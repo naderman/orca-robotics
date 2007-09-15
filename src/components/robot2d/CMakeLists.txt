@@ -18,6 +18,8 @@ IF ( BUILD_ROBOT2D )
         HAVE_PLAYERCLIENT_DRIVER
         ${PLAYER_LIBS} OrcaPlayer
     )
+    INCLUDE_DIRECTORIES( ${PLAYER_INCLUDE_DIRS} )
+    ADD_DEFINITIONS( ${PLAYER_DEFINITIONS} )
 
     IF ( NOT HAVE_PLAYERCLIENT_DRIVER )
         MESSAGE( STATUS "    WARNING: only default 'fake' driver can be built")

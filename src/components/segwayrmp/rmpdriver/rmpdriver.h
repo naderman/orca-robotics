@@ -16,11 +16,10 @@
 #include "rmpio.h"
 #include "rmpdataframe.h"
 #include "canpacket.h"
+#include <IceUtil/IceUtil.h>
 
 namespace segwayrmp
 {
-
-class RmpIo;
 
 //
 // An implementation of HwHandler that knows how to talk Segway's
@@ -40,10 +39,6 @@ public:
     virtual void enable();
 
     // Inherited from HwDriver
-    // AlexB: What the fuck is this?
-    void disable() {}
-
-    // Inherited from HwDriver
     bool read( Data& data );
 
     // Inherited from HwDriver
@@ -51,18 +46,14 @@ public:
 
     // Inherited from HwDriver
     void applyHardwareLimits( double& forwardSpeed, double& reverseSpeed, 
-        double& turnrate, double& turnrateAtMaxSpeed );
-
-    // Inherited from HwDriver
-    void get( Stats& stats );
-
-    // Inherited from HwDriver
-    std::string toString();
+                              double& turnrate, double& turnrateAtMaxSpeed );
 
     // Inherited from HwDriver
     void getStatus( std::string &status, bool &isWarn, bool &isFault );
 
 private:
+
+    std::string toString();
 
     enum OperationalMode
     {
@@ -143,6 +134,7 @@ private:
     void watchPacket( CanPacket* pkt, short int pktID );
     void watchDataStream( CanPacket* pkt );
 
+    IceUtil::Mutex   mutex_;
 };
 
 } // namespace

@@ -57,7 +57,7 @@ Odometry3dImpl::Odometry3dImpl( const orca::VehicleDescription& descr,
                           const std::string& interfaceTag,
                           const orcaice::Context& context ) :
     descr_(descr),
-    tag_(interfaceTag),
+    interfaceTag_(interfaceTag),
     context_(context)
 {
 }
@@ -72,13 +72,23 @@ Odometry3dImpl::initInterface()
 {
     // Find IceStorm Topic to which we'll publish
     topicPrx_ = orcaice::connectToTopicWithTag<orca::Odometry3dConsumerPrx>
-        ( context_, consumerPrx_, tag_ );
+        ( context_, consumerPrx_, interfaceTag_ );
 
     // Register with the adapter
     // We don't have to clean up the memory we're allocating here, because
     // we're holding it in a smart pointer which will clean up when it's done.
     ptr_ = new Odometry3dI( *this );
-    orcaice::createInterfaceWithTag( context_, ptr_, tag_ );
+    orcaice::createInterfaceWithTag( context_, ptr_, interfaceTag_ );
+}
+
+void 
+Odometry3dImpl::initInterface( orcaice::Thread* thread, int retryInterval )
+{
+    topicPrx_ = orcaice::connectToTopicWithTag<orca::Odometry3dConsumerPrx>
+        ( context_, consumerPrx_, interfaceTag_, "*", thread, retryInterval );
+
+    ptr_ = new Odometry3dI( *this );
+    orcaice::createInterfaceWithTag( context_, ptr_, interfaceTag_, thread, retryInterval );
 }
 
 ::orca::Odometry3dData 
@@ -89,7 +99,7 @@ Odometry3dImpl::internalGetData() const
     if ( dataProxy_.isEmpty() )
     {
         std::stringstream ss;
-        ss << "No data available! (interfaceTag="<<tag_<<")";
+        ss << "No data available! (interfaceTag="<<interfaceTag_<<")";
         throw orca::DataNotExistException( ss.str() );
     }
 
@@ -150,7 +160,7 @@ Odometry3dImpl::localSetAndSend( const orca::Odometry3dData& data )
         consumerPrx_,
         data,
         topicPrx_,
-        tag_ );
+        interfaceTag_ );
 }
 
 } // namespace

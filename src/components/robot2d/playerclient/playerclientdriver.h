@@ -13,13 +13,9 @@
 
 #include "../hwdriver.h"
 #include "playerclientdriverconfig.h"
-
-// Player proxies
-namespace PlayerCc
-{
-class PlayerClient;
-class Position2dProxy;
-}
+#include <libplayerc++/playerc++.h>
+#include <memory>
+#include <orcaice/store.h>
 
 namespace robot2d
 {
@@ -29,23 +25,22 @@ class PlayerClientDriver : public HwDriver
 public:
 
     PlayerClientDriver( const orcaice::Context & context );
-    //PlayerClientDriver( const std::map<std::string,std::string> & props );
     virtual ~PlayerClientDriver();
 
-    // returns: 0 = success, non-zero = failure
-    virtual int enable();
-    virtual int repair();
-    virtual int disable();
+    virtual void enable();
 
-    virtual int read( Data& data, std::string & status );
+    virtual bool read( Data& data );
 
-    virtual int write( const Command& command );
+    virtual void write( const Command& command );
+
+    virtual void getStatus( std::string &status, bool &isWarn, bool &isFault );
 
 private:
 
-    bool enabled_;
-    PlayerCc::PlayerClient *robot_;
-    PlayerCc::Position2dProxy *positionProxy_;
+    orcaice::Store<Command> commandStore_;
+
+    std::auto_ptr<PlayerCc::PlayerClient>    robot_;
+    std::auto_ptr<PlayerCc::Position2dProxy> positionProxy_;
 
     // configuration
     orcaice::Context context_;

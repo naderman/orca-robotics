@@ -49,6 +49,8 @@ RmpDriver::RmpDriver( const orcaice::Context & context,
 void
 RmpDriver::enable()
 {
+    IceUtil::Mutex::Lock lock(mutex_);
+
     rmpIo_.disable();
 
     // init device
@@ -105,20 +107,10 @@ RmpDriver::enable()
     }
 }
 
-// int
-// RmpDriver::disable()
-// {
-//     cout<<"RmpDriver::disabling... ("<<repairCounter_<<" repairs so far)"<<endl;
-//     assert( rmpusbio_ );
-//     delete rmpusbio_;
-//     rmpusbio_ = NULL;
-
-//     return 0;
-// }
-
 bool
 RmpDriver::read( Data &data )
 {
+    IceUtil::Mutex::Lock lock(mutex_);
     bool stateChanged = false;
 
     try {
@@ -182,6 +174,7 @@ RmpDriver::applyScaling( const Command& original, Command &scaledCommand )
 void
 RmpDriver::write( const Command& command )
 {
+    IceUtil::Mutex::Lock lock(mutex_);
     Command scaledCommand;
     applyScaling( command, scaledCommand );
 
@@ -222,11 +215,11 @@ RmpDriver::applyHardwareLimits( double& forwardSpeed, double& reverseSpeed,
     turnrate = MIN( turnrateAtMaxSpeed, turnrateAtMaxSpeedLimit );
 }
 
-void
-RmpDriver::get( Stats& stats )
-{
-    stats.distanceTravelled = frame_.foreaft;
-}
+// void
+// RmpDriver::get( Stats& stats )
+// {
+//     stats.distanceTravelled = frame_.foreaft;
+// }
 
 std::string
 RmpDriver::toString()

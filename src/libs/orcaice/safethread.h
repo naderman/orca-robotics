@@ -50,6 +50,8 @@ public:
     virtual void walk()=0;
 
 };
+//! A smart pointer to the SafeThread class.
+typedef IceUtil::Handle<SafeThread> SafeThreadPtr;
 
 } // end namespace
 

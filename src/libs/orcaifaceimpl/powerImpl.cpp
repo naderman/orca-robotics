@@ -76,6 +76,16 @@ PowerImpl::initInterface()
     orcaice::createInterfaceWithTag( context_, ptr_, tag_ );
 }
 
+void 
+PowerImpl::initInterface( orcaice::Thread* thread, int retryInterval )
+{
+    topicPrx_ = orcaice::connectToTopicWithTag<orca::PowerConsumerPrx>
+        ( context_, consumerPrx_, tag_, "*", thread, retryInterval );
+
+    ptr_ = new PowerI( *this );
+    orcaice::createInterfaceWithTag( context_, ptr_, tag_, thread, retryInterval );
+}
+
 ::orca::PowerData 
 PowerImpl::internalGetData() const
 {

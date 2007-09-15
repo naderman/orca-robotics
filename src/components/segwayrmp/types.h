@@ -11,11 +11,15 @@
 #ifndef ORCA2_SEGWAY_RMP_TYPES_H
 #define ORCA2_SEGWAY_RMP_TYPES_H
 
+#include <orcarobotdriverutil/ihwdriver.h>
+
 namespace segwayrmp
 {
 
-struct Data
+class Data
 {
+public:
+
     int seconds;
     int useconds;
     double x;
@@ -29,17 +33,17 @@ struct Data
     double dyaw;
     double mainvolt;
     double uivolt;
+
+    std::string toString() const;
 };
 
-struct Command
+class Command
 {
+public:
     double vx;
     double w;
-};
 
-struct Stats
-{
-    double distanceTravelled;
+    std::string toString() const;
 };
 
 } // namespace

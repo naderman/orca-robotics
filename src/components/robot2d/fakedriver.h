@@ -27,13 +27,13 @@ public:
     FakeDriver( const orcaice::Context& context );
     virtual ~FakeDriver();
 
-    virtual int enable();
-    virtual int repair();
-    virtual int disable();
+    virtual void enable();
 
-    virtual int read( Data& data, std::string & status );
+    virtual bool read( Data& data );
 
-    virtual int write( const Command& command );
+    virtual void write( const Command& command );
+
+    virtual void getStatus( std::string &status, bool &isWarn, bool &isFault );
 
 private:
     orcaice::Context context_;

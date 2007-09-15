@@ -11,7 +11,7 @@
 #ifndef ORCA2_SEGWAY_RMP_NETWORK_HANDLER_H
 #define ORCA2_SEGWAY_RMP_NETWORK_HANDLER_H
 
-#include <orcaice/thread.h>
+#include <orcaice/safethread.h>
 #include <orcaice/context.h>
 #include <orcaice/proxy.h>
 #include <orcaice/notify.h>
@@ -20,37 +20,30 @@
 #include <orcaifaceimpl/odometry3dImpl.h>
 #include <orcaifaceimpl/powerImpl.h>
 #include <orcaifaceimpl/velocitycontrol2dImpl.h>
-
+#include <orcarobotdriverutil/hwdriverhandler.h>
 #include "types.h"
 
 namespace segwayrmp
 {
 
-// Note: this thing self-destructs when run() returns.
-class NetHandler : public orcaice::Thread,
+class NetHandler : public orcaice::SafeThread,
                    public orcaice::NotifyHandler<orca::VelocityControl2dData>
 {
 public:
 
-    NetHandler( orcaice::Proxy<Data>&              dataPipe,
-                orcaice::Notify<Command>&          commandPipe,
-                const orca::VehicleDescription&    descr,
-                const orcaice::Context&            context );
-    virtual ~NetHandler();
+    NetHandler( orcarobotdriverutil::HwDriverHandler<Command,Data> &hwDriverHandler,
+                const orca::VehicleDescription                     &descr,
+                const orcaice::Context                             &context );
 
-    // from Thread
-    virtual void run();
+    // from SafeThread
+    virtual void walk();
 
     // from NotifyHandler
-    virtual void handleData(const orca::VelocityControl2dData& obj);
+    virtual void handleData(const orca::VelocityControl2dData &incomingCommand);
 
 private:
 
-    void activate();
-    void initOdom2d();
-    void initOdom3d();
-    void initPower();
-    void initVelocityControl2d();
+    void limit( Command &command );
 
     // external interfaces
     orcaifaceimpl::Odometry2dImplPtr           odometry2dI_;
@@ -58,21 +51,15 @@ private:
     orcaifaceimpl::PowerImplPtr                powerI_;
     orcaifaceimpl::VelocityControl2dImplPtr    velocityControl2dI_;
 
-    // hardware->network data flow
-    orcaice::Proxy<Data>& dataPipe_;
-    // network->hardware command flow
-    orcaice::Notify<Command>& commandPipe_;
+    orcarobotdriverutil::HwDriverHandler<Command,Data> &hwDriverHandler_;
 
     orca::VehicleDescription descr_;
 
+    double maxSpeed_;
+    double maxTurnrate_;
+
     // component current context
     orcaice::Context context_;
-
-    // utilities
-    static void convert( const Data& internal, orca::Odometry2dData& network );
-    static void convert( const Data& internal, orca::Odometry3dData& network );
-    static void convert( const Data& internal, orca::PowerData& network );
-    static void convert( const orca::VelocityControl2dData& network, segwayrmp::Command& internal );
 };
 
 } // namespace

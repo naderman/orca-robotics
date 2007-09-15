@@ -17,10 +17,22 @@ using namespace std;
 
 namespace robot2d {
 
-std::string toString( const Command &c )
+std::string 
+Command::toString() const
 {
     stringstream ss;
-    ss << "[vx="<<c.vx<<"m/s, vy="<<c.vy<<"m/s, w="<<c.w*180.0/M_PI<<"deg/s]";
+    ss << "[vx="<<vx<<"m/s, vy="<<vy<<"m/s, w="<<w*180.0/M_PI<<"deg/s]";
+    return ss.str();
+}
+
+std::string 
+Data::toString() const
+{
+    stringstream ss;
+    ss << endl;
+    ss << "  t="<<seconds<<":"<<useconds<<endl;
+    ss << "  [x,y,o]=["<<x<<","<<y<<","<<o*180.0/M_PI<<"]"<<endl;
+    ss << "  [vx,vy,w]=["<<vx<<","<<vy<<","<<w<<"]"<<endl;
     return ss.str();
 }
 

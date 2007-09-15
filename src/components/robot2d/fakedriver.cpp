@@ -27,29 +27,14 @@ FakeDriver::~FakeDriver()
     cout<<"FakeDriver~FakeDriver"<<endl;
 }
 
-int 
+void 
 FakeDriver::enable()
 {
     context_.tracer()->info( "FakeDriver is enabled" );
-    return 0;
 }
 
-int 
-FakeDriver::repair()
-{
-    context_.tracer()->info( "FakeDriver is repaired" );
-    return 0;
-}
-
-int 
-FakeDriver::disable()
-{
-    context_.tracer()->info( "FakeDriver is disabled" );
-    return 0;
-}
-
-int 
-FakeDriver::read( Data& data, std::string& status )
+bool
+FakeDriver::read( Data& data )
 {
     context_.tracer()->info( "Generating fake info for robot2d..." );
 
@@ -66,11 +51,10 @@ FakeDriver::read( Data& data, std::string& status )
     // slow it down a bit
     IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
 
-    status = "faking=1";
-    return 0;
+    return false;
 }
 
-int 
+void
 FakeDriver::write( const Command& command )
 {
     // debug: simulated failure
@@ -81,9 +65,16 @@ FakeDriver::write( const Command& command )
             << command.vy << ", "
             << RAD2DEG(command.w) << ")";
         context_.tracer()->info( ss.str() );
-        return 0;
     }
     else {
-        return 1;
+        throw( orcaice::Exception( ERROR_INFO, "FakeDriver: simulated hardware fault" ) );
     }
+}
+
+void 
+FakeDriver::getStatus( std::string &status, bool &isWarn, bool &isFault )
+{
+    status = "FakeDriver: dummy status";
+    isWarn = false;
+    isFault = false;
 }

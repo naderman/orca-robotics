@@ -14,8 +14,14 @@
 
 #include "component.h"
 #include "nethandler.h"
-#include "hwhandler.h"
 #include <orcamisc/configutils.h>
+#include <orcarobotdriverutil/hwdriverhandler.h>
+
+// driver types
+#include "fakedriver.h"
+#ifdef HAVE_PLAYERCLIENT_DRIVER
+#   include "playerclient/playerclientdriver.h"
+#endif
 
 using namespace std;
 using namespace robot2d;
@@ -27,19 +33,9 @@ Component::Component() :
 {
 }
 
-Component::~Component()
+orca::VehicleDescription
+Component::loadDriver()
 {
-    cout<<"TRACE(component.cpp): destructor()" << endl;
-    // do not delete handlers!!! They derive from Ice::Thread and self-destruct.
-}
-
-// warning: this function returns after it's done, all variable that need to be permanet must
-//          be declared as member variables.
-void
-Component::start()
-{
-    tracer()->debug( "Starting Component",2 );
-
     // 
     // Read vehicle description
     //
@@ -50,20 +46,68 @@ Component::start()
         << endl << orcaice::toString(descr) << endl;
     context().tracer()->info( ss.str() );
 
+    // based on the config parameter, create the right driver
+    string driverName = orcaice::getPropertyWithDefault( 
+            context().properties(), context().tag()+".Config.Driver", "playerclient" );
+            
+    if ( driverName == "playerclient" )
+    {
+#ifdef HAVE_PLAYERCLIENT_DRIVER
+        context().tracer()->debug( "loading Player-Client driver",3);
+        driver_.reset( new PlayerClientDriver( context() ) );
+#else
+        throw orcaice::Exception( ERROR_INFO, "Can't instantiate driver 'playerclient' because it was not built!" );
+#endif
+    }
+    else if ( driverName == "fake" )
+    {
+        context().tracer()->debug( "loading Fake driver",3);
+        driver_.reset( new FakeDriver( context() ) );
+    }
+    else {
+        string errorStr = "Unknown driver type. Cannot talk to hardware.";
+        context().tracer()->error( errorStr);
+        context().tracer()->info( "Valid driver values are {'playerclient', 'fake'}" );
+        throw orcaice::Exception( ERROR_INFO, errorStr );
+    }
+
+    context().tracer()->debug( "Component: driver instantiated", 5 );
+    return descr;
+}
+
+// warning: this function returns after it's done, all variable that need to be permanet must
+//          be declared as member variables.
+void
+Component::start()
+{
+    tracer()->debug( "Starting Component",2 );
+
+    // 
+    // Read vehicle description and load driver
     //
-    // Network handling loop
-    //
-    // the constructor may throw, we'll let the application shut us down
-    netHandler_ = new NetHandler( dataPipe_, commandPipe_, descr, context() );
-    // this thread will try to activate and register the adapter
-    netHandler_->start();
+    orca::VehicleDescription descr = loadDriver();
 
     //
     // Hardware handling loop
     //
     // the constructor may throw, we'll let the application shut us down
-    hwHandler_ = new HwHandler( dataPipe_, commandPipe_, descr, context() );
+    bool isMotionEnabled = (bool)orcaice::getPropertyAsIntWithDefault( context().properties(),
+                                                                       context().tag()+".Config.EnableMotion",
+                                                                       1 );
+    orcarobotdriverutil::HwDriverHandler<Command,Data> *hwHandler = 
+        new orcarobotdriverutil::HwDriverHandler<Command,Data>( *driver_,
+                                                                isMotionEnabled,
+                                                                context() );
+    hwHandler_ = hwHandler;
     hwHandler_->start();
+
+    //
+    // Network handling loop
+    //
+    // the constructor may throw, we'll let the application shut us down
+    netHandler_ = new NetHandler( *hwHandler, descr, context() );
+    // this thread will try to activate and register the adapter
+    netHandler_->start();
 
     // the rest is handled by the application/service
     context().tracer()->debug( "Component::start() done." );

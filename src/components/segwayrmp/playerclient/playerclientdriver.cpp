@@ -48,6 +48,8 @@ PlayerClientDriver::~PlayerClientDriver()
 void
 PlayerClientDriver::enable()
 {
+    IceUtil::Mutex::Lock lock(mutex_);
+
     if ( enabled_ ) return;
 
     cout << "TRACE(playerclientdriver.cpp): PlayerClientDriver: Connecting to player on host "
@@ -91,6 +93,8 @@ PlayerClientDriver::disable()
 bool
 PlayerClientDriver::read( Data& data )
 {
+    IceUtil::Mutex::Lock lock(mutex_);
+
     if ( ! enabled_ ) {
         stringstream ss;
         ss << "PlayerClientDriver: Can't read: not connected to Player/Stage yet.";
@@ -138,6 +142,8 @@ PlayerClientDriver::read( Data& data )
 void
 PlayerClientDriver::write( const Command& command )
 {
+    IceUtil::Mutex::Lock lock(mutex_);
+
     // this version of Player client takes speed command in  [m, m, rad/s]
     try
     {

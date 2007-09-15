@@ -26,6 +26,8 @@ struct Data
     double vx;
     double vy;
     double w;
+
+    std::string toString() const;
 };
 
 struct Command
@@ -33,14 +35,14 @@ struct Command
     double vx;
     double vy;
     double w;
+
+    std::string toString() const;
 };
 
-struct Stats
-{
-    double distanceTravelled;
-};
-
-std::string toString( const Command &c );
+inline std::string toString( const Command &c )
+{ return c.toString(); }
+inline std::string toString( const Data &d )
+{ return d.toString(); }
 
 } // namespace
 

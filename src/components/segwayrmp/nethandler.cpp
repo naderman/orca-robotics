@@ -19,10 +19,9 @@ using namespace segwayrmp;
 
 namespace {
     const char *SUBSYSTEM_NAME = "network";
-}
 
 void 
-NetHandler::convert( const Data& internal, orca::Odometry2dData& network )
+convert( const Data& internal, orca::Odometry2dData& network )
 {
     network.timeStamp.seconds = internal.seconds;
     network.timeStamp.useconds = internal.useconds;
@@ -37,7 +36,7 @@ NetHandler::convert( const Data& internal, orca::Odometry2dData& network )
 }
 
 void 
-NetHandler::convert( const Data& internal, orca::Odometry3dData& network )
+convert( const Data& internal, orca::Odometry3dData& network )
 {
     network.timeStamp.seconds = internal.seconds;
     network.timeStamp.useconds = internal.useconds;
@@ -60,7 +59,7 @@ NetHandler::convert( const Data& internal, orca::Odometry3dData& network )
 }
 
 void 
-NetHandler::convert( const Data& internal, orca::PowerData& network )
+convert( const Data& internal, orca::PowerData& network )
 {
     network.timeStamp.seconds = internal.seconds;
     network.timeStamp.useconds = internal.useconds;
@@ -75,323 +74,160 @@ NetHandler::convert( const Data& internal, orca::PowerData& network )
 }
 
 void 
-NetHandler::convert( const orca::VelocityControl2dData& network, segwayrmp::Command& internal )
+convert( const orca::VelocityControl2dData& network, segwayrmp::Command& internal )
 {
     internal.vx = network.motion.v.x;
     internal.w = network.motion.w;
 }
 
-NetHandler::NetHandler(
-        orcaice::Proxy<Data>&               dataPipe,
-        orcaice::Notify<Command>&           commandPipe,
-        const orca::VehicleDescription&     descr,
-        const orcaice::Context&             context ) :
-    dataPipe_(dataPipe),
-    commandPipe_(commandPipe),
-    descr_(descr),
-    context_(context)
+}
+
+//////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+
+NetHandler::NetHandler( orcarobotdriverutil::HwDriverHandler<Command,Data> &hwDriverHandler,
+                        const orca::VehicleDescription                     &descr,
+                        const orcaice::Context                             &context )
+    : hwDriverHandler_(hwDriverHandler),
+      descr_(descr),
+      context_(context)
 {
     context_.status()->setMaxHeartbeatInterval( SUBSYSTEM_NAME, 10.0 );
     context_.status()->initialising( SUBSYSTEM_NAME );
-}
 
-NetHandler::~NetHandler()
-{
-}
+    // Get vehicle limits
+    orca::VehicleControlVelocityDifferentialDescription *controlDescr =
+        dynamic_cast<orca::VehicleControlVelocityDifferentialDescription*>(&(*(descr.control)));
+    if ( controlDescr == NULL )
+        throw orcaice::Exception( ERROR_INFO, "Can only deal with differential drive vehicles." );
+    if ( controlDescr->maxForwardSpeed != controlDescr->maxReverseSpeed ) 
+        throw orcaice::Exception( ERROR_INFO, "Can't handle max forward speed != max reverse speed." );
 
-void
-NetHandler::activate()
-{
-    int retryInterval = 2;
-    while ( isActive() )
-    {
-        try {
-            context_.activate();
-            break;
-        }     
-        // alexm: in all of these exception handlers we would like to just catch
-        // std::exception but Ice 3.2 does not overload e.what() so we have to do it
-        // separately.
-        catch ( const Ice::Exception& e ) {
-            stringstream ss;
-            ss << "Failed to activate component: " << e 
-               << ".  Check Registry and IceStorm. Will try again in "<<retryInterval<<"secs...";
-            context_.tracer()->warning( ss.str() );
-        }
-        catch ( const std::exception& e ) {
-            stringstream ss;
-            ss << "Failed to activate component: " << e.what() 
-               << ".  Check Registry and IceStorm. Will try again in "<<retryInterval<<"secs...";
-            context_.tracer()->warning( ss.str() );
-        }
-        catch ( ... )
-        {
-            cout << "Caught some other exception while activating." << endl;
-        }
-        context_.status()->initialising( SUBSYSTEM_NAME, "activating..." );
-        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(retryInterval));
-    }
+    maxSpeed_    = controlDescr->maxForwardSpeed;
+    maxTurnrate_ = controlDescr->maxTurnrate;
 }
 
 void
-NetHandler::initOdom2d()
+NetHandler::limit( Command &command )
 {
-    odometry2dI_ =
-        new orcaifaceimpl::Odometry2dImpl( descr_, "Odometry2d", context_ );
+    if ( command.vx > maxSpeed_ )
+        command.vx = maxSpeed_;
+    if ( command.vx < -maxSpeed_ )
+        command.vx = -maxSpeed_;
 
-    int retryInterval = 2;
-    while ( isActive() ) {
-        try {
-            odometry2dI_->initInterface();
-            context_.tracer()->debug( "odometry 2d interface initialized",2);
-            break;
-        }
-        catch ( const Ice::Exception& e ) {
-            stringstream ss;
-            ss << "Failed to setup interface: " << e 
-               << ".  Check Registry and IceStorm. Will try again in "<<retryInterval<<"secs...";
-            context_.tracer()->warning( ss.str() );
-        }
-        catch ( const std::exception& e ) {
-            stringstream ss;
-            ss << "Failed to setup interface: " << e.what() 
-               << ".  Check Registry and IceStorm. Will try again in "<<retryInterval<<"secs...";
-            context_.tracer()->warning( ss.str() );
-        }
-
-        context_.status()->initialising( SUBSYSTEM_NAME, "initOdom2d..." );
-        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(retryInterval));
-    }
-}
-
-void
-NetHandler::initOdom3d()
-{
-    odometry3dI_ = 
-        new orcaifaceimpl::Odometry3dImpl( descr_, "Odometry3d", context_ );
-
-    int retryInterval = 2;
-    while ( isActive() ) {
-        try {
-            odometry3dI_->initInterface();
-            context_.tracer()->debug( "odometry 3d interface initialized",2);
-            break;
-        }
-        catch ( const Ice::Exception& e ) {
-            stringstream ss;
-            ss << "Failed to setup interface: " << e 
-               << ".  Check Registry and IceStorm. Will try again in "<<retryInterval<<"secs...";
-            context_.tracer()->warning( ss.str() );
-        }
-        catch ( const std::exception& e ) {
-            stringstream ss;
-            ss << "Failed to setup interface: " << e.what() 
-               << ".  Check Registry and IceStorm. Will try again in "<<retryInterval<<"secs...";
-            context_.tracer()->warning( ss.str() );
-        }
-        
-        context_.status()->initialising( SUBSYSTEM_NAME, "initOdom3d..." );
-        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(retryInterval));
-    }    
-}
-
-void
-NetHandler::initPower()
-{
-    powerI_ = new orcaifaceimpl::PowerImpl( "Power", context_ );
-    
-    int retryInterval = 2;
-    while ( isActive() ) {
-        try {
-            powerI_->initInterface();
-            context_.tracer()->debug( "power interface initialized",2);
-            break;
-        }
-        catch ( const Ice::Exception& e ) {
-            stringstream ss;
-            ss << "Failed to setup interface: " << e 
-               << ".  Check Registry and IceStorm. Will try again in "<<retryInterval<<"secs...";
-            context_.tracer()->warning( ss.str() );
-        }
-        catch ( const std::exception& e ) {
-            stringstream ss;
-            ss << "Failed to setup interface: " << e.what() 
-               << ".  Check Registry and IceStorm. Will try again in "<<retryInterval<<"secs...";
-            context_.tracer()->warning( ss.str() );
-        }
-        
-        context_.status()->initialising( SUBSYSTEM_NAME, "initPower..." );
-        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(retryInterval));
-    }
-}
-
-void
-NetHandler::initVelocityControl2d()
-{
-    velocityControl2dI_ = new orcaifaceimpl::VelocityControl2dImpl( descr_, "VelocityControl2d", context_ );
-    
-    int retryInterval = 2;
-    while ( isActive() ) {
-        try {
-            velocityControl2dI_->initInterface();
-            context_.tracer()->debug( "VelocityControl2d interface initialized",2);
-            break;
-        }
-        catch ( const Ice::Exception& e ) {
-            stringstream ss;
-            ss << "Failed to setup interface: " << e 
-               << ".  Check Registry and IceStorm. Will try again in "<<retryInterval<<"secs...";
-            context_.tracer()->warning( ss.str() );
-        }
-        catch ( const std::exception& e ) {
-            stringstream ss;
-            ss << "Failed to setup interface: " << e.what() 
-               << ".  Check Registry and IceStorm. Will try again in "<<retryInterval<<"secs...";
-            context_.tracer()->warning( ss.str() );
-        }
-        
-        context_.status()->initialising( SUBSYSTEM_NAME, "initVelocityControl2d..." );
-        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(retryInterval));
-    }
-
-    // register ourselves as data handlers (it will call the handleData() callback).
-    velocityControl2dI_->setNotifyHandler( this );
+    if ( command.w > maxTurnrate_ )
+        command.w = maxTurnrate_;
+    if ( command.w < -maxTurnrate_ )
+        command.w = -maxTurnrate_;
 }
 
 // This is a direct callback from the VelocityControl2dImpl object.
 // It's executed in Ice thread.
-// Here we convert to our internal format and stick it into
-// another Notify pipe to be handled the HwHandler.
 void 
-NetHandler::handleData(const orca::VelocityControl2dData& obj)
+NetHandler::handleData(const orca::VelocityControl2dData& incomingCommand)
 {
-    segwayrmp::Command command;
-    convert( obj, command );
-    commandPipe_.set( command );
+    segwayrmp::Command internalCommand;
+    convert( incomingCommand, internalCommand );
+    limit( internalCommand );
+    hwDriverHandler_.setCommand( internalCommand );
 }
 
 void
-NetHandler::run()
+NetHandler::walk()
 {
-    try // this is once per run try/catch: waiting for the communicator to be destroyed
-    {
-        activate();
+    activate( context_, this );
     
-        std::string prefix = context_.tag() + ".Config.";
+    std::string prefix = context_.tag() + ".Config.";
 
-        // alexm: this option used to be in HwHandler. The external interface was always enabled,
-        //        but when ProvideOdometry3d=0, the HwHandler would not push any 3D data 
-        //        to NetHandler.
-//         bool provideOdometry3d = (bool)orcaice::getPropertyAsIntWithDefault( 
-//                 context_.properties(), prefix+".ProvideOdometry3d", 1 );
+    // Initialise external interfaces
+    odometry2dI_ = new orcaifaceimpl::Odometry2dImpl( descr_, "Odometry2d", context_ );
+    odometry2dI_->initInterface( this );
+    
+    odometry3dI_ = new orcaifaceimpl::Odometry3dImpl( descr_, "Odometry3d", context_ );
+    odometry3dI_->initInterface( this );
 
-        // Initialise external interfaces
-        initOdom2d();
-        initOdom3d();
-        initPower();
-        initVelocityControl2d();
+    powerI_ = new orcaifaceimpl::PowerImpl( "Power", context_ );
+    powerI_->initInterface( this );
 
-        // temp objects in internal format
-        Data data;
+    velocityControl2dI_ = new orcaifaceimpl::VelocityControl2dImpl( descr_, "VelocityControl2d", context_ );
+    velocityControl2dI_->initInterface( this );
+    // register ourselves as data handlers (it will call the handleData() callback).
+    velocityControl2dI_->setNotifyHandler( this );
 
-        // temp objects in network format
-        orca::Odometry2dData odometry2dData;
-        orca::Odometry3dData odometry3dData;
-        orca::PowerData powerData;
+    // temp objects in network format
+    orca::Odometry2dData odometry2dData;
+    orca::Odometry3dData odometry3dData;
+    orca::PowerData      powerData;
 
-        // set up data structure for 3 batteries
-        powerData.batteries.resize(3);
-        powerData.batteries[0].name = "main-front";
-        powerData.batteries[1].name = "main-rear";
-        powerData.batteries[2].name = "ui";
+    // set up data structure for 3 batteries
+    powerData.batteries.resize(3);
+    powerData.batteries[0].name = "main-front";
+    powerData.batteries[1].name = "main-rear";
+    powerData.batteries[2].name = "ui";
 
-        orcaice::Timer odometry2dPublishTimer;
-        orcaice::Timer odometry3dPublishTimer;
-        orcaice::Timer powerPublishTimer;
+    orcaice::Timer odometry2dPublishTimer;
+    orcaice::Timer odometry3dPublishTimer;
+    orcaice::Timer powerPublishTimer;
 
-        double odometry2dPublishInterval = orcaice::getPropertyAsDoubleWithDefault( 
-                context_.properties(), prefix+"Odometry2dPublishInterval", 0.1 );
-        double odometry3dPublishInterval = orcaice::getPropertyAsDoubleWithDefault( 
-                context_.properties(), prefix+"Odometry3dPublishInterval", 0.1 );
-        double powerPublishInterval = orcaice::getPropertyAsDoubleWithDefault( 
-                context_.properties(), prefix+"PowerPublishInterval", 20.0 );
+    double odometry2dPublishInterval = orcaice::getPropertyAsDoubleWithDefault( 
+        context_.properties(), prefix+"Odometry2dPublishInterval", 0.1 );
+    double odometry3dPublishInterval = orcaice::getPropertyAsDoubleWithDefault( 
+        context_.properties(), prefix+"Odometry3dPublishInterval", 0.1 );
+    double powerPublishInterval = orcaice::getPropertyAsDoubleWithDefault( 
+        context_.properties(), prefix+"PowerPublishInterval", 20.0 );
 
-        const int odometryReadTimeout = 500; // [ms]
-        context_.status()->setMaxHeartbeatInterval( "network", 2.0*(odometryReadTimeout/1000.0) );
+    const int odometryReadTimeout = 500; // [ms]
+    context_.status()->setMaxHeartbeatInterval( SUBSYSTEM_NAME, 2.0*(odometryReadTimeout/1000.0) );
 
-        //
-        // Main loop
-        //
-        while( isActive() )
-        {
+    //
+    // Main loop
+    //
+    while( isActive() )
+    {
 //         context_.tracer()->debug( "net handler loop spinning ",1);
 
-            // block on the only incoming data stream
-            if ( dataPipe_.getNext( data, odometryReadTimeout ) ) {
+        // block on the only incoming data stream
+        Data data;
+        if ( hwDriverHandler_.dataProxy().getNext( data, odometryReadTimeout ) ) {
 //             context_.tracer()->debug( "Net loop timed out", 1);
-                // Don't flag this as an error -- it may happen during normal initialisation.
-                context_.status()->ok( SUBSYSTEM_NAME, "Net loop timed out" );
-                continue;
-            }
+            // Don't flag this as an error -- it may happen during normal initialisation.
+            context_.status()->ok( SUBSYSTEM_NAME, "Net loop timed out" );
+            continue;
+        }
 
-            // Odometry2d
-            convert( data, odometry2dData );
-            // check that we were not told to terminate while we were sleeping
-            // otherwise, we'll get segfault (there's probably a way to prevent this inside the library)
-            if ( isActive() && odometry2dPublishTimer.elapsed().toSecondsDouble()>=odometry2dPublishInterval ) {
-                odometry2dI_->localSetAndSend( odometry2dData );
-                odometry2dPublishTimer.restart();
-            } 
-            else {
-                odometry2dI_->localSet( odometry2dData );
-            }
+        // Odometry2d
+        convert( data, odometry2dData );
+        // check that we were not told to terminate while we were sleeping
+        // otherwise, we'll get segfault (there's probably a way to prevent this inside the library)
+        if ( isActive() && odometry2dPublishTimer.elapsed().toSecondsDouble()>=odometry2dPublishInterval ) {
+            odometry2dI_->localSetAndSend( odometry2dData );
+            odometry2dPublishTimer.restart();
+        } 
+        else {
+            odometry2dI_->localSet( odometry2dData );
+        }
 
-            // Odometry3d
-            convert( data, odometry3dData );
-            if ( isActive() && odometry3dPublishTimer.elapsed().toSecondsDouble()>=odometry3dPublishInterval ) {
-                odometry3dI_->localSetAndSend( odometry3dData );
-                odometry3dPublishTimer.restart();
-            } 
-            else {
-                odometry3dI_->localSet( odometry3dData );
-            }
+        // Odometry3d
+        convert( data, odometry3dData );
+        if ( isActive() && odometry3dPublishTimer.elapsed().toSecondsDouble()>=odometry3dPublishInterval ) {
+            odometry3dI_->localSetAndSend( odometry3dData );
+            odometry3dPublishTimer.restart();
+        } 
+        else {
+            odometry3dI_->localSet( odometry3dData );
+        }
 
-            // Power
-            convert( data, powerData );
-            if ( isActive() && powerPublishTimer.elapsed().toSecondsDouble()>=powerPublishInterval ) {
-                powerI_->localSetAndSend( powerData );
-                powerPublishTimer.restart();
-            } 
-            else {
-                powerI_->localSet( powerData );
-            }
+        // Power
+        convert( data, powerData );
+        if ( isActive() && powerPublishTimer.elapsed().toSecondsDouble()>=powerPublishInterval ) {
+            powerI_->localSetAndSend( powerData );
+            powerPublishTimer.restart();
+        } 
+        else {
+            powerI_->localSet( powerData );
+        }
 
-            // subsystem heartbeat
-            context_.status()->ok( SUBSYSTEM_NAME );
-        } // main loop
-    
-    }
-    catch ( const Ice::CommunicatorDestroyedException & e )
-    {
-        context_.tracer()->debug( "NetHandler cought CommunicatorDestroyedException",1);        
-        // it's ok, we must be quitting.
-    }
-    catch ( std::exception &e )
-    {
-        stringstream ss;
-        ss << "NetHandler caught unexpected exception: " << e.what();
-        context_.tracer()->error( ss.str() );
-        context_.status()->fault( SUBSYSTEM_NAME, ss.str() );
-    }
-    catch ( ... )
-    {
-        stringstream ss;
-        ss << "NetHandler caught unknown unexpected exception";
-        context_.tracer()->error( ss.str() );
-        context_.status()->fault( SUBSYSTEM_NAME, ss.str() );
-    }
-
-    // wait for the component to realize that we are quitting and tell us to stop.
-    waitForStop();
-    context_.tracer()->debug( "Exiting NetHandler thread...",2);
+        // subsystem heartbeat
+        context_.status()->ok( SUBSYSTEM_NAME );
+    } // main loop
 }

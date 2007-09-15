@@ -15,10 +15,24 @@
 
 #include "component.h"
 #include "nethandler.h"
-#include "hwhandler.h"
+#include "orcarobotdriverutil/hwdriverhandler.h"
+
+// segway rmp drivers
+#include "fakedriver.h"
+#include "rmpdriver/rmpdriver.h"
+#ifdef HAVE_USB_DRIVER
+#   include "rmpdriver/usb/rmpusbioftdi.h"
+#endif
+#ifdef HAVE_CAN_DRIVER
+#   include "rmpdriver/can/peakcandriver.h"
+#endif
+#ifdef HAVE_PLAYERCLIENT_DRIVER
+#   include "playerclient/playerclientdriver.h"
+#endif
 
 using namespace std;
-using namespace segwayrmp;
+
+namespace segwayrmp {
 
 Component::Component() :
     orcaice::Component( "SegwayRmp" ),
@@ -32,6 +46,98 @@ Component::~Component()
     // do not delete handlers!!! They derive from Ice::Thread and self-destruct.
 }
 
+orca::VehicleDescription
+Component::loadDriver()
+{
+    //
+    // Read vehicle description from config file
+    // This VehicleDescription is interpreted as "user preferences". After the hardware
+    // in started, it can be modified to reflect actual physical limits of the robot.
+    //
+    orca::VehicleDescription descr;
+    std::string prefix = context().tag() + ".Config.";
+    orcamisc::readVehicleDescription( context().properties(), prefix, descr );
+    stringstream ss;
+    ss<<"TRACE(component.cpp): Read vehicle description from configuration: " 
+        << endl << orcaice::toString(descr) << endl;
+    context().tracer()->info( ss.str() );
+
+    //
+    // Check vehicle desciption sanity
+    //
+    orca::VehicleControlVelocityDifferentialDescription *controlDescr =
+        dynamic_cast<orca::VehicleControlVelocityDifferentialDescription*>(&(*(descr.control)));
+    if ( controlDescr == NULL )
+        throw orcaice::Exception( ERROR_INFO, "Can only deal with differential drive vehicles." );
+    if ( controlDescr->maxForwardSpeed != controlDescr->maxReverseSpeed ) 
+        throw orcaice::Exception( ERROR_INFO, "Can't handle max forward speed != max reverse speed." );
+
+    // based on the config parameter, create the right driver
+    string driverName = orcaice::getPropertyWithDefault( 
+            context().properties(), prefix+"Driver", "segwayrmpusb" );
+
+    if ( driverName == "segwayrmpusb" || driverName == "segwayrmpcan" )
+    {
+        if ( driverName == "segwayrmpusb" )
+        {
+#ifdef HAVE_USB_DRIVER
+            context().tracer()->debug( "HwHandler: loading 'segwayrmpusb' driver",3);
+            rmpIo_  = new RmpUsbIoFtdi;
+#else
+            throw orcaice::Exception( ERROR_INFO, "HwHandler: Can't instantiate driver 'usb' because it was not built!" );
+#endif            
+        }
+        else if ( driverName == "segwayrmpcan" )
+        {
+#ifdef HAVE_CAN_DRIVER
+        context().tracer()->debug( "HwHandler: loading 'peakcan' driver",3);
+        
+        //Get the port name that we are being asked to open
+        string portName;
+        if( orcaice::getProperty( context().properties(), prefix+"SegwayRmpCan.PortName", portName ) !=0 ){
+            throw orcaice::Exception( ERROR_INFO, "HwHandler::HwHandler() Config.SegwayRmpCan.PortName not specified" );
+        }
+
+        rmpIo_ = new PeakCanDriver ( portName );
+#else
+        throw orcaice::Exception( ERROR_INFO, "HwHandler: Can't instantiate driver 'peakcan' because it was not built!" );
+#endif            
+        }
+        else { assert(false); }
+
+        RmpDriver *rmpDriver = new RmpDriver( context(), *rmpIo_ );
+        driver_.reset( rmpDriver );
+
+        // Scale the desired description to what we can actually do.
+        rmpDriver->applyHardwareLimits( controlDescr->maxForwardSpeed, 
+                                        controlDescr->maxReverseSpeed,
+                                        controlDescr->maxTurnrate,
+                                        controlDescr->maxTurnrateAtMaxSpeed );
+    }
+    else if ( driverName == "playerclient" )
+    {
+#ifdef HAVE_PLAYERCLIENT_DRIVER
+        context().tracer()->debug( "HwHandler: loading 'playerclient' driver",3);
+        driver_.reset( new PlayerClientDriver( context() ) );
+#else
+        throw orcaice::Exception( ERROR_INFO, "HwHandler: Can't instantiate driver 'playerclient' because it was not built!" );
+#endif
+    }
+    else if ( driverName == "fake" )
+    {
+        context().tracer()->debug( "HwHandler: loading 'fake' driver",3);
+        driver_.reset( new FakeDriver( context() ) );
+    }
+    else {
+        string errorStr = "HwHandler: Unknown driver type. Cannot talk to hardware.";
+        context().tracer()->error( errorStr);
+        context().tracer()->info( "HwHandler: Valid driver values are {'segwayrmpcan', 'segwayrmpusb', 'playerclient', 'fake'}" );
+        throw orcaice::Exception( ERROR_INFO, errorStr );
+    }
+
+    return descr;
+}
+
 // warning: this function returns after it's done, all variable that need to be permanet must
 //          be declared as member variables.
 void
@@ -40,33 +146,34 @@ Component::start()
     tracer()->debug( "Starting Component",2 );
 
     // 
-    // Read vehicle description
+    // Read vehicle description and load driver
     //
-    orca::VehicleDescription descr;
-    orcamisc::readVehicleDescription( context().properties(), context().tag()+".Config.", descr );
-    stringstream ss;
-    ss<<"TRACE(component.cpp): Read vehicle description from configuration: " 
-        << endl << orcaice::toString(descr) << endl;
-    context().tracer()->info( ss.str() );
+    orca::VehicleDescription descr = loadDriver();
 
     //
     // Hardware handling loop
     //
     // the constructor may throw, we'll let the application shut us down
-    // Until here the VehicleDescription is interpreted as "user preferences". After the hardware
-    // in started, it can be modified to reflect actual physical limits of the robot.
-    hwHandler_ = new HwHandler( dataPipe_, commandPipe_, descr, context() );
+    bool isMotionEnabled = (bool)orcaice::getPropertyAsIntWithDefault( context().properties(),
+                                                                       context().tag()+".Config.EnableMotion",
+                                                                       1 );
+    orcarobotdriverutil::HwDriverHandler<Command,Data> *hwHandler = 
+        new orcarobotdriverutil::HwDriverHandler<Command,Data>( *driver_,
+                                                                isMotionEnabled,
+                                                                context() );
+    hwHandler_ = hwHandler;
     hwHandler_->start();
 
     //
     // Network handling loop
     //
     // the constructor may throw, we'll let the application shut us down
-    netHandler_ = new NetHandler( dataPipe_, commandPipe_, descr, context() );
+    netHandler_ = new NetHandler( *hwHandler, descr, context() );
     // this thread will try to activate and register the adapter
     netHandler_->start();
 
     // the rest is handled by the application/service
+    context().tracer()->debug( "Component::start() done." );
 }
 
 void
@@ -77,4 +184,6 @@ Component::stop()
     tracer()->info( "stopped net handler", 2 );
     orcaice::stopAndJoin( hwHandler_ );
     tracer()->info( "stopped hw handler", 2 );
+}
+
 }

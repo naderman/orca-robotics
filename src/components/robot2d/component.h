@@ -18,37 +18,32 @@
 #include <orcaice/notify.h>
 // internal data structures
 #include "types.h"
+#include <orcarobotdriverutil/hwdriverhandler.h>
+#include "hwdriver.h"
 
 namespace robot2d
 {
-
-class HwHandler;
-class NetHandler;
 
 class Component : public orcaice::Component
 {
 public:
 
     Component();
-    virtual ~Component();
 
     // component interface
-    virtual void  start();
+    virtual void start();
     virtual void stop();
 
 private:
-    // loop responsible for interaction with the network
-    NetHandler     *netHandler_;
-    // loop responsible for interaction with local hardware
-    HwHandler      *hwHandler_;
 
-    //
-    // INTERFACES BETWEEN NETWORK AND HARDWARE HANDLERS
-    //
-    // hardware->network
-    orcaice::Proxy<Data> dataPipe_;
-    // network->hardware
-    orcaice::Notify<Command> commandPipe_;
+    orca::VehicleDescription loadDriver();
+
+    // loop responsible for interaction with the network
+    orcaice::ThreadPtr netHandler_;
+    // loop responsible for interaction with local hardware
+    orcaice::ThreadPtr hwHandler_;
+
+    std::auto_ptr<HwDriver> driver_;
 };
 
 } // namespace

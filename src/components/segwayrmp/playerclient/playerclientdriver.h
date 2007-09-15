@@ -13,6 +13,7 @@
 
 #include "../hwdriver.h"
 #include "playerclientdriverconfig.h"
+#include <IceUtil/IceUtil.h>
 
 // Player proxies
 namespace PlayerCc
@@ -35,8 +36,6 @@ public:
 
     virtual void enable();
 
-    virtual void disable();
-
     virtual bool read( Data& data );
 
     virtual void write( const Command& command );
@@ -44,6 +43,8 @@ public:
     virtual void getStatus( std::string &status, bool &isWarn, bool &isFault );
 
 private:
+
+    virtual void disable();
 
     bool enabled_;
     PlayerCc::PlayerClient *robot_;
@@ -54,6 +55,8 @@ private:
     // configuration
     orcaice::Context context_;
     PlayerClientDriverConfig config_;
+
+    IceUtil::Mutex   mutex_;
 };
 
 } // namespace

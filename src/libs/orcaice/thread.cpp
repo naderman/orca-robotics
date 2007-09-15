@@ -78,3 +78,29 @@ void orcaice::stopAndJoin( orcaice::ThreadPtr thread )
         tc.join();        
     }
 }
+
+// void orcaice::stopAndJoin( const std::vector<orcaice::Thread *> &threads )
+// {
+//     std::vector<IceUtil::ThreadControl*> tc;
+//     for ( uint i=0; i < threads.size(); i++ )
+//     {
+//         if ( !threads[i] )
+//         {
+//             tc[i] = NULL;
+//             continue;
+//         }
+
+//         tc[i] = new IceUtil::ThreadControl( threads[i]->getThreadControl() );
+//         threads[i]->stop();
+//     }
+
+//     for ( uint i=0; i < threads.size(); i++ )
+//     {
+//         if ( tc[i] == NULL )
+//             continue;
+
+//         tc[i]->join();
+
+//         delete tc[i];
+//     }
+// }

@@ -30,8 +30,6 @@ public:
 
     virtual void enable();
 
-    virtual void disable();
-
     virtual bool read( Data& data );
 
     virtual void write( const Command& command );
@@ -39,6 +37,8 @@ public:
     virtual void getStatus( std::string &status, bool &isWarn, bool &isFault );
 
 private:
+    void disable();
+
     orcaice::Context context_;
 };
 

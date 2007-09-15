@@ -38,6 +38,10 @@ public:
     //! May throw orcaice::Exceptions.
     void initInterface();
 
+    //! Sets up interface and connects to IceStorm. Catches all exceptions and retries
+    //! until sucessful. At every iteration, checks if the thread was stopped.
+    void initInterface( orcaice::Thread* thread, int retryInterval=2 );
+
     //! A local call which sets the data reported by the interface
     void localSet( const orca::Odometry3dData& data );
 
@@ -61,8 +65,8 @@ private:
     // Hang onto this so we can remove from the adapter and control when things get deleted
     Ice::ObjectPtr          ptr_;
 
-    const std::string              tag_;
-    orcaice::Context               context_;
+    const std::string       interfaceTag_;
+    orcaice::Context        context_;
 };
 typedef IceUtil::Handle<Odometry3dImpl> Odometry3dImplPtr;
 

@@ -110,8 +110,8 @@ MainLoop::walk()
     // temp variables
     orca::Localise2dData localiseData;
     orca::Odometry2dData odomData;
-    double varPosition = stdDevPosition_*stdDevPosition_;
-    double varHeading = (stdDevHeading_*M_PI/180.0)*(stdDevHeading_*M_PI/180.0);
+    const double varPosition = stdDevPosition_*stdDevPosition_;
+    const double varHeading = (stdDevHeading_*M_PI/180.0)*(stdDevHeading_*M_PI/180.0);
     
     //
     // MAIN LOOP

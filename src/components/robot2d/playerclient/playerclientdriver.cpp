@@ -11,27 +11,20 @@
 #include <iostream>
 #include <stdlib.h>
 #include <assert.h>
+#include <orcaice/timer.h>
 
 #include <orcaice/orcaice.h>
-// #include <orcaplayer/orcaplayer.h>
-#include <libplayerc++/playerc++.h>
 #include <IceUtil/Thread.h>     // for sleep()
 
 #include "playerclientdriver.h"
 
 using namespace std;
-using namespace orca;
-using namespace robot2d;
 using namespace PlayerCc;
 
-// experiment to pass all custom props as a disctionary
-//PlayerClientDriver::PlayerClientDriver( const std::map<std::string,std::string> & props, const std::string & prefix )
+namespace robot2d {
 
 PlayerClientDriver::PlayerClientDriver( const orcaice::Context & context )
-    : enabled_( false ),
-      robot_(0),
-      positionProxy_(0),
-      context_(context)
+    : context_(context)
 {
     // parse configuration parameters
     readFromProperties( context, config_ );
@@ -42,19 +35,22 @@ PlayerClientDriver::~PlayerClientDriver()
 {
 }
 
-int
+void
 PlayerClientDriver::enable()
 {
-    if ( enabled_ ) return 0;
+    robot_.reset();
+    positionProxy_.reset();
 
-    cout << "TRACE(playerclientdriver.cpp): PlayerClientDriver: Connecting to player on host "
-         << config_.host << ", port " << config_.port << endl;
-    
+    stringstream ss;
+    ss << "TRACE(playerclientdriver.cpp): PlayerClientDriver: Connecting to player on host "
+       << config_.host << ", port " << config_.port << endl;
+    context_.tracer()->info( ss.str() );
+
     // player throws exceptions on creation if we fail
     try
     {
-        robot_      = new PlayerCc::PlayerClient( config_.host, config_.port );
-        positionProxy_ = new PlayerCc::Position2dProxy( robot_, 0 );
+        robot_.reset( new PlayerCc::PlayerClient( config_.host, config_.port ) );
+        positionProxy_.reset( new PlayerCc::Position2dProxy( robot_.get(), 0 ) );
     
         robot_->Read();
     
@@ -62,60 +58,18 @@ PlayerClientDriver::enable()
     }
     catch ( const PlayerCc::PlayerError & e )
     {
-        std::cerr << e << std::endl;
-        cout << "ERROR(playerclientdriver.cpp): player error" << endl;
-        disable();
-
         // Slow things down a little...
         sleep(1);
-        return -1;
+        throw;
     }
-
-    enabled_ = true;
-    return 0;
 }
 
-int PlayerClientDriver::repair()
+bool
+PlayerClientDriver::read( Data& data )
 {
-    disable();
-    return enable();
-}
-
-int
-PlayerClientDriver::disable()
-{
-    if ( !enabled_ ) return 0;
-
-    delete positionProxy_;
-    delete robot_;
-    enabled_ = false;
-    return 0;
-}
-
-
-int
-PlayerClientDriver::read( Data& data, std::string & status )
-{
-    if ( ! enabled_ ) {
-        //cout << "ERROR(playerclientdriver.cpp): Can't read: not connected to Player/Stage yet." << endl;
-        return -1;
-    }
-
     // player throws exceptions on creation if we fail
-    try
-    {
-        robot_->Read();
-    }
-    catch ( const PlayerCc::PlayerError & e )
-    {
-        std::cerr << e << std::endl;
-        cout << "ERROR(playerclientdriver.cpp): Error reading from robot." << endl;
-        enabled_ = false;
-        return -1;
-    }
+    robot_->Read();
     
-//     orcaplayer::convert( *positionProxy_, position2d );
-
     orca::Time t = orcaice::toOrcaTime( positionProxy_->GetDataTime() );
     data.seconds = t.seconds;
     data.useconds = t.useconds;
@@ -128,24 +82,27 @@ PlayerClientDriver::read( Data& data, std::string & status )
     data.vy = positionProxy_->GetYSpeed();
     data.w = positionProxy_->GetYawSpeed();
 
-    status = "playing=1";
-
-    return 0;
-}
-
-int
-PlayerClientDriver::write( const Command& command )
-{
-    // this version of Player client takes speed command in  [m, m, rad/s]
-    try
+    if ( commandStore_.isNewData() )
     {
+        Command command;
+        commandStore_.get( command );
         positionProxy_->SetSpeed( command.vx, command.vy, command.w );
     }
-    catch ( const PlayerCc::PlayerError & e )
-    {
-        std::cerr << e << std::endl;
-        cout << "ERROR(playerclientdriver.cpp): Error writing to robot." << endl;
-        return -1;
-    }
-    return 0;     
+    return false;
+}
+
+void
+PlayerClientDriver::write( const Command& command )
+{
+    commandStore_.set( command );
+}
+
+void
+PlayerClientDriver::getStatus( std::string &status, bool &isWarn, bool &isFault )
+{
+    status = "";
+    isWarn = 0;
+    isFault = 0;
+}
+
 }
