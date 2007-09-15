@@ -36,7 +36,7 @@ public:
                RmpIo &rmpIo );
 
     // Inherited from HwDriver
-    virtual void enable();
+    void enable();
 
     // Inherited from HwDriver
     bool read( Data& data );

@@ -82,7 +82,7 @@ Component::loadDriver()
         {
 #ifdef HAVE_USB_DRIVER
             context().tracer()->debug( "HwHandler: loading 'segwayrmpusb' driver",3);
-            rmpIo_  = new RmpUsbIoFtdi;
+            rmpIo_.reset( new RmpUsbIoFtdi );
 #else
             throw orcaice::Exception( ERROR_INFO, "HwHandler: Can't instantiate driver 'usb' because it was not built!" );
 #endif            
@@ -98,7 +98,7 @@ Component::loadDriver()
             throw orcaice::Exception( ERROR_INFO, "HwHandler::HwHandler() Config.SegwayRmpCan.PortName not specified" );
         }
 
-        rmpIo_ = new PeakCanDriver ( portName );
+        rmpIo_.reset( new PeakCanDriver ( portName ) );
 #else
         throw orcaice::Exception( ERROR_INFO, "HwHandler: Can't instantiate driver 'peakcan' because it was not built!" );
 #endif            

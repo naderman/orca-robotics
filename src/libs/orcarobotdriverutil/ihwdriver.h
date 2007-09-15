@@ -17,7 +17,7 @@ class IHwDriver
 
 public: 
 
-    ~IHwDriver() {}
+    virtual ~IHwDriver() {}
 
     // Throws std::exceptions on failure.
     // It is not an error to call this repeatedly: repeated calls should
