@@ -15,6 +15,8 @@
 #include <QLCDNumber>
 #include <QVBoxLayout>
 
+#include <orcaobj/mathdefs.h>
+
 #include "wifielement.h"
 
 using namespace std;
@@ -23,38 +25,27 @@ using namespace orcaqgui2d;
 
 // mimics Windows-style signal level
 // see http://www.osuweb.net/wireless/faqs.html#whydoesmysignalstrengthsaylow
-int overallSignalLevel( int signal, int noise, QString &label )
+QString 
+WifiWidget::getSignalLabel( int snr )
 {
-    int snr = signal-noise;
-    if (snr<10) {
-        label="very low";
-        return 0;
-    }
-    else if (snr<15)
-    {
-        label="low";
-        return 1;
-    }
-    else if (snr<20) 
-    {
-        label="good";   
-        return 2;
-    }
-    else if (snr<25)
-    {
-        label="very good";
-        return 3;
-    }
-    else 
-    {
-        label="excellent";
-        return 4;    
-    }
+    assert(signalThreshholds_.size()==4);
+    
+    if (snr<signalThreshholds_[0]) return "very low";
+    else if (snr<signalThreshholds_[1]) return "low";
+    else if (snr<signalThreshholds_[2]) return "good";   
+    else if (snr<signalThreshholds_[3]) return "very good";
+    else return "excellent";
 }
 
 WifiWidget::WifiWidget( unsigned int numInterfaces, std::string proxyString )
     : numInterfaces_(numInterfaces)
 {
+    // threshholds to determine signal levels
+    signalThreshholds_.push_back(10);
+    signalThreshholds_.push_back(15);
+    signalThreshholds_.push_back(20);
+    signalThreshholds_.push_back(25);
+    
     setupDisplay();
     setWindowTitle( QString(proxyString.c_str()) );
 }
@@ -62,6 +53,8 @@ WifiWidget::WifiWidget( unsigned int numInterfaces, std::string proxyString )
 void
 WifiWidget::refresh( WifiData &data )
 {
+    //cout << orcaice::toString(data);
+    
     for (int i=0; i<interfaceLabels_.size(); i++) 
     {
         interfaceLabels_[i]->setText("<b>" + QString(data.interfaces[i].interfaceName.c_str()) + "</b>");
@@ -78,16 +71,15 @@ WifiWidget::refresh( WifiData &data )
             lcdsMaxSignal_[i]->display("DB");
             lcdsMaxNoise_[i]->display("DB");
             progressBars_[i]->setFormat("%p%");
-            QString label;
-            int level = overallSignalLevel( wifiInt.signalLevel,
-                                            wifiInt.noiseLevel,
-                                            label );
-            progressBars_[i]->setValue(level);
+            int snr = wifiInt.signalLevel-wifiInt.noiseLevel;
+            QString label = getSignalLabel( snr );
+            progressBars_[i]->setValue( MIN(snr,signalThreshholds_.last()) );
             overallSigLabels_[i]->setText( label );
         } else {
             lcdsMaxSignal_[i]->display(wifiInt.maxSignalLevel);
             lcdsMaxNoise_[i]->display(wifiInt.maxNoiseLevel);
             progressBars_[i]->setFormat("NA");
+            progressBars_[i]->setValue(0);
             overallSigLabels_[i]->setText( "Unknown" );
         }
         lcdsMaxLink_[i]->display(wifiInt.maxLinkQuality);
@@ -99,7 +91,7 @@ WifiWidget::refresh( WifiData &data )
 void WifiWidget::setupDisplay()
 {
     const int numRowsPerInterface = 6; 
-    const int numDigits = 3;
+    const int numDigits = 4;
     
     QGridLayout *globalLayout = new QGridLayout(this);
     globalLayout->setColumnStretch(0,0);
@@ -154,7 +146,7 @@ void WifiWidget::setupDisplay()
         
         QProgressBar *overall = new QProgressBar;
         overall->setMinimum(0);
-        overall->setMaximum(4);
+        overall->setMaximum(signalThreshholds_.last());
         progressBars_.push_back(overall);
         QLabel *progressLabel = new QLabel("Overall signal level: ");
         QLabel *overallSigLabel = new QLabel;

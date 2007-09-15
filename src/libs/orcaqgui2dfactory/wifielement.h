@@ -43,8 +43,12 @@ class WifiWidget : public QWidget
         QVector<QLCDNumber*> lcdsBitrate_;
         QVector<QLabel*> interfaceLabels_;
         QVector<QLabel*> overallSigLabels_;
+        
         void setupDisplay();
         unsigned int numInterfaces_;
+        QVector<int> signalThreshholds_;
+        QString getSignalLabel( int snr );
+
 };
 
 class WifiElement
