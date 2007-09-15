@@ -9,18 +9,15 @@
  */
 
 #include <iostream>
-
 #include <orcaice/buffer.h>
-// #include <orca/bros1.h>
 
 using namespace std;
 
 int main(int argc, char * argv[])
 {
-//     orcaice::Buffer<orca::Frame2d> buffer;
-//     orca::Frame2d data;
-    orcaice::Buffer<int> buffer(-1, orcaice::BufferTypeCircular);
-    int data;
+    orcaice::Buffer<double> buffer(-1, orcaice::BufferTypeCircular);
+    double data = 20.0;
+    double copy = -1.0;
 
     cout<<"testing default constructor and depth() and type() ... ";
     if ( buffer.depth()!=-1 || buffer.type()!=orcaice::BufferTypeCircular ) {
@@ -33,7 +30,7 @@ int main(int argc, char * argv[])
     // call get on an empty stomach
     try
     {
-        buffer.get( data );
+        buffer.get( copy );
         cout<<"failed. empty buffer, should've caught exception"<<endl;
         return EXIT_FAILURE;
     }
@@ -58,7 +55,7 @@ int main(int argc, char * argv[])
 
     cout<<"testing getNext() with empty buffer ... ";
     if ( buffer.getNext( data, 50 )==0 ) {
-        cout<<"failed. not expecting anybody setting the proxy"<<endl;
+        cout<<"failed. not expecting anybody setting the buffer"<<endl;
         return EXIT_FAILURE;
     }
     cout<<"ok"<<endl;
@@ -95,11 +92,17 @@ int main(int argc, char * argv[])
     cout<<"testing get() ... ";
     try
     {
-        buffer.get( data );
+        buffer.get( copy );
     }
     catch ( const orcaice::Exception & )
     {
         cout<<"failed. should be a non-empty buffer."<<endl;
+        return EXIT_FAILURE;
+    }
+    if ( data!=copy )
+    {
+        cout<<"failed. expecting an exact copy of the data."<<endl;
+        cout<<"\tin="<<data<<" out="<<copy<<endl;
         return EXIT_FAILURE;
     }
     if ( buffer.isEmpty() || buffer.size()!=3 ) {

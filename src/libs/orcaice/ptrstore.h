@@ -19,7 +19,10 @@ namespace orcaice
 
 /*!
  *  @brief Thread-safe storage for a single data object represented by an Ice smart pointer.
- * 
+ *
+ *  @note Works only with smart pointers to classes auto-generated from Slice 
+ *  definitions.
+ *
  *  @note Replaces the deprecated PtrProxy class.
  *  @see PtrBuffer, PtrNotify
  */

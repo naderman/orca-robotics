@@ -20,7 +20,10 @@ namespace orcaice
 /*!
  *  @brief A thread-safe data pipe with buffer semantics for Ice smart pointers.
  * 
- *  @see PtrBuffer, PtrNotify
+ *  @note Works only with smart pointers to classes auto-generated from Slice 
+ *  definitions.
+ *
+ *  @see PtrStore, PtrNotify
  */
 template<class Type>
 class PtrBuffer : public Buffer<Type>

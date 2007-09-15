@@ -22,7 +22,10 @@ namespace orcaice
 /*!
  *  @brief A data pipe with callback semantics for Ice smart pointers.
  * 
- *  @see PtrBuffer, PtrProxy
+ *  @note Works only with smart pointers to classes auto-generated from Slice 
+ *  definitions.
+ *
+ *  @see PtrBuffer, PtrStore
  */
 template<class Type>
 class PtrNotify : public Notify<Type>
