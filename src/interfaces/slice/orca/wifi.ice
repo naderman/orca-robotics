@@ -90,7 +90,7 @@ struct WifiInterface
     
     //! Operating mode (see above)
     OperationMode mode;
-    //! Bitrate
+    //! Bitrate in bits/second
     int bitrate;
     //! Access point MAC address
     string accessPoint;

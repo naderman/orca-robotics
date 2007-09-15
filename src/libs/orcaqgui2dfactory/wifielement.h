@@ -40,7 +40,9 @@ class WifiWidget : public QWidget
         QVector<QLCDNumber*> lcdsMaxNoise_;
         QVector<QLCDNumber*> lcdsLink_;
         QVector<QLCDNumber*> lcdsMaxLink_;
+        QVector<QLCDNumber*> lcdsBitrate_;
         QVector<QLabel*> interfaceLabels_;
+        QVector<QLabel*> overallSigLabels_;
         void setupDisplay();
         unsigned int numInterfaces_;
 };

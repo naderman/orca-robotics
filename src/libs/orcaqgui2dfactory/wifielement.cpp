@@ -21,6 +21,37 @@ using namespace std;
 using namespace orca;
 using namespace orcaqgui2d;
 
+// mimics Windows-style signal level
+// see http://www.osuweb.net/wireless/faqs.html#whydoesmysignalstrengthsaylow
+int overallSignalLevel( int signal, int noise, QString &label )
+{
+    int snr = signal-noise;
+    if (snr<10) {
+        label="very low";
+        return 0;
+    }
+    else if (snr<15)
+    {
+        label="low";
+        return 1;
+    }
+    else if (snr<20) 
+    {
+        label="good";   
+        return 2;
+    }
+    else if (snr<25)
+    {
+        label="very good";
+        return 3;
+    }
+    else 
+    {
+        label="excellent";
+        return 4;    
+    }
+}
+
 WifiWidget::WifiWidget( unsigned int numInterfaces, std::string proxyString )
     : numInterfaces_(numInterfaces)
 {
@@ -46,22 +77,28 @@ WifiWidget::refresh( WifiData &data )
         if (wifiInt.linkType==LinkQualityTypeDbm) {
             lcdsMaxSignal_[i]->display("DB");
             lcdsMaxNoise_[i]->display("DB");
+            progressBars_[i]->setFormat("%p%");
+            QString label;
+            int level = overallSignalLevel( wifiInt.signalLevel,
+                                            wifiInt.noiseLevel,
+                                            label );
+            progressBars_[i]->setValue(level);
+            overallSigLabels_[i]->setText( label );
         } else {
             lcdsMaxSignal_[i]->display(wifiInt.maxSignalLevel);
             lcdsMaxNoise_[i]->display(wifiInt.maxNoiseLevel);
+            progressBars_[i]->setFormat("NA");
+            overallSigLabels_[i]->setText( "Unknown" );
         }
         lcdsMaxLink_[i]->display(wifiInt.maxLinkQuality);
-        
-//         progressBars_[i]->setMinimum(0);
-//         progressBars_[i]->setMaximum(wifiInt.maxLinkQuality);
-//         progressBars_[i]->setValue(wifiInt.linkQuality);
+        lcdsBitrate_[i]->display(wifiInt.bitrate/1e6);
     }
     
 }
 
 void WifiWidget::setupDisplay()
 {
-    const int numRowsPerInterface = 4; 
+    const int numRowsPerInterface = 6; 
     const int numDigits = 3;
     
     QGridLayout *globalLayout = new QGridLayout(this);
@@ -107,13 +144,25 @@ void WifiWidget::setupDisplay()
         globalLayout->addWidget( linkLabel,numRowsPerInterface*i+3,0);
         globalLayout->addWidget( lcdLinkLevel,numRowsPerInterface*i+3,1);
         globalLayout->addWidget( lcdMaxLinkLevel,numRowsPerInterface*i+3,2);
+                
+        QLCDNumber *lcdBitrate = new QLCDNumber(numDigits, this);
+        lcdBitrate->setSegmentStyle(QLCDNumber::Filled);
+        lcdsBitrate_.push_back(lcdBitrate);
+        QLabel *bitRateLabel = new QLabel("Bit rate (Mb/s): ");
+        globalLayout->addWidget( bitRateLabel,numRowsPerInterface*i+4,0);
+        globalLayout->addWidget( lcdBitrate,numRowsPerInterface*i+4,1);
         
-    
-//         QProgressBar *barLinkQuality = new QProgressBar;
-//         progressBars_.push_back(barLinkQuality);
-//         QLabel *linkLabel = new QLabel("Link quality level: ");
-//         globalLayout->addWidget( linkLabel,3*i+2,0);
-//         globalLayout->addWidget( barLinkQuality,3*i+2,1);
+        QProgressBar *overall = new QProgressBar;
+        overall->setMinimum(0);
+        overall->setMaximum(4);
+        progressBars_.push_back(overall);
+        QLabel *progressLabel = new QLabel("Overall signal level: ");
+        QLabel *overallSigLabel = new QLabel;
+        overallSigLabel->setFont(QFont("Helvetica", 12, QFont::Bold));
+        overallSigLabels_.push_back( overallSigLabel );
+        globalLayout->addWidget( progressLabel,numRowsPerInterface*i+5,0);
+        globalLayout->addWidget( overall,numRowsPerInterface*i+5,1);
+        globalLayout->addWidget( overallSigLabel,numRowsPerInterface*i+5,2);
     }
     setLayout(globalLayout);
 }

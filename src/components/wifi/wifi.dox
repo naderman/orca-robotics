@@ -32,7 +32,7 @@ None.
 
 @image html wifi.png
 
-@par Configuration
+@section Configuration
 
 - @c Wifi.Config.Driver (string)
     - Type of driver
@@ -41,7 +41,23 @@ None.
 
 An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
 
-@par Authors
+@section Signal strength
+
+The reported values for signal, noise, and link quality are totally hardware and driver-dependent. Here's a loose list of what we know about certain drivers:
+
+@par MadWifi (see http://madwifi.org/wiki/UserDocs/RSSI)
+
+- Signal: signal in dBm
+- Noise: noise in dBm
+- Link quality: represents Signal-to-Noise (SNR) ratio (SNR=signal-noise)
+
+SNRs:
+ 10: weak signal
+ 20: decent signal
+ 40+: very strong signal
+
+
+@section Authors
 
  - Tobias Kaupp
 
