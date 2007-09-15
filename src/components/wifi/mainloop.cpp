@@ -26,7 +26,8 @@ namespace {
 }
 
 MainLoop::MainLoop( const orcaice::Context & context )
-    : context_(context)
+    : context_(context),
+      snrWarningThreshhold_(0)
 {
     context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 10.0 );
     context_.status()->initialising( SUBSYSTEM );
@@ -75,6 +76,9 @@ void MainLoop::initDriver()
     //
     std::string prefix = context_.tag() + ".Config.";
     
+    // get warning threshhold first
+    snrWarningThreshhold_ = orcaice::getPropertyAsIntWithDefault( context_.properties(), prefix+"SnrWarningThreshhold",10);
+    
     string driverName = orcaice::getPropertyWithDefault( context_.properties(), prefix+"Driver", "hardware" );
     context_.tracer()->debug( std::string("loading ")+driverName+" driver",3);
     if ( driverName == "hardware" )
@@ -98,6 +102,36 @@ void MainLoop::initDriver()
     context_.tracer()->debug("driver initialized",5);
 }
 
+void
+MainLoop::checkWifiSignal( WifiData &data )
+{
+    for (unsigned int i=0; i<data.interfaces.size(); i++)
+    {
+        const WifiInterface &iface = data.interfaces[i];
+        
+        if (iface.linkType!=LinkQualityTypeDbm)
+        {
+            // we can't judge how good the signal is in relative mode, so just say ok
+            context_.status()->ok( SUBSYSTEM );
+            continue;
+        }
+        
+        // if we are below the threshhold, spit out a warning
+        if ( (iface.signalLevel-iface.noiseLevel) < snrWarningThreshhold_) 
+        {
+            stringstream ss;
+            ss << "Wifi signal strength of interface " << iface.interfaceName << " is below " << snrWarningThreshhold_ << " dBm";
+            context_.status()->warning( SUBSYSTEM, ss.str() );
+            context_.tracer()->warning( ss.str() );
+        }
+        else
+        {
+            context_.status()->ok( SUBSYSTEM );
+        }
+    }
+    
+}
+
 void 
 MainLoop::run()
 {   
@@ -115,7 +149,8 @@ MainLoop::run()
                     
             wifiInterface_->localSetAndSend( data );
             
-            context_.status()->ok( SUBSYSTEM );
+            checkWifiSignal( data );
+            
             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));            
         }
         catch ( const wifiutil::Exception & e )

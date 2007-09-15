@@ -34,8 +34,11 @@ private:
     orcaifaceimpl::WifiImplPtr wifiInterface_;
     WifiDriver *driver_;
     
+    int snrWarningThreshhold_;
+    
     void initNetwork();
     void initDriver();
+    void checkWifiSignal( orca::WifiData &data );
     
 };
 

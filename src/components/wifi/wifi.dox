@@ -32,16 +32,20 @@ None.
 
 @image html wifi.png
 
-@section Configuration
+@section config Configuration
 
 - @c Wifi.Config.Driver (string)
     - Type of driver
     - Valid values: { 'hardware', 'fake' }
-    - Default: 'hardware'
+    - Default: 'hardware'- 
+
+- @c Wifi.Config.SnrWarningThreshhold (int in dBm)
+    - If Signal-to-Noise Ratio (SNR) falls below this threshhold, a warning is issued through status and tracer
+    - Default: 10
 
 An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
 
-@section Signal strength
+@section signal_strength Signal strength
 
 The reported values for signal, noise, and link quality are totally hardware and driver-dependent. Here's a loose list of what we know about certain drivers:
 
@@ -50,14 +54,13 @@ The reported values for signal, noise, and link quality are totally hardware and
 - Signal: signal in dBm
 - Noise: noise in dBm
 - Link quality: represents Signal-to-Noise (SNR) ratio (SNR=signal-noise)
+- SNR values: 
+  - 10: weak signal
+  - 20: decent signal
+  - 40+: very strong signal
 
-SNRs:
- 10: weak signal
- 20: decent signal
- 40+: very strong signal
 
-
-@section Authors
+@section authors Authors
 
  - Tobias Kaupp
 
