@@ -7,7 +7,9 @@ namespace segwayrmp
 class CanPacket;
 
 //!
-//! @bried An abstract class for communicating with the RMP.
+//! @brief An abstract class for communicating with the RMP.
+//!        Note: This thing _has_ to be able to handle simultaneous read/write
+//!              from two different threads.
 //!
 //! @author Alex Brooks
 //!

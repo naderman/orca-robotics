@@ -49,8 +49,6 @@ RmpDriver::RmpDriver( const orcaice::Context & context,
 void
 RmpDriver::enable()
 {
-    IceUtil::Mutex::Lock lock(mutex_);
-
     rmpIo_.disable();
 
     // init device
@@ -61,6 +59,7 @@ RmpDriver::enable()
     {
         stringstream ss;
         ss << "RmpDriver: failed to enable.  Looks like the Segway is not connected.  Symptom is: "<<endl<<e.what();
+        context_.tracer()->error( ss.str() );
         throw RmpException( ss.str() );
     }
 
@@ -72,10 +71,18 @@ RmpDriver::enable()
     Command zero;
     zero.vx = 0.0;
     zero.w = 0.0;
-    write( zero  );
+    try {
+        write( zero  );
+    }
+    catch ( std::exception &e )
+    {
+        stringstream ss; ss << "RmpDriver::enable(): write failed: " << e.what();
+        throw RmpException( ss.str() );
+    }
         
     // try reading from it
     try {
+        context_.tracer()->debug( "RmpDriver::enable(): Reading initial frame" );
         readFrame();
     }
     catch ( RmpException &e )
@@ -110,7 +117,6 @@ RmpDriver::enable()
 bool
 RmpDriver::read( Data &data )
 {
-    IceUtil::Mutex::Lock lock(mutex_);
     bool stateChanged = false;
 
     try {
@@ -174,14 +180,13 @@ RmpDriver::applyScaling( const Command& original, Command &scaledCommand )
 void
 RmpDriver::write( const Command& command )
 {
-    IceUtil::Mutex::Lock lock(mutex_);
     Command scaledCommand;
     applyScaling( command, scaledCommand );
 
     try {
-        makeMotionCommandPacket( &pkt_, scaledCommand );
-
-        rmpIo_.writePacket(&pkt_);
+        CanPacket packet;
+        makeMotionCommandPacket( &packet, scaledCommand );
+        rmpIo_.writePacket(&packet);
     }
     catch ( std::exception &e )
     {

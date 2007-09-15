@@ -16,7 +16,6 @@
 #include "rmpio.h"
 #include "rmpdataframe.h"
 #include "canpacket.h"
-#include <IceUtil/IceUtil.h>
 
 namespace segwayrmp
 {
@@ -133,8 +132,6 @@ private:
     // chip's utilities
     void watchPacket( CanPacket* pkt, short int pktID );
     void watchDataStream( CanPacket* pkt );
-
-    IceUtil::Mutex   mutex_;
 };
 
 } // namespace

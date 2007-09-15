@@ -178,9 +178,9 @@ PeakCanDriver::enable(int debugLevel){
     // Note in reality we are only ever dealing with standard not extended message types, but the
     // writes barf if we set ST message type here
     DWORD retVal = CAN_Init(portHandle_, CAN_BAUD_500K, CAN_INIT_TYPE_EX );
-    stringstream ss;
     
     if( retVal != 0 ){
+        stringstream ss;
         ss << endl << " --> Attempted initialisation of the CAN card failed: Error Returned " << 
             peakStatusToString(retVal )<< endl;
         throw RmpException( ss.str() );      
@@ -203,7 +203,8 @@ void
 PeakCanDriver::disable(void){
     DWORD retVal=0;
 
-    if(debugLevel_ > 0){
+    if(debugLevel_ > 0)
+    {
         retVal = CAN_Status(portHandle_);
         cout << "TRACE(peakcandriver.cpp): disable() CAN Status:- " <<
            peakStatusToString(retVal) << endl;
