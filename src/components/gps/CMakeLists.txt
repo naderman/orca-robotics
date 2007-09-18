@@ -13,19 +13,6 @@ IF ( BUILD_GPS )
     )
 
     # OPTIONAL_SUB_LIBRARY macro defined in component_rules.cmake
-    SET( ASHTECHGPS_FOUND 1 )
-    OPTIONAL_SUB_LIBRARY(
-        "Ashtech Driver for Gps"
-    	ashtech
-        OrcaAshtechGps
-        ASHTECHGPS_LIBS
-        ASHTECHGPS_FOUND
-        HAVE_ASHTECHGPS_DRIVER
-        OrcaSerial
-        OrcaGpsUtil
-    )
-
-    # OPTIONAL_SUB_LIBRARY macro defined in component_rules.cmake
     SET( GARMINGPS_FOUND 1 )
     OPTIONAL_SUB_LIBRARY(
         "Garmin Driver for Gps"
