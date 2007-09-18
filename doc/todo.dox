@@ -48,9 +48,33 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 
 
-
-
 @section orca_doc_history_head Changes in CVS since Last Release
+
+@par Project wide
+
+@par New interfaces
+
+@par New components
+
+@par New utilities
+
+@par New libraries
+
+@par New examples
+
+@par Updated interfaces
+
+@par Updated components
+
+@par Updated utilities
+
+@par Updated libraries
+
+@par Removed
+
+
+
+@section orca_doc_history_260 Changes in Release 2.6.0
 
 @par Project wide
 
@@ -124,6 +148,15 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - OgNode/Laser2Og (alex b)
   - big cleanup.  fixed problem where skinny objects are missed.
 
+- robot2d/segwayrmp (alex b)
+  - factored out common code into orcarobotdriverutil library.
+  - cleaned up robot2d, so exceptions are handled better.
+  - fixed threading problem in robot2d which could cause the Ice thread to hang.
+
+- gps (Duncan Mercer)
+  - Added support for Garmin GPS units.
+  - General cleanup, which broke the old Ashtech driver.
+
 @par Updated utilities
 
 - Orcaview2d
@@ -177,11 +210,6 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     names and API. (alex m)
 
 @par Removed
-
-
-
-
-
 
 
 

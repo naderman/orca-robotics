@@ -12,7 +12,7 @@
 
 @page orca_doc_tute_stage A bigger system with Player/Stage simulator
 
-@note Reviewed for release 2.5.0.
+@note Reviewed for release 2.6.0.
 
 In this tutorial we will assemble a simple robotic system and connect it to the 2D Player/Stage simulator. The system diagram is shown below (IceGrid Registry and IceStorm are will be used but are not shown).
 
