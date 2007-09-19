@@ -27,6 +27,30 @@ namespace orcaqgui2d {
 class PathInput;
 class WpTable;
 
+// internal Gui representation for waypoint and path
+struct GuiWaypoint
+{
+    QPointF position;           // in m
+    int     heading;            // in 1/16 deg from 0 to 360*16
+    float   timeTarget;         // number of seconds until arrival at waypoint
+    float   distanceTolerance;  // distance tolerances in m
+    int     headingTolerance;   // heading tolerances in 1/16 deg from 0 to 360*16
+    float   maxSpeed;           // max speed in m/s
+    int     maxTurnrate;        // max turnrate in deg/s
+};
+
+typedef QVector<GuiWaypoint> GuiPath;
+
+// conversion functions
+void guiPathToOrcaPath( const GuiPath &in, 
+                        orca::Path2d  &out, 
+                        int            numLoops=1, 
+                        float          timeOffset=0.0 );
+
+void orcaPathToGuiPath( const orca::Path2d &in, 
+                        GuiPath            &out );
+
+
 // all units are SI units
 class WaypointSettings
 {
@@ -53,14 +77,8 @@ class WpWidget : public QWidget
     
     public:
         WpWidget(   PathInput *pathInput,
-                    QPolygonF *waypoints, 
-                    QVector<int> *headings,
-                    QVector<float> *times,
-                    QVector<float> *waitingTimes,
-                    QVector<float> *distTolerances,
-                    QVector<int> *headingTolerances,
-                    QVector<float> *maxSpeeds,
-                    QVector<int> *maxTurnrates );
+                    GuiPath *guiPath,
+                    QVector<float> *waitingTimes );
         ~WpWidget() {};
         void refreshTable();
         QString getBehaviour( int row );
@@ -87,14 +105,8 @@ class WpTable : public QTableWidget
     public:
         WpTable( QWidget *parent,
                  PathInput *pathInput,
-                 QPolygonF *waypoints, 
-                 QVector<int> *headings,
-                 QVector<float> *times,
-                 QVector<float> *waitingTimes,
-                 QVector<float> *distTolerances,
-                 QVector<int> *headingTolerances,
-                 QVector<float> *maxSpeeds,
-                 QVector<int> *maxTurnrates);
+                 GuiPath *guiPath,
+                 QVector<float> *waitingTimes );
         ~WpTable() {};
         void refreshTable();
         void computeVelocities();
@@ -104,14 +116,8 @@ class WpTable : public QTableWidget
         PathInput *pathInput_;
         
         // data which is shared with pathinput
-        QPolygonF *waypoints_;
-        QVector<int> *headings_;
-        QVector<float> *times_;
+        GuiPath *guiPath_;
         QVector<float> *waitingTimes_;
-        QVector<float> *distTolerances_;
-        QVector<int> *headingTolerances_;
-        QVector<float> *maxSpeeds_;
-        QVector<int> *maxTurnrates_;
         
         // this one is only local
         QVector<float> velocities_;
@@ -158,16 +164,10 @@ class PathInput : public QObject
         void changeWpParameters( QPointF );
         void resizeData( int index );
                 
-        // This is the data for drawing. It gets translated into the relevant Ice data structures.
-        // The WpWidget has full read/write access to it by passing a pointer.
-        QPolygonF      waypoints_;           // in m
-        QVector<int>   headings_;            // in 1/16 deg from 0 to 360*16
-        QVector<float> times_;               // number of seconds until arrival at waypoint
-        QVector<float> distTolerances_;      // distance tolerances in m
-        QVector<int>   headingTolerances_;   // heading tolerances in 1/16 deg from 0 to 360*16
-        QVector<float> maxSpeeds_;           // max speed in m/s
-        QVector<int> maxTurnrates_;          // max turnrate in deg/s
-        QVector<float> waitingTimes_;        // how long to wait at this waypoint, filled in by wpWidget
+        // The path in Gui representation. Shared with wpWidget
+        GuiPath guiPath_;
+        // how long to wait at this waypoint, filled in by wpWidget
+        QVector<float> waitingTimes_;        
 
         QPointF mouseDownPnt_;
         QPointF mouseUpPnt_;

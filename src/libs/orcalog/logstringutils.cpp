@@ -49,6 +49,8 @@ namespace {
     { s >> i; }
     inline void fromLogString( std::stringstream &s, double &i )
     { s >> i; }
+    inline void fromLogString( std::stringstream &s, float &i )
+    { s >> i; }
 
 
     std::string toLogString( const orca::CartesianPoint &o )
@@ -125,16 +127,35 @@ namespace {
 std::string 
 toLogString( const orca::Waypoint2d& obj )
 {
-    // waypoint angles are specified in 1/16 of a degree from the GUI.
-    // For consistentcy, log them from 0 to 360*16
     std::ostringstream s;
-    s << obj.target.p.x << " " << obj.target.p.y << " " << obj.target.o*16*180.0/M_PI << " " 
-      << obj.timeTarget.seconds + obj.timeTarget.useconds/1000000.0 << " " 
+    s << obj.target.p.x << " " << obj.target.p.y << " " << obj.target.o << " " 
+      << toLogString(obj.timeTarget) << " " 
       << obj.distanceTolerance << " " 
-      << obj.headingTolerance*16*180.0/M_PI << " "
+      << obj.headingTolerance << " "
       << obj.maxApproachSpeed << " "
-      << obj.maxApproachTurnrate*16*180.0/M_PI
+      << obj.maxApproachTurnrate
       << endl;
+    return s.str();
+}
+
+void fromLogString( std::stringstream& stream, orca::Waypoint2d& obj )
+{
+    fromLogString( stream, obj.target );
+    fromLogString( stream, obj.timeTarget );
+    fromLogString( stream, obj.distanceTolerance );
+    fromLogString( stream, obj.headingTolerance );
+    fromLogString( stream, obj.maxApproachSpeed );
+    fromLogString( stream, obj.maxApproachTurnrate );
+}
+
+std::string 
+toLogString( const orca::Path2d& obj )
+{
+    std::ostringstream s;
+    for (unsigned int i=0; i<obj.size(); i++)
+    {
+        s << toLogString( obj[i] ); 
+    }
     return s.str();
 }
 

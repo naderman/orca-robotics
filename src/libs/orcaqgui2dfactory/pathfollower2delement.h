@@ -197,6 +197,7 @@ private:
     // toggle states
     bool displayWaypoints_;
     bool displayPastWaypoints_;
+    bool displayOlympicMarker_;
     bool currentTransparency_;
     
     bool isRemoteInterfaceSick_;

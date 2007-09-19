@@ -146,6 +146,7 @@ PathFollower2dElement::PathFollower2dElement( const orcaice::Context & context,
       firstTime_(true),
       displayWaypoints_(true),
       displayPastWaypoints_(false),
+      displayOlympicMarker_(true),
       currentTransparency_(false),
       isRemoteInterfaceSick_(false),
       pathHI_( this,
@@ -158,7 +159,7 @@ PathFollower2dElement::PathFollower2dElement( const orcaice::Context & context,
 {
     cout<<"TRACE(pathfollower2delement.cpp): Instantiating w/ proxyString '" << proxyString << "'" << endl;
     
-    painter_.initialize( displayWaypoints_, displayPastWaypoints_, currentTransparency_);
+    painter_.initialize( displayWaypoints_, displayPastWaypoints_, displayOlympicMarker_, currentTransparency_);
     
     pathUpdateConsumer_ = new PathUpdateConsumer;
 
@@ -331,6 +332,11 @@ PathFollower2dElement::contextMenu()
     } else {
         s << "Switch past waypoints ON";
     }
+    if (displayOlympicMarker_) {
+        s << "Switch olympic marker OFF";
+    } else {
+        s << "Switch olympic marker ON";
+    }
     if (currentTransparency_) {
         s << "Switch transparency OFF";
     } else {
@@ -370,9 +376,14 @@ PathFollower2dElement::execute( int action )
     }
     else if ( action == 2 )
     {
-        setTransparency(!currentTransparency_);
+        displayOlympicMarker_ = !displayOlympicMarker_;
+        painter_.toggleOlympicMarker();
     }
     else if ( action == 3 )
+    {
+        setTransparency(!currentTransparency_);
+    }
+    else if ( action == 4 )
     {
         if (isRemoteInterfaceSick_) return;
         pathFollower2dPrx_->setEnabled( !pathFollower2dPrx_->enabled() );
@@ -386,11 +397,11 @@ PathFollower2dElement::execute( int action )
         }
         humanManager_->showStatusMsg(Information,str);
     }
-    else if ( action == 4 )
+    else if ( action == 5 )
     {
         pathHI_.savePathAs();
     }
-    else if ( action == 5 )
+    else if ( action == 6 )
     {
         pathHI_.savePath();
     }

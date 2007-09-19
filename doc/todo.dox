@@ -68,6 +68,10 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @par Updated utilities
 
+- Orcaview2d
+  - big overhaul of how paths are stored internally and to files (Tobi)
+  - olympic marker is configurable (Tobi)
+
 @par Updated libraries
 
 @par Removed
@@ -163,8 +167,13 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
   - LocaliseElement gets VehicleGeometryDescription and draws robot properly (Tobi)
   - Lookup table (hazardmap) is installed and accessed from there (Tobi)
   - Hazard map by itself is displayed properly (Tobi)
+  - WifiElement: Windows-like interpretation of signal strength is displayed (Tobi)
 
 @par Updated libraries
+
+- libOrcaWifi
+  - bug fixes for signal strength (Tobi)
+  - status reports warnings when signal strength is low (Tobi)
 
 - libOrcaNavUtil
   - added convenience functions for transformations between poses (alex b)

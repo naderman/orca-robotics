@@ -12,13 +12,10 @@
 #define QORC_PATHPAINTER_H
 
 
-#include <qpolygon.h>
-#include <QVector>
+#include <QPolygon>
 #include <QColor>
 
-#include <orca/pathfollower2d.h>
-#include <orca/pathplanner2d.h>
-#include <orcaqgui/ihumanmanager.h>
+#include <orcaqgui2dfactory/pathinput.h>
 #include <orcaqgui2d/definitions2d.h>
 
 // forward declarations
@@ -32,7 +29,7 @@ class PathPainter
   public:
     PathPainter();
     ~PathPainter();
-    void initialize( bool displayWaypoints, bool displayPastWaypoints, bool useTransparency);
+    void initialize( bool displayWaypoints, bool displayPastWaypoints, bool displayOlympicMarker, bool useTransparency);
     void setData( const orca::PathFollower2dData& path );
     void setData( const orca::PathPlanner2dData& path );
     void setWpIndex( int index );
@@ -48,19 +45,16 @@ class PathPainter
     void toggleDisplayWaypoints()
         { displayWaypoints_ = !displayWaypoints_; }
     
-    int savePath( const QString fileName, orcaqgui::IHumanManager *humanManager ) const;
+    void toggleOlympicMarker()
+        { displayOlympicMarker_ = !displayOlympicMarker_; }
+    
+    void savePath( const QString fileName, orcaqgui::IHumanManager *humanManager ) const;
     void setColor( QColor color ) { color_ = color; };
     void setFocus( bool inFocus ) { inFocus_  = inFocus; };
     
   private:
 
-    QPolygonF      waypoints_;           // in m
-    QVector<int>   headings_;            // in 1/16 deg from 0 to 360*16
-    QVector<float> distTolerances_;      // distance tolerances in m
-    QVector<int>   headingTolerances_;   // heading tolerances in 1/16 deg from 0 to 360*16
-    QVector<float> times_;               // number of seconds until arrival at waypoint
-    QVector<float> maxSpeeds_;           // max speed in m/s
-    QVector<int> maxTurnrates_;          // max turnrate in deg/s
+    GuiPath guiPath_;
 
     // The index of the waypoint we're currently pursuing
     int wpIndex_;
@@ -68,6 +62,7 @@ class PathPainter
     // toggle states
     bool displayWaypoints_;
     bool displayPastWaypoints_;
+    bool displayOlympicMarker_;
     bool useTransparency_;
     
     QColor color_;
@@ -75,7 +70,6 @@ class PathPainter
     
     double relativeStartTime_;
 
-    void setDataLocal( orca::Path2d & path );
 };
 
 }

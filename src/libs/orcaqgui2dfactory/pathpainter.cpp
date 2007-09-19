@@ -16,6 +16,7 @@
 #include <QTextStream>
 
 #include <orcaice/orcaice.h>
+#include <orcalog/logstringutils.h>
 
 #include <orcaqgui2d/paintutils.h>
 
@@ -39,74 +40,33 @@ PathPainter::~PathPainter()
 {
 }
 
-void PathPainter::initialize(bool displayWaypoints, bool displayPastWaypoints, bool useTransparency)
+void PathPainter::initialize(bool displayWaypoints, bool displayPastWaypoints, bool displayOlympicMarker, bool useTransparency)
 {
     displayWaypoints_ = displayWaypoints;
     displayPastWaypoints_ = displayPastWaypoints;
+    displayOlympicMarker_ = displayOlympicMarker;
     useTransparency_ = useTransparency;
 }
 
 void PathPainter::clear()
 {
-    waypoints_.resize(0);
+    guiPath_.resize(0);
 }
 
 void PathPainter::setData( const PathFollower2dData& path )
 {
-    Path2d path2d = path.path;
-    setDataLocal( path2d );
+    orcaPathToGuiPath( path.path, guiPath_ );
 }
 
 void PathPainter::setData( const PathPlanner2dData& path )
 {
-    Path2d path2d = path.path;
-    setDataLocal( path2d );
+    orcaPathToGuiPath( path.path, guiPath_ );
 }
 
 void PathPainter::setRelativeStartTime( double relativeStartTime )
 {
     //cout << "TRACE(pathpainter.cpp): new relative time: " << relativeStartTime << endl;
     relativeStartTime_ = relativeStartTime;
-}
-
-void PathPainter::setDataLocal( Path2d & path )
-{
-    orca::Waypoint2d wayPoint;
-    
-    int numWaypoints = path.size();
-    
-    waypoints_.resize( numWaypoints );
-    headings_.resize( numWaypoints );
-    distTolerances_.resize( numWaypoints );
-    headingTolerances_.resize( numWaypoints );  
-    times_.resize( numWaypoints ); 
-    maxSpeeds_.resize( numWaypoints ); 
-    maxTurnrates_.resize( numWaypoints );   
-
-    for ( int i=0; i < numWaypoints; i++ )
-    {
-        wayPoint = path[i];
-
-        waypoints_[i] = QPointF( wayPoint.target.p.x, wayPoint.target.p.y );
-        const double factor = 16.0;     // factor for drawPie where angles are required as 1/16 deg 
-        double heading;
-        // conversion to 0->360*16
-        if (wayPoint.target.o < 0.0)
-        {
-            heading = wayPoint.target.o + 2.0* M_PI;
-        }
-        else
-        {
-            heading = wayPoint.target.o;
-        }
-        headings_[i] = (int)floor( factor * (heading*180.0/M_PI) );
-        distTolerances_[i] = wayPoint.distanceTolerance;
-        headingTolerances_[i] = (int)floor( factor* (wayPoint.headingTolerance/M_PI*180.0));
-        
-        times_[i] = orcaice::timeAsDouble(wayPoint.timeTarget);
-        maxSpeeds_[i] = wayPoint.maxApproachSpeed; 
-        maxTurnrates_[i] = (int)RAD2DEG(wayPoint.maxApproachTurnrate);
-    }
 }
 
 void PathPainter::setWpIndex( int index )
@@ -146,7 +106,7 @@ void PathPainter::paint( QPainter *painter, int z )
         currentWpColor = futureWpColor;
     }
     
-    for ( int i=0; i < waypoints_.size(); i++)
+    for ( int i=0; i < guiPath_.size(); i++)
     {
         if ( wpIndex_ == -1 )
         {
@@ -174,34 +134,34 @@ void PathPainter::paint( QPainter *painter, int z )
         }
  
         painter->save();
-        painter->translate( waypoints_[i].x(), waypoints_[i].y() );    // move to point
+        painter->translate( guiPath_[i].position.x(), guiPath_[i].position.y() );    // move to point
         paintWaypoint( painter, 
                        fillColor,
                        drawColor, 
-                       headings_[i],
-                       distTolerances_[i], 
-                       headingTolerances_[i] );
+                       guiPath_[i].heading,
+                       guiPath_[i].distanceTolerance, 
+                       guiPath_[i].headingTolerance );
         painter->restore();
     }
     
     // ===== draw the waypoint in focus again, to be able to see the edge =======
-    if ( (wpIndex_!=-1) && (waypoints_.size()>0) )
+    if ( (wpIndex_!=-1) && (guiPath_.size()>0) )
     {
         painter->save();
 
-        painter->translate( waypoints_[wpIndex_].x(), waypoints_[wpIndex_].y() );    // move to point
+        painter->translate( guiPath_[wpIndex_].position.x(), guiPath_[wpIndex_].position.y() );    // move to point
         drawColor = Qt::black;
         paintWaypoint( painter, 
                         currentWpColor,
                         drawColor, 
-                        headings_[wpIndex_],
-                        distTolerances_[wpIndex_], 
-                        headingTolerances_[wpIndex_] );
+                        guiPath_[wpIndex_].heading,
+                        guiPath_[wpIndex_].distanceTolerance, 
+                        guiPath_[wpIndex_].headingTolerance );
         painter->restore();
     }
     
     // ======== draw connections between waypoints =========
-    if ( waypoints_.size()>1 )
+    if ( guiPath_.size()>1 )
     {
         painter->setPen( QPen( futureWpColor, PATH_WIDTH ) );
         painter->setBrush ( Qt::NoBrush );
@@ -209,20 +169,21 @@ void PathPainter::paint( QPainter *painter, int z )
         if ( !displayPastWaypoints_ ) 
             startI = wpIndex_+1;
         assert( startI >= 0 );
-        for ( int i=startI; i<waypoints_.size(); ++i)
+        for ( int i=startI; i<guiPath_.size(); ++i)
         {
-            if (i != 0) painter->drawLine(waypoints_[i],waypoints_[i-1]);
+            if (i != 0) painter->drawLine(guiPath_[i].position,guiPath_[i-1].position);
         }
     }
     
     // ====== draw the olympic marker: shows where we should be according to the plan ========
+    if (!displayOlympicMarker_) return;
     if (relativeStartTime_==NAN) return;
     
     int wpI = -1;
     // find the waypoint we should be going towards according to the plan
-    for (int i=0; i<waypoints_.size(); i++)
+    for (int i=0; i<guiPath_.size(); i++)
     {
-        if (relativeStartTime_ <= times_[i]) {
+        if (relativeStartTime_ <= guiPath_[i].timeTarget) {
             wpI = i;
             break;
         }
@@ -237,22 +198,25 @@ void PathPainter::paint( QPainter *painter, int z )
     float y;
     double velocity;
     
-    if (wpI == 0) {
+    if (wpI == 0) 
+    {
         // we going for the very first waypoint: paint marker on top of it
-        x = waypoints_[0].x();
-        y = waypoints_[0].y();
+        x = guiPath_[0].position.x();
+        y = guiPath_[0].position.y();
         velocity = 0.0;
     }
     else
     {    
         // ratio of how much we accomplished of the distance between the two current waypoints
-        float ratio = (relativeStartTime_-times_[wpI-1])/(times_[wpI] - times_[wpI-1]);
+        float ratio = (relativeStartTime_-guiPath_[wpI-1].timeTarget) /
+                      (guiPath_[wpI].timeTarget - guiPath_[wpI-1].timeTarget);
     
         // compute position of sliding point
-        QPointF diffPoints = waypoints_[wpI] - waypoints_[wpI-1];      
-        x = waypoints_[wpI-1].x() + ratio * diffPoints.x();
-        y = waypoints_[wpI-1].y() + ratio * diffPoints.y();
-        velocity = sqrt( diffPoints.x()*diffPoints.x() + diffPoints.y()*diffPoints.y() ) / (times_[wpI] - times_[wpI-1]);
+        QPointF diffPoints = guiPath_[wpI].position - guiPath_[wpI-1].position;      
+        x = guiPath_[wpI-1].position.x() + ratio * diffPoints.x();
+        y = guiPath_[wpI-1].position.y() + ratio * diffPoints.y();
+        velocity = sqrt( diffPoints.x()*diffPoints.x() + diffPoints.y()*diffPoints.y() ) /
+                    (guiPath_[wpI].timeTarget - guiPath_[wpI-1].timeTarget);
     }
     
     painter->save();
@@ -270,42 +234,35 @@ void PathPainter::paint( QPainter *painter, int z )
     
     painter->drawText( labelPos, "speed:" + QString::number( velocity, 'f', 2 ) + " m/s" );
     labelPos.setY( labelPos.y() + lineSpacing );
-    painter->drawText( labelPos, "maxSpeed: " + QString::number( maxSpeeds_[wpI]) + " m/s" );
+    painter->drawText( labelPos, "maxSpeed: " + QString::number( guiPath_[wpI].maxSpeed ) + " m/s" );
     
     painter->restore();
 }
 
 
-int PathPainter::savePath( const QString fileName, IHumanManager *humanManager ) const
+void PathPainter::savePath( const QString fileName, IHumanManager *humanManager ) const
 {
-    int size=waypoints_.size();
-    
-    if (size==0)
+    if (guiPath_.size()==0)
     {
-        humanManager->showBoxMsg(Warning, "Path has no waypoints. File will be empty!");
+        humanManager->showBoxMsg(Warning, "Path has no waypoints!");
+        return;
     }
     
     QFile file(fileName);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
     {
         humanManager->showBoxMsg(Error, "Cannot create file " + fileName );
-        return -1;
-    }
-
-    QTextStream out(&file);
-    for (int i=0; i<size; i++)
-    {
-        out << waypoints_[i].x() << " " << waypoints_[i].y() << " "
-                << headings_[i] << " "
-                << times_[i] << " "
-                << distTolerances_[i] << " "
-                << headingTolerances_[i]<< " "
-                << maxSpeeds_[i]<< " "
-                << maxTurnrates_[i]<< "\n";
+        return;
     }
     
+    // convert gui path to an orca path
+    orca::Path2d orcaPath;
+    guiPathToOrcaPath( guiPath_, orcaPath );
+    
+    // save to file
+    QTextStream out(&file);
+    out << QString(orcalog::toLogString( orcaPath ).c_str());
     file.close();
-    return 0;
 }
 
 }
