@@ -31,9 +31,13 @@ GridElement::GridElement() :
 void
 GridElement::paint( QPainter *painter, int z )
 {
+    QMatrix m = painter->worldMatrix();  
+    const double radius  = 6.0/m.m11();
+    const double lineThickness = 2.0/m.m11();
+    
     if ( z==Z_ORIGIN && isDisplayOrigin_ ) {
         //cout<<"painting origin"<<endl;
-        paintOrigin( painter, Qt::blue );
+        paintOrigin( painter, Qt::blue, radius, lineThickness );
         return;
     }
 
@@ -53,7 +57,6 @@ GridElement::paint( QPainter *painter, int z )
     }
     
     // need current world matrix
-    QMatrix m = painter->matrix();  // this is m2win matrix
     QMatrix mi = m.inverted();       // win2m
     QRect rwin = painter->window();       // rect. in window cs
     QRectF rm = mi.mapRect( QRectF(rwin) ); // rect. in m (world) cs

@@ -19,13 +19,13 @@
 // Generally useful tools that are used by several 
 // painters.
 //
-// \author Alex Brooks, Tobias Kaupp
+// Authors: Alex Brooks, Tobias Kaupp
 //
 namespace orcaqgui2d
 {
 
 //!
-//! class for remembering the path of a robot
+//! Class for remembering the path of a robot
 //!
 class PoseHistory
 {
@@ -67,54 +67,76 @@ private:
 };
 
 
-////////////////////////////////////////////////////////////////////////////////
-// Nota Bene: All of these function draw whatever they're gonna draw _AT_THE_ORIGIN_!!
-//            If you want them somewhere else, pre-rotate/translate the painter.
-// Tobi: all functions that have the m2win matrix as an argument can't get it from the painter
-//       because the painter is usually rotated before the function call. 
-//       It is used to draw in pixel size rather than in meters. Useful for iconic
-//       views, e.g. platform positions.
+//! Paint crosshairs with length of cross = 2 x radius
+void paintOrigin( QPainter       *p, 
+                  const QColor   &colour,
+                  float           radius,
+                  float           lineThickness=0.2 );
 
-//! Paint crosshairs
-//! Warning: Don't rotate painter before calling this function
-void paintOrigin( QPainter *p, QColor colour );
-
-//! Paints a rectangular robot icon, painted with minimum pixel sizes, independent of zoom configuration. The painter needs to be translated and rotated before calling this function. The robot's geometry extends around the painter's current position.
-//! m2win is the worldmatrix BEFORE any painter rotation
-void paintCubicPlatformPose( const QMatrix &m2win, QPainter *p, QColor colour, float length, float width, float transparencyMultiplier=1.0 );
+//! Paints a rectangular robot icon. All physical units are in meters. 
+//! The painter needs to be translated and rotated before calling this function. 
+//! The robot's geometry extends around the painter's current position. 
+//! If minLength is specified, the robot is never painted smaller than this, independent of the zoom configuration.
+void paintCubicPlatformPose( QPainter *p, 
+                             const QColor   &colour, 
+                             float     length, 
+                             float     width, 
+                             float     transparencyMultiplier=1.0, 
+                             float     minLength=0.0, 
+                             float     lineThickness=0.2 );
 
 //! As above but paints a circular platform
-void paintCylindricalPlatformPose( const QMatrix &m2win, QPainter *p, QColor colour, float radius, float transparencyMultiplier=1.0 );
+void paintCylindricalPlatformPose( QPainter *p, 
+                                   const QColor   &colour, 
+                                   float     radius, 
+                                   float     transparencyMultiplier=1.0, 
+                                   float     minRadius=0.0, 
+                                   float     lineThickness=0.2 );
 
-//!
 //! Paints an ellipse for the position uncertainty, plus
 //! a little wedge for the heading uncertainty, by calling
 //! 'paintUncertaintyInfo' and 'paintCovarianceEllipse'
-//! m2win is the worldmatrix BEFORE any painter rotation.
-void paintUncertaintyInfo( const QMatrix &m2win, QPainter *p, QColor colour, float thetaMean, float pxx, float pxy, float pyy, float ptt );
+void paintUncertaintyInfo( QPainter     *p, 
+                           const QColor &colour, 
+                           float         thetaMean, 
+                           float         pxx, 
+                           float         pxy, 
+                           float         pyy, 
+                           float         ptt, 
+                           float         length, 
+                           float         lineThickness=0.2 );
 
-//! Paints a little wedge representing rotational uncertainty
-//! m2win is the worldmatrix BEFORE any painter rotation
-void paintUncertaintyWedge( const QMatrix &m2win, QPainter *p, QColor colour, float thetaMean, float ptt );
+//! Paints a little wedge of sidelength 'length' representing rotational uncertainty
+void paintUncertaintyWedge( QPainter     *p, 
+                            const QColor &colour, 
+                            float         thetaMean, 
+                            float         ptt, 
+                            float         length, 
+                            float         lineThickness=0.2 );
 
 //! Paints 2-sigma ellipse for the position uncertainty
-//! m2win is the worldmatrix BEFORE any painter rotation
-void paintCovarianceEllipse( const QMatrix &m2win, QPainter *p, QColor colour, float pxx, float pxy, float pyy );
+void paintCovarianceEllipse( QPainter     *p, 
+                             const QColor &colour, 
+                             float         pxx, 
+                             float         pxy, 
+                             float         pyy, 
+                             float         lineThickness=0.2 );
 
 //! Get a more transparent version of the given colour
 //! transparencyMultiplier=1.0 gives the same colour.
-QColor getTransparentVersion( const QColor &c, float transparencyMultiplier=0.5 );
+QColor getTransparentVersion( const QColor &c, 
+                              float         transparencyMultiplier=0.5 );
 
 //! Get a darker version of the given colour
-QColor getDarkVersion( QColor &color );
+QColor getDarkVersion( const QColor &color );
 
 //! Paint a waypoint with distance tolerance [m] as a circle and heading tolerance [deg] as a wedge around targetHeading [deg]
-void paintWaypoint( QPainter *p, 
-                    QColor &fillColor,
-                    QColor &drawColor,
-                    int targetHeading, 
-                    float distanceTolerance, 
-                    int headingTolerance );
+void paintWaypoint( QPainter     *p, 
+                    const QColor &fillColor,
+                    const QColor &drawColor,
+                    int           targetHeading, 
+                    float         distanceTolerance, 
+                    int           headingTolerance );
 
 }
 

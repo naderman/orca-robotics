@@ -71,6 +71,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - Orcaview2d
   - big overhaul of how paths are stored internally and to files (Tobi)
   - olympic marker is configurable (Tobi)
+  - overhaul of paint utils: independence of transformation matrices (Tobi)
 
 @par Updated libraries
 

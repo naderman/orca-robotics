@@ -101,12 +101,13 @@ FeatureMap2dPainter::paintPointFeature( QPainter *painter,
             //cout<<"TRACE(featuremap2dpainter.cpp): painting: " << f.c.xx << ","<<f.c.xy<<","<<f.c.yy << endl;
 
             QMatrix m2win = painter->worldMatrix();
-            paintCovarianceEllipse( m2win,
-                                    painter,
+            const float lineThickness = 2.0/m2win.m11();
+            paintCovarianceEllipse( painter,
                                     orcaqgui::featureColour(featureType),
                                     covXX,
                                     covXY,
-                                    covYY );
+                                    covYY,
+                                    lineThickness);
         }
 
         // Numbers
@@ -168,6 +169,9 @@ FeatureMap2dPainter::paintLineFeature( QPainter *painter,
         painter->translate( midpointX, midpointY );
         
         QMatrix m2win = painter->worldMatrix();
+        const int lenghtInPixel = 45;
+        const float length = lenghtInPixel/m2win.m11();
+        const float lineThickness = 2.0/m2win.m11();
         painter->save();
         {
             // The direction from start point to end point.
@@ -187,7 +191,7 @@ FeatureMap2dPainter::paintLineFeature( QPainter *painter,
                                            uncertaintyLength, halfLineLength ) );
 
                 // alpha uncertainty: a wedge on the back (non-visible) side of the line
-                paintUncertaintyWedge( m2win, painter, orcaqgui::featureColour(f.type), 0.0, f.c.yy );
+                paintUncertaintyWedge( painter, orcaqgui::featureColour(f.type), 0.0, f.c.yy, length, lineThickness );
             }
             else
             {
@@ -213,12 +217,17 @@ FeatureMap2dPainter::paintPoseFeature( QPainter *painter,
     paintPointFeature( painter, f.type, featureNum, f.pExists,
                        f.p.p.x, f.p.p.y, f.c.xx, f.c.xy, f.c.yy );
 
+    QMatrix m2win = painter->worldMatrix();
+    const int lenghtInPixel = 45;
+    const float length = lenghtInPixel/m2win.m11();
+    const float lineThickness = 2.0/m2win.m11();
+            
     if ( displayUncertainty_ )
     {
         painter->save();
         {
             painter->translate( f.p.p.x, f.p.p.y );
-            paintUncertaintyWedge( painter->worldMatrix(), painter, orcaqgui::featureColour(f.type), f.p.o, f.c.tt );
+            paintUncertaintyWedge( painter, orcaqgui::featureColour(f.type), f.p.o, f.c.tt, length, lineThickness );
         }
         painter->restore();
     }
