@@ -88,8 +88,11 @@ SimpleDriver::compute( const orca::GpsData  &gpsData,
     localiseData.hypotheses[0].mean.p.y = northing;
     localiseData.hypotheses[0].mean.o   = M_PI/2.0 - gpsData.heading;
 
-    localiseData.hypotheses[0].cov.xx = gpsData.horizontalPositionError;
-    localiseData.hypotheses[0].cov.yy = gpsData.horizontalPositionError;
+    const double linearSigma = gpsData.horizontalPositionError;
+    const double linearVariance = linearSigma*linearSigma;
+
+    localiseData.hypotheses[0].cov.xx = linearVariance;
+    localiseData.hypotheses[0].cov.yy = linearVariance;
     localiseData.hypotheses[0].cov.xy = 0.0;
 
     localiseData.hypotheses[0].cov.xt = 0.0;
