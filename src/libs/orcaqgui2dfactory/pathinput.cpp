@@ -34,37 +34,40 @@ using namespace orcaqgui;
 
 namespace orcaqgui2d {
     
+const int QT_ANGLE_MULTIPLIER=16;
+    
 // normalises heading to 0<angle<360*16 for Gui painting
 int guiNormalise( int heading )
 {
-    if (heading < 0) return (heading + 360*16);
-    if (heading > 360*16) return (heading - 360*16);
+    if (heading < 0) return (heading + 360*QT_ANGLE_MULTIPLIER);
+    if (heading > 360*QT_ANGLE_MULTIPLIER) return (heading - 360*QT_ANGLE_MULTIPLIER);
     
     return heading;
 }
     
 void guiPathToOrcaPath( const GuiPath &in, orca::Path2d &out, int numLoops, float timeOffset )
 {
-    out.resize( in.size() );
+    out.resize( in.size()*numLoops );
+    
+    int counter = 0;
     
     for (int k=0; k<numLoops; k++)
     {
         for (int i=0; i<in.size(); i++)
         {
-            float heading = in[i].heading/16;
-            if (heading>180.0) {
-                heading = heading - 360.0;
-            }
-            float headingTolerance = in[i].headingTolerance/16;
+            double heading = DEG2RAD((double)in[i].heading/QT_ANGLE_MULTIPLIER);
+            NORMALISE_ANGLE( heading );
     
-            out[i].target.p.x = in[i].position.x();
-            out[i].target.p.y = in[i].position.y();
-            out[i].target.o = heading/180.0 * M_PI;
-            out[i].distanceTolerance = in[i].distanceTolerance;
-            out[i].headingTolerance = (float)headingTolerance/180.0*M_PI;      
-            out[i].timeTarget = orcaice::toOrcaTime( in[i].timeTarget + k*timeOffset );
-            out[i].maxApproachSpeed = in[i].maxSpeed;
-            out[i].maxApproachTurnrate = (float)in[i].maxTurnrate/180.0*M_PI;
+            out[counter].target.p.x = in[i].position.x();
+            out[counter].target.p.y = in[i].position.y();
+            out[counter].target.o = heading;
+            out[counter].distanceTolerance = in[i].distanceTolerance;
+            out[counter].headingTolerance = DEG2RAD((float)in[i].headingTolerance/QT_ANGLE_MULTIPLIER);      
+            out[counter].timeTarget = orcaice::toOrcaTime( in[i].timeTarget + k*timeOffset );
+            out[counter].maxApproachSpeed = in[i].maxSpeed;
+            out[counter].maxApproachTurnrate = DEG2RAD((float)in[i].maxTurnrate);
+            
+            counter++;
         }
     }
 }
@@ -77,12 +80,12 @@ void orcaPathToGuiPath( const orca::Path2d &in, GuiPath &out )
     {
         out[i].position.setX( in[i].target.p.x );
         out[i].position.setY( in[i].target.p.y );
-        out[i].heading = (int)floor(in[i].target.o/M_PI*180.0*16.0);
+        out[i].heading = (int)floor(RAD2DEG(in[i].target.o))*QT_ANGLE_MULTIPLIER;
         out[i].distanceTolerance = in[i].distanceTolerance;
-        out[i].headingTolerance = (int)floor(in[i].headingTolerance/M_PI*180.0*16.0);   
+        out[i].headingTolerance = (int)floor(RAD2DEG(in[i].headingTolerance))*QT_ANGLE_MULTIPLIER;   
         out[i].timeTarget = orcaice::timeAsDouble(in[i].timeTarget);
         out[i].maxSpeed = in[i].maxApproachSpeed;
-        out[i].maxTurnrate = in[i].maxApproachTurnrate/M_PI*180.0;
+        out[i].maxTurnrate = RAD2DEG(in[i].maxApproachTurnrate);
     }
 }
     
@@ -299,7 +302,7 @@ void WpTable::refreshTable()
         item = new QTableWidgetItem(str);
         setItem(row, WaypointY, item);
         
-        str.setNum(guiPath_->at(row).heading/16);
+        str.setNum(guiPath_->at(row).heading/QT_ANGLE_MULTIPLIER);
         item = new QTableWidgetItem(str);
         setItem(row, Heading, item);
         
@@ -307,7 +310,7 @@ void WpTable::refreshTable()
         item = new QTableWidgetItem(str);
         setItem(row, DistanceTolerance, item);
         
-        str.setNum(guiPath_->at(row).headingTolerance/16);
+        str.setNum(guiPath_->at(row).headingTolerance/QT_ANGLE_MULTIPLIER);
         item = new QTableWidgetItem(str);
         setItem(row, HeadingTolerance, item);
         
@@ -335,18 +338,6 @@ void WpTable::computeVelocities()
     }
 }
 
-// void WpTable::computeAbsTimes()
-// {
-//     velocities_.resize(1);
-//     velocities_[0] = 0.0;
-//     for (int i=1; i<waypoints_->size(); i++)
-//     {
-//         float deltaS = straightLineDist( waypoints_->at(i) - waypoints_->at(i-1));
-//         float deltaT = times_->at(i) - (times_->at(i-1) + waitingTimes_->at(i-1));
-//         velocities_.push_back(deltaS/deltaT);
-//     }
-// }
-
 QString WpTable::getBehaviour( int row )
 {
     QComboBox *combo = dynamic_cast<QComboBox*>(cellWidget(row,Behaviour));
@@ -364,13 +355,13 @@ void WpTable::updateDataStorage(int row, int column)
     
     QTableWidgetItem *item = this->item(row,column);
     
+    // get a pointer to first element
+    GuiWaypoint *data = guiPath_->data();
+    
     switch (column)
     {
         case AbsoluteTime: 
         {       
-            // get a pointer to first element
-            GuiWaypoint *data = guiPath_->data();
-            
             float currentTimeSec = data[row].timeTarget;
             float newTimeSec = item->text().toDouble();
             float deltaTime = newTimeSec-currentTimeSec;
@@ -393,13 +384,12 @@ void WpTable::updateDataStorage(int row, int column)
             } else {
                 cellWidget(row,Behaviour)->setEnabled(false);
             }
-            float *data = waitingTimes_->data();
-            data[row] = waitingTime;
+            float *waitingData = waitingTimes_->data();
+            waitingData[row] = waitingTime;
             // update all subsequent times
-            GuiWaypoint *data2 = guiPath_->data();
             for (int i=row+1; i<rowCount(); i++)
             {
-                data2[i].timeTarget = data2[i].timeTarget + waitingTime;    
+                data[i].timeTarget = data[i].timeTarget + waitingTime;    
             }
             refreshTable();
             break;
@@ -412,7 +402,6 @@ void WpTable::updateDataStorage(int row, int column)
             velocities_[row] = velocity;
             
             // update time to get to here
-            GuiWaypoint *data = guiPath_->data();
             float deltaS = straightLineDist( guiPath_->at(row).position - guiPath_->at(row-1).position );
             float oldTime = data[row].timeTarget;
             float newTime = deltaS/velocity + (data[row-1].timeTarget + waitingTimes_->at(row-1));
@@ -434,49 +423,42 @@ void WpTable::updateDataStorage(int row, int column)
         }
         case WaypointX: 
         {       
-            GuiWaypoint *data = guiPath_->data();
             data[row].position.setX( item->text().toDouble() );
             break;
         }
         case WaypointY: 
         {       
-            GuiWaypoint *data = guiPath_->data();
             data[row].position.setY( item->text().toDouble() );
             break;
         }
         case Heading: 
         {       
-            GuiWaypoint *data = guiPath_->data();
-            data[row].heading = item->text().toInt()*16;
+            data[row].heading = item->text().toInt()*QT_ANGLE_MULTIPLIER;
             break;
         }
         case DistanceTolerance: 
         {       
-            GuiWaypoint *data = guiPath_->data();
             data[row].distanceTolerance = item->text().toDouble();
             break;
         }
         case HeadingTolerance: 
         {       
-            GuiWaypoint *data = guiPath_->data();
-            data[row].headingTolerance = item->text().toInt()*16;
+            data[row].headingTolerance = item->text().toInt()*QT_ANGLE_MULTIPLIER;
             break;
         }
         case MaxApproachSpeed: 
         {       
-            GuiWaypoint *data = guiPath_->data();
             data[row].maxSpeed = item->text().toDouble();
             break;
         }
         case MaxApproachTurnRate: 
         {       
-            GuiWaypoint *data = guiPath_->data();
             data[row].maxTurnrate = item->text().toInt();
             break;
         }
         default: 
         {
-            cout << "WpTable:: This column is currently not supported!" << endl;
+            cout << "WpTable:: This column is not supported!" << endl;
         }
     }
         
@@ -643,7 +625,7 @@ void PathInput::addWaypoint (QPointF wp)
     if (numWaypoints==0)
     {   // first waypoint is special
         guiPath_[0].heading = 0;
-        guiPath_[0].headingTolerance = 180*16;
+        guiPath_[0].headingTolerance = 180*QT_ANGLE_MULTIPLIER;
         guiPath_[0].timeTarget = 0.0;
     }
     else 
@@ -661,10 +643,10 @@ void PathInput::addWaypoint (QPointF wp)
         
         // heading: aligned with the line between the two last waypoints
         QPointF diff = guiPath_[numWaypoints].position - guiPath_[numWaypoints-1].position;
-        int tmpHeading =(int)floor( atan2(diff.y(),diff.x() )/M_PI*180.0 ) * 16;
+        int tmpHeading =(int)floor( RAD2DEG(atan2(diff.y(),diff.x())) ) * QT_ANGLE_MULTIPLIER;
         guiPath_[numWaypoints].heading = guiNormalise(tmpHeading);
         
-        guiPath_[numWaypoints].headingTolerance = wpSettings_->headingTolerance*16;
+        guiPath_[numWaypoints].headingTolerance = wpSettings_->headingTolerance*QT_ANGLE_MULTIPLIER;
         // correct previous headings to the direction we're going
         if (numWaypoints>1)
         {
@@ -717,15 +699,15 @@ void PathInput::changeWpParameters( QPointF p1 )
             
             // save waiting time
             float waitingTimeBefore = waitingTimes_[i];
-            cout << "Waiting time before: " << waitingTimeBefore << endl;
+            //cout << "Waiting time before: " << waitingTimeBefore << endl;
             
             ui.xSpin->setValue( guiPath_[i].position.x() );
             ui.ySpin->setValue( guiPath_[i].position.y() );
-            ui.headingSpin->setValue( guiPath_[i].heading/16 );
+            ui.headingSpin->setValue( guiPath_[i].heading/QT_ANGLE_MULTIPLIER );
             ui.timeSpin->setValue( guiPath_[i].timeTarget );
             ui.waitingTimeSpin->setValue( waitingTimes_[i] );
             ui.distanceTolSpin->setValue( guiPath_[i].distanceTolerance );
-            ui.headingTolSpin->setValue( guiPath_[i].headingTolerance/16 );
+            ui.headingTolSpin->setValue( guiPath_[i].headingTolerance/QT_ANGLE_MULTIPLIER );
             ui.maxSpeedSpin->setValue( guiPath_[i].maxSpeed );
             ui.maxTurnrateSpin->setValue( guiPath_[i].maxTurnrate );
             
@@ -734,11 +716,11 @@ void PathInput::changeWpParameters( QPointF p1 )
             
             guiPath_[i].position.setX( ui.xSpin->value() );
             guiPath_[i].position.setY( ui.ySpin->value() );
-            guiPath_[i].heading = ui.headingSpin->value()*16;
+            guiPath_[i].heading = ui.headingSpin->value()*QT_ANGLE_MULTIPLIER;
             guiPath_[i].timeTarget = ui.timeSpin->value();
             waitingTimes_[i] = ui.waitingTimeSpin->value();
             guiPath_[i].distanceTolerance = ui.distanceTolSpin->value();
-            guiPath_[i].headingTolerance = ui.headingTolSpin->value()*16;
+            guiPath_[i].headingTolerance = ui.headingTolSpin->value()*QT_ANGLE_MULTIPLIER;
             guiPath_[i].maxSpeed = ui.maxSpeedSpin->value();
             guiPath_[i].maxTurnrate = ui.maxTurnrateSpin->value();
             
@@ -794,16 +776,16 @@ int PathInput::expandPathStationary(int index)
 int PathInput::expandPathRightLeft( int index )
 {
     const int numInsert=4;
-    const int headingTolerance=15*16;
+    const int headingTolerance=15*QT_ANGLE_MULTIPLIER;
     expandPath( index, numInsert, headingTolerance );
     
     // headings
     // right
-    guiPath_[index+1].heading = guiNormalise(guiPath_[index].heading-80*16);
+    guiPath_[index+1].heading = guiNormalise(guiPath_[index].heading-80*QT_ANGLE_MULTIPLIER);
     // back to middle
     guiPath_[index+2].heading = guiPath_[index].heading;
     // left
-    guiPath_[index+3].heading =  guiNormalise(guiPath_[index].heading+80*16);
+    guiPath_[index+3].heading =  guiNormalise(guiPath_[index].heading+80*QT_ANGLE_MULTIPLIER);
     // back to middle
     guiPath_[index+4].heading = guiPath_[index].heading;
     
@@ -813,16 +795,16 @@ int PathInput::expandPathRightLeft( int index )
 int PathInput::expandPathLeftRight( int index )
 {
     const int numInsert=4;
-    const int headingTolerance=15*16;
+    const int headingTolerance=15*QT_ANGLE_MULTIPLIER;
     expandPath( index, numInsert, headingTolerance );
     
     // headings
     // left
-    guiPath_[index+1].heading = guiNormalise(guiPath_[index].heading+80*16);
+    guiPath_[index+1].heading = guiNormalise(guiPath_[index].heading+80*QT_ANGLE_MULTIPLIER);
     // back to middle
     guiPath_[index+2].heading = guiPath_[index].heading;
     // right
-    guiPath_[index+3].heading = guiNormalise(guiPath_[index].heading-80*16);
+    guiPath_[index+3].heading = guiNormalise(guiPath_[index].heading-80*QT_ANGLE_MULTIPLIER);
     // back to middle
     guiPath_[index+4].heading = guiPath_[index].heading;
     
@@ -832,14 +814,14 @@ int PathInput::expandPathLeftRight( int index )
 int PathInput::expandPathTurn360( int index )
 {
     const int numInsert=4;
-    const int headingTolerance=15*16;
+    const int headingTolerance=15*QT_ANGLE_MULTIPLIER;
     expandPath( index, numInsert, headingTolerance );
     
     // headings
     int heading = guiPath_[index].heading;
     for (int i=1; i<numInsert; i++)
     {
-        guiPath_[index+i].heading = guiNormalise(heading + 90*16);
+        guiPath_[index+i].heading = guiNormalise(heading + 90*QT_ANGLE_MULTIPLIER);
     }
     guiPath_[index+4].heading = guiPath_[index].heading;
     
@@ -981,7 +963,7 @@ void PathInput::loadPath( const QString& fileName )
     file.close();
     
     orcaPathToGuiPath( orcaPath, guiPath_ );
-    waitingTimes_.resize( orcaPath.size() );
+    waitingTimes_.fill(0.0, orcaPath.size());
     
     humanManager_->showStatusMsg(Information, "Successfully loaded file " + fileName );
     wpWidget_->refreshTable();
@@ -991,7 +973,7 @@ bool
 PathFollowerInput::getPath( orca::PathFollower2dData &pathData ) const
 {    
     int size = wpWidget_->numberOfLoops() * guiPath_.size();
-    cout << "DEBUG(pathinput.cpp): getPath: size of waypoints is " << size << endl;
+    //cout << "DEBUG(pathinput.cpp): getPath: size of waypoints is " << size << endl;
     if (size==0) return false;
     
     const float timeOffset = guiPath_.last().timeTarget + secondsToCompleteLoop();

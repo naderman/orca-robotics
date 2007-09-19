@@ -44,8 +44,8 @@ typedef QVector<GuiWaypoint> GuiPath;
 // conversion functions
 void guiPathToOrcaPath( const GuiPath &in, 
                         orca::Path2d  &out, 
-                        int            numLoops=1, 
-                        float          timeOffset=0.0 );
+                        int            numLoops = 1, 
+                        float          timeOffset = 0.0 );
 
 void orcaPathToGuiPath( const orca::Path2d &in, 
                         GuiPath            &out );
