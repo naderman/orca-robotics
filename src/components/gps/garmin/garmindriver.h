@@ -43,7 +43,7 @@ private:
     void populateData();
     void enableDevice();
     void disableDevice();
-    int resetDevice();
+    int  resetDevice();
     void ExtractGGAData();
     void ExtractVTGData();
     void ExtractRMEData();

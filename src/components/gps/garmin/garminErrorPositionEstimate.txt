@@ -1,0 +1,143 @@
+        WHAT IS EPE?
+
+Quote follows from Garmin Engineering
+
+Joe,
+
+The EPE is an estimation based upon the information the  receiver 
+can  determine.  SA  consists  of  artificial  clock  errors  and 
+artificial  ephemeral errors. Both of these effects, as  well  as 
+atmospheric  effects, can result in a positional area  of  uncer-
+tainty, which can be measured and will add to the receivers  EPE. 
+Bias errors cannot be measured and will typically not be detected 
+in the EPE calculation. 
+
+The 12XL will typically have a better EPE than other units due to 
+the  12 channel correlator and the use of all tracked  satellites 
+in the positional computation.
+
+EPE  is  an  estimation,  rather  than  a  measurement,  but  all 
+measurable  factors  are used in the estimation  algorithm.    We 
+consider the details of our EPE and FOM calculations proprietary.
+
+We  calculate  EPE  our  own way. URE  and  HDOP  are  definitely 
+significant  factors in the calculation.   We calculate an  over-
+determined solution,  and fully understand the characteristics of 
+SA,  and  are  able  (in our opinion) to  provide  for  a  better 
+estimate  of current position error than the simplistic  calcula-
+tions will indicate. 
+
+Many  folks  have and will demand to know our  specific  calcula-
+tions,  but  we consider these to be proprietary and  we  do  not 
+release  the  specific  formulas.  This is  similar  in  our  FOM 
+calculation, we use a lot of finesse in our software which  other 
+manufacturers  have not been able to duplicate. This  is  further 
+evidenced  by  Dr. Wilson's reports on our accuracy  compared  to 
+other receivers. If the tests were performed, I believe you would 
+see closer correlation between our EPE values and actual  errors, 
+as compared to other manufacturers units.
+
+Garmin International
+
+-----------------------------------------------------------------
+
+One  experimenter  has  found that about 2/3 of  the  time,   the 
+ACTUAL error is less than the EPE readout on a Garmin 45 GPS unit 
+tested.  Your figures may vary.  So..  EPE really is an  estimate 
+not a guarantee or a measurement.
+Joe Mehaffey
+
+===================================================================
+
+Sam Wormley offers the following additional information on EPE.
+
+Garmin  does  not  give an explanation for  the  EPE  calculation 
+displayed  on  a number of their handheld receivers.  EPE  is  an 
+acronym for "Estimated  Position Error".  See page 18 of the  GPS 
+12XL  Owner's Manual and Reference.  The behavior of EPE  is  not 
+identical  on all of Garmin's receivers... some reflect the  dgps 
+mode and others do not.
+
+A  number  of  sources  indicate the error  in  position  can  be 
+estimated  by the  simple calculation DOP * URA with  the  former 
+calculated  in the GPS receiver from the geometry of  the  satel-
+lites  used  in the position solution and the later  derived  and 
+computed from the GPS message transmitted by each satellite. 
+
+DOP  - Dilution of Precision - TDOP, PDOP, HDOP, VDOP, etc.  are, 
+in  effect,  multipliers  that, when used with  some  measure  of 
+positioning  statistic, can give you a realistic  expectation  of 
+probability of error.
+
+URA - User Range Accuracy - this is a quantity that is  transmit-
+ted  in  the  navigation  message  that  is  the  predicted  (not 
+measured) statistical ranging accuracy.  Since it is defined  for 
+SPS (Standard Positioning Service), it  includes SA.
+
+================================================================
+
+Bill Stone wrote [March 1997]:
+
+What does Garmin mean by EPE?  
+
+EPE  =  HDOP  * URA (1-sigma)  would give a measure  of  the  68% 
+confidence  circle, i.e., 68% of your position fixes  would  fall 
+within and 32% would fall outside.
+
+EPE  =  HDOP  *  URA (1-sigma) * 2 gives a  measure  of  the  95% 
+confidence  circle,  i.e., 95% of your position fixes would  fall 
+within and 5% would fall outside.
+
+EPE  =  HDOP * URA (1-sigma) * 0.73 gives a measure  of  the  50% 
+confidence  circle, i.e., 50% of your position fixes  would  fall 
+within  and  50% would fall outside.  This is also known  in  the 
+literature as CEP (Circular Error Probable).
+
+This latter expression is what several of you have indicated that 
+you think Garmin's EPE calculation is for the Garmin 12XL.  There 
+may  also  be  an "EPE filter" to minimize the  EPE  figure  from 
+jumping about to much.
+
+There should be a "reasonable correlation" between HDOP and outer 
+radial  position from a known geodetic point (could be determined 
+over a long period  of time by statisical averaging).  I use  the 
+word  "reasonable"  because the  comparison involves  the  points 
+wandering  around mostly within a circle of  confidence,  whereas 
+HDOP will relate to the radius of that circle of confidence.
+
+=================================================================
+
+To  further complicate the analysis, witout an  absolutely  clear 
+view  of  the  sky,  you can expect the HDOP  to  take  jumps  as 
+satellites  are  obstructed from view.  This might not be  a  bad 
+idea to collect data under conditions less than desireable.  John 
+Franke reports:
+
+    "It  is  interesting  to  see  what  happens  under   certain 
+     alinements.   I  recently had a case where the  receiver  (6 
+     channel,  parallel) was tracking 4 satellites but was  doing 
+     2D  NAV and the HDOP was 32.  A quick look at the  satellite 
+     position  screen showed the 4 tracked satellites to be in  a 
+     straight  line.  There were other satellites  available  but 
+     the view to them was blocked by buildings.  So, knowing  the 
+     orbits  repeat but are several minutes earlier each  day,  I 
+     watched  the next day to see the alinement develop  and  the 
+     PDOP change.  In less than twenty minutes the receiver  went 
+     from  3D NAV with a PDOP of 2.3 to 2D NAV and a HDOP  of  30 
+     back  to  3D  NAV and PDOP of  2.4!   Quite  impressive  and 
+     educational to observe".
+
+The  NMEA sentence $GPGGA recorded periodically over at  least  a 
+twenty-four-hour  period  may  provide  enough  data  to  draw  a 
+conclusion.   This is a good experiment for all to try  who  have 
+the capability to capture data.... you will learn much.
+
+Many  of you may have better approaches than mine to  gather  and 
+analyse data to resolve the EPE issue.... and, of course it  goes 
+without saying, we would hold Garmin in high[er] esteem if Garmin 
+would  give a complete technical discription of the  calculation.  
+And... if that technical language is over the typical  readership 
+heads, I'm sure there are many qualified to translate.
+__________________________________________________
+Sam Wormley - http://www.cnde.iastate.edu/gps.html
+

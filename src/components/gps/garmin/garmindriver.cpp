@@ -46,7 +46,11 @@ GarminGpsDriver::~GarminGpsDriver()
 
 void
 GarminGpsDriver::init()
-{
+{ 
+    //Make sure that we clear our internal data structures
+    memset((void*)(&nmeaMessage_) , 0 , sizeof(nmeaMessage_));
+    memset((void*)(&GpsData_) , 0 , sizeof(GpsData_));
+
     try {
         enableDevice();
         //TODO Need to check here that we have been successful.
@@ -139,7 +143,6 @@ void
 GarminGpsDriver::read()
 {
     char serial_data[1024];
-    static int nmeaExceptionCount =0;
 
     // This will block up to the timeout
     int ret = serial_.readLine(serial_data,1024,'\n');
@@ -157,13 +160,14 @@ GarminGpsDriver::read()
     // We successfully read something from the serial port
     //
     
+
     //Put it into the message object and checksum the data
+    static int nmeaExceptionCount =0;
     try{
         //This throws if it cannot find the * to deliminate the checksum field
         nmeaMessage_.setSentence(serial_data,TestChecksum);
     }
-    catch (NmeaException &e)
-    {
+    catch (NmeaException &e){
         //Don't throw if only occasional messages are missing the checksums
         if(nmeaExceptionCount++ < 3) {return;}
         stringstream ss;
@@ -171,15 +175,21 @@ GarminGpsDriver::read()
         context_.tracer()->error( ss.str() );
         throw GpsException(ss.str());
     }
-
     nmeaExceptionCount = 0;
     
-    if(!nmeaMessage_.haveValidChecksum()){        
-        throw GpsException("GarminGpsDriver: Message fails checksum");
+    //Only populate the data structures if our message passes the checksum!
+    static int nmeaFailChecksumCount =0;
+    if(nmeaMessage_.haveValidChecksum()){        
+        nmeaFailChecksumCount = 0;
+        populateData();
+    }else{      
+        if(nmeaFailChecksumCount++ >= 3){ //Dont throw an exception on the first failed checksum.
+            throw GpsException("GarminGpsDriver: more than 3 sequential messages failed the checksum\n");
+        }else{
+            context_.tracer()->error("GarminGpsDriver: Single message failed checksum. Not throwing an exception yet!\n" );
+        }
     }
 
-    // this may throw.
-    populateData();
 }
 
 
@@ -194,6 +204,7 @@ GarminGpsDriver::populateData()
     //And then find out which type of messge we have recieved...
     string MsgType(nmeaMessage_.getDataToken(0));
 
+    //We should not be being passed any messages with failed checksums, but just in case
     if(nmeaMessage_.haveTestedChecksum() && (!nmeaMessage_.haveValidChecksum())){
         throw GpsException("GarminGpsDriver: Message fails checksum");
     }
@@ -332,6 +343,9 @@ GarminGpsDriver::ExtractVTGData(void){
 
 //*********************************************************************************************
 // RME message. This one is garmin specific... Give position error estimates
+// See the file garminErrorPositionEstimate.txt for a discussion of the position errors as
+// reported here. Essentially the EPE reported by the garmin is a 1 sigma error (RMS) or a
+// 68% confidence bounds.
 
 void 
 GarminGpsDriver::ExtractRMEData(void){
