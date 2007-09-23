@@ -29,7 +29,7 @@ MainLoop::MainLoop( const orcaice::Context &context )
 {
     context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 10.0 );
     context_.status()->initialising( SUBSYSTEM );
-
+    
     // create a callback object to recieve data
     gpsConsumer_ = new orcaifaceimpl::ProxiedGpsConsumerImpl( context_ );
 }
@@ -175,57 +175,73 @@ MainLoop::getGpsDescription()
 void
 MainLoop::initInterface()
 {
-    //
-    // connect to odometry to get vehicle description
-    //
     orca::VehicleDescription vehicleDesc;
-    orca::Odometry2dPrx odoPrx;
     
-    while ( isActive() )
+    std::string prefix = context_.tag() + ".Config.";
+    bool requireOdometry = orcaice::getPropertyAsIntWithDefault( context_.properties(),
+    prefix+"RequireOdometry", 1);
+    
+    if (!requireOdometry)
     {
-        try
+        context_.tracer()->debug("Odometry interface is not required: VehicleDescription is set to unknown", 3);
+        orca::VehicleGeometryDescriptionPtr geometry = new orca::VehicleGeometryDescription;
+        geometry->type = orca::VehicleGeometryOther;
+        vehicleDesc.geometry = geometry; 
+    }
+    else
+    {
+        //
+        // connect to odometry to get vehicle description
+        //
+        
+        orca::Odometry2dPrx odoPrx;
+        
+        while ( isActive() )
         {
-            context_.tracer()->debug( "Connecting to Odometry2d...", 3 );
-            orcaice::connectToInterfaceWithTag<orca::Odometry2dPrx>( context_, odoPrx, "Odometry2d" );
-            context_.tracer()->debug("connected to a 'Odometry2d' interface", 4 );
-            context_.tracer()->debug( "Getting vehicle description...", 2 );
-            vehicleDesc = odoPrx->getDescription();
-            stringstream ss;
-            ss << "Got vehicle description: " << orcaice::toString( vehicleDesc );
-            context_.tracer()->info( ss.str() );
-            break;
+            try
+            {
+                context_.tracer()->debug( "Connecting to Odometry2d...", 3 );
+                orcaice::connectToInterfaceWithTag<orca::Odometry2dPrx>( context_, odoPrx, "Odometry2d" );
+                context_.tracer()->debug("connected to a 'Odometry2d' interface", 4 );
+                context_.tracer()->debug( "Getting vehicle description...", 2 );
+                vehicleDesc = odoPrx->getDescription();
+                stringstream ss;
+                ss << "Got vehicle description: " << orcaice::toString( vehicleDesc );
+                context_.tracer()->info( ss.str() );
+                break;
+            }
+            catch ( const Ice::Exception &e )
+            {
+                stringstream ss;
+                ss << "failed to retrieve vehicle description: " << e;
+                context_.tracer()->error( ss.str() );
+            }
+            catch ( const std::exception &e )
+            {
+                stringstream ss;
+                ss << "failed to retreive vehicle description: " << e.what();
+                context_.tracer()->error( ss.str() );
+            }
+            catch ( ... )
+            {
+                context_.tracer()->error( "Failed to retreive vehicle description for unknown reason." );
+            }
+            context_.status()->initialising( SUBSYSTEM, "getVehicleDescription()" );
+            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
         }
-        catch ( const Ice::Exception &e )
-        {
-            stringstream ss;
-            ss << "failed to retrieve vehicle description: " << e;
-            context_.tracer()->error( ss.str() );
-        }
-        catch ( const std::exception &e )
-        {
-            stringstream ss;
-            ss << "failed to retreive vehicle description: " << e.what();
-            context_.tracer()->error( ss.str() );
-        }
-        catch ( ... )
-        {
-            context_.tracer()->error( "Failed to retreive vehicle description for unknown reason." );
-        }
-        context_.status()->initialising( SUBSYSTEM, "getVehicleDescription()" );
-        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
     }
     
     //
     // Instantiate External Interface
     //
     localiseInterface_ = new orcaifaceimpl::Localise2dImpl( vehicleDesc.geometry, "Localise2d", context_ );
-
+    
     while ( isActive() )
     {
         try {
-            context_.tracer()->debug( "Initialising PolarFeature2d interface...",3 );
+            context_.tracer()->debug( "Initialising Localise2d interface...",3 );
             localiseInterface_->initInterface();
-            context_.tracer()->debug( "Initialised PolarFeature2d interface",3 );
+            context_.tracer()->debug( "Initialised Localise2d interface",3 );
             return;
         }
         catch ( orcaice::Exception &e )
