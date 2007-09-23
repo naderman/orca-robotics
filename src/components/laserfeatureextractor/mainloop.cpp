@@ -340,7 +340,7 @@ MainLoop::convertToRobotCS( const PolarFeature2dDataPtr & featureData )
         else if ( ftr->ice_isA( "::orca::LinePolarFeature2d" ) )
         {
             orca::LinePolarFeature2d& f = dynamic_cast<orca::LinePolarFeature2d&>(*ftr);
-#ifndef NDEBUG
+
             // Check a few things...
             // (Allow slack because funny things can happen as endpoints are projected)
             const bool EPSR=0.5;
@@ -358,9 +358,27 @@ MainLoop::convertToRobotCS( const PolarFeature2dDataPtr & featureData )
                         f.end.o < laserDescr_.startAngle+laserDescr_.fieldOfView+EPSB );
             }
             assert ( f.rhoSd >= 0 && f.alphaSd >= 0 );
-#endif
+
             convertPointToRobotCS( f.start.r, f.start.o, offsetXyz, offsetAngles );
             convertPointToRobotCS( f.end.r,   f.end.o,   offsetXyz, offsetAngles );
+
+            //
+            // Check that the line should be visible.
+            // 
+            double bearingDiff = f.end.o - f.start.o;
+            if ( bearingDiff < 0 )
+            {
+                //
+                // Line is not visible from platform pose (but presumably it was visible from sensor pose -- 
+                //   this can happen if the two are not co-located.  Could probably do better, but throw 
+                //   an exception for now).
+                //
+                stringstream ss;
+                ss << "MainLoop::convertToRobotCS(): bearingDiff < 0 -- line is not visible from platform pose"
+                   << " (but maybe it is from sensor pose).  Line was: " 
+                   << orcaice::toString(ftr);
+                throw orcaice::Exception( ERROR_INFO, ss.str() );
+            }
         }
         else
         {

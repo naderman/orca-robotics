@@ -91,13 +91,20 @@ public:
                      double eigVectY,
                      double c,
                      double maxLineFitError ) 
-        { 
-            isALine_=true; 
-            eigVectX_=eigVectX;
-            eigVectY_=eigVectY;
-            c_=c;            
-            maxLineFitError_=maxLineFitError;
-            setEndPoints(); 
+        {
+            try {
+                isALine_=true; 
+                eigVectX_=eigVectX;
+                eigVectY_=eigVectY;
+                c_=c;            
+                maxLineFitError_=maxLineFitError;
+                setEndPoints();
+            }
+            catch ( ... )
+            {
+                isALine_ = false;
+                throw;
+            }
         }
 
 private:

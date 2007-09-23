@@ -59,7 +59,6 @@ Section::setEndPoints()
     end_.setXY( x2, y2 );
 
     // Make sure the points are ordered correctly.
-#ifndef NDEBUG    
     if ( end_.bearing()-start_.bearing() < 0 )
     {
         stringstream ss;
@@ -76,7 +75,6 @@ Section::setEndPoints()
         //assert( false && "incorrect ordering of points!" );
         throw ss.str();
     }
-#endif
 
     // sanity check...
     assert ( hypotf( start_.y()-elements().front().y(), start_.x()-elements().front().x() ) < 1.0 );
