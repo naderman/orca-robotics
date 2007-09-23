@@ -145,6 +145,9 @@ AlgoHandler::initDriver()
     try
     {
         ogMapSlice = ogMapPrx_->getData();
+        stringstream ss;
+        ss << "AlgoHandler::initDriver(): got ogMap: " << orcaice::toString( ogMapSlice );
+        context_.tracer()->info( ss.str() );
     }
     catch ( const orca::DataNotExistException & e )
     {

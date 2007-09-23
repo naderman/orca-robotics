@@ -25,6 +25,7 @@
 #include "odometry3dprobe.h"
 #include "gpsprobe.h"
 #include "powerprobe.h"
+#include "ogmapprobe.h"
 #include "statusprobe.h"
 #include "tracerprobe.h"
 #include "pathfollower2dprobe.h"
@@ -48,6 +49,7 @@ OrcaProbeFactory::OrcaProbeFactory()
     addSupportedType("::orca::Odometry2d");
     addSupportedType("::orca::Odometry3d");
     addSupportedType("::orca::Power");
+    addSupportedType("::orca::OgMap");
     addSupportedType("::orca::PathFollower2d");
     addSupportedType("::orca::Status");
     addSupportedType("::orca::Tracer");
@@ -102,6 +104,9 @@ OrcaProbeFactory::create( const std::string           & interfaceType,
     }
     else if ( interfaceType == "::orca::Power" ) {
         probe = new PowerProbe( name, display, context );
+    }
+    else if ( interfaceType == "::orca::OgMap" ) {
+        probe = new OgMapProbe( name, display, context );
     }
     else if ( interfaceType == "::orca::PathFollower2d" ) {
         probe = new PathFollower2dProbe( name, display, context );

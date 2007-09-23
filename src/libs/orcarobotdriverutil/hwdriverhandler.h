@@ -117,7 +117,7 @@ HwDriverHandler<Command,Data>::enableDriver()
         catch ( std::exception &e )
         {
             std::stringstream ss;
-            ss << "HwDriverHandler::enableDriver(): Failed to enable: " << e.what();
+            ss << "HwDriverHandler::enableDriver(): enable failed: " << e.what();
             context_.tracer()->error( ss.str() );
             context_.status()->fault( "HwDriverHandler", ss.str() );
         }
