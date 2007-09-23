@@ -31,8 +31,7 @@ public:
     
 private:
     orcaice::Context context_;
-    std::vector<wifiutil::WirelessConfig> config_;
-    bool haveConfig_;
+    bool haveIoctl_;
 };
 
 } // namespace

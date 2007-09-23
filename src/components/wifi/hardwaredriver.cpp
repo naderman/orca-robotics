@@ -105,17 +105,21 @@ void fillIn( const vector<wifiutil::IoctlData> &ioctlData,
 
 HardwareDriver::HardwareDriver(orcaice::Context &context)
   : context_(context),
-    haveConfig_(false)
+    haveIoctl_(false)
 {
 }
 
 void
 HardwareDriver::init()
 {
+    // try whether we can read using ioctl
+    
+    vector<wifiutil::WirelessConfig> config;
+    
     try
     {
-        wifiutil::readConfig( config_ );
-        haveConfig_ = true;
+        wifiutil::readConfig( config );
+        haveIoctl_ = true;
     }
     catch (wifiutil::Exception &e) 
     {
@@ -140,17 +144,18 @@ HardwareDriver::read( orca::WifiData &data )
     fillIn( procData, data );
     
     // if we didn't manage to get the config, reading from ioctl doesn't work and we just return 
-    if (!haveConfig_) return;
-    
-    // assumption: config does not change
-    fillIn( config_, data );
+    if (!haveIoctl_) return;
     
     // ======== ioctl data =============
-    bool haveIoctl = true;
+    vector<wifiutil::WirelessConfig> config;
     vector<wifiutil::IoctlData> ioctlData;
+    
     try 
     {
+        wifiutil::readConfig( config );
+        fillIn( config, data );
         wifiutil::readUsingIoctl( ioctlData );
+        fillIn( ioctlData, data );
     } 
     catch (wifiutil::Exception &e) 
     {
@@ -158,10 +163,8 @@ HardwareDriver::read( orca::WifiData &data )
         ss << "HardwareDriver: Caught exception: " << e.what();
         ss << "We'll continue because this operation is not critical" << endl;      
         context_.tracer()->info( ss.str() );
-        haveIoctl = false;
+        haveIoctl_ = false;
     }
-    // if we managed to get information from ioctl, we'll add and refine the data
-    if (haveIoctl) fillIn( ioctlData, data );
     
 }
             
