@@ -98,7 +98,6 @@ void paintCylindricalPlatformPose( QPainter *p,
 //! 'paintUncertaintyInfo' and 'paintCovarianceEllipse'
 void paintUncertaintyInfo( QPainter     *p, 
                            const QColor &colour, 
-                           float         thetaMean, 
                            float         pxx, 
                            float         pxy, 
                            float         pyy, 
@@ -109,7 +108,6 @@ void paintUncertaintyInfo( QPainter     *p,
 //! Paints a little wedge of sidelength 'length' representing rotational uncertainty
 void paintUncertaintyWedge( QPainter     *p, 
                             const QColor &colour, 
-                            float         thetaMean, 
                             float         ptt, 
                             float         length, 
                             float         lineThickness=0.2 );

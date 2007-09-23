@@ -160,7 +160,6 @@ void paintCubicPlatformPose( QPainter *p, const QColor &colour, float length, fl
 void
 paintUncertaintyInfo( QPainter *p,
                       const QColor &colour,
-                      float thetaMean,
                       float pxx,
                       float pxy,
                       float pyy,
@@ -168,28 +167,22 @@ paintUncertaintyInfo( QPainter *p,
                       float length,
                       float lineThickness )
 {
-    paintUncertaintyWedge( p, colour, thetaMean, ptt, length, lineThickness );
+    paintUncertaintyWedge( p, colour, ptt, length, lineThickness );
     paintCovarianceEllipse( p, colour, pxx, pxy, pyy, lineThickness );
 }
 
 void
 paintUncertaintyWedge( QPainter *p,
                        const QColor &colour,
-                       float thetaMean,
                        float ptt,
                        float length,
                        float lineThickness)
 {
-    p->save();
-    {
-        p->rotate( RAD2DEG(thetaMean) );
         p->setPen( QPen(colour, lineThickness) );
         p->setBrush( Qt::NoBrush );
         int pTheta = (int) (ptt * (180.0/M_PI));
         p->drawPie( QRectF(-length,-length,2.0*length,2.0*length),
                     -N_SIGMA*pTheta*16, 2*N_SIGMA*pTheta*16 );
-    }
-    p->restore();
 }
 
 void

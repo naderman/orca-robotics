@@ -98,7 +98,6 @@ Localise2dPainter::paintHypothesis( QPainter* p, const orca::Pose2dHypothesis &h
     
         paintUncertaintyInfo( p,
                               color,
-                              mean.o,
                               cov.xx,
                               cov.xy,
                               cov.yy,

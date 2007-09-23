@@ -191,7 +191,7 @@ FeatureMap2dPainter::paintLineFeature( QPainter *painter,
                                            uncertaintyLength, halfLineLength ) );
 
                 // alpha uncertainty: a wedge on the back (non-visible) side of the line
-                paintUncertaintyWedge( painter, orcaqgui::featureColour(f.type), 0.0, f.c.yy, length, lineThickness );
+                paintUncertaintyWedge( painter, orcaqgui::featureColour(f.type), f.c.yy, length, lineThickness );
             }
             else
             {
@@ -227,7 +227,8 @@ FeatureMap2dPainter::paintPoseFeature( QPainter *painter,
         painter->save();
         {
             painter->translate( f.p.p.x, f.p.p.y );
-            paintUncertaintyWedge( painter, orcaqgui::featureColour(f.type), f.p.o, f.c.tt, length, lineThickness );
+            painter->rotate( f.p.o );
+            paintUncertaintyWedge( painter, orcaqgui::featureColour(f.type), f.c.tt, length, lineThickness );
         }
         painter->restore();
     }
