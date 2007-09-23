@@ -75,7 +75,7 @@ Localise2dLogger::writeGeometryToFile( const orca::VehicleGeometryDescriptionPtr
     }
     else if ( format_ == "ascii" )
     {
-        (*file_) << orcalog::toLogString(obj) << flush;
+        (*file_) << orcalog::toLogString(obj) << endl;
     }
     else
     {
