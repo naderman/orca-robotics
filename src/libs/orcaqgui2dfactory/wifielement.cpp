@@ -55,13 +55,11 @@ WifiWidget::refresh( WifiData &data )
 {
     //cout << orcaice::toString(data);
     
-    for (int i=0; i<interfaceLabels_.size(); i++) 
-    {
-        interfaceLabels_[i]->setText("<b>" + QString(data.interfaces[i].interfaceName.c_str()) + "</b>");
-    }
-    
     for (unsigned int i=0; i<numInterfaces_; i++)
     {
+        interfaceLabels_[i]->setText(QString(data.interfaces[i].interfaceName.c_str()));
+        accessPointLabels_[i]->setText(QString(data.interfaces[i].accessPoint.c_str()));
+        
         WifiInterface &wifiInt = data.interfaces[i];
         lcdsSignal_[i]->display(wifiInt.signalLevel);
         lcdsNoise_[i]->display(wifiInt.noiseLevel);
@@ -101,8 +99,14 @@ void WifiWidget::setupDisplay()
     for (unsigned int i=0; i<numInterfaces_; i++)
     {
         QLabel *interfaceLabel = new QLabel;
+        interfaceLabel->setFont(QFont("Helvetica", 12, QFont::Bold));
         globalLayout->addWidget(interfaceLabel,numRowsPerInterface*i,0);
         interfaceLabels_.push_back( interfaceLabel );
+        
+        QLabel *accessPointLabel = new QLabel;
+        accessPointLabel->setFont(QFont("Helvetica", 12, QFont::Bold));
+        globalLayout->addWidget(accessPointLabel,numRowsPerInterface*i,1);
+        accessPointLabels_.push_back( accessPointLabel );
         
         QLCDNumber *lcdSignalLevel = new QLCDNumber(numDigits, this);
         lcdSignalLevel->setSegmentStyle(QLCDNumber::Filled);

@@ -42,6 +42,7 @@ class WifiWidget : public QWidget
         QVector<QLCDNumber*> lcdsMaxLink_;
         QVector<QLCDNumber*> lcdsBitrate_;
         QVector<QLabel*> interfaceLabels_;
+        QVector<QLabel*> accessPointLabels_;
         QVector<QLabel*> overallSigLabels_;
         
         void setupDisplay();
