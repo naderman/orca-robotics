@@ -72,7 +72,7 @@ LineExtractor::LineExtractor( const orcaice::Context &context,
 }
     
 void LineExtractor::addFeatures( const orca::LaserScanner2dDataPtr &laserData,
-                                   orca::PolarFeature2dDataPtr &features )
+                                 orca::PolarFeature2dDataPtr &features )
 {
 //     cout<<"TRACE(lineextractor.cpp): ------------------- addFeatures() --------------------" << endl;
 

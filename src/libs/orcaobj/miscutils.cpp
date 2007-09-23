@@ -184,7 +184,7 @@ loadFromFile( const std::string &filename, orca::FeatureMap2dDataPtr &fmap )
     {
         std::stringstream ss;
         ss << "Failed to open file: "<<filename;
-        throw ss.str();
+        throw orcaice::Exception( ERROR_INFO, ss.str() );
     }
 
     const int bufSize=10000;
@@ -211,7 +211,7 @@ loadFromFile( const std::string &filename, orca::FeatureMap2dDataPtr &fmap )
             {
                 stringstream ss; ss << "Malformed featuremap file!  Expected offset on first non-comment line, found:"<<endl<<buf;
                 f.close();
-                throw( ss.str() );
+                throw orcaice::Exception( ERROR_INFO, ss.str() );
             }
             gotOffset=true;
             continue;
@@ -253,7 +253,7 @@ loadFromFile( const std::string &filename, orca::FeatureMap2dDataPtr &fmap )
                 std::stringstream ss;
                 ss << "Malformed featuremap file!  Couldn't understand line " << line <<":"<<endl<<buf;
                 f.close();
-                throw( ss.str() );
+                throw orcaice::Exception( ERROR_INFO, ss.str() );
             }
 
             fmap->features.push_back( feature );
@@ -285,7 +285,7 @@ loadFromFile( const std::string &filename, orca::FeatureMap2dDataPtr &fmap )
                 std::stringstream ss;
                 ss << "Malformed featuremap file!  Couldn't understand line " << line <<":"<<endl<<buf;
                 f.close();
-                throw( ss.str() );
+                throw orcaice::Exception( ERROR_INFO, ss.str() );
             }
             feature->startSighted = ss;
             feature->endSighted = es;
@@ -317,7 +317,7 @@ loadFromFile( const std::string &filename, orca::FeatureMap2dDataPtr &fmap )
                 std::stringstream ss;
                 ss << "Malformed featuremap file!  Couldn't understand line " << line <<":"<<endl<<buf;
                 f.close();
-                throw( ss.str() );
+                throw orcaice::Exception( ERROR_INFO, ss.str() );
             }
 
             fmap->features.push_back( feature );
