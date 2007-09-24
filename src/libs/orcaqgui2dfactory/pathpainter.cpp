@@ -162,7 +162,8 @@ void PathPainter::paint( QPainter *painter, int z )
     if ( guiPath_.size()>1 )
     {
         QPen pen( futureWpColor );
-        pen.setCosmetic( true );
+//TODO: this works for Qt 4.3
+//         pen.setCosmetic( true );
         painter->setPen( pen );
         painter->setBrush ( Qt::NoBrush );
         int startI = 0;
