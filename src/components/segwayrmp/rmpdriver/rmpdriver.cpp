@@ -167,14 +167,25 @@ RmpDriver::getStatus( std::string &status, bool &isWarn, bool &isFault )
 }
 
 void
-RmpDriver::applyScaling( const Command& original, Command &scaledCommand )
+RmpDriver::applyScaling( const Command& originalCommand, Command &scaledCommand )
 {
-    scaledCommand.vx = original.vx / config_.maxVelocityScale;
+    scaledCommand.vx = originalCommand.vx / config_.maxVelocityScale;
 
-    // alexm: this needs to be debugged, it seems that the turnrate is not scaled the same
-    // way the forward velocidy is.
-//     scaledCommand.w  = original.w  / config_.maxTurnrateScale;
-    scaledCommand.w  = original.w;
+    // alexm: it's not clear if maxTurnrateScale is used by segway at all
+//     scaledCommand.w  = originalCommand.w  / config_.maxTurnrateScale;
+
+    // here's our interpretation of RMP Manual Section "Theory of Operation: Turning"
+    //   Vo = Pi/2
+    //   if V<=Vo, Wout = Win;
+    //   if V>Vo,  Wout = Win / (V/Vo);
+    // assumption, we use the commanded forward velocity instead of the actual velocity.
+    double vxo = 1.57;
+    if ( originalCommand.vx <= vxo ) {
+        scaledCommand.w = originalCommand.w;
+    }
+    else {
+        scaledCommand.w = originalCommand.w * (originalCommand.vx/vxo);
+    }
 }
 
 void
