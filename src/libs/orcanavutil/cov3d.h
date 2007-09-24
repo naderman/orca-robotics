@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <assert.h>
+#include <orcanavutil/exceptions.h>
 
 namespace orcanavutil {
 

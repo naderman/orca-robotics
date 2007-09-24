@@ -1,6 +1,7 @@
 #include "cov3d.h"
 #include <iostream>
 #include <cmath>
+#include <sstream>
 
 using namespace std;
 
@@ -45,7 +46,18 @@ Cov3d::gauss( double x, double y, double t ) const
         (x*i.xy()+y*i.yy()+t*i.yt())*y +
         (x*i.xt()+y*i.yt()+t*i.tt())*t;
 
-    return CONSTANT_BIT * 1.0/sqrt(det()) * exp( -0.5 * expBit );
+    double ret = CONSTANT_BIT * 1.0/sqrt(det()) * exp( -0.5 * expBit );
+    if ( isnan(ret) ||
+         isinf(ret) )
+    {
+        stringstream ss;
+        ss << "Cov3d::gauss(): numerical error: guass("<<x<<", "<<y<<", "<<t<<") returned " << ret << "." << endl
+           << "  Covariance is: " << *this << endl
+           << "  det() is: " << det() << endl
+           << "  inverse is: " << inverse();
+        throw Exception( ss.str() );
+    }    
+    return ret;
 }
 
 }
