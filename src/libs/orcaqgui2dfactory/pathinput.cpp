@@ -85,7 +85,7 @@ void orcaPathToGuiPath( const orca::Path2d &in, GuiPath &out )
         out[i].headingTolerance = (int)floor(RAD2DEG(in[i].headingTolerance))*QT_ANGLE_MULTIPLIER;   
         out[i].timeTarget = orcaice::timeAsDouble(in[i].timeTarget);
         out[i].maxSpeed = in[i].maxApproachSpeed;
-        out[i].maxTurnrate = RAD2DEG(in[i].maxApproachTurnrate);
+        out[i].maxTurnrate = (int)floor(RAD2DEG(in[i].maxApproachTurnrate));
     }
 }
     

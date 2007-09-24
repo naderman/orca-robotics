@@ -161,7 +161,7 @@ void PathPainter::paint( QPainter *painter, int z )
     // ======== draw connections between waypoints =========
     if ( guiPath_.size()>1 )
     {
-        QPen pen( futureWpColor );
+        QPen pen( futureWpColor, 0.1 );
 //TODO: this works for Qt 4.3
 //         pen.setCosmetic( true );
         painter->setPen( pen );
