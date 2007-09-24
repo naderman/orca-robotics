@@ -246,7 +246,7 @@ PathFollower2dElement::isFollowerEnabled( bool &isEnabled )
     {
         isEnabled = pathFollower2dPrx_->enabled();
         if (isRemoteInterfaceSick_) {
-            humanManager_->showStatusMsg( Information, "Remote interface is sane again" );
+            humanManager_->showStatusMsg( Information, "PathFollower2dElement::remote interface is sane again" );
             isRemoteInterfaceSick_ = false;
         }
         return 0;
@@ -254,7 +254,7 @@ PathFollower2dElement::isFollowerEnabled( bool &isEnabled )
     catch ( ... )
     {
         if (!isRemoteInterfaceSick_) {
-            humanManager_->showStatusMsg( Error, "Remote interface seems sick" );
+            humanManager_->showStatusMsg( Error, "PathFollower2dElement::remote interface seems sick" );
             isRemoteInterfaceSick_ = true;
         }
         return -1;

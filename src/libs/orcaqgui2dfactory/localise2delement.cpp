@@ -43,7 +43,7 @@ Localise2dElement::tryToGetGeometry()
     }
     catch ( std::exception &e)
     {
-        humanManager_->showStatusMsg(Error,"Exception when trying to get geometry: " + QString(e.what()) );
+        humanManager_->showStatusMsg(Error,"Localise2dElement::Exception when trying to get geometry: " + QString(e.what()) );
     }
     
     if (!haveGeometry_) {
@@ -66,7 +66,7 @@ Localise2dElement::tryToGetGeometry()
     }
     else
     {
-        humanManager_->showStatusMsg(Warning, "Unknown platform type. Will paint a rectangle");
+        humanManager_->showStatusMsg(Warning, "Localise2dElement::Unknown platform type. Will paint a rectangle");
         VehicleGeometryCuboidDescriptionPtr cubGeom = VehicleGeometryCuboidDescriptionPtr::dynamicCast( geom );
         painter_.setTypeAndGeometry( PlatformTypeCubic, cubGeom->size.l, cubGeom->size.w );
         painter_.setOrigin( cubGeom->vehicleToGeometryTransform.p.x, cubGeom->vehicleToGeometryTransform.p.y, cubGeom->vehicleToGeometryTransform.o.y );
