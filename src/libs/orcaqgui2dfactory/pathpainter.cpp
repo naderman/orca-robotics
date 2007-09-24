@@ -80,8 +80,6 @@ void PathPainter::paint( QPainter *painter, int z )
     
     if ( z != Z_PATH ) return;
 
-    const float PATH_WIDTH = 0.05;
-
     QColor fillColor;
     QColor drawColor;
     QColor futureWpColor;
@@ -163,12 +161,15 @@ void PathPainter::paint( QPainter *painter, int z )
     // ======== draw connections between waypoints =========
     if ( guiPath_.size()>1 )
     {
-        painter->setPen( QPen( futureWpColor, PATH_WIDTH ) );
+        QPen pen( futureWpColor );
+        pen.setCosmetic( true );
+        painter->setPen( pen );
         painter->setBrush ( Qt::NoBrush );
         int startI = 0;
         if ( !displayPastWaypoints_ ) 
             startI = wpIndex_+1;
         assert( startI >= 0 );
+        
         for ( int i=startI; i<guiPath_.size(); ++i)
         {
             if (i != 0) painter->drawLine(guiPath_[i].position,guiPath_[i-1].position);

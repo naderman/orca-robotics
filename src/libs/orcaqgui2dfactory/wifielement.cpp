@@ -178,6 +178,7 @@ WifiElement::WifiElement( const orcaice::Context  &context,
 
 WifiElement::~WifiElement()
 {
+    //cout << "================ DESTRUCTOR == " << endl;
     if (wifiWidget_!=0) delete wifiWidget_;
 }
 
