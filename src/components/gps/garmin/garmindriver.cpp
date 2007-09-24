@@ -145,6 +145,7 @@ GarminGpsDriver::read()
     char serial_data[1024];
 
     // This will block up to the timeout
+    context_.tracer()->debug( "GarminGpsDriver::read(): calling serial_.readLine()", 5 );
     int ret = serial_.readLine(serial_data,1024,'\n');
     timeOfRead_ = IceUtil::Time::now();
         
