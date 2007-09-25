@@ -49,12 +49,7 @@ class Driver
 
 public:
 
-    Driver()
-     : newGpsData_(false),
-       newGpsMapGridData_(false),
-       newGpsTime_(false),
-       hasFix_(false)
-    {};
+    Driver() {};
        
     virtual ~Driver() {};
 
@@ -65,28 +60,11 @@ public:
 
     // Reads from GPS, blocks till timout expires
     // May throw GpsException
-    virtual void read()=0;
-    
-    // Returns true if we have a GPS fix otherwise false
-    virtual bool hasFix()=0;
-    
-    // Fetches latest GpsData. Returns -1 if it there is no new data.
-    virtual int getData(orca::GpsData& data )=0;
-    
-    // Fetches latest GpsTimeData. Returns -1 if it there is no new data.
-    virtual int getTimeData(orca::GpsTimeData& data )=0;
-
-
+    virtual void read(orca::GpsData&)=0;
 protected:
 
-    bool newGpsData_;
-    bool newGpsMapGridData_;
-    bool newGpsTime_;
-
-    bool hasFix_;
-
-    orca::GpsData GpsData_;
-    orca::GpsTimeData GpsTimeData_;
+    orca::GpsData gpsData_;
+    orca::GpsTimeData gpsTimeData_;
 
 };
 

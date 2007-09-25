@@ -32,29 +32,17 @@ FakeGpsDriver::~FakeGpsDriver()
 {
 }
 
-bool 
-FakeGpsDriver::hasFix() 
-{ 
-    fixCounter_++;
-    if (fixCounter_>=5) {
-        return true;
-    } else {
-        return false; 
-    }
-}
 
 void
-FakeGpsDriver::read()
+FakeGpsDriver::read(orca::GpsData & data)
 {
 //     cout<<"TRACE(fakelaserdriver.cpp): Generating fake gps data..." << endl;
     
-    newGpsData_ = false;
-    orcaice::setToNow( GpsData_.timeStamp );
-    orcaice::setSane( GpsTimeData_.utcTime );
+    orcaice::setToNow( gpsData_.timeStamp );
     if (longitudes_.size()>0) 
     {
-        GpsData_.latitude = latitudes_[dataRecord_];
-        GpsData_.longitude = longitudes_[dataRecord_];
+        gpsData_.latitude = latitudes_[dataRecord_];
+        gpsData_.longitude = longitudes_[dataRecord_];
         // every 20 seconds we switch to the next gps record
         // if at the end, start again
         if (numReads_ % 20 == 0)
@@ -66,53 +54,27 @@ FakeGpsDriver::read()
             }
         }
     } else {
-        GpsData_.latitude = -35.0;
-        GpsData_.longitude = 150.0;
+        gpsData_.latitude = -35.0;
+        gpsData_.longitude = 150.0;
     }
         
-    GpsData_.altitude = 50;
-    double heading = GpsData_.heading + DEG2RAD(10);
-    GpsData_.heading = heading; 
-    GpsData_.speed = 0;
-    GpsData_.climbRate = 0;
-    GpsData_.satellites = 6;
-    GpsData_.positionType = orca::GpsPositionTypeAutonomous;
-    GpsData_.geoidalSeparation = 10;
-    newGpsData_ = true;
-    
-    newGpsTime_ = false;
-    orcaice::setToNow( GpsTimeData_.timeStamp );
-    orcaice::setSane( GpsTimeData_.utcTime );
-    orcaice::setSane( GpsTimeData_.utcDate );
-    newGpsTime_ = true;
+    gpsData_.altitude = 50;
+    double heading = gpsData_.heading + DEG2RAD(10);
+    gpsData_.heading = heading; 
+    gpsData_.speed = 0;
+    gpsData_.climbRate = 0;
+    gpsData_.satellites = 6;
+    gpsData_.positionType = orca::GpsPositionTypeAutonomous;
+    gpsData_.geoidalSeparation = 10;
+
     
     numReads_++;
         
     IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
+
+    data=gpsData_;
+
 }
 
-int 
-FakeGpsDriver::getData( orca::GpsData& data )
-{
-    if (newGpsData_)
-    {
-	   newGpsData_=false;
-	   data=GpsData_;
-       return 0;
-    }
-    return -1;
-}
-
-int 
-FakeGpsDriver::getTimeData( orca::GpsTimeData& data )
-{
-    if (newGpsTime_)
-    {
-	   newGpsTime_=false;
-	   data=GpsTimeData_;
-       return 0;
-    }
-    return -1;
-}
 
 }

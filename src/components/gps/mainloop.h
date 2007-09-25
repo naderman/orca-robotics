@@ -53,8 +53,7 @@ private:
     orcaice::Context context_;
     
     void reportBogusValues( orca::GpsData        &gpsData, 
-                            orca::GpsMapGridData &gpsMapGridData, 
-                            orca::GpsTimeData    &gpsTimeData );
+                            orca::GpsMapGridData &gpsMapGridData );
     
 };
 

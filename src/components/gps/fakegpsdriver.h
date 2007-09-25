@@ -29,14 +29,7 @@ public:
     virtual ~FakeGpsDriver();
 
     virtual void init() {};
-
-    virtual bool hasFix();
-
-    virtual void read();
-
-    virtual int getData(orca::GpsData& data );
-
-    virtual int getTimeData(orca::GpsTimeData& data );
+    virtual void read(orca::GpsData &);
 
 private:
 

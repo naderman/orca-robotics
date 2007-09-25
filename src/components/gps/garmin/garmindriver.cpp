@@ -23,6 +23,9 @@ using namespace orcaserial;
 using namespace orcagpsutil;
 using namespace gps;
 
+
+//TODO. Duncan needs to re-add the date functionality
+
 //***************************************************************************
 
 GarminGpsDriver::GarminGpsDriver( const char             *device, 
@@ -49,11 +52,12 @@ GarminGpsDriver::init()
 { 
     //Make sure that we clear our internal data structures
     memset((void*)(&nmeaMessage_) , 0 , sizeof(nmeaMessage_));
-    memset((void*)(&GpsData_) , 0 , sizeof(GpsData_));
+    memset((void*)(&gpsData_) , 0 , sizeof(gpsData_));
 
     try {
         enableDevice();
         //TODO Need to check here that we have been successful.
+        clearFrame();
     }
     catch ( const orcaserial::SerialException &e )
     {
@@ -105,99 +109,97 @@ GarminGpsDriver::disableDevice()
 
 
 
-//*******************************************************************************
-
-int 
-GarminGpsDriver::getData(orca::GpsData& data )
-{
-    if (newGpsData_) 
-    {
-        newGpsData_=false;
-        data=GpsData_;
-        return 0;
-    }
-    
-    return -1;
-}
 
 //****************************************************************************
-
-int 
-GarminGpsDriver::getTimeData(orca::GpsTimeData& data )
-{
-    if (newGpsTime_) 
-    {
-        newGpsTime_=false;
-        data=GpsTimeData_;
-        return 0;
-    }
-    
-    return -1;
-}
-
-
-//****************************************************************************
-
+// Read one complete frame of data. IE all the messages that we need before returning the data.
 
 void
-GarminGpsDriver::read()
+GarminGpsDriver::readFrame(orca::GpsData& GpsData)
 {
+    
     char serial_data[1024];
+    int gpsMsgNotYetGotFrameCount = 0;
 
+    //How many messages are we looking for to make our frame
+    const int N_MSGS_IN_FRAME = 3;
+    
     // This will block up to the timeout
     context_.tracer()->debug( "GarminGpsDriver::read(): calling serial_.readLine()", 5 );
-    int ret = serial_.readLine(serial_data,1024,'\n');
-    timeOfRead_ = IceUtil::Time::now();
+
+    //Clear our data before we start trying to assemble the frame
+    clearFrame();
+
+    
+    while(! haveCompleteFrame() ){
         
-    if ( ret<0 ) {
-        throw GpsException( "GarminGpsDriver: Timeout reading from serial port" );
-    }
+        // This will block up to the timeout
+        context_.tracer()->debug( "GarminGpsDriver::read(): calling serial_.readLine()", 5 );
+        int ret = serial_.readLine(serial_data,1024,'\n');
+        timeOfRead_ = IceUtil::Time::now();
+        
+        if ( ret<0 ) {
+            throw GpsException( "GarminGpsDriver: Timeout reading from serial port" );
+        }
     
-    if (ret==0) {
-        throw GpsException("GarminGpsDriver: Read 0 bytes from serial port");
-     }
+        if(ret==0) {
+            throw GpsException("GarminGpsDriver: Read 0 bytes from serial port");
+        }
     
-    // 
-    // We successfully read something from the serial port
-    //
+        // 
+        // We successfully read something from the serial port
+        //
     
 
-    //Put it into the message object and checksum the data
-    static int nmeaExceptionCount =0;
-    try{
-        //This throws if it cannot find the * to deliminate the checksum field
-        nmeaMessage_.setSentence(serial_data,TestChecksum);
-    }
-    catch (NmeaException &e){
-        //Don't throw if only occasional messages are missing the checksums
-        if(nmeaExceptionCount++ < 3) {return;}
-        stringstream ss;
-        ss << "MainLoop: Problem reading from GPS: " << e.what();
-        context_.tracer()->error( ss.str() );
-        throw GpsException(ss.str());
-    }
-    nmeaExceptionCount = 0;
-    
-    //Only populate the data structures if our message passes the checksum!
-    static int nmeaFailChecksumCount =0;
-    if(nmeaMessage_.haveValidChecksum()){        
-        nmeaFailChecksumCount = 0;
-        populateData();
-    }else{      
-        if(nmeaFailChecksumCount++ >= 3){ //Dont throw an exception on the first failed checksum.
-            throw GpsException("GarminGpsDriver: more than 3 sequential messages failed the checksum\n");
-        }else{
-            context_.tracer()->error("GarminGpsDriver: Single message failed checksum. Not throwing an exception yet!\n" );
+        //Put it into the message object and checksum the data
+        static int nmeaExceptionCount =0;
+        try{
+            //This throws if it cannot find the * to deliminate the checksum field
+            nmeaMessage_.setSentence(serial_data,TestChecksum);
         }
+        catch (NmeaException &e){
+        //Don't throw if only occasional messages are missing the checksums
+            if(nmeaExceptionCount++ < 3) {return;}
+            stringstream ss;
+            ss << "MainLoop: Problem reading from GPS: " << e.what();
+            context_.tracer()->error( ss.str() );
+            throw GpsException(ss.str());
+        }
+        nmeaExceptionCount = 0;
+    
+        //Only populate the data structures if our message passes the checksum!
+        static int nmeaFailChecksumCount =0;
+        if(nmeaMessage_.haveValidChecksum()){        
+            nmeaFailChecksumCount = 0;
+            addDataToFrame();
+        }else{      
+            if(nmeaFailChecksumCount++ >= 3){ //Dont throw an exception on the first failed checksum.
+                throw GpsException("GarminGpsDriver: more than 3 sequential messages failed the checksum\n");
+            }else{
+                context_.tracer()->error("GarminGpsDriver: Single message failed checksum. Not throwing an exception yet!\n" );
+            }
+        }
+
+        //Make sure that we do not wait for ever trying to get a frame of data
+        if(gpsMsgNotYetGotFrameCount++ >= (N_MSGS_IN_FRAME * 2)){
+            throw GpsException("GarminGpsDriver: Not able to assemble a complete data frame\n");
+        }
+
     }
+
+    cout << "Got the complete frame\n";
+
+    // Hand the data back to the outside world
+    GpsData=gpsData_;
 
 }
+
+
 
 
 //**********************************************************************************
 
 void
-GarminGpsDriver::populateData()
+GarminGpsDriver::addDataToFrame()
 {
     //First split up the data fields in the string we have read.
     nmeaMessage_.parseTokens();
@@ -212,15 +214,18 @@ GarminGpsDriver::populateData()
     
     if(MsgType == "$GPGGA"){
         //cout << "got GGA message\n";
-        ExtractGGAData();
+        extractGGAData();
+        haveGGA_ = true;
         return;
     }else if(MsgType == "$GPVTG"){
         //cout << "got VTG message\n";
-        ExtractVTGData();
+        extractVTGData();
+        haveVTG_ = true;
         return;
     }else if(MsgType == "$PGRME"){
         //cout << "got RME message\n";
-        ExtractRMEData();
+        extractRMEData();
+        haveRME_ = true;
         return;
     }else if(MsgType == "$PGRMO"){
         //This message is sent by us to control msg transmission and then echoed by GPS
@@ -241,7 +246,7 @@ GarminGpsDriver::populateData()
 // Get the useful bits from a GGA message
 
 void 
-GarminGpsDriver::ExtractGGAData(void){
+GarminGpsDriver::extractGGAData(void){
 
     //Names for the tokens in the GGA message
     enum GGATokens{MsgType=0,UTC,Lat,LatDir,Lon,LonDir,FixType,
@@ -253,22 +258,21 @@ GarminGpsDriver::ExtractGGAData(void){
     switch (nmeaMessage_.getDataToken(FixType)[0])
     {
     case '0': 
-        GpsData_.positionType = orca::GpsPositionTypeNotAvailable;
-        hasFix_ = false;
+        gpsData_.positionType = orca::GpsPositionTypeNotAvailable;
         return;
     case '1': 
-        GpsData_.positionType = orca::GpsPositionTypeAutonomous;
+        gpsData_.positionType = orca::GpsPositionTypeAutonomous;
         break;
     case '2': 
-        GpsData_.positionType = orca::GpsPositionTypeDifferential;
+        gpsData_.positionType = orca::GpsPositionTypeDifferential;
         break;
     }
     
-    GpsData_.timeStamp = orcaice::toOrcaTime (timeOfRead_);
+    gpsData_.timeStamp = orcaice::toOrcaTime (timeOfRead_);
     
     //UTC time 
     sscanf(nmeaMessage_.getDataToken(UTC).c_str(),"%02d%02d%lf",
-           &GpsData_.utcTime.hours, &GpsData_.utcTime.minutes, &GpsData_.utcTime.seconds);
+           &gpsData_.utcTime.hours, &gpsData_.utcTime.minutes, &gpsData_.utcTime.seconds);
     //position
     int deg;
     double min;
@@ -277,28 +281,26 @@ GarminGpsDriver::ExtractGGAData(void){
     //latitude
     sscanf(nmeaMessage_.getDataToken(Lat).c_str(),"%02d%lf",&deg,&min);
     dir = (*nmeaMessage_.getDataToken(LatDir).c_str()=='N') ? 1.0 : -1.0;
-    GpsData_.latitude=dir*(deg+(min/60.0));
+    gpsData_.latitude=dir*(deg+(min/60.0));
     //longitude
     sscanf(nmeaMessage_.getDataToken(Lon).c_str(),"%03d%lf",&deg,&min);
     dir = (*nmeaMessage_.getDataToken(LonDir).c_str()=='E') ? 1.0 : -1.0;
-    GpsData_.longitude=dir*(deg+(min/60.0));
+    gpsData_.longitude=dir*(deg+(min/60.0));
     
     //number of satellites in use
-    GpsData_.satellites = atoi(nmeaMessage_.getDataToken(NSatsUsed).c_str());
+    gpsData_.satellites = atoi(nmeaMessage_.getDataToken(NSatsUsed).c_str());
     
     //altitude
-    GpsData_.altitude=atof(nmeaMessage_.getDataToken(Hgt).c_str());
+    gpsData_.altitude=atof(nmeaMessage_.getDataToken(Hgt).c_str());
     
     //geoidal Separation
-    GpsData_.geoidalSeparation=atof(nmeaMessage_.getDataToken(GeoidHgt).c_str());
+    gpsData_.geoidalSeparation=atof(nmeaMessage_.getDataToken(GeoidHgt).c_str());
     
 
     //cout << "Lat " << GpsData_.latitude << " Long " << GpsData_.longitude ;
     //cout << " Hght "<< GpsData_.altitude << " Geoid "<< GpsData_.geoidalSeparation << endl;
 
     // Set flag
-    newGpsData_=true;
-    hasFix_=true;
     
     return;
 }
@@ -307,32 +309,30 @@ GarminGpsDriver::ExtractGGAData(void){
 //********************************************************************
 // VTG provides velocity and heading information
 void 
-GarminGpsDriver::ExtractVTGData(void){
+GarminGpsDriver::extractVTGData(void){
 
     //Names for the VTG message items
     enum VTGTokens{MsgType=0,HeadingTrue,T,HeadingMag,M,SpeedKnots,
                    N,SpeedKPH,K,ModeInd};
 
-    newGpsData_=true;
-
     //Check for an empty string. Means that we are not moving
     //When the message has empty fields tokeniser skips so we get the next field inline.
     if(nmeaMessage_.getDataToken(HeadingTrue)[0] == 'T' ){
-        GpsData_.speed=0.0;
-        GpsData_.climbRate=0.0;
-        GpsData_.heading=0.0;
+        gpsData_.speed=0.0;
+        gpsData_.climbRate=0.0;
+        gpsData_.heading=0.0;
         return;
     }
 
     //heading
     double headingRad = DEG2RAD(atof(nmeaMessage_.getDataToken(HeadingTrue).c_str()));
     NORMALISE_ANGLE( headingRad );
-    GpsData_.heading=headingRad;
+    gpsData_.heading=headingRad;
     //speed - converted to m/s
-    GpsData_.speed=atof(nmeaMessage_.getDataToken(SpeedKPH).c_str());
-    GpsData_.speed*=(1000/3600.0);
+    gpsData_.speed=atof(nmeaMessage_.getDataToken(SpeedKPH).c_str());
+    gpsData_.speed*=(1000/3600.0);
     //set to zero
-    GpsData_.climbRate=0.0;
+    gpsData_.climbRate=0.0;
     
     //cout << nmeaMessage_.sentence() << endl;
     // cout << "head "<< RAD2DEG(GpsData_.heading) << " speed " << GpsData_.speed << endl;
@@ -349,14 +349,12 @@ GarminGpsDriver::ExtractVTGData(void){
 // 68% confidence bounds.
 
 void 
-GarminGpsDriver::ExtractRMEData(void){
+GarminGpsDriver::extractRMEData(void){
     //Names for the RME message items
     enum VTGTokens{MsgType=0,HError,M1,VError,M2,EPE,M3};
     
-    newGpsData_=true;
-
-    GpsData_.horizontalPositionError = atof(nmeaMessage_.getDataToken(HError).c_str());
-    GpsData_.verticalPositionError = atof(nmeaMessage_.getDataToken(VError).c_str());
+    gpsData_.horizontalPositionError = atof(nmeaMessage_.getDataToken(HError).c_str());
+    gpsData_.verticalPositionError = atof(nmeaMessage_.getDataToken(VError).c_str());
     
     //cout << nmeaMessage_.sentence() << endl;
     //cout << "Herr " << GpsData_.horizontalPositionError << " Verr " << GpsData_.verticalPositionError<<endl;
