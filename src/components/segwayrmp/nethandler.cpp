@@ -103,6 +103,7 @@ NetHandler::NetHandler( orcarobotdriverutil::HwDriverHandler<Command,Data> &hwDr
     if ( controlDescr->maxForwardSpeed != controlDescr->maxReverseSpeed ) 
         throw orcaice::Exception( ERROR_INFO, "Can't handle max forward speed != max reverse speed." );
 
+    // for symetric limits, only need to store 2 constants.
     maxSpeed_    = controlDescr->maxForwardSpeed;
     maxTurnrate_ = controlDescr->maxTurnrate;
 }

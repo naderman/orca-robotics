@@ -35,20 +35,20 @@ public:
                RmpIo &rmpIo );
 
     // Inherited from HwDriver
-    void enable();
+    virtual void enable();
 
     // Inherited from HwDriver
-    bool read( Data& data );
+    virtual bool read( Data& data );
 
     // Inherited from HwDriver
-    void write( const Command& command );
+    virtual void write( const Command& command );
 
     // Inherited from HwDriver
+    virtual void getStatus( std::string &status, bool &isWarn, bool &isFault );
+    
+    // Checks that the description matches what this hardware can actually do.
     void applyHardwareLimits( double& forwardSpeed, double& reverseSpeed, 
                               double& turnrate, double& turnrateAtMaxSpeed );
-
-    // Inherited from HwDriver
-    void getStatus( std::string &status, bool &isWarn, bool &isFault );
 
 private:
 

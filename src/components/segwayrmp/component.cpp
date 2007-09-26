@@ -108,7 +108,10 @@ Component::loadDriver()
         RmpDriver *rmpDriver = new RmpDriver( context(), *rmpIo_ );
         driver_.reset( rmpDriver );
 
-        // Scale the desired description to what we can actually do.
+        //
+        // Checks that the description matches what this hardware can actually do.
+        // This may change values inside the description structure!
+        //
         rmpDriver->applyHardwareLimits( controlDescr->maxForwardSpeed, 
                                         controlDescr->maxReverseSpeed,
                                         controlDescr->maxTurnrate,
