@@ -111,8 +111,13 @@ NetHandler::NetHandler( orcarobotdriverutil::HwDriverHandler<Command,Data> &hwDr
 void
 NetHandler::limit( Command &command )
 {
-    if ( command.vx > maxSpeed_ )
+    if ( command.vx > maxSpeed_ ) {
         command.vx = maxSpeed_;
+        // debug
+//         stringstream ss;
+//         ss<<"Forward speed limited to "<<command.vx;
+//         context_.tracer()->debug(ss.str(),6);
+    }
     if ( command.vx < -maxSpeed_ )
         command.vx = -maxSpeed_;
 

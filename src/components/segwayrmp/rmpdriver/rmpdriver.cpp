@@ -96,6 +96,8 @@ RmpDriver::enable()
     ssread << "Initial exploratory read says:"<<endl<<toString();
     context_.tracer()->debug( ssread.str() );
 
+//     cout<<"DEBUG: SETTING MAX VELOCITY SCALE = "<<config_.maxVelocityScale<<endl;
+    
     try {
         // Initialise everything
         resetAllIntegrators();
@@ -410,6 +412,8 @@ RmpDriver::updateData( Data& data, Status & status )
     //else if ( frame_.ui_heartbeat_status == RMP_UI_EMPTY_SHUTDOWN ) {
     //    cout<<"ui battery status (UI) : shutdown "<<endl;
     //}
+//     double velcom = (double)frame_.velocity_command / RMP_COUNT_PER_M_PER_S;
+//     cout<<"DEBUG: commanded="<<velcom<<"   speed="<<data.vx<<endl;
 
     // Chip debug
     //frame_.dump();
