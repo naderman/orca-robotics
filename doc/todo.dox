@@ -75,6 +75,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @par Updated libraries
 
+- libOrcaMisc
+  - moved Activator to libOrcaIce
+
 @par Removed
 
 

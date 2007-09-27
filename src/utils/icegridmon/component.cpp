@@ -16,7 +16,6 @@
 #include <orcaice/orcaice.h>
 #include <orcalog/orcalog.h>
 
-#include <orcamisc/activator.h>
 #include "sessioncreationcallback.h"
 #include "component.h"
 
@@ -34,7 +33,7 @@ namespace icegridmon {
 // which to perform setup, and we want to make sure we're activated
 // before registering observers.
 //
-class SessionManagerStarter : public orcamisc::PostActivationCallback
+class SessionManagerStarter : public orcaice::PostActivationCallback
 {
 public:
     SessionManagerStarter( orcaicegrid::SessionManager &sessionManager )
@@ -73,7 +72,7 @@ Component::start()
     // Don't have to keep track of the activator: it'll either:
     // a) activate us, then start the sessionManager, or
     // b) fail to activate us, and self-destruct at the end of the component's lifetime.
-    orcamisc::Activator *activator = new orcamisc::Activator( context(), sessionManagerStarter_ );
+    orcaice::Activator *activator = new orcaice::Activator( context(), sessionManagerStarter_ );
     activator->start();
 }
 

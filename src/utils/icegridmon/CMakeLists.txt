@@ -8,7 +8,7 @@ IF( BUILD_ICEGRIDMON )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
     
     FIND_COMPONENT_SOURCES( COMP_SRCS )
-    SET( COMP_DEPS OrcaIceGrid OrcaMisc )
+    SET( COMP_DEPS OrcaIceGrid )
 
     # build stand-alone component  
     GLOBAL_ADD_EXECUTABLE( icegridmon ${COMP_SRCS} main )

@@ -13,7 +13,7 @@
 
 using namespace std;
 
-namespace orcamisc {
+namespace orcaice {
 
 Activator::Activator( const orcaice::Context &context,
                       PostActivationCallback *postActivationCallback )

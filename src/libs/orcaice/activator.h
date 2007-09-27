@@ -7,13 +7,13 @@
  * ORCA_LICENSE file included in this distribution.
  *
  */
-#ifndef ORCAMISC_ACTIVATOR_H
-#define ORCAMISC_ACTIVATOR_H
+#ifndef ORCAICE_ACTIVATOR_H
+#define ORCAICE_ACTIVATOR_H
 
 #include <orcaice/thread.h>
 #include <orcaice/context.h>
 
-namespace orcamisc {
+namespace orcaice {
 
 //!
 //! @brief A hook to allow something to be done post-activation
