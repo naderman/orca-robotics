@@ -16,6 +16,8 @@ This page lists publications dealing specifically with Orca design. You may also
 
 @section orca_doc_publications_orca2 Orca-2
 
+- A.Makarenko, A.Brooks, T.Kaupp. <a href="http://www.cas.edu.au/content.php/237.html?publicationid=403">On the Benefits of Making Robotic Software Frameworks Thin</a>. IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS 2007). Workshop on Evaluation of Middleware and Architectures. (Accepted.)
+
 - A.Makarenko, A.Brooks, B.Upcroft. <a href="http://zeroc.com/newsletter/index.html">An Autonomous Vehicle Using Ice and Orca</a>. ZeroC's Connections newsletter, issue 22, April, 2007.
 
 - A. Makarenko, A. Brooks, T. Kaupp. <a href="http://www.cas.edu.au/content.php/237.html?publicationid=341">Orca: Components for Robotics.</a> IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS 2006). Workshop on Robotic Standardization.
