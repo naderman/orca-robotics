@@ -72,7 +72,7 @@ Component::stop()
     tracer()->print( "Press any key or shake the joystick to continue." );
     tracer()->print( "************************************************" );
     
-    orcaice::stopAndJoin( inputHandler_ );
-    orcaice::stopAndJoin( networkHandler_ );
-    orcaice::stopAndJoin( displayHandler_ );
+    orcaiceutil::stopAndJoin( inputHandler_ );
+    orcaiceutil::stopAndJoin( networkHandler_ );
+    orcaiceutil::stopAndJoin( displayHandler_ );
 }

@@ -15,10 +15,10 @@
 #include <IceStorm/IceStorm.h>
 
 // utilities
-#include <orcaice/proxy.h>
+#include <orcaiceutil/proxy.h>
 #include <orcaice/context.h>
 
-namespace orcaice {
+namespace orcaiceutil {
     class Thread;
 }
 
@@ -39,12 +39,12 @@ public:
     ~CameraImpl();
 
     // local interface:
-    //! Sets up interface and connects to IceStorm. May throw orcaice::Exceptions.
+    //! Sets up interface and connects to IceStorm. May throw orcaiceutil::Exceptions.
     void initInterface();
 
     //! Sets up interface and connects to IceStorm. Catches all exceptions and retries
     //! until sucessful. At every iteration, checks if the thread was stopped.
-    void initInterface( orcaice::Thread* thread, int retryInterval=2 );
+    void initInterface( orcaiceutil::Thread* thread, int retryInterval=2 );
 
     //! A local call which sets the data reported by the interface
     void localSet( const orca::CameraData& data );
@@ -61,7 +61,7 @@ private:
     void internalUnsubscribe(const ::orca::CameraConsumerPrx&);
 
     orca::CameraDescription     descr_;
-    orcaice::Proxy<orca::CameraData> dataProxy_;
+    orcaiceutil::Proxy<orca::CameraData> dataProxy_;
 
     orca::CameraConsumerPrx    consumerPrx_;
     IceStorm::TopicPrx             topicPrx_;

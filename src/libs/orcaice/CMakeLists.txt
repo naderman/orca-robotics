@@ -31,19 +31,23 @@ IF( NOT OS_WIN )
               IceStorm
               IceBox
               IceGrid
+              Glacier2
               OrcaInterfaces
               OrcaObjects
-              Glacier2 )
+              OrcaIceUtil )
 
 ELSE ( NOT OS_WIN )
   # building shared libs is complicated in windows
   GLOBAL_ADD_LIBRARY( OrcaIce STATIC ${SRCS} )
   # windows... have to link to different libs depending on build type
   TARGET_LINK_LIBRARIES( OrcaIce
-              optimized Ice optimized IceUtil optimized IceStorm optimized IceBox optimized IceGrid
-              debug Iced debug IceUtild debug IceStormd debug IceBoxd debug IceGridd
-              optimized Glacier2 debug Glacier2d
-              OrcaInterfaces )
+                optimized Ice debug Iced
+                optimized IceUtil debug IceUtild 
+                optimized IceStorm debug IceStormd
+                optimized IceBox debug IceBoxd
+                optimized IceGrid debug IceGridd
+                optimized Glacier2 debug Glacier2d
+                OrcaInterfaces OrcaObjects OrcaIceUtil )
 ENDIF ( NOT OS_WIN )
 
 # special dependency on the generated files

@@ -11,13 +11,13 @@
 #ifndef ORCA2_ORCAWALL_INTERFACE_SIM_H
 #define ORCA2_ORCAWALL_INTERFACE_SIM_H
 
-#include <orcaice/thread.h>
+#include <orcaiceutil/thread.h>
 #include <orcaice/context.h>
 
 namespace orcawall
 {
 
-class InterfaceSim : public orcaice::Thread
+class InterfaceSim : public orcaiceutil::Thread
 {
 
 public:

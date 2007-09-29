@@ -17,10 +17,10 @@
 // include provided interfaces
 #include <orca/ogmap.h>
 
-#include <orcaice/proxy.h>
+#include <orcaiceutil/proxy.h>
 #include <orcaice/context.h>
 
-namespace orcaice {
+namespace orcaiceutil {
     class Thread;
 }
 
@@ -40,12 +40,12 @@ public:
     ~OgMapImpl();
 
     // Local calls:
-    //! Sets up interface and connects to IceStorm. May throw orcaice::Exceptions.
+    //! Sets up interface and connects to IceStorm. May throw orcaiceutil::Exceptions.
     void initInterface();
 
     //! Sets up interface and connects to IceStorm. Catches all exceptions and retries
     //! until sucessful. At every iteration, checks if the thread was stopped.
-    void initInterface( orcaice::Thread* thread, int retryInterval=2 );
+    void initInterface( orcaiceutil::Thread* thread, int retryInterval=2 );
 
     //! A local call which sets the data reported by the interface, 
     //! and sends it through IceStorm
@@ -58,7 +58,7 @@ private:
     void internalUnsubscribe(const ::orca::OgMapConsumerPrx& );
 
     // Holds the latest data
-    orcaice::Proxy<orca::OgMapData> dataProxy_;
+    orcaiceutil::Proxy<orca::OgMapData> dataProxy_;
 
     // The topic to which we'll publish
     IceStorm::TopicPrx             topicPrx_;

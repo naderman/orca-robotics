@@ -12,7 +12,7 @@
 #define ORCA2_TRACERMON_COMPONENT_H
 
 #include <orcaice/component.h>
-#include <orcaice/thread.h>
+#include <orcaiceutil/thread.h>
 
 namespace tracermon
 {
@@ -33,8 +33,8 @@ public:
 
 private:
 
-    orcaice::Thread* netHandler_;
-    orcaice::Thread* usrHandler_;
+    orcaiceutil::Thread* netHandler_;
+    orcaiceutil::Thread* usrHandler_;
 };
 
 } // namespace

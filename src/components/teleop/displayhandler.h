@@ -11,7 +11,7 @@
 #ifndef ORCA2_TELEOP_DISPLAY_HANDLER_H
 #define ORCA2_TELEOP_DISPLAY_HANDLER_H
 
-#include <orcaice/thread.h>
+#include <orcaiceutil/thread.h>
 #include <orcaice/context.h>
 
 #include "inputdriver.h"
@@ -19,7 +19,7 @@
 namespace teleop
 {
 
-class DisplayHandler : public orcaice::Thread, public Display
+class DisplayHandler : public orcaiceutil::Thread, public Display
 {
 public:
 
@@ -33,7 +33,7 @@ public:
 private:
 
     // network/driver interface
-    orcaice::Buffer<orca::Velocity2dCommand> *commandPipe_;
+    orcaiceutil::Buffer<orca::Velocity2dCommand> *commandPipe_;
 
     // generic interface to input hardware
     InputDriver* driver_;

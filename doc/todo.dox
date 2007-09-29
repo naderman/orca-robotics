@@ -60,11 +60,20 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @par New libraries
 
+- libOrcaIceUtil (alex m.)
+   - A set of tools which depends only libIceUtil. Contains nothing
+    related to communications. See notes on libOrcaIce.
+
 @par New examples
 
 @par Updated interfaces
 
 @par Updated components
+
+- SegwayRmpUsb
+    - Added correction for the curve which the Segway applies to the commanded
+      turn rate. This is a big improvement, but it's still not 100% right (it's
+      not clear if the MAX_TURNRATE_SCALE is applied internally as well). (alexb, alexm)
 
 @par Updated utilities
 
@@ -74,6 +83,12 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
   - overhaul of paint utils: independence of transformation matrices (Tobi)
 
 @par Updated libraries
+
+- libOrcaIce
+  - split some of the contents into a new libOrcaIceUtil library. This is
+    done in preparation for decoupling of Ice-dependent components and libs
+    from Ice-independent drivers and algorithm implementations. libOrcaIce
+    depends on libOrcaIceUtil. (alex m.)
 
 - libOrcaMisc
   - moved Activator to libOrcaIce

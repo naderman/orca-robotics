@@ -1,0 +1,137 @@
+/*
+ * Orca Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2007 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This copy of Orca is licensed to you under the terms described in the
+ * ORCA_LICENSE file included in this distribution.
+ *
+ */
+/*!
+@ingroup libs
+@defgroup orca_library_orcaice libOrcaIce
+@brief Customizes Ice API for Orca.
+
+@par Development status
+Used by all components, API is fairly stable.
+
+@section overview Overview
+
+This library aims at simplifying Orca component development. It provides several helper classes to use and derive from and several functions to use. In doing so we make unavoidable assumptions about how Ice is going to be used in Orca components. If your component cannot live with these constraints you can always go back to using Ice directly (it's not much more work).
+
+For a full list of functions and classes see @ref orcaice.
+
+Header file:
+@verbatim
+#include <orcaice/orcaice.h>
+@endverbatim
+
+    @section classes Class Usage
+
+Here's what our stand-alone component looks like. In this figure and the one below, white color stands for standard Ice objects which we don't modify, e.g. the Communicator -- the Ice run-time object. Gray color stands for the objects which come with libOrcaIce and used unmodified by component developers. Cream color stands for component-specific code, written by component developers.
+
+@image html orcaice_app_comp.png
+
+Here's what an IceBox service looks like. The main idea is to have the guts of the component used unmodified in both stand-alone and application server environment. 
+
+@image html orcaice_service_comp.png
+
+Note that 'Component1' code is identical in both cases -- that's a big time saver!
+
+    @section functions Function Usage
+
+The functions described here are very high-level. They are intended as one-line wrappers which work in typical situations. If your usage does not fit the pattern, no worries: just look how they are implemented, copy the code into your program and modify it as needed.
+
+In the discussion below, we assume here that the library functions are called from inside a class derived from orcaice::Component. You can see more output from libOrcaIce by setting orcaice::Tracer verbosity for info, warning, and error to 2.
+
+    @par To create a Provided Interface
+
+Make an instance of your object implementation and initialize it using information in the config file. 
+
+@verbatim
+Ice::MyInterfacePtr obj = new MyInterfaceI;
+orcaice::createInterfaceWithTag( context(), obj, "MyConfigFileTag" );
+@endverbatim
+
+The interface tag in this example is "MyConfigFileTag". The function context() summarizes the context of your component (pointers to Communicator, Adapter, etc.). The function orcaice::createInterfaceWithTag adds the newly created interface implementation to the component's adapter, thereby making it reachable over the network.
+
+    @par To start publishing to IceStorm
+
+Let's start sending updates of object type orca::MyObject. The config file tag for this interface is "MyConfigFileTag". 
+
+@verbatim
+orca::MyInterfaceConsumerPrx publisher;
+orcaice::connectToTopicWithTag <orca::MyObjectConsumerPrx> ( context(), publisher, "MyConfigFileTag" );
+@endverbatim
+Use this function to connect to the IceStorm server and get a proxy to the "consumer of information". We will publish information by pushing data to the consumer. Note that you don't create the proxy itself (using keyword new), the function does everything for you.
+
+    @par To connect to a Required Interface
+
+Now let's connect to a remote interface. We first create a proxy of the right type (so we can call its remote operations). The interface tag here is "MyConfigFileTag". Note that you don't create the proxy itself (with new), the function does everything for you.
+
+@verbatim
+orca::YourObjectPrx yourObjectPrx;
+orcaice::connectToInterface<orca::YourObjectPrx>( context(), yourObjectPrx, "MyConfigFileTag" );
+@endverbatim
+
+    @par To subscribe to an IceStorm topic
+
+There's no corresponding function in libOrcaIce because, normally, you call the subscribe() operation on an interface which publishes the data so you don't actually talk to the IceStorm server directly.
+
+
+@section config Configuration
+
+The following properties are assigned defaults unless they are configured explicitely:
+
+- @c IceStorm.TopicManager.Proxy (string)
+    - Default: "IceStorm/TopicManager:default -p 10000"
+
+- @c [ComponentTag].AdapterId (string)
+    - Default: "[platform name]/[component name]"
+
+- @c [ComponentTag].Endpoints (string)
+    - Default: "tcp -t 5000"
+
+Behavior of libOrcaIce functions and classes can be influenced by setting several configuration parameters.
+
+- @c Orca.PrintProperties (bool)
+    - Print out all properties passed to the component? Includes hardwired defaults, global settings, properties from the component configuration file, and command line options.
+    - Default: 0
+
+- @c Orca.PrintComponentStarted (bool)
+    - If this property is set to 1, a statement is printed to standard output when component initialization is complete.
+    - Default: 0
+
+- @c Orca.RequireRegistry (bool)
+    - When component activates it tries to register its adapter with the Registry. If it cannot connect (e.g. Registy is not running) it gets an exception. When indirect binding (using names) is used this makes a component with provided interfaces useless because nobody can connect to it. In this case requiring registry makes sense and the component should exit at this point. There are cases however when you may want to ignore this and continue with the startup.
+    - Default: 1
+
+- @c Orca.Warn.DefaultProperty (bool)
+    - If this property is set to 1, a warning is printed every time a default property is used when calling *WithDefault() functions. e.g. orcaice::getPropertyAsIntWithDefault().
+    - Default: 1
+
+- @c Orca.Warn.FactoryProperty (bool)
+    - If this property is set to 1, a warning is printed when a factory default is used. This applies only during component initialization.
+    - Default: 0
+
+
+@see orcaice::Tracer configuration.
+
+A sample configuration file which sets all parameters to sensible defaults is shown here.
+
+@include libs/orcaice/orcarc
+
+    @par Responsible Developer
+    Alex Brooks, Alex Makarenko
+  
+*/
+
+/*!
+@brief libOrcaIce customizes Ice to simplify writing Orca components.
+@namespace orcaice
+
+This namespace is part of a library which aims at simplifying Orca component development. It provides several helper classes to use and derive from and several functions to use. In doing so we make unavoidable assumptions about how Ice is going to be used in Orca components. If your component cannot live with these constraints you can always go back to using Ice directly (it's not much more work).
+
+@see @ref orca_library_orcaice
+
+*/

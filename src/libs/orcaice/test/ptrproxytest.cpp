@@ -31,7 +31,7 @@ int main(int argc, char * argv[])
         cout<<"failed. empty proxy, should've caught exception"<<endl;
         return EXIT_FAILURE;
     }
-    catch ( const orcaice::Exception & )
+    catch ( const orcaiceutil::Exception & )
     {
         ; // ok
     }
@@ -66,7 +66,7 @@ int main(int argc, char * argv[])
     {
         proxy.get( copy );
     }
-    catch ( const orcaice::Exception & )
+    catch ( const orcaiceutil::Exception & )
     {
         cout<<"failed. should be a non-empty proxy."<<endl;
         return EXIT_FAILURE;

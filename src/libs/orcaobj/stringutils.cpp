@@ -11,7 +11,7 @@
 #include <iostream>
 #include <sstream>
 #include <iomanip>
-#include <orcaice/exceptions.h>
+#include <orcaiceutil/exceptions.h>
 
 // trying to solve a problem in win, round() is not found
 #ifdef WIN32
@@ -1429,7 +1429,7 @@ toString( const orca::LinkQualityType &l )
     case orca::LinkQualityTypeRelative:
         return "LinkQualityTypeRelative";
     }
-    throw orcaice::Exception( ERROR_INFO, "Don't know how to handle this type in toString()" );
+    throw orcaiceutil::Exception( ERROR_INFO, "Don't know how to handle this type in toString()" );
 }
 
 std::string
@@ -1452,7 +1452,7 @@ toString( const orca::OperationMode &o )
     case orca::OperationModeSecondRepeater:
         return "OperationModeSecondRepeater";
     }
-    throw orcaice::Exception( ERROR_INFO, "Don't know how to handle this type in toString()" );
+    throw orcaiceutil::Exception( ERROR_INFO, "Don't know how to handle this type in toString()" );
 }
 
 std::string 

@@ -15,7 +15,7 @@
 #include <orca/position2d.h>
 
 // utilities
-#include <orcaice/buffer.h>
+#include <orcaiceutil/buffer.h>
 #include <orcaice/connectutils.h>
 
 namespace drunk 
@@ -31,7 +31,7 @@ class Position2dI : public orca::Position2d
 {
 public:
 
-    Position2dI( orcaice::Buffer<orca::Position2dData> &posBuffer, 
+    Position2dI( orcaiceutil::Buffer<orca::Position2dData> &posBuffer, 
                  orca::Position2dGeometry &geomBuffer, 
                  const IceStorm::TopicPrx &topic);
     //
@@ -49,7 +49,7 @@ public:
 private:
 
     // the driver will put the latest data into this proxy
-    orcaice::Buffer<orca::Position2dData> &posBuffer_;
+    orcaiceutil::Buffer<orca::Position2dData> &posBuffer_;
     
     // the driver will use this member to return geometry when requested. 
     orca::Position2dGeometry& geomBuffer_; 

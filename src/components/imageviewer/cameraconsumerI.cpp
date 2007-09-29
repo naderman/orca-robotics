@@ -15,7 +15,7 @@
 
 using namespace imageviewer;
 
-CameraConsumerI::CameraConsumerI( orcaice::Buffer<orca::CameraData> &dataPipe ) 
+CameraConsumerI::CameraConsumerI( orcaiceutil::Buffer<orca::CameraData> &dataPipe ) 
     : dataPipe_(dataPipe)
 {
 }

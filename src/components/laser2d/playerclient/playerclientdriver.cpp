@@ -78,7 +78,7 @@ PlayerClientDriver::init()
     {
         stringstream ss;
         ss << "Player exception on init: " << e;
-        throw orcaice::Exception( ERROR_INFO, ss.str() );
+        throw orcaiceutil::Exception( ERROR_INFO, ss.str() );
     }
 
     // we  are left with sicklms200 (real hardware) for which we can get live config data.
@@ -91,7 +91,7 @@ PlayerClientDriver::init()
     {
         stringstream ss;
         ss << "Player exception on get config: " << e;
-        throw orcaice::Exception( ERROR_INFO, ss.str() );
+        throw orcaiceutil::Exception( ERROR_INFO, ss.str() );
     }
 
     // convert scan and range resolutions
@@ -155,7 +155,7 @@ PlayerClientDriver::read( std::vector<float> &ranges,
     {
         stringstream ss;
         ss << "Player exception on read: " << e;
-        throw orcaice::Exception( ERROR_INFO, ss.str() );
+        throw orcaiceutil::Exception( ERROR_INFO, ss.str() );
     }
 
     // don't convert headers again, we've already done it on initialization
@@ -163,7 +163,7 @@ PlayerClientDriver::read( std::vector<float> &ranges,
     {
         stringstream ss;
         ss << "PlayerClientDriver::read(): number of samples returned by player ("<<laser_->GetCount()<<") != number we expect ("<<config_.numberOfSamples<<")";
-        throw orcaice::Exception( ERROR_INFO, ss.str() );
+        throw orcaiceutil::Exception( ERROR_INFO, ss.str() );
     }
     for ( unsigned int i = 0; i < laser_->GetCount(); ++i )
     {

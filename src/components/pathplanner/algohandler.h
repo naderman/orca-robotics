@@ -11,9 +11,9 @@
 #ifndef ORCA2_PATHPLANNER_ALGORITHM_HANDLER_H
 #define ORCA2_PATHPLANNER_ALGORITHM_HANDLER_H
 
-#include <orcaice/thread.h>
+#include <orcaiceutil/thread.h>
 #include <orcaice/context.h>
-#include <orcaice/proxy.h>
+#include <orcaiceutil/proxy.h>
 
 #include <orca/ogmap.h>
 #include <orca/pathplanner2d.h>
@@ -27,7 +27,7 @@ class AlgoDriver;
 class SkeletonGraphicsI;
 class PathPlanner2dI;
 
-class AlgoHandler : public orcaice::Thread
+class AlgoHandler : public orcaiceutil::Thread
 {
 
 public: 
@@ -50,8 +50,8 @@ private:
     orcaogmap::OgMap ogMap_;
 
     PathPlanner2dI* pathPlannerI_;
-    orcaice::Proxy<orca::PathPlanner2dTask>* pathPlannerTaskProxy_;
-    orcaice::Proxy<orca::PathPlanner2dData>* pathPlannerDataProxy_;
+    orcaiceutil::Proxy<orca::PathPlanner2dTask>* pathPlannerTaskProxy_;
+    orcaiceutil::Proxy<orca::PathPlanner2dData>* pathPlannerDataProxy_;
     
     void initNetwork();
     void initDriver();

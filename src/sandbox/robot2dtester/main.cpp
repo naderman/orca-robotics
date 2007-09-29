@@ -85,7 +85,7 @@ void
 Component::stop()
 {
     tracer()->debug( "Stopping component", 2 );
-    orcaice::stopAndJoin( handler_ );
+    orcaiceutil::stopAndJoin( handler_ );
     tracer()->debug( "Component stopped", 2 );
 }
 

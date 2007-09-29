@@ -11,10 +11,10 @@
 #ifndef ORCA2_SEGWAY_RMP_NETWORK_HANDLER_H
 #define ORCA2_SEGWAY_RMP_NETWORK_HANDLER_H
 
-#include <orcaice/safethread.h>
+#include <orcaiceutil/safethread.h>
 #include <orcaice/context.h>
-#include <orcaice/proxy.h>
-#include <orcaice/notify.h>
+#include <orcaiceutil/proxy.h>
+#include <orcaiceutil/notify.h>
 
 #include <orcaifaceimpl/odometry2dImpl.h>
 #include <orcaifaceimpl/odometry3dImpl.h>
@@ -26,8 +26,8 @@
 namespace segwayrmp
 {
 
-class NetHandler : public orcaice::SafeThread,
-                   public orcaice::NotifyHandler<orca::VelocityControl2dData>
+class NetHandler : public orcaiceutil::SafeThread,
+                   public orcaiceutil::NotifyHandler<orca::VelocityControl2dData>
 {
 public:
 

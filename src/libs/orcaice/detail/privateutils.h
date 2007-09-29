@@ -37,10 +37,10 @@ namespace detail
 
     void setFactoryProperties( Ice::PropertiesPtr &properties, const std::string &compTag );
 
-    // throws orcaice::Exception if can't load the file
+    // throws orcaiceutil::Exception if can't load the file
     void setGlobalProperties( Ice::PropertiesPtr & properties, const std::string & filename );
 
-    // throws orcaice::Exception if can't load the file
+    // throws orcaiceutil::Exception if can't load the file
     void setComponentProperties( Ice::PropertiesPtr & properties, const std::string & filename );
 
     /*

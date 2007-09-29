@@ -14,11 +14,11 @@
 #include <orca/drivebicycle.h>
 #include <IceStorm/IceStorm.h>
 
-#include <orcaice/proxy.h>
-#include <orcaice/notify.h>
+#include <orcaiceutil/proxy.h>
+#include <orcaiceutil/notify.h>
 #include <orcaice/context.h>
 
-namespace orcaice {
+namespace orcaiceutil {
     class Thread;
 }
 
@@ -28,7 +28,7 @@ namespace orcaifaceimpl {
 //! Implements the DriveBicycle interface: Handles remote calls.
 //!
 class DriveBicycleImpl : public IceUtil::Shared,
-                          public orcaice::Notify<orca::DriveBicycleCommand>
+                          public orcaiceutil::Notify<orca::DriveBicycleCommand>
 {
 friend class DriveBicycleI;
 
@@ -40,12 +40,12 @@ public:
     ~DriveBicycleImpl();
 
     // Local calls:
-    //! Sets up interface and connects to IceStorm. May throw orcaice::Exceptions.
+    //! Sets up interface and connects to IceStorm. May throw orcaiceutil::Exceptions.
     void initInterface();
 
     //! Sets up interface and connects to IceStorm. Catches all exceptions and retries
     //! until sucessful. At every iteration, checks if the thread was stopped.
-    void initInterface( orcaice::Thread* thread, int retryInterval=2 );
+    void initInterface( orcaiceutil::Thread* thread, int retryInterval=2 );
 
     //! A local call which sets the data reported by the interface
     void localSet( const orca::DriveBicycleData &data );
@@ -69,7 +69,7 @@ private:
     IceStorm::TopicPrx                topicPrx_;
 
     // outgoing data
-    orcaice::Proxy<orca::DriveBicycleData> dataPipe_;
+    orcaiceutil::Proxy<orca::DriveBicycleData> dataPipe_;
 
     orcaice::Context                  context_;
 

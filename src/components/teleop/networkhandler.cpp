@@ -21,12 +21,12 @@ using namespace std;
 using namespace teleop;
 
 NetworkHandler::NetworkHandler( Display* display, const orcaice::Context& context ) :
-    events_(new orcaice::EventQueue),
+    events_(new orcaiceutil::EventQueue),
     display_(display),
     context_(context)
 {
     // install event optimizer
-    orcaice::EventQueueOptimizerPtr opt = new TeleopEventQueueOptimizer;
+    orcaiceutil::EventQueueOptimizerPtr opt = new TeleopEventQueueOptimizer;
     events_->setOptimizer( opt );
 }
 
@@ -38,7 +38,7 @@ void
 NetworkHandler::newCommandIncrement( int longitudinal, int transverse, int angle )
 {
 // cout<<"DEBUG: got command incresment : "<<longitudinal<<" "<<transverse<<" "<<angle<<endl;
-    orcaice::EventPtr e = new NewCommandIncrementEvent( longitudinal, transverse, angle );
+    orcaiceutil::EventPtr e = new NewCommandIncrementEvent( longitudinal, transverse, angle );
     events_->optimizedAdd( e );
 }
 
@@ -46,7 +46,7 @@ void
 NetworkHandler::newRelativeCommand( double longitudinal, double transverse, double angle )
 {
 // cout<<"DEBUG: got relative command : "<<longitudinal<<"% "<<transverse<<"% "<<angle<<"%"<<endl;
-    orcaice::EventPtr e = new NewRelativeCommandEvent( longitudinal, transverse, angle );
+    orcaiceutil::EventPtr e = new NewRelativeCommandEvent( longitudinal, transverse, angle );
     events_->optimizedAdd( e );
 }
 
@@ -88,7 +88,7 @@ NetworkHandler::run()
         string errorStr = "Unsupported interface ID="+ifaceId;
         context_.tracer()->error( errorStr); 
         context_.tracer()->info( "Valid driver values are {'VelocityControl2d', 'DriveBicycle'}" );
-        throw orcaice::Exception( ERROR_INFO, errorStr );
+        throw orcaiceutil::Exception( ERROR_INFO, errorStr );
     }    
 
     // don't forget to enable the driver, but check isActive() to see if we should quit
@@ -104,7 +104,7 @@ NetworkHandler::run()
     context_.tracer()->debug("Network driver enabled",2);
 
 
-    orcaice::EventPtr event;    
+    orcaiceutil::EventPtr event;    
     int timeoutMs = (int)floor(1000.0 * orcaice::getPropertyAsDoubleWithDefault(
             context_.properties(), prefix+"RepeatInterval", 0.2 ) );
     //

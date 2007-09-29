@@ -11,13 +11,13 @@
 #ifndef ORCA2_FAITH_LOCALISER_MAIN_LOOP_H
 #define ORCA2_FAITH_LOCALISER_MAIN_LOOP_H
 
-#include <orcaice/safethread.h>
+#include <orcaiceutil/safethread.h>
 #include <orcaice/context.h>
 
 namespace faithlocaliser
 {
 
-class MainLoop : public orcaice::SafeThread
+class MainLoop : public orcaiceutil::SafeThread
 {
 
 public:

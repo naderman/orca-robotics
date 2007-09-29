@@ -11,9 +11,9 @@
 #ifndef ORCA2_TELEOP_NETWORK_HANDLER_H
 #define ORCA2_TELEOP_NETWORK_HANDLER_H
 
-#include <orcaice/thread.h>
+#include <orcaiceutil/thread.h>
 #include <orcaice/context.h>
-#include <orcaice/eventqueue.h>
+#include <orcaiceutil/eventqueue.h>
 
 #include "network.h"
 
@@ -23,7 +23,7 @@ namespace teleop
 class Display;
 class NetworkDriver;
 
-class NetworkHandler : public orcaice::Thread, public Network
+class NetworkHandler : public orcaiceutil::Thread, public Network
 {
 public:
 
@@ -41,7 +41,7 @@ public:
 
 private:
 
-    orcaice::EventQueuePtr events_;
+    orcaiceutil::EventQueuePtr events_;
 
     Display* display_;
 

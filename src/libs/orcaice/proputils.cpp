@@ -56,7 +56,7 @@ getGlobalConfigFilename( const Ice::StringSeq & args )
     // Linux and friends
     char *home = getenv("HOME");
     if ( home == NULL ) {
-        throw orcaice::Exception( ERROR_INFO, "Environment variable 'HOME' not set, while trying to load .orcarc" );
+        throw orcaiceutil::Exception( ERROR_INFO, "Environment variable 'HOME' not set, while trying to load .orcarc" );
     }
     
     // start with the home directory
@@ -76,7 +76,7 @@ getApplicationConfigFilename( const Ice::StringSeq & args )
     if ( args.empty() ) {
         return std::string( "" );
         // throwing this exception leads to 'unhandled ex' in windows for some reason
-        //throw orcaice::Exception( ERROR_INFO, "Invalid command line options, cannot determine config file name" );
+        //throw orcaiceutil::Exception( ERROR_INFO, "Invalid command line options, cannot determine config file name" );
     }
 
     // first look for Orca.Config parameter
@@ -139,7 +139,7 @@ std::string
 getServiceConfigFilename( const Ice::StringSeq & args )
 {
     if ( args.empty() ) {
-        throw orcaice::Exception( ERROR_INFO, "Invalid command line options, cannot determine config file name" );
+        throw orcaiceutil::Exception( ERROR_INFO, "Invalid command line options, cannot determine config file name" );
     }
 
     // first look for Orca.Config parameter (specified by us manually)

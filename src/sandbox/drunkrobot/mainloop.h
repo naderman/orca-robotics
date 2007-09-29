@@ -12,8 +12,8 @@
 #define ORCA2_DRUNK_ROBOT_MAIN_LOOP_H
 
 
-#include <orcaice/thread.h>
-#include <orcaice/buffer.h>
+#include <orcaiceutil/thread.h>
+#include <orcaiceutil/buffer.h>
 
 #include <orca/position2d.h>
 
@@ -21,19 +21,19 @@ namespace drunk
 {
 
 // Implements the main loop of our drunken robot.
-// It's very convenient to inherit from orcaice::Thread
+// It's very convenient to inherit from orcaiceutil::Thread
 // as it means really we only have to implement one method:
 // run().
 
 
-class MainLoop: public orcaice::Thread 
+class MainLoop: public orcaiceutil::Thread 
 {
 public: 
 
     // The posData pointer tells us where to put the data
     // The Consumer is a proxy for IceStorm, we will use that to pass data to 
     // Ice storm. 
-    MainLoop(orcaice::Buffer<orca::Position2dData> &posData,
+    MainLoop(orcaiceutil::Buffer<orca::Position2dData> &posData,
                        const orca::Position2dConsumerPrx &position2dConsumer);
 
     ~MainLoop(); 
@@ -41,7 +41,7 @@ public:
     virtual void run();
 
 private: 
-    orcaice::Buffer<orca::Position2dData>    & posBuffer_;
+    orcaiceutil::Buffer<orca::Position2dData>    & posBuffer_;
 
     orca::Position2dConsumerPrx position2dConsumer_;
 };

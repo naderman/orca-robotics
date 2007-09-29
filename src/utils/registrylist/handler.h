@@ -11,13 +11,13 @@
 #ifndef ORCA2_REGISRY_LIST_HANDLER_H
 #define ORCA2_REGISRY_LIST_HANDLER_H
 
-#include <orcaice/thread.h>
+#include <orcaiceutil/thread.h>
 #include <orcaice/context.h>
 
 namespace registrylist
 {
 
-class Handler: public orcaice::Thread
+class Handler: public orcaiceutil::Thread
 {    	
 public:
     Handler( const orcaice::Context & context );

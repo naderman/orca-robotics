@@ -11,7 +11,7 @@
 #ifndef ORCAICE_ICE_PTR_STORE_H
 #define ORCAICE_ICE_PTR_STORE_H
 
-#include <orcaice/store.h>
+#include <orcaiceutil/store.h>
 #include <Ice/Ice.h>
 
 namespace orcaice
@@ -27,9 +27,9 @@ namespace orcaice
  *  @see PtrBuffer, PtrNotify
  */
 template<class Type>
-class PtrStore : public Store<Type>
+class PtrStore : public orcaiceutil::Store<Type>
 {
-    using Store<Type>::obj_;
+    using orcaiceutil::Store<Type>::obj_;
     
 protected:
     virtual void internalGet( Type & obj ) const ;

@@ -40,10 +40,10 @@ NovatelSpanInsGpsDriver::NovatelSpanInsGpsDriver( const char*             device
     serial_(0),
     enabled_( false ),
     // configure the buffers so they have depth 100 and are of type queue
-    gpsDataBuffer_( 100 , orcaice::BufferTypeQueue ),
-    imuDataBuffer_( 100 , orcaice::BufferTypeQueue ),
-    odometry3dDataBuffer_( 100 , orcaice::BufferTypeQueue ),
-    localise3dDataBuffer_( 200 , orcaice::BufferTypeQueue ),
+    gpsDataBuffer_( 100 , orcaiceutil::BufferTypeQueue ),
+    imuDataBuffer_( 100 , orcaiceutil::BufferTypeQueue ),
+    odometry3dDataBuffer_( 100 , orcaiceutil::BufferTypeQueue ),
+    localise3dDataBuffer_( 200 , orcaiceutil::BufferTypeQueue ),
     gpsCount_(0),
     imuCount_(0),
     localise3dCount_(0),
@@ -104,7 +104,7 @@ NovatelSpanInsGpsDriver::reset()
 //         {
 //             std::string errString = "Failed to set baud rate.";
 //             context_.tracer()->error( errString );
-//             throw orcaice::Exception( ERROR_INFO, errString );
+//             throw orcaiceutil::Exception( ERROR_INFO, errString );
 //         }
 //         else
 //         {
@@ -141,7 +141,7 @@ NovatelSpanInsGpsDriver::reset()
 //     { 
 // 	cout << "NovatelSpanInsGps: ERROR: Failed to set baud rate.\n";
 //         std::string errString = "Failed to set baud rate.";
-//         throw orcaice::Exception( ERROR_INFO, errString );
+//         throw orcaiceutil::Exception( ERROR_INFO, errString );
 //     }
     
    return 0;
@@ -538,7 +538,7 @@ NovatelSpanInsGpsDriver::run()
                 ss<<"Caught NovatelSpanException: " << e.what();
                 context_.tracer()->warning( ss.str() );
             }
-            catch ( orcaice::Exception & e )
+            catch ( orcaiceutil::Exception & e )
             {
                 std::stringstream ss;
                 ss << "novatelspandriver::run(): Caught orcaice::exception: " << e.what();
@@ -620,7 +620,7 @@ NovatelSpanInsGpsDriver::readMsgsFromHardware()
             std::string errString = "Error reading from InsGps: ";
             errString += strerror(errno);
             errString += "--shutting down.";
-            throw orcaice::Exception( ERROR_INFO, errString );
+            throw orcaiceutil::Exception( ERROR_INFO, errString );
             // cout << "NovatelSpanInsGps: ERROR: Error reading from InsGps:" << strerror(errno) << " -- shutting down." << endl;
             enabled_ = false;
             return -1;
@@ -1300,7 +1300,7 @@ void
 NovatelSpanInsGpsDriver::shutdown()
 {
     // context_.tracer()->debug( "stopping driver", 5 );
-    // orcaice::Thread::stopAndJoin( this );
+    // orcaiceutil::Thread::stopAndJoin( this );
     // context_.tracer()->debug( "stopped driver", 5 );
 }               
 

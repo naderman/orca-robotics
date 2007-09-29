@@ -18,42 +18,6 @@ ADD_EXECUTABLE( ptrnotifytest ptrnotifytest.cpp )
 ADD_TEST( PtrNotifyTest ptrnotifytest )
 MESSAGE ( STATUS "Planning to Build Test      : PtrNotifyTest [libOrcaIce]")
 
-ADD_EXECUTABLE( buffertest buffertest.cpp )
-ADD_TEST( BufferTest buffertest )
-MESSAGE ( STATUS "Planning to Build Test      : BufferTest [libOrcaIce]")
-
-ADD_EXECUTABLE( proxytest proxytest.cpp )
-ADD_TEST( ProxyTest proxytest )
-MESSAGE ( STATUS "Planning to Build Test      : ProxyTest [libOrcaIce]")
-
-ADD_EXECUTABLE( storetest storetest.cpp )
-ADD_TEST( StoreTest storetest )
-MESSAGE ( STATUS "Planning to Build Test      : StoreTest [libOrcaIce]")
-
-ADD_EXECUTABLE( notifytest notifytest.cpp )
-ADD_TEST( NotifyTest notifytest )
-MESSAGE ( STATUS "Planning to Build Test      : NotifyTest [libOrcaIce]")
-
-ADD_EXECUTABLE( stringtest stringtest.cpp )
-ADD_TEST( StringTest stringtest )
-MESSAGE ( STATUS "Planning to Build Test      : StringTest [libOrcaIce]")
-
-ADD_EXECUTABLE( systest systest.cpp )
-ADD_TEST( SysTest systest )
-MESSAGE ( STATUS "Planning to Build Test      : SysTest [libOrcaIce]")
-
-ADD_EXECUTABLE( threadtest threadtest.cpp )
-ADD_TEST( ThreadTest threadtest )
-MESSAGE ( STATUS "Planning to Build Test      : ThreadTest [libOrcaIce]")
-
-ADD_EXECUTABLE( safethreadtest safethreadtest.cpp )
-ADD_TEST( SafeThreadTest safethreadtest )
-MESSAGE ( STATUS "Planning to Build Test      : SafeThreadTest [libOrcaIce]")
-
-ADD_EXECUTABLE( eventqueuetest eventqueuetest.cpp )
-ADD_TEST( EventQueueTest eventqueuetest )
-MESSAGE ( STATUS "Planning to Build Test      : EventQueueTest [libOrcaIce]")
-
 ADD_EXECUTABLE( proptest proptest.cpp )
 ADD_TEST( PropUtilsTest proptest )
 MESSAGE ( STATUS "Planning to Build Test      : PropUtilsTest [libOrcaIce]")

@@ -13,7 +13,7 @@
 
 #include <orcaice/context.h>
 #include <orcaice/multiconnectutils.h>
-#include <orcaice/thread.h>
+#include <orcaiceutil/thread.h>
 
 namespace orcaifaceimpl
 {
@@ -78,10 +78,10 @@ public:
     //! Tries to connect to remote interface with stringified proxy @c proxyString.
     //! If succesful, tries to subscribe for data using the internal consumer interface.
     //! Catches appropriate exceptions. DOCUMENT!
-    virtual void subscribeWithString( const std::string& proxyString, orcaice::Thread* thread, int retryInterval=2 )=0;
+    virtual void subscribeWithString( const std::string& proxyString, orcaiceutil::Thread* thread, int retryInterval=2 )=0;
 
     //! Same as unsubscribeWithString() but the interface is looked up using the config file and tag interfaceTag.
-    virtual void subscribeWithTag( const std::string& interfaceTag, orcaice::Thread* thread, int retryInterval=2 )=0;
+    virtual void subscribeWithTag( const std::string& interfaceTag, orcaiceutil::Thread* thread, int retryInterval=2 )=0;
 };
 
 /*!
@@ -151,7 +151,7 @@ public:
         unsubscribeWithString( proxyString );
     }
 
-    virtual void subscribeWithString( const std::string& proxyString, orcaice::Thread* thread, int retryInterval=2  )
+    virtual void subscribeWithString( const std::string& proxyString, orcaiceutil::Thread* thread, int retryInterval=2  )
     {
         ProviderPrxType providerPrx;
         // multi-try
@@ -191,7 +191,7 @@ public:
 
     }
 
-    virtual void subscribeWithTag( const std::string& interfaceTag, orcaice::Thread* thread, int retryInterval=2  )
+    virtual void subscribeWithTag( const std::string& interfaceTag, orcaiceutil::Thread* thread, int retryInterval=2  )
     {
         // this may throw ConfigFileException, we don't catch it, let the user catch it at the component level
         std::string proxyString = orcaice::getRequiredInterfaceAsString( context_, interfaceTag );

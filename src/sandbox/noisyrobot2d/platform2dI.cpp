@@ -46,7 +46,7 @@ Platform2dI::getData(const Ice::Current& current) const
     {
         dataBuffer_.get( data );
     }
-    catch ( const orcaice::Exception & e )
+    catch ( const orcaiceutil::Exception & e )
     {
         throw orca::DataNotExistException( "try again later." );
     }

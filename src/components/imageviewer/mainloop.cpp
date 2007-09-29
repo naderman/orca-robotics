@@ -19,7 +19,7 @@ using namespace std;
 using namespace imageviewer;
 
 MainLoop::MainLoop( const orca::CameraConsumerPrx & callbackPrx,
-                    orcaice::Buffer<orca::CameraData> & dataPipe, 
+                    orcaiceutil::Buffer<orca::CameraData> & dataPipe, 
                     const orcaice::Context & context )
     : callbackPrx_(callbackPrx),
       dataPipe_(dataPipe),
@@ -214,7 +214,7 @@ MainLoop::run()
             context_.communicator()->destroy();
         }
     }
-    catch ( const orcaice::Exception & e )
+    catch ( const orcaiceutil::Exception & e )
     {
         stringstream ss;
         ss << "unexpected (local?) orcaice exception: " << e.what();

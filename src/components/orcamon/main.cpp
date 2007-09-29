@@ -30,7 +30,7 @@ public:
     virtual void stop();
     
 private:
-    orcaice::Thread* mainLoop_;
+    orcaiceutil::Thread* mainLoop_;
 };
 
 Component::Component() : 
@@ -56,7 +56,7 @@ void
 Component::stop()
 {
     tracer()->debug( "stopping component", 5 );
-    orcaice::stopAndJoin( mainLoop_ );
+    orcaiceutil::stopAndJoin( mainLoop_ );
     tracer()->debug( "stopped component", 5 );
 }
 

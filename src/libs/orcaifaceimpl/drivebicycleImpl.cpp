@@ -82,7 +82,7 @@ DriveBicycleImpl::initInterface()
 }
 
 void 
-DriveBicycleImpl::initInterface( orcaice::Thread* thread, int retryInterval )
+DriveBicycleImpl::initInterface( orcaiceutil::Thread* thread, int retryInterval )
 {
     topicPrx_ = orcaice::connectToTopicWithTag<orca::DriveBicycleConsumerPrx>
         ( context_, consumerPrx_, interfaceTag_, "*", thread, retryInterval );

@@ -13,7 +13,7 @@
 
 #include <orca/imu.h>
 #include <orca/bros1.h>
-#include <orcaice/thread.h>
+#include <orcaiceutil/thread.h>
 #include <orcaice/context.h>
 // #include <orcanavutil/mapgrid.h>
 
@@ -28,7 +28,7 @@ namespace imu {
 //
 // Note: this thing self-destructs when run() returns.
 //
-class ImuHandler : public orcaice::Thread
+class ImuHandler : public orcaiceutil::Thread
 {
 
 public:

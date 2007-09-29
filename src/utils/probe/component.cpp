@@ -129,7 +129,7 @@ Component::start()
         tracer()->info( "Loading GUI Qt driver");
         display = new GuiQtDisplay( supportedInterfaces );
 #else
-        throw orcaice::Exception( ERROR_INFO, "Can't instantiate driver type 'gui-qt' because it was not compiled." );
+        throw orcaiceutil::Exception( ERROR_INFO, "Can't instantiate driver type 'gui-qt' because it was not compiled." );
 #endif
     }
     else if ( driverName == "term-iostream" ) 

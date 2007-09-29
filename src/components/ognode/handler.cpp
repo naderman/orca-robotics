@@ -62,7 +62,7 @@ namespace {
 //////////////////////////////////////////////////////////////////////
 
 Handler::Handler( const orcaice::Context &context )
-    : ogFusionDataBuffer_(-1,orcaice::BufferTypeCircular), // infinite depth
+    : ogFusionDataBuffer_(-1,orcaiceutil::BufferTypeCircular), // infinite depth
       context_(context)
 {
 }

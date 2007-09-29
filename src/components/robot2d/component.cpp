@@ -56,7 +56,7 @@ Component::loadDriver()
         context().tracer()->debug( "loading Player-Client driver",3);
         driver_.reset( new PlayerClientDriver( context() ) );
 #else
-        throw orcaice::Exception( ERROR_INFO, "Can't instantiate driver 'playerclient' because it was not built!" );
+        throw orcaiceutil::Exception( ERROR_INFO, "Can't instantiate driver 'playerclient' because it was not built!" );
 #endif
     }
     else if ( driverName == "fake" )
@@ -68,7 +68,7 @@ Component::loadDriver()
         string errorStr = "Unknown driver type. Cannot talk to hardware.";
         context().tracer()->error( errorStr);
         context().tracer()->info( "Valid driver values are {'playerclient', 'fake'}" );
-        throw orcaice::Exception( ERROR_INFO, errorStr );
+        throw orcaiceutil::Exception( ERROR_INFO, errorStr );
     }
 
     context().tracer()->debug( "Component: driver instantiated", 5 );
@@ -117,8 +117,8 @@ void
 Component::stop()
 {
     tracer()->debug( "stopping component", 2 );
-    orcaice::stopAndJoin( netHandler_ );
+    orcaiceutil::stopAndJoin( netHandler_ );
     tracer()->info( "stopped net handler", 2 );
-    orcaice::stopAndJoin( hwHandler_ );
+    orcaiceutil::stopAndJoin( hwHandler_ );
     tracer()->info( "stopped hw handler", 2 );
 }

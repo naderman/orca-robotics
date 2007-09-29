@@ -55,7 +55,7 @@ Component::start()
     else
     {
         std::string errString = "Unknown driver type: "+driverName;
-        throw orcaice::Exception( ERROR_INFO, errString );
+        throw orcaiceutil::Exception( ERROR_INFO, errString );
     }
 
     cout<<"TRACE(component.cpp): Loaded map: " << orcaice::toString(theMap) << endl;

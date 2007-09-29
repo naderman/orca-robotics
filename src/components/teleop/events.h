@@ -11,7 +11,7 @@
 #ifndef ORCA2_TELEOP_EVENTS_H
 #define ORCA2_TELEOP_EVENTS_H
 
-#include <orcaice/eventqueue.h>
+#include <orcaiceutil/eventqueue.h>
 
 namespace teleop
 {
@@ -28,7 +28,7 @@ enum EventType
     NewRelativeCommand
 };
 
-class SentNewVelocityCommandEvent : public orcaice::Event
+class SentNewVelocityCommandEvent : public orcaiceutil::Event
 {
 public:
     SentNewVelocityCommandEvent( double vx, double vy, double w, bool vxLimit, bool vyLimit, bool wLimit ) :
@@ -49,7 +49,7 @@ public:
 };
 typedef IceUtil::Handle<SentNewVelocityCommandEvent> SentNewVelocityCommandEventPtr;
 
-class SentNewBicycleCommandEvent : public orcaice::Event
+class SentNewBicycleCommandEvent : public orcaiceutil::Event
 {
 public:
     SentNewBicycleCommandEvent( double speed, double steerAngle, bool speedLimit, bool steerAngleLimit ) :
@@ -66,21 +66,21 @@ public:
 };
 typedef IceUtil::Handle<SentNewBicycleCommandEvent> SentNewBicycleCommandEventPtr;
 
-class SentRepeatCommandEvent : public orcaice::Event
+class SentRepeatCommandEvent : public orcaiceutil::Event
 {
 public:
     SentRepeatCommandEvent() :
         Event( SentRepeatCommand ) {};
 };
 
-class FailedToSendCommandEvent : public orcaice::Event
+class FailedToSendCommandEvent : public orcaiceutil::Event
 {
 public:
     FailedToSendCommandEvent() :
         Event( FailedToSendCommand ) {};
 };
 
-class NewCommandIncrementEvent : public orcaice::Event
+class NewCommandIncrementEvent : public orcaiceutil::Event
 {
 public:
     NewCommandIncrementEvent( int longitudinal, int transverse, int angle ) :
@@ -95,7 +95,7 @@ public:
 };
 typedef IceUtil::Handle<NewCommandIncrementEvent> NewCommandIncrementEventPtr;
 
-class NewRelativeCommandEvent : public orcaice::Event
+class NewRelativeCommandEvent : public orcaiceutil::Event
 {
 public:
     NewRelativeCommandEvent( double longitudinal, double transverse, double angle ) :
@@ -111,11 +111,11 @@ public:
 typedef IceUtil::Handle<NewRelativeCommandEvent> NewRelativeCommandEventPtr;
 
 
-class TeleopEventQueueOptimizer : public orcaice::EventQueueOptimizer
+class TeleopEventQueueOptimizer : public orcaiceutil::EventQueueOptimizer
 {
 public:
     // this combine function adds the member variables of the two events
-    virtual bool combine( orcaice::EventPtr& existing, const orcaice::EventPtr& extra );
+    virtual bool combine( orcaiceutil::EventPtr& existing, const orcaiceutil::EventPtr& extra );
 };
 
 } // namespace

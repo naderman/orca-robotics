@@ -94,7 +94,7 @@ segwayrmp::readFromProperties( const orcaice::Context & context, RmpDriverConfig
         string errorStr = "SegwayRmp driver: unknown gain schedule type '"+gainSchedule+"'. Cannot initialize.";
         context.tracer()->error( errorStr);
         context.tracer()->info( "Valid gain schedule types are {'normal', 'tall', 'heavy'}" );
-        throw orcaice::Exception( ERROR_INFO, errorStr );
+        throw orcaiceutil::Exception( ERROR_INFO, errorStr );
     }
 
     c.maxVelocityScale = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"MaxVelocityScale", 0.75 );

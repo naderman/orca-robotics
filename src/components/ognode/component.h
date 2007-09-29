@@ -11,7 +11,7 @@
 #define _ORCA2_OGNODE_COMPONENT_H_
 
 #include <orcaice/component.h>
-#include <orcaice/thread.h>
+#include <orcaiceutil/thread.h>
 
 namespace ognode
 {
@@ -29,7 +29,7 @@ public:
     virtual void stop();
 
 private:
-    orcaice::ThreadPtr handler_;
+    orcaiceutil::ThreadPtr handler_;
 
 };
 

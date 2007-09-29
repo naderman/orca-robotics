@@ -13,7 +13,7 @@
 
 #include <IceStorm/IceStorm.h>
 
-#include <orcaice/proxy.h>
+#include <orcaiceutil/proxy.h>
 #include <orcaice/context.h>
 #include <orcaifaceimpl/util.h>
 
@@ -47,7 +47,7 @@ public:
 
     // Local calls:
 
-    //! may throw orcaice::Exceptions
+    //! may throw orcaiceutil::Exceptions
     void initInterface();
 
     //! A local call which sets the data reported by the interface
@@ -59,7 +59,7 @@ public:
 
 private:
 
-    orcaice::Proxy<DataType>  dataProxy_;
+    orcaiceutil::Proxy<DataType>  dataProxy_;
 
     ConsumerPrxType     consumerPrx_;
     IceStorm::TopicPrx  topicPrx_;

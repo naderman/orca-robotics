@@ -58,9 +58,9 @@ NetHandler::NetHandler( orcarobotdriverutil::HwDriverHandler<Command,Data> &hwDr
     orca::VehicleControlVelocityDifferentialDescription *controlDescr =
         dynamic_cast<orca::VehicleControlVelocityDifferentialDescription*>(&(*(descr.control)));
     if ( controlDescr == NULL )
-        throw orcaice::Exception( ERROR_INFO, "Can only deal with differential drive vehicles." );
+        throw orcaiceutil::Exception( ERROR_INFO, "Can only deal with differential drive vehicles." );
     if ( controlDescr->maxForwardSpeed != controlDescr->maxReverseSpeed ) 
-        throw orcaice::Exception( ERROR_INFO, "Can't handle max forward speed != max reverse speed." );
+        throw orcaiceutil::Exception( ERROR_INFO, "Can't handle max forward speed != max reverse speed." );
 
     maxSpeed_    = controlDescr->maxForwardSpeed;
     maxTurnrate_ = controlDescr->maxTurnrate;
@@ -143,7 +143,7 @@ NetHandler::walk()
     // temp objects in network format
     orca::Odometry2dData odometry2dData;
 
-    orcaice::Timer publishTimer;
+    orcaiceutil::Timer publishTimer;
     double publishInterval = orcaice::getPropertyAsDoubleWithDefault( 
         context_.properties(), prefix+"Odometry2dPublishInterval", 0 );
 

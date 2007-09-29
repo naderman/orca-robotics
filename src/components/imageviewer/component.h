@@ -12,7 +12,7 @@
 #define ORCA2_IMAGEVIEWER_COMPONENT_H
 
 #include <orcaice/component.h>
-#include <orcaice/buffer.h>
+#include <orcaiceutil/buffer.h>
 #include <orca/camera.h>
 
 
@@ -33,7 +33,7 @@ public:
 
 private:
 
-    orcaice::Buffer<orca::CameraData> dataPipe_;
+    orcaiceutil::Buffer<orca::CameraData> dataPipe_;
     MainLoop* mainloop_;
 };
     

@@ -10,7 +10,7 @@
 #ifndef ORCAICE_ACTIVATOR_H
 #define ORCAICE_ACTIVATOR_H
 
-#include <orcaice/thread.h>
+#include <orcaiceutil/thread.h>
 #include <orcaice/context.h>
 
 namespace orcaice {
@@ -47,7 +47,7 @@ public:
 //!
 //! @author Alex Brooks
 //!
-class Activator : public orcaice::Thread
+class Activator : public orcaiceutil::Thread
 {
 
 public: 

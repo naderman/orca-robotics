@@ -15,7 +15,7 @@
 #include <orca/gps.h>
 #include <orcalog/replayer.h>
 
-#include <orcaice/proxy.h>
+#include <orcaiceutil/proxy.h>
 
 namespace orcalogfactory
 {
@@ -41,8 +41,8 @@ public:
     virtual void replayData( int index, bool isTest=false );
 
 private:
-    orcaice::Proxy<orca::GpsDescription> gpsDescriptionPipe_;
-    orcaice::Proxy<orca::GpsData> gpsDataPipe_;
+    orcaiceutil::Proxy<orca::GpsDescription> gpsDescriptionPipe_;
+    orcaiceutil::Proxy<orca::GpsData> gpsDataPipe_;
     
     virtual void initInterfaces();
     virtual void initDescription();

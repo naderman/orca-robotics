@@ -13,17 +13,17 @@
 #include <iostream>
 
 #include <orca/localise2d.h>
-#include <orcaice/proxy.h>
+#include <orcaiceutil/proxy.h>
 
 class Localise2dConsumerI : public orca::Localise2dConsumer
 {
     
 public:
-    Localise2dConsumerI(orcaice::Proxy<orca::Localise2dData>& localise2dDataPipe);
+    Localise2dConsumerI(orcaiceutil::Proxy<orca::Localise2dData>& localise2dDataPipe);
     virtual void setData(const orca::Localise2dData& data, const Ice::Current&);
 
 private:
-    orcaice::Proxy<orca::Localise2dData>& localise2dDataPipe_;
+    orcaiceutil::Proxy<orca::Localise2dData>& localise2dDataPipe_;
 };
 
 #endif

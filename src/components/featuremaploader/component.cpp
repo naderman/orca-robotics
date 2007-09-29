@@ -73,14 +73,14 @@ Component::start()
         {
             std::string errString = "Failed to load map from file '"+mapFileName+"'";
             tracer()->error( errString );
-            throw orcaice::Exception( ERROR_INFO, errString );
+            throw orcaiceutil::Exception( ERROR_INFO, errString );
         }
     }
     else
     {
         std::string errString = "Unknown driver type: "+driverName;
         tracer()->error( errString );
-        throw orcaice::Exception( ERROR_INFO, errString );
+        throw orcaiceutil::Exception( ERROR_INFO, errString );
     }
 
     //

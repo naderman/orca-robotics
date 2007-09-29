@@ -14,11 +14,11 @@
 #include <orca/velocitycontrol2d.h>
 #include <IceStorm/IceStorm.h>
 
-#include <orcaice/proxy.h>
-#include <orcaice/notify.h>
+#include <orcaiceutil/proxy.h>
+#include <orcaiceutil/notify.h>
 #include <orcaice/context.h>
 
-namespace orcaice {
+namespace orcaiceutil {
     class Thread;
 }
 
@@ -28,7 +28,7 @@ namespace orcaifaceimpl {
 //! Implements the VelocityControl2d interface: Handles remote calls.
 //!
 class VelocityControl2dImpl : public IceUtil::Shared,
-                               public orcaice::Notify<orca::VelocityControl2dData>
+                               public orcaiceutil::Notify<orca::VelocityControl2dData>
 {
 friend class VelocityControl2dI;
 
@@ -39,12 +39,12 @@ public:
                        const orcaice::Context& context );
     ~VelocityControl2dImpl();
 
-    //! Sets up interface and connects to IceStorm. May throw orcaice::Exceptions.
+    //! Sets up interface and connects to IceStorm. May throw orcaiceutil::Exceptions.
     void initInterface();
 
     //! Sets up interface and connects to IceStorm. Catches all exceptions and retries
     //! until sucessful. At every iteration, checks if the thread was stopped.
-    void initInterface( orcaice::Thread* thread, int retryInterval=2 );
+    void initInterface( orcaiceutil::Thread* thread, int retryInterval=2 );
 
 private:
 

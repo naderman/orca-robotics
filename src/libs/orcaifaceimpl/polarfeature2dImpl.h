@@ -38,7 +38,7 @@ public:
     //
     // Local calls:
     //
-    //! may throw orcaice::Exceptions
+    //! may throw orcaiceutil::Exceptions
     void initInterface();
 
     //! A local call which sets the data reported by the interface

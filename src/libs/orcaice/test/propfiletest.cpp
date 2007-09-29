@@ -115,7 +115,7 @@ main(int argc, char * argv[])
         cout<<"failed"<<endl<<"\texpect to throw exception with no input and no env variables :"<<filename<<endl;
         return EXIT_FAILURE;
     }
-    catch ( const orcaice::Exception & )
+    catch ( const orcaiceutil::Exception & )
     {
         cout<<"ok"<<endl;
     }
@@ -226,7 +226,7 @@ main(int argc, char * argv[])
         }
         cout<<"ok"<<endl;
     }
-    catch ( const orcaice::Exception & ) {
+    catch ( const orcaiceutil::Exception & ) {
         cout<<"failed"<<endl<<"did not expect to catch an exception."<<endl;
         return EXIT_FAILURE;
     }
@@ -237,7 +237,7 @@ main(int argc, char * argv[])
         cout<<"failed"<<endl<<"expected to catch an exception."<<endl;
         return EXIT_FAILURE;
     }
-    catch ( const orcaice::Exception & ) {
+    catch ( const orcaiceutil::Exception & ) {
         cout<<"ok"<<endl;
     }
 

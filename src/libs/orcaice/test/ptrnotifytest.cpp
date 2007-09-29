@@ -16,7 +16,7 @@
 
 using namespace std;
 
-class TestNotifyHandler : public orcaice::NotifyHandler<orca::RangeScanner2dDataPtr>
+class TestNotifyHandler : public orcaiceutil::NotifyHandler<orca::RangeScanner2dDataPtr>
 {
 public:
     TestNotifyHandler()
@@ -38,7 +38,7 @@ main(int argc, char * argv[])
     orca::RangeScanner2dDataPtr data = new orca::RangeScanner2dData;
     orcaice::setSane( data );
     
-    orcaice::NotifyHandler<orca::RangeScanner2dDataPtr>* emptyHandler = 0;
+    orcaiceutil::NotifyHandler<orca::RangeScanner2dDataPtr>* emptyHandler = 0;
     TestNotifyHandler testHandler;
 
     cout<<"testing set() ... ";
@@ -49,7 +49,7 @@ main(int argc, char * argv[])
         cout<<"failed. empty notify handler, should've caught exception"<<endl;
         return EXIT_FAILURE;
     }
-    catch ( const orcaice::Exception & )
+    catch ( const orcaiceutil::Exception & )
     {
         ; // ok
     }
@@ -80,7 +80,7 @@ main(int argc, char * argv[])
     {
         notify.set( data );
     }
-    catch ( const orcaice::Exception & )
+    catch ( const orcaiceutil::Exception & )
     {
         cout<<"failed. shouldn't have caught exception"<<endl;
         return EXIT_FAILURE;

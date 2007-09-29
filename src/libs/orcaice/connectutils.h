@@ -17,9 +17,9 @@
 
 #include <orcaice/context.h>
 #include <orcaice/exceptions.h>
-#include <orcaice/thread.h>
+#include <orcaiceutil/thread.h>
 #include <orcaice/configutils.h>
-#include <orcaice/sysutils.h>
+#include <orcaiceutil/sysutils.h>
 #include <orcaice/printutils.h>
 
 #include <orcaobj/stringutils.h>
@@ -42,7 +42,7 @@ bool isRegistryReachable( const Context &context );
  *  Note that @p name is just the interface name, not its fully-qualified name.
  *  (In Ice terms this will become the object identity.)
  *
- *  Throws orcaice::Exception if fails to register the new object.
+ *  Throws orcaiceutil::Exception if fails to register the new object.
  *
 @verbatim
 Ice::ObjectPtr obj = new MyObjectI;
@@ -243,7 +243,7 @@ connectToTopicWithTag( const Context           & context,
         topicName = orcaice::toString(
                         orcaice::getProvidedTopic( context, interfaceTag, subtopic ) );
     }
-    catch ( orcaice::Exception &e )
+    catch ( orcaiceutil::Exception &e )
     {
         std::string errString = e.what();
         throw orcaice::ConfigFileException( ERROR_INFO,
@@ -285,7 +285,7 @@ connectToTopicWithString( const Context     & context,
         //
         publisher = ConsumerProxyType::uncheckedCast(obj);
     }
-    //catch ( const orcaice::Exception & e ) {
+    //catch ( const orcaiceutil::Exception & e ) {
         // we'll catch it here if the topic manager does not exist
     //}
     catch ( Ice::ConnectionRefusedException &e )
@@ -301,7 +301,7 @@ connectToTopicWithString( const Context     & context,
         std::stringstream ss;
         ss<<"Error while connecting to IceStorm topic publisher '"<<topicName<<"': "<<e;
         initTracerError( context, ss.str(), 2 );
-        throw orcaice::Exception( ERROR_INFO, ss.str() );
+        throw orcaiceutil::Exception( ERROR_INFO, ss.str() );
     }
     catch ( Ice::Exception &e )
     {

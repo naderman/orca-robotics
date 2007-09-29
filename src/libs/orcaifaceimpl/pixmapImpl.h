@@ -17,7 +17,7 @@
 // include provided interfaces
 #include <orca/pixmap.h>
 
-#include <orcaice/proxy.h>
+#include <orcaiceutil/proxy.h>
 #include <orcaice/context.h>
 
 namespace orcaifaceimpl {
@@ -36,7 +36,7 @@ public:
     ~PixMapImpl();
 
     // Local calls:
-    // may throw orcaice::Exceptions
+    // may throw orcaiceutil::Exceptions
     void initInterface();
     // A local call which sets the data reported by the interface, 
     // and sends it through IceStorm
@@ -49,7 +49,7 @@ private:
     void internalUnsubscribe(const ::orca::PixMapConsumerPrx&);
 
     // Holds the latest data
-    orcaice::Proxy<orca::PixMapData> dataProxy_;
+    orcaiceutil::Proxy<orca::PixMapData> dataProxy_;
 
     // The topic to which we'll publish
     IceStorm::TopicPrx             topicPrx_;

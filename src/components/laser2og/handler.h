@@ -10,7 +10,7 @@
 #ifndef _ORCA2_LASER2OG_HANDLER_H_
 #define _ORCA2_LASER2OG_HANDLER_H_
 
-#include <orcaice/thread.h>
+#include <orcaiceutil/thread.h>
 #include <orcaice/ptrbuffer.h>
 #include <orcaice/context.h>
 
@@ -23,7 +23,7 @@
 namespace laser2og
 {
 
-class Handler : public orcaice::Thread
+class Handler : public orcaiceutil::Thread
 {
 public:
     

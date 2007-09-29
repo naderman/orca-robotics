@@ -12,7 +12,7 @@
 
 #include <IceGrid/Registry.h>
 #include <orcaice/context.h>
-#include <orcaice/thread.h>
+#include <orcaiceutil/thread.h>
 
 namespace orcaicegrid
 {
@@ -40,7 +40,7 @@ public:
 //!
 //! @author Alex Brooks
 //!
-class SessionManager : public orcaice::Thread
+class SessionManager : public orcaiceutil::Thread
 {
 public:
 

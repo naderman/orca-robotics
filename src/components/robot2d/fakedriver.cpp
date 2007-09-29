@@ -67,7 +67,7 @@ FakeDriver::write( const Command& command )
         context_.tracer()->info( ss.str() );
     }
     else {
-        throw( orcaice::Exception( ERROR_INFO, "FakeDriver: simulated hardware fault" ) );
+        throw( orcaiceutil::Exception( ERROR_INFO, "FakeDriver: simulated hardware fault" ) );
     }
 }
 

@@ -15,8 +15,8 @@
 
 #include <orca/ocm.h>
 #include <orcaice/home.h>
-#include <orcaice/tracer.h>
-#include <orcaice/status.h>
+#include <orcaiceutil/tracer.h>
+#include <orcaiceutil/status.h>
 
 namespace orcaice
 {
@@ -77,9 +77,9 @@ public:
     //! Access to setting home information.
     orcaice::Home*         home() const { return home_; };
     //! Access tracing functions.
-    orcaice::Tracer*       tracer() const { return tracer_; };
+    orcaiceutil::Tracer*       tracer() const { return tracer_; };
     //! Access status functions.
-    orcaice::Status*       status() const { return status_; };
+    orcaiceutil::Status*       status() const { return status_; };
 
 
     //! Calls Component::activate(). This function is useful when component (adapter)
@@ -104,8 +104,8 @@ private:
     Component*             component_; 
 
     orcaice::Home*         home_;
-    orcaice::Tracer*       tracer_;
-    orcaice::Status*       status_;
+    orcaiceutil::Tracer*       tracer_;
+    orcaiceutil::Status*       status_;
 };
 
 } // end namespace

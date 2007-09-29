@@ -11,10 +11,10 @@
 #ifndef ORCA2_ROBOTDRIVERUTIL_HARDWARE_HANDLER_H
 #define ORCA2_ROBOTDRIVERUTIL_HARDWARE_HANDLER_H
 
-#include <orcaice/safethread.h>
+#include <orcaiceutil/safethread.h>
 #include <orcaice/context.h>
-#include <orcaice/proxy.h>
-#include <orcaice/timer.h>
+#include <orcaiceutil/proxy.h>
+#include <orcaiceutil/timer.h>
 #include <IceUtil/Time.h>
 #include <orcaice/orcaice.h>
 #include <sstream>
@@ -31,7 +31,7 @@ namespace orcarobotdriverutil
 //!   Data    (what the driver tells us)
 //!
 template<typename Command, typename Data>
-class HwDriverHandler : public orcaice::SafeThread
+class HwDriverHandler : public orcaiceutil::SafeThread
 {
 public:
 
@@ -44,7 +44,7 @@ public:
 
     void setCommand( const Command &command );
 
-    orcaice::Proxy<Data> &dataProxy() { return dataProxy_; }
+    orcaiceutil::Proxy<Data> &dataProxy() { return dataProxy_; }
 
 private:
 
@@ -70,17 +70,17 @@ private:
     //
     // Faults can be detected in either read or write threads: have to be careful.
     //
-    orcaice::Proxy<FaultInfo> faultProxy_;
+    orcaiceutil::Proxy<FaultInfo> faultProxy_;
 
     // network/hardware interface
-    orcaice::Proxy<Data> dataProxy_;
+    orcaiceutil::Proxy<Data> dataProxy_;
 
     IHwDriver<Command,Data> &driver_;
 
     bool isMotionEnabled_;
 
     // debug
-    orcaice::Timer writeTimer_;
+    orcaiceutil::Timer writeTimer_;
 
     orcaice::Context context_;
 };

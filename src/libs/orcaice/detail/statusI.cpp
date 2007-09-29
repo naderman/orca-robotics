@@ -13,7 +13,6 @@
 
 #include "statusI.h"
 #include "syslogger.h"
-#include "../status.h"
 
 using namespace std;
 
@@ -133,7 +132,7 @@ StatusI::connectToIceStorm()
         topic_ = orcaice::connectToTopicWithString<orca::StatusConsumerPrx>(
             context_, publisher_, topicName_ );
     }
-    catch ( const orcaice::Exception & e )
+    catch ( const orcaiceutil::Exception & e )
     {
         initTracerError( std::string("Caught exception while connecting to IceStorm: ")+e.what() );
         icestormConnectFailed( topicName_, publisher_, isStatusTopicRequired_ );
@@ -218,19 +217,19 @@ void StatusI::convert( const std::map<std::string,LocalStatus::SubsystemStatus> 
     for ( it=internal.begin(); it!=internal.end(); ++it ) 
     {
         switch ( it->second.type ) {
-        case orcaice::Status::Initialising :
+        case orcaiceutil::Status::Initialising :
             network[it->first].type = orca::SubsystemStatusInitialising;
             break;
-        case orcaice::Status::Ok :
+        case orcaiceutil::Status::Ok :
             network[it->first].type = orca::SubsystemStatusOk;
             break;
-        case orcaice::Status::Warning :
+        case orcaiceutil::Status::Warning :
             network[it->first].type = orca::SubsystemStatusWarning;
             break;
-        case orcaice::Status::Fault :
+        case orcaiceutil::Status::Fault :
             network[it->first].type = orca::SubsystemStatusFault;
             break;
-        case orcaice::Status::Stalled :
+        case orcaiceutil::Status::Stalled :
             network[it->first].type = orca::SubsystemStatusStalled;
             break;
         }

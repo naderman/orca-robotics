@@ -47,7 +47,7 @@ VfhDriver::VfhDriver( const orcaice::Context & context,
             context_.tracer()->error( "Erroneous VFH configuration: " + errors );
             stringstream ss;
             ss << "VfhDriver: Bad VFH config: " << errors;
-            throw orcaice::Exception( ERROR_INFO, ss.str() );
+            throw orcaiceutil::Exception( ERROR_INFO, ss.str() );
         }
     }
 
@@ -260,7 +260,7 @@ VfhDriver::copyLaserScan( const orca::RangeScanner2dDataPtr obs, double playerLa
         {
             stringstream ss;
             ss << "VfhDriver: Can't handle weird angle increment: obs size,increment= " << obs->ranges.size() << ", " << angleIncrement*180.0/M_PI << "deg";
-            throw orcaice::Exception( ERROR_INFO, ss.str() );
+            throw orcaiceutil::Exception( ERROR_INFO, ss.str() );
         }
         replicateNum = 2;
     }
@@ -270,7 +270,7 @@ VfhDriver::copyLaserScan( const orca::RangeScanner2dDataPtr obs, double playerLa
         {
             stringstream ss;
             ss << "VfhDriver: Can't handle weird angle increment: obs size,increment= " << obs->ranges.size() << ", " << angleIncrement*180.0/M_PI << "deg";
-            throw orcaice::Exception( ERROR_INFO, ss.str() );
+            throw orcaiceutil::Exception( ERROR_INFO, ss.str() );
         }
         replicateNum = 1;
     }
@@ -278,13 +278,13 @@ VfhDriver::copyLaserScan( const orca::RangeScanner2dDataPtr obs, double playerLa
     {
         stringstream ss;
         ss << "VfhDriver: Scan size of " << obs->ranges.size() << " is not implemented";
-        throw orcaice::Exception( ERROR_INFO, ss.str() );
+        throw orcaiceutil::Exception( ERROR_INFO, ss.str() );
     }
     if ( obs->startAngle - -90.0*M_PI/180.0 > EPS )
     {
         stringstream ss;
         ss << "VfhDriver: Don't know how to handle weird startAngle: " << obs->startAngle;
-        throw orcaice::Exception( ERROR_INFO, ss.str() );
+        throw orcaiceutil::Exception( ERROR_INFO, ss.str() );
     }
 
     // Copy the ranges into a player-style structure.  This means converting units: m -> mm.

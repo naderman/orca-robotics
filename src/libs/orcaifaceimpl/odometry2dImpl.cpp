@@ -81,7 +81,7 @@ Odometry2dImpl::initInterface()
 }
 
 void 
-Odometry2dImpl::initInterface( orcaice::Thread* thread, int retryInterval )
+Odometry2dImpl::initInterface( orcaiceutil::Thread* thread, int retryInterval )
 {
     topicPrx_ = orcaice::connectToTopicWithTag<orca::Odometry2dConsumerPrx>
         ( context_, consumerPrx_, interfaceTag_, "*", thread, retryInterval );

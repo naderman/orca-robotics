@@ -11,7 +11,7 @@
 #ifndef ORCA2_PROBE_BROWSER_EVENTS_H
 #define ORCA2_PROBE_BROWSER_EVENTS_H
 
-#include <orcaice/eventqueue.h>
+#include <orcaiceutil/eventqueue.h>
 
 namespace probe
 {
@@ -28,49 +28,49 @@ enum EventType
     Pick
 };
 
-class ActivateEvent : public orcaice::Event
+class ActivateEvent : public orcaiceutil::Event
 {
 public:
     ActivateEvent() : Event( Activate ) {};
 };
 
-class ReloadEvent : public orcaice::Event
+class ReloadEvent : public orcaiceutil::Event
 {
 public:
     ReloadEvent() : Event( Reload ) {};
 };
 
-class UpEvent : public orcaice::Event
+class UpEvent : public orcaiceutil::Event
 {
 public:
     UpEvent() : Event( Up ) {};
 };
 
-class TopEvent : public orcaice::Event
+class TopEvent : public orcaiceutil::Event
 {
 public:
     TopEvent() : Event( Top ) {};
 };
 
-class FaultEvent : public orcaice::Event
+class FaultEvent : public orcaiceutil::Event
 {
 public:
     FaultEvent() : Event( Fault ) {};
 };
 
-class FilterEvent : public orcaice::Event
+class FilterEvent : public orcaiceutil::Event
 {
 public:
     FilterEvent() : Event( Filter ) {};
 };
 
-class DeactivateEvent : public orcaice::Event
+class DeactivateEvent : public orcaiceutil::Event
 {
 public:
     DeactivateEvent() : Event( Deactivate ) {};
 };
 
-class PickEvent : public orcaice::Event
+class PickEvent : public orcaiceutil::Event
 {
 public:
     PickEvent( int pick ) :

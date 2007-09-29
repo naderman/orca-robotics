@@ -15,7 +15,7 @@
 #include <IceStorm/IceStorm.h>
 
 // utilities
-#include <orcaice/proxy.h>
+#include <orcaiceutil/proxy.h>
 #include <orcaice/context.h>
 
 namespace orcaifaceimpl {
@@ -35,12 +35,12 @@ public:
     ~Odometry3dImpl();
 
     // local interface:
-    //! May throw orcaice::Exceptions.
+    //! May throw orcaiceutil::Exceptions.
     void initInterface();
 
     //! Sets up interface and connects to IceStorm. Catches all exceptions and retries
     //! until sucessful. At every iteration, checks if the thread was stopped.
-    void initInterface( orcaice::Thread* thread, int retryInterval=2 );
+    void initInterface( orcaiceutil::Thread* thread, int retryInterval=2 );
 
     //! A local call which sets the data reported by the interface
     void localSet( const orca::Odometry3dData& data );
@@ -57,7 +57,7 @@ private:
     void internalUnsubscribe(const ::orca::Odometry3dConsumerPrx&);
 
     orca::VehicleDescription     descr_;
-    orcaice::Proxy<orca::Odometry3dData> dataProxy_;
+    orcaiceutil::Proxy<orca::Odometry3dData> dataProxy_;
 
     orca::Odometry3dConsumerPrx    consumerPrx_;
     IceStorm::TopicPrx             topicPrx_;

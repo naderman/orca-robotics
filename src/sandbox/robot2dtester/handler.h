@@ -11,7 +11,7 @@
 #ifndef ORCA2_ROBOT2D_TESTMACHINE_HANDLER_H
 #define ORCA2_ROBOT2D_TESTMACHINE_HANDLER_H
 
-#include <orcaice/thread.h>
+#include <orcaiceutil/thread.h>
 #include <orcaice/context.h>
 
 #include <orca/odometry2d.h>
@@ -20,7 +20,7 @@
 namespace robot2dtester
 {
 
-class Handler : public orcaice::Thread
+class Handler : public orcaiceutil::Thread
 {
 public:
 

@@ -15,7 +15,7 @@
 #include <orca/wifi.h>
 #include <orcalog/replayer.h>
 
-#include <orcaice/proxy.h>
+#include <orcaiceutil/proxy.h>
 
 namespace orcalogfactory
 {
@@ -41,7 +41,7 @@ public:
     virtual void replayData( int index, bool isTest=false );
 
 private:
-    orcaice::Proxy<orca::WifiData> dataPipe_;
+    orcaiceutil::Proxy<orca::WifiData> dataPipe_;
     
     orca::WifiData data_;
     orca::WifiConsumerPrx publisher_;

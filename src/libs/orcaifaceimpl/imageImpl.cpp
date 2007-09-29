@@ -79,7 +79,7 @@ ImageImpl::initInterface()
 }
 
 void 
-ImageImpl::initInterface( orcaice::Thread* thread, int retryInterval )
+ImageImpl::initInterface( orcaiceutil::Thread* thread, int retryInterval )
 {
     topicPrx_ = orcaice::connectToTopicWithTag<orca::ImageConsumerPrx>
         ( context_, consumerPrx_, interfaceTag_, "*", thread, retryInterval );

@@ -14,7 +14,7 @@
 #include <orcaice/component.h> 
 #include <orca/position2d.h>
 
-#include <orcaice/buffer.h>
+#include <orcaiceutil/buffer.h>
 
 namespace drunk 
 {
@@ -35,7 +35,7 @@ private:
     MainLoop *mainLoop_;
 
     // Now the buffers that go to the ICE interface:
-    orcaice::Buffer<orca::Position2dData> posBuffer_; 
+    orcaiceutil::Buffer<orca::Position2dData> posBuffer_; 
 
     orca::Position2dGeometry geom_; 
 

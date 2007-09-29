@@ -10,7 +10,7 @@
 #ifndef ORCA2_LASER2D_MAIN_LOOP_H
 #define ORCA2_LASER2D_MAIN_LOOP_H
 
-#include <orcaice/thread.h>
+#include <orcaiceutil/thread.h>
 #include <orcaice/context.h>
 #include <orcaifaceimpl/laserscanner2dImpl.h>
 #include <laser2dutil/driver.h>
@@ -22,7 +22,7 @@ namespace laser2d {
 //
 // Note: this thing self-destructs when run() returns.
 //
-class MainLoop : public orcaice::Thread
+class MainLoop : public orcaiceutil::Thread
 {
 
 public:

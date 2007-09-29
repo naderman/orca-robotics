@@ -15,7 +15,7 @@
 #include <orca/laserscanner2d.h>
 #include <orcalog/replayer.h>
 
-#include <orcaice/proxy.h>
+#include <orcaiceutil/proxy.h>
 
 namespace orcalogfactory
 {
@@ -43,8 +43,8 @@ public:
     virtual void replayData( int index, bool isTest=false );
 
 private:
-    orcaice::Proxy<orca::LaserScanner2dDataPtr> dataPipe_;
-    orcaice::Proxy<orca::RangeScanner2dDescription> laserDescriptionPipe_;
+    orcaiceutil::Proxy<orca::LaserScanner2dDataPtr> dataPipe_;
+    orcaiceutil::Proxy<orca::RangeScanner2dDescription> laserDescriptionPipe_;
     
     orca::LaserScanner2dDataPtr data_;
     orca::RangeScanner2dConsumerPrx publisher_;

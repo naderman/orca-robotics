@@ -11,7 +11,7 @@
 #ifndef ORCA2_TRACERMON_EVENTS_H
 #define ORCA2_TRACERMON_EVENTS_H
 
-#include <orcaice/eventqueue.h>
+#include <orcaiceutil/eventqueue.h>
 #include <orca/tracer.h>
 
 namespace tracermon
@@ -41,7 +41,7 @@ enum VerbosityType
     NumberOfVerbosityTypes
 };
 */
-class VerbosityLevelsChangedEvent : public orcaice::Event
+class VerbosityLevelsChangedEvent : public orcaiceutil::Event
 {
 public:
     VerbosityLevelsChangedEvent( int error, int warn, int info, int debug ) :
@@ -58,7 +58,7 @@ public:
 };
 typedef IceUtil::Handle<VerbosityLevelsChangedEvent> VerbosityLevelsChangedEventPtr;
 
-class FocusChangedEvent : public orcaice::Event
+class FocusChangedEvent : public orcaiceutil::Event
 {
 public:
     FocusChangedEvent( int focus ) :
@@ -69,7 +69,7 @@ public:
 };
 typedef IceUtil::Handle<FocusChangedEvent> FocusChangedEventPtr;
 
-class NewTraceMessageEvent : public orcaice::Event
+class NewTraceMessageEvent : public orcaiceutil::Event
 {
 public:
     NewTraceMessageEvent( const orca::TracerData & data ) :
@@ -80,7 +80,7 @@ public:
 };
 typedef IceUtil::Handle<NewTraceMessageEvent> NewTraceMessageEventPtr;
 
-class NewLocalTraceEvent : public orcaice::Event
+class NewLocalTraceEvent : public orcaiceutil::Event
 {
 public:
     NewLocalTraceEvent( const std::string& msg ) :
@@ -91,35 +91,35 @@ public:
 };
 typedef IceUtil::Handle<NewLocalTraceEvent> NewLocalTraceEventPtr;
 
-class PreviousFieldEvent : public orcaice::Event
+class PreviousFieldEvent : public orcaiceutil::Event
 {
 public:
     PreviousFieldEvent() :
         Event( PreviousField ) {};
 };
 
-class NextFieldEvent : public orcaice::Event
+class NextFieldEvent : public orcaiceutil::Event
 {
 public:
     NextFieldEvent() :
         Event( NextField ) {};
 };
 
-class ValueUpEvent : public orcaice::Event
+class ValueUpEvent : public orcaiceutil::Event
 {
 public:
     ValueUpEvent() :
         Event( ValueUp ) {};
 };
 
-class ValueDownEvent : public orcaice::Event
+class ValueDownEvent : public orcaiceutil::Event
 {
 public:
     ValueDownEvent() :
         Event( ValueDown ) {};
 };
 
-class ActionEvent : public orcaice::Event
+class ActionEvent : public orcaiceutil::Event
 {
 public:
     ActionEvent() :

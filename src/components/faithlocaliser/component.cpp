@@ -42,6 +42,6 @@ void
 Component::stop()
 {
     tracer()->debug( "stopping component", 5 );
-    orcaice::stopAndJoin( mainLoop_ );
+    orcaiceutil::stopAndJoin( mainLoop_ );
     tracer()->debug( "stopped component", 5 );
 }

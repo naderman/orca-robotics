@@ -271,7 +271,7 @@ MainLoop::run()
             context_.communicator()->destroy();
         }
     }
-    catch ( const orcaice::Exception & e )
+    catch ( const orcaiceutil::Exception & e )
     {
         stringstream ss;
         ss << "unexpected (local?) orcaice exception: " << e.what();

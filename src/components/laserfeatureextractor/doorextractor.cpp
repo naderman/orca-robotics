@@ -170,7 +170,7 @@ void DoorExtractor::addFeatures( const orca::LaserScanner2dDataPtr &laserData,
                            possibleDoorStarts,
                            possibleDoorEnds );
 
-    if ( context_.tracer()->verbosity( orcaice::Tracer::DebugTrace, orcaice::Tracer::ToAny ) >= 2 )
+    if ( context_.tracer()->verbosity( orcaiceutil::Tracer::DebugTrace, orcaiceutil::Tracer::ToAny ) >= 2 )
     {
         stringstream ss;
         ss << "Possible door starts:" << endl;
@@ -189,7 +189,7 @@ void DoorExtractor::addFeatures( const orca::LaserScanner2dDataPtr &laserData,
     std::vector<DoorJamb> actualDoorStarts, actualDoorEnds;
     findActualDoorJambs( possibleDoorStarts, possibleDoorEnds, actualDoorStarts, actualDoorEnds );
 
-    if ( context_.tracer()->verbosity( orcaice::Tracer::DebugTrace, orcaice::Tracer::ToAny ) >= 2 )
+    if ( context_.tracer()->verbosity( orcaiceutil::Tracer::DebugTrace, orcaiceutil::Tracer::ToAny ) >= 2 )
     {
         stringstream ss;
         ss << "Actual door starts:" << endl;
@@ -222,7 +222,7 @@ void DoorExtractor::addFeatures( const orca::LaserScanner2dDataPtr &laserData,
         features->features.push_back( p );
     }
 
-    if ( context_.tracer()->verbosity( orcaice::Tracer::DebugTrace, orcaice::Tracer::ToAny ) >= 2 )
+    if ( context_.tracer()->verbosity( orcaiceutil::Tracer::DebugTrace, orcaiceutil::Tracer::ToAny ) >= 2 )
     {
         std::stringstream ss;
         ss << "DoorExtractor:: features: " << orcaice::toString( features );

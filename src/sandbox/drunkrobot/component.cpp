@@ -26,7 +26,7 @@ using namespace drunk;
 
 Component::Component():
     orcaice::Component( "DrunkRobot" ), 
-    posBuffer_(100,orcaice::BufferTypeCircular),
+    posBuffer_(100,orcaiceutil::BufferTypeCircular),
     mainLoop_(0)
 {
 
@@ -72,5 +72,5 @@ Component::stop()
 {
     cout<<"stopping loop"<<endl;
     // Tell the main loop to stop and wait for it to comply
-    orcaice::stopAndJoin( mainLoop_ );
+    orcaiceutil::stopAndJoin( mainLoop_ );
 }

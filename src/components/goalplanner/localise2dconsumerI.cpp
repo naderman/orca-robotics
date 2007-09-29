@@ -13,7 +13,7 @@
 
 using namespace std;
 
-Localise2dConsumerI::Localise2dConsumerI(orcaice::Proxy<orca::Localise2dData>& localise2dDataPipe)
+Localise2dConsumerI::Localise2dConsumerI(orcaiceutil::Proxy<orca::Localise2dData>& localise2dDataPipe)
     :localise2dDataPipe_(localise2dDataPipe)
 {
 }

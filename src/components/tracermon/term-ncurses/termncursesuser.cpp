@@ -34,7 +34,7 @@ enum ColorType
 };
 
 TermNcursesUser::TermNcursesUser( const orcaice::Context & context ) :
-    events_(new orcaice::EventQueue),
+    events_(new orcaiceutil::EventQueue),
     context_(context)
 {
 }
@@ -57,7 +57,7 @@ TermNcursesUser::~TermNcursesUser()
     cout<< "************************************************" << endl;
     cout<< "Press any key to continue." << endl;
     cout<< "************************************************" << endl;
-    orcaice::stopAndJoin( inputHandler_ );
+    orcaiceutil::stopAndJoin( inputHandler_ );
 }
 
 void 
@@ -194,42 +194,42 @@ void
 TermNcursesUser::newTraceMessage( const orca::TracerData & data )
 {
 //     cout<<"TermNcursesUser::newTraceMessage"<<endl;
-    orcaice::EventPtr e = new NewTraceMessageEvent( data );
+    orcaiceutil::EventPtr e = new NewTraceMessageEvent( data );
     events_->add( e );
 }
 
 void 
 TermNcursesUser::previousField()
 {
-    orcaice::EventPtr e = new PreviousFieldEvent;
+    orcaiceutil::EventPtr e = new PreviousFieldEvent;
     events_->add( e );
 }
 
 void 
 TermNcursesUser::nextField()
 {
-    orcaice::EventPtr e = new NextFieldEvent;
+    orcaiceutil::EventPtr e = new NextFieldEvent;
     events_->add( e );
 }
 
 void 
 TermNcursesUser::valueUp()
 {
-    orcaice::EventPtr e = new ValueUpEvent;
+    orcaiceutil::EventPtr e = new ValueUpEvent;
     events_->add( e );
 }
 
 void 
 TermNcursesUser::valueDown()
 {
-    orcaice::EventPtr e = new ValueDownEvent;
+    orcaiceutil::EventPtr e = new ValueDownEvent;
     events_->add( e );
 }
 
 void 
 TermNcursesUser::action()
 {
-    orcaice::EventPtr e = new ActionEvent;
+    orcaiceutil::EventPtr e = new ActionEvent;
     events_->add( e );
 }
 
@@ -237,14 +237,14 @@ void
 TermNcursesUser::newVerbosityLevel( int error, int warn, int info, int debug )
 {
 //     cout<<"TermNcursesUser::newTraceMessage"<<endl;
-    orcaice::EventPtr e = new VerbosityLevelsChangedEvent( error, warn, info, debug );
+    orcaiceutil::EventPtr e = new VerbosityLevelsChangedEvent( error, warn, info, debug );
     events_->add( e );
 }
 
 void 
 TermNcursesUser::newLocalTrace( const std::string& msg )
 {
-    orcaice::EventPtr e = new NewLocalTraceEvent( msg );
+    orcaiceutil::EventPtr e = new NewLocalTraceEvent( msg );
     events_->add( e );
 }
 
@@ -258,7 +258,7 @@ TermNcursesUser::run()
     inputHandler_ = new InputHandler( *network_, *this );
     inputHandler_->start();
     
-    orcaice::EventPtr event;
+    orcaiceutil::EventPtr event;
     int timeoutMs = 500;
     
     //
@@ -408,24 +408,24 @@ displayLocalTrace( "TermNcursesUser: exited main loop" );
 void 
 TermNcursesUser::displayTrace( const orca::TracerData& obj )
 {
-//     orcaice::Tracer::TraceType type = orcaice::Tracer::toTraceType( obj.category );
+//     orcaiceutil::Tracer::TraceType type = orcaiceutil::Tracer::toTraceType( obj.category );
     ColorType color = DefaultColor;
 
-    switch ( orcaice::Tracer::toTraceType( obj.category ) )
+    switch ( orcaiceutil::Tracer::toTraceType( obj.category ) )
     {
-    case orcaice::Tracer::InfoTrace :
+    case orcaiceutil::Tracer::InfoTrace :
         color = DefaultColor;
 //         wattron( mainwin_, COLOR_PAIR(DefaultColor) );
         break;
-    case orcaice::Tracer::WarningTrace :
+    case orcaiceutil::Tracer::WarningTrace :
         color = WarningColor;
 //         wattron( mainwin_, COLOR_PAIR(WarningColor)|A_BOLD );
         break;
-    case orcaice::Tracer::ErrorTrace :
+    case orcaiceutil::Tracer::ErrorTrace :
         color = ErrorColor;
 //         wattron( mainwin_, COLOR_PAIR(ErrorColor)|A_BOLD );
         break;
-    case orcaice::Tracer::DebugTrace :
+    case orcaiceutil::Tracer::DebugTrace :
         color = DebugColor;
 //         wattron( mainwin_, COLOR_PAIR(DebugColor)|A_BOLD );
         break;

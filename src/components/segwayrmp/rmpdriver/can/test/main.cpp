@@ -58,8 +58,8 @@ int main(int argc, char* argv[]){
     segwayrmp::CanPacket dataPacketCollected;      //Data read from the card
 
 
-    orcaice::Timer delayTimer;
-    orcaice::Timer waitTimer;
+    orcaiceutil::Timer delayTimer;
+    orcaiceutil::Timer waitTimer;
 
 
     std::string portName("/dev/pcan40");

@@ -68,7 +68,7 @@ VelocityControl2dImpl::initInterface()
 }
 
 void 
-VelocityControl2dImpl::initInterface( orcaice::Thread* thread, int retryInterval )
+VelocityControl2dImpl::initInterface( orcaiceutil::Thread* thread, int retryInterval )
 {
     ptr_ = new VelocityControl2dI( *this );
     orcaice::createInterfaceWithTag( context_, ptr_, interfaceTag_, thread, retryInterval );

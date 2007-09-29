@@ -11,16 +11,16 @@
 #ifndef ORCA2_TRACERMON_TERM_IOSTREAM_USER_H
 #define ORCA2_TRACERMON_TERM_IOSTREAM_USER_H
 
-#include <orcaice/safethread.h>
+#include <orcaiceutil/safethread.h>
 #include <orcaice/context.h>
-#include <orcaice/eventqueue.h>
+#include <orcaiceutil/eventqueue.h>
 #include "../user.h"
 #include "../network.h"
 
 namespace tracermon
 {
 
-class TermIostreamUser : public orcaice::SafeThread, public User
+class TermIostreamUser : public orcaiceutil::SafeThread, public User
 {
 public:
 
@@ -49,7 +49,7 @@ public:
 private:
 
     Network* network_;
-    orcaice::EventQueuePtr events_;
+    orcaiceutil::EventQueuePtr events_;
    
     orcaice::Context context_;
 };

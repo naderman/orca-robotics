@@ -12,8 +12,8 @@ namespace detail {
 //
 // Knows how to send trace messages to an IceStorm topic.
 //
-// Note that this does _not_ inherit from orcaice::Tracer, it's simply
-// a convenience class for use by orcaice::Tracer classes.
+// Note that this does _not_ inherit from orcaiceutil::Tracer, it's simply
+// a convenience class for use by orcaiceutil::Tracer classes.
 //
 // @author Alex Brooks
 //

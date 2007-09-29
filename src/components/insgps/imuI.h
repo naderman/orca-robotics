@@ -20,7 +20,7 @@
 #include <orcaice/orcaice.h>
 
 // utilities
-#include <orcaice/buffer.h>
+#include <orcaiceutil/buffer.h>
 
 // hardware driver      
 #include "driver.h"
@@ -73,7 +73,7 @@ public:
 private:
 
     // the handler will put the latest raw data into this buffer
-    orcaice::Buffer<orca::ImuData> imuDataBuffer_;
+    orcaiceutil::Buffer<orca::ImuData> imuDataBuffer_;
     
     //publishers
     orca::ImuConsumerPrx imuPublisher_;

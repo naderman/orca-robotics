@@ -34,7 +34,7 @@ namespace orcaice
  *     system-dependent location:
  *          > Linux: $HOME/.orcarc
  *          > Win32: C:\orca.ini
- *  Throws orcaice::Exception if none of the three options work out.
+ *  Throws orcaiceutil::Exception if none of the three options work out.
  */
 std::string getGlobalConfigFilename( const Ice::StringSeq & args );
 
@@ -72,7 +72,7 @@ std::string getApplicationConfigFilename( const Ice::StringSeq & args );
  *          IceBox.Service.MyService=MyService:create --Ice.Config=local.cfg
  *              returns "local.cfg"
  *
- *  Throws orcaice::Exception if the argument list is empty. Returns an empty string if 
+ *  Throws orcaiceutil::Exception if the argument list is empty. Returns an empty string if 
  *  the argument is non-empty but no suitable properties were found.
  */
 std::string getServiceConfigFilename( const Ice::StringSeq & args );

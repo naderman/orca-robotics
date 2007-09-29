@@ -189,7 +189,7 @@ SickCarmenDriver::read( std::vector<float> &ranges,
         if ( laserStalled_ )
         {
 //             cout<<"TRACE(nativelaserdriver.cpp): returning on stall" << endl;
-            throw orcaice::Exception( ERROR_INFO, "SickCarmenDriver: laser stalled." );
+            throw orcaiceutil::Exception( ERROR_INFO, "SickCarmenDriver: laser stalled." );
         }
 
         if ( laser_->new_reading ) {

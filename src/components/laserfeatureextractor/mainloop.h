@@ -12,7 +12,7 @@
 #ifndef ORCA2_FEATURE_EXTRACTOR_MAIN_LOOP_H
 #define ORCA2_FEATURE_EXTRACTOR_MAIN_LOOP_H
 
-#include <orcaice/thread.h>
+#include <orcaiceutil/thread.h>
 #include <orcaice/context.h>
 
 #include <orca/polarfeature2d.h>
@@ -25,7 +25,7 @@ namespace laserfeatures
 
 class AlgorithmDriver;
 
-class MainLoop : public orcaice::Thread
+class MainLoop : public orcaiceutil::Thread
 {
 public:
 

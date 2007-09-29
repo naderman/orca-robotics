@@ -65,7 +65,7 @@ Component::start()
     {
         std::string errString = "Couldn't determine imu type.  Expected property '";
         errString += prefix + "Driver'";
-        throw orcaice::Exception( ERROR_INFO, errString );
+        throw orcaiceutil::Exception( ERROR_INFO, errString );
     }
 
     orca::CartesianPoint defaultOffset;
@@ -97,7 +97,7 @@ Component::start()
         // int         playerDev  = orcaice::getPropertyAsIntWithDefault( prop, prefix+"PlayerClient.Device", 0 );
         hwDriver_ = new PlayerClientOdometry3dDriver( playerHost.c_str(), playerPort, false );
 #else
-        throw orcaice::Exception( ERROR_INFO, "Can't instantiate driverName 'playerclientodometry3d' without player install!" );
+        throw orcaiceutil::Exception( ERROR_INFO, "Can't instantiate driverName 'playerclientodometry3d' without player install!" );
 #endif
     }
 
@@ -105,14 +105,14 @@ Component::start()
     {
         std::string errString = "unknown imu type: "+driverName;
         context().tracer()->error( errString );
-        throw orcaice::Exception( ERROR_INFO, errString );
+        throw orcaiceutil::Exception( ERROR_INFO, errString );
         return;
     }
 
     if(hwDriver_->reset()<0){
         std::string errString = "Failed to reset IMU.";
         context().tracer()->error( errString );
-        throw orcaice::Exception( ERROR_INFO, errString );
+        throw orcaiceutil::Exception( ERROR_INFO, errString );
         return;
     }
 
@@ -125,7 +125,7 @@ Component::start()
         if(ret==-1){
             std::string errString = "Failed to read from IMU.";
             context().tracer()->error( errString );
-            throw orcaice::Exception( ERROR_INFO, errString );
+            throw orcaiceutil::Exception( ERROR_INFO, errString );
             return;
         }
         if(!isActive()){
@@ -194,7 +194,7 @@ void
 Component::stop()
 {
     tracer()->info("stopping component...");
-    orcaice::stopAndJoin( handler_ );
+    orcaiceutil::stopAndJoin( handler_ );
 }
 
 } //namespace

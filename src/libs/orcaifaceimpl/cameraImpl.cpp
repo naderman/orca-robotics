@@ -80,7 +80,7 @@ CameraImpl::initInterface()
 }
 
 void 
-CameraImpl::initInterface( orcaice::Thread* thread, int retryInterval )
+CameraImpl::initInterface( orcaiceutil::Thread* thread, int retryInterval )
 {
     topicPrx_ = orcaice::connectToTopicWithTag<orca::CameraConsumerPrx>
         ( context_, consumerPrx_, interfaceTag_, "*", thread, retryInterval );

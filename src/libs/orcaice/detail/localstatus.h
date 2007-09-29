@@ -11,7 +11,7 @@
 #ifndef ORCAICE_DETAIL_LOCAL_STATUS_H
 #define ORCAICE_DETAIL_LOCAL_STATUS_H
 
-#include "../status.h"
+#include <orcaiceutil/status.h>
 
 #include <IceUtil/Mutex.h>
 #include <map>
@@ -23,7 +23,7 @@ namespace detail
 
 class StatusI;
 
-class LocalStatus : public orcaice::Status
+class LocalStatus : public orcaiceutil::Status
 {
 public:
 
@@ -42,7 +42,7 @@ public:
                  StatusI *statusI );
     virtual ~LocalStatus();
     
-    // from orcaice::Status
+    // from orcaiceutil::Status
 
     // Must be called before notifcations of the subsytem's status.
     // Status will flag an error if the subsystem's status is not updated
@@ -60,6 +60,10 @@ public:
 
     virtual void fault( const std::string& subsystem, const std::string& message );
 
+    // inherited from Status
+    // alexm: it's public status will probably change.
+    virtual void process();
+
 private:
 
     // Not implemented; prevents accidental use.
@@ -71,8 +75,6 @@ private:
                              SubsystemStatusType type,
                              const std::string& message );
 
-    // inherited from Status
-    void process();
 
     orcaice::Context context_;
 

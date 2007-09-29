@@ -14,7 +14,7 @@
 #include <orcaice/component.h>
 
 #include <orcaice/configutils.h>
-#include <orcaice/sysutils.h>
+#include <orcaiceutil/sysutils.h>
 #include <orcaice/exceptions.h>
 
 #include <orcaobj/stringutils.h>
@@ -39,7 +39,7 @@ TestComponent::start()
     try {
         orca::FQInterfaceName fqIface = orcaice::getProvidedInterface( context(), "P1" );
         std::string strIface = orcaice::toString( fqIface );
-        if ( strIface != "p1@"+orcaice::getHostname()+"/configtest" ) {
+        if ( strIface != "p1@"+orcaiceutil::getHostname()+"/configtest" ) {
             cout<<"failed"<<endl<<"got :"<<strIface<<endl;
             exit(EXIT_FAILURE);
         }
@@ -76,7 +76,7 @@ TestComponent::start()
     try {
         orca::FQTopicName fqTopic = orcaice::getProvidedTopic( context(), "P1" );
         std::string strTopic = orcaice::toString( fqTopic );
-        if ( strTopic != "p1/*@"+orcaice::getHostname()+"/configtest" ) {
+        if ( strTopic != "p1/*@"+orcaiceutil::getHostname()+"/configtest" ) {
             cout<<"failed"<<endl<<"got :"<<strTopic<<endl;
             exit(EXIT_FAILURE);
         }

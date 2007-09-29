@@ -7,6 +7,7 @@ MESSAGE ( STATUS "== LIBRARIES ==" )
 
 ADD_SUBDIRECTORY ( bros1 )
 ADD_SUBDIRECTORY ( orcabros1 )
+ADD_SUBDIRECTORY ( orcaiceutil )
 ADD_SUBDIRECTORY ( orcaice )
 ADD_SUBDIRECTORY ( orcacm )
 ADD_SUBDIRECTORY ( orcacolourtext )

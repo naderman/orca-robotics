@@ -17,7 +17,7 @@ using namespace std;
 using namespace orca;
 using namespace goalplanner;
 
-PathPlanner2dConsumerI::PathPlanner2dConsumerI(orcaice::Proxy<orca::PathPlanner2dData> &pathProxy)
+PathPlanner2dConsumerI::PathPlanner2dConsumerI(orcaiceutil::Proxy<orca::PathPlanner2dData> &pathProxy)
     : pathProxy_(pathProxy)
 {
 }

@@ -47,7 +47,7 @@ Application::main(int argc, char* argv[])
         if ( !args[i].compare( 0,2, "-h" ) ||
              !args[i].compare( 0,6, "--help" ) )
         {
-            orcaice::initTracerInfo( component_.help( basename(args[0]) ) );
+            orcaice::initTracerInfo( component_.help( orcaiceutil::basename(args[0]) ) );
             // nothing to clean up yet
             exit(0);
         }
@@ -95,7 +95,7 @@ Application::main(int argc, char* argv[])
             initTracerInfo( component_.tag()+": Loaded component properties from '"+compFilename+"'" );
         }
     }
-    catch ( const orcaice::Exception &e )
+    catch ( const orcaiceutil::Exception &e )
     {
         initTracerWarning( component_.tag()+": Failed to open component config file '"+compFilename+"':"+e.what() );
             // debug
@@ -129,7 +129,7 @@ Application::main(int argc, char* argv[])
         orcaice::detail::setGlobalProperties( initData.properties, globFilename );
         initTracerInfo( component_.tag()+": Loaded global properties from '"+globFilename+"'" );
     }
-    catch ( const orcaice::Exception &e )
+    catch ( const orcaiceutil::Exception &e )
     {
         initTracerWarning( component_.tag()+": Failed to open global config file '"+globFilename+"': "+e.what() );
     }
@@ -188,7 +188,7 @@ Application::run( int argc, char* argv[] )
             initTracerInfo( component_.tag()+": Component started" );
         }
     }
-    catch ( const orcaice::Exception & e )
+    catch ( const orcaiceutil::Exception & e )
     {
         initTracerError( component_.tag()+": Caught OrcaIce exception: "+e.what() );
 

@@ -15,7 +15,7 @@
 #include "playerclientdriverconfig.h"
 #include <libplayerc++/playerc++.h>
 #include <memory>
-#include <orcaice/store.h>
+#include <orcaiceutil/store.h>
 
 namespace robot2d
 {
@@ -37,7 +37,7 @@ public:
 
 private:
 
-    orcaice::Store<Command> commandStore_;
+    orcaiceutil::Store<Command> commandStore_;
 
     std::auto_ptr<PlayerCc::PlayerClient>    robot_;
     std::auto_ptr<PlayerCc::Position2dProxy> positionProxy_;

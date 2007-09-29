@@ -8,7 +8,7 @@ using namespace std;
 namespace orcaice {
 
 ComponentThread::ComponentThread( const Ice::ObjectPrx   &homePrx,
-                                  Status                 &status,
+                                  orcaiceutil::Status    &status,
                                   ComponentInterfaceFlag  interfaceFlag,
                                   const orcaice::Context &context )
     : registeredHome_(false),
@@ -47,7 +47,9 @@ ComponentThread::run()
                 registeredHome_ = tryRegisterHome();
             }
             if ( interfaceFlag_ & StatusInterface )
+            {
                 status_.process();
+            }
 
             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
         }

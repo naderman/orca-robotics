@@ -22,7 +22,7 @@ void
 createInterfaceWithString( const Context       & context,
                             Ice::ObjectPtr      & object,
                             const std::string   & name,
-                            orcaice::Thread*  thread, int retryInterval )
+                            orcaiceutil::Thread*  thread, int retryInterval )
 {
     while ( !thread->isStopping() )
     {
@@ -51,7 +51,7 @@ void
 createInterfaceWithTag( const Context       & context,
                         Ice::ObjectPtr      & object,
                         const std::string   & interfaceTag,
-                        orcaice::Thread*  thread, int retryInterval )
+                        orcaiceutil::Thread*  thread, int retryInterval )
 {
     while ( !thread->isStopping() )
     {
@@ -77,7 +77,7 @@ createInterfaceWithTag( const Context       & context,
 }
 
 void
-activate( Context& context, orcaice::Thread* thread, int retryInterval )
+activate( Context& context, orcaiceutil::Thread* thread, int retryInterval )
 {
     while ( !thread->isStopping() )
     {
@@ -114,7 +114,7 @@ activate( Context& context, orcaice::Thread* thread, int retryInterval )
 
 std::string 
 getInterfaceIdWithString( const Context& context, const std::string& proxyString,
-                       orcaice::Thread*  thread, int retryInterval )
+                       orcaiceutil::Thread*  thread, int retryInterval )
 {
     std::string ifaceId;
     while ( !thread->isStopping() )
@@ -138,7 +138,7 @@ getInterfaceIdWithString( const Context& context, const std::string& proxyString
 
 std::string 
 getInterfaceIdWithTag( const Context& context, const std::string& interfaceTag,
-                       orcaice::Thread*  thread, int retryInterval )
+                       orcaiceutil::Thread*  thread, int retryInterval )
 {
     std::string ifaceId;
     while ( !thread->isStopping() )

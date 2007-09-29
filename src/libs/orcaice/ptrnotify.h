@@ -11,7 +11,7 @@
 #ifndef ORCAICE_ICE_PTR_NOTIFY_H
 #define ORCAICE_ICE_PTR_NOTIFY_H
 
-#include <orcaice/notify.h>
+#include <orcaiceutil/notify.h>
 
 #include <Ice/Ice.h>
 #include <IceUtil/IceUtil.h>
@@ -28,9 +28,9 @@ namespace orcaice
  *  @see PtrBuffer, PtrStore
  */
 template<class Type>
-class PtrNotify : public Notify<Type>
+class PtrNotify : public orcaiceutil::Notify<Type>
 {
-    using Notify<Type>::handler_;
+    using orcaiceutil::Notify<Type>::handler_;
     
 protected:
     virtual void internalSet( const Type & obj );

@@ -136,7 +136,7 @@ checkForDodgyEndpoints( const orca::CartesianLineFeature2d &f )
     {
         stringstream ss;
         ss << "NaN found in start/end of line: " << orcaice::toString(f);
-        throw orcaice::Exception( ERROR_INFO, ss.str() );
+        throw orcaiceutil::Exception( ERROR_INFO, ss.str() );
     }
 }
 

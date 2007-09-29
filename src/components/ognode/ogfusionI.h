@@ -19,7 +19,7 @@
 #include <orcaice/orcaice.h>
 
 // utilities
-#include <orcaice/buffer.h>
+#include <orcaiceutil/buffer.h>
 
 namespace ognode
 {
@@ -28,7 +28,7 @@ class OgFusionI : public orca::OgFusion
 {
 public:
     OgFusionI( orca::OgFusionConfig &config, 
-               orcaice::Buffer<orca::OgFusionData> &OgFusionDataBuffer);
+               orcaiceutil::Buffer<orca::OgFusionData> &OgFusionDataBuffer);
 
     virtual void setData(const orca::OgFusionData&, const Ice::Current&);
     virtual orca::OgFusionConfig getConfig(const ::Ice::Current &) const;
@@ -39,7 +39,7 @@ private:
     orca::OgFusionConfig config_;
 
     //buffer
-    orcaice::Buffer<orca::OgFusionData> &ogFusionDataBuffer_;
+    orcaiceutil::Buffer<orca::OgFusionData> &ogFusionDataBuffer_;
 
 };
 

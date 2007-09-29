@@ -110,7 +110,7 @@ Component::createPlugin( const std::string& interfaceType, const std::string& ta
         orcawall::InterfaceSim* sim = factories_[i]->create( interfaceType, tag, context() );
 
         if ( sim ) { 
-            sims_.push_back( (orcaice::Thread*)sim );
+            sims_.push_back( (orcaiceutil::Thread*)sim );
             return;
         }
         else {
@@ -188,7 +188,7 @@ Component::stop()
     for ( unsigned int i=0; i<sims_.size(); ++i ) {
         stringstream ss; ss<<"Stopping interface simulator "<<i;
         context().tracer()->debug( ss.str(), 3 );
-        orcaice::stopAndJoin( sims_[i] );
+        orcaiceutil::stopAndJoin( sims_[i] );
     }
     context().tracer()->debug( "Component stopped", 2 );
 }

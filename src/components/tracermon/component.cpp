@@ -55,17 +55,17 @@ Component::start()
 #ifdef HAVE_TERM_NCURSES_DRIVER        
         tracer()->info( "Loading terminal ncurses driver");
         TermNcursesUser* user = new TermNcursesUser( context() );
-        usrHandler_ = (orcaice::Thread*)user;
+        usrHandler_ = (orcaiceutil::Thread*)user;
         userDriver = (User*)user;
 #else
-        throw orcaice::Exception( ERROR_INFO, "Can't instantiate driver type 'term-ncurses' because it was not compiled." );
+        throw orcaiceutil::Exception( ERROR_INFO, "Can't instantiate driver type 'term-ncurses' because it was not compiled." );
 #endif
     }
     else if ( driverName == "term-iostream" ) 
     {
         tracer()->info( "Loading terminal iostream driver");
         TermIostreamUser* userHandler = new TermIostreamUser( context() );
-        usrHandler_ = (orcaice::Thread*)userHandler;
+        usrHandler_ = (orcaiceutil::Thread*)userHandler;
         userDriver = (User*)userHandler;
     }
     else {
@@ -79,7 +79,7 @@ Component::start()
     //
     // the constructor may throw, we'll let the application shut us down
     NetworkHandler* networkHandler = new NetworkHandler( userDriver, context() );
-    netHandler_ = (orcaice::Thread*)networkHandler;
+    netHandler_ = (orcaiceutil::Thread*)networkHandler;
     Network* netDriver = (Network*)networkHandler;
     netHandler_->start();
 
@@ -93,7 +93,7 @@ Component::start()
 void
 Component::stop()
 {
-    orcaice::stopAndJoin( netHandler_ );
+    orcaiceutil::stopAndJoin( netHandler_ );
 
     // userHandler_ is blocked on user input
     // the only way for it to realize that we want to stop is to give it some keyboard input.
@@ -102,5 +102,5 @@ Component::stop()
 //     tracer()->print( "Press any key or shake the joystick to continue." );
 //     tracer()->print( "************************************************" );
     
-    orcaice::stopAndJoin( usrHandler_ );
+    orcaiceutil::stopAndJoin( usrHandler_ );
 }

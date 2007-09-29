@@ -141,7 +141,7 @@ PolarFeature2dImpl::localSet( const ::orca::PolarFeature2dDataPtr &data )
 void
 PolarFeature2dImpl::localSetAndSend( const ::orca::PolarFeature2dDataPtr &data )
 {
-    if ( context_.tracer()->verbosity( orcaice::Tracer::DebugTrace, orcaice::Tracer::ToAny ) >= 5 )
+    if ( context_.tracer()->verbosity( orcaiceutil::Tracer::DebugTrace, orcaiceutil::Tracer::ToAny ) >= 5 )
     {
         stringstream ss;
         ss << "PolarFeature2dIface: Sending data: " << orcaice::toString(data);

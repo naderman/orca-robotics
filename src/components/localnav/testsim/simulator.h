@@ -8,7 +8,7 @@
 #include <orcaifaceimpl/ogmapImpl.h>
 #include <orca/velocitycontrol2d.h>
 #include <orca/odometry2d.h>
-#include <orcaice/proxy.h>
+#include <orcaiceutil/proxy.h>
 #include <orcaice/context.h>
 #include <orca/pathfollower2d.h>
 
@@ -31,9 +31,9 @@ public:
 
     // These can be given out to others: the simulator 
     // will put new data in them on each step.
-    orcaice::Proxy<orca::RangeScanner2dDataPtr> obsProxy_;
-    orcaice::Proxy<orca::Localise2dData>        locProxy_;
-    orcaice::Proxy<orca::Odometry2dData>        odomProxy_;
+    orcaiceutil::Proxy<orca::RangeScanner2dDataPtr> obsProxy_;
+    orcaiceutil::Proxy<orca::Localise2dData>        locProxy_;
+    orcaiceutil::Proxy<orca::Odometry2dData>        odomProxy_;
 
     void printState();
 

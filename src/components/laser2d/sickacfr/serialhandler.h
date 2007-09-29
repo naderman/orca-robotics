@@ -10,11 +10,11 @@
 #ifndef SICK_ACFR_SERIALHANDLER_H
 #define SICK_ACFR_SERIALHANDLER_H
 
-#include <orcaice/thread.h>
+#include <orcaiceutil/thread.h>
 #include <sickacfr/messages.h>
 #include <orcaserial/serial.h>
 #include <orcaice/context.h>
-#include <orcaice/buffer.h>
+#include <orcaiceutil/buffer.h>
 #include <orca/orca.h>
 
 namespace sickacfr {
@@ -40,7 +40,7 @@ public:
 //
 // @author Alex Brooks
 //
-class SerialHandler : public orcaice::Thread
+class SerialHandler : public orcaiceutil::Thread
 {
 
 public: 
@@ -56,7 +56,7 @@ public:
     virtual void run();
 
     // Allow external non-const access direct to (thread-safe) responseBuffer
-    orcaice::Buffer<TimedLmsResponse> &responseBuffer() { return responseBuffer_; }
+    orcaiceutil::Buffer<TimedLmsResponse> &responseBuffer() { return responseBuffer_; }
 
 private: 
 
@@ -72,7 +72,7 @@ private:
     std::vector<uChar> buffer_;
 
     // Thread-safe store of responses from the SICK
-    orcaice::Buffer<TimedLmsResponse> responseBuffer_;
+    orcaiceutil::Buffer<TimedLmsResponse> responseBuffer_;
 
     // Stuff waiting to be sent
     bool isMessageWaitingToBeSent_;

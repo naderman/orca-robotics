@@ -110,12 +110,12 @@ Component::finalise()
     if ( componentThread_ )
     {
         context_.tracer()->debug( "orcaice::Component: stopping ComponentThread....", 2 );
-        orcaice::stopAndJoin( componentThread_ );
+        orcaiceutil::stopAndJoin( componentThread_ );
         context_.tracer()->debug( "orcaice::Component: ComponentThread stopped.", 2 );
     }
 }
 
-Tracer*
+orcaiceutil::Tracer*
 Component::initTracer()
 {
     if ( !(interfaceFlag_ & TracerInterface) ) {
@@ -128,13 +128,13 @@ Component::initTracer()
     // 2. a smart pointer which derives from Tracer to save in context
     // Ideally we'd have something like StatusTracerPtr which does derive from both.
     // but the smart pointer stuff is then included twice and reference counters get confused.
-    // So first we use the pointer to orcaice::StatusTracerI, then change to Ice::ObjectPtr and Tracer*.
+    // So first we use the pointer to orcaiceutil::StatusTracerI, then change to Ice::ObjectPtr and Tracer*.
     orcaice::detail::TracerI* pobj = new orcaice::detail::TracerI( context_ );
     Ice::ObjectPtr obj = pobj;
     //TracerPtr trac = pobj;
     // have to revert to using plain pointers. Otherwise, we get segfault on shutdown when
     // trac tries to delete the object which already doesn't exist. Something wrong with ref counters.
-    Tracer* trac = (Tracer*)pobj;
+    orcaiceutil::Tracer* trac = (orcaiceutil::Tracer*)pobj;
     
     //
     // add this object to the adapter and name it 'tracer'
@@ -148,7 +148,7 @@ Component::initTracer()
     return trac;
 }
 
-Status*
+orcaiceutil::Status*
 Component::initStatus()
 {
 
@@ -163,7 +163,7 @@ Component::initStatus()
     // 2. a smart pointer which derives from Tracer to save in context
     // Ideally we'd have something like StatusTracerPtr which does derive from both.
     // but the smart pointer stuff is then included twice and reference counters get confused.
-    // So first we use the pointer to orcaice::StatusTracerI, then change to Ice::ObjectPtr and Tracer*.
+    // So first we use the pointer to orcaiceutil::StatusTracerI, then change to Ice::ObjectPtr and Tracer*.
     orcaice::detail::StatusI* pobj = new orcaice::detail::StatusI( context_ );
     // a bit of a hack: keep a smart pointer so it's not destroyed with the adapter
     statusObj_ = pobj;
@@ -255,7 +255,7 @@ const std::string
 Component::help( const std::string& executable ) const
 {
     // strip possible extension
-    std::string exec = orcaice::basename( executable, true );
+    std::string exec = orcaiceutil::basename( executable, true );
     std::string s;
     s += "Standard usage:\n";
     s += "  " + executable + " --help           Prints this help and exists.\n";

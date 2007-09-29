@@ -20,7 +20,7 @@
 #include <orcaice/orcaice.h>
 
 // utilities
-#include <orcaice/buffer.h>
+#include <orcaiceutil/buffer.h>
 
 // hardware driver      
 #include "driver.h"
@@ -77,7 +77,7 @@ private:
     //      
 
     // the handler (this class) will put the latest data into this buffer
-    orcaice::Buffer<orca::GpsData> gpsDataBuffer_;
+    orcaiceutil::Buffer<orca::GpsData> gpsDataBuffer_;
 
     //publishers
     orca::GpsConsumerPrx gpsPublisher_;

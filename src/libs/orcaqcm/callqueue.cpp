@@ -86,7 +86,7 @@ CallQueue::run()
             exception_ = auto_ptr<Ice::Exception>(e.ice_clone());
             destroy_ = true;
         }
-        // these include orcaice::Exception's which derive from std::exception
+        // these include orcaiceutil::Exception's which derive from std::exception
         // normally will get an exception from Notify when the handler is destroyed on shutdown
         catch ( const std::exception & e )
         {

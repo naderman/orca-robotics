@@ -1,9 +1,19 @@
-#ifndef COMPONENTTHREAD_H
-#define COMPONENTTHREAD_H
+/*
+ * Orca Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2007 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This copy of Orca is licensed to you under the terms described in the
+ * ORCA_LICENSE file included in this distribution.
+ *
+ */
 
-#include <orcaice/thread.h>
+#ifndef ORCAICE_COMPONENT_THREAD_H
+#define ORCAICE_COMPONENT_THREAD_H
+
+#include <orcaiceutil/thread.h>
+#include <orcaiceutil/status.h>
 #include <orcaice/context.h>
-#include <orcaice/status.h>
 #include <orcaice/component.h>
 
 namespace orcaice {
@@ -15,13 +25,13 @@ namespace orcaice {
 //
 // @author Alex Brooks
 //
-class ComponentThread : public orcaice::Thread
+class ComponentThread : public orcaiceutil::Thread
 {
 
 public: 
 
     ComponentThread( const Ice::ObjectPrx   &homePrx,
-                     Status                 &status,
+                     orcaiceutil::Status    &status,
                      ComponentInterfaceFlag  interfaceFlag,
                      const orcaice::Context &context );
     ~ComponentThread();
@@ -36,7 +46,7 @@ private:
     bool registeredHome_;
 
     Ice::ObjectPrx          homePrx_;
-    Status                 &status_;
+    orcaiceutil::Status    &status_;
     ComponentInterfaceFlag  interfaceFlag_;
     orcaice::Context        context_;
 };

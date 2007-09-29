@@ -11,9 +11,9 @@
 #ifndef ORCA2_ROBOT2D_NETWORK_HANDLER_H
 #define ORCA2_ROBOT2D_NETWORK_HANDLER_H
 
-#include <orcaice/safethread.h>
+#include <orcaiceutil/safethread.h>
 #include <orcaice/context.h>
-#include <orcaice/notify.h>
+#include <orcaiceutil/notify.h>
 
 #include <orcaifaceimpl/odometry2dImpl.h>
 #include <orcaifaceimpl/velocitycontrol2dImpl.h>
@@ -26,8 +26,8 @@ namespace robot2d
 //
 // Handles network interface
 //
-class NetHandler : public orcaice::SafeThread,
-                   public orcaice::NotifyHandler<orca::VelocityControl2dData>
+class NetHandler : public orcaiceutil::SafeThread,
+                   public orcaiceutil::NotifyHandler<orca::VelocityControl2dData>
 {
 public:
 

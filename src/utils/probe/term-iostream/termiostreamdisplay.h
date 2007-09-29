@@ -12,8 +12,8 @@
 #define ORCA2_PROBE_IOSTREAM_DISPLAY_DRIVER_H
 
 #include <vector>
-#include <orcaice/buffer.h>
-#include <orcaice/proxy.h>
+#include <orcaiceutil/buffer.h>
+#include <orcaiceutil/proxy.h>
 
 #include <orcaprobe/factory.h>
 
@@ -47,7 +47,7 @@ private:
     std::vector<std::string>    supportedInterfaces_;
     orcaprobe::IBrowser    *browser_;
 
-    orcaice::EventQueuePtr events_;
+    orcaiceutil::EventQueuePtr events_;
 
     // local data model
     orcacm::RegistryHierarchicalData1 registryData_;

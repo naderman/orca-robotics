@@ -127,8 +127,8 @@ AlgoHandler::initNetwork()
 
     // PathPlanner2d
     // create the proxy/buffer for tasks
-    pathPlannerTaskProxy_ = new orcaice::Proxy<PathPlanner2dTask>; 
-    pathPlannerDataProxy_ = new orcaice::Proxy<PathPlanner2dData>;
+    pathPlannerTaskProxy_ = new orcaiceutil::Proxy<PathPlanner2dTask>; 
+    pathPlannerDataProxy_ = new orcaiceutil::Proxy<PathPlanner2dData>;
 
     pathPlannerI_ = new PathPlanner2dI( *pathPlannerTaskProxy_, *pathPlannerDataProxy_, context_ );
     Ice::ObjectPtr pathPlannerObj = pathPlannerI_;
@@ -253,7 +253,7 @@ AlgoHandler::initDriver()
         string errorStr = "Unknown driver type.";
         context_.tracer()->error( errorStr);
         context_.tracer()->info( "Valid driver values are {'simplenav', 'skeletonnav', 'sparseskeletonnav', 'astar', 'fake'}" );
-        throw orcaice::Exception( ERROR_INFO, errorStr );
+        throw orcaiceutil::Exception( ERROR_INFO, errorStr );
     }
 
     context_.tracer()->debug("driver instantiated",5);
@@ -361,7 +361,7 @@ AlgoHandler::run()
             ss << "unexpected (remote?) orca exception: " << e << ": " << e.what;
             context_.tracer()->error( ss.str() );
         }
-        catch ( const orcaice::Exception & e )
+        catch ( const orcaiceutil::Exception & e )
         {
             stringstream ss;
             ss << "unexpected (local?) orcaice exception: " << e.what();

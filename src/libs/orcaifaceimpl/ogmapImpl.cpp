@@ -75,7 +75,7 @@ OgMapImpl::initInterface()
 }
 
 void 
-OgMapImpl::initInterface( orcaice::Thread* thread, int retryInterval )
+OgMapImpl::initInterface( orcaiceutil::Thread* thread, int retryInterval )
 {
     context_.tracer()->debug( "OgMapImpl::initInterface(thread)", 5 );
 

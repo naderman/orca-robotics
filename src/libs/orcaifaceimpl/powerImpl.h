@@ -15,7 +15,7 @@
 #include <IceStorm/IceStorm.h>
 
 // utilities
-#include <orcaice/proxy.h>
+#include <orcaiceutil/proxy.h>
 #include <orcaice/context.h>
 
 namespace orcaifaceimpl {
@@ -34,12 +34,12 @@ public:
     ~PowerImpl();
 
     // local interface:
-    //! May throw orcaice::Exceptions.
+    //! May throw orcaiceutil::Exceptions.
     void initInterface();
 
     //! Sets up interface and connects to IceStorm. Catches all exceptions and retries
     //! until sucessful. At every iteration, checks if the thread was stopped.
-    void initInterface( orcaice::Thread* thread, int retryInterval=2 );
+    void initInterface( orcaiceutil::Thread* thread, int retryInterval=2 );
 
     //! A local call which sets the data reported by the interface
     void localSet( const orca::PowerData& data );
@@ -54,7 +54,7 @@ private:
     void internalSubscribe(const ::orca::PowerConsumerPrx&);
     void internalUnsubscribe(const ::orca::PowerConsumerPrx&);
 
-    orcaice::Proxy<orca::PowerData> dataProxy_;
+    orcaiceutil::Proxy<orca::PowerData> dataProxy_;
 
     orca::PowerConsumerPrx    consumerPrx_;
     IceStorm::TopicPrx             topicPrx_;

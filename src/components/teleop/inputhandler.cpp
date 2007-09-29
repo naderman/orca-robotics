@@ -77,14 +77,14 @@ InputHandler::run()
         context_.tracer()->info("loading 'joystick' driver");
         driver_ = new JoystickDriver( network_, context_ );
 #else
-        throw orcaice::Exception( ERROR_INFO, "Can't instantiate driver 'joystick' because it was not built!" );
+        throw orcaiceutil::Exception( ERROR_INFO, "Can't instantiate driver 'joystick' because it was not built!" );
 #endif
     }
     else {
         string errorStr = "Unknown driver type. Cannot talk to hardware.";
         context_.tracer()->error( errorStr);
         context_.tracer()->info( "Valid driver values are {'keyboard', 'joystick'}" );
-        throw orcaice::Exception( ERROR_INFO, errorStr );
+        throw orcaiceutil::Exception( ERROR_INFO, errorStr );
     }    
 
     // don't forget to enable the driver, but check isActive() to see if we should quit

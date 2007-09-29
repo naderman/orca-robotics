@@ -65,7 +65,7 @@ void stdMenu( const std::string& header, const std::string& itemname, const std:
 TermIostreamDisplay::TermIostreamDisplay( const std::vector<std::string> & supportedInterfaces ) : 
     supportedInterfaces_(supportedInterfaces),
     browser_(0),
-    events_(new orcaice::EventQueue)
+    events_(new orcaiceutil::EventQueue)
 {
     cout<<"The following interfaces are supported:";
     for ( unsigned int j=0; j<supportedInterfaces_.size(); ++j ) {
@@ -90,7 +90,7 @@ TermIostreamDisplay::enable( orcaprobe::IBrowser* browser )
     browser_ = browser;
     browser_->chooseActivate();
 
-    orcaice::EventPtr event;
+    orcaiceutil::EventPtr event;
     int timeoutMs = 500;
 
     //
@@ -187,49 +187,49 @@ TermIostreamDisplay::enable( orcaprobe::IBrowser* browser )
 void 
 TermIostreamDisplay::showNetworkActivity( bool isActive )
 {
-    orcaice::EventPtr e = new probe::NetworkActivityChangedEvent( isActive );
+    orcaiceutil::EventPtr e = new probe::NetworkActivityChangedEvent( isActive );
     events_->add( e );
 }
 
 void 
 TermIostreamDisplay::setRegistryData( const orcacm::RegistryHierarchicalData1 & data )
 {
-    orcaice::EventPtr e = new probe::RegistryDataChangedEvent( data );
+    orcaiceutil::EventPtr e = new probe::RegistryDataChangedEvent( data );
     events_->add( e );
 }
 
 void 
 TermIostreamDisplay::setPlatformData( const orcacm::RegistryHierarchicalData2 & data )
 {
-    orcaice::EventPtr e = new probe::PlatformDataChangedEvent( data );
+    orcaiceutil::EventPtr e = new probe::PlatformDataChangedEvent( data );
     events_->add( e );
 }
 
 void 
 TermIostreamDisplay::setComponentData( const orcacm::ComponentData & data )
 {
-    orcaice::EventPtr e = new probe::ComponentDataChangedEvent( data );
+    orcaiceutil::EventPtr e = new probe::ComponentDataChangedEvent( data );
     events_->add( e );
 }
 
 void 
 TermIostreamDisplay::setInterfaceData( const orcacm::InterfaceData & data )
 {
-    orcaice::EventPtr e = new probe::InterfaceDataChangedEvent( data );
+    orcaiceutil::EventPtr e = new probe::InterfaceDataChangedEvent( data );
     events_->add( e );
 }
 
 void 
 TermIostreamDisplay::setOperationData( const orcacm::OperationData & data )
 {
-    orcaice::EventPtr e = new probe::OperationDataChangedEvent( data );
+    orcaiceutil::EventPtr e = new probe::OperationDataChangedEvent( data );
     events_->add( e );
 }
 
 void 
 TermIostreamDisplay::setFocus( orcaprobe::IDisplay::FocusType focus )
 {
-    orcaice::EventPtr e = new probe::FocusChangedEvent( focus );
+    orcaiceutil::EventPtr e = new probe::FocusChangedEvent( focus );
     events_->add( e );
 }
 

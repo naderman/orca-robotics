@@ -80,7 +80,7 @@ RangeScanner2dImpl::initInterface()
 }
 
 void 
-RangeScanner2dImpl::initInterface( orcaice::Thread* thread, int retryInterval )
+RangeScanner2dImpl::initInterface( orcaiceutil::Thread* thread, int retryInterval )
 {
     topicPrx_ = orcaice::connectToTopicWithTag<orca::RangeScanner2dConsumerPrx>
         ( context_, consumerPrx_, interfaceTag_, "*", thread, retryInterval );
@@ -162,7 +162,7 @@ RangeScanner2dImpl::localSet( const ::orca::RangeScanner2dDataPtr &data )
 void
 RangeScanner2dImpl::localSetAndSend( const ::orca::RangeScanner2dDataPtr &data )
 {
-    if ( context_.tracer()->verbosity( orcaice::Tracer::DebugTrace, orcaice::Tracer::ToAny ) >= 5 )
+    if ( context_.tracer()->verbosity( orcaiceutil::Tracer::DebugTrace, orcaiceutil::Tracer::ToAny ) >= 5 )
     {
         stringstream ss;
         ss << "RangeScanner2dIface: Sending data: " << orcaice::toString(data);

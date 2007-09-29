@@ -10,7 +10,7 @@
 #ifndef ORCA2_IMAGESERVER_MAIN_LOOP_H
 #define ORCA2_IMAGESERVER_MAIN_LOOP_H
 
-#include <orcaice/thread.h>
+#include <orcaiceutil/thread.h>
 #include <orcaice/context.h>
 #include <orcaifaceimpl/cameraImpl.h>
 
@@ -24,7 +24,7 @@ namespace imageserver {
 //
 // Note: this thing self-destructs when run() returns.
 //
-class MainLoop : public orcaice::Thread
+class MainLoop : public orcaiceutil::Thread
 {
 
 public:

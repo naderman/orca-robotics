@@ -39,5 +39,5 @@ Component::start()
 void
 Component::stop()
 {
-    orcaice::stopAndJoin( mainLoop_ );
+    orcaiceutil::stopAndJoin( mainLoop_ );
 }

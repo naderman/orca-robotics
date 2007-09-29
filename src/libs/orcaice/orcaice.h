@@ -17,20 +17,17 @@
 
 // dependencies
 #include <orcaobj/orcaobj.h>
+#include <orcaiceutil/orcaiceutil.h>
 
 // orcaice headers
-#include <orcaice/common.h>
-#include <orcaice/thread.h>
 #include <orcaice/exceptions.h>
 #include <orcaice/ptrbuffer.h>
+#include <orcaice/ptrstore.h>
 #include <orcaice/ptrnotify.h>
-#include <orcaice/eventqueue.h>
-#include <orcaice/timer.h>
 
 #include <orcaice/configutils.h>
 #include <orcaice/proputils.h>
 #include <orcaice/printutils.h>
-#include <orcaice/stringutils.h>
 
 #include <orcaice/connectutils.h>
 #include <orcaice/multiconnectutils.h>

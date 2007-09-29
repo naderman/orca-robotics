@@ -14,16 +14,16 @@
 #include <IceStorm/IceStorm.h>
 #include <orca/drivebicycle.h>
 #include <orcalog/replayer.h>
-#include <orcaice/notify.h>
+#include <orcaiceutil/notify.h>
 
-#include <orcaice/proxy.h>
+#include <orcaiceutil/proxy.h>
 
 namespace orcalogfactory
 {
 
 class DriveBicycleReplayer : public orca::DriveBicycle, 
                              public IceUtil::Shared,
-                             public orcaice::Notify<orca::DriveBicycleCommand>,
+                             public orcaiceutil::Notify<orca::DriveBicycleCommand>,
                              public orcalog::Replayer
 {
 public:
@@ -49,8 +49,8 @@ public:
     virtual void replayData( int index, bool isTest=false );
 
 private:
-    orcaice::Proxy<orca::DriveBicycleData> dataPipe_;
-    orcaice::Proxy<orca::VehicleDescription> descriptionPipe;
+    orcaiceutil::Proxy<orca::DriveBicycleData> dataPipe_;
+    orcaiceutil::Proxy<orca::VehicleDescription> descriptionPipe;
     
     orca::DriveBicycleData data_;
     orca::DriveBicycleConsumerPrx publisher_;

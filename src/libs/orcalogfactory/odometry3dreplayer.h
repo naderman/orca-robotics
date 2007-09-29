@@ -15,7 +15,7 @@
 #include <orca/odometry3d.h>
 #include <orcalog/replayer.h>
 
-#include <orcaice/proxy.h>
+#include <orcaiceutil/proxy.h>
 
 namespace orcalogfactory
 {
@@ -43,7 +43,7 @@ public:
     virtual void replayData( int index, bool isTest=false );
 
 private:
-    orcaice::Proxy<orca::Odometry3dData> dataPipe_;
+    orcaiceutil::Proxy<orca::Odometry3dData> dataPipe_;
     
     orca::Odometry3dData data_;
     orca::VehicleDescription descr_;

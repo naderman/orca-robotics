@@ -82,7 +82,7 @@ Localise2dImpl::initInterface()
 }
 
 void 
-Localise2dImpl::initInterface( orcaice::Thread* thread, int retryInterval )
+Localise2dImpl::initInterface( orcaiceutil::Thread* thread, int retryInterval )
 {
     topicPrx_ = orcaice::connectToTopicWithTag<orca::Localise2dConsumerPrx>
         ( context_, consumerPrx_, interfaceTag_, "*", thread, retryInterval );
