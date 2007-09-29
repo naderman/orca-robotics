@@ -19,7 +19,7 @@
 #include <map>
 #include <list>
 
-namespace appadmin {
+namespace orcaiceutil {
 
 //
 // We use the pointer to this class as a unique ID.

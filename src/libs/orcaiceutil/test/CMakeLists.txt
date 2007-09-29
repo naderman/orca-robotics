@@ -36,3 +36,7 @@ MESSAGE ( STATUS "Planning to Build Test      : SafeThreadTest [libOrcaIceUtil]"
 ADD_EXECUTABLE( eventqueuetest eventqueuetest.cpp )
 ADD_TEST( EventQueueTest eventqueuetest )
 MESSAGE ( STATUS "Planning to Build Test      : EventQueueTest [libOrcaIceUtil]")
+
+ADD_EXECUTABLE( jobqueuetest jobqueuetest.cpp )
+ADD_TEST( JobQueueTest jobqueuetest )
+MESSAGE ( STATUS "Planning to Build Test      : JobQueueTest [libOrcaIceUtil]")

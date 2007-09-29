@@ -14,7 +14,7 @@
 
 using namespace std;
 
-namespace appadmin {
+namespace orcaiceutil {
 
 //////////////////////////////////////////////
 
