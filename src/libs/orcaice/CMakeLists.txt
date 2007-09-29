@@ -43,7 +43,7 @@ ELSE ( NOT OS_WIN )
               optimized Ice optimized IceUtil optimized IceStorm optimized IceBox optimized IceGrid
               debug Iced debug IceUtild debug IceStormd debug IceBoxd debug IceGridd
               optimized Glacier2 debug Glacier2d
-              OrcaIceDetail OrcaInterfaces )
+              OrcaInterfaces )
 ENDIF ( NOT OS_WIN )
 
 # special dependency on the generated files
