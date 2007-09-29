@@ -34,6 +34,7 @@ src
         insgps                             LGPL
         laser2d                            LGPL
             playerclient                    GPL
+            sickacfr                       LGPL
             sickcarmen                      GPL
         laser2og                           LGPL
         laserfeatureextractor              LGPL
@@ -48,7 +49,8 @@ src
         robot2d                            LGPL
             playerclient                    GPL
         segwayrmp                          LGPL
-            usb                             GPL
+            playerclient                    GPL
+            rmpdriver                      LGPL
         simlocaliser                       LGPL
         teleop                             LGPL
         tracermon                          LGPL
@@ -61,6 +63,7 @@ src
         orcacolourtext                     LGPL
         orcadef                            LGPL
         orcaice                            LGPL
+        orcaiceutil                        LGPL
         orcaimage                           GPL
         orcalog                            LGPL
         orcamisc                           LGPL
