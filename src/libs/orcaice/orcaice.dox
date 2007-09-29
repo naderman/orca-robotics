@@ -15,18 +15,18 @@
 @par Development status
 Used by all components, API is fairly stable.
 
-@section overview Overview
+@section orca_library_orcaice_overview Overview
 
 This library aims at simplifying Orca component development. It provides several helper classes to use and derive from and several functions to use. In doing so we make unavoidable assumptions about how Ice is going to be used in Orca components. If your component cannot live with these constraints you can always go back to using Ice directly (it's not much more work).
 
-For a full list of functions and classes see @ref orcaice.
+For a full list of functions and classes see see the complete documentation for the @ref orcaice "orcaice namespace".
 
 Header file:
 @verbatim
 #include <orcaice/orcaice.h>
 @endverbatim
 
-    @section classes Class Usage
+    @section orca_library_orcaice_classes Class Usage
 
 Here's what our stand-alone component looks like. In this figure and the one below, white color stands for standard Ice objects which we don't modify, e.g. the Communicator -- the Ice run-time object. Gray color stands for the objects which come with libOrcaIce and used unmodified by component developers. Cream color stands for component-specific code, written by component developers.
 
@@ -38,7 +38,7 @@ Here's what an IceBox service looks like. The main idea is to have the guts of t
 
 Note that 'Component1' code is identical in both cases -- that's a big time saver!
 
-    @section functions Function Usage
+    @section orca_library_orcaice_functions Function Usage
 
 The functions described here are very high-level. They are intended as one-line wrappers which work in typical situations. If your usage does not fit the pattern, no worries: just look how they are implemented, copy the code into your program and modify it as needed.
 
@@ -79,7 +79,7 @@ orcaice::connectToInterface<orca::YourObjectPrx>( context(), yourObjectPrx, "MyC
 There's no corresponding function in libOrcaIce because, normally, you call the subscribe() operation on an interface which publishes the data so you don't actually talk to the IceStorm server directly.
 
 
-@section config Configuration
+@section orca_library_orcaice_config Configuration
 
 The following properties are assigned defaults unless they are configured explicitely:
 
