@@ -95,6 +95,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @par Removed
 
+- OrcaSmc utility (alex m)
+   - Using a much more advanced derivative of the same original compiler maintained
+     at http://smc.sourceforge.net
 
 
 @section orca_doc_history_260 Changes in Release 2.6.0
