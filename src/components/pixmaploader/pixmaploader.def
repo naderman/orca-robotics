@@ -19,5 +19,4 @@ Config.Size.X.Default=20.0
 Config.Size.Y.Default=20.0
 
 # Ice default message size too small for large maps
-Config.Ice.MessageSizeMax.Default=3000
-Config.Ice.MessageSizeMax.External=1
+ExternalConfig.Ice.MessageSizeMax.Default=3000

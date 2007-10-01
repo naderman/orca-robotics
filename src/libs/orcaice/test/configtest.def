@@ -24,5 +24,4 @@ Requires.SpecialR4.Type=RT4
 Requires.SpecialR4.DefaultProxy=r4@remote/random
 
 # Ensure timeouts
-Config.Ice.Override.ConnectTimeout.Default=150
-Config.Ice.Override.ConnectTimeout.External=1
+ExternalConfig.Ice.Override.ConnectTimeout.Default=150

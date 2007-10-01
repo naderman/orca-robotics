@@ -99,8 +99,10 @@ struct ComponentDef
     std::vector<ProvidedDef> provided;
     //! Required interfaces.
     std::vector<RequiredDef> required;
-    //! Configuration parameters.
+    //! Component configuration parameters.
     std::vector<ConfigDef>   configs;
+    //! External configuration parameters.
+    std::vector<ConfigDef> externalConfigs;
 };
 
 //
@@ -159,8 +161,10 @@ struct ComponentCfg
     std::vector<ProvidedCfg> provided;
     //! Required interfaces.
     std::vector<RequiredCfg> required;
-    //! Configuration parameters.
+    //! Component configuration parameters.
     std::vector<ConfigCfg> configs;
+    //! External configuration parameters.
+    std::vector<ConfigCfg> externalConfigs;
 };
 
 /*!

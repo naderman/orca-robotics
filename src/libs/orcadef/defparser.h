@@ -63,15 +63,20 @@ private:
     void initValidTypes();
 
     void getComponentComments();
-    void getInterfaceTags( const std::string        &providesRequires, 
+    // interfaceType="Provides" or "Requires" (no ".")
+    void getInterfaceTags( const std::string        &interfaceType, 
                            std::vector<std::string> &tagList);
     void getProvidedInterfaceDetails( const std::vector<std::string> &tags, 
                                       std::vector<ProvidedDef>       &p );
     void getRequiredInterfaceDetails( const std::vector<std::string> &tags, 
                                       std::vector<RequiredDef>       &p );
     
-    void getConfigTags( std::vector<std::string> &configTags );
-    void getConfigDetails( const std::vector<std::string>  &tags,
+    // configType="Config" or "ExternaConfig" (no ".")
+    void getConfigTags( const std::string        &configType, 
+                        std::vector<std::string> &configTags );
+    // configType="Config" or "ExternaConfig" (no ".")
+    void getConfigDetails( const std::string        &configType,
+                           const std::vector<std::string>  &tags,
                            std::vector<ConfigDef>          &p );
 
     // Throws an exception if it's not found.

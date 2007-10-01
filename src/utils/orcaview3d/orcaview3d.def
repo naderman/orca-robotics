@@ -18,5 +18,4 @@ Config.ScreenCapture.BottomPad.Default = 2
 Config.ScreenCapture.CaptureTimerInterval.Default = 1000
 
 # external configuration options
-Config.Ice.Override.ConnectTimeout.Default=150
-Config.Ice.Override.ConnectTimeout.External=1
+ExternalConfig.Ice.Override.ConnectTimeout.Default=150

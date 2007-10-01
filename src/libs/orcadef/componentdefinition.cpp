@@ -71,9 +71,89 @@ toDefText( const ComponentDef &def )
     
 
     ss << "# Configuration Options" << endl;
+    // alexm: what about the configs? did it ever worked?
     ss << endl;
 
     return ss.str();
+}
+
+ComponentCfg
+toCfg( const ComponentDef & def )
+{
+    if ( def.tag.empty() ) {
+        throw ParseException( ERROR_INFO, "Component tag is empty" );
+    }
+    
+    ComponentCfg cfg;
+
+    cfg.fqname.platform     = "local";
+    cfg.fqname.component    = orcaiceutil::toLowerCase(def.tag);
+    cfg.endpoints           = def.endpoints;
+
+    //
+    // Provided Interfaces
+    //
+    ProvidedCfg p;
+    for ( unsigned int i=0; i < def.provided.size(); ++i )
+    {
+        p.name = def.provided[i].name;
+        p.tag = def.provided[i].tag;
+        
+        //assert( !p.tag.empty() );
+        if ( p.tag.empty() ) {
+            throw ParseException( ERROR_INFO, "Provided interface tag is empty" );
+        }
+    
+        // default
+        if ( p.name.empty() ) {
+            p.name = orcaiceutil::toLowerCase(p.tag);
+        }
+        
+        cfg.provided.push_back(p);
+    }
+    
+    //
+    // Required Interfaces
+    //
+    RequiredCfg r;
+    for ( unsigned int i=0; i < def.required.size(); ++i )
+    {
+        r.tag = def.required[i].tag;
+        r.proxy = def.required[i].proxy;
+
+        // apply defaults: direct proxy
+        if ( r.proxy.empty() ) {
+            orca::FQInterfaceName fqname;
+            fqname.platform = std::string("local");
+            fqname.component = orcaiceutil::toLowerCase(r.tag);
+            fqname.iface = orcaiceutil::toLowerCase(r.tag);
+            
+            r.proxy = orcaice::toString( fqname );
+        }
+
+        cfg.required.push_back(r);
+    }
+    
+    //
+    // Configuration Parameters
+    //
+    ConfigCfg c;
+    // component configs
+    for ( unsigned int i=0; i < def.configs.size(); ++i )
+    {
+        c.tag = def.configs[i].tag;
+        c.value = def.configs[i].value;
+        cfg.configs.push_back(c);
+    }
+    // external configs
+    for ( unsigned int i=0; i < def.externalConfigs.size(); ++i )
+    {
+        c.tag = def.externalConfigs[i].tag;
+        c.value = def.externalConfigs[i].value;
+        cfg.externalConfigs.push_back(c);
+    }
+
+    return cfg;
 }
 
 const std::string
@@ -143,17 +223,21 @@ toCfgText( const ComponentDef &def )
     
     //assert( def.configs.size()==cfg.configs.size() );
     if ( def.configs.size()!=cfg.configs.size() ) {
-        throw ParseException( ERROR_INFO, "Number of config entries in def and cfg sturctures do not match." );
+        throw ParseException( ERROR_INFO, "Number of component config entries in def and cfg structs do not match." );
     }
-    if ( cfg.configs.size() > 0 )
+    if ( !cfg.configs.empty() )
     {
-        ss << "# Configuration Options" << endl;
+        ss << "# Component Configuration Options" << endl;
         for ( unsigned int i=0; i < cfg.configs.size(); ++i )
         {
             if ( def.configs[i].comment != "" )
             {
                 ss << "# " << def.configs[i].comment << endl;
             }
+            //
+            // This behavior is OBSOLETE and will be removed soon.
+            // Use ExternalConfig tag to specify external configs.
+            //
             // 2 cases: internal and external configs.
             if ( def.configs[i].isExternal ) {
                 // External ones are printed as is
@@ -163,6 +247,25 @@ toCfgText( const ComponentDef &def )
                 // Internal ones are preceded by component tag.
                 ss << def.tag << ".Config." << cfg.configs[i].tag << "=" << cfg.configs[i].value << endl;
             }
+        }
+        ss << endl;
+    }
+
+    //assert( def.externalConfigs.size()==cfg.externalConfigs.size() );
+    if ( def.externalConfigs.size()!=cfg.externalConfigs.size() ) {
+        throw ParseException( ERROR_INFO, "Number of external config entries in def and cfg structs do not match." );
+    }
+    if ( !cfg.externalConfigs.empty() )
+    {
+        ss << "# External Configuration Options" << endl;
+        for ( unsigned int i=0; i < cfg.externalConfigs.size(); ++i )
+        {
+            if ( !def.externalConfigs[i].comment.empty() )
+            {
+                ss << "# " << def.externalConfigs[i].comment << endl;
+            }
+            // External configs are printed as is!
+            ss << cfg.externalConfigs[i].tag << "=" << cfg.externalConfigs[i].value << endl;
         }
         ss << endl;
     }
@@ -183,77 +286,6 @@ toCfgTextWithHeaders( const ComponentDef & def, const std::vector<std::string> &
     ss << toCfgText( def );
 
     return ss.str();
-}
-
-ComponentCfg
-toCfg( const ComponentDef & def )
-{
-    if ( def.tag.empty() ) {
-        throw ParseException( ERROR_INFO, "Component tag is empty" );
-    }
-    
-    ComponentCfg cfg;
-
-    cfg.fqname.platform     = "local";
-    cfg.fqname.component    = orcaiceutil::toLowerCase(def.tag);
-    cfg.endpoints           = def.endpoints;
-
-    //
-    // Provided Interfaces
-    //
-    ProvidedCfg p;
-    for ( unsigned int i=0; i < def.provided.size(); ++i )
-    {
-        p.name = def.provided[i].name;
-        p.tag = def.provided[i].tag;
-        
-        //assert( !p.tag.empty() );
-        if ( p.tag.empty() ) {
-            throw ParseException( ERROR_INFO, "Provided interface tag is empty" );
-        }
-    
-        // default
-        if ( p.name.empty() ) {
-            p.name = orcaiceutil::toLowerCase(p.tag);
-        }
-        
-        cfg.provided.push_back(p);
-    }
-    
-    //
-    // Required Interfaces
-    //
-    RequiredCfg r;
-    for ( unsigned int i=0; i < def.required.size(); ++i )
-    {
-        r.tag = def.required[i].tag;
-        r.proxy = def.required[i].proxy;
-
-        // apply defaults: direct proxy
-        if ( r.proxy.empty() ) {
-            orca::FQInterfaceName fqname;
-            fqname.platform = std::string("local");
-            fqname.component = orcaiceutil::toLowerCase(r.tag);
-            fqname.iface = orcaiceutil::toLowerCase(r.tag);
-            
-            r.proxy = orcaice::toString( fqname );
-        }
-
-        cfg.required.push_back(r);
-    }
-    
-    //
-    // Configuration Parameters
-    //
-    ConfigCfg c;
-    for ( unsigned int i=0; i < def.configs.size(); ++i )
-    {
-        c.tag = def.configs[i].tag;
-        c.value = def.configs[i].value;
-        cfg.configs.push_back(c);
-    }
-
-    return cfg;
 }
 
 const std::string
@@ -340,6 +372,10 @@ toXmlText( const ComponentDef &def )
             <<"value=\""<<cfg.required[i].proxy<<"\"/>" << endl;
     }
 
+    //
+    // This behavior is OBSOLETE and will be removed soon.
+    // Use ExternalConfig tag to specify external configs.
+    //
     // component configs
 //     ss <<tab<<tab<<tab<<tab<<"<!-- Component configuration parameters -->" << endl;
     for ( unsigned int i=0; i < def.configs.size(); ++i ) {
@@ -358,6 +394,16 @@ toXmlText( const ComponentDef &def )
                 <<"name=\""<<def.tag<<".Config."<<def.configs[i].tag<<"\" "
                 <<"value=\""<<def.configs[i].value<<"\"/>" << endl;
         }
+    }
+
+    // external configs
+//     ss <<tab<<tab<<tab<<tab<<"<!-- External configuration parameters -->" << endl;
+    for ( unsigned int i=0; i < def.externalConfigs.size(); ++i ) {
+        // External configs are printed as is
+        ss <<tab<<tab<<tab<<tab
+            <<"<property "
+            <<"name=\""<<def.externalConfigs[i].tag<<"\" "
+            <<"value=\""<<def.externalConfigs[i].value<<"\"/>" << endl;
     }
 
     ss <<tab<<tab<<tab<<"</server>" << endl;
@@ -457,6 +503,10 @@ toXmlTemplateText( const ComponentDef &def )
             <<"value=\""<<cfg.required[i].proxy<<"\"/>" << endl;
     }
 
+    //
+    // This behavior is OBSOLETE and will be removed soon.
+    // Use ExternalConfig tag to specify external configs.
+    //
     // component configs
 //     ss <<tab<<tab<<tab<<tab<<"<!-- Component configuration parameters -->" << endl;
     for ( unsigned int i=0; i < def.configs.size(); ++i ) {
@@ -475,6 +525,16 @@ toXmlTemplateText( const ComponentDef &def )
                 <<"name=\""<<def.tag<<".Config."<<def.configs[i].tag<<"\" "
                 <<"value=\""<<def.configs[i].value<<"\"/>" << endl;
         }
+    }
+
+    // external configs
+//     ss <<tab<<tab<<tab<<tab<<"<!-- External configuration parameters -->" << endl;
+    for ( unsigned int i=0; i < def.externalConfigs.size(); ++i ) {
+        // External configs are printed as is
+        ss <<tab<<tab<<tab<<tab
+            <<"<property "
+            <<"name=\""<<def.externalConfigs[i].tag<<"\" "
+            <<"value=\""<<def.externalConfigs[i].value<<"\"/>" << endl;
     }
 
     ss <<tab<<tab<<tab<<"</server>" << endl;
@@ -597,10 +657,18 @@ toString( const ComponentDef &d )
     }
     if ( d.configs.size() > 0 )
     {
-        ss<<"  Configuration Parameters:" << endl;
+        ss<<"  Component Configuration Parameters:" << endl;
         for ( unsigned int i=0; i < d.configs.size(); i++ )
         {
             ss << toString( d.configs[i] );
+        }
+    }
+    if ( d.externalConfigs.size() > 0 )
+    {
+        ss<<"  External Configuration Parameters:" << endl;
+        for ( unsigned int i=0; i < d.externalConfigs.size(); i++ )
+        {
+            ss << toString( d.externalConfigs[i] );
         }
     }
     return ss.str();
@@ -666,10 +734,18 @@ toString( const ComponentCfg &c )
     }
     if ( c.configs.size() > 0 )
     {
-        ss<<"  Config:" << endl;
+        ss<<"  Component Configuration Parameters:" << endl;
         for ( unsigned int i=0; i < c.configs.size(); i++ )
         {
             ss << toString(c.configs[i]);
+        }
+    }
+    if ( c.externalConfigs.size() > 0 )
+    {
+        ss<<"  External Configuration Parameters:" << endl;
+        for ( unsigned int i=0; i < c.externalConfigs.size(); i++ )
+        {
+            ss << toString(c.externalConfigs[i]);
         }
     }
 

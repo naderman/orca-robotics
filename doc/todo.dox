@@ -52,6 +52,11 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @par Project wide
 
+- Added a new keyword for writing .def files. A single line which starts with 'ExternalConfig.*' 
+  replaces 2 lines: 'Config.*' + 'Config.*.External=1'.
+  The old syntax is deprecated but will be supported for a while. All .def files in Orca have been
+  updated. (alexm)
+
 @par New interfaces
 
 @par New components
@@ -61,7 +66,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 @par New libraries
 
 - libOrcaIceUtil (alex m.)
-   - A set of tools which depends only libIceUtil. Contains nothing
+   - A set of tools which depends only on libIceUtil. Contains nothing
     related to communications. See notes on libOrcaIce.
 
 @par New examples
@@ -92,6 +97,10 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 - libOrcaMisc
   - moved Activator to libOrcaIce
+
+- libOrcaDef
+  - Added new keyword 'ExternalConfig' (see Project Wide changes above). Fixed bugs in 
+   tests. (alexm)
 
 @par Removed
 

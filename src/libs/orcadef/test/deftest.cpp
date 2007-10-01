@@ -76,36 +76,50 @@ main( int argc, char **argv )
     }
     cout<<"ok"<<endl;
 
-    // check that properties are as expected
+    // check that component properties are as expected
     for ( unsigned int i=0; i<def.configs.size(); ++i ) {
-        if ( def.configs[i].tag == "ext" ) {
-            if ( def.configs[i].isExternal == false ) {
-                cout<<"failed"<<endl<<"external part of config parsed incorrectly for 'ext'"<<endl;
+        if ( def.configs[i].tag == "Max" ) {
+            if ( def.configs[i].value != "default value" ) {
+                cout<<"failed"<<endl<<"default value parsed incorrectly for 'Ext' :"<<def.configs[i].value<<endl;
                 return EXIT_FAILURE;
             }
         }
-        if ( def.configs[i].tag == "max" || def.configs[i].tag == "min" ) {
+        //
+        // This syntax is OBSOLETE, use ExternalConfig tag
+        //
+        if ( def.configs[i].tag == "External.One.Two" ) {
+            if ( def.configs[i].isExternal == false ) {
+                cout<<"failed"<<endl<<"external part of config parsed incorrectly for 'External.One.Two'"<<endl;
+                return EXIT_FAILURE;
+            }
+        }
+        if ( def.configs[i].tag == "Max" || def.configs[i].tag == "Min" ) {
             if ( def.configs[i].isExternal == true ) {
-                cout<<"failed"<<endl<<"external part of config parsed incorrectly for 'max' or 'min''"<<endl;
+                cout<<"failed"<<endl<<"external part of config parsed incorrectly for 'Max' or 'Min''"<<endl;
                 return EXIT_FAILURE;
             }
         }
     }
-    
+
+    // check that external properties are as expected
+    for ( unsigned int i=0; i<def.externalConfigs.size(); ++i ) {
+        if ( def.externalConfigs[i].tag == "Avg" ) {
+            if ( def.externalConfigs[i].value != "99" ) {
+                cout<<"failed"<<endl<<"default value parsed incorrectly for 'Ext' :"<<def.externalConfigs[i].value<<endl;
+                return EXIT_FAILURE;
+            }
+        }
+    }
+
     // alexm: what else can we test?
     
     // debug
     cout<<"*** DEF ***"<<endl<<toString( def )<<endl;
     cout<<"*** CFG ***"<<endl<<toString( cfg )<<endl;
+    cout<<"*** CFG TEXT ***"<<endl<<toCfgText( def )<<endl;
+//     cout<<"*** CFG TEXT WITH HEADERS ***"<<endl<<toCfgTextWithHeaders( def )<<endl;
     cout<<"*** XML INSTANCE ***"<<endl<<toXmlText( def )<<endl;
     cout<<"*** XML TEMPLATE ***"<<endl<<toXmlTemplateText( def )<<endl;
-    
-/*
-    cout<<"TRACE(main.cpp): toString:" << endl;
-    cout<< orcadef::toCfgText( def ) << endl;
 
-    cout<<"TRACE(main.cpp): Config file:" << endl;
-    cout<< orcadef::toCfgTextWithHeaders( def ) << endl;
-*/
     return EXIT_SUCCESS;
 }

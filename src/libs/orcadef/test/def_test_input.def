@@ -57,9 +57,18 @@ Requires.Interface2.DefaultProxy=odometry2d@local/odometry2d
 Config.Max.Default=default value
 Config.Max.Comment=The max blah
 Config.Max.Type=string
+#
+# This syntax is OBSOLETE, use ExternalConfig tag
+#
 Config.Max.External=0
 
 Config.Min.Default=another default value
 
-Config.Ext.One.Two.Default=another default value
-Config.Ext.One.Two.External=1
+#
+# This syntax is OBSOLETE, use ExternalConfig tag
+#
+Config.External.One.Two.Default=another default value
+Config.External.One.Two.External=1
+
+# This is the new syntax for external config parameters
+ExternalConfig.External.Avg.Default=99

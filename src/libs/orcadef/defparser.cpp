@@ -138,10 +138,15 @@ DefParser::parse()
     getInterfaceTags("Requires", requiredInterfaceTags);
     getRequiredInterfaceDetails( requiredInterfaceTags, def_.required );
 
-    // Configuration Parameters
+    // Component Configuration Parameters
     std::vector<string> configTags;
-    getConfigTags( configTags );
-    getConfigDetails( configTags, def_.configs );
+    getConfigTags( "Config", configTags );
+    getConfigDetails( "Config", configTags, def_.configs );
+
+    // External Configuration Parameters
+    std::vector<string> externalConfigTags;
+    getConfigTags( "ExternalConfig", externalConfigTags );
+    getConfigDetails( "ExternalConfig", externalConfigTags, def_.externalConfigs );
 }
 
 void
@@ -181,16 +186,47 @@ DefParser::getComponentComments()
 }
 
 void
-DefParser::getConfigDetails( const vector<string>   &tags,
+DefParser::getConfigTags(const std::string &configType, std::vector<string> &configTags )
+{
+//    listAllPropertiesForPrefix(configType);
+
+    const string tailString=".Default";
+
+    PropertyDict p = props_->getPropertiesForPrefix(configType);
+    for ( PropertyDict::iterator i = p.begin();
+          i != p.end();
+          i++ )
+    {
+        // Strip off the leading 'Config.'
+        string configPropStr = i->first.substr( i->first.find('.')+1, i->first.size()-1 );
+
+        // Look for the string at the end of the property name
+        int tailStart = configPropStr.rfind( tailString );
+        if ( tailStart == -1 ) 
+            continue;
+        if ( (configPropStr.size() - tailStart) != tailString.size() ) 
+            continue;
+
+        // strip off the trailing string
+        string cfg = configPropStr.substr( 0, tailStart );
+        pushBackIfNew( configTags, cfg );
+    }
+}
+
+void
+DefParser::getConfigDetails( const std::string      &configType,
+                             const vector<string>   &tags,
                              std::vector<ConfigDef> &p )
 {
     p.resize( tags.size() );
     for ( unsigned int i=0; i < tags.size(); ++i )
     {
         p[i].tag     = tags[i];
-        p[i].value   = forceGetProperty( "Config." + tags[i] + ".Default" );
-        p[i].comment = props_->getProperty( "Config." + tags[i] + ".Comment" );
-        p[i].type    = props_->getProperty( "Config." + tags[i] + ".Type" );
+        // this one is required, so we force it.
+        p[i].value   = forceGetProperty( configType + "." + tags[i] + ".Default" );
+        // the rest are optional
+        p[i].comment = props_->getProperty( configType + "." + tags[i] + ".Comment" );
+        p[i].type    = props_->getProperty( configType + "." + tags[i] + ".Type" );
         // if config type is supplied, make sure it's on the list of allowed types.
         if ( p[i].type != "" )
         {
@@ -199,47 +235,25 @@ DefParser::getConfigDetails( const vector<string>   &tags,
                 throw ParseException( ERROR_INFO, "Invalid type for config parameter '" + tags[i] + "': '" + p[i].type + "'" );
             }
         }
-        p[i].isExternal = props_->getPropertyAsInt( "Config." + tags[i] + ".External" );
+        //
+        // This behavior is OBSOLETE and will be removed soon.
+        //
+        p[i].isExternal = props_->getPropertyAsInt( configType + "." + tags[i] + ".External" );
     }
 }
 
 void
-DefParser::getConfigTags( std::vector<string> &configTags )
+DefParser::getInterfaceTags(const std::string &interfaceType, std::vector<string> &tagList)
 {
-//    listAllPropertiesForPrefix("Config");
+    // listAllPropertiesForPrefix(interfaceType);
 
-    const string stringToLookFor=".Default";
-
-    PropertyDict p = props_->getPropertiesForPrefix("Config");
-    for ( PropertyDict::iterator i = p.begin();
-          i != p.end();
-          i++ )
-    {
-        // Strip off 'Config.'
-        string configPropStr = i->first.substr( i->first.find('.')+1, i->first.size()-1 );
-
-        // Look for final '.Type'
-        int typeStart = configPropStr.rfind( stringToLookFor );
-        if ( typeStart == -1 ) continue;
-        if ( (configPropStr.size() - typeStart) != stringToLookFor.size() ) continue;
-
-        string cfg = configPropStr.substr( 0, typeStart );
-        pushBackIfNew( configTags, cfg );
-    }
-}
-
-void
-DefParser::getInterfaceTags(const std::string &providesRequires, std::vector<string> &tagList)
-{
-    // listAllPropertiesForPrefix(providesRequires);
-
-    PropertyDict p = props_->getPropertiesForPrefix(providesRequires);
+    PropertyDict p = props_->getPropertiesForPrefix(interfaceType);
     for ( PropertyDict::iterator i = p.begin();
           i != p.end();
           i++ )
     {
         Ice::StringSeq s = orcaice::toStringSeq( i->first, '.' );
-        assert(s[0] == providesRequires);
+        assert(s[0] == interfaceType);
         
         string tag = s[1];
         pushBackIfNew( tagList, tag );
