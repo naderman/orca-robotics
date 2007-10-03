@@ -117,11 +117,11 @@ ENDIF ( CURSES_INCLUDE_DIR )
 INCLUDE (${CMAKE_ROOT}/Modules/FindZLIB.cmake)
 SET( HAVE_ZLIB ${ZLIB_FOUND} )
 
-# Look for boost
-INCLUDE (${ORCA_CMAKE_DIR}/FindBoost.cmake)
+# Look for Boost ublas library
+# INCLUDE (${ORCA_CMAKE_DIR}/FindBoostUblas.cmake)
 
 # Look for liblapack library -- linear algebra package
-INCLUDE (${ORCA_CMAKE_DIR}/FindLapack.cmake)
+# INCLUDE (${ORCA_CMAKE_DIR}/FindLapack.cmake)
 
 # Look for liboping -- library for 'ping'ing from C
 INCLUDE ( ${ORCA_CMAKE_DIR}/FindOPing.cmake )
