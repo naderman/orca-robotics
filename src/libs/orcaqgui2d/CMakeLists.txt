@@ -1,4 +1,5 @@
-IF ( NOT OS_WIN AND QT4_FOUND )
+IF ( NOT OS_WIN )
+IF ( QT4_FOUND )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
@@ -20,8 +21,9 @@ IF ( NOT OS_WIN AND QT4_FOUND )
     
     INSTALL_FILES( /include/orcaqgui2d .*\\.h$ )
 
-ELSE  ( NOT OS_WIN AND QT4_FOUND )
+ELSE  ( QT4_FOUND )
 
-    MESSAGE( STATUS "Not Planning to Build Utility: libOrcaQGui2d -- QT4 not found")
+    CANNOT_BUILD_MESSAGE( libOrcaQGui2d "QT4 not found")
 
-ENDIF ( NOT OS_WIN AND QT4_FOUND )
+ENDIF ( QT4_FOUND )
+ENDIF ( NOT OS_WIN )

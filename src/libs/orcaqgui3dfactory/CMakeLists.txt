@@ -1,8 +1,10 @@
+IF ( NOT OS_WIN )
+
 OPTION( BUILD_ORCAQGUI3DFACTORY_LIBRARY "Try to build OrcaQGui3dFactory library" OFF )
 
 IF ( BUILD_ORCAQGUI3DFACTORY_LIBRARY )
 
-    IF ( NOT OS_WIN AND QT4_FOUND AND GLUT_FOUND )
+    IF ( QT4_FOUND AND GLUT_FOUND )
     
         INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
         INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
@@ -19,10 +21,10 @@ IF ( BUILD_ORCAQGUI3DFACTORY_LIBRARY )
         
         LINK_DIRECTORIES( ${PROJECT_SOURCE_DIR}/src/libs/qorcacm )
         TARGET_LINK_LIBRARIES ( OrcaQGui3dFactory
-        OrcaQGui
-        OrcaQGui3d
-        OrcaQCompModel 
-        ${QT_QTOPENGL_LIBRARY}
+            OrcaQGui
+            OrcaQGui3d
+            OrcaQCompModel 
+            ${QT_QTOPENGL_LIBRARY}
         )
     
         IF ( LIB3DS_FOUND )
@@ -30,15 +32,17 @@ IF ( BUILD_ORCAQGUI3DFACTORY_LIBRARY )
         TARGET_LINK_LIBRARIES ( OrcaQGui3dFactory 3ds )
         ENDIF ( LIB3DS_FOUND )
     
-    ELSE  ( NOT OS_WIN AND QT4_FOUND AND GLUT_FOUND )
+    ELSE  ( QT4_FOUND AND GLUT_FOUND )
     
-        MESSAGE( STATUS "Not planning to build library: libOrcaQGui3dFactory -- QT4 or GLUT not found")
+        CANNOT_BUILD_MESSAGE( libOrcaQGui3dFactory "QT4 or GLUT not found" )
     
-    ENDIF ( NOT OS_WIN AND QT4_FOUND AND GLUT_FOUND )
+    ENDIF ( QT4_FOUND AND GLUT_FOUND )
     
 
 ELSE ( BUILD_ORCAQGUI3DFACTORY_LIBRARY )
 
-    MESSAGE( STATUS "Not planning to build library: libOrcaQGui3dFactory -- turned off")
+    DISABLED_MESSAGE( libOrcaQGui3dFactory )
     
 ENDIF ( BUILD_ORCAQGUI3DFACTORY_LIBRARY )
+
+ENDIF ( NOT OS_WIN )

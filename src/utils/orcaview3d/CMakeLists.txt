@@ -1,8 +1,10 @@
+IF ( NOT OS_WIN )
+
 OPTION( BUILD_ORCAVIEW3D_GUI "Try to build OrcaView3d GUI" OFF )
 
 IF ( BUILD_ORCAVIEW3D_GUI )
 
-    IF ( NOT OS_WIN AND QT4_FOUND AND GLUT_FOUND )
+    IF ( QT4_FOUND AND GLUT_FOUND )
     
         INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
         INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
@@ -22,14 +24,15 @@ IF ( BUILD_ORCAVIEW3D_GUI )
         ADD_DEFINITIONS( -DHAVE_LIB3DS )
         ENDIF ( LIB3DS_FOUND )
     
-    ELSE ( NOT OS_WIN AND QT4_FOUND AND GLUT_FOUND )
+    ELSE ( QT4_FOUND AND GLUT_FOUND )
     
-        MESSAGE( STATUS "Not Planning to Build Utility: OrcaView3d -- Qt4 or GLUT not found")
+        CANNOT_BUILD_MESSAGE( OrcaView3d "Qt4 or GLUT not found")
         
-    ENDIF ( NOT OS_WIN AND QT4_FOUND AND GLUT_FOUND )
+    ENDIF ( QT4_FOUND AND GLUT_FOUND )
 
 ELSE ( BUILD_ORCAVIEW3D_GUI )
     
-    MESSAGE( STATUS "Not Planning to Build Utility: OrcaView3d -- turned off")
+    DISABLED_MESSAGE( OrcaView3d )
 
 ENDIF ( BUILD_ORCAVIEW3D_GUI )
+ENDIF ( NOT OS_WIN )
