@@ -53,7 +53,70 @@ public:
 typedef IceUtil::Handle<EventQueueOptimizer> EventQueueOptimizerPtr;
 
 /*!
-    Thread-safe event queue.
+    @brief Thread-safe event queue.
+
+    First define custom events.
+@verbatim
+#include <orcaiceutil/eventqueue.h>
+
+enum EventType { Activate };
+
+class ActivateEvent : public orcaiceutil::Event
+{
+public:
+    ActivateEvent() : orcaiceutil::Event( Activate ) {};
+    bool isUrgent;
+};
+typedef IceUtil::Handle<ActivateEvent> ActivateEventPtr;
+@endverbatim
+
+Your threaded class will have an event queue, probably as a member variable.
+@verbatim
+orcaiceutil::EventQueuePtr events_;
+@endverbatim
+
+Don't forget to initialize it in the constructor
+
+@verbatim
+events_(new orcaiceutil::EventQueue)
+@endverbatim
+
+When running inside your thread, read from the queue, with or without timeout. 
+Here's an example of doing it inside the run function of orcaiceutil::Thread.
+
+@verbatim
+void run()
+{
+    orcaiceutil::EventPtr event;
+    int timeoutMs = 500;
+    
+    while ( !isStopping() )
+    {
+        if ( !events_->timedGet( event, timeoutMs ) ) {
+            // timed out
+            continue;
+        }
+    
+        switch ( event->type() )
+        {
+            // approx in order of call frequency
+            case Activate : {
+                ActivateEventPtr e = ActivateEventPtr::dynamicCast( event );
+                if ( e->isUrgent )
+                    // do something
+                else
+                    // don't do anything
+                break;
+            }
+            default : {
+                cout<<"Unknown event "<<event->type()<<". Ignoring..."<<endl;
+            }
+        } // switch
+    } // while
+}
+@endverbatim
+
+@see EventQueueHolder
 */
 class EventQueue : public IceUtil::Shared, public IceUtil::Monitor<IceUtil::Mutex>
 {
@@ -70,7 +133,7 @@ public:
     //! Add event to the queue but, before the event is added, the queue tries to
     //! combine it with the last event already in the queue. This is done by calling 
     //! combine() function of the queue's optimizer. The default optimizer does not
-    //! support any combinations. To implement combination(s) for your events, implement
+    //! support any combinations. To implement combination(s) for your events, write
     //! your own optimizer by deriving from EventQueueOptimizer.
     //! Calling this function when the event is empty or when the queue's optimizer is not set
     //! or when the combine() operation fails for some reason is equivalent to calling add().
@@ -99,12 +162,20 @@ private:
 
 typedef IceUtil::Handle<EventQueue> EventQueuePtr;
 
-//! A class which lets outsiders to post events into its own event queue.
+/*! 
+    @brief A class which lets outsiders to post events into its own event queue.
+*/
 class EventQueueHolder
 {
 public:
     virtual ~EventQueueHolder() {};
-    //! Adds event to the queue.
+    /*! 
+        Adds event to the queue. A typical implementation, if the derived class 
+        has an event queue as a member:
+@verbatim
+virtual void postEvent( const orcaiceutil::EventPtr& e ) { events_->add( e ); };
+@endverbatim
+    */
     virtual void postEvent( const EventPtr& e )=0;
 };
 
