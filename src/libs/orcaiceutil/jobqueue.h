@@ -1,6 +1,6 @@
 /*
  * Orca Project: Components for robotics 
- *               http://orca-robotics.sf.net/
+ *               http://!orca-robotics.sf.net/
  * Copyright (c) 2004-2007 Alex Brooks, Alexei Makarenko, Tobias Kaupp
  *
  * This copy of Orca is licensed to you under the terms described in the
@@ -21,71 +21,84 @@
 
 namespace orcaiceutil {
 
-//
-// We use the pointer to this class as a unique ID.
-//
+//!
+//! We use the pointer to this class as a unique ID.
+//!
 class JobQueueUser {
 public:
 
 };
 
-//
-// Describes what happened with a Job
-//
+//!
+//! Describes what happened with a Job
+//!
 class JobStatus : public IceUtil::Shared
 {
 public:
+    //! Consturtor
     JobStatus( JobQueueUser *s )
         : jobQueueUser_(s)
         {}
     virtual ~JobStatus() {}
+
+    //! Returns a text description of the job status
     virtual std::string toString() const=0;
-    // Did everything go smoothly?
+
+    //! Did everything go smoothly?
     virtual bool isOk() const=0;
 
+    //! Returns the pointer to the user who posted the job.
     JobQueueUser *jobQueueUser() { return jobQueueUser_; }
 
 private:
     JobQueueUser *jobQueueUser_;
 };
+//! Ice smart pointer to job status.
 typedef IceUtil::Handle<JobStatus> JobStatusPtr;
 
-//
-// A request for a long-term (eg network) operation
-//
+
+//!
+//! A request to perform an operation which may take a long time 
+//! (eg network job).
+//!
 class Job : public IceUtil::Shared
 {
 public:
+    //! Consturtor
     Job( JobQueueUser *s )
         : jobQueueUser_(s)
         {}
     virtual ~Job() {}
 
+    //! Implement this function and do your job in it.
     virtual JobStatusPtr process()=0;
 
+    //! Returns a text description of the job
     virtual std::string toString() const=0;
 
+    //! Returns the pointer to the user who posted the job.
     JobQueueUser *jobQueueUser() const { return jobQueueUser_; }
 
 private:
     JobQueueUser *jobQueueUser_;
 };
+//! Ice smart pointer to job.
 typedef IceUtil::Handle<Job> JobPtr;
 
+
 //!
-//! @brief A queue of calls to be processed.
+//! @brief A queue of jobs to be processed.
 //!
-//! Rather than tie up the main thread, calls which may take a long time can be placed on this
-//! job queue.  They will be processed by a separate thread.
-//! A JobQueueUser should poll the JobQueue to see when its call is done.
+//! Rather than tie up the main thread, calls which may take a long time 
+//! can be placed on this job queue.  
+//! They will be processed by a separate thread.
+//! A JobQueueUser should poll the JobQueue to see when its job is done.
 //!
 //! @author Alex Brooks
 //!
 class JobQueue :  private ::IceUtil::noncopyable
 {
-
 public: 
-
     //! Consturtor. Initializes the worker pool (currently fixed to size 1).
     JobQueue( orcaiceutil::Tracer& tracer );
 
@@ -95,27 +108,27 @@ public:
     //! Start the worker(s)
     void start();
 
-    //! Add request to execute a call.
-    void addJob( JobPtr &call );
+    //! Add request to execute a job.
+    void addJob( JobPtr &job );
 
-    //! Returns the oldest of possibly multiple call status objects and removes
+    //! Returns the oldest of possibly multiple job status objects and removes
     //! it from the internal storage.
-    //! Returns 0 if no call status is available for this jobQueueUser.
+    //! Returns 0 if no job status is available for this jobQueueUser.
     JobStatusPtr getJobStatus( JobQueueUser *jobQueueUser );
 
     //
     // No doxy-tags because these are only used by workers.
     //
 
-    // The worker asks for a call to work on.
-    // Immediately returns 0 if no call is available.
+    // The worker asks for a job to work on.
+    // Immediately returns 0 if no job is available.
     JobPtr getJob();
 
-    // The worker reports status of a processed call.
+    // The worker reports status of a processed job.
     void addJobStatus( JobStatusPtr &c );
 
 private: 
-    // incoming call requests
+    // incoming job requests
     std::list<JobPtr>               pendingJobs_;
 
     typedef std::list<JobStatusPtr>       JobStatusList;
@@ -131,32 +144,40 @@ private:
     orcaiceutil::Tracer&         tracer_;
 };
 
-//
-// Generic "everything worked"
-//
+//!
+//! Generic "everything worked" status
+//!
 class OkJobStatus : public JobStatus
 {
 public:
+    //! Consturtor
     OkJobStatus( JobQueueUser *s )
         : JobStatus(s) {}
 
-    std::string toString() const { return "OkJobStatus"; }
-    bool isOk() const { return true; }
+    //! It's all good and nothing else to say.
+    virtual std::string toString() const { return "OkJobStatus"; }
+
+    //! Returns the good news.
+    virtual bool isOk() const { return true; }
 };
 
-//
-// Generic "Job failed"
-//
+//!
+//! Generic "Job failed" status
+//!
 class FailedJobStatus : public JobStatus
 {
 public:
+    //! Consturtor, with a reason for failure.
     FailedJobStatus( JobQueueUser *s, const std::string &what )
         : JobStatus(s),
           what_(what)
         {}
 
-    std::string toString() const { return "FailedJobStatus: "+what(); }
-    bool isOk() const { return false; }
+    //! Returns the reason for failure.
+    virtual std::string toString() const { return "FailedJobStatus: "+what(); }
+
+    //! Returns the bad news.
+    virtual bool isOk() const { return false; }
 
     const std::string &what() const { return what_; }
 
