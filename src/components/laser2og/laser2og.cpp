@@ -15,8 +15,6 @@
 #include <unistd.h>
 
 #include <orcaice/orcaice.h>
-#include <orcaobj/mathdefs.h>
-
 #include <orcapathplan/orcapathplan.h>
 
 #include "laser2og.h"

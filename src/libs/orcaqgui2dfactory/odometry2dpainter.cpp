@@ -9,8 +9,8 @@
  */
  
 #include <iostream>
+#include <orcaiceutil/mathdefs.h>
 #include <orcaqgui2d/paintutils.h>
-#include <orcaobj/mathdefs.h>
 
 #include "odometry2dpainter.h"
 

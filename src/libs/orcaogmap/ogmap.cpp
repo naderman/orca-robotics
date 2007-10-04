@@ -1,7 +1,17 @@
+/*
+ * Orca Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2007 Alex Brooks, Alexei Makarenko, Tobias Kaupp, George Mathews
+ *
+ * This copy of Orca is licensed to you under the terms described in the
+ * ORCA_LICENSE file included in this distribution.
+ *
+ */
+
 #include "ogmap.h"
 #include <iostream>
 #include <sstream>
-#include <orcaobj/mathdefs.h>
+#include <orcaiceutil/mathdefs.h>
 
 using namespace std;
 

@@ -11,8 +11,6 @@
 #ifndef ORCAOBJ_ORCAOBJ_H
 #define ORCAOBJ_ORCAOBJ_H
 
-#include <orcaobj/mathdefs.h>
-
 #include <orcaobj/frameutils.h>
 #include <orcaobj/initutils.h>
 #include <orcaobj/miscutils.h>

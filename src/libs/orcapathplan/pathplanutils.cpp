@@ -7,10 +7,10 @@
  * ORCA_LICENSE file included in this distribution.
  *
  */
-#include <orcaobj/mathdefs.h>
 
 #include "pathplanutils.h"
 #include "ipathplanner2d.h"
+#include <orcaiceutil/mathdefs.h>
 #include <orcamisc/orcamisc.h>
 #include "costcalculator.h"
 

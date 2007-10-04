@@ -23,6 +23,7 @@
 #include <orcaiceutil/notify.h>
 #include <orcaiceutil/eventqueue.h>
 #include <orcaiceutil/timer.h>
+#include <orcaiceutil/mathdefs.h>
 #include <orcaiceutil/stringutils.h>
 #include <orcaiceutil/sysutils.h>
 

@@ -11,9 +11,9 @@
 #include <sstream>
 #include <stdlib.h>             // for getenv()
 
-#include <orcaobj/mathdefs.h>           // for DEG2RAD_RATIO
 #include <orcaobj/stringutils.h>        
 #include <orcaiceutil/stringutils.h>    // for toStringSeq()
+#include <orcaiceutil/mathdefs.h>           // for DEG2RAD_RATIO
 
 #include "proputils.h"
 #include "configutils.h"

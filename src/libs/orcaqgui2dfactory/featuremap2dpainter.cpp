@@ -14,14 +14,11 @@
 #include <QTextStream>
 
 #include <orcaice/orcaice.h>
-#include <orcaobj/mathdefs.h>
-
 #include <orcaqgui/features.h>
 #include <orcaqgui/ihumanmanager.h>
-
-#include "featuremap2dpainter.h"
-#include <orcaqgui2d/paintutils.h>
 #include <orcaqgui/exceptions.h>
+#include <orcaqgui2d/paintutils.h>
+#include "featuremap2dpainter.h"
 
 using namespace std;
 using namespace orca;

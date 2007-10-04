@@ -21,6 +21,10 @@ ADD_EXECUTABLE( stringtest stringtest.cpp )
 ADD_TEST( StringTest stringtest )
 MESSAGE ( STATUS "Planning to Build Test      : StringTest [libOrcaIceUtil]")
 
+ADD_EXECUTABLE( mathtest mathtest.cpp )
+ADD_TEST( MathTest mathtest )
+MESSAGE( STATUS "Planning to Build Test       : MathTest [libOrcaIceUtil]")
+
 ADD_EXECUTABLE( systest systest.cpp )
 ADD_TEST( SysTest systest )
 MESSAGE ( STATUS "Planning to Build Test      : SysTest [libOrcaIceUtil]")

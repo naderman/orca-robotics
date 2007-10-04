@@ -24,7 +24,7 @@
 #include <assert.h>
 #include "player_macros.h"
 // for MIN/MAX and DEG2RAD:
-#include <orcaobj/mathdefs.h>
+#include <orcaiceutil/mathdefs.h>
 #include <math.h>
 
 namespace vfh {

@@ -32,21 +32,9 @@ inline double round( double d )
 
 #include <orcaobj/timeutils.h>
 #include <orcaobj/miscutils.h>
+#include <orcaiceutil/mathdefs.h>
 
 #include "stringutils.h"
-
-// this is a copy from orcaice/mathdefs.h
-// make a copy here to cut circular dependency
-//==============
-#ifndef DEG2RAD_RATIO
-#   define DEG2RAD_RATIO	(M_PI/180.0)
-#endif
-
-// Converts from degrees to radians.
-#define DEG2RAD(deg)	((deg)*DEG2RAD_RATIO)
-// Converts from radians to degrees.
-#define RAD2DEG(rad) 	((rad)/DEG2RAD_RATIO)
-//==============
 
 using namespace std;
 

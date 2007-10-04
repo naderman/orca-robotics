@@ -107,6 +107,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 - libOrcaObjects
   - moved general string functions toStringSeq() and toString(vector<string>) to libOrcaIceUtil
+  - moved math defenitions to libOrcaIceUtil
 
 - libOrcaIceGrid
   - added a new session manager with can control the IceGrid registry through its Admin 

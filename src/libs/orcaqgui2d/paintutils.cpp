@@ -8,9 +8,9 @@
  *
  */
 
-#include <orcaobj/mathdefs.h>
 #include <iostream>
 #include <sstream>
+#include <orcaiceutil/mathdefs.h>
 #include <orcaqgui/exceptions.h>
 #include <orcaqgui/cov2d.h>
 #include "paintutils.h"

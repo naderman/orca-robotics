@@ -13,8 +13,7 @@
 
 #include <orcapathplan/orcapathplan.h>
 #include <orcaogmap/ogmap.h>
-
-#include <orcaobj/mathdefs.h>
+#include <orcaiceutil/mathdefs.h>
 
 using namespace orca;
 using namespace orcaogmap;

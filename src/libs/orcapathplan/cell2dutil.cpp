@@ -14,7 +14,7 @@
   \author George Mathews, g.mathews@cas.edu.au
 */
 
-#include <orcaobj/mathdefs.h>  // for CHECK_LIMITS(max_x, x, min_x)
+#include <orcaiceutil/mathdefs.h>  // for CHECK_LIMITS(max_x, x, min_x)
 #include "cell2dutil.h"
 
 using namespace orcapathplan;

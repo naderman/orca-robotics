@@ -14,7 +14,7 @@
 
 #include <orcaiceutil/eventqueue.h>
 #include <orcaiceutil/thread.h>
-#include <orcaobj/mathdefs.h>
+#include <orcaiceutil/mathdefs.h>
 
 using namespace std;
 

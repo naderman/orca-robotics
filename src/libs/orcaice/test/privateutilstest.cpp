@@ -12,7 +12,7 @@
 
 #include <orcaice/proputils.h>
 #include <orcaice/detail/privateutils.h>
-#include <orcaobj/mathdefs.h>
+#include <orcaiceutil/mathdefs.h>
 #include <orcaobj/stringutils.h>
 
 using namespace std;

@@ -14,7 +14,6 @@
 #include <cmath>
 
 #include <orca/featuremap2d.h>
-#include <orcaobj/mathdefs.h>
 #include <orcaice/orcaice.h>
 #include "foregroundextractor.h"
 #include "polefinder.h"

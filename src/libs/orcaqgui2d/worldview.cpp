@@ -11,7 +11,6 @@
 #include <iostream> // debugging only
 #include <cmath>  // for floor()
 #include <map>
-#include <orcaobj/mathdefs.h>
 
 #include <QPainter>
 #include <QAction>
@@ -22,14 +21,15 @@
 #include <QDialog>
 #include <QToolTip>
 
+#include <orcaiceutil/mathdefs.h>
 #include <orcaqgui2dfactory/gridelement.h>
-#include "worldview.h"
 #include <orcaqgui/guielementmodel.h>
 #include <orcaqgui/mainwin.h>
 #include <orcaqgui/guiicons.h>
 #include <orcaqgui2d/definitions2d.h>
 #include <orcaqgui2d/platformcsfinder.h>
 #include <orcaqgui2d/iknowsplatformposition2d.h>
+#include "worldview.h"
 
 using namespace std;
 using namespace orcaqgui;

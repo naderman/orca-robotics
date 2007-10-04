@@ -9,7 +9,7 @@
  */
 
 #include <iostream>
-#include <orcaobj/mathdefs.h>
+#include <orcaiceutil/mathdefs.h>
 
 #include "ogsensormodel.h"
 

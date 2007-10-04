@@ -11,7 +11,7 @@
 #define ORCA_NAV_UTIL_OFFSET__H
 
 #include <iostream>
-#include <orcaobj/mathdefs.h>
+#include <orcaiceutil/mathdefs.h>
 
 //
 // A collection of small utility functions for doing

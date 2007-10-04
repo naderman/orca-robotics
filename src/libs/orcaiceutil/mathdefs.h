@@ -11,11 +11,11 @@
 /*! 
   @file 
   @brief Mathematical macros
-  @ingroup orca_library_orcaobj 
+  @ingroup orca_library_orcaiceutil 
  */
 
-#ifndef ORCA2_MATH_DEFINITIONS_H
-#define ORCA2_MATH_DEFINITIONS_H	
+#ifndef ORCAICEUTIL_MATH_DEFINITIONS_H
+#define ORCAICEUTIL_MATH_DEFINITIONS_H	
 
 #include <assert.h>
 

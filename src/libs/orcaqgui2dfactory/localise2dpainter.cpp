@@ -12,6 +12,7 @@
 
 #include <QPainter>
 #include <orcaobj/orcaobj.h>
+#include <orcaiceutil/mathdefs.h>
 #include <orcaqgui/exceptions.h>
 #include "localise2dpainter.h"
 

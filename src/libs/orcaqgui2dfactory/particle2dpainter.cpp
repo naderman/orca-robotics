@@ -14,7 +14,7 @@
 
 #include "particle2dpainter.h"
 #include <orcaqgui2d/paintutils.h>
-#include <orcaobj/mathdefs.h>
+#include <orcaiceutil/mathdefs.h>
 
 using namespace orca; 
 using namespace std;

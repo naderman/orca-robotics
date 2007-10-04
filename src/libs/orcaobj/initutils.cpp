@@ -16,7 +16,7 @@
 
 #include <orcaobj/initutils.h>
 #include <orcaobj/timeutils.h>
-#include <orcaobj/mathdefs.h>
+#include <orcaiceutil/mathdefs.h>
 
 // Random doubles and integers
 #define RDOUBLE (rand()*M_PI)

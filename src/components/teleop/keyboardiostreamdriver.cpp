@@ -10,7 +10,6 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include <orcaobj/mathdefs.h>
 
 #include "keyboardiostreamdriver.h"
 #include "network.h"

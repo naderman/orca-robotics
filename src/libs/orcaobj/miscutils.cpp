@@ -12,10 +12,10 @@
 #include <sstream>
 #include <IceUtil/Time.h>
 
-#include <orcaobj/mathdefs.h>
 #include <orcaobj/stringutils.h>
 
 #include <orcaiceutil/exceptions.h>
+#include <orcaiceutil/mathdefs.h>
 #include "miscutils.h"
 #include <fstream>
 #include <config.h>

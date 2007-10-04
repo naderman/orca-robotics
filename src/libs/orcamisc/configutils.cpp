@@ -9,7 +9,6 @@
  */
 #include "configutils.h"
 #include <iostream>
-#include <orcaobj/mathdefs.h>
 #include <orcaice/orcaice.h>
 
 using namespace std;

@@ -15,7 +15,7 @@
 #include <QLCDNumber>
 #include <QVBoxLayout>
 
-#include <orcaobj/mathdefs.h>
+#include <orcaiceutil/mathdefs.h>
 
 #include "wifielement.h"
 

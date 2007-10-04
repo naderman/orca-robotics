@@ -11,6 +11,7 @@
 #include <iostream>
 
 #include <orcaobj/orcaobj.h>
+#include <orcaiceutil/mathdefs.h>
 
 using namespace std;
 
