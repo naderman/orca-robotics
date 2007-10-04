@@ -69,6 +69,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
    - A set of tools which depends only on libIceUtil. Contains nothing
     related to communications. See notes on libOrcaIce.
 
+- libOrcaIceXml (alex m.)
+   - Tools useful for XML parsing. Current contents were extracted from IceGrid code.
+
 @par New examples
 
 @par Updated interfaces
@@ -101,6 +104,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - libOrcaDef
   - Added new keyword 'ExternalConfig' (see Project Wide changes above). Fixed bugs in 
    tests. (alexm)
+
+- libOrcaObjects
+  - moved general string functions toStringSeq() and toString(vector<string>) to libOrcaIceUtil
 
 @par Removed
 
