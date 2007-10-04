@@ -8,28 +8,26 @@
  *
  */
 
-#include <iostream>
-
 #include <orcaobj/orcaobj.h>
+#include <iostream>
 
 using namespace std;
 
-//
-// Build the component into a stand-alone application
-//
 int main(int argc, char * argv[])
 {
     cout<<"testing toComponentName() and toString(orca::FQComponentName) ... ";
-    std::string strComp1 = "platf/comp";
-    orca::FQComponentName fqComp = orcaice::toComponentName( strComp1 );
-    std::string strComp2 = orcaice::toString( fqComp );
-    if ( strComp1 != strComp2 ) {
-        cout<<"failed"<<endl<<"in="<<strComp1<<"; out="<<strComp2<<endl;
-        return EXIT_FAILURE;
+    {
+        std::string s1 = "platf/comp";
+        orca::FQComponentName fqComp = orcaice::toComponentName( s1 );
+        std::string s2 = orcaice::toString( fqComp );
+        if ( s1 != s2 ) {
+            cout<<"failed"<<endl<<"in="<<s1<<"; out="<<s2<<endl;
+            return EXIT_FAILURE;
+        }
     }
     cout<<"ok"<<endl;
     
-    cout<<"testing toInterfaceName() and toString() ... ";
+    cout<<"testing toInterfaceName() and toString(orca::FQInterfaceName) ... ";
     std::string strIface1 = "iface@platf/comp";
     orca::FQInterfaceName fqIface = orcaice::toInterfaceName( strIface1 );
     std::string strIface2 = orcaice::toString( fqIface );
@@ -39,7 +37,7 @@ int main(int argc, char * argv[])
     }
     cout<<"ok"<<endl;
 
-    cout<<"testing toString() ... ";
+    cout<<"testing toString(orca::FQTopicName) ... ";
     std::string strTopic1 = "iface/topic@platf/comp";
     // back-conversion function does not exist, create the right topic manually
     //orca::FQTopicName fqTopic = orcaice::stringToTopicName( strTopic1 );

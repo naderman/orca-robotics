@@ -13,7 +13,7 @@ ELSE (NOT OS_WIN)
   GLOBAL_ADD_LIBRARY( OrcaDef STATIC defparser.cpp componentdefinition.cpp exceptions.cpp )
 ENDIF (NOT OS_WIN)
 
-TARGET_LINK_LIBRARIES( OrcaDef OrcaInterfaces OrcaIce OrcaObjects Ice IceUtil )
+TARGET_LINK_LIBRARIES( OrcaDef OrcaInterfaces OrcaIce OrcaIceUtil OrcaObjects Ice IceUtil )
 
 # special dependency on the generated files
 ADD_DEPENDENCIES( OrcaDef OrcaObjects OrcaIce )

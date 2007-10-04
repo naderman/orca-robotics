@@ -12,7 +12,8 @@
 #include <stdlib.h>             // for getenv()
 
 #include <orcaobj/mathdefs.h>           // for DEG2RAD_RATIO
-#include <orcaobj/stringutils.h>
+#include <orcaobj/stringutils.h>        
+#include <orcaiceutil/stringutils.h>    // for toStringSeq()
 
 #include "proputils.h"
 #include "configutils.h"
@@ -267,7 +268,7 @@ getPropertyAsStringSeq( const Ice::PropertiesPtr & prop, const ::std::string& ke
         return -1;
     }
     else {
-        value = toStringSeq( stringVal, ':' );
+        value = orcaiceutil::toStringSeq( stringVal, ':' );
         return 0;
     }
 }
@@ -279,7 +280,7 @@ getPropertyAsStringSeqWithDefault( const Ice::PropertiesPtr & prop, const ::std:
     if ( getProperty( prop, key, stringVal ) )
         return defaultValue;
     else
-        return toStringSeq( stringVal, ':' );
+        return orcaiceutil::toStringSeq( stringVal, ':' );
 }
 
 int

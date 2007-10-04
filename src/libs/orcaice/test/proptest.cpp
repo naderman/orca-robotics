@@ -169,16 +169,6 @@ int main(int argc, char * argv[])
     }
     cout<<"ok"<<endl;
 
-    cout<<"testing toStringSeq() and toString() ... ";
-    std::string str1 = "alpha:bravo:charlie:delta";
-    Ice::StringSeq seq = orcaice::toStringSeq( str1 );
-    std::string str2 = orcaice::toString( seq );
-    if ( str1 != str2 ) {
-        cout<<"failed"<<endl<<"in="<<str1<<"; out="<<str2<<endl;
-        return EXIT_FAILURE;
-    }
-    cout<<"ok"<<endl;
-
     cout<<"testing getPropertyAsFrame2d() ... ";
     orca::Frame2d frame2d;
     ret = orcaice::getPropertyAsFrame2d( props, "Frame2d.Good", frame2d );

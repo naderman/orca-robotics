@@ -18,6 +18,49 @@ using namespace std;
 int 
 main(int argc, char * argv[])
 {
+    cout<<"testing toString(vector<string>) and toStringSeq() ... ";
+    {
+        vector<string> in;
+//         const char del = ':';
+        in.push_back( "a" );
+        string s = orcaiceutil::toString( in );
+        vector<string> out = orcaiceutil::toStringSeq( s );
+        if ( out.size() != in.size() ) {
+            cout<<"failed"<<endl
+                <<"wrong output size: expect="<<in.size()<<", got="<<out.size()<<endl
+                <<"string="<<s<<endl;
+            return EXIT_FAILURE;
+        }
+
+        // with two elemens
+        in.push_back( "bbb" );
+        s = orcaiceutil::toString( in );
+        out = orcaiceutil::toStringSeq( s );
+        if ( out.size() != in.size() ) {
+            cout<<"failed"<<endl
+                <<"wrong output size: expect="<<in.size()<<", got="<<out.size()<<endl
+                <<"string="<<s<<endl;
+            return EXIT_FAILURE;
+        }
+        if ( out[0]!=in[0] || out[1]!=in[1] ) {
+            cout<<"failed, wrong output: string="<<s<<endl;
+            return EXIT_FAILURE;
+        }
+    }
+    cout<<"ok"<<endl;
+
+    cout<<"testing toStringSeq() and toString(vector<string>) ... ";
+    {
+        std::string s1 = "alpha:bravo:charlie:delta";
+        vector<string> seq = orcaiceutil::toStringSeq( s1 );
+        std::string s2 = orcaiceutil::toString( seq );
+        if ( s1 != s2 ) {
+            cout<<"failed"<<endl<<"in="<<s1<<"; out="<<s2<<endl;
+            return EXIT_FAILURE;
+        }
+    }
+    cout<<"ok"<<endl;
+
     cout<<"testing toLowerCase() ... ";
     {
         std::string in = "qwertyQWERTY123,./";

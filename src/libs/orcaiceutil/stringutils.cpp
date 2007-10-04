@@ -17,6 +17,60 @@ using namespace std;
 namespace orcaiceutil
 {
 
+std::vector<std::string>
+toStringSeq( const std::string& s, const char delim )
+{
+    std::string::size_type beg;
+    std::string::size_type end = 0;
+    const std::string whitespace = " \t\n\r";
+
+    vector<string> seq;
+    while( end < s.length() )
+    {
+        // skip leading white space
+        beg = s.find_first_not_of(whitespace, end);
+        if(beg == std::string::npos) {
+            break;
+        }
+
+        // find the delimeter
+        end = s.find( delim, beg );
+        if(end == std::string::npos) {
+            end = s.length();
+        }
+
+        // empty string in the sequence, i.e. "something: :else"
+        if(end == beg) {
+            ++end;
+            continue;
+        }
+
+        seq.push_back( s.substr(beg, end - beg) );
+        ++end;
+    }
+
+    return seq;
+}
+
+std::string
+toString( const std::vector<std::string>& seq, const char delim )
+{
+    std::string s;
+
+    // check for empty sequence
+    if ( seq.empty() )
+        return s;
+
+    s = seq[0];
+
+    // append the rest of the sequence with delimeters
+    // (this is safe even when size=1: in that case we'll never get inside that loop)
+    for ( size_t i=1; i<seq.size(); ++i ) {
+        s += delim + seq[i];
+    }
+    return s;
+}
+
 std::string
 toLowerCase( const std::string & s )
 {

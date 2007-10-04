@@ -43,18 +43,6 @@ namespace orcaice
 {
 
 /*!
- *  @name String Utilities
- */
-//@{
-
-//! Parses the string into a sequence of strings for a given separator.
-Ice::StringSeq toStringSeq( const std::string& s, const char delim=':' );
-//! Combines the sequence of strings into a single string using a given separator.
-std::string toString( const Ice::StringSeq & seq, const char delim=':' );
-
-//@}
-
-/*!
  *  @name Stringify OCM Structures
  */
 //@{

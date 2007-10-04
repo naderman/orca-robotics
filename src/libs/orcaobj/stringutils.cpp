@@ -12,6 +12,7 @@
 #include <sstream>
 #include <iomanip>
 #include <orcaiceutil/exceptions.h>
+#include <orcaiceutil/stringutils.h>
 
 // trying to solve a problem in win, round() is not found
 #ifdef WIN32
@@ -51,59 +52,6 @@ using namespace std;
 
 namespace orcaice
 {
-
-Ice::StringSeq
-toStringSeq( const std::string& s, const char delim )
-{
-    std::string::size_type beg;
-    std::string::size_type end = 0;
-    const std::string whitespace = " \t\n\r";
-
-    Ice::StringSeq seq;
-    while( end < s.length() )
-    {
-        // skip leading white space
-        beg = s.find_first_not_of(whitespace, end);
-        if(beg == std::string::npos) {
-            break;
-        }
-
-        // find the delimeter
-        end = s.find( delim, beg );
-        if(end == std::string::npos) {
-            end = s.length();
-        }
-
-        // empty string in the sequence, i.e. "something: :else"
-        if(end == beg) {
-            ++end;
-            continue;
-        }
-
-        seq.push_back( s.substr(beg, end - beg) );
-        ++end;
-    }
-
-    return seq;
-}
-
-std::string
-toString( const Ice::StringSeq& seq, const char delim )
-{
-    std::string s;
-
-    // check for empty sequence
-    if ( seq.empty() ) {
-        return s;
-    }
-
-    s = seq[0];
-    // append the rest of the sequence with delimeters
-    for ( unsigned int i=1; i<seq.size(); ++i ) {
-        s += delim + seq[i];
-    }
-    return s;
-}
 
 std::string 
 toString( const orca::FQComponentName& name )
@@ -475,12 +423,12 @@ toTimeDuration( const std::string& s, orca::Time& obj )
         isNegative = true;
     }
 
-    Ice::StringSeq sseq;
+    vector<string> sseq;
     if ( isNegative ) {
-        sseq = orcaice::toStringSeq( s.substr( 1 ) );
+        sseq = orcaiceutil::toStringSeq( s.substr( 1 ) );
     }
     else {
-        sseq = orcaice::toStringSeq( s );
+        sseq = orcaiceutil::toStringSeq( s );
     }
     if ( sseq.empty() ) return -1;
 //     cout<<"forward :"<<endl; for ( unsigned int i=0; i<sseq.size(); ++i ) cout<<sseq[i]<<endl;
@@ -490,7 +438,7 @@ toTimeDuration( const std::string& s, orca::Time& obj )
 //     cout<<"reversed :"<<endl; for ( unsigned int i=0; i<sseq.size(); ++i ) cout<<sseq[i]<<endl;
 
     // convert to a single string but now with spaces as delimeters
-    std::string s2 = orcaice::toString( sseq, ' ' );
+    std::string s2 = orcaiceutil::toString( sseq, ' ' );
     std::istringstream ss( s2 );
 
     IceUtil::Time t;
