@@ -4,17 +4,16 @@ OPTION( BUILD_ORCAICEGRID "Try to build libOrcaIceGrid" ON )
 
 IF ( BUILD_ORCAICEGRID )
 
-  INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseBasicRules.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseIce.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseLibProjectInterfaces.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
+    
+    FILE( GLOB SRCS *.cpp )
 
-  FILE( GLOB SRCS *.cpp )
+    GLOBAL_ADD_LIBRARY( OrcaIceGrid SHARED ${SRCS} )
 
-  IF ( NOT OS_WIN )
-	GLOBAL_ADD_LIBRARY( OrcaIceGrid SHARED ${SRCS} )
-  ELSE ( NOT OS_WIN )
-	GLOBAL_ADD_LIBRARY( OrcaIceGrid STATIC ${SRCS} )
-  ENDIF ( NOT OS_WIN )
-
-  INSTALL_FILES( /include/orcaicegrid .*\\.h$ )
+    INSTALL_FILES( /include/orcaicegrid .*\\.h$ )
 
 ENDIF ( BUILD_ORCAICEGRID )
 

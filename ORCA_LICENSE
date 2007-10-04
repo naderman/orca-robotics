@@ -63,6 +63,7 @@ src
         orcacolourtext                     LGPL
         orcadef                            LGPL
         orcaice                            LGPL
+        orcaicegrid                        LGPL
         orcaiceutil                        LGPL
 	orcaicexml			    GPL
         orcaimage                           GPL

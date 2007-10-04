@@ -12,6 +12,7 @@
 #define ORCA2_ORCAICEGRID__H
 
 #include <orcaicegrid/sessionmanager.h>
+#include <orcaicegrid/adminsessionmanager.h>
 #include <orcaicegrid/printutil.h>
 
 #endif
