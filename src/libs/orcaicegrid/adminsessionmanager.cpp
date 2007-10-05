@@ -29,7 +29,7 @@ AdminSessionManager::AdminSessionManager( const orcaice::Context &context )
 bool
 AdminSessionManager::tryCreateSession()
 {
-    cout<<"TRACE(icegridadminsession.cpp): tryCreateSession()" << endl;
+//     cout<<"TRACE(icegridadminsession.cpp): tryCreateSession()" << endl;
 
     // config file parameters
     Ice::PropertiesPtr props = context_.properties();
@@ -101,7 +101,7 @@ AdminSessionManager::tryCreateSession()
         return false;
     }
 
-    cout<<"TRACE(icegridadminsession.cpp): tryCreateSession() returning ok" << endl;
+//     cout<<"TRACE(icegridadminsession.cpp): tryCreateSession() returning ok" << endl;
     return true;
 }
 

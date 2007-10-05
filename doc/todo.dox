@@ -65,9 +65,11 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @par New libraries
 
-- libOrcaIceUtil (alex m.)
+- libOrcaIceUtil
    - A set of tools which depends only on libIceUtil. Contains nothing
-    related to communications. See notes on libOrcaIce.
+    related to communications. See notes on libOrcaIce. (alex m)
+   - Added new utility class JobQueue for spinning off long-term tasks into a
+     different thread. (alex b)
 
 - libOrcaIceXml (alex m.)
    - Tools useful for XML parsing. Current contents were extracted from IceGrid code.
