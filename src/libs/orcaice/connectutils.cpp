@@ -191,7 +191,7 @@ connectToIceStormTopicPublisherPrx( const IceStorm::TopicPrx & topic )
 }
 
 bool
-isRegistryReachable( const Context  & context )
+isRegistryReachable( const Context& context )
 {
     assert( context.communicator() );
 
@@ -220,6 +220,25 @@ isRegistryReachable( const Context  & context )
         context.tracer()->debug( ss.str() ,5 );
     }
     return false;
+}
+
+bool 
+isInterfaceReachable( const Context& context, const std::string& proxyString,  
+                           std::string& diagnostic )
+{
+    try {
+        Ice::ObjectPrx obj = context.communicator()->stringToProxy( proxyString );
+        obj->ice_ping();
+    }
+    catch ( const Ice::Exception &e )
+    {
+        stringstream ss; 
+        ss << e;
+        diagnostic = ss.str();
+        return false;
+    }
+
+    return true;
 }
 
 } // namespace

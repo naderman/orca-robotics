@@ -36,39 +36,75 @@ void
 TestComponent::start()
 {
     // if set to FALSE, will return success when registry is not available
-    bool failWithoutRegistry = false;
+    const bool failWithoutRegistry = false;
+
+    cout<<"testing isRegistryReachable() ... ";
+    {
+        bool isUp = orcaice::isRegistryReachable( context() );
+        if ( !isUp ) {
+            if ( failWithoutRegistry ) {
+                cout<<"failed: could not reach registry"<<endl;
+                exit(EXIT_FAILURE);
+            }
+            else {
+                cout<<"could not connect to registry."<<endl;
+                cout<<"The test is configured not to fail."<<endl;
+                exit(EXIT_SUCCESS);
+            }
+        }
+    }
+    cout<<"ok"<<endl;
+
+    // from now on, we know that the registry exists, so we don't tolerate exceptions
 
     cout<<"testing activate() ... ";
     try {
         activate();
     }
     catch ( const orcaice::NetworkException & e ) {
-        if ( failWithoutRegistry ) {
-            cout<<"failed"<<endl<<e.what()<<endl;
-            exit(EXIT_FAILURE);
-        }
-        else {
-            cout<<"could not connect to registry:"<<endl<<e.what()<<endl;
-            cout<<"The test is configured not to fail."<<endl;
-            exit(EXIT_SUCCESS);
-        }
-    }
-    cout<<"ok"<<endl;
-    // from now on, we know that the registry exists, so we don't tolerate exceptions
-
-    Ice::ObjectPtr homeObj = new orcaice::HomeI( interfaceFlag(), context() );
-    
-    cout<<"testing createInterfaceWithString() ... ";
-    try {
-        orcaice::createInterfaceWithString( context(), homeObj, "homeless" );
-        // ok
-    }
-    catch ( const orcaiceutil::Exception & ) {
-        cout<<"failed"<<endl<<"should be able to create interface"<<endl;
+        cout<<"failed"<<endl<<e.what()<<endl;
         exit(EXIT_FAILURE);
     }
     cout<<"ok"<<endl;
 
+    Ice::ObjectPtr homeObj = new orcaice::HomeI( interfaceFlag(), context() );
+    
+    cout<<"testing isInterfaceReachable() with non-existant interface ... ";
+    {
+        string diagnostic;
+        bool isUp = orcaice::isInterfaceReachable( context(), "unlikely@to/exist", diagnostic );
+        if ( isUp ) {
+            cout<<"failed"<<endl<<"should be NOT able to ping interface"<<endl;
+            exit(EXIT_FAILURE);
+        }
+    }
+    cout<<"ok"<<endl;
+
+    cout<<"testing createInterfaceWithString() ... ";
+    {
+        try {
+            orcaice::createInterfaceWithString( context(), homeObj, "homeless" );
+            // ok
+        }
+        catch ( const orcaiceutil::Exception & ) {
+            cout<<"failed"<<endl<<"should be able to create interface"<<endl;
+            exit(EXIT_FAILURE);
+        }
+    }
+    cout<<"ok"<<endl;
+    
+    cout<<"testing isInterfaceReachable() with existing interface ... ";
+    {
+        string proxyString = "homeless@" + orcaice::toString(context().name());
+        string diagnostic;
+        bool isUp = orcaice::isInterfaceReachable( context(), proxyString, diagnostic );
+        if ( !isUp ) {
+            cout<<"failed"<<endl<<"should be able to ping interface"<<endl;
+            cout<<"diagnostic="<<diagnostic<<endl;
+            exit(EXIT_FAILURE);
+        }
+    }
+    cout<<"ok"<<endl;
 
     cout<<"testing createInterfaceWithTag() ... ";
     try {

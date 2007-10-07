@@ -35,7 +35,21 @@ namespace orcaice
  *  Tries to ping the default Locator and, based on success or the exceptions
  *  it catches, determines if the registry is reachable.
  */
-bool isRegistryReachable( const Context &context );
+bool isRegistryReachable( const Context& context );
+
+/*!
+ Tries to reach the remote interface specified with proxyString by calling
+ ice_ping() function. Returns TRUE if the ping was successful and FALSE if not.
+ Writes diagnostic information into @c diagnostic string.
+ 
+ Catches all exceptions. Does not throw.  
+  
+ Implementation note: this function does not need to be templated because
+ ice_ping() is implemented by all Ice objects regardless of type.
+ */
+bool isInterfaceReachable( const Context& context,
+                           const std::string& proxyString,  
+                           std::string& diagnostic );
 
 /*!
  *  Adds the @p object to the component adapter and gives it the @p name.
