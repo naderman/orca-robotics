@@ -54,7 +54,7 @@ interface LatencyPinger
 interface LatencyReplier
 {
     //! Specifies the Pinger proxy, only required for tests with ping1().
-    idempotent void setPinger( Pinger* server );
+    idempotent void setPinger( LatencyPinger* server );
 
     //! Sends data one way and expects it to be returned using callback operation
     //! of Pinger interface.
