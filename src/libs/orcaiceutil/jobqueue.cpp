@@ -23,15 +23,15 @@ namespace {
     class Worker : public orcaiceutil::Thread
     {
     public:
-        Worker( JobQueue &q, orcaiceutil::Tracer& tracer );
+        Worker( JobQueue &q, orcaiceutil::Tracer* tracer );
         virtual void run();
 
     private:
         JobQueue         &q_;
-        orcaiceutil::Tracer&   tracer_;
+        orcaiceutil::Tracer*   tracer_;
     };
 
-    Worker::Worker( JobQueue &q, orcaiceutil::Tracer& tracer )
+    Worker::Worker( JobQueue &q, orcaiceutil::Tracer* tracer )
             : q_(q),
               tracer_(tracer) 
     {
@@ -60,30 +60,36 @@ namespace {
 //             }
             catch ( IceUtil::Exception & e )
             {
-                std::stringstream ss;
-                ss << "Worker::run(): Caught exception during Job: " << c->toString();
-                ss << ": " << e;
-                tracer_.warning( ss.str() );
-                JobStatusPtr status = new FailedJobStatus( c->jobQueueUser(), ss.str() );
-                q_.addJobStatus( status );
+                if ( tracer_ ) {
+                    std::stringstream ss;
+                    ss << "Worker::run(): Caught exception during Job: " << c->toString();
+                    ss << ": " << e;
+                    tracer_->warning( ss.str() );
+                    JobStatusPtr status = new FailedJobStatus( c->jobQueueUser(), ss.str() );
+                    q_.addJobStatus( status );
+                }
             }
             catch ( std::exception & e )
             {
-                std::stringstream ss;
-                ss << "Worker::run(): Caught exception during Job: " << c->toString();
-                ss << e.what();
-                cout<<"TRACE(jobqueue.cpp): ss: " << ss.str() << endl;
-                tracer_.warning( ss.str() );
-                JobStatusPtr status = new FailedJobStatus( c->jobQueueUser(), ss.str() );
-                q_.addJobStatus( status );
+                if ( tracer_ ) {
+                    std::stringstream ss;
+                    ss << "Worker::run(): Caught exception during Job: " << c->toString();
+                    ss << e.what();
+                    cout<<"TRACE(jobqueue.cpp): ss: " << ss.str() << endl;
+                    tracer_->warning( ss.str() );
+                    JobStatusPtr status = new FailedJobStatus( c->jobQueueUser(), ss.str() );
+                    q_.addJobStatus( status );
+                }
             }
             catch ( ... )
             {
-                std::stringstream ss;
-                ss << "Worker::run(): Caught unknown exception during Job: " << c->toString();
-                tracer_.warning( ss.str() );
-                JobStatusPtr status = new FailedJobStatus( c->jobQueueUser(), ss.str() );
-                q_.addJobStatus( status );
+                if ( tracer_ ) {
+                    std::stringstream ss;
+                    ss << "Worker::run(): Caught unknown exception during Job: " << c->toString();
+                    tracer_->warning( ss.str() );
+                    JobStatusPtr status = new FailedJobStatus( c->jobQueueUser(), ss.str() );
+                    q_.addJobStatus( status );
+                }
             } // try
         } // while
     } // function
@@ -91,21 +97,33 @@ namespace {
 
 //////////////////////////////////////////////
 
-JobQueue::JobQueue( orcaiceutil::Tracer& tracer )
-    : tracer_(tracer)
+JobQueue::JobQueue( orcaiceutil::Tracer* tracer, int threadPoolSize,
+              int queueSizeWarn  ) : 
+    tracer_(tracer),
+    queueSizeWarn_(queueSizeWarn)
 {
+    if ( threadPoolSize<1 )
+        threadPoolSize = 1;
+    
+    for ( size_t i=0; i<(size_t)threadPoolSize; ++i ) {
+        orcaiceutil::ThreadPtr t = new Worker( *this, tracer_ );
+        workerPool_.push_back( t );
+    }
 }
 
 JobQueue::~JobQueue()
-{
-    orcaiceutil::stopAndJoin( worker_ );
+{    
+    for ( size_t i=0; i<workerPool_.size(); ++i ) {
+        orcaiceutil::stopAndJoin( workerPool_[i] );
+    }
 }
 
 void
 JobQueue::start()
 {
-    worker_ = new Worker( *this, tracer_ );
-    worker_->start();
+    for ( size_t i=0; i<workerPool_.size(); ++i ) {
+        workerPool_[i]->start();
+    }
 }
 
 void
@@ -114,6 +132,12 @@ JobQueue::addJob( JobPtr &job )
     IceUtil::Mutex::Lock lock(mutex_);
 
     pendingJobs_.push_back( job );
+    
+    if ( tracer_ && queueSizeWarn_>0 && pendingJobs_.size()>=(size_t)queueSizeWarn_ ) {
+        std::stringstream ss;
+        ss << "Job queue size " << pendingJobs_.size();
+        tracer_->warning( ss.str() );
+    }
 }
 
 JobStatusPtr

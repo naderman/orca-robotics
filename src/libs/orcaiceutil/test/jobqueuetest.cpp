@@ -18,6 +18,9 @@ using namespace std;
 class TestJob : public orcaiceutil::Job 
 {
 public:
+    TestJob( orcaiceutil::JobQueueUser* user ) :
+        orcaiceutil::Job( user ) {};
+    
     virtual orcaiceutil::JobStatusPtr process()
     {
         return new orcaiceutil::OkJobStatus(jobQueueUser());
@@ -31,10 +34,26 @@ public:
 
 int main(int argc, char * argv[])
 {
-    cout<<"starting job queue... ";
-    orcaiceutil::SimpleTracer tracer;
-    orcaiceutil::JobQueue jobQueue( tracer );
-    jobQueue.start();
+    cout<<"starting job queue with thread pool 1 ... ";
+    {
+        orcaiceutil::SimpleTracer tracer;
+        orcaiceutil::JobQueue jobQueue( &tracer, 1, 1 );
+        jobQueue.start();
+        orcaiceutil::JobQueueUser* fakeUser = 0;
+        orcaiceutil::JobPtr j = new TestJob( fakeUser );
+        jobQueue.addJob( j );
+    }
+    cout<<"ok"<<endl;
+    
+    cout<<"starting job queue with thread pool 2 ... ";
+    {
+        orcaiceutil::SimpleTracer tracer;
+        orcaiceutil::JobQueue jobQueue( &tracer, 2, 1 );
+        jobQueue.start();
+        orcaiceutil::JobQueueUser* fakeUser = 0;
+        orcaiceutil::JobPtr j = new TestJob( fakeUser );
+        jobQueue.addJob( j );
+    }
     cout<<"ok"<<endl;
     
     return EXIT_SUCCESS;

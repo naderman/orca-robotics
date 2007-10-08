@@ -17,6 +17,7 @@
 #include <orcaiceutil/thread.h>
 #include <orcaiceutil/tracer.h>
 #include <map>
+#include <vector>
 #include <list>
 
 namespace orcaiceutil {
@@ -99,13 +100,16 @@ typedef IceUtil::Handle<Job> JobPtr;
 class JobQueue :  private ::IceUtil::noncopyable
 {
 public: 
-    //! Consturtor. Initializes the worker pool (currently fixed to size 1).
-    JobQueue( orcaiceutil::Tracer& tracer );
+    //! Consturtor. 
+    //! For queueSizeWarn>0, a warning will be traced when the queue size 
+    //! exceeds specified size.
+    JobQueue( orcaiceutil::Tracer* tracer=0, int threadPoolSize=1,
+              int queueSizeWarn=-1 );
 
     //! Shuts down the worker pool.
     ~JobQueue();
-
-    //! Start the worker(s)
+    
+    //! Initializes the worker pool (currently fixed to size 1).
     void start();
 
     //! Add request to execute a job.
@@ -115,7 +119,7 @@ public:
     //! it from the internal storage.
     //! Returns 0 if no job status is available for this jobQueueUser.
     JobStatusPtr getJobStatus( JobQueueUser *jobQueueUser );
-
+    
     //
     // No doxy-tags because these are only used by workers.
     //
@@ -135,13 +139,14 @@ private:
     // status of calls which were processed but the user has not asked for them yet
     std::map<JobQueueUser*,JobStatusList> finishedJobs_;
 
-    // worker "pool" of 1.
-    orcaiceutil::ThreadPtr       worker_;
+    // worker pool
+    std::vector<orcaiceutil::ThreadPtr>   workerPool_;
 
     // makes internal storage thread-safe
     IceUtil::Mutex   mutex_;
 
-    orcaiceutil::Tracer&         tracer_;
+    orcaiceutil::Tracer*         tracer_;
+    int queueSizeWarn_;
 };
 
 //!
