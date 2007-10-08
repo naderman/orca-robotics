@@ -9,6 +9,7 @@
  */
 
 #include "stringutils.h"
+#include "exceptions.h"
 #include <sstream>
 #include <iomanip> // for setw()
 
@@ -90,6 +91,59 @@ toUpperCase( const std::string & s )
     }
     return s2;
 }
+
+void 
+substitute( string& v, const vector<string>& parameters, 
+            const map<string,string>& values, const map<string,string>& defaults )
+{
+    string::size_type beg = 0;
+    string::size_type end;
+
+    while( (beg = v.find("${", beg)) != string::npos && beg < v.size()-1 )
+    {
+        end = v.find( "}" );
+        if(end == string::npos) {
+            break;
+        }
+        string variable = v.substr( beg+2, end-beg-2 );
+
+        // check against known parameters
+        bool isParameterKnown = false;
+        for ( size_t i=0; i<parameters.size(); ++i ) {
+            if ( variable == parameters[i] ) {
+                isParameterKnown = true;
+                break;
+            }
+        }
+        if ( !isParameterKnown )
+            throw Exception(ERROR_INFO, "Unknown parameter '"+variable+"'" );
+
+        string value;
+        bool isValueKnown = false;
+
+        // first, look for a provided value
+        map<string,string>::const_iterator it = values.find( variable );
+        if ( it != values.end() ) {
+            value = it->second;
+            isValueKnown = true;
+        }
+
+        // if value is not provided, look for a default value
+        if ( !isValueKnown ) {
+            map<string,string>::const_iterator it = defaults.find( variable );
+            if ( it != defaults.end() ) {
+                value = it->second;
+                isValueKnown = true;
+            }
+        }
+
+        if ( !isValueKnown )
+            throw Exception(ERROR_INFO, "Unknown value for parameter '"+variable+"'" );
+
+        v.replace( beg, end-beg+1, value );
+        beg += value.size();
+    }
+};
 
 std::string 
 toFixedWidth( const std::string& s, int width, char filler, bool adjustLeft )

@@ -70,6 +70,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     related to communications. See notes on libOrcaIce. (alex m)
    - Added new utility class JobQueue for spinning off long-term tasks into a
      different thread. (alex b)
+   - added new function substitute() to string utilities. It substitutes parameters
+     in the form ${parameter}. (alex m)
 
 - libOrcaIceXml (alex m.)
    - Tools useful for XML parsing. Current contents were extracted from IceGrid code.
@@ -99,6 +101,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     done in preparation for decoupling of Ice-dependent components and libs
     from Ice-independent drivers and algorithm implementations. libOrcaIce
     depends on libOrcaIceUtil. (alex m.)
+  - added function isInterfaceReachable() (alex m.)
 
 - libOrcaMisc
   - moved Activator to libOrcaIce

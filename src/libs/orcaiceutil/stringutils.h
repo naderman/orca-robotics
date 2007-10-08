@@ -13,6 +13,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 
 namespace orcaiceutil
 {
@@ -32,6 +33,38 @@ std::string toLowerCase( const std::string& s );
 
 //! Converts the whole string to upper case.
 std::string toUpperCase( const std::string& s );
+
+
+/*! 
+Performs parameter substitution in string the string provided.
+Parameter syntax: ${parameter_name}. Valid parameters are given in @c parameters.
+Substitution values are first looked up ini @c values and then in @c defaults.
+Throws orcaiceutil::Exception if the string conatains an unknown parameter
+or if the parameter has no value (provided or default).
+
+The input string can contain '${' without a matching '}'. These are ignored.
+
+    Example:
+@verbatim
+string s="The best framework is ${framework}";
+
+vector<string> parameters;
+parameters.push_back("software");
+parameters.push_back("framework");
+
+map<string,string> values;
+
+map<string,string> defaults;
+defaults["framework"] = "Orca";
+
+substitute( s, parameters, values, defaults );
+
+cout<<s<endl; // output: "The best framework is Orca"
+@endverbatim
+*/
+void substitute( std::string& s, const std::vector<std::string>& parameters, 
+                const std::map<std::string,std::string>& values, 
+                const std::map<std::string,std::string>& defaults );
 
 //! Unlike std::setw() function, this functions pads and truncates.
 //! When width=0, an empty string is returned.

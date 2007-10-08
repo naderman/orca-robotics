@@ -12,6 +12,7 @@
 
 #include <orcaiceutil/stringutils.h>
 #include <orcaiceutil/sysutils.h>
+#include <orcaiceutil/exceptions.h>
 
 using namespace std;
 
@@ -51,9 +52,9 @@ main(int argc, char * argv[])
 
     cout<<"testing toStringSeq() and toString(vector<string>) ... ";
     {
-        std::string s1 = "alpha:bravo:charlie:delta";
+        string s1 = "alpha:bravo:charlie:delta";
         vector<string> seq = orcaiceutil::toStringSeq( s1 );
-        std::string s2 = orcaiceutil::toString( seq );
+        string s2 = orcaiceutil::toString( seq );
         if ( s1 != s2 ) {
             cout<<"failed"<<endl<<"in="<<s1<<"; out="<<s2<<endl;
             return EXIT_FAILURE;
@@ -63,9 +64,9 @@ main(int argc, char * argv[])
 
     cout<<"testing toLowerCase() ... ";
     {
-        std::string in = "qwertyQWERTY123,./";
-        std::string out = orcaiceutil::toLowerCase( in );
-        std::string expect = "qwertyqwerty123,./";
+        string in = "qwertyQWERTY123,./";
+        string out = orcaiceutil::toLowerCase( in );
+        string expect = "qwertyqwerty123,./";
         if ( out != expect ) {
             cout<<"failed"<<endl<<"expect '"<<expect<<"' got='"<<out<<"'"<<endl;
             return EXIT_FAILURE;
@@ -75,9 +76,9 @@ main(int argc, char * argv[])
 
     cout<<"testing toLowerCase() with empty string ... ";
     {
-        std::string in = "";
-        std::string out = orcaiceutil::toLowerCase( in );
-        std::string expect = "";
+        string in = "";
+        string out = orcaiceutil::toLowerCase( in );
+        string expect = "";
         if ( out != expect ) {
             cout<<"failed"<<endl<<"expect '"<<expect<<"' got='"<<out<<"'"<<endl;
             return EXIT_FAILURE;
@@ -87,9 +88,9 @@ main(int argc, char * argv[])
 
     cout<<"testing toUpperCase() ... ";
     {
-        std::string in = "qwertyQWERTY123,./";
-        std::string out = orcaiceutil::toUpperCase( in );
-        std::string expect = "QWERTYQWERTY123,./";
+        string in = "qwertyQWERTY123,./";
+        string out = orcaiceutil::toUpperCase( in );
+        string expect = "QWERTYQWERTY123,./";
         if ( out != expect ) {
             cout<<"failed"<<endl<<"expect '"<<expect<<"' got='"<<out<<"'"<<endl;
             return EXIT_FAILURE;
@@ -99,9 +100,9 @@ main(int argc, char * argv[])
 
     cout<<"testing toUpperCase() with empty string ... ";
     {
-        std::string in = "";
-        std::string out = orcaiceutil::toUpperCase( in );
-        std::string expect = "";
+        string in = "";
+        string out = orcaiceutil::toUpperCase( in );
+        string expect = "";
         if ( out != expect ) {
             cout<<"failed"<<endl<<"expect '"<<expect<<"' got='"<<out<<"'"<<endl;
             return EXIT_FAILURE;
@@ -109,11 +110,124 @@ main(int argc, char * argv[])
     }
     cout<<"ok"<<endl;
 
+    cout<<"testing substitute() with empty string ... ";
+    {
+        string s = "";
+        vector<string> parameters;
+        map<string,string> values, defaults;
+        orcaiceutil::substitute( s, parameters, values, defaults );
+        string expect = "";
+        if ( s != expect ) {
+            cout<<"failed"<<endl<<"expect '"<<expect<<"' got='"<<s<<"'"<<endl;
+            return EXIT_FAILURE;
+        }
+    }
+    cout<<"ok"<<endl;
+
+    cout<<"testing substitute() with non-existent parameter ... ";
+    {
+        string s = "jfkdj ${var}fd fjkdjf";
+        vector<string> parameters;
+        map<string,string> values, defaults;
+        try {
+            orcaiceutil::substitute( s, parameters, values, defaults );
+            cout<<"failed, expect to catch exception"<<endl;
+            return EXIT_FAILURE;
+        }
+        catch ( const orcaiceutil::Exception& e ) {}
+    }
+    cout<<"ok"<<endl;
+
+    cout<<"testing substitute() with no matching values ... ";
+    {
+        string s = "jfkdj ${var}fd fjkdjf";
+        vector<string> parameters;
+        parameters.push_back( "var" );
+        map<string,string> values, defaults;
+        values["crap"] = "fdkj";
+        defaults["crud"] = "jkljk";
+        try {
+            orcaiceutil::substitute( s, parameters, values, defaults );
+            cout<<"failed, expect to catch exception"<<endl;
+            return EXIT_FAILURE;
+        }
+        catch ( const orcaiceutil::Exception& e ) {}
+    }
+    cout<<"ok"<<endl;
+
+    cout<<"testing substitute() with provided value ... ";
+    {
+        string s = "jfkdj ${var}fd fjkdjf";
+        vector<string> parameters;
+        parameters.push_back( "var" );
+        map<string,string> values, defaults;
+        values["var"] = "Orca";
+        defaults["crud"] = "jkljk";
+        orcaiceutil::substitute( s, parameters, values, defaults );
+        string expect = "jfkdj Orcafd fjkdjf";
+        if ( s != expect ) {
+            cout<<"failed"<<endl<<"expect '"<<expect<<"' got='"<<s<<"'"<<endl;
+            return EXIT_FAILURE;
+        }
+    }
+    cout<<"ok"<<endl;
+
+    cout<<"testing substitute() with default value ... ";
+    {
+        string s="The best framework is ${framework}";
+        vector<string> parameters;
+        parameters.push_back( "framework" );
+        map<string,string> values, defaults;
+        defaults["framework"] = "Orca";
+        orcaiceutil::substitute( s, parameters, values, defaults );
+        string expect = "The best framework is Orca";
+        if ( s != expect ) {
+            cout<<"failed"<<endl<<"expect '"<<expect<<"' got='"<<s<<"'"<<endl;
+            return EXIT_FAILURE;
+        }
+    }
+    cout<<"ok"<<endl;
+
+    cout<<"testing substitute() with value and default value ... ";
+    {
+        string s="The best framework is ${framework}";
+        vector<string> parameters;
+        parameters.push_back( "framework" );
+        map<string,string> values, defaults;
+        values["framework"] = "Orca-3";
+        defaults["framework"] = "Orca";
+        orcaiceutil::substitute( s, parameters, values, defaults );
+        string expect = "The best framework is Orca-3";
+        if ( s != expect ) {
+            cout<<"failed"<<endl<<"expect '"<<expect<<"' got='"<<s<<"'"<<endl;
+            return EXIT_FAILURE;
+        }
+    }
+    cout<<"ok"<<endl;
+
+    cout<<"testing substitute() with 2 parameters ... ";
+    {
+        string s="The best ${framework} is ${project}";
+        vector<string> parameters;
+        parameters.push_back( "project" );
+        parameters.push_back( "framework" );
+        map<string,string> values, defaults;
+        values["project"] = "orca-robotics";
+        defaults["framework"] = "Orca";
+        orcaiceutil::substitute( s, parameters, values, defaults );
+        string expect = "The best Orca is orca-robotics";
+        if ( s != expect ) {
+            cout<<"failed"<<endl<<"expect '"<<expect<<"' got='"<<s<<"'"<<endl;
+            return EXIT_FAILURE;
+        }
+    }
+    cout<<"ok"<<endl;
+
     cout<<"testing toFixedWidth() with padding ... ";
     {
-        std::string in = "abcd";
-        std::string out = orcaiceutil::toFixedWidth( in, 7 );
-        std::string expect = "   abcd";
+        string in = "abcd";
+        string out = orcaiceutil::toFixedWidth( in, 7 );
+        string expect = "   abcd";
         if ( out != expect ) {
             cout<<"failed"<<endl<<"expect '"<<expect<<"' got='"<<out<<"'"<<endl;
             return EXIT_FAILURE;
@@ -123,9 +237,9 @@ main(int argc, char * argv[])
 
     cout<<"testing toFixedWidth() with non-standard padding ... ";
     {
-        std::string in = "abcd";
-        std::string out = orcaiceutil::toFixedWidth( in, 7, 'x' );
-        std::string expect = "xxxabcd";
+        string in = "abcd";
+        string out = orcaiceutil::toFixedWidth( in, 7, 'x' );
+        string expect = "xxxabcd";
         if ( out != expect ) {
             cout<<"failed"<<endl<<"expect '"<<expect<<"' got='"<<out<<"'"<<endl;
             return EXIT_FAILURE;
@@ -135,9 +249,9 @@ main(int argc, char * argv[])
 
     cout<<"testing toFixedWidth() with left adjustment ... ";
     {
-        std::string in = "abcd";
-        std::string out = orcaiceutil::toFixedWidth( in, 7, 'x', true );
-        std::string expect = "abcdxxx";
+        string in = "abcd";
+        string out = orcaiceutil::toFixedWidth( in, 7, 'x', true );
+        string expect = "abcdxxx";
         if ( out != expect ) {
             cout<<"failed"<<endl<<"expect '"<<expect<<"' got='"<<out<<"'"<<endl;
             return EXIT_FAILURE;
@@ -147,9 +261,9 @@ main(int argc, char * argv[])
 
     cout<<"testing toFixedWidth() with trunkating ... ";
     {
-        std::string in = "abcd";
-        std::string out = orcaiceutil::toFixedWidth( in, 3 );
-        std::string expect = "abc";
+        string in = "abcd";
+        string out = orcaiceutil::toFixedWidth( in, 3 );
+        string expect = "abc";
         if ( out != expect ) {
             cout<<"failed"<<endl<<"expect '"<<expect<<"' got='"<<out<<"'"<<endl;
             return EXIT_FAILURE;
@@ -159,9 +273,9 @@ main(int argc, char * argv[])
 
     cout<<"testing toFixedWidth() with trunkating to nothing ... ";
     {
-        std::string in = "abcd";
-        std::string out = orcaiceutil::toFixedWidth( in, 0 );
-        std::string expect = "";
+        string in = "abcd";
+        string out = orcaiceutil::toFixedWidth( in, 0 );
+        string expect = "";
         if ( out != expect ) {
             cout<<"failed"<<endl<<"expect '"<<expect<<"' got='"<<out<<"'"<<endl;
             return EXIT_FAILURE;
@@ -171,9 +285,9 @@ main(int argc, char * argv[])
 
     cout<<"testing toFixedWidth() with no change ... ";
     {
-        std::string in = "abcd";
-        std::string out = orcaiceutil::toFixedWidth( in, 4 );
-        std::string expect = in;
+        string in = "abcd";
+        string out = orcaiceutil::toFixedWidth( in, 4 );
+        string expect = in;
         if ( out != expect ) {
             cout<<"failed"<<endl<<"expect '"<<expect<<"' got='"<<out<<"'"<<endl;
             return EXIT_FAILURE;
@@ -183,9 +297,9 @@ main(int argc, char * argv[])
 
     cout<<"testing toFixedWidth() with no empty string ... ";
     {
-        std::string in = "";
-        std::string out = orcaiceutil::toFixedWidth( in, 4 );
-        std::string expect = "    ";
+        string in = "";
+        string out = orcaiceutil::toFixedWidth( in, 4 );
+        string expect = "    ";
         if ( out != expect ) {
             cout<<"failed"<<endl<<"expect '"<<expect<<"' got='"<<out<<"'"<<endl;
             return EXIT_FAILURE;
@@ -195,9 +309,9 @@ main(int argc, char * argv[])
 
     cout<<"testing toFixedWidth() with negative width ... ";
     {
-        std::string in = "abcd";
-        std::string out = orcaiceutil::toFixedWidth( in, -4 );
-        std::string expect = in;
+        string in = "abcd";
+        string out = orcaiceutil::toFixedWidth( in, -4 );
+        string expect = in;
         if ( out != expect ) {
             cout<<"failed"<<endl<<"expect '"<<expect<<"' got='"<<out<<"'"<<endl;
             return EXIT_FAILURE;
@@ -205,13 +319,13 @@ main(int argc, char * argv[])
     }
     cout<<"ok"<<endl;
 
-    std::string dir = orcaiceutil::pathDelimeter()+"path"+orcaiceutil::pathDelimeter();
+    string dir = orcaiceutil::pathDelimeter()+"path"+orcaiceutil::pathDelimeter();
 
     cout<<"testing basename() typical ... ";
     {
-        std::string path = dir+"file.ext";
-        std::string filename = orcaiceutil::basename( path );
-        std::string expect = "file.ext";
+        string path = dir+"file.ext";
+        string filename = orcaiceutil::basename( path );
+        string expect = "file.ext";
         if ( filename != expect ) {
             cout<<"failed"<<endl<<"expect '"<<expect<<"' got='"<<filename<<"'"<<endl;
             return EXIT_FAILURE;
@@ -221,9 +335,9 @@ main(int argc, char * argv[])
 
     cout<<"testing basename() no filename ... ";
     {
-        std::string path = dir;
-        std::string filename = orcaiceutil::basename( path );
-        std::string expect = "";
+        string path = dir;
+        string filename = orcaiceutil::basename( path );
+        string expect = "";
         if ( filename != expect ) {
             cout<<"failed"<<endl<<"expect '"<<expect<<"' got='"<<filename<<"'"<<endl;
             return EXIT_FAILURE;
@@ -233,9 +347,9 @@ main(int argc, char * argv[])
 
     cout<<"testing basename() remove extention ... ";
     {
-        std::string path = dir+"file.ext";
-        std::string filename = orcaiceutil::basename( path, true );
-        std::string expect = "file";
+        string path = dir+"file.ext";
+        string filename = orcaiceutil::basename( path, true );
+        string expect = "file";
         if ( filename != expect ) {
             cout<<"failed"<<endl<<"expect '"<<expect<<"' got='"<<filename<<"'"<<endl;
             return EXIT_FAILURE;
@@ -245,9 +359,9 @@ main(int argc, char * argv[])
 
     cout<<"testing basename() remove extention, no extention ... ";
     {
-        std::string path = dir+"file";
-        std::string filename = orcaiceutil::basename( path, true );
-        std::string expect = "file";
+        string path = dir+"file";
+        string filename = orcaiceutil::basename( path, true );
+        string expect = "file";
         if ( filename != expect ) {
             cout<<"failed"<<endl<<"expect '"<<expect<<"' got='"<<filename<<"'"<<endl;
             return EXIT_FAILURE;
@@ -257,9 +371,9 @@ main(int argc, char * argv[])
 
     cout<<"testing basename() remove extention, 2 extentions ... ";
     {
-        std::string path = dir+"file.crap.ext";
-        std::string filename = orcaiceutil::basename( path, true );
-        std::string expect = "file.crap";
+        string path = dir+"file.crap.ext";
+        string filename = orcaiceutil::basename( path, true );
+        string expect = "file.crap";
         if ( filename != expect ) {
             cout<<"failed"<<endl<<"expect '"<<expect<<"' got='"<<filename<<"'"<<endl;
             return EXIT_FAILURE;
@@ -269,10 +383,10 @@ main(int argc, char * argv[])
 
     cout<<"testing dirname() typical ... ";
     {
-        std::string dir = orcaiceutil::pathDelimeter()+"path";
-        std::string path = dir+orcaiceutil::pathDelimeter()+"file.ext";
-        std::string dname = orcaiceutil::dirname( path );
-        std::string expect = dir;
+        string dir = orcaiceutil::pathDelimeter()+"path";
+        string path = dir+orcaiceutil::pathDelimeter()+"file.ext";
+        string dname = orcaiceutil::dirname( path );
+        string expect = dir;
         if ( dname != expect ) {
             cout<<"failed"<<endl<<"expect '"<<expect<<"' got='"<<dname<<"'"<<endl;
             return EXIT_FAILURE;
@@ -282,9 +396,9 @@ main(int argc, char * argv[])
 
     cout<<"testing dirname() no dir ... ";
     {
-        std::string path = "file.ext";
-        std::string dname = orcaiceutil::dirname( path );
-        std::string expect = ".";
+        string path = "file.ext";
+        string dname = orcaiceutil::dirname( path );
+        string expect = ".";
         if ( dname != expect ) {
             cout<<"failed"<<endl<<"expect '"<<expect<<"' got='"<<dname<<"'"<<endl;
             return EXIT_FAILURE;
