@@ -406,6 +406,14 @@ setSane( orca::DriveBicycleCommand& obj )
 }
 
 void 
+setSane( orca::VelocityControl2dData& obj )
+{
+    obj.motion.v.x = double(RINT%10000)/1000.0 - 30.0;
+    obj.motion.v.y = double(RINT%10000)/1000.0 - 30.0;
+    obj.motion.w = DEG2RAD( double(RINT%100000)/1000.0 - 50.0 );
+}
+
+void 
 setSane( orca::DriveBicycleData& obj )
 {
     obj.referenceSpeed = double(RINT%100000)/1000.0 - 30.0;

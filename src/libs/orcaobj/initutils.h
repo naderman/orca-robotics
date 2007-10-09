@@ -117,6 +117,8 @@ void setSane( orca::OgMapData&, int width=640, int height=480 );
 void setSane( orca::PixMapData&, int width=640, int height=480 );
 //! Set to randomized but sane values.
 void setSane( orca::PowerData&, int count=2 );
+//! Set to randomized but sane values.
+void setSane( orca::VelocityControl2dData& );
 //@}
 
 //@}
