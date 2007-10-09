@@ -78,6 +78,12 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @par New examples
 
+- Brick (alex m)
+   - moved from tests and cleaned up. It's very simple and makes a good first example.
+
+- ReactiveWalker (alex m)
+   - resurrected from the sandbox. It's a robot controller similar to Player's randomwalk.
+
 @par Updated interfaces
 
 @par Updated components

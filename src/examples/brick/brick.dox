@@ -1,0 +1,43 @@
+/*
+ * Orca Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2007 Alexei Makarenko
+ *
+ * This copy of Orca is licensed to you under the terms described in the
+ * ORCA_LICENSE file included in this distribution.
+ *
+ */
+
+/*!
+@ingroup examples
+@ingroup apps
+@ingroup cpp
+@ingroup linux
+@ingroup qnx
+@ingroup win
+@defgroup orca_component_brick Brick
+@brief The most basic component.
+
+@par Provides
+
+- @ref orca_interface_home
+- @ref orca_interface_status
+- @ref orca_interface_tracer
+
+@par Requires
+
+- none
+
+@image html brick.png
+
+Starts up, launches a thread, generates traces and status. A good starting point for a basic component. Add servers or clients to it later by copying from "real" components. It is also well suited for playing with IceGrid deployment.
+
+@par Configuration
+
+- @c Brick.Config.SleepIntervalMs (int)
+    - Specifies how long the main loop sleeps [ms].
+    - Usage: this will affect how responsive the component is to Ctrl-C (useful for deployment testing).
+    - Default: 1000
+
+*/
+

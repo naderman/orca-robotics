@@ -1,0 +1,16 @@
+DefaultComponentTag=ReactiveWalker
+
+# Provided Interfaces
+
+# Required Interfaces
+Requires.Laser.Type=LaserScanner2d
+Requires.Laser.DefaultProxy=laserscanner2d@local/laser2d
+
+Requires.Odometry.Type=Odometry2d
+Requires.Odometry.DefaultProxy=odometry2d@local/robot2d
+
+Requires.Command.Type=VelocityControl2d
+Requires.Command.DefaultProxy=velocitycontrol2d@local/robot2d
+
+# Config Parameters
+Config.Driver.Default=random

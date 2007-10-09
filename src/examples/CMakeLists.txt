@@ -6,6 +6,7 @@ MESSAGE ( STATUS "== EXAMPLES ==" )
 IF ( BUILD_EXAMPLES )
 
     # when adding new directories, please maintain alphabetical order
+    ADD_SUBDIRECTORY ( brick )
     ADD_SUBDIRECTORY ( orca2yarp )
     ADD_SUBDIRECTORY ( player2orca )
     ADD_SUBDIRECTORY ( pureice )
@@ -17,6 +18,7 @@ IF ( BUILD_EXAMPLES )
     IF ( PYTHON_FOUND AND BUILD_PYTHON )
         ADD_SUBDIRECTORY ( pureicepython )
     ENDIF ( PYTHON_FOUND AND BUILD_PYTHON )
+    ADD_SUBDIRECTORY ( reactivewalker )
 
 ELSE ( BUILD_EXAMPLES )
 
