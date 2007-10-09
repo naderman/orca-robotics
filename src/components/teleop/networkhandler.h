@@ -11,7 +11,7 @@
 #ifndef ORCA2_TELEOP_NETWORK_HANDLER_H
 #define ORCA2_TELEOP_NETWORK_HANDLER_H
 
-#include <orcaiceutil/thread.h>
+#include <orcaiceutil/safethread.h>
 #include <orcaice/context.h>
 #include <orcaiceutil/eventqueue.h>
 
@@ -23,15 +23,15 @@ namespace teleop
 class Display;
 class NetworkDriver;
 
-class NetworkHandler : public orcaiceutil::Thread, public Network
+class NetworkHandler : public orcaiceutil::SafeThread, public Network
 {
 public:
 
     NetworkHandler( Display* display, const orcaice::Context& context );
     virtual ~NetworkHandler();
 
-    // from Thread
-    virtual void run();
+    // from SafeThread
+    virtual void walk();
 
     // from Network
     virtual void newCommandIncrement( int longitudinal, int transverse, int angle );

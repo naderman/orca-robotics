@@ -76,6 +76,13 @@ VelocityControl2dDriver::repeatCommand()
 
         display_->sentRepeatCommand();
     }
+    catch ( const Ice::CommunicatorDestroyedException& e )
+    {
+        // we are shutting down, ignore this exception
+        command_.motion.v.x = 0.0;
+        command_.motion.v.y = 0.0;
+        command_.motion.w = 0.0;
+    }
     catch ( const Ice::Exception& e )
     {
         command_.motion.v.x = 0.0;

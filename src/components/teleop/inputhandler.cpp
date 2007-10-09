@@ -37,11 +37,8 @@ InputHandler::~InputHandler()
 }
 
 void
-InputHandler::run()
+InputHandler::walk()
 {
-    // we are in a different thread now, catch all stray exceptions
-    try
-    {
     //
     // Read settings
     //
@@ -104,7 +101,7 @@ InputHandler::run()
     //
     while ( isActive() )
     {
-        context_.tracer()->debug( "InputHandler: calling driver_->read()", 9 );
+        context_.tracer()->debug( "InputHandler: calling driver_->read()", 10 );
         driver_->read();
     } // end of main loop
 
@@ -113,41 +110,4 @@ InputHandler::run()
         context_.tracer()->warning("Failed to disable input driver");
     }
     context_.tracer()->debug("Input driver disabled",2);
-
-    //
-    // unexpected exceptions
-    //
-    } // try
-    catch ( const Ice::Exception & e )
-    {
-        stringstream ss;
-        ss << "unexpected Ice exception: " << e;
-        context_.tracer()->error( ss.str() );
-        if ( context_.isApplication() ) {
-            context_.tracer()->info( "this is an stand-alone component. Quitting...");
-            context_.communicator()->destroy();
-        }
-    }
-    catch ( const std::exception & e )
-    {
-        stringstream ss;
-        ss << "unexpected std exception: " << e.what();
-        context_.tracer()->error( ss.str() );
-        if ( context_.isApplication() ) {
-            context_.tracer()->info( "this is an stand-alone component. Quitting...");
-            context_.communicator()->destroy();
-        }
-    }
-    catch ( ... )
-    {
-        context_.tracer()->error( "unexpected exception from somewhere.");
-        if ( context_.isApplication() ) {
-            context_.tracer()->info( "this is an stand-alone component. Quitting...");
-            context_.communicator()->destroy();
-        }
-    }
-    
-    // wait for the component to realize that we are quitting and tell us to stop.
-    waitForStop();
-    context_.tracer()->debug( "InputHandler: stopped.",5 );
 }

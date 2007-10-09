@@ -51,12 +51,8 @@ NetworkHandler::newRelativeCommand( double longitudinal, double transverse, doub
 }
 
 void
-NetworkHandler::run()
+NetworkHandler::walk()
 {
-    // we are in a different thread now, catch all stray exceptions
-    try
-    {
-
     // The only provided interfaces are the 2 standard ones: Home and Status.
     // We can just skip this activation step and they will not be visible on
     // on the network (if network traffic is an issue, for example).
@@ -91,14 +87,14 @@ NetworkHandler::run()
         throw orcaiceutil::Exception( ERROR_INFO, errorStr );
     }    
 
-    // don't forget to enable the driver, but check isActive() to see if we should quit
-    while ( driver_->enable() && isActive() ) {
+    // don't forget to enable the driver, but check isStopping() to see if we should quit
+    while ( driver_->enable() && !isStopping() ) {
         context_.tracer()->warning("Failed to enable network driver. Will try again in 2 seconds.");
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
     }
 
     // check again to make sure we are not being terminated
-    if ( !isActive() ) {
+    if ( isStopping() ) {
         return;
     }
     context_.tracer()->debug("Network driver enabled",2);
@@ -110,9 +106,9 @@ NetworkHandler::run()
     //
     // Main loop
     //
-    while ( isActive() )
+    while ( !isStopping() )
     {
-        context_.tracer()->debug( "NetworkHandler: waiting for event...", 5 );
+        context_.tracer()->debug( "NetworkHandler: waiting for event...", 10 );
         if ( !events_->timedGet( event, timeoutMs ) ) {
             driver_->repeatCommand();
             continue;
@@ -141,41 +137,4 @@ NetworkHandler::run()
         }
         } // switch
     } // end of main loop
-
-    //
-    // unexpected exceptions
-    //
-    } // try
-    catch ( const Ice::Exception & e )
-    {
-        stringstream ss;
-        ss << "NetworkHandler: unexpected Ice exception: " << e;
-        context_.tracer()->error( ss.str() );
-        if ( context_.isApplication() ) {
-            context_.tracer()->info( "this is an stand-alone component. Quitting...");
-            context_.communicator()->destroy();
-        }
-    }
-    catch ( const std::exception & e )
-    {
-        stringstream ss;
-        ss << "NetworkHandler: unexpected exception: " << e.what();
-        context_.tracer()->error( ss.str() );
-        if ( context_.isApplication() ) {
-            context_.tracer()->info( "this is an stand-alone component. Quitting...");
-            context_.communicator()->destroy();
-        }
-    }
-    catch ( ... )
-    {
-        context_.tracer()->error( "NetworkHandler: unexpected unknown exception.");
-        if ( context_.isApplication() ) {
-            context_.tracer()->info( "this is an stand-alone component. Quitting...");
-            context_.communicator()->destroy();
-        }
-    }
-    
-    // wait for the component to realize that we are quitting and tell us to stop.
-    waitForStop();
-    context_.tracer()->debug( "NetworkHandler: stopped.",5 );
 }

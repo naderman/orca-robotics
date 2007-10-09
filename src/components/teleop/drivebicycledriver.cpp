@@ -71,10 +71,18 @@ DriveBicycleDriver::repeatCommand()
 
         display_->sentRepeatCommand();
     }
+    catch ( const Ice::CommunicatorDestroyedException& e )
+    {
+        // we are shutting down, ignore this exception
+        command_.speed = 0.0;
+        command_.steerAngle = 0.0;
+    }
     catch ( const Ice::Exception& e )
     {
         command_.speed = 0.0;
         command_.steerAngle = 0.0;
+        stringstream ss; ss << "DriveBicycleDriver::repeatCommand(): " << e;
+        context_.tracer()->warning( ss.str() );
         display_->failedToSendCommand();
     }
 }

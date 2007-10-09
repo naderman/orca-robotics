@@ -11,7 +11,7 @@
 #ifndef ORCA2_TELEOP_INPUT_HANDLER_H
 #define ORCA2_TELEOP_INPUT_HANDLER_H
 
-#include <orcaiceutil/thread.h>
+#include <orcaiceutil/safethread.h>
 #include <orcaice/context.h>
 
 namespace teleop
@@ -20,15 +20,15 @@ namespace teleop
 class Network;
 class InputDriver;
 
-class InputHandler : public orcaiceutil::Thread
+class InputHandler : public orcaiceutil::SafeThread
 {
 public:
 
     InputHandler( Network* network, const orcaice::Context& context );
     virtual ~InputHandler();
 
-    // from Thread
-    virtual void run();
+    // from SafeThread
+    virtual void walk();
 
 private:
 
