@@ -57,6 +57,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
   The old syntax is deprecated but will be supported for a while. All .def files in Orca have been
   updated. (alexm)
 
+- Documentation
+   - New tutorial: "Closed-loop control of a robot simulated with Player/Stage"
+
 @par New interfaces
 
 @par New components

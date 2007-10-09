@@ -1,8 +1,8 @@
 /*!
-@ingroup orca_components
-@ingroup orca_apps
-@ingroup orca_cpp
-@ingroup orca_linux
+@ingroup components
+@ingroup apps
+@ingroup cpp
+@ingroup linux
 @defgroup orca_component_pingserver PingServer
 
 @brief Can execute 'ping' and report results over a slice interface
@@ -17,6 +17,8 @@
 @par Requires
 
 none
+
+@image html pingserver.png
 
 @par Operation
 
@@ -35,7 +37,7 @@ other components can ping without requiring root privileges.
 # apt-get install liboping-dev
 @endverbatim
 
-@section Authors
+@par Authors
 
 - Alex Brooks
 

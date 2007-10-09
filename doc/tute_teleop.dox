@@ -12,7 +12,7 @@
 
 @page orca_doc_tute_teleop Driving a robot simulated with Player/Stage
 
-@note Reviewed for release 2.6.0.
+@note Reviewed for release 2.7.0.
 
 In this tutorial we will teleoperate a robot simulated using 2-D Player/Stage simulator. The system diagram is shown below (IceGrid Registry and IceStorm are not shown).
 

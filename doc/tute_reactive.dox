@@ -1,0 +1,68 @@
+/*
+ * Orca Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2007 Alex Makarenko
+ *
+ * This copy of Orca is licensed to you under the terms described in the
+ * ORCA_LICENSE file included in this distribution.
+ *
+ */
+
+/*!
+
+@page orca_doc_tute_reactive Closed-loop control of a robot simulated with Player/Stage
+
+@note Reviewed for release 2.7.0.
+
+In this tutorial we will connect a simple controller to a robot simulated using 2-D Player/Stage simulator. The system diagram is shown below (IceGrid Registry and IceStorm are not shown).
+
+@image html doc_tute_reactive.png
+
+In this tutorial we will use components which have external dependencies.
+- Player/Stage to simulate the robotic platform. Debian installation instructions for Player can be found in @ref orca_doc_installdebian. This tutorial was tested with Player/Stage version 2.0.4. (@b note: as of writing the Player Debian package does not properly install its dependencies. If something does not work, write to the Player mailing list or install from source.)
+
+@section orca_doc_tute_reactive_orca Starting Orca
+
+Start IceGrid Registry and IceStorm server as described in the @ref orca_doc_quickstart.
+
+Create a new system directory and copy Orca sample files.
+@verbatim
+$ mkdir -p ~/sys/tuteteleop; cd ~/sys/tutereactive
+$ cp [ORCA2-INSTALL]/cfg/robot2d.cfg .
+$ cp [ORCA2-INSTALL]/cfg/laser2d.cfg .
+$ cp [ORCA2-INSTALL]/cfg/reactivewalker.cfg .
+@endverbatim
+
+@section orca_doc_tute_reactive_player Starting Player/Stage
+
+Copy Stage sample files.
+@verbatim
+$ cp -r [STAGE-SRC]/worlds .
+@endverbatim
+
+Start up the Stage simulator with the @e simple world.
+@verbatim
+$ player worlds/simple.cfg
+@endverbatim
+
+@section orca_doc_tute_reactive_robot Components
+
+@par Sensor and actuator components
+
+Follow the instructions from @ref orca_doc_tute_stage on how to set and run @ref orca_component_robot2d and  @ref orca_component_laserscanner2d components.
+
+@par Controller component
+
+We'll use an example component @ref orca_component_reactivewalker. The config file which we've already copied over does not need to be modified. Start the controller component and watch the robot run (crawl) around the simulated world.
+
+@verbatim
+$ reactivewalker
+@endverbatim
+
+@section orca_doc_tute_reactive_next What else?
+
+Take a look at the source files for @ref orca_component_reactivewalker.
+
+Check out more @ref orca_doc_tutorials.
+
+*/

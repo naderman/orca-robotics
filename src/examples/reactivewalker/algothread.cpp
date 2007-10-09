@@ -38,19 +38,35 @@ void
 AlgoThread::initNetwork()
 {
     //
+    // REQUIRED INTERFACE: VelocityControl2d
+    //
+    orcaice::connectToInterfaceWithTag<orca::VelocityControl2dPrx>( context_, commandPrx_, "Command", this );
+    context_.tracer()->info( "Connected to VelocityControl2d interface.");
+
+    //
     // REQUIRED INTERFACE: Laser
     //
     laser_->subscribeWithTag( "Laser", this );
+    context_.tracer()->info( "Connected and subscribed to LaserScanner2d interface.");
 
     //
     // REQUIRED INTERFACE: Odometry2d
     //
     odometry_->subscribeWithTag( "Odometry", this );
+    context_.tracer()->info( "Connected and subscribed to Odometry2d interface.");
 
-    //
-    // REQUIRED INTERFACE: VelocityControl2d
-    //
-    orcaice::connectToInterfaceWithTag<orca::VelocityControl2dPrx>( context_, commandPrx_, "Command", this );
+    // NOTE: odometry_ has a small buffer called odometry_->store(), see orcaiceutil::Store.
+    // it is empty until the first piece of data arrives. if you try to get data from an
+    // empty Store an exception will be thrown. It is easier if just wait until it's not
+    // empty here so that we don't have to worry about it later.
+
+    orca::Odometry2dData odometryData;
+    const int odometryTimeoutMs = 500;
+    while ( !isStopping() ) {
+        if ( !odometry_->store().getNext( odometryData, odometryTimeoutMs ) )
+            break;
+    }
+    context_.tracer()->info( "Received the first update from Odometry2d interface.");
 }
 
 void
@@ -103,27 +119,35 @@ AlgoThread::walk()
     orca::Odometry2dData odometryData;
     orca::VelocityControl2dData commandData;
     
+    const int laserTimeoutMs = 1000;
+
     while ( !isStopping() )
     {
         //
         // Wait for next laser data
         //
-        int ret = laser_->buffer().getAndPopNext( laserData, 1000 );
-        // todo: check return value
-        ret++;
-        
+        if ( laser_->buffer().getAndPopNext( laserData, laserTimeoutMs ) ) {
+            // timeout without a laser scan. 
+            // this is a sign of a problem. a real component would have to deal with this
+            stringstream ss; ss<<"No new laser scan after "<<laserTimeoutMs<<"ms";
+            context_.tracer()->warning( ss.str() );
+            continue;
+        }
+
         //
         // Get the latest odometry data, do not wait for the next one
-        // note: we already made sure there's some data in Store, see initNetwork()
+        // NOTE: we already made sure there's some data in Store, see initNetwork()
         //
         odometry_->store().get( odometryData );
+        // NOTE: the odometry data is not aligned with the laser scan
+        // in a real application, we would probably need to align them somehow (e.g. interpolate)
 
         //
         // Compute motion command
         //
         driver_->computeCommand( laserData, odometryData, commandData );
 
-        context_.tracer()->debug( orcaice::toString(commandData), 3 );
+        context_.tracer()->debug( orcaice::toString(commandData), 5 );
 
         //
         // send motion command to the robot

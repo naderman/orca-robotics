@@ -30,9 +30,11 @@
 - @ref orca_interface_odometry2d
 - @ref orca_interface_velocitycontrol2d
 
+@image html reactivewalker.png
+
 @par Drivers
 
-- @b random @ref orca_reactivewalker_random
+- @b random @ref orca_component_reactivewalker_random
 - @b fake Useful for testing or if you don't have hardware or a simulator.
 
 Implements simple reactive behaviors for mobile robotic platforms. The behavior depends on the chosen driver.
@@ -46,7 +48,9 @@ Implements simple reactive behaviors for mobile robotic platforms. The behavior 
 
 An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
 
-@section random A port of Player's randomwalk
+@section orca_component_reactivewalker_random  Random walk
+
+A port of Player's famous randomwalk example.
 
 @par Authors
 Alex Makarenko

@@ -14,7 +14,9 @@
 @ingroup python
 @ingroup linux
 @defgroup orca_component_pureicepython PureIcePython
-@brief Installation notes for python and third-party packages in addition to exmples of an Orca component written in Python. The examples inlude a single remote getData() call (puricepython.py), subscribing (pureicepythonsubscribe.py), plotting in 2D (pureicepythonplotranges.py) and 3D (pureicepythonplot3dranges.py).
+@brief An Orca components written in Python (plus python installation notes).
+
+The examples inlude a single remote getData() call (puricepython.py), subscribing (pureicepythonsubscribe.py), plotting in 2D (pureicepythonplotranges.py) and 3D (pureicepythonplot3dranges.py).
 
 @section orca_doc_pureicepython_installpython Python Installation
 Note 1: These install notes have not been tested or checked so please be patient if trying this out.
