@@ -8,10 +8,10 @@
  *
  */
  
-#ifndef ORCAIFACEIMPL_BUFFERED_CONSUMERS_H
-#define ORCAIFACEIMPL_BUFFERED_CONSUMERS_H
+#ifndef ORCAIFACEIMPL_STORING_CONSUMERS_H
+#define ORCAIFACEIMPL_STORING_CONSUMERS_H
 
-#include <orcaifaceimpl/bufferedconsumerImpl.h>
+#include <orcaifaceimpl/storingconsumerImpl.h>
 
 #include <orca/rangescanner2d.h>
 #include <orca/localise3d.h>
@@ -30,61 +30,60 @@ namespace orcaifaceimpl
 //
 
 //! Typedef for a common interface type. There's also a corresponding Ptr.
-typedef BufferedConsumerImpl<orca::RangeScanner2dPrx,
+typedef StoringConsumerImpl<orca::RangeScanner2dPrx,
                         orca::RangeScanner2dConsumer,
                         orca::RangeScanner2dConsumerPrx,
-                        orca::RangeScanner2dDataPtr>       BufferedRangeScanner2dConsumerImpl;
-typedef IceUtil::Handle<BufferedRangeScanner2dConsumerImpl> BufferedRangeScanner2dConsumerImplPtr;
+                        orca::RangeScanner2dDataPtr>       StoringRangeScanner2dConsumerImpl;
+typedef IceUtil::Handle<StoringRangeScanner2dConsumerImpl> StoringRangeScanner2dConsumerImplPtr;
 
 //! Typedef for a common interface type. There's also a corresponding Ptr.
-typedef BufferedConsumerImpl<orca::Localise2dPrx,
+typedef StoringConsumerImpl<orca::Localise2dPrx,
                         orca::Localise2dConsumer,
                         orca::Localise2dConsumerPrx,
-                        orca::Localise2dData>              BufferedLocalise2dConsumerImpl;
-typedef IceUtil::Handle<BufferedLocalise2dConsumerImpl>    BufferedLocalise2dConsumerImplPtr;
+                        orca::Localise2dData>              StoringLocalise2dConsumerImpl;
+typedef IceUtil::Handle<StoringLocalise2dConsumerImpl>     StoringLocalise2dConsumerImplPtr;
 
 //! Typedef for a common interface type. There's also a corresponding Ptr.
-typedef BufferedConsumerImpl<orca::Localise3dPrx,
+typedef StoringConsumerImpl<orca::Localise3dPrx,
                         orca::Localise3dConsumer,
                         orca::Localise3dConsumerPrx,
-                        orca::Localise3dData>              BufferedLocalise3dConsumerImpl;
-typedef IceUtil::Handle<BufferedLocalise3dConsumerImpl>    BufferedLocalise3dConsumerImplPtr;
+                        orca::Localise3dData>              StoringLocalise3dConsumerImpl;
+typedef IceUtil::Handle<StoringLocalise3dConsumerImpl>     StoringLocalise3dConsumerImplPtr;
 
 //! Typedef for a common interface type. There's also a corresponding Ptr.
-typedef BufferedConsumerImpl<orca::Odometry2dPrx,
+typedef StoringConsumerImpl<orca::Odometry2dPrx,
                         orca::Odometry2dConsumer,
                         orca::Odometry2dConsumerPrx,
-                        orca::Odometry2dData>              BufferedOdometry2dConsumerImpl;
-typedef IceUtil::Handle<BufferedOdometry2dConsumerImpl>    BufferedOdometry2dConsumerImplPtr;
+                        orca::Odometry2dData>              StoringOdometry2dConsumerImpl;
+typedef IceUtil::Handle<StoringOdometry2dConsumerImpl>     StoringOdometry2dConsumerImplPtr;
 
 //! Typedef for a common interface type. There's also a corresponding Ptr.
-typedef BufferedConsumerImpl<orca::Odometry3dPrx,
+typedef StoringConsumerImpl<orca::Odometry3dPrx,
                         orca::Odometry3dConsumer,
                         orca::Odometry3dConsumerPrx,
-                        orca::Odometry3dData>              BufferedOdometry3dConsumerImpl;
-typedef IceUtil::Handle<BufferedOdometry3dConsumerImpl>    BufferedOdometry3dConsumerImplPtr;
+                        orca::Odometry3dData>              StoringOdometry3dConsumerImpl;
+typedef IceUtil::Handle<StoringOdometry3dConsumerImpl>     StoringOdometry3dConsumerImplPtr;
 
 //! Typedef for a common interface type. There's also a corresponding Ptr.
-typedef BufferedConsumerImpl<orca::DriveBicyclePrx,
+typedef StoringConsumerImpl<orca::DriveBicyclePrx,
                         orca::DriveBicycleConsumer,
                         orca::DriveBicycleConsumerPrx,
-                        orca::DriveBicycleData>            BufferedDriveBicycleConsumerImpl;
-typedef IceUtil::Handle<BufferedDriveBicycleConsumerImpl>  BufferedDriveBicycleConsumerImplPtr;
+                        orca::DriveBicycleData>            StoringDriveBicycleConsumerImpl;
+typedef IceUtil::Handle<StoringDriveBicycleConsumerImpl>   StoringDriveBicycleConsumerImplPtr;
 
 //! Typedef for a common interface type. There's also a corresponding Ptr.
-typedef BufferedConsumerImpl<orca::OgMapPrx,
+typedef StoringConsumerImpl<orca::OgMapPrx,
                         orca::OgMapConsumer,
                         orca::OgMapConsumerPrx,
-                        orca::OgMapData>                   BufferedOgMapConsumerImpl;
-typedef IceUtil::Handle<BufferedOgMapConsumerImpl>         BufferedOgMapConsumerImplPtr;
+                        orca::OgMapData>                   StoringOgMapConsumerImpl;
+typedef IceUtil::Handle<StoringOgMapConsumerImpl>          StoringOgMapConsumerImplPtr;
 
 //! Typedef for a common interface type. There's also a corresponding Ptr.
-typedef BufferedConsumerImpl<orca::GpsPrx,
+typedef StoringConsumerImpl<orca::GpsPrx,
                         orca::GpsConsumer,
                         orca::GpsConsumerPrx,
-                        orca::GpsData>                     BufferedGpsConsumerImpl;
-typedef IceUtil::Handle<BufferedGpsConsumerImpl>           BufferedGpsConsumerImplPtr;
-
+                        orca::GpsData>                     StoringGpsConsumerImpl;
+typedef IceUtil::Handle<StoringGpsConsumerImpl>            StoringGpsConsumerImplPtr;
 
 } // namespace
 

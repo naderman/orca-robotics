@@ -8,41 +8,39 @@
  *
  */
  
-#ifndef ORCAIFACEIMPL_PROXIED_CONSUMER_IMPL_H
-#define ORCAIFACEIMPL_PROXIED_CONSUMER_IMPL_H
+#ifndef ORCAIFACEIMPL_STORING_CONSUMER_IMPL_H
+#define ORCAIFACEIMPL_STORING_CONSUMER_IMPL_H
 
-#include <orcaiceutil/proxy.h>
+#include <orcaiceutil/store.h>
 #include <orcaifaceimpl/consumerImpl.h>
 
 namespace orcaifaceimpl
 {
 
 //!
-//! @b DEPRICATED! Use StoringConsumerImpl instead.
-//!
 //! Implements a consumer interface whose set method is 'SetData'.
-//! Does nothing more than sticking incoming data into an orcaiceutil::Proxy.
+//! Does nothing more than sticking incoming data into an orcaiceutil::Store.
 //!
 template<class ProviderPrxType, class ConsumerType, class ConsumerPrxType, class ObjectType>
-class ProxiedConsumerImpl : 
+class StoringConsumerImpl : 
         public ConsumerImpl<ProviderPrxType,ConsumerType,ConsumerPrxType,ObjectType>
 {
 public:
     //! Constructor.
-    ProxiedConsumerImpl( const orcaice::Context &context )
+    StoringConsumerImpl( const orcaice::Context &context )
         : ConsumerImpl<ProviderPrxType,ConsumerType,ConsumerPrxType,ObjectType>(context) {}
 
-    //! Returns reference to local proxy.
-    orcaiceutil::Proxy<ObjectType> &proxy() { return proxy_; }
+    //! Returns reference to local store.
+    orcaiceutil::Store<ObjectType> &store() { return store_; }
 
-    //! This callback simply puts the data object into the internal proxy.
+    //! This callback simply puts the data object into the internal store.
     virtual void handleData( const ObjectType& data ) 
     { 
-        proxy_.set( data ); 
+        store_.set( data ); 
     }
 
 private:
-    orcaiceutil::Proxy<ObjectType> proxy_;
+    orcaiceutil::Store<ObjectType> store_;
 };
 
 } // namespace
