@@ -9,7 +9,7 @@
  */
 /*!
 
-@ingroup libs
+@ingroup orca_libs
 @defgroup orca_library_orcabros1 libOrcaBros1
 @brief Converts between the types of BROS-I C++ library and Orca types.
 

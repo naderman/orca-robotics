@@ -18,7 +18,7 @@
 module orca
 {
 /*!
-    @ingroup interfaces
+    @ingroup orca_interfaces
     @defgroup orca_interface_qgraphics2d QGraphics2d
     @brief Components can implement this interface to define how they'd like
            to draw themselves.

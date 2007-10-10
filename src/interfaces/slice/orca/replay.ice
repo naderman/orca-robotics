@@ -16,7 +16,7 @@
 module orca
 {
 /*!
-    @ingroup interfaces
+    @ingroup orca_interfaces
     @defgroup orca_interface_replay Replay
     @brief Monitors and controls replay of log files.
 

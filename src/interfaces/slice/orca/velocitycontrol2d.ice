@@ -18,7 +18,7 @@
 module orca
 {
 /*!
-    @ingroup interfaces
+    @ingroup orca_interfaces
     @defgroup orca_interface_velocitycontrol2d VelocityControl2d
     @brief Sends velocity command to a 2D mobile robot.
     @{

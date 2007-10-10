@@ -9,8 +9,8 @@
  */
 
 /*!
-@ingroup utils
-@ingroup linux
+@ingroup orca_utils
+@ingroup orca_linux
 @defgroup orca_util_def2uml Def2Uml
 @brief Loads component definition file and creates an image of the corresponding UML symbol.
 

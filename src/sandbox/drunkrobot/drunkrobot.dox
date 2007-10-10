@@ -9,10 +9,10 @@
  */
 
 /*!
-@ingroup examples
-@ingroup apps
-@ingroup cpp
-@ingroup linux
+@ingroup orca_examples
+@ingroup orca_apps
+@ingroup orca_cpp
+@ingroup orca_linux
 @defgroup orca_component_drunkrobot DrunkRobot
 @brief An example of Orca component.
 

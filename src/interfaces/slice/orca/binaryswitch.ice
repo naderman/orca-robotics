@@ -16,7 +16,7 @@
 module orca
 {
 /*!
-    @ingroup interfaces
+    @ingroup orca_interfaces
     @defgroup orca_interface_binaryswitch BinarySwitch
     @brief A bank of hardware devices with binary states, e.g. lights.
 

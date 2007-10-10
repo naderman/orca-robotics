@@ -9,8 +9,8 @@
  */
 
 /*!
-@ingroup utils
-@ingroup linux
+@ingroup orca_utils
+@ingroup orca_linux
 @defgroup orca_util_def2cfg Def2Cfg
 @brief Converts from component definition file to component configuration file.
 

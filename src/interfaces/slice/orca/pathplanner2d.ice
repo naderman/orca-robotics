@@ -17,7 +17,7 @@
 module orca
 {
 /*!
-    @ingroup interfaces
+    @ingroup orca_interfaces
     @defgroup orca_interface_pathplanner2d PathPlanner2d
     @brief PathPlanner interface for 2D world
     @{

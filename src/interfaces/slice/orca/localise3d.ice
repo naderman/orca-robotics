@@ -20,7 +20,7 @@
 module orca
 {
 /*!
-    @ingroup interfaces
+    @ingroup orca_interfaces
     @defgroup orca_interface_localise3d Localise3d
     @brief Multi-hypothesis 3D localisation.
     @{

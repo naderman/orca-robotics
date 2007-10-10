@@ -9,10 +9,10 @@
  */
 
 /*!
-@ingroup examples
-@ingroup apps
-@ingroup java
-@ingroup linux
+@ingroup orca_examples
+@ingroup orca_apps
+@ingroup orca_java
+@ingroup orca_linux
 @defgroup orca_component_pureicej PureIceJ
 @brief An example of Orca component written in Java.
 

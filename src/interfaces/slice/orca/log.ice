@@ -16,7 +16,7 @@
 module orca
 {
 /*!
-    @ingroup interfaces
+    @ingroup orca_interfaces
     @defgroup orca_interface_log Log
     @brief Monitors and controls creation of log files.
 

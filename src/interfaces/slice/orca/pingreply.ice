@@ -16,7 +16,7 @@
 module orca
 {
 /*!
-    @ingroup interfaces
+    @ingroup orca_interfaces
     @defgroup orca_interface_pingreply Ping/Reply
     @brief Utility interfaces for latency testing.
     @{

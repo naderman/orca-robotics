@@ -19,7 +19,7 @@ module orca
 {
 
 /*!
-    @ingroup interfaces
+    @ingroup orca_interfaces
     @defgroup orca_interface_ogpatch OGPatch
     @brief An occupancy grid patch 
 

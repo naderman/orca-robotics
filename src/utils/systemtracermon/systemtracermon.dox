@@ -10,12 +10,12 @@
 
 /*!
 
-@ingroup utils
-@ingroup apps
-@ingroup cpp
-@ingroup linux
-@ingroup qnx
-@ingroup win
+@ingroup orca_utils
+@ingroup orca_apps
+@ingroup orca_cpp
+@ingroup orca_linux
+@ingroup orca_qnx
+@ingroup orca_win
 @defgroup orca_component_systemtracermon SystemTracerMon
 @brief A tool to monitor info/warning/error traces for an entire system.
 

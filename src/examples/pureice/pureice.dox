@@ -9,10 +9,10 @@
  */
 
 /*!
-@ingroup examples
-@ingroup apps
-@ingroup cpp
-@ingroup linux
+@ingroup orca_examples
+@ingroup orca_apps
+@ingroup orca_cpp
+@ingroup orca_linux
 @defgroup orca_component_pureice PureIce
 @brief An example of Orca component written in C++ which does NOT use libOrcaIce.
 

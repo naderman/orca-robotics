@@ -8,8 +8,8 @@
  *
  */
 /*!
-@ingroup libs
-@ingroup linux
+@ingroup orca_libs
+@ingroup orca_linux
 @defgroup orca_library_orcaqgui2dfactory libOrcaQGui2dFactory
 @brief Contains all the supported 2D Gui elements and corresponding painters
 

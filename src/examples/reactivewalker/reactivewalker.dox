@@ -10,11 +10,11 @@
 
 /*!
 
-@ingroup examples
-@ingroup apps
-@ingroup services
-@ingroup cpp
-@ingroup linux
+@ingroup orca_examples
+@ingroup orca_apps
+@ingroup orca_services
+@ingroup orca_cpp
+@ingroup orca_linux
 @defgroup orca_component_reactivewalker ReactiveWalker
 @brief Makes reactive motion control decisions based on odometry and laser scans.
 

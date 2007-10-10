@@ -9,12 +9,12 @@
  */
 
 /*!
-@ingroup examples
-@ingroup apps
-@ingroup cpp
-@ingroup linux
-@ingroup qnx
-@ingroup win
+@ingroup orca_examples
+@ingroup orca_apps
+@ingroup orca_cpp
+@ingroup orca_linux
+@ingroup orca_qnx
+@ingroup orca_win
 @defgroup orca_component_brick Brick
 @brief The most basic component.
 

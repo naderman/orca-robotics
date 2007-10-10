@@ -16,7 +16,7 @@
 
 module orca {
 /*!
-    @ingroup interfaces
+    @ingroup orca_interfaces
     @defgroup orca_interface_pointcloud PointCloud
     @brief Interface for point cloud producers and consumers
 

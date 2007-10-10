@@ -9,8 +9,8 @@
  */
 
 /*!
-@ingroup utils
-@ingroup linux
+@ingroup orca_utils
+@ingroup orca_linux
 @defgroup orca_util_def2xml Def2Xml
 @brief Converts from component definition file to application descriptor file.
 

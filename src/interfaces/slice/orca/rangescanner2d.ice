@@ -17,7 +17,7 @@
 module orca
 {
 /*!
-    @ingroup interfaces
+    @ingroup orca_interfaces
     @defgroup orca_interface_rangescanner2d RangeScanner2d
     @brief Single-origin scanning range sensor
 

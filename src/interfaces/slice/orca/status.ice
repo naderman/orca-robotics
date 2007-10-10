@@ -16,7 +16,7 @@
 module orca
 {
 /*!
-    @ingroup interfaces
+    @ingroup orca_interfaces
     @defgroup orca_interface_status Status
     @brief Access to a component's health and status subsystem
     @{

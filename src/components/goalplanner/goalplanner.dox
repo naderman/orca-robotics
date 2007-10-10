@@ -10,13 +10,13 @@
 
 /*!
 
-@ingroup components
-@ingroup apps
-@ingroup services
-@ingroup cpp
-@ingroup linux
-@ingroup qnx
-@ingroup win
+@ingroup orca_components
+@ingroup orca_apps
+@ingroup orca_services
+@ingroup orca_cpp
+@ingroup orca_linux
+@ingroup orca_qnx
+@ingroup orca_win
 @defgroup orca_component_goalplanner GoalPlanner
 @brief Plans a path from where you are now to a goal
  

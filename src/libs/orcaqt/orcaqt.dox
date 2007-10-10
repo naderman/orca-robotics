@@ -9,7 +9,7 @@
  */
 /*!
 
-@ingroup libs
+@ingroup orca_libs
 @defgroup orca_library_orcaqt libOrcaQt
 @brief Resources commonly used by Orca graphical applications using Qt.
 

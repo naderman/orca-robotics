@@ -9,11 +9,11 @@
  */
 
 /*!
-@ingroup components
-@ingroup apps
-@ingroup cpp
-@ingroup linux
-@ingroup qnx
+@ingroup orca_components
+@ingroup orca_apps
+@ingroup orca_cpp
+@ingroup orca_linux
+@ingroup orca_qnx
 @defgroup orca_component_pixmaploader PixMapLoader
 @brief Serves an pixel-based grid map which is loaded from an image file.
 

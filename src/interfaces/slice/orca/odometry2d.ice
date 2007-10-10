@@ -18,7 +18,7 @@
 module orca
 {
 /*!
-    @ingroup interfaces
+    @ingroup orca_interfaces
     @defgroup orca_interface_odometry2d Odometry2d
     @brief Odometry of planar mobile robots.
     @{

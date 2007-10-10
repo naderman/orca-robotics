@@ -9,11 +9,11 @@
  */
 
 /*!
-@ingroup components
-@ingroup apps
-@ingroup services
-@ingroup cpp
-@ingroup linux
+@ingroup orca_components
+@ingroup orca_apps
+@ingroup orca_services
+@ingroup orca_cpp
+@ingroup orca_linux
 @defgroup orca_component_localnav LocalNav
 @brief A Local Navigation component: follows a waypoint-defined path while avoiding obstacles.
 

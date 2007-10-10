@@ -18,7 +18,7 @@
 module orca
 {
 /*!
-    @ingroup interfaces
+    @ingroup orca_interfaces
     @defgroup orca_interface_featuremap2d FeatureMap2d
     @brief A map of features, eg for SLAM purposes
 

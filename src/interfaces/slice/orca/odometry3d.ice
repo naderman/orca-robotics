@@ -18,7 +18,7 @@
 module orca
 {
 /*!
-    @ingroup interfaces
+    @ingroup orca_interfaces
     @defgroup orca_interface_odometry3d Odometry3d
     @brief Odometry of mobile robots operating in 3D space.
     @{

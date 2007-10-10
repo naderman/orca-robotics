@@ -10,11 +10,11 @@
 
 /*!
 
-@ingroup components
-@ingroup apps
-@ingroup cpp
-@ingroup linux
-@ingroup qnx
+@ingroup orca_components
+@ingroup orca_apps
+@ingroup orca_cpp
+@ingroup orca_linux
+@ingroup orca_qnx
 @defgroup orca_component_orcamon OrcaMon
 @brief Connects the specified proxy and subscribes to data updates.
 

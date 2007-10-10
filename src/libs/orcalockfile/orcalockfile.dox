@@ -8,7 +8,7 @@
  *
  */
 /*!
-@ingroup libs
+@ingroup orca_libs
 @defgroup orca_library_orcalockfile libOrcaLockFile
 @brief Library for locking unique resources with lock files
 

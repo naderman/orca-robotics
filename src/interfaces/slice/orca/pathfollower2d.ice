@@ -17,7 +17,7 @@
 module orca
 {
 /*!
-    @ingroup interfaces
+    @ingroup orca_interfaces
     @defgroup orca_interface_pathfollower2d PathFollower2d
     @brief Interface for a component that can follow a 2d path, defined as a set of waypoints
 

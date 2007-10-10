@@ -9,10 +9,10 @@
  */
 
 /*!
-@ingroup examples
-@ingroup apps
-@ingroup python
-@ingroup linux
+@ingroup orca_examples
+@ingroup orca_apps
+@ingroup orca_python
+@ingroup orca_linux
 @defgroup orca_component_pureicepython PureIcePython
 @brief An Orca components written in Python (plus python installation notes).
 

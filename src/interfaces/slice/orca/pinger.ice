@@ -16,7 +16,7 @@
 module orca
 {
 /*!
-    @ingroup interfaces
+    @ingroup orca_interfaces
     @defgroup orca_interface_pinger Pinger
     @brief An interface which provides the well-known 'ping' service.
     @{

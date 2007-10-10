@@ -17,7 +17,7 @@
 module orca
 {
 /*!
-    @ingroup interfaces
+    @ingroup orca_interfaces
     @defgroup orca_interface_hand Hand
     @brief Model of a hand, both for sensing and control of a motorised hand
 

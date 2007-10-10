@@ -17,7 +17,7 @@
 module orca
 {
 /*!
-    @ingroup interfaces
+    @ingroup orca_interfaces
     @defgroup orca_interface_polarfeature2d PolarFeature2d
     @brief Range/bearing features relative to robot frame
 

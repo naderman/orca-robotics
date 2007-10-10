@@ -17,7 +17,7 @@
 module orca
 {
 /*!
-    @ingroup interfaces
+    @ingroup orca_interfaces
     @defgroup orca_interface_ogfusion OgFusion
     @brief An occupancy grid fusion interface
     @{

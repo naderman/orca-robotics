@@ -10,10 +10,10 @@
 
 /*!
 
-@ingroup utils
-@ingroup apps
-@ingroup cpp
-@ingroup linux
+@ingroup orca_utils
+@ingroup orca_apps
+@ingroup orca_cpp
+@ingroup orca_linux
 @defgroup orca_component_cleanregistry CleanRegistry
 @brief A utility to remove unreachable components from the IceGrid Registry.
 

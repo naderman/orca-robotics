@@ -16,7 +16,7 @@
 module orca
 {
 /*!
-    @ingroup interfaces
+    @ingroup orca_interfaces
     @defgroup orca_interface_binaryindicator BinaryIndicator
     @brief Hardware device with a binary state, e.g. flashing lights.
 

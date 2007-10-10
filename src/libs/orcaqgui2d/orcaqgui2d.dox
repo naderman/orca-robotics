@@ -8,8 +8,8 @@
  *
  */
 /*!
-@ingroup libs
-@ingroup linux
+@ingroup orca_libs
+@ingroup orca_linux
 @defgroup orca_library_orcaqgui2d libOrcaQGui2d
 @brief Tools for building 2D Orca-compliant GUI's with Qt library.
 

@@ -9,8 +9,8 @@
  */
 
 /*!
-@ingroup utils
-@ingroup linux
+@ingroup orca_utils
+@ingroup orca_linux
 @defgroup orca_util_def2xmltemplate Def2XmlTemplate
 @brief Converts component definition file to templated server descriptor file.
 

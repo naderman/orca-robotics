@@ -19,7 +19,7 @@
 module orca
 {
 /*!
-    @ingroup interfaces
+    @ingroup orca_interfaces
     @defgroup orca_interface_home Home
     @brief Component meta information.
     @{

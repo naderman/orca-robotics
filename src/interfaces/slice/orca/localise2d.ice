@@ -19,7 +19,7 @@
 module orca
 {
 /*!
-    @ingroup interfaces
+    @ingroup orca_interfaces
     @defgroup orca_interface_localise2d Localise2d
     @brief Multi-hypothesis planar localisation.
     @{

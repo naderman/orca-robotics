@@ -16,7 +16,7 @@
 module orca
 {
 /*!
-    @ingroup interfaces
+    @ingroup orca_interfaces
     @defgroup orca_interface_tracer Tracer
     @brief Remote access to component's traces, e.g. errors, warning, etc.
     @{

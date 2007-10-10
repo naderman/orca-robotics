@@ -11,24 +11,24 @@
 
 /*!
 
-@defgroup interfaces Interfaces
-@defgroup components Components
-@defgroup libs Libraries
-@defgroup utils Utilities
-@defgroup examples Examples
-@defgroup tests Tests
+@defgroup orca_interfaces Interfaces
+@defgroup orca_components Components
+@defgroup orca_libs Libraries
+@defgroup orca_utils Utilities
+@defgroup orca_examples Examples
+@defgroup orca_tests Tests
 
-@defgroup apps Stand-Alone Components
-@defgroup services IceBox Services
+@defgroup orca_apps Stand-Alone Components
+@defgroup orca_services IceBox Services
 
-@defgroup cpp C++
-@defgroup java Java
-@defgroup matlab Matlab
-@defgroup python Python
+@defgroup orca_cpp C++
+@defgroup orca_java Java
+@defgroup orca_matlab Matlab
+@defgroup orca_python Python
 
-@defgroup linux Linux
-@defgroup qnx QNX
-@defgroup win Windows
+@defgroup orca_linux Linux
+@defgroup orca_qnx QNX
+@defgroup orca_win Windows
 */
 
 // without this gap between two doxygen definition, the last group does not get 
@@ -43,7 +43,7 @@ Our main goal is the continuing progress in robotic research and the robotic ind
 
 @image html orca_concept.png
 
-@section more_information Where to start
+@section orca_doc_index_more_info Where to start
 
 - Read general information about the project: @ref orca_doc_overview
 - Get set up: @ref orca_doc_getting
@@ -51,12 +51,12 @@ Our main goal is the continuing progress in robotic research and the robotic ind
 - Read an overview of Ice middleware: Ch. 2 of the Ice Manual <a href="http://www.zeroc.com/download.html#doc" target="_blank">[download]</a>
 - See a list of all available Orca components: @ref orca_doc_swmap
 - Start coding: @ref orca_doc_start_code (read this if you want to evaluate Orca)
-- Browse through examples:  <strong><a href="group__examples.html" style="text-decoration:none">Orca Component Examples</a></strong>
+- Browse through examples:  <strong><a href="group__orca__examples.html" style="text-decoration:none">Orca Component Examples</a></strong>
 - Become an expert: @ref orca_doc_devguide
 
 Note: The documentation on this web page matches the latest release. A web page is also <a href="http://orca-robotics.sourceforge.net/cvs/">generated every 30 min</a> from the latest CVS version.
 
-@section news News
+@section orca_doc_index_news News
 
 - 28-Sep-07 Our <a href="http://www.cas.edu.au/content.php/237.html?publicationid=403">position paper</a> was accepted for the Workshop on Evaluation of Middleware and Architectures to be held at IROS'07 in San Diego.
 - 18-Sep-07 Orca2.6.0 is released. See @ref orca_doc_history_260 "Release Notes" for details.  One important change is a fix for robot2d which would cause the tutorials to malfunction on some machines.

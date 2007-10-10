@@ -8,7 +8,7 @@
  *
  */
 /*!
-@ingroup libs
+@ingroup orca_libs
 @defgroup orca_library_orcaiceutil libOrcaIceUtil
 @brief Customizes libIceUtil API for Orca and adds a few useful classes.
 

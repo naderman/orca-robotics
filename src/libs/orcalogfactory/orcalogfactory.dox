@@ -9,7 +9,7 @@
  */
 /*!
 
-@ingroup libs
+@ingroup orca_libs
 @defgroup orca_library_orcalogfactory libOrcaLogFactory
 @brief A factory of all logging and replaying elements.
 

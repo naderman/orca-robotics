@@ -9,10 +9,10 @@
  */
 
 /*!
-@ingroup tests
-@ingroup apps
-@ingroup cpp
-@ingroup linux
+@ingroup orca_tests
+@ingroup orca_apps
+@ingroup orca_cpp
+@ingroup orca_linux
 @defgroup orca_component_robot2dtester Robot2dTester
 @brief Tests Robot2d component.
 

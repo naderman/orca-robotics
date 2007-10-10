@@ -8,10 +8,10 @@
  *
  */
 /*!
-@ingroup utils
-@ingroup apps
-@ingroup cpp
-@ingroup linux
+@ingroup orca_utils
+@ingroup orca_apps
+@ingroup orca_cpp
+@ingroup orca_linux
 @defgroup orca_util_orcaview3d OrcaView3d
 
 @brief Graphical display of global and local 3D information.

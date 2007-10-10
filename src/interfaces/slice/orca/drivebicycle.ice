@@ -17,7 +17,7 @@
 module orca
 {
 /*!
-    @ingroup interfaces
+    @ingroup orca_interfaces
     @defgroup orca_interface_drivebicycle DriveBicycle
     @brief Controls a mobile robot with bicycle steering.
     @{

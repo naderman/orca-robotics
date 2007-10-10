@@ -10,10 +10,10 @@
 
 /*!
 
-@ingroup utils
-@ingroup cpp
-@ingroup linux
-@ingroup win
+@ingroup orca_utils
+@ingroup orca_cpp
+@ingroup orca_linux
+@ingroup orca_win
 @defgroup orca_component_registrylist RegistryList
 @brief A text viewer for the Orca %Component Model
 

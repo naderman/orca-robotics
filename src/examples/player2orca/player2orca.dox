@@ -9,10 +9,10 @@
  */
 
 /*!
-@ingroup examples
-@ingroup apps
-@ingroup cpp
-@ingroup linux
+@ingroup orca_examples
+@ingroup orca_apps
+@ingroup orca_cpp
+@ingroup orca_linux
 @defgroup orca_component_player2orca Player2Orca
 @brief An example of using Orca and Player in the same component.
 

@@ -17,7 +17,7 @@
 module orca
 {
 /*!
-    @ingroup interfaces
+    @ingroup orca_interfaces
     @defgroup orca_interface_particle2d Particle2d
     @brief Interface for a 2D Particle-based Localiser
 

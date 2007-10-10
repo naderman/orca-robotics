@@ -18,7 +18,7 @@
 module orca
 {
 /*!
-    @ingroup interfaces
+    @ingroup orca_interfaces
     @defgroup orca_interface_laserscanner2d LaserScanner2d
     @brief Single-origin scanning range and intensity sensor
 
