@@ -60,28 +60,32 @@ Sorca = [ ...
 % COMP: comp + util - orcaice 
 2005    11  20  1   Sice212 2320+530    9226+8781-2320      0      % 2.0.0-rc1
 2006     1  22  0   Sice301 2511+596    9801+9695-2511      0      % 2.0.0-rc2
-2006     2  20  0   Sice301 3369+813    9867+14734-3369     0      % 2.0.0-rc3
-2006     3  29  0   Sice301 4022+1052   14625+18131-4022    0      % 2.0.0-rc4
-2006     6  11  0   Sice310 3439+1116   19999+24867-3439    0      % 2.0.0-rc5
-2006     8   9  1   Sice310 3482+1116   19979+21711-3482    0      % 2.0.0
-2006     9  18  0   Sice310 3647+1094   19317+30847-3647    0      % 2.0.1
-2006    10   5  0   Sice310 3644+1094   20384+31798-3644    0      % 2.0.2
-2006    11  23  1   Sice311 3831+1178   21408+35311-3831    0      % 2.1.0
+% UTIL: sloccount components/log* 
+2006     2  20  0   Sice301 3369+813    9867+14734-3369-1372 1372      % 2.0.0-rc3
+% UTIL: sloccount components/orcaview/ components/log* utils/orcalog* utils/orcagui/ utils/orcaobj/
+2006     3  29  0   Sice301 4022+1052   14625+18131-4022-9307 9307     % 2.0.0-rc4
+2006     6  11  0   Sice310 3439+1116   19999+24867-3439-12670 12670   % 2.0.0-rc5  
+2006     8   9  1   Sice310 3482+1116   19979+21711-3482-13111 13111   % 2.0.0
+2006     9  18  0   Sice310 3647+1094   19317+30847-3647-15704 15704   % 2.0.1
+2006    10   5  0   Sice310 3644+1094   20384+31798-3644-16329 16329   % 2.0.2
+% UTIL: sloccount components/orcaview* components/log* utils/orcalog* utils/orcagui* utils/orcaobj/
+2006    11  23  1   Sice311 3831+1178   21408+35311-3831-18359 18359   % 2.1.0
 % BASE: cd src; sloccount libs/orcaice/ 
 %          MINUS sloccount libs/orcaice/test 
 %          PLUS sloccount interfaces/slice
 % COMP: cd src; sloccount components/ libs/ 
-%          MINUS sloccount libs/orcaice/ libs/orcaq* libs/orcalog* libs/orcaprobe* libs/orcawall*
-% UTIL: cd src; sloccount utils libs/orcaq* libs/orcalog* libs/orcaprobe* libs/orcawall*
+%          MINUS sloccount libs/orcaice* libs/orcaq* libs/orcalog* libs/orcaprobe* libs/orcawall* libs/orcaobj
+% UTIL: cd src; sloccount utils libs/orcaq* libs/orcalog* libs/orcaprobe* libs/orcawall* libs/orcaobj libs/orcaice*
+%          MINUS sloccount libs/orcaice/
 % to count lines in *.ice files, rename them to *.cpp like this:
 % $cd src/interfaces/slice/orca; for file in *; do mv $file `echo $file | sed s/.ice/.cpp/`; done
-2006    12  17  0   Sice311 5615-1784+1240  60241-25885     24644  % 2.1.1
-2007     2   2  1   Sice311 6225-2011+1671  70376-29436     28519  % 2.2.0
-2007     4  10  1   Sice320 6232-2011+1671  72704-30907     30121  % 2.3.0
-2007     6   3  1   Sice320 6837-2056+1682  75506-31245     30166  % 2.4.0
-2007     8  13  1   Sice320 7247-2226+1772  78939-33535     32062  % 2.5.0
-2007     9  18  1   Sice321 7919-2572+1787  83838-35198     33230  % 2.6.0
-2007    10  18  1   Sice321 5772-1496+1787  84050-33260     33438  % 2.7.0
+2006    12  17  0   Sice311 5615-1784+1240  60241-28024     32398-5615  % 2.1.1
+2007     2   2  1   Sice311 6225-2011+1671  70376-31989     37297-6225  % 2.2.0
+2007     4  10  1   Sice320 6232-2011+1671  72704-34165     39894-6232  % 2.3.0
+2007     6   3  1   Sice320 6837-2056+1682  75506-34316     40074-6837  % 2.4.0
+2007     8  13  1   Sice320 7247-2226+1772  78939-36926     42700-7247  % 2.5.0
+2007     9  18  1   Sice321 7919-2572+1787  83838-38743     44694-7919  % 2.6.0
+2007    10  28  1   Sice321 5817-1520+1787  84931-40141     45454-5817  % 2.7.0
 ];
 Vorca ={'0.8.6', '0.11.0', '0.12.0', '0.12.1', '0.13.0', '0.13.1', '0.13.2', '0.13.3', '0.14.0', '0.15.0', '1.0.0', ...
     '2.0.0-rc1', '2.0.0-rc2', '2.0.0-rc3', '2.0.0-rc4', '2.0.0-rc5', '2.0.0', '2.0.1', '2.0.2', '2.1.0', '2.1.1', ...
@@ -100,6 +104,11 @@ Torca = datenum(Sorca(:,iyy),Sorca(:,imm),Sorca(:,idd));
 i2 = (Sorca(:,iver)==1);
 Torca2 = Torca(i2);
 Vorca2 = Vorca(i2);
+
+% what can go to Hydra?
+% cd libs; sloccount bros1 orcacolourtext orcadynamicload orcageom2d orcagpsutil orcaiceutil orcaimage orcaimagegrabber orcalocalnav orcalockfile orcamapload orcamisc orcanavutil orcaogfusion orcaogmap orcapathplan orcaping orcaportability orcaserial orcawifi
+% cd components; sloccount gps/garmin/ insgps/novatel insgps/novatelspan/ laser2d/laser2dutil/ laser2d/sickacfr/ laser2d/sickcarmen/ localnav/vfhdriver/ segwayrmp/rmpdriver/ 
+% 15,102 + 10,322
 
 % for comparison, ASN
 %  Sasn = 90433;
