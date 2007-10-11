@@ -72,7 +72,8 @@ public:
     virtual ~Job() {}
 
     //! Implement this function and do your job in it.
-    virtual JobStatusPtr process()=0;
+    //! It will be done by one of the 'workers' from the queue's thread pool.
+    virtual JobStatusPtr execute()=0;
 
     //! Returns a text description of the job
     virtual std::string toString() const=0;
@@ -129,7 +130,7 @@ public:
     JobPtr getJob();
 
     // The worker reports status of a processed job.
-    void addJobStatus( JobStatusPtr &c );
+    void addJobStatus( JobStatusPtr &s );
 
 private: 
     // incoming job requests

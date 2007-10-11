@@ -41,19 +41,20 @@ namespace {
     {
         while ( isActive() )
         {
-            JobPtr c = q_.getJob();
-            if ( c == 0 )
+            JobPtr job = q_.getJob();
+            if ( job == 0 )
             {
                 IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
                 continue;
             }
             try {
-                // cout<<"TRACE(jobqueue.cpp): worker: processing " << c->toString() << endl;
+                // cout<<"TRACE(jobqueue.cpp): worker: processing " << job->toString() << endl;
                 
-                JobStatusPtr s = c->process();
+                JobStatusPtr s = job->execute();
                 q_.addJobStatus(s);
                 continue;
             }
+            // would have to include Ice to be able to catch this one specifically
 //             catch ( Ice::CommunicatorDestroyedException &e )
 //             {
 //                 // This is OK, we must be shutting down.
@@ -62,10 +63,10 @@ namespace {
             {
                 if ( tracer_ ) {
                     std::stringstream ss;
-                    ss << "Worker::run(): Caught exception during Job: " << c->toString();
+                    ss << "Worker::run(): Caught exception during Job: " << job->toString();
                     ss << ": " << e;
                     tracer_->warning( ss.str() );
-                    JobStatusPtr status = new FailedJobStatus( c->jobQueueUser(), ss.str() );
+                    JobStatusPtr status = new FailedJobStatus( job->jobQueueUser(), ss.str() );
                     q_.addJobStatus( status );
                 }
             }
@@ -73,11 +74,11 @@ namespace {
             {
                 if ( tracer_ ) {
                     std::stringstream ss;
-                    ss << "Worker::run(): Caught exception during Job: " << c->toString();
+                    ss << "Worker::run(): Caught exception during Job: " << job->toString();
                     ss << e.what();
                     cout<<"TRACE(jobqueue.cpp): ss: " << ss.str() << endl;
                     tracer_->warning( ss.str() );
-                    JobStatusPtr status = new FailedJobStatus( c->jobQueueUser(), ss.str() );
+                    JobStatusPtr status = new FailedJobStatus( job->jobQueueUser(), ss.str() );
                     q_.addJobStatus( status );
                 }
             }
@@ -85,9 +86,9 @@ namespace {
             {
                 if ( tracer_ ) {
                     std::stringstream ss;
-                    ss << "Worker::run(): Caught unknown exception during Job: " << c->toString();
+                    ss << "Worker::run(): Caught unknown exception during Job: " << job->toString();
                     tracer_->warning( ss.str() );
-                    JobStatusPtr status = new FailedJobStatus( c->jobQueueUser(), ss.str() );
+                    JobStatusPtr status = new FailedJobStatus( job->jobQueueUser(), ss.str() );
                     q_.addJobStatus( status );
                 }
             } // try
@@ -170,30 +171,30 @@ JobQueue::getJob()
     if ( pendingJobs_.empty() )
         return 0;
 
-    JobPtr c = pendingJobs_.front();
+    JobPtr job = pendingJobs_.front();
     pendingJobs_.pop_front();
-    return c;
+    return job;
 }
 
 void
-JobQueue::addJobStatus( JobStatusPtr &c )
+JobQueue::addJobStatus( JobStatusPtr &s )
 {
-    if ( c == 0 ) return;
+    if ( s == 0 ) return;
 
     IceUtil::Mutex::Lock lock(mutex_);
 
-    map<JobQueueUser*,JobStatusList>::iterator it = finishedJobs_.find( c->jobQueueUser() );
+    map<JobQueueUser*,JobStatusList>::iterator it = finishedJobs_.find( s->jobQueueUser() );
     if ( it == finishedJobs_.end() )
     {
         // this is a new queue user
         JobStatusList newList;
-        newList.push_back( c );
-        finishedJobs_[c->jobQueueUser()] = newList;
+        newList.push_back( s );
+        finishedJobs_[s->jobQueueUser()] = newList;
     }
     else
     {
         // this queue user already exists
-        it->second.push_back( c );
+        it->second.push_back( s );
     }
 }
 
