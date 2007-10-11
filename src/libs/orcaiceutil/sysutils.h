@@ -31,6 +31,15 @@ std::string getHostname();
 //! Returns "/" in Linux, "\" in Windows.
 std::string pathDelimeter();
 
+//! Returns:
+//!   - True:  success
+//!   - False: failure (and failReason is set)
+//! On Linux calls popen : opens a process by creating a pipe, forking, and invoking the shell 
+//! (see: man popen).
+//!
+bool executeSystemCommand( const std::string &command, std::string &failReason, std::string *output=NULL );
+
+
 //@}
 } // namespace
 
