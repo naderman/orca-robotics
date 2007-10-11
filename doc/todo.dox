@@ -69,12 +69,13 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 @par New libraries
 
 - libOrcaIceUtil
-   - A set of tools which depends only on libIceUtil. Contains nothing
-    related to communications. See notes on libOrcaIce. (alex m)
-   - Added new utility class JobQueue for spinning off long-term tasks into a
+   - a set of tools which depends only on libIceUtil (and general c++). Specifically,
+     contains nothing related to communications. See notes on libOrcaIce. (alex m)
+   - added new utility class JobQueue for spinning off long-term tasks into a
      different thread. (alex b)
    - added new function substitute() to string utilities. It substitutes parameters
      in the form ${parameter}. (alex m)
+   - added new function executeSystemCommand() a wrapper for Linux popen(). (alex b)
 
 - libOrcaIceXml (alex m.)
    - Tools useful for XML parsing. Current contents were extracted from IceGrid code.
