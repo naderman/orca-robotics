@@ -21,7 +21,7 @@ public:
     TestJob( orcaiceutil::JobQueueUser* user ) :
         orcaiceutil::Job( user ) {};
     
-    virtual orcaiceutil::JobStatusPtr process()
+    virtual orcaiceutil::JobStatusPtr execute()
     {
         return new orcaiceutil::OkJobStatus(jobQueueUser());
     };
