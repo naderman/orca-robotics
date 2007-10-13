@@ -128,6 +128,11 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
   - added a new session manager with can control the IceGrid registry through its Admin 
     interface. (alex b)
 
+- libOrcaDynamicLoad
+  - split up include file into parts for more modular inclusions. added explicit
+    dependence on libdl (which before was included somehow through libIce). added tests
+    which can also server as examples. (alex m)
+
 @par Removed
 
 - OrcaSmc utility (alex m)
