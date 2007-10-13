@@ -8,59 +8,17 @@
  *
  */
 
-#ifndef ORCA_DYNAMIC_LOAD_H
-#define ORCA_DYNAMIC_LOAD_H
+#ifndef ORCA_DYNAMICLOAD_DYNAMICLOAD_H
+#define ORCA_DYNAMICLOAD_DYNAMICLOAD_H
 
+#include <orcadynamicload/dll.h>
+#include <orcadynamicload/exceptions.h>
+#include <dlfcn.h>
 #include <string>
 #include <sstream>
-#include <dlfcn.h>
 
-namespace orcadynamicload {
-
-//! Exceptions
-class DynamicLoadException : public std::exception
-{ 
-    std::string  message_;
-public:
-    DynamicLoadException(const char *message)
-        : message_(message) {}
-    DynamicLoadException(const std::string &message)
-        : message_(message) {}
-    ~DynamicLoadException()throw(){}
-    virtual const char* what() const throw() { return message_.c_str(); }
-};
-
-//////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////
-
-
-//!
-//! Class to encapsulate a dynamically-loaded library, so you can load
-//! code at run-time.
-//!
-//! Note that you have to keep this thing in scope for as long as you
-//! want to access code from it.
-//!
-class DynamicallyLoadedLibrary
+namespace orcadynamicload 
 {
-public:
-
-    //! Loads the lib, throws DynamicLoadExceptions on error.
-    DynamicallyLoadedLibrary( const std::string &libName );
-    ~DynamicallyLoadedLibrary();
-
-    const std::string &name() const { return libName_; }
-    void *handle() { return libHandle_; }
-
-private:
-
-    void        *libHandle_;
-    std::string  libName_;
-};
-
-//////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////
-
 
 //!
 //! Uses a function in the lib to load an instance of 'LoadedClass'.
@@ -89,8 +47,8 @@ LoadedClass *dynamicallyLoadClass( DynamicallyLoadedLibrary &lib, const char *ma
 
     LoadedClass *loadedClass = makerFunc();
     return loadedClass;
-}
+};
 
-}
+} // namespace
 
 #endif

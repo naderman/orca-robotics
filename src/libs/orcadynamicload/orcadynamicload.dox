@@ -27,6 +27,10 @@ Header file:
 #include <orcadynamicload/dynamicload.h>
 @endverbatim
 
+@par Dependencies
+
+Links to @c libdl but if, for some reason, you are getting an error similar to "undefined reference to dlopen" add this library dependency manualy.
+
 @par Responsible Developer
 Alex Brooks
   
@@ -38,6 +42,6 @@ Alex Brooks
 
 This is a very small library for dynamically loading C++ classes.
 
-@see @ref orca_library_orcadef 
+@see @ref orca_library_orcadynamicload 
 */
 
