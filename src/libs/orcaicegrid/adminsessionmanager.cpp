@@ -226,11 +226,11 @@ AdminSessionManager::performOp( Operation &op )
     {
         try {
             orca::Time startTime = orcaice::getNow();
-            context_.tracer()->info( string("AdminSessionManager: performing ")+op.toString() );
+            context_.tracer()->debug( string("AdminSessionManager: performing ")+op.toString(),10 );
             op.performOp( iceGridAdmin_ );
             stringstream ss;
             ss << "AdminSessionManager: "<<op.toString()<<" done.  Took "<<orcaice::timeDiffAsDouble(orcaice::getNow(),startTime)<<"s";
-            context_.tracer()->info( ss.str() );
+            context_.tracer()->debug( ss.str(),10 );
             return;
         }
         catch ( const Ice::ObjectNotExistException &e )
