@@ -2,6 +2,7 @@
 #define ORCANAVUTIL_COV3D_H
 
 #include <iostream>
+#include <sstream>
 #include <assert.h>
 #include <orcanavutil/exceptions.h>
 
@@ -111,6 +112,14 @@ inline void invert( double xx,
                     double &ttOut )
 {
     double d = det( xx, xy, xt, yy, yt, tt );
+
+    if ( d == 0 )
+    {
+        std::stringstream ss;
+        Cov3d c( xx, xy, xt, yy, yt, tt );
+        ss << "orcanavutil::invert(): det==0.  Cov is: "<<c;
+        throw Exception( ss.str() );
+    }
 
     double ytSq = yt*yt;
     double xySq = xy*xy;
