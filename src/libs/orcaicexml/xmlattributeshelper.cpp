@@ -40,11 +40,11 @@ string toString(const vector<string>& v, const std::string& sep= std::string(" "
 } // namespace
 
 XmlAttributesHelper::XmlAttributesHelper(const IceXML::Attributes& attrs, 
-                                         const Ice::LoggerPtr& logger,
+//                                          const Ice::LoggerPtr& logger,
                                          const string& filename,
                                          int line) :
     _attributes(attrs),
-    _logger(logger),
+//     _logger(logger),
     _filename(filename),
     _line(line)
 {

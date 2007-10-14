@@ -14,7 +14,7 @@
 #ifndef ICE_XML_ATTRIBUTES_HELPER_H
 #define ICE_XML_ATTRIBUTES_HELPER_H
 
-#include <Ice/Logger.h>
+// #include <Ice/Logger.h>
 #include <IceXML/Parser.h>
 #include <set>
 
@@ -26,7 +26,8 @@ class XmlAttributesHelper
 {
 public:
     //! Constructor
-    XmlAttributesHelper(const IceXML::Attributes&, const Ice::LoggerPtr&, const std::string&, int);
+    XmlAttributesHelper(const IceXML::Attributes&, const std::string&, int);
+//     XmlAttributesHelper(const IceXML::Attributes&, const Ice::LoggerPtr&, const std::string&, int);
 
     //! checkUnknownAttributes
     void checkUnknownAttributes();
@@ -48,7 +49,7 @@ public:
 private:
     
     const IceXML::Attributes& _attributes;
-    const Ice::LoggerPtr _logger;
+//     const Ice::LoggerPtr _logger;
     const std::string _filename;
     const int _line;
 
