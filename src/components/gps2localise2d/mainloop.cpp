@@ -21,33 +21,6 @@ namespace gps2localise2d {
 
 namespace {
     const char *SUBSYSTEM = "mainloop";
-
-    bool isSane( const orca::GpsData &gpsData, std::string &reason )
-    {
-        bool sane = true;
-
-        stringstream ss;
-        if ( gpsData.horizontalPositionError <= 0.0 )
-        {
-            sane = false;
-            ss << "Bad horizontalPositionError: " << gpsData.horizontalPositionError << "  ";
-        }
-        if ( gpsData.verticalPositionError <= 0.0 )
-        {
-            cout << "Bad verticalPositionError: " << gpsData.verticalPositionError << "  " << endl;
-            cout<<"TRACE(mainloop.cpp): TODO: re-enable !sane." << endl;
-//             sane = false;
-//             ss << "Bad verticalPositionError: " << gpsData.verticalPositionError << "  ";
-        }
-        if ( gpsData.speed < 0.0 )
-        {
-            sane = false;
-            ss << "Bad speed: " << gpsData.speed;
-        }
-
-        reason = ss.str();
-        return sane;
-    }
 }
 
 MainLoop::MainLoop( const orcaice::Context &context )
@@ -320,19 +293,6 @@ MainLoop::run()
             }
             numTimeouts = 0;
 
-            std::string reason;
-            if ( !isSane( gpsData, reason ) )
-            {
-                stringstream ss;
-                ss << "Received bad GPS data: " << orcaice::toString(gpsData) << endl << reason;
-                context_.status()->warning( SUBSYSTEM, ss.str() );
-                context_.tracer()->warning( ss.str() );
-
-                // assert( false );
-
-                continue;
-            }
-
             //
             // execute algorithm to compute localisation
             //
@@ -347,10 +307,6 @@ MainLoop::run()
 
             // copy the timestamp
             localiseData.timeStamp = gpsData.timeStamp;
-
-            stringstream ssOut;
-            ssOut << "MainLoop: setting data: " << orcaice::toString(localiseData);
-            context_.tracer()->debug( ssOut.str() );
 
             localiseInterface_->localSetAndSend( localiseData );
 

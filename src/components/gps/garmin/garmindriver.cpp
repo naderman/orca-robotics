@@ -173,20 +173,16 @@ GarminGpsDriver::readFrame(orca::GpsData& GpsData)
             addDataToFrame();
         }else{      
             if(nmeaFailChecksumCount++ >= 3){ //Dont throw an exception on the first failed checksum.
-                cout<<"TRACE(garmindriver.cpp): TODO: throw exception" << endl;
-//                throw GpsException("GarminGpsDriver: more than 3 sequential messages failed the checksum\n");
-                context_.tracer()->error("GarminGpsDriver: more than 3 sequential messages failed the checksum\n");
-                break;
+                throw GpsException("GarminGpsDriver: more than 3 sequential messages failed the checksum\n");
             }else{
                 context_.tracer()->error("GarminGpsDriver: Single message failed checksum. Not throwing an exception yet!\n" );
             }
         }
 
         //Make sure that we do not wait for ever trying to get a frame of data
-        cout<<"TRACE(garmindriver.cpp): TODO: re-enable this!!" << endl;
-//         if(gpsMsgNotYetGotFrameCount++ >= (N_MSGS_IN_FRAME * 2)){
-//             throw GpsException("GarminGpsDriver: Not able to assemble a complete data frame\n");
-//         }
+        if(gpsMsgNotYetGotFrameCount++ >= (N_MSGS_IN_FRAME * 2)){
+            throw GpsException("GarminGpsDriver: Not able to assemble a complete data frame\n");
+        }
 
     }
 
@@ -217,17 +213,17 @@ GarminGpsDriver::addDataToFrame()
     }
     
     if(MsgType == "$GPGGA"){
-        cout << "got GGA message\n";
+        //cout << "got GGA message\n";
         extractGGAData();
         haveGGA_ = true;
         return;
     }else if(MsgType == "$GPVTG"){
-        cout << "got VTG message\n";
+        //cout << "got VTG message\n";
         extractVTGData();
         haveVTG_ = true;
         return;
     }else if(MsgType == "$PGRME"){
-        cout << "got RME message\n";
+        //cout << "got RME message\n";
         extractRMEData();
         haveRME_ = true;
         return;

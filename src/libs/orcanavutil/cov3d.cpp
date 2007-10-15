@@ -14,8 +14,7 @@ namespace {
 std::ostream &operator<<( std::ostream &s,
                           const Cov3d &c )
 {
-    s << endl
-      << "[ " << c.xx() << ",\t" << c.xy() << ",\t" << c.xt() << endl
+    s << "[ " << c.xx() << ",\t" << c.xy() << ",\t" << c.xt() << endl
       << "  " << "\t\t" << c.yy() << ",\t" << c.yt() << endl
       << "  " << "\t\t\t" << c.tt() << " ]";
     return s;

@@ -97,7 +97,7 @@ SimpleDriver::compute( const orca::GpsData  &gpsData,
 
     localiseData.hypotheses[0].cov.xt = 0.0;
     localiseData.hypotheses[0].cov.yt = 0.0;
-    localiseData.hypotheses[0].cov.tt = 6*M_PI;
+    localiseData.hypotheses[0].cov.tt = 2*M_PI;
 
     localiseData.hypotheses[0].weight = 1.0;
 
