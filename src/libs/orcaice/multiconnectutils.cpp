@@ -22,9 +22,10 @@ void
 createInterfaceWithString( const Context       & context,
                             Ice::ObjectPtr      & object,
                             const std::string   & name,
-                            orcaiceutil::Thread*  thread, int retryInterval )
+                            orcaiceutil::Thread*  thread, int retryInterval, int retryNumber )
 {
-    while ( !thread->isStopping() )
+    int count = 0;
+    while ( !thread->isStopping() && ( retryNumber<0 || count<retryNumber) )
     {
         try {
             createInterfaceWithString( context, object, name );
@@ -43,6 +44,7 @@ createInterfaceWithString( const Context       & context,
                 <<"Will retry in "<<retryInterval<<"s.\n";
             context.tracer()->warning( ss.str() );
         }
+        ++count;
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(retryInterval));
     }
 }
@@ -51,9 +53,10 @@ void
 createInterfaceWithTag( const Context       & context,
                         Ice::ObjectPtr      & object,
                         const std::string   & interfaceTag,
-                        orcaiceutil::Thread*  thread, int retryInterval )
+                        orcaiceutil::Thread*  thread, int retryInterval, int retryNumber )
 {
-    while ( !thread->isStopping() )
+    int count = 0;
+    while ( !thread->isStopping() && ( retryNumber<0 || count<retryNumber) )
     {
         try {
             createInterfaceWithTag( context, object, interfaceTag );
@@ -72,14 +75,16 @@ createInterfaceWithTag( const Context       & context,
                 <<"Will retry in "<<retryInterval<<"s.\n";
             context.tracer()->warning( ss.str() );
         }
+        ++count;
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(retryInterval));
     }
 }
 
 void
-activate( Context& context, orcaiceutil::Thread* thread, int retryInterval )
+activate( Context& context, orcaiceutil::Thread* thread, int retryInterval, int retryNumber )
 {
-    while ( !thread->isStopping() )
+    int count = 0;
+    while ( !thread->isStopping() && ( retryNumber<0 || count<retryNumber) )
     {
         try {
             context.activate();
@@ -108,16 +113,18 @@ activate( Context& context, orcaiceutil::Thread* thread, int retryInterval )
                 <<"Will retry in "<<retryInterval<<"s.\n";
             context.tracer()->warning( ss.str() );
         }
+        ++count;
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(retryInterval));
     }
 }
 
 std::string 
 getInterfaceIdWithString( const Context& context, const std::string& proxyString,
-                       orcaiceutil::Thread*  thread, int retryInterval )
+                       orcaiceutil::Thread*  thread, int retryInterval, int retryNumber )
 {
     std::string ifaceId;
-    while ( !thread->isStopping() )
+    int count = 0;
+    while ( !thread->isStopping() && ( retryNumber<0 || count<retryNumber) )
     {
         try {
             ifaceId = getInterfaceIdWithString( context, proxyString );
@@ -129,19 +136,20 @@ getInterfaceIdWithString( const Context& context, const std::string& proxyString
                 <<"Will retry in "<<retryInterval<<"s.\n"
                 << e.what();
             context.tracer()->warning( ss.str() );
-
-            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(retryInterval));
         }
+        ++count;
+        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(retryInterval));
     }
     return ifaceId;
 }
 
 std::string 
 getInterfaceIdWithTag( const Context& context, const std::string& interfaceTag,
-                       orcaiceutil::Thread*  thread, int retryInterval )
+                       orcaiceutil::Thread*  thread, int retryInterval, int retryNumber )
 {
     std::string ifaceId;
-    while ( !thread->isStopping() )
+    int count = 0;
+    while ( !thread->isStopping() && ( retryNumber<0 || count<retryNumber) )
     {
         try {
             ifaceId = getInterfaceIdWithTag( context, interfaceTag );
@@ -153,9 +161,9 @@ getInterfaceIdWithTag( const Context& context, const std::string& interfaceTag,
                 <<"Will retry in "<<retryInterval<<"s.\n"
                 << e.what();
             context.tracer()->warning( ss.str() );
-
-            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(retryInterval));
         }
+        ++count;
+        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(retryInterval));
     }
     return ifaceId;
 }

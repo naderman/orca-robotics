@@ -22,8 +22,9 @@ namespace orcaice
 //@{
 
 /*!
-Convenience function. Tries to setup the specified interface until is successful or
-the @c thread is stopped. 
+Convenience function. Tries to setup the specified interface until is successful,
+the number of retries is exceeded (default -1, i.e. infinite), or the @c thread is stopped.
+Nothing is done if retryNumber=0;
 
 We catch orcaiceutil::Exception, sleep for @c retryInterval [s] and try again.
 
@@ -36,13 +37,15 @@ orcaice::createInterfaceWithString( context_, obj, "coolname", (orcaiceutil::Thr
 void createInterfaceWithString( const Context       & context,
                                 Ice::ObjectPtr      & object,
                                 const std::string   & name,
-                                orcaiceutil::Thread*  thread, int retryInterval=2 );
+                                orcaiceutil::Thread*  thread, int retryInterval=2, int retryNumber=-1 );
 
 /*!
-Convenience function. Tries to setup the specified interface until is successful or
-the @c thread is stopped.
+Convenience function. Tries to setup the specified interface until successful,
+the number of retries is exceeded (default -1, i.e. infinite), or the @c thread is stopped.
+Nothing is done if retryNumber=0;
 
 We catch orcaiceutil::Exception, sleep for @c retryInterval [s] and try again.
+Gives up after @c retryNumber of attempts (-1 stands for infinite number of retries).
 
 We do NOT catch a possible orcaice::ConfigFileException exception.
 
@@ -60,18 +63,20 @@ catch ( const orcaice::ConfigFileException& e ) {
 void createInterfaceWithTag( const Context      & context,
                             Ice::ObjectPtr      & object,
                             const std::string   & interfaceTag,
-                            orcaiceutil::Thread*  thread, int retryInterval=2 );
+                            orcaiceutil::Thread*  thread, int retryInterval=2, int retryNumber=-1 );
 
 /*!
-    Tries to activate the adapter (by calling Context::activate(). If fails, sleeps for
-    @c retryInterval [s] seconds. Will repeat indefinitely until the thread is stopped (checks
-    orcaiceutil::Thread::isAlive() ).
+Tries to activate the adapter (by calling Context::activate(). If fails, sleeps for
+@c retryInterval [s] seconds. Will repeat until successful, the number of retries is exceeded 
+(default -1, i.e. infinite), or the @c thread is stopped. Nothing is done if retryNumber=0;
 */
-void activate( Context& context, orcaiceutil::Thread* thread, int retryInterval=2 );
+// note: Context::activate() is not a const function, that's why a ref to it is not const.
+void activate( Context& context, orcaiceutil::Thread* thread, int retryInterval=2, int retryNumber=-1 );
 
 /*!
-Convenience function. Tries to connect to the specified remote interface until is successful or
-the @c thread is stopped. 
+Convenience function. Tries to connect to the specified remote interface until successful,
+the number of retries is exceeded (default -1, i.e. infinite), or the @c thread is stopped.
+Nothing is done if retryNumber=0;
 
 We catch orcaice::NetworkException, sleep for @c retryInterval [s] and try again.
 
@@ -95,10 +100,11 @@ void
 connectToInterfaceWithString( const Context     & context,
                               ProxyType         & proxy,
                               const std::string & proxyString,
-                              orcaiceutil::Thread*    thread, int retryInterval=2 )
+                              orcaiceutil::Thread*    thread, int retryInterval=2, int retryNumber=-1 )
 {    
     context.tracer()->debug( "orcaice::connectToInterfaceWithString(thread) proxy="+proxyString, 10 );
-    while ( !thread->isStopping() )
+    int count = 0;
+    while ( !thread->isStopping() && ( retryNumber<0 || count<retryNumber) )
     {
         try {
             connectToInterfaceWithString<ProxyType>( context, proxy, proxyString );
@@ -111,13 +117,15 @@ connectToInterfaceWithString( const Context     & context,
                 << e.what();
             context.tracer()->warning( ss.str() );
         }
+        ++count;
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(retryInterval));
     }
 }
 
 /*!
-Convenience function. Tries to connect to the specified remote interface until is successful or
-the @c thread is stopped. 
+Convenience function. Tries to connect to the specified remote interface until successful,
+the number of retries is exceeded (default -1, i.e. infinite), or the @c thread is stopped. 
+Nothing is done if retryNumber=0;
 
 We catch orcaice::NetworkException, sleep for @c retryInterval [s] and try again.
 
@@ -146,10 +154,12 @@ void
 connectToInterfaceWithTag( const Context     & context,
                            ProxyType         & proxy,
                            const std::string & interfaceTag,
-                           orcaiceutil::Thread*  thread, int retryInterval=2 )
+                           orcaiceutil::Thread*  thread, int retryInterval=2, int retryNumber=-1 )
 {    
     context.tracer()->debug( "orcaice::connectToInterfaceWithTag(thread) tag="+interfaceTag, 10 );
-    while ( !thread->isStopping() )
+
+    int count = 0;
+    while ( !thread->isStopping() && ( retryNumber<0 || count<retryNumber) )
     {
         try {
             connectToInterfaceWithTag<ProxyType>( context, proxy, interfaceTag );
@@ -162,13 +172,15 @@ connectToInterfaceWithTag( const Context     & context,
                 << e.what();
             context.tracer()->warning( ss.str() );
         }
+        ++count;
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(retryInterval));
     }
 }
 
 /*!
 Convenience function. Tries to connect to the specified topic by calling connectToTopicWithString() 
-until is successful or the @c thread is stopped (in this case an empty topic proxy is returned).
+until successful, the number of retries is exceeded (default -1, i.e. infinite), or the @c thread is stopped 
+If unsuccesful for any reason, an empty topic proxy is returned. Nothing is done if retryNumber=0;
 
 We catch all orcaice::NetworkException, sleep for @c retryInterval [s] and try again.
 
@@ -179,12 +191,13 @@ IceStorm::TopicPrx
 connectToTopicWithString( const Context     & context,
                           ConsumerProxyType & publisher,
                           const std::string & topicName,
-                          orcaiceutil::Thread*  thread, int retryInterval=2 )
+                          orcaiceutil::Thread*  thread, int retryInterval=2, int retryNumber=-1 )
 {
     context.tracer()->debug( "orcaice::connectToTopicWithString(thread) topic="+topicName, 10 );
     IceStorm::TopicPrx topicPrx;
 
-    while ( !thread->isStopping() )
+    int count = 0;
+    while ( !thread->isStopping() && ( retryNumber<0 || count<retryNumber) )
     {
         try {
             topicPrx = connectToTopicWithString<ConsumerProxyType>( context, publisher, topicName );
@@ -197,6 +210,7 @@ connectToTopicWithString( const Context     & context,
                 << e.what();
             context.tracer()->warning( ss.str() );
         }
+        ++count;
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(retryInterval));
     }
     return topicPrx;
@@ -204,7 +218,9 @@ connectToTopicWithString( const Context     & context,
 
 /*!
 Convenience function. Tries to connect to the specified topic by calling connectToTopicWithTag() 
-until is successful or the @c thread is stopped (in this case an empty topic proxy is returned).
+until successful, the number of retries is exceeded (default -1, i.e. infinite), or the @c thread 
+is stopped. If unsuccesful for any reason, an empty topic proxy is returned.
+Nothing is done if retryNumber=0;
 
 We catch all orcaice::NetworkException, sleep for @c retryInterval [s] and try again.
 
@@ -216,12 +232,13 @@ connectToTopicWithTag( const Context      & context,
                        ConsumerProxyType  & publisher,
                        const std::string  & interfaceTag,
                        const std::string  & subtopic,
-                       orcaiceutil::Thread*  thread, int retryInterval=2 )
+                       orcaiceutil::Thread*  thread, int retryInterval=2, int retryNumber=-1 )
 {
     context.tracer()->debug( "orcaice::connectToTopicWithTag(thread) tag="+interfaceTag, 10 );
     IceStorm::TopicPrx topicPrx;
 
-    while ( !thread->isStopping() )
+    int count = 0;
+    while ( !thread->isStopping() && ( retryNumber<0 || count<retryNumber) )
     {
         try {
             topicPrx = connectToTopicWithTag<ConsumerProxyType>( context, publisher, interfaceTag, subtopic );
@@ -234,6 +251,7 @@ connectToTopicWithTag( const Context      & context,
                 << e.what();
             context.tracer()->warning( ss.str() );
         }
+        ++count;
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(retryInterval));
     }
     return topicPrx;
@@ -241,23 +259,25 @@ connectToTopicWithTag( const Context      & context,
 
 /*!
 Convenience function. Tries to connect to the specified topic by calling getInterfaceIdWithString() 
-until is successful or the @c thread is stopped (in this case an empty string is returned).
+until successful, the number of retries is exceeded (default -1, i.e. infinite), or the @c thread 
+is stopped. If unsuccesful for any reason, an empty string is returned. Nothing is done if retryNumber=0;
 
 We catch all orcaice::NetworkException, sleep for @c retryInterval [s] and try again.
 */
 std::string getInterfaceIdWithString( const Context& context, const std::string& proxyString,
-                       orcaiceutil::Thread*  thread, int retryInterval=2 );
+                       orcaiceutil::Thread*  thread, int retryInterval=2, int retryNumber=-1 );
 
 /*!
 Convenience function. Tries to connect to the specified topic by calling getInterfaceIdWithString() 
-until is successful or the @c thread is stopped (in this case an empty string is returned).
+until successful, the number of retries is exceeded (default -1, i.e. infinite), or the @c thread 
+is stopped. If unsuccesful for any reason, an empty string is returned. Nothing is done if retryNumber=0;
 
 We catch all orcaice::NetworkException, sleep for @c retryInterval [s] and try again.
 
 All other exceptions are not likely to be resolved over time so we don't catch them.
 */
 std::string getInterfaceIdWithTag( const Context& context, const std::string& interfaceTag,
-                       orcaiceutil::Thread*  thread, int retryInterval=2 );
+                       orcaiceutil::Thread*  thread, int retryInterval=2, int retryNumber=-1 );
 
 //@}
 
