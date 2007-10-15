@@ -18,6 +18,10 @@
 #include <orcaiceutil/proxy.h>
 #include <orcaice/context.h>
 
+namespace orcaiceutil {
+    class Thread;
+}
+
 namespace orcaifaceimpl {
 
 //!
