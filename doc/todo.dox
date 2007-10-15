@@ -112,6 +112,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     from Ice-independent drivers and algorithm implementations. libOrcaIce
     depends on libOrcaIceUtil. (alex m.)
   - added function isInterfaceReachable() (alex m.)
+  - all multi-try connection functions now have an optional retryNumber parameter. default
+    is -1, i.e. infinite -- same as before. therefore, no changes in existing
+    code are needed. (alex m)
 
 - libOrcaMisc
   - moved Activator to libOrcaIce
@@ -132,6 +135,11 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
   - split up include file into parts for more modular inclusions. added explicit
     dependence on libdl (which before was included somehow through libIce). added tests
     which can also server as examples. (alex m)
+
+- libOrcaIfaceImpl
+  - the two multi-try subscribe functions now have an optional retryNumber parameter. default
+    is -1, i.e. infinite -- same as before. therefore, no changes in existing
+    code are needed. (alex m)
 
 @par Removed
 
