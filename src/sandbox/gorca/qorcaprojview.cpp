@@ -148,7 +148,7 @@ void QorcaProjView::contentsMousePressEvent(QMouseEvent* e)
             (*it)->setSelected( true );
         }
         // now check that it's supposed to move at all
-        if ( (*it)->isActive() ) {
+        if ( (*it)->!isStopping() ) {
             movingObject_ = *it;
             moving_start_ = p;
             canvas()->update();

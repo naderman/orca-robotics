@@ -71,7 +71,7 @@ TermIostreamUser::walk()
     //
     // Main loop
     //
-    while ( isActive() )
+    while ( !isStopping() )
     {
         if ( !events_->timedGet( event, timeoutMs ) ) {
             continue;

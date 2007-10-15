@@ -66,7 +66,7 @@ Handler::run()
     //
     // Main loop, ctrl-C will exit from this
     //   
-    while( isActive() )
+    while( !isStopping() )
     {
         // Instead of pulling data every time with getData(), 
         // should really subscribe and wait the server to push data to us.

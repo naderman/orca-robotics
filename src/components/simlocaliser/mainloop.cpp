@@ -98,7 +98,7 @@ MainLoop::run()
     //
     // Enable driver
     //
-    while ( isActive() && driver_->enable() ) {
+    while ( !isStopping() && driver_->enable() ) {
         context_.tracer()->warning("failed to enable the driver; will try again in 2 seconds.");
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
     }
@@ -109,7 +109,7 @@ MainLoop::run()
     {
         int readStatus;
          
-        while ( isActive() )
+        while ( !isStopping() )
         {
 
             //

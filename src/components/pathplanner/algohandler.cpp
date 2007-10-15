@@ -77,7 +77,7 @@ AlgoHandler::initNetwork()
     // REQUIRED INTERFACE: OgMap
     //
 
-    while( isActive() )
+    while( !isStopping() )
     {
         try
         {
@@ -101,7 +101,7 @@ AlgoHandler::initNetwork()
     
     if (useHazardMap_)
     {
-        while( isActive() )
+        while( !isStopping() )
         {
             try
             {
@@ -270,7 +270,7 @@ AlgoHandler::run()
     PathPlanner2dTask task; 
     PathPlanner2dData pathData;   
 
-    while ( isActive() )
+    while ( !isStopping() )
     {
         try
         {
@@ -281,7 +281,7 @@ AlgoHandler::run()
             context_.tracer()->info("waiting for a new task");
             bool haveTask=false;
             
-            while ( isActive() )
+            while ( !isStopping() )
             {
                 int ret = pathPlannerTaskProxy_->getNext( task, 1000 );
                 if ( ret==0 ) {

@@ -32,7 +32,7 @@ MainLoop::run(){
 
     cout << "Ok, starting thread ..." << endl; 
     int msgCount = 0; 
-    while( isActive())
+    while( !isStopping())
     {
 
         // Generate a random position every time stemp. 

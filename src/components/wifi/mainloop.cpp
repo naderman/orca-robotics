@@ -45,7 +45,7 @@ MainLoop::initNetwork()
 {
     wifiInterface_ = new orcaifaceimpl::WifiImpl( "Wifi", context_ );
 
-    while ( isActive() ) 
+    while ( !isStopping() ) 
     {
         try {
             wifiInterface_->initInterface();
@@ -137,7 +137,7 @@ MainLoop::run()
 {   
     context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 3.0 );
 
-    while ( isActive() )
+    while ( !isStopping() )
     {
         try
         {

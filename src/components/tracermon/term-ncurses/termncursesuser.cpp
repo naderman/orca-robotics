@@ -265,7 +265,7 @@ TermNcursesUser::run()
     // Main loop
     //
 displayLocalTrace( "TermNcursesUser: entering main loop" );
-    while ( isActive() )
+    while ( !isStopping() )
     {
         if ( !events_->timedGet( event, timeoutMs ) ) {
             continue;

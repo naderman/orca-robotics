@@ -64,7 +64,7 @@ MainLoop::run()
     //
 
     // Connect directly to the interface
-    while( isActive() )
+    while( !isStopping() )
     {
         try
         {
@@ -81,7 +81,7 @@ MainLoop::run()
     }
 
     // get description, we need it to size the window
-    while( isActive() )
+    while( !isStopping() )
     {
         try
         {
@@ -108,7 +108,7 @@ MainLoop::run()
     //
     // Subscribe for data
     //
-    while ( isActive() )
+    while ( !isStopping() )
     {
         try
         {
@@ -128,7 +128,7 @@ MainLoop::run()
     //
     // This is the main loop
     //
-    while( isActive() )
+    while( !isStopping() )
     {
         //
         // block on arrival of camera data

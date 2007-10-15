@@ -53,7 +53,7 @@ VelocityControl2dSim::run()
     PrivateNotifyHandler notifyHandler( context_.tracer() );
     iface->setNotifyHandler( &notifyHandler );
 
-    while ( isActive() )
+    while ( !isStopping() )
     {
         try 
         {

@@ -34,7 +34,7 @@ Localise2dSim::run()
     iface = new orcaifaceimpl::Localise2dImpl( geom, tag_, context_ );
     iface->initInterface( this );
 
-    while ( isActive() )
+    while ( !isStopping() )
     {
         try 
         {

@@ -48,7 +48,7 @@ public:
 
 private:
 
-    // Keeps trying until success or !isActive()
+    // Keeps trying until success or !!isStopping()
     void enableDriver();
 
     // This structs stores fault information.  
@@ -106,7 +106,7 @@ template<typename Command, typename Data>
 void
 HwDriverHandler<Command,Data>::enableDriver()
 {
-    while ( isActive() ) 
+    while ( !isStopping() ) 
     {
         try {
             context_.tracer()->info("(Re-)Enabling driver...");
@@ -137,7 +137,7 @@ HwDriverHandler<Command,Data>::walk()
     //
     // Main loop
     //
-    while( isActive() )
+    while( !isStopping() )
     {
         //
         // Make sure we're OK
@@ -154,7 +154,7 @@ HwDriverHandler<Command,Data>::walk()
             context_.status()->setMaxHeartbeatInterval( "HwDriverHandler", 2.0 );
 
             // but make sure we're not shutting down.
-            if ( !isActive() )
+            if ( !!isStopping() )
                 break;
         }
 

@@ -37,7 +37,7 @@ InputHandler::walk()
     //
     // Main loop
     //
-    while ( isActive() )
+    while ( !isStopping() )
     {    
         //
         // get the next event from the keyboard

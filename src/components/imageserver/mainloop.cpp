@@ -35,7 +35,7 @@ MainLoop::~MainLoop()
 void
 MainLoop::activate()
 {
-    while ( isActive() )
+    while ( !isStopping() )
     {
         try {
             context_.activate();
@@ -64,7 +64,7 @@ MainLoop::activate()
 void
 MainLoop::establishInterface()
 {
-    while ( isActive() )
+    while ( !isStopping() )
     {
         try {
             cameraObj_.initInterface();
@@ -128,17 +128,17 @@ MainLoop::run()
         establishInterface();
 
         //
-        // IMPORTANT: Have to keep this loop rolling, because the 'isActive()' call checks for requests to shut down.
+        // IMPORTANT: Have to keep this loop rolling, because the '!isStopping()' call checks for requests to shut down.
         //            So we have to avoid getting stuck anywhere within this main loop.
         //
-        while ( isActive() )
+        while ( !isStopping() )
         {
             try
             {
                 int ret = readData( cameraData );
 
                 // make sure we are not shutting down, otherwise we'll segfault while trying to send
-                if ( isActive() ) {
+                if ( !isStopping() ) {
                     cameraObj_.localSetAndSend( cameraData );
                 }
 

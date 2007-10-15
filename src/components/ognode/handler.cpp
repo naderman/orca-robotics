@@ -74,7 +74,7 @@ Handler::~Handler()
 void
 Handler::init()
 {
-    while ( isActive() )
+    while ( !isStopping() )
     {
         try {
 
@@ -168,7 +168,7 @@ Handler::run()
     orca::OgFusionData data;
     orca::OgMapData map;
     
-    while ( isActive() )
+    while ( !isStopping() )
     {
         try
         {

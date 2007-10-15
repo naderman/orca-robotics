@@ -113,7 +113,7 @@ Handler::init()
     // REQUIRED INTERFACES: Laser, Localise2d, OgFusion
     //
 
-    while ( isActive() )
+    while ( !isStopping() )
     {
         try
         {
@@ -132,7 +132,7 @@ Handler::init()
             //       but if this happens it's ok if we just quit.
     }
 
-    while ( isActive() )
+    while ( !isStopping() )
     {
         try
         {
@@ -149,7 +149,7 @@ Handler::init()
         }
     }
 
-    while ( isActive() )
+    while ( !isStopping() )
     {
         try
         {
@@ -203,7 +203,7 @@ Handler::init()
     // Subscribe for data
     //
     // will try forever until the user quits with ctrl-c
-    while ( isActive() )
+    while ( !isStopping() )
     {
         try
         {
@@ -229,15 +229,15 @@ Handler::run()
 	Localise2dData localiseData;
 
     //
-    // IMPORTANT: Have to keep this loop rolling, because the 'isActive()' call checks for requests to shut down.
+    // IMPORTANT: Have to keep this loop rolling, because the '!isStopping()' call checks for requests to shut down.
     //            So we have to avoid getting stuck in a loop anywhere within this main loop.
     //
-    while ( isActive() )
+    while ( !isStopping() )
 	{
         try
         {
             
-            while ( isActive() )
+            while ( !isStopping() )
             {
                 int ret=rangeScannerDataBuffer_.getAndPopNext(rangeScan,1000);
                 if(ret!=0) {

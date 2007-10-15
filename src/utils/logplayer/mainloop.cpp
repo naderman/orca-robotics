@@ -165,7 +165,7 @@ MainLoop::run()
     // The main loop
     //
     ///////////////////////////////////////////////////
-    while( isActive() )
+    while( !isStopping() )
     {
         // read a line and act appropriately
         if ( master_->getData( seconds, useconds, id, index ) ) 
@@ -210,7 +210,7 @@ MainLoop::run()
                     IceUtil::ThreadControl::sleep(untilNextLogTime);
                 }
                 
-            } while ( isActive() && untilNextLogTime > replayTimeTolerance  );
+            } while ( !isStopping() && untilNextLogTime > replayTimeTolerance  );
         }
     
         //

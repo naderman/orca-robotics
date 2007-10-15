@@ -188,7 +188,7 @@ NetHandler::walk()
     //
     // Main loop
     //
-    while( isActive() )
+    while( !isStopping() )
     {
 //         context_.tracer()->debug( "net handler loop spinning ",1);
 
@@ -205,7 +205,7 @@ NetHandler::walk()
         convert( data, odometry2dData );
         // check that we were not told to terminate while we were sleeping
         // otherwise, we'll get segfault (there's probably a way to prevent this inside the library)
-        if ( isActive() && odometry2dPublishTimer.elapsed().toSecondsDouble()>=odometry2dPublishInterval ) {
+        if ( !isStopping() && odometry2dPublishTimer.elapsed().toSecondsDouble()>=odometry2dPublishInterval ) {
             odometry2dI_->localSetAndSend( odometry2dData );
             odometry2dPublishTimer.restart();
         } 
@@ -215,7 +215,7 @@ NetHandler::walk()
 
         // Odometry3d
         convert( data, odometry3dData );
-        if ( isActive() && odometry3dPublishTimer.elapsed().toSecondsDouble()>=odometry3dPublishInterval ) {
+        if ( !isStopping() && odometry3dPublishTimer.elapsed().toSecondsDouble()>=odometry3dPublishInterval ) {
             odometry3dI_->localSetAndSend( odometry3dData );
             odometry3dPublishTimer.restart();
         } 
@@ -225,7 +225,7 @@ NetHandler::walk()
 
         // Power
         convert( data, powerData );
-        if ( isActive() && powerPublishTimer.elapsed().toSecondsDouble()>=powerPublishInterval ) {
+        if ( !isStopping() && powerPublishTimer.elapsed().toSecondsDouble()>=powerPublishInterval ) {
             powerI_->localSetAndSend( powerData );
             powerPublishTimer.restart();
         } 

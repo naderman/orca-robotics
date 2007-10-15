@@ -74,14 +74,14 @@ TermDisplayHandler::run()
     try
     {
     
-    // don't forget to enable the driver, but check isActive() to see if we should quit
-    while ( driver_->enable() && isActive() ) {
+    // don't forget to enable the driver, but check !isStopping() to see if we should quit
+    while ( driver_->enable() && !isStopping() ) {
         context_.tracer()->warning("Failed to enable driver. Will try again in 2 seconds.");
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
     }
 
     // check again to make sure we are not being terminated
-    if ( !isActive() ) {
+    if ( !!isStopping() ) {
         return;
     }
     
@@ -93,7 +93,7 @@ TermDisplayHandler::run()
     //
     // Main loop
     //
-    while ( isActive() )
+    while ( !isStopping() )
     {
         if ( !events_->timedGet( event, timeoutMs ) ) {
             continue;

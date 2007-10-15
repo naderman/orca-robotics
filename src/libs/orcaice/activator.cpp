@@ -29,7 +29,7 @@ Activator::~Activator()
 void 
 Activator::run()
 {
-    while ( isActive() )
+    while ( !isStopping() )
     {
         try {
             context_.tracer()->debug( "Activator: Activating..." );

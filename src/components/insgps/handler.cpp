@@ -36,10 +36,10 @@ Handler::run()
         context_.tracer()->debug( "TRACE(handler::run()): Handler thread is running", 6);
         
         //
-        // IMPORTANT: Have to keep this loop rolling, because the 'isActive()' call checks
+        // IMPORTANT: Have to keep this loop rolling, because the '!isStopping()' call checks
         // for requests to shut down. So we have to avoid getting stuck in a loop anywhere within this main loop.
         //
-        while ( isActive() )
+        while ( !isStopping() )
         {
 
             try

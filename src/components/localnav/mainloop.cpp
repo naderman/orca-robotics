@@ -85,7 +85,7 @@ void
 MainLoop::ensureProxiesNotEmpty()
 {
     // Ensure that there's something in our proxys
-    while ( isActive() )
+    while ( !isStopping() )
     {
         bool gotObs  = !obsProxy_->isEmpty();
         bool gotLoc  = !locProxy_->isEmpty();
@@ -123,7 +123,7 @@ MainLoop::getStopCommand( orca::VelocityControl2dData& cmd )
 void
 MainLoop::initInterfaces()
 {
-    while ( isActive() )
+    while ( !isStopping() )
     {
         try {
             pathFollowerInterface_.initInterface();
@@ -148,7 +148,7 @@ MainLoop::initInterfaces()
 void
 MainLoop::connectToController()
 {
-    while ( isActive() )
+    while ( !isStopping() )
     {
         try 
         {
@@ -170,7 +170,7 @@ MainLoop::connectToController()
         context_.status()->heartbeat( SUBSYSTEM );
         sleep(2);
     }
-    while ( isActive() )
+    while ( !isStopping() )
     {
         try 
         {
@@ -198,7 +198,7 @@ MainLoop::subscribeForOdometry()
 {
     orca::Odometry2dPrx   odomPrx;
     
-    while ( isActive() )
+    while ( !isStopping() )
     {
         try {
             orcaice::connectToInterfaceWithTag( context_, odomPrx, "Odometry2d" );
@@ -217,7 +217,7 @@ MainLoop::subscribeForOdometry()
         context_.status()->heartbeat( SUBSYSTEM );
         sleep(2);
     }    
-    while ( isActive() )
+    while ( !isStopping() )
     {
         try {
             odomPrx->subscribe( odomConsumer_->consumerPrx() );
@@ -244,7 +244,7 @@ MainLoop::subscribeForLocalisation()
 {
     orca::Localise2dPrx   locPrx;
         
-    while ( isActive() )
+    while ( !isStopping() )
     {
         try {
             orcaice::connectToInterfaceWithTag( context_, locPrx, "Localisation" );
@@ -268,7 +268,7 @@ MainLoop::subscribeForLocalisation()
         context_.status()->heartbeat( SUBSYSTEM );
         sleep(2);
     }    
-    while ( isActive() )
+    while ( !isStopping() )
     {
         try {
             locPrx->subscribe( locConsumer_->consumerPrx() );
@@ -295,7 +295,7 @@ MainLoop::subscribeForObservations()
 {
     orca::RangeScanner2dPrx obsPrx;
 
-    while ( isActive() )
+    while ( !isStopping() )
     {
         try {
             orcaice::connectToInterfaceWithTag( context_, obsPrx, "Observations" );
@@ -314,7 +314,7 @@ MainLoop::subscribeForObservations()
         context_.status()->heartbeat( SUBSYSTEM );
         sleep(2);
     }    
-    while ( isActive() )
+    while ( !isStopping() )
     {
         try {
             obsPrx->subscribe(  obsConsumer_->consumerPrx() );
@@ -333,7 +333,7 @@ MainLoop::subscribeForObservations()
         context_.status()->heartbeat( SUBSYSTEM );
         sleep(2);
     }
-    while ( isActive() )
+    while ( !isStopping() )
     {
         try {
             scannerDescr_ = obsPrx->getDescription();
@@ -467,7 +467,7 @@ MainLoop::run()
 
     context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 2.0 );
 
-    while ( isActive() )
+    while ( !isStopping() )
     {
         try 
         {

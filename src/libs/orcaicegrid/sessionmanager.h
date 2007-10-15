@@ -54,7 +54,7 @@ private:
     bool tryCreateSession();
 
     // Tries to sleep for the specified number of seconds, but wakes
-    // up if isActive() fails.
+    // up if !isStopping() fails.
     void checkedSleep( int sec );
 
     SessionCreationCallback &sessionCreationCallback_;

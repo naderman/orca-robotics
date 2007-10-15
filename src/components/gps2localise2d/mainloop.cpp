@@ -76,7 +76,7 @@ MainLoop::initDriver()
 void 
 MainLoop::connectToGps()
 {
-    while ( isActive() )
+    while ( !isStopping() )
     {
         try
         {
@@ -104,7 +104,7 @@ MainLoop::connectToGps()
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
     }
 
-    while ( isActive() )
+    while ( !isStopping() )
     {
         try
         {
@@ -138,7 +138,7 @@ MainLoop::connectToGps()
 void 
 MainLoop::getGpsDescription()
 {
-    while ( isActive() )
+    while ( !isStopping() )
     {
         try
         {
@@ -196,7 +196,7 @@ MainLoop::initInterface()
         
         orca::Odometry2dPrx odoPrx;
         
-        while ( isActive() )
+        while ( !isStopping() )
         {
             try
             {
@@ -236,7 +236,7 @@ MainLoop::initInterface()
     //
     localiseInterface_ = new orcaifaceimpl::Localise2dImpl( vehicleDesc.geometry, "Localise2d", context_ );
     
-    while ( isActive() )
+    while ( !isStopping() )
     {
         try {
             context_.tracer()->debug( "Initialising Localise2d interface...",3 );
@@ -272,7 +272,7 @@ MainLoop::run()
     context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 3.0 );
 
     // Loop forever till we get shut down.
-    while ( isActive() )
+    while ( !isStopping() )
     {
         try
         {                

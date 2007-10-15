@@ -501,8 +501,8 @@ NovatelSpanInsGpsDriver::run()
 
     int retMsgs; 
         // We can't block in this loop -- have to keep it rolling so
-        // that isActive() is always checked.
-        while ( isActive() )
+        // that !isStopping() is always checked.
+        while ( !isStopping() )
         {
             try
             {

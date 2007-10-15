@@ -114,7 +114,7 @@ SessionManager::checkedSleep( int sec )
     for ( int i=0; i < sec; i++ )
     {
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
-        if ( !isActive() )
+        if ( !!isStopping() )
             break;
     }
 }
@@ -123,11 +123,11 @@ void
 SessionManager::run()
 {
     // This outer loop is repeated on session failure.
-    while( isActive() )
+    while( !isStopping() )
     {
         try {
             // Create the session
-            while ( isActive() )
+            while ( !isStopping() )
             {
                 if ( tryCreateSession() )
                     break;
@@ -135,7 +135,7 @@ SessionManager::run()
             }
 
             // Keep it alive
-            while ( isActive() )
+            while ( !isStopping() )
             {
                 checkedSleep( timeoutSec_/2 );
 

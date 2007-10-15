@@ -33,7 +33,7 @@ Odometry2dSim::run()
     iface = new orcaifaceimpl::Odometry2dImpl( descr, tag_, context_ );
     iface->initInterface( this );
 
-    while ( isActive() )
+    while ( !isStopping() )
     {
         try 
         {

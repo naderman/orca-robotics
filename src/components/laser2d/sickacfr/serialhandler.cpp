@@ -120,7 +120,7 @@ SerialHandler::run()
 {
     context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 2 );
 
-    while ( isActive() )
+    while ( !isStopping() )
     {
         try {
 

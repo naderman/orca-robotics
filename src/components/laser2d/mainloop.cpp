@@ -45,7 +45,7 @@ MainLoop::~MainLoop()
 void
 MainLoop::activate()
 {
-    while ( isActive() )
+    while ( !isStopping() )
     {
         try {
             context_.activate();
@@ -75,7 +75,7 @@ MainLoop::activate()
 void
 MainLoop::establishInterface()
 {
-    while ( isActive() )
+    while ( !isStopping() )
     {
         try {
             laserInterface_.initInterface();
@@ -102,7 +102,7 @@ MainLoop::initialiseDriver()
 
     if ( driver_ ) delete driver_;
 
-    while ( isActive() )
+    while ( !isStopping() )
     {
         try {
             context_.tracer()->info( "MainLoop: Initialising driver..." );
@@ -182,10 +182,10 @@ MainLoop::run()
     initialiseDriver();
 
     //
-    // IMPORTANT: Have to keep this loop rolling, because the 'isActive()' call checks for requests to shut down.
+    // IMPORTANT: Have to keep this loop rolling, because the '!isStopping()' call checks for requests to shut down.
     //            So we have to avoid getting stuck anywhere within this main loop.
     //
-    while ( isActive() )
+    while ( !isStopping() )
     {
         try 
         {

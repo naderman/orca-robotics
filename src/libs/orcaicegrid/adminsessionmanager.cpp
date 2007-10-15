@@ -111,7 +111,7 @@ AdminSessionManager::checkedSleep( int sec )
     for ( int i=0; i < sec; i++ )
     {
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
-        if ( !isActive() )
+        if ( !!isStopping() )
             break;
     }
 }
@@ -126,7 +126,7 @@ AdminSessionManager::run()
     {
         try {
             // Create the session
-            while ( isActive() )
+            while ( !isStopping() )
             {
                 {
                     IceUtil::Mutex::Lock lock(mutex_);

@@ -39,7 +39,7 @@ namespace {
 
     void Worker::run()
     {
-        while ( isActive() )
+        while ( !isStopping() )
         {
             JobPtr job = q_.getJob();
             if ( job == 0 )

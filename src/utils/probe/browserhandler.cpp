@@ -93,7 +93,7 @@ BrowserHandler::run()
     orcaiceutil::EventPtr event;
     int timeoutMs = 500;
     
-    while ( isActive() )
+    while ( !isStopping() )
     {
         if ( !events_->timedGet( event, timeoutMs ) ) {
             continue;

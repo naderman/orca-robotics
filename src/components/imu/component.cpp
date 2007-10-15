@@ -128,7 +128,7 @@ Component::start()
             throw orcaiceutil::Exception( ERROR_INFO, errString );
             return;
         }
-        if(!isActive()){
+        if(!!isStopping()){
             return;
         }
     }while(!hwDriver_->hasFix());
@@ -150,7 +150,7 @@ Component::start()
         new orcaifaceimpl::Odometry3dImpl( odom3dDescr, "Odometry3d", context() );
 
 
-    while ( true ) // isActive() 
+    while ( true ) // !isStopping() 
     { 
         try {
             odometry3dImpl_->initInterface();

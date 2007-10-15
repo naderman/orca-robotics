@@ -41,7 +41,7 @@ LaserScanner2dSim::run()
     iface = new orcaifaceimpl::LaserScanner2dImpl( descr, tag_, context_ );
     iface->initInterface( this );
 
-    while ( isActive() )
+    while ( !isStopping() )
     {
         try 
         {

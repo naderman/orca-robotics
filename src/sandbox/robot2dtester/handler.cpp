@@ -45,7 +45,7 @@ Handler::printEvents()
 void
 Handler::connectToOdometry( orca::Odometry2dPrx& odometry2dPrx )
 {
-    while ( isActive() ) {
+    while ( !isStopping() ) {
         try
         {
             orcaice::connectToInterfaceWithTag<orca::Odometry2dPrx>( context_, odometry2dPrx, "Odometry2d" );
@@ -72,7 +72,7 @@ Handler::connectToOdometry( orca::Odometry2dPrx& odometry2dPrx )
 void
 Handler::connectToPower( orca::PowerPrx &powerPrx )
 {
-    while ( isActive() ) {
+    while ( !isStopping() ) {
         try
         {
             // create a proxy for the remote server based on its name in the config file
@@ -120,7 +120,7 @@ Handler::run()
 //         int windUpCounter = 0;
 
         // run until we are killed
-        while ( isActive() ) {
+        while ( !isStopping() ) {
 
             // generate random events
             try {

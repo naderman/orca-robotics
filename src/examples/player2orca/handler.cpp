@@ -63,7 +63,7 @@ Handler::run()
     //
     // Main loop, ctrl-C will exit from this
     //   
-    while( isActive() )
+    while( !isStopping() )
     {
         // get data from the player server, blocking read
         playerServer.Read();
@@ -80,7 +80,7 @@ Handler::run()
         odometry2dData.motion.w   = positionProxy.GetYawSpeed();
 
         // check that we were not told to terminate while we were sleeping
-        if ( isActive() ) {
+        if ( !isStopping() ) {
             context_.tracer()->debug( "Setting data", 5 );
             odometry2dI->localSetAndSend( odometry2dData );
         } 

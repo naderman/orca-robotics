@@ -78,7 +78,7 @@ NetworkHandler::walk()
 
 
 // user_->newLocalTrace( "subscribing..." );
-    while ( isActive() ) {
+    while ( !isStopping() ) {
         try
         {
 //             tracerPrx_->setVerbosity( errorVerb, warnVerb, infoVerb, debugVerb );
@@ -105,7 +105,7 @@ NetworkHandler::walk()
     //
     // Main loop
     //
-    while ( isActive() )
+    while ( !isStopping() )
     {
         if ( !events_->timedGet( event, timeoutMs ) ) {
             continue;
@@ -141,7 +141,7 @@ NetworkHandler::setRemoteVerbosity( int error, int warn, int info, int debug )
     config.info = info;
     config.debug = debug;
 
-    while ( isActive() ) {
+    while ( !isStopping() ) {
         try
         {
             tracerPrx_->setVerbosity( config );

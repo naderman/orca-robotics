@@ -179,7 +179,7 @@ Component::start()
             throw orcaiceutil::Exception( ERROR_INFO, errString );
             return;
         }
-        if(!isActive()){
+        if(!!isStopping()){
             return;
         }
     }while(!hwDriver_->hasFix());

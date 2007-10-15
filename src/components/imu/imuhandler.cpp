@@ -52,10 +52,10 @@ ImuHandler::run()
 
         
         //
-        // IMPORTANT: Have to keep this loop rolling, because the 'isActive()' call checks for requests to shut down.
+        // IMPORTANT: Have to keep this loop rolling, because the '!isStopping()' call checks for requests to shut down.
         //            So we have to avoid getting stuck in a loop anywhere within this main loop.
         //
-        while ( isActive() )
+        while ( !isStopping() )
         {
             //
             // This 'if' block is what slows the loop down, by either reading from the IMU

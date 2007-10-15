@@ -84,14 +84,14 @@ InputHandler::walk()
         throw orcaiceutil::Exception( ERROR_INFO, errorStr );
     }    
 
-    // don't forget to enable the driver, but check isActive() to see if we should quit
-    while ( driver_->enable() && isActive() ) {
+    // don't forget to enable the driver, but check !isStopping() to see if we should quit
+    while ( driver_->enable() && !isStopping() ) {
         context_.tracer()->warning("Failed to enable input driver. Will try again in 2 seconds.");
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
     }
 
     // check again to make sure we are not being terminated
-    if ( !isActive() ) {
+    if ( !!isStopping() ) {
         return;
     }
     context_.tracer()->debug("InputHandler: Input driver enabled",2);
@@ -99,7 +99,7 @@ InputHandler::walk()
     //
     // Main loop
     //
-    while ( isActive() )
+    while ( !isStopping() )
     {
         context_.tracer()->debug( "InputHandler: calling driver_->read()", 10 );
         driver_->read();

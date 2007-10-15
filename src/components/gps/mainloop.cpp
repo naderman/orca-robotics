@@ -115,11 +115,11 @@ MainLoop::run()
         GpsData gpsData;
         GpsMapGridData gpsMapGridData;
 
-        while ( isActive() )
+        while ( !isStopping() )
         {
             context_.tracer()->debug("Trying to read from driver now.", 3);
             
-            while ( isActive() )
+            while ( !isStopping() )
             {
                 try 
                 {

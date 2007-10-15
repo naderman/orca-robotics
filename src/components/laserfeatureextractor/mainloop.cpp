@@ -87,7 +87,7 @@ MainLoop::initDriver()
 void 
 MainLoop::connectToLaser()
 {
-    while ( isActive() )
+    while ( !isStopping() )
     {
         try
         {
@@ -115,7 +115,7 @@ MainLoop::connectToLaser()
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
     }
 
-    while ( isActive() )
+    while ( !isStopping() )
     {
         try
         {
@@ -149,7 +149,7 @@ MainLoop::connectToLaser()
 void 
 MainLoop::getLaserDescription()
 {
-    while ( isActive() )
+    while ( !isStopping() )
     {
         try
         {
@@ -186,7 +186,7 @@ MainLoop::getLaserDescription()
 void
 MainLoop::initInterface()
 {
-    while ( isActive() )
+    while ( !isStopping() )
     {
         try {
             context_.tracer()->debug( "Initialising PolarFeature2d interface...",3 );
@@ -221,7 +221,7 @@ MainLoop::run()
     context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 2.0 );
 
     // Loop forever till we get shut down.
-    while ( isActive() )
+    while ( !isStopping() )
     {
         try
         {                

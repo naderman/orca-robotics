@@ -41,7 +41,7 @@ Handler::run()
         //
         // Main loop
         //   
-        while(isActive())
+        while(!isStopping())
         {
             //cout<<"default locator (refresh) :"<<context_.communicator()->getDefaultLocator()->ice_toString()<<endl;
         

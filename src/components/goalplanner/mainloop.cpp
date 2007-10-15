@@ -119,7 +119,7 @@ MainLoop::initNetwork()
     // REQUIRED INTERFACES: Localise2d, Pathfollower, Pathplanner
     //
 
-    while( isActive() )
+    while( !isStopping() )
     {
         context_.status()->initialising( SUBSYSTEM, "Connecting to Localise2d" );
         try
@@ -142,7 +142,7 @@ MainLoop::initNetwork()
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
     }
     
-    while( isActive() )
+    while( !isStopping() )
     {
         context_.status()->initialising( SUBSYSTEM, "Connecting to PathFollower2d" );
         try
@@ -165,7 +165,7 @@ MainLoop::initNetwork()
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
     }
     
-    while( isActive() )
+    while( !isStopping() )
     {
         context_.status()->initialising( SUBSYSTEM, "Connecting to PathPlanner2d" );
         try
@@ -278,7 +278,7 @@ MainLoop::computeAndSendPath( const orcanavutil::Pose &pose,
     PathPlanner2dData computedPath;
     // (need a loop here so ctrlC works)
     int secWaited=0;
-    while ( isActive() )
+    while ( !isStopping() )
     {
         int ret = computedPathProxy_.getNext( computedPath, 1000 );
         if ( ret == 0 )
@@ -340,7 +340,7 @@ MainLoop::tryGetLocaliseData( Localise2dData &data )
     const unsigned int maxNumTries = 20;
     unsigned int numTries=0;
     
-    while( isActive() )
+    while( !isStopping() )
     {
         try 
         {
@@ -383,7 +383,7 @@ MainLoop::run()
     context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 3.0 );
 
     // main loop
-    while ( isActive() )
+    while ( !isStopping() )
     {
         try
         {
@@ -401,7 +401,7 @@ MainLoop::run()
             else
             {
                 context_.tracer()->info("Waiting for a goal path");
-                while( isActive() )
+                while( !isStopping() )
                 {
                     int ret = incomingPathProxy_.getNext( incomingPath, 1000 );
                     if (ret==0)
