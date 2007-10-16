@@ -253,7 +253,7 @@ VfhDriver::copyLaserScan( const orca::RangeScanner2dDataPtr obs, double playerLa
     const float EPS = 1e-9;
 
     // number of times to replicate each scan when copying
-    int replicateNum;
+    int replicateNum=1;
     if ( obs->ranges.size() == 181 )
     {
         if ( angleIncrement - 1.0*M_PI/180.0 > EPS ) 
@@ -276,9 +276,26 @@ VfhDriver::copyLaserScan( const orca::RangeScanner2dDataPtr obs, double playerLa
     }
     else
     {
-        stringstream ss;
-        ss << "VfhDriver: Scan size of " << obs->ranges.size() << " is not implemented";
-        throw orcaiceutil::Exception( ERROR_INFO, ss.str() );
+        if ( angleIncrement - 0.5*M_PI/180.0 > EPS )
+        {
+            stringstream ss;
+            ss << "VfhDriver: obs size,increment= " << obs->ranges.size() << ", " << angleIncrement*180.0/M_PI << endl;
+            ss << "Expected " << 0.5*M_PI/180.0 << ", found " << angleIncrement;
+            context_.tracer()->debug( ss.str(), 5 );
+            ss.str("");
+            ss << "VfhDriver: Can't handle weird angle increment: obs size,increment= " << obs->ranges.size() << ", " << angleIncrement*180.0/M_PI << "deg";
+            throw orcaiceutil::Exception( ERROR_INFO, ss.str() );
+        }
+        //  map the values in the range array to degrees so that they can be copied into the
+        //  player structure at the end of this function
+        // i.e ranges[i] and ranges [i+1] is now set to the range for angle i
+        double currentAngle = 0.0;
+        for ( int i=0; i < (int) obs->ranges.size(); i++ )
+        {
+            obs->ranges[(int) floor(currentAngle)] = obs->ranges[i] ;
+            currentAngle = currentAngle + angleIncrement;
+        }
+        replicateNum = 1;
     }
     if ( obs->startAngle - -90.0*M_PI/180.0 > EPS )
     {
