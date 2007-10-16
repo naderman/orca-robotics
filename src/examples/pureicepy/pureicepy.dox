@@ -13,12 +13,12 @@
 @ingroup orca_apps
 @ingroup orca_python
 @ingroup orca_linux
-@defgroup orca_component_pureicepython PureIcePython
+@defgroup orca_component_pureicepy PureIcePy
 @brief An Orca components written in Python (plus python installation notes).
 
 The examples inlude a single remote getData() call (puricepython.py), subscribing (pureicepythonsubscribe.py), plotting in 2D (pureicepythonplotranges.py) and 3D (pureicepythonplot3dranges.py).
 
-@section orca_doc_pureicepython_installpython Python Installation
+@section orca_doc_pureicepy_installpython Python Installation
 Note 1: These install notes have not been tested or checked so please be patient if trying this out.
 Note 2: If python moves into mainstream Orca, this section should be moved to the main orca installation notes
 
@@ -27,7 +27,7 @@ Python can be used as a rapid prototyping tool and debug tool. It has many built
 # apt-get install python python-scipy python-matplotlib python-gtk2
 @endverbatim
 
-@section orca_doc_pureicepython_installicepythonfromsource Install the Python Mappings for Ice From Source 
+@section orca_doc_pureicepy_installicepythonfromsource Install the Python Mappings for Ice From Source 
 Follow the instructions for installing Ice from source (@ref orca_doc_installdebian_icefromsource) but replace Ice-[VERSION] with IcePy-[VERSION]. 
 
 Make sure that the installed Ice python scripts are in your path. You may want to add a snippet to your @c ~/.bashrc file similar to the one below. Replace [VERSION] with the version of IcePy you've just installed. Change the directory if you've modified the default install directory.
@@ -36,8 +36,8 @@ export ICEPY_HOME=/opt/IcePy-[VERSION]
 export PYTHONPATH=$ICEPY_HOME/python:$PYTHONPATH
 @endverbatim
 
-@section orca_doc_pureicepython_generate_orca_python_interfaces Generate and Install the Orca Python Interfaces
-Currently there is only the ability to generate python interfaces but there is no equivalent to libOrcaIce yet. Work is currently underway to wrap libOrcaIce using the boost.python wrapper. For now, if you want to use python, you must interface directly with the Ice API. Examples of Orca and python working together can be found in <ORCA_SRC>/src/examples/pureicepython and a tutorial can be found below @ref orca_doc_pureicepython_connecting_to_an_orca_interface
+@section orca_doc_pureicepy_generate_orca_python_interfaces Generate and Install the Orca Python Interfaces
+Currently there is only the ability to generate python interfaces but there is no equivalent to libOrcaIce yet. Work is currently underway to wrap libOrcaIce using the boost.python wrapper. For now, if you want to use python, you must interface directly with the Ice API. Examples of Orca and python working together can be found in <ORCA_SRC>/src/examples/pureicepython and a tutorial can be found below @ref orca_doc_pureicepy_connecting_to_an_orca_interface
 
 To generate the python interfaces you need to have installed python and you must turn on the BUILD_PYTHON parameter in cmake. The easiest way to do this is type "ccmake ." in the top level directory of the Orca source. Scroll down the list until the cursor is on the line for BUILD_PYTHON. Press "Enter" to turn it on. Configure and generate the make files. Then make and install orca:
 @verbatim
@@ -65,7 +65,7 @@ export PYTHONPATH=$ORCA2_HOME/python/orca:$PYTHONPATH
 Example code intended for component developers.
 
 
-@section orca_doc_pureicepython_connecting_to_an_orca_interface Connecting to an Orca interface using the Python Ice API 
+@section orca_doc_pureicepy_connecting_to_an_orca_interface Connecting to an Orca interface using the Python Ice API 
 
 To test the pure ice python component, follow the directions of the @ref orca_doc_quickstart. After Laser2d is up and running, start the pureicepython example which will connect to the server, get a single laser scan, and exit. The following line must be executed from the build directory of pureicepython.
 
@@ -79,7 +79,7 @@ You can use the same command for the other examples by replacing "puricepython" 
 
 Note that the plotting examples are very inefficient. matplotlib (the plotting tool used in these examples) provides a more complicated way of just redrawing the bits that have changed. An example will be committed in the near future.
 
-@section orca_doc_pureicepython_errors Errors
+@section orca_doc_pureicepy_errors Errors
 If you get errors like
 @verbatim 
 /opt/IcePy-3.2/python/Ice.py:34: RuntimeWarning: Python C API version mismatch for module IcePy: 

@@ -16,7 +16,7 @@ IF ( BUILD_EXAMPLES )
     ENDIF ( JAVA_FOUND AND BUILD_JAVA )
     # much easier to check for python here, because the example is build as a separate project
     IF ( PYTHON_FOUND AND BUILD_PYTHON )
-        ADD_SUBDIRECTORY ( pureicepython )
+        ADD_SUBDIRECTORY ( pureicepy )
     ENDIF ( PYTHON_FOUND AND BUILD_PYTHON )
     ADD_SUBDIRECTORY ( reactivewalker )
 
