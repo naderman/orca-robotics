@@ -7,7 +7,7 @@
 //component.
 
 //Edit the proxy string to suit your location
-$ProxyStr = "laserscanner2d@tapti/laser2d";
+$ProxyStr = "laserscanner2d@coca/laser2d";
 ?>
 
 <HTML><HEAD>
@@ -18,7 +18,7 @@ $ProxyStr = "laserscanner2d@tapti/laser2d";
 <BODY>
 
 <H1>Laser2d test PHP script</H1>
-A script that connects to a laser2d component at Tapti<br>
+A script that connects to a laser2d component at Coca<br>
 It should refresh the <B>scan data</B> every 5 secs<br>&nbsp<br>
 
 <?php
