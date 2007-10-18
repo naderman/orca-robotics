@@ -1,0 +1,17 @@
+DefaultComponentTag=PathplanTester
+
+# Provided Interfaces
+Provides.PathPlanner2dConsumer.Type=PathPlanner2dConsumer
+Provides.PathPlanner2dConsumer.DefaultName=pathplanner2dconsumer
+
+# Required Interfaces
+Requires.PathPlanner2d.Type=PathPlanner2d
+Requires.PathPlanner2d.DefaultProxy=pathplanner2d@local/pathplanner
+
+# Config Parameters
+Config.StartWp.x.Default=0.0
+Config.StartWp.y.Default=0.0
+Config.GoalWp0.x.Default=1.0
+Config.GoalWp0.y.Default=1.0
+Config.GoalWp1.x.Default=2.0
+Config.GoalWp1.y.Default=2.0

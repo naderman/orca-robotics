@@ -1,0 +1,9 @@
+DefaultComponentTag=LaserTester
+
+# Provided Interfaces
+
+# Required Interfaces
+Requires.Laser.Type=LaserScanner2d
+Requires.Laser.DefaultProxy=laserscanner2d@local/laser2d
+
+# Config Parameters
