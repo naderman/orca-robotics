@@ -56,7 +56,7 @@ Logger.Requires.Odometry2d0.Proxy=odometry2d@local/robot2d
 Logger.Config.Driver=auto
 Logger.Config.FactoryLibNames=libOrcaLogFactory.so
 Logger.Config.FilenameTimestamp=0
-Logger.Config.Odometry2d0.Format=acfr
+Logger.Config.Odometry2d0.Format=ascii
 @endverbatim
 
 A couple of things to note about this configuration:
