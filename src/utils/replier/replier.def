@@ -1,0 +1,9 @@
+DefaultComponentTag=Replier
+
+# Provided Interfaces
+Provides.Replier.Type=Replier
+Provides.Replier.DefaultName=replier
+
+# Required Interfaces
+
+# Config Parameters

@@ -41,7 +41,6 @@ SET( SLICE_SOURCE_FILES
     pathfollower2d.ice
     pathplanner2d.ice
     pinger.ice
-#    pingreply.ice
     pixmap.ice
     pointcloud.ice
     polarfeature2d.ice

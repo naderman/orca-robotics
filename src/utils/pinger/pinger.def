@@ -1,0 +1,16 @@
+DefaultComponentTag=Pinger
+
+# Provided Interfaces
+
+# Required Interfaces
+Requires.Replier.Type=Replier
+Requires.Replier.DefaultProxy=replier@local/replier
+
+# Config Parameters
+Config.Driver.Comment=Valid values: { "sequence", "class", "iceping" }
+Config.Driver.Default=sequence
+Config.OperationType.Default=2
+Config.Count.Default=101
+Config.Interval.Default=0.250
+Config.Preload.Default=1
+Config.LogFileName.Default=orcapingresults.dat
