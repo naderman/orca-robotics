@@ -16,11 +16,33 @@ MESSAGE( STATUS "Setting project interface lib name to ${PROJECT_INTERFACE_LIB}"
 ADD_DEFINITIONS( "-DPROJECT_VERSION=\\\"${PROJECT_VERSION}\\\"" )
 ADD_DEFINITIONS( "-DCMAKE_INSTALL_PREFIX=\\\"${CMAKE_INSTALL_PREFIX}\\\"" )
 
+
+###########################################################
+#
+# Find Hydro installation, we need it early for cmake scripts
+#
+###########################################################
+IF ( DEFINED HYDRO_HOME )
+    # Hydro home is specified with a command line option or is already in cache
+    MESSAGE( STATUS "Hydro location was specified or using cached value: ${HYDRO_HOME}")
+ELSE ( DEFINED HYDRO_HOME )
+    # Find Hydro installation
+    INCLUDE ( ${ORCA_CMAKE_DIR}/FindHydro.cmake )
+# Hydro!
+#     ASSERT( HYDRO_FOUND 
+#             "Looking for Hydro - not found. Please install Hydro, ** delete CMakeCache.txt **, then re-run CMake." 
+#             "Looking for Hydro - found in ${HYDRO_HOME}" 
+#             1 )
+ENDIF ( DEFINED HYDRO_HOME )
+
+
 ###########################################################
 #
 # Determine OS
 #
 ###########################################################
+# Hydro!
+# INCLUDE( ${HYDRO_HOME}/cmake/os.cmake )
 INCLUDE( ${ORCA_CMAKE_DIR}/os.cmake )
 
 ###########################################################
@@ -93,9 +115,14 @@ ENDIF ( OS_WIN )
 
 ###########################################################
 #
-# Include local macro definitions
+# Include external and local macro definitions
 #
 ###########################################################
+# Hydro!
+# INCLUDE( ${HYDRO_HOME}/cmake/GlobalAdd.cmake )
+# INCLUDE( ${HYDRO_HOME}/cmake/messages.cmake )
+INCLUDE( ${ORCA_CMAKE_DIR}/GlobalAdd.cmake )
+INCLUDE( ${ORCA_CMAKE_DIR}/messages.cmake )
 INCLUDE( ${ORCA_CMAKE_DIR}/orca_macros.cmake )
 
 ###########################################################

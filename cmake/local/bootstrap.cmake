@@ -3,6 +3,7 @@
 # If it is, all necessary files are in this project.
 # Otherwise, we need to find Orca installation directory.
 #
+INCLUDE ( cmake/local/Assert.cmake )
 
 IF ( ${PROJECT_NAME} MATCHES "orca" )
     MESSAGE ( STATUS "Setting project type to orca mothership" )
@@ -23,11 +24,16 @@ ELSE ( ${PROJECT_NAME} MATCHES "orca" )
         # Will search several standard places starting with an env. variable ORCA2_HOME
         INCLUDE ( cmake/local/FindOrca2.cmake )
 
-        IF ( ORCA2_FOUND )    
-                MESSAGE( STATUS "Looking for Orca2 - found in ${ORCA2_HOME}" )
-        ELSE ( ORCA2_FOUND )    
-                MESSAGE( FATAL_ERROR "Looking for Orca2 - not found. Please install Orca2, ** delete CMakeCache.txt **, then re-run CMake." )    
-        ENDIF ( ORCA2_FOUND )
+        ASSERT( ORCA2_FOUND 
+            "Looking for Orca2 - not found. Please install Orca, ** delete CMakeCache.txt **, then re-run CMake." 
+            "Looking for Orca2 - found in ${ORCA2_HOME}" 
+            1 )
+
+#         IF ( ORCA2_FOUND )    
+#                 MESSAGE( STATUS "Looking for Orca2 - found in ${ORCA2_HOME}" )
+#         ELSE ( ORCA2_FOUND )    
+#                 MESSAGE( FATAL_ERROR "Looking for Orca2 - not found. Please install Orca2, ** delete CMakeCache.txt **, then re-run CMake." )    
+#         ENDIF ( ORCA2_FOUND )
 
     ENDIF ( DEFINED ORCA2_HOME )
 
