@@ -23,8 +23,14 @@ It should refresh the <B>scan data</B> every 5 secs<br>&nbsp<br>
 
 <?php
 
+
 global $ICE;
-Ice_loadProfile();
+Ice_loadProfile("LaserMon");
+
+//The following two lines can be used for diagnostic if required
+//Ice_dumpProfile();
+//phpinfo();
+
 
 try
 {
