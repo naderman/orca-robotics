@@ -30,9 +30,9 @@ Practically, this means that you can download build your own components from scr
 
 You have 2 options: using the latest distribution or working from SVN.
 
-- Download <strong><a href="http://sourceforge.net/project/showfiles.php?group_id=111647" style="text-decoration:none">the latest distribution of Orca</a></strong>
+- Option 1. Download <strong><a href="http://sourceforge.net/project/showfiles.php?group_id=111647" style="text-decoration:none">the latest distribution of Orca</a></strong>
 
-- Checkout from SVN
+- Option 2. Checkout source from SVN
     - Anonymous Checkout:
 @verbatim
 svn checkout https://orca-robotics.svn.sf.net/svnroot/orca-robotics/orca/trunk orca
