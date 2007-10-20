@@ -36,7 +36,7 @@ Download the installer from
 
 @section orca_doc_installwinxp_orca Orca
 
-Build and install Orca2 distribution.
+Build and install Orca distribution.
     - If you want to checkout Orca from SVN, see the <a href="http://wiki2.cas.edu.au/orca">Wiki</a> for instructions.
     - Otherwise, download the latest release of <a href="http://sourceforge.net/project/showfiles.php?group_id=111647">orca</a> and un-tar the archive with one of many available utilities (e.g. PicoZip).
     - Tested with Microsoft Visual Studio 2005 v.8.0

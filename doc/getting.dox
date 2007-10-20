@@ -21,7 +21,7 @@ External libraries are shown in white. Dependencies are indicated by dashed arro
 
 @image html orca_depend.png
 
-@b Orca2 contains objects and interface definitions. The distribution also contains
+@b Orca distribution contains objects and interface definitions. The distribution also contains
 a repository of working, documented components contributed by the developer community. It also contains some examples. The utilities contained in the distribution are strictly optional.
 Practically, this means that you can download build your own components from scratch and communicate with the existing components. Individual components may have their own dependencies as illustrated in the diagram but they never depend on each other.
 
@@ -67,7 +67,7 @@ The instructions below are quite general, follow them if your platform/distribut
             - The standard version of doxygen cannot build documentation from Slice files. We have a patched version which does that. It is used to generate the documentation displayed on the Orca website. The patch may appear in future versions of Doxygen or made available here.
         - <a href="http://www.trolltech.com/" target="_blank">Qt</a> is a cross-platform framework for building GUI's. Some components are GUI-only and some have optional GUI drivers.
             - Minimum version required 4.1.0 (latest tested: 4.3.1)
-    -# Build and install Orca2 distribution.
+    -# Build and install Orca distribution.
         - Download the latest release of <a href="http://sourceforge.net/project/showfiles.php?group_id=111647">orca</a> and un-tar the archive.
         - Configure using CMake
         - Compile and install

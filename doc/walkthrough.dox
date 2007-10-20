@@ -10,23 +10,23 @@
 
 /*!
 
-@page orca_doc_walkthrough Writing Your First Orca2 Component
+@page orca_doc_walkthrough Writing Your First Orca Component
 @author Waleed Kadous
 @section intro Intro
 
 This document will step you through the process of making your first
-Orca2 component.  In particular, we will build an Orca2 component
+Orca component.  In particular, we will build an Orca component
 called "drunkrobot" that simulates a robot that takes a random
-walk. We'll use the existing Orca2 component "position2dmon" to watch
+walk. We'll use the existing Orca component "position2dmon" to watch
 the robot as it moves around.
 
 @section started Getting started
 
 Before reading this document, you should familiarise yourself with: 
     - @ref orca_doc_getting : download, compile, install.
-    - @ref orca_doc_quickstart : The Orca2 quick start guide.
+    - @ref orca_doc_quickstart : The Orca quick start guide.
     - Ch. 2 Ice Overview of the <a href="http://www.zeroc.com/download.html#doc" target="_blank">Ice manual</a>
-    - @ref orca_doc_devcomp : the basic Orca2 component design pattern
+    - @ref orca_doc_devcomp : the basic Orca component design pattern
 
 Once you've read that, things here should make a bit more sense. 
 
@@ -67,7 +67,7 @@ drunken robot at all.
 
 Note also that our robot must know about the orca::Position2dData and
 orca::Position2dGeometry objects. These are also described in the Ice
-file. Orca2 uses BROS (Basic Robotic Standard) for representations of
+file. Orca uses BROS (Basic Robotic Standard) for representations of
 geometry and the like. These are also defined in the above file; for
 instance, orca::Position2dData definition looks like this:
 
@@ -225,7 +225,7 @@ And we now have a robot that is generating random positions every second or so.
 
 @section position2dmon Connecting to another component. 
 
-Let's now try to connect another component. Orca2 distribution includes
+Let's now try to connect another component. Orca distribution includes
 @c position2dmon, a command line tool for displaying output from Position2d interfaces,
 just like the one our drunk robot provides. To get these two things to talk to one
 another shouldn't be hard at all, in fact all it requires is to define
@@ -261,7 +261,7 @@ Woohoo! We now have two components talking to one another.
 @section furtherstuff Further things
 
 There is still a little that you should learn about when using
-Orca2. These include
+Orca. These include
 
 - Putting components into IceBoxes instead of standalone
 applications. 
