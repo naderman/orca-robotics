@@ -11,9 +11,9 @@ DOXYGENCMD=/usr/local/bin/doxyorca
 #CHANGESIGN="'^[UP]'"
 #  SVN
 UPDATECMD="svn update --non-interactive"
-CHANGESIGN="'^[U]'"
+CHANGESIGN='^[U]'
 HTDOCS=/home/groups/o/or/orca-robotics/htdocs
-PROJDIR=$HOME/svn/docversion/orca2
+PROJDIR=$HOME/svn/docversion/orca
 TARBALL=orca-head-doc.tar.gz
 
 did_update=0
@@ -53,7 +53,9 @@ mv temp_index.html html/index.html
 # Copy it to sourceforge
 #
 tar -zcvf $TARBALL html
-scp  $TARBALL shell.sf.net:$HTDOCS/head_version/orca2/doc/
-ssh shell.sf.net "cd $HTDOCS/head_version/orca2/doc/; tar -zxvf $TARBALL"
+echo "scp $TARBALL shell.sf.net:$HTDOCS/head_doc/."
+scp  $TARBALL shell.sf.net:$HTDOCS/head_doc/.
+echo "ssh shell.sf.net 'cd $HTDOCS/head_doc/; tar -zxvf $TARBALL'"
+ssh shell.sf.net "cd $HTDOCS/head_doc/; tar -zxvf $TARBALL"
 
 echo "Finished $0 at: `date`"
