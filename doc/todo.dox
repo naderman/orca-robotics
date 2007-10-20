@@ -52,6 +52,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @par Project wide
 
+- Moved from CVS to SVN version control system.
+
 - Added a new keyword for writing .def files. A single line which starts with 'ExternalConfig.*' 
   replaces 2 lines: 'Config.*' + 'Config.*.External=1'.
   The old syntax is deprecated but will be supported for a while. All .def files in Orca have been
