@@ -54,7 +54,7 @@ Our main goal is the continuing progress in robotic research and the robotic ind
 - Browse through examples:  <strong><a href="group__orca__examples.html" style="text-decoration:none">Orca Component Examples</a></strong>
 - Become an expert: @ref orca_doc_devguide
 
-Note: The documentation on this web page matches the latest release. A web page is also <a href="http://orca-robotics.sourceforge.net/cvs/">generated every 30 min</a> from the latest CVS version.
+Note: The documentation on this web page matches the latest release. A web page is also <a href="http://orca-robotics.sourceforge.net/head/">generated every 30 min</a> from the latest SVN version.
 
 @section orca_doc_index_news News
 

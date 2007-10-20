@@ -14,7 +14,7 @@
 
 @note Reviewed for release 2.4.0.
 
-Whether you have big development plans or just want to see what is envolved in using Orca, you have to start by writing a single component. You can add a new component to the Orca source tree which downloaded or checked out from CVS but it is inconvenient (mostly because it is large, seems complicated, and can be slow to recompile). You can follow these instructions to set up your own Orca-based project and create the first component.
+Whether you have big development plans or just want to see what is envolved in using Orca, you have to start by writing a single component. You can add a new component to the Orca source tree which downloaded or checked out from SVN but it is inconvenient (mostly because it is large, seems complicated, and can be slow to recompile). You can follow these instructions to set up your own Orca-based project and create the first component.
 
 @par Step 1. Create a separate project for yourself.
 

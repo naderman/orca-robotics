@@ -34,7 +34,6 @@ maintainable, and understandable code.
 - @ref orca_doc_units
 - @ref orca_doc_style
 - @ref orca_doc_buildsystem
-- @ref orca_doc_cvs
 - <a class="el" href="http://www.kegel.com/academy/opensource.html#patches" target="_blank">How to Submit a Patch</a>
 - @ref orca_doc_daemons
 - @ref orca_doc_dart2

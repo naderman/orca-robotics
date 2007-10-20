@@ -17,14 +17,14 @@
 Orca uses <a href="http://www.cmake.org">CMake</a> to handle its build system.
 CMake is a cross-platform tool, designed as a replacement for autotools.
 
-@section basics Basics
+@section orca_doc_buildsystem_basics Basics
 
 Builds are controlled by a set of files called 'CMakeLists.txt'.  There
 is approximately one in each directory, and builds descend recursively through the source tree.
 
 If you just want to see how to initiate a build, see @ref orca_doc_getting "instructions on getting Orca" or read the 'INSTALL' file at the top level of Orca2 distribution.
 
-@section orca2 Orca2 Details
+@section orca_doc_buildsystem_orca2 Orca2 Details
 
 The build system for orca2 consists of a set of 'CMakeLists.txt' files, many of which INCLUDE a set of helper '.cmake' files.  The '.cmake' files live in the top-level 'config' directory.
 
@@ -41,26 +41,5 @@ Individual components maintain their own 'CMakeLists.txt' files.  Components wil
 Components should build themselves with GLOBAL_ADD_EXECUTABLE rather than ADD_EXECUTABLE.  This allows their builds to be mediated in a central location.
 
 Note for libraries: In order for files to be able to @c \#include header files the same when they're in situ (within the distribution) as when they're installed, all @c \#include header files live in subdirectories called 'orca'.  Source files then @c \#include the directory above.
-
-@section docco Documentation
-
-All Orca documentation is produced with Doxygen. The structure
-is based largely on the <a href="http://playerstage.sf.net">Player/Stage v2.0</a> model.
-
-To view a frequently updated documentation based on the source in CVS see
-http://orca-robotics.sf.net/cvs. The site is refreshed every 30-60 minutes.
-
-To build a local copy just do this. Note that you must have the right version of doxygen (see below).
-@verbatim
-$ cd <orca2>/doc
-$ doxygen orca.doxyfile
-$ konqueror <orca2>/doc/html/index.html
-@endverbatim
-
-Outstanding issues:
-
-- The Doxygen parser is modified by us to handle Slice files. For this to work
-we have to build doxygen from source. A patch has been submitted, so 
-eventually it will make into distributions.
 
 */

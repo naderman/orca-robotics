@@ -22,7 +22,7 @@ then setup a parallel workspace for your own project.
 To help you start quickly we provide a template  project which uses CMake, mirrors
 the setup of the orca2 repository and is already set up to find Ice, orca2
 installation, etc. You can of course set up a project in any way you like, however you
-might find it useful. Export CVS module 'empty-project'. Use the export CVS command instead checkout, otherwise you'll have to manually remove all CVS directories. With @c orcacvs pointing at the SourceForge cvs server, the command looks like this:
+might find it useful. Export CVS module 'empty-project'. Use the export SVN command instead checkout, otherwise you'll have to manually remove all CVS directories. With @c orcacvs pointing at the SourceForge cvs server, the command looks like this:
 @verbatim
 $ orcacvs export -r HEAD empty-project
 @endverbatim
@@ -70,7 +70,7 @@ module tractor
     tractor::SomeDataPtr someData = new tractor::SomeData;
 @endverbatim
 
-- If you're going to use CVS, it's a good idea to commit your project to your own CVS server at this point. All the current files are "raw" files which need to be added to CVS. If you commit later and used an in-source build, raw and generated files will be mixed.
+- If you're going to use revision control system (e.g. SVN, CVS), it's a good idea to commit your project to your own repository at this point. All the current files are "raw" files which need to be added to CVS. If you commit later and used an in-source build, raw and generated files will be mixed.
 
 - Run cmake and compile.
 

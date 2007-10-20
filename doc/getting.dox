@@ -12,7 +12,7 @@
 
 @page orca_doc_getting Download and Install Orca
 
-@note Reviewed for release 2.4.0.
+@note Reviewed for release 2.7.0.
 
 @section depend Overview of dependencies
 
@@ -26,7 +26,24 @@ a repository of working, documented components contributed by the developer comm
 Practically, this means that you can download build your own components from scratch and communicate with the existing components. Individual components may have their own dependencies as illustrated in the diagram but they never depend on each other.
 
 
-@section download Download and install instructions
+@section orca_doc_getting_download Download instructions
+
+You have 2 options: using the latest distribution or working from SVN.
+
+- Download <strong><a href="http://sourceforge.net/project/showfiles.php?group_id=111647" style="text-decoration:none">the latest distribution of Orca</a></strong>
+
+- Checkout from SVN
+    - Anonymous Checkout:
+@verbatim
+svn checkout https://orca-robotics.svn.sf.net/svnroot/orca-robotics/orca/trunk orca
+@endverbatim
+    - Registered developers:
+@verbatim
+svn checkout --username [your-sf-username] https://orca-robotics.svn.sf.net/svnroot/orca-robotics/orca/trunk orca
+@endverbatim
+    - See <strong><a href="http://sourceforge.net/svn/?group_id=111647" style="text-decoration:none">more detailed SF SVN instructions.</a></strong>
+
+@section orca_doc_getting_install Installation instructions
 
 Detailed instructions are available for these platforms/distributions:
     - @ref orca_doc_installdebian (also tested with Ubuntu/Kubuntu 6.06, 6.10 and 7.04)
@@ -55,19 +72,5 @@ The instructions below are quite general, follow them if your platform/distribut
         - Configure using CMake
         - Compile and install
         - Make sure that the binaries and executables are in the path. Finished!
-
-@section cvs Getting Orca from CVS
-
-You can get detailed instructions of how to get Orca from CVS <a href="http://sourceforge.net/cvs/?group_id=111647">here</a>. Short instructions:
-
-    - Registered developers should use ssh-based login, others should use anonymous login.
-    - Anonymous Login
-@verbatim
-cvs -d:pserver:anonymous@orca-robotics.cvs.sourceforge.net:/cvsroot/orca-robotics login
-@endverbatim
-    - Anonymous Checkout:
-@verbatim
-cvs -z3 -d:pserver:anonymous@orca-robotics.cvs.sourceforge.net:/cvsroot/orca-robotics co orca2
-@endverbatim
 
 */

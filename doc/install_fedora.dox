@@ -139,7 +139,7 @@ in the shell you will be compiling Orca 2 in.
 
 @ref orca_doc_getting has general guidelines for downloading Orca
 2. Follow the instructions there to download the source as a tar file
-or through CVS. In either case, the process once it is downloaded is essentially the same:
+or through SVN. In either case, the process once it is downloaded is essentially the same:
 
 @verbatim
 % cd orca2
