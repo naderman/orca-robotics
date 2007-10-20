@@ -6,6 +6,12 @@
 #
 
 DOXYGENCMD=/usr/local/bin/doxyorca
+#  CVS 
+#UPDATECMD="cvs update"
+#CHANGESIGN="'^[UP]'"
+#  SVN
+UPDATECMD="svn update --non-interactive"
+CHANGESIGN="'^[U]'"
 HTDOCS=/home/groups/o/or/orca-robotics/htdocs
 PROJDIR=$HOME/cvs/docversion/orca2
 TARBALL=orca-cvs-doc.tar.gz
@@ -22,7 +28,7 @@ if ! cd $PROJDIR 2>&1; then
     exit 1
 fi
 pwd
-if cvs update 2>&1 | egrep -e '^[UP]' 2>&1; then
+if $UPDATECMD 2>&1 | egrep -e $CHANGESIGN 2>&1; then
     echo "Project has changed."
     did_update=1
 fi
