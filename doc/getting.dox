@@ -28,28 +28,27 @@ Practically, this means that you can download build your own components from scr
 
 @section orca_doc_getting_download Download instructions
 
-You have 2 options: using the latest distribution or working from SVN.
-
 - Option 1. Download <strong><a href="http://sourceforge.net/project/showfiles.php?group_id=111647" style="text-decoration:none">the latest distribution of Orca</a></strong>
 
 - Option 2. Checkout source from SVN
-    - Anonymous Checkout:
+    - Anonymous checkout:
 @verbatim
 svn checkout https://orca-robotics.svn.sf.net/svnroot/orca-robotics/orca/trunk orca
 @endverbatim
-    - Registered developers:
+    - Checkout for registered developers:
 @verbatim
 svn checkout --username [your-sf-username] https://orca-robotics.svn.sf.net/svnroot/orca-robotics/orca/trunk orca
 @endverbatim
-    - See <strong><a href="http://sourceforge.net/svn/?group_id=111647" style="text-decoration:none">more detailed SF SVN instructions.</a></strong>
+    - See links @ref orca_doc_version_control "to get started" with SVN.
+    - See <strong><a href="http://sourceforge.net/svn/?group_id=111647" style="text-decoration:none">more detailed SourceForge SVN instructions.</a></strong>
 
 @section orca_doc_getting_install Installation instructions
 
 Detailed instructions are available for these platforms/distributions:
-    - @ref orca_doc_installdebian (also tested with Ubuntu/Kubuntu 6.06, 6.10 and 7.04)
-    - @ref orca_doc_installfedora
-    - @ref orca_doc_installqnx
-    - @ref orca_doc_installwinxp
+    - @ref orca_doc_installdebian "Debian Linux" (also tested with Ubuntu/Kubuntu)
+    - @ref orca_doc_installfedora "Fedora Linux"
+    - @ref orca_doc_installqnx "QNX Neutrino"
+    - @ref orca_doc_installwinxp "Windows XP"
     - Send feedback on building under other configurations.
 
 The instructions below are quite general, follow them if your platform/distribution combination is not described above:
@@ -59,16 +58,14 @@ The instructions below are quite general, follow them if your platform/distribut
         - Full instructions are available from the <a href="http://www.cmake.org/HTML/Download.html">download page</a>.
     -# Download and install Ice libraries.
         - Minimum version required 3.2.0 (latest tested: 3.2.1)
-        - Full instructions are available from the <a href="http://www.zeroc.com/download.html">download page</a>. Several binaries distributions exists, for others (e.g. Debian Linux) building from source is required.
-    -# Download and install any optional dependencies you'd like. You skip this step and do it later.
+        - Full instructions are available from the <a href="http://www.zeroc.com/download.html">download page</a>. Several binaries distributions exists, for others building from source may be required.
+    -# Download and install any optional dependencies you'd like. Or just skip this step and do it later.
         - <a href="http://playerstage.sourceforge.net/" target="_blank">Player/Stage</a>, is required for some hardware support and for use of the Stage simulator (you probably want this).
             - For version requirements see individual component documentation.
-        - <a href="http://www.stack.nl/~dimitri/doxygen/" target="_blank">Doxygen</a>  for generating local doxygen documentation</a>.
-            - The standard version of doxygen cannot build documentation from Slice files. We have a patched version which does that. It is used to generate the documentation displayed on the Orca website. The patch may appear in future versions of Doxygen or made available here.
         - <a href="http://www.trolltech.com/" target="_blank">Qt</a> is a cross-platform framework for building GUI's. Some components are GUI-only and some have optional GUI drivers.
             - Minimum version required 4.1.0 (latest tested: 4.3.1)
     -# Build and install Orca distribution.
-        - Download the latest release of <a href="http://sourceforge.net/project/showfiles.php?group_id=111647">orca</a> and un-tar the archive.
+        - Download the @ref orca_doc_getting_download "Orca source" archive and un-tar it.
         - Configure using CMake
         - Compile and install
         - Make sure that the binaries and executables are in the path. Finished!
