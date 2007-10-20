@@ -24,9 +24,9 @@ is approximately one in each directory, and builds descend recursively through t
 
 If you just want to see how to initiate a build, see @ref orca_doc_getting "instructions on getting Orca" or read the 'INSTALL' file at the top level of Orca2 distribution.
 
-@section orca_doc_buildsystem_orca2 Orca2 Details
+@section orca_doc_buildsystem_orca2 Orca Details
 
-The build system for orca2 consists of a set of 'CMakeLists.txt' files, many of which INCLUDE a set of helper '.cmake' files.  The '.cmake' files live in the top-level 'config' directory.
+The build system for orca consists of a set of 'CMakeLists.txt' files, many of which INCLUDE a set of helper '.cmake' files.  The '.cmake' files live in the top-level 'config' directory.
 
 The top-level 'CMakeLists.txt' file:
     - Calls config/global_setup.cmake, which checks for global requirements like Ice.

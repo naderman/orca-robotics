@@ -47,13 +47,13 @@ Minimum version required 3.2.0 (latest tested: 3.2.1).
 @section orca_doc_installdebian_orca Orca
 
 Build and install Orca2 distribution.
-    - Download the latest release of <a href="http://sourceforge.net/project/showfiles.php?group_id=111647">orca2</a> and un-tar the archive.
-    - The default installation directory is  @c /opt/orca-[VERSION], where [VERSION] is the Orca version. You can customized this by setting ORCA2_INSTALL environment variable (e.g. 'export ORCA2_INSTALL=~/orca2').
+    - Download the latest release of <a href="http://sourceforge.net/project/showfiles.php?group_id=111647">orca</a> and un-tar the archive.
+    - The default installation directory is  @c /opt/orca-[VERSION], where [VERSION] is the Orca version. You can customized this by setting ORCA2_INSTALL environment variable (e.g. 'export ORCA2_INSTALL=~/orca').
     - Configure using @c cmake . (note the dot after cmake)
     - Compile, and install. If you've changed your mind about the installation directory, you can change it using @c ccmake tool ('$ ccmake .').
 @verbatim
-$ tar -zxf orca2-x.x.x.tar.gz
-$ cd orca2
+$ tar -zxf orca-x.x.x.tar.gz
+$ cd orca
 $ cmake .
 $ make
 # make install

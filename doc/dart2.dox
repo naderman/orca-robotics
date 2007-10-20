@@ -23,7 +23,7 @@ General things to note:
 
 @section server Dart2 Server
 
-The <a href="http://129.78.210.237:8081/orca2/Dashboard">Dart2 server for Orca2</a> is up and running. Users can sign themselves up by clicking on the ''login or create account'' link on top of the page. One useful feature is to send out emails to responsible developers when a build contained errors. After you login there are two two fields to fill in: Project and Repository id. Type in ''orca2'' for the Project and your sourceforge username as Repository id. After pressing the button Add repository id the mapping will show up in the table on the left. From now on, if you check something in that doesn't compile you'll get blamed by email, so don't screw up!
+The <a href="http://129.78.210.237:8081/orca2/Dashboard">Dart2 server for Orca</a> is up and running. Users can sign themselves up by clicking on the ''login or create account'' link on top of the page. One useful feature is to send out emails to responsible developers when a build contained errors. After you login there are two two fields to fill in: Project and Repository id. Type in ''orca'' for the Project and your sourceforge username as Repository id. After pressing the button Add repository id the mapping will show up in the table on the left. From now on, if you check something in that doesn't compile you'll get blamed by email, so don't screw up!
 
 @section client Dart2 Client
 

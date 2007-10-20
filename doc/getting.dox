@@ -68,7 +68,7 @@ The instructions below are quite general, follow them if your platform/distribut
         - <a href="http://www.trolltech.com/" target="_blank">Qt</a> is a cross-platform framework for building GUI's. Some components are GUI-only and some have optional GUI drivers.
             - Minimum version required 4.1.0 (latest tested: 4.3.1)
     -# Build and install Orca2 distribution.
-        - Download the latest release of <a href="http://sourceforge.net/project/showfiles.php?group_id=111647">orca2</a> and un-tar the archive.
+        - Download the latest release of <a href="http://sourceforge.net/project/showfiles.php?group_id=111647">orca</a> and un-tar the archive.
         - Configure using CMake
         - Compile and install
         - Make sure that the binaries and executables are in the path. Finished!

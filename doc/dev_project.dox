@@ -20,7 +20,7 @@ component. In this case you should download and install the main Orca distributi
 then setup a parallel workspace for your own project.
 
 To help you start quickly we provide a template  project which uses CMake, mirrors
-the setup of the orca2 repository and is already set up to find Ice, orca2
+the setup of the Orca repository and is already set up to find Ice and Orca
 installation, etc. You can of course set up a project in any way you like, however you
 might find it useful. Export CVS module 'empty-project'. Use the export SVN command instead checkout, otherwise you'll have to manually remove all CVS directories. With @c orcacvs pointing at the SourceForge cvs server, the command looks like this:
 @verbatim

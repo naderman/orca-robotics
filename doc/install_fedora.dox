@@ -142,7 +142,7 @@ in the shell you will be compiling Orca 2 in.
 or through SVN. In either case, the process once it is downloaded is essentially the same:
 
 @verbatim
-% cd orca2
+% cd orca
 % cmake .
 @endverbatim
 (At this point you may wish to confirm by looking at output that Ice and Qt are correctly
@@ -153,7 +153,7 @@ detected).
 % make install
 @endverbatim
 
-@section orca_doc_installfedora_paths2 Adding Orca 2 to your path
+@section orca_doc_installfedora_paths2 Adding Orca to your path
 
 Again, minor modifications need to be made to your ~/.bash_profile file. The new section
 should look like this:
