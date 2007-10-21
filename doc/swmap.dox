@@ -12,36 +12,37 @@
 
 @page orca_doc_swmap Software Map
 
-@see <a href="modules.html">one page version</a> of this software map.
+@see <strong><a href="modules.html" style="text-decoration:none">One page version</a></strong> of this software map.
 
 @par Interface definitions
 
-<strong><a href="group__orca__interfaces.html">Interfaces</a></strong>
+<strong><a href="group__orca__interfaces.html" style="text-decoration:none">Interfaces</a></strong>
 
 @par By type
 
-<strong><a href="group__orca__components.html">Components</a></strong><br>
-<strong><a href="group__orca__libs.html">Libraries</a></strong><br>
-<strong><a href="group__orca__utils.html">Utilities</a></strong><br>
-<strong><a href="group__orca__examples.html">Examples</a></strong><br>
-<strong><a href="group__orca__tests.html">Tests</a></strong><br>
+<strong><a href="group__orca__components.html" style="text-decoration:none">Components</a></strong><br>
+<strong><a href="group__orca__libs.html" style="text-decoration:none">Libraries</a></strong><br>
+<strong><a href="group__orca__utils.html" style="text-decoration:none">Utilities</a></strong><br>
+<strong><a href="group__orca__examples.html" style="text-decoration:none">Examples</a></strong><br>
+<strong><a href="group__orca__tests.html" style="text-decoration:none">Tests</a></strong><br>
 
 @par By form-factor
 
-<strong><a href="group__orca__apps.html">Stand-alone components</a></strong><br>
-<strong><a href="group__orca__services.html">IceBox services</a></strong><br>
+<strong><a href="group__orca__apps.html" style="text-decoration:none">Stand-alone components</a></strong><br>
+<strong><a href="group__orca__services.html" style="text-decoration:none">IceBox services</a></strong><br>
 
 @par By Operating System
 
-<strong><a href="group__orca__linux.html">Linux</a></strong><br>
-<strong><a href="group__orca__qnx.html">QNX</a></strong><br>
-<strong><a href="group__orca__win.html">Windows</a></strong><br>
+<strong><a href="group__orca__linux.html" style="text-decoration:none">Linux</a></strong><br>
+<strong><a href="group__orca__qnx.html" style="text-decoration:none">QNX</a></strong><br>
+<strong><a href="group__orca__win.html" style="text-decoration:none">Windows</a></strong><br>
 
 @par By programming language
 
-<strong><a href="group__orca__cpp.html">C++</a></strong><br>
-<strong><a href="group__orca__java.html">Java</a></strong><br>
-<strong><a href="group__orca__python.html">Python</a></strong><br>
-<strong><a href="group__orca__matlab.html">Matlab</a></strong><br>
+<strong><a href="group__orca__cpp.html" style="text-decoration:none">C++</a></strong><br>
+<strong><a href="group__orca__java.html" style="text-decoration:none">Java</a></strong><br>
+<strong><a href="group__orca__python.html" style="text-decoration:none">Python</a></strong><br>
+<strong><a href="group__orca__php.html" style="text-decoration:none">PHP</a></strong><br>
+<strong><a href="group__orca__matlab.html" style="text-decoration:none">Matlab</a></strong><br>
 
 */

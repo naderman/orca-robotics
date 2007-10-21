@@ -1,0 +1,27 @@
+/*
+ * Orca Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2007 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This copy of Orca is licensed to you under the terms described in the
+ * ORCA_LICENSE file included in this distribution.
+ *
+ */
+
+/*!
+@ingroup orca_examples
+@ingroup orca_php
+@ingroup orca_linux
+@defgroup orca_component_pureicephp PureIcePhp
+@brief An example of Orca component written in PHP.
+
+@par Provides
+
+- none
+
+@par Requires
+
+- @ref orca_interface_laserscanner2d
+
+*/
+

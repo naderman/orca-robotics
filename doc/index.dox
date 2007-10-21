@@ -25,6 +25,7 @@
 @defgroup orca_java Java
 @defgroup orca_matlab Matlab
 @defgroup orca_python Python
+@defgroup orca_php PHP
 
 @defgroup orca_linux Linux
 @defgroup orca_qnx QNX
