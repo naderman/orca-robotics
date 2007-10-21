@@ -11,7 +11,8 @@ FIND_PATH( HYDRO_HOME_INCLUDE_HYDROUTIL buffer.h
   $ENV{HYDRO_HOME}/include/hydroutil
   # Test standard installation points
   /opt/hydro/include/hydroutil
-  /opt/hydro-0.1.0/include/hydroutil
+  /opt/hydro-2.7.0/include/hydroutil
+  /opt/hydro-2.6.0/include/hydroutil
   C:/hydro/include/hydroutil
   )
 # MESSAGE( STATUS "DEBUG: buffer.h is apparently found in : ${HYDRO_HOME_INCLUDE_HYDROUTIL}" )
