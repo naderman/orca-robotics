@@ -12,6 +12,9 @@
 
 @page orca_doc_old_news Older News
 
+- 18-Sep-06 Orca2.0.1 is released (@ref orca_doc_history_201 "Release Notes").
+- 10-Aug-06 Orca2.0.0 is released.  Uses the newly released Ice-3.1.0. Support for Windows. @ref orca_doc_java components. License issues have been resolved.
+- 20-Jul-06 Wiki is on-line (follow link from sidebar). Anyone can add comments to the FAQ or whatever. Useful stuff may later get moved to the Doxygen documentation.
 - 11-Jun-06 Distribution created for Orca2.0.0rc5: the fifth release candidate for Orca v2.0.0.
 - 30-Mar-06 Distribution created for Orca2.0.0rc4: the fourth release candidate for Orca v2.0.0.
 - 27-Feb-06 Distribution created for Orca2.0.0rc3: the third release candidate for Orca v2.0.0.
