@@ -59,7 +59,7 @@ The basic tools we use are cross-platform, so in principle Orca can be deployed 
 @par Programming language support
 
 - all components which are currently in the repository are written in C++
-- there's an example in Java.
+- there are examples in Java, Python, and PHP.
 
 Slice interfaces can be compiled to C++, Java, Python, PHP, C\#, Visual Basic, and Ruby. All of these can be used to implement or use Orca interfaces.
 
