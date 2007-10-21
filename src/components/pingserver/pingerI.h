@@ -17,7 +17,7 @@
 #include <orca/pinger.h>
 #include <orcaice/context.h>
 
-namespace orcaping {
+namespace hydroping {
     class Pinger;
 }
 
@@ -40,7 +40,7 @@ public:
 private:
 
     // Does the work
-    orcaping::Pinger *pinger_;
+    hydroping::Pinger *pinger_;
 
     std::string ifaceTag_;
     orcaice::Context context_;

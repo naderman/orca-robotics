@@ -9,7 +9,7 @@
  */
 #include "pingerI.h"
 #include <iostream>
-#include <orcaping/orcaping.h>
+#include <hydroping/hydroping.h>
 #include <orcaice/orcaice.h>
 
 using namespace std;
@@ -18,7 +18,7 @@ namespace pingserver {
 
 PingerI::PingerI( const std::string      &ifaceTag,
                   const orcaice::Context &context )
-    : pinger_(new orcaping::Pinger),
+    : pinger_(new hydroping::Pinger),
       ifaceTag_(ifaceTag),
       context_(context)
 {
@@ -26,12 +26,12 @@ PingerI::PingerI( const std::string      &ifaceTag,
     try {
         pinger_->ping( "localhost" );
     }
-    catch ( orcaping::PingException &e )
+    catch ( hydroping::PingException &e )
     {
         stringstream ss;
         ss << "Experimental ping to localhost failed: " << e.what();
         context_.tracer()->error( ss.str() );
-        throw orcaping::PingException( ss.str() );
+        throw hydroping::PingException( ss.str() );
     }
 }
 
@@ -60,7 +60,7 @@ PingerI::ping( const std::string &host, const Ice::Current& )
         context_.tracer()->debug( ss.str() );
         return latencyMs;
     }
-    catch ( orcaping::PingException &e )
+    catch ( hydroping::PingException &e )
     {
         stringstream ss; ss << "Error while pinging: " << e.what();
         context_.tracer()->debug( ss.str() );

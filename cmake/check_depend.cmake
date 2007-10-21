@@ -122,6 +122,3 @@ SET( HAVE_ZLIB ${ZLIB_FOUND} )
 
 # Look for liblapack library -- linear algebra package
 # INCLUDE (${ORCA_CMAKE_DIR}/FindLapack.cmake)
-
-# Look for liboping -- library for 'ping'ing from C
-INCLUDE ( ${ORCA_CMAKE_DIR}/FindOPing.cmake )
