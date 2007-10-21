@@ -21,28 +21,28 @@ namespace orcabros1
 {
 
 // C++ to Slice Conversion Functions
-void convert( const bros1::Size2d& cobj, orca::Size2d& iceobj )
+void convert( const hydrobros1::Size2d& cobj, orca::Size2d& iceobj )
 {
     iceobj.l = cobj.l;
     iceobj.w = cobj.w;
 }
-void convert( const bros1::CartesianPoint2d& cobj, orca::CartesianPoint2d& iceobj )
+void convert( const hydrobros1::CartesianPoint2d& cobj, orca::CartesianPoint2d& iceobj )
 {
     iceobj.x = cobj.x;
     iceobj.y = cobj.y;
 }
-void convert( const bros1::CartesianPoint3d& cobj, orca::CartesianPoint& iceobj )
+void convert( const hydrobros1::CartesianPoint3d& cobj, orca::CartesianPoint& iceobj )
 {
     iceobj.x = cobj.x;
     iceobj.y = cobj.y;
     iceobj.z = cobj.z;
 }
-void convert( const bros1::CartesianPoint3d& cobj, orca::CartesianPoint2d& iceobj )
+void convert( const hydrobros1::CartesianPoint3d& cobj, orca::CartesianPoint2d& iceobj )
 {
     iceobj.x = cobj.x;
     iceobj.y = cobj.y;
 }
-void convert( const bros1::Frame3d& cobj, orca::Frame3d& iceobj )
+void convert( const hydrobros1::Frame3d& cobj, orca::Frame3d& iceobj )
 {
     iceobj.p.x = cobj.p.x;
     iceobj.p.y = cobj.p.y;
@@ -54,28 +54,28 @@ void convert( const bros1::Frame3d& cobj, orca::Frame3d& iceobj )
 
 
 //  Slice to C++ Conversion Functions
-void convert( const orca::Size2d& iceobj, bros1::Size2d& cobj )
+void convert( const orca::Size2d& iceobj, hydrobros1::Size2d& cobj )
 {
     cobj.l = iceobj.l;
     cobj.w = iceobj.w;
 }
-void convert( const orca::CartesianPoint2d& iceobj, bros1::CartesianPoint2d& cobj )
+void convert( const orca::CartesianPoint2d& iceobj, hydrobros1::CartesianPoint2d& cobj )
 {
     cobj.x = iceobj.x;
     cobj.y = iceobj.y;
 }
-void convert( const orca::CartesianPoint& iceobj, bros1::CartesianPoint3d& cobj )
+void convert( const orca::CartesianPoint& iceobj, hydrobros1::CartesianPoint3d& cobj )
 {
     cobj.x = iceobj.x;
     cobj.y = iceobj.y;
     cobj.z = iceobj.z;
 }
-void convert( const orca::CartesianPoint& iceobj, bros1::CartesianPoint2d& cobj )
+void convert( const orca::CartesianPoint& iceobj, hydrobros1::CartesianPoint2d& cobj )
 {
     cobj.x = iceobj.x;
     cobj.y = iceobj.y;
 }
-void convert( const orca::Frame3d& iceobj, bros1::Frame3d& cobj )
+void convert( const orca::Frame3d& iceobj, hydrobros1::Frame3d& cobj )
 {
     cobj.p.x = iceobj.p.x;
     cobj.p.y = iceobj.p.y;

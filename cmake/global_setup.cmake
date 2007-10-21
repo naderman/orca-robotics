@@ -28,11 +28,10 @@ IF ( DEFINED HYDRO_HOME )
 ELSE ( DEFINED HYDRO_HOME )
     # Find Hydro installation
     INCLUDE ( ${ORCA_CMAKE_DIR}/FindHydro.cmake )
-# Hydro!
-#     ASSERT( HYDRO_FOUND 
-#             "Looking for Hydro - not found. Please install Hydro, ** delete CMakeCache.txt **, then re-run CMake." 
-#             "Looking for Hydro - found in ${HYDRO_HOME}" 
-#             1 )
+    ASSERT( HYDRO_FOUND 
+            "Looking for Hydro - not found. Please install Hydro, ** delete CMakeCache.txt **, then re-run CMake." 
+            "Looking for Hydro - found in ${HYDRO_HOME}" 
+            1 )
 ENDIF ( DEFINED HYDRO_HOME )
 
 
@@ -42,8 +41,8 @@ ENDIF ( DEFINED HYDRO_HOME )
 #
 ###########################################################
 # Hydro!
-# INCLUDE( ${HYDRO_HOME}/cmake/os.cmake )
-INCLUDE( ${ORCA_CMAKE_DIR}/os.cmake )
+INCLUDE( ${HYDRO_HOME}/cmake/os.cmake )
+# INCLUDE( ${ORCA_CMAKE_DIR}/os.cmake )
 
 ###########################################################
 #
@@ -119,10 +118,10 @@ ENDIF ( OS_WIN )
 #
 ###########################################################
 # Hydro!
-# INCLUDE( ${HYDRO_HOME}/cmake/GlobalAdd.cmake )
-# INCLUDE( ${HYDRO_HOME}/cmake/messages.cmake )
-INCLUDE( ${ORCA_CMAKE_DIR}/GlobalAdd.cmake )
-INCLUDE( ${ORCA_CMAKE_DIR}/messages.cmake )
+INCLUDE( ${HYDRO_HOME}/cmake/GlobalAdd.cmake )
+INCLUDE( ${HYDRO_HOME}/cmake/messages.cmake )
+# INCLUDE( ${ORCA_CMAKE_DIR}/GlobalAdd.cmake )
+# INCLUDE( ${ORCA_CMAKE_DIR}/messages.cmake )
 INCLUDE( ${ORCA_CMAKE_DIR}/orca_macros.cmake )
 
 ###########################################################

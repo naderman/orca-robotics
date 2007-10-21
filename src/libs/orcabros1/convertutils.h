@@ -14,7 +14,7 @@
 // BROS-I data structures defined in Slice
 #include <orca/bros1.h>
 // BROS-I data structures defined directly in C++
-#include <bros1/types.h>
+#include <hydrobros1/types.h>
 
 namespace orcabros1
 {
@@ -24,15 +24,15 @@ namespace orcabros1
 //@{
 
 //! Converts from C++ structure to Slice-defined structure.
-void convert( const bros1::Size2d& cobj, orca::Size2d& iceobj );
+void convert( const hydrobros1::Size2d& cobj, orca::Size2d& iceobj );
 //! Converts from C++ structure to Slice-defined structure.
-void convert( const bros1::CartesianPoint2d& cobj, orca::CartesianPoint2d& iceobj );
+void convert( const hydrobros1::CartesianPoint2d& cobj, orca::CartesianPoint2d& iceobj );
 //! Converts from C++ structure to Slice-defined structure.
-void convert( const bros1::CartesianPoint3d& cobj, orca::CartesianPoint& iceobj );
+void convert( const hydrobros1::CartesianPoint3d& cobj, orca::CartesianPoint& iceobj );
 //! Converts from C++ structure to Slice-defined structure and reduce dimensions.
-void convert( const bros1::CartesianPoint3d& cobj, orca::CartesianPoint2d& iceobj );
+void convert( const hydrobros1::CartesianPoint3d& cobj, orca::CartesianPoint2d& iceobj );
 //! Converts from C++ structure to Slice-defined structure.
-void convert( const bros1::Frame3d& cobj, orca::Frame3d& iceobj );
+void convert( const hydrobros1::Frame3d& cobj, orca::Frame3d& iceobj );
 
 //@}
 
@@ -41,15 +41,15 @@ void convert( const bros1::Frame3d& cobj, orca::Frame3d& iceobj );
  */
 //@{
 //! Converts from Slice-defined structure to C++ structure.
-void convert( const orca::Size2d& iceobj, bros1::Size2d& cobj );
+void convert( const orca::Size2d& iceobj, hydrobros1::Size2d& cobj );
 //! Converts from Slice-defined structure to C++ structure.
-void convert( const orca::CartesianPoint2d& iceobj, bros1::CartesianPoint2d& cobj );
+void convert( const orca::CartesianPoint2d& iceobj, hydrobros1::CartesianPoint2d& cobj );
 //! Converts from Slice-defined structure to C++ structure.
-void convert( const orca::CartesianPoint& iceobj, bros1::CartesianPoint3d& cobj );
+void convert( const orca::CartesianPoint& iceobj, hydrobros1::CartesianPoint3d& cobj );
 //! Converts from Slice-defined structure to C++ structure and reduce dimensions.
-void convert( const orca::CartesianPoint& iceobj, bros1::CartesianPoint2d& cobj );
+void convert( const orca::CartesianPoint& iceobj, hydrobros1::CartesianPoint2d& cobj );
 //! Converts from Slice-defined structure to C++ structure.
-void convert( const orca::Frame3d& iceobj, bros1::Frame3d& cobj );
+void convert( const orca::Frame3d& iceobj, hydrobros1::Frame3d& cobj );
 //@}
 
 } // namespace
