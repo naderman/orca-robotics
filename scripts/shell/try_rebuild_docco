@@ -56,6 +56,7 @@ mv temp_index.html html/index.html
 #
 # Copy it to sourceforge
 #
+rm -rf $MODULENAME
 mv html $MODULENAME
 tar -zcvf $TARBALL $MODULENAME
 echo "scp $TARBALL shell.sf.net:$HEADDIR/."
