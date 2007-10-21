@@ -13,6 +13,7 @@
 
 #include <orcaice/orcaice.h>
 #include <orcawall/orcawall.h>
+#include <hydrodll/dynamicload.h>
 #include "component.h"
 
 using namespace std;
@@ -22,10 +23,10 @@ namespace wall
 
 static const char *DEFAULT_FACTORY_NAME="libOrcaWallFactory.so";
 
-orcawall::Factory* loadFactory( orcadynamicload::DynamicallyLoadedLibrary &lib )
+orcawall::Factory* loadFactory( hydrodll::DynamicallyLoadedLibrary &lib )
 {
     orcawall::Factory *f = 
-        orcadynamicload::dynamicallyLoadClass<orcawall::Factory,FactoryMakerFunc>
+        hydrodll::dynamicallyLoadClass<orcawall::Factory,FactoryMakerFunc>
                                         (lib, "createFactory");
     return f;
 }
@@ -63,7 +64,7 @@ Component::loadPluginLibraries( const std::string & factoryLibNames )
         context().tracer()->info( ss.str() );
         
         try {
-            orcadynamicload::DynamicallyLoadedLibrary *lib = new orcadynamicload::DynamicallyLoadedLibrary(libNames[i]);
+            hydrodll::DynamicallyLoadedLibrary *lib = new hydrodll::DynamicallyLoadedLibrary(libNames[i]);
             orcawall::Factory *f = loadFactory( *lib );
             libraries_.push_back(lib);
             factories_.push_back(f);
@@ -73,7 +74,7 @@ Component::loadPluginLibraries( const std::string & factoryLibNames )
                 supportedInterfaces.push_back( ifaces[j] );
             }                        
         }
-        catch (orcadynamicload::DynamicLoadException &e)
+        catch (hydrodll::DynamicLoadException &e)
         {
             cout << "ERROR(loggercomponent.cpp): " << e.what() << endl;
             throw;

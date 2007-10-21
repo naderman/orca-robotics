@@ -10,7 +10,7 @@ IF ( BUILD_WALL )
     FILE( GLOB SRCS *.cpp )
 
     GLOBAL_ADD_EXECUTABLE( wall ${SRCS} )
-    TARGET_LINK_LIBRARIES( wall OrcaWall OrcaDynamicLoad )
+    TARGET_LINK_LIBRARIES( wall OrcaWall HydroDll )
 
     GENERATE_CONFIG_FILE( wall.def )
 

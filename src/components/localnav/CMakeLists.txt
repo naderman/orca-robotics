@@ -19,7 +19,7 @@ IF ( BUILD_LOCALNAV )
     ADD_SUBDIRECTORY( localnavutil )
 
     FIND_COMPONENT_SOURCES( COMP_SRCS )
-    SET( COMP_DEPS OrcaLocalNav OrcaLocalNavUtil OrcaDynamicLoad OrcaLocalNavTestSim OrcaNavUtil )
+    SET( COMP_DEPS OrcaLocalNav OrcaLocalNavUtil HydroDll OrcaLocalNavTestSim OrcaNavUtil )
 
     # build stand-alone component  
     GLOBAL_ADD_EXECUTABLE( localnav ${COMP_SRCS} main )

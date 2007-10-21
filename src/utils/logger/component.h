@@ -13,7 +13,7 @@
 
 #include <string>
 #include <orcaice/component.h>
-#include <orcadynamicload/dynamicload.h>
+#include <hydrodll/dll.h>
 
 namespace orcalog
 {
@@ -37,7 +37,7 @@ public:
 
 private:
     std::vector<orcalog::LogFactory*>                       logFactories_;
-    std::vector<orcadynamicload::DynamicallyLoadedLibrary*> libraries_;
+    std::vector<hydrodll::DynamicallyLoadedLibrary*> libraries_;
 
     orcalog::LogMaster *master_;
 

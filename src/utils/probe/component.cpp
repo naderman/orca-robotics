@@ -13,6 +13,7 @@
 
 #include <orcaice/orcaice.h>
 #include <orcaprobe/orcaprobe.h>
+#include <hydrodll/dynamicload.h>
 #include "component.h"
 
 #include "browserhandler.h"
@@ -29,10 +30,10 @@ namespace probe
 
 static const char *DEFAULT_FACTORY_NAME="libOrcaProbeFactory.so";
 
-orcaprobe::Factory* loadFactory( orcadynamicload::DynamicallyLoadedLibrary &lib )
+orcaprobe::Factory* loadFactory( hydrodll::DynamicallyLoadedLibrary &lib )
 {
     orcaprobe::Factory *f = 
-        orcadynamicload::dynamicallyLoadClass<orcaprobe::Factory,FactoryMakerFunc>
+        hydrodll::dynamicallyLoadClass<orcaprobe::Factory,FactoryMakerFunc>
                                         (lib, "createFactory");
     return f;
 }
@@ -70,7 +71,7 @@ Component::loadPluginLibraries( const std::string & factoryLibNames )
         context().tracer()->info( ss.str() );
         
         try {
-            orcadynamicload::DynamicallyLoadedLibrary *lib = new orcadynamicload::DynamicallyLoadedLibrary(libNames[i]);
+            hydrodll::DynamicallyLoadedLibrary *lib = new hydrodll::DynamicallyLoadedLibrary(libNames[i]);
             orcaprobe::Factory *f = loadFactory( *lib );
             libraries_.push_back(lib);
             factories_.push_back(f);
@@ -80,7 +81,7 @@ Component::loadPluginLibraries( const std::string & factoryLibNames )
                 supportedInterfaces.push_back( ifaces[j] );
             }                        
         }
-        catch (orcadynamicload::DynamicLoadException &e)
+        catch (hydrodll::DynamicLoadException &e)
         {
             cout << "ERROR(loggercomponent.cpp): " << e.what() << endl;
             throw;

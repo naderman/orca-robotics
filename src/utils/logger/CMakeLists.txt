@@ -8,7 +8,7 @@ IF( BUILD_LOGGER )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
 
     FIND_COMPONENT_SOURCES( COMP_SRCS )
-    SET( COMP_DEPS OrcaLog OrcaDynamicLoad )
+    SET( COMP_DEPS OrcaLog HydroDll )
     
     # build stand-alone component  
     GLOBAL_ADD_EXECUTABLE( logger ${COMP_SRCS} main )

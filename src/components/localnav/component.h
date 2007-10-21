@@ -12,7 +12,7 @@
 #define ORCA2_LOCALNAV_COMPONENT_H
 
 #include <orcaice/component.h>
-#include <orcadynamicload/dynamicload.h>
+#include <hydrodll/dynamicload.h>
 #include <orcalocalnav/pathfollower2dI.h>
 #include <orcalocalnav/clock.h>
 
@@ -49,7 +49,7 @@ private:
     // A factory to instantiate the driver
     DriverFactory   *driverFactory_;
     // And the library that provides it
-    orcadynamicload::DynamicallyLoadedLibrary *driverLib_;
+    hydrodll::DynamicallyLoadedLibrary *driverLib_;
 
     // The global time
     orcalocalnav::Clock *clock_;

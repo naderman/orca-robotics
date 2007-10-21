@@ -12,6 +12,7 @@
 
 #include <orcaice/orcaice.h>
 #include <orcalog/orcalog.h>
+#include <hydrodll/dynamicload.h>
 #include "component.h"
 
 using namespace std;
@@ -20,10 +21,10 @@ namespace logger {
 
 static const char *DEFAULT_FACTORY_LIB_NAME="libOrcaLogFactory.so";
 
-orcalog::LogFactory* loadLogFactory( orcadynamicload::DynamicallyLoadedLibrary &lib )
+orcalog::LogFactory* loadLogFactory( hydrodll::DynamicallyLoadedLibrary &lib )
 {
     orcalog::LogFactory *f = 
-        orcadynamicload::dynamicallyLoadClass<orcalog::LogFactory,LogFactoryMakerFunc>
+        hydrodll::dynamicallyLoadClass<orcalog::LogFactory,LogFactoryMakerFunc>
                                               (lib, "createLogFactory");
     return f;
 }
@@ -63,12 +64,12 @@ Component::loadPluginLibraries( const std::string & factoryLibNames )
         context().tracer()->info( ss.str() );
         
         try {
-            orcadynamicload::DynamicallyLoadedLibrary *lib = new orcadynamicload::DynamicallyLoadedLibrary(libNames[i]);
+            hydrodll::DynamicallyLoadedLibrary *lib = new hydrodll::DynamicallyLoadedLibrary(libNames[i]);
             orcalog::LogFactory *f = loadLogFactory( *lib );
             libraries_.push_back(lib);
             logFactories_.push_back(f);
         }
-        catch (orcadynamicload::DynamicLoadException &e)
+        catch (hydrodll::DynamicLoadException &e)
         {
             cout << "ERROR(loggercomponent.cpp): " << e.what() << endl;
             throw;

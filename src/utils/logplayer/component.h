@@ -14,7 +14,7 @@
 #include <vector>
 #include <string>
 #include <orcaice/component.h>
-#include <orcadynamicload/dynamicload.h>
+#include <hydrodll/dll.h>
 
 namespace orcalog
 {
@@ -44,7 +44,7 @@ private:
     MainLoop *mainLoop_;
     
     std::vector<orcalog::ReplayFactory*>                    replayFactories_;
-    std::vector<orcadynamicload::DynamicallyLoadedLibrary*> libraries_;
+    std::vector<hydrodll::DynamicallyLoadedLibrary*> libraries_;
 
     orcalog::ReplayMaster *master_;
     std::vector<orcalog::Replayer*> replayers_;

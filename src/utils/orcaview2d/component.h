@@ -13,7 +13,7 @@
 
 #include <string>
 #include <orcaice/component.h>
-#include <orcadynamicload/dynamicload.h>
+#include <hydrodll/dynamicload.h>
 #include <orcaqgui/guielementfactory.h>
 
 using namespace std;
@@ -33,7 +33,7 @@ public:
 private:
 
     std::vector<orcaqgui::GuiElementFactory*>               factories_;
-    std::vector<orcadynamicload::DynamicallyLoadedLibrary*> libraries_;
+    std::vector<hydrodll::DynamicallyLoadedLibrary*> libraries_;
         
     // loads all factory libs and returns a listing of supported interfaces
     std::vector<std::string> loadPluginLibraries( const std::string &factoryLibNames );  

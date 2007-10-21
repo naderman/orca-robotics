@@ -88,12 +88,12 @@ Component::start()
         orcaice::getPropertyWithDefault( prop, prefix+"DriverLib", "libOrcaLocalNavVfh.so" );
     try {
         // Dynamically load the driver from its library
-        driverLib_ = new orcadynamicload::DynamicallyLoadedLibrary(driverLibName);
+        driverLib_ = new hydrodll::DynamicallyLoadedLibrary(driverLibName);
         driverFactory_ = 
-            orcadynamicload::dynamicallyLoadClass<DriverFactory,DriverFactoryMakerFunc>
+            hydrodll::dynamicallyLoadClass<DriverFactory,DriverFactoryMakerFunc>
             ( *driverLib_, "createDriverFactory" );
     }
-    catch (orcadynamicload::DynamicLoadException &e)
+    catch (hydrodll::DynamicLoadException &e)
     {
         context().tracer()->error( e.what() );
         throw;

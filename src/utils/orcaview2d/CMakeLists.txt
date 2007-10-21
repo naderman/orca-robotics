@@ -13,7 +13,7 @@ IF ( BUILD_ORCAVIEW2D_GUI AND QT4_FOUND )
     FILE( GLOB HUMAN_SRCS *.cpp )
     
     GLOBAL_ADD_EXECUTABLE( orcaview2d ${HUMAN_SRCS} )
-    TARGET_LINK_LIBRARIES( orcaview2d OrcaQCompModel OrcaQGui OrcaQGui2d OrcaDynamicLoad )
+    TARGET_LINK_LIBRARIES( orcaview2d OrcaQCompModel OrcaQGui OrcaQGui2d HydroDll )
 
     GENERATE_CONFIG_FILE( orcaview2d.def )
 

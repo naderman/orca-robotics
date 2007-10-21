@@ -16,7 +16,7 @@
 #include <orcaqgui/guielementmodel.h>
 #include <orcaqgui3d/worldview.h>
 #include <orcaqgui3d/platformcsfinder.h>
-#include <orcadynamicload/dynamicload.h>
+#include <hydrodll/dynamicload.h>
 #include "component.h"
 #include <orcaqgui/guielementfactory.h>
         
@@ -25,10 +25,10 @@ using namespace orcaview3d;
 
 static const char *DEFAULT_FACTORY_LIB_NAME="libOrcaQGui3dFactory.so";
 
-orcaqgui::GuiElementFactory* loadFactory( orcadynamicload::DynamicallyLoadedLibrary &lib )
+orcaqgui::GuiElementFactory* loadFactory( hydrodll::DynamicallyLoadedLibrary &lib )
 {
     orcaqgui::GuiElementFactory *f = 
-        orcadynamicload::dynamicallyLoadClass<orcaqgui::GuiElementFactory,FactoryMakerFunc>
+        hydrodll::dynamicallyLoadClass<orcaqgui::GuiElementFactory,FactoryMakerFunc>
                                           (lib, "createFactory");
     return f;
 }
@@ -55,12 +55,12 @@ Component::loadPluginLibraries( const std::string & factoryLibNames )
         context().tracer()->info( ss.str() );
         
         try {
-            orcadynamicload::DynamicallyLoadedLibrary *lib = new orcadynamicload::DynamicallyLoadedLibrary(libNames[i]);
+            hydrodll::DynamicallyLoadedLibrary *lib = new hydrodll::DynamicallyLoadedLibrary(libNames[i]);
             orcaqgui::GuiElementFactory *f = loadFactory( *lib );
             libraries_.push_back(lib);
             factories_.push_back(f);
         }
-        catch (orcadynamicload::DynamicLoadException &e)
+        catch (hydrodll::DynamicLoadException &e)
         {
             cout << "ERROR(orcaview3d:component.cpp): " << e.what() << endl;
             throw;

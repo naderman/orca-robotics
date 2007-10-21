@@ -16,7 +16,7 @@ IF ( BUILD_ORCAVIEW3D_GUI )
         FILE( GLOB HUMAN_SRCS *.cpp )
         
         GLOBAL_ADD_EXECUTABLE( orcaview3d ${HUMAN_SRCS} )
-        TARGET_LINK_LIBRARIES( orcaview3d OrcaQCompModel OrcaQGui OrcaQGui3d OrcaDynamicLoad )
+        TARGET_LINK_LIBRARIES( orcaview3d OrcaQCompModel OrcaQGui OrcaQGui3d HydroDll )
     
         GENERATE_CONFIG_FILE( orcaview3d.def )
     

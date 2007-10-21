@@ -16,7 +16,7 @@
 #include <string>
 #include <orcaice/component.h>
 #include <hydroutil/thread.h>
-#include <orcadynamicload/dynamicload.h>
+#include <hydrodll/dll.h>
 
 namespace orcawall
 {
@@ -38,7 +38,7 @@ public:
 
 private:
     std::vector<orcawall::Factory*> factories_;
-    std::vector<orcadynamicload::DynamicallyLoadedLibrary*> libraries_;
+    std::vector<hydrodll::DynamicallyLoadedLibrary*> libraries_;
 
     // a set of interface simulators, each has its own thread
     // cannot use ThreadPtr's here, because when they will try to re-destruct themselves.

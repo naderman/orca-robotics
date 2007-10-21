@@ -15,7 +15,7 @@
 #include <vector>
 #include <string>
 #include <orcaice/component.h>
-#include <orcadynamicload/dynamicload.h>
+#include <hydrodll/dll.h>
 
 namespace orcaprobe
 {
@@ -37,7 +37,7 @@ public:
 
 private:
     std::vector<orcaprobe::Factory*>                  factories_;
-    std::vector<orcadynamicload::DynamicallyLoadedLibrary*> libraries_;
+    std::vector<hydrodll::DynamicallyLoadedLibrary*> libraries_;
 
     // loads all factory libs and returns a listing of unique supported interfaces
     std::vector<std::string> loadPluginLibraries( const std::string & factoryLibNames );

@@ -19,7 +19,7 @@ IF ( BUILD_LASER2D )
     ADD_SUBDIRECTORY ( laser2dutil )
 
     FIND_COMPONENT_SOURCES( COMP_SRCS )
-    SET( COMP_DEPS OrcaLaser2dUtil OrcaDynamicLoad OrcaIfaceImpl )
+    SET( COMP_DEPS OrcaLaser2dUtil HydroDll OrcaIfaceImpl )
 
     # build stand-alone component  
     GLOBAL_ADD_EXECUTABLE( laser2d ${COMP_SRCS} main )

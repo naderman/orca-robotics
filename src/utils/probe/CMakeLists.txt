@@ -35,7 +35,7 @@ IF ( BUILD_PROBE )
     FILE( GLOB SRCS *.cpp )
     
     GLOBAL_ADD_EXECUTABLE( probe ${SRCS} )
-    TARGET_LINK_LIBRARIES( probe OrcaCompModel IceGrid OrcaProbe OrcaDynamicLoad 
+    TARGET_LINK_LIBRARIES( probe OrcaCompModel IceGrid OrcaProbe HydroDll 
             ${PROBE_TERM_IOSTREAM_LIBS} ${PROBE_GUI_QT_LIBS} )
 
     GENERATE_CONFIG_FILE( probe.def )
