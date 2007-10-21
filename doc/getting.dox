@@ -19,25 +19,27 @@
 The diagram below shows an overview of dependencies between Orca and external libraries. Orca distribution is shown in yellow. Source code modules distributed with Orca are highlighted.
 External libraries are shown in white. Dependencies are indicated by dashed arrows.
 
-@image html orca_depend.png
+@image html orca_hydro_depends.png
 
 @b Orca distribution contains objects and interface definitions. The distribution also contains
 a repository of working, documented components contributed by the developer community. It also contains some examples. The utilities contained in the distribution are strictly optional.
 Practically, this means that you can download build your own components from scratch and communicate with the existing components. Individual components may have their own dependencies as illustrated in the diagram but they never depend on each other.
 
 
-@section orca_doc_getting_download Download instructions
+@section orca_doc_getting_download Download instructions for Hydro and Orca
 
-- Option 1. Download <strong><a href="http://sourceforge.net/project/showfiles.php?group_id=111647" style="text-decoration:none">the latest distribution of Orca</a></strong>
+- Option 1. Download <strong><a href="http://sourceforge.net/project/showfiles.php?group_id=111647" style="text-decoration:none">the latest distribution of Hydro and Orca</a></strong>
 
 - Option 2. Checkout source from SVN
     - Anonymous checkout:
 @verbatim
-svn checkout https://orca-robotics.svn.sf.net/svnroot/orca-robotics/orca/trunk orca
+svn co https://orca-robotics.svn.sf.net/svnroot/orca-robotics/hydro/trunk hydro
+svn co https://orca-robotics.svn.sf.net/svnroot/orca-robotics/orca/trunk orca
 @endverbatim
     - Checkout for registered developers:
 @verbatim
-svn checkout --username [your-sf-username] https://orca-robotics.svn.sf.net/svnroot/orca-robotics/orca/trunk orca
+svn co --username [your-sf-username] https://orca-robotics.svn.sf.net/svnroot/orca-robotics/hydro/trunk hydro
+svn co --username [your-sf-username] https://orca-robotics.svn.sf.net/svnroot/orca-robotics/orca/trunk orca
 @endverbatim
     - See links @ref orca_doc_version_control "to get started" with SVN.
     - See <strong><a href="http://sourceforge.net/svn/?group_id=111647" style="text-decoration:none">more detailed SourceForge SVN instructions.</a></strong>
@@ -64,6 +66,10 @@ The instructions below are quite general, follow them if your platform/distribut
             - For version requirements see individual component documentation.
         - <a href="http://www.trolltech.com/" target="_blank">Qt</a> is a cross-platform framework for building GUI's. Some components are GUI-only and some have optional GUI drivers.
             - Minimum version required 4.1.0 (latest tested: 4.3.1)
+    -# Build and install Hydro distribution.
+        - Download the @ref orca_doc_getting_download "Hydro source" archive and un-tar it.
+        - Configure using CMake
+        - Compile and install
     -# Build and install Orca distribution.
         - Download the @ref orca_doc_getting_download "Orca source" archive and un-tar it.
         - Configure using CMake
