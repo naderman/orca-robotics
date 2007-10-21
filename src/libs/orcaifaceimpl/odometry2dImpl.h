@@ -15,10 +15,10 @@
 #include <IceStorm/IceStorm.h>
 
 // utilities
-#include <orcaiceutil/proxy.h>
+#include <hydroutil/proxy.h>
 #include <orcaice/context.h>
 
-namespace orcaiceutil {
+namespace hydroutil {
     class Thread;
 }
 
@@ -39,12 +39,12 @@ public:
     ~Odometry2dImpl();
 
     // local interface:
-    //! Sets up interface and connects to IceStorm. May throw orcaiceutil::Exceptions.
+    //! Sets up interface and connects to IceStorm. May throw hydroutil::Exceptions.
     void initInterface();
 
     //! Sets up interface and connects to IceStorm. Catches all exceptions and retries
     //! until sucessful. At every iteration, checks if the thread was stopped.
-    void initInterface( orcaiceutil::Thread* thread, int retryInterval=2 );
+    void initInterface( hydroutil::Thread* thread, int retryInterval=2 );
 
     //! A local call which sets the data reported by the interface
     void localSet( const orca::Odometry2dData& data );
@@ -61,7 +61,7 @@ private:
     void internalUnsubscribe(const ::orca::Odometry2dConsumerPrx&);
 
     orca::VehicleDescription     descr_;
-    orcaiceutil::Proxy<orca::Odometry2dData> dataProxy_;
+    hydroutil::Proxy<orca::Odometry2dData> dataProxy_;
 
     // IceStorm proxies
     orca::Odometry2dConsumerPrx    consumerPrx_;

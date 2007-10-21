@@ -14,7 +14,7 @@
 #include <IceUtil/Time.h>
 #include <IceGrid/Registry.h>
 #include <orcaice/context.h>
-#include <orcaiceutil/thread.h>
+#include <hydroutil/thread.h>
 
 namespace orcaicegrid
 {
@@ -26,7 +26,7 @@ namespace orcaicegrid
 //!
 //! @author Alex Brooks
 //!
-class AdminSessionManager : public orcaiceutil::Thread
+class AdminSessionManager : public hydroutil::Thread
 {
 public:
     //! Constructor

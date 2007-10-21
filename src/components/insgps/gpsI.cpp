@@ -22,7 +22,7 @@ GpsI::GpsI( const orca::GpsDescription& descr,
             const orcaice::Context & context )
     : InsGpsI(context),
       // alexm: using the same settings as in FakeInsGpsDriver 
-      gpsDataBuffer_(100,orcaiceutil::BufferTypeQueue),
+      gpsDataBuffer_(100,hydroutil::BufferTypeQueue),
       descr_(descr),
       hwDriver_(hwDriver),
       context_(context)

@@ -1,7 +1,7 @@
 #include <iostream>
 #include <assert.h>
 #include <orcageom2d/geom2d.h>
-#include <orcaiceutil/mathdefs.h>
+#include <hydroutil/mathdefs.h>
 #include <orcamisc/rand.h>
 
 using namespace std;

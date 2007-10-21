@@ -13,7 +13,7 @@
 
 #include <orca/pathplanner2d.h>
 #include <orcaice/orcaice.h>
-#include <orcaiceutil/proxy.h>
+#include <hydroutil/proxy.h>
 
 
 namespace goalplanner
@@ -22,13 +22,13 @@ namespace goalplanner
 class PathPlanner2dConsumerI : public orca::PathPlanner2dConsumer
 {
 public:
-    PathPlanner2dConsumerI(orcaiceutil::Proxy<orca::PathPlanner2dData> &pathProxy);
+    PathPlanner2dConsumerI(hydroutil::Proxy<orca::PathPlanner2dData> &pathProxy);
 
     // remote call
     virtual void setData(const ::orca::PathPlanner2dData&, const ::Ice::Current& = ::Ice::Current());
 
 private:
-    orcaiceutil::Proxy<orca::PathPlanner2dData> &pathProxy_;
+    hydroutil::Proxy<orca::PathPlanner2dData> &pathProxy_;
 };
 
 } // namespace

@@ -32,7 +32,7 @@ Driver::initData( orca::CameraData& data ) const
         std::string errString = "Failed to validate camera configuration.";
         context_.tracer()->error( errString );
         // this will kill this component
-        throw orcaiceutil::Exception( ERROR_INFO, errString );
+        throw hydroutil::Exception( ERROR_INFO, errString );
         return -1;
     }
     else

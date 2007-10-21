@@ -19,7 +19,7 @@ using namespace std;
 using namespace orcaqcm;
 
 GetComponentsCall::GetComponentsCall( const orcaice::Context & context, const std::string & locatorString,
-                orcaiceutil::Notify<orcacm::ComponentData>* homePipe )
+                hydroutil::Notify<orcacm::ComponentData>* homePipe )
     : context_(context),
       locatorString_(locatorString),
       homePipe_(homePipe)

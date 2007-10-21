@@ -5,7 +5,7 @@
 #include <libpcan.h>
 #include <rmpdriver/canpacket.h>
 #include <rmpdriver/rmpio.h>
-#include <orcaiceutil/timer.h>
+#include <hydroutil/timer.h>
 
 namespace segwayrmp {
 
@@ -47,7 +47,7 @@ private:
 
     // String representation of the peak can card error
     std::string peakStatusToString(DWORD status);
-    orcaiceutil::Timer writeTimer_;
+    hydroutil::Timer writeTimer_;
     
 }; // end of class declaration
 

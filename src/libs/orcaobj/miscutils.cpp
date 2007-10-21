@@ -14,8 +14,8 @@
 
 #include <orcaobj/stringutils.h>
 
-#include <orcaiceutil/exceptions.h>
-#include <orcaiceutil/mathdefs.h>
+#include <hydroutil/exceptions.h>
+#include <hydroutil/mathdefs.h>
 #include "miscutils.h"
 #include <fstream>
 #include <config.h>
@@ -64,7 +64,7 @@ mlHypothesis( const orca::Localise2dData& obj )
     {
         std::stringstream ss;
         ss << "Dodgy Localise2dDataPtr: " << orcaice::toString(obj);
-        throw orcaiceutil::Exception( ERROR_INFO, ss.str() );
+        throw hydroutil::Exception( ERROR_INFO, ss.str() );
     }
 #endif
     return obj.hypotheses[mlI];
@@ -88,7 +88,7 @@ mlHypothesis( const orca::Localise3dData& obj )
     {
         std::stringstream ss;
         ss << "Dodgy Localise3dDataPtr: " << orcaice::toString(obj);
-        throw orcaiceutil::Exception( ERROR_INFO, ss.str() );
+        throw hydroutil::Exception( ERROR_INFO, ss.str() );
     }
 #endif
     return obj.hypotheses[mlI];
@@ -168,7 +168,7 @@ saveToFile( const orca::FeatureMap2dDataPtr& fmap, FILE *f )
         {
             stringstream ss;
             ss << "Don't know how to save feature to file: " << orcaice::toString( *feature );
-            throw orcaiceutil::Exception( ERROR_INFO, ss.str() );
+            throw hydroutil::Exception( ERROR_INFO, ss.str() );
         }
     }
 }
@@ -184,7 +184,7 @@ loadFromFile( const std::string &filename, orca::FeatureMap2dDataPtr &fmap )
     {
         std::stringstream ss;
         ss << "Failed to open file: "<<filename;
-        throw orcaiceutil::Exception( ERROR_INFO, ss.str() );
+        throw hydroutil::Exception( ERROR_INFO, ss.str() );
     }
 
     const int bufSize=10000;
@@ -211,7 +211,7 @@ loadFromFile( const std::string &filename, orca::FeatureMap2dDataPtr &fmap )
             {
                 stringstream ss; ss << "Malformed featuremap file!  Expected offset on first non-comment line, found:"<<endl<<buf;
                 f.close();
-                throw orcaiceutil::Exception( ERROR_INFO, ss.str() );
+                throw hydroutil::Exception( ERROR_INFO, ss.str() );
             }
             gotOffset=true;
             continue;
@@ -253,7 +253,7 @@ loadFromFile( const std::string &filename, orca::FeatureMap2dDataPtr &fmap )
                 std::stringstream ss;
                 ss << "Malformed featuremap file!  Couldn't understand line " << line <<":"<<endl<<buf;
                 f.close();
-                throw orcaiceutil::Exception( ERROR_INFO, ss.str() );
+                throw hydroutil::Exception( ERROR_INFO, ss.str() );
             }
 
             fmap->features.push_back( feature );
@@ -285,7 +285,7 @@ loadFromFile( const std::string &filename, orca::FeatureMap2dDataPtr &fmap )
                 std::stringstream ss;
                 ss << "Malformed featuremap file!  Couldn't understand line " << line <<":"<<endl<<buf;
                 f.close();
-                throw orcaiceutil::Exception( ERROR_INFO, ss.str() );
+                throw hydroutil::Exception( ERROR_INFO, ss.str() );
             }
             feature->startSighted = ss;
             feature->endSighted = es;
@@ -317,7 +317,7 @@ loadFromFile( const std::string &filename, orca::FeatureMap2dDataPtr &fmap )
                 std::stringstream ss;
                 ss << "Malformed featuremap file!  Couldn't understand line " << line <<":"<<endl<<buf;
                 f.close();
-                throw orcaiceutil::Exception( ERROR_INFO, ss.str() );
+                throw hydroutil::Exception( ERROR_INFO, ss.str() );
             }
 
             fmap->features.push_back( feature );
@@ -327,7 +327,7 @@ loadFromFile( const std::string &filename, orca::FeatureMap2dDataPtr &fmap )
         {
             stringstream ss;
             ss<<"loadFromFile: don't know how to load with feature type " << type << endl;
-            throw orcaiceutil::Exception( ERROR_INFO, ss.str() );
+            throw hydroutil::Exception( ERROR_INFO, ss.str() );
         }
         }
     }

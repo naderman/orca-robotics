@@ -156,7 +156,7 @@ class BufferedTimedConsumerI : public ConsumerType
 public:
 
     BufferedTimedConsumerI( int depth=1,
-                            orcaiceutil::BufferType bufferType = orcaiceutil::BufferTypeCircular )
+                            hydroutil::BufferType bufferType = hydroutil::BufferTypeCircular )
         : buffer_( depth, bufferType ) {};
 
     void setData( const ObjectType& data, const Ice::Current& )
@@ -169,7 +169,7 @@ public:
     void resetTimer() { return timer_.restart(); }
 
     // buffer_ is public so that guielements can access it directly
-    orcaiceutil::Buffer<ObjectType> buffer_;
+    hydroutil::Buffer<ObjectType> buffer_;
 
 protected:
 
@@ -178,7 +178,7 @@ protected:
             timer_.restart();
         }
 
-    orcaiceutil::Timer timer_;
+    hydroutil::Timer timer_;
 };
 /*
  *  @brief A convenience class for consumers with setData() operation.
@@ -192,7 +192,7 @@ class PtrBufferedTimedConsumerI : public ConsumerType
 {
 public:
 
-    PtrBufferedTimedConsumerI( int depth=1, orcaiceutil::BufferType bufferType = orcaiceutil::BufferTypeCircular )
+    PtrBufferedTimedConsumerI( int depth=1, hydroutil::BufferType bufferType = hydroutil::BufferTypeCircular )
         : buffer_( depth, bufferType ) {};
 
     void setData( const ObjectType& data, const Ice::Current& )
@@ -214,7 +214,7 @@ protected:
             timer_.restart();
         }
 
-    orcaiceutil::Timer timer_;
+    hydroutil::Timer timer_;
 };
 
 

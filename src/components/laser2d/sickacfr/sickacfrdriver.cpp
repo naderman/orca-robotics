@@ -72,7 +72,7 @@ SickAcfrDriver::SickAcfrDriver( const laser2d::Driver::Config &config,
     {
         stringstream ss;
         ss << "Property was not set: "<<(prefix+"Device");
-        throw orcaiceutil::Exception( ERROR_INFO, ss.str() );
+        throw hydroutil::Exception( ERROR_INFO, ss.str() );
     }
 
     stringstream ssDebug;
@@ -149,7 +149,7 @@ SickAcfrDriver::waitForResponseType( uChar type, TimedLmsResponse &response, int
         else
         {
             stringstream ss; ss << "Weird return code from getAndPopNext: " << ret;
-            throw orcaiceutil::Exception( ERROR_INFO, ss.str() );
+            throw hydroutil::Exception( ERROR_INFO, ss.str() );
         }
     }
 }
@@ -195,7 +195,7 @@ SickAcfrDriver::waitForAckOrNack( bool &receivedAck )
         {
             stringstream ss;
             ss << "Weird return code from getAndPopNext: " << ret;
-            throw orcaiceutil::Exception( ERROR_INFO, ss.str() );
+            throw hydroutil::Exception( ERROR_INFO, ss.str() );
         }
     }    
 }
@@ -240,7 +240,7 @@ SickAcfrDriver::desiredMeasuredValueUnit()
     {
         stringstream ss;
         ss << "Unknown linear resolution: " << config_.maxRange;
-        throw orcaiceutil::Exception( ERROR_INFO, ss.str() );
+        throw hydroutil::Exception( ERROR_INFO, ss.str() );
     }
 }
 
@@ -349,7 +349,7 @@ SickAcfrDriver::guessLaserBaudRate()
         }
     } // end loop over baud rates
 
-    throw orcaiceutil::Exception( ERROR_INFO, "Failed to detect laser baud rate." );
+    throw hydroutil::Exception( ERROR_INFO, "Failed to detect laser baud rate." );
 }
 
 void
@@ -428,7 +428,7 @@ SickAcfrDriver::initLaser()
         {
             stringstream ss;
             ss << "Error configuring SICK:  Config after configuration not what we expect.  Asked for: " << desiredConfiguration().toString() << endl << "got: " << configCmdResponseData->toString();
-            throw orcaiceutil::Exception( ERROR_INFO, ss.str() );
+            throw hydroutil::Exception( ERROR_INFO, ss.str() );
         }
     }
 
@@ -448,7 +448,7 @@ SickAcfrDriver::initLaser()
     {
             stringstream ss;
             ss << "Error configuring SICK variant:  Variant after configuration not what we expect: " << angResponseData->toString();
-            throw orcaiceutil::Exception( ERROR_INFO, ss.str() );        
+            throw hydroutil::Exception( ERROR_INFO, ss.str() );        
     }
     
     //
@@ -520,7 +520,7 @@ SickAcfrDriver::read( std::vector<float> &ranges,
     bool received = waitForResponseType( ACK_REQUEST_MEASURED_VALUES, response, timeoutMs );
     if ( !received )
     {
-        throw orcaiceutil::Exception( ERROR_INFO, "No scan received." );
+        throw hydroutil::Exception( ERROR_INFO, "No scan received." );
     }
 
 

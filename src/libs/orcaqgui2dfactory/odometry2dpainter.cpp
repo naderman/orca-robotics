@@ -9,7 +9,7 @@
  */
  
 #include <iostream>
-#include <orcaiceutil/mathdefs.h>
+#include <hydroutil/mathdefs.h>
 #include <orcaqgui2d/paintutils.h>
 
 #include "odometry2dpainter.h"

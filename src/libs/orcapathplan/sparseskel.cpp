@@ -9,7 +9,7 @@
  */
 #include "sparseskel.h"
 #include "ipathplanner2d.h"
-#include <orcaiceutil/mathdefs.h>
+#include <hydroutil/mathdefs.h>
 #include <orcaogmap/simpleograytrace.h>
 #include <iostream>
 using namespace std;

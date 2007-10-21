@@ -11,7 +11,7 @@
 #ifndef ORCA2_STAGE_LOCALISER_MAIN_LOOP_H
 #define ORCA2_STAGE_LOCALISER_MAIN_LOOP_H
 
-#include <orcaiceutil/thread.h>
+#include <hydroutil/thread.h>
 #include <orcaice/context.h>
 
 namespace simlocaliser
@@ -19,14 +19,14 @@ namespace simlocaliser
 
 class Driver;
 
-class MainLoop : public orcaiceutil::Thread
+class MainLoop : public hydroutil::Thread
 {
 
 public:
     MainLoop( const orcaice::Context& context );
     virtual ~MainLoop();
 
-    // from orcaiceutil::Thread
+    // from hydroutil::Thread
     virtual void run();
 
 private:

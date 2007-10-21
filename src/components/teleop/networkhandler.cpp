@@ -21,12 +21,12 @@ using namespace std;
 using namespace teleop;
 
 NetworkHandler::NetworkHandler( Display* display, const orcaice::Context& context ) :
-    events_(new orcaiceutil::EventQueue),
+    events_(new hydroutil::EventQueue),
     display_(display),
     context_(context)
 {
     // install event optimizer
-    orcaiceutil::EventQueueOptimizerPtr opt = new TeleopEventQueueOptimizer;
+    hydroutil::EventQueueOptimizerPtr opt = new TeleopEventQueueOptimizer;
     events_->setOptimizer( opt );
 }
 
@@ -38,7 +38,7 @@ void
 NetworkHandler::newCommandIncrement( int longitudinal, int transverse, int angle )
 {
 // cout<<"DEBUG: got command incresment : "<<longitudinal<<" "<<transverse<<" "<<angle<<endl;
-    orcaiceutil::EventPtr e = new NewCommandIncrementEvent( longitudinal, transverse, angle );
+    hydroutil::EventPtr e = new NewCommandIncrementEvent( longitudinal, transverse, angle );
     events_->optimizedAdd( e );
 }
 
@@ -46,7 +46,7 @@ void
 NetworkHandler::newRelativeCommand( double longitudinal, double transverse, double angle )
 {
 // cout<<"DEBUG: got relative command : "<<longitudinal<<"% "<<transverse<<"% "<<angle<<"%"<<endl;
-    orcaiceutil::EventPtr e = new NewRelativeCommandEvent( longitudinal, transverse, angle );
+    hydroutil::EventPtr e = new NewRelativeCommandEvent( longitudinal, transverse, angle );
     events_->optimizedAdd( e );
 }
 
@@ -84,7 +84,7 @@ NetworkHandler::walk()
         string errorStr = "Unsupported interface ID="+ifaceId;
         context_.tracer()->error( errorStr); 
         context_.tracer()->info( "Valid driver values are {'VelocityControl2d', 'DriveBicycle'}" );
-        throw orcaiceutil::Exception( ERROR_INFO, errorStr );
+        throw hydroutil::Exception( ERROR_INFO, errorStr );
     }    
 
     // don't forget to enable the driver, but check isStopping() to see if we should quit
@@ -100,7 +100,7 @@ NetworkHandler::walk()
     context_.tracer()->debug("Network driver enabled",2);
 
 
-    orcaiceutil::EventPtr event;    
+    hydroutil::EventPtr event;    
     int timeoutMs = (int)floor(1000.0 * orcaice::getPropertyAsDoubleWithDefault(
             context_.properties(), prefix+"RepeatInterval", 0.2 ) );
     //

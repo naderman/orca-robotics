@@ -54,7 +54,7 @@ void
 Component::loadPluginLibraries( const std::string & factoryLibNames )
 {
     // Parse space-separated list of lib names
-    vector<string> libNames = orcaiceutil::toStringSeq( factoryLibNames, ' ' );
+    vector<string> libNames = hydroutil::toStringSeq( factoryLibNames, ' ' );
     
     for ( unsigned int i=0; i < libNames.size(); i++ )
     {
@@ -223,7 +223,7 @@ void
 Component::stop()
 {
     context().tracer()->debug("Stopping component", 2 );
-    orcaiceutil::stopAndJoin( mainLoop_ );
+    hydroutil::stopAndJoin( mainLoop_ );
 }
 
 } // namespace

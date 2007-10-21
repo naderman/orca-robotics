@@ -47,11 +47,7 @@ void Component::start()
 
 void Component::stop()
 {
-    if ( mainloop_ ) {
-        IceUtil::ThreadControl mainLoopControl = mainloop_->getThreadControl();
-        tracer()->debug("stopping mainloop", 5 );
-        mainloop_->stop();
-        tracer()->debug("joining mainloop", 5 );
-        mainLoopControl.join();
-    }
+    tracer()->debug( "stopping component", 5 );
+    hydroutil::stopAndJoin( mainloop_ );
+    tracer()->debug( "stopped component", 5 );
 }

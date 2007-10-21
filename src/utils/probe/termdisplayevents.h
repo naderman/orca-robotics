@@ -11,7 +11,7 @@
 #ifndef ORCA2_PROBE_TERM_DISPLAY_EVENTS_H
 #define ORCA2_PROBE_TERM_DISPLAY_EVENTS_H
 
-#include <orcaiceutil/eventqueue.h>
+#include <hydroutil/eventqueue.h>
 #include <orcacm/types.h>
 #include <orcaprobe/idisplay.h> // for focus types
 
@@ -33,7 +33,7 @@ enum EventType
     OperationDataChanged
 };
 
-class NetworkActivityChangedEvent : public orcaiceutil::Event
+class NetworkActivityChangedEvent : public hydroutil::Event
 {
 public:
     NetworkActivityChangedEvent( bool isActive )
@@ -42,9 +42,9 @@ public:
 
     bool isActive_;
 };
-typedef IceUtil::Handle<NetworkActivityChangedEvent> NetworkActivityChangedEventPtr;
+typedef HydroIceUtil::Handle<NetworkActivityChangedEvent> NetworkActivityChangedEventPtr;
 
-class FocusChangedEvent : public orcaiceutil::Event
+class FocusChangedEvent : public hydroutil::Event
 {
 public:
     FocusChangedEvent( orcaprobe::IDisplay::FocusType focus )
@@ -53,9 +53,9 @@ public:
 
     orcaprobe::IDisplay::FocusType focus_;
 };
-typedef IceUtil::Handle<FocusChangedEvent> FocusChangedEventPtr;
+typedef HydroIceUtil::Handle<FocusChangedEvent> FocusChangedEventPtr;
 
-class RegistryDataChangedEvent : public orcaiceutil::Event
+class RegistryDataChangedEvent : public hydroutil::Event
 {
 public:
     RegistryDataChangedEvent( const orcacm::RegistryHierarchicalData1 & data )
@@ -64,9 +64,9 @@ public:
 
     orcacm::RegistryHierarchicalData1 data_;
 };
-typedef IceUtil::Handle<RegistryDataChangedEvent> RegistryDataChangedEventPtr;
+typedef HydroIceUtil::Handle<RegistryDataChangedEvent> RegistryDataChangedEventPtr;
 
-class PlatformDataChangedEvent : public orcaiceutil::Event
+class PlatformDataChangedEvent : public hydroutil::Event
 {
 public:
     PlatformDataChangedEvent( const orcacm::RegistryHierarchicalData2 & data )
@@ -75,9 +75,9 @@ public:
 
     orcacm::RegistryHierarchicalData2 data_;
 };
-typedef IceUtil::Handle<PlatformDataChangedEvent> PlatformDataChangedEventPtr;
+typedef HydroIceUtil::Handle<PlatformDataChangedEvent> PlatformDataChangedEventPtr;
 
-class ComponentDataChangedEvent : public orcaiceutil::Event
+class ComponentDataChangedEvent : public hydroutil::Event
 {
 public:
     ComponentDataChangedEvent( const orcacm::ComponentData & data )
@@ -86,9 +86,9 @@ public:
 
     orcacm::ComponentData data_;
 };
-typedef IceUtil::Handle<ComponentDataChangedEvent> ComponentDataChangedEventPtr;
+typedef HydroIceUtil::Handle<ComponentDataChangedEvent> ComponentDataChangedEventPtr;
 
-class InterfaceDataChangedEvent : public orcaiceutil::Event
+class InterfaceDataChangedEvent : public hydroutil::Event
 {
 public:
     InterfaceDataChangedEvent( const orcacm::InterfaceData & data )
@@ -97,10 +97,10 @@ public:
 
     orcacm::InterfaceData data_;
 };
-typedef IceUtil::Handle<InterfaceDataChangedEvent> InterfaceDataChangedEventPtr;
+typedef HydroIceUtil::Handle<InterfaceDataChangedEvent> InterfaceDataChangedEventPtr;
 
 
-class OperationDataChangedEvent : public orcaiceutil::Event
+class OperationDataChangedEvent : public hydroutil::Event
 {
 public:
     OperationDataChangedEvent( const orcacm::OperationData & data )
@@ -109,7 +109,7 @@ public:
 
     orcacm::OperationData data_;
 };
-typedef IceUtil::Handle<OperationDataChangedEvent> OperationDataChangedEventPtr;
+typedef HydroIceUtil::Handle<OperationDataChangedEvent> OperationDataChangedEventPtr;
 
 
 

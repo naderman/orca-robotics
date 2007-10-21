@@ -29,7 +29,7 @@
 
 namespace insgps{
 
-class Handler : public orcaiceutil::Thread
+class Handler : public hydroutil::Thread
 {
 public:
     Handler(insgps::InsGpsI&  insGpsI,

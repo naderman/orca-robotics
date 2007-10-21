@@ -194,7 +194,7 @@ MainLoop::initInterface()
             context_.tracer()->debug( "Initialised PolarFeature2d interface",3 );
             return;
         }
-        catch ( orcaiceutil::Exception &e )
+        catch ( hydroutil::Exception &e )
         {
             context_.tracer()->warning( std::string("MainLoop::initInterface(): ") + e.what() );
         }
@@ -377,7 +377,7 @@ MainLoop::convertToRobotCS( const PolarFeature2dDataPtr & featureData )
                 ss << "MainLoop::convertToRobotCS(): bearingDiff < 0 -- line is not visible from platform pose"
                    << " (but maybe it is from sensor pose).  Line was: " 
                    << orcaice::toString(ftr);
-                throw orcaiceutil::Exception( ERROR_INFO, ss.str() );
+                throw hydroutil::Exception( ERROR_INFO, ss.str() );
             }
         }
         else

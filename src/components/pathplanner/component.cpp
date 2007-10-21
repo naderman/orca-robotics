@@ -26,7 +26,8 @@ Component::~Component()
 
 // NOTE: this function returns after it's done, all variable that need to be permanet must
 //       be declared as member variables.
-void Component::start()
+void 
+Component::start()
 {
     context().tracer()->info( "Component starting." );
 
@@ -47,14 +48,10 @@ void Component::start()
     // the rest is handled by the application/service
 }
 
-void Component::stop()
+void 
+Component::stop()
 {
-    context().tracer()->info( "Component stopping." );
-    if ( algoHandler_ ) {
-        IceUtil::ThreadControl algoControl = algoHandler_->getThreadControl();
-        tracer()->debug("stopping algorithm handler", 5 );
-        algoHandler_->stop();
-        tracer()->debug("joining algorithm handler", 5 );
-        algoControl.join();
-    }
+    tracer()->debug( "stopping component", 5 );
+    hydroutil::stopAndJoin( algoHandler_ );
+    tracer()->debug( "stopped component", 5 );
 }

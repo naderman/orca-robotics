@@ -13,13 +13,13 @@
 
 #include <Ice/Ice.h>
 
-#include <orcaiceutil/thread.h>
+#include <hydroutil/thread.h>
 #include <orcaice/context.h>
 
 #include <orca/home.h>
 #include <orca/status.h>
 
-class TestLoop : public orcaiceutil::Thread
+class TestLoop : public hydroutil::Thread
 {
 public:
 

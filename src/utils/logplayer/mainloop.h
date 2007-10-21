@@ -14,7 +14,7 @@
 #include <vector>
 
 #include <orcaice/context.h>
-#include <orcaiceutil/thread.h>
+#include <hydroutil/thread.h>
 
 namespace orcalog
 {
@@ -26,7 +26,7 @@ namespace orcalog
 namespace logplayer
 {
 
-class MainLoop : public orcaiceutil::Thread
+class MainLoop : public hydroutil::Thread
 {
 public:
 

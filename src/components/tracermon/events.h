@@ -11,7 +11,7 @@
 #ifndef ORCA2_TRACERMON_EVENTS_H
 #define ORCA2_TRACERMON_EVENTS_H
 
-#include <orcaiceutil/eventqueue.h>
+#include <hydroutil/eventqueue.h>
 #include <orca/tracer.h>
 
 namespace tracermon
@@ -41,7 +41,7 @@ enum VerbosityType
     NumberOfVerbosityTypes
 };
 */
-class VerbosityLevelsChangedEvent : public orcaiceutil::Event
+class VerbosityLevelsChangedEvent : public hydroutil::Event
 {
 public:
     VerbosityLevelsChangedEvent( int error, int warn, int info, int debug ) :
@@ -56,9 +56,9 @@ public:
     int info_;
     int debug_;
 };
-typedef IceUtil::Handle<VerbosityLevelsChangedEvent> VerbosityLevelsChangedEventPtr;
+typedef HydroIceUtil::Handle<VerbosityLevelsChangedEvent> VerbosityLevelsChangedEventPtr;
 
-class FocusChangedEvent : public orcaiceutil::Event
+class FocusChangedEvent : public hydroutil::Event
 {
 public:
     FocusChangedEvent( int focus ) :
@@ -67,9 +67,9 @@ public:
 
     int focus_;
 };
-typedef IceUtil::Handle<FocusChangedEvent> FocusChangedEventPtr;
+typedef HydroIceUtil::Handle<FocusChangedEvent> FocusChangedEventPtr;
 
-class NewTraceMessageEvent : public orcaiceutil::Event
+class NewTraceMessageEvent : public hydroutil::Event
 {
 public:
     NewTraceMessageEvent( const orca::TracerData & data ) :
@@ -78,9 +78,9 @@ public:
 
     orca::TracerData data_;
 };
-typedef IceUtil::Handle<NewTraceMessageEvent> NewTraceMessageEventPtr;
+typedef HydroIceUtil::Handle<NewTraceMessageEvent> NewTraceMessageEventPtr;
 
-class NewLocalTraceEvent : public orcaiceutil::Event
+class NewLocalTraceEvent : public hydroutil::Event
 {
 public:
     NewLocalTraceEvent( const std::string& msg ) :
@@ -89,37 +89,37 @@ public:
 
     std::string msg_;
 };
-typedef IceUtil::Handle<NewLocalTraceEvent> NewLocalTraceEventPtr;
+typedef HydroIceUtil::Handle<NewLocalTraceEvent> NewLocalTraceEventPtr;
 
-class PreviousFieldEvent : public orcaiceutil::Event
+class PreviousFieldEvent : public hydroutil::Event
 {
 public:
     PreviousFieldEvent() :
         Event( PreviousField ) {};
 };
 
-class NextFieldEvent : public orcaiceutil::Event
+class NextFieldEvent : public hydroutil::Event
 {
 public:
     NextFieldEvent() :
         Event( NextField ) {};
 };
 
-class ValueUpEvent : public orcaiceutil::Event
+class ValueUpEvent : public hydroutil::Event
 {
 public:
     ValueUpEvent() :
         Event( ValueUp ) {};
 };
 
-class ValueDownEvent : public orcaiceutil::Event
+class ValueDownEvent : public hydroutil::Event
 {
 public:
     ValueDownEvent() :
         Event( ValueDown ) {};
 };
 
-class ActionEvent : public orcaiceutil::Event
+class ActionEvent : public hydroutil::Event
 {
 public:
     ActionEvent() :

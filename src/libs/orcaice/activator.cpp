@@ -10,6 +10,7 @@
 #include "activator.h"
 #include <iostream>
 #include <orcaice/exceptions.h>
+#include <IceUtil/Thread.h>
 
 using namespace std;
 

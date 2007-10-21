@@ -12,7 +12,7 @@
 #define ORCA2_REACTIVE_WALKER_COMPONENT_H
 
 #include <orcaice/component.h>
-#include <orcaiceutil/thread.h>
+#include <hydroutil/thread.h>
 
 namespace reactivewalker
 {
@@ -31,7 +31,7 @@ public:
 
 private:
 
-    orcaiceutil::ThreadPtr algoThread_;
+    hydroutil::ThreadPtr algoThread_;
 
 };
 

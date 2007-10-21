@@ -10,7 +10,7 @@
 
 #include "pathplanutils.h"
 #include "ipathplanner2d.h"
-#include <orcaiceutil/mathdefs.h>
+#include <hydroutil/mathdefs.h>
 #include <orcamisc/orcamisc.h>
 #include "costcalculator.h"
 

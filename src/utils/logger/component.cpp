@@ -54,7 +54,7 @@ void
 Component::loadPluginLibraries( const std::string & factoryLibNames )
 {
     // Parse space-separated list of lib names
-    vector<string> libNames = orcaiceutil::toStringSeq( factoryLibNames, ' ' );
+    vector<string> libNames = hydroutil::toStringSeq( factoryLibNames, ' ' );
     
     for ( unsigned int i=0; i < libNames.size(); i++ )
     {

@@ -77,7 +77,7 @@ PowerImpl::initInterface()
 }
 
 void 
-PowerImpl::initInterface( orcaiceutil::Thread* thread, int retryInterval )
+PowerImpl::initInterface( hydroutil::Thread* thread, int retryInterval )
 {
     topicPrx_ = orcaice::connectToTopicWithTag<orca::PowerConsumerPrx>
         ( context_, consumerPrx_, tag_, "*", thread, retryInterval );

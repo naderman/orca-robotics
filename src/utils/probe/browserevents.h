@@ -11,7 +11,7 @@
 #ifndef ORCA2_PROBE_BROWSER_EVENTS_H
 #define ORCA2_PROBE_BROWSER_EVENTS_H
 
-#include <orcaiceutil/eventqueue.h>
+#include <hydroutil/eventqueue.h>
 
 namespace probe
 {
@@ -28,49 +28,49 @@ enum EventType
     Pick
 };
 
-class ActivateEvent : public orcaiceutil::Event
+class ActivateEvent : public hydroutil::Event
 {
 public:
     ActivateEvent() : Event( Activate ) {};
 };
 
-class ReloadEvent : public orcaiceutil::Event
+class ReloadEvent : public hydroutil::Event
 {
 public:
     ReloadEvent() : Event( Reload ) {};
 };
 
-class UpEvent : public orcaiceutil::Event
+class UpEvent : public hydroutil::Event
 {
 public:
     UpEvent() : Event( Up ) {};
 };
 
-class TopEvent : public orcaiceutil::Event
+class TopEvent : public hydroutil::Event
 {
 public:
     TopEvent() : Event( Top ) {};
 };
 
-class FaultEvent : public orcaiceutil::Event
+class FaultEvent : public hydroutil::Event
 {
 public:
     FaultEvent() : Event( Fault ) {};
 };
 
-class FilterEvent : public orcaiceutil::Event
+class FilterEvent : public hydroutil::Event
 {
 public:
     FilterEvent() : Event( Filter ) {};
 };
 
-class DeactivateEvent : public orcaiceutil::Event
+class DeactivateEvent : public hydroutil::Event
 {
 public:
     DeactivateEvent() : Event( Deactivate ) {};
 };
 
-class PickEvent : public orcaiceutil::Event
+class PickEvent : public hydroutil::Event
 {
 public:
     PickEvent( int pick ) :
@@ -79,7 +79,7 @@ public:
 
     int pick_;
 };
-typedef IceUtil::Handle<PickEvent> PickEventPtr;
+typedef HydroIceUtil::Handle<PickEvent> PickEventPtr;
 
 
 } // namespace

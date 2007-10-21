@@ -66,10 +66,10 @@ inline int gridCellIndex( const orca::OgMapData& obj, int indX, int indY )
     return indY*obj.numCellsX + indX; 
 }
 
-//! Throws orcaiceutil::Exceptions on problems
+//! Throws hydroutil::Exceptions on problems
 void saveToFile( const orca::FeatureMap2dDataPtr &fmap, FILE *f );
 
-//! Throws orcaiceutil::Exceptions on problems
+//! Throws hydroutil::Exceptions on problems
 void loadFromFile( const std::string &filename, orca::FeatureMap2dDataPtr &fmap );
 
 //@}

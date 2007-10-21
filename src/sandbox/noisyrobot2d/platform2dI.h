@@ -13,7 +13,7 @@
 
 #include <IceStorm/IceStorm.h>
 #include <orca/platform2d.h>
-#include <orcaiceutil/proxy.h>
+#include <hydroutil/proxy.h>
 #include <orcaice/context.h>
 #include "inoisemodel.h"
 
@@ -54,7 +54,7 @@ public:
 private:
 
     // internal storage of latest data
-    orcaiceutil::Proxy<orca::Position2dData> dataBuffer_;
+    hydroutil::Proxy<orca::Position2dData> dataBuffer_;
 
     // The thing we publish to
     orca::Position2dConsumerPrx    consumerPrx_;

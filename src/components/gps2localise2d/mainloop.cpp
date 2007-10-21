@@ -244,7 +244,7 @@ MainLoop::initInterface()
             context_.tracer()->debug( "Initialised Localise2d interface",3 );
             return;
         }
-        catch ( orcaiceutil::Exception &e )
+        catch ( hydroutil::Exception &e )
         {
             context_.tracer()->warning( std::string("MainLoop::initInterface(): ") + e.what() );
         }

@@ -21,7 +21,7 @@ using namespace tracermon;
 NetworkHandler::NetworkHandler( User* user,
                                 const orcaice::Context & context ) :
     user_(user),
-    events_(new orcaiceutil::EventQueue),
+    events_(new hydroutil::EventQueue),
     context_(context)
 {
 }
@@ -38,7 +38,7 @@ NetworkHandler::setVerbosityLevel( int error, int warn, int info, int debug )
 // ss<<"got verbosity event with ["<<error<<","<<warn<<","<<info<<","<<debug<<"]";
 // user_->newLocalTrace( ss.str() );
 // user_->newLocalTrace( "got fucking verbosity event" );
-    orcaiceutil::EventPtr e = new VerbosityLevelsChangedEvent( error, warn, info, debug );
+    hydroutil::EventPtr e = new VerbosityLevelsChangedEvent( error, warn, info, debug );
     events_->add( e );
 }
 
@@ -99,7 +99,7 @@ NetworkHandler::walk()
         }
     }
 
-    orcaiceutil::EventPtr event;
+    hydroutil::EventPtr event;
     int timeoutMs = 500;
 
     //

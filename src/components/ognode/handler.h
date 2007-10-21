@@ -10,8 +10,8 @@
 #ifndef _ORCA2_OGNODE_HANDLER_H_
 #define _ORCA2_OGNODE_HANDLER_H_
 
-#include <orcaiceutil/thread.h>
-#include <orcaiceutil/buffer.h>
+#include <hydroutil/thread.h>
+#include <hydroutil/buffer.h>
 #include <orcaice/context.h>
 
 #include <orca/ogfusion.h>
@@ -21,7 +21,7 @@
 namespace ognode
 {
 
-class Handler : public orcaiceutil::Thread
+class Handler : public hydroutil::Thread
 {
 public:
     Handler( const orcaice::Context              &context);
@@ -34,7 +34,7 @@ private:
 
     Ice::ObjectPtr                      ogFusionObjPtr_;
     orcaifaceimpl::OgMapImplPtr        ogMapImpl_;
-    orcaiceutil::Buffer<orca::OgFusionData> ogFusionDataBuffer_;
+    hydroutil::Buffer<orca::OgFusionData> ogFusionDataBuffer_;
 
     // Representt he occupancy certainty values using doubles internally.
     orcaogmap::GenericMap<double> internalMap_;

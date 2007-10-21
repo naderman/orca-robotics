@@ -12,7 +12,7 @@
 #define ORCAICE_TRACER_I_H
 
 #include <orca/tracer.h>
-#include <orcaiceutil/tracer.h>
+#include <hydroutil/tracer.h>
 #include "localtracer.h"
 #include "networktracesender.h"
 #include <IceStorm/IceStorm.h>
@@ -60,7 +60,7 @@ public:
                                                      const ::Ice::Current& = ::Ice::Current())
         { unsubscribe( platformErrorSender_, subscriber ); }
 
-    // orcaiceutil::Tracer interface
+    // hydroutil::Tracer interface
     // reimplement from LocalTracer because we are adding toNetwork() option
 
     virtual void info( const std::string &message, int level=1 );
@@ -81,7 +81,7 @@ private:
     TracerI& operator= ( const TracerI & );
 
     // to network
-	void toNetwork( orcaiceutil::Tracer::TraceType traceType,
+	void toNetwork( hydroutil::Tracer::TraceType traceType,
                     const std::string& message,
                     int level );
     void setupAndConnectNetworkSenders();
@@ -90,7 +90,7 @@ private:
                                      bool isTracerTopicRequired );
     void icestormConnectFailed( const std::string &topicName,
                                 bool isTracerTopicRequired );
-    std::string categoryToString( orcaiceutil::Tracer::TraceType category );
+    std::string categoryToString( hydroutil::Tracer::TraceType category );
 
     // Responsible for sending messages to the component's tracer topic
     NetworkTraceSender *componentTraceSender_;

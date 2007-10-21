@@ -13,7 +13,7 @@
 
 #include <orcaice/component.h>
 #include "gpsinterfaces.h"
-#include <orcaiceutil/thread.h>
+#include <hydroutil/thread.h>
 
 namespace gps {
 
@@ -31,7 +31,7 @@ public:
 
 private:
 
-    orcaiceutil::ThreadPtr mainLoop_;
+    hydroutil::ThreadPtr mainLoop_;
     orca::GpsDescription descr_;
 
     //

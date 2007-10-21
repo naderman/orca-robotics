@@ -129,7 +129,7 @@ MainLoop::initInterfaces()
             pathFollowerInterface_.initInterface();
             return;
         }
-        catch ( orcaiceutil::Exception &e )
+        catch ( hydroutil::Exception &e )
         {
             stringstream ss;
             ss << "MainLoop: Failed to initialise PathFollower2d interface: " << e.what();

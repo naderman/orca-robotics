@@ -80,7 +80,7 @@ namespace {
 
 Handler::Handler( const orcaice::Context &context )
     :   context_(context),
-        rangeScannerDataBuffer_(-1,orcaiceutil::BufferTypeCircular),
+        rangeScannerDataBuffer_(-1,hydroutil::BufferTypeCircular),
         laser2Og_(0)
 {
     init();
@@ -194,7 +194,7 @@ Handler::init()
     if(ogFusionConfig.offset.o != 0.0){
         std::string errString = "Laser2Og currently only support axis aligned OgMaps";
         context_.tracer()->error( errString );
-        throw orcaiceutil::Exception( ERROR_INFO, errString );
+        throw hydroutil::Exception( ERROR_INFO, errString );
         return;
     }
 
@@ -290,7 +290,7 @@ Handler::run()
             ss << "unexpected (remote?) orca exception: " << e << ": " << e.what;
             context_.tracer()->error( ss.str() );
         }
-        catch ( const orcaiceutil::Exception & e )
+        catch ( const hydroutil::Exception & e )
         {
             stringstream ss;
             ss << "unexpected (local?) orcaice exception: " << e.what();

@@ -12,7 +12,7 @@
 #define ORCA2_BRICK_COMPONENT_H
 
 #include <orcaice/component.h>
-#include <orcaiceutil/thread.h>
+#include <hydroutil/thread.h>
 
 namespace brick
 {
@@ -34,7 +34,7 @@ public:
     
 private:
 
-    orcaiceutil::ThreadPtr mainThread_;
+    hydroutil::ThreadPtr mainThread_;
 };
 
 } // namespace

@@ -11,7 +11,7 @@
 #ifndef ORCA2_PATHPLANTESTER_ALGORITHM_HANDLER_H
 #define ORCA2_PATHPLANTESTER_ALGORITHM_HANDLER_H
 
-#include <orcaiceutil/thread.h>
+#include <hydroutil/thread.h>
 #include <orcaice/context.h>
 
 #include <orca/pathplanner2d.h>
@@ -20,7 +20,7 @@
 namespace pathplantester
 {
 
-class AlgoHandler : public orcaiceutil::Thread
+class AlgoHandler : public hydroutil::Thread
 {
 
 public: 

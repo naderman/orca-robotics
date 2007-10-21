@@ -15,7 +15,7 @@
 using namespace std;
 using namespace drunk; 
 
-MainLoop::MainLoop( orcaiceutil::Buffer<orca::Position2dData> &posBuffer,
+MainLoop::MainLoop( hydroutil::Buffer<orca::Position2dData> &posBuffer,
                     const orca::Position2dConsumerPrx &position2dConsumer):
     posBuffer_(posBuffer), 
     position2dConsumer_(position2dConsumer)

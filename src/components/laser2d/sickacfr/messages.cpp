@@ -537,7 +537,7 @@ parseLmsMeasurementData( const uChar *buf, int len )
     {
         stringstream ss;
         ss << "Unknown measurement mode: " << measurementMode;
-        throw orcaiceutil::Exception( ERROR_INFO, ss.str() );
+        throw hydroutil::Exception( ERROR_INFO, ss.str() );
     }
 
     bool scanType = (buf[1] >> 5) & 0x01;
@@ -546,7 +546,7 @@ parseLmsMeasurementData( const uChar *buf, int len )
     {
         stringstream ss;
         ss << "parseLmsMeasurementData(): Only know how to deal with complete scan.";
-        throw orcaiceutil::Exception( ERROR_INFO, ss.str() );
+        throw hydroutil::Exception( ERROR_INFO, ss.str() );
     }
 
     int numMeasurements = ((buf[1]&0x80)<<8) | (buf[0]);
@@ -748,7 +748,7 @@ parseResponse( uChar responseCode,
     {
         stringstream ss;
         ss << "Don't know how to deal with response code: " << cmdToString(responseCode);
-        throw orcaiceutil::Exception( ERROR_INFO, ss.str() );
+        throw hydroutil::Exception( ERROR_INFO, ss.str() );
     }
     }
 }

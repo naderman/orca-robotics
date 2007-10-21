@@ -12,7 +12,7 @@
 #include <string>
 
 #include <orcaice/configutils.h>
-#include <orcaiceutil/sysutils.h>
+#include <hydroutil/sysutils.h>
 #include <orcaice/proputils.h>
 #include <orcaice/printutils.h>
 #include <orcaice/exceptions.h>
@@ -142,7 +142,7 @@ getRequiredInterfaceAsString( const Context & context, const std::string &ifaceT
     orca::FQInterfaceName fqname = orcaice::toInterfaceName( proxy );
     if ( !fqname.iface.empty() && !fqname.platform.empty() && !fqname.component.empty() ) {
         if ( fqname.platform=="local" ) {
-            fqname.platform = orcaiceutil::getHostname();
+            fqname.platform = hydroutil::getHostname();
             initTracerWarning( context, "set remote platform name to hostname="+fqname.platform, 2 );
         }
         proxy = orcaice::toString( fqname );

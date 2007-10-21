@@ -128,7 +128,7 @@ AlgoHandler::run()
             context_.communicator()->destroy();
         }
     }
-    catch ( const orcaiceutil::Exception & e )
+    catch ( const hydroutil::Exception & e )
     {
         context_.tracer()->print( e.what() );
         context_.tracer()->error( "unexpected (local?) orcaice exception.");

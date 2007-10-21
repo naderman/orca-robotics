@@ -11,9 +11,9 @@
 #ifndef ORCA2_TRACERMON_TERM_NCURSES_USER_DRIVER_H
 #define ORCA2_TRACERMON_TERM_NCURSES_USER_DRIVER_H
 
-#include <orcaiceutil/thread.h>
+#include <hydroutil/thread.h>
 #include <orcaice/context.h>
-#include <orcaiceutil/eventqueue.h>
+#include <hydroutil/eventqueue.h>
 #include "../user.h"
 #include "../network.h"
 
@@ -23,7 +23,7 @@
 namespace tracermon
 {
 
-class TermNcursesUser : public orcaiceutil::Thread, public tracermon::User
+class TermNcursesUser : public hydroutil::Thread, public tracermon::User
 {
 public:
 
@@ -50,11 +50,11 @@ public:
 private:
 
     Network* network_;
-    orcaiceutil::EventQueuePtr events_;
+    hydroutil::EventQueuePtr events_;
    
     orcaice::Context context_;
 
-    orcaiceutil::Thread* inputHandler_;
+    hydroutil::Thread* inputHandler_;
 
     // obscure ncurses stuff
     WINDOW* mainwin_;

@@ -57,7 +57,7 @@ std::vector<std::string>
 Component::loadPluginLibraries( const std::string & factoryLibNames )
 {
     // Parse space-separated list of lib names
-    vector<string> libNames = orcaiceutil::toStringSeq( factoryLibNames, ' ' );
+    vector<string> libNames = hydroutil::toStringSeq( factoryLibNames, ' ' );
     
     // this will be a listing of unique supported interfaces
     std::vector<std::string> supportedInterfaces;
@@ -129,7 +129,7 @@ Component::start()
         tracer()->info( "Loading GUI Qt driver");
         display = new GuiQtDisplay( supportedInterfaces );
 #else
-        throw orcaiceutil::Exception( ERROR_INFO, "Can't instantiate driver type 'gui-qt' because it was not compiled." );
+        throw hydroutil::Exception( ERROR_INFO, "Can't instantiate driver type 'gui-qt' because it was not compiled." );
 #endif
     }
     else if ( driverName == "term-iostream" ) 

@@ -5,12 +5,14 @@
 #
 ADD_DEFINITIONS( "-Wall" )
 INCLUDE_DIRECTORIES( 
-	${ICE_HOME}/include
+# 	${ICE_HOME}/include
     ${PROJECT_BINARY_DIR}/src/interfaces/cpp 
-    ${PROJECT_SOURCE_DIR}/src/libs
+#     ${PROJECT_SOURCE_DIR}/src/libs
     )
-LINK_DIRECTORIES( ${ICE_HOME}/lib )
-LINK_LIBRARIES( Ice IceUtil OrcaInterfaces OrcaIce OrcaObjects )
+# LINK_DIRECTORIES( ${ICE_HOME}/lib )
+# LINK_LIBRARIES( Ice IceUtil OrcaInterfaces OrcaIce OrcaObjects )
+INCLUDE( ${ORCA_CMAKE_DIR}/UseIce.cmake )
+INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
 
 GLOBAL_ADD_EXECUTABLE( def2cfg def2cfg.cpp )
 TARGET_LINK_LIBRARIES( def2cfg OrcaDef )

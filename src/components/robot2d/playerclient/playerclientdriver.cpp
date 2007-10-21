@@ -11,7 +11,7 @@
 #include <iostream>
 #include <stdlib.h>
 #include <assert.h>
-#include <orcaiceutil/timer.h>
+#include <hydroutil/timer.h>
 
 #include <orcaice/orcaice.h>
 #include <IceUtil/Thread.h>     // for sleep()

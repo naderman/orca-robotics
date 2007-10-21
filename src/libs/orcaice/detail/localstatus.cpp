@@ -52,7 +52,7 @@ LocalStatus::setMaxHeartbeatInterval( const std::string& subsystem,
         newStatus.maxHeartbeatInterval = maxHeartbeatIntervalSec;
         newStatus.lastHeartbeatTime    = IceUtil::Time::now();
         newStatus.message = "";
-        newStatus.type = orcaiceutil::Status::Initialising;
+        newStatus.type = hydroutil::Status::Initialising;
         subsystems_[subsystem] = newStatus;        
     }
     else
@@ -86,25 +86,25 @@ LocalStatus::heartbeat( const std::string& subsystem )
 void 
 LocalStatus::initialising( const std::string& subsystem, const std::string& message )
 {
-    setSubsystemStatus( subsystem, orcaiceutil::Status::Initialising, message );
+    setSubsystemStatus( subsystem, hydroutil::Status::Initialising, message );
 }
 
 void 
 LocalStatus::ok( const std::string& subsystem, const std::string& message )
 {
-    setSubsystemStatus( subsystem, orcaiceutil::Status::Ok, message );
+    setSubsystemStatus( subsystem, hydroutil::Status::Ok, message );
 }
 
 void 
 LocalStatus::warning( const std::string& subsystem, const std::string& message )
 {
-    setSubsystemStatus( subsystem, orcaiceutil::Status::Warning, message );
+    setSubsystemStatus( subsystem, hydroutil::Status::Warning, message );
 }
 
 void 
 LocalStatus::fault( const std::string& subsystem, const std::string& message )
 {
-    setSubsystemStatus( subsystem, orcaiceutil::Status::Fault, message );
+    setSubsystemStatus( subsystem, hydroutil::Status::Fault, message );
 }
     
 void 
@@ -156,7 +156,7 @@ LocalStatus::process()
         if ( secSinceLastHeartbeat > it->second.maxHeartbeatInterval )
         {
             // Oops, this subsystem appears to be dead...
-            it->second.type = orcaiceutil::Status::Stalled;
+            it->second.type = hydroutil::Status::Stalled;
             stringstream ss; 
             ss << "Subsystem hasn't been heard from for "<<secSinceLastHeartbeat<<"s.";
             it->second.message = ss.str();

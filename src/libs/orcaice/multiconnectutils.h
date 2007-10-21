@@ -12,7 +12,8 @@
 #define ORCAICE_MULTI_CONNECT_UTILITIES_H
 
 #include <orcaice/connectutils.h>
-#include <orcaiceutil/thread.h>
+#include <hydroutil/thread.h>
+#include <IceUtil/Thread.h>
 
 namespace orcaice
 {
@@ -26,25 +27,25 @@ Convenience function. Tries to setup the specified interface until is successful
 the number of retries is exceeded (default -1, i.e. infinite), or the @c thread is stopped.
 Nothing is done if retryNumber=0;
 
-We catch orcaiceutil::Exception, sleep for @c retryInterval [s] and try again.
+We catch hydroutil::Exception, sleep for @c retryInterval [s] and try again.
 
 Example:
 @verbatim
 Ice::ObjectPtr obj = new MyObjectI;
-orcaice::createInterfaceWithString( context_, obj, "coolname", (orcaiceutil::Thread*)this );
+orcaice::createInterfaceWithString( context_, obj, "coolname", (hydroutil::Thread*)this );
 @endverbatim
  */
 void createInterfaceWithString( const Context       & context,
                                 Ice::ObjectPtr      & object,
                                 const std::string   & name,
-                                orcaiceutil::Thread*  thread, int retryInterval=2, int retryNumber=-1 );
+                                hydroutil::Thread*  thread, int retryInterval=2, int retryNumber=-1 );
 
 /*!
 Convenience function. Tries to setup the specified interface until successful,
 the number of retries is exceeded (default -1, i.e. infinite), or the @c thread is stopped.
 Nothing is done if retryNumber=0;
 
-We catch orcaiceutil::Exception, sleep for @c retryInterval [s] and try again.
+We catch hydroutil::Exception, sleep for @c retryInterval [s] and try again.
 Gives up after @c retryNumber of attempts (-1 stands for infinite number of retries).
 
 We do NOT catch a possible orcaice::ConfigFileException exception.
@@ -53,7 +54,7 @@ We do NOT catch a possible orcaice::ConfigFileException exception.
 Ice::ObjectPtr obj = new MyObjectI;
 try
 {
-    orcaice::createInterfaceWithTag( context_, obj, "InterfaceTag", (orcaiceutil::Thread*)this );
+    orcaice::createInterfaceWithTag( context_, obj, "InterfaceTag", (hydroutil::Thread*)this );
 }
 catch ( const orcaice::ConfigFileException& e ) {
     // what do we do?
@@ -63,7 +64,7 @@ catch ( const orcaice::ConfigFileException& e ) {
 void createInterfaceWithTag( const Context      & context,
                             Ice::ObjectPtr      & object,
                             const std::string   & interfaceTag,
-                            orcaiceutil::Thread*  thread, int retryInterval=2, int retryNumber=-1 );
+                            hydroutil::Thread*  thread, int retryInterval=2, int retryNumber=-1 );
 
 /*!
 Tries to activate the adapter (by calling Context::activate(). If fails, sleeps for
@@ -71,7 +72,7 @@ Tries to activate the adapter (by calling Context::activate(). If fails, sleeps 
 (default -1, i.e. infinite), or the @c thread is stopped. Nothing is done if retryNumber=0;
 */
 // note: Context::activate() is not a const function, that's why a ref to it is not const.
-void activate( Context& context, orcaiceutil::Thread* thread, int retryInterval=2, int retryNumber=-1 );
+void activate( Context& context, hydroutil::Thread* thread, int retryInterval=2, int retryNumber=-1 );
 
 /*!
 Convenience function. Tries to connect to the specified remote interface until successful,
@@ -88,7 +89,7 @@ Example:
 MyInterfacePrx myInterfacePrx;
 try {
     orcaice::connectToInterfaceWithString<MyInterfacePrx>( 
-        context_, myInterfacePrx, "iface@platform/component", (orcaiceutil::Thread*)this );
+        context_, myInterfacePrx, "iface@platform/component", (hydroutil::Thread*)this );
 }
 catch ( const orcaice::TypeMismatchException& e ) {
     // what do we do?
@@ -100,7 +101,7 @@ void
 connectToInterfaceWithString( const Context     & context,
                               ProxyType         & proxy,
                               const std::string & proxyString,
-                              orcaiceutil::Thread*    thread, int retryInterval=2, int retryNumber=-1 )
+                              hydroutil::Thread*    thread, int retryInterval=2, int retryNumber=-1 )
 {    
     context.tracer()->debug( "orcaice::connectToInterfaceWithString(thread) proxy="+proxyString, 10 );
     int count = 0;
@@ -139,7 +140,7 @@ Example:
 MyInterfacePrx myInterfacePrx;
 try {
     orcaice::connectToInterfaceWithTag<MyInterfacePrx>( 
-        context_, myInterfacePrx, "MyInterface", (orcaiceutil::Thread*)this );
+        context_, myInterfacePrx, "MyInterface", (hydroutil::Thread*)this );
 }
 catch ( const orcaice::TypeMismatchException& e ) {
     // what do we do?
@@ -154,7 +155,7 @@ void
 connectToInterfaceWithTag( const Context     & context,
                            ProxyType         & proxy,
                            const std::string & interfaceTag,
-                           orcaiceutil::Thread*  thread, int retryInterval=2, int retryNumber=-1 )
+                           hydroutil::Thread*  thread, int retryInterval=2, int retryNumber=-1 )
 {    
     context.tracer()->debug( "orcaice::connectToInterfaceWithTag(thread) tag="+interfaceTag, 10 );
 
@@ -191,7 +192,7 @@ IceStorm::TopicPrx
 connectToTopicWithString( const Context     & context,
                           ConsumerProxyType & publisher,
                           const std::string & topicName,
-                          orcaiceutil::Thread*  thread, int retryInterval=2, int retryNumber=-1 )
+                          hydroutil::Thread*  thread, int retryInterval=2, int retryNumber=-1 )
 {
     context.tracer()->debug( "orcaice::connectToTopicWithString(thread) topic="+topicName, 10 );
     IceStorm::TopicPrx topicPrx;
@@ -232,7 +233,7 @@ connectToTopicWithTag( const Context      & context,
                        ConsumerProxyType  & publisher,
                        const std::string  & interfaceTag,
                        const std::string  & subtopic,
-                       orcaiceutil::Thread*  thread, int retryInterval=2, int retryNumber=-1 )
+                       hydroutil::Thread*  thread, int retryInterval=2, int retryNumber=-1 )
 {
     context.tracer()->debug( "orcaice::connectToTopicWithTag(thread) tag="+interfaceTag, 10 );
     IceStorm::TopicPrx topicPrx;
@@ -265,7 +266,7 @@ is stopped. If unsuccesful for any reason, an empty string is returned. Nothing 
 We catch all orcaice::NetworkException, sleep for @c retryInterval [s] and try again.
 */
 std::string getInterfaceIdWithString( const Context& context, const std::string& proxyString,
-                       orcaiceutil::Thread*  thread, int retryInterval=2, int retryNumber=-1 );
+                       hydroutil::Thread*  thread, int retryInterval=2, int retryNumber=-1 );
 
 /*!
 Convenience function. Tries to connect to the specified topic by calling getInterfaceIdWithString() 
@@ -277,7 +278,7 @@ We catch all orcaice::NetworkException, sleep for @c retryInterval [s] and try a
 All other exceptions are not likely to be resolved over time so we don't catch them.
 */
 std::string getInterfaceIdWithTag( const Context& context, const std::string& interfaceTag,
-                       orcaiceutil::Thread*  thread, int retryInterval=2, int retryNumber=-1 );
+                       hydroutil::Thread*  thread, int retryInterval=2, int retryNumber=-1 );
 
 //@}
 

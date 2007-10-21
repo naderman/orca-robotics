@@ -17,7 +17,7 @@ using namespace std;
 
 int main(int argc, char * argv[])
 {
-    orcaice::PtrBuffer<orca::RangeScanner2dDataPtr> buffer(-1,orcaiceutil::BufferTypeCircular);
+    orcaice::PtrBuffer<orca::RangeScanner2dDataPtr> buffer(-1,hydroutil::BufferTypeCircular);
     orca::RangeScanner2dDataPtr data = new orca::RangeScanner2dData;
 
     cout<<"testing get() ... ";
@@ -28,7 +28,7 @@ int main(int argc, char * argv[])
         cout<<"failed. empty buffer, should've caught exception"<<endl;
         return EXIT_FAILURE;
     }
-    catch ( const orcaiceutil::Exception & )
+    catch ( const hydroutil::Exception & )
     {
         ; // ok
     }
@@ -41,7 +41,7 @@ int main(int argc, char * argv[])
         cout<<"failed. empty buffer, should've caught exception"<<endl;
         return EXIT_FAILURE;
     }
-    catch ( const orcaiceutil::Exception & )
+    catch ( const hydroutil::Exception & )
     {
         ; // ok
     }
@@ -86,7 +86,7 @@ int main(int argc, char * argv[])
     {
         buffer.get( data );
     }
-    catch ( const orcaiceutil::Exception & )
+    catch ( const hydroutil::Exception & )
     {
         cout<<"failed. should be a non-empty buffer."<<endl;
         return EXIT_FAILURE;
@@ -106,7 +106,7 @@ int main(int argc, char * argv[])
             buffer.getAndPop( data );
         }
     }
-    catch ( const orcaiceutil::Exception & )
+    catch ( const hydroutil::Exception & )
     {
         cout<<"failed. should be a non-empty buffer."<<endl;
         return EXIT_FAILURE;
@@ -117,8 +117,8 @@ int main(int argc, char * argv[])
     }
     cout<<"ok"<<endl;
     
-    cout<<"testing configure() with orcaiceutil::BufferTypeCircular ... ";
-    buffer.configure( 300, orcaiceutil::BufferTypeCircular );
+    cout<<"testing configure() with hydroutil::BufferTypeCircular ... ";
+    buffer.configure( 300, hydroutil::BufferTypeCircular );
     for ( int i=0; i<400; ++i ) {
         buffer.push( data );
     }
@@ -137,8 +137,8 @@ int main(int argc, char * argv[])
     }
     cout<<"ok"<<endl;
 
-    cout<<"testing configure() with orcaiceutil::BufferTypeQueue ... ";
-    buffer.configure( 300, orcaiceutil::BufferTypeQueue );
+    cout<<"testing configure() with hydroutil::BufferTypeQueue ... ";
+    buffer.configure( 300, hydroutil::BufferTypeQueue );
     for ( int i=0; i<400; ++i ) {
         buffer.push( data );
     }

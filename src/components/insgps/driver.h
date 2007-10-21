@@ -12,7 +12,7 @@
 #define ORCA2_INSGPS_DRIVER_H
 
 // this class is a thread which inherits from thread.h
-#include <orcaiceutil/thread.h>
+#include <hydroutil/thread.h>
 
 #include <orca/imu.h>
 #include <orca/odometry3d.h>
@@ -68,7 +68,7 @@ typedef struct Pps{
 }Pps;
 
 
-class Driver : public orcaiceutil::Thread
+class Driver : public hydroutil::Thread
 {
 
 public:

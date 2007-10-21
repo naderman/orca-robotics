@@ -83,7 +83,7 @@ Localise3dImpl::initInterface()
 }
 
 void 
-Localise3dImpl::initInterface( orcaiceutil::Thread* thread, int retryInterval )
+Localise3dImpl::initInterface( hydroutil::Thread* thread, int retryInterval )
 {
     topicPrx_ = orcaice::connectToTopicWithTag<orca::Localise3dConsumerPrx>
         ( context_, consumerPrx_, interfaceTag_, "*", thread, retryInterval );

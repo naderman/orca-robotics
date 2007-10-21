@@ -14,7 +14,7 @@
 
 #include <vector>
 #include <orca/bros1.h>
-#include <orcaiceutil/mathdefs.h>
+#include <hydroutil/mathdefs.h>
 #include <orcapathplan/cell2d.h>
 #include <orcaogmap/ogmap.h>
 

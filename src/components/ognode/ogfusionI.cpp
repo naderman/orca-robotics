@@ -15,7 +15,7 @@ using namespace std;
 using namespace ognode;
 
 OgFusionI::OgFusionI( orca::OgFusionConfig& config,
-                      orcaiceutil::Buffer<orca::OgFusionData>& OgFusionDataBuffer )
+                      hydroutil::Buffer<orca::OgFusionData>& OgFusionDataBuffer )
     : config_(config),
       ogFusionDataBuffer_(OgFusionDataBuffer)
 {

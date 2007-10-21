@@ -33,7 +33,7 @@ ReplayMaster::ReplayMaster( const std::string &filename, const orcaice::Context&
 
     // remember the dir where the master file is located
     // the individual log files MUST be in the same dir.
-    dir_ = orcaiceutil::dirname( filename );
+    dir_ = hydroutil::dirname( filename );
 }
 
 ReplayMaster::~ReplayMaster()
@@ -76,7 +76,7 @@ ReplayMaster::getLogs( std::vector<std::string>& filenames,
         orcalog::parseHeaderLine( line, filename, interfaceType, format, enabled );
 
         // add full path to the file name
-        filename = dir_ + orcaiceutil::pathDelimeter() + filename;
+        filename = dir_ + hydroutil::pathDelimeter() + filename;
 
         filenames.push_back( filename );
         interfaceTypes.push_back( interfaceType );

@@ -9,7 +9,7 @@
  */
 #include <iostream>
 #include <assert.h>
-#include <orcaiceutil/mathdefs.h>
+#include <hydroutil/mathdefs.h>
 
 #include "sickutil.h"
 

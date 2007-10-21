@@ -11,7 +11,7 @@
 #ifndef ORCAICE_ICE_PTR_PROXY_H
 #define ORCAICE_ICE_PTR_PROXY_H
 
-#include <orcaiceutil/proxy.h>
+#include <hydroutil/proxy.h>
 #include <Ice/Ice.h>
 
 namespace orcaice
@@ -23,9 +23,9 @@ namespace orcaice
  *  @see PtrBuffer, PtrNotify
  */
 template<class Type>
-class PtrProxy : public orcaiceutil::Proxy<Type>
+class PtrProxy : public hydroutil::Proxy<Type>
 {
-    using orcaiceutil::Proxy<Type>::obj_;
+    using hydroutil::Proxy<Type>::obj_;
     
 protected:
     virtual void internalGet( Type & obj ) const ;

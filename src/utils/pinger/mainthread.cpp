@@ -124,7 +124,7 @@ Handler::run()
         else {
             std::string errString = "Unknown ping method: "+driverName;
             context_.tracer()->error( errString );
-            throw orcaiceutil::Exception( ERROR_INFO, errString );
+            throw hydroutil::Exception( ERROR_INFO, errString );
             return;
         }
         

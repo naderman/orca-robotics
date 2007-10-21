@@ -12,7 +12,7 @@
 #define ORCA2_GPS_MAINLOOP_H
 
 #include <orca/gps.h>
-#include <orcaiceutil/thread.h>
+#include <hydroutil/thread.h>
 #include <orcaice/context.h>
 
 #include "driver.h"
@@ -25,7 +25,7 @@ namespace gps {
 //
 // Note: this thing self-destructs when run() returns.
 //
-class MainLoop : public orcaiceutil::Thread
+class MainLoop : public hydroutil::Thread
 {
 
 public:

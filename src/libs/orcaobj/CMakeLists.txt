@@ -13,7 +13,7 @@ ELSE (NOT OS_WIN)
   GLOBAL_ADD_LIBRARY( OrcaObjects STATIC ${SRCS} )
 ENDIF (NOT OS_WIN)
 
-TARGET_LINK_LIBRARIES( OrcaObjects OrcaInterfaces OrcaIceUtil )
+TARGET_LINK_LIBRARIES( OrcaObjects OrcaInterfaces )
 
 # special dependency on the generated files
 ADD_DEPENDENCIES( OrcaObjects OrcaInterfaces )

@@ -9,7 +9,7 @@
 #include <orca/wifi.h>
 
 // utilities
-#include <orcaiceutil/proxy.h>
+#include <hydroutil/proxy.h>
 #include <orcaice/context.h>
 
 namespace orcaifaceimpl
@@ -29,7 +29,7 @@ public:
     ~WifiImpl();
     
     // local functions
-    //! may throw orcaiceutil::Exceptions
+    //! may throw hydroutil::Exceptions
     void initInterface();
     //! A local call which sets the data reported by the interface, 
     //! and sends it through IceStorm
@@ -41,7 +41,7 @@ private:
     void internalSubscribe(const ::orca::WifiConsumerPrx&);
     void internalUnsubscribe(const ::orca::WifiConsumerPrx& );
 
-    orcaiceutil::Proxy<orca::WifiData> dataProxy_;
+    hydroutil::Proxy<orca::WifiData> dataProxy_;
 
     orca::WifiConsumerPrx    consumerPrx_;
     IceStorm::TopicPrx       topicPrx_;

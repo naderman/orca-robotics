@@ -14,7 +14,7 @@
 #include <map>
 
 #include <orcaice/context.h>
-#include <orcaiceutil/notify.h>
+#include <hydroutil/notify.h>
 #include <orcacm/types.h>
 
 #include "callqueue.h"
@@ -33,10 +33,10 @@ public:
     ~NetworkHandler();    
     
     void getComponentInfo();
-    orcaiceutil::Notify<orcacm::ComponentData> homePipe_;
+    hydroutil::Notify<orcacm::ComponentData> homePipe_;
 
     void getProperties( const std::string & proxy );
-    orcaiceutil::Notify<PropertiesMessage> propPipe_;
+    hydroutil::Notify<PropertiesMessage> propPipe_;
     
 private:
 

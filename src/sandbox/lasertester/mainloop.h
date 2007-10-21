@@ -10,9 +10,9 @@
 #ifndef MAINLOOP_H
 #define MAINLOOP_H
 
-#include <orcaiceutil/thread.h>
+#include <hydroutil/thread.h>
 #include <orcaice/context.h>
-#include <orcaiceutil/proxy.h>
+#include <hydroutil/proxy.h>
 
 #include <orca/laserscanner2d.h>
 #include <IceUtil/Time.h>
@@ -20,7 +20,7 @@
 //
 // @author Alex Brooks
 //
-class MainLoop : public orcaiceutil::Thread
+class MainLoop : public hydroutil::Thread
 {
 
 public: 

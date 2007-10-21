@@ -68,9 +68,9 @@ Component::loadDriver()
     orca::VehicleControlVelocityDifferentialDescription *controlDescr =
         dynamic_cast<orca::VehicleControlVelocityDifferentialDescription*>(&(*(descr.control)));
     if ( controlDescr == NULL )
-        throw orcaiceutil::Exception( ERROR_INFO, "Can only deal with differential drive vehicles." );
+        throw hydroutil::Exception( ERROR_INFO, "Can only deal with differential drive vehicles." );
     if ( controlDescr->maxForwardSpeed != controlDescr->maxReverseSpeed ) 
-        throw orcaiceutil::Exception( ERROR_INFO, "Can't handle max forward speed != max reverse speed." );
+        throw hydroutil::Exception( ERROR_INFO, "Can't handle max forward speed != max reverse speed." );
 
     // based on the config parameter, create the right driver
     string driverName = orcaice::getPropertyWithDefault( 
@@ -84,7 +84,7 @@ Component::loadDriver()
             context().tracer()->debug( "HwHandler: loading 'segwayrmpusb' driver",3);
             rmpIo_.reset( new RmpUsbIoFtdi );
 #else
-            throw orcaiceutil::Exception( ERROR_INFO, "HwHandler: Can't instantiate driver 'usb' because it was not built!" );
+            throw hydroutil::Exception( ERROR_INFO, "HwHandler: Can't instantiate driver 'usb' because it was not built!" );
 #endif            
         }
         else if ( driverName == "segwayrmpcan" )
@@ -95,12 +95,12 @@ Component::loadDriver()
         //Get the port name that we are being asked to open
         string portName;
         if( orcaice::getProperty( context().properties(), prefix+"SegwayRmpCan.PortName", portName ) !=0 ){
-            throw orcaiceutil::Exception( ERROR_INFO, "HwHandler::HwHandler() Config.SegwayRmpCan.PortName not specified" );
+            throw hydroutil::Exception( ERROR_INFO, "HwHandler::HwHandler() Config.SegwayRmpCan.PortName not specified" );
         }
 
         rmpIo_.reset( new PeakCanDriver ( portName ) );
 #else
-        throw orcaiceutil::Exception( ERROR_INFO, "HwHandler: Can't instantiate driver 'peakcan' because it was not built!" );
+        throw hydroutil::Exception( ERROR_INFO, "HwHandler: Can't instantiate driver 'peakcan' because it was not built!" );
 #endif            
         }
         else { assert(false); }
@@ -123,7 +123,7 @@ Component::loadDriver()
         context().tracer()->debug( "HwHandler: loading 'playerclient' driver",3);
         driver_.reset( new PlayerClientDriver( context() ) );
 #else
-        throw orcaiceutil::Exception( ERROR_INFO, "HwHandler: Can't instantiate driver 'playerclient' because it was not built!" );
+        throw hydroutil::Exception( ERROR_INFO, "HwHandler: Can't instantiate driver 'playerclient' because it was not built!" );
 #endif
     }
     else if ( driverName == "fake" )
@@ -135,7 +135,7 @@ Component::loadDriver()
         string errorStr = "HwHandler: Unknown driver type. Cannot talk to hardware.";
         context().tracer()->error( errorStr);
         context().tracer()->info( "HwHandler: Valid driver values are {'segwayrmpcan', 'segwayrmpusb', 'playerclient', 'fake'}" );
-        throw orcaiceutil::Exception( ERROR_INFO, errorStr );
+        throw hydroutil::Exception( ERROR_INFO, errorStr );
     }
 
     return descr;
@@ -183,9 +183,9 @@ void
 Component::stop()
 {
     tracer()->debug( "stopping component", 2 );
-    orcaiceutil::stopAndJoin( netHandler_ );
+    hydroutil::stopAndJoin( netHandler_ );
     tracer()->info( "stopped net handler", 2 );
-    orcaiceutil::stopAndJoin( hwHandler_ );
+    hydroutil::stopAndJoin( hwHandler_ );
     tracer()->info( "stopped hw handler", 2 );
 }
 

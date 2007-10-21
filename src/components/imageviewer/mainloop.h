@@ -15,19 +15,19 @@
 #include <cv.h>
 
 #include <orca/camera.h>
-#include <orcaiceutil/thread.h>
-#include <orcaiceutil/buffer.h>
+#include <hydroutil/thread.h>
+#include <hydroutil/buffer.h>
 #include <orcaice/context.h>
 
 
 namespace imageviewer{
 
-class MainLoop : public orcaiceutil::Thread
+class MainLoop : public hydroutil::Thread
 {
 public:
 
     MainLoop( const orca::CameraConsumerPrx & callbackPrx,
-                orcaiceutil::Buffer<orca::CameraData> & dataPipe, 
+                hydroutil::Buffer<orca::CameraData> & dataPipe, 
                 const orcaice::Context & context );
 
     ~MainLoop();
@@ -43,7 +43,7 @@ private:
     orca::CameraConsumerPrx callbackPrx_;
     
     // buffers
-    orcaiceutil::Buffer<orca::CameraData> & dataPipe_;
+    hydroutil::Buffer<orca::CameraData> & dataPipe_;
     
     orca::CameraDescription  descr_;
 

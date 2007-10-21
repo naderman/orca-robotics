@@ -80,7 +80,7 @@ LaserScanner2dImpl::initInterface()
 }
 
 void 
-LaserScanner2dImpl::initInterface( orcaiceutil::Thread* thread, int retryInterval )
+LaserScanner2dImpl::initInterface( hydroutil::Thread* thread, int retryInterval )
 {
     topicPrx_ = orcaice::connectToTopicWithTag<orca::RangeScanner2dConsumerPrx>
         ( context_, consumerPrx_, interfaceTag_, "*", thread, retryInterval );
@@ -162,7 +162,7 @@ LaserScanner2dImpl::localSet( const ::orca::LaserScanner2dDataPtr &data )
 void
 LaserScanner2dImpl::localSetAndSend( const ::orca::LaserScanner2dDataPtr &data )
 {
-    if ( context_.tracer()->verbosity( orcaiceutil::Tracer::DebugTrace, orcaiceutil::Tracer::ToAny ) >= 5 )
+    if ( context_.tracer()->verbosity( hydroutil::Tracer::DebugTrace, hydroutil::Tracer::ToAny ) >= 5 )
     {
         stringstream ss;
         ss << "LaserScanner2dIface: Sending data: " << orcaice::toString(data);

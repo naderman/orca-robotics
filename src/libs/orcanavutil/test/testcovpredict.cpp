@@ -9,7 +9,7 @@
  */
 #include <orcanavutil/covpredict.h>
 #include <iostream>
-#include <orcaiceutil/mathdefs.h>
+#include <hydroutil/mathdefs.h>
 
 using namespace std;
 

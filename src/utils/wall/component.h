@@ -15,7 +15,7 @@
 #include <vector>
 #include <string>
 #include <orcaice/component.h>
-#include <orcaiceutil/thread.h>
+#include <hydroutil/thread.h>
 #include <orcadynamicload/dynamicload.h>
 
 namespace orcawall
@@ -42,7 +42,7 @@ private:
 
     // a set of interface simulators, each has its own thread
     // cannot use ThreadPtr's here, because when they will try to re-destruct themselves.
-    std::vector<orcaiceutil::Thread*> sims_;
+    std::vector<hydroutil::Thread*> sims_;
 
     // loads all factory libs and returns a listing of unique supported interfaces
     std::vector<std::string> loadPluginLibraries( const std::string & factoryLibNames );

@@ -11,7 +11,7 @@
 #ifndef ORCA2_TELEOP_INPUT_HANDLER_H
 #define ORCA2_TELEOP_INPUT_HANDLER_H
 
-#include <orcaiceutil/safethread.h>
+#include <hydroutil/safethread.h>
 #include <orcaice/context.h>
 
 namespace teleop
@@ -20,7 +20,7 @@ namespace teleop
 class Network;
 class InputDriver;
 
-class InputHandler : public orcaiceutil::SafeThread
+class InputHandler : public hydroutil::SafeThread
 {
 public:
 

@@ -1,6 +1,7 @@
 #include "componentthread.h"
 #include <orcaice/exceptions.h>
 #include <iostream>
+#include <IceUtil/Thread.h>
 #include <IceGrid/Registry.h>  // used to register Home interface as a well-known object
 
 using namespace std;
@@ -8,7 +9,7 @@ using namespace std;
 namespace orcaice {
 
 ComponentThread::ComponentThread( const Ice::ObjectPrx   &homePrx,
-                                  orcaiceutil::Status    &status,
+                                  hydroutil::Status    &status,
                                   ComponentInterfaceFlag  interfaceFlag,
                                   const orcaice::Context &context )
     : registeredHome_(false),

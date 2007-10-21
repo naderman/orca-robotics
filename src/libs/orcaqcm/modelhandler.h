@@ -12,7 +12,7 @@
 #define QORCACM_MODEL_HANDLER_H
 
 #include <QObject>
-#include <orcaiceutil/notify.h>
+#include <hydroutil/notify.h>
 
 #include <orcacm/types.h>
 #include <orcaqcm/networkhandler.h>
@@ -23,7 +23,7 @@ class QApplication;
 namespace orcaqcm
 {
 
-class ModelHandler : public QObject, public orcaiceutil::NotifyHandler<orcacm::ComponentData>
+class ModelHandler : public QObject, public hydroutil::NotifyHandler<orcacm::ComponentData>
 {
     Q_OBJECT
     

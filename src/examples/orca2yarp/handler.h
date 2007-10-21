@@ -11,13 +11,13 @@
 #ifndef ORCA2_ORCA2YARP_HANDLER_H
 #define ORCA2_ORCA2YARP_HANDLER_H
 
-#include <orcaiceutil/thread.h>
+#include <hydroutil/thread.h>
 #include <orcaice/context.h>
 
 namespace orca2yarp
 {
 
-class Handler: public orcaiceutil::Thread
+class Handler: public hydroutil::Thread
 {    	
 public:
     Handler( const orcaice::Context& context );

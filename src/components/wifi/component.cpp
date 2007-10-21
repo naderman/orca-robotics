@@ -53,7 +53,7 @@ Component::start()
 void Component::stop()
 {    
     tracer()->debug( "Stopping component", 2 );
-//    orcaiceutil::stopAndJoin( mainloop_ );
+//    hydroutil::stopAndJoin( mainloop_ );
     tracer()->info( "Component stopped" );
 }
 

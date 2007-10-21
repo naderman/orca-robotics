@@ -14,8 +14,8 @@
 #include <orca/localise2d.h>
 #include <orca/rangescanner2d.h>
 #include <orcaice/context.h>
-#include <orcaiceutil/thread.h>
-#include <orcaiceutil/proxy.h>
+#include <hydroutil/thread.h>
+#include <hydroutil/proxy.h>
 #include <orcaifaceimpl/proxiedconsumers.h>
 #include <orcalocalnav/speedlimiter.h>
 #include <orcalocalnav/pathmaintainer.h>
@@ -36,7 +36,7 @@ class Simulator;
 //
 // @author Alex Brooks
 //
-class MainLoop : public orcaiceutil::Thread
+class MainLoop : public hydroutil::Thread
 {
 
 public: 
@@ -104,9 +104,9 @@ private:
     orcaifaceimpl::ProxiedLocalise2dConsumerImplPtr     locConsumer_;
     orcaifaceimpl::ProxiedOdometry2dConsumerImplPtr     odomConsumer_;
 
-    orcaiceutil::Proxy<orca::RangeScanner2dDataPtr> *obsProxy_;
-    orcaiceutil::Proxy<orca::Localise2dData>        *locProxy_;
-    orcaiceutil::Proxy<orca::Odometry2dData>        *odomProxy_;
+    hydroutil::Proxy<orca::RangeScanner2dDataPtr> *obsProxy_;
+    hydroutil::Proxy<orca::Localise2dData>        *locProxy_;
+    hydroutil::Proxy<orca::Odometry2dData>        *odomProxy_;
 
     orcalocalnav::PathFollower2dI  &pathFollowerInterface_;
 

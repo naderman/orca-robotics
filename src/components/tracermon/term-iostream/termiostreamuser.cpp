@@ -23,7 +23,7 @@ namespace tracermon
 {
 
 TermIostreamUser::TermIostreamUser( const orcaice::Context & context ) :
-    events_(new orcaiceutil::EventQueue),
+    events_(new hydroutil::EventQueue),
     context_(context)
 {
 }
@@ -46,7 +46,7 @@ TermIostreamUser::enable( Network* network )
 void 
 TermIostreamUser::newTraceMessage( const orca::TracerData & data )
 {
-    orcaiceutil::EventPtr e = new NewTraceMessageEvent( data );
+    hydroutil::EventPtr e = new NewTraceMessageEvent( data );
     events_->add( e );
 }
 
@@ -65,7 +65,7 @@ TermIostreamUser::newLocalTrace( const std::string& msg )
 void
 TermIostreamUser::walk()
 {
-    orcaiceutil::EventPtr event;
+    hydroutil::EventPtr event;
     int timeoutMs = 500;
     
     //

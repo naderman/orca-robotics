@@ -40,6 +40,6 @@ void Component::start()
 void Component::stop()
 {
     tracer()->debug("stopping component...",2);
-    orcaiceutil::stopAndJoin( algoThread_ );
+    hydroutil::stopAndJoin( algoThread_ );
     tracer()->debug("component stopped.",2);
 }

@@ -18,7 +18,7 @@
 
 #include <orcaice/connectutils.h>
 #include <orcaice/context.h>
-#include <orcaiceutil/timer.h>
+#include <hydroutil/timer.h>
 
 #include <orcaqgui/detail.h>
 
@@ -60,7 +60,7 @@ public:
             // do not delete consumer_, it's deleted when the smart pointers fall out of scope.
         }
 
-    orcaiceutil::Buffer<DataType> &buffer() { return consumer_->buffer_; }
+    hydroutil::Buffer<DataType> &buffer() { return consumer_->buffer_; }
 
     // Returns zero on success
     int connect()

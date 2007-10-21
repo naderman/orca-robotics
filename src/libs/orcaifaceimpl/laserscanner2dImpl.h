@@ -20,7 +20,7 @@
 #include <orcaice/ptrproxy.h>
 #include <orcaice/context.h>
 
-namespace orcaiceutil {
+namespace hydroutil {
     class Thread;
 }
 
@@ -41,12 +41,12 @@ public:
     ~LaserScanner2dImpl();
 
     // local interface:
-    //! Sets up interface and connects to IceStorm. May throw orcaiceutil::Exceptions.
+    //! Sets up interface and connects to IceStorm. May throw hydroutil::Exceptions.
     void initInterface();
 
     //! Sets up interface and connects to IceStorm. Catches all exceptions and retries
     //! until sucessful. At every iteration, checks if the thread was stopped.
-    void initInterface( orcaiceutil::Thread* thread, int retryInterval=2 );
+    void initInterface( hydroutil::Thread* thread, int retryInterval=2 );
 
     //! A local call which sets the data reported by the interface
     void localSet( const orca::LaserScanner2dDataPtr& data );

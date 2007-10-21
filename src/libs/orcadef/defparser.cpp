@@ -11,7 +11,7 @@
 #include <iostream>
   
 #include <orcaice/proputils.h>
-#include <orcaiceutil/stringutils.h>
+#include <hydroutil/stringutils.h>
 
 #include "defparser.h"
 #include "exceptions.h"
@@ -252,7 +252,7 @@ DefParser::getInterfaceTags(const std::string &interfaceType, std::vector<string
           i != p.end();
           i++ )
     {
-        vector<string> s = orcaiceutil::toStringSeq( i->first, '.' );
+        vector<string> s = hydroutil::toStringSeq( i->first, '.' );
         assert(s[0] == interfaceType);
         
         string tag = s[1];

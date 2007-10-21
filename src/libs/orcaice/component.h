@@ -12,7 +12,7 @@
 #define ORCAICE_COMPONENT_H
 
 #include <orcaice/context.h>
-#include <orcaiceutil/thread.h>
+#include <hydroutil/thread.h>
 
 namespace orcaice
 {
@@ -152,10 +152,10 @@ protected:
     const std::string& tag() const { return context_.tag_; };
     //! Convenience shortcut to component's local tracer API.
     //! Same result as context().tracer().
-    orcaiceutil::Tracer* tracer() const { return context_.tracer_; };
+    hydroutil::Tracer* tracer() const { return context_.tracer_; };
     //! Convenience shortcut to component's local status API.
     //! Same result as context().status().
-    orcaiceutil::Status* status() const { return context_.status_; };
+    hydroutil::Status* status() const { return context_.status_; };
     //! Convenience shortcut to component's local home API.
     //! Same result as context().home().
     Home* home() const { return context_.home_; };
@@ -188,8 +188,8 @@ private:
 
     // initialize component services
     orcaice::Home*   initHome();
-    orcaiceutil::Tracer* initTracer();
-    orcaiceutil::Status* initStatus();
+    hydroutil::Tracer* initTracer();
+    hydroutil::Status* initStatus();
 
     // Component's context
     Context context_;
@@ -202,10 +202,10 @@ private:
     Ice::ObjectPtr tracerObj_;
     Ice::ObjectPtr statusObj_;
     Ice::ObjectPrx homePrx_;
-    orcaiceutil::Status *localStatus_;
+    hydroutil::Status *localStatus_;
 
     // This thread allows us to do house-keeping stuff and manage Status.
-    orcaiceutil::ThreadPtr componentThread_;
+    hydroutil::ThreadPtr componentThread_;
 };
 
 } // end namespace

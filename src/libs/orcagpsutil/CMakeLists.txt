@@ -5,11 +5,11 @@ IF ( NOT OS_WIN )
     FILE( GLOB SRCS *.cpp )
 
     GLOBAL_ADD_LIBRARY( OrcaGpsUtil SHARED ${SRCS} )
-    TARGET_LINK_LIBRARIES( OrcaGpsUtil OrcaMisc)
+    TARGET_LINK_LIBRARIES( OrcaGpsUtil OrcaMisc )
     INSTALL_FILES( /include/orcagpsutil .*\\.h$ )
     
     IF ( BUILD_TESTS )
-      ADD_SUBDIRECTORY ( test )
+        ADD_SUBDIRECTORY ( test )
     ENDIF ( BUILD_TESTS )
 
 ENDIF ( NOT OS_WIN )

@@ -11,9 +11,9 @@
 #ifndef ORCA2_GOALPLANNER_MAINLOOP_H
 #define ORCA2_GOALPLANNER_MAINLOOP_H
 
-#include <orcaiceutil/thread.h>
+#include <hydroutil/thread.h>
 #include <orcaice/context.h>
-#include <orcaiceutil/proxy.h>
+#include <hydroutil/proxy.h>
 #include <orcanavutil/pose.h> 
 #include <orca/localise2d.h>
 #include <orca/pathplanner2d.h>
@@ -24,7 +24,7 @@ namespace goalplanner
 
 class PathFollower2dI;
 
-class MainLoop : public orcaiceutil::Thread
+class MainLoop : public hydroutil::Thread
 {
 
 public: 
@@ -53,14 +53,14 @@ private:
     orca::PathPlanner2dConsumerPrx taskPrx_;
     
     // buffer which stores computed path from pathplanner
-    orcaiceutil::Proxy<orca::PathPlanner2dData> computedPathProxy_;
+    hydroutil::Proxy<orca::PathPlanner2dData> computedPathProxy_;
         
     // ========== provided pathfollower interface (incoming paths) ===============
     PathFollower2dI* incomingPathI_;
     
-    orcaiceutil::Proxy<orca::PathFollower2dData> incomingPathProxy_;
+    hydroutil::Proxy<orca::PathFollower2dData> incomingPathProxy_;
     
-    orcaiceutil::Proxy<bool> activationProxy_;
+    hydroutil::Proxy<bool> activationProxy_;
     // ===========================================================================
 
     // If the path planner takes more than this amount of time, assume something's wrong.

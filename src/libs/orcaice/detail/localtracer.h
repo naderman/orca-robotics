@@ -11,7 +11,7 @@
 #ifndef ORCAICE_LOCAL_TRACER_H
 #define ORCAICE_LOCAL_TRACER_H
 
-#include <orcaiceutil/tracer.h>
+#include <hydroutil/tracer.h>
 
 #include <IceUtil/Mutex.h>
 
@@ -22,13 +22,13 @@ namespace detail
 
 class SysLogger;
 
-class LocalTracer : public orcaiceutil::Tracer
+class LocalTracer : public hydroutil::Tracer
 {
 public:
     LocalTracer( const orcaice::Context& context );
     virtual ~LocalTracer(); 
 
-    // orcaiceutil::Tracer interface
+    // hydroutil::Tracer interface
     
     virtual void print( const std::string &message );
 

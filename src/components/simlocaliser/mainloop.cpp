@@ -58,7 +58,7 @@ MainLoop::MainLoop( const orcaice::Context & context )
     
         driver_ = new StageDriver( playerHost.c_str(), playerPort, playerId.c_str() );
 #else
-        throw orcaiceutil::Exception( ERROR_INFO, "Can't instantiate driver 'stage' because it was not built!" );
+        throw hydroutil::Exception( ERROR_INFO, "Can't instantiate driver 'stage' because it was not built!" );
 #endif
     }
     
@@ -163,7 +163,7 @@ MainLoop::run()
             context_.communicator()->destroy();
         }
     }
-    catch ( const orcaiceutil::Exception & e )
+    catch ( const hydroutil::Exception & e )
     {
         stringstream ss;
         ss << "unexpected (local?) orcaice exception: " << e.what();

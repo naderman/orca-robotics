@@ -37,7 +37,7 @@ Component::start()
 void
 Component::stop()
 {
-    orcaiceutil::stopAndJoin( handler_ );
+    hydroutil::stopAndJoin( handler_ );
 }
 
 }

@@ -97,7 +97,7 @@ Component::start()
     if ( !desiredCfg.validate() ) {
         tracer()->error( "Failed to validate camera configuration. "+desiredCfg.toString() );
         // this will kill this component
-        throw orcaiceutil::Exception( ERROR_INFO, "Failed to validate camera configuration" );
+        throw hydroutil::Exception( ERROR_INFO, "Failed to validate camera configuration" );
     }
 
     // if we have multiple cameras, this indicates which one we want to use
@@ -106,7 +106,7 @@ Component::start()
     {
         std::string errString = "Only two cameras are supported \n \t cameraIndex must equal 0 for a single camera or 1 for a second camera'";
         errString += prefix + "CameraIndex'";
-        throw orcaiceutil::Exception( ERROR_INFO, errString );
+        throw hydroutil::Exception( ERROR_INFO, errString );
     }
 
     //
@@ -131,7 +131,7 @@ Component::start()
 
         hwDriver_ = new MonoDriver( imageGrabber_, desiredCfg, context() );
 #else
-        throw orcaiceutil::Exception( ERROR_INFO, "Can't instantiate driver 'monoopencv' because it wasn't built!" );
+        throw hydroutil::Exception( ERROR_INFO, "Can't instantiate driver 'monoopencv' because it wasn't built!" );
 #endif // BUILD_OPENCV_GRABBER
     }
     else if ( driverName == "digiclops" )
@@ -145,14 +145,14 @@ Component::start()
 
         hwDriver_ = new MonoDriver( imageGrabber_, desiredCfg, context() );
 #else
-        throw orcaiceutil::Exception( ERROR_INFO, "Can't instantiate driver 'digiclops' because it wasn't built!" );
+        throw hydroutil::Exception( ERROR_INFO, "Can't instantiate driver 'digiclops' because it wasn't built!" );
 #endif // BUILD_DIGICLOPS_GRABBER
     }
     else
     {
         std::string errString = "unknown camera type: "+driverName;
         context().tracer()->error( errString );
-        throw orcaiceutil::Exception( ERROR_INFO, errString );
+        throw hydroutil::Exception( ERROR_INFO, errString );
         return;
     }
     tracer()->debug( "loaded '"+driverName+"' driver", 2 );
@@ -206,7 +206,7 @@ void
 Component::stop()
 {
     tracer()->debug("stopping component...",2);
-    orcaiceutil::stopAndJoin( mainLoop_ );
+    hydroutil::stopAndJoin( mainLoop_ );
 }
 
 } // namespace

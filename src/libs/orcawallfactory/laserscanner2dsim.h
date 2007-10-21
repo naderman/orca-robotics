@@ -22,7 +22,7 @@ class LaserScanner2dSim : public orcawall::InterfaceSim
 public:
     LaserScanner2dSim( const std::string& tag, const orcaice::Context& context );
 
-    // from orcaiceutil::Thread
+    // from hydroutil::Thread
     virtual void run();
 };
 

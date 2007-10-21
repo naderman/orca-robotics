@@ -14,7 +14,7 @@
 using namespace std;
 using namespace drunk; 
 
-Position2dI::Position2dI( orcaiceutil::Buffer<orca::Position2dData> &posBuffer, 
+Position2dI::Position2dI( hydroutil::Buffer<orca::Position2dData> &posBuffer, 
                           orca::Position2dGeometry &geomBuffer, 
                           const IceStorm::TopicPrx &topic) :
     posBuffer_(posBuffer), 

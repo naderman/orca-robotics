@@ -11,7 +11,7 @@
 #include <iostream>
 #include <orcaqgui/orcaguiuserevent.h>
 #include <orcaice/orcaice.h>
-#include <orcaiceutil/sysutils.h>
+#include <hydroutil/sysutils.h>
 
 #include "ipermanentelement.h"
 #include "guielementmodel.h"
@@ -233,7 +233,7 @@ GuiElementModel::determinePlatform( QStringList &elementDetails,
         str = str.section('/',0,0);
         // replace local with our host name
         if (str=="local") {
-            str = QString(orcaiceutil::getHostname().c_str());
+            str = QString(hydroutil::getHostname().c_str());
             elementDetails[i].replace("@local", "@"+str);
         }
         platformStrList << str;

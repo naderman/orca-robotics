@@ -37,10 +37,10 @@ LogMaster::LogMaster( const std::string &filename, const orcaice::Context & cont
     
     // write some global information as comments to the header
     (*file_) << "# == Component ==" << endl;
-    (*file_) << "# Logger host    : " << orcaiceutil::getHostname() << endl;
+    (*file_) << "# Logger host    : " << hydroutil::getHostname() << endl;
     (*file_) << "# Log start time : " << IceUtil::Time::now().toDateTime() << endl;
     (*file_) << "# Ice version    : " << ICE_STRING_VERSION << endl;
-    (*file_) << "# Orca version   : " << orcaiceutil::orcaVersion() << endl;
+    (*file_) << "# Orca version   : " << hydroutil::orcaVersion() << endl;
     (*file_) << "# " << endl;
     (*file_) << "# == Interfaces / Logs Legend ==" << endl;
     (*file_) << "# [interface name]" << endl;

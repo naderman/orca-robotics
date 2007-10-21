@@ -13,7 +13,7 @@
 
 #include <orcaice/context.h>
 #include <orcaice/multiconnectutils.h>
-#include <orcaiceutil/thread.h>
+#include <hydroutil/thread.h>
 
 namespace orcaifaceimpl
 {
@@ -80,11 +80,11 @@ public:
     //! each attempt.
     //! If succesful, tries to subscribe for data using the internal consumer interface.
     //! Catches appropriate exceptions. DOCUMENT!
-    virtual void subscribeWithString( const std::string& proxyString, orcaiceutil::Thread* thread, int retryInterval=2, int retryNumber=-1 )=0;
+    virtual void subscribeWithString( const std::string& proxyString, hydroutil::Thread* thread, int retryInterval=2, int retryNumber=-1 )=0;
 
     //! Same as the threaded version of unsubscribeWithString() but the interface is looked up 
     //! using the config file and tag interfaceTag.
-    virtual void subscribeWithTag( const std::string& interfaceTag, orcaiceutil::Thread* thread, int retryInterval=2, int retryNumber=-1 )=0;
+    virtual void subscribeWithTag( const std::string& interfaceTag, hydroutil::Thread* thread, int retryInterval=2, int retryNumber=-1 )=0;
 };
 
 /*!
@@ -153,7 +153,7 @@ public:
         unsubscribeWithString( proxyString );
     }
 
-    virtual void subscribeWithString( const std::string& proxyString, orcaiceutil::Thread* thread, int retryInterval=2, int retryNumber=-1  )
+    virtual void subscribeWithString( const std::string& proxyString, hydroutil::Thread* thread, int retryInterval=2, int retryNumber=-1  )
     {
         ProviderPrxType providerPrx;
         // multi-try
@@ -195,7 +195,7 @@ public:
 
     }
 
-    virtual void subscribeWithTag( const std::string& interfaceTag, orcaiceutil::Thread* thread, int retryInterval=2, int retryNumber=-1  )
+    virtual void subscribeWithTag( const std::string& interfaceTag, hydroutil::Thread* thread, int retryInterval=2, int retryNumber=-1  )
     {
         // this may throw ConfigFileException, we don't catch it, let the user catch it at the component level
         std::string proxyString = orcaice::getRequiredInterfaceAsString( context_, interfaceTag );

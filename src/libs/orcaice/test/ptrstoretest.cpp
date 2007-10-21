@@ -31,7 +31,7 @@ int main(int argc, char * argv[])
         cout<<"failed. empty store, should've caught exception"<<endl;
         return EXIT_FAILURE;
     }
-    catch ( const orcaiceutil::Exception & )
+    catch ( const hydroutil::Exception & )
     {
         ; // ok
     }
@@ -66,7 +66,7 @@ int main(int argc, char * argv[])
     {
         store.get( copy );
     }
-    catch ( const orcaiceutil::Exception & )
+    catch ( const hydroutil::Exception & )
     {
         cout<<"failed. should be a non-empty store."<<endl;
         return EXIT_FAILURE;

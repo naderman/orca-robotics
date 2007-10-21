@@ -32,7 +32,7 @@ createInterfaceWithString( const Context      & context,
     {
         std::stringstream ss;
         ss<<"Failed to create interface "<<proxyString<<": "<<e;
-        throw orcaiceutil::Exception( ERROR_INFO, ss.str() );
+        throw hydroutil::Exception( ERROR_INFO, ss.str() );
     }
 
     // locally register this interface with Home interface 
@@ -120,7 +120,7 @@ connectToIceStormTopicPrxWithManager( const Ice::CommunicatorPtr & communicator,
     {
         std::string errorString = "invalid proxy to IceStorm";
         communicator->getLogger()->error( errorString );
-        throw( orcaiceutil::Exception( ERROR_INFO, errorString ) );
+        throw( hydroutil::Exception( ERROR_INFO, errorString ) );
         return IceStorm::TopicPrx();
     }
     
@@ -141,7 +141,7 @@ connectToIceStormTopicPrxWithManager( const Ice::CommunicatorPtr & communicator,
             communicator->getLogger()->warning( "no such topic, name=" + e.name );
             // do not create a new topic
             // @todo what do we do? rethrow?
-            //throw orcaiceutil::Exception(ERROR_INFO,"Couldn't create topic");
+            //throw hydroutil::Exception(ERROR_INFO,"Couldn't create topic");
         }
     }
     

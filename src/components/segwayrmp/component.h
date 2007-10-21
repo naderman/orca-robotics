@@ -14,8 +14,8 @@
 #include <orcaice/component.h>
 
 // data pipes
-#include <orcaiceutil/proxy.h>
-#include <orcaiceutil/notify.h>
+#include <hydroutil/proxy.h>
+#include <hydroutil/notify.h>
 #include "hwdriver.h"
 #include <rmpdriver/rmpio.h>
 #include <orca/vehicledescription.h>
@@ -39,9 +39,9 @@ private:
     orca::VehicleDescription loadDriver();
 
     // loop responsible for interaction with the network
-    orcaiceutil::ThreadPtr netHandler_;
+    hydroutil::ThreadPtr netHandler_;
     // loop responsible for interaction with local hardware
-    orcaiceutil::ThreadPtr hwHandler_;
+    hydroutil::ThreadPtr hwHandler_;
 
     std::auto_ptr<HwDriver> driver_;
     std::auto_ptr<RmpIo>    rmpIo_;

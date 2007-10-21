@@ -254,7 +254,7 @@ AdminSessionManager::performOp( Operation &op )
     stringstream ss;
     ss << "AdminSessionManager::"<<op.toString()<<": giving up after errors:\n"<<errorLog.str();
     context_.tracer()->error( ss.str() );
-    throw orcaiceutil::Exception( ERROR_INFO, ss.str() );    
+    throw hydroutil::Exception( ERROR_INFO, ss.str() );    
 }
 
 

@@ -13,7 +13,7 @@
 
 #include <IceStorm/IceStorm.h>
 #include <orca/camera.h>
-#include <orcaiceutil/proxy.h>
+#include <hydroutil/proxy.h>
 #include <orcalog/replayer.h>
 
 #ifdef OPENCV_FOUND
@@ -45,9 +45,9 @@ public:
 
 
 private:
-    orcaiceutil::Proxy<orca::CameraData> dataPipe_;
+    hydroutil::Proxy<orca::CameraData> dataPipe_;
     // alexm: this pipe is not necessary
-    orcaiceutil::Proxy<orca::CameraDescription> descrPipe_;
+    hydroutil::Proxy<orca::CameraDescription> descrPipe_;
     
     orca::CameraData data_;
     orca::CameraConsumerPrx publisher_;

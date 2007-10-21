@@ -11,7 +11,7 @@
 #include <iostream>
 
 #include <orcaice/proputils.h>
-#include <orcaiceutil/mathdefs.h>
+#include <hydroutil/mathdefs.h>
 #include <orcaobj/stringutils.h>
 
 using namespace std;

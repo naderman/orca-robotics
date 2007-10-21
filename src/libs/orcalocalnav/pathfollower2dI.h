@@ -14,7 +14,7 @@
 // include defnition of Ice runtime
 #include <Ice/Ice.h>
 #include <IceStorm/IceStorm.h>
-#include <orcaiceutil/proxy.h>
+#include <hydroutil/proxy.h>
 
 // include provided interfaces
 #include <orca/pathfollower2d.h>
@@ -73,30 +73,30 @@ public:
     bool localIsEnabled() const;
 
     // local access to proxies
-    orcaiceutil::Proxy<orca::PathFollower2dData> &pathProxy()           { return pathProxy_; }
-    orcaiceutil::Proxy<bool>                     &newPathArrivedProxy() { return newPathArrivedProxy_; }
-    orcaiceutil::Proxy<orca::Time>               &activationTimeProxy() { return activationTimeProxy_; }
-    orcaiceutil::Proxy<bool>                     &activationArrivedProxy() { return activationArrivedProxy_; }
+    hydroutil::Proxy<orca::PathFollower2dData> &pathProxy()           { return pathProxy_; }
+    hydroutil::Proxy<bool>                     &newPathArrivedProxy() { return newPathArrivedProxy_; }
+    hydroutil::Proxy<orca::Time>               &activationTimeProxy() { return activationTimeProxy_; }
+    hydroutil::Proxy<bool>                     &activationArrivedProxy() { return activationArrivedProxy_; }
 
 private:
 
     double timeSinceActivate( const orca::Time &activationTime );
 
     // New paths from the outside world go in here
-    orcaiceutil::Proxy<orca::PathFollower2dData>        pathProxy_;
+    hydroutil::Proxy<orca::PathFollower2dData>        pathProxy_;
 
     // Let the component know that a new path has arrived
-    orcaiceutil::Proxy<bool>                            newPathArrivedProxy_;
+    hydroutil::Proxy<bool>                            newPathArrivedProxy_;
 
     // Time of Activation from the outside world goes in here
-    orcaiceutil::Proxy<bool>                            activationArrivedProxy_;
+    hydroutil::Proxy<bool>                            activationArrivedProxy_;
 
     // Progress info from the component goes in here
-    orcaiceutil::Proxy<int>                             wpIndexProxy_;
-    orcaiceutil::Proxy<orca::Time>                      activationTimeProxy_;
+    hydroutil::Proxy<int>                             wpIndexProxy_;
+    hydroutil::Proxy<orca::Time>                      activationTimeProxy_;
 
     // Allow external en/dis-able
-    orcaiceutil::Proxy<bool>                            enabledProxy_;
+    hydroutil::Proxy<bool>                            enabledProxy_;
     
     // The topic to which we'll publish
     IceStorm::TopicPrx             topicPrx_;

@@ -32,7 +32,7 @@ public:
 
 private:
 
-    orcaiceutil::ThreadPtr mainLoop_;
+    hydroutil::ThreadPtr mainLoop_;
 };
 
 } // namespace

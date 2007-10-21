@@ -11,8 +11,8 @@
 #include <iostream>
 #include <sstream>
 #include <iomanip>
-#include <orcaiceutil/exceptions.h>
-#include <orcaiceutil/stringutils.h>
+#include <hydroutil/exceptions.h>
+#include <hydroutil/stringutils.h>
 
 // trying to solve a problem in win, round() is not found
 #ifdef WIN32
@@ -32,7 +32,7 @@ inline double round( double d )
 
 #include <orcaobj/timeutils.h>
 #include <orcaobj/miscutils.h>
-#include <orcaiceutil/mathdefs.h>
+#include <hydroutil/mathdefs.h>
 
 #include "stringutils.h"
 
@@ -413,10 +413,10 @@ toTimeDuration( const std::string& s, orca::Time& obj )
 
     vector<string> sseq;
     if ( isNegative ) {
-        sseq = orcaiceutil::toStringSeq( s.substr( 1 ) );
+        sseq = hydroutil::toStringSeq( s.substr( 1 ) );
     }
     else {
-        sseq = orcaiceutil::toStringSeq( s );
+        sseq = hydroutil::toStringSeq( s );
     }
     if ( sseq.empty() ) return -1;
 //     cout<<"forward :"<<endl; for ( unsigned int i=0; i<sseq.size(); ++i ) cout<<sseq[i]<<endl;
@@ -426,7 +426,7 @@ toTimeDuration( const std::string& s, orca::Time& obj )
 //     cout<<"reversed :"<<endl; for ( unsigned int i=0; i<sseq.size(); ++i ) cout<<sseq[i]<<endl;
 
     // convert to a single string but now with spaces as delimeters
-    std::string s2 = orcaiceutil::toString( sseq, ' ' );
+    std::string s2 = hydroutil::toString( sseq, ' ' );
     std::istringstream ss( s2 );
 
     IceUtil::Time t;
@@ -1365,7 +1365,7 @@ toString( const orca::LinkQualityType &l )
     case orca::LinkQualityTypeRelative:
         return "LinkQualityTypeRelative";
     }
-    throw orcaiceutil::Exception( ERROR_INFO, "Don't know how to handle this type in toString()" );
+    throw hydroutil::Exception( ERROR_INFO, "Don't know how to handle this type in toString()" );
 }
 
 std::string
@@ -1388,7 +1388,7 @@ toString( const orca::OperationMode &o )
     case orca::OperationModeSecondRepeater:
         return "OperationModeSecondRepeater";
     }
-    throw orcaiceutil::Exception( ERROR_INFO, "Don't know how to handle this type in toString()" );
+    throw hydroutil::Exception( ERROR_INFO, "Don't know how to handle this type in toString()" );
 }
 
 std::string 

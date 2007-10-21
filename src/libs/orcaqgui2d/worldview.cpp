@@ -21,7 +21,7 @@
 #include <QDialog>
 #include <QToolTip>
 
-#include <orcaiceutil/mathdefs.h>
+#include <hydroutil/mathdefs.h>
 #include <orcaqgui2dfactory/gridelement.h>
 #include <orcaqgui/guielementmodel.h>
 #include <orcaqgui/mainwin.h>

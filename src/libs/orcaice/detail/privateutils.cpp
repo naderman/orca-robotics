@@ -187,7 +187,7 @@ setGlobalProperties( Ice::PropertiesPtr& properties, const std::string& filename
     {
         stringstream ss; ss<<"Couldn't load global configuration file '"<<filename<<"': "<<e;
         initTracerError( ss.str() );
-        throw orcaiceutil::Exception( ERROR_INFO, ss.str() );
+        throw hydroutil::Exception( ERROR_INFO, ss.str() );
     }
 
     // we are transfering prop's from lower to higher priority, this means that
@@ -213,7 +213,7 @@ setComponentProperties( Ice::PropertiesPtr& properties, const std::string& filen
     catch ( Ice::SyscallException& e ) 
     {
         stringstream ss;ss<<"Couldn't load component configuration file '"<<filename<<"': "<<e;
-        throw orcaiceutil::Exception( ERROR_INFO, ss.str() );
+        throw hydroutil::Exception( ERROR_INFO, ss.str() );
     }
 
     // debug
@@ -267,14 +267,14 @@ parseComponentProperties( const Ice::CommunicatorPtr& communicator, const std::s
     // check that we have component name, if missing set it to 'ComponentTag' converted to lower case
     if( fqCName.component.empty() )
     {
-        fqCName.component = orcaiceutil::toLowerCase( compTag );
+        fqCName.component = hydroutil::toLowerCase( compTag );
         if ( warnFactoryProp )
             initTracerInfo( "Set property to factory default value: "+compTag+".Component="+fqCName.component );
     }
 
     // special case: replace 'local' platform with actual hostname
     if ( fqCName.platform == "local" ) {
-        fqCName.platform = orcaiceutil::getHostname();
+        fqCName.platform = hydroutil::getHostname();
         // update properties
         properties->setProperty( compTag+".Platform", fqCName.platform );
         properties->setProperty( compTag+".AdapterId", orcaice::toString(fqCName) );
@@ -308,7 +308,7 @@ void
 printAllVersions( const Component& component )
 {
     std::stringstream ss;
-    ss << "Versions: Ice="<<ICE_STRING_VERSION<<"  Orca="<<orcaiceutil::orcaVersion();
+    ss << "Versions: Ice="<<ICE_STRING_VERSION<<"  Orca="<<hydroutil::orcaVersion();
     // if this is NOT an Orca component, print its version as well
     if ( !component.version().empty() ) {
         ss << "  Project="<<component.version();

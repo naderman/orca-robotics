@@ -57,7 +57,7 @@ Component::start()
     else
     {
         std::string errString = "Unknown driver type: "+driverName;
-        throw orcaiceutil::Exception( ERROR_INFO, errString );
+        throw hydroutil::Exception( ERROR_INFO, errString );
     }
 
     //

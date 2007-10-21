@@ -11,8 +11,8 @@
 #ifndef ORCA2_FEATURE_EXTRACTOR_MAIN_LOOP_H
 #define ORCA2_FEATURE_EXTRACTOR_MAIN_LOOP_H
 
-#include <orcaiceutil/thread.h>
-#include <orcaiceutil/proxy.h>
+#include <hydroutil/thread.h>
+#include <hydroutil/proxy.h>
 #include <orcaice/context.h>
 
 #include <orca/localise2d.h>
@@ -25,7 +25,7 @@ namespace gps2localise2d
 
 class Driver;
 
-class MainLoop : public orcaiceutil::Thread
+class MainLoop : public hydroutil::Thread
 {
 public:
 

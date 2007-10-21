@@ -15,7 +15,7 @@
 #include <iostream>
 
 #include <orcaice/context.h>
-#include <orcaiceutil/timer.h>
+#include <hydroutil/timer.h>
 #include <orcaice/recursivegaussian.h>
 #include <orcaice/connectutils.h>
 
@@ -74,7 +74,7 @@ private:
     
     ConsumerPrxType callbackPrx_;
 
-    orcaiceutil::Timer timer_;
+    hydroutil::Timer timer_;
     RecursiveGaussian model_;
 };
 

@@ -4,6 +4,7 @@
 INCLUDE( ${ORCA_CMAKE_DIR}/UseBasicRules.cmake )
 INCLUDE( ${ORCA_CMAKE_DIR}/UseIce.cmake )
 INCLUDE( ${ORCA_CMAKE_DIR}/UseLibProjectInterfaces.cmake )
+INCLUDE( ${HYDRO_HOME}/cmake/UseHydro.cmake )
 
 #
 # Project-specific rules

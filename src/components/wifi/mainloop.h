@@ -11,7 +11,7 @@
 #ifndef ORCA2_WIFI_MAINLOOP_H
 #define ORCA2_WIFI_MAINLOOP_H
 
-#include <orcaiceutil/thread.h>
+#include <hydroutil/thread.h>
 #include <orcaifaceimpl/wifiImpl.h>
 
 namespace wifi
@@ -19,7 +19,7 @@ namespace wifi
     
 class WifiDriver;
 
-class MainLoop : public orcaiceutil::Thread
+class MainLoop : public hydroutil::Thread
 {
 
 public: 

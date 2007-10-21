@@ -11,7 +11,7 @@
 #ifndef ORCAICE_EXCEPTIONS_H
 #define ORCAICE_EXCEPTIONS_H
 
-#include <orcaiceutil/exceptions.h>
+#include <hydroutil/exceptions.h>
 
 namespace orcaice
 {
@@ -20,7 +20,7 @@ namespace orcaice
 //! 
 //! Potential problems include file missing, the specified property tag missing, or the property
 //! value is of wrong type.
-class ConfigFileException : public orcaiceutil::Exception
+class ConfigFileException : public hydroutil::Exception
 {
 public:
     ConfigFileException(const char *file, const char *line, const char *message)
@@ -30,7 +30,7 @@ public:
 };
 
 //! This exception is raised when something is wrong with the hardware.
-class HardwareException : public orcaiceutil::Exception
+class HardwareException : public hydroutil::Exception
 {
 public:
     HardwareException(const char *file, const char *line, const char *message)
@@ -40,7 +40,7 @@ public:
 };
 
 //! This exception is raised when something is wrong with the network connection.
-class NetworkException : public orcaiceutil::Exception
+class NetworkException : public hydroutil::Exception
 {
     public:
         NetworkException(const char *file, const char *line, const char *message)
@@ -51,7 +51,7 @@ class NetworkException : public orcaiceutil::Exception
 
 //! This exception is raised when you try to do something like activate the component
 //! while the component is in the process of deactivating
-class ComponentDeactivatingException : public orcaiceutil::Exception
+class ComponentDeactivatingException : public hydroutil::Exception
 {
     public:
         ComponentDeactivatingException(const char *file, const char *line, const char *message)

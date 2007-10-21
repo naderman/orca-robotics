@@ -5,6 +5,7 @@ INCLUDE_DIRECTORIES(
     ${PROJECT_SOURCE_DIR}/src/libs
     )
 LINK_DIRECTORIES( ${ICE_HOME}/lib )
+INCLUDE( ${HYDRO_HOME}/cmake/UseHydro.cmake )
 
 # for some reason cannot get shared libs working in windows
 IF(NOT OS_WIN)
@@ -13,7 +14,7 @@ ELSE (NOT OS_WIN)
   GLOBAL_ADD_LIBRARY( OrcaDef STATIC defparser.cpp componentdefinition.cpp exceptions.cpp )
 ENDIF (NOT OS_WIN)
 
-TARGET_LINK_LIBRARIES( OrcaDef OrcaInterfaces OrcaIce OrcaIceUtil OrcaObjects Ice IceUtil )
+TARGET_LINK_LIBRARIES( OrcaDef OrcaInterfaces OrcaIce HydroUtil OrcaObjects Ice IceUtil )
 
 # special dependency on the generated files
 ADD_DEPENDENCIES( OrcaDef OrcaObjects OrcaIce )

@@ -18,7 +18,7 @@
 
 #include <orcaice/connectutils.h>
 #include <orcaice/context.h>
-#include <orcaiceutil/timer.h>
+#include <hydroutil/timer.h>
 
 #include <orcaqgui/detail.h>
 

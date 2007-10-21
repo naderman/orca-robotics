@@ -11,9 +11,9 @@
 #ifndef ORCA2_TELEOP_TERMINAL_DISPLAY_HANDLER_H
 #define ORCA2_TELEOP_TERMINAL_DISPLAY_HANDLER_H
 
-#include <orcaiceutil/thread.h>
+#include <hydroutil/thread.h>
 #include <orcaice/context.h>
-#include <orcaiceutil/eventqueue.h>
+#include <hydroutil/eventqueue.h>
 
 #include "display.h"
 
@@ -22,7 +22,7 @@ namespace teleop
 
 class TermDisplayDriver;
 
-class TermDisplayHandler : public orcaiceutil::Thread, public Display
+class TermDisplayHandler : public hydroutil::Thread, public Display
 {
 public:
 
@@ -47,7 +47,7 @@ public:
     
 private:
 
-    orcaiceutil::EventQueuePtr events_;
+    hydroutil::EventQueuePtr events_;
 
     // generic interface to input hardware
     TermDisplayDriver* driver_;

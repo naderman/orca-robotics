@@ -11,7 +11,7 @@
 #ifndef ORCAICE_DETAIL_LOCAL_STATUS_H
 #define ORCAICE_DETAIL_LOCAL_STATUS_H
 
-#include <orcaiceutil/status.h>
+#include <hydroutil/status.h>
 
 #include <IceUtil/Mutex.h>
 #include <map>
@@ -23,7 +23,7 @@ namespace detail
 
 class StatusI;
 
-class LocalStatus : public orcaiceutil::Status
+class LocalStatus : public hydroutil::Status
 {
 public:
 
@@ -42,7 +42,7 @@ public:
                  StatusI *statusI );
     virtual ~LocalStatus();
     
-    // from orcaiceutil::Status
+    // from hydroutil::Status
 
     // Must be called before notifcations of the subsytem's status.
     // Status will flag an error if the subsystem's status is not updated

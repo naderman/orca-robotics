@@ -56,10 +56,10 @@ public:
 private:
 
     // the driver will put the latest data into this queue buffer
-    orcaiceutil::Buffer<orca::GpsData> gpsDataBuffer_;
-    orcaiceutil::Buffer<orca::ImuData> imuDataBuffer_;
-    orcaiceutil::Buffer<orca::Odometry3dData> odometry3dDataBuffer_;
-    orcaiceutil::Buffer<orca::Localise3dData> localise3dDataBuffer_;
+    hydroutil::Buffer<orca::GpsData> gpsDataBuffer_;
+    hydroutil::Buffer<orca::ImuData> imuDataBuffer_;
+    hydroutil::Buffer<orca::Odometry3dData> odometry3dDataBuffer_;
+    hydroutil::Buffer<orca::Localise3dData> localise3dDataBuffer_;
 
     // Blocks till timout expires, returns number of messages read, -1 if failure
     virtual int readMsgsFromHardware();

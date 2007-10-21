@@ -18,8 +18,8 @@ using namespace orcaice;
 
 namespace goalplanner {
 
-PathFollower2dI::PathFollower2dI( orcaiceutil::Proxy<orca::PathFollower2dData> &pathPipe,
-                                  orcaiceutil::Proxy<bool> &activationPipe,
+PathFollower2dI::PathFollower2dI( hydroutil::Proxy<orca::PathFollower2dData> &pathPipe,
+                                  hydroutil::Proxy<bool> &activationPipe,
                                   orca::PathFollower2dPrx localNavPrx )
     : pathPipe_(pathPipe),
       activationPipe_(activationPipe),

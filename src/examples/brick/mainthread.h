@@ -11,13 +11,13 @@
 #ifndef ORCA2_BRICK_HANDLER_H
 #define ORCA2_BRICK_HANDLER_H
 
-#include <orcaiceutil/safethread.h>
+#include <hydroutil/safethread.h>
 #include <orcaice/context.h>
 
 namespace brick
 {
 
-class MainThread: public orcaiceutil::SafeThread
+class MainThread: public hydroutil::SafeThread
 {    	
 public:
     MainThread( const orcaice::Context& context );

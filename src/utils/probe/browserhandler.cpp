@@ -25,7 +25,7 @@ BrowserHandler::BrowserHandler( orcaprobe::IDisplay & display,
                                 const orcaice::Context & context )
     : factories_(factories),
       display_(display),
-      events_(new orcaiceutil::EventQueue),
+      events_(new hydroutil::EventQueue),
       ifaceProbe_(0),
       context_(context)
 {
@@ -40,28 +40,28 @@ void
 BrowserHandler::chooseActivate()
 {
 //     cout<<"chooseActivate"<<endl;
-    orcaiceutil::EventPtr e = new probe::ActivateEvent;
+    hydroutil::EventPtr e = new probe::ActivateEvent;
     events_->add( e );
 }
 
 void 
 BrowserHandler::chooseReload()
 {
-    orcaiceutil::EventPtr e = new probe::ReloadEvent;
+    hydroutil::EventPtr e = new probe::ReloadEvent;
     events_->add( e );
 }
 
 void 
 BrowserHandler::chooseUp()
 {
-    orcaiceutil::EventPtr e = new probe::UpEvent;
+    hydroutil::EventPtr e = new probe::UpEvent;
     events_->add( e );
 }
 
 void 
 BrowserHandler::chooseTop()
 {
-    orcaiceutil::EventPtr e = new probe::TopEvent;
+    hydroutil::EventPtr e = new probe::TopEvent;
     events_->add( e );
 }
 
@@ -69,28 +69,28 @@ void
 BrowserHandler::choosePick( int pick )
 {
 //     cout<<"choosePick() pick="<<pick<<endl;
-    orcaiceutil::EventPtr e = new probe::PickEvent( pick );
+    hydroutil::EventPtr e = new probe::PickEvent( pick );
     events_->add( e );
 }
 
 void 
 BrowserHandler::chooseFilter( const std::string & filter )
 {
-    orcaiceutil::EventPtr e = new probe::FilterEvent; // FilterEvent( filter_ );
+    hydroutil::EventPtr e = new probe::FilterEvent; // FilterEvent( filter_ );
     events_->add( e );
 }
 
 void
 BrowserHandler::chooseDeactivate()
 {
-    orcaiceutil::EventPtr e = new probe::DeactivateEvent;
+    hydroutil::EventPtr e = new probe::DeactivateEvent;
     events_->add( e );
 }
 
 void 
 BrowserHandler::run()
 {
-    orcaiceutil::EventPtr event;
+    hydroutil::EventPtr event;
     int timeoutMs = 500;
     
     while ( !isStopping() )
@@ -146,7 +146,7 @@ BrowserHandler::run()
         }
         default : {
             cout<<"unknown browser event "<<event->type()<<". Ignoring..."<<endl;
-            orcaiceutil::EventPtr e = new probe::FaultEvent;
+            hydroutil::EventPtr e = new probe::FaultEvent;
             events_->add( e );
         }
         } // switch

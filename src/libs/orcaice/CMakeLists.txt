@@ -3,6 +3,7 @@
 # alexm: is this true? component_rules does not link OrcaIce.
 #
 
+INCLUDE( ${HYDRO_HOME}/cmake/UseHydro.cmake )
 INCLUDE( ${ORCA_CMAKE_DIR}/UseLibProjectInterfaces.cmake )
 
 INCLUDE_DIRECTORIES( BEFORE
@@ -34,7 +35,7 @@ IF( NOT OS_WIN )
               Glacier2
               OrcaInterfaces
               OrcaObjects
-              OrcaIceUtil )
+              HydroUtil )
 
 ELSE ( NOT OS_WIN )
   # building shared libs is complicated in windows
@@ -47,7 +48,7 @@ ELSE ( NOT OS_WIN )
                 optimized IceBox debug IceBoxd
                 optimized IceGrid debug IceGridd
                 optimized Glacier2 debug Glacier2d
-                OrcaInterfaces OrcaObjects OrcaIceUtil )
+                OrcaInterfaces OrcaObjects HydroUtil )
 ENDIF ( NOT OS_WIN )
 
 # special dependency on the generated files

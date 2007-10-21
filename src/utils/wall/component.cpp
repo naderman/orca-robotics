@@ -50,7 +50,7 @@ std::vector<std::string>
 Component::loadPluginLibraries( const std::string & factoryLibNames )
 {
     // Parse space-separated list of lib names
-    vector<string> libNames = orcaiceutil::toStringSeq( factoryLibNames, ' ' );
+    vector<string> libNames = hydroutil::toStringSeq( factoryLibNames, ' ' );
     
     // this will be a listing of unique supported interfaces
     std::vector<std::string> supportedInterfaces;
@@ -110,7 +110,7 @@ Component::createPlugin( const std::string& interfaceType, const std::string& ta
         orcawall::InterfaceSim* sim = factories_[i]->create( interfaceType, tag, context() );
 
         if ( sim ) { 
-            sims_.push_back( (orcaiceutil::Thread*)sim );
+            sims_.push_back( (hydroutil::Thread*)sim );
             return;
         }
         else {
@@ -188,7 +188,7 @@ Component::stop()
     for ( unsigned int i=0; i<sims_.size(); ++i ) {
         stringstream ss; ss<<"Stopping interface simulator "<<i;
         context().tracer()->debug( ss.str(), 3 );
-        orcaiceutil::stopAndJoin( sims_[i] );
+        hydroutil::stopAndJoin( sims_[i] );
     }
     context().tracer()->debug( "Component stopped", 2 );
 }

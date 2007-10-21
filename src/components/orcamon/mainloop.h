@@ -11,13 +11,13 @@
 #ifndef ORCA2_ORCAMON_MAIN_LOOP_H
 #define ORCA2_ORCAMON_MAIN_LOOP_H
 
-#include <orcaiceutil/safethread.h>
+#include <hydroutil/safethread.h>
 #include <orcaice/context.h>
 
 namespace orcamon
 {
 
-class MainLoop : public orcaiceutil::SafeThread
+class MainLoop : public hydroutil::SafeThread
 {
 
 public:

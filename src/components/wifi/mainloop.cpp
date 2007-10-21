@@ -94,7 +94,7 @@ void MainLoop::initDriver()
         string errorStr = "Unknown driver type.";
         context_.tracer()->error( errorStr);
         context_.tracer()->info( "Valid driver values are {'hardware','fake'}" );
-        throw orcaiceutil::Exception( ERROR_INFO, errorStr );
+        throw hydroutil::Exception( ERROR_INFO, errorStr );
     }
     context_.tracer()->debug("driver instantiated",5);
     
@@ -172,7 +172,7 @@ MainLoop::run()
             context_.tracer()->error( ss.str() );
             context_.status()->fault( SUBSYSTEM, ss.str() );
         }
-        catch ( const orcaiceutil::Exception & e )
+        catch ( const hydroutil::Exception & e )
         {
             stringstream ss;
             ss << "unexpected (local?) orcaice exception: " << e.what();

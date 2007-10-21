@@ -37,12 +37,7 @@ Component::start()
 void
 Component::stop()
 {
-    if ( handler_ ) 
-    {
-        IceUtil::ThreadControl algoControl = handler_->getThreadControl();
-        tracer()->debug("stopping algorithm handler", 5 );
-        handler_->stop();
-        tracer()->debug("joining algorithm handler", 5 );
-        algoControl.join();
-    }
+    tracer()->debug( "stopping component", 5 );
+    hydroutil::stopAndJoin( handler_ );
+    tracer()->debug( "stopped component", 5 );
 }

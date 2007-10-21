@@ -11,8 +11,8 @@
 #ifndef ORCAICE_COMPONENT_THREAD_H
 #define ORCAICE_COMPONENT_THREAD_H
 
-#include <orcaiceutil/thread.h>
-#include <orcaiceutil/status.h>
+#include <hydroutil/thread.h>
+#include <hydroutil/status.h>
 #include <orcaice/context.h>
 #include <orcaice/component.h>
 
@@ -25,13 +25,13 @@ namespace orcaice {
 //
 // @author Alex Brooks
 //
-class ComponentThread : public orcaiceutil::Thread
+class ComponentThread : public hydroutil::Thread
 {
 
 public: 
 
     ComponentThread( const Ice::ObjectPrx   &homePrx,
-                     orcaiceutil::Status    &status,
+                     hydroutil::Status    &status,
                      ComponentInterfaceFlag  interfaceFlag,
                      const orcaice::Context &context );
     ~ComponentThread();
@@ -46,7 +46,7 @@ private:
     bool registeredHome_;
 
     Ice::ObjectPrx          homePrx_;
-    orcaiceutil::Status    &status_;
+    hydroutil::Status    &status_;
     ComponentInterfaceFlag  interfaceFlag_;
     orcaice::Context        context_;
 };

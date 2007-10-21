@@ -11,7 +11,7 @@
 #include "ogmap.h"
 #include <iostream>
 #include <sstream>
-#include <orcaiceutil/mathdefs.h>
+#include <hydroutil/mathdefs.h>
 
 using namespace std;
 

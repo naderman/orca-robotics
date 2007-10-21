@@ -25,7 +25,7 @@ AlgoThread::AlgoThread( const orcaice::Context& context ) :
     context_(context)
 {
     laser_ = new orcaifaceimpl::BufferedRangeScanner2dConsumerImpl(
-                    10, orcaiceutil::BufferTypeCircular, context );
+                    10, hydroutil::BufferTypeCircular, context );
     odometry_ = new orcaifaceimpl::StoringOdometry2dConsumerImpl( context );
 }
 
@@ -55,7 +55,7 @@ AlgoThread::initNetwork()
     odometry_->subscribeWithTag( "Odometry", this );
     context_.tracer()->info( "Connected and subscribed to Odometry2d interface.");
 
-    // NOTE: odometry_ has a small buffer called odometry_->store(), see orcaiceutil::Store.
+    // NOTE: odometry_ has a small buffer called odometry_->store(), see hydroutil::Store.
     // it is empty until the first piece of data arrives. if you try to get data from an
     // empty Store an exception will be thrown. It is easier if just wait until it's not
     // empty here so that we don't have to worry about it later.
@@ -94,7 +94,7 @@ AlgoThread::initDriver()
         string errorStr = "Unknown driver type. Cannot talk to hardware.";
         context_.tracer()->error( errorStr);
         context_.tracer()->info( "Valid driver values are {'random', 'fake'}" );
-        throw orcaiceutil::Exception( ERROR_INFO, errorStr );
+        throw hydroutil::Exception( ERROR_INFO, errorStr );
     }
 
     context_.tracer()->debug("driver instantiated",5);

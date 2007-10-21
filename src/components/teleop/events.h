@@ -11,7 +11,7 @@
 #ifndef ORCA2_TELEOP_EVENTS_H
 #define ORCA2_TELEOP_EVENTS_H
 
-#include <orcaiceutil/eventqueue.h>
+#include <hydroutil/eventqueue.h>
 
 namespace teleop
 {
@@ -28,7 +28,7 @@ enum EventType
     NewRelativeCommand
 };
 
-class SentNewVelocityCommandEvent : public orcaiceutil::Event
+class SentNewVelocityCommandEvent : public hydroutil::Event
 {
 public:
     SentNewVelocityCommandEvent( double vx, double vy, double w, bool vxLimit, bool vyLimit, bool wLimit ) :
@@ -47,9 +47,9 @@ public:
     bool vyLimit_;
     bool wLimit_;
 };
-typedef IceUtil::Handle<SentNewVelocityCommandEvent> SentNewVelocityCommandEventPtr;
+typedef HydroIceUtil::Handle<SentNewVelocityCommandEvent> SentNewVelocityCommandEventPtr;
 
-class SentNewBicycleCommandEvent : public orcaiceutil::Event
+class SentNewBicycleCommandEvent : public hydroutil::Event
 {
 public:
     SentNewBicycleCommandEvent( double speed, double steerAngle, bool speedLimit, bool steerAngleLimit ) :
@@ -64,23 +64,23 @@ public:
     bool speedLimit_;
     bool steerAngleLimit_;
 };
-typedef IceUtil::Handle<SentNewBicycleCommandEvent> SentNewBicycleCommandEventPtr;
+typedef HydroIceUtil::Handle<SentNewBicycleCommandEvent> SentNewBicycleCommandEventPtr;
 
-class SentRepeatCommandEvent : public orcaiceutil::Event
+class SentRepeatCommandEvent : public hydroutil::Event
 {
 public:
     SentRepeatCommandEvent() :
         Event( SentRepeatCommand ) {};
 };
 
-class FailedToSendCommandEvent : public orcaiceutil::Event
+class FailedToSendCommandEvent : public hydroutil::Event
 {
 public:
     FailedToSendCommandEvent() :
         Event( FailedToSendCommand ) {};
 };
 
-class NewCommandIncrementEvent : public orcaiceutil::Event
+class NewCommandIncrementEvent : public hydroutil::Event
 {
 public:
     NewCommandIncrementEvent( int longitudinal, int transverse, int angle ) :
@@ -93,9 +93,9 @@ public:
     int transverse_;
     int angle_;
 };
-typedef IceUtil::Handle<NewCommandIncrementEvent> NewCommandIncrementEventPtr;
+typedef HydroIceUtil::Handle<NewCommandIncrementEvent> NewCommandIncrementEventPtr;
 
-class NewRelativeCommandEvent : public orcaiceutil::Event
+class NewRelativeCommandEvent : public hydroutil::Event
 {
 public:
     NewRelativeCommandEvent( double longitudinal, double transverse, double angle ) :
@@ -108,14 +108,14 @@ public:
     double transverse_;
     double angle_;
 };
-typedef IceUtil::Handle<NewRelativeCommandEvent> NewRelativeCommandEventPtr;
+typedef HydroIceUtil::Handle<NewRelativeCommandEvent> NewRelativeCommandEventPtr;
 
 
-class TeleopEventQueueOptimizer : public orcaiceutil::EventQueueOptimizer
+class TeleopEventQueueOptimizer : public hydroutil::EventQueueOptimizer
 {
 public:
     // this combine function adds the member variables of the two events
-    virtual bool combine( orcaiceutil::EventPtr& existing, const orcaiceutil::EventPtr& extra );
+    virtual bool combine( hydroutil::EventPtr& existing, const hydroutil::EventPtr& extra );
 };
 
 } // namespace

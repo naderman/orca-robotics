@@ -52,7 +52,7 @@ LaserTestComponent::start()
 void 
 LaserTestComponent::stop()
 {
-    orcaiceutil::stopAndJoin( mainLoop_ );
+    hydroutil::stopAndJoin( mainLoop_ );
 }
 
 //

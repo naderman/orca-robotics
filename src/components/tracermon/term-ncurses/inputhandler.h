@@ -11,14 +11,14 @@
 #ifndef ORCA2_TRACERMON_TERM_NCURSES_INPUT_HANDLER_H
 #define ORCA2_TRACERMON_TERM_NCURSES_INPUT_HANDLER_H
 
-#include <orcaiceutil/safethread.h>
+#include <hydroutil/safethread.h>
 #include "../user.h"
 #include "../network.h"
 
 namespace tracermon
 {
 
-class InputHandler : public orcaiceutil::SafeThread
+class InputHandler : public hydroutil::SafeThread
 {
 public:
 

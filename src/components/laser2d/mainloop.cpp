@@ -51,7 +51,7 @@ MainLoop::activate()
             context_.activate();
             return;
         }
-        catch ( orcaiceutil::Exception & e )
+        catch ( hydroutil::Exception & e )
         {
             std::stringstream ss;
             ss << "MainLoop::activate(): Caught exception: " << e.what();
@@ -82,7 +82,7 @@ MainLoop::establishInterface()
             context_.tracer()->debug( "Activated Laser interface" );
             return;
         }
-        catch ( orcaiceutil::Exception &e )
+        catch ( hydroutil::Exception &e )
         {
             context_.tracer()->warning( std::string("MainLoop::establishInterface(): ") + e.what() );
         }

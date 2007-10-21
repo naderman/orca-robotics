@@ -12,7 +12,7 @@
 #include <iostream>
 
 #include <GL/glut.h>
-#include <orcaiceutil/mathdefs.h>
+#include <hydroutil/mathdefs.h>
 
 using namespace std;
 

@@ -11,7 +11,7 @@
 #ifndef ORCA_LOCALNAV_CLOCK_H
 #define ORCA_LOCALNAV_CLOCK_H
 
-#include <orcaiceutil/proxy.h>
+#include <hydroutil/proxy.h>
 #include <orca/orca.h>
 
 namespace orcalocalnav {
@@ -44,7 +44,7 @@ public:
 
 private: 
 
-    mutable orcaiceutil::Proxy<orca::Time> timeProxy_;
+    mutable hydroutil::Proxy<orca::Time> timeProxy_;
 
 };
 

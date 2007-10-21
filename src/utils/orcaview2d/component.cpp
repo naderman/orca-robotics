@@ -51,7 +51,7 @@ std::vector<std::string>
 Component::loadPluginLibraries( const std::string& factoryLibNames )
 {
     // Parse space-separated list of lib names
-    vector<string> libNames = orcaiceutil::toStringSeq( factoryLibNames, ' ' );
+    vector<string> libNames = hydroutil::toStringSeq( factoryLibNames, ' ' );
     
     // this will be a listing of unique supported interfaces
     std::vector<std::string> supportedInterfaces;

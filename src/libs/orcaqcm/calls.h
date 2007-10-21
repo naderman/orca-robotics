@@ -35,14 +35,14 @@ class GetComponentsCall : public Call
 {
 public:
     GetComponentsCall( const orcaice::Context & context, const std::string & locatorString,
-                       orcaiceutil::Notify<orcacm::ComponentData>* homePipe );
+                       hydroutil::Notify<orcacm::ComponentData>* homePipe );
 
     virtual void execute();
 
 private:
     orcaice::Context context_;
     std::string locatorString_;
-    orcaiceutil::Notify<orcacm::ComponentData>* homePipe_;
+    hydroutil::Notify<orcacm::ComponentData>* homePipe_;
 };
 
 

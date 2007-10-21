@@ -94,7 +94,7 @@ Service::start( const ::std::string        & name,
             initTracerInfo( component_->tag()+": Loaded component properties from '"+servFilename+"'" );
         }
     }
-    catch ( const orcaiceutil::Exception &e )
+    catch ( const hydroutil::Exception &e )
     {
         initTracerWarning( component_->tag()+": Failed to open component config file : '"+servFilename+"'"+e.what() );
             // debug
@@ -134,7 +134,7 @@ Service::start( const ::std::string        & name,
             orcaice::detail::setGlobalProperties( properties, globFilename );
             initTracerInfo( component_->tag()+": Loaded global properties from '"+globFilename+"'" );
         }
-        catch ( const orcaiceutil::Exception &e )
+        catch ( const hydroutil::Exception &e )
         {
             initTracerWarning( component_->tag()+": Failed to open global config file: '"+globFilename+"'"+e.what() );
         }
@@ -204,7 +204,7 @@ Service::start( const ::std::string        & name,
 //         component_->stop();
         initTracerInfo( component_->tag()+": Service quitting.." );
     }
-    catch ( orcaiceutil::Exception & e )
+    catch ( hydroutil::Exception & e )
     {
         initTracerError( component_->tag()+": Caught OrcaIce exception: "+e.what() );
 //         initTracerError( component_->tag()+": unexpected OrcaIce exception from component. Stopping component..." );

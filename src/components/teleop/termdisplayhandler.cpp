@@ -18,7 +18,7 @@ using namespace std;
 using namespace teleop;
 
 TermDisplayHandler::TermDisplayHandler( const orcaice::Context& context ) :
-    events_(new orcaiceutil::EventQueue),
+    events_(new hydroutil::EventQueue),
     context_(context)
 {
     //
@@ -42,7 +42,7 @@ void
 TermDisplayHandler::sentNewVelocityCommand( 
                 double vx, double vy, double w, bool vxLimit, bool vyLimit, bool wLimit )
 {
-    orcaiceutil::EventPtr e = new SentNewVelocityCommandEvent( vx,vy,w, vxLimit,vyLimit,wLimit );
+    hydroutil::EventPtr e = new SentNewVelocityCommandEvent( vx,vy,w, vxLimit,vyLimit,wLimit );
     events_->add( e );
 }
 
@@ -50,7 +50,7 @@ void
 TermDisplayHandler::sentNewBicycleCommand( 
                 double speed, double steerAngle, bool speedLimit, bool steerAngleLimit )
 {
-    orcaiceutil::EventPtr e = new SentNewBicycleCommandEvent( speed, steerAngle, speedLimit, steerAngleLimit );
+    hydroutil::EventPtr e = new SentNewBicycleCommandEvent( speed, steerAngle, speedLimit, steerAngleLimit );
     events_->add( e );
 }
 
@@ -87,7 +87,7 @@ TermDisplayHandler::run()
     
     context_.tracer()->debug("Display driver enabled",2);
     
-    orcaiceutil::EventPtr event;
+    hydroutil::EventPtr event;
     int timeoutMs = 500;
 
     //

@@ -22,7 +22,7 @@ void
 createInterfaceWithString( const Context       & context,
                             Ice::ObjectPtr      & object,
                             const std::string   & name,
-                            orcaiceutil::Thread*  thread, int retryInterval, int retryNumber )
+                            hydroutil::Thread*  thread, int retryInterval, int retryNumber )
 {
     int count = 0;
     while ( !thread->isStopping() && ( retryNumber<0 || count<retryNumber) )
@@ -53,7 +53,7 @@ void
 createInterfaceWithTag( const Context       & context,
                         Ice::ObjectPtr      & object,
                         const std::string   & interfaceTag,
-                        orcaiceutil::Thread*  thread, int retryInterval, int retryNumber )
+                        hydroutil::Thread*  thread, int retryInterval, int retryNumber )
 {
     int count = 0;
     while ( !thread->isStopping() && ( retryNumber<0 || count<retryNumber) )
@@ -81,7 +81,7 @@ createInterfaceWithTag( const Context       & context,
 }
 
 void
-activate( Context& context, orcaiceutil::Thread* thread, int retryInterval, int retryNumber )
+activate( Context& context, hydroutil::Thread* thread, int retryInterval, int retryNumber )
 {
     int count = 0;
     while ( !thread->isStopping() && ( retryNumber<0 || count<retryNumber) )
@@ -120,7 +120,7 @@ activate( Context& context, orcaiceutil::Thread* thread, int retryInterval, int 
 
 std::string 
 getInterfaceIdWithString( const Context& context, const std::string& proxyString,
-                       orcaiceutil::Thread*  thread, int retryInterval, int retryNumber )
+                       hydroutil::Thread*  thread, int retryInterval, int retryNumber )
 {
     std::string ifaceId;
     int count = 0;
@@ -145,7 +145,7 @@ getInterfaceIdWithString( const Context& context, const std::string& proxyString
 
 std::string 
 getInterfaceIdWithTag( const Context& context, const std::string& interfaceTag,
-                       orcaiceutil::Thread*  thread, int retryInterval, int retryNumber )
+                       hydroutil::Thread*  thread, int retryInterval, int retryNumber )
 {
     std::string ifaceId;
     int count = 0;
