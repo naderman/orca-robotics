@@ -14,21 +14,20 @@
 
 @note Reviewed for release 2.7.0.
 
-A common situation is that you want to experiment with some components without the hassle of
-committing them into the Orca SourceForge repository or want to work on a closed-source
-component. In this case you should download and install the main Orca distribution and
-then setup a parallel workspace for your own project.
+A common situation is that you want to work on a component outsided of the Orca source tree. This can happen if you want to experiment without the need to keep the code clean and documented (a requirement for Orca SourceForge repository) or you want to work on a closed-source component. In this case you should download and install the main Orca distribution and then setup a parallel workspace for your own project.
+
+@section orca_doc_devproj_create Creating a Satelite Project
 
 To help you start quickly we provide a template  project which uses CMake, mirrors
-the setup of the Orca repository and is already set up to find Ice and Orca
+the setup of the Orca repository and is already set up to find Ice and the Orca
 installation, etc. You can of course set up a project in any way you like, however you
-might find it useful. Export CVS module 'empty-project'. Use the export SVN command instead checkout, otherwise you'll have to manually remove all CVS directories. With @c orcacvs pointing at the SourceForge cvs server, the command looks like this:
+might find this template useful. (We use the export command instead checkout, to avoid manually removing the .svn directories).
 @verbatim
-$ orcacvs export -r HEAD empty-project
+$ svn export https://orca-robotics.svn.sf.net/svnroot/orca-robotics/empty/trunk empty-export
 @endverbatim
 
-To customize the empty project a project called 'tractor' follow these steps:
-- Rename the directory 'empty-project' to 'tractor'
+We'll walk through the steps of customizing the empty project into a project called 'tractor'.
+- Rename the directory 'empty-export' to 'tractor'
 - Edit the top level CMakeLists.txt file so it looks like this:
 @verbatim
 # project name
@@ -76,12 +75,20 @@ module tractor
 
 This enough to get you started. Now you can start writing code: add your own components, libraries, and interfaces.
 
-@par Tips for maintaining your project
+@section orca_doc_devproj_tips Tips for Maintaining a Satelite Project
 
-- Tag versions. If this is an internal project, then you probably don't realease distributions. It's still useful to have a history of working code. It's easy to add a tag when Orca version changes and you made sure that your project compiles with the new version. Here's an example of tagging for version Orca v.2.2.0.
+@par Tag versions. 
+
+If this is an internal project, then you probably don't bother realeasing distributions. It's still useful to have a history of working code. It's easy to add a tag when Orca version changes and you made sure that your project compiles with the new version. 
+
+In SVN you do it like this (URL is the URL to your repository, not Orca's)
 @verbatim
-$ cvs tag -f orca-220
+$ svn copy [URL]/tractor/trunk [URL]/tractor/tags/orca-2120 -m "Works with new orca"
 @endverbatim
 
+Here's how to do the same thing in CVS.
+@verbatim
+$ cvs tag -f orca-2120
+@endverbatim
 
 */
