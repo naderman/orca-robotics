@@ -55,7 +55,7 @@ mv temp_index.html html/index.html
 tar -zcvf $TARBALL html
 echo "scp $TARBALL shell.sf.net:$HTDOCS/head_doc/."
 scp  $TARBALL shell.sf.net:$HTDOCS/head_doc/.
-echo "ssh shell.sf.net 'cd $HTDOCS/head_doc/; tar -zxvf $TARBALL'"
-ssh shell.sf.net "cd $HTDOCS/head_doc/; tar -zxvf $TARBALL"
+echo "ssh shell.sf.net 'cd $HTDOCS/head_doc/; tar -zxvf $TARBALL; mv html orca'"
+ssh shell.sf.net "cd $HTDOCS/head_doc/; tar -zxvf $TARBALL; mv html orca"
 
 echo "Finished $0 at: `date`"
