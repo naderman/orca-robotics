@@ -31,18 +31,18 @@ main(int argc, char * argv[])
     }
     cout<<"ok"<<endl;
 
-    cout<<"testing getGlobalConfigFilename() with ORCA2_GLOBAL_CONFIG ... ";
+    cout<<"testing getGlobalConfigFilename() with ORCA_GLOBAL_CONFIG ... ";
     expect = "orca2_config_test";
 #ifndef WIN32
-    if ( setenv( "ORCA2_GLOBAL_CONFIG", expect.c_str(), 1 ) ) {
-        cout<<"failed to set ORCA2_GLOBAL_CONFIG env variable."<<endl;
+    if ( setenv( "ORCA_GLOBAL_CONFIG", expect.c_str(), 1 ) ) {
+        cout<<"failed to set ORCA_GLOBAL_CONFIG env variable."<<endl;
         return EXIT_FAILURE;
     }
 #else
     // windows has to be different!
     // see http://msdn2.microsoft.com/en-us/library/tehxacec.aspx
-    if ( _putenv_s( "ORCA2_GLOBAL_CONFIG", expect.c_str() ) ) {
-        cout<<"failed to set ORCA2_GLOBAL_CONFIG env variable."<<endl;
+    if ( _putenv_s( "ORCA_GLOBAL_CONFIG", expect.c_str() ) ) {
+        cout<<"failed to set ORCA_GLOBAL_CONFIG env variable."<<endl;
         return EXIT_FAILURE;
     }
 #endif
@@ -55,21 +55,21 @@ main(int argc, char * argv[])
     cout<<"ok"<<endl;
 
     cout<<"testing getGlobalConfigFilename() with HOME ... ";
-    // make sure ORCA2_GLOBAL_CONFIG is not set
+    // make sure ORCA_GLOBAL_CONFIG is not set
 #ifndef WIN32
 #if defined(__QNX__) || defined(__APPLE__)
 	// the QNX version of unsetenv() returns void
-    unsetenv( "ORCA2_GLOBAL_CONFIG" );
+    unsetenv( "ORCA_GLOBAL_CONFIG" );
 #else
-    if ( unsetenv( "ORCA2_GLOBAL_CONFIG" ) ) {
-        cout<<"failed to unset ORCA2_GLOBAL_CONFIG env variable."<<endl;
+    if ( unsetenv( "ORCA_GLOBAL_CONFIG" ) ) {
+        cout<<"failed to unset ORCA_GLOBAL_CONFIG env variable."<<endl;
         return EXIT_FAILURE;
     }
 #endif
 #else
     // windows does not have unsetenv() for some reason!
-    if ( _putenv_s( "ORCA2_GLOBAL_CONFIG", "" ) ) {
-        cout<<"failed to set ORCA2_GLOBAL_CONFIG env variable (actually want to unset)."<<endl;
+    if ( _putenv_s( "ORCA_GLOBAL_CONFIG", "" ) ) {
+        cout<<"failed to set ORCA_GLOBAL_CONFIG env variable (actually want to unset)."<<endl;
         return EXIT_FAILURE;
     }
 #endif

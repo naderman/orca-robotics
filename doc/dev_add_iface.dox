@@ -39,10 +39,10 @@ For more information read the chapter on Slice in the Ice Manual <a href="http:/
 @par How to add an interface to the build system
 
 -# Write a Slice file (*.ice) which defines an interface.
-    - Slice files are in @c [ORCA2_SRC]/src/interfaces/slice/orca
+    - Slice files are in @c [ORCA_SRC]/src/interfaces/slice/orca
     - To create a new interface start by copying a similar file.
 -# Add the filename of the new file to the list of Slice sources
-    - Edit file @c [ORCA2_SRC]/src/interfaces/slice/orca/slice_sources.cmake
+    - Edit file @c [ORCA_SRC]/src/interfaces/slice/orca/slice_sources.cmake
 
 @par Adding support for you interface
 

@@ -28,11 +28,11 @@ INCLUDE_DIRECTORIES( BEFORE
 )
 
 # for satelite projects, add the orca install directory
-IF ( DEFINED ORCA2_HOME )
+IF ( DEFINED ORCA_HOME )
     INCLUDE_DIRECTORIES(
-        ${ORCA2_HOME}/include
+        ${ORCA_HOME}/include
     )
-ENDIF ( DEFINED ORCA2_HOME )
+ENDIF ( DEFINED ORCA_HOME )
 
 LINK_DIRECTORIES( ${ICE_HOME}/lib )
 

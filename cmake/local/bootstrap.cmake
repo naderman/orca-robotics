@@ -3,6 +3,9 @@
 # If it is, all necessary files are in this project.
 # Otherwise, we need to find Orca installation directory.
 #
+# This file should be copied verbatim into [PROJECT]/cmake/local
+# directory of satelite projects.
+#
 INCLUDE ( cmake/local/Assert.cmake )
 
 IF ( ${PROJECT_NAME} MATCHES "orca" )
@@ -16,28 +19,28 @@ ELSE ( ${PROJECT_NAME} MATCHES "orca" )
     SET ( ORCA_MOTHERSHIP 0 )
 
     # If this is NOT the Orca project, we need to find Orca installation
-    IF ( DEFINED ORCA2_HOME )
-        # Orca2 home is specified with a command line option or it's already in cache
-        MESSAGE( STATUS "Orca2 location was specified or using cached value: ${ORCA2_HOME}" )
-    ELSE ( DEFINED ORCA2_HOME )
-        # Find Orca2 Installation
-        # Will search several standard places starting with an env. variable ORCA2_HOME
-        INCLUDE ( cmake/local/FindOrca2.cmake )
+    IF ( DEFINED ORCA_HOME )
+        # Orca home is specified with a command line option or it's already in cache
+        MESSAGE( STATUS "Orca location was specified or using cached value: ${ORCA_HOME}" )
+    ELSE ( DEFINED ORCA_HOME )
+        # Find Orca Installation
+        # Will search several standard places starting with an env. variable ORCA_HOME
+        INCLUDE ( cmake/local/FindOrca.cmake )
 
-        ASSERT( ORCA2_FOUND 
-            "Looking for Orca2 - not found. Please install Orca, ** delete CMakeCache.txt **, then re-run CMake." 
-            "Looking for Orca2 - found in ${ORCA2_HOME}" 
+        ASSERT( ORCA_FOUND 
+            "Looking for Orca - not found. Please install Orca, ** delete CMakeCache.txt **, then re-run CMake." 
+            "Looking for Orca - found in ${ORCA_HOME}" 
             1 )
 
-#         IF ( ORCA2_FOUND )    
-#                 MESSAGE( STATUS "Looking for Orca2 - found in ${ORCA2_HOME}" )
-#         ELSE ( ORCA2_FOUND )    
-#                 MESSAGE( FATAL_ERROR "Looking for Orca2 - not found. Please install Orca2, ** delete CMakeCache.txt **, then re-run CMake." )    
-#         ENDIF ( ORCA2_FOUND )
+#         IF ( ORCA_FOUND )    
+#                 MESSAGE( STATUS "Looking for Orca - found in ${ORCA_HOME}" )
+#         ELSE ( ORCA_FOUND )    
+#                 MESSAGE( FATAL_ERROR "Looking for Orca - not found. Please install Orca, ** delete CMakeCache.txt **, then re-run CMake." )    
+#         ENDIF ( ORCA_FOUND )
 
-    ENDIF ( DEFINED ORCA2_HOME )
+    ENDIF ( DEFINED ORCA_HOME )
 
-    SET ( ORCA_CMAKE_DIR ${ORCA2_HOME}/cmake CACHE PATH "Location of Orca CMake scripts" )
+    SET ( ORCA_CMAKE_DIR ${ORCA_HOME}/cmake CACHE PATH "Location of Orca CMake scripts" )
 
 ENDIF ( ${PROJECT_NAME} MATCHES "orca" )
 

@@ -19,8 +19,8 @@
 Ice utility slice2cpp can generate implementation skeletons from *.ice files. We don't do it because they would then be compiled and included (unnecessarily) with libOrcaInterfaces library. So if you need to implement an interface, e.g. Home, you can generate a skeletion like this:
 
 @verbatim
-$ cd <ORCA2_SRC>/src/interfaces/slice/orca
-$ slice2cpp -I<ORCA2_SRC>/src/interfaces/slice/ -I<ICE_SLICE_HOME> --impl home.ice
+$ cd <ORCA_SRC>/src/interfaces/slice/orca
+$ slice2cpp -I<ORCA_SRC>/src/interfaces/slice/ -I<ICE_SLICE_HOME> --impl home.ice
 $ ls home*
 home.cpp  home.h  home.ice  homeI.cpp  homeI.h
 @endverbatim
@@ -45,7 +45,7 @@ In the directory you can see 4 generated files: %homeI.h and homeI.cpp are the s
 You'll need @c doxyorca which is a patched version of Doxygen which can parse @c .ice files. If you don't have it, just use standard @c doxygen.
 
 @verbatim
-$ cd <ORCA2_SRC>/doc
+$ cd <ORCA_SRC>/doc
 $ doxyorca orca.doxyfile
 $ konqueror html/index.html &
 @endverbatim

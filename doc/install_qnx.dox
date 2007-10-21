@@ -156,7 +156,7 @@ export LD_LIBRARY_PATH=$ICE_HOME/lib:$LD_LIBRARY_PATH
 
 Build and install Orca2 distribution.
     - Download the latest release of <a href="http://sourceforge.net/project/showfiles.php?group_id=111647">orca2</a> and un-tar the archive.
-    - The default installation directory is  @c /opt/orca-[VERSION], where [VERSION] is the Orca version. You can customized this by setting ORCA2_INSTALL environment variable (e.g. 'export ORCA2_INSTALL=~/orca2').
+    - The default installation directory is  @c /opt/orca-[VERSION], where [VERSION] is the Orca version. You can customized this by setting ORCA_INSTALL environment variable (e.g. 'export ORCA_INSTALL=~/orca2').
     - Configure using @c cmake . (note the dot after cmake)
     - Compile, and install. If you've changed your mind about the installation directory, you can change it using @c ccmake tool ('$ ccmake .').
 @verbatim
@@ -167,19 +167,19 @@ $ make
 # make install
 @endverbatim
 
-Make sure that the binaries and executables are in the path. You may want to add a snippet to your @c ~/.profile file similar to the one below. Replace [VERSION] with the version of Orca you've just installed. Change the directory if you've modified the default install directory. Notice that the environment variable for the Orca installation to use (ORCA2_HOME) is different from the one which specifies where to install Orca (ORCA2_INSTALL). This allows multiple Orca installations on the same machine.
+Make sure that the binaries and executables are in the path. You may want to add a snippet to your @c ~/.profile file similar to the one below. Replace [VERSION] with the version of Orca you've just installed. Change the directory if you've modified the default install directory. Notice that the environment variable for the Orca installation to use (ORCA_HOME) is different from the one which specifies where to install Orca (ORCA_INSTALL). This allows multiple Orca installations on the same machine.
 @verbatim
-export ORCA2_HOME=/opt/orca-[VERSION]
-export PATH=$ORCA2_HOME/bin:$PATH
-export LD_LIBRARY_PATH=$ORCA2_HOME/lib:$LD_LIBRARY_PATH
+export ORCA_HOME=/opt/orca-[VERSION]
+export PATH=$ORCA_HOME/bin:$PATH
+export LD_LIBRARY_PATH=$ORCA_HOME/lib:$LD_LIBRARY_PATH
 @endverbatim
 
 These environment variables are optional but you may as well put them into your @c ~/.bashrc file now so that you have easy access to them later.
 @verbatim
 # uncomment to change the default location of Orca installation
-# export ORCA2_INSTALL=/opt/orca-[VERSION]
+# export ORCA_INSTALL=/opt/orca-[VERSION]
 # uncomment to change the default location of the Orca global config file
-# export ORCA2_CONFIG=$HOME/.orcarc
+# export ORCA_GLOBAL_CONFIG=$HOME/.orcarc
 @endverbatim
 
 You are finished.

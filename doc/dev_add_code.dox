@@ -18,7 +18,7 @@
 
 @par What is what and where does it live?
 
-All source code is divided into 6 categories, each has a subdirectory in [ORCA2_SRC]/src
+All source code is divided into 6 categories, each has a subdirectory in [ORCA_SRC]/src
 -# @e Components [components]
     - Well-tested and well-documented with staticly-defined provided and required interfaces
     - Can be stand-alone executables and/or IceBox services
@@ -40,7 +40,7 @@ All source code is divided into 6 categories, each has a subdirectory in [ORCA2_
 @par Adding code to the build system
 
 -# Create a new sub-directory in the appropriate place (see above for options)
-    - e.g. @c [ORCA2_SRC]/src/components/mymodule for a new component
+    - e.g. @c [ORCA_SRC]/src/components/mymodule for a new component
 -# Edit files
     - Start by copying the directory of a similar module.
     - Edit the CMake file @c CMakeLists.txt in the new directory
@@ -49,7 +49,7 @@ All source code is divided into 6 categories, each has a subdirectory in [ORCA2_
     - Modify the names of classes, namespaces, etc. using the name of your module
 -# Add an entry for the new directory to the build system.
     - Edit the file @c CMakeLists.txt in the directory @e containing your new module
-        - e.g. @c [ORCA2_SRC]/src/components/CMakeLists.txt for components
+        - e.g. @c [ORCA_SRC]/src/components/CMakeLists.txt for components
     - In alphabetical order, add a line "ADD_SUBDIRECTORY ( mymodule )"
 
 */

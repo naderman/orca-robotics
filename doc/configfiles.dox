@@ -12,7 +12,7 @@
 
 @page orca_doc_configfiles Orca Configuration Files
 
-@note Reviewed for release 2.4.0.
+@note Reviewed for release 2.7.0.
 
 This page describes everything you need to know about writing and using Orca config files.
 
@@ -37,11 +37,11 @@ $ ls *.cfg
 global.cfg
 $ mycomponent --Orca.GlobalConfig=global.cfg
 @endverbatim
-    -# The contents of @c ORCA2_GLOBAL_CONFIG environment variable
+    -# The contents of @c ORCA_GLOBAL_CONFIG environment variable
 @verbatim
 $ ls *.cfg
 global.cfg
-$ export ORCA2_GLOBAL_CONFIG=global.cfg
+$ export ORCA_GLOBAL_CONFIG=global.cfg
 $ mycomponent
 @endverbatim
     -# Default file, platform-dependent:
@@ -80,7 +80,7 @@ $ mycomponent
 @endverbatim
 -# Command-line arguments. For example, the following ways of starting a component are equivalent:
 @verbatim
-$ export ORCA2_GLOBAL_CONFIG=global.cfg
+$ export ORCA_GLOBAL_CONFIG=global.cfg
 $ mycomponent --Orca.Config=local.cfg --MyComponent.MaxSpeed=500
 @endverbatim
 @verbatim

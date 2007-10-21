@@ -3,6 +3,6 @@
 #
 
 # Set up the include and library paths
-INCLUDE_DIRECTORIES( ${ORCA2_HOME}/include )
-LINK_DIRECTORIES( ${ORCA2_HOME}/lib )
+INCLUDE_DIRECTORIES( ${ORCA_HOME}/include )
+LINK_DIRECTORIES( ${ORCA_HOME}/lib )
 LINK_LIBRARIES( OrcaInterfaces )

@@ -18,11 +18,11 @@ GET_FILENAME_COMPONENT( INTERFACE_NAMESPACE ${CMAKE_CURRENT_SOURCE_DIR} NAME )
 # note: satelite projects need to include slice files from orca installation
 # note: compared to slice2cpp, slice2java automatically places generated files into 'namespace dir,
 #       e.g. 'orca'. So the output dir is just 'java' not 'java/<namespace>'
-IF ( DEFINED ORCA2_HOME )
-    SET ( SLICE_ARGS -I${SLICE_SOURCE_DIR} -I${ICE_HOME}/slice -I${ORCA2_HOME}/slice --stream --output-dir ${SLICE2JAVA_BINARY_DIR} )
-ELSE ( DEFINED ORCA2_HOME )
+IF ( DEFINED ORCA_HOME )
+    SET ( SLICE_ARGS -I${SLICE_SOURCE_DIR} -I${ICE_HOME}/slice -I${ORCA_HOME}/slice --stream --output-dir ${SLICE2JAVA_BINARY_DIR} )
+ELSE ( DEFINED ORCA_HOME )
     SET ( SLICE_ARGS -I${SLICE_SOURCE_DIR} -I${ICE_HOME}/slice --stream --output-dir ${SLICE2JAVA_BINARY_DIR} )
-ENDIF ( DEFINED ORCA2_HOME )
+ENDIF ( DEFINED ORCA_HOME )
 
 
 #

@@ -51,10 +51,10 @@ INCLUDE( ${ORCA_CMAKE_DIR}/os.cmake )
 #
 ###########################################################
 SET( PROJECT_INSTALL_DIR $ENV{${PROJECT_INSTALL_ENV_VAR}} )
-# If environment variable ORCA2_INSTALL is NOT set, use defaults
+# If environment variable is NOT set, use defaults
 IF( NOT PROJECT_INSTALL_DIR )
   IF   ( NOT OS_WIN )
-    # Linux and friends: if environment variable ORCA2_INSTALL is not set, e.g. /opt/orca-1.2.3
+    # Linux and friends: if environment variable is not set, e.g. /opt/orca-1.2.3
     SET( PROJECT_INSTALL_DIR /opt/${PROJECT_NAME}-${PROJECT_VERSION} )
   ELSE ( NOT OS_WIN )
     # Windows: e.g. C:\orca-1.2.3
@@ -143,7 +143,7 @@ IF ( ${CMAKE_C_COMPILER} MATCHES gcc )
     ENDIF ( GCC_VERSION MATCHES ".*4\\.[0-9]\\.[0-9]")
 
     ASSERT ( GCC_VERSION_OK
-      "Checking gcc version - failed. Orca2 requires gcc v. 4.x"
+      "Checking gcc version - failed. Orca requires gcc v. 4.x"
       "Checking gcc version - ok"
       1 )
     
@@ -252,7 +252,7 @@ SET( CMAKE_INSTALL_RPATH
 IF ( NOT ORCA_MOTHERSHIP )
     SET( CMAKE_INSTALL_RPATH  
         ${CMAKE_INSTALL_RPATH}
-        ${ORCA2_HOME}/lib )
+        ${ORCA_HOME}/lib )
 ENDIF ( NOT ORCA_MOTHERSHIP )
 # ENDIF ( NOT ${PROJECT_NAME} MATCHES "orca" )
 

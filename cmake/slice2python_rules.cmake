@@ -20,11 +20,11 @@ GET_FILENAME_COMPONENT( INTERFACE_NAMESPACE ${CMAKE_CURRENT_SOURCE_DIR} NAME )
 # are orca/<included file>. slice2py will automatically prepend orca_ to the names of each of the imported modules unless 
 # the SLICE_ORCA_SOURCE_DIR directory is also included. See Sec. 22.15.2 in the Ice manual for how code generation works for
 # python.  
-IF ( DEFINED ORCA2_HOME )
-    SET ( SLICE_ARGS ${SLICE_PROJECT_ARGS} -I${SLICE_SOURCE_DIR} -I${SLICE_ORCA_SOURCE_DIR} -I${ICE_SLICE_HOME}/slice -I${ORCA2_HOME}/slice --output-dir ${SLICE2PY_BINARY_DIR}/${INTERFACE_NAMESPACE} )
-ELSE ( DEFINED ORCA2_HOME )
+IF ( DEFINED ORCA_HOME )
+    SET ( SLICE_ARGS ${SLICE_PROJECT_ARGS} -I${SLICE_SOURCE_DIR} -I${SLICE_ORCA_SOURCE_DIR} -I${ICE_SLICE_HOME}/slice -I${ORCA_HOME}/slice --output-dir ${SLICE2PY_BINARY_DIR}/${INTERFACE_NAMESPACE} )
+ELSE ( DEFINED ORCA_HOME )
     SET ( SLICE_ARGS ${SLICE_PROJECT_ARGS} -I${SLICE_SOURCE_DIR} -I${SLICE_ORCA_SOURCE_DIR} -I${ICE_SLICE_HOME}/slice --output-dir ${SLICE2PY_BINARY_DIR}/${INTERFACE_NAMESPACE} )
-ENDIF ( DEFINED ORCA2_HOME )
+ENDIF ( DEFINED ORCA_HOME )
 
 #
 # byte-compile all the python interfaces to produce .pyc files

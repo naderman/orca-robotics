@@ -36,6 +36,6 @@ ELSE ( ICE_VERSION MATCHES "3\\.[1-9]\\.[0-9]" )
 ENDIF ( ICE_VERSION MATCHES "3\\.[1-9]\\.[0-9]" )
 
 ASSERT ( ICE_VERSION_OK
-            "Checking Ice version - ${ICE_VERSION} - failed. Orca2 requires Ice v. 3.1.x"
+            "Checking Ice version - ${ICE_VERSION} - failed. Orca requires Ice v. 3.1.x"
             "Checking Ice version - ${ICE_VERSION} - ok"
             1 )

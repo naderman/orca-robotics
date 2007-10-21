@@ -12,7 +12,7 @@
 
 @page orca_doc_devproj Starting Your Own Orca Project
 
-@note Reviewed for release 2.5.0.
+@note Reviewed for release 2.7.0.
 
 A common situation is that you want to experiment with some components without the hassle of
 committing them into the Orca SourceForge repository or want to work on a closed-source

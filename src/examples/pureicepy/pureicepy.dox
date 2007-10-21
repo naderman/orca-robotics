@@ -47,7 +47,7 @@ $ make
 
 Make sure that the installed Orca python scripts are in your path. You may want to add a snippet to your @c ~/.bashrc file similar to the one below. Replace [VERSION] with the version of Orca you've just installed. Change the directory if you've modified the default install directory.
 @verbatim
-export PYTHONPATH=$ORCA2_HOME/python/orca:$PYTHONPATH
+export PYTHONPATH=$ORCA_HOME/python/orca:$PYTHONPATH
 @endverbatim
 
 <hr>

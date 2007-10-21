@@ -21,9 +21,9 @@ SET ( SLICE2JAVA_BINARY_DIR     ${CMAKE_CURRENT_BINARY_DIR} )
 #       e.g. 'orca'. So the output dir is just 'java' not 'java/<namespace>'
 SET ( SLICE_ARGS -I${SLICE_SOURCE_DIR} -I${ICE_SLICE_HOME}/slice --stream --output-dir ${SLICE2JAVA_BINARY_DIR} --meta "java:java5" )
 # note: satelite projects need to include slice files from orca installation
-IF ( DEFINED ORCA2_HOME )
-    SET ( SLICE_ARGS -I${ORCA2_HOME}/slice ${SLICE_ARGS} )
-ENDIF ( DEFINED ORCA2_HOME )
+IF ( DEFINED ORCA_HOME )
+    SET ( SLICE_ARGS -I${ORCA_HOME}/slice ${SLICE_ARGS} )
+ENDIF ( DEFINED ORCA_HOME )
 
 # ALL .java files for the .class files
 ADD_CUSTOM_COMMAND(

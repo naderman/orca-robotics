@@ -161,9 +161,9 @@ should look like this:
 @verbatim
 export ICE_HOME=/opt/Ice-[VERSION]
 export QT_HOME=/usr/local/Trolltech/Qt-[VERSION]
-export ORCA2_HOME=/opt/orca-[VERSION]
-export PATH=${ICE_HOME}/bin:${QT_HOME}/bin:${ORCA2_HOME}/bin:/usr/local/bin:$PATH
-export LD_LIBRARY_PATH=${ICE_HOME}/lib:${QT_HOME}/lib:${ORCA2_HOME}/lib:/usr/local/lib
+export ORCA_HOME=/opt/orca-[VERSION]
+export PATH=${ICE_HOME}/bin:${QT_HOME}/bin:${ORCA_HOME}/bin:/usr/local/bin:$PATH
+export LD_LIBRARY_PATH=${ICE_HOME}/lib:${QT_HOME}/lib:${ORCA_HOME}/lib:/usr/local/lib
 @endverbatim
 
 

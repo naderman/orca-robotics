@@ -19,7 +19,7 @@ FIND_PATH( HYDRO_HOME_INCLUDE_HYDROUTIL buffer.h
 # NOTE: if HYDRO_HOME_INCLUDE_HYDROUTIL is set to *-NOTFOUND it will evaluate to FALSE
 IF ( HYDRO_HOME_INCLUDE_HYDROUTIL )
 
-    SET( HYDRO_FOUND 1 CACHE BOOL "Do we have Orca2?" FORCE )
+    SET( HYDRO_FOUND 1 CACHE BOOL "Do we have Orca?" FORCE )
 
     # strip 'file' twice to get rid off 'include/hydroutil'
 #     MESSAGE( STATUS "DEBUG: HYDRO_HOME_INCLUDE_HYDROUTIL=" ${HYDRO_HOME_INCLUDE_HYDROUTIL} )

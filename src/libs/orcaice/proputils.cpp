@@ -40,10 +40,10 @@ getGlobalConfigFilename( const Ice::StringSeq & args )
     }
 
     // now look in this special environment variable
-    char *orca_config = getenv("ORCA2_GLOBAL_CONFIG");
+    char *orca_config = getenv("ORCA_GLOBAL_CONFIG");
     if ( orca_config != NULL ) {
         // debug
-        cout<<"echo $ORCA2_GLOBAL_CONFIG='"<<orca_config<<"'"<<endl;
+        cout<<"echo $ORCA_GLOBAL_CONFIG='"<<orca_config<<"'"<<endl;
         // this extra test is mostly because Win32 does not implement
         // unsetenv(). So we have to set the env var to empty string instead.
         if ( strlen(orca_config) ) {

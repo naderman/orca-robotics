@@ -42,7 +42,7 @@ Build and install Orca distribution.
     - Tested with Microsoft Visual Studio 2005 v.8.0
       - Older versions are reported not to work.
     - @b Important! Due to a bug in the current version of Ice, the full path of files in the Orca distribution may not have spaces. It's best to put it at the top level of the drive, e.i. @c C:\\orca.
-    - The default installation directory is  @c C:\\orca-[VERSION], where [VERSION] is the Orca version. You can customized this by setting ORCA2_INSTALL environment variable.
+    - The default installation directory is  @c C:\\orca-[VERSION], where [VERSION] is the Orca version. You can customized this by setting ORCA_INSTALL environment variable.
     - Configure using CMake application.
         - Launch CMake. Point 'source code' to @c C:\\orca. Point 'binary directory' to @c C:\\orca\\build. 
         - Click on Configure button. Say Yes to creating @c build directory. (You may have to click Configure again until the left column turns gray.)
