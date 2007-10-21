@@ -7,6 +7,7 @@
 IF ( NOT OS_WIN )
 
     # alexm: this is a mess, not sure what this one needs
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseIce.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
 #     ADD_DEFINITIONS( "-Wall" )
 #     INCLUDE_DIRECTORIES( 
