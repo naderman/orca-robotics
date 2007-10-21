@@ -5,23 +5,9 @@ MESSAGE( STATUS "Setting project name to ${PROJECT_NAME}" )
 MESSAGE( STATUS "Setting project version to ${PROJECT_VERSION}" )
 MESSAGE( STATUS "Setting project interface lib name to ${PROJECT_INTERFACE_LIB}" )
 
-###########################################################
-#
-# define the project version so we can have access to it from the code
-#
-###########################################################
-# alexm: for gcc need to produce this in the Makefile: -DORCA_VERSION=\"X.Y.Z\", 
-#        without escaping the quotes the compiler will strip them off.
-# alexb: it seems that you also need to escape the quotes for windoze??
-ADD_DEFINITIONS( "-DPROJECT_VERSION=\\\"${PROJECT_VERSION}\\\"" )
-ADD_DEFINITIONS( "-DCMAKE_INSTALL_PREFIX=\\\"${CMAKE_INSTALL_PREFIX}\\\"" )
-
-
-###########################################################
 #
 # Find Hydro installation, we need it early for cmake scripts
 #
-###########################################################
 IF ( DEFINED HYDRO_HOME )
     # Hydro home is specified with a command line option or is already in cache
     MESSAGE( STATUS "Hydro location was specified or using cached value: ${HYDRO_HOME}")
@@ -34,89 +20,30 @@ ELSE ( DEFINED HYDRO_HOME )
             1 )
 ENDIF ( DEFINED HYDRO_HOME )
 
-
-###########################################################
 #
-# Determine OS
+# process version number
 #
-###########################################################
-# Hydro!
-INCLUDE( ${HYDRO_HOME}/cmake/os.cmake )
-# INCLUDE( ${ORCA_CMAKE_DIR}/os.cmake )
+INCLUDE( ${HYDRO_HOME}/cmake/version.cmake )
 
-###########################################################
 #
 # Project directories
 #
-###########################################################
-SET( PROJECT_INSTALL_DIR $ENV{${PROJECT_INSTALL_ENV_VAR}} )
-# If environment variable is NOT set, use defaults
-IF( NOT PROJECT_INSTALL_DIR )
-  IF   ( NOT OS_WIN )
-    # Linux and friends: if environment variable is not set, e.g. /opt/orca-1.2.3
-    SET( PROJECT_INSTALL_DIR /opt/${PROJECT_NAME}-${PROJECT_VERSION} )
-  ELSE ( NOT OS_WIN )
-    # Windows: e.g. C:\orca-1.2.3
-    SET( PROJECT_INSTALL_DIR C:/${PROJECT_NAME}-${PROJECT_VERSION} )
-  ENDIF ( NOT OS_WIN )
-ENDIF( NOT PROJECT_INSTALL_DIR )
+INCLUDE( ${HYDRO_HOME}/cmake/dirs.cmake )
 
-# It's impossible in cmake to tell whether a variable was set by the system or by 
-# the user. The hack we use is to check whether the installation directory is set 
-# to cmake initial default (OS-dependent).
-# btw: is there LINUX variable? or do we have to do this nonsense?
-IF ( NOT OS_WIN AND ${CMAKE_INSTALL_PREFIX} STREQUAL "/usr/local" )
-    SET ( IS_INSTALL_PREFIX_UNTOUCHED 1 )
-ENDIF ( NOT OS_WIN AND ${CMAKE_INSTALL_PREFIX} STREQUAL "/usr/local" )
-# windows side is untested
-IF ( OS_WIN AND ${CMAKE_INSTALL_PREFIX} STREQUAL "C:/Program Files" )
-    SET ( IS_INSTALL_PREFIX_UNTOUCHED 1 )
-ENDIF ( OS_WIN AND ${CMAKE_INSTALL_PREFIX} STREQUAL "C:/Program Files" )
+#
+# Determine OS, and make os-specefic choices
+#
+INCLUDE( ${HYDRO_HOME}/cmake/os.cmake )
 
-# Now, if it's still set to default, change it to our own prefered location. 
-# Otherwise, it's probably set by us or by the user and we don't
-# touch it again. The consequence of this is that the user CANNOT specify CMake 
-# default installation directories.
-IF ( ${IS_INSTALL_PREFIX_UNTOUCHED} )
-    # Force our own default
-    SET( CMAKE_INSTALL_PREFIX ${PROJECT_INSTALL_DIR} CACHE PATH "Installation directory" FORCE )
-ENDIF ( ${IS_INSTALL_PREFIX_UNTOUCHED} )
-MESSAGE( STATUS "Setting installation directory to ${CMAKE_INSTALL_PREFIX}" )
-
-SET( PROJECT_SOURCE_DIR ${${PROJECT_NAME}_SOURCE_DIR} )
-SET( PROJECT_BINARY_DIR ${${PROJECT_NAME}_BINARY_DIR} )
-
-###########################################################
 #
 # Set the build type (affects debugging symbols and optimization)
 #
-###########################################################
-IF ( NOT CMAKE_BUILD_TYPE )
-  IF ( NOT OS_WIN )
-    # For gcc, RelWithDebInfo gives '-O2 -g'
-    SET( CMAKE_BUILD_TYPE RelWithDebInfo )
-  ELSE ( NOT OS_WIN )
-    # windows... a temp hack: VCC does not seem to respect the cmake
-    # setting and always defaults to debug, we have to match it here.
-    SET( CMAKE_BUILD_TYPE Debug )
-  ENDIF ( NOT OS_WIN )
-  MESSAGE( STATUS "Setting build type to '${CMAKE_BUILD_TYPE}'" )
-ELSE ( NOT CMAKE_BUILD_TYPE )
-  MESSAGE( STATUS "Build type set to '${CMAKE_BUILD_TYPE}' by user." )
-ENDIF ( NOT CMAKE_BUILD_TYPE )
+INCLUDE( ${PROJECT_SOURCE_DIR}/cmake/local/buildtype.cmake )
 
-#
-# CMake seems not to set this property correctly for some reason
-#
-IF ( OS_WIN )
-    SET( EXE_EXTENSION ".exe" )
-ENDIF ( OS_WIN )
 
-###########################################################
 #
 # Include external and local macro definitions
 #
-###########################################################
 # Hydro!
 INCLUDE( ${HYDRO_HOME}/cmake/GlobalAdd.cmake )
 INCLUDE( ${HYDRO_HOME}/cmake/messages.cmake )
@@ -124,50 +51,14 @@ INCLUDE( ${HYDRO_HOME}/cmake/messages.cmake )
 # INCLUDE( ${ORCA_CMAKE_DIR}/messages.cmake )
 INCLUDE( ${ORCA_CMAKE_DIR}/orca_macros.cmake )
 
-###########################################################
 #
-# If we're using gcc, make sure the version is OK.
+# check compiler type and version
 #
-###########################################################
-IF ( ${CMAKE_C_COMPILER} MATCHES gcc )
+INCLUDE( ${PROJECT_SOURCE_DIR}/cmake/local/compiler.cmake )
 
-    EXEC_PROGRAM ( ${CMAKE_C_COMPILER} ARGS --version OUTPUT_VARIABLE GCC_VERSION )
-    MESSAGE ( STATUS "gcc version: ${GCC_VERSION}")
-
-    # Why doesn't this work?
-    #STRING( REGEX MATCHALL "gcc\.*" VERSION_STRING ${CMAKE_C_COMPILER} )
-
-    IF ( GCC_VERSION MATCHES ".*4\\.[0-9]\\.[0-9]" )
-        SET ( GCC_VERSION_OK 1 )
-    ENDIF ( GCC_VERSION MATCHES ".*4\\.[0-9]\\.[0-9]")
-
-    ASSERT ( GCC_VERSION_OK
-      "Checking gcc version - failed. Orca requires gcc v. 4.x"
-      "Checking gcc version - ok"
-      1 )
-    
-    IF ( GCC_VERSION MATCHES ".*4\\.0.*" )
-      # gcc 4.0.x
-    ENDIF ( GCC_VERSION MATCHES ".*4\\.0.*" )
-    IF ( GCC_VERSION MATCHES ".*4\\.1.*" )
-      # gcc 4.1.x
-      # gcc-4.1 adds stack protection, which makes code robust to buffer-overrun attacks
-      #      (see: http://www.trl.ibm.com/projects/security/ssp/)
-      # However for some reason this can result in the symbol '__stack_chk_fail_local' not being found.
-      # So turn it off.
-      # Tobi: it looks like stack protection is off by default from version gcc 4.1.2, so we don't need this any more.
-      # Will keep it for now, it doesn't hurt.
-      ADD_DEFINITIONS( -fno-stack-protector )
-    ENDIF ( GCC_VERSION MATCHES ".*4\\.1.*" )
-
-
-ENDIF ( ${CMAKE_C_COMPILER} MATCHES gcc )
-
-###########################################################
 #
 # Find Ice installation
 #
-###########################################################
 IF ( DEFINED ICE_HOME )
     # Ice home is specified with a command line option or it's already in cache
     MESSAGE( STATUS "Ice location was specified or using cached value: ${ICE_HOME}")
@@ -187,12 +78,10 @@ ASSERT ( ICE_WORKS
          "Testing Ice - ok."
          1 )
 
-###########################################################
 #
 # Defaults for big source code switches 
 # (these are defaults. after the user modifies these in GUI they stay in cache)
 #
-###########################################################
 OPTION( BUILD_SERVICES "Enables compilation of all IceBox services" OFF )
 OPTION( BUILD_JAVA     "Enables compilation of all Java interfaces and components" OFF  )
 OPTION( BUILD_PYTHON   "Enables compilation of all Python interfaces and components" OFF  )
@@ -201,25 +90,19 @@ OPTION( BUILD_EXAMPLES "Enables compilation of all examples" ON  )
 OPTION( BUILD_SANDBOX  "Enables compilation of everything in the sandbox" OFF )
 OPTION( GENERATE_XML   "Enables generation of XML file for IceGrid" ON )
 
-###########################################################
-#                                                         #
-# Look for low-level C headers, write defines to config.h #
-#                                                         #
-###########################################################
+#                                                         
+# Look for low-level C headers, write defines to config.h 
+#                                                         
 INCLUDE( ${ORCA_CMAKE_DIR}/write_config_h.cmake )
 
-###########################################################
-#                                                         #
-# Look for dependencies required by individual components #
-#                                                         #
-###########################################################
+#                                                         
+# Look for dependencies required by individual components 
+#                                                         
 INCLUDE( ${ORCA_CMAKE_DIR}/check_depend.cmake )
 
-###########################################################
 #
 # Project-specific global setup
 #
-###########################################################
 INCLUDE( ${PROJECT_SOURCE_DIR}/cmake/local/project_setup.cmake )
 
 # Store the location of the command in cache
@@ -233,12 +116,9 @@ SET( ORCA_DEF2XMLTEMPLATE_COMMAND ${DEFTOOLS_HOME}/def2xmltemplate${EXE_EXTENSIO
         CACHE PATH "Path to def2xmltemplate executable." FORCE )
 MESSAGE( STATUS "Using ${ORCA_DEF2CFG_COMMAND}" )
 
-###########################################################
 #
 # Installation preferences
 #
-###########################################################
-
 # CMake default is FALSE
 # SET( CMAKE_SKIP_BUILD_RPATH TRUE )
 # CMake default is FALSE
@@ -266,19 +146,16 @@ ENDIF ( ORCA_MOTHERSHIP )
 INCLUDE (${CMAKE_ROOT}/Modules/Dart.cmake)
 ENABLE_TESTING()
 
-###########################################################
-#                                                         #
-# Enter the source tree                                   #
-#                                                         #
-###########################################################
+#                                                         
+# Enter the source tree                                   
+#                                                         
 ADD_SUBDIRECTORY ( src )
 
 # Some scripts need to be installed
 ADD_SUBDIRECTORY ( scripts )
 
-###########################################################
-#                                                         #
-# Print results of CMake activity                         #
-#                                                         #
-###########################################################
-INCLUDE ( ${ORCA_CMAKE_DIR}/build_config_report.cmake )
+#                                                         
+# Print results of CMake activity                         
+#                                                     
+GLOBAL_CONFIG_REPORT( "Ice version       ${ICE_VERSION}" )
+# INCLUDE ( ${ORCA_CMAKE_DIR}/build_config_report.cmake )
