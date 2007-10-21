@@ -2,7 +2,5 @@
 # For use in satellite projects
 #
 
-# Set up the include and library paths
-INCLUDE_DIRECTORIES( ${ORCA_HOME}/include )
-LINK_DIRECTORIES( ${ORCA_HOME}/lib )
+INCLUDE( ${ORCA_CMAKE_DIR}/UseOrca.cmake )
 LINK_LIBRARIES( OrcaInterfaces )
