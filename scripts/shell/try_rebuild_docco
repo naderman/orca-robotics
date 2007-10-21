@@ -6,15 +6,19 @@
 #
 
 DOXYGENCMD=/usr/local/bin/doxyorca
+DOXYFILE=doxyfile
 #  CVS 
 #UPDATECMD="cvs update"
 #CHANGESIGN="'^[UP]'"
 #  SVN
 UPDATECMD="svn update --non-interactive"
 CHANGESIGN='^[U]'
-HTDOCS=/home/groups/o/or/orca-robotics/htdocs
+# source
 PROJDIR=$HOME/svn/docversion/orca
-TARBALL=orca-head-doc.tar.gz
+MODULENAME=orca
+TARBALL=$MODULENAME-head-doc.tar.gz
+# destination
+HEADDIR=/home/groups/o/or/orca-robotics/htdocs/head_doc
 
 did_update=0
 
@@ -45,17 +49,18 @@ fi
 # Rebuild docco
 #
 cd $PROJDIR/doc
-$DOXYGENCMD orca.doxyfile
+$DOXYGENCMD $DOXYFILE
 cat html/index.html | sed "s/Generated for Orca Robotics/Generated for Orca Robotics (on `date`)/" > temp_index.html
 mv temp_index.html html/index.html
 
 #
 # Copy it to sourceforge
 #
-tar -zcvf $TARBALL html
-echo "scp $TARBALL shell.sf.net:$HTDOCS/head_doc/."
-scp  $TARBALL shell.sf.net:$HTDOCS/head_doc/.
-echo "ssh shell.sf.net 'cd $HTDOCS/head_doc/; tar -zxvf $TARBALL; mv html orca'"
-ssh shell.sf.net "cd $HTDOCS/head_doc/; tar -zxvf $TARBALL; mv html orca"
+mv html $MODULENAME
+tar -zcvf $TARBALL $MODULENAME
+echo "scp $TARBALL shell.sf.net:$HEADDIR/."
+scp  $TARBALL shell.sf.net:$HEADDIR/.
+echo "ssh shell.sf.net 'cd $HEADDIR; tar -zxvf $TARBALL'"
+ssh shell.sf.net "cd $HEADDIR; tar -zxvf $TARBALL"
 
 echo "Finished $0 at: `date`"
