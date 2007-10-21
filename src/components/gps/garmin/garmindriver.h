@@ -12,7 +12,7 @@
 #define ORCA2_GARMIN_GPS_DRIVER_H
 
 #include <orcaice/orcaice.h>
-#include <orcaserial/serial.h>
+#include <hydroserial/serial.h>
 #include <orcagpsutil/nmea.h>
 #include <driver.h>
 #include <orca/gps.h>
@@ -54,7 +54,7 @@ private:
     void readFrame (orca::GpsData &gpsData);
     orcaice::Context context_;
     
-    orcaserial::Serial serial_;
+    hydroserial::Serial serial_;
     GpsProxy *gpsProxy_;
     orcagpsutil::NmeaMessage nmeaMessage_;
     IceUtil::Time timeOfRead_;

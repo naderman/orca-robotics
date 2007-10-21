@@ -37,7 +37,7 @@ ADD_DEFINITIONS( ${PLAYER_DEFINITIONS} )
     )
 
     FIND_COMPONENT_SOURCES( COMP_SRCS )
-    SET( COMP_DEPS OrcaSerial OrcaNavUtil OrcaIfaceImpl ${PLAYERCLIENT_LIBS} )
+    SET( COMP_DEPS HydroSerial OrcaNavUtil OrcaIfaceImpl ${PLAYERCLIENT_LIBS} )
     
     # build stand-alone component  
     GLOBAL_ADD_EXECUTABLE( imu ${COMP_SRCS} main )

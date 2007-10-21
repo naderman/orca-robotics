@@ -21,7 +21,7 @@ IF ( BUILD_INSGPS )
         NOVATELSPANINSGPS_LIBS
         NOVATELSPANINSGPS_FOUND
         HAVE_NOVATELSPANINSGPS_DRIVER
-        OrcaSerial OrcaNovatel
+        HydroSerial OrcaNovatel
     )
     
     FIND_COMPONENT_SOURCES( COMP_SRCS )

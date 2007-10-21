@@ -9,7 +9,7 @@ LIST( REMOVE_ITEM SRCS
   "${CMAKE_CURRENT_SOURCE_DIR}/laser2dsickacfr.cpp" )
   
 GLOBAL_ADD_LIBRARY( OrcaLaser2dSickAcfr SHARED ${SRCS} )
-TARGET_LINK_LIBRARIES( OrcaLaser2dSickAcfr OrcaLaser2dUtil OrcaSerial )
+TARGET_LINK_LIBRARIES( OrcaLaser2dSickAcfr OrcaLaser2dUtil HydroSerial )
 
 # Test for correct linking.
 ADD_EXECUTABLE( laser2dsickacfr laser2dsickacfr.cpp )

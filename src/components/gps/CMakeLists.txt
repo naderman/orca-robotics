@@ -21,7 +21,7 @@ IF ( BUILD_GPS )
         GARMINGPS_LIBS
         GARMINGPS_FOUND
         HAVE_GARMINGPS_DRIVER
-        OrcaSerial
+        HydroSerial
         OrcaGpsUtil
     )
 

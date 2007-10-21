@@ -12,7 +12,7 @@
 
 #include <hydroutil/thread.h>
 #include <sickacfr/messages.h>
-#include <orcaserial/serial.h>
+#include <hydroserial/serial.h>
 #include <orcaice/context.h>
 #include <hydroutil/buffer.h>
 #include <orca/orca.h>
@@ -66,7 +66,7 @@ private:
 
     IceUtil::Mutex   mutex_;
 
-    orcaserial::Serial serial_;
+    hydroserial::Serial serial_;
 
     // Contains un-parsed data from the SICK.
     std::vector<uChar> buffer_;

@@ -19,7 +19,7 @@
 
 using namespace std;
 using namespace orca;
-using namespace orcaserial;
+using namespace hydroserial;
 using namespace orcagpsutil;
 using namespace gps;
 
@@ -59,7 +59,7 @@ GarminGpsDriver::init()
         //TODO Need to check here that we have been successful.
         clearFrame();
     }
-    catch ( const orcaserial::SerialException &e )
+    catch ( const hydroserial::SerialException &e )
     {
         stringstream ss;
         ss << "GarminGpsDriver: Caught SerialException: " << e.what();

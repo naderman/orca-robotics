@@ -15,7 +15,7 @@
 #include <orcaice/context.h>
 
 // for reading and writing to a serial device
-#include <orcaserial/serial.h>
+#include <hydroserial/serial.h>
 
 // buffer for gps data
 #include <hydroutil/buffer.h>
@@ -125,7 +125,7 @@ private:
     int baud_;
 
     // serial class for reading and writing to and from a serial device
-    orcaserial::Serial* serial_;
+    hydroserial::Serial* serial_;
     
     bool enabled_;
     bool swappedRollPitch_;

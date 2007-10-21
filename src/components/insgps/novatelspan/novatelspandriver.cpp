@@ -25,7 +25,7 @@
 
 using namespace std;
 using namespace orca;
-using namespace orcaserial;
+using namespace hydroserial;
 using namespace orcagpsutil;
 
 namespace insgps

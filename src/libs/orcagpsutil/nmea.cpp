@@ -15,7 +15,7 @@
 #include <orcamisc/tokenise.h>
 
 // Make sure strnlen is defined.
-#include <orcaportability/strnlen.h>
+#include <hydroportability/strnlen.h>
 
 #include "nmea.h"
 
