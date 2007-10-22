@@ -60,6 +60,13 @@ $ make
 # ldconfig
 @endverbatim
 
+Make sure that the binaries and executables are in the path. You may want to add a snippet to your @c ~/.bashrc file similar to the one below. Replace [VERSION] with the version of Hydro you've just installed or create a symbolic link called simply @c hydro (without the version number). Change the directory if you've modified the default install directory. Notice that the environment variable for the Hydro installation to use (HYDRO_HOME) is different from the one which specifies where to install it (HYDRO_INSTALL). This allows multiple installations on the same machine.
+@verbatim
+export HYDRO_HOME=/opt/hydro-[VERSION]
+export PATH=HYDRO_HOME/bin:$PATH
+export LD_LIBRARY_PATH=HYDRO_HOME/lib:$LD_LIBRARY_PATH
+@endverbatim
+
 @section orca_doc_installdebian_orca Orca
 
 Build and install Orca distribution.
@@ -76,7 +83,7 @@ $ make
 # ldconfig
 @endverbatim
 
-Make sure that the binaries and executables are in the path. You may want to add a snippet to your @c ~/.bashrc file similar to the one below. Replace [VERSION] with the version of Orca you've just installed. Change the directory if you've modified the default install directory. Notice that the environment variable for the Orca installation to use (ORCA_HOME) is different from the one which specifies where to install Orca (ORCA_INSTALL). This allows multiple Orca installations on the same machine.
+Add entries to @c ~/.bashrc file, similar to the ones for Hydro.
 @verbatim
 export ORCA_HOME=/opt/orca-[VERSION]
 export PATH=$ORCA_HOME/bin:$PATH
