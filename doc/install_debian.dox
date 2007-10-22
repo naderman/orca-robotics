@@ -83,7 +83,7 @@ $ make
 # ldconfig
 @endverbatim
 
-Add entries to @c ~/.bashrc file, similar to the ones for Hydro.
+Add entries to @c ~/.bashrc file, these are similar to the ones for Hydro.
 @verbatim
 export ORCA_HOME=/opt/orca-[VERSION]
 export PATH=$ORCA_HOME/bin:$PATH
