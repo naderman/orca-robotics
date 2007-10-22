@@ -14,7 +14,7 @@
 #include <orca/laserscanner2d.h>
 #include <orca/ogfusion.h>
 #include <vector>
-#include <orcanavutil/pose.h>
+#include <hydronavutil/pose.h>
 #include "ogsensormodel.h"
 #include <orcaogfusion/orcaogfusion.h>
 
@@ -28,7 +28,7 @@ public:
               OgLaserModelConfig  &sensorConfig );
     ~Laser2Og();
 
-    orca::OgObservation process( const orcanavutil::Pose &pose, const orca::RangeScanner2dData & scan );
+    orca::OgObservation process( const hydronavutil::Pose &pose, const orca::RangeScanner2dData & scan );
 
     // If the vehicle pose uncertainty is greater than this, we shouldn't process sensor data
     double positionStdDevMax() const { return sensorModel_->posStDevMax(); }

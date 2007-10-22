@@ -12,7 +12,7 @@
 
 #include <orca/pathfollower2d.h>
 #include <orcaice/context.h>
-#include <orcanavutil/pose.h>
+#include <hydronavutil/pose.h>
 #include "goal.h"
 
 namespace orcalocalnav {
@@ -49,7 +49,7 @@ public:
     // returns FALSE if there are no active goals, and TRUE otherwise
     bool getActiveGoals( std::vector<Goal> &goals,
                          int maxNumGoals,
-                         const orcanavutil::Pose &pose );
+                         const hydronavutil::Pose &pose );
 
     //
     // Functions called by MainLoop, to trigger comms with outside world
@@ -61,7 +61,7 @@ public:
 private: 
 
     bool waypointReached( const orca::Waypoint2d &wp,
-                          const orcanavutil::Pose &pose,
+                          const hydronavutil::Pose &pose,
                           double timeNow );
     void  incrementWpIndex();
 

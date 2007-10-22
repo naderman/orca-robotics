@@ -30,7 +30,7 @@ namespace {
     //   true:  worked out pose OK
     //   false: localisation is too uncertain.
     bool calcPose( const orca::Localise2dData &localiseData,
-                   orcanavutil::Pose &pose,
+                   hydronavutil::Pose &pose,
                    double maxPositionSd,
                    double maxHeadingSd )
     {
@@ -68,7 +68,7 @@ namespace {
         }
 
         // Localisation is certain enough.
-        pose = orcanavutil::Pose( localiseData.hypotheses[0].mean.p.x,
+        pose = hydronavutil::Pose( localiseData.hypotheses[0].mean.p.x,
                                   localiseData.hypotheses[0].mean.p.y,
                                   localiseData.hypotheses[0].mean.o );
         return true;
@@ -261,7 +261,7 @@ Handler::run()
     
             // TODO: could be more accurate by interpolating here...
             // TODO: add laser offset
-            orcanavutil::Pose pose;
+            hydronavutil::Pose pose;
             bool isPoseClear = calcPose( localiseData,
                                          pose,
                                          laser2Og_->positionStdDevMax(),

@@ -10,7 +10,7 @@
 #include "simpledriver.h"
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include <orcanavutil/offset.h>
+#include <hydronavutil/offset.h>
 #include <orcagpsutil/latlon2mga.h>
 
 using namespace std;
@@ -20,13 +20,13 @@ namespace gps2localise2d {
 namespace {
     void transform( orca::Frame2d &p, const orca::Frame2d &f )
     {
-        orcanavutil::transformPoint2d( p.p.x,
+        hydronavutil::transformPoint2d( p.p.x,
                                        p.p.y,
                                        f.p.x,
                                        f.p.y,
                                        f.o );
         p.o += f.o;
-        orcanavutil::normaliseAngle( p.o );
+        hydronavutil::normaliseAngle( p.o );
     }
 }
 
@@ -105,7 +105,7 @@ SimpleDriver::compute( const orca::GpsData  &gpsData,
     transform( localiseData.hypotheses[0].mean, offset_ );
 
     // Get the pose of the platform
-    orcanavutil::addPoseOffset( localiseData.hypotheses[0].mean.p.x,
+    hydronavutil::addPoseOffset( localiseData.hypotheses[0].mean.p.x,
                                 localiseData.hypotheses[0].mean.p.y,
                                 localiseData.hypotheses[0].mean.o,
                                 antennaTransform_.p.x,

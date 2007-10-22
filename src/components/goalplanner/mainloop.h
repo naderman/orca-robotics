@@ -14,7 +14,7 @@
 #include <hydroutil/thread.h>
 #include <orcaice/context.h>
 #include <hydroutil/proxy.h>
-#include <orcanavutil/pose.h> 
+#include <hydronavutil/pose.h> 
 #include <orca/localise2d.h>
 #include <orca/pathplanner2d.h>
 #include <orca/pathfollower2d.h>
@@ -38,7 +38,7 @@ private:
     
     void stopRobot();
     void initNetwork();
-    void computeAndSendPath( const orcanavutil::Pose &pose, const orca::PathFollower2dData &incomingPath );
+    void computeAndSendPath( const hydronavutil::Pose &pose, const orca::PathFollower2dData &incomingPath );
 
     // required interface to localiser
     orca::Localise2dPrx localise2dPrx_;
@@ -68,7 +68,7 @@ private:
     
     // Velocity to get to the first waypoint
     double velocityToFirstWaypoint_;
-    void adjustTimes( const orcanavutil::Pose &pose,
+    void adjustTimes( const hydronavutil::Pose &pose,
                       orca::PathFollower2dData &incomingPath );
     
     // tries a few times to get localise data by issueing remote calls

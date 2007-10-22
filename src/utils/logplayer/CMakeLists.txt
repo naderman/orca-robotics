@@ -10,7 +10,7 @@ IF( BUILD_LOGPLAYER )
     FILE( GLOB SRCS *.cpp )
     
     GLOBAL_ADD_EXECUTABLE( logplayer ${SRCS} )
-    TARGET_LINK_LIBRARIES( logplayer OrcaLog OrcaNavUtil HydroDll )
+    TARGET_LINK_LIBRARIES( logplayer OrcaLog HydroNavUtil HydroDll )
 
     GENERATE_CONFIG_FILE( logplayer.def )
     

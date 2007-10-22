@@ -2,7 +2,7 @@
 #define MULTIPLICATIVENOISEMODEL_H
 
 #include "inoisemodel.h"
-#include <orcanavutil/odometrydifferentiator.h>
+#include <hydronavutil/odometrydifferentiator.h>
 
 namespace noisyrobot2d {
 
@@ -48,8 +48,8 @@ private:
     orca::Time                     lastScaleFactorChangeTime_;
     double                         constantMultiplierTime_;
 
-    orcanavutil::OdometryDifferentiator odomDifferentiator_;
-    orcanavutil::Offset                 apparentOdom_;
+    hydronavutil::OdometryDifferentiator odomDifferentiator_;
+    hydronavutil::Offset                 apparentOdom_;
 
     NoiseLevelDistributionType          noiseLevelType_;
     double                              noiseLevelLinear_;

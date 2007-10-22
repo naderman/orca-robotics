@@ -371,7 +371,7 @@ Simulator::checkProgress()
 void
 Simulator::applyCurrentVelocity()
 {
-    orcanavutil::addPoseOffset( pose_.x(),
+    hydronavutil::addPoseOffset( pose_.x(),
                                 pose_.y(),
                                 pose_.theta(),
                                 velLin_*DELTA_T,

@@ -10,7 +10,7 @@
 #include "odometrybaseddriver.h"
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include <orcanavutil/offset.h>
+#include <hydronavutil/offset.h>
 #include <orcagpsutil/latlon2mga.h>
 #include <orcaice/orcaice.h>
 
@@ -82,7 +82,7 @@ OdometryBasedDriver::setup()
 }
 
 double 
-OdometryBasedDriver::calcHeadingUncertainty( orcanavutil::Offset &delta,
+OdometryBasedDriver::calcHeadingUncertainty( hydronavutil::Offset &delta,
                                              double dt )
 {
     // Uncertainty is low if we're moving fast in a straight line.
@@ -148,7 +148,7 @@ OdometryBasedDriver::compute( const orca::GpsData  &gpsData,
     {
         orca::Odometry2dData odom;
         odomConsumer_->proxy().get( odom );
-        orcanavutil::Offset delta = odometryDifferentiator_.calcDelta( odom.pose.p.x,
+        hydronavutil::Offset delta = odometryDifferentiator_.calcDelta( odom.pose.p.x,
                                                                        odom.pose.p.y,
                                                                        odom.pose.o );
 

@@ -21,7 +21,7 @@ IF ( QT4_FOUND )
     TARGET_LINK_LIBRARIES ( OrcaQGui2dFactory
                             OrcaQCompModel 
                             OrcaLog
-                            OrcaNavUtil
+                            HydroNavUtil
                             OrcaQGui2d
                             OrcaQGui )
 

@@ -9,7 +9,7 @@
  */
 
 #include <orcaice/orcaice.h>
-#include <orcanavutil/orcanavutil.h>
+#include <hydronavutil/hydronavutil.h>
 #include "platform2dI.h"
 
 using namespace std;

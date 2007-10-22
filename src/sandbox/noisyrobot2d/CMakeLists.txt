@@ -8,7 +8,7 @@ IF ( BUILD_NOISYROBOT2D )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
 
     FIND_COMPONENT_SOURCES( COMP_SRCS )
-    SET( COMP_DEPS OrcaNavUtil OrcaMisc )
+    SET( COMP_DEPS HydroNavUtil OrcaMisc )
     
     # build stand-alone component  
     GLOBAL_ADD_EXECUTABLE( noisyrobot2d ${COMP_SRCS} main )

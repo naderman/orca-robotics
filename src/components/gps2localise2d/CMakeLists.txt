@@ -8,7 +8,7 @@ IF ( BUILD_GPS2LOCALISE2D )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
     
     FIND_COMPONENT_SOURCES( COMP_SRCS )
-    SET( COMP_DEPS OrcaIfaceImpl OrcaGpsUtil OrcaNavUtil )
+    SET( COMP_DEPS OrcaIfaceImpl OrcaGpsUtil HydroNavUtil )
     
     # build stand-alone component  
     GLOBAL_ADD_EXECUTABLE( gps2localise2d ${COMP_SRCS} main )

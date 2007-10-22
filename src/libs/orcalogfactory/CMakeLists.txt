@@ -13,7 +13,7 @@ IF ( NOT OS_WIN )
     
     GLOBAL_ADD_LIBRARY( OrcaLogFactory SHARED ${SRCS} )
 
-    SET( COMP_DEPS OrcaNavUtil OrcaLog )
+    SET( COMP_DEPS HydroNavUtil OrcaLog )
 
     # Need OpenCV to compress images to file
     IF ( OPENCV_FOUND )

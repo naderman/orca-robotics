@@ -44,7 +44,7 @@ MultiplicativeNoiseModel::perturbOdom( ::orca::Position2dData& odom )
     //
     // Work out the deltaPose
     //
-    orcanavutil::Offset deltaPose;
+    hydronavutil::Offset deltaPose;
     odomDifferentiator_.addOdom( odom, deltaPose );
 
     // cout<<"TRACE(multiplicativenoisemodel.cpp): instead of deltaPose="<<deltaPose << endl;
@@ -60,7 +60,7 @@ MultiplicativeNoiseModel::perturbOdom( ::orca::Position2dData& odom )
     //
     // Add the delta to apparentOdom_
     //
-    orcanavutil::addPoseOffset( apparentOdom_.x,
+    hydronavutil::addPoseOffset( apparentOdom_.x,
                                 apparentOdom_.y,
                                 apparentOdom_.theta,
                                 deltaPose.x,

@@ -58,7 +58,7 @@ Laser2Og::~Laser2Og()
 
 // NOTE: assumes both POSE in map coordinate system
 orca::OgObservation
-Laser2Og::process( const orcanavutil::Pose &sensorPose, const orca::RangeScanner2dData &scan )
+Laser2Og::process( const hydronavutil::Pose &sensorPose, const orca::RangeScanner2dData &scan )
 {
     // @todo where to get these settings from?
     const double RAY_EXTENSION = 1.25;

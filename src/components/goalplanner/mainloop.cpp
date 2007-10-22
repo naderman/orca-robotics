@@ -51,7 +51,7 @@ namespace {
     // Computes waypoint to start from
     // This is for the pathplanner's purposes, not the pathfollower.
     // So we don't care too much about tolerances and speeds.
-    void computeFirstWaypointForPathPlanning( const orcanavutil::Pose &pose, Waypoint2d &wp )
+    void computeFirstWaypointForPathPlanning( const hydronavutil::Pose &pose, Waypoint2d &wp )
     {
         wp.target.p.x = pose.x();
         wp.target.p.y = pose.y();
@@ -66,10 +66,10 @@ namespace {
         wp.maxApproachTurnrate = (float)DEG2RAD(2e+6); 
     }
 
-    orcanavutil::Pose mlPose( const orca::Localise2dData &localiseData )
+    hydronavutil::Pose mlPose( const orca::Localise2dData &localiseData )
     {
         const orca::Pose2dHypothesis &mlHyp = orcaice::mlHypothesis( localiseData );
-        return orcanavutil::Pose( mlHyp.mean.p.x, mlHyp.mean.p.y, mlHyp.mean.o );
+        return hydronavutil::Pose( mlHyp.mean.p.x, mlHyp.mean.p.y, mlHyp.mean.o );
     }
 
     bool localisationIsUncertain( const orca::Localise2dData &localiseData )
@@ -225,7 +225,7 @@ void MainLoop::stopRobot()
 }
 
 void
-MainLoop::adjustTimes( const orcanavutil::Pose &pose,
+MainLoop::adjustTimes( const hydronavutil::Pose &pose,
                        orca::PathFollower2dData &incomingPath )
 {  
     // compute time to reach 1st wp based on straight-line distance: timeDist
@@ -254,7 +254,7 @@ MainLoop::adjustTimes( const orcanavutil::Pose &pose,
 }
 
 void 
-MainLoop::computeAndSendPath( const orcanavutil::Pose &pose, 
+MainLoop::computeAndSendPath( const hydronavutil::Pose &pose, 
                               const orca::PathFollower2dData &incomingPath )
 {   
     // put together a task for the pathplanner
@@ -437,7 +437,7 @@ MainLoop::run()
             
             // Adjust timing: work out how long it takes to the first waypoint based on straight-line distance 
             // and configured velocityToFirstWaypoint_. Take the max of first wp time and the computed time.
-            const orcanavutil::Pose &pose = mlPose(localiseData);
+            const hydronavutil::Pose &pose = mlPose(localiseData);
             adjustTimes( pose, incomingPath );
             
             computeAndSendPath( pose, incomingPath );

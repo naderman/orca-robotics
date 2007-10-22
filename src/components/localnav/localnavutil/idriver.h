@@ -14,7 +14,7 @@
 #include <orca/rangescanner2d.h>
 #include <orcaice/context.h>
 #include <orca/vehicledescription.h>
-#include <orcanavutil/pose.h>
+#include <hydronavutil/pose.h>
 
 #include <orcalocalnav/goal.h>
 
@@ -47,7 +47,7 @@ public:
     //
     virtual void getCommand( bool                                   stalled,
                              bool                                   localisationUncertain,
-                             const orcanavutil::Pose               &pose,
+                             const hydronavutil::Pose               &pose,
                              const orca::Twist2d                   &currentVelocity,
                              const orca::Time                      &poseAndVelocityTime,
                              const orca::RangeScanner2dDataPtr      obs,

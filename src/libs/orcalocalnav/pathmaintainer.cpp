@@ -9,7 +9,7 @@
  */
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include <orcanavutil/orcanavutil.h>
+#include <hydronavutil/hydronavutil.h>
 #include "pathfollower2dI.h"
 #include "pathmaintainer.h"
 
@@ -131,7 +131,7 @@ PathMaintainer::checkForWpIndexChange()
 
 bool 
 PathMaintainer::waypointReached( const orca::Waypoint2d &wp,
-                                 const orcanavutil::Pose &pose,
+                                 const hydronavutil::Pose &pose,
                                  const double timeNow )
 {
     double distanceToWp = hypotf( pose.y()-wp.target.p.y,
@@ -159,7 +159,7 @@ PathMaintainer::waypointReached( const orca::Waypoint2d &wp,
 void
 convert( const orca::Waypoint2d  &wp,
          Goal                    &goal,
-         const orcanavutil::Pose &pose,
+         const hydronavutil::Pose &pose,
          double                  secSinceActivation )
 {
     double secToWp = orcaice::timeAsDouble(wp.timeTarget) - secSinceActivation;
@@ -174,7 +174,7 @@ convert( const orca::Waypoint2d  &wp,
               wp.maxApproachTurnrate );
 
     // put the goal in robot's local coord system
-    orcanavutil::subtractInitialOffset( goal.x,
+    hydronavutil::subtractInitialOffset( goal.x,
                                         goal.y,
                                         goal.theta,
                                         pose.x(),
@@ -186,7 +186,7 @@ convert( const orca::Waypoint2d  &wp,
 bool
 PathMaintainer::getActiveGoals( std::vector<Goal> &goals,
                                 int maxNumWaypoints,
-                                const orcanavutil::Pose &pose )
+                                const hydronavutil::Pose &pose )
 {
     goals.resize(0);
     if ( wpIndex_ == -1 ) return false;

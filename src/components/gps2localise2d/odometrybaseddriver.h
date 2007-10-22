@@ -14,8 +14,8 @@
 #include <orcaice/context.h>
 #include "simpledriver.h"
 #include <orcaifaceimpl/proxiedconsumers.h>
-#include <orcanavutil/offset.h>
-#include <orcanavutil/odometrydifferentiator.h>
+#include <hydronavutil/offset.h>
+#include <hydronavutil/odometrydifferentiator.h>
 
 namespace gps2localise2d {
 
@@ -42,14 +42,14 @@ public:
 private: 
 
     bool setup();
-    double calcHeadingUncertainty( orcanavutil::Offset &delta,
+    double calcHeadingUncertainty( hydronavutil::Offset &delta,
                                    double dt );
 
     SimpleDriver                                simpleDriver_;
     orcaifaceimpl::ProxiedOdometry2dConsumerImplPtr odomConsumer_;
     bool                                        isSetup_;
 
-    orcanavutil::OdometryDifferentiator         odometryDifferentiator_;
+    hydronavutil::OdometryDifferentiator         odometryDifferentiator_;
 
     orca::Time prevTime_;
 

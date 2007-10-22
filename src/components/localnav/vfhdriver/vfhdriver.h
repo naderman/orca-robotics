@@ -52,7 +52,7 @@ public:
     // Goal location is in robot's coordinate frame
     virtual void getCommand( bool                                   stalled,
                              bool                                   localisationUncertain,
-                             const orcanavutil::Pose               &pose,
+                             const hydronavutil::Pose               &pose,
                              const orca::Twist2d                   &currentVelocity,
                              const orca::Time                      &poseAndVelocityTime,
                              const orca::RangeScanner2dDataPtr      obs,

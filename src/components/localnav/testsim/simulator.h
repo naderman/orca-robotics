@@ -2,7 +2,7 @@
 #define SIMULATOR_H
 
 #include <orcaogmap/orcaogmap.h>
-#include <orcanavutil/orcanavutil.h>
+#include <hydronavutil/hydronavutil.h>
 #include <orcaifaceimpl/laserscanner2dImpl.h>
 #include <orcaifaceimpl/localise2dImpl.h>
 #include <orcaifaceimpl/ogmapImpl.h>
@@ -57,7 +57,7 @@ private:
     orcaogmap::OgMap       grownOgMap_;
     orcaogmap::OgLosTracer rayTracer_;
 
-    orcanavutil::Pose      pose_;
+    hydronavutil::Pose      pose_;
     double                 velLin_;
     double                 velRot_;
 

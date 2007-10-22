@@ -93,7 +93,7 @@ VfhDriver::setSpeedConstraints( float maxSpeed, float maxTurnrate )
 void
 VfhDriver::getCommand( bool                                   stalled,
                        bool                                   localisationUncertain,
-                       const orcanavutil::Pose               &pose,
+                       const hydronavutil::Pose               &pose,
                        const orca::Twist2d                   &currentVelocity,
                        const orca::Time                      &poseAndVelocityTime,
                        const orca::RangeScanner2dDataPtr      obs,
