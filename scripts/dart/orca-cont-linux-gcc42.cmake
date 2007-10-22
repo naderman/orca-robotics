@@ -38,8 +38,6 @@ BUILD_IMAGE_SERVER:BOOL=ON
 
 # set any extra envionment variables here
 SET (CTEST_ENVIRONMENT
-HYDRO_HOME=/opt/hydro-cont
-LD_LIBRARY_PATH=$HYDRO_HOME/lib:$LD_LIBRARY_PATH
 ORCA_INSTALL=/opt/orca-cont
 CC=/home/users/dart/bin/gcc
 CXX=/home/users/dart/bin/g++

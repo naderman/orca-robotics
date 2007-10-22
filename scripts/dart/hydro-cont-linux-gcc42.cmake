@@ -37,7 +37,6 @@ BUILD_IMAGE_SERVER:BOOL=ON
 
 # set any extra envionment variables here
 SET (CTEST_ENVIRONMENT
-HYDRO_INSTALL=/opt/hydro-cont
 CC=/home/users/dart/bin/gcc
 CXX=/home/users/dart/bin/g++
 )

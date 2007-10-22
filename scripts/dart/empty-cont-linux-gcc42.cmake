@@ -36,10 +36,7 @@ CMAKE_BUILD_TYPE:STRING=Debug
 
 # set any extra envionment variables here
 SET (CTEST_ENVIRONMENT
-HYDRO_HOME=/opt/hydro-cont
 ORCA_HOME=/opt/orca-cont
-LD_LIBRARY_PATH=$HYDRO_HOME/lib:$LD_LIBRARY_PATH
-LD_LIBRARY_PATH=$ORCA_HOME/lib:$LD_LIBRARY_PATH
 CC=/home/users/dart/bin/gcc
 CXX=/home/users/dart/bin/g++
 )

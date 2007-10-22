@@ -39,8 +39,6 @@ BUILD_SERVICES=ON
 
 # set any extra envionment variables here
 SET (CTEST_ENVIRONMENT
-  HYDRO_HOME=/opt/hydro-nightly
-  LD_LIBRARY_PATH=$HYDRO_HOME/lib:$LD_LIBRARY_PATH
   ORCA_INSTALL=/opt/orca-nightly
   CC=gcc-4.2
   CXX=g++-4.2

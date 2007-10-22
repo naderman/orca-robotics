@@ -3,6 +3,10 @@
 dashboard=/home/users/dart/ctests/orca-and-friends/orca-and-friends-cont
 logfile=$dashboard/orca-and-friends.log
 
+export HYDRO_INSTALL=/opt/hydro-cont
+export HYDRO_HOME=$HYDRO_INSTALL
+export LD_LIBRARY_PATH=$HYDRO_HOME/lib:$LD_LIBRARY_PATH
+
 while true; do
  
  echo ------- ORCA AND FRIENDS ---------- >> $logfile
