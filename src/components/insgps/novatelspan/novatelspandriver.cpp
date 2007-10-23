@@ -12,6 +12,7 @@
 #include <orcagpsutil/latlon2mga.h>
 #include "novatelspandriver.h"
 #include "timeval.h"
+#include "serialconnectivity.h"
 
 // log types
 #include <novatel/header.h>
@@ -54,6 +55,7 @@ NovatelSpanInsGpsDriver::NovatelSpanInsGpsDriver( const char*             device
 {
     const bool blockingMode = false;
     serial_ = new Serial( device, baud, blockingMode );
+    //serial_->setDebugLevel(1);
 
     // set to n second timeout
     serial_->setTimeout( 2, 0 );
@@ -75,76 +77,52 @@ NovatelSpanInsGpsDriver::~NovatelSpanInsGpsDriver()
 int
 NovatelSpanInsGpsDriver::reset()
 {
-    int put;
 
-    context_.tracer()->debug( "NovatelSpanInsGps: resetting Novatel Span InsGps driver", 2 );
+    //context_.tracer()->debug( "!_DOES__NOTHING_!_ NovatelSpanInsGps: resetting Novatel Span InsGps driver", 2 );
 
-    serial_->flush();
+    // baudrates we test for; this is
+    // _not_ all the baudrates the receiver
+    // can possible be set to
+    int baudrates[]={
+        9600,
+        19200,
+        38400,
+        57600,
+        115200,
+        230400
+    };
+    int currentBaudrate = 0;
+    bool correctBaudrate = false;
 
-//     std::vector<int> baudrates;
-//     baudrates.resize(11);
-//     baudrates[0] = 300 ;
-//     baudrates[1] = 600 ;
-//     // baudrates[2] = 900 ;
-//     baudrates[2] = 1200 ;
-//     baudrates[3] = 2400 ;
-//     baudrates[4] = 4800 ;
-//     baudrates[5] = 9600 ;
-//     baudrates[6] = 19200 ;
-//     baudrates[7] = 38400 ;
-//     baudrates[8] = 57600 ;
-//     baudrates[9] = 115200 ;
-//     baudrates[10] = 230400 ;
- 
-    // try all baud rates and reset the device
-//     for ( int i=0; i<11; i++ )
-//     {
-//         std::cout << "i = " << i << std::endl;
-//         if( serial_->baud( baudrates[i] )==-1 )
-//         {
-//             std::string errString = "Failed to set baud rate.";
-//             context_.tracer()->error( errString );
-//             throw hydroutil::Exception( ERROR_INFO, errString );
-//         }
-//         else
-//         {
-//             serial_->flush();
-//             put = serial_->writeString( "freset command\r\n" );
-//             // cout << put << " bytes were written at " << baudrates[i] << "baudrate" << endl;
-//             serial_->drain();
-//             // IceUtil::ThreadControl::sleep(IceUtil::Time::milliSeconds(250));
-//         }
-//     }
-	
-    // TODO: After adding freset back in:
-    // Change the baudrate of the serial port to 9600 which is the default
-    // for the device after it has been reset.
-
-    // Change the baudrate of the serial port to the requested baudrate
-    serial_->setBaudRate( baud_ );
-
-    //IceUtil::ThreadControl::sleep(IceUtil::Time::milliSeconds(2000));
-    // serial_->flush();
-    put = serial_->writeString( "unlogall\r\n" );
-    // printf("put %d bytes\n",put);
-    serial_->drain();
-
-    // set the device to the requested baud rate 
-    // put = serial_->writeString( "com com1 115200 n 8 1 n off on\r\n" );
+    std::cout << "Trying to hook up to receiver at different Baudrates\n";
+    int maxTry = 4;
+    int successThresh = 4;
+    std::string challenge("unlogall\r\n");
+    std::string ack("<OK");
+    size_t i=0;
+    while(false == correctBaudrate && (i<sizeof baudrates)){
+        currentBaudrate = baudrates[i];
+        correctBaudrate = testConnectivity( challenge, ack, serial_, 100, maxTry, successThresh, currentBaudrate);
+        i++;
+    }
+    if(false == correctBaudrate){
+        return -1;
+    }
     char str[256];
     sprintf( str,"com com1 %d n 8 1 n off on\r\n", baud_ );
-    put = serial_->writeString( str );
-    
-
-//     // set the port to the requested baudrate
-//     if( serial_->baud( 115200 )==-1 )
-//     { 
-// 	cout << "NovatelSpanInsGps: ERROR: Failed to set baud rate.\n";
-//         std::string errString = "Failed to set baud rate.";
-//         throw hydroutil::Exception( ERROR_INFO, errString );
-//     }
-    
-   return 0;
+    serial_->writeString( str );
+    std::cout << "*******************************\n"
+        << "** Current Speed " << currentBaudrate << "\n"
+        << "** Resetting to " << baud_ << "\n"
+        << "*******************************\n";
+    std::cout << "** Testing new setting\n** ";
+    if(true == testConnectivity( challenge, ack, serial_, 100, maxTry, successThresh, baud_)){
+        std::cout << "*******************************\n";
+        return 0;
+    }else{
+        std::cout << "*******************************\n";
+        return -1;
+    }
 }
 
 void
@@ -511,7 +489,17 @@ NovatelSpanInsGpsDriver::run()
                 #endif
 
                 // Guaranteed not to block for long.
-                int ret = serial_->bytesAvailableWait();
+                int ret = 0;
+                try{
+                    ret = serial_->bytesAvailableWait();
+                }
+                catch ( const std::string &e )
+                {
+                    std::stringstream ss;
+                    ss << "ERROR("<<__FILE__<<" _wait_ ): Caught unexpected string: " << e;
+                    context_.tracer()->error( ss.str() );
+                    //context_.status()->fault( SUBSYSTEM, ss.str() );            
+                }
                 // timeOfRead_ = IceUtil::Time::now();
                 if ( ret < 0 )
                 {
@@ -538,6 +526,12 @@ NovatelSpanInsGpsDriver::run()
                 ss<<"Caught NovatelSpanException: " << e.what();
                 context_.tracer()->warning( ss.str() );
             }
+            catch ( SerialException &e )
+            {
+                std::stringstream ss;
+                ss<<"Caught SerialException: " << e.what();
+                context_.tracer()->warning( ss.str() );
+            }
             catch ( hydroutil::Exception & e )
             {
                 std::stringstream ss;
@@ -550,7 +544,26 @@ NovatelSpanInsGpsDriver::run()
                 ss << "novatelspandriver::run(): Caught Ice::exception: " << e;
                 context_.tracer()->warning( ss.str() );
             }
-
+            catch ( std::exception & e )
+            {
+                std::stringstream ss;
+                ss << "novatelspandriver::run(): Caught std::exception: " << e.what();
+                context_.tracer()->warning( ss.str() );
+            }
+            catch ( const std::string &e )
+            {
+                std::stringstream ss;
+                ss << "ERROR("<<__FILE__<<"): Caught unexpected string: " << e;
+                context_.tracer()->error( ss.str() );
+                //context_.status()->fault( SUBSYSTEM, ss.str() );            
+            }
+            catch ( const char *e )
+            {
+                std::stringstream ss;
+                ss << "ERROR("<<__FILE__<<"): Caught unexpected char *: " << e;
+                context_.tracer()->error( ss.str() );
+                //context_.status()->fault( SUBSYSTEM, ss.str() );
+            }
             catch ( ... )
             {
                 context_.tracer()->warning( "Caught some other exception..." );
@@ -600,7 +613,7 @@ NovatelSpanInsGpsDriver::readMsgsFromHardware()
 
     // read novatel binary messages
     ret = read_message( &serial_data_ );
-    // cout << "readMsgsFromHardware(): ret: " << ret << endl;
+    //cout << "readMsgsFromHardware(): ret: " << ret << endl;
     // ret = serial_->read_line(serial_data_,1024,'\n');
 
     if( ret>0 )
@@ -1071,7 +1084,7 @@ int NovatelSpanInsGpsDriver::read_message( novatel_message* msg )
 
     // read the first sync byte
     do{
-        got = serial_->readFull( &msg->hdr.sop1, 1 );
+        got = serial_->read( &msg->hdr.sop1, 1 );
         if ( got <= 0 )
         {
             // server has disconnected somehow
