@@ -12,6 +12,7 @@ FIND_PATH( HYDRO_HOME_INCLUDE_HYDROUTIL buffer.h
   # Test standard installation points
   /opt/hydro/include/hydroutil
   /opt/hydro-2.7.0/include/hydroutil
+  /opt/hydro-2.6.0+/include/hydroutil
   /opt/hydro-2.6.0/include/hydroutil
   C:/hydro/include/hydroutil
   )
