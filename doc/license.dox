@@ -14,7 +14,9 @@
 
 @section orca_doc_license_license License
 
-The Orca project does not, as a policy, require code to conform to any specific license to be included in the distribution. However, the code is required to have a license and the license must be Open Source.
+The Orca-Robotics project does not, as a policy, require code to conform to any 
+specific license to be included in the distribution. However, the code is required 
+to have a license and the license must be Open Source. That is the official policy.
 
 For a complete up-to-date list of licenses see the @b ORCA_LICENSE file included in your distribution.
 

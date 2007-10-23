@@ -1,10 +1,10 @@
 Orca Project: Components for robotics 
               http://orca-robotics.sf.net/
-Copyright (c) 2004-2006 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+Copyright (c) 2004-2007 Alex Brooks, Alexei Makarenko, Tobias Kaupp
 
-The Orca project does not, as a policy, require code to conform to any specific 
-license to be included in the distribution. However, the code is required to 
-have a license and the license must be Open Source. That is the official policy.
+The Orca-Robotics project does not, as a policy, require code to conform to any 
+specific license to be included in the distribution. However, the code is required 
+to have a license and the license must be Open Source. That is the official policy.
 
 The reality of the situation is that nearly all code in the Orca libraries and 
 components is covered under the Library GNU Public License (LGPL) as defined by 
@@ -17,7 +17,7 @@ copy of the license, write to the Free Software Foundation, 59 Temple
 Place, Suite 330, Boston, MA 02111 USA.
 
 The following is a complete list of subdirectories of the 'src' directory 
-in orca2 distribution. For each subdirectory with a distinct license the 
+in 'orca' distribution. For each subdirectory with a distinct license the 
 license is listed.
 
 DIRECTORY                                 LICENSE
@@ -25,13 +25,13 @@ DIRECTORY                                 LICENSE
 src
     components
         faithlocaliser                     LGPL
-        featuremap2dmon                    LGPL
         featuremaploader                   LGPL
         goalplanner                        LGPL
         gps                                LGPL
         imageserver                        LGPL
         imageviewer                        LGPL
-        insgps                             LGPL
+        imu                                LGPL
+        insgps                             LGPL (with permission from NovAtel Inc.)
         laser2d                            LGPL
             playerclient                    GPL
             sickacfr                       LGPL
@@ -40,12 +40,10 @@ src
         laserfeatureextractor              LGPL
         lasermon                           LGPL
         localnav                           LGPL
-        noisyrobot2d                       LGPL
         ogmaploader                         GPL
         ognode                             LGPL
         orcamon                            LGPL
         pathplanner                        LGPL
-        position2dmon                      LGPL
         robot2d                            LGPL
             playerclient                    GPL
         segwayrmp                          LGPL
@@ -60,7 +58,6 @@ src
         *                                  LGPL
     libs
         orcacm                             LGPL
-        orcacolourtext                     LGPL
         orcadef                            LGPL
         orcaice                            LGPL
         orcaicegrid                        LGPL
@@ -69,13 +66,11 @@ src
         orcaimage                           GPL
         orcalog                            LGPL
         orcamisc                           LGPL
-        orcanavutil                        LGPL
         orcaobj                            LGPL
         orcaogfusion                       LGPL
         orcaogmap                          LGPL
         orcapathplan                       LGPL
         orcaplayer                          GPL
-        orcaportability                    LGPL
         orcaprobe                          LGPL
         orcaprobefactory                   LGPL
         orcaqcm                             GPL
@@ -86,17 +81,12 @@ src
         orcaqgui3dfactory                   GPL
         orcaqt                              GPL
         orcaquml                            GPL
-        orcaserial                         LGPL
+        orcawall                           LGPL
+        orcawallfactory                    LGPL
     sandbox
         gorca                               GPL
-        imu                                LGPL
-        insgps                             LGPL (with permission from NovAtel Inc.)
-        netcam                             LGPL
         pointcloudserver                   LGPL
         pointcloudviewer                   LGPL
-        reactivewalker                     LGPL
-    tests
-        *                                  LGPL
     utils
         cleanregistry                      LGPL
         deftools                           LGPL
@@ -105,9 +95,13 @@ src
         logplayer                          LGPL
         orcaview2d                          GPL
         orcaview3d                          GPL
+        pinger                             LGPL
         probe                              LGPL
             term-iostream                  LGPL
             gui-qt                          GPL
         registrylist                       LGPL
         registryview                        GPL
+        replyer                            LGPL
+        systemtracermon                    LGPL
+        wall                               LGPL
 -------------------------------------------------------------

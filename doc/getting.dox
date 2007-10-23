@@ -33,13 +33,13 @@ Practically, this means that you can download build your own components from scr
 - Option 2. Checkout source from SVN
     - Anonymous checkout:
 @verbatim
-svn co https://orca-robotics.svn.sf.net/svnroot/orca-robotics/hydro/trunk hydro
-svn co https://orca-robotics.svn.sf.net/svnroot/orca-robotics/orca/trunk orca
+$ svn co https://orca-robotics.svn.sf.net/svnroot/orca-robotics/hydro/trunk hydro
+$ svn co https://orca-robotics.svn.sf.net/svnroot/orca-robotics/orca/trunk orca
 @endverbatim
     - Checkout for registered developers:
 @verbatim
-svn co --username [your-sf-username] https://orca-robotics.svn.sf.net/svnroot/orca-robotics/hydro/trunk hydro
-svn co --username [your-sf-username] https://orca-robotics.svn.sf.net/svnroot/orca-robotics/orca/trunk orca
+$ svn co --username [your-sf-username] https://orca-robotics.svn.sf.net/svnroot/orca-robotics/hydro/trunk hydro
+$ svn co --username [your-sf-username] https://orca-robotics.svn.sf.net/svnroot/orca-robotics/orca/trunk orca
 @endverbatim
     - See links @ref orca_doc_version_control "to get started" with SVN.
     - See <strong><a href="http://sourceforge.net/svn/?group_id=111647" style="text-decoration:none">more detailed SourceForge SVN instructions.</a></strong>
