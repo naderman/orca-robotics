@@ -1,3 +1,4 @@
+#if 0
 /*
  * Orca Project: Components for robotics 
  *               http://orca-robotics.sf.net/
@@ -10,7 +11,7 @@
 
 // #include <iostream>
 
-#include <orcalog/logmaster.h>
+#include <orcalog/masterfilewriter.h>
 
 // all plug-insv
 #include "cameralogger.h"
@@ -51,66 +52,66 @@ DefaultLogFactory::DefaultLogFactory()
 }
 
 orcalog::Logger* 
-DefaultLogFactory::create( const std::string      &interfaceType, 
-                           const std::string      &typeSuffix,
-                           const std::string      &format,
-                           orcalog::LogMaster     *master,
-                           const std::string      &filenamePrefix,
-                           const orcaice::Context &context )
+DefaultLogFactory::create( const std::string         &interfaceType, 
+                           const std::string         &comment,
+                           const std::string         &format,
+                           orcalog::MasterFileWriter &masterFileWriter,
+                           const std::string         &filename,
+                           const orcaice::Context    &context )
 {
     orcalog::Logger* logger = 0;
      
     if (interfaceType == "Camera")
     {
-        logger = new CameraLogger( master, typeSuffix, format, filenamePrefix, context );
+        logger = new CameraLogger( masterFileWriter, comment, format, filename, context );
     }
     else if (interfaceType == "Cpu")
     {
-        logger = new CpuLogger( master, typeSuffix, format, filenamePrefix, context );
+        logger = new CpuLogger( masterFileWriter, comment, format, filename, context );
     }
     else if (interfaceType == "DriveBicycle")
     {
-        logger = new DriveBicycleLogger( master, typeSuffix, format, filenamePrefix, context );
+        logger = new DriveBicycleLogger( masterFileWriter, comment, format, filename, context );
     }
     else if (interfaceType == "Imu")
     {
-        logger = new ImuLogger( master, typeSuffix, format, filenamePrefix, context );
+        logger = new ImuLogger( masterFileWriter, comment, format, filename, context );
     }
     else if (interfaceType == "LaserScanner2d")
     {
-        logger = new LaserScanner2dLogger( master, typeSuffix, format, filenamePrefix, context );
+        logger = new LaserScanner2dLogger( masterFileWriter, comment, format, filename, context );
     }
     else if (interfaceType == "Localise2d")
     {
-        logger = new Localise2dLogger( master, typeSuffix, format, filenamePrefix, context );
+        logger = new Localise2dLogger( masterFileWriter, comment, format, filename, context );
     }
     else if (interfaceType == "Localise3d")
     {
-        logger = new Localise3dLogger( master, typeSuffix, format, filenamePrefix, context );
+        logger = new Localise3dLogger( masterFileWriter, comment, format, filename, context );
     }
     else if (interfaceType == "Odometry2d")
     {
-        logger = new Odometry2dLogger( master, typeSuffix, format, filenamePrefix, context );
+        logger = new Odometry2dLogger( masterFileWriter, comment, format, filename, context );
     }
     else if (interfaceType == "Odometry3d")
     {
-        logger = new Odometry3dLogger( master, typeSuffix, format, filenamePrefix, context );
+        logger = new Odometry3dLogger( masterFileWriter, comment, format, filename, context );
     }
     else if (interfaceType == "PolarFeature2d")
     {
-        logger = new PolarFeature2dLogger( master, typeSuffix, format, filenamePrefix, context );
+        logger = new PolarFeature2dLogger( masterFileWriter, comment, format, filename, context );
     }
     else if (interfaceType == "Power")
     {
-        logger = new PowerLogger( master, typeSuffix, format, filenamePrefix, context );
+        logger = new PowerLogger( masterFileWriter, comment, format, filename, context );
     }
     else if (interfaceType == "Wifi")
     {
-        logger = new WifiLogger( master, typeSuffix, format, filenamePrefix, context );
+        logger = new WifiLogger( masterFileWriter, comment, format, filename, context );
     }
     else if (interfaceType == "Gps")
     {
-        logger = new GpsLogger( master, typeSuffix, format, filenamePrefix, context );
+        logger = new GpsLogger( masterFileWriter, comment, format, filename, context );
     }
     
     return logger;
@@ -120,3 +121,4 @@ orcalog::LogFactory* createLogFactory()
 {
     return new DefaultLogFactory;
 }
+#endif

@@ -101,4 +101,3 @@ orcalog::ReplayFactory* createReplayFactory()
 {
     return new DefaultReplayFactory;
 }
-

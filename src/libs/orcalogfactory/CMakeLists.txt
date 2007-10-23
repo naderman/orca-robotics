@@ -13,7 +13,7 @@ IF ( NOT OS_WIN )
     
     GLOBAL_ADD_LIBRARY( OrcaLogFactory SHARED ${SRCS} )
 
-    SET( COMP_DEPS HydroNavUtil OrcaLog )
+    SET( COMP_DEPS OrcaLog )
 
     # Need OpenCV to compress images to file
     IF ( OPENCV_FOUND )
@@ -22,8 +22,8 @@ IF ( NOT OS_WIN )
 
     TARGET_LINK_LIBRARIES( OrcaLogFactory ${COMP_DEPS} )
 
-    IF ( BUILD_TESTS )
-        ADD_SUBDIRECTORY ( test )
-    ENDIF ( BUILD_TESTS )
+#    IF ( BUILD_TESTS )
+#        ADD_SUBDIRECTORY ( test )
+#    ENDIF ( BUILD_TESTS )
     
 ENDIF ( NOT OS_WIN )

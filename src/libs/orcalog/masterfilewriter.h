@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_ORCALOG_LOG_MASTER_H
-#define ORCA2_ORCALOG_LOG_MASTER_H
+#ifndef ORCA2_ORCALOG_MASTER_FILE_WRITER_H
+#define ORCA2_ORCALOG_MASTER_FILE_WRITER_H
 
 #include <IceUtil/Mutex.h>
 #include <orcaice/context.h>
@@ -17,28 +17,17 @@
 namespace orcalog
 {
 
-class Logger;
-
 /*!
+    @brief Maintains the master file.
+
     All public operations are thread safe.
 */
-class LogMaster
+class MasterFileWriter
 {
 public:
-    LogMaster( const std::string& filename, const orcaice::Context& context );
-    ~LogMaster();
-
-    //! Initializes loggers and starts logging data.
-    void start();
-
-    //! Stops logging and closes all log files.
-    void stop();
-
-    //! Temporariliy stops logging data without closing the data set.
-    void pause();
-
-    //! Resumes logging data.
-    void unpause();
+    MasterFileWriter( const std::string &filename,
+                      const orcaice::Context &context );
+    ~MasterFileWriter();
 
     //! Returns number of registered loggers.
     int loggerCount() const;
@@ -47,23 +36,23 @@ public:
     //! Returns a unique ID used by loggers later to identify themselves.
     //! Raises orcalog::Exception if the logger cannot be registered, e.g.
     //! because logging has already started.
-    int addLog( Logger* logger,
-                const std::string& filename,
-                const std::string& interfaceType,
-                const std::string& encodingType,
-                const std::string& proxyString );
+    int addLog( const std::string &filename,
+                const std::string &interfaceType,
+                const std::string &encodingType,
+                const std::string &comment );
 
-    //! Call this to write another data object.
-    void addData( int id, int index );
+    //! Call this when an item is written in a sub-logfile
+    void notifyOfLogfileAddition( int loggerId,
+                                  int indexInSubLogfile );
 
 private:
+
     std::ofstream* file_;
-    std::vector<Logger*> loggers_;
 
     // use this to assign unique ID's to loggers.
-    int logCounter_;
+    int numLoggers_;
     // use this for feedback at the end of the run.
-    int dataCounter_;
+    int numItemsLogged_;
 
     bool isStarted_;
 

@@ -14,11 +14,13 @@
 #include <string>
 #include <orcaice/component.h>
 #include <hydrodll/dll.h>
+#include <memory>
 
 namespace orcalog
 {
-    class LogMaster;
-    class LogFactory;
+    class MasterFileWriter;
+    class AutoLoggerFactory;
+    class AutoLogger;
 }
 
 namespace logger
@@ -36,10 +38,13 @@ public:
     virtual void stop();
 
 private:
-    std::vector<orcalog::LogFactory*>                       logFactories_;
+    std::vector<orcalog::AutoLoggerFactory*>         logFactories_;
     std::vector<hydrodll::DynamicallyLoadedLibrary*> libraries_;
 
-    orcalog::LogMaster *master_;
+    // The guy that writes the master file
+    std::auto_ptr<orcalog::MasterFileWriter> masterFileWriter_;
+    // The guys that write the data files
+    std::vector<orcalog::AutoLogger*> autoLoggers_;
 
     // utilities
     void loadPluginLibraries( const std::string &factoryLibNames );

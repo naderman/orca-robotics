@@ -1,4 +1,3 @@
-#if 0
 /*
  * Orca Project: Components for robotics 
  *               http://orca-robotics.sf.net/
@@ -13,6 +12,7 @@
 #define ORCA2_LOGGER_DEFAULT_AUTO_LOGGER_FACTORY_H
 
 #include <orcalog/autologgerfactory.h>
+#include <orcalog/logwriterinfo.h>
 
 namespace orcalogfactory
 {
@@ -23,7 +23,7 @@ class DefaultAutoLoggerFactory: public orcalog::AutoLoggerFactory
 public:
     DefaultAutoLoggerFactory();
     
-    virtual orcalog::IAutoLogger* create( const LogWriterInfo &logWriterInfo );
+    virtual orcalog::AutoLogger* create( const orcalog::LogWriterInfo &logWriterInfo );
 };
 
 } // namespace
@@ -34,4 +34,4 @@ extern "C" {
 
 
 #endif
-#endif
+

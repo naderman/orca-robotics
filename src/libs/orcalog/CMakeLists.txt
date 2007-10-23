@@ -9,8 +9,8 @@ IF ( NOT OS_WIN )
   
   INSTALL_FILES( /include/orcalog .*\\.h$ ) 
 
-IF ( BUILD_TESTS )
-    ADD_SUBDIRECTORY ( test )
-ENDIF ( BUILD_TESTS )
+#IF ( BUILD_TESTS )
+#    ADD_SUBDIRECTORY ( test )
+#ENDIF ( BUILD_TESTS )
 
 ENDIF ( NOT OS_WIN )

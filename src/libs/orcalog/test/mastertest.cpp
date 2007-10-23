@@ -21,13 +21,13 @@ using namespace std;
 class TestLogger : public orcalog::Logger
 {
 public:
-    TestLogger( orcalog::LogMaster *master,
-            const std::string &interfaceType, 
-            const std::string &interfaceTag,
-            const std::string &format,
-            const std::string &filename,
-            const orcaice::Context & context ) :
-        orcalog::Logger( master, interfaceType, interfaceTag, format, filename, context ) {};
+    TestLogger( orcalog::MasterFileWriter &masterFileWriter,
+                const std::string         &interfaceType, 
+                const std::string         &comment,
+                const std::string         &format,
+                const std::string         &filename,
+                const orcaice::Context    &context ) :
+        orcalog::Logger( masterFileWriter, interfaceType, comment, format, filename, context ) {};
     virtual ~TestLogger() {};
     virtual void init() {};
 };
@@ -58,27 +58,27 @@ void TestComponent::start()
     cout<<"testing LogMaster() ... ";
     string masterFilename = "testmaster.txt";
     // create logMaster file
-    orcalog::LogMaster* logMaster = new orcalog::LogMaster( masterFilename.c_str(), context() );
+    orcalog::MasterFileWriter masterFileWriter( masterFilename.c_str(), context() );
     // fake properties
     context().properties()->setProperty(  "MasterTest.Requires.Tag0.Proxy", "bullshit" );
     context().properties()->setProperty(  "MasterTest.Requires.Tag1.Proxy", "horseshit" );
     // add a few logs
-    new TestLogger( logMaster, "type0", "Tag0", "format0", "file0", context() );
-    new TestLogger( logMaster, "type1", "Tag1", "format1", "file1", context() );
+    new TestLogger( masterFileWriter, "type0", "comment0", "format0", "file0", context() );
+    new TestLogger( masterFileWriter, "type1", "comment1", "format1", "file1", context() );
 
     int l0=0, d0=0;
-    logMaster->addData( l0, d0 );
+    masterFileWriter.notifyOfLogfileAddition( l0, d0 );
     IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
-    logMaster->addData( 0, 1 );
+    masterFileWriter.notifyOfLogfileAddition( 0, 1 );
     IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
-    logMaster->addData( 0, 1 );
+    masterFileWriter.notifyOfLogfileAddition( 0, 1 );
     IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
-    logMaster->addData( 0, 1 );
+    masterFileWriter.notifyOfLogfileAddition( 0, 1 );
     IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
     int l1=1, d1=0;
-    logMaster->addData( l1, d1 );
+    masterFileWriter.notifyOfLogfileAddition( l1, d1 );
     IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
-    logMaster->addData( 1, 1 );
+    masterFileWriter.notifyOfLogfileAddition( 1, 1 );
     cout<<"ok"<<endl;
 
     cout<<"testing LogMaster() ... ";
@@ -91,8 +91,8 @@ void TestComponent::start()
     std::vector<bool> enableds;
     // this may throw and it will kill us
     playMaster->getLogs( filenames, interfaceTypes, formats, enableds );
-    if ( filenames.size() != (unsigned int)logMaster->loggerCount() ) {
-        cout<<"failed"<<endl<<"log count expected="<<logMaster->loggerCount()<<" got="<<filenames.size()<<endl;
+    if ( filenames.size() != (unsigned int)masterFileWriter.loggerCount() ) {
+        cout<<"failed"<<endl<<"log count expected="<<masterFileWriter.loggerCount()<<" got="<<filenames.size()<<endl;
         exit(EXIT_FAILURE);
     }
     cout<<"ok"<<endl;

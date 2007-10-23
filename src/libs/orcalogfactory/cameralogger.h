@@ -1,67 +1,67 @@
-/*
- * Orca Project: Components for robotics 
- *               http://orca-robotics.sf.net/
- * Copyright (c) 2004-2007 Alex Brooks, Alexei Makarenko, Tobias Kaupp, Ben Upcroft
- *
- * This copy of Orca is licensed to you under the terms described in the
- * ORCA_LICENSE file included in this distribution.
- *
- */
+// /*
+//  * Orca Project: Components for robotics 
+//  *               http://orca-robotics.sf.net/
+//  * Copyright (c) 2004-2007 Alex Brooks, Alexei Makarenko, Tobias Kaupp, Ben Upcroft
+//  *
+//  * This copy of Orca is licensed to you under the terms described in the
+//  * ORCA_LICENSE file included in this distribution.
+//  *
+//  */
 
-#ifndef ORCA2_ORCALOGFACTORY_CAMERA_LOGGER_H
-#define ORCA2_ORCALOGFACTORY_CAMERA_LOGGER_H
+// #ifndef ORCA2_ORCALOGFACTORY_CAMERA_LOGGER_H
+// #define ORCA2_ORCALOGFACTORY_CAMERA_LOGGER_H
 
-#include <orcaice/context.h>
-#include <orca/camera.h>
-#include <orcalog/logger.h>
+// #include <orcaice/context.h>
+// #include <orca/camera.h>
+// #include <orcalog/logger.h>
 
-#ifdef OPENCV_FOUND
-    #include <cv.h>
-#endif
+// #ifdef OPENCV_FOUND
+//     #include <cv.h>
+// #endif
 
-namespace orcalogfactory
-{
+// namespace orcalogfactory
+// {
 
-class CameraLogger : public orca::CameraConsumer, public orcalog::Logger
-{
-public:
-    CameraLogger( orcalog::LogMaster *master, 
-                const std::string & typeSuffix,
-                const std::string & format,
-                const std::string & filenamePrefix,
-                const orcaice::Context & context );
-    virtual ~CameraLogger();
+// class CameraLogger : public orca::CameraConsumer, public orcalog::Logger
+// {
+// public:
+//     CameraLogger( orcalog::LogMaster *master, 
+//                 const std::string & typeSuffix,
+//                 const std::string & format,
+//                 const std::string & filenamePrefix,
+//                 const orcaice::Context & context );
+//     virtual ~CameraLogger();
 
-    // from Logger
-    virtual void init();
+//     // from Logger
+//     virtual void init();
 
-    // reimplement from Logger because we have a custom log format
-    virtual void createLogFile();
+//     // reimplement from Logger because we have a custom log format
+//     virtual void createLogFile();
 
-    // from *Consumer
-    virtual void setData(const orca::CameraData& data, const Ice::Current&);
+//     // from *Consumer
+//     virtual void setData(const orca::CameraData& data, const Ice::Current&);
     
-private:
-    // utility function
-    void writeDescription( const orca::CameraDescription& obj );
+// private:
+//     // utility function
+//     void writeDescription( const orca::CameraDescription& obj );
     
-    // custom function to mirror ice_writeCameraData()
-    void orca_writeCameraData( Ice::OutputStreamPtr outStreamPtr, const orca::CameraData& data, const std::string & filename );
+//     // custom function to mirror ice_writeCameraData()
+//     void orca_writeCameraData( Ice::OutputStreamPtr outStreamPtr, const orca::CameraData& data, const std::string & filename );
 
-    // alexm: 'data' cannot be const because we are changing it's format
-    void writeCameraDataAsJpeg( const orca::CameraData& data, const std::string & filename );
+//     // alexm: 'data' cannot be const because we are changing it's format
+//     void writeCameraDataAsJpeg( const orca::CameraData& data, const std::string & filename );
 
-    // use opencv to convert to jpg
-   #ifdef OPENCV_FOUND
-       	IplImage* cvImage_;
-		//alen: directory prefix length
-  #endif
+//     // use opencv to convert to jpg
+//    #ifdef OPENCV_FOUND
+//        	IplImage* cvImage_;
+// 		//alen: directory prefix length
+//   #endif
 
-	//alen: directory prefix for jpeg images
-	std::string directoryPrefix_;
-	int directoryPrefixLength_;
-    int nChannels_;
-};
-} // namespace
+// 	//alen: directory prefix for jpeg images
+// 	std::string directoryPrefix_;
+// 	int directoryPrefixLength_;
+//     int nChannels_;
+// };
+// } // namespace
 
-#endif
+// #endif

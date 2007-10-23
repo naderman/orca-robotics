@@ -35,7 +35,7 @@ public:
               std::vector<orcalog::ReplayFactory*> & factories,
               const orcaice::Context & context );
     ~MainLoop(); 
-    
+
     virtual void run();
 
 private:

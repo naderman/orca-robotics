@@ -18,7 +18,9 @@
 namespace orcalog
 {
 
-//! All replayers inherit from this. Some file handling is done in the base class.
+//! Handles a file which contains actual data (ie not the master file).
+//! All replayers inherit from this. 
+//! Some file handling is done in the base class.
 class Replayer
 {
 public:
@@ -44,6 +46,10 @@ public:
 protected:
     //! Summary of component and communicator information
     orcaice::Context context_;
+
+    std::string format() const { return format_; }
+
+protected:
 
     //! In Ice terms, this is the interface ID.
     //! By convention, we strip the namespace.

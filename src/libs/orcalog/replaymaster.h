@@ -18,7 +18,7 @@ namespace orcalog
 {
 
 /*!
-    All public operations are thread safe.
+     @brief Manages replaying of a master log file
 */
 class ReplayMaster
 {
@@ -43,15 +43,16 @@ public:
 
     //! Steps through the data entries until the time stamp is equal to or is after
     //! the one specified. For example, data is logged every second and the last replayed
-    //! time was t=3. Calling seekData(...,5,0) or seekData(...,5,1) will return 
+    //! time was t=3. Calling getData(...,5,0) or getData(...,5,1) will return 
     //! the data at time t=5.
-    //! 
+    //!
     //! Seeking time earlier than the current time will move one step forward and return. 
-    //! For example, calling seekData(..,,2,0) at t=3 will return the data at time t=4.
+    //! For example, calling getData(..,,2,0) at t=3 will return the data at time t=4.
     //!
     //! Seeking time after the end of the log will result in fast forwarding to the end.
+    //!
+    //! Return values are same as the simpler version of getData.
     int getData( int& seconds, int& useconds, int& id, int& index, int seekSec, int secUsec=0 );
-
 
 private:
     std::ifstream *file_;
@@ -61,8 +62,6 @@ private:
     std::string dir_;
 
     orcaice::Context context_;
-
-//     IceUtil::Mutex mutex_;
 };
 
 }

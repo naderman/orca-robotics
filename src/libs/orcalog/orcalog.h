@@ -10,9 +10,9 @@
 #ifndef ORCA2_ORCALOG_H
 #define ORCA2_ORCALOG_H
 
-#include <orcalog/logmaster.h>
-#include <orcalog/logger.h>
-#include <orcalog/logfactory.h>
+#include <orcalog/masterfilewriter.h>
+#include <orcalog/logwriter.h>
+#include <orcalog/autologgerfactory.h>
 
 #include <orcalog/replaymaster.h>
 #include <orcalog/replayer.h>

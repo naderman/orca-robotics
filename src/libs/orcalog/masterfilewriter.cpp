@@ -14,17 +14,17 @@
 #include <IceUtil/Time.h>
 #include <orcaice/orcaice.h>
 #include <orcalog/exceptions.h>
-#include "logmaster.h"
-#include "logger.h"
+#include "masterfilewriter.h"
 #include "utils.h"
 
 using namespace std;
 using namespace orcalog;
 
 
-LogMaster::LogMaster( const std::string &filename, const orcaice::Context & context )
-    : logCounter_(-1),
-      dataCounter_(0),
+MasterFileWriter::MasterFileWriter( const std::string      &filename,
+                                    const orcaice::Context &context )
+    : numLoggers_(0),
+      numItemsLogged_(0),
       isStarted_(false),
       context_(context)
 {
@@ -49,65 +49,33 @@ LogMaster::LogMaster( const std::string &filename, const orcaice::Context & cont
     (*file_) << "# == Interfaces / Logs ==" << endl;
 }
 
-LogMaster::~LogMaster()
+MasterFileWriter::~MasterFileWriter()
 {
     std::stringstream ss;
-    ss << "shutting down after writing "<<dataCounter_<<" objects to "<<(logCounter_+1)<<" logs.";
+    ss << "shutting down after writing "<<numItemsLogged_<<" objects to "<<numLoggers_<<" logs.";
     context_.tracer()->info( ss.str() );
 
     if ( file_ ) {
         file_->close();
         delete file_;
     }
-
-    // important: do not delete loggers because most of them derive from 
-    // Ice smart pointers and self-destruct. Deleting them here will result
-    // in seg fault.
-}
-
-void 
-LogMaster::start()
-{
-    for ( unsigned int i=0; i<loggers_.size(); i++)
-    {
-        loggers_[i]->init();
-    }
-}
-
-void 
-LogMaster::stop()
-{
-}
-
-void 
-LogMaster::pause()
-{
-}
-
-void 
-LogMaster::unpause()
-{
 }
 
 int 
-LogMaster::loggerCount() const
+MasterFileWriter::loggerCount() const
 {
     IceUtil::Mutex::Lock lock(mutex_);
-
-    return loggers_.size();
+    return numLoggers_;
 }
 
 int
-LogMaster::addLog( Logger* logger,
-                    const std::string & filename, 
-                    const std::string & interfaceType,
-                    const std::string & format,
-                    const std::string & proxyString )
+MasterFileWriter::addLog( const std::string &filename, 
+                          const std::string &interfaceType,
+                          const std::string &format,
+                          const std::string &comment )
 {
-    assert( logger && "zero logger pointer" );
-
     context_.tracer()->debug( 
-        "adding log: file="+filename+" id="+interfaceType+" fmt="+format+" prx="+proxyString, 5 );
+        "adding log: file="+filename+" id="+interfaceType+" fmt="+format+" comment="+comment, 5 );
 
     IceUtil::Mutex::Lock lock(mutex_);
 
@@ -116,24 +84,21 @@ LogMaster::addLog( Logger* logger,
         throw orcalog::Exception( ERROR_INFO, "Can't register after started appending!" );
     }
 
-    // keep pointer to control this logger in the future
-    loggers_.push_back( logger );
-
     // this is just a comment 
-    (*file_) << "# " << proxyString << endl;
+    (*file_) << "# " << comment << endl;
 
-    // this will be used replay this log back, we enable play back by default
+    // this will be used replay this log back, we enable playback by default
     bool enabled = true;
     (*file_) << orcalog::headerLine( filename, interfaceType, format, enabled ) << endl;
 
-    // increment unique logger id
-    ++logCounter_;
-
-    return logCounter_;
+    // calc unique logger id
+    int id = numLoggers_;
+    numLoggers_++;
+    return id;
 }
 
 void 
-LogMaster::addData( int id, int index )
+MasterFileWriter::notifyOfLogfileAddition( int loggerId, int indexInSubLogfile )
 {
     IceUtil::Mutex::Lock lock(mutex_);
 
@@ -151,8 +116,8 @@ LogMaster::addData( int id, int index )
     // write to master file
     //
     orca::Time now = orcaice::getNow();
-    (*file_) << orcalog::dataLine( now.seconds, now.useconds, id, index ) << endl;
+    (*file_) << orcalog::dataLine( now.seconds, now.useconds, loggerId, indexInSubLogfile ) << endl;
 
     // count data objects
-    ++dataCounter_;
+    ++numItemsLogged_;
 }

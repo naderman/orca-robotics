@@ -21,32 +21,29 @@ namespace logger {
 
 static const char *DEFAULT_FACTORY_LIB_NAME="libOrcaLogFactory.so";
 
-orcalog::LogFactory* loadLogFactory( hydrodll::DynamicallyLoadedLibrary &lib )
+orcalog::AutoLoggerFactory* loadLogFactory( hydrodll::DynamicallyLoadedLibrary &lib )
 {
-    orcalog::LogFactory *f = 
-        hydrodll::dynamicallyLoadClass<orcalog::LogFactory,LogFactoryMakerFunc>
-                                              (lib, "createLogFactory");
+    orcalog::AutoLoggerFactory *f = 
+        hydrodll::dynamicallyLoadClass<orcalog::AutoLoggerFactory,AutoLoggerFactoryMakerFunc>
+                                              (lib, "createAutoLoggerFactory");
     return f;
 }
 
-Component::Component( const std::string & compName ) : 
-    orcaice::Component( compName ),
-    master_(0)
+Component::Component( const std::string & compName )
+    : orcaice::Component( compName )
 {
 }
 
 Component::~Component()
 {
-    delete master_;
     // important: do not delete loggers because most of them derive from 
     // Ice smart pointers and self-destruct. Deleting them here will result
     // in seg fault.
 
     assert( libraries_.size() == logFactories_.size() );
-    for ( unsigned int i=0; i < libraries_.size(); i++ ){
-//         cout<<"deleting factory #"<<i<<endl;
+    for ( unsigned int i=0; i < libraries_.size(); i++ )
+    {
         delete logFactories_[i];
-//         cout<<"deleting library #"<<i<<endl;
         delete libraries_[i];
     }
 }
@@ -65,7 +62,7 @@ Component::loadPluginLibraries( const std::string & factoryLibNames )
         
         try {
             hydrodll::DynamicallyLoadedLibrary *lib = new hydrodll::DynamicallyLoadedLibrary(libNames[i]);
-            orcalog::LogFactory *f = loadLogFactory( *lib );
+            orcalog::AutoLoggerFactory *f = loadLogFactory( *lib );
             libraries_.push_back(lib);
             logFactories_.push_back(f);
         }
@@ -85,12 +82,17 @@ Component::loadPluginLibraries( const std::string & factoryLibNames )
 
 void
 Component::createLogger( const std::string  &interfaceType, 
-                   const std::string  &interfaceTypeSuffix,
-                   const std::string  &format,
-                   const std::string  &filenamePrefix )
+                         const std::string  &interfaceTypeSuffix,
+                         const std::string  &format,
+                         const std::string  &filenamePrefix )
 {
-    // debug
-//     cout<<"adding slave type="<<interfaceType<<" sfx="<<interfaceTypeSuffix<<" fmt="<<format<<" prfx="<<filenamePrefix<<endl;
+    orcalog::LogWriterInfo logWriterInfo( *masterFileWriter_, context() );
+
+    logWriterInfo.interfaceType = interfaceType;
+    logWriterInfo.interfaceTag = interfaceType+interfaceTypeSuffix;
+    logWriterInfo.comment = orcaice::getRequiredInterfaceAsString( context(), logWriterInfo.interfaceTag );
+    logWriterInfo.format = format;
+    logWriterInfo.filename = filenamePrefix + logWriterInfo.interfaceTag + ".log";
 
     for ( unsigned int i=0; i < logFactories_.size(); ++i )
     {
@@ -99,16 +101,10 @@ Component::createLogger( const std::string  &interfaceType,
             continue;
         }
 
-//         context().tracer()->debug( "creating logger type="+interfaceType+" sfx="+interfaceTypeSuffix+" fmt="+format+" prfx="+filenamePrefix, 5);
-        orcalog::Logger* logger = logFactories_[i]->create( 
-                interfaceType, 
-                interfaceTypeSuffix,
-                format,
-                master_,
-                filenamePrefix,
-                context() );
+        orcalog::AutoLogger* logger = logFactories_[i]->create( logWriterInfo );
 
         if ( logger ) { 
+            autoLoggers_.push_back( logger );
             return;
         }
         else {
@@ -154,7 +150,7 @@ Component::start()
     string masterFilename = filenamePrefix + baseMasterFilename;
 
     // create master file
-    master_ = new orcalog::LogMaster( masterFilename.c_str(), context() );
+    masterFileWriter_.reset( new orcalog::MasterFileWriter( masterFilename.c_str(), context() ) );
     
     // activate component, this may throw and it will kill us
     activate();
@@ -192,17 +188,17 @@ Component::start()
     }
 
     // doesn't make sense to continue if no loggers were created
-    if ( master_->loggerCount() == 0 )
+    if ( masterFileWriter_->loggerCount() == 0 )
     {
         context().tracer()->warning("No loggers were created. Quitting.");
         context().communicator()->shutdown();
     }
 
-
-    // initialize and subscribe all interfaces 
-//     if ( autoStart ) {
-        master_->start();    
-//     }
+    // initialize and subscribe all interfaces  
+    for ( uint i=0; i < autoLoggers_.size(); i++ )
+    {
+        autoLoggers_[i]->initAndStartLogging();
+    }
 }
 
 void 

@@ -18,6 +18,9 @@
 This library contains logging and replaying classes, one for each interface.
 For a full list of functions and classes see @ref orcalogfactory.
 
+@see orca_component_logger
+@see orca_library_orcalog
+
 @par Responsible Developer
 Alex Brooks, Alexei Makarenko, Tobias Kaupp
   
@@ -29,6 +32,8 @@ Alex Brooks, Alexei Makarenko, Tobias Kaupp
 
 This library contains logging and replaying classes, one for each interface.
 
-@see @ref orca_library_orcalogfactory
+@see orca_library_orcalog
+@see orca_component_logger
+@see orca_library_orcalogfactory
 
 */
