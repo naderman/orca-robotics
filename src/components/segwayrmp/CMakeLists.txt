@@ -8,6 +8,9 @@ IF ( BUILD_SEGWAYRMP )
     INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
 
+    # Look for Player
+    INCLUDE (${ORCA_CMAKE_DIR}/FindPlayer2.cmake)
+
     INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR} )
     LINK_DIRECTORIES( ${PLAYER_LINK_DIRS} )    
 

@@ -1,3 +1,6 @@
+# Look for Player
+INCLUDE (${ORCA_CMAKE_DIR}/FindPlayer2.cmake)
+
 IF ( NOT OS_WIN AND PLAYER_FOUND )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )

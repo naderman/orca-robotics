@@ -1,5 +1,8 @@
 IF ( OS_LINUX )
 
+# Look for Player
+INCLUDE (${ORCA_CMAKE_DIR}/FindPlayer2.cmake)
+
 IF ( PLAYER_FOUND)
 
     OPTION( BUILD_PLAYER2ORCA "Try to build Player-to-Orca example" ON )

@@ -7,6 +7,9 @@ IF ( BUILD_ROBOT2D )
     INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
 
+    # Look for Player
+    INCLUDE (${ORCA_CMAKE_DIR}/FindPlayer2.cmake)
+
     LINK_DIRECTORIES( ${PLAYER_LINK_DIRS} )
     
     OPTIONAL_SUB_LIBRARY(

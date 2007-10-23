@@ -21,6 +21,15 @@ IF ( BUILD_TRACERMON )
 
 # curses exist in QNX but apparently assume_default_colors() is not supported
 IF ( OS_LINUX )
+    INCLUDE( ${CMAKE_ROOT}/Modules/FindCurses.cmake )
+    IF ( CURSES_INCLUDE_DIR )
+        MESSAGE( STATUS "Looking for libncurses - found")
+        SET( CURSES_FOUND 1 CACHE INTERNAL "libncurses" )
+    ELSE ( CURSES_INCLUDE_DIR )
+        MESSAGE( STATUS "Looking for libncurses - not found")
+        SET( CURSES_FOUND 0 CACHE INTERNAL "libncurses" )
+    ENDIF ( CURSES_INCLUDE_DIR )
+
     # keyboard driver with libncurses
     OPTIONAL_SUB_LIBRARY(
         "Terminal Ncurses driver for TracerMon"

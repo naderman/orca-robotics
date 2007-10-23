@@ -17,15 +17,6 @@ INCLUDE( ${ORCA_CMAKE_DIR}/orca_macros.cmake )
 # Can we use pkg-config?
 INCLUDE (${ORCA_CMAKE_DIR}/FindPkgConfig.cmake)
 
-# Look for Player
-INCLUDE (${ORCA_CMAKE_DIR}/FindPlayer2.cmake)
-
-# Look for libftd2xx.so (a high level USB library)
-INCLUDE (${ORCA_CMAKE_DIR}/FindFtd2xx.cmake)
-
-# Look for libpcan.so (the Peak CAN library)
-INCLUDE (${ORCA_CMAKE_DIR}/FindPeakCan.cmake)
-
 # Check for Qt
 INCLUDE (${CMAKE_ROOT}/Modules/FindQt4.cmake)
 # we do NOT want 4.0.x
@@ -70,18 +61,6 @@ ASSERT( JAVA_FOUND "Looking for Java - not found" "Looking for Java - found" )
 INCLUDE (${CMAKE_ROOT}/Modules/FindPythonInterp.cmake)
 ASSERT( PYTHONINTERP_FOUND "Looking for the Python interpreter - not found" "Looking for the Python interpreter - found" )
 
-# # Check for OpenCV
-# FIND_LIBRARY( OPENCV_FOUND NAMES opencv cv cv0.9 PATHS /usr/lib /usr/local/lib )
-# ASSERT( OPENCV_FOUND "Looking for OpenCV - not found" "Looking for OpenCV - found" )
-# 
-# # Check for CVAux
-# FIND_LIBRARY( CVAUX_FOUND NAMES cvaux cvaux0.9 PATHS /usr/lib /usr/local/lib )
-# ASSERT( CVAUX_FOUND "Looking for CVAux - not found" "Looking for CVAux - found" )
-# 
-# # Check for HighGUI
-# FIND_LIBRARY( HIGHGUI_FOUND NAMES highgui highgui0.9 highgui0.9.7 PATHS /usr/lib /usr/local/lib )
-# ASSERT( HIGHGUI_FOUND "Looking for HighGUI - not found" "Looking for HighGUI - found" )
-
 # Check for OpenCV
 INCLUDE (${ORCA_CMAKE_DIR}/FindOpencv.cmake)
 
@@ -103,22 +82,3 @@ CHECK_INCLUDE_FILE_CXX( libdc1394/dc1394_control.h 1394_FOUND )
 # Look for video-for-linux (for usb cameras).
 CHECK_INCLUDE_FILE( linux/videodev.h V4L_FOUND )
 CHECK_INCLUDE_FILE( linux/videodev2.h V4L2_FOUND )
-
-INCLUDE( ${CMAKE_ROOT}/Modules/FindCurses.cmake )
-IF ( CURSES_INCLUDE_DIR )
-    MESSAGE( STATUS "Looking for libncurses - found")
-    SET( CURSES_FOUND 1 CACHE INTERNAL "libncurses" )
-ELSE ( CURSES_INCLUDE_DIR )
-    MESSAGE( STATUS "Looking for libncurses - not found")
-    SET( CURSES_FOUND 0 CACHE INTERNAL "libncurses" )
-ENDIF ( CURSES_INCLUDE_DIR )
-
-# Check for ZLIB
-INCLUDE (${CMAKE_ROOT}/Modules/FindZLIB.cmake)
-SET( HAVE_ZLIB ${ZLIB_FOUND} )
-
-# Look for Boost ublas library
-# INCLUDE (${ORCA_CMAKE_DIR}/FindBoostUblas.cmake)
-
-# Look for liblapack library -- linear algebra package
-# INCLUDE (${ORCA_CMAKE_DIR}/FindLapack.cmake)

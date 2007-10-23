@@ -4,6 +4,9 @@ FILE( GLOB SRCS *.cpp )
 ADD_LIBRARY( OrcaSegwayRmpDriver SHARED ${SRCS} )
 INSTALL_TARGETS( /lib OrcaSegwayRmpDriver )
 
+# Look for libpcan.so (the Peak CAN library)
+INCLUDE (${ORCA_CMAKE_DIR}/FindPeakCan.cmake)
+
 IF ( BUILD_PEAKCAN AND PEAKCAN_FOUND )
   
   ADD_SUBDIRECTORY ( can )
@@ -11,6 +14,10 @@ IF ( BUILD_PEAKCAN AND PEAKCAN_FOUND )
   TARGET_LINK_LIBRARIES( OrcaSegwayRmpDriver OrcaSegwayRmpCan pcan )
 
 ENDIF ( BUILD_PEAKCAN  AND PEAKCAN_FOUND )
+
+
+# Look for libftd2xx.so (a high level USB library)
+INCLUDE (${ORCA_CMAKE_DIR}/FindFtd2xx.cmake)
 
 IF ( FTD2XX_FOUND )
 

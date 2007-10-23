@@ -7,6 +7,9 @@ IF ( BUILD_SIM_LOCALISER )
     INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
 
+    # Look for Player
+    INCLUDE (${ORCA_CMAKE_DIR}/FindPlayer2.cmake)
+
     # these should be in the subdir, but they have no effect there for some reason
     INCLUDE_DIRECTORIES( ${PLAYER_INCLUDE_DIRS} )
     LINK_DIRECTORIES( ${PLAYER_LINK_DIRS} )

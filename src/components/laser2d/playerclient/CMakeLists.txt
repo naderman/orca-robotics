@@ -1,3 +1,7 @@
+
+# Look for Player
+INCLUDE (${ORCA_CMAKE_DIR}/FindPlayer2.cmake)
+
 IF ( NOT PLAYER_FOUND )
   MESSAGE( STATUS "Not building OrcaLaser2dPlayerClient -- Player not found." )
 ELSE ( NOT PLAYER_FOUND )
