@@ -1,4 +1,4 @@
-class orcaserial::Serial;
+class hydroserial::Serial;
 
 // test connectivity to a [serial] device at a [baudrate];
 // Assumes that you can figure out a [challenge] (command ...) to
@@ -12,7 +12,7 @@ class orcaserial::Serial;
 bool testConnectivity(
         std::string &challenge,
         std::string &ack,
-        orcaserial::Serial* serial,
+        hydroserial::Serial* serial,
         int timeOutMsec,
         int numTry,
         int successThresh,

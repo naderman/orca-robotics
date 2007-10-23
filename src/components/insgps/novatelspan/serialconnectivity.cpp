@@ -3,14 +3,14 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#include <orcaserial/serial.h>
+#include <hydroserial/serial.h>
 #include <string>
 #include <vector>
 #include <iostream>
 
 #include "serialconnectivity.h"
 
-using namespace orcaserial;
+using namespace hydroserial;
 // test connectivity to a [serial] device at a [baudrate];
 // Assumes that you can figure out a [challenge] (e.g. a command) to
 // which the device will answer with a unique [ack] in [timeOutMsec] milliseconds.
@@ -22,7 +22,7 @@ using namespace orcaserial;
 bool testConnectivity(
         std::string &challenge,
         std::string &ack,
-        orcaserial::Serial* serial,
+        hydroserial::Serial* serial,
         int timeOutMsec,
         int numTry,
         int successThresh,
