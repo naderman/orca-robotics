@@ -1,11 +1,9 @@
 INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
 
+LINK_LIBRARIES( OrcaObjects OrcaIce )
+
 ADD_EXECUTABLE( stringtest stringtest.cpp )
-TARGET_LINK_LIBRARIES( stringtest OrcaObjects OrcaIce )
-ADD_TEST( ObjectStringTest stringtest )
-MESSAGE( STATUS "Planning to Build Test      : ObjectStringTest [libOrcaObjects]")
+GLOBAL_ADD_TEST( ObjectStringTest stringtest )
 
 ADD_EXECUTABLE( timetest timetest.cpp )
-TARGET_LINK_LIBRARIES( timetest OrcaObjects OrcaIce )
-ADD_TEST( TimeTest timetest )
-MESSAGE( STATUS "Planning to Build Test      : TimeTest [libOrcaObjects]")
+GLOBAL_ADD_TEST( TimeTest timetest )

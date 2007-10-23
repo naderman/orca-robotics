@@ -1,12 +1,10 @@
 INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
 INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
 
+LINK_LIBRARIES( OrcaLog )
+
 ADD_EXECUTABLE( logtest logtest.cpp )
-TARGET_LINK_LIBRARIES( logtest OrcaLog )
-ADD_TEST( LibOrcaLogTest logtest )
-MESSAGE( STATUS "Planning to Build Test      : LibOrcaLogTest [libOrcaLog]")
+GLOBAL_ADD_TEST( LibOrcaLogTest logtest )
 
 ADD_EXECUTABLE( mastertest mastertest.cpp )
-TARGET_LINK_LIBRARIES( mastertest OrcaLog )
-ADD_TEST( LogReplayMasterTest mastertest )
-MESSAGE( STATUS "Planning to Build Test      : LogReplayMasterTest [libOrcaLog]")
+GLOBAL_ADD_TEST( LogReplayMasterTest mastertest )

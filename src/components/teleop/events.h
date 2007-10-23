@@ -47,7 +47,7 @@ public:
     bool vyLimit_;
     bool wLimit_;
 };
-typedef HydroIceUtil::Handle<SentNewVelocityCommandEvent> SentNewVelocityCommandEventPtr;
+typedef IceUtil::Handle<SentNewVelocityCommandEvent> SentNewVelocityCommandEventPtr;
 
 class SentNewBicycleCommandEvent : public hydroutil::Event
 {
@@ -64,7 +64,7 @@ public:
     bool speedLimit_;
     bool steerAngleLimit_;
 };
-typedef HydroIceUtil::Handle<SentNewBicycleCommandEvent> SentNewBicycleCommandEventPtr;
+typedef IceUtil::Handle<SentNewBicycleCommandEvent> SentNewBicycleCommandEventPtr;
 
 class SentRepeatCommandEvent : public hydroutil::Event
 {
@@ -93,7 +93,7 @@ public:
     int transverse_;
     int angle_;
 };
-typedef HydroIceUtil::Handle<NewCommandIncrementEvent> NewCommandIncrementEventPtr;
+typedef IceUtil::Handle<NewCommandIncrementEvent> NewCommandIncrementEventPtr;
 
 class NewRelativeCommandEvent : public hydroutil::Event
 {
@@ -108,7 +108,7 @@ public:
     double transverse_;
     double angle_;
 };
-typedef HydroIceUtil::Handle<NewRelativeCommandEvent> NewRelativeCommandEventPtr;
+typedef IceUtil::Handle<NewRelativeCommandEvent> NewRelativeCommandEventPtr;
 
 
 class TeleopEventQueueOptimizer : public hydroutil::EventQueueOptimizer

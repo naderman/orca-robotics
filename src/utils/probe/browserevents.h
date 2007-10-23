@@ -79,7 +79,7 @@ public:
 
     int pick_;
 };
-typedef HydroIceUtil::Handle<PickEvent> PickEventPtr;
+typedef IceUtil::Handle<PickEvent> PickEventPtr;
 
 
 } // namespace

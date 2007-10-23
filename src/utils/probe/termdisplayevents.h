@@ -42,7 +42,7 @@ public:
 
     bool isActive_;
 };
-typedef HydroIceUtil::Handle<NetworkActivityChangedEvent> NetworkActivityChangedEventPtr;
+typedef IceUtil::Handle<NetworkActivityChangedEvent> NetworkActivityChangedEventPtr;
 
 class FocusChangedEvent : public hydroutil::Event
 {
@@ -53,7 +53,7 @@ public:
 
     orcaprobe::IDisplay::FocusType focus_;
 };
-typedef HydroIceUtil::Handle<FocusChangedEvent> FocusChangedEventPtr;
+typedef IceUtil::Handle<FocusChangedEvent> FocusChangedEventPtr;
 
 class RegistryDataChangedEvent : public hydroutil::Event
 {
@@ -64,7 +64,7 @@ public:
 
     orcacm::RegistryHierarchicalData1 data_;
 };
-typedef HydroIceUtil::Handle<RegistryDataChangedEvent> RegistryDataChangedEventPtr;
+typedef IceUtil::Handle<RegistryDataChangedEvent> RegistryDataChangedEventPtr;
 
 class PlatformDataChangedEvent : public hydroutil::Event
 {
@@ -75,7 +75,7 @@ public:
 
     orcacm::RegistryHierarchicalData2 data_;
 };
-typedef HydroIceUtil::Handle<PlatformDataChangedEvent> PlatformDataChangedEventPtr;
+typedef IceUtil::Handle<PlatformDataChangedEvent> PlatformDataChangedEventPtr;
 
 class ComponentDataChangedEvent : public hydroutil::Event
 {
@@ -86,7 +86,7 @@ public:
 
     orcacm::ComponentData data_;
 };
-typedef HydroIceUtil::Handle<ComponentDataChangedEvent> ComponentDataChangedEventPtr;
+typedef IceUtil::Handle<ComponentDataChangedEvent> ComponentDataChangedEventPtr;
 
 class InterfaceDataChangedEvent : public hydroutil::Event
 {
@@ -97,7 +97,7 @@ public:
 
     orcacm::InterfaceData data_;
 };
-typedef HydroIceUtil::Handle<InterfaceDataChangedEvent> InterfaceDataChangedEventPtr;
+typedef IceUtil::Handle<InterfaceDataChangedEvent> InterfaceDataChangedEventPtr;
 
 
 class OperationDataChangedEvent : public hydroutil::Event
@@ -109,7 +109,7 @@ public:
 
     orcacm::OperationData data_;
 };
-typedef HydroIceUtil::Handle<OperationDataChangedEvent> OperationDataChangedEventPtr;
+typedef IceUtil::Handle<OperationDataChangedEvent> OperationDataChangedEventPtr;
 
 
 

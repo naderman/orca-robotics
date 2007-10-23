@@ -3,38 +3,30 @@ INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
 INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
 
 ADD_EXECUTABLE( ptrbuffertest ptrbuffertest.cpp )
-ADD_TEST( PtrBufferTest ptrbuffertest )
-MESSAGE ( STATUS "Planning to Build Test      : PtrBufferTest [libOrcaIce]")
+GLOBAL_ADD_TEST( PtrBufferTest ptrbuffertest )
 
 ADD_EXECUTABLE( ptrproxytest ptrproxytest.cpp )
-ADD_TEST( PtrProxyTest ptrproxytest )
-MESSAGE ( STATUS "Planning to Build Test      : PtrProxyTest [libOrcaIce]")
+GLOBAL_ADD_TEST( PtrProxyTest ptrproxytest )
 
 ADD_EXECUTABLE( ptrstoretest ptrstoretest.cpp )
-ADD_TEST( PtrStoreTest ptrstoretest )
-MESSAGE ( STATUS "Planning to Build Test      : PtrStoreTest [libOrcaIce]")
+GLOBAL_ADD_TEST( PtrStoreTest ptrstoretest )
 
 ADD_EXECUTABLE( ptrnotifytest ptrnotifytest.cpp )
-ADD_TEST( PtrNotifyTest ptrnotifytest )
-MESSAGE ( STATUS "Planning to Build Test      : PtrNotifyTest [libOrcaIce]")
+GLOBAL_ADD_TEST( PtrNotifyTest ptrnotifytest )
 
 ADD_EXECUTABLE( proptest proptest.cpp )
-ADD_TEST( PropUtilsTest proptest )
-MESSAGE ( STATUS "Planning to Build Test      : PropUtilsTest [libOrcaIce]")
+GLOBAL_ADD_TEST( PropUtilsTest proptest )
 
 ADD_EXECUTABLE( privateutilstest privateutilstest.cpp )
-ADD_TEST( PrivateUtilsTest privateutilstest )
-MESSAGE ( STATUS "Planning to Build Test      : PrivateUtilsTest [libOrcaIce]")
+GLOBAL_ADD_TEST( PrivateUtilsTest privateutilstest )
 
 ADD_EXECUTABLE( propfiletest propfiletest.cpp )
-ADD_TEST( PropFileTest propfiletest )
-MESSAGE ( STATUS "Planning to Build Test      : PropFileTest [libOrcaIce]")
+GLOBAL_ADD_TEST( PropFileTest propfiletest )
 
 # basic app test
 ADD_EXECUTABLE( apptest apptest.cpp )
-ADD_TEST( AppTest apptest )
+GLOBAL_ADD_TEST( AppTest apptest )
 GENERATE_CONFIG_FILE( apptest.def apptest 0 )
-MESSAGE ( STATUS "Planning to Build Test      : AppTest [libOrcaIce]")
 
 # advanced app tests
 ADD_EXECUTABLE( appproptest appproptest.cpp )
@@ -49,23 +41,22 @@ ENDIF( OS_WIN )
 # test1000 = factory YES, global NO, local NO, args NO --> expect=FACT, which is 0
 # NOTE: the CTEST variable is escaped here so it's ignored by CMake and is put into the CTest script which then
 # expands it to debug/release depending on the -C parameter (Debug or Release).
-ADD_TEST( AppPropTest1000 appproptest --Orca.GlobalConfig=${CMAKE_CURRENT_SOURCE_DIR}/globaloff.cfg --Orca.Config=./\${CTEST_CONFIGURATION_TYPE}/appproptestoff.cfg --AppPropTest.Expect=0 )
-ADD_TEST( AppPropTest1001 appproptest --Orca.GlobalConfig=${CMAKE_CURRENT_SOURCE_DIR}/globaloff.cfg --Orca.Config=./\${CTEST_CONFIGURATION_TYPE}/appproptestoff.cfg --Orca.Tracer.ErrorToFile=400 --AppPropTest.Expect=400 )
-ADD_TEST( AppPropTest1010 appproptest --Orca.GlobalConfig=${CMAKE_CURRENT_SOURCE_DIR}/globaloff.cfg --Orca.Config=./\${CTEST_CONFIGURATION_TYPE}/apppropteston.cfg --AppPropTest.Expect=300 )
-ADD_TEST( AppPropTest1011 appproptest --Orca.GlobalConfig=${CMAKE_CURRENT_SOURCE_DIR}/globaloff.cfg --Orca.Config=./\${CTEST_CONFIGURATION_TYPE}/apppropteston.cfg --Orca.Tracer.ErrorToFile=400 --AppPropTest.Expect=400 )
-ADD_TEST( AppPropTest1100 appproptest --Orca.GlobalConfig=${CMAKE_CURRENT_SOURCE_DIR}/globalon.cfg --Orca.Config=./\${CTEST_CONFIGURATION_TYPE}/appproptestoff.cfg --AppPropTest.Expect=200 )
-ADD_TEST( AppPropTest1101 appproptest --Orca.GlobalConfig=${CMAKE_CURRENT_SOURCE_DIR}/globalon.cfg --Orca.Config=./\${CTEST_CONFIGURATION_TYPE}/appproptestoff.cfg --Orca.Tracer.ErrorToFile=400 --AppPropTest.Expect=400 )
-ADD_TEST( AppPropTest1110 appproptest --Orca.GlobalConfig=${CMAKE_CURRENT_SOURCE_DIR}/globalon.cfg --Orca.Config=./\${CTEST_CONFIGURATION_TYPE}/apppropteston.cfg --AppPropTest.Expect=300 )
-ADD_TEST( AppPropTest1111 appproptest --Orca.GlobalConfig=${CMAKE_CURRENT_SOURCE_DIR}/globalon.cfg --Orca.Config=./\${CTEST_CONFIGURATION_TYPE}/apppropteston.cfg --Orca.Tracer.ErrorToFile=400 --AppPropTest.Expect=400 )
+GLOBAL_ADD_TEST( AppPropTest1000 appproptest --Orca.GlobalConfig=${CMAKE_CURRENT_SOURCE_DIR}/globaloff.cfg --Orca.Config=./\${CTEST_CONFIGURATION_TYPE}/appproptestoff.cfg --AppPropTest.Expect=0 )
+GLOBAL_ADD_TEST( AppPropTest1001 appproptest --Orca.GlobalConfig=${CMAKE_CURRENT_SOURCE_DIR}/globaloff.cfg --Orca.Config=./\${CTEST_CONFIGURATION_TYPE}/appproptestoff.cfg --Orca.Tracer.ErrorToFile=400 --AppPropTest.Expect=400 )
+GLOBAL_ADD_TEST( AppPropTest1010 appproptest --Orca.GlobalConfig=${CMAKE_CURRENT_SOURCE_DIR}/globaloff.cfg --Orca.Config=./\${CTEST_CONFIGURATION_TYPE}/apppropteston.cfg --AppPropTest.Expect=300 )
+GLOBAL_ADD_TEST( AppPropTest1011 appproptest --Orca.GlobalConfig=${CMAKE_CURRENT_SOURCE_DIR}/globaloff.cfg --Orca.Config=./\${CTEST_CONFIGURATION_TYPE}/apppropteston.cfg --Orca.Tracer.ErrorToFile=400 --AppPropTest.Expect=400 )
+GLOBAL_ADD_TEST( AppPropTest1100 appproptest --Orca.GlobalConfig=${CMAKE_CURRENT_SOURCE_DIR}/globalon.cfg --Orca.Config=./\${CTEST_CONFIGURATION_TYPE}/appproptestoff.cfg --AppPropTest.Expect=200 )
+GLOBAL_ADD_TEST( AppPropTest1101 appproptest --Orca.GlobalConfig=${CMAKE_CURRENT_SOURCE_DIR}/globalon.cfg --Orca.Config=./\${CTEST_CONFIGURATION_TYPE}/appproptestoff.cfg --Orca.Tracer.ErrorToFile=400 --AppPropTest.Expect=400 )
+GLOBAL_ADD_TEST( AppPropTest1110 appproptest --Orca.GlobalConfig=${CMAKE_CURRENT_SOURCE_DIR}/globalon.cfg --Orca.Config=./\${CTEST_CONFIGURATION_TYPE}/apppropteston.cfg --AppPropTest.Expect=300 )
+GLOBAL_ADD_TEST( AppPropTest1111 appproptest --Orca.GlobalConfig=${CMAKE_CURRENT_SOURCE_DIR}/globalon.cfg --Orca.Config=./\${CTEST_CONFIGURATION_TYPE}/apppropteston.cfg --Orca.Tracer.ErrorToFile=400 --AppPropTest.Expect=400 )
 # now try to fail it
 # it's ok to run a component without global, local, or both config files
-ADD_TEST( AppPropTest1x00 appproptest --Orca.GlobalConfig=crap.cfg --Orca.Config=./\${CTEST_CONFIGURATION_TYPE}/appproptestoff.cfg --AppPropTest.Expect=0 )
+GLOBAL_ADD_TEST( AppPropTest1x00 appproptest --Orca.GlobalConfig=crap.cfg --Orca.Config=./\${CTEST_CONFIGURATION_TYPE}/appproptestoff.cfg --AppPropTest.Expect=0 )
 # without a comp config file, have to specify Orca.RequireRegistry on command line
-ADD_TEST( AppPropTest1xx0 appproptest --Orca.GlobalConfig=crap.cfg --Orca.Config=./\${CTEST_CONFIGURATION_TYPE}/crap.cfg --AppPropTest.Expect=0 --Orca.RequireRegistry=0 )
-ADD_TEST( AppPropTest11x0 appproptest --Orca.GlobalConfig=${CMAKE_CURRENT_SOURCE_DIR}/globalon.cfg --AppPropTest.Expect=200 --Orca.RequireRegistry=0 )
+GLOBAL_ADD_TEST( AppPropTest1xx0 appproptest --Orca.GlobalConfig=crap.cfg --Orca.Config=./\${CTEST_CONFIGURATION_TYPE}/crap.cfg --AppPropTest.Expect=0 --Orca.RequireRegistry=0 )
+GLOBAL_ADD_TEST( AppPropTest11x0 appproptest --Orca.GlobalConfig=${CMAKE_CURRENT_SOURCE_DIR}/globalon.cfg --AppPropTest.Expect=200 --Orca.RequireRegistry=0 )
 GENERATE_CONFIG_FILE( apppropteston.def appproptest 0 )
 GENERATE_CONFIG_FILE( appproptestoff.def appproptest 0 )
-MESSAGE ( STATUS "Planning to Build 10 Tests  : AppPropTestXXXX [libOrcaIce]")
 
 # can't do this in win 'cause: 1) need shared libs for services, 2) need to copy files
 
@@ -73,8 +64,7 @@ IF ( NOT OS_WIN )
 
 # basic service test
 ADD_LIBRARY( ServiceTest SHARED servicetest )
-ADD_TEST( ServiceTest ${ICE_HOME}/bin/icebox --Ice.Config=${CMAKE_CURRENT_SOURCE_DIR}/iceboxbasic.cfg )
-MESSAGE ( STATUS "Planning to Build Test      : ServiceTest [libOrcaIce]")
+GLOBAL_ADD_TEST( ServiceTest ${ICE_HOME}/bin/icebox --Ice.Config=${CMAKE_CURRENT_SOURCE_DIR}/iceboxbasic.cfg )
 
 # advanced service tests
 ADD_LIBRARY( ServicePropTest SHARED serviceproptest )
@@ -95,28 +85,25 @@ GENERATE_CONFIG_FILE( serviceproptest3off.def ServicePropTest 0 )
 #   a) service with properties in the same file
 #   b) service with properties in a separate file sharing Communicator with service (a)
 #   c) service with properties in a separate file having it's own Communicator
-ADD_TEST( ServicePropTest1000 ${ICE_HOME}/bin/icebox --Ice.Config=${CMAKE_CURRENT_SOURCE_DIR}/icebox1000.cfg )
-ADD_TEST( ServicePropTest1001 ${ICE_HOME}/bin/icebox --Ice.Config=${CMAKE_CURRENT_SOURCE_DIR}/icebox1001.cfg )
-ADD_TEST( ServicePropTest1010 ${ICE_HOME}/bin/icebox --Ice.Config=${CMAKE_CURRENT_SOURCE_DIR}/icebox1010.cfg )
-ADD_TEST( ServicePropTest1011 ${ICE_HOME}/bin/icebox --Ice.Config=${CMAKE_CURRENT_SOURCE_DIR}/icebox1011.cfg )
-ADD_TEST( ServicePropTest1100 ${ICE_HOME}/bin/icebox --Ice.Config=${CMAKE_CURRENT_SOURCE_DIR}/icebox1100.cfg )
-ADD_TEST( ServicePropTest1101 ${ICE_HOME}/bin/icebox --Ice.Config=${CMAKE_CURRENT_SOURCE_DIR}/icebox1101.cfg )
-ADD_TEST( ServicePropTest1110 ${ICE_HOME}/bin/icebox --Ice.Config=${CMAKE_CURRENT_SOURCE_DIR}/icebox1110.cfg )
-ADD_TEST( ServicePropTest1111 ${ICE_HOME}/bin/icebox --Ice.Config=${CMAKE_CURRENT_SOURCE_DIR}/icebox1111.cfg )
-MESSAGE ( STATUS "Planning to Build 8  Tests  : ServicePropTestXXXX [libOrcaIce]")
+GLOBAL_ADD_TEST( ServicePropTest1000 ${ICE_HOME}/bin/icebox --Ice.Config=${CMAKE_CURRENT_SOURCE_DIR}/icebox1000.cfg )
+GLOBAL_ADD_TEST( ServicePropTest1001 ${ICE_HOME}/bin/icebox --Ice.Config=${CMAKE_CURRENT_SOURCE_DIR}/icebox1001.cfg )
+GLOBAL_ADD_TEST( ServicePropTest1010 ${ICE_HOME}/bin/icebox --Ice.Config=${CMAKE_CURRENT_SOURCE_DIR}/icebox1010.cfg )
+GLOBAL_ADD_TEST( ServicePropTest1011 ${ICE_HOME}/bin/icebox --Ice.Config=${CMAKE_CURRENT_SOURCE_DIR}/icebox1011.cfg )
+GLOBAL_ADD_TEST( ServicePropTest1100 ${ICE_HOME}/bin/icebox --Ice.Config=${CMAKE_CURRENT_SOURCE_DIR}/icebox1100.cfg )
+GLOBAL_ADD_TEST( ServicePropTest1101 ${ICE_HOME}/bin/icebox --Ice.Config=${CMAKE_CURRENT_SOURCE_DIR}/icebox1101.cfg )
+GLOBAL_ADD_TEST( ServicePropTest1110 ${ICE_HOME}/bin/icebox --Ice.Config=${CMAKE_CURRENT_SOURCE_DIR}/icebox1110.cfg )
+GLOBAL_ADD_TEST( ServicePropTest1111 ${ICE_HOME}/bin/icebox --Ice.Config=${CMAKE_CURRENT_SOURCE_DIR}/icebox1111.cfg )
 ENDIF ( NOT OS_WIN )
 
 ADD_EXECUTABLE( configtest configtest.cpp )
-ADD_TEST( ConfigUtilsTest configtest )
+GLOBAL_ADD_TEST( ConfigUtilsTest configtest )
 GENERATE_CONFIG_FILE( configtest.def configtest 0 )
-MESSAGE ( STATUS "Planning to Build Test      : ConfigUtilsTest [libOrcaIce]")
 
 # alexm: 
 # This test relies on establishing direct connections which is currently broken
 # not sure why it works in linux actually.
 IF ( NOT OS_QNX )
 ADD_EXECUTABLE( connecttest connecttest.cpp )
-ADD_TEST( ConnectUtilsTest connecttest )
+GLOBAL_ADD_TEST( ConnectUtilsTest connecttest )
 GENERATE_CONFIG_FILE( connecttest.def connecttest 0 )
-MESSAGE ( STATUS "Planning to Build Test      : ConnectUtilsTest [libOrcaIce]")
 ENDIF ( NOT OS_QNX )

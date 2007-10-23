@@ -56,7 +56,7 @@ public:
     int info_;
     int debug_;
 };
-typedef HydroIceUtil::Handle<VerbosityLevelsChangedEvent> VerbosityLevelsChangedEventPtr;
+typedef IceUtil::Handle<VerbosityLevelsChangedEvent> VerbosityLevelsChangedEventPtr;
 
 class FocusChangedEvent : public hydroutil::Event
 {
@@ -67,7 +67,7 @@ public:
 
     int focus_;
 };
-typedef HydroIceUtil::Handle<FocusChangedEvent> FocusChangedEventPtr;
+typedef IceUtil::Handle<FocusChangedEvent> FocusChangedEventPtr;
 
 class NewTraceMessageEvent : public hydroutil::Event
 {
@@ -78,7 +78,7 @@ public:
 
     orca::TracerData data_;
 };
-typedef HydroIceUtil::Handle<NewTraceMessageEvent> NewTraceMessageEventPtr;
+typedef IceUtil::Handle<NewTraceMessageEvent> NewTraceMessageEventPtr;
 
 class NewLocalTraceEvent : public hydroutil::Event
 {
@@ -89,7 +89,7 @@ public:
 
     std::string msg_;
 };
-typedef HydroIceUtil::Handle<NewLocalTraceEvent> NewLocalTraceEventPtr;
+typedef IceUtil::Handle<NewLocalTraceEvent> NewLocalTraceEventPtr;
 
 class PreviousFieldEvent : public hydroutil::Event
 {
