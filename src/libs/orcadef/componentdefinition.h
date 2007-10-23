@@ -188,7 +188,7 @@ const std::string toCfgTextWithHeaders( const ComponentDef &def, const std::vect
     Generates a default descriptor file from a component definition structure.
     Throws ParseException if the definition structure is ill-formed.
 */
-const std::string toXmlText( const ComponentDef & def );
+const std::string toXmlText( const ComponentDef & def, bool withTemplate=false );
 
 /*!
     Generates a templated descriptor file from a component definition structure.

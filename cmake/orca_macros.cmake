@@ -171,31 +171,32 @@ MACRO( GENERATE_CONFIG_FILE DEF_FILE )
         ADD_CUSTOM_COMMAND( 
             TARGET ${COMPONENT_TARGET} POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E echo "-- Generating ${XML_FILE} from ${DEF_FILE}"
-            COMMAND ${ORCA_DEF2XML_COMMAND} ${CMAKE_CURRENT_SOURCE_DIR}/${DEF_FILE} ${CMAKE_CURRENT_BINARY_DIR}/${MANUAL_CFG_INTDIR}/${XML_FILE}
+            COMMAND ${ORCA_DEF2XML_COMMAND} --template ${CMAKE_CURRENT_SOURCE_DIR}/${DEF_FILE} ${CMAKE_CURRENT_BINARY_DIR}/${MANUAL_CFG_INTDIR}/${XML_FILE}
             # doesn't seem to work for some reason
-        #     COMMENT "-- Generating ${XML_FILE} from ${DEF_FILE}"
+#             COMMENT "-- Generating ${XML_FILE} from ${DEF_FILE}"
             )
         
         IF ( INSTALL_XML )
             INSTALL_FILES( /xml FILES ${CMAKE_CURRENT_BINARY_DIR}/${MANUAL_CFG_INTDIR}/${XML_FILE} )
         ENDIF ( INSTALL_XML )
         
+        # as of version 2.7.0, the template is included in the regural xml file
         #
         # ICEGRID SERVER TEMPLATE XML FILE
         #
-        STRING( REGEX REPLACE "\\.def" "-template.xml" TEMPLATE_XML_FILE ${DEF_FILE} )
-        ADD_CUSTOM_COMMAND( 
-            TARGET ${COMPONENT_TARGET} POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E echo "-- Generating ${TEMPLATE_XML_FILE} from ${DEF_FILE}"
-            COMMAND ${ORCA_DEF2XMLTEMPLATE_COMMAND} ${CMAKE_CURRENT_SOURCE_DIR}/${DEF_FILE} 
-                ${CMAKE_CURRENT_BINARY_DIR}/${MANUAL_CFG_INTDIR}/${TEMPLATE_XML_FILE}
-            # doesn't seem to work for some reason
-        #     COMMENT "-- Generating ${XML_FILE} from ${DEF_FILE}"
-            )
-        
-        IF ( INSTALL_XML )
-            INSTALL_FILES( /xml FILES ${CMAKE_CURRENT_BINARY_DIR}/${MANUAL_CFG_INTDIR}/${TEMPLATE_XML_FILE} )
-        ENDIF ( INSTALL_XML )
+#         STRING( REGEX REPLACE "\\.def" "-template.xml" TEMPLATE_XML_FILE ${DEF_FILE} )
+#         ADD_CUSTOM_COMMAND( 
+#             TARGET ${COMPONENT_TARGET} POST_BUILD
+#             COMMAND ${CMAKE_COMMAND} -E echo "-- Generating ${TEMPLATE_XML_FILE} from ${DEF_FILE}"
+#             COMMAND ${ORCA_DEF2XMLTEMPLATE_COMMAND} ${CMAKE_CURRENT_SOURCE_DIR}/${DEF_FILE} 
+#                 ${CMAKE_CURRENT_BINARY_DIR}/${MANUAL_CFG_INTDIR}/${TEMPLATE_XML_FILE}
+#             # doesn't seem to work for some reason
+#         #     COMMENT "-- Generating ${XML_FILE} from ${DEF_FILE}"
+#             )
+#         
+#         IF ( INSTALL_XML )
+#             INSTALL_FILES( /xml FILES ${CMAKE_CURRENT_BINARY_DIR}/${MANUAL_CFG_INTDIR}/${TEMPLATE_XML_FILE} )
+#         ENDIF ( INSTALL_XML )
     ENDIF ( GENERATE_XML )
 
 ENDMACRO( GENERATE_CONFIG_FILE DEF_FILE )

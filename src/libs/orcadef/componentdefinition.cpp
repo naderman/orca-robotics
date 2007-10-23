@@ -289,7 +289,7 @@ toCfgTextWithHeaders( const ComponentDef & def, const std::vector<std::string> &
 }
 
 const std::string
-toXmlText( const ComponentDef &def )
+toXmlText( const ComponentDef &def, bool withTemplate )
 {
     ComponentCfg cfg = toCfg( def );
 
@@ -309,6 +309,11 @@ toXmlText( const ComponentDef &def )
     ss <<tab
         <<"<application "
         <<"name=\"OrcaApp\">" << endl;
+
+    if ( withTemplate )
+    {
+        ss << toXmlTemplateText( def );
+    }
 
     ss <<tab<<tab
         <<"<node "

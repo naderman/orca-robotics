@@ -25,12 +25,17 @@ int main( int argc, char **argv )
     bool gotDefName=false;
     bool gotCfgName=false;
     bool verbose=false;
+    bool withTemplate=false;
 
     for ( int i=1; i < argc; i++ )
     {
         if ( !strcmp(argv[i],"--verbose") )
         {
             verbose=true;
+        }
+        else if ( !strcmp(argv[i],"--template") )
+        {
+            withTemplate=true;
         }
         else if ( !gotDefName )
         {
@@ -97,7 +102,7 @@ int main( int argc, char **argv )
     //
     try
     {
-        f << orcadef::toXmlText( def );
+        f << orcadef::toXmlText( def, withTemplate );
         // use this one, if there's some extra stuff we want to add
         // f << orcadef::toCfgTextWithHeaders( def );
     }
