@@ -30,11 +30,15 @@ namespace orcaice
 //! Throws ConfigFileException if the interface name cannot be read for some reason.
 orca::FQInterfaceName getProvidedInterface( const Context &, const std::string &interfaceTag );
 
-//! Reads properties contained in the context and returns the fully-qualified topic name
-//! correpsonding to the interface tag.
-//!
+//! Reads platform and component names from the context, and the interface name and 
+//! returns the fully-qualified topic name, and the optional subtopic name.
+//! We don't check if the interfaceName is empty.
+orca::FQTopicName getProvidedTopicWithString( const Context &, const std::string &interfaceName, const std::string & subtopic="*" );
+
+//! Convenience function which behaves like getProvidedTopicWithString() but the interface
+//! name is looked up in the config file using the interfaceTag.
 //! Throws ConfigFileException if the interface name cannot be read for some reason.
-orca::FQTopicName getProvidedTopic( const Context &, const std::string &interfaceTag, const std::string & subtopic="*" );
+orca::FQTopicName getProvidedTopicWithTag( const Context &, const std::string &interfaceTag, const std::string & subtopic="*" );
 
 //! Reads properties contained in the context and returns the stringified proxy to the 
 //! required interface corresponding to the interface tag. 

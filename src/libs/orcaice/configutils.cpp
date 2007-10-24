@@ -105,20 +105,28 @@ getProvidedInterface( const Context & context, const std::string &ifaceTag )
 }
 
 orca::FQTopicName
-getProvidedTopic( const Context & context, const std::string &ifaceTag, const std::string & subtopic )
+getProvidedTopicWithString( const Context & context, const std::string &ifaceName, const std::string & subtopic )
+{
+    orca::FQTopicName fqTName;
+    fqTName.platform = context.name().platform;
+    fqTName.component = context.name().component;
+    fqTName.iface = ifaceName;
+    fqTName.topic = subtopic;
+
+    initTracerInfo( context, "will publish to topic '"+orcaice::toString(fqTName)+"'",2 );
+    return fqTName;
+}
+
+orca::FQTopicName
+getProvidedTopicWithTag( const Context & context, const std::string &ifaceTag, const std::string & subtopic )
 {
     if ( ifaceTag.empty() ) {
         throw orcaice::ConfigFileException(ERROR_INFO, "Empty interface tag");
     }
 
-    orca::FQTopicName fqTName;
-    fqTName.platform = context.name().platform;
-    fqTName.component = context.name().component;
-    fqTName.iface = getProvidedName( context, ifaceTag );
-    fqTName.topic = subtopic;
+    string ifaceName = getProvidedName( context, ifaceTag );
 
-    initTracerInfo( context, "will publish to topic '"+orcaice::toString(fqTName)+"'",2 );
-    return fqTName;
+    return getProvidedTopicWithString( context, ifaceName, subtopic );
 }
 
 std::string
@@ -221,47 +229,5 @@ getComponentData( const Context & context )
 
     return compData;
 }
-
-// THESE FUNCTIONS WERE OBSOLETED TO REDUCE THE SIZE OF THE API
-
-/*
-orca::FQTopicName
-getRequiredTopic( const Context & context, const std::string &ifaceTag )
-{
-    orca::FQInterfaceName fqIName = getRequiredInterface( context, ifaceTag );
-
-    orca::FQTopicName fqTName;
-    fqTName.platform = fqIName.platform;
-    fqTName.component = fqIName.component;
-    fqTName.iface = fqIName.iface;
-    fqTName.topic = "*";
-
-    initTracerInfo( context, "will subscribe to topic '"+orcaice::toString( fqTName )+"'",2 );
-    return fqTName;
-}
-
-Ice::ObjectPrx
-getRequiredInterfaceAsProxy( const Context & context, const std::string &ifaceTag )
-{
-    return context.communicator()->stringToProxy( getRequiredInterfaceAsString(context,ifaceTag) );
-}
-Ice::Identity
-getProvidedNameAsIdentity( const Context & context, const std::string &ifaceTag )
-{
-    return Ice::stringToIdentity( getProvidedName(context,ifaceTag) );
-}
-std::string getProvidedTopicAsString( const Context & context, const std::string &ifaceTag )
-{
-    return toString( getProvidedTopic(context,ifaceTag) );
-}
-std::string getRequiredInterfaceAsString( const Context & context, const std::string &ifaceTag )
-{
-    return toString( getRequiredInterface(context,ifaceTag) );
-}
-std::string getRequiredTopicAsString( const Context & context, const std::string &ifaceTag )
-{
-    return toString( getRequiredTopic(context,ifaceTag ) );
-}
-*/
 
 } // namespace

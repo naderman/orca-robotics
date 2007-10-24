@@ -249,20 +249,10 @@ connectToTopicWithTag( const Context           & context,
 {
     context.tracer()->debug( "orcaice::connectToTopicWithTag() tag="+interfaceTag, 10 );
 
-    std::string topicName;
-
     // lookup the name of the interface in the config file and generate topic name.
-    try {
-        // this generates a standard topic name based on fully-qualified interface name.
-        topicName = orcaice::toString(
-                        orcaice::getProvidedTopic( context, interfaceTag, subtopic ) );
-    }
-    catch ( hydroutil::Exception &e )
-    {
-        std::string errString = e.what();
-        throw orcaice::ConfigFileException( ERROR_INFO,
-                "Couldn't get name for IceStorm topic tag '"+interfaceTag+"': "+errString );
-    }
+    // this generates a standard topic name based on fully-qualified interface name.
+    std::string topicName = orcaice::toString(
+                    orcaice::getProvidedTopicWithTag( context, interfaceTag, subtopic ) );
 
     return connectToTopicWithString( context, publisher, topicName );
 }

@@ -124,6 +124,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
   - all multi-try connection functions now have an optional retryNumber parameter. default
     is -1, i.e. infinite -- same as before. therefore, no changes in existing
     code are needed. (alex m)
+  - renamed function getProvidedTopic() into getProvidedTopicWithTag() and added getProvidedTopicWitString().
+    These were mostly used internally by libOrcaIce and other utilities. (alex m)
 
 - libOrcaMisc
   - moved Activator to libOrcaIce
