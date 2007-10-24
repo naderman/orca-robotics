@@ -123,9 +123,6 @@ GarminGpsDriver::readFrame(orca::GpsData& GpsData)
     //How many messages are we looking for to make our frame
     const int N_MSGS_IN_FRAME = 3;
     
-    // This will block up to the timeout
-    context_.tracer()->debug( "GarminGpsDriver::read(): calling serial_.readLine()", 5 );
-
     //Clear our data before we start trying to assemble the frame
     clearFrame();
 
@@ -133,8 +130,10 @@ GarminGpsDriver::readFrame(orca::GpsData& GpsData)
     while(! haveCompleteFrame() ){
         
         // This will block up to the timeout
-        context_.tracer()->debug( "GarminGpsDriver::read(): calling serial_.readLine()", 5 );
+        context_.tracer()->debug( "GarminGpsDriver::read(): calling serial_.readLine()", 10 );
         int ret = serial_.readLine(serial_data,1024,'\n');
+        context_.tracer()->debug( serial_data, 10 );
+
         timeOfRead_ = IceUtil::Time::now();
         
         if ( ret<0 ) {
@@ -180,13 +179,15 @@ GarminGpsDriver::readFrame(orca::GpsData& GpsData)
         }
 
         //Make sure that we do not wait for ever trying to get a frame of data
-        if(gpsMsgNotYetGotFrameCount++ >= (N_MSGS_IN_FRAME * 2)){
+        //Note that we might need to skip the N * $PGRMO messages echoed back from receiver when starting
+        //As well as the N * messages that we are looking for
+        if(gpsMsgNotYetGotFrameCount++ >= (N_MSGS_IN_FRAME * 3)){
             throw GpsException("GarminGpsDriver: Not able to assemble a complete data frame\n");
         }
 
     }
 
-    cout << "Got the complete frame\n";
+    context_.tracer()->debug("GPS got a complete frame\n", 10 );
 
     // Hand the data back to the outside world
     GpsData=gpsData_;
@@ -204,26 +205,26 @@ GarminGpsDriver::addDataToFrame()
     //First split up the data fields in the string we have read.
     nmeaMessage_.parseTokens();
     
-    //And then find out which type of messge we have recieved...
-    string MsgType(nmeaMessage_.getDataToken(0));
-
     //We should not be being passed any messages with failed checksums, but just in case
     if(nmeaMessage_.haveTestedChecksum() && (!nmeaMessage_.haveValidChecksum())){
         throw GpsException("GarminGpsDriver: Message fails checksum");
     }
+
+    //And then find out which type of messge we have recieved...
+    string MsgType = nmeaMessage_.getDataToken(0);
     
     if(MsgType == "$GPGGA"){
-        //cout << "got GGA message\n";
+        context_.tracer()->debug("got GGA message\n",4);
         extractGGAData();
         haveGGA_ = true;
         return;
     }else if(MsgType == "$GPVTG"){
-        //cout << "got VTG message\n";
+        context_.tracer()->debug("got VTG message\n",4);
         extractVTGData();
         haveVTG_ = true;
         return;
     }else if(MsgType == "$PGRME"){
-        //cout << "got RME message\n";
+        context_.tracer()->debug("got RME message\n",4);
         extractRMEData();
         haveRME_ = true;
         return;

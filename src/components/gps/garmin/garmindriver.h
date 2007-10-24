@@ -59,9 +59,8 @@ private:
     orcagpsutil::NmeaMessage nmeaMessage_;
     IceUtil::Time timeOfRead_;
     
-    //NOTE if we change the number of messages in the frame need to change
+    //*** NOTE:- if we change the number of messages in the frame need to change
     //The N_MSGS_IN_FRAME in the readFrame fn...
-
     bool haveGGA_;
     bool haveVTG_;
     bool haveRME_;
