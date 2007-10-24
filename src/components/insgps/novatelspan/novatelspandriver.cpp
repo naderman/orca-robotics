@@ -390,13 +390,6 @@ NovatelSpanInsGpsDriver::readGps( orca::GpsData& data, int timeoutMs )
 }
 
 void
-NovatelSpanInsGpsDriver::readGpsTime( orca::GpsTimeData& data, int timeoutMs )
-{
-    context_.tracer()->info( "novatelspandriver::readGpsTime(): GpsTime is not provided in this driver", 6 );
-    return;
-}
-
-void
 NovatelSpanInsGpsDriver::readImu( orca::ImuData& data, int timeoutMs )
 {
     // blocking read with timeout. Also deletes the front element from the buffer
@@ -773,13 +766,6 @@ NovatelSpanInsGpsDriver::populateData( int id )
             pps_.offset=TIME_.data.dGPSOffset;
             pps_.offset_std=TIME_.data.dOffsetStd;
             pps_.utc_offset=TIME_.data.dUtcOffset;
-
-            gpsTimeData_.utcTime.seconds = TIME_.data.lUtcMillisec/1000;
-            gpsTimeData_.utcTime.minutes = TIME_.data.ucUtcMin;
-            gpsTimeData_.utcTime.hours = TIME_.data.ucUtcHour;
-            gpsTimeData_.utcDate.day = TIME_.data.ucUtcDay;
-            gpsTimeData_.utcDate.month = TIME_.data.ucUtcMonth-1;
-            gpsTimeData_.utcDate.year = TIME_.data.lUtcYear-1900;
 
             // calculate UTC time
             // struct tm broken_time;

@@ -1,6 +1,6 @@
 IF ( OS_LINUX )
 
-OPTION( BUILD_INSGPS "Try to build InsGps component" OFF )
+OPTION( BUILD_INSGPS "Try to build InsGps component" ON )
 
 IF ( BUILD_INSGPS )
 

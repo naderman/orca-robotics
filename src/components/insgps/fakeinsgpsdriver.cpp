@@ -214,22 +214,6 @@ FakeInsGpsDriver::readGps(orca::GpsData& data, int timeoutMs )
 }
 
 void
-FakeInsGpsDriver::readGpsTime(orca::GpsTimeData& data, int timeoutMs )
-{
-//     if(newGpsTime_)
-//     {
-//         newGpsTime_=false;
-//         *data=gpsTimeData_;
-//         return 0;
-//     }
-//     else
-//     {
-//         return -1;
-//     }
-return;
-}
-
-void
 FakeInsGpsDriver::readImu(orca::ImuData& data, int timeoutMs )
 {
     // blocking read with timeout. Also deletes the front element from the buffer

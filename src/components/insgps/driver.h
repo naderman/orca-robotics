@@ -118,7 +118,6 @@ public:
     // Read the latest data, return -1 if unavailable
     // Blocks with timeout, also quietly deletes the element that is read
     virtual void readGps( orca::GpsData& data, int timeoutMs=2000 ) = 0;
-    virtual void readGpsTime( orca::GpsTimeData& data, int timeoutMs=2000 ) = 0;
     virtual void readImu( orca::ImuData& data, int timeoutMs=2000 ) = 0;
     virtual void readOdometry3d( orca::Odometry3dData& data, int timeoutMs=2000 ) = 0;
     virtual void readLocalise3d( orca::Localise3dData& data, int timeoutMs=2000 ) = 0;
@@ -140,7 +139,6 @@ protected:
     GpsPosition position_;
     
     orca::GpsData gpsData_;
-    orca::GpsTimeData gpsTimeData_;
     orca::ImuData imuData_;
     orca::Odometry3dData odometry3dData_;
     orca::Localise3dData localise3dData_;

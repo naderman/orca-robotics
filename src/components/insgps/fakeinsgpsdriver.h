@@ -46,7 +46,6 @@ public:
 
     // Fetch latest data from the hardware driver. return -1 if unavailable
     virtual void readGps(orca::GpsData& data, int timeoutMs=2000 );
-    virtual void readGpsTime(orca::GpsTimeData& data, int timeoutMs=2000 );
     virtual void readImu(orca::ImuData& data, int timeoutMs=2000 );
     virtual void readOdometry3d(orca::Odometry3dData& data, int timeoutMs=2000 );
     virtual void readLocalise3d(orca::Localise3dData& data, int timeoutMs=2000 );

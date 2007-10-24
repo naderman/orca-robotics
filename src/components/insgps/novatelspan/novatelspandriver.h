@@ -84,7 +84,6 @@ public:
     
     // Read from the gpsBuffer where the driver is storing all incoming gps messages
     virtual void readGps( orca::GpsData& data, int timeoutMs=2000 );
-    virtual void readGpsTime( orca::GpsTimeData& data, int timeoutMs=2000 );
     virtual void readImu(orca::ImuData& data, int timeoutMs=2000 );
     // Note that this driver only provides localise3d and not odometry3d.
     // This is here to keep the main driver happy as it is pure virtual
