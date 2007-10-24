@@ -17,6 +17,15 @@
 
 This library contains logging and replaying classes.
 Basically, it specialises orcalog for a variety of Orca interfaces.
+
+The main files are:
+ - For logging:
+   - logwriters.h:  classes capable of writing data files for specific Orca interfaces.
+   - autologgers.h: classes that connect to an interface and log all data using a LogWriter.
+ - For replaying:
+   - logreaders.h:  classes capable of reading data files for specific Orca interfaces.
+   - replayers.h: classes that establish an interface and replay all data using a LogWriter.
+
 For a full list of functions and classes see @ref orcalogfactory.
 
 @see orca_component_logger
