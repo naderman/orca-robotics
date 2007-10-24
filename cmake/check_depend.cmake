@@ -9,11 +9,6 @@ MESSAGE( STATUS "== GLOBAL DEPENDENCY CHECK ==" )
 INCLUDE( ${CMAKE_ROOT}/Modules/CheckIncludeFile.cmake )
 INCLUDE( ${CMAKE_ROOT}/Modules/CheckIncludeFileCXX.cmake )
 
-#
-# Include local macro definitions
-#
-INCLUDE( ${ORCA_CMAKE_DIR}/orca_macros.cmake )
-
 # Can we use pkg-config?
 INCLUDE (${ORCA_CMAKE_DIR}/FindPkgConfig.cmake)
 
