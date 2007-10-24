@@ -1,6 +1,8 @@
-INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
-INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
+INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
+#
+# alexm: we don't need all of Ice to get random numbers!
+#
 LINK_LIBRARIES( OrcaGeom2d OrcaMisc )
 
 ADD_EXECUTABLE( circle circle.cpp )

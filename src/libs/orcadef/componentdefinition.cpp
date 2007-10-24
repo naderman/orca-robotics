@@ -13,7 +13,7 @@
 #include <assert.h>
 
 #include <orcaobj/orcaobj.h>
-#include <orcaice/orcaice.h>
+#include <hydroutil/hydroutil.h>
 
 #include "componentdefinition.h"
 #include "exceptions.h"

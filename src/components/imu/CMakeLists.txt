@@ -4,8 +4,7 @@ OPTION( BUILD_IMU "Try to build Imu component" ON )
 
 IF ( BUILD_IMU )
 
-    INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
-    INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
     
     INCLUDE_DIRECTORIES( ${PROJECT_SOURCE_DIR}/src/components/imu )
     INCLUDE_DIRECTORIES( ${PROJECT_SOURCE_DIR} )
@@ -17,8 +16,6 @@ INCLUDE_DIRECTORIES( ${PLAYER_INCLUDE_DIRS} )
 LINK_DIRECTORIES( ${PLAYER_LINK_DIRS} )
 ADD_DEFINITIONS( ${PLAYER_DEFINITIONS} )
 
-
-#     # OPTIONAL_SUB_LIBRARY macro defined in component_rules.cmake
 #     SET( HONEYWELLIMU_FOUND 1 )
 #     OPTIONAL_SUB_LIBRARY(
 #         "Honeywell Driver for Imu"

@@ -5,8 +5,7 @@ OPTION( BUILD_SEGWAYRMP "Try to build SegwayRmp component" ON )
 
 IF ( BUILD_SEGWAYRMP )
 
-    INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
-    INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
     # Look for Player
     INCLUDE (${ORCA_CMAKE_DIR}/FindPlayer2.cmake)

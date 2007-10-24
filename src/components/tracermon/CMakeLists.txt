@@ -4,8 +4,7 @@ OPTION( BUILD_TRACERMON "Try to build TracerMon" ON )
 
 IF ( BUILD_TRACERMON )
 
-    INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
-    INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
     # keyboard driver with iostream
     SET ( ALL_FOUND 1 )

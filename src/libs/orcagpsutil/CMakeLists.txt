@@ -1,6 +1,7 @@
 IF ( NOT OS_WIN )
 
-    INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
+    # alexm: bloody OrcaMisc needs to be reviewed!
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
     FILE( GLOB SRCS *.cpp )
 

@@ -4,8 +4,7 @@ OPTION( BUILD_LASER2OG "Try to build Laser2Og" ON )
 
 IF ( BUILD_LASER2OG )
 
-    INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
-    INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
     
     #
     # This gathers all the source files into the variable 'SRCS'

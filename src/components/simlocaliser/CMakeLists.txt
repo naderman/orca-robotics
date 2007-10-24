@@ -4,8 +4,7 @@ OPTION( BUILD_SIM_LOCALISER "Try to build SimLocaliser component" ON )
 
 IF ( BUILD_SIM_LOCALISER )
 
-    INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
-    INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
     # Look for Player
     INCLUDE (${ORCA_CMAKE_DIR}/FindPlayer2.cmake)

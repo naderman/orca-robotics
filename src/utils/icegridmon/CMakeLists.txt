@@ -4,8 +4,7 @@ OPTION( BUILD_ICEGRIDMON "Try to build IceGridMon" ON )
 
 IF( BUILD_ICEGRIDMON )
 
-    INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
-    INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
     
     FIND_COMPONENT_SOURCES( COMP_SRCS )
     SET( COMP_DEPS OrcaIceGrid )

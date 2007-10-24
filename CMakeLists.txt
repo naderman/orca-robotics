@@ -1,5 +1,6 @@
 #
-# Test CMake version
+# Official dependency number 0: CMake.
+# Obviously, we must have it if we are here but test version.
 #
 CMAKE_MINIMUM_REQUIRED( VERSION 2.4 FATAL_ERROR )
 

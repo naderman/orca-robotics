@@ -18,7 +18,11 @@
 #include <hydroutil/mathdefs.h>
 #include "miscutils.h"
 #include <fstream>
-#include <config.h>
+
+// alexm: not sure why this was ever here!
+// if we have to put it back in, add this line to CMakeLists.txt
+// # INCLUDE_DIRECTORIES( ${PROJECT_BINARY_DIR} # for config.h )
+// #include <config.h>      
 
 // Random doubles and integers
 #define RDOUBLE (rand()*M_PI)

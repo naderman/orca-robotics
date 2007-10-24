@@ -1,8 +1,10 @@
 IF ( NOT OS_WIN )
-
-    INCLUDE( ${HYDRO_HOME}/cmake/UseHydro.cmake )
-    INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
     
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseBasicRules.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseIce.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseLibProjectInterfaces.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseHydro.cmake )
+
     GLOBAL_ADD_LIBRARY( OrcaBros1 SHARED convertutils.cpp )
     TARGET_LINK_LIBRARIES( OrcaBros1 HydroBros1 OrcaInterfaces )
 

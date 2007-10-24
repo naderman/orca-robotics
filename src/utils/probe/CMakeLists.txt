@@ -3,8 +3,7 @@ OPTION( BUILD_PROBE "Try to build Probe" ON )
 IF ( NOT OS_WIN )
 IF ( BUILD_PROBE )
 
-    INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
-    INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
     SET ( IOSTREAM_FOUND 1 )
     

@@ -4,8 +4,7 @@ OPTION( BUILD_TELEOP "Try to build Teleop" ON )
 
 IF ( BUILD_TELEOP )
 
-    INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
-    INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
     # keyboard driver with termio
     OPTIONAL_SUB_LIBRARY(

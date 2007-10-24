@@ -2,8 +2,7 @@ OPTION( BUILD_SYSTEMTRACERMON "Try to build SystemTracerMon component" ON )
 
 IF ( BUILD_SYSTEMTRACERMON )
 
-    INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
-    INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
     FILE ( GLOB SRCS *.cpp )
 

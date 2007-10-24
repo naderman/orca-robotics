@@ -3,8 +3,7 @@ OPTION( BUILD_ORCAVIEW2D_GUI "Try to build OrcaView2d GUI" ON )
 IF ( NOT OS_WIN )
 IF ( BUILD_ORCAVIEW2D_GUI AND QT4_FOUND )
 
-    INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
-    INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseQt.cmake )
 
     #

@@ -4,8 +4,7 @@ OPTION( BUILD_WALL "Try to build Wall utility" ON )
 
 IF ( BUILD_WALL )
 
-    INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
-    INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
     FILE( GLOB SRCS *.cpp )
 

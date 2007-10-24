@@ -4,8 +4,7 @@ OPTION( BUILD_LOCALNAV "Try to build LocalNav component" ON )
 
 IF ( BUILD_LOCALNAV )
 
-    INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
-    INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
     ADD_SUBDIRECTORY( vfhdriver )
     MESSAGE( STATUS "    VfhDriver for LocalNav - can be built" )

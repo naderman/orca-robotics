@@ -1,7 +1,6 @@
 IF ( NOT OS_WIN )
 
-    INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
-    INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
     
     IF ( OPENCV_FOUND )
         INCLUDE_DIRECTORIES( ${OPENCV_INCLUDE_DIRS} )

@@ -4,8 +4,7 @@ OPTION( BUILD_ROBOT2D "Try to build Robot2d component" ON )
 
 IF ( BUILD_ROBOT2D )
 
-    INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
-    INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
     # Look for Player
     INCLUDE (${ORCA_CMAKE_DIR}/FindPlayer2.cmake)

@@ -4,8 +4,7 @@ OPTION( BUILD_OGNODE "Try to build OgNode" ON )
 
 IF ( BUILD_OGNODE )
 
-    INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
-    INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
     
     #
     # This gathers all the source files into the variable 'SRCS'

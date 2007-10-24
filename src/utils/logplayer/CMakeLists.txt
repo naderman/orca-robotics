@@ -4,8 +4,7 @@ OPTION( BUILD_LOGPLAYER "Try to build LogPlayer" ON )
 
 IF( BUILD_LOGPLAYER )
 
-    INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
-    INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
     
     FILE( GLOB SRCS *.cpp )
     

@@ -1,4 +1,5 @@
-INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
+INCLUDE( ${ORCA_CMAKE_DIR}/UseBasicRules.cmake )
+INCLUDE( ${ORCA_CMAKE_DIR}/UseIceBasics.cmake )
 
 LINK_LIBRARIES( OrcaObjects OrcaIce )
 

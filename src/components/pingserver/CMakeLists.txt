@@ -9,8 +9,7 @@ IF ( BUILD_PINGSERVER )
         MESSAGE( STATUS "Not Planning to Build Component: pingserver -- liboping not found")
     ELSE ( NOT LIBOPING_FOUND )
     
-        INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
-        INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
+        INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
     
         FILE ( GLOB SRCS *.cpp )
     

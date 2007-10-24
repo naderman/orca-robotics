@@ -6,8 +6,7 @@ IF ( BUILD_ORCAQGUI3D_LIBRARY )
 
     IF ( QT4_FOUND AND GLUT_FOUND )
     
-        INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
-        INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
+        INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
         INCLUDE( ${ORCA_CMAKE_DIR}/UseQt.cmake )
         
         FILE( GLOB HUMAN_SRCS *.cpp )

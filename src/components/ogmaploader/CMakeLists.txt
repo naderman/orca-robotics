@@ -11,8 +11,7 @@ ENDIF ( NOT QT4_FOUND )
 
 IF ( REALLY_BUILD_OGMAPLOADER )
 
-    INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
-    INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseQt.cmake )
     
     FIND_COMPONENT_SOURCES( COMP_SRCS )

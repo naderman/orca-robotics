@@ -2,8 +2,7 @@ OPTION( BUILD_REPLIER "Try to build replier" OFF )
 
 IF ( BUILD_REPLIER )
 
-    INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
-    INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
     
     FIND_COMPONENT_SOURCES( COMP_SRCS )
 #     SET( COMP_DEPS )

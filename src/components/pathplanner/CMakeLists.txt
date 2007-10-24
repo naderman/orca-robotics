@@ -8,8 +8,7 @@ ENDIF( NOT QT4_FOUND )
 
 IF ( BUILD_PATHPLANNER )
 
-    INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
-    INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
     
     # having skeletongraphics makes this comp special, can't call FIND_COMPONENT_SOURCES()
     # "common sources" are common to stand-alone component and IceStorm service 

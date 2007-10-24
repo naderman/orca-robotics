@@ -4,15 +4,13 @@ OPTION( BUILD_GPS "Try to build Gps component" ON )
 
 IF ( BUILD_GPS )
 
-    INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
-    INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
     
     INCLUDE_DIRECTORIES( 
       ${PROJECT_BINARY_DIR}
       ${PROJECT_SOURCE_DIR}/src/components/gps
     )
 
-    # OPTIONAL_SUB_LIBRARY macro defined in component_rules.cmake
     SET( GARMINGPS_FOUND 1 )
     OPTIONAL_SUB_LIBRARY(
         "Garmin Driver for Gps"

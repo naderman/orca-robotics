@@ -1,8 +1,10 @@
-INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
-
-INCLUDE_DIRECTORIES( 
-  ${PROJECT_BINARY_DIR} # for config.h
-  )
+# This is one of fundamental libs.
+# Do not include UseComponentRules here because it will link to OrcaIce
+# creating circular dependency.
+INCLUDE( ${ORCA_CMAKE_DIR}/UseBasicRules.cmake )
+INCLUDE( ${ORCA_CMAKE_DIR}/UseIce.cmake )
+INCLUDE( ${ORCA_CMAKE_DIR}/UseHydroUtil.cmake )
+INCLUDE( ${ORCA_CMAKE_DIR}/UseLibProjectInterfaces.cmake )
 
 FILE( GLOB SRCS *.cpp )
 

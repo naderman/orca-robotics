@@ -1,6 +1,4 @@
-# annoying: including these rules causes test .cfg files to be installed.
-INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
-INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
+INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
 ADD_EXECUTABLE( ptrbuffertest ptrbuffertest.cpp )
 GLOBAL_ADD_TEST( PtrBufferTest ptrbuffertest )

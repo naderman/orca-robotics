@@ -1,23 +1,21 @@
-ADD_DEFINITIONS( "-Wall" )
-INCLUDE_DIRECTORIES( 
-    ${ICE_HOME}/include
-    ${PROJECT_BINARY_DIR}/src/interfaces/cpp 
-    ${PROJECT_SOURCE_DIR}/src/libs
-    )
-LINK_DIRECTORIES( ${ICE_HOME}/lib )
-INCLUDE( ${HYDRO_HOME}/cmake/UseHydro.cmake )
+INCLUDE( ${ORCA_CMAKE_DIR}/UseBasicRules.cmake )
+INCLUDE( ${ORCA_CMAKE_DIR}/UseIce.cmake )
+INCLUDE( ${ORCA_CMAKE_DIR}/UseLibProjectInterfaces.cmake )
+INCLUDE( ${ORCA_CMAKE_DIR}/UseHydroUtil.cmake )
 
-# for some reason cannot get shared libs working in windows
+FILE( GLOB SRCS *.cpp )
+
 IF(NOT OS_WIN)
-  GLOBAL_ADD_LIBRARY( OrcaDef SHARED defparser.cpp componentdefinition.cpp exceptions.cpp )
+    GLOBAL_ADD_LIBRARY( OrcaDef SHARED ${SRCS} )
 ELSE (NOT OS_WIN)
-  GLOBAL_ADD_LIBRARY( OrcaDef STATIC defparser.cpp componentdefinition.cpp exceptions.cpp )
+    # for some reason cannot get shared libs working in windows
+    GLOBAL_ADD_LIBRARY( OrcaDef STATIC ${SRCS} )
 ENDIF (NOT OS_WIN)
 
-TARGET_LINK_LIBRARIES( OrcaDef OrcaInterfaces OrcaIce HydroUtil OrcaObjects Ice IceUtil )
+TARGET_LINK_LIBRARIES( OrcaDef OrcaObjects )
 
 # special dependency on the generated files
-ADD_DEPENDENCIES( OrcaDef OrcaObjects OrcaIce )
+ADD_DEPENDENCIES( OrcaDef OrcaObjects )
 
 INSTALL_FILES( /include/orcadef .*\\.h$ )
 

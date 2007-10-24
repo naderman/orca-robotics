@@ -4,8 +4,7 @@ OPTION( BUILD_IMAGE_SERVER "Try to build Image Server" ON )
 
 IF ( BUILD_IMAGE_SERVER )
 
-    INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
-    INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
     
     # automatically generate #ifdef's for component.cpp
     # CONFIGURE_FILE( configimageserver.h.cmake ${PROJECT_SOURCE_DIR}/src/components/imageserver/configimageserver.h )

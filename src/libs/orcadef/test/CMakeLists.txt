@@ -1,6 +1,3 @@
-INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
-INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
-
 LINK_LIBRARIES( OrcaDef )
 
 ADD_EXECUTABLE( deftest deftest.cpp )

@@ -1,8 +1,5 @@
 # IF ( NOT OS_QNX )
-
-    INCLUDE_DIRECTORIES(
-    ${PROJECT_SOURCE_DIR}/src/libs
-    )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseBasicRules.cmake )
     
     FILE( GLOB SRCS *.cpp )
     
@@ -18,7 +15,7 @@
     INSTALL_FILES( /include/orcageom2d .*\\.h$ )
     
     IF ( BUILD_TESTS ) 
-    ADD_SUBDIRECTORY( test )
+        ADD_SUBDIRECTORY( test )
     ENDIF ( BUILD_TESTS )
  
 # ENDIF ( NOT OS_QNX )

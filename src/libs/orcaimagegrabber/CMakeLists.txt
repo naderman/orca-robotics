@@ -1,8 +1,6 @@
 IF( OS_LINUX )
 
-INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
-
-ADD_DEFINITIONS( -Wall )
+INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
 #
 # checks for libraries and drivers
