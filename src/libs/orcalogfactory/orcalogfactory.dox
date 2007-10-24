@@ -24,7 +24,7 @@ The main files are:
    - autologgers.h: classes that connect to an interface and log all data using a LogWriter.
  - For replaying:
    - logreaders.h:  classes capable of reading data files for specific Orca interfaces.
-   - replayers.h: classes that establish an interface and replay all data using a LogWriter.
+   - replayers.h: classes that establish an interface and replay all data using a LogReader.
 
 For a full list of functions and classes see @ref orcalogfactory.
 
