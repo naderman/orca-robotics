@@ -7,35 +7,29 @@
 # start with 'not found'
 SET( ORCA_FOUND 0 CACHE BOOL "Do we have Orca?" )
 
-FIND_PATH( ORCA_HOME_INCLUDE_ORCA orca.h
-  $ENV{ORCA_HOME}/include/orca
+FIND_PATH( ORCA_HOME orca_manifest.h
+  $ENV{ORCA_HOME}
   # Test standard installation points
-  /opt/orca/include/orca
-  /opt/orca-2.7.0/include/orca
-  /opt/orca-2.6.0/include/orca
-  /opt/orca-2.5.0/include/orca
-  /opt/orca-2.4.0/include/orca
-  /opt/orca-2.3.0/include/orca
-  /opt/orca-2.2.0/include/orca
-  /opt/orca-2.2.0/include/orca
-  /opt/orca-2.1.0/include/orca
-  /opt/orca-2.0.0/include/orca
-  C:/orca/include/orca
+  /opt/orca
+  /opt/orca-2.7.0+
+  /opt/orca-2.7.0
+  /opt/orca-2.6.0+
+  /opt/orca-2.6.0
+  /opt/orca-2.5.0
+  /opt/orca-2.4.0
+  /opt/orca-2.3.0
+  /opt/orca-2.2.0
+  /opt/orca-2.2.0
+  /opt/orca-2.1.0
+  /opt/orca-2.0.0
+  C:/orca
   )
-# MESSAGE( STATUS "DEBUG: orca.h is apparently found in : ${ORCA_HOME_INCLUDE_ORCA}" )
+# MESSAGE( STATUS "DEBUG: orca_manifest.cmake is apparently found in : ${ORCA_HOME}" )
 
 # NOTE: if ORCA_HOME_INCLUDE_ORCA is set to *-NOTFOUND it will evaluate to FALSE
-IF ( ORCA_HOME_INCLUDE_ORCA )
-
+IF ( ORCA_HOME )
     SET( ORCA_FOUND 1 CACHE BOOL "Do we have Orca?" FORCE )
-
-    # strip 'file' twice to get rid off 'include/orca'
-#     MESSAGE( STATUS "DEBUG: ORCA_HOME_INCLUDE_ORCA=" ${ORCA_HOME_INCLUDE_ORCA} )
-    GET_FILENAME_COMPONENT( ORCA_HOME_INCLUDE ${ORCA_HOME_INCLUDE_ORCA} PATH )
-    #MESSAGE( STATUS "DEBUG: ORCA_HOME_INCLUDE=" ${ORCA_HOME_INCLUDE} )
-    GET_FILENAME_COMPONENT( ORCA_HOME ${ORCA_HOME_INCLUDE} PATH )
-    #MESSAGE( STATUS "DEBUG: ORCA_HOME=" ${ORCA_HOME} )
-ENDIF ( ORCA_HOME_INCLUDE_ORCA )
+ENDIF ( ORCA_HOME )
 
 # do we need it in cache?
 # SET( ORCA_HOME ${ORCA_HOME} CACHE PATH "Orca installed directory" FORCE )

@@ -32,13 +32,13 @@ ELSE ( ${PROJECT_NAME} MATCHES "orca" )
             "Looking for Orca - found in ${ORCA_HOME}" 
             1 )
 
-#         IF ( ORCA_FOUND )    
-#                 MESSAGE( STATUS "Looking for Orca - found in ${ORCA_HOME}" )
-#         ELSE ( ORCA_FOUND )    
-#                 MESSAGE( FATAL_ERROR "Looking for Orca - not found. Please install Orca, ** delete CMakeCache.txt **, then re-run CMake." )    
-#         ENDIF ( ORCA_FOUND )
-
     ENDIF ( DEFINED ORCA_HOME )
+
+    #
+    # Load Orca manifest
+    #
+    INCLUDE( ${ORCA_HOME}/orca_manifest.cmake )
+    MESSAGE( STATUS "Loaded Orca manifest")
 
     SET ( ORCA_CMAKE_DIR ${ORCA_HOME}/cmake CACHE PATH "Location of Orca CMake scripts" )
 
@@ -47,6 +47,6 @@ ENDIF ( ${PROJECT_NAME} MATCHES "orca" )
 MESSAGE ( STATUS "Using custom CMake scripts in ${ORCA_CMAKE_DIR}" )
 
 #
-# The rest is done by a script
+# The rest is done by a script common to both Orca and derived projects
 #
 INCLUDE( ${ORCA_CMAKE_DIR}/global_setup.cmake )

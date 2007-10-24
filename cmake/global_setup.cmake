@@ -6,7 +6,8 @@ MESSAGE( STATUS "Setting project version to ${PROJECT_VERSION}" )
 MESSAGE( STATUS "Setting project interface lib name to ${PROJECT_INTERFACE_LIB}" )
 
 #
-# Find Hydro installation, we need it early for cmake scripts
+# Official dependency number 1: Hydro
+# Find Hydro installation, we need it early to use its cmake scripts
 #
 IF ( DEFINED HYDRO_HOME )
     # Hydro home is specified with a command line option or is already in cache
@@ -19,6 +20,11 @@ ELSE ( DEFINED HYDRO_HOME )
             "Looking for Hydro - found in ${HYDRO_HOME}" 
             1 )
 ENDIF ( DEFINED HYDRO_HOME )
+#
+# Load Hydro manifest
+#
+INCLUDE( ${HYDRO_HOME}/hydro_manifest.cmake )
+MESSAGE( STATUS "Loaded Hydro manifest")
 
 #
 # process version number
@@ -40,23 +46,14 @@ INCLUDE( ${HYDRO_HOME}/cmake/os.cmake )
 #
 INCLUDE( ${PROJECT_SOURCE_DIR}/cmake/local/buildtype.cmake )
 
-
-#
-# Include external and local macro definitions
-#
-# Hydro!
-INCLUDE( ${HYDRO_HOME}/cmake/GlobalAdd.cmake )
-INCLUDE( ${HYDRO_HOME}/cmake/messages.cmake )
-# INCLUDE( ${ORCA_CMAKE_DIR}/GlobalAdd.cmake )
-# INCLUDE( ${ORCA_CMAKE_DIR}/messages.cmake )
-INCLUDE( ${ORCA_CMAKE_DIR}/orca_macros.cmake )
-
 #
 # check compiler type and version
 #
 INCLUDE( ${PROJECT_SOURCE_DIR}/cmake/local/compiler.cmake )
 
 #
+# 
+# Official dependency number 2: ZeroC's Ice
 # Find Ice installation
 #
 IF ( DEFINED ICE_HOME )
@@ -78,6 +75,18 @@ ASSERT ( ICE_WORKS
          "Testing Ice - ok."
          1 )
 
+# Check which parts of Ice are actually installed (produce "manifest")
+# INCLUDE ( ${ORCA_CMAKE_DIR}/ManifestIce.cmake )
+
+#
+# Include external and local macro definitions
+#
+INCLUDE( ${HYDRO_HOME}/cmake/GlobalAdd.cmake )
+INCLUDE( ${HYDRO_HOME}/cmake/messages.cmake )
+INCLUDE( ${ORCA_CMAKE_DIR}/FindComponentSources.cmake )
+INCLUDE( ${ORCA_CMAKE_DIR}/GenerateConfigFile.cmake )
+INCLUDE( ${ORCA_CMAKE_DIR}/OptionalSubLibrary.cmake )
+
 #
 # Defaults for big source code switches 
 # (these are defaults. after the user modifies these in GUI they stay in cache)
@@ -97,6 +106,9 @@ INCLUDE( ${ORCA_CMAKE_DIR}/write_config_h.cmake )
 
 #                                                         
 # Look for dependencies required by individual components 
+# alexm: everything or most of what's currently in this file
+# will move into individual comps and libs, only the global dependencies
+# will be checked globally.
 #                                                         
 INCLUDE( ${ORCA_CMAKE_DIR}/check_depend.cmake )
 
@@ -112,8 +124,8 @@ SET( ORCA_DEF2CFG_COMMAND ${DEFTOOLS_HOME}/def2cfg${EXE_EXTENSION}
         CACHE PATH "Path to def2cfg executable." FORCE )
 SET( ORCA_DEF2XML_COMMAND ${DEFTOOLS_HOME}/def2xml${EXE_EXTENSION} 
         CACHE PATH "Path to def2xml executable." FORCE )
-SET( ORCA_DEF2XMLTEMPLATE_COMMAND ${DEFTOOLS_HOME}/def2xmltemplate${EXE_EXTENSION} 
-        CACHE PATH "Path to def2xmltemplate executable." FORCE )
+# SET( ORCA_DEF2XMLTEMPLATE_COMMAND ${DEFTOOLS_HOME}/def2xmltemplate${EXE_EXTENSION} 
+#         CACHE PATH "Path to def2xmltemplate executable." FORCE )
 MESSAGE( STATUS "Using ${ORCA_DEF2CFG_COMMAND}" )
 
 #
@@ -123,24 +135,21 @@ MESSAGE( STATUS "Using ${ORCA_DEF2CFG_COMMAND}" )
 # SET( CMAKE_SKIP_BUILD_RPATH TRUE )
 # CMake default is FALSE
 # SET( CMAKE_BUILD_WITH_INSTALL_RPATH TRUE )
-SET( CMAKE_INSTALL_RPATH 
-    ${CMAKE_INSTALL_PREFIX}/lib
-    ${ICE_HOME}/lib )
+SET( CMAKE_INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/lib ${HYDRO_HOME}/lib ${ICE_HOME}/lib )
 
-# IF ( NOT ${PROJECT_NAME} MATCHES "orca" )
 IF ( NOT ORCA_MOTHERSHIP )
-    SET( CMAKE_INSTALL_RPATH  
-        ${CMAKE_INSTALL_RPATH}
-        ${ORCA_HOME}/lib )
+    # For satellite projects only, link to Orca
+    SET( CMAKE_INSTALL_RPATH  ${CMAKE_INSTALL_RPATH} ${ORCA_HOME}/lib )
 ENDIF ( NOT ORCA_MOTHERSHIP )
-# ENDIF ( NOT ${PROJECT_NAME} MATCHES "orca" )
 
 IF ( ORCA_MOTHERSHIP )
     # For orca project only, install CMake scripts
     ADD_SUBDIRECTORY ( cmake )
 ENDIF ( ORCA_MOTHERSHIP )
 
-
+#
+# Testing with CTest
+#
 # Enable testing by including the Dart module
 # (must be done *before* entering source directories )
 INCLUDE (${CMAKE_ROOT}/Modules/Dart.cmake)
@@ -151,11 +160,18 @@ ENABLE_TESTING()
 #                                                         
 ADD_SUBDIRECTORY ( src )
 
+#
 # Some scripts need to be installed
+#
 ADD_SUBDIRECTORY ( scripts )
+
+#
+# Write installation manifest in CMake format
+#
+WRITE_MANIFEST()   
 
 #                                                         
 # Print results of CMake activity                         
-#                                                     
+#                                                  
 GLOBAL_CONFIG_REPORT( "Ice version       ${ICE_VERSION}" )
-# INCLUDE ( ${ORCA_CMAKE_DIR}/build_config_report.cmake )
+GLOBAL_LIST_RESET()

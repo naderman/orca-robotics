@@ -1,10 +1,12 @@
 # Locate Ice home
 
 # This module defines the following variables:
-# ICE_HOME  : path where to find include, lib, bin, etc.
 # ICE_FOUND : 1 if Ice is found, 0 otherwise
-# ICEJ_HOME  : path where to find Ice for Java archive
+# ICE_HOME  : path where to find include, lib, bin, etc.
+#
+#
 # ICEJ_FOUND : 1 if Ice for Java is found, 0 otherwise
+# ICEJ_HOME  : path where to find Ice for Java archive
 
 #
 # Ice for C++

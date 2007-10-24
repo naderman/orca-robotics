@@ -1,20 +1,17 @@
-INCLUDE_DIRECTORIES( 
-    ${ICE_HOME}/include
-)
-
-# Ice libraries installed in lib64 on 64-bit systems.  Is there a way to tell automatically?
-LINK_DIRECTORIES(
-    ${ICE_HOME}/lib
-    ${ICE_HOME}/lib64
-)
-
 #
-# Platform-specific compiler and linker flags
+# Links to libIce only.
+# see also: UseIceBasics.cmake
 #
+
+INCLUDE( ${ORCA_CMAKE_DIR}/UseZeroC.cmake )
+
 IF ( NOT OS_WIN )
-    LINK_LIBRARIES( Ice IceUtil IceStorm )
+
+    LINK_LIBRARIES( Ice )
+
 ELSE ( NOT OS_WIN )
+
     # windows... have to link to different libs depending on build type
-    LINK_LIBRARIES( optimized Ice optimized IceUtil optimized IceStorm 
-                    debug Iced debug IceUtild debug IceStormd )
+    LINK_LIBRARIES( optimized Ice       debug Iced)
+
 ENDIF ( NOT OS_WIN )

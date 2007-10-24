@@ -7,30 +7,22 @@
 # start with 'not found'
 SET( HYDRO_FOUND 0 CACHE BOOL "Do we have Hydro?" )
 
-FIND_PATH( HYDRO_HOME_INCLUDE_HYDROUTIL buffer.h
-  $ENV{HYDRO_HOME}/include/hydroutil
+FIND_PATH( HYDRO_HOME hydro_manifest.cmake
+  $ENV{HYDRO_HOME}
   # Test standard installation points
-  /opt/hydro/include/hydroutil
-  /opt/hydro-2.7.0/include/hydroutil
-  /opt/hydro-2.6.0+/include/hydroutil
-  /opt/hydro-2.6.0/include/hydroutil
-  C:/hydro/include/hydroutil
+  /opt/hydro
+  /opt/hydro-2.8.0
+  /opt/hydro-2.7.0
+  /opt/hydro-2.6.0+
+  /opt/hydro-2.6.0
+  C:/hydro
   )
-# MESSAGE( STATUS "DEBUG: buffer.h is apparently found in : ${HYDRO_HOME_INCLUDE_HYDROUTIL}" )
+# MESSAGE( STATUS "DEBUG: manifest.cmake is apparently found in : ${HYDRO_HOME}" )
 
-# NOTE: if HYDRO_HOME_INCLUDE_HYDROUTIL is set to *-NOTFOUND it will evaluate to FALSE
-IF ( HYDRO_HOME_INCLUDE_HYDROUTIL )
-
+# NOTE: if HYDRO_HOME is set to *-NOTFOUND it will evaluate to FALSE
+IF ( HYDRO_HOME )
     SET( HYDRO_FOUND 1 CACHE BOOL "Do we have Orca?" FORCE )
-
-    # strip 'file' twice to get rid off 'include/hydroutil'
-#     MESSAGE( STATUS "DEBUG: HYDRO_HOME_INCLUDE_HYDROUTIL=" ${HYDRO_HOME_INCLUDE_HYDROUTIL} )
-    GET_FILENAME_COMPONENT( HYDRO_HOME_INCLUDE ${HYDRO_HOME_INCLUDE_HYDROUTIL} PATH )
-#     MESSAGE( STATUS "DEBUG: HYDRO_HOME_INCLUDE=" ${HYDRO_HOME_INCLUDE} )
-    GET_FILENAME_COMPONENT( HYDRO_HOME ${HYDRO_HOME_INCLUDE} PATH )
-#     MESSAGE( STATUS "DEBUG: HYDRO_HOME=" ${HYDRO_HOME} )
-
-ENDIF ( HYDRO_HOME_INCLUDE_HYDROUTIL )
+ENDIF ( HYDRO_HOME )
 
 # do we need it in cache?
 # SET( HYDRO_HOME ${HYDRO_HOME} CACHE PATH "Hydro installed directory" FORCE )
