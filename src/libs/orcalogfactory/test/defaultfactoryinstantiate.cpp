@@ -1,6 +1,6 @@
 #include <iostream>
-#include <orcalogfactory/defaultlogfactory.h>
-#include <orcalogfactory/defaultreplayfactory.h>
+#include <orcalogfactory/defaultautologgerfactory.h>
+#include <orcalogfactory/defaultreplayerfactory.h>
 
 using namespace std;
 using namespace orcalogfactory;
@@ -11,8 +11,8 @@ using namespace orcalogfactory;
 //
 int main()
 {
-    DefaultLogFactory l;
-    DefaultReplayFactory r;
+    DefaultAutoLoggerFactory l;
+    DefaultReplayerFactory r;
 
     cout<<"TRACE(defaultfactoryinstantiate.cpp): test PASSED" << endl;
     return 0;

@@ -20,8 +20,6 @@ namespace laser2d {
 //
 // @brief the main executing loop of this laser component.
 //
-// Note: this thing self-destructs when run() returns.
-//
 class MainLoop : public hydroutil::Thread
 {
 

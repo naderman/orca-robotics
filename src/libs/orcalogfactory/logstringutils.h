@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCALOG_STRINGIFY_UTILITIES_H
-#define ORCALOG_STRINGIFY_UTILITIES_H
+#ifndef ORCALOGFACTORY_STRINGIFY_UTILITIES_H
+#define ORCALOGFACTORY_STRINGIFY_UTILITIES_H
 
 #include <string>
 #include <orca/orca.h>
@@ -34,7 +34,7 @@
 #include <orca/pathplanner2d.h>
 #include <orca/wifi.h>
 
-namespace orcalog
+namespace orcalogfactory
 {
 /*!
  *  @name Stringify Orca structures for logging.
@@ -54,16 +54,6 @@ std::string toLogString( const orca::CpuData& );
 std::string toLogString( const orca::GpsData& );
 //! Parses from ASCII log. Throws orcalog::ParseException on error.
 void fromLogString( std::stringstream& stream, orca::GpsData& );
-
-//! Prints out gps mapgrid data to text which is easy to parse
-std::string toLogString( const orca::GpsMapGridData& );
-//! Parses from ASCII log. Throws orcalog::ParseException on error.
-void fromLogString( std::stringstream& stream, orca::GpsMapGridData& );
-
-//! Prints out gps time data to text which is easy to parse
-std::string toLogString( const orca::GpsTimeData& );
-//! Parses from ASCII log. Throws orcalog::ParseException on error.
-void fromLogString( std::stringstream& stream, orca::GpsTimeData& );
 
 std::string toLogString( const orca::LaserScanner2dDataPtr& );
 std::string toLogString( const orca::Localise2dData& );

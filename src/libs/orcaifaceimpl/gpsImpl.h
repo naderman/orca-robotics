@@ -8,10 +8,10 @@
  *
  */
 
-#ifndef ORCA2_IMAGE_IMPL_H
-#define ORCA2_IMAGE_IMPL_H
+#ifndef ORCA2_GPS_IMPL_H
+#define ORCA2_GPS_IMPL_H
 
-#include <orca/image.h>
+#include <orca/gps.h>
 #include <IceStorm/IceStorm.h>
 
 // utilities
@@ -25,22 +25,22 @@ namespace hydroutil {
 namespace orcaifaceimpl {
 
 //!
-//! Implements the orca::Image interface. Handles remote calls.
+//! Implements the orca::Gps interface: Handles remote calls.
 //!
-class ImageImpl : public IceUtil::Shared
+class GpsImpl : public IceUtil::Shared
 {
-friend class ImageI;
+friend class GpsI;
 
 public:
-    //! Constructor using interfaceTag (may throw ConfigFileException)
-    ImageImpl( const orca::ImageDescription &descr,
-               const std::string            &interfaceTag, 
-               const orcaice::Context       &context );
+    //! constructor using interfaceTag (may throw ConfigFileException)
+    GpsImpl( const orca::GpsDescription &descr,
+             const std::string              &interfaceTag, 
+             const orcaice::Context         &context );
     //! constructor using interfaceName
-    ImageImpl( const orca::ImageDescription &descr,
-               const orcaice::Context       &context,
-               const std::string            &interfaceName );
-    ~ImageImpl();
+    GpsImpl( const orca::GpsDescription &descr,
+             const orcaice::Context         &context,
+             const std::string              &interfaceName );
+    ~GpsImpl();
 
     // local interface:
     //! Sets up interface and connects to IceStorm. May throw hydroutil::Exceptions.
@@ -51,35 +51,35 @@ public:
     void initInterface( hydroutil::Thread* thread, int retryInterval=2 );
 
     //! A local call which sets the data reported by the interface
-    void localSet( const orca::ImageDataPtr& data );
+    void localSet( const orca::GpsData& data );
 
     //! A local call which sets the data reported by the interface, 
     //! and sends it through IceStorm
-    void localSetAndSend( const orca::ImageDataPtr& data );
+    void localSetAndSend( const orca::GpsData& data );
 
 private:
     // remote call implementations, mimic (but do not inherit) the orca interface
-    ::orca::ImageDataPtr internalGetData() const;
-    ::orca::ImageDescription internalGetDescription() const;
-    void internalSubscribe(const ::orca::ImageConsumerPrx&);
-    void internalUnsubscribe(const ::orca::ImageConsumerPrx&);
+    ::orca::GpsData internalGetData() const;
+    ::orca::GpsDescription internalGetDescription() const;
+    void internalSubscribe(const ::orca::GpsConsumerPrx&);
+    void internalUnsubscribe(const ::orca::GpsConsumerPrx&);
 
-    orca::ImageDescription     descr_;
-    // yes, this is not a typo! It's safe to use a normal proxy with an Ice smart pointer.
-    hydroutil::Proxy<orca::ImageDataPtr> dataProxy_;
+    orca::GpsDescription     descr_;
+    hydroutil::Proxy<orca::GpsData> dataProxy_;
 
-    orca::ImageConsumerPrx    consumerPrx_;
-    IceStorm::TopicPrx        topicPrx_;
+    // IceStorm proxies
+    orca::GpsConsumerPrx    consumerPrx_;
+    IceStorm::TopicPrx             topicPrx_;
 
     // Hang onto this so we can remove from the adapter and control when things get deleted
-    Ice::ObjectPtr          ptr_;
+    Ice::ObjectPtr                 ptr_;
 
     const std::string              interfaceName_;
     const std::string              topicName_;
     orcaice::Context               context_;
 };
 
-typedef IceUtil::Handle<ImageImpl> ImageImplPtr;
+typedef IceUtil::Handle<GpsImpl> GpsImplPtr;
 
 }
 

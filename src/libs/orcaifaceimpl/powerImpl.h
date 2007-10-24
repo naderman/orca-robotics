@@ -32,9 +32,12 @@ class PowerImpl : public IceUtil::Shared
 friend class PowerI;
 
 public:
-    //! constructor
+    //! constructor using interfaceTag (may throw ConfigFileException)
     PowerImpl( const std::string& interfaceTag, 
-            const orcaice::Context& context );
+               const orcaice::Context& context );
+    //! constructor using interfaceName
+    PowerImpl( const orcaice::Context& context,
+               const std::string& interfaceName );
     ~PowerImpl();
 
     // local interface:
@@ -66,7 +69,8 @@ private:
     // Hang onto this so we can remove from the adapter and control when things get deleted
     Ice::ObjectPtr          ptr_;
 
-    const std::string              tag_;
+    const std::string              interfaceName_;
+    const std::string              topicName_;
     orcaice::Context               context_;
 };
 typedef IceUtil::Handle<PowerImpl> PowerImplPtr;

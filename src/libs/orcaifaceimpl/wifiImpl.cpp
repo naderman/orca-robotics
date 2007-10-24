@@ -39,8 +39,17 @@ private:
 //////////////////////////////////////////////////////////////////////
 
 WifiImpl::WifiImpl( const std::string       &interfaceTag, 
-                      const orcaice::Context  &context  )
-    : interfaceTag_(interfaceTag),
+                    const orcaice::Context  &context  )
+    : interfaceName_(getInterfaceNameFromTag(context,interfaceTag)),
+      topicName_(getTopicNameFromInterfaceName(context,interfaceName_)),
+      context_(context)
+{
+}
+
+WifiImpl::WifiImpl( const orcaice::Context  &context,
+                    const std::string       &interfaceName )
+    : interfaceName_(interfaceName),
+      topicName_(getTopicNameFromInterfaceName(context,interfaceName)),
       context_(context)
 {
 }
@@ -54,16 +63,24 @@ void
 WifiImpl::initInterface()
 {
     // Find IceStorm Topic to which we'll publish
-    topicPrx_ = orcaice::connectToTopicWithTag<orca::WifiConsumerPrx>
-        ( context_, consumerPrx_, interfaceTag_ );
+    topicPrx_ = orcaice::connectToTopicWithString<orca::WifiConsumerPrx>
+        ( context_, consumerPrx_, topicName_ );
 
     // Register with the adapter
     // We don't have to clean up the memory we're allocating here, because
     // we're holding it in a smart pointer which will clean up when it's done.
     ptr_ = new WifiI( *this );
-    orcaice::createInterfaceWithTag( context_, ptr_, interfaceTag_ );
+    orcaice::createInterfaceWithString( context_, ptr_, interfaceName_ );
 }
 
+void 
+WifiImpl::initInterface( hydroutil::Thread* thread, int retryInterval )
+{
+    topicPrx_ = orcaice::connectToTopicWithString( context_, consumerPrx_, topicName_, thread, retryInterval );
+
+    ptr_ = new WifiI( *this );
+    orcaice::createInterfaceWithString( context_, ptr_, interfaceName_, thread, retryInterval );
+}
 
 ::orca::WifiData
 WifiImpl::internalGetData() const
@@ -73,7 +90,7 @@ WifiImpl::internalGetData() const
     if ( dataProxy_.isEmpty() )
     {
         std::stringstream ss;
-        ss << "No data available! (interfaceTag="<<interfaceTag_<<")";
+        ss << "No data available! (interface="<<interfaceName_<<")";
         throw orca::DataNotExistException( ss.str() );
     }
 
@@ -120,7 +137,8 @@ WifiImpl::localSetAndSend( const orca::WifiData& data )
           consumerPrx_,
           data,
           topicPrx_,
-          interfaceTag_ );
+          interfaceName_,
+          topicName_ );
 }
 
 }

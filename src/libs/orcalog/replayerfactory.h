@@ -8,10 +8,11 @@
  *
  */
 
-#ifndef ORCA2_ORCALOG_REPLAY_FACTORY_H
-#define ORCA2_ORCALOG_REPLAY_FACTORY_H
+#ifndef ORCA2_ORCALOG_REPLAYER_FACTORY_H
+#define ORCA2_ORCALOG_REPLAYER_FACTORY_H
 
 #include <orcalog/factory.h>
+#include <orcalog/logreaderinfo.h>
 
 namespace orcaice
 {
@@ -24,18 +25,14 @@ namespace orcalog
 class Replayer;
     
 //! Factory of log replayers.
-class ReplayFactory : public Factory
+class ReplayerFactory : public Factory
 {
 public:
-    virtual ~ReplayFactory() {};
+    virtual ~ReplayerFactory() {};
 
     //! Creates a log replayer of specified type. Returns a pointer to it if
     //! successful or a NULL pointer if it fails.
-    virtual Replayer* create( 
-        const std::string      &interfaceType, 
-        const std::string      &format,
-        const std::string      &filename,
-        const orcaice::Context &context) = 0;
+    virtual Replayer* create( const LogReaderInfo &logReaderInfo )=0;
 };
 
 } // namespace
@@ -43,8 +40,8 @@ public:
 // Function for instantiating plug-in factories.
 // A plug-in library must have a function like so:
 // extern "C" {
-//     orcalog::ReplayerFactory *createReplayFactory();
+//     orcalog::ReplayerFactory *createReplayerFactory();
 // }
-typedef orcalog::ReplayFactory *ReplayFactoryMakerFunc();
+typedef orcalog::ReplayerFactory *ReplayerFactoryMakerFunc();
 
 #endif

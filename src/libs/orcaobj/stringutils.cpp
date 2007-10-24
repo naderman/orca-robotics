@@ -719,41 +719,6 @@ toString( const orca::GpsData&  obj )
 }
 
 std::string 
-toString( const orca::GpsMapGridData& obj )
-{
-    std::ostringstream s;
-    s   << toString(obj.timeStamp) <<"\n"
-        << " UTC: " << toString(obj.utcTime) << "\n"
-        << " Gps (northing,easting,altitude) : ("
-        << std::setprecision(12)
-        << obj.northing << ","
-	    << obj.easting << ","
-	    << obj.altitude << ")" << "\n"
-        << " Gps (horizontalPositionError,verticalPositionError) : ("
-        << std::setprecision(6)
-        << obj.horizontalPositionError<< ","
-        << obj.verticalPositionError << ")\n"
-        << " Gps (heading,speed,climbrate) : ("
-        << obj.heading*180.0/M_PI << "deg,"
-	    << obj.speed << ","
-	    << obj.climbRate << ")" << "\n"
-	    << " Gps (zone, positionType) : ("
-        << obj.zone << ","
-	    << toString(obj.positionType) << ")";
-
-    return s.str();
-}
-
-std::string 
-toString( const orca::GpsTimeData&  obj )
-{
-    std::ostringstream s;
-    s << toString(obj.timeStamp) <<"\n"
-      << " UTC: " << toString(obj.utcDate) << " " << toString(obj.utcTime);
-    return s.str();
-}
-
-std::string 
 toString( const orca::ImageDataPtr& obj )
 {
     std::ostringstream s;

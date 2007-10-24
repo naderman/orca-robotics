@@ -37,7 +37,7 @@
 
 using namespace std;
 
-namespace orcalog
+namespace orcalogfactory
 {
 
 namespace {
@@ -352,76 +352,6 @@ fromLogString( std::stringstream &s, orca::GpsData& obj )
     fromLogString( s, numericPosType );
     obj.positionType = convertFromNumeric( numericPosType );
     fromLogString( s, obj.geoidalSeparation );
-}
-
-std::string 
-toLogString( const orca::GpsTimeData& obj )
-{
-    std::ostringstream s;
-    s << toLogString(obj.timeStamp) << " "
-      << obj.utcTime.hours << " "
-      << obj.utcTime.minutes << " "
-      << obj.utcTime.seconds << " "
-      << obj.utcDate.day << " "
-      << obj.utcDate.month << " "
-      << obj.utcDate.year;
-    return s.str();
-}
-
-void
-fromLogString( std::stringstream &s, orca::GpsTimeData& obj )
-{
-    fromLogString( s, obj.timeStamp );
-    fromLogString( s, obj.utcTime.hours );
-    fromLogString( s, obj.utcTime.minutes );
-    fromLogString( s, obj.utcTime.seconds );
-    fromLogString( s, obj.utcDate.day );
-    fromLogString( s, obj.utcDate.month );
-    fromLogString( s, obj.utcDate.year );
-}
-
-std::string 
-toLogString( const orca::GpsMapGridData& obj )
-{
-    int positionType = convertToNumeric( obj.positionType );
-    
-    std::ostringstream s;
-    s << toLogString(obj.timeStamp) << " "
-      << obj.utcTime.hours << " "
-      << obj.utcTime.minutes << " "
-      << obj.utcTime.seconds << " "
-      << obj.northing << " "
-      << obj.easting << " "
-      << obj.altitude << " "
-      << obj.horizontalPositionError<< " "
-      << obj.verticalPositionError << " "
-      << obj.heading << " "
-      << obj.speed << " "
-      << obj.climbRate << " "
-      << obj.zone << " "
-      << positionType;
-    return s.str();
-}
-
-void
-fromLogString( std::stringstream &s, orca::GpsMapGridData& obj )
-{
-    fromLogString( s, obj.timeStamp );
-    fromLogString( s, obj.utcTime.hours );
-    fromLogString( s, obj.utcTime.minutes );
-    fromLogString( s, obj.utcTime.seconds );
-    fromLogString( s, obj.northing );
-    fromLogString( s, obj.easting );
-    fromLogString( s, obj.altitude );
-    fromLogString( s, obj.horizontalPositionError );
-    fromLogString( s, obj.verticalPositionError );
-    fromLogString( s, obj.heading );
-    fromLogString( s, obj.speed );
-    fromLogString( s, obj.climbRate );
-    fromLogString( s, obj.zone );
-    int numericPosType;
-    fromLogString( s, numericPosType );
-    obj.positionType = convertFromNumeric( numericPosType );
 }
 
 std::string 

@@ -14,16 +14,16 @@
 #include <orcalog/logwriter.h>
 #include <orcalog/autologgerfactory.h>
 
-#include <orcalog/replaymaster.h>
+#include <orcalog/masterfilereader.h>
+#include <orcalog/logreader.h>
 #include <orcalog/replayer.h>
+#include <orcalog/replayerfactory.h>
 #include <orcalog/dummyreplayer.h>
-#include <orcalog/replayfactory.h>
 
 #include <orcalog/icereadhelper.h>
 #include <orcalog/icewritehelper.h>
 
 #include <orcalog/exceptions.h>
-#include <orcalog/logstringutils.h>
 #include <orcalog/utils.h>
 
 #endif

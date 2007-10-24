@@ -64,7 +64,6 @@ public:
 protected:
 
     orca::GpsData gpsData_;
-    orca::GpsTimeData gpsTimeData_;
 
 };
 

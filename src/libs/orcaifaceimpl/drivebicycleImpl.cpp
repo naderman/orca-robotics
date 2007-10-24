@@ -53,12 +53,24 @@ private:
 //////////////////////////////////////////////////////////////////////
 
 DriveBicycleImpl::DriveBicycleImpl( 
-            const orca::VehicleDescription& descr,
-            const std::string &interfaceTag,
-            const orcaice::Context &context ) :
-    description_(descr),
-    interfaceTag_(interfaceTag),
-    context_(context)
+            const orca::VehicleDescription &descr,
+            const std::string              &interfaceTag,
+            const orcaice::Context         &context )
+    : description_(descr),
+      interfaceName_(getInterfaceNameFromTag(context,interfaceTag)),
+      topicName_(getTopicNameFromInterfaceName(context,interfaceName_)),
+      context_(context)
+{
+}
+
+DriveBicycleImpl::DriveBicycleImpl( 
+            const orca::VehicleDescription &descr,
+            const orcaice::Context         &context,
+            const std::string              &interfaceName )
+    : description_(descr),
+      interfaceName_(interfaceName),
+      topicName_(getTopicNameFromInterfaceName(context,interfaceName)),
+      context_(context)
 {
 }
 
@@ -71,24 +83,24 @@ void
 DriveBicycleImpl::initInterface()
 {
     // Find IceStorm Topic to which we'll publish
-    topicPrx_ = orcaice::connectToTopicWithTag<orca::DriveBicycleConsumerPrx>
-        ( context_, consumerPrx_, interfaceTag_ );
+    topicPrx_ = orcaice::connectToTopicWithString<orca::DriveBicycleConsumerPrx>
+        ( context_, consumerPrx_, topicName_ );
 
     // Register with the adapter
     // We don't have to clean up the memory we're allocating here, because
     // we're holding it in a smart pointer which will clean up when it's done.
     ptr_ = new DriveBicycleI( *this );
-    orcaice::createInterfaceWithTag( context_, ptr_, interfaceTag_ );
+    orcaice::createInterfaceWithString( context_, ptr_, interfaceName_ );
 }
 
 void 
 DriveBicycleImpl::initInterface( hydroutil::Thread* thread, int retryInterval )
 {
-    topicPrx_ = orcaice::connectToTopicWithTag<orca::DriveBicycleConsumerPrx>
-        ( context_, consumerPrx_, interfaceTag_, "*", thread, retryInterval );
+    topicPrx_ = orcaice::connectToTopicWithString<orca::DriveBicycleConsumerPrx>
+        ( context_, consumerPrx_, topicName_, thread, retryInterval );
 
     ptr_ = new DriveBicycleI( *this );
-    orcaice::createInterfaceWithTag( context_, ptr_, interfaceTag_, thread, retryInterval );
+    orcaice::createInterfaceWithString( context_, ptr_, interfaceName_, thread, retryInterval );
 }
 
 ::orca::DriveBicycleData 
@@ -99,7 +111,7 @@ DriveBicycleImpl::internalGetData() const
     if ( dataPipe_.isEmpty() )
     {
         std::stringstream ss;
-        ss << "No data available! (interfaceTag="<<interfaceTag_<<")";
+        ss << "No data available! (interface="<<interfaceName_<<")";
         throw orca::DataNotExistException( ss.str() );
     }
 
@@ -164,7 +176,8 @@ DriveBicycleImpl::localSetAndSend( const orca::DriveBicycleData &data )
           consumerPrx_,
           data,
           topicPrx_,
-          interfaceTag_ );
+          interfaceName_,
+          topicName_ );
 }
 
 } // namespace

@@ -33,10 +33,15 @@ class DriveBicycleImpl : public IceUtil::Shared,
 friend class DriveBicycleI;
 
 public:
-    //! Constructor
+
+    //! constructor using interfaceTag (may throw ConfigFileException)
     DriveBicycleImpl( const orca::VehicleDescription& descr,
-                       const std::string &interfaceTag,
-                       const orcaice::Context &context );
+                      const std::string &interfaceTag,
+                      const orcaice::Context &context );
+    //! constructor using interfaceName
+    DriveBicycleImpl( const orca::VehicleDescription& descr,
+                      const orcaice::Context &context,
+                      const std::string &interfaceName );
     ~DriveBicycleImpl();
 
     // Local calls:
@@ -65,7 +70,8 @@ private:
     void internalSetCommand( const ::orca::DriveBicycleCommand& );
 
     const orca::VehicleDescription    description_;
-    const std::string                 interfaceTag_;
+    const std::string                 interfaceName_;
+    const std::string                 topicName_;
     IceStorm::TopicPrx                topicPrx_;
 
     // outgoing data

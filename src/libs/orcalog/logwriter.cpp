@@ -15,16 +15,25 @@
 #include "exceptions.h"
 
 using namespace std;
-using namespace orcalog;
+
+namespace orcalog {
 
 LogWriter::LogWriter( const LogWriterInfo &logWriterInfo )
     : file_(0),
       masterFileWriteHandler_(logWriterInfo),
       logWriterInfo_(logWriterInfo)
 {
+}
+
+void
+LogWriter::init()
+{
     //
     // create log file. Derived classes may re-implement this function to modify
     // the standard treatment of log formats.
+    //
+    // Note: openLogFile() has to be called from here, because
+    // calling it from the constructor would call the base-class's version.
     //
     createLogFile( logWriterInfo_.filename, 
                    logWriterInfo_.format );
@@ -41,48 +50,50 @@ LogWriter::~LogWriter()
 }
 
 void
-LogWriter::createAsciiFile( const std::string &filename )
-{
-    if ( file_ ) {
-        std::string s = "Log file already exists.";
-        throw FileException( ERROR_INFO, s );
-    }
-
-    file_ = new ofstream( filename.c_str() );
-    if ( !file_->is_open() )  {
-        std::string s = "Could not create data file " + filename;
-        throw FileException( ERROR_INFO, s );
-    }
-}
-
-void
-LogWriter::createBinaryFile( const std::string &filename )
-{
-    if ( file_ ) {
-        std::string s = "Log file already exists.";
-        throw FileException( ERROR_INFO, s );
-    }
-
-    file_ = new ofstream( filename.c_str(), ios::binary );
-    if ( !file_->is_open() )  {
-        std::string s = "Could not create data file " + filename;
-        throw FileException( ERROR_INFO, s );
-    }
-}
-
-void
 LogWriter::createLogFile( const std::string &filename, const std::string &format )
 {
+    // Check that the file's not already open
+    if ( file_ ) {
+        std::string s = "Log file already exists.";
+        throw FileException( ERROR_INFO, s );
+    }
+
     //
     // create log file, may throw and it will kill us
     //
     if ( format == "ice" ) {
-        createBinaryFile(filename);
+        file_ = openBinaryFileForWriting(filename);
     }
     else if ( format == "ascii" ) {
-        createAsciiFile(filename);
+        file_ = openAsciiFileForWriting(filename);
     }
     else {
         assert( false && "base class can only handle 'ice' and 'ascii' formats" );
     }
+}
+
+//////////////////////////////////////////////////////////////////////
+
+std::ofstream *
+openAsciiFileForWriting( const std::string &filename )
+{
+    std::ofstream *file = new ofstream( filename.c_str() );
+    if ( !file->is_open() )  {
+        std::string s = "Could not create data file " + filename;
+        throw FileException( ERROR_INFO, s );
+    }
+    return file;
+}
+
+std::ofstream *
+openBinaryFileForWriting( const std::string &filename )
+{
+    std::ofstream *file = new ofstream( filename.c_str(), ios::binary );
+    if ( !file->is_open() )  {
+        std::string s = "Could not create data file " + filename;
+        throw FileException( ERROR_INFO, s );
+    }
+    return file;
+}
+
 }

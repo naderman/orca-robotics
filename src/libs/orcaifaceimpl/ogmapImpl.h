@@ -34,9 +34,12 @@ class OgMapImpl : public IceUtil::Shared
 friend class OgMapI;
 
 public:
-    //! Constructor
+    //! Constructor using interfaceTag (may throw ConfigFileException)
     OgMapImpl( const std::string      &interfaceTag,
-                const orcaice::Context &context );
+               const orcaice::Context &context );
+    //! constructor using interfaceName
+    OgMapImpl( const orcaice::Context &context,
+               const std::string      &interfaceName );               
     ~OgMapImpl();
 
     // Local calls:
@@ -68,7 +71,8 @@ private:
     // Hang onto this so we can remove from the adapter and control when things get deleted
     Ice::ObjectPtr          ptr_;
 
-    std::string interfaceTag_;
+    const std::string interfaceName_;
+    const std::string topicName_;
     orcaice::Context context_;
 };
 typedef IceUtil::Handle<OgMapImpl> OgMapImplPtr;

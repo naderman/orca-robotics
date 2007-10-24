@@ -52,10 +52,21 @@ private:
 //////////////////////////////////////////////////////////////////////
 
 CameraImpl::CameraImpl( const orca::CameraDescription& descr,
-                          const std::string& interfaceTag,
-                          const orcaice::Context& context )
+                        const std::string& interfaceTag,
+                        const orcaice::Context& context )
     : descr_(descr),
-      interfaceTag_(interfaceTag),
+      interfaceName_(getInterfaceNameFromTag(context,interfaceTag)),
+      topicName_(getTopicNameFromInterfaceName(context,interfaceName_)),
+      context_(context)
+{
+}
+
+CameraImpl::CameraImpl( const orca::CameraDescription& descr,
+                        const orcaice::Context& context,
+                        const std::string& interfaceName )
+    : descr_(descr),
+      interfaceName_(interfaceName),
+      topicName_(getTopicNameFromInterfaceName(context,interfaceName)),
       context_(context)
 {
 }
@@ -69,24 +80,24 @@ void
 CameraImpl::initInterface()
 {
     // Find IceStorm Topic to which we'll publish
-    topicPrx_ = orcaice::connectToTopicWithTag<orca::CameraConsumerPrx>
-        ( context_, consumerPrx_, interfaceTag_ );
+    topicPrx_ = orcaice::connectToTopicWithString<orca::CameraConsumerPrx>
+        ( context_, consumerPrx_, topicName_ );
 
     // Register with the adapter
     // We don't have to clean up the memory we're allocating here, because
     // we're holding it in a smart pointer which will clean up when it's done.
     ptr_ = new CameraI( *this );
-    orcaice::createInterfaceWithTag( context_, ptr_, interfaceTag_ );
+    orcaice::createInterfaceWithString( context_, ptr_, interfaceName_ );
 }
 
 void 
 CameraImpl::initInterface( hydroutil::Thread* thread, int retryInterval )
 {
-    topicPrx_ = orcaice::connectToTopicWithTag<orca::CameraConsumerPrx>
-        ( context_, consumerPrx_, interfaceTag_, "*", thread, retryInterval );
+    topicPrx_ = orcaice::connectToTopicWithString<orca::CameraConsumerPrx>
+        ( context_, consumerPrx_, topicName_, thread, retryInterval );
 
     ptr_ = new CameraI( *this );
-    orcaice::createInterfaceWithTag( context_, ptr_, interfaceTag_, thread, retryInterval );
+    orcaice::createInterfaceWithString( context_, ptr_, interfaceName_, thread, retryInterval );
 }
 
 ::orca::CameraData 
@@ -97,7 +108,7 @@ CameraImpl::internalGetData() const
     if ( dataProxy_.isEmpty() )
     {
         std::stringstream ss;
-        ss << "No data available! (interfaceTag="<<interfaceTag_<<")";
+        ss << "No data available! (interface="<<interfaceName_<<")";
         throw orca::DataNotExistException( ss.str() );
     }
 
@@ -155,10 +166,11 @@ CameraImpl::localSetAndSend( const orca::CameraData& data )
     // Try to push to IceStorm.
     tryPushToIceStormWithReconnect<orca::CameraConsumerPrx,orca::CameraData>
         ( context_,
-        consumerPrx_,
-        data,
-        topicPrx_,
-        interfaceTag_ );
+          consumerPrx_,
+          data,
+          topicPrx_,
+          interfaceName_,
+          topicName_ );
 }
 
 } // namespace

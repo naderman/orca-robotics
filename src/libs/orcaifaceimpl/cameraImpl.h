@@ -32,10 +32,15 @@ class CameraImpl : public IceUtil::Shared
 friend class CameraI;
 
 public:
-    //! constructor
-    CameraImpl( const orca::CameraDescription& descr,
-                 const std::string& interfaceTag, 
-                 const orcaice::Context& context );
+
+    //! constructor using interfaceTag (may throw ConfigFileException)
+    CameraImpl( const orca::CameraDescription &descr,
+                const std::string             &interfaceTag, 
+                const orcaice::Context        &context );
+    //! constructor using interfaceName
+    CameraImpl( const orca::CameraDescription &descr,
+                const orcaice::Context        &context,
+                const std::string             &interfaceName );
     ~CameraImpl();
 
     // local interface:
@@ -69,7 +74,8 @@ private:
     // Hang onto this so we can remove from the adapter and control when things get deleted
     Ice::ObjectPtr          ptr_;
 
-    const std::string              interfaceTag_;
+    const std::string              interfaceName_;
+    const std::string              topicName_;
     orcaice::Context               context_;
 };
 

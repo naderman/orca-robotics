@@ -12,8 +12,8 @@
 #define ORCA2_GPS_COMPONENT_H
 
 #include <orcaice/component.h>
-#include "gpsinterfaces.h"
 #include <hydroutil/thread.h>
+#include <orcaifaceimpl/gpsImpl.h>
 
 namespace gps {
 
@@ -37,9 +37,7 @@ private:
     //
     // EXTERNAL INTERFACES
     //
-    GpsImplPtr        gpsInterface_;
-    GpsMapGridImplPtr gpsMapGridInterface_;
-    GpsTimeImplPtr    gpsTimeInterface_;
+    orcaifaceimpl::GpsImplPtr gpsInterface_;
 
     //
     // HARDWARE INTERFACES

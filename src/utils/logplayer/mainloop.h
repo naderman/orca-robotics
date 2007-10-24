@@ -14,11 +14,12 @@
 #include <vector>
 
 #include <orcaice/context.h>
-#include <hydroutil/thread.h>
+#include <hydroutil/safethread.h>
+#include "replayclock.h"
 
 namespace orcalog
 {
-    class ReplayMaster;
+    class MasterFileReader;
     class Replayer;
     class ReplayFactory;
 }
@@ -26,24 +27,47 @@ namespace orcalog
 namespace logplayer
 {
 
-class MainLoop : public hydroutil::Thread
+class MainLoop : public hydroutil::SafeThread
 {
 public:
 
-    MainLoop( orcalog::ReplayMaster* master,
-              std::vector<orcalog::Replayer*> & replayers,
-              std::vector<orcalog::ReplayFactory*> & factories,
-              const orcaice::Context & context );
+    MainLoop( orcalog::MasterFileReader       *masterFileReader,
+              std::vector<orcalog::Replayer*> &replayers,
+              const orcaice::Context          &context );
     ~MainLoop(); 
 
-    virtual void run();
+    // from SafeThread
+    virtual void walk();
 
 private:
 
-    orcalog::ReplayMaster* master_;
+    void readConfig();
+    void initReplayers();
+
+    orcalog::MasterFileReader* masterFileReader_;
     std::vector<orcalog::Replayer*> & replayers_;
-    std::vector<orcalog::ReplayFactory*> & factories_;
     orcaice::Context context_;
+
+    // The clock by which replay occurs (might not run in real-time).
+    ReplayClock clock_;
+
+    // Params read from config file
+
+    // Replay data starting from BeginTime (seconds) from the start of the log
+    IceUtil::Time beginTime_;
+
+    // EndTime: Replay data up to EndTime (seconds) from the start of the log
+    // by convention, negative time means play to the ened
+    IceUtil::Time endTime_;
+
+    // ReplayRate: Adjusts the playback speed (1.0 is real-time).
+    double replayRate_;
+
+    // Start automatically? (or wait for user key-press)
+    bool autoStart_;
+
+    // replay one data item per keypress?
+    bool waitForUserInput_;
 };
 
 } // namespace

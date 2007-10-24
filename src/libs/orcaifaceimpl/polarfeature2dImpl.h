@@ -30,9 +30,12 @@ class PolarFeature2dImpl : public IceUtil::Shared
 friend class PolarFeature2dI;
 
 public:
-    //! Constructor
+    //! Constructor using interfaceTag (may throw ConfigFileException)
     PolarFeature2dImpl( const std::string                     &interfaceTag,
-                         const orcaice::Context                &context );
+                        const orcaice::Context                &context );
+    //! constructor using interfaceName
+    PolarFeature2dImpl( const orcaice::Context                &context,
+                        const std::string                     &interfaceName );                        
     ~PolarFeature2dImpl();
 
     //
@@ -40,6 +43,10 @@ public:
     //
     //! may throw hydroutil::Exceptions
     void initInterface();
+
+    //! Sets up interface and connects to IceStorm. Catches all exceptions and retries
+    //! until sucessful. At every iteration, checks if the thread was stopped.
+    void initInterface( hydroutil::Thread* thread, int retryInterval=2 );
 
     //! A local call which sets the data reported by the interface
     void localSet( const orca::PolarFeature2dDataPtr& data );
@@ -65,7 +72,8 @@ private:
     // Hang onto this so we can remove from the adapter and control when things get deleted
     Ice::ObjectPtr          ptr_;
 
-    std::string                     interfaceTag_;
+    const std::string                     interfaceName_;
+    const std::string                     topicName_;
     orcaice::Context                context_;
 };
 typedef IceUtil::Handle<PolarFeature2dImpl> PolarFeature2dImplPtr;

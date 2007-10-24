@@ -20,13 +20,19 @@ orca_component_logger for details.
 
 The main classes in orcalog which support this are:
 
-(For log writing):
+For log writing:
 
- - orcalog::MasterFileWriter : knows how to write the master file.
- - orcalog::LogFileWriter    : base class for classes that know how to write individual log-files.
+ - orcalog::MasterFileWriter  : knows how to write the master file.
+ - orcalog::LogWriter         : base class for classes that know how to write individual log-files.
+ - orcalog::AutoLogger        : base class for classes that continuously log received data (using a LogWriter)
+ - orcalog::AutoLoggerFactory : base class for classes that create AutoLoggers
 
+Similarly, for log reading:
 
-
+ - orcalog::MasterFileReader  : knows how to read the master file.
+ - orcalog::LogReader         : base class for classes that know how to read individual log-files.
+ - orcalog::Replayer          : base class for classes that can replay data (using a LogReader)
+ - orcalog::ReplayerFactory   : base class for classes that create Replayers
 
 For a full list of functions and classes see @ref orcalog.
 

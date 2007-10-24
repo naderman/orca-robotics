@@ -24,4 +24,17 @@ tryRemovePtr( orcaice::Context &context,
     }
 }
 
+std::string getInterfaceNameFromTag( const orcaice::Context &context,
+                                     const std::string      &interfaceTag )
+{
+    orca::FQInterfaceName fqIName = orcaice::getProvidedInterface( context, interfaceTag );
+    return fqIName.iface;
+}
+    
+std::string getTopicNameFromInterfaceName( const orcaice::Context &context,
+                                           const std::string      &interfaceName )
+{
+    return orcaice::toString( orcaice::getProvidedTopicWithString( context, interfaceName ) );
+}
+
 }

@@ -12,7 +12,7 @@
 #include <cmath>
  
 #include <orcaice/orcaice.h>
-#include <orcalog/logstringutils.h>
+#include <orcalogfactory/logstringutils.h>
 #include <orcaqgui/guiicons.h>
 #include <orcaqgui2d/paintutils.h>
 #include <orcaqgui2dfactory/waypointdialog.h>
@@ -911,7 +911,7 @@ PathInput::savePath( const QString &fileName )
     
     // write to a file
     QTextStream out(&file);
-    out << QString(orcalog::toLogString( orcaPath ).c_str());
+    out << QString(orcalogfactory::toLogString( orcaPath ).c_str());
     file.close();
     humanManager_->showStatusMsg(Information, "Path successfully saved to " + fileName );
 }
@@ -957,7 +957,7 @@ void PathInput::loadPath( const QString& fileName )
     while (!in.atEnd()) 
     {
         stringstream ss( in.readLine().toStdString() );
-        orcalog::fromLogString( ss, wp );
+        orcalogfactory::fromLogString( ss, wp );
         orcaPath.push_back(wp);
     }
     file.close();

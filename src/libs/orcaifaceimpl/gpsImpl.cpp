@@ -9,8 +9,9 @@
  */
 
 #include <iostream>
+
 #include <orcaice/orcaice.h>
-#include "imageImpl.h"
+#include "gpsImpl.h"
 #include "util.h"
 
 using namespace std;
@@ -22,37 +23,38 @@ namespace orcaifaceimpl {
 //
 // This is the implementation of the slice-defined interface
 //
-class ImageI : public orca::Image
+class GpsI : public orca::Gps
 {
 public:
-    ImageI( ImageImpl &impl )
+    GpsI( GpsImpl &impl )
         : impl_(impl) {}
+    virtual ~GpsI() {}
 
     // remote interface
 
-    virtual ::orca::ImageDataPtr getData(const ::Ice::Current& )
+    virtual ::orca::GpsData getData(const ::Ice::Current& ) const
         { return impl_.internalGetData(); }
 
-    virtual ::orca::ImageDescription getDescription(const ::Ice::Current& )
+    virtual ::orca::GpsDescription getDescription(const ::Ice::Current& ) const
         { return impl_.internalGetDescription(); }
 
-    virtual void subscribe(const ::orca::ImageConsumerPrx& consumer,
+    virtual void subscribe(const ::orca::GpsConsumerPrx& consumer,
                            const ::Ice::Current& = ::Ice::Current())
         { impl_.internalSubscribe( consumer ); }
 
-    virtual void unsubscribe(const ::orca::ImageConsumerPrx& consumer,
+    virtual void unsubscribe(const ::orca::GpsConsumerPrx& consumer,
                              const ::Ice::Current& = ::Ice::Current())
-        { impl_.internalSubscribe( consumer ); }
+        { impl_.internalUnsubscribe(consumer); }
 
 private:
-    ImageImpl &impl_;
+    GpsImpl &impl_;
 };
 
 //////////////////////////////////////////////////////////////////////
 
-ImageImpl::ImageImpl( const orca::ImageDescription& descr,
-                      const std::string& interfaceTag,
-                      const orcaice::Context& context )
+GpsImpl::GpsImpl( const orca::GpsDescription& descr,
+                                const std::string& interfaceTag,
+                                const orcaice::Context& context )
     : descr_(descr),
       interfaceName_(getInterfaceNameFromTag(context,interfaceTag)),
       topicName_(getTopicNameFromInterfaceName(context,interfaceName_)),
@@ -60,9 +62,9 @@ ImageImpl::ImageImpl( const orca::ImageDescription& descr,
 {
 }
 
-ImageImpl::ImageImpl( const orca::ImageDescription& descr,
-                      const orcaice::Context& context,
-                      const std::string& interfaceName )
+GpsImpl::GpsImpl( const orca::GpsDescription& descr,
+                                const orcaice::Context& context,
+                                const std::string& interfaceName )
     : descr_(descr),
       interfaceName_(interfaceName),
       topicName_(getTopicNameFromInterfaceName(context,interfaceName)),
@@ -70,39 +72,39 @@ ImageImpl::ImageImpl( const orca::ImageDescription& descr,
 {
 }
 
-ImageImpl::~ImageImpl()
+GpsImpl::~GpsImpl()
 {
     tryRemovePtr( context_, ptr_ );
 }
 
 void
-ImageImpl::initInterface()
+GpsImpl::initInterface()
 {
     // Find IceStorm Topic to which we'll publish
-    topicPrx_ = orcaice::connectToTopicWithString<orca::ImageConsumerPrx>
+    topicPrx_ = orcaice::connectToTopicWithString<orca::GpsConsumerPrx>
         ( context_, consumerPrx_, topicName_ );
 
     // Register with the adapter
     // We don't have to clean up the memory we're allocating here, because
     // we're holding it in a smart pointer which will clean up when it's done.
-    ptr_ = new ImageI( *this );
+    ptr_ = new GpsI( *this );
     orcaice::createInterfaceWithString( context_, ptr_, interfaceName_ );
 }
 
 void 
-ImageImpl::initInterface( hydroutil::Thread* thread, int retryInterval )
+GpsImpl::initInterface( hydroutil::Thread* thread, int retryInterval )
 {
-    topicPrx_ = orcaice::connectToTopicWithString<orca::ImageConsumerPrx>
+    topicPrx_ = orcaice::connectToTopicWithString<orca::GpsConsumerPrx>
         ( context_, consumerPrx_, topicName_, thread, retryInterval );
 
-    ptr_ = new ImageI( *this );
+    ptr_ = new GpsI( *this );
     orcaice::createInterfaceWithString( context_, ptr_, interfaceName_, thread, retryInterval );
 }
 
-::orca::ImageDataPtr 
-ImageImpl::internalGetData() const
+::orca::GpsData 
+GpsImpl::internalGetData() const
 {
-    context_.tracer()->debug( "ImageImpl::internalGetData()", 10 );
+    context_.tracer()->debug( "GpsImpl::internalGetData()", 5 );
 
     if ( dataProxy_.isEmpty() )
     {
@@ -111,21 +113,21 @@ ImageImpl::internalGetData() const
         throw orca::DataNotExistException( ss.str() );
     }
 
-    orca::ImageDataPtr data;
+    orca::GpsData data;
     dataProxy_.get( data );
     return data;
 }
 
-::orca::ImageDescription
-ImageImpl::internalGetDescription() const
+::orca::GpsDescription
+GpsImpl::internalGetDescription() const
 {
     return descr_;
 }
 
 void 
-ImageImpl::internalSubscribe(const ::orca::ImageConsumerPrx& subscriber)
+GpsImpl::internalSubscribe(const ::orca::GpsConsumerPrx& subscriber )
 {
-    context_.tracer()->debug( "ImageImpl::internalSubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
+    context_.tracer()->debug( "GpsImpl::internalSubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
     try {
         topicPrx_->subscribeAndGetPublisher( IceStorm::QoS(), subscriber->ice_twoway() );
     }
@@ -136,38 +138,39 @@ ImageImpl::internalSubscribe(const ::orca::ImageConsumerPrx& subscriber)
     }
     catch ( const Ice::Exception & e ) {
         std::stringstream ss;
-        ss <<"ImageImpl::internalSubscribe: failed to subscribe: "<< e << endl;
+        ss <<"GpsImpl::internalSubscribe: failed to subscribe: "<< e << endl;
         context_.tracer()->warning( ss.str() );
         throw orca::SubscriptionFailedException( ss.str() );
     }
 }
 
 void 
-ImageImpl::internalUnsubscribe(const ::orca::ImageConsumerPrx& subscriber)
+GpsImpl::internalUnsubscribe(const ::orca::GpsConsumerPrx& subscriber)
 {
-    context_.tracer()->debug( "ImageImpl::internalUnsubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
+    context_.tracer()->debug( "GpsImpl::internalSubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
     topicPrx_->unsubscribe( subscriber );
 }
 
 void
-ImageImpl::localSet( const orca::ImageDataPtr& data )
+GpsImpl::localSet( const orca::GpsData& data )
 {
     dataProxy_.set( data );
 }
 
 void
-ImageImpl::localSetAndSend( const orca::ImageDataPtr& data )
+GpsImpl::localSetAndSend( const orca::GpsData& data )
 {
-//     cout<<"TRACE(ImageIface.cpp): localSetAndSend: " << orcaice::toString(data) << endl;
+//     cout<<"TRACE(GpsIface.cpp): localSetAndSend: " << orcaice::toString(data) << endl;
+
     dataProxy_.set( data );
 
     // Try to push to IceStorm.
-    tryPushToIceStormWithReconnect<orca::ImageConsumerPrx,orca::ImageDataPtr>
+    tryPushToIceStormWithReconnect<orca::GpsConsumerPrx,orca::GpsData>
         ( context_,
-          consumerPrx_,
-          data,
-          topicPrx_,
-          interfaceName_,
+        consumerPrx_,
+        data,
+        topicPrx_,
+        interfaceName_,
           topicName_ );
 }
 

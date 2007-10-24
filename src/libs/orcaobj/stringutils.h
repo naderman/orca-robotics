@@ -183,10 +183,6 @@ std::string toString( const orca::GpsDescription& );
 //! Converts to string
 std::string toString( const orca::GpsData&  );
 //! Converts to string
-std::string toString( const orca::GpsMapGridData& );
-//! Converts to string
-std::string toString( const orca::GpsTimeData&  );
-//! Converts to string
 std::string toString( const orca::HomeData& );
 //! Converts to string
 std::string toString( const orca::ImuDescription& );

@@ -120,13 +120,8 @@ Component::start()
     context().tracer()->debug( ss.str() );
 
     // create servant for direct connections
-    gpsInterface_        = new GpsImpl(        "Gps", descr_, context() );
-    gpsMapGridInterface_ = new GpsMapGridImpl( "GpsMapGrid", descr_, context() );
-    gpsTimeInterface_    = new GpsTimeImpl(    "GpsTime", descr_, context() );
-
+    gpsInterface_        = new orcaifaceimpl::GpsImpl( descr_, "Gps", context() );
     gpsInterface_->initInterface();
-    gpsMapGridInterface_->initInterface();
-    gpsTimeInterface_->initInterface();
 
     ////////////////////////////////////////////////////////////////////////////////
 
@@ -141,8 +136,6 @@ Component::start()
     context().tracer()->debug( "entering mainLoop_...",5 );
 
     mainLoop_ = new MainLoop( gpsInterface_,
-                              gpsMapGridInterface_,
-                              gpsTimeInterface_,
                               hwDriver_,
                               descr_.antennaOffset,
                               context() );

@@ -34,10 +34,14 @@ class RangeScanner2dImpl : public IceUtil::Shared
 friend class RangeScanner2dI;
 
 public:
-    //! constructor
+    //! constructor using interfaceTag (may throw ConfigFileException)
     RangeScanner2dImpl( const orca::RangeScanner2dDescription &descr,
-                         const std::string                     &interfaceTag,
-                         const orcaice::Context                &context );
+                        const std::string                     &interfaceTag,
+                        const orcaice::Context                &context );
+    //! constructor using interfaceName
+    RangeScanner2dImpl( const orca::RangeScanner2dDescription &descr,
+                        const orcaice::Context                &context,
+                        const std::string                     &interfaceName );                        
     ~RangeScanner2dImpl();
 
     // local interface:
@@ -75,7 +79,8 @@ private:
     // Hang onto this so we can remove from the adapter and control when things get deleted
     Ice::ObjectPtr          ptr_;
 
-    std::string        interfaceTag_;
+    const std::string        interfaceName_;
+    const std::string        topicName_;
     orcaice::Context   context_;
 };
 typedef IceUtil::Handle<RangeScanner2dImpl> RangeScanner2dImplPtr;

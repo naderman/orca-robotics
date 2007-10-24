@@ -1,3 +1,8 @@
+//
+// AlexB: '#if 0'd this out till it's fixed.
+//
+//
+#if 0
 /*
  * Orca Project: Components for robotics 
  *               http://orca-robotics.sf.net/
@@ -80,4 +85,5 @@ private:
 
 } // namespace
 
+#endif
 #endif

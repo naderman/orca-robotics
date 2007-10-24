@@ -3,6 +3,7 @@
 #include <fstream>
 #include <orcalog/orcalog.h>
 #include <orcaobj/stringutils.h>
+#include "logstringutils.h"
 
 using namespace std;
 
@@ -10,7 +11,7 @@ namespace orcalogfactory {
 
 namespace {
 
-    void checkFormats( const orcalog::LogWriterInfo &logWriterInfo,
+    void checkFormats( const orcalog::LogWriterInfo  &logWriterInfo,
                        const std::vector<std::string> &okFormats )
     {
         for ( uint i=0; i < okFormats.size(); i++ )
@@ -66,7 +67,7 @@ namespace {
         else
         {
             stringstream ss;
-            ss << "Can't handle format " << format << " for VehicleDescription.";
+            ss << "Can't handle format " << format;
             throw orcalog::FormatNotSupportedException( ERROR_INFO, ss.str() );
         }
     } 
@@ -85,12 +86,12 @@ namespace {
         }
         else if ( format == "ascii" )
         {
-            (*file) << orcalog::toLogString(obj) << flush;
+            (*file) << toLogString(obj) << flush;
         }
         else
         {
             stringstream ss;
-            ss << "can't handle format: " << format << " for VehicleGeometryDescriptionPtr.";
+            ss << "can't handle format: " << format;
             throw orcalog::FormatNotSupportedException( ERROR_INFO, ss.str() );
         }
     }
@@ -113,7 +114,7 @@ namespace {
         else
         {
             stringstream ss;
-            ss << "can't handle format: " << format << " for RangeScanner2dDescription.";
+            ss << "can't handle format: " << format;
             throw orcalog::FormatNotSupportedException( ERROR_INFO, ss.str() );
         }
     }
@@ -131,12 +132,12 @@ namespace {
         }
         else if ( format=="ascii" )
         {
-            (*file) << orcalog::toLogString(obj) << endl;
+            (*file) << toLogString(obj) << endl;
         }
         else
         {
             stringstream ss;
-            ss << "can't handle format: " << format << " for GpsDescription.";
+            ss << "can't handle format: " << format;
             throw orcalog::FormatNotSupportedException( ERROR_INFO, ss.str() );
         }
     }
@@ -154,12 +155,12 @@ namespace {
         }
         else if ( format == "ascii" )
         {
-            (*file) << orcalog::toLogString(obj) << endl;
+            (*file) << toLogString(obj) << endl;
         }
         else
         {
             stringstream ss;
-            ss << "can't handle format: " << format << " for CpuData.";
+            ss << "can't handle format: " << format;
             throw orcalog::FormatNotSupportedException( ERROR_INFO, ss.str() );
         }
     }
@@ -177,12 +178,12 @@ namespace {
         }
         else if ( format == "ascii" )
         {
-            (*file) << orcalog::toLogString(obj) << endl;
+            (*file) << toLogString(obj) << endl;
         }
         else
         {
             stringstream ss;
-            ss << "can't handle format: " << format << " for DriveBicycleData.";
+            ss << "can't handle format: " << format;
             throw orcalog::FormatNotSupportedException( ERROR_INFO, ss.str() );
         }
     }
@@ -200,12 +201,12 @@ namespace {
         }
         else if ( format == "ascii" )
         {
-            (*file) << orcalog::toLogString(obj) << endl;
+            (*file) << toLogString(obj) << endl;
         }
         else
         {
             stringstream ss;
-            ss << "can't handle format: " << format << " for ImuData.";
+            ss << "can't handle format: " << format;
             throw orcalog::FormatNotSupportedException( ERROR_INFO, ss.str() );
         }
     }
@@ -223,12 +224,12 @@ namespace {
         }
         else if ( format == "ascii" )
         {
-            (*file) << orcalog::toLogString(obj) << endl;
+            (*file) << toLogString(obj) << endl;
         }
         else
         {
             stringstream ss;
-            ss << "can't handle format: " << format << " for LaserScanner2dDataPtr.";
+            ss << "can't handle format: " << format;
             throw orcalog::FormatNotSupportedException( ERROR_INFO, ss.str() );
         }
     }
@@ -246,12 +247,12 @@ namespace {
         }
         else if ( format == "ascii" )
         {
-            (*file) << orcalog::toLogString(obj) << endl;
+            (*file) << toLogString(obj) << endl;
         }
         else
         {
             stringstream ss;
-            ss << "can't handle format: " << format << " for Localise2dData.";
+            ss << "can't handle format: " << format;
             throw orcalog::FormatNotSupportedException( ERROR_INFO, ss.str() );
         }
     }
@@ -269,12 +270,12 @@ namespace {
         }
         else if ( format == "ascii" )
         {
-            (*file) << orcalog::toLogString(obj) << endl;
+            (*file) << toLogString(obj) << endl;
         }
         else
         {
             stringstream ss;
-            ss << "can't handle format: " << format << " for Localise3dData.";
+            ss << "can't handle format: " << format;
             throw orcalog::FormatNotSupportedException( ERROR_INFO, ss.str() );
         }
     }
@@ -292,12 +293,12 @@ namespace {
         }
         else if ( format == "ascii" )
         {
-            (*file) << orcalog::toLogString(obj) << endl;
+            (*file) << toLogString(obj) << endl;
         }
         else
         {
             stringstream ss;
-            ss << "can't handle format: " << format << " for Odometry2dData.";
+            ss << "can't handle format: " << format;
             throw orcalog::FormatNotSupportedException( ERROR_INFO, ss.str() );
         }
     }
@@ -315,12 +316,12 @@ namespace {
         }
         else if ( format == "ascii" )
         {
-            (*file) << orcalog::toLogString(obj) << endl;
+            (*file) << toLogString(obj) << endl;
         }
         else
         {
             stringstream ss;
-            ss << "can't handle format: " << format << " for Odometry3dData.";
+            ss << "can't handle format: " << format;
             throw orcalog::FormatNotSupportedException( ERROR_INFO, ss.str() );
         }
     }
@@ -339,7 +340,7 @@ namespace {
         else
         {
             stringstream ss;
-            ss << "can't handle format: " << format << " for PowerData.";
+            ss << "can't handle format: " << format;
             throw orcalog::FormatNotSupportedException( ERROR_INFO, ss.str() );
         }
     }
@@ -357,12 +358,12 @@ namespace {
         }
         else if ( format == "ascii" )
         {
-            (*file) << orcalog::toLogString(obj) << endl;
+            (*file) << toLogString(obj) << endl;
         }
         else
         {
             stringstream ss;
-            ss << "can't handle format: " << format << " for PowerData.";
+            ss << "can't handle format: " << format;
             throw orcalog::FormatNotSupportedException( ERROR_INFO, ss.str() );
         }
     }
@@ -380,12 +381,12 @@ namespace {
         }
         else if ( format == "ascii" )
         {
-            (*file) << orcalog::toLogString(obj) << endl;
+            (*file) << toLogString(obj) << endl;
         }
         else
         {
             stringstream ss;
-            ss << "can't handle format: " << format << " for WifiData.";
+            ss << "can't handle format: " << format;
             throw orcalog::FormatNotSupportedException( ERROR_INFO, ss.str() );
         }
     }
@@ -403,12 +404,12 @@ namespace {
         }
         else if ( format == "ascii" )
         {
-            (*file) << orcalog::toLogString(obj) << endl;
+            (*file) << toLogString(obj) << endl;
         }
         else
         {
             stringstream ss;
-            ss << "can't handle format: " << format << " for GpsData.";
+            ss << "can't handle format: " << format;
             throw orcalog::FormatNotSupportedException( ERROR_INFO, ss.str() );
         }
     }

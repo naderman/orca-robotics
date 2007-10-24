@@ -31,7 +31,8 @@ namespace orcaifaceimpl {
                                     ConsumerPrxType    &consumerPrx,
                                     const DataType     &data,
                                     IceStorm::TopicPrx &topicPrx,
-                                    const std::string  &interfaceTag )
+                                    const std::string  &interfaceName,
+                                    const std::string  &topicName )
     {
         // check that communicator still exists
         if ( !context.communicator() ) {
@@ -50,15 +51,15 @@ namespace orcaifaceimpl {
             // This could happen if IceStorm dies.
             // If we're running in an IceBox and the IceBox is shutting down, 
             // this is expected (our co-located IceStorm is obviously going down).
-            std::stringstream ss; ss << interfaceTag << ": Failed push to IceStorm: " << e;
+            std::stringstream ss; ss << interfaceName << ": Failed push to IceStorm: " << e;
             context.tracer()->warning( ss.str() );
 
             // If IceStorm just re-started for some reason though, we want to try to re-connect
             try
             {
                 context.tracer()->info( "Re-connecting to IceStorm..." );
-                topicPrx = orcaice::connectToTopicWithTag<ConsumerPrxType>
-                    ( context, consumerPrx, interfaceTag );
+                topicPrx = orcaice::connectToTopicWithString<ConsumerPrxType>
+                    ( context, consumerPrx, topicName );
                 context.tracer()->info( "Re-connected to IceStorm." );
 
                 // try again to push that bit of info
@@ -79,6 +80,15 @@ namespace orcaifaceimpl {
     tryRemovePtr( orcaice::Context &context,
                   Ice::ObjectPtr &ptr );
 
+
+    // Convenience function for tag->name conversion
+    // (may throw ConfigFileException)
+    std::string getInterfaceNameFromTag( const orcaice::Context &context,
+                                         const std::string      &interfaceTag );
+    
+    // Convenience function for interfaceName->topicName conversion
+    std::string getTopicNameFromInterfaceName( const orcaice::Context &context,
+                                               const std::string      &interfaceTag );
 }
 
 #endif

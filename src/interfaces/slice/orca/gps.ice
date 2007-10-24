@@ -84,51 +84,6 @@ enum GpsPositionType {
     NovatelUnknown
 };
 
-//! Gps time structure
-struct GpsTimeData
-{
-    //! Time (according to the computer clock) when data was measured.
-    Time timeStamp;
-    //! UTC time (according to GPS device), reference is Greenwich.
-    TimeOfDay utcTime;
-    //! UTC date (according to GPS device)
-    Date utcDate;
-};
-
-//! Gps MapGrid data structure
-struct GpsMapGridData
-{
-    //! Time (according to the computer clock) when data was measured.
-    Time timeStamp;
-    //! UTC time (according to GPS device), reference is Greenwich.
-    TimeOfDay utcTime;
-
-    //! Our current zone
-    int zone;
-    //! Northing (metres)
-    double northing;
-    //! Easting (metres)
-    double easting;
-    //! Altitude (metres above ellipsoid)
-    double altitude;
-    
-    //! Horizontal position error: one standard deviation (metres)
-    double horizontalPositionError;
-    //! Vertical position error: one standard deviation (metres)
-    double verticalPositionError;
-    
-    //! Heading/track/course with respect to true north (rad)
-    double heading; 
-    //! Horizontal velocity (metres/second)
-    double speed;
-    //! Vertical velocity (metres/second)
-    double climbRate;
-    
-    //! Position type (see above)
-    GpsPositionType positionType;
-};
-
-
 //! Gps data structure
 struct GpsData
 {
@@ -176,22 +131,6 @@ interface GpsConsumer
 };
 
 /*!
- * Gps Map information consumer interface
- */
-interface GpsMapGridConsumer
-{
-    void setData( GpsMapGridData obj );
-};
-
-/*!
- * Gps Time information consumer interface
- */
-interface GpsTimeConsumer
-{
-    void setData( GpsTimeData obj );
-};
-
-/*!
     @brief Access to GpsData (raw data)
 */
 interface Gps
@@ -227,81 +166,6 @@ interface Gps
      */
     idempotent void unsubscribe( GpsConsumer* subscriber );
 };
-
-/*!
-    @brief Access to GpsMapGridData (northing, easting etc)
-*/
-interface GpsMapGrid
-{
-    //! Return the latest map information
-    ["cpp:const"] idempotent GpsMapGridData getData()
-            throws HardwareFailedException;
-
-    //! Return the gps description
-    ["cpp:const"] idempotent GpsDescription getDescription();
-
-    /*!
-     * Mimics IceStorm's subscribe() but without QoS, for now. The
-     * implementation may choose to implement the data push internally
-     * or use IceStorm. This choice is transparent to the subscriber.
-     *
-     * @param subscriber The subscriber's proxy.
-     *
-     * @see unsubscribe
-     */
-    void subscribe( GpsMapGridConsumer* subscriber )
-            throws SubscriptionFailedException;
-
-    // for reference, this is what IceStorm's subscribe function looks like.
-    //void subscribe(QoS theQoS, Object* subscriber);
-
-    /*!
-     * Unsubscribe the given [subscriber].
-     *
-     * @param subscriber The proxy of an existing subscriber.
-     *
-     * @see subscribe
-     */
-    idempotent void unsubscribe( GpsMapGridConsumer* subscriber );
-};
-
-/*!
-    @brief Access to GpsTimeData (UTC)
-*/
-interface GpsTime
-{
-    //! Return the latest timestamp information
-    ["cpp:const"] idempotent GpsTimeData getData()
-            throws HardwareFailedException;
-
-    //! Return the gps description
-    ["cpp:const"] idempotent GpsDescription getDescription();
-
-    /*!
-     * Mimics IceStorm's subscribe() but without QoS, for now. The
-     * implementation may choose to implement the data push internally
-     * or use IceStorm. This choice is transparent to the subscriber.
-     *
-     * @param subscriber The subscriber's proxy.
-     *
-     * @see unsubscribe
-     */
-    void subscribe( GpsTimeConsumer* subscriber )
-            throws SubscriptionFailedException;
-
-    // for reference, this is what IceStorm's subscribe function looks like.
-    //void subscribe(QoS theQoS, Object* subscriber);
-
-    /*!
-     * Unsubscribe the given [subscriber].
-     *
-     * @param subscriber The proxy of an existing subscriber.
-     *
-     * @see subscribe
-     */
-    idempotent void unsubscribe( GpsTimeConsumer* subscriber );
-};
-
 
 //!  //@}
 }; // module

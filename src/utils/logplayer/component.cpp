@@ -20,33 +20,44 @@ using namespace logplayer;
 
 namespace logplayer {
 
+std::string stringToLower( const std::string &s )
+{
+    std::string sLow = s;
+    for ( unsigned int i=0; i < sLow.size(); i++ )
+    {
+        sLow[i] = tolower( sLow[i] );
+    }
+    return sLow;
+}
+
+
 static const char *DEFAULT_FACTORY_NAME="libOrcaLogFactory.so";
 
-orcalog::ReplayFactory* loadReplayFactory( hydrodll::DynamicallyLoadedLibrary &lib )
+orcalog::ReplayerFactory* loadReplayerFactory( hydrodll::DynamicallyLoadedLibrary &lib )
 {
-    orcalog::ReplayFactory *f = 
-        hydrodll::dynamicallyLoadClass<orcalog::ReplayFactory,ReplayFactoryMakerFunc>
-                                        (lib, "createReplayFactory");
+    orcalog::ReplayerFactory *f = 
+        hydrodll::dynamicallyLoadClass<orcalog::ReplayerFactory,ReplayerFactoryMakerFunc>
+                                        (lib, "createReplayerFactory");
     return f;
 }
 
 Component::Component( const std::string & compName )
     : orcaice::Component( compName ),
       mainLoop_(0),
-      master_(0)
+      masterFileReader_(0)
 {
 }
 
 Component::~Component()
 {
-    delete master_;
+    delete masterFileReader_;
     // important: do not delete replayers because most of them derive from 
     // Ice smart pointers and self-destruct. Deleting them here will result
     // in seg fault.
 
-    assert( libraries_.size() == replayFactories_.size() );
+    assert( libraries_.size() == replayerFactories_.size() );
     for ( unsigned int i=0; i < libraries_.size(); i++ ){
-        delete replayFactories_[i];
+        delete replayerFactories_[i];
         delete libraries_[i];
     }
 }
@@ -65,9 +76,9 @@ Component::loadPluginLibraries( const std::string & factoryLibNames )
         
         try {
             hydrodll::DynamicallyLoadedLibrary *lib = new hydrodll::DynamicallyLoadedLibrary(libNames[i]);
-            orcalog::ReplayFactory *f = loadReplayFactory( *lib );
+            orcalog::ReplayerFactory *f = loadReplayerFactory( *lib );
             libraries_.push_back(lib);
-            replayFactories_.push_back(f);
+            replayerFactories_.push_back(f);
         }
         catch (hydrodll::DynamicLoadException &e)
         {
@@ -76,7 +87,7 @@ Component::loadPluginLibraries( const std::string & factoryLibNames )
         }
     }
 
-    if ( replayFactories_.empty() ) {
+    if ( replayerFactories_.empty() ) {
         std::string err = "No replayer factories were loaded.";
         context().tracer()->error( err );
         throw err;
@@ -90,32 +101,36 @@ Component::createReplayer( const std::string& interfaceType,
                    bool enabled,
                    bool require )
 {
-    // this replayer was disabled by the user in the config file
-    if ( !enabled ) {
-        replayers_.push_back( new orcalog::DummyReplayer(context()) );
-        std::string s = "Interface replay is disabled (type="+interfaceType+" file="+filename
+    if ( !enabled ) 
+    {
+        // this replayer was disabled by the user in the config file
+        replayers_.push_back( new orcalog::DummyReplayer );
+        std::string s = "Interface replayer is disabled (type="+interfaceType+" file="+filename
                         +". Created dummy log player";
         context().tracer()->info( s );
         return;
     }
 
-    // debug
-//     cout<<"adding slave type="<<interfaceType<<" sfx="<<interfaceTypeSuffix<<" fmt="<<format<<" prfx="<<filenamePrefix<<endl;
-    for ( unsigned int i=0; i < replayFactories_.size(); ++i )
+    orcalog::LogReaderInfo logReaderInfo( context() );
+    logReaderInfo.interfaceType = interfaceType;
+    stringstream ssName;
+    ssName << stringToLower(interfaceType) << interfaceTypeCounter_.nextAvailableId( interfaceType );
+    logReaderInfo.interfaceName = ssName.str();
+    logReaderInfo.format        = format;
+    logReaderInfo.filename      = filename;
+
+    // Search for a factory willing to instantiate this type of replayer
+    for ( unsigned int i=0; i < replayerFactories_.size(); ++i )
     {
         // if this interface is not supported, skip this factory
-        if ( !replayFactories_[i]->isSupported( interfaceType ) ) {
+        if ( !replayerFactories_[i]->isSupported( interfaceType ) ) {
             continue;
         }
 
         // this interface is supported, but it may throw if this particulaer format is not
         try
         {
-            orcalog::Replayer* s = replayFactories_[i]->create( 
-                    interfaceType, 
-                    format,
-                    filename,
-                    context() );
+            orcalog::Replayer* s = replayerFactories_[i]->create( logReaderInfo );
             if ( s ) { 
                 replayers_.push_back( s );
                 std::string s( "Created log player: " );
@@ -133,14 +148,14 @@ Component::createReplayer( const std::string& interfaceType,
         }
         catch ( const orcalog::FormatNotSupportedException& e )
         {
-            // all interfaces are required, no dummies
-            if ( require ) {
+            if ( require ) 
+            {
                 std::string err = "Format "+format+" is not supported for interface type"+interfaceType;
                 context().tracer()->error( err );
                 throw err;
             }
             else {
-                replayers_.push_back( new orcalog::DummyReplayer(context()) );
+                replayers_.push_back( new orcalog::DummyReplayer() );
                 std::string s = "Log format is not supported (type="+interfaceType+" fmt="+format+" file="+filename
                                 +". Created dummy log player";
                 context().tracer()->info( s );
@@ -159,7 +174,7 @@ Component::createReplayer( const std::string& interfaceType,
         throw err;
     }
     else {
-        replayers_.push_back( new orcalog::DummyReplayer(context()) );
+        replayers_.push_back( new orcalog::DummyReplayer );
         std::string s = "Interface type is not supported (type="+interfaceType+" fmt="+format+" file="+filename
                         +". Created dummy log player";
         context().tracer()->info( s );
@@ -178,7 +193,7 @@ Component::start()
     loadPluginLibraries( libNames );
 
     string masterFilename = orcaice::getPropertyWithDefault( props, prefix+"LogFilename", "master.log" );
-    master_ = new orcalog::ReplayMaster( masterFilename.c_str(), context() );
+    masterFileReader_ = new orcalog::MasterFileReader( masterFilename.c_str(), context() );
 
     bool requireAll = orcaice::getPropertyAsIntWithDefault( props, prefix+"RequireAll", 1 );
 
@@ -188,7 +203,7 @@ Component::start()
     std::vector<std::string> formats;
     std::vector<bool> enableds;
     // this may throw and it will kill us
-    master_->getLogs( filenames, interfaceTypes, formats, enableds );
+    masterFileReader_->getLogs( filenames, interfaceTypes, formats, enableds );
     stringstream ss;
     ss << "found " << filenames.size() << " logs in the master file.";
     context().tracer()->info( ss.str() );
@@ -208,13 +223,13 @@ Component::start()
         createReplayer( interfaceTypes[i], formats[i], filenames[i], enableds[i], requireAll );
     }
 
-    // this will launch its own thread and replay the logs
-    mainLoop_ = new MainLoop( master_, replayers_, replayFactories_, context() );
+    // this will launch its own thread and replayer the logs
+    mainLoop_ = new MainLoop( masterFileReader_, replayers_, context() );
 
     // now we can safely activate
     activate(); 
 
-    // replay the data now
+    // replayer the data now
     mainLoop_->start();
     
     // the rest is handled by the application/service

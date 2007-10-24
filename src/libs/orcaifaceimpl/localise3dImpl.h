@@ -32,10 +32,14 @@ class Localise3dImpl : public IceUtil::Shared
 friend class Localise3dI;
 
 public:
-    //! Constructor
+    //! Constructor using interfaceTag (may throw ConfigFileException)
     Localise3dImpl( const orca::VehicleGeometryDescriptionPtr &geometry,
-                     const std::string &interfaceTag,
-                     const orcaice::Context &context );
+                    const std::string &interfaceTag,
+                    const orcaice::Context &context );
+    //! constructor using interfaceName
+    Localise3dImpl( const orca::VehicleGeometryDescriptionPtr &geometry,
+                    const orcaice::Context &context,
+                    const std::string &interfaceName );                    
     ~Localise3dImpl();
 
     // Local calls:
@@ -70,7 +74,8 @@ private:
     // Hang onto this so we can remove from the adapter and control when things get deleted
     Ice::ObjectPtr          ptr_;
 
-    const std::string              interfaceTag_;
+    const std::string              interfaceName_;
+    const std::string              topicName_;
     orcaice::Context               context_;
 };
 typedef IceUtil::Handle<Localise3dImpl> Localise3dImplPtr;

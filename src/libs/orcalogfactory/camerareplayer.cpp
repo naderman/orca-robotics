@@ -1,3 +1,8 @@
+//
+// AlexB: '#if 0'd this out till it's fixed.
+//
+//
+#if 0
 /*
  * Orca Project: Components for robotics 
  *               http://orca-robotics.sf.net/
@@ -296,3 +301,4 @@ CameraReplayer::orca_readCameraData( Ice::InputStreamPtr iceInputStreamPtr, int 
     }
     #endif
 }       
+#endif

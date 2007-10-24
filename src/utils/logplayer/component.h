@@ -15,12 +15,13 @@
 #include <string>
 #include <orcaice/component.h>
 #include <hydrodll/dll.h>
+#include "interfacetypecounter.h"
 
 namespace orcalog
 {
-    class ReplayMaster;
+    class MasterFileReader;
     class Replayer;
-    class ReplayFactory;
+    class ReplayerFactory;
 }
 
 namespace logplayer
@@ -41,21 +42,25 @@ public:
 
 private:
   
-    MainLoop *mainLoop_;
-    
-    std::vector<orcalog::ReplayFactory*>                    replayFactories_;
-    std::vector<hydrodll::DynamicallyLoadedLibrary*> libraries_;
-
-    orcalog::ReplayMaster *master_;
-    std::vector<orcalog::Replayer*> replayers_;
-    
     // utilities
     void loadPluginLibraries( const std::string& factoryLibNames );
     void createReplayer( const std::string & interfaceType, 
-                   const std::string& format,
-                   const std::string& filename,
-                   bool               enabled,
-                   bool               require );
+                         const std::string& format,
+                         const std::string& filename,
+                         bool               enabled,
+                         bool               require );
+
+    MainLoop *mainLoop_;
+    
+    std::vector<orcalog::ReplayerFactory*>           replayerFactories_;
+    std::vector<hydrodll::DynamicallyLoadedLibrary*> libraries_;
+
+    orcalog::MasterFileReader *masterFileReader_;
+    std::vector<orcalog::Replayer*> replayers_;
+
+    // Ensure interfaces of a given type are unique.
+    InterfaceTypeCounter interfaceTypeCounter_;
+    
 };
 
 } // namespace

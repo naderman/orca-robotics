@@ -12,20 +12,13 @@
 #define ORCA2_LOGGER_AUTO_LOGGER_FACTORY_H
 
 #include <orcalog/factory.h>
+#include <orcalog/autologger.h>
 #include <orcalog/logwriterinfo.h>
 
 namespace orcalog
 {
 
-//! An AutoLogger simply logs continuously once it's started.    
-class AutoLogger {
-public:
-    virtual ~AutoLogger() {}
-    
-    virtual void initAndStartLogging()=0;
-};
-
-//! Factory of slave loggers.
+//! Factory of AutoLogger instances.
 class AutoLoggerFactory : public Factory
 {
 public:

@@ -33,10 +33,14 @@ class VelocityControl2dImpl : public IceUtil::Shared,
 friend class VelocityControl2dI;
 
 public:
-    //! Constructor
+    //! Constructor using interfaceTag (may throw ConfigFileException)
     VelocityControl2dImpl( const orca::VehicleDescription& descr,
-                       const std::string& interfaceTag,
-                       const orcaice::Context& context );
+                           const std::string& interfaceTag,
+                           const orcaice::Context& context );
+    //! constructor using interfaceName
+    VelocityControl2dImpl( const orca::VehicleDescription& descr,
+                           const orcaice::Context& context,
+                           const std::string& interfaceName );
     ~VelocityControl2dImpl();
 
     //! Sets up interface and connects to IceStorm. May throw hydroutil::Exceptions.
@@ -54,7 +58,8 @@ private:
     void internalSetCommand( const ::orca::VelocityControl2dData& );
 
     const orca::VehicleDescription    description_;
-    const std::string                 interfaceTag_;
+    const std::string                 interfaceName_;
+    const std::string                 topicName_;
     IceStorm::TopicPrx                topicPrx_;
 
     orcaice::Context                  context_;

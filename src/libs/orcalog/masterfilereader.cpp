@@ -14,14 +14,14 @@
 #include <orcaice/orcaice.h>
 #include <orcalog/exceptions.h>
 
-#include "replaymaster.h"
+#include "masterfilereader.h"
 #include "utils.h"
 
 using namespace std;
 using namespace orcalog;
 
 
-ReplayMaster::ReplayMaster( const std::string &filename, const orcaice::Context& context )
+MasterFileReader::MasterFileReader( const std::string &filename, const orcaice::Context& context )
     : context_(context)
 {
     // create master file
@@ -36,7 +36,7 @@ ReplayMaster::ReplayMaster( const std::string &filename, const orcaice::Context&
     dir_ = hydroutil::dirname( filename );
 }
 
-ReplayMaster::~ReplayMaster()
+MasterFileReader::~MasterFileReader()
 {
     if ( file_ ) {
         file_->close();
@@ -46,7 +46,7 @@ ReplayMaster::~ReplayMaster()
 
 
 void
-ReplayMaster::getLogs( std::vector<std::string>& filenames,
+MasterFileReader::getLogs( std::vector<std::string>& filenames,
                         std::vector<std::string>& interfaceTypes,
                         std::vector<std::string>& formats,
                         std::vector<bool>& enableds )
@@ -88,7 +88,7 @@ ReplayMaster::getLogs( std::vector<std::string>& filenames,
 }
 
 int 
-ReplayMaster::seekDataStart()
+MasterFileReader::rewindToStart()
 {   
     // STL book p.634-36
     file_->clear();
@@ -108,7 +108,7 @@ ReplayMaster::seekDataStart()
 }
 
 int 
-ReplayMaster::getData( int& seconds, int& useconds, int& id, int& index )
+MasterFileReader::getData( int& seconds, int& useconds, int& id, int& index )
 {
     std::string line;
 
@@ -139,12 +139,12 @@ ReplayMaster::getData( int& seconds, int& useconds, int& id, int& index )
         return 0;
     }
     
-//     cout<<"ReplayMaster::getData: this is EOF"<<endl;
+//     cout<<"MasterFileReader::getData: this is EOF"<<endl;
     return 1;
 }
 
 int 
-ReplayMaster::getData( int& seconds, int& useconds, int& id, int& index, int seekSec, int seekUsec )
+MasterFileReader::getDataAfterTime( int& seconds, int& useconds, int& id, int& index, int seekSec, int seekUsec )
 {
 //     cout<<"seeking "<<seekSec<<"s "<<seekUsec<<"us"<<endl;
     IceUtil::Time seekTime = 

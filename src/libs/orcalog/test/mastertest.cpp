@@ -18,18 +18,13 @@
 
 using namespace std;
 
-class TestLogger : public orcalog::Logger
+class TestAutoLogger : public orcalog::AutoLogger
 {
 public:
-    TestLogger( orcalog::MasterFileWriter &masterFileWriter,
-                const std::string         &interfaceType, 
-                const std::string         &comment,
-                const std::string         &format,
-                const std::string         &filename,
-                const orcaice::Context    &context ) :
-        orcalog::Logger( masterFileWriter, interfaceType, comment, format, filename, context ) {};
-    virtual ~TestLogger() {};
-    virtual void init() {};
+    TestAutoLogger( const orcalog::LogWriterInfo &logWriterInfo )
+        {}
+    virtual ~TestAutoLogger() {}
+    virtual void initAndStartLogging() {}
 };
 
 class TestComponent : public orcaice::Component
@@ -55,17 +50,40 @@ TestComponent::~TestComponent()
 
 void TestComponent::start()
 {
-    cout<<"testing LogMaster() ... ";
+    cout<<"testing MasterFileWriter() ... ";
+
+    //
+    // create master file
+    //
     string masterFilename = "testmaster.txt";
-    // create logMaster file
     orcalog::MasterFileWriter masterFileWriter( masterFilename.c_str(), context() );
+
+    //
     // fake properties
+    //
     context().properties()->setProperty(  "MasterTest.Requires.Tag0.Proxy", "bullshit" );
     context().properties()->setProperty(  "MasterTest.Requires.Tag1.Proxy", "horseshit" );
-    // add a few logs
-    new TestLogger( masterFileWriter, "type0", "comment0", "format0", "file0", context() );
-    new TestLogger( masterFileWriter, "type1", "comment1", "format1", "file1", context() );
 
+    //
+    // add a few logs
+    //
+    orcalog::LogWriterInfo info( masterFileWriter, context() );
+    info.interfaceType = "type0";
+    info.interfaceTag  = "Tag0";
+    info.comment       = "comment0";
+    info.format        = "format0";
+    info.filename      = "file0";
+    new TestAutoLogger( info );
+    info.interfaceType = "type1";
+    info.interfaceTag  = "Tag1";
+    info.comment       = "comment1";
+    info.format        = "format1";
+    info.filename      = "file1";
+    new TestAutoLogger( info );
+
+    //
+    // Fake a few instances of arrival of data
+    //
     int l0=0, d0=0;
     masterFileWriter.notifyOfLogfileAddition( l0, d0 );
     IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
@@ -81,8 +99,8 @@ void TestComponent::start()
     masterFileWriter.notifyOfLogfileAddition( 1, 1 );
     cout<<"ok"<<endl;
 
-    cout<<"testing LogMaster() ... ";
-    orcalog::ReplayMaster* playMaster = new orcalog::ReplayMaster( masterFilename.c_str(), context() );
+    cout<<"testing replaying ... ";
+    orcalog::MasterFileReader *masterFileReader = new orcalog::MasterFileReader( masterFilename, context() );
 
     // get info on all logs from the master file
     std::vector<std::string> filenames;
@@ -90,7 +108,7 @@ void TestComponent::start()
     std::vector<std::string> formats;
     std::vector<bool> enableds;
     // this may throw and it will kill us
-    playMaster->getLogs( filenames, interfaceTypes, formats, enableds );
+    masterFileReader->getLogs( filenames, interfaceTypes, formats, enableds );
     if ( filenames.size() != (unsigned int)masterFileWriter.loggerCount() ) {
         cout<<"failed"<<endl<<"log count expected="<<masterFileWriter.loggerCount()<<" got="<<filenames.size()<<endl;
         exit(EXIT_FAILURE);
@@ -100,7 +118,7 @@ void TestComponent::start()
     cout<<"testing getData() ... ";
     int s, u, l, d;
     int ret;
-    ret = playMaster->getData( s, u, l, d );
+    ret = masterFileReader->getData( s, u, l, d );
     if ( ret ) {
         cout<<"failed: expected to find line, ret="<<ret<<endl;
         exit(EXIT_FAILURE);
@@ -114,7 +132,7 @@ void TestComponent::start()
     cout<<"ok"<<endl;
     
     cout<<"testing FF getData() to good line ... ";
-    ret = playMaster->getData( s, u, l, d,  s+3, u+900000 );
+    ret = masterFileReader->getDataAfterTime( s, u, l, d,  s+3, u+900000 );
     if ( ret ) {
         cout<<"failed: ret="<<ret<<endl;
         exit(EXIT_FAILURE);
@@ -128,7 +146,7 @@ void TestComponent::start()
     cout<<"ok"<<endl;
 
     cout<<"testing FF getData() to line which is after the end of log  ... ";
-    ret = playMaster->getData( s, u, l, d,  s+1000 );
+    ret = masterFileReader->getDataAfterTime( s, u, l, d,  s+1000 );
     if ( !ret ) {
         cout<<"failed: expected not to find line, ret="<<ret<<endl
             <<"got="<<s<<","<<u<<","<<l<<","<<d<<endl;
@@ -137,12 +155,12 @@ void TestComponent::start()
     cout<<"ok"<<endl;
 
     cout<<"testing seekDataStart() ... ";
-    ret = playMaster->seekDataStart();
+    ret = masterFileReader->rewindToStart();
     if ( ret ) {
         cout<<"failed: expected find data, ret="<<ret<<endl;
         exit(EXIT_FAILURE);
     }
-    ret = playMaster->getData( s, u, l, d );
+    ret = masterFileReader->getData( s, u, l, d );
     if ( ret ) {
         cout<<"failed: expected to find line, ret="<<ret<<endl;
         exit(EXIT_FAILURE);

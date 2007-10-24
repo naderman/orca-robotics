@@ -28,7 +28,7 @@ class CpuLogWriter : public orcalog::LogWriter
 {
 public:
     CpuLogWriter( const orcalog::LogWriterInfo &logWriterInfo );
-    void write( const orca::CpuData &obj );        
+    void write( const orca::CpuData &obj );       
 };
 
 //////////////////////////////////////////////////////////////////////

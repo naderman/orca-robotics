@@ -51,9 +51,18 @@ private:
 //////////////////////////////////////////////////////////////////////
 
 PowerImpl::PowerImpl( const std::string& interfaceTag,
-                const orcaice::Context& context ) :
-    tag_(interfaceTag),
-    context_(context)
+                      const orcaice::Context& context )
+    : interfaceName_(getInterfaceNameFromTag(context,interfaceTag)),
+      topicName_(getTopicNameFromInterfaceName(context,interfaceName_)),
+      context_(context)
+{
+}
+
+PowerImpl::PowerImpl( const orcaice::Context& context,
+                      const std::string& interfaceName )                      
+    : interfaceName_(interfaceName),
+      topicName_(getTopicNameFromInterfaceName(context,interfaceName)),
+      context_(context)
 {
 }
 
@@ -66,24 +75,24 @@ void
 PowerImpl::initInterface()
 {
     // Find IceStorm Topic to which we'll publish
-    topicPrx_ = orcaice::connectToTopicWithTag<orca::PowerConsumerPrx>
-        ( context_, consumerPrx_, tag_ );
+    topicPrx_ = orcaice::connectToTopicWithString<orca::PowerConsumerPrx>
+        ( context_, consumerPrx_, topicName_ );
 
     // Register with the adapter
     // We don't have to clean up the memory we're allocating here, because
     // we're holding it in a smart pointer which will clean up when it's done.
     ptr_ = new PowerI( *this );
-    orcaice::createInterfaceWithTag( context_, ptr_, tag_ );
+    orcaice::createInterfaceWithString( context_, ptr_, interfaceName_ );
 }
 
 void 
 PowerImpl::initInterface( hydroutil::Thread* thread, int retryInterval )
 {
-    topicPrx_ = orcaice::connectToTopicWithTag<orca::PowerConsumerPrx>
-        ( context_, consumerPrx_, tag_, "*", thread, retryInterval );
+    topicPrx_ = orcaice::connectToTopicWithString<orca::PowerConsumerPrx>
+        ( context_, consumerPrx_, topicName_, thread, retryInterval );
 
     ptr_ = new PowerI( *this );
-    orcaice::createInterfaceWithTag( context_, ptr_, tag_, thread, retryInterval );
+    orcaice::createInterfaceWithString( context_, ptr_, interfaceName_, thread, retryInterval );
 }
 
 ::orca::PowerData 
@@ -94,7 +103,7 @@ PowerImpl::internalGetData() const
     if ( dataProxy_.isEmpty() )
     {
         std::stringstream ss;
-        ss << "No data available! (interfaceTag="<<tag_<<")";
+        ss << "No data available! (interface="<<interfaceName_<<")";
         throw orca::DataNotExistException( ss.str() );
     }
 
@@ -149,7 +158,8 @@ PowerImpl::localSetAndSend( const orca::PowerData& data )
         consumerPrx_,
         data,
         topicPrx_,
-        tag_ );
+        interfaceName_,
+          topicName_ );
 }
 
 } // namespace

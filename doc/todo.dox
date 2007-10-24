@@ -99,6 +99,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @par Updated interfaces
 
+- Gps (alex b)
+  - removed GpsMapGrid and GpsTime interfaces.
+
 @par Updated components
 
 - SegwayRmpUsb
@@ -151,6 +154,11 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
   - the two multi-try subscribe functions now have an optional retryNumber parameter. default
     is -1, i.e. infinite -- same as before. therefore, no changes in existing
     code are needed. (alex m)
+  - Added constructors that don't rely on a tag but rather take the interface name directly as a string (alex b)
+
+- libOrcaLog/libOrcaLogFactory
+  - Huge overhaul of how logging/replaying is done.
+    Note: This is solely an implementation change: log file formats remain the same (and old logs will still play) (alex b)
 
 @par Removed
 

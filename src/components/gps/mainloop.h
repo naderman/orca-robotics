@@ -14,9 +14,9 @@
 #include <orca/gps.h>
 #include <hydroutil/thread.h>
 #include <orcaice/context.h>
+#include <orcaifaceimpl/gpsImpl.h>
 
 #include "driver.h"
-#include "gpsinterfaces.h"
 
 namespace gps {
 
@@ -30,21 +30,17 @@ class MainLoop : public hydroutil::Thread
 
 public:
 
-    MainLoop( GpsImplPtr         &gpsInterface,
-              GpsMapGridImplPtr  &gpsMapGridInterface,
-              GpsTimeImplPtr     &gpsTimeInterface,
-              Driver              *hwDriver,
-              const orca::Frame3d &antennaOffset,
-              orcaice::Context     current );
+    MainLoop( orcaifaceimpl::GpsImplPtr &gpsInterface,
+              Driver                    *hwDriver,
+              const orca::Frame3d       &antennaOffset,
+              orcaice::Context           current );
     ~MainLoop();
 
     virtual void run();
 
 private:
 
-    GpsImplPtr        &gpsInterface_;
-    GpsMapGridImplPtr &gpsMapGridInterface_;
-    GpsTimeImplPtr    &gpsTimeInterface_;
+    orcaifaceimpl::GpsImplPtr gpsInterface_;
 
     Driver *hwDriver_;
 
@@ -52,8 +48,7 @@ private:
 
     orcaice::Context context_;
     
-    void reportBogusValues( orca::GpsData        &gpsData, 
-                            orca::GpsMapGridData &gpsMapGridData );
+    void reportBogusValues( orca::GpsData        &gpsData );
     
 };
 

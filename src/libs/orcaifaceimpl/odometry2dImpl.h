@@ -32,10 +32,14 @@ class Odometry2dImpl : public IceUtil::Shared
 friend class Odometry2dI;
 
 public:
-    //! constructor
-    Odometry2dImpl( const orca::VehicleDescription& descr,
-                     const std::string& interfaceTag, 
-                     const orcaice::Context& context );
+    //! constructor using interfaceTag (may throw ConfigFileException)
+    Odometry2dImpl( const orca::VehicleDescription &descr,
+                    const std::string              &interfaceTag, 
+                    const orcaice::Context         &context );
+    //! constructor using interfaceName
+    Odometry2dImpl( const orca::VehicleDescription &descr,
+                    const orcaice::Context         &context,
+                    const std::string              &interfaceName );
     ~Odometry2dImpl();
 
     // local interface:
@@ -70,7 +74,8 @@ private:
     // Hang onto this so we can remove from the adapter and control when things get deleted
     Ice::ObjectPtr                 ptr_;
 
-    const std::string              interfaceTag_;
+    const std::string              interfaceName_;
+    const std::string              topicName_;
     orcaice::Context               context_;
 };
 

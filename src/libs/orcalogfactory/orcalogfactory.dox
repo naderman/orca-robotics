@@ -15,7 +15,8 @@
 
 @section overview Overview
 
-This library contains logging and replaying classes, one for each interface.
+This library contains logging and replaying classes.
+Basically, it specialises orcalog for a variety of Orca interfaces.
 For a full list of functions and classes see @ref orcalogfactory.
 
 @see orca_component_logger

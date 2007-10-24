@@ -341,41 +341,6 @@ setSane( orca::GpsData& obj )
 
 
 void 
-setSane( orca::GpsTimeData& obj )
-{
-    orca::Time t;
-    setSane( t );
-    obj.timeStamp = t;
-
-    setSane( obj.utcTime );
-    setSane( obj.utcDate );
-}
-
-
-void 
-setSane( orca::GpsMapGridData& obj )
-{
-    orca::Time t;
-    setSane( t );
-    obj.timeStamp = t;
-
-    setSane( obj.utcTime );
-
-    obj.zone = RINT%500;
-
-    obj.northing = double(RINT%800000)/1000.0;
-    obj.easting = double(RINT%800000)/1000.0;
-    obj.altitude = double(RINT%90000)/1000.0;
-    obj.horizontalPositionError = double(RINT%90000)/1000.0;
-    obj.verticalPositionError = double(RINT%90000)/1000.0;
-    
-    obj.speed = double(RINT%1000000)/1000.0;
-    obj.climbRate = double(RINT%1000000)/1000.0;
-
-    obj.positionType = orca::GpsPositionTypeAutonomous;
-}
-
-void 
 setSane( orca::PowerData& obj, int count )
 {
     orca::Time t;

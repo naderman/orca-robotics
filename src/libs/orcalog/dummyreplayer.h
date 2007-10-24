@@ -20,15 +20,13 @@ namespace orcalog
 class DummyReplayer : public Replayer
 {
 public:
-    DummyReplayer( const orcaice::Context& context ) :
-        Replayer( "dummy", "dummy", "dummy", context ) {};
+    DummyReplayer() {}
 
-    virtual void replayData( int index, bool isTest=false ) {};
+    void init () {}
 
-protected:
-    virtual void initInterfaces() {};
+    void replayData( int index ) {}
 
-    virtual void initDescription() {};
+    std::string toString() const { return "dummy"; }
 };
 
 } // namespace

@@ -45,10 +45,22 @@ private:
 VelocityControl2dImpl::VelocityControl2dImpl( 
             const orca::VehicleDescription& descr,
             const std::string &interfaceTag,
-            const orcaice::Context &context ) :
-    description_(descr),
-    interfaceTag_(interfaceTag),
-    context_(context)
+            const orcaice::Context &context )
+    : description_(descr),
+      interfaceName_(getInterfaceNameFromTag(context,interfaceTag)),
+      topicName_(getTopicNameFromInterfaceName(context,interfaceName_)),
+      context_(context)
+{
+}
+
+VelocityControl2dImpl::VelocityControl2dImpl( 
+            const orca::VehicleDescription& descr,
+            const orcaice::Context &context,
+            const std::string &interfaceName )
+    : description_(descr),
+      interfaceName_(interfaceName),
+      topicName_(getTopicNameFromInterfaceName(context,interfaceName)),
+      context_(context)
 {
 }
 
@@ -64,14 +76,14 @@ VelocityControl2dImpl::initInterface()
     // We don't have to clean up the memory we're allocating here, because
     // we're holding it in a smart pointer which will clean up when it's done.
     ptr_ = new VelocityControl2dI( *this );
-    orcaice::createInterfaceWithTag( context_, ptr_, interfaceTag_ );
+    orcaice::createInterfaceWithString( context_, ptr_, interfaceName_ );
 }
 
 void 
 VelocityControl2dImpl::initInterface( hydroutil::Thread* thread, int retryInterval )
 {
     ptr_ = new VelocityControl2dI( *this );
-    orcaice::createInterfaceWithTag( context_, ptr_, interfaceTag_, thread, retryInterval );
+    orcaice::createInterfaceWithString( context_, ptr_, interfaceName_, thread, retryInterval );
 }
 
 void

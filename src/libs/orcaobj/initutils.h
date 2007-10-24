@@ -100,10 +100,6 @@ void setSane( orca::DriveBicycleData& );
 //! Set to randomized but sane values.
 void setSane( orca::GpsData& );
 //! Set to randomized but sane values.
-void setSane( orca::GpsTimeData& );
-//! Set to randomized but sane values.
-void setSane( orca::GpsMapGridData& );
-//! Set to randomized but sane values.
 void setSane( orca::Localise2dData& );
 //! Set to randomized but sane values.
 void setSane( const orca::RangeScanner2dDataPtr&, int numberOfSamples=361 );

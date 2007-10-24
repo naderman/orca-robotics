@@ -7,8 +7,17 @@
 
 namespace orcalogfactory {
 
+    //
+    // A set of AutoLoggers: ie loggers which run continuously as soon as they're
+    //                       initialised
+    //
+
     //////////////////////////////////////////////////////////////////////
 
+    //!
+    //! The generic version which will fit most use-cases.
+    //! has a hook to allow something special to happen on initialisation (eg 'getDescription')
+    //!
     template<class DataType,
              class ConsumerType,
              class ConsumerPrxType,
@@ -28,6 +37,8 @@ namespace orcalogfactory {
 
         virtual void initAndStartLogging()
             {
+                logWriter_.init();
+
                 // may throw
                 PrxType objectPrx;
                 orcaice::connectToInterfaceWithTag<PrxType>( logWriter_.logWriterInfo().context,
@@ -35,7 +46,7 @@ namespace orcalogfactory {
                                                              logWriter_.logWriterInfo().interfaceTag );
 
                 // Allow derived classes to do something special (like get description)
-                init(objectPrx);
+                setup(objectPrx);
     
                 Ice::ObjectPtr consumer = this;
                 ConsumerPrxType callbackPrx = 
@@ -47,7 +58,7 @@ namespace orcalogfactory {
 
     protected:
 
-        virtual void init( PrxType &objectPrx ) {}
+        virtual void setup( PrxType &objectPrx ) {}
 
         LogWriterType    logWriter_;
     };
@@ -77,7 +88,8 @@ namespace orcalogfactory {
                                 DriveBicycleLogWriter>( logWriterInfo )
             {}
 
-        void init( orca::DriveBicyclePrx &objectPrx )
+    private:
+        void setup( orca::DriveBicyclePrx &objectPrx )
             {
                 logWriter_.write( objectPrx->getDescription() );
             }
@@ -112,6 +124,8 @@ namespace orcalogfactory {
 
         virtual void initAndStartLogging()
             {
+                logWriter_.init();
+
                 orca::LaserScanner2dPrx objectPrx;
                 orcaice::connectToInterfaceWithTag( logWriter_.logWriterInfo().context,
                                                     objectPrx,
@@ -134,10 +148,10 @@ namespace orcalogfactory {
     //////////////////////////////////////////////////////////////////////
 
     class Localise2dAutoLogger : public GenericAutoLogger<orca::Localise2dData,
-                                                            orca::Localise2dConsumer,
-                                                            orca::Localise2dConsumerPrx,
-                                                            orca::Localise2dPrx,
-                                                            Localise2dLogWriter>
+                                                          orca::Localise2dConsumer,
+                                                          orca::Localise2dConsumerPrx,
+                                                          orca::Localise2dPrx,
+                                                          Localise2dLogWriter>
     {
     public:
         Localise2dAutoLogger( const orcalog::LogWriterInfo &logWriterInfo )
@@ -148,7 +162,8 @@ namespace orcalogfactory {
                                 Localise2dLogWriter>( logWriterInfo )
             {}
 
-        void init( orca::Localise2dPrx &objectPrx )
+    private:
+        void setup( orca::Localise2dPrx &objectPrx )
             {
                 logWriter_.write( objectPrx->getVehicleGeometry() );
             }
@@ -171,7 +186,8 @@ namespace orcalogfactory {
                                 Localise3dLogWriter>( logWriterInfo )
             {}
 
-        void init( orca::Localise3dPrx &objectPrx )
+    private:
+        void setup( orca::Localise3dPrx &objectPrx )
             {
                 logWriter_.write( objectPrx->getVehicleGeometry() );
             }
@@ -194,7 +210,8 @@ namespace orcalogfactory {
                                 Odometry2dLogWriter>( logWriterInfo )
             {}
 
-        void init( orca::Odometry2dPrx &objectPrx )
+    private:
+        void setup( orca::Odometry2dPrx &objectPrx )
             {
                 logWriter_.write( objectPrx->getDescription() );
             }
@@ -217,7 +234,8 @@ namespace orcalogfactory {
                                 Odometry3dLogWriter>( logWriterInfo )
             {}
 
-        void init( orca::Odometry3dPrx &objectPrx )
+    private:
+        void setup( orca::Odometry3dPrx &objectPrx )
             {
                 logWriter_.write( objectPrx->getDescription() );
             }
@@ -264,7 +282,8 @@ namespace orcalogfactory {
                                 GpsLogWriter>( logWriterInfo )
             {}
 
-        void init( orca::GpsPrx &objectPrx )
+    private:
+        void setup( orca::GpsPrx &objectPrx )
             {
                 logWriter_.write( objectPrx->getDescription() );
             }

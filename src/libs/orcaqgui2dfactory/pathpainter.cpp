@@ -16,7 +16,7 @@
 #include <QTextStream>
 
 #include <orcaice/orcaice.h>
-#include <orcalog/logstringutils.h>
+#include <orcalogfactory/logstringutils.h>
 
 #include <orcaqgui2d/paintutils.h>
 
@@ -263,7 +263,7 @@ void PathPainter::savePath( const QString fileName, IHumanManager *humanManager 
     
     // save to file
     QTextStream out(&file);
-    out << QString(orcalog::toLogString( orcaPath ).c_str());
+    out << QString(orcalogfactory::toLogString( orcaPath ).c_str());
     file.close();
 }
 

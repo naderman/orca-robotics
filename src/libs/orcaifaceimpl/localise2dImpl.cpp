@@ -51,15 +51,23 @@ private:
 //////////////////////////////////////////////////////////////////////
 
 Localise2dImpl::Localise2dImpl( const orca::VehicleGeometryDescriptionPtr &geometry,
-                                  const std::string &interfaceTag,
-                                  const orcaice::Context &context ) :
-    geometry_(geometry),
-    interfaceTag_(interfaceTag),
-    context_(context)
+                                const std::string &interfaceTag,
+                                const orcaice::Context &context )
+    : geometry_(geometry),
+      interfaceName_(getInterfaceNameFromTag(context,interfaceTag)),
+      topicName_(getTopicNameFromInterfaceName(context,interfaceName_)),
+      context_(context)
 {
-    stringstream ss;
-    ss << "Localise2dImpl::internalGeometry: " << orcaice::toString( geometry );
-    context_.tracer()->debug( ss.str(), 5 );
+}
+
+Localise2dImpl::Localise2dImpl( const orca::VehicleGeometryDescriptionPtr &geometry,
+                                const orcaice::Context &context,
+                                const std::string &interfaceName )
+    : geometry_(geometry),
+      interfaceName_(interfaceName),
+      topicName_(getTopicNameFromInterfaceName(context,interfaceName)),
+      context_(context)
+{
 }
 
 Localise2dImpl::~Localise2dImpl()
@@ -71,24 +79,24 @@ void
 Localise2dImpl::initInterface()
 {
     // Find IceStorm Topic to which we'll publish
-    topicPrx_ = orcaice::connectToTopicWithTag<orca::Localise2dConsumerPrx>
-        ( context_, consumerPrx_, interfaceTag_ );
+    topicPrx_ = orcaice::connectToTopicWithString<orca::Localise2dConsumerPrx>
+        ( context_, consumerPrx_, topicName_ );
 
     // Register with the adapter
     // We don't have to clean up the memory we're allocating here, because
     // we're holding it in a smart pointer which will clean up when it's done.
     ptr_ = new Localise2dI( *this );
-    orcaice::createInterfaceWithTag( context_, ptr_, interfaceTag_ );
+    orcaice::createInterfaceWithString( context_, ptr_, interfaceName_ );
 }
 
 void 
 Localise2dImpl::initInterface( hydroutil::Thread* thread, int retryInterval )
 {
-    topicPrx_ = orcaice::connectToTopicWithTag<orca::Localise2dConsumerPrx>
-        ( context_, consumerPrx_, interfaceTag_, "*", thread, retryInterval );
+    topicPrx_ = orcaice::connectToTopicWithString<orca::Localise2dConsumerPrx>
+        ( context_, consumerPrx_, topicName_, thread, retryInterval );
 
     ptr_ = new Localise2dI( *this );
-    orcaice::createInterfaceWithTag( context_, ptr_, interfaceTag_, thread, retryInterval );
+    orcaice::createInterfaceWithString( context_, ptr_, interfaceName_, thread, retryInterval );
 }
 
 ::orca::Localise2dData 
@@ -99,7 +107,7 @@ Localise2dImpl::internalGetData() const
     if ( dataProxy_.isEmpty() )
     {
         std::stringstream ss;
-        ss << "No data available! (interfaceTag="<<interfaceTag_<<")";
+        ss << "No data available! (interface="<<interfaceName_<<")";
         throw orca::DataNotExistException( ss.str() );
     }
 
@@ -162,7 +170,8 @@ Localise2dImpl::localSetAndSend( const orca::Localise2dData &data )
           consumerPrx_,
           data,
           topicPrx_,
-          interfaceTag_ );
+          interfaceName_,
+          topicName_ );
 }
 
 } // namespace
