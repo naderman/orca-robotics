@@ -6,6 +6,6 @@ IF ( NOT OS_WIN )
     
     GLOBAL_ADD_LIBRARY( OrcaWallFactory SHARED ${SRCS} )
     
-    TARGET_LINK_LIBRARIES( OrcaWallFactory OrcaWall OrcaIfaceImpl OrcaMisc )
+    TARGET_LINK_LIBRARIES( OrcaWallFactory OrcaWall OrcaIfaceImpl  )
     
 ENDIF ( NOT OS_WIN )

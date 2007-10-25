@@ -17,7 +17,7 @@ IF ( BUILD_REGISTRY_VIEWER AND QT4_FOUND )
     QT4_WRAP_CPP( MOC_SRCS ${MOC_HEADERS} )
 
     GLOBAL_ADD_EXECUTABLE( registryview ${HUMAN_SRCS} ${MOC_SRCS} )
-    TARGET_LINK_LIBRARIES( registryview OrcaQt OrcaQCompModel OrcaMisc )
+    TARGET_LINK_LIBRARIES( registryview OrcaQt OrcaQCompModel )
 
     GENERATE_CONFIG_FILE( registryview.def )
 

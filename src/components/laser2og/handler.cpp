@@ -13,12 +13,14 @@
 #include <orca/localise2d.h>
 #include <orca/ogfusion.h>
 #include <orcaice/orcaice.h>
-#include <orcamisc/cov2d.h>
 
 #include "laser2og.h"
 #include "handler.h"
 #include "ogsensormodel.h"
 #include "rangescannerconsumerI.h"
+// this file was in libOrcaMisc before it was disbanded.
+// there's another version in libHydroNavUtil, we should probably use that one
+#include "cov2d.h"
 
 using namespace std;
 using namespace orca;
@@ -42,7 +44,7 @@ namespace {
         }
 
         // Ellipse of position uncertainty
-        orcamisc::Cov2d posEll(localiseData.hypotheses[0].cov.xx,
+        laser2og::Cov2d posEll(localiseData.hypotheses[0].cov.xx,
                                localiseData.hypotheses[0].cov.xy,
                                localiseData.hypotheses[0].cov.yy );
 

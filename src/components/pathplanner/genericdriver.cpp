@@ -8,8 +8,8 @@
  *
  */
 #include "genericdriver.h"
-#include <orcamisc/orcamisc.h>
-#include <orcamisc/rand.h>
+#include <hydroutil/cpustopwatch.h>
+#include <hydroutil/rand.h>
 #include <orcaice/orcaice.h>
 #include <iostream>
 
@@ -49,7 +49,7 @@ namespace {
             // perform a random walk of numSteps steps.
             for ( int i=0; i < numSteps; i++ )
             {
-                cell = orcapathplan::surroundCell( cell, (int)(orcamisc::randNum(0,8)) );
+                cell = orcapathplan::surroundCell( cell, (int)(hydroutil::randNum(0,8)) );
 
                 if ( orcapathplan::isTraversable( ogMap, cell.x(), cell.y(), traversabilityThreshhold ) )
                 {
@@ -137,7 +137,7 @@ GenericDriver::computePath( const orca::PathPlanner2dTask& task,
         const orca::Waypoint2d *goalWp = &((*coarsePath)[i]);
         orcapathplan::Cell2DVector pathSegment;
 
-        orcamisc::CpuStopwatch watch(true);
+        hydroutil::CpuStopwatch watch(true);
         assert(pathPlanner_!=0);
         try {
             int startX, startY, endX, endY;

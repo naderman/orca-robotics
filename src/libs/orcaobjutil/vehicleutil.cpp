@@ -7,13 +7,14 @@
  * ORCA_LICENSE file included in this distribution.
  *
  */
-#include "configutils.h"
+
+#include "vehicleutil.h"
 #include <iostream>
 #include <orcaice/orcaice.h>
 
 using namespace std;
 
-namespace orcamisc {
+namespace orcaobjutil {
 
 void
 readVehicleControlVelocityDifferentialDescription( Ice::PropertiesPtr prop,

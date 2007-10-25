@@ -28,7 +28,7 @@ IF ( BUILD_ROBOT2D )
     ENDIF ( NOT HAVE_PLAYERCLIENT_DRIVER )
 
     FIND_COMPONENT_SOURCES( COMP_SRCS )
-    SET( COMP_DEPS OrcaIfaceImpl OrcaMisc ${PLAYERCLIENT_LIBS} )
+    SET( COMP_DEPS OrcaIfaceImpl OrcaObjectUtil ${PLAYERCLIENT_LIBS} )
 
     # build stand-alone component  
     GLOBAL_ADD_EXECUTABLE( robot2d ${COMP_SRCS} main )

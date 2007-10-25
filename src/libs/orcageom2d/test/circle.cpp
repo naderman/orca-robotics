@@ -2,7 +2,7 @@
 #include <assert.h>
 #include <orcageom2d/geom2d.h>
 #include <hydroutil/mathdefs.h>
-#include <orcamisc/rand.h>
+#include <hydroutil/rand.h>
 
 using namespace std;
 using namespace geom2d;
@@ -75,12 +75,12 @@ int main()
     {
         // cout << endl;
 
-        c1.x() = orcamisc::randNum( -10, 10 );
-        c1.y() = orcamisc::randNum( -10, 10 );
-        c2.x() = orcamisc::randNum( -10, 10 );
-        c2.y() = orcamisc::randNum( -10, 10 );
-        r1 = orcamisc::randNum( 0.1, 5 );
-        r2 = orcamisc::randNum( 0.1, 5 );
+        c1.x() = hydroutil::randNum( -10, 10 );
+        c1.y() = hydroutil::randNum( -10, 10 );
+        c2.x() = hydroutil::randNum( -10, 10 );
+        c2.y() = hydroutil::randNum( -10, 10 );
+        r1 = hydroutil::randNum( 0.1, 5 );
+        r2 = hydroutil::randNum( 0.1, 5 );
 
 //         cout<<"TRACE(circle.cpp): circle 1: centre "<<c1<<", radius "<<r1<<endl;
 //         cout<<"TRACE(circle.cpp): circle 2: centre "<<c2<<", radius "<<r2<<endl;

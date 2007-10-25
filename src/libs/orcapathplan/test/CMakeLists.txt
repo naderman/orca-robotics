@@ -1,7 +1,7 @@
 INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
 ADD_EXECUTABLE( testconversions testconversions.cpp )
-TARGET_LINK_LIBRARIES( testconversions OrcaPathPlan OrcaMisc )
+TARGET_LINK_LIBRARIES( testconversions OrcaPathPlan  )
 GLOBAL_ADD_TEST( OrcaPathPlanConversion testconversions )
 
 # The map loading stuff relies on Qt

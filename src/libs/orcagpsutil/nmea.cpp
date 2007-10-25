@@ -12,7 +12,7 @@
 #include <string>
 #include <iostream>
 #include <assert.h>
-#include <orcamisc/tokenise.h>
+#include <hydroutil/tokenise.h>
 
 // Make sure strnlen is defined.
 #include <hydroportability/strnlen.h>
@@ -185,7 +185,7 @@ void NmeaMessage::parseTokens(){
 
     //Split the message at the commas
     //TODO cope with missing fields
-    orcamisc::tokenise(sentence_, dataTokens_, ",");
+    hydroutil::tokenise(sentence_, dataTokens_, ",");
     
     //Now discard the $ and the * from the first and last tokens...
     //TODO : - dataTokens_[0] = 

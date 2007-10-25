@@ -13,5 +13,6 @@
 
 #include <orcacm/types.h>
 #include <orcacm/utils.h>
+#include <orcacm/parseutils.h>
  
 #endif

@@ -8,7 +8,7 @@
  *
  */
 #include "sparseskeletonpathplanner.h"
-#include <orcamisc/orcamisc.h>
+#include <hydroutil/cpustopwatch.h>
 #include <iostream>
 
 using namespace std;
@@ -28,7 +28,7 @@ SparseSkeletonPathPlanner::SparseSkeletonPathPlanner( const orcaogmap::OgMap &og
     assert( traversabilityThreshhold >= 0.0 && traversabilityThreshhold <= 1.0 );
 
     // Measuring performance
-    orcamisc::CpuStopwatch watch;
+    hydroutil::CpuStopwatch watch;
 
     watch.start();
 
@@ -285,7 +285,7 @@ SparseSkeletonPathPlanner::computePath( int           startX,
     Cell2D startCell( startX, startY );
     Cell2D goalCell(  endX,   endY   );
     
-    orcamisc::CpuStopwatch watch;
+    hydroutil::CpuStopwatch watch;
     watch.start();
 
     //

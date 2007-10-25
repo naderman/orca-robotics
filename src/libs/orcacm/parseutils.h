@@ -7,12 +7,12 @@
  * ORCA_LICENSE file included in this distribution.
  *
  */
-#ifndef ORCA2_MISC_STRING_PARSE_UTILS_H
-#define ORCA2_MISC_STRING_PARSE_UTILS_H
+#ifndef ORCACM_MISC_STRING_PARSE_UTILS_H
+#define ORCACM_MISC_STRING_PARSE_UTILS_H
 
 #include <string>
 
-namespace orcamisc 
+namespace orcacm 
 {
 
 //! Parses a string returned by Ice::Connection to extract the local address

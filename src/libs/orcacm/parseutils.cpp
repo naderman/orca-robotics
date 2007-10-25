@@ -9,7 +9,7 @@
  */
 #include "parseutils.h"
 
-namespace orcamisc {
+namespace orcacm {
 
 std::string 
 connectionToLocalAddress( const std::string & s )

@@ -23,7 +23,7 @@
 #ifndef QORC_COV2D_H
 #define QORC_COV2D_H
 
-namespace orcamisc {
+namespace laser2og {
 
 class Cov2d
 {

@@ -13,7 +13,7 @@
 #include <hydronavutil/pose.h>
 #include <orcalocalnav/pathfollower2dI.h>
 #include <localnavutil/pose.h>
-#include <orcamisc/realtimestopwatch.h>
+#include <hydroutil/realtimestopwatch.h>
 
 #include "mainloop.h"
 #include "testsim/simulator.h"
@@ -487,7 +487,7 @@ MainLoop::run()
             }
             
             // Time how long it takes us to make a decision and send the command
-            orcamisc::RealTimeStopwatch timer;
+            hydroutil::RealTimeStopwatch timer;
 
             // Tell everyone what time it is, boyeee
             clock_.setTime( rangeData_->timeStamp );

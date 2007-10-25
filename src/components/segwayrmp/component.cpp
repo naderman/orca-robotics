@@ -10,7 +10,7 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include <orcamisc/configutils.h>
+#include <orcaobjutil/vehicleutil.h>
 #include <orca/vehicledescription.h>
 
 #include "component.h"
@@ -56,7 +56,7 @@ Component::loadDriver()
     //
     orca::VehicleDescription descr;
     std::string prefix = context().tag() + ".Config.";
-    orcamisc::readVehicleDescription( context().properties(), prefix, descr );
+    orcaobjutil::readVehicleDescription( context().properties(), prefix, descr );
     stringstream ss;
     ss<<"TRACE(component.cpp): Read vehicle description from configuration: " 
         << endl << orcaice::toString(descr) << endl;

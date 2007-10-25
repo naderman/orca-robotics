@@ -11,7 +11,7 @@
 #include "pathplanutils.h"
 #include "ipathplanner2d.h"
 #include <hydroutil/mathdefs.h>
-#include <orcamisc/orcamisc.h>
+#include <hydroutil/cpustopwatch.h>
 #include "costcalculator.h"
 
 // Distance to a 4-adjacent cell
@@ -422,7 +422,7 @@ calcSimpleNavigation( const OgMap  &ogMap,
 
     
     // grow obstacles to robot diameter (extends NaN of utility grid)
-    orcamisc::CpuStopwatch watch;
+    hydroutil::CpuStopwatch watch;
     watch.start();
     growObstaclesNavMap( ogMap, navMap, traversabilityThreshhold, robotDiameterMetres );
     watch.stop();

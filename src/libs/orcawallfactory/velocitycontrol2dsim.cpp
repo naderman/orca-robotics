@@ -10,7 +10,7 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include <orcamisc/orcamisc.h>
+#include <orcaobjutil/vehicleutil.h>
 #include <orcaifaceimpl/velocitycontrol2dImpl.h>
 
 #include "velocitycontrol2dsim.h"
@@ -43,7 +43,7 @@ void
 VelocityControl2dSim::run()
 {
     orca::VehicleDescription descr;
-    orcamisc::readVehicleDescription( context_.properties(), configPrefix(), descr );
+    orcaobjutil::readVehicleDescription( context_.properties(), configPrefix(), descr );
 
     orcaifaceimpl::VelocityControl2dImplPtr iface;
     iface = new orcaifaceimpl::VelocityControl2dImpl( descr, tag_, context_ );

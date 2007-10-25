@@ -3,7 +3,7 @@
 #include <orcageom2d/geom2d.h>
 #include <orcaice/orcaice.h>
 #include <orcapathplan/pathplanutils.h>
-#include <orcamisc/configutils.h>
+#include <orcaobjutil/vehicleutil.h>
 #include <localnavutil/brosutil.h>
 
 using namespace std;
@@ -422,7 +422,7 @@ Simulator::getVehicleDescription() const
     c->maxForwardAcceleration = 1.0;
     c->maxReverseAcceleration = 1.0;
     c->maxRotationalAcceleration = DEG2RAD(90.0);
-    orcamisc::checkVehicleControlVelocityDifferentialDescription( *c );
+    orcaobjutil::checkVehicleControlVelocityDifferentialDescription( *c );
     d.control = c;
 
     setToZero( d.platformToVehicleTransform );

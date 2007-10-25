@@ -9,7 +9,7 @@
  */
 #include "skeletonpathplanner.h"
 #include "pathplanutils.h"
-#include <orcamisc/orcamisc.h>
+#include <hydroutil/cpustopwatch.h>
 #include <iostream>
 
 using namespace std;
@@ -34,7 +34,7 @@ SkeletonPathPlanner::SkeletonPathPlanner( const orcaogmap::OgMap &ogMap,
     assert( traversabilityThreshhold >= 0.0 );
 
     // Measuring performance
-    orcamisc::CpuStopwatch watch;
+    hydroutil::CpuStopwatch watch;
 
     watch.start();
     bool success = computeSkeleton( ogMap_,
@@ -87,7 +87,7 @@ SkeletonPathPlanner::computePath( int           startX,
     Cell2D startCell( startX, startY );
     Cell2D goalCell(  endX,   endY   );
 
-    orcamisc::CpuStopwatch watch;
+    hydroutil::CpuStopwatch watch;
     watch.start();
 
     Cell2DVector tempSkel = skel_;

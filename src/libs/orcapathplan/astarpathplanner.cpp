@@ -10,7 +10,7 @@
  
 #include "astarpathplanner.h"
 #include "pathplanutils.h"
-#include <orcamisc/orcamisc.h>
+#include <hydroutil/cpustopwatch.h>
 #include <iostream>
 
 using namespace std;
@@ -30,7 +30,7 @@ AStarPathPlanner::AStarPathPlanner( const orcaogmap::OgMap ogMap,
     assert( traversabilityThreshhold >= 0.0 );
     
     // grow map
-    orcamisc::CpuStopwatch watch;
+    hydroutil::CpuStopwatch watch;
     watch.start();
     int robotDiameterCells = robotDiameterInCells( ogMap_, robotDiameterMetres_ );
     orcapathplan::growObstaclesOgMap( ogMap_, traversabilityThreshhold_, robotDiameterCells );
@@ -86,7 +86,7 @@ AStarPathPlanner::computePath( int          startX,
     aStar_->m_iGoalNode_i = goalCell.x();
     aStar_->m_iGoalNode_j = goalCell.y();
             
-    orcamisc::CpuStopwatch watch;
+    hydroutil::CpuStopwatch watch;
     watch.start();
     if ( !aStar_->run() )
     {

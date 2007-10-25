@@ -1,7 +1,7 @@
 #include "multiplicativenoisemodel.h"
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include <orcamisc/rand.h>
+#include <hydroutil/rand.h>
 
 using namespace std;
 
@@ -89,17 +89,17 @@ MultiplicativeNoiseModel::getNewScaleFactors()
     {
         if ( noiseLevelType_ == DISTRIBUTION_GAUSSIAN )
         {
-            currentCommandVelScale_ = orcamisc::normalRand( 1.0, noiseLevelLinear_ );
-            currentCommandYawScale_ = orcamisc::normalRand( 1.0, noiseLevelRotational_ );
+            currentCommandVelScale_ = hydroutil::normalRand( 1.0, noiseLevelLinear_ );
+            currentCommandYawScale_ = hydroutil::normalRand( 1.0, noiseLevelRotational_ );
         }
         else if ( noiseLevelType_ == DISTRIBUTION_UNIFORM )
         {
             cout<<"TRACE(multiplicativenoisemodel.cpp): choosing linear from range:" << endl;
             cout<<"TRACE(multiplicativenoisemodel.cpp): " << 1.0-noiseLevelLinear_<<", "<<1.0+noiseLevelLinear_<< endl;
             currentCommandVelScale_ = 
-                orcamisc::randNumInclusive( 1.0-noiseLevelLinear_, 1.0+noiseLevelLinear_ );
+                hydroutil::randNumInclusive( 1.0-noiseLevelLinear_, 1.0+noiseLevelLinear_ );
             currentCommandYawScale_ = 
-                orcamisc::randNumInclusive( 1.0-noiseLevelRotational_, 1.0+noiseLevelRotational_ );
+                hydroutil::randNumInclusive( 1.0-noiseLevelRotational_, 1.0+noiseLevelRotational_ );
         }
         else
         {

@@ -12,7 +12,7 @@ IF ( BUILD_LASER2OG )
     FILE( GLOB SRCS *.cpp )
     
     GLOBAL_ADD_EXECUTABLE( laser2og ${SRCS} )
-    TARGET_LINK_LIBRARIES( laser2og OrcaOgFusion OrcaPathPlan OrcaMisc )
+    TARGET_LINK_LIBRARIES( laser2og OrcaOgFusion OrcaPathPlan  )
     GENERATE_CONFIG_FILE( laser2og.def )
 
 ENDIF ( BUILD_LASER2OG )

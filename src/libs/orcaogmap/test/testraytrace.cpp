@@ -13,7 +13,7 @@
 #include <iostream>
 #include <sstream>
 #include <orcaogmap/orcaogmap.h>
-#include <orcamisc/diff.h>
+#include <hydroutil/diff.h>
 
 using namespace std;
 using namespace orcaogmap;
@@ -173,7 +173,7 @@ int main( int argc, char **argv )
     cout << ss.str();
 
     // Then check that it matches the reference
-    if ( !orcamisc::outputMatchesReferenceFile( ss.str(),
+    if ( !hydroutil::outputMatchesReferenceFile( ss.str(),
                                                 argv[1] ) )
     {
         cout << "ERROR(testraytrace.cpp): Output differs from reference output." << endl;

@@ -14,7 +14,7 @@
 
 #include "component.h"
 #include "nethandler.h"
-#include <orcamisc/configutils.h>
+#include <orcaobjutil/vehicleutil.h>
 #include <orcarobotdriverutil/hwdriverhandler.h>
 
 // driver types
@@ -40,7 +40,7 @@ Component::loadDriver()
     // Read vehicle description
     //
     orca::VehicleDescription descr;
-    orcamisc::readVehicleDescription( context().properties(), context().tag()+".Config.", descr );
+    orcaobjutil::readVehicleDescription( context().properties(), context().tag()+".Config.", descr );
     stringstream ss;
     ss<<"TRACE(component.cpp): Read vehicle description from configuration: " 
         << endl << orcaice::toString(descr) << endl;

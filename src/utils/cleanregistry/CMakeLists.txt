@@ -16,7 +16,7 @@ IF ( NOT OS_WIN AND BUILD_CLEAN_REGISTRY )
     
     GLOBAL_ADD_EXECUTABLE( cleanregistry ${SRCS} )
 
-    TARGET_LINK_LIBRARIES ( cleanregistry OrcaCompModel OrcaMisc IceGrid )
+    TARGET_LINK_LIBRARIES ( cleanregistry OrcaCompModel  IceGrid )
     
     GENERATE_CONFIG_FILE( cleanregistry.def )
 

@@ -1,7 +1,7 @@
 INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
 ADD_EXECUTABLE( testraytrace testraytrace.cpp )
-TARGET_LINK_LIBRARIES( testraytrace OrcaOgMap OrcaMisc )
+TARGET_LINK_LIBRARIES( testraytrace OrcaOgMap  )
 GLOBAL_ADD_TEST( OrcaOgMapRayTrace testraytrace "${PROJECT_SOURCE_DIR}/src/libs/orcaogmap/test/reference_output.txt" )
 
 # The map loading stuff relies on Qt

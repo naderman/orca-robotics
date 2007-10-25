@@ -4,12 +4,11 @@ FILE( GLOB SRCS *.cpp )
 
 IF ( NOT OS_WIN )
     GLOBAL_ADD_LIBRARY( OrcaCompModel SHARED ${SRCS} )
-    TARGET_LINK_LIBRARIES( OrcaCompModel OrcaMisc IceGrid )
+    TARGET_LINK_LIBRARIES( OrcaCompModel IceGrid )
 ELSE ( NOT OS_WIN )
     GLOBAL_ADD_LIBRARY( OrcaCompModel STATIC ${SRCS} )
-    TARGET_LINK_LIBRARIES( OrcaCompModel OrcaMisc
+    TARGET_LINK_LIBRARIES( OrcaCompModel
                 optimized IceGrid debug IceGridd
-#               optimized Glacier2 debug Glacier2d
                )
 ENDIF ( NOT OS_WIN )
 

@@ -20,7 +20,7 @@ IF ( BUILD_PATHPLANNER )
         "${CMAKE_CURRENT_SOURCE_DIR}/service.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/skeletongraphicsI.cpp" )
 
-    SET( COMP_DEPS OrcaOgMap OrcaMisc OrcaPathPlan )
+    SET( COMP_DEPS OrcaOgMap  OrcaPathPlan )
 
     IF ( QT4_FOUND )
         INCLUDE( ${ORCA_CMAKE_DIR}/UseQt.cmake )

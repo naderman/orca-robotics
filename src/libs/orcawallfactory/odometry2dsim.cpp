@@ -10,7 +10,7 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include <orcamisc/orcamisc.h>
+#include <orcaobjutil/vehicleutil.h>
 #include <orcaifaceimpl/odometry2dImpl.h>
 
 #include "odometry2dsim.h"
@@ -27,7 +27,7 @@ void
 Odometry2dSim::run()
 {
     orca::VehicleDescription descr;
-    orcamisc::readVehicleDescription( context_.properties(), configPrefix(), descr );
+    orcaobjutil::readVehicleDescription( context_.properties(), configPrefix(), descr );
 
     orcaifaceimpl::Odometry2dImplPtr iface;
     iface = new orcaifaceimpl::Odometry2dImpl( descr, tag_, context_ );

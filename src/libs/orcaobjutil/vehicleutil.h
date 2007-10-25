@@ -8,14 +8,14 @@
  *
  */
 
-#ifndef ORCAMISCCONFIGUTILS_H
-#define ORCAMISCCONFIGUTILS_H
+#ifndef ORCAOBJUTIL_VEHICLE_DESCR_UTILS_H
+#define ORCAOBJUTIL_VEHICLE_DESCR_UTILS_H
 
 #include <Ice/Ice.h>
 #include <orca/vehicledescription.h>
 #include <string>
 
-namespace orcamisc {
+namespace orcaobjutil {
 
 /*!
  *  @name Configuration Utilities

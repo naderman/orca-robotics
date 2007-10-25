@@ -11,7 +11,7 @@
 #include <iostream>
 #include <assert.h>
 #include <orcaice/orcaice.h>
-#include <orcamisc/orcamisc.h>
+#include <hydroutil/hydroutil.h>
 #include "algohandler.h"
 #include "pathplanner2dI.h"
 #include "fakedriver.h"

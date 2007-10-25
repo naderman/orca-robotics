@@ -5,7 +5,7 @@ IF ( BUILD_GOAL_PLANNER )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
     FIND_COMPONENT_SOURCES( COMP_SRCS )
-    SET( COMP_DEPS OrcaMisc )
+    SET( COMP_DEPS  )
     
     # build stand-alone component  
     GLOBAL_ADD_EXECUTABLE( goalplanner ${COMP_SRCS} main )

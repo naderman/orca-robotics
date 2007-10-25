@@ -5,4 +5,4 @@ INCLUDE_DIRECTORIES(
 FILE( GLOB SRCS *.cpp )
 GLOBAL_ADD_LIBRARY( OrcaLocalNavTestSim SHARED ${SRCS} )
 INSTALL_TARGETS( /lib OrcaLocalNavTestSim )
-TARGET_LINK_LIBRARIES( OrcaLocalNavTestSim OrcaOgMap OrcaMisc OrcaIfaceImpl OrcaPathPlan )
+TARGET_LINK_LIBRARIES( OrcaLocalNavTestSim OrcaOgMap OrcaObjectUtil OrcaIfaceImpl OrcaPathPlan )

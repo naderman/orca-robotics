@@ -9,7 +9,7 @@
  */
 #include "simplenavpathplanner.h"
 #include "pathplanutils.h"
-#include <orcamisc/orcamisc.h>
+#include <hydroutil/cpustopwatch.h>
 #include <iostream>
 
 using namespace std;
@@ -61,7 +61,7 @@ SimpleNavPathPlanner::computePath( int          startX,
     Cell2D startCell( startX, startY );
     Cell2D goalCell(  endX,   endY   );
 
-    orcamisc::CpuStopwatch watch;
+    hydroutil::CpuStopwatch watch;
     FloatMap navMap;
     bool success;
     FloatMap distGrid;

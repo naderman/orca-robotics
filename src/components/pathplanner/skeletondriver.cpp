@@ -10,7 +10,7 @@
 #include "skeletondriver.h"
 #include <orcapathplan/skeletonpathplanner.h>
 #include <orcapathplan/sparseskeletonpathplanner.h>
-#include <orcamisc/orcamisc.h>
+#include <hydroutil/cpustopwatch.h>
 #include <orcapathplan/sparseskel.h>
 #include <orcaice/orcaice.h>
 #include <iostream>
@@ -41,7 +41,7 @@ SkeletonDriver::SkeletonDriver( const orcaogmap::OgMap &ogMap,
 {
     context_.tracer()->debug("SkeletonDriver: constructor",3);
     
-    orcamisc::CpuStopwatch watch(true);
+    hydroutil::CpuStopwatch watch(true);
     if ( !useSparseSkeleton )
     {
         try {

@@ -2,7 +2,7 @@ IF ( OS_LINUX )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
-    LINK_LIBRARIES( OrcaOgMap OrcaMisc )
+    LINK_LIBRARIES( OrcaOgMap  )
 
     FILE( GLOB SRCS *.cpp )
 

@@ -1,6 +1,6 @@
 #include "testsim.h"
 #include <iostream>
-#include <orcamisc/rand.h>
+#include <hydroutil/rand.h>
 #include <orcaice/orcaice.h>
 
 using namespace std;
@@ -107,14 +107,14 @@ namespace localnav {
         int numRandom=numWaypoints-d.path.size();
         for ( int i=0; i < numRandom; i++ )
         {
-            t += (int) orcamisc::randNum(0,10);
-            wp.target.p.x   = orcamisc::randNum(-10,20);
-            wp.target.p.y   = orcamisc::randNum(-20,10);
-            wp.target.o     = orcamisc::randNum(-M_PI,M_PI);
+            t += (int) hydroutil::randNum(0,10);
+            wp.target.p.x   = hydroutil::randNum(-10,20);
+            wp.target.p.y   = hydroutil::randNum(-20,10);
+            wp.target.o     = hydroutil::randNum(-M_PI,M_PI);
             wp.timeTarget.seconds  = t;
             wp.timeTarget.useconds = 0;
-            wp.maxApproachSpeed = orcamisc::randNum( 1.0, 5.0 );
-            wp.maxApproachTurnrate = orcamisc::randNum( 45*M_PI/180.0, 180*M_PI/180.0 );
+            wp.maxApproachSpeed = hydroutil::randNum( 1.0, 5.0 );
+            wp.maxApproachTurnrate = hydroutil::randNum( 45*M_PI/180.0, 180*M_PI/180.0 );
             d.path.push_back( wp );            
         }
 

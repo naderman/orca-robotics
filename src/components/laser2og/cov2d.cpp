@@ -27,7 +27,7 @@
 
 using namespace std;
 
-namespace orcamisc {
+namespace laser2og {
 
 void Cov2d::ellipse( double & a, double & b, double & th ) const
 {

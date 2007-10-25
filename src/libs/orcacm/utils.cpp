@@ -12,7 +12,7 @@
 #include <IceGrid/Admin.h>
 #include <IceGrid/Query.h>
 #include <orcaice/orcaice.h>
-#include <orcamisc/orcamisc.h>  // for connectionToRemoteAddress()
+#include <orcacm/parseutils.h>
 
 #include "utils.h"
 
@@ -49,12 +49,12 @@ getRegistryHomeData( const orcaice::Context& context, const std::string& locator
     data.locatorString = locatorString;
     
     Ice::ObjectPrx queryPrx = context.communicator()->stringToProxy(
-            orcamisc::stringToIceGridInstanceName(locatorString)+"/Query");
+            orcacm::stringToIceGridInstanceName(locatorString)+"/Query");
     
     Ice::ObjectProxySeq list;
     try {
         queryPrx->ice_ping();
-        data.address = orcamisc::connectionToRemoteAddress( queryPrx->ice_getConnection()->toString() );
+        data.address = orcacm::connectionToRemoteAddress( queryPrx->ice_getConnection()->toString() );
         data.isReachable = true;
 
         std::ostringstream os;
@@ -130,7 +130,7 @@ getComponentData( const orcaice::Context& context, const orca::FQComponentName& 
         try
         {
             Ice::ConnectionPtr conn = ohome->ice_getConnection();
-            data.address = orcamisc::connectionToRemoteAddress( conn->toString() );
+            data.address = orcacm::connectionToRemoteAddress( conn->toString() );
             //std::cout<<"remote address : ["<<homeData.address<<"]"<<std::endl;
         }
         catch( const Ice::CollocationOptimizationException& )
@@ -191,7 +191,7 @@ getComponentHomeData( const orcaice::Context& context, const Ice::ObjectPrx& oho
         try
         {
             Ice::ConnectionPtr conn = ohome->ice_getConnection();
-            data.address = orcamisc::connectionToRemoteAddress( conn->toString() );
+            data.address = orcacm::connectionToRemoteAddress( conn->toString() );
             //std::cout<<"remote address : ["<<homeData.address<<"]"<<std::endl;
         }
         catch( const Ice::CollocationOptimizationException& )
