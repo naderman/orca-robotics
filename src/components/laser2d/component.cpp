@@ -12,6 +12,7 @@
 #include "component.h"
 #include <laser2dutil/driver.h>
 #include <laser2dutil/sickutil.h>
+#include "mainthread.h"
 
 namespace laser2d {
 
@@ -132,7 +133,7 @@ Component::start()
     // MAIN DRIVER LOOP
     //
 
-    mainLoop_ = new MainLoop( *laserInterface_,
+    mainLoop_ = new MainThread( *laserInterface_,
                               cfg,
                               *driverFactory_,
                               compensateRoll,

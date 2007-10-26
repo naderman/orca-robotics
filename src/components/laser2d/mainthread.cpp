@@ -10,7 +10,7 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include "mainloop.h"
+#include "mainthread.h"
 
 using namespace std;
 using namespace orca;
@@ -18,10 +18,10 @@ using namespace orca;
 namespace laser2d {
 
 namespace {
-    const char *SUBSYSTEM = "MainLoop";
+    const char *SUBSYSTEM = "MainThread";
 }
 
-MainLoop::MainLoop( orcaifaceimpl::LaserScanner2dImpl &laserInterface,
+MainThread::MainThread( orcaifaceimpl::LaserScanner2dImpl &laserInterface,
                     const Driver::Config               &config,
                     DriverFactory                      &driverFactory,
                     bool                                compensateRoll,
@@ -37,13 +37,13 @@ MainLoop::MainLoop( orcaifaceimpl::LaserScanner2dImpl &laserInterface,
     context_.status()->initialising( SUBSYSTEM );
 }
 
-MainLoop::~MainLoop()
+MainThread::~MainThread()
 {
     if ( driver_ ) delete driver_;
 }
 
 void
-MainLoop::activate()
+MainThread::activate()
 {
     while ( !isStopping() )
     {
@@ -54,18 +54,18 @@ MainLoop::activate()
         catch ( hydroutil::Exception & e )
         {
             std::stringstream ss;
-            ss << "MainLoop::activate(): Caught exception: " << e.what();
+            ss << "MainThread::activate(): Caught exception: " << e.what();
             context_.tracer()->warning( ss.str() );
         }
         catch ( Ice::Exception & e )
         {
             std::stringstream ss;
-            ss << "MainLoop::activate(): Caught exception: " << e;
+            ss << "MainThread::activate(): Caught exception: " << e;
             context_.tracer()->warning( ss.str() );
         }
         catch ( ... )
         {
-            context_.tracer()->warning( "MainLoop::activate(): caught unknown exception." );
+            context_.tracer()->warning( "MainThread::activate(): caught unknown exception." );
         }
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
         context_.status()->heartbeat( SUBSYSTEM );
@@ -73,7 +73,7 @@ MainLoop::activate()
 }
 
 void
-MainLoop::establishInterface()
+MainThread::establishInterface()
 {
     while ( !isStopping() )
     {
@@ -84,11 +84,11 @@ MainLoop::establishInterface()
         }
         catch ( hydroutil::Exception &e )
         {
-            context_.tracer()->warning( std::string("MainLoop::establishInterface(): ") + e.what() );
+            context_.tracer()->warning( std::string("MainThread::establishInterface(): ") + e.what() );
         }
         catch ( ... )
         {
-            context_.tracer()->warning( "MainLoop::establishInterface(): caught unknown exception." );
+            context_.tracer()->warning( "MainThread::establishInterface(): caught unknown exception." );
         }
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
         context_.status()->heartbeat( SUBSYSTEM );
@@ -96,7 +96,7 @@ MainLoop::establishInterface()
 }
 
 void
-MainLoop::initialiseDriver()
+MainThread::initialiseDriver()
 {
     context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 20.0 );
 
@@ -105,35 +105,35 @@ MainLoop::initialiseDriver()
     while ( !isStopping() )
     {
         try {
-            context_.tracer()->info( "MainLoop: Initialising driver..." );
+            context_.tracer()->info( "MainThread: Initialising driver..." );
             driver_ = driverFactory_.createDriver( config_, context_ );
             return;
         }
         catch ( std::exception &e )
         {
             stringstream ss;
-            ss << "MainLoop: Caught exception while initialising driver: " << e.what();
+            ss << "MainThread: Caught exception while initialising driver: " << e.what();
             context_.tracer()->error( ss.str() );
             context_.status()->fault( SUBSYSTEM, ss.str() );
         }
         catch ( char *e )
         {
             stringstream ss;
-            ss << "MainLoop: Caught exception while initialising driver: " << e;
+            ss << "MainThread: Caught exception while initialising driver: " << e;
             context_.tracer()->error( ss.str() );
             context_.status()->fault( SUBSYSTEM, ss.str() );
         }
         catch ( std::string &e )
         {
             stringstream ss;
-            ss << "MainLoop: Caught exception while initialising driver: " << e;
+            ss << "MainThread: Caught exception while initialising driver: " << e;
             context_.tracer()->error( ss.str() );
             context_.status()->fault( SUBSYSTEM, ss.str() );
         }
         catch ( ... )
         {
             stringstream ss;
-            ss << "MainLoop: Caught unknown exception while initialising driver";
+            ss << "MainThread: Caught unknown exception while initialising driver";
             context_.tracer()->error( ss.str() );
             context_.status()->fault( SUBSYSTEM, ss.str() );
         }
@@ -144,7 +144,7 @@ MainLoop::initialiseDriver()
 }
 
 void
-MainLoop::readData( orca::LaserScanner2dDataPtr &laserData )
+MainThread::readData( orca::LaserScanner2dDataPtr &laserData )
 {
     //
     // Read from the laser driver
@@ -165,7 +165,7 @@ MainLoop::readData( orca::LaserScanner2dDataPtr &laserData )
 }
 
 void
-MainLoop::run()
+MainThread::run()
 {
     // Set up the laser-scan object
     LaserScanner2dDataPtr laserData = new LaserScanner2dData;
@@ -195,7 +195,7 @@ MainLoop::run()
             context_.status()->ok( SUBSYSTEM );
 
             stringstream ss;
-            ss << "MainLoop: Read laser data: " << orcaice::toString(laserData);
+            ss << "MainThread: Read laser data: " << orcaice::toString(laserData);
             context_.tracer()->debug( ss.str(), 5 );
 
             continue;

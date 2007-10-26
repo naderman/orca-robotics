@@ -15,7 +15,6 @@
 #include <orcaice/component.h>
 #include <orcaifaceimpl/laserscanner2dImpl.h>
 #include <hydrodll/dynamicload.h>
-#include "mainloop.h"
 
 namespace laser2d {
 

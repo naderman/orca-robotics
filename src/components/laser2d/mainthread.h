@@ -7,8 +7,8 @@
  * ORCA_LICENSE file included in this distribution.
  *
  */
-#ifndef ORCA2_LASER2D_MAIN_LOOP_H
-#define ORCA2_LASER2D_MAIN_LOOP_H
+#ifndef ORCA2_LASER2D_MAIN_THREAD_H
+#define ORCA2_LASER2D_MAIN_THREAD_H
 
 #include <hydroutil/thread.h>
 #include <orcaice/context.h>
@@ -20,17 +20,17 @@ namespace laser2d {
 //
 // @brief the main executing loop of this laser component.
 //
-class MainLoop : public hydroutil::Thread
+class MainThread : public hydroutil::Thread
 {
 
 public:
 
-    MainLoop( orcaifaceimpl::LaserScanner2dImpl &laserInterface,
+    MainThread( orcaifaceimpl::LaserScanner2dImpl &laserInterface,
               const Driver::Config               &config,
               DriverFactory                      &driverFactory,
               bool                                compensateRoll,
               const orcaice::Context             &context );
-    ~MainLoop();
+    ~MainThread();
 
     virtual void run();
 
