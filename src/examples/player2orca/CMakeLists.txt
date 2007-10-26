@@ -8,8 +8,7 @@ IF ( PLAYER_FOUND)
     OPTION( BUILD_PLAYER2ORCA "Try to build Player-to-Orca example" ON )
     IF ( BUILD_PLAYER2ORCA )
     
-        INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
-        INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
+        INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
     
         INCLUDE_DIRECTORIES( ${PLAYER_INCLUDE_DIRS} )
         LINK_DIRECTORIES( ${PLAYER_LINK_DIRS} )

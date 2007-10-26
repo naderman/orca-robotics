@@ -4,8 +4,7 @@ OPTION( BUILD_ROBOT2D_TESTER "Try to build a Tester for SegwayRmp component" OFF
 
 IF ( BUILD_ROBOT2D_TESTER )
 
-    INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
-    INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
     FILE( GLOB SRCS *.cpp )
 

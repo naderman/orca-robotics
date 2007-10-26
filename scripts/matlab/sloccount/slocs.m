@@ -39,53 +39,55 @@ isub=5;
 ibase=6;
 icomp=7;
 iutil=8;
+iad=9;
 
 Sorca = [ ...
-% YY    MM  DD  ?   SUB     BASE        COMP           UTILS        VERSION
+% YY    MM  DD  ?   SUB     BASE        COMP           UTILS    A&D VERSION
 % 0.8.6: a single distro, divide in halves arbitrarily
-2003     4  14  1   0       18930/2     18930/2             0      % 0.8.6 (last change in doc/ChangeLog
+2003     4  14  1   0       18930/2     18930/2             0   0   % 0.8.6 (last change in doc/ChangeLog
 % BASE: orca-base
 % COMP: orca-components
-2004     9  13  1   0       42543       21726               0      % 0.11.0
-2004    11  16  1   0       8963        27310               0      % 0.12.0
-2004    12  23  0   0       10596       31845               0      % 0.12.1
-2005     3  16  1   0       13767       43576               0      % 0.13.0
-2005     3  21  0   0       13620       45874               0      % 0.13.1
-2005     4   4  0   0       15630       45944               0      % 0.13.2
-2005     4  16  0   0       12283       46666               0      % 0.13.3
-2005     5   9  1   0       14639       46837               0      % 0.14.0
-2005     7   2  1   0       19751       49854               0      % 0.15.0
-2005    10  11  1   0       20818       52408               0      % 1.0.0
+2004     9  13  1   0       42543       21726               0   0   % 0.11.0
+2004    11  16  1   0       8963        27310               0   0   % 0.12.0
+2004    12  23  0   0       10596       31845               0   0   % 0.12.1
+2005     3  16  1   0       13767       43576               0   0   % 0.13.0
+2005     3  21  0   0       13620       45874               0   0   % 0.13.1
+2005     4   4  0   0       15630       45944               0   0   % 0.13.2
+2005     4  16  0   0       12283       46666               0   0   % 0.13.3
+2005     5   9  1   0       14639       46837               0   0   % 0.14.0
+2005     7   2  1   0       19751       49854               0   0   % 0.15.0
+2005    10  11  1   0       20818       52408               0   0   % 1.0.0
 % BASE: just orcaice w/out test + interfaces/slice
 % COMP: comp + util - orcaice 
-2005    11  20  1   Sice212 2320+530    9226+8781-2320      0      % 2.0.0-rc1
-2006     1  22  0   Sice301 2511+596    9801+9695-2511      0      % 2.0.0-rc2
+2005    11  20  1   Sice212 2320+530    9226+8781-2320      0   0   % 2.0.0-rc1
+2006     1  22  0   Sice301 2511+596    9801+9695-2511      0   0   % 2.0.0-rc2
 % UTIL: sloccount components/log* 
-2006     2  20  0   Sice301 3369+813    9867+14734-3369-1372 1372      % 2.0.0-rc3
+2006     2  20  0   Sice301 3369+813    9867+14734-3369-1372 1372    0  % 2.0.0-rc3
 % UTIL: sloccount components/orcaview/ components/log* utils/orcalog* utils/orcagui/ utils/orcaobj/
-2006     3  29  0   Sice301 4022+1052   14625+18131-4022-9307 9307     % 2.0.0-rc4
-2006     6  11  0   Sice310 3439+1116   19999+24867-3439-12670 12670   % 2.0.0-rc5  
-2006     8   9  1   Sice310 3482+1116   19979+21711-3482-13111 13111   % 2.0.0
-2006     9  18  0   Sice310 3647+1094   19317+30847-3647-15704 15704   % 2.0.1
-2006    10   5  0   Sice310 3644+1094   20384+31798-3644-16329 16329   % 2.0.2
+2006     3  29  0   Sice301 4022+1052   14625+18131-4022-9307 9307   0  % 2.0.0-rc4
+2006     6  11  0   Sice310 3439+1116   19999+24867-3439-12670 12670 0  % 2.0.0-rc5  
+2006     8   9  1   Sice310 3482+1116   19979+21711-3482-13111 13111 0  % 2.0.0
+2006     9  18  0   Sice310 3647+1094   19317+30847-3647-15704 15704 0  % 2.0.1
+2006    10   5  0   Sice310 3644+1094   20384+31798-3644-16329 16329 0  % 2.0.2
 % UTIL: sloccount components/orcaview* components/log* utils/orcalog* utils/orcagui* utils/orcaobj/
-2006    11  23  1   Sice311 3831+1178   21408+35311-3831-18359 18359   % 2.1.0
+2006    11  23  1   Sice311 3831+1178   21408+35311-3831-18359 18359 0  % 2.1.0
 % BASE: cd src; sloccount libs/orcaice/ 
 %          MINUS sloccount libs/orcaice/test 
 %          PLUS sloccount interfaces/slice
 % COMP: cd src; sloccount components/ libs/ 
-%          MINUS sloccount libs/orcaice* libs/orcaq* libs/orcalog* libs/orcaprobe* libs/orcawall* libs/orcaobj
+%          MINUS sloccount libs/orcaice* libs/orcaq* libs/orcalog* libs/orcaprobe* libs/orcawall* libs/orcaobj libs/orcaobjutil/
 % UTIL: cd src; sloccount utils libs/orcaq* libs/orcalog* libs/orcaprobe* libs/orcawall* libs/orcaobj libs/orcaice*
 %          MINUS sloccount libs/orcaice/
 % to count lines in *.ice files, rename them to *.cpp like this:
 % $cd src/interfaces/slice/orca; for file in *; do mv $file `echo $file | sed s/.ice/.cpp/`; done
-2006    12  17  0   Sice311 5615-1784+1240  60241-28024     32398-5615  % 2.1.1
-2007     2   2  1   Sice311 6225-2011+1671  70376-31989     37297-6225  % 2.2.0
-2007     4  10  1   Sice320 6232-2011+1671  72704-34165     39894-6232  % 2.3.0
-2007     6   3  1   Sice320 6837-2056+1682  75506-34316     40074-6837  % 2.4.0
-2007     8  13  1   Sice320 7247-2226+1772  78939-36926     42700-7247  % 2.5.0
-2007     9  18  1   Sice321 7919-2572+1787  83838-38743     44694-7919  % 2.6.0
-2007    10  28  1   Sice321 5817-1520+1787  84931-40141     45454-5817  % 2.7.0
+2006    12  17  0   Sice311 5615-1784+1240  60241-28024     32398-5615  0   % 2.1.1
+2007     2   2  1   Sice311 6225-2011+1671  70376-31989     37297-6225  0   % 2.2.0
+2007     4  10  1   Sice320 6232-2011+1671  72704-34165     39894-6232  0   % 2.3.0
+2007     6   3  1   Sice320 6837-2056+1682  75506-34316     40074-6837  0   % 2.4.0
+2007     8  13  1   Sice320 7247-2226+1772  78939-36926     42700-7247  0    % 2.5.0
+2007     9  18  1   Sice321 7919-2572+1787  83838-38743     44694-7919  0    % 2.6.0
+% A&D: Hydro: sloccount src
+2007    10  28  1   Sice321 5844-1528+1787  77870-36287     42268-5844  6476    % 2.7.0
 ];
 Vorca ={'0.8.6', '0.11.0', '0.12.0', '0.12.1', '0.13.0', '0.13.1', '0.13.2', '0.13.3', '0.14.0', '0.15.0', '1.0.0', ...
     '2.0.0-rc1', '2.0.0-rc2', '2.0.0-rc3', '2.0.0-rc4', '2.0.0-rc5', '2.0.0', '2.0.1', '2.0.2', '2.1.0', '2.1.1', ...
@@ -139,7 +141,7 @@ Splayer = [
 2006    6   9   1  0    69083-51546-1319        61421       0     % 2.0.2
 2006    9  26   1  0    69388-51546-1319        64088       13606       % 2.0.3
 2007    5   2   1  0    69602-51686-1359        58396       9589+13606  % 2.0.4
-2007    8  31   1  0    23526-109               77242       11404+13606  % 2.0.4+
+2007   10  26   1  0    23526-109               78141       11404+13606 % 2.0.4+
 ];
 Tplayer = datenum(Splayer(:,1),Splayer(:,2),Splayer(:,3));
 
@@ -198,9 +200,10 @@ d2 = Sorca(:,isub); d2 = [d2 d2]'; d2=d2(:); d2(end)=[];
 d3 = Sorca(:,ibase); d3 = [d3 d3]'; d3=d3(:); d3(end)=[];
 d4 = Sorca(:,icomp); d4 = [d4 d4]'; d4=d4(:); d4(end)=[];
 d5 = Sorca(:,iutil); d5 = [d5 d5]'; d5=d5(:); d5(end)=[];
+d6 = Sorca(:,iad); d6 = [d6 d6]'; d6=d6(:); d6(end)=[];
 
 figure(1), clf
-ha=area( d0, [d1 d2 d3 d5 d4]/1e3, -Smax ); hold on
+ha=area( d0, [d1 d2 d3 d5 d4 d6]/1e3, -Smax ); hold on
 plot( Torca, 0*Torca, 'k-o' )
 h2=plot( Torca2, 0*Torca2, 'ko' );
 set(h2,'markerfacecolor','k')
@@ -211,8 +214,9 @@ set(ha(2),'facecolor',.85*[1 1 1]);
 set(ha(3),'facecolor',min(255,[255 153 0]+60)/255);
 set(ha(4),'facecolor',min(255,[60 255 109]+60)/255);
 set(ha(5),'facecolor',min(255,[51 102 255]+60)/255);
+set(ha(6),'facecolor',min(255,[60 255 109]+60)/255);
 ha(1)=[];
-legend(fliplr(ha),'Orca components+libs','Orca utilities','Orca infrastructure','Ice middleware', 'Location','NorthWest')
+legend(fliplr(ha),'Hydro','Orca components+libs','Orca utilities','Orca infrastructure','Ice middleware', 'Location','NorthWest')
 %  xlim(datenum([2004;2005],[7;7],[1;1]) )
 ylim([-Smax 100])
 ax=axis;

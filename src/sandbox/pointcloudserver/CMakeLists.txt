@@ -2,8 +2,7 @@ OPTION( BUILD_POINT_CLOUD_SERVER "Try to build point cloud server" OFF )
 
 IF ( BUILD_POINT_CLOUD_SERVER )
 
-    INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
-    INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
     FILE( GLOB SRCS *.cpp )
     

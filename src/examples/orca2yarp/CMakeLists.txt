@@ -5,8 +5,7 @@ OPTION( BUILD_ORCA2YARP "Try to build Orca-to-Yarp example" OFF )
 
 IF ( BUILD_ORCA2YARP )
 
-    INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
-    INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
     # not checking for existence and location
     # for this reason this example is OFF by default

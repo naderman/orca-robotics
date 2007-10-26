@@ -4,8 +4,7 @@ IF ( NOT OS_WIN AND BUILD_TESTS )
 
   IF ( BUILD_ORCAICE_TESTER )
 
-    INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
-    INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
     #
     # This gathers all the source files into the variable 'SRCS'

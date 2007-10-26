@@ -2,8 +2,7 @@ OPTION( BUILD_WALKER_CONTROLLER "Try to build ReactiveWalker robot controller" O
 
 IF ( BUILD_WALKER_CONTROLLER )
 
-    INCLUDE( ${ORCA_CMAKE_DIR}/component_rules.cmake )
-    INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
     
     FIND_COMPONENT_SOURCES( COMP_SRCS )
 #     SET( COMP_DEPS )
