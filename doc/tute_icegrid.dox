@@ -51,7 +51,7 @@ $ cp [ORCA2-INSTALL]/cfg/lasermon.cfg .
 
 @par The Server
 
-Edit the file @c laser2d.xml to change the value of @c Laser2d.DriverLib to "libOrcaLaser2dFake.so". Also replace platform name 'local' to the hostname of your computer in the string for adapter ID. In the example below, the hostname is 'agave'. (This needs to be done because, unlike the Orca components, IceGrid will not resolve the string 'local' to the honstname).
+Edit the file @c laser2d.xml to change the value of @c Laser2d.DriverLib to "libHydroLaserScanner2dFake.so". Also replace platform name 'local' to the hostname of your computer in the string for adapter ID. In the example below, the hostname is 'agave'. (This needs to be done because, unlike the Orca components, IceGrid will not resolve the string 'local' to the honstname).
 @verbatim
 ...
 <adapter name="Laser2d" register-process="true" id="agave/laser2d"/>

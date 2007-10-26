@@ -43,14 +43,14 @@ $ cp [ORCA2-INSTALL]/cfg/lasermon.cfg .
 
 Edit @c laser2d.cfg file:
 - Configure the component to accept connections on a specific port (we will use port 15000 in this tutorial) instead of a random one assigned by the operating system.  
-- Change driver library from @c 'libOrcaLaser2dSickCarmen.so' to @c 'libOrcaLaser2dFake.so'.
+- Change driver library from @c 'libHydroLaserScanner2dFake.so' to @c 'libHydroLaserScanner2dFake.so'.
 - Tell the component to ignore the fact the registry is not there on activation by setting the @c Orca.RequireRegistry property to zero. 
 
 The config file should now contain the following lines:
 @verbatim
 Laser2d.Endpoints=tcp -t 5000 -p 15000
 ...
-Laser2d.Config.DriverLib=libOrcaLaser2dFake.so
+Laser2d.Config.DriverLib=libHydroLaserScanner2dFake.so
 ...
 Orca.RequireRegistry=0
 @endverbatim

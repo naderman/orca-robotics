@@ -136,7 +136,7 @@ From here on, each component will need a separate terminal.
 Tell the component to use the @e gazebo driver by modifying the @c laser2d.cfg file. Check that the following lines look like this.
 @verbatim
 ...
-Laser2d.Config.DriverLib=libOrcaLaser2dPlayerClient.so
+Laser2d.Config.DriverLib=libHydroLaserScanner2dPlayerClient.so
 Laser2d.Config.PlayerClient.Driver=gazebo
 ...
 @endverbatim

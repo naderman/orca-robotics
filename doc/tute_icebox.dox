@@ -44,10 +44,10 @@ $ mkdir stormdb
 
 The IceBox configuration file does not need to be modifed. It instructs the IceBox to first load the IceStorm service and then the Laser2d service. Both are configured to share a single instance of Communicator to speed up communication.
 
-The laser config file needs to be changed to @c fake (simulated) operation (you can skip this step if you're connected to a real SICK laser).  Edit @c laser2d.cfg, and change the name of the driver library from @c 'libOrcaLaser2dSickCarmen.so' to @c 'libOrcaLaser2dFake.so' so it looks like this:
+The laser config file needs to be changed to @c fake (simulated) operation (you can skip this step if you're connected to a real SICK laser).  Edit @c laser2d.cfg, and change the name of the driver library from @c 'libHydroLaserScanner2dSickCarmen.so' to @c 'libHydroLaserScanner2dFake.so' so it looks like this:
 
 @verbatim
-Laser2d.Config.DriverLib=libOrcaLaser2dFake.so
+Laser2d.Config.DriverLib=libHydroLaserScanner2dFake.so
 @endverbatim
 
 Start the IceBox.
