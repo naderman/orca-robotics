@@ -1,3 +1,12 @@
+/*
+ * Orca Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2007 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This copy of Orca is licensed to you under the terms described in the
+ * ORCA_LICENSE file included in this distribution.
+ *
+ */
 #include <netinet/in.h>
 #include <linux/if.h>
 #include <linux/types.h>
@@ -6,11 +15,12 @@
 #include <netinet/if_ether.h>
 
 #include <iostream>
+#include <sstream>
+
 
 #include "wifiutil.h"
 
 using namespace std;
-using namespace orca;
 
 namespace wifiutil {
 
@@ -212,9 +222,9 @@ char* convertMacHex(char *buf, unsigned char *data)
 }
 
 
-orca::OperationMode getMode( int socketFd, iwreq* iwRequest )
+OperationMode getMode( int socketFd, iwreq* iwRequest )
 {
-    orca::OperationMode mode;
+    OperationMode mode;
     
     if (ioctl(socketFd, SIOCGIWMODE, iwRequest) < 0)
         throw IoctlException( "Error:\nIoctl for mode failed.\n" );
@@ -379,7 +389,7 @@ void readUsingIoctl( vector<IoctlData> &wifiDataIoctl )
             if((qual->updated & IW_QUAL_DBM) || (qual->level > iwRange->max_qual.level))
             {
                 // dbm
-                data.linkType = orca::LinkQualityTypeDbm;
+                data.linkType = LinkQualityTypeDbm;
                 data.signalLevel = qual->level - 0x100;
                 data.maxSignalLevel = iwRange->max_qual.level;
                 data.noiseLevel = qual->noise - 0x100;
@@ -389,7 +399,7 @@ void readUsingIoctl( vector<IoctlData> &wifiDataIoctl )
             else
             {
                 // relative
-                data.linkType = orca::LinkQualityTypeRelative;
+                data.linkType = LinkQualityTypeRelative;
                 data.signalLevel = qual->level;
                 data.maxSignalLevel = iwRange->max_qual.level;
                 data.noiseLevel = qual->noise;

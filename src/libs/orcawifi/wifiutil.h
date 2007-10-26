@@ -1,11 +1,18 @@
+/*
+ * Orca Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2007 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This copy of Orca is licensed to you under the terms described in the
+ * ORCA_LICENSE file included in this distribution.
+ *
+ */
+ 
 #ifndef WIFI_UTIL_H
 #define WIFI_UTIL_H
 
 #include <string>
 #include <vector>
-
-// only for modes/linkqualitytype enums
-#include <orca/wifi.h>
 
 namespace wifiutil {
 
@@ -69,13 +76,43 @@ namespace wifiutil {
         int numMissedBeacons;   
     };
     
+    //! Operation modes (equivalent to Slice definitions)
+    enum OperationMode
+    {
+        // unknown operating mode
+        OperationModeUnknown,
+        // driver decides the mode
+        OperationModeAuto,
+        // ad hoc mode
+        OperationModeAdhoc,
+        // infrastructure mode (multi cell network, roaming)
+        OperationModeInfrastructure,
+        // access point, master mode
+        OperationModeMaster,
+        // repeater mode
+        OperationModeRepeat,
+        // secondary/backup repeater
+        OperationModeSecondRepeater
+    };
+    
     //! Wireless config data structure
     struct WirelessConfig
     {
         std::string interfaceName;
-        orca::OperationMode mode;
+        OperationMode mode;
         int bitrate;
         std::string accessPoint;
+    };
+    
+    //! Interpretation of link quality (equivalent to Slice definitions)
+    enum LinkQualityType 
+    {
+        // link quality type is unknown
+        LinkQualityTypeUnknown,
+        // link quality is in dBm
+        LinkQualityTypeDbm,
+        // link quality is relative
+        LinkQualityTypeRelative
     };
     
     //! Wireless data structure for ioctl-obtainable data
@@ -83,7 +120,7 @@ namespace wifiutil {
     {
         std::string interfaceName;
         int throughPut;
-        orca::LinkQualityType linkType;
+        LinkQualityType linkType;
         int linkQuality;
         int signalLevel;
         int noiseLevel;

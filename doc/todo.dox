@@ -118,6 +118,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @par Updated libraries
 
+- libOrcaWifi (Tobi)
+  - removed dependence on orca enums before moving to hydro
+
 - libOrcaIce
   - split some of the contents into a new libOrcaIceUtil library. This is
     done in preparation for decoupling of Ice-dependent components and libs

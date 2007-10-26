@@ -16,6 +16,43 @@ using namespace std;
 
 namespace wifi
 {
+    
+orca::LinkQualityType toOrcaLinkType( const wifiutil::LinkQualityType &lq )
+{
+    switch (lq)
+    {
+        case wifiutil::LinkQualityTypeUnknown: 
+            return orca::LinkQualityTypeUnknown;
+        case wifiutil::LinkQualityTypeDbm: 
+            return orca::LinkQualityTypeDbm;
+        case wifiutil::LinkQualityTypeRelative: 
+            return orca::LinkQualityTypeRelative;
+    }
+    return orca::LinkQualityTypeUnknown;
+}
+
+
+orca::OperationMode toOrcaOpMode( const wifiutil::OperationMode &op )
+{
+    switch (op)
+    {
+        case wifiutil::OperationModeUnknown: 
+            return orca::OperationModeUnknown;
+        case wifiutil::OperationModeAuto: 
+            return orca::OperationModeAuto;
+        case wifiutil::OperationModeAdhoc: 
+            return orca::OperationModeAdhoc;
+        case wifiutil::OperationModeInfrastructure: 
+            return orca::OperationModeInfrastructure;
+        case wifiutil::OperationModeMaster: 
+            return orca::OperationModeMaster;
+        case wifiutil::OperationModeRepeat: 
+            return orca::OperationModeRepeat;
+        case wifiutil::OperationModeSecondRepeater: 
+            return orca::OperationModeSecondRepeater;
+    }
+    return orca::OperationModeUnknown;
+}
         
 // Fills the config entries into the data
 // Extends the data.interfaces vector if it's smaller than the config vector
@@ -33,7 +70,7 @@ void fillIn( const vector<wifiutil::WirelessConfig> &config,
             data.interfaces.push_back(w);
         }
         
-        w.mode = config[i].mode;
+        w.mode = toOrcaOpMode(config[i].mode);
         w.bitrate = config[i].bitrate;
         w.accessPoint = config[i].accessPoint;
           
@@ -91,7 +128,7 @@ void fillIn( const vector<wifiutil::IoctlData> &ioctlData,
         }
         
         w.throughPut = ioctlData[i].throughPut;
-        w.linkType = ioctlData[i].linkType;
+        w.linkType = toOrcaLinkType(ioctlData[i].linkType);
         w.linkQuality = ioctlData[i].linkQuality;
         w.signalLevel = ioctlData[i].signalLevel;
         w.noiseLevel = ioctlData[i].noiseLevel;
