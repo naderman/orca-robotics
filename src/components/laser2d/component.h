@@ -11,9 +11,9 @@
 #ifndef ORCA2_LASER2D_COMPONENT_H
 #define ORCA2_LASER2D_COMPONENT_H
 
-#include <orca/laserscanner2d.h>
 #include <orcaice/component.h>
 #include <orcaifaceimpl/laserscanner2dImpl.h>
+#include <hydrointerfaces/laserscanner2d.h>
 #include <hydrodll/dynamicload.h>
 
 namespace laser2d {
@@ -27,6 +27,7 @@ public:
     Component();
     virtual ~Component();
 
+    // from orcaice::Component
     virtual void start();
     virtual void stop();
 
@@ -40,7 +41,7 @@ private:
     orcaifaceimpl::LaserScanner2dImplPtr laserInterface_;
 
     // A factory to instantiate the driver
-    DriverFactory   *driverFactory_;
+    hydrointerfaces::LaserScanner2dFactory *driverFactory_;
     // And the library that provides it
     hydrodll::DynamicallyLoadedLibrary *driverLib_;
 };

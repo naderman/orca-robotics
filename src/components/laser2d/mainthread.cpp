@@ -22,8 +22,8 @@ namespace {
 }
 
 MainThread::MainThread( orcaifaceimpl::LaserScanner2dImpl &laserInterface,
-                    const Driver::Config               &config,
-                    DriverFactory                      &driverFactory,
+                    const hydrointerfaces::LaserScanner2d::Config &config,
+                    hydrointerfaces::LaserScanner2dFactory &driverFactory,
                     bool                                compensateRoll,
                     const orcaice::Context             &context )
     : laserInterface_(laserInterface),
@@ -104,9 +104,12 @@ MainThread::initialiseDriver()
 
     while ( !isStopping() )
     {
+        hydroutil::Properties props = 
+            context_.properties()->getPropertiesForPrefix( context_.tag()+".Config." );
+        hydrointerfaces::Context driverContext( props, context_.tracer(), context_.status() );
         try {
             context_.tracer()->info( "MainThread: Initialising driver..." );
-            driver_ = driverFactory_.createDriver( config_, context_ );
+            driver_ = driverFactory_.createDriver( config_, driverContext );
             return;
         }
         catch ( std::exception &e )
@@ -151,7 +154,8 @@ MainThread::readData( orca::LaserScanner2dDataPtr &laserData )
     //            
     driver_->read( laserData->ranges, 
                    laserData->intensities,
-                   laserData->timeStamp );
+                   laserData->timeStamp.seconds,
+                   laserData->timeStamp.useconds );
     assert( (int)laserData->ranges.size()      == config_.numberOfSamples );
     assert( (int)laserData->intensities.size() == config_.numberOfSamples );
 

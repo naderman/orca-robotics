@@ -97,7 +97,7 @@ KeyboardTermioDriver::read()
         network_->newRelativeCommand( 0.0, 0.0, 0.0 );
 
         string errString = "failed to read from keyboard";
-        throw orcaice::HardwareException( ERROR_INFO, errString );
+        throw hydroutil::HardwareException( ERROR_INFO, errString );
     }
 
     switch( c )

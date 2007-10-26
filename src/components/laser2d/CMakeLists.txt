@@ -4,21 +4,8 @@ IF ( BUILD_LASER2D )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
-    INCLUDE_DIRECTORIES( ${PROJECT_SOURCE_DIR}/src/components/laser2d )
-
-    # Driver implementations
-    ADD_SUBDIRECTORY( fakedriver )
-    ADD_SUBDIRECTORY( sickacfr )
-    ADD_SUBDIRECTORY( sickcarmen )
-    ADD_SUBDIRECTORY( playerclient )
-    
-    #
-    # General stuff for all drivers
-    #
-    ADD_SUBDIRECTORY ( laser2dutil )
-
     FIND_COMPONENT_SOURCES( COMP_SRCS )
-    SET( COMP_DEPS OrcaLaser2dUtil HydroDll OrcaIfaceImpl )
+    SET( COMP_DEPS HydroDll HydroInterfaces OrcaIfaceImpl )
 
     # build stand-alone component  
     GLOBAL_ADD_EXECUTABLE( laser2d ${COMP_SRCS} main )

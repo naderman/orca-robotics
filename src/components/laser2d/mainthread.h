@@ -13,7 +13,7 @@
 #include <hydroutil/thread.h>
 #include <orcaice/context.h>
 #include <orcaifaceimpl/laserscanner2dImpl.h>
-#include <laser2dutil/driver.h>
+#include <hydrointerfaces/laserscanner2d.h>
 
 namespace laser2d {
 
@@ -26,8 +26,8 @@ class MainThread : public hydroutil::Thread
 public:
 
     MainThread( orcaifaceimpl::LaserScanner2dImpl &laserInterface,
-              const Driver::Config               &config,
-              DriverFactory                      &driverFactory,
+              const hydrointerfaces::LaserScanner2d::Config &config,
+              hydrointerfaces::LaserScanner2dFactory &driverFactory,
               bool                                compensateRoll,
               const orcaice::Context             &context );
     ~MainThread();
@@ -49,13 +49,13 @@ private:
     // The laser object
     orcaifaceimpl::LaserScanner2dImpl &laserInterface_;
 
-    Driver::Config config_;
+    hydrointerfaces::LaserScanner2d::Config config_;
 
     // Generic driver for the hardware
-    Driver *driver_;
+    hydrointerfaces::LaserScanner2d *driver_;
 
     // Loaded with this
-    DriverFactory &driverFactory_;
+    hydrointerfaces::LaserScanner2dFactory &driverFactory_;
 
     bool compensateRoll_;
 

@@ -96,7 +96,7 @@ JoystickDriver::read()
             network_->newRelativeCommand( 0.0, 0.0, 0.0 );
 
             string errString = "failed to read from joystick";
-            throw orcaice::HardwareException( ERROR_INFO, errString );
+            throw hydroutil::HardwareException( ERROR_INFO, errString );
             return 1;
         }
         else {

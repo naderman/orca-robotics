@@ -29,16 +29,6 @@ public:
             : Exception( file, line, message ) {};
 };
 
-//! This exception is raised when something is wrong with the hardware.
-class HardwareException : public hydroutil::Exception
-{
-public:
-    HardwareException(const char *file, const char *line, const char *message)
-            : Exception( file, line, message ) {};
-    HardwareException(const char *file, const char *line, const std::string &message)
-            : Exception( file, line, message ) {};
-};
-
 //! This exception is raised when something is wrong with the network connection.
 class NetworkException : public hydroutil::Exception
 {

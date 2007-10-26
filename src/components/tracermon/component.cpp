@@ -71,7 +71,7 @@ Component::start()
     else {
         std::string errorStr = "Unknown driver type." + driverName + " Cannot talk to hardware.";
         tracer()->error( errorStr);
-        throw orcaice::HardwareException( ERROR_INFO, errorStr );
+        throw hydroutil::HardwareException( ERROR_INFO, errorStr );
     }
     
     //

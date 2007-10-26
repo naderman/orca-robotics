@@ -10,8 +10,6 @@
 
 #include <orcaice/orcaice.h>
 #include "component.h"
-#include <laser2dutil/driver.h>
-#include <laser2dutil/sickutil.h>
 #include "mainthread.h"
 
 namespace laser2d {
@@ -46,7 +44,7 @@ Component::start()
     //
 
     // read config options
-    Driver::Config cfg;
+    hydrointerfaces::LaserScanner2d::Config cfg;
 
     cfg.minRange = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"MinRange", 0.0 );
     cfg.maxRange = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"MaxRange", 80.0 );
@@ -120,7 +118,7 @@ Component::start()
         // Dynamically load the driver from its library
         driverLib_ = new hydrodll::DynamicallyLoadedLibrary(driverLibName);
         driverFactory_ = 
-            hydrodll::dynamicallyLoadClass<DriverFactory,DriverFactoryMakerFunc>
+            hydrodll::dynamicallyLoadClass<hydrointerfaces::LaserScanner2dFactory,DriverFactoryMakerFunc>
             ( *driverLib_, "createDriverFactory" );
     }
     catch (hydrodll::DynamicLoadException &e)

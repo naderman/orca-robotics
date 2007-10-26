@@ -12,7 +12,7 @@
 
 @page orca_doc_quickstart Quick-Start Guide
 
-@note Reviewed for release 2.5.0.
+@note Reviewed for release 2.7.0.
 
 This page describes how to get a quick demonstration up and running with your new Orca install. Before you begin, make sure that you've installed Orca (see @ref orca_doc_getting ).
 
@@ -82,7 +82,7 @@ $ cp [ORCA2-INSTALL]/cfg/lasermon.cfg .
 Configure the laser for fake (simulated) operation (or skip this step if you're connected to a real SICK laser).  Edit @c laser2d.cfg, and replace the default library name @c 'libOrcaLaser2dSickCarmen.so' with @c 'libOrcaLaser2dFake.so', so it looks like this:
 
 @verbatim
-Laser2d.Config.DriverLib=libOrcaLaser2dFake.so
+Laser2d.Config.DriverLib=libHydroLaserScanner2dFake.so.so
 @endverbatim
 
 Start the Laser2d component.

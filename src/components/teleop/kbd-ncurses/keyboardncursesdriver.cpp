@@ -133,7 +133,7 @@ int KeyboardNcurcesDriver::read( orca::Velocity2dCommand& data )
         command_.motion.w = 0.0;
 
         string errString = "failed to read from keyboard";
-        throw orcaice::HardwareException( ERROR_INFO, errString );
+        throw hydroutil::HardwareException( ERROR_INFO, errString );
     }
 */
 /*

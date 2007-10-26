@@ -1,3 +1,0 @@
-FILE( GLOB SRCS *.cpp )
-
-GLOBAL_ADD_LIBRARY( OrcaLaser2dFake SHARED ${SRCS} )
