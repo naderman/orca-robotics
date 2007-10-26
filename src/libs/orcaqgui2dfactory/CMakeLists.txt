@@ -26,6 +26,10 @@ IF ( QT4_FOUND )
 
     INSTALL_FILES( /include/orcaqgui2dfactory .*\\.h$ )
     INSTALL_FILES( /share/orcaqgui/ ogHazardLookupTable.png )
+
+    IF ( BUILD_TESTS )
+        ADD_SUBDIRECTORY ( test )
+    ENDIF ( BUILD_TESTS )
     
 ELSE  ( QT4_FOUND )
 
