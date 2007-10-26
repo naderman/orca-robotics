@@ -22,18 +22,20 @@ using namespace orcalog;
 
 
 MasterFileReader::MasterFileReader( const std::string &filename, const orcaice::Context& context )
-    : context_(context)
+    : index_(-1),
+      context_(context)
 {
     // create master file
     file_ = new ifstream( filename.c_str() );
     if ( !file_->is_open() ) {
-        context_.tracer()->warning( "Could not open master file " + filename );
         throw orcalog::FileException( ERROR_INFO, "Could not open master file " + filename );
     }
 
     // remember the dir where the master file is located
     // the individual log files MUST be in the same dir.
     dir_ = hydroutil::dirname( filename );
+
+    calcConstituentLogs();
 }
 
 MasterFileReader::~MasterFileReader()
@@ -44,23 +46,14 @@ MasterFileReader::~MasterFileReader()
     }
 }
 
-
 void
-MasterFileReader::getLogs( std::vector<std::string>& filenames,
-                        std::vector<std::string>& interfaceTypes,
-                        std::vector<std::string>& formats,
-                        std::vector<bool>& enableds )
+MasterFileReader::calcConstituentLogs()
 {
-    filenames.clear();
-    interfaceTypes.clear();
-    formats.clear();
-
     std::string line;
     std::string filename;
     std::string interfaceType;
     std::string format;
     bool enabled;
-    // todo: go to top of the file
 
     while ( std::getline( *file_, line ) ) {
         // data starts here, don't parse headers anymore
@@ -78,13 +71,28 @@ MasterFileReader::getLogs( std::vector<std::string>& filenames,
         // add full path to the file name
         filename = dir_ + hydroutil::pathDelimeter() + filename;
 
-        filenames.push_back( filename );
-        interfaceTypes.push_back( interfaceType );
-        formats.push_back( format );
-        enableds.push_back( enabled );
+        filenames_.push_back( filename );
+        interfaceTypes_.push_back( interfaceType );
+        formats_.push_back( format );
+        enableds_.push_back( enabled );
 
         context_.tracer()->debug( "Parsed header: file="+filename+" type="+interfaceType+" fmt="+format, 5);
     }
+
+    // At this point we're at the start of the data.
+    index_=0;
+}
+
+void
+MasterFileReader::getLogs( std::vector<std::string>& filenames,
+                           std::vector<std::string>& interfaceTypes,
+                           std::vector<std::string>& formats,
+                           std::vector<bool>& enableds )
+{
+    filenames_      = filenames;
+    interfaceTypes_ = interfaceTypes;
+    formats_        = formats;
+    enableds_       = enableds;
 }
 
 int 
@@ -112,7 +120,11 @@ MasterFileReader::getData( int& seconds, int& useconds, int& id, int& index )
 {
     std::string line;
 
-    while ( !file_->eof() ) {
+    while ( !file_->eof() ) 
+    {
+        // Remember the position of the start of this line.
+        std::ios::pos_type lineStartPos = file_->tellg();
+
         std::getline( *file_, line );
 
         // skip empty lines and comments
@@ -132,10 +144,7 @@ MasterFileReader::getData( int& seconds, int& useconds, int& id, int& index )
         }
 
         // success
-//         stringstream ss;
-//         ss << "parsed data line sec="<<seconds<<" usec="<<useconds<<" id="<<id<<" idx="<<index;
-//         context_.tracer()->debug( line, 10);
-//         context_.tracer()->debug( ss.str(), 10);
+        breadCrumbs_.placeCrumb( lineStartPos, seconds, useconds );
         return 0;
     }
     
@@ -144,21 +153,38 @@ MasterFileReader::getData( int& seconds, int& useconds, int& id, int& index )
 }
 
 int 
-MasterFileReader::getDataAfterTime( int& seconds, int& useconds, int& id, int& index, int seekSec, int seekUsec )
+MasterFileReader::getDataAtOrAfterTime( int& seconds, int& useconds, int& id, int& index, int seekSec, int seekUsec )
 {
-//     cout<<"seeking "<<seekSec<<"s "<<seekUsec<<"us"<<endl;
-    IceUtil::Time seekTime = 
+    // Maybe the requested time is in the past, somewhere in the trail of breadcrumbs.
+    std::ios::pos_type crumbPos;
+    SeekResult result = breadCrumbs_.getCrumbAtOrAfterTime( seekSec, seekUsec, crumbPos );
+    if ( result == SeekOK )
+    {
+        // Found it
+        file_->seekg( crumbPos );
+        return getData( seconds, useconds, id, index );
+    }
+    else if ( result == SeekQueryInFuture )
+    {
+        // The piece of data we want is some time into the future.  Have to search forwards.
+        IceUtil::Time seekTime = 
             IceUtil::Time::seconds(seekSec) + IceUtil::Time::microSeconds(seekUsec);
 
-    IceUtil::Time dataTime;
-    while ( !getData( seconds, useconds, id, index ) ) {
-//         cout<<"read "<<seconds<<"s "<<useconds<<"us"<<endl;
-        dataTime = IceUtil::Time::seconds(seconds) + IceUtil::Time::microSeconds(useconds);
-        if ( dataTime >= seekTime ) {
-            // success
-            return 0;
+        IceUtil::Time dataTime;
+        while ( !getData( seconds, useconds, id, index ) ) 
+        {
+            dataTime = IceUtil::Time::seconds(seconds) + IceUtil::Time::microSeconds(useconds);
+            if ( dataTime >= seekTime ) {
+                // success
+                return 0;
+            }
         }
+        // eof
+        return 1;
     }
-    // eof
-    return 1;
+    else
+    {
+        assert( false && "unknown SeekResult." );
+        return 1;
+    }
 }

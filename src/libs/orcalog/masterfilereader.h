@@ -13,6 +13,7 @@
 
 #include <IceUtil/Mutex.h>
 #include <orcaice/context.h>
+#include <orcalog/masterfilebreadcrumbs.h>
 
 namespace orcalog
 {
@@ -52,15 +53,30 @@ public:
     //! Seeking time after the end of the log will result in fast forwarding to the end.
     //!
     //! Return values are same as getData.
-    int getDataAfterTime( int &seconds, int &useconds, int &id, int &index, int seekSec, int secUsec=0 );
+    int getDataAtOrAfterTime( int &seconds, int &useconds, int &id, int &index, int seekSec, int seekUsec=0 );
 
 private:
+
+    void calcConstituentLogs();
+
     std::ifstream *file_;
+
+    // Used for recording positions in the file.
+    MasterFileBreadCrumbs breadCrumbs_;
 
     // remember the dir where the master file is located
     // the individual log files MUST be in the same dir.
     std::string dir_;
 
+    // Details of the logs referenced in this master file
+    std::vector<std::string> filenames_;
+    std::vector<std::string> interfaceTypes_;
+    std::vector<std::string> formats_;
+    std::vector<bool>        enableds_;
+
+    // If we read right now we'll read the index_'th data item.
+    int index_;
+    
     orcaice::Context context_;
 };
 

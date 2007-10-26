@@ -84,8 +84,8 @@ void TestComponent::start()
     //
     // Fake a few instances of arrival of data
     //
-    int l0=0, d0=0;
-    masterFileWriter.notifyOfLogfileAddition( l0, d0 );
+    int i0=0, index0=0;
+    masterFileWriter.notifyOfLogfileAddition( i0, index0 );
     IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
     masterFileWriter.notifyOfLogfileAddition( 0, 1 );
     IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
@@ -93,8 +93,8 @@ void TestComponent::start()
     IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
     masterFileWriter.notifyOfLogfileAddition( 0, 1 );
     IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
-    int l1=1, d1=0;
-    masterFileWriter.notifyOfLogfileAddition( l1, d1 );
+    int id1=1, index1=0;
+    masterFileWriter.notifyOfLogfileAddition( id1, index1 );
     IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
     masterFileWriter.notifyOfLogfileAddition( 1, 1 );
     cout<<"ok"<<endl;
@@ -116,63 +116,80 @@ void TestComponent::start()
     cout<<"ok"<<endl;
 
     cout<<"testing getData() ... ";
-    int s, u, l, d;
+    int sec, usec, id, index;
     int ret;
-    ret = masterFileReader->getData( s, u, l, d );
+    ret = masterFileReader->getData( sec, usec, id, index );
     if ( ret ) {
         cout<<"failed: expected to find line, ret="<<ret<<endl;
         exit(EXIT_FAILURE);
     }
-    if ( l!=l0 || d!=d0 ) {
+    if ( id!=i0 || index!=index0 ) {
         cout<<"failed"<<endl<<"wrong data in first line"<<endl
-            <<"expected="<<l0<<","<<d0
-            <<"got="<<l<<","<<d<<endl;
+            <<"expected="<<i0<<","<<index0
+            <<"got="<<id<<","<<index<<endl;
         exit(EXIT_FAILURE);
     }
     cout<<"ok"<<endl;
-    
-    cout<<"testing FF getData() to good line ... ";
-    ret = masterFileReader->getDataAfterTime( s, u, l, d,  s+3, u+900000 );
+
+    cout<<"testing getDataAtOrAfterTime() to good line ... ";
+    ret = masterFileReader->getDataAtOrAfterTime( sec, usec, id, index,  sec+3, usec+900000 );
     if ( ret ) {
         cout<<"failed: ret="<<ret<<endl;
         exit(EXIT_FAILURE);
     }
-    if ( l!=l1 || d!=d1 ) {
+    if ( id!=id1 || index!=index1 ) {
         cout<<"failed"<<endl<<"wrong data in sought line"<<endl
-            <<"expected="<<l1<<","<<d1
-            <<" got="<<l<<","<<d<<endl;
+            <<"expected="<<id1<<","<<index1
+            <<" got="<<id<<","<<index<<endl;
         exit(EXIT_FAILURE);
     }
     cout<<"ok"<<endl;
 
-    cout<<"testing FF getData() to line which is after the end of log  ... ";
-    ret = masterFileReader->getDataAfterTime( s, u, l, d,  s+1000 );
+    cout<<"testing getDataAtOrAfterTime() to line which is after the end of log  ... ";
+    ret = masterFileReader->getDataAtOrAfterTime( sec, usec, id, index,  sec+1000 );
     if ( !ret ) {
         cout<<"failed: expected not to find line, ret="<<ret<<endl
-            <<"got="<<s<<","<<u<<","<<l<<","<<d<<endl;
+            <<"got="<<sec<<","<<usec<<","<<id<<","<<index<<endl;
         exit(EXIT_FAILURE);
     }
     cout<<"ok"<<endl;
 
-    cout<<"testing seekDataStart() ... ";
+    cout<<"testing rewindToStart() ... ";
     ret = masterFileReader->rewindToStart();
     if ( ret ) {
         cout<<"failed: expected find data, ret="<<ret<<endl;
         exit(EXIT_FAILURE);
     }
-    ret = masterFileReader->getData( s, u, l, d );
+    ret = masterFileReader->getData( sec, usec, id, index );
     if ( ret ) {
         cout<<"failed: expected to find line, ret="<<ret<<endl;
         exit(EXIT_FAILURE);
     }
-    if ( l!=l0 || d!=d0 ) {
+    if ( id!=i0 || index!=index0 ) {
         cout<<"failed"<<endl<<"wrong data in first line"<<endl
-            <<"expected="<<l0<<","<<d0
-            <<"got="<<l<<","<<d<<endl;
+            <<"expected="<<i0<<","<<index0
+            <<"got="<<id<<","<<index<<endl;
         exit(EXIT_FAILURE);
     }
     cout<<"ok"<<endl;
 
+    cout<<"Testing arbitrary access ... ";
+    int rSec, rUsec, rId, rIndex;
+    ret = masterFileReader->getData( rSec, rUsec, rId, rIndex );
+    assert( !ret );
+    ret = masterFileReader->getData( sec, usec, id, index );
+    assert( !ret );
+    masterFileReader->getDataAtOrAfterTime( sec, usec, id, index, rSec, rUsec );
+    if ( sec != rSec     ||
+         usec != rUsec   ||
+         id != rId       ||
+         index != rIndex )
+    {
+        cout<<"failed."<<endl;
+        exit(EXIT_FAILURE);
+    }
+    cout<<"ok"<<endl;
+    
     // NOTE: cannot call communicator()->destroy() from here
     // because they'll be caught by Ice::Application and show up as failed ctest.
     exit(EXIT_SUCCESS);
