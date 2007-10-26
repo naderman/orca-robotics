@@ -121,7 +121,7 @@ MainLoop::walk()
         cout<<"DEBUG: Begin log absolute time :"<<beginLogTime.toSeconds()<<endl;
 
         // use special Fast-Forward version of getData()
-        if ( masterFileReader_->getDataAfterTime( seconds, useconds, id, index, 
+        if ( masterFileReader_->getDataAtOrAfterTime( seconds, useconds, id, index, 
                 beginLogTime.toSeconds(), beginLogTime.toMicroSeconds()%1000000 ) ) {
             context_.tracer()->error( "Failed to fast forward to BeginTime "+beginTime_.toDuration() );
             exit(1);
