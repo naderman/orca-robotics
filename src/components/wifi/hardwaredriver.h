@@ -12,7 +12,7 @@
 #define ORCA2_HARDWARE_DRIVER_H
 
 #include <orcaice/orcaice.h>
-#include <orcawifi/wifiutil.h>
+#include <hydrowifi/wifiutil.h>
 
 #include "wifidriver.h"
 

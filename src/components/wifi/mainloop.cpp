@@ -10,7 +10,7 @@
 
 #include <iostream>
 #include <vector>
-#include <orcawifi/wifiutil.h>
+#include <hydrowifi/wifiutil.h>
 #include <orcaice/orcaice.h>
 #include "mainloop.h"
 #include "hardwaredriver.h"

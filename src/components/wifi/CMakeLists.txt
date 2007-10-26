@@ -7,7 +7,7 @@ IF ( BUILD_WIFI )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
     
     FIND_COMPONENT_SOURCES( COMP_SRCS )
-    SET( COMP_DEPS OrcaIfaceImpl OrcaWifi )
+    SET( COMP_DEPS OrcaIfaceImpl HydroWifi )
     
     # build stand-alone component  
     GLOBAL_ADD_EXECUTABLE( wifi ${COMP_SRCS} main)
