@@ -33,9 +33,6 @@ src
         imu                                LGPL
         insgps                             LGPL (with permission from NovAtel Inc.)
         laser2d                            LGPL
-            playerclient                    GPL
-            sickacfr                       LGPL
-            sickcarmen                      GPL
         laser2og                           LGPL
         laserfeatureextractor              LGPL
         lasermon                           LGPL
