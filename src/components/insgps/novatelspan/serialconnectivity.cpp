@@ -57,7 +57,10 @@ bool testConnectivity(
             //and look for an ACK
             buf[read] = '\0';
             std::string response(buf);
-            char *ack = "<OK";
+            // alexm: made this guy const to suppress the following warning
+            // serialconnectivity.cpp:60: warning: deprecated conversion from string constant to 'char*'
+            // haven't tested anything, this could be wrong.
+            const char *ack = "<OK";
             size_t found = response.find(ack);
             if(std::string::npos != found){
                 successCnt++;
