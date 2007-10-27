@@ -33,15 +33,8 @@
 
 @par Drivers
 
-Laser2d dynamically loads an implementation of a driver (ie the thing
-which actually talks to the (possibly simulated) laser hardware).
-
-The driver libraries included in orca2 are:
-
-- @b libOrcaLaser2dSickAcfr @ref orca_laser_sickacfr
-- @b libOrcaLaser2dSickCarmen @ref orca_laser_sickcarmen
-- @b libOrcaLaser2dPlayerClient @ref orca_laser_playerclient
-- @b libOrcaLaser2dFake Useful for testing or if you don't have hardware or a simulator.
+Laser2d dynamically loads an implementation of a Hydro driver interface LaserScanner2d 
+(ie the thing which actually talks to the (possibly simulated) laser hardware). See Hydro documentation for the list of available drivers.
 
 @par Operation
 
@@ -92,69 +85,6 @@ Geometry
     - Default: 0.155 0.155 0.185 (SICK LMS dimensions)
 
 An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
-
-@section orca_laser_sickcarmen SickCarmen driver
-
-Drives real laser hardware, directly connected to the computer. Uses
-Carmen's SICK laser implementation (see the <a
-href="http://carmen.sourceforge.net/" target="_blank">Carmen
-website</a>). This driver works robustly and can be configured with
-different baud rates.
-
-Limitations: This is a Linux-only implementation. Does NOT work with kernel 2.6.17 producing this message (use dmesg) "laser2d sets custom speed on ttyS3. This is deprecated." Google search indicates that it's a known kernel issue which currently has no solution. A new method of setting custom serial speed will be introduced in future kernels at which point we'll try to convert our code.
-
-@par Extra configuration
-
-- @c Laser2d.Config.SickCarmen.Device (string)
-  - The unix device to use
-  - Default: "/dev/ttyS0"
-- @c Laser2d.Config.SickCarmen.LaserType (string)
-  - Valid Values: {"LMS","PMS"}
-  - Default: "LMS"
-- @c Laser2d.Config.SickCarmen.Baudrate (int) [bps]
-  - Valid Values: { 9600, 19200, 38400, 500000 }
-  - Default: 38400
-
-@section orca_laser_sickacfr SickAcfr driver
-
-Drives real laser hardware, directly connected to the computer. 
-
-Limitations: This is a Linux-only implementation.  It has not been
-tested at 500k baud.
-
-@par Extra configuration
-
-- @c Laser2d.Config.SickAcfr.Device (string)
-  - The unix device to use
-  - Default: "/dev/ttyS0"
-- @c Laser2d.Config.SickAcfr.Baudrate (int) [bps]
-  - Valid Values: { 9600, 19200, 38400, 500000 }
-  - Default: 38400
-  
-@section orca_laser_playerclient PlayerClient driver
-
-This driver wraps a player client. Given a running Player server, the laser gets data from that server and distributes it over Orca pipes. Talks to a Player server (see the <a
-href="http://playerstage.sourceforge.net/" target="_blank">Player webpage</a>).
-
-@par Dependancies
-
-Requires that Player/Stage v.>=2.0 are installed and running. As Player itself, this driver is Linux only. See our notes on installing Player in platform-dependent installation page, e.g. @ref orca_doc_installdebian_player.
-
-@par Extra configuration
-
-- @c Laser2d.Config.PlayerClient.Host (string)
-    - The host that Player (or Stage) is running on
-    - Default: "localhost"
-- @c Laser2d.Config.PlayerClient.Port (int)
-    - The port that PLayer (or Stage) is running on
-    - Default: 6665
-- @c Laser2d.Config.PlayerClient.Device (int)
-    - Device ID of the laser to which the driver will connect to
-    - Default: 0
-- @c Laser2d.Config.PlayerClient.Driver (string)
-    - Driver used by the Player server. In theory this is unnecessary because the Player laser interface should abstract these differences. In reality the drivers either do not implement the interface fully or the implementation contains bugs. So we need to specify the driver here and implement various work-arounds.
-    - Valid values: { "sicklms200", "stage", "gazebo", "urglaser" }
-    - Default: "sicklms200"
 
 @section internal Internal Structure
     

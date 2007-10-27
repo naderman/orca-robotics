@@ -87,7 +87,7 @@ Sorca = [ ...
 2007     8  13  1   Sice320 7247-2226+1772  78939-36926     42700-7247  0    % 2.5.0
 2007     9  18  1   Sice321 7919-2572+1787  83838-38743     44694-7919  0    % 2.6.0
 % A&D: Hydro: sloccount src
-2007    10  28  1   Sice321 5844-1528+1787  73103-36287     42268-5844  11566    % 2.7.0
+2007    10  28  1   Sice321 5481-1528+1787  72748-36062     42043-5481  12251    % 2.7.0
 ];
 Vorca ={'0.8.6', '0.11.0', '0.12.0', '0.12.1', '0.13.0', '0.13.1', '0.13.2', '0.13.3', '0.14.0', '0.15.0', '1.0.0', ...
     '2.0.0-rc1', '2.0.0-rc2', '2.0.0-rc3', '2.0.0-rc4', '2.0.0-rc5', '2.0.0', '2.0.1', '2.0.2', '2.1.0', '2.1.1', ...
@@ -209,12 +209,20 @@ h2=plot( Torca2, 0*Torca2, 'ko' );
 set(h2,'markerfacecolor','k')
 ylabel('Source Code Size (kSLOC)')
 
-set(ha(1),'facecolor',1*[1 1 1]);
-set(ha(2),'facecolor',.85*[1 1 1]);
-set(ha(3),'facecolor',min(255,[255 153 0]+60)/255);
-set(ha(4),'facecolor',min(255,[60 255 109]+60)/255);
-set(ha(5),'facecolor',min(255,[51 102 255]+60)/255);
-set(ha(6),'facecolor',min(255,[60 255 109]+60)/255);
+% colors
+white = 1*[1 1 1];
+gray = .85*[1 1 1];
+red = min(255,[255 0 0]+60)/255;
+orange = min(255,[255 153 0]+60)/255;
+green = min(255,[60 255 109]+60)/255;
+blue = min(255,[51 102 255]+60)/255;
+
+set(ha(1),'facecolor', white);
+set(ha(2),'facecolor', gray);
+set(ha(3),'facecolor', red);
+set(ha(4),'facecolor', green);
+set(ha(5),'facecolor', orange);
+set(ha(6),'facecolor', blue);
 ha(1)=[];
 legend(fliplr(ha),'Hydro','Orca components+libs','Orca utilities','Orca infrastructure','Ice middleware', 'Location','NorthWest')
 %  xlim(datenum([2004;2005],[7;7],[1;1]) )

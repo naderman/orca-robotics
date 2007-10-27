@@ -8,19 +8,49 @@
  *
  */
 
-#include <IceUtil/Time.h>
 #include <orcaice/orcaice.h>
-
 #include "statusI.h"
 
 using namespace std;
-
 using namespace orcaice::detail;
+
+namespace
+{
+
+void 
+convert( const hydroutil::NameStatusMap &internal, orca::SubsystemsStatus &network )
+{
+    hydroutil::NameStatusMap::const_iterator it;
+    
+    for ( it=internal.begin(); it!=internal.end(); ++it ) 
+    {
+        switch ( it->second.type ) {
+        case hydroutil::Status::Initialising :
+            network[it->first].type = orca::SubsystemStatusInitialising;
+            break;
+        case hydroutil::Status::Ok :
+            network[it->first].type = orca::SubsystemStatusOk;
+            break;
+        case hydroutil::Status::Warning :
+            network[it->first].type = orca::SubsystemStatusWarning;
+            break;
+        case hydroutil::Status::Fault :
+            network[it->first].type = orca::SubsystemStatusFault;
+            break;
+        case hydroutil::Status::Stalled :
+            network[it->first].type = orca::SubsystemStatusStalled;
+            break;
+        }
+        network[it->first].sinceHeartbeat = 
+            (Ice::Float)(it->second.heartbeatTimer.elapsedSec() / it->second.maxHeartbeatInterval);
+    }
+}
+
+} // namespace
 
 StatusI::StatusI( const orcaice::Context & context )
     : topic_(0),
       publisher_(0),
-      startTime_(IceUtil::Time::now()),
       context_(context)
 {
     IceUtil::Mutex::Lock lock(mutex_);
@@ -47,20 +77,28 @@ StatusI::~StatusI()
 }
 
 void
-StatusI::setStatusData( const std::map<std::string,LocalStatus::SubsystemStatus> &subsystemStatus )
+StatusI::setStatusData( const hydroutil::NameStatusMap &subsystemStatus )
 {
     orcaice::setToNow( statusData_.timeStamp );
 
     statusData_.name = context_.name();
 
-    IceUtil::Time timeUp = IceUtil::Time::now() - startTime_;
-    statusData_.timeUp = (Ice::Int)timeUp.toSeconds();
+    statusData_.timeUp = (Ice::Int)upTimer_.elapsedSec();
 
     convert( subsystemStatus, statusData_.subsystems );
 }
 
 void 
-StatusI::localSetData( const std::map<std::string,LocalStatus::SubsystemStatus> &subsystemStatus )
+StatusI::handleData (const hydroutil::NameStatusMap& subsystemStatus )
+{
+    IceUtil::Mutex::Lock lock(mutex_);
+
+    setStatusData( subsystemStatus );
+    sendToIceStorm( statusData_ );
+}
+
+void 
+StatusI::localSetData( const hydroutil::NameStatusMap &subsystemStatus )
 {
     IceUtil::Mutex::Lock lock(mutex_);
 
@@ -162,8 +200,7 @@ StatusI::getData(const ::Ice::Current& ) const
     IceUtil::Mutex::Lock lock(mutex_);
 
     // Just update the timeUp
-    IceUtil::Time timeUp = IceUtil::Time::now() - startTime_;
-    statusData_.timeUp = (Ice::Int)timeUp.toSeconds();
+    statusData_.timeUp = (Ice::Int)upTimer_.elapsedSec();
     
     return statusData_;
 }
@@ -201,36 +238,5 @@ StatusI::unsubscribe(const ::orca::StatusConsumerPrx& subscriber, const ::Ice::C
     
     //cout<<"unsubscription request"<<endl;
     topic_->unsubscribe( subscriber );
-}
-
-
-
-void StatusI::convert( const std::map<std::string,LocalStatus::SubsystemStatus> &internal,
-                       orca::SubsystemsStatus &network ) const
-{
-    std::map<std::string,LocalStatus::SubsystemStatus>::const_iterator it;
-    
-    for ( it=internal.begin(); it!=internal.end(); ++it ) 
-    {
-        switch ( it->second.type ) {
-        case hydroutil::Status::Initialising :
-            network[it->first].type = orca::SubsystemStatusInitialising;
-            break;
-        case hydroutil::Status::Ok :
-            network[it->first].type = orca::SubsystemStatusOk;
-            break;
-        case hydroutil::Status::Warning :
-            network[it->first].type = orca::SubsystemStatusWarning;
-            break;
-        case hydroutil::Status::Fault :
-            network[it->first].type = orca::SubsystemStatusFault;
-            break;
-        case hydroutil::Status::Stalled :
-            network[it->first].type = orca::SubsystemStatusStalled;
-            break;
-        }
-        network[it->first].sinceHeartbeat = 
-            (Ice::Float)(it->second.heartbeatTimer.elapsedSec() / it->second.maxHeartbeatInterval);
-    }
 }
 

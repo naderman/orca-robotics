@@ -68,6 +68,7 @@ Component::init( const orca::FQComponentName& name,
     //
     context_.tracer_ = initTracer();
     context_.status_ = initStatus();
+    localStatus_ = context_.status_;
     context_.home_   = initHome();
     componentThread_ = new ComponentThread( homePrx_, *(context_.status_), interfaceFlag_, context_ );
     try {
@@ -154,11 +155,14 @@ Component::initTracer()
 hydroutil::Status*
 Component::initStatus()
 {
+    hydroutil::LocalStatus* localStatus = new hydroutil::LocalStatus( 
+            context_.tracer(),
+            hydroutil::Properties( context_.properties()->getPropertiesForPrefix("Orca.Status.")) );
 
     if ( !(interfaceFlag_ & StatusInterface) ) 
     {
         orcaice::initTracerInfo( tag()+": Initialized local status handler");
-        return new orcaice::detail::LocalStatus( context_, NULL );
+        return localStatus_;
     }
 
     // this is a bit tricky. we need
@@ -178,11 +182,12 @@ Component::initStatus()
     // add this object to the adapter and name it 'status'
     // 
     context_.adapter()->add( statusObj_, context_.communicator()->stringToIdentity("status") );
-    
-    localStatus_ = new orcaice::detail::LocalStatus( context_, pobj );
+
+    // connect local status handler to the internal interface through Notify pattern.    
+    localStatus->setNotifyHandler( pobj );
 
     orcaice::initTracerInfo( tag()+": Initialized status handler");
-    return localStatus_;
+    return localStatus;
 }
 
 Home*
