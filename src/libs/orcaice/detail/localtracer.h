@@ -12,6 +12,7 @@
 #define ORCAICE_LOCAL_TRACER_H
 
 #include <hydroutil/tracer.h>
+#include <hydroutil/uncopyable.h>
 
 #include <IceUtil/Mutex.h>
 
@@ -22,7 +23,8 @@ namespace detail
 
 class SysLogger;
 
-class LocalTracer : public hydroutil::Tracer
+class LocalTracer : public hydroutil::Tracer,
+                    public hydroutil::Uncopyable
 {
 public:
     LocalTracer( const orcaice::Context& context );
@@ -43,10 +45,6 @@ public:
     virtual int verbosity( TraceType traceType, DestinationType destType ) const;
 
 protected:
-
-    // Not implemented; prevents accidental use.
-    LocalTracer( const LocalTracer& );
-    LocalTracer& operator= ( const LocalTracer& );
 
     Tracer::Config  config_;
     orcaice::Context context_;
