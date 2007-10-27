@@ -16,7 +16,6 @@
 @defgroup orca_libs Libraries
 @defgroup orca_utils Utilities
 @defgroup orca_examples Examples
-@defgroup orca_tests Tests
 
 @defgroup orca_apps Stand-Alone Components
 @defgroup orca_services IceBox Services
