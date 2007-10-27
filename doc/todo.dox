@@ -52,6 +52,32 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @par Project wide
 
+@par New interfaces
+
+@par New components
+
+@par New utilities
+
+@par New libraries
+
+@par New examples
+
+@par Updated interfaces
+
+@par Updated components
+
+@par Updated utilities
+
+@par Updated libraries
+
+@par Removed
+
+
+
+@section orca_doc_history_270 Changes in Release 2.7.0
+
+@par Project wide
+
 - Moved from CVS to SVN version control system.
 
 - Created a separate distribution called Hydro for communication-independent code 
