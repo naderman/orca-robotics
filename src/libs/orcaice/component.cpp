@@ -14,13 +14,14 @@
 #include <orca/orca.h>
 #include <orcaice/orcaice.h>
 
+#include <hydroutil/localstatus.h>
+#include <hydroutil/localtracer.h>
+
 #include "localhome.h"
 #include "homeI.h"
 
-#include "localstatus.h"
 #include "statusI.h"
 
-#include "localtracer.h"
 #include "tracerI.h"
 
 #include "privateutils.h"
@@ -120,7 +121,9 @@ Component::initTracer()
 {
     if ( !(interfaceFlag_ & TracerInterface) ) {
         orcaice::initTracerInfo( tag()+": Initialized local trace handler.");
-        return new orcaice::detail::LocalTracer( context_ );
+        return new hydroutil::LocalTracer( 
+                hydroutil::Properties( context_.properties()->getPropertiesForPrefix("Orca.Tracer.")),
+                orcaice::toString(context_.name()) );
     }
         
     // this is a bit tricky. we need

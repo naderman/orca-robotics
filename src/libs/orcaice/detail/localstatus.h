@@ -12,6 +12,8 @@
 #define ORCAICE_DETAIL_LOCAL_STATUS_H
 
 #include <hydroutil/status.h>
+#include <hydroutil/uncopyable.h>
+#include <hydroutil/timer.h>
 
 #include <IceUtil/Mutex.h>
 #include <map>
@@ -23,7 +25,8 @@ namespace detail
 
 class StatusI;
 
-class LocalStatus : public hydroutil::Status
+class LocalStatus : public hydroutil::Status,
+                    public hydroutil::Uncopyable
 {
 public:
 
@@ -32,7 +35,7 @@ public:
     {
         SubsystemStatusType type;
         std::string message;
-        IceUtil::Time lastHeartbeatTime;
+        hydroutil::Timer heartbeatTimer;
         double maxHeartbeatInterval;
     };
     //////////////////////////////////////////////////////////////////////
@@ -65,11 +68,6 @@ public:
     virtual void process();
 
 private:
-
-    // Not implemented; prevents accidental use.
-    LocalStatus( const LocalStatus & );
-    LocalStatus& operator= ( const LocalStatus & );
-
     // utility
     void setSubsystemStatus( const std::string& subsystem,
                              SubsystemStatusType type,
@@ -87,7 +85,8 @@ private:
     StatusI *statusI_;
 
     bool statusTouched_;
-    IceUtil::Time lastPublishTime_;
+    hydroutil::Timer publishTimer_;
+//     IceUtil::Time lastPublishTime_;
     double publishPeriodSec_;
 };
 

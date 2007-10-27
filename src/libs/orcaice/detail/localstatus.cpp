@@ -8,7 +8,6 @@
  *
  */
 
-#include <IceUtil/Time.h>
 #include <orcaice/orcaice.h>
 
 #include "localstatus.h"
@@ -25,7 +24,6 @@ LocalStatus::LocalStatus( const orcaice::Context& context,
       statusTouched_(false)
 {
     publishPeriodSec_ = getPropertyAsDoubleWithDefault( context_.properties(), "Orca.Status.PublishPeriod", 30 );
-    lastPublishTime_ = IceUtil::Time::now();
 }
 
 LocalStatus::~LocalStatus()
@@ -48,9 +46,9 @@ LocalStatus::setMaxHeartbeatInterval( const std::string& subsystem,
         ss << "LocalStatus::setMaxHeartbeatInterval(): Adding new subsystem: '"<<subsystem<<"'";
         context_.tracer()->debug( ss.str() );
 
+        // the timer is initialised to current time
         SubsystemStatus newStatus;
         newStatus.maxHeartbeatInterval = maxHeartbeatIntervalSec;
-        newStatus.lastHeartbeatTime    = IceUtil::Time::now();
         newStatus.message = "";
         newStatus.type = hydroutil::Status::Initialising;
         subsystems_[subsystem] = newStatus;        
@@ -60,7 +58,7 @@ LocalStatus::setMaxHeartbeatInterval( const std::string& subsystem,
         // Modifying previously-registered subsytem
         SubsystemStatus &status = it->second;
         status.maxHeartbeatInterval = maxHeartbeatIntervalSec;
-        status.lastHeartbeatTime    = IceUtil::Time::now();
+        status.heartbeatTimer.restart();
     }
 }
 
@@ -80,7 +78,7 @@ LocalStatus::heartbeat( const std::string& subsystem )
         return;
     }
 
-    subsystems_[subsystem].lastHeartbeatTime = IceUtil::Time::now();
+    subsystems_[subsystem].heartbeatTimer.restart();
 }
 
 void 
@@ -133,7 +131,7 @@ LocalStatus::setSubsystemStatus( const std::string& subsystem,
 
     it->second.type = type;
     it->second.message = message;
-    it->second.lastHeartbeatTime = IceUtil::Time::now();
+    it->second.heartbeatTimer.restart();
 }
 
 void 
@@ -147,25 +145,21 @@ LocalStatus::process()
         return;
     }
 
-    IceUtil::Time now = IceUtil::Time::now();
     std::map<std::string,SubsystemStatus>::iterator it;
     for ( it=subsystems_.begin(); it!=subsystems_.end(); ++it ) 
     {
-        IceUtil::Time timeSinceLastHeartbeat = now-it->second.lastHeartbeatTime;
-        double secSinceLastHeartbeat = (double)timeSinceLastHeartbeat.toSeconds();
-        if ( secSinceLastHeartbeat > it->second.maxHeartbeatInterval )
+        if ( it->second.heartbeatTimer.elapsedSec() > it->second.maxHeartbeatInterval )
         {
             // Oops, this subsystem appears to be dead...
             it->second.type = hydroutil::Status::Stalled;
             stringstream ss; 
-            ss << "Subsystem hasn't been heard from for "<<secSinceLastHeartbeat<<"s.";
+            ss << "Subsystem hasn't been heard from for "<<it->second.heartbeatTimer.elapsedSec()<<"s.";
             it->second.message = ss.str();
             statusTouched_ = true;
         }
     }
 
-    IceUtil::Time timeSinceLastPublish = now-lastPublishTime_;
-    bool isPublishTime = (timeSinceLastPublish.toSeconds() >= publishPeriodSec_);
+    bool isPublishTime = ( publishTimer_.elapsedSec() >= publishPeriodSec_ );
 
     if ( !statusTouched_ && !isPublishTime ) return;
     statusTouched_ = false;
@@ -173,6 +167,6 @@ LocalStatus::process()
     if ( statusI_ != NULL )
     {
         statusI_->localSetData( subsystems_ );
-        lastPublishTime_ = now;
+        publishTimer_.restart();
     }
 }

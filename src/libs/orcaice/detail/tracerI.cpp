@@ -12,17 +12,18 @@
 #include <orcaice/orcaice.h>
 
 #include "tracerI.h"
-#include "syslogger.h"
 
 using namespace std;
 using namespace orcaice::detail;
 
-TracerI::TracerI( const orcaice::Context & context ) :
-    LocalTracer(context),
+TracerI::TracerI( const orcaice::Context& context ) :
+    LocalTracer( hydroutil::Properties( context.properties()->getPropertiesForPrefix("Orca.Tracer.")),
+                 orcaice::toString(context.name()) ),
     componentTraceSender_(NULL),
     platformInfoSender_(NULL),
     platformWarningSender_(NULL),
-    platformErrorSender_(NULL)
+    platformErrorSender_(NULL),
+    context_(context)
 {
     // do we need IceStorm topics?
     if ( config_.verbosity[AnyTrace][ToNetwork] ) {
@@ -159,7 +160,7 @@ TracerI::setVerbosity( const ::orca::TracerVerbosityConfig& config,  const ::Ice
         toFile( "info", ss.str(), 1 );
     }   
     if ( config_.verbosity[InfoTrace][ToLog] ) {
-        sysLogger_->logInfo( ss.str() );
+        toLog( "info", ss.str(), 1 );
     }  
 
     // pre-calculate marginals: accross trace types

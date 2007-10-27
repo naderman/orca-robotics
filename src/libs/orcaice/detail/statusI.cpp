@@ -12,7 +12,6 @@
 #include <orcaice/orcaice.h>
 
 #include "statusI.h"
-#include "syslogger.h"
 
 using namespace std;
 
@@ -209,9 +208,6 @@ StatusI::unsubscribe(const ::orca::StatusConsumerPrx& subscriber, const ::Ice::C
 void StatusI::convert( const std::map<std::string,LocalStatus::SubsystemStatus> &internal,
                        orca::SubsystemsStatus &network ) const
 {
-    IceUtil::Time t = IceUtil::Time::now();
-    IceUtil::Time dt;
-
     std::map<std::string,LocalStatus::SubsystemStatus>::const_iterator it;
     
     for ( it=internal.begin(); it!=internal.end(); ++it ) 
@@ -233,9 +229,8 @@ void StatusI::convert( const std::map<std::string,LocalStatus::SubsystemStatus> 
             network[it->first].type = orca::SubsystemStatusStalled;
             break;
         }
-        network[it->first].message = it->second.message;
-        dt = t - it->second.lastHeartbeatTime;
-        network[it->first].sinceHeartbeat = (Ice::Float)(dt.toSecondsDouble() / it->second.maxHeartbeatInterval);
+        network[it->first].sinceHeartbeat = 
+            (Ice::Float)(it->second.heartbeatTimer.elapsedSec() / it->second.maxHeartbeatInterval);
     }
 }
 

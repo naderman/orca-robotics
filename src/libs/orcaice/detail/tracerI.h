@@ -12,8 +12,7 @@
 #define ORCAICE_TRACER_I_H
 
 #include <orca/tracer.h>
-#include <hydroutil/tracer.h>
-#include "localtracer.h"
+#include <hydroutil/localtracer.h>
 #include "networktracesender.h"
 #include <IceStorm/IceStorm.h>
 
@@ -22,7 +21,7 @@ namespace orcaice
 namespace detail
 {
 
-class TracerI : public virtual orca::Tracer, public LocalTracer
+class TracerI : public virtual orca::Tracer, public hydroutil::LocalTracer
 {
 public:
     TracerI( const orcaice::Context & context );
@@ -76,14 +75,10 @@ private:
     void subscribe( NetworkTraceSender *&sender, const ::orca::TracerConsumerPrx &subscriber );
     void unsubscribe( NetworkTraceSender *sender, const ::orca::TracerConsumerPrx &subscriber );
 
-    // Not implemented; prevents accidental use.
-    TracerI( const TracerI & );
-    TracerI& operator= ( const TracerI & );
-
     // to network
-	void toNetwork( hydroutil::Tracer::TraceType traceType,
-                    const std::string& message,
-                    int level );
+    void toNetwork( hydroutil::Tracer::TraceType traceType,
+                const std::string& message,
+                int level );
     void setupAndConnectNetworkSenders();
     void trySetupNetworkTraceSender( NetworkTraceSender *&sender,
                                      std::string topic,
@@ -100,6 +95,7 @@ private:
     NetworkTraceSender *platformWarningSender_;
     NetworkTraceSender *platformErrorSender_;
 
+    orcaice::Context context_;
 };
 
 } // namespace
