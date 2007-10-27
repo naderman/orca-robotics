@@ -109,6 +109,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
       turn rate. This is a big improvement, but it's still not 100% right (it's
       not clear if the MAX_TURNRATE_SCALE is applied internally as well). (alexb, alexm)
 
+- Laser2d
+    - Moved all 4 drivers to hydro.
+
 @par Updated utilities
 
 - Orcaview2d
