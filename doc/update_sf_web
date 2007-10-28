@@ -22,5 +22,5 @@ force cd html
 force tar --exclude=CVS --exclude=$TARBALL -zcvf $TARBALL *
 force scp $TARBALL shell.sourceforge.net:
 
-ssh shell.sourceforge.net "cd /home/groups/o/or/orca-robotics/htdocs/orca; mv ~/$TARBALL .; tar -zxvf $TARBALL; find . | xargs chmod g+w"
+ssh acfr@shell.sourceforge.net "cd /home/groups/o/or/orca-robotics/htdocs/orca; mv ~/$TARBALL .; tar -zxvf $TARBALL; find . | xargs chmod g+w"
 
