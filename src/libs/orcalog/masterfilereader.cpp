@@ -76,7 +76,7 @@ MasterFileReader::calcConstituentLogs()
         formats_.push_back( format );
         enableds_.push_back( enabled );
 
-        context_.tracer()->debug( "Parsed header: file="+filename+" type="+interfaceType+" fmt="+format, 5);
+        context_.tracer()->debug( "MasterFileReader: Parsed header: file="+filename+" type="+interfaceType+" fmt="+format, 5);
     }
 
     // At this point we're at the start of the data.
@@ -89,10 +89,10 @@ MasterFileReader::getLogs( std::vector<std::string>& filenames,
                            std::vector<std::string>& formats,
                            std::vector<bool>& enableds )
 {
-    filenames_      = filenames;
-    interfaceTypes_ = interfaceTypes;
-    formats_        = formats;
-    enableds_       = enableds;
+    filenames      = filenames_;
+    interfaceTypes = interfaceTypes_;
+    formats        = formats_;
+    enableds       = enableds_;
 }
 
 int 

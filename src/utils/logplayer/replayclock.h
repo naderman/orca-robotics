@@ -16,6 +16,17 @@
 namespace logplayer
 {
 
+//
+// ReplayClock is used to make sure the log gets played with the correct timing
+// (possibly not real-time).
+//
+// The timing could also be controlled by just looking at time deltas between items,
+// but that would drift.  This provides some kind of absolute reference.
+//
+// We keep track of two things:
+//  1. real time since the start of continuous playback, and
+//  2. log time since the start of continuous playback.
+//
 class ReplayClock
 {
 public:
@@ -24,11 +35,16 @@ public:
 
     void setReplayRate( double replayRate ) { replayRate_=replayRate; };
 
-    void setLogStartTime( const IceUtil::Time & t ) { logStartTime_=t; };
+    // When we start continuous replay, make a note of the start time with this call
+    void setContinuousReplayStartTime( const IceUtil::Time & t );
 
-    void setReplayStartTime( const IceUtil::Time & t ) { replayStartTime_=t; };
+//    void setLogStartTime( const IceUtil::Time & t ) { logStartTime_=t; };
+//    void setReplayStartTime( const IceUtil::Time & t ) { replayStartTime_=t; };
 
-    IceUtil::Time untilNextLogTime( const IceUtil::Time & logDataTime );
+    // Give it the time in log-land till the next item, it returns the
+    // time we should wait in the real world.
+    // Note: setContinuousReplayStartTime should have been called already.
+    IceUtil::Time realTimeTillNextItem( const IceUtil::Time &logTimeTillNextItem );
 
 private:
     double replayRate_;

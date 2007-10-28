@@ -20,21 +20,25 @@ ReplayClock::ReplayClock( double replayRate )
     if ( replayRate_==0 ) {
         throw std::string("Replay rate cannot be zero");
     }
+}
 
-    logStartTime_ = IceUtil::Time::now();
+void
+ReplayClock::setContinuousReplayStartTime( const IceUtil::Time &logStartTime )
+{
+    logStartTime_ = logStartTime;
     replayStartTime_ = IceUtil::Time::now();
 }
 
 IceUtil::Time 
-ReplayClock::untilNextLogTime( const IceUtil::Time & logDataTime )
+ReplayClock::realTimeTillNextItem( const IceUtil::Time &logTimeTillNextItem )
 {
     IceUtil::Time replayDataTime;
 
     if ( replayRate_ == 1.0 ) {
-        replayDataTime = replayStartTime_ + logDataTime - logStartTime_;
+        replayDataTime = replayStartTime_ + logTimeTillNextItem - logStartTime_;
     }
     else {
-        replayDataTime = replayStartTime_ + (logDataTime - logStartTime_)/replayRate_;
+        replayDataTime = replayStartTime_ + (logTimeTillNextItem - logStartTime_)/replayRate_;
     }
 
     IceUtil::Time timeLeft = replayDataTime - IceUtil::Time::now();
@@ -42,7 +46,7 @@ ReplayClock::untilNextLogTime( const IceUtil::Time & logDataTime )
     // debug
 //     cout<<"log started           : "<<logStartTime_.toString()<<endl;
 //     cout<<"replay started        : "<<replayStartTime_.toString()<<endl;
-//     cout<<"next data log time    : "<<logDataTime.toString()<<endl;
+//     cout<<"next data log time    : "<<logTimeTillNextItem.toString()<<endl;
 //     cout<<"next data replay time : "<<replayDataTime.toString()<<endl;
 //     cout<<"time remaining        : "<<timeLeft.toDuration()<<endl;
 

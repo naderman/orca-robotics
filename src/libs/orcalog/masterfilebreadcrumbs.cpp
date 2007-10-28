@@ -1,16 +1,10 @@
 #include "masterfilebreadcrumbs.h"
 #include <iostream>
+#include "utils.h"
 
 using namespace std;
 
 namespace orcalog {
-
-namespace {
-    inline IceUtil::Time iceUtilTime( int sec, int usec )
-    {
-        return IceUtil::Time::seconds(sec) + IceUtil::Time::microSeconds(usec);
-    }
-}
 
 MasterFileBreadCrumbs::MasterFileBreadCrumbs()
 {

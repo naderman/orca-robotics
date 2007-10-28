@@ -13,7 +13,8 @@
 #include <hydrodll/dynamicload.h>
 
 #include "component.h"
-#include "mainloop.h"
+#include "replayconductor.h"
+#include "continuouscontroller.h"
 
 using namespace std;
 using namespace logplayer;
@@ -43,7 +44,6 @@ orcalog::ReplayerFactory* loadReplayerFactory( hydrodll::DynamicallyLoadedLibrar
 
 Component::Component( const std::string & compName )
     : orcaice::Component( compName ),
-      mainLoop_(0),
       masterFileReader_(0)
 {
 }
@@ -183,19 +183,55 @@ Component::createReplayer( const std::string& interfaceType,
 }
 
 void
+Component::readReplayParams( IceUtil::Time &beginTime, double &replayRate, bool &autoStart )
+{
+    // config file parameters
+    Ice::PropertiesPtr props = properties();
+    string prefix = tag() + ".Config.";
+
+    // BeginTime: Replay data starting from BeginTime (seconds) from the start of the log
+    orca::Time tempTime;
+    orcaice::setInit( tempTime );
+    tempTime = orcaice::getPropertyAsTimeDurationWithDefault( props, prefix+"BeginTime", tempTime );
+    beginTime = orcaice::toIceTime( tempTime );
+    if ( beginTime<IceUtil::Time() ) {
+        beginTime = IceUtil::Time();
+        tracer()->warning( "Negative BeginTime was reset to 0.0" );
+    }
+
+    // ReplayRate: Adjusts the playback speed
+    replayRate = orcaice::getPropertyAsDoubleWithDefault( props, prefix+"ReplayRate", 1.0 );
+    stringstream ss;
+    ss<<"Replay is triggered by the clock (real/replay="<<replayRate<<").";
+    tracer()->info( ss.str() );
+
+    autoStart = orcaice::getPropertyAsIntWithDefault( props, prefix+"AutoStart", 0 );
+}
+
+void
 Component::start()
 {
     // config file parameters
     Ice::PropertiesPtr props = properties();
     std::string prefix = tag() + ".Config.";
 
+    //
+    // Load the factories
+    //
     string libNames = orcaice::getPropertyWithDefault( props, prefix+"FactoryLibNames", DEFAULT_FACTORY_NAME );
     loadPluginLibraries( libNames );
 
+    //
+    // Load the master-file reader
+    //
     string masterFilename = orcaice::getPropertyWithDefault( props, prefix+"LogFilename", "master.log" );
     masterFileReader_ = new orcalog::MasterFileReader( masterFilename.c_str(), context() );
 
     bool requireAll = orcaice::getPropertyAsIntWithDefault( props, prefix+"RequireAll", 1 );
+
+    //
+    // Load individual replayers
+    //
 
     // get info on all logs from the master file
     std::vector<std::string> filenames;
@@ -223,14 +259,41 @@ Component::start()
         createReplayer( interfaceTypes[i], formats[i], filenames[i], enableds[i], requireAll );
     }
 
-    // this will launch its own thread and replayer the logs
-    mainLoop_ = new MainLoop( masterFileReader_, replayers_, context() );
+    //
+    // Initialise replayer
+    //
+    for ( uint i=0; i < replayers_.size(); i++ )
+    {
+        replayers_[i]->init();
+    }
+
+    //
+    // Load classes to orchestrate replaying
+    //
+
+    // read replay parameters
+    IceUtil::Time beginTime;
+    double        replayRate;
+    bool          autoStart;
+    readReplayParams( beginTime, replayRate, autoStart );
+
+    ReplayConductor *conductor = new ReplayConductor( *masterFileReader_,
+                                                      replayers_,
+                                                      beginTime,
+                                                      replayRate,
+                                                      context() );
+    replayConductor_ = conductor;
+
+    highLevelController_ = new ContinuousController( *conductor, autoStart );
 
     // now we can safely activate
     activate(); 
 
-    // replayer the data now
-    mainLoop_->start();
+    // Start the thread to replay the logs
+    replayConductor_->start();
+
+    // Start the high-level control thread
+    highLevelController_->start();
     
     // the rest is handled by the application/service
 }
@@ -239,7 +302,8 @@ void
 Component::stop()
 {
     context().tracer()->debug("Stopping component", 2 );
-    hydroutil::stopAndJoin( mainLoop_ );
+    hydroutil::stopAndJoin( replayConductor_ );
+    hydroutil::stopAndJoin( highLevelController_ );
 }
 
 } // namespace

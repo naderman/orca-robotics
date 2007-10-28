@@ -16,6 +16,7 @@
 #include <orcaice/component.h>
 #include <hydrodll/dll.h>
 #include "interfacetypecounter.h"
+#include <hydroutil/thread.h>
 
 namespace orcalog
 {
@@ -26,8 +27,6 @@ namespace orcalog
 
 namespace logplayer
 {
-
-class MainLoop;
 
 class Component : public orcaice::Component
 {
@@ -50,12 +49,16 @@ private:
                          bool               enabled,
                          bool               require );
 
-    MainLoop *mainLoop_;
-    
+    void readReplayParams( IceUtil::Time &beginTime, double &replayRate, bool &autoStart );
+
+    hydroutil::ThreadPtr       replayConductor_;
+    hydroutil::ThreadPtr       highLevelController_;
+
+    orcalog::MasterFileReader *masterFileReader_;
+
     std::vector<orcalog::ReplayerFactory*>           replayerFactories_;
     std::vector<hydrodll::DynamicallyLoadedLibrary*> libraries_;
 
-    orcalog::MasterFileReader *masterFileReader_;
     std::vector<orcalog::Replayer*> replayers_;
 
     // Ensure interfaces of a given type are unique.

@@ -12,6 +12,7 @@
 #define ORCA2_ORCALOG_UTILS_H
 
 #include <string>
+#include <IceUtil/IceUtil.h>
 
 namespace orcalog
 {
@@ -46,6 +47,12 @@ std::string dataLine( int seconds, int useconds, int id, int index );
 //! Parse a master file data line to data parameters. Throws orcalog::Exception if the data line has
 //! wrong format.
 void parseDataLine( const std::string& line, int& seconds, int& useconds, int& id, int& index );
+
+//! Convenience function for constructing IceUtil times.
+inline IceUtil::Time iceUtilTime( int sec, int usec )
+{
+    return IceUtil::Time::seconds(sec) + IceUtil::Time::microSeconds(usec);
+}
 
 } //namespace
 
