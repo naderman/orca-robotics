@@ -30,7 +30,7 @@ To test the component, follow the directions of the @ref orca_doc_quickstart. Af
 
 @verbatim
 $ export ICEJ_HOME=$ICE_HOME
-$ java -cp $ICEJ_HOME/lib/Ice.jar:../../interfaces/java/orca.jar:./PureIceJ.jar PureIceJ --Ice.Default.Locator='IceGrid/Locator:default -p 12000'
+$ java -classpath $ICEJ_HOME/lib/Ice.jar:../../interfaces/java/orca.jar:./PureIceJ.jar PureIceJ --Ice.Default.Locator='IceGrid/Locator:default -p 12000'
 @endverbatim
 
 Note that PureIceJ does not use any configuration files. All connection parameters are hard-wired into the code, so you have to follow the directions of the tutorial exactly, otherwise it will not work.
