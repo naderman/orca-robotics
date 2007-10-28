@@ -52,6 +52,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @par Project wide
 
+- java build (Jayen Ashar)
+  - Dealt with the fact that gcj only handles '-classpath', not '-cp'.
+
 @par New interfaces
 
 @par New components
