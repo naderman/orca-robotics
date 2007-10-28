@@ -17,7 +17,7 @@ force () {
 TARBALL=orca-release-doc.tar.gz
 
 force ls
-force doxyorca orca.doxyfile
+force doxyorca doxyfile
 force cd html
 force tar --exclude=CVS --exclude=$TARBALL -zcvf $TARBALL *
 force scp $TARBALL shell.sourceforge.net:
