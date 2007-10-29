@@ -99,13 +99,12 @@ interface PathFollower2dConsumer
     To make the follower follow a path:
 
     - either (a)
-      1) call 'setData(thePath,false)' to load the path, then
-      2) call 'activateNow' to make it go.
+        -# call setData(thePath,false) to load the path, then
+        -# call activateNow() to make it go.
 
     - or (b)
-      1) call 'setData(thePath,true)' to load the path and have the
+        -# call setData(thePath,true) to load the path and have the
          follower start following it immediately
-    
  */
 interface PathFollower2d
 {
@@ -114,32 +113,33 @@ interface PathFollower2d
     ["cpp:const"] idempotent PathFollower2dData getData();
             
     //! Loads the follower with a path to follow.
-    //! If 'activateImmediately' is false, the follower won't go anywhere
-    //! until 'activateNow()' is called.
+    //! If @c activateImmediately is false, the follower won't go anywhere
+    //! until activateNow() is called.
     //!
     //! Loading the follower with a new path while it is active
     //! over-writes the old path.  The activation status of the follower is
-    //! set to the value of 'activateImmediately'.
+    //! set to the value of @c activateImmediately.
     //!
-    //! The follower can therefore be stopped by calling setData(dummyPath,false).
+    //! The follower can therefore be stopped by calling setData(emptyPath,false).
     //!
     idempotent void setData( PathFollower2dData path, bool activateImmediately )
         throws MalformedParametersException, OrcaException;
 
     //! Start following the previously-loaded path.
+    //! alexm: what happens when none is loaded? Silently ignored?
     idempotent void activateNow();
 
-    //! Returns the index of the waypoint being seeked:
+    //! Returns the index of the waypoint which is currently pursued:
     //!   - '-1'    : none (inactive)
     //!   - [0,n-1] : an index into the list of n waypoints.
     ["cpp:const"] idempotent int getWaypointIndex();
 
-    //! If the PathFollower is active:
-    //!   - returns true and
-    //!     sets the absolute time when the follower started following the current path
+    //! If the PathFollower is active (alexm: what does that mean? has path?)
+    //!   - returns TRUE and
+    //!   - sets the absolute time when the follower started following the current path
     //! If the PathFollower is inactive:
-    //!   - returns false and
-    //!     does not set the activationTime
+    //!   - returns FALSE and
+    //!   - does not set the activation time
     ["cpp:const"] idempotent bool getAbsoluteActivationTime( out Time activationTime );
     
     //! If the PathFollower is active:
