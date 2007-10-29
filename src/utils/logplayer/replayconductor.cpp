@@ -38,7 +38,7 @@ ReplayConductor::addEvent( const Event &e )
     eventQueue_.push( e );
     stringstream ss;
     ss << "ReplayConductor: Received event: " << toString(e);
-    context_.tracer()->debug( ss.str() );    
+    context_.tracer()->info( ss.str() );    
 }
 
 void
@@ -275,7 +275,7 @@ ReplayConductor::handleStepForward()
 {
     if ( isPlaying_ )
     {
-        context_.tracer()->warning( "ReplayConductor: Can't step backward while playing." );
+        context_.tracer()->warning( "ReplayConductor: Can't step forward while playing." );
         return;
     }
 
@@ -283,7 +283,7 @@ ReplayConductor::handleStepForward()
     int ret = masterFileReader_.getData( seconds, useconds, id, index );    
     if ( ret != 0 )
     {
-        context_.tracer()->error( "ReplayConductor::handleStepBackward: getData returned non-zero!" );
+        context_.tracer()->info( "ReplayConductor::handleStepForward: end of file reached." );
     }
     else
     {
