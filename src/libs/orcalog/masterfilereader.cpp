@@ -188,3 +188,29 @@ MasterFileReader::getDataAtOrAfterTime( int& seconds, int& useconds, int& id, in
         return 1;
     }
 }
+
+void
+MasterFileReader::placeCursorBeforeTime( int seekSec, int seekUsec )
+{
+    // First get the item >= the specified time
+    int seconds, useconds, id, index;
+    getDataAtOrAfterTime( seconds, useconds, id, index, seekSec, seekUsec );
+
+    // Now we know that the breadCrumbs_ will have passed the specified point.
+    // Get what we want from the breadCrumbs_.
+
+    std::ios::pos_type crumbPos;
+    SeekResult result = breadCrumbs_.getCrumbBeforeTime( seekSec, seekUsec, crumbPos );
+    if ( result == SeekOK )
+    {
+        file_->seekg( crumbPos );
+    }
+    else if ( result == SeekQueryBeforeStart )
+    {
+        rewindToStart();
+    }
+    else
+    {
+        assert( false && "unexpected result" );
+    }
+}

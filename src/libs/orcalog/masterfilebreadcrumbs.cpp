@@ -59,5 +59,24 @@ MasterFileBreadCrumbs::getCrumbAtOrAfterTime( int querySec, int queryUsec, std::
     }
 }
 
+SeekResult 
+MasterFileBreadCrumbs::getCrumbBeforeTime( int querySec, int queryUsec, std::ios::pos_type &pos )
+{
+    // Find the first crumb after the specified time
+    std::map<IceUtil::Time,std::ios::pos_type>::const_iterator it =
+        crumbs_.lower_bound( iceUtilTime(querySec,queryUsec) );
+
+    if ( it == crumbs_.begin() )
+    {
+        return SeekQueryBeforeStart;
+    }
+    else
+    {
+        it--;
+        pos = it->second;
+        return SeekOK;
+    }
+}
+
 }
 

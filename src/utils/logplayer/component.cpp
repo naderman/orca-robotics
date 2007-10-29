@@ -284,7 +284,7 @@ Component::start()
                                                       context() );
     replayConductor_ = conductor;
 
-    highLevelController_ = new ContinuousController( *conductor, autoStart );
+    highLevelController_ = new ContinuousController( *conductor, autoStart, context() );
 
     // now we can safely activate
     activate(); 

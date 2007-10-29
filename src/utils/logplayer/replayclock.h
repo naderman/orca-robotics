@@ -33,13 +33,11 @@ public:
     // Throws an error string if replayRate is set to zero.
     ReplayClock( double replayRate=1.0 );
 
-    void setReplayRate( double replayRate ) { replayRate_=replayRate; };
+    void setReplayRate( double replayRate );
 
-    // When we start continuous replay, make a note of the start time with this call
-    void setContinuousReplayStartTime( const IceUtil::Time & t );
-
-//    void setLogStartTime( const IceUtil::Time & t ) { logStartTime_=t; };
-//    void setReplayStartTime( const IceUtil::Time & t ) { replayStartTime_=t; };
+    // When we start continuous replay, use this call to tell the clock the
+    // time (in log-space) of the first item.
+    void setContinuousReplayStartTime( const IceUtil::Time &timeFirstLogItem );
 
     // Give it the time in log-land till the next item, it returns the
     // time we should wait in the real world.
@@ -47,6 +45,7 @@ public:
     IceUtil::Time realTimeTillNextItem( const IceUtil::Time &logTimeTillNextItem );
 
 private:
+
     double replayRate_;
     IceUtil::Time logStartTime_;
     IceUtil::Time replayStartTime_;

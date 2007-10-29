@@ -47,13 +47,16 @@ public:
     //! time was t=3. Calling getData(...,5,0) or getData(...,5,1) will return 
     //! the data at time t=5.
     //!
-    //! Seeking time earlier than the current time will move one step forward and return. 
-    //! For example, calling getData(..,,2,0) at t=3 will return the data at time t=4.
-    //!
     //! Seeking time after the end of the log will result in fast forwarding to the end.
     //!
     //! Return values are same as getData.
     int getDataAtOrAfterTime( int &seconds, int &useconds, int &id, int &index, int seekSec, int seekUsec=0 );
+
+    //! Places the file cursor just before the item with the largest timestamp less that seekSec:seekUsec.
+    //! Therefore the next call to getData() will return the item with timeStamp equal to seekSec:seekUsec.
+    //!
+    //! Seeking time before the start of the log will result in rewinding to the start.
+    void placeCursorBeforeTime( int seekSec, int seekUsec=0 );
 
 private:
 

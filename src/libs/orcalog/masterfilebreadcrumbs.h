@@ -7,26 +7,10 @@
 
 namespace orcalog {
 
-// //
-// // This structure stores the position in the file
-// // of the beginning of the record with the given timestamp.
-// //
-// class MasterFileBreadCrumb {
-// public:
-//     MasterFileBreadCrumb() {}
-//     MasterFileBreadCrumb( const std::ios::pos_type &thePos,
-//                           const IceUtil::Time      &theTime )
-//         : pos(thePos),
-//           time(theTime)
-//         {}
-
-//     std::ios::pos_type pos;
-//     IceUtil::Time time;
-// };
-
 enum SeekResult {
     SeekOK,
-    SeekQueryInFuture
+    SeekQueryInFuture,
+    SeekQueryBeforeStart
 };
 
 //!
@@ -46,8 +30,14 @@ public:
     // Tries to find the first marker after (or at) the query time.
     // Returns:
     //   SeekOK: valid answer returned in 'pos'.
-    //   SeekQueryInFuture : there was no marker after the query time (ie the query is in the future).
+    //   SeekQueryInFuture : there was no marker at or after the query time (ie the query is in the future).
     SeekResult getCrumbAtOrAfterTime( int querySec, int queryUsec, std::ios::pos_type &pos );
+
+    // Tries to find the first marker before the query time.
+    // Returns:
+    //   SeekOK: valid answer returned in 'pos'.
+    //   SeekQueryBeforeStart : there was no marker before the query time (ie the query is before the start).
+    SeekResult getCrumbBeforeTime( int querySec, int queryUsec, std::ios::pos_type &pos );
 
 private: 
 

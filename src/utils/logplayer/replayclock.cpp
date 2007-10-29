@@ -22,10 +22,16 @@ ReplayClock::ReplayClock( double replayRate )
     }
 }
 
+void 
+ReplayClock::setReplayRate( double replayRate )
+{ 
+    replayRate_=replayRate;
+}
+
 void
-ReplayClock::setContinuousReplayStartTime( const IceUtil::Time &logStartTime )
+ReplayClock::setContinuousReplayStartTime( const IceUtil::Time &timeFirstLogItem )
 {
-    logStartTime_ = logStartTime;
+    logStartTime_ = timeFirstLogItem;
     replayStartTime_ = IceUtil::Time::now();
 }
 
