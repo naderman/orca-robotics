@@ -104,8 +104,9 @@ MainThread::initialiseDriver()
 
     while ( !isStopping() )
     {
-        hydroutil::Properties props = 
-            context_.properties()->getPropertiesForPrefix( context_.tag()+".Config." );
+        string configPrefix = context_.tag()+".Config.";
+        hydroutil::Properties props(
+            context_.properties()->getPropertiesForPrefix(configPrefix), configPrefix );
         hydrointerfaces::Context driverContext( props, context_.tracer(), context_.status() );
         try {
             context_.tracer()->info( "MainThread: Initialising driver..." );

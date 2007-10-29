@@ -40,7 +40,28 @@ TestComponent::~TestComponent()
 
 void TestComponent::start()
 {
-    cout<<"testing Application() ... ok";
+    cout<<"testing Tracer::verbosity() ..."<<endl;
+    {
+        int verb;
+        verb = context().tracer()->verbosity(hydroutil::Tracer::InfoTrace,hydroutil::Tracer::ToDisplay);
+        if ( verb!=1 ) {
+            cout<<"failed. wrong InfoToDisplay verbosity, expect=1, got="<<verb<<endl;
+            exit(EXIT_FAILURE);
+        }
+        verb = context().tracer()->verbosity(hydroutil::Tracer::DebugTrace,hydroutil::Tracer::ToFile);
+        if ( verb!=16 ) {
+            cout<<"failed. wrong DebugToFile verbosity, expect=16, got="<<verb<<endl;
+            exit(EXIT_FAILURE);
+        }
+    }
+    cout<<"ok"<<endl;
+
+    cout<<"excercising tracer ..."<<endl;
+    context().tracer()->debug( "calling debug(1)", 1 );
+    context().tracer()->info( "calling info()" );
+    context().tracer()->warning( "calling warning()" );
+    context().tracer()->error( "calling error()" );
+    cout<<"ok";
     
     // NOTE: cannot call communicator()->destroy() from here
     // because they'll be caught by Ice::Application and show up as failed ctest.

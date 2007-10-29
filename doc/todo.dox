@@ -69,9 +69,15 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @par Updated components
 
+- Laser2d
+    - fixed bug made dynamically loaded drivers not to load configuration parameters (alex m)
+
 @par Updated utilities
 
 @par Updated libraries
+
+- libOrcaIce
+    - fixed bug made Tracer and Status not to load configuration parameters (alex m)
 
 @par Removed
 

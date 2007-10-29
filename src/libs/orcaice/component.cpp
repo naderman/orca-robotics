@@ -157,7 +157,8 @@ Component::initStatus()
 {
     hydroutil::LocalStatus* localStatus = new hydroutil::LocalStatus( 
             context_.tracer(),
-            hydroutil::Properties( context_.properties()->getPropertiesForPrefix("Orca.Status.")) );
+            hydroutil::Properties( 
+                context_.properties()->getPropertiesForPrefix("Orca.Status."),"Orca.Status.") );
 
     if ( !(interfaceFlag_ & StatusInterface) ) 
     {

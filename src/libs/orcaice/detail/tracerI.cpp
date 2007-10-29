@@ -17,7 +17,8 @@ using namespace std;
 using namespace orcaice::detail;
 
 TracerI::TracerI( const orcaice::Context& context ) :
-    LocalTracer( hydroutil::Properties( context.properties()->getPropertiesForPrefix("Orca.Tracer.")),
+    LocalTracer( hydroutil::Properties( 
+                    context.properties()->getPropertiesForPrefix("Orca.Tracer."),"Orca.Tracer."),
                  orcaice::toString(context.name()) ),
     componentTraceSender_(NULL),
     platformInfoSender_(NULL),
