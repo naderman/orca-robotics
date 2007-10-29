@@ -7,6 +7,16 @@ using namespace std;
 
 namespace logplayer {
 
+namespace {
+    
+    std::string toString( const IceUtil::Time &t )
+    {
+        stringstream ss;
+        ss << t.toSeconds() << ":" << t.toMicroSeconds();
+        return ss.str();
+    }
+}
+
 ReplayConductor::ReplayConductor( orcalog::MasterFileReader       &masterFileReader,
                                   std::vector<orcalog::Replayer*> &replayers,
                                   const IceUtil::Time             &beginTime,
@@ -37,7 +47,7 @@ ReplayConductor::setReplayRate( double rate )
     IceUtil::Mutex::Lock lock(mutex_);
     stringstream ss;
     ss << "ReplayConductor: Received new replay rate: " << rate;
-    context_.tracer()->info( ss.str() );
+    context_.tracer()->print( ss.str() );
 
     // If we're playing, pause before adjusting rate.
     if ( isPlayingOrAboutToStart_ )
@@ -56,7 +66,7 @@ ReplayConductor::startPlaying()
     IceUtil::Mutex::Lock lock(mutex_);
     stringstream ss;
     ss << "ReplayConductor: Received startPlaying instruction.";
-    context_.tracer()->info( ss.str() );
+    context_.tracer()->print( ss.str() );
     eventQueue_.push( Event( Start ) );
     isPlayingOrAboutToStart_ = true;
 }
@@ -67,7 +77,7 @@ ReplayConductor::pausePlaying()
     IceUtil::Mutex::Lock lock(mutex_);
     stringstream ss;
     ss << "ReplayConductor: Received pausePlaying instruction.";
-    context_.tracer()->info( ss.str() );
+    context_.tracer()->print( ss.str() );
     eventQueue_.push( Event( Pause ) );
 }
 
@@ -99,7 +109,11 @@ ReplayConductor::fastForward( const IceUtil::Time &time )
 void
 ReplayConductor::fastForwardToEnd()
 {
-    cout<<"TRACE(replayconductor.cpp): TODO" << endl;
+    IceUtil::Mutex::Lock lock(mutex_);
+    stringstream ss;
+    ss << "ReplayConductor: Received FastForwardToEnd instruction.";
+    context_.tracer()->print( ss.str() );
+    eventQueue_.push( Event( FastForwardToEnd ) );
 }
 
 void
@@ -111,7 +125,11 @@ ReplayConductor::rewind( const IceUtil::Time &time )
 void
 ReplayConductor::rewindToStartAndStop()
 {
-    cout<<"TRACE(replayconductor.cpp): TODO" << endl;
+    IceUtil::Mutex::Lock lock(mutex_);
+    stringstream ss;
+    ss << "ReplayConductor: Received RewindToStartAndStop instruction.";
+    context_.tracer()->print( ss.str() );
+    eventQueue_.push( Event( RewindToStartAndStop ) );
 }
 
 void
@@ -122,8 +140,9 @@ ReplayConductor::handleEvents()
     // Pop all the events off the queue and deal with them.
     while ( !eventQueue_.empty() )
     {
-        handleEvent( eventQueue_.front() );
+        Event e = eventQueue_.front();
         eventQueue_.pop();
+        handleEvent( e );
     }
 }
 
@@ -154,6 +173,8 @@ ReplayConductor::handleEvent( const Event &event )
         }
         clock_.setContinuousReplayStartTime( timeNextItem );
 
+        cout<<"TRACE(replayconductor.cpp): will start at " << toString(timeNextItem) << endl;
+        
         // This flag will cause the main loop to start rolling.
         isPlaying_ = true;
         isPlayingOrAboutToStart_ = true;
@@ -163,6 +184,17 @@ ReplayConductor::handleEvent( const Event &event )
     {
         isPlaying_ = false;
         isPlayingOrAboutToStart_ = false;
+        break;
+    }
+    case RewindToStartAndStop:
+    {
+        masterFileReader_.rewindToStart();
+        eventQueue_.push( Event( Pause ) );
+        break;
+    }
+    case FastForwardToEnd:
+    {
+        cout<<"TRACE(replayconductor.cpp): TODO: FastForwardToEnd" << endl;
         break;
     }
     default:
@@ -228,6 +260,7 @@ ReplayConductor::walk()
         if ( id > (int)replayers_.size() ) {
             stringstream ss;
             ss << "ReplayConductor: Reference to subfile number " << id << ", when only " << replayers_.size() << " exist.";
+            context_.tracer()->print( ss.str() );
             context_.tracer()->error( ss.str() );
             exit(1);
         }
@@ -260,6 +293,7 @@ ReplayConductor::walk()
             }
             else
             {
+                cout<<"TRACE(replayconductor.cpp): replayData("<<index<<")" << endl;
                 replayers_[id]->replayData( index );
             }
         }
@@ -272,18 +306,21 @@ ReplayConductor::walk()
         {
             stringstream ss;
             ss<<"ReplayConductor: Caught Ice::Exception from replayer '"<<replayers_[id]->toString()<<"': "<<e;
+            context_.tracer()->print( ss.str() );
             context_.tracer()->error( ss.str() );
         }
         catch ( const std::exception  &e ) 
         {
             stringstream ss;
             ss<<"ReplayConductor: Caught std::exception from replayer '"<<replayers_[id]->toString()<<"': "<<e.what();
+            context_.tracer()->print( ss.str() );
             context_.tracer()->error( ss.str() );
         }
         catch ( ... )
         {
             stringstream ss;
             ss<<"ReplayConductor: Caught unknown exception from replayer '"<<replayers_[id]->toString();
+            context_.tracer()->print( ss.str() );
             context_.tracer()->error( ss.str() );
         }
 

@@ -74,27 +74,39 @@ private:
         SetReplayRate,
         Start,
         Pause,
-//         StepForward,
-//         StepBackward,
-//         FastForward,
-//         FastForwardToEnd,
-//         Rewind,
-//         RewindToStartAndStop
+        StepForward,
+        StepBackward,
+        FastForward,
+        FastForwardToEnd,
+        Rewind,
+        RewindToStartAndStop
     };
+    // Helper class to represent events that are waiting to be
+    // processed.  The member variables are only valid for certain
+    // event types.
     class Event {
     public:
         Event( EventType eventType )
-            : type_(eventType) {}
+            : type_(eventType)
+            {}
         Event( EventType eventType, double replayRate )
             : type_(eventType),
               replayRate_(replayRate)
             {}
-//        Event( EventType eventType, int sec, int usec );
+        Event( EventType eventType, const IceUtil::Time &t )
+            : type_(eventType),
+              time_(t)
+            {}
         EventType type() const { return type_; }
         double replayRate() const
             {
                 assert( type_ == SetReplayRate );
                 return replayRate_; 
+            }
+        const IceUtil::Time &time() const
+            {
+                assert( type_ == FastForward || type_ == Rewind );
+                return time_;
             }
     private:
         const EventType type_;

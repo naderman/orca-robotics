@@ -10,9 +10,38 @@ namespace {
 
     void printMenu()
     {
-        cout << "  p)ause              : toggle playing"  << endl
-             << "  r)eplay-rate <rate> : set replay rate" << endl
-             << "  q)uit" << endl;
+        cout << "  (p)ause              : toggle playing"  << endl
+             << "  (r)eplay-rate <rate> : set replay rate" << endl
+             << "  re(w)ind [sec[:usec]]  : rewind (no arg = 'to start')" << endl
+             << "  (q)uit" << endl;
+    }
+
+    // timeString should have format 'sec:usec' or format 'sec'
+    bool
+    parseTime( const std::string &timeString, IceUtil::Time &t )
+    {
+        int sec, usec;
+
+        std::vector<string> tokens = hydroutil::tokenise(timeString,":");
+        if ( tokens.size() == 1 )
+        {
+            int num = sscanf( tokens[0].c_str(), "%d", &sec );
+            if ( num != 1 ) return false;
+            t = IceUtil::Time::seconds(sec);
+            return true;
+        }
+        else if ( tokens.size() == 2 )
+        {
+            int num = sscanf( tokens[0].c_str(), "%d", &sec );
+            if ( num != 1 ) return false;
+            num = sscanf( tokens[1].c_str(), "%d", &usec );
+            t = IceUtil::Time::seconds(sec) + IceUtil::Time::microSeconds(usec);
+            return true;            
+        }
+        else
+        {
+            return false;
+        }
     }
 
 }
@@ -33,7 +62,7 @@ InteractiveController::walk()
 
     while ( !isStopping() )
     {
-        cout << " =>";
+        cout << " => ";
 
         const int NUM = 1000;
         char input[NUM];
@@ -81,8 +110,6 @@ InteractiveController::parseInput( const std::string &input )
 
         double newRate;
         int num = sscanf( tokens[1].c_str(), "%lf", &newRate );
-        cout<<"TRACE(interactivecontroller.cpp): num: " << num << endl;
-        cout<<"TRACE(interactivecontroller.cpp): newRate: " << newRate << endl;
         if ( num != 1 )
         {
             printMenu();
@@ -90,6 +117,29 @@ InteractiveController::parseInput( const std::string &input )
         }
 
         replayConductor_.setReplayRate( newRate );
+    }
+    else if ( tokens[0][0] == 'w' )
+    {
+        if ( tokens.size() == 1 )
+        {
+            replayConductor_.rewindToStartAndStop();
+        }
+        else if ( tokens.size() != 2 )
+        {
+            printMenu();
+        }
+        else
+        {
+            IceUtil::Time rewindTime;
+            bool timeOK = parseTime( tokens[1], rewindTime );
+            if ( !timeOK )
+            {
+                cout<<"TRACE(interactivecontroller.cpp): badly formed time." << endl;
+                printMenu();
+                return;
+            }
+            replayConductor_.rewind( rewindTime );
+        }
     }
     else if ( tokens[0][0] == 'q' )
     {
