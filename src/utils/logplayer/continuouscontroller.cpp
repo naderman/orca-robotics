@@ -14,10 +14,6 @@ ContinuousController::ContinuousController( ReplayConductor        &replayConduc
 {
 }
 
-ContinuousController::~ContinuousController()
-{
-}
-
 void
 ContinuousController::walk()
 {

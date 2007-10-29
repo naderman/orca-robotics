@@ -38,7 +38,16 @@ ReplayConductor::setReplayRate( double rate )
     stringstream ss;
     ss << "ReplayConductor: Received new replay rate: " << rate;
     context_.tracer()->info( ss.str() );
+
+    // If we're playing, pause before adjusting rate.
+    if ( isPlayingOrAboutToStart_ )
+        eventQueue_.push( Event( Pause ) );
+
     eventQueue_.push( Event( SetReplayRate, rate ) );
+
+    // Then un-pause if necessary
+    if ( isPlayingOrAboutToStart_ )
+        eventQueue_.push( Event( Start ) );
 }
 
 void
@@ -140,6 +149,7 @@ ReplayConductor::handleEvent( const Event &event )
         if ( ret != 0 )
         {
             context_.tracer()->debug( "ReplayConductor: At end of log.  Can't start." );
+            isPlayingOrAboutToStart_ = false;
             break;
         }
         clock_.setContinuousReplayStartTime( timeNextItem );

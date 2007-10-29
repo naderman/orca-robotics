@@ -185,7 +185,7 @@ void NmeaMessage::parseTokens(){
 
     //Split the message at the commas
     //TODO cope with missing fields
-    hydroutil::tokenise(sentence_, dataTokens_, ",");
+    dataTokens_ = hydroutil::tokenise(sentence_, ",");
     
     //Now discard the $ and the * from the first and last tokens...
     //TODO : - dataTokens_[0] = 

@@ -17,7 +17,6 @@ public:
     ContinuousController( ReplayConductor &replayConductor,
                           bool             autoStart,
                           const orcaice::Context &context );
-    ~ContinuousController();
 
     void walk();
 

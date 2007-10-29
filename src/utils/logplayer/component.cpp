@@ -15,6 +15,7 @@
 #include "component.h"
 #include "replayconductor.h"
 #include "continuouscontroller.h"
+#include "interactivecontroller.h"
 
 using namespace std;
 using namespace logplayer;
@@ -284,7 +285,8 @@ Component::start()
                                                       context() );
     replayConductor_ = conductor;
 
-    highLevelController_ = new ContinuousController( *conductor, autoStart, context() );
+//    highLevelController_ = new ContinuousController( *conductor, autoStart, context() );
+    highLevelController_ = new InteractiveController( *conductor, autoStart, context() );
 
     // now we can safely activate
     activate(); 
