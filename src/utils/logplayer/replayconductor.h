@@ -116,9 +116,31 @@ private:
 
     ////////////////////////////////////////
 
+    // Convenience function which pushes the event and prints a message.
+    void addEvent( const Event &e );
+
     void handleEvents();
-    void handleEvent( const Event &event );
+    // Returns: 
+    //   0:  got time OK
+    //   -1: couldn't get time (eg because at end of file)
     int getTimeOfNextItem( IceUtil::Time &timeNextItem );
+
+    void handleSetReplayRate( double rate );
+    void handleStart();
+    void handlePause();
+    void handleRewindToStartAndStop();
+    void handleFastForwardToEnd();
+    void handleRewind( const IceUtil::Time &deltaT );
+    void handleFastForward( const IceUtil::Time &deltaT );
+    void handleStepForward();
+    void handleStepBackward();
+
+    // Catches its own exceptions.
+    void replayData( int id, int index );
+
+    std::string toString( EventType e );
+    std::string toString( const Event &e );
+    std::string toString( const IceUtil::Time &t );
 
     // Handles high-level commands
     std::queue<Event> eventQueue_;

@@ -1,6 +1,7 @@
 #ifndef ORCALOG_FILEBREADCRUMBS_H
 #define ORCALOG_FILEBREADCRUMBS_H
 
+#include <sstream>
 #include <fstream>
 #include <vector>
 #include <IceUtil/IceUtil.h>
@@ -47,7 +48,7 @@ public:
     //   false: not found
     bool getCrumbAt( const IndexType &t, std::ios::pos_type &pos );
 
-    // Tries to find the first marker before the query.
+    // Tries to find the last marker before the query.
     // Returns:
     //   SeekOK: valid answer returned in 'pos'.
     //   SeekQueryBeforeStart : there was no marker before the query (ie the query is before the start).
@@ -139,7 +140,7 @@ FileBreadCrumbs<IndexType>::getCrumbAt( const IndexType &index,
 template<typename IndexType>
 SeekResult 
 FileBreadCrumbs<IndexType>::getCrumbBefore( const IndexType &index,
-                                                  std::ios::pos_type &pos )
+                                            std::ios::pos_type &pos )
 {
     // Find the first crumb after the specified index
     ConstCrumbsIterator it = crumbs_.lower_bound( index );
@@ -154,6 +155,29 @@ FileBreadCrumbs<IndexType>::getCrumbBefore( const IndexType &index,
         pos = it->second;
         return SeekOK;
     }
+}
+
+//////////////////////////////////////////////////////////////////////
+
+inline std::string toString( SeekResult &r )
+{
+    std::stringstream ss;
+    switch (r)
+    {
+    case SeekOK:
+        ss << "SeekOK";
+        break;
+    case SeekQueryInFuture:
+        ss << "SeekQueryInFuture";
+        break;
+    case SeekQueryBeforeStart:
+        ss << "SeekQueryBeforeStart";
+        break;
+    default:
+        ss << "Unknown SeekResult";
+        break;
+    }
+    return ss.str();
 }
 
 } // end namespace orcalog

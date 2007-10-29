@@ -34,12 +34,13 @@ public:
                   std::vector<bool>        &enableds );
 
     //! Rewind to the start of the data log. Calling getData() afterwards will
-    //! return the first data point. Returns 0 if data read sucessfully. Returns 
-    //! 1 if end of file is reached without finding data.
-    int rewindToStart();
+    //! return the first data point.
+    void rewindToStart();
 
-    //! Read one line of data log. Returns 0 if data read sucessfully. Returns 
-    //! 1 if end of file is reached.
+    //! Read one line of data log. 
+    //! Returns:
+    //!  - 0 if data read sucessfully.
+    //!  - 1 if end of file is reached.
     int getData( int &seconds, int &useconds, int &id, int &index );
 
     //! Steps through the data entries until the time stamp is equal to or is after
@@ -49,23 +50,53 @@ public:
     //!
     //! Seeking time after the end of the log will result in fast forwarding to the end.
     //!
-    //! Return values are same as getData.
+    //! Returns:
+    //!  - 0 if data read sucessfully.
+    //!  - 1 if end of file is reached.
     int getDataAtOrAfterTime( int &seconds, int &useconds, int &id, int &index, int seekSec, int seekUsec=0 );
 
-    //! Places the file cursor just before the item with the largest timestamp less that seekSec:seekUsec.
-    //! Therefore the next call to getData() will return the item with timeStamp equal to seekSec:seekUsec.
-    //!
-    //! Seeking time before the start of the log will result in rewinding to the start.
+    //! Places the cursor at the item with the greatest time < seekSec:seekUsec.
     void placeCursorBeforeTime( int seekSec, int seekUsec=0 );
+
+    //! Places the cursor at the item with the smallest time >= seekSec:seekUsec.
+    //! Returns:
+    //!  - 0 if sucessful.
+    //!  - 1 if end of file is reached.
+    int placeCursorAtOrAfterTime( int seekSec, int seekUsec=0 );
+
+    //! Gives the time of the item which would be returned if getData() were called.
+    //! Returns: cursorIsValid (is invalid at end of log)
+    bool getCursorTime( int &seconds, int &useconds );
+
+    //! Steps the cursor backward (unless it's already at the start).
+    //! Ie interleaved calls to stepBackward() and getData() will move the cursor back
+    //! and forth between two locations.
+    void stepBackward();
 
 private:
 
     void calcConstituentLogs();
+    void calcCursorInfo();
+    int readData( int& seconds, int& useconds, int& id, int& index );
+    void moveTo( const std::ios::pos_type &pos );
 
     std::ifstream *file_;
 
     // Used for recording positions in the file.
     detail::FileBreadCrumbs<IceUtil::Time> breadCrumbs_;
+
+    // The time of the first entry
+    IceUtil::Time initialCursorTime_;
+
+    // What's at the cursor.  Ie:
+    //   if (cursorValid): what we'll get if we call getData() now.
+    //   if (!cursorValid): the last timeStamp in the file.
+    int cursorSec_;
+    int cursorUsec_;
+    int cursorId_;
+    int cursorIndex_;
+
+    bool cursorValid_;
 
     // remember the dir where the master file is located
     // the individual log files MUST be in the same dir.
@@ -77,9 +108,6 @@ private:
     std::vector<std::string> formats_;
     std::vector<bool>        enableds_;
 
-    // If we read right now we'll read the index_'th data item.
-    int index_;
-    
     orcaice::Context context_;
 };
 

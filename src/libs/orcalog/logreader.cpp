@@ -74,11 +74,14 @@ LogReader::setLogIndex( int index )
         // The usual case when we're moving through sequentially
         return;
     }
-    else if ( index > breadCrumbs_.latest() )
+
+    if ( index > breadCrumbs_.latest() )
     {
         // Have to fast-forward into the future
-        while ( index < logIndex_ )
+        while ( logIndex_ < index )
+        {
             read();
+        }
     }
     else // index < breadCrumbs_.latest()
     {
@@ -93,7 +96,7 @@ LogReader::setLogIndex( int index )
         }
         file_->seekg( crumbPos );
     }
-    index = logIndex_;
+    logIndex_ = index;
 }
 
 void 

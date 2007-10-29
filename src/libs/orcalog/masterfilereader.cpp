@@ -22,7 +22,7 @@ using namespace orcalog;
 
 
 MasterFileReader::MasterFileReader( const std::string &filename, const orcaice::Context& context )
-    : index_(-1),
+    : cursorValid_(false),
       context_(context)
 {
     // create master file
@@ -36,6 +36,15 @@ MasterFileReader::MasterFileReader( const std::string &filename, const orcaice::
     dir_ = hydroutil::dirname( filename );
 
     calcConstituentLogs();
+
+    calcCursorInfo();
+    if ( !cursorValid_ )
+    {
+        throw hydroutil::Exception( ERROR_INFO, "Initial calcCursorInfo failed.  Is there any data in this log?" );
+    }
+
+    initialCursorTime_ = iceUtilTime(cursorSec_,cursorUsec_);
+    rewindToStart();
 }
 
 MasterFileReader::~MasterFileReader()
@@ -78,9 +87,6 @@ MasterFileReader::calcConstituentLogs()
 
         context_.tracer()->debug( "MasterFileReader: Parsed header: file="+filename+" type="+interfaceType+" fmt="+format, 5);
     }
-
-    // At this point we're at the start of the data.
-    index_=0;
 }
 
 void
@@ -95,28 +101,26 @@ MasterFileReader::getLogs( std::vector<std::string>& filenames,
     enableds       = enableds_;
 }
 
-int 
+void 
 MasterFileReader::rewindToStart()
 {   
-    // STL book p.634-36
-    file_->clear();
-    file_->seekg( 0 );
+    std::ios::pos_type crumbPos;
+    detail::SeekResult res = breadCrumbs_.getCrumbAtOrAfter( iceUtilTime(0,0), crumbPos );
+    assert( (res == detail::SeekOK) && "Should be able to find first crumb!" );
 
-//     int count = 0;
-    std::string line;
-    while ( std::getline( *file_, line ) ) {
-//         cout<<count++<<endl;
-        // data starts here, don't parse headers anymore
-        if ( orcalog::isEndOfHeader( line ) ) {
-            return 0;
-        }
-    }
-    // this is EOF, failed to find DATA
-    return 1;
+    moveTo( crumbPos );
+    assert( cursorValid_ );
+}
+
+void
+MasterFileReader::calcCursorInfo()
+{
+    int ret = readData( cursorSec_, cursorUsec_, cursorId_, cursorIndex_ );
+    cursorValid_ = (ret==0);
 }
 
 int 
-MasterFileReader::getData( int& seconds, int& useconds, int& id, int& index )
+MasterFileReader::readData( int& seconds, int& useconds, int& id, int& index )
 {
     std::string line;
 
@@ -148,35 +152,99 @@ MasterFileReader::getData( int& seconds, int& useconds, int& id, int& index )
         return 0;
     }
     
-//     cout<<"MasterFileReader::getData: this is EOF"<<endl;
     return 1;
 }
 
 int 
-MasterFileReader::getDataAtOrAfterTime( int& seconds, int& useconds, int& id, int& index, int seekSec, int seekUsec )
+MasterFileReader::getData( int& seconds, int& useconds, int& id, int& index )
+{
+    if ( cursorValid_ )
+    {
+        seconds  = cursorSec_;
+        useconds = cursorUsec_;
+        id       = cursorId_;
+        index    = cursorIndex_;
+
+        calcCursorInfo();
+        return 0;
+    }
+    else
+    {
+        return 1;
+    }
+}
+
+void
+MasterFileReader::placeCursorBeforeTime( int seekSec, int seekUsec )
+{
+    int seconds, useconds, id, index;
+    // don't care if we read to the end of the file.
+    getDataAtOrAfterTime( seconds, useconds, id, index, seekSec, seekUsec );
+
+    // Now we know that the breadCrumbs_ will have passed the specified point.
+    // Get what we want from the breadCrumbs_.
+
+    std::ios::pos_type crumbPos;
+    detail::SeekResult result = breadCrumbs_.getCrumbBefore( iceUtilTime(seekSec, seekUsec),
+                                                             crumbPos );
+
+    if ( result == detail::SeekOK )
+    {
+        moveTo( crumbPos );
+    }
+    else if ( result == detail::SeekQueryBeforeStart )
+    {
+        rewindToStart();
+    }
+    else
+    {
+        assert( false && "unexpected result" );
+    }
+}
+
+void
+MasterFileReader::stepBackward()
+{
+    if ( !cursorValid_ )
+    {
+        // cursorSec_:cursorUsec_ is the time of the last item.
+        // Point at it.
+        placeCursorAtOrAfterTime( cursorSec_, cursorUsec_ );
+    }
+    else
+    {
+        // Point at the item before the current one.
+        placeCursorBeforeTime( cursorSec_, cursorUsec_ );
+    }
+}
+
+int 
+MasterFileReader::placeCursorAtOrAfterTime( int seekSec,
+                                            int seekUsec )
 {
     // Maybe the requested time is in the past, somewhere in the trail of breadcrumbs.
     std::ios::pos_type crumbPos;
     detail::SeekResult result = breadCrumbs_.getCrumbAtOrAfter( iceUtilTime(seekSec, seekUsec), 
                                                                 crumbPos );
+
     if ( result == detail::SeekOK )
     {
         // Found it
-        file_->seekg( crumbPos );
-        return getData( seconds, useconds, id, index );
+        moveTo( crumbPos );
+        return 0;
     }
     else if ( result == detail::SeekQueryInFuture )
     {
         // The piece of data we want is some time into the future.  Have to search forwards.
-        IceUtil::Time seekTime = 
-            IceUtil::Time::seconds(seekSec) + IceUtil::Time::microSeconds(seekUsec);
-
-        IceUtil::Time dataTime;
+        int seconds, useconds, id, index;
+        IceUtil::Time seekTime = iceUtilTime( seekSec, seekUsec );
         while ( !getData( seconds, useconds, id, index ) ) 
         {
-            dataTime = IceUtil::Time::seconds(seconds) + IceUtil::Time::microSeconds(useconds);
-            if ( dataTime >= seekTime ) {
-                // success
+            if ( iceUtilTime(seconds,useconds) >= seekTime ) 
+            {
+                // Found what we want.  Now step back one so the cursor is pointing
+                // at what was just found.
+                stepBackward();
                 return 0;
             }
         }
@@ -190,29 +258,44 @@ MasterFileReader::getDataAtOrAfterTime( int& seconds, int& useconds, int& id, in
     }
 }
 
-void
-MasterFileReader::placeCursorBeforeTime( int seekSec, int seekUsec )
+int 
+MasterFileReader::getDataAtOrAfterTime( int& seconds,
+                                        int& useconds,
+                                        int& id,
+                                        int& index,
+                                        int seekSec,
+                                        int seekUsec )
 {
-    // First get the item >= the specified time
-    int seconds, useconds, id, index;
-    getDataAtOrAfterTime( seconds, useconds, id, index, seekSec, seekUsec );
-
-    // Now we know that the breadCrumbs_ will have passed the specified point.
-    // Get what we want from the breadCrumbs_.
-
-    std::ios::pos_type crumbPos;
-    detail::SeekResult result = breadCrumbs_.getCrumbBefore( iceUtilTime(seekSec, seekUsec),
-                                                             crumbPos );
-    if ( result == detail::SeekOK )
+    int ret = placeCursorAtOrAfterTime( seekSec, seekUsec );
+    if ( ret != 0 )
     {
-        file_->seekg( crumbPos );
-    }
-    else if ( result == detail::SeekQueryBeforeStart )
-    {
-        rewindToStart();
+        return ret;
     }
     else
     {
-        assert( false && "unexpected result" );
+        getData( seconds, useconds, id, index );
+        return 0;
     }
+}
+
+bool
+MasterFileReader::getCursorTime( int &seconds,
+                                 int &useconds )
+{
+    if ( !cursorValid_ )
+        return false;
+
+    seconds = cursorSec_;
+    useconds = cursorUsec_;
+    return true;
+}
+
+void
+MasterFileReader::moveTo( const std::ios::pos_type &pos )
+{
+    // Clear eof bit
+    file_->clear();
+    file_->seekg( pos );
+    calcCursorInfo();
+    
 }

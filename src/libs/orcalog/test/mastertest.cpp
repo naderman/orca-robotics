@@ -130,9 +130,11 @@ void TestComponent::start()
         exit(EXIT_FAILURE);
     }
     cout<<"ok"<<endl;
+    int initSec=sec, initUsec=usec;
 
-    cout<<"testing getDataAtOrAfterTime() to good line ... ";
-    ret = masterFileReader->getDataAtOrAfterTime( sec, usec, id, index,  sec+3, usec+900000 );
+    cout<<"testing getDataAtOrAfterTime() forward to good line ... ";
+    int goodSec = sec+3, goodUsec=usec+900000;
+    ret = masterFileReader->getDataAtOrAfterTime( sec, usec, id, index,  goodSec, goodUsec );
     if ( ret ) {
         cout<<"failed: ret="<<ret<<endl;
         exit(EXIT_FAILURE);
@@ -141,6 +143,29 @@ void TestComponent::start()
         cout<<"failed"<<endl<<"wrong data in sought line"<<endl
             <<"expected="<<id1<<","<<index1
             <<" got="<<id<<","<<index<<endl;
+        exit(EXIT_FAILURE);
+    }
+    cout<<"ok"<<endl;
+
+    cout<<"testing placeCursorBeforeTime() for good line ... ";
+    masterFileReader->placeCursorBeforeTime( goodSec, goodUsec );
+    ret = masterFileReader->getData( sec, usec, id, index );
+    if ( ret ) {
+        cout<<"failed: ret="<<ret<<endl;
+        exit(EXIT_FAILURE);
+    }
+    if ( orcalog::iceUtilTime(sec,usec) >= orcalog::iceUtilTime(goodSec,goodUsec) )
+    {
+        cout<<"failed"<<endl
+            <<"sec=    "<<sec<<    ", usec=    "<<usec<<endl
+            <<"goodSec="<<goodSec<<", goodUsec="<<goodUsec<<endl;
+        exit(EXIT_FAILURE);
+    }
+    if ( orcalog::iceUtilTime(sec,usec) == orcalog::iceUtilTime(initSec,initUsec) )
+    {
+        cout<<"failed"<<endl
+            <<"sec=    "<<sec<<    ", usec=    "<<usec<<endl
+            <<"initSec="<<initSec<<", initUsec="<<initUsec<<endl;
         exit(EXIT_FAILURE);
     }
     cout<<"ok"<<endl;
@@ -154,12 +179,22 @@ void TestComponent::start()
     }
     cout<<"ok"<<endl;
 
-    cout<<"testing rewindToStart() ... ";
-    ret = masterFileReader->rewindToStart();
+    cout<<"testing getDataAtOrAfterTime() backward to good line from after end ... ";
+    ret = masterFileReader->getDataAtOrAfterTime( sec, usec, id, index,  goodSec, goodUsec );
     if ( ret ) {
-        cout<<"failed: expected find data, ret="<<ret<<endl;
+        cout<<"failed: ret="<<ret<<endl;
         exit(EXIT_FAILURE);
     }
+    if ( id!=id1 || index!=index1 ) {
+        cout<<"failed"<<endl<<"wrong data in sought line"<<endl
+            <<"expected="<<id1<<","<<index1
+            <<" got="<<id<<","<<index<<endl;
+        exit(EXIT_FAILURE);
+    }
+    cout<<"ok"<<endl;
+
+    cout<<"testing rewindToStart() ... ";
+    masterFileReader->rewindToStart();
     ret = masterFileReader->getData( sec, usec, id, index );
     if ( ret ) {
         cout<<"failed: expected to find line, ret="<<ret<<endl;

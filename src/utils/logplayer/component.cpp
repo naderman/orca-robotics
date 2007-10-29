@@ -285,8 +285,22 @@ Component::start()
                                                       context() );
     replayConductor_ = conductor;
 
-//    highLevelController_ = new ContinuousController( *conductor, autoStart, context() );
-    highLevelController_ = new InteractiveController( *conductor, autoStart, context() );
+    // Instantiate highLevelController_
+    string replayController = orcaice::getPropertyWithDefault( props, prefix+"ReplayController", "interactive" );
+    if ( replayController == "interactive" )
+    {
+        highLevelController_ = new InteractiveController( *conductor, autoStart, context() );
+    }
+    else if ( replayController == "continuous" )
+    {
+        highLevelController_ = new ContinuousController( *conductor, autoStart, context() );
+    }
+    else
+    {
+        stringstream ss;
+        ss << "Component: Unknown ReplayController: " << replayController;
+        throw hydroutil::Exception( ERROR_INFO, ss.str() );
+    }
 
     // now we can safely activate
     activate(); 

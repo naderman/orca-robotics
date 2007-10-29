@@ -8,14 +8,6 @@ namespace logplayer {
 
 namespace {
 
-    void printMenu()
-    {
-        cout << "  (p)ause              : toggle playing"  << endl
-             << "  (r)eplay-rate <rate> : set replay rate" << endl
-             << "  re(w)ind [sec[:usec]]  : rewind (no arg = 'to start')" << endl
-             << "  (q)uit" << endl;
-    }
-
     // timeString should have format 'sec:usec' or format 'sec'
     bool
     parseTime( const std::string &timeString, IceUtil::Time &t )
@@ -55,9 +47,31 @@ InteractiveController::InteractiveController( ReplayConductor        &replayCond
 {
 }
 
+void 
+InteractiveController::printMenu()
+{
+    if ( replayConductor_.isPlayingOrAboutToStart() )
+    {
+        cout << "    -- LogPlayer is PLAYING -- " << endl;
+    }
+    else
+    {
+        cout << "    -- LogPlayer is PAUSED -- " << endl;
+    }
+    cout << "  (p)lay/(p)ause               : toggle playing"  << endl
+         << "  (r)eplay-rate <rate>         : set replay rate" << endl
+         << "  re(w)ind [sec[:usec]]        : rewind (no arg = 'to start')" << endl
+         << "  (f)ast-forward [sec[:usec]]  : fast-forward (no arg = 'to end')" << endl
+         << "  (l),(j)                      : step backward/forward" << endl
+         << "  (q)uit" << endl;
+}
+
 void
 InteractiveController::walk()
 {
+    if ( autoStart_ )
+        replayConductor_.startPlaying();
+
     printMenu();
 
     while ( !isStopping() )
@@ -76,20 +90,13 @@ InteractiveController::parseInput( const std::string &input )
 {
     std::vector<string> tokens = hydroutil::tokenise( input, " " );
 
-    cout<<"TRACE(interactivecontroller.cpp): input: " << input << endl;
-    cout<<"TRACE(interactivecontroller.cpp): numTokens: " << tokens.size() << endl;
-    for ( uint i=0; i < tokens.size(); i++ )
-    {
-        cout<<"TRACE(interactivecontroller.cpp): tokens["<<i<<"]: '" << tokens[i] << "'" << endl;
-    }
-
     if ( tokens.size() == 0 )
     {
         printMenu();
         return;
     }
 
-    if ( tokens[0][0] == 'p' )
+    if ( tokens[0][0] == 'p' ) // play/pause
     {
         if ( replayConductor_.isPlayingOrAboutToStart() )
         {
@@ -100,7 +107,7 @@ InteractiveController::parseInput( const std::string &input )
             replayConductor_.startPlaying();
         }
     }
-    else if ( tokens[0][0] == 'r' )
+    else if ( tokens[0][0] == 'r' ) // replay-rate
     {
         if ( tokens.size() != 2 )
         {
@@ -118,7 +125,7 @@ InteractiveController::parseInput( const std::string &input )
 
         replayConductor_.setReplayRate( newRate );
     }
-    else if ( tokens[0][0] == 'w' )
+    else if ( tokens[0][0] == 'w' ) // rewind
     {
         if ( tokens.size() == 1 )
         {
@@ -130,18 +137,49 @@ InteractiveController::parseInput( const std::string &input )
         }
         else
         {
-            IceUtil::Time rewindTime;
-            bool timeOK = parseTime( tokens[1], rewindTime );
+            IceUtil::Time time;
+            bool timeOK = parseTime( tokens[1], time );
             if ( !timeOK )
             {
                 cout<<"TRACE(interactivecontroller.cpp): badly formed time." << endl;
                 printMenu();
                 return;
             }
-            replayConductor_.rewind( rewindTime );
+            replayConductor_.rewind( time );
         }
     }
-    else if ( tokens[0][0] == 'q' )
+    else if ( tokens[0][0] == 'f' ) // fast-forward
+    {
+        if ( tokens.size() == 1 )
+        {
+            replayConductor_.fastForwardToEnd();
+        }
+        else if ( tokens.size() != 2 )
+        {
+            printMenu();
+        }
+        else
+        {
+            IceUtil::Time time;
+            bool timeOK = parseTime( tokens[1], time );
+            if ( !timeOK )
+            {
+                cout<<"TRACE(interactivecontroller.cpp): badly formed time." << endl;
+                printMenu();
+                return;
+            }
+            replayConductor_.fastForward( time );
+        }
+    }
+    else if ( tokens[0][0] == 'j' ) // step backward
+    {
+        replayConductor_.stepBackward();
+    }
+    else if ( tokens[0][0] == 'l' ) // step forward
+    {
+        replayConductor_.stepForward();
+    }
+    else if ( tokens[0][0] == 'q' ) // quit
     {
         context_.communicator()->destroy();
         stop();
