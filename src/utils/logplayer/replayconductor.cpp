@@ -72,31 +72,37 @@ ReplayConductor::isPlayingOrAboutToStart()
 void
 ReplayConductor::stepForward()
 {
+    cout<<"TRACE(replayconductor.cpp): TODO" << endl;
 }
 
 void
 ReplayConductor::stepBackward()
 {
+    cout<<"TRACE(replayconductor.cpp): TODO" << endl;
 }
 
 void
 ReplayConductor::fastForward( const IceUtil::Time &time )
 {
+    cout<<"TRACE(replayconductor.cpp): TODO" << endl;
 }
 
 void
 ReplayConductor::fastForwardToEnd()
 {
+    cout<<"TRACE(replayconductor.cpp): TODO" << endl;
 }
 
 void
 ReplayConductor::rewind( const IceUtil::Time &time )
 {
+    cout<<"TRACE(replayconductor.cpp): TODO" << endl;
 }
 
 void
 ReplayConductor::rewindToStartAndStop()
 {
+    cout<<"TRACE(replayconductor.cpp): TODO" << endl;
 }
 
 void
@@ -246,11 +252,28 @@ ReplayConductor::walk()
             {
                 replayers_[id]->replayData( index );
             }
-        } 
-        catch ( const std::exception  &e) 
+        }
+        catch ( const Ice::CommunicatorDestroyedException  &e ) 
+        {
+            // This is OK, it means we're shutting down.
+            break;
+        }
+        catch ( const Ice::Exception  &e ) 
         {
             stringstream ss;
-            ss<<"ReplayConductor: Caught exception from replayer '"<<replayers_[id]->toString()<<"': "<<e.what();
+            ss<<"ReplayConductor: Caught Ice::Exception from replayer '"<<replayers_[id]->toString()<<"': "<<e;
+            context_.tracer()->error( ss.str() );
+        }
+        catch ( const std::exception  &e ) 
+        {
+            stringstream ss;
+            ss<<"ReplayConductor: Caught std::exception from replayer '"<<replayers_[id]->toString()<<"': "<<e.what();
+            context_.tracer()->error( ss.str() );
+        }
+        catch ( ... )
+        {
+            stringstream ss;
+            ss<<"ReplayConductor: Caught unknown exception from replayer '"<<replayers_[id]->toString();
             context_.tracer()->error( ss.str() );
         }
 

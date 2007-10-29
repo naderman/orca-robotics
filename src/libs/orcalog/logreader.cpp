@@ -11,6 +11,7 @@
 #include <fstream>
 #include "logreader.h"
 #include "exceptions.h"
+#include <hydroutil/hydroutil.h>
 
 using namespace std;
 
@@ -70,7 +71,9 @@ LogReader::setLogIndex( int index )
 {
     if ( index != logIndex_ )
     {
-        assert( false && "Can't randomly access the log" );
+        stringstream ss;
+        ss << "LogReader: Asked for index " << index << " when logIndex_ is " << logIndex_;
+        throw hydroutil::Exception( ERROR_INFO, ss.str() );
     }
 }
 
