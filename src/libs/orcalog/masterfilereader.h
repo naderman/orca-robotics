@@ -13,7 +13,7 @@
 
 #include <IceUtil/Mutex.h>
 #include <orcaice/context.h>
-#include <orcalog/masterfilebreadcrumbs.h>
+#include <orcalog/detail/filebreadcrumbs.h>
 
 namespace orcalog
 {
@@ -65,7 +65,7 @@ private:
     std::ifstream *file_;
 
     // Used for recording positions in the file.
-    MasterFileBreadCrumbs breadCrumbs_;
+    detail::FileBreadCrumbs<IceUtil::Time> breadCrumbs_;
 
     // remember the dir where the master file is located
     // the individual log files MUST be in the same dir.

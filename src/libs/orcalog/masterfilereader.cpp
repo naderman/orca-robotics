@@ -144,7 +144,7 @@ MasterFileReader::getData( int& seconds, int& useconds, int& id, int& index )
         }
 
         // success
-        breadCrumbs_.placeCrumb( lineStartPos, seconds, useconds );
+        breadCrumbs_.placeCrumb( lineStartPos, iceUtilTime(seconds, useconds) );
         return 0;
     }
     
@@ -157,14 +157,15 @@ MasterFileReader::getDataAtOrAfterTime( int& seconds, int& useconds, int& id, in
 {
     // Maybe the requested time is in the past, somewhere in the trail of breadcrumbs.
     std::ios::pos_type crumbPos;
-    SeekResult result = breadCrumbs_.getCrumbAtOrAfterTime( seekSec, seekUsec, crumbPos );
-    if ( result == SeekOK )
+    detail::SeekResult result = breadCrumbs_.getCrumbAtOrAfter( iceUtilTime(seekSec, seekUsec), 
+                                                                crumbPos );
+    if ( result == detail::SeekOK )
     {
         // Found it
         file_->seekg( crumbPos );
         return getData( seconds, useconds, id, index );
     }
-    else if ( result == SeekQueryInFuture )
+    else if ( result == detail::SeekQueryInFuture )
     {
         // The piece of data we want is some time into the future.  Have to search forwards.
         IceUtil::Time seekTime = 
@@ -200,12 +201,13 @@ MasterFileReader::placeCursorBeforeTime( int seekSec, int seekUsec )
     // Get what we want from the breadCrumbs_.
 
     std::ios::pos_type crumbPos;
-    SeekResult result = breadCrumbs_.getCrumbBeforeTime( seekSec, seekUsec, crumbPos );
-    if ( result == SeekOK )
+    detail::SeekResult result = breadCrumbs_.getCrumbBefore( iceUtilTime(seekSec, seekUsec),
+                                                             crumbPos );
+    if ( result == detail::SeekOK )
     {
         file_->seekg( crumbPos );
     }
-    else if ( result == SeekQueryBeforeStart )
+    else if ( result == detail::SeekQueryBeforeStart )
     {
         rewindToStart();
     }

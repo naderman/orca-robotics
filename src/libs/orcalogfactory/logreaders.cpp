@@ -356,11 +356,12 @@ DriveBicycleLogReader::read( orca::DriveBicycleData &obj )
 void
 DriveBicycleLogReader::read( orca::VehicleDescription &obj )
 {
-    assert( orcalog::LogReader::logIndex() == 0 );
+    assert( orcalog::LogReader::logIndex() == -1 );
     readFromFile( file_, 
                   orcalog::LogReader::logReaderInfo().format,
                   orcalog::LogReader::logReaderInfo().context,
                   obj );
+    orcalog::LogReader::zeroLogIndex();
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -382,11 +383,12 @@ GpsLogReader::read( orca::GpsData &obj )
 void
 GpsLogReader::read( orca::GpsDescription &obj )
 {
-    assert( orcalog::LogReader::logIndex() == 0 );
+    assert( orcalog::LogReader::logIndex() == -1 );
     readFromFile( file_, 
                   orcalog::LogReader::logReaderInfo().format,
                   orcalog::LogReader::logReaderInfo().context,
                   obj );
+    orcalog::LogReader::zeroLogIndex();
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -408,11 +410,12 @@ LaserScanner2dLogReader::read( orca::LaserScanner2dDataPtr &obj )
 void
 LaserScanner2dLogReader::read( orca::RangeScanner2dDescription &obj )
 {
-    assert( orcalog::LogReader::logIndex() == 0 );
+    assert( orcalog::LogReader::logIndex() == -1 );
     readFromFile( file_, 
                   orcalog::LogReader::logReaderInfo().format,
                   orcalog::LogReader::logReaderInfo().context,
                   obj );
+    orcalog::LogReader::zeroLogIndex();
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -434,11 +437,12 @@ Localise2dLogReader::read( orca::Localise2dData &obj )
 void
 Localise2dLogReader::read( orca::VehicleGeometryDescriptionPtr &obj )
 {
-    assert( orcalog::LogReader::logIndex() == 0 );
+    assert( orcalog::LogReader::logIndex() == -1 );
     readFromFile( file_, 
                   orcalog::LogReader::logReaderInfo().format,
                   orcalog::LogReader::logReaderInfo().context,
                   obj );
+    orcalog::LogReader::zeroLogIndex();
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -460,11 +464,12 @@ Localise3dLogReader::read( orca::Localise3dData &obj )
 void
 Localise3dLogReader::read( orca::VehicleGeometryDescriptionPtr &obj )
 {
-    assert( orcalog::LogReader::logIndex() == 0 );
+    assert( orcalog::LogReader::logIndex() == -1 );
     readFromFile( file_, 
                   orcalog::LogReader::logReaderInfo().format,
                   orcalog::LogReader::logReaderInfo().context,
                   obj );
+    orcalog::LogReader::zeroLogIndex();
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -486,11 +491,12 @@ Odometry2dLogReader::read( orca::Odometry2dData &obj )
 void
 Odometry2dLogReader::read( orca::VehicleDescription &obj )
 {
-    assert( orcalog::LogReader::logIndex() == 0 );
+    assert( orcalog::LogReader::logIndex() == -1 );
     readFromFile( file_, 
                   orcalog::LogReader::logReaderInfo().format,
                   orcalog::LogReader::logReaderInfo().context,
                   obj );
+    orcalog::LogReader::zeroLogIndex();
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -512,11 +518,12 @@ Odometry3dLogReader::read( orca::Odometry3dData &obj )
 void
 Odometry3dLogReader::read( orca::VehicleDescription &obj )
 {
-    assert( orcalog::LogReader::logIndex() == 0 );
+    assert( orcalog::LogReader::logIndex() == -1 );
     readFromFile( file_, 
                   orcalog::LogReader::logReaderInfo().format,
                   orcalog::LogReader::logReaderInfo().context,
                   obj );
+    orcalog::LogReader::zeroLogIndex();
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -525,6 +532,7 @@ PowerLogReader::PowerLogReader( const orcalog::LogReaderInfo &logReaderInfo )
     : orcalog::LogReader( logReaderInfo )
 {
     checkFormatIceOrAscii( logReaderInfo );
+    orcalog::LogReader::zeroLogIndex();
 }
 void
 PowerLogReader::read( orca::PowerData &obj )
@@ -542,6 +550,7 @@ WifiLogReader::WifiLogReader( const orcalog::LogReaderInfo &logReaderInfo )
     : orcalog::LogReader( logReaderInfo )
 {
     checkFormatIceOnly( logReaderInfo );
+    orcalog::LogReader::zeroLogIndex();
 }
 void
 WifiLogReader::read( orca::WifiData &obj )

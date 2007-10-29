@@ -28,6 +28,7 @@ public:
     DriveBicycleLogReader( const orcalog::LogReaderInfo &logReaderInfo );
     void read( orca::DriveBicycleData &obj );
     void read( orca::VehicleDescription &obj );
+    void read() { orca::DriveBicycleData obj; read(obj); }
 };
 
 //////////////////////////////////////////////////////////////////////
@@ -38,6 +39,7 @@ public:
     GpsLogReader( const orcalog::LogReaderInfo &logReaderInfo );
     void read( orca::GpsData &obj );
     void read( orca::GpsDescription &obj );
+    void read() { orca::GpsData obj; read(obj); }
 };
 
 //////////////////////////////////////////////////////////////////////
@@ -48,6 +50,7 @@ public:
     LaserScanner2dLogReader( const orcalog::LogReaderInfo &logReaderInfo );
     void read( orca::LaserScanner2dDataPtr &obj );
     void read( orca::RangeScanner2dDescription &obj );
+    void read() { orca::LaserScanner2dDataPtr obj=new orca::LaserScanner2dData; read(obj); }
 };
 
 //////////////////////////////////////////////////////////////////////
@@ -58,6 +61,7 @@ public:
     Localise2dLogReader( const orcalog::LogReaderInfo &logReaderInfo );
     void read( orca::Localise2dData &obj );
     void read( orca::VehicleGeometryDescriptionPtr &obj );
+    void read() { orca::Localise2dData obj; read(obj); }
 };
 
 //////////////////////////////////////////////////////////////////////
@@ -68,6 +72,7 @@ public:
     Localise3dLogReader( const orcalog::LogReaderInfo &logReaderInfo );
     void read( orca::Localise3dData &obj );
     void read( orca::VehicleGeometryDescriptionPtr &obj );
+    void read() { orca::Localise3dData obj; read(obj); }
 };
 
 //////////////////////////////////////////////////////////////////////
@@ -78,6 +83,7 @@ public:
     Odometry2dLogReader( const orcalog::LogReaderInfo &logReaderInfo );
     void read( orca::Odometry2dData &obj );
     void read( orca::VehicleDescription &obj );
+    void read() { orca::Odometry2dData obj; read(obj); }
 };
 
 //////////////////////////////////////////////////////////////////////
@@ -88,6 +94,7 @@ public:
     Odometry3dLogReader( const orcalog::LogReaderInfo &logReaderInfo );
     void read( orca::Odometry3dData &obj );
     void read( orca::VehicleDescription &obj );
+    void read() { orca::Odometry3dData obj; read(obj); }
 };
 
 //////////////////////////////////////////////////////////////////////
@@ -97,6 +104,7 @@ class PowerLogReader : public orcalog::LogReader
 public:
     PowerLogReader( const orcalog::LogReaderInfo &logReaderInfo );
     void read( orca::PowerData &obj );
+    void read() { orca::PowerData obj; read(obj); }
 };
 
 //////////////////////////////////////////////////////////////////////
@@ -106,6 +114,7 @@ class WifiLogReader : public orcalog::LogReader
 public:
     WifiLogReader( const orcalog::LogReaderInfo &logReaderInfo );
     void read( orca::WifiData &obj );
+    void read() { orca::WifiData obj; read(obj); }
 };
 
 }

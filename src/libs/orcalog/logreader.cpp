@@ -20,7 +20,7 @@ namespace orcalog {
 LogReader::LogReader( const LogReaderInfo &logReaderInfo )
     : file_(0),
       logReaderInfo_(logReaderInfo),
-      logIndex_(0)
+      logIndex_(-1)
 {    
 }
 
@@ -69,18 +69,45 @@ LogReader::openLogFile()
 void
 LogReader::setLogIndex( int index )
 {
-    if ( index != logIndex_ )
+    if ( index == logIndex_ )
     {
-        stringstream ss;
-        ss << "LogReader: Asked for index " << index << " when logIndex_ is " << logIndex_;
-        throw hydroutil::Exception( ERROR_INFO, ss.str() );
+        // The usual case when we're moving through sequentially
+        return;
     }
+    else if ( index > breadCrumbs_.latest() )
+    {
+        // Have to fast-forward into the future
+        while ( index < logIndex_ )
+            read();
+    }
+    else // index < breadCrumbs_.latest()
+    {
+        // Have to rewind into the past
+        std::ios::pos_type crumbPos;
+        bool found = breadCrumbs_.getCrumbAt( index, crumbPos );
+        if ( !found )
+        {
+            stringstream ss;
+            ss << "Failed to find crumb in past.  index="<<index<<", logIndex_="<<logIndex_;
+            throw hydroutil::Exception( ERROR_INFO, ss.str() );
+        }
+        file_->seekg( crumbPos );
+    }
+    index = logIndex_;
+}
+
+void 
+LogReader::zeroLogIndex()
+{
+    logIndex_ = 0;
+    breadCrumbs_.placeCrumb( file_->tellg(), logIndex_ );
 }
 
 void 
 LogReader::advanceLogIndex()
 {
     logIndex_++;
+    breadCrumbs_.placeCrumb( file_->tellg(), logIndex_ );
 
     // Let the user know that something's happening
     if ( (logIndex_ % 50)==0 )

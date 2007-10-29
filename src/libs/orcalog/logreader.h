@@ -15,6 +15,7 @@
 #include <vector>
 #include <orcaice/context.h>
 #include <orcalog/logreaderinfo.h>
+#include <orcalog/detail/filebreadcrumbs.h>
 
 namespace orcalog
 {
@@ -49,7 +50,10 @@ public:
 
 protected:
 
-    // Derived classes should call this when they read an item.
+    // Derived classes should call this to let us know when we're at log index zero
+    void zeroLogIndex();
+
+    // Derived classes should call this when they have just read an item.
     void advanceLogIndex();
 
     //! This version correctly handles two standard log file formats:
@@ -60,12 +64,20 @@ protected:
     //! formats need to re-implement this function.
     virtual void openLogFile();
 
+    //! Read a log item and chuck it away (base-class has to implement).
+    //! Used for fast-forwarding through a file.
+    virtual void read()=0;
+
 private:
 
     LogReaderInfo logReaderInfo_;
 
-    //! An index into the log: we're currently pointing at the start of the logIndex_'th object.
+    // An index into the log: we're currently pointing at the start of the logIndex_'th object.
     int logIndex_;
+
+    // As we move through the file, leave a trail of bread-crumbs so we can rewind
+    // (use the index as the key)
+    detail::FileBreadCrumbs<int> breadCrumbs_;
 };
 
 //! Optional utility, which allocates space for opened file.
