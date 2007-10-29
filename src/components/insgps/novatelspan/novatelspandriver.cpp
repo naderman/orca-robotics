@@ -77,9 +77,6 @@ NovatelSpanInsGpsDriver::~NovatelSpanInsGpsDriver()
 int
 NovatelSpanInsGpsDriver::reset()
 {
-
-    //context_.tracer()->debug( "!_DOES__NOTHING_!_ NovatelSpanInsGps: resetting Novatel Span InsGps driver", 2 );
-
     // baudrates we test for; this is
     // _not_ all the baudrates the receiver
     // can possible be set to
@@ -106,6 +103,8 @@ NovatelSpanInsGpsDriver::reset()
         i++;
     }
     if(false == correctBaudrate){
+        std::cout << "!Failed to establish a connection to the receiver!\n";
+        std::cout << "Check physical connections; Check manually (minicom) for Baudrates < 9600kb/s.\n";
         return -1;
     }
     char str[256];
