@@ -11,7 +11,6 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include "laserconsumerI.h"
 #include "mainloop.h"
 
 // these drivers can always be built

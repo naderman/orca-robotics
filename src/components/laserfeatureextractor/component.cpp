@@ -13,7 +13,6 @@
 #include <orcaice/orcaice.h>
 #include "component.h"
 #include "mainloop.h"
-#include "laserconsumerI.h"
 
 using namespace std;
 using namespace orca;
