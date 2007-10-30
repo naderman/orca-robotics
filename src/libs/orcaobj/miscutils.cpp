@@ -116,8 +116,6 @@ bool localisationIsUncertain( const orca::Localise2dData &localiseData,
 void 
 saveToFile( const orca::FeatureMap2dDataPtr& fmap, FILE *f )
 {
-    fprintf( f, "%f %f %f\n", fmap->offset.p.x, fmap->offset.p.y, fmap->offset.o );
-
     for ( unsigned int i=0; i < fmap->features.size(); i++ )
     {
         assert( fmap->features[i] != 0 );
@@ -194,7 +192,6 @@ loadFromFile( const std::string &filename, orca::FeatureMap2dDataPtr &fmap )
     const int bufSize=10000;
     char buf[bufSize];
 
-    bool gotOffset=false;
     int line=0;
     while ( true )
     {
@@ -207,19 +204,6 @@ loadFromFile( const std::string &filename, orca::FeatureMap2dDataPtr &fmap )
         // ignore comments
         if ( buf[0] == '#' )
             continue;
-
-        if ( !gotOffset )
-        {
-            int numRead = sscanf( buf, "%lf %lf %lf", &(fmap->offset.p.x), &(fmap->offset.p.y), &(fmap->offset.o) );
-            if ( numRead != 3 )
-            {
-                stringstream ss; ss << "Malformed featuremap file!  Expected offset on first non-comment line, found:"<<endl<<buf;
-                f.close();
-                throw hydroutil::Exception( ERROR_INFO, ss.str() );
-            }
-            gotOffset=true;
-            continue;
-        }
 
         char typeAsString[bufSize];
         int ret = sscanf( buf, "%s ", typeAsString );
