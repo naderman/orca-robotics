@@ -48,23 +48,21 @@ enum ComponentInterfaceFlag {
 //!
 //! @par Component Initialisation
 //! 
-//!   Component initialisation code can be put in three places:
+//!   Component initialisation code can be put in two places:
 //!
 //!   1. Component Constructor
 //!
 //!      - In the constructor, none of the orcaice machinery is initialised.  This
 //!        means that no remote calls can be made (the communicator isn't initialised yet),
 //!        and the tracer isn't available yet.
-//!      - Any code that should be executed before any remote calls are made belongs in the Component constructor.
+//!      - Any code that should be executed before any remote calls are made belongs in 
+//!        the Component constructor.
 //!
-//!   2. Component::init()
+//!   2. Component::start()
 //!
-//!      - This is called after initialisation of the context and Home interface.
-//!      - This code is executed in the Application or Service's thread.
-//!
-//!   3. Component::start()
-//!
-//!      - start() is called immediately after init(), so the same things (eg context) are available.
+//!      - start() is called after all resources in Context are initialised.
+//!        - Home and Status interfaces are initialized from a separate thread and it
+//!          it may take multiple attempts to do this.
 //!      - This is the place to launch threads from.
 //!        - Don't do anything that might loop forever in here, otherwise it won't be possible
 //!          to bring the component down cleanly.
