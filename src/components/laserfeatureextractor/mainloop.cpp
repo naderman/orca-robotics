@@ -359,25 +359,47 @@ MainLoop::convertToRobotCS( const PolarFeature2dDataPtr & featureData )
             }
             assert ( f.rhoSd >= 0 && f.alphaSd >= 0 );
 
-            convertPointToRobotCS( f.start.r, f.start.o, offsetXyz, offsetAngles );
-            convertPointToRobotCS( f.end.r,   f.end.o,   offsetXyz, offsetAngles );
-
             //
-            // Check that the line should be visible.
+            // Check: the line should be visible.
+            //        (prior to conversion to robot-centric CS)
             // 
             double bearingDiff = f.end.o - f.start.o;
             if ( bearingDiff < 0 )
             {
-                //
-                // Line is not visible from platform pose (but presumably it was visible from sensor pose -- 
-                //   this can happen if the two are not co-located.  Could probably do better, but throw 
-                //   an exception for now).
-                //
                 stringstream ss;
-                ss << "MainLoop::convertToRobotCS(): bearingDiff < 0 -- line is not visible from platform pose"
-                   << " (but maybe it is from sensor pose).  Line was: " 
+                ss << "MainLoop::convertToRobotCS(): bearingDiff < 0 -- line is not visible from sensor pose!"
+                   << "  Line was: " 
                    << orcaice::toString(ftr);
                 throw hydroutil::Exception( ERROR_INFO, ss.str() );
+            }
+
+            convertPointToRobotCS( f.start.r, f.start.o, offsetXyz, offsetAngles );
+            convertPointToRobotCS( f.end.r,   f.end.o,   offsetXyz, offsetAngles );
+
+            //
+            // Check: the line should be visible.
+            //        (after conversion to robot-centric CS)
+            // 
+            bearingDiff = f.end.o - f.start.o;
+            if ( bearingDiff < 0 )
+            {
+                //
+                // Line is not visible from platform pose (but it was visible from sensor pose -- 
+                //   this can happen if the two are not co-located.
+                //   So turn the thing around.
+                //
+                orca::PolarPoint2d startPrior = f.start;
+                bool startSightedPrior = f.startSighted;
+                f.start = f.end;
+                f.startSighted = f.endSighted;
+                f.end = startPrior;
+                f.endSighted = startSightedPrior;
+                
+                stringstream ss;
+                ss << "MainLoop::convertToRobotCS(): bearingDiff was < 0 (line was not visible from platform pose)."
+                   << " Turned line around.  Line is now: " 
+                   << orcaice::toString(ftr);
+                context_.tracer()->debug( ss.str() );
             }
         }
         else
