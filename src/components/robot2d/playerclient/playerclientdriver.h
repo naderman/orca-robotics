@@ -15,7 +15,6 @@
 #include "playerclientdriverconfig.h"
 #include <libplayerc++/playerc++.h>
 #include <memory>
-#include <hydroutil/store.h>
 
 namespace robot2d
 {
@@ -36,8 +35,6 @@ public:
     virtual void getStatus( std::string &status, bool &isWarn, bool &isFault );
 
 private:
-
-    hydroutil::Store<Command> commandStore_;
 
     std::auto_ptr<PlayerCc::PlayerClient>    robot_;
     std::auto_ptr<PlayerCc::Position2dProxy> positionProxy_;

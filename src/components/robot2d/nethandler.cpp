@@ -47,10 +47,10 @@ convert( const orca::VelocityControl2dData& network, robot2d::Command& internal 
 
 //////////////////////////////////////////////////////////////////////
 
-NetHandler::NetHandler( orcarobotdriverutil::HwDriverHandler<Command,Data> &hwDriverHandler,
-                        const orca::VehicleDescription                     &descr,
-                        const orcaice::Context                             &context )
-    : hwDriverHandler_(hwDriverHandler),
+NetHandler::NetHandler( HwHandler                      &hwHandler,
+                        const orca::VehicleDescription &descr,
+                        const orcaice::Context         &context )
+    : hwHandler_(hwHandler),
       descr_(descr),
       context_(context)
 {
@@ -91,8 +91,7 @@ NetHandler::limit( Command &cmd )
 
 // This is a direct callback from the VelocityControl2dImpl object.
 // It's executed in Ice thread.
-// Here we convert to our internal format and stick it into
-// another Notify pipe to be handled the HwHandler.
+// Here we convert to our internal format pass it to HwHandler
 void 
 NetHandler::handleData(const orca::VelocityControl2dData& command)
 {
@@ -104,7 +103,14 @@ NetHandler::handleData(const orca::VelocityControl2dData& command)
         robot2d::Command internalCommand;
         convert( command, internalCommand );
         limit( internalCommand );
-        hwDriverHandler_.setCommand( internalCommand );
+        hwHandler_.setCommand( internalCommand );
+    }
+    catch ( Ice::Exception &e )
+    {
+        stringstream ss;
+        ss<<"NetHandler::handleData() Caught unexpected exception: " << e << endl;
+        context_.tracer()->error( ss.str() );
+        throw;
     }
     catch ( std::exception &e )
     {
@@ -159,7 +165,7 @@ NetHandler::walk()
         // context_.tracer()->debug( "NetHandler: loop spinning ",9);
 
         // block on the most frequent data source: odometry
-        if ( hwDriverHandler_.dataProxy().getNext( data, odometryReadTimeout ) ) {
+        if ( hwHandler_.getData( data, odometryReadTimeout ) ) {
             context_.tracer()->debug( "Net loop timed out", 5);
             continue;
         }

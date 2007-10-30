@@ -53,7 +53,7 @@ IF ( BUILD_SEGWAYRMP )
     ENDIF ( NOT HAVE_USB_DRIVER AND NOT HAVE_CAN_DRIVER AND NOT HAVE_PLAYERCLIENT_DRIVER )
     
     FIND_COMPONENT_SOURCES( COMP_SRCS )
-    SET( COMP_DEPS   OrcaIfaceImpl OrcaSegwayRmpDriver OrcaObjectUtil
+    SET( COMP_DEPS   OrcaIfaceImpl OrcaSegwayRmpDriver OrcaObjectUtil OrcaRobotDriverUtil
                     ${SEGWAY_RMP_USB_LIBS} ${SEGWAY_RMP_CAN_LIBS} ${PLAYERCLIENT_LIBS} )
     
     # build stand-alone component  

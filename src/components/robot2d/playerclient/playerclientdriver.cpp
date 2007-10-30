@@ -60,33 +60,36 @@ PlayerClientDriver::enable()
     {
         // Slow things down a little...
         sleep(1);
-        throw;
+        stringstream ss;
+        ss << "PlayerError("<<e.GetErrorFun()<<"): "<<e.GetErrorStr();
+        throw hydroutil::Exception( ERROR_INFO, ss.str() );
     }
 }
 
 bool
 PlayerClientDriver::read( Data& data )
 {
-    // player throws exceptions on creation if we fail
-    robot_->Read();
+    try {
+        // player throws exceptions on creation if we fail
+        robot_->Read();
     
-    orca::Time t = orcaice::toOrcaTime( positionProxy_->GetDataTime() );
-    data.seconds = t.seconds;
-    data.useconds = t.useconds;
+        orca::Time t = orcaice::toOrcaTime( positionProxy_->GetDataTime() );
+        data.seconds = t.seconds;
+        data.useconds = t.useconds;
 
-    data.x = positionProxy_->GetXPos();
-    data.y = positionProxy_->GetYPos();
-    data.o = positionProxy_->GetYaw();
+        data.x = positionProxy_->GetXPos();
+        data.y = positionProxy_->GetYPos();
+        data.o = positionProxy_->GetYaw();
     
-    data.vx = positionProxy_->GetXSpeed();
-    data.vy = positionProxy_->GetYSpeed();
-    data.w = positionProxy_->GetYawSpeed();
-
-    if ( commandStore_.isNewData() )
+        data.vx = positionProxy_->GetXSpeed();
+        data.vy = positionProxy_->GetYSpeed();
+        data.w = positionProxy_->GetYawSpeed();
+    }
+    catch ( PlayerCc::PlayerError &e )
     {
-        Command command;
-        commandStore_.get( command );
-        positionProxy_->SetSpeed( command.vx, command.vy, command.w );
+        stringstream ss;
+        ss << "PlayerError("<<e.GetErrorFun()<<"): "<<e.GetErrorStr();
+        throw hydroutil::Exception( ERROR_INFO, ss.str() );
     }
     return false;
 }
@@ -94,7 +97,15 @@ PlayerClientDriver::read( Data& data )
 void
 PlayerClientDriver::write( const Command& command )
 {
-    commandStore_.set( command );
+    try {
+        positionProxy_->SetSpeed( command.vx, command.vy, command.w );
+    }
+    catch ( PlayerCc::PlayerError &e )
+    {
+        stringstream ss;
+        ss << "PlayerError("<<e.GetErrorFun()<<"): "<<e.GetErrorStr();
+        throw hydroutil::Exception( ERROR_INFO, ss.str() );
+    }
 }
 
 void

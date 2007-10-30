@@ -85,10 +85,10 @@ convert( const orca::VelocityControl2dData& network, segwayrmp::Command& interna
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 
-NetHandler::NetHandler( orcarobotdriverutil::HwDriverHandler<Command,Data> &hwDriverHandler,
-                        const orca::VehicleDescription                     &descr,
-                        const orcaice::Context                             &context )
-    : hwDriverHandler_(hwDriverHandler),
+NetHandler::NetHandler( HwHandler                      &hwHandler,
+                        const orca::VehicleDescription &descr,
+                        const orcaice::Context         &context )
+    : hwHandler_(hwHandler),
       descr_(descr),
       context_(context)
 {
@@ -135,7 +135,7 @@ NetHandler::handleData(const orca::VelocityControl2dData& incomingCommand)
     segwayrmp::Command internalCommand;
     convert( incomingCommand, internalCommand );
     limit( internalCommand );
-    hwDriverHandler_.setCommand( internalCommand );
+    hwHandler_.setCommand( internalCommand );
 }
 
 void
@@ -194,7 +194,7 @@ NetHandler::walk()
 
         // block on the only incoming data stream
         Data data;
-        if ( hwDriverHandler_.dataProxy().getNext( data, odometryReadTimeout ) ) {
+        if ( hwHandler_.getData( data, odometryReadTimeout ) ) {
 //             context_.tracer()->debug( "Net loop timed out", 1);
             // Don't flag this as an error -- it may happen during normal initialisation.
             context_.status()->ok( SUBSYSTEM_NAME, "Net loop timed out" );

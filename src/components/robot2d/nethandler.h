@@ -17,7 +17,7 @@
 
 #include <orcaifaceimpl/odometry2dImpl.h>
 #include <orcaifaceimpl/velocitycontrol2dImpl.h>
-#include <orcarobotdriverutil/hwdriverhandler.h>
+#include "hwhandler.h"
 #include "types.h"
 
 namespace robot2d
@@ -31,9 +31,9 @@ class NetHandler : public hydroutil::SafeThread,
 {
 public:
 
-    NetHandler( orcarobotdriverutil::HwDriverHandler<Command,Data> &hwDriverHandler,
-                const orca::VehicleDescription                     &descr,
-                const orcaice::Context                             &context );
+    NetHandler( HwHandler                      &hwHandler,
+                const orca::VehicleDescription &descr,
+                const orcaice::Context         &context );
     virtual ~NetHandler();
 
     // from SafeThread
@@ -50,7 +50,7 @@ private:
     orcaifaceimpl::Odometry2dImplPtr           odometry2dI_;
     orcaifaceimpl::VelocityControl2dImplPtr    velocityControl2dI_;
 
-    orcarobotdriverutil::HwDriverHandler<Command,Data> &hwDriverHandler_;
+    HwHandler &hwHandler_;
 
     orca::VehicleDescription descr_;
 

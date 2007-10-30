@@ -20,7 +20,7 @@
 #include <orcaifaceimpl/odometry3dImpl.h>
 #include <orcaifaceimpl/powerImpl.h>
 #include <orcaifaceimpl/velocitycontrol2dImpl.h>
-#include <orcarobotdriverutil/hwdriverhandler.h>
+#include "hwhandler.h"
 #include "types.h"
 
 namespace segwayrmp
@@ -31,9 +31,9 @@ class NetHandler : public hydroutil::SafeThread,
 {
 public:
 
-    NetHandler( orcarobotdriverutil::HwDriverHandler<Command,Data> &hwDriverHandler,
-                const orca::VehicleDescription                     &descr,
-                const orcaice::Context                             &context );
+    NetHandler( HwHandler                      &hwHandler,
+                const orca::VehicleDescription &descr,
+                const orcaice::Context         &context );
 
     // from SafeThread
     virtual void walk();
@@ -51,7 +51,7 @@ private:
     orcaifaceimpl::PowerImplPtr                powerI_;
     orcaifaceimpl::VelocityControl2dImplPtr    velocityControl2dI_;
 
-    orcarobotdriverutil::HwDriverHandler<Command,Data> &hwDriverHandler_;
+    HwHandler &hwHandler_;
 
     orca::VehicleDescription descr_;
 

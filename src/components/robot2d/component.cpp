@@ -15,7 +15,7 @@
 #include "component.h"
 #include "nethandler.h"
 #include <orcaobjutil/vehicleutil.h>
-#include <orcarobotdriverutil/hwdriverhandler.h>
+#include "hwhandler.h"
 
 // driver types
 #include "fakedriver.h"
@@ -27,9 +27,7 @@ using namespace std;
 using namespace robot2d;
 
 Component::Component() :
-    orcaice::Component( "Robot2d" ),
-    netHandler_(0),
-    hwHandler_(0)
+    orcaice::Component( "Robot2d" )
 {
 }
 
@@ -94,10 +92,9 @@ Component::start()
     bool isMotionEnabled = (bool)orcaice::getPropertyAsIntWithDefault( context().properties(),
                                                                        context().tag()+".Config.EnableMotion",
                                                                        1 );
-    orcarobotdriverutil::HwDriverHandler<Command,Data> *hwHandler = 
-        new orcarobotdriverutil::HwDriverHandler<Command,Data>( *driver_,
-                                                                isMotionEnabled,
-                                                                context() );
+    HwHandler *hwHandler = new HwHandler( *driver_,
+                                          isMotionEnabled,
+                                          context() );
     hwHandler_ = hwHandler;
     hwHandler_->start();
 

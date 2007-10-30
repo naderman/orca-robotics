@@ -15,7 +15,7 @@
 
 #include "component.h"
 #include "nethandler.h"
-#include "orcarobotdriverutil/hwdriverhandler.h"
+#include "hwhandler.h"
 
 // segway rmp drivers
 #include "fakedriver.h"
@@ -160,10 +160,9 @@ Component::start()
     bool isMotionEnabled = (bool)orcaice::getPropertyAsIntWithDefault( context().properties(),
                                                                        context().tag()+".Config.EnableMotion",
                                                                        1 );
-    orcarobotdriverutil::HwDriverHandler<Command,Data> *hwHandler = 
-        new orcarobotdriverutil::HwDriverHandler<Command,Data>( *driver_,
-                                                                isMotionEnabled,
-                                                                context() );
+    HwHandler *hwHandler = new HwHandler( *driver_,
+                                          isMotionEnabled,
+                                          context() );
     hwHandler_ = hwHandler;
     hwHandler_->start();
 

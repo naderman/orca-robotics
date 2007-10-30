@@ -18,8 +18,8 @@
 #include <hydroutil/notify.h>
 // internal data structures
 #include "types.h"
-#include <orcarobotdriverutil/hwdriverhandler.h>
 #include "hwdriver.h"
+#include <orca/vehicledescription.h>
 
 namespace robot2d
 {
