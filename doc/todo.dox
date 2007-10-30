@@ -76,6 +76,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     - Implemented interactive interface which allows
       pausing/fast-forwarding/rewinding/etc during log playing (alex b)
 
+- Robot2d/SegwayRMP
+    - simplified and improved (alex b)
+
 @par Updated utilities
 
 @par Updated libraries
