@@ -85,6 +85,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 - libOrcaIce
     - fixed bug made Tracer and Status not to load configuration parameters (alex m)
+    - calls to status are now traced (alex m) 
 
 - libOrcaLog
     - Changes for interactive log-playing (alex b)
