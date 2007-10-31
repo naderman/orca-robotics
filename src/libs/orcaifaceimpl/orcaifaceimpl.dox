@@ -34,7 +34,7 @@ while ( isActive() ) {
     }
     catch ( const Ice::Exception& e ) {
         // give feedback
-        context_.tracer()->warning( "Failed to setup interface. Check Registry and IceStorm. Will try again in 2 secs...");
+        context_.tracer()->warning( "Failed to setup interface: " << e << ". Check Registry and IceStorm. Will try again in 2 secs...");
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
     }
 }
