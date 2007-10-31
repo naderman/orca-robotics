@@ -82,7 +82,7 @@ public:
     //! Catches appropriate exceptions. DOCUMENT!
     virtual void subscribeWithString( const std::string& proxyString, hydroutil::Thread* thread, int retryInterval=2, int retryNumber=-1 )=0;
 
-    //! Same as the threaded version of unsubscribeWithString() but the interface is looked up 
+    //! Same as the threaded version of subscribeWithString() but the interface is looked up 
     //! using the config file and tag interfaceTag.
     virtual void subscribeWithTag( const std::string& interfaceTag, hydroutil::Thread* thread, int retryInterval=2, int retryNumber=-1 )=0;
 };

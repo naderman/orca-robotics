@@ -28,7 +28,7 @@ namespace orcaifaceimpl {
 //! Implements the VelocityControl2d interface: Handles remote calls.
 //!
 class VelocityControl2dImpl : public IceUtil::Shared,
-                               public hydroutil::Notify<orca::VelocityControl2dData>
+                              public hydroutil::Notify<orca::VelocityControl2dData>
 {
 friend class VelocityControl2dI;
 

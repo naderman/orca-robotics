@@ -214,7 +214,7 @@ RmpDriver::applyHardwareLimits( double& forwardSpeed, double& reverseSpeed,
                                 double& turnrate, double& turnrateAtMaxSpeed )
 {
     double forwardSpeedLimit 
-            = config_.maxVelocityScale * (double)RMP_MAX_TRANS_VEL_COUNT / RMP_COUNT_PER_M_PER_S;
+        = config_.maxVelocityScale * (double)RMP_MAX_TRANS_VEL_COUNT / RMP_COUNT_PER_M_PER_S;
     double reverseSpeedLimit = forwardSpeedLimit;
     
     // alexm: this needs to be debugged, it seems that the turnrate is not scaled the same

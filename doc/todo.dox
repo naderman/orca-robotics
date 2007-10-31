@@ -63,6 +63,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @par New libraries
 
+- libOrcaNavUtil (alex b)
+  - Library for conversion between Orca types and HydroNavUtil types.
+
 @par New examples
 
 @par Updated interfaces
@@ -89,6 +92,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 - libOrcaLog
     - Changes for interactive log-playing (alex b)
+
+- libOrcaLocalNav
+    - Moved Velocity/Acceleration out into hydronavutil (alex b)
 
 @par Removed
 
