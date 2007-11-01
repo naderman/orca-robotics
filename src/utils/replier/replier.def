@@ -1,7 +1,7 @@
 DefaultComponentTag=Replier
 
 # Provided Interfaces
-Provides.Replier.Type=Replier
+Provides.Replier.Type=LatencyReplier
 Provides.Replier.DefaultName=replier
 
 # Required Interfaces

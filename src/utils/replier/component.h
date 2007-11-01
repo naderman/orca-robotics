@@ -12,8 +12,7 @@
 #define ORCA2_REPLIER_COMPONENT_H
 
 #include <orcaice/component.h>
-
-#include "handler.h"
+#include <hydroutil/thread.h>
 
 namespace replier
 {
@@ -23,15 +22,12 @@ class Component: public orcaice::Component
 	
 public:
     Component();
-    virtual ~Component();
 
     virtual void start();
     virtual void stop();
     
 private:
-
-    // main loop
-    Handler* handler_;
+    hydroutil::ThreadPtr mainThread_;
 };
 
 } // namespace

@@ -9,29 +9,40 @@
  */
 
 /*!
-@ingroup orca_tests
+@ingroup orca_utils
 @ingroup orca_services
 @ingroup orca_cpp
 @ingroup orca_linux
 @ingroup orca_win
-@defgroup orca_test_pinger Pinger
+@defgroup orca_util_pinger Pinger
 @brief A test component to measure object transmission times.
 
 @par Provides
 
-- @ref orca_interface_pingreply "Pinger"
+- none
 
 @par Requires
 
-- @ref orca_interface_pingreply "Replier"
+- custom interface orca::util::LatencyReplier
 
 @image html pinger.png
 
 Results obtained using this components can be seen here: @ref orca_doc_performance.
 
-@see @ref orca_test_replier
+@see @ref orca_util_replier
 
 @par Configuration
+
+- @c Pinger.Config.Driver (string)
+    - Valid values: { "sequence", "iceping" }
+    - 'sequence' sends a sequence of doubles. 'iceping' uses build-in ice_ping() method.
+    - Default: "sequence"
+
+- @c Pinger.Config.OperationType (string)
+    - Valid values: { "twoway", "callback" }
+    - 'twoway' sends payload and receives it back in a single operation. 
+      'callback' sends the payload but the reply comes through another operation.
+    - Default: "twoway"
 
 - @c Pinger.Config.Count (int)
     - How many objects to send.
@@ -49,11 +60,6 @@ Results obtained using this components can be seen here: @ref orca_doc_performan
     - File name where to save ping results.
     - Default: 'orcapingresults.dat'
 
-- @c Pinger.Config.UseIcePing (bool)
-    - Use ice_ping() function instead of sending Orca objects.
-    - Default: 0
-
 An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
 
 */
-

@@ -10,17 +10,14 @@
 
 #include <orcaice/orcaice.h>
 #include "component.h"
+#include "mainthread.h"
 
 using namespace std;
 using namespace pinger;
 
 Component::Component() :
     orcaice::Component("Pinger"),
-    handler_(0)
-{
-}
-
-Component::~Component()
+    mainThread_(0)
 {
 }
 
@@ -28,14 +25,14 @@ void
 Component::start()
 {
     //start the main loop and pass it the pointer to the proxy
-    handler_ = new Handler( context() );
-    handler_->start();
+    mainThread_ = new MainThread( context() );
+    mainThread_->start();
 }
 
 void
 Component::stop()
 {
     tracer()->debug( "stopping component", 2 );
-    hydroutil::stopAndJoin( handler_ );
+    hydroutil::stopAndJoin( mainThread_ );
     tracer()->debug( "component stopped", 2 );
 }

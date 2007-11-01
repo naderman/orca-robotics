@@ -8,61 +8,54 @@
  *
  */
 
-#ifndef ORCA2_PINGER_I_H
-#define ORCA2_PINGER_I_H
+#ifndef ORCA2_LATENCY_PINGER_I_H
+#define ORCA2_LATENCY_PINGER_I_H
 
-#include <Ice/Ice.h>
 #include <IceUtil/Time.h>
 
 #include <vector>
 #include <string>
 #include <fstream>
 
-#include <orca/pingreply.h>
+#include "pingreply.h"
 #include <orcaice/context.h>
 
-typedef struct
-{
-    int count;
-    // sending period in [sec]
-    double interval;
-    int preload;
-    // do we need deadline_?
-} ping_config_t;
-
-class PingerI : public orca::Pinger
+class LatencyPingerI : public orca::util::LatencyPinger
 {
 public:
-    PingerI( const orcaice::Context & context, orca::ReplierPrx &, std::ofstream* logfile, ping_config_t config );
-    virtual ~PingerI() {};
+    struct Config
+    {
+        int count;
+        // sending period in [sec]
+        double interval;
+        int preload;
+        // do we need deadline_?
+        std::string filename;
+    };
 
-    // from orca::Pinger
-    virtual void callback(const orca::OrcaObjectPtr&, const Ice::Current&);
+    LatencyPingerI( const orcaice::Context& context, orca::util::LatencyReplierPrx& replier, const Config& config );
 
-    virtual void takeItBack(const orca::PingReplyData&, const Ice::Current&);
+    // from orca::util::LatencyPinger
+    virtual void takeItBack(const orca::util::PingReplyData&, const Ice::Current&);
 
     // local API
     // Return true if pass, false if fail
     bool sequencePing( int operationType );
-    bool classPing();
+//     bool classPing();
 //     bool structPing();
     bool icePing();
 
 private:
-
-    bool internalPing( orca::OrcaObjectPtr & object, const int size, int pingMode);
     void calcStats( const int size );
 
-    orcaice::Context context_;
-
     // the server
-    orca::ReplierPrx & replier_;
+    orca::util::LatencyReplierPrx& replier_;
 
     // pointer to the log file, passed down from the calling function
     std::ofstream* logfile_;
 
     // ping options
-    ping_config_t config_;
+    Config config_;
 
     std::vector<IceUtil::Time> sends_;
     std::vector<IceUtil::Time> receives_;
@@ -70,9 +63,10 @@ private:
 
     IceUtil::Time stopWatch_;
 
+    orcaice::Context context_;
 };
 
 // define a smart pointer using Ice utilities
-typedef IceUtil::Handle<PingerI> PingerIPtr;
+typedef IceUtil::Handle<LatencyPingerI> LatencyPingerIPtr;
 
 #endif

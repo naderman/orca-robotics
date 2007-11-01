@@ -9,27 +9,27 @@
  */
 
 /*!
-@ingroup orca_tests
+@ingroup orca_utils
 @ingroup orca_services
 @ingroup orca_cpp
 @ingroup orca_linux
 @ingroup orca_win
-@defgroup orca_test_replier Replier
+@defgroup orca_util_replier Replier
 @brief A test component to reply to timed object transmissions.
 
 @par Provides
 
-- @ref orca_interface_pingreply "Replier"
+- custom interface orca::util::LatencyReplier
 
 @par Requires
 
-- @ref orca_interface_pingreply "Pinger"
+- none
 
 @image html replier.png
 
 Results obtained using this components can be seen here: @ref orca_doc_performance.
 
-@see @ref orca_test_pinger
+@see @ref orca_util_pinger
 
 @par Configuration
 

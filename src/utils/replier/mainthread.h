@@ -11,23 +11,21 @@
 #ifndef ORCA2_REPLIER_HANDLER_H
 #define ORCA2_REPLIER_HANDLER_H
 
-#include <hydroutil/thread.h>
+#include <hydroutil/safethread.h>
 #include <orcaice/context.h>
 
 namespace replier
 {
 
-
-class Handler: public hydroutil::Thread
+class MainThread: public hydroutil::SafeThread
 {    	
 public:
-    Handler( const orcaice::Context & context );
-    ~Handler();
+    MainThread( const orcaice::Context& context );
+    ~MainThread();
 
-    virtual void run();
+    virtual void walk();
 
 private:
-
     orcaice::Context context_;
 
 };
