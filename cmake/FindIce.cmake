@@ -30,22 +30,19 @@ FIND_PATH( ICE_HOME_INCLUDE_ICE Ice.h
   $ENV{ICE_HOME}/include/Ice
   # debian package installs Ice here
   /usr/include/Ice
-  # Test standard installation points: newer versions first
+  # Test standard installation points: generic symlinks first, then standard dirs, newer first
+  /opt/Ice/include/Ice
+  /opt/Ice-3/include/Ice
+  /opt/Ice-3.2/include/Ice
+  /opt/Ice-3.2.1/include/Ice
   /opt/Ice-3.2.0/include/Ice
-  /opt/Ice-3.1.1/include/Ice
-  /opt/Ice-3.1.0/include/Ice
-  /opt/Ice-3.0.1/include/Ice
-  /opt/Ice-3.0.0/include/Ice
-  /opt/Ice-2.1.2/include/Ice
   # some people may manually choose to install Ice here
   /usr/local/include/Ice
   # windows
+  C:/Ice-3.2.1-VC80/include/Ice
+  C:/Ice-3.2.1/include/Ice
   C:/Ice-3.2.0-VC80/include/Ice
   C:/Ice-3.2.0/include/Ice
-  C:/Ice-3.1.0-VC80/include/Ice
-  C:/Ice-3.1.0/include/Ice
-  C:/Ice-3.0.1-VC80/include/Ice
-  C:/Ice-3.0.1/include/Ice
   )
 # MESSAGE( STATUS "DEBUG: Ice.h is apparently found in : ${ICE_HOME_INCLUDE_ICE}" )
 
