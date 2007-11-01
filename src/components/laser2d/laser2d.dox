@@ -33,8 +33,11 @@
 
 @par Drivers
 
-Laser2d dynamically loads an implementation of a Hydro driver interface LaserScanner2d 
-(ie the thing which actually talks to the (possibly simulated) laser hardware). See Hydro documentation for the list of available drivers.
+Laser2d dynamically loads an implementation of a Hydro driver interface hydrointerfaces::LaserScanner2d 
+(ie the thing which actually talks to the (possibly simulated) laser hardware). 
+See Hydro documentation for the list of available drivers.
+
+- @ref hydro_drivers_laserscanner2d
 
 @par Operation
 

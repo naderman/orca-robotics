@@ -55,6 +55,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - java build (Jayen Ashar)
   - Dealt with the fact that gcj only handles '-classpath', not '-cp'.
 
+- documentation
+  - orca documentation now links to hydro's (alex m)
+
 @par New interfaces
 
 @par New components
@@ -83,6 +86,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     - simplified and improved (alex b)
 
 @par Updated utilities
+
+- Pinger/Replier
+    - These utilities for measuring communication latencies are working again (alex m)
 
 @par Updated libraries
 
