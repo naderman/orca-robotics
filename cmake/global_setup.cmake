@@ -166,6 +166,12 @@ ADD_SUBDIRECTORY ( src )
 ADD_SUBDIRECTORY ( scripts )
 
 #
+# During the install we want to 'label' the install
+#
+INSTALL (SCRIPT ${PROJECT_SOURCE_DIR}/cmake/local/labelInstall.cmake)
+
+
+#
 # Write installation manifest in CMake format
 #
 WRITE_MANIFEST()   
