@@ -31,7 +31,7 @@ Repeat the steps for starting IceGrid Registry (See @ref orca_doc_quickstart for
 The IceGrid Node will activate our application. We create a separate directory for it to run in, copy a sample config file, create the database directory and start it up. Note that it's possible to run the Node and the Registry in one process but we choose to run them separately.
 @verbatim
 $ mkdir -p ~/sys/icenode; cd ~/sys/icenode
-$ cp [ORCA2-SRC]/scripts/ice/icegridnode.cfg .
+$ cp [ORCA-SRC]/scripts/ice/icegridnode.cfg .
 $ mkdir db
 $ icegridnode --Ice.Config=icegridnode.cfg
 @endverbatim
@@ -45,8 +45,8 @@ Repeat the steps for starting IceStorm service (See @ref orca_doc_quickstart for
 First, copy default configuration files for the Laser2d and LaserMon components.
 @verbatim
 $ mkdir -p ~/sys/tuteicegrid; cd ~/sys/tuteicegrid
-$ cp [ORCA2-INSTALL]/xml/laser2d.xml .
-$ cp [ORCA2-INSTALL]/cfg/lasermon.cfg .
+$ cp [ORCA-INSTALL]/xml/laser2d.xml .
+$ cp [ORCA-INSTALL]/cfg/lasermon.cfg .
 @endverbatim
 
 @par The Server
@@ -83,7 +83,7 @@ $ icegridadmin --Ice.Default.Locator="IceGrid/Locator:default -p 12000" -e "appl
 
 @section orca_doc_tute_icegrid_next What's Next
 
-For an example of running IceStorm through IceGrid, see @c [ORCA2-SRC]/scripts/ice/icestorm_laser.xml configuration file.
+For an example of running IceStorm through IceGrid, see @c [ORCA-SRC]/scripts/ice/icestorm_laser.xml configuration file.
 
 If everything works, check out more @ref orca_doc_tutorials.
 

@@ -33,7 +33,7 @@ $ mkdir ~/sys
 The IceGrid Registry provides a Naming service: a mapping from logical interface names to physical addresses. It's currently the only way for components to find one another. We create a separate directory for it to run in, copy a sample config file, create the database directory and start it up.
 @verbatim
 $ mkdir -p ~/sys/icereg; cd ~/sys/icereg
-$ cp [ORCA2-SRC]/scripts/ice/icegridregistry.cfg .
+$ cp [ORCA-SRC]/scripts/ice/icegridregistry.cfg .
 $ mkdir db
 $ icegridregistry --Ice.Config=icegridregistry.cfg
 @endverbatim
@@ -51,7 +51,7 @@ IceStorm is an event service, used to decouple publishers from subscribers. Typi
 
 @verbatim
 $ mkdir -p ~/sys/icestorm; cd ~/sys/icestorm
-$ cp [ORCA2-SRC]/scripts/ice/icebox_icestorm.cfg .
+$ cp [ORCA-SRC]/scripts/ice/icebox_icestorm.cfg .
 $ mkdir stormdb
 $ icebox --Ice.Config=icebox_icestorm.cfg
 @endverbatim
@@ -73,8 +73,8 @@ Note that only one piece of information is required: the address of the Registry
 Now will connect a fake laser component to a laser monitoring component. First, copy default configuration files for the Laser2d and LaserMon components.
 @verbatim
 $ mkdir -p ~/sys/quickstart; cd ~/sys/quickstart
-$ cp [ORCA2-INSTALL]/cfg/laser2d.cfg .
-$ cp [ORCA2-INSTALL]/cfg/lasermon.cfg .
+$ cp [ORCA-INSTALL]/cfg/laser2d.cfg .
+$ cp [ORCA-INSTALL]/cfg/lasermon.cfg .
 @endverbatim
 
 @par The Server

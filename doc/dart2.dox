@@ -18,7 +18,7 @@ Dart2 is a rewrite of Dart -- the automated test facility which is part of CMake
 
 General things to note:
 - It's best to do out-of-source build, i.e. all object/generated files are in one 'binary' directory. The reason is that it makes it simple for CTest to do a clean build every time by simply deleting all files in the build (or 'binary') directory.
-- All scripts listed on this page can be found in the @c [ORCA2-SRC]/scripts/dart/ directory, so you can simply copy and edit them.
+- All scripts listed on this page can be found in the @c [ORCA-SRC]/scripts/dart/ directory, so you can simply copy and edit them.
 - Make sure @cvs can update the checked-out module without you typing in the password (see SourceForge help page).
 
 @section server Dart2 Server
@@ -55,7 +55,7 @@ ctests/
 That's the simplest test you can run and you do things manually:
 -# Reproduce the file structure shown above. Orca2 source tree is checked out from CVS 
 -# Create an out-of-source build directory
--# Copy the CTest script from [ORCA2-SRC]/scripts/dart/
+-# Copy the CTest script from [ORCA-SRC]/scripts/dart/
 -# Execute the CTest script.
 
 @verbatim

@@ -27,8 +27,8 @@ Start the IceGrid Registry and the IceStorm server on a Linux machine just as be
 First, copy default configuration files for the Laser2d and LaserMon components.
 @verbatim
 $ mkdir -p ~/sys/tutedirect; cd ~/sys/tutedirect
-$ cp [ORCA2-INSTALL]/cfg/laser2d.cfg .
-$ cp [ORCA2-INSTALL]/cfg/lasermon.cfg .
+$ cp [ORCA-INSTALL]/cfg/laser2d.cfg .
+$ cp [ORCA-INSTALL]/cfg/lasermon.cfg .
 @endverbatim
 
 @par The Server on Linux
@@ -50,7 +50,7 @@ On the Windows machine, start the terminal application. Create a separate direct
 >cd sys
 >mkdir tutewin
 >cd tutewin
->copy [ORCA2-INSTALL]\cfg\lasermon.cfg .
+>copy [ORCA-INSTALL]\cfg\lasermon.cfg .
 @endverbatim
 
 We have to modify the configuration file because the server now runs on a different platform (host). Replace [HOSTNAME] with the hostname of the Linux machine on which the server is running.
@@ -60,7 +60,7 @@ We have to modify the configuration file because the server now runs on a differ
 LaserMon.Requires.Laser.Proxy=laserscanner2d@[HOSTNAME]/laser2d
 @endverbatim
 
-Start the client (here we assume that [ORCA2-INSTALL]\bin is in the PATH).
+Start the client (here we assume that [ORCA-INSTALL]\bin is in the PATH).
 
 @verbatim
 >lasermon.exe

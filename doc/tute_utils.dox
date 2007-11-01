@@ -58,8 +58,8 @@ $ iceping -h
 For the next two utilities, we'll need configuration files. Copy default ones from the installation directory.
 @verbatim
 $ cd ~/sys; mkdir tuteutils; cd tuteutils
-$ cp [ORCA2-INSTALL]/cfg/registrylist.cfg .
-$ cp [ORCA2-INSTALL]/cfg/registryview.cfg .
+$ cp [ORCA-INSTALL]/cfg/registrylist.cfg .
+$ cp [ORCA-INSTALL]/cfg/registryview.cfg .
 @endverbatim
 
 @section orca_doc_tute_utils_list Listing contents of the Registry

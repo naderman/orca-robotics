@@ -28,8 +28,8 @@ Start IceGrid Registry and IceStorm server as described in the @ref orca_doc_qui
 Create a new system directory and copy Orca sample files.
 @verbatim
 $ mkdir -p ~/sys/tuteteleop; cd ~/sys/tuteteleop
-$ cp [ORCA2-INSTALL]/cfg/robot2d.cfg .
-$ cp [ORCA2-INSTALL]/cfg/teleop.cfg .
+$ cp [ORCA-INSTALL]/cfg/robot2d.cfg .
+$ cp [ORCA-INSTALL]/cfg/teleop.cfg .
 @endverbatim
 
 @section orca_doc_tute_teleop_player Starting Player/Stage

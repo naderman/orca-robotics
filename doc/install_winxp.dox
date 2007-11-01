@@ -54,7 +54,7 @@ Build and install Orca distribution.
         - While in MS Visual Studio, find INSTALL project in the Solution Explorer list on the left.
         - Right-click and select Project Only > Build Only INSTALL
         - Add @c C:\\orca-[VERSION]\\bin (or custom installation path) to the Windows path (As super-user right-click on My Computer > Properties > Advanced > Environment Variables > Edit).
-        - Note that the .cfg files get installed into C:\Program Files\orca.  When the QuickStart tutorials refer to [ORCA2-INSTALL], this is the directory they're referring to.
+        - Note that the .cfg files get installed into C:\Program Files\orca.  When the QuickStart tutorials refer to [ORCA-INSTALL], this is the directory they're referring to.
 
 */
 

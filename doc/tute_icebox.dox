@@ -29,14 +29,14 @@ Make sure the IceGrid Registry is running and the IceStorm server is @b NOT (See
 First, copy default configuration files for the SickLaser and LaserMon components.
 @verbatim
 $ cd ~/sys; mkdir tuteicebox; cd tuteicebox
-$ cp [ORCA2-INSTALL]/cfg/laser2d.cfg .
-$ cp [ORCA2-INSTALL]/cfg/lasermon.cfg .
+$ cp [ORCA-INSTALL]/cfg/laser2d.cfg .
+$ cp [ORCA-INSTALL]/cfg/lasermon.cfg .
 @endverbatim
 
 Also, copy the IceBox configuration files for this tutorial, which are included with your Orca distribution.
 @verbatim
-$ cp [ORCA2-SRC]/scripts/ice/icebox_laser.cfg .
-$ cp [ORCA2-SRC]/scripts/ice/icestorm.cfg .
+$ cp [ORCA-SRC]/scripts/ice/icebox_laser.cfg .
+$ cp [ORCA-SRC]/scripts/ice/icestorm.cfg .
 $ mkdir stormdb
 @endverbatim
 

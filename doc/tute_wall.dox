@@ -25,7 +25,7 @@ Repeat the instructions of @ref orca_doc_quickstart for starting up IceGrid Regi
 Create a new system directory and copy Orca sample files.
 @verbatim
 $ mkdir -p ~/sys/tutewall; cd ~/sys/tutewall
-$ cp [ORCA2-INSTALL]/cfg/wall.cfg .
+$ cp [ORCA-INSTALL]/cfg/wall.cfg .
 @endverbatim
 
 @section orca_doc_tute_wall_config Configuring Interface Simulation

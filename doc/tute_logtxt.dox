@@ -25,9 +25,9 @@ Repeat the start up instructions of @ref orca_doc_tute_teleop -- but this time I
 Create a new system directory and copy Orca sample files.
 @verbatim
 $ mkdir -p ~/sys/tutelogtxt; cd ~/sys/tutelogtxt
-$ cp [ORCA2-INSTALL]/cfg/robot2d.cfg .
-$ cp [ORCA2-INSTALL]/cfg/teleop.cfg .
-$ cp [ORCA2-INSTALL]/cfg/logger.cfg .
+$ cp [ORCA-INSTALL]/cfg/robot2d.cfg .
+$ cp [ORCA-INSTALL]/cfg/teleop.cfg .
+$ cp [ORCA-INSTALL]/cfg/logger.cfg .
 @endverbatim
 
 @section orca_doc_tute_logtxt_robot Robot component

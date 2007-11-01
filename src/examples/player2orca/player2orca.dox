@@ -54,8 +54,8 @@ Start the Player server as described in @ref orca_doc_tute_stage "Orca/Stage Tut
 Now we create the tute directory and copy two pre-installed config files.
 @verbatim
 $ mkdir -p ~/sys/player; cd ~/sys/player
-$ cp [ORCA2-INSTALL]/cfg/player2orca.cfg .
-$ cp [ORCA2-INSTALL]/cfg/orcamon.cfg .
+$ cp [ORCA-INSTALL]/cfg/player2orca.cfg .
+$ cp [ORCA-INSTALL]/cfg/orcamon.cfg .
 @endverbatim
 
 Start the Player2Orca component (the standard config file will work)

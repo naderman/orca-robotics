@@ -28,9 +28,9 @@ Start IceGrid Registry and IceStorm server as described in the @ref orca_doc_qui
 Create a new system directory and copy Orca sample files.
 @verbatim
 $ mkdir -p ~/sys/tuteteleop; cd ~/sys/tutereactive
-$ cp [ORCA2-INSTALL]/cfg/robot2d.cfg .
-$ cp [ORCA2-INSTALL]/cfg/laser2d.cfg .
-$ cp [ORCA2-INSTALL]/cfg/reactivewalker.cfg .
+$ cp [ORCA-INSTALL]/cfg/robot2d.cfg .
+$ cp [ORCA-INSTALL]/cfg/laser2d.cfg .
+$ cp [ORCA-INSTALL]/cfg/reactivewalker.cfg .
 @endverbatim
 
 @section orca_doc_tute_reactive_player Starting Player/Stage

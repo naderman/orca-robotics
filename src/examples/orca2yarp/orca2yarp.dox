@@ -68,8 +68,8 @@ IceStorm.TopicManager.Endpoints=default -p 20000
 Now we create the tute directory and copy two pre-installed config files.
 @verbatim
 $ mkdir -p ~/sys/yarp; cd ~/sys/yarp
-$ cp [ORCA2-INSTALL]/cfg/robot2d.cfg .
-$ cp [ORCA2-INSTALL]/cfg/orca2yarp.cfg .
+$ cp [ORCA-INSTALL]/cfg/robot2d.cfg .
+$ cp [ORCA-INSTALL]/cfg/orca2yarp.cfg .
 @endverbatim
 
 Edit the @c robot2d.cfg file by changing the driver name to @e fake and appending a line about the non-standard IceStorm port.
