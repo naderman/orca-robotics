@@ -12,16 +12,16 @@
 
 @page orca_doc_tute_perf_test Testing Orca Latencies
 
-@note Reviewed for release 2.0.0.
+@note Reviewed for release 2.7.1.
 
-In this tutorial we show how to use two utilities to measure communication latencies. The utilities are @ref orca_test_pinger and @ref orca_test_replier. The results we produce will be similar to those shown in @ref orca_doc_performance.
+In this tutorial we show how to use two utilities to measure communication latencies. The utilities are @ref orca_util_pinger and @ref orca_util_replier. The results we produce will be similar to those shown in @ref orca_doc_performance.
 
 We assume that the IceGrid registry is already running (see earlier tutorials on how to do this). Create a system directory and copy default configuration files.
 
 @verbatim
 $ cd ~/sys; mkdir perftest; cd perftest
-$ cp [ORCA2-INSTALL]/cfg/replier.cfg .
-$ cp [ORCA2-INSTALL]/cfg/pinger.cfg .
+$ cp [ORCA-INSTALL]/cfg/replier.cfg .
+$ cp [ORCA-INSTALL]/cfg/pinger.cfg .
 @endverbatim
 
 @section orca_doc_tute_perftest_replier Start up Replier
@@ -39,7 +39,7 @@ Edit the configuration file @c pinger.cfg : change the number of pings from 101 
 @verbatim
 # Configuration Options
 Pinger.Config.Count=5
-# Valid values: { "sequence", "class", "iceping" }
+# Valid values: { "sequence", "iceping" }
 Pinger.Config.Driver=sequence
 Pinger.Config.Interval=0.250
 Pinger.Config.LogFileName=orcapingresults.dat
@@ -59,9 +59,19 @@ SIZE RTT_MIN RTT_AVG RTT_MAX RTT_MDEV  RTT0 RTT1 RTT2 ... RTTN
 
 Where SIZE is the size of the data structure in bytes. RTT stands for Round-Trip Time and are stored in milliseconds. RTT_MDEV is standard deviation of the data set (currently not implemented). Note that the contents are similar to the output of UNIX ping. 
 
-@section orca_doc_tute_perftest_replier Start up Replier
+@section orca_doc_tute_perftest_icebox Latency with IceBox
 
-Now we can run the same test insde an IceBox. The IceBox configuration file is show below.
+The latencies are much lower when pinger and replier are run as IceBox services. To take advantage of colocation, the UseSharedCommunicator flag must be set. 
+
+IceBox services are not built by default. Their compilation can be enabled with @c ccmake by setting BUILD_SERVICES = ON. Rebuild and reinstall orca.
+@verbatim
+$ cd [ORCA-SRC]
+$ ccmake .
+$ make
+# make install
+@endverbatim
+
+A sample IceBox configuration file for running latency tests is shown below.
 
 @verbatim
 #
@@ -80,11 +90,13 @@ Ice.PrintAdapterReady=1
 Ice.Override.Timeout=200
 
 #
-# The IceBox server endpoint configuration
+# The IceBox server endpoint configuration (Notice that we assign an unusual port
+# here so that we can run it simultaneously with the IceBox which runs IceStorm on
+# port 9998. These two IceBoxes could be combined of course, if necessary).
 # All services will share one communicator to allow take advantage of collocation
 # (see UseSharedCommunicator option for individual services)
 #
-IceBox.ServiceManager.Endpoints=tcp -p 9998
+IceBox.ServiceManager.Endpoints=tcp -p 19998
 # Load Replier first!
 IceBox.LoadOrder=Replier Pinger
 
@@ -95,12 +107,13 @@ IceBox.Service.Pinger=OrcaPinger:create --Ice.Config=pinger.cfg
 IceBox.UseSharedCommunicator.Pinger=1
 @endverbatim
 
-Copy it into a file called pingbox.cfg and start the IceBox like so:
+Copy it into a file called pingbox.cfg. The ping results will be written into a file specified in @c pinger.cfg. If you want to compare new results to previous ones, rename the existing log file or change the filename in @c pinger.cfg. Start the IceBox like so:
 
 @verbatim
 $ icebox --Ice.Config=pingbox.cfg
 @endverbatim
 
+Take a look at the logfile. The round-trip times should be much lower.
 
 @section orca_doc_tute_perftest_next What's Next
 
