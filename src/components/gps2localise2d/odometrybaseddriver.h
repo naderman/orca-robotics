@@ -42,7 +42,7 @@ public:
 private: 
 
     bool setup();
-    double calcHeadingUncertainty( hydronavutil::Offset &delta,
+    double calcHeadingUncertainty( hydronavutil::Pose &delta,
                                    double dt );
 
     SimpleDriver                                simpleDriver_;

@@ -82,12 +82,12 @@ OdometryBasedDriver::setup()
 }
 
 double 
-OdometryBasedDriver::calcHeadingUncertainty( hydronavutil::Offset &delta,
+OdometryBasedDriver::calcHeadingUncertainty( hydronavutil::Pose &delta,
                                              double dt )
 {
     // Uncertainty is low if we're moving fast in a straight line.
-    double linSpeed = dt*hypotf(delta.x,delta.y);
-    double rotSpeed = dt*delta.theta;
+    double linSpeed = dt*hypotf(delta.x(),delta.y());
+    double rotSpeed = dt*delta.theta();
 
     double rotVal = fabs(rotSpeed);
 
@@ -148,9 +148,9 @@ OdometryBasedDriver::compute( const orca::GpsData  &gpsData,
     {
         orca::Odometry2dData odom;
         odomConsumer_->proxy().get( odom );
-        hydronavutil::Offset delta = odometryDifferentiator_.calcDelta( odom.pose.p.x,
-                                                                       odom.pose.p.y,
-                                                                       odom.pose.o );
+        hydronavutil::Pose delta = odometryDifferentiator_.calcDelta( odom.pose.p.x,
+                                                                      odom.pose.p.y,
+                                                                      odom.pose.o );
 
         assert( localiseData.hypotheses.size() == 1 );
         localiseData.hypotheses[0].cov.tt = calcHeadingUncertainty( delta, dt );
