@@ -125,6 +125,9 @@ public:
         orcaice::connectToInterfaceWithString<ProviderPrxType>( context_, providerPrx, proxyString );
 
         providerPrx->subscribe( prx_ );
+        std::stringstream ss;
+        ss << "Subscribed to " << proxyString;
+        context_.tracer()->debug( ss.str() );
     }
 
     virtual void subscribeWithTag( const std::string& interfaceTag )
@@ -142,6 +145,9 @@ public:
         orcaice::connectToInterfaceWithString<ProviderPrxType>( context_, providerPrx, proxyString );
 
         providerPrx->unsubscribe( prx_ );
+        std::stringstream ss;
+        ss << "unsubscribed to " << proxyString;
+        context_.tracer()->debug( ss.str() );
     }
 
     virtual void unsubscribeWithTag( const std::string& interfaceTag )
@@ -164,29 +170,30 @@ public:
         {
             try {
                 providerPrx->subscribe( prx_ );
+                std::stringstream ss;
+                ss << "Subscribed to " << proxyString;
+                context_.tracer()->debug( ss.str() );
                 break;
             }
             catch ( const Ice::Exception &e )
             {
                 std::stringstream ss;
-                ss << "Failed to subscribe. "
-                    <<"Will retry in "<<retryInterval<<"s."
-                    <<e;
+                ss << "Failed to subscribe: " << e << std::endl
+                   <<"Will retry in "<<retryInterval<<"s.";
                 context_.tracer()->warning( ss.str() );
             }
             catch ( const std::exception &e )
             {
                 std::stringstream ss;
-                ss << "Failed to subscribe. "
-                    <<"Will retry in "<<retryInterval<<"s."
-                    <<e.what();
+                ss << "Failed to subscribe: " << e.what() << std::endl
+                   <<"Will retry in "<<retryInterval<<"s.";
                 context_.tracer()->warning( ss.str() );
             }
             catch ( ... )
             {
                 std::stringstream ss;
                 ss << "Failed to subscribe for unknown reason. "
-                    <<"Will retry in "<<retryInterval<<"s.";
+                   <<"Will retry in "<<retryInterval<<"s.";
                 context_.tracer()->warning( ss.str() );
             }
             ++count;
