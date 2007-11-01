@@ -93,7 +93,7 @@ StatusI::setStatusData( const hydroutil::NameStatusMap &subsystemStatus )
 void 
 StatusI::handleData (const hydroutil::NameStatusMap& subsystemStatus )
 {
-    cout<<"DEBUG: StatusI::handleData"<<endl;
+//     cout<<"DEBUG: StatusI::handleData"<<endl;
     IceUtil::Mutex::Lock lock(mutex_);
 
     setStatusData( subsystemStatus );

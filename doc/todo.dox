@@ -97,7 +97,6 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 - libOrcaIce
     - fixed bug made Tracer and Status not to load configuration parameters (alex m)
-    - calls to status are now traced (alex m) 
 
 - libOrcaLog
     - Changes for interactive log-playing (alex b)
@@ -137,15 +136,6 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 @par New utilities
 
 @par New libraries
-
-- libOrcaIceUtil
-   - a set of tools which depends only on libIceUtil (and general c++). Specifically,
-     contains nothing related to communications. See notes on libOrcaIce. (alex m)
-   - added new utility class JobQueue for spinning off long-term tasks into a
-     different thread. (alex b)
-   - added new function substitute() to string utilities. It substitutes parameters
-     in the form ${parameter}. (alex m)
-   - added new function executeSystemCommand() a wrapper for Linux popen(). (alex b)
 
 - libOrcaIceXml (alex m.)
    - Tools useful for XML parsing. Current contents were extracted from IceGrid code.
