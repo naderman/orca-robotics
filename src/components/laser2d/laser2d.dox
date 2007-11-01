@@ -87,6 +87,8 @@ Geometry
     - Format: length width height (space separated)
     - Default: 0.155 0.155 0.185 (SICK LMS dimensions)
 
+@see Individual drivers may have additional configuration option. See driver documentation.
+
 An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
 
 @section internal Internal Structure
