@@ -58,6 +58,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - documentation
   - orca documentation now links to hydro's (alex m)
 
+- build system
+  - looking for Ice installation, first looks in generic dirs: /opt/Ice; /opt/Ice-3; /opt/Ice-3.2
+
 @par New interfaces
 
 @par New components
