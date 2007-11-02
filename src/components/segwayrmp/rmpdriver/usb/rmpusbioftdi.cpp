@@ -349,7 +349,7 @@ RmpUsbIoFtdi::usbMessageChecksum( unsigned char *msg )
 // }
 
 void
-RmpUsbIoFtdi::getPacketFromCanBuffer(CanPacket &pkt)
+RmpUsbIoFtdi::getPacketFromCanBuffer(CanPacket *pkt)
 {
     assert( !canBuffer_.empty() );
     pkt = canBuffer_.front();
