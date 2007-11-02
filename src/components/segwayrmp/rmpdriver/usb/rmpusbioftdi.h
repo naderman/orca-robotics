@@ -74,8 +74,8 @@ private:
     RmpIo::RmpIoStatus readFromUsbToBufferBlocking();
     void readFromBufferToQueue();
     
-    int parseUsbToCan( CanPacket *pkt, unsigned char *bytes );
-    int parseCanToUsb( CanPacket *pkt, unsigned char *bytes );
+    int parseUsbToCan( CanPacket *pkt, const unsigned char *bytes );
+    int parseCanToUsb( const CanPacket *pkt, unsigned char *bytes );
     
     unsigned char usbMessageChecksum( unsigned char *msg );    
 

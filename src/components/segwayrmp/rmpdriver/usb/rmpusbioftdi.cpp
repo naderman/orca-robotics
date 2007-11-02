@@ -519,7 +519,7 @@ RmpUsbIoFtdi::readFromBufferToQueue()
  *
  *  @note It's assumed that the checksum is already checked.
  */
-int RmpUsbIoFtdi::parseUsbToCan( CanPacket *pkt, unsigned char *bytes )
+int RmpUsbIoFtdi::parseUsbToCan( CanPacket *pkt, const unsigned char *bytes )
 {
     int ret;
 /*
@@ -567,7 +567,7 @@ int RmpUsbIoFtdi::parseUsbToCan( CanPacket *pkt, unsigned char *bytes )
 /*
  *  See Section 3.4 USB Message Format of the Segway RMP manual.
  */
-int RmpUsbIoFtdi::parseCanToUsb( CanPacket *pkt, unsigned char *bytes )
+int RmpUsbIoFtdi::parseCanToUsb( const CanPacket *pkt, unsigned char *bytes )
 {
     bytes[0] = SEGWAY_USB_MSG_START;   //SOH (alexm: start of header?)
     bytes[1] = SEGWAY_USB_STATUS_MESSAGE;
