@@ -58,10 +58,10 @@ char* CanPacket::toString()
 }
 
 CanPacket
-makeStatusCommandPacket( uint16_t statusCommandType, 
-                         uint16_t value,
-                         uint16_t speedCount,
-                         uint16_t turnrateCount )
+statusCommandPacket( uint16_t statusCommandType, 
+                     uint16_t value,
+                     uint16_t speedCount,
+                     uint16_t turnrateCount )
 {
     CanPacket pkt( RMP_CAN_ID_COMMAND );
 
