@@ -270,14 +270,14 @@ RmpUsbIoFtdi::readPacketBlocking( CanPacket* pkt )
 // }
   
 void
-RmpUsbIoFtdi::writePacket( CanPacket *pkt )
+RmpUsbIoFtdi::writePacket( const CanPacket &pkt )
 {
     assert( usbFtdi_ != 0 );
 
     unsigned char bytes[SEGWAY_USB_MESSAGE_SIZE];
 
     // convet CAN packet to USB message
-    parseCanToUsb( pkt, bytes );
+    parseCanToUsb( &pkt, bytes );
 
     try {
         usbFtdi_->write( bytes, SEGWAY_USB_MESSAGE_SIZE );
@@ -349,10 +349,10 @@ RmpUsbIoFtdi::usbMessageChecksum( unsigned char *msg )
 // }
 
 void
-RmpUsbIoFtdi::getPacketFromCanBuffer(CanPacket *pkt)
+RmpUsbIoFtdi::getPacketFromCanBuffer(CanPacket &pkt)
 {
     assert( !canBuffer_.empty() );
-    *pkt = canBuffer_.front();
+    pkt = canBuffer_.front();
     canBuffer_.pop();
 }
 

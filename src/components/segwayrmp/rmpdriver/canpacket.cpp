@@ -68,8 +68,10 @@ makeStatusCommandPacket( uint16_t statusCommandType,
 {
     CanPacket pkt( RMP_CAN_ID_COMMAND );
 
-    pkt->putSlot( 0, speedCount );
-    pkt->putSlot( 1, turnrateCount );
-    pkt->putSlot( 2, statusCommandType );
-    pkt->putSlot( 3, value );
+    pkt.putSlot( 0, speedCount );
+    pkt.putSlot( 1, turnrateCount );
+    pkt.putSlot( 2, statusCommandType );
+    pkt.putSlot( 3, value );
+
+    return pkt;
 }

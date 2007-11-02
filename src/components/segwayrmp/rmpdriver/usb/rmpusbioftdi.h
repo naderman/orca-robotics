@@ -40,9 +40,9 @@ public:
     virtual void disable();
     
     // Returns OK if copied a packet, NO_DATA if not
-    RmpIo::RmpIoStatus readPacket( CanPacket* pkt );
+    RmpIo::RmpIoStatus readPacket( CanPacket &pkt );
     
-    void writePacket( CanPacket* pkt );
+    void writePacket( const CanPacket &pkt );
     
 private:
 

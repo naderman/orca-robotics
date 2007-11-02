@@ -82,7 +82,7 @@ PeakCanDriver::~PeakCanDriver(){
 // timing out
 
 RmpIo::RmpIoStatus 
-PeakCanDriver::readPacket(CanPacket *pkt){
+PeakCanDriver::readPacket(CanPacket &pkt){
 
     // Set the default timeout to 100Hz
     const int timeOutMicroSeconds=10000;
@@ -98,7 +98,7 @@ PeakCanDriver::readPacket(CanPacket *pkt){
     DWORD retVal = LINUX_CAN_Read_Timeout(portHandle_, &canDataReceived, timeOutMicroSeconds ); 
 
     if ( retVal == 0 ){
-        convertPeakToCanPacket(pkt, &canDataReceived.Msg);
+        convertPeakToCanPacket(&pkt, &canDataReceived.Msg);
         status = OK;
     }else{        
         if( debugLevel_ > 0){ 
@@ -119,7 +119,7 @@ PeakCanDriver::readPacket(CanPacket *pkt){
 // 
 // throws an Exception if the write fails.
 
-void PeakCanDriver::writePacket(CanPacket *pktToSend){
+void PeakCanDriver::writePacket(const CanPacket &pktToSend){
 
     assert ( isEnabled_ );
 
@@ -136,7 +136,7 @@ void PeakCanDriver::writePacket(CanPacket *pktToSend){
     // Using data structs from pcan.h
     TPCANMsg canDataToSend;
     
-    convertCanPacketToPeak( &canDataToSend, pktToSend );
+    convertCanPacketToPeak( &canDataToSend, &pktToSend );
 
     // Send to the peak device driver code
     DWORD retVal = LINUX_CAN_Write_Timeout(portHandle_,  &canDataToSend, timeOutMicroSeconds);

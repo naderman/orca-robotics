@@ -32,8 +32,8 @@ public:
     ~PeakCanDriver();
     void enable(int debugLevel);
     void disable(void);
-    RmpIo::RmpIoStatus readPacket(CanPacket *pkt);
-    void writePacket(CanPacket *pkt);
+    RmpIo::RmpIoStatus readPacket( CanPacket &pkt );
+    void writePacket( const CanPacket &pkt );
       
 private:
     HANDLE portHandle_;
