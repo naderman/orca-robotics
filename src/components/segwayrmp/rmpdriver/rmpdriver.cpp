@@ -197,8 +197,7 @@ RmpDriver::write( const Command& command )
     applyScaling( command, scaledCommand );
 
     try {
-        CanPacket packet;
-        makeMotionCommandPacket( &packet, scaledCommand );
+        CanPacket packet = makeMotionCommandPacket( scaledCommand );
         rmpIo_.writePacket(packet);
     }
     catch ( std::exception &e )
@@ -232,12 +231,6 @@ RmpDriver::applyHardwareLimits( double& forwardSpeed, double& reverseSpeed,
     turnrate = MIN( turnrate, turnrateLimit );
     turnrate = MIN( turnrateAtMaxSpeed, turnrateAtMaxSpeedLimit );
 }
-
-// void
-// RmpDriver::get( Stats& stats )
-// {
-//     stats.distanceTravelled = frame_.foreaft;
-// }
 
 std::string
 RmpDriver::toString()
@@ -586,17 +579,9 @@ RmpDriver::enableBalanceMode( bool enable )
 /*
  *  Takes an Orca command object and turns it into CAN packets for the RMP
  */
-void
-RmpDriver::makeMotionCommandPacket( CanPacket* pkt, const Command& command )
+CanPacket
+RmpDriver::makeMotionCommandPacket( const Command& command )
 {
-    pkt->setId( RMP_CAN_ID_COMMAND );
-
-    // velocity command does not change any other values
-    pkt->putSlot(2, (uint16_t)RMP_CMD_NONE);
-
-    pkt->putSlot(3, 0);
-
-
     // translational RMP command
     int16_t trans = (int16_t) rint(command.vx * RMP_COUNT_PER_M_PER_S);
     // check for command limits
@@ -617,15 +602,11 @@ RmpDriver::makeMotionCommandPacket( CanPacket* pkt, const Command& command )
         rot = -RMP_MAX_ROT_VEL_COUNT;
     }
 
-    // put commands into the packet
-    pkt->putSlot(0, (uint16_t)trans);
-    pkt->putSlot(1, (uint16_t)rot);
-
     // save this last command
     lastTrans_ = trans;
     lastRot_ = rot;
 
-    
+    return motionCommandPacket( trans, rot );
 }
 
 /*
@@ -638,14 +619,6 @@ RmpDriver::makeStatusCommandPacket( uint16_t commandId, uint16_t value )
                                 value,
                                 (uint16_t)lastTrans_,
                                 (uint16_t)lastRot_ );
-}
-
-void
-RmpDriver::makeShutdownCommandPacket( CanPacket* pkt )
-{
-    pkt->setId( RMP_CAN_ID_SHUTDOWN );
-
-    //printf("SEGWAYIO: SHUTDOWN: pkt: %s\n", pkt->toString());
 }
 
 // Calculate the difference between two raw counter values, taking care

@@ -77,6 +77,12 @@ statusCommandPacket( uint16_t statusCommandType,
                      uint16_t speedCount,
                      uint16_t turnrateCount );
 
+CanPacket
+motionCommandPacket( uint16_t speedCount,
+                     uint16_t turnrateCount );
+
+CanPacket
+shutdownCommandPacket();
 
 } // namespace
 

@@ -99,6 +99,10 @@ private:
 
     // last motion commands [segway counts]
     // used to load into status command
+
+    // Remember the last command we gave, so that if we need to give a
+    // configuration command (which also requires that a velocity be
+    // specified) we can maintain the same speed.
     int16_t lastTrans_;
     int16_t lastRot_;
 
@@ -119,10 +123,8 @@ private:
     void integrateMotion();
     void updateData( Data& data, Status & status );
 
-    // helper to take a player command and turn it into a CAN command packet
-    void makeMotionCommandPacket( CanPacket* pkt, const Command& command );
+    CanPacket makeMotionCommandPacket( const Command& command );
     CanPacket makeStatusCommandPacket( uint16_t commandId, uint16_t value );
-    void makeShutdownCommandPacket( CanPacket* pkt );
 
     // Calculate the difference between two raw counter values, taking care of rollover.
     int diff(uint32_t from, uint32_t to, bool first);

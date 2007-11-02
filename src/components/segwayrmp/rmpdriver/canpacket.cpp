@@ -11,6 +11,11 @@
 #include <stdio.h>
 #include "rmpdefs.h"
 #include "canpacket.h"
+#include <stdlib.h>
+#include <sstream>
+#include <rmpexception.h>
+
+using namespace std;
 
 // Copied this from <canlib.h>. 
 // This definition appears to be standard only for the FTDI USB to can
@@ -57,12 +62,39 @@ char* CanPacket::toString()
     return buf;
 }
 
+//////////////////////////////////////////////////////////////////////
+
+void
+checkSpeedLimits( uint16_t speedCount )
+{
+    if ( abs(speedCount) > RMP_MAX_TRANS_VEL_COUNT )
+    {
+        stringstream ss;
+        ss << "Asked for speed="<<speedCount<<"cnts, max="<<RMP_MAX_TRANS_VEL_COUNT;
+        throw RmpException( ss.str() );
+    }
+}
+
+void
+checkTurnrateLimits( uint16_t turnrateCount )
+{
+    if ( abs(turnrateCount) > RMP_MAX_ROT_VEL_COUNT )
+    {
+        stringstream ss;
+        ss << "Asked for turnrate="<<turnrateCount<<"cnts, max="<<RMP_MAX_ROT_VEL_COUNT;
+        throw RmpException( ss.str() );
+    }    
+}
+
 CanPacket
 statusCommandPacket( uint16_t statusCommandType, 
                      uint16_t value,
                      uint16_t speedCount,
                      uint16_t turnrateCount )
 {
+    checkSpeedLimits( speedCount );
+    checkTurnrateLimits( turnrateCount );
+
     CanPacket pkt( RMP_CAN_ID_COMMAND );
 
     pkt.putSlot( 0, speedCount );
@@ -71,6 +103,30 @@ statusCommandPacket( uint16_t statusCommandType,
     pkt.putSlot( 3, value );
 
     return pkt;
+}
+
+CanPacket
+motionCommandPacket( uint16_t speedCount,
+                     uint16_t turnrateCount )
+{
+    checkSpeedLimits( speedCount );
+    checkTurnrateLimits( turnrateCount );
+
+    CanPacket pkt( RMP_CAN_ID_COMMAND );
+    
+    pkt.putSlot( 0, speedCount );
+    pkt.putSlot( 1, turnrateCount );
+
+    // Don't modify configuration
+    pkt.putSlot( 2, 0 );
+
+    return pkt;
+}
+
+CanPacket
+shutdownCommandPacket()
+{
+    return CanPacket( RMP_CAN_ID_SHUTDOWN );
 }
 
 }
