@@ -352,7 +352,7 @@ void
 RmpUsbIoFtdi::getPacketFromCanBuffer(CanPacket *pkt)
 {
     assert( !canBuffer_.empty() );
-    pkt = canBuffer_.front();
+    *pkt = canBuffer_.front();
     canBuffer_.pop();
 }
 
