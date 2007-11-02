@@ -199,7 +199,7 @@ RmpDriver::write( const Command& command )
     try {
         CanPacket packet;
         makeMotionCommandPacket( &packet, scaledCommand );
-        rmpIo_.writePacket(&packet);
+        rmpIo_.writePacket(packet);
     }
     catch ( std::exception &e )
     {
@@ -260,7 +260,7 @@ RmpDriver::readFrame()
     // get next packet from the packet buffer, will block until new packet arrives
     while( canPacketsProcessed < maxCanPacketsProcessed && timeoutCount < maxTimeoutCount )
     {
-        status = rmpIo_.readPacket( &pkt_ );
+        status = rmpIo_.readPacket( pkt_ );
 
         if ( status == RmpIo::NO_DATA ) {
             // not sure what to do here. treat as an error? try again?
@@ -425,10 +425,10 @@ RmpDriver::updateData( Data& data, Status & status )
 void
 RmpDriver::resetAllIntegrators()
 {
-    makeStatusCommandPacket( &pkt_, RMP_CMD_RESET_INTEGRATORS, RMP_CAN_RESET_ALL );
+    CanPacket pkt = makeStatusCommandPacket( RMP_CMD_RESET_INTEGRATORS, RMP_CAN_RESET_ALL );
 
     try {
-        rmpIo_.writePacket(&pkt_);
+        rmpIo_.writePacket(pkt);
     }
     catch ( std::exception &e )
     {
@@ -448,10 +448,10 @@ RmpDriver::setMaxVelocityScaleFactor( double scale )
     } else if ( scale<0.0 ) {
         scale=0.0;
     }
-    makeStatusCommandPacket( &pkt_, RMP_CMD_SET_MAX_VELOCITY_SCALE, (uint16_t)ceil(scale*16.0) );
+    CanPacket pkt = makeStatusCommandPacket( RMP_CMD_SET_MAX_VELOCITY_SCALE, (uint16_t)ceil(scale*16.0) );
 
     try {
-        rmpIo_.writePacket(&pkt_);
+        rmpIo_.writePacket(pkt);
     }
     catch ( std::exception &e )
     {
@@ -471,10 +471,10 @@ RmpDriver::setMaxTurnrateScaleFactor( double scale )
     } else if ( scale<0.0 ) {
         scale=0.0;
     }
-    makeStatusCommandPacket( &pkt_, RMP_CMD_SET_MAX_TURNRATE_SCALE, (uint16_t)ceil(scale*16.0) );
+    CanPacket pkt = makeStatusCommandPacket( RMP_CMD_SET_MAX_TURNRATE_SCALE, (uint16_t)ceil(scale*16.0) );
 
     try {
-        rmpIo_.writePacket(&pkt_);
+        rmpIo_.writePacket(pkt);
     }
     catch ( std::exception &e )
     {
@@ -494,10 +494,10 @@ RmpDriver::setMaxAccelerationScaleFactor( double scale )
     } else if ( scale<0.0 ) {
         scale=0.0;
     }
-    makeStatusCommandPacket( &pkt_, RMP_CMD_SET_MAX_ACCELERATION_SCALE, (uint16_t)ceil(scale*16.0) );
+    CanPacket pkt = makeStatusCommandPacket( RMP_CMD_SET_MAX_ACCELERATION_SCALE, (uint16_t)ceil(scale*16.0) );
 
     try {
-        rmpIo_.writePacket(&pkt_);
+        rmpIo_.writePacket(pkt);
     }
     catch ( std::exception &e )
     {
@@ -518,10 +518,10 @@ RmpDriver::setMaxCurrentLimitScaleFactor( double scale )
         scale=0.0;
     }
     // note: the scale of this command is [0,256]
-    makeStatusCommandPacket( &pkt_, RMP_CMD_SET_CURRENT_LIMIT_SCALE, (uint16_t)ceil(scale*256.0) );
+    CanPacket pkt = makeStatusCommandPacket( RMP_CMD_SET_CURRENT_LIMIT_SCALE, (uint16_t)ceil(scale*256.0) );
 
     try {
-        rmpIo_.writePacket(&pkt_);
+        rmpIo_.writePacket(pkt);
     }
     catch ( std::exception &e )
     {
@@ -534,10 +534,10 @@ RmpDriver::setMaxCurrentLimitScaleFactor( double scale )
 void
 RmpDriver::setOperationalMode( OperationalMode mode )
 {
-    makeStatusCommandPacket( &pkt_, RMP_CMD_SET_OPERATIONAL_MODE, mode );
+    CanPacket pkt = makeStatusCommandPacket( RMP_CMD_SET_OPERATIONAL_MODE, mode );
 
     try {
-        rmpIo_.writePacket(&pkt_);
+        rmpIo_.writePacket(pkt);
     }
     catch ( std::exception &e )
     {
@@ -549,10 +549,10 @@ RmpDriver::setOperationalMode( OperationalMode mode )
 void
 RmpDriver::setGainSchedule( int sched )
 {
-    makeStatusCommandPacket( &pkt_, RMP_CMD_SET_GAIN_SCHEDULE, sched );
+    CanPacket pkt = makeStatusCommandPacket( RMP_CMD_SET_GAIN_SCHEDULE, sched );
 
     try {
-        rmpIo_.writePacket(&pkt_);
+        rmpIo_.writePacket(pkt);
     }
     catch ( std::exception &e )
     {
@@ -565,15 +565,16 @@ RmpDriver::setGainSchedule( int sched )
 void
 RmpDriver::enableBalanceMode( bool enable )
 {
+    CanPacket pkt;
     if ( enable ) {
-        makeStatusCommandPacket( &pkt_, RMP_CMD_SET_BALANCE_MODE_LOCKOUT, BalanceAllowed );
+        pkt = makeStatusCommandPacket( RMP_CMD_SET_BALANCE_MODE_LOCKOUT, BalanceAllowed );
     }
     else {
-        makeStatusCommandPacket( &pkt_, RMP_CMD_SET_BALANCE_MODE_LOCKOUT, BalanceNotAllowed );
+        pkt = makeStatusCommandPacket( RMP_CMD_SET_BALANCE_MODE_LOCKOUT, BalanceNotAllowed );
     }
     
     try {
-        rmpIo_.writePacket(&pkt_);
+        rmpIo_.writePacket(pkt);
     }
     catch ( std::exception &e )
     {
@@ -630,27 +631,13 @@ RmpDriver::makeMotionCommandPacket( CanPacket* pkt, const Command& command )
 /*
     Creates a status CAN packet from the given arguments
  */  
-void
-RmpDriver::makeStatusCommandPacket( CanPacket* pkt, uint16_t commandId, uint16_t value )
+CanPacket
+RmpDriver::makeStatusCommandPacket( uint16_t commandId, uint16_t value )
 {
-    pkt->setId( RMP_CAN_ID_COMMAND );
-
-    // put last motion command into the packet
-    pkt->putSlot(0, (uint16_t)lastTrans_);
-    pkt->putSlot(1, (uint16_t)lastRot_);
-
-    pkt->putSlot(2, commandId);
-    
-    // it was noted in the windows demo code that they
-    // copied the 8-bit value into both bytes like this
-    //pkt->PutByte(6, val);
-    //pkt->PutByte(7, val);
-    pkt->putSlot(3, value);
-    
-    // debug
-//     if(cmd) {
-//         printf("SEGWAYIO: STATUS: cmd: %02x val: %02x pkt: %s\n", cmd, val, pkt->toString());
-//     }
+    return statusCommandPacket( commandId, 
+                                value,
+                                (uint16_t)lastTrans_,
+                                (uint16_t)lastRot_ );
 }
 
 void
@@ -692,77 +679,3 @@ RmpDriver::diff( uint32_t from, uint32_t to, bool first )
     }
 }
 
-void
-RmpDriver::watchPacket( CanPacket* pkt, short int pktID )
-{
-    short slot0 = (short)pkt->getSlot(0);
-    short slot1 = (short)pkt->getSlot(1);
-    short slot2 = (short)pkt->getSlot(2);
-    short slot3 = (short)pkt->getSlot(3);
-
-    int slot0_lo = (int)pkt->getSlot(0);
-    int slot1_hi = (int)pkt->getSlot(1) << 16;
-    int slot2_lo = (int)pkt->getSlot(2);
-    int slot3_hi = (int)pkt->getSlot(3) << 16;
-
-    if( pkt->id() == (uint32_t)pktID )
-    {
-        //printf("SEGWAYIO: pkt: %s\n", pkt.toString());
-
-        switch( pkt->id() )
-        {
-            case RMP_CAN_ID_MSG1:
-                printf("pitch = %6.2f, pitch rate = %6.2f,roll = %6.2f, roll rate = %6.2f\r",
-                       (float)(slot0/RMP_COUNT_PER_DEG), (float)(slot1/RMP_COUNT_PER_DEG_PER_S),
-                       (float)(slot2/RMP_COUNT_PER_DEG), (float)(slot3/RMP_COUNT_PER_DEG_PER_S));
-                break;
-            case RMP_CAN_ID_MSG2:
-                printf("LW vel = %6.2f, RW vel = %6.2f, yaw rate = %6.2f, frames = %8i\r",
-                       (float)(slot0/RMP_COUNT_PER_M_PER_S), float(slot1/RMP_COUNT_PER_M_PER_S),
-                       (float)(slot2/RMP_COUNT_PER_DEG_PER_S), (int)(slot3/RMP_SEC_PER_FRAME)  );
-                break;
-            case RMP_CAN_ID_MSG3:
-                printf("Left wheel = %6.2f, right wheel = %6.2f\r",
-                       (float)((slot0_lo | slot1_hi)/RMP_COUNT_PER_M),
-                       (float)((slot2_lo | slot3_hi)/RMP_COUNT_PER_M)   );
-                break;
-            case RMP_CAN_ID_MSG4:
-                printf("Int f/a disp  = %6.2f, int yaw disp = %6.2f\r",
-                       (float)((slot0_lo | slot1_hi)/RMP_COUNT_PER_M),
-                       (float)((slot2_lo | slot3_hi)/RMP_COUNT_PER_REV)   );
-                break;
-            case RMP_CAN_ID_MSG5:
-                printf("Left motor torque  = %6.2f, right motor torque = %6.2f\r",
-                       (float)(slot0/1094.0), (float)(slot1/RMP_COUNT_PER_NM)   );
-                break;
-            case RMP_CAN_ID_MSG6:
-                printf("Op mode = %1i, gain sch = %1i, UI batt = %6.2f, Base batt = %6.2f\r",
-                       slot0, slot1,
-                       (float)(1.5 + slot2*RMP_UI_COEFF),
-                       (float)(slot3/RMP_BASE_COUNT_PER_VOLT) );
-                break;
-            case RMP_CAN_ID_MSG7:
-                printf("Vel command = %4i, turn command = %4i\n",
-                       slot0, slot1 );
-                break;
-        }
-    }
-}
-
-void
-RmpDriver::watchDataStream( CanPacket* pkt )
-{
-    static CanPacket priorPkt;
-
-    // Check for breaks in the message sequence
-    if( (pkt->id() != (priorPkt.id() + 1) )  &&
-         !((pkt->id() == 0x0400) && (priorPkt.id() == 0x0407)) )
-    {
-        printf("=== BREAK IN SEQUENCE ===\n");
-    }
-
-        // Update prior packet (for debugging)
-    priorPkt = *pkt;
-
-    printf("SEGWAYIO: pkt: %s\n", pkt->toString());
-}

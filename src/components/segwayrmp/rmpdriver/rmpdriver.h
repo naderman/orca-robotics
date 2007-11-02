@@ -121,17 +121,13 @@ private:
 
     // helper to take a player command and turn it into a CAN command packet
     void makeMotionCommandPacket( CanPacket* pkt, const Command& command );
-    void makeStatusCommandPacket( CanPacket* pkt, uint16_t commandId, uint16_t value );
+    CanPacket makeStatusCommandPacket( uint16_t commandId, uint16_t value );
     void makeShutdownCommandPacket( CanPacket* pkt );
 
     // Calculate the difference between two raw counter values, taking care of rollover.
     int diff(uint32_t from, uint32_t to, bool first);
     // bullshit
     bool firstread_;
-
-    // chip's utilities
-    void watchPacket( CanPacket* pkt, short int pktID );
-    void watchDataStream( CanPacket* pkt );
 };
 
 } // namespace

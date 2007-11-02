@@ -9,7 +9,7 @@
  */
 
 #include <stdio.h>
-
+#include "rmpdefs.h"
 #include "canpacket.h"
 
 
@@ -30,7 +30,8 @@ using namespace segwayrmp;
     http://playerstage.sf.net
     file: canio.h
 */
-CanPacket::CanPacket()
+CanPacket::CanPacket( uint32_t id )
+    : id_(id)
 {
     memset(msg_,0,sizeof(msg_));
 
@@ -57,4 +58,18 @@ char* CanPacket::toString()
             msg_[6], msg_[7]);
 
     return buf;
+}
+
+CanPacket
+makeStatusCommandPacket( uint16_t statusCommandType, 
+                         uint16_t value,
+                         uint16_t speedCount,
+                         uint16_t turnrateCount )
+{
+    CanPacket pkt( RMP_CAN_ID_COMMAND );
+
+    pkt->putSlot( 0, speedCount );
+    pkt->putSlot( 1, turnrateCount );
+    pkt->putSlot( 2, statusCommandType );
+    pkt->putSlot( 3, value );
 }

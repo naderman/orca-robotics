@@ -38,7 +38,7 @@ public:
     // Always use all 8 bytes
     static const int CAN_DATA_SIZE = 8;
 
-    CanPacket();
+    CanPacket( uint32_t id=0 );
     
     // Sets the ID (what the RMP docs call the header)
     void setId( uint32_t id ) { id_ = id; }
@@ -70,6 +70,12 @@ private:
     //    uint32_t flags;
 
 };
+
+CanPacket
+statusCommandPacket( uint16_t statusCommandType, 
+                     uint16_t value,
+                     uint16_t speedCount,
+                     uint16_t turnrateCount );
 
 
 } // namespace
