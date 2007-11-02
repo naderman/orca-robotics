@@ -16,3 +16,10 @@ MACRO( FIND_DEFTOOLS DEFTOOLS_HOME )
 #     GET_TARGET_PROPERTY ( GENERATE_CFG_EXE_LOCATION generatecfg LOCATION )
 
 ENDMACRO( FIND_DEFTOOLS DEFTOOLS_HOME )
+
+
+#
+# During the install we want to 'label' the install
+#
+INSTALL (SCRIPT ${PROJECT_SOURCE_DIR}/cmake/local/labelInstall.cmake)
+
