@@ -15,7 +15,6 @@
 #include "rmpdriverconfig.h"
 #include "rmpio.h"
 #include "rmpdataframe.h"
-#include "canpacket.h"
 
 namespace segwayrmp
 {
@@ -91,7 +90,6 @@ private:
     // driver/hardware interface
     RmpIo         &rmpIo_;
     RmpDataFrame   frame_;
-    CanPacket      pkt_;
 
     // configuration
     orcaice::Context context_;

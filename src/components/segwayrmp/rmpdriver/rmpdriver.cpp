@@ -250,10 +250,12 @@ RmpDriver::readFrame()
     const int maxCanPacketsProcessed = 100;
     const int maxTimeoutCount = 2;
 
+    CanPacket pkt;
+
     // get next packet from the packet buffer, will block until new packet arrives
     while( canPacketsProcessed < maxCanPacketsProcessed && timeoutCount < maxTimeoutCount )
     {
-        status = rmpIo_.readPacket( pkt_ );
+        status = rmpIo_.readPacket( pkt );
 
         if ( status == RmpIo::NO_DATA ) {
             // not sure what to do here. treat as an error? try again?
@@ -262,19 +264,17 @@ RmpDriver::readFrame()
         }
         
         ++canPacketsProcessed;
-        // debug
-        //watchDataStream( &pkt_ );
     
         //
         // Add packet to data frame
         // This is where we interprete all message contents!
         //
-        frame_.AddPacket(&pkt_);
+        frame_.AddPacket(&pkt);
    
         //
         // special case: integrate robot motion
         //
-        if ( pkt_.id() == RMP_CAN_ID_MSG4 ) {
+        if ( pkt.id() == RMP_CAN_ID_MSG4 ) {
             integrateMotion();
         }
 
