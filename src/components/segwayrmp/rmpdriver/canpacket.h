@@ -52,6 +52,7 @@ public:
 
     // Allow direct access for memcpy
     uint8_t *msg() { return msg_; }
+    const uint8_t *msg() const { return msg_; }
 
 private:
 
