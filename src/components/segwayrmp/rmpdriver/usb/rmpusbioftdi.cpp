@@ -133,7 +133,7 @@ RmpUsbIoFtdi::disable()
 // }
 
 RmpIo::RmpIoStatus
-RmpUsbIoFtdi::readPacket(CanPacket* pkt)
+RmpUsbIoFtdi::readPacket(CanPacket &pkt)
 {
     assert( usbFtdi_ != 0 );
 
@@ -141,10 +141,10 @@ RmpUsbIoFtdi::readPacket(CanPacket* pkt)
         RmpIo::RmpIoStatus status;
 
         // First try non-blocking (maybe there's a packet there already)
-        status = readPacketNonBlocking( pkt );
+        status = readPacketNonBlocking( &pkt );
         
         if ( status == NO_DATA )
-            return readPacketBlocking( pkt );
+            return readPacketBlocking( &pkt );
         else
             return status;
     }
