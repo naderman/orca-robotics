@@ -533,20 +533,20 @@ int RmpUsbIoFtdi::parseUsbToCan( CanPacket *pkt, unsigned char *bytes )
 */
     if (bytes[1]==SEGWAY_USB_STATUS_MESSAGE && bytes[2]==SEGWAY_USB_CHANNEL_A )
     {
-        pkt->id = ((bytes[4] << 3) | ((bytes[5] >> 5) & 7)) & 0x0fff;
+        pkt->setId( ((bytes[4] << 3) | ((bytes[5] >> 5) & 7)) & 0x0fff );
 
-        if ( (pkt->id>=RMP_CAN_ID_MSG0 && pkt->id<=RMP_CAN_ID_MSG7) 
-                || pkt->id==RMP_CAN_ID_STATUS || pkt->id==RMP_CAN_ID_HEARTBEAT )
+        if ( (pkt->id()>=RMP_CAN_ID_MSG0 && pkt->id()<=RMP_CAN_ID_MSG7) 
+                || pkt->id()==RMP_CAN_ID_STATUS || pkt->id()==RMP_CAN_ID_HEARTBEAT )
         {
             for ( int i = 0; i < 8; ++i )
             {
-                pkt->msg[i] = bytes[9+i];
+                pkt->msg()[i] = bytes[9+i];
             }
             ret = 8;
         }
         else {
             // this is not a status message, no need to queue it
-            cout<<"got a status message with unexpected ID : "<<(int)pkt->id<<endl;
+            cout<<"got a status message with unexpected ID : "<<(int)pkt->id()<<endl;
             ret = 0;
         }
     }
@@ -575,13 +575,13 @@ int RmpUsbIoFtdi::parseCanToUsb( CanPacket *pkt, unsigned char *bytes )
     bytes[3] = 0;   // always 0
     bytes[4] = 0;   // always 0
     bytes[5] = 0;   // always 0
-    bytes[6] = pkt->id >> 8;
-    bytes[7] = pkt->id ;
+    bytes[6] = pkt->id() >> 8;
+    bytes[7] = pkt->id();
     bytes[8] = 0;   // always 0
 
     for ( int i = 0; i < 8; ++i )
     {
-        bytes[9+i] = pkt->msg[i];
+        bytes[9+i] = pkt->msg()[i];
     }
     
     // do check sum

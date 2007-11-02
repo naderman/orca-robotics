@@ -15,8 +15,8 @@
 // MESSAGE ID'S
 
 // Segway->CPU messages
-// warning: Segway manual refers to them as Message 1-7
-// we call them Message 0-6 to synch with 0x0400-406
+// warning: Segway manual refers to them as Message 1-8
+// we call them Message 0-7 to synch with 0x0400-407
 // 0x0400 = 1024
 #define RMP_CAN_ID_MSG0         0x0400
 #define RMP_CAN_ID_MSG1         0x0401

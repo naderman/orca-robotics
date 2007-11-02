@@ -178,7 +178,7 @@ bool RmpDataFrame::isComplete() const
  */
 void RmpDataFrame::AddPacket(const CanPacket* pkt)
 {
-    switch(pkt->id)
+    switch(pkt->id())
     {
     case RMP_CAN_ID_STATUS:
     {

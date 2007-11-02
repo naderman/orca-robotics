@@ -219,9 +219,9 @@ PeakCanDriver::disable(void){
 void 
 PeakCanDriver::convertCanPacketToPeak(TPCANMsg *peakCanOut, const CanPacket *pktIn ){
 
-    peakCanOut->ID      =  pktIn->id;
+    peakCanOut->ID      =  pktIn->id();
     peakCanOut->LEN     =  CanPacket::CAN_DATA_SIZE;
-    memcpy(peakCanOut->DATA, pktIn->msg, CanPacket::CAN_DATA_SIZE * sizeof(BYTE));
+    memcpy(peakCanOut->DATA, pktIn->msg(), CanPacket::CAN_DATA_SIZE * sizeof(BYTE));
 
     // Use the peak driver definition for a standard (not extended type message)
     // Note that this does not match that used in the FDTI library (see below)
@@ -233,8 +233,8 @@ PeakCanDriver::convertCanPacketToPeak(TPCANMsg *peakCanOut, const CanPacket *pkt
 void 
 PeakCanDriver::convertPeakToCanPacket(CanPacket *pktOut, const TPCANMsg *peakCanIn ){
 
-    pktOut->id = peakCanIn->ID;
-    memcpy(pktOut->msg, peakCanIn->DATA, CanPacket::CAN_DATA_SIZE * sizeof(BYTE));
+    pktOut->setId( peakCanIn->ID );
+    memcpy(pktOut->msg(), peakCanIn->DATA, CanPacket::CAN_DATA_SIZE * sizeof(BYTE));
 
     // NOTE:- We do not change the value in the flags field. It seems the 
     // different drivers peak / FDTI etc have different definitions of how a standard

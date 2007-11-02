@@ -19,6 +19,11 @@ namespace segwayrmp
 {
 
 /*
+  CAN Packets consist of:
+    - Header (2 bytes in standard packet (which the RMP always uses))
+    - Data Length Code (2 bytes, always '8' for RMP)
+    - Data (8 bytes, split into 4 2-byte slots)
+
   Even if we're interfacing with USB, we still pass CAN packets
   (wrapped up in USB packets).
 
@@ -29,10 +34,10 @@ namespace segwayrmp
 class CanPacket
 {
 public:
-    enum{ 
-      CAN_DATA_SIZE=8
-    }canInfo;
-  
+
+    // Always use all 8 bytes
+    static const int CAN_DATA_SIZE = 8;
+
     CanPacket();
     
     uint16_t GetSlot(int s) const;
@@ -41,10 +46,22 @@ public:
     void PutSlot(const int slot, const uint16_t val);
     void PutByte(const int byte, const uint16_t val);
     
-    long id;
-    uint8_t msg[CAN_DATA_SIZE];
-    uint32_t dlc;
-    uint32_t flags;
+    // The id is the 'header' field in the RMP docs
+    uint32_t id() const { return id_; }
+    void setId( uint32_t id ) { id_ = id; }
+
+    // Allow direct access for memcpy
+    uint8_t *msg() { return msg_; }
+
+private:
+
+    long id_;
+    uint8_t msg_[CAN_DATA_SIZE];
+
+    // Could store dataLengthCode and flags here,
+    // but don't bother cause for the RMP they're always the same.
+    //    uint32_t dlc;
+    //    uint32_t flags;
 
 };
 

@@ -281,7 +281,7 @@ RmpDriver::readFrame()
         //
         // special case: integrate robot motion
         //
-        if ( pkt_.id == RMP_CAN_ID_MSG4 ) {
+        if ( pkt_.id() == RMP_CAN_ID_MSG4 ) {
             integrateMotion();
         }
 
@@ -588,7 +588,7 @@ RmpDriver::enableBalanceMode( bool enable )
 void
 RmpDriver::makeMotionCommandPacket( CanPacket* pkt, const Command& command )
 {
-    pkt->id = RMP_CAN_ID_COMMAND;
+    pkt->setId( RMP_CAN_ID_COMMAND );
 
     // velocity command does not change any other values
     pkt->PutSlot(2, (uint16_t)RMP_CMD_NONE);
@@ -633,7 +633,7 @@ RmpDriver::makeMotionCommandPacket( CanPacket* pkt, const Command& command )
 void
 RmpDriver::makeStatusCommandPacket( CanPacket* pkt, uint16_t commandId, uint16_t value )
 {
-    pkt->id = RMP_CAN_ID_COMMAND;
+    pkt->setId( RMP_CAN_ID_COMMAND );
 
     // put last motion command into the packet
     pkt->PutSlot(0, (uint16_t)lastTrans_);
@@ -656,7 +656,7 @@ RmpDriver::makeStatusCommandPacket( CanPacket* pkt, uint16_t commandId, uint16_t
 void
 RmpDriver::makeShutdownCommandPacket( CanPacket* pkt )
 {
-    pkt->id = RMP_CAN_ID_SHUTDOWN;
+    pkt->setId( RMP_CAN_ID_SHUTDOWN );
 
     //printf("SEGWAYIO: SHUTDOWN: pkt: %s\n", pkt->toString());
 }
@@ -705,11 +705,11 @@ RmpDriver::watchPacket( CanPacket* pkt, short int pktID )
     int slot2_lo = (int)pkt->GetSlot(2);
     int slot3_hi = (int)pkt->GetSlot(3) << 16;
 
-    if( pkt->id == pktID )
+    if( pkt->id() == (uint32_t)pktID )
     {
         //printf("SEGWAYIO: pkt: %s\n", pkt.toString());
 
-        switch( pkt->id )
+        switch( pkt->id() )
         {
             case RMP_CAN_ID_MSG1:
                 printf("pitch = %6.2f, pitch rate = %6.2f,roll = %6.2f, roll rate = %6.2f\r",
@@ -755,8 +755,8 @@ RmpDriver::watchDataStream( CanPacket* pkt )
     static CanPacket priorPkt;
 
     // Check for breaks in the message sequence
-    if( (pkt->id != (priorPkt.id + 1) )  &&
-         !((pkt->id == 0x0400) && (priorPkt.id == 0x0407)) )
+    if( (pkt->id() != (priorPkt.id() + 1) )  &&
+         !((pkt->id() == 0x0400) && (priorPkt.id() == 0x0407)) )
     {
         printf("=== BREAK IN SEQUENCE ===\n");
     }
