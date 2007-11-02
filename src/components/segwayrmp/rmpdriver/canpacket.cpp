@@ -12,10 +12,6 @@
 #include "rmpdefs.h"
 #include "canpacket.h"
 
-
-using namespace segwayrmp;
-
-
 // Copied this from <canlib.h>. 
 // This definition appears to be standard only for the FTDI USB to can
 // The peak driver uses a different value in the MSG_Type field to denote
@@ -24,6 +20,7 @@ using namespace segwayrmp;
   #define canMSG_STD              0x0002
 #endif
 
+namespace segwayrmp {
 
 /*
     This code originates from Player/Stage project
@@ -74,4 +71,6 @@ makeStatusCommandPacket( uint16_t statusCommandType,
     pkt.putSlot( 3, value );
 
     return pkt;
+}
+
 }
