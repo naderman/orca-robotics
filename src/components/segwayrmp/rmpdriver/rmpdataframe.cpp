@@ -183,8 +183,8 @@ void RmpDataFrame::AddPacket(const CanPacket* pkt)
     case RMP_CAN_ID_STATUS:
     {
         // slot0 : controller mode and wake control
-        status_word1 = pkt->GetSlot(1);
-        status_word2 =  pkt->GetSlot(2);
+        status_word1 = pkt->getSlot(1);
+        status_word2 = pkt->getSlot(2);
         // slot3 : undefined
         
         statusCheck_ = true;
@@ -217,7 +217,7 @@ void RmpDataFrame::AddPacket(const CanPacket* pkt)
         // slot1 : UI battery voltage (we also get in MSG6 from CU)
         // slot2 : UI battery status
         // @todo have to apply mask here
-        uint16_t slot2 = (uint16_t)pkt->GetSlot(2);
+        uint16_t slot2 = (uint16_t)pkt->getSlot(2);
         ui_heartbeat_voltage =  slot2 & RMP_CAN_MASK_HEARTBEAT_UIBAT_VOLTAGE;
         ui_heartbeat_status =  slot2 & RMP_CAN_MASK_HEARTBEAT_UIBAT_STATUS;
         std::cout<<"heartbeat:slot2 : "<<slot2<<std::endl;
@@ -227,7 +227,7 @@ void RmpDataFrame::AddPacket(const CanPacket* pkt)
 */    
     case RMP_CAN_ID_MSG0:
     {
-        build_id = pkt->GetSlot(0);
+        build_id = pkt->getSlot(0);
         // slot1 undefined
         // slot2 undefined
         // slot3 undefined
@@ -238,48 +238,48 @@ void RmpDataFrame::AddPacket(const CanPacket* pkt)
     }
     case RMP_CAN_ID_MSG1:
     {
-        pitch = pkt->GetSlot(0);
-        pitch_dot = pkt->GetSlot(1);
-        roll =  pkt->GetSlot(2);
-        roll_dot =  pkt->GetSlot(3);
+        pitch = pkt->getSlot(0);
+        pitch_dot = pkt->getSlot(1);
+        roll =  pkt->getSlot(2);
+        roll_dot =  pkt->getSlot(3);
 
         msgCheckList_[1] = true;
         break;
     }
     case RMP_CAN_ID_MSG2:
     {
-        left_dot = (int16_t) pkt->GetSlot(0);
-        right_dot = (int16_t) pkt->GetSlot(1);
-        yaw_dot = (int16_t) pkt->GetSlot(2);
-        frames = pkt->GetSlot(3);
+        left_dot = (int16_t) pkt->getSlot(0);
+        right_dot = (int16_t) pkt->getSlot(1);
+        yaw_dot = (int16_t) pkt->getSlot(2);
+        frames = pkt->getSlot(3);
 
         msgCheckList_[2] = true;
         break;
     }
     case RMP_CAN_ID_MSG3:
     {
-        left = (uint32_t)(((uint32_t)pkt->GetSlot(1) << 16) |
-                    (uint32_t)pkt->GetSlot(0));
-        right = (uint32_t)(((uint32_t)pkt->GetSlot(3) << 16) |
-                (uint32_t)pkt->GetSlot(2));
+        left = (uint32_t)(((uint32_t)pkt->getSlot(1) << 16) |
+                    (uint32_t)pkt->getSlot(0));
+        right = (uint32_t)(((uint32_t)pkt->getSlot(3) << 16) |
+                (uint32_t)pkt->getSlot(2));
 
         msgCheckList_[3] = true;
         break;
     }
     case RMP_CAN_ID_MSG4:
     {
-        foreaft = (uint32_t)(((uint32_t)pkt->GetSlot(1) << 16) |
-                        (uint32_t)pkt->GetSlot(0));
-        yaw = (uint32_t)(((uint32_t)pkt->GetSlot(3) << 16) |
-                (uint32_t)pkt->GetSlot(2));
+        foreaft = (uint32_t)(((uint32_t)pkt->getSlot(1) << 16) |
+                        (uint32_t)pkt->getSlot(0));
+        yaw = (uint32_t)(((uint32_t)pkt->getSlot(3) << 16) |
+                (uint32_t)pkt->getSlot(2));
 
         msgCheckList_[4] = true;
         break;
     }
     case RMP_CAN_ID_MSG5:
     {
-        left_torque = (int16_t) pkt->GetSlot(0);
-        right_torque = (int16_t) pkt->GetSlot(1);
+        left_torque = (int16_t) pkt->getSlot(0);
+        right_torque = (int16_t) pkt->getSlot(1);
         // slot2 undefined
         // slot3 undefined
 
@@ -288,18 +288,18 @@ void RmpDataFrame::AddPacket(const CanPacket* pkt)
     }
     case RMP_CAN_ID_MSG6:
     {
-        operational_mode = (uint8_t) pkt->GetSlot(0);
-        controller_gain_schedule = (uint8_t) pkt->GetSlot(1);
-        ui_battery_voltage = (uint16_t) pkt->GetSlot(2);
-        base_battery_voltage = (uint16_t)pkt->GetSlot(3);
+        operational_mode = (uint8_t) pkt->getSlot(0);
+        controller_gain_schedule = (uint8_t) pkt->getSlot(1);
+        ui_battery_voltage = (uint16_t) pkt->getSlot(2);
+        base_battery_voltage = (uint16_t)pkt->getSlot(3);
 
         msgCheckList_[6] = true;
         break;
     }
     case RMP_CAN_ID_MSG7:
     {
-        velocity_command = (int16_t) pkt->GetSlot(0);
-        rate_command = (int16_t) pkt->GetSlot(1);
+        velocity_command = (int16_t) pkt->getSlot(0);
+        rate_command = (int16_t) pkt->getSlot(1);
         // slot2 undefined
         // slot3 undefined
 

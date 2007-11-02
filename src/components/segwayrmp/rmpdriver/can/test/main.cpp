@@ -71,14 +71,14 @@ int main(int argc, char* argv[]){
     testCan.enable(4);
     
     //Simple setup of the can packet to be a slow move forward....
-    dataMovePacket.id = RMP_CAN_ID_COMMAND;
+    dataMovePacket.setId( RMP_CAN_ID_COMMAND );
     // velocity command does not change any other values
-    dataMovePacket.PutSlot(2, (uint16_t)RMP_CMD_NONE);
+    dataMovePacket.putSlot(2, (uint16_t)RMP_CMD_NONE);
 
     // put commands into the packet
-    dataMovePacket.PutSlot(0, 0x1BB); //Slow move
-    dataMovePacket.PutSlot(1, 0); //Rotation zero
-    dataMovePacket.PutSlot(3, 0); //No command param
+    dataMovePacket.putSlot(0, 0x1BB); //Slow move
+    dataMovePacket.putSlot(1, 0); //Rotation zero
+    dataMovePacket.putSlot(3, 0); //No command param
 
     
 
@@ -107,10 +107,10 @@ int main(int argc, char* argv[]){
       //Keep trying to read data from the CAN interface
         if ( testCan.readPacket(&dataPacketCollected) == RmpIo::OK ){ 
             cout<< dataPacketCollected.toString() << endl;
-            if(dataPacketCollected.id == SendTriggerMsgID){
+            if(dataPacketCollected.id() == SendTriggerMsgID){
                 sendCounter++;
             }else{
-                cout << dataPacketCollected.id << " Trigger " << SendTriggerMsgID << endl;
+                cout << dataPacketCollected.id() << " Trigger " << SendTriggerMsgID << endl;
             }
         }
 

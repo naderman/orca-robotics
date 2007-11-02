@@ -591,9 +591,9 @@ RmpDriver::makeMotionCommandPacket( CanPacket* pkt, const Command& command )
     pkt->setId( RMP_CAN_ID_COMMAND );
 
     // velocity command does not change any other values
-    pkt->PutSlot(2, (uint16_t)RMP_CMD_NONE);
+    pkt->putSlot(2, (uint16_t)RMP_CMD_NONE);
 
-    pkt->PutSlot(3, 0);
+    pkt->putSlot(3, 0);
 
 
     // translational RMP command
@@ -617,8 +617,8 @@ RmpDriver::makeMotionCommandPacket( CanPacket* pkt, const Command& command )
     }
 
     // put commands into the packet
-    pkt->PutSlot(0, (uint16_t)trans);
-    pkt->PutSlot(1, (uint16_t)rot);
+    pkt->putSlot(0, (uint16_t)trans);
+    pkt->putSlot(1, (uint16_t)rot);
 
     // save this last command
     lastTrans_ = trans;
@@ -636,16 +636,16 @@ RmpDriver::makeStatusCommandPacket( CanPacket* pkt, uint16_t commandId, uint16_t
     pkt->setId( RMP_CAN_ID_COMMAND );
 
     // put last motion command into the packet
-    pkt->PutSlot(0, (uint16_t)lastTrans_);
-    pkt->PutSlot(1, (uint16_t)lastRot_);
+    pkt->putSlot(0, (uint16_t)lastTrans_);
+    pkt->putSlot(1, (uint16_t)lastRot_);
 
-    pkt->PutSlot(2, commandId);
+    pkt->putSlot(2, commandId);
     
     // it was noted in the windows demo code that they
     // copied the 8-bit value into both bytes like this
     //pkt->PutByte(6, val);
     //pkt->PutByte(7, val);
-    pkt->PutSlot(3, value);
+    pkt->putSlot(3, value);
     
     // debug
 //     if(cmd) {
@@ -695,15 +695,15 @@ RmpDriver::diff( uint32_t from, uint32_t to, bool first )
 void
 RmpDriver::watchPacket( CanPacket* pkt, short int pktID )
 {
-    short slot0 = (short)pkt->GetSlot(0);
-    short slot1 = (short)pkt->GetSlot(1);
-    short slot2 = (short)pkt->GetSlot(2);
-    short slot3 = (short)pkt->GetSlot(3);
+    short slot0 = (short)pkt->getSlot(0);
+    short slot1 = (short)pkt->getSlot(1);
+    short slot2 = (short)pkt->getSlot(2);
+    short slot3 = (short)pkt->getSlot(3);
 
-    int slot0_lo = (int)pkt->GetSlot(0);
-    int slot1_hi = (int)pkt->GetSlot(1) << 16;
-    int slot2_lo = (int)pkt->GetSlot(2);
-    int slot3_hi = (int)pkt->GetSlot(3) << 16;
+    int slot0_lo = (int)pkt->getSlot(0);
+    int slot1_hi = (int)pkt->getSlot(1) << 16;
+    int slot2_lo = (int)pkt->getSlot(2);
+    int slot3_hi = (int)pkt->getSlot(3) << 16;
 
     if( pkt->id() == (uint32_t)pktID )
     {

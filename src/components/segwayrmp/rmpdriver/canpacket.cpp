@@ -38,20 +38,15 @@ CanPacket::CanPacket()
 //    dlc = 8;                 //Data Length Code
 }
 
-uint16_t CanPacket::GetSlot(int s)  const
+uint16_t CanPacket::getSlot(int s)  const
 {
     return (uint16_t) ((msg_[s*2] << 8) | (msg_[s*2+1]));
 }
 
-void CanPacket::PutSlot(const int slot, const uint16_t val)
+void CanPacket::putSlot(const int slot, const uint16_t val)
 {
     msg_[slot*2] = (val >> 8) & 0xFF;
     msg_[slot*2+1] = val & 0xFF;
-}
-
-void CanPacket::PutByte(const int byte, const uint16_t val)
-{
-    msg_[byte] = val & 0xFF;
 }
 
 char* CanPacket::toString()

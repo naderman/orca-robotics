@@ -40,19 +40,24 @@ public:
 
     CanPacket();
     
-    uint16_t GetSlot(int s) const;
-    char* toString();
-    
-    void PutSlot(const int slot, const uint16_t val);
-    void PutByte(const int byte, const uint16_t val);
+    // Sets the ID (what the RMP docs call the header)
+    void setId( uint32_t id ) { id_ = id; }
+
+    // returns the value of the slotNum'th slot
+    uint16_t getSlot(int slotNum) const;
+
+    // sets the slotNum'th slot to val
+    void putSlot(const int slotNum, const uint16_t val);
     
     // The id is the 'header' field in the RMP docs
     uint32_t id() const { return id_; }
-    void setId( uint32_t id ) { id_ = id; }
 
     // Allow direct access for memcpy
     uint8_t *msg() { return msg_; }
     const uint8_t *msg() const { return msg_; }
+
+    // Human-readable string for debugging
+    char* toString();
 
 private:
 

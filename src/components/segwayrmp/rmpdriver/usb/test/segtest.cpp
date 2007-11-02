@@ -142,8 +142,8 @@ void parseCanToUsb( CanPacket *pkt, unsigned char *bytes )
     bytes[3] = 0;   // always 0
     bytes[4] = 0;   // always 0
     bytes[5] = 0;   // always 0
-    bytes[6] = pkt->id >> 8;
-    bytes[7] = pkt->id ;
+    bytes[6] = pkt->id() >> 8;
+    bytes[7] = pkt->id() ;
     bytes[8] = 0;   // always 0
 
     for ( int i = 0; i < 8; ++i )
@@ -158,13 +158,13 @@ void parseCanToUsb( CanPacket *pkt, unsigned char *bytes )
 void
 makeStatusCommandPacket( CanPacket* pkt, uint16_t commandId, uint16_t value )
 {
-    pkt->id = RMP_CAN_ID_COMMAND;
+    pkt->setId( RMP_CAN_ID_COMMAND );
 
     // put last motion command into the packet
-    pkt->PutSlot(0, (uint16_t)lastTrans_);
-    pkt->PutSlot(1, (uint16_t)lastRot_);
-    pkt->PutSlot(2, commandId);
-    pkt->PutSlot(3, value);
+    pkt->putSlot(0, (uint16_t)lastTrans_);
+    pkt->putSlot(1, (uint16_t)lastRot_);
+    pkt->putSlot(2, commandId);
+    pkt->putSlot(3, value);
 }
 
 void tryReOpen( FT_HANDLE &ftHandle_ )
