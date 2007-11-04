@@ -14,7 +14,6 @@
 #include <IceUtil/IceUtil.h>
 
 #include "rmpusbioftdi.h"
-#include <rmpdriver/rmpdataframe.h>
 #include <rmpdriver/rmpdefs.h>
 #include <rmpdriver/canpacket.h>
 #include <rmpdriver/usb/usbftdi/usbftdi.h>
