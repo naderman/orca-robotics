@@ -65,14 +65,15 @@ RmpModel modelAsEnum( const std::string &m )
     else
     {
         stringstream ss;
-        ss << "Unknown RMP model number: " << model << endl
+        ss << "Unknown RMP model: " << m << endl
            << "Valid values are {'RMP50','RMP100','RMP200','RMP400'}";
         throw hydroutil::Exception( ERROR_INFO, ss.str() );
     }
 }
-}
 
 }
+
+//////////////////////////////////////////////////////////////////////
 
 RmpDriverConfig::RmpDriverConfig()
 {
@@ -141,8 +142,8 @@ segwayrmp::readFromProperties( const orcaice::Context & context, RmpDriverConfig
     c.maxAccelerationScale = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"MaxAccelerationScale", 0.75 );
     c.maxCurrentLimitScale = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"MaxCurrentLimitScale", 0.75 );
 
-    int modelNum = orcaice::getPropertyAsIntWithDefault( prop, prefix+"ModelNum", 200 );
-    c.model = modelAsEnum( modelNum );
+    std::string model = orcaice::getPropertyWithDefault( prop, prefix+"ModelNum", "RMP200" );
+    c.model = modelAsEnum( model );
 
     c.requireSpecificBuildId = orcaice::getPropertyAsIntWithDefault( prop, prefix+"RequireSpecificBuildId", 0 );
     c.requiredBuildId = orcaice::getPropertyAsIntWithDefault( prop, prefix+"RequiredBuildId", 0 );

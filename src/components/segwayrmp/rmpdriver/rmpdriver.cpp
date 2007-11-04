@@ -49,6 +49,27 @@ namespace {
             return diff2;
         }
     }
+
+    // The RMP Manual Section "Theory of Operation: Turning" says:
+    //   At low speeds,  inputTurnrate is interpreted as a turnrate (rad/s).
+    //   At high speeds, inputTurnrate is interpreted as centripital acceleration (m/s/s)
+    // Here's our guess at the function:
+    //   Vo = Pi/2
+    //   if V<=Vo, Wout = Win;
+    //   if V>Vo,  Wout = Win / (V/Vo);
+    double
+    interpretedTurnrate( double inputTurnrate, double speed )
+    {
+        const double vo = 1.57;
+        if ( speed < vo )
+        {
+            return inputTurnrate;
+        }
+        else
+        {
+            return inputTurnrate / (speed/vo);
+        }
+    }
 }
 
 RmpDriver::RmpDriver( const RmpDriverConfig  &driverConfig,
@@ -68,11 +89,46 @@ RmpDriver::RmpDriver( const RmpDriverConfig  &driverConfig,
     context_.tracer()->info( ss.str() );
 }
 
+double
+RmpDriver::maxSpeed()
+{
+    double maxVelocityUnscaled = 
+        converter_.speedInMperS(RMP_MAX_TRANS_VEL_COUNT);
+    return config_.maxVelocityScale * maxVelocityUnscaled;
+}
+
+double
+RmpDriver::maxTurnrate( double speed )
+{
+    // max turnrate is slow at low speeds
+    double maxTurnrateInputUnscaledSlow = 
+        converter_.angularRateInRadians( RMP_MAX_ROT_VEL_COUNT );
+
+
+    // todo: this needs to be debugged, it seems that the turnrate is not scaled the same
+    // way the forward velocity is.
+    double maxTurnrateInputSlow = maxTurnrateInputUnscaledSlow;
+//    double maxTurnrateSlow = config_.maxTurnrateScale * maxTurnrateInputUnscaledSlow;
+
+    return interpretedTurnrate( maxTurnrateInputSlow, speed );
+}
+
+void 
+RmpDriver::applyHardwareLimits( double &maxForwardSpeed, double &maxReverseSpeed, 
+                                double &maxTurnrate, double &maxTurnrateAtMaxSpeed )
+{
+    // todo: check these
+    maxForwardSpeed = MIN( maxForwardSpeed, this->maxSpeed() );
+    maxReverseSpeed = MIN( maxReverseSpeed, this->maxSpeed() );
+
+    maxTurnrate = MIN( maxTurnrate, this->maxTurnrate(this->maxSpeed()) );
+    // the easiest thing: set turnrate limit at max speed to be the same as at zero speed
+    maxTurnrateAtMaxSpeed = MIN( maxTurnrateAtMaxSpeed, maxTurnrate );
+}
+
 void
 RmpDriver::enable()
 {
-    // todo: check build id
-
     rmpIo_.disable();
 
     // init device
@@ -211,75 +267,65 @@ RmpDriver::getStatus( std::string &status, bool &isWarn, bool &isFault )
 }
 
 void
+RmpDriver::checkOperationalMode()
+{
+    if ( rxData_.operationalMode() == OperationalModeBalance &&
+         !config_.allowMoveInBalanceMode )
+    {
+        throw RmpException( "RmpDriver: attempted to move in balance mode (disallowed by configuration)" );
+    }
+    if ( rxData_.operationalMode() == OperationalModeTractor &&
+         !config_.allowMoveInTractorMode )
+    {
+        throw RmpException( "RmpDriver: attempted to move in tractor mode (disallowed by configuration)" );
+    }
+    if ( rxData_.operationalMode() == OperationalModeDisabled )
+    {
+        throw RmpException( "RmpDriver: attempted to move when OperationalMode=OperationalModeDisabled" );
+    }    
+}
+
+void
 RmpDriver::applyScaling( const Command& originalCommand, Command &scaledCommand )
 {
-    // todo: clean up and debug scaling
+    // todo: debug scaling
 
     scaledCommand.vx = originalCommand.vx / config_.maxVelocityScale;
-
+    
     // alexm: it's not clear if maxTurnrateScale is used by segway at all
 //     scaledCommand.w  = originalCommand.w  / config_.maxTurnrateScale;
 
-    // here's our interpretation of RMP Manual Section "Theory of Operation: Turning"
-    //   Vo = Pi/2
-    //   if V<=Vo, Wout = Win;
-    //   if V>Vo,  Wout = Win / (V/Vo);
     // assumption, we use the commanded forward velocity instead of the actual velocity.
-    double vxo = 1.57;
-    if ( originalCommand.vx <= vxo ) {
-        scaledCommand.w = originalCommand.w;
-    }
-    else {
-        scaledCommand.w = originalCommand.w * (originalCommand.vx/vxo);
-    }
+    scaledCommand.w = interpretedTurnrate( originalCommand.w, originalCommand.vx );
 }
 
 void
 RmpDriver::write( const Command& command )
 {
-    // todo: scale more sensibly
+    checkOperationalMode();
 
+    //
+    // Scale to account for the funky scaling the RMP's gonna do
+    //
     Command scaledCommand;
     applyScaling( command, scaledCommand );
 
-    try {
-        CanPacket packet = makeMotionCommandPacket( scaledCommand );
-        rmpIo_.writePacket(packet);
-    }
-    catch ( std::exception &e )
+    // Check if we're exceeding any limits
+    if ( scaledCommand.vx > maxSpeed() )
     {
         stringstream ss;
-        ss << "RmpDriver::write(): " << e.what();
-        throw RmpException( ss.str() );
+        ss << "RmpDriver::write: scaledCommand.vx(="<<scaledCommand.vx<<"m/s) was greater than maxSpeed(="<<maxSpeed()<<"m/s).  Thresholding.";
+        context_.tracer()->warning( ss.str() );
     }
-}
+    if ( scaledCommand.w > maxTurnrate(scaledCommand.vx) )
+    {
+        stringstream ss;
+        ss << "RmpDriver::write: scaledCommand.w(="<<scaledCommand.w*180.0/M_PI<<"deg/s) was greater than maxTurnrate at "<<scaledCommand.vx<<"m/s(="<<maxTurnrate(scaledCommand.vx)*180.0/M_PI<<"deg/s).  Thresholding.";
+        context_.tracer()->warning( ss.str() );
+    }
 
-void 
-RmpDriver::applyHardwareLimits( double& forwardSpeed, double& reverseSpeed, 
-                                double& turnrate, double& turnrateAtMaxSpeed )
-{
-    if ( rand() < RAND_MAX/100.0 )
-        cout<<"TRACE(rmpdriver.cpp): TODO: applyHardwareLimits" << endl;
-#if 0
-    double forwardSpeedLimit 
-        = config_.maxVelocityScale * (double)RMP_MAX_TRANS_VEL_COUNT / RMP_COUNT_PER_M_PER_S;
-    double reverseSpeedLimit = forwardSpeedLimit;
-    
-    // alexm: this needs to be debugged, it seems that the turnrate is not scaled the same
-    // way the forward velocidy is.
-//     double turnrateLimit
-//             = config_.maxTurnrateScale * (double)RMP_MAX_ROT_VEL_COUNT / RMP_COUNT_PER_RAD_PER_S;
-    double turnrateLimit
-            = (double)RMP_MAX_ROT_VEL_COUNT / RMP_COUNT_PER_RAD_PER_S;
-    // the easiest thing: set turnrate limit at max speed to be the same as at zero speed
-    double turnrateAtMaxSpeedLimit = turnrateLimit;
-
-    // limit software limits to physical limits
-    forwardSpeed = MIN( forwardSpeed, forwardSpeedLimit );
-    reverseSpeed = MIN( reverseSpeed, reverseSpeedLimit );
-    turnrate = MIN( turnrate, turnrateLimit );
-    turnrate = MIN( turnrateAtMaxSpeed, turnrateAtMaxSpeedLimit );
-#endif
+    // Send the command to the RMP
+    sendMotionCommandPacket( scaledCommand );
 }
 
 RxData
@@ -463,8 +509,8 @@ RmpDriver::enableBalanceMode( bool enable )
     }
 }
 
-CanPacket
-RmpDriver::makeMotionCommandPacket( const Command& command )
+void
+RmpDriver::sendMotionCommandPacket( const Command& command )
 {
     // translational RMP command
     int16_t trans = converter_.speedAsRaw(command.vx);
@@ -472,30 +518,19 @@ RmpDriver::makeMotionCommandPacket( const Command& command )
     // rotational RMP command
     int16_t rot = converter_.angularRateAsRaw(command.w);
 
-    if ( rand() < RAND_MAX / 100.0 )
-        cout<<"TRACE(rmpdriver.cpp): TODO: check command limits" << endl;
-#if 0
-    // check for command limits
-    if(trans > RMP_MAX_TRANS_VEL_COUNT) {
-        trans = RMP_MAX_TRANS_VEL_COUNT;
+    try {
+        rmpIo_.writePacket( motionCommandPacket( trans, rot ) );
     }
-    else if(trans < -RMP_MAX_TRANS_VEL_COUNT) {
-        trans = -RMP_MAX_TRANS_VEL_COUNT;
+    catch ( std::exception &e )
+    {
+        stringstream ss;
+        ss << "RmpDriver::sendMotionCommandPacket(): " << e.what();
+        throw RmpException( ss.str() );
     }
-    // check for command limits
-    if(rot > RMP_MAX_ROT_VEL_COUNT) {
-        rot = RMP_MAX_ROT_VEL_COUNT;
-    }
-    else if(rot < -RMP_MAX_ROT_VEL_COUNT) {
-        rot = -RMP_MAX_ROT_VEL_COUNT;
-    }
-#endif
 
     // save this last command
     lastTrans_ = trans;
     lastRot_ = rot;
-
-    return motionCommandPacket( trans, rot );
 }
 
 /*

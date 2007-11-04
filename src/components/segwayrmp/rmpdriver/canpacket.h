@@ -71,6 +71,11 @@ private:
 
 };
 
+//
+// Some functions for building CAN packets
+// (all values are in the RMP's native representation)
+//
+
 CanPacket
 statusCommandPacket( uint16_t statusCommandType, 
                      uint16_t value,

@@ -47,9 +47,9 @@ public:
     // Inherited from HwDriver
     virtual void getStatus( std::string &status, bool &isWarn, bool &isFault );
     
-    // Checks that the description matches what this hardware can actually do.
-    void applyHardwareLimits( double& forwardSpeed, double& reverseSpeed, 
-                              double& turnrate, double& turnrateAtMaxSpeed );
+    // Modifies the arguments, thresholding to match what this hardware can actually do.
+    void applyHardwareLimits( double &maxForwardSpeed, double &maxReverseSpeed, 
+                              double &maxTurnrate, double &maxTurnrateAtMaxSpeed );
 
 private:
 
@@ -62,7 +62,15 @@ private:
     void setGainSchedule( int sched );
     void enableBalanceMode( bool enable );
 
+    double maxSpeed();
+    // max turnrate depends on the speed
+    double maxTurnrate( double speed );
+
     void applyScaling( const Command& original, Command &scaledCommand );
+
+    // Checks that we're allowed to command the RMP in this operational mode (balance/tractor).
+    // Throws exceptions if we're trying to do the wrong thing.
+    void checkOperationalMode();
 
     // Reads a set of CAN packets, returns the result
     RxData readData();
@@ -70,7 +78,7 @@ private:
     // fills up the Data class (understood externally)
     Data getData();
 
-    CanPacket makeMotionCommandPacket( const Command& command );
+    void sendMotionCommandPacket( const Command& command );
     void sendStatusCommandPacket( ConfigurationCommand commandId, uint16_t param );
 
     // Configuration
