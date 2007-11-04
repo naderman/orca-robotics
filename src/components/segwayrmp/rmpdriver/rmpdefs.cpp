@@ -34,4 +34,72 @@ std::string toString(ConfigurationCommand c)
     }
 }
 
+std::string toString(StatusFlag s)
+{
+    switch (s )
+    {
+    case StatusFlagSafetyShutdownType1:
+        return "StatusFlagSafetyShutdownType1";
+    case StatusFlagSafetyShutdownType2:
+        return "StatusFlagSafetyShutdownType2";
+    case StatusFlagDisableResponse:
+        return "StatusFlagDisableResponse";
+    case StatusFlagSpeedLimitTo4Mph:
+        return "StatusFlagSpeedLimitTo4Mph";
+    case StatusFlagSpeedLimitTo0Mph:
+        return "StatusFlagSpeedLimitTo0Mph";
+    case StatusFlagSystemIntegrityFault:
+        return "StatusFlagSystemIntegrityFault";
+    case StatusFlagMotorsEnabled:
+        return "StatusFlagMotorsEnabled";
+    case StatusFlagBalanceMode:
+        return "StatusFlagBalanceMode";
+    case StatusFlagYawTransient:
+        return "StatusFlagYawTransient";
+    case StatusFlagEmptyBatteryHazard:
+        return "StatusFlagEmptyBatteryHazard";
+    case StatusFlagWheelSlip:
+        return "StatusFlagWheelSlip";
+    case StatusFlagMotorFeedbackFault:
+        return "StatusFlagMotorFeedbackFault";
+    case StatusFlagLowBatteryHazard:
+        return "StatusFlagLowBatteryHazard";
+    case StatusFlagForeAftPitchAngleLimitExceededA:
+        return "StatusFlagForeAftPitchAngleLimitExceededA";
+    case StatusFlagEStopSwitchOpenA:
+        return "StatusFlagEStopSwitchOpenA";
+    case StatusFlagPositionErrorLimitExceededA:
+        return "StatusFlagPositionErrorLimitExceededA";
+    case StatusFlagMaxVelocityExceededA:
+        return "StatusFlagMaxVelocityExceededA";
+    case StatusFlagBatteryEmptyA:
+        return "StatusFlagBatteryEmptyA";
+    case StatusFlagBatteryTemperatureOutOfRangeA:
+        return "StatusFlagBatteryTemperatureOutOfRangeA";
+    case StatusFlagRollAngleLimitExceededA:
+        return "StatusFlagRollAngleLimitExceededA";
+    case StatusFlagLowBatteryBusVoltageA:
+        return "StatusFlagLowBatteryBusVoltageA";
+    case StatusFlagForeAftPitchAngleLimitExceededB:
+        return "StatusFlagForeAftPitchAngleLimitExceededB";
+    case StatusFlagEStopSwitchOpenB:
+        return "StatusFlagEStopSwitchOpenB";
+    case StatusFlagPositionErrorLimitExceededB:
+        return "StatusFlagPositionErrorLimitExceededB";
+    case StatusFlagMaxVelocityExceededB:
+        return "StatusFlagMaxVelocityExceededB";
+    case StatusFlagBatteryEmptyB:
+        return "StatusFlagBatteryEmptyB";
+    case StatusFlagBatteryTemperatureOutOfRangeB:
+        return "StatusFlagBatteryTemperatureOutOfRangeB";
+    case StatusFlagRollAngleLimitExceededB:
+        return "StatusFlagRollAngleLimitExceededB";
+    case StatusFlagLowBatteryBusVoltageB:
+        return "StatusFlagLowBatteryBusVoltageB";
+    default:
+        stringstream ss; ss << " ?? Unknown StatusFlag: " << s << " ??";
+        return ss.str();
+    }
+}
+
 }

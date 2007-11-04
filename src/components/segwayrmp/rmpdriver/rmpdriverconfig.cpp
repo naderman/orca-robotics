@@ -17,37 +17,66 @@
 using namespace std;
 using namespace segwayrmp;
 
-// Returns -1 on error
-int gainScheduleAsInt( std::string gainSchedule )
+namespace {
+
+GainSchedule gainScheduleAsEnum( std::string gainSchedule )
 {
     if ( gainSchedule == "normal" )
-        return RMP_GAIN_SCHEDULE_NORMAL;
+        return GainScheduleNormal;
     else if ( gainSchedule == "tall" )
-        return RMP_GAIN_SCHEDULE_TALL;
+        return GainScheduleTall;
     else if ( gainSchedule == "heavy" )
-        return RMP_GAIN_SCHEDULE_HEAVY;
+        return GainScheduleHeavy;
     else
     {
-        // bad gain schedule
-        return -1;
+        stringstream ss;
+        ss << "Unknown GainSchedule: " << gainSchedule << endl
+           << "Valid gain schedule types are {'normal', 'tall', 'heavy'}";
+        throw hydroutil::Exception( ERROR_INFO, ss.str() );
     }
 }
 
-std::string gainScheduleAsString( int gainSchedule )
+std::string gainScheduleAsString( GainSchedule gainSchedule )
 {
-    if ( gainSchedule == RMP_GAIN_SCHEDULE_NORMAL )
+    if ( gainSchedule == GainScheduleNormal )
         return "normal";
-    else if ( gainSchedule == RMP_GAIN_SCHEDULE_TALL )
+    else if ( gainSchedule == GainScheduleTall )
         return "tall";
-    else if ( gainSchedule == RMP_GAIN_SCHEDULE_HEAVY )
+    else if ( gainSchedule == GainScheduleHeavy )
         return "heavy";
     else
-        return "error: bad gain schedule";
+    {
+        stringstream ss;
+        ss << "Unknown GainSchedule: " << gainSchedule;
+        throw hydroutil::Exception( ERROR_INFO, ss.str() );
+    }
+}
+
+RmpModel modelAsEnum( int model )
+{
+    switch ( model )
+    {
+    case 50:
+        return RmpModel_50;
+    case 100:
+        return RmpModel_100;
+    case 200:
+        return RmpModel_200;
+    case 400:
+        return RmpModel_400;
+    default:
+        stringstream ss;
+        ss << "Unknown RMP model number: " << model << endl
+           << "Valid values are {50,100,200,400}";
+        throw hydroutil::Exception( ERROR_INFO, ss.str() );
+    }
+}
+
 }
 
 RmpDriverConfig::RmpDriverConfig()
 {
-    gainSchedule            = 0;
+    gainSchedule            = GainScheduleNormal;
     maxVelocityScale        = 0.75;
     maxTurnrateScale        = 0.75;
     maxAccelerationScale    = 0.75;
@@ -55,15 +84,26 @@ RmpDriverConfig::RmpDriverConfig()
 }
 
 int
-RmpDriverConfig::checkSanity( std::string &warnings, std::string &errors )
+RmpDriverConfig::checkSanity( std::string &errors )
 {
-    std::stringstream ssWarn, ssErr;
+    std::stringstream ssErr;
 
-    warnings = ssWarn.str();
+    if ( maxVelocityScale < 0.0 || maxVelocityScale > 1.0 )
+        ssErr << "Bad maxVelocityScale.  ";
+
+    if ( maxTurnrateScale < 0.0 || maxTurnrateScale > 1.0 )
+        ssErr << "Bad maxTurnrateScale.  ";
+
+    if ( maxAccelerationScale < 0.0 || maxAccelerationScale > 1.0 )
+        ssErr << "Bad maxAccelerationScale.  ";
+
+    if ( maxCurrentLimitScale < 0.0 || maxCurrentLimitScale > 1.0 )
+        ssErr << "Bad maxCurrentLimitScale.  ";
+
     errors   = ssErr.str();
 
-    if ( warnings == "" && errors == "" ) return 0;
-    return -1;
+    if ( errors == "" ) return 0;
+    else return -1;
 }
 
 std::ostream &
@@ -86,19 +126,19 @@ segwayrmp::readFromProperties( const orcaice::Context & context, RmpDriverConfig
     std::string prefix = context.tag() + ".Config.SegwayRmp.";
 
     std::string gainSchedule = orcaice::getPropertyWithDefault( prop, prefix+"GainSchedule", "normal" );
-
-    c.gainSchedule = gainScheduleAsInt( gainSchedule );
-
-    if ( c.gainSchedule == -1 )
-    {
-        string errorStr = "SegwayRmp driver: unknown gain schedule type '"+gainSchedule+"'. Cannot initialize.";
-        context.tracer()->error( errorStr);
-        context.tracer()->info( "Valid gain schedule types are {'normal', 'tall', 'heavy'}" );
-        throw hydroutil::Exception( ERROR_INFO, errorStr );
-    }
+    c.gainSchedule = gainScheduleAsEnum( gainSchedule );
 
     c.maxVelocityScale = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"MaxVelocityScale", 0.75 );
     c.maxTurnrateScale = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"MaxTurnrateScale", 0.75 );
     c.maxAccelerationScale = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"MaxAccelerationScale", 0.75 );
     c.maxCurrentLimitScale = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"MaxCurrentLimitScale", 0.75 );
+
+    int modelNum = orcaice::getPropertyAsIntWithDefault( prop, prefix+"ModelNum", 200 );
+    c.model = modelAsEnum( modelNum );
+
+    c.requireSpecificBuildId = orcaice::getPropertyAsIntWithDefault( prop, prefix+"RequireSpecificBuildId", 0 );
+    c.requiredBuildId = orcaice::getPropertyAsIntWithDefault( prop, prefix+"RequiredBuildId", 0 );
+
+    c.allowMoveInTractorMode = orcaice::getPropertyAsIntWithDefault( prop, prefix+"AllowMoveInTractorMode", 1 );
+    c.allowMoveInBalanceMode = orcaice::getPropertyAsIntWithDefault( prop, prefix+"AllowMoveInBalanceMode", 1 );
 }

@@ -49,8 +49,14 @@ Config.SegwayRmp.MaxTurnrateScale.Default=0.75
 Config.SegwayRmp.MaxAccelerationScale.Default=0.75
 Config.SegwayRmp.MaxCurrentLimitScale.Default=0.75
 
-#Tell the driver how to find the peak device that we are using!
-Config.SegwayRmpCan.PortName.Comment=The default peak CAN device we are going to use!
+Config.SegwayRmp.ModelNum.Default=200
+Config.SegwayRmp.RequireSpecificBuildId.Default=0
+Config.SegwayRmp.RequiredBuildId.Default=0
+Config.SegwayRmp.AllowMoveInTractorMode.Default=1
+Config.SegwayRmp.AllowMoveInBalanceMode.Default=1
+
+# Tell the driver how to find the peak device that we are using
+Config.SegwayRmpCan.PortName.Comment=The peak CAN device we are going to use
 Config.SegwayRmpCan.PortName.Default=/dev/pcan40
 
 # PlayerClient driver only

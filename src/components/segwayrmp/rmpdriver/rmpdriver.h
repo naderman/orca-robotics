@@ -31,8 +31,9 @@ class RmpDriver : public HwDriver
 {
 public:
 
-    RmpDriver( const orcaice::Context & context,
-               RmpIo &rmpIo );
+    RmpDriver( const RmpDriverConfig  &driverConfig,
+               RmpIo                  &rmpIo,
+               const orcaice::Context &context );
 
     // Inherited from HwDriver
     virtual void enable();
@@ -72,6 +73,9 @@ private:
     CanPacket makeMotionCommandPacket( const Command& command );
     void sendStatusCommandPacket( ConfigurationCommand commandId, uint16_t param );
 
+    // Configuration
+    RmpDriverConfig  config_;
+
     // Which version of the RMP hardware are we using?
     RmpModel model_;
 
@@ -79,10 +83,6 @@ private:
     RmpIo         &rmpIo_;
     // RmpDataFrame   frame_;
     RxData         rxData_;
-
-    // configuration
-    orcaice::Context context_;
-    RmpDriverConfig  config_;
 
     // Remember the last command we gave, so that if we need to give a
     // configuration command (which also requires that a velocity be
@@ -97,6 +97,8 @@ private:
     
     // Converts between units
     UnitConverter converter_;
+
+    orcaice::Context context_;
 };
 
 } // namespace

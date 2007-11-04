@@ -31,17 +31,19 @@ public:
     // Did all the packets arrive?
     bool isComplete() const { return rawData_.isComplete(); }
 
-//     // Is there a warning condition?
-//     bool isWarn();
-//     // Is there an error condition?
-//     bool isFault();
-
     //
     // Functions for retreiving the data in sane units.
     // Should only be called when the data structure is full.
     //
     // All units are S.I.
     //
+
+    // Get all status flags
+    std::vector<StatusFlag> statusFlags() const;
+    // Is there a warning condition?
+    bool isWarn() const;
+    // Is there an error condition?
+    bool isFault() const;
 
     // Not sure how to interpret the build ID, so just report it as-is.
     int16_t buildId() const

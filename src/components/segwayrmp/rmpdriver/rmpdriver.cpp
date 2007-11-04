@@ -51,25 +51,28 @@ namespace {
     }
 }
 
-RmpDriver::RmpDriver( const orcaice::Context & context,
-                      RmpIo &rmpIo )
-    : model_(RmpModel_200),
+RmpDriver::RmpDriver( const RmpDriverConfig  &driverConfig,
+                      RmpIo                  &rmpIo,
+                      const orcaice::Context &context )
+    : config_(driverConfig),
       rmpIo_(rmpIo),
-      rxData_(model_,context),
-      context_(context),
+      rxData_(config_.model,context),
       odomX_(0),
       odomY_(0),
       odomYaw_(0),
-      converter_(model_)
+      converter_(config_.model),
+      context_(context)
 {
-    // parse configuration parameters
-    readFromProperties( context, config_ );
-    cout<<config_<<endl;
+    stringstream ss;
+    ss << "RmpDriver: Using config: " << config_;
+    context_.tracer()->info( ss.str() );
 }
 
 void
 RmpDriver::enable()
 {
+    // todo: check build id
+
     rmpIo_.disable();
 
     // init device
@@ -114,8 +117,8 @@ RmpDriver::enable()
     }
 
     stringstream ssread;
-    ssread << "Initial exploratory read: rxData: "<<endl<<rxData_.toString();
-    context_.tracer()->debug( ssread.str() );
+    ssread << "Initial rxData: "<<endl<<rxData_.toString();
+    context_.tracer()->info( ssread.str() );
 
     try {
         // Initialise everything
@@ -138,8 +141,6 @@ RmpDriver::enable()
 bool
 RmpDriver::read( Data &data )
 {
-    // todo: make sure what we read matches the commands we last wrote.
-
     bool stateChanged = false;
 
     try {
@@ -147,6 +148,17 @@ RmpDriver::read( Data &data )
         // Read a new RxData from the CAN bus
         //
         RxData newRxData = readData();
+
+        // Check that the RMP read our last command correctly
+        if ( newRxData.rawData().received_velocity_command != lastTrans_ ||
+             newRxData.rawData().received_turnrate_command != lastRot_ )
+        {
+            stringstream ss;
+            ss << "RmpDriver::read(): It looks like the RMP didn't read our last command correctly!"<<endl
+               << "  velocity: we last wrote: " << lastTrans_ << " but it last received: " << newRxData.rawData().received_velocity_command << endl
+               << "  turnrate: we last wrote: " << lastRot_ << " but it last received: " << newRxData.rawData().received_turnrate_command;
+            context_.tracer()->warning( ss.str() );
+        }
 
         // Calculate integrated odometry
         calculateIntegratedOdometry( rxData_, newRxData );
@@ -177,13 +189,12 @@ RmpDriver::read( Data &data )
 void 
 RmpDriver::getStatus( std::string &status, bool &isWarn, bool &isFault )
 {
-    // TODO: clean up status
     stringstream ss;
     ss << "RmpDriver: internal state change : "<<IceUtil::Time::now().toDateTime()<<endl;
     ss<<rxData_.toString();
     status = ss.str();
-    isWarn = rxData_.rawData().isWarn();
-    isFault = rxData_.rawData().isFault();
+    isWarn = rxData_.isWarn();
+    isFault = rxData_.isFault();
 }
 
 void

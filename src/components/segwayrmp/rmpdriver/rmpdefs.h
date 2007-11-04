@@ -237,6 +237,44 @@ enum ConfigurationCommand {
 };
 std::string toString(ConfigurationCommand c);
 
+enum StatusFlag {
+    // General Flags
+    StatusFlagSafetyShutdownType1,
+    StatusFlagSafetyShutdownType2,
+    StatusFlagDisableResponse,
+    StatusFlagSpeedLimitTo4Mph,
+    StatusFlagSpeedLimitTo0Mph,
+    StatusFlagSystemIntegrityFault,
+    StatusFlagMotorsEnabled,
+    StatusFlagBalanceMode,
+    StatusFlagYawTransient,
+    StatusFlagEmptyBatteryHazard,
+    StatusFlagWheelSlip,
+    StatusFlagMotorFeedbackFault,
+    StatusFlagLowBatteryHazard,
+
+    // Flags for side A
+    StatusFlagForeAftPitchAngleLimitExceededA,
+    StatusFlagEStopSwitchOpenA,
+    StatusFlagPositionErrorLimitExceededA,
+    StatusFlagMaxVelocityExceededA,
+    StatusFlagBatteryEmptyA,
+    StatusFlagBatteryTemperatureOutOfRangeA,
+    StatusFlagRollAngleLimitExceededA,
+    StatusFlagLowBatteryBusVoltageA,
+
+    // Flags for side B
+    StatusFlagForeAftPitchAngleLimitExceededB,
+    StatusFlagEStopSwitchOpenB,
+    StatusFlagPositionErrorLimitExceededB,
+    StatusFlagMaxVelocityExceededB,
+    StatusFlagBatteryEmptyB,
+    StatusFlagBatteryTemperatureOutOfRangeB,
+    StatusFlagRollAngleLimitExceededB,
+    StatusFlagLowBatteryBusVoltageB
+};
+std::string toString(StatusFlag s);
+
 }
 
 #endif

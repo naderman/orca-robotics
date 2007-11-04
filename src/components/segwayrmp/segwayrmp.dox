@@ -85,13 +85,30 @@ General Parameters:
         - t>0 : send approximately every t seconds
     - Default: 60.0
 
-  - @c SegwayRmp.Config.LogStats (bool)
-    - Log statistics about the run before shutting down. Currently logs run time and distance travelled. The filename is determined by LogStatsFilename property.
+Parameters valid only for 'segwayrmpcan' and 'segwayrmpusb' drivers (ie real directly-connected hardware):
+
+  - @c SegwayRmp.Config.ModelNum (int)
+    - The model number of the RMP hardware
+    - Valid values:
+        - { 50, 100, 200, 400 }
+    - Default: 200
+
+  - @c SegwayRmp.Config.RequireSpecificBuildId (bool)
+    - If true, the vehicle will not operate on all other build IDs (ie RMP firmware versions)
+    - Default: 0
+
+  - @c SegwayRmp.Config.RequiredBuildId (int)
+    - The only RMP firmware version which the component will allow
+      (ignored if RequireSpecificBuildId is not set)
+    - Default: 0
+
+  - @c SegwayRmp.Config.AllowMoveInTractorMode (bool)
+    - Allow the vehicle to move in tractor mode (this allows extra safety)
     - Default: 1
 
-  - @c SegwayRmp.Config.LogStatsFilename (string)
-    - Name of the log file to which run statistics are saved (if LogStats is set to 1).
-    - Default: 'segwayrmp-stats.txt'
+  - @c SegwayRmp.Config.AllowMoveInBalanceMode (bool)
+    - Allow the vehicle to move in balance mode (this allows extra safety)
+    - Default: 1
 
 Parameters describing vehicle (see orca::VehicleDescription for details)
 

@@ -105,7 +105,22 @@ Component::loadDriver()
         }
         else { assert(false); }
 
-        RmpDriver *rmpDriver = new RmpDriver( context(), *rmpIo_ );
+        // Read configuration
+        RmpDriverConfig driverConfig;
+        readFromProperties( context(), driverConfig );
+
+        // Check that it's sane
+        std::string configErrors;
+        if ( driverConfig.checkSanity( configErrors ) != 0 )
+        {
+            stringstream ss;
+            ss << "Component::loadDriver(): bad configuration: " << driverConfig << endl
+               << "  --> " << configErrors;
+            throw hydroutil::Exception( ERROR_INFO, ss.str() );
+        }
+
+        // Instantiate the driver
+        RmpDriver *rmpDriver = new RmpDriver( driverConfig, *rmpIo_, context() );
         driver_.reset( rmpDriver );
 
         //

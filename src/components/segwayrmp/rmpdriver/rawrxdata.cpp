@@ -234,41 +234,5 @@ RawRxData::CuStatus2ToString() const
     return s;
 }
 
-bool
-RawRxData::isWarn() const
-{
-    return ( status_word1 & WORD1_DISABLE_RESPONSE          || // Not sure what this one is...
-             status_word1 & WORD1_YAW_TRANSIENT_FLAG        || //Not sure what this one is...
-             status_word1 & WORD1_WHEEL_SLIP_FLAG           ||
-             status_word1 & WORD1_MOTOR_FEEDBACK_FAULT      ||
-             status_word1 & WORD1_LOW_BATTRY_HAZARD         ||
-             status_word2 & WORD2_MAX_VELOCITY_A            || // Not sure if this is significant or not...
-             status_word2 & WORD2_LOW_BATTERY_BUS_VOLTAGE_A ||
-             status_word2 & WORD2_MAX_VELOCITY_B            ||
-             status_word2 & WORD2_LOW_BATTERY_BUS_VOLTAGE_B );
-}
-
-bool 
-RawRxData::isFault() const
-{
-    return ( status_word1 & WORD1_SAFETY_SHUTDOWN_1           ||
-             status_word1 & WORD1_SAFETY_SHUTDOWN_2           ||
-             status_word1 & WORD1_SYSTEM_INTEGRITY_FAULT      ||
-             status_word1 & WORD1_EMPTY_BATTERY_HAZARD        ||
-             status_word2 & WORD2_FOREAFT_PITCH_ANGLE_LIMIT_A ||
-             status_word2 & WORD2_ESTOP_SWITCH_OPEN_A         ||
-             status_word2 & WORD2_POSITION_ERROR_LIMIT_A      ||
-             status_word2 & WORD2_BATTERY_EMPTY_A             ||
-             status_word2 & WORD2_BATTERY_TEMP_LIMIT_A        ||
-             status_word2 & WORD2_ROLL_ANGLE_LIMIT_A          ||
-             status_word2 & WORD2_FOREAFT_PITCH_ANGLE_LIMIT_B ||
-             status_word2 & WORD2_ESTOP_SWITCH_OPEN_B         ||
-             status_word2 & WORD2_POSITION_ERROR_LIMIT_B      ||
-             status_word2 & WORD2_BATTERY_EMPTY_B             ||
-             status_word2 & WORD2_BATTERY_TEMP_LIMIT_B        ||
-             status_word2 & WORD2_ROLL_ANGLE_LIMIT_B          );
-}
-
-
 }
 
