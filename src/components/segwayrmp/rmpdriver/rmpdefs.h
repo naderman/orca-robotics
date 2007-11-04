@@ -197,6 +197,8 @@
 
 #define RMP_CAN_DROPPED_PACKET      0x5A5A
 
+namespace segwayrmp {
+
 enum RmpModel {
     RmpModel_50,
     RmpModel_100,
@@ -234,5 +236,7 @@ enum ConfigurationCommand {
     ConfigurationCommandResetIntegrators=50
 };
 std::string toString(ConfigurationCommand c);
+
+}
 
 #endif
