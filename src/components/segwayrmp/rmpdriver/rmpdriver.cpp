@@ -57,13 +57,9 @@ RmpDriver::RmpDriver( const orcaice::Context & context,
       rmpIo_(rmpIo),
       rxData_(model_,context),
       context_(context),
-      lastRawYaw_(0),
-      lastRawForeaft_(0),
       odomX_(0),
       odomY_(0),
       odomYaw_(0),
-      lastStatusWord1_(0),
-      lastStatusWord2_(0),
       converter_(model_)
 {
     // parse configuration parameters
@@ -155,21 +151,18 @@ RmpDriver::read( Data &data )
         // Calculate integrated odometry
         calculateIntegratedOdometry( rxData_, newRxData );
 
-        // update our stored rxData
-        rxData_ = newRxData;
-
         // Fill out the argument
         data = getData();
 
         // do a status check
-        if ( rxData_.rawData().status_word1 != lastStatusWord1_ || 
-             rxData_.rawData().status_word2 != lastStatusWord2_ ) 
+        if ( newRxData.rawData().status_word1 != rxData_.rawData().status_word1 || 
+             newRxData.rawData().status_word2 != rxData_.rawData().status_word2 ) 
         {
-            lastStatusWord1_ = rxData_.rawData().status_word1;
-            lastStatusWord2_ = rxData_.rawData().status_word2;
             stateChanged = true;
         }
 
+        // update our stored rxData
+        rxData_ = newRxData;
     }
     catch ( std::exception &e )
     {

@@ -95,19 +95,11 @@ private:
     int16_t lastTrans_;
     int16_t lastRot_;
 
-    // for integrating odometry
-    uint32_t lastRawYaw_;
-    uint32_t lastRawForeaft_;
-
-    // for odometry calculation
+    // integrated odometry (in SI units)
     double odomX_;
     double odomY_;
     double odomYaw_;
     
-    // for detecting internal state change
-    int lastStatusWord1_;
-    int lastStatusWord2_;
-
     // Converts between units
     UnitConverter converter_;
 };
