@@ -64,13 +64,16 @@ convert( const Data& internal, orca::PowerData& network )
     network.timeStamp.seconds = internal.seconds;
     network.timeStamp.useconds = internal.useconds;
 
+    // set up data structure for 2 batteries
+    network.batteries.resize(2);
+    network.batteries[0].name = "main";
+    network.batteries[1].name = "ui";
+
     network.batteries[0].voltage = internal.mainvolt;
-    network.batteries[1].voltage = internal.mainvolt;
-    network.batteries[2].voltage = internal.uivolt;
+    network.batteries[1].voltage = internal.uivolt;
     
     network.batteries[0].isBatteryCharging = orca::ChargingUnknown;
     network.batteries[1].isBatteryCharging = orca::ChargingUnknown;
-    network.batteries[2].isBatteryCharging = orca::ChargingUnknown;
 }
 
 void 
@@ -164,12 +167,6 @@ NetHandler::walk()
     orca::Odometry2dData odometry2dData;
     orca::Odometry3dData odometry3dData;
     orca::PowerData      powerData;
-
-    // set up data structure for 3 batteries
-    powerData.batteries.resize(3);
-    powerData.batteries[0].name = "main-front";
-    powerData.batteries[1].name = "main-rear";
-    powerData.batteries[2].name = "ui";
 
     hydroutil::Timer odometry2dPublishTimer;
     hydroutil::Timer odometry3dPublishTimer;
