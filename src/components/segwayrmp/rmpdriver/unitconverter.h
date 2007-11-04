@@ -2,6 +2,7 @@
 #define SEGWAYRMP_UNITCONVERTER_H
 
 #include <rmpdriver/rmpdefs.h>
+#include <stdint.h>
 
 namespace segwayrmp {
 
@@ -31,9 +32,14 @@ public:
     OperationalMode operationalModeAsEnum( int i ) const;
     GainSchedule gainScheduleAsEnum( int i ) const;
 
-    // S.I. units -> counts
-    int speedInCounts( double si ) const;
-    int angularRateInCounts( double si ) const;
+    // S.I. units -> raw RMP values
+    int speedAsRaw( double si ) const;
+    int angularRateAsRaw( double si ) const;
+    uint16_t configurationCommandAsRaw( ConfigurationCommand cmd ) const;
+    uint16_t maxVelocityScaleFactorAsRaw( double scale );
+    uint16_t maxTurnrateScaleFactorAsRaw( double scale );
+    uint16_t maxAccelerationScaleFactorAsRaw( double scale );
+    uint16_t maxCurrentLimitScaleFactorAsRaw( double scale );
 
 private: 
 

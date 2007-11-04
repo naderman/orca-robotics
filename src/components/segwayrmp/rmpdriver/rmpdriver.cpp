@@ -114,7 +114,7 @@ RmpDriver::enable()
     }
 
     stringstream ssread;
-    ssread << "Initial exploratory read says:"<<endl<<toString();
+    ssread << "Initial exploratory read: rxData: "<<endl<<rxData_.toString();
     context_.tracer()->debug( ssread.str() );
 
     try {
@@ -180,7 +180,7 @@ RmpDriver::getStatus( std::string &status, bool &isWarn, bool &isFault )
     // TODO: clean up status
     stringstream ss;
     ss << "RmpDriver: internal state change : "<<IceUtil::Time::now().toDateTime()<<endl;
-    ss<<toString();
+    ss<<rxData_.toString();
     status = ss.str();
     isWarn = rxData_.rawData().isWarn();
     isFault = rxData_.rawData().isFault();
@@ -256,12 +256,6 @@ RmpDriver::applyHardwareLimits( double& forwardSpeed, double& reverseSpeed,
     turnrate = MIN( turnrate, turnrateLimit );
     turnrate = MIN( turnrateAtMaxSpeed, turnrateAtMaxSpeedLimit );
 #endif
-}
-
-std::string
-RmpDriver::toString()
-{
-    return rxData_.rawData().toString();
 }
 
 RxData
@@ -383,16 +377,8 @@ RmpDriver::getData()
 void
 RmpDriver::resetAllIntegrators()
 {
-    CanPacket pkt = makeStatusCommandPacket( RMP_CMD_RESET_INTEGRATORS, RMP_CAN_RESET_ALL );
-
-    try {
-        rmpIo_.writePacket(pkt);
-    }
-    catch ( std::exception &e )
-    {
-        stringstream ss; ss << "RmpDriver::resetAllIntegrators(): " << e.what();
-        throw RmpException( ss.str() );
-    }
+    sendStatusCommandPacket( ConfigurationCommandResetIntegrators, 
+                             RMP_CAN_RESET_ALL );
 }
 
 void
@@ -400,22 +386,9 @@ RmpDriver::setMaxVelocityScaleFactor( double scale )
 {
     assert( scale>=0.0);
     assert( scale<=1.0);
-    // limit input to [0.0, 1.0]
-    if ( scale>1.0 ) {
-        scale=1.0;
-    } else if ( scale<0.0 ) {
-        scale=0.0;
-    }
-    CanPacket pkt = makeStatusCommandPacket( RMP_CMD_SET_MAX_VELOCITY_SCALE, (uint16_t)ceil(scale*16.0) );
 
-    try {
-        rmpIo_.writePacket(pkt);
-    }
-    catch ( std::exception &e )
-    {
-        stringstream ss; ss << "RmpDriver::setMaxVelocityScaleFactor(): " << e.what();
-        throw RmpException( ss.str() );
-    }
+    sendStatusCommandPacket( ConfigurationCommandSetMaxVelocityScale,
+                             converter_.maxVelocityScaleFactorAsRaw(scale) );
 }
 
 void
@@ -423,22 +396,9 @@ RmpDriver::setMaxTurnrateScaleFactor( double scale )
 {
     assert( scale>=0.0);
     assert( scale<=1.0);
-    // limit input to [0.0, 1.0]
-    if ( scale>1.0 ) {
-        scale=1.0;
-    } else if ( scale<0.0 ) {
-        scale=0.0;
-    }
-    CanPacket pkt = makeStatusCommandPacket( RMP_CMD_SET_MAX_TURNRATE_SCALE, (uint16_t)ceil(scale*16.0) );
 
-    try {
-        rmpIo_.writePacket(pkt);
-    }
-    catch ( std::exception &e )
-    {
-        stringstream ss; ss << "RmpDriver::setMaxTurnrateScaleFactor(): " << e.what();
-        throw RmpException( ss.str() );
-    }
+    sendStatusCommandPacket( ConfigurationCommandSetMaxTurnrateScale,
+                             converter_.maxTurnrateScaleFactorAsRaw(scale) );
 }
 
 void
@@ -446,22 +406,9 @@ RmpDriver::setMaxAccelerationScaleFactor( double scale )
 {
     assert( scale>=0.0);
     assert( scale<=1.0);
-    // limit input to [0.0, 1.0]
-    if ( scale>1.0 ) {
-        scale=1.0;
-    } else if ( scale<0.0 ) {
-        scale=0.0;
-    }
-    CanPacket pkt = makeStatusCommandPacket( RMP_CMD_SET_MAX_ACCELERATION_SCALE, (uint16_t)ceil(scale*16.0) );
 
-    try {
-        rmpIo_.writePacket(pkt);
-    }
-    catch ( std::exception &e )
-    {
-        stringstream ss; ss << "RmpDriver::setMaxAccelerationScaleFactor(): " << e.what();
-        throw RmpException( ss.str() );
-    }
+    sendStatusCommandPacket( ConfigurationCommandSetMaxAccelerationScale,
+                             converter_.maxAccelerationScaleFactorAsRaw(scale) );
 }
 
 void
@@ -469,74 +416,37 @@ RmpDriver::setMaxCurrentLimitScaleFactor( double scale )
 {
     assert( scale>=0.0);
     assert( scale<=1.0);
-    // limit input to [0.0, 1.0]
-    if ( scale>1.0 ) {
-        scale=1.0;
-    } else if ( scale<0.0 ) {
-        scale=0.0;
-    }
+
     // note: the scale of this command is [0,256]
-    CanPacket pkt = makeStatusCommandPacket( RMP_CMD_SET_CURRENT_LIMIT_SCALE, (uint16_t)ceil(scale*256.0) );
-
-    try {
-        rmpIo_.writePacket(pkt);
-    }
-    catch ( std::exception &e )
-    {
-        stringstream ss; ss << "RmpDriver::setMaxCurrentLimitScaleFactor(): " << e.what();
-        throw RmpException( ss.str() );
-    }
-
+    sendStatusCommandPacket( ConfigurationCommandSetCurrentLimitScale,
+                             converter_.maxCurrentLimitScaleFactorAsRaw(scale) );
 }
 
 void
 RmpDriver::setGainSchedule( int sched )
 {
-    CanPacket pkt = makeStatusCommandPacket( RMP_CMD_SET_GAIN_SCHEDULE, sched );
-
-    try {
-        rmpIo_.writePacket(pkt);
-    }
-    catch ( std::exception &e )
-    {
-        stringstream ss; ss << "RmpDriver::setGainSchedule(): " << e.what();
-        throw RmpException( ss.str() );
-    }
-
+    sendStatusCommandPacket( ConfigurationCommandSetGainSchedule, sched );
 }
 
 void
 RmpDriver::enableBalanceMode( bool enable )
 {
-    CanPacket pkt;
     if ( enable ) {
-        pkt = makeStatusCommandPacket( RMP_CMD_SET_BALANCE_MODE_LOCKOUT, BalanceAllowed );
+        sendStatusCommandPacket( ConfigurationCommandSetBalanceModeLockout, BalanceAllowed );
     }
     else {
-        pkt = makeStatusCommandPacket( RMP_CMD_SET_BALANCE_MODE_LOCKOUT, BalanceNotAllowed );
-    }
-    
-    try {
-        rmpIo_.writePacket(pkt);
-    }
-    catch ( std::exception &e )
-    {
-        stringstream ss; ss << "RmpDriver::enableBalanceMode(): " << e.what();
-        throw RmpException( ss.str() );
+        sendStatusCommandPacket( ConfigurationCommandSetBalanceModeLockout, BalanceNotAllowed );
     }
 }
 
-/*
- *  Takes an Orca command object and turns it into CAN packets for the RMP
- */
 CanPacket
 RmpDriver::makeMotionCommandPacket( const Command& command )
 {
     // translational RMP command
-    int16_t trans = converter_.speedInCounts(command.vx);
+    int16_t trans = converter_.speedAsRaw(command.vx);
 
     // rotational RMP command
-    int16_t rot = converter_.angularRateInCounts(command.w);
+    int16_t rot = converter_.angularRateAsRaw(command.w);
 
     if ( rand() < RAND_MAX / 100.0 )
         cout<<"TRACE(rmpdriver.cpp): TODO: check command limits" << endl;
@@ -567,12 +477,21 @@ RmpDriver::makeMotionCommandPacket( const Command& command )
 /*
     Creates a status CAN packet from the given arguments
  */  
-CanPacket
-RmpDriver::makeStatusCommandPacket( uint16_t commandId, uint16_t value )
+void
+RmpDriver::sendStatusCommandPacket( ConfigurationCommand command, uint16_t param )
 {
-    return statusCommandPacket( commandId, 
-                                value,
-                                (uint16_t)lastTrans_,
-                                (uint16_t)lastRot_ );
+    CanPacket pkt = statusCommandPacket( converter_.configurationCommandAsRaw( command ),
+                                         param,
+                                         (uint16_t)lastTrans_,
+                                         (uint16_t)lastRot_ );
+
+    try {
+        rmpIo_.writePacket(pkt);
+    }
+    catch ( std::exception &e )
+    {
+        stringstream ss; ss << "RmpDriver::sendStatusCommandPacket("<<toString(command)<<"): " << e.what();
+        throw RmpException( ss.str() );
+    }
 }
 

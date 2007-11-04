@@ -52,8 +52,6 @@ public:
 
 private:
 
-    std::string toString();
-
     void setMaxVelocityScaleFactor( double scale );
     void setMaxTurnrateScaleFactor( double scale );
     void setMaxAccelerationScaleFactor( double scale );
@@ -72,7 +70,7 @@ private:
     Data getData();
 
     CanPacket makeMotionCommandPacket( const Command& command );
-    CanPacket makeStatusCommandPacket( uint16_t commandId, uint16_t value );
+    void sendStatusCommandPacket( ConfigurationCommand commandId, uint16_t param );
 
     // Which version of the RMP hardware are we using?
     RmpModel model_;

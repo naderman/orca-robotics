@@ -7,10 +7,10 @@
  * the LICENSE file included in this distribution.
  *
  */
-
-
 #ifndef ORCA2_SEGWAY_RMP_CONFIGURATION_H
 #define ORCA2_SEGWAY_RMP_CONFIGURATION_H
+
+#include <string>
 
 // MESSAGE ID'S
 
@@ -46,17 +46,6 @@
 
 // Mask for user interface battery status in the heartbeat message.
 #define RMP_CAN_MASK_HEARTBEAT_UIBAT_STATUS     0xC000
-
-// from 'Configuration Command' table, see sec.2.2.1
-#define RMP_CMD_NONE                        0
-#define RMP_CMD_SET_MAX_VELOCITY_SCALE      10
-#define RMP_CMD_SET_MAX_ACCELERATION_SCALE  11
-#define RMP_CMD_SET_MAX_TURNRATE_SCALE      12
-#define RMP_CMD_SET_GAIN_SCHEDULE           13
-#define RMP_CMD_SET_CURRENT_LIMIT_SCALE     14
-#define RMP_CMD_SET_BALANCE_MODE_LOCKOUT    15
-#define RMP_CMD_SET_OPERATIONAL_MODE        16
-#define RMP_CMD_RESET_INTEGRATORS           50
 
 // from table: Bitfield for Reset Integrators, see sec.2.2.2
 #define RMP_CAN_RESET_RIGHT           0x01
@@ -216,15 +205,15 @@ enum RmpModel {
 };
 
 enum OperationalMode {
-    OperationalModeDisabled,
-    OperationalModeTractor,
-    OperationalModeBalance,
+    OperationalModeDisabled=0,
+    OperationalModeTractor=1,
+    OperationalModeBalance=2
 };
 
 enum GainSchedule {
-    GainScheduleNormal,
-    GainScheduleTall,
-    GainScheduleHeavy
+    GainScheduleNormal=0,
+    GainScheduleTall=1,
+    GainScheduleHeavy=2
 };
 
 enum BalanceLockout
@@ -233,5 +222,17 @@ enum BalanceLockout
     BalanceNotAllowed=1
 };
 
+enum ConfigurationCommand {
+    ConfigutationCommandNone=0,
+    ConfigurationCommandSetMaxVelocityScale=10,
+    ConfigurationCommandSetMaxAccelerationScale=11,
+    ConfigurationCommandSetMaxTurnrateScale=12,
+    ConfigurationCommandSetGainSchedule=13,
+    ConfigurationCommandSetCurrentLimitScale=14,
+    ConfigurationCommandSetBalanceModeLockout=15,
+    ConfigurationCommandSetOperationalMode=16,
+    ConfigurationCommandResetIntegrators=50
+};
+std::string toString(ConfigurationCommand c);
 
 #endif

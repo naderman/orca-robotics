@@ -57,50 +57,54 @@ UnitConverter::baseVoltageInVolts( int counts ) const
 
 
 int
-UnitConverter::speedInCounts( double si ) const
+UnitConverter::speedAsRaw( double si ) const
 {
     return si*countsPerMperS();
 }
 int
-UnitConverter::angularRateInCounts( double si ) const
+UnitConverter::angularRateAsRaw( double si ) const
 {
     return si*RMP_COUNT_PER_RAD_PER_S;
 }
 OperationalMode
 UnitConverter::operationalModeAsEnum( int i ) const
 {
-    switch ( i )
-    {
-    case 0:
-        return OperationalModeDisabled;
-    case 1:
-        return OperationalModeTractor;
-    case 2:
-        return OperationalModeBalance;
-    default:
-        stringstream ss;
-        ss << "UnitConverter: unknown OperationalMode: " << i;
-        throw ss.str();
-    }
+    // Cast is OK, the enum values are lined up correctly.
+    return (OperationalMode) i;
 }
 GainSchedule
 UnitConverter::gainScheduleAsEnum( int i ) const
 {
-    switch ( i )
-    {
-    case 0:
-        return GainScheduleNormal;
-    case 1:
-        return GainScheduleTall;
-    case 2:
-        return GainScheduleHeavy;
-    default:
-        stringstream ss;
-        ss << "UnitConverter: unknown GainSchedule: " << i;
-        throw ss.str();
-    }
+    // Cast is OK, the enum values are lined up correctly.
+    return (GainSchedule) i;
 }
-
+uint16_t
+UnitConverter::configurationCommandAsRaw( ConfigurationCommand cmd ) const
+{
+    // Cast is OK, the enum values are lined up correctly.
+    return (uint16_t) cmd;
+}
+uint16_t
+UnitConverter::maxVelocityScaleFactorAsRaw( double scale )
+{
+    return (uint16_t)ceil(scale*16.0);
+}
+uint16_t
+UnitConverter::maxTurnrateScaleFactorAsRaw( double scale )
+{
+    return (uint16_t)ceil(scale*16.0);
+}
+uint16_t
+UnitConverter::maxAccelerationScaleFactorAsRaw( double scale )
+{
+    return (uint16_t)ceil(scale*16.0);
+}
+uint16_t
+UnitConverter::maxCurrentLimitScaleFactorAsRaw( double scale )
+{
+    // note: the range of this command is [0,256]
+    return (uint16_t)ceil(scale*256.0);
+}
 
 double 
 UnitConverter::countsPerM() const
