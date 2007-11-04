@@ -12,6 +12,13 @@ namespace segwayrmp {
 UnitConverter::UnitConverter( RmpModel model )
     : model_(model)
 {
+    if ( ! ( model >= RmpModel_50 &&
+             model <= RmpModel_400 ) )
+    {
+        stringstream ss;
+        ss << "UnitConverter: unknown RmpModel: " << model;
+        throw RmpException( ss.str() );
+    }
 }
 
 double 
@@ -85,22 +92,22 @@ UnitConverter::configurationCommandAsRaw( ConfigurationCommand cmd ) const
     return (uint16_t) cmd;
 }
 uint16_t
-UnitConverter::maxVelocityScaleFactorAsRaw( double scale )
+UnitConverter::maxVelocityScaleFactorAsRaw( double scale ) const
 {
     return (uint16_t)ceil(scale*16.0);
 }
 uint16_t
-UnitConverter::maxTurnrateScaleFactorAsRaw( double scale )
+UnitConverter::maxTurnrateScaleFactorAsRaw( double scale ) const
 {
     return (uint16_t)ceil(scale*16.0);
 }
 uint16_t
-UnitConverter::maxAccelerationScaleFactorAsRaw( double scale )
+UnitConverter::maxAccelerationScaleFactorAsRaw( double scale ) const
 {
     return (uint16_t)ceil(scale*16.0);
 }
 uint16_t
-UnitConverter::maxCurrentLimitScaleFactorAsRaw( double scale )
+UnitConverter::maxCurrentLimitScaleFactorAsRaw( double scale ) const
 {
     // note: the range of this command is [0,256]
     return (uint16_t)ceil(scale*256.0);

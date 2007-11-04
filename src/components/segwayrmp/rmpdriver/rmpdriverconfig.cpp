@@ -76,11 +76,11 @@ RmpModel modelAsEnum( int model )
 
 RmpDriverConfig::RmpDriverConfig()
 {
-    gainSchedule            = GainScheduleNormal;
-    maxVelocityScale        = 0.75;
-    maxTurnrateScale        = 0.75;
-    maxAccelerationScale    = 0.75;
-    maxCurrentLimitScale    = 0.75;
+    // Invalid values to make sure the config is read properly.
+    maxVelocityScale        = -1;
+    maxTurnrateScale        = -1;
+    maxAccelerationScale    = -1;
+    maxCurrentLimitScale    = -1;
 }
 
 int
@@ -110,11 +110,19 @@ std::ostream &
 segwayrmp::operator<<( std::ostream &s, const RmpDriverConfig &c )
 {
     s << "RmpDriver Configuration Parameters:     "                     <<endl
-      << "\tgainSchedule:              " << gainScheduleAsString(c.gainSchedule) <<endl
-      << "\tmaxVelocityScale:          " << c.maxVelocityScale          <<endl
-      << "\tmaxTurnrateScale:          " << c.maxTurnrateScale          <<endl
-      << "\tmaxAccelerationScale:      " << c.maxAccelerationScale      <<endl
-      << "\tmaxCurrentLimitScale:      " << c.maxCurrentLimitScale;
+      << "\t gainSchedule:              " << gainScheduleAsString(c.gainSchedule) <<endl
+      << "\t maxVelocityScale:          " << c.maxVelocityScale          <<endl
+      << "\t maxTurnrateScale:          " << c.maxTurnrateScale          <<endl
+      << "\t maxAccelerationScale:      " << c.maxAccelerationScale      <<endl
+      << "\t maxCurrentLimitScale:      " << c.maxCurrentLimitScale      <<endl
+      << "\t model:                     " << toString(c.model)           <<endl
+      << "\t requireSpecificBuildId:    " << c.requireSpecificBuildId    <<endl;
+    if ( c.requireSpecificBuildId )
+    {
+        s << "\t requiredBuildId:           " << c.requiredBuildId           <<endl;
+    }
+    s << "\t allowMoveInTractorMode:    " << c.allowMoveInTractorMode    <<endl
+      << "\t allowMoveInBalanceMode:    " << c.allowMoveInBalanceMode;
 
     return s;
 }

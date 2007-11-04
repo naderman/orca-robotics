@@ -120,6 +120,19 @@ RmpDriver::enable()
     ssread << "Initial rxData: "<<endl<<rxData_.toString();
     context_.tracer()->info( ssread.str() );
 
+    if ( config_.requireSpecificBuildId )
+    {
+        // Check Build ID (ie firmware version)
+        if ( rxData_.buildId() != config_.requiredBuildId )
+        {
+            stringstream ss;
+            ss << "RmpDriver::enable(): RMP firmware version mismatch!" << endl
+               << "  Required version: " << config_.requiredBuildId << endl
+               << "  Found version:    " << rxData_.buildId();
+            throw RmpException( ss.str() );
+        }
+    }
+         
     try {
         // Initialise everything
         resetAllIntegrators();

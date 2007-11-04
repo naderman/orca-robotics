@@ -6,6 +6,24 @@ using namespace std;
 
 namespace segwayrmp {
 
+std::string toString( RmpModel model )
+{
+    switch ( model )
+    {
+    case RmpModel_50:
+        return "RmpModel_50";
+    case RmpModel_100:
+        return "RmpModel_100";
+    case RmpModel_200:
+        return "RmpModel_200";
+    case RmpModel_400:
+        return "RmpModel_400";
+    default:
+        stringstream ss; ss << " ?? Unknown RmpModel: " << model << " ??";
+        return ss.str();
+    }
+}
+
 std::string toString(ConfigurationCommand c)
 {
     switch (c)

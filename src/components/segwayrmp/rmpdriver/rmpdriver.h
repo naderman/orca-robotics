@@ -74,7 +74,7 @@ private:
     void sendStatusCommandPacket( ConfigurationCommand commandId, uint16_t param );
 
     // Configuration
-    RmpDriverConfig  config_;
+    const RmpDriverConfig config_;
 
     // Which version of the RMP hardware are we using?
     RmpModel model_;
@@ -96,7 +96,7 @@ private:
     double odomYaw_;
     
     // Converts between units
-    UnitConverter converter_;
+    const UnitConverter converter_;
 
     orcaice::Context context_;
 };

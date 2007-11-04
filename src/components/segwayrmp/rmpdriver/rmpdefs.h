@@ -205,6 +205,7 @@ enum RmpModel {
     RmpModel_200,
     RmpModel_400
 };
+std::string toString( RmpModel model );
 
 enum OperationalMode {
     OperationalModeDisabled=0,

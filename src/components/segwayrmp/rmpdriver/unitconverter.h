@@ -36,10 +36,10 @@ public:
     int speedAsRaw( double si ) const;
     int angularRateAsRaw( double si ) const;
     uint16_t configurationCommandAsRaw( ConfigurationCommand cmd ) const;
-    uint16_t maxVelocityScaleFactorAsRaw( double scale );
-    uint16_t maxTurnrateScaleFactorAsRaw( double scale );
-    uint16_t maxAccelerationScaleFactorAsRaw( double scale );
-    uint16_t maxCurrentLimitScaleFactorAsRaw( double scale );
+    uint16_t maxVelocityScaleFactorAsRaw( double scale ) const;
+    uint16_t maxTurnrateScaleFactorAsRaw( double scale ) const;
+    uint16_t maxAccelerationScaleFactorAsRaw( double scale ) const;
+    uint16_t maxCurrentLimitScaleFactorAsRaw( double scale ) const;
 
 private: 
 
