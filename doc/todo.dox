@@ -88,6 +88,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - Robot2d/SegwayRMP
     - simplified and improved (alex b)
 
+- SegwayRMP
+    - big overhaul of SegwayRmpDriver (alex b)
+
 @par Updated utilities
 
 - Pinger/Replier
