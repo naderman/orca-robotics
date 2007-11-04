@@ -85,31 +85,6 @@ General Parameters:
         - t>0 : send approximately every t seconds
     - Default: 60.0
 
-Parameters valid only for 'segwayrmpcan' and 'segwayrmpusb' drivers (ie real directly-connected hardware):
-
-  - @c SegwayRmp.Config.ModelNum (int)
-    - The model number of the RMP hardware
-    - Valid values:
-        - { 50, 100, 200, 400 }
-    - Default: 200
-
-  - @c SegwayRmp.Config.RequireSpecificBuildId (bool)
-    - If true, the vehicle will not operate on all other build IDs (ie RMP firmware versions)
-    - Default: 0
-
-  - @c SegwayRmp.Config.RequiredBuildId (int)
-    - The only RMP firmware version which the component will allow
-      (ignored if RequireSpecificBuildId is not set)
-    - Default: 0
-
-  - @c SegwayRmp.Config.AllowMoveInTractorMode (bool)
-    - Allow the vehicle to move in tractor mode (this allows extra safety)
-    - Default: 1
-
-  - @c SegwayRmp.Config.AllowMoveInBalanceMode (bool)
-    - Allow the vehicle to move in balance mode (this allows extra safety)
-    - Default: 1
-
 Parameters describing vehicle (see orca::VehicleDescription for details)
 
   - @c SegwayRmp.Config.VehicleDescription.Control.Type (string)
@@ -239,6 +214,29 @@ You should see the following line in CMake output:
     - Scaling factor applied to forward velocity.
     - Valid values: [0.0 .. 1.0]
     - Default: 0.75
+
+- @c SegwayRmp.Config.ModelNum (int)
+   - The model number of the RMP hardware
+   - Valid values:
+       - { 50, 100, 200, 400 }
+   - Default: 200
+
+- @c SegwayRmp.Config.RequireSpecificBuildId (bool)
+   - If true, the vehicle will not operate on all other build IDs (ie RMP firmware versions)
+   - Default: 0
+
+- @c SegwayRmp.Config.RequiredBuildId (int)
+   - The only RMP firmware version which the component will allow
+     (ignored if RequireSpecificBuildId is not set)
+   - Default: 0
+
+- @c SegwayRmp.Config.AllowMoveInTractorMode (bool)
+   - Allow the vehicle to move in tractor mode (this allows extra safety)
+   - Default: 1
+
+- @c SegwayRmp.Config.AllowMoveInBalanceMode (bool)
+   - Allow the vehicle to move in balance mode (this allows extra safety)
+   - Default: 1
 
 
 @section orca_segwayrmp_segwayrmpcan Segway RMP CAN
