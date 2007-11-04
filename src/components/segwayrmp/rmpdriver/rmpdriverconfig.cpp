@@ -19,7 +19,7 @@ using namespace segwayrmp;
 
 namespace {
 
-GainSchedule gainScheduleAsEnum( std::string gainSchedule )
+GainSchedule gainScheduleAsEnum( const std::string &gainSchedule )
 {
     if ( gainSchedule == "normal" )
         return GainScheduleNormal;
@@ -52,24 +52,24 @@ std::string gainScheduleAsString( GainSchedule gainSchedule )
     }
 }
 
-RmpModel modelAsEnum( int model )
+RmpModel modelAsEnum( const std::string &m )
 {
-    switch ( model )
-    {
-    case 50:
+    if ( m=="RMP50" )
         return RmpModel_50;
-    case 100:
+    else if ( m == "RMP100" )
         return RmpModel_100;
-    case 200:
+    else if ( m == "RMP200" )
         return RmpModel_200;
-    case 400:
+    else if ( m == "RMP400" )
         return RmpModel_400;
-    default:
+    else
+    {
         stringstream ss;
         ss << "Unknown RMP model number: " << model << endl
-           << "Valid values are {50,100,200,400}";
+           << "Valid values are {'RMP50','RMP100','RMP200','RMP400'}";
         throw hydroutil::Exception( ERROR_INFO, ss.str() );
     }
+}
 }
 
 }
