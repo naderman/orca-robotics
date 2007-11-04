@@ -227,4 +227,11 @@ enum GainSchedule {
     GainScheduleHeavy
 };
 
+enum BalanceLockout
+{
+    BalanceAllowed=0,
+    BalanceNotAllowed=1
+};
+
+
 #endif

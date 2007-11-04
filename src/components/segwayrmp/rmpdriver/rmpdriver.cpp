@@ -15,7 +15,6 @@
 #include "rmpdriver.h"
 
 // rmp data structure
-#include "rmpdataframe.h"
 #include "rmpdefs.h"
 #include "canpacket.h"
 #include <rmpexception.h>
@@ -30,7 +29,9 @@ namespace {
 
 RmpDriver::RmpDriver( const orcaice::Context & context,
                       RmpIo &rmpIo )
-    : rmpIo_(rmpIo),
+    : model_(RmpModel_200),
+      rmpIo_(rmpIo),
+      rxData_(model_,context),
       context_(context),
       lastRawYaw_(0),
       lastRawForeaft_(0),
@@ -83,8 +84,8 @@ RmpDriver::enable()
         
     // try reading from it
     try {
-        context_.tracer()->debug( "RmpDriver::enable(): Reading initial frame" );
-        readFrame();
+        context_.tracer()->debug( "RmpDriver::enable(): Trying initial read" );
+        readData( rxData_ );
     }
     catch ( RmpException &e )
     {
@@ -124,19 +125,17 @@ RmpDriver::read( Data &data )
 
     try {
         //
-        // Read a full data frame
+        // Read a new RxData from scratch
         //
-        frame_.reset();
-        readFrame();
-    
+        readData( rxData_ );    
         updateData( data );
 
         // do a status check (before resetting the frame)
-        if ( frame_.status_word1 != lastStatusWord1_ || 
-             frame_.status_word2 != lastStatusWord2_ ) 
+        if ( rxData_.rawData().status_word1 != lastStatusWord1_ || 
+             rxData_.rawData().status_word2 != lastStatusWord2_ ) 
         {
-            lastStatusWord1_ = frame_.status_word1;
-            lastStatusWord2_ = frame_.status_word2;
+            lastStatusWord1_ = rxData_.rawData().status_word1;
+            lastStatusWord2_ = rxData_.rawData().status_word2;
             stateChanged = true;
         }
 
@@ -158,8 +157,8 @@ RmpDriver::getStatus( std::string &status, bool &isWarn, bool &isFault )
     ss << "RmpDriver: internal state change : "<<IceUtil::Time::now().toDateTime()<<endl;
     ss<<toString();
     status = ss.str();
-    isWarn = frame_.isWarn();
-    isFault = frame_.isFault();
+    isWarn = rxData_.rawData().isWarn();
+    isFault = rxData_.rawData().isFault();
 }
 
 void
@@ -233,15 +232,17 @@ RmpDriver::applyHardwareLimits( double& forwardSpeed, double& reverseSpeed,
 std::string
 RmpDriver::toString()
 {
-    return frame_.toString();
+    return rxData_.rawData().toString();
 }
 
 void
-RmpDriver::readFrame()
+RmpDriver::readData( RxData &rxData )
 {
+    // Start from scratch
+    rxData = RxData( model_, context_ );    
+
     RmpIo::RmpIoStatus status;
     int canPacketsProcessed = 0;
-    int dataFramesReopened = 0;
     int timeoutCount = 0;
 
     // arbitrary parameters
@@ -262,12 +263,17 @@ RmpDriver::readFrame()
         }
         
         ++canPacketsProcessed;
-    
+        if ( ++canPacketsProcessed > 9 )
+        {
+            stringstream ss;
+            ss << "RmpDriver::readData: processed " << canPacketsProcessed << " without completing rxData!";
+            context_.tracer()->warning( ss.str() );
+        }
+
         //
-        // Add packet to data frame
         // This is where we interprete all message contents!
         //
-        frame_.AddPacket(&pkt);
+        rxData_.addPacket(pkt);
    
         //
         // special case: integrate robot motion
@@ -276,30 +282,11 @@ RmpDriver::readFrame()
             integrateMotion();
         }
 
-        // If frame is closed and complete, transfer data and reset frame
-        if( frame_.isClosed() )
+        // If frame is complete, we can stop reading
+        if ( rxData_.isComplete() )
         {
-            if ( frame_.isComplete() )
-            {
-                //cout<<"RmpDriver::readFrame: pkts:"<<canPacketsProcessed<<" re-opened: "<<dataFramesReopened<<endl;
-                return;
-            }
-            else {
-                // debug: the frame is closed but not complete: some packets were lost
-                /* int sec = IceUtil::Time::now().toSeconds();
-                cout<<sec<<" re-opening frame. Missing [";
-                for ( int i=1; i<8; ++i ) {
-                    if ( !frame_.msgCheckList_[i] ) { cout<<i<<" "; }
-                }
-                cout<<"]"<<endl; */
-                // @todo or should we reset?
-                frame_.reopen();
-                ++dataFramesReopened;
-                
-                // remain in the while loop, read another frame
-            }
+            return;
         }
-
     }   // while
 
     // either processed too many packets or got too many timeouts without
@@ -314,12 +301,12 @@ void
 RmpDriver::integrateMotion()
 {
     // Get the new linear and angular encoder values and compute odometry.
-    int deltaForeaftRaw = diff(lastRawForeaft_, frame_.foreaft, firstread_);
-    int deltaYawRaw = diff(lastRawYaw_, frame_.yaw, firstread_);
+    int deltaForeaftRaw = diff(lastRawForeaft_, rxData_.rawData().foreaft_displacement, firstread_);
+    int deltaYawRaw = diff(lastRawYaw_, rxData_.rawData().yaw, firstread_);
 
     // store current values
-    lastRawForeaft_ = frame_.foreaft;
-    lastRawYaw_ = frame_.yaw;
+    lastRawForeaft_ = rxData_.rawData().foreaft_displacement;
+    lastRawYaw_ = rxData_.rawData().yaw;
 
     // convert to SI
     double deltaForeaft = converter_.distanceInM( deltaForeaftRaw );
@@ -351,14 +338,14 @@ RmpDriver::updateData( Data& data )
     // Player got it right: "this robot doesn't fly"
 //     data.z    = 0.0;
 
-    data.roll    = frame_.roll;
-    data.pitch   = frame_.pitch;
+    data.roll    = rxData_.rawData().roll;
+    data.pitch   = rxData_.rawData().pitch;
     data.yaw     = odomYaw_;
 
     // for current rates, use instanteneous values
     // combine left and right wheel velocity to get forward velocity
     // change from counts/sec into meters/sec
-    data.vx = (converter_.speedInMperS(frame_.left_dot)+converter_.speedInMperS(frame_.right_dot)) / 2.0;
+    data.vx = (converter_.speedInMperS(rxData_.rawData().left_wheel_velocity)+converter_.speedInMperS(rxData_.rawData().right_wheel_velocity)) / 2.0;
 
     // no side speeds for this 'bot
 //     data.vy = 0.0;
@@ -367,21 +354,21 @@ RmpDriver::updateData( Data& data )
 
     // note the correspondence between pitch and roll rate and the 
     // axes around which the rotation happens.
-    data.droll  = frame_.roll_dot;
-    data.dpitch = frame_.pitch_dot;
+    data.droll  = rxData_.rawData().roll_dot;
+    data.dpitch = rxData_.rawData().pitch_dot;
     // from counts/sec into deg/sec.  also, take the additive
     // inverse, since the RMP reports clockwise angular velocity as positive.
-    data.dyaw   = -(double)frame_.yaw_dot / RMP_COUNT_PER_RAD_PER_S;
+    data.dyaw   = -(double)rxData_.rawData().yaw_dot / RMP_COUNT_PER_RAD_PER_S;
 
     // Convert battery voltage from counts to Volts
     // we only know the minimum of the two main batteries
-    data.mainvolt = frame_.base_battery_voltage / RMP_BASE_COUNT_PER_VOLT;
+    data.mainvolt = rxData_.rawData().base_battery_voltage / RMP_BASE_COUNT_PER_VOLT;
 //     power.batteries[0].percent = 99.0;
 //     power.batteries[0].secRemaining = 8*60*60;
-//     data.mainvolt = frame_.base_battery_voltage / RMP_BASE_COUNT_PER_VOLT;
+//     data.mainvolt = rxData_.rawData().base_battery_voltage / RMP_BASE_COUNT_PER_VOLT;
 //     power.batteries[1].percent = 99.0;
 //     power.batteries[1].secRemaining = 8*60*60;
-    data.uivolt = RMP_UI_OFFSET + frame_.ui_battery_voltage*RMP_UI_COEFF;
+    data.uivolt = RMP_UI_OFFSET + rxData_.rawData().ui_battery_voltage*RMP_UI_COEFF;
 //     power.batteries[2].percent = 99.0;
 //     power.batteries[2].secRemaining = 8*60*60;
 

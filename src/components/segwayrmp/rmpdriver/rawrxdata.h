@@ -85,6 +85,11 @@ public:
     // CU Status "word 2"
     int16_t status_word2;
 
+    // Is there a warning condition?
+    bool isWarn() const;
+    // Is there an error condition?
+    bool isFault() const;
+
 private: 
 
     std::string CuStatus1ToString() const;

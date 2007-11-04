@@ -14,7 +14,7 @@
 #include "../hwdriver.h"
 #include "rmpdriverconfig.h"
 #include "rmpio.h"
-#include "rmpdataframe.h"
+#include "rxdata.h"
 #include "unitconverter.h"
 
 namespace segwayrmp
@@ -54,12 +54,6 @@ private:
 
     std::string toString();
 
-    enum BalanceLockout
-    {
-        BalanceAllowed=0,
-        BalanceNotAllowed=1
-    };
-
     void setMaxVelocityScaleFactor( double scale );
     void setMaxTurnrateScaleFactor( double scale );
     void setMaxAccelerationScaleFactor( double scale );
@@ -71,9 +65,23 @@ private:
 
     void applyScaling( const Command& original, Command &scaledCommand );
 
+    void readData( RxData &rxData );
+    void integrateMotion();
+    void updateData( Data& data );
+
+    CanPacket makeMotionCommandPacket( const Command& command );
+    CanPacket makeStatusCommandPacket( uint16_t commandId, uint16_t value );
+
+    // Calculate the difference between two raw counter values, taking care of rollover.
+    int diff(uint32_t from, uint32_t to, bool first);
+
+    // Which version of the RMP hardware are we using?
+    RmpModel model_;
+
     // driver/hardware interface
     RmpIo         &rmpIo_;
-    RmpDataFrame   frame_;
+    // RmpDataFrame   frame_;
+    RxData         rxData_;
 
     // configuration
     orcaice::Context context_;
@@ -101,15 +109,6 @@ private:
     int lastStatusWord1_;
     int lastStatusWord2_;
 
-    void readFrame();
-    void integrateMotion();
-    void updateData( Data& data );
-
-    CanPacket makeMotionCommandPacket( const Command& command );
-    CanPacket makeStatusCommandPacket( uint16_t commandId, uint16_t value );
-
-    // Calculate the difference between two raw counter values, taking care of rollover.
-    int diff(uint32_t from, uint32_t to, bool first);
     // bullshit
     bool firstread_;
 
