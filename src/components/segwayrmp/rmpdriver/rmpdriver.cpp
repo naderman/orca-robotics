@@ -20,11 +20,35 @@
 #include <rmpexception.h>
 
 using namespace std;
-using namespace orca;
 using namespace segwayrmp;
 
 namespace {
     const int DEBUG_LEVEL=5;
+
+    // Calculate the difference between two raw counter values, taking care of rollover.
+    int32_t
+    diffInclRollover( uint32_t from, uint32_t to )
+    {
+        int diff1, diff2;
+        const uint32_t max = 0xFFFFFFFF;
+
+        diff1 = to - from;
+
+        // find difference in two directions and pick shortest
+        if( to > from ) {
+            diff2 = -(from + max - to);
+        }
+        else {
+            diff2 = max - from + to;
+        }
+
+        if( abs(diff1) < abs(diff2) ) {
+            return diff1;
+        }
+        else {
+            return diff2;
+        }
+    }
 }
 
 RmpDriver::RmpDriver( const orcaice::Context & context,
@@ -40,8 +64,7 @@ RmpDriver::RmpDriver( const orcaice::Context & context,
       odomYaw_(0),
       lastStatusWord1_(0),
       lastStatusWord2_(0),
-      firstread_(true),
-      converter_(RmpModel_200)
+      converter_(model_)
 {
     // parse configuration parameters
     readFromProperties( context, config_ );
@@ -82,10 +105,10 @@ RmpDriver::enable()
         throw RmpException( ss.str() );
     }
         
-    // try reading from it
+    // try reading from it (and fill out initial values in rxData_)
     try {
         context_.tracer()->debug( "RmpDriver::enable(): Trying initial read" );
-        readData( rxData_ );
+        rxData_ = readData();
     }
     catch ( RmpException &e )
     {
@@ -125,12 +148,20 @@ RmpDriver::read( Data &data )
 
     try {
         //
-        // Read a new RxData from scratch
+        // Read a new RxData from the CAN bus
         //
-        readData( rxData_ );    
-        updateData( data );
+        RxData newRxData = readData();
 
-        // do a status check (before resetting the frame)
+        // Calculate integrated odometry
+        calculateIntegratedOdometry( rxData_, newRxData );
+
+        // update our stored rxData
+        rxData_ = newRxData;
+
+        // Fill out the argument
+        data = getData();
+
+        // do a status check
         if ( rxData_.rawData().status_word1 != lastStatusWord1_ || 
              rxData_.rawData().status_word2 != lastStatusWord2_ ) 
         {
@@ -235,11 +266,10 @@ RmpDriver::toString()
     return rxData_.rawData().toString();
 }
 
-void
-RmpDriver::readData( RxData &rxData )
+RxData
+RmpDriver::readData()
 {
-    // Start from scratch
-    rxData = RxData( model_, context_ );    
+    RxData rxData( model_, context_ );
 
     RmpIo::RmpIoStatus status;
     int canPacketsProcessed = 0;
@@ -272,19 +302,12 @@ RmpDriver::readData( RxData &rxData )
         //
         // This is where we interprete all message contents!
         //
-        rxData_.addPacket(pkt);
+        rxData.addPacket(pkt);
    
-        //
-        // special case: integrate robot motion
-        //
-        if ( pkt.id() == RMP_CAN_ID_MSG4 ) {
-            integrateMotion();
-        }
-
         // If frame is complete, we can stop reading
-        if ( rxData_.isComplete() )
+        if ( rxData.isComplete() )
         {
-            return;
+            return rxData;
         }
     }   // while
 
@@ -306,39 +329,33 @@ RmpDriver::readData( RxData &rxData )
     }
 }
 
-
-//**??** djlm... Do we know anything about changes in wheel diameters here?
-//**??** djlm what happens if the segway integrated values are reset or rollover?
 void
-RmpDriver::integrateMotion()
+RmpDriver::calculateIntegratedOdometry( const RxData &prevData, const RxData &thisData )
 {
-    // Get the new linear and angular encoder values and compute odometry.
-    int deltaForeaftRaw = diff(lastRawForeaft_, rxData_.rawData().foreaft_displacement, firstread_);
-    int deltaYawRaw = diff(lastRawYaw_, rxData_.rawData().yaw, firstread_);
-
-    // store current values
-    lastRawForeaft_ = rxData_.rawData().foreaft_displacement;
-    lastRawYaw_ = rxData_.rawData().yaw;
+    // Calculate the delta this new info represents
+    int32_t deltaForeAftRaw = diffInclRollover( prevData.rawData().foreaft_displacement,
+                                                thisData.rawData().foreaft_displacement );
+    int32_t deltaYawRaw = diffInclRollover( prevData.rawData().yaw,
+                                            thisData.rawData().yaw );
 
     // convert to SI
-    double deltaForeaft = converter_.distanceInM( deltaForeaftRaw );
-    double deltaYaw = converter_.angleInRadiansFromRevCounts(deltaYawRaw);
+    double deltaForeAft = converter_.distanceInM( deltaForeAftRaw );
+    double deltaYaw     = converter_.angleInRadiansFromRevCounts(deltaYawRaw);
 
     // First-order odometry integration
-    odomX_ += deltaForeaft * cos(odomYaw_);
-    odomY_ += deltaForeaft * sin(odomYaw_);
+    odomX_   += deltaForeAft * cos(odomYaw_);
+    odomY_   += deltaForeAft * sin(odomYaw_);
     odomYaw_ += deltaYaw;
 
-    // Normalize yaw in [0, 360]
-    odomYaw_ = atan2(sin(odomYaw_), cos(odomYaw_));
-    if (odomYaw_ < 0) {
-        odomYaw_ += 2 * M_PI;
-    }
+    // Normalize yaw
+    NORMALISE_ANGLE( odomYaw_ );
 }
 
-void
-RmpDriver::updateData( Data& data )
+Data
+RmpDriver::getData()
 {
+    Data data;
+
     // set all time stamps right away
     orca::Time t = orcaice::toOrcaTime( IceUtil::Time::now() );
     data.seconds = t.seconds;
@@ -362,7 +379,7 @@ RmpDriver::updateData( Data& data )
     data.mainvolt = rxData_.baseBatteryVoltage();
     data.uivolt   = rxData_.uiBatteryVoltage();
 
-    firstread_ = false;
+    return data;
 }
 
 void
@@ -559,36 +576,5 @@ RmpDriver::makeStatusCommandPacket( uint16_t commandId, uint16_t value )
                                 value,
                                 (uint16_t)lastTrans_,
                                 (uint16_t)lastRot_ );
-}
-
-// Calculate the difference between two raw counter values, taking care
-// of rollover.
-int
-RmpDriver::diff( uint32_t from, uint32_t to, bool first )
-{
-    // if this is the first time, report no change
-    if(first) {
-        return 0;
-    }
-
-    int diff1, diff2;
-    static uint32_t max = (uint32_t)pow(2.0,32.0)-1;
-
-    diff1 = to - from;
-
-    // find difference in two directions and pick shortest
-    if( to > from ) {
-        diff2 = -(from + max - to);
-    }
-    else {
-        diff2 = max - from + to;
-    }
-
-    if( abs(diff1) < abs(diff2) ) {
-        return diff1;
-    }
-    else {
-        return diff2;
-    }
 }
 

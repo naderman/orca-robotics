@@ -65,15 +65,14 @@ private:
 
     void applyScaling( const Command& original, Command &scaledCommand );
 
-    void readData( RxData &rxData );
-    void integrateMotion();
-    void updateData( Data& data );
+    // Reads a set of CAN packets, returns the result
+    RxData readData();
+    void calculateIntegratedOdometry( const RxData &prevData, const RxData &thisData );
+    // fills up the Data class (understood externally)
+    Data getData();
 
     CanPacket makeMotionCommandPacket( const Command& command );
     CanPacket makeStatusCommandPacket( uint16_t commandId, uint16_t value );
-
-    // Calculate the difference between two raw counter values, taking care of rollover.
-    int diff(uint32_t from, uint32_t to, bool first);
 
     // Which version of the RMP hardware are we using?
     RmpModel model_;
@@ -108,9 +107,6 @@ private:
     // for detecting internal state change
     int lastStatusWord1_;
     int lastStatusWord2_;
-
-    // bullshit
-    bool firstread_;
 
     // Converts between units
     UnitConverter converter_;
