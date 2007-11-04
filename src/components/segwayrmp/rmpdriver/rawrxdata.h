@@ -1,5 +1,5 @@
-#ifndef SEGWAYRMP_RMPRAWDATA_H
-#define SEGWAYRMP_RMPRAWDATA_H
+#ifndef SEGWAYRMP_RAWRXDATA_H
+#define SEGWAYRMP_RAWRXDATA_H
 
 #include <orcaice/context.h>
 #include <rmpdriver/canpacket.h>
@@ -15,16 +15,16 @@ namespace segwayrmp {
 // Since different CAN packets hold different kinds of data, this thing acts
 // as an accumulator.
 //
-// The RmpRawData structure is complete when it has a status message
+// The RawRxData structure is complete when it has a status message
 // and all 8 monitoring messages
 //
-class RmpRawData
+class RawRxData
 {
 
 public: 
 
     // Data is empty on construction.
-    RmpRawData( const orcaice::Context &context );
+    RawRxData( const orcaice::Context &context );
 
     // Adds information from a packet
     void addPacket(const CanPacket &pkt);
@@ -46,7 +46,7 @@ public:
     // Roll Rate
     int16_t    roll_dot;
     // yaw displacement
-    uint32_t   yaw_displacement;
+    uint32_t   yaw;
     // Yaw rate
     int16_t    yaw_dot;
     // integrated left wheel displacement

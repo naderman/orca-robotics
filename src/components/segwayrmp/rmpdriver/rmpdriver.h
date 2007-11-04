@@ -15,6 +15,7 @@
 #include "rmpdriverconfig.h"
 #include "rmpio.h"
 #include "rmpdataframe.h"
+#include "unitconverter.h"
 
 namespace segwayrmp
 {
@@ -53,35 +54,18 @@ private:
 
     std::string toString();
 
-    enum OperationalMode
-    {
-        OperationalModeTractor=1,
-        OperationalModeBalance=2,
-        OperationalModePowerdown=3
-    };
-
     enum BalanceLockout
     {
         BalanceAllowed=0,
         BalanceNotAllowed=1
     };
 
-    struct Status
-    {
-        int buildId;
-        int cuState;
-        int opMode;
-        int gainSchedule;
-        //OperationalMode opMode;
-    };
-    
     void setMaxVelocityScaleFactor( double scale );
     void setMaxTurnrateScaleFactor( double scale );
     void setMaxAccelerationScaleFactor( double scale );
     void setMaxCurrentLimitScaleFactor( double scale );
     void resetAllIntegrators();
 
-    void setOperationalMode( OperationalMode mode );
     void setGainSchedule( int sched );
     void enableBalanceMode( bool enable );
 
@@ -119,7 +103,7 @@ private:
 
     void readFrame();
     void integrateMotion();
-    void updateData( Data& data, Status & status );
+    void updateData( Data& data );
 
     CanPacket makeMotionCommandPacket( const Command& command );
     CanPacket makeStatusCommandPacket( uint16_t commandId, uint16_t value );
@@ -128,6 +112,9 @@ private:
     int diff(uint32_t from, uint32_t to, bool first);
     // bullshit
     bool firstread_;
+
+    // Converts between units
+    UnitConverter converter_;
 };
 
 } // namespace

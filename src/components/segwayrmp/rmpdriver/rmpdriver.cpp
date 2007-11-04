@@ -39,7 +39,8 @@ RmpDriver::RmpDriver( const orcaice::Context & context,
       odomYaw_(0),
       lastStatusWord1_(0),
       lastStatusWord2_(0),
-      firstread_(true)
+      firstread_(true),
+      converter_(RmpModel_200)
 {
     // parse configuration parameters
     readFromProperties( context, config_ );
@@ -128,24 +129,17 @@ RmpDriver::read( Data &data )
         frame_.reset();
         readFrame();
     
-        RmpDriver::Status rmpStatus;
-        updateData( data, rmpStatus );
+        updateData( data );
 
         // do a status check (before resetting the frame)
         if ( frame_.status_word1 != lastStatusWord1_ || 
              frame_.status_word2 != lastStatusWord2_ ) 
         {
-//             ss << "StatusWords:     " << frame_.status_word1 << "  " << frame_.status_word2 << endl;
-//             ss << "lastStatusWords: " << lastStatusWord1_ << "  " << lastStatusWord2_ << endl;
             lastStatusWord1_ = frame_.status_word1;
             lastStatusWord2_ = frame_.status_word2;
             stateChanged = true;
         }
 
-//         // update status (only change it when internal state changes?)
-//         std::ostringstream os;
-//         os << "State1="<<frame_.CuStatus1ToString()<<" State2="<<frame_.CuStatus2ToString();
-//         status = os.str();
     }
     catch ( std::exception &e )
     {
@@ -212,6 +206,9 @@ void
 RmpDriver::applyHardwareLimits( double& forwardSpeed, double& reverseSpeed, 
                                 double& turnrate, double& turnrateAtMaxSpeed )
 {
+    if ( rand() < RAND_MAX/100.0 )
+        cout<<"TRACE(rmpdriver.cpp): TODO: applyHardwareLimits" << endl;
+#if 0
     double forwardSpeedLimit 
         = config_.maxVelocityScale * (double)RMP_MAX_TRANS_VEL_COUNT / RMP_COUNT_PER_M_PER_S;
     double reverseSpeedLimit = forwardSpeedLimit;
@@ -230,6 +227,7 @@ RmpDriver::applyHardwareLimits( double& forwardSpeed, double& reverseSpeed,
     reverseSpeed = MIN( reverseSpeed, reverseSpeedLimit );
     turnrate = MIN( turnrate, turnrateLimit );
     turnrate = MIN( turnrateAtMaxSpeed, turnrateAtMaxSpeedLimit );
+#endif
 }
 
 std::string
@@ -324,8 +322,8 @@ RmpDriver::integrateMotion()
     lastRawYaw_ = frame_.yaw;
 
     // convert to SI
-    double deltaForeaft = (double)deltaForeaftRaw / RMP_COUNT_PER_M;
-    double deltaYaw = (double)deltaYawRaw / RMP_COUNT_PER_REV * 2.0 * M_PI;
+    double deltaForeaft = converter_.distanceInM( deltaForeaftRaw );
+    double deltaYaw = converter_.angleInRadiansFromRevCounts(deltaYawRaw);
 
     // First-order odometry integration
     odomX_ += deltaForeaft * cos(odomYaw_);
@@ -340,7 +338,7 @@ RmpDriver::integrateMotion()
 }
 
 void
-RmpDriver::updateData( Data& data, Status & status )
+RmpDriver::updateData( Data& data )
 {
     // set all time stamps right away
     orca::Time t = orcaice::toOrcaTime( IceUtil::Time::now() );
@@ -360,8 +358,8 @@ RmpDriver::updateData( Data& data, Status & status )
     // for current rates, use instanteneous values
     // combine left and right wheel velocity to get forward velocity
     // change from counts/sec into meters/sec
-    data.vx = ((double)frame_.left_dot+(double)frame_.right_dot) /
-                    RMP_COUNT_PER_M_PER_S / 2.0;
+    data.vx = (converter_.speedInMperS(frame_.left_dot)+converter_.speedInMperS(frame_.right_dot)) / 2.0;
+
     // no side speeds for this 'bot
 //     data.vy = 0.0;
     // no jumps for this 'bot
@@ -387,30 +385,6 @@ RmpDriver::updateData( Data& data, Status & status )
 //     power.batteries[2].percent = 99.0;
 //     power.batteries[2].secRemaining = 8*60*60;
 
-    // INTERNAL STATUS
-    status.buildId = frame_.build_id;
-    status.cuState = frame_.status_word1;
-    status.opMode = frame_.operational_mode;
-    status.gainSchedule = frame_.controller_gain_schedule;
-
-    //debug
-    //cout<<"cu battery voltage (CU): "<<power.batteries[0].voltage<<" ("<<frame_.base_battery_voltage<<")"<<endl;
-    // info from CU in msg 406
-    //cout<<"ui battery voltage (CU): "<<power.batteries[2].voltage<<" ("<<frame_.ui_battery_voltage<<")"<<endl;
-    // info from UI in heartbeat msg
-    //cout<<"ui battery voltage (UI): "<<frame_.ui_heartbeat_voltage<<endl;
-    //if ( frame_.ui_heartbeat_status == RMP_UI_LOW_WARNING ) {
-    //    cout<<"ui battery status (UI) : low "<<endl;
-    //}
-    //else if ( frame_.ui_heartbeat_status == RMP_UI_EMPTY_SHUTDOWN ) {
-    //    cout<<"ui battery status (UI) : shutdown "<<endl;
-    //}
-//     double velcom = (double)frame_.velocity_command / RMP_COUNT_PER_M_PER_S;
-//     cout<<"DEBUG: commanded="<<velcom<<"   speed="<<data.vx<<endl;
-
-    // Chip debug
-    //frame_.dump();
-    //dump();
 
     firstread_ = false;
 }
@@ -525,21 +499,6 @@ RmpDriver::setMaxCurrentLimitScaleFactor( double scale )
 }
 
 void
-RmpDriver::setOperationalMode( OperationalMode mode )
-{
-    CanPacket pkt = makeStatusCommandPacket( RMP_CMD_SET_OPERATIONAL_MODE, mode );
-
-    try {
-        rmpIo_.writePacket(pkt);
-    }
-    catch ( std::exception &e )
-    {
-        stringstream ss; ss << "RmpDriver::setOperationalMode(): " << e.what();
-        throw RmpException( ss.str() );
-    }
-}
-
-void
 RmpDriver::setGainSchedule( int sched )
 {
     CanPacket pkt = makeStatusCommandPacket( RMP_CMD_SET_GAIN_SCHEDULE, sched );
@@ -583,7 +542,14 @@ CanPacket
 RmpDriver::makeMotionCommandPacket( const Command& command )
 {
     // translational RMP command
-    int16_t trans = (int16_t) rint(command.vx * RMP_COUNT_PER_M_PER_S);
+    int16_t trans = converter_.speedInCounts(command.vx);
+
+    // rotational RMP command
+    int16_t rot = converter_.angularRateInCounts(command.w);
+
+    if ( rand() < RAND_MAX / 100.0 )
+        cout<<"TRACE(rmpdriver.cpp): TODO: check command limits" << endl;
+#if 0
     // check for command limits
     if(trans > RMP_MAX_TRANS_VEL_COUNT) {
         trans = RMP_MAX_TRANS_VEL_COUNT;
@@ -591,9 +557,6 @@ RmpDriver::makeMotionCommandPacket( const Command& command )
     else if(trans < -RMP_MAX_TRANS_VEL_COUNT) {
         trans = -RMP_MAX_TRANS_VEL_COUNT;
     }
-
-    // rotational RMP command
-    int16_t rot = (int16_t) rint(command.w * RMP_COUNT_PER_RAD_PER_S);
     // check for command limits
     if(rot > RMP_MAX_ROT_VEL_COUNT) {
         rot = RMP_MAX_ROT_VEL_COUNT;
@@ -601,6 +564,7 @@ RmpDriver::makeMotionCommandPacket( const Command& command )
     else if(rot < -RMP_MAX_ROT_VEL_COUNT) {
         rot = -RMP_MAX_ROT_VEL_COUNT;
     }
+#endif
 
     // save this last command
     lastTrans_ = trans;

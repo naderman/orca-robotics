@@ -143,8 +143,16 @@
 
 // unit conversions from Data Reference, see sec.4
 
-#define RMP_COUNT_PER_M            33215.0
-#define RMP_COUNT_PER_M_PER_S      332.0
+// different models
+#define RMP_COUNT_PER_M_RMP50      40181.0
+#define RMP_COUNT_PER_M_RMP100     40181.0
+#define RMP_COUNT_PER_M_RMP200     33215.0
+#define RMP_COUNT_PER_M_RMP400     33215.0
+
+#define RMP_COUNT_PER_M_PER_S_RMP50  401.0
+#define RMP_COUNT_PER_M_PER_S_RMP100 401.0
+#define RMP_COUNT_PER_M_PER_S_RMP200 332.0
+#define RMP_COUNT_PER_M_PER_S_RMP400 332.0
 
 #define RMP_COUNT_PER_DEG          7.8
 #define RMP_COUNT_PER_DEG_PER_S    7.8
@@ -153,7 +161,10 @@
 #define RMP_COUNT_PER_RAD_PER_S    446.9071
 #define RMP_COUNT_PER_RAD_PER_SS   446.9071
 // This is different from rotation and depends on geometry
-#define RMP_COUNT_PER_REV          112644.0
+#define RMP_COUNT_PER_REV_RMP50    117031.0
+#define RMP_COUNT_PER_REV_RMP100   117031.0
+#define RMP_COUNT_PER_REV_RMP200   112644.0
+#define RMP_COUNT_PER_REV_RMP400   112644.0
 
 // main (CU) battery voltage
 #define RMP_BASE_COUNT_PER_VOLT      4.0
@@ -167,7 +178,10 @@
 #define RMP_UI_EMPTY_SHUTDOWN       0x40
 
 // motor torque
-#define RMP_COUNT_PER_NM           1094.0
+#define RMP_COUNT_PER_NM_RMP50     1463.0
+#define RMP_COUNT_PER_NM_RMP100    1463.0
+#define RMP_COUNT_PER_NM_RMP200    1094.0
+#define RMP_COUNT_PER_NM_RMP400    1094.0
 #define RMP_SEC_PER_FRAME          0.01
 
 // alexm: where is this from?
@@ -194,5 +208,23 @@
 
 #define RMP_CAN_DROPPED_PACKET      0x5A5A
 
+enum RmpModel {
+    RmpModel_50,
+    RmpModel_100,
+    RmpModel_200,
+    RmpModel_400
+};
+
+enum OperationalMode {
+    OperationalModeDisabled,
+    OperationalModeTractor,
+    OperationalModeBalance,
+};
+
+enum GainSchedule {
+    GainScheduleNormal,
+    GainScheduleTall,
+    GainScheduleHeavy
+};
 
 #endif

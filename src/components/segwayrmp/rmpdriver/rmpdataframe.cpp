@@ -42,19 +42,19 @@ std::string RmpDataFrame::toString()
     msgCheckList_[4] ? os<<setw(17)<<"yaw"<<dec<<setw(10)<<(int)yaw<<hex<<setw(10)<<yaw<<"\t\t"<<dec<<(float)yaw/RMP_COUNT_PER_DEG<<" deg"<<endl : os<<"yaw        \tDROPPED"<<endl;
     msgCheckList_[2] ? os<<setw(17)<<"yaw dot"<<dec<<setw(10)<<(int)yaw_dot<<hex<<setw(10)<<yaw_dot<<"\t\t"<<dec<<(float)yaw_dot/RMP_COUNT_PER_DEG_PER_S<<" deg/s"<<endl : os<<"yaw dot    \tDROPPED"<<endl;
 
-    msgCheckList_[3] ? os<<setw(17)<<"left"<<dec<<setw(10)<<(int)left<<hex<<setw(10)<<left<<"\t\t"<<dec<<(float)left/RMP_COUNT_PER_M<<" m"<<endl : os<<"left       \tDROPPED"<<endl;
-    msgCheckList_[2] ? os<<setw(17)<<"left dot"<<dec<<setw(10)<<(int)left_dot<<hex<<setw(10)<<left_dot<<"\t\t"<<dec<<(float)left_dot/RMP_COUNT_PER_M_PER_S<<" m/s"<<endl : os<<"left dot   \tDROPPED"<<endl;
-    msgCheckList_[3] ? os<<setw(17)<<"right"<<dec<<setw(10)<<(int)right<<hex<<setw(10)<<right<<"\t\t"<<dec<<(float)right/RMP_COUNT_PER_M<<" m"<<endl : os<<"right      \tDROPPED"<<endl;
-    msgCheckList_[2] ? os<<setw(17)<<"right dot"<<dec<<setw(10)<<(int)right_dot<<hex<<setw(10)<<right_dot<<"\t\t"<<dec<<(float)right_dot/RMP_COUNT_PER_M_PER_S<<" m/s"<<endl : os<<"right dot  \tDROPPED"<<endl;
-    msgCheckList_[4] ? os<<setw(17)<<"fore-aft"<<dec<<setw(10)<<(int)foreaft<<hex<<setw(10)<<foreaft<<"\t\t"<<dec<<(float)foreaft/RMP_COUNT_PER_M<<" m"<<endl : os<<"fore-aft   \tDROPPED"<<endl;
+    msgCheckList_[3] ? os<<setw(17)<<"left"<<dec<<setw(10)<<(int)left<<hex<<setw(10)<<left<<"\t\t"<<dec<<(float)left/RMP_COUNT_PER_M_RMP200<<" m"<<endl : os<<"left       \tDROPPED"<<endl;
+    msgCheckList_[2] ? os<<setw(17)<<"left dot"<<dec<<setw(10)<<(int)left_dot<<hex<<setw(10)<<left_dot<<"\t\t"<<dec<<(float)left_dot/RMP_COUNT_PER_M_PER_S_RMP200<<" m/s"<<endl : os<<"left dot   \tDROPPED"<<endl;
+    msgCheckList_[3] ? os<<setw(17)<<"right"<<dec<<setw(10)<<(int)right<<hex<<setw(10)<<right<<"\t\t"<<dec<<(float)right/RMP_COUNT_PER_M_RMP200<<" m"<<endl : os<<"right      \tDROPPED"<<endl;
+    msgCheckList_[2] ? os<<setw(17)<<"right dot"<<dec<<setw(10)<<(int)right_dot<<hex<<setw(10)<<right_dot<<"\t\t"<<dec<<(float)right_dot/RMP_COUNT_PER_M_PER_S_RMP200<<" m/s"<<endl : os<<"right dot  \tDROPPED"<<endl;
+    msgCheckList_[4] ? os<<setw(17)<<"fore-aft"<<dec<<setw(10)<<(int)foreaft<<hex<<setw(10)<<foreaft<<"\t\t"<<dec<<(float)foreaft/RMP_COUNT_PER_M_RMP200<<" m"<<endl : os<<"fore-aft   \tDROPPED"<<endl;
 
-    msgCheckList_[5] ? os<<setw(17)<<"left torque"<<dec<<setw(10)<<(int)left_torque<<hex<<setw(10)<<left_torque<<"\t\t"<<dec<<(float)left_torque/RMP_COUNT_PER_NM<<" Nm"<<endl : os<<"left torque\tDROPPED"<<endl;
-    msgCheckList_[5] ? os<<setw(17)<<"right torque"<<dec<<setw(10)<<(int)right_torque<<hex<<setw(10)<<right_torque<<"\t\t"<<dec<<(float)right_torque/RMP_COUNT_PER_NM<<" Nm"<<endl : os<<"right torqu\tDROPPED"<<endl;
+    msgCheckList_[5] ? os<<setw(17)<<"left torque"<<dec<<setw(10)<<(int)left_torque<<hex<<setw(10)<<left_torque<<"\t\t"<<dec<<(float)left_torque/RMP_COUNT_PER_NM_RMP200<<" Nm"<<endl : os<<"left torque\tDROPPED"<<endl;
+    msgCheckList_[5] ? os<<setw(17)<<"right torque"<<dec<<setw(10)<<(int)right_torque<<hex<<setw(10)<<right_torque<<"\t\t"<<dec<<(float)right_torque/RMP_COUNT_PER_NM_RMP200<<" Nm"<<endl : os<<"right torqu\tDROPPED"<<endl;
 
     msgCheckList_[6] ? os<<setw(17)<<"ui battery"<<dec<<setw(10)<<(int)ui_battery_voltage<<hex<<setw(10)<<ui_battery_voltage<<"\t\t"<<dec<<(float)RMP_UI_OFFSET + ui_battery_voltage*RMP_UI_COEFF<<" V"<<endl : os<<"ui battery \tDROPPED"<<endl;
     msgCheckList_[6] ? os<<setw(17)<<"cu battery"<<dec<<setw(10)<<(int)base_battery_voltage<<hex<<setw(10)<<base_battery_voltage<<"\t\t"<<dec<<(float)base_battery_voltage/RMP_BASE_COUNT_PER_VOLT<<" V"<<endl : os<<"cu battery \tDROPPED"<<endl;
 
-    msgCheckList_[7] ? os<<setw(17)<<"vel command"<<dec<<setw(10)<<(int)velocity_command<<hex<<setw(10)<<velocity_command<<"\t\t"<<dec<<(float)velocity_command/RMP_COUNT_PER_M_PER_S<<" m/s"<<endl : os<<"vel command\tDROPPED"<<endl;
+    msgCheckList_[7] ? os<<setw(17)<<"vel command"<<dec<<setw(10)<<(int)velocity_command<<hex<<setw(10)<<velocity_command<<"\t\t"<<dec<<(float)velocity_command/RMP_COUNT_PER_M_PER_S_RMP200<<" m/s"<<endl : os<<"vel command\tDROPPED"<<endl;
     msgCheckList_[7] ? os<<setw(17)<<"turn command"<<dec<<setw(10)<<(int)rate_command<<hex<<setw(10)<<rate_command<<"\t\t"<<dec<<(float)rate_command/RMP_COUNT_PER_DEG_PER_S<<" deg/s"<<endl : os<<"turn comman\tDROPPED"<<endl;
 
     msgCheckList_[6] ? os<<setw(17)<<"op mode"<<dec<<setw(10)<<(int)operational_mode<<hex<<setw(10)<<operational_mode<<dec<<endl : os<<"op mode    \tDROPPED"<<endl;

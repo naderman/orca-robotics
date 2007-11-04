@@ -1,4 +1,4 @@
-#include "rmprawdata.h"
+#include "rawrxdata.h"
 #include <iostream>
 #include "rmpdefs.h"
 #include <iomanip>
@@ -7,7 +7,7 @@ using namespace std;
 
 namespace segwayrmp {
 
-RmpRawData::RmpRawData( const orcaice::Context &context )
+RawRxData::RawRxData( const orcaice::Context &context )
     : context_(context)
 {
     haveStatusMsg_ = false;
@@ -17,7 +17,7 @@ RmpRawData::RmpRawData( const orcaice::Context &context )
 }
 
 bool 
-RmpRawData::isComplete() const
+RawRxData::isComplete() const
 {
     if ( !haveStatusMsg_ ) return false;
     for ( int i=0; i<8; ++i ) 
@@ -28,7 +28,7 @@ RmpRawData::isComplete() const
 }
 
 void
-RmpRawData::addPacket( const CanPacket &pkt )
+RawRxData::addPacket( const CanPacket &pkt )
 {
     switch(pkt.id())
     {
@@ -104,8 +104,8 @@ RmpRawData::addPacket( const CanPacket &pkt )
     {
         foreaft_displacement = (uint32_t)(((uint32_t)pkt.getSlot(1) << 16) |
                                           (uint32_t)pkt.getSlot(0));
-        yaw_displacement = (uint32_t)(((uint32_t)pkt.getSlot(3) << 16) |
-                                      (uint32_t)pkt.getSlot(2));
+        yaw = (uint32_t)(((uint32_t)pkt.getSlot(3) << 16) |
+                         (uint32_t)pkt.getSlot(2));
 
         haveMonitorMsg_[4] = true;
         break;
@@ -142,14 +142,16 @@ RmpRawData::addPacket( const CanPacket &pkt )
     }
     default:
     {
-        // did not recognize the message
+        stringstream ss;
+        ss << "Received CAN packet with id 0x"<<std::hex<<pkt.id()<<".  Don't know what to do, ignoring.";
+         context_.tracer()->warning( ss.str() );
         break;
     }
     }
 }
 
 std::string 
-RmpRawData::toString() const
+RawRxData::toString() const
 {
     std::ostringstream os;
     haveStatusMsg_ ? os<<setw(17)<<"status 1"<<dec<<setw(10)<<(int)status_word1<<hex<<setw(10)<<"0x"<<status_word1<<"\t\t"<< CuStatus1ToString()<<endl :os<<"status 1   \tDROPPED"<<endl;
@@ -159,22 +161,22 @@ RmpRawData::toString() const
     haveMonitorMsg_[1] ? os<<setw(17)<<"pitch dot"<<dec<<setw(10)<<(int)pitch_dot<<hex<<setw(10)<<pitch_dot<<"\t\t"<<dec<<(float)pitch_dot/RMP_COUNT_PER_DEG_PER_S<<" deg/s"<<endl : os<<"pitch dot  \tDROPPED"<<endl;
     haveMonitorMsg_[1] ? os<<setw(17)<<"roll"<<dec<<setw(10)<<(int)roll<<hex<<setw(10)<<roll<<"\t\t"<<dec<<(float)roll/RMP_COUNT_PER_DEG<<" deg"<<endl : os<<"roll       \tDROPPED"<<endl;
     haveMonitorMsg_[1] ? os<<setw(17)<<"roll dot"<<dec<<setw(10)<<(int)roll_dot<<hex<<setw(10)<<roll_dot<<"\t\t"<<dec<<(float)roll_dot/RMP_COUNT_PER_DEG_PER_S<<" deg/s"<<endl : os<<"roll dot   \tDROPPED"<<endl;
-    haveMonitorMsg_[4] ? os<<setw(17)<<"yaw_displacement"<<dec<<setw(10)<<(int)yaw_displacement<<hex<<setw(10)<<yaw_displacement<<"\t\t"<<dec<<(float)yaw_displacement/RMP_COUNT_PER_DEG<<" deg"<<endl : os<<"yaw_displacement        \tDROPPED"<<endl;
+    haveMonitorMsg_[4] ? os<<setw(17)<<"yaw"<<dec<<setw(10)<<(int)yaw<<hex<<setw(10)<<yaw<<"\t\t"<<dec<<(float)yaw/RMP_COUNT_PER_DEG<<" deg"<<endl : os<<"yaw        \tDROPPED"<<endl;
     haveMonitorMsg_[2] ? os<<setw(17)<<"yaw dot"<<dec<<setw(10)<<(int)yaw_dot<<hex<<setw(10)<<yaw_dot<<"\t\t"<<dec<<(float)yaw_dot/RMP_COUNT_PER_DEG_PER_S<<" deg/s"<<endl : os<<"yaw dot    \tDROPPED"<<endl;
 
-    haveMonitorMsg_[3] ? os<<setw(17)<<"left_wheel_displacement"<<dec<<setw(10)<<(int)left_wheel_displacement<<hex<<setw(10)<<left_wheel_displacement<<"\t\t"<<dec<<(float)left_wheel_displacement/RMP_COUNT_PER_M<<" m"<<endl : os<<"left_wheel_displacement       \tDROPPED"<<endl;
-    haveMonitorMsg_[2] ? os<<setw(17)<<"left_wheel_velocity"<<dec<<setw(10)<<(int)left_wheel_velocity<<hex<<setw(10)<<left_wheel_velocity<<"\t\t"<<dec<<(float)left_wheel_velocity/RMP_COUNT_PER_M_PER_S<<" m/s"<<endl : os<<"left_wheel_velocity   \tDROPPED"<<endl;
-    haveMonitorMsg_[3] ? os<<setw(17)<<"right_wheel_displacement"<<dec<<setw(10)<<(int)right_wheel_displacement<<hex<<setw(10)<<right_wheel_displacement<<"\t\t"<<dec<<(float)right_wheel_displacement/RMP_COUNT_PER_M<<" m"<<endl : os<<"right_wheel_displacement      \tDROPPED"<<endl;
-    haveMonitorMsg_[2] ? os<<setw(17)<<"right_wheel_velocity"<<dec<<setw(10)<<(int)right_wheel_velocity<<hex<<setw(10)<<right_wheel_velocity<<"\t\t"<<dec<<(float)right_wheel_velocity/RMP_COUNT_PER_M_PER_S<<" m/s"<<endl : os<<"right_wheel_velocity  \tDROPPED"<<endl;
-    haveMonitorMsg_[4] ? os<<setw(17)<<"foreaft_displacement"<<dec<<setw(10)<<(int)foreaft_displacement<<hex<<setw(10)<<foreaft_displacement<<"\t\t"<<dec<<(float)foreaft_displacement/RMP_COUNT_PER_M<<" m"<<endl : os<<"foreaft_displacement   \tDROPPED"<<endl;
+    haveMonitorMsg_[3] ? os<<setw(17)<<"left_wheel_displacement"<<dec<<setw(10)<<(int)left_wheel_displacement<<hex<<setw(10)<<left_wheel_displacement<<"\t\t"<<dec<<(float)left_wheel_displacement/RMP_COUNT_PER_M_RMP200<<" m"<<endl : os<<"left_wheel_displacement       \tDROPPED"<<endl;
+    haveMonitorMsg_[2] ? os<<setw(17)<<"left_wheel_velocity"<<dec<<setw(10)<<(int)left_wheel_velocity<<hex<<setw(10)<<left_wheel_velocity<<"\t\t"<<dec<<(float)left_wheel_velocity/RMP_COUNT_PER_M_PER_S_RMP200<<" m/s"<<endl : os<<"left_wheel_velocity   \tDROPPED"<<endl;
+    haveMonitorMsg_[3] ? os<<setw(17)<<"right_wheel_displacement"<<dec<<setw(10)<<(int)right_wheel_displacement<<hex<<setw(10)<<right_wheel_displacement<<"\t\t"<<dec<<(float)right_wheel_displacement/RMP_COUNT_PER_M_RMP200<<" m"<<endl : os<<"right_wheel_displacement      \tDROPPED"<<endl;
+    haveMonitorMsg_[2] ? os<<setw(17)<<"right_wheel_velocity"<<dec<<setw(10)<<(int)right_wheel_velocity<<hex<<setw(10)<<right_wheel_velocity<<"\t\t"<<dec<<(float)right_wheel_velocity/RMP_COUNT_PER_M_PER_S_RMP200<<" m/s"<<endl : os<<"right_wheel_velocity  \tDROPPED"<<endl;
+    haveMonitorMsg_[4] ? os<<setw(17)<<"foreaft_displacement"<<dec<<setw(10)<<(int)foreaft_displacement<<hex<<setw(10)<<foreaft_displacement<<"\t\t"<<dec<<(float)foreaft_displacement/RMP_COUNT_PER_M_RMP200<<" m"<<endl : os<<"foreaft_displacement   \tDROPPED"<<endl;
 
-    haveMonitorMsg_[5] ? os<<setw(17)<<"left torque"<<dec<<setw(10)<<(int)left_torque<<hex<<setw(10)<<left_torque<<"\t\t"<<dec<<(float)left_torque/RMP_COUNT_PER_NM<<" Nm"<<endl : os<<"left torque\tDROPPED"<<endl;
-    haveMonitorMsg_[5] ? os<<setw(17)<<"right torque"<<dec<<setw(10)<<(int)right_torque<<hex<<setw(10)<<right_torque<<"\t\t"<<dec<<(float)right_torque/RMP_COUNT_PER_NM<<" Nm"<<endl : os<<"right torqu\tDROPPED"<<endl;
+    haveMonitorMsg_[5] ? os<<setw(17)<<"left torque"<<dec<<setw(10)<<(int)left_torque<<hex<<setw(10)<<left_torque<<"\t\t"<<dec<<(float)left_torque/RMP_COUNT_PER_NM_RMP200<<" Nm"<<endl : os<<"left torque\tDROPPED"<<endl;
+    haveMonitorMsg_[5] ? os<<setw(17)<<"right torque"<<dec<<setw(10)<<(int)right_torque<<hex<<setw(10)<<right_torque<<"\t\t"<<dec<<(float)right_torque/RMP_COUNT_PER_NM_RMP200<<" Nm"<<endl : os<<"right torqu\tDROPPED"<<endl;
 
     haveMonitorMsg_[6] ? os<<setw(17)<<"ui battery"<<dec<<setw(10)<<(int)ui_battery_voltage<<hex<<setw(10)<<ui_battery_voltage<<"\t\t"<<dec<<(float)RMP_UI_OFFSET + ui_battery_voltage*RMP_UI_COEFF<<" V"<<endl : os<<"ui battery \tDROPPED"<<endl;
     haveMonitorMsg_[6] ? os<<setw(17)<<"cu battery"<<dec<<setw(10)<<(int)base_battery_voltage<<hex<<setw(10)<<base_battery_voltage<<"\t\t"<<dec<<(float)base_battery_voltage/RMP_BASE_COUNT_PER_VOLT<<" V"<<endl : os<<"cu battery \tDROPPED"<<endl;
 
-    haveMonitorMsg_[7] ? os<<setw(17)<<"received_velocity_command"<<dec<<setw(10)<<(int)received_velocity_command<<hex<<setw(10)<<received_velocity_command<<"\t\t"<<dec<<(float)received_velocity_command/RMP_COUNT_PER_M_PER_S<<" m/s"<<endl : os<<"received_velocity_command\tDROPPED"<<endl;
+    haveMonitorMsg_[7] ? os<<setw(17)<<"received_velocity_command"<<dec<<setw(10)<<(int)received_velocity_command<<hex<<setw(10)<<received_velocity_command<<"\t\t"<<dec<<(float)received_velocity_command/RMP_COUNT_PER_M_PER_S_RMP200<<" m/s"<<endl : os<<"received_velocity_command\tDROPPED"<<endl;
     haveMonitorMsg_[7] ? os<<setw(17)<<"received_turnrate_command"<<dec<<setw(10)<<(int)received_turnrate_command<<hex<<setw(10)<<received_turnrate_command<<"\t\t"<<dec<<(float)received_turnrate_command/RMP_COUNT_PER_DEG_PER_S<<" deg/s"<<endl : os<<"received_turnrate_command\tDROPPED"<<endl;
 
     haveMonitorMsg_[6] ? os<<setw(17)<<"op mode"<<dec<<setw(10)<<(int)operational_mode<<hex<<setw(10)<<operational_mode<<dec<<endl : os<<"op mode    \tDROPPED"<<endl;
@@ -185,7 +187,7 @@ RmpRawData::toString() const
 }
 
 std::string
-RmpRawData::CuStatus1ToString() const
+RawRxData::CuStatus1ToString() const
 {
     std::string s;
     if ( status_word1 & WORD1_SAFETY_SHUTDOWN_1 ) s += std::string(WORD1_SAFETY_SHUTDOWN_1_STRING) + "; ";
@@ -209,7 +211,7 @@ RmpRawData::CuStatus1ToString() const
 }
 
 std::string
-RmpRawData::CuStatus2ToString() const
+RawRxData::CuStatus2ToString() const
 {
     std::string s;
     if ( status_word2 & WORD2_FOREAFT_PITCH_ANGLE_LIMIT_A ) s += std::string(WORD2_FOREAFT_PITCH_ANGLE_LIMIT_A_STRING) + "; ";
