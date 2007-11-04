@@ -12,8 +12,6 @@ namespace segwayrmp {
 UnitConverter::UnitConverter( RmpModel model )
     : model_(model)
 {
-    cout<<"TRACE(unitconverter.cpp): model_: " << model_ << endl;
-
     if ( ! ( model_ >= RmpModel_50 &&
              model_ <= RmpModel_400 ) )
     {

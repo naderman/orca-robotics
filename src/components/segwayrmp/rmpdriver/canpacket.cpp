@@ -65,23 +65,23 @@ char* CanPacket::toString()
 //////////////////////////////////////////////////////////////////////
 
 void
-checkSpeedLimits( uint16_t speedCount )
+checkSpeedLimits( int16_t speedCount )
 {
     if ( abs(speedCount) > RMP_MAX_TRANS_VEL_COUNT )
     {
         stringstream ss;
-        ss << "Asked for speed="<<speedCount<<"cnts, max="<<RMP_MAX_TRANS_VEL_COUNT;
+        ss << "Asked for speed="<<speedCount<<"cnts, max="<<RMP_MAX_TRANS_VEL_COUNT<<"cnts";
         throw RmpException( ss.str() );
     }
 }
 
 void
-checkTurnrateLimits( uint16_t turnrateCount )
+checkTurnrateLimits( int16_t turnrateCount )
 {
     if ( abs(turnrateCount) > RMP_MAX_ROT_VEL_COUNT )
     {
         stringstream ss;
-        ss << "Asked for turnrate="<<turnrateCount<<"cnts, max="<<RMP_MAX_ROT_VEL_COUNT;
+        ss << "Asked for turnrate="<<turnrateCount<<"cnts, max="<<RMP_MAX_ROT_VEL_COUNT<<"cnts";
         throw RmpException( ss.str() );
     }    
 }
@@ -89,8 +89,8 @@ checkTurnrateLimits( uint16_t turnrateCount )
 CanPacket
 statusCommandPacket( uint16_t statusCommandType, 
                      uint16_t value,
-                     uint16_t speedCount,
-                     uint16_t turnrateCount )
+                     int16_t  speedCount,
+                     int16_t  turnrateCount )
 {
     checkSpeedLimits( speedCount );
     checkTurnrateLimits( turnrateCount );
@@ -106,8 +106,8 @@ statusCommandPacket( uint16_t statusCommandType,
 }
 
 CanPacket
-motionCommandPacket( uint16_t speedCount,
-                     uint16_t turnrateCount )
+motionCommandPacket( int16_t speedCount,
+                     int16_t turnrateCount )
 {
     checkSpeedLimits( speedCount );
     checkTurnrateLimits( turnrateCount );

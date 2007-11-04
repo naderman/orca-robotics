@@ -74,12 +74,12 @@ private:
 CanPacket
 statusCommandPacket( uint16_t statusCommandType, 
                      uint16_t value,
-                     uint16_t speedCount,
-                     uint16_t turnrateCount );
+                     int16_t  speedCount,
+                     int16_t  turnrateCount );
 
 CanPacket
-motionCommandPacket( uint16_t speedCount,
-                     uint16_t turnrateCount );
+motionCommandPacket( int16_t speedCount,
+                     int16_t turnrateCount );
 
 CanPacket
 shutdownCommandPacket();
