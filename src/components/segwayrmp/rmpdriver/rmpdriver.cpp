@@ -485,6 +485,12 @@ RmpDriver::sendStatusCommandPacket( ConfigurationCommand command, uint16_t param
                                          (uint16_t)lastTrans_,
                                          (uint16_t)lastRot_ );
 
+    {
+        stringstream ss;
+        ss << "RmpDriver: sending status command " << toString(command) << " with param " << param;
+        context_.tracer()->info( ss.str() );
+    }
+
     try {
         rmpIo_.writePacket(pkt);
     }
