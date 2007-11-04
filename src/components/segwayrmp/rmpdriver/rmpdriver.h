@@ -86,9 +86,6 @@ private:
     orcaice::Context context_;
     RmpDriverConfig  config_;
 
-    // last motion commands [segway counts]
-    // used to load into status command
-
     // Remember the last command we gave, so that if we need to give a
     // configuration command (which also requires that a velocity be
     // specified) we can maintain the same speed.

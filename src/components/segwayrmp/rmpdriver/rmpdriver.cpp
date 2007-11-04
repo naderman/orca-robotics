@@ -100,7 +100,7 @@ RmpDriver::enable()
         stringstream ss; ss << "RmpDriver::enable(): write failed: " << e.what();
         throw RmpException( ss.str() );
     }
-        
+
     // try reading from it (and fill out initial values in rxData_)
     try {
         context_.tracer()->debug( "RmpDriver::enable(): Trying initial read" );
@@ -117,8 +117,6 @@ RmpDriver::enable()
     ssread << "Initial exploratory read says:"<<endl<<toString();
     context_.tracer()->debug( ssread.str() );
 
-//     cout<<"DEBUG: SETTING MAX VELOCITY SCALE = "<<config_.maxVelocityScale<<endl;
-    
     try {
         // Initialise everything
         resetAllIntegrators();
@@ -140,6 +138,8 @@ RmpDriver::enable()
 bool
 RmpDriver::read( Data &data )
 {
+    // todo: make sure what we read matches the commands we last wrote.
+
     bool stateChanged = false;
 
     try {
@@ -177,6 +177,7 @@ RmpDriver::read( Data &data )
 void 
 RmpDriver::getStatus( std::string &status, bool &isWarn, bool &isFault )
 {
+    // TODO: clean up status
     stringstream ss;
     ss << "RmpDriver: internal state change : "<<IceUtil::Time::now().toDateTime()<<endl;
     ss<<toString();
@@ -188,6 +189,8 @@ RmpDriver::getStatus( std::string &status, bool &isWarn, bool &isFault )
 void
 RmpDriver::applyScaling( const Command& originalCommand, Command &scaledCommand )
 {
+    // todo: clean up and debug scaling
+
     scaledCommand.vx = originalCommand.vx / config_.maxVelocityScale;
 
     // alexm: it's not clear if maxTurnrateScale is used by segway at all
@@ -210,6 +213,8 @@ RmpDriver::applyScaling( const Command& originalCommand, Command &scaledCommand 
 void
 RmpDriver::write( const Command& command )
 {
+    // todo: scale more sensibly
+
     Command scaledCommand;
     applyScaling( command, scaledCommand );
 
@@ -274,7 +279,6 @@ RmpDriver::readData()
 
     CanPacket pkt;
 
-    // get next packet from the packet buffer, will block until new packet arrives
     while( canPacketsProcessed < maxCanPacketsProcessed && timeoutCount < maxTimeoutCount )
     {
         status = rmpIo_.readPacket( pkt );
@@ -283,7 +287,7 @@ RmpDriver::readData()
             // not sure what to do here. treat as an error? try again?
             ++timeoutCount;
             continue;
-        }        
+        }
         ++canPacketsProcessed;
 
         if ( pkt.id() == RMP_CAN_ID_HEARTBEAT )
@@ -322,6 +326,8 @@ RmpDriver::readData()
     }
 }
 
+// AlexB: todo: We're getting yaw and foreAft direct from the Segway, how are these calculated?
+//              Could we get them from the wheel positions instead?
 void
 RmpDriver::calculateIntegratedOdometry( const RxData &prevData, const RxData &thisData )
 {
@@ -365,12 +371,11 @@ RmpDriver::getData()
     data.droll  = rxData_.rollRate();
     data.dpitch = rxData_.pitchRate();
     data.dyaw   = rxData_.yawRate();
+    data.mainvolt = rxData_.baseBatteryVoltage();
+    data.uivolt   = rxData_.uiBatteryVoltage();
 
     // combine left and right wheel velocity to get forward velocity
     data.vx = (rxData_.leftWheelVelocity() + rxData_.rightWheelVelocity()) / 2.0;
-
-    data.mainvolt = rxData_.baseBatteryVoltage();
-    data.uivolt   = rxData_.uiBatteryVoltage();
 
     return data;
 }
