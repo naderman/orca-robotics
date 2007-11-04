@@ -260,14 +260,13 @@ RmpDriver::readData( RxData &rxData )
             // not sure what to do here. treat as an error? try again?
             ++timeoutCount;
             continue;
-        }
-        
+        }        
         ++canPacketsProcessed;
-        if ( ++canPacketsProcessed > 9 )
+
+        if ( pkt.id() == RMP_CAN_ID_HEARTBEAT )
         {
-            stringstream ss;
-            ss << "RmpDriver::readData: processed " << canPacketsProcessed << " without completing rxData!";
-            context_.tracer()->warning( ss.str() );
+            // Ignore this, we can get all the info from other messages
+            continue;
         }
 
         //
@@ -289,9 +288,22 @@ RmpDriver::readData( RxData &rxData )
         }
     }   // while
 
-    // either processed too many packets or got too many timeouts without
-    // getting a complete frame.
-    throw RmpException( "RmpDriver::readFrame(): either processed too many packets or got too many timeouts without getting a complete frame" );
+    if ( canPacketsProcessed == maxCanPacketsProcessed )
+    {
+        stringstream ss;
+        ss << "RmpDriver::readData(): processed "<<canPacketsProcessed<<" CAN packets without finding all data.";
+        throw RmpException( ss.str() );
+    }
+    else if ( timeoutCount == maxTimeoutCount )
+    {
+        stringstream ss;
+        ss << "RmpDriver::readData(): timed out " << timeoutCount << " times while waiting for CAN data.";
+        throw RmpException( ss.str() );
+    }
+    else
+    {
+        throw RmpException( "RmpDriver::readData() failed for reason unknown (this shouldn't happen!)" );
+    }
 }
 
 
@@ -332,46 +344,23 @@ RmpDriver::updateData( Data& data )
     data.seconds = t.seconds;
     data.useconds = t.useconds;
 
-    // for odometry, use integrated values
-    data.x    = odomX_;
-    data.y    = odomY_;
-    // Player got it right: "this robot doesn't fly"
-//     data.z    = 0.0;
+    // for x,y,yaw use locally-integrated values
+    data.x     = odomX_;
+    data.y     = odomY_;
+    data.yaw   = odomYaw_;
 
-    data.roll    = rxData_.rawData().roll;
-    data.pitch   = rxData_.rawData().pitch;
-    data.yaw     = odomYaw_;
+    // Use what we can direct from the RMP
+    data.roll   = rxData_.rollAngle();
+    data.pitch  = rxData_.pitchAngle();
+    data.droll  = rxData_.rollRate();
+    data.dpitch = rxData_.pitchRate();
+    data.dyaw   = rxData_.yawRate();
 
-    // for current rates, use instanteneous values
     // combine left and right wheel velocity to get forward velocity
-    // change from counts/sec into meters/sec
-    data.vx = (converter_.speedInMperS(rxData_.rawData().left_wheel_velocity)+converter_.speedInMperS(rxData_.rawData().right_wheel_velocity)) / 2.0;
+    data.vx = (rxData_.leftWheelVelocity() + rxData_.rightWheelVelocity()) / 2.0;
 
-    // no side speeds for this 'bot
-//     data.vy = 0.0;
-    // no jumps for this 'bot
-//     data.vz = 0.0;
-
-    // note the correspondence between pitch and roll rate and the 
-    // axes around which the rotation happens.
-    data.droll  = rxData_.rawData().roll_dot;
-    data.dpitch = rxData_.rawData().pitch_dot;
-    // from counts/sec into deg/sec.  also, take the additive
-    // inverse, since the RMP reports clockwise angular velocity as positive.
-    data.dyaw   = -(double)rxData_.rawData().yaw_dot / RMP_COUNT_PER_RAD_PER_S;
-
-    // Convert battery voltage from counts to Volts
-    // we only know the minimum of the two main batteries
-    data.mainvolt = rxData_.rawData().base_battery_voltage / RMP_BASE_COUNT_PER_VOLT;
-//     power.batteries[0].percent = 99.0;
-//     power.batteries[0].secRemaining = 8*60*60;
-//     data.mainvolt = rxData_.rawData().base_battery_voltage / RMP_BASE_COUNT_PER_VOLT;
-//     power.batteries[1].percent = 99.0;
-//     power.batteries[1].secRemaining = 8*60*60;
-    data.uivolt = RMP_UI_OFFSET + rxData_.rawData().ui_battery_voltage*RMP_UI_COEFF;
-//     power.batteries[2].percent = 99.0;
-//     power.batteries[2].secRemaining = 8*60*60;
-
+    data.mainvolt = rxData_.baseBatteryVoltage();
+    data.uivolt   = rxData_.uiBatteryVoltage();
 
     firstread_ = false;
 }

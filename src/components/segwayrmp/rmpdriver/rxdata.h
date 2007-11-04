@@ -73,7 +73,9 @@ public:
         }
     double yawRate() const
         {
-            return converter_.angularRateInRadians(rawData_.yaw_dot);
+            // take the additive inverse, since the RMP reports
+            // clockwise angular velocity as positive.
+            return -converter_.angularRateInRadians(rawData_.yaw_dot);
         }
     
     // wheels
@@ -118,6 +120,7 @@ public:
         {
             return converter_.uiVoltageInVolts(rawData_.ui_battery_voltage);
         }
+    // We only know the minimum of the two main batteries.
     double baseBatteryVoltage()
         {
             return converter_.baseVoltageInVolts(rawData_.base_battery_voltage);
