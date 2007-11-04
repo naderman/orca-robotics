@@ -16,7 +16,7 @@ class UnitConverter
 
 public: 
 
-    UnitConverter( RmpModel model );
+    explicit UnitConverter( RmpModel model );
 
     // counts -> S.I. units
     // (some angles are specified in revs)

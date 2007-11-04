@@ -56,11 +56,11 @@ RmpDriver::RmpDriver( const RmpDriverConfig  &driverConfig,
                       const orcaice::Context &context )
     : config_(driverConfig),
       rmpIo_(rmpIo),
-      rxData_(config_.model,context),
       odomX_(0),
       odomY_(0),
       odomYaw_(0),
       converter_(config_.model),
+      rxData_(config_.model,context),
       context_(context)
 {
     stringstream ss;
@@ -285,7 +285,7 @@ RmpDriver::applyHardwareLimits( double& forwardSpeed, double& reverseSpeed,
 RxData
 RmpDriver::readData()
 {
-    RxData rxData( model_, context_ );
+    RxData rxData( config_.model, context_ );
 
     RmpIo::RmpIoStatus status;
     int canPacketsProcessed = 0;

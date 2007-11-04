@@ -76,13 +76,8 @@ private:
     // Configuration
     const RmpDriverConfig config_;
 
-    // Which version of the RMP hardware are we using?
-    RmpModel model_;
-
     // driver/hardware interface
     RmpIo         &rmpIo_;
-    // RmpDataFrame   frame_;
-    RxData         rxData_;
 
     // Remember the last command we gave, so that if we need to give a
     // configuration command (which also requires that a velocity be
@@ -97,6 +92,9 @@ private:
     
     // Converts between units
     const UnitConverter converter_;
+
+    // Most-recently-received data
+    RxData rxData_;
 
     orcaice::Context context_;
 };

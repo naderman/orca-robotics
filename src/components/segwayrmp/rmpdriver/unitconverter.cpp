@@ -12,11 +12,13 @@ namespace segwayrmp {
 UnitConverter::UnitConverter( RmpModel model )
     : model_(model)
 {
-    if ( ! ( model >= RmpModel_50 &&
-             model <= RmpModel_400 ) )
+    cout<<"TRACE(unitconverter.cpp): model_: " << model_ << endl;
+
+    if ( ! ( model_ >= RmpModel_50 &&
+             model_ <= RmpModel_400 ) )
     {
         stringstream ss;
-        ss << "UnitConverter: unknown RmpModel: " << model;
+        ss << "UnitConverter: unknown RmpModel: " << model_;
         throw RmpException( ss.str() );
     }
 }

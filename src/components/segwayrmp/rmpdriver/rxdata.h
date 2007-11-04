@@ -155,7 +155,6 @@ private:
 
     // Convert between units
     UnitConverter converter_;
-
 };
 
 }
