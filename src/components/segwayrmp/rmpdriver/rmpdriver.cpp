@@ -302,7 +302,11 @@ RmpDriver::applyScaling( const Command& originalCommand, Command &scaledCommand 
 void
 RmpDriver::write( const Command& command )
 {
-    checkOperationalMode();
+    if ( command.vx != 0 ||
+         command.w  != 0 )
+    {
+        checkOperationalMode();
+    }
 
     //
     // Scale to account for the funky scaling the RMP's gonna do
