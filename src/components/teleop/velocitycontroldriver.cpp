@@ -125,6 +125,15 @@ VelocityControl2dDriver::processNewCommandIncrement(int longitudinal, int transv
         display_->sentNewVelocityCommand( command_.motion.v.x, command_.motion.v.y, command_.motion.w,
                 (fabs(command_.motion.v.x)==maxSpeed_), false, (fabs(command_.motion.w)==maxTurnRate_) );
     }
+    catch ( const orca::OrcaException& e )
+    {
+        command_.motion.v.x = 0.0;
+        command_.motion.v.y = 0.0;
+        command_.motion.w = 0.0;
+        stringstream ss; ss << "VelocityControl2dDriver:processNewCommandIncrement: " << e.what;
+        context_.tracer()->warning( ss.str() );
+        display_->failedToSendCommand();
+    }
     catch ( const Ice::Exception& e )
     {
         command_.motion.v.x = 0.0;
