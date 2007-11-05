@@ -23,7 +23,7 @@ using namespace std;
 using namespace segwayrmp;
 
 namespace {
-    const int DEBUG_LEVEL=5;
+    const int DEBUG_LEVEL=0;
 
     // Calculate the difference between two raw counter values, taking care of rollover.
     int32_t

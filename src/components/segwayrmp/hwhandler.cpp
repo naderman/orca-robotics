@@ -135,7 +135,7 @@ HwHandler::walk()
         //
         // Write pending commands to the hardware
         //
-        if ( !commandStore_.isEmpty() && !stateMachine_.isFault() )
+        if ( !commandStore_.isNewData() && !stateMachine_.isFault() )
         {
             Command command;
             commandStore_.get( command );
