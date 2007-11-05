@@ -83,6 +83,15 @@ VelocityControl2dDriver::repeatCommand()
         command_.motion.v.y = 0.0;
         command_.motion.w = 0.0;
     }
+    catch ( const orca::OrcaException& e )
+    {
+        command_.motion.v.x = 0.0;
+        command_.motion.v.y = 0.0;
+        command_.motion.w = 0.0;
+        stringstream ss; ss << "VelocityControl2dDriver::repeatCommand(): " << e.what;
+        context_.tracer()->warning( ss.str() );
+        display_->failedToSendCommand();
+    }
     catch ( const Ice::Exception& e )
     {
         command_.motion.v.x = 0.0;
