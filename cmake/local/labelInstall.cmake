@@ -14,10 +14,10 @@ IF ( NOT WIN32 )
   SET (LABEL_OUTPUT_FILE "${CMAKE_INSTALL_PREFIX}/bin/orcainstallinfo.txt")
 
   # Setup the path to the script. Note that this is in the HYDRO install
-  IF (EXISTS $ENV{HYDRO_HOME})
-    SET (LABEL_SCRIPT "$ENV{HYDRO_HOME}/scripts/labelInstall.sh")  
+  IF ( SYSTEM_HYDRO_INSTALL )
+    SET (LABEL_SCRIPT "${SYSTEM_HYDRO_INSTALL}/scripts/labelInstall.sh")  
     MESSAGE("-- Labeling and time stamping the install")
-    EXECUTE_PROCESS(COMMAND ${LABEL_SCRIPT}  $ENV{ORCA_SRC} 
+    EXECUTE_PROCESS(COMMAND ${LABEL_SCRIPT} ${SYSTEM_ORCA_SOURCE}
                     RESULT_VARIABLE SCRIPT_RESULT
                     OUTPUT_VARIABLE SCRIPT_DATA)
                   
@@ -30,13 +30,12 @@ IF ( NOT WIN32 )
     #Write file even if failed above. Ensures that failure gets recorded
     FILE(WRITE ${LABEL_OUTPUT_FILE} ${SCRIPT_DATA})
 
-  ELSE (EXISTS $ENV{HYDRO_HOME})
+  ELSE ( SYSTEM_HYDRO_INSTALL )
 
-    #Write file even if failed above. Ensures that failure gets recorded
-    FILE(WRITE ${LABEL_OUTPUT_FILE} " Env var HYDRO_HOME  not found Unable to timestamp the install. ")
-    MESSAGE("WARNING: Env var HYDRO_HOME  not found Unable to timestamp the install. Continuing anyway.")
-
-  ENDIF (EXISTS $ENV{HYDRO_HOME})
+    FILE(WRITE ${LABEL_OUTPUT_FILE} "WARNING: var SYSTEM_HYDRO_INSTALL not found Unable to timestamp the install.")
+    MESSAGE("WARNING: var SYSTEM_HYDRO_INSTALL not found Unable to timestamp the install. Continuing anyway.")
+    
+  ENDIF ( SYSTEM_HYDRO_INSTALL )
 
   
 
