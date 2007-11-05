@@ -32,6 +32,8 @@ IF ( NOT WIN32 )
 
   ELSE (EXISTS $ENV{HYDRO_HOME})
 
+    #Write file even if failed above. Ensures that failure gets recorded
+    FILE(WRITE ${LABEL_OUTPUT_FILE} " Env var HYDRO_HOME  not found Unable to timestamp the install. ")
     MESSAGE("WARNING: Env var HYDRO_HOME  not found Unable to timestamp the install. Continuing anyway.")
 
   ENDIF (EXISTS $ENV{HYDRO_HOME})
