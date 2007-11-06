@@ -20,9 +20,17 @@ using namespace orca;
 
 OgMapsCombinedPainter::OgMapsCombinedPainter( const orcaice::Context &context )
 {       
-    lookupTable_ = new QImage( QString(CMAKE_INSTALL_PREFIX) + "/share/orcaqgui/ogHazardLookupTable.png"  );
-    assert( !lookupTable_->isNull() && "Lookup table file not found" );
-    pixmapPainter_ = new PixmapPainter();
+    QString lookupTableFile = QString(CMAKE_INSTALL_PREFIX) + "/share/orcaqgui/ogHazardLookupTable.png";
+
+    lookupTable_ = new QImage( lookupTableFile );
+
+    if ( lookupTable_->isNull() )
+    {
+        stringstream ss;
+        ss << "OgMapsCombinedPainter: Lookup table file not found.  Tried to find: " << lookupTableFile.toStdString();
+        throw hydroutil::Exception( ERROR_INFO, ss.str() );
+    }
+    pixmapPainter_.reset( new PixmapPainter() );
 }
 
 

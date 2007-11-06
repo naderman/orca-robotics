@@ -14,7 +14,7 @@
 #include <orca/ogmap.h>
 #include <orcaqgui2d/definitions2d.h>
 #include <orcaqgui2dfactory/pixmappainter.h>
-
+#include <memory>
 
 namespace orcaqgui2d
 {
@@ -36,7 +36,7 @@ class OgMapsCombinedPainter
     void toggleDisplayMap() { pixmapPainter_->toggleDisplayMap(); };
     
   private:
-    PixmapPainter *pixmapPainter_;
+    std::auto_ptr<PixmapPainter> pixmapPainter_;
     QImage *lookupTable_;
 
 };
