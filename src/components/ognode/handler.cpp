@@ -92,12 +92,12 @@ Handler::init()
             double sizeXMetres = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Map.SizeXMetres", 50.0 );
             double sizeYMetres = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Map.SizeYMetres", 50.0 );
     
-            mapConfig.mapSizeX = (int)floor(sizeXMetres/mapConfig.mapResX);
-            mapConfig.mapSizeY = (int)floor(sizeYMetres/mapConfig.mapResY);
+            mapConfig.mapSizeX = (int)round(sizeXMetres/mapConfig.mapResX);
+            mapConfig.mapSizeY = (int)round(sizeYMetres/mapConfig.mapResY);
             mapConfig.mapOriginX=orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Map.OriginX", -25.0 );
             mapConfig.mapOriginY=orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Map.OriginY", -25.0 );
             mapConfig.mapOrientation=orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Map.Orientation", 0.0 );
-            
+
             if ( !ogMapImpl_ )
             {
                 // setup internal map

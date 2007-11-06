@@ -32,8 +32,8 @@ private:
 
     void init();
 
-    Ice::ObjectPtr                      ogFusionObjPtr_;
-    orcaifaceimpl::OgMapImplPtr        ogMapImpl_;
+    Ice::ObjectPtr                        ogFusionObjPtr_;
+    orcaifaceimpl::OgMapImplPtr           ogMapImpl_;
     hydroutil::Buffer<orca::OgFusionData> ogFusionDataBuffer_;
 
     // Representt he occupancy certainty values using doubles internally.
