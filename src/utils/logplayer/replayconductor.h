@@ -138,6 +138,8 @@ private:
     // Catches its own exceptions.
     void replayData( int id, int index );
 
+    bool isPlaying();
+
     std::string toString( EventType e );
     std::string toString( const Event &e );
     std::string toString( const IceUtil::Time &t );

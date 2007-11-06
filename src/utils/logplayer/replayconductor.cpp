@@ -79,6 +79,13 @@ ReplayConductor::isPlayingOrAboutToStart()
     return isPlayingOrAboutToStart_;
 }
 
+bool
+ReplayConductor::isPlaying()
+{
+    IceUtil::Mutex::Lock lock(mutex_);
+    return isPlaying_;
+}
+
 void
 ReplayConductor::stepForward()
 {
@@ -370,11 +377,13 @@ ReplayConductor::walk()
     while( !isStopping() )
     {
         handleEvents();
+
         // Check if we're playing
+        if ( !isPlaying() )
         {
-            IceUtil::Mutex::Lock lock(mutex_);
-            if ( !isPlaying_ )
-                continue;
+            // Slow the loop down a bit...            
+            usleep( (int)(0.1 * 1e6) );
+            continue;
         }
 
         //
