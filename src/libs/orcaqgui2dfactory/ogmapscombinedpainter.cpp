@@ -20,7 +20,7 @@ using namespace orca;
 
 OgMapsCombinedPainter::OgMapsCombinedPainter( const orcaice::Context &context )
 {       
-    QString lookupTableFile = QString(CMAKE_INSTALL_PREFIX) + "/share/orcaqgui/ogHazardLookupTable.png";
+    QString lookupTableFile = QString(CMAKE_INSTALL_PREFIX) + "/share/orcaqgui2dfactory/ogHazardLookupTable.png";
 
     lookupTable_ = new QImage( lookupTableFile );
 
