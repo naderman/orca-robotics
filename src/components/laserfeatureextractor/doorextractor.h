@@ -38,7 +38,7 @@ public:
 
 //     Adds laser features to the 'features' data structure
       void addFeatures( const orca::LaserScanner2dDataPtr &laserData,
-                        orca::PolarFeature2dDataPtr &features );   
+                        orca::PolarFeature2dData &features );   
 
 private: 
 

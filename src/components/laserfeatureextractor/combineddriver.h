@@ -29,7 +29,7 @@ public:
     virtual ~CombinedDriver();
     
     virtual int computeFeatures( const orca::LaserScanner2dDataPtr &laserDataPtr,
-                                 orca::PolarFeature2dDataPtr       &featureDataPtr );
+                                 orca::PolarFeature2dData          &featureData );
     
 private:
 

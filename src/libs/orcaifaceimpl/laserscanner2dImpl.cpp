@@ -73,7 +73,7 @@ LaserScanner2dImpl::LaserScanner2dImpl( const orca::RangeScanner2dDescription &d
 
 LaserScanner2dImpl::~LaserScanner2dImpl()
 {
-    tryRemovePtr( context_, ptr_ );
+    tryRemoveInterface( context_, interfaceName_ );
 }
 
 void

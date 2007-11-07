@@ -74,7 +74,7 @@ Odometry2dImpl::Odometry2dImpl( const orca::VehicleDescription& descr,
 
 Odometry2dImpl::~Odometry2dImpl()
 {
-    tryRemovePtr( context_, ptr_ );
+    tryRemoveInterface( context_, interfaceName_ );
 }
 
 void

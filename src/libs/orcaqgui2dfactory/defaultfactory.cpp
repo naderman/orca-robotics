@@ -13,6 +13,7 @@
 #include <orcaqgui/exceptions.h>
 #include <orcaqgui/ihumanmanager.h>
 
+#include <orcaqgui2dfactory/buttonelement.h>
 #include <orcaqgui2dfactory/gridelement.h>
 #include <orcaqgui2dfactory/simpleguielements.h>
 #include <orcaqgui2dfactory/featuremap2delement.h>
@@ -33,6 +34,7 @@ namespace orcaqgui2d {
 DefaultFactory::DefaultFactory()
 {
     addSupportedType("FeatureMap2d");
+    addSupportedType("Button");
     addSupportedType("Grid");
     addSupportedType("LaserScanner2d");
     addSupportedType("RangeScanner2d");
@@ -88,7 +90,11 @@ DefaultFactory::create( const orcaice::Context         &context,
     
     try
     {
-        if ( elementType == "Grid" ) {
+        if ( elementType == "Button" ) {
+                cout<<"creating Button element"<<endl;
+                elem = new orcaqgui2d::ButtonElement( context, elementDetails[0].toStdString() );
+        }
+        else if ( elementType == "Grid" ) {
                 cout<<"creating Grid element"<<endl;
                 elem = new orcaqgui2d::GridElement();
         }

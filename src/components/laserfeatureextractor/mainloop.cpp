@@ -208,7 +208,7 @@ MainLoop::run()
     initInterface();
     initDriver();
 
-    orca::PolarFeature2dDataPtr featureData = new orca::PolarFeature2dData;
+    orca::PolarFeature2dData featureData;
 
     orca::LaserScanner2dDataPtr laserData;
     orca::RangeScanner2dDataPtr rangeData;
@@ -262,7 +262,7 @@ MainLoop::run()
             convertToRobotCS( featureData );
 
             // features have the same time stamp as the raw scan
-            featureData->timeStamp = laserData->timeStamp;
+            featureData.timeStamp = laserData->timeStamp;
 
             featureInterface_.localSetAndSend( featureData );
 
@@ -318,15 +318,15 @@ convertPointToRobotCS( double &range,
 }
 
 void 
-MainLoop::convertToRobotCS( const PolarFeature2dDataPtr & featureData )
+MainLoop::convertToRobotCS( const PolarFeature2dData &featureData )
 {
     CartesianPoint offsetXyz = sensorOffset_.p;
     OrientationE   offsetAngles = sensorOffset_.o;
     
-    for (unsigned int i=0; i<featureData->features.size(); i++ )
+    for (unsigned int i=0; i<featureData.features.size(); i++ )
     {
         // a bit ugly...
-        orca::SinglePolarFeature2dPtr ftr = featureData->features[i];
+        orca::SinglePolarFeature2dPtr ftr = featureData.features[i];
         if ( ftr->ice_isA( "::orca::PointPolarFeature2d" ) )
         {
             orca::PointPolarFeature2d& f = dynamic_cast<orca::PointPolarFeature2d&>(*ftr);

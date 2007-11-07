@@ -33,8 +33,8 @@ public:
     virtual ~AlgorithmDriver() {};
     
     // Computes the features
-    virtual int computeFeatures( const orca::LaserScanner2dDataPtr   &laserDataPtr,
-                                       orca::PolarFeature2dDataPtr   &featureDataPtr ) = 0;
+    virtual int computeFeatures( const orca::LaserScanner2dDataPtr  &laserDataPtr,
+                                       orca::PolarFeature2dData     &featureData ) = 0;
 };
 
 } // namespace

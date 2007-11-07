@@ -161,7 +161,7 @@ DoorExtractor::findActualDoorJambs( const std::vector<DoorJamb> &possibleDoorSta
 }
 
 void DoorExtractor::addFeatures( const orca::LaserScanner2dDataPtr &laserData,
-                                 orca::PolarFeature2dDataPtr &features )
+                                 orca::PolarFeature2dData &features )
 {
     context_.tracer()->debug( " --- DoorExtractor::addFeatures() ---", 2 );
 
@@ -219,7 +219,7 @@ void DoorExtractor::addFeatures( const orca::LaserScanner2dDataPtr &laserData,
         p->pTruePositive  = P_TRUE_POSITIVE;
         p->rangeSd = rangeSd_;
         p->bearingSd = bearingSd_;
-        features->features.push_back( p );
+        features.features.push_back( p );
     }
 
     if ( context_.tracer()->verbosity( hydroutil::Tracer::DebugTrace, hydroutil::Tracer::ToAny ) >= 2 )

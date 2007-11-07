@@ -78,9 +78,9 @@ namespace orcanavutil {
             h.cov.tt = gmm.components(i).cov().tt();
 
             h.weight = gmm.weights(i);
-        }
 
-        cout<<"TRACE(orcanavutil.cpp): l.hypotheses.size(): " << l.hypotheses.size() << endl;
+            l.hypotheses[i] = h;
+        }
         return l;
     }
 }

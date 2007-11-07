@@ -106,7 +106,7 @@ class PolarFeature2dLogWriter : public orcalog::LogWriter
 {
 public:
     PolarFeature2dLogWriter( const orcalog::LogWriterInfo      &logWriterInfo );
-    void write( const orca::PolarFeature2dDataPtr &obj );
+    void write( const orca::PolarFeature2dData &obj );
 };
 
 //////////////////////////////////////////////////////////////////////

@@ -41,11 +41,9 @@ PolarFeature2dPainter::clear()
 }
 
 void 
-PolarFeature2dPainter::setData( const orca::PolarFeature2dDataPtr & data )
+PolarFeature2dPainter::setData( const orca::PolarFeature2dData &data )
 {
-    if ( data==0 ) return;
-    
-    featureDataPtr_ = data;
+    featureData_ = data;
 
 //    cout<<"TRACE(polarfeature2dpainter.cpp): setData: " << data << endl;
 }
@@ -101,21 +99,12 @@ void
 PolarFeature2dPainter::paint( QPainter *painter, int z )
 {
     if ( z != Z_LASER_FEATURES ) return;
-    if ( !featureDataPtr_ ) return;
-
-    // debug
-//     cout<<"["<<featureDataPtr_->features.size()<<"] ";
-//     for ( unsigned int i=0; i<featureDataPtr_->features.size(); ++i ) {
-//         cout<<" ("<<featureDataPtr_->features[i]->p.r<<","<<RAD2DEG(featureDataPtr_->features[i]->p.o)<<")";
-//         //if ( i>10 ) break;
-//     }
-//     cout<<endl;
 
     painter->setBrush(QBrush());
 
-    for ( unsigned int i=0; i<featureDataPtr_->features.size(); ++i )
+    for ( unsigned int i=0; i<featureData_.features.size(); ++i )
     {
-        const orca::SinglePolarFeature2d &ftr = *(featureDataPtr_->features[i]);
+        const orca::SinglePolarFeature2d &ftr = *(featureData_.features[i]);
         switch ( ftr.type )
         {
         case orca::feature::LINE:

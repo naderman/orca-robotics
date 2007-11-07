@@ -66,19 +66,19 @@ CombinedDriver::~CombinedDriver()
 }
 
 int
-CombinedDriver::computeFeatures( const orca::LaserScanner2dDataPtr          &laserDataPtr,
-                                 orca::PolarFeature2dDataPtr       &featureDataPtr )
+CombinedDriver::computeFeatures( const orca::LaserScanner2dDataPtr &laserDataPtr,
+                                 orca::PolarFeature2dData          &featureData )
 {
-    featureDataPtr->features.clear();
+    featureData.features.clear();
 
     for ( unsigned int i=0; i < extractors_.size(); i++ )
     {
-        extractors_[i]->addFeatures( laserDataPtr, featureDataPtr );
+        extractors_[i]->addFeatures( laserDataPtr, featureData );
     }
   
-    for ( unsigned int i=0; i < featureDataPtr->features.size(); i++ )
+    for ( unsigned int i=0; i < featureData.features.size(); i++ )
     {
-        assert ( featureDataPtr->features[i]->pTruePositive > featureDataPtr->features[i]->pFalsePositive );
+        assert ( featureData.features[i]->pTruePositive > featureData.features[i]->pFalsePositive );
     }
 
     return 0;

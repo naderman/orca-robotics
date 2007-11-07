@@ -73,7 +73,7 @@ Localise3dImpl::Localise3dImpl( const orca::VehicleGeometryDescriptionPtr &geome
 
 Localise3dImpl::~Localise3dImpl()
 {
-    tryRemovePtr( context_, ptr_ );
+    tryRemoveInterface( context_, interfaceName_ );
 }
 
 void

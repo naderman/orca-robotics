@@ -73,7 +73,7 @@ CameraImpl::CameraImpl( const orca::CameraDescription& descr,
 
 CameraImpl::~CameraImpl()
 {
-    tryRemovePtr( context_, ptr_ );
+    tryRemoveInterface( context_, interfaceName_ );
 }
 
 void

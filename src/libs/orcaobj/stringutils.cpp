@@ -1256,14 +1256,14 @@ toString( const orca::SinglePolarFeature2dPtr& obj )
 }
 
 std::string 
-toString( const orca::PolarFeature2dDataPtr& obj )
+toString( const orca::PolarFeature2dData& obj )
 {
     std::ostringstream s;
-    s << toString(obj->timeStamp)
-      << " PolarFeatureData [" << obj->features.size() << " elements] (type,pFalsePos,pTruePos) (details): " << endl;
+    s << toString(obj.timeStamp)
+      << " PolarFeatureData [" << obj.features.size() << " elements] (type,pFalsePos,pTruePos) (details): " << endl;
 
-    const orca::PolarFeature2dSequence &features = obj->features;
-    for (unsigned int i=0; i < obj->features.size(); i++)
+    const orca::PolarFeature2dSequence &features = obj.features;
+    for (unsigned int i=0; i < obj.features.size(); i++)
     {
         s << "  " << i << ": " << toString(features[i]) << endl;
     }

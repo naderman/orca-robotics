@@ -82,7 +82,7 @@ ReflectorExtractor::calcPFalsePositive( const orca::LaserScanner2dDataPtr &laser
 
 void 
 ReflectorExtractor::addFeatures( const orca::LaserScanner2dDataPtr    &laserData,
-                                 orca::PolarFeature2dDataPtr &features )
+                                 orca::PolarFeature2dData &features )
 {
 //     cout<<"TRACE(reflectorextractor.cpp): addFeatures()" << endl;
     assert( laserData != 0 );
@@ -184,7 +184,7 @@ ReflectorExtractor::addFeatures( const orca::LaserScanner2dDataPtr    &laserData
                         f->pTruePositive = pTruePositive_;
                         f->rangeSd = rangeSd_;
                         f->bearingSd = bearingSd_;
-                        features->features.push_back( f );
+                        features.features.push_back( f );
                     }
                 }
             }

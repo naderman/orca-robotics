@@ -33,7 +33,7 @@ public:
     // Remote calls:
     //
 
-    virtual ::orca::PolarFeature2dDataPtr     getData(const ::Ice::Current& ) const
+    virtual ::orca::PolarFeature2dData     getData(const ::Ice::Current& ) const
         { return impl_.internalGetData(); }
 
     virtual void subscribe(const ::orca::PolarFeature2dConsumerPrx& consumer,
@@ -68,7 +68,7 @@ PolarFeature2dImpl::PolarFeature2dImpl( const orcaice::Context        &context,
 
 PolarFeature2dImpl::~PolarFeature2dImpl()
 {
-    tryRemovePtr( context_, ptr_ );
+    tryRemoveInterface( context_, interfaceName_ );
 }
 
 void
@@ -94,7 +94,7 @@ PolarFeature2dImpl::initInterface( hydroutil::Thread* thread, int retryInterval 
     orcaice::createInterfaceWithString( context_, ptr_, interfaceName_, thread, retryInterval );
 }
 
-orca::PolarFeature2dDataPtr 
+orca::PolarFeature2dData 
 PolarFeature2dImpl::internalGetData() const
 {
     context_.tracer()->debug( "PolarFeature2dImpl::internalGetData()", 5 );
@@ -107,7 +107,7 @@ PolarFeature2dImpl::internalGetData() const
     }
 
     // create a null pointer. data will be cloned into it.
-    orca::PolarFeature2dDataPtr data;
+    orca::PolarFeature2dData data;
     dataProxy_.get( data );
 
     return data;
@@ -149,7 +149,7 @@ PolarFeature2dImpl::internalUnsubscribe(const ::orca::PolarFeature2dConsumerPrx 
 }
 
 void
-PolarFeature2dImpl::localSet( const ::orca::PolarFeature2dDataPtr &data )
+PolarFeature2dImpl::localSet( const ::orca::PolarFeature2dData &data )
 {
     // cout << "PolarFeature2dImpl::internalSet data: " << orcaice::toString( data ) << endl;
     
@@ -157,7 +157,7 @@ PolarFeature2dImpl::localSet( const ::orca::PolarFeature2dDataPtr &data )
 }
 
 void
-PolarFeature2dImpl::localSetAndSend( const ::orca::PolarFeature2dDataPtr &data )
+PolarFeature2dImpl::localSetAndSend( const ::orca::PolarFeature2dData &data )
 {
     if ( context_.tracer()->verbosity( hydroutil::Tracer::DebugTrace, hydroutil::Tracer::ToAny ) >= 5 )
     {
@@ -171,12 +171,12 @@ PolarFeature2dImpl::localSetAndSend( const ::orca::PolarFeature2dDataPtr &data )
     dataProxy_.set( data );
 
     // Try to push to IceStorm
-    tryPushToIceStormWithReconnect<PolarFeature2dConsumerPrx,PolarFeature2dDataPtr>( context_,
-                                                                                     consumerPrx_,
-                                                                                     data,
-                                                                                     topicPrx_,
-                                                                                     interfaceName_,
-                                                                                     topicName_ );
+    tryPushToIceStormWithReconnect<PolarFeature2dConsumerPrx,PolarFeature2dData>( context_,
+                                                                                  consumerPrx_,
+                                                                                  data,
+                                                                                  topicPrx_,
+                                                                                  interfaceName_,
+                                                                                  topicName_ );
 }
 
 } // namespace

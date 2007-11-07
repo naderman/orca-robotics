@@ -72,7 +72,23 @@ Localise2dImpl::Localise2dImpl( const orca::VehicleGeometryDescriptionPtr &geome
 
 Localise2dImpl::~Localise2dImpl()
 {
-    tryRemovePtr( context_, ptr_ );
+    cout<<"TRACE(localise2dImpl.cpp): interfaceName_: " << interfaceName_ << endl;
+    cout<<"TRACE(localise2dImpl.cpp): ice_id(): " << ptr_->ice_id() << endl;
+
+    tryRemoveInterface( context_, interfaceName_ );
+
+//     try {
+//         // context.adapter()->remove( context.communicator()->stringToIdentity( ptr->ice_id() ) );
+//         context_.adapter()->remove( context_.communicator()->stringToIdentity( interfaceName_ ) );
+//     }
+//     catch ( Ice::ObjectAdapterDeactivatedException & )
+//     {
+//         // This is OK, we're shutting down.
+//     }
+//     catch ( Ice::Exception &e )
+//     {
+//         cout << "orcaifaceimpl: Exception when removing Ice::ObjectPtr with id "<<ptr_->ice_id()<<" from adapter: " << e << endl;
+//     }
 }
 
 void

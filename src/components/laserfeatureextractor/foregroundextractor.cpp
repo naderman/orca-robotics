@@ -105,7 +105,7 @@ ForegroundExtractor::ForegroundExtractor( const orcaice::Context & context, doub
 }
 
 void ForegroundExtractor::addFeatures( const orca::LaserScanner2dDataPtr &laserData, 
-                                       orca::PolarFeature2dDataPtr &features )
+                                       orca::PolarFeature2dData &features )
 {
     assert( laserMaxRange_ > 0.0 );
 
@@ -155,7 +155,7 @@ void ForegroundExtractor::addFeatures( const orca::LaserScanner2dDataPtr &laserD
             pp->pFalsePositive = pFalsePositive_;
             pp->pTruePositive = pTruePositive_;
         }
-        features->features.push_back(pp);
+        features.features.push_back(pp);
     }
 
 }

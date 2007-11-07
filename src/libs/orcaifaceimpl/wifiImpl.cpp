@@ -56,7 +56,7 @@ WifiImpl::WifiImpl( const orcaice::Context  &context,
 
 WifiImpl::~WifiImpl()
 {
-    tryRemovePtr( context_, ptr_ );
+    tryRemoveInterface( context_, interfaceName_ );
 }
 
 void

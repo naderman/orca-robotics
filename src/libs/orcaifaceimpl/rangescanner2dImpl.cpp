@@ -73,7 +73,7 @@ RangeScanner2dImpl::RangeScanner2dImpl( const orca::RangeScanner2dDescription& d
 
 RangeScanner2dImpl::~RangeScanner2dImpl()
 {
-    tryRemovePtr( context_, ptr_ );
+    tryRemoveInterface( context_, interfaceName_ );
 }
 
 void

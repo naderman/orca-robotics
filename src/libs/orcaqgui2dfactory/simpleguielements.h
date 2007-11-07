@@ -42,23 +42,21 @@ namespace orcaqgui2d
 
 ////////////////////////////////////////////////////////////////////////////////
 class PolarFeature2dElement
-    : public PtrIceStormElement<PolarFeature2dPainter,
-                               orca::PolarFeature2dData,
-                               orca::PolarFeature2dDataPtr,
-                               orca::PolarFeature2dPrx,
-                               orca::PolarFeature2dConsumer,
-                               orca::PolarFeature2dConsumerPrx>
+    : public IceStormElement<PolarFeature2dPainter,
+                             orca::PolarFeature2dData,
+                             orca::PolarFeature2dPrx,
+                             orca::PolarFeature2dConsumer,
+                             orca::PolarFeature2dConsumerPrx>
 {
 public:
     PolarFeature2dElement( const orcaice::Context  &context,
                            const std::string       &proxyString,
                            int                      timeoutMs=30000 )
-        : PtrIceStormElement<PolarFeature2dPainter,
-                            orca::PolarFeature2dData,
-                            orca::PolarFeature2dDataPtr,
-                            orca::PolarFeature2dPrx,
-                            orca::PolarFeature2dConsumer,
-                            orca::PolarFeature2dConsumerPrx>( context, proxyString, painter_, timeoutMs )
+        : IceStormElement<PolarFeature2dPainter,
+                          orca::PolarFeature2dData,
+                          orca::PolarFeature2dPrx,
+                          orca::PolarFeature2dConsumer,
+                          orca::PolarFeature2dConsumerPrx>( context, proxyString, painter_, timeoutMs )
           {};
 
     virtual bool isInGlobalCS() { return false; }

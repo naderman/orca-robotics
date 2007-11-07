@@ -68,7 +68,7 @@ PowerImpl::PowerImpl( const orcaice::Context& context,
 
 PowerImpl::~PowerImpl()
 {
-    tryRemovePtr( context_, ptr_ );
+    tryRemoveInterface( context_, interfaceName_ );
 }
 
 void

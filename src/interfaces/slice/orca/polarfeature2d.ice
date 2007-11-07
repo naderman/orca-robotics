@@ -11,8 +11,9 @@
 #ifndef ORCA2_POLARFEATURE_INTERFACE_ICE
 #define ORCA2_POLARFEATURE_INTERFACE_ICE
 
-#include <orca/orca.ice>
+#include <orca/datetime.ice>
 #include <orca/bros1.ice>
+#include <orca/exceptions.ice>
 
 module orca
 {
@@ -101,8 +102,11 @@ class LinePolarFeature2d extends SinglePolarFeature2d
 sequence<SinglePolarFeature2d> PolarFeature2dSequence;
 
 //! A single data transmission may include a sequence of 2D polar features
-class PolarFeature2dData extends OrcaObject
+struct PolarFeature2dData
 {
+    //! Time when data (from which the features were extracted) was measured.
+    Time timeStamp;
+
     //! Features.
     PolarFeature2dSequence features;
 };

@@ -17,7 +17,7 @@
 #include <orca/polarfeature2d.h>
 
 // utilities
-#include <orcaice/ptrproxy.h>
+#include <hydroutil/store.h>
 #include <orcaice/context.h>
 
 namespace orcaifaceimpl {
@@ -49,20 +49,20 @@ public:
     void initInterface( hydroutil::Thread* thread, int retryInterval=2 );
 
     //! A local call which sets the data reported by the interface
-    void localSet( const orca::PolarFeature2dDataPtr& data );
+    void localSet( const orca::PolarFeature2dData &data );
 
     //! A local call which sets the data reported by the interface, 
     //! and sends it through IceStorm
-    void localSetAndSend( const ::orca::PolarFeature2dDataPtr &data );
+    void localSetAndSend( const ::orca::PolarFeature2dData &data );
 
 private:
     // remote call implementations, mimic (but do not inherit) the orca interface
-    ::orca::PolarFeature2dDataPtr     internalGetData() const;
+    ::orca::PolarFeature2dData     internalGetData() const;
     void internalSubscribe(const ::orca::PolarFeature2dConsumerPrx&);
     void internalUnsubscribe(const ::orca::PolarFeature2dConsumerPrx&);
 
     // Holds the latest data
-    orcaice::PtrProxy<orca::PolarFeature2dDataPtr> dataProxy_;
+    hydroutil::Store<orca::PolarFeature2dData> dataProxy_;
 
     // The topic to which we'll publish
     IceStorm::TopicPrx              topicPrx_;

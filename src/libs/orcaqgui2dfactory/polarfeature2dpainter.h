@@ -30,7 +30,7 @@ class PolarFeature2dPainter
     PolarFeature2dPainter();
     ~PolarFeature2dPainter();
 
-    void setData( const orca::PolarFeature2dDataPtr & featureDataPtr );
+    void setData( const orca::PolarFeature2dData &featureData );
     void paint( QPainter *p, int z );
     bool paintThisLayer( int z ) const { return z==Z_LASER_FEATURES; }
 
@@ -38,7 +38,7 @@ class PolarFeature2dPainter
     
   private:
 
-    orca::PolarFeature2dDataPtr featureDataPtr_;
+    orca::PolarFeature2dData featureData_;
 };
 
 }

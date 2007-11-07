@@ -243,7 +243,7 @@ namespace orcalogfactory {
 
     //////////////////////////////////////////////////////////////////////
 
-    typedef GenericAutoLogger<orca::PolarFeature2dDataPtr,
+    typedef GenericAutoLogger<orca::PolarFeature2dData,
                               orca::PolarFeature2dConsumer,
                               orca::PolarFeature2dConsumerPrx,
                               orca::PolarFeature2dPrx,

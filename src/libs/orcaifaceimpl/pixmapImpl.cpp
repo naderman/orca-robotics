@@ -65,7 +65,7 @@ PixMapImpl::PixMapImpl( const orcaice::Context &context,
 
 PixMapImpl::~PixMapImpl()
 {
-    tryRemovePtr( context_, ptr_ );
+    tryRemoveInterface( context_, interfaceName_ );
 }
 
 void

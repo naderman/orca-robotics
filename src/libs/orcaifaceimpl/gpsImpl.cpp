@@ -74,7 +74,7 @@ GpsImpl::GpsImpl( const orca::GpsDescription& descr,
 
 GpsImpl::~GpsImpl()
 {
-    tryRemovePtr( context_, ptr_ );
+    tryRemoveInterface( context_, interfaceName_ );
 }
 
 void

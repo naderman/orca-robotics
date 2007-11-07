@@ -64,7 +64,7 @@ OgMapImpl::OgMapImpl( const orcaice::Context &context,
 
 OgMapImpl::~OgMapImpl()
 {
-    tryRemovePtr( context_, ptr_ );
+    tryRemoveInterface( context_, interfaceName_ );
 }
 
 void

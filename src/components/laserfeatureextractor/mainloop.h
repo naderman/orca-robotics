@@ -46,7 +46,7 @@ private:
     // This component is 2D-centric: can only handle certain orientations.
     bool sensorOffsetOK( const orca::Frame3d & offset );
 
-    void convertToRobotCS( const orca::PolarFeature2dDataPtr & featuresPtr );
+    void convertToRobotCS( const orca::PolarFeature2dData &featuresPtr );
 
     // generic algorithm
     AlgorithmDriver* driver_;

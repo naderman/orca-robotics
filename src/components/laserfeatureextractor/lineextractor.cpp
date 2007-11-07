@@ -72,7 +72,7 @@ LineExtractor::LineExtractor( const orcaice::Context &context,
 }
     
 void LineExtractor::addFeatures( const orca::LaserScanner2dDataPtr &laserData,
-                                 orca::PolarFeature2dDataPtr &features )
+                                 orca::PolarFeature2dData &features )
 {
 //     cout<<"TRACE(lineextractor.cpp): ------------------- addFeatures() --------------------" << endl;
 
@@ -311,7 +311,7 @@ LineExtractor::determineUncertainty( double &rhoSd, double &alphaSd, const Secti
 
 void
 LineExtractor::addLines( const std::vector<Section> &sections, 
-                         orca::PolarFeature2dDataPtr &features )
+                         orca::PolarFeature2dData   &features )
 {
     std::vector<Section>::const_iterator i=sections.begin();
     std::vector<Section>::const_iterator prev = sections.begin();
@@ -387,22 +387,22 @@ LineExtractor::addLines( const std::vector<Section> &sections,
         newFeature->endSighted   = isEndVisible( *i, alpha, nextPtr );
 
         // Add it to the list
-        features->features.push_back( newFeature );
+        features.features.push_back( newFeature );
     }
 }
 
 void
-mergeDuplicateCorners( orca::PolarFeature2dDataPtr &f,
+mergeDuplicateCorners( orca::PolarFeature2dData &f,
                        int beginningOfCorners,
                        double angleIncrement )
 {
-    for ( uint i=beginningOfCorners; i < f->features.size(); i++ )
+    for ( uint i=beginningOfCorners; i < f.features.size(); i++ )
     {
-        if ( f->features.size() == i+1 )
+        if ( f.features.size() == i+1 )
             break;
 
-        orca::PointPolarFeature2d *pre  = dynamic_cast<orca::PointPolarFeature2d*>(&(*(f->features[i])));
-        orca::PointPolarFeature2d *post = dynamic_cast<orca::PointPolarFeature2d*>(&(*(f->features[i+1])));
+        orca::PointPolarFeature2d *pre  = dynamic_cast<orca::PointPolarFeature2d*>(&(*(f.features[i])));
+        orca::PointPolarFeature2d *post = dynamic_cast<orca::PointPolarFeature2d*>(&(*(f.features[i+1])));
 
         assert( pre != NULL && post != NULL );
 
@@ -414,9 +414,9 @@ mergeDuplicateCorners( orca::PolarFeature2dDataPtr &f,
             pre->p.o = (pre->p.o+post->p.o)/2.0;
             
             // delete post
-            orca::PolarFeature2dSequence::iterator it = f->features.begin();
+            orca::PolarFeature2dSequence::iterator it = f.features.begin();
             it += i+1;
-            f->features.erase( it );
+            f.features.erase( it );
             i=i-1;
         }
     }
@@ -424,14 +424,14 @@ mergeDuplicateCorners( orca::PolarFeature2dDataPtr &f,
 
 void
 LineExtractor::addCorners( const std::vector<Section>  &sections, 
-                           orca::PolarFeature2dDataPtr &features,
+                           orca::PolarFeature2dData    &features,
                            double angleIncrement )
 {
     // cout<<"TRACE(lineextractor.cpp): addCorners(): features.features.size() == " << features->features.size() << endl;
 
     const double MIN_LINE_LENGTH = 0.5;
 
-    int beginningOfCorners = features->features.size();
+    int beginningOfCorners = features.features.size();
 
     std::vector<Section>::const_iterator i=sections.begin();
     std::vector<Section>::const_iterator prev = sections.begin();
@@ -484,7 +484,7 @@ LineExtractor::addCorners( const std::vector<Section>  &sections,
                     newFeature->bearingSd = bearingSd_;
                     newFeature->pFalsePositive = cornerPFalsePositive_;
                     newFeature->pTruePositive  = cornerPTruePositive_;
-                    features->features.push_back( newFeature );
+                    features.features.push_back( newFeature );
                     // cout<<"TRACE(lineextractor.cpp): added start-point: " 
                     //     << "r="<<newFeature->p.r<<", b="<<newFeature->p.o*180/M_PI << endl;
                 }
@@ -513,7 +513,7 @@ LineExtractor::addCorners( const std::vector<Section>  &sections,
                     newFeature->bearingSd = bearingSd_;
                     newFeature->pFalsePositive = cornerPFalsePositive_;
                     newFeature->pTruePositive  = cornerPTruePositive_;
-                    features->features.push_back( newFeature );
+                    features.features.push_back( newFeature );
                     // cout<<"TRACE(lineextractor.cpp): added corner: " 
                     //     << "r="<<newFeature->p.r<<", b="<<newFeature->p.o*180/M_PI << endl;
                 }

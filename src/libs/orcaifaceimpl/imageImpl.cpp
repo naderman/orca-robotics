@@ -72,7 +72,7 @@ ImageImpl::ImageImpl( const orca::ImageDescription& descr,
 
 ImageImpl::~ImageImpl()
 {
-    tryRemovePtr( context_, ptr_ );
+    tryRemoveInterface( context_, interfaceName_ );
 }
 
 void

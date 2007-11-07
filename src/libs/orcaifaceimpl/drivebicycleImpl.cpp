@@ -76,7 +76,7 @@ DriveBicycleImpl::DriveBicycleImpl(
 
 DriveBicycleImpl::~DriveBicycleImpl()
 {
-    tryRemovePtr( context_, ptr_ );
+    tryRemoveInterface( context_, interfaceName_ );
 }
 
 void

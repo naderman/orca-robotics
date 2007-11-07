@@ -74,12 +74,15 @@ namespace orcaifaceimpl {
 
     }
 
-    // Remove the ptr from the adapter if possible.
+    // Remove the interface from the adapter if possible.
     // If not, fail silently.
     void
-    tryRemovePtr( orcaice::Context &context,
-                  Ice::ObjectPtr &ptr );
+    tryRemoveInterface( orcaice::Context  &context,
+                        const std::string &interfaceName );
 
+//     void
+//     tryRemovePtr( orcaice::Context  &context,
+//                   Ice::ObjectPtr ptr );
 
     // Convenience function for tag->name conversion
     // (may throw ConfigFileException)

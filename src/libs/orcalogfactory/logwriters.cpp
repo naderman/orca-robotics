@@ -326,10 +326,10 @@ namespace {
         }
     }
 
-    void logToFile( std::ofstream                     *file, 
-                    const std::string                 &format,
-                    orcaice::Context                   context,
-                    const orca::PolarFeature2dDataPtr &obj )
+    void logToFile( std::ofstream                  *file, 
+                    const std::string              &format,
+                    orcaice::Context                context,
+                    const orca::PolarFeature2dData &obj )
     {        
         if ( format == "ice" )
         {
@@ -621,7 +621,7 @@ PolarFeature2dLogWriter::PolarFeature2dLogWriter( const orcalog::LogWriterInfo  
     checkFormatIceOrAscii( logWriterInfo );
 }
 void 
-PolarFeature2dLogWriter::write( const orca::PolarFeature2dDataPtr &obj )
+PolarFeature2dLogWriter::write( const orca::PolarFeature2dData &obj )
 {
     writeReferenceToMasterFile();
     logToFile( file_,

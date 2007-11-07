@@ -217,7 +217,7 @@ std::string toString( const orca::RangeScanner2dDescription& );
 //! Converts to string
 std::string toString( const orca::SinglePolarFeature2dPtr& obj );
 //! Converts to string
-std::string toString( const orca::PolarFeature2dDataPtr& );
+std::string toString( const orca::PolarFeature2dData& );
 //! Converts to string
 std::string toString( const orca::FeatureMap2dDataPtr& );
 //! Converts to string
