@@ -60,14 +60,16 @@ namespace {
     double
     interpretedTurnrate( double inputTurnrate, double speed )
     {
-        const double vo = 1.57;
+        const double vo = M_PI/2; // (~1.57)
         if ( speed < vo )
         {
             return inputTurnrate;
         }
         else
         {
-            return inputTurnrate / (speed/vo);
+            // Note: multiply instead of divide, coz we're inverting
+            //       the function above.
+            return inputTurnrate * (speed/vo);
         }
     }
 }

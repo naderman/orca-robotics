@@ -19,6 +19,7 @@ SET( SLICE_SOURCE_FILES
 #interfaces
     binaryindicator.ice
     binaryswitch.ice
+    button.ice
     camera.ice
     cpu.ice
     drivebicycle.ice

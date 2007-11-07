@@ -11,8 +11,10 @@ namespace orcanavutil {
     hydronavutil::Cov3d    convert( const orca::Covariance2d &c );
     hydronavutil::Gaussian convert( const orca::Pose2dHypothesis &hyp );
     hydronavutil::Gmm      convert( const orca::Localise2dData &locData );
-
     hydronavutil::Pose     convert( const orca::Odometry2dData &odom );
+
+    //! Note: the timestamp has to be supplied separately since the Gmm doesn't have one.
+    orca::Localise2dData   convert( const hydronavutil::Gmm &gmm, int seconds, int useconds );
 
 }
 

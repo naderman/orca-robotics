@@ -53,5 +53,35 @@ namespace orcanavutil {
     {
         return hydronavutil::Pose( odom.pose.p.x, odom.pose.p.y, odom.pose.o );
     }
+
+    orca::Localise2dData   convert( const hydronavutil::Gmm &gmm, int seconds, int useconds )
+    {
+        orca::Localise2dData l;
+        l.timeStamp.seconds  = seconds;
+        l.timeStamp.useconds = useconds;
+
+        l.hypotheses.resize( gmm.size() );
+
+        for ( uint i=0; i < gmm.size(); i++ )
+        {
+            orca::Pose2dHypothesis h;
+
+            h.mean.p.x = gmm.components(i).mean().x();
+            h.mean.p.y = gmm.components(i).mean().y();
+            h.mean.o   = gmm.components(i).mean().theta();
+
+            h.cov.xx = gmm.components(i).cov().xx();
+            h.cov.xy = gmm.components(i).cov().xy();
+            h.cov.xt = gmm.components(i).cov().xt();
+            h.cov.yy = gmm.components(i).cov().yy();
+            h.cov.yt = gmm.components(i).cov().yt();
+            h.cov.tt = gmm.components(i).cov().tt();
+
+            h.weight = gmm.weights(i);
+        }
+
+        cout<<"TRACE(orcanavutil.cpp): l.hypotheses.size(): " << l.hypotheses.size() << endl;
+        return l;
+    }
 }
 
