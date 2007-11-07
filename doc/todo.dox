@@ -65,6 +65,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @par New interfaces
 
+- Button (alex b)
+  - A simple thing you can press remotely, with no feedback.
+
 @par New components
 
 @par New utilities
