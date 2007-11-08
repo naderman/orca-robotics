@@ -11,6 +11,7 @@
 // utilities
 #include <hydroutil/proxy.h>
 #include <orcaice/context.h>
+#include <hydroutil/thread.h>
 
 namespace orcaifaceimpl
 {
