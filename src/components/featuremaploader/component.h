@@ -11,7 +11,7 @@
 #define FEATUREMAPLOADER_COMPONENT_H
 
 #include <orcaice/component.h>
-#include <orca/featuremap2d.h>
+#include <orcaifaceimpl/featuremap2dImpl.h>
 
 namespace featuremaploader {
 
@@ -31,12 +31,12 @@ public:
 private:
 
     // Returns zero on success
-    int loadMap( const std::string &fileName, orca::FeatureMap2dDataPtr &theMap );
+    int loadMap( const std::string &fileName, orca::FeatureMap2dData &theMap );
 
     //
     // EXTERNAL INTERFACE: featuremap2d
     //
-    Ice::ObjectPtr featureMap2dObj_;
+    orcaifaceimpl::FeatureMap2dImplPtr featureMap2dImpl_;
 };
 
 }

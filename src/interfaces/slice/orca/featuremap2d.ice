@@ -11,8 +11,9 @@
 #ifndef ORCA2_FEATUREMAP2D_INTERFACE_ICE
 #define ORCA2_FEATUREMAP2D_INTERFACE_ICE
 
-#include <orca/orca.ice>
+#include <orca/datetime.ice>
 #include <orca/bros1.ice>
+#include <orca/exceptions.ice>
 #include <orca/localise2d.ice>
 
 module orca
@@ -122,7 +123,7 @@ class CartesianPoseFeature2d extends Feature2d
 sequence<Feature2d> Feature2dSequence;
 
 //! Data describing generic 2D features.
-class FeatureMap2dData extends OrcaObject
+struct FeatureMap2dData
 {
     //! Features
     Feature2dSequence features;

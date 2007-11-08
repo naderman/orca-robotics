@@ -1,4 +1,4 @@
-OPTION( BUILD_REPLIER "Try to build replier" ON )
+OPTION( BUILD_REPLIER "Try to build replier" OFF )
 
 IF ( BUILD_REPLIER )
 

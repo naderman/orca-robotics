@@ -14,7 +14,7 @@
 
 namespace featuremaploader {
 
-void fakeLoadMap( orca::FeatureMap2dDataPtr theMap );
+void fakeLoadMap( orca::FeatureMap2dData &theMap );
 
 }
 

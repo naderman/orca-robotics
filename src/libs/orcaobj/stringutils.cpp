@@ -1395,19 +1395,17 @@ toString( const orca::WifiData &obj )
 }
 
 std::string 
-toString( const orca::FeatureMap2dDataPtr &obj )
+toString( const orca::FeatureMap2dData &obj )
 {
     std::ostringstream s;
-    assert( obj != 0 );
 
-    s << toString(obj->timeStamp)
-      << " FeatureMap2d ["<<obj->features.size()<<" elements]: "<<endl;
+    s << " FeatureMap2d ["<<obj.features.size()<<" elements]: "<<endl;
 
-    for (unsigned int i=0; i < obj->features.size(); i++)
+    for (unsigned int i=0; i < obj.features.size(); i++)
     {
-        assert( obj->features[i] != 0 );
+        assert( obj.features[i] != 0 );
 
-        const orca::Feature2dPtr &f = obj->features[i];
+        const orca::Feature2dPtr &f = obj.features[i];
         s << "  " << i << ": " << toString(*f) << endl;
     }    
     s << endl;

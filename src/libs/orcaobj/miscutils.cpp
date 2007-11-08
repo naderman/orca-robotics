@@ -114,13 +114,13 @@ bool localisationIsUncertain( const orca::Localise2dData &localiseData,
 }
 
 void 
-saveToFile( const orca::FeatureMap2dDataPtr& fmap, FILE *f )
+saveToFile( const orca::FeatureMap2dData& fmap, FILE *f )
 {
-    for ( unsigned int i=0; i < fmap->features.size(); i++ )
+    for ( unsigned int i=0; i < fmap.features.size(); i++ )
     {
-        assert( fmap->features[i] != 0 );
+        assert( fmap.features[i] != 0 );
 
-        const orca::Feature2dPtr &feature = fmap->features[i];
+        const orca::Feature2dPtr &feature = fmap.features[i];
         fprintf( f, "%d %f ", feature->type, feature->pExists );
 
         //
@@ -176,10 +176,8 @@ saveToFile( const orca::FeatureMap2dDataPtr& fmap, FILE *f )
 }
 
 void 
-loadFromFile( const std::string &filename, orca::FeatureMap2dDataPtr &fmap )
+loadFromFile( const std::string &filename, orca::FeatureMap2dData &fmap )
 {
-    assert( fmap != 0 );
-
     std::ifstream f;
     f.open( filename.c_str(), ifstream::in );
     if ( f.good() == false )
@@ -244,7 +242,7 @@ loadFromFile( const std::string &filename, orca::FeatureMap2dDataPtr &fmap )
                 throw hydroutil::Exception( ERROR_INFO, ss.str() );
             }
 
-            fmap->features.push_back( feature );
+            fmap.features.push_back( feature );
             break;
         }
         case orca::feature::LINE:
@@ -278,7 +276,7 @@ loadFromFile( const std::string &filename, orca::FeatureMap2dDataPtr &fmap )
             feature->startSighted = ss;
             feature->endSighted = es;
 
-            fmap->features.push_back( feature );
+            fmap.features.push_back( feature );
             line++;
             break;
         }
@@ -308,7 +306,7 @@ loadFromFile( const std::string &filename, orca::FeatureMap2dDataPtr &fmap )
                 throw hydroutil::Exception( ERROR_INFO, ss.str() );
             }
 
-            fmap->features.push_back( feature );
+            fmap.features.push_back( feature );
             break;
         }
         default:

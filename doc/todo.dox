@@ -81,6 +81,11 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @par Updated interfaces
 
+- PolarFeature2d (alex b)
+  - PolarFeature2dData was un-necessarily a class.  It's now a struct.
+- FeatureMap2d (alex b)
+  - FeatureMap2d was un-necessarily a class.  It's now a struct.
+
 @par Updated components
 
 - Laser2d
@@ -164,9 +169,6 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 - Gps (alex b)
   - removed GpsMapGrid and GpsTime interfaces.
-
-- PolarFeature2d (alex b)
-  - PolarFeature2dData was un-necessarily a class.  It's now a struct.
 
 @par Updated components
 

@@ -10,9 +10,6 @@
 #include "component.h"
 #include "fakemaploader.h"
 
-// implementations of Ice objects
-#include "featuremap2dI.h"
-
 #include <orcaice/orcaice.h>
 
 using namespace std;
@@ -30,7 +27,7 @@ Component::~Component()
 }
 
 int 
-Component::loadMap( const std::string &fileName, orca::FeatureMap2dDataPtr &theMap )
+Component::loadMap( const std::string &fileName, orca::FeatureMap2dData &theMap )
 {
     try
     {
@@ -58,7 +55,7 @@ Component::start()
     //
     // LOAD THE MAP
     //
-    orca::FeatureMap2dDataPtr theMap = new FeatureMap2dData;
+    orca::FeatureMap2dData theMap;
 
     std::string driverName = orcaice::getPropertyWithDefault( prop, prefix+"Driver", "fake" );
     if ( driverName == "fake" )
@@ -87,8 +84,9 @@ Component::start()
     // EXTERNAL PROVIDED INTERFACES
     //
     // create servant for direct connections
-    featureMap2dObj_ = new FeatureMap2dI( theMap, "FeatureMap2d", context() );
-    orcaice::createInterfaceWithTag( context(), featureMap2dObj_, "FeatureMap2d" );
+    featureMap2dImpl_ = new orcaifaceimpl::FeatureMap2dImpl( "FeatureMap2d", context() );
+    featureMap2dImpl_->initInterface();
+    featureMap2dImpl_->localSetAndSend( theMap );
 
     ////////////////////////////////////////////////////////////////////////////////
 

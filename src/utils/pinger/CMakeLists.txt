@@ -1,4 +1,4 @@
-OPTION( BUILD_PINGER "Try to build pinger" ON )
+OPTION( BUILD_PINGER "Try to build pinger" OFF )
 
 IF ( BUILD_PINGER )
     

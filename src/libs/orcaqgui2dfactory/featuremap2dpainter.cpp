@@ -28,8 +28,7 @@ using namespace orcaqgui;
 namespace orcaqgui2d {
 
 FeatureMap2dPainter::FeatureMap2dPainter()
-    : data_( NULL ),
-      displayFeatureNumbers_(false),
+    : displayFeatureNumbers_(false),
       displayUncertainty_(false)
 {
 }
@@ -45,10 +44,8 @@ FeatureMap2dPainter::clear()
 
 
 void 
-FeatureMap2dPainter::setData( const orca::FeatureMap2dDataPtr &data )
+FeatureMap2dPainter::setData( const orca::FeatureMap2dData &data )
 {
-    assert( data != 0 );
-
     // cout<<"TRACE(featuremap2dpainter.cpp): got data: " << orcaice::toString(data) << endl;
 
     data_ = data;
@@ -235,38 +232,36 @@ void FeatureMap2dPainter::paint( QPainter *painter, const int z )
 {
     if ( z != orcaqgui2d::Z_SLAM_MAP ) return;
 
-    if (data_ == 0) return;
-
     QColor color;
 
     // Paint all lines first, so the less-obvious point features are on top.
 
-    for ( unsigned int i=0; i < data_->features.size(); i++ )
+    for ( unsigned int i=0; i < data_.features.size(); i++ )
     {
-        if ( data_->features[i]->ice_isA( "::orca::CartesianLineFeature2d" ) )
+        if ( data_.features[i]->ice_isA( "::orca::CartesianLineFeature2d" ) )
         {
             const orca::CartesianLineFeature2d *f = 
-                dynamic_cast<const orca::CartesianLineFeature2d*>(&(*(data_->features[i])));
+                dynamic_cast<const orca::CartesianLineFeature2d*>(&(*(data_.features[i])));
             assert( f != NULL );
             assert( f->type == orca::feature::LINE || f->type == orca::feature::LINE+10 );
             
             paintLineFeature( painter, *f, i );
         }
     }
-    for ( unsigned int i=0; i < data_->features.size(); i++ )
+    for ( unsigned int i=0; i < data_.features.size(); i++ )
     {
-        if ( data_->features[i]->ice_isA( "::orca::CartesianPointFeature2d" ) )
+        if ( data_.features[i]->ice_isA( "::orca::CartesianPointFeature2d" ) )
         {
             const orca::CartesianPointFeature2d *f = 
-                dynamic_cast<const orca::CartesianPointFeature2d*>(&(*(data_->features[i])));
+                dynamic_cast<const orca::CartesianPointFeature2d*>(&(*(data_.features[i])));
             assert( f != NULL );
 
             paintPointFeature( painter, *f, i );
         }
-        else if ( data_->features[i]->ice_isA( "::orca::CartesianPoseFeature2d" ) )
+        else if ( data_.features[i]->ice_isA( "::orca::CartesianPoseFeature2d" ) )
         {
             const orca::CartesianPoseFeature2d *f = 
-                dynamic_cast<const orca::CartesianPoseFeature2d*>(&(*(data_->features[i])));
+                dynamic_cast<const orca::CartesianPoseFeature2d*>(&(*(data_.features[i])));
             assert( f != NULL );
 
             paintPoseFeature( painter, *f, i );
@@ -278,7 +273,7 @@ int FeatureMap2dPainter::saveMap( const QString fileName, orcaqgui::IHumanManage
 {
     cout << "INFO(featuremap2dpainter.cpp): saveMap, fileName is " << fileName.toStdString() << endl;
     
-    int size = data_->features.size();
+    int size = data_.features.size();
     if (size==0) return -2;
     
     FILE *f = fopen( fileName.toStdString().c_str(), "w" );

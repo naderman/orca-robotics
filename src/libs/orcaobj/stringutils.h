@@ -219,7 +219,7 @@ std::string toString( const orca::SinglePolarFeature2dPtr& obj );
 //! Converts to string
 std::string toString( const orca::PolarFeature2dData& );
 //! Converts to string
-std::string toString( const orca::FeatureMap2dDataPtr& );
+std::string toString( const orca::FeatureMap2dData& );
 //! Converts to string
 std::string toString( const orca::Feature2d& );
 //! Converts to string
