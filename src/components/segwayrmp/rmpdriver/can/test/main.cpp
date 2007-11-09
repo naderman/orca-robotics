@@ -73,7 +73,7 @@ int main(int argc, char* argv[]){
     //Simple setup of the can packet to be a slow move forward....
     dataMovePacket.setId( RMP_CAN_ID_COMMAND );
     // velocity command does not change any other values
-    dataMovePacket.putSlot(2, (uint16_t)RMP_CMD_NONE);
+    dataMovePacket.putSlot(2, (uint16_t)0);
 
     // put commands into the packet
     dataMovePacket.putSlot(0, 0x1BB); //Slow move
@@ -105,9 +105,9 @@ int main(int argc, char* argv[]){
 
     while(true){ //**??** how should this be escaped?
       //Keep trying to read data from the CAN interface
-        if ( testCan.readPacket(&dataPacketCollected) == RmpIo::OK ){ 
+        if ( testCan.readPacket(dataPacketCollected) == RmpIo::OK ){ 
             cout<< dataPacketCollected.toString() << endl;
-            if(dataPacketCollected.id() == SendTriggerMsgID){
+            if((int)(dataPacketCollected.id()) == SendTriggerMsgID){
                 sendCounter++;
             }else{
                 cout << dataPacketCollected.id() << " Trigger " << SendTriggerMsgID << endl;
@@ -135,7 +135,7 @@ int main(int argc, char* argv[]){
 
         //If we got here time to send a move command
         cout << "Sending " << dataMovePacket.toString()<<"delta T  " << msecs <<endl;
-        testCan.writePacket(& dataMovePacket);
+        testCan.writePacket(dataMovePacket);
         
         if(add_jitter){
             jitter = (rand() % 20) + 1;
