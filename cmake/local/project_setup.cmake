@@ -17,12 +17,7 @@ MACRO( FIND_DEFTOOLS DEFTOOLS_HOME )
 
 ENDMACRO( FIND_DEFTOOLS DEFTOOLS_HOME )
 
-#
-# During the install we want to 'label' the install. We also
-# Need the SYSTEM_HYDRO_INSTALL var as most likely install will
-# be run by root , with a very limited environment
-#
-# During the install we want to 'label' the install. The SYSTEM_HYDRO_SOURCE
+# During the install we want to 'label' the install. The SYSTEM_HYDRO_INSTALL
 # Variable is needed by the install script as this will most likely be run from
 # Root and not have the compelete environment. For some reason I do not understand
 # The 'SET - CACHED' variables are not available in the install scripts (djlm)
