@@ -121,6 +121,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     - Fixed bug where interfaces were not removed fromthe adapter correctly (alex b)
     - Added NotifyingConsumer types (alex b)
 
+- libOrcaDef
+    - changed 'orca2' to 'orca' in executable path in generated .xml files (alex m, thanks duncan m.)
+
 @par Removed
 
 

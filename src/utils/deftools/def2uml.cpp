@@ -27,8 +27,8 @@ usage()
     cout << "  -d, --display\n\tDisplays the UML symbol in a window, in addition to saving an image file."<<endl;
     cout << "  -V, --verbose\n\tPrints extra debugging information."<<endl;
     cout << "EXAMPLES"<<endl;
-    cout << "  def2uml /opt/orca2/def/localnav.def"<<endl;
-    cout << "  for file in /opt/orca2/def/*; do echo $file; def2uml $file; done"<<endl;
+    cout << "  def2uml /opt/orca/def/localnav.def"<<endl;
+    cout << "  for file in /opt/orca/def/*; do echo $file; def2uml $file; done"<<endl;
 }
 
  int main(int argc, char **argv)

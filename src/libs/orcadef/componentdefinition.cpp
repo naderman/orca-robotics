@@ -454,7 +454,7 @@ toXmlTemplateText( const ComponentDef &def )
     ss <<tab<<tab<<tab
         <<"<server "
         <<"id=\"${platform}."<<cfg.fqname.component<<"\" "
-        <<"exe=\"${application.distrib}/orca2/bin/"<<cfg.fqname.component<<"\" "
+        <<"exe=\"${application.distrib}/orca/bin/"<<cfg.fqname.component<<"\" "
         <<"activation=\"on-demand\">" << endl;
 
     ss <<tab<<tab<<tab<<tab

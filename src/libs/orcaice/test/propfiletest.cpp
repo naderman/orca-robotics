@@ -181,9 +181,9 @@ main(int argc, char * argv[])
     args.clear();
     expect = "mycomponent.cfg";
 #ifndef WIN32
-    args.push_back( "/opt/orca2/bin/mycomponent" );
+    args.push_back( "/opt/orca/bin/mycomponent" );
 #else
-    args.push_back( "C:\\orca2\\bin\\mycomponent" );
+    args.push_back( "C:\\orca\\bin\\mycomponent" );
 #endif
     filename = orcaice::getApplicationConfigFilename( args );
     if ( filename != expect ) {
