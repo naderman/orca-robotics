@@ -81,6 +81,9 @@ private:
     void sendMotionCommandPacket( const Command& command );
     void sendStatusCommandPacket( ConfigurationCommand commandId, uint16_t param );
 
+    // The RMP reports its last received command.  Check that this is what we sent.
+    void checkReceivedCommand( const RxData &rxData );
+
     // Configuration
     const RmpDriverConfig config_;
 
@@ -92,6 +95,11 @@ private:
     // specified) we can maintain the same speed.
     int16_t lastTrans_;
     int16_t lastRot_;
+
+    // Remember the one before that, so we can check for the RMP dropping packets
+    // (it reports the last command it received, we check both the last and the one before).
+    int16_t prevTrans_;
+    int16_t prevRot_;
 
     // integrated odometry (in SI units)
     double odomX_;

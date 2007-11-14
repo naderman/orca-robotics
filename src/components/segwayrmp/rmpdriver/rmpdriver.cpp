@@ -79,6 +79,10 @@ RmpDriver::RmpDriver( const RmpDriverConfig  &driverConfig,
                       const orcaice::Context &context )
     : config_(driverConfig),
       rmpIo_(rmpIo),
+      lastTrans_(0),
+      lastRot_(0),
+      prevTrans_(0),
+      prevRot_(0),
       odomX_(0),
       odomY_(0),
       odomYaw_(0),
@@ -209,6 +213,34 @@ RmpDriver::enable()
     }
 }
 
+void
+RmpDriver::checkReceivedCommand( const RxData &rxData )
+{
+    bool transOK = ( rxData.rawData().received_velocity_command == lastTrans_ ||
+                     rxData.rawData().received_velocity_command == prevTrans_  );
+    bool rotOK =   ( rxData.rawData().received_turnrate_command == lastRot_ ||
+                     rxData.rawData().received_turnrate_command == prevRot_  );
+ 
+    if ( !transOK || !rotOK )
+    {
+        stringstream ss;
+        ss << "RmpDriver::read(): It looks like the RMP didn't read our last command correctly!";
+        if ( !transOK )
+        {
+            ss<<endl 
+              << "  velocity: last two commands were ["<<prevTrans_<<","<<lastTrans_<<"]"
+              << "  but it last received " << rxData.rawData().received_velocity_command;
+        }
+        if ( !rotOK )
+        {
+            ss<<endl 
+              << "  turnrate: last two commands were ["<<prevRot_<<","<<lastRot_<<"]"
+              << "  but it last received " << rxData.rawData().received_turnrate_command;
+        }
+        context_.tracer()->warning( ss.str() );
+    }
+}
+
 bool
 RmpDriver::read( Data &data )
 {
@@ -221,15 +253,7 @@ RmpDriver::read( Data &data )
         RxData newRxData = readData();
 
         // Check that the RMP read our last command correctly
-        if ( newRxData.rawData().received_velocity_command != lastTrans_ ||
-             newRxData.rawData().received_turnrate_command != lastRot_ )
-        {
-            stringstream ss;
-            ss << "RmpDriver::read(): It looks like the RMP didn't read our last command correctly!"<<endl
-               << "  velocity: we last wrote: " << lastTrans_ << " but it last received: " << newRxData.rawData().received_velocity_command << endl
-               << "  turnrate: we last wrote: " << lastRot_ << " but it last received: " << newRxData.rawData().received_turnrate_command;
-            context_.tracer()->warning( ss.str() );
-        }
+        checkReceivedCommand(newRxData);
 
         // Calculate integrated odometry
         calculateIntegratedOdometry( rxData_, newRxData );
