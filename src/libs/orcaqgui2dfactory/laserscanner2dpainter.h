@@ -55,8 +55,11 @@ class LaserScanner2dPainter
     std::vector<float>         ranges_;
     std::vector<unsigned char> intensities_;
     bool                       intensitiesValid_;
-    
+
+    // The scan (set of points for drawing the scan outline)
     QPolygonF qScan_;
+    // The actual returns (doesn't include a point at the origin)
+    QPolygonF qReturns_;
     
     double laserMaxRange_;
 

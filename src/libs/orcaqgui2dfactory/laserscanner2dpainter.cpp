@@ -117,6 +117,7 @@ LaserScanner2dPainter::setData( const orca::RangeScanner2dDataPtr & data )
         point.setX( ranges_[i] * cos(bearing) * cos(offsetPitch_) );
         point.setY( ranges_[i] * sin(bearing) );
 
+        qReturns_.push_back( point );
         qScan_.push_back( point );
     }
 
@@ -187,7 +188,7 @@ LaserScanner2dPainter::paint( QPainter *painter, int z )
     if ( isDisplayPoints_ )
     {
         painter->setPen( QPen( Qt::black, .1 ) );
-        painter->drawPoints( qScan_ );
+        painter->drawPoints( qReturns_ );
     }
 
     // draw bright rectangles for high intensity returns
