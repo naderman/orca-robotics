@@ -22,6 +22,9 @@ class HwHandler : public hydroutil::SafeThread
 public: 
 
     HwHandler( HwDriver               &hwDriver,
+               double                  maxForwardSpeed,
+               double                  maxReverseSpeed,
+               double                  maxTurnrate,
                bool                    isMotionEnabled,
                const orcaice::Context &context );
 
@@ -41,6 +44,9 @@ private:
     // Keeps trying until success or !!isStopping()
     void enableDriver();
 
+    // Checks to see if the requested command is outside our limits.
+    bool commandImpossible( const Command &command );
+
     // Faults can be detected in either read or write threads: have to be careful.
     orcarobotdriverutil::StateMachine stateMachine_;
 
@@ -50,6 +56,10 @@ private:
     hydroutil::Store<Command> commandStore_;
 
     HwDriver &driver_;
+
+    double maxForwardSpeed_;
+    double maxReverseSpeed_;
+    double maxTurnrate_;
 
     bool isMotionEnabled_;
 

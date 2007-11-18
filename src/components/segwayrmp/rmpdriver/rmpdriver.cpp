@@ -255,7 +255,10 @@ RmpDriver::read( Data &data )
         RxData newRxData = readData();
 
         // Check that the RMP read our last command correctly
-        checkReceivedCommand(newRxData);
+        // AlexB: commented out for now, since this breaks when the RMP stops receiving
+        //        and slews the command to zero.  It then reports this slewed-down command,
+        //        even though it didn't receive it from us.
+        // checkReceivedCommand(newRxData);
 
         // Calculate integrated odometry
         calculateIntegratedOdometry( rxData_, newRxData );

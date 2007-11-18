@@ -175,7 +175,14 @@ Component::start()
     bool isMotionEnabled = (bool)orcaice::getPropertyAsIntWithDefault( context().properties(),
                                                                        context().tag()+".Config.EnableMotion",
                                                                        1 );
+    orca::VehicleControlVelocityDifferentialDescription *controlDescr =
+        dynamic_cast<orca::VehicleControlVelocityDifferentialDescription*>(&(*(descr.control)));
+    if ( controlDescr == NULL )
+        throw hydroutil::Exception( ERROR_INFO, "Can only deal with differential drive vehicles." );
     HwHandler *hwHandler = new HwHandler( *driver_,
+                                          controlDescr->maxForwardSpeed,
+                                          controlDescr->maxReverseSpeed,
+                                          controlDescr->maxTurnrate,
                                           isMotionEnabled,
                                           context() );
     hwHandler_ = hwHandler;

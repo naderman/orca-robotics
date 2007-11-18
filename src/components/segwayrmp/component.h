@@ -13,9 +13,6 @@
 
 #include <orcaice/component.h>
 
-// data pipes
-#include <hydroutil/proxy.h>
-#include <hydroutil/notify.h>
 #include "hwdriver.h"
 #include <rmpdriver/rmpio.h>
 #include <orca/vehicledescription.h>

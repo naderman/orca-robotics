@@ -1,6 +1,7 @@
 #include "hwhandler.h"
 #include <iostream>
 #include <orca/exceptions.h>
+#include <cmath>
 
 using namespace std;
 
@@ -11,9 +12,15 @@ namespace {
 namespace segwayrmp {
 
 HwHandler::HwHandler( HwDriver               &hwDriver,
+                      double                  maxForwardSpeed,
+                      double                  maxReverseSpeed,
+                      double                  maxTurnrate,
                       bool                    isMotionEnabled,
                       const orcaice::Context &context )
     : driver_(hwDriver),
+      maxForwardSpeed_(maxForwardSpeed),
+      maxReverseSpeed_(maxReverseSpeed),
+      maxTurnrate_(maxTurnrate),
       isMotionEnabled_(isMotionEnabled),
       context_(context)
 {
@@ -184,6 +191,21 @@ HwHandler::walk()
     } // while
 }
 
+bool
+HwHandler::commandImpossible( const Command &command )
+{
+    if ( command.vx > maxForwardSpeed_ )
+        return true;
+    if ( command.vx < maxReverseSpeed_ )
+        return true;
+    if ( command.w > maxTurnrate_ )
+        return true;
+    if ( command.w < -maxTurnrate_ )
+        return true;
+
+    return false;
+}
+
 void
 HwHandler::setCommand( const Command &command )
 {
@@ -197,6 +219,14 @@ HwHandler::setCommand( const Command &command )
     if ( !isMotionEnabled_ )
     {
         throw orca::HardwareFailedException( "Motion is disabled" );
+    }
+
+    if ( commandImpossible( command ) )
+    {
+        stringstream ss;
+        ss << "Requested speed ("<<command.toString()<<") can not be achieved.  "
+           << "maxForwardSpeed: " << maxForwardSpeed_ << ", maxReverseSpeed: " << maxReverseSpeed_ << ", maxTurnrate: " << maxTurnrate_*M_PI/180.0;
+        throw orca::MalformedParametersException( ss.str() );
     }
 
     double msecs=writeTimer_.elapsed().toMilliSecondsDouble();
