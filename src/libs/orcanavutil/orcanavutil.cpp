@@ -58,9 +58,14 @@ namespace orcanavutil {
         }
     }
 
-    hydronavutil::Pose convert( const orca::Odometry2dData &odom )
+    hydronavutil::Pose convertToPose( const orca::Odometry2dData &odom )
     {
         return hydronavutil::Pose( odom.pose.p.x, odom.pose.p.y, odom.pose.o );
+    }
+
+    hydronavutil::Velocity convertToVelocity( const orca::Odometry2dData &odom )
+    {
+        return hydronavutil::Velocity( odom.motion.v.x, odom.motion.w );
     }
 
     orca::Localise2dData   convert( const hydronavutil::Gmm &gmm, int seconds, int useconds )
