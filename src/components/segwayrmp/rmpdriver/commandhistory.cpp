@@ -48,6 +48,7 @@ CommandHistory::checkReceivedCommandWasRecentlySent( int16_t rxSpeed, int16_t rx
     {
         if ( *it == rxSpeed )
         {
+            cout<<"TRACE(commandhistory.cpp): found speed: *it = " << *it << endl;
             speedRecentlySent = true;
             break;
         }
@@ -59,6 +60,7 @@ CommandHistory::checkReceivedCommandWasRecentlySent( int16_t rxSpeed, int16_t rx
     {
         if ( *it == rxTurnrate )
         {
+            cout<<"TRACE(commandhistory.cpp): found turnrate: *it = " << *it << endl;
             turnrateRecentlySent = true;
             break;
         }
