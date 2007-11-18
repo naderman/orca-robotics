@@ -30,6 +30,7 @@ CommandHistory::checkReceivedCommandWasRecentlySent( int16_t rxSpeed, int16_t rx
 {
     if ( (int)(sentSpeeds_.size()) < historyLength_ )
     {
+        cout<<"TRACE(commandhistory.cpp): Not enough history received..." << endl;
         speedRecentlySent = true;
         turnrateRecentlySent = true;
         return;
