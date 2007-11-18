@@ -62,7 +62,7 @@ CommandHistory::checkReceivedCommandWasRecentlySent( int16_t rxSpeed, int16_t rx
 }
 
 std::string
-CommandHistory::dequeAsString( const std::deque<int16_t> &d )
+CommandHistory::dequeAsString( const std::deque<int16_t> &d ) const
 {
     stringstream ss;
     ss << "[ ";
