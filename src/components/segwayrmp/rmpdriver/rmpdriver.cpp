@@ -50,26 +50,31 @@ namespace {
         }
     }
 
+    //
+    // Invert the RMP's turnrate-input-interpretation function.
+    // Returns the turnrate we should command to the RMP to get it do execute
+    // a particular desired turnrate.
+    //
     // The RMP Manual Section "Theory of Operation: Turning" says:
-    //   At low speeds,  inputTurnrate is interpreted as a turnrate (rad/s).
-    //   At high speeds, inputTurnrate is interpreted as centripital acceleration (m/s/s)
+    //   At low speeds,  input turnrate is interpreted as a turnrate (rad/s).
+    //   At high speeds, input turnrate is interpreted as centripital acceleration (m/s/s)
     // Here's our guess at the function:
     //   Vo = Pi/2
     //   if V<=Vo, Wout = Win;
     //   if V>Vo,  Wout = Win / (V/Vo);
     double
-    interpretedTurnrate( double inputTurnrate, double speed )
+    invertRmpTurnrateFunction( double desiredTurnrate, double speed )
     {
         const double vo = M_PI/2; // (~1.57)
         if ( speed < vo )
         {
-            return inputTurnrate;
+            return desiredTurnrate;
         }
         else
         {
             // Note: multiply instead of divide, coz we're inverting
-            //       the function above.
-            return inputTurnrate * (speed/vo);
+            //       the function described in the comment block above.
+            return desiredTurnrate * (speed/vo);
         }
     }
 }
@@ -116,7 +121,7 @@ RmpDriver::maxTurnrate( double speed )
     double maxTurnrateInputSlow = maxTurnrateInputUnscaledSlow;
 //    double maxTurnrateSlow = config_.maxTurnrateScale * maxTurnrateInputUnscaledSlow;
 
-    return interpretedTurnrate( maxTurnrateInputSlow, speed );
+    return invertRmpTurnrateFunction( maxTurnrateInputSlow, speed );
 }
 
 void 
@@ -322,7 +327,7 @@ RmpDriver::applyScaling( const Command& originalCommand, Command &scaledCommand 
 //     scaledCommand.w  = originalCommand.w  / config_.maxTurnrateScale;
 
     // assumption, we use the commanded forward velocity instead of the actual velocity.
-    scaledCommand.w = interpretedTurnrate( originalCommand.w, originalCommand.vx );
+    scaledCommand.w = invertRmpTurnrateFunction( originalCommand.w, originalCommand.vx );
 }
 
 void
@@ -355,7 +360,18 @@ RmpDriver::write( const Command& command )
     }
 
     // Send the command to the RMP
-    sendMotionCommandPacket( scaledCommand );
+    try {
+        sendMotionCommandPacket( scaledCommand );
+    }
+    catch ( const RmpException &e )
+    {
+        stringstream ss;
+        ss << "RmpDriver::write(): failed to write command." << endl
+           << "  command =       " << command.toString() << endl
+           << "  scaledCommand = " << scaledCommand.toString() << endl
+           << e.what();
+        throw RmpException( ss.str() );
+    }
 }
 
 RxData

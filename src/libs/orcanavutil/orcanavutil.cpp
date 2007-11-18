@@ -46,7 +46,16 @@ namespace orcanavutil {
             weights.push_back( locData.hypotheses[i].weight );
         }
 
-        return hydronavutil::Gmm( components, weights );
+        try {
+            return hydronavutil::Gmm( components, weights );
+        }
+        catch ( const hydronavutil::Exception &e )
+        {
+            stringstream ss;
+            ss << "While creating Gmm from orca::Localise2dData: " << orcaice::toString(locData)
+               << ": " << e.what();
+            throw hydronavutil::Exception( ERROR_INFO, ss.str() );
+        }
     }
 
     hydronavutil::Pose convert( const orca::Odometry2dData &odom )
