@@ -3,6 +3,7 @@
 
 #include <sys/types.h>
 #include <deque>
+#include <string>
 
 namespace segwayrmp {
 
@@ -20,10 +21,15 @@ public:
     CommandHistory( int historyLength );
 
     void setCommand( int16_t speed, int16_t turnrate );
-    void receivedCommandWasRecentlySent( int16_t rxSpeed, int16_t rxTurnrate,
-                                         bool speedRecentlySent, bool turnrateRecentlySent ) const;
+    void checkReceivedCommandWasRecentlySent( int16_t rxSpeed, int16_t rxTurnrate,
+                                              bool &speedRecentlySent, bool &turnrateRecentlySent ) const;
+
+    std::string recentlySentSpeeds() const { return dequeAsString( sentSpeeds_ ); }
+    std::string recentlySentTurnrates() const { return dequeAsString( sentTurnrates_ ); }
 
 private: 
+
+    std::string dequeAsString( const std::deque<int16_t> &d ) const;
 
     const int historyLength_;
 

@@ -84,10 +84,7 @@ RmpDriver::RmpDriver( const RmpDriverConfig  &driverConfig,
                       const orcaice::Context &context )
     : config_(driverConfig),
       rmpIo_(rmpIo),
-      lastTrans_(0),
-      lastRot_(0),
-      prevTrans_(0),
-      prevRot_(0),
+      commandHistory_(2),
       odomX_(0),
       odomY_(0),
       odomYaw_(0),
@@ -221,25 +218,25 @@ RmpDriver::enable()
 void
 RmpDriver::checkReceivedCommand( const RxData &rxData )
 {
-    bool transOK = ( rxData.rawData().received_velocity_command == lastTrans_ ||
-                     rxData.rawData().received_velocity_command == prevTrans_  );
-    bool rotOK =   ( rxData.rawData().received_turnrate_command == lastRot_ ||
-                     rxData.rawData().received_turnrate_command == prevRot_  );
- 
-    if ( !transOK || !rotOK )
+    bool speedOK, turnrateOK;
+    commandHistory_.checkReceivedCommandWasRecentlySent( rxData.rawData().received_velocity_command,
+                                                         rxData.rawData().received_turnrate_command,
+                                                         speedOK,
+                                                         turnrateOK );
+    if ( !speedOK || !turnrateOK )
     {
         stringstream ss;
         ss << "RmpDriver::read(): It looks like the RMP didn't read our last command correctly!";
-        if ( !transOK )
+        if ( !speedOK )
         {
             ss<<endl 
-              << "  velocity: last two commands were ["<<prevTrans_<<","<<lastTrans_<<"]"
+              << "  velocity: last commands were: " << commandHistory_.recentlySentSpeeds() << endl
               << "  but it last received " << rxData.rawData().received_velocity_command;
         }
-        if ( !rotOK )
+        if ( !turnrateOK )
         {
             ss<<endl 
-              << "  turnrate: last two commands were ["<<prevRot_<<","<<lastRot_<<"]"
+              << "  turnrate: last commands were: " << commandHistory_.recentlySentTurnrates() << endl
               << "  but it last received " << rxData.rawData().received_turnrate_command;
         }
         context_.tracer()->warning( ss.str() );
@@ -575,8 +572,7 @@ RmpDriver::sendMotionCommandPacket( const Command& command )
     }
 
     // save this last command
-    lastTrans_ = trans;
-    lastRot_ = rot;
+    commandHistory_.setCommand( trans, rot );
 }
 
 /*
@@ -587,8 +583,8 @@ RmpDriver::sendStatusCommandPacket( ConfigurationCommand command, uint16_t param
 {
     CanPacket pkt = statusCommandPacket( converter_.configurationCommandAsRaw( command ),
                                          param,
-                                         (uint16_t)lastTrans_,
-                                         (uint16_t)lastRot_ );
+                                         (uint16_t)0,
+                                         (uint16_t)0 );
 
     {
         stringstream ss;

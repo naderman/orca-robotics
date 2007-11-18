@@ -16,6 +16,7 @@
 #include "rmpio.h"
 #include "rxdata.h"
 #include "unitconverter.h"
+#include "commandhistory.h"
 
 namespace segwayrmp
 {
@@ -90,16 +91,9 @@ private:
     // driver/hardware interface
     RmpIo         &rmpIo_;
 
-    // Remember the last command we gave, so that if we need to give a
-    // configuration command (which also requires that a velocity be
-    // specified) we can maintain the same speed.
-    int16_t lastTrans_;
-    int16_t lastRot_;
-
-    // Remember the one before that, so we can check for the RMP dropping packets
-    // (it reports the last command it received, we check both the last and the one before).
-    int16_t prevTrans_;
-    int16_t prevRot_;
+    // Remember the last commands we gave, so that we can check that the
+    // received-commands reported by the Segway were actually sent.
+    CommandHistory commandHistory_;
 
     // integrated odometry (in SI units)
     double odomX_;

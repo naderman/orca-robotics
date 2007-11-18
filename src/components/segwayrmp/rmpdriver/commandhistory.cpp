@@ -1,5 +1,6 @@
 #include "commandhistory.h"
 #include <iostream>
+#include <sstream>
 
 using namespace std;
 
@@ -24,9 +25,16 @@ CommandHistory::setCommand( int16_t speed, int16_t turnrate )
 }
 
 void
-CommandHistory::receivedCommandWasRecentlySent( int16_t rxSpeed, int16_t rxTurnrate,
-                                                bool speedRecentlySent, bool turnrateRecentlySent ) const
+CommandHistory::checkReceivedCommandWasRecentlySent( int16_t rxSpeed, int16_t rxTurnrate,
+                                                     bool &speedRecentlySent, bool &turnrateRecentlySent ) const
 {
+    if ( (int)(sentSpeeds_.size()) < historyLength_ )
+    {
+        speedRecentlySent = true;
+        turnrateRecentlySent = true;
+        return;
+    }
+
     speedRecentlySent    = false;
     turnrateRecentlySent = false;
 
@@ -51,6 +59,24 @@ CommandHistory::receivedCommandWasRecentlySent( int16_t rxSpeed, int16_t rxTurnr
             break;
         }
     }          
+}
+
+std::string
+dequeAsString( const std::deque<int16_t> &d )
+{
+    stringstream ss;
+    ss << "[ ";
+
+
+    for ( std::deque<int16_t>::const_iterator it = d.begin();
+          it != d.end();
+          it++ )
+    {
+        ss << *it << " ";
+    }
+    ss << "]";
+
+    return ss.str();
 }
 
 }
