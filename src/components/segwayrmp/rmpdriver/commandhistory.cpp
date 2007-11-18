@@ -22,9 +22,6 @@ CommandHistory::setCommand( int16_t speed, int16_t turnrate )
 
     sentSpeeds_.push_back( speed );
     sentTurnrates_.push_back( turnrate );
-
-    cout<<"TRACE(commandhistory.cpp): setCommand: size: " << sentSpeeds_.size() << endl;
-
 }
 
 void
@@ -33,7 +30,6 @@ CommandHistory::checkReceivedCommandWasRecentlySent( int16_t rxSpeed, int16_t rx
 {
     if ( (int)(sentSpeeds_.size()) < historyLength_ )
     {
-        cout<<"TRACE(commandhistory.cpp): Not enough history received..." << endl;
         speedRecentlySent = true;
         turnrateRecentlySent = true;
         return;
@@ -48,7 +44,6 @@ CommandHistory::checkReceivedCommandWasRecentlySent( int16_t rxSpeed, int16_t rx
     {
         if ( *it == rxSpeed )
         {
-            cout<<"TRACE(commandhistory.cpp): found speed: *it = " << *it << endl;
             speedRecentlySent = true;
             break;
         }
@@ -60,7 +55,6 @@ CommandHistory::checkReceivedCommandWasRecentlySent( int16_t rxSpeed, int16_t rx
     {
         if ( *it == rxTurnrate )
         {
-            cout<<"TRACE(commandhistory.cpp): found turnrate: *it = " << *it << endl;
             turnrateRecentlySent = true;
             break;
         }
