@@ -84,7 +84,7 @@ RmpDriver::RmpDriver( const RmpDriverConfig  &driverConfig,
                       const orcaice::Context &context )
     : config_(driverConfig),
       rmpIo_(rmpIo),
-      commandHistory_(2),
+      commandHistory_(1),
       odomX_(0),
       odomY_(0),
       odomYaw_(0),
