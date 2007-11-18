@@ -22,6 +22,9 @@ CommandHistory::setCommand( int16_t speed, int16_t turnrate )
 
     sentSpeeds_.push_back( speed );
     sentTurnrates_.push_back( turnrate );
+
+    cout<<"TRACE(commandhistory.cpp): setCommand: size: " << sentSpeeds_.size() << endl;
+
 }
 
 void
