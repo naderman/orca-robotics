@@ -10,12 +10,7 @@
 /*!
 @ingroup orca_libs
 @defgroup orca_library_orcaogmap libOrcaOgMap
-@brief Occupancy Grid Map manipulation utilities
-
-    @section overview Overview
-
-Provides some simple OG map manipulation utilities.
-For a full list of functions and classes see @ref orcaogmap.
+@brief Conversion utilities: slice-defined OgMap <--> hydroogmap::OgMap
 
 Header file:
 @verbatim
@@ -28,10 +23,11 @@ Header file:
 */
 
 /*!
-@brief libOrcaOgMap provides OgMap manipulation utilities
+@brief Conversion utilities: slice-defined OgMap <--> hydroogmap::OgMap
 @namespace orcaogmap
 
 @see @ref orca_library_orcaogmap
 @see @ref orca_interface_ogmap
+@see @ref hydro_library_hydroogmap
 
 */
