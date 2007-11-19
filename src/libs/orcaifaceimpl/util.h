@@ -57,10 +57,15 @@ namespace orcaifaceimpl {
             // If IceStorm just re-started for some reason though, we want to try to re-connect
             try
             {
-                context.tracer()->info( "Re-connecting to IceStorm..." );
+                std::stringstream ss;
+                ss << interfaceName << ": Re-connecting to IceStorm...";
+                context.tracer()->info( ss.str() );
                 topicPrx = orcaice::connectToTopicWithString<ConsumerPrxType>
                     ( context, consumerPrx, topicName );
-                context.tracer()->info( "Re-connected to IceStorm." );
+
+                ss.clear();
+                ss << interfaceName << ": Re-connected to IceStorm.";                
+                context.tracer()->info( ss.str() );
 
                 // try again to push that bit of info
                 consumerPrx->setData( data );
@@ -68,7 +73,9 @@ namespace orcaifaceimpl {
             catch ( ... )
             {
                 // ignore it -- we'll try again next push.
-                context.tracer()->info( "Re-connection to IceStorm failed." );
+                std::stringstream ss;
+                ss << interfaceName << ": Re-connection to IceStorm failed.";
+                context.tracer()->info( ss.str() );
             }
         }
 
@@ -79,10 +86,6 @@ namespace orcaifaceimpl {
     void
     tryRemoveInterface( orcaice::Context  &context,
                         const std::string &interfaceName );
-
-//     void
-//     tryRemovePtr( orcaice::Context  &context,
-//                   Ice::ObjectPtr ptr );
 
     // Convenience function for tag->name conversion
     // (may throw ConfigFileException)

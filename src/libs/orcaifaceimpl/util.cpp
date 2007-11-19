@@ -22,24 +22,6 @@ tryRemoveInterface( orcaice::Context &context,
     }
 }
 
-// void
-// tryRemovePtr( orcaice::Context &context,
-//               Ice::ObjectPtr ptr )
-            
-// {
-//     try {
-//         context.adapter()->remove( context.communicator()->stringToIdentity( ptr->ice_id() ) );
-//     }
-//     catch ( Ice::ObjectAdapterDeactivatedException & )
-//     {
-//         // This is OK, we're shutting down.
-//     }
-//     catch ( Ice::Exception &e )
-//     {
-//         cout << "orcaifaceimpl: Exception when removing Ice::ObjectPtr from adapter: " << e << endl;
-//     }
-// }
-
 std::string getInterfaceNameFromTag( const orcaice::Context &context,
                                      const std::string      &interfaceTag )
 {
