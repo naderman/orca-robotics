@@ -28,7 +28,7 @@ public:
     //!
     //! Warning: may throw 'orcapathplan::Exception's
     //!
-    SparseSkeletonPathPlanner( const orcaogmap::OgMap &ogMap,
+    SparseSkeletonPathPlanner( const hydroogmap::OgMap &ogMap,
                                double robotDiameterMetres,
                                double traversabilityThreshhold,
                                bool   doPathOptimization,
@@ -81,13 +81,13 @@ private:
 
     void optimisePath( Cell2DVector &path ) const;
 
-    const orcaogmap::OgMap &ogMap_;
+    const hydroogmap::OgMap &ogMap_;
 
     // OgMap with obstacles grown
-    orcaogmap::OgMap        grownOgMap_;
+    hydroogmap::OgMap        grownOgMap_;
 
     // (a pointer:) The map that the sparse planner uses
-    const orcaogmap::OgMap *planOgMap_;
+    const hydroogmap::OgMap *planOgMap_;
 
     Cell2DVector skel_;
     SparseSkel   *sparseSkel_;

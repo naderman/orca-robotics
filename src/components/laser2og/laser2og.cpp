@@ -78,7 +78,7 @@ Laser2Og::process( const hydronavutil::Pose &sensorPose, const orca::RangeScanne
         
         // find (x,y) coordinates of laser return in global
 	    // NOTE!!! : arbitrary 25% overshoot on range.
-        orcaogmap::CartesianPoint2d returnPoint;
+        hydroogmap::CartesianPoint2d returnPoint;
         double rayBearing = sensorPose.theta() + laserScanBearing(scan, i );
         returnPoint.x = sensorPose.x() +
             RAY_EXTENSION*rangeEff*cos( rayBearing );
@@ -87,7 +87,7 @@ Laser2Og::process( const hydronavutil::Pose &sensorPose, const orca::RangeScanne
             RAY_EXTENSION*rangeEff*sin( rayBearing );
         
         // find cells crossed by the vehicle-to-return_point ray
-        orcaogmap::CartesianPoint2d sensorPosePoint;
+        hydroogmap::CartesianPoint2d sensorPosePoint;
         sensorPosePoint.x = sensorPose.x();
         sensorPosePoint.y = sensorPose.y();
         std::vector<Cell2D> ray = rayTrace( sensorPosePoint, returnPoint, mapOriginX_, mapOriginY_, mapResX_, mapResY_ );

@@ -49,6 +49,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - libOrcaIfaceImpl
    - AlexB: prod status on the multi-try initInterface functions?
 
+- laser2og:
+   - The ray-trace stuff in here is currently cut-n-pasted from hydroogmap...
+
 
 @section orca_doc_history_head Changes in SVN since Last Release
 
@@ -123,6 +126,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 - libOrcaDef
     - changed 'orca2' to 'orca' in executable path in generated .xml files (alex m, thanks duncan m.)
+
+- libOrcaOgMap
+    - Moved the guts out to Hydro.  This is now just a set of conversion functions (alex b).
 
 @par Removed
 

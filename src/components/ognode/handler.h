@@ -15,7 +15,7 @@
 #include <orcaice/context.h>
 
 #include <orca/ogfusion.h>
-#include <orcaogmap/orcaogmap.h>
+#include <hydroogmap/hydroogmap.h>
 #include <orcaifaceimpl/ogmapImpl.h>
 
 namespace ognode
@@ -37,7 +37,7 @@ private:
     hydroutil::Buffer<orca::OgFusionData> ogFusionDataBuffer_;
 
     // Representt he occupancy certainty values using doubles internally.
-    orcaogmap::GenericMap<double> internalMap_;
+    hydroogmap::GenericMap<double> internalMap_;
 
     orcaice::Context context_;
 };

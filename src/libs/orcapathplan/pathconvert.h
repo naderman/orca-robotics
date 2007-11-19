@@ -39,13 +39,13 @@ namespace orcapathplan {
     //! The first waypoint's heading can be specified optionally (0.0 by default).
     //! Will append input cells to the output path if output path already contains entries. 
     //! Note that parameters are *not* set.
-    void convertAndAppend( const orcaogmap::OgMap      &ogMap,
+    void convertAndAppend( const hydroogmap::OgMap      &ogMap,
                            const Cell2DVector          &input,
                            orca::PathPlanner2dData     &output,
                            double                       firstHeading = 0.0  );
     
     //! As above but also adds parameters.
-    void convertAndAppend( const orcaogmap::OgMap               &ogMap,
+    void convertAndAppend( const hydroogmap::OgMap               &ogMap,
                            const Cell2DVector                   &input,
                            const std::vector<WaypointParameter> &wpPara,
                            orca::PathPlanner2dData              &output,

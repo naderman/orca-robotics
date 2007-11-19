@@ -47,16 +47,16 @@ public:
 
     // Local calls:
     // Leave eith skell NULL and it won't be drawn.
-    void localSetSkel( const orcaogmap::OgMap           &ogMap,
+    void localSetSkel( const hydroogmap::OgMap           &ogMap,
                        const orcapathplan::Cell2DVector *skel=NULL,
                        const orcapathplan::SparseSkel   *sparseSkel=NULL );
 
 private:
 
-    void drawSkel( const orcaogmap::OgMap           &ogMap,
+    void drawSkel( const hydroogmap::OgMap           &ogMap,
                    const orcapathplan::Cell2DVector &skel,
                    QPainter                         &p );
-    void drawSparseSkel( const orcaogmap::OgMap           &ogMap,
+    void drawSparseSkel( const hydroogmap::OgMap           &ogMap,
                          const orcapathplan::SparseSkel   &skel,
                          QPainter                         &p );
     

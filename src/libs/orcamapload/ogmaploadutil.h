@@ -12,7 +12,7 @@
 
 #include <vector>
 #include <string>
-#include <orcaogmap/ogmap.h>
+#include <hydroogmap/hydroogmap.h>
 
 #include <orca/pixmap.h>
 
@@ -35,14 +35,14 @@ namespace orcaogmapload {
     
     //
     // @author Alex Brooks
-    // @brief Loads an occupancy grid from an image file, into orcaogmap::OgMap format.
+    // @brief Loads an occupancy grid from an image file, into hydroogmap::OgMap format.
     //
     // Allowed formats: anything qt can load
     //
     // Throws std::strings if there are problems.
     //
     void loadMap( const std::string &filename,
-                  orcaogmap::OgMap  &ogMap,
+                  hydroogmap::OgMap  &ogMap,
                   bool               negate,
                   float              offsetX,
                   float              offsetY,

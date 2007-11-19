@@ -53,9 +53,9 @@ private:
     // get simulation time
     orca::Time now();
 
-    orcaogmap::OgMap       ogMap_;
-    orcaogmap::OgMap       grownOgMap_;
-    orcaogmap::OgLosTracer rayTracer_;
+    hydroogmap::OgMap       ogMap_;
+    hydroogmap::OgMap       grownOgMap_;
+    hydroogmap::OgLosTracer rayTracer_;
 
     hydronavutil::Pose      pose_;
     double                 velLin_;

@@ -5,6 +5,7 @@
 #include <orcapathplan/pathplanutils.h>
 #include <orcaobjutil/vehicleutil.h>
 #include <localnavutil/brosutil.h>
+#include <orcaogmap/orcaogmap.h>
 
 using namespace std;
 
@@ -144,7 +145,7 @@ Simulator::setupInterfaces()
 }
 
 void
-placeObstacle( orcaogmap::OgMap &ogMap,
+placeObstacle( hydroogmap::OgMap &ogMap,
                double x,
                double y,
                double radius )
@@ -158,13 +159,13 @@ placeObstacle( orcaogmap::OgMap &ogMap,
     {
         for ( int j=-radiusInCellsY; j < radiusInCellsY; j++ )
         {
-            ogMap.gridCell(gridX+i,gridY+j) = orcaogmap::CELL_OCCUPIED;
+            ogMap.gridCell(gridX+i,gridY+j) = hydroogmap::CELL_OCCUPIED;
         }
     }
 }
 
 void
-placeRoom( orcaogmap::OgMap &ogMap )
+placeRoom( hydroogmap::OgMap &ogMap )
 {
     double centreX = -14, centreY = 14;
     double widthX = 4, widthY = 4;
@@ -183,14 +184,14 @@ placeRoom( orcaogmap::OgMap &ogMap )
     // side walls
     for ( int yi=blY; yi <= tlY; yi++ )
     {
-        ogMap.gridCell(blX,yi) = orcaogmap::CELL_OCCUPIED;
-        ogMap.gridCell(brX,yi) = orcaogmap::CELL_OCCUPIED;
+        ogMap.gridCell(blX,yi) = hydroogmap::CELL_OCCUPIED;
+        ogMap.gridCell(brX,yi) = hydroogmap::CELL_OCCUPIED;
     }
     // top & bottom walls
     for ( int xi=blX; xi <= brX; xi++ )
     {
-        ogMap.gridCell(xi,tlY) = orcaogmap::CELL_OCCUPIED;
-        ogMap.gridCell(xi,brY) = orcaogmap::CELL_OCCUPIED;
+        ogMap.gridCell(xi,tlY) = hydroogmap::CELL_OCCUPIED;
+        ogMap.gridCell(xi,brY) = hydroogmap::CELL_OCCUPIED;
     }
 
     // clear a doorway
@@ -199,7 +200,7 @@ placeRoom( orcaogmap::OgMap &ogMap )
     ogMap.getCellIndices( centreX+doorWidth/2, centreY-widthY/2, doorRightX, doorY );
 
     for ( int xi=doorLeftX; xi <= doorRightX; xi++ )
-        ogMap.gridCell(xi,doorY) = orcaogmap::CELL_EMPTY;
+        ogMap.gridCell(xi,doorY) = hydroogmap::CELL_EMPTY;
 }
 
 void
@@ -304,12 +305,12 @@ Simulator::setCommand( const orca::VelocityControl2dData &cmd )
 }
 
 bool
-bordersFreeSpace( const orcaogmap::OgMap &ogMap, int x, int y )
+bordersFreeSpace( const hydroogmap::OgMap &ogMap, int x, int y )
 {
-    return ( ogMap.gridCell( x-1, y ) < orcaogmap::CELL_UNKNOWN ||
-             ogMap.gridCell( x+1, y ) < orcaogmap::CELL_UNKNOWN ||
-             ogMap.gridCell( x, y-1 ) < orcaogmap::CELL_UNKNOWN ||
-             ogMap.gridCell( x, y+1 ) < orcaogmap::CELL_UNKNOWN );
+    return ( ogMap.gridCell( x-1, y ) < hydroogmap::CELL_UNKNOWN ||
+             ogMap.gridCell( x+1, y ) < hydroogmap::CELL_UNKNOWN ||
+             ogMap.gridCell( x, y-1 ) < hydroogmap::CELL_UNKNOWN ||
+             ogMap.gridCell( x, y+1 ) < hydroogmap::CELL_UNKNOWN );
 }
 
 void
@@ -353,7 +354,7 @@ Simulator::checkProgress()
         cout<<"TRACE(simulator.cpp): Vehicle left the map!" << endl;
         exit(1);
     }
-    else if ( grownOgMap_.worldCell( pose_.x(), pose_.y() ) > orcaogmap::CELL_UNKNOWN )
+    else if ( grownOgMap_.worldCell( pose_.x(), pose_.y() ) > hydroogmap::CELL_UNKNOWN )
     {
         // Cell is occupied.  To be really, sure, make sure we're _inside_ an obstacle
         // (discrectisation can screw with things, so give the controller the beenfit of the doubt).

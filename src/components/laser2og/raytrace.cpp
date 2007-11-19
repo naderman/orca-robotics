@@ -12,11 +12,11 @@
 #include <orca/bros1.h>
 
 #include <orcapathplan/orcapathplan.h>
-#include <orcaogmap/ogmap.h>
+#include <hydroogmap/hydroogmap.h>
 #include <hydroutil/mathdefs.h>
 
 using namespace orca;
-using namespace orcaogmap;
+using namespace hydroogmap;
 using namespace orcapathplan;
 using namespace std;
 
@@ -226,7 +226,7 @@ laser2og::rayTrace(const orcapathplan::Cell2D & c0,
 
 
 std::vector<Cell2D>
-laser2og::rayTrace( const orcaogmap::CartesianPoint2d & p1, const orcaogmap::CartesianPoint2d & p2,
+laser2og::rayTrace( const hydroogmap::CartesianPoint2d & p1, const hydroogmap::CartesianPoint2d & p2,
                               const double originX, const double originY,
                               const double mapResX, const double mapResY ) 
 {
@@ -235,5 +235,3 @@ laser2og::rayTrace( const orcaogmap::CartesianPoint2d & p1, const orcaogmap::Car
     
     return rayTrace(c1,c2);
 }
-
-

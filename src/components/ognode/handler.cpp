@@ -21,7 +21,7 @@ namespace ognode {
 namespace {
 
     // Fuses the cell likelihoods into the map
-    void add( const orca::OgCellLikelihood &f, orcaogmap::GenericMap<double> &m )
+    void add( const orca::OgCellLikelihood &f, hydroogmap::GenericMap<double> &m )
     {
         double prior;
         if( !m.tryGridCell( f.x, f.y, prior ) )
@@ -38,9 +38,9 @@ namespace {
         m.gridCell( f.x, f.y ) = normPosterior;
     }
 
-    void convert( const orcaogmap::GenericMap<double> &doubleMap, orca::OgMapData &ogMapData )
+    void convert( const hydroogmap::GenericMap<double> &doubleMap, orca::OgMapData &ogMapData )
     {
-        orcaogmap::OgMap local( doubleMap.numCellsX(),
+        hydroogmap::OgMap local( doubleMap.numCellsX(),
                                 doubleMap.numCellsY(),
                                 doubleMap.offset(),
                                 doubleMap.metresPerCellX(),
@@ -51,7 +51,7 @@ namespace {
         {
             for ( int yi=0; yi < local.numCellsY(); yi++ )
             {
-                local.gridCell( xi, yi ) = (unsigned char)floor( doubleMap.gridCell(xi,yi)*orcaogmap::CELL_OCCUPIED+0.5 );
+                local.gridCell( xi, yi ) = (unsigned char)floor( doubleMap.gridCell(xi,yi)*hydroogmap::CELL_OCCUPIED+0.5 );
             }
         }
         orcaogmap::convert( local, ogMapData );

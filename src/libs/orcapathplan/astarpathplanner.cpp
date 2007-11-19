@@ -17,7 +17,26 @@ using namespace std;
 
 namespace orcapathplan {
 
-AStarPathPlanner::AStarPathPlanner( const orcaogmap::OgMap ogMap,
+namespace {
+
+    void 
+    convert( const hydroogmap::OgMap & input, double *output )
+    {
+        unsigned int counter=0;
+        for (int y=0; y<input.numCellsY(); y++ )
+        {
+            for (int x=0; x<input.numCellsX(); x++ )
+            { 
+                unsigned char c = input.gridCell(x,y);
+                output[counter] = (double)c;
+                ++counter;
+            }
+        }
+    }
+
+}
+
+AStarPathPlanner::AStarPathPlanner( const hydroogmap::OgMap ogMap,
                                     double robotDiameterMetres,
                                     double traversabilityThreshhold,
                                     bool   doPathOptimization )

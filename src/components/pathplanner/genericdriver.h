@@ -29,7 +29,7 @@ class GenericDriver : public AlgoDriver
 public: 
 
     GenericDriver( orcapathplan::IPathPlanner2d *pathPlanner,
-                   const orcaogmap::OgMap       &ogMap,
+                   const hydroogmap::OgMap       &ogMap,
                    double                        robotDiameterMetres,
                    double                        traversabilityThreshhold,
                    bool                          doPathOptimization,
@@ -44,8 +44,8 @@ public:
 private: 
 
     orcapathplan::IPathPlanner2d  *pathPlanner_;
-    const orcaogmap::OgMap        &ogMap_;
-    orcaogmap::OgMap               grownOgMap_;
+    const hydroogmap::OgMap        &ogMap_;
+    hydroogmap::OgMap               grownOgMap_;
     
     double robotDiameterMetres_;
     double traversabilityThreshhold_;
@@ -54,7 +54,7 @@ private:
     void setWaypointParameters( const orca::Waypoint2d *startWp, 
                                 const orca::Waypoint2d *goalWp, 
                                 const orcapathplan::Cell2DVector &pathSegmentCells,
-                                const orcaogmap::OgMap &ogMap,
+                                const hydroogmap::OgMap &ogMap,
                                 std::vector<orcapathplan::WaypointParameter> &wpParaVector );
 
     void jiggleOntoClearCells( orca::Path2d &path );

@@ -64,7 +64,7 @@ loadMap( const std::string &filename,
 }
 
 void loadMap( const std::string &filename,
-              orcaogmap::OgMap  &ogMap,
+              hydroogmap::OgMap  &ogMap,
               bool               negate,
               float              offsetX,
               float              offsetY,

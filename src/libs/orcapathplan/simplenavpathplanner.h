@@ -24,7 +24,7 @@ class SimpleNavPathPlanner : public IPathPlanner2d
 
 public: 
 
-    SimpleNavPathPlanner( const orcaogmap::OgMap &ogMap,
+    SimpleNavPathPlanner( const hydroogmap::OgMap &ogMap,
                           double robotDiameterMetres,
                           double traversabilityThreshhold,
                           bool   doPathOptimization );
@@ -45,7 +45,7 @@ private:
                       int           endX,
                       int           endY ) const;
 
-    const orcaogmap::OgMap &ogMap_;
+    const hydroogmap::OgMap &ogMap_;
 
     const double robotDiameterMetres_;
     const double traversabilityThreshhold_;

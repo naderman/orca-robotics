@@ -27,7 +27,7 @@ public:
     //!
     //! Warning: may throw 'orcapathplan::Exception's
     //!
-    SkeletonPathPlanner( const orcaogmap::OgMap &ogMap,
+    SkeletonPathPlanner( const hydroogmap::OgMap &ogMap,
                          double robotDiameterMetres,
                          double traversabilityThreshhold,
                          bool   doPathOptimization,
@@ -53,7 +53,7 @@ private:
                       int           endX,
                       int           endY ) const;
 
-    const orcaogmap::OgMap &ogMap_;
+    const hydroogmap::OgMap &ogMap_;
 
     FloatMap     costMap_;
     Cell2DVector skel_;

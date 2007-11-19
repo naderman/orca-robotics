@@ -32,7 +32,7 @@ class SkeletonDriver : public AlgoDriver
 
 public: 
 
-    SkeletonDriver( const orcaogmap::OgMap &ogMap,
+    SkeletonDriver( const hydroogmap::OgMap &ogMap,
                     double robotDiameterMetres,
                     double traversabilityThreshhold,
                     bool   doPathOptimization,
@@ -48,7 +48,7 @@ public:
 private: 
     
     #ifdef QT4_FOUND
-    void setGraphics( const orcaogmap::OgMap &ogMap,
+    void setGraphics( const hydroogmap::OgMap &ogMap,
                       double            robotDiameterMetres,
                       double            traversabilityThreshhold,
                       bool              doPathOptimization );

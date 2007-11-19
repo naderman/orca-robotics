@@ -10,7 +10,7 @@
 #include "sparseskel.h"
 #include "ipathplanner2d.h"
 #include <hydroutil/mathdefs.h>
-#include <orcaogmap/simpleograytrace.h>
+#include <hydroogmap/simpleograytrace.h>
 #include <iostream>
 using namespace std;
 
@@ -51,7 +51,7 @@ namespace {
     // rayTracer isn't necessarily symmetric.
     // This tests both directions.
     //
-    bool directLinkExists( const orcaogmap::OgMap &ogMap,
+    bool directLinkExists( const hydroogmap::OgMap &ogMap,
                            double                  traversabilityThreshhold,
                            const Cell2D           &p1,
                            const Cell2D           &p2 )
@@ -65,7 +65,7 @@ namespace {
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-SparseSkel::SparseSkel( const orcaogmap::OgMap &ogMap,
+SparseSkel::SparseSkel( const hydroogmap::OgMap &ogMap,
                         double                  traversabilityThreshhold,
                         const Cell2DVector     &skel,
                         const FloatMap         &costMap )

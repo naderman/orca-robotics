@@ -42,7 +42,7 @@ namespace orcapathplan
     bool areAllNans( const FloatMap &floatMap );
     
     //! Does Line-Of-Sight exist between the two cells?
-    bool losExists( const orcaogmap::OgMap &ogMap,
+    bool losExists( const hydroogmap::OgMap &ogMap,
                     double traversabilityThreshhold,
                     const Cell2D &c1,
                     const Cell2D &c2 );
@@ -59,13 +59,13 @@ namespace orcapathplan
     //! Returns: 
     //! - TRUE if cell is stricly < traversabilityThreshhold, 
     //! - FALSE if it's on the edge of the map
-    bool isTraversable( const orcaogmap::OgMap &ogMap,
+    bool isTraversable( const hydroogmap::OgMap &ogMap,
                         const int indX,
                         const int indY,
                         const float traversabilityThreshhold);
 
     //! Convenience function, see above
-    inline bool isTraversable( const orcaogmap::OgMap & ogMap,
+    inline bool isTraversable( const hydroogmap::OgMap & ogMap,
                                const Cell2D cell,
                                const float traversabilityThreshhold)
     { return isTraversable(ogMap,cell.x(),cell.y(),traversabilityThreshhold); }
@@ -104,21 +104,21 @@ namespace orcapathplan
 // ================= SIMPLE NAVIGATION FUNCTIONS ============================ 
     //! Calculates simple navigation function. Returns false if unsuccessful
     //! (algorithm described by Latombe, NF1, ch.4.2.1, p.322)
-    bool calcSimpleNavigation( const orcaogmap::OgMap &ogMap,
+    bool calcSimpleNavigation( const hydroogmap::OgMap &ogMap,
                                FloatMap               &navMap,
                                Cell2D                 &startCell,
                                double                  traversabilityThreshhold,
                                const double            robotDiameterMetres );
 
     //! Modifies navMap: grows obstacles using the diameter of the robot (obstacles are represented by NANs)
-    void growObstaclesNavMap( const orcaogmap::OgMap &ogMap,
+    void growObstaclesNavMap( const hydroogmap::OgMap &ogMap,
                               FloatMap               &navMap,
                               double                  traversabilityThreshhold,
                               const double            robotDiameterMetres );
 
     //! Modifies ogMap: grows obstacles using the diameter of the robot and the 
     //! traversabilityThreshhold (obstacles are represented by OCCUPIED).
-    void growObstaclesOgMap( orcaogmap::OgMap &ogMap,
+    void growObstaclesOgMap( hydroogmap::OgMap &ogMap,
                              const double      traversabilityThreshhold,
                              const int         robotDiameterCells );
 // =========================================================================
@@ -151,7 +151,7 @@ namespace orcapathplan
     //! Outputs (needn't be initialised before calling this function):
     //!  - skel
     //!  - distGrid
-    bool computeSkeleton( const orcaogmap::OgMap &ogMap,
+    bool computeSkeleton( const hydroogmap::OgMap &ogMap,
                           Cell2DVector           &skel,
                           FloatMap               &distGrid,
                           double                  traversabilityThreshhold,
@@ -172,14 +172,14 @@ namespace orcapathplan
                                int             robotRadiusCells );
 
     //! Computes the potential function U along the skeleton
-    bool computePotentialSkeleton( const orcaogmap::OgMap &ogMap,
+    bool computePotentialSkeleton( const hydroogmap::OgMap &ogMap,
                                    const FloatMap         &costMap,
                                    FloatMap               &navMap,
                                    const Cell2DVector     &skel,
                                    const Cell2D           &startCell );
 
     //! Computes the potential function U in the free space (not on the skeleton)
-    void computePotentialFreeSpace( const orcaogmap::OgMap &ogMap,
+    void computePotentialFreeSpace( const hydroogmap::OgMap &ogMap,
                                     const FloatMap         &costMap,
                                     FloatMap               &navMap,
                                     const Cell2DVector     &skel,
@@ -188,7 +188,7 @@ namespace orcapathplan
     //! Convenience function that calls the other functions sequentially 
     //! (algorithm as described by Latombe, SKELETON and NF2, ch.4.2.2, p.324).
     //! Returns false if unsuccessful.
-    bool calcSkeletonNavigation( const orcaogmap::OgMap &ogMap,
+    bool calcSkeletonNavigation( const hydroogmap::OgMap &ogMap,
                                  FloatMap               &navMap,
                                  Cell2D                 &startCell,
                                  double                  traversabilityThreshhold,
@@ -215,7 +215,7 @@ namespace orcapathplan
                                    double               metresPerCell,
                                    const CostEvaluator &costEvaluator=DefaultCostEvaluator() );
 
-    void computeUniformCosts( const orcaogmap::OgMap &ogMap,
+    void computeUniformCosts( const hydroogmap::OgMap &ogMap,
                               FloatMap               &costMap,
                               double                  traversabilityThreshhold );
 
@@ -223,7 +223,7 @@ namespace orcapathplan
 
 // ================= GENERAL PATHPLANNING FUNCTIONS ====================
     //! Finds a series of connected cells using gradient descent on precalculated navigation function. Returns result codes.
-    Result calcPath( const orcaogmap::OgMap &ogMap,
+    Result calcPath( const hydroogmap::OgMap &ogMap,
                      const FloatMap         &navMap,
                      Cell2D                 &goalCell,
                      Cell2DVector           &path,
@@ -231,7 +231,7 @@ namespace orcapathplan
 
     //! Returns the diameter of the robot in cells depending on the resolution of the ogmap. 
     //! If x and y resolutions are different, the smaller one is used (yielding the larger diameter in cells)
-    int robotDiameterInCells( const orcaogmap::OgMap & ogMap, const double robotDiameterMetres );
+    int robotDiameterInCells( const hydroogmap::OgMap & ogMap, const double robotDiameterMetres );
 
     //! Optimizes a long path into a few waypoints only, by removing un-necessary waypoints.
     //! Doesn't take the size of the robot into account -- if you want to do so, grow the
@@ -240,7 +240,7 @@ namespace orcapathplan
     //! This function returns a subset of the cells in origPath.  It could be improved (generating a shorter path)
     //! by considering cells other than just those in origPath.
     //!
-    void optimizePath( const orcaogmap::OgMap &ogMap,
+    void optimizePath( const hydroogmap::OgMap &ogMap,
                        double                  traversabilityThreshhold,
                        const Cell2DVector     &origPath,
                        Cell2DVector           &optimisedPath );

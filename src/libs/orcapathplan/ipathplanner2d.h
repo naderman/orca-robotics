@@ -87,6 +87,8 @@ public:
     // Compute the path from 'start' to 'end'.
     // NOTE: Everything is done in cells (not world-coordinates).
     //
+    // The computed path is not necessarily a set of contiguous cells.
+    //
     // Warning: may throw 'orcapathplan::Exception's
     //
     virtual void computePath( int           startX,

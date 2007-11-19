@@ -22,19 +22,19 @@ namespace {
 
     bool isClearWorld( double x,
                        double y,
-                       const orcaogmap::OgMap &ogMap,
+                       const hydroogmap::OgMap &ogMap,
                        double traversabilityThreshhold )
     {
         unsigned char val;
         if( ogMap.tryWorldCell( x, y, val ) == true )
         {
-            return ( val < (unsigned char) ((traversabilityThreshhold)*orcaogmap::CELL_OCCUPIED) );
+            return ( val < (unsigned char) ((traversabilityThreshhold)*hydroogmap::CELL_OCCUPIED) );
         }
         return false;   
     }
 
     void jiggleOntoClearCell( orca::Waypoint2d &wp,
-                              const orcaogmap::OgMap &ogMap,
+                              const hydroogmap::OgMap &ogMap,
                               double traversabilityThreshhold )
     {
         if ( isClearWorld( wp.target.p.x, wp.target.p.y, ogMap, traversabilityThreshhold ) )
@@ -75,7 +75,7 @@ namespace {
 }
 
 GenericDriver::GenericDriver( orcapathplan::IPathPlanner2d  *pathPlanner,
-                              const orcaogmap::OgMap        &ogMap,
+                              const hydroogmap::OgMap        &ogMap,
                               double                         robotDiameterMetres,
                               double                         traversabilityThreshhold,
                               bool                           doPathOptimization,
@@ -192,7 +192,7 @@ void
 GenericDriver::setWaypointParameters( const orca::Waypoint2d *startWp, 
                                        const orca::Waypoint2d *goalWp, 
                                        const orcapathplan::Cell2DVector &pathSegmentCells,
-                                       const orcaogmap::OgMap &ogMap,
+                                       const hydroogmap::OgMap &ogMap,
                                        vector<orcapathplan::WaypointParameter> &wpParaVector )
 {
     wpParaVector.clear();

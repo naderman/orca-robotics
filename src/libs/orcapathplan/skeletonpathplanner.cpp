@@ -16,7 +16,7 @@ using namespace std;
 
 namespace orcapathplan {
 
-SkeletonPathPlanner::SkeletonPathPlanner( const orcaogmap::OgMap &ogMap,
+SkeletonPathPlanner::SkeletonPathPlanner( const hydroogmap::OgMap &ogMap,
                                           double robotDiameterMetres,
                                           double traversabilityThreshhold,
                                           bool   doPathOptimization,
@@ -28,7 +28,7 @@ SkeletonPathPlanner::SkeletonPathPlanner( const orcaogmap::OgMap &ogMap,
 {
 // Un-comment to see OgMap as text.    
 //     cout<<"TRACE(skeletonpathplanner.cpp): ogMap: " << endl;
-//     cout << orcaogmap::toText( ogMap ) << endl;
+//     cout << hydroogmap::toText( ogMap ) << endl;
 
     assert( robotDiameterMetres >= 0.0 );
     assert( traversabilityThreshhold >= 0.0 );

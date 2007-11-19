@@ -16,7 +16,7 @@
 #include <orca/bros1.h>
 #include <hydroutil/mathdefs.h>
 #include <orcapathplan/cell2d.h>
-#include <orcaogmap/ogmap.h>
+#include <hydroogmap/hydroogmap.h>
 
 
 namespace laser2og
@@ -30,11 +30,10 @@ namespace laser2og
         Returns a list of cells along a straight line from one point to another.
         Both points startPoint and endPoint must be in the world coordinate system.
      */
-    std::vector<orcapathplan::Cell2D> rayTrace(const orcaogmap::CartesianPoint2d & startPoint,
-				       const orcaogmap::CartesianPoint2d & endPoint,
-                                        const double originX, const double originY,
-                                        const double mapResX, const double mapResY = -1 ) ;
+    std::vector<orcapathplan::Cell2D> rayTrace(const hydroogmap::CartesianPoint2d & startPoint,
+                                               const hydroogmap::CartesianPoint2d & endPoint,
+                                               const double originX, const double originY,
+                                               const double mapResX, const double mapResY = -1 ) ;
 }
   
 #endif
-

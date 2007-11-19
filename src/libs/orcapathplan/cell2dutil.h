@@ -12,7 +12,7 @@
 #define ORCA2_CELL2D_UTIL_H
 
 #include "cell2d.h"
-#include <orcaogmap/ogmap.h>
+#include <hydroogmap/ogmap.h>
 
 namespace orcapathplan
 {
@@ -37,17 +37,17 @@ namespace orcapathplan
 
     //! convers a point in 2d space to a cell reference
     //! @relatesalso Grid2D
-    Cell2D point2cell( const orcaogmap::CartesianPoint2d & pt, const double & originX, const double & originY,
+    Cell2D point2cell( const hydroogmap::CartesianPoint2d & pt, const double & originX, const double & originY,
                        const double & resX, const double & resY=-1 );
 
     //! convers a cell reference to a point in 2d space
     //! @relatesalso Grid2D
-    orcaogmap::CartesianPoint2d cell2point( const Cell2D c, const double originX, const double originY,
+    hydroogmap::CartesianPoint2d cell2point( const Cell2D c, const double originX, const double originY,
                         const double resX, const double resY=-1 );
 
     //! Find the geometric distance between two cells
     //! @relatesalso CartesianPoint2d
-    double euclideanDistance( const orcaogmap::CartesianPoint2d p1, const orcaogmap::CartesianPoint2d p2 );
+    double euclideanDistance( const hydroogmap::CartesianPoint2d p1, const hydroogmap::CartesianPoint2d p2 );
 
 
 } // namespace

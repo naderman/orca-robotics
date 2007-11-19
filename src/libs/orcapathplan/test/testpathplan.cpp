@@ -6,7 +6,7 @@ using namespace std;
 using namespace orcapathplan;
 
 void testPathPlan( const IPathPlanner2d   &planner,
-                   const orcaogmap::OgMap &ogMap,
+                   const hydroogmap::OgMap &ogMap,
                    const Cell2D           &start,
                    const Cell2D           &goal )
 {
@@ -16,7 +16,7 @@ void testPathPlan( const IPathPlanner2d   &planner,
     planner.computePath( start.x(), start.y(), goal.x(), goal.y(), path );
 
     // Check the path
-    orcaogmap::OgLosTracer rayTracer(ogMap);
+    hydroogmap::OgLosTracer rayTracer(ogMap);
     if ( path.size() < 2 )
     {
         cout << "ERROR(testpathplan.cpp): Path too short: just one element." << endl;
@@ -49,7 +49,7 @@ int main( int argc, char **argv )
         exit(1);
     }
 
-    orcaogmap::OgMap ogMap;
+    hydroogmap::OgMap ogMap;
     orcaogmapload::loadMap( argv[1],
                             ogMap,
                             false,

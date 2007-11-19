@@ -1,7 +1,7 @@
 #ifndef COSTCALCULATOR_H
 #define COSTCALCULATOR_H
 
-#include <orcaogmap/ograytracer.h>
+#include <hydroogmap/ograytracer.h>
 #include <orcapathplan/pathplanutils.h>
 
 namespace orcapathplan {
@@ -33,7 +33,7 @@ private:
     double costSoFar_;
 };
 
-typedef orcaogmap::OgRayTracer<CostAccumulator> CostCalculator;
+typedef hydroogmap::OgRayTracer<CostAccumulator> CostCalculator;
 
 }
 

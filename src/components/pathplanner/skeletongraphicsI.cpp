@@ -73,7 +73,7 @@ SkeletonGraphicsI::unsubscribe(const ::QGraphics2dConsumerPrx& subscriber,
 
 
 void 
-SkeletonGraphicsI::drawSkel( const orcaogmap::OgMap           &ogMap,
+SkeletonGraphicsI::drawSkel( const hydroogmap::OgMap           &ogMap,
                              const orcapathplan::Cell2DVector &skel,
                              QPainter                         &p )
 {
@@ -115,7 +115,7 @@ SkeletonGraphicsI::drawSkel( const orcaogmap::OgMap           &ogMap,
 }
 
 void 
-SkeletonGraphicsI::drawSparseSkel( const orcaogmap::OgMap           &ogMap,
+SkeletonGraphicsI::drawSparseSkel( const hydroogmap::OgMap           &ogMap,
                                    const orcapathplan::SparseSkel   &skel,
                                    QPainter                         &p )
 {
@@ -163,7 +163,7 @@ SkeletonGraphicsI::drawSparseSkel( const orcaogmap::OgMap           &ogMap,
 }
 
 void 
-SkeletonGraphicsI::localSetSkel( const orcaogmap::OgMap           &ogMap,
+SkeletonGraphicsI::localSetSkel( const hydroogmap::OgMap           &ogMap,
                                  const orcapathplan::Cell2DVector *skel,
                                  const orcapathplan::SparseSkel   *sparseSkel )
 {

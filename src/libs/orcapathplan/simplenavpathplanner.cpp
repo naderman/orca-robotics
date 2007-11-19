@@ -16,7 +16,7 @@ using namespace std;
 
 namespace orcapathplan {
 
-SimpleNavPathPlanner::SimpleNavPathPlanner( const orcaogmap::OgMap &ogMap,
+SimpleNavPathPlanner::SimpleNavPathPlanner( const hydroogmap::OgMap &ogMap,
                                             double robotDiameterMetres,
                                             double traversabilityThreshhold,
                                             bool   doPathOptimization )

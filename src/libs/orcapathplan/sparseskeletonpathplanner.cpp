@@ -15,7 +15,7 @@ using namespace std;
 
 namespace orcapathplan {
 
-SparseSkeletonPathPlanner::SparseSkeletonPathPlanner( const orcaogmap::OgMap &ogMap,
+SparseSkeletonPathPlanner::SparseSkeletonPathPlanner( const hydroogmap::OgMap &ogMap,
                                                       double robotDiameterMetres,
                                                       double traversabilityThreshhold,
                                                       bool   doPathOptimization,
@@ -72,7 +72,7 @@ SparseSkeletonPathPlanner::SparseSkeletonPathPlanner( const orcaogmap::OgMap &og
 
     planOgMap_ = &(grownOgMap_);
 
-    // cout<<"TRACE(sparseskeletonpathplanner.cpp): planOgMap_: " << endl << orcaogmap::toText(*planOgMap_) << endl;
+    // cout<<"TRACE(sparseskeletonpathplanner.cpp): planOgMap_: " << endl << hydroogmap::toText(*planOgMap_) << endl;
 
     sparseSkel_ = new SparseSkel( (*planOgMap_), traversabilityThreshhold_, skel_, costMap_ );
 }

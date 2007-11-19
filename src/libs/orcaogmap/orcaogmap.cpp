@@ -7,13 +7,13 @@
  * the LICENSE file included in this distribution.
  *
  */
-#include "ogmapconvert.h"
+#include "orcaogmap.h"
 
 
 namespace orcaogmap {
 
 void 
-convert( const orca::OgMapData & input, orcaogmap::OgMap & output )
+convert( const orca::OgMapData & input, hydroogmap::OgMap & output )
 {
     assert( input.numCellsX*input.numCellsY == (int) (input.data.size()) );
 
@@ -28,7 +28,7 @@ convert( const orca::OgMapData & input, orcaogmap::OgMap & output )
 }
 
 void 
-convert( const orcaogmap::OgMap &input, orca::OgMapData &output, orca::OgMapType mapType )
+convert( const hydroogmap::OgMap &input, orca::OgMapData &output, orca::OgMapType mapType )
 {
     output.numCellsX = input.numCellsX();
     output.numCellsY = input.numCellsY();
@@ -41,21 +41,6 @@ convert( const orcaogmap::OgMap &input, orca::OgMapData &output, orca::OgMapType
     output.metresPerCellX = input.metresPerCellX();
     output.metresPerCellY = input.metresPerCellY();
     output.mapType = mapType;
-}
-
-void 
-convert( const orcaogmap::OgMap & input, double *output )
-{
-    unsigned int counter=0;
-    for (int y=0; y<input.numCellsY(); y++ )
-    {
-        for (int x=0; x<input.numCellsX(); x++ )
-        { 
-            unsigned char c = input.gridCell(x,y);
-            output[counter] = (double)c;
-            ++counter;
-        }
-    }
 }
 
 } // namespace

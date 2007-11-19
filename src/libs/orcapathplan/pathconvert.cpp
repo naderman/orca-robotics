@@ -100,7 +100,7 @@ isDoubleWaypoint( const orca::PathPlanner2dData &path, float worldX, float world
 }
 
 void 
-convertAndAppend( const orcaogmap::OgMap  &ogMap,
+convertAndAppend( const hydroogmap::OgMap  &ogMap,
                   const Cell2DVector      &input,
                   orca::PathPlanner2dData &output,
                   double                   firstHeading)
@@ -125,7 +125,7 @@ convertAndAppend( const orcaogmap::OgMap  &ogMap,
         
 
 void 
-convertAndAppend( const orcaogmap::OgMap               &ogMap,
+convertAndAppend( const hydroogmap::OgMap               &ogMap,
                   const Cell2DVector                   &input,
                   const std::vector<WaypointParameter> &wpPara,
                   orca::PathPlanner2dData              &output,

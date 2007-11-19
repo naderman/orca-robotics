@@ -7,12 +7,19 @@
  * the LICENSE file included in this distribution.
  *
  */
-#ifndef ORCA_OGMAP_H
-#define ORCA_OGMAP_H
+#ifndef ORCAOGMAP_CONVERT_H
+#define ORCAOGMAP_CONVERT_H
 
-#include <orcaogmap/simpleograytrace.h>
-#include <orcaogmap/ograytracer.h>
-#include <orcaogmap/ogmap.h>
-#include <orcaogmap/ogmapconvert.h>
+#include <orca/ogmap.h>
+#include <hydroogmap/hydroogmap.h>
 
+namespace orcaogmap {
+    
+    //! Converts an OgMap from a Slice-defined representation to an internal one
+    void convert( const orca::OgMapData &input, hydroogmap::OgMap &output );
+    
+    //! Converts an OgMap from an internal to a Slice-defined representation
+    void convert( const hydroogmap::OgMap &input, orca::OgMapData &output, orca::OgMapType mapType=orca::OgMapOccupancy );
+    
+}
 #endif

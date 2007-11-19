@@ -20,7 +20,7 @@ const float AC = 1.0;
 const float DC = 1.4142;
 
 using namespace std;
-using namespace orcaogmap;
+using namespace hydroogmap;
 
 
 namespace orcapathplan {
@@ -227,7 +227,7 @@ bool isTraversable( const OgMap &ogMap,
     unsigned char val;
     if( ogMap.tryGridCell( indX, indY, val ) == true )
     {
-        return ( val < (unsigned char) ((traversabilityThreshhold)*orcaogmap::CELL_OCCUPIED) );
+        return ( val < (unsigned char) ((traversabilityThreshhold)*hydroogmap::CELL_OCCUPIED) );
     }
     return false;   
 }
@@ -244,7 +244,7 @@ bool isTraversableNeighbors( const OgMap &ogMap,
 }
 
 // Convenience function, see above
-inline bool isTraversableNeighbors( const orcaogmap::OgMap & ogMap, const Cell2D cell, const float traversabilityThreshhold )
+inline bool isTraversableNeighbors( const hydroogmap::OgMap & ogMap, const Cell2D cell, const float traversabilityThreshhold )
 { return ( isTraversableNeighbors(ogMap,cell.x(),cell.y(),traversabilityThreshhold) ); } 
 
 // Checks whether cell is in a free space region.
@@ -305,7 +305,7 @@ bool validateCell( const FloatMap & theMap, Cell2D & c, int numCells, bool check
 }
 
 // Returns true if the cell is at the border of the ogMap otherwise false
-bool isBorderCell( const orcaogmap::OgMap & ogMap, int i, int j )
+bool isBorderCell( const hydroogmap::OgMap & ogMap, int i, int j )
 {
     int sizeX = ogMap.numCellsX();
     int sizeY = ogMap.numCellsY();
@@ -315,11 +315,11 @@ bool isBorderCell( const orcaogmap::OgMap & ogMap, int i, int j )
     return false;
 }
 
-bool losExists( const orcaogmap::OgMap &ogMap, double traversabilityThreshhold, const Cell2D &c1, const Cell2D &c2 )
+bool losExists( const hydroogmap::OgMap &ogMap, double traversabilityThreshhold, const Cell2D &c1, const Cell2D &c2 )
 {
     assert( ogMap.cellWithinMap( c1.x(), c1.y() ) );
     assert( ogMap.cellWithinMap( c2.x(), c2.y() ) );
-    orcaogmap::OgLosTracer rayTracer( ogMap, (unsigned char)(traversabilityThreshhold*orcaogmap::CELL_OCCUPIED) );
+    hydroogmap::OgLosTracer rayTracer( ogMap, (unsigned char)(traversabilityThreshhold*hydroogmap::CELL_OCCUPIED) );
     return rayTracer.isClearCells( c1.x(), c1.y(), c2.x(), c2.y() );
 }
 
@@ -614,7 +614,7 @@ void growObstaclesOgMap( OgMap        &ogMap,
 
 
 
-bool calcSkeletonNavigation( const orcaogmap::OgMap &ogMap,
+bool calcSkeletonNavigation( const hydroogmap::OgMap &ogMap,
                              FloatMap               &navMap,
                              Cell2D                 &startCell,
                              const double            traversabilityThreshhold,
@@ -650,7 +650,7 @@ bool calcSkeletonNavigation( const orcaogmap::OgMap &ogMap,
 }
 
 
-void makeOgMapBoundary( orcaogmap::OgMap ogMap )
+void makeOgMapBoundary( hydroogmap::OgMap ogMap )
 {
     int sizeX = ogMap.numCellsX();
     int sizeY = ogMap.numCellsY();
@@ -701,7 +701,7 @@ computeCostsFromDistGrid( const FloatMap      &distGrid,
     }
 }
 
-void computeUniformCosts( const orcaogmap::OgMap &ogMap,
+void computeUniformCosts( const hydroogmap::OgMap &ogMap,
                           FloatMap               &costMap,
                           double                  traversabilityThreshhold )
 {
@@ -720,7 +720,7 @@ void computeUniformCosts( const orcaogmap::OgMap &ogMap,
     }
 }
 
-bool computeSkeleton( const orcaogmap::OgMap &ogMap,
+bool computeSkeleton( const hydroogmap::OgMap &ogMap,
                       Cell2DVector           &skel,
                       FloatMap               &distGrid,
                       double                  traversabilityThreshhold,
@@ -1113,7 +1113,7 @@ void optimizePath( const OgMap        &ogMap,
                    const Cell2DVector &origPath,
                    Cell2DVector       &optimisedPath )
 {
-    OgLosTracer rayTracer( ogMap, (unsigned char)(traversabilityThreshhold*orcaogmap::CELL_OCCUPIED) );
+    OgLosTracer rayTracer( ogMap, (unsigned char)(traversabilityThreshhold*hydroogmap::CELL_OCCUPIED) );
 
 #ifndef NDEBUG
     // Check that the original path is OK.

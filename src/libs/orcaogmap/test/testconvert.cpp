@@ -16,7 +16,6 @@
 #include <orca/ogmap.h>
 
 using namespace std;
-using namespace orcaogmap;
 
 int main( int argc, char **argv )
 {
@@ -28,7 +27,7 @@ int main( int argc, char **argv )
     }
     
     // load map from file into internal representation
-    orcaogmap::OgMap internalMap;
+    hydroogmap::OgMap internalMap;
     orcaogmapload::loadMap( argv[1],
                             internalMap,
                             false,
@@ -44,7 +43,7 @@ int main( int argc, char **argv )
     orcaogmap::convert( internalMap, sliceMap );
     
     // convert back
-    orcaogmap::OgMap internalMap2;
+    hydroogmap::OgMap internalMap2;
     orcaogmap::convert( sliceMap, internalMap2 );
     
     // alter map for testing

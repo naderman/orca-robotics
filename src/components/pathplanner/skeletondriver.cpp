@@ -24,7 +24,7 @@ using namespace orcaice;
 
 namespace pathplanner {
     
-SkeletonDriver::SkeletonDriver( const orcaogmap::OgMap &ogMap,
+SkeletonDriver::SkeletonDriver( const hydroogmap::OgMap &ogMap,
                                 double robotDiameterMetres,
                                 double traversabilityThreshhold,
                                 bool   doPathOptimization,
@@ -125,7 +125,7 @@ SkeletonDriver::~SkeletonDriver()
 
 #ifdef QT4_FOUND
 void
-SkeletonDriver::setGraphics( const orcaogmap::OgMap &ogMap,
+SkeletonDriver::setGraphics( const hydroogmap::OgMap &ogMap,
                              double            robotDiameterMetres,
                              double            traversabilityThreshhold,
                              bool              doPathOptimization )

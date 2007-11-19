@@ -162,7 +162,7 @@ AlgoHandler::initDriver()
     if (useHazardMap_)
     {
         orca::OgMapData hazardMapSlice;
-        orcaogmap::OgMap hazardMap;
+        hydroogmap::OgMap hazardMap;
         try
         {
             hazardMapSlice = hazardMapPrx_->getData();
@@ -176,7 +176,7 @@ AlgoHandler::initDriver()
         // convert into internal representation
         orcaogmap::convert(hazardMapSlice,hazardMap);
         // overlay the two maps, result is stored in ogMap
-        orcaogmap::overlay(ogMap_,hazardMap);
+        hydroogmap::overlay(ogMap_,hazardMap);
     }
 
 

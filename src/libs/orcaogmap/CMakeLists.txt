@@ -5,6 +5,7 @@ IF ( NOT OS_WIN)
     FILE( GLOB SRCS *.cpp )
 
     GLOBAL_ADD_LIBRARY( OrcaOgMap SHARED ${SRCS} )
+    TARGET_LINK_LIBRARIES( OrcaOgMap HydroOgMap )
 
     INSTALL_FILES( /include/orcaogmap .*\\.h$ )
 

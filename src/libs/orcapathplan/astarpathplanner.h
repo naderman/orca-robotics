@@ -24,7 +24,7 @@ class AStarPathPlanner : public IPathPlanner2d
 
 public: 
 
-    AStarPathPlanner( const orcaogmap::OgMap ogMap,
+    AStarPathPlanner( const hydroogmap::OgMap ogMap,
                       double robotDiameterMetres,
                       double traversabilityThreshhold,
                       bool   doPathOptimization );
@@ -45,7 +45,7 @@ private:
                       int           endX,
                       int           endY ) const;
 
-    orcaogmap::OgMap     ogMap_;
+    hydroogmap::OgMap     ogMap_;
     orcapathplan::AStar* aStar_;
 
     const double robotDiameterMetres_;

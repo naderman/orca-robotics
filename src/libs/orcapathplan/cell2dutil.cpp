@@ -18,7 +18,7 @@
 #include "cell2dutil.h"
 
 using namespace orcapathplan;
-using namespace orcaogmap;
+using namespace hydroogmap;
 using namespace std; // for math functions
 
 Cell2D 
@@ -41,7 +41,7 @@ orcapathplan::cell2point( const Cell2D c, const double originX, const double ori
 }
 
 double 
-orcapathplan::euclideanDistance( const orcaogmap::CartesianPoint2d p1, const orcaogmap::CartesianPoint2d p2 )
+orcapathplan::euclideanDistance( const hydroogmap::CartesianPoint2d p1, const hydroogmap::CartesianPoint2d p2 )
 {
     return hypot(p1.x-p2.x, p1.y-p2.y );
 }
