@@ -11,7 +11,8 @@
 #ifndef ORCA2_SEGWAY_RMP_TYPES_H
 #define ORCA2_SEGWAY_RMP_TYPES_H
 
-#include <orcarobotdriverutil/ihwdriver.h>
+#include <sstream>
+#include <cmath>
 
 namespace segwayrmp
 {
@@ -34,7 +35,26 @@ public:
     double mainvolt;
     double uivolt;
 
-    std::string toString() const;
+    std::string toString() const
+        {
+            std::stringstream ss;
+
+            ss << "  seconds:  " << seconds  << std::endl;
+            ss << "  useconds: " << useconds << std::endl;
+            ss << "  x:        " << x        << std::endl;
+            ss << "  y:        " << y        << std::endl;
+            ss << "  roll:     " << roll     << std::endl;
+            ss << "  pitch:    " << pitch    << std::endl;
+            ss << "  yaw:      " << yaw      << std::endl;
+            ss << "  vx:       " << vx       << std::endl;
+            ss << "  droll:    " << droll    << std::endl;
+            ss << "  dpitch:   " << dpitch   << std::endl;
+            ss << "  dyaw:     " << dyaw     << std::endl;
+            ss << "  mainvolt: " << mainvolt << std::endl;
+            ss << "  uivolt:   " << uivolt   << std::endl;
+
+            return ss.str(); 
+        }
 };
 
 class Command
@@ -43,7 +63,13 @@ public:
     double vx;
     double w;
 
-    std::string toString() const;
+    std::string toString() const
+        {
+            std::stringstream ss;
+            ss << "[ "<<vx<<"m/s, "<<w*180.0/M_PI<<"deg/s ]";
+
+            return ss.str();
+        }
 };
 
 } // namespace
