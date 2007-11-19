@@ -66,12 +66,12 @@ UnitConverter::baseVoltageInVolts( int counts ) const
 int
 UnitConverter::speedAsRaw( double si ) const
 {
-    return si*countsPerMperS();
+    return (int)(round(si*countsPerMperS()));
 }
 int
 UnitConverter::angularRateAsRaw( double si ) const
 {
-    return si*RMP_COUNT_PER_RAD_PER_S;
+    return (int)(round(si*RMP_COUNT_PER_RAD_PER_S));
 }
 OperationalMode
 UnitConverter::operationalModeAsEnum( int i ) const
