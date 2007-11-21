@@ -134,7 +134,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     - Moved the guts out to Hydro.  This is now just a set of conversion functions (alex b).
 
 - libOrcaMapLoad
-    - Moved out to Hydro.
+    - Moved out to Hydro (alex b).
 
 @par Removed
 
