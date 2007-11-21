@@ -26,6 +26,28 @@ using namespace hydropathplan;
 using namespace orca;
 using namespace laser2og;
 
+namespace {
+
+    hydroogmap::CartesianPoint2d 
+    cell2point( const hydropathplan::Cell2D &c, const double originX, const double originY,
+                const double resX, const double resY )
+    {
+        double tmpResY = (resY > 0 ?  resY : resX);
+        hydroogmap::CartesianPoint2d p;
+        p.x=( c.x() * resX + originX );
+        p.y=( c.y() * tmpResY + originY );
+        return  p;
+    }
+
+    double 
+    euclideanDistance( const hydroogmap::CartesianPoint2d p1, const hydroogmap::CartesianPoint2d p2 )
+    {
+        return hypot(p1.x-p2.x, p1.y-p2.y );
+    }
+
+}
+
+
 static float laserScanBearing(const orca::RangeScanner2dData& scan, const int i)
 {
     double angleIncrement = scan.fieldOfView / double(scan.ranges.size()+1);
@@ -114,12 +136,12 @@ Laser2Og::process( const hydronavutil::Pose &sensorPose, const orca::RangeScanne
 
             // Distance to a particular cell along the ray.
             // NOTE: use distance from midcell to robot location instead of distance btw cell centers.
-            double dist = hydropathplan::euclideanDistance( sensorPosePoint,
-                                                           cell2point(currentCell,
-                                                                      mapOriginX_,
-                                                                      mapOriginY_,
-                                                                      mapResX_,
-                                                                      mapResY_) );
+            double dist = euclideanDistance( sensorPosePoint,
+                                             cell2point(currentCell,
+                                                        mapOriginX_,
+                                                        mapOriginY_,
+                                                        mapResX_,
+                                                        mapResY_) );
             
             // =========== LIKELIHOOD ====================
             const double posSD=0, headSD=0;

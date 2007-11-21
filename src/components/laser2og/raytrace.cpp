@@ -20,6 +20,18 @@ using namespace hydroogmap;
 using namespace hydropathplan;
 using namespace std;
 
+namespace {
+
+hydropathplan::Cell2D 
+point2cell( const hydroogmap::CartesianPoint2d & pt, const double & originX, const double & originY,
+            const double & resX, const double & resY )
+{
+    double tmpResY = (resY > 0 ?  resY : resX); 
+    return hydropathplan::Cell2D( (int)floor( ( pt.x-originX ) / resX + 0.5 ) , (int)floor( ( pt.y-originY ) / tmpResY + 0.5 ) );
+}
+
+}
+
 //
 // Uses Bresenham's line algorithm
 //
