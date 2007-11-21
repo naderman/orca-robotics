@@ -10,12 +10,33 @@
 #include <orcaice/orcaice.h>
 
 #include "component.h"
-#include <orcamapload/pixmaploadutil.h>
+#include <hydromapload/pixmaploadutil.h>
 
 using namespace std;
 using namespace orca;
 
 namespace pixmaploader {
+
+namespace {
+
+    void convert( const std::vector<char> &rgbPixels,
+                  orca::Pixels &orcaPixels )
+    {
+        orcaPixels.resize( rgbPixels.size()/3 );
+
+        for ( uint i=0; i < rgbPixels.size(); i+=3 )
+        {
+            orca::Pixel pix;
+
+            pix.r = rgbPixels[i];
+            pix.g = rgbPixels[i+1];
+            pix.b = rgbPixels[i+2];
+
+            orcaPixels[i/3] = pix;
+        }
+    }
+
+}
 
 Component::Component()
     : orcaice::Component( "PixMapLoader" )
@@ -92,7 +113,10 @@ void Component::loadMapFromFile(orca::PixMapData &map)
     prefix += ".Config.";
 
     std::string filename = orcaice::getPropertyWithDefault( prop, prefix+"MapFileName", "mapfilename" );  
-    orcapixmapload::loadMap( filename.c_str(), map.numCellsX, map.numCellsY, map.rgbPixels );
+
+    std::vector<char> rgbPixels;
+    hydromapload::loadMap( filename.c_str(), map.numCellsX, map.numCellsY, rgbPixels );
+    convert( rgbPixels, map.rgbPixels );
     
     map.offset.p.x = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Offset.X", 0.0 );
     map.offset.p.y = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Offset.Y", 0.0 );

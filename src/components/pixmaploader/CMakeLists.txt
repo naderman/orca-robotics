@@ -15,7 +15,7 @@ IF ( REALLY_BUILD_PIXMAPLOADER )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseQt.cmake )
     
     FIND_COMPONENT_SOURCES( COMP_SRCS )
-    SET( COMP_DEPS OrcaMapLoad OrcaIfaceImpl )
+    SET( COMP_DEPS HydroMapLoad OrcaIfaceImpl )
     
     # build stand-alone component  
     GLOBAL_ADD_EXECUTABLE( pixmaploader ${COMP_SRCS} main )

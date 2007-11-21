@@ -15,7 +15,7 @@
 #include <orca/pathplanner2d.h>
 #include <orcaogmap/orcaogmap.h>
 #include <orcapathplan/orcapathplan.h>
-
+#include <hydropathplan/hydropathplan.h>
 
 namespace orcapathplan {
 
@@ -30,7 +30,7 @@ namespace orcapathplan {
     std::string toString( const WaypointParameter &wp );
 
     //! Transfers the result code into the corresponding field of the Slice-defined data structure
-    void convert( orcapathplan::Result     result,
+    void convert( hydropathplan::Result     result,
                   orca::PathPlanner2dData &output );
 
     //! Converts a path (cell vector in cell coordinate system)
@@ -39,17 +39,17 @@ namespace orcapathplan {
     //! The first waypoint's heading can be specified optionally (0.0 by default).
     //! Will append input cells to the output path if output path already contains entries. 
     //! Note that parameters are *not* set.
-    void convertAndAppend( const hydroogmap::OgMap      &ogMap,
-                           const Cell2DVector          &input,
-                           orca::PathPlanner2dData     &output,
-                           double                       firstHeading = 0.0  );
+    void convertAndAppend( const hydroogmap::OgMap           &ogMap,
+                           const hydropathplan::Cell2DVector &input,
+                           orca::PathPlanner2dData           &output,
+                           double                             firstHeading = 0.0  );
     
     //! As above but also adds parameters.
     void convertAndAppend( const hydroogmap::OgMap               &ogMap,
-                           const Cell2DVector                   &input,
-                           const std::vector<WaypointParameter> &wpPara,
-                           orca::PathPlanner2dData              &output,
-                           double                                firstHeading = 0.0 );
+                           const hydropathplan::Cell2DVector     &input,
+                           const std::vector<WaypointParameter>  &wpPara,
+                           orca::PathPlanner2dData               &output,
+                           double                                 firstHeading = 0.0 );
     
     //! Sets all parameters of pathData contained in vector wpPara
     void setParameters( orca::PathPlanner2dData              &pathData,

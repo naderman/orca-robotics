@@ -14,7 +14,6 @@
 #include <iostream>
 
 using namespace std;
-using namespace orcaice;
 
 namespace pathplanner {
 
@@ -44,14 +43,14 @@ namespace {
         {
             int xCell,yCell;
             ogMap.getCellIndices( wp.target.p.x, wp.target.p.y, xCell, yCell );
-            orcapathplan::Cell2D cell(xCell,yCell);
+            hydropathplan::Cell2D cell(xCell,yCell);
 
             // perform a random walk of numSteps steps.
             for ( int i=0; i < numSteps; i++ )
             {
-                cell = orcapathplan::surroundCell( cell, (int)(hydroutil::randNum(0,8)) );
+                cell = hydropathplan::surroundCell( cell, (int)(hydroutil::randNum(0,8)) );
 
-                if ( orcapathplan::isTraversable( ogMap, cell.x(), cell.y(), traversabilityThreshhold ) )
+                if ( hydropathplan::isTraversable( ogMap, cell.x(), cell.y(), traversabilityThreshhold ) )
                 {
                     double worldX, worldY;
                     ogMap.getWorldCoords( cell.x(), cell.y(), worldX, worldY );
@@ -62,7 +61,7 @@ namespace {
                 }
             }
         }
-        throw( orcapathplan::Exception( "Couldn't jiggle onto clear cell." ) );
+        throw( hydropathplan::Exception( "Couldn't jiggle onto clear cell." ) );
     }
     
     double straightLineDist( const orca::Waypoint2d *wp1, const orca::Waypoint2d *wp2 )
@@ -74,13 +73,13 @@ namespace {
 
 }
 
-GenericDriver::GenericDriver( orcapathplan::IPathPlanner2d  *pathPlanner,
+GenericDriver::GenericDriver( hydropathplan::IPathPlanner2d  *pathPlanner,
                               const hydroogmap::OgMap        &ogMap,
                               double                         robotDiameterMetres,
                               double                         traversabilityThreshhold,
                               bool                           doPathOptimization,
-                              bool                          jiggleWaypointsOntoClearCells,
-                              const Context                 &context)
+                              bool                           jiggleWaypointsOntoClearCells,
+                              const orcaice::Context         &context)
     : pathPlanner_(pathPlanner),
       ogMap_(ogMap),
       robotDiameterMetres_(robotDiameterMetres),
@@ -94,7 +93,7 @@ GenericDriver::GenericDriver( orcapathplan::IPathPlanner2d  *pathPlanner,
     {
         grownOgMap_ = ogMap_;
         assert( ogMap_.metresPerCellX() == ogMap_.metresPerCellY() );
-        orcapathplan::growObstaclesOgMap( grownOgMap_,
+        hydropathplan::growObstaclesOgMap( grownOgMap_,
                                           traversabilityThreshhold_,
                                           (int)(robotDiameterMetres_/grownOgMap_.metresPerCellX()) );
     }
@@ -135,7 +134,7 @@ GenericDriver::computePath( const orca::PathPlanner2dTask& task,
     for (unsigned int i=1; i<coarsePath->size(); i++)
     {
         const orca::Waypoint2d *goalWp = &((*coarsePath)[i]);
-        orcapathplan::Cell2DVector pathSegment;
+        hydropathplan::Cell2DVector pathSegment;
 
         hydroutil::CpuStopwatch watch(true);
         assert(pathPlanner_!=0);
@@ -149,7 +148,7 @@ GenericDriver::computePath( const orca::PathPlanner2dTask& task,
                                        endY,
                                        pathSegment );
         }
-        catch ( orcapathplan::Exception &e )
+        catch ( hydropathplan::Exception &e )
         {
             std::stringstream ss;
             ss << "Error planning path segment from (" 
@@ -158,7 +157,7 @@ GenericDriver::computePath( const orca::PathPlanner2dTask& task,
                << e.what()
                << endl;
             
-            throw orcapathplan::Exception( ss.str(), e.type() );
+            throw hydropathplan::Exception( ss.str(), e.type() );
         }
         stringstream ss;
         ss << "Computing path segment took " << watch.elapsedSeconds() << "s";
@@ -189,18 +188,18 @@ GenericDriver::computePath( const orca::PathPlanner2dTask& task,
 //        lengthTotal:   total length which is a sum of line lengths connecting all waypoints
 //        lengthSegment: line length of the current segment
 void
-GenericDriver::setWaypointParameters( const orca::Waypoint2d *startWp, 
-                                       const orca::Waypoint2d *goalWp, 
-                                       const orcapathplan::Cell2DVector &pathSegmentCells,
-                                       const hydroogmap::OgMap &ogMap,
-                                       vector<orcapathplan::WaypointParameter> &wpParaVector )
+GenericDriver::setWaypointParameters( const orca::Waypoint2d                  *startWp, 
+                                      const orca::Waypoint2d                  *goalWp, 
+                                      const hydropathplan::Cell2DVector       &pathSegmentCells,
+                                      const hydroogmap::OgMap                 &ogMap,
+                                      vector<orcapathplan::WaypointParameter> &wpParaVector )
 {
     wpParaVector.clear();
     
     // convert cell vector into slice data structure
     // needed for distance calculations
     orca::PathPlanner2dData pathSegmentSlice;
-    convertAndAppend( ogMap, pathSegmentCells, pathSegmentSlice );
+    orcapathplan::convertAndAppend( ogMap, pathSegmentCells, pathSegmentSlice );
     
     // compute the total length connecting all intermediate waypoints based on straight lines
     // store segment lengths in a vector for later
@@ -226,7 +225,7 @@ GenericDriver::setWaypointParameters( const orca::Waypoint2d *startWp,
             wpPara.distanceTolerance = startWp->distanceTolerance;
             wpPara.maxApproachSpeed = startWp->maxApproachSpeed;
             wpPara.maxApproachTurnrate = startWp->maxApproachTurnrate;
-            wpPara.timeTarget = toOrcaTime( timeAsDouble( startWp->timeTarget ) );
+            wpPara.timeTarget = orcaice::toOrcaTime( orcaice::timeAsDouble( startWp->timeTarget ) );
             wpPara.headingTolerance = startWp->headingTolerance;
         } 
         else 
@@ -235,7 +234,7 @@ GenericDriver::setWaypointParameters( const orca::Waypoint2d *startWp,
             wpPara.maxApproachSpeed = goalWp->maxApproachSpeed;
             wpPara.maxApproachTurnrate = goalWp->maxApproachTurnrate;
             // time for this segment is proportional to its length                        
-            wpPara.timeTarget = toOrcaTime( timeAsDouble(wpParaVector[i-1].timeTarget) + timeLengthRatio * lengthSegments[i-1] );
+            wpPara.timeTarget = orcaice::toOrcaTime( orcaice::timeAsDouble(wpParaVector[i-1].timeTarget) + timeLengthRatio * lengthSegments[i-1] );
             wpPara.headingTolerance = goalWp->headingTolerance;
         }
         wpParaVector.push_back( wpPara );

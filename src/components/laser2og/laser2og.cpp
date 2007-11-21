@@ -22,7 +22,7 @@
 #include "raytrace.h"
 
 using namespace std;
-using namespace orcapathplan;
+using namespace hydropathplan;
 using namespace orca;
 using namespace laser2og;
 
@@ -90,13 +90,13 @@ Laser2Og::process( const hydronavutil::Pose &sensorPose, const orca::RangeScanne
         hydroogmap::CartesianPoint2d sensorPosePoint;
         sensorPosePoint.x = sensorPose.x();
         sensorPosePoint.y = sensorPose.y();
-        std::vector<Cell2D> ray = rayTrace( sensorPosePoint, returnPoint, mapOriginX_, mapOriginY_, mapResX_, mapResY_ );
+        std::vector<hydropathplan::Cell2D> ray = rayTrace( sensorPosePoint, returnPoint, mapOriginX_, mapOriginY_, mapResX_, mapResY_ );
 
         //cout<<"Laser2Og::process: traced a ray with "<<ray.size()<<" cells. "<<
         //    "from ("<<sensorPosePoint.x<<","<<sensorPosePoint.y<<") to ("<<returnPoint.x<<","<<returnPoint.y<<")"<<endl;
         //cout << "with bearing of "<< laserScanBearing(scan, i )<<endl;
 
-        Cell2D currentCell;
+        hydropathplan::Cell2D currentCell;
         OgCellLikelihood currentFeature;
 
         // for each traversed cell
@@ -114,7 +114,7 @@ Laser2Og::process( const hydronavutil::Pose &sensorPose, const orca::RangeScanne
 
             // Distance to a particular cell along the ray.
             // NOTE: use distance from midcell to robot location instead of distance btw cell centers.
-            double dist = orcapathplan::euclideanDistance( sensorPosePoint,
+            double dist = hydropathplan::euclideanDistance( sensorPosePoint,
                                                            cell2point(currentCell,
                                                                       mapOriginX_,
                                                                       mapOriginY_,
@@ -130,7 +130,7 @@ Laser2Og::process( const hydronavutil::Pose &sensorPose, const orca::RangeScanne
             currentFeature.y=currentCell.y();
 
             // cell index
-            int currentCellIndex = orcapathplan::sub2ind( currentCell, mapSizeX_, mapSizeY_ );
+            int currentCellIndex = hydropathplan::sub2ind( currentCell, mapSizeX_, mapSizeY_ );
             buffer.insert( currentCellIndex,
                            currentFeature,
 //                           ogfusion::OgBuffer::PolicyAddLikelihood );

@@ -14,7 +14,7 @@
 #include <orca/pathplanner2d.h>
 #include <orca/ogmap.h>
 
-#include <orcapathplan/pathplanutils.h>
+#include <hydropathplan/pathplanutils.h>
 
 namespace pathplanner
 {

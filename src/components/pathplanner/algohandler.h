@@ -18,7 +18,7 @@
 #include <orca/ogmap.h>
 #include <orca/pathplanner2d.h>
 #include <orca/qgraphics2d.h>
-#include <orcapathplan/pathplanutils.h>
+#include <hydropathplan/hydropathplan.h>
 
 namespace pathplanner
 {
@@ -61,7 +61,7 @@ private:
     int useHazardMap_;
 
     // cost of traversing cells (only used for skeleton variants)
-    orcapathplan::CostEvaluator *costEvaluator_;
+    hydropathplan::CostEvaluator *costEvaluator_;
 };
 
 } // namespace

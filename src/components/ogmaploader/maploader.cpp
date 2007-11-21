@@ -11,7 +11,7 @@
 #include <orcaice/orcaice.h>
 #include <fstream>
 
-#include <orcamapload/ogmaploadutil.h>
+#include <hydromapload/hydromapload.h>
 
 using namespace std;
 using namespace orca;
@@ -84,7 +84,7 @@ loadMapFromFile( const orcaice::Context & context, orca::OgMapData& map )
         // Load a normal image format
         //
         bool negate = orcaice::getPropertyAsIntWithDefault( prop, prefix+"Negate", true );
-        orcaogmapload::loadMap( filename.c_str(), negate, map.numCellsX, map.numCellsY, map.data );
+        hydromapload::loadMap( filename.c_str(), negate, map.numCellsX, map.numCellsY, map.data );
 
         map.offset.p.x = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Offset.X", 0.0 );
         map.offset.p.y = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Offset.Y", 0.0 );

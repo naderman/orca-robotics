@@ -2,7 +2,7 @@
 #include <iostream>
 #include <orcageom2d/geom2d.h>
 #include <orcaice/orcaice.h>
-#include <orcapathplan/pathplanutils.h>
+#include <hydropathplan/hydropathplan.h>
 #include <orcaobjutil/vehicleutil.h>
 #include <localnavutil/brosutil.h>
 #include <orcaogmap/orcaogmap.h>
@@ -52,9 +52,9 @@ Simulator::Simulator( const orcaice::Context &context,
     setupMap();
     grownOgMap_ = ogMap_;
 
-    orcapathplan::growObstaclesOgMap( grownOgMap_,
-                                      0.5,
-                                      (int)(ROBOT_RADIUS/CELL_SIZE) );
+    hydropathplan::growObstaclesOgMap( grownOgMap_,
+                                       0.5,
+                                       (int)(ROBOT_RADIUS/CELL_SIZE) );
 
     // setup scan
     scan_->timeStamp.seconds  = 0;

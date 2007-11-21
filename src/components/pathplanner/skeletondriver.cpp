@@ -8,10 +8,8 @@
  *
  */
 #include "skeletondriver.h"
-#include <orcapathplan/skeletonpathplanner.h>
-#include <orcapathplan/sparseskeletonpathplanner.h>
+#include <hydropathplan/hydropathplan.h>
 #include <hydroutil/cpustopwatch.h>
-#include <orcapathplan/sparseskel.h>
 #include <orcaice/orcaice.h>
 #include <iostream>
 
@@ -30,7 +28,7 @@ SkeletonDriver::SkeletonDriver( const hydroogmap::OgMap &ogMap,
                                 bool   doPathOptimization,
                                 bool   jiggleWaypointsOntoClearCells,
                                 bool   useSparseSkeleton,
-                                const orcapathplan::CostEvaluator &costEvaluator,
+                                const hydropathplan::CostEvaluator &costEvaluator,
                                 const Context &context)
     : pathPlanner_(NULL),
       genericDriver_(NULL),
@@ -45,44 +43,44 @@ SkeletonDriver::SkeletonDriver( const hydroogmap::OgMap &ogMap,
     if ( !useSparseSkeleton )
     {
         try {
-            orcapathplan::SkeletonPathPlanner *skelPathPlanner = 
-                new orcapathplan::SkeletonPathPlanner( ogMap,
+            hydropathplan::SkeletonPathPlanner *skelPathPlanner = 
+                new hydropathplan::SkeletonPathPlanner( ogMap,
                                                        robotDiameterMetres,
                                                        traversabilityThreshhold,
                                                        doPathOptimization,
                                                        costEvaluator );
             pathPlanner_ = skelPathPlanner;
         }
-        catch ( orcapathplan::Exception &e )
+        catch ( hydropathplan::Exception &e )
         {
             stringstream ss;
             ss << "Error trying to construct a skeletonpathplanner: " << e.what();
-            throw orcapathplan::Exception( ss.str(), e.type() );
+            throw hydropathplan::Exception( ss.str(), e.type() );
         } 
 
     }
     else
     {
         try {
-            orcapathplan::SparseSkeletonPathPlanner *skelPathPlanner = 
-                new orcapathplan::SparseSkeletonPathPlanner( ogMap,
+            hydropathplan::SparseSkeletonPathPlanner *skelPathPlanner = 
+                new hydropathplan::SparseSkeletonPathPlanner( ogMap,
                                                              robotDiameterMetres,
                                                              traversabilityThreshhold,
                                                              doPathOptimization,
                                                              costEvaluator );
             pathPlanner_ = skelPathPlanner;
         }
-        catch( orcapathplan::Exception &e )
+        catch( hydropathplan::Exception &e )
         {
             stringstream ss;
             ss << "Error trying to construct a sparseskeletonpathplanner: " << e.what();
-            throw orcapathplan::Exception( ss.str(), e.type() );
+            throw hydropathplan::Exception( ss.str(), e.type() );
         }  
         catch ( Ice::MemoryLimitException &e )
         {
             stringstream ss;
             ss<<"Caught: " << e << " .This means the dense skel is too big to send out." << endl;
-            throw orcapathplan::Exception( ss.str() );
+            throw hydropathplan::Exception( ss.str() );
         }
     }
     
@@ -132,7 +130,7 @@ SkeletonDriver::setGraphics( const hydroogmap::OgMap &ogMap,
 {                   
     if ( !useSparseSkeleton_ )
     {
-        orcapathplan::SkeletonPathPlanner *skelPathPlanner = dynamic_cast<orcapathplan::SkeletonPathPlanner*>( pathPlanner_ );
+        hydropathplan::SkeletonPathPlanner *skelPathPlanner = dynamic_cast<hydropathplan::SkeletonPathPlanner*>( pathPlanner_ );
         skelGraphicsI_->localSetSkel( ogMap, &(skelPathPlanner->skeleton()) );
     }
     else
@@ -140,8 +138,8 @@ SkeletonDriver::setGraphics( const hydroogmap::OgMap &ogMap,
         const bool displayDenseSkelFirst = false;
         if ( displayDenseSkelFirst )
         {
-            orcapathplan::SkeletonPathPlanner *temp = 
-                    new orcapathplan::SkeletonPathPlanner( ogMap,
+            hydropathplan::SkeletonPathPlanner *temp = 
+                    new hydropathplan::SkeletonPathPlanner( ogMap,
                     robotDiameterMetres,
                     traversabilityThreshhold,
                     doPathOptimization );
@@ -149,7 +147,7 @@ SkeletonDriver::setGraphics( const hydroogmap::OgMap &ogMap,
         }
         
         
-        orcapathplan::SparseSkeletonPathPlanner *sparseSkelPathPlanner = dynamic_cast<orcapathplan::SparseSkeletonPathPlanner*>( pathPlanner_ );
+        hydropathplan::SparseSkeletonPathPlanner *sparseSkelPathPlanner = dynamic_cast<hydropathplan::SparseSkeletonPathPlanner*>( pathPlanner_ );
         skelGraphicsI_->localSetSkel( ogMap,
                                       &(sparseSkelPathPlanner->denseSkel()),
                                       &(sparseSkelPathPlanner->sparseSkel()) );

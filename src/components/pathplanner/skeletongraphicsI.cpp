@@ -74,7 +74,7 @@ SkeletonGraphicsI::unsubscribe(const ::QGraphics2dConsumerPrx& subscriber,
 
 void 
 SkeletonGraphicsI::drawSkel( const hydroogmap::OgMap           &ogMap,
-                             const orcapathplan::Cell2DVector &skel,
+                             const hydropathplan::Cell2DVector &skel,
                              QPainter                         &p )
 {
     // Some of these skels get pretty large.
@@ -82,7 +82,7 @@ SkeletonGraphicsI::drawSkel( const hydroogmap::OgMap           &ogMap,
     const int MAX_SKEL = 1000;
     int n = (int) ceil( skel.size() / MAX_SKEL );
     if ( n==0 ) n=1;
-    orcapathplan::Cell2DVector denseSkelToDisplay;
+    hydropathplan::Cell2DVector denseSkelToDisplay;
     for ( unsigned int i=0; i < skel.size(); i+=n )
     {
         denseSkelToDisplay.push_back( skel[i] );
@@ -116,7 +116,7 @@ SkeletonGraphicsI::drawSkel( const hydroogmap::OgMap           &ogMap,
 
 void 
 SkeletonGraphicsI::drawSparseSkel( const hydroogmap::OgMap           &ogMap,
-                                   const orcapathplan::SparseSkel   &skel,
+                                   const hydropathplan::SparseSkel   &skel,
                                    QPainter                         &p )
 {
     bool print = false;
@@ -133,10 +133,10 @@ SkeletonGraphicsI::drawSparseSkel( const hydroogmap::OgMap           &ogMap,
     
     for ( unsigned int i=0; i < skel.contiguousSkels().size(); i++ )
     {
-        const std::vector<orcapathplan::SparseSkelNode*> &nodes = skel.contiguousSkels()[i]->nodes();
+        const std::vector<hydropathplan::SparseSkelNode*> &nodes = skel.contiguousSkels()[i]->nodes();
         for ( unsigned int j=0; j < nodes.size(); j++ )
         {
-            const orcapathplan::SparseSkelNode *node = nodes[j];
+            const hydropathplan::SparseSkelNode *node = nodes[j];
             double nodeX, nodeY;
 
             // draw node
@@ -150,7 +150,7 @@ SkeletonGraphicsI::drawSparseSkel( const hydroogmap::OgMap           &ogMap,
             // draw arcs
             for ( unsigned int k=0; k < node->arcs.size(); k++ )
             {
-                const orcapathplan::SparseSkelArc *arc = node->arcs[k];
+                const hydropathplan::SparseSkelArc *arc = node->arcs[k];
                 double toX, toY;
                 ogMap.getWorldCoords( arc->toNode->pos.x(), arc->toNode->pos.y(), toX, toY );
                 p.drawLine( QLineF( nodeX, nodeY, toX, toY ) );
@@ -164,8 +164,8 @@ SkeletonGraphicsI::drawSparseSkel( const hydroogmap::OgMap           &ogMap,
 
 void 
 SkeletonGraphicsI::localSetSkel( const hydroogmap::OgMap           &ogMap,
-                                 const orcapathplan::Cell2DVector *skel,
-                                 const orcapathplan::SparseSkel   *sparseSkel )
+                                 const hydropathplan::Cell2DVector *skel,
+                                 const hydropathplan::SparseSkel   *sparseSkel )
 {
     //
     // Set up the orca object

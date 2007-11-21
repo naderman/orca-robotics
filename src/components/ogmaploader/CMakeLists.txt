@@ -15,7 +15,7 @@ IF ( REALLY_BUILD_OGMAPLOADER )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseQt.cmake )
     
     FIND_COMPONENT_SOURCES( COMP_SRCS )
-    SET( COMP_DEPS OrcaIfaceImpl OrcaMapLoad )
+    SET( COMP_DEPS OrcaIfaceImpl HydroMapLoad )
     
     # build stand-alone component  
     GLOBAL_ADD_EXECUTABLE( ogmaploader ${COMP_SRCS} main )

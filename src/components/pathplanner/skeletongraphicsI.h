@@ -18,8 +18,7 @@
 // include provided interfaces
 #include <orca/qgraphics2d.h>
 
-#include <orcapathplan/cell2d.h>
-#include <orcapathplan/sparseskel.h>
+#include <hydropathplan/hydropathplan.h>
 #include <hydroutil/proxy.h>
 #include <orcaice/context.h>
 #include <vector>
@@ -48,16 +47,16 @@ public:
     // Local calls:
     // Leave eith skell NULL and it won't be drawn.
     void localSetSkel( const hydroogmap::OgMap           &ogMap,
-                       const orcapathplan::Cell2DVector *skel=NULL,
-                       const orcapathplan::SparseSkel   *sparseSkel=NULL );
+                       const hydropathplan::Cell2DVector *skel=NULL,
+                       const hydropathplan::SparseSkel   *sparseSkel=NULL );
 
 private:
 
     void drawSkel( const hydroogmap::OgMap           &ogMap,
-                   const orcapathplan::Cell2DVector &skel,
+                   const hydropathplan::Cell2DVector &skel,
                    QPainter                         &p );
     void drawSparseSkel( const hydroogmap::OgMap           &ogMap,
-                         const orcapathplan::SparseSkel   &skel,
+                         const hydropathplan::SparseSkel   &skel,
                          QPainter                         &p );
     
     hydroutil::Proxy<orca::QGraphics2dData> dataProxy_;

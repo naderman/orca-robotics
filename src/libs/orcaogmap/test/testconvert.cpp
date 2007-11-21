@@ -11,7 +11,7 @@
 #undef NDEBUG
 
 #include <iostream>
-#include <orcamapload/ogmaploadutil.h>
+#include <hydromapload/hydromapload.h>
 #include <orcaogmap/orcaogmap.h>
 #include <orca/ogmap.h>
 
@@ -28,14 +28,14 @@ int main( int argc, char **argv )
     
     // load map from file into internal representation
     hydroogmap::OgMap internalMap;
-    orcaogmapload::loadMap( argv[1],
-                            internalMap,
-                            false,
-                            0.0,
-                            0.0,
-                            0.0,
-                            0.1,
-                            0.1 );
+    hydromapload::loadMap( argv[1],
+                           internalMap,
+                           false,
+                           0.0,
+                           0.0,
+                           0.0,
+                           0.1,
+                           0.1 );
     cout << "Loaded map with number of cells (" << internalMap.numCellsX() << "," << internalMap.numCellsY() << ")" << endl;
     
     // convert to a Slice-defined ogmap

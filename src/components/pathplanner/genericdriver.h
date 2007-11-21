@@ -13,9 +13,8 @@
 #include "algodriver.h"
 #include <orcaice/orcaice.h>
 #include <orcapathplan/orcapathplan.h>
-#include <orcapathplan/ipathplanner2d.h>
 #include <orca/ogmap.h>
-#include <orcaogmap/orcaogmap.h>
+#include <hydroogmap/hydroogmap.h>
 #include <vector>
 
 namespace pathplanner {
@@ -28,7 +27,7 @@ class GenericDriver : public AlgoDriver
 
 public: 
 
-    GenericDriver( orcapathplan::IPathPlanner2d *pathPlanner,
+    GenericDriver( hydropathplan::IPathPlanner2d *pathPlanner,
                    const hydroogmap::OgMap       &ogMap,
                    double                        robotDiameterMetres,
                    double                        traversabilityThreshhold,
@@ -43,7 +42,7 @@ public:
 
 private: 
 
-    orcapathplan::IPathPlanner2d  *pathPlanner_;
+    hydropathplan::IPathPlanner2d  *pathPlanner_;
     const hydroogmap::OgMap        &ogMap_;
     hydroogmap::OgMap               grownOgMap_;
     
@@ -53,7 +52,7 @@ private:
     
     void setWaypointParameters( const orca::Waypoint2d *startWp, 
                                 const orca::Waypoint2d *goalWp, 
-                                const orcapathplan::Cell2DVector &pathSegmentCells,
+                                const hydropathplan::Cell2DVector &pathSegmentCells,
                                 const hydroogmap::OgMap &ogMap,
                                 std::vector<orcapathplan::WaypointParameter> &wpParaVector );
 

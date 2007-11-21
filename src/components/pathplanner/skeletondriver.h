@@ -13,8 +13,7 @@
 #include "algodriver.h"
 #include "genericdriver.h"
 #include <orcaice/orcaice.h>
-#include <orcapathplan/orcapathplan.h>
-#include <orcapathplan/ipathplanner2d.h>
+#include <hydropathplan/hydropathplan.h>
 #include <orca/ogmap.h>
 #include <orcaogmap/orcaogmap.h>
 #include <vector>
@@ -38,7 +37,7 @@ public:
                     bool   doPathOptimization,
                     bool   jiggleWaypointsOntoClearCells,
                     bool   useSparseSkeleton,
-                    const orcapathplan::CostEvaluator &costEvaluator,
+                    const hydropathplan::CostEvaluator &costEvaluator,
                     const orcaice::Context &context);
     ~SkeletonDriver();
     
@@ -54,7 +53,7 @@ private:
                       bool              doPathOptimization );
     #endif
     
-    orcapathplan::IPathPlanner2d *pathPlanner_;
+    hydropathplan::IPathPlanner2d *pathPlanner_;
     GenericDriver                *genericDriver_;
     SkeletonGraphicsI            *skelGraphicsI_;
     

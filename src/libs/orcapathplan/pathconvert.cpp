@@ -56,24 +56,24 @@ void setHeading( orca::PathPlanner2dData &pathData, double firstHeading)
 }
 
 void 
-convert( const orcapathplan::Result        result,
-         orca::PathPlanner2dData &output )
+convert( const hydropathplan::Result  result,
+         orca::PathPlanner2dData     &output )
 {
     switch(result)
     {
-        case PathOk: 
+        case hydropathplan::PathOk: 
             output.result = orca::PathOk;
             break;
-        case PathStartNotValid: 
+        case hydropathplan::PathStartNotValid: 
             output.result = orca::PathStartNotValid;
             break;
-        case PathDestinationNotValid: 
+        case hydropathplan::PathDestinationNotValid: 
             output.result = orca::PathDestinationNotValid;
             break;
-        case PathDestinationUnreachable: 
+        case hydropathplan::PathDestinationUnreachable: 
             output.result = orca::PathDestinationUnreachable;
             break;
-        case OtherError:
+        case hydropathplan::OtherError:
             output.result = orca::PathOtherError;
             break;   
         default:
@@ -100,10 +100,10 @@ isDoubleWaypoint( const orca::PathPlanner2dData &path, float worldX, float world
 }
 
 void 
-convertAndAppend( const hydroogmap::OgMap  &ogMap,
-                  const Cell2DVector      &input,
-                  orca::PathPlanner2dData &output,
-                  double                   firstHeading)
+convertAndAppend( const hydroogmap::OgMap           &ogMap,
+                  const hydropathplan::Cell2DVector &input,
+                  orca::PathPlanner2dData           &output,
+                  double                             firstHeading)
 {
     double worldX, worldY;
     orca::Waypoint2d wp;
@@ -125,8 +125,8 @@ convertAndAppend( const hydroogmap::OgMap  &ogMap,
         
 
 void 
-convertAndAppend( const hydroogmap::OgMap               &ogMap,
-                  const Cell2DVector                   &input,
+convertAndAppend( const hydroogmap::OgMap              &ogMap,
+                  const hydropathplan::Cell2DVector    &input,
                   const std::vector<WaypointParameter> &wpPara,
                   orca::PathPlanner2dData              &output,
                   double                                firstHeading)

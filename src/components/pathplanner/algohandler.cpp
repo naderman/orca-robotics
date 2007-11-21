@@ -30,7 +30,7 @@ using namespace pathplanner;
 
 namespace {
 
-    class DistBasedCostEvaluator : public orcapathplan::CostEvaluator {
+    class DistBasedCostEvaluator : public hydropathplan::CostEvaluator {
     public:
         DistBasedCostEvaluator( double distanceThreshold,
                                 double costMultiplier )
@@ -196,15 +196,15 @@ AlgoHandler::initDriver()
     
     if ( driverName == "simplenav" || driverName == "astar")
     {
-        orcapathplan::IPathPlanner2d *pathPlanner=NULL;
+        hydropathplan::IPathPlanner2d *pathPlanner=NULL;
         
         if (driverName == "simplenav") {
-            pathPlanner = new orcapathplan::SimpleNavPathPlanner( ogMap_,
+            pathPlanner = new hydropathplan::SimpleNavPathPlanner( ogMap_,
                                                            robotDiameterMetres,
                                                            traversabilityThreshhold,
                                                            doPathOptimization );
         } else if (driverName == "astar") {
-            pathPlanner = new orcapathplan::AStarPathPlanner( ogMap_,
+            pathPlanner = new hydropathplan::AStarPathPlanner( ogMap_,
                                                            robotDiameterMetres,
                                                            traversabilityThreshhold,
                                                            doPathOptimization );
@@ -236,12 +236,12 @@ AlgoHandler::initDriver()
                                           *costEvaluator_,
                                           context_ );
         }
-        catch ( orcapathplan::Exception &e )
+        catch ( hydropathplan::Exception &e )
         {
             std::stringstream ss;
             ss << "Trouble constructing a skeletondriver" << endl << "Problem was: " << e.what();
             context_.tracer()->error( ss.str() );
-            throw orcapathplan::Exception( ss.str() );  // this will exit
+            throw hydropathplan::Exception( ss.str() );  // this will exit
         }
         
     }
@@ -307,7 +307,7 @@ AlgoHandler::run()
                 pathData.result = orca::PathOk;
                 pathData.resultDescription = "All good";
             }
-            catch ( orcapathplan::Exception &e )
+            catch ( hydropathplan::Exception &e )
             {
                 std::stringstream ss;
                 ss << "Couldn't compute path: " << orcaice::toVerboseString(task) << endl << "Problem was: " << e.what();
@@ -316,16 +316,16 @@ AlgoHandler::run()
                 
                 switch( e.type() )
                 {
-                    case orcapathplan::PathStartNotValid:             
+                    case hydropathplan::PathStartNotValid:             
                         pathData.result = orca::PathStartNotValid;
                         break;
-                    case orcapathplan::PathDestinationNotValid:       
+                    case hydropathplan::PathDestinationNotValid:       
                         pathData.result = orca::PathDestinationNotValid;
                         break;
-                    case orcapathplan::PathDestinationUnreachable:    
+                    case hydropathplan::PathDestinationUnreachable:    
                         pathData.result = orca::PathDestinationUnreachable;
                         break;
-                    case orcapathplan::OtherError:                    
+                    case hydropathplan::OtherError:                    
                         pathData.result = orca::PathOtherError; 
                         break;
                     default : {}

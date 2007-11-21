@@ -11,13 +11,13 @@
 #include "raytrace.h"
 #include <orca/bros1.h>
 
-#include <orcapathplan/orcapathplan.h>
+#include <hydropathplan/hydropathplan.h>
 #include <hydroogmap/hydroogmap.h>
 #include <hydroutil/mathdefs.h>
 
 using namespace orca;
 using namespace hydroogmap;
-using namespace orcapathplan;
+using namespace hydropathplan;
 using namespace std;
 
 //
@@ -27,8 +27,8 @@ using namespace std;
 namespace details
 {
 
-    void rayTraceOct0( const orcapathplan::Cell2D & c0,
-		      const orcapathplan::Cell2D & c1,
+    void rayTraceOct0( const hydropathplan::Cell2D & c0,
+		      const hydropathplan::Cell2D & c1,
 		      std::vector<Cell2D> & retCellVect )
     {
         int y = c0.y(); 
@@ -52,8 +52,8 @@ namespace details
         }
     }
 
-    void rayTraceOct1( const orcapathplan::Cell2D & c0,
-		      const orcapathplan::Cell2D & c1,
+    void rayTraceOct1( const hydropathplan::Cell2D & c0,
+		      const hydropathplan::Cell2D & c1,
 		      std::vector<Cell2D> & retCellVect  )
     {
         int x = c0.x(); 
@@ -77,8 +77,8 @@ namespace details
         }
     }
 
-    void rayTraceOct2( const orcapathplan::Cell2D & c0,
-		      const orcapathplan::Cell2D & c1,
+    void rayTraceOct2( const hydropathplan::Cell2D & c0,
+		      const hydropathplan::Cell2D & c1,
 		      std::vector<Cell2D> & retCellVect  )
     {
         int x = c0.x(); 
@@ -102,8 +102,8 @@ namespace details
         }
     }
 
-    void rayTraceOct7( const orcapathplan::Cell2D & c0,
-		      const orcapathplan::Cell2D & c1,
+    void rayTraceOct7( const hydropathplan::Cell2D & c0,
+		      const hydropathplan::Cell2D & c1,
 		      std::vector<Cell2D> & retCellVect  )
     {
         int y = c0.y(); 
@@ -130,8 +130,8 @@ namespace details
 }
 
 std::vector<Cell2D>
-laser2og::rayTrace(const orcapathplan::Cell2D & c0,
-		   const orcapathplan::Cell2D & c1 )
+laser2og::rayTrace(const hydropathplan::Cell2D & c0,
+		   const hydropathplan::Cell2D & c1 )
 {
     /*
     *  Octants are defined as follows:

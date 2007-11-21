@@ -10,16 +10,6 @@
 #ifndef ORCA2_PATHPLAN_H
 #define ORCA2_PATHPLAN_H
 
-#include <orcapathplan/astar.h>
-#include <orcapathplan/pathplanutils.h>
 #include <orcapathplan/pathconvert.h>
-#include <orcapathplan/cell2d.h>
-#include <orcapathplan/cell2dutil.h>
-#include <orcapathplan/ipathplanner2d.h>
-#include <orcapathplan/skeletonpathplanner.h>
-#include <orcapathplan/sparseskeletonpathplanner.h>
-#include <orcapathplan/sparseskel.h>
-#include <orcapathplan/simplenavpathplanner.h>
-#include <orcapathplan/astarpathplanner.h>
 
 #endif
