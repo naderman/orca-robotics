@@ -17,6 +17,7 @@
 #include <orca/camera.h>
 #include <orca/cpu.h>
 #include <orca/drivebicycle.h>
+#include <orca/estop.h>
 #include <orca/gps.h>
 #include <orca/ogmap.h>
 #include <orca/home.h>
@@ -178,6 +179,8 @@ std::string toString( const orca::CpuData& );
 std::string toString( const orca::DriveBicycleCommand& );
 //! Converts to string
 std::string toString( const orca::DriveBicycleData& );
+//! Converts to string
+std::string toString( const orca::EStopData& );
 //! Converts to string
 std::string toString( const orca::GpsDescription& );
 //! Converts to string

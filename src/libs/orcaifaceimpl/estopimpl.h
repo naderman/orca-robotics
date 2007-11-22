@@ -8,37 +8,41 @@
  *
  */
 
-#ifndef ORCA_POWER_IMPL_H
-#define ORCA_POWER_IMPL_H
+#ifndef ORCA_ESTOP_IMPL_H
+#define ORCA_ESTOP_IMPL_H
 
-#include <orca/power.h>
-#include <IceStorm/IceStorm.h>
-
-// utilities
 #include <hydroutil/proxy.h>
 #include <orcaice/context.h>
 
-namespace hydroutil {
-    class Thread;
-}
+#include <orca/estop.h>
+#include <IceStorm/IceStorm.h>
+
+// utilities
+
 
 namespace orcaifaceimpl {
 
+
+
 //!
-//! Implements the orca::Power interface: Handles remote calls.
+//! Implements the orca::EStop interface: Handles remote calls.
+//! Intended that the consumer of this interface should, take the
+//! appropriate action and 'fail-safe' if data is not being received
+//! across the interface. Or if data received indicates a fault condition
 //!
-class PowerImpl : public IceUtil::Shared
+
+class EStopImpl : public IceUtil::Shared
 {
-friend class PowerI;
+friend class EStopI;
 
 public:
     //! constructor using interfaceTag (may throw ConfigFileException)
-    PowerImpl( const std::string& interfaceTag, 
+    EStopImpl( const std::string& interfaceTag, 
                const orcaice::Context& context );
     //! constructor using interfaceName
-    PowerImpl( const orcaice::Context& context,
+    EStopImpl( const orcaice::Context& context,
                const std::string& interfaceName );
-    ~PowerImpl();
+    ~EStopImpl();
 
     // local interface:
     //! May throw hydroutil::Exceptions.
@@ -48,23 +52,25 @@ public:
     //! until sucessful. At every iteration, checks if the thread was stopped.
     void initInterface( hydroutil::Thread* thread, int retryInterval=2 );
 
-    //! A local call which sets the data reported by the interface
-    void localSet( const orca::PowerData& data );
+    //! A local call which sets the state reported by the interface
+    void localSet( const orca::EStopData data );
 
     //! A local call which sets the data reported by the interface, 
     //! and sends it through IceStorm
-    void localSetAndSend( const orca::PowerData& data );
+    void localSetAndSend( const orca::EStopData data );
 
 private:
+
     // remote call implementations, mimic (but do not inherit) the orca interface
-    ::orca::PowerData internalGetData() const;
-    void internalSubscribe(const ::orca::PowerConsumerPrx&);
-    void internalUnsubscribe(const ::orca::PowerConsumerPrx&);
+    ::orca::EStopData internalGet() const;
+    void internalSubscribe(const ::orca::EStopConsumerPrx&);
+    void internalUnsubscribe(const ::orca::EStopConsumerPrx&);
 
-    hydroutil::Proxy<orca::PowerData> dataProxy_;
 
-    orca::PowerConsumerPrx    consumerPrx_;
-    IceStorm::TopicPrx             topicPrx_;
+    hydroutil::Proxy<orca::EStopData> dataProxy_;
+
+    orca::EStopConsumerPrx    consumerPrx_;
+    IceStorm::TopicPrx        topicPrx_;
 
     // Hang onto this so we can remove from the adapter and control when things get deleted
     Ice::ObjectPtr          ptr_;
@@ -74,8 +80,9 @@ private:
     orcaice::Context               context_;
 };
 
-typedef IceUtil::Handle<PowerImpl> PowerImplPtr;
+typedef IceUtil::Handle<EStopImpl> EStopImplPtr;
 
-}
+
+}// namespace
 
 #endif

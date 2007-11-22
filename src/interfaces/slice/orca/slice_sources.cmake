@@ -24,6 +24,7 @@ SET( SLICE_SOURCE_FILES
     cpu.ice
     drivebicycle.ice
     drivedifferential.ice
+    estop.ice
     featuremap2d.ice
     gps.ice
     hand.ice

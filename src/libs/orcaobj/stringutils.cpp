@@ -606,6 +606,15 @@ toString( const orca::DriveBicycleData& obj )
 }
 
 std::string 
+toString( const orca::EStopData& obj )
+{
+    std::ostringstream s;
+    s << toString(obj.timeStamp);
+    s << " EStop fault condition is:- "<< obj.hasFaultCondition; 
+    return s.str();
+}
+
+std::string 
 toString( const orca::GpsDescription& obj )
 {
     std::ostringstream s;

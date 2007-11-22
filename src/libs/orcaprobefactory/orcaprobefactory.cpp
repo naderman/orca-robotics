@@ -15,6 +15,7 @@
 #include "cameraprobe.h"
 #include "cpuprobe.h"
 #include "drivebicycleprobe.h"
+#include "estopprobe.h"
 #include "homeprobe.h"
 #include "imageprobe.h"
 #include "rangescanner2dprobe.h"
@@ -39,6 +40,7 @@ OrcaProbeFactory::OrcaProbeFactory()
     addSupportedType("::orca::Camera");
     addSupportedType("::orca::Cpu");
     addSupportedType("::orca::DriveBicycle");
+    addSupportedType("::orca::EStop");
     addSupportedType("::orca::Gps");
     addSupportedType("::orca::Home");
     addSupportedType("::orca::Image");
@@ -76,6 +78,9 @@ OrcaProbeFactory::create( const std::string           & interfaceType,
     }
     else if ( interfaceType == "::orca::DriveBicycle" ) {
     probe = new DriveBicycleProbe( name, display, context );
+    }
+    else if ( interfaceType == "::orca::EStop" ) {
+        probe = new EStopProbe( name, display, context );
     }
     else if ( interfaceType == "::orca::Gps" ) {
         probe = new GpsProbe( name, display, interfaceType, context );
