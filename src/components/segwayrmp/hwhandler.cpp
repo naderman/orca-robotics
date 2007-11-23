@@ -196,8 +196,11 @@ HwHandler::commandImpossible( const Command &command )
 {
     if ( command.vx > maxForwardSpeed_ )
         return true;
-    if ( command.vx < maxReverseSpeed_ )
+
+    //Note that maxReverseSpeed is a positive number.
+    if ( command.vx < -maxReverseSpeed_ )
         return true;
+
     if ( command.w > maxTurnrate_ )
         return true;
     if ( command.w < -maxTurnrate_ )
@@ -226,6 +229,7 @@ HwHandler::setCommand( const Command &command )
         stringstream ss;
         ss << "Requested speed ("<<command.toString()<<") can not be achieved.  "
            << "maxForwardSpeed: " << maxForwardSpeed_ << ", maxReverseSpeed: " << maxReverseSpeed_ << ", maxTurnrate: " << maxTurnrate_*M_PI/180.0;
+        cout << ss.str() <<endl;
         throw orca::MalformedParametersException( ss.str() );
     }
 
