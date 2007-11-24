@@ -1,9 +1,9 @@
 #include "simulator.h"
 #include <iostream>
-#include <orcageom2d/geom2d.h>
 #include <orcaice/orcaice.h>
-#include <hydropathplan/hydropathplan.h>
 #include <orcaobjutil/vehicleutil.h>
+#include <hydropathplan/hydropathplan.h>
+#include <hydrogeom2d/geom2d.h>
 #include <localnavutil/brosutil.h>
 #include <orcaogmap/orcaogmap.h>
 
