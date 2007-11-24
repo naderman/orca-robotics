@@ -21,25 +21,25 @@
 #include <hydroutil/buffer.h>
 
 // novatel message definitions      
-#include <novatel/header.h>
-#include <novatel/log/rxstatus.h>
-#include <novatel/log/time.h>
-#include <novatel/log/timesync.h>
-#include <novatel/log/bestgpspos.h>
-#include <novatel/log/inspva.h>
-#include <novatel/log/inscov.h>
-#include <novatel/log/rawimu.h>
+#include <hydronovatelutil/header.h>
+#include <hydronovatelutil/log/rxstatus.h>
+#include <hydronovatelutil/log/time.h>
+#include <hydronovatelutil/log/timesync.h>
+#include <hydronovatelutil/log/bestgpspos.h>
+#include <hydronovatelutil/log/inspva.h>
+#include <hydronovatelutil/log/inscov.h>
+#include <hydronovatelutil/log/rawimu.h>
 
 
 // binary messages defined by novatel
 #pragma pack(push,1)
     typedef union novatel_message{
         struct{
-            novatel::OEM4_BINARY_HEADER hdr;
+            hydronovatelutil::OEM4_BINARY_HEADER hdr;
             char               data[484];
         };
         struct{
-            novatel::OEM4_SHORT_BINARY_HEADER short_hdr;
+            hydronovatelutil::OEM4_SHORT_BINARY_HEADER short_hdr;
             char               short_data[500];
         };
         unsigned char raw_message[512];
@@ -148,13 +148,13 @@ private:
     // Where the latest and greatest of each log is stored.
     // The trailing B's indicate binary messages
     // No trailing B means abbreviated ASCII message
-    novatel::RXSTATUSB_LOG  RXSTATUS_;
-    novatel::TIMEB_LOG      TIME_;
-    novatel::TIMESYNCB_LOG  TIMESYNC_;
-    novatel::BESTGPSPOS_LOG BESTGPSPOS_;
-    novatel::INSPVASB_LOG   INSPVA_;
-    novatel::INSCOVSB_LOG   INSCOV_;
-    novatel::RAWIMUSB_LOG   RAWIMU_;
+    hydronovatelutil::RXSTATUSB_LOG  RXSTATUS_;
+    hydronovatelutil::TIMEB_LOG      TIME_;
+    hydronovatelutil::TIMESYNCB_LOG  TIMESYNC_;
+    hydronovatelutil::BESTGPSPOS_LOG BESTGPSPOS_;
+    hydronovatelutil::INSPVASB_LOG   INSPVA_;
+    hydronovatelutil::INSCOVSB_LOG   INSCOV_;
+    hydronovatelutil::RAWIMUSB_LOG   RAWIMU_;
 
     int gpsCount_;
     int imuCount_;

@@ -21,7 +21,7 @@
 namespace insgps
 {
 
-class Handler;
+class MainThread;
 class Driver;
 
 class Component : public orcaice::Component
@@ -57,10 +57,10 @@ private:
     Driver *hwDriver_;
     
     // handlers for the interfaces
-    Handler* gpsHandler_;
-    Handler* imuHandler_;
-    Handler* odometry3dHandler_;
-    Handler* localise3dHandler_;
+    MainThread* gpsMainThread_;
+    MainThread* imuMainThread_;
+    MainThread* odometry3dMainThread_;
+    MainThread* localise3dMainThread_;
 };
 
 } //namespace

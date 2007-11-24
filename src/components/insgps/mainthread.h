@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_INSGPS_HANDLER_H
-#define ORCA2_INSGPS_HANDLER_H
+#ifndef ORCA2_INSGPS_MAINTHREAD_H
+#define ORCA2_INSGPS_MAINTHREAD_H
 
 // for context and thread
 #include <orcaice/orcaice.h>
@@ -21,7 +21,7 @@
 #include "insgpsi.h"
 
 //
-// Handler for InsGps interfaces which include Gps, Imu, and Odometry3d:
+// MainThread for InsGps interfaces which include Gps, Imu, and Odometry3d:
 //     - Reads the gps, imu, and odometry3d messages provided by the driver and publishes them
 //
 // The component interacts with the driver and interfaces through (thread-safe) buffers.
@@ -29,10 +29,10 @@
 
 namespace insgps{
 
-class Handler : public hydroutil::Thread
+class MainThread : public hydroutil::Thread
 {
 public:
-    Handler(insgps::InsGpsI&  insGpsI,
+    MainThread(insgps::InsGpsI&  insGpsI,
             insgps::Driver*  hwDriver,
             const orcaice::Context & context);
     

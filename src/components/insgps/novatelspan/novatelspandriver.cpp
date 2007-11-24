@@ -15,9 +15,9 @@
 #include "serialconnectivity.h"
 
 // log types
-#include <novatel/header.h>
-#include <novatel/logtypes.h>
-#include <novatel/crc/ncrc32.h>
+#include <hydronovatelutil/header.h>
+#include <hydronovatelutil/logtypes.h>
+#include <hydronovatelutil/crc/ncrc32.h>
 
 #include <iostream>
 #include <stdlib.h>
@@ -726,7 +726,7 @@ NovatelSpanInsGpsDriver::populateData( int id )
 {
     switch(id)
     {
-        case novatel::RXSTATUSB_LOG_TYPE:
+        case hydronovatelutil::RXSTATUSB_LOG_TYPE:
         {
             memcpy( &RXSTATUS_, &serial_data_.raw_message, sizeof(RXSTATUS_) );
             // printf("got RXSTATUS\n");
@@ -735,7 +735,7 @@ NovatelSpanInsGpsDriver::populateData( int id )
         }
         // This case is used for dgps synchronisation which is not needed at the moment
         // TODO: add mkutctime in if needed                      
-//         case novatel::TIMESYNCB_LOG_TYPE:
+//         case hydronovatelutil::TIMESYNCB_LOG_TYPE:
 //         {
 //             memcpy( &TIMESYNC_, &serial_data_.raw_message, sizeof(TIMESYNC_) );
 // 
@@ -751,7 +751,7 @@ NovatelSpanInsGpsDriver::populateData( int id )
 // 
 //             break;
 //         }
-        case novatel::TIMEB_LOG_TYPE:
+        case hydronovatelutil::TIMEB_LOG_TYPE:
         {
             // printf("got TIME\n");
             memcpy( &TIME_, &serial_data_.raw_message, sizeof(TIME_ ) );
@@ -798,7 +798,7 @@ NovatelSpanInsGpsDriver::populateData( int id )
             return 0;       
             break;
         }
-        case novatel::BESTGPSPOSB_LOG_TYPE:
+        case hydronovatelutil::BESTGPSPOSB_LOG_TYPE:
         {
             // printf("got BESTGPSPOS\n");
             memcpy( &BESTGPSPOS_, &serial_data_.raw_message, sizeof(BESTGPSPOS_) );
@@ -864,7 +864,7 @@ NovatelSpanInsGpsDriver::populateData( int id )
             return 0;       
             break;
         }
-        case novatel::INSPVASB_LOG_TYPE:
+        case hydronovatelutil::INSPVASB_LOG_TYPE:
         //this gets stuffed into localise3d _and_ odometry3d; probably not the best way to go
         //angular motion in odometry3d is _not_ populated
         {
@@ -941,7 +941,7 @@ NovatelSpanInsGpsDriver::populateData( int id )
             return 0;       
             break;
         }
-        case novatel::INSCOVSB_LOG_TYPE:
+        case hydronovatelutil::INSCOVSB_LOG_TYPE:
         {
            // printf("got INSCOVSB\n");
            memcpy( &INSCOV_, &serial_data_.raw_message, sizeof(INSCOV_) );
@@ -1005,7 +1005,7 @@ NovatelSpanInsGpsDriver::populateData( int id )
            return 0;
              break;
         }
-        case novatel::RAWIMUSB_LOG_TYPE:
+        case hydronovatelutil::RAWIMUSB_LOG_TYPE:
         {
             //printf("got RAWIMUSB\n");
             memcpy(&RAWIMU_, &serial_data_.raw_message, sizeof(RAWIMU_) );
@@ -1017,17 +1017,17 @@ NovatelSpanInsGpsDriver::populateData( int id )
 	    double dt = 0.01;
 	    // Divide by dt to get the correct units for the IMU data
             if(true == swappedRollPitch_){
-                imuData_.gyro.y = -novatel::IMU_GYRO_CONST * (double)RAWIMU_.data.y_gyro/dt;
-                imuData_.gyro.x = novatel::IMU_GYRO_CONST * (double)RAWIMU_.data.x_gyro/dt;
+                imuData_.gyro.y = -hydronovatelutil::IMU_GYRO_CONST * (double)RAWIMU_.data.y_gyro/dt;
+                imuData_.gyro.x = hydronovatelutil::IMU_GYRO_CONST * (double)RAWIMU_.data.x_gyro/dt;
             }else{
-                imuData_.gyro.x = -novatel::IMU_GYRO_CONST * (double)RAWIMU_.data.y_gyro/dt;
-                imuData_.gyro.y = novatel::IMU_GYRO_CONST * (double)RAWIMU_.data.x_gyro/dt;
+                imuData_.gyro.x = -hydronovatelutil::IMU_GYRO_CONST * (double)RAWIMU_.data.y_gyro/dt;
+                imuData_.gyro.y = hydronovatelutil::IMU_GYRO_CONST * (double)RAWIMU_.data.x_gyro/dt;
             }
-            imuData_.gyro.z = -novatel::IMU_GYRO_CONST * (double)RAWIMU_.data.z_gyro/dt;
+            imuData_.gyro.z = -hydronovatelutil::IMU_GYRO_CONST * (double)RAWIMU_.data.z_gyro/dt;
 
-            imuData_.accel.x = novatel::IMU_ACCEL_CONST * (double)RAWIMU_.data.y_accel/dt;
-            imuData_.accel.y = -novatel::IMU_ACCEL_CONST * (double)RAWIMU_.data.x_accel/dt;
-            imuData_.accel.z = novatel::IMU_ACCEL_CONST * (double)RAWIMU_.data.z_accel/dt;
+            imuData_.accel.x = hydronovatelutil::IMU_ACCEL_CONST * (double)RAWIMU_.data.y_accel/dt;
+            imuData_.accel.y = -hydronovatelutil::IMU_ACCEL_CONST * (double)RAWIMU_.data.x_accel/dt;
+            imuData_.accel.z = hydronovatelutil::IMU_ACCEL_CONST * (double)RAWIMU_.data.z_accel/dt;
 
             // TODO: add this if needed       
             //Set time
@@ -1127,7 +1127,7 @@ int NovatelSpanInsGpsDriver::read_message( novatel_message* msg )
 
             id = msg->hdr.number;
 
-            crc = novatel::CalculateCRC32( msg->raw_message,
+            crc = hydronovatelutil::CalculateCRC32( msg->raw_message,
                                msg->hdr.length+msg->hdr.header_length );
             break;
 
@@ -1145,7 +1145,7 @@ int NovatelSpanInsGpsDriver::read_message( novatel_message* msg )
 
             id = msg->short_hdr.number;
 
-            crc = novatel::CalculateCRC32( msg->raw_message,msg->short_hdr.length + 12 );
+            crc = hydronovatelutil::CalculateCRC32( msg->raw_message,msg->short_hdr.length + 12 );
             break;
 
         default: //bollocks

@@ -11,7 +11,7 @@
 #include <orcaice/orcaice.h>
 
 #include "component.h"
-#include "handler.h"
+#include "mainthread.h"
 
 // Various bits of hardware we can drive
 #include "fakeinsgpsdriver.h"
@@ -25,10 +25,10 @@ namespace insgps
 Component::Component() :
     orcaice::Component( "InsGps" ),
     hwDriver_(0),
-    gpsHandler_(0),         
-    imuHandler_(0),
-    odometry3dHandler_(0),
-    localise3dHandler_(0)
+    gpsMainThread_(0),         
+    imuMainThread_(0),
+    odometry3dMainThread_(0),
+    localise3dMainThread_(0)
 {
 }
 
@@ -36,7 +36,7 @@ Component::~Component()
 {
     // Do not delete the gpsObj_, imuObj_, odometry3dObj_, or localise3dObj_
     // as they are smart pointers and self destruct.
-    // Do not delete gpsHandler_, imuHandler_, odometry3dHandler_, localise3dHandler_, 
+    // Do not delete gpsMainThread_, imuMainThread_, odometry3dMainThread_, localise3dMainThread_, 
     // or the hwDriver_ as they are hydroutil::Threads and self-destruct.
 }
 
@@ -226,27 +226,27 @@ Component::start()
     
     context().tracer()->debug( "entering handlers_...", 2 );
 
-    gpsHandler_ = new Handler( *gpsObj_,
+    gpsMainThread_ = new MainThread( *gpsObj_,
                                hwDriver_,
                                context() );
 
-    imuHandler_ = new Handler( *imuObj_,
+    imuMainThread_ = new MainThread( *imuObj_,
                                 hwDriver_,
                                 context() );
     
-    odometry3dHandler_ = new Handler( *odometry3dObj_,
+    odometry3dMainThread_ = new MainThread( *odometry3dObj_,
                                 hwDriver_,
                                 context() );
 
-    localise3dHandler_ = new Handler( *localise3dObj_,
+    localise3dMainThread_ = new MainThread( *localise3dObj_,
                                 hwDriver_,
                                 context() );
 
     // now that each of the objects have been registered, start their handlers
-    gpsHandler_->start();
-    imuHandler_->start();
-    odometry3dHandler_->start();
-    localise3dHandler_->start();
+    gpsMainThread_->start();
+    imuMainThread_->start();
+    odometry3dMainThread_->start();
+    localise3dMainThread_->start();
 
 }
 
@@ -256,10 +256,10 @@ Component::stop()
     tracer()->debug( "stopping component", 2 );
 
     tracer()->debug( "stopping handlers", 2 );
-    hydroutil::stopAndJoin( gpsHandler_ );
-    hydroutil::stopAndJoin( imuHandler_ );
-    hydroutil::stopAndJoin( odometry3dHandler_ );   
-    hydroutil::stopAndJoin( localise3dHandler_ );   
+    hydroutil::stopAndJoin( gpsMainThread_ );
+    hydroutil::stopAndJoin( imuMainThread_ );
+    hydroutil::stopAndJoin( odometry3dMainThread_ );   
+    hydroutil::stopAndJoin( localise3dMainThread_ );   
     // tracer()->debug( "stopped handlers", 2 );
 
     tracer()->debug( "stopping driver", 2 );

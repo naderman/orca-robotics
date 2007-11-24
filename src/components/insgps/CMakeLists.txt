@@ -3,8 +3,6 @@ IF ( OS_LINUX )
 OPTION( BUILD_INSGPS "Try to build InsGps component" ON )
 
 IF ( BUILD_INSGPS )
-
-    ADD_SUBDIRECTORY( novatel )
     
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
@@ -19,7 +17,7 @@ IF ( BUILD_INSGPS )
         NOVATELSPANINSGPS_LIBS
         NOVATELSPANINSGPS_FOUND
         HAVE_NOVATELSPANINSGPS_DRIVER
-        HydroSerial OrcaNovatel
+        HydroSerial HydroNovatelUtil
     )
     
     FIND_COMPONENT_SOURCES( COMP_SRCS )

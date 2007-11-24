@@ -8,7 +8,7 @@
  *
  */
 
-#include "handler.h"
+#include "mainthread.h"
 #include "novatelspan/novatelspandriver.h"
 
 using namespace std;
@@ -16,7 +16,7 @@ using namespace orca;
 
 namespace insgps{
 
-Handler::Handler(InsGpsI&           insGpsI,
+MainThread::MainThread(InsGpsI&           insGpsI,
                  insgps::Driver*    hwDriver,
                  const orcaice::Context & context )
     : insGpsI_(&insGpsI),
@@ -26,14 +26,14 @@ Handler::Handler(InsGpsI&           insGpsI,
 }
    
 void
-Handler::run()
+MainThread::run()
 {
     const int TIME_BETWEEN_HEARTBEATS  = 10000;  // ms
     IceUtil::Time lastHeartbeatTime = IceUtil::Time::now();
 
     try 
     {
-        context_.tracer()->debug( "TRACE(handler::run()): Handler thread is running", 6);
+        context_.tracer()->debug( "TRACE(handler::run()): MainThread thread is running", 6);
         
         //
         // IMPORTANT: Have to keep this loop rolling, because the '!isStopping()' call checks
