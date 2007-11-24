@@ -1,3 +1,4 @@
+#include "estopconsumerI.h"
 #include "hwhandler.h"
 #include <iostream>
 #include <orca/exceptions.h>
@@ -16,12 +17,14 @@ HwHandler::HwHandler( HwDriver               &hwDriver,
                       double                  maxReverseSpeed,
                       double                  maxTurnrate,
                       bool                    isMotionEnabled,
+                      bool                    isEStopEnabled,
                       const orcaice::Context &context )
     : driver_(hwDriver),
       maxForwardSpeed_(maxForwardSpeed),
       maxReverseSpeed_(maxReverseSpeed),
       maxTurnrate_(maxTurnrate),
       isMotionEnabled_(isMotionEnabled),
+      isEStopEnabled_(isEStopEnabled),
       context_(context)
 {
     context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 10.0 );
@@ -59,10 +62,13 @@ HwHandler::enableDriver()
     }
 }
 
+
+
 void
 HwHandler::walk()
 {
     std::string reason;
+    const int eStopTimeoutMs = 1200;
 
     //
     // Main loop
@@ -76,6 +82,12 @@ HwHandler::walk()
         {
             // Try to (re-)enable
             context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 5.0 );    
+
+            // Is the Estop correctly enabled?
+            if( isEStopEnabled_ && ( !isEStopConnected(eStopTimeoutMs) ))
+               {continue;}
+            
+            
             enableDriver();
 
             // we enabled, so presume we're OK.
@@ -174,6 +186,31 @@ HwHandler::walk()
             }
         }
 
+        // TODO should this be optional?
+
+        // Does the estop interface indicate a stop now fault!
+        if (isEStopEnabled_) 
+        {
+            if(eStopFaultStatus_.isNewData())
+            {
+                EStopStatus eStopStatus;
+                eStopFaultStatus_.get(eStopStatus);
+                if( eStopStatus == segwayrmp::ESS_FAULT )
+                {
+                    std::stringstream ss; ss << "HwHandler: EstopInterface shows error state, disabling motion.";
+                    context_.tracer()->error( ss.str() );
+                    // set local state to failure
+                    stateMachine_.setFault( ss.str() );                                
+                }        
+                /*
+                     else if(){
+                     //TODO need to implement timeout
+                   }
+                 */
+            }
+
+        }
+
         // Tell the 'status' engine what our local state machine knows.
         if ( stateMachine_.isFault(reason) )
         {
@@ -187,6 +224,7 @@ HwHandler::walk()
         {
             context_.status()->ok( SUBSYSTEM );
         }
+
 
     } // while
 }
@@ -251,5 +289,38 @@ HwHandler::setCommand( const Command &command )
     context_.tracer()->debug( ss.str() );
 }
 
+
+
+
+bool
+HwHandler::isEStopConnected(int timeoutMs)
+{
+    
+    //Get the estop status or timeout.
+    EStopStatus eStopStatus;
+    if(eStopFaultStatus_.getNext(eStopStatus, timeoutMs) != 0)
+    {
+        string Msg("HwHandler: No EStop data available. Will try again");
+        context_.tracer()->error( Msg );
+        stateMachine_.setFault( Msg );
+        return false;
+    }                
+
+    //Are we showing a fault on the estop
+    if (eStopStatus != segwayrmp::ESS_NO_FAULT)
+    {
+        string Msg( "HwHandler: EStop data indicating fault. Trying again" );
+        context_.tracer()->error( Msg );
+        stateMachine_.setFault( Msg );
+        return false;
+    }
+
+    return true;
 }
+    
+
+
+
+}
+
 

@@ -11,6 +11,9 @@
 
 namespace segwayrmp {
 
+
+enum EStopStatus{ESS_NO_FAULT, ESS_FAULT};
+
 //
 // @brief The thread that runs the driver
 //
@@ -26,12 +29,17 @@ public:
                double                  maxReverseSpeed,
                double                  maxTurnrate,
                bool                    isMotionEnabled,
+               bool                    isEStopEnabled,
                const orcaice::Context &context );
 
     // Inherited from SafeThread
     void walk();
 
     void setCommand( const Command &command );
+
+    void setEStopFaultStatus( const EStopStatus status ){
+        eStopFaultStatus_.set(status);
+    }
 
     // Return valus same as hydroutil::Store.
     int getData( Data &data, int timeoutMs )
@@ -40,6 +48,9 @@ public:
         }
 
 private: 
+
+    // Try and get data from the estop to ensure this is all OK.
+    bool isEStopConnected(int timeoutMs);
 
     // Keeps trying until success or !!isStopping()
     void enableDriver();
@@ -55,6 +66,10 @@ private:
     // Stores incoming commands
     hydroutil::Store<Command> commandStore_;
 
+    // Stores incoming EStop Status
+    hydroutil::Store<EStopStatus> eStopFaultStatus_;
+    
+
     HwDriver &driver_;
 
     double maxForwardSpeed_;
@@ -62,6 +77,7 @@ private:
     double maxTurnrate_;
 
     bool isMotionEnabled_;
+    bool isEStopEnabled_;
 
     // Looks for late writes (which will cause timeouts in the segway)
     hydroutil::Timer writeTimer_;

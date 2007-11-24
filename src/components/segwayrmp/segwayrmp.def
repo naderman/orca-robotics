@@ -14,11 +14,15 @@ Provides.Power.Type=Power
 Provides.Power.DefaultName=power
 
 # Required Interfaces
+Requires.HatchMon.Type=EStop
+Requires.HatchMon.DefaultProxy=estop@local/hatchmon
 
 # Config Parameters
 Config.Driver.Comment=Options are { 'segwayrmpcan', 'segwayrmpusb', 'playerclient', 'fake' }
 Config.Driver.Default=segwayrmpcan
+Config.EnableEStopInterface.Default=0
 Config.EnableMotion.Default=1
+
 
 # Common to all drivers
 Config.VehicleDescription.Control.Type.Default=VelocityDifferential

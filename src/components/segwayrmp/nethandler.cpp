@@ -13,6 +13,7 @@
 
 #include <orcaice/orcaice.h>
 #include "nethandler.h"
+#include "estopconsumerI.h"
 
 using namespace std;
 using namespace segwayrmp;
@@ -90,9 +91,12 @@ convert( const orca::VelocityControl2dData& network, segwayrmp::Command& interna
 
 NetHandler::NetHandler( HwHandler                      &hwHandler,
                         const orca::VehicleDescription &descr,
+                        const bool isEStopEnabled,
                         const orcaice::Context         &context )
-    : hwHandler_(hwHandler),
+    : eStopPrx_(0),
+      hwHandler_(hwHandler),
       descr_(descr),
+      isEStopEnabled_(isEStopEnabled),
       context_(context)
 {
     context_.status()->setMaxHeartbeatInterval( SUBSYSTEM_NAME, 10.0 );
@@ -141,6 +145,7 @@ NetHandler::handleData(const orca::VelocityControl2dData& incomingCommand)
     hwHandler_.setCommand( internalCommand );
 }
 
+
 void
 NetHandler::walk()
 {
@@ -163,6 +168,11 @@ NetHandler::walk()
     // register ourselves as data handlers (it will call the handleData() callback).
     velocityControl2dI_->setNotifyHandler( this );
 
+    // Are we using the EStop interface?
+    if( isEStopEnabled_ ){
+        initEStopCallback();    
+    }
+
     // temp objects in network format
     orca::Odometry2dData odometry2dData;
     orca::Odometry3dData odometry3dData;
@@ -171,6 +181,7 @@ NetHandler::walk()
     hydroutil::Timer odometry2dPublishTimer;
     hydroutil::Timer odometry3dPublishTimer;
     hydroutil::Timer powerPublishTimer;
+    hydroutil::Timer eStopDataLastRxTimer;
 
     double odometry2dPublishInterval = orcaice::getPropertyAsDoubleWithDefault( 
         context_.properties(), prefix+"Odometry2dPublishInterval", 0.1 );
@@ -181,6 +192,8 @@ NetHandler::walk()
 
     const int odometryReadTimeout = 500; // [ms]
     context_.status()->setMaxHeartbeatInterval( SUBSYSTEM_NAME, 2.0*(odometryReadTimeout/1000.0) );
+    
+
 
     //
     // Main loop
@@ -189,7 +202,7 @@ NetHandler::walk()
     {
 //         context_.tracer()->debug( "net handler loop spinning ",1);
 
-        // block on the only incoming data stream
+        // block on the highest frequency incoming data stream
         Data data;
         if ( hwHandler_.getData( data, odometryReadTimeout ) ) {
 //             context_.tracer()->debug( "Net loop timed out", 1);
@@ -233,4 +246,38 @@ NetHandler::walk()
         // subsystem heartbeat
         context_.status()->ok( SUBSYSTEM_NAME );
     } // main loop
+}
+
+
+
+// TODO modernise this code section.
+void 
+NetHandler::initEStopCallback()
+{
+
+    // Keep trying to create the interface until we succeed
+    orcaice::connectToInterfaceWithTag<orca::EStopPrx>( context_, eStopPrx_, "HatchMon", this );
+            
+    // callback object to receive data, and hands it straight the the hwHandler thread
+    Ice::ObjectPtr consumerObj = new segwayrmp::EStopConsumerI(hwHandler_);
+    orca::EStopConsumerPrx callbackPrx =
+      orcaice::createConsumerInterface<orca::EStopConsumerPrx>( context_, consumerObj );
+    
+    //
+    // Subscribe for EStop data
+    //
+    // will try forever until the user quits with ctrl-c
+    while ( true )
+    {
+        try
+        {
+            eStopPrx_->subscribe( callbackPrx );
+            break;
+        }
+        catch ( const orca::SubscriptionFailedException & )
+        {
+            context_.tracer()->error( "failed to subscribe for data updates. Will try again after 3 seconds." );
+            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
+        }
+    }
 }

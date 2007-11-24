@@ -16,6 +16,7 @@
 #include <hydroutil/proxy.h>
 #include <hydroutil/notify.h>
 
+#include <orcaifaceimpl/estopimpl.h>
 #include <orcaifaceimpl/odometry2dImpl.h>
 #include <orcaifaceimpl/odometry3dImpl.h>
 #include <orcaifaceimpl/powerImpl.h>
@@ -26,6 +27,8 @@
 namespace segwayrmp
 {
 
+
+
 class NetHandler : public hydroutil::SafeThread,
                    public hydroutil::NotifyHandler<orca::VelocityControl2dData>
 {
@@ -33,6 +36,7 @@ public:
 
     NetHandler( HwHandler                      &hwHandler,
                 const orca::VehicleDescription &descr,
+                bool isEStopEnabled,
                 const orcaice::Context         &context );
 
     // from SafeThread
@@ -44,22 +48,29 @@ public:
 private:
 
     void limit( Command &command );
+    void initEStopCallback();
 
     // external interfaces
     orcaifaceimpl::Odometry2dImplPtr           odometry2dI_;
     orcaifaceimpl::Odometry3dImplPtr           odometry3dI_;
     orcaifaceimpl::PowerImplPtr                powerI_;
     orcaifaceimpl::VelocityControl2dImplPtr    velocityControl2dI_;
+    
+    // proxy to our optional 'required interface'
+    orca::EStopPrx eStopPrx_;
 
     HwHandler &hwHandler_;
 
     orca::VehicleDescription descr_;
+    bool isEStopEnabled_;
 
     double maxSpeed_;
     double maxTurnrate_;
 
     // component current context
     orcaice::Context context_;
+
+    
 };
 
 } // namespace

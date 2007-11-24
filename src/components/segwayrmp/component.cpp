@@ -172,6 +172,16 @@ Component::start()
     // Hardware handling loop
     //
     // the constructor may throw, we'll let the application shut us down
+    
+
+    // By default the estop interface is not enabled...
+    bool isEStopEnabled = (bool)orcaice::getPropertyAsIntWithDefault( context().properties(),
+                                                                       context().tag()+".Config.EnableEStopInterface",
+                                                                       0 );
+    stringstream ss; ss <<"is EStopInterfaceEnabled is set to "<< isEStopEnabled<<endl;
+    context().tracer()->info( ss.str() );
+ 
+
     bool isMotionEnabled = (bool)orcaice::getPropertyAsIntWithDefault( context().properties(),
                                                                        context().tag()+".Config.EnableMotion",
                                                                        1 );
@@ -184,6 +194,7 @@ Component::start()
                                           controlDescr->maxReverseSpeed,
                                           controlDescr->maxTurnrate,
                                           isMotionEnabled,
+                                          isEStopEnabled,
                                           context() );
     hwHandler_ = hwHandler;
     hwHandler_->start();
@@ -192,7 +203,8 @@ Component::start()
     // Network handling loop
     //
     // the constructor may throw, we'll let the application shut us down
-    netHandler_ = new NetHandler( *hwHandler, descr, context() );
+    netHandler_ = new NetHandler( *hwHandler, descr, isEStopEnabled, context() );
+
     // this thread will try to activate and register the adapter
     netHandler_->start();
 
