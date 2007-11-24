@@ -23,7 +23,7 @@ IF ( BUILD_INSGPS )
     )
     
     FIND_COMPONENT_SOURCES( COMP_SRCS )
-    SET( COMP_DEPS OrcaGpsUtil ${NOVATELSPANINSGPS_LIBS} )
+    SET( COMP_DEPS HydroGpsUtil ${NOVATELSPANINSGPS_LIBS} )
     
     # build stand-alone component  
     GLOBAL_ADD_EXECUTABLE( insgps ${COMP_SRCS} main )

@@ -88,10 +88,11 @@ Sorca = [ ...
 2007     9  18  1   Sice321 7919-2572+1787  83838-38743     44694-7919  0    % 2.6.0
 % A&D: Hydro: sloccount src
 2007    10  28  1   Sice321 5481-1528+1787  72748-36062     42043-5481  12251    % 2.7.0
+2007    11   7  0   Sice321 5348-1558+1787  70475-36370     44196-5348  17013    % 2.7.0+
 ];
 Vorca ={'0.8.6', '0.11.0', '0.12.0', '0.12.1', '0.13.0', '0.13.1', '0.13.2', '0.13.3', '0.14.0', '0.15.0', '1.0.0', ...
     '2.0.0-rc1', '2.0.0-rc2', '2.0.0-rc3', '2.0.0-rc4', '2.0.0-rc5', '2.0.0', '2.0.1', '2.0.2', '2.1.0', '2.1.1', ...
-    '2.2.0', '2.3.0', '2.4.0', '2.5.0', '2.6.0', '2.7.0' }';
+    '2.2.0', '2.3.0', '2.4.0', '2.5.0', '2.6.0', '2.7.0', '2.7.0+' }';
 
 % add a dummy release just for display
 Sorca(end+1,:) = Sorca(end,:);
@@ -114,6 +115,15 @@ Vorca2 = Vorca(i2);
 
 % for comparison, ASN
 %  Sasn = 90433;
+
+Sgenom = [
+% YY    MM  DD  ? SUB   BASE    COMP    UTIL    VERSION
+% SUB : cd pocolibs-2.3; sloccount include src
+% BASE: cd genom-2.0; sloccount include src
+% COMP: 0
+% UTIL: 0 
+2007    8   31  1  9786    11368   0   0       % 2.0
+];
 
 Splayer = [ 
 % YY    MM  DD  ?   SUB     BASE                COMP       UTIL  VERSION

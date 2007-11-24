@@ -10,7 +10,7 @@
  
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include <orcagpsutil/latlon2mga.h>
+#include <hydrogpsutil/latlon2mga.h>
 
 #include "mainloop.h"
 

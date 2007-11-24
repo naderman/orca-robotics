@@ -11,7 +11,7 @@
 #include <iostream>
 #include <orcaice/orcaice.h>
 #include <hydronavutil/offset.h>
-#include <orcagpsutil/latlon2mga.h>
+#include <hydrogpsutil/latlon2mga.h>
 #include <orcaice/orcaice.h>
 
 using namespace std;

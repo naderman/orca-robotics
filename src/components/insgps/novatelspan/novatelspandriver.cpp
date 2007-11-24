@@ -9,7 +9,7 @@
  */
 
 #include <orcaice/orcaice.h>
-#include <orcagpsutil/latlon2mga.h>
+#include <hydrogpsutil/latlon2mga.h>
 #include "novatelspandriver.h"
 #include "timeval.h"
 #include "serialconnectivity.h"
@@ -27,7 +27,7 @@
 using namespace std;
 using namespace orca;
 using namespace hydroserial;
-using namespace orcagpsutil;
+using namespace hydrogpsutil;
 
 namespace insgps
 {

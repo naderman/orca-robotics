@@ -11,7 +11,7 @@
 #include <iostream>
 #include <orcaice/orcaice.h>
 #include <hydronavutil/offset.h>
-#include <orcagpsutil/latlon2mga.h>
+#include <hydrogpsutil/latlon2mga.h>
 
 using namespace std;
 
@@ -75,7 +75,7 @@ SimpleDriver::compute( const orca::GpsData  &gpsData,
     double easting, northing;
     int zone;
 
-    orcagpsutil::LatLon2MGA( gpsData.latitude, 
+    hydrogpsutil::LatLon2MGA( gpsData.latitude, 
                              gpsData.longitude,
                              northing,
                              easting,

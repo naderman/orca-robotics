@@ -13,7 +13,7 @@
 
 #include <orcaice/orcaice.h>
 #include <hydroserial/serial.h>
-#include <orcagpsutil/nmea.h>
+#include <hydrogpsutil/nmea.h>
 #include <driver.h>
 #include <orca/gps.h>
 
@@ -56,7 +56,7 @@ private:
     
     hydroserial::Serial serial_;
     GpsProxy *gpsProxy_;
-    orcagpsutil::NmeaMessage nmeaMessage_;
+    hydrogpsutil::NmeaMessage nmeaMessage_;
     IceUtil::Time timeOfRead_;
     
     //*** NOTE:- if we change the number of messages in the frame need to change

@@ -20,7 +20,7 @@ IF ( BUILD_GPS )
         GARMINGPS_FOUND
         HAVE_GARMINGPS_DRIVER
         HydroSerial
-        OrcaGpsUtil
+        HydroGpsUtil
     )
 
     FIND_COMPONENT_SOURCES( COMP_SRCS )
