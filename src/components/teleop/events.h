@@ -19,20 +19,21 @@ namespace teleop
 enum EventType  
 {
     // user & network
-    SentNewVelocityCommand=0,
-    SentNewBicycleCommand,
+    SentVelocityCommand=0,
+    SentBicycleCommand,
     SentRepeatCommand,
     FailedToSendCommand,
     // network
-    NewCommandIncrement,
-    NewRelativeCommand
+    MixedCommand,
+    IncrementCommand,
+    RelativeCommand
 };
 
-class SentNewVelocityCommandEvent : public hydroutil::Event
+class SentVelocityCommandEvent : public hydroutil::Event
 {
 public:
-    SentNewVelocityCommandEvent( double vx, double vy, double w, bool vxLimit, bool vyLimit, bool wLimit ) :
-        Event( SentNewVelocityCommand ),
+    SentVelocityCommandEvent( double vx, double vy, double w, bool vxLimit, bool vyLimit, bool wLimit ) :
+        Event( SentVelocityCommand ),
         vx_(vx),
         vy_(vy),
         w_(w),
@@ -47,13 +48,13 @@ public:
     bool vyLimit_;
     bool wLimit_;
 };
-typedef IceUtil::Handle<SentNewVelocityCommandEvent> SentNewVelocityCommandEventPtr;
+typedef IceUtil::Handle<SentVelocityCommandEvent> SentVelocityCommandEventPtr;
 
-class SentNewBicycleCommandEvent : public hydroutil::Event
+class SentBicycleCommandEvent : public hydroutil::Event
 {
 public:
-    SentNewBicycleCommandEvent( double speed, double steerAngle, bool speedLimit, bool steerAngleLimit ) :
-        Event( SentNewBicycleCommand ),
+    SentBicycleCommandEvent( double speed, double steerAngle, bool speedLimit, bool steerAngleLimit ) :
+        Event( SentBicycleCommand ),
         speed_(speed),
         steerAngle_(steerAngle),
         speedLimit_(speedLimit),
@@ -64,7 +65,7 @@ public:
     bool speedLimit_;
     bool steerAngleLimit_;
 };
-typedef IceUtil::Handle<SentNewBicycleCommandEvent> SentNewBicycleCommandEventPtr;
+typedef IceUtil::Handle<SentBicycleCommandEvent> SentBicycleCommandEventPtr;
 
 class SentRepeatCommandEvent : public hydroutil::Event
 {
@@ -80,35 +81,56 @@ public:
         Event( FailedToSendCommand ) {};
 };
 
-class NewCommandIncrementEvent : public hydroutil::Event
+class MixedCommandEvent : public hydroutil::Event
 {
 public:
-    NewCommandIncrementEvent( int longitudinal, int transverse, int angle ) :
-        Event( NewCommandIncrement ),
-        longitudinal_(longitudinal),
-        transverse_(transverse),
-        angle_(angle) {};
+    MixedCommandEvent( int lon, bool isLong, int tr, bool isTr, int ang, bool isAng ) :
+        Event( MixedCommand ),
+        longitudinal(lon),
+        isLongIncrement(isLong),
+        transverse(tr),
+        isTransverseIncrement(isTr),
+        angular(ang),
+        isAngularIncrement(isAng) {};
 
-    int longitudinal_;
-    int transverse_;
-    int angle_;
+    int longitudinal;
+    bool isLongIncrement;
+    int transverse;
+    bool isTransverseIncrement;
+    int angular;
+    bool isAngularIncrement;
 };
-typedef IceUtil::Handle<NewCommandIncrementEvent> NewCommandIncrementEventPtr;
+typedef IceUtil::Handle<MixedCommandEvent> MixedCommandEventPtr;
 
-class NewRelativeCommandEvent : public hydroutil::Event
+class IncrementCommandEvent : public hydroutil::Event
 {
 public:
-    NewRelativeCommandEvent( double longitudinal, double transverse, double angle ) :
-        Event( NewRelativeCommand ),
-        longitudinal_(longitudinal),
-        transverse_(transverse),
-        angle_(angle) {};
+    IncrementCommandEvent( int lon, int tr, int ang ) :
+        Event( IncrementCommand ),
+        longitudinal(lon),
+        transverse(tr),
+        angular(ang) {};
 
-    double longitudinal_;
-    double transverse_;
-    double angle_;
+    int longitudinal;
+    int transverse;
+    int angular;
 };
-typedef IceUtil::Handle<NewRelativeCommandEvent> NewRelativeCommandEventPtr;
+typedef IceUtil::Handle<IncrementCommandEvent> IncrementCommandEventPtr;
+
+class RelativeCommandEvent : public hydroutil::Event
+{
+public:
+    RelativeCommandEvent( double lon, double tr, double ang ) :
+        Event( RelativeCommand ),
+        longitudinal(lon),
+        transverse(tr),
+        angular(ang) {};
+
+    double longitudinal;
+    double transverse;
+    double angular;
+};
+typedef IceUtil::Handle<RelativeCommandEvent> RelativeCommandEventPtr;
 
 
 class TeleopEventQueueOptimizer : public hydroutil::EventQueueOptimizer

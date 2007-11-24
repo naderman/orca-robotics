@@ -104,20 +104,49 @@ VelocityControl2dDriver::repeatCommand()
 }
 
 void 
-VelocityControl2dDriver::processNewCommandIncrement(int longitudinal, int transverse, int angle )
+VelocityControl2dDriver::processMixedCommand( double longitudinal, bool isLongIncrement, 
+    double transverse, bool isTransverseIncrement, 
+    double angular, bool isAngularIncrement )
 {
-    if ( longitudinal ) {
-        command_.motion.v.x += longitudinal*speedIncrement_;
-        command_.motion.v.x = MIN( command_.motion.v.x, maxSpeed_ );
-        command_.motion.v.x = MAX( command_.motion.v.x, -maxSpeed_ );
+    if ( isLongIncrement )
+        incrementValue( command_.motion.v.x, longitudinal*speedIncrement_, -maxSpeed_, maxSpeed_ );
+    else
+        setValue( command_.motion.v.x, longitudinal*maxSpeed_, -maxSpeed_, maxSpeed_ );
+
+    if ( isAngularIncrement )
+        incrementValue( command_.motion.w, angular*turnRateIncrement_, -maxTurnRate_, maxTurnRate_ );
+    else
+        setValue( command_.motion.w, angular*maxTurnRate_, -maxTurnRate_, maxTurnRate_ );
+
+    sendCommand();
+}
+
+void 
+VelocityControl2dDriver::processIncrementCommand(int longitudinal, int transverse, int angle )
+{
+    incrementValue( command_.motion.v.x, longitudinal*speedIncrement_, -maxSpeed_, maxSpeed_ );
+    incrementValue( command_.motion.w, angle*turnRateIncrement_, -maxTurnRate_, maxTurnRate_ );
+
+    sendCommand();
+}
+
+void 
+VelocityControl2dDriver::processRelativeCommand( double longitudinal, double transverse, double angle )
+{
+    if ( longitudinal != TELEOP_COMMAND_UNCHANGED ) {
+        setValue( command_.motion.v.x, longitudinal*maxSpeed_, -maxSpeed_, maxSpeed_ );
     }
 
-    if ( angle ) {
-        command_.motion.w += angle*turnRateIncrement_;
-        command_.motion.w = MIN( command_.motion.w, maxTurnRate_ );
-        command_.motion.w = MAX( command_.motion.w, -maxTurnRate_ );
+    if ( angle != TELEOP_COMMAND_UNCHANGED ) {
+        setValue( command_.motion.w, angle*maxTurnRate_, -maxTurnRate_, maxTurnRate_ );
     }
 
+    sendCommand();
+}
+
+void 
+VelocityControl2dDriver::sendCommand()
+{
     try 
     {
         prx_->setCommand( command_ );
@@ -140,39 +169,6 @@ VelocityControl2dDriver::processNewCommandIncrement(int longitudinal, int transv
         command_.motion.v.y = 0.0;
         command_.motion.w = 0.0;
         stringstream ss; ss << "VelocityControl2dDriver:processNewCommandIncrement: " << e;
-        context_.tracer()->warning( ss.str() );
-        display_->failedToSendCommand();
-    }
-}
-
-void 
-VelocityControl2dDriver::processNewRelativeCommand( double longitudinal, double transverse, double angle )
-{
-    if ( longitudinal != TELEOP_COMMAND_UNCHANGED ) {
-        command_.motion.v.x = longitudinal*maxSpeed_;
-        command_.motion.v.x = MIN( command_.motion.v.x, maxSpeed_ );
-        command_.motion.v.x = MAX( command_.motion.v.x, -maxSpeed_ );
-    }
-
-    if ( angle != TELEOP_COMMAND_UNCHANGED ) {
-        command_.motion.w = angle*maxTurnRate_;
-        command_.motion.w = MIN( command_.motion.w, maxTurnRate_ );
-        command_.motion.w = MAX( command_.motion.w, -maxTurnRate_ );
-    }
-
-    try 
-    {
-        prx_->setCommand( command_ );
-
-        display_->sentNewVelocityCommand( command_.motion.v.x, command_.motion.v.y, command_.motion.w,
-                (fabs(command_.motion.v.x)==maxSpeed_), false, (fabs(command_.motion.w)==maxTurnRate_) );
-    }
-    catch ( const Ice::Exception& e )
-    {
-        command_.motion.v.x = 0.0;
-        command_.motion.v.y = 0.0;
-        command_.motion.w = 0.0;
-        stringstream ss; ss << "VelocityControl2dDriver::processNewRelativeCommand(): " << e;
         context_.tracer()->warning( ss.str() );
         display_->failedToSendCommand();
     }

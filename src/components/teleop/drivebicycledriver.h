@@ -35,11 +35,15 @@ public:
 
     virtual void repeatCommand();
 
-    virtual void processNewCommandIncrement( int longitudinal, int transverse, int angle );
-
-    virtual void processNewRelativeCommand( double longitudinal, double transverse, double angle );
+    virtual void processMixedCommand( double longitudinal, bool isLongIncrement, 
+        double transverse, bool isTransverseIncrement, 
+        double angular, bool isAngularIncrement );
+    virtual void processIncrementCommand( int longitudinal, int transverse, int angular );
+    virtual void processRelativeCommand( double longitudinal, double transverse, double angular );
 
 private:
+
+    void sendCommand();
 
     orca::DriveBicyclePrx prx_;
     orca::DriveBicycleCommand command_;

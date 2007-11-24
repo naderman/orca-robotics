@@ -16,9 +16,9 @@
 namespace teleop
 {
 
-class NetworkHandler;
-class TermDisplayHandler;
-class InputHandler;
+class NetworkThread;
+class TermDisplayThread;
+class InputThread;
 
 class Component : public orcaice::Component
 {
@@ -32,9 +32,9 @@ public:
     virtual void stop();
 
 private:
-    NetworkHandler* networkHandler_;
-    TermDisplayHandler* displayHandler_;
-    InputHandler* inputHandler_;
+    NetworkThread* networkThread_;
+    TermDisplayThread* displayThread_;
+    InputThread* inputThread_;
 };
 
 } // namespace

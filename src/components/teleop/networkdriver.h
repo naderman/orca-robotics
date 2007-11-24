@@ -28,9 +28,15 @@ public:
 
     virtual void repeatCommand() = 0;
 
-    virtual void processNewCommandIncrement( int longitudinal, int transverse, int angle ) = 0;
+    virtual void processMixedCommand( double longitudinal, bool isLongIncrement, 
+        double transverse, bool isTransverseIncrement, 
+        double angular, bool isAngularIncrement ) = 0;
+    virtual void processIncrementCommand( int longitudinal, int transverse, int angular ) = 0;
+    virtual void processRelativeCommand( double longitudinal, double transverse, double angular ) = 0;
 
-    virtual void processNewRelativeCommand( double longitudinal, double transverse, double angle ) = 0;
+protected:
+    static void incrementValue( double& value, double delta, double minValue, double maxValue );
+    static void setValue( double& value, double newValue, double minValue, double maxValue );
 };
 
 } // namespace

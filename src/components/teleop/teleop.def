@@ -8,11 +8,9 @@ Requires.Generic.DefaultProxy=velocitycontrol2d@local/robot2d
 # configuration
 Config.RepeatInterval.Default=0.1
 
-Config.DisplayDriver.Comment=valid drivers are { term-iostream, term-ncurses }
-Config.DisplayDriver.Default=term-iostream
-
-Config.InputDriver.Comment=valid drivers are { keyboard, joystick }
-Config.InputDriver.Default=keyboard
+Config.InputDriverLib.Comment=standard drivers are { libHydroHumanInput2dKbdTermio.so, libHydroHumanInput2dJoystick.so, libHydroHumanInput2dKbdIostream.so }
+Config.InputDriverLib.Default=libHydroHumanInput2dKbdTermio.so
+Config.KbdTermio.StepInputs.Default=0
 Config.Joystick.Device.Default=auto
 
 Config.VelocityControl2d.MaxSpeed.Default=1.0

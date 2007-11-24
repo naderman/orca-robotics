@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_TELEOP_TERMINAL_DISPLAY_HANDLER_H
-#define ORCA2_TELEOP_TERMINAL_DISPLAY_HANDLER_H
+#ifndef ORCA2_TELEOP_TERMINAL_DISPLAY_THREAD_H
+#define ORCA2_TELEOP_TERMINAL_DISPLAY_THREAD_H
 
 #include <hydroutil/thread.h>
 #include <orcaice/context.h>
@@ -22,12 +22,12 @@ namespace teleop
 
 class TermDisplayDriver;
 
-class TermDisplayHandler : public hydroutil::Thread, public Display
+class TermDisplayThread : public hydroutil::Thread, public Display
 {
 public:
 
-    TermDisplayHandler( const orcaice::Context& context );
-    virtual ~TermDisplayHandler();
+    TermDisplayThread( const orcaice::Context& context );
+    virtual ~TermDisplayThread();
 
     // from Thread
     virtual void run();

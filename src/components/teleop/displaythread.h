@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_TELEOP_DISPLAY_HANDLER_H
-#define ORCA2_TELEOP_DISPLAY_HANDLER_H
+#ifndef ORCA2_TELEOP_DISPLAY_THREAD_H
+#define ORCA2_TELEOP_DISPLAY_THREAD_H
 
 #include <hydroutil/thread.h>
 #include <orcaice/context.h>
@@ -19,28 +19,25 @@
 namespace teleop
 {
 
-class DisplayHandler : public hydroutil::Thread, public Display
+class DisplayThread : public hydroutil::Thread, public Display
 {
 public:
 
-    DisplayHandler( const orcaice::Context& context );
-    virtual ~DisplayHandler();
+    DisplayThread( const orcaice::Context& context );
+    virtual ~DisplayThread();
 
     virtual void run();
 
-    DisplayHandler* displayHandler() { return displayHandler_; };
+//     DisplayThread* displayHandler() { return displayHandler_; };
     
 private:
-
-    // network/driver interface
-    hydroutil::Buffer<orca::Velocity2dCommand> *commandPipe_;
 
     // generic interface to input hardware
     InputDriver* driver_;
 
     InputDriver::Config config_;
 
-    DisplayHandler* displayHandler_;
+//     DisplayThread* displayHandler_;
     
     void init();
 

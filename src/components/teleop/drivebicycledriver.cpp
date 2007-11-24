@@ -88,21 +88,52 @@ DriveBicycleDriver::repeatCommand()
 }
 
 void 
-DriveBicycleDriver::processNewCommandIncrement(int longitudinal, int transverse, int angle )
+DriveBicycleDriver::processMixedCommand( double longitudinal, bool isLongIncrement, 
+    double transverse, bool isTransverseIncrement, 
+    double angular, bool isAngularIncrement )
+{
+    if ( isLongIncrement )
+        incrementValue( command_.speed, longitudinal*speedIncrement_, -maxSpeed_, maxSpeed_ );
+    else
+        setValue( command_.speed, longitudinal*maxSpeed_, -maxSpeed_, maxSpeed_ );
+
+    if ( isAngularIncrement )
+        incrementValue( command_.steerAngle, angular*steerAngleIncrement_, -maxSteerAngle_, maxSteerAngle_ );
+    else
+        setValue( command_.steerAngle, angular*maxSteerAngle_, -maxSteerAngle_, maxSteerAngle_ );
+
+    sendCommand();
+}
+
+void 
+DriveBicycleDriver::processIncrementCommand(int longitudinal, int transverse, int angular )
 {
 // cout<<"DEBUG: DriveBicycleDriver::processNewCommandIncrement"<<endl;
-    if ( longitudinal ) {
-        command_.speed += longitudinal*speedIncrement_;
-        command_.speed = MIN( command_.speed, maxSpeed_ );
-        command_.speed = MAX( command_.speed, -maxSpeed_ );
+    incrementValue( command_.speed, longitudinal*speedIncrement_, -maxSpeed_, maxSpeed_ );
+    incrementValue( command_.steerAngle, angular*steerAngleIncrement_, -maxSteerAngle_, maxSteerAngle_ );
+
+    sendCommand();
+}
+
+void 
+DriveBicycleDriver::processRelativeCommand( double longitudinal, double transverse, double angular )
+{
+// cout<<"DEBUG: DriveBicycleDriver::processNewRelativeCommand"<<endl;
+    if ( longitudinal != TELEOP_COMMAND_UNCHANGED ) {
+        setValue( command_.speed, longitudinal*maxSpeed_, -maxSpeed_, maxSpeed_ );
     }
 
-    if ( angle ) {
-        command_.steerAngle += angle*steerAngleIncrement_;
-        command_.steerAngle = MIN( command_.steerAngle, maxSteerAngle_ );
-        command_.steerAngle = MAX( command_.steerAngle, -maxSteerAngle_ );
+    if ( angular != TELEOP_COMMAND_UNCHANGED ) {
+        setValue( command_.steerAngle, angular*maxSteerAngle_, -maxSteerAngle_, maxSteerAngle_ );
     }
 
+// cout<<"DEBUG: DriveBicycleDriver::processNewRelativeCommand: sending command : speed="<<command_.speed<<" steer="<<command_.steerAngle<<endl;
+    sendCommand();
+}
+
+void
+DriveBicycleDriver::sendCommand()
+{
     try 
     {
         prx_->setCommand( command_ );
@@ -116,39 +147,6 @@ DriveBicycleDriver::processNewCommandIncrement(int longitudinal, int transverse,
         command_.steerAngle = 0.0;
         stringstream ss; ss << "DriveBicycleDriver: " << e;
         context_.tracer()->warning( ss.str() );
-        display_->failedToSendCommand();
-    }
-}
-
-void 
-DriveBicycleDriver::processNewRelativeCommand( double longitudinal, double transverse, double angle )
-{
-// cout<<"DEBUG: DriveBicycleDriver::processNewRelativeCommand"<<endl;
-    if ( longitudinal != TELEOP_COMMAND_UNCHANGED ) {
-        command_.speed = longitudinal*maxSpeed_;
-        command_.speed = MIN( command_.speed, maxSpeed_ );
-        command_.speed = MAX( command_.speed, -maxSpeed_ );
-    }
-
-    if ( angle != TELEOP_COMMAND_UNCHANGED ) {
-        command_.steerAngle = angle*maxSteerAngle_;
-        command_.steerAngle = MIN( command_.steerAngle, maxSteerAngle_ );
-        command_.steerAngle = MAX( command_.steerAngle, -maxSteerAngle_ );
-    }
-
-// cout<<"DEBUG: DriveBicycleDriver::processNewRelativeCommand: sending command : speed="<<command_.speed<<" steer="<<command_.steerAngle<<endl;
-    try 
-    {
-        prx_->setCommand( command_ );
-
-        display_->sentNewBicycleCommand( command_.speed, command_.steerAngle,
-                (fabs(command_.speed)==maxSpeed_), (fabs(command_.steerAngle)==maxSteerAngle_) );
-    }
-    catch ( const Ice::Exception& e )
-    {
-        cout<<"ERROR: "<<e<<endl;
-        command_.speed = 0.0;
-        command_.steerAngle = 0.0;
         display_->failedToSendCommand();
     }
 }

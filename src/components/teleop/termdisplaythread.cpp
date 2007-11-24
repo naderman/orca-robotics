@@ -10,14 +10,14 @@
 
 #include <orcaice/orcaice.h>
 
-#include "termdisplayhandler.h"
+#include "termdisplaythread.h"
 #include "iostreamdisplaydriver.h"
 #include "events.h"
 
 using namespace std;
 using namespace teleop;
 
-TermDisplayHandler::TermDisplayHandler( const orcaice::Context& context ) :
+TermDisplayThread::TermDisplayThread( const orcaice::Context& context ) :
     events_(new hydroutil::EventQueue),
     context_(context)
 {
@@ -33,42 +33,42 @@ TermDisplayHandler::TermDisplayHandler( const orcaice::Context& context ) :
     driver_ = new IostreamDisplayDriver();
 }
 
-TermDisplayHandler::~TermDisplayHandler()
+TermDisplayThread::~TermDisplayThread()
 {
     delete driver_;
 }
 
 void 
-TermDisplayHandler::sentNewVelocityCommand( 
+TermDisplayThread::sentNewVelocityCommand( 
                 double vx, double vy, double w, bool vxLimit, bool vyLimit, bool wLimit )
 {
-    hydroutil::EventPtr e = new SentNewVelocityCommandEvent( vx,vy,w, vxLimit,vyLimit,wLimit );
+    hydroutil::EventPtr e = new SentVelocityCommandEvent( vx,vy,w, vxLimit,vyLimit,wLimit );
     events_->add( e );
 }
 
 void 
-TermDisplayHandler::sentNewBicycleCommand( 
+TermDisplayThread::sentNewBicycleCommand( 
                 double speed, double steerAngle, bool speedLimit, bool steerAngleLimit )
 {
-    hydroutil::EventPtr e = new SentNewBicycleCommandEvent( speed, steerAngle, speedLimit, steerAngleLimit );
+    hydroutil::EventPtr e = new SentBicycleCommandEvent( speed, steerAngle, speedLimit, steerAngleLimit );
     events_->add( e );
 }
 
 void 
-TermDisplayHandler::sentRepeatCommand()
+TermDisplayThread::sentRepeatCommand()
 {
     cout<<"."<<flush;
 }
 
 void 
-TermDisplayHandler::failedToSendCommand()
+TermDisplayThread::failedToSendCommand()
 {
     cout<<"x"<<flush;
 }
 
 // read commands from the keyboard. Launced in a separate thread.
 void
-TermDisplayHandler::run()
+TermDisplayThread::run()
 {
     // we are in a different thread now, catch all stray exceptions
     try
@@ -102,8 +102,8 @@ TermDisplayHandler::run()
         switch ( event->type() )
         {
         // approx in order of call frequency
-        case SentNewVelocityCommand : {
-            SentNewVelocityCommandEventPtr e = SentNewVelocityCommandEventPtr::dynamicCast( event );
+        case SentVelocityCommand : {
+            SentVelocityCommandEventPtr e = SentVelocityCommandEventPtr::dynamicCast( event );
 
             stringstream ss;
             ss<<"\nVelocityControl2d command (vx,vy,w(deg/s)) : ("<<e->vx_<<", "<<e->vy_<<", "<< RAD2DEG(e->w_) << ") ";
@@ -115,8 +115,8 @@ TermDisplayHandler::run()
             driver_->show( ss.str() );
             break;
         }
-        case SentNewBicycleCommand : {
-            SentNewBicycleCommandEventPtr e = SentNewBicycleCommandEventPtr::dynamicCast( event );
+        case SentBicycleCommand : {
+            SentBicycleCommandEventPtr e = SentBicycleCommandEventPtr::dynamicCast( event );
 
             stringstream ss;
             ss<<"\nBicycleCommand command (speed[m],ster[deg]) : ("<<e->speed_<<", "<<RAD2DEG(e->steerAngle_) << ") ";
@@ -128,7 +128,7 @@ TermDisplayHandler::run()
             break;
         }
         default : {
-            stringstream ss; ss<<"LOCAL: TermDisplayHandler: unknown event "<<event->type()<<". Ignoring...";
+            stringstream ss; ss<<"LOCAL: TermDisplayThread: unknown event "<<event->type()<<". Ignoring...";
             driver_->show( ss.str() );
         }
         } // switch
@@ -149,5 +149,5 @@ TermDisplayHandler::run()
 
     // wait for the component to realize that we are quitting and tell us to stop.
     waitForStop();
-    context_.tracer()->debug( "TermDisplayHandler: stopped.",2 );
+    context_.tracer()->debug( "TermDisplayThread: stopped.",2 );
 }

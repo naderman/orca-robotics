@@ -32,20 +32,17 @@ This component connects to a robot base and issues motion commands according to 
 
 @par Input Drivers
 
-- @b keyboard @ref orca_teleop_keyboard
-- @b joystick @ref orca_teleop_joystick
+Teleop dynamically loads an implementation of a Hydro hardware interface hydrointerfaces::HumanInput2d. You can also load your own implementation as long as the shared library is in the path. See Hydro documentation for the list of available drivers.
+
+- @ref hydro_drivers_humaninput2d
+
 
 @par Configuration
 
-- @c Teleop.Config.DisplayDriver (string)
-    - Which input driver to use
-    - Valid values: { "term-iostream", "term-ncurses" }
-    - Default: "term-iostream"
-
-- @c Teleop.Config.InputDriver (string)
-    - Which input driver to use
-    - Valid values: { "keyboard, "joystick" }
-    - Default: "keyboard"
+- @c Teleop.Config.InputDriverLib (string)
+    - The name of the library from which to load the input driver.
+    - standard drivers are { "libHydroHumanInput2dKbdTermio.so", "libHydroHumanInput2dJoystick.so", "libHydroHumanInput2dKbdIostream.so" }
+    - Default: "libHydroHumanInput2dKbdTermio.so"
 
 - @c Teleop.Config.RepeatInterval (float) [s]
     - Time interval before a repeat command is sent in the absence of a new command.
@@ -61,38 +58,7 @@ An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ director
 
 None for the component. See driver sections below for individual driver dependencies.
 
-@section orca_teleop_keyboard Keyboard Driver using termio.h
 
-Motion commands are issued by pressing keyboard keys. The meaning of "forward motion" and "turn" are interpreted differently depending on which interface we are connected to (see Output drivers below)
-- i : increment "forward motion"
-- k : decrement "forward motion"
-- j : increment "turn"
-- l : decrement "turn"
-- u : stop turn
-- o : stop movement (but still turn)
-- anything else : stop
-
-@par Additional Configuration
-
-- @c Teleop.Keyboard.StepInputs (bool)
-    - If set to 1, excepts numeric commands which are interpreted as step changes in speed. For example,
-      pressing 1 results in step to 10% of maximum speed, 2 to 20%, 9 to 90%, and 0 to 100%.
-    - Default: 0
-
-@section orca_teleop_joystick Joystick Driver
-
-Motion commands are issued by moving the joystick. The meaning of "forward motion" and "turn" are interpreted differently depending on which interface we are connected to (see Output drivers below)
-- forward     : set "forward motion"
-- backward    : set "forward motion"
-- left        : set left "turn"
-- right       : set right "turn"
-    
-@par Additional Configuration
-
-- @c Teleop.Config.Joystick.Device (string)
-    - Unix path to the joystick device, or "auto" to have teleop search for a joystick.
-    - Default: "auto"
-    - Example: "/dev/input/event0"
 
 @par Operation
 

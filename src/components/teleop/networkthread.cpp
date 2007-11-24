@@ -11,7 +11,7 @@
 #include <iostream>
 #include <orcaice/orcaice.h>
 
-#include "networkhandler.h"
+#include "networkthread.h"
 #include "display.h"
 #include "events.h"
 #include "velocitycontroldriver.h"
@@ -20,7 +20,7 @@
 using namespace std;
 using namespace teleop;
 
-NetworkHandler::NetworkHandler( Display* display, const orcaice::Context& context ) :
+NetworkThread::NetworkThread( Display* display, const orcaice::Context& context ) :
     events_(new hydroutil::EventQueue),
     display_(display),
     context_(context)
@@ -30,28 +30,38 @@ NetworkHandler::NetworkHandler( Display* display, const orcaice::Context& contex
     events_->setOptimizer( opt );
 }
 
-NetworkHandler::~NetworkHandler()
+NetworkThread::~NetworkThread()
 {
 }
 
 void 
-NetworkHandler::newCommandIncrement( int longitudinal, int transverse, int angle )
+NetworkThread::newMixedCommand( const hydrointerfaces::HumanInput2d::Command& command )
 {
-// cout<<"DEBUG: got command incresment : "<<longitudinal<<" "<<transverse<<" "<<angle<<endl;
-    hydroutil::EventPtr e = new NewCommandIncrementEvent( longitudinal, transverse, angle );
+    hydroutil::EventPtr e = new MixedCommandEvent( 
+        command.longitudinal, command.isLongIncrement,
+        command.transverse, command.isTransverseIncrement,
+        command.angular, command.isAngularIncrement );
     events_->optimizedAdd( e );
 }
 
 void 
-NetworkHandler::newRelativeCommand( double longitudinal, double transverse, double angle )
+NetworkThread::newIncrementCommand( int longitudinal, int transverse, int angle )
+{
+// cout<<"DEBUG: got command incresment : "<<longitudinal<<" "<<transverse<<" "<<angle<<endl;
+    hydroutil::EventPtr e = new IncrementCommandEvent( longitudinal, transverse, angle );
+    events_->optimizedAdd( e );
+}
+
+void 
+NetworkThread::newRelativeCommand( double longitudinal, double transverse, double angle )
 {
 // cout<<"DEBUG: got relative command : "<<longitudinal<<"% "<<transverse<<"% "<<angle<<"%"<<endl;
-    hydroutil::EventPtr e = new NewRelativeCommandEvent( longitudinal, transverse, angle );
+    hydroutil::EventPtr e = new RelativeCommandEvent( longitudinal, transverse, angle );
     events_->optimizedAdd( e );
 }
 
 void
-NetworkHandler::walk()
+NetworkThread::walk()
 {
     // The only provided interfaces are the 2 standard ones: Home and Status.
     // We can just skip this activation step and they will not be visible on
@@ -108,7 +118,7 @@ NetworkHandler::walk()
     //
     while ( !isStopping() )
     {
-        context_.tracer()->debug( "NetworkHandler: waiting for event...", 10 );
+        context_.tracer()->debug( "NetworkThread: waiting for event...", 10 );
         if ( !events_->timedGet( event, timeoutMs ) ) {
             driver_->repeatCommand();
             continue;
@@ -117,18 +127,28 @@ NetworkHandler::walk()
         switch ( event->type() )
         {
         // approx in order of call frequency
-        case NewCommandIncrement : {
+        case MixedCommand : {
             //cout<<"focus changed event"<<endl;
-            NewCommandIncrementEventPtr e = NewCommandIncrementEventPtr::dynamicCast( event );
+            MixedCommandEventPtr e = MixedCommandEventPtr::dynamicCast( event );
             if ( !e ) break;
-            driver_->processNewCommandIncrement( e->longitudinal_, e->transverse_, e->angle_ );
+            driver_->processMixedCommand( 
+                e->longitudinal, e->isLongIncrement, 
+                e->transverse, e->isTransverseIncrement,
+                e->angular, e->isAngularIncrement );
             break;
         }        
-        case NewRelativeCommand : {
+        case IncrementCommand : {
             //cout<<"focus changed event"<<endl;
-            NewRelativeCommandEventPtr e = NewRelativeCommandEventPtr::dynamicCast( event );
+            IncrementCommandEventPtr e = IncrementCommandEventPtr::dynamicCast( event );
             if ( !e ) break;
-            driver_->processNewRelativeCommand( e->longitudinal_, e->transverse_, e->angle_ );
+            driver_->processIncrementCommand( e->longitudinal, e->transverse, e->angular );
+            break;
+        }        
+        case RelativeCommand : {
+            //cout<<"focus changed event"<<endl;
+            RelativeCommandEventPtr e = RelativeCommandEventPtr::dynamicCast( event );
+            if ( !e ) break;
+            driver_->processRelativeCommand( e->longitudinal, e->transverse, e->angular );
             break;
         }        
         default : {

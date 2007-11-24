@@ -11,24 +11,24 @@
 #include <iostream>
 
 #include "component.h"
-#include "networkhandler.h"
-#include "termdisplayhandler.h"
-#include "inputhandler.h"
+#include "networkthread.h"
+#include "termdisplaythread.h"
+#include "inputthread.h"
 
 using namespace std;
 using namespace teleop;
 
 Component::Component() :
     orcaice::Component( "Teleop", orcaice::HomeInterface ),
-    networkHandler_(0),
-    displayHandler_(0),
-    inputHandler_(0)
+    networkThread_(0),
+    displayThread_(0),
+    inputThread_(0)
 {
 }
 
 Component::~Component()
 {
-    // do not delete networkHandler_ and displayHandler_!!! They derive from Ice::Thread and deletes itself.
+    // do not delete networkThread_ and displayThread_!!! They derive from Ice::Thread and deletes itself.
 }
 
 // warning: this function returns after it's done, all variable that need to be permanet must
@@ -42,22 +42,22 @@ Component::start()
     // USER DISPLAY
     //
     // the constructor may throw, we'll let the application shut us down
-    displayHandler_ = new TermDisplayHandler( context() );
-    displayHandler_->start();
+    displayThread_ = new TermDisplayThread( context() );
+    displayThread_->start();
     
     //
     // NETWORK
     //
     // the constructor may throw, we'll let the application shut us down
-    networkHandler_ = new NetworkHandler( (Display*)displayHandler_, context() );
-    networkHandler_->start();
+    networkThread_ = new NetworkThread( (Display*)displayThread_, context() );
+    networkThread_->start();
 
     //
     // USER INPUT
     //
     // the constructor may throw, we'll let the application shut us down
-    inputHandler_ = new InputHandler( (Network*)networkHandler_, context() );
-    inputHandler_->start();
+    inputThread_ = new InputThread( (Network*)networkThread_, context() );
+    inputThread_->start();
 
     // the rest is handled by the application/service
 }
@@ -65,14 +65,14 @@ Component::start()
 void
 Component::stop()
 {
-    // inputHandler_ is blocked on user input
+    // inputThread_ is blocked on user input
     // the only way for it to realize that we want to stop is to give it some keyboard input.
-    tracer()->info( "Component is quitting but the InputHandler is blocked waiting for user input.");
+    tracer()->info( "Component is quitting but the InputThread is blocked waiting for user input.");
     tracer()->print( "************************************************" );
     tracer()->print( "Press any key or shake the joystick to continue." );
     tracer()->print( "************************************************" );
     
-    hydroutil::stopAndJoin( inputHandler_ );
-    hydroutil::stopAndJoin( networkHandler_ );
-    hydroutil::stopAndJoin( displayHandler_ );
+    hydroutil::stopAndJoin( inputThread_ );
+    hydroutil::stopAndJoin( networkThread_ );
+    hydroutil::stopAndJoin( displayThread_ );
 }

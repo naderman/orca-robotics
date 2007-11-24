@@ -15,23 +15,23 @@ using namespace teleop;
 bool 
 TeleopEventQueueOptimizer::combine( hydroutil::EventPtr& existing, const hydroutil::EventPtr& extra ) 
 { 
-    if ( existing->type()==NewCommandIncrement && extra->type()==NewCommandIncrement ) 
+    if ( existing->type()==IncrementCommand && extra->type()==IncrementCommand ) 
     {    
-        NewCommandIncrementEventPtr eExisting = NewCommandIncrementEventPtr::dynamicCast( existing );
-        NewCommandIncrementEventPtr eExtra = NewCommandIncrementEventPtr::dynamicCast( extra );
+        IncrementCommandEventPtr eExisting = IncrementCommandEventPtr::dynamicCast( existing );
+        IncrementCommandEventPtr eExtra = IncrementCommandEventPtr::dynamicCast( extra );
         if ( !eExisting || !eExtra ) {
             return false; 
         }
         // incremental commands add up
-        eExisting->longitudinal_    += eExtra->longitudinal_;
-        eExisting->transverse_      += eExtra->transverse_;
-        eExisting->angle_           += eExtra->angle_;
+        eExisting->longitudinal    += eExtra->longitudinal;
+        eExisting->transverse      += eExtra->transverse;
+        eExisting->angular         += eExtra->angular;
         return true;
     }
-    else if ( existing->type()==NewCommandIncrement && extra->type()==NewRelativeCommand ) 
+    else if ( existing->type()==IncrementCommand && extra->type()==RelativeCommand ) 
     {    
-        NewCommandIncrementEventPtr eExisting = NewCommandIncrementEventPtr::dynamicCast( existing );
-        NewRelativeCommandEventPtr eExtra = NewRelativeCommandEventPtr::dynamicCast( extra );
+        IncrementCommandEventPtr eExisting = IncrementCommandEventPtr::dynamicCast( existing );
+        RelativeCommandEventPtr eExtra = RelativeCommandEventPtr::dynamicCast( extra );
         if ( !eExisting || !eExtra ) {
             return false; 
         }
@@ -39,10 +39,10 @@ TeleopEventQueueOptimizer::combine( hydroutil::EventPtr& existing, const hydrout
         existing = extra;
         return true;
     }
-    else if ( existing->type()==NewRelativeCommand && extra->type()==NewRelativeCommand ) 
+    else if ( existing->type()==RelativeCommand && extra->type()==RelativeCommand ) 
     {    
-        NewRelativeCommandEventPtr eExisting = NewRelativeCommandEventPtr::dynamicCast( existing );
-        NewRelativeCommandEventPtr eExtra = NewRelativeCommandEventPtr::dynamicCast( extra );
+        RelativeCommandEventPtr eExisting = RelativeCommandEventPtr::dynamicCast( existing );
+        RelativeCommandEventPtr eExtra = RelativeCommandEventPtr::dynamicCast( extra );
         if ( !eExisting || !eExtra ) {
             return false; 
         }
