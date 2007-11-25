@@ -12,7 +12,7 @@
 #define ORCAICE_DETAIL_STATUS_I_H
 
 #include <orca/status.h>
-#include <hydroutil/localstatus.h>  // just for data types
+#include <hydroutil/localstatus.h>
 #include <hydroutil/timer.h>
 
 #include <IceStorm/IceStorm.h>
@@ -24,8 +24,7 @@ namespace detail
 {
 
 // An implementation of the (remote) Status interface.
-class StatusI : public virtual orca::Status,
-                public hydroutil::NotifyHandler<hydroutil::NameStatusMap>
+class StatusI : public virtual orca::Status, public hydroutil::LocalStatus
 {
 public:
     
@@ -37,11 +36,8 @@ public:
     virtual void subscribe(const ::orca::StatusConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
     virtual void unsubscribe(const ::orca::StatusConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
 
-    // from NotifyHandler
-    virtual void handleData (const hydroutil::NameStatusMap& subsystemStatus );
-
-    // Local Calls
-    void localSetData( const hydroutil::NameStatusMap& subsystemStatus );
+    // from LocalStatus
+    virtual void publish();
 
 private:
 

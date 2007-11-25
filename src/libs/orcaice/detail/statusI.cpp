@@ -50,10 +50,13 @@ convert( const hydroutil::NameStatusMap &internal, orca::SubsystemsStatus &netwo
 
 } // namespace
 
-StatusI::StatusI( const orcaice::Context & context )
-    : topic_(0),
-      publisher_(0),
-      context_(context)
+StatusI::StatusI( const orcaice::Context& context ) :
+    hydroutil::LocalStatus( 
+            context.tracer(),
+            hydroutil::Properties( context.properties()->getPropertiesForPrefix("Orca.Status."),"Orca.Status.") ), 
+    topic_(0),
+    publisher_(0),
+    context_(context)
 {
     IceUtil::Mutex::Lock lock(mutex_);
 
@@ -91,21 +94,12 @@ StatusI::setStatusData( const hydroutil::NameStatusMap &subsystemStatus )
 }
 
 void 
-StatusI::handleData (const hydroutil::NameStatusMap& subsystemStatus )
+StatusI::publish()
 {
-//     cout<<"DEBUG: StatusI::handleData"<<endl;
+//     cout<<"StatusI::publish()"<<endl;
     IceUtil::Mutex::Lock lock(mutex_);
 
-    setStatusData( subsystemStatus );
-    sendToIceStorm( statusData_ );
-}
-
-void 
-StatusI::localSetData( const hydroutil::NameStatusMap &subsystemStatus )
-{
-    IceUtil::Mutex::Lock lock(mutex_);
-
-    setStatusData( subsystemStatus );
+    setStatusData( subsystems_ );
     sendToIceStorm( statusData_ );
 }
 

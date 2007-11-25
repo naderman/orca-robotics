@@ -39,7 +39,7 @@ namespace orcaice {
 
 Component::Component( const std::string& tag, ComponentInterfaceFlag flag )
     : interfaceFlag_(flag),
-      localStatus_(0),
+//       localStatus_(0),
       componentThread_(0)
 {
     context_.tag_ = tag;
@@ -47,10 +47,7 @@ Component::Component( const std::string& tag, ComponentInterfaceFlag flag )
 
 Component::~Component()
 {
-    if ( localStatus_ )
-    {
-        delete localStatus_;
-    }    
+//     if ( localStatus_ ) delete localStatus_;
 }
 
 void
@@ -68,7 +65,7 @@ Component::init( const orca::FQComponentName& name,
     //
     context_.tracer_ = initTracer();
     context_.status_ = initStatus();
-    localStatus_ = context_.status_;
+//     localStatus_ = context_.status_;
     context_.home_   = initHome();
     componentThread_ = new ComponentThread( homePrx_, *(context_.status_), interfaceFlag_, context_ );
     try {
@@ -120,7 +117,8 @@ Component::finalise()
 hydroutil::Tracer*
 Component::initTracer()
 {
-    if ( !(interfaceFlag_ & TracerInterface) ) {
+    if ( !(interfaceFlag_ & TracerInterface) ) 
+    {
         orcaice::initTracerInfo( tag()+": Initialized local trace handler.");
         return new hydroutil::LocalTracer( 
                 hydroutil::Properties( context_.properties()->getPropertiesForPrefix("Orca.Tracer.")),
@@ -155,40 +153,23 @@ Component::initTracer()
 hydroutil::Status*
 Component::initStatus()
 {
-    hydroutil::LocalStatus* localStatus = new hydroutil::LocalStatus( 
-            context_.tracer(),
-            hydroutil::Properties( 
-                context_.properties()->getPropertiesForPrefix("Orca.Status."),"Orca.Status.") );
-
     if ( !(interfaceFlag_ & StatusInterface) ) 
     {
         orcaice::initTracerInfo( tag()+": Initialized local status handler");
-        return localStatus_;
+        return new hydroutil::LocalStatus( 
+            context_.tracer(),
+            hydroutil::Properties( context_.properties()->getPropertiesForPrefix("Orca.Status."),"Orca.Status.") );
     }
 
-    // this is a bit tricky. we need
-    // 1. a smart pointer which derives from Object (or ObjectPtr itself) to add to adapter
-    // 2. a smart pointer which derives from Tracer to save in context
-    // Ideally we'd have something like StatusTracerPtr which does derive from both.
-    // but the smart pointer stuff is then included twice and reference counters get confused.
-    // So first we use the pointer to hydroutil::StatusTracerI, then change to Ice::ObjectPtr and Tracer*.
+    // create remote status object and keep a smart pointer to it
     orcaice::detail::StatusI* pobj = new orcaice::detail::StatusI( context_ );
-    // a bit of a hack: keep a smart pointer so it's not destroyed with the adapter
     statusObj_ = pobj;
-
-    //TracerPtr trac = pobj;
-    // have to revert to using plain pointers. Otherwise, we get segfault on shutdown when
-    // trac tries to delete the object which already doesn't exist. Something wrong with ref counters.
-    //
     // add this object to the adapter and name it 'status'
-    // 
     context_.adapter()->add( statusObj_, context_.communicator()->stringToIdentity("status") );
 
-    // connect local status handler to the internal interface through Notify pattern.    
-    localStatus->setNotifyHandler( pobj );
-
+    hydroutil::Status* stat = (hydroutil::Status*)pobj;
     orcaice::initTracerInfo( tag()+": Initialized status handler");
-    return localStatus;
+    return stat;
 }
 
 Home*

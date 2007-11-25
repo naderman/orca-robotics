@@ -199,8 +199,8 @@ private:
     // (I think we only need to do it with tracer)
     Ice::ObjectPtr tracerObj_;
     Ice::ObjectPtr statusObj_;
+    // alexm: why is this one different?
     Ice::ObjectPrx homePrx_;
-    hydroutil::Status *localStatus_;
 
     // This thread allows us to do house-keeping stuff and manage Status.
     hydroutil::ThreadPtr componentThread_;
