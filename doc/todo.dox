@@ -99,10 +99,14 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
       pausing/fast-forwarding/rewinding/etc during log playing (alex b)
 
 - Robot2d/SegwayRMP
-    - simplified and improved (alex b)
+    - simplified and improved common code (alex b)
 
 - SegwayRMP
     - big overhaul of SegwayRmpDriver (alex b)
+    - moved hardware drivers to Hydro (alex m)
+
+- Teleop
+    - moved hardware drivers to Hydro (alex m)
 
 @par Updated utilities
 
@@ -112,7 +116,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 @par Updated libraries
 
 - libOrcaIce
-    - fixed bug made Tracer and Status not to load configuration parameters (alex m)
+    - fixed bug which made Tracer and Status not to load configuration parameters (alex m)
 
 - libOrcaLog
     - Changes for interactive log-playing (alex b)
@@ -121,7 +125,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     - Moved Velocity/Acceleration out into hydronavutil (alex b)
 
 - libOrcaIfaceImpl
-    - Fixed bug where interfaces were not removed fromthe adapter correctly (alex b)
+    - Fixed bug where interfaces were not removed from the adapter correctly (alex b)
     - Added NotifyingConsumer types (alex b)
 
 - libOrcaDef
