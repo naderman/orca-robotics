@@ -138,6 +138,14 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @par Removed
 
+- mgaconversion
+- libHydroGeom2d
+- libHydroGpsUtil
+- libHydroNovatelUtil
+- libHydroOgMap
+- libHydroPathPlan
+- libHydroMapLoad
+  - Moved to Hydro (alexb, alexm)
 
 
 @section orca_doc_history_270 Changes in Release 2.7.0
