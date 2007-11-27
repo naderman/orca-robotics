@@ -13,10 +13,6 @@
 
 #include <orcaice/component.h>
 
-#include "hwdriver.h"
-#include <rmpdriver/rmpio.h>
-#include <orca/vehicledescription.h>
-
 namespace segwayrmp
 {
 
@@ -33,15 +29,10 @@ public:
 
 private:
 
-    orca::VehicleDescription loadDriver();
-
-    // loop responsible for interaction with the network
+    // thread responsible for interaction with the network
     hydroutil::ThreadPtr netThread_;
-    // loop responsible for interaction with local hardware
+    // thread responsible for interaction with local hardware
     hydroutil::ThreadPtr hwThread_;
-
-    std::auto_ptr<HwDriver> driver_;
-    std::auto_ptr<RmpIo>    rmpIo_;
 };
 
 } // namespace

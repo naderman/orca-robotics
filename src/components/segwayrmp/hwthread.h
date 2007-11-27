@@ -1,12 +1,24 @@
-#ifndef SEGWAYRMP_HWHANDLER_H
-#define SEGWAYRMP_HWHANDLER_H
+
+/*
+ * Orca-Robotics Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2007 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This copy of Orca is licensed to you under the terms described in
+ * the LICENSE file included in this distribution.
+ *
+ */
+
+#ifndef SEGWAYRMP_HARDWARE_THREAD_H
+#define SEGWAYRMP_HARDWARE_THREAD_H
 
 #include <hydroutil/safethread.h>
-#include <hydroutil/store.h>
-#include "types.h"
-#include <orcarobotdriverutil/statemachine.h>
-#include "hwdriver.h"
 #include <orcaice/context.h>
+#include <hydrointerfaces/segwayrmp.h>
+#include <hydrodll/dynamicload.h>
+
+#include <hydroutil/store.h>
+#include <orcarobotdriverutil/statemachine.h>
 #include <hydroutil/timer.h>
 
 namespace segwayrmp {
@@ -24,25 +36,31 @@ class HwThread : public hydroutil::SafeThread
 
 public: 
 
-    HwThread( HwDriver               &hwDriver,
-               double                  maxForwardSpeed,
-               double                  maxReverseSpeed,
-               double                  maxTurnrate,
-               bool                    isMotionEnabled,
-               bool                    isEStopEnabled,
-               const orcaice::Context &context );
+    // this is a subset of configuration parameters which is checked by the hardware driver
+    struct Config
+    {
+        double maxForwardSpeed;
+        double maxReverseSpeed;
+        double maxTurnrate;
+        double maxTurnrateAtMaxSpeed;
+    };
+
+    // these config settings are checked and possibly limited based on hardware capabilities
+    HwThread( Config& config, const orcaice::Context &context );
 
     // Inherited from SafeThread
-    void walk();
+    virtual void walk();
 
-    void setCommand( const Command &command );
+    // local interface
 
-    void setEStopFaultStatus( const EStopStatus status ){
-        eStopFaultStatus_.set(status);
-    }
+    // used by NetThread to pass commands, events and get data
+    void setCommand( const hydrointerfaces::SegwayRmp::Command &command );
 
-    // Return valus same as hydroutil::Store.
-    int getData( Data &data, int timeoutMs )
+    void setEStopFaultStatus( const EStopStatus status )
+        {
+            eStopFaultStatus_.set(status);
+        }
+    int getData( hydrointerfaces::SegwayRmp::Data &data, int timeoutMs )
         {
             return dataStore_.getNext( data, timeoutMs );
         }
@@ -56,21 +74,18 @@ private:
     void enableDriver();
 
     // Checks to see if the requested command is outside our limits.
-    bool commandImpossible( const Command &command );
+    bool commandImpossible( const hydrointerfaces::SegwayRmp::Command &command );
 
     // Faults can be detected in either read or write threads: have to be careful.
     orcarobotdriverutil::StateMachine stateMachine_;
 
     // Stores the data most recently received from the hardware
-    hydroutil::Store<Data>    dataStore_;
+    hydroutil::Store<hydrointerfaces::SegwayRmp::Data>    dataStore_;
     // Stores incoming commands
-    hydroutil::Store<Command> commandStore_;
+    hydroutil::Store<hydrointerfaces::SegwayRmp::Command> commandStore_;
 
     // Stores incoming EStop Status
     hydroutil::Store<EStopStatus> eStopFaultStatus_;
-    
-
-    HwDriver &driver_;
 
     double maxForwardSpeed_;
     double maxReverseSpeed_;
@@ -82,9 +97,16 @@ private:
     // Looks for late writes (which will cause timeouts in the segway)
     hydroutil::Timer writeTimer_;
 
+    // Generic driver for the hardware
+    hydrointerfaces::SegwayRmp *driver_;
+    // A factory to instantiate the driver
+    hydrointerfaces::SegwayRmpFactory *driverFactory_;
+    // And the library that provides it
+    hydrodll::DynamicallyLoadedLibrary *driverLib_;
+
     orcaice::Context context_;
 };
 
-}
+} // namespace
 
 #endif

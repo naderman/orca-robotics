@@ -1,8 +1,22 @@
+
+/*
+ * Orca-Robotics Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2007 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This copy of Orca is licensed to you under the terms described in
+ * the LICENSE file included in this distribution.
+ *
+ */
+
+#include <iostream>
+#include <cmath>
+
+// we need these to throw orca exceptions from the functions executed in the network thread
+#include <orca/exceptions.h>
+// alexm: this is a network object? should it be here?
 #include "estopconsumerI.h"
 #include "hwthread.h"
-#include <iostream>
-#include <orca/exceptions.h>
-#include <cmath>
 
 using namespace std;
 
@@ -12,23 +26,66 @@ namespace {
 
 namespace segwayrmp {
 
-HwThread::HwThread( HwDriver               &hwDriver,
-                      double                  maxForwardSpeed,
-                      double                  maxReverseSpeed,
-                      double                  maxTurnrate,
-                      bool                    isMotionEnabled,
-                      bool                    isEStopEnabled,
-                      const orcaice::Context &context )
-    : driver_(hwDriver),
-      maxForwardSpeed_(maxForwardSpeed),
-      maxReverseSpeed_(maxReverseSpeed),
-      maxTurnrate_(maxTurnrate),
-      isMotionEnabled_(isMotionEnabled),
-      isEStopEnabled_(isEStopEnabled),
-      context_(context)
+HwThread::HwThread( Config& config, const orcaice::Context &context ) :
+    driver_(0),
+    driverFactory_(0),
+    driverLib_(0),
+    context_(context)
 {
     context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 10.0 );
     context_.status()->initialising( SUBSYSTEM );
+
+    //
+    // Read settings
+    //
+    Ice::PropertiesPtr prop = context_.properties();
+    std::string prefix = context_.tag() + ".Config.";
+
+    // By default the estop interface is not enabled...
+    // alexm: this param is read-in twice: here and in NetThread, doesn't seem right.
+    isEStopEnabled_ = (bool)orcaice::getPropertyAsIntWithDefault( prop, prefix+"EnableEStopInterface", 0 );
+    stringstream ss; ss <<"HwThread: isEStopInterfaceEnabled is set to "<< isEStopEnabled_<<endl;
+    context_.tracer()->info( ss.str() );
+ 
+    isMotionEnabled_ = (bool)orcaice::getPropertyAsIntWithDefault( prop, prefix+"EnableMotion", 1 );
+
+    // Dynamically load the library and find the factory
+    std::string driverLibName = 
+        orcaice::getPropertyWithDefault( prop, prefix+"DriverLib", "libHydroSegwayRmpAcfrCan.so" );
+    context_.tracer()->debug( "HwThread: Loading driver library "+driverLibName, 4 );
+    try {
+        driverLib_ = new hydrodll::DynamicallyLoadedLibrary(driverLibName);
+        driverFactory_ = 
+            hydrodll::dynamicallyLoadClass<hydrointerfaces::SegwayRmpFactory,DriverFactoryMakerFunc>
+            ( *driverLib_, "createDriverFactory" );
+    }
+    catch (hydrodll::DynamicLoadException &e)
+    {
+        context_.tracer()->error( e.what() );
+        throw;
+    }
+
+    // create the driver
+    hydroutil::Properties props( prop->getPropertiesForPrefix(prefix), prefix );
+    hydrointerfaces::Context driverContext( props, context_.tracer(), context_.status() );
+    try {
+        context_.tracer()->info( "HwThread: Initialising driver..." );
+        driver_ = driverFactory_->createDriver( driverContext );
+    }
+    catch ( ... )
+    {
+        stringstream ss;
+        ss << "MainThread: Caught unknown exception while initialising driver";
+        context_.tracer()->error( ss.str() );
+        throw;
+    }  
+
+    // let the driver apply limits and save the param for future use
+    driver_->applyHardwareLimits( config.maxForwardSpeed, config.maxReverseSpeed,
+                        config.maxTurnrate, config.maxTurnrateAtMaxSpeed );
+    maxForwardSpeed_ = config.maxForwardSpeed;
+    maxReverseSpeed_ = config.maxReverseSpeed;
+    maxTurnrate_ = config.maxTurnrate;
 }
 
 void
@@ -38,7 +95,7 @@ HwThread::enableDriver()
     {
         try {
             context_.tracer()->info("HwThread: (Re-)Enabling driver...");
-            driver_.enable();
+            driver_->enable();
             context_.tracer()->info( "HwThread: Enable succeeded." );
             return;
         }
@@ -61,8 +118,6 @@ HwThread::enableDriver()
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
     }
 }
-
-
 
 void
 HwThread::walk()
@@ -103,8 +158,8 @@ HwThread::walk()
         // Read data from the hardware
         //
         try {
-            Data data;
-            bool stateChanged = driver_.read( data );
+            hydrointerfaces::SegwayRmp::Data data;
+            bool stateChanged = driver_->read( data );
 
             // stick it in the store, so that NetThread can distribute it                
             dataStore_.set( data );
@@ -114,7 +169,7 @@ HwThread::walk()
             {
                 std::string status;
                 bool isWarn, isFault;
-                driver_.getStatus( status, isWarn, isFault );
+                driver_->getStatus( status, isWarn, isFault );
                 std::stringstream ss;
                 ss << "Saw state change: " << status;
                 if ( isFault )
@@ -156,11 +211,11 @@ HwThread::walk()
         //
         if ( commandStore_.isNewData() && !stateMachine_.isFault() )
         {
-            Command command;
+            hydrointerfaces::SegwayRmp::Command command;
             commandStore_.get( command );
 
             try {
-                driver_.write( command );
+                driver_->write( command );
 
                 stringstream ss;
                 ss << "HwThread: wrote command: " << command.toString();
@@ -230,7 +285,7 @@ HwThread::walk()
 }
 
 bool
-HwThread::commandImpossible( const Command &command )
+HwThread::commandImpossible( const hydrointerfaces::SegwayRmp::Command &command )
 {
     if ( command.vx > maxForwardSpeed_ )
         return true;
@@ -248,7 +303,7 @@ HwThread::commandImpossible( const Command &command )
 }
 
 void
-HwThread::setCommand( const Command &command )
+HwThread::setCommand( const hydrointerfaces::SegwayRmp::Command &command )
 {
     // if we know we can't write, don't try: inform remote component of problem
     std::string reason;
@@ -289,9 +344,6 @@ HwThread::setCommand( const Command &command )
     context_.tracer()->debug( ss.str() );
 }
 
-
-
-
 bool
 HwThread::isEStopConnected(int timeoutMs)
 {
@@ -318,9 +370,4 @@ HwThread::isEStopConnected(int timeoutMs)
     return true;
 }
     
-
-
-
-}
-
-
+} // namespace

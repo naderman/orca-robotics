@@ -22,7 +22,7 @@ namespace {
     const char *SUBSYSTEM_NAME = "network";
 
 void 
-convert( const Data& internal, orca::Odometry2dData& network )
+convert( const hydrointerfaces::SegwayRmp::Data& internal, orca::Odometry2dData& network )
 {
     network.timeStamp.seconds = internal.seconds;
     network.timeStamp.useconds = internal.useconds;
@@ -37,7 +37,7 @@ convert( const Data& internal, orca::Odometry2dData& network )
 }
 
 void 
-convert( const Data& internal, orca::Odometry3dData& network )
+convert( const hydrointerfaces::SegwayRmp::Data& internal, orca::Odometry3dData& network )
 {
     network.timeStamp.seconds = internal.seconds;
     network.timeStamp.useconds = internal.useconds;
@@ -60,7 +60,7 @@ convert( const Data& internal, orca::Odometry3dData& network )
 }
 
 void 
-convert( const Data& internal, orca::PowerData& network )
+convert( const hydrointerfaces::SegwayRmp::Data& internal, orca::PowerData& network )
 {
     network.timeStamp.seconds = internal.seconds;
     network.timeStamp.useconds = internal.useconds;
@@ -78,7 +78,7 @@ convert( const Data& internal, orca::PowerData& network )
 }
 
 void 
-convert( const orca::VelocityControl2dData& network, segwayrmp::Command& internal )
+convert( const orca::VelocityControl2dData& network, hydrointerfaces::SegwayRmp::Command& internal )
 {
     internal.vx = network.motion.v.x;
     internal.w = network.motion.w;
@@ -89,14 +89,12 @@ convert( const orca::VelocityControl2dData& network, segwayrmp::Command& interna
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 
-NetThread::NetThread( HwThread                      &hwHandler,
+NetThread::NetThread( HwThread                      &hwThread,
                         const orca::VehicleDescription &descr,
-                        const bool isEStopEnabled,
                         const orcaice::Context         &context )
     : eStopPrx_(0),
-      hwThread_(hwHandler),
+      hwThread_(hwThread),
       descr_(descr),
-      isEStopEnabled_(isEStopEnabled),
       context_(context)
 {
     context_.status()->setMaxHeartbeatInterval( SUBSYSTEM_NAME, 10.0 );
@@ -113,10 +111,16 @@ NetThread::NetThread( HwThread                      &hwHandler,
     // for symetric limits, only need to store 2 constants.
     maxSpeed_    = controlDescr->maxForwardSpeed;
     maxTurnrate_ = controlDescr->maxTurnrate;
+
+    // By default the estop interface is not enabled...
+    isEStopEnabled_ = (bool)orcaice::getPropertyAsIntWithDefault( context_.properties(),
+            context_.tag()+".Config.EnableEStopInterface", 0 );
+    stringstream ss; ss <<"NetThread: isEStopInterfaceEnabled is set to "<< isEStopEnabled_<<endl;
+    context_.tracer()->info( ss.str() );
 }
 
 void
-NetThread::limit( Command &command )
+NetThread::limit( hydrointerfaces::SegwayRmp::Command &command )
 {
     if ( command.vx > maxSpeed_ ) {
         command.vx = maxSpeed_;
@@ -139,7 +143,7 @@ NetThread::limit( Command &command )
 void 
 NetThread::handleData(const orca::VelocityControl2dData& incomingCommand)
 {
-    segwayrmp::Command internalCommand;
+    hydrointerfaces::SegwayRmp::Command internalCommand;
     convert( incomingCommand, internalCommand );
     limit( internalCommand );
     hwThread_.setCommand( internalCommand );
@@ -203,7 +207,7 @@ NetThread::walk()
 //         context_.tracer()->debug( "net handler loop spinning ",1);
 
         // block on the highest frequency incoming data stream
-        Data data;
+        hydrointerfaces::SegwayRmp::Data data;
         if ( hwThread_.getData( data, odometryReadTimeout ) ) {
 //             context_.tracer()->debug( "Net loop timed out", 1);
             // Don't flag this as an error -- it may happen during normal initialisation.
@@ -258,7 +262,7 @@ NetThread::initEStopCallback()
     // Keep trying to create the interface until we succeed
     orcaice::connectToInterfaceWithTag<orca::EStopPrx>( context_, eStopPrx_, "HatchMon", this );
             
-    // callback object to receive data, and hands it straight the the hwHandler thread
+    // callback object to receive data, and hands it straight the the hwThread thread
     Ice::ObjectPtr consumerObj = new segwayrmp::EStopConsumerI(hwThread_);
     orca::EStopConsumerPrx callbackPrx =
       orcaice::createConsumerInterface<orca::EStopConsumerPrx>( context_, consumerObj );

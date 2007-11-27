@@ -13,7 +13,6 @@
 
 #include <hydroutil/safethread.h>
 #include <orcaice/context.h>
-#include <hydroutil/proxy.h>
 #include <hydroutil/notify.h>
 
 #include <orcaifaceimpl/estopimpl.h>
@@ -22,7 +21,6 @@
 #include <orcaifaceimpl/powerImpl.h>
 #include <orcaifaceimpl/velocitycontrol2dImpl.h>
 #include "hwthread.h"
-#include "types.h"
 
 namespace segwayrmp
 {
@@ -30,13 +28,12 @@ namespace segwayrmp
 
 
 class NetThread : public hydroutil::SafeThread,
-                   public hydroutil::NotifyHandler<orca::VelocityControl2dData>
+                  public hydroutil::NotifyHandler<orca::VelocityControl2dData>
 {
 public:
 
     NetThread( HwThread                      &hwHandler,
                 const orca::VehicleDescription &descr,
-                bool isEStopEnabled,
                 const orcaice::Context         &context );
 
     // from SafeThread
@@ -47,7 +44,7 @@ public:
 
 private:
 
-    void limit( Command &command );
+    void limit( hydrointerfaces::SegwayRmp::Command &command );
     void initEStopCallback();
 
     // external interfaces

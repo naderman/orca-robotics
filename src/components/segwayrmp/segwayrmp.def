@@ -18,8 +18,8 @@ Requires.HatchMon.Type=EStop
 Requires.HatchMon.DefaultProxy=estop@local/hatchmon
 
 # Config Parameters
-Config.Driver.Comment=Options are { 'segwayrmpcan', 'segwayrmpusb', 'playerclient', 'fake' }
-Config.Driver.Default=segwayrmpcan
+Config.DriverLib.Comment=Options are { 'libHydroSegwayRmpAcfrCan.so', 'libHydroSegwayRmpAcfrUsb.so', 'libHydroSegwayRmpPlayerClient.so', 'libHydroSegwayRmpFake.so' }
+Config.DriverLib.Default=libHydroSegwayRmpAcfrCan.so
 Config.EnableEStopInterface.Default=0
 Config.EnableMotion.Default=1
 
