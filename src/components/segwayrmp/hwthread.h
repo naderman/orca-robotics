@@ -19,12 +19,12 @@ enum EStopStatus{ESS_NO_FAULT, ESS_FAULT};
 //
 // @author Alex Brooks
 //
-class HwHandler : public hydroutil::SafeThread
+class HwThread : public hydroutil::SafeThread
 {
 
 public: 
 
-    HwHandler( HwDriver               &hwDriver,
+    HwThread( HwDriver               &hwDriver,
                double                  maxForwardSpeed,
                double                  maxReverseSpeed,
                double                  maxTurnrate,

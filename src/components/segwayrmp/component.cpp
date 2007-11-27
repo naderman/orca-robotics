@@ -14,8 +14,8 @@
 #include <orca/vehicledescription.h>
 
 #include "component.h"
-#include "nethandler.h"
-#include "hwhandler.h"
+#include "netthread.h"
+#include "hwthread.h"
 
 // segway rmp drivers
 #include "fakedriver.h"
@@ -36,8 +36,8 @@ namespace segwayrmp {
 
 Component::Component() :
     orcaice::Component( "SegwayRmp" ),
-    netHandler_(0),
-    hwHandler_(0)
+    netThread_(0),
+    hwThread_(0)
 {
 }
 
@@ -81,26 +81,26 @@ Component::loadDriver()
         if ( driverName == "segwayrmpusb" )
         {
 #ifdef HAVE_USB_DRIVER
-            context().tracer()->debug( "HwHandler: loading 'segwayrmpusb' driver",3);
+            context().tracer()->debug( "HwThread: loading 'segwayrmpusb' driver",3);
             rmpIo_.reset( new RmpUsbIoFtdi );
 #else
-            throw hydroutil::Exception( ERROR_INFO, "HwHandler: Can't instantiate driver 'usb' because it was not built!" );
+            throw hydroutil::Exception( ERROR_INFO, "HwThread: Can't instantiate driver 'usb' because it was not built!" );
 #endif            
         }
         else if ( driverName == "segwayrmpcan" )
         {
 #ifdef HAVE_CAN_DRIVER
-        context().tracer()->debug( "HwHandler: loading 'peakcan' driver",3);
+        context().tracer()->debug( "HwThread: loading 'peakcan' driver",3);
         
         //Get the port name that we are being asked to open
         string portName;
         if( orcaice::getProperty( context().properties(), prefix+"SegwayRmpCan.PortName", portName ) !=0 ){
-            throw hydroutil::Exception( ERROR_INFO, "HwHandler::HwHandler() Config.SegwayRmpCan.PortName not specified" );
+            throw hydroutil::Exception( ERROR_INFO, "HwThread::HwThread() Config.SegwayRmpCan.PortName not specified" );
         }
 
         rmpIo_.reset( new PeakCanDriver ( portName ) );
 #else
-        throw hydroutil::Exception( ERROR_INFO, "HwHandler: Can't instantiate driver 'peakcan' because it was not built!" );
+        throw hydroutil::Exception( ERROR_INFO, "HwThread: Can't instantiate driver 'peakcan' because it was not built!" );
 #endif            
         }
         else { assert(false); }
@@ -135,21 +135,21 @@ Component::loadDriver()
     else if ( driverName == "playerclient" )
     {
 #ifdef HAVE_PLAYERCLIENT_DRIVER
-        context().tracer()->debug( "HwHandler: loading 'playerclient' driver",3);
+        context().tracer()->debug( "HwThread: loading 'playerclient' driver",3);
         driver_.reset( new PlayerClientDriver( context() ) );
 #else
-        throw hydroutil::Exception( ERROR_INFO, "HwHandler: Can't instantiate driver 'playerclient' because it was not built!" );
+        throw hydroutil::Exception( ERROR_INFO, "HwThread: Can't instantiate driver 'playerclient' because it was not built!" );
 #endif
     }
     else if ( driverName == "fake" )
     {
-        context().tracer()->debug( "HwHandler: loading 'fake' driver",3);
+        context().tracer()->debug( "HwThread: loading 'fake' driver",3);
         driver_.reset( new FakeDriver( context() ) );
     }
     else {
-        string errorStr = "HwHandler: Unknown driver type. Cannot talk to hardware.";
+        string errorStr = "HwThread: Unknown driver type. Cannot talk to hardware.";
         context().tracer()->error( errorStr);
-        context().tracer()->info( "HwHandler: Valid driver values are {'segwayrmpcan', 'segwayrmpusb', 'playerclient', 'fake'}" );
+        context().tracer()->info( "HwThread: Valid driver values are {'segwayrmpcan', 'segwayrmpusb', 'playerclient', 'fake'}" );
         throw hydroutil::Exception( ERROR_INFO, errorStr );
     }
 
@@ -189,24 +189,24 @@ Component::start()
         dynamic_cast<orca::VehicleControlVelocityDifferentialDescription*>(&(*(descr.control)));
     if ( controlDescr == NULL )
         throw hydroutil::Exception( ERROR_INFO, "Can only deal with differential drive vehicles." );
-    HwHandler *hwHandler = new HwHandler( *driver_,
+    HwThread *hwHandler = new HwThread( *driver_,
                                           controlDescr->maxForwardSpeed,
                                           controlDescr->maxReverseSpeed,
                                           controlDescr->maxTurnrate,
                                           isMotionEnabled,
                                           isEStopEnabled,
                                           context() );
-    hwHandler_ = hwHandler;
-    hwHandler_->start();
+    hwThread_ = hwHandler;
+    hwThread_->start();
 
     //
     // Network handling loop
     //
     // the constructor may throw, we'll let the application shut us down
-    netHandler_ = new NetHandler( *hwHandler, descr, isEStopEnabled, context() );
+    netThread_ = new NetThread( *hwHandler, descr, isEStopEnabled, context() );
 
     // this thread will try to activate and register the adapter
-    netHandler_->start();
+    netThread_->start();
 
     // the rest is handled by the application/service
     context().tracer()->debug( "Component::start() done." );
@@ -216,9 +216,9 @@ void
 Component::stop()
 {
     tracer()->debug( "stopping component", 2 );
-    hydroutil::stopAndJoin( netHandler_ );
+    hydroutil::stopAndJoin( netThread_ );
     tracer()->info( "stopped net handler", 2 );
-    hydroutil::stopAndJoin( hwHandler_ );
+    hydroutil::stopAndJoin( hwThread_ );
     tracer()->info( "stopped hw handler", 2 );
 }
 

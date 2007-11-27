@@ -22,7 +22,7 @@ namespace segwayrmp
 {
 
 //
-// An implementation of HwHandler that knows how to talk Segway's
+// An implementation of HwThread that knows how to talk Segway's
 // protocol.  Requires a hardware interface implementation to be
 // passed to the constructor.
 //

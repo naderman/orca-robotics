@@ -36,9 +36,9 @@ private:
     orca::VehicleDescription loadDriver();
 
     // loop responsible for interaction with the network
-    hydroutil::ThreadPtr netHandler_;
+    hydroutil::ThreadPtr netThread_;
     // loop responsible for interaction with local hardware
-    hydroutil::ThreadPtr hwHandler_;
+    hydroutil::ThreadPtr hwThread_;
 
     std::auto_ptr<HwDriver> driver_;
     std::auto_ptr<RmpIo>    rmpIo_;

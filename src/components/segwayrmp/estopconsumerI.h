@@ -15,7 +15,7 @@
 #include <iostream>
 #include <orca/estop.h>
 #include <orcaice/orcaice.h>
-#include "hwhandler.h"
+#include "hwthread.h"
 
 namespace segwayrmp{
 
@@ -23,19 +23,19 @@ namespace segwayrmp{
 class EStopConsumerI : public orca::EStopConsumer
 {
 public:  
-    EStopConsumerI ( HwHandler& hwHandler ): hwHandler_(hwHandler){};
+    EStopConsumerI ( HwThread& hwHandler ): hwThread_(hwHandler){};
     ~EStopConsumerI() {};
 
-    // Pass the data straight to the HwHandler to deal with
+    // Pass the data straight to the HwThread to deal with
     virtual void setData(const orca::EStopData& data, const Ice::Current&){
         if(data.hasFaultCondition)
-            {hwHandler_.setEStopFaultStatus(ESS_FAULT);}
-        else{hwHandler_.setEStopFaultStatus(ESS_NO_FAULT);}
+            {hwThread_.setEStopFaultStatus(ESS_FAULT);}
+        else{hwThread_.setEStopFaultStatus(ESS_NO_FAULT);}
         std::cout << "EStopCallback called"<<std::endl;
     }
 
 private:
-    HwHandler& hwHandler_;
+    HwThread& hwThread_;
     
 };
 

@@ -12,7 +12,7 @@
 #include <sstream>
 
 #include <orcaice/orcaice.h>
-#include "nethandler.h"
+#include "netthread.h"
 #include "estopconsumerI.h"
 
 using namespace std;
@@ -89,12 +89,12 @@ convert( const orca::VelocityControl2dData& network, segwayrmp::Command& interna
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 
-NetHandler::NetHandler( HwHandler                      &hwHandler,
+NetThread::NetThread( HwThread                      &hwHandler,
                         const orca::VehicleDescription &descr,
                         const bool isEStopEnabled,
                         const orcaice::Context         &context )
     : eStopPrx_(0),
-      hwHandler_(hwHandler),
+      hwThread_(hwHandler),
       descr_(descr),
       isEStopEnabled_(isEStopEnabled),
       context_(context)
@@ -116,7 +116,7 @@ NetHandler::NetHandler( HwHandler                      &hwHandler,
 }
 
 void
-NetHandler::limit( Command &command )
+NetThread::limit( Command &command )
 {
     if ( command.vx > maxSpeed_ ) {
         command.vx = maxSpeed_;
@@ -137,17 +137,17 @@ NetHandler::limit( Command &command )
 // This is a direct callback from the VelocityControl2dImpl object.
 // It's executed in Ice thread.
 void 
-NetHandler::handleData(const orca::VelocityControl2dData& incomingCommand)
+NetThread::handleData(const orca::VelocityControl2dData& incomingCommand)
 {
     segwayrmp::Command internalCommand;
     convert( incomingCommand, internalCommand );
     limit( internalCommand );
-    hwHandler_.setCommand( internalCommand );
+    hwThread_.setCommand( internalCommand );
 }
 
 
 void
-NetHandler::walk()
+NetThread::walk()
 {
     activate( context_, this );
     
@@ -204,7 +204,7 @@ NetHandler::walk()
 
         // block on the highest frequency incoming data stream
         Data data;
-        if ( hwHandler_.getData( data, odometryReadTimeout ) ) {
+        if ( hwThread_.getData( data, odometryReadTimeout ) ) {
 //             context_.tracer()->debug( "Net loop timed out", 1);
             // Don't flag this as an error -- it may happen during normal initialisation.
             context_.status()->ok( SUBSYSTEM_NAME, "Net loop timed out" );
@@ -252,14 +252,14 @@ NetHandler::walk()
 
 // TODO modernise this code section.
 void 
-NetHandler::initEStopCallback()
+NetThread::initEStopCallback()
 {
 
     // Keep trying to create the interface until we succeed
     orcaice::connectToInterfaceWithTag<orca::EStopPrx>( context_, eStopPrx_, "HatchMon", this );
             
     // callback object to receive data, and hands it straight the the hwHandler thread
-    Ice::ObjectPtr consumerObj = new segwayrmp::EStopConsumerI(hwHandler_);
+    Ice::ObjectPtr consumerObj = new segwayrmp::EStopConsumerI(hwThread_);
     orca::EStopConsumerPrx callbackPrx =
       orcaice::createConsumerInterface<orca::EStopConsumerPrx>( context_, consumerObj );
     

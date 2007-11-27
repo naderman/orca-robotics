@@ -21,7 +21,7 @@
 #include <orcaifaceimpl/odometry3dImpl.h>
 #include <orcaifaceimpl/powerImpl.h>
 #include <orcaifaceimpl/velocitycontrol2dImpl.h>
-#include "hwhandler.h"
+#include "hwthread.h"
 #include "types.h"
 
 namespace segwayrmp
@@ -29,12 +29,12 @@ namespace segwayrmp
 
 
 
-class NetHandler : public hydroutil::SafeThread,
+class NetThread : public hydroutil::SafeThread,
                    public hydroutil::NotifyHandler<orca::VelocityControl2dData>
 {
 public:
 
-    NetHandler( HwHandler                      &hwHandler,
+    NetThread( HwThread                      &hwHandler,
                 const orca::VehicleDescription &descr,
                 bool isEStopEnabled,
                 const orcaice::Context         &context );
@@ -59,7 +59,7 @@ private:
     // proxy to our optional 'required interface'
     orca::EStopPrx eStopPrx_;
 
-    HwHandler &hwHandler_;
+    HwThread &hwThread_;
 
     orca::VehicleDescription descr_;
     bool isEStopEnabled_;
