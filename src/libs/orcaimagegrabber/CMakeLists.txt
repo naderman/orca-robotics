@@ -1,10 +1,8 @@
 IF( OS_LINUX )
 
+# alexm: this seems like a big dependency
+# not sure what is actually needed.
 INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
-
-#
-# checks for libraries and drivers
-#
 
 # opencv image grabber checks
 IF ( OPENCV_FOUND )
@@ -23,8 +21,8 @@ IF ( DIGICLOPS_AND_TRICLOPS_FOUND )
     MESSAGE( STATUS "    The Digiclops Image Grabber - can be built" )
 
     INCLUDE_DIRECTORIES(
-	/usr/local/include/digiclops
-	/usr/local/include/triclops
+        /usr/local/include/digiclops
+        /usr/local/include/triclops
     )
     SET( DIGICLOPS_LIBS digiclops triclops )
     SET( SRCS ${SRCS} digiclopsgrabber )
@@ -32,14 +30,6 @@ IF ( DIGICLOPS_AND_TRICLOPS_FOUND )
 ELSE ( DIGICLOPS_AND_TRICLOPS_FOUND ) 
     MESSAGE( STATUS "    The Digiclops Image Grabber - CANNOT be built" )
 ENDIF ( DIGICLOPS_AND_TRICLOPS_FOUND ) 
-
-
-# only build the image grabbers if the correct libraries have been found
-# IF ( DIGICLOPS_AND_TRICLOPS_FOUND )
-# ENDIF ( DIGICLOPS_AND_TRICLOPS_FOUND )
-
-# IF ( OPENCV_FOUND )
-# ENDIF ( OPENCV_FOUND )
 
 IF ( OPENCV_FOUND OR DIGICLOPS_AND_TRICLOPS_FOUND )
     GLOBAL_ADD_LIBRARY( OrcaImageGrabber SHARED ${SRCS} )
