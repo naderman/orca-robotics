@@ -11,7 +11,7 @@
 #ifndef ORCA2_SEGWAY_RMP_HARDWARE_DRIVER_H
 #define ORCA2_SEGWAY_RMP_HARDWARE_DRIVER_H
 
-#include <orcarobotdriverutil/ihwdriver.h>
+// #include <orcarobotdriverutil/ihwdriver.h>
 #include "types.h"
 
 namespace segwayrmp
