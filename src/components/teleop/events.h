@@ -84,7 +84,7 @@ public:
 class MixedCommandEvent : public hydroutil::Event
 {
 public:
-    MixedCommandEvent( int lon, bool isLong, int tr, bool isTr, int ang, bool isAng ) :
+    MixedCommandEvent( double lon, bool isLong, double tr, bool isTr, double ang, bool isAng ) :
         Event( MixedCommand ),
         longitudinal(lon),
         isLongIncrement(isLong),
@@ -93,11 +93,11 @@ public:
         angular(ang),
         isAngularIncrement(isAng) {};
 
-    int longitudinal;
+    double longitudinal;
     bool isLongIncrement;
-    int transverse;
+    double transverse;
     bool isTransverseIncrement;
-    int angular;
+    double angular;
     bool isAngularIncrement;
 };
 typedef IceUtil::Handle<MixedCommandEvent> MixedCommandEventPtr;

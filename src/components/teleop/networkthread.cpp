@@ -37,6 +37,8 @@ NetworkThread::~NetworkThread()
 void 
 NetworkThread::newMixedCommand( const hydrointerfaces::HumanInput2d::Command& command )
 {
+//     cout<<"DEBUG: NetworkThread::newMixedCommand: "<<command.toString()<<endl;
+    
     hydroutil::EventPtr e = new MixedCommandEvent( 
         command.longitudinal, command.isLongIncrement,
         command.transverse, command.isTransverseIncrement,
@@ -128,9 +130,9 @@ NetworkThread::walk()
         {
         // approx in order of call frequency
         case MixedCommand : {
-            //cout<<"focus changed event"<<endl;
             MixedCommandEventPtr e = MixedCommandEventPtr::dynamicCast( event );
             if ( !e ) break;
+
             driver_->processMixedCommand( 
                 e->longitudinal, e->isLongIncrement, 
                 e->transverse, e->isTransverseIncrement,
