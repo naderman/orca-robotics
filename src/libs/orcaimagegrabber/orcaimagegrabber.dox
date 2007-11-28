@@ -11,7 +11,7 @@
 
 @ingroup orca_libs
 @defgroup orca_library_orcaimagegrabber libOrcaImageGrabber
-@brief 
+@brief Hardware abstraction for cameras.
 
 @par Development status
 beta.
