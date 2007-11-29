@@ -7,7 +7,7 @@ IF ( BUILD_ROBOT2D )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
     FIND_COMPONENT_SOURCES( COMP_SRCS )
-    SET( COMP_DEPS OrcaIfaceImpl OrcaObjectUtil OrcaRobotDriverUtil )
+    SET( COMP_DEPS HydroDll HydroInterfaces OrcaIfaceImpl OrcaObjectUtil OrcaRobotDriverUtil )
 
     # build stand-alone component  
     GLOBAL_ADD_EXECUTABLE( robot2d ${COMP_SRCS} main )

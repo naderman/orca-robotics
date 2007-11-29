@@ -13,14 +13,6 @@
 
 #include <orcaice/component.h>
 
-// data pipes
-#include <hydroutil/proxy.h>
-#include <hydroutil/notify.h>
-// internal data structures
-#include "types.h"
-#include "hwdriver.h"
-#include <orca/vehicledescription.h>
-
 namespace robot2d
 {
 
@@ -30,20 +22,15 @@ public:
 
     Component();
 
-    // component interface
+    // from Component
     virtual void start();
     virtual void stop();
 
 private:
-
-    orca::VehicleDescription loadDriver();
-
     // loop responsible for interaction with the network
     hydroutil::ThreadPtr NetThread_;
     // loop responsible for interaction with local hardware
     hydroutil::ThreadPtr HwThread_;
-
-    std::auto_ptr<HwDriver> driver_;
 };
 
 } // namespace

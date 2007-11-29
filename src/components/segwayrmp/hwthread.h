@@ -1,4 +1,3 @@
-
 /*
  * Orca-Robotics Project: Components for robotics 
  *               http://orca-robotics.sf.net/
@@ -51,7 +50,7 @@ public:
     // Inherited from SafeThread
     virtual void walk();
 
-    // local interface
+    // local interface, used by NetThread
 
     // used by NetThread to pass commands, events and get data
     void setCommand( const hydrointerfaces::SegwayRmp::Command &command );
@@ -60,6 +59,7 @@ public:
         {
             eStopFaultStatus_.set(status);
         }
+
     int getData( hydrointerfaces::SegwayRmp::Data &data, int timeoutMs )
         {
             return dataStore_.getNext( data, timeoutMs );

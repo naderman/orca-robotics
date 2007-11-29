@@ -21,10 +21,9 @@ class Component : public orcaice::Component
 public:
 
     Component();
-    virtual ~Component();
 
-    // component interface
-    virtual void  start();
+    // from Component
+    virtual void start();
     virtual void stop();
 
 private:

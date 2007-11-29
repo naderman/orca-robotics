@@ -12,8 +12,8 @@ Provides.VelocityControl2d.DefaultName=velocitycontrol2d
 # Config Parameters
 
 # Common to all drivers
-Config.Driver.Comment=Options are { 'playerclient', 'fake' }
-Config.Driver.Default=playerclient
+Config.DriverLib.Comment=Options are { 'libHydroRobot2dPlayerClient.so', 'libHydroRobot2dFake.so' }
+Config.DriverLib.Default=libHydroRobot2dPlayerClient.so
 
 Config.VehicleDescription.Control.Type.Default=VelocityDifferential
 Config.VehicleDescription.Control.VelocityDifferential.MaxForwardSpeed.Default=1.0

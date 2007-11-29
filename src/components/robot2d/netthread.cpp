@@ -21,26 +21,26 @@ namespace robot2d {
 namespace {
 
 void 
-convert( const robot2d::Data& internal, orca::Odometry2dData& network )
+convert( const hydrointerfaces::Robot2d::Data& internal, orca::Odometry2dData& network )
 {
     network.timeStamp.seconds = internal.seconds;
     network.timeStamp.useconds = internal.useconds;
 
     network.pose.p.x = internal.x;
     network.pose.p.y = internal.y;
-    network.pose.o = internal.o;
+    network.pose.o = internal.yaw;
     
-    network.motion.v.x = internal.vx;
-    network.motion.v.y = internal.vy;
-    network.motion.w = internal.w;
+    network.motion.v.x = internal.vlong;
+    network.motion.v.y = internal.vtransverse;
+    network.motion.w = internal.dyaw;
 }
 
 void 
-convert( const orca::VelocityControl2dData& network, robot2d::Command& internal )
+convert( const orca::VelocityControl2dData& network, hydrointerfaces::Robot2d::Command& internal )
 {
-    internal.vx = network.motion.v.x;
-    internal.vy = network.motion.v.y;
-    internal.w  = network.motion.w;
+    internal.vlong = network.motion.v.x;
+    internal.vtransverse = network.motion.v.y;
+    internal.dyaw  = network.motion.w;
 }
 
 }
@@ -71,22 +71,22 @@ NetThread::~NetThread()
 }
 
 void
-NetThread::limit( Command &cmd )
+NetThread::limit( hydrointerfaces::Robot2d::Command &cmd )
 {
-    if ( cmd.vx > maxSpeed_ )
-        cmd.vx = maxSpeed_;
-    if ( cmd.vx < -maxSpeed_ )
-        cmd.vx = -maxSpeed_;
+    if ( cmd.vlong > maxSpeed_ )
+        cmd.vlong = maxSpeed_;
+    if ( cmd.vlong < -maxSpeed_ )
+        cmd.vlong = -maxSpeed_;
 
-    if ( cmd.vy > maxSpeed_ )
-        cmd.vy = maxSpeed_;
-    if ( cmd.vy < -maxSpeed_ )
-        cmd.vy = -maxSpeed_;
+    if ( cmd.vtransverse > maxSpeed_ )
+        cmd.vtransverse = maxSpeed_;
+    if ( cmd.vtransverse < -maxSpeed_ )
+        cmd.vtransverse = -maxSpeed_;
 
-    if ( cmd.w > maxTurnrate_ )
-        cmd.w = maxTurnrate_;
-    if ( cmd.w < -maxTurnrate_ )
-        cmd.w = -maxTurnrate_;
+    if ( cmd.dyaw > maxTurnrate_ )
+        cmd.dyaw = maxTurnrate_;
+    if ( cmd.dyaw < -maxTurnrate_ )
+        cmd.dyaw = -maxTurnrate_;
 }
 
 // This is a direct callback from the VelocityControl2dImpl object.
@@ -100,7 +100,7 @@ NetThread::handleData(const orca::VelocityControl2dData& command)
     context_.tracer()->debug( ss.str() );
 
     try {
-        robot2d::Command internalCommand;
+        hydrointerfaces::Robot2d::Command internalCommand;
         convert( command, internalCommand );
         limit( internalCommand );
         HwThread_.setCommand( internalCommand );
@@ -144,7 +144,7 @@ NetThread::walk()
     velocityControl2dI_->setNotifyHandler( this );
 
     // temp objects in internal format
-    Data data;
+    hydrointerfaces::Robot2d::Data data;
 
     // temp objects in network format
     orca::Odometry2dData odometry2dData;

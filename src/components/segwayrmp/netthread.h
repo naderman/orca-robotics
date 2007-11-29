@@ -66,8 +66,6 @@ private:
 
     // component current context
     orcaice::Context context_;
-
-    
 };
 
 } // namespace

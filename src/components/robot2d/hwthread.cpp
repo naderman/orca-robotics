@@ -1,6 +1,19 @@
+/*
+ * Orca-Robotics Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2007 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This copy of Orca is licensed to you under the terms described in
+ * the LICENSE file included in this distribution.
+ *
+ */
+
 #include "hwthread.h"
 #include <iostream>
+
+// we need these to throw orca exceptions from the functions executed in the network thread
 #include <orca/exceptions.h>
+#include <orcaice/orcaice.h>
 
 using namespace std;
 
@@ -10,15 +23,53 @@ namespace {
 
 namespace robot2d {
 
-HwThread::HwThread( HwDriver               &hwDriver,
-                      bool                    isMotionEnabled,
-                      const orcaice::Context &context )
-    : driver_(hwDriver),
-      isMotionEnabled_(isMotionEnabled),
-      context_(context)
+HwThread::HwThread( const orcaice::Context &context ) :
+    driver_(0),
+    driverFactory_(0),
+    driverLib_(0),
+    context_(context)
 {
     context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 10.0 );
     context_.status()->initialising( SUBSYSTEM );
+
+    //
+    // Read settings
+    //
+    Ice::PropertiesPtr prop = context_.properties();
+    std::string prefix = context_.tag() + ".Config.";
+
+    isMotionEnabled_ = (bool)orcaice::getPropertyAsIntWithDefault( prop, prefix+"EnableMotion", 1 );
+
+    // Dynamically load the library and find the factory
+    std::string driverLibName = 
+        orcaice::getPropertyWithDefault( prop, prefix+"DriverLib", "libHydroRobot2dPlayerClient.so" );
+    context_.tracer()->debug( "HwThread: Loading driver library "+driverLibName, 4 );
+    try {
+        driverLib_ = new hydrodll::DynamicallyLoadedLibrary(driverLibName);
+        driverFactory_ = 
+            hydrodll::dynamicallyLoadClass<hydrointerfaces::Robot2dFactory,DriverFactoryMakerFunc>
+            ( *driverLib_, "createDriverFactory" );
+    }
+    catch (hydrodll::DynamicLoadException &e)
+    {
+        context_.tracer()->error( e.what() );
+        throw;
+    }
+
+    // create the driver
+    hydroutil::Properties props( prop->getPropertiesForPrefix(prefix), prefix );
+    hydrointerfaces::Context driverContext( props, context_.tracer(), context_.status() );
+    try {
+        context_.tracer()->info( "HwThread: Initialising driver..." );
+        driver_ = driverFactory_->createDriver( driverContext );
+    }
+    catch ( ... )
+    {
+        stringstream ss;
+        ss << "HwThread: Caught unknown exception while initialising driver";
+        context_.tracer()->error( ss.str() );
+        throw;
+    }  
 }
 
 void
@@ -28,7 +79,7 @@ HwThread::enableDriver()
     {
         try {
             context_.tracer()->info("HwThread: (Re-)Enabling driver...");
-            driver_.enable();
+            driver_->enable();
             context_.tracer()->info( "HwThread: Enable succeeded." );
             return;
         }
@@ -84,8 +135,8 @@ HwThread::walk()
         // Read data from the hardware
         //
         try {
-            Data data;
-            bool stateChanged = driver_.read( data );
+            hydrointerfaces::Robot2d::Data data;
+            bool stateChanged = driver_->read( data );
 
             // stick it in the store, so that NetThread can distribute it                
             dataStore_.set( data );
@@ -95,7 +146,7 @@ HwThread::walk()
             {
                 std::string status;
                 bool isWarn, isFault;
-                driver_.getStatus( status, isWarn, isFault );
+                driver_->getStatus( status, isWarn, isFault );
                 std::stringstream ss;
                 ss << "Saw state change: " << status;
                 if ( isFault )
@@ -137,11 +188,11 @@ HwThread::walk()
         //
         if ( !commandStore_.isEmpty() && !stateMachine_.isFault() )
         {
-            Command command;
+            hydrointerfaces::Robot2d::Command command;
             commandStore_.get( command );
 
             try {
-                driver_.write( command );
+                driver_->write( command );
 
                 stringstream ss;
                 ss << "HwThread: wrote command: " << command.toString();
@@ -185,7 +236,7 @@ HwThread::walk()
 }
 
 void
-HwThread::setCommand( const Command &command )
+HwThread::setCommand( const hydrointerfaces::Robot2d::Command &command )
 {
     // if we know we can't write, don't try: inform remote component of problem
     std::string reason;

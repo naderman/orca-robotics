@@ -75,7 +75,7 @@ HwThread::HwThread( Config& config, const orcaice::Context &context ) :
     catch ( ... )
     {
         stringstream ss;
-        ss << "MainThread: Caught unknown exception while initialising driver";
+        ss << "HwThread: Caught unknown exception while initialising driver";
         context_.tracer()->error( ss.str() );
         throw;
     }  

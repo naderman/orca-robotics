@@ -101,6 +101,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - Robot2d/SegwayRMP
     - simplified and improved common code (alex b)
 
+- Robot2d
+    - moved hardware drivers to Hydro (alex m)
+
 - SegwayRMP
     - big overhaul of SegwayRmpDriver (alex b)
     - moved hardware drivers to Hydro (alex m)

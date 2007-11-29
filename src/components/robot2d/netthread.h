@@ -18,7 +18,6 @@
 #include <orcaifaceimpl/odometry2dImpl.h>
 #include <orcaifaceimpl/velocitycontrol2dImpl.h>
 #include "hwthread.h"
-#include "types.h"
 
 namespace robot2d
 {
@@ -44,7 +43,7 @@ public:
 
 private:
 
-    void limit( Command &cmd );
+    void limit( hydrointerfaces::Robot2d::Command &cmd );
 
     // external interfaces
     orcaifaceimpl::Odometry2dImplPtr           odometry2dI_;

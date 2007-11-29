@@ -1,12 +1,22 @@
-#ifndef ROBOT2D_HwThread_H
-#define ROBOT2D_HwThread_H
+/*
+ * Orca-Robotics Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2007 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This copy of Orca is licensed to you under the terms described in
+ * the LICENSE file included in this distribution.
+ *
+ */
+
+#ifndef ROBOT2D_HARDWARE_THREAD_H
+#define ROBOT2D_HARDWARE_THREAD_H
 
 #include <hydroutil/safethread.h>
-#include <hydroutil/store.h>
-#include "types.h"
-#include <orcarobotdriverutil/statemachine.h>
-#include "hwdriver.h"
 #include <orcaice/context.h>
+#include <hydrointerfaces/robot2d.h>
+#include <hydrodll/dynamicload.h>
+#include <hydroutil/store.h>
+#include <orcarobotdriverutil/statemachine.h>
 
 namespace robot2d {
 
@@ -20,17 +30,17 @@ class HwThread : public hydroutil::SafeThread
 
 public: 
 
-    HwThread( HwDriver               &hwDriver,
-               bool                    isMotionEnabled,
-               const orcaice::Context &context );
+    HwThread( const orcaice::Context &context );
 
-    // Inherited from SafeThread
-    void walk();
+    // from SafeThread
+    virtual void walk();
 
-    void setCommand( const Command &command );
+    // local interface, used by NetThread
+
+    void setCommand( const hydrointerfaces::Robot2d::Command &command );
 
     // Return valus same as hydroutil::Store.
-    int getData( Data &data, int timeoutMs )
+    int getData( hydrointerfaces::Robot2d::Data &data, int timeoutMs )
         {
             return dataStore_.getNext( data, timeoutMs );
         }
@@ -44,17 +54,22 @@ private:
     orcarobotdriverutil::StateMachine stateMachine_;
 
     // Stores the data most recently received from the hardware
-    hydroutil::Store<Data>    dataStore_;
+    hydroutil::Store<hydrointerfaces::Robot2d::Data>    dataStore_;
     // Stores incoming commands
-    hydroutil::Store<Command> commandStore_;
-
-    HwDriver &driver_;
+    hydroutil::Store<hydrointerfaces::Robot2d::Command> commandStore_;
 
     bool isMotionEnabled_;
+
+    // Generic driver for the hardware
+    hydrointerfaces::Robot2d *driver_;
+    // A factory to instantiate the driver
+    hydrointerfaces::Robot2dFactory *driverFactory_;
+    // And the library that provides it
+    hydrodll::DynamicallyLoadedLibrary *driverLib_;
 
     orcaice::Context context_;
 };
 
-}
+} // namespace
 
 #endif

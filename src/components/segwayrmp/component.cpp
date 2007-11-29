@@ -46,16 +46,8 @@ void convert( const HwThread::Config& config, orca::VehicleControlVelocityDiffer
 
 
 Component::Component() :
-    orcaice::Component( "SegwayRmp" ),
-    // alexm: i don't think we need to init smart pointers. i'll check.
-    netThread_(0),
-    hwThread_(0)
+    orcaice::Component( "SegwayRmp" )
 {
-}
-
-Component::~Component()
-{
-    // do not delete handlers!!! They derive from Ice::Thread and self-destruct.
 }
 
 // warning: this function returns after it's done, all variable that need to be permanet must
@@ -63,8 +55,6 @@ Component::~Component()
 void
 Component::start()
 {
-    tracer()->debug( "Starting Component",2 );
-
     //
     // Read vehicle description from config file
     // This VehicleDescription is interpreted as "user preferences". After the hardware
