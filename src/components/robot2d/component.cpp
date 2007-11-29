@@ -13,9 +13,9 @@
 #include <orca/vehicledescription.h>
 
 #include "component.h"
-#include "nethandler.h"
+#include "netthread.h"
 #include <orcaobjutil/vehicleutil.h>
-#include "hwhandler.h"
+#include "hwthread.h"
 
 // driver types
 #include "fakedriver.h"
@@ -92,19 +92,19 @@ Component::start()
     bool isMotionEnabled = (bool)orcaice::getPropertyAsIntWithDefault( context().properties(),
                                                                        context().tag()+".Config.EnableMotion",
                                                                        1 );
-    HwHandler *hwHandler = new HwHandler( *driver_,
+    HwThread* hwThread = new HwThread( *driver_,
                                           isMotionEnabled,
                                           context() );
-    hwHandler_ = hwHandler;
-    hwHandler_->start();
+    HwThread_ = hwThread;
+    HwThread_->start();
 
     //
     // Network handling loop
     //
     // the constructor may throw, we'll let the application shut us down
-    netHandler_ = new NetHandler( *hwHandler, descr, context() );
+    NetThread_ = new NetThread( *hwThread, descr, context() );
     // this thread will try to activate and register the adapter
-    netHandler_->start();
+    NetThread_->start();
 
     // the rest is handled by the application/service
     context().tracer()->debug( "Component::start() done." );
@@ -114,8 +114,8 @@ void
 Component::stop()
 {
     tracer()->debug( "stopping component", 2 );
-    hydroutil::stopAndJoin( netHandler_ );
+    hydroutil::stopAndJoin( NetThread_ );
     tracer()->info( "stopped net handler", 2 );
-    hydroutil::stopAndJoin( hwHandler_ );
+    hydroutil::stopAndJoin( HwThread_ );
     tracer()->info( "stopped hw handler", 2 );
 }

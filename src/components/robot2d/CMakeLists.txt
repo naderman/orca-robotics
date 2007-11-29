@@ -6,29 +6,8 @@ IF ( BUILD_ROBOT2D )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
-    # Look for Player
-    INCLUDE (${ORCA_CMAKE_DIR}/FindPlayer2.cmake)
-
-    LINK_DIRECTORIES( ${PLAYER_LINK_DIRS} )
-    
-    OPTIONAL_SUB_LIBRARY(
-        "Player client driver for Robot2d"
-        playerclient
-        OrcaRobot2dPlayerClient
-        PLAYERCLIENT_LIBS
-        PLAYER_FOUND
-        HAVE_PLAYERCLIENT_DRIVER
-        ${PLAYER_LIBS} OrcaPlayer
-    )
-    INCLUDE_DIRECTORIES( ${PLAYER_INCLUDE_DIRS} )
-    ADD_DEFINITIONS( ${PLAYER_DEFINITIONS} )
-
-    IF ( NOT HAVE_PLAYERCLIENT_DRIVER )
-        MESSAGE( STATUS "    WARNING: only default 'fake' driver can be built")
-    ENDIF ( NOT HAVE_PLAYERCLIENT_DRIVER )
-
     FIND_COMPONENT_SOURCES( COMP_SRCS )
-    SET( COMP_DEPS OrcaIfaceImpl OrcaObjectUtil OrcaRobotDriverUtil ${PLAYERCLIENT_LIBS} )
+    SET( COMP_DEPS OrcaIfaceImpl OrcaObjectUtil OrcaRobotDriverUtil )
 
     # build stand-alone component  
     GLOBAL_ADD_EXECUTABLE( robot2d ${COMP_SRCS} main )

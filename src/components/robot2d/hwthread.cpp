@@ -1,16 +1,16 @@
-#include "hwhandler.h"
+#include "hwthread.h"
 #include <iostream>
 #include <orca/exceptions.h>
 
 using namespace std;
 
 namespace {
-    const char *SUBSYSTEM = "HwHandler";
+    const char *SUBSYSTEM = "HwThread";
 }
 
 namespace robot2d {
 
-HwHandler::HwHandler( HwDriver               &hwDriver,
+HwThread::HwThread( HwDriver               &hwDriver,
                       bool                    isMotionEnabled,
                       const orcaice::Context &context )
     : driver_(hwDriver),
@@ -22,20 +22,20 @@ HwHandler::HwHandler( HwDriver               &hwDriver,
 }
 
 void
-HwHandler::enableDriver()
+HwThread::enableDriver()
 {
     while ( !isStopping() ) 
     {
         try {
-            context_.tracer()->info("HwHandler: (Re-)Enabling driver...");
+            context_.tracer()->info("HwThread: (Re-)Enabling driver...");
             driver_.enable();
-            context_.tracer()->info( "HwHandler: Enable succeeded." );
+            context_.tracer()->info( "HwThread: Enable succeeded." );
             return;
         }
         catch ( std::exception &e )
         {
             std::stringstream ss;
-            ss << "HwHandler::enableDriver(): enable failed: " << e.what();
+            ss << "HwThread::enableDriver(): enable failed: " << e.what();
             context_.tracer()->error( ss.str() );
             context_.status()->fault( SUBSYSTEM, ss.str() );
             stateMachine_.setFault( ss.str() );
@@ -43,7 +43,7 @@ HwHandler::enableDriver()
         catch ( ... )
         {
             std::stringstream ss;
-            ss << "HwHandler::enableDriver(): enable failed due to unknown exception.";
+            ss << "HwThread::enableDriver(): enable failed due to unknown exception.";
             context_.tracer()->error( ss.str() );
             context_.status()->fault( SUBSYSTEM, ss.str() );
             stateMachine_.setFault( ss.str() );
@@ -53,7 +53,7 @@ HwHandler::enableDriver()
 }
 
 void
-HwHandler::walk()
+HwThread::walk()
 {
     std::string reason;
 
@@ -87,7 +87,7 @@ HwHandler::walk()
             Data data;
             bool stateChanged = driver_.read( data );
 
-            // stick it in the store, so that NetHandler can distribute it                
+            // stick it in the store, so that NetThread can distribute it                
             dataStore_.set( data );
 
             // Update status
@@ -118,7 +118,7 @@ HwHandler::walk()
         catch ( std::exception &e )
         {
             std::stringstream ss;
-            ss << "HwHandler: Failed to read: " << e.what();
+            ss << "HwThread: Failed to read: " << e.what();
             context_.tracer()->error( ss.str() );
 
             stateMachine_.setFault( ss.str() );
@@ -126,7 +126,7 @@ HwHandler::walk()
         catch ( ... )
         {
             std::stringstream ss;
-            ss << "HwHandler: Failed to read due to unknown exception.";
+            ss << "HwThread: Failed to read due to unknown exception.";
             context_.tracer()->error( ss.str() );
 
             stateMachine_.setFault( ss.str() );            
@@ -144,13 +144,13 @@ HwHandler::walk()
                 driver_.write( command );
 
                 stringstream ss;
-                ss << "HwHandler: wrote command: " << command.toString();
+                ss << "HwThread: wrote command: " << command.toString();
                 context_.tracer()->debug( ss.str() );
             }
             catch ( std::exception &e )
             {
                 std::stringstream ss;
-                ss << "HwHandler: Failed to write command to hardware: " << e.what();
+                ss << "HwThread: Failed to write command to hardware: " << e.what();
                 context_.tracer()->error( ss.str() );
 
                 // set local state to failure
@@ -159,7 +159,7 @@ HwHandler::walk()
             catch ( ... )
             {
                 std::stringstream ss;
-                ss << "HwHandler: Failed to write command to hardware due to unknown exception.";
+                ss << "HwThread: Failed to write command to hardware due to unknown exception.";
                 context_.tracer()->error( ss.str() );
 
                 // set local state to failure
@@ -185,7 +185,7 @@ HwHandler::walk()
 }
 
 void
-HwHandler::setCommand( const Command &command )
+HwThread::setCommand( const Command &command )
 {
     // if we know we can't write, don't try: inform remote component of problem
     std::string reason;
@@ -202,7 +202,7 @@ HwHandler::setCommand( const Command &command )
     commandStore_.set( command );
 
     stringstream ss;
-    ss << "HwHandler::setCommand( "<<command.toString()<<" )";
+    ss << "HwThread::setCommand( "<<command.toString()<<" )";
     context_.tracer()->debug( ss.str() );
 }
 

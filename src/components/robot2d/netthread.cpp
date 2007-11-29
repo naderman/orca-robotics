@@ -12,7 +12,7 @@
 #include <sstream>
 
 #include <orcaice/orcaice.h>
-#include "nethandler.h"
+#include "netthread.h"
 
 using namespace std;
 
@@ -47,10 +47,10 @@ convert( const orca::VelocityControl2dData& network, robot2d::Command& internal 
 
 //////////////////////////////////////////////////////////////////////
 
-NetHandler::NetHandler( HwHandler                      &hwHandler,
+NetThread::NetThread( HwThread                      &HwThread,
                         const orca::VehicleDescription &descr,
                         const orcaice::Context         &context )
-    : hwHandler_(hwHandler),
+    : HwThread_(HwThread),
       descr_(descr),
       context_(context)
 {
@@ -66,12 +66,12 @@ NetHandler::NetHandler( HwHandler                      &hwHandler,
     maxTurnrate_ = controlDescr->maxTurnrate;
 }
 
-NetHandler::~NetHandler()
+NetThread::~NetThread()
 {
 }
 
 void
-NetHandler::limit( Command &cmd )
+NetThread::limit( Command &cmd )
 {
     if ( cmd.vx > maxSpeed_ )
         cmd.vx = maxSpeed_;
@@ -91,46 +91,46 @@ NetHandler::limit( Command &cmd )
 
 // This is a direct callback from the VelocityControl2dImpl object.
 // It's executed in Ice thread.
-// Here we convert to our internal format pass it to HwHandler
+// Here we convert to our internal format pass it to HwThread
 void 
-NetHandler::handleData(const orca::VelocityControl2dData& command)
+NetThread::handleData(const orca::VelocityControl2dData& command)
 {
     stringstream ss;
-    ss << "NetHandler::handleData: " << orcaice::toString(command);
+    ss << "NetThread::handleData: " << orcaice::toString(command);
     context_.tracer()->debug( ss.str() );
 
     try {
         robot2d::Command internalCommand;
         convert( command, internalCommand );
         limit( internalCommand );
-        hwHandler_.setCommand( internalCommand );
+        HwThread_.setCommand( internalCommand );
     }
     catch ( Ice::Exception &e )
     {
         stringstream ss;
-        ss<<"NetHandler::handleData() Caught unexpected exception: " << e << endl;
+        ss<<"NetThread::handleData() Caught unexpected exception: " << e << endl;
         context_.tracer()->error( ss.str() );
         throw;
     }
     catch ( std::exception &e )
     {
         stringstream ss;
-        ss<<"NetHandler::handleData() Caught unexpected exception: " << e.what() << endl;
+        ss<<"NetThread::handleData() Caught unexpected exception: " << e.what() << endl;
         context_.tracer()->error( ss.str() );
         throw;
     }
     catch ( ... )
     {
-        context_.tracer()->error( "NetHandler::handleData(): Caught unexpected unknown exception." );
+        context_.tracer()->error( "NetThread::handleData(): Caught unexpected unknown exception." );
         throw;
     }
 }
 
 void
-NetHandler::walk()
+NetThread::walk()
 {
     // multi-try function
-    context_.tracer()->debug( "NetHandler: activating..." );
+    context_.tracer()->debug( "NetThread: activating..." );
     orcaice::activate( context_, this );
     
     std::string prefix = context_.tag() + ".Config.";
@@ -155,17 +155,17 @@ NetHandler::walk()
 
     const int odometryReadTimeout = 500; // [ms]
 
-    context_.tracer()->debug( "NetHandler: interface is set up." );
+    context_.tracer()->debug( "NetThread: interface is set up." );
 
     //
     // Main loop
     //
     while( !isStopping() )
     {
-        // context_.tracer()->debug( "NetHandler: loop spinning ",9);
+        // context_.tracer()->debug( "NetThread: loop spinning ",9);
 
         // block on the most frequent data source: odometry
-        if ( hwHandler_.getData( data, odometryReadTimeout ) ) {
+        if ( HwThread_.getData( data, odometryReadTimeout ) ) {
             context_.tracer()->debug( "Net loop timed out", 5);
             continue;
         }

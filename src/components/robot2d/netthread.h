@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_ROBOT2D_NETWORK_HANDLER_H
-#define ORCA2_ROBOT2D_NETWORK_HANDLER_H
+#ifndef ORCA2_ROBOT2D_NETWORK_Thread_H
+#define ORCA2_ROBOT2D_NETWORK_Thread_H
 
 #include <hydroutil/safethread.h>
 #include <orcaice/context.h>
@@ -17,7 +17,7 @@
 
 #include <orcaifaceimpl/odometry2dImpl.h>
 #include <orcaifaceimpl/velocitycontrol2dImpl.h>
-#include "hwhandler.h"
+#include "hwthread.h"
 #include "types.h"
 
 namespace robot2d
@@ -26,15 +26,15 @@ namespace robot2d
 //
 // Handles network interface
 //
-class NetHandler : public hydroutil::SafeThread,
-                   public hydroutil::NotifyHandler<orca::VelocityControl2dData>
+class NetThread : public hydroutil::SafeThread,
+                  public hydroutil::NotifyHandler<orca::VelocityControl2dData>
 {
 public:
 
-    NetHandler( HwHandler                      &hwHandler,
+    NetThread( HwThread                      &HwThread,
                 const orca::VehicleDescription &descr,
                 const orcaice::Context         &context );
-    virtual ~NetHandler();
+    virtual ~NetThread();
 
     // from SafeThread
     virtual void walk();
@@ -50,7 +50,7 @@ private:
     orcaifaceimpl::Odometry2dImplPtr           odometry2dI_;
     orcaifaceimpl::VelocityControl2dImplPtr    velocityControl2dI_;
 
-    HwHandler &hwHandler_;
+    HwThread &HwThread_;
 
     orca::VehicleDescription descr_;
 

@@ -1,5 +1,5 @@
-#ifndef ROBOT2D_HWHANDLER_H
-#define ROBOT2D_HWHANDLER_H
+#ifndef ROBOT2D_HwThread_H
+#define ROBOT2D_HwThread_H
 
 #include <hydroutil/safethread.h>
 #include <hydroutil/store.h>
@@ -15,12 +15,12 @@ namespace robot2d {
 //
 // @author Alex Brooks
 //
-class HwHandler : public hydroutil::SafeThread
+class HwThread : public hydroutil::SafeThread
 {
 
 public: 
 
-    HwHandler( HwDriver               &hwDriver,
+    HwThread( HwDriver               &hwDriver,
                bool                    isMotionEnabled,
                const orcaice::Context &context );
 
