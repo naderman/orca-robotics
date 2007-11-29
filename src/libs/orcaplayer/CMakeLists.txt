@@ -1,17 +1,17 @@
+IF ( NOT OS_WIN )
+
 # Look for Player
 INCLUDE (${ORCA_CMAKE_DIR}/FindPlayer2.cmake)
 
-IF ( NOT OS_WIN AND PLAYER_FOUND )
+IF ( PLAYER_FOUND )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UsePlayer.cmake )
     
     GLOBAL_ADD_LIBRARY( OrcaPlayer SHARED convertutils.cpp )
-
     INSTALL_FILES( /include/orcaplayer .*\\.h$ )
 
-ELSE  ( NOT OS_WIN AND PLAYER_FOUND )
-
-    MESSAGE( STATUS "Not Planning to Build Library: libOrcaPlayer -- Player not found")
-
-ENDIF ( NOT OS_WIN AND PLAYER_FOUND )
+ELSE ( PLAYER_FOUND )
+    GLOBAL_NOT_ADD_LIBRARY( OrcaPlayer "Player not found" )
+ENDIF ( PLAYER_FOUND )
+ENDIF ( NOT OS_WIN )

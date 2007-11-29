@@ -1,3 +1,5 @@
+IF ( OS_LINUX )
+
 OPTION( BUILD_PINGSERVER "Try to build PingServer component" ON )
 
 IF ( BUILD_PINGSERVER )
@@ -5,9 +7,7 @@ IF ( BUILD_PINGSERVER )
     # Look for liboping -- library for 'ping'ing from C
     INCLUDE ( ${HYDRO_HOME}/cmake/FindOPing.cmake )
 
-    IF ( NOT LIBOPING_FOUND )
-        MESSAGE( STATUS "Not Planning to Build Component: pingserver -- liboping not found")
-    ELSE ( NOT LIBOPING_FOUND )
+    IF ( LIBOPING_FOUND )
     
         INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
     
@@ -19,6 +19,9 @@ IF ( BUILD_PINGSERVER )
     
         GENERATE_CONFIG_FILE( pingserver.def )
     
-    ENDIF ( NOT LIBOPING_FOUND )
+    ELSE ( LIBOPING_FOUND )
+        GLOBAL_NOT_ADD_EXECUTABLE( pingserver "liboping not found" )
+    ENDIF ( LIBOPING_FOUND )
 
 ENDIF ( BUILD_PINGSERVER )
+ENDIF ( OS_LINUX )
