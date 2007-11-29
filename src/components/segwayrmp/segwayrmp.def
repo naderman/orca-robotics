@@ -58,8 +58,8 @@ Config.SegwayRmp.AllowMoveInTractorMode.Default=1
 Config.SegwayRmp.AllowMoveInBalanceMode.Default=1
 
 # Tell the driver how to find the peak device that we are using
-Config.SegwayRmpCan.PortName.Comment=The peak CAN device we are going to use
-Config.SegwayRmpCan.PortName.Default=/dev/pcan40
+Config.Acfr.CanDevice.Comment=The peak CAN device we are going to use
+Config.Acfr.CanDevice.Default=/dev/pcan40
 
 # PlayerClient driver only
 Config.PlayerClient.Host.Default=localhost

@@ -30,25 +30,22 @@
 
 @par Requires
 
-- none
+- @ref orca_interface_estop
 
 @image html segwayrmp.png
 
 @par Drivers
 
-- @b segwayrmpusb @ref orca_segwayrmp_segwayrmpusb
-- @b segwayrmpcan @ref orca_segwayrmp_segwayrmpcan
-- @b playerclient @ref orca_segwayrmp_playerclient
-- @b fake Useful for testing or if you don't have hardware or a simulator.
+This component dynamically loads an implementation of a Hydro hardware interface hydrointerfaces::SegwayRmp. You can also load your own implementation as long as the shared library is in the path. See Hydro documentation for the list of available drivers.
+
+- @ref hydro_drivers_segwayrmp
 
 @par Configuration
 
-General Parameters:
-
-  - @c SegwayRmp.Config.Driver (string)
-    - Type of hardware driver
-    - Valid values: { 'segwayrmpcan', 'segwayrmpusb', 'playerclient', 'fake' }
-    - Default: 'segwayrmpcan'
+  - @c SegwayRmp.Config.DriverLib (string)
+    - Name of shared library containing the hardware driver
+    - Valid options are { 'libHydroSegwayRmpAcfrCan.so', 'libHydroSegwayRmpAcfrUsb.so', 'libHydroSegwayRmpPlayerClient.so', 'libHydroSegwayRmpFake.so' }
+    - Default: 'libHydroSegwayRmpAcfrCan.so'
     
   - @c SegwayRmp.Config.EnableMotion (bool)
     - Allow motion commands or not. Convinient for testing when you want to make sure that
@@ -85,7 +82,7 @@ General Parameters:
         - t>0 : send approximately every t seconds
     - Default: 60.0
 
-Parameters describing vehicle (see orca::VehicleDescription for details)
+Parameters describing the vehicle (see orca::VehicleDescription for details)
 
   - @c SegwayRmp.Config.VehicleDescription.Control.Type (string)
     - valid values: 'VelocityDifferential'
@@ -128,218 +125,13 @@ Parameters describing vehicle (see orca::VehicleDescription for details)
     - Format: x y z roll pitch yaw (space separated)
     - Default: 0.0 0.0 0.0  0.0 0.0 0.0
 
+@see Individual drivers may have additional configuration parameters which are specified as SegwayRmp.Config.XXX. See driver documentation.
+
 An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
-
-@par Dependancies
-
-None for the component. See driver sections below for individual driver dependencies.
-
-@section orca_segwayrmp_segwayrmpusb Segway RMP USB driver
-
-Note: This driver has been tested on the balancing platform RMP200 and the caster version RMP50.
-
-The @c segwayrmp driver provides control of a Segway RMP (Robotic Mobility Platform), which is an robotic version of the Segway HT (Human Transport), a kind of two-wheeled, self-balancing electric scooter. Because of its power, weight, height, and dynamics, the Segway RMP is a potentially dangerous machine.  Be @b very careful with it.
-
-For safety, this Segway will stop (zero-out motion commands) if no new command has been received from the PC in the previous 400ms or so. This is done in Segway firmware and this component does not duplicate this functionality. Thus, if you want to continue moving at a constant velocity, you must continuously send your desired velocities to the Platform2d interface (@ref orca_component_teleop component does exactly that).
-
-When controlled through the USB port, the Segway implements an extra level of safety precaution which works as follows. On startup, the Segway black box checks for the presence of a host PC. If the host PC is absent, the Segway disables itself. All of this means that the following startup order must be followed:
--# Host PC is powered up and the Segway USB cable is plugged in (give it enough time to activate USB)
--# SegwayRMP is powered up.
-
-If for some reason you did it in the wrong order (e.g. the cable was unplugged), just power cycle the Segway.
-
-The implementation of @ref orca_interface_odometry3d interface does not integrate robot's motion in the vertical direction. The altitude (z coordinate) of is always reported as 0.0. 
-
-@par Dependancies
-
-The USB version of RMP uses a chip from Future Technology Devices Int. (FTDI). Following the Windows  demo software from Segway we use a high-level closed-source library from FTDI to communicate with their chip. The Linux and Windows versions of the library have a (nearly) identical API. On linux the library is called libftd2xx.so and it uses the standard low-level libusb.so.
-
-Make sure libusb is installed. In Debian, the easiest is to install the developer package. It's likely that you already have the library and all this package will do is create a couple of symbolic links.
-@verbatim
-# apt-get install libusb-dev
-@endverbatim
-
-The Orca component has been tested with libftd2xx.so.0.4.13 and libusb-0.1.so.4 (these are the latest versions tested). Download the libftd2xx library from <a href="http://www.ftdichip.com/Drivers/D2XX.htm" target="_blank">www.ftdichip.com</a>. Untar and follow the installation instructions in README.dat file. Note an incorrect version number in several places and that the line to add to your @c fstab file depends on the distribution and kernel number. The following has been tested in Debian, kernels 2.6.12 and 2.6.15 and Kubuntu, kernel 2.6.20.
-@verbatim
-none            /proc/bus/usb   usbfs   defaults,devmode=0666   0       0
-@endverbatim
-
-Tips for troubleshooting: Use usbview (or look at /proc/bus/usb/devices) to check whether the Segway shows up when you plug in the USB. Use dmesg on the console to see whether the mounting is successful. 
-
-In addition, copy the header files provided with the distribution to a standard place, e.g.
-@verbatim
-# cp ftd2xx.h WinTypes.h /usr/local/include/.
-@endverbatim
-
-On some systems, an additional symbolic link needs to be created for shared libraries to load properly. You'll see an error message at runtime that contains "libftd2xx.so.0: cannot open shared object file".
-@verbatim
-# ln -s /usr/local/lib/libftd2xx.so.0.4.10 /usr/lib/libftd2xx.so.0
-@endverbatim
-
-As usual, make sure that both Linux and CMake detect the changes
-@verbatim
-# ldconfig
-$ rm CMakeCache.txt
-$ cmake .
-@endverbatim
-
-You should see the following line in CMake output:
-@verbatim
-    USB Driver for Segway RMP - can be built
-@endverbatim
-
-@par Extra configuration. Used for USB and CAN
-
-- @c SegwayRmp.Config.SegwayRmp.GainSchedule (string)
-    - Choice of the gain schedule for the closed-loop controller in balanced mode
-    - Valid values: { "normal", "tall", "heavy" }
-    - Default: "normal"
-
-- @c SegwayRmp.Config.SegwayRmp.MaxVelocityScale (double)
-    - Scaling factor applied to forward velocity.
-    - Valid values: [0.0 .. 1.0]
-    - Default: 0.75
-
-- @c SegwayRmp.Config.SegwayRmp.MaxTurnrateScale (double)
-    - Scaling factor applied to yaw rate.
-    - Valid values: [0.0 .. 1.0]
-    - Default: 0.75
-
-- @c SegwayRmp.Config.SegwayRmp.MaxAccelerationScale (double)
-    - Scaling factor applied to forward velocity.
-    - Valid values: [0.0 .. 1.0]
-    - Default: 0.75
-
-- @c SegwayRmp.Config.SegwayRmp.MaxCurrentLimitScale (double)
-    - Scaling factor applied to forward velocity.
-    - Valid values: [0.0 .. 1.0]
-    - Default: 0.75
-
-- @c SegwayRmp.Config.ModelNum (string)
-   - The model of the RMP hardware
-   - Valid values:
-       - { 'RMP50', 'RMP100', 'RMP200', 'RMP400' }
-   - Default: 200
-
-- @c SegwayRmp.Config.RequireSpecificBuildId (bool)
-   - If true, the vehicle will not operate on all other build IDs (ie RMP firmware versions)
-   - Default: 0
-
-- @c SegwayRmp.Config.RequiredBuildId (int)
-   - The only RMP firmware version which the component will allow
-     (ignored if RequireSpecificBuildId is not set)
-   - Default: 0
-
-- @c SegwayRmp.Config.AllowMoveInTractorMode (bool)
-   - Allow the vehicle to move in tractor mode (this allows extra safety)
-   - Default: 1
-
-- @c SegwayRmp.Config.AllowMoveInBalanceMode (bool)
-   - Allow the vehicle to move in balance mode (this allows extra safety)
-   - Default: 1
-
-
-@section orca_segwayrmp_segwayrmpcan Segway RMP CAN
-
-This driver is written to interface with the PCMICA CAN card from
-peaksystems http://www.peak-system.com/. Please read the general description
-above for the USB driver as some of the information there is directly relevant.
-The drivers for the peak devices should be downloaded from the website above. Currently the code
-has been tested with driver version 6.0 on Debian / Ubuntu systems. Download the driver package
-*.tar.gz unzip and then follow the installation instructions in the installation sources. 
-
-@verbatim
-    peak-system-drivers*/Documentation/Installation-en.pdf
-@endverbatim 
-
-This should
-work for PCMCIA, USB, PCI cards etc, though only the PCMCIA version has been tested!
-
-@par Concise Debian Instructions
-
-The following should work on Debian, using pcan driver version 6.4 (as of 1-Aug-2007):
-
-@verbatim
-$ sudo apt-get install linux-headers linux-source
-$ cd /usr/src/
-$ sudo ln -s linux-headers-<version>-686 linux
-@endverbatim
-
-Then build the the peak drivers with 'make; sudo make install'.
-
-@par Ubuntu Instructions
-
-On at least one ubuntu installation it was necessary to make some additional changes
-in order to run the installs.<br>
-
-<ol>
-<li>
-On the system which had a split headers installation. ie under /usr/src/
-existed two headers directories linux-headers-.2.6*  and linux-headers-2.6*-386
-it was necessary to create the symbolic link /usr/src/linux to point at the
-linux-headers*-386 directory not at the linux-source directory as described in the installation
-notes. Again note that this is the headers*-386 directory not the the headers* dir 
-</li>
-@verbatim
-    cd /usr/src/; ln -s linux-headers-2.6.17.11-386 linux;
-@endverbatim
-
-<li>After doing the peak driver 'make install' step. Edit the default shell used in the 
-"pcan_make_devices" script from #!/bin/sh to #!/bin/bash. This file exists under /usr/local/bin
-</li>
-
-</ol>
-
-Now back to compiling Orca SRC. As usual, make sure that both Linux and CMake detect the changes
-@verbatim
-# ldconfig
-$ rm CMakeCache.txt
-$ cmake .
-@endverbatim
-
-You should see the following line in CMake output:
-@verbatim
-    CAN Driver for Segway RMP - can be built
-@endverbatim
-
-@par Extra configuration. Used for the peak CAN
-
-- @c SegwayRmp.Config.SegwayRmpCan.CardPort (string)
-    - Select the linux file that is the end point for communication with the peak can device
-    - Valid values: { "/dev/pcan*"  }
-    - Default: "/dev/pcan40"   &nbsp;&nbsp;The default is the first PCMCIA port
-
-
-
-@section orca_segwayrmp_playerclient Player Client driver
-
-This driver wraps up a Player client. It requires a running Player server. The driver gets data from that server and converts it into Orca format.More information on Player/Stage.
-
-@par Dependancies
-
-Requires that Player/Stage v.>=2.0 are installed and running. As Player itself, this driver is Linux only. See our notes on installing Player in platform-dependent installation page, e.g. @ref orca_doc_installdebian_player.
-
-@par Extra configuration
-
-- @c SegwayRmp.Config.PlayerClient.Host (string)
-    - The host that Player (or Stage) is running on
-    - Default: "localhost"
-- @c SegwayRmp.Config.PlayerClient.Port (int)
-    - The port that PLayer (or Stage) is running on
-    - Constraints: >0
-    - Default: 6665
-    
-Naturally, both real hardware and Stage simulator are supported. Support is limited to what Player supports which is currently the original RMP with CAN I/O using Peak systems driver and USB from FTDI
-
-@section internal Internal Structure
-
-@image html segwayrmp_whitebox.png
-
-The implementation of Platform2d interface can raise orca::DataNotExistException but does NOT raise orca::HardwareFailedException.
 
 @par Authors
 
-Orca component by Alex Makarenko & Alex Brooks.
+Alex Makarenko & Alex Brooks.
 
 */
 

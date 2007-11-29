@@ -33,7 +33,7 @@
 
 @par Drivers
 
-Laser2d dynamically loads an implementation of a Hydro hardware interface hydrointerfaces::LaserScanner2d. You can also load your own implementation as long as the shared library is in the path. See Hydro documentation for the list of available drivers.
+This component dynamically loads an implementation of a Hydro hardware interface hydrointerfaces::LaserScanner2d. You can also load your own implementation as long as the shared library is in the path. See Hydro documentation for the list of available drivers.
 
 - @ref hydro_drivers_laserscanner2d
 
@@ -44,7 +44,7 @@ This component encapsulates a SICK Laser Range-Finder (see @ref how_sick_works )
 @par Configuration
 
 - @c Laser2d.Config.DriverLib (string)
-    - Name of shared library containing the laser driver
+    - Name of shared library containing the hardware driver
     - Valid values are at least: { 'libHydroLaserScanner2dSickAcfr.so', 'libHydroLaserScanner2dSickCarmen.so', 'libHydroLaserScanner2dPlayerClient.so', 'libHydroLaserScanner2dFake.so' }
     - Default: "libHydroLaserScanner2dSickCarmen.so"
 
@@ -85,7 +85,7 @@ Geometry
     - Format: length width height (space separated)
     - Default: 0.155 0.155 0.185 (SICK LMS dimensions)
 
-@see Individual drivers may have additional configuration option. See driver documentation.
+@see Individual drivers may have additional configuration parameters which are specified as Laser2d.Config.XXX. See driver documentation.
 
 An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
 
