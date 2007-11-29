@@ -30,13 +30,15 @@ IceUtil::Time toIceTime( const orca::Time & t );
 orca::Time toOrcaTime( const IceUtil::Time & t );
 
 //! Converts from number of seconds to orca::Time.
-//! Time can be negative.
-orca::Time toOrcaTime( double seconds );
-//! Converts an orca::Time to a double in seconds.
 //! Time can be negative, in which case both seconds and
-//! microseconds are returned as negatives, 
+//! microseconds are returned as negatives,
 //! e.g. -10.1s will translate to -10s:-100000us,
 //! not -11s:900000us.
+orca::Time toOrcaTime( double seconds );
+//! Converts an orca::Time to a double in seconds.
+//! Time can be negative, but remember that seconds and
+//! microseconds are added to together.
+//! e.g. -10s:-100000us and -11s:900000us will both translate to -10.1s
 double timeAsDouble( const orca::Time &t );
 //! Adds the specified number of seconds to t
 void add( orca::Time &t, double seconds );
