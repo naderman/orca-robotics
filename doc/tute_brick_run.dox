@@ -189,7 +189,10 @@ orca: Brick: Application initialized
 [ 12/02/07 01:13:54.431 jamaica/brick:  debug: Running main loop ]
 @endverbatim
 
-In addition to the debug messages from the main loop we got a few more from the component initialization sequence. A bit more info is displayed on shutdown as well. Press Ctrl-C.
+In addition to the debug traces from the main loop we got a few more from the component initialization sequence. 
+Notice that the time stamps of the main-loop traces correspond to the 1Hz frequency of the main loop.
+
+A bit more info is displayed on shutdown as well. Press Ctrl-C.
 
 @verbatim
 orca: Brick: Communicator is destroyed. Stopping component
