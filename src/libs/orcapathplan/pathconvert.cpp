@@ -55,33 +55,33 @@ void setHeading( orca::PathPlanner2dData &pathData, double firstHeading)
     }
 }
 
-void 
-convert( const hydropathplan::Result  result,
-         orca::PathPlanner2dData     &output )
-{
-    switch(result)
-    {
-        case hydropathplan::PathOk: 
-            output.result = orca::PathOk;
-            break;
-        case hydropathplan::PathStartNotValid: 
-            output.result = orca::PathStartNotValid;
-            break;
-        case hydropathplan::PathDestinationNotValid: 
-            output.result = orca::PathDestinationNotValid;
-            break;
-        case hydropathplan::PathDestinationUnreachable: 
-            output.result = orca::PathDestinationUnreachable;
-            break;
-        case hydropathplan::OtherError:
-            output.result = orca::PathOtherError;
-            break;   
-        default:
-            output.result = orca::PathOtherError;
-            break;
-    }
+// void 
+// convert( const hydropathplan::Result  result,
+//          orca::PathPlanner2dData     &output )
+// {
+//     switch(result)
+//     {
+//         case hydropathplan::PathOk: 
+//             output.result = orca::PathOk;
+//             break;
+//         case hydropathplan::PathStartNotValid: 
+//             output.result = orca::PathStartNotValid;
+//             break;
+//         case hydropathplan::PathDestinationNotValid: 
+//             output.result = orca::PathDestinationNotValid;
+//             break;
+//         case hydropathplan::PathDestinationUnreachable: 
+//             output.result = orca::PathDestinationUnreachable;
+//             break;
+//         case hydropathplan::OtherError:
+//             output.result = orca::PathOtherError;
+//             break;   
+//         default:
+//             output.result = orca::PathOtherError;
+//             break;
+//     }
 
-}
+// }
     
 bool 
 isDoubleWaypoint( const orca::PathPlanner2dData &path, float worldX, float worldY )

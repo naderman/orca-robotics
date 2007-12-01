@@ -31,14 +31,15 @@ class SkeletonDriver : public AlgoDriver
 
 public: 
 
-    SkeletonDriver( const hydroogmap::OgMap &ogMap,
+    SkeletonDriver( const  hydroogmap::OgMap &ogMap,
                     double robotDiameterMetres,
                     double traversabilityThreshhold,
                     bool   doPathOptimization,
                     bool   jiggleWaypointsOntoClearCells,
                     bool   useSparseSkeleton,
-                    const hydropathplan::CostEvaluator &costEvaluator,
-                    const orcaice::Context &context);
+                    double sparseSkelExtraNodeResolution,
+                    const  hydropathplan::CostEvaluator &costEvaluator,
+                    const  orcaice::Context &context);
     ~SkeletonDriver();
     
     virtual void computePath( const orca::PathPlanner2dTask& task,

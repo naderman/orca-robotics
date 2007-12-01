@@ -50,7 +50,7 @@ namespace {
             {
                 cell = hydropathplan::surroundCell( cell, (int)(hydroutil::randNum(0,8)) );
 
-                if ( hydropathplan::isTraversable( ogMap, cell.x(), cell.y(), traversabilityThreshhold ) )
+                if ( hydropathplan::util::isTraversable( ogMap, cell.x(), cell.y(), traversabilityThreshhold ) )
                 {
                     double worldX, worldY;
                     ogMap.getWorldCoords( cell.x(), cell.y(), worldX, worldY );
@@ -93,9 +93,9 @@ GenericDriver::GenericDriver( hydropathplan::IPathPlanner2d  *pathPlanner,
     {
         grownOgMap_ = ogMap_;
         assert( ogMap_.metresPerCellX() == ogMap_.metresPerCellY() );
-        hydropathplan::growObstaclesOgMap( grownOgMap_,
-                                          traversabilityThreshhold_,
-                                          (int)(robotDiameterMetres_/grownOgMap_.metresPerCellX()) );
+        hydropathplan::util::growObstaclesOgMap( grownOgMap_,
+                                                 traversabilityThreshhold_,
+                                                 (int)(robotDiameterMetres_/grownOgMap_.metresPerCellX()) );
     }
 }
 
@@ -156,8 +156,9 @@ GenericDriver::computePath( const orca::PathPlanner2dTask& task,
                << goalWp->target.p.x << ","<<goalWp->target.p.y<<"): "
                << e.what()
                << endl;
-            
-            throw hydropathplan::Exception( ss.str(), e.type() );
+
+            // Warning: we lose the exception type information here...
+            throw hydropathplan::Exception( ss.str() );
         }
         stringstream ss;
         ss << "Computing path segment took " << watch.elapsedSeconds() << "s";

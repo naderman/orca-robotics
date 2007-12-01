@@ -108,6 +108,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     - big overhaul of SegwayRmpDriver (alex b)
     - moved hardware drivers to Hydro (alex m)
 
+- GoalPlanner
+    - Added functionality to re-plan when something goes awry (alex b)
+
 - Teleop
     - moved hardware drivers to Hydro (alex m)
 

@@ -29,9 +29,9 @@ namespace orcapathplan {
     };
     std::string toString( const WaypointParameter &wp );
 
-    //! Transfers the result code into the corresponding field of the Slice-defined data structure
-    void convert( hydropathplan::Result     result,
-                  orca::PathPlanner2dData &output );
+//     //! Transfers the result code into the corresponding field of the Slice-defined data structure
+//     void convert( hydropathplan::Result     result,
+//                   orca::PathPlanner2dData &output );
 
     //! Converts a path (cell vector in cell coordinate system)
     //! into the Slice-defined PathPlanner2dData (world coordinate system). 

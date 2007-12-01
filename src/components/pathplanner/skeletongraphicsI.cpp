@@ -11,6 +11,7 @@
 #include <iostream>
 #include <orcaice/orcaice.h>
 #include <qpicture.h>
+#include <hydropathplan/sparseskel/sparseskel.h>
 
 using namespace std;
 using namespace orca;
@@ -89,7 +90,7 @@ SkeletonGraphicsI::drawSkel( const hydroogmap::OgMap           &ogMap,
     }
 
     QColor color = Qt::darkCyan;
-    color.setAlpha( 128 );
+    // color.setAlpha( 128 );
 
     p.setPen( color );
     p.setBrush( color );
@@ -115,9 +116,9 @@ SkeletonGraphicsI::drawSkel( const hydroogmap::OgMap           &ogMap,
 }
 
 void 
-SkeletonGraphicsI::drawSparseSkel( const hydroogmap::OgMap           &ogMap,
-                                   const hydropathplan::SparseSkel   &skel,
-                                   QPainter                         &p )
+SkeletonGraphicsI::drawSparseSkel( const hydroogmap::OgMap                     &ogMap,
+                                   const hydropathplan::sparseskel::SparseSkel &skel,
+                                   QPainter                                    &p )
 {
     bool print = false;
 
@@ -125,18 +126,18 @@ SkeletonGraphicsI::drawSparseSkel( const hydroogmap::OgMap           &ogMap,
         cout<<"TRACE(skeletongraphicsI.cpp): Skeleton details:" << endl;
 
     QColor color = Qt::red;
-    color.setAlpha( 128 );
+    // color.setAlpha( 128 );
 
     p.setPen( color );
     p.setBrush( color );
-    const double circleSize = 0.3;     // in m, should be constant pixel size?
+    const double circleSize = 0.2;     // in m, should be constant pixel size?
     
     for ( unsigned int i=0; i < skel.contiguousSkels().size(); i++ )
     {
-        const std::vector<hydropathplan::SparseSkelNode*> &nodes = skel.contiguousSkels()[i]->nodes();
+        const std::vector<hydropathplan::sparseskel::SparseSkelNode*> &nodes = skel.contiguousSkels()[i]->nodes();
         for ( unsigned int j=0; j < nodes.size(); j++ )
         {
-            const hydropathplan::SparseSkelNode *node = nodes[j];
+            const hydropathplan::sparseskel::SparseSkelNode *node = nodes[j];
             double nodeX, nodeY;
 
             // draw node
@@ -150,7 +151,7 @@ SkeletonGraphicsI::drawSparseSkel( const hydroogmap::OgMap           &ogMap,
             // draw arcs
             for ( unsigned int k=0; k < node->arcs.size(); k++ )
             {
-                const hydropathplan::SparseSkelArc *arc = node->arcs[k];
+                const hydropathplan::sparseskel::SparseSkelArc *arc = node->arcs[k];
                 double toX, toY;
                 ogMap.getWorldCoords( arc->toNode->pos.x(), arc->toNode->pos.y(), toX, toY );
                 p.drawLine( QLineF( nodeX, nodeY, toX, toY ) );
@@ -163,9 +164,9 @@ SkeletonGraphicsI::drawSparseSkel( const hydroogmap::OgMap           &ogMap,
 }
 
 void 
-SkeletonGraphicsI::localSetSkel( const hydroogmap::OgMap           &ogMap,
-                                 const hydropathplan::Cell2DVector *skel,
-                                 const hydropathplan::SparseSkel   *sparseSkel )
+SkeletonGraphicsI::localSetSkel( const hydroogmap::OgMap                     &ogMap,
+                                 const hydropathplan::Cell2DVector           *skel,
+                                 const hydropathplan::sparseskel::SparseSkel *sparseSkel )
 {
     //
     // Set up the orca object
@@ -176,10 +177,10 @@ SkeletonGraphicsI::localSetSkel( const hydroogmap::OgMap           &ogMap,
     QPainter p;
     p.begin( &qpic );
     {
-        if ( skel != NULL )
-            drawSkel( ogMap, *skel, p );
         if ( sparseSkel != NULL )
             drawSparseSkel( ogMap, *sparseSkel, p );
+        if ( skel != NULL )
+            drawSkel( ogMap, *skel, p );
     }
     p.end();
 
@@ -206,7 +207,11 @@ SkeletonGraphicsI::localSetSkel( const hydroogmap::OgMap           &ogMap,
         // this is expected (our co-located IceStorm is obviously going down).
         context_.tracer()->warning( "Failed push to IceStorm." );
     }
-
+    catch ( Ice::Exception &e )
+    {
+        cout << "ERROR(skeletongraphicsI.cpp): Caught exception while setting QGraphics object: " << e << endl;
+        throw;
+    }
 }
 
 }

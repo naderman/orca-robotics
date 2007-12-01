@@ -33,6 +33,7 @@ The goalplanner plans a path from the current position of a robot to a global wo
 - @ref orca_interface_localise2d [GoalPlanner.Requires.Localise2d]
 - @ref orca_interface_pathfollower2d [GoalPlanner.Requires.PathFollower2d]
 - @ref orca_interface_pathplanner2d [GoalPlanner.Requires.PathPlanner2d]
+- @ref orca_interface_ogmap [GoalPlanner.Requires.OgMap]
 
 @image html goalplanner.png
 
@@ -65,6 +66,10 @@ The following happens in sequencential order in the mainloop:
 - @c GoalPlanner.Config.PathPlanTimeout (double) [s]
     - Flag an error if it takes longer than this many seconds for the path planner to return a result.
     - Default: 10.0
+
+- @c GoalPlanner.Config.CheckForStaleLocaliseData (bool)
+    - Flag an error if the localiseData we're receiving is old compared to the system clock.
+    - Default: 0
 
 @par Authors
 Tobias Kaupp, Alex Brooks

@@ -152,7 +152,7 @@ Laser2Og::process( const hydronavutil::Pose &sensorPose, const orca::RangeScanne
             currentFeature.y=currentCell.y();
 
             // cell index
-            int currentCellIndex = hydropathplan::sub2ind( currentCell, mapSizeX_, mapSizeY_ );
+            int currentCellIndex = hydropathplan::latombeutil::sub2ind( currentCell, mapSizeX_, mapSizeY_ );
             buffer.insert( currentCellIndex,
                            currentFeature,
 //                           ogfusion::OgBuffer::PolicyAddLikelihood );

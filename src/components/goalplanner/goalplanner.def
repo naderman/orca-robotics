@@ -14,8 +14,12 @@ Requires.PathFollower2d.DefaultProxy=pathfollower2d@local/localnav
 Requires.PathPlanner2d.Type=Pathplanner2d
 Requires.PathPlanner2d.DefaultProxy=pathplanner2d@local/pathplanner
 
+Requires.OgMap.Type=OgMap
+Requires.OgMap.DefaultProxy=ogmap@local/ogmaploader
+
 # Config Parameters
 Config.PathPlanTimeout.Default=10.0
 Config.VelocityToFirstWaypoint.Default=1.0
+Config.CheckForStaleLocaliseData.Default=1
 
 

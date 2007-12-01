@@ -45,19 +45,19 @@ public:
                              const Ice::Current&);
 
     // Local calls:
-    // Leave eith skell NULL and it won't be drawn.
-    void localSetSkel( const hydroogmap::OgMap           &ogMap,
-                       const hydropathplan::Cell2DVector *skel=NULL,
-                       const hydropathplan::SparseSkel   *sparseSkel=NULL );
+    // Leave either skell NULL and it won't be drawn.
+    void localSetSkel( const hydroogmap::OgMap                     &ogMap,
+                       const hydropathplan::Cell2DVector           *skel=NULL,
+                       const hydropathplan::sparseskel::SparseSkel *sparseSkel=NULL );
 
 private:
 
     void drawSkel( const hydroogmap::OgMap           &ogMap,
                    const hydropathplan::Cell2DVector &skel,
-                   QPainter                         &p );
-    void drawSparseSkel( const hydroogmap::OgMap           &ogMap,
-                         const hydropathplan::SparseSkel   &skel,
-                         QPainter                         &p );
+                   QPainter                          &p );
+    void drawSparseSkel( const hydroogmap::OgMap                     &ogMap,
+                         const hydropathplan::sparseskel::SparseSkel &skel,
+                         QPainter                                    &p );
     
     hydroutil::Proxy<orca::QGraphics2dData> dataProxy_;
 

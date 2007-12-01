@@ -21,6 +21,7 @@
 #include <orca/drivebicycle.h>
 #include <orca/ogmap.h>
 #include <orca/gps.h>
+#include <orca/pathplanner2d.h>
 
 namespace orcaifaceimpl
 {
@@ -84,6 +85,13 @@ typedef StoringConsumerImpl<orca::GpsPrx,
                         orca::GpsConsumerPrx,
                         orca::GpsData>                     StoringGpsConsumerImpl;
 typedef IceUtil::Handle<StoringGpsConsumerImpl>            StoringGpsConsumerImplPtr;
+
+//! Typedef for a common interface type. There's also a corresponding Ptr.
+typedef StoringConsumerImpl<orca::PathPlanner2dPrx,
+                        orca::PathPlanner2dConsumer,
+                        orca::PathPlanner2dConsumerPrx,
+                        orca::PathPlanner2dData>           StoringPathPlanner2dConsumerImpl;
+typedef IceUtil::Handle<StoringPathPlanner2dConsumerImpl>  StoringPathPlanner2dConsumerImplPtr;
 
 } // namespace
 

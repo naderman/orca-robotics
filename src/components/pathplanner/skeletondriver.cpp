@@ -28,6 +28,7 @@ SkeletonDriver::SkeletonDriver( const hydroogmap::OgMap &ogMap,
                                 bool   doPathOptimization,
                                 bool   jiggleWaypointsOntoClearCells,
                                 bool   useSparseSkeleton,
+                                double sparseSkelExtraNodeResolution,
                                 const hydropathplan::CostEvaluator &costEvaluator,
                                 const Context &context)
     : pathPlanner_(NULL),
@@ -45,17 +46,17 @@ SkeletonDriver::SkeletonDriver( const hydroogmap::OgMap &ogMap,
         try {
             hydropathplan::SkeletonPathPlanner *skelPathPlanner = 
                 new hydropathplan::SkeletonPathPlanner( ogMap,
-                                                       robotDiameterMetres,
-                                                       traversabilityThreshhold,
-                                                       doPathOptimization,
-                                                       costEvaluator );
+                                                        robotDiameterMetres,
+                                                        traversabilityThreshhold,
+                                                        doPathOptimization,
+                                                        costEvaluator );
             pathPlanner_ = skelPathPlanner;
         }
         catch ( hydropathplan::Exception &e )
         {
             stringstream ss;
             ss << "Error trying to construct a skeletonpathplanner: " << e.what();
-            throw hydropathplan::Exception( ss.str(), e.type() );
+            throw hydropathplan::Exception( ss.str() );
         } 
 
     }
@@ -64,17 +65,19 @@ SkeletonDriver::SkeletonDriver( const hydroogmap::OgMap &ogMap,
         try {
             hydropathplan::SparseSkeletonPathPlanner *skelPathPlanner = 
                 new hydropathplan::SparseSkeletonPathPlanner( ogMap,
-                                                             robotDiameterMetres,
-                                                             traversabilityThreshhold,
-                                                             doPathOptimization,
-                                                             costEvaluator );
+                                                              robotDiameterMetres,
+                                                              traversabilityThreshhold,
+                                                              doPathOptimization,
+                                                              sparseSkelExtraNodeResolution,
+                                                              costEvaluator );
             pathPlanner_ = skelPathPlanner;
         }
         catch( hydropathplan::Exception &e )
         {
             stringstream ss;
             ss << "Error trying to construct a sparseskeletonpathplanner: " << e.what();
-            throw hydropathplan::Exception( ss.str(), e.type() );
+            // Warning: we lose the exception type information here.
+            throw hydropathplan::Exception( ss.str() );
         }  
         catch ( Ice::MemoryLimitException &e )
         {

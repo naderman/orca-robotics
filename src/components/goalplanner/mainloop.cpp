@@ -12,17 +12,16 @@
 #include <orcaobj/miscutils.h>
 #include <orcaobj/stringutils.h>
 #include <orcaobj/timeutils.h>
-
+#include <orcaogmap/orcaogmap.h>
 #include "pathfollower2dI.h"
 #include "localise2dconsumerI.h"
-#include "pathplanner2dconsumerI.h"
 
 #include "mainloop.h"
 
 
 using namespace std;
-using namespace orca;
-using namespace goalplanner;
+
+namespace goalplanner {
 
 namespace {
     const char *SUBSYSTEM = "mainloop";
@@ -51,8 +50,10 @@ namespace {
     // Computes waypoint to start from
     // This is for the pathplanner's purposes, not the pathfollower.
     // So we don't care too much about tolerances and speeds.
-    void computeFirstWaypointForPathPlanning( const hydronavutil::Pose &pose, Waypoint2d &wp )
+    orca::Waypoint2d computeFirstWaypointForPathPlanning( const hydronavutil::Pose &pose )
     {
+        orca::Waypoint2d wp;
+
         wp.target.p.x = pose.x();
         wp.target.p.y = pose.y();
         wp.target.o   = pose.theta();
@@ -62,8 +63,10 @@ namespace {
         wp.headingTolerance  = (Ice::Float)(M_PI/2.0);
         wp.timeTarget.seconds  = 0;
         wp.timeTarget.useconds = 0;
-        wp.maxApproachSpeed    = 2e+6;
-        wp.maxApproachTurnrate = (float)DEG2RAD(2e+6); 
+        wp.maxApproachSpeed    = 2000;
+        wp.maxApproachTurnrate = (float)DEG2RAD(2000); 
+
+        return wp;
     }
 
     hydronavutil::Pose mlPose( const orca::Localise2dData &localiseData )
@@ -75,7 +78,13 @@ namespace {
     bool localisationIsUncertain( const orca::Localise2dData &localiseData )
     {
         if ( localiseData.hypotheses.size() > 1 )
-            return false;
+            return true;
+        if ( localiseData.hypotheses.size() == 0 )
+        {
+            stringstream ss;
+            ss << "Badly formed localiseData: " << orcaice::toString( localiseData );
+            throw hydroutil::Exception( ERROR_INFO, ss.str() );
+        }
         
         const orca::Pose2dHypothesis &h = localiseData.hypotheses[0];
 
@@ -92,6 +101,15 @@ namespace {
     {
         return orcaice::timeDiffAsDouble( orcaice::getNow(), ts );
     }
+
+    double distance( const hydronavutil::Pose &pose, const orca::Waypoint2d &wp )
+    {
+        return hypotf( pose.y()-wp.target.p.y, pose.x()-wp.target.p.x );
+    }
+    double distance( const orca::Waypoint2d &wp1, const orca::Waypoint2d &wp2 )
+    {
+        return hypotf( wp1.target.p.y-wp2.target.p.y, wp1.target.p.x-wp2.target.p.x );
+    }
 }
 
 MainLoop::MainLoop( const orcaice::Context & context )
@@ -106,6 +124,7 @@ MainLoop::MainLoop( const orcaice::Context & context )
     std::string prefix = context_.tag()+".Config.";
     pathPlanTimeout_ = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"PathPlanTimeout", 10.0 );
     velocityToFirstWaypoint_ = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"VelocityToFirstWaypoint", 1.0 );
+    checkForStaleLocaliseData_ = orcaice::getPropertyAsIntWithDefault( prop, prefix+"CheckForStaleLocaliseData", 1 );
 }
 
 MainLoop::~MainLoop()
@@ -119,85 +138,51 @@ MainLoop::initNetwork()
     // REQUIRED INTERFACES: Localise2d, Pathfollower, Pathplanner
     //
 
-    while( !isStopping() )
-    {
-        context_.status()->initialising( SUBSYSTEM, "Connecting to Localise2d" );
-        try
-        {
-            orcaice::connectToInterfaceWithTag<orca::Localise2dPrx>( context_, localise2dPrx_, "Localise2d" );
-            break;
-        }
-        catch ( const Ice::Exception &e )
-        {
-            stringstream ss;
-            ss << "Localise2d: failed to connect to Localise2d: " << e << ". Will try again after 3 seconds.";
-            context_.tracer()->error( ss.str() );
-        }
-        catch ( const std::exception &e )
-        {
-            stringstream ss;
-            ss << "Localise2d: failed to connect to Localise2d: " << e.what() << ". Will try again after 3 seconds.";
-            context_.tracer()->error( ss.str() );
-        }
-        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
-    }
-    
-    while( !isStopping() )
-    {
-        context_.status()->initialising( SUBSYSTEM, "Connecting to PathFollower2d" );
-        try
-        {
-            orcaice::connectToInterfaceWithTag<orca::PathFollower2dPrx>( context_, localNavPrx_, "PathFollower2d" );
-            break;
-        }
-        catch ( const Ice::Exception &e )
-        {
-            stringstream ss;
-            ss << "failed to connect to remote pathfollower2d object: " << e << ". Will try again after 3 seconds.";
-            context_.tracer()->error( ss.str() );
-        }
-        catch ( const std::exception &e )
-        {
-            stringstream ss;
-            ss << "failed to connect to remote pathfollower2d object: " << e.what() << ". Will try again after 3 seconds.";
-            context_.tracer()->error( ss.str() );
-        }
-        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
-    }
-    
-    while( !isStopping() )
-    {
-        context_.status()->initialising( SUBSYSTEM, "Connecting to PathPlanner2d" );
-        try
-        {
-            orcaice::connectToInterfaceWithTag<orca::PathPlanner2dPrx>( context_, pathplanner2dPrx_, "PathPlanner2d" );
-            break;
-        }
-        catch ( const Ice::Exception &e )
-        {
-            stringstream ss;
-            ss << "failed to connect to remote pathplanner2d object: " << e << ".  Will try again after 3 seconds.";
-            context_.tracer()->error( ss.str() );
-        }
-        catch ( const std::exception &e )
-        {
-            stringstream ss;
-            ss << "failed to connect to remote pathplanner2d object: " << e.what() << ".  Will try again after 3 seconds.";
-            context_.tracer()->error( ss.str() );
-        }
-        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
-    }
-    
-    Ice::ObjectPtr pathConsumer = new PathPlanner2dConsumerI( computedPathProxy_ );
-    taskPrx_ = orcaice::createConsumerInterface<PathPlanner2dConsumerPrx>( context_, pathConsumer );
+    context_.status()->initialising( SUBSYSTEM, "Connecting to Localise2d" );
+    orcaice::connectToInterfaceWithTag( context_,
+                                        localise2dPrx_,
+                                        "Localise2d",
+                                        this );
 
+    context_.status()->initialising( SUBSYSTEM, "Connecting to PathFollower2d" );
+    orcaice::connectToInterfaceWithTag( context_,
+                                        localNavPrx_,
+                                        "PathFollower2d",
+                                        this );
+
+    context_.status()->initialising( SUBSYSTEM, "Subscribing for PathFollower2d updates" );
+    progressMonitor_ = new ProgressMonitor;
+    progressMonitorPtr_ = progressMonitor_;
+    progressMonitorPrx_ = orcaice::createConsumerInterface<orca::PathFollower2dConsumerPrx>( context_, progressMonitorPtr_ );
+    localNavPrx_->subscribe( progressMonitorPrx_ );
+
+    context_.status()->initialising( SUBSYSTEM, "Connecting to PathPlanner2d" );
+    orcaice::connectToInterfaceWithTag( context_,
+                                        pathplanner2dPrx_,
+                                        "PathPlanner2d",
+                                        this );
+
+    context_.status()->initialising( SUBSYSTEM, "Connecting to OgMap" );
+    orca::OgMapPrx ogMapPrx_;
+    orcaice::connectToInterfaceWithTag( context_,
+                                        ogMapPrx_,
+                                        "OgMap",
+                                        this );
+    orca::OgMapData orcaOgMap = ogMapPrx_->getData();
+    orcaogmap::convert( orcaOgMap, ogMap_ );
+
+    ogLosTracer_.reset( new hydroogmap::OgLosTracer( ogMap_ ) );
+
+    // Create consumer to receive planned paths from the path-planner
+    computedPathConsumer_ = new orcaifaceimpl::StoringPathPlanner2dConsumerImpl( context_ );
+    
     //
     // PROVIDED INTERFACES: pathfollower2d
     //
     
     // create the proxy/buffer for incoming path
-    incomingPathI_ = new PathFollower2dI( incomingPathProxy_,
-                                          activationProxy_,
+    incomingPathI_ = new PathFollower2dI( incomingPathStore_,
+                                          activationStore_,
                                           localNavPrx_ );
     
     Ice::ObjectPtr pathFollowerObj = incomingPathI_;
@@ -206,12 +191,13 @@ MainLoop::initNetwork()
     orcaice::createInterfaceWithTag( context_, pathFollowerObj, "PathFollower2d" );
 }
 
-void MainLoop::stopRobot()
+void
+MainLoop::stopRobot()
 {            
     try 
     {
         context_.tracer()->debug("Stopping robot");
-        PathFollower2dData dummyPath;
+        orca::PathFollower2dData dummyPath;
         bool activateNow = true;
         localNavPrx_->setData( dummyPath, activateNow );
     }
@@ -225,12 +211,12 @@ void MainLoop::stopRobot()
 }
 
 void
-MainLoop::adjustTimes( const hydronavutil::Pose &pose,
-                       orca::PathFollower2dData &incomingPath )
+MainLoop::addTimeToReachFirstWp( const hydronavutil::Pose &pose,
+                                 orca::PathFollower2dData &incomingPath )
 {  
     // compute time to reach 1st wp based on straight-line distance: timeDist
     assert( incomingPath.path.size()>0 );
-    Waypoint2d &firstWp = incomingPath.path[0];
+    orca::Waypoint2d &firstWp = incomingPath.path[0];
     double dX = pose.x()-firstWp.target.p.x;
     double dY = pose.y()-firstWp.target.p.y;
     double dist = sqrt( dX*dX + dY*dY );
@@ -248,24 +234,23 @@ MainLoop::adjustTimes( const hydronavutil::Pose &pose,
     // otherwise: add the offset to all waypoints in the path
     for (unsigned int i=0; i<incomingPath.path.size(); i++)
     {
-        Waypoint2d &wp = incomingPath.path[i];
+        orca::Waypoint2d &wp = incomingPath.path[i];
         wp.timeTarget = orcaice::toOrcaTime( orcaice::timeAsDouble(wp.timeTarget) + timeOffset );
     }
 }
 
-void 
-MainLoop::computeAndSendPath( const hydronavutil::Pose &pose, 
-                              const orca::PathFollower2dData &incomingPath )
-{   
+orca::PathPlanner2dData
+MainLoop::planPath( const hydronavutil::Pose &pose, 
+                    const orca::PathFollower2dData &coarsePath )
+{
     // put together a task for the pathplanner
     // add the position of the robot as the first waypoint in the path
-    Waypoint2d wp;
-    computeFirstWaypointForPathPlanning(pose, wp);
-    PathPlanner2dTask task;
-    task.timeStamp  = incomingPath.timeStamp;
-    task.coarsePath = incomingPath.path;
-    task.coarsePath.insert( task.coarsePath.begin(), 1, wp );
-    task.prx = taskPrx_;
+    orca::Waypoint2d firstWp = computeFirstWaypointForPathPlanning(pose);
+    orca::PathPlanner2dTask task;
+    task.timeStamp  = coarsePath.timeStamp;
+    task.coarsePath = coarsePath.path;
+    task.coarsePath.insert( task.coarsePath.begin(), 1, firstWp );
+    task.prx = computedPathConsumer_->consumerPrx();
 
     // send task to pathplanner
     stringstream ssSend;
@@ -275,12 +260,12 @@ MainLoop::computeAndSendPath( const hydronavutil::Pose &pose,
             
     // block until path is computed
     context_.tracer()->debug("MainLoop: Waiting for pathplanner's answer");
-    PathPlanner2dData computedPath;
+    orca::PathPlanner2dData computedPath;
     // (need a loop here so ctrlC works)
     int secWaited=0;
     while ( !isStopping() )
     {
-        int ret = computedPathProxy_.getNext( computedPath, 1000 );
+        int ret = computedPathConsumer_->store().getNext( computedPath, 1000 );
         if ( ret == 0 )
             break;
         else
@@ -296,34 +281,38 @@ MainLoop::computeAndSendPath( const hydronavutil::Pose &pose,
     }
             
     // check result
-    if ( computedPath.result!= PathOk )
+    if ( computedPath.result != orca::PathOk )
     {
         stringstream ss;
-        ss << "MainLoop: PathPlanner could not compute.  Gave result " << orcaice::toString( computedPath.result )<<": "<<computedPath.resultDescription;
+        ss << "MainLoop: PathPlanner could not compute.  Gave result " 
+           << orcaice::toString( computedPath.result )<<": "<<computedPath.resultDescription;
         const bool isTemporary = true;
         throw( GoalPlanException( ss.str(), isTemporary ) );
     }
 
     assert( computedPath.path.size() > 0 );
+    return computedPath;
+}
 
-    // send out result to localnav, assemble packet first
-    PathFollower2dData outgoingPath;
-    outgoingPath.timeStamp = computedPath.timeStamp;
-    outgoingPath.path = computedPath.path;
+orca::PathFollower2dData
+MainLoop::convertToPathFollowerData( const orca::PathPlanner2dData &pathPlan )
+{
+    orca::PathFollower2dData outgoingPath;
+    outgoingPath.timeStamp = pathPlan.timeStamp;
+    outgoingPath.path = pathPlan.path;
     // get rid of first waypoint, it's the robot's location which is not needed
     vector<orca::Waypoint2d>::iterator it = outgoingPath.path.begin();
     outgoingPath.path.erase(it);
-                
-    // Work out whether we're supposed to activate immediately
-    bool activation=0;
-    activationProxy_.get( activation );
-    stringstream ss; ss << "Activation is " << activation;
-    context_.tracer()->debug(ss.str());
 
-    // Send result to localNav
-    context_.tracer()->debug("MainLoop: Sending out the resulting path to localnav.");
+    return outgoingPath;
+}
+
+void
+MainLoop::sendPath( const orca::PathFollower2dData &pathToSend, bool activateImmediately )
+{
+    context_.tracer()->debug("MainLoop: Sending path to localnav.");
     try {
-        localNavPrx_->setData( outgoingPath, activation );
+        localNavPrx_->setData( pathToSend, activateImmediately );
     }
     catch ( Ice::Exception &e )
     {
@@ -335,7 +324,20 @@ MainLoop::computeAndSendPath( const hydronavutil::Pose &pose,
 }
 
 void 
-MainLoop::tryGetLocaliseData( Localise2dData &data )
+MainLoop::checkForStaleness( orca::Localise2dData &data )
+{
+    const double AGE_FOR_STALE = 3; // seconds
+    if ( ageOf( data.timeStamp ) > AGE_FOR_STALE )
+    {
+        stringstream ss;
+        ss << "MainLoop: LocaliseData is stale: age is " << ageOf( data.timeStamp ) << " sec";
+        bool isTemporary = true;
+        throw GoalPlanException( ss.str(), isTemporary );
+    }
+}
+
+void 
+MainLoop::tryGetLocaliseData( orca::Localise2dData &data )
 {
     const unsigned int maxNumTries = 20;
     unsigned int numTries=0;
@@ -361,23 +363,230 @@ MainLoop::tryGetLocaliseData( Localise2dData &data )
     }
 }
 
-void 
-MainLoop::checkForStaleness( Localise2dData &data )
+hydronavutil::Pose
+MainLoop::getPose( bool &isLocalisationUncertain )
 {
-    const double AGE_FOR_STALE = 3; // seconds
-    if ( ageOf( data.timeStamp ) > AGE_FOR_STALE )
+    // get robot pose and check what we got, may throw
+    orca::Localise2dData localiseData;
+    tryGetLocaliseData( localiseData );
+    if ( checkForStaleLocaliseData_ )
+        checkForStaleness( localiseData );
+
+    isLocalisationUncertain = localisationIsUncertain(localiseData);
+    return mlPose( localiseData );
+}
+
+bool
+MainLoop::needToReplan( const hydronavutil::Pose &currentPose, const orca::Waypoint2d &currentWp )
+{
+    bool lineOfSightToGoal = ogLosTracer_->isClearWorld( currentPose.x(),
+                                                         currentPose.y(),
+                                                         currentWp.target.p.x,
+                                                         currentWp.target.p.y );
+    return !lineOfSightToGoal;
+}
+
+void
+MainLoop::replan( const hydronavutil::Pose &currentPose, const orca::Waypoint2d &currentWp )
+{
+    //
+    // Plan to the current wp
+    //
+    orca::PathFollower2dData coarsePathToCurrentWp;
+    coarsePathToCurrentWp.timeStamp = orcaice::getNow();
+    coarsePathToCurrentWp.path.push_back( currentWp );
+    orca::PathPlanner2dData pathPlanToCurrentWp = planPath( currentPose, coarsePathToCurrentWp );
+    orca::PathFollower2dData pathToCurrentWp = convertToPathFollowerData( pathPlanToCurrentWp );
+
+    // Now we need to construct a new path: the path to the current WP, followed
+    // by the remainder fo the original path
+    
+    // TODO: maybe the PathFollower2d interface should have functions to modify the path?
+    //       Otherwise things like the 'activation time' will change now...
+    //       Also, for a big path there might be a lot of copying of the old path...
+    orca::PathFollower2dData newPath = pathToCurrentWp;
+
+    // Delete the last element of newPath: it's the current waypoint, which we'll get from the oldPath.
+    newPath.path.resize( newPath.path.size()-1 );
+    if ( newPath.path.size() == 0 )
+    {
+        // The path-planner reckons we can get directly to the currentWp.
+        // The path-planner probably knows best.
+        context_.tracer()->info( "MainLoop::replan(): not replanning, since the path-planner reckons it's not necessary." );
+        return;
+    }
+    
+    //
+    // Get the old path
+    //
+    orca::PathFollower2dData oldPath;
+    int currentWpIndex;
+    bool gotPath = progressMonitor_->getCurrentPath( oldPath, currentWpIndex );
+    if ( !gotPath )
+    {
+        bool isTemporary = false;
+        throw GoalPlanException( "MainLoop::replan(): made a new plan, but suddenly we're not following a path anymore!  It's unlikely but possible that something changed while we were re-planning...", isTemporary );
+    }
+    if ( oldPath.path[currentWpIndex] != currentWp )
     {
         stringstream ss;
-        ss << "MainLoop: LocaliseData is stale: age is " << ageOf( data.timeStamp ) << " sec";
-        context_.tracer()->warning( ss.str() );
-        context_.status()->warning( SUBSYSTEM, ss.str() );
+        ss << "MainLoop::replan(): oldPath.path[currentWpIndex] = " << orcaice::toString(oldPath.path[currentWpIndex]) << endl
+           << "    but currentWp =                                " << orcaice::toString(currentWp) << endl
+           << "  These should be the same!";
+        bool isTemporary = false;
+        throw GoalPlanException( ss.str(), isTemporary );
     }
+
+    // cout<<"TRACE(mainloop.cpp): old path:        " << orcaice::toVerboseString(oldPath) << endl;
+    // cout<<"TRACE(mainloop.cpp): currentWpIndex:  " << currentWpIndex << endl;
+    // cout<<"TRACE(mainloop.cpp): pathToCurrentWp: " << orcaice::toVerboseString(pathToCurrentWp) << endl;
+
+    //
+    // Shift all the times in the oldPath back because localNav is about to start a new path.
+    //
+    double secSinceActivation;
+    bool ok = localNavPrx_->getRelativeActivationTime( secSinceActivation );
+    if ( !ok )
+    {
+        throw GoalPlanException( "MainLoop::replan(): localNavPrx_->getRelativeActivationTime returned false!", false );
+    }
+    for ( uint i = currentWpIndex; i < oldPath.path.size(); i++ )
+    {
+        orca::Waypoint2d &wp = oldPath.path[i];
+        if ( orcaice::timeAsDouble(wp.timeTarget) > secSinceActivation )
+        {
+            wp.timeTarget = orcaice::toOrcaTime( orcaice::timeAsDouble(wp.timeTarget) - secSinceActivation );
+        }
+        else
+        {
+            // We're running late: aim to be there 'now'
+            wp.timeTarget = orcaice::toOrcaTime( 0 );
+        }
+    }
+
+    //
+    // work out timeTargets for the newPath
+    //
+
+    // Calc cumulative straight-line distance along newPath
+    assert( newPath.path.size() > 0 );
+    std::vector<double> cumDistances( newPath.path.size() );
+    cumDistances[0] = distance( currentPose, newPath.path[0] );
+    for ( uint i=1; i < newPath.path.size(); i++ )
+    {
+        cumDistances[i] = cumDistances[i-1] + distance( newPath.path[i-1], newPath.path[i] );
+    }
+    double totalDistance = cumDistances.back() + distance( newPath.path.back(), oldPath.path[currentWpIndex] );
+
+    // Total time to allot
+    double totalTime = orcaice::timeAsDouble( oldPath.path[currentWpIndex].timeTarget );
+    assert( totalTime >= 0.0 );
+
+    // Spread this time out in proportion to distance
+    for ( uint i=0; i < newPath.path.size(); i++ )
+    {
+        double time = (cumDistances[i]/totalDistance) * totalTime;
+        newPath.path[i].timeTarget = orcaice::toOrcaTime( time );
+    }
+    
+    //
+    // Build complete path
+    //
+    cout<<"TRACE(mainloop.cpp): TODO: use 'insert'" << endl;
+    // orca::Path2d::iterator remainderStart = oldPath.path.begin();
+    // remainderStart += currentWpIndex;
+    // newPath.path.insert( newPath.path.back(), remainderStart, oldPath.path.end() );
+    for ( uint i = currentWpIndex; i < oldPath.path.size(); i++ )
+    {
+        newPath.path.push_back( oldPath.path[i] );
+    }
+    
+    // cout<<"TRACE(mainloop.cpp): secSinceActivation: " << secSinceActivation << endl;
+    // cout<<"TRACE(mainloop.cpp): new path:        " << orcaice::toVerboseString(newPath) << endl;
+
+    //
+    // Finally, send it off.
+    //
+    sendPath( newPath, true );
+}
+
+bool
+MainLoop::waitForNewPath( orca::PathFollower2dData &newPathData )
+{
+    while ( !isStopping() )
+    {
+        try {
+
+            // Block briefly, waiting for a new path
+            int ret = incomingPathStore_.getNext( newPathData, 1000 );
+            if ( ret==0 )
+            {
+                // Got a new request.
+                return true;
+            }
+            else
+            {
+                //
+                // Don't have any new requests.  Check
+                // progress on the existing path if any.
+                //
+                orca::Waypoint2d currentWp;
+                bool havePath = progressMonitor_->getCurrentWp( currentWp );
+
+                // cout<<"TRACE(mainloop.cpp): havePath: " << havePath << endl;
+
+                if ( havePath )
+                {
+                    // get robot pose
+                    bool isLocalisationUncertain;
+                    hydronavutil::Pose pose = getPose(isLocalisationUncertain);
+
+                    if ( needToReplan( pose, currentWp ) )
+                    {
+                        if ( isLocalisationUncertain )
+                        {
+                            stringstream ss;
+                            ss << "MainLoop: need to replan, but localisation is too uncertain!";
+                            context_.tracer()->warning( ss.str() );
+                            context_.status()->warning( SUBSYSTEM, ss.str() );
+                            continue;
+                        }
+                        context_.tracer()->info( "MainLoop: current wp is not visible -- replanning." );
+                        replan( pose, currentWp );
+                    }
+                }
+
+                // Let the world know we're alive.
+                context_.status()->ok( SUBSYSTEM );
+            }
+        }
+        catch ( const Ice::Exception & e )
+        {
+            stringstream ss;
+            ss << "MainLoop::waitForNewPath: Caught exception: " << e;
+            context_.tracer()->error( ss.str() );
+            context_.status()->fault( SUBSYSTEM, ss.str() );
+        }
+        catch ( const std::exception & e )
+        {
+            stringstream ss;
+            ss << "MainLoop:waitForNewPath: Caught exception: " << e.what();
+            context_.tracer()->error( ss.str() );
+            context_.status()->fault( SUBSYSTEM, ss.str() );
+        }
+        catch ( ... )
+        {
+            context_.tracer()->error( "MainLoop::waitForNewPath: caught unknown unexpected exception.");
+            context_.status()->fault( SUBSYSTEM, "MainLoop::waitForNewPath: caught unknown unexpected exception.");
+        }
+    }
+    return false;
 }
 
 void 
 MainLoop::run()
 {
-    PathFollower2dData incomingPath;
+    orca::PathFollower2dData incomingPath;
     bool requestIsOutstanding = false;
 
     context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 3.0 );
@@ -392,28 +601,25 @@ MainLoop::run()
             // Otherwise, wait for a new request.
             if ( requestIsOutstanding )
             {
-                if ( !incomingPathProxy_.isEmpty() )
+                if ( !incomingPathStore_.isEmpty() )
                 {
                     // Overwrite the unserviced request with the new one.
-                    incomingPathProxy_.get( incomingPath );
+                    incomingPathStore_.get( incomingPath );
                 }
             }
             else
             {
                 context_.tracer()->info("Waiting for a goal path");
-                while( !isStopping() )
+                bool gotNewPath = waitForNewPath( incomingPath );
+                if ( gotNewPath )
                 {
-                    int ret = incomingPathProxy_.getNext( incomingPath, 1000 );
-                    if (ret==0)
-                    {
-                        requestIsOutstanding = true;
-                        break;
-                    }
-                    else
-                    {
-                        // Keep waiting, but let the world know we're alive
-                        context_.status()->ok( SUBSYSTEM );
-                    }
+                    requestIsOutstanding = true;
+                }
+                else
+                {
+                    // waitForNewPath will only exit without a new path if we're stopping.
+                    assert( isStopping() );
+                    break;
                 }
             }
 
@@ -430,30 +636,33 @@ MainLoop::run()
                 continue;
             }
 
-            // get robot pose and check what we got, may throw
-            orca::Localise2dData localiseData;
-            tryGetLocaliseData( localiseData );
-            checkForStaleness( localiseData );
+            // get robot pose
+            bool isLocalisationUncertain;
+            const hydronavutil::Pose pose = getPose(isLocalisationUncertain);
+            if ( isLocalisationUncertain )
+            {
+                stringstream ss;
+                ss << "MainLoop: Localisation is too uncertain.";
+                const bool isTemporary = true;
+                throw GoalPlanException( ss.str(), isTemporary );
+            }
             
             // Adjust timing: work out how long it takes to the first waypoint based on straight-line distance 
             // and configured velocityToFirstWaypoint_. Take the max of first wp time and the computed time.
-            const hydronavutil::Pose &pose = mlPose(localiseData);
-            adjustTimes( pose, incomingPath );
-            
-            computeAndSendPath( pose, incomingPath );
+            addTimeToReachFirstWp( pose, incomingPath );
 
-            // We've only serviced the request properly if we're certain of our position.
-            // If we're not certain, keep trying till we become certain.
-            if ( localisationIsUncertain(localiseData) )
-            {
-                context_.tracer()->info( "MainLoop: path was sent but localisation was uncertain...  We'll try again soon." );
-            }
-            else
-            {
-                context_.tracer()->info( "MainLoop: localisation was OK -- request no longer outstanding." );
-                requestIsOutstanding = false;
-            }
+            orca::PathPlanner2dData  plannedPath = planPath( pose, incomingPath );
+            orca::PathFollower2dData pathToSend = convertToPathFollowerData( plannedPath );
 
+            // Work out whether we're supposed to activate immediately
+            bool activateImmediately;
+            activationStore_.get( activateImmediately );
+            stringstream ss; ss << "MainLoop: activateImmediately is " << activateImmediately;
+            context_.tracer()->debug(ss.str());
+
+            // Send it off!
+            sendPath( pathToSend, activateImmediately );
+            requestIsOutstanding = false;
             context_.status()->ok( SUBSYSTEM );
 
         } // try
@@ -502,10 +711,10 @@ MainLoop::run()
             
     } // end of big while loop
     
-    cout << "TRACE(mainloop.cpp): End of run() now..." << endl;
+    cout << "TRACE(mainloop.cpp): End of loop." << endl;
     
     // wait for the component to realize that we are quitting and tell us to stop.
     waitForStop();
 }
 
-
+}

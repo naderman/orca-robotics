@@ -52,9 +52,9 @@ Simulator::Simulator( const orcaice::Context &context,
     setupMap();
     grownOgMap_ = ogMap_;
 
-    hydropathplan::growObstaclesOgMap( grownOgMap_,
-                                       0.5,
-                                       (int)(ROBOT_RADIUS/CELL_SIZE) );
+    hydropathplan::util::growObstaclesOgMap( grownOgMap_,
+                                             0.5,
+                                             (int)(ROBOT_RADIUS/CELL_SIZE) );
 
     // setup scan
     scan_->timeStamp.seconds  = 0;

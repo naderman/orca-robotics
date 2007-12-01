@@ -60,8 +60,6 @@ AlgoHandler::AlgoHandler( const orcaice::Context & context )
       pathPlannerTaskProxy_(0),
       context_(context)
 {
-    initNetwork();
-    initDriver();
 }
 
 AlgoHandler::~AlgoHandler()
@@ -223,6 +221,7 @@ AlgoHandler::initDriver()
 
         double distanceThreshold = orcaice::getPropertyAsDoubleWithDefault( context_.properties(), prefix+"Skeleton.Cost.DistanceThreshold", 0.3 );
         double costMultiplier = orcaice::getPropertyAsDoubleWithDefault( context_.properties(), prefix+"Skeleton.Cost.CostMultiplier", 10 );
+        double sparseSkelExtraNodeResolution = orcaice::getPropertyAsDoubleWithDefault( context_.properties(), prefix+"Skeleton.SparseSkelExtraNodeResolution", 5 );
 
         costEvaluator_ = new DistBasedCostEvaluator( distanceThreshold, costMultiplier );
 
@@ -233,6 +232,7 @@ AlgoHandler::initDriver()
                                           doPathOptimization,
                                           jiggleWaypointsOntoClearCells,
                                           useSparseSkeleton,
+                                          sparseSkelExtraNodeResolution,
                                           *costEvaluator_,
                                           context_ );
         }
@@ -262,6 +262,9 @@ AlgoHandler::initDriver()
 void 
 AlgoHandler::run()
 {
+    initNetwork();
+    initDriver();
+
     assert( driver_ );
     assert( pathPlannerTaskProxy_ );
 
@@ -307,30 +310,37 @@ AlgoHandler::run()
                 pathData.result = orca::PathOk;
                 pathData.resultDescription = "All good";
             }
+            catch ( hydropathplan::PathStartNotValidException &e )
+            {
+                std::stringstream ss;
+                ss << "Couldn't compute path: " << orcaice::toVerboseString(task) << endl << "Problem was: " << e.what();
+                context_.tracer()->error( ss.str() );
+                pathData.resultDescription = ss.str();
+                pathData.result = orca::PathStartNotValid;
+            }
+            catch ( hydropathplan::PathDestinationNotValidException &e )
+            {
+                std::stringstream ss;
+                ss << "Couldn't compute path: " << orcaice::toVerboseString(task) << endl << "Problem was: " << e.what();
+                context_.tracer()->error( ss.str() );
+                pathData.resultDescription = ss.str();
+                pathData.result = orca::PathDestinationNotValid;
+            }
+            catch ( hydropathplan::PathDestinationUnreachableException &e )
+            {
+                std::stringstream ss;
+                ss << "Couldn't compute path: " << orcaice::toVerboseString(task) << endl << "Problem was: " << e.what();
+                context_.tracer()->error( ss.str() );
+                pathData.resultDescription = ss.str();
+                pathData.result = orca::PathDestinationUnreachable;
+            }
             catch ( hydropathplan::Exception &e )
             {
                 std::stringstream ss;
                 ss << "Couldn't compute path: " << orcaice::toVerboseString(task) << endl << "Problem was: " << e.what();
                 context_.tracer()->error( ss.str() );
                 pathData.resultDescription = ss.str();
-                
-                switch( e.type() )
-                {
-                    case hydropathplan::PathStartNotValid:             
-                        pathData.result = orca::PathStartNotValid;
-                        break;
-                    case hydropathplan::PathDestinationNotValid:       
-                        pathData.result = orca::PathDestinationNotValid;
-                        break;
-                    case hydropathplan::PathDestinationUnreachable:    
-                        pathData.result = orca::PathDestinationUnreachable;
-                        break;
-                    case hydropathplan::OtherError:                    
-                        pathData.result = orca::PathOtherError; 
-                        break;
-                    default : {}
-                        // nothing
-                }
+                pathData.result = orca::PathOtherError;
             }
     
             //

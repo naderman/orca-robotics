@@ -25,4 +25,8 @@ Config.JiggleWaypointsOntoClearCells.Default=1
 
 Config.Skeleton.Cost.DistanceThreshold.Default=0.3
 Config.Skeleton.Cost.CostMultiplier.Default=10.0
+Config.Skeleton.SparseSkelExtraNodeResolution.Default=5.0
 Config.Skeleton.ProvideGraphics.Default=1
+
+# Ice default message size too small for displaying debugging graphics on large maps
+ExternalConfig.Ice.MessageSizeMax.Default=3000

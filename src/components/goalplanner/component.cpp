@@ -21,7 +21,7 @@ Component::Component()
 
 Component::~Component()
 {
-    // do not delete handlers!!! They derives from Ice::Thread and delete themselves.
+    // do not delete handlers!!! They derive from Ice::Thread and delete themselves.
 }
 
 // NOTE: this function returns after it's done, all variable that need to be permanet must

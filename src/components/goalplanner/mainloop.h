@@ -13,11 +13,15 @@
 
 #include <hydroutil/thread.h>
 #include <orcaice/context.h>
-#include <hydroutil/proxy.h>
+#include <hydroutil/store.h>
 #include <hydronavutil/pose.h> 
 #include <orca/localise2d.h>
 #include <orca/pathplanner2d.h>
 #include <orca/pathfollower2d.h>
+#include <hydroogmap/hydroogmap.h>
+#include "progressmonitor.h"
+#include <memory>
+#include <orcaifaceimpl/storingconsumers.h>
 
 namespace goalplanner
 {
@@ -38,7 +42,35 @@ private:
     
     void stopRobot();
     void initNetwork();
-    void computeAndSendPath( const hydronavutil::Pose &pose, const orca::PathFollower2dData &incomingPath );
+
+    // Returns 'gotNewPath':
+    //   - if true, we got a new path (written to newPathData).
+    //   - if false, we exitted coz the component is stopping.
+    bool waitForNewPath( orca::PathFollower2dData &newPathData );
+
+    orca::PathPlanner2dData planPath( const hydronavutil::Pose &pose, const orca::PathFollower2dData &coarsePath );
+    orca::PathFollower2dData convertToPathFollowerData( const orca::PathPlanner2dData &pathPlan );
+    void sendPath( const orca::PathFollower2dData &pathToSend, bool activateImmediately );
+
+    // Adjust timing: work out how long it takes to the first waypoint based on straight-line distance 
+    // and configured velocityToFirstWaypoint_. Take the max of first wp time and the computed time.
+    // Add this time to all waypoints.
+    void addTimeToReachFirstWp( const hydronavutil::Pose &pose,
+                                orca::PathFollower2dData &incomingPath );
+    
+    // tries a few times to get localise data by issueing remote calls
+    void tryGetLocaliseData( orca::Localise2dData &data );
+    
+    // check whether the localise data is stale, if yes throws an exception
+    void checkForStaleness( orca::Localise2dData &data );
+
+    // Gets the most likely pose from the localiser (may throw).
+    // Also sets isLocalisationUncertain.
+    hydronavutil::Pose getPose( bool &isLocalisationUncertain );
+
+    bool needToReplan( const hydronavutil::Pose &currentPose, const orca::Waypoint2d &currentWp );
+
+    void replan( const hydronavutil::Pose &currentPose, const orca::Waypoint2d &currentWp );
 
     // required interface to localiser
     orca::Localise2dPrx localise2dPrx_;
@@ -48,35 +80,35 @@ private:
     
     // required interface to pathplanner
     orca::PathPlanner2dPrx pathplanner2dPrx_;
-    
-    // task proxy passed to pathplanner which receives the computed path
-    orca::PathPlanner2dConsumerPrx taskPrx_;
-    
-    // buffer which stores computed path from pathplanner
-    hydroutil::Proxy<orca::PathPlanner2dData> computedPathProxy_;
+
+    // receives and stores information about computed paths 
+    orcaifaceimpl::StoringPathPlanner2dConsumerImplPtr computedPathConsumer_;
         
     // ========== provided pathfollower interface (incoming paths) ===============
     PathFollower2dI* incomingPathI_;
     
-    hydroutil::Proxy<orca::PathFollower2dData> incomingPathProxy_;
+    hydroutil::Store<orca::PathFollower2dData> incomingPathStore_;
     
-    hydroutil::Proxy<bool> activationProxy_;
+    hydroutil::Store<bool> activationStore_;
     // ===========================================================================
+
+    hydroogmap::OgMap ogMap_;
+
+    // For ray-tracing in OG Map
+    std::auto_ptr<hydroogmap::OgLosTracer> ogLosTracer_;
+
+    // Monitors how far we are along the path
+    ProgressMonitor                 *progressMonitor_;
+    Ice::ObjectPtr                   progressMonitorPtr_;
+    orca::PathFollower2dConsumerPrx  progressMonitorPrx_;
+
+    bool checkForStaleLocaliseData_;
 
     // If the path planner takes more than this amount of time, assume something's wrong.
     double pathPlanTimeout_;
     
     // Velocity to get to the first waypoint
     double velocityToFirstWaypoint_;
-    void adjustTimes( const hydronavutil::Pose &pose,
-                      orca::PathFollower2dData &incomingPath );
-    
-    // tries a few times to get localise data by issueing remote calls
-    void tryGetLocaliseData( orca::Localise2dData &data );
-    
-    // check whether the localise data is stale, if yes throws an exception
-    void checkForStaleness( orca::Localise2dData &data );
-
     orcaice::Context context_;
 
 };
