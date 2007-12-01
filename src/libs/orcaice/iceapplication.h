@@ -29,7 +29,7 @@ namespace orcaice
 {
 
 //
-// This is Ice::Application, cut-and-pasted from the Ice source v.3.0.0.
+// This is Ice::Application, cut-and-pasted from the Ice source.
 // The only difference is that there's an extra flag passed to the constructor
 // that enables/disables setting up a Ctrl-C handler.
 //

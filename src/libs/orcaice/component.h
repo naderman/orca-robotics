@@ -12,6 +12,7 @@
 #define ORCAICE_COMPONENT_H
 
 #include <orcaice/context.h>
+#include <hydroutil/uncopyable.h>
 #include <hydroutil/thread.h>
 
 namespace orcaice
@@ -84,7 +85,7 @@ enum ComponentInterfaceFlag {
 //! @sa Application, Service, Context
 //! @sa Tracer, Status
 //!
-class Component
+class Component : public hydroutil::Uncopyable
 {
 // these are declared friends so they can call init(), tag(), finalise()
 friend class Application;
@@ -165,10 +166,6 @@ protected:
     ComponentInterfaceFlag interfaceFlag() const { return interfaceFlag_; };
 
 private:
-
-    // Not implemented; prevents accidental use.
-    Component( const Component& );
-    Component& operator= ( const Component& );
 
     // One of the container classes (Application or Service) will
     // call this function before calling start().
