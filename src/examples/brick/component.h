@@ -24,6 +24,7 @@ public:
     Component();
     virtual ~Component();
 
+    // from orcaice::Component
     virtual void start();
     virtual void stop();
 

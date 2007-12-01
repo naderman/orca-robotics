@@ -1,4 +1,4 @@
-OPTION( BUILD_BRICK "Try to build Brick test component" ON )
+OPTION( BUILD_BRICK "Try to build Brick example" ON )
 
 IF ( BUILD_BRICK )
 
@@ -22,4 +22,3 @@ IF ( BUILD_BRICK )
     GENERATE_CONFIG_FILE( brick.def )
 
 ENDIF ( BUILD_BRICK )
-

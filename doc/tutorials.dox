@@ -39,7 +39,7 @@
 
 @section orca_doc_tutorials_writing Writing Components
 
-- @ref orca_component_brick : super-simple component.
+- @ref orca_doc_tutebrickwrite (with a @ref orca_doc_tutebrickrun "follow-up on how to run it")
 - @ref orca_component_pureice : an example of writing a C++ component "from scratch" without using libOrcaIce.
 - @ref orca_component_pureicej : an example of writing a Java component.
 - Cross-framework examples: @ref orca_component_orca2yarp and @ref orca_component_player2orca.

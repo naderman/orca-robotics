@@ -62,6 +62,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 - documentation
   - orca documentation now links to hydro's (alex m)
+  - new tutorial: line-by-line step-through of Brick source code. (alex m)
+  - new tutorial: detailed comments on running Brick. (alex m)
 
 - build system
   - looking for Ice installation, first looks in generic dirs: /opt/Ice; /opt/Ice-3; /opt/Ice-3.2

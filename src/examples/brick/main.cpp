@@ -11,8 +11,6 @@
 #include <orcaice/application.h>
 #include "component.h"
 
-using namespace std;
-
 //
 // Build the component into a stand-alone application
 //

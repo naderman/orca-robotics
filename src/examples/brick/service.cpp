@@ -11,9 +11,6 @@
 #include "service.h"
 #include "component.h"
 
-using namespace std;
-using namespace brick;
-
 extern "C"
 {
     //
@@ -25,7 +22,7 @@ extern "C"
     }
 }
 
-Service::Service()
+brick::Service::Service()
 {
     component_ = new brick::Component();
 }

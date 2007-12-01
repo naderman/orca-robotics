@@ -12,12 +12,10 @@
 #include "component.h"
 #include "mainthread.h"
 
-using namespace std;
 using namespace brick;
 
 Component::Component() :
-    orcaice::Component("Brick"),
-    mainThread_(0)
+    orcaice::Component("Brick")
 {
 }
 

@@ -19,8 +19,8 @@ using namespace brick;
 MainThread::MainThread( const orcaice::Context& context ) :
     context_(context)
 {
-    context_.status()->setMaxHeartbeatInterval( "handler", 10.0 );
-    context_.status()->ok( "handler", "initialized" );
+    context_.status()->setMaxHeartbeatInterval( "main", 10.0 );
+    context_.status()->ok( "main", "initialized" );
 }
 
 MainThread::~MainThread()
@@ -45,11 +45,11 @@ MainThread::walk()
     // Main loop
     //   
     context_.tracer()->debug( "Entering main loop", 2 );
-    context_.status()->ok( "handler", "running main loop" );
+    context_.status()->ok( "main", "running main loop" );
     while( !isStopping() )
     {
         context_.tracer()->debug( "Running main loop", 5 );
-        context_.status()->heartbeat( "handler" );
+        context_.status()->heartbeat( "main" );
 
         // here we can do something useful
 

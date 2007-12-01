@@ -1,0 +1,207 @@
+/*
+ * Orca-Robotics Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2007 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This copy of Orca is licensed to you under the terms described in
+ * the LICENSE file included in this distribution.
+ *
+ */
+
+/*!
+
+@page orca_doc_tutebrickrun Running a super-simple component
+
+@note Reviewed for release 2.8.0.
+
+In the @ref orca_doc_tutebrickwrite "previous tutorial" we described how to write a basic Orca component. Now we show how to run it.
+
+@section orca_doc_tutebrickrun_orca Starting Orca
+
+Start IceGrid Registry and IceStorm server as described in the @ref orca_doc_quickstart.
+
+Create a new system directory and copy Orca sample files.
+@verbatim
+$ mkdir -p ~/sys/tutebrick; cd ~/sys/tutebrick
+$ cp [ORCA-INSTALL]/cfg/brick.cfg .
+@endverbatim
+
+@section orca_doc_tutebrickrun_start Starting Brick Component
+
+The @c brick.cfg file is already configured the way we want it here, so simply run the component:
+
+@verbatim
+tutebrick$$ brick
+@endverbatim
+
+You'll see a few lines of feeback in the terminal window.
+
+@verbatim
+tutebrick$ brick
+orca: Versions: Ice=3.2.1  Orca=2.7.0+  Project=2.7.0+
+orca: Brick: Loaded command line properties
+orca: Brick: Loaded component properties from 'brick.cfg'
+orca: Brick: Loaded global properties from '/home/makara/.orcarc'
+orca: Brick: Loaded factory default properties
+orca: Brick: Created object adapter
+orca: Brick: Initialized trace handler.
+orca: Brick: Status connected to status/*@jamaica/brick
+orca: Brick: Initialized status handler
+orca: Brick: Initialized Home interface
+orca: Brick: Application initialized
+[ 12/02/07 00:20:39.277 jamaica/brick:  info: LocalStatus: main is ok : 'initialized' ]
+[ 12/02/07 00:20:39.288 jamaica/brick:  info: LocalStatus: main is ok : 'running main loop' ]
+@endverbatim
+
+We'll go through them line-by-line and explain what they mean.
+
+@verbatim
+tutebrick$ brick
+orca: Versions: Ice=3.2.1  Orca=2.7.0+  Project=2.7.0+
+@endverbatim
+With multiple versions of Ice and Orca installed on the same computer, it's hard sometimes to tell which version you are running. When debugging, always look at this first line to make sure you are not running code from a year ago. Project version refers to the version of the satelite project. For Orca components, Orca version and Project version is always the same.
+
+@verbatim
+orca: Brick: Loaded command line properties
+@endverbatim
+In this case we did not provide any explicit command line options. But implicitly we specified component config file, i.e. @c --Orca.Config=brick.cfg. See the complete guide to @ref orca_doc_configfiles for more details.
+
+@verbatim
+orca: Brick: Loaded component properties from 'brick.cfg'
+@endverbatim
+The component understood our intention and loaded the correct config file.
+
+@verbatim
+orca: Brick: Loaded global properties from '/home/makara/.orcarc'
+@endverbatim
+The global config file was not specified explicitely, so the default value was used.
+
+@verbatim
+orca: Brick: Loaded factory default properties
+@endverbatim
+Some properties have hardwired "factory" defaults.
+
+@verbatim
+orca: Brick: Created object adapter
+@endverbatim
+This is an important internal step in component initialization. It happens deep inside @ref orca_library_orcaice before getting to the component code.
+
+@verbatim
+orca: Brick: Initialized trace handler.
+@endverbatim
+Initialized Tracer. Local Tracer is always created. A networked Tracer is initialized only if the orca::Tracer interface is created. See documentation for orcaice::ComponentInterfaceFlag and orcaice::Component.
+
+@verbatim
+orca: Brick: Status connected to status/*@jamaica/brick
+@endverbatim
+Status messages will be published to an IceStorm topic with this name. Anybody can subscribe to them remotely.
+
+@verbatim
+orca: Brick: Initialized status handler
+@endverbatim
+Initialized Status. Local Status is always created. A networked Status is initialized only if the orca::Status interface is created. See documentation for orcaice::ComponentInterfaceFlag and orcaice::Component.
+
+@verbatim
+orca: Brick: Initialized Home interface
+@endverbatim
+If configured with orcaice::ComponentInterfaceFlag, the Component will initialize orca::Home interface used for accessing various information remotely, e.g a list of provided interfaces, component properties.
+
+@verbatim
+orca: Brick: Application initialized
+@endverbatim
+The Component::start() function has returned the control to orcaice::Application.
+
+@verbatim
+[ 12/02/07 00:20:39.277 jamaica/brick:  info: LocalStatus: main is ok : 'initialized' ]
+@endverbatim
+The first status call is made from the MainThread constructor.
+
+@verbatim
+[ 12/02/07 00:20:39.288 jamaica/brick:  info: LocalStatus: main is ok : 'running main loop' ]
+@endverbatim
+The second status call is made before entering the main loop.
+
+If you are using default configuration files, you don't see any more statements even though we are printing debug statements inside the main loop. This is because the debug statements are not displayed on the screen by default. 
+
+
+@section orca_doc_tutebrickrun_stop Stopping Brick Component
+
+We'll modify this behaviour but first we'll stop the component by pressing Ctrl-C. Here's what gets printed out.
+
+@verbatim
+orca: Brick: Communicator is destroyed. Stopping component
+orca: Brick: Component stopped
+orca: Brick: Adapter deactivated
+orca: Brick: Application quitting. Orca out.
+@endverbatim
+
+Let's look at it line-by-line.
+
+@verbatim
+orca: Brick: Communicator is destroyed. Stopping Component
+@endverbatim
+When Component::start() returns, the orcaice::Application class blocks waiting for a Communicator shutdown. This can happen if we destroy the Communicator manually but usually it happens when an interrupt signal is received (e.g. after a Ctrl-C). The Application now tells the Component to stop().
+
+@verbatim
+orca: Brick: Component stopped
+@endverbatim
+Component told the thread to stop and waited for it to terminate.
+
+@verbatim
+orca: Brick: Adapter deactivated
+orca: Brick: Application quitting. Orca out.
+@endverbatim
+All networking is deactivated and the application has exited cleanly.
+
+@section orca_doc_tutebrickrun_mod Modifying Tracing
+
+Let's add this line to the config file @c brick.cfg. (Remember that the debug level of the statements inside the main loop is 5).
+
+@verbatim
+Orca.Tracer.DebugToDisplay=5
+@endverbatim
+
+Run the component again
+
+@verbatim
+tutebrick$ brick
+orca: Versions: Ice=3.2.1  Orca=2.7.0+  Project=2.7.0+
+orca: Brick: Loaded command line properties
+orca: Brick: Loaded component properties from 'brick.cfg'
+orca: Brick: Loaded global properties from '/home/makara/.orcarc'
+orca: Brick: Loaded factory default properties
+orca: Brick: Created object adapter
+orca: Brick: Initialized trace handler.
+orca: Brick: Status connected to status/*@jamaica/brick
+orca: Brick: Initialized status handler
+orca: Brick: Initialized Home interface
+orca: Brick: Application initialized
+[ 12/02/07 01:13:51.382 jamaica/brick:  debug: Starting component ]
+[ 12/02/07 01:13:51.382 jamaica/brick:  debug: LocalStatus::setMaxHeartbeatInterval(): Adding new subsystem: 'main' ]
+[ 12/02/07 01:13:51.382 jamaica/brick:  info: LocalStatus: main is ok : 'initialized' ]
+[ 12/02/07 01:13:51.382 jamaica/brick:  debug: Component started ]
+[ 12/02/07 01:13:51.429 jamaica/brick:  debug: Adapter activated ]
+[ 12/02/07 01:13:51.429 jamaica/brick:  debug: Entering main loop ]
+[ 12/02/07 01:13:51.430 jamaica/brick:  info: LocalStatus: main is ok : 'running main loop' ]
+[ 12/02/07 01:13:51.430 jamaica/brick:  debug: Running main loop ]
+[ 12/02/07 01:13:52.430 jamaica/brick:  debug: Running main loop ]
+[ 12/02/07 01:13:53.431 jamaica/brick:  debug: Running main loop ]
+[ 12/02/07 01:13:54.431 jamaica/brick:  debug: Running main loop ]
+@endverbatim
+
+In addition to the messages from the main loop we got a few more from the component initialization sequence. A bit more info is displayed on shutdown as well. Press Ctrl-C.
+
+@verbatim
+orca: Brick: Communicator is destroyed. Stopping component
+[ 12/02/07 01:16:01.308 jamaica/brick:  debug: orcaice::Component: stopping ComponentThread.... ]
+[ 12/02/07 01:16:01.452 jamaica/brick:  debug: orcaice::Component: ComponentThread stopped. ]
+[ 12/02/07 01:16:01.453 jamaica/brick:  debug: Stopping component ]
+[ 12/02/07 01:16:01.471 jamaica/brick:  debug: Exiting main loop ]
+[ 12/02/07 01:16:01.472 jamaica/brick:  debug: Component stopped ]
+orca: Brick: Component stopped
+orca: Brick: Adapter deactivated
+orca: Brick: Application quitting. Orca out.
+@endverbatim
+
+*/
+ 

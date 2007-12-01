@@ -8,8 +8,8 @@
  *
  */
  
-#ifndef ORCA2_BRICK_HANDLER_H
-#define ORCA2_BRICK_HANDLER_H
+#ifndef ORCA2_BRICK_MAIN_THREAD_H
+#define ORCA2_BRICK_MAIN_THREAD_H
 
 #include <hydroutil/safethread.h>
 #include <orcaice/context.h>
