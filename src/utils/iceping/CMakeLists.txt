@@ -16,4 +16,7 @@ IF ( BUILD_ICEPING )
     
     GLOBAL_ADD_EXECUTABLE( iceping ${SRCS} )
 
+    # special case: we don't have a .def file here, installing a sample .cfg
+    INSTALL_FILES( /cfg iceping.cfg )
+
 ENDIF ( BUILD_ICEPING )

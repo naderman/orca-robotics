@@ -13,8 +13,9 @@
 @ingroup orca_cpp
 @ingroup orca_linux
 @ingroup orca_win
+@ingroup orca_qnx
 @defgroup orca_util_iceping IcePing
-@brief An equivalent to Unix ping for Orca components.
+@brief An equivalent to Unix ping for Orca components and Ice infrastructure.
 
 Checks if an Orca interface is reachable by trying to invoke @c ice_ping method available for all Ice objects.
 
@@ -26,25 +27,12 @@ Checks if an Orca interface is reachable by trying to invoke @c ice_ping method 
 
 - none
 
-Usage is kept similar to ping. Ping tries to reach a destination specified by a hostname or an IP address. Iceping tries to reach a destination specified by the stringified proxy to an object. Trying to reach an address specified by its address may be added in the future.
+Usage is kept similar to ping. Ping tries to reach a destination specified by a hostname or an IP address. Iceping tries to reach a destination specified by the stringified proxy to an object. 
+
+This utility is self-documenting.
 
 @verbatim
-USAGE
-iceping [ -rhovV ] [ -f file ] [ -c count ] [ -i intervalUs ] proxy
-  Proxy Desitnation specified as a string in the form 'object@adapter'
-OPTIONS
-  -c count
-        Ping count times. Default is 3.
-  -f file
-        Use file as Ice.Config parameter. Default is ~/.orcarc
-  -h    Print this.
-  -i interval
-        Pause for interval seconds after each ping. Default is 0.
-  -o    Ping the Home interface of component, i.e. 'home@platform/component
-  -r    Ping the IcePackRegistry, specifically its Query interface. This is
-        a way to make sure that the registry is reachable.
-  -v    Print Ice version and exits.
-  -V    Prints extra debugging information.
+$ iceping --help
 @endverbatim
 
 
@@ -56,10 +44,19 @@ We intentionally do not use @ref orca_library_orcaice so that when one component
 
 @par Configuration
 
-Only one configuration option is required: how to find the IceGrid Registry. By default, @c iceping tries to load @c ~/.orcarc file which typically contains this information. Optionally, a dedicated file can be written.
+Only one configuration option is required: how to find the IceGrid Registry. By default, @c iceping tries to load @c ~/.orcarc file which typically contains this information. Optionally, a dedicated file can be written. Create a file and name it @c iceping.cfg
 
 @include utils/iceping/iceping.cfg
 
+Run @c iceping utility with the custom config file:
+
+@verbatim
+$ iceping -r -f iceping.cfg
+@endverbatim
+
+@par Authors
+
+Alex Makarenko
 
 */
 

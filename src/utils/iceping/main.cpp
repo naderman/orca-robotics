@@ -22,7 +22,7 @@ void
 usage()
 {
     cout << "USAGE"<<endl;
-    cout << "iceping [ -orhvV ] [ -f file ] [ -c count ] [ -i intervalUs ] proxy"<<endl;
+    cout << "iceping [ -rshvV ] [ -f file ] [ -c count ] [ -i intervalUs ] proxy"<<endl;
     cout << "  proxy\t stringified direct or indirect proxy"<<endl;
     cout << "    \tdirect   : interface name and address in the form 'interface:endpoint'"<<endl;
     cout << "    \t           In Ice terms this is simply stringified direct proxy"<<endl;
@@ -33,6 +33,10 @@ usage()
 //     cout << "    \tRelies on the fact that all Orca components provide Home interface"<<endl;
     cout << "  -r registry\n\tPings the IceGrid Registry as described in configuration files."<<endl;
     cout << "    \tSpecifically, pings the Query interface."<<endl;
+    cout << "  -s storm\n\tPings the IceStorm as described in configuration files."<<endl;
+    cout << "    \tSpecifically, pings the TopicManager interface."<<endl;
+    cout << "    \tThe endpoint can be specified with --IceStorm.TopicManager.Proxy parameter."<<endl;
+    cout << "    \tDefault is --IceStorm.TopicManager.Proxy=IceStorm/TopicManager:default -p 10000"<<endl;
     cout << "  -c count\n\tPing count times. Default is 3."<<endl;
     cout << "  -f file\n\tUse file as Ice.Config parameter. Default is ~/.orcarc"<<endl;
     cout << "  --help help\n\tPrints this."<<endl;
@@ -40,10 +44,10 @@ usage()
     cout << "  -V verbose\n\tPrints extra debugging information."<<endl;
     cout << "  -i interval\n\tPause for interval seconds after each ping. Default is 0."<<endl;
     cout << "EXAMPLES"<<endl;
-    cout << "  iceping -r -V -c 5 -i 1     : pings the registry 5 times with 1 sec interval in verbose mode."<<endl;
-    cout << "  iceping home@platf/comp     : pings the Home interface of component 'comp' on platform 'platf'"<<endl;
-    cout << "  iceping -o platf/comp       : same as above"<<endl;
-    cout << "  iceping 'home:tcp -p 11000' : pings the Home interface of a component listening on the "<<endl;
+    cout << "  iceping -r -V -c 5 -i 0.5     : pings the registry 5 times with 0.5 sec interval in verbose mode."<<endl;
+    cout << "  iceping status@platf/comp     : pings the Home interface of component 'comp' on platform 'platf'"<<endl;
+//     cout << "  iceping -o platf/comp       : same as above"<<endl;
+    cout << "  iceping 'status:tcp -p 11000' : pings the Home interface of a component listening on the "<<endl;
     cout << "                                specified endpoint."<<endl;
 }
 
@@ -72,10 +76,14 @@ App::run( int argc, char* argv[] )
     }
 
     // go through value-less keys
+    // we don't check if mutually-exclusive options are supplied (e.g. -r and -s)
     for( unsigned int i=1; i<args.size(); ++i )
     {
         if ( args[i]=="-r" ) {
             proxy = "IceGrid/Query";
+        }
+        else if ( args[i]=="-s" ) {
+            proxy = "IceStorm/TopicManager";
         }
         else if ( args[i]=="-V" ) {
             verbose = true;
@@ -83,6 +91,7 @@ App::run( int argc, char* argv[] )
     }
 
     // proxy must've been supplied as the last command line parameter
+    // or filled in by the shortcuts (e.g. -r and -s)
     if ( proxy.empty() ) {
         proxy = args[args.size()-1];
 
@@ -102,6 +111,7 @@ App::run( int argc, char* argv[] )
 //         }
 //     }
 
+    // go through keys with values
     for( unsigned int i=1; i<args.size()-1; ++i )
     {
         if ( args[i]=="-i" ) {
@@ -121,36 +131,57 @@ App::run( int argc, char* argv[] )
         else if ( args[i]=="-r" ) {
             // already parsed
         }
+        else if ( args[i]=="-s" ) {
+            // already parsed
+        }
         else if ( args[i]=="-V" ) {
             // already parsed
         }
         else {
-            cout<<"warning: unknown command line option "<<args[i]<<endl;
+            // if it doesn't start with '-', it's not an option at all
+            if ( args[i][0] == '-' ) {
+                cout<<"warning: unknown command line option "<<args[i]<<endl;
+            }
         }
+    }
+
+    // defaults
+    if ( proxy == "IceStorm/TopicManager" ) {
+        std::string icestormProxy = communicator()->getProperties()->getProperty( "IceStorm.TopicManager.Proxy" );
+        // if empty, we have 2 options:
+        //      1. leave it a the name and look it up in the registry, or
+        //      2. substitute the default endpoint
+        // we use option 2.
+        if ( icestormProxy.empty() ) {
+            icestormProxy = "IceStorm/TopicManager:default -p 10000";
+        }
+        proxy = icestormProxy;
     }
 
     // got all parameters
     if ( verbose ) {
-        cout<<"will ping "<<proxy<<" "<<count<<" times with "<<intervalUs<<"us interval"<<endl;
+        cout<<"will ping '"<<proxy<<"' "<<count<<" times with "<<intervalUs<<"us interval"<<endl;
         
         std::string locatorStr = communicator()->getProperties()->getProperty( "Ice.Default.Locator" );
         cout<<"will use locator:  "<<locatorStr<<endl;
 
-        // this is copy of orcaice::printConmponentProperties() from orcaice/privateutils.cpp
+        // this is copy of orcaice::printComponentProperties() from orcaice/privateutils.cpp
+        // ---
         Ice::StringSeq propSeq = communicator()->getProperties()->getCommandLineOptions();
         // strip off all orca-specific properties, we don't use them anyway
         propSeq = communicator()->getProperties()->parseCommandLineOptions( "Orca", propSeq );
 
-        std::ostringstream os;
-        os << propSeq.size();
+        std::ostringstream ss;
+        ss << propSeq.size();
     
-        cout<<"iceping properties ("<<os.str()<<")"<<endl;
+        cout<<"iceping properties ("<<ss.str()<<")"<<endl;
         cout<<"========================"<<endl;
     
         for ( unsigned int i=0; i<propSeq.size(); ++i ) {
             cout<<propSeq[i]<<endl;
         }
         cout<<"========================"<<endl;
+        // ---
     }
     
     // this works for both direct and indirect proxies
@@ -221,7 +252,7 @@ main(int argc, char * argv[])
             return 0;
         }
         else if ( args[i]=="--version" ) {
-            // alrady printed out the version
+            // already printed out the version
             return 0;
         }
     }
@@ -232,6 +263,10 @@ main(int argc, char * argv[])
         for( unsigned int i=1; i<args.size(); ++i )
         {
             if ( args[i]=="-f" ) {
+                if ( i+1 == args.size() ) {
+                    usage();
+                    return 0;
+                }
                 propertiesFile = args[i+1];
             }
         }
@@ -253,11 +288,11 @@ main(int argc, char * argv[])
         // windows
         propertiesFile += "C:\\orca.ini";
 #endif
+        cout<<"assumed config file: "<<propertiesFile<<endl;
     }
 
     if ( !propertiesFile.empty() ) {
         args.push_back( "--Ice.Config=" + propertiesFile );
-        cout<<"assumed config file: --Ice.Config="<<propertiesFile<<endl;
         isModified = true;
     }
 

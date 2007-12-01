@@ -116,6 +116,11 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - Pinger/Replier
     - These utilities for measuring communication latencies are working again (alex m)
 
+- IcePing
+    - Added command line shortcut '-s' for pinging IceStorm (specifically its TopicManager interface). (alex m)
+    - Fixed seg fault with '-f' option when file name is not specified. (alex m)
+    - Updated documentation. (alex m)
+
 @par Updated libraries
 
 - libOrcaIce
