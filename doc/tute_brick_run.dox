@@ -31,10 +31,10 @@ $ cp [ORCA-INSTALL]/cfg/brick.cfg .
 The @c brick.cfg file is already configured the way we want it here, so simply run the component:
 
 @verbatim
-tutebrick$$ brick
+tutebrick$ brick
 @endverbatim
 
-You'll see a few lines of feeback in the terminal window.
+You'll see a few lines of feedback in the terminal window.
 
 @verbatim
 tutebrick$ brick
@@ -59,7 +59,7 @@ We'll go through them line-by-line and explain what they mean.
 tutebrick$ brick
 orca: Versions: Ice=3.2.1  Orca=2.7.0+  Project=2.7.0+
 @endverbatim
-With multiple versions of Ice and Orca installed on the same computer, it's hard sometimes to tell which version you are running. When debugging, always look at this first line to make sure you are not running code from a year ago. Project version refers to the version of the satelite project. For Orca components, Orca version and Project version is always the same.
+With multiple versions of Ice and Orca installed on the same computer, it's hard sometimes to tell which version you are running. When debugging, always look at this first line to make sure you are not running code from a year ago. Project version refers to the version of the satelite project. For Orca components, Orca version and Project version are always the same.
 
 @verbatim
 orca: Brick: Loaded command line properties
@@ -79,7 +79,7 @@ The global config file was not specified explicitely, so the default value was u
 @verbatim
 orca: Brick: Loaded factory default properties
 @endverbatim
-Some properties have hardwired "factory" defaults.
+Some properties have hardwired "factory" defaults. They are loaded last (previously loaded properties are not overwritten).
 
 @verbatim
 orca: Brick: Created object adapter
@@ -89,7 +89,7 @@ This is an important internal step in component initialization. It happens deep 
 @verbatim
 orca: Brick: Initialized trace handler.
 @endverbatim
-Initialized Tracer. Local Tracer is always created. A networked Tracer is initialized only if the orca::Tracer interface is created. See documentation for orcaice::ComponentInterfaceFlag and orcaice::Component.
+Initialized Tracer. Local Tracer is always created. A networked Tracer is initialized only if the @ref orca_interface_tracer interface is enabled. This interface can be disabled with an appropriate value of the orcaice::ComponentInterfaceFlag passed to orcaice::Component.
 
 @verbatim
 orca: Brick: Status connected to status/*@jamaica/brick
@@ -99,12 +99,12 @@ Status messages will be published to an IceStorm topic with this name. Anybody c
 @verbatim
 orca: Brick: Initialized status handler
 @endverbatim
-Initialized Status. Local Status is always created. A networked Status is initialized only if the orca::Status interface is created. See documentation for orcaice::ComponentInterfaceFlag and orcaice::Component.
+Initialized Status. Local Status is always created. A networked Status is initialized only if the @ref orca_interface_status interface is enabled. This interface can be disabled with an appropriate value of the orcaice::ComponentInterfaceFlag passed to orcaice::Component.
 
 @verbatim
 orca: Brick: Initialized Home interface
 @endverbatim
-If configured with orcaice::ComponentInterfaceFlag, the Component will initialize orca::Home interface used for accessing various information remotely, e.g a list of provided interfaces, component properties.
+Initialized @ref orca_interface_home interface. It is used for accessing various information remotely, e.g a list of provided interfaces, component properties. This interface can be disabled with an appropriate value of the orcaice::ComponentInterfaceFlag passed to orcaice::Component.
 
 @verbatim
 orca: Brick: Application initialized
@@ -140,12 +140,12 @@ Let's look at it line-by-line.
 @verbatim
 orca: Brick: Communicator is destroyed. Stopping Component
 @endverbatim
-When Component::start() returns, the orcaice::Application class blocks waiting for a Communicator shutdown. This can happen if we destroy the Communicator manually but usually it happens when an interrupt signal is received (e.g. after a Ctrl-C). The Application now tells the Component to stop().
+When Component::start() returns, the orcaice::Application class blocks waiting for a Communicator shutdown. This can happen if we destroy the Communicator manually but usually it happens when an interrupt signal is received (e.g. after a Ctrl-C). This is what happened just now and the Application told the Component to stop().
 
 @verbatim
 orca: Brick: Component stopped
 @endverbatim
-Component told the thread to stop and waited for it to terminate.
+Component told the thread to stop and waited for it to terminate. By now all threads have terminated.
 
 @verbatim
 orca: Brick: Adapter deactivated
@@ -189,7 +189,7 @@ orca: Brick: Application initialized
 [ 12/02/07 01:13:54.431 jamaica/brick:  debug: Running main loop ]
 @endverbatim
 
-In addition to the messages from the main loop we got a few more from the component initialization sequence. A bit more info is displayed on shutdown as well. Press Ctrl-C.
+In addition to the debug messages from the main loop we got a few more from the component initialization sequence. A bit more info is displayed on shutdown as well. Press Ctrl-C.
 
 @verbatim
 orca: Brick: Communicator is destroyed. Stopping component
@@ -202,6 +202,14 @@ orca: Brick: Component stopped
 orca: Brick: Adapter deactivated
 orca: Brick: Application quitting. Orca out.
 @endverbatim
+
+@section orca_doc_tutebrickrun_exersise Exercise for the User
+
+When the system is as simple as this one, it's easier to observe what happens when something goes wrong. So here are a few thing to try:
+- Stop the Registry, try to start the component, look at the error message it spits out.
+- Start the Registry and stop the IceBox/IceStorm, try to start the component.
+- Stop the Registry, start the IceBox/IceStorm, try to start the component. After a while start the Registry. The component should continue happily.
+- Start the Registry and the IceBox/IceStorm, start the component. Now kill the Registry. Nobody should be complaining. That's because the servers do not need the registry after they are registered. The clients, of course, would not be able to connect.
 
 */
  
