@@ -21,10 +21,10 @@ Component.Comment.2=Line 2 of comments about this component
 #   Provides.<InterfaceTag>.Type=<type>                     (REQUIRED)
 #   Provides.<InterfaceTag>.DefaultName=<name>              (optional)
 
-Provides.Laser.Type=::orca::Laser
+Provides.Laser.Type=LaserScanner2d
 Provides.Laser.DefaultName=laser
 
-Provides.Platform2d.Type=::orca::Platform2d
+Provides.Platform2d.Type=Odometry2d
 
 # Required Interfaces
 # -------------------
