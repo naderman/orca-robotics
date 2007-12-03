@@ -13,7 +13,6 @@
 #include "mainthread.h"
 
 using namespace std;
-using namespace orca;
 
 namespace laser2d {
 
@@ -21,20 +20,47 @@ namespace {
     const char *SUBSYSTEM = "MainThread";
 }
 
-MainThread::MainThread( orcaifaceimpl::LaserScanner2dImpl &laserInterface,
-                    const hydrointerfaces::LaserScanner2d::Config &config,
-                    hydrointerfaces::LaserScanner2dFactory &driverFactory,
-                    bool                                compensateRoll,
-                    const orcaice::Context             &context )
-    : laserInterface_(laserInterface),
-      config_(config),
-      driver_(0),
-      driverFactory_(driverFactory),
-      compensateRoll_(compensateRoll),
-      context_(context)
+// MainThread::MainThread( orcaifaceimpl::LaserScanner2dImpl &laserInterface,
+//                     const hydrointerfaces::LaserScanner2d::Config &config,
+//                     hydrointerfaces::LaserScanner2dFactory &driverFactory,
+//                     bool                                compensateRoll,
+//                     const orcaice::Context             &context )
+//     : laserInterface_(laserInterface),
+//       config_(config),
+//       driver_(0),
+//       driverFactory_(driverFactory),
+//       compensateRoll_(compensateRoll),
+//       context_(context)
+MainThread::MainThread( const orcaice::Context &context ) :
+    laserInterface_(0),
+    driver_(0),
+    driverFactory_(0),
+    driverLib_(0),
+    context_(context)
 {
     context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 20.0 );
     context_.status()->initialising( SUBSYSTEM );
+
+    //
+    // Read settings
+    //
+    Ice::PropertiesPtr prop = context_.properties();
+    std::string prefix = context_.tag() + ".Config.";
+
+    config_.minRange = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"MinRange", 0.0 );
+    config_.maxRange = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"MaxRange", 80.0 );
+
+    config_.fieldOfView = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"FieldOfView", 180.0 )*DEG2RAD_RATIO;
+    config_.startAngle = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"StartAngle", -RAD2DEG(config_.fieldOfView)/2.0 )*DEG2RAD_RATIO;
+
+    config_.numberOfSamples = orcaice::getPropertyAsIntWithDefault( prop, prefix+"NumberOfSamples", 181 );
+
+    if ( !config_.validate() ) {
+        context_.tracer()->error( "Failed to validate laser configuration. "+config_.toString() );
+        // this will kill this component
+        throw hydroutil::Exception( ERROR_INFO, "Failed to validate laser configuration" );
+    }
+
 }
 
 MainThread::~MainThread()
@@ -73,22 +99,75 @@ MainThread::activate()
 }
 
 void
-MainThread::establishInterface()
+MainThread::initNetworkInterface()
 {
+    Ice::PropertiesPtr prop = context_.properties();
+    std::string prefix = context_.tag() + ".Config.";
+
+    //
+    // SENSOR DESCRIPTION
+    //
+
+    orca::RangeScanner2dDescription descr;
+    descr.timeStamp = orcaice::getNow();
+
+    // transfer internal sensor configs
+    descr.minRange        = config_.minRange;
+    descr.maxRange        = config_.maxRange;
+    descr.fieldOfView     = config_.fieldOfView;
+    descr.startAngle      = config_.startAngle;
+    descr.numberOfSamples = config_.numberOfSamples;
+
+    // offset from the robot coordinate system
+    orcaice::setInit( descr.offset );
+    descr.offset = orcaice::getPropertyAsFrame3dWithDefault( prop, prefix+"Offset", descr.offset );
+
+    // consider the special case of the sensor mounted level (pitch=0) but upside-down (roll=180)
+//     bool compensateRoll;
+    if ( NEAR(descr.offset.o.r,M_PI,0.001) && descr.offset.o.p==0.0 ) {
+        // the offset is appropriate, now check the user preference (default is TRUE)
+        compensateRoll_ = (bool)orcaice::getPropertyAsIntWithDefault( prop, prefix+"AllowRollCompensation", 1 );
+
+        if ( compensateRoll_ ) {
+            // now remove the roll angle, we'll compensate for it internally
+            descr.offset.o.r = 0.0;
+            context_.tracer()->info( "the driver will compensate for upside-down mounted sensor" );
+        }
+    }
+    else {
+        // no need to consider it, the offset is inappropriate for roll compensation
+        compensateRoll_ = false;
+    }
+
+    // size info should really be stored in the driver
+    orcaice::setInit( descr.size );
+    descr.size = orcaice::getPropertyAsSize3dWithDefault( prop, prefix+"Size", descr.size );
+
+    //
+    // EXTERNAL PROVIDED INTERFACE
+    //
+
+    laserInterface_ = new orcaifaceimpl::LaserScanner2dImpl( descr,
+                                                              "LaserScanner2d",
+                                                              context_ );
+    
+    //
+    // INIT INTERFACE
+    //
     while ( !isStopping() )
     {
         try {
-            laserInterface_.initInterface();
+            laserInterface_->initInterface();
             context_.tracer()->debug( "Activated Laser interface" );
             return;
         }
         catch ( hydroutil::Exception &e )
         {
-            context_.tracer()->warning( std::string("MainThread::establishInterface(): ") + e.what() );
+            context_.tracer()->warning( std::string("MainThread::initNetworkInterface(): ") + e.what() );
         }
         catch ( ... )
         {
-            context_.tracer()->warning( "MainThread::establishInterface(): caught unknown exception." );
+            context_.tracer()->warning( "MainThread::initNetworkInterface(): caught unknown exception." );
         }
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
         context_.status()->heartbeat( SUBSYSTEM );
@@ -96,12 +175,33 @@ MainThread::establishInterface()
 }
 
 void
-MainThread::initialiseDriver()
+MainThread::initHardwareDriver()
 {
     context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 20.0 );
 
+    // this function works for re-initialization as well
     if ( driver_ ) delete driver_;
 
+    Ice::PropertiesPtr prop = context_.properties();
+    std::string prefix = context_.tag() + ".Config.";
+
+    // Dynamically load the library and find the factory
+    std::string driverLibName = 
+        orcaice::getPropertyWithDefault( prop, prefix+"DriverLib", "libOrcaLaser2dSickCarmen.so" );
+    context_.tracer()->debug( "MainThread: Loading driver library "+driverLibName, 4 );
+    try {
+        driverLib_ = new hydrodll::DynamicallyLoadedLibrary(driverLibName);
+        driverFactory_ = 
+            hydrodll::dynamicallyLoadClass<hydrointerfaces::LaserScanner2dFactory,DriverFactoryMakerFunc>
+            ( *driverLib_, "createDriverFactory" );
+    }
+    catch (hydrodll::DynamicLoadException &e)
+    {
+        context_.tracer()->error( e.what() );
+        throw;
+    }
+
+    // create the driver
     while ( !isStopping() )
     {
         string configPrefix = context_.tag()+".Config.";
@@ -110,7 +210,7 @@ MainThread::initialiseDriver()
         hydrointerfaces::Context driverContext( props, context_.tracer(), context_.status() );
         try {
             context_.tracer()->info( "MainThread: Initialising driver..." );
-            driver_ = driverFactory_.createDriver( config_, driverContext );
+            driver_ = driverFactory_->createDriver( config_, driverContext );
             return;
         }
         catch ( std::exception &e )
@@ -170,10 +270,10 @@ MainThread::readData( orca::LaserScanner2dDataPtr &laserData )
 }
 
 void
-MainThread::run()
+MainThread::walk()
 {
     // Set up the laser-scan object
-    LaserScanner2dDataPtr laserData = new LaserScanner2dData;
+    orca::LaserScanner2dDataPtr laserData = new orca::LaserScanner2dData;
     laserData->minRange     = config_.minRange;
     laserData->maxRange     = config_.maxRange;
     laserData->fieldOfView  = config_.fieldOfView;
@@ -183,8 +283,8 @@ MainThread::run()
 
     // These functions catch their exceptions.
     activate();
-    establishInterface();
-    initialiseDriver();
+    initNetworkInterface();
+    initHardwareDriver();
 
     //
     // IMPORTANT: Have to keep this loop rolling, because the '!isStopping()' call checks for requests to shut down.
@@ -196,7 +296,7 @@ MainThread::run()
         {
             // this blocks until new data arrives
             readData( laserData );
-            laserInterface_.localSetAndSend( laserData );
+            laserInterface_->localSetAndSend( laserData );
             context_.status()->ok( SUBSYSTEM );
 
             stringstream ss;
@@ -249,7 +349,7 @@ MainThread::run()
 
         // If we got to here there's a problem.
         // Re-initialise the driver.
-        initialiseDriver();
+        initHardwareDriver();
 
     } // end of while
 

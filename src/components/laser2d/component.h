@@ -12,20 +12,19 @@
 #define ORCA2_LASER2D_COMPONENT_H
 
 #include <orcaice/component.h>
-#include <orcaifaceimpl/laserscanner2dImpl.h>
-#include <hydrointerfaces/laserscanner2d.h>
-#include <hydrodll/dynamicload.h>
+// #include <orcaifaceimpl/laserscanner2dImpl.h>
+// #include <hydrointerfaces/laserscanner2d.h>
+// #include <hydrodll/dynamicload.h>
 
 namespace laser2d {
 
-class DriverFactory;
+// class DriverFactory;
 
 class Component : public orcaice::Component
 {
 public:
 
     Component();
-    virtual ~Component();
 
     // from orcaice::Component
     virtual void start();
@@ -35,17 +34,17 @@ private:
 
     hydroutil::ThreadPtr mainLoop_;
 
-    //
-    // External Interface
-    //
-    orcaifaceimpl::LaserScanner2dImplPtr laserInterface_;
-
-    // A factory to instantiate the driver
-    hydrointerfaces::LaserScanner2dFactory *driverFactory_;
-    // And the library that provides it
-    hydrodll::DynamicallyLoadedLibrary *driverLib_;
+//     //
+//     // External Interface
+//     //
+//     orcaifaceimpl::LaserScanner2dImplPtr laserInterface_;
+// 
+//     // A factory to instantiate the driver
+//     hydrointerfaces::LaserScanner2dFactory *driverFactory_;
+//     // And the library that provides it
+//     hydrodll::DynamicallyLoadedLibrary *driverLib_;
 };
 
-}
+} // namespace
 
 #endif
