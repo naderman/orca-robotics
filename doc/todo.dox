@@ -108,6 +108,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 - SegwayRMP
     - big overhaul of SegwayRmpDriver (alex b)
+    - Added interpretation of pct remaining for CU batteries (alex b)
     - moved hardware drivers to Hydro (alex m)
 
 - GoalPlanner
@@ -115,6 +116,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 - Teleop
     - moved hardware drivers to Hydro (alex m)
+
+- PathPlanner
+    - Got rid of that hazardMap malarky -- now only accepts an OG map (alex b)
 
 @par Updated utilities
 
