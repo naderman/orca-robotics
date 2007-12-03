@@ -69,13 +69,13 @@ HwThread::HwThread( Config& config, const orcaice::Context &context ) :
     hydroutil::Properties props( prop->getPropertiesForPrefix(prefix), prefix );
     hydrointerfaces::Context driverContext( props, context_.tracer(), context_.status() );
     try {
-        context_.tracer()->info( "HwThread: Initialising driver..." );
+        context_.tracer()->info( "HwThread: creating driver..." );
         driver_ = driverFactory_->createDriver( driverContext );
     }
     catch ( ... )
     {
         stringstream ss;
-        ss << "HwThread: Caught unknown exception while initialising driver";
+        ss << "HwThread: Caught exception while creating driver.";
         context_.tracer()->error( ss.str() );
         throw;
     }  

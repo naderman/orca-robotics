@@ -44,18 +44,18 @@ Config.ProvideOdometry3d.Default=1
 Config.Odometry3dPublishInterval.Default=0.1
 Config.PowerPublishInterval.Default=20.0
 
-Config.SegwayRmp.GainSchedule.Comment=SegwayRmpUsb And SegwayRmpCan drivers only
-Config.SegwayRmp.GainSchedule.Default=normal
-Config.SegwayRmp.MaxVelocityScale.Default=0.75
-Config.SegwayRmp.MaxTurnrateScale.Default=0.75
-Config.SegwayRmp.MaxAccelerationScale.Default=0.75
-Config.SegwayRmp.MaxCurrentLimitScale.Default=0.75
+Config.Acfr.GainSchedule.Comment=SegwayRmpUsb And SegwayRmpCan drivers only
+Config.Acfr.GainSchedule.Default=normal
+Config.Acfr.MaxVelocityScale.Default=0.75
+Config.Acfr.MaxTurnrateScale.Default=0.75
+Config.Acfr.MaxAccelerationScale.Default=0.75
+Config.Acfr.MaxCurrentLimitScale.Default=0.75
 
-Config.SegwayRmp.ModelNum.Default=200
-Config.SegwayRmp.RequireSpecificBuildId.Default=0
-Config.SegwayRmp.RequiredBuildId.Default=0
-Config.SegwayRmp.AllowMoveInTractorMode.Default=1
-Config.SegwayRmp.AllowMoveInBalanceMode.Default=1
+Config.Acfr.ProductModel.Default=RMP200
+Config.Acfr.RequireSpecificBuildId.Default=0
+Config.Acfr.RequiredBuildId.Default=0
+Config.Acfr.AllowMoveInTractorMode.Default=1
+Config.Acfr.AllowMoveInBalanceMode.Default=1
 
 # Tell the driver how to find the peak device that we are using
 Config.Acfr.CanDevice.Comment=The peak CAN device we are going to use
