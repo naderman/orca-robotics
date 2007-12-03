@@ -12,27 +12,23 @@
 #define ORCA2_FAITH_LOCALISER_COMPONENT_H
 
 #include <orcaice/component.h>
-#include <hydroutil/thread.h>
-
-#include <orca/localise2d.h>
-#include <orca/odometry2d.h>
 
 namespace faithlocaliser
 {
 
-// Deriving from orcaice::Component means we have to implement start() and stop()
 class Component : public orcaice::Component
 {
 public:
 
     Component();
-    virtual ~Component();
 
+    // from orcaice::Component
     virtual void start();
     virtual void stop();
 
 private:
-    hydroutil::Thread* mainLoop_;
+    
+    hydroutil::ThreadPtr mainThread_;
 
 };
 

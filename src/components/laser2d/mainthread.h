@@ -28,11 +28,7 @@ class MainThread : public hydroutil::SafeThread
 
 public:
 
-    MainThread( //orcaifaceimpl::LaserScanner2dImpl &laserInterface,
-//               const hydrointerfaces::LaserScanner2d::Config &config,
-//               hydrointerfaces::LaserScanner2dFactory &driverFactory,
-//               bool                                compensateRoll,
-              const orcaice::Context             &context );
+    MainThread( const orcaice::Context &context );
     ~MainThread();
 
     // from SafeThread
@@ -43,8 +39,6 @@ private:
     // Tries repeatedly to instantiate the driver
     void initHardwareDriver();
 
-    // Loops until activated
-    void activate();
     // Loops until established
     void initNetworkInterface();
 
@@ -54,13 +48,7 @@ private:
     orcaifaceimpl::LaserScanner2dImpl *laserInterface_;
 
     hydrointerfaces::LaserScanner2d::Config config_;
-
-    // Generic driver for the hardware
-//     hydrointerfaces::LaserScanner2d *driver_;
-
-    // Loaded with this
-//     hydrointerfaces::LaserScanner2dFactory &driverFactory_;
-
+    // an extra config to allow sensor mounted upside-down
     bool compensateRoll_;
 
     // Generic driver for the hardware

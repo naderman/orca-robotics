@@ -17,13 +17,13 @@
 namespace faithlocaliser
 {
 
-class MainLoop : public hydroutil::SafeThread
+class MainThread : public hydroutil::SafeThread
 {
 
 public:
 
-    MainLoop( const orcaice::Context &context );
-    ~MainLoop();
+    MainThread( const orcaice::Context &context );
+    ~MainThread();
 
     // from SafeThread
     virtual void walk();

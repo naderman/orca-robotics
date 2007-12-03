@@ -74,12 +74,12 @@ FeatureMap2dImpl::initInterface()
 }
 
 void 
-FeatureMap2dImpl::initInterface( hydroutil::Thread* thread, int retryInterval )
+FeatureMap2dImpl::initInterface( hydroutil::Thread* thread, const std::string& subsysName, int retryInterval )
 {
-    topicPrx_ = orcaice::connectToTopicWithString( context_, consumerPrx_, topicName_, thread, retryInterval );
+    topicPrx_ = orcaice::connectToTopicWithString( context_, consumerPrx_, topicName_, thread, subsysName, retryInterval );
 
     ptr_ = new FeatureMap2dI( *this );
-    orcaice::createInterfaceWithString( context_, ptr_, interfaceName_, thread, retryInterval );
+    orcaice::createInterfaceWithString( context_, ptr_, interfaceName_, thread, subsysName, retryInterval );
 }
 
 ::orca::FeatureMap2dData

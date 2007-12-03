@@ -88,6 +88,13 @@ HwThread::HwThread( Config& config, const orcaice::Context &context ) :
     maxTurnrate_ = config.maxTurnrate;
 }
 
+HwThread::~HwThread()
+{
+    delete driver_;
+    delete driverFactory_;
+    delete driverLib_;
+}
+
 void
 HwThread::enableDriver()
 {

@@ -86,13 +86,13 @@ PowerImpl::initInterface()
 }
 
 void 
-PowerImpl::initInterface( hydroutil::Thread* thread, int retryInterval )
+PowerImpl::initInterface( hydroutil::Thread* thread, const std::string& subsysName, int retryInterval )
 {
     topicPrx_ = orcaice::connectToTopicWithString<orca::PowerConsumerPrx>
-        ( context_, consumerPrx_, topicName_, thread, retryInterval );
+        ( context_, consumerPrx_, topicName_, thread, subsysName, retryInterval );
 
     ptr_ = new PowerI( *this );
-    orcaice::createInterfaceWithString( context_, ptr_, interfaceName_, thread, retryInterval );
+    orcaice::createInterfaceWithString( context_, ptr_, interfaceName_, thread, subsysName, retryInterval );
 }
 
 ::orca::PowerData 

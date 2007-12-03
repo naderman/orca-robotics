@@ -46,7 +46,8 @@ public:
 
     // these config settings are checked and possibly limited based on hardware capabilities
     HwThread( Config& config, const orcaice::Context &context );
-
+    ~HwThread();
+    
     // Inherited from SafeThread
     virtual void walk();
 

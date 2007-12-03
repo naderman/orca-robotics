@@ -20,17 +20,6 @@ namespace {
     const char *SUBSYSTEM = "MainThread";
 }
 
-// MainThread::MainThread( orcaifaceimpl::LaserScanner2dImpl &laserInterface,
-//                     const hydrointerfaces::LaserScanner2d::Config &config,
-//                     hydrointerfaces::LaserScanner2dFactory &driverFactory,
-//                     bool                                compensateRoll,
-//                     const orcaice::Context             &context )
-//     : laserInterface_(laserInterface),
-//       config_(config),
-//       driver_(0),
-//       driverFactory_(driverFactory),
-//       compensateRoll_(compensateRoll),
-//       context_(context)
 MainThread::MainThread( const orcaice::Context &context ) :
     laserInterface_(0),
     driver_(0),
@@ -65,37 +54,9 @@ MainThread::MainThread( const orcaice::Context &context ) :
 
 MainThread::~MainThread()
 {
-    if ( driver_ ) delete driver_;
-}
-
-void
-MainThread::activate()
-{
-    while ( !isStopping() )
-    {
-        try {
-            context_.activate();
-            return;
-        }
-        catch ( hydroutil::Exception & e )
-        {
-            std::stringstream ss;
-            ss << "MainThread::activate(): Caught exception: " << e.what();
-            context_.tracer()->warning( ss.str() );
-        }
-        catch ( Ice::Exception & e )
-        {
-            std::stringstream ss;
-            ss << "MainThread::activate(): Caught exception: " << e;
-            context_.tracer()->warning( ss.str() );
-        }
-        catch ( ... )
-        {
-            context_.tracer()->warning( "MainThread::activate(): caught unknown exception." );
-        }
-        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
-        context_.status()->heartbeat( SUBSYSTEM );
-    }
+    delete driver_;
+    delete driverFactory_;
+    delete driverLib_;
 }
 
 void
@@ -107,7 +68,6 @@ MainThread::initNetworkInterface()
     //
     // SENSOR DESCRIPTION
     //
-
     orca::RangeScanner2dDescription descr;
     descr.timeStamp = orcaice::getNow();
 
@@ -123,7 +83,6 @@ MainThread::initNetworkInterface()
     descr.offset = orcaice::getPropertyAsFrame3dWithDefault( prop, prefix+"Offset", descr.offset );
 
     // consider the special case of the sensor mounted level (pitch=0) but upside-down (roll=180)
-//     bool compensateRoll;
     if ( NEAR(descr.offset.o.r,M_PI,0.001) && descr.offset.o.p==0.0 ) {
         // the offset is appropriate, now check the user preference (default is TRUE)
         compensateRoll_ = (bool)orcaice::getPropertyAsIntWithDefault( prop, prefix+"AllowRollCompensation", 1 );
@@ -150,28 +109,8 @@ MainThread::initNetworkInterface()
     laserInterface_ = new orcaifaceimpl::LaserScanner2dImpl( descr,
                                                               "LaserScanner2d",
                                                               context_ );
-    
-    //
-    // INIT INTERFACE
-    //
-    while ( !isStopping() )
-    {
-        try {
-            laserInterface_->initInterface();
-            context_.tracer()->debug( "Activated Laser interface" );
-            return;
-        }
-        catch ( hydroutil::Exception &e )
-        {
-            context_.tracer()->warning( std::string("MainThread::initNetworkInterface(): ") + e.what() );
-        }
-        catch ( ... )
-        {
-            context_.tracer()->warning( "MainThread::initNetworkInterface(): caught unknown exception." );
-        }
-        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
-        context_.status()->heartbeat( SUBSYSTEM );
-    }
+    // init
+    laserInterface_->initInterface( this, SUBSYSTEM );
 }
 
 void
@@ -282,7 +221,8 @@ MainThread::walk()
     laserData->intensities.resize( config_.numberOfSamples );
 
     // These functions catch their exceptions.
-    activate();
+    activate( context_, this, SUBSYSTEM );
+
     initNetworkInterface();
     initHardwareDriver();
 

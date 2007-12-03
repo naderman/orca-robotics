@@ -91,13 +91,13 @@ RangeScanner2dImpl::initInterface()
 }
 
 void 
-RangeScanner2dImpl::initInterface( hydroutil::Thread* thread, int retryInterval )
+RangeScanner2dImpl::initInterface( hydroutil::Thread* thread, const std::string& subsysName, int retryInterval )
 {
     topicPrx_ = orcaice::connectToTopicWithString<orca::RangeScanner2dConsumerPrx>
-        ( context_, consumerPrx_, topicName_, thread, retryInterval );
+        ( context_, consumerPrx_, topicName_, thread, subsysName, retryInterval );
 
     ptr_ = new RangeScanner2dI( *this );
-    orcaice::createInterfaceWithString( context_, ptr_, interfaceName_, thread, retryInterval );
+    orcaice::createInterfaceWithString( context_, ptr_, interfaceName_, thread, subsysName, retryInterval );
 }
 
 orca::RangeScanner2dDataPtr 

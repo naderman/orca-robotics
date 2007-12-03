@@ -7,41 +7,29 @@
  * the LICENSE file included in this distribution.
  *
  */
-#include <orcaice/orcaice.h>
 
 #include "component.h"
-#include "mainloop.h"
-#include "odometry2dconsumerI.h"
+#include "mainthread.h"
 
 using namespace std;
-using namespace orca;
 using namespace faithlocaliser;
 
 Component::Component()
-    : orcaice::Component( "FaithLocaliser" ),
-      mainLoop_(0)
-{
-}
-
-Component::~Component()
+    : orcaice::Component( "FaithLocaliser" )
 {
 }
 
 void
 Component::start()
 {
-    //
-    // MAIN DRIVER LOOP
-    //
-    
-    mainLoop_ = new MainLoop( context() );
-    mainLoop_->start();
+    mainThread_ = new MainThread( context() );
+    mainThread_->start();
 }
 
 void
 Component::stop()
 {
     tracer()->debug( "stopping component", 5 );
-    hydroutil::stopAndJoin( mainLoop_ );
+    hydroutil::stopAndJoin( mainThread_ );
     tracer()->debug( "stopped component", 5 );
 }

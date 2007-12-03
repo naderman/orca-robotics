@@ -84,15 +84,15 @@ OgMapImpl::initInterface()
 }
 
 void 
-OgMapImpl::initInterface( hydroutil::Thread* thread, int retryInterval )
+OgMapImpl::initInterface( hydroutil::Thread* thread, const std::string& subsysName, int retryInterval )
 {
     context_.tracer()->debug( "OgMapImpl::initInterface(thread)", 5 );
 
     topicPrx_ = orcaice::connectToTopicWithString<orca::OgMapConsumerPrx>
-        ( context_, consumerPrx_, topicName_, thread, retryInterval );
+        ( context_, consumerPrx_, topicName_, thread, subsysName, retryInterval );
 
     ptr_ = new OgMapI( *this );
-    orcaice::createInterfaceWithString( context_, ptr_, interfaceName_, thread, retryInterval );
+    orcaice::createInterfaceWithString( context_, ptr_, interfaceName_, thread, subsysName, retryInterval );
 }
 
 orca::OgMapData

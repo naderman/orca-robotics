@@ -11,7 +11,7 @@
 #include <iostream>
 #include <orcaice/orcaice.h>
 
-#include "mainloop.h"
+#include "mainthread.h"
 #include <orcaifaceimpl/localise2dImpl.h>
 #include <orcaifaceimpl/bufferedconsumers.h>
 
@@ -19,7 +19,7 @@ using namespace std;
 using namespace faithlocaliser;
 
 namespace {
-    const char *SUBSYSTEM = "mainloop";
+    const char *SUBSYSTEM = "MainThread";
 
     void odometryToLocalise( const orca::Odometry2dData &odData,
                             orca::Localise2dData        &loData,
@@ -43,7 +43,7 @@ namespace {
 
 }
 
-MainLoop::MainLoop( const orcaice::Context &context ) : 
+MainThread::MainThread( const orcaice::Context &context ) : 
     context_(context)
 {
     context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 10.0 );
@@ -55,12 +55,12 @@ MainLoop::MainLoop( const orcaice::Context &context ) :
     stdDevHeading_ = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"StdDevHeading", 1.0 );
 }
 
-MainLoop::~MainLoop()
+MainThread::~MainThread()
 {
 }
 
 void
-MainLoop::walk()
+MainThread::walk()
 {
     //
     // ENABLE NETWORK CONNECTIONS
@@ -123,7 +123,7 @@ MainLoop::walk()
         if ( odometry2dInterface->buffer().getAndPopNext( odomData, TIMEOUT_MS ) != 0 ) 
         {
             stringstream ss;
-            ss << "MainLoop: received no odometry for " << TIMEOUT_MS << "ms";
+            ss << "MainThread: received no odometry for " << TIMEOUT_MS << "ms";
             context_.tracer()->debug( ss.str(), 2 );
             continue;
         }

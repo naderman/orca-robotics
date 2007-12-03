@@ -94,13 +94,13 @@ DriveBicycleImpl::initInterface()
 }
 
 void 
-DriveBicycleImpl::initInterface( hydroutil::Thread* thread, int retryInterval )
+DriveBicycleImpl::initInterface( hydroutil::Thread* thread, const std::string& subsysName, int retryInterval )
 {
     topicPrx_ = orcaice::connectToTopicWithString<orca::DriveBicycleConsumerPrx>
-        ( context_, consumerPrx_, topicName_, thread, retryInterval );
+        ( context_, consumerPrx_, topicName_, thread, subsysName, retryInterval );
 
     ptr_ = new DriveBicycleI( *this );
-    orcaice::createInterfaceWithString( context_, ptr_, interfaceName_, thread, retryInterval );
+    orcaice::createInterfaceWithString( context_, ptr_, interfaceName_, thread, subsysName, retryInterval );
 }
 
 ::orca::DriveBicycleData 

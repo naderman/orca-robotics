@@ -26,15 +26,15 @@ Component::start()
     //
     // create and start the main thread
     //
-    mainLoop_ = new MainThread( context() );
-    mainLoop_->start();
+    mainThread_ = new MainThread( context() );
+    mainThread_->start();
 }
 
 void 
 Component::stop()
 {
     tracer()->debug("stopping component...",2);
-    hydroutil::stopAndJoin( mainLoop_ );
+    hydroutil::stopAndJoin( mainThread_ );
     tracer()->debug("component stopped.",2);
 }
 

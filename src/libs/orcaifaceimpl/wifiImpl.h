@@ -37,7 +37,7 @@ public:
 
     //! Sets up interface and connects to IceStorm. Catches all exceptions and retries
     //! until sucessful. At every iteration, checks if the thread was stopped.
-    void initInterface( hydroutil::Thread* thread, int retryInterval=2 );
+    void initInterface( hydroutil::Thread* thread, const std::string& subsysName="", int retryInterval=2 );
 
     //! A local call which sets the data reported by the interface, 
     //! and sends it through IceStorm

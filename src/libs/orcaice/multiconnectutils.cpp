@@ -22,7 +22,8 @@ void
 createInterfaceWithString( const Context       & context,
                             Ice::ObjectPtr      & object,
                             const std::string   & name,
-                            hydroutil::Thread*  thread, int retryInterval, int retryNumber )
+                            hydroutil::Thread*  thread, const std::string& subsysName, 
+                            int retryInterval, int retryNumber )
 {
     int count = 0;
     while ( !thread->isStopping() && ( retryNumber<0 || count<retryNumber) )
@@ -46,6 +47,9 @@ createInterfaceWithString( const Context       & context,
         }
         ++count;
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(retryInterval));
+        if ( !subsysName.empty() ) {
+            context.status()->heartbeat( subsysName );
+        }
     }
 }
 
@@ -53,7 +57,8 @@ void
 createInterfaceWithTag( const Context       & context,
                         Ice::ObjectPtr      & object,
                         const std::string   & interfaceTag,
-                        hydroutil::Thread*  thread, int retryInterval, int retryNumber )
+                            hydroutil::Thread*  thread, const std::string& subsysName, 
+                            int retryInterval, int retryNumber )
 {
     int count = 0;
     while ( !thread->isStopping() && ( retryNumber<0 || count<retryNumber) )
@@ -77,11 +82,16 @@ createInterfaceWithTag( const Context       & context,
         }
         ++count;
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(retryInterval));
+        if ( !subsysName.empty() ) {
+            context.status()->heartbeat( subsysName );
+        }
     }
 }
 
 void
-activate( Context& context, hydroutil::Thread* thread, int retryInterval, int retryNumber )
+activate( Context& context, 
+            hydroutil::Thread*  thread, const std::string& subsysName, 
+            int retryInterval, int retryNumber )
 {
     int count = 0;
     while ( !thread->isStopping() && ( retryNumber<0 || count<retryNumber) )
@@ -115,12 +125,16 @@ activate( Context& context, hydroutil::Thread* thread, int retryInterval, int re
         }
         ++count;
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(retryInterval));
+        if ( !subsysName.empty() ) {
+            context.status()->heartbeat( subsysName );
+        }
     }
 }
 
 std::string 
 getInterfaceIdWithString( const Context& context, const std::string& proxyString,
-                       hydroutil::Thread*  thread, int retryInterval, int retryNumber )
+                            hydroutil::Thread*  thread, const std::string& subsysName, 
+                            int retryInterval, int retryNumber )
 {
     std::string ifaceId;
     int count = 0;
@@ -139,13 +153,17 @@ getInterfaceIdWithString( const Context& context, const std::string& proxyString
         }
         ++count;
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(retryInterval));
+        if ( !subsysName.empty() ) {
+            context.status()->heartbeat( subsysName );
+        }
     }
     return ifaceId;
 }
 
 std::string 
 getInterfaceIdWithTag( const Context& context, const std::string& interfaceTag,
-                       hydroutil::Thread*  thread, int retryInterval, int retryNumber )
+                            hydroutil::Thread*  thread, const std::string& subsysName, 
+                            int retryInterval, int retryNumber )
 {
     std::string ifaceId;
     int count = 0;
@@ -164,6 +182,9 @@ getInterfaceIdWithTag( const Context& context, const std::string& interfaceTag,
         }
         ++count;
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(retryInterval));
+        if ( !subsysName.empty() ) {
+            context.status()->heartbeat( subsysName );
+        }
     }
     return ifaceId;
 }

@@ -80,11 +80,15 @@ public:
     //! each attempt.
     //! If succesful, tries to subscribe for data using the internal consumer interface.
     //! Catches appropriate exceptions. DOCUMENT!
-    virtual void subscribeWithString( const std::string& proxyString, hydroutil::Thread* thread, int retryInterval=2, int retryNumber=-1 )=0;
+    virtual void subscribeWithString( const std::string& proxyString, 
+                          hydroutil::Thread*  thread, const std::string& subsysName="", 
+                          int retryInterval=2, int retryNumber=-1 )=0;
 
     //! Same as the threaded version of subscribeWithString() but the interface is looked up 
     //! using the config file and tag interfaceTag.
-    virtual void subscribeWithTag( const std::string& interfaceTag, hydroutil::Thread* thread, int retryInterval=2, int retryNumber=-1 )=0;
+    virtual void subscribeWithTag( const std::string& interfaceTag, 
+                          hydroutil::Thread*  thread, const std::string& subsysName="", 
+                          int retryInterval=2, int retryNumber=-1 )=0;
 };
 
 /*!
@@ -159,11 +163,14 @@ public:
         unsubscribeWithString( proxyString );
     }
 
-    virtual void subscribeWithString( const std::string& proxyString, hydroutil::Thread* thread, int retryInterval=2, int retryNumber=-1  )
+    virtual void subscribeWithString( const std::string& proxyString, 
+                          hydroutil::Thread*  thread, const std::string& subsysName="", 
+                          int retryInterval=2, int retryNumber=-1 )
     {
         ProviderPrxType providerPrx;
         // multi-try
-        orcaice::connectToInterfaceWithString<ProviderPrxType>( context_, providerPrx, proxyString, thread, retryInterval, retryNumber );
+        orcaice::connectToInterfaceWithString<ProviderPrxType>( 
+                context_, providerPrx, proxyString, thread, subsysName, retryInterval, retryNumber );
 
         int count = 0;
         while ( !thread->isStopping() && ( retryNumber<0 || count<retryNumber) )
@@ -202,13 +209,15 @@ public:
 
     }
 
-    virtual void subscribeWithTag( const std::string& interfaceTag, hydroutil::Thread* thread, int retryInterval=2, int retryNumber=-1  )
+    virtual void subscribeWithTag( const std::string& interfaceTag, 
+                          hydroutil::Thread*  thread, const std::string& subsysName="", 
+                          int retryInterval=2, int retryNumber=-1 )
     {
         // this may throw ConfigFileException, we don't catch it, let the user catch it at the component level
         std::string proxyString = orcaice::getRequiredInterfaceAsString( context_, interfaceTag );
     
         // now that we have the stingified proxy, use the function above.
-        subscribeWithString( proxyString, thread, retryInterval, retryNumber );
+        subscribeWithString( proxyString, thread, subsysName, retryInterval, retryNumber );
     }
 
     //! Access to the proxy to the internal consumer interface implementation.

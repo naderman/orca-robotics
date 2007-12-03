@@ -50,8 +50,10 @@ public:
     void initInterface();
 
     //! Sets up interface and connects to IceStorm. Catches all exceptions and retries
-    //! until sucessful. At every iteration, checks if the thread was stopped.
-    void initInterface( hydroutil::Thread* thread, int retryInterval=2 );
+    //! until sucessful. Before every attempt checks if the thread was stopped. After every
+    //! If a non-empty subsystem name is supplied, sends a Status heartbeat after each attempt 
+    //! (@see hydroutil::Status).
+    void initInterface( hydroutil::Thread* thread, const std::string& subsysName="", int retryInterval=2 );
 
     //! A local call which sets the data reported by the interface
     void localSet( const orca::LaserScanner2dDataPtr& data );

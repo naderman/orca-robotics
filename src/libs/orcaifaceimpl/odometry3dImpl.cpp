@@ -93,13 +93,13 @@ Odometry3dImpl::initInterface()
 }
 
 void 
-Odometry3dImpl::initInterface( hydroutil::Thread* thread, int retryInterval )
+Odometry3dImpl::initInterface( hydroutil::Thread* thread, const std::string& subsysName, int retryInterval )
 {
     topicPrx_ = orcaice::connectToTopicWithString<orca::Odometry3dConsumerPrx>
-        ( context_, consumerPrx_, topicName_, thread, retryInterval );
+        ( context_, consumerPrx_, topicName_, thread, subsysName, retryInterval );
 
     ptr_ = new Odometry3dI( *this );
-    orcaice::createInterfaceWithString( context_, ptr_, interfaceName_, thread, retryInterval );
+    orcaice::createInterfaceWithString( context_, ptr_, interfaceName_, thread, subsysName, retryInterval );
 }
 
 ::orca::Odometry3dData 
