@@ -123,6 +123,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - PathPlanner
     - Got rid of that hazardMap malarky -- now only accepts an OG map (alex b)
 
+- FaithLocaliser
+    - converted source code to modern style (alex m)
+
 @par Updated utilities
 
 - Pinger/Replier
@@ -137,6 +140,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 - libOrcaIce
     - fixed bug which made Tracer and Status not to load configuration parameters (alex m)
+    - all multi-try functions now accept an optional parameter specifying the name of the subsystem.
+      if this name is provided, Status heartbeat is sent at every attempt. (alex m)
 
 - libOrcaLog
     - Changes for interactive log-playing (alex b)
