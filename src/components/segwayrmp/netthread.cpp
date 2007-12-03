@@ -61,6 +61,19 @@ convert( const hydrointerfaces::SegwayRmp::Data& internal, orca::Odometry3dData&
     network.motion.w.z = internal.dyaw;
 }
 
+// The CU batteries are the main ones.
+double
+cuBatteryPercentRemaining( double cuVoltage )
+{
+    const double vMax  = 78;
+    const double vMin  = 69;
+    const double slope = 100.0 / (vMax-vMin);
+    const double b = -vMin * slope;
+
+    double pct = slope * cuVoltage + b;
+    return pct;
+}
+
 void 
 convert( const hydrointerfaces::SegwayRmp::Data& internal, orca::PowerData& network )
 {
@@ -70,13 +83,16 @@ convert( const hydrointerfaces::SegwayRmp::Data& internal, orca::PowerData& netw
     // set up data structure for 2 batteries
     network.batteries.resize(2);
     network.batteries[0].name = "main";
-    network.batteries[1].name = "ui";
-
     network.batteries[0].voltage = internal.mainvolt;
-    network.batteries[1].voltage = internal.uivolt;
-    
+    network.batteries[0].percent = cuBatteryPercentRemaining( internal.mainvolt );
     network.batteries[0].isBatteryCharging = orca::ChargingUnknown;
+    network.batteries[0].secRemaining      = 0;
+
+    network.batteries[1].name = "ui";
+    network.batteries[1].voltage = internal.uivolt;
+    network.batteries[1].percent = 0;
     network.batteries[1].isBatteryCharging = orca::ChargingUnknown;
+    network.batteries[1].secRemaining = 0;
 }
 
 void 

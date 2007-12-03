@@ -10,14 +10,11 @@ Provides.SkeletonGraphics.DefaultName=skeletongraphics
 # Required Interfaces
 Requires.OgMap.Type=OgMap
 Requires.OgMap.DefaultProxy=ogmap@local/ogmaploader
-Requires.HazardMap.Type=HazardMap
-Requires.HazardMap.DefaultProxy=ogmap@local/hazardmaploader
 
 # Config Parameters
 Config.Driver.Comment=Options are { 'simplenav', 'skeletonnav', 'sparseskeletonnav', 'astar', 'fake' }
 Config.Driver.Default=sparseskeletonnav
 
-Config.UseHazardMap.Default=0
 Config.TraversabilityThreshhold.Default=0.3
 Config.RobotDiameterMetres.Default=0.8
 Config.DoPathOptimization.Default=1

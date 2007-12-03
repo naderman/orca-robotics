@@ -93,31 +93,6 @@ AlgoHandler::initNetwork()
         //       but if this happens it's ok if we just quit.
     }
     
-    // Optional hazard map
-    std::string prefix = context_.tag() + ".Config.";
-    useHazardMap_ = orcaice::getPropertyAsIntWithDefault( context_.properties(), prefix+"UseHazardMap", 0 );
-    
-    if (useHazardMap_)
-    {
-        while( !isStopping() )
-        {
-            try
-            {
-                orcaice::connectToInterfaceWithTag<orca::OgMapPrx>( context_, hazardMapPrx_, "HazardMap" );
-                break;
-            }
-            catch ( const std::exception & e )
-            {
-                stringstream ss;
-                ss << "AlgoHandler: failed to connect to hazardMap interface: " << e.what();
-                context_.tracer()->error( ss.str() );
-                IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
-            }
-            // NOTE: connectToInterfaceWithTag() can also throw ConfigFileException,
-            //       but if this happens it's ok if we just quit.
-        }
-    }
-
     //
     // PROVIDED INTERFACES
     //
@@ -156,28 +131,6 @@ AlgoHandler::initDriver()
     // convert into internal representation
     orcaogmap::convert(ogMapSlice,ogMap_);
     
-    // hazard map is optional
-    if (useHazardMap_)
-    {
-        orca::OgMapData hazardMapSlice;
-        hydroogmap::OgMap hazardMap;
-        try
-        {
-            hazardMapSlice = hazardMapPrx_->getData();
-        }
-        catch ( const orca::DataNotExistException & e )
-        {
-            std::stringstream ss;
-            ss << "algohandler::initDriver: DataNotExistException: "<<e.what;
-            context_.tracer()->warning( ss.str() );
-        }
-        // convert into internal representation
-        orcaogmap::convert(hazardMapSlice,hazardMap);
-        // overlay the two maps, result is stored in ogMap
-        hydroogmap::overlay(ogMap_,hazardMap);
-    }
-
-
     //
     // Read settings
     //

@@ -43,7 +43,6 @@ private:
     AlgoDriver* driver_;
 
     orca::OgMapPrx ogMapPrx_;
-    orca::OgMapPrx hazardMapPrx_;
     
     // we have to keep the ogmap as member variable,
     // otherwise they get out of scope if we pass references around
@@ -58,8 +57,6 @@ private:
     
     orcaice::Context context_;
     
-    int useHazardMap_;
-
     // cost of traversing cells (only used for skeleton variants)
     hydropathplan::CostEvaluator *costEvaluator_;
 };
