@@ -95,6 +95,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 - Laser2d
     - fixed bug made dynamically loaded drivers not to load configuration parameters (alex m)
+    - converted source code to modern style (alex m)
 
 - LogPlayer
     - Implemented interactive interface which allows
@@ -105,11 +106,13 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 - Robot2d
     - moved hardware drivers to Hydro (alex m)
+    - converted source code to modern style (alex m)
 
 - SegwayRMP
     - big overhaul of SegwayRmpDriver (alex b)
     - Added interpretation of pct remaining for CU batteries (alex b)
     - moved hardware drivers to Hydro (alex m)
+    - converted source code to modern style (alex m)
 
 - GoalPlanner
     - Added functionality to re-plan when something goes awry (alex b)
