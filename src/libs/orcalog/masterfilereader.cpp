@@ -15,6 +15,7 @@
 #include <orcalog/exceptions.h>
 
 #include "masterfilereader.h"
+#include "detail/filebreadcrumbs.h"
 #include "utils.h"
 
 using namespace std;
@@ -23,13 +24,15 @@ using namespace orcalog;
 
 MasterFileReader::MasterFileReader( const std::string &filename, const orcaice::Context& context )
     : cursorValid_(false),
-      context_(context)
+      context_(context),
+      breadCrumbs_(0)
 {
     // create master file
     file_ = new ifstream( filename.c_str() );
     if ( !file_->is_open() ) {
         throw orcalog::FileException( ERROR_INFO, "Could not open master file " + filename );
     }
+    breadCrumbs_ = new detail::FileBreadCrumbs<IceUtil::Time>();
 
     // remember the dir where the master file is located
     // the individual log files MUST be in the same dir.
@@ -53,6 +56,7 @@ MasterFileReader::~MasterFileReader()
         file_->close();
         delete file_;
     }
+    delete breadCrumbs_;
 }
 
 void
@@ -105,7 +109,7 @@ void
 MasterFileReader::rewindToStart()
 {   
     std::ios::pos_type crumbPos;
-    detail::SeekResult res = breadCrumbs_.getCrumbAtOrAfter( iceUtilTime(0,0), crumbPos );
+    detail::SeekResult res = breadCrumbs_->getCrumbAtOrAfter( iceUtilTime(0,0), crumbPos );
     assert( (res == detail::SeekOK) && "Should be able to find first crumb!" );
 
     moveTo( crumbPos );
@@ -148,7 +152,7 @@ MasterFileReader::readData( int& seconds, int& useconds, int& id, int& index )
         }
 
         // success
-        breadCrumbs_.placeCrumb( lineStartPos, iceUtilTime(seconds, useconds) );
+        breadCrumbs_->placeCrumb( lineStartPos, iceUtilTime(seconds, useconds) );
         return 0;
     }
     
@@ -185,7 +189,7 @@ MasterFileReader::placeCursorBeforeTime( int seekSec, int seekUsec )
     // Get what we want from the breadCrumbs_.
 
     std::ios::pos_type crumbPos;
-    detail::SeekResult result = breadCrumbs_.getCrumbBefore( iceUtilTime(seekSec, seekUsec),
+    detail::SeekResult result = breadCrumbs_->getCrumbBefore( iceUtilTime(seekSec, seekUsec),
                                                              crumbPos );
 
     if ( result == detail::SeekOK )
@@ -224,7 +228,7 @@ MasterFileReader::placeCursorAtOrAfterTime( int seekSec,
 {
     // Maybe the requested time is in the past, somewhere in the trail of breadcrumbs.
     std::ios::pos_type crumbPos;
-    detail::SeekResult result = breadCrumbs_.getCrumbAtOrAfter( iceUtilTime(seekSec, seekUsec), 
+    detail::SeekResult result = breadCrumbs_->getCrumbAtOrAfter( iceUtilTime(seekSec, seekUsec), 
                                                                 crumbPos );
 
     if ( result == detail::SeekOK )

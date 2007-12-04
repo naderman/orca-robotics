@@ -13,10 +13,13 @@
 
 #include <IceUtil/Mutex.h>
 #include <orcaice/context.h>
-#include <orcalog/detail/filebreadcrumbs.h>
 
 namespace orcalog
 {
+    namespace detail{
+        template<typename IndexType>
+        class FileBreadCrumbs;
+    }
 
 /*!
      @brief Knows how to parse a master file.
@@ -83,7 +86,7 @@ private:
     std::ifstream *file_;
 
     // Used for recording positions in the file.
-    detail::FileBreadCrumbs<IceUtil::Time> breadCrumbs_;
+    detail::FileBreadCrumbs<IceUtil::Time> *breadCrumbs_;
 
     // The time of the first entry
     IceUtil::Time initialCursorTime_;
