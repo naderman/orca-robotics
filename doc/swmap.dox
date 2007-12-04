@@ -14,35 +14,34 @@
 
 @see <strong><a href="modules.html" style="text-decoration:none">One page version</a></strong> of this software map.
 
-@par Interface definitions
+@par Component interface definitions
 
-<strong><a href="group__orca__interfaces.html" style="text-decoration:none">Interfaces</a></strong>
+- @ref orca_interfaces
 
 @par By type
 
-<strong><a href="group__orca__components.html" style="text-decoration:none">Components</a></strong><br>
-<strong><a href="group__orca__libs.html" style="text-decoration:none">Libraries</a></strong><br>
-<strong><a href="group__orca__utils.html" style="text-decoration:none">Utilities</a></strong><br>
-<strong><a href="group__orca__examples.html" style="text-decoration:none">Examples</a></strong><br>
-<strong><a href="group__orca__tests.html" style="text-decoration:none">Tests</a></strong><br>
+- @ref orca_components
+- @ref orca_libs
+- @ref orca_utils
+- @ref orca_examples
 
 @par By form-factor
 
-<strong><a href="group__orca__apps.html" style="text-decoration:none">Stand-alone components</a></strong><br>
-<strong><a href="group__orca__services.html" style="text-decoration:none">IceBox services</a></strong><br>
+- @ref orca_apps
+- @ref orca_services
 
 @par By Operating System
 
-<strong><a href="group__orca__linux.html" style="text-decoration:none">Linux</a></strong><br>
-<strong><a href="group__orca__qnx.html" style="text-decoration:none">QNX</a></strong><br>
-<strong><a href="group__orca__win.html" style="text-decoration:none">Windows</a></strong><br>
+- @ref orca_linux
+- @ref orca_qnx
+- @ref orca_win
 
 @par By programming language
 
-<strong><a href="group__orca__cpp.html" style="text-decoration:none">C++</a></strong><br>
-<strong><a href="group__orca__java.html" style="text-decoration:none">Java</a></strong><br>
-<strong><a href="group__orca__python.html" style="text-decoration:none">Python</a></strong><br>
-<strong><a href="group__orca__php.html" style="text-decoration:none">PHP</a></strong><br>
-<strong><a href="group__orca__matlab.html" style="text-decoration:none">Matlab</a></strong><br>
+- @ref orca_cpp
+- @ref orca_java
+- @ref orca_python
+- @ref orca_php
+- @ref orca_matlab
 
 */
