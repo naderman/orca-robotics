@@ -13,7 +13,7 @@
 
 #include <orca/estop.h>
 #include <orcaice/orcaice.h>
-#include "estopimpl.h"
+#include "estopImpl.h"
 #include "util.h"
 
 using namespace std;
