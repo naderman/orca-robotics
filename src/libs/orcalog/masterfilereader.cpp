@@ -24,15 +24,14 @@ using namespace orcalog;
 
 MasterFileReader::MasterFileReader( const std::string &filename, const orcaice::Context& context )
     : cursorValid_(false),
-      context_(context),
-      breadCrumbs_(0)
+      context_(context)
 {
     // create master file
     file_ = new ifstream( filename.c_str() );
     if ( !file_->is_open() ) {
         throw orcalog::FileException( ERROR_INFO, "Could not open master file " + filename );
     }
-    breadCrumbs_ = new detail::FileBreadCrumbs<IceUtil::Time>();
+    breadCrumbs_.reset( new detail::FileBreadCrumbs<IceUtil::Time> );
 
     // remember the dir where the master file is located
     // the individual log files MUST be in the same dir.
@@ -56,7 +55,6 @@ MasterFileReader::~MasterFileReader()
         file_->close();
         delete file_;
     }
-    delete breadCrumbs_;
 }
 
 void

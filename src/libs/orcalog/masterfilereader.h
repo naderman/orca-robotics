@@ -86,7 +86,8 @@ private:
     std::ifstream *file_;
 
     // Used for recording positions in the file.
-    detail::FileBreadCrumbs<IceUtil::Time> *breadCrumbs_;
+    // detail::FileBreadCrumbs<IceUtil::Time> *breadCrumbs_;
+    std::auto_ptr< detail::FileBreadCrumbs<IceUtil::Time> > breadCrumbs_;
 
     // The time of the first entry
     IceUtil::Time initialCursorTime_;
