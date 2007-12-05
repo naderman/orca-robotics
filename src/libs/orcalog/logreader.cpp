@@ -9,9 +9,11 @@
  */
 
 #include <fstream>
+#include <hydroutil/hydroutil.h>
+
 #include "logreader.h"
 #include "exceptions.h"
-#include <hydroutil/hydroutil.h>
+#include "detail/filebreadcrumbs.h"
 
 using namespace std;
 
@@ -20,8 +22,10 @@ namespace orcalog {
 LogReader::LogReader( const LogReaderInfo &logReaderInfo )
     : file_(0),
       logReaderInfo_(logReaderInfo),
-      logIndex_(-1)
-{    
+      logIndex_(-1),
+      breadCrumbs_(0)
+{
+    breadCrumbs_ = new detail::FileBreadCrumbs<int>();
 }
 
 LogReader::~LogReader()
@@ -30,6 +34,7 @@ LogReader::~LogReader()
         file_->close();
         delete file_;
     }
+    delete breadCrumbs_;
 }
     
 void 
@@ -75,7 +80,7 @@ LogReader::setLogIndex( int index )
         return;
     }
 
-    if ( index > breadCrumbs_.latest() )
+    if ( index > breadCrumbs_->latest() )
     {
         // Have to fast-forward into the future
         while ( logIndex_ < index )
@@ -83,11 +88,11 @@ LogReader::setLogIndex( int index )
             read();
         }
     }
-    else // index < breadCrumbs_.latest()
+    else // index < breadCrumbs_->latest()
     {
         // Have to rewind into the past
         std::ios::pos_type crumbPos;
-        bool found = breadCrumbs_.getCrumbAt( index, crumbPos );
+        bool found = breadCrumbs_->getCrumbAt( index, crumbPos );
         if ( !found )
         {
             stringstream ss;
@@ -103,14 +108,14 @@ void
 LogReader::zeroLogIndex()
 {
     logIndex_ = 0;
-    breadCrumbs_.placeCrumb( file_->tellg(), logIndex_ );
+    breadCrumbs_->placeCrumb( file_->tellg(), logIndex_ );
 }
 
 void 
 LogReader::advanceLogIndex()
 {
     logIndex_++;
-    breadCrumbs_.placeCrumb( file_->tellg(), logIndex_ );
+    breadCrumbs_->placeCrumb( file_->tellg(), logIndex_ );
 
     // Let the user know that something's happening
     if ( (logIndex_ % 50)==0 )

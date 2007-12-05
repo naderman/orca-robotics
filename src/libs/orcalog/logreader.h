@@ -15,10 +15,14 @@
 #include <vector>
 #include <orcaice/context.h>
 #include <orcalog/logreaderinfo.h>
-#include <orcalog/detail/filebreadcrumbs.h>
 
 namespace orcalog
 {
+
+    namespace detail{
+        template<typename IndexType>
+        class FileBreadCrumbs;
+    }
 
 //! Handles a file which contains actual data (ie not the master file).
 //! All LogReaders inherit from this. 
@@ -77,7 +81,7 @@ private:
 
     // As we move through the file, leave a trail of bread-crumbs so we can rewind
     // (use the index as the key)
-    detail::FileBreadCrumbs<int> breadCrumbs_;
+    detail::FileBreadCrumbs<int> *breadCrumbs_;
 };
 
 //! Optional utility, which allocates space for opened file.
