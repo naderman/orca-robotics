@@ -125,7 +125,7 @@ NetThread::NetThread( HwThread                      &hwThread,
     if ( controlDescr->maxForwardSpeed != controlDescr->maxReverseSpeed ) 
         throw hydroutil::Exception( ERROR_INFO, "Can't handle max forward speed != max reverse speed." );
 
-    // for symetric limits, only need to store 2 constants.
+    // for symmetric limits, only need to store 2 constants.
     maxSpeed_    = controlDescr->maxForwardSpeed;
     maxTurnrate_ = controlDescr->maxTurnrate;
 
@@ -170,22 +170,23 @@ NetThread::handleData(const orca::VelocityControl2dData& incomingCommand)
 void
 NetThread::walk()
 {
-    activate( context_, this );
+    // this is a multi-try function to activate component's server capabilities
+    activate( context_, this, SUBSYSTEM_NAME );
     
     std::string prefix = context_.tag() + ".Config.";
 
     // Initialise external interfaces
     odometry2dI_ = new orcaifaceimpl::Odometry2dImpl( descr_, "Odometry2d", context_ );
-    odometry2dI_->initInterface( this );
+    odometry2dI_->initInterface( this, SUBSYSTEM_NAME );
     
     odometry3dI_ = new orcaifaceimpl::Odometry3dImpl( descr_, "Odometry3d", context_ );
-    odometry3dI_->initInterface( this );
+    odometry3dI_->initInterface( this, SUBSYSTEM_NAME );
 
     powerI_ = new orcaifaceimpl::PowerImpl( "Power", context_ );
-    powerI_->initInterface( this );
+    powerI_->initInterface( this, SUBSYSTEM_NAME );
 
     velocityControl2dI_ = new orcaifaceimpl::VelocityControl2dImpl( descr_, "VelocityControl2d", context_ );
-    velocityControl2dI_->initInterface( this );
+    velocityControl2dI_->initInterface( this, SUBSYSTEM_NAME );
     // register ourselves as data handlers (it will call the handleData() callback).
     velocityControl2dI_->setNotifyHandler( this );
 

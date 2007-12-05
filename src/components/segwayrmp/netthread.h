@@ -13,19 +13,16 @@
 
 #include <hydroutil/safethread.h>
 #include <orcaice/context.h>
-#include <hydroutil/notify.h>
 
-#include <orcaifaceimpl/estopimpl.h>
 #include <orcaifaceimpl/odometry2dImpl.h>
 #include <orcaifaceimpl/odometry3dImpl.h>
 #include <orcaifaceimpl/powerImpl.h>
 #include <orcaifaceimpl/velocitycontrol2dImpl.h>
+#include <orcaifaceimpl/estopImpl.h>
 #include "hwthread.h"
 
 namespace segwayrmp
 {
-
-
 
 class NetThread : public hydroutil::SafeThread,
                   public hydroutil::NotifyHandler<orca::VelocityControl2dData>
@@ -40,6 +37,7 @@ public:
     virtual void walk();
 
     // from NotifyHandler
+    // this call originates in orcaifaceimpl::VelocityControl2dImpl
     virtual void handleData(const orca::VelocityControl2dData &incomingCommand);
 
 private:
@@ -56,6 +54,7 @@ private:
     // proxy to our optional 'required interface'
     orca::EStopPrx eStopPrx_;
 
+    // we need this reference to call a couple of get/set functions
     HwThread &hwThread_;
 
     orca::VehicleDescription descr_;
@@ -64,7 +63,7 @@ private:
     double maxSpeed_;
     double maxTurnrate_;
 
-    // component current context
+    // component context
     orcaice::Context context_;
 };
 
