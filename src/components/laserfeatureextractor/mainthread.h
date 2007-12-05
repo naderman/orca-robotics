@@ -12,10 +12,9 @@
 #ifndef ORCA2_FEATURE_EXTRACTOR_MAIN_LOOP_H
 #define ORCA2_FEATURE_EXTRACTOR_MAIN_LOOP_H
 
-#include <hydroutil/thread.h>
+#include <hydroutil/safethread.h>
 #include <orcaice/context.h>
 
-#include <orca/polarfeature2d.h>
 #include <orca/laserscanner2d.h>
 #include <orcaifaceimpl/polarfeature2dImpl.h>
 #include <orcaifaceimpl/proxiedconsumers.h>
@@ -25,23 +24,22 @@ namespace laserfeatures
 
 class AlgorithmDriver;
 
-class MainLoop : public hydroutil::Thread
+class MainThread : public hydroutil::SafeThread
 {
 public:
 
-    MainLoop( orcaifaceimpl::PolarFeature2dImpl &featureInterface,
-              const orcaice::Context &context );
+    MainThread( const orcaice::Context &context );
+    ~MainThread();
 
-    ~MainLoop();
-
-    virtual void run();
+    // from SafeThread
+    virtual void walk();
 
 private:
 
     void connectToLaser();
     void getLaserDescription();
-    void initInterface();
-    void initDriver();
+    void initAlgorithmDriver();
+    void initNetworkInterface();
     
     // This component is 2D-centric: can only handle certain orientations.
     bool sensorOffsetOK( const orca::Frame3d & offset );
@@ -52,7 +50,7 @@ private:
     AlgorithmDriver* driver_;
     
     // Our external interface
-    orcaifaceimpl::PolarFeature2dImpl &featureInterface_;
+    orcaifaceimpl::PolarFeature2dImplPtr featureInterface_;
     
     // Laser proxy
     orca::LaserScanner2dPrx laserPrx_;
@@ -70,7 +68,6 @@ private:
     orcaifaceimpl::ProxiedRangeScanner2dConsumerImplPtr laserConsumer_;
 
     orcaice::Context context_;
-
 };
 
 } // namespace

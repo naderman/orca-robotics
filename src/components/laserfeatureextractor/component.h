@@ -14,31 +14,22 @@
 
 #include <orcaice/component.h>
 
-// interface definitions
-#include <orcaifaceimpl/polarfeature2dImpl.h>
-
 namespace laserfeatures
 {
-
-class MainLoop;
 
 class Component : public orcaice::Component
 {
 public:
 
     Component();
-    virtual ~Component();
 
-    // component interface
+    // from orcaice::Component
     virtual void start();
     virtual void stop();
 
 private:
 
-    // External interface: polar features
-    orcaifaceimpl::PolarFeature2dImplPtr featureInterface_;
-
-    MainLoop *mainLoop_;
+    hydroutil::ThreadPtr mainThread_;
 };
 
 } // namespace

@@ -51,5 +51,3 @@ Config.Doors.BearingSd.Default=5.0
 Config.Doors.MinReturnsThruDoor.Default=3
 Config.Doors.MinReturnsBesideDoor.Default=2
 Config.Doors.MaxDeltaRangeWallBesideDoor.Default=0.3
-
-

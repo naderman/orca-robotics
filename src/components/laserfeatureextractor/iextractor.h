@@ -3,9 +3,9 @@
 
 namespace laserfeatures {
 
-//!
-//! @author Alex Brooks
-//!
+//
+// @author Alex Brooks
+//
 class IExtractor
 {
 

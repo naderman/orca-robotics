@@ -11,24 +11,21 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include "mainloop.h"
+#include "mainthread.h"
 
 // these drivers can always be built
 #include "fakedriver.h"
 #include "combineddriver.h"
 
 using namespace std;
-using namespace orca;
 using namespace laserfeatures;
 
 namespace {
-    const char *SUBSYSTEM = "mainloop";
+    const char *SUBSYSTEM = "MainLoop";
 }
 
-MainLoop::MainLoop( orcaifaceimpl::PolarFeature2dImpl &featureInterface,
-                    const orcaice::Context &context )
+MainThread::MainThread( const orcaice::Context &context )
     : driver_(NULL),
-      featureInterface_(featureInterface),
       context_(context)
 {
     context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 10.0 );
@@ -45,16 +42,17 @@ MainLoop::MainLoop( orcaifaceimpl::PolarFeature2dImpl &featureInterface,
     laserConsumer_ = new orcaifaceimpl::ProxiedRangeScanner2dConsumerImpl( context_ );
 }
 
-MainLoop::~MainLoop()
+MainThread::~MainThread()
 {
-    if ( driver_ ) delete driver_;
+    delete driver_;
 }
 
 void 
-MainLoop::initDriver()
+MainThread::initAlgorithmDriver()
 {
     std::string prefix = context_.tag() + ".Config.";
     Ice::PropertiesPtr prop = context_.properties();
+
     std::string driverName = orcaice::getPropertyWithDefault( prop,
             prefix+"Driver", "combined" );
     
@@ -84,14 +82,15 @@ MainLoop::initDriver()
 }
 
 void 
-MainLoop::connectToLaser()
+MainThread::connectToLaser()
 {
     while ( !isStopping() )
     {
         try
         {
             context_.tracer()->debug( "Connecting to laser...", 3 );
-            orcaice::connectToInterfaceWithTag<LaserScanner2dPrx>( context_, laserPrx_, "Laser" );
+            orcaice::connectToInterfaceWithTag<orca::LaserScanner2dPrx>( 
+                context_, laserPrx_, "Laser" );
             context_.tracer()->debug("connected to a 'Laser' interface", 4 );
             break;
         }
@@ -146,7 +145,7 @@ MainLoop::connectToLaser()
 }
 
 void 
-MainLoop::getLaserDescription()
+MainThread::getLaserDescription()
 {
     while ( !isStopping() )
     {
@@ -183,30 +182,25 @@ MainLoop::getLaserDescription()
 }
 
 void
-MainLoop::initInterface()
-{
-    while ( !isStopping() )
-    {
-        try {
-            context_.tracer()->debug( "Initialising PolarFeature2d interface...",3 );
-            featureInterface_.initInterface();
-            context_.tracer()->debug( "Initialised PolarFeature2d interface",3 );
-            return;
-        }
-        catch ( hydroutil::Exception &e )
-        {
-            context_.tracer()->warning( std::string("MainLoop::initInterface(): ") + e.what() );
-        }
-        context_.status()->initialising( SUBSYSTEM, "initInterface()" );
-        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
-    }
+MainThread::initNetworkInterface()
+{    
+    //
+    // Instantiate External Interface
+    //
+    featureInterface_ = new orcaifaceimpl::PolarFeature2dImpl( "PolarFeature2d", context_ );
+
+    // init
+    featureInterface_->initInterface( this, SUBSYSTEM );
 }
 
 void 
-MainLoop::run()
+MainThread::walk()
 {
-    initInterface();
-    initDriver();
+    // These functions catch their exceptions.
+    activate( context_, this, SUBSYSTEM );
+
+    initNetworkInterface();
+    initAlgorithmDriver();
 
     orca::PolarFeature2dData featureData;
 
@@ -222,6 +216,7 @@ MainLoop::run()
     // Loop forever till we get shut down.
     while ( !isStopping() )
     {
+        // this try makes this component robust to exceptions
         try
         {                
             //
@@ -264,37 +259,37 @@ MainLoop::run()
             // features have the same time stamp as the raw scan
             featureData.timeStamp = laserData->timeStamp;
 
-            featureInterface_.localSetAndSend( featureData );
+            featureInterface_->localSetAndSend( featureData );
 
             context_.status()->ok( SUBSYSTEM );
         } // try
         catch ( const orca::OrcaException & e )
         {
             std::stringstream ss;
-            ss << "MainLoop: unexpected orca exception: " << e << ": " << e.what;
+            ss << "MainThread: unexpected orca exception: " << e << ": " << e.what;
             context_.tracer()->error( ss.str() );
         }
         catch ( const Ice::Exception & e )
         {
             std::stringstream ss;
-            ss << "MainLoop: unexpected Ice exception: " << e;
+            ss << "MainThread: unexpected Ice exception: " << e;
             context_.tracer()->error( ss.str() );
         }
         catch ( const std::exception & e )
         {
             std::stringstream ss;
-            ss << "MainLoop: unexpected std exception: " << e.what();
+            ss << "MainThread: unexpected std exception: " << e.what();
             context_.tracer()->error( ss.str() );
         }
         catch ( const std::string &e )
         {
             std::stringstream ss;
-            ss << "MainLoop: unexpected std::string exception: " << e;
+            ss << "MainThread: unexpected std::string exception: " << e;
             context_.tracer()->error( ss.str() );
         }
         catch ( ... )
         {
-            context_.tracer()->error( "MainLoop: unexpected exception from somewhere.");
+            context_.tracer()->error( "MainThread: unexpected exception from somewhere.");
         }
     } // while
 
@@ -304,10 +299,10 @@ MainLoop::run()
 void
 convertPointToRobotCS( double &range,
                        double &bearing,
-                       const CartesianPoint &offsetXyz,
-                       const OrientationE offsetAngles )
+                       const orca::CartesianPoint &offsetXyz,
+                       const orca::OrientationE offsetAngles )
 {
-    CartesianPoint LaserXy, RobotXy;
+    orca::CartesianPoint LaserXy, RobotXy;
     
     LaserXy.x = cos(bearing) * range;
     LaserXy.y = sin(bearing) * range;
@@ -318,10 +313,10 @@ convertPointToRobotCS( double &range,
 }
 
 void 
-MainLoop::convertToRobotCS( const PolarFeature2dData &featureData )
+MainThread::convertToRobotCS( const orca::PolarFeature2dData &featureData )
 {
-    CartesianPoint offsetXyz = sensorOffset_.p;
-    OrientationE   offsetAngles = sensorOffset_.o;
+    orca::CartesianPoint offsetXyz = sensorOffset_.p;
+    orca::OrientationE   offsetAngles = sensorOffset_.o;
     
     for (unsigned int i=0; i<featureData.features.size(); i++ )
     {
@@ -366,7 +361,7 @@ MainLoop::convertToRobotCS( const PolarFeature2dData &featureData )
             if ( bearingDiff < 0 )
             {
                 stringstream ss;
-                ss << "MainLoop::convertToRobotCS(): bearingDiff < 0 -- line is not visible from sensor pose!"
+                ss << "MainThread::convertToRobotCS(): bearingDiff < 0 -- line is not visible from sensor pose!"
                    << "  Line was: " 
                    << orcaice::toString(ftr);
                 throw hydroutil::Exception( ERROR_INFO, ss.str() );
@@ -388,7 +383,7 @@ MainLoop::convertToRobotCS( const PolarFeature2dData &featureData )
                 //   So turn the thing around.
                 //
                 stringstream ss;
-                ss << "MainLoop::convertToRobotCS(): bearingDiff < 0 -- line is not visible from platform pose!"
+                ss << "MainThread::convertToRobotCS(): bearingDiff < 0 -- line is not visible from platform pose!"
                    << "  (this is possible when sensor/platforms poses are not co-located).  Ignoring."<<endl
                    << "  Line was: " 
                    << orcaice::toString(ftr);
@@ -404,7 +399,7 @@ MainLoop::convertToRobotCS( const PolarFeature2dData &featureData )
 }
 
 bool
-MainLoop::sensorOffsetOK( const orca::Frame3d & offset )
+MainThread::sensorOffsetOK( const orca::Frame3d & offset )
 {
     bool offsetOk = true;
     if ( offset.p.z != 0.0 )
