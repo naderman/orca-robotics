@@ -124,6 +124,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     - Got rid of that hazardMap malarky -- now only accepts an OG map (alex b)
 
 - FaithLocaliser
+- LaserFeatureExtractor
     - converted source code to modern style (alex m)
 
 @par Updated utilities
