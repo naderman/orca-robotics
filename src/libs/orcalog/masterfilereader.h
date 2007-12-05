@@ -85,10 +85,6 @@ private:
 
     std::ifstream *file_;
 
-    // Used for recording positions in the file.
-    // detail::FileBreadCrumbs<IceUtil::Time> *breadCrumbs_;
-    std::auto_ptr< detail::FileBreadCrumbs<IceUtil::Time> > breadCrumbs_;
-
     // The time of the first entry
     IceUtil::Time initialCursorTime_;
 
@@ -111,6 +107,10 @@ private:
     std::vector<std::string> interfaceTypes_;
     std::vector<std::string> formats_;
     std::vector<bool>        enableds_;
+
+    // Used for recording positions in the file.
+    // detail::FileBreadCrumbs<IceUtil::Time> *breadCrumbs_;
+    std::auto_ptr< detail::FileBreadCrumbs<IceUtil::Time> > breadCrumbs_;
 
     orcaice::Context context_;
 };

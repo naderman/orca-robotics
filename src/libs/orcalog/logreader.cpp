@@ -25,7 +25,7 @@ LogReader::LogReader( const LogReaderInfo &logReaderInfo )
       logIndex_(-1),
       breadCrumbs_(0)
 {
-    breadCrumbs_ = new detail::FileBreadCrumbs<int>();
+    breadCrumbs_.reset( new detail::FileBreadCrumbs<int> );
 }
 
 LogReader::~LogReader()
@@ -34,7 +34,6 @@ LogReader::~LogReader()
         file_->close();
         delete file_;
     }
-    delete breadCrumbs_;
 }
     
 void 

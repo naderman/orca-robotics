@@ -24,6 +24,7 @@ using namespace orcalog;
 
 MasterFileReader::MasterFileReader( const std::string &filename, const orcaice::Context& context )
     : cursorValid_(false),
+      breadCrumbs_(0),
       context_(context)
 {
     // create master file

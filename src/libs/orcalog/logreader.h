@@ -81,7 +81,7 @@ private:
 
     // As we move through the file, leave a trail of bread-crumbs so we can rewind
     // (use the index as the key)
-    detail::FileBreadCrumbs<int> *breadCrumbs_;
+    std::auto_ptr< detail::FileBreadCrumbs<int> > breadCrumbs_;
 };
 
 //! Optional utility, which allocates space for opened file.
