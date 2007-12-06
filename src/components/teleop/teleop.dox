@@ -32,10 +32,9 @@ This component connects to a robot base and issues motion commands according to 
 
 @par Input Drivers
 
-Teleop dynamically loads an implementation of a Hydro hardware interface hydrointerfaces::HumanInput2d. You can also load your own implementation as long as the shared library is in the path. See Hydro documentation for the list of available drivers.
+Teleop dynamically loads an implementation of a Hydro hardware interface hydrointerfaces::HumanInput2d. You can also load your own implementation as long as the shared library is in the path. See Hydro documentation for the list of available drivers. See driver documentation for dependencies and possible extra configuration parameters. 
 
 - @ref hydro_drivers_humaninput2d
-
 
 @par Configuration
 
@@ -54,44 +53,11 @@ Teleop dynamically loads an implementation of a Hydro hardware interface hydroin
 
 An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
 
-@par Dependancies
-
-None for the component. See driver sections below for individual driver dependencies.
-
-
-
-@par Operation
-
-If using a joystick then TeleopControl requires either a <A HREF="http://kernel.org">Linux Kernel</A> >= 2.4 or the <A HREF="http://linuxconsole.sourceforge.net/input/input.html">Linux Input Drivers</A> . If the driver is built as a module you may have to load it. Check with command <code>lsmod</code> and add module with <code>modprobe</code>. This Orca driver has only been tested with kernel >=2.6.12.
-
-- Make sure you're using the correct event device. Get a list of available devices and find the one corresponding to your joystick.
-@verbatim
-$ cat /proc/bus/input/devices
-@endverbatim
-
-- Other things that can go wrong:
-- Make sure that your event devices exist and can be read, i.e. ensure that you have permissions to /dev/input/event*, eg with:
-@verbatim
-# chmod 666 /dev/input/event*
-@endverbatim
-    - (note that these permissions may get over-written on reboot...)
-    - if not enough exist, make them with:
-@verbatim
-# mknod c event0 13 64
-# mknod c event1 13 65
-# mknod c event2 13 66
-# mknod c event3 13 67
-@endverbatim
-
-- There are some problems with USB1.0 joysticks and older kernels.
-    If your USB system hangs, try upgrading.  Kernel 2.6.12 seems to be OK.
-
 @section orca_teleop_velocitycontrol2d Output driver for VelocityControl2d interface
 
 Connects to a VelocityControl2d interface. "Forward motion" is translated to speed. "Turn" is translated to turnrate.
 
 @par Additional Configuration
-
 
 - @c Teleop.Config.VelocityControl2d.MaxSpeed (double) [m/s]
     - The maximum absolute linear speed which the component will send out
@@ -119,7 +85,6 @@ Connects to a DriveBicycle interface. "Forward motion" is translated to speed. "
 
 @par Additional Configuration
 
-
 - @c Teleop.Config.DriveBicycle.MaxSpeed (double) [m/s]
     - The maximum absolute linear speed which the component will send out
     - Default: 1.0
@@ -135,12 +100,6 @@ Connects to a DriveBicycle interface. "Forward motion" is translated to speed. "
 - @c Teleop.Config.DriveBicycle.SteerAngleIncrement (double) [deg]
     - For input devices which allow command increments (keyboard), by how much the steer angle will change for each input.
     - Default: 5.0
-
-@section internal Internal Structure
-
-@note This diagram is obsolete!
-    
-@image html teleop_whitebox.png
 
 @par Authors
 
