@@ -13,8 +13,6 @@
 
 namespace laser2d {
 
-using namespace std;
-
 Component::Component()
     : orcaice::Component( "Laser2d" )
 {
