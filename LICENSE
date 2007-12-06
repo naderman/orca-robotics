@@ -42,28 +42,29 @@ src
         orcamon                            LGPL
         pathplanner                        LGPL
         robot2d                            LGPL
-            playerclient                    GPL
         segwayrmp                          LGPL
-            playerclient                    GPL
-            rmpdriver                      LGPL
         simlocaliser                       LGPL
         teleop                             LGPL
         tracermon                          LGPL
+        wifi                               LGPL
     examples
         *                                  LGPL
     interfaces
         *                                  LGPL
     libs
+        orcabros1                          LGPL
         orcacm                             LGPL
         orcadef                            LGPL
         orcaice                            LGPL
         orcaicegrid                        LGPL
         orcaiceutil                        LGPL
-	orcaicexml			    GPL
+    	orcaicexml			                GPL
         orcaimage                           GPL
         orcalog                            LGPL
-        orcamisc                           LGPL
+        orcalogfactory                     LGPL
+        orcanavutil                        LGPL
         orcaobj                            LGPL
+        orcaobjutil                        LGPL
         orcaogfusion                       LGPL
         orcaogmap                          LGPL
         orcapathplan                       LGPL
@@ -82,11 +83,14 @@ src
         orcawallfactory                    LGPL
     sandbox
         gorca                               GPL
+        noisyrobot2d                       LGPL
+        pathplantester                     LGPL
         pointcloudserver                   LGPL
         pointcloudviewer                   LGPL
     utils
         cleanregistry                      LGPL
         deftools                           LGPL
+        icegridmon                         LGPL
         iceping                            LGPL
         logger                             LGPL
         logplayer                          LGPL
