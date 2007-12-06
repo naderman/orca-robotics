@@ -12,44 +12,39 @@
 
 @page orca_doc_release Release Instructions
 
-@note Reviewed for release 2.7.0.
+@note Reviewed for release 2.8.0.
 
 @section orca_doc_release_release Release
 
-- 1) On a machine that doesn't build regularly (eg bamboo):
-
-  - a) Blow away old installations of orca/hydro.
-  - b) Check out clean copies of orca/hydro.
-  - c) Modify the project versions in the top-level CMakeLists.txt files.
-  - d) Modify the 'news' sections in the 'index.dox' files.
-  - e) Shunt everything down in 'todo.dox'.
-  - f) Delete any temporary files created by an editor.
-  - g) Check in those changes.
-  - h) Tag the distributions, eg with:
-    - hydro:
+-# On a machine that doesn't build regularly (eg bamboo):
+  -# Blow away old installations of orca/hydro.
+  -# Check out clean copies of orca/hydro.
+  -# Modify the project versions in the top-level CMakeLists.txt files.
+  -# Modify the 'news' sections in the 'index.dox' files.
+  -# Shunt everything down in 'todo.dox'.
+  -# Delete any temporary files created by an editor.
+  -# Check in those changes.
+  -# Tag the distributions, eg with:
+    - %hydro:
 @verbatim
 $ svn copy --username borax00 https://orca-robotics.svn.sf.net/svnroot/orca-robotics/hydro/trunk https://orca-robotics.svn.sf.net/svnroot/orca-robotics/hydro/tags/RELEASE_2.7.0 -m 'Tagging release 2.7.0'
 @endverbatim
-    - orca:
+    - %orca:
 @verbatim
 $ svn copy --username borax00 https://orca-robotics.svn.sf.net/svnroot/orca-robotics/orca/trunk https://orca-robotics.svn.sf.net/svnroot/orca-robotics/orca/tags/RELEASE_2.7.0 -m 'Tagging release 2.7.0'
 @endverbatim
-  - i) Delete all .svn directories (eg with 'find . -name .svn | xargs rm -rf')
-  - j) Create tar-balls of these distributions, named eg. 'hydro-2.7.0.tar.gz' and 'orca-2.7.0.tar.gz'
-  - k) Now the tar-balls are ready to roll.  But first test that the originals build cleanly.
-  - l) Copy the tar-balls to a machine with external access (eg lowrider).
-
-- 2) From eg lowrider:
-  - a) ftp to upload.sf.net (anonymous login)
-  - b) cd /incoming
-  - c) 'put' both the tarballs
-
-- 3) Create the distros through the sourceforge web interface
+  -# Delete all .svn directories (eg with 'find . -name .svn | xargs rm -rf')
+  -# Create tar-balls of these distributions, named eg. 'hydro-2.7.0.tar.gz' and 'orca-2.7.0.tar.gz'
+  -# Now the tar-balls are ready to roll.  But first test that the originals build cleanly.
+  -# Copy the tar-balls to a machine with external access (eg lowrider).
+-# From eg lowrider:
+  -# ftp to upload.sf.net (anonymous login)
+  -# cd /incoming
+  -# 'put' both tarballs
+-# Create the distros through the sourceforge web interface
   - (Go through "'Admin' -> 'File Releases'" from the Orca project page)
-
-- 4) Update the web page
+-# Update the web page
   - Use the script: <distro>/doc/updatesfweb
-
-- 5) Increment the version numbers (eg '2.7.0' -> '2.7.0+') in the top-level CMakeLists.txt files.
+-# Increment the version numbers (eg '2.7.0' -> '2.7.0+') in the top-level CMakeLists.txt files.
 
 */

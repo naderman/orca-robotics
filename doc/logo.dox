@@ -12,9 +12,12 @@
 
 @page orca_doc_logo Project Logos
 
-@par Orca-2
+@par Orca
 
 @image html orca_2x3_orange_130.png
+
+@par Orca-2
+
 @image html orca2_2x3_yellow_130.png
 
 @par Orca-1
@@ -24,6 +27,6 @@
 
 @par Orocos\@KTH
 
-We've lost it.
+Lost forever.
 
 */
