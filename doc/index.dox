@@ -58,15 +58,17 @@ Note: The documentation on this web page matches the latest release. A web page 
 
 @section orca_doc_index_news News
 
-- 28-Oct-07 Orca2.7.0 released. A chunk of communication-independent code was split off from Orca into a new distribution called Hydro. See the updated @ref orca_doc_getting "installation instructions" for how to install Hydro and Orca. At the same time, the entire project code repository has moved to SVN. Many other updates. See @ref orca_doc_history_270 "Release Notes" for details.
+- 07-Dec-07 Version 2.8.0 released. More hardware drives were moved to Hydro. New tutorials on writing components. Bug fixes related to Orca/Hydro split. 
+See @ref orca_doc_history_280 "Release Notes" for details.
+- 28-Oct-07 Version 2.7.0 released. A chunk of communication-independent code was split off from Orca into a new distribution called Hydro. See the updated @ref orca_doc_getting "installation instructions" for how to install Hydro and Orca. At the same time, the entire project code repository has moved to SVN. Many other updates. See @ref orca_doc_history_270 "Release Notes" for details.
 - 28-Sep-07 Our <strong><a href="http://www.cas.edu.au/content.php/237.html?publicationid=403" style="text-decoration:none">position paper</a></strong> was accepted for the Workshop on Evaluation of Middleware and Architectures to be held at IROS'07 in San Diego.
-- 18-Sep-07 Orca2.6.0 is released. See @ref orca_doc_history_260 "Release Notes" for details.  One important change is a fix for robot2d which would cause the tutorials to malfunction on some machines.
-- 13-Aug-07 Orca2.5.0 is released. See @ref orca_doc_history_250 "Release Notes" for details.
-- 3-Jun-07 Orca2.4.0 is released. This release requires Ice v3.2, as it is not backwards-compatible with Ice v3.1.  This release contains many component updates, and fixes a serious issue to do with re-subscriptions for Ice3.2.  See @ref orca_doc_history_240 "Release Notes" for details.
+- 18-Sep-07 Version 2.6.0 is released. See @ref orca_doc_history_260 "Release Notes" for details.  One important change is a fix for robot2d which would cause the tutorials to malfunction on some machines.
+- 13-Aug-07 Version 2.5.0 is released. See @ref orca_doc_history_250 "Release Notes" for details.
+- 03-Jun-07 Version 2.4.0 is released. This release requires Ice v3.2, as it is not backwards-compatible with Ice v3.1.  This release contains many component updates, and fixes a serious issue to do with re-subscriptions for Ice3.2.  See @ref orca_doc_history_240 "Release Notes" for details.
 - 12-Apr-07 We wrote <strong><a href="http://zeroc.com/forums/showthread.php?t=3098" style="text-decoration:none">an article</a></strong> for ZeroC's Connections newsletter about the use of Ice and Orca by a Darpa Urban Challenge team.
 - 11-Apr-07 Orca project admins were invited to participate in an organizational meeting of <strong><a href="http://www.robot-standards.org/" style="text-decoration:none">RoSta -- a European Coordination Action for Robot Standards</a></strong>. We hope to contribute to this project in the future.
-- 10-Apr-07 Orca2.3.0 is released. This release is compatible with Ice v3.2, and backwards-compatible with Ice v3.1.  It is anticipated that future releases will not be backwards-compatible with Ice v3.1.  Release 2.3.0 contains many component and utility updates, see @ref orca_doc_history_230 "Release Notes" for details.
-- 2-Feb-07  Orca2.2.0 is released. Support for QNX, many component updates. (@ref orca_doc_history_220 "Release Notes").
+- 10-Apr-07 Version 2.3.0 is released. This release is compatible with Ice v3.2, and backwards-compatible with Ice v3.1.  It is anticipated that future releases will not be backwards-compatible with Ice v3.1.  Release 2.3.0 contains many component and utility updates, see @ref orca_doc_history_230 "Release Notes" for details.
+- 02-Feb-07 Version 2.2.0 is released. Support for QNX, many component updates. (@ref orca_doc_history_220 "Release Notes").
 - @ref orca_doc_old_news
 
 */

@@ -55,6 +55,19 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @section orca_doc_history_head Changes in SVN since Last Release
 
+@par New interfaces
+@par New components
+@par New utilities
+@par New libraries
+@par Updated interfaces
+@par Updated components
+@par Updated utilities
+@par Updated libraries
+@par Removed
+
+
+@section orca_doc_history_280 Changes in Release 2.8.0
+
 @par Project wide
 
 - java build (Jayen Ashar)
@@ -73,16 +86,10 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - Button (alex b)
   - A simple thing you can press remotely, with no feedback.
 
-@par New components
-
-@par New utilities
-
 @par New libraries
 
 - libOrcaNavUtil (alex b)
   - Library for conversion between Orca types and HydroNavUtil types.
-
-@par New examples
 
 @par Updated interfaces
 
