@@ -82,7 +82,7 @@ Orca grew out of Orocos\@KTH project. It has been on SourceForge.net since June 
 
 @par Current snapshot and future directions
 
-@image html orca_sloc.jpg
+@image html orca_sloc.png
 
 Source code size gives some idea about the project's activity. The stats above are generated using David A. Wheeler's SLOCCount. This figure also helps illustrate our main objective: writing useful robotics software. 
 
