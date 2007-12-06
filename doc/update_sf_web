@@ -19,7 +19,7 @@ TARBALL=orca-release-doc.tar.gz
 force ls
 force doxyorca doxyfile
 force cd html
-force tar --exclude=CVS --exclude=$TARBALL -zcvf $TARBALL *
+force tar --exclude=$TARBALL -zcvf $TARBALL *
 force scp $TARBALL acfr@shell.sourceforge.net:
 
 ssh acfr@shell.sourceforge.net "cd /home/groups/o/or/orca-robotics/htdocs/orca; mv ~/$TARBALL .; tar -zxvf $TARBALL"
