@@ -8,50 +8,49 @@
  *
  */
 
-#ifndef ORCA2_GPS_MAINLOOP_H
-#define ORCA2_GPS_MAINLOOP_H
+#ifndef ORCA2_GPS_MAIN_THREAD_H
+#define ORCA2_GPS_MAIN_THREAD_H
 
-#include <orca/gps.h>
-#include <hydroutil/thread.h>
+#include <hydroutil/safethread.h>
 #include <orcaice/context.h>
 #include <orcaifaceimpl/gpsImpl.h>
 
-#include "driver.h"
-
 namespace gps {
+
+class Driver;
 
 //
 // @brief the main loop of this GPS component.
 //
-// Note: this thing self-destructs when run() returns.
-//
-class MainLoop : public hydroutil::Thread
+class MainThread : public hydroutil::SafeThread
 {
 
 public:
 
-    MainLoop( orcaifaceimpl::GpsImplPtr &gpsInterface,
-              Driver                    *hwDriver,
-              const orca::Frame3d       &antennaOffset,
-              orcaice::Context           current );
-    ~MainLoop();
+    MainThread( const orcaice::Context& context );
+    ~MainThread();
 
-    virtual void run();
+    // from SafeThread
+    virtual void walk();
 
 private:
 
+    orca::GpsDescription descr_;
     orcaifaceimpl::GpsImplPtr gpsInterface_;
 
-    Driver *hwDriver_;
+    Driver *driver_;
 
-    orca::Frame3d antennaOffset_;
+    // Tries repeatedly to instantiate the driver
+    void initHardwareDriver();
 
-    orcaice::Context context_;
-    
+    // Loops until established
+    void initNetworkInterface();
+
     void reportBogusValues( orca::GpsData        &gpsData );
     
+    orcaice::Context context_;
 };
 
-}
+} // namespace
 
 #endif

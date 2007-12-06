@@ -58,10 +58,6 @@ without a fix ever having been achieved.
     - See introduction.
     - Valid values: { "garmin", "fake" }
     - Default: "garmin"
-
-- @c Gps.Config.StartEnabled (bool)
-    - Enable the GPS on component initialisation?
-    - Default: 1
     
 - @c Gps.Config.ReportIfNoFix (bool)
     - Report values if there is no GPS fix?

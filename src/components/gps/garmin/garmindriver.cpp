@@ -160,7 +160,7 @@ GarminGpsDriver::readFrame(orca::GpsData& GpsData)
         //Don't throw if only occasional messages are missing the checksums
             if(nmeaExceptionCount++ < 3) {return;}
             stringstream ss;
-            ss << "MainLoop: Problem reading from GPS: " << e.what();
+            ss << "MainThread: Problem reading from GPS: " << e.what();
             context_.tracer()->error( ss.str() );
             throw GpsException(ss.str());
         }
