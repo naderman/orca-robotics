@@ -1,13 +1,14 @@
-OPTION( BUILD_LASER2D "Try to build Laser2d component" ON )
-
 SET ( COMP_NAME laser2d )
 SET ( SERVICE_NAME OrcaLaser2d )
+SET ( OPTION_NAME BUILD_LASER2D )
+
 SET ( BUILD TRUE )
 
-IF ( BUILD AND NOT BUILD_LASER2D )
+OPTION( ${OPTION_NAME} "Try to build ${COMP_NAME}" ON )
+IF ( BUILD AND NOT ${OPTION_NAME}  )
     SET ( BUILD FALSE )
-    GLOBAL_NOT_ADD_EXECUTABLE( ${COMP_NAME} "disabled by user, use ccmake to enable" )
-ENDIF ( BUILD AND NOT BUILD_LASER2D )
+    GLOBAL_NOT_ADD_LIBRARY( ${COMP_NAME} "disabled by user, use ccmake to enable" )
+ENDIF ( BUILD AND NOT ${OPTION_NAME} )
 
 
 IF ( BUILD)

@@ -1,7 +1,7 @@
-OPTION( BUILD_INSGPS "Try to build InsGps component" ON )
-
 SET ( COMP_NAME insgps )
 SET ( SERVICE_NAME OrcaInsGps )
+SET ( OPTION_NAME BUILD_INSGPS )
+
 SET ( BUILD TRUE )
 
 IF ( BUILD AND NOT OS_LINUX )
@@ -9,10 +9,11 @@ IF ( BUILD AND NOT OS_LINUX )
     GLOBAL_NOT_ADD_EXECUTABLE( ${COMP_NAME} "only Linux OS is supported" )
 ENDIF ( BUILD AND NOT OS_LINUX )
 
-IF ( BUILD AND NOT BUILD_INSGPS )
+OPTION( ${OPTION_NAME} "Try to build ${COMP_NAME}" ON )
+IF ( BUILD AND NOT ${OPTION_NAME}  )
     SET ( BUILD FALSE )
-    GLOBAL_NOT_ADD_EXECUTABLE( ${COMP_NAME} "disabled by user, use ccmake to enable" )
-ENDIF ( BUILD AND NOT BUILD_INSGPS )
+    GLOBAL_NOT_ADD_LIBRARY( ${COMP_NAME} "disabled by user, use ccmake to enable" )
+ENDIF ( BUILD AND NOT ${OPTION_NAME} )
 
 
 IF ( BUILD )

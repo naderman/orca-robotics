@@ -1,13 +1,14 @@
-OPTION( BUILD_LASER_MONITOR "Try to build Laser Monitor" ON )
-
 SET ( COMP_NAME lasermon )
 SET ( SERVICE_NAME OrcaFaithLocaliser )
+SET ( OPTION_NAME BUILD_LASER_MONITOR )
+
 SET ( BUILD TRUE )
 
-IF ( BUILD AND NOT BUILD_LASER_MONITOR )
+OPTION( ${OPTION_NAME} "Try to build ${COMP_NAME}" ON )
+IF ( BUILD AND NOT ${OPTION_NAME}  )
     SET ( BUILD FALSE )
-    GLOBAL_NOT_ADD_EXECUTABLE( ${COMP_NAME} "disabled by user, use ccmake to enable" )
-ENDIF ( BUILD AND NOT BUILD_LASER_MONITOR )
+    GLOBAL_NOT_ADD_LIBRARY( ${COMP_NAME} "disabled by user, use ccmake to enable" )
+ENDIF ( BUILD AND NOT ${OPTION_NAME} )
 
 IF ( BUILD )
 

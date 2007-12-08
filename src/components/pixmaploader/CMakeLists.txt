@@ -1,7 +1,7 @@
-OPTION( BUILD_PIXMAPLOADER "Try to build PixMapLoader component" ON )
-
 SET ( COMP_NAME pixmaploader )
 SET ( SERVICE_NAME OrcaPixMapLoader )
+SET ( OPTION_NAME BUILD_PIXMAPLOADER )
+
 SET ( BUILD TRUE )
 
 IF ( BUILD AND OS_WIN )
@@ -9,10 +9,11 @@ IF ( BUILD AND OS_WIN )
     GLOBAL_NOT_ADD_EXECUTABLE( ${COMP_NAME} "Windows OS is not supported" )
 ENDIF ( BUILD AND OS_WIN )
 
-IF ( BUILD AND NOT BUILD_PIXMAPLOADER )
+OPTION( ${OPTION_NAME} "Try to build ${COMP_NAME}" ON )
+IF ( BUILD AND NOT ${OPTION_NAME}  )
     SET ( BUILD FALSE )
-    GLOBAL_NOT_ADD_EXECUTABLE( ${COMP_NAME} "disabled by user, use ccmake to enable" )
-ENDIF ( BUILD AND NOT BUILD_PIXMAPLOADER )
+    GLOBAL_NOT_ADD_LIBRARY( ${COMP_NAME} "disabled by user, use ccmake to enable" )
+ENDIF ( BUILD AND NOT ${OPTION_NAME} )
 
 IF ( BUILD AND NOT QT4_FOUND )
     SET ( BUILD FALSE )

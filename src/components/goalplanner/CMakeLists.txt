@@ -1,13 +1,14 @@
-OPTION( BUILD_GOAL_PLANNER "Try to build GoalPlanner" ON )
-
 SET ( COMP_NAME goalplanner )
 SET ( SERVICE_NAME OrcaGoalPlanner )
+SET ( OPTION_NAME BUILD_GOALPLANNER )
+
 SET ( BUILD TRUE )
 
-IF ( BUILD AND NOT BUILD_GOAL_PLANNER )
+OPTION( ${OPTION_NAME} "Try to build ${COMP_NAME}" ON )
+IF ( BUILD AND NOT ${OPTION_NAME}  )
     SET ( BUILD FALSE )
-    GLOBAL_NOT_ADD_EXECUTABLE( ${COMP_NAME} "disabled by user, use ccmake to enable" )
-ENDIF ( BUILD AND NOT BUILD_GOAL_PLANNER )
+    GLOBAL_NOT_ADD_LIBRARY( ${COMP_NAME} "disabled by user, use ccmake to enable" )
+ENDIF ( BUILD AND NOT ${OPTION_NAME} )
 
 
 IF ( BUILD )

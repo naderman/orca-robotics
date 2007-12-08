@@ -1,7 +1,7 @@
-OPTION( BUILD_FAITHLOCALISER "Try to build FaithLocaliser component" ON )
-
 SET ( COMP_NAME faithlocaliser )
 SET ( SERVICE_NAME OrcaFaithLocaliser )
+SET ( OPTION_NAME BUILD_FAITHLOCALISER )
+
 SET ( BUILD TRUE )
 
 IF ( BUILD AND OS_WIN )
@@ -9,10 +9,11 @@ IF ( BUILD AND OS_WIN )
     GLOBAL_NOT_ADD_EXECUTABLE( ${COMP_NAME} "Windows OS is not supported" )
 ENDIF ( BUILD AND OS_WIN )
 
-IF ( BUILD AND NOT BUILD_FAITHLOCALISER )
+OPTION( ${OPTION_NAME} "Try to build ${COMP_NAME}" ON )
+IF ( BUILD AND NOT ${OPTION_NAME}  )
     SET ( BUILD FALSE )
-    GLOBAL_NOT_ADD_EXECUTABLE( ${COMP_NAME} "disabled by user, use ccmake to enable" )
-ENDIF ( BUILD AND NOT BUILD_FAITHLOCALISER )
+    GLOBAL_NOT_ADD_LIBRARY( ${COMP_NAME} "disabled by user, use ccmake to enable" )
+ENDIF ( BUILD AND NOT ${OPTION_NAME} )
 
 
 IF ( BUILD )

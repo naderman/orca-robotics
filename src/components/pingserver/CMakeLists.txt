@@ -1,7 +1,7 @@
-OPTION( BUILD_PINGSERVER "Try to build PingServer component" ON )
-
 SET ( COMP_NAME pingserver )
 SET ( SERVICE_NAME OrcaFaithLocaliser )
+SET ( OPTION_NAME BUILD_PINGSERVER )
+
 SET ( BUILD TRUE )
 
 IF ( BUILD AND NOT OS_LINUX )
@@ -9,10 +9,11 @@ IF ( BUILD AND NOT OS_LINUX )
     GLOBAL_NOT_ADD_EXECUTABLE( ${COMP_NAME} "only Linux OS is supported" )
 ENDIF ( BUILD AND NOT OS_LINUX )
 
-IF ( BUILD AND NOT BUILD_PINGSERVER )
+OPTION( ${OPTION_NAME} "Try to build ${COMP_NAME}" ON )
+IF ( BUILD AND NOT ${OPTION_NAME}  )
     SET ( BUILD FALSE )
-    GLOBAL_NOT_ADD_EXECUTABLE( ${COMP_NAME} "disabled by user, use ccmake to enable" )
-ENDIF ( BUILD AND NOT BUILD_PINGSERVER )
+    GLOBAL_NOT_ADD_LIBRARY( ${COMP_NAME} "disabled by user, use ccmake to enable" )
+ENDIF ( BUILD AND NOT ${OPTION_NAME} )
 
 # Look for liboping -- library for 'ping'ing from C
 INCLUDE ( ${HYDRO_HOME}/cmake/FindOPing.cmake )
