@@ -6,7 +6,6 @@ SET ( NOT_OS_WIN NOT OS_WIN )
 REQUIRE_VAR( EXE ${COMP_NAME} NOT_OS_WIN "Windows OS is not  supported" )
 REQUIRE_VAR( EXE ${COMP_NAME} HYDROWIFI_INSTALLED "libHydroWifi not installed" )
 
-
 IF ( BUILD )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
