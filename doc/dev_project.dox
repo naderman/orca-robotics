@@ -77,16 +77,17 @@ This enough to get you started. Now you can start writing code: add your own com
 
 @section orca_doc_devproj_tips Tips for Maintaining a Satelite Project
 
-@par Tag versions. 
+@par Versions tags
 
 If this is an internal project, then you probably don't bother realeasing distributions. It's still useful to have a history of working code. It's easy to add a tag when Orca version changes and you made sure that your project compiles with the new version. 
 
-In SVN you do it like this (URL is the URL to your repository, not Orca's)
+In SVN you do it like this, assuming Orca version 2.12.0. URL is the URL to your repository, not Orca's.
+You can get it easily by typing @c 'svn @c info' at the top level of the local copy.
 @verbatim
-$ svn copy [URL]/tractor/trunk [URL]/tractor/tags/orca-2120 -m "Works with new orca"
+$ svn copy [URL]/tractor/trunk [URL]/tractor/tags/orca-2120 -m "Works with orca release 2.12.0"
 @endverbatim
 
-Here's how to do the same thing in CVS.
+Here's how we used to do the same thing in CVS.
 @verbatim
 $ cvs tag -f orca-2120
 @endverbatim
