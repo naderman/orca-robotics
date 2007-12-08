@@ -1,12 +1,15 @@
-OPTION( BUILD_PROBE "Try to build Probe" ON )
+SET ( COMP_NAME probe )
 
-IF ( NOT OS_WIN )
-IF ( BUILD_PROBE )
+REQUIRE_OPTION( EXE ${COMP_NAME} ON )
+SET ( NOT_OS_WIN NOT OS_WIN )
+REQUIRE_VAR( EXE ${COMP_NAME} NOT_OS_WIN "Windows OS is not  supported" )
+REQUIRE_VAR( EXE ${COMP_NAME} HYDRODLL_INSTALLED "libHydroDll not installed" )
+
+IF ( BUILD )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
     SET ( IOSTREAM_FOUND 1 )
-    
     OPTIONAL_SUB_LIBRARY( 
         "terminal display driver for Probe using iostreams"
         term-iostream
@@ -33,11 +36,10 @@ IF ( BUILD_PROBE )
 
     FILE( GLOB SRCS *.cpp )
     
-    GLOBAL_ADD_EXECUTABLE( probe ${SRCS} )
-    TARGET_LINK_LIBRARIES( probe OrcaCompModel IceGrid OrcaProbe HydroDll 
+    GLOBAL_ADD_EXECUTABLE( ${COMP_NAME} ${SRCS} )
+    TARGET_LINK_LIBRARIES( ${COMP_NAME} OrcaCompModel IceGrid OrcaProbe HydroDll 
             ${PROBE_TERM_IOSTREAM_LIBS} ${PROBE_GUI_QT_LIBS} )
 
-    GENERATE_CONFIG_FILE( probe.def )
+    GENERATE_CONFIG_FILE( ${COMP_NAME}.def )
 
-ENDIF ( BUILD_PROBE )
-ENDIF ( NOT OS_WIN )
+ENDIF ( BUILD )

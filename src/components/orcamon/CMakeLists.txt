@@ -1,5 +1,4 @@
 SET ( COMP_NAME orcamon )
-SET ( SERVICE_NAME OrcaFaithLocaliser )
 
 REQUIRE_OPTION( EXE ${COMP_NAME} ON )
 SET ( NOT_OS_WIN NOT OS_WIN )

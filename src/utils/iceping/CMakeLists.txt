@@ -1,22 +1,21 @@
-OPTION( BUILD_ICEPING "Try to build the iceping utility" ON )
+SET ( COMP_NAME iceping )
 
-IF ( BUILD_ICEPING )
+REQUIRE_OPTION( EXE ${COMP_NAME} ON )
+
+IF ( BUILD )
 
 	#
 	# This utility is intentionally built without using libOrcaIce.
 	# We do not include the standard component compile options.
 	#
-
-    ADD_DEFINITIONS( "-Wall" )
-    INCLUDE_DIRECTORIES( ${ICE_HOME}/include )
-    LINK_DIRECTORIES( ${ICE_HOME}/lib )
-    LINK_LIBRARIES( Ice IceUtil )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseBasicRules.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseIce.cmake )
     
     FILE( GLOB SRCS *.cpp )
     
-    GLOBAL_ADD_EXECUTABLE( iceping ${SRCS} )
+    GLOBAL_ADD_EXECUTABLE( ${COMP_NAME} ${SRCS} )
 
     # special case: we don't have a .def file here, installing a sample .cfg
     INSTALL_FILES( /cfg iceping.cfg )
 
-ENDIF ( BUILD_ICEPING )
+ENDIF ( BUILD )

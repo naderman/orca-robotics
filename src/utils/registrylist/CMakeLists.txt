@@ -1,6 +1,8 @@
-OPTION( BUILD_REGISTRY_LIST "Try to build RegistryList component" ON )
+SET ( COMP_NAME registrylist )
 
-IF ( BUILD_REGISTRY_LIST )
+REQUIRE_OPTION( EXE ${COMP_NAME} ON )
+
+IF ( BUILD )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
@@ -9,14 +11,14 @@ IF ( BUILD_REGISTRY_LIST )
     GLOBAL_ADD_EXECUTABLE( registrylist ${SRCS} )
         
     IF ( NOT OS_WIN )
-        TARGET_LINK_LIBRARIES( registrylist IceGrid OrcaCompModel )
+        TARGET_LINK_LIBRARIES( ${COMP_NAME} IceGrid OrcaCompModel )
     ELSE ( NOT OS_WIN )
-        TARGET_LINK_LIBRARIES( registrylist 
+        TARGET_LINK_LIBRARIES( ${COMP_NAME} 
               optimized IceGrid debug IceGridd
               optimized Glacier2 debug Glacier2d
               OrcaCompModel )
     ENDIF ( NOT OS_WIN )
 
-    GENERATE_CONFIG_FILE( registrylist.def )
+    GENERATE_CONFIG_FILE( ${COMP_NAME}.def )
 
-ENDIF ( BUILD_REGISTRY_LIST )
+ENDIF ( BUILD )

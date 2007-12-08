@@ -1,14 +1,16 @@
-OPTION( BUILD_SYSTEMTRACERMON "Try to build SystemTracerMon component" ON )
+SET ( COMP_NAME systemtracermon )
 
-IF ( BUILD_SYSTEMTRACERMON )
+REQUIRE_OPTION( EXE ${COMP_NAME} ON )
+
+IF ( BUILD )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
     FILE ( GLOB SRCS *.cpp )
 
     # stand-alone component  
-    GLOBAL_ADD_EXECUTABLE( systemtracermon ${SRCS} )
+    GLOBAL_ADD_EXECUTABLE( ${COMP_NAME} ${SRCS} )
 
-    GENERATE_CONFIG_FILE( systemtracermon.def )
+    GENERATE_CONFIG_FILE( ${COMP_NAME}.def )
 
-ENDIF ( BUILD_SYSTEMTRACERMON )
+ENDIF ( BUILD )

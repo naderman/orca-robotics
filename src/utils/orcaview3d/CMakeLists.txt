@@ -1,37 +1,29 @@
-IF ( NOT OS_WIN )
+SET ( COMP_NAME orcaview3d )
 
-OPTION( BUILD_ORCAVIEW3D_GUI "Try to build OrcaView3d GUI" OFF )
+REQUIRE_OPTION( EXE ${COMP_NAME} OFF )
+SET ( NOT_OS_WIN NOT OS_WIN )
+REQUIRE_VAR( EXE ${COMP_NAME} NOT_OS_WIN "Windows OS is not  supported" )
+REQUIRE_VAR( EXE ${COMP_NAME} QT4_FOUND "Qt4 not found" )
+REQUIRE_VAR( EXE ${COMP_NAME} GLUT_FOUND "libGlut not found" )
+REQUIRE_VAR( EXE ${COMP_NAME} HYDRODLL_INSTALLED "libHydroDll not installed" )
 
-IF ( BUILD_ORCAVIEW3D_GUI )
+IF ( BUILD )
+    
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseQt.cmake )
 
-    IF ( QT4_FOUND AND GLUT_FOUND )
+    #
+    # This gathers all the source files into the variable 'SRCS'
+    #
+    FILE( GLOB HUMAN_SRCS *.cpp )
     
-        INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
-        INCLUDE( ${ORCA_CMAKE_DIR}/UseQt.cmake )
-    
-        #
-        # This gathers all the source files into the variable 'SRCS'
-        #
-        FILE( GLOB HUMAN_SRCS *.cpp )
-        
-        GLOBAL_ADD_EXECUTABLE( orcaview3d ${HUMAN_SRCS} )
-        TARGET_LINK_LIBRARIES( orcaview3d OrcaQCompModel OrcaQGui OrcaQGui3d HydroDll )
-    
-        GENERATE_CONFIG_FILE( orcaview3d.def )
-    
-        IF ( LIB3DS_FOUND )
+    GLOBAL_ADD_EXECUTABLE( ${COMP_NAME} ${HUMAN_SRCS} )
+    TARGET_LINK_LIBRARIES( ${COMP_NAME} OrcaQCompModel OrcaQGui OrcaQGui3d HydroDll )
+
+    GENERATE_CONFIG_FILE( ${COMP_NAME}.def )
+
+    IF ( LIB3DS_FOUND )
         ADD_DEFINITIONS( -DHAVE_LIB3DS )
-        ENDIF ( LIB3DS_FOUND )
-    
-    ELSE ( QT4_FOUND AND GLUT_FOUND )
-    
-        CANNOT_BUILD_MESSAGE( OrcaView3d "Qt4 or GLUT not found")
-        
-    ENDIF ( QT4_FOUND AND GLUT_FOUND )
+    ENDIF ( LIB3DS_FOUND )
 
-ELSE ( BUILD_ORCAVIEW3D_GUI )
-    
-    DISABLED_MESSAGE( OrcaView3d )
-
-ENDIF ( BUILD_ORCAVIEW3D_GUI )
-ENDIF ( NOT OS_WIN )
+ENDIF ( BUILD )

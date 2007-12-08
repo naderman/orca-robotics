@@ -1,24 +1,33 @@
-INCLUDE( ${ORCA_CMAKE_DIR}/UseBasicRules.cmake )
-INCLUDE( ${ORCA_CMAKE_DIR}/UseIce.cmake )
-INCLUDE( ${ORCA_CMAKE_DIR}/UseLibProjectInterfaces.cmake )
-INCLUDE( ${ORCA_CMAKE_DIR}/UseHydroUtil.cmake )
-INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
+SET ( MODULE_NAME def_tools )
+REQUIRE_OPTION( EXE ${MODULE_NAME} ON )
 
-LINK_LIBRARIES( OrcaDef )
+IF ( BUILD )
 
-GLOBAL_ADD_EXECUTABLE( def2cfg def2cfg.cpp )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseBasicRules.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseIce.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseLibProjectInterfaces.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseHydroUtil.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
+    
+    LINK_LIBRARIES( OrcaDef )
+    
+    GLOBAL_ADD_EXECUTABLE( def2cfg def2cfg.cpp )
+    
+    GLOBAL_ADD_EXECUTABLE( def2xml def2xml.cpp )
+    
+    GLOBAL_ADD_EXECUTABLE( def2xmltemplate def2xmltemplate.cpp )
+    
+    GLOBAL_ADD_EXECUTABLE( def2definverted def2definverted.cpp )
 
-GLOBAL_ADD_EXECUTABLE( def2xml def2xml.cpp )
+ENDIF ( BUILD )
 
-GLOBAL_ADD_EXECUTABLE( def2xmltemplate def2xmltemplate.cpp )
+SET ( NOT_OS_WIN NOT OS_WIN )
+REQUIRE_VAR( EXE ${MODULE_NAME} NOT_OS_WIN "Windows OS is not supported" )
+REQUIRE_VAR( EXE ${MODULE_NAME} QT4_FOUND "Qt4 not found" )
 
-GLOBAL_ADD_EXECUTABLE( def2definverted def2definverted.cpp )
-
-IF ( NOT OS_WIN AND QT4_FOUND )
+IF ( BUILD )
     INCLUDE_DIRECTORIES( ${QT_INCLUDES} )    
     ADD_DEFINITIONS( ${QT_DEFINITIONS} )
     GLOBAL_ADD_EXECUTABLE( def2uml def2uml.cpp )
     TARGET_LINK_LIBRARIES( def2uml OrcaQUml ${QT_QTGUI_LIBRARY} ${QT_QTCORE_LIBRARY} )
-ELSE  ( NOT OS_WIN AND QT4_FOUND )
-    MESSAGE( STATUS "Not Planning to Build Utility: def2uml -- Windows or Qt not found")
-ENDIF ( NOT OS_WIN AND QT4_FOUND )
+ENDIF ( BUILD )

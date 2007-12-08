@@ -1,8 +1,12 @@
-IF( NOT OS_WIN )
+SET ( COMP_NAME logger )
+SET ( SERVICE_NAME OrcaLogger )
 
-OPTION( BUILD_LOGGER "Try to build Logger" ON )
+REQUIRE_OPTION( EXE ${COMP_NAME} ON )
+SET ( NOT_OS_WIN NOT OS_WIN )
+REQUIRE_VAR( EXE ${COMP_NAME} NOT_OS_WIN "Windows OS is not  supported" )
+REQUIRE_VAR( EXE ${COMP_NAME} HYDRODLL_INSTALLED "libHydroDll not installed" )
 
-IF( BUILD_LOGGER )
+IF ( BUILD )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
@@ -10,16 +14,15 @@ IF( BUILD_LOGGER )
     SET( COMP_DEPS OrcaLog HydroDll )
     
     # build stand-alone component  
-    GLOBAL_ADD_EXECUTABLE( logger ${COMP_SRCS} main )
-    TARGET_LINK_LIBRARIES( logger ${COMP_DEPS} )
+    GLOBAL_ADD_EXECUTABLE( ${COMP_NAME} ${COMP_SRCS} main )
+    TARGET_LINK_LIBRARIES( ${COMP_NAME} ${COMP_DEPS} )
     
     # build IceBox service
     IF ( BUILD_SERVICES )
-        GLOBAL_ADD_LIBRARY( OrcaLogger SHARED ${COMP_SRCS} service )
-        TARGET_LINK_LIBRARIES( OrcaLogger ${COMP_DEPS} ) 
+        GLOBAL_ADD_LIBRARY( ${SERVICE_NAME} SHARED ${COMP_SRCS} service )
+        TARGET_LINK_LIBRARIES( ${SERVICE_NAME} ${COMP_DEPS} ) 
     ENDIF ( BUILD_SERVICES )
 
-    GENERATE_CONFIG_FILE( logger.def )
+    GENERATE_CONFIG_FILE( ${COMP_NAME}.def )
 
-ENDIF( BUILD_LOGGER )
-ENDIF( NOT OS_WIN )
+ENDIF( BUILD )

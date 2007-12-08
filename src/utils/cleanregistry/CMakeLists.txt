@@ -1,23 +1,18 @@
-OPTION( BUILD_CLEAN_REGISTRY "Try to build ClearRegistry Utility" ON )
+SET ( COMP_NAME cleanregistry )
 
-IF ( NOT OS_WIN AND BUILD_CLEAN_REGISTRY )
+REQUIRE_OPTION( EXE ${COMP_NAME} ON )
+SET ( NOT_OS_WIN NOT OS_WIN )
+REQUIRE_VAR( EXE ${COMP_NAME} NOT_OS_WIN "Windows OS is not  supported" )
+
+IF ( BUILD )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
     FILE( GLOB SRCS *.cpp )
-
-    INCLUDE_DIRECTORIES(
-        ${PROJECT_SOURCE_DIR}/src/utils
-    )
-
-    LINK_DIRECTORIES(
-        ${PROJECT_BINARY_DIR}/src/utils/orcacm
-    )
     
-    GLOBAL_ADD_EXECUTABLE( cleanregistry ${SRCS} )
-
-    TARGET_LINK_LIBRARIES ( cleanregistry OrcaCompModel  IceGrid )
+    GLOBAL_ADD_EXECUTABLE( ${COMP_NAME} ${SRCS} )
+    TARGET_LINK_LIBRARIES ( ${COMP_NAME} OrcaCompModel  IceGrid )
     
-    GENERATE_CONFIG_FILE( cleanregistry.def )
+    GENERATE_CONFIG_FILE( ${COMP_NAME}.def )
 
-ENDIF ( NOT OS_WIN AND BUILD_CLEAN_REGISTRY )
+ENDIF ( BUILD )
