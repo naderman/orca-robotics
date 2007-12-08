@@ -90,7 +90,8 @@ Component::createLogger( const std::string  &interfaceType,
 
     logWriterInfo.interfaceType = interfaceType;
     logWriterInfo.interfaceTag = interfaceType+interfaceTypeSuffix;
-    logWriterInfo.comment = orcaice::getRequiredInterfaceAsString( context(), logWriterInfo.interfaceTag );
+    std::string proxyString = orcaice::getRequiredInterfaceAsString( context(), logWriterInfo.interfaceTag );
+    logWriterInfo.comment = orcaice::resolveLocalPlatform( context(), proxyString );
     logWriterInfo.format = format;
     logWriterInfo.filename = filenamePrefix + logWriterInfo.interfaceTag + ".log";
 

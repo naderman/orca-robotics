@@ -116,7 +116,8 @@ createConsumerInterface( const Context  & context,
 //  to ensure we're connecting to the right type.
 /*!
  *  Create an Ice proxy @p proxy for the remote server based on a stringified proxy @p proxyString.
- *  The proxy can be direct or indirect.
+ *  The proxy can be direct or indirect. For indirect proxies with platform name set to @e local, 
+ *  hostname is used as the platform name.
  *
  *  Throws TypeMismatchException if fails to connect to the remote interface or if
  *  it is of the wrong type. Throws NetworkException if the interface is otherwise unreachable.
@@ -133,7 +134,11 @@ connectToInterfaceWithString( const Context     & context,
                               ProxyType         & proxy,
                               const std::string & proxyString)
 {
-    Ice::ObjectPrx base = context.communicator()->stringToProxy(proxyString);
+
+    // for indirect proxies only: if platform is set to 'local', replace it by hostname
+    std::string resolvedProxyString = resolveLocalPlatform( context, proxyString );
+
+    Ice::ObjectPrx base = context.communicator()->stringToProxy( resolvedProxyString );
 
     // check with the server that the one we found is of the right type
     // the check operation is remote and may fail (see sec.6.11.2)
@@ -141,7 +146,7 @@ connectToInterfaceWithString( const Context     & context,
         proxy = ProxyType::checkedCast( base );
         // got some answer, check that it's the right type
         if ( !proxy ) {
-            std::string errString = "Required interface '" + proxyString + "' is of wrong type.";
+            std::string errString = "Required interface '" + resolvedProxyString + "' is of wrong type.";
             initTracerWarning( context, errString, 2 );
             throw orcaice::TypeMismatchException( ERROR_INFO, errString );
         }
@@ -151,7 +156,7 @@ connectToInterfaceWithString( const Context     & context,
     {
         // Give some feedback as to why shit isn't working
         std::stringstream ss;
-        ss << "Failed to connect to '" << proxyString << "': "<<e;
+        ss << "Failed to connect to '" << resolvedProxyString << "': "<<e;
         initTracerWarning( context, ss.str(), 2 );
         throw orcaice::NetworkException( ERROR_INFO, ss.str() );
     }

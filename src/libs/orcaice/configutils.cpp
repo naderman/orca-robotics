@@ -49,7 +49,7 @@ void filter_start( std::vector<std::string>& s, const std::string& pattern )
 
 // NOTE: utility function, not part of public interface
 std::string
-getProvidedName( const Context & context, const std::string &ifaceTag )
+getProvidedName( const Context& context, const std::string &ifaceTag )
 {
     std::string ifaceName;
     orcaice::getProperty( context.properties(), context.tag()+".Provides."+ifaceTag+".Name", ifaceName );
@@ -69,7 +69,7 @@ getProvidedName( const Context & context, const std::string &ifaceTag )
 // NOTE: utility function, not part of public interface
 // example: prefix="Something.Something."
 std::vector<std::string>
-getFieldsForPrefix( const Context & context, const std::string & prefix )
+getFieldsForPrefix( const Context& context, const std::string & prefix )
 {
     int prefixLength = prefix.size();
     
@@ -90,7 +90,7 @@ getFieldsForPrefix( const Context & context, const std::string & prefix )
 }
 
 orca::FQInterfaceName
-getProvidedInterface( const Context & context, const std::string &ifaceTag )
+getProvidedInterface( const Context& context, const std::string &ifaceTag )
 {
     if ( ifaceTag.empty() ) {
         throw orcaice::ConfigFileException(ERROR_INFO, "Empty interface tag");
@@ -105,7 +105,7 @@ getProvidedInterface( const Context & context, const std::string &ifaceTag )
 }
 
 orca::FQTopicName
-getProvidedTopicWithString( const Context & context, const std::string &ifaceName, const std::string & subtopic )
+getProvidedTopicWithString( const Context& context, const std::string &ifaceName, const std::string & subtopic )
 {
     orca::FQTopicName fqTName;
     fqTName.platform = context.name().platform;
@@ -118,7 +118,7 @@ getProvidedTopicWithString( const Context & context, const std::string &ifaceNam
 }
 
 orca::FQTopicName
-getProvidedTopicWithTag( const Context & context, const std::string &ifaceTag, const std::string & subtopic )
+getProvidedTopicWithTag( const Context& context, const std::string &ifaceTag, const std::string & subtopic )
 {
     if ( ifaceTag.empty() ) {
         throw orcaice::ConfigFileException(ERROR_INFO, "Empty interface tag");
@@ -130,7 +130,7 @@ getProvidedTopicWithTag( const Context & context, const std::string &ifaceTag, c
 }
 
 std::string
-getRequiredInterfaceAsString( const Context & context, const std::string &ifaceTag )
+getRequiredInterfaceAsString( const Context& context, const std::string &ifaceTag )
 {
     if ( ifaceTag.empty() ) {
         throw orcaice::ConfigFileException(ERROR_INFO, "Empty interface tag");
@@ -146,21 +146,11 @@ getRequiredInterfaceAsString( const Context & context, const std::string &ifaceT
         throw orcaice::ConfigFileException(ERROR_INFO,errorString);
     }
 
-    // for indirect proxies only: if platform is set to 'local', replace it by hostname
-    orca::FQInterfaceName fqname = orcaice::toInterfaceName( proxy );
-    if ( !fqname.iface.empty() && !fqname.platform.empty() && !fqname.component.empty() ) {
-        if ( fqname.platform=="local" ) {
-            fqname.platform = hydroutil::getHostname();
-            initTracerWarning( context, "set remote platform name to hostname="+fqname.platform, 2 );
-        }
-        proxy = orcaice::toString( fqname );
-    }
-
     return proxy;
 }
 
 std::vector<std::string>
-getProvidedTags( const Context & context, const std::string& pattern )
+getProvidedTags( const Context& context, const std::string& pattern )
 {
     std::string prefix = context.tag()+".Provides.";
     std::vector<std::string> tags = getFieldsForPrefix( context, prefix );
@@ -172,7 +162,7 @@ getProvidedTags( const Context & context, const std::string& pattern )
 }
 
 std::vector<std::string>
-getRequiredTags( const Context & context, const std::string& pattern )
+getRequiredTags( const Context& context, const std::string& pattern )
 {
     std::string prefix = context.tag() + ".Requires.";
     std::vector<std::string> tags = getFieldsForPrefix( context, prefix );
@@ -183,8 +173,26 @@ getRequiredTags( const Context & context, const std::string& pattern )
     return tags;
 }
 
+std::string 
+resolveLocalPlatform( const Context& context, const std::string& proxy )
+{
+    // for indirect proxies only: if platform is set to 'local', replace it by hostname
+    orca::FQInterfaceName fqname = orcaice::toInterfaceName( proxy );
+    if ( !fqname.iface.empty() && !fqname.platform.empty() && !fqname.component.empty() ) 
+    {
+        if ( fqname.platform=="local" ) 
+        {
+            fqname.platform = hydroutil::getHostname();
+            initTracerWarning( context, "set remote platform name to hostname="+fqname.platform, 2 );
+            return orcaice::toString( fqname );
+        }
+    }
+    // no changes were made
+    return proxy;
+}
+
 orca::ComponentData
-getComponentData( const Context & context )
+getComponentData( const Context& context )
 {
     orca::ComponentData compData;
     compData.name = context.name();

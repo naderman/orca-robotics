@@ -41,8 +41,8 @@ MainLoop::walk()
 
     // This may throw ConfigFileException, but we don't catch it.
     // If this happens we may as well quit.
-    std::string proxyString = 
-                    orcaice::getRequiredInterfaceAsString( context_, "Generic" );
+    std::string proxyString = orcaice::getRequiredInterfaceAsString( context_, "Generic" );
+    proxyString = orcaice::resolveLocalPlatform( context_, proxyString );
     Ice::ObjectPrx obj = context_.communicator()->stringToProxy( proxyString );
 
     // connect to it and get its object ID, aka interface type.

@@ -11,6 +11,9 @@ Provides.SpecialP3.Type=PT3
 Provides.SpecialP3.DefaultName=p3
 
 # Required Interfaces
+Requires.R0.Type=RT0
+Requires.R0.DefaultProxy=r0@local/random
+
 Requires.R1.Type=RT1
 Requires.R1.DefaultProxy=r1@remote/random
 

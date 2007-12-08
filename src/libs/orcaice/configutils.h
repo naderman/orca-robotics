@@ -43,8 +43,7 @@ orca::FQTopicName getProvidedTopicWithTag( const Context &, const std::string &i
 //! Reads properties contained in the context and returns the stringified proxy to the 
 //! required interface corresponding to the interface tag. 
 //!
-//! The proxy can be direct or indirect. For indirect proxies with platform name set to @e local, 
-//! it is replaced it with hostname.
+//! The proxy can be direct or indirect.
 //! 
 //! Throws ConfigFileException if the interface name cannot be read for some reason.
 std::string getRequiredInterfaceAsString( const Context &, const std::string &interfaceTag );
@@ -77,6 +76,12 @@ The default empty string pattern will match all required interfaces.
 */
 std::vector<std::string> getRequiredTags( const Context & context, const std::string& pattern="" );
     
+/*!
+For indirect proxies with platform name set to @e local, returns a new proxy string with @c local
+replaced with the current hostname.
+*/
+std::string resolveLocalPlatform( const Context& context, const std::string& proxy );
+
 //! Parses properties to build static component information.
 //! Interfaces which are not in the config file will not appear here, e.g. Home, Tracer, Status.
 orca::ComponentData getComponentData( const Context & context );

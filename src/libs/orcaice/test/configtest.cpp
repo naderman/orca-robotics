@@ -118,7 +118,22 @@ TestComponent::start()
     }
     cout<<"ok"<<endl;
 
-    cout<<"testing getRequiredInterfaceAsString() with existing tag, indirect ... ";
+    cout<<"testing getRequiredInterfaceAsString() with existing tag, indirect local ... ";
+    try {
+        std::string strPrx = orcaice::getRequiredInterfaceAsString( context(), "R0" );
+        std::string expect = "r0@local/random";
+        if ( strPrx != expect ) {
+            cout<<"failed"<<endl<<"expected: "<<expect<<"; got :"<<strPrx<<endl;
+            exit(EXIT_FAILURE);
+        }
+    }
+    catch ( const orcaice::ConfigFileException & ) {
+        cout<<"failed"<<endl<<"interface R0 (indirect proxy syntax) should exist"<<endl;
+        exit(EXIT_FAILURE);
+    }
+    cout<<"ok"<<endl;
+
+    cout<<"testing getRequiredInterfaceAsString() with existing tag, indirect non-local ... ";
     try {
         std::string strPrx = orcaice::getRequiredInterfaceAsString( context(), "R1" );
         std::string expect = "r1@remote/random";
@@ -198,7 +213,7 @@ TestComponent::start()
     {
         std::vector<std::string> tags = orcaice::getRequiredTags( context() );
         int out = tags.size();
-        int expect = 4;
+        int expect = 5;
         if ( out != expect ) {
             cout<<"failed, wrong number of tags, expected="<<expect<<"; got="<<out<<endl;
             exit(EXIT_FAILURE);
@@ -215,6 +230,21 @@ TestComponent::start()
             cout<<"failed, wrong number of tags, expected="<<expect<<"; got="<<out<<endl;
             exit(EXIT_FAILURE);
         }
+    }
+    cout<<"ok"<<endl;
+
+    cout<<"testing resolveLocalPlatform() ... ";
+    try {
+        std::string strPrx = orcaice::resolveLocalPlatform( context(), "r0@local/random" );
+        std::string expect = "r0@"+hydroutil::getHostname()+"/random";
+        if ( strPrx != expect ) {
+            cout<<"failed"<<endl<<"expected: "<<expect<<"; got :"<<strPrx<<endl;
+            exit(EXIT_FAILURE);
+        }
+    }
+    catch ( ... ) {
+        cout<<"failed, caught something"<<endl;
+        exit(EXIT_FAILURE);
     }
     cout<<"ok"<<endl;
 
