@@ -1,28 +1,42 @@
-IF ( OS_LINUX )
+SET ( COMP_NAME player2orca )
+SET ( OPTION_NAME BUILD_PLAYER2ORCA )
 
-# Look for Player
+SET ( BUILD TRUE )
+
+IF ( BUILD AND NOT OS_LINUX )
+    SET ( BUILD FALSE )
+    GLOBAL_NOT_ADD_EXECUTABLE( ${COMP_NAME} "only Linux OS is supported" )
+ENDIF ( BUILD AND NOT OS_LINUX )
+
+OPTION( ${OPTION_NAME} "Try to build ${COMP_NAME}" ON )
+IF ( BUILD AND NOT ${OPTION_NAME}  )
+    SET ( BUILD FALSE )
+    GLOBAL_NOT_ADD_EXECUTABLE( ${COMP_NAME} "disabled by user, use ccmake to enable" )
+ENDIF ( BUILD AND NOT ${OPTION_NAME} )
+
 INCLUDE (${ORCA_CMAKE_DIR}/FindPlayer2.cmake)
+IF ( BUILD AND NOT PLAYER_FOUND  )
+    SET ( BUILD FALSE )
+    GLOBAL_NOT_ADD_EXECUTABLE( ${COMP_NAME} "Player not found" )
+ENDIF ( BUILD AND NOT PLAYER_FOUND )
 
-IF ( PLAYER_FOUND)
 
-    OPTION( BUILD_PLAYER2ORCA "Try to build Player-to-Orca example" ON )
-    IF ( BUILD_PLAYER2ORCA )
-    
-        INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
-    
-        INCLUDE_DIRECTORIES( ${PLAYER_INCLUDE_DIRS} )
-        LINK_DIRECTORIES( ${PLAYER_LINK_DIRS} )
-        ADD_DEFINITIONS( ${PLAYER_DEFINITIONS} )
-    
-        GLOBAL_ADD_EXECUTABLE( player2orca main handler )
-        TARGET_LINK_LIBRARIES( player2orca OrcaIfaceImpl ${PLAYER_LIBS} )
-    
-        GENERATE_CONFIG_FILE( player2orca.def )
-    
-    ENDIF ( BUILD_PLAYER2ORCA )
+IF ( BUILD)
 
-ELSE ( PLAYER_FOUND )
-    MESSAGE ( STATUS "    Player not found: cannot build Player2Orca example" )
-ENDIF ( PLAYER_FOUND )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
-ENDIF ( OS_LINUX )
+    INCLUDE_DIRECTORIES( ${PLAYER_INCLUDE_DIRS} )
+    LINK_DIRECTORIES( ${PLAYER_LINK_DIRS} )
+    ADD_DEFINITIONS( ${PLAYER_DEFINITIONS} )
+
+    FIND_COMPONENT_SOURCES( COMP_SRCS )
+
+    SET( COMP_DEPS OrcaIfaceImpl ${PLAYER_LIBS} )
+
+    # build stand-alone component  
+    GLOBAL_ADD_EXECUTABLE( ${COMP_NAME} main handler )
+    TARGET_LINK_LIBRARIES( ${COMP_NAME} ${COMP_DEPS} )
+
+    GENERATE_CONFIG_FILE( ${COMP_NAME}.def )
+
+ENDIF ( BUILD )

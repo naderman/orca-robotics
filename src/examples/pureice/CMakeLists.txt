@@ -1,16 +1,29 @@
-OPTION( BUILD_PURE_ICE "Try to build PureIce Example" ON )
+SET ( COMP_NAME brick )
+SET ( OPTION_NAME BUILD_BRICK )
 
-IF ( NOT OS_WIN AND BUILD_PURE_ICE )
+SET ( BUILD TRUE )
+
+IF ( BUILD AND OS_WIN )
+    SET ( BUILD FALSE )
+    GLOBAL_NOT_ADD_EXECUTABLE( ${COMP_NAME} "Windows OS is not supported" )
+ENDIF ( BUILD AND OS_WIN )
+
+OPTION( ${OPTION_NAME} "Try to build ${COMP_NAME}" ON )
+IF ( BUILD AND NOT ${OPTION_NAME}  )
+    SET ( BUILD FALSE )
+    GLOBAL_NOT_ADD_EXECUTABLE( ${COMP_NAME} "disabled by user, use ccmake to enable" )
+ENDIF ( BUILD AND NOT ${OPTION_NAME} )
+
+IF ( BUILD)
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseBasicRules.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseLibProjectInterfaces.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseIce.cmake )
-    
-    #
-    # This gathers all the source files into the variable 'SRCS'
-    #
+
+    FIND_COMPONENT_SOURCES( COMP_SRCS )
+
     FILE( GLOB SRCS *.cpp )
     
-    GLOBAL_ADD_EXECUTABLE( pureice ${SRCS} )
+    GLOBAL_ADD_EXECUTABLE( ${COMP_NAME} ${SRCS} )
 
-ENDIF ( NOT OS_WIN AND BUILD_PURE_ICE )
+ENDIF ( BUILD )

@@ -7,7 +7,7 @@ SET ( BUILD TRUE )
 OPTION( ${OPTION_NAME} "Try to build ${COMP_NAME}" ON )
 IF ( BUILD AND NOT ${OPTION_NAME}  )
     SET ( BUILD FALSE )
-    GLOBAL_NOT_ADD_LIBRARY( ${COMP_NAME} "disabled by user, use ccmake to enable" )
+    GLOBAL_NOT_ADD_EXECUTABLE( ${COMP_NAME} "disabled by user, use ccmake to enable" )
 ENDIF ( BUILD AND NOT ${OPTION_NAME} )
 
 IF ( BUILD )

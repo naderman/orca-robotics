@@ -1,24 +1,34 @@
-OPTION( BUILD_BRICK "Try to build Brick example" ON )
+SET ( COMP_NAME brick )
+SET ( SERVICE_NAME OrcaBrick )
+SET ( OPTION_NAME BUILD_BRICK )
 
-IF ( BUILD_BRICK )
+SET ( BUILD TRUE )
+
+OPTION( ${OPTION_NAME} "Try to build ${COMP_NAME}" ON )
+IF ( BUILD AND NOT ${OPTION_NAME}  )
+    SET ( BUILD FALSE )
+    GLOBAL_NOT_ADD_EXECUTABLE( ${COMP_NAME} "disabled by user, use ccmake to enable" )
+ENDIF ( BUILD AND NOT ${OPTION_NAME} )
+
+IF ( BUILD)
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
     FIND_COMPONENT_SOURCES( COMP_SRCS )
 
-    # libs on which our code depends go here
+    # libs on which our code depends would go here
 #     SET( COMP_DEPS ??? )
 
     # build stand-alone component  
-    GLOBAL_ADD_EXECUTABLE( brick ${COMP_SRCS} main )
-#     TARGET_LINK_LIBRARIES( brick ${COMP_DEPS} )
-    
-    # build IceBox service
-    IF ( BUILD_SERVICES )
-        GLOBAL_ADD_LIBRARY( OrcaBrick SHARED ${COMP_SRCS} service )
-#         TARGET_LINK_LIBRARIES( OrcaBrick ${COMP_DEPS} ) 
-    ENDIF ( BUILD_SERVICES )
-    
-    GENERATE_CONFIG_FILE( brick.def )
+    GLOBAL_ADD_EXECUTABLE( ${COMP_NAME} ${COMP_SRCS} main )
+#     TARGET_LINK_LIBRARIES( ${COMP_NAME} ${COMP_DEPS} )
 
-ENDIF ( BUILD_BRICK )
+    # build IceBox service
+    IF ( BUILD_SERVICES AND NOT OS_WIN )
+        GLOBAL_ADD_LIBRARY( ${SERVICE_NAME} SHARED ${COMP_SRCS} service )
+#         TARGET_LINK_LIBRARIES( ${SERVICE_NAME} ${COMP_DEPS} ) 
+    ENDIF ( BUILD_SERVICES AND NOT OS_WIN )
+
+    GENERATE_CONFIG_FILE( ${COMP_NAME}.def )
+
+ENDIF ( BUILD )
