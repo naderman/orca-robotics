@@ -31,8 +31,8 @@ public:
              const orcaice::Context &context );
     ~PingerI();
 
-    // Remote calls:
-    double ping( const std::string &host, const Ice::Current& );
+    // Remote calls, defined in orca::Pinger
+    virtual double ping( const std::string &host, const Ice::Current& );
 
     // local calls
     void initInterface();

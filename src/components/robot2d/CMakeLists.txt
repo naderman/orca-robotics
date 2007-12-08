@@ -1,8 +1,24 @@
-IF ( NOT OS_WIN )
-
 OPTION( BUILD_ROBOT2D "Try to build Robot2d component" ON )
 
-IF ( BUILD_ROBOT2D )
+SET ( BUILD TRUE )
+
+IF ( BUILD AND OS_WIN )
+    SET ( BUILD FALSE )
+    GLOBAL_NOT_ADD_EXECUTABLE( robot2d "Windows OS is not supported" )
+ENDIF ( BUILD AND OS_WIN )
+
+IF ( BUILD AND NOT BUILD_ROBOT2D )
+    SET ( BUILD FALSE )
+    GLOBAL_NOT_ADD_EXECUTABLE( robot2d "disabled by user, use ccmake to enable" )
+ENDIF ( BUILD AND NOT BUILD_ROBOT2D )
+
+IF ( BUILD AND NOT HYDRODLL_INSTALLED )
+    SET ( BUILD FALSE )
+    GLOBAL_NOT_ADD_EXECUTABLE( robot2d "libHydroDll not installed" )
+ENDIF ( BUILD AND NOT HYDRODLL_INSTALLED )
+
+
+IF ( BUILD )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
@@ -21,5 +37,4 @@ IF ( BUILD_ROBOT2D )
     
     GENERATE_CONFIG_FILE( robot2d.def )
 
-ENDIF ( BUILD_ROBOT2D )
-ENDIF ( NOT OS_WIN )
+ENDIF ( BUILD )

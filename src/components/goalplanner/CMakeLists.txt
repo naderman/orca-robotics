@@ -1,6 +1,14 @@
 OPTION( BUILD_GOAL_PLANNER "Try to build GoalPlanner" ON )
 
-IF ( BUILD_GOAL_PLANNER )
+SET ( BUILD TRUE )
+
+IF ( BUILD AND NOT BUILD_GOAL_PLANNER )
+    SET ( BUILD FALSE )
+    GLOBAL_NOT_ADD_EXECUTABLE( goalplanner "disabled by user, use ccmake to enable" )
+ENDIF ( BUILD AND NOT BUILD_GOAL_PLANNER )
+
+
+IF ( BUILD )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
@@ -19,4 +27,4 @@ IF ( BUILD_GOAL_PLANNER )
     
     GENERATE_CONFIG_FILE( goalplanner.def )
 
-ENDIF ( BUILD_GOAL_PLANNER )
+ENDIF ( BUILD )

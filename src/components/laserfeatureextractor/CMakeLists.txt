@@ -1,8 +1,18 @@
-IF ( OS_LINUX )
-
 OPTION( BUILD_LASERFEATUREEXTRACTOR "Try to build LaserFeatureExtractor" ON )
+SET ( BUILD TRUE )
 
-IF ( BUILD_LASERFEATUREEXTRACTOR )
+IF ( BUILD AND NOT OS_LINUX )
+    SET ( BUILD FALSE )
+    GLOBAL_NOT_ADD_EXECUTABLE( laserfeatureextractor "only Linux OS is supported" )
+ENDIF ( BUILD AND NOT OS_LINUX )
+
+IF ( BUILD AND NOT BUILD_LASERFEATUREEXTRACTOR )
+    SET ( BUILD FALSE )
+    GLOBAL_NOT_ADD_EXECUTABLE( laserfeatureextractor "disabled by user, use ccmake to enable" )
+ENDIF ( BUILD AND NOT BUILD_LASERFEATUREEXTRACTOR )
+
+
+IF ( BUILD )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
     
@@ -21,5 +31,4 @@ IF ( BUILD_LASERFEATUREEXTRACTOR )
 
     GENERATE_CONFIG_FILE( laserfeatureextractor.def )
 
-ENDIF ( BUILD_LASERFEATUREEXTRACTOR )
-ENDIF ( OS_LINUX )
+ENDIF ( BUILD )

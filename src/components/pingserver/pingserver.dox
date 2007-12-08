@@ -23,19 +23,13 @@ none
 @par Operation
 
 This component provides a pinging service.  It's split out into a
-special component like this because pinging requires root privileges.
+special component like this because pinging in Linux requires root privileges.
 Therefore in order for pingserver to work, it needs to either be
 executed as root or to be suid root.  Restricting the pinging
 functionality to a single component in this way means that a bunch of
 other components can ping without requiring root privileges.
 
-@see @ref orca_library_orcaping
-
-@par Prerequisites
-
-@verbatim
-# apt-get install liboping-dev
-@endverbatim
+@see For prerequisits, see @ref hydro_library_hydroping
 
 @par Authors
 

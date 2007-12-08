@@ -1,8 +1,19 @@
-IF ( OS_LINUX )
-
 OPTION( BUILD_GPS "Try to build Gps component" ON )
 
-IF ( BUILD_GPS )
+SET ( BUILD TRUE )
+
+IF ( BUILD AND NOT OS_LINUX )
+    SET ( BUILD FALSE )
+    GLOBAL_NOT_ADD_EXECUTABLE( gps "only Linux OS is supported" )
+ENDIF ( BUILD AND NOT OS_LINUX )
+
+IF ( BUILD AND NOT BUILD_GPS )
+    SET ( BUILD FALSE )
+    GLOBAL_NOT_ADD_EXECUTABLE( gps "disabled by user, use ccmake to enable" )
+ENDIF ( BUILD AND NOT BUILD_GPS )
+
+
+IF ( BUILD )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
     
@@ -24,7 +35,7 @@ IF ( BUILD_GPS )
     )
 
     FIND_COMPONENT_SOURCES( COMP_SRCS )
-    SET( COMP_DEPS OrcaIfaceImpl ${ASHTECHGPS_LIBS} ${GARMINGPS_LIBS})
+    SET( COMP_DEPS OrcaIfaceImpl ${GARMINGPS_LIBS})
     
     # build stand-alone component  
     GLOBAL_ADD_EXECUTABLE( gps ${COMP_SRCS} main )
@@ -38,6 +49,4 @@ IF ( BUILD_GPS )
 
     GENERATE_CONFIG_FILE( gps.def )
 
-ENDIF ( BUILD_GPS )
-ENDIF ( OS_LINUX )
-
+ENDIF ( BUILD )

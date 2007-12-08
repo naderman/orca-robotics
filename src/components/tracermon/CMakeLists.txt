@@ -1,8 +1,19 @@
-IF ( NOT OS_WIN )
-
 OPTION( BUILD_TRACERMON "Try to build TracerMon" ON )
 
-IF ( BUILD_TRACERMON )
+SET ( BUILD TRUE )
+
+IF ( BUILD AND OS_WIN )
+    SET ( BUILD FALSE )
+    GLOBAL_NOT_ADD_EXECUTABLE( tracermon "Windows OS is not supported" )
+ENDIF ( BUILD AND OS_WIN )
+
+IF ( BUILD AND NOT BUILD_TRACERMON )
+    SET ( BUILD FALSE )
+    GLOBAL_NOT_ADD_EXECUTABLE( tracermon "disabled by user, use ccmake to enable" )
+ENDIF ( BUILD AND NOT BUILD_TRACERMON )
+
+
+IF ( BUILD )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
@@ -49,5 +60,4 @@ ENDIF ( OS_LINUX )
 
     GENERATE_CONFIG_FILE( tracermon.def )
 
-ENDIF ( BUILD_TRACERMON )
-ENDIF ( NOT OS_WIN )
+ENDIF ( BUILD )

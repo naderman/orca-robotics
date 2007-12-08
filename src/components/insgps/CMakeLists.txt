@@ -1,8 +1,18 @@
-IF ( OS_LINUX )
-
 OPTION( BUILD_INSGPS "Try to build InsGps component" ON )
+SET ( BUILD TRUE )
 
-IF ( BUILD_INSGPS )
+IF ( BUILD AND NOT OS_LINUX )
+    SET ( BUILD FALSE )
+    GLOBAL_NOT_ADD_EXECUTABLE( insgps "only Linux OS is supported" )
+ENDIF ( BUILD AND NOT OS_LINUX )
+
+IF ( BUILD AND NOT BUILD_INSGPS )
+    SET ( BUILD FALSE )
+    GLOBAL_NOT_ADD_EXECUTABLE( insgps "disabled by user, use ccmake to enable" )
+ENDIF ( BUILD AND NOT BUILD_INSGPS )
+
+
+IF ( BUILD )
     
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
@@ -35,5 +45,4 @@ IF ( BUILD_INSGPS )
 
     GENERATE_CONFIG_FILE( insgps.def )
 
-ENDIF ( BUILD_INSGPS )
-ENDIF ( OS_LINUX )
+ENDIF ( BUILD )

@@ -1,8 +1,18 @@
-IF ( OS_LINUX )
-
 OPTION( BUILD_PATHPLANNER "Try to build pathplanner" ON )
+SET ( BUILD TRUE )
 
-IF ( BUILD_PATHPLANNER )
+IF ( BUILD AND NOT OS_LINUX )
+    SET ( BUILD FALSE )
+    GLOBAL_NOT_ADD_EXECUTABLE( pathplanner "only Linux OS is supported" )
+ENDIF ( BUILD AND NOT OS_LINUX )
+
+IF ( BUILD AND NOT BUILD_PATHPLANNER )
+    SET ( BUILD FALSE )
+    GLOBAL_NOT_ADD_EXECUTABLE( pathplanner "disabled by user, use ccmake to enable" )
+ENDIF ( BUILD AND NOT BUILD_PATHPLANNER )
+
+
+IF ( BUILD )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
@@ -29,5 +39,4 @@ IF ( BUILD_PATHPLANNER )
 
     GENERATE_CONFIG_FILE( pathplanner.def )
 
-ENDIF ( BUILD_PATHPLANNER )
-ENDIF ( OS_LINUX )
+ENDIF ( BUILD )

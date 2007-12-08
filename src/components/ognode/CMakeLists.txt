@@ -1,8 +1,18 @@
-IF ( NOT OS_WIN )
-
 OPTION( BUILD_OGNODE "Try to build OgNode" ON )
+SET ( BUILD TRUE )
 
-IF ( BUILD_OGNODE )
+IF ( BUILD AND OS_WIN )
+    SET ( BUILD FALSE )
+    GLOBAL_NOT_ADD_EXECUTABLE( ognode "Windows OS is not supported" )
+ENDIF ( BUILD AND OS_WIN )
+
+IF ( BUILD AND NOT BUILD_OGNODE )
+    SET ( BUILD FALSE )
+    GLOBAL_NOT_ADD_EXECUTABLE( ognode "disabled by user, use ccmake to enable" )
+ENDIF ( BUILD AND NOT BUILD_OGNODE )
+
+
+IF ( BUILD )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
     
@@ -16,5 +26,4 @@ IF ( BUILD_OGNODE )
     
     GENERATE_CONFIG_FILE( ognode.def )
 
-ENDIF ( BUILD_OGNODE )
-ENDIF ( NOT OS_WIN )
+ENDIF ( BUILD )

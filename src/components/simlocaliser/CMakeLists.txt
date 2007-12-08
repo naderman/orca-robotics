@@ -1,8 +1,19 @@
-IF ( NOT OS_WIN )
-
 OPTION( BUILD_SIM_LOCALISER "Try to build SimLocaliser component" ON )
 
-IF ( BUILD_SIM_LOCALISER )
+SET ( BUILD TRUE )
+
+IF ( BUILD AND OS_WIN )
+    SET ( BUILD FALSE )
+    GLOBAL_NOT_ADD_EXECUTABLE( simlocaliser "Windows OS is not supported" )
+ENDIF ( BUILD AND OS_WIN )
+
+IF ( BUILD AND NOT BUILD_SIM_LOCALISER )
+    SET ( BUILD FALSE )
+    GLOBAL_NOT_ADD_EXECUTABLE( simlocaliser "disabled by user, use ccmake to enable" )
+ENDIF ( BUILD AND NOT BUILD_SIM_LOCALISER )
+
+
+IF ( BUILD )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
@@ -39,5 +50,4 @@ IF ( BUILD_SIM_LOCALISER )
     
     GENERATE_CONFIG_FILE( simlocaliser.def )
 
-ENDIF ( BUILD_SIM_LOCALISER )
-ENDIF ( NOT OS_WIN )
+ENDIF ( BUILD )

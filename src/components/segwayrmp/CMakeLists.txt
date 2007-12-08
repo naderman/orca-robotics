@@ -1,8 +1,24 @@
-IF ( OS_LINUX )
-
 OPTION( BUILD_SEGWAYRMP "Try to build SegwayRmp component" ON )
 
-IF ( BUILD_SEGWAYRMP )
+SET ( BUILD TRUE )
+
+IF ( BUILD AND NOT OS_LINUX )
+    SET ( BUILD FALSE )
+    GLOBAL_NOT_ADD_EXECUTABLE( segwayrmp "only Linux OS is supported" )
+ENDIF ( BUILD AND NOT OS_LINUX )
+
+IF ( BUILD AND NOT BUILD_SEGWAYRMP )
+    SET ( BUILD FALSE )
+    GLOBAL_NOT_ADD_EXECUTABLE( segwayrmp "disabled by user, use ccmake to enable" )
+ENDIF ( BUILD AND NOT BUILD_SEGWAYRMP )
+
+IF ( BUILD AND NOT HYDRODLL_INSTALLED )
+    SET ( BUILD FALSE )
+    GLOBAL_NOT_ADD_EXECUTABLE( segwayrmp "libHydroDll not installed" )
+ENDIF ( BUILD AND NOT HYDRODLL_INSTALLED )
+
+
+IF ( BUILD )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
@@ -21,5 +37,4 @@ IF ( BUILD_SEGWAYRMP )
 
     GENERATE_CONFIG_FILE( segwayrmp.def )
 
-ENDIF ( BUILD_SEGWAYRMP )
-ENDIF ( OS_LINUX )
+ENDIF ( BUILD )

@@ -16,9 +16,9 @@
 
 namespace pingserver {
 
-//!
-//! @author Alex Brooks
-//!
+//
+// @author Alex Brooks
+//
 class Component : public orcaice::Component
 {
 
@@ -26,7 +26,7 @@ public:
 
     Component();
 
-    // component interface
+    // from orcaice::Component
     virtual void start();
     virtual void stop();
 

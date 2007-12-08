@@ -1,8 +1,19 @@
-IF ( NOT OS_WIN )
-
 OPTION( BUILD_FAITHLOCALISER "Try to build FaithLocaliser component" ON )
 
-IF ( BUILD_FAITHLOCALISER )
+SET ( BUILD TRUE )
+
+IF ( BUILD AND OS_WIN )
+    SET ( BUILD FALSE )
+    GLOBAL_NOT_ADD_EXECUTABLE( faithlocaliser "Windows OS is not supported" )
+ENDIF ( BUILD AND OS_WIN )
+
+IF ( BUILD AND NOT BUILD_FAITHLOCALISER )
+    SET ( BUILD FALSE )
+    GLOBAL_NOT_ADD_EXECUTABLE( faithlocaliser "disabled by user, use ccmake to enable" )
+ENDIF ( BUILD AND NOT BUILD_FAITHLOCALISER )
+
+
+IF ( BUILD )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
@@ -21,5 +32,4 @@ IF ( BUILD_FAITHLOCALISER )
 
     GENERATE_CONFIG_FILE( faithlocaliser.def )
 
-ENDIF ( BUILD_FAITHLOCALISER )
-ENDIF ( NOT OS_WIN )
+ENDIF ( BUILD )

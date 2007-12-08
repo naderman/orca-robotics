@@ -1,8 +1,19 @@
-IF ( NOT OS_WIN )
-
 OPTION( BUILD_GPS2LOCALISE2D "Try to build Gps2Localise2d" ON )
 
-IF ( BUILD_GPS2LOCALISE2D )
+SET ( BUILD TRUE )
+
+IF ( BUILD AND OS_WIN )
+    SET ( BUILD FALSE )
+    GLOBAL_NOT_ADD_EXECUTABLE( gps2localise2d "Windows OS is not supported" )
+ENDIF ( BUILD AND OS_WIN )
+
+IF ( BUILD AND NOT BUILD_GPS2LOCALISE2D )
+    SET ( BUILD FALSE )
+    GLOBAL_NOT_ADD_EXECUTABLE( gps2localise2d "disabled by user, use ccmake to enable" )
+ENDIF ( BUILD AND NOT BUILD_GPS2LOCALISE2D )
+
+
+IF ( BUILD )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
     
@@ -21,5 +32,4 @@ IF ( BUILD_GPS2LOCALISE2D )
 
     GENERATE_CONFIG_FILE( gps2localise2d.def )
 
-ENDIF ( BUILD_GPS2LOCALISE2D )
-ENDIF ( NOT OS_WIN )
+ENDIF ( BUILD )

@@ -1,8 +1,28 @@
-IF ( OS_LINUX )
-
 OPTION( BUILD_LOCALNAV "Try to build LocalNav component" ON )
 
-IF ( BUILD_LOCALNAV )
+SET ( BUILD TRUE )
+
+IF ( BUILD AND NOT OS_LINUX )
+    SET ( BUILD FALSE )
+    GLOBAL_NOT_ADD_EXECUTABLE( localnav "only Linux OS is supported" )
+ENDIF ( BUILD AND NOT OS_LINUX )
+
+IF ( BUILD AND NOT BUILD_LOCALNAV )
+    SET ( BUILD FALSE )
+    GLOBAL_NOT_ADD_EXECUTABLE( localnav "disabled by user, use ccmake to enable" )
+ENDIF ( BUILD AND NOT BUILD_LOCALNAV )
+
+IF ( BUILD AND NOT HYDRODLL_INSTALLED )
+    SET ( BUILD FALSE )
+    GLOBAL_NOT_ADD_EXECUTABLE( localnav "libHydroDll not installed" )
+ENDIF ( BUILD AND NOT HYDRODLL_INSTALLED )
+
+IF ( BUILD AND NOT HYDRONAVUTIL_INSTALLED )
+    SET ( BUILD FALSE )
+    GLOBAL_NOT_ADD_EXECUTABLE( localnav "libHydroNavUtil not installed" )
+ENDIF ( BUILD AND NOT HYDRONAVUTIL_INSTALLED )
+
+IF ( BUILD )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
@@ -18,7 +38,7 @@ IF ( BUILD_LOCALNAV )
     ADD_SUBDIRECTORY( localnavutil )
 
     FIND_COMPONENT_SOURCES( COMP_SRCS )
-    SET( COMP_DEPS OrcaLocalNav OrcaLocalNavUtil HydroDll OrcaLocalNavTestSim HydroNavUtil )
+    SET( COMP_DEPS OrcaLocalNav OrcaLocalNavUtil OrcaLocalNavTestSim HydroDll HydroNavUtil )
 
     # build stand-alone component  
     GLOBAL_ADD_EXECUTABLE( localnav ${COMP_SRCS} main )
@@ -58,5 +78,4 @@ IF ( BUILD_LOCALNAV )
       GLOBAL_ADD_TEST( LocalNavVfhTest ${LD_LINUX} --library-path vfhdriver:$ENV{LD_LIBRARY_PATH} ${CMAKE_CURRENT_BINARY_DIR}/localnav --Orca.Config=${PROJECT_BINARY_DIR}/src/components/localnav/localnav.cfg --LocalNav.Config.TestInSimulationMode=1 --LocalNav.Config.Vfh.MaxSpeed=2.0 --LocalNav.Config.Test.NumWaypoints=20 --Orca.RequireRegistry=0 --LocalNav.Config.Test.BatchMode=1 )
     ENDIF ( BUILD_TESTS )
 
-ENDIF ( BUILD_LOCALNAV )
-ENDIF ( OS_LINUX )
+ENDIF ( BUILD )

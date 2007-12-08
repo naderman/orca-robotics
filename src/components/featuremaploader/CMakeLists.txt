@@ -1,8 +1,19 @@
-IF ( NOT OS_WIN )
-
 OPTION( BUILD_FEATUREMAPLOADER "Try to build FeatureMapLoader component" ON )
 
-IF ( BUILD_FEATUREMAPLOADER )
+SET ( BUILD TRUE )
+
+IF ( BUILD AND OS_WIN )
+    SET ( BUILD FALSE )
+    GLOBAL_NOT_ADD_EXECUTABLE( featuremaploader "Windows OS is not supported" )
+ENDIF ( BUILD AND OS_WIN )
+
+IF ( BUILD AND NOT BUILD_FEATUREMAPLOADER )
+    SET ( BUILD FALSE )
+    GLOBAL_NOT_ADD_EXECUTABLE( featuremaploader "disabled by user, use ccmake to enable" )
+ENDIF ( BUILD AND NOT BUILD_FEATUREMAPLOADER )
+
+
+IF ( BUILD )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
@@ -21,5 +32,4 @@ IF ( BUILD_FEATUREMAPLOADER )
 
     GENERATE_CONFIG_FILE( featuremaploader.def )
 
-ENDIF ( BUILD_FEATUREMAPLOADER )
-ENDIF ( NOT OS_WIN )
+ENDIF ( BUILD )

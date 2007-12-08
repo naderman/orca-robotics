@@ -1,8 +1,24 @@
-IF ( NOT OS_WIN )
-
 OPTION( BUILD_TELEOP "Try to build Teleop" ON )
 
-IF ( BUILD_TELEOP )
+SET ( BUILD TRUE )
+
+IF ( BUILD AND OS_WIN )
+    SET ( BUILD FALSE )
+    GLOBAL_NOT_ADD_EXECUTABLE( teleop "Windows OS is not supported" )
+ENDIF ( BUILD AND OS_WIN )
+
+IF ( BUILD AND NOT BUILD_TELEOP )
+    SET ( BUILD FALSE )
+    GLOBAL_NOT_ADD_EXECUTABLE( teleop "disabled by user, use ccmake to enable" )
+ENDIF ( BUILD AND NOT BUILD_TELEOP )
+
+IF ( BUILD AND NOT HYDRODLL_INSTALLED )
+    SET ( BUILD FALSE )
+    GLOBAL_NOT_ADD_EXECUTABLE( teleop "libHydroDll not installed" )
+ENDIF ( BUILD AND NOT HYDRODLL_INSTALLED )
+
+
+IF ( BUILD )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
     
@@ -12,7 +28,7 @@ IF ( BUILD_TELEOP )
 
     GLOBAL_ADD_EXECUTABLE( teleop ${COMP_SRCS} )
     TARGET_LINK_LIBRARIES( teleop ${COMP_DEPS} )
+
     GENERATE_CONFIG_FILE( teleop.def )
 
-ENDIF ( BUILD_TELEOP )
-ENDIF ( NOT OS_WIN )
+ENDIF ( BUILD )
