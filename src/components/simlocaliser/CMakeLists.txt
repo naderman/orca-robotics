@@ -1,20 +1,9 @@
 SET ( COMP_NAME simlocaliser )
 SET ( SERVICE_NAME OrcaSimLocaliser )
-SET ( OPTION_NAME BUILD_SIM_LOCALISER )
 
-SET ( BUILD TRUE )
-
-IF ( BUILD AND OS_WIN )
-    SET ( BUILD FALSE )
-    GLOBAL_NOT_ADD_EXECUTABLE( ${COMP_NAME} "Windows OS is not supported" )
-ENDIF ( BUILD AND OS_WIN )
-
-OPTION( ${OPTION_NAME} "Try to build ${COMP_NAME}" ON )
-IF ( BUILD AND NOT ${OPTION_NAME}  )
-    SET ( BUILD FALSE )
-    GLOBAL_NOT_ADD_EXECUTABLE( ${COMP_NAME} "disabled by user, use ccmake to enable" )
-ENDIF ( BUILD AND NOT ${OPTION_NAME} )
-
+REQUIRE_OPTION( EXE ${COMP_NAME} ON )
+SET ( NOT_OS_WIN NOT OS_WIN )
+REQUIRE_VAR( EXE ${COMP_NAME} NOT_OS_WIN "Windows OS is not  supported" )
 
 IF ( BUILD )
 

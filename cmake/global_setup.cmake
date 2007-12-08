@@ -82,6 +82,7 @@ ASSERT ( ICE_WORKS
 # Include external and local macro definitions
 #
 INCLUDE( ${HYDRO_HOME}/cmake/GlobalAdd.cmake )
+INCLUDE( ${HYDRO_HOME}/cmake/Require.cmake )
 INCLUDE( ${HYDRO_HOME}/cmake/messages.cmake )
 INCLUDE( ${ORCA_CMAKE_DIR}/FindComponentSources.cmake )
 INCLUDE( ${ORCA_CMAKE_DIR}/GenerateConfigFile.cmake )

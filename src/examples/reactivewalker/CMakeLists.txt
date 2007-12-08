@@ -1,14 +1,7 @@
 SET ( COMP_NAME reactivewalker )
 SET ( SERVICE_NAME OrcaReactiveWalker )
-SET ( OPTION_NAME BUILD_REACTIVEWALKER )
 
-SET ( BUILD TRUE )
-
-OPTION( ${OPTION_NAME} "Try to build ${COMP_NAME}" ON )
-IF ( BUILD AND NOT ${OPTION_NAME}  )
-    SET ( BUILD FALSE )
-    GLOBAL_NOT_ADD_EXECUTABLE( ${COMP_NAME} "disabled by user, use ccmake to enable" )
-ENDIF ( BUILD AND NOT ${OPTION_NAME} )
+REQUIRE_OPTION( EXE ${COMP_NAME} ON )
 
 IF ( BUILD)
 

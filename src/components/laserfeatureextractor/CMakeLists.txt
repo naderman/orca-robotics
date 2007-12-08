@@ -1,20 +1,8 @@
 SET ( COMP_NAME laserfeatureextractor )
 SET ( SERVICE_NAME OrcaLaserFeatureExtractor )
-SET ( OPTION_NAME BUILD_LASERFEATUREEXTRACTOR )
 
-SET ( BUILD TRUE )
-
-IF ( BUILD AND NOT OS_LINUX )
-    SET ( BUILD FALSE )
-    GLOBAL_NOT_ADD_EXECUTABLE( ${COMP_NAME} "only Linux OS is supported" )
-ENDIF ( BUILD AND NOT OS_LINUX )
-
-OPTION( ${OPTION_NAME} "Try to build ${COMP_NAME}" ON )
-IF ( BUILD AND NOT ${OPTION_NAME}  )
-    SET ( BUILD FALSE )
-    GLOBAL_NOT_ADD_EXECUTABLE( ${COMP_NAME} "disabled by user, use ccmake to enable" )
-ENDIF ( BUILD AND NOT ${OPTION_NAME} )
-
+REQUIRE_OPTION( EXE ${COMP_NAME} ON )
+REQUIRE_VAR( EXE ${COMP_NAME} OS_LINUX "only Linux OS is supported" )
 
 IF ( BUILD )
 

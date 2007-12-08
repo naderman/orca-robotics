@@ -1,32 +1,11 @@
 SET ( COMP_NAME pingserver )
-SET ( SERVICE_NAME OrcaFaithLocaliser )
-SET ( OPTION_NAME BUILD_PINGSERVER )
 
-SET ( BUILD TRUE )
-
-IF ( BUILD AND NOT OS_LINUX )
-    SET ( BUILD FALSE )
-    GLOBAL_NOT_ADD_EXECUTABLE( ${COMP_NAME} "only Linux OS is supported" )
-ENDIF ( BUILD AND NOT OS_LINUX )
-
-OPTION( ${OPTION_NAME} "Try to build ${COMP_NAME}" ON )
-IF ( BUILD AND NOT ${OPTION_NAME}  )
-    SET ( BUILD FALSE )
-    GLOBAL_NOT_ADD_EXECUTABLE( ${COMP_NAME} "disabled by user, use ccmake to enable" )
-ENDIF ( BUILD AND NOT ${OPTION_NAME} )
-
+REQUIRE_OPTION( EXE ${COMP_NAME} ON )
+REQUIRE_VAR( EXE ${COMP_NAME} OS_LINUX "only Linux OS is supported" )
 # Look for liboping -- library for 'ping'ing from C
 INCLUDE ( ${HYDRO_HOME}/cmake/FindOPing.cmake )
-IF ( BUILD AND NOT LIBOPING_FOUND )
-    SET ( BUILD FALSE )
-    GLOBAL_NOT_ADD_EXECUTABLE( ${COMP_NAME} "liboping not found" )
-ENDIF ( BUILD AND NOT LIBOPING_FOUND )
-
-IF ( BUILD AND NOT HYDROPING_INSTALLED )
-    SET ( BUILD FALSE )
-    GLOBAL_NOT_ADD_EXECUTABLE( ${COMP_NAME} "libHydroPing not installed" )
-ENDIF ( BUILD AND NOT HYDROPING_INSTALLED )
-
+REQUIRE_VAR( EXE ${COMP_NAME} LIBOPING_FOUND "liboping not found" )
+REQUIRE_VAR( EXE ${COMP_NAME} HYDROPING_INSTALLED "libHydroPing not installed" )
 
 IF ( BUILD )
     
