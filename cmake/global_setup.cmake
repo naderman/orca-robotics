@@ -20,6 +20,12 @@ ELSE ( DEFINED HYDRO_HOME )
             "Looking for Hydro - found in ${HYDRO_HOME}" 
             1 )
 ENDIF ( DEFINED HYDRO_HOME )
+
+#
+# Special Hydro directories
+#
+SET ( HYDRO_CMAKE_DIR ${HYDRO_HOME}/cmake )
+
 #
 # Load Hydro manifest
 #
@@ -29,17 +35,17 @@ MESSAGE( STATUS "Loaded Hydro manifest")
 #
 # process version number
 #
-INCLUDE( ${HYDRO_HOME}/cmake/version.cmake )
+INCLUDE( ${HYDRO_CMAKE_DIR}/version.cmake )
 
 #
 # Project directories
 #
-INCLUDE( ${HYDRO_HOME}/cmake/dirs.cmake )
+INCLUDE( ${HYDRO_CMAKE_DIR}/dirs.cmake )
 
 #
 # Determine OS, and make os-specefic choices
 #
-INCLUDE( ${HYDRO_HOME}/cmake/os.cmake )
+INCLUDE( ${HYDRO_CMAKE_DIR}/os.cmake )
 
 #
 # Set the build type (affects debugging symbols and optimization)
@@ -81,9 +87,9 @@ ASSERT ( ICE_WORKS
 #
 # Include external and local macro definitions
 #
-INCLUDE( ${HYDRO_HOME}/cmake/GlobalAdd.cmake )
-INCLUDE( ${HYDRO_HOME}/cmake/Require.cmake )
-INCLUDE( ${HYDRO_HOME}/cmake/messages.cmake )
+INCLUDE( ${HYDRO_CMAKE_DIR}/GlobalAdd.cmake )
+INCLUDE( ${HYDRO_CMAKE_DIR}/Require.cmake )
+INCLUDE( ${HYDRO_CMAKE_DIR}/messages.cmake )
 INCLUDE( ${ORCA_CMAKE_DIR}/FindComponentSources.cmake )
 INCLUDE( ${ORCA_CMAKE_DIR}/GenerateConfigFile.cmake )
 INCLUDE( ${ORCA_CMAKE_DIR}/OptionalSubLibrary.cmake )

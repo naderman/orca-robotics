@@ -1,5 +1,11 @@
-IF ( NOT OS_WIN )
-IF ( QT4_FOUND )
+SET ( LIB_NAME OrcaQGui2d )
+
+REQUIRE_OPTION( LIB ${LIB_NAME} ON )
+SET ( NOT_OS_WIN NOT OS_WIN )
+REQUIRE_VAR( LIB ${LIB_NAME} NOT_OS_WIN "Windows OS is not  supported" )
+REQUIRE_VAR( LIB ${LIB_NAME} QT4_FOUND "Qt4 not found" )
+
+IF ( BUILD )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseQt.cmake )
@@ -13,16 +19,11 @@ IF ( QT4_FOUND )
 
     QT4_WRAP_CPP( MOC_SRCS ${MOC_HEADERS} )
     
-    GLOBAL_ADD_LIBRARY( OrcaQGui2d SHARED ${HUMAN_SRCS} ${MOC_SRCS} )
+    GLOBAL_ADD_LIBRARY( ${LIB_NAME} SHARED ${HUMAN_SRCS} ${MOC_SRCS} )
     
     LINK_DIRECTORIES( ${PROJECT_SOURCE_DIR}/src/libs/qorcacm )
-    TARGET_LINK_LIBRARIES ( OrcaQGui2d OrcaQCompModel )
+    TARGET_LINK_LIBRARIES ( ${LIB_NAME} OrcaQCompModel )
     
     INSTALL_FILES( /include/orcaqgui2d .*\\.h$ )
 
-ELSE  ( QT4_FOUND )
-
-    CANNOT_BUILD_MESSAGE( libOrcaQGui2d "QT4 not found")
-
-ENDIF ( QT4_FOUND )
-ENDIF ( NOT OS_WIN )
+ENDIF ( BUILD )

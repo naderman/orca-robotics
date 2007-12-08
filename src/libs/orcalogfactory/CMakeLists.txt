@@ -1,4 +1,10 @@
-IF ( NOT OS_WIN )
+SET ( LIB_NAME OrcaLogFactory )
+
+REQUIRE_OPTION( LIB ${LIB_NAME} ON )
+SET ( NOT_OS_WIN NOT OS_WIN )
+REQUIRE_VAR( LIB ${LIB_NAME} NOT_OS_WIN "Windows OS is not  supported" )
+
+IF ( BUILD )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
     
@@ -10,7 +16,7 @@ IF ( NOT OS_WIN )
 
     FILE( GLOB SRCS *.cpp )
     
-    GLOBAL_ADD_LIBRARY( OrcaLogFactory SHARED ${SRCS} )
+    GLOBAL_ADD_LIBRARY( ${LIB_NAME} SHARED ${SRCS} )
 
     SET( COMP_DEPS OrcaLog OrcaIfaceImpl )
 
@@ -19,10 +25,10 @@ IF ( NOT OS_WIN )
         SET( COMP_DEPS ${COMP_DEPS} ${OPENCV_LIBS} OrcaImage )
     ENDIF ( OPENCV_FOUND )
 
-    TARGET_LINK_LIBRARIES( OrcaLogFactory ${COMP_DEPS} )
+    TARGET_LINK_LIBRARIES( ${LIB_NAME} ${COMP_DEPS} )
 
     IF ( BUILD_TESTS )
         ADD_SUBDIRECTORY ( test )
     ENDIF ( BUILD_TESTS )
     
-ENDIF ( NOT OS_WIN )
+ENDIF ( BUILD )

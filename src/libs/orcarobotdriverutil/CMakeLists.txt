@@ -1,10 +1,18 @@
-INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
+SET ( LIB_NAME OrcaRobotDriverUtil )
 
-INCLUDE_DIRECTORIES( 
-  ${PROJECT_BINARY_DIR}
-  ${PROJECT_SOURCE_DIR}/src/libs
-  )
+REQUIRE_OPTION( LIB ${LIB_NAME} ON )
 
-FILE( GLOB SRCS *.cpp )
-GLOBAL_ADD_LIBRARY( OrcaRobotDriverUtil SHARED ${SRCS} )
-INSTALL_FILES( /include/orcarobotdriverutil .*\\.h$ )
+IF ( BUILD )
+
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
+    
+    INCLUDE_DIRECTORIES( 
+        ${PROJECT_BINARY_DIR}
+        ${PROJECT_SOURCE_DIR}/src/libs
+    )
+    
+    FILE( GLOB SRCS *.cpp )
+    GLOBAL_ADD_LIBRARY( ${LIB_NAME} SHARED ${SRCS} )
+    INSTALL_FILES( /include/orcarobotdriverutil .*\\.h$ )
+
+ENDIF ( BUILD )

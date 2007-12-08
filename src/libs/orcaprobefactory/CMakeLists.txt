@@ -1,11 +1,17 @@
-IF ( NOT OS_WIN )
+SET ( LIB_NAME OrcaProbeFactory )
+
+REQUIRE_OPTION( LIB ${LIB_NAME} ON )
+SET ( NOT_OS_WIN NOT OS_WIN )
+REQUIRE_VAR( LIB ${LIB_NAME} NOT_OS_WIN "Windows OS is not  supported" )
+
+IF ( BUILD )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
     
     FILE( GLOB SRCS *.cpp )
     
-    GLOBAL_ADD_LIBRARY( OrcaProbeFactory SHARED ${SRCS} )
+    GLOBAL_ADD_LIBRARY( ${LIB_NAME} SHARED ${SRCS} )
     
-    TARGET_LINK_LIBRARIES( OrcaProbeFactory OrcaProbe )
+    TARGET_LINK_LIBRARIES( ${LIB_NAME} OrcaProbe )
     
-ENDIF ( NOT OS_WIN )
+ENDIF (BUILD )

@@ -1,15 +1,23 @@
-INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
+SET ( LIB_NAME OrcaObjectUtil )
 
-FILE( GLOB SRCS *.cpp )
+REQUIRE_OPTION( LIB ${LIB_NAME} ON )
 
-IF(NOT OS_WIN)
-    GLOBAL_ADD_LIBRARY( OrcaObjectUtil SHARED ${SRCS} )
-ELSE (NOT OS_WIN)
-    # for some reason cannot get shared libs working in windows
-    GLOBAL_ADD_LIBRARY( OrcaObjectUtil STATIC ${SRCS} )
-ENDIF (NOT OS_WIN)
+IF ( BUILD )
 
-# special dependency on the generated files
-ADD_DEPENDENCIES( OrcaObjectUtil OrcaObjects )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
+    
+    FILE( GLOB SRCS *.cpp )
+    
+    IF(NOT OS_WIN)
+        GLOBAL_ADD_LIBRARY( ${LIB_NAME} SHARED ${SRCS} )
+    ELSE (NOT OS_WIN)
+        # for some reason cannot get shared libs working in windows
+        GLOBAL_ADD_LIBRARY( ${LIB_NAME} STATIC ${SRCS} )
+    ENDIF (NOT OS_WIN)
+    
+    # special dependency on the generated files
+    ADD_DEPENDENCIES( ${LIB_NAME} OrcaObjects )
+    
+    INSTALL_FILES( /include/orcaobjutil .*\\.h$ )
 
-INSTALL_FILES( /include/orcaobjutil .*\\.h$ )
+ENDIF ( BUILD )

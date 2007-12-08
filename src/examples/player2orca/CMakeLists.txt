@@ -2,7 +2,7 @@ SET ( COMP_NAME player2orca )
 
 REQUIRE_OPTION( EXE ${COMP_NAME} ON )
 REQUIRE_VAR( EXE ${COMP_NAME} OS_LINUX "only Linux OS is supported" )
-INCLUDE (${ORCA_CMAKE_DIR}/FindPlayer2.cmake)
+INCLUDE (${HYDRO_HOME}/cmake/FindPlayer2.cmake)
 REQUIRE_VAR( EXE ${COMP_NAME} PLAYER_FOUND "Player not found" )
 
 IF ( BUILD)

@@ -1,8 +1,9 @@
-IF ( OS_LINUX )
+SET ( LIB_NAME OrcaIceGrid )
 
-OPTION( BUILD_ORCAICEGRID "Try to build libOrcaIceGrid" ON )
+REQUIRE_OPTION( LIB ${LIB_NAME} ON )
+REQUIRE_VAR( LIB ${LIB_NAME} OS_LINUX "only Linux OS is supported" )
 
-IF ( BUILD_ORCAICEGRID )
+IF ( BUILD )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseBasicRules.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseIce.cmake )
@@ -11,11 +12,8 @@ IF ( BUILD_ORCAICEGRID )
     
     FILE( GLOB SRCS *.cpp )
 
-    GLOBAL_ADD_LIBRARY( OrcaIceGrid SHARED ${SRCS} )
+    GLOBAL_ADD_LIBRARY( ${LIB_NAME} SHARED ${SRCS} )
 
     INSTALL_FILES( /include/orcaicegrid .*\\.h$ )
 
-ENDIF ( BUILD_ORCAICEGRID )
-
-ENDIF ( OS_LINUX )
-
+ENDIF ( BUILD )

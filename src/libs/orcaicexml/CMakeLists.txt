@@ -1,19 +1,17 @@
-IF ( OS_LINUX )
+SET ( LIB_NAME OrcaIceXml )
 
-OPTION( BUILD_ORCAICEXML "Try to build libOrcaIceXml" ON )
+REQUIRE_OPTION( LIB ${LIB_NAME} ON )
+REQUIRE_VAR( LIB ${LIB_NAME} OS_LINUX "only Linux OS is supported" )
 
-IF ( BUILD_ORCAICEXML )
+IF ( BUILD )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseIce.cmake )
     
     FILE( GLOB SRCS *.cpp )
 
-    GLOBAL_ADD_LIBRARY( OrcaIceXml SHARED ${SRCS} )
-    TARGET_LINK_LIBRARIES( OrcaIceXml IceXML )
+    GLOBAL_ADD_LIBRARY( ${LIB_NAME} SHARED ${SRCS} )
+    TARGET_LINK_LIBRARIES( ${LIB_NAME} IceXML )
 
     INSTALL_FILES( /include/orcaicexml .*\\.h$ )
 
-ENDIF ( BUILD_ORCAICEXML )
-
-ENDIF ( OS_LINUX )
-
+ENDIF ( BUILD )

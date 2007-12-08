@@ -10,7 +10,7 @@ IF ( BUILD )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
     # Look for Player
-    INCLUDE (${ORCA_CMAKE_DIR}/FindPlayer2.cmake)
+    INCLUDE (${HYDRO_HOME}/cmake/FindPlayer2.cmake)
 
     # these should be in the subdir, but they have no effect there for some reason
     INCLUDE_DIRECTORIES( ${PLAYER_INCLUDE_DIRS} )

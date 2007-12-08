@@ -1,17 +1,18 @@
-IF ( NOT OS_WIN )
+SET ( LIB_NAME OrcaPlayer )
 
-# Look for Player
-INCLUDE (${ORCA_CMAKE_DIR}/FindPlayer2.cmake)
+REQUIRE_OPTION( LIB ${LIB_NAME} ON )
+SET ( NOT_OS_WIN NOT OS_WIN )
+REQUIRE_VAR( LIB ${LIB_NAME} NOT_OS_WIN "Windows OS is not  supported" )
 
-IF ( PLAYER_FOUND )
+INCLUDE (${HYDRO_CMAKE_DIR}/FindPlayer2.cmake)
+REQUIRE_VAR( LIB ${LIB_NAME} PLAYER_FOUND "Player not found" )
+
+IF ( BUILD )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
-    INCLUDE( ${ORCA_CMAKE_DIR}/UsePlayer.cmake )
+    INCLUDE( ${HYDRO_CMAKE_DIR}/UsePlayer.cmake )
     
     GLOBAL_ADD_LIBRARY( OrcaPlayer SHARED convertutils.cpp )
     INSTALL_FILES( /include/orcaplayer .*\\.h$ )
 
-ELSE ( PLAYER_FOUND )
-    GLOBAL_NOT_ADD_LIBRARY( OrcaPlayer "Player not found" )
-ENDIF ( PLAYER_FOUND )
-ENDIF ( NOT OS_WIN )
+ENDIF ( BUILD )

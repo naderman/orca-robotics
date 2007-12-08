@@ -1,9 +1,17 @@
-INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
+SET ( LIB_NAME OrcaNavUtil )
 
-FILE( GLOB SRCS *.cpp )
+REQUIRE_OPTION( LIB ${LIB_NAME} ON )
+REQUIRE_VAR( LIB ${LIB_NAME} HYDRONAVUTIL_INSTALLED "libHydroNavUtil not installed" )
 
+IF ( BUILD )
 
-GLOBAL_ADD_LIBRARY( OrcaNavUtil SHARED ${SRCS} )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
+    
+    FILE( GLOB SRCS *.cpp )
+     
+    GLOBAL_ADD_LIBRARY( ${LIB_NAME} SHARED ${SRCS} )
+    
+    TARGET_LINK_LIBRARIES( ${LIB_NAME} HydroNavUtil )
+    INSTALL_FILES( /include/orcanavutil .*\\.h$ ) 
 
-TARGET_LINK_LIBRARIES( OrcaNavUtil HydroNavUtil )
-INSTALL_FILES( /include/orcanavutil .*\\.h$ ) 
+ENDIF ( BUILD )

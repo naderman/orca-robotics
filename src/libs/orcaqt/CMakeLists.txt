@@ -1,17 +1,20 @@
-IF ( NOT OS_WIN AND QT4_FOUND )
+SET ( LIB_NAME OrcaQt )
+
+REQUIRE_OPTION( LIB ${LIB_NAME} ON )
+SET ( NOT_OS_WIN NOT OS_WIN )
+REQUIRE_VAR( LIB ${LIB_NAME} NOT_OS_WIN "Windows OS is not  supported" )
+REQUIRE_VAR( LIB ${LIB_NAME} QT4_FOUND "Qt4 not found" )
+
+IF ( BUILD )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseQt.cmake )
 
     FILE( GLOB HUMAN_SRCS *.cpp )
     
-    GLOBAL_ADD_LIBRARY( OrcaQt SHARED ${HUMAN_SRCS} )
+    GLOBAL_ADD_LIBRARY( ${LIB_NAME} SHARED ${HUMAN_SRCS} )
     
-    TARGET_LINK_LIBRARIES ( OrcaQt )
+    TARGET_LINK_LIBRARIES ( ${LIB_NAME} )
     
     INSTALL_FILES( /include/orcaqt .*\\.h$ )
 
-ELSE  ( NOT OS_WIN AND QT4_FOUND )
-
-    MESSAGE( STATUS "Not Planning to Build Library: libOrcaQt -- Qt4 not found")
-
-ENDIF ( NOT OS_WIN AND QT4_FOUND )
+ENDIF ( BUILD )

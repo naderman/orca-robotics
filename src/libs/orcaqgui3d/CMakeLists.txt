@@ -1,39 +1,29 @@
-IF ( NOT OS_WIN )
+SET ( LIB_NAME OrcaQGui3d )
 
-OPTION( BUILD_ORCAQGUI3D_LIBRARY "Try to build OrcaQGui3d library" OFF )
+REQUIRE_OPTION( LIB ${LIB_NAME} OFF )
+SET ( NOT_OS_WIN NOT OS_WIN )
+REQUIRE_VAR( LIB ${LIB_NAME} NOT_OS_WIN "Windows OS is not  supported" )
+REQUIRE_VAR( LIB ${LIB_NAME} QT4_FOUND "Qt4 not found" )
+REQUIRE_VAR( LIB ${LIB_NAME} GLUT_FOUND "libGlut not found" )
 
-IF ( BUILD_ORCAQGUI3D_LIBRARY )
+IF ( BUILD )
 
-    IF ( QT4_FOUND AND GLUT_FOUND )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseQt.cmake )
     
-        INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
-        INCLUDE( ${ORCA_CMAKE_DIR}/UseQt.cmake )
+    FILE( GLOB HUMAN_SRCS *.cpp )
+    
+    SET( MOC_HEADERS
+        worldview.h
+    )
         
-        FILE( GLOB HUMAN_SRCS *.cpp )
-        
-        SET( MOC_HEADERS
-            worldview.h
-        )
-            
-        QT4_WRAP_CPP( MOC_SRCS ${MOC_HEADERS} )
-        
-        GLOBAL_ADD_LIBRARY( OrcaQGui3d SHARED ${HUMAN_SRCS} ${MOC_SRCS} )
-        
-        LINK_DIRECTORIES( ${PROJECT_SOURCE_DIR}/src/libs/qorcacm )
-        TARGET_LINK_LIBRARIES ( OrcaQGui3d OrcaQCompModel ${QT_QTOPENGL_LIBRARY} )
+    QT4_WRAP_CPP( MOC_SRCS ${MOC_HEADERS} )
     
-        INSTALL_FILES( /include/orcaqgui3d .*\\.h$ )
+    GLOBAL_ADD_LIBRARY( ${LIB_NAME}  SHARED ${HUMAN_SRCS} ${MOC_SRCS} )
     
-    ELSE  ( QT4_FOUND AND GLUT_FOUND )
-    
-        CANNOT_BUILD_MESSAGE( libOrcaQGui3d "QT4 or GLUT not found" )
-    
-    ENDIF ( QT4_FOUND AND GLUT_FOUND )
+    LINK_DIRECTORIES( ${PROJECT_SOURCE_DIR}/src/libs/qorcacm )
+    TARGET_LINK_LIBRARIES ( ${LIB_NAME}  OrcaQCompModel ${QT_QTOPENGL_LIBRARY} )
 
-ELSE ( BUILD_ORCAQGUI3D_LIBRARY )
+    INSTALL_FILES( /include/orcaqgui3d .*\\.h$ )
 
-    DISABLED_MESSAGE( libOrcaQGui3d )
-    
-ENDIF ( BUILD_ORCAQGUI3D_LIBRARY )
-
-ENDIF ( NOT OS_WIN )
+ENDIF ( BUILD )

@@ -1,12 +1,18 @@
-IF ( NOT OS_WIN )
+SET ( LIB_NAME OrcaOgFusion )
+
+REQUIRE_OPTION( LIB ${LIB_NAME} ON )
+SET ( NOT_OS_WIN NOT OS_WIN )
+REQUIRE_VAR( LIB ${LIB_NAME} NOT_OS_WIN "Windows OS is not  supported" )
+
+IF ( BUILD )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
     FILE( GLOB SRCS *.cpp )
     
-    GLOBAL_ADD_LIBRARY( OrcaOgFusion SHARED ${SRCS} )
-    TARGET_LINK_LIBRARIES( OrcaOgFusion OrcaOgMap  )
+    GLOBAL_ADD_LIBRARY( ${LIB_NAME} SHARED ${SRCS} )
+    TARGET_LINK_LIBRARIES( ${LIB_NAME} OrcaOgMap  )
     
     INSTALL_FILES( /include/orcaogfusion .*\\.h$ )
 
-ENDIF ( NOT OS_WIN )
+ENDIF ( BUILD )

@@ -1,3 +1,5 @@
+SET ( LIB_NAME OrcaObjects )
+
 # This is one of fundamental libs.
 # Do not include UseComponentRules here because it will link to OrcaIce
 # creating circular dependency.
@@ -10,15 +12,15 @@ FILE( GLOB SRCS *.cpp )
 
 # for some reason cannot get shared libs working in windows
 IF(NOT OS_WIN)
-  GLOBAL_ADD_LIBRARY( OrcaObjects SHARED ${SRCS} )
+  GLOBAL_ADD_LIBRARY( ${LIB_NAME} SHARED ${SRCS} )
 ELSE (NOT OS_WIN)
-  GLOBAL_ADD_LIBRARY( OrcaObjects STATIC ${SRCS} )
+  GLOBAL_ADD_LIBRARY( ${LIB_NAME} STATIC ${SRCS} )
 ENDIF (NOT OS_WIN)
 
-TARGET_LINK_LIBRARIES( OrcaObjects OrcaInterfaces )
+TARGET_LINK_LIBRARIES( ${LIB_NAME} OrcaInterfaces )
 
 # special dependency on the generated files
-ADD_DEPENDENCIES( OrcaObjects OrcaInterfaces )
+ADD_DEPENDENCIES( ${LIB_NAME} OrcaInterfaces )
 
 INSTALL_FILES( /include/orcaobj .*\\.h$ )
 
