@@ -1,15 +1,17 @@
 OPTION( BUILD_TRACERMON "Try to build TracerMon" ON )
 
+SET ( COMP_NAME tracermon )
+SET ( SERVICE_NAME OrcaFaithLocaliser )
 SET ( BUILD TRUE )
 
 IF ( BUILD AND OS_WIN )
     SET ( BUILD FALSE )
-    GLOBAL_NOT_ADD_EXECUTABLE( tracermon "Windows OS is not supported" )
+    GLOBAL_NOT_ADD_EXECUTABLE( ${COMP_NAME} "Windows OS is not supported" )
 ENDIF ( BUILD AND OS_WIN )
 
 IF ( BUILD AND NOT BUILD_TRACERMON )
     SET ( BUILD FALSE )
-    GLOBAL_NOT_ADD_EXECUTABLE( tracermon "disabled by user, use ccmake to enable" )
+    GLOBAL_NOT_ADD_EXECUTABLE( ${COMP_NAME} "disabled by user, use ccmake to enable" )
 ENDIF ( BUILD AND NOT BUILD_TRACERMON )
 
 
@@ -55,9 +57,9 @@ ENDIF ( OS_LINUX )
     FILE( GLOB COMP_SRCS *.cpp )
     SET( COMP_DEPS ${TERM_IOSTREAM_LIBS} ${TERM_NCURSES_LIBS} )
 
-    GLOBAL_ADD_EXECUTABLE( tracermon ${COMP_SRCS} )
-    TARGET_LINK_LIBRARIES( tracermon ${COMP_DEPS} )
+    GLOBAL_ADD_EXECUTABLE( ${COMP_NAME} ${COMP_SRCS} )
+    TARGET_LINK_LIBRARIES( ${COMP_NAME} ${COMP_DEPS} )
 
-    GENERATE_CONFIG_FILE( tracermon.def )
+    GENERATE_CONFIG_FILE( ${COMP_NAME}.def )
 
 ENDIF ( BUILD )

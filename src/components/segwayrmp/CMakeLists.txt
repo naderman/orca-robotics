@@ -1,20 +1,22 @@
 OPTION( BUILD_SEGWAYRMP "Try to build SegwayRmp component" ON )
 
+SET ( COMP_NAME segwayrmp )
+SET ( SERVICE_NAME OrcaSegwayRmp )
 SET ( BUILD TRUE )
 
 IF ( BUILD AND NOT OS_LINUX )
     SET ( BUILD FALSE )
-    GLOBAL_NOT_ADD_EXECUTABLE( segwayrmp "only Linux OS is supported" )
+    GLOBAL_NOT_ADD_EXECUTABLE( ${COMP_NAME} "only Linux OS is supported" )
 ENDIF ( BUILD AND NOT OS_LINUX )
 
 IF ( BUILD AND NOT BUILD_SEGWAYRMP )
     SET ( BUILD FALSE )
-    GLOBAL_NOT_ADD_EXECUTABLE( segwayrmp "disabled by user, use ccmake to enable" )
+    GLOBAL_NOT_ADD_EXECUTABLE( ${COMP_NAME} "disabled by user, use ccmake to enable" )
 ENDIF ( BUILD AND NOT BUILD_SEGWAYRMP )
 
 IF ( BUILD AND NOT HYDRODLL_INSTALLED )
     SET ( BUILD FALSE )
-    GLOBAL_NOT_ADD_EXECUTABLE( segwayrmp "libHydroDll not installed" )
+    GLOBAL_NOT_ADD_EXECUTABLE( ${COMP_NAME} "libHydroDll not installed" )
 ENDIF ( BUILD AND NOT HYDRODLL_INSTALLED )
 
 
@@ -26,15 +28,15 @@ IF ( BUILD )
     SET( COMP_DEPS HydroDll HydroInterfaces OrcaIfaceImpl OrcaObjectUtil OrcaRobotDriverUtil )
     
     # build stand-alone component  
-    GLOBAL_ADD_EXECUTABLE( segwayrmp ${COMP_SRCS} main )
-    TARGET_LINK_LIBRARIES( segwayrmp ${COMP_DEPS} )
+    GLOBAL_ADD_EXECUTABLE( ${COMP_NAME} ${COMP_SRCS} main )
+    TARGET_LINK_LIBRARIES( ${COMP_NAME} ${COMP_DEPS} )
 
     # build IceBox service
     IF ( BUILD_SERVICES )
-        GLOBAL_ADD_LIBRARY( OrcaSegwayRmp SHARED ${COMP_SRCS} service )
-        TARGET_LINK_LIBRARIES( OrcaSegwayRmp ${COMP_DEPS} ) 
+        GLOBAL_ADD_LIBRARY( ${SERVICE_NAME} SHARED ${COMP_SRCS} service )
+        TARGET_LINK_LIBRARIES( ${SERVICE_NAME} ${COMP_DEPS} ) 
     ENDIF ( BUILD_SERVICES )
 
-    GENERATE_CONFIG_FILE( segwayrmp.def )
+    GENERATE_CONFIG_FILE( ${COMP_NAME}.def )
 
 ENDIF ( BUILD )

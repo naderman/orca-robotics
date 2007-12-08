@@ -1,20 +1,22 @@
 OPTION( BUILD_WIFI "Try to build Wifi component" ON )
 
+SET ( COMP_NAME wifi )
+SET ( SERVICE_NAME OrcaWifiService )
 SET ( BUILD TRUE )
 
 IF ( BUILD AND NOT OS_LINUX )
     SET ( BUILD FALSE )
-    GLOBAL_NOT_ADD_EXECUTABLE( wifi "only Linux OS is supported" )
+    GLOBAL_NOT_ADD_EXECUTABLE( ${COMP_NAME} "only Linux OS is supported" )
 ENDIF ( BUILD AND NOT OS_LINUX )
 
 IF ( BUILD AND NOT BUILD_LOCALNAV )
     SET ( BUILD FALSE )
-    GLOBAL_NOT_ADD_EXECUTABLE( wifi "disabled by user, use ccmake to enable" )
+    GLOBAL_NOT_ADD_EXECUTABLE( ${COMP_NAME} "disabled by user, use ccmake to enable" )
 ENDIF ( BUILD AND NOT BUILD_LOCALNAV )
 
 IF ( BUILD AND NOT HYDROWIFI_INSTALLED )
     SET ( BUILD FALSE )
-    GLOBAL_NOT_ADD_EXECUTABLE( wifi "libHydroWifi not installed" )
+    GLOBAL_NOT_ADD_EXECUTABLE( ${COMP_NAME} "libHydroWifi not installed" )
 ENDIF ( BUILD AND NOT HYDROWIFI_INSTALLED )
 
 
@@ -26,15 +28,15 @@ IF ( BUILD )
     SET( COMP_DEPS OrcaIfaceImpl HydroWifi )
     
     # build stand-alone component  
-    GLOBAL_ADD_EXECUTABLE( wifi ${COMP_SRCS} main)
-    TARGET_LINK_LIBRARIES( wifi ${COMP_DEPS} )
+    GLOBAL_ADD_EXECUTABLE( ${COMP_NAME} ${COMP_SRCS} main)
+    TARGET_LINK_LIBRARIES( ${COMP_NAME} ${COMP_DEPS} )
     
     # build IceBox service
     IF ( BUILD_SERVICES )
-        GLOBAL_ADD_LIBRARY( OrcaWifiService SHARED ${COMP_SRCS} service )
-        TARGET_LINK_LIBRARIES( OrcaWifiService ${COMP_DEPS} ) 
+        GLOBAL_ADD_LIBRARY( ${SERVICE_NAME} SHARED ${COMP_SRCS} service )
+        TARGET_LINK_LIBRARIES( ${SERVICE_NAME} ${COMP_DEPS} ) 
     ENDIF ( BUILD_SERVICES )
 
-    GENERATE_CONFIG_FILE( wifi.def )
+    GENERATE_CONFIG_FILE( ${COMP_NAME}.def )
 
 ENDIF ( BUILD )

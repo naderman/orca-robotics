@@ -1,9 +1,12 @@
 OPTION( BUILD_LASER_MONITOR "Try to build Laser Monitor" ON )
+
+SET ( COMP_NAME lasermon )
+SET ( SERVICE_NAME OrcaFaithLocaliser )
 SET ( BUILD TRUE )
 
 IF ( BUILD AND NOT BUILD_LASER_MONITOR )
     SET ( BUILD FALSE )
-    GLOBAL_NOT_ADD_EXECUTABLE( lasermon "disabled by user, use ccmake to enable" )
+    GLOBAL_NOT_ADD_EXECUTABLE( ${COMP_NAME} "disabled by user, use ccmake to enable" )
 ENDIF ( BUILD AND NOT BUILD_LASER_MONITOR )
 
 IF ( BUILD )
@@ -12,8 +15,8 @@ IF ( BUILD )
 
     FILE( GLOB COMP_SRCS *.cpp )
     
-    GLOBAL_ADD_EXECUTABLE( lasermon ${COMP_SRCS} )
+    GLOBAL_ADD_EXECUTABLE( ${COMP_NAME} ${COMP_SRCS} )
     
-    GENERATE_CONFIG_FILE( lasermon.def )
+    GENERATE_CONFIG_FILE( ${COMP_NAME}.def )
 
 ENDIF ( BUILD )

@@ -1,10 +1,12 @@
 OPTION( BUILD_GOAL_PLANNER "Try to build GoalPlanner" ON )
 
+SET ( COMP_NAME goalplanner )
+SET ( SERVICE_NAME OrcaGoalPlanner )
 SET ( BUILD TRUE )
 
 IF ( BUILD AND NOT BUILD_GOAL_PLANNER )
     SET ( BUILD FALSE )
-    GLOBAL_NOT_ADD_EXECUTABLE( goalplanner "disabled by user, use ccmake to enable" )
+    GLOBAL_NOT_ADD_EXECUTABLE( ${COMP_NAME} "disabled by user, use ccmake to enable" )
 ENDIF ( BUILD AND NOT BUILD_GOAL_PLANNER )
 
 
@@ -16,15 +18,15 @@ IF ( BUILD )
     SET( COMP_DEPS OrcaOgMap HydroNavUtil )
     
     # build stand-alone component  
-    GLOBAL_ADD_EXECUTABLE( goalplanner ${COMP_SRCS} main )
-    TARGET_LINK_LIBRARIES( goalplanner ${COMP_DEPS} )
+    GLOBAL_ADD_EXECUTABLE( ${COMP_NAME} ${COMP_SRCS} main )
+    TARGET_LINK_LIBRARIES( ${COMP_NAME} ${COMP_DEPS} )
     
     # build IceBox service
     IF ( BUILD_SERVICES )
-        GLOBAL_ADD_LIBRARY( OrcaGoalPlanner SHARED ${COMP_SRCS} service )
-        TARGET_LINK_LIBRARIES( OrcaGoalPlanner ${COMP_DEPS} ) 
+        GLOBAL_ADD_LIBRARY( ${SERVICE_NAME} SHARED ${COMP_SRCS} service )
+        TARGET_LINK_LIBRARIES( ${SERVICE_NAME} ${COMP_DEPS} ) 
     ENDIF ( BUILD_SERVICES )
     
-    GENERATE_CONFIG_FILE( goalplanner.def )
+    GENERATE_CONFIG_FILE( ${COMP_NAME}.def )
 
 ENDIF ( BUILD )

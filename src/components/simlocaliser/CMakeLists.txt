@@ -1,15 +1,17 @@
 OPTION( BUILD_SIM_LOCALISER "Try to build SimLocaliser component" ON )
 
+SET ( COMP_NAME simlocaliser )
+SET ( SERVICE_NAME OrcaSimLocaliser )
 SET ( BUILD TRUE )
 
 IF ( BUILD AND OS_WIN )
     SET ( BUILD FALSE )
-    GLOBAL_NOT_ADD_EXECUTABLE( simlocaliser "Windows OS is not supported" )
+    GLOBAL_NOT_ADD_EXECUTABLE( ${COMP_NAME} "Windows OS is not supported" )
 ENDIF ( BUILD AND OS_WIN )
 
 IF ( BUILD AND NOT BUILD_SIM_LOCALISER )
     SET ( BUILD FALSE )
-    GLOBAL_NOT_ADD_EXECUTABLE( simlocaliser "disabled by user, use ccmake to enable" )
+    GLOBAL_NOT_ADD_EXECUTABLE( ${COMP_NAME} "disabled by user, use ccmake to enable" )
 ENDIF ( BUILD AND NOT BUILD_SIM_LOCALISER )
 
 
@@ -39,15 +41,15 @@ IF ( BUILD )
     SET( COMP_DEPS OrcaIfaceImpl ${STAGE_LIBS} )
 
     # build stand-alone component  
-    GLOBAL_ADD_EXECUTABLE( simlocaliser ${COMP_SRCS} main )
-    TARGET_LINK_LIBRARIES( simlocaliser ${COMP_DEPS} )
+    GLOBAL_ADD_EXECUTABLE( ${COMP_NAME} ${COMP_SRCS} main )
+    TARGET_LINK_LIBRARIES( ${COMP_NAME} ${COMP_DEPS} )
     
     # build IceBox service
     IF ( BUILD_SERVICES )
-        GLOBAL_ADD_LIBRARY( OrcaSimLocaliser SHARED ${COMP_SRCS} service )
-        TARGET_LINK_LIBRARIES( OrcaSimLocaliser ${COMP_DEPS} ) 
+        GLOBAL_ADD_LIBRARY( ${SERVICE_NAME} SHARED ${COMP_SRCS} service )
+        TARGET_LINK_LIBRARIES( ${SERVICE_NAME} ${COMP_DEPS} ) 
     ENDIF ( BUILD_SERVICES )
     
-    GENERATE_CONFIG_FILE( simlocaliser.def )
+    GENERATE_CONFIG_FILE( ${COMP_NAME}.def )
 
 ENDIF ( BUILD )

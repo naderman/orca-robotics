@@ -1,15 +1,17 @@
 OPTION( BUILD_FEATUREMAPLOADER "Try to build FeatureMapLoader component" ON )
 
+SET ( COMP_NAME featuremaploader )
+SET ( SERVICE_NAME OrcaFeatureMapLoader )
 SET ( BUILD TRUE )
 
 IF ( BUILD AND OS_WIN )
     SET ( BUILD FALSE )
-    GLOBAL_NOT_ADD_EXECUTABLE( featuremaploader "Windows OS is not supported" )
+    GLOBAL_NOT_ADD_EXECUTABLE( ${COMP_NAME} "Windows OS is not supported" )
 ENDIF ( BUILD AND OS_WIN )
 
 IF ( BUILD AND NOT BUILD_FEATUREMAPLOADER )
     SET ( BUILD FALSE )
-    GLOBAL_NOT_ADD_EXECUTABLE( featuremaploader "disabled by user, use ccmake to enable" )
+    GLOBAL_NOT_ADD_EXECUTABLE( ${COMP_NAME} "disabled by user, use ccmake to enable" )
 ENDIF ( BUILD AND NOT BUILD_FEATUREMAPLOADER )
 
 
@@ -21,15 +23,15 @@ IF ( BUILD )
     SET( COMP_DEPS OrcaIfaceImpl )
     
     # build stand-alone component  
-    GLOBAL_ADD_EXECUTABLE( featuremaploader ${COMP_SRCS} main )
-    TARGET_LINK_LIBRARIES( featuremaploader ${COMP_DEPS} )
+    GLOBAL_ADD_EXECUTABLE( ${COMP_NAME} ${COMP_SRCS} main )
+    TARGET_LINK_LIBRARIES( ${COMP_NAME} ${COMP_DEPS} )
     
     # build IceBox service
     IF ( BUILD_SERVICES )
-        GLOBAL_ADD_LIBRARY( OrcaFeatureMapLoader SHARED ${COMP_SRCS} service )
-        TARGET_LINK_LIBRARIES( OrcaFeatureMapLoader ${COMP_DEPS} ) 
+        GLOBAL_ADD_LIBRARY( ${SERVICE_NAME} SHARED ${COMP_SRCS} service )
+        TARGET_LINK_LIBRARIES( ${SERVICE_NAME} ${COMP_DEPS} ) 
     ENDIF ( BUILD_SERVICES )
 
-    GENERATE_CONFIG_FILE( featuremaploader.def )
+    GENERATE_CONFIG_FILE( ${COMP_NAME}.def )
 
 ENDIF ( BUILD )

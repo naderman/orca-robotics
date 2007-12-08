@@ -1,26 +1,29 @@
 OPTION( BUILD_LOCALNAV "Try to build LocalNav component" ON )
 
+SET ( COMP_NAME localnav )
+SET ( SERVICE_NAME OrcaLocalNavService )
 SET ( BUILD TRUE )
 
 IF ( BUILD AND NOT OS_LINUX )
     SET ( BUILD FALSE )
-    GLOBAL_NOT_ADD_EXECUTABLE( localnav "only Linux OS is supported" )
+    GLOBAL_NOT_ADD_EXECUTABLE( ${COMP_NAME} "only Linux OS is supported" )
 ENDIF ( BUILD AND NOT OS_LINUX )
 
 IF ( BUILD AND NOT BUILD_LOCALNAV )
     SET ( BUILD FALSE )
-    GLOBAL_NOT_ADD_EXECUTABLE( localnav "disabled by user, use ccmake to enable" )
+    GLOBAL_NOT_ADD_EXECUTABLE( ${COMP_NAME} "disabled by user, use ccmake to enable" )
 ENDIF ( BUILD AND NOT BUILD_LOCALNAV )
 
 IF ( BUILD AND NOT HYDRODLL_INSTALLED )
     SET ( BUILD FALSE )
-    GLOBAL_NOT_ADD_EXECUTABLE( localnav "libHydroDll not installed" )
+    GLOBAL_NOT_ADD_EXECUTABLE( ${COMP_NAME} "libHydroDll not installed" )
 ENDIF ( BUILD AND NOT HYDRODLL_INSTALLED )
 
 IF ( BUILD AND NOT HYDRONAVUTIL_INSTALLED )
     SET ( BUILD FALSE )
-    GLOBAL_NOT_ADD_EXECUTABLE( localnav "libHydroNavUtil not installed" )
+    GLOBAL_NOT_ADD_EXECUTABLE( ${COMP_NAME} "libHydroNavUtil not installed" )
 ENDIF ( BUILD AND NOT HYDRONAVUTIL_INSTALLED )
+
 
 IF ( BUILD )
 
@@ -30,7 +33,7 @@ IF ( BUILD )
     MESSAGE( STATUS "    VfhDriver for LocalNav - can be built" )
 
     INCLUDE_DIRECTORIES(
-       ${PROJECT_SOURCE_DIR}/src/components/localnav
+       ${PROJECT_SOURCE_DIR}/src/components/${COMP_NAME}
        ${PROJECT_SOURCE_DIR}/src/libs/orcalocalnav
        )
 
@@ -41,17 +44,17 @@ IF ( BUILD )
     SET( COMP_DEPS OrcaLocalNav OrcaLocalNavUtil OrcaLocalNavTestSim HydroDll HydroNavUtil )
 
     # build stand-alone component  
-    GLOBAL_ADD_EXECUTABLE( localnav ${COMP_SRCS} main )
-    TARGET_LINK_LIBRARIES( localnav ${COMP_DEPS} )
+    GLOBAL_ADD_EXECUTABLE( ${COMP_NAME} ${COMP_SRCS} main )
+    TARGET_LINK_LIBRARIES( ${COMP_NAME} ${COMP_DEPS} )
     
     # build IceBox service
     IF ( BUILD_SERVICES )
         # Naming clashes with OrcaLocalNav library in src/libs
-        GLOBAL_ADD_LIBRARY( OrcaLocalNavComponent SHARED ${COMP_SRCS} service )
-        TARGET_LINK_LIBRARIES( OrcaLocalNavComponent ${COMP_DEPS} ) 
+        GLOBAL_ADD_LIBRARY( ${SERVICE_NAME} SHARED ${COMP_SRCS} service )
+        TARGET_LINK_LIBRARIES( ${SERVICE_NAME} ${COMP_DEPS} ) 
     ENDIF ( BUILD_SERVICES )
 
-    GENERATE_CONFIG_FILE( localnav.def )
+    GENERATE_CONFIG_FILE( ${COMP_NAME}.def )
 
     IF ( BUILD_TESTS )
 
@@ -75,7 +78,7 @@ IF ( BUILD )
       # AlexB: The /lib/ld-linux stuff is a bit of magic to make Linux
       # find the vfh library so it can be dynamically loaded.
       #
-      GLOBAL_ADD_TEST( LocalNavVfhTest ${LD_LINUX} --library-path vfhdriver:$ENV{LD_LIBRARY_PATH} ${CMAKE_CURRENT_BINARY_DIR}/localnav --Orca.Config=${PROJECT_BINARY_DIR}/src/components/localnav/localnav.cfg --LocalNav.Config.TestInSimulationMode=1 --LocalNav.Config.Vfh.MaxSpeed=2.0 --LocalNav.Config.Test.NumWaypoints=20 --Orca.RequireRegistry=0 --LocalNav.Config.Test.BatchMode=1 )
+      GLOBAL_ADD_TEST( LocalNavVfhTest ${LD_LINUX} --library-path vfhdriver:$ENV{LD_LIBRARY_PATH} ${CMAKE_CURRENT_BINARY_DIR}/${COMP_NAME} --Orca.Config=${PROJECT_BINARY_DIR}/src/components/${COMP_NAME}/${COMP_NAME}.cfg --LocalNav.Config.TestInSimulationMode=1 --LocalNav.Config.Vfh.MaxSpeed=2.0 --LocalNav.Config.Test.NumWaypoints=20 --Orca.RequireRegistry=0 --LocalNav.Config.Test.BatchMode=1 )
     ENDIF ( BUILD_TESTS )
 
 ENDIF ( BUILD )
