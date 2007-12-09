@@ -20,16 +20,13 @@
 using namespace std;
 using namespace laserfeatures;
 
-namespace {
-    const char *SUBSYSTEM = "MainLoop";
-}
-
-MainThread::MainThread( const orcaice::Context &context )
-    : driver_(NULL),
-      context_(context)
+MainThread::MainThread( const orcaice::Context &context ) :
+    SafeThread( context.tracer(), context.status(), "MainThread" ),
+    driver_(NULL),
+    context_(context)
 {
-    context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 10.0 );
-    context_.status()->initialising( SUBSYSTEM );
+    context_.status()->setMaxHeartbeatInterval( name(), 10.0 );
+    context_.status()->initialising( name() );
 
     sensorOffset_.p.x=0;
     sensorOffset_.p.y=0;
@@ -137,7 +134,7 @@ MainThread::connectToLaser()
         {
             context_.tracer()->error( "Failed to subscribe to laser for unknown reason." );
         }
-        context_.status()->initialising( SUBSYSTEM, "connectToLaser()" );
+        context_.status()->initialising( name(), "connectToLaser()" );
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
     }
 
@@ -176,7 +173,7 @@ MainThread::getLaserDescription()
         {
             context_.tracer()->error( "Failed to retreive laser description for unknown reason." );
         }
-        context_.status()->initialising( SUBSYSTEM, "getLaserDescription()" );
+        context_.status()->initialising( name(), "getLaserDescription()" );
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
     }
 }
@@ -190,14 +187,14 @@ MainThread::initNetworkInterface()
     featureInterface_ = new orcaifaceimpl::PolarFeature2dImpl( "PolarFeature2d", context_ );
 
     // init
-    featureInterface_->initInterface( this, SUBSYSTEM );
+    featureInterface_->initInterface( this, name() );
 }
 
 void 
 MainThread::walk()
 {
     // These functions catch their exceptions.
-    activate( context_, this, SUBSYSTEM );
+    activate( context_, this, name() );
 
     initNetworkInterface();
     initAlgorithmDriver();
@@ -211,7 +208,7 @@ MainThread::walk()
     const int timeoutMs = 1000;
 
     context_.tracer()->debug( "Entering main loop.",2 );
-    context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 2.0 );
+    context_.status()->setMaxHeartbeatInterval( name(), 2.0 );
 
     // Loop forever till we get shut down.
     while ( !isStopping() )
@@ -227,7 +224,7 @@ MainThread::walk()
                 stringstream ss;
                 ss << "Timed out (" << timeoutMs << "ms) waiting for laser data.  Reconnecting.";
                 context_.tracer()->warning( ss.str() );
-                context_.status()->warning( SUBSYSTEM, ss.str() );
+                context_.status()->warning( name(), ss.str() );
                 connectToLaser();
                 continue;
             }
@@ -241,7 +238,7 @@ MainThread::walk()
                 ss << "Got laser scan: expected " << laserDescr_.numberOfSamples
                     << " returns, got " << laserData->ranges.size();
                 context_.tracer()->warning( ss.str() );
-                context_.status()->warning( SUBSYSTEM, ss.str() );
+                context_.status()->warning( name(), ss.str() );
                 continue;
             }
 
@@ -261,7 +258,7 @@ MainThread::walk()
 
             featureInterface_->localSetAndSend( featureData );
 
-            context_.status()->ok( SUBSYSTEM );
+            context_.status()->ok( name() );
         } // try
         catch ( const orca::OrcaException & e )
         {

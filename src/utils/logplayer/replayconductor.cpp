@@ -13,7 +13,8 @@ ReplayConductor::ReplayConductor( orcalog::MasterFileReader       &masterFileRea
                                   const IceUtil::Time             &beginTime,
                                   double                           replayRate,
                                   const orcaice::Context          &context )
-    : isPlaying_(false),
+    : SafeThread( context.tracer(), context.status() ),
+      isPlaying_(false),
       isPlayingOrAboutToStart_(false),
       masterFileReader_(masterFileReader),
       replayers_(replayers),

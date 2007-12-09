@@ -49,10 +49,11 @@ convert( const orca::VelocityControl2dData& network, hydrointerfaces::Robot2d::C
 
 NetThread::NetThread( HwThread                      &HwThread,
                         const orca::VehicleDescription &descr,
-                        const orcaice::Context         &context )
-    : HwThread_(HwThread),
-      descr_(descr),
-      context_(context)
+                        const orcaice::Context         &context ) :
+    SafeThread( context.tracer(), context.status(), "NetThread" ),
+    HwThread_(HwThread),
+    descr_(descr),
+    context_(context)
 {
     // Get vehicle limits
     orca::VehicleControlVelocityDifferentialDescription *controlDescr =

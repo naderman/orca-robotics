@@ -18,6 +18,7 @@ using namespace std;
 using namespace teleop;
 
 InputThread::InputThread( Network* network, const orcaice::Context& context ) :
+    SafeThread( context.tracer(), context.status(), "InputThread" ),
     network_(network),
     driver_(0),
     driverFactory_(0),

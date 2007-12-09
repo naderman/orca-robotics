@@ -18,8 +18,8 @@
 using namespace std;
 using namespace tracermon;
 
-NetworkHandler::NetworkHandler( User* user,
-                                const orcaice::Context & context ) :
+NetworkHandler::NetworkHandler( User* user, const orcaice::Context & context ) :
+    SafeThread( context.tracer(), context.status(), "NetworkThread" ),
     user_(user),
     events_(new hydroutil::EventQueue),
     context_(context)

@@ -19,7 +19,6 @@ using namespace std;
 using namespace faithlocaliser;
 
 namespace {
-    const char *SUBSYSTEM = "MainThread";
 
     void odometryToLocalise( const orca::Odometry2dData &odData,
                             orca::Localise2dData        &loData,
@@ -44,10 +43,11 @@ namespace {
 }
 
 MainThread::MainThread( const orcaice::Context &context ) : 
+    SafeThread( context.tracer(), context.status(), "MainThread" ),
     context_(context)
 {
-    context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 10.0 );
-    context_.status()->initialising( SUBSYSTEM );
+    context_.status()->setMaxHeartbeatInterval( name(), 10.0 );
+    context_.status()->initialising( name() );
 
     Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag()+".Config.";

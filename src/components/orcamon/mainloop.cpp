@@ -18,6 +18,7 @@ using namespace std;
 using namespace orcamon;
 
 MainLoop::MainLoop( const orcaice::Context &context ) : 
+    SafeThread( context.tracer(), context.status(), "MainThread" ),
     context_(context)
 {
 }

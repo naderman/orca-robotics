@@ -21,6 +21,7 @@ using namespace std;
 using namespace teleop;
 
 NetworkThread::NetworkThread( Display* display, const orcaice::Context& context ) :
+    SafeThread( context.tracer(), context.status(), "NetThread" ),
     events_(new hydroutil::EventQueue),
     display_(display),
     context_(context)

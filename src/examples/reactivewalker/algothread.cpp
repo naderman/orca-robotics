@@ -21,6 +21,7 @@ using namespace std;
 using namespace reactivewalker;
 
 AlgoThread::AlgoThread( const orcaice::Context& context ) : 
+    SafeThread( context.tracer(), context.status(), "AlgoThread" ),
     driver_(0),
     context_(context)
 {

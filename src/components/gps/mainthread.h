@@ -19,9 +19,6 @@ namespace gps {
 
 class Driver;
 
-//
-// @brief the main loop of this GPS component.
-//
 class MainThread : public hydroutil::SafeThread
 {
 

@@ -13,22 +13,18 @@
 #include "mainthread.h"
 
 using namespace std;
-
-namespace laser2d {
-
-namespace {
-    const char *SUBSYSTEM = "MainThread";
-}
+using namespace laser2d;
 
 MainThread::MainThread( const orcaice::Context &context ) :
+    SafeThread( context.tracer(), context.status(), "MainThread" ),
     laserInterface_(0),
     driver_(0),
     driverFactory_(0),
     driverLib_(0),
     context_(context)
 {
-    context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 20.0 );
-    context_.status()->initialising( SUBSYSTEM );
+    context_.status()->setMaxHeartbeatInterval( name(), 20.0 );
+    context_.status()->initialising( name() );
 
     //
     // Read settings
@@ -110,13 +106,13 @@ MainThread::initNetworkInterface()
                                                               "LaserScanner2d",
                                                               context_ );
     // init
-    laserInterface_->initInterface( this, SUBSYSTEM );
+    laserInterface_->initInterface( this, name() );
 }
 
 void
 MainThread::initHardwareDriver()
 {
-    context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 20.0 );
+    context_.status()->setMaxHeartbeatInterval( name(), 20.0 );
 
     // this function works for re-initialization as well
     if ( driver_ ) delete driver_;
@@ -157,33 +153,33 @@ MainThread::initHardwareDriver()
             stringstream ss;
             ss << "MainThread: Caught exception while initialising driver: " << e.what();
             context_.tracer()->error( ss.str() );
-            context_.status()->fault( SUBSYSTEM, ss.str() );
+            context_.status()->fault( name(), ss.str() );
         }
         catch ( char *e )
         {
             stringstream ss;
             ss << "MainThread: Caught exception while initialising driver: " << e;
             context_.tracer()->error( ss.str() );
-            context_.status()->fault( SUBSYSTEM, ss.str() );
+            context_.status()->fault( name(), ss.str() );
         }
         catch ( std::string &e )
         {
             stringstream ss;
             ss << "MainThread: Caught exception while initialising driver: " << e;
             context_.tracer()->error( ss.str() );
-            context_.status()->fault( SUBSYSTEM, ss.str() );
+            context_.status()->fault( name(), ss.str() );
         }
         catch ( ... )
         {
             stringstream ss;
             ss << "MainThread: Caught unknown exception while initialising driver";
             context_.tracer()->error( ss.str() );
-            context_.status()->fault( SUBSYSTEM, ss.str() );
+            context_.status()->fault( name(), ss.str() );
         }
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));        
     }
 
-    context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 1.0 );
+    context_.status()->setMaxHeartbeatInterval( name(), 1.0 );
 }
 
 void
@@ -221,7 +217,7 @@ MainThread::walk()
     laserData->intensities.resize( config_.numberOfSamples );
 
     // These functions catch their exceptions.
-    activate( context_, this, SUBSYSTEM );
+    activate( context_, this, name() );
 
     initNetworkInterface();
     initHardwareDriver();
@@ -237,7 +233,7 @@ MainThread::walk()
             // this blocks until new data arrives
             readData( laserData );
             laserInterface_->localSetAndSend( laserData );
-            context_.status()->ok( SUBSYSTEM );
+            context_.status()->ok( name() );
 
             stringstream ss;
             ss << "MainThread: Read laser data: " << orcaice::toString(laserData);
@@ -256,35 +252,35 @@ MainThread::walk()
             std::stringstream ss;
             ss << "ERROR(mainloop.cpp): Caught unexpected exception: " << e;
             context_.tracer()->error( ss.str() );
-            context_.status()->fault( SUBSYSTEM, ss.str() );
+            context_.status()->fault( name(), ss.str() );
         }
         catch ( const std::exception &e )
         {
             std::stringstream ss;
             ss << "ERROR(mainloop.cpp): Caught unexpected exception: " << e.what();
             context_.tracer()->error( ss.str() );
-            context_.status()->fault( SUBSYSTEM, ss.str() );
+            context_.status()->fault( name(), ss.str() );
         }
         catch ( const std::string &e )
         {
             std::stringstream ss;
             ss << "ERROR(mainloop.cpp): Caught unexpected string: " << e;
             context_.tracer()->error( ss.str() );
-            context_.status()->fault( SUBSYSTEM, ss.str() );            
+            context_.status()->fault( name(), ss.str() );            
         }
         catch ( const char *e )
         {
             std::stringstream ss;
             ss << "ERROR(mainloop.cpp): Caught unexpected char *: " << e;
             context_.tracer()->error( ss.str() );
-            context_.status()->fault( SUBSYSTEM, ss.str() );
+            context_.status()->fault( name(), ss.str() );
         }
         catch ( ... )
         {
             std::stringstream ss;
             ss << "ERROR(mainloop.cpp): Caught unexpected unknown exception.";
             context_.tracer()->error( ss.str() );
-            context_.status()->fault( SUBSYSTEM, ss.str() );
+            context_.status()->fault( name(), ss.str() );
         }
 
         // If we got to here there's a problem.
@@ -296,5 +292,3 @@ MainThread::walk()
     // Laser hardware will be shut down in the driver's destructor.
     context_.tracer()->debug( "dropping out from run()", 2 );
 }
-
-} // namespace

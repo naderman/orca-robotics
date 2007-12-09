@@ -19,6 +19,7 @@ using namespace std;
 namespace pinger {
 
 MainThread::MainThread( const orcaice::Context& context ) : 
+    SafeThread( context.tracer(), context.status() ),
     context_(context)
 {
 }

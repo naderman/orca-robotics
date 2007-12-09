@@ -19,19 +19,15 @@
 #include "garmin/garmindriver.h"
 
 using namespace std;
+using namespace gps;
 
-namespace gps {
-
-namespace {
-    const char *SUBSYSTEM = "MainThread";
-}
-
-MainThread::MainThread( const orcaice::Context& context )
-    : driver_(0),
-      context_(context)
+MainThread::MainThread( const orcaice::Context& context ) :
+    SafeThread( context.tracer(), context.status(), "MainThread" ),
+    driver_(0),
+    context_(context)
 {
-    context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 10.0 );
-    context_.status()->initialising( SUBSYSTEM );
+    context_.status()->setMaxHeartbeatInterval( name(), 10.0 );
+    context_.status()->initialising( name() );
 }
 
 MainThread::~MainThread()
@@ -64,13 +60,13 @@ MainThread::initNetworkInterface()
     gpsInterface_ = new orcaifaceimpl::GpsImpl( descr_, "Gps", context_ );
 
     // multi-try init
-    gpsInterface_->initInterface( this, SUBSYSTEM );
+    gpsInterface_->initInterface( this, name() );
 }
 
 void
 MainThread::initHardwareDriver()
 {
-    context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 10.0 );
+    context_.status()->setMaxHeartbeatInterval( name(), 10.0 );
 
     // this function works for re-initialization as well
     if ( driver_ ) delete driver_;
@@ -148,7 +144,7 @@ MainThread::reportBogusValues( orca::GpsData &gpsData )
 void
 MainThread::walk()
 {
-    context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 5.0 );  
+    context_.status()->setMaxHeartbeatInterval( name(), 5.0 );  
 
     Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag() + ".Config.";
@@ -156,7 +152,7 @@ MainThread::walk()
     bool reportIfNoFix = orcaice::getPropertyAsIntWithDefault( prop, prefix+"ReportIfNoFix", 1 );
 
     // These functions catch their exceptions.
-    orcaice::activate( context_, this, SUBSYSTEM );
+    orcaice::activate( context_, this, name() );
 
     initNetworkInterface();
     initHardwareDriver();
@@ -185,7 +181,7 @@ MainThread::walk()
                 stringstream ss;
                 ss << "MainThread: Problem reading from GPS: " << e.what();
                 context_.tracer()->error( ss.str() );
-                context_.status()->fault( SUBSYSTEM, ss.str() );
+                context_.status()->fault( name(), ss.str() );
             }
 
             //If the read threw then we should now try to re-initialise 
@@ -220,12 +216,10 @@ MainThread::walk()
             gpsInterface_->localSetAndSend(gpsData);
         }        
             
-        context_.status()->ok( SUBSYSTEM );
+        context_.status()->ok( name() );
 
     } // end of while
 
     // GPS hardware will be shut down in the driver's destructor.
     context_.tracer()->debug( "dropping out from run()", 5 );
 }
-
-} // namespace
