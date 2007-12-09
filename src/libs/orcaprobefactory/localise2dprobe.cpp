@@ -25,7 +25,7 @@ Localise2dProbe::Localise2dProbe( const orca::FQInterfaceName& name, orcaprobe::
     id_ = "::orca::Localise2d";
     
     addOperation( "getData" );
-    addOperation( "getDataAtTime" );
+    addOperation( "getVehicleGeometry" );
     addOperation( "subscribe" );
     addOperation( "unsubscribe" );
 
@@ -41,7 +41,7 @@ Localise2dProbe::loadOperationEvent( const int index, orcacm::OperationData& dat
     case orcaprobe::UserIndex+0 :
         return loadGetData( data );
     case orcaprobe::UserIndex+1 :
-        return loadGetDataAtTime( data );
+        return loadGetVehicleGeometry( data );
     case orcaprobe::UserIndex+2 :
         return loadSubscribe( data );
     case orcaprobe::UserIndex+3 :
@@ -60,6 +60,25 @@ Localise2dProbe::loadGetData( orcacm::OperationData& data )
         result = derivedPrx->getData();
         orcaprobe::reportResult( data, "data", orcaice::toString(result) );
     }
+    catch( const Ice::Exception& e )
+    {
+        stringstream ss;
+        ss<<e<<endl;
+        orcaprobe::reportException( data, ss.str() );
+    }
+    return 0;
+}
+
+int 
+Localise2dProbe::loadGetVehicleGeometry( orcacm::OperationData& data )
+{
+    orca::VehicleGeometryDescriptionPtr result;
+    try
+    {
+        orca::Localise2dPrx derivedPrx = orca::Localise2dPrx::checkedCast(prx_);
+        result = derivedPrx->getVehicleGeometry();
+        orcaprobe::reportResult( data, "data", orcaice::toString(result) );
+    }
     catch( const orca::DataNotExistException& e )
     {
         orcaprobe::reportException( data, "data is not ready on the remote interface" );
@@ -74,13 +93,6 @@ Localise2dProbe::loadGetData( orcacm::OperationData& data )
         ss<<e<<endl;
         orcaprobe::reportException( data, ss.str() );
     }
-    return 0;
-}
-
-int 
-Localise2dProbe::loadGetDataAtTime( orcacm::OperationData& data )
-{
-    orcaprobe::reportNotImplemented( data );
     return 0;
 }
 

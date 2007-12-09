@@ -33,7 +33,7 @@ private:
 
     int loadGetDescription( orcacm::OperationData& data );
     int loadGetData( orcacm::OperationData& data );
-    int loadGetDataAtTime( orcacm::OperationData& data );
+    int loadGetVehicleGeometry( orcacm::OperationData& data );
     int loadSubscribe( orcacm::OperationData& data );
     int loadUnsubscribe( orcacm::OperationData& data );
 
