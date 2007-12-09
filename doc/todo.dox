@@ -65,6 +65,10 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 @par New libraries
 @par Updated interfaces
 @par Updated components
+
+- pathplanner (alex b)
+  - brought closer to modern standards, implemented status.
+
 @par Updated utilities
 @par Updated libraries
 @par Removed
