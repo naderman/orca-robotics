@@ -29,6 +29,7 @@ namespace orcaicegrid
 class AdminSessionManager : public hydroutil::Thread
 {
 public:
+
     //! Constructor
     AdminSessionManager( const orcaice::Context& context );
 
@@ -50,6 +51,22 @@ public:
     // from Thread
     virtual void run();
 
+    //! State of the Session 
+    enum State
+    {
+        //! Disconnected
+        Disconnected,
+        //! Connecting
+        Connecting,
+        //! Connected
+        Connected,
+        //! Disconnecting
+        Disconnecting
+    };
+
+    //! Get the current state of the session. This a local operation.
+    State getState();
+
 private:
 
     bool tryCreateSession();
@@ -64,6 +81,7 @@ private:
     IceGrid::AdminSessionPrx session_;
     IceGrid::AdminPrx        iceGridAdmin_;
 
+    State state_;
     int timeoutSec_;
     IceUtil::Time lastKeepaliveTime_;
     orcaice::Context context_;

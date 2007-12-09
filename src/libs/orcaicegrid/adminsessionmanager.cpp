@@ -20,9 +20,10 @@ namespace {
     const int MAX_TRIES = 3;
 } // namespace
 
-AdminSessionManager::AdminSessionManager( const orcaice::Context &context )
-    : timeoutSec_(0),
-      context_(context)     
+AdminSessionManager::AdminSessionManager( const orcaice::Context &context ) : 
+    state_(Disconnected),
+    timeoutSec_(0),
+    context_(context)     
 {
 }
 
@@ -35,10 +36,13 @@ AdminSessionManager::tryCreateSession()
     Ice::PropertiesPtr props = context_.properties();
     std::string prefix = context_.tag() + ".Config.";
    
-    std::string instanceName = context_.properties()->getPropertyWithDefault( prefix+"IceGrid.InstanceName",
-                                                                              "IceGrid" );
+    std::string instanceName = context_.properties()->getPropertyWithDefault( 
+            prefix+"IceGrid.InstanceName", "IceGrid" );
     IceGrid::RegistryPrx registry;
-
+    
+    //
+    // connect to the Registry
+    //
     try {
         string regName = instanceName+"/Registry";
         registry = IceGrid::RegistryPrx::checkedCast( context_.communicator()->stringToProxy(regName) );
@@ -76,6 +80,9 @@ AdminSessionManager::tryCreateSession()
         return false;
     }
             
+    //
+    // Create Session
+    //
     try
     {
         session_ = registry->createAdminSession( "sessionmanager.cpp-assume-no-access-control",
@@ -125,7 +132,11 @@ AdminSessionManager::run()
     while( !isStopping() )
     {
         try {
-            // Create the session
+            // Connect to the Registry and create the session
+            {
+                IceUtil::Mutex::Lock lock(mutex_);
+                state_ = Connecting;
+            }
             while ( !isStopping() )
             {
                 {
@@ -134,6 +145,11 @@ AdminSessionManager::run()
                         break;
                 }
                 IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
+            }
+            // Connected!
+            {
+                IceUtil::Mutex::Lock lock(mutex_);
+                state_ = Connecting;
             }
 
             // Keep it alive
@@ -191,7 +207,19 @@ AdminSessionManager::run()
         {
             context_.tracer()->warning( "AdminSessionManager: caught unknown stray exception." );
         }
+        
+        // Lost it!
+        {
+            IceUtil::Mutex::Lock lock(mutex_);
+            state_ = Disconnected;
+        }
     } // while
+
+    
+    {
+        IceUtil::Mutex::Lock lock(mutex_);
+        state_ = Disconnecting;
+    }
 
     try {
         // Destroying the session_ will release all allocated objects.
@@ -202,6 +230,18 @@ AdminSessionManager::run()
     {
         // Not much we can do about it...
     }
+
+    {
+        IceUtil::Mutex::Lock lock(mutex_);
+        state_ = Disconnected;
+    }
+}
+
+AdminSessionManager::State 
+AdminSessionManager::getState()
+{
+    IceUtil::Mutex::Lock lock(mutex_);
+    return state_;
 }
 
 class AdminSessionManager::Operation {
