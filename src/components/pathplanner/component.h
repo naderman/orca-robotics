@@ -12,11 +12,10 @@
 #define ORCA2_PATHPLANNER_COMPONENT_H
 
 #include <orcaice/component.h>
+#include <hydroutil/thread.h>
 
 namespace pathplanner
 {
-
-class AlgoHandler;
 
 class Component : public orcaice::Component
 {
@@ -30,7 +29,7 @@ public:
 
 private:
 
-    AlgoHandler *algoHandler_;
+    hydroutil::ThreadPtr mainThread_;
 
 };
 

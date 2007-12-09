@@ -12,7 +12,7 @@
 #include <assert.h>
 #include <orcaice/orcaice.h>
 #include <hydroutil/hydroutil.h>
-#include "algohandler.h"
+#include "mainthread.h"
 #include "pathplanner2dI.h"
 #include "fakedriver.h"
 #include "skeletondriver.h"
@@ -55,71 +55,38 @@ namespace {
 
 }
 
-AlgoHandler::AlgoHandler( const orcaice::Context & context )
-    : driver_(0),
+MainThread::MainThread( const orcaice::Context & context )
+    : hydroutil::SafeThread( context_.tracer(), context.status(), "MainThread" ),
       pathPlannerTaskProxy_(0),
       context_(context)
 {
+    context_.status()->setMaxHeartbeatInterval( name(), 30.0 );
+    context_.status()->initialising( name() );
 }
 
-AlgoHandler::~AlgoHandler()
+MainThread::~MainThread()
 {
     delete pathPlannerTaskProxy_;
-    if ( costEvaluator_ ) delete costEvaluator_;
 }
 
 void
-AlgoHandler::initNetwork()
+MainThread::initNetwork()
 {
     //
     // REQUIRED INTERFACE: OgMap
     //
+    context_.status()->initialising( name(), "Connecting to OgMap" );
+    orca::OgMapPrx ogMapPrx;    
+    orcaice::connectToInterfaceWithTag<orca::OgMapPrx>( context_, ogMapPrx, "OgMap", this, name() );
 
-    while( !isStopping() )
-    {
-        try
-        {
-            orcaice::connectToInterfaceWithTag<orca::OgMapPrx>( context_, ogMapPrx_, "OgMap" );
-            break;
-        }
-        catch ( const std::exception & e )
-        {
-            stringstream ss;
-            ss << "AlgoHandler: failed to connect to ogMap interface: " << e.what();
-            context_.tracer()->error( ss.str() );
-            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
-        }
-        // NOTE: connectToInterfaceWithTag() can also throw ConfigFileException,
-        //       but if this happens it's ok if we just quit.
-    }
-    
-    //
-    // PROVIDED INTERFACES
-    //
-    
-
-    // PathPlanner2d
-    // create the proxy/buffer for tasks
-    pathPlannerTaskProxy_ = new hydroutil::Proxy<PathPlanner2dTask>; 
-    pathPlannerDataProxy_ = new hydroutil::Proxy<PathPlanner2dData>;
-
-    pathPlannerI_ = new PathPlanner2dI( *pathPlannerTaskProxy_, *pathPlannerDataProxy_, context_ );
-    Ice::ObjectPtr pathPlannerObj = pathPlannerI_;
-    
-    // two possible exceptions will kill it here, that's what we want
-    orcaice::createInterfaceWithTag( context_, pathPlannerObj, "PathPlanner2d" );
-}
-
-void
-AlgoHandler::initDriver()
-{
-    // get the og map once    
+    // get the og map once
+    context_.status()->initialising( name(), "Getting Og Map" );
     orca::OgMapData ogMapSlice;
     try
     {
-        ogMapSlice = ogMapPrx_->getData();
+        ogMapSlice = ogMapPrx->getData();
         stringstream ss;
-        ss << "AlgoHandler::initDriver(): got ogMap: " << orcaice::toString( ogMapSlice );
+        ss << "MainThread::initDriver(): got ogMap: " << orcaice::toString( ogMapSlice );
         context_.tracer()->info( ss.str() );
     }
     catch ( const orca::DataNotExistException & e )
@@ -131,6 +98,27 @@ AlgoHandler::initDriver()
     // convert into internal representation
     orcaogmap::convert(ogMapSlice,ogMap_);
     
+    //
+    // PROVIDED INTERFACES
+    //
+
+    // PathPlanner2d
+    // create the proxy/buffer for tasks
+    pathPlannerTaskProxy_ = new hydroutil::Proxy<PathPlanner2dTask>; 
+    pathPlannerDataProxy_ = new hydroutil::Proxy<PathPlanner2dData>;
+
+    context_.status()->initialising( name(), "Creating PathPlanner2d Interface" );
+    pathPlannerI_ = new PathPlanner2dI( *pathPlannerTaskProxy_, *pathPlannerDataProxy_, context_ );
+    Ice::ObjectPtr pathPlannerObj = pathPlannerI_;
+    
+    // two possible exceptions will kill it here, that's what we want
+    orcaice::createInterfaceWithTag( context_, pathPlannerObj, "PathPlanner2d" );
+}
+
+void
+MainThread::initDriver()
+{
+    context_.status()->initialising( name(), "Initialising Driver" );
     //
     // Read settings
     //
@@ -160,13 +148,13 @@ AlgoHandler::initDriver()
                                                            traversabilityThreshhold,
                                                            doPathOptimization );
         }
-        driver_ = new GenericDriver( pathPlanner,
-                                     ogMap_,
-                                     robotDiameterMetres,
-                                     traversabilityThreshhold,
-                                     doPathOptimization,
-                                     jiggleWaypointsOntoClearCells,
-                                     context_ );
+        driver_.reset( new GenericDriver( pathPlanner,
+                                          ogMap_,
+                                          robotDiameterMetres,
+                                          traversabilityThreshhold,
+                                          doPathOptimization,
+                                          jiggleWaypointsOntoClearCells,
+                                          context_ ) );
     }    
     else if ( driverName == "skeletonnav" || driverName == "sparseskeletonnav" )
     {
@@ -176,18 +164,18 @@ AlgoHandler::initDriver()
         double costMultiplier = orcaice::getPropertyAsDoubleWithDefault( context_.properties(), prefix+"Skeleton.Cost.CostMultiplier", 10 );
         double sparseSkelExtraNodeResolution = orcaice::getPropertyAsDoubleWithDefault( context_.properties(), prefix+"Skeleton.SparseSkelExtraNodeResolution", 5 );
 
-        costEvaluator_ = new DistBasedCostEvaluator( distanceThreshold, costMultiplier );
+        costEvaluator_.reset( new DistBasedCostEvaluator( distanceThreshold, costMultiplier ) );
 
         try {
-            driver_ = new SkeletonDriver( ogMap_,
-                                          robotDiameterMetres,
-                                          traversabilityThreshhold,
-                                          doPathOptimization,
-                                          jiggleWaypointsOntoClearCells,
-                                          useSparseSkeleton,
-                                          sparseSkelExtraNodeResolution,
-                                          *costEvaluator_,
-                                          context_ );
+            driver_.reset( new SkeletonDriver( ogMap_,
+                                               robotDiameterMetres,
+                                               traversabilityThreshhold,
+                                               doPathOptimization,
+                                               jiggleWaypointsOntoClearCells,
+                                               useSparseSkeleton,
+                                               sparseSkelExtraNodeResolution,
+                                               *costEvaluator_,
+                                               context_ ) );
         }
         catch ( hydropathplan::Exception &e )
         {
@@ -200,7 +188,7 @@ AlgoHandler::initDriver()
     }
     else if ( driverName == "fake" )
     {
-        driver_ = new FakeDriver();
+        driver_.reset( new FakeDriver() );
     }
     else {
         string errorStr = "Unknown driver type.";
@@ -213,18 +201,23 @@ AlgoHandler::initDriver()
 }
 
 void 
-AlgoHandler::run()
+MainThread::walk()
 {
+    activate( context_, this, name() );
+
     initNetwork();
     initDriver();
 
-    assert( driver_ );
+    assert( driver_.get() );
     assert( pathPlannerTaskProxy_ );
 
     // we are in a different thread now, catch all stray exceptions
 
     PathPlanner2dTask task; 
     PathPlanner2dData pathData;   
+
+    context_.status()->setMaxHeartbeatInterval( name(), 30 );
+    context_.status()->ok( name() );
 
     while ( !isStopping() )
     {
@@ -245,6 +238,7 @@ AlgoHandler::run()
                     context_.tracer()->info("task arrived");  
                     break;
                 }
+                context_.status()->ok( name() );
             }
             
             // the only way of getting out of the above loop without a task
@@ -314,6 +308,7 @@ AlgoHandler::run()
             // resize the pathData: future tasks might not compute a path successfully and we would resend the old path
             pathData.path.resize( 0 );
     
+            context_.status()->ok( name() );
         //
         // unexpected exceptions
         //
@@ -322,30 +317,30 @@ AlgoHandler::run()
         {
             stringstream ss;
             ss << "unexpected (remote?) orca exception: " << e << ": " << e.what;
-            context_.tracer()->error( ss.str() );
+            context_.status()->fault( name(), ss.str() );
         }
         catch ( const hydroutil::Exception & e )
         {
             stringstream ss;
             ss << "unexpected (local?) orcaice exception: " << e.what();
-            context_.tracer()->error( ss.str() );
+            context_.status()->fault( name(), ss.str() );
         }
         catch ( const Ice::Exception & e )
         {
             stringstream ss;
             ss << "unexpected Ice exception: " << e;
-            context_.tracer()->error( ss.str() );
+            context_.status()->fault( name(), ss.str() );
         }
         catch ( const std::exception & e )
         {
             // once caught this beast in here, don't know who threw it 'St9bad_alloc'
             stringstream ss;
             ss << "unexpected std exception: " << e.what();
-            context_.tracer()->error( ss.str() );
+            context_.status()->fault( name(), ss.str() );
         }
         catch ( ... )
         {
-            context_.tracer()->error( "unexpected exception from somewhere.");
+            context_.status()->fault( name(), "unexpected exception from somewhere.");
         }
     
     } // end of while

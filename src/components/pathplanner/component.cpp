@@ -9,49 +9,35 @@
  */
 
 #include "component.h"
-#include "algohandler.h"
+#include "mainthread.h"
 
 using namespace pathplanner;
 
 Component::Component()
-    : orcaice::Component( "PathPlanner" ),
-      algoHandler_(0)
+    : orcaice::Component( "PathPlanner" )
 {
 }
 
 Component::~Component()
 {
-    // do not delete handlers!!! They derives from Ice::Thread and delete themselves.
 }
 
-// NOTE: this function returns after it's done, all variable that need to be permanet must
-//       be declared as member variables.
 void 
 Component::start()
 {
     context().tracer()->info( "Component starting." );
 
     //
-    // ENABLE NETWORK CONNECTIONS
+    // Creat and start the main thread
     //
-    // only needed for Home and Status interfaces
-    // this may throw, but may as well quit right then
-    activate();
-
-    //
-    // Hardware handling loop
-    //
-    // the constructor may throw, we'll let the application shut us down
-    algoHandler_ = new AlgoHandler( context() );
-    algoHandler_->start();
-    
-    // the rest is handled by the application/service
+    mainThread_ = new MainThread( context() );
+    mainThread_->start();
 }
 
 void 
 Component::stop()
 {
     tracer()->debug( "stopping component", 5 );
-    hydroutil::stopAndJoin( algoHandler_ );
+    hydroutil::stopAndJoin( mainThread_ );
     tracer()->debug( "stopped component", 5 );
 }

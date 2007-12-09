@@ -8,10 +8,10 @@
  *
  */
  
-#ifndef ORCA2_PATHPLANNER_ALGORITHM_HANDLER_H
-#define ORCA2_PATHPLANNER_ALGORITHM_HANDLER_H
+#ifndef ORCA2_PATHPLANNER_MAIN_THREAD_H
+#define ORCA2_PATHPLANNER_MAIN_THREAD_H
 
-#include <hydroutil/thread.h>
+#include <hydroutil/safethread.h>
 #include <orcaice/context.h>
 #include <hydroutil/proxy.h>
 
@@ -19,6 +19,7 @@
 #include <orca/pathplanner2d.h>
 #include <orca/qgraphics2d.h>
 #include <hydropathplan/hydropathplan.h>
+#include <memory>
 
 namespace pathplanner
 {
@@ -27,23 +28,21 @@ class AlgoDriver;
 class SkeletonGraphicsI;
 class PathPlanner2dI;
 
-class AlgoHandler : public hydroutil::Thread
+class MainThread : public hydroutil::SafeThread
 {
 
 public: 
 
-    AlgoHandler( const orcaice::Context & context );
-    ~AlgoHandler();
+    MainThread( const orcaice::Context & context );
+    ~MainThread();
 
-    virtual void run();
+    virtual void walk();
 
 private:
 
     // generic inerface to the algorithm
-    AlgoDriver* driver_;
+    std::auto_ptr<AlgoDriver> driver_;
 
-    orca::OgMapPrx ogMapPrx_;
-    
     // we have to keep the ogmap as member variable,
     // otherwise they get out of scope if we pass references around
     hydroogmap::OgMap ogMap_;
@@ -58,7 +57,7 @@ private:
     orcaice::Context context_;
     
     // cost of traversing cells (only used for skeleton variants)
-    hydropathplan::CostEvaluator *costEvaluator_;
+    std::auto_ptr<hydropathplan::CostEvaluator> costEvaluator_;
 };
 
 } // namespace
