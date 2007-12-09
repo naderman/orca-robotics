@@ -39,7 +39,6 @@ namespace orcaice {
 
 Component::Component( const std::string& tag, ComponentInterfaceFlag flag )
     : interfaceFlag_(flag),
-//       localStatus_(0),
       componentThread_(0)
 {
     context_.tag_ = tag;
@@ -47,7 +46,6 @@ Component::Component( const std::string& tag, ComponentInterfaceFlag flag )
 
 Component::~Component()
 {
-//     if ( localStatus_ ) delete localStatus_;
 }
 
 void
@@ -65,7 +63,6 @@ Component::init( const orca::FQComponentName& name,
     //
     context_.tracer_ = initTracer();
     context_.status_ = initStatus();
-//     localStatus_ = context_.status_;
     context_.home_   = initHome();
     componentThread_ = new ComponentThread( homePrx_, *(context_.status_), interfaceFlag_, context_ );
     try {

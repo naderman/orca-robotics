@@ -20,8 +20,15 @@ namespace orcaice
 
 class Status;
 
-//! This enum type is used to describe which standard interfaces the component
-//! will provide.
+/*! 
+This enum type is used to describe which standard interfaces the component
+will provide.
+
+Flags can be combined. For example to initialize Home and Status but not Tracer.
+@verbatim
+orcaice::ComponentInterfaceFlag flag = orcaice::HomeInterface | orcaice::StatusInterface;
+@endverbatim
+*/
 enum ComponentInterfaceFlag {
     //! No standard interfaces
     NoStandardInterfaces    = 0x000,
@@ -162,8 +169,11 @@ protected:
     //! Same result as context().properties().
     Ice::PropertiesPtr properties() const { return context_.properties(); };
 
-    //! Describe which standard interfaces this component will provide.
+    //! Describes which standard interfaces this component will provide.
     ComponentInterfaceFlag interfaceFlag() const { return interfaceFlag_; };
+    //! Defines which standard interfaces will be created. To take effect, this function must be called
+    //! from the constructor.
+    void setInterfaceFlag( ComponentInterfaceFlag flag ) { interfaceFlag_ = flag; };
 
 private:
 
