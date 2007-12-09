@@ -16,7 +16,7 @@ using namespace std;
 using namespace laser2d;
 
 MainThread::MainThread( const orcaice::Context &context ) :
-    SafeThread( context.tracer(), context.status(), "MainThread" ),
+    hydroutil::SafeThread( context.tracer(), context.status(), "MainThread" ),
     laserInterface_(0),
     driver_(0),
     driverFactory_(0),
