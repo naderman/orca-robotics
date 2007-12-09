@@ -255,7 +255,7 @@ TermNcursesUser::run()
     // we are in a different thread now, catch all stray exceptions
     try
     {
-    inputHandler_ = new InputHandler( *network_, *this );
+    inputHandler_ = new InputHandler( *network_, *this, context_ );
     inputHandler_->start();
     
     hydroutil::EventPtr event;

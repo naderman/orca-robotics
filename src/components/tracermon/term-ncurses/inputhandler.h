@@ -12,6 +12,7 @@
 #define ORCA2_TRACERMON_TERM_NCURSES_INPUT_HANDLER_H
 
 #include <hydroutil/safethread.h>
+#include <orcaice/context.h>
 #include "../user.h"
 #include "../network.h"
 
@@ -22,7 +23,7 @@ class InputHandler : public hydroutil::SafeThread
 {
 public:
 
-    InputHandler( tracermon::Network& network, tracermon::User& user );
+    InputHandler( tracermon::Network& network, tracermon::User& user, const orcaice::Context& context );
     virtual ~InputHandler();
 
     // from Thread
