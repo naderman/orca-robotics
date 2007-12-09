@@ -149,7 +149,7 @@ AdminSessionManager::run()
             // Connected!
             {
                 IceUtil::Mutex::Lock lock(mutex_);
-                state_ = Connecting;
+                state_ = Connected;
             }
 
             // Keep it alive
