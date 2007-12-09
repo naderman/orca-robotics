@@ -526,8 +526,8 @@ MainLoop::run()
             hydronavutil::Pose pose = getMLPose( localiseData_ );
             
             bool uncertainLocalisation = orcaice::localisationIsUncertain( localiseData_ );
-            if ( uncertainLocalisation )
-                context_.tracer()->warning( "MainLoop: Localisation is uncertain..." );
+//             if ( uncertainLocalisation )
+//                 context_.tracer()->warning( "MainLoop: Localisation is uncertain..." );
 
             // pathMaintainer knows about the whole path in global coords and where
             // we are in that path. So get the next set of current goals in local 

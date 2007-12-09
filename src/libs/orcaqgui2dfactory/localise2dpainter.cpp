@@ -21,9 +21,9 @@ using namespace std;
 using namespace orcaqgui2d;
 
 Localise2dPainter::Localise2dPainter( bool beginDisplayHistory )
-    : length_(0.5),
-      width_(0.3),
-      radius_(0.25),
+    : length_(1e-3),
+      width_(1e-3),
+      radius_(1e-3),
       platformType_(PlatformTypeCubic),
       isDataAvailable_(false),
       basicColor_(Qt::blue),

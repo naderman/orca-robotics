@@ -92,6 +92,12 @@ Localise2dProbe::loadGetVehicleGeometry( orcacm::OperationData& data )
         ss<<e<<endl;
         orcaprobe::reportException( data, ss.str() );
     }
+    catch( const std::exception &e )
+    {
+        stringstream ss;
+        ss<<e.what()<<endl;
+        orcaprobe::reportException( data, ss.str() );        
+    }
     return 0;
 }
 

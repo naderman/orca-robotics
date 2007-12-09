@@ -22,6 +22,25 @@ namespace orcaqgui2d {
 void
 Localise2dElement::actionOnConnection()
 {
+    cout<<"TRACE(localise2delement.cpp): actionOnConnection(): isConnected_: " << isConnected_ << endl;
+    cout<<"TRACE(localise2delement.cpp): actionOnConnection(): isConnected_: " << isConnected_ << endl;
+    cout<<"TRACE(localise2delement.cpp): actionOnConnection(): isConnected_: " << isConnected_ << endl;
+    cout<<"TRACE(localise2delement.cpp): actionOnConnection(): isConnected_: " << isConnected_ << endl;
+    cout<<"TRACE(localise2delement.cpp): actionOnConnection(): isConnected_: " << isConnected_ << endl;
+    cout<<"TRACE(localise2delement.cpp): actionOnConnection(): isConnected_: " << isConnected_ << endl;
+    cout<<"TRACE(localise2delement.cpp): actionOnConnection(): isConnected_: " << isConnected_ << endl;
+    cout<<"TRACE(localise2delement.cpp): actionOnConnection(): isConnected_: " << isConnected_ << endl;
+    cout<<"TRACE(localise2delement.cpp): actionOnConnection(): isConnected_: " << isConnected_ << endl;
+    cout<<"TRACE(localise2delement.cpp): actionOnConnection(): isConnected_: " << isConnected_ << endl;
+    cout<<"TRACE(localise2delement.cpp): actionOnConnection(): isConnected_: " << isConnected_ << endl;
+    cout<<"TRACE(localise2delement.cpp): actionOnConnection(): isConnected_: " << isConnected_ << endl;
+    cout<<"TRACE(localise2delement.cpp): actionOnConnection(): isConnected_: " << isConnected_ << endl;
+    cout<<"TRACE(localise2delement.cpp): actionOnConnection(): isConnected_: " << isConnected_ << endl;
+    cout<<"TRACE(localise2delement.cpp): actionOnConnection(): isConnected_: " << isConnected_ << endl;
+    cout<<"TRACE(localise2delement.cpp): actionOnConnection(): isConnected_: " << isConnected_ << endl;
+    cout<<"TRACE(localise2delement.cpp): actionOnConnection(): isConnected_: " << isConnected_ << endl;
+    cout<<"TRACE(localise2delement.cpp): actionOnConnection(): isConnected_: " << isConnected_ << endl;
+
     if (!isConnected_) return;
 
     tryToGetGeometry();
@@ -33,23 +52,41 @@ Localise2dElement::actionOnConnection()
 void 
 Localise2dElement::tryToGetGeometry()
 {
-    
+    cout<<"TRACE(localise2delement.cpp): tryToGetGeometry()" << endl;
+    cout<<"TRACE(localise2delement.cpp): tryToGetGeometry()" << endl;
+    cout<<"TRACE(localise2delement.cpp): tryToGetGeometry()" << endl;
+
     VehicleGeometryDescriptionPtr geom;
     
+    if ( !listener_.proxy() )
+    {
+        humanManager_->showStatusMsg(Error,"Localise2dElement::tryToGetGeometry(): listener_.proxy() = 0"  );
+    }
     try 
     {
         geom = listener_.proxy()->getVehicleGeometry();
-        haveGeometry_=true;
+        if ( geom == 0 )
+        {
+            throw hydroutil::Exception( ERROR_INFO, "Localise2dElement::tryToGetGeometry(): got NULL vehicle geometry from remote interface!" );
+        }
+        haveGeometry_ = true;
     }
     catch ( std::exception &e)
     {
-        humanManager_->showStatusMsg(Error,"Localise2dElement::Exception when trying to get geometry: " + QString(e.what()) );
+        humanManager_->showStatusMsg(Error,"Localise2dElement::tryToGetGeometry(): Exception when trying to get geometry: " + QString(e.what()) );
     }
     
-    if (!haveGeometry_) {
-        painter_.setTypeAndGeometry(PlatformTypeCubic, 0.5, 0.4 );
+    if (!haveGeometry_) 
+    {
+        humanManager_->showStatusMsg(Warning,"Localise2dElement::tryToGetGeometry(): couldn't get geometry.  Assuming point vehicle." );
+        const double length = 1e-3, width = 1e-3;
+        painter_.setTypeAndGeometry(PlatformTypeCubic, length, width );
         painter_.setOrigin( 0.0, 0.0, 0.0 );
         return;
+    }
+    else
+    {
+        cout<<"TRACE(localise2delement.cpp): got geometry: " << orcaice::toString(geom) << endl;
     }
     
     if (geom->type==VehicleGeometryCuboid)
@@ -76,6 +113,8 @@ Localise2dElement::tryToGetGeometry()
 void
 Localise2dElement::update()
 {
+    cout<<"TRACE(localise2delement.cpp): update(): haveGeometry_: " << haveGeometry_ << endl;
+
     if (!haveGeometry_)
         tryToGetGeometry();
     

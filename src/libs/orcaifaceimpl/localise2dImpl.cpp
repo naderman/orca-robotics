@@ -58,6 +58,7 @@ Localise2dImpl::Localise2dImpl( const orca::VehicleGeometryDescriptionPtr &geome
       topicName_(getTopicNameFromInterfaceName(context,interfaceName_)),
       context_(context)
 {
+    assert( geometry_ != 0 );
 }
 
 Localise2dImpl::Localise2dImpl( const orca::VehicleGeometryDescriptionPtr &geometry,
@@ -68,6 +69,7 @@ Localise2dImpl::Localise2dImpl( const orca::VehicleGeometryDescriptionPtr &geome
       topicName_(getTopicNameFromInterfaceName(context,interfaceName)),
       context_(context)
 {
+    assert( geometry_ != 0 );
 }
 
 Localise2dImpl::~Localise2dImpl()

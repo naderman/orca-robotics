@@ -113,12 +113,12 @@ namespace {
 }
 
 MainLoop::MainLoop( const orcaice::Context & context )
-    : incomingPathI_(0),
+    : hydroutil::SafeThread( context.tracer(), context.status(), SUBSYSTEM ),
+      incomingPathI_(0),
       context_(context)
 {
     context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 10.0 );
     context_.status()->initialising( SUBSYSTEM );
-    initNetwork();
 
     Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag()+".Config.";
@@ -142,13 +142,15 @@ MainLoop::initNetwork()
     orcaice::connectToInterfaceWithTag( context_,
                                         localise2dPrx_,
                                         "Localise2d",
-                                        this );
+                                        this,
+                                        SUBSYSTEM );
 
     context_.status()->initialising( SUBSYSTEM, "Connecting to PathFollower2d" );
     orcaice::connectToInterfaceWithTag( context_,
                                         localNavPrx_,
                                         "PathFollower2d",
-                                        this );
+                                        this,
+                                        SUBSYSTEM );
 
     context_.status()->initialising( SUBSYSTEM, "Subscribing for PathFollower2d updates" );
     progressMonitor_ = new ProgressMonitor;
@@ -160,14 +162,16 @@ MainLoop::initNetwork()
     orcaice::connectToInterfaceWithTag( context_,
                                         pathplanner2dPrx_,
                                         "PathPlanner2d",
-                                        this );
+                                        this,
+                                        SUBSYSTEM );
 
     context_.status()->initialising( SUBSYSTEM, "Connecting to OgMap" );
     orca::OgMapPrx ogMapPrx_;
     orcaice::connectToInterfaceWithTag( context_,
                                         ogMapPrx_,
                                         "OgMap",
-                                        this );
+                                        this,
+                                        SUBSYSTEM );
     orca::OgMapData orcaOgMap = ogMapPrx_->getData();
     orcaogmap::convert( orcaOgMap, ogMap_ );
 
@@ -584,8 +588,10 @@ MainLoop::waitForNewPath( orca::PathFollower2dData &newPathData )
 }
 
 void 
-MainLoop::run()
+MainLoop::walk()
 {
+    initNetwork();
+
     orca::PathFollower2dData incomingPath;
     bool requestIsOutstanding = false;
 

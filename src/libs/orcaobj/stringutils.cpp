@@ -809,7 +809,7 @@ std::string
 toString( const orca::VehicleControlDescriptionPtr& obj )
 {
     if ( obj == 0 )
-        throw( "VehicleControlDescriptionPtr was zero!" );
+        throw hydroutil::Exception( ERROR_INFO, "VehicleControlDescriptionPtr was zero!" );
 
     std::ostringstream s;
     s << "VehicleControlDescription: "
@@ -864,7 +864,7 @@ std::string
 toString( const orca::VehicleGeometryDescriptionPtr& obj )
 {
     if ( obj == 0 )
-        throw( "VehicleControlDescriptionPtr was zero!" );
+        throw hydroutil::Exception( ERROR_INFO, "VehicleGeometryDescriptionPtr was zero!" );
 
     std::ostringstream s;
     s << "VehicleGeometryDescription: "

@@ -51,6 +51,12 @@ public:
           theta_(0),
           haveGeometry_(false)
         {
+            std::cout<<"TRACE(localise2delement.h): constructor()" << std::endl;
+            std::cout<<"TRACE(localise2delement.h): constructor()" << std::endl;
+            std::cout<<"TRACE(localise2delement.h): constructor()" << std::endl;
+            std::cout<<"TRACE(localise2delement.h): constructor()" << std::endl;
+            std::cout<<"TRACE(localise2delement.h): constructor()" << std::endl;
+            std::cout<<"TRACE(localise2delement.h): constructor()" << std::endl;
         };
 
     virtual bool isInGlobalCS() { return true; }

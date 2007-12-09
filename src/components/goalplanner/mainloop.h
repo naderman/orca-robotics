@@ -11,7 +11,7 @@
 #ifndef ORCA2_GOALPLANNER_MAINLOOP_H
 #define ORCA2_GOALPLANNER_MAINLOOP_H
 
-#include <hydroutil/thread.h>
+#include <hydroutil/safethread.h>
 #include <orcaice/context.h>
 #include <hydroutil/store.h>
 #include <hydronavutil/pose.h> 
@@ -28,7 +28,7 @@ namespace goalplanner
 
 class PathFollower2dI;
 
-class MainLoop : public hydroutil::Thread
+class MainLoop : public hydroutil::SafeThread
 {
 
 public: 
@@ -36,7 +36,7 @@ public:
     MainLoop( const orcaice::Context & context );
     ~MainLoop();
 
-    virtual void run();
+    virtual void walk();
 
 private:
     

@@ -46,7 +46,7 @@ public:
           timeoutMs_(timeoutMs),
           isConnected_(false)
         {            
-            //try to connect once
+            // try to connect once
             if ( listener_.connect() != 0 ) {
                 throw orcaqgui::Exception("Problem connecting to interface with proxyString " + proxyString);
             }
