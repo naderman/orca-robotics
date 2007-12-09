@@ -63,6 +63,11 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 @par New components
 @par New utilities
 @par New libraries
+
+- libOrcaIce
+   - Component standard interfaces can now be configured from the constructor of the derived
+     class with setInterfaceFlag() function. (alex m)
+
 @par Updated interfaces
 @par Updated components
 
