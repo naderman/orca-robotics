@@ -42,7 +42,7 @@ private:
     // Loops until established
     void initNetworkInterface();
 
-    void readData( orca::LaserScanner2dDataPtr &data );
+    void readData();
 
     // The laser object
     orcaifaceimpl::LaserScanner2dImpl *laserInterface_;
@@ -50,6 +50,10 @@ private:
     hydrointerfaces::LaserScanner2d::Config config_;
     // an extra config to allow sensor mounted upside-down
     bool compensateRoll_;
+
+    // space for data
+    orca::LaserScanner2dDataPtr           orcaLaserData_;
+    hydrointerfaces::LaserScanner2d::Data hydroLaserData_;
 
     // Generic driver for the hardware
     hydrointerfaces::LaserScanner2d *driver_;

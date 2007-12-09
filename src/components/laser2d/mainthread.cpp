@@ -183,38 +183,41 @@ MainThread::initHardwareDriver()
 }
 
 void
-MainThread::readData( orca::LaserScanner2dDataPtr &laserData )
+MainThread::readData()
 {
     //
     // Read from the laser driver
-    //            
-    driver_->read( laserData->ranges, 
-                   laserData->intensities,
-                   laserData->timeStamp.seconds,
-                   laserData->timeStamp.useconds );
-    assert( (int)laserData->ranges.size()      == config_.numberOfSamples );
-    assert( (int)laserData->intensities.size() == config_.numberOfSamples );
+    //
+    hydroLaserData_.haveWarnings = false;
+    driver_->read( hydroLaserData_ );
+
+    orcaLaserData_->timeStamp.seconds  = hydroLaserData_.timeStampSec;
+    orcaLaserData_->timeStamp.useconds = hydroLaserData_.timeStampUsec;
 
     // flip the scan left-to-right if we are configured to do so
     if ( compensateRoll_ ) {
         // NOTE: instead of copying around, we should be able to simply change the
         // start bearing and bearing increment.
-        std::reverse( laserData->ranges.begin(), laserData->ranges.end() );
-        std::reverse( laserData->intensities.begin(), laserData->intensities.end() );
+        std::reverse( orcaLaserData_->ranges.begin(), orcaLaserData_->ranges.end() );
+        std::reverse( orcaLaserData_->intensities.begin(), orcaLaserData_->intensities.end() );
     }
 }
 
 void
 MainThread::walk()
 {
-    // Set up the laser-scan object
-    orca::LaserScanner2dDataPtr laserData = new orca::LaserScanner2dData;
-    laserData->minRange     = config_.minRange;
-    laserData->maxRange     = config_.maxRange;
-    laserData->fieldOfView  = config_.fieldOfView;
-    laserData->startAngle   = config_.startAngle;
-    laserData->ranges.resize( config_.numberOfSamples );
-    laserData->intensities.resize( config_.numberOfSamples );
+    // Set up the laser-scan objects
+    orcaLaserData_ = new orca::LaserScanner2dData;
+    orcaLaserData_->minRange     = config_.minRange;
+    orcaLaserData_->maxRange     = config_.maxRange;
+    orcaLaserData_->fieldOfView  = config_.fieldOfView;
+    orcaLaserData_->startAngle   = config_.startAngle;
+    orcaLaserData_->ranges.resize( config_.numberOfSamples );
+    orcaLaserData_->intensities.resize( config_.numberOfSamples );
+
+    // Point the pointers in hydroLaserData_ at orcaLaserData_
+    hydroLaserData_.ranges      = &(orcaLaserData_->ranges[0]);
+    hydroLaserData_.intensities = &(orcaLaserData_->intensities[0]);
 
     // These functions catch their exceptions.
     activate( context_, this, name() );
@@ -231,12 +234,20 @@ MainThread::walk()
         try 
         {
             // this blocks until new data arrives
-            readData( laserData );
-            laserInterface_->localSetAndSend( laserData );
-            context_.status()->ok( name() );
+            readData();
+            
+            laserInterface_->localSetAndSend( orcaLaserData_ );
+            if ( hydroLaserData_.haveWarnings )
+            {
+                context_.status()->warning( name(), hydroLaserData_.warnings );
+            }
+            else
+            {
+                context_.status()->ok( name() );
+            }
 
             stringstream ss;
-            ss << "MainThread: Read laser data: " << orcaice::toString(laserData);
+            ss << "MainThread: Read laser data: " << orcaice::toString(orcaLaserData_);
             context_.tracer()->debug( ss.str(), 5 );
 
             continue;
