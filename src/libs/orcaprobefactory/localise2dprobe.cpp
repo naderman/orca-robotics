@@ -72,11 +72,10 @@ Localise2dProbe::loadGetData( orcacm::OperationData& data )
 int 
 Localise2dProbe::loadGetVehicleGeometry( orcacm::OperationData& data )
 {
-    orca::VehicleGeometryDescriptionPtr result;
     try
     {
         orca::Localise2dPrx derivedPrx = orca::Localise2dPrx::checkedCast(prx_);
-        result = derivedPrx->getVehicleGeometry();
+        orca::VehicleGeometryDescriptionPtr result = derivedPrx->getVehicleGeometry();
         orcaprobe::reportResult( data, "data", orcaice::toString(result) );
     }
     catch( const orca::DataNotExistException& e )
