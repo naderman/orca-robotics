@@ -28,8 +28,8 @@ HwThread::HwThread( Config& config, const orcaice::Context &context ) :
     driverLib_(0),
     context_(context)
 {
-    context_.status()->setMaxHeartbeatInterval( name(), 10.0 );
-    context_.status()->initialising( name() );
+    context_.status()->setMaxHeartbeatInterval( subsysName(), 10.0 );
+    context_.status()->initialising( subsysName() );
 
     //
     // Read settings
@@ -107,7 +107,7 @@ HwThread::enableDriver()
             std::stringstream ss;
             ss << "HwThread::enableDriver(): enable failed: " << e.what();
             context_.tracer()->error( ss.str() );
-            context_.status()->fault( name(), ss.str() );
+            context_.status()->fault( subsysName(), ss.str() );
             stateMachine_.setFault( ss.str() );
         }
         catch ( ... )
@@ -115,7 +115,7 @@ HwThread::enableDriver()
             std::stringstream ss;
             ss << "HwThread::enableDriver(): enable failed due to unknown exception.";
             context_.tracer()->error( ss.str() );
-            context_.status()->fault( name(), ss.str() );
+            context_.status()->fault( subsysName(), ss.str() );
             stateMachine_.setFault( ss.str() );
         }
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
@@ -139,7 +139,7 @@ HwThread::walk()
         if ( stateMachine_.isFault( reason ) )
         {
             // Try to (re-)enable
-            context_.status()->setMaxHeartbeatInterval( name(), 5.0 );    
+            context_.status()->setMaxHeartbeatInterval( subsysName(), 5.0 );    
 
             // Is the Estop correctly enabled?
             if( isEStopEnabled_ && ( !isEStopConnected(eStopTimeoutMs) ))
@@ -150,7 +150,7 @@ HwThread::walk()
 
             // we enabled, so presume we're OK.
             stateMachine_.setOK();
-            context_.status()->setMaxHeartbeatInterval( name(), 2.0 );
+            context_.status()->setMaxHeartbeatInterval( subsysName(), 2.0 );
 
             // but make sure we're not shutting down.
             if ( isStopping() )
@@ -272,15 +272,15 @@ HwThread::walk()
         // Tell the 'status' engine what our local state machine knows.
         if ( stateMachine_.isFault(reason) )
         {
-            context_.status()->fault( name(), reason );
+            context_.status()->fault( subsysName(), reason );
         }
         else if ( stateMachine_.isWarning(reason) )
         {
-            context_.status()->warning( name(), reason );
+            context_.status()->warning( subsysName(), reason );
         }
         else
         {
-            context_.status()->ok( name() );
+            context_.status()->ok( subsysName() );
         }
 
 

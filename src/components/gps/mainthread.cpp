@@ -26,8 +26,8 @@ MainThread::MainThread( const orcaice::Context& context ) :
     driver_(0),
     context_(context)
 {
-    context_.status()->setMaxHeartbeatInterval( name(), 10.0 );
-    context_.status()->initialising( name() );
+    context_.status()->setMaxHeartbeatInterval( subsysName(), 10.0 );
+    context_.status()->initialising( subsysName() );
 }
 
 MainThread::~MainThread()
@@ -60,13 +60,13 @@ MainThread::initNetworkInterface()
     gpsInterface_ = new orcaifaceimpl::GpsImpl( descr_, "Gps", context_ );
 
     // multi-try init
-    gpsInterface_->initInterface( this, name() );
+    gpsInterface_->initInterface( this, subsysName() );
 }
 
 void
 MainThread::initHardwareDriver()
 {
-    context_.status()->setMaxHeartbeatInterval( name(), 10.0 );
+    context_.status()->setMaxHeartbeatInterval( subsysName(), 10.0 );
 
     // this function works for re-initialization as well
     if ( driver_ ) delete driver_;
@@ -144,7 +144,7 @@ MainThread::reportBogusValues( orca::GpsData &gpsData )
 void
 MainThread::walk()
 {
-    context_.status()->setMaxHeartbeatInterval( name(), 5.0 );  
+    context_.status()->setMaxHeartbeatInterval( subsysName(), 5.0 );  
 
     Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag() + ".Config.";
@@ -152,7 +152,7 @@ MainThread::walk()
     bool reportIfNoFix = orcaice::getPropertyAsIntWithDefault( prop, prefix+"ReportIfNoFix", 1 );
 
     // These functions catch their exceptions.
-    orcaice::activate( context_, this, name() );
+    orcaice::activate( context_, this, subsysName() );
 
     initNetworkInterface();
     initHardwareDriver();
@@ -181,7 +181,7 @@ MainThread::walk()
                 stringstream ss;
                 ss << "MainThread: Problem reading from GPS: " << e.what();
                 context_.tracer()->error( ss.str() );
-                context_.status()->fault( name(), ss.str() );
+                context_.status()->fault( subsysName(), ss.str() );
             }
 
             //If the read threw then we should now try to re-initialise 
@@ -216,7 +216,7 @@ MainThread::walk()
             gpsInterface_->localSetAndSend(gpsData);
         }        
             
-        context_.status()->ok( name() );
+        context_.status()->ok( subsysName() );
 
     } // end of while
 

@@ -60,8 +60,8 @@ MainThread::MainThread( const orcaice::Context & context )
       pathPlannerTaskProxy_(0),
       context_(context)
 {
-    context_.status()->setMaxHeartbeatInterval( name(), 30.0 );
-    context_.status()->initialising( name() );
+    context_.status()->setMaxHeartbeatInterval( subsysName(), 30.0 );
+    context_.status()->initialising( subsysName() );
 }
 
 MainThread::~MainThread()
@@ -75,12 +75,12 @@ MainThread::initNetwork()
     //
     // REQUIRED INTERFACE: OgMap
     //
-    context_.status()->initialising( name(), "Connecting to OgMap" );
+    context_.status()->initialising( subsysName(), "Connecting to OgMap" );
     orca::OgMapPrx ogMapPrx;    
-    orcaice::connectToInterfaceWithTag<orca::OgMapPrx>( context_, ogMapPrx, "OgMap", this, name() );
+    orcaice::connectToInterfaceWithTag<orca::OgMapPrx>( context_, ogMapPrx, "OgMap", this, subsysName() );
 
     // get the og map once
-    context_.status()->initialising( name(), "Getting Og Map" );
+    context_.status()->initialising( subsysName(), "Getting Og Map" );
     orca::OgMapData ogMapSlice;
     try
     {
@@ -107,7 +107,7 @@ MainThread::initNetwork()
     pathPlannerTaskProxy_ = new hydroutil::Proxy<PathPlanner2dTask>; 
     pathPlannerDataProxy_ = new hydroutil::Proxy<PathPlanner2dData>;
 
-    context_.status()->initialising( name(), "Creating PathPlanner2d Interface" );
+    context_.status()->initialising( subsysName(), "Creating PathPlanner2d Interface" );
     pathPlannerI_ = new PathPlanner2dI( *pathPlannerTaskProxy_, *pathPlannerDataProxy_, context_ );
     Ice::ObjectPtr pathPlannerObj = pathPlannerI_;
     
@@ -118,7 +118,7 @@ MainThread::initNetwork()
 void
 MainThread::initDriver()
 {
-    context_.status()->initialising( name(), "Initialising Driver" );
+    context_.status()->initialising( subsysName(), "Initialising Driver" );
     //
     // Read settings
     //
@@ -203,7 +203,7 @@ MainThread::initDriver()
 void 
 MainThread::walk()
 {
-    activate( context_, this, name() );
+    activate( context_, this, subsysName() );
 
     initNetwork();
     initDriver();
@@ -216,8 +216,8 @@ MainThread::walk()
     PathPlanner2dTask task; 
     PathPlanner2dData pathData;   
 
-    context_.status()->setMaxHeartbeatInterval( name(), 30 );
-    context_.status()->ok( name() );
+    context_.status()->setMaxHeartbeatInterval( subsysName(), 30 );
+    context_.status()->ok( subsysName() );
 
     while ( !isStopping() )
     {
@@ -238,7 +238,7 @@ MainThread::walk()
                     context_.tracer()->info("task arrived");  
                     break;
                 }
-                context_.status()->ok( name() );
+                context_.status()->ok( subsysName() );
             }
             
             // the only way of getting out of the above loop without a task
@@ -308,7 +308,7 @@ MainThread::walk()
             // resize the pathData: future tasks might not compute a path successfully and we would resend the old path
             pathData.path.resize( 0 );
     
-            context_.status()->ok( name() );
+            context_.status()->ok( subsysName() );
         //
         // unexpected exceptions
         //
@@ -317,30 +317,30 @@ MainThread::walk()
         {
             stringstream ss;
             ss << "unexpected (remote?) orca exception: " << e << ": " << e.what;
-            context_.status()->fault( name(), ss.str() );
+            context_.status()->fault( subsysName(), ss.str() );
         }
         catch ( const hydroutil::Exception & e )
         {
             stringstream ss;
             ss << "unexpected (local?) orcaice exception: " << e.what();
-            context_.status()->fault( name(), ss.str() );
+            context_.status()->fault( subsysName(), ss.str() );
         }
         catch ( const Ice::Exception & e )
         {
             stringstream ss;
             ss << "unexpected Ice exception: " << e;
-            context_.status()->fault( name(), ss.str() );
+            context_.status()->fault( subsysName(), ss.str() );
         }
         catch ( const std::exception & e )
         {
             // once caught this beast in here, don't know who threw it 'St9bad_alloc'
             stringstream ss;
             ss << "unexpected std exception: " << e.what();
-            context_.status()->fault( name(), ss.str() );
+            context_.status()->fault( subsysName(), ss.str() );
         }
         catch ( ... )
         {
-            context_.status()->fault( name(), "unexpected exception from somewhere.");
+            context_.status()->fault( subsysName(), "unexpected exception from somewhere.");
         }
     
     } // end of while

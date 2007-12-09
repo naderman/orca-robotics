@@ -28,11 +28,6 @@ public:
     virtual void start();
     virtual void stop();
 
-    // This is an optional function. It is not typically overwritten in
-    // Orca components but this can be useful in external projects.
-    // This is done here for testing.
-    virtual const std::string version() const { return std::string(PROJECT_VERSION); };
-    
 private:
 
     hydroutil::ThreadPtr mainThread_;

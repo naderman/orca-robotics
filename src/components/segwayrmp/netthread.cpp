@@ -114,8 +114,8 @@ NetThread::NetThread( HwThread                      &hwThread,
     descr_(descr),
     context_(context)
 {
-    context_.status()->setMaxHeartbeatInterval( name(), 10.0 );
-    context_.status()->initialising( name() );
+    context_.status()->setMaxHeartbeatInterval( subsysName(), 10.0 );
+    context_.status()->initialising( subsysName() );
 
     // Get vehicle limits
     orca::VehicleControlVelocityDifferentialDescription *controlDescr =
@@ -171,22 +171,22 @@ void
 NetThread::walk()
 {
     // this is a multi-try function to activate component's server capabilities
-    activate( context_, this, name() );
+    activate( context_, this, subsysName() );
     
     std::string prefix = context_.tag() + ".Config.";
 
     // Initialise external interfaces
     odometry2dI_ = new orcaifaceimpl::Odometry2dImpl( descr_, "Odometry2d", context_ );
-    odometry2dI_->initInterface( this, name() );
+    odometry2dI_->initInterface( this, subsysName() );
     
     odometry3dI_ = new orcaifaceimpl::Odometry3dImpl( descr_, "Odometry3d", context_ );
-    odometry3dI_->initInterface( this, name() );
+    odometry3dI_->initInterface( this, subsysName() );
 
     powerI_ = new orcaifaceimpl::PowerImpl( "Power", context_ );
-    powerI_->initInterface( this, name() );
+    powerI_->initInterface( this, subsysName() );
 
     velocityControl2dI_ = new orcaifaceimpl::VelocityControl2dImpl( descr_, "VelocityControl2d", context_ );
-    velocityControl2dI_->initInterface( this, name() );
+    velocityControl2dI_->initInterface( this, subsysName() );
     // register ourselves as data handlers (it will call the handleData() callback).
     velocityControl2dI_->setNotifyHandler( this );
 
@@ -213,7 +213,7 @@ NetThread::walk()
         context_.properties(), prefix+"PowerPublishInterval", 20.0 );
 
     const int odometryReadTimeout = 500; // [ms]
-    context_.status()->setMaxHeartbeatInterval( name(), 2.0*(odometryReadTimeout/1000.0) );
+    context_.status()->setMaxHeartbeatInterval( subsysName(), 2.0*(odometryReadTimeout/1000.0) );
     
 
 
@@ -229,7 +229,7 @@ NetThread::walk()
         if ( hwThread_.getData( data, odometryReadTimeout ) ) {
 //             context_.tracer()->debug( "Net loop timed out", 1);
             // Don't flag this as an error -- it may happen during normal initialisation.
-            context_.status()->ok( name(), "Net loop timed out" );
+            context_.status()->ok( subsysName(), "Net loop timed out" );
             continue;
         }
 
@@ -266,7 +266,7 @@ NetThread::walk()
         }
 
         // subsystem heartbeat
-        context_.status()->ok( name() );
+        context_.status()->ok( subsysName() );
     } // main loop
 }
 
