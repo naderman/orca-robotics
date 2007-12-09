@@ -17,7 +17,7 @@ using namespace std;
 using namespace tracermon;
 
 InputHandler::InputHandler( Network& network, User& user ) :
-    SafeThread( context.tracer(), context.status(), "InputThread" ),
+    SafeThread( 0, 0, "InputThread" ),
     network_(network),
     user_(user)
 {

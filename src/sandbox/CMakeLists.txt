@@ -12,7 +12,6 @@ IF ( NOT OS_WIN AND BUILD_SANDBOX )
     ADD_SUBDIRECTORY ( pathplantester )
     ADD_SUBDIRECTORY ( pointcloudserver )
     ADD_SUBDIRECTORY ( pointcloudviewer ) 
-    ADD_SUBDIRECTORY ( tracermon )    
 
 ELSE ( NOT OS_WIN AND BUILD_SANDBOX )
 
