@@ -39,7 +39,7 @@ enum ComponentInterfaceFlag {
     //! Tracer interface only.
     TracerInterface         = 0x100,
     //! All standard interfaces.
-    AllStandardInterfaces   = HomeInterface | StatusInterface | TracerInterface
+    AllStandardInterfaces   = NoStandardInterfaces | HomeInterface | StatusInterface | TracerInterface
 };
 
 //!
@@ -101,8 +101,18 @@ friend class Service;
 friend class Context;
 
 public:
-    //! Takes the text tag with which to identify it in the config files. The @e flag
-    //! specifies what standard interfaces to initialize.
+    /*! Takes the text tag with which to identify it in the config files. The @e flag
+    //! specifies what standard interfaces to initialize. It is also possible to configure
+    //! standard interfaces with configuration parameters. Configuration parameters always
+    //! override the values supplied with ComponentInterfaceFlag.
+@verbatim
+Orca.Component.EnableTracer
+Orca.Component.EnableStatus
+Orca.Component.EnableHome
+@endverbatim
+    //!
+    //! Inside this contructor the component context is not initialized yet and cannot be used.
+    */
     Component( const std::string& tag, ComponentInterfaceFlag flag=AllStandardInterfaces );
     virtual ~Component();
 
@@ -171,9 +181,6 @@ protected:
 
     //! Describes which standard interfaces this component will provide.
     ComponentInterfaceFlag interfaceFlag() const { return interfaceFlag_; };
-    //! Defines which standard interfaces will be created. To take effect, this function must be called
-    //! from the constructor.
-    void setInterfaceFlag( ComponentInterfaceFlag flag ) { interfaceFlag_ = flag; };
 
 private:
 

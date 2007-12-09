@@ -114,7 +114,16 @@ Component::finalise()
 hydroutil::Tracer*
 Component::initTracer()
 {
-    if ( !(interfaceFlag_ & TracerInterface) ) 
+    // We use programmatic configration as default. Config file settings will always overwrite.
+    bool enableInterface = interfaceFlag_ & TracerInterface;
+    enableInterface = properties()->getPropertyAsIntWithDefault( "Orca.Component.EnableTracer", enableInterface );
+    // in case the settings have changed, update the flag (it may be used by someone in the future)
+    if ( enableInterface )
+        interfaceFlag_ = ComponentInterfaceFlag( interfaceFlag_ | TracerInterface );
+    else
+        interfaceFlag_ = ComponentInterfaceFlag( interfaceFlag_ & ~TracerInterface );
+
+    if ( !enableInterface ) 
     {
         orcaice::initTracerInfo( tag()+": Initialized local trace handler.");
         return new hydroutil::LocalTracer( 
@@ -150,7 +159,16 @@ Component::initTracer()
 hydroutil::Status*
 Component::initStatus()
 {
-    if ( !(interfaceFlag_ & StatusInterface) ) 
+    // We use programmatic configration as default. Config file settings will always overwrite.
+    bool enableInterface = interfaceFlag_ & StatusInterface;
+    enableInterface = properties()->getPropertyAsIntWithDefault( "Orca.Component.EnableStatus", enableInterface );
+    // in case the settings have changed, update the flag (it may be used by someone in the future)
+    if ( enableInterface )
+        interfaceFlag_ = ComponentInterfaceFlag( interfaceFlag_ | StatusInterface );
+    else
+        interfaceFlag_ = ComponentInterfaceFlag( interfaceFlag_ & ~StatusInterface );
+
+    if ( !enableInterface ) 
     {
         orcaice::initTracerInfo( tag()+": Initialized local status handler");
         return new hydroutil::LocalStatus( 
@@ -172,7 +190,16 @@ Component::initStatus()
 Home*
 Component::initHome()
 {
-    if ( !(interfaceFlag_ & HomeInterface) ) {
+    // We use programmatic configration as default. Config file settings will always overwrite.
+    bool enableInterface = interfaceFlag_ & HomeInterface;
+    enableInterface = properties()->getPropertyAsIntWithDefault( "Orca.Component.EnableHome", enableInterface );
+    // in case the settings have changed, update the flag (it may be used by someone in the future)
+    if ( enableInterface )
+        interfaceFlag_ = ComponentInterfaceFlag( interfaceFlag_ | HomeInterface );
+    else
+        interfaceFlag_ = ComponentInterfaceFlag( interfaceFlag_ & ~HomeInterface );
+
+    if ( !enableInterface ) {
         // local object only
         return new orcaice::detail::LocalHome;
     }

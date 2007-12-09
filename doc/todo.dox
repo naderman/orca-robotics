@@ -57,7 +57,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @par Project wide
   - Build system
-    - Better cmake feedback when a component cannot be built.
+    - Updated style of checking module dependencies, for both components and libraries.
+      Better cmake feedback when a component cannot be built.
 
 @par New interfaces
 @par New components
@@ -65,8 +66,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 @par New libraries
 
 - libOrcaIce
-   - Component standard interfaces can now be configured from the constructor of the derived
-     class with setInterfaceFlag() function. (alex m)
+   - Component standard interfaces can now be configured from the config file in addition to the 
+     programatic methond used before. (alex m)
 
 @par Updated interfaces
 @par Updated components

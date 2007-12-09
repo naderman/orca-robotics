@@ -40,6 +40,30 @@ TestComponent::~TestComponent()
 
 void TestComponent::start()
 {
+    cout<<"testing compoenent interface settings ... ";
+    {
+        // ON implicitly
+        bool enabled;
+        enabled = interfaceFlag() & orcaice::TracerInterface;
+        if ( enabled != true ) {
+            cout<<"failed"<<endl<<"expected Tracer to be enabled, flag="<<interfaceFlag()<<endl;
+            exit(EXIT_FAILURE);
+        }
+        // ON explicitly
+        enabled = interfaceFlag() & orcaice::StatusInterface;
+        if ( enabled != true ) {
+            cout<<"failed"<<endl<<"expected Status to be enabled, flag="<<interfaceFlag()<<endl;
+            exit(EXIT_FAILURE);
+        }
+        // OFF explicitly
+        enabled = interfaceFlag() & orcaice::HomeInterface;
+        if ( enabled != false ) {
+            cout<<"failed"<<endl<<"expected Home to be disabled, flag="<<interfaceFlag()<<endl;
+            exit(EXIT_FAILURE);
+        }
+    }
+    cout<<"ok"<<endl;
+
     cout<<"testing Tracer::verbosity() ..."<<endl;
     {
         int verb;
