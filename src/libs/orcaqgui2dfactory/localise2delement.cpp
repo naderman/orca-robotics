@@ -22,25 +22,6 @@ namespace orcaqgui2d {
 void
 Localise2dElement::actionOnConnection()
 {
-    cout<<"TRACE(localise2delement.cpp): actionOnConnection(): isConnected_: " << isConnected_ << endl;
-    cout<<"TRACE(localise2delement.cpp): actionOnConnection(): isConnected_: " << isConnected_ << endl;
-    cout<<"TRACE(localise2delement.cpp): actionOnConnection(): isConnected_: " << isConnected_ << endl;
-    cout<<"TRACE(localise2delement.cpp): actionOnConnection(): isConnected_: " << isConnected_ << endl;
-    cout<<"TRACE(localise2delement.cpp): actionOnConnection(): isConnected_: " << isConnected_ << endl;
-    cout<<"TRACE(localise2delement.cpp): actionOnConnection(): isConnected_: " << isConnected_ << endl;
-    cout<<"TRACE(localise2delement.cpp): actionOnConnection(): isConnected_: " << isConnected_ << endl;
-    cout<<"TRACE(localise2delement.cpp): actionOnConnection(): isConnected_: " << isConnected_ << endl;
-    cout<<"TRACE(localise2delement.cpp): actionOnConnection(): isConnected_: " << isConnected_ << endl;
-    cout<<"TRACE(localise2delement.cpp): actionOnConnection(): isConnected_: " << isConnected_ << endl;
-    cout<<"TRACE(localise2delement.cpp): actionOnConnection(): isConnected_: " << isConnected_ << endl;
-    cout<<"TRACE(localise2delement.cpp): actionOnConnection(): isConnected_: " << isConnected_ << endl;
-    cout<<"TRACE(localise2delement.cpp): actionOnConnection(): isConnected_: " << isConnected_ << endl;
-    cout<<"TRACE(localise2delement.cpp): actionOnConnection(): isConnected_: " << isConnected_ << endl;
-    cout<<"TRACE(localise2delement.cpp): actionOnConnection(): isConnected_: " << isConnected_ << endl;
-    cout<<"TRACE(localise2delement.cpp): actionOnConnection(): isConnected_: " << isConnected_ << endl;
-    cout<<"TRACE(localise2delement.cpp): actionOnConnection(): isConnected_: " << isConnected_ << endl;
-    cout<<"TRACE(localise2delement.cpp): actionOnConnection(): isConnected_: " << isConnected_ << endl;
-
     if (!isConnected_) return;
 
     tryToGetGeometry();
@@ -52,10 +33,6 @@ Localise2dElement::actionOnConnection()
 void 
 Localise2dElement::tryToGetGeometry()
 {
-    cout<<"TRACE(localise2delement.cpp): tryToGetGeometry()" << endl;
-    cout<<"TRACE(localise2delement.cpp): tryToGetGeometry()" << endl;
-    cout<<"TRACE(localise2delement.cpp): tryToGetGeometry()" << endl;
-
     VehicleGeometryDescriptionPtr geom;
     
     if ( !listener_.proxy() )
@@ -84,10 +61,6 @@ Localise2dElement::tryToGetGeometry()
         painter_.setOrigin( 0.0, 0.0, 0.0 );
         return;
     }
-    else
-    {
-        cout<<"TRACE(localise2delement.cpp): got geometry: " << orcaice::toString(geom) << endl;
-    }
     
     if (geom->type==VehicleGeometryCuboid)
     {
@@ -113,8 +86,6 @@ Localise2dElement::tryToGetGeometry()
 void
 Localise2dElement::update()
 {
-    cout<<"TRACE(localise2delement.cpp): update(): haveGeometry_: " << haveGeometry_ << endl;
-
     if (!haveGeometry_)
         tryToGetGeometry();
     
