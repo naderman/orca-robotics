@@ -62,7 +62,7 @@ PingerProbe::loadPing( orcacm::OperationData & data )
     catch( const orca::OrcaException & e )
     {
         cout<<"Caught orca::OrcaException"<<endl;
-        cout << e <<endl;
+        cout << e << ": " << e.what <<endl;
         return 1;
     }
     catch( const Ice::Exception & e )
