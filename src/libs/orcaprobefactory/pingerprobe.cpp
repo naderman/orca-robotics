@@ -57,25 +57,22 @@ PingerProbe::loadPing( orcacm::OperationData & data )
     {
         orca::PingerPrx derivedPrx = orca::PingerPrx::checkedCast(prx_);
         double latencyMs = derivedPrx->ping( hostname );
-        cout<<"latency = "<<latencyMs<<"ms"<<endl;
+
+        stringstream ss;
+        ss<<latencyMs<<"ms"<<endl;
+        orcaprobe::reportResult( data, "latency", ss.str() );
     }
     catch( const orca::OrcaException & e )
     {
-        cout<<"Caught orca::OrcaException"<<endl;
-        cout << e << ": " << e.what <<endl;
-        return 1;
+        stringstream ss;
+        ss<< e << ": " << e.what <<endl;
+        orcaprobe::reportException( data, ss.str() );
     }
     catch( const Ice::Exception & e )
     {
-        cout<<"Caught Ice::Exception"<<endl;
-        cout << e <<endl;
-        return 1;
+        stringstream ss;
+        ss<< e <<endl;
+        orcaprobe::reportException( data, ss.str() );
     }
-    catch( ... )
-    {
-        cout << "Caught something unexpected while pinging" <<endl;
-        return 1;
-    }
-    
     return 0;
 }
