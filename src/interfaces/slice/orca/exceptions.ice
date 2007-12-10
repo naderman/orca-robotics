@@ -24,6 +24,19 @@ module orca
     @brief A generic run-time exception.
     
     Orca Components can use this to signal error conditions to their clients.
+
+    To catch this exception and all derived ones, do the following:
+@verbatim
+try
+{
+    // make a remote call
+}
+catch ( const orca::OrcaException& e )
+{
+    cout << e << ": " << e.what <<endl;
+    // do something else
+}
+@endverbatim
 */
 exception OrcaException
 {
