@@ -18,7 +18,7 @@ module orca
 /*!
     @ingroup orca_interfaces
     @defgroup orca_interface_pinger Pinger
-    @brief An interface which provides the well-known 'ping' service.
+    @brief An interface which provides the well-known @e ping service to check reachability across an IP network.
     @{
 */
 
@@ -26,7 +26,7 @@ module orca
 exception PingException extends OrcaException {};
 
 /*!
-    @brief An interface which provides the well-known 'ping' service.
+    @brief An interface which provides the well-known @e ping service.
            
     This is provided as an Ice interface because calling Unix 'ping' requires root
     priveliges, so it's hard to do from within a large C++ program
@@ -46,10 +46,10 @@ interface Pinger
 {
     //!
     //! Returns:
-    //!   >=0 : a latency in milliseconds
-    //!   <0  : ping timed out.
+    //! - >=0 : a latency in milliseconds
+    //! - <0  : ping timed out.
     //!
-    //! WARNING: This thing executes in the caller's thread.
+    //! @warning This function executes in the caller's thread.
     //!          So it may wait for the ping to time out before returning.
     //!          So, you should make sure that the Timeout value of the Ice call
     //!          is larger than the timeout value of the server's ping call.
