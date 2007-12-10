@@ -29,11 +29,11 @@ public:
     
 private:
 
-    int loadGetData();
-    int loadSetState();
-    int loadTimedSetState();
-    int loadToggleState();
-    int loadTimedToggleState();
+    int loadGetData( orcacm::OperationData & data );
+    int loadSetState( orcacm::OperationData & data );
+    int loadTimedSetState( orcacm::OperationData & data );
+    int loadToggleState( orcacm::OperationData & data );
+    int loadTimedToggleState( orcacm::OperationData & data );
 };
 
 } // namespace

@@ -17,20 +17,21 @@
 #include "drivebicycleprobe.h"
 #include "estopprobe.h"
 #include "homeprobe.h"
+#include "gpsprobe.h"
 #include "imageprobe.h"
 #include "rangescanner2dprobe.h"
 #include "laserscanner2dprobe.h"
-#include "wifiprobe.h"
 #include "localise2dprobe.h"
 #include "localise3dprobe.h"
 #include "odometry2dprobe.h"
 #include "odometry3dprobe.h"
-#include "gpsprobe.h"
-#include "powerprobe.h"
 #include "ogmapprobe.h"
+#include "pathfollower2dprobe.h"
+#include "pingerprobe.h"
+#include "powerprobe.h"
 #include "statusprobe.h"
 #include "tracerprobe.h"
-#include "pathfollower2dprobe.h"
+#include "wifiprobe.h"
 
 using namespace orcaprobefactory;
 
@@ -52,6 +53,7 @@ OrcaProbeFactory::OrcaProbeFactory()
 //     addSupportedType("::orca::PolarFeature2d");
     addSupportedType("::orca::Odometry2d");
     addSupportedType("::orca::Odometry3d");
+    addSupportedType("::orca::Pinger");
     addSupportedType("::orca::Power");
     addSupportedType("::orca::OgMap");
     addSupportedType("::orca::PathFollower2d");
@@ -111,6 +113,9 @@ OrcaProbeFactory::create( const std::string           & interfaceType,
     }
     else if ( interfaceType == "::orca::Odometry3d" ) {
         probe = new Odometry3dProbe( name, display, context );
+    }
+    else if ( interfaceType == "::orca::Pinger" ) {
+        probe = new PingerProbe( name, display, context );
     }
     else if ( interfaceType == "::orca::Power" ) {
         probe = new PowerProbe( name, display, context );

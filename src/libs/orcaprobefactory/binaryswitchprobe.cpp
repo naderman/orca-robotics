@@ -37,48 +37,48 @@ BinarySwitchProbe::loadOperationEvent( const int index, orcacm::OperationData & 
     switch ( index )
     {
     case orcaprobe::UserIndex :
-        return loadGetData();
+        return loadGetData( data );
     case orcaprobe::UserIndex+1 :
-        return loadSetState();
+        return loadSetState( data );
     case orcaprobe::UserIndex+2 :
-        return loadTimedSetState();
+        return loadTimedSetState( data );
     case orcaprobe::UserIndex+3 :
-        return loadToggleState();
+        return loadToggleState( data );
     case orcaprobe::UserIndex+4 :
-        return loadTimedToggleState();
+        return loadTimedToggleState( data );
     }
     return 1;
 }
 
 int 
-BinarySwitchProbe::loadGetData()
+BinarySwitchProbe::loadGetData( orcacm::OperationData & data )
 {
-    orca::BinarySwitchData data;
+    orca::BinarySwitchData result;
     
     try
     {
         orca::BinarySwitchPrx derivedPrx = orca::BinarySwitchPrx::checkedCast(prx_);
-        data = derivedPrx->getData();
+        result = derivedPrx->getData();
     }
     catch( const Ice::Exception & e )
     {
         return 1;
     }
 
-    cout<<orcaice::toString(data)<<endl;
+    cout<<orcaice::toString(result)<<endl;
     return 0;
 }
 
 int 
-BinarySwitchProbe::loadSetState()
+BinarySwitchProbe::loadSetState( orcacm::OperationData & data )
 {
     // first get a list of devices
-    orca::BinarySwitchData data;
+    orca::BinarySwitchData result;
     
     try
     {
         orca::BinarySwitchPrx derivedPrx = orca::BinarySwitchPrx::checkedCast(prx_);
-        data = derivedPrx->getData();
+        result = derivedPrx->getData();
     }
     catch( const Ice::Exception & e )
     {
@@ -92,8 +92,8 @@ BinarySwitchProbe::loadSetState()
     }
 
     cout << "Select device from the list:"<<endl;
-    for ( unsigned int i=0; i<data.devices.size(); ++i ) {
-        cout<<i<<"\t"<<data.devices[i].name<<endl;
+    for ( unsigned int i=0; i<result.devices.size(); ++i ) {
+        cout<<i<<"\t"<<result.devices[i].name<<endl;
     }
     cout << "==>";
 
@@ -130,19 +130,19 @@ BinarySwitchProbe::loadSetState()
 }
 
 int 
-BinarySwitchProbe::loadTimedSetState()
+BinarySwitchProbe::loadTimedSetState( orcacm::OperationData & data )
 {
     return 0;
 }
 
 int 
-BinarySwitchProbe::loadToggleState()
+BinarySwitchProbe::loadToggleState( orcacm::OperationData & data )
 {
     return 0;
 }
 
 int 
-BinarySwitchProbe::loadTimedToggleState()
+BinarySwitchProbe::loadTimedToggleState( orcacm::OperationData & data )
 {
     return 0;
 }

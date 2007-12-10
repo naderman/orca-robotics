@@ -76,6 +76,10 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
   - brought closer to modern standards, implemented status.
 
 @par Updated utilities
+
+- Probe
+   added support for Pinger interface (alex m)
+
 @par Updated libraries
 @par Removed
 
