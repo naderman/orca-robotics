@@ -148,6 +148,13 @@ MainThread::initHardwareDriver()
             driver_ = driverFactory_->createDriver( config_, driverContext );
             return;
         }
+        catch ( IceUtil::Exception &e )
+        {
+            stringstream ss;
+            ss << "MainThread: Caught exception while initialising driver: " << e;
+            context_.tracer()->error( ss.str() );
+            context_.status()->fault( subsysName(), ss.str() );
+        }
         catch ( std::exception &e )
         {
             stringstream ss;
