@@ -78,7 +78,7 @@ HwThread::HwThread( Config& config, const orcaice::Context &context ) :
 
     // let the driver apply limits and save the param for future use
     driver_->applyHardwareLimits( config.maxForwardSpeed, config.maxReverseSpeed,
-                        config.maxTurnrate, config.maxTurnrateAtMaxSpeed );
+                                  config.maxTurnrate, config.maxTurnrateAtMaxSpeed );
     maxForwardSpeed_ = config.maxForwardSpeed;
     maxReverseSpeed_ = config.maxReverseSpeed;
     maxTurnrate_ = config.maxTurnrate;
