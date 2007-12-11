@@ -16,6 +16,6 @@
 #include <orcaifaceimpl/printingconsumers.h>
 
 // obsolete
-// #include <orcaifaceimpl/proxiedconsumers.h>
+#include <orcaifaceimpl/proxiedconsumers.h>
 
 #endif
