@@ -27,19 +27,19 @@ class AdminSessionManager
 {
 public:
     //! Tells IceGrid to remove app
-    void removeApplication( const std::string &appName );
+    virtual void removeApplication( const std::string &appName )=0;
 
     //! Tells IceGrid to get app info
-    IceGrid::ApplicationInfo getApplicationInfo( const std::string &appName );
+    virtual IceGrid::ApplicationInfo getApplicationInfo( const std::string &appName )=0;
 
     //! Tells IceGrid to get server state
-    IceGrid::ServerState getServerState( const std::string &serverId );
+    virtual IceGrid::ServerState getServerState( const std::string &serverId )=0;
 
     //! Tells IceGrid to start server
-    void startServer( const std::string &serverId );
+    virtual void startServer( const std::string &serverId )=0;
 
     //! Tells IceGrid to stop server
-    void stopServer( const std::string &serverId );
+    virtual void stopServer( const std::string &serverId )=0;
 
     //! State of the Session 
     enum State
@@ -55,7 +55,7 @@ public:
     };
 
     //! Get the current state of the session. This a local operation.
-    State getState();
+    virtual State getState()=0;
 };
 
 } // namespace
