@@ -28,16 +28,16 @@ void convert( const orca::VehicleControlVelocityDifferentialDescription& descr, 
 {
     config.maxForwardSpeed = descr.maxForwardSpeed;
     config.maxReverseSpeed = descr.maxReverseSpeed;
-    config.maxTurnrate = descr.maxTurnrate;
-    config.maxTurnrateAtMaxSpeed = descr.maxTurnrateAtMaxSpeed;
+    config.maxTurnrate     = descr.maxTurnrate;
+    config.maxLateralAcceleration = descr.maxLateralAcceleration;
 }
 
 void convert( const HwThread::Config& config, orca::VehicleControlVelocityDifferentialDescription& descr )
 {
     descr.maxForwardSpeed = config.maxForwardSpeed;
     descr.maxReverseSpeed = config.maxReverseSpeed;
-    descr.maxTurnrate = config.maxTurnrate;
-    descr.maxTurnrateAtMaxSpeed = config.maxTurnrateAtMaxSpeed;
+    descr.maxTurnrate     = config.maxTurnrate;
+    descr.maxLateralAcceleration = config.maxLateralAcceleration;
 }
 
 }

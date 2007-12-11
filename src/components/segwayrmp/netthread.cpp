@@ -101,6 +101,45 @@ convert( const orca::VelocityControl2dData& network, hydrointerfaces::SegwayRmp:
     internal.w = network.motion.w;
 }
 
+bool
+commandPossible( double cmdSpeed,
+                 double cmdTurnrate,
+                 double maxForwardSpeed,
+                 double maxReverseSpeed,
+                 double maxTurnrate,
+                 double maxLateralAcceleration )
+{
+    if ( cmdSpeed > maxForwardSpeed ) return false;
+    // Note that maxReverseSpeed is a positive number.
+    if ( cmdSpeed < -maxReverseSpeed ) return false;
+    if ( cmdTurnrate > maxTurnrate ) return false;
+    if ( cmdTurnrate < -maxTurnrate ) return false;
+
+    double lateralAcceleration = cmdSpeed*cmdTurnrate;
+    if ( lateralAcceleration > maxLateralAcceleration ) return false;
+
+    return true;
+}
+
+void
+limit( double &cmdSpeed,
+       double &cmdTurnrate,
+       double maxForwardSpeed,
+       double maxReverseSpeed,
+       double maxTurnrate,
+       double maxLateralAcceleration )
+{
+    if ( cmdSpeed > maxForwardSpeed ) cmdSpeed = maxForwardSpeed;
+    // Note that maxReverseSpeed is a positive number.
+    if ( cmdSpeed < -maxReverseSpeed ) cmdSpeed = -maxReverseSpeed;
+    if ( cmdTurnrate > maxTurnrate ) cmdTurnrate = maxTurnrate;
+    if ( cmdTurnrate < -maxTurnrate ) cmdTurnrate = -maxTurnrate;
+
+    double maxTurnrateToSatisfyLateralAcc = maxLateralAcceleration / cmdSpeed;
+    if ( cmdTurnrate > maxTurnrateToSatisfyLateralAcc )
+        cmdTurnrate = maxTurnrateToSatisfyLateralAcc;
+}
+
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -125,34 +164,16 @@ NetThread::NetThread( HwThread                      &hwThread,
     if ( controlDescr->maxForwardSpeed != controlDescr->maxReverseSpeed ) 
         throw hydroutil::Exception( ERROR_INFO, "Can't handle max forward speed != max reverse speed." );
 
-    // for symmetric limits, only need to store 2 constants.
-    maxSpeed_    = controlDescr->maxForwardSpeed;
-    maxTurnrate_ = controlDescr->maxTurnrate;
+    maxForwardSpeed_        = controlDescr->maxForwardSpeed;
+    maxReverseSpeed_        = controlDescr->maxForwardSpeed;
+    maxTurnrate_            = controlDescr->maxTurnrate;
+    maxLateralAcceleration_ = controlDescr->maxLateralAcceleration;
 
-    // By default the estop interface is not enabled...
+    // By default the estop interface is not enabled
     isEStopEnabled_ = (bool)orcaice::getPropertyAsIntWithDefault( context_.properties(),
             context_.tag()+".Config.EnableEStopInterface", 0 );
     stringstream ss; ss <<"NetThread: isEStopInterfaceEnabled is set to "<< isEStopEnabled_<<endl;
     context_.tracer()->info( ss.str() );
-}
-
-void
-NetThread::limit( hydrointerfaces::SegwayRmp::Command &command )
-{
-    if ( command.vx > maxSpeed_ ) {
-        command.vx = maxSpeed_;
-        // debug
-//         stringstream ss;
-//         ss<<"Forward speed limited to "<<command.vx;
-//         context_.tracer()->debug(ss.str(),6);
-    }
-    if ( command.vx < -maxSpeed_ )
-        command.vx = -maxSpeed_;
-
-    if ( command.w > maxTurnrate_ )
-        command.w = maxTurnrate_;
-    if ( command.w < -maxTurnrate_ )
-        command.w = -maxTurnrate_;
 }
 
 // This is a direct callback from the VelocityControl2dImpl object.
@@ -162,7 +183,32 @@ NetThread::handleData(const orca::VelocityControl2dData& incomingCommand)
 {
     hydrointerfaces::SegwayRmp::Command internalCommand;
     convert( incomingCommand, internalCommand );
-    limit( internalCommand );
+
+    if ( !commandPossible( internalCommand.vx,
+                           internalCommand.w,
+                           maxForwardSpeed_,
+                           maxReverseSpeed_,
+                           maxTurnrate_,
+                           maxLateralAcceleration_ ) )
+    {
+        hydrointerfaces::SegwayRmp::Command originalCommand;
+        limit( internalCommand.vx,
+               internalCommand.w,
+               maxForwardSpeed_,
+               maxReverseSpeed_,
+               maxTurnrate_,
+               maxLateralAcceleration_ );
+
+        stringstream ss;
+        ss << "Requested command ("<<originalCommand.toString()<<") can not be achieved.  " << endl
+           << "  maxForwardSpeed        : " << maxForwardSpeed_ << endl
+           << "  maxReverseSpeed        : " << maxReverseSpeed_ << endl
+           << "  maxTurnrate            :     " << maxTurnrate_*M_PI/180.0 << endl
+           << "  maxLateralAcceleration : " << maxLateralAcceleration_ << endl
+           << "    --> limiting command to: " << internalCommand.toString();
+        context_.status()->warning( subsysName(), ss.str() );
+    }
+
     hwThread_.setCommand( internalCommand );
 }
 

@@ -25,6 +25,7 @@
 #include "localise3dprobe.h"
 #include "odometry2dprobe.h"
 #include "odometry3dprobe.h"
+#include "velocitycontrol2dprobe.h"
 #include "ogmapprobe.h"
 #include "pathfollower2dprobe.h"
 #include "pingerprobe.h"
@@ -54,6 +55,7 @@ OrcaProbeFactory::OrcaProbeFactory()
     addSupportedType("::orca::Odometry2d");
     addSupportedType("::orca::Odometry3d");
     addSupportedType("::orca::Pinger");
+    addSupportedType("::orca::VelocityControl2d");
     addSupportedType("::orca::Power");
     addSupportedType("::orca::OgMap");
     addSupportedType("::orca::PathFollower2d");
@@ -113,6 +115,9 @@ OrcaProbeFactory::create( const std::string           & interfaceType,
     }
     else if ( interfaceType == "::orca::Odometry3d" ) {
         probe = new Odometry3dProbe( name, display, context );
+    }
+    else if ( interfaceType == "::orca::VelocityControl2d" ) {
+        probe = new VelocityControl2dProbe( name, display, context );
     }
     else if ( interfaceType == "::orca::Pinger" ) {
         probe = new PingerProbe( name, display, context );

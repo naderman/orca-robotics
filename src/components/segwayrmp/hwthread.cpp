@@ -77,11 +77,10 @@ HwThread::HwThread( Config& config, const orcaice::Context &context ) :
     }  
 
     // let the driver apply limits and save the param for future use
-    driver_->applyHardwareLimits( config.maxForwardSpeed, config.maxReverseSpeed,
-                                  config.maxTurnrate, config.maxTurnrateAtMaxSpeed );
-    maxForwardSpeed_ = config.maxForwardSpeed;
-    maxReverseSpeed_ = config.maxReverseSpeed;
-    maxTurnrate_ = config.maxTurnrate;
+    driver_->applyHardwareLimits( config.maxForwardSpeed, 
+                                  config.maxReverseSpeed,
+                                  config.maxTurnrate, 
+                                  config.maxLateralAcceleration );
 }
 
 HwThread::~HwThread()
@@ -287,24 +286,6 @@ HwThread::walk()
     } // while
 }
 
-bool
-HwThread::commandImpossible( const hydrointerfaces::SegwayRmp::Command &command )
-{
-    if ( command.vx > maxForwardSpeed_ )
-        return true;
-
-    //Note that maxReverseSpeed is a positive number.
-    if ( command.vx < -maxReverseSpeed_ )
-        return true;
-
-    if ( command.w > maxTurnrate_ )
-        return true;
-    if ( command.w < -maxTurnrate_ )
-        return true;
-
-    return false;
-}
-
 void
 HwThread::setCommand( const hydrointerfaces::SegwayRmp::Command &command )
 {
@@ -320,14 +301,10 @@ HwThread::setCommand( const hydrointerfaces::SegwayRmp::Command &command )
         throw orca::HardwareFailedException( "Motion is disabled" );
     }
 
-    if ( commandImpossible( command ) )
-    {
-        stringstream ss;
-        ss << "Requested speed ("<<command.toString()<<") can not be achieved.  "
-           << "maxForwardSpeed: " << maxForwardSpeed_ << ", maxReverseSpeed: " << maxReverseSpeed_ << ", maxTurnrate: " << maxTurnrate_*M_PI/180.0;
-        cout << ss.str() <<endl;
-        throw orca::MalformedParametersException( ss.str() );
-    }
+    //
+    // Don't bother checking that the command is feasible here:
+    // netthread should have checked already.
+    //
 
     double msecs=writeTimer_.elapsed().toMilliSecondsDouble();
     writeTimer_.restart();

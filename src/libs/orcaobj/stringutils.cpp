@@ -836,7 +836,7 @@ toString( const orca::VehicleControlDescriptionPtr& obj )
             << "     maxForwardSpeed:           " << v->maxForwardSpeed                    << "m/s"   << endl
             << "     maxReverseSpeed:           " << v->maxReverseSpeed                    << "m/s"   << endl
             << "     maxTurnrate:               " << RAD2DEG(v->maxTurnrate)               << "deg/s" << endl
-            << "     maxTurnrateAtMaxSpeed:     " << RAD2DEG(v->maxTurnrateAtMaxSpeed)     << "deg/s" << endl
+            << "     maxLateralAcceleration:    " << v->maxLateralAcceleration             << "m/s/s" << endl
             << "     maxForwardAcceleration:    " << v->maxForwardAcceleration             << "m/s/s" << endl
             << "     maxReverseAcceleration:    " << v->maxReverseAcceleration             << "m/s/s" << endl
             << "     maxRotationalAcceleration: " << RAD2DEG(v->maxRotationalAcceleration) << "deg/s/s";

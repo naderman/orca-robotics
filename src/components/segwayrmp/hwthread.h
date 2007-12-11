@@ -41,7 +41,7 @@ public:
         double maxForwardSpeed;
         double maxReverseSpeed;
         double maxTurnrate;
-        double maxTurnrateAtMaxSpeed;
+        double maxLateralAcceleration;
     };
 
     // these config settings are checked and possibly limited based on hardware capabilities
@@ -74,9 +74,6 @@ private:
     // Keeps trying until success or !!isStopping()
     void enableDriver();
 
-    // Checks to see if the requested command is outside our limits.
-    bool commandImpossible( const hydrointerfaces::SegwayRmp::Command &command );
-
     // Faults can be detected in either read or write threads: have to be careful.
     orcarobotdriverutil::StateMachine stateMachine_;
 
@@ -87,10 +84,6 @@ private:
 
     // Stores incoming EStop Status
     hydroutil::Store<EStopStatus> eStopFaultStatus_;
-
-    double maxForwardSpeed_;
-    double maxReverseSpeed_;
-    double maxTurnrate_;
 
     bool isMotionEnabled_;
     bool isEStopEnabled_;

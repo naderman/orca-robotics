@@ -42,7 +42,6 @@ public:
 
 private:
 
-    void limit( hydrointerfaces::SegwayRmp::Command &command );
     void initEStopCallback();
 
     // external interfaces
@@ -60,8 +59,10 @@ private:
     orca::VehicleDescription descr_;
     bool isEStopEnabled_;
 
-    double maxSpeed_;
+    double maxForwardSpeed_;
+    double maxReverseSpeed_;
     double maxTurnrate_;
+    double maxLateralAcceleration_;
 
     // component context
     orcaice::Context context_;

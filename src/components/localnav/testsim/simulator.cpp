@@ -419,7 +419,7 @@ Simulator::getVehicleDescription() const
     c->maxForwardSpeed = 20.0;
     c->maxReverseSpeed = 20.0;
     c->maxTurnrate     = DEG2RAD(990.0);
-    c->maxTurnrateAtMaxSpeed  = DEG2RAD(990.0);
+    c->maxLateralAcceleration = 3.57;
     c->maxForwardAcceleration = 1.0;
     c->maxReverseAcceleration = 1.0;
     c->maxRotationalAcceleration = DEG2RAD(90.0);
