@@ -11,8 +11,11 @@
 #ifndef ORCAIFACEIMPL_CONSUMER_TYPES_H
 #define ORCAIFACEIMPL_CONSUMER_TYEPS_H
 
-#include <orcaifaceimpl/proxiedconsumers.h>
+#include <orcaifaceimpl/storingconsumers.h>
 #include <orcaifaceimpl/bufferedconsumers.h>
 #include <orcaifaceimpl/printingconsumers.h>
+
+// obsolete
+// #include <orcaifaceimpl/proxiedconsumers.h>
 
 #endif
