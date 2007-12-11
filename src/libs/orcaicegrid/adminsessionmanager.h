@@ -11,10 +11,7 @@
 #ifndef ORCA2_ORCAICEGRID_ADMIN_SESSIONMANAGER_H
 #define ORCA2_ORCAICEGRID_ADMIN_SESSIONMANAGER_H
 
-#include <IceUtil/Time.h>
 #include <IceGrid/Registry.h>
-#include <orcaice/context.h>
-#include <hydroutil/thread.h>
 
 namespace orcaicegrid
 {
@@ -22,17 +19,13 @@ namespace orcaicegrid
 //!
 //! @brief Creates and maintains an IceGrid admin session.
 //!
-//! This thing is thread-safe
+//! The implementation must be thread-safe.
 //!
 //! @author Alex Brooks
 //!
-class AdminSessionManager : public hydroutil::Thread
+class AdminSessionManager
 {
 public:
-
-    //! Constructor
-    AdminSessionManager( const orcaice::Context& context );
-
     //! Tells IceGrid to remove app
     void removeApplication( const std::string &appName );
 
@@ -47,9 +40,6 @@ public:
 
     //! Tells IceGrid to stop server
     void stopServer( const std::string &serverId );
-
-    // from Thread
-    virtual void run();
 
     //! State of the Session 
     enum State
@@ -66,26 +56,6 @@ public:
 
     //! Get the current state of the session. This a local operation.
     State getState();
-
-private:
-
-    bool tryCreateSession();
-
-    // Tries to sleep for the specified number of seconds, but wakes
-    // up if !isStopping() fails.
-    void checkedSleep( int sec );
-
-    class Operation;
-    void performOp( Operation &op );
-
-    IceGrid::AdminSessionPrx session_;
-    IceGrid::AdminPrx        iceGridAdmin_;
-
-    State state_;
-    int timeoutSec_;
-    IceUtil::Time lastKeepaliveTime_;
-    orcaice::Context context_;
-    IceUtil::Mutex   mutex_;
 };
 
 } // namespace

@@ -9,7 +9,7 @@
  */
 
 #include <sstream>
-#include "adminsessionmanager.h"
+#include "adminsessionmanagerI.h"
 #include <orcaice/orcaice.h>
 
 using namespace std;
@@ -20,7 +20,7 @@ namespace {
     const int MAX_TRIES = 3;
 } // namespace
 
-AdminSessionManager::AdminSessionManager( const orcaice::Context &context ) : 
+AdminSessionManagerI::AdminSessionManagerI( const orcaice::Context &context ) : 
     state_(Disconnected),
     timeoutSec_(0),
     context_(context)     
@@ -28,7 +28,7 @@ AdminSessionManager::AdminSessionManager( const orcaice::Context &context ) :
 }
 
 bool
-AdminSessionManager::tryCreateSession()
+AdminSessionManagerI::tryCreateSession()
 {
 //     cout<<"TRACE(icegridadminsession.cpp): tryCreateSession()" << endl;
 
@@ -49,7 +49,7 @@ AdminSessionManager::tryCreateSession()
         
         if( !registry )
         {
-            context_.tracer()->error( "AdminSessionManager: Could not contact registry" );
+            context_.tracer()->error( "AdminSessionManagerI: Could not contact registry" );
             return false;
         }
     }
@@ -61,21 +61,21 @@ AdminSessionManager::tryCreateSession()
     catch ( const Ice::Exception &e )
     {
         std::stringstream ss;
-        ss << "AdminSessionManager: Error contacting registry: " << e;
+        ss << "AdminSessionManagerI: Error contacting registry: " << e;
         context_.tracer()->error( ss.str() );
         return false;
     }
     catch ( const std::exception &e )
     {
         std::stringstream ss;
-        ss << "AdminSessionManager: Error contacting registry: " << e.what();
+        ss << "AdminSessionManagerI: Error contacting registry: " << e.what();
         context_.tracer()->error( ss.str() );
         return false;
     }
     catch ( ... )
     {
         std::stringstream ss;
-        ss << "AdminSessionManager: Unknown error contacting registry.";
+        ss << "AdminSessionManagerI: Unknown error contacting registry.";
         context_.tracer()->error( ss.str() );
         return false;
     }
@@ -88,7 +88,7 @@ AdminSessionManager::tryCreateSession()
         session_ = registry->createAdminSession( "sessionmanager.cpp-assume-no-access-control",
                                                  "sessionmanager.cpp-assume-no-access-control" );
         timeoutSec_ = registry->getSessionTimeout();
-        stringstream ss; ss<<"AdminSessionManager: Created session (timeout="<<timeoutSec_<<"s)";
+        stringstream ss; ss<<"AdminSessionManagerI: Created session (timeout="<<timeoutSec_<<"s)";
         context_.tracer()->info( ss.str() );
 
         iceGridAdmin_ = session_->getAdmin();
@@ -96,14 +96,14 @@ AdminSessionManager::tryCreateSession()
     catch( const std::exception& e)
     {
         stringstream ss;
-        ss << "AdminSessionManager: Error creating Admin Session: " << e.what();
+        ss << "AdminSessionManagerI: Error creating Admin Session: " << e.what();
         context_.tracer()->error( ss.str() );
         return false;
     }
     catch( ... )
     {
         stringstream ss;
-        ss << "AdminSessionManager: Unknown exception when creating Admin Session.";
+        ss << "AdminSessionManagerI: Unknown exception when creating Admin Session.";
         context_.tracer()->error( ss.str() );
         return false;
     }
@@ -113,7 +113,7 @@ AdminSessionManager::tryCreateSession()
 }
 
 void
-AdminSessionManager::checkedSleep( int sec )
+AdminSessionManagerI::checkedSleep( int sec )
 {
     for ( int i=0; i < sec; i++ )
     {
@@ -124,7 +124,7 @@ AdminSessionManager::checkedSleep( int sec )
 }
 
 void
-AdminSessionManager::run()
+AdminSessionManagerI::run()
 {
     bool sentKeepalive = false;
 
@@ -165,11 +165,11 @@ AdminSessionManager::run()
                     if ( sentKeepalive && secSinceLastKeepalive > timeoutSec_ )
                     {
                         stringstream ss;
-                        ss << "AdminSessionManager: failed to send keepAlives quicker than timeout.  timeoutSec_="
+                        ss << "AdminSessionManagerI: failed to send keepAlives quicker than timeout.  timeoutSec_="
                            <<timeoutSec_<<", secSinceLastKeepalive=" << secSinceLastKeepalive;
                         context_.tracer()->warning( ss.str() );
                     }
-                    context_.tracer()->debug( "AdminSessionManager: sending keepAlive()" );
+                    context_.tracer()->debug( "AdminSessionManagerI: sending keepAlive()" );
                     session_->keepAlive();
                     lastKeepaliveTime_ = IceUtil::Time::now(); //orcaice::getNow();
                     sentKeepalive = true;
@@ -181,13 +181,13 @@ AdminSessionManager::run()
                 }
                 catch( const Ice::Exception& e )
                 {
-                    stringstream ss; ss<<"AdminSessionManager: Failed to keep session alive: "<<e;
+                    stringstream ss; ss<<"AdminSessionManagerI: Failed to keep session alive: "<<e;
                     context_.tracer()->warning( ss.str() );
                     break;
                 }
                 catch( const std::exception& e )
                 {
-                    stringstream ss; ss<<"AdminSessionManager: Failed to keep session alive: "<<e.what();
+                    stringstream ss; ss<<"AdminSessionManagerI: Failed to keep session alive: "<<e.what();
                     context_.tracer()->warning( ss.str() );
                     break;
                 }
@@ -200,12 +200,12 @@ AdminSessionManager::run()
         catch ( std::exception &e )
         {
             stringstream ss;
-            ss << "AdminSessionManager: Caught stray exception: " << e.what();
+            ss << "AdminSessionManagerI: Caught stray exception: " << e.what();
             context_.tracer()->warning( ss.str() );
         }
         catch ( ... )
         {
-            context_.tracer()->warning( "AdminSessionManager: caught unknown stray exception." );
+            context_.tracer()->warning( "AdminSessionManagerI: caught unknown stray exception." );
         }
         
         // Lost it!
@@ -223,7 +223,7 @@ AdminSessionManager::run()
 
     try {
         // Destroying the session_ will release all allocated objects.
-        context_.tracer()->info( "AdminSessionManager: Destroying session." );
+        context_.tracer()->info( "AdminSessionManagerI: Destroying session." );
         session_->destroy();
     }
     catch ( ... )
@@ -237,14 +237,14 @@ AdminSessionManager::run()
     }
 }
 
-AdminSessionManager::State 
-AdminSessionManager::getState()
+AdminSessionManagerI::State 
+AdminSessionManagerI::getState()
 {
     IceUtil::Mutex::Lock lock(mutex_);
     return state_;
 }
 
-class AdminSessionManager::Operation {
+class AdminSessionManagerI::Operation {
 public:
     virtual ~Operation() {}
 
@@ -254,7 +254,7 @@ public:
 };
 
 void
-AdminSessionManager::performOp( Operation &op )
+AdminSessionManagerI::performOp( Operation &op )
 {
     IceUtil::Mutex::Lock lock(mutex_);
 
@@ -266,17 +266,17 @@ AdminSessionManager::performOp( Operation &op )
     {
         try {
             orca::Time startTime = orcaice::getNow();
-            context_.tracer()->debug( string("AdminSessionManager: performing ")+op.toString(),10 );
+            context_.tracer()->debug( string("AdminSessionManagerI: performing ")+op.toString(),10 );
             op.performOp( iceGridAdmin_ );
             stringstream ss;
-            ss << "AdminSessionManager: "<<op.toString()<<" done.  Took "<<orcaice::timeDiffAsDouble(orcaice::getNow(),startTime)<<"s";
+            ss << "AdminSessionManagerI: "<<op.toString()<<" done.  Took "<<orcaice::timeDiffAsDouble(orcaice::getNow(),startTime)<<"s";
             context_.tracer()->debug( ss.str(),10 );
             return;
         }
         catch ( const Ice::ObjectNotExistException &e )
         {
             stringstream ss;
-            ss << "AdminSessionManager: "<<op.toString()<<"(): caught exception: "<<e;
+            ss << "AdminSessionManagerI: "<<op.toString()<<"(): caught exception: "<<e;
             context_.tracer()->warning( ss.str() );
             errorLog << "Error " << i << ": " << ss.str();
             tryCreateSession();
@@ -284,7 +284,7 @@ AdminSessionManager::performOp( Operation &op )
         catch ( const Ice::TimeoutException &e )
         {
             stringstream ss;
-            ss << "AdminSessionManager: "<<op.toString()<<"(): caught exception: "<<e;
+            ss << "AdminSessionManagerI: "<<op.toString()<<"(): caught exception: "<<e;
             context_.tracer()->warning( ss.str() );
             errorLog << "Error " << i << ": " << ss.str();
             tryCreateSession();
@@ -292,14 +292,14 @@ AdminSessionManager::performOp( Operation &op )
     }
 
     stringstream ss;
-    ss << "AdminSessionManager::"<<op.toString()<<": giving up after errors:\n"<<errorLog.str();
+    ss << "AdminSessionManagerI::"<<op.toString()<<": giving up after errors:\n"<<errorLog.str();
     context_.tracer()->error( ss.str() );
     throw hydroutil::Exception( ERROR_INFO, ss.str() );    
 }
 
 
 IceGrid::ServerState 
-AdminSessionManager::getServerState( const std::string &serverId )
+AdminSessionManagerI::getServerState( const std::string &serverId )
 {
     class GetServerStateOp : public Operation {
     public:
@@ -323,7 +323,7 @@ AdminSessionManager::getServerState( const std::string &serverId )
 }
 
 void 
-AdminSessionManager::startServer( const std::string &serverId )
+AdminSessionManagerI::startServer( const std::string &serverId )
 {
     class StartServerOp : public Operation {
     public:
@@ -343,7 +343,7 @@ AdminSessionManager::startServer( const std::string &serverId )
 }
 
 void 
-AdminSessionManager::stopServer( const std::string &serverId )
+AdminSessionManagerI::stopServer( const std::string &serverId )
 {
     class StopServerOp : public Operation {
     public:
@@ -363,7 +363,7 @@ AdminSessionManager::stopServer( const std::string &serverId )
 }
 
 void 
-AdminSessionManager::removeApplication( const std::string &appName )
+AdminSessionManagerI::removeApplication( const std::string &appName )
 {
     class RemoveApplicationOp : public Operation {
     public:
@@ -383,7 +383,7 @@ AdminSessionManager::removeApplication( const std::string &appName )
 }
 
 IceGrid::ApplicationInfo 
-AdminSessionManager::getApplicationInfo( const std::string &appName )
+AdminSessionManagerI::getApplicationInfo( const std::string &appName )
 {
     class GetApplicationInfoOp : public Operation {
     public:
