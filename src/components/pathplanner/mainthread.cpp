@@ -161,7 +161,7 @@ MainThread::initDriver()
 
         double distanceThreshold = orcaice::getPropertyAsDoubleWithDefault( context_.properties(), prefix+"Skeleton.Cost.DistanceThreshold", 0.3 );
         double costMultiplier = orcaice::getPropertyAsDoubleWithDefault( context_.properties(), prefix+"Skeleton.Cost.CostMultiplier", 10 );
-        double addExtraSparseSkelNodes = orcaice::getPropertyAsDoubleWithDefault( context_.properties(), prefix+"Skeleton.AddExtraNodes", 1 );
+        double addExtraSparseSkelNodes = orcaice::getPropertyAsDoubleWithDefault( context_.properties(), prefix+"Skeleton.SparseSkelAddExtraNodes", 1 );
         double sparseSkelExtraNodeResolution = orcaice::getPropertyAsDoubleWithDefault( context_.properties(), prefix+"Skeleton.SparseSkelExtraNodeResolution", 5 );
 
         costEvaluator_.reset( new DistBasedCostEvaluator( distanceThreshold, costMultiplier ) );
