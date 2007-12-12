@@ -29,21 +29,22 @@ namespace {
 MainThread::MainThread( DriverFactory                    &driverFactory,
                     orcalocalnav::Clock              &clock,
                     orcalocalnav::PathFollower2dI    &pathFollowerInterface,
-                    const orcaice::Context           &context )
-    : speedLimiter_(NULL),
-      pathMaintainer_(NULL),
-      driver_(NULL),
-      driverFactory_(driverFactory),
-      obsConsumer_(new orcaifaceimpl::ProxiedRangeScanner2dConsumerImpl(context)),
-      locConsumer_(new orcaifaceimpl::ProxiedLocalise2dConsumerImpl(context)),
-      odomConsumer_(new orcaifaceimpl::ProxiedOdometry2dConsumerImpl(context)),
-      obsProxy_(NULL),
-      locProxy_(NULL),
-      odomProxy_(NULL),
-      pathFollowerInterface_(pathFollowerInterface),
-      clock_(clock),
-      testMode_(false),
-      context_(context)
+                    const orcaice::Context           &context ) :
+    SafeThread(context.tracer()),
+    speedLimiter_(NULL),
+    pathMaintainer_(NULL),
+    driver_(NULL),
+    driverFactory_(driverFactory),
+    obsConsumer_(new orcaifaceimpl::ProxiedRangeScanner2dConsumerImpl(context)),
+    locConsumer_(new orcaifaceimpl::ProxiedLocalise2dConsumerImpl(context)),
+    odomConsumer_(new orcaifaceimpl::ProxiedOdometry2dConsumerImpl(context)),
+    obsProxy_(NULL),
+    locProxy_(NULL),
+    odomProxy_(NULL),
+    pathFollowerInterface_(pathFollowerInterface),
+    clock_(clock),
+    testMode_(false),
+    context_(context)
 {
     context_.status().setMaxHeartbeatInterval( SUBSYSTEM, 10.0 );
     context_.status().initialising( SUBSYSTEM );
@@ -53,22 +54,23 @@ MainThread::MainThread( DriverFactory                   &driverFactory,
                     orcalocalnav::Clock             &clock,
                     orcalocalnav::PathFollower2dI   &pathFollowerInterface,
                     Simulator                       &testSimulator,
-                    const orcaice::Context          &context )
-    : speedLimiter_(NULL),
-      pathMaintainer_(NULL),
-      driver_(NULL),
-      driverFactory_(driverFactory),
-      obsConsumer_(NULL),
-      locConsumer_(NULL),
-      odomConsumer_(NULL),
-      obsProxy_(NULL),
-      locProxy_(NULL),
-      odomProxy_(NULL),
-      pathFollowerInterface_(pathFollowerInterface),
-      testSimulator_(&testSimulator),
-      clock_(clock),
-      testMode_(true),
-      context_(context)
+                    const orcaice::Context          &context ) :
+    SafeThread(context.tracer()),
+    speedLimiter_(NULL),
+    pathMaintainer_(NULL),
+    driver_(NULL),
+    driverFactory_(driverFactory),
+    obsConsumer_(NULL),
+    locConsumer_(NULL),
+    odomConsumer_(NULL),
+    obsProxy_(NULL),
+    locProxy_(NULL),
+    odomProxy_(NULL),
+    pathFollowerInterface_(pathFollowerInterface),
+    testSimulator_(&testSimulator),
+    clock_(clock),
+    testMode_(true),
+    context_(context)
 {
     context_.status().setMaxHeartbeatInterval( SUBSYSTEM, 10.0 );
     context_.status().initialising( SUBSYSTEM );
@@ -416,7 +418,7 @@ MainThread::sendCommandToPlatform( const orca::VelocityControl2dData& cmd )
 }
 
 void
-MainThread::run()
+MainThread::walk()
 {
     try {
         setup();

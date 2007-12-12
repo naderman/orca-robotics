@@ -23,9 +23,10 @@ namespace {
     const char *SUBSYSTEM = "mainloop";
 }
 
-MainThread::MainThread( const orcaice::Context &context )
-    : driver_(NULL),
-      context_(context)
+MainThread::MainThread( const orcaice::Context &context ) :
+    SafeThread(context.tracer()),
+    driver_(NULL),
+    context_(context)
 {
     context_.status().setMaxHeartbeatInterval( SUBSYSTEM, 10.0 );
     context_.status().initialising( SUBSYSTEM );
@@ -254,7 +255,7 @@ MainThread::initInterface()
 }
 
 void 
-MainThread::run()
+MainThread::walk()
 {
     initInterface();
     initDriver();

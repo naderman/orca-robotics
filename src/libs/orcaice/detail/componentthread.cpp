@@ -11,12 +11,13 @@ namespace orcaice {
 ComponentThread::ComponentThread( const Ice::ObjectPrx   &homePrx,
                                   hydroutil::Status    &status,
                                   ComponentInterfaceFlag  interfaceFlag,
-                                  const orcaice::Context &context )
-    : registeredHome_(false),
-      homePrx_(homePrx),
-      status_(status),
-      interfaceFlag_(interfaceFlag),
-      context_(context)
+                                  const orcaice::Context &context ) :
+    SafeThread(context.tracer()),
+    registeredHome_(false),
+    homePrx_(homePrx),
+    status_(status),
+    interfaceFlag_(interfaceFlag),
+    context_(context)
 {
 }
 
@@ -25,7 +26,7 @@ ComponentThread::~ComponentThread()
 }
 
 void
-ComponentThread::run()
+ComponentThread::walk()
 {
     bool hasStatusInterface = (interfaceFlag_ & StatusInterface);
     bool hasHomeInterface   = (interfaceFlag_ & HomeInterface);

@@ -17,7 +17,7 @@
 
 #include <orcaice/context.h>
 #include <orcaice/exceptions.h>
-#include <hydroutil/thread.h>
+#include <hydroutil/safethread.h>
 #include <orcaice/configutils.h>
 #include <hydroutil/sysutils.h>
 #include <orcaice/printutils.h>

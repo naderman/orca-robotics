@@ -10,7 +10,7 @@
 #ifndef ORCAICE_ACTIVATOR_H
 #define ORCAICE_ACTIVATOR_H
 
-#include <hydroutil/thread.h>
+#include <hydroutil/safethread.h>
 #include <orcaice/context.h>
 
 namespace orcaice {
@@ -47,7 +47,7 @@ public:
 //!
 //! @author Alex Brooks
 //!
-class Activator : public hydroutil::Thread
+class Activator : public hydroutil::SafeThread
 {
 
 public: 
@@ -56,7 +56,7 @@ public:
                PostActivationCallback *postActivationCallback=NULL );
     ~Activator();
 
-    virtual void run();
+    virtual void walk();
 
 private: 
 

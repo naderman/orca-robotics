@@ -12,7 +12,7 @@
 #define ORCA2_ORCAICEGRID_ADMIN_SESSIONMANAGER_I_H
 
 #include <orcaicegrid/adminsessionmanager.h>
-#include <hydroutil/thread.h>
+#include <hydroutil/safethread.h>
 #include <orcaice/context.h>
 #include <IceUtil/Time.h>
 
@@ -26,7 +26,7 @@ namespace orcaicegrid
 //!
 //! @author Alex Brooks
 //!
-class AdminSessionManagerI : public AdminSessionManager, public hydroutil::Thread
+class AdminSessionManagerI : public AdminSessionManager, public hydroutil::SafeThread
 {
 public:
     //! Constructor
@@ -41,7 +41,7 @@ public:
     virtual State getState();
 
     // from Thread
-    virtual void run();
+    virtual void walk();
 
 private:
 

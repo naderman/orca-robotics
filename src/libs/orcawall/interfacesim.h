@@ -11,18 +11,19 @@
 #ifndef ORCA2_ORCAWALL_INTERFACE_SIM_H
 #define ORCA2_ORCAWALL_INTERFACE_SIM_H
 
-#include <hydroutil/thread.h>
+#include <hydroutil/safethread.h>
 #include <orcaice/context.h>
 
 namespace orcawall
 {
 
-class InterfaceSim : public hydroutil::Thread
+class InterfaceSim : public hydroutil::SafeThread
 {
 
 public:
     //! Constructor
     InterfaceSim( const std::string& tag, const orcaice::Context& context ) :
+        SafeThread(context.tracer()),
         tag_(tag),
         context_(context) {};
         

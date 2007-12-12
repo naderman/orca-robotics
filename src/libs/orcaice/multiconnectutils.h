@@ -12,7 +12,7 @@
 #define ORCAICE_MULTI_CONNECT_UTILITIES_H
 
 #include <orcaice/connectutils.h>
-#include <hydroutil/thread.h>
+#include <hydroutil/safethread.h>
 #include <IceUtil/Thread.h>
 
 namespace orcaice

@@ -11,7 +11,7 @@
 #define _ORCA2_OGNODE_COMPONENT_H_
 
 #include <orcaice/component.h>
-#include <hydroutil/thread.h>
+#include <hydroutil/safethread.h>
 
 namespace ognode
 {

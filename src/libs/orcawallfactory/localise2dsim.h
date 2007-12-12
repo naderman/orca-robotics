@@ -23,7 +23,7 @@ public:
     Localise2dSim( const std::string& tag, const orcaice::Context& context );
 
     // from hydroutil::Thread
-    virtual void run();
+    virtual void walk();
 };
 
 } // namespace

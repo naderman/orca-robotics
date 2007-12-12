@@ -80,10 +80,11 @@ namespace {
 
 //////////////////////////////////////////////////////////////////////
 
-MainThread::MainThread( const orcaice::Context &context )
-    :   context_(context),
-        rangeScannerDataBuffer_(-1,hydroutil::BufferTypeCircular),
-        laser2Og_(0)
+MainThread::MainThread( const orcaice::Context &context ) :
+    SafeThread(context.tracer()),
+    context_(context),
+    rangeScannerDataBuffer_(-1,hydroutil::BufferTypeCircular),
+    laser2Og_(0)
 {
     init();
 }
@@ -224,7 +225,7 @@ MainThread::init()
 }
 
 void
-MainThread::run()
+MainThread::walk()
 {
 
 	RangeScanner2dDataPtr rangeScan = new RangeScanner2dData;

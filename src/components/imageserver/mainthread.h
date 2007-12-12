@@ -10,7 +10,7 @@
 #ifndef ORCA2_IMAGESERVER_MAIN_LOOP_H
 #define ORCA2_IMAGESERVER_MAIN_LOOP_H
 
-#include <hydroutil/thread.h>
+#include <hydroutil/safethread.h>
 #include <orcaice/context.h>
 #include <orcaifaceimpl/cameraImpl.h>
 
@@ -24,7 +24,7 @@ namespace imageserver {
 //
 // Note: this thing self-destructs when run() returns.
 //
-class MainThread : public hydroutil::Thread
+class MainThread : public hydroutil::SafeThread
 {
 
 public:
@@ -35,7 +35,7 @@ public:
 
     ~MainThread();
 
-    virtual void run();
+    virtual void walk();
 
 private:
 

@@ -23,7 +23,7 @@ Localise2dSim::Localise2dSim( const std::string& tag, const orcaice::Context& co
 }
  
 void 
-Localise2dSim::run()
+Localise2dSim::walk()
 {
     orca::VehicleGeometryCuboidDescriptionPtr geom;
     geom->type = orca::VehicleGeometryCuboid;
@@ -88,5 +88,5 @@ Localise2dSim::run()
     } // end of while
 
     // Laser hardware will be shut down in the driver's destructor.
-    context_.tracer().debug( "Localise2dSim::run(): Dropping out from run()", 2 );
+    context_.tracer().debug( "Localise2dSim::walk(): Dropping out from run()", 2 );
 };

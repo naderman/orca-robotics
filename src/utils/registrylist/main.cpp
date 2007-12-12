@@ -27,7 +27,7 @@ public:
     virtual void start();
     virtual void stop();
 private:
-    Thread* mainThread_;
+    MainThread* mainThread_;
 };
 
 // don't need any standard interfaces because this component quits righ after it finished
@@ -43,7 +43,7 @@ Component::~Component()
 
 void Component::start()
 {
-    mainThread_ = new Thread( context() );
+    mainThread_ = new MainThread( context() );
     mainThread_->start();
 }
 

@@ -12,7 +12,7 @@
 #define ORCA2_INSGPS_DRIVER_H
 
 // this class is a thread which inherits from thread.h
-#include <hydroutil/thread.h>
+#include <hydroutil/safethread.h>
 
 #include <orca/imu.h>
 #include <orca/odometry3d.h>
@@ -95,7 +95,7 @@ public:
     virtual ~Driver() {};
 
     // This is the thread's function.
-    virtual void run(){ std::cout << "TRACE(driver::run()): You must implement run for your derived driver " << std::endl; };
+    virtual void walk(){ std::cout << "TRACE(driver::walk()): You must implement run for your derived driver " << std::endl; };
 
     // Initializes the device. If it's aleady initialized, then it
     // quietly re-initializes it.

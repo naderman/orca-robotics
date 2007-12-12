@@ -25,9 +25,10 @@ namespace {
     const char *SUBSYSTEM = "mainloop";
 }
 
-MainThread::MainThread( const orcaice::Context & context )
-    : context_(context),
-      snrWarningThreshhold_(0)
+MainThread::MainThread( const orcaice::Context & context ) :
+    SafeThread(context.tracer()),
+    context_(context),
+    snrWarningThreshhold_(0)
 {
     context_.status().setMaxHeartbeatInterval( SUBSYSTEM, 10.0 );
     context_.status().initialising( SUBSYSTEM );
@@ -133,7 +134,7 @@ MainThread::checkWifiSignal( WifiData &data )
 }
 
 void 
-MainThread::run()
+MainThread::walk()
 {   
     context_.status().setMaxHeartbeatInterval( SUBSYSTEM, 3.0 );
 

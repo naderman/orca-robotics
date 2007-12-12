@@ -20,10 +20,11 @@ using namespace imageviewer;
 
 MainThread::MainThread( const orca::CameraConsumerPrx & callbackPrx,
                     hydroutil::Buffer<orca::CameraData> & dataPipe, 
-                    const orcaice::Context & context )
-    : callbackPrx_(callbackPrx),
-      dataPipe_(dataPipe),
-      context_(context)
+                    const orcaice::Context & context ) : 
+    SafeThread(context.tracer()),
+    callbackPrx_(callbackPrx),
+    dataPipe_(dataPipe),
+    context_(context)
 {
     // initialise opencv stuff
     cvNamedWindow( "ImageViewer", 1 );
@@ -37,7 +38,7 @@ MainThread::~MainThread()
 }
 
 void 
-MainThread::run()
+MainThread::walk()
 {
     // we are in a different thread now, catch all stray exceptions
     try

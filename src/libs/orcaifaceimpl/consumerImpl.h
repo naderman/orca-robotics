@@ -13,7 +13,7 @@
 
 #include <orcaice/context.h>
 #include <orcaice/multiconnectutils.h>
-#include <hydroutil/thread.h>
+#include <hydroutil/safethread.h>
 
 namespace orcaifaceimpl
 {

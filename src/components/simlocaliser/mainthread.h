@@ -11,7 +11,7 @@
 #ifndef ORCA2_STAGE_LOCALISER_MAIN_LOOP_H
 #define ORCA2_STAGE_LOCALISER_MAIN_LOOP_H
 
-#include <hydroutil/thread.h>
+#include <hydroutil/safethread.h>
 #include <orcaice/context.h>
 
 namespace simlocaliser
@@ -19,15 +19,15 @@ namespace simlocaliser
 
 class Driver;
 
-class MainThread : public hydroutil::Thread
+class MainThread : public hydroutil::SafeThread
 {
 
 public:
     MainThread( const orcaice::Context& context );
     virtual ~MainThread();
 
-    // from hydroutil::Thread
-    virtual void run();
+    // from hydroutil::SafeThread
+    virtual void walk();
 
 private:
     // generic interface to the hardware

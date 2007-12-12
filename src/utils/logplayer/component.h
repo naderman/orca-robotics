@@ -16,7 +16,7 @@
 #include <orcaice/component.h>
 #include <hydrodll/dll.h>
 #include "interfacetypecounter.h"
-#include <hydroutil/thread.h>
+#include <hydroutil/safethread.h>
 
 namespace orcalog
 {

@@ -33,7 +33,8 @@ enum ColorType
     NumberOfColors
 };
 
-TermNcursesUser::TermNcursesUser( const orcaice::Context & context ) :
+TermNcursesUser::TermNcursesUser( const orcaice::Context & context ) : 
+    SafeThread(context.tracer()),
     events_(new hydroutil::EventQueue),
     context_(context)
 {
@@ -250,7 +251,7 @@ TermNcursesUser::newLocalTrace( const std::string& msg )
 
 // read commands from the keyboard. Launced in a separate thread.
 void
-TermNcursesUser::run()
+TermNcursesUser::walk()
 {
     // we are in a different thread now, catch all stray exceptions
     try

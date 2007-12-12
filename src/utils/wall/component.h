@@ -15,7 +15,7 @@
 #include <vector>
 #include <string>
 #include <orcaice/component.h>
-#include <hydroutil/thread.h>
+#include <hydroutil/safethread.h>
 #include <hydrodll/dll.h>
 
 namespace orcawall

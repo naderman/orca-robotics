@@ -18,22 +18,23 @@ namespace insgps{
 
 MainThread::MainThread(InsGpsI&           insGpsI,
                  insgps::Driver*    hwDriver,
-                 const orcaice::Context & context )
-    : insGpsI_(&insGpsI),
-      hwDriver_(hwDriver),
-      context_(context)
+                 const orcaice::Context & context ) :
+    SafeThread(context.tracer()),
+    insGpsI_(&insGpsI),
+    hwDriver_(hwDriver),
+    context_(context)
 {
 }
    
 void
-MainThread::run()
+MainThread::walk()
 {
     const int TIME_BETWEEN_HEARTBEATS  = 10000;  // ms
     IceUtil::Time lastHeartbeatTime = IceUtil::Time::now();
 
     try 
     {
-        context_.tracer().debug( "TRACE(handler::run()): MainThread thread is running", 6);
+        context_.tracer().debug( "TRACE(handler::walk()): MainThread thread is running", 6);
         
         //
         // IMPORTANT: Have to keep this loop rolling, because the '!isStopping()' call checks
@@ -50,9 +51,9 @@ MainThread::run()
                     // blocking read with timeout (2000ms by default)
                     // get & send the gps data to icestorm and to a buffer for direct connections
                     
-                    // context_.tracer().debug( "TRACE(handler::run()): publishing data", 5 );
+                    // context_.tracer().debug( "TRACE(handler::walk()): publishing data", 5 );
                     insGpsI_->publish();
-                    // context_.tracer().debug( "TRACE(handler::run()): published data", 5 );
+                    // context_.tracer().debug( "TRACE(handler::walk()): published data", 5 );
                 }
                 else
                 {

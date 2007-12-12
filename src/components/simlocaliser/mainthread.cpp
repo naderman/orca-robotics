@@ -21,8 +21,9 @@
 using namespace std;
 using namespace simlocaliser;
 
-MainThread::MainThread( const orcaice::Context & context )
-    : context_(context)
+MainThread::MainThread( const orcaice::Context & context ) :  
+    SafeThread(context.tracer()),
+    context_(context)
 {
     //
     // Read settings
@@ -70,7 +71,7 @@ MainThread::~MainThread()
 }
 
 void
-MainThread::run()
+MainThread::walk()
 {
     // we are in a different thread now, catch all stray exceptions
     try

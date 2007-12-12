@@ -19,17 +19,18 @@ using namespace std;
 
 namespace registrylist {
 
-Thread::Thread( const orcaice::Context & context )
-    : context_(context)
+MainThread::MainThread( const orcaice::Context & context ) :
+    SafeThread(context.tracer()),
+    context_(context)
 {
 }
 
-Thread::~Thread()
+MainThread::~MainThread()
 {
 }
 
 void
-Thread::run()
+MainThread::walk()
 {
     // we are in a different thread now, catch all stray exceptions
     try

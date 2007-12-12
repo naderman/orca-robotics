@@ -527,19 +527,19 @@ NovatelSpanInsGpsDriver::run()
             catch ( hydroutil::Exception & e )
             {
                 std::stringstream ss;
-                ss << "novatelspandriver::run(): Caught orcaice::exception: " << e.what();
+                ss << "novatelspandriver::walk(): Caught orcaice::exception: " << e.what();
                 context_.tracer().warning( ss.str() );
             }
             catch ( Ice::Exception & e )
             {
                 std::stringstream ss;
-                ss << "novatelspandriver::run(): Caught Ice::exception: " << e;
+                ss << "novatelspandriver::walk(): Caught Ice::exception: " << e;
                 context_.tracer().warning( ss.str() );
             }
             catch ( std::exception & e )
             {
                 std::stringstream ss;
-                ss << "novatelspandriver::run(): Caught std::exception: " << e.what();
+                ss << "novatelspandriver::walk(): Caught std::exception: " << e.what();
                 context_.tracer().warning( ss.str() );
             }
             catch ( const std::string &e )
@@ -571,19 +571,19 @@ NovatelSpanInsGpsDriver::run()
     catch ( Ice::Exception &e )
     {
         std::stringstream ss;
-        ss << "ERROR(novatelspandriver::run()): Caught unexpected Ice exception: " << e;
+        ss << "ERROR(novatelspandriver::walk()): Caught unexpected Ice exception: " << e;
         context_.tracer().error( ss.str() );
     }
     catch ( std::exception &e )
     {
         std::stringstream ss;
-        ss << "ERROR(novatelspandriver::run()): Caught unexpected std::exception: ";
+        ss << "ERROR(novatelspandriver::walk()): Caught unexpected std::exception: ";
         context_.tracer().error( ss.str() );
     }
     catch ( ... )
     {
         std::stringstream ss;
-        ss << "ERROR(novatelspandriver::run()): Caught unexpected unknown exception.";
+        ss << "ERROR(novatelspandriver::walk()): Caught unexpected unknown exception.";
         context_.tracer().error( ss.str() );
     }
 
@@ -1298,7 +1298,7 @@ void
 NovatelSpanInsGpsDriver::shutdown()
 {
     // context_.tracer().debug( "stopping driver", 5 );
-    // hydroutil::Thread::stopAndJoin( this );
+    // hydroutil::SafeThread::stopAndJoin( this );
     // context_.tracer().debug( "stopped driver", 5 );
 }               
 

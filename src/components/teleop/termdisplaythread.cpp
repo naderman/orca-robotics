@@ -17,7 +17,8 @@
 using namespace std;
 using namespace teleop;
 
-TermDisplayThread::TermDisplayThread( const orcaice::Context& context ) :
+TermDisplayThread::TermDisplayThread( const orcaice::Context& context ) : 
+    SafeThread(context.tracer()),
     events_(new hydroutil::EventQueue),
     context_(context)
 {
@@ -68,7 +69,7 @@ TermDisplayThread::failedToSendCommand()
 
 // read commands from the keyboard. Launced in a separate thread.
 void
-TermDisplayThread::run()
+TermDisplayThread::walk()
 {
     // we are in a different thread now, catch all stray exceptions
     try

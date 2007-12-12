@@ -19,8 +19,9 @@ using namespace std;
 using namespace orca;
 using namespace pathplantester;
 
-AlgoHandler::AlgoHandler( const orcaice::Context & context )
-    : context_(context)
+AlgoHandler::AlgoHandler( const orcaice::Context & context ) :
+    SafeThread(context.tracer()),
+    context_(context)
 {
     initNetwork();
     getConfig();
@@ -93,7 +94,7 @@ AlgoHandler::getConfig()
 
 
 void 
-AlgoHandler::run()
+AlgoHandler::walk()
 {
     // we are in a different thread now, catch all stray exceptions
     try

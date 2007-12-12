@@ -20,7 +20,8 @@ namespace {
     const int MAX_TRIES = 3;
 } // namespace
 
-AdminSessionManagerI::AdminSessionManagerI( const orcaice::Context &context ) : 
+AdminSessionManagerI::AdminSessionManagerI( const orcaice::Context &context ) :
+    SafeThread(context.tracer()),
     state_(Disconnected),
     timeoutSec_(0),
     context_(context)     
@@ -124,7 +125,7 @@ AdminSessionManagerI::checkedSleep( int sec )
 }
 
 void
-AdminSessionManagerI::run()
+AdminSessionManagerI::walk()
 {
     bool sentKeepalive = false;
 

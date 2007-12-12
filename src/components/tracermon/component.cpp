@@ -55,7 +55,7 @@ Component::start()
 #ifdef HAVE_TERM_NCURSES_DRIVER        
         tracer().info( "Loading terminal ncurses driver");
         TermNcursesUser* user = new TermNcursesUser( context() );
-        usrMainThread_ = (hydroutil::Thread*)user;
+        usrMainThread_ = (hydroutil::SafeThread*)user;
         userDriver = (User*)user;
 #else
         throw hydroutil::Exception( ERROR_INFO, "Can't instantiate driver type 'term-ncurses' because it was not compiled." );
@@ -65,7 +65,7 @@ Component::start()
     {
         tracer().info( "Loading terminal iostream driver");
         TermIostreamUser* userMainThread = new TermIostreamUser( context() );
-        usrMainThread_ = (hydroutil::Thread*)userMainThread;
+        usrMainThread_ = (hydroutil::SafeThread*)userMainThread;
         userDriver = (User*)userMainThread;
     }
     else {
@@ -79,7 +79,7 @@ Component::start()
     //
     // the constructor may throw, we'll let the application shut us down
     MainThread* networkMainThread = new MainThread( userDriver, context() );
-    netMainThread_ = (hydroutil::Thread*)networkMainThread;
+    netMainThread_ = (hydroutil::SafeThread*)networkMainThread;
     Network* netDriver = (Network*)networkMainThread;
     netMainThread_->start();
 

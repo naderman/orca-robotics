@@ -11,7 +11,7 @@
 #ifndef ORCA2_TELEOP_DISPLAY_THREAD_H
 #define ORCA2_TELEOP_DISPLAY_THREAD_H
 
-#include <hydroutil/thread.h>
+#include <hydroutil/safethread.h>
 #include <orcaice/context.h>
 
 #include "inputdriver.h"
@@ -19,14 +19,14 @@
 namespace teleop
 {
 
-class DisplayThread : public hydroutil::Thread, public Display
+class DisplayThread : public hydroutil::SafeThread, public Display
 {
 public:
 
     DisplayThread( const orcaice::Context& context );
     virtual ~DisplayThread();
 
-    virtual void run();
+    virtual void walk();
 
 //     DisplayThread* displayMainThread() { return displayMainThread_; };
     

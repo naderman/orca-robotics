@@ -10,7 +10,7 @@
 #ifndef _ORCA2_OGNODE_HANDLER_H_
 #define _ORCA2_OGNODE_HANDLER_H_
 
-#include <hydroutil/thread.h>
+#include <hydroutil/safethread.h>
 #include <hydroutil/buffer.h>
 #include <orcaice/context.h>
 
@@ -21,13 +21,13 @@
 namespace ognode
 {
 
-class MainThread : public hydroutil::Thread
+class MainThread : public hydroutil::SafeThread
 {
 public:
     MainThread( const orcaice::Context              &context);
     ~MainThread();
 
-    virtual void run();
+    virtual void walk();
 private:
 
     void init();

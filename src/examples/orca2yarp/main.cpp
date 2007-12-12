@@ -11,7 +11,7 @@
 #include <orcaice/application.h>
 #include <orcaice/component.h>
 #include <orcaice/orcaice.h>
-#include "thread.h"
+#include "mainthread.h"
 
 namespace orca2yarp
 {
@@ -23,8 +23,7 @@ public:
     virtual void start();
     virtual void stop();
 private:
-    // main loop
-    Thread* mainThread_;
+    MainThread* mainThread_;
 };
 
 
@@ -37,7 +36,7 @@ void
 Component::start()
 {
     //start the main loop
-    mainThread_ = new Thread( context() );
+    mainThread_ = new MainThread( context() );
     mainThread_->start();
     // the rest is handled by the application/service
 }

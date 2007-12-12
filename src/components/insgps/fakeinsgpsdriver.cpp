@@ -75,11 +75,11 @@ FakeInsGpsDriver::run()
         }
         catch ( FakeInsGpsException &e )
         {
-            cout << "fakeinsgpsdriver::run(): Caught FakeInsGpsException: " << e.what() << endl;
+            cout << "fakeinsgpsdriver::walk(): Caught FakeInsGpsException: " << e.what() << endl;
         }
         catch ( ... )
         {
-            cout << "fakeinsgpsdriver::run(): Caught some other exception..." << endl;
+            cout << "fakeinsgpsdriver::walk(): Caught some other exception..." << endl;
         }
     }
    

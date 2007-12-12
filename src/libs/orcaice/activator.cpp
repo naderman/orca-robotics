@@ -17,9 +17,10 @@ using namespace std;
 namespace orcaice {
 
 Activator::Activator( const orcaice::Context &context,
-                      PostActivationCallback *postActivationCallback )
-    : context_(context),
-      postActivationCallback_(postActivationCallback)
+                      PostActivationCallback *postActivationCallback ) :
+    SafeThread(context.tracer()),
+    context_(context),
+    postActivationCallback_(postActivationCallback)
 {
 }
 
@@ -28,7 +29,7 @@ Activator::~Activator()
 }
 
 void 
-Activator::run()
+Activator::walk()
 {
     while ( !isStopping() )
     {

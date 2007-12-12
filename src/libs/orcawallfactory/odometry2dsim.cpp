@@ -24,7 +24,7 @@ Odometry2dSim::Odometry2dSim( const std::string& tag, const orcaice::Context& co
 }
  
 void 
-Odometry2dSim::run()
+Odometry2dSim::walk()
 {
     orca::VehicleDescription descr;
     orcaobjutil::readVehicleDescription( context_.properties(), configPrefix(), descr );
@@ -87,5 +87,5 @@ Odometry2dSim::run()
     } // end of while
 
     // Laser hardware will be shut down in the driver's destructor.
-    context_.tracer().debug( "Odometry2dSim::run(): Dropping out from run()", 2 );
+    context_.tracer().debug( "Odometry2dSim::walk(): Dropping out from run()", 2 );
 };

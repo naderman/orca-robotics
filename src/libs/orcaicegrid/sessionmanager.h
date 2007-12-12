@@ -12,7 +12,7 @@
 
 #include <IceGrid/Registry.h>
 #include <orcaice/context.h>
-#include <hydroutil/thread.h>
+#include <hydroutil/safethread.h>
 
 namespace orcaicegrid
 {
@@ -40,14 +40,14 @@ public:
 //!
 //! @author Alex Brooks
 //!
-class SessionManager : public hydroutil::Thread
+class SessionManager : public hydroutil::SafeThread
 {
 public:
 
     SessionManager( SessionCreationCallback &sessionCreationCallback,
                     const orcaice::Context& context );
 
-    virtual void run();
+    virtual void walk();
 
 private:
 

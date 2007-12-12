@@ -13,7 +13,7 @@
 
 #include <orcaice/context.h>
 #include <hydroutil/uncopyable.h>
-#include <hydroutil/thread.h>
+#include <hydroutil/safethread.h>
 
 namespace orcaice
 {

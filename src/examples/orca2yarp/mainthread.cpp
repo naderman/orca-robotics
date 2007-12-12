@@ -25,17 +25,18 @@ using namespace std;
 
 namespace orca2yarp {
 
-Thread::Thread( const orcaice::Context& context ) :
+MainThread::MainThread( const orcaice::Context& context ) :
+    SafeThread(context.tracer()),
     context_(context)
 {
 }
 
-Thread::~Thread()
+MainThread::~MainThread()
 {
 }
 
 void
-Thread::run()
+MainThread::walk()
 {
     // we are in a different thread now, catch all stray exceptions
     try
@@ -106,7 +107,7 @@ Thread::run()
 
     // wait for the component to realize that we are quitting and tell us to stop.
     waitForStop();
-    context_.tracer().debug( "Thread stopped", 2 );
+    context_.tracer().debug( "MainThread stopped", 2 );
 }
 
 } // namespace

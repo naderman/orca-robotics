@@ -21,7 +21,8 @@ namespace imageserver {
 
 MainThread::MainThread( orcaifaceimpl::CameraImpl&  cameraObj,
                     Driver*                      hwDriver,
-                    const orcaice::Context&      context ) :
+                    const orcaice::Context&      context ) : 
+    SafeThread(context.tracer()),
     cameraObj_(cameraObj),
     hwDriver_(hwDriver),
     context_(context)
@@ -111,7 +112,7 @@ MainThread::readData( orca::CameraData& data )
 }
 
 void
-MainThread::run()
+MainThread::walk()
 {
     try
     {   
@@ -161,19 +162,19 @@ MainThread::run()
             catch ( Ice::Exception &e )
             {
                 std::stringstream ss;
-                ss << "ERROR(mainloop::run()): Caught unexpected Ice exception: " << e;
+                ss << "ERROR(mainloop::walk()): Caught unexpected Ice exception: " << e;
                 context_.tracer().error( ss.str() );
             }
             catch ( std::exception &e )
             {
                 std::stringstream ss;
-                ss << "ERROR(mainloop::run()): Caught unexpected std::exception: ";
+                ss << "ERROR(mainloop::walk()): Caught unexpected std::exception: ";
                 context_.tracer().error( ss.str() );
             }
             catch ( ... )
             {
                 std::stringstream ss;
-                ss << "ERROR(mainloop::run()): Caught unexpected unknown exception.";
+                ss << "ERROR(mainloop::walk()): Caught unexpected unknown exception.";
                 context_.tracer().error( ss.str() );
             }
 
@@ -186,19 +187,19 @@ MainThread::run()
     catch ( Ice::Exception &e )
     {
         std::stringstream ss;
-        ss << "ERROR(mainloop::run()): Caught unexpected Ice exception: " << e;
+        ss << "ERROR(mainloop::walk()): Caught unexpected Ice exception: " << e;
         context_.tracer().error( ss.str() );
     }
     catch ( std::exception &e )
     {
         std::stringstream ss;
-        ss << "ERROR(mainloop::run()): Caught unexpected std::exception: ";
+        ss << "ERROR(mainloop::walk()): Caught unexpected std::exception: ";
         context_.tracer().error( ss.str() );
     }
     catch ( ... )
     {
         std::stringstream ss;
-        ss << "ERROR(mainloop::run()): Caught unexpected unknown exception.";
+        ss << "ERROR(mainloop::walk()): Caught unexpected unknown exception.";
         context_.tracer().error( ss.str() );
     }
     

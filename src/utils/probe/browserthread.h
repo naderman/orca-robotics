@@ -30,7 +30,7 @@ namespace probe
 class ProbeFactory;
 class InterfaceProbe;
 
-class BrowserThread : public orcaprobe::IBrowser, public hydroutil::Thread, public BrowserFsm
+class BrowserThread : public orcaprobe::IBrowser, public hydroutil::SafeThread, public BrowserFsm
 {
 
 public:
@@ -51,7 +51,7 @@ public:
 private:
 
     // from Thread
-    virtual void run();
+    virtual void walk();
 
     // from BrowserFsm
     virtual void loadRegistry();

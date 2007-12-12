@@ -37,7 +37,7 @@ Component::~Component()
     // Do not delete the gpsObj_, imuObj_, odometry3dObj_, or localise3dObj_
     // as they are smart pointers and self destruct.
     // Do not delete gpsMainThread_, imuMainThread_, odometry3dMainThread_, localise3dMainThread_, 
-    // or the hwDriver_ as they are hydroutil::Threads and self-destruct.
+    // or the hwDriver_ as they are hydroutil::SafeThreads and self-destruct.
 }
 
 void

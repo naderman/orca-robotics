@@ -14,7 +14,7 @@
 #include <orca/localise2d.h>
 #include <orca/rangescanner2d.h>
 #include <orcaice/context.h>
-#include <hydroutil/thread.h>
+#include <hydroutil/safethread.h>
 #include <hydroutil/proxy.h>
 #include <orcaifaceimpl/proxiedconsumers.h>
 #include <orcalocalnav/speedlimiter.h>
@@ -36,7 +36,7 @@ class Simulator;
 //
 // @author Alex Brooks
 //
-class MainThread : public hydroutil::Thread
+class MainThread : public hydroutil::SafeThread
 {
 
 public: 
@@ -56,7 +56,7 @@ public:
 
     ~MainThread();
 
-    virtual void run();
+    virtual void walk();
 
 private: 
 

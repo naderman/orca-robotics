@@ -10,7 +10,7 @@
 #ifndef _ORCA2_LASER2OG_HANDLER_H_
 #define _ORCA2_LASER2OG_HANDLER_H_
 
-#include <hydroutil/thread.h>
+#include <hydroutil/safethread.h>
 #include <orcaice/ptrbuffer.h>
 #include <orcaice/context.h>
 
@@ -23,14 +23,14 @@
 namespace laser2og
 {
 
-class MainThread : public hydroutil::Thread
+class MainThread : public hydroutil::SafeThread
 {
 public:
     
     MainThread( const orcaice::Context &context );
     ~MainThread();
 
-    virtual void run();
+    virtual void walk();
     
 private:
 

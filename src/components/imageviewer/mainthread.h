@@ -15,14 +15,14 @@
 #include <cv.h>
 
 #include <orca/camera.h>
-#include <hydroutil/thread.h>
+#include <hydroutil/safethread.h>
 #include <hydroutil/buffer.h>
 #include <orcaice/context.h>
 
 
 namespace imageviewer{
 
-class MainThread : public hydroutil::Thread
+class MainThread : public hydroutil::SafeThread
 {
 public:
 
@@ -32,7 +32,7 @@ public:
 
     ~MainThread();
 
-    virtual void run();
+    virtual void walk();
 
 private:
 

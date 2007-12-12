@@ -11,7 +11,7 @@
 #ifndef ORCA2_TELEOP_TERMINAL_DISPLAY_THREAD_H
 #define ORCA2_TELEOP_TERMINAL_DISPLAY_THREAD_H
 
-#include <hydroutil/thread.h>
+#include <hydroutil/safethread.h>
 #include <orcaice/context.h>
 #include <hydroutil/eventqueue.h>
 
@@ -22,7 +22,7 @@ namespace teleop
 
 class TermDisplayDriver;
 
-class TermDisplayThread : public hydroutil::Thread, public Display
+class TermDisplayThread : public hydroutil::SafeThread, public Display
 {
 public:
 
@@ -30,7 +30,7 @@ public:
     virtual ~TermDisplayThread();
 
     // from Thread
-    virtual void run();
+    virtual void walk();
 
     // from Display
     virtual void sentNewVelocityCommand( 

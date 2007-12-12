@@ -24,12 +24,13 @@ MainThread::MainThread(ImuI                            &imuObj,
                        ImuDriver                       *hwDriver,
                        orca::CartesianPoint            frameOffset,
                        orcaice::Context                context,
-                       bool                            startEnabled )
-    : imuObj_(imuObj),
-      odometry3dObj_(odometry3dObj),
-      hwDriver_(hwDriver),
-      frameOffset_(frameOffset),
-      context_(context)
+                       bool                            startEnabled ) :
+    SafeThread(context.tracer()),
+    imuObj_(imuObj),
+    odometry3dObj_(odometry3dObj),
+    hwDriver_(hwDriver),
+    frameOffset_(frameOffset),
+    context_(context)
 {
 }
 
@@ -38,7 +39,7 @@ MainThread::~MainThread()
 }
 
 void
-MainThread::run()
+MainThread::walk()
 {
     const int TIME_BETWEEN_HEARTBEATS  = 10000;  // ms
     IceUtil::Time lastHeartbeatTime = IceUtil::Time::now();

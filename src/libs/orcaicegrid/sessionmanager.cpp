@@ -17,10 +17,11 @@ using namespace std;
 namespace orcaicegrid {
 
 SessionManager::SessionManager( SessionCreationCallback &sessionCreationCallback,
-                                const orcaice::Context &context )
-    : sessionCreationCallback_(sessionCreationCallback),
-      timeoutSec_(0),
-      context_(context)
+                                const orcaice::Context &context ) :
+    SafeThread(context.tracer()),
+    sessionCreationCallback_(sessionCreationCallback),
+    timeoutSec_(0),
+    context_(context)
       
 {
 }
@@ -120,7 +121,7 @@ SessionManager::checkedSleep( int sec )
 }
 
 void
-SessionManager::run()
+SessionManager::walk()
 {
     // This outer loop is repeated on session failure.
     while( !isStopping() )

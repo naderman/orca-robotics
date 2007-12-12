@@ -29,7 +29,7 @@
 
 namespace insgps{
 
-class MainThread : public hydroutil::Thread
+class MainThread : public hydroutil::SafeThread
 {
 public:
     MainThread(insgps::InsGpsI&  insGpsI,
@@ -38,7 +38,7 @@ public:
     
     // This is the thread's function.  It listens for data from the insgps driver,
     // and sticks it in a buffer for publishing.
-    virtual void run();
+    virtual void walk();
     
 private:
     

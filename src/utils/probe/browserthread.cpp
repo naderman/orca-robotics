@@ -22,12 +22,13 @@ using namespace probe;
 
 BrowserThread::BrowserThread( orcaprobe::IDisplay & display,
                                 std::vector<orcaprobe::Factory*> &factories,
-                                const orcaice::Context & context )
-    : factories_(factories),
-      display_(display),
-      events_(new hydroutil::EventQueue),
-      ifaceProbe_(0),
-      context_(context)
+                                const orcaice::Context & context ) :
+    SafeThread(context.tracer()),
+    factories_(factories),
+    display_(display),
+    events_(new hydroutil::EventQueue),
+    ifaceProbe_(0),
+    context_(context)
 {
 }
 
@@ -88,7 +89,7 @@ BrowserThread::chooseDeactivate()
 }
 
 void 
-BrowserThread::run()
+BrowserThread::walk()
 {
     hydroutil::EventPtr event;
     int timeoutMs = 500;

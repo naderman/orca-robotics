@@ -10,7 +10,7 @@
 
 // utilities
 #include <hydroutil/proxy.h>
-#include <hydroutil/thread.h>
+#include <hydroutil/safethread.h>
 #include <orcaice/context.h>
 
 namespace orcaifaceimpl

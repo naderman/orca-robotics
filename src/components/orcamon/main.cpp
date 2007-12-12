@@ -30,7 +30,7 @@ public:
     virtual void stop();
     
 private:
-    hydroutil::Thread* mainLoop_;
+    hydroutil::SafeThread* mainLoop_;
 };
 
 Component::Component() : 

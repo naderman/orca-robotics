@@ -21,6 +21,7 @@
 namespace player2orca {
 
 MainThread::MainThread( const orcaice::Context& context ) :
+    SafeThread(context.tracer()),
     context_(context)
 {
 }
@@ -30,7 +31,7 @@ MainThread::~MainThread()
 }
 
 void
-MainThread::run()
+MainThread::walk()
 {
     // we are in a different thread now, catch all stray exceptions
     try

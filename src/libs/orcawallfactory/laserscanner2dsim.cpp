@@ -23,7 +23,7 @@ LaserScanner2dSim::LaserScanner2dSim( const std::string& tag, const orcaice::Con
 }
  
 void 
-LaserScanner2dSim::run()
+LaserScanner2dSim::walk()
 {
     orca::RangeScanner2dDescription descr;
     descr.timeStamp = orcaice::getNow();
@@ -95,5 +95,5 @@ LaserScanner2dSim::run()
     } // end of while
 
     // Laser hardware will be shut down in the driver's destructor.
-    context_.tracer().debug( "LaserScanner2dSim::run(): Dropping out from run()", 2 );
+    context_.tracer().debug( "LaserScanner2dSim::walk(): Dropping out from run()", 2 );
 };

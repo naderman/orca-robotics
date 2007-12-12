@@ -8,22 +8,22 @@
  *
  */
  
-#ifndef ORCA2_REGISRY_LIST_HANDLER_H
-#define ORCA2_REGISRY_LIST_HANDLER_H
+#ifndef ORCA2_REGISRY_MAIN_THREAD_H
+#define ORCA2_REGISRY_MAIN_THREAD_H
 
-#include <hydroutil/thread.h>
+#include <hydroutil/safethread.h>
 #include <orcaice/context.h>
 
 namespace registrylist
 {
 
-class Thread: public hydroutil::Thread
+class MainThread: public hydroutil::SafeThread
 {    	
 public:
-    Thread( const orcaice::Context & context );
-    ~Thread();
+    MainThread( const orcaice::Context & context );
+    ~MainThread();
 
-    virtual void run();
+    virtual void walk();
 
 private:
 

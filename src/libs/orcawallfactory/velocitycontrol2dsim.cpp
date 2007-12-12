@@ -40,7 +40,7 @@ VelocityControl2dSim::VelocityControl2dSim( const std::string& tag, const orcaic
 }
  
 void 
-VelocityControl2dSim::run()
+VelocityControl2dSim::walk()
 {
     orca::VehicleDescription descr;
     orcaobjutil::readVehicleDescription( context_.properties(), configPrefix(), descr );
