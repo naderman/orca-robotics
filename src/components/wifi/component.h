@@ -11,28 +11,22 @@
 #define WIFI_COMPONENT_H
 
 #include <orcaice/component.h>
-#include <orca/wifi.h>
 
 namespace wifi {
 
-class MainThread;
 
-//
-// Deriving from orcaice::Component means we have to implement start() and stop()
-//
 class Component : public orcaice::Component
 {
 public:
 
     Component();
-    virtual ~Component();
 
     virtual void start();
     virtual void stop();
 
 private:
 
-    MainThread *mainloop_;
+    hydroutil::ThreadPtr mainThread_;
 };
 
 }

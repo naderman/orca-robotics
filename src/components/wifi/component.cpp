@@ -7,13 +7,9 @@
  * the LICENSE file included in this distribution.
  *
  */
-#include <orcaice/orcaice.h>
 
 #include "component.h"
 #include "mainthread.h"
-
-using namespace std;
-using namespace orca;
 
 namespace wifi {
 
@@ -22,38 +18,18 @@ Component::Component()
 {
 }
 
-Component::~Component()
-{
-}
-
 void
 Component::start()
 {
-    tracer().info( "Starting component" );
-    
-    //
-    // ENABLE NETWORK CONNECTIONS
-    //
-    // only needed for Home and Status interfaces
-    // this may throw, but may as well quit right then
-    activate();
-
-    //
-    // Hardware handling loop
-    //
-    mainloop_ = new MainThread( context() );
-    mainloop_->start();
-    
-    tracer().debug( "Component started", 2 );
-    
-    // the rest is handled by the application/service
-
+    mainThread_ = new MainThread( context() );
+    mainThread_->start();
 }
 
 void Component::stop()
 {    
     tracer().debug( "Stopping component", 2 );
-//    hydroutil::stopAndJoin( mainloop_ );
+    // alexm: why is this?
+//    hydroutil::stopAndJoin( mainThread_ );
     tracer().info( "Component stopped" );
 }
 

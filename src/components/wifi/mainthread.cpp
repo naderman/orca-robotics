@@ -17,70 +17,37 @@
 #include "fakedriver.h"
 
 using namespace std;
-using namespace orca;
+using namespace wifi;
 
-namespace wifi {
 
-namespace {
-    const char *SUBSYSTEM = "mainloop";
-}
-
-MainThread::MainThread( const orcaice::Context & context ) :
-    SafeThread(context.tracer()),
+MainThread::MainThread( const orcaice::Context& context ) :
+    hydroutil::SubsystemThread( context.tracer(), context.status(), "MainThread" ),
     context_(context),
     snrWarningThreshhold_(0)
 {
-    context_.status().setMaxHeartbeatInterval( SUBSYSTEM, 10.0 );
-    context_.status().initialising( SUBSYSTEM );
-
-    initNetwork();
-    initDriver();
-}
-
-MainThread::~MainThread()
-{
+    subStatus().setMaxHeartbeatInterval( 10.0 );
 }
 
 void 
-MainThread::initNetwork()
+MainThread::initNetworkInterface()
 {
     wifiInterface_ = new orcaifaceimpl::WifiImpl( "Wifi", context_ );
-
-    while ( !isStopping() ) 
-    {
-        try {
-            wifiInterface_->initInterface();
-            context_.tracer().debug( "wifi interface initialized",2);
-            break;
-        }
-        catch ( const orcaice::NetworkException& e ) {
-            stringstream ss;
-            ss << "Failed to setup interface: " << e.what();
-            context_.tracer().warning( ss.str() );
-            context_.status().initialising( SUBSYSTEM, ss.str() );
-        }
-        catch ( const Ice::Exception& e ) {
-            stringstream ss;
-            ss << "Failed to setup interface: " << e;
-            context_.tracer().warning( ss.str() );
-            context_.status().initialising( SUBSYSTEM, ss.str() );
-        }
-        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
-    }
-    
+    wifiInterface_->initInterface( this, subsysName());
 }
 
-void MainThread::initDriver()
+void 
+MainThread::initHardwareDriver()
 {
     //
     // Read settings
     //
+    Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag() + ".Config.";
     
     // get warning threshhold first
-    snrWarningThreshhold_ = orcaice::getPropertyAsIntWithDefault( context_.properties(), prefix+"SnrWarningThreshhold",10);
+    snrWarningThreshhold_ = orcaice::getPropertyAsIntWithDefault( prop, prefix+"SnrWarningThreshhold",10);
     
-    string driverName = orcaice::getPropertyWithDefault( context_.properties(), prefix+"Driver", "hardware" );
+    string driverName = orcaice::getPropertyWithDefault( prop, prefix+"Driver", "hardware" );
     context_.tracer().debug( std::string("loading ")+driverName+" driver",3);
     if ( driverName == "hardware" )
     {
@@ -104,30 +71,30 @@ void MainThread::initDriver()
 }
 
 void
-MainThread::checkWifiSignal( WifiData &data )
+MainThread::checkWifiSignal( orca::WifiData &data )
 {
     for (unsigned int i=0; i<data.interfaces.size(); i++)
     {
-        const WifiInterface &iface = data.interfaces[i];
+        const orca::WifiInterface &iface = data.interfaces[i];
         
-        if (iface.linkType!=LinkQualityTypeDbm)
+        if ( iface.linkType != orca::LinkQualityTypeDbm )
         {
             // we can't judge how good the signal is in relative mode, so just say ok
-            context_.status().ok( SUBSYSTEM );
+            subStatus().ok();
             continue;
         }
         
         // if we are below the threshhold, spit out a warning
-        if ( (iface.signalLevel-iface.noiseLevel) < snrWarningThreshhold_) 
+        if ( (iface.signalLevel-iface.noiseLevel) < snrWarningThreshhold_ ) 
         {
             stringstream ss;
             ss << "Wifi signal strength of interface " << iface.interfaceName << " is below " << snrWarningThreshhold_ << " dBm";
-            context_.status().warning( SUBSYSTEM, ss.str() );
+            subStatus().warning( ss.str() );
             context_.tracer().warning( ss.str() );
         }
         else
         {
-            context_.status().ok( SUBSYSTEM );
+            subStatus().ok();
         }
     }
     
@@ -136,7 +103,13 @@ MainThread::checkWifiSignal( WifiData &data )
 void 
 MainThread::walk()
 {   
-    context_.status().setMaxHeartbeatInterval( SUBSYSTEM, 3.0 );
+    // These functions catch their exceptions.
+    activate( context_, this, subsysName() );
+
+    initNetworkInterface();
+    initHardwareDriver();
+
+    subStatus().setMaxHeartbeatInterval( 3.0 );
 
     while ( !isStopping() )
     {
@@ -164,51 +137,43 @@ MainThread::walk()
                 ss << e.what();
             }
             context_.tracer().error( ss.str() );
-            context_.status().fault( SUBSYSTEM, ss.str() );
+            subStatus().fault( ss.str() );
         }
         catch ( const orca::OrcaException & e )
         {
             stringstream ss;
             ss << "unexpected (remote?) orca exception: " << e << ": " << e.what;
             context_.tracer().error( ss.str() );
-            context_.status().fault( SUBSYSTEM, ss.str() );
+            subStatus().fault( ss.str() );
         }
         catch ( const hydroutil::Exception & e )
         {
             stringstream ss;
             ss << "unexpected (local?) orcaice exception: " << e.what();
             context_.tracer().error( ss.str() );
-            context_.status().fault( SUBSYSTEM, ss.str() );
+            subStatus().fault( ss.str() );
         }
         catch ( const Ice::Exception & e )
         {
             stringstream ss;
             ss << "unexpected Ice exception: " << e;
             context_.tracer().error( ss.str() );
-            context_.status().fault( SUBSYSTEM, ss.str() );
+            subStatus().fault( ss.str() );
         }
         catch ( const std::exception & e )
         {
             stringstream ss;
             ss << "unexpected std exception: " << e.what();
             context_.tracer().error( ss.str() );
-            context_.status().fault( SUBSYSTEM, ss.str() );
+            subStatus().fault( ss.str() );
         }
         catch ( ... )
         {
             string err = "unexpected exception from somewhere.";
             context_.tracer().error( err );
-            context_.status().fault( SUBSYSTEM, err );
+            subStatus().fault( err );
         }
             
     } // end of big while loop
     
-    context_.tracer().debug( "TRACE(mainloop.cpp): End of run() now...", 5 );
-    
-    // wait for the component to realize that we are quitting and tell us to stop.
-    waitForStop();
-    
 }
-
-} // end of namespace
-

@@ -11,7 +11,7 @@
 #ifndef ORCA2_WIFI_MAINTHREAD_H
 #define ORCA2_WIFI_MAINTHREAD_H
 
-#include <hydroutil/safethread.h>
+#include <hydroutil/subsystemthread.h>
 #include <orcaifaceimpl/wifiImpl.h>
 
 namespace wifi
@@ -19,13 +19,12 @@ namespace wifi
     
 class WifiDriver;
 
-class MainThread : public hydroutil::SafeThread
+class MainThread : public hydroutil::SubsystemThread
 {
 
 public: 
 
     MainThread( const orcaice::Context & context );
-    ~MainThread();
 
     virtual void walk();
 
@@ -36,8 +35,8 @@ private:
     
     int snrWarningThreshhold_;
     
-    void initNetwork();
-    void initDriver();
+    void initNetworkInterface();
+    void initHardwareDriver();
     void checkWifiSignal( orca::WifiData &data );
     
 };
