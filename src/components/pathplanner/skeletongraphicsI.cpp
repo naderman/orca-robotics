@@ -45,7 +45,7 @@ SkeletonGraphicsI::getData(const Ice::Current& current) const
 
 void
 SkeletonGraphicsI::subscribe(const ::QGraphics2dConsumerPrx& subscriber,
-                  const Ice::Current& current)
+                             const Ice::Current& current)
 {
     cout<<"subscribe()"<<endl;
     try {
@@ -125,15 +125,28 @@ SkeletonGraphicsI::drawSparseSkel( const hydroogmap::OgMap                     &
     if ( print )
         cout<<"TRACE(skeletongraphicsI.cpp): Skeleton details:" << endl;
 
-    QColor color = Qt::red;
+    std::vector<QColor> colors;
+    colors.push_back(Qt::red);
+    colors.push_back(Qt::blue);
+    colors.push_back(Qt::cyan);
+    colors.push_back(Qt::magenta);
+    colors.push_back(Qt::darkYellow);    
+    colors.push_back(Qt::darkRed);
+    colors.push_back(Qt::darkBlue);
+    colors.push_back(Qt::darkGreen);
+    colors.push_back(Qt::darkCyan);
+    colors.push_back(Qt::darkMagenta);
+
     // color.setAlpha( 128 );
 
-    p.setPen( color );
-    p.setBrush( color );
     const double circleSize = 0.2;     // in m, should be constant pixel size?
     
     for ( unsigned int i=0; i < skel.contiguousSkels().size(); i++ )
     {
+        QColor color = colors[i % colors.size()];
+        p.setPen( color );
+        p.setBrush( color );
+    
         const std::vector<hydropathplan::sparseskel::SparseSkelNode*> &nodes = skel.contiguousSkels()[i]->nodes();
         for ( unsigned int j=0; j < nodes.size(); j++ )
         {
