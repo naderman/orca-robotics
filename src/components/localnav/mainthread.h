@@ -14,7 +14,7 @@
 #include <orca/localise2d.h>
 #include <orca/rangescanner2d.h>
 #include <orcaice/context.h>
-#include <hydroutil/safethread.h>
+#include <hydroutil/subsystemthread.h>
 #include <hydroutil/proxy.h>
 #include <orcaifaceimpl/proxiedconsumers.h>
 #include <orcalocalnav/speedlimiter.h>
@@ -36,19 +36,19 @@ class Simulator;
 //
 // @author Alex Brooks
 //
-class MainThread : public hydroutil::SafeThread
+class MainThread : public hydroutil::SubsystemThread
 {
 
 public: 
 
     // This version interacts with the real world
-    MainThread( DriverFactory                   &driverFactory,
+    MainThread( DriverFactory                 &driverFactory,
               orcalocalnav::Clock             &clock,
               orcalocalnav::PathFollower2dI   &pathFollowerInterface,
               const orcaice::Context          &context );
 
     // This version is for simulator-based testing.
-    MainThread( DriverFactory                   &driverFactory,
+    MainThread( DriverFactory                 &driverFactory,
               orcalocalnav::Clock             &clock,
               orcalocalnav::PathFollower2dI   &pathFollowerInterface,
               Simulator                       &testSimulator,
