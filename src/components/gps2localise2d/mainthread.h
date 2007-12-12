@@ -8,24 +8,22 @@
  *
  */
 
-#ifndef ORCA2_FEATURE_EXTRACTOR_MAIN_LOOP_H
-#define ORCA2_FEATURE_EXTRACTOR_MAIN_LOOP_H
+#ifndef MAIN_THREAD_H
+#define MAIN_THREAD_H
 
-#include <hydroutil/safethread.h>
-#include <hydroutil/proxy.h>
+#include <hydroutil/subsystemthread.h>
 #include <orcaice/context.h>
 
-#include <orca/localise2d.h>
 #include <orca/gps.h>
 #include <orcaifaceimpl/localise2dImpl.h>
-#include <orcaifaceimpl/proxiedconsumers.h>
+#include <orcaifaceimpl/storingconsumers.h>
 
 namespace gps2localise2d
 {
 
 class Driver;
 
-class MainThread : public hydroutil::SafeThread
+class MainThread : public hydroutil::SubsystemThread
 {
 public:
 
@@ -39,7 +37,7 @@ private:
 
     void connectToGps();
     void getGpsDescription();
-    void initInterface();
+    void initNetworkInterface();
     void initDriver();
     
     // This component is 2D-centric: can only handle certain orientations.
@@ -56,7 +54,7 @@ private:
     orca::GpsDescription gpsDescr_;
 
     // Consumers
-    orcaifaceimpl::ProxiedGpsConsumerImplPtr gpsConsumer_;
+    orcaifaceimpl::StoringGpsConsumerImplPtr gpsConsumer_;
 
     orcaice::Context context_;
 };

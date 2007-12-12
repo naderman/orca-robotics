@@ -8,45 +8,26 @@
  *
  */
 
-#include <iostream>
-#include <orcaice/orcaice.h>
 #include "component.h"
 #include "mainthread.h"
 
-using namespace std;
-using namespace orca;
-
-namespace gps2localise2d {
+using namespace gps2localise2d;
 
 Component::Component()
     : orcaice::Component( "Gps2Localise2d" )
 {
 }
 
-Component::~Component()
-{
-}
-
 void 
 Component::start()
 {
-    context().tracer().info( "Starting component...",2 );
-    
-    //
-    // ENABLE NETWORK CONNECTIONS
-    //
-    // this may throw, but may as well quit right then
-    activate();
-
-    mainLoop_ = new MainThread( context() );
-    mainLoop_->start();
+    mainThread_ = new MainThread( context() );
+    mainThread_->start();
 }
 
 void 
 Component::stop()
 {
     context().tracer().debug("Stopping component", 2 );
-    hydroutil::stopAndJoin( mainLoop_ );
-}
-
+    hydroutil::stopAndJoin( mainThread_ );
 }

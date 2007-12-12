@@ -13,9 +13,6 @@
 
 #include <orcaice/component.h>
 
-// interface definitions
-#include <orcaifaceimpl/localise2dImpl.h>
-
 namespace gps2localise2d
 {
 
@@ -24,15 +21,14 @@ class Component : public orcaice::Component
 public:
 
     Component();
-    virtual ~Component();
 
-    // component interface
+    // from orcaice::Component
     virtual void start();
     virtual void stop();
 
 private:
 
-    hydroutil::ThreadPtr mainLoop_;
+    hydroutil::ThreadPtr mainThread_;
 };
 
 } // namespace

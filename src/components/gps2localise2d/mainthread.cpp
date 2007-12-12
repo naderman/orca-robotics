@@ -16,23 +16,18 @@
 #include "mainthread.h"
 
 using namespace std;
+using namespace gps2localise2d;
 
-namespace gps2localise2d {
-
-namespace {
-    const char *SUBSYSTEM = "mainloop";
-}
 
 MainThread::MainThread( const orcaice::Context &context ) :
-    SafeThread(context.tracer()),
+    hydroutil::SubsystemThread( context.tracer(), context.status(), "MainThread" ),
     driver_(NULL),
     context_(context)
 {
-    context_.status().setMaxHeartbeatInterval( SUBSYSTEM, 10.0 );
-    context_.status().initialising( SUBSYSTEM );
+    subStatus().setMaxHeartbeatInterval( 10.0 );
     
     // create a callback object to recieve data
-    gpsConsumer_ = new orcaifaceimpl::ProxiedGpsConsumerImpl( context_ );
+    gpsConsumer_ = new orcaifaceimpl::StoringGpsConsumerImpl( context_ );
 }
 
 MainThread::~MainThread()
@@ -129,7 +124,7 @@ MainThread::connectToGps()
         {
             context_.tracer().error( "Failed to subscribe to gps for unknown reason." );
         }
-        context_.status().initialising( SUBSYSTEM, "connectToGps()" );
+        subStatus().initialising( "connectToGps()" );
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
     }
 
@@ -168,13 +163,13 @@ MainThread::getGpsDescription()
         {
             context_.tracer().error( "Failed to retreive gps description for unknown reason." );
         }
-        context_.status().initialising( SUBSYSTEM, "getGpsDescription()" );
+        subStatus().initialising( "getGpsDescription()" );
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
     }
 }
 
 void
-MainThread::initInterface()
+MainThread::initNetworkInterface()
 {
     orca::VehicleDescription vehicleDesc;
     
@@ -195,6 +190,8 @@ MainThread::initInterface()
         // connect to odometry to get vehicle description
         //
         
+        // not using a single-line multi-try function here, because in addition to connecting to the interface
+        // we need to get the vehicle description.
         orca::Odometry2dPrx odoPrx;
         
         while ( !isStopping() )
@@ -227,37 +224,24 @@ MainThread::initInterface()
             {
                 context_.tracer().error( "Failed to retreive vehicle description for unknown reason." );
             }
-            context_.status().initialising( SUBSYSTEM, "getVehicleDescription()" );
+            subStatus().initialising( "getVehicleDescription()" );
             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
         }
     }
     
     //
-    // Instantiate External Interface
+    // Initialize Provided Interface
     //
     localiseInterface_ = new orcaifaceimpl::Localise2dImpl( vehicleDesc.geometry, "Localise2d", context_ );
-    
-    while ( !isStopping() )
-    {
-        try {
-            context_.tracer().debug( "Initialising Localise2d interface...",3 );
-            localiseInterface_->initInterface();
-            context_.tracer().debug( "Initialised Localise2d interface",3 );
-            return;
-        }
-        catch ( hydroutil::Exception &e )
-        {
-            context_.tracer().warning( std::string("MainThread::initInterface(): ") + e.what() );
-        }
-        context_.status().initialising( SUBSYSTEM, "initInterface()" );
-        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
-    }
+    localiseInterface_->initInterface( this, subsysName() );
 }
 
 void 
 MainThread::walk()
 {
-    initInterface();
+    activate( context_, this, subsysName() );
+
+    initNetworkInterface();
     initDriver();
 
     orca::GpsData        gpsData;
@@ -270,7 +254,7 @@ MainThread::walk()
     int numTimeouts = 0;
 
     context_.tracer().debug( "Entering main loop.",2 );
-    context_.status().setMaxHeartbeatInterval( SUBSYSTEM, 3.0 );
+    subStatus().setMaxHeartbeatInterval( 3.0 );
 
     // Loop forever till we get shut down.
     while ( !isStopping() )
@@ -280,14 +264,14 @@ MainThread::walk()
             //
             // block on arrival of data
             //
-            int ret = gpsConsumer_->proxy().getNext ( gpsData, timeoutMs );
+            int ret = gpsConsumer_->store().getNext ( gpsData, timeoutMs );
             if ( ret != 0 ) {
                 if ( numTimeouts++ > reconnectFailTimes )
                 {
                     stringstream ss;
                     ss << "Timed out (" << timeoutMs << "ms) waiting for data.  Reconnecting.";
                     context_.tracer().warning( ss.str() );
-                    context_.status().warning( SUBSYSTEM, ss.str() );
+                    subStatus().warning( ss.str() );
                     connectToGps();
                 }
                 continue;
@@ -301,7 +285,7 @@ MainThread::walk()
 
             if ( !canCompute )
             {
-                context_.status().ok( SUBSYSTEM );
+                subStatus().ok();
                 context_.tracer().debug( "MainThread: can't compute localiseData" );
                 continue;
             }
@@ -311,7 +295,7 @@ MainThread::walk()
 
             localiseInterface_->localSetAndSend( localiseData );
 
-            context_.status().ok( SUBSYSTEM );
+            subStatus().ok();
 
         } // try
         catch ( const orca::OrcaException & e )
@@ -360,6 +344,4 @@ MainThread::antennaOffsetOK( const orca::Frame3d &offset )
     }
 
     return offsetOk;
-}
-
 }
