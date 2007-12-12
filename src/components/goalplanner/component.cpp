@@ -9,7 +9,7 @@
  */
 
 #include "component.h"
-#include "mainloop.h"
+#include "mainthread.h"
 
 using namespace goalplanner;
 
@@ -39,7 +39,7 @@ void Component::start()
     // Hardware handling loop
     //
     // the constructor may throw, we'll let the application shut us down
-    mainloop_ = new MainLoop( context() );
+    mainloop_ = new MainThread( context() );
     mainloop_->start();
     
     // the rest is handled by the application/service

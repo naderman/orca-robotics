@@ -11,7 +11,7 @@
 #include <orcaogfusion/orcaogfusion.h>
 
 #include "component.h"
-#include "handler.h"
+#include "mainthread.h"
 #include "ogfusionI.h"
 
 using namespace std;
@@ -30,14 +30,14 @@ Component::~Component()
 void
 Component::start()
 {
-    handler_ = new Handler( context() );
-    handler_->start();
+    mainThread_ = new MainThread( context() );
+    mainThread_->start();
 }
 
 void
 Component::stop()
 {
-    hydroutil::stopAndJoin( handler_ );
+    hydroutil::stopAndJoin( mainThread_ );
 }
 
 }

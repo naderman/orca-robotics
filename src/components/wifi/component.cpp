@@ -10,7 +10,7 @@
 #include <orcaice/orcaice.h>
 
 #include "component.h"
-#include "mainloop.h"
+#include "mainthread.h"
 
 using namespace std;
 using namespace orca;
@@ -41,7 +41,7 @@ Component::start()
     //
     // Hardware handling loop
     //
-    mainloop_ = new MainLoop( context() );
+    mainloop_ = new MainThread( context() );
     mainloop_->start();
     
     tracer().debug( "Component started", 2 );

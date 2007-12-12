@@ -11,7 +11,7 @@
 #include <orcaice/orcaice.h>
 
 #include "component.h"
-#include "mainloop.h"
+#include "mainthread.h"
 
 using namespace std;
 using namespace simlocaliser;
@@ -32,7 +32,7 @@ Component::start()
     //
     // MAIN DRIVER LOOP
     //
-    mainLoop_ = new MainLoop( context() );
+    mainLoop_ = new MainThread( context() );
     mainLoop_->start();    
 }
 

@@ -9,7 +9,7 @@
  */
 
 #include "component.h"
-#include "algohandler.h"
+#include "algothread.h"
 
 using namespace pathplantester;
 

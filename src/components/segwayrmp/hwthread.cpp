@@ -312,7 +312,7 @@ HwThread::setCommand( const hydrointerfaces::SegwayRmp::Command &command )
     if ( msecs>300 ) 
     {
         std::stringstream ss;
-        ss << "HwDriverHandler: It's been " << msecs << "ms since we last received a command."<<endl
+        ss << "HwDriverMainThread: It's been " << msecs << "ms since we last received a command."<<endl
            << "This will cause the Segway to time out.";
         context_.tracer().debug( ss.str() );
     }

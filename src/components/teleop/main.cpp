@@ -20,7 +20,7 @@
 int main(int argc, char * argv[])
 {
     teleop::Component component;
-    bool installCtrlCHandler = true;
-    orcaice::Application app( component, installCtrlCHandler );
+    bool installCtrlCMainThread = true;
+    orcaice::Application app( component, installCtrlCMainThread );
     return app.main(argc, argv);
 }

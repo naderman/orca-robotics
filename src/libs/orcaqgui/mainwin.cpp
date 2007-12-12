@@ -31,14 +31,14 @@ namespace orcaqgui
 {
 
     MainWindow::MainWindow( std::string              title,
-                            orcaqcm::NetworkHandler *networkHandler,
+                            orcaqcm::NetworkThread *networkThread,
                             ScreenDumpParams         screenDumpParams,
                             int                      displayRefreshTime,
                             const std::vector<std::string> &supportedInterfaces,
                             QWidget                 *parent, 
                             Qt::WFlags               flags )
     : QMainWindow(parent, flags), 
-      networkHandler_(networkHandler), 
+      networkThread_(networkThread), 
       screenDumpParams_(screenDumpParams),
       displayRefreshTime_(displayRefreshTime),
       elemModel_(NULL),
@@ -65,12 +65,12 @@ namespace orcaqgui
     // Select-from-Registry widget
     //
     // Model
-    regModelHandler_ = new orcaqcm::ModelHandler( *networkHandler );
+    regModelThread_ = new orcaqcm::ModelThread( *networkThread );
     // Delegate
     regDelegate_ = new orcaqcm::OcmDelegate();
     // View
     regView_ = new RegSelectView(side_);
-    regView_->setModel( regModelHandler_->model() );
+    regView_->setModel( regModelThread_->model() );
     regView_->setItemDelegate(regDelegate_);
     //regView_->setSelectionModel(selections_);
     regView_->header()->setMovable(true);
@@ -271,7 +271,7 @@ MainWindow::setupInterface()
 void
 MainWindow::updateRegistryView()
 {
-    networkHandler_->getComponentInfo();
+    networkThread_->getComponentInfo();
     
 //     statusBar()->showMessage( "Downloaded a list of "+QString::number(compNumber)+" components.", 3000 );
 }
@@ -280,7 +280,7 @@ void
 MainWindow::reloadRegistryView()
 {
     // first clear the model
-    regModelHandler_->clearModel();
+    regModelThread_->clearModel();
 
     // now update the view
     updateRegistryView();

@@ -12,7 +12,7 @@
 #include <orcaice/proputils.h>
 
 #include "component.h"
-#include "imuhandler.h"
+#include "mainthread.h"
 
 // Various bits of hardware we can drive
 #include "imudriver.h"
@@ -34,7 +34,7 @@ namespace imu {
 
 Component::Component()
     : orcaice::Component( "Imu" ),
-      handler_(0),
+      mainThread_(0),
       hwDriver_(0)
 {
 }
@@ -42,7 +42,7 @@ Component::Component()
 Component::~Component()
 {
     delete hwDriver_;
-    // do not delete the handler_, it's a Thread and self-distructs.
+    // do not delete the mainThread_, it's a Thread and self-distructs.
 }
 
 void
@@ -178,23 +178,23 @@ Component::start()
     //
     // MAIN DRIVER LOOP
     //
-    context().tracer().debug( "entering handler_...",5 );
+    context().tracer().debug( "entering mainThread_...",5 );
 
-    handler_ = new ImuHandler(*imuObj,
+    mainThread_ = new MainThread(*imuObj,
                               *odometry3dImpl_,
                               hwDriver_,
                               frameOffset,
                               context(),
                               startEnabled );
 
-    handler_->start();
+    mainThread_->start();
 }
 
 void 
 Component::stop()
 {
     tracer().info("stopping component...");
-    hydroutil::stopAndJoin( handler_ );
+    hydroutil::stopAndJoin( mainThread_ );
 }
 
 } //namespace

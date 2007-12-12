@@ -12,7 +12,7 @@
 #include <assert.h>
 #include <orcaice/orcaice.h>
 
-#include "algohandler.h"
+#include "algothread.h"
 #include "pathplanner2dconsumerI.h"
 
 using namespace std;

@@ -17,8 +17,8 @@
 namespace tracermon
 {
 
-class NetworkHandler;
-class UserHandler;
+class MainThread;
+class UserMainThread;
 
 class Component : public orcaice::Component
 {
@@ -33,8 +33,8 @@ public:
 
 private:
 
-    hydroutil::Thread* netHandler_;
-    hydroutil::Thread* usrHandler_;
+    hydroutil::Thread* netMainThread_;
+    hydroutil::Thread* usrMainThread_;
 };
 
 } // namespace

@@ -28,7 +28,7 @@ public:
 
     virtual void run();
 
-//     DisplayThread* displayHandler() { return displayHandler_; };
+//     DisplayThread* displayMainThread() { return displayMainThread_; };
     
 private:
 
@@ -37,7 +37,7 @@ private:
 
     InputDriver::Config config_;
 
-//     DisplayThread* displayHandler_;
+//     DisplayThread* displayMainThread_;
     
     void init();
 

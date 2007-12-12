@@ -54,7 +54,7 @@ private:
    
     orcaice::Context context_;
 
-    hydroutil::Thread* inputHandler_;
+    hydroutil::Thread* inputMainThread_;
 
     // obscure ncurses stuff
     WINDOW* mainwin_;

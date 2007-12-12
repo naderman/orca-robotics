@@ -18,7 +18,7 @@
 
 namespace localnav {
 
-class MainLoop;
+class MainThread;
 class DriverFactory;
 class Simulator;
 
@@ -44,7 +44,7 @@ private:
     // Simulator for test mode
     Simulator           *testSimulator_;
 
-    MainLoop            *mainLoop_;
+    MainThread            *mainLoop_;
 
     // A factory to instantiate the driver
     DriverFactory   *driverFactory_;

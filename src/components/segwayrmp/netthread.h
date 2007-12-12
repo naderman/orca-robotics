@@ -29,7 +29,7 @@ class NetThread : public hydroutil::SafeThread,
 {
 public:
 
-    NetThread( HwThread                      &hwHandler,
+    NetThread( HwThread                      &hwMainThread,
                 const orca::VehicleDescription &descr,
                 const orcaice::Context         &context );
 

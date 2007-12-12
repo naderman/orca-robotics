@@ -17,7 +17,7 @@
 namespace reactivewalker
 {
 
-class AlgoHandler;
+class AlgoThread;
 
 class Component : public orcaice::Component
 {

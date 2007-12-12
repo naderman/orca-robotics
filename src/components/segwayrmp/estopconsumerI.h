@@ -23,7 +23,7 @@ namespace segwayrmp{
 class EStopConsumerI : public orca::EStopConsumer
 {
 public:  
-    EStopConsumerI ( HwThread& hwHandler ): hwThread_(hwHandler){};
+    EStopConsumerI ( HwThread& hwMainThread ): hwThread_(hwMainThread){};
     ~EStopConsumerI() {};
 
     // Pass the data straight to the HwThread to deal with

@@ -12,7 +12,7 @@
 #include <orcaice/component.h>
 #include <orcaice/orcaice.h>
 
-#include "handler.h"
+#include "mainthread.h"
 
 namespace registrylist
 {
@@ -27,7 +27,7 @@ public:
     virtual void start();
     virtual void stop();
 private:
-    Handler* handler_;
+    Thread* mainThread_;
 };
 
 // don't need any standard interfaces because this component quits righ after it finished
@@ -43,8 +43,8 @@ Component::~Component()
 
 void Component::start()
 {
-    handler_ = new Handler( context() );
-    handler_->start();
+    mainThread_ = new Thread( context() );
+    mainThread_->start();
 }
 
 void Component::stop()

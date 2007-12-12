@@ -10,13 +10,13 @@
 #include <orcaice/orcaice.h>
 
 #include "component.h"
-#include "handler.h"
+#include "mainthread.h"
 
 using namespace laser2og;
 
 Component::Component()
     : orcaice::Component( "Laser2Og" ),
-      handler_(0)
+      mainThread_(0)
 {
 }
 
@@ -30,14 +30,14 @@ void
 Component::start()
 {
     activate();
-    handler_ = new Handler( context() );
-    handler_->start();
+    mainThread_ = new MainThread( context() );
+    mainThread_->start();
 }
 
 void
 Component::stop()
 {
     tracer().debug( "stopping component", 5 );
-    hydroutil::stopAndJoin( handler_ );
+    hydroutil::stopAndJoin( mainThread_ );
     tracer().debug( "stopped component", 5 );
 }

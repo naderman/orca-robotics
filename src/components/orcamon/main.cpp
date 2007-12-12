@@ -13,7 +13,7 @@
 #include <iostream>
 
 #include <orcaice/orcaice.h>
-#include "mainloop.h"
+#include "mainthread.h"
 
 using namespace std;
 
@@ -46,7 +46,7 @@ void Component::start()
     //
     // MAIN DRIVER LOOP
     //    
-    mainLoop_ = new MainLoop( context() );
+    mainLoop_ = new MainThread( context() );
     mainLoop_->start();
 
     // the rest is handled by the application/service

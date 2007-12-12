@@ -18,7 +18,7 @@
 int main(int argc, char * argv[])
 {
     robot2d::Component component;
-    bool installCtrlCHandler = false;
-    orcaice::Application app( component, installCtrlCHandler );
+    bool installCtrlCMainThread = false;
+    orcaice::Application app( component, installCtrlCMainThread );
     return app.main(argc, argv);
 }

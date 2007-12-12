@@ -24,10 +24,10 @@
 
 using namespace std;
 
-MainWindow::MainWindow( orcaqcm::NetworkHandler *networkHandler, double refreshInterval,
+MainWindow::MainWindow( orcaqcm::NetworkThread *networkThread, double refreshInterval,
                         QWidget *parent, Qt::WFlags flags)
     : QMainWindow(parent, flags),
-      networkHandler_(networkHandler)
+      networkThread_(networkThread)
 {
     setWindowTitle("Orca: Registry View");
     setWindowIcon ( QPixmap(orcaqt::orca2_2x3_yellow_130_xpm) );
@@ -43,7 +43,7 @@ MainWindow::MainWindow( orcaqcm::NetworkHandler *networkHandler, double refreshI
     // Model
     //
     //model_ = new orcaqcm::OcmTreeModel();
-    modelHandler_ = new orcaqcm::ModelHandler( *networkHandler );
+    modelThread_ = new orcaqcm::ModelThread( *networkThread );
     
     //selections_ = new QItemSelectionModel(model_);
 
@@ -56,7 +56,7 @@ MainWindow::MainWindow( orcaqcm::NetworkHandler *networkHandler, double refreshI
     // View
     //
     view_ = new RegTreeView(split);
-    view_->setModel( modelHandler_->model() );
+    view_->setModel( modelThread_->model() );
     view_->setItemDelegate(delegate_);
     //view_->setSelectionModel(selections_);
     view_->header()->setMovable(true);
@@ -106,7 +106,7 @@ MainWindow::setupMenuBar()
 void
 MainWindow::updateRegistryView()
 {
-    networkHandler_->getComponentInfo();
+    networkThread_->getComponentInfo();
     
 //     statusBar()->showMessage( "Downloaded a list of "+QString::number(compNumber)+" components.", 3000 );
 }
@@ -115,7 +115,7 @@ void
 MainWindow::reloadRegistryView()
 {
     // first clear the model
-    modelHandler_->clearModel();
+    modelThread_->clearModel();
 
     // now update the view
     updateRegistryView();
@@ -124,7 +124,7 @@ MainWindow::reloadRegistryView()
 void
 MainWindow::getProperties( const QString & proxy )
 {
-//     std::map<std::string,std::string> props = networkHandler_->getProperties( proxy.toStdString() );
+//     std::map<std::string,std::string> props = networkThread_->getProperties( proxy.toStdString() );
 // 
 //     // debug
 //     cout<<"MainWindow: got "<<props.size()<<" properties"<<endl;

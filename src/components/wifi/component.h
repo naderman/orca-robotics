@@ -15,7 +15,7 @@
 
 namespace wifi {
 
-class MainLoop;
+class MainThread;
 
 //
 // Deriving from orcaice::Component means we have to implement start() and stop()
@@ -32,7 +32,7 @@ public:
 
 private:
 
-    MainLoop *mainloop_;
+    MainThread *mainloop_;
 };
 
 }

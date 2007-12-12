@@ -15,8 +15,8 @@
 #include <QMainWindow>
 
 #include <orcaqgui/ihumanmanager.h>
-#include <orcaqcm/networkhandler.h>
-#include <orcaqcm/modelhandler.h>
+#include <orcaqcm/networkthread.h>
+#include <orcaqcm/modelthread.h>
 
 class QTreeView;
 class QItemDelegate;
@@ -45,7 +45,7 @@ class MainWindow : public QMainWindow, public orcaqgui::IHumanManager
     Q_OBJECT
 public:
     MainWindow( std::string                        title,
-                orcaqcm::NetworkHandler           *networkHandler,           
+                orcaqcm::NetworkThread           *networkThread,           
                 ScreenDumpParams                   screenDumpParams,
                 int                                displayRefreshTime,
                 const std::vector<std::string>    &supportedInterfaces,
@@ -107,8 +107,8 @@ private:
     QSplitter *side_;
 
     // registry
-    orcaqcm::NetworkHandler     *networkHandler_;
-    orcaqcm::ModelHandler       *regModelHandler_;
+    orcaqcm::NetworkThread     *networkThread_;
+    orcaqcm::ModelThread       *regModelThread_;
     QTreeView                   *regView_;
     QItemDelegate               *regDelegate_;
     

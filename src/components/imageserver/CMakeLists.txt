@@ -69,7 +69,7 @@ IF ( BUILD_IMAGE_SERVER )
     ENDIF ( DIGICLOPS_AND_TRICLOPS_FOUND )
     
     # CANNOT use standard macro, because some driver files are optional
-    SET( COMMON_SRCS component mainloop ${DRIVER_SRCS} ${MONO_DRIVER_SRCS} )
+    SET( COMMON_SRCS component mainthread ${DRIVER_SRCS} ${MONO_DRIVER_SRCS} )
     
     GLOBAL_ADD_EXECUTABLE( imageserver main ${COMMON_SRCS} )
     

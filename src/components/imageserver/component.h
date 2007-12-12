@@ -18,7 +18,7 @@
 
 namespace imageserver {
 
-class MainLoop;
+class MainThread;
 class Driver;
 
 class Component : public orcaice::Component
@@ -33,7 +33,7 @@ public:
 
 private:
 
-    MainLoop* mainLoop_;
+    MainThread* mainLoop_;
 
     //
     // HARDWARE INTERFACES

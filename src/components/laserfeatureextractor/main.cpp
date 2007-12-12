@@ -18,8 +18,8 @@
 //
 int main(int argc, char * argv[])
 {
-    bool installCtrlCHandler=true;
+    bool installCtrlCMainThread=true;
     laserfeatures::Component component;
-    orcaice::Application app( component, installCtrlCHandler );
+    orcaice::Application app( component, installCtrlCMainThread );
     return app.main(argc, argv);
 }

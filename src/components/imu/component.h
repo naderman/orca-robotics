@@ -17,7 +17,7 @@
 
 namespace imu {
 
-class ImuHandler;
+class MainThread;
 class ImuDriver;
 
 class Component : public orcaice::Component
@@ -32,7 +32,7 @@ public:
 
 private:
 
-    ImuHandler *handler_;
+    MainThread *mainThread_;
 
     //
     // EXTERNAL PROVIDED INTERFACE

@@ -11,7 +11,7 @@
 #include <QApplication>
  
 #include <orcaice/orcaice.h>
-#include <orcaqcm/networkhandler.h>
+#include <orcaqcm/networkthread.h>
 #include <orcaqgui/mainwin.h>
 #include <orcaqgui/guielementmodel.h>
 #include <orcaqgui3d/worldview.h>
@@ -105,8 +105,8 @@ Component::start()
     activate();
     
     // this runs in its own thread
-    orcaqcm::NetworkHandler networkHandler( context() );
-    networkHandler.start();
+    orcaqcm::NetworkThread networkThread( context() );
+    networkThread.start();
     
     // Set up QT stuff
     char **v = 0;
@@ -125,7 +125,7 @@ Component::start()
    
     // main window for display
     orcaqgui::MainWindow gui( "OrcaView3d",
-                             &networkHandler,
+                             &networkThread,
                              screenDumpParams,
                              displayRefreshTime );
 
@@ -153,7 +153,7 @@ Component::start()
     // note: this does not return!
     qapp.exec();
 
-    // normally ctrl-c handler does this, now we have to because UserHandler keeps the thread
+    // normally ctrl-c handler does this, now we have to because UserThread keeps the thread
     context().communicator()->shutdown();
 
     // the rest is handled by the application/service

@@ -16,7 +16,7 @@
 namespace laser2og 
 {
 
-class Handler;
+class MainThread;
 class Laser2Og;
 
 class Component : public orcaice::Component
@@ -30,7 +30,7 @@ public:
     virtual void stop();
     
 private:
-    Handler *handler_;
+    MainThread *mainThread_;
 
 };
 

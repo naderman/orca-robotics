@@ -16,7 +16,7 @@
 namespace goalplanner
 {
 
-class MainLoop;
+class MainThread;
 
 class Component : public orcaice::Component
 {
@@ -30,7 +30,7 @@ public:
 
 private:
 
-    MainLoop *mainloop_;
+    MainThread *mainloop_;
 
 };
 

@@ -13,7 +13,7 @@
 
 #include <orcalog/masterfilewriter.h>
 #include <orcalog/logwriterinfo.h>
-#include <orcalog/masterfilewritehandler.h>
+#include <orcalog/masterfilewritethread.h>
 
 namespace orcalog
 {
@@ -62,7 +62,7 @@ protected:
 
 private:
 
-    MasterFileWriteHandler masterFileWriteHandler_;
+    MasterFileWriteThread masterFileWriteHandler_;
     LogWriterInfo logWriterInfo_;
 };
 

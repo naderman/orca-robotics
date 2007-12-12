@@ -16,7 +16,7 @@
 #include <hydrodll/dynamicload.h>
 #include "component.h"
 
-#include "browserhandler.h"
+#include "browserthread.h"
 
 #include "term-iostream/termiostreamdisplay.h"
 #ifdef HAVE_GUI_QT_DRIVER   
@@ -144,9 +144,9 @@ Component::start()
         throw hydroutil::HardwareException( ERROR_INFO, errorStr );
     }
 
-    BrowserHandler browserHandler( *display, factories_, context() );
-    browser = &browserHandler;
-    browserHandler.start();
+    BrowserThread browserThread( *display, factories_, context() );
+    browser = &browserThread;
+    browserThread.start();
 
     // for Qt driver, this will not return
     display->enable( browser );

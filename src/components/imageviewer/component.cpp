@@ -12,7 +12,7 @@
 #include <orcaice/orcaice.h>
 
 #include "component.h"
-#include "mainloop.h"
+#include "mainthread.h"
 
 // implementations of Ice objects
 #include "cameraconsumerI.h"
@@ -52,7 +52,7 @@ Component::start()
     //
     // start main loop
     //
-    mainloop_ = new MainLoop( callbackPrx, dataPipe_, context() );
+    mainloop_ = new MainThread( callbackPrx, dataPipe_, context() );
     mainloop_->start();
     
     // the rest is handled by the application/service

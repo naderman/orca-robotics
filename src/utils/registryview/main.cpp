@@ -15,7 +15,7 @@
 #include <orcaice/application.h>
 #include <orcaice/component.h>
 
-#include <orcaqcm/networkhandler.h>
+#include <orcaqcm/networkthread.h>
 #include "mainwin.h"
 
 #include <orcaice/orcaice.h>
@@ -62,15 +62,15 @@ void Component::start()
     activate();
 
     // this runs in its own thread
-    orcaqcm::NetworkHandler networkHandler( context() );
-    networkHandler.start();
+    orcaqcm::NetworkThread networkThread( context() );
+    networkThread.start();
     
     // Set up QT stuff
     char **v = 0;
     int c = 0;
     QApplication qapp(c,v);
 
-    MainWindow gui( &networkHandler, refreshInterval );
+    MainWindow gui( &networkThread, refreshInterval );
     gui.show();
 
     // note: this does not return!

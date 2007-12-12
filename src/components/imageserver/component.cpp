@@ -10,7 +10,7 @@
 
 #include <orcaice/orcaice.h>
 #include "component.h"
-#include "mainloop.h"
+#include "mainthread.h"
 
 // define flags for building drivers
 // #include "configimageserver.h"
@@ -198,7 +198,7 @@ Component::start()
     //
     // MAIN DRIVER LOOP
     //
-    mainLoop_ = new MainLoop( *cameraInterface_, hwDriver_, context() );
+    mainLoop_ = new MainThread( *cameraInterface_, hwDriver_, context() );
     mainLoop_->start();
 }
 

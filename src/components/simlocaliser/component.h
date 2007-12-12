@@ -16,7 +16,7 @@
 namespace simlocaliser
 {
 
-class MainLoop;
+class MainThread;
 
 class Component : public orcaice::Component
 {
@@ -30,7 +30,7 @@ public:
     virtual void stop();
 
 private:
-    MainLoop* mainLoop_;
+    MainThread* mainLoop_;
 };
 
 } // namespace

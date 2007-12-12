@@ -11,7 +11,7 @@
 #include <orcaice/orcaice.h>
 
 #include "termncursesuser.h"
-#include "inputhandler.h"
+#include "inputthread.h"
 #include "../events.h"
 // super-dodgy but can't make cmake recongnize included dir's properly
 #include "../termutil/termutils.h"
@@ -51,13 +51,13 @@ TermNcursesUser::~TermNcursesUser()
     free_field(menufields_[1]); 
     endwin();
 
-    // userHandler_ is blocked on user input
+    // userMainThread_ is blocked on user input
     // the only way for it to realize that we want to stop is to give it some keyboard input.
-    cout<< "Component is quitting but the UserHandler is blocked waiting for user input." << endl;
+    cout<< "Component is quitting but the UserMainThread is blocked waiting for user input." << endl;
     cout<< "************************************************" << endl;
     cout<< "Press any key to continue." << endl;
     cout<< "************************************************" << endl;
-    hydroutil::stopAndJoin( inputHandler_ );
+    hydroutil::stopAndJoin( inputMainThread_ );
 }
 
 void 
@@ -255,8 +255,8 @@ TermNcursesUser::run()
     // we are in a different thread now, catch all stray exceptions
     try
     {
-    inputHandler_ = new InputHandler( *network_, *this, context_ );
-    inputHandler_->start();
+    inputMainThread_ = new MainThread( *network_, *this, context_ );
+    inputMainThread_->start();
     
     hydroutil::EventPtr event;
     int timeoutMs = 500;

@@ -11,7 +11,7 @@
 #include <iostream>
 #include <orcaice/orcaice.h>
 #include "component.h"
-#include "mainloop.h"
+#include "mainthread.h"
 
 using namespace std;
 using namespace orca;
@@ -38,7 +38,7 @@ Component::start()
     // this may throw, but may as well quit right then
     activate();
 
-    mainLoop_ = new MainLoop( context() );
+    mainLoop_ = new MainThread( context() );
     mainLoop_->start();
 }
 

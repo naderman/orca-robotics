@@ -11,7 +11,7 @@
 #include <orcaice/application.h>
 #include <orcaice/component.h>
 #include <orcaice/orcaice.h>
-#include "handler.h"
+#include "mainthread.h"
 
 namespace player2orca
 {
@@ -24,7 +24,7 @@ public:
     virtual void stop();
 private:
     // main loop
-    Handler* handler_;
+    MainThread* mainThread_;
 };
 
 
@@ -37,15 +37,15 @@ void
 Component::start()
 {
     //start the main loop
-    handler_ = new Handler( context() );
-    handler_->start();
+    mainThread_ = new MainThread( context() );
+    mainThread_->start();
     // the rest is handled by the application/service
 }
 
 void
 Component::stop()
 {
-    hydroutil::stopAndJoin( handler_ );
+    hydroutil::stopAndJoin( mainThread_ );
 }
 
 } // namespace

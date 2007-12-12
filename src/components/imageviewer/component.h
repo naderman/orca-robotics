@@ -18,7 +18,7 @@
 
 namespace imageviewer{
 
-class MainLoop;
+class MainThread;
 
 class Component : public orcaice::Component
 {
@@ -34,7 +34,7 @@ public:
 private:
 
     hydroutil::Buffer<orca::CameraData> dataPipe_;
-    MainLoop* mainloop_;
+    MainThread* mainloop_;
 };
     
 } // namespace

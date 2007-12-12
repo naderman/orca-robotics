@@ -16,7 +16,7 @@
 namespace ognode
 {
 
-class Handler;
+class MainThread;
 
 class Component : public orcaice::Component
 {
@@ -29,7 +29,7 @@ public:
     virtual void stop();
 
 private:
-    hydroutil::ThreadPtr handler_;
+    hydroutil::ThreadPtr mainThread_;
 
 };
 

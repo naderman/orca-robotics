@@ -12,7 +12,7 @@
 #include <orcaice/orcaice.h>
 
 #include "component.h"
-#include "networkhandler.h"
+#include "networkthread.h"
 
 #include "term-iostream/termiostreamuser.h"
 #ifdef HAVE_TERM_NCURSES_DRIVER   
@@ -24,14 +24,14 @@ using namespace tracermon;
 
 Component::Component()
     : orcaice::Component( "TracerMon", orcaice::HomeInterface ),
-      netHandler_(0),
-      usrHandler_(0)
+      netMainThread_(0),
+      usrMainThread_(0)
 {
 }
 
 Component::~Component()
 {
-    // do not delete networkHandler_ and userHandler_!!! 
+    // do not delete networkMainThread_ and userMainThread_!!! 
     // They derive from Ice::Thread and delete itself.
 }
 
@@ -55,7 +55,7 @@ Component::start()
 #ifdef HAVE_TERM_NCURSES_DRIVER        
         tracer().info( "Loading terminal ncurses driver");
         TermNcursesUser* user = new TermNcursesUser( context() );
-        usrHandler_ = (hydroutil::Thread*)user;
+        usrMainThread_ = (hydroutil::Thread*)user;
         userDriver = (User*)user;
 #else
         throw hydroutil::Exception( ERROR_INFO, "Can't instantiate driver type 'term-ncurses' because it was not compiled." );
@@ -64,9 +64,9 @@ Component::start()
     else if ( driverName == "term-iostream" ) 
     {
         tracer().info( "Loading terminal iostream driver");
-        TermIostreamUser* userHandler = new TermIostreamUser( context() );
-        usrHandler_ = (hydroutil::Thread*)userHandler;
-        userDriver = (User*)userHandler;
+        TermIostreamUser* userMainThread = new TermIostreamUser( context() );
+        usrMainThread_ = (hydroutil::Thread*)userMainThread;
+        userDriver = (User*)userMainThread;
     }
     else {
         std::string errorStr = "Unknown driver type." + driverName + " Cannot talk to hardware.";
@@ -78,14 +78,14 @@ Component::start()
     // NETWORK
     //
     // the constructor may throw, we'll let the application shut us down
-    NetworkHandler* networkHandler = new NetworkHandler( userDriver, context() );
-    netHandler_ = (hydroutil::Thread*)networkHandler;
-    Network* netDriver = (Network*)networkHandler;
-    netHandler_->start();
+    MainThread* networkMainThread = new MainThread( userDriver, context() );
+    netMainThread_ = (hydroutil::Thread*)networkMainThread;
+    Network* netDriver = (Network*)networkMainThread;
+    netMainThread_->start();
 
     // important: must use 
     userDriver->enable( netDriver );
-    usrHandler_->start();
+    usrMainThread_->start();
     
     // the rest is handled by the application/service
 }
@@ -93,14 +93,14 @@ Component::start()
 void
 Component::stop()
 {
-    hydroutil::stopAndJoin( netHandler_ );
+    hydroutil::stopAndJoin( netMainThread_ );
 
-    // userHandler_ is blocked on user input
+    // userMainThread_ is blocked on user input
     // the only way for it to realize that we want to stop is to give it some keyboard input.
-//     tracer().info( "Component is quitting but the UserHandler is blocked waiting for user input.");
+//     tracer().info( "Component is quitting but the UserMainThread is blocked waiting for user input.");
 //     tracer().print( "************************************************" );
 //     tracer().print( "Press any key or shake the joystick to continue." );
 //     tracer().print( "************************************************" );
     
-    hydroutil::stopAndJoin( usrHandler_ );
+    hydroutil::stopAndJoin( usrMainThread_ );
 }

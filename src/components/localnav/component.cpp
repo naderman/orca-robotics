@@ -8,7 +8,7 @@
  *
  */
 #include "component.h"
-#include "mainloop.h"
+#include "mainthread.h"
 #include <localnavutil/idriver.h>
 #include <orcalocalnav/pathmaintainer.h>
 #include "testsim/testsim.h"
@@ -102,14 +102,14 @@ Component::start()
     context().tracer().debug( "Component: Instantiating main loop.", 3 );
     if ( !testInSimulationMode )
     {
-        mainLoop_ = new MainLoop( *driverFactory_,
+        mainLoop_ = new MainThread( *driverFactory_,
                                   *clock_,
                                   *pathFollowerInterface_,
                                   context() );
     }
     else
     {
-        mainLoop_ = new MainLoop( *driverFactory_,
+        mainLoop_ = new MainThread( *driverFactory_,
                                   *clock_,
                                   *pathFollowerInterface_,
                                   *testSimulator_,

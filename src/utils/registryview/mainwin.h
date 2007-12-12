@@ -13,8 +13,8 @@
 
 #include <QMainWindow>
 
-#include <orcaqcm/networkhandler.h>
-#include <orcaqcm/modelhandler.h>
+#include <orcaqcm/networkthread.h>
+#include <orcaqcm/modelthread.h>
 
 class QTreeView;
 class QItemDelegate;
@@ -26,7 +26,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    MainWindow( orcaqcm::NetworkHandler* networkHandler, double refreshInterval,
+    MainWindow( orcaqcm::NetworkThread* networkThread, double refreshInterval,
                 QWidget *parent = 0, Qt::WFlags flags = 0 );
 
 private slots:
@@ -42,8 +42,8 @@ private slots:
 private:
     void setupMenuBar();
 
-    orcaqcm::NetworkHandler     *networkHandler_;
-    orcaqcm::ModelHandler       *modelHandler_;
+    orcaqcm::NetworkThread     *networkThread_;
+    orcaqcm::ModelThread       *modelThread_;
     
     QTreeView                   *view_;
     QItemDelegate               *delegate_;
