@@ -37,6 +37,7 @@ public:
                     bool   doPathOptimization,
                     bool   jiggleWaypointsOntoClearCells,
                     bool   useSparseSkeleton,
+                    bool   addExtraSparseSkelNodes,
                     double sparseSkelExtraNodeResolution,
                     const  hydropathplan::CostEvaluator &costEvaluator,
                     const  orcaice::Context &context);

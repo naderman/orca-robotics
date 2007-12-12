@@ -28,6 +28,7 @@ SkeletonDriver::SkeletonDriver( const hydroogmap::OgMap &ogMap,
                                 bool   doPathOptimization,
                                 bool   jiggleWaypointsOntoClearCells,
                                 bool   useSparseSkeleton,
+                                bool   addExtraSparseSkelNodes,
                                 double sparseSkelExtraNodeResolution,
                                 const hydropathplan::CostEvaluator &costEvaluator,
                                 const Context &context)
@@ -68,6 +69,7 @@ SkeletonDriver::SkeletonDriver( const hydroogmap::OgMap &ogMap,
                                                               robotDiameterMetres,
                                                               traversabilityThreshhold,
                                                               doPathOptimization,
+                                                              addExtraSparseSkelNodes,
                                                               sparseSkelExtraNodeResolution,
                                                               costEvaluator );
             pathPlanner_ = skelPathPlanner;
