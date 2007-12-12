@@ -26,8 +26,8 @@ MainThread::MainThread( const orcaice::Context& context ) :
     driver_(0),
     context_(context)
 {
-    context_.status().setMaxHeartbeatInterval( subsysName(), 10.0 );
-    context_.status().initialising( subsysName() );
+    subStatus().setMaxHeartbeatInterval( 10.0 );
+    subStatus().initialising();
 }
 
 MainThread::~MainThread()
@@ -66,7 +66,7 @@ MainThread::initNetworkInterface()
 void
 MainThread::initHardwareDriver()
 {
-    context_.status().setMaxHeartbeatInterval( subsysName(), 10.0 );
+    subStatus().setMaxHeartbeatInterval( 10.0 );
 
     // this function works for re-initialization as well
     if ( driver_ ) delete driver_;
@@ -144,7 +144,7 @@ MainThread::reportBogusValues( orca::GpsData &gpsData )
 void
 MainThread::walk()
 {
-    context_.status().setMaxHeartbeatInterval( subsysName(), 5.0 );  
+    subStatus().setMaxHeartbeatInterval( 5.0 );  
 
     Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag() + ".Config.";
@@ -181,7 +181,7 @@ MainThread::walk()
                 stringstream ss;
                 ss << "MainThread: Problem reading from GPS: " << e.what();
                 context_.tracer().error( ss.str() );
-                context_.status().fault( subsysName(), ss.str() );
+                subStatus().fault( ss.str() );
             }
 
             //If the read threw then we should now try to re-initialise 
@@ -216,7 +216,7 @@ MainThread::walk()
             gpsInterface_->localSetAndSend(gpsData);
         }        
             
-        context_.status().ok( subsysName() );
+        subStatus().ok();
 
     } // end of while
 

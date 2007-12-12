@@ -17,11 +17,9 @@ using namespace std;
 using namespace brick;
 
 MainThread::MainThread( const orcaice::Context& context ) :
-    SafeThread( context.tracer(), context.status(), "main" ),
+    SafeThread( context.tracer(), context.status(), "MainThread" ),
     context_(context)
 {
-    context_.status().setMaxHeartbeatInterval( subsysName(), 10.0 );
-    context_.status().ok( subsysName(), "initialized" );
 }
 
 MainThread::~MainThread()
@@ -42,15 +40,17 @@ MainThread::walk()
     int sleepIntervalMs = orcaice::getPropertyAsIntWithDefault( context_.properties(),
             prefix+"SleepIntervalMs", 1000 );
 
+    subStatus().ok( "Initialized" );
     //
     // Main loop
     //   
     context_.tracer().debug( "Entering main loop", 2 );
-    context_.status().ok( subsysName(), "Running main loop" );
+    subStatus().setMaxHeartbeatInterval( sleepIntervalMs * 3.0/1000.0 );
+    subStatus().ok( "Running main loop" );
     while( !isStopping() )
     {
         context_.tracer().debug( "Running main loop", 5 );
-        context_.status().heartbeat( subsysName() );
+        subStatus().heartbeat();
 
         // here we can do something useful
 

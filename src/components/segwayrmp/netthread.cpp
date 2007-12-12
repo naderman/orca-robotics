@@ -153,8 +153,8 @@ NetThread::NetThread( HwThread                      &hwThread,
     descr_(descr),
     context_(context)
 {
-    context_.status().setMaxHeartbeatInterval( subsysName(), 10.0 );
-    context_.status().initialising( subsysName() );
+    subStatus().setMaxHeartbeatInterval( 10.0 );
+    subStatus().initialising();
 
     // Get vehicle limits
     orca::VehicleControlVelocityDifferentialDescription *controlDescr =
@@ -206,7 +206,7 @@ NetThread::handleData(const orca::VelocityControl2dData& incomingCommand)
            << "  maxTurnrate            :     " << maxTurnrate_*M_PI/180.0 << endl
            << "  maxLateralAcceleration : " << maxLateralAcceleration_ << endl
            << "    --> limiting command to: " << internalCommand.toString();
-        context_.status().warning( subsysName(), ss.str() );
+        subStatus().warning( ss.str() );
     }
 
     hwThread_.setCommand( internalCommand );
@@ -259,7 +259,7 @@ NetThread::walk()
         context_.properties(), prefix+"PowerPublishInterval", 20.0 );
 
     const int odometryReadTimeout = 500; // [ms]
-    context_.status().setMaxHeartbeatInterval( subsysName(), 2.0*(odometryReadTimeout/1000.0) );
+    subStatus().setMaxHeartbeatInterval( 2.0*(odometryReadTimeout/1000.0) );
     
 
 
@@ -275,7 +275,7 @@ NetThread::walk()
         if ( hwThread_.getData( data, odometryReadTimeout ) ) {
 //             context_.tracer().debug( "Net loop timed out", 1);
             // Don't flag this as an error -- it may happen during normal initialisation.
-            context_.status().ok( subsysName(), "Net loop timed out" );
+            subStatus().ok( "Net loop timed out" );
             continue;
         }
 
@@ -312,7 +312,7 @@ NetThread::walk()
         }
 
         // subsystem heartbeat
-        context_.status().ok( subsysName() );
+        subStatus().ok();
     } // main loop
 }
 

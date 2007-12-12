@@ -24,7 +24,6 @@ using namespace std;
 namespace goalplanner {
 
 namespace {
-    const char *SUBSYSTEM = "mainloop";
 
     // Exceptions thrown/caught internally.
     // If isTemporary we'll hopefully be able to recover soon.
@@ -113,12 +112,12 @@ namespace {
 }
 
 MainLoop::MainLoop( const orcaice::Context & context )
-    : hydroutil::SafeThread( context.tracer(), context.status(), SUBSYSTEM ),
+    : hydroutil::SafeThread( context.tracer(), context.status(), "MainThread" ),
       incomingPathI_(0),
       context_(context)
 {
-    context_.status().setMaxHeartbeatInterval( SUBSYSTEM, 10.0 );
-    context_.status().initialising( SUBSYSTEM );
+    subStatus().setMaxHeartbeatInterval( 10.0 );
+    subStatus().initialising();
 
     Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag()+".Config.";
@@ -138,40 +137,40 @@ MainLoop::initNetwork()
     // REQUIRED INTERFACES: Localise2d, Pathfollower, Pathplanner
     //
 
-    context_.status().initialising( SUBSYSTEM, "Connecting to Localise2d" );
+    subStatus().initialising( "Connecting to Localise2d" );
     orcaice::connectToInterfaceWithTag( context_,
                                         localise2dPrx_,
                                         "Localise2d",
                                         this,
-                                        SUBSYSTEM );
+                                        subStatus().name() );
 
-    context_.status().initialising( SUBSYSTEM, "Connecting to PathFollower2d" );
+    subStatus().initialising( "Connecting to PathFollower2d" );
     orcaice::connectToInterfaceWithTag( context_,
                                         localNavPrx_,
                                         "PathFollower2d",
                                         this,
-                                        SUBSYSTEM );
+                                        subStatus().name() );
 
-    context_.status().initialising( SUBSYSTEM, "Subscribing for PathFollower2d updates" );
+    subStatus().initialising( "Subscribing for PathFollower2d updates" );
     progressMonitor_ = new ProgressMonitor;
     progressMonitorPtr_ = progressMonitor_;
     progressMonitorPrx_ = orcaice::createConsumerInterface<orca::PathFollower2dConsumerPrx>( context_, progressMonitorPtr_ );
     localNavPrx_->subscribe( progressMonitorPrx_ );
 
-    context_.status().initialising( SUBSYSTEM, "Connecting to PathPlanner2d" );
+    subStatus().initialising( "Connecting to PathPlanner2d" );
     orcaice::connectToInterfaceWithTag( context_,
                                         pathplanner2dPrx_,
                                         "PathPlanner2d",
                                         this,
-                                        SUBSYSTEM );
+                                        subStatus().name() );
 
-    context_.status().initialising( SUBSYSTEM, "Connecting to OgMap" );
+    subStatus().initialising( "Connecting to OgMap" );
     orca::OgMapPrx ogMapPrx_;
     orcaice::connectToInterfaceWithTag( context_,
                                         ogMapPrx_,
                                         "OgMap",
                                         this,
-                                        SUBSYSTEM );
+                                        subStatus().name() );
     orca::OgMapData orcaOgMap = ogMapPrx_->getData();
     orcaogmap::convert( orcaOgMap, ogMap_ );
 
@@ -552,7 +551,7 @@ MainLoop::waitForNewPath( orca::PathFollower2dData &newPathData )
                             stringstream ss;
                             ss << "MainLoop: need to replan, but localisation is too uncertain!";
                             context_.tracer().warning( ss.str() );
-                            context_.status().warning( SUBSYSTEM, ss.str() );
+                            subStatus().warning( ss.str() );
                             continue;
                         }
                         context_.tracer().info( "MainLoop: current wp is not visible -- replanning." );
@@ -561,7 +560,7 @@ MainLoop::waitForNewPath( orca::PathFollower2dData &newPathData )
                 }
 
                 // Let the world know we're alive.
-                context_.status().ok( SUBSYSTEM );
+                subStatus().ok();
             }
         }
         catch ( const Ice::Exception & e )
@@ -569,19 +568,19 @@ MainLoop::waitForNewPath( orca::PathFollower2dData &newPathData )
             stringstream ss;
             ss << "MainLoop::waitForNewPath: Caught exception: " << e;
             context_.tracer().error( ss.str() );
-            context_.status().fault( SUBSYSTEM, ss.str() );
+            subStatus().fault( ss.str() );
         }
         catch ( const std::exception & e )
         {
             stringstream ss;
             ss << "MainLoop:waitForNewPath: Caught exception: " << e.what();
             context_.tracer().error( ss.str() );
-            context_.status().fault( SUBSYSTEM, ss.str() );
+            subStatus().fault( ss.str() );
         }
         catch ( ... )
         {
             context_.tracer().error( "MainLoop::waitForNewPath: caught unknown unexpected exception.");
-            context_.status().fault( SUBSYSTEM, "MainLoop::waitForNewPath: caught unknown unexpected exception.");
+            subStatus().fault( "MainLoop::waitForNewPath: caught unknown unexpected exception.");
         }
     }
     return false;
@@ -595,7 +594,7 @@ MainLoop::walk()
     orca::PathFollower2dData incomingPath;
     bool requestIsOutstanding = false;
 
-    context_.status().setMaxHeartbeatInterval( SUBSYSTEM, 3.0 );
+    subStatus().setMaxHeartbeatInterval( 3.0 );
 
     // main loop
     while ( !isStopping() )
@@ -637,7 +636,7 @@ MainLoop::walk()
             if (incomingPath.path.size()==0) 
             {
                 stopRobot();
-                context_.status().ok( SUBSYSTEM );
+                subStatus().ok();
                 requestIsOutstanding = false;
                 continue;
             }
@@ -669,7 +668,7 @@ MainLoop::walk()
             // Send it off!
             sendPath( pathToSend, activateImmediately );
             requestIsOutstanding = false;
-            context_.status().ok( SUBSYSTEM );
+            subStatus().ok();
 
         } // try
         catch ( const GoalPlanException &e )
@@ -679,7 +678,7 @@ MainLoop::walk()
             {
                 ss << "MainLoop:: Caught GoalPlanException: " << e.what() << ".  I reckon I can recover from this.";
                 context_.tracer().warning( ss.str() );
-                context_.status().warning( SUBSYSTEM, ss.str() );
+                subStatus().warning( ss.str() );
 
                 // Slow the loop down a little before trying again.
                 IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
@@ -688,7 +687,7 @@ MainLoop::walk()
             {
                 ss << "MainLoop:: Caught GoalPlanException: " << e.what() << ".  Looks unrecoverable, I'm giving up.";
                 context_.tracer().error( ss.str() );
-                context_.status().fault( SUBSYSTEM, ss.str() );
+                subStatus().fault( ss.str() );
                 requestIsOutstanding = false;
             }
         }
@@ -697,7 +696,7 @@ MainLoop::walk()
             stringstream ss;
             ss << "MainLoop:: Caught exception: " << e;
             context_.tracer().error( ss.str() );
-            context_.status().fault( SUBSYSTEM, ss.str() );
+            subStatus().fault( ss.str() );
             requestIsOutstanding = false;
         }
         catch ( const std::exception & e )
@@ -705,13 +704,13 @@ MainLoop::walk()
             stringstream ss;
             ss << "MainLoop: Caught exception: " << e.what();
             context_.tracer().error( ss.str() );
-            context_.status().fault( SUBSYSTEM, ss.str() );
+            subStatus().fault( ss.str() );
             requestIsOutstanding = false;
         }
         catch ( ... )
         {
             context_.tracer().error( "MainLoop: caught unknown unexpected exception.");
-            context_.status().fault( SUBSYSTEM, "MainLoop: caught unknown unexpected exception.");
+            subStatus().fault( "MainLoop: caught unknown unexpected exception.");
             requestIsOutstanding = false;
         }
             

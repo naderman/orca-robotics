@@ -23,8 +23,8 @@ MainThread::MainThread( const orcaice::Context &context ) :
     driverLib_(0),
     context_(context)
 {
-    context_.status().setMaxHeartbeatInterval( subsysName(), 20.0 );
-    context_.status().initialising( subsysName() );
+    subStatus().setMaxHeartbeatInterval( 20.0 );
+    subStatus().initialising();
 
     //
     // Read settings
@@ -112,7 +112,7 @@ MainThread::initNetworkInterface()
 void
 MainThread::initHardwareDriver()
 {
-    context_.status().setMaxHeartbeatInterval( subsysName(), 20.0 );
+    subStatus().setMaxHeartbeatInterval( 20.0 );
 
     // this function works for re-initialization as well
     if ( driver_ ) delete driver_;
@@ -153,40 +153,40 @@ MainThread::initHardwareDriver()
             stringstream ss;
             ss << "MainThread: Caught exception while initialising driver: " << e;
             context_.tracer().error( ss.str() );
-            context_.status().fault( subsysName(), ss.str() );
+            subStatus().fault( ss.str() );
         }
         catch ( std::exception &e )
         {
             stringstream ss;
             ss << "MainThread: Caught exception while initialising driver: " << e.what();
             context_.tracer().error( ss.str() );
-            context_.status().fault( subsysName(), ss.str() );
+            subStatus().fault( ss.str() );
         }
         catch ( char *e )
         {
             stringstream ss;
             ss << "MainThread: Caught exception while initialising driver: " << e;
             context_.tracer().error( ss.str() );
-            context_.status().fault( subsysName(), ss.str() );
+            subStatus().fault( ss.str() );
         }
         catch ( std::string &e )
         {
             stringstream ss;
             ss << "MainThread: Caught exception while initialising driver: " << e;
             context_.tracer().error( ss.str() );
-            context_.status().fault( subsysName(), ss.str() );
+            subStatus().fault( ss.str() );
         }
         catch ( ... )
         {
             stringstream ss;
             ss << "MainThread: Caught unknown exception while initialising driver";
             context_.tracer().error( ss.str() );
-            context_.status().fault( subsysName(), ss.str() );
+            subStatus().fault( ss.str() );
         }
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));        
     }
 
-    context_.status().setMaxHeartbeatInterval( subsysName(), 1.0 );
+    subStatus().setMaxHeartbeatInterval( 1.0 );
 }
 
 void
@@ -246,11 +246,11 @@ MainThread::walk()
             laserInterface_->localSetAndSend( orcaLaserData_ );
             if ( hydroLaserData_.haveWarnings )
             {
-                context_.status().warning( subsysName(), hydroLaserData_.warnings );
+                subStatus().warning( hydroLaserData_.warnings );
             }
             else
             {
-                context_.status().ok( subsysName() );
+                subStatus().ok();
             }
 
             stringstream ss;
@@ -270,35 +270,35 @@ MainThread::walk()
             std::stringstream ss;
             ss << "ERROR(mainloop.cpp): Caught unexpected exception: " << e;
             context_.tracer().error( ss.str() );
-            context_.status().fault( subsysName(), ss.str() );
+            subStatus().fault( ss.str() );
         }
         catch ( const std::exception &e )
         {
             std::stringstream ss;
             ss << "ERROR(mainloop.cpp): Caught unexpected exception: " << e.what();
             context_.tracer().error( ss.str() );
-            context_.status().fault( subsysName(), ss.str() );
+            subStatus().fault( ss.str() );
         }
         catch ( const std::string &e )
         {
             std::stringstream ss;
             ss << "ERROR(mainloop.cpp): Caught unexpected string: " << e;
             context_.tracer().error( ss.str() );
-            context_.status().fault( subsysName(), ss.str() );            
+            subStatus().fault( ss.str() );            
         }
         catch ( const char *e )
         {
             std::stringstream ss;
             ss << "ERROR(mainloop.cpp): Caught unexpected char *: " << e;
             context_.tracer().error( ss.str() );
-            context_.status().fault( subsysName(), ss.str() );
+            subStatus().fault( ss.str() );
         }
         catch ( ... )
         {
             std::stringstream ss;
             ss << "ERROR(mainloop.cpp): Caught unexpected unknown exception.";
             context_.tracer().error( ss.str() );
-            context_.status().fault( subsysName(), ss.str() );
+            subStatus().fault( ss.str() );
         }
 
         // If we got to here there's a problem.

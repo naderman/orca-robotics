@@ -46,8 +46,8 @@ MainThread::MainThread( const orcaice::Context &context ) :
     SafeThread( context.tracer(), context.status(), "MainThread" ),
     context_(context)
 {
-    context_.status().setMaxHeartbeatInterval( subsysName(), 10.0 );
-    context_.status().initialising( subsysName() );
+    subStatus().setMaxHeartbeatInterval( 10.0 );
+    subStatus().initialising();
 
     Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag()+".Config.";
