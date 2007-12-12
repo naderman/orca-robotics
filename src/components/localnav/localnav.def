@@ -31,6 +31,8 @@ Config.DriverLib.Default=libOrcaLocalNavVfh.so
 Config.TestInSimulationMode.Default=0
 Config.Test.BatchMode.Default=0
 Config.Test.NumWaypoints.Default=10
+Config.Test.MaxLateralAcceleration.Default=1
+Config.Test.CheckLateralAcceleration.Default=0
 
 # Vfh Parameters
 Config.Vfh.CellSize.Default=0.1

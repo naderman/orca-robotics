@@ -36,6 +36,9 @@ Simulator::Simulator( const orcaice::Context &context,
     std::string prefix = context.tag();
     prefix += ".Config.Test.";
 
+    maxLateralAcceleration_ = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"MaxLateralAcceleraton", 1.0 );
+    checkLateralAcceleration_ = orcaice::getPropertyAsIntWithDefault( prop, prefix+"CheckLateralAcceleration", 0 );
+
     batchMode_ = orcaice::getPropertyAsIntWithDefault( prop, prefix+"BatchMode", 0 );
 
     cout<<"TRACE(simulator.cpp): batchMode_: " << batchMode_ << endl;
@@ -367,6 +370,19 @@ Simulator::checkProgress()
             exit(1);
         }
     }
+
+    if ( checkLateralAcceleration_ )
+    {
+        const double lateralAcceleration = velLin_*velRot_;
+        if ( lateralAcceleration > maxLateralAcceleration_ )
+        {
+            cout << "ERROR(simulator.cpp): lateral acceleration limit (of " << maxLateralAcceleration_ << ") exceeded!"
+                 << endl
+                 << "  velLin_: " << velLin_ << "m/s" << endl
+                 << "  velRot_: " << velRot_*180.0/M_PI << "deg/s" << endl;
+            exit(1);
+        }
+    }
 }
 
 void
@@ -419,7 +435,7 @@ Simulator::getVehicleDescription() const
     c->maxForwardSpeed = 20.0;
     c->maxReverseSpeed = 20.0;
     c->maxTurnrate     = DEG2RAD(990.0);
-    c->maxLateralAcceleration = 3.57;
+    c->maxLateralAcceleration = maxLateralAcceleration_;
     c->maxForwardAcceleration = 1.0;
     c->maxReverseAcceleration = 1.0;
     c->maxRotationalAcceleration = DEG2RAD(90.0);

@@ -58,8 +58,8 @@ private:
     hydroogmap::OgLosTracer rayTracer_;
 
     hydronavutil::Pose      pose_;
-    double                 velLin_;
-    double                 velRot_;
+    double                  velLin_;
+    double                  velRot_;
 
     orcaifaceimpl::LaserScanner2dImpl *laserInterface_;
     orcaifaceimpl::Localise2dImpl     *localiseInterface_;
@@ -70,8 +70,10 @@ private:
 
     orca::PathFollower2dData testPath_;
 
-    int iterationNum_;
+    double maxLateralAcceleration_;
+    bool   checkLateralAcceleration_;
 
+    int iterationNum_;
     bool batchMode_;
     
     orcaice::Context context_;

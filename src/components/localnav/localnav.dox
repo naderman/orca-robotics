@@ -256,6 +256,16 @@ The following configuration parameters affect the behaviour of TestInSimulationM
         is added to create a path of the required size.
     - Default: 10
 
+- @c LocalNav.Config.Test.MaxLateralAcceleration (double) [m/s/s]
+    - When the test simulator reports the capabilities of the simulated vehicle,
+      this is the reported max lateral acceleration (constrains max turnrate at speed).
+    - Default: 1.0
+
+- @c LocalNav.Config.Test.CheckLateralAcceleration (bool)
+    - If true, check that the driver doesn't exceed the specified max lateral acceleration.
+      - Fail the test if it's exceeded.
+    - Default: 0
+
 
 @par Authors
 
