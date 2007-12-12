@@ -21,10 +21,12 @@ using namespace std;
 using namespace reactivewalker;
 
 AlgoThread::AlgoThread( const orcaice::Context& context ) : 
-    SafeThread( context.tracer(), context.status(), "AlgoThread" ),
+    SubsystemThread( context.tracer(), context.status(), "AlgoThread" ),
     driver_(0),
     context_(context)
 {
+    subStatus().setMaxHeartbeatInterval( 20.0 );
+
     laser_ = new orcaifaceimpl::BufferedRangeScanner2dConsumerImpl(
                     10, hydroutil::BufferTypeCircular, context );
     odometry_ = new orcaifaceimpl::StoringOdometry2dConsumerImpl( context );
@@ -115,6 +117,9 @@ AlgoThread::walk()
     assert( odometry_ );
     assert( commandPrx_ );
 
+    // we are fully initialized
+    subStatus().ok();
+
     // temp objects
     orca::RangeScanner2dDataPtr laserData;
     orca::Odometry2dData odometryData;
@@ -154,5 +159,7 @@ AlgoThread::walk()
         // send motion command to the robot
         //
         commandPrx_->setCommand( commandData );
+
+        subStatus().heartbeat();
     }
 }

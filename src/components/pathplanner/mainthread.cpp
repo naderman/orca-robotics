@@ -56,12 +56,11 @@ namespace {
 }
 
 MainThread::MainThread( const orcaice::Context & context )
-    : hydroutil::SafeThread( context_.tracer(), context.status(), "MainThread" ),
+    : hydroutil::SubsystemThread( context_.tracer(), context.status(), "MainThread" ),
       pathPlannerTaskProxy_(0),
       context_(context)
 {
     subStatus().setMaxHeartbeatInterval( 30.0 );
-    subStatus().initialising();
 }
 
 MainThread::~MainThread()

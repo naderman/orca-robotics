@@ -25,7 +25,7 @@ public:
     MainThread( const orcaice::Context &context );
     ~MainThread();
 
-    // from SafeThread
+    // from SubsystemThread
     virtual void walk();
 
 private:

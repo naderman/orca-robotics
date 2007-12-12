@@ -147,14 +147,13 @@ limit( double &cmdSpeed,
 NetThread::NetThread( HwThread                      &hwThread,
                         const orca::VehicleDescription &descr,
                         const orcaice::Context         &context ) :
-    SafeThread( context.tracer(), context.status(), "NetThread" ),
+    SubsystemThread( context.tracer(), context.status(), "NetThread" ),
     eStopPrx_(0),
     hwThread_(hwThread),
     descr_(descr),
     context_(context)
 {
     subStatus().setMaxHeartbeatInterval( 10.0 );
-    subStatus().initialising();
 
     // Get vehicle limits
     orca::VehicleControlVelocityDifferentialDescription *controlDescr =

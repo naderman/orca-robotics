@@ -22,14 +22,13 @@ using namespace std;
 using namespace segwayrmp;
 
 HwThread::HwThread( Config& config, const orcaice::Context &context ) :
-    SafeThread( context.tracer(), context.status(), "HwThread" ),
+    SubsystemThread( context.tracer(), context.status(), "HwThread" ),
     driver_(0),
     driverFactory_(0),
     driverLib_(0),
     context_(context)
 {
     subStatus().setMaxHeartbeatInterval( 10.0 );
-    subStatus().initialising();
 
     //
     // Read settings

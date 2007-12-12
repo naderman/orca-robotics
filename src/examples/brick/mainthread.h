@@ -11,19 +11,19 @@
 #ifndef ORCA2_BRICK_MAIN_THREAD_H
 #define ORCA2_BRICK_MAIN_THREAD_H
 
-#include <hydroutil/safethread.h>
+#include <hydroutil/subsystemthread.h>
 #include <orcaice/context.h>
 
 namespace brick
 {
 
-class MainThread: public hydroutil::SafeThread
+class MainThread: public hydroutil::SubsystemThread
 {    	
 public:
     MainThread( const orcaice::Context& context );
     virtual ~MainThread();
 
-    // from SafeThread
+    // from SubsystemThread
     virtual void walk();
 
 private:

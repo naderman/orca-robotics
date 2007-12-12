@@ -11,13 +11,13 @@
 #ifndef ORCA2_FAITH_LOCALISER_MAIN_LOOP_H
 #define ORCA2_FAITH_LOCALISER_MAIN_LOOP_H
 
-#include <hydroutil/safethread.h>
+#include <hydroutil/subsystemthread.h>
 #include <orcaice/context.h>
 
 namespace faithlocaliser
 {
 
-class MainThread : public hydroutil::SafeThread
+class MainThread : public hydroutil::SubsystemThread
 {
 
 public:
@@ -25,7 +25,7 @@ public:
     MainThread( const orcaice::Context &context );
     ~MainThread();
 
-    // from SafeThread
+    // from SubsystemThread
     virtual void walk();
 
 private:

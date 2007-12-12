@@ -112,12 +112,11 @@ namespace {
 }
 
 MainThread::MainThread( const orcaice::Context & context )
-    : hydroutil::SafeThread( context.tracer(), context.status(), "MainThread" ),
+    : hydroutil::SubsystemThread( context.tracer(), context.status(), "MainThread" ),
       incomingPathI_(0),
       context_(context)
 {
     subStatus().setMaxHeartbeatInterval( 10.0 );
-    subStatus().initialising();
 
     Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag()+".Config.";

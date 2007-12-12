@@ -17,7 +17,7 @@ using namespace std;
 using namespace tracermon;
 
 MainThread::MainThread( Network& network, User& user, const orcaice::Context& context ) :
-    SafeThread( context.tracer(), context.status(), "InputThread" ),
+    SafeThread( context.tracer() ),
     network_(network),
     user_(user)
 {

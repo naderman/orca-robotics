@@ -19,7 +19,7 @@ using namespace std;
 using namespace tracermon;
 
 MainThread::MainThread( User* user, const orcaice::Context & context ) :
-    SafeThread( context.tracer(), context.status(), "NetworkThread" ),
+    SafeThread( context.tracer() ),
     user_(user),
     events_(new hydroutil::EventQueue),
     context_(context)

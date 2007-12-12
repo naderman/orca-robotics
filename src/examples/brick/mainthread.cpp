@@ -17,9 +17,10 @@ using namespace std;
 using namespace brick;
 
 MainThread::MainThread( const orcaice::Context& context ) :
-    SafeThread( context.tracer(), context.status(), "MainThread" ),
+    SubsystemThread( context.tracer(), context.status(), "MainThread" ),
     context_(context)
 {
+    subStatus().setMaxHeartbeatInterval( 20.0 );
 }
 
 MainThread::~MainThread()

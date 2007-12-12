@@ -30,7 +30,7 @@ public:
                     const orcaice::Context & context );
     virtual ~MainThread();
 
-    // from thread
+    // from SafeThread
     virtual void walk();
     
     // from Network

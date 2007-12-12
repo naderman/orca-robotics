@@ -17,7 +17,7 @@
 namespace replier
 {
 
-class MainThread: public hydroutil::SafeThread
+class MainThread: public hydroutil::SafeThread(
 {    	
 public:
     MainThread( const orcaice::Context& context );

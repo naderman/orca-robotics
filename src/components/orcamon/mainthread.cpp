@@ -18,7 +18,7 @@ using namespace std;
 using namespace orcamon;
 
 MainThread::MainThread( const orcaice::Context &context ) : 
-    SafeThread( context.tracer(), context.status(), "MainThread" ),
+    SafeThread( context.tracer() ),
     context_(context)
 {
 }

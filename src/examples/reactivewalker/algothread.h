@@ -11,7 +11,7 @@
 #ifndef ORCA2_REACTIVE_WALKER_ALGORITHM_HANDLER_H
 #define ORCA2_REACTIVE_WALKER_ALGORITHM_HANDLER_H
 
-#include <hydroutil/safethread.h>
+#include <hydroutil/subsystemthread.h>
 #include <orcaice/context.h>
 #include <orcaifaceimpl/bufferedconsumers.h>
 #include <orcaifaceimpl/storingconsumers.h>
@@ -22,7 +22,7 @@
 namespace reactivewalker
 {
 
-class AlgoThread : public hydroutil::SafeThread
+class AlgoThread : public hydroutil::SubsystemThread
 {
 
 public: 
@@ -30,7 +30,7 @@ public:
     AlgoThread( const orcaice::Context& context );
     virtual ~AlgoThread();
 
-    // from SafeThread
+    // from SubsystemThread
     virtual void walk();
 
 private:

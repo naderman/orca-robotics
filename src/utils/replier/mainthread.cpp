@@ -19,7 +19,7 @@ using namespace std;
 namespace replier {
 
 MainThread::MainThread( const orcaice::Context& context ) : 
-    SafeThread( context.tracer(), context.status() ),
+    SafeThread( context.tracer() ),
     context_(context)
 {
 }

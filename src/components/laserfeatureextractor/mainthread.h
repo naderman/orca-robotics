@@ -12,7 +12,7 @@
 #ifndef ORCA2_FEATURE_EXTRACTOR_MAIN_LOOP_H
 #define ORCA2_FEATURE_EXTRACTOR_MAIN_LOOP_H
 
-#include <hydroutil/safethread.h>
+#include <hydroutil/subsystemthread.h>
 #include <orcaice/context.h>
 
 #include <orca/laserscanner2d.h>
@@ -24,14 +24,14 @@ namespace laserfeatures
 
 class AlgorithmDriver;
 
-class MainThread : public hydroutil::SafeThread
+class MainThread : public hydroutil::SubsystemThread
 {
 public:
 
     MainThread( const orcaice::Context &context );
     ~MainThread();
 
-    // from SafeThread
+    // from SubsystemThread
     virtual void walk();
 
 private:

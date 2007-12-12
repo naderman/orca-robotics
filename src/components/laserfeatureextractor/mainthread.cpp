@@ -21,12 +21,11 @@ using namespace std;
 using namespace laserfeatures;
 
 MainThread::MainThread( const orcaice::Context &context ) :
-    SafeThread( context.tracer(), context.status(), "MainThread" ),
+    SubsystemThread( context.tracer(), context.status(), "MainThread" ),
     driver_(NULL),
     context_(context)
 {
     subStatus().setMaxHeartbeatInterval( 10.0 );
-    subStatus().initialising();
 
     sensorOffset_.p.x=0;
     sensorOffset_.p.y=0;

@@ -8,7 +8,7 @@ namespace logplayer {
 ContinuousController::ContinuousController( ReplayConductor        &replayConductor,
                                             bool                    autoStart,
                                             const orcaice::Context &context )
-    : SafeThread( context.tracer(), context.status() ),
+    : SubsystemThread( context.tracer(), context.status() ),
       replayConductor_(replayConductor),
       autoStart_(autoStart),
       context_(context)

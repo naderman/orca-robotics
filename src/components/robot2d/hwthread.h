@@ -11,7 +11,7 @@
 #ifndef ROBOT2D_HARDWARE_THREAD_H
 #define ROBOT2D_HARDWARE_THREAD_H
 
-#include <hydroutil/safethread.h>
+#include <hydroutil/subsystemthread.h>
 #include <orcaice/context.h>
 #include <hydrointerfaces/robot2d.h>
 #include <hydrodll/dynamicload.h>
@@ -25,14 +25,14 @@ namespace robot2d {
 //
 // @author Alex Brooks
 //
-class HwThread : public hydroutil::SafeThread
+class HwThread : public hydroutil::SubsystemThread
 {
 
 public: 
 
     HwThread( const orcaice::Context &context );
 
-    // from SafeThread
+    // from SubsystemThread
     virtual void walk();
 
     // local interface, used by NetThread

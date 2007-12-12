@@ -26,7 +26,7 @@ public:
     MainThread( tracermon::Network& network, tracermon::User& user, const orcaice::Context& context );
     virtual ~MainThread();
 
-    // from Thread
+    // from SafeThread
     virtual void walk();
     
 private:

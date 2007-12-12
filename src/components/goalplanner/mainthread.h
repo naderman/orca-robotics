@@ -11,7 +11,7 @@
 #ifndef ORCA2_GOALPLANNER_MAINTHREAD_H
 #define ORCA2_GOALPLANNER_MAINTHREAD_H
 
-#include <hydroutil/safethread.h>
+#include <hydroutil/subsystemthread.h>
 #include <orcaice/context.h>
 #include <hydroutil/store.h>
 #include <hydronavutil/pose.h> 
@@ -28,7 +28,7 @@ namespace goalplanner
 
 class PathFollower2dI;
 
-class MainThread : public hydroutil::SafeThread
+class MainThread : public hydroutil::SubsystemThread
 {
 
 public: 

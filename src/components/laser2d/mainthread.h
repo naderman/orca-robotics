@@ -10,7 +10,7 @@
 #ifndef ORCA2_LASER2D_MAIN_THREAD_H
 #define ORCA2_LASER2D_MAIN_THREAD_H
 
-#include <hydroutil/safethread.h>
+#include <hydroutil/subsystemthread.h>
 #include <orcaice/context.h>
 #include <hydrodll/dynamicload.h>
 // remote interface
@@ -23,7 +23,7 @@ namespace laser2d {
 //
 // @brief the main executing loop of this laser component.
 //
-class MainThread : public hydroutil::SafeThread
+class MainThread : public hydroutil::SubsystemThread
 {
 
 public:
@@ -31,7 +31,7 @@ public:
     MainThread( const orcaice::Context &context );
     ~MainThread();
 
-    // from SafeThread
+    // from SubsystemThread
     virtual void walk();
 
 private:

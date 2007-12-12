@@ -11,7 +11,7 @@
 #ifndef ORCA2_GPS_MAIN_THREAD_H
 #define ORCA2_GPS_MAIN_THREAD_H
 
-#include <hydroutil/safethread.h>
+#include <hydroutil/subsystemthread.h>
 #include <orcaice/context.h>
 #include <orcaifaceimpl/gpsImpl.h>
 
@@ -19,7 +19,7 @@ namespace gps {
 
 class Driver;
 
-class MainThread : public hydroutil::SafeThread
+class MainThread : public hydroutil::SubsystemThread
 {
 
 public:
@@ -27,7 +27,7 @@ public:
     MainThread( const orcaice::Context& context );
     ~MainThread();
 
-    // from SafeThread
+    // from SubsystemThread
     virtual void walk();
 
 private:

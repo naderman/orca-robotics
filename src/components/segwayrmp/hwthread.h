@@ -11,7 +11,7 @@
 #ifndef SEGWAYRMP_HARDWARE_THREAD_H
 #define SEGWAYRMP_HARDWARE_THREAD_H
 
-#include <hydroutil/safethread.h>
+#include <hydroutil/subsystemthread.h>
 #include <orcaice/context.h>
 #include <hydrointerfaces/segwayrmp.h>
 #include <hydrodll/dynamicload.h>
@@ -30,7 +30,7 @@ enum EStopStatus{ESS_NO_FAULT, ESS_FAULT};
 //
 // @author Alex Brooks
 //
-class HwThread : public hydroutil::SafeThread
+class HwThread : public hydroutil::SubsystemThread
 {
 
 public: 
@@ -48,7 +48,7 @@ public:
     HwThread( Config& config, const orcaice::Context &context );
     ~HwThread();
     
-    // Inherited from SafeThread
+    // Inherited from SubsystemThread
     virtual void walk();
 
     // local interface, used by NetThread

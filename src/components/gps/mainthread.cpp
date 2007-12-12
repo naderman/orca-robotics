@@ -22,12 +22,11 @@ using namespace std;
 using namespace gps;
 
 MainThread::MainThread( const orcaice::Context& context ) :
-    SafeThread( context.tracer(), context.status(), "MainThread" ),
+    SubsystemThread( context.tracer(), context.status(), "MainThread" ),
     driver_(0),
     context_(context)
 {
     subStatus().setMaxHeartbeatInterval( 10.0 );
-    subStatus().initialising();
 }
 
 MainThread::~MainThread()
