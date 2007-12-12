@@ -162,7 +162,7 @@ GenericDriver::computePath( const orca::PathPlanner2dTask& task,
         }
         stringstream ss;
         ss << "Computing path segment took " << watch.elapsedSeconds() << "s";
-        context_.tracer()->debug(ss.str(),1);
+        context_.tracer().debug(ss.str(),1);
 
         // ====== Set waypoint parameters ================================
         // ====== Different options could be implemented and chosen and runtime (via .cfg file)

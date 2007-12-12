@@ -27,8 +27,8 @@ MainLoop::MainLoop( const orcaice::Context &context )
     : driver_(NULL),
       context_(context)
 {
-    context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 10.0 );
-    context_.status()->initialising( SUBSYSTEM );
+    context_.status().setMaxHeartbeatInterval( SUBSYSTEM, 10.0 );
+    context_.status().initialising( SUBSYSTEM );
     
     // create a callback object to recieve data
     gpsConsumer_ = new orcaifaceimpl::ProxiedGpsConsumerImpl( context_ );
@@ -52,7 +52,7 @@ MainLoop::initDriver()
         connectToGps();
         getGpsDescription();
 
-        context_.tracer()->debug( "loading 'simple' driver",3);
+        context_.tracer().debug( "loading 'simple' driver",3);
         driver_ = new SimpleDriver( gpsDescr_, context_ );
     }
     else if ( driverName == "odometrybased" )
@@ -60,17 +60,17 @@ MainLoop::initDriver()
         connectToGps();
         getGpsDescription();
 
-        context_.tracer()->debug( "loading 'odometrybased' driver",3);
+        context_.tracer().debug( "loading 'odometrybased' driver",3);
         driver_ = new OdometryBasedDriver( gpsDescr_, context_ );
     }
     else
     {
         std::string errString = "Unknown driver: " + driverName;
-        context_.tracer()->error( errString );
+        context_.tracer().error( errString );
         exit(1);
     }
     
-    context_.tracer()->debug("driver instantiated",5);
+    context_.tracer().debug("driver instantiated",5);
 }
 
 void 
@@ -80,26 +80,26 @@ MainLoop::connectToGps()
     {
         try
         {
-            context_.tracer()->debug( "Connecting to gps...", 3 );
+            context_.tracer().debug( "Connecting to gps...", 3 );
             orcaice::connectToInterfaceWithTag<orca::GpsPrx>( context_, gpsPrx_, "Gps" );
-            context_.tracer()->debug("connected to a 'Gps' interface", 4 );
+            context_.tracer().debug("connected to a 'Gps' interface", 4 );
             break;
         }
         catch ( const Ice::Exception &e )
         {
             stringstream ss;
             ss << "failed to connect to gps interface: " << e;
-            context_.tracer()->error( ss.str() );
+            context_.tracer().error( ss.str() );
         }
         catch ( const std::exception &e )
         {
             stringstream ss;
             ss << "failed to connect to gps interface: " << e.what();
-            context_.tracer()->error( ss.str() );
+            context_.tracer().error( ss.str() );
         }
         catch ( ... )
         {
-            context_.tracer()->error( "Failed to connect to gps interface for unknown reason." );
+            context_.tracer().error( "Failed to connect to gps interface for unknown reason." );
         }
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
     }
@@ -108,7 +108,7 @@ MainLoop::connectToGps()
     {
         try
         {
-            context_.tracer()->debug( "Subscribing to gps...", 3 );
+            context_.tracer().debug( "Subscribing to gps...", 3 );
             gpsPrx_->subscribe( gpsConsumer_->consumerPrx() );
             break;
         }
@@ -116,23 +116,23 @@ MainLoop::connectToGps()
         {
             stringstream ss;
             ss << "failed to subscribe to gps: " << e;
-            context_.tracer()->error( ss.str() );
+            context_.tracer().error( ss.str() );
         }
         catch ( const std::exception &e )
         {
             stringstream ss;
             ss << "failed to subscribe to gps: " << e.what();
-            context_.tracer()->error( ss.str() );
+            context_.tracer().error( ss.str() );
         }
         catch ( ... )
         {
-            context_.tracer()->error( "Failed to subscribe to gps for unknown reason." );
+            context_.tracer().error( "Failed to subscribe to gps for unknown reason." );
         }
-        context_.status()->initialising( SUBSYSTEM, "connectToGps()" );
+        context_.status().initialising( SUBSYSTEM, "connectToGps()" );
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
     }
 
-    context_.tracer()->info( "Subscribed to gps." );
+    context_.tracer().info( "Subscribed to gps." );
 }
 
 void 
@@ -142,11 +142,11 @@ MainLoop::getGpsDescription()
     {
         try
         {
-            context_.tracer()->debug( "Getting gps description...", 2 );
+            context_.tracer().debug( "Getting gps description...", 2 );
             gpsDescr_ = gpsPrx_->getDescription();
             stringstream ss;
             ss << "Got gps description: " << orcaice::toString( gpsDescr_ );
-            context_.tracer()->info( ss.str() );
+            context_.tracer().info( ss.str() );
             antennaOffset_ = gpsDescr_.antennaOffset;
             if ( antennaOffsetOK( antennaOffset_ ) )
                 return;
@@ -155,19 +155,19 @@ MainLoop::getGpsDescription()
         {
             stringstream ss;
             ss << "failed to retreive gps description: " << e;
-            context_.tracer()->error( ss.str() );
+            context_.tracer().error( ss.str() );
         }
         catch ( const std::exception &e )
         {
             stringstream ss;
             ss << "failed to retreive gps description: " << e.what();
-            context_.tracer()->error( ss.str() );
+            context_.tracer().error( ss.str() );
         }
         catch ( ... )
         {
-            context_.tracer()->error( "Failed to retreive gps description for unknown reason." );
+            context_.tracer().error( "Failed to retreive gps description for unknown reason." );
         }
-        context_.status()->initialising( SUBSYSTEM, "getGpsDescription()" );
+        context_.status().initialising( SUBSYSTEM, "getGpsDescription()" );
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
     }
 }
@@ -183,7 +183,7 @@ MainLoop::initInterface()
     
     if (!requireOdometry)
     {
-        context_.tracer()->debug("Odometry interface is not required: VehicleDescription is set to unknown", 3);
+        context_.tracer().debug("Odometry interface is not required: VehicleDescription is set to unknown", 3);
         orca::VehicleGeometryDescriptionPtr geometry = new orca::VehicleGeometryDescription;
         geometry->type = orca::VehicleGeometryOther;
         vehicleDesc.geometry = geometry; 
@@ -200,33 +200,33 @@ MainLoop::initInterface()
         {
             try
             {
-                context_.tracer()->debug( "Connecting to Odometry2d...", 3 );
+                context_.tracer().debug( "Connecting to Odometry2d...", 3 );
                 orcaice::connectToInterfaceWithTag<orca::Odometry2dPrx>( context_, odoPrx, "Odometry2d" );
-                context_.tracer()->debug("connected to a 'Odometry2d' interface", 4 );
-                context_.tracer()->debug( "Getting vehicle description...", 2 );
+                context_.tracer().debug("connected to a 'Odometry2d' interface", 4 );
+                context_.tracer().debug( "Getting vehicle description...", 2 );
                 vehicleDesc = odoPrx->getDescription();
                 stringstream ss;
                 ss << "Got vehicle description: " << orcaice::toString( vehicleDesc );
-                context_.tracer()->info( ss.str() );
+                context_.tracer().info( ss.str() );
                 break;
             }
             catch ( const Ice::Exception &e )
             {
                 stringstream ss;
                 ss << "failed to retrieve vehicle description: " << e;
-                context_.tracer()->error( ss.str() );
+                context_.tracer().error( ss.str() );
             }
             catch ( const std::exception &e )
             {
                 stringstream ss;
                 ss << "failed to retreive vehicle description: " << e.what();
-                context_.tracer()->error( ss.str() );
+                context_.tracer().error( ss.str() );
             }
             catch ( ... )
             {
-                context_.tracer()->error( "Failed to retreive vehicle description for unknown reason." );
+                context_.tracer().error( "Failed to retreive vehicle description for unknown reason." );
             }
-            context_.status()->initialising( SUBSYSTEM, "getVehicleDescription()" );
+            context_.status().initialising( SUBSYSTEM, "getVehicleDescription()" );
             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
         }
     }
@@ -239,16 +239,16 @@ MainLoop::initInterface()
     while ( !isStopping() )
     {
         try {
-            context_.tracer()->debug( "Initialising Localise2d interface...",3 );
+            context_.tracer().debug( "Initialising Localise2d interface...",3 );
             localiseInterface_->initInterface();
-            context_.tracer()->debug( "Initialised Localise2d interface",3 );
+            context_.tracer().debug( "Initialised Localise2d interface",3 );
             return;
         }
         catch ( hydroutil::Exception &e )
         {
-            context_.tracer()->warning( std::string("MainLoop::initInterface(): ") + e.what() );
+            context_.tracer().warning( std::string("MainLoop::initInterface(): ") + e.what() );
         }
-        context_.status()->initialising( SUBSYSTEM, "initInterface()" );
+        context_.status().initialising( SUBSYSTEM, "initInterface()" );
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
     }
 }
@@ -268,8 +268,8 @@ MainLoop::run()
     const int reconnectFailTimes = 10;
     int numTimeouts = 0;
 
-    context_.tracer()->debug( "Entering main loop.",2 );
-    context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 3.0 );
+    context_.tracer().debug( "Entering main loop.",2 );
+    context_.status().setMaxHeartbeatInterval( SUBSYSTEM, 3.0 );
 
     // Loop forever till we get shut down.
     while ( !isStopping() )
@@ -285,8 +285,8 @@ MainLoop::run()
                 {
                     stringstream ss;
                     ss << "Timed out (" << timeoutMs << "ms) waiting for data.  Reconnecting.";
-                    context_.tracer()->warning( ss.str() );
-                    context_.status()->warning( SUBSYSTEM, ss.str() );
+                    context_.tracer().warning( ss.str() );
+                    context_.status().warning( SUBSYSTEM, ss.str() );
                     connectToGps();
                 }
                 continue;
@@ -300,8 +300,8 @@ MainLoop::run()
 
             if ( !canCompute )
             {
-                context_.status()->ok( SUBSYSTEM );
-                context_.tracer()->debug( "MainLoop: can't compute localiseData" );
+                context_.status().ok( SUBSYSTEM );
+                context_.tracer().debug( "MainLoop: can't compute localiseData" );
                 continue;
             }
 
@@ -310,40 +310,40 @@ MainLoop::run()
 
             localiseInterface_->localSetAndSend( localiseData );
 
-            context_.status()->ok( SUBSYSTEM );
+            context_.status().ok( SUBSYSTEM );
 
         } // try
         catch ( const orca::OrcaException & e )
         {
             std::stringstream ss;
             ss << "MainLoop: unexpected orca exception: " << e << ": " << e.what;
-            context_.tracer()->error( ss.str() );
+            context_.tracer().error( ss.str() );
         }
         catch ( const Ice::Exception & e )
         {
             std::stringstream ss;
             ss << "MainLoop: unexpected Ice exception: " << e;
-            context_.tracer()->error( ss.str() );
+            context_.tracer().error( ss.str() );
         }
         catch ( const std::exception & e )
         {
             std::stringstream ss;
             ss << "MainLoop: unexpected std exception: " << e.what();
-            context_.tracer()->error( ss.str() );
+            context_.tracer().error( ss.str() );
         }
         catch ( const std::string &e )
         {
             std::stringstream ss;
             ss << "MainLoop: unexpected std::string exception: " << e;
-            context_.tracer()->error( ss.str() );
+            context_.tracer().error( ss.str() );
         }
         catch ( ... )
         {
-            context_.tracer()->error( "MainLoop: unexpected exception from somewhere.");
+            context_.tracer().error( "MainLoop: unexpected exception from somewhere.");
         }
     } // while
 
-    context_.tracer()->debug( "Exited main loop.",2 );
+    context_.tracer().debug( "Exited main loop.",2 );
 }
 
 bool
@@ -354,7 +354,7 @@ MainLoop::antennaOffsetOK( const orca::Frame3d &offset )
     {
         stringstream ss;
         ss << "Can't handle non-zero roll/pitch/yaw in antenna offset. Offset: " << orcaice::toString(offset);
-        context_.tracer()->error( ss.str() );
+        context_.tracer().error( ss.str() );
         offsetOk = false;
     }
 

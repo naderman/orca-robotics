@@ -40,11 +40,11 @@ VfhDriver::VfhDriver( const orcaice::Context & context,
     {
         if ( warnings != "" )
         {
-            context_.tracer()->warning( "Dodgy-looking VFH configuration: " + warnings );
+            context_.tracer().warning( "Dodgy-looking VFH configuration: " + warnings );
         }
         if ( errors != "" )
         {
-            context_.tracer()->error( "Erroneous VFH configuration: " + errors );
+            context_.tracer().error( "Erroneous VFH configuration: " + errors );
             stringstream ss;
             ss << "VfhDriver: Bad VFH config: " << errors;
             throw hydroutil::Exception( ERROR_INFO, ss.str() );
@@ -72,7 +72,7 @@ VfhDriver::setSpeedConstraints( float maxSpeed, float maxTurnrate )
         ss << "VFH: requested maxSpeed ("
            <<maxSpeed_<<") faster than its configured maximum ("<<vfhConfig_.maxSpeed
            <<").  Thresholding.";
-        context_.tracer()->debug( ss.str(), 2 );
+        context_.tracer().debug( ss.str(), 2 );
         maxSpeed_ = vfhConfig_.maxSpeed;
     }
     if ( maxTurnrate_ > vfhConfig_.maxTurnrate1ms )
@@ -81,7 +81,7 @@ VfhDriver::setSpeedConstraints( float maxSpeed, float maxTurnrate )
         ss << "VFH: requested maxTurnrate ("<<maxTurnrate*180.0/M_PI
            <<"deg) faster than its configured maximum ("<<vfhConfig_.absoluteMaxTurnrate*180.0/M_PI
            <<"deg).  Thresholding.";
-        context_.tracer()->debug( ss.str(), 2 );
+        context_.tracer().debug( ss.str(), 2 );
         maxTurnrate_ = vfhConfig_.absoluteMaxTurnrate;
     }
 
@@ -143,7 +143,7 @@ VfhDriver::getCommand( bool                                   stalled,
 
     stringstream ss;
     ss << "VFH: Setting command: " << orcaice::toString(cmd);
-    context_.tracer()->debug( ss.str(), 5 );
+    context_.tracer().debug( ss.str(), 5 );
 
     prevCmd_.motion.v.x = cmd.motion.v.x;
     prevCmd_.motion.v.y = cmd.motion.v.y;
@@ -281,7 +281,7 @@ VfhDriver::copyLaserScan( const orca::RangeScanner2dDataPtr obs, double playerLa
             stringstream ss;
             ss << "VfhDriver: obs size,increment= " << obs->ranges.size() << ", " << angleIncrement*180.0/M_PI << endl;
             ss << "Expected " << 0.5*M_PI/180.0 << ", found " << angleIncrement;
-            context_.tracer()->debug( ss.str(), 5 );
+            context_.tracer().debug( ss.str(), 5 );
             ss.str("");
             ss << "VfhDriver: Can't handle weird angle increment: obs size,increment= " << obs->ranges.size() << ", " << angleIncrement*180.0/M_PI << "deg";
             throw hydroutil::Exception( ERROR_INFO, ss.str() );

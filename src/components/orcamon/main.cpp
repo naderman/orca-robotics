@@ -55,9 +55,9 @@ void Component::start()
 void
 Component::stop()
 {
-    tracer()->debug( "stopping component", 5 );
+    tracer().debug( "stopping component", 5 );
     hydroutil::stopAndJoin( mainLoop_ );
-    tracer()->debug( "stopped component", 5 );
+    tracer().debug( "stopped component", 5 );
 }
 
 } // namespace

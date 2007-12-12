@@ -16,7 +16,7 @@ NodeObserverI::nodeInit( const IceGrid::NodeDynamicInfoSeq &nodes,
     ss << "NodeObserverI::nodeInit:\n"
        << "  nodes:\n"
        << toString(nodes,"node",4);
-    context_.tracer()->info( ss.str() );
+    context_.tracer().info( ss.str() );
 }
 
 void 
@@ -25,7 +25,7 @@ NodeObserverI::nodeUp( const IceGrid::NodeDynamicInfo &info,
 {
     stringstream ss;
     ss << "NodeObserverI::nodeUp:\n" << toString(info,2);
-    context_.tracer()->info( ss.str() );
+    context_.tracer().info( ss.str() );
 }
 
 void 
@@ -34,7 +34,7 @@ NodeObserverI::nodeDown( const std::string &name,
 {
     stringstream ss;
     ss << "NodeObserverI::nodeDown: " << name;
-    context_.tracer()->info( ss.str() );
+    context_.tracer().info( ss.str() );
 }
 
 void 
@@ -46,7 +46,7 @@ NodeObserverI::updateServer( const std::string &node,
     ss << "NodeObserverI::updateServer:\n"
        << "  node: " << node << endl
        << "  updatedInfo: " << endl << toString(updatedInfo,4);
-    context_.tracer()->info( ss.str() );
+    context_.tracer().info( ss.str() );
 }
 
 void 
@@ -58,7 +58,7 @@ NodeObserverI::updateAdapter( const std::string &node,
     ss << "NodeObserverI::updateAdapter:\n" 
        << "  node: " << node << endl
        << "  updatedInfo: " << endl << toString(updatedInfo,4);
-    context_.tracer()->info( ss.str() );
+    context_.tracer().info( ss.str() );
 }
 
 void 
@@ -68,7 +68,7 @@ NodeObserverI::nodeUpdated( const IceGrid::NodeInfo &info,
     stringstream ss;
     ss << "NodeObserverI::nodeUpdated:\n"
        << "  nodeInfo: " << endl << toString(info,4);
-    context_.tracer()->info( ss.str() );
+    context_.tracer().info( ss.str() );
 }                             
 
 }

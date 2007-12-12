@@ -85,24 +85,24 @@ NetworkThread::walk()
     // based on the ID of the interface, create the right network driver
     if ( ifaceId == "::orca::VelocityControl2d" )
     {
-        context_.tracer()->info("loading 'VelocityControl2d' driver");
+        context_.tracer().info("loading 'VelocityControl2d' driver");
         driver_ = new VelocityControl2dDriver( display_, context_ );
     }
     else if ( ifaceId == "::orca::DriveBicycle" )
     {
-        context_.tracer()->info("loading 'DriveBicycle' driver");
+        context_.tracer().info("loading 'DriveBicycle' driver");
         driver_ = new DriveBicycleDriver( display_, context_ );
     }
     else {
         string errorStr = "Unsupported interface ID="+ifaceId;
-        context_.tracer()->error( errorStr); 
-        context_.tracer()->info( "Valid driver values are {'VelocityControl2d', 'DriveBicycle'}" );
+        context_.tracer().error( errorStr); 
+        context_.tracer().info( "Valid driver values are {'VelocityControl2d', 'DriveBicycle'}" );
         throw hydroutil::Exception( ERROR_INFO, errorStr );
     }    
 
     // don't forget to enable the driver, but check isStopping() to see if we should quit
     while ( driver_->enable() && !isStopping() ) {
-        context_.tracer()->warning("Failed to enable network driver. Will try again in 2 seconds.");
+        context_.tracer().warning("Failed to enable network driver. Will try again in 2 seconds.");
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
     }
 
@@ -110,7 +110,7 @@ NetworkThread::walk()
     if ( isStopping() ) {
         return;
     }
-    context_.tracer()->debug("Network driver enabled",2);
+    context_.tracer().debug("Network driver enabled",2);
 
 
     hydroutil::EventPtr event;    
@@ -121,7 +121,7 @@ NetworkThread::walk()
     //
     while ( !isStopping() )
     {
-        context_.tracer()->debug( "NetworkThread: waiting for event...", 10 );
+        context_.tracer().debug( "NetworkThread: waiting for event...", 10 );
         if ( !events_->timedGet( event, timeoutMs ) ) {
             driver_->repeatCommand();
             continue;

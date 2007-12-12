@@ -153,8 +153,8 @@ NetThread::NetThread( HwThread                      &hwThread,
     descr_(descr),
     context_(context)
 {
-    context_.status()->setMaxHeartbeatInterval( subsysName(), 10.0 );
-    context_.status()->initialising( subsysName() );
+    context_.status().setMaxHeartbeatInterval( subsysName(), 10.0 );
+    context_.status().initialising( subsysName() );
 
     // Get vehicle limits
     orca::VehicleControlVelocityDifferentialDescription *controlDescr =
@@ -173,7 +173,7 @@ NetThread::NetThread( HwThread                      &hwThread,
     isEStopEnabled_ = (bool)orcaice::getPropertyAsIntWithDefault( context_.properties(),
             context_.tag()+".Config.EnableEStopInterface", 0 );
     stringstream ss; ss <<"NetThread: isEStopInterfaceEnabled is set to "<< isEStopEnabled_<<endl;
-    context_.tracer()->info( ss.str() );
+    context_.tracer().info( ss.str() );
 }
 
 // This is a direct callback from the VelocityControl2dImpl object.
@@ -206,7 +206,7 @@ NetThread::handleData(const orca::VelocityControl2dData& incomingCommand)
            << "  maxTurnrate            :     " << maxTurnrate_*M_PI/180.0 << endl
            << "  maxLateralAcceleration : " << maxLateralAcceleration_ << endl
            << "    --> limiting command to: " << internalCommand.toString();
-        context_.status()->warning( subsysName(), ss.str() );
+        context_.status().warning( subsysName(), ss.str() );
     }
 
     hwThread_.setCommand( internalCommand );
@@ -259,7 +259,7 @@ NetThread::walk()
         context_.properties(), prefix+"PowerPublishInterval", 20.0 );
 
     const int odometryReadTimeout = 500; // [ms]
-    context_.status()->setMaxHeartbeatInterval( subsysName(), 2.0*(odometryReadTimeout/1000.0) );
+    context_.status().setMaxHeartbeatInterval( subsysName(), 2.0*(odometryReadTimeout/1000.0) );
     
 
 
@@ -268,14 +268,14 @@ NetThread::walk()
     //
     while( !isStopping() )
     {
-//         context_.tracer()->debug( "net handler loop spinning ",1);
+//         context_.tracer().debug( "net handler loop spinning ",1);
 
         // block on the highest frequency incoming data stream
         hydrointerfaces::SegwayRmp::Data data;
         if ( hwThread_.getData( data, odometryReadTimeout ) ) {
-//             context_.tracer()->debug( "Net loop timed out", 1);
+//             context_.tracer().debug( "Net loop timed out", 1);
             // Don't flag this as an error -- it may happen during normal initialisation.
-            context_.status()->ok( subsysName(), "Net loop timed out" );
+            context_.status().ok( subsysName(), "Net loop timed out" );
             continue;
         }
 
@@ -312,7 +312,7 @@ NetThread::walk()
         }
 
         // subsystem heartbeat
-        context_.status()->ok( subsysName() );
+        context_.status().ok( subsysName() );
     } // main loop
 }
 
@@ -344,7 +344,7 @@ NetThread::initEStopCallback()
         }
         catch ( const orca::SubscriptionFailedException & )
         {
-            context_.tracer()->error( "failed to subscribe for data updates. Will try again after 3 seconds." );
+            context_.tracer().error( "failed to subscribe for data updates. Will try again after 3 seconds." );
             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
         }
     }

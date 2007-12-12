@@ -28,8 +28,8 @@ HwThread::HwThread( Config& config, const orcaice::Context &context ) :
     driverLib_(0),
     context_(context)
 {
-    context_.status()->setMaxHeartbeatInterval( subsysName(), 10.0 );
-    context_.status()->initialising( subsysName() );
+    context_.status().setMaxHeartbeatInterval( subsysName(), 10.0 );
+    context_.status().initialising( subsysName() );
 
     //
     // Read settings
@@ -41,14 +41,14 @@ HwThread::HwThread( Config& config, const orcaice::Context &context ) :
     // alexm: this param is read-in twice: here and in NetThread, doesn't seem right.
     isEStopEnabled_ = (bool)orcaice::getPropertyAsIntWithDefault( prop, prefix+"EnableEStopInterface", 0 );
     stringstream ss; ss <<"HwThread: isEStopInterfaceEnabled is set to "<< isEStopEnabled_<<endl;
-    context_.tracer()->info( ss.str() );
+    context_.tracer().info( ss.str() );
  
     isMotionEnabled_ = (bool)orcaice::getPropertyAsIntWithDefault( prop, prefix+"EnableMotion", 1 );
 
     // Dynamically load the library and find the factory
     std::string driverLibName = 
         orcaice::getPropertyWithDefault( prop, prefix+"DriverLib", "libHydroSegwayRmpAcfrCan.so" );
-    context_.tracer()->debug( "HwThread: Loading driver library "+driverLibName, 4 );
+    context_.tracer().debug( "HwThread: Loading driver library "+driverLibName, 4 );
     try {
         driverLib_ = new hydrodll::DynamicallyLoadedLibrary(driverLibName);
         driverFactory_ = 
@@ -57,7 +57,7 @@ HwThread::HwThread( Config& config, const orcaice::Context &context ) :
     }
     catch (hydrodll::DynamicLoadException &e)
     {
-        context_.tracer()->error( e.what() );
+        context_.tracer().error( e.what() );
         throw;
     }
 
@@ -65,14 +65,14 @@ HwThread::HwThread( Config& config, const orcaice::Context &context ) :
     hydroutil::Properties props( prop->getPropertiesForPrefix(prefix), prefix );
     hydrointerfaces::Context driverContext( props, context_.tracer(), context_.status() );
     try {
-        context_.tracer()->info( "HwThread: creating driver..." );
+        context_.tracer().info( "HwThread: creating driver..." );
         driver_ = driverFactory_->createDriver( driverContext );
     }
     catch ( ... )
     {
         stringstream ss;
         ss << "HwThread: Caught exception while creating driver.";
-        context_.tracer()->error( ss.str() );
+        context_.tracer().error( ss.str() );
         throw;
     }  
 
@@ -96,25 +96,25 @@ HwThread::enableDriver()
     while ( !isStopping() ) 
     {
         try {
-            context_.tracer()->info("HwThread: (Re-)Enabling driver...");
+            context_.tracer().info("HwThread: (Re-)Enabling driver...");
             driver_->enable();
-            context_.tracer()->info( "HwThread: Enable succeeded." );
+            context_.tracer().info( "HwThread: Enable succeeded." );
             return;
         }
         catch ( std::exception &e )
         {
             std::stringstream ss;
             ss << "HwThread::enableDriver(): enable failed: " << e.what();
-            context_.tracer()->error( ss.str() );
-            context_.status()->fault( subsysName(), ss.str() );
+            context_.tracer().error( ss.str() );
+            context_.status().fault( subsysName(), ss.str() );
             stateMachine_.setFault( ss.str() );
         }
         catch ( ... )
         {
             std::stringstream ss;
             ss << "HwThread::enableDriver(): enable failed due to unknown exception.";
-            context_.tracer()->error( ss.str() );
-            context_.status()->fault( subsysName(), ss.str() );
+            context_.tracer().error( ss.str() );
+            context_.status().fault( subsysName(), ss.str() );
             stateMachine_.setFault( ss.str() );
         }
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
@@ -138,7 +138,7 @@ HwThread::walk()
         if ( stateMachine_.isFault( reason ) )
         {
             // Try to (re-)enable
-            context_.status()->setMaxHeartbeatInterval( subsysName(), 5.0 );    
+            context_.status().setMaxHeartbeatInterval( subsysName(), 5.0 );    
 
             // Is the Estop correctly enabled?
             if( isEStopEnabled_ && ( !isEStopConnected(eStopTimeoutMs) ))
@@ -149,7 +149,7 @@ HwThread::walk()
 
             // we enabled, so presume we're OK.
             stateMachine_.setOK();
-            context_.status()->setMaxHeartbeatInterval( subsysName(), 2.0 );
+            context_.status().setMaxHeartbeatInterval( subsysName(), 2.0 );
 
             // but make sure we're not shutting down.
             if ( isStopping() )
@@ -177,17 +177,17 @@ HwThread::walk()
                 if ( isFault )
                 {
                     stateMachine_.setFault( ss.str() );
-                    context_.tracer()->error( ss.str() );
+                    context_.tracer().error( ss.str() );
                 }
                 else if ( isWarn )
                 {
                     stateMachine_.setWarning( ss.str() );
-                    context_.tracer()->warning( ss.str() );
+                    context_.tracer().warning( ss.str() );
                 }
                 else
                 {
                     stateMachine_.setOK();
-                    context_.tracer()->info( ss.str() );
+                    context_.tracer().info( ss.str() );
                 }
             }
         }
@@ -195,7 +195,7 @@ HwThread::walk()
         {
             std::stringstream ss;
             ss << "HwThread: Failed to read: " << e.what();
-            context_.tracer()->error( ss.str() );
+            context_.tracer().error( ss.str() );
 
             stateMachine_.setFault( ss.str() );
         }
@@ -203,7 +203,7 @@ HwThread::walk()
         {
             std::stringstream ss;
             ss << "HwThread: Failed to read due to unknown exception.";
-            context_.tracer()->error( ss.str() );
+            context_.tracer().error( ss.str() );
 
             stateMachine_.setFault( ss.str() );            
         }
@@ -221,13 +221,13 @@ HwThread::walk()
 
                 stringstream ss;
                 ss << "HwThread: wrote command: " << command.toString();
-                context_.tracer()->debug( ss.str() );
+                context_.tracer().debug( ss.str() );
             }
             catch ( std::exception &e )
             {
                 std::stringstream ss;
                 ss << "HwThread: Failed to write command to hardware: " << e.what();
-                context_.tracer()->error( ss.str() );
+                context_.tracer().error( ss.str() );
 
                 // set local state to failure
                 stateMachine_.setFault( ss.str() );
@@ -236,7 +236,7 @@ HwThread::walk()
             {
                 std::stringstream ss;
                 ss << "HwThread: Failed to write command to hardware due to unknown exception.";
-                context_.tracer()->error( ss.str() );
+                context_.tracer().error( ss.str() );
 
                 // set local state to failure
                 stateMachine_.setFault( ss.str() );                
@@ -255,7 +255,7 @@ HwThread::walk()
                 if( eStopStatus == segwayrmp::ESS_FAULT )
                 {
                     std::stringstream ss; ss << "HwThread: EstopInterface shows error state, disabling motion.";
-                    context_.tracer()->error( ss.str() );
+                    context_.tracer().error( ss.str() );
                     // set local state to failure
                     stateMachine_.setFault( ss.str() );                                
                 }        
@@ -271,15 +271,15 @@ HwThread::walk()
         // Tell the 'status' engine what our local state machine knows.
         if ( stateMachine_.isFault(reason) )
         {
-            context_.status()->fault( subsysName(), reason );
+            context_.status().fault( subsysName(), reason );
         }
         else if ( stateMachine_.isWarning(reason) )
         {
-            context_.status()->warning( subsysName(), reason );
+            context_.status().warning( subsysName(), reason );
         }
         else
         {
-            context_.status()->ok( subsysName() );
+            context_.status().ok( subsysName() );
         }
 
 
@@ -314,14 +314,14 @@ HwThread::setCommand( const hydrointerfaces::SegwayRmp::Command &command )
         std::stringstream ss;
         ss << "HwDriverHandler: It's been " << msecs << "ms since we last received a command."<<endl
            << "This will cause the Segway to time out.";
-        context_.tracer()->debug( ss.str() );
+        context_.tracer().debug( ss.str() );
     }
 
     commandStore_.set( command );
 
     stringstream ss;
     ss << "HwThread::setCommand( "<<command.toString()<<" )";
-    context_.tracer()->debug( ss.str() );
+    context_.tracer().debug( ss.str() );
 }
 
 bool
@@ -333,7 +333,7 @@ HwThread::isEStopConnected(int timeoutMs)
     if(eStopFaultStatus_.getNext(eStopStatus, timeoutMs) != 0)
     {
         string Msg("HwThread: No EStop data available. Will try again");
-        context_.tracer()->error( Msg );
+        context_.tracer().error( Msg );
         stateMachine_.setFault( Msg );
         return false;
     }                
@@ -342,7 +342,7 @@ HwThread::isEStopConnected(int timeoutMs)
     if (eStopStatus != segwayrmp::ESS_NO_FAULT)
     {
         string Msg( "HwThread: EStop data indicating fault. Trying again" );
-        context_.tracer()->error( Msg );
+        context_.tracer().error( Msg );
         stateMachine_.setFault( Msg );
         return false;
     }

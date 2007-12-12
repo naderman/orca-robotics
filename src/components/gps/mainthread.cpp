@@ -26,8 +26,8 @@ MainThread::MainThread( const orcaice::Context& context ) :
     driver_(0),
     context_(context)
 {
-    context_.status()->setMaxHeartbeatInterval( subsysName(), 10.0 );
-    context_.status()->initialising( subsysName() );
+    context_.status().setMaxHeartbeatInterval( subsysName(), 10.0 );
+    context_.status().initialising( subsysName() );
 }
 
 MainThread::~MainThread()
@@ -54,7 +54,7 @@ MainThread::initNetworkInterface()
 
     stringstream ss;
     ss << "Loaded sensor description: " << orcaice::toString( descr_ );
-    context_.tracer()->debug( ss.str(), 2 );
+    context_.tracer().debug( ss.str(), 2 );
 
     // create servant for direct connections
     gpsInterface_ = new orcaifaceimpl::GpsImpl( descr_, "Gps", context_ );
@@ -66,7 +66,7 @@ MainThread::initNetworkInterface()
 void
 MainThread::initHardwareDriver()
 {
-    context_.status()->setMaxHeartbeatInterval( subsysName(), 10.0 );
+    context_.status().setMaxHeartbeatInterval( subsysName(), 10.0 );
 
     // this function works for re-initialization as well
     if ( driver_ ) delete driver_;
@@ -115,7 +115,7 @@ MainThread::initHardwareDriver()
     else
     {
         std::string errString = "Component: Unknown driver: " + driverName;
-        context_.tracer()->error( errString );
+        context_.tracer().error( errString );
         throw GpsException( errString );
     }
 
@@ -127,7 +127,7 @@ MainThread::initHardwareDriver()
     {
         stringstream ss;
         ss << "Component: Failed to initialize GPS: " << e.what();
-        context_.tracer()->error( ss.str() );
+        context_.tracer().error( ss.str() );
         throw GpsException( ss.str() );
     }
 }
@@ -135,7 +135,7 @@ MainThread::initHardwareDriver()
 void 
 MainThread::reportBogusValues( orca::GpsData &gpsData )
 {
-    context_.tracer()->debug("Reporting bogus values with positionType 0", 3);
+    context_.tracer().debug("Reporting bogus values with positionType 0", 3);
     orcaice::setSane(gpsData);
     gpsData.positionType = orca::GpsPositionTypeNotAvailable;
     gpsInterface_->localSetAndSend(gpsData);
@@ -144,7 +144,7 @@ MainThread::reportBogusValues( orca::GpsData &gpsData )
 void
 MainThread::walk()
 {
-    context_.status()->setMaxHeartbeatInterval( subsysName(), 5.0 );  
+    context_.status().setMaxHeartbeatInterval( subsysName(), 5.0 );  
 
     Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag() + ".Config.";
@@ -165,7 +165,7 @@ MainThread::walk()
     //
     while ( !isStopping() )
     {
-        context_.tracer()->debug("Trying to read from driver.", 4);
+        context_.tracer().debug("Trying to read from driver.", 4);
         
         // keep trying to read until successful
         while ( !isStopping() )
@@ -180,46 +180,46 @@ MainThread::walk()
             {
                 stringstream ss;
                 ss << "MainThread: Problem reading from GPS: " << e.what();
-                context_.tracer()->error( ss.str() );
-                context_.status()->fault( subsysName(), ss.str() );
+                context_.tracer().error( ss.str() );
+                context_.status().fault( subsysName(), ss.str() );
             }
 
             //If the read threw then we should now try to re-initialise 
             try 
             {
-                context_.tracer()->debug("Trying to reinitialize now", 2);
+                context_.tracer().debug("Trying to reinitialize now", 2);
                 driver_->init();
             }
             catch (GpsException &e)
             {
                 stringstream ss;
                 ss << "MainThread: Problem reinitializing: " << e.what();
-                context_.tracer()->error( ss.str() );
+                context_.tracer().error( ss.str() );
             }
                 
         }
-        context_.tracer()->debug("Read successfully from driver.", 5);
+        context_.tracer().debug("Read successfully from driver.", 5);
 
 
         if ( gpsData.positionType == orca::GpsPositionTypeNotAvailable )
         {
-            context_.tracer()->debug("No GPS fix", 2);
+            context_.tracer().debug("No GPS fix", 2);
             if (reportIfNoFix) reportBogusValues(gpsData);
         }
         else
         {
-            context_.tracer()->debug("We have a GPS fix", 2);
+            context_.tracer().debug("We have a GPS fix", 2);
                 
             // Publish gpsData
-            context_.tracer()->debug("New GpsData: publishing now.", 5);
-            context_.tracer()->debug( orcaice::toString( gpsData ), 5 );
+            context_.tracer().debug("New GpsData: publishing now.", 5);
+            context_.tracer().debug( orcaice::toString( gpsData ), 5 );
             gpsInterface_->localSetAndSend(gpsData);
         }        
             
-        context_.status()->ok( subsysName() );
+        context_.status().ok( subsysName() );
 
     } // end of while
 
     // GPS hardware will be shut down in the driver's destructor.
-    context_.tracer()->debug( "dropping out from run()", 5 );
+    context_.tracer().debug( "dropping out from run()", 5 );
 }

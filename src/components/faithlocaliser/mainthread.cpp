@@ -46,8 +46,8 @@ MainThread::MainThread( const orcaice::Context &context ) :
     SafeThread( context.tracer(), context.status(), "MainThread" ),
     context_(context)
 {
-    context_.status()->setMaxHeartbeatInterval( subsysName(), 10.0 );
-    context_.status()->initialising( subsysName() );
+    context_.status().setMaxHeartbeatInterval( subsysName(), 10.0 );
+    context_.status().initialising( subsysName() );
 
     Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag()+".Config.";
@@ -94,7 +94,7 @@ MainThread::walk()
         catch ( std::exception &e )
         {
             stringstream ss; ss << "Failed to get vehicle description from odometry interface: " << e.what() << " Will try again after 3 seconds.";
-            context_.tracer()->error( ss.str() );
+            context_.tracer().error( ss.str() );
             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
         }
     }
@@ -124,12 +124,12 @@ MainThread::walk()
         {
             stringstream ss;
             ss << "MainThread: received no odometry for " << TIMEOUT_MS << "ms";
-            context_.tracer()->debug( ss.str(), 2 );
+            context_.tracer().debug( ss.str(), 2 );
             continue;
         }
 
         odometryToLocalise( odomData, localiseData, varPosition, varHeading );
-        context_.tracer()->debug( orcaice::toString(localiseData), 5 );
+        context_.tracer().debug( orcaice::toString(localiseData), 5 );
         
         localiseInterface->localSetAndSend( localiseData );
     }

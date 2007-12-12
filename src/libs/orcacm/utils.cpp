@@ -59,7 +59,7 @@ getRegistryHomeData( const orcaice::Context& context, const std::string& locator
 
         std::ostringstream os;
         os<<"Registry ping successful: "<<data.address;
-        context.tracer()->debug( os.str() );
+        context.tracer().debug( os.str() );
 
         IceGrid::QueryPrx query = IceGrid::QueryPrx::checkedCast( queryPrx );
 

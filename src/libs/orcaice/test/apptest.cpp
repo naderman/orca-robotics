@@ -67,12 +67,12 @@ void TestComponent::start()
     cout<<"testing Tracer::verbosity() ..."<<endl;
     {
         int verb;
-        verb = context().tracer()->verbosity(hydroutil::Tracer::InfoTrace,hydroutil::Tracer::ToDisplay);
+        verb = context().tracer().verbosity(hydroutil::Tracer::InfoTrace,hydroutil::Tracer::ToDisplay);
         if ( verb!=1 ) {
             cout<<"failed. wrong InfoToDisplay verbosity, expect=1, got="<<verb<<endl;
             exit(EXIT_FAILURE);
         }
-        verb = context().tracer()->verbosity(hydroutil::Tracer::DebugTrace,hydroutil::Tracer::ToFile);
+        verb = context().tracer().verbosity(hydroutil::Tracer::DebugTrace,hydroutil::Tracer::ToFile);
         if ( verb!=16 ) {
             cout<<"failed. wrong DebugToFile verbosity, expect=16, got="<<verb<<endl;
             exit(EXIT_FAILURE);
@@ -81,24 +81,24 @@ void TestComponent::start()
     cout<<"ok"<<endl;
 
     cout<<"excercising tracer ..."<<endl;
-    context().tracer()->debug( "calling debug(1)", 1 );
-    context().tracer()->info( "calling info()" );
-    context().tracer()->warning( "calling warning()" );
-    context().tracer()->error( "calling error()" );
+    context().tracer().debug( "calling debug(1)", 1 );
+    context().tracer().info( "calling info()" );
+    context().tracer().warning( "calling warning()" );
+    context().tracer().error( "calling error()" );
     cout<<"ok"<<endl;
     
     cout<<"excercising status ..."<<endl;
     // wait a bit for the ComponentThread to call process()
     IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
 
-    context().status()->setMaxHeartbeatInterval( "core", 10 );
-    context().status()->initialising( "core", "holding fingers crossed" );
-    context().status()->heartbeat( "core" );
-    context().status()->ok( "core", "all ok" );
-    context().status()->warning( "core", "all is weird" );
-    context().status()->fault( "core", "all is bad" );
+    context().status().setMaxHeartbeatInterval( "core", 10 );
+    context().status().initialising( "core", "holding fingers crossed" );
+    context().status().heartbeat( "core" );
+    context().status().ok( "core", "all ok" );
+    context().status().warning( "core", "all is weird" );
+    context().status().fault( "core", "all is bad" );
     // ComponentThread usually does it once per second
-    context().status()->process();
+    context().status().process();
     cout<<"ok"<<endl;
 
     // uncomment to manually probe Status interface

@@ -79,7 +79,7 @@ Component::start()
 void 
 Component::stop()
 {
-    tracer()->debug("stopping component...",2);
+    tracer().debug("stopping component...",2);
     hydroutil::stopAndJoin( sessionManager_ );
 }
 

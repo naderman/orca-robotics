@@ -38,7 +38,7 @@ SkeletonDriver::SkeletonDriver( const hydroogmap::OgMap &ogMap,
       useSparseSkeleton_(useSparseSkeleton)
       
 {
-    context_.tracer()->debug("SkeletonDriver: constructor",3);
+    context_.tracer().debug("SkeletonDriver: constructor",3);
     
     hydroutil::CpuStopwatch watch(true);
     if ( !useSparseSkeleton )
@@ -89,7 +89,7 @@ SkeletonDriver::SkeletonDriver( const hydroogmap::OgMap &ogMap,
     
     stringstream ss;
     ss << "Creating skeleton took " << watch.elapsedSeconds() << "s";
-    context_.tracer()->debug(ss.str(),1);
+    context_.tracer().debug(ss.str(),1);
         
     genericDriver_ = new GenericDriver( pathPlanner_,
                                         ogMap,
@@ -104,7 +104,7 @@ SkeletonDriver::SkeletonDriver( const hydroogmap::OgMap &ogMap,
     if ( provideSkeletonGraphics )
     {
         // QGraphics2d
-        context.tracer()->info( "Instantiating QGraphics2d Interface" );
+        context.tracer().info( "Instantiating QGraphics2d Interface" );
         skelGraphicsI_ = new SkeletonGraphicsI( context, "SkeletonGraphics" );
         Ice::ObjectPtr graphicsObj = skelGraphicsI_;
         orcaice::createInterfaceWithTag( context, graphicsObj, "SkeletonGraphics" ); 

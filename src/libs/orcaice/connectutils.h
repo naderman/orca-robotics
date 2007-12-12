@@ -252,7 +252,7 @@ connectToTopicWithTag( const Context           & context,
                        const std::string       & interfaceTag,
                        const std::string       & subtopic="*" )
 {
-    context.tracer()->debug( "orcaice::connectToTopicWithTag() tag="+interfaceTag, 10 );
+    context.tracer().debug( "orcaice::connectToTopicWithTag() tag="+interfaceTag, 10 );
 
     // lookup the name of the interface in the config file and generate topic name.
     // this generates a standard topic name based on fully-qualified interface name.

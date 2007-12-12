@@ -37,18 +37,18 @@ createInterfaceWithString( const Context       & context,
             ss << "Failed to create interface with string "<<name<<". Check Registry. "
                 <<"Will retry in "<<retryInterval<<"s.\n"
                 << e.what();
-            context.tracer()->warning( ss.str() );
+            context.tracer().warning( ss.str() );
         }
         catch ( ... ) {
             std::stringstream ss;
             ss << "Caught something while creating interface with string "<<name<<". "
                 <<"Will retry in "<<retryInterval<<"s.\n";
-            context.tracer()->warning( ss.str() );
+            context.tracer().warning( ss.str() );
         }
         ++count;
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(retryInterval));
         if ( !subsysName.empty() ) {
-            context.status()->heartbeat( subsysName );
+            context.status().heartbeat( subsysName );
         }
     }
 }
@@ -72,18 +72,18 @@ createInterfaceWithTag( const Context       & context,
             ss << "Failed to create interface with tag "<<interfaceTag<<". Check Registry. "
                 <<"Will retry in "<<retryInterval<<"s.\n"
                 << e.what();
-            context.tracer()->warning( ss.str() );
+            context.tracer().warning( ss.str() );
         }
         catch ( ... ) {
             std::stringstream ss;
             ss << "Caught something while creating interface with tag "<<interfaceTag<<". "
                 <<"Will retry in "<<retryInterval<<"s.\n";
-            context.tracer()->warning( ss.str() );
+            context.tracer().warning( ss.str() );
         }
         ++count;
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(retryInterval));
         if ( !subsysName.empty() ) {
-            context.status()->heartbeat( subsysName );
+            context.status().heartbeat( subsysName );
         }
     }
 }
@@ -108,25 +108,25 @@ activate( Context& context,
             ss << "Failed to activate component. Check Registry and IceStorm. "
                 <<"Will retry in "<<retryInterval<<"s.\n"
                 <<e;
-            context.tracer()->warning( ss.str() );
+            context.tracer().warning( ss.str() );
         }
         catch ( const std::exception& e ) {
             std::stringstream ss;
             ss << "Failed to activate component. Check Registry and IceStorm. "
                 <<"Will retry in "<<retryInterval<<"s.\n"
                 <<e.what();
-            context.tracer()->warning( ss.str() );
+            context.tracer().warning( ss.str() );
         }
         catch ( ... ) {
             std::stringstream ss;
             ss << "Caught something while activating. "
                 <<"Will retry in "<<retryInterval<<"s.\n";
-            context.tracer()->warning( ss.str() );
+            context.tracer().warning( ss.str() );
         }
         ++count;
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(retryInterval));
         if ( !subsysName.empty() ) {
-            context.status()->heartbeat( subsysName );
+            context.status().heartbeat( subsysName );
         }
     }
 }
@@ -149,12 +149,12 @@ getInterfaceIdWithString( const Context& context, const std::string& proxyString
             ss << "Failed to get interface ID with string="<<proxyString<<". Check Registry. "
                 <<"Will retry in "<<retryInterval<<"s.\n"
                 << e.what();
-            context.tracer()->warning( ss.str() );
+            context.tracer().warning( ss.str() );
         }
         ++count;
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(retryInterval));
         if ( !subsysName.empty() ) {
-            context.status()->heartbeat( subsysName );
+            context.status().heartbeat( subsysName );
         }
     }
     return ifaceId;
@@ -178,12 +178,12 @@ getInterfaceIdWithTag( const Context& context, const std::string& interfaceTag,
             ss << "Failed to get interface ID with tag="<<interfaceTag<<". Check Registry. "
                 <<"Will retry in "<<retryInterval<<"s.\n"
                 << e.what();
-            context.tracer()->warning( ss.str() );
+            context.tracer().warning( ss.str() );
         }
         ++count;
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(retryInterval));
         if ( !subsysName.empty() ) {
-            context.status()->heartbeat( subsysName );
+            context.status().heartbeat( subsysName );
         }
     }
     return ifaceId;

@@ -64,7 +64,7 @@ GarminGpsDriver::init()
     {
         stringstream ss;
         ss << "GarminGpsDriver: Caught SerialException: " << e.what();
-        context_.tracer()->error( ss.str() );
+        context_.tracer().error( ss.str() );
         throw GpsException( ss.str() );
     }
 }
@@ -83,7 +83,7 @@ GarminGpsDriver::enableDevice()
     NmeaMessage Start_VTG_Msg("$PGRMO,GPVTG,1*xx\r\n",AddChecksum);
     NmeaMessage Start_RME_Msg("$PGRMO,PGRME,1*xx\r\n",AddChecksum);
 
-    context_.tracer()->info("Configure Garmin GPS device");
+    context_.tracer().info("Configure Garmin GPS device");
 
 
     //First disables all output messages then enable selected ones only.
@@ -131,9 +131,9 @@ GarminGpsDriver::readFrame(orca::GpsData& GpsData)
     while(! haveCompleteFrame() ){
         
         // This will block up to the timeout
-        context_.tracer()->debug( "GarminGpsDriver::read(): calling serial_.readLine()", 10 );
+        context_.tracer().debug( "GarminGpsDriver::read(): calling serial_.readLine()", 10 );
         int ret = serial_.readLine(serial_data,1024,'\n');
-        context_.tracer()->debug( serial_data, 10 );
+        context_.tracer().debug( serial_data, 10 );
 
         timeOfRead_ = IceUtil::Time::now();
         
@@ -161,7 +161,7 @@ GarminGpsDriver::readFrame(orca::GpsData& GpsData)
             if(nmeaExceptionCount++ < 3) {return;}
             stringstream ss;
             ss << "MainThread: Problem reading from GPS: " << e.what();
-            context_.tracer()->error( ss.str() );
+            context_.tracer().error( ss.str() );
             throw GpsException(ss.str());
         }
         nmeaExceptionCount = 0;
@@ -175,7 +175,7 @@ GarminGpsDriver::readFrame(orca::GpsData& GpsData)
             if(nmeaFailChecksumCount++ >= 3){ //Dont throw an exception on the first failed checksum.
                 throw GpsException("GarminGpsDriver: more than 3 sequential messages failed the checksum\n");
             }else{
-                context_.tracer()->error("GarminGpsDriver: Single message failed checksum. Not throwing an exception yet!\n" );
+                context_.tracer().error("GarminGpsDriver: Single message failed checksum. Not throwing an exception yet!\n" );
             }
         }
 
@@ -188,7 +188,7 @@ GarminGpsDriver::readFrame(orca::GpsData& GpsData)
 
     }
 
-    context_.tracer()->debug("GPS got a complete frame\n", 10 );
+    context_.tracer().debug("GPS got a complete frame\n", 10 );
 
     // Hand the data back to the outside world
     GpsData=gpsData_;
@@ -215,17 +215,17 @@ GarminGpsDriver::addDataToFrame()
     string MsgType = nmeaMessage_.getDataToken(0);
     
     if(MsgType == "$GPGGA"){
-        context_.tracer()->debug("got GGA message\n",4);
+        context_.tracer().debug("got GGA message\n",4);
         extractGGAData();
         haveGGA_ = true;
         return;
     }else if(MsgType == "$GPVTG"){
-        context_.tracer()->debug("got VTG message\n",4);
+        context_.tracer().debug("got VTG message\n",4);
         extractVTGData();
         haveVTG_ = true;
         return;
     }else if(MsgType == "$PGRME"){
-        context_.tracer()->debug("got RME message\n",4);
+        context_.tracer().debug("got RME message\n",4);
         extractRMEData();
         haveRME_ = true;
         return;

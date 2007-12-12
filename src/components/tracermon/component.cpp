@@ -53,7 +53,7 @@ Component::start()
     if ( driverName == "term-ncurses" ) 
     {
 #ifdef HAVE_TERM_NCURSES_DRIVER        
-        tracer()->info( "Loading terminal ncurses driver");
+        tracer().info( "Loading terminal ncurses driver");
         TermNcursesUser* user = new TermNcursesUser( context() );
         usrHandler_ = (hydroutil::Thread*)user;
         userDriver = (User*)user;
@@ -63,14 +63,14 @@ Component::start()
     }
     else if ( driverName == "term-iostream" ) 
     {
-        tracer()->info( "Loading terminal iostream driver");
+        tracer().info( "Loading terminal iostream driver");
         TermIostreamUser* userHandler = new TermIostreamUser( context() );
         usrHandler_ = (hydroutil::Thread*)userHandler;
         userDriver = (User*)userHandler;
     }
     else {
         std::string errorStr = "Unknown driver type." + driverName + " Cannot talk to hardware.";
-        tracer()->error( errorStr);
+        tracer().error( errorStr);
         throw hydroutil::HardwareException( ERROR_INFO, errorStr );
     }
     
@@ -97,10 +97,10 @@ Component::stop()
 
     // userHandler_ is blocked on user input
     // the only way for it to realize that we want to stop is to give it some keyboard input.
-//     tracer()->info( "Component is quitting but the UserHandler is blocked waiting for user input.");
-//     tracer()->print( "************************************************" );
-//     tracer()->print( "Press any key or shake the joystick to continue." );
-//     tracer()->print( "************************************************" );
+//     tracer().info( "Component is quitting but the UserHandler is blocked waiting for user input.");
+//     tracer().print( "************************************************" );
+//     tracer().print( "Press any key or shake the joystick to continue." );
+//     tracer().print( "************************************************" );
     
     hydroutil::stopAndJoin( usrHandler_ );
 }

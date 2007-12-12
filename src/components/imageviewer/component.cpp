@@ -61,6 +61,6 @@ Component::start()
 void 
 Component::stop()
 {
-    tracer()->info("stopping component...");
+    tracer().info("stopping component...");
     hydroutil::stopAndJoin( mainloop_ );
 }

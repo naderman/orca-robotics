@@ -31,7 +31,7 @@ MasterFileWriter::MasterFileWriter( const std::string      &filename,
     // create master file
     file_ = new ofstream( filename.c_str() );
     if ( !file_->is_open() ) {
-        context_.tracer()->warning( "Could not create master file " + filename );
+        context_.tracer().warning( "Could not create master file " + filename );
         throw orcalog::FileException( ERROR_INFO, "Could not create master file " + filename );
     }
     
@@ -53,7 +53,7 @@ MasterFileWriter::~MasterFileWriter()
 {
     std::stringstream ss;
     ss << "shutting down after writing "<<numItemsLogged_<<" objects to "<<numLoggers_<<" logs.";
-    context_.tracer()->info( ss.str() );
+    context_.tracer().info( ss.str() );
 
     if ( file_ ) {
         file_->close();
@@ -74,13 +74,13 @@ MasterFileWriter::addLog( const std::string &filename,
                           const std::string &format,
                           const std::string &comment )
 {
-    context_.tracer()->debug( 
+    context_.tracer().debug( 
         "adding log: file="+filename+" id="+interfaceType+" fmt="+format+" comment="+comment, 5 );
 
     IceUtil::Mutex::Lock lock(mutex_);
 
     if ( isStarted_ ) {
-        context_.tracer()->warning("Can't register after started appending!");
+        context_.tracer().warning("Can't register after started appending!");
         throw orcalog::Exception( ERROR_INFO, "Can't register after started appending!" );
     }
 

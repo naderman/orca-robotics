@@ -145,17 +145,17 @@ Handler::init()
         {
             stringstream ss;
             ss << "Handler: unexpected exception: " << e;
-            context_.tracer()->error( ss.str() );
+            context_.tracer().error( ss.str() );
         }
         catch ( const std::exception & e )
         {
             stringstream ss;
             ss << "Handler: unexpected exception: " << e.what();
-            context_.tracer()->error( ss.str() );
+            context_.tracer().error( ss.str() );
         }
         catch ( ... )
         {
-            context_.tracer()->error( "Handler: unexpected unknown exception.");
+            context_.tracer().error( "Handler: unexpected unknown exception.");
         }
     }
 }
@@ -176,13 +176,13 @@ Handler::run()
 
             if(ret!=0) 
             {
-                context_.tracer()->info("no ogfusion data available: waiting ...");
+                context_.tracer().info("no ogfusion data available: waiting ...");
                 continue;
             } 
 
             if ( data.observation.size() == 0 )
             {
-                context_.tracer()->info("Received empty observation!");
+                context_.tracer().info("Received empty observation!");
                 continue;
             }
 
@@ -207,22 +207,22 @@ Handler::run()
         {
             stringstream ss;
             ss << "Handler: unexpected exception: " << e;
-            context_.tracer()->error( ss.str() );
+            context_.tracer().error( ss.str() );
         }
         catch ( const std::exception & e )
         {
             stringstream ss;
             ss << "Handler: unexpected exception: " << e.what();
-            context_.tracer()->error( ss.str() );
+            context_.tracer().error( ss.str() );
         }
         catch ( ... )
         {
-            context_.tracer()->error( "Handler: unexpected unknown exception.");
+            context_.tracer().error( "Handler: unexpected unknown exception.");
         }
     } // end of main loop
     
     
-    context_.tracer()->debug( "dropping out from run()", 5 );
+    context_.tracer().debug( "dropping out from run()", 5 );
     waitForStop();
 }
 

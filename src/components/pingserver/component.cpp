@@ -27,7 +27,7 @@ Component::Component()
 void
 Component::start()
 {
-    context().tracer()->info( "Component::start()" );
+    context().tracer().info( "Component::start()" );
 
     //
     // ENABLE NETWORK

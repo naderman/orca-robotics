@@ -117,8 +117,8 @@ MainLoop::MainLoop( const orcaice::Context & context )
       incomingPathI_(0),
       context_(context)
 {
-    context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 10.0 );
-    context_.status()->initialising( SUBSYSTEM );
+    context_.status().setMaxHeartbeatInterval( SUBSYSTEM, 10.0 );
+    context_.status().initialising( SUBSYSTEM );
 
     Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag()+".Config.";
@@ -138,34 +138,34 @@ MainLoop::initNetwork()
     // REQUIRED INTERFACES: Localise2d, Pathfollower, Pathplanner
     //
 
-    context_.status()->initialising( SUBSYSTEM, "Connecting to Localise2d" );
+    context_.status().initialising( SUBSYSTEM, "Connecting to Localise2d" );
     orcaice::connectToInterfaceWithTag( context_,
                                         localise2dPrx_,
                                         "Localise2d",
                                         this,
                                         SUBSYSTEM );
 
-    context_.status()->initialising( SUBSYSTEM, "Connecting to PathFollower2d" );
+    context_.status().initialising( SUBSYSTEM, "Connecting to PathFollower2d" );
     orcaice::connectToInterfaceWithTag( context_,
                                         localNavPrx_,
                                         "PathFollower2d",
                                         this,
                                         SUBSYSTEM );
 
-    context_.status()->initialising( SUBSYSTEM, "Subscribing for PathFollower2d updates" );
+    context_.status().initialising( SUBSYSTEM, "Subscribing for PathFollower2d updates" );
     progressMonitor_ = new ProgressMonitor;
     progressMonitorPtr_ = progressMonitor_;
     progressMonitorPrx_ = orcaice::createConsumerInterface<orca::PathFollower2dConsumerPrx>( context_, progressMonitorPtr_ );
     localNavPrx_->subscribe( progressMonitorPrx_ );
 
-    context_.status()->initialising( SUBSYSTEM, "Connecting to PathPlanner2d" );
+    context_.status().initialising( SUBSYSTEM, "Connecting to PathPlanner2d" );
     orcaice::connectToInterfaceWithTag( context_,
                                         pathplanner2dPrx_,
                                         "PathPlanner2d",
                                         this,
                                         SUBSYSTEM );
 
-    context_.status()->initialising( SUBSYSTEM, "Connecting to OgMap" );
+    context_.status().initialising( SUBSYSTEM, "Connecting to OgMap" );
     orca::OgMapPrx ogMapPrx_;
     orcaice::connectToInterfaceWithTag( context_,
                                         ogMapPrx_,
@@ -200,7 +200,7 @@ MainLoop::stopRobot()
 {            
     try 
     {
-        context_.tracer()->debug("Stopping robot");
+        context_.tracer().debug("Stopping robot");
         orca::PathFollower2dData dummyPath;
         bool activateNow = true;
         localNavPrx_->setData( dummyPath, activateNow );
@@ -209,7 +209,7 @@ MainLoop::stopRobot()
     {
         stringstream ss;
         ss << "MainLoop: problem in stopRobot: " << e;
-        context_.tracer()->warning( ss.str() );     
+        context_.tracer().warning( ss.str() );     
         throw;
     }
 }
@@ -259,11 +259,11 @@ MainLoop::planPath( const hydronavutil::Pose &pose,
     // send task to pathplanner
     stringstream ssSend;
     ssSend << "MainLoop: Sending task to pathplanner: " << orcaice::toVerboseString( task );
-    context_.tracer()->debug(ssSend.str());
+    context_.tracer().debug(ssSend.str());
     pathplanner2dPrx_->setTask( task );
             
     // block until path is computed
-    context_.tracer()->debug("MainLoop: Waiting for pathplanner's answer");
+    context_.tracer().debug("MainLoop: Waiting for pathplanner's answer");
     orca::PathPlanner2dData computedPath;
     // (need a loop here so ctrlC works)
     int secWaited=0;
@@ -314,7 +314,7 @@ MainLoop::convertToPathFollowerData( const orca::PathPlanner2dData &pathPlan )
 void
 MainLoop::sendPath( const orca::PathFollower2dData &pathToSend, bool activateImmediately )
 {
-    context_.tracer()->debug("MainLoop: Sending path to localnav.");
+    context_.tracer().debug("MainLoop: Sending path to localnav.");
     try {
         localNavPrx_->setData( pathToSend, activateImmediately );
     }
@@ -352,14 +352,14 @@ MainLoop::tryGetLocaliseData( orca::Localise2dData &data )
         {
             data = localise2dPrx_->getData();
             stringstream ss; ss << "MainLoop: received pose: " << orcaice::toString( data );
-            context_.tracer()->debug( ss.str(), 4 );
+            context_.tracer().debug( ss.str(), 4 );
             break;
         }
         catch( orca::DataNotExistException e )
         {
             std::stringstream ss;
             ss << "Mainloop: could not fetch pose because of: " << e.what;
-            context_.tracer()->warning( ss.str() );
+            context_.tracer().warning( ss.str() );
             numTries++;
             if (numTries>=maxNumTries) throw;
         }
@@ -416,7 +416,7 @@ MainLoop::replan( const hydronavutil::Pose &currentPose, const orca::Waypoint2d 
     {
         // The path-planner reckons we can get directly to the currentWp.
         // The path-planner probably knows best.
-        context_.tracer()->info( "MainLoop::replan(): not replanning, since the path-planner reckons it's not necessary." );
+        context_.tracer().info( "MainLoop::replan(): not replanning, since the path-planner reckons it's not necessary." );
         return;
     }
     
@@ -551,37 +551,37 @@ MainLoop::waitForNewPath( orca::PathFollower2dData &newPathData )
                         {
                             stringstream ss;
                             ss << "MainLoop: need to replan, but localisation is too uncertain!";
-                            context_.tracer()->warning( ss.str() );
-                            context_.status()->warning( SUBSYSTEM, ss.str() );
+                            context_.tracer().warning( ss.str() );
+                            context_.status().warning( SUBSYSTEM, ss.str() );
                             continue;
                         }
-                        context_.tracer()->info( "MainLoop: current wp is not visible -- replanning." );
+                        context_.tracer().info( "MainLoop: current wp is not visible -- replanning." );
                         replan( pose, currentWp );
                     }
                 }
 
                 // Let the world know we're alive.
-                context_.status()->ok( SUBSYSTEM );
+                context_.status().ok( SUBSYSTEM );
             }
         }
         catch ( const Ice::Exception & e )
         {
             stringstream ss;
             ss << "MainLoop::waitForNewPath: Caught exception: " << e;
-            context_.tracer()->error( ss.str() );
-            context_.status()->fault( SUBSYSTEM, ss.str() );
+            context_.tracer().error( ss.str() );
+            context_.status().fault( SUBSYSTEM, ss.str() );
         }
         catch ( const std::exception & e )
         {
             stringstream ss;
             ss << "MainLoop:waitForNewPath: Caught exception: " << e.what();
-            context_.tracer()->error( ss.str() );
-            context_.status()->fault( SUBSYSTEM, ss.str() );
+            context_.tracer().error( ss.str() );
+            context_.status().fault( SUBSYSTEM, ss.str() );
         }
         catch ( ... )
         {
-            context_.tracer()->error( "MainLoop::waitForNewPath: caught unknown unexpected exception.");
-            context_.status()->fault( SUBSYSTEM, "MainLoop::waitForNewPath: caught unknown unexpected exception.");
+            context_.tracer().error( "MainLoop::waitForNewPath: caught unknown unexpected exception.");
+            context_.status().fault( SUBSYSTEM, "MainLoop::waitForNewPath: caught unknown unexpected exception.");
         }
     }
     return false;
@@ -595,7 +595,7 @@ MainLoop::walk()
     orca::PathFollower2dData incomingPath;
     bool requestIsOutstanding = false;
 
-    context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 3.0 );
+    context_.status().setMaxHeartbeatInterval( SUBSYSTEM, 3.0 );
 
     // main loop
     while ( !isStopping() )
@@ -615,7 +615,7 @@ MainLoop::walk()
             }
             else
             {
-                context_.tracer()->info("Waiting for a goal path");
+                context_.tracer().info("Waiting for a goal path");
                 bool gotNewPath = waitForNewPath( incomingPath );
                 if ( gotNewPath )
                 {
@@ -631,13 +631,13 @@ MainLoop::walk()
 
             stringstream ssPath;
             ssPath << "MainLoop: Requested path: " << endl << orcaice::toVerboseString(incomingPath);
-            context_.tracer()->debug( ssPath.str() );
+            context_.tracer().debug( ssPath.str() );
 
             // special case 'stop': we received an empty path
             if (incomingPath.path.size()==0) 
             {
                 stopRobot();
-                context_.status()->ok( SUBSYSTEM );
+                context_.status().ok( SUBSYSTEM );
                 requestIsOutstanding = false;
                 continue;
             }
@@ -664,12 +664,12 @@ MainLoop::walk()
             bool activateImmediately;
             activationStore_.get( activateImmediately );
             stringstream ss; ss << "MainLoop: activateImmediately is " << activateImmediately;
-            context_.tracer()->debug(ss.str());
+            context_.tracer().debug(ss.str());
 
             // Send it off!
             sendPath( pathToSend, activateImmediately );
             requestIsOutstanding = false;
-            context_.status()->ok( SUBSYSTEM );
+            context_.status().ok( SUBSYSTEM );
 
         } // try
         catch ( const GoalPlanException &e )
@@ -678,8 +678,8 @@ MainLoop::walk()
             if ( e.isTemporary() )
             {
                 ss << "MainLoop:: Caught GoalPlanException: " << e.what() << ".  I reckon I can recover from this.";
-                context_.tracer()->warning( ss.str() );
-                context_.status()->warning( SUBSYSTEM, ss.str() );
+                context_.tracer().warning( ss.str() );
+                context_.status().warning( SUBSYSTEM, ss.str() );
 
                 // Slow the loop down a little before trying again.
                 IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
@@ -687,8 +687,8 @@ MainLoop::walk()
             else
             {
                 ss << "MainLoop:: Caught GoalPlanException: " << e.what() << ".  Looks unrecoverable, I'm giving up.";
-                context_.tracer()->error( ss.str() );
-                context_.status()->fault( SUBSYSTEM, ss.str() );
+                context_.tracer().error( ss.str() );
+                context_.status().fault( SUBSYSTEM, ss.str() );
                 requestIsOutstanding = false;
             }
         }
@@ -696,22 +696,22 @@ MainLoop::walk()
         {
             stringstream ss;
             ss << "MainLoop:: Caught exception: " << e;
-            context_.tracer()->error( ss.str() );
-            context_.status()->fault( SUBSYSTEM, ss.str() );
+            context_.tracer().error( ss.str() );
+            context_.status().fault( SUBSYSTEM, ss.str() );
             requestIsOutstanding = false;
         }
         catch ( const std::exception & e )
         {
             stringstream ss;
             ss << "MainLoop: Caught exception: " << e.what();
-            context_.tracer()->error( ss.str() );
-            context_.status()->fault( SUBSYSTEM, ss.str() );
+            context_.tracer().error( ss.str() );
+            context_.status().fault( SUBSYSTEM, ss.str() );
             requestIsOutstanding = false;
         }
         catch ( ... )
         {
-            context_.tracer()->error( "MainLoop: caught unknown unexpected exception.");
-            context_.status()->fault( SUBSYSTEM, "MainLoop: caught unknown unexpected exception.");
+            context_.tracer().error( "MainLoop: caught unknown unexpected exception.");
+            context_.status().fault( SUBSYSTEM, "MainLoop: caught unknown unexpected exception.");
             requestIsOutstanding = false;
         }
             

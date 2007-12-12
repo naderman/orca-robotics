@@ -51,13 +51,13 @@ OdometryBasedDriver::setup()
     catch( Ice::Exception &e )
     {
         stringstream ss; ss << "Error while connecting to odometry: " << e;
-        context_.tracer()->error( ss.str() );
+        context_.tracer().error( ss.str() );
         return false;
     }
     catch( std::exception &e )
     {
         stringstream ss; ss << "Error while connecting to odometry: " << e.what();
-        context_.tracer()->error( ss.str() );
+        context_.tracer().error( ss.str() );
         return false;
     }
     
@@ -67,16 +67,16 @@ OdometryBasedDriver::setup()
     catch( Ice::Exception &e )
     {
         stringstream ss; ss << "Error while subscribing to odometry: " << e;
-        context_.tracer()->error( ss.str() );
+        context_.tracer().error( ss.str() );
         return false;
     }
     catch( std::exception &e )
     {
         stringstream ss; ss << "Error while subscribing to odometry: " << e.what();
-        context_.tracer()->error( ss.str() );
+        context_.tracer().error( ss.str() );
         return false;
     }
-    context_.tracer()->info( "Subscribed for odometry" );
+    context_.tracer().info( "Subscribed for odometry" );
 
     return true;
 }
@@ -134,7 +134,7 @@ OdometryBasedDriver::compute( const orca::GpsData  &gpsData,
 
     if ( odomConsumer_->proxy().isEmpty() )
     {
-        context_.tracer()->warning( "OdometryBasedDriver: no odometry received yet." );
+        context_.tracer().warning( "OdometryBasedDriver: no odometry received yet." );
         return false;
     }
 

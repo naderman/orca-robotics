@@ -52,20 +52,20 @@ namespace orcaifaceimpl {
             // If we're running in an IceBox and the IceBox is shutting down, 
             // this is expected (our co-located IceStorm is obviously going down).
             std::stringstream ss; ss << interfaceName << ": Failed push to IceStorm: " << e;
-            context.tracer()->warning( ss.str() );
+            context.tracer().warning( ss.str() );
 
             // If IceStorm just re-started for some reason though, we want to try to re-connect
             try
             {
                 std::stringstream ss;
                 ss << interfaceName << ": Re-connecting to IceStorm...";
-                context.tracer()->info( ss.str() );
+                context.tracer().info( ss.str() );
                 topicPrx = orcaice::connectToTopicWithString<ConsumerPrxType>
                     ( context, consumerPrx, topicName );
 
                 ss.clear();
                 ss << interfaceName << ": Re-connected to IceStorm.";                
-                context.tracer()->info( ss.str() );
+                context.tracer().info( ss.str() );
 
                 // try again to push that bit of info
                 consumerPrx->setData( data );
@@ -75,7 +75,7 @@ namespace orcaifaceimpl {
                 // ignore it -- we'll try again next push.
                 std::stringstream ss;
                 ss << interfaceName << ": Re-connection to IceStorm failed.";
-                context.tracer()->info( ss.str() );
+                context.tracer().info( ss.str() );
             }
         }
 

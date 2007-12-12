@@ -79,7 +79,7 @@ SpeedLimiter::constrainMaxSpeeds( Goal &goal )
         stringstream ss; ss << "We have " << goal.timeRemaining 
                             << "s, but we could get there in " << requiredTimeAtMaxSpeed 
                             << "s if we put the foot down.  Scaling speeds with a factor of " << scaleFactor;
-        context_.tracer()->debug( ss.str(), 5 );
+        context_.tracer().debug( ss.str(), 5 );
         secondsBehindSchedule_ = 0.0;
     }
     else
@@ -87,7 +87,7 @@ SpeedLimiter::constrainMaxSpeeds( Goal &goal )
         stringstream ss; ss << "We're running late! " << goal.timeRemaining
                             << "s allowed, but it would take " << requiredTimeAtMaxSpeed 
                             << "s at full speed.";
-        context_.tracer()->debug( ss.str(), 5 );
+        context_.tracer().debug( ss.str(), 5 );
         secondsBehindSchedule_ = requiredTimeAtMaxSpeed - goal.timeRemaining;
     }
     assert( scaleFactor <= 1.0 );

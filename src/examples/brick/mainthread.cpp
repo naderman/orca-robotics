@@ -20,8 +20,8 @@ MainThread::MainThread( const orcaice::Context& context ) :
     SafeThread( context.tracer(), context.status(), "main" ),
     context_(context)
 {
-    context_.status()->setMaxHeartbeatInterval( subsysName(), 10.0 );
-    context_.status()->ok( subsysName(), "initialized" );
+    context_.status().setMaxHeartbeatInterval( subsysName(), 10.0 );
+    context_.status().ok( subsysName(), "initialized" );
 }
 
 MainThread::~MainThread()
@@ -45,16 +45,16 @@ MainThread::walk()
     //
     // Main loop
     //   
-    context_.tracer()->debug( "Entering main loop", 2 );
-    context_.status()->ok( subsysName(), "Running main loop" );
+    context_.tracer().debug( "Entering main loop", 2 );
+    context_.status().ok( subsysName(), "Running main loop" );
     while( !isStopping() )
     {
-        context_.tracer()->debug( "Running main loop", 5 );
-        context_.status()->heartbeat( subsysName() );
+        context_.tracer().debug( "Running main loop", 5 );
+        context_.status().heartbeat( subsysName() );
 
         // here we can do something useful
 
         IceUtil::ThreadControl::sleep(IceUtil::Time::milliSeconds(sleepIntervalMs));
     }
-    context_.tracer()->debug( "Exiting main loop", 2 );
+    context_.tracer().debug( "Exiting main loop", 2 );
 }

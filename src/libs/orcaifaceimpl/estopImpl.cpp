@@ -109,7 +109,7 @@ EStopImpl::initInterface( hydroutil::Thread* thread, const std::string& subsysNa
 orca::EStopData
 EStopImpl::internalGet() const
 {
-    context_.tracer()->debug( "EStopImpl::internalGetData()", 5 );
+    context_.tracer().debug( "EStopImpl::internalGetData()", 5 );
 
     if ( dataProxy_.isEmpty() )
     {
@@ -129,19 +129,19 @@ EStopImpl::internalGet() const
 void 
 EStopImpl::internalSubscribe(const ::orca::EStopConsumerPrx& subscriber)
 {
-    context_.tracer()->debug( "EStopImpl::internalSubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
+    context_.tracer().debug( "EStopImpl::internalSubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
     try {
         topicPrx_->subscribeAndGetPublisher( IceStorm::QoS(), subscriber->ice_twoway() );
     }
     catch ( const IceStorm::AlreadySubscribed & e ) {
         std::stringstream ss;
         ss <<"Request for subscribe but this proxy has already been subscribed, so I do nothing: "<< e;
-        context_.tracer()->debug( ss.str(), 2 );
+        context_.tracer().debug( ss.str(), 2 );
     }
     catch ( const Ice::Exception & e ) {
         std::stringstream ss;
         ss <<"EStopImpl::internalSubscribe: failed to subscribe: "<< e << endl;
-        context_.tracer()->warning( ss.str() );
+        context_.tracer().warning( ss.str() );
         throw orca::SubscriptionFailedException( ss.str() );
     }
 }
@@ -149,7 +149,7 @@ EStopImpl::internalSubscribe(const ::orca::EStopConsumerPrx& subscriber)
 void 
 EStopImpl::internalUnsubscribe(const ::orca::EStopConsumerPrx& subscriber)
 {
-    context_.tracer()->debug( "EStopImpl::internalUnsubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
+    context_.tracer().debug( "EStopImpl::internalUnsubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
     topicPrx_->unsubscribe( subscriber );
 }
 

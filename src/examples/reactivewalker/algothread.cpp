@@ -42,19 +42,19 @@ AlgoThread::initNetwork()
     // REQUIRED INTERFACE: VelocityControl2d
     //
     orcaice::connectToInterfaceWithTag<orca::VelocityControl2dPrx>( context_, commandPrx_, "Command", this );
-    context_.tracer()->info( "Connected to VelocityControl2d interface.");
+    context_.tracer().info( "Connected to VelocityControl2d interface.");
 
     //
     // REQUIRED INTERFACE: Laser
     //
     laser_->subscribeWithTag( "Laser", this );
-    context_.tracer()->info( "Connected and subscribed to LaserScanner2d interface.");
+    context_.tracer().info( "Connected and subscribed to LaserScanner2d interface.");
 
     //
     // REQUIRED INTERFACE: Odometry2d
     //
     odometry_->subscribeWithTag( "Odometry", this );
-    context_.tracer()->info( "Connected and subscribed to Odometry2d interface.");
+    context_.tracer().info( "Connected and subscribed to Odometry2d interface.");
 
     // NOTE: odometry_ has a small buffer called odometry_->store(), see hydroutil::Store.
     // it is empty until the first piece of data arrives. if you try to get data from an
@@ -67,7 +67,7 @@ AlgoThread::initNetwork()
         if ( !odometry_->store().getNext( odometryData, odometryTimeoutMs ) )
             break;
     }
-    context_.tracer()->info( "Received the first update from Odometry2d interface.");
+    context_.tracer().info( "Received the first update from Odometry2d interface.");
 }
 
 void
@@ -83,22 +83,22 @@ AlgoThread::initDriver()
             prefix+"Driver", "random" );
     if ( driverName == "random" )
     {
-        context_.tracer()->debug( "loading Random driver",3);
+        context_.tracer().debug( "loading Random driver",3);
         driver_ = new RandomDriver;
     }
     else if ( driverName == "fake" )
     {
-        context_.tracer()->debug( "loading Fake driver",3);
+        context_.tracer().debug( "loading Fake driver",3);
         driver_ = new FakeDriver;
     }
     else {
         string errorStr = "Unknown driver type. Cannot talk to hardware.";
-        context_.tracer()->error( errorStr);
-        context_.tracer()->info( "Valid driver values are {'random', 'fake'}" );
+        context_.tracer().error( errorStr);
+        context_.tracer().info( "Valid driver values are {'random', 'fake'}" );
         throw hydroutil::Exception( ERROR_INFO, errorStr );
     }
 
-    context_.tracer()->debug("driver instantiated",5);
+    context_.tracer().debug("driver instantiated",5);
 }
 
 void 
@@ -131,7 +131,7 @@ AlgoThread::walk()
             // timeout without a laser scan. 
             // this is a sign of a problem. a real component would have to deal with this
             stringstream ss; ss<<"No new laser scan after "<<laserTimeoutMs<<"ms";
-            context_.tracer()->warning( ss.str() );
+            context_.tracer().warning( ss.str() );
             continue;
         }
 
@@ -148,7 +148,7 @@ AlgoThread::walk()
         //
         driver_->computeCommand( laserData, odometryData, commandData );
 
-        context_.tracer()->debug( orcaice::toString(commandData), 5 );
+        context_.tracer().debug( orcaice::toString(commandData), 5 );
 
         //
         // send motion command to the robot

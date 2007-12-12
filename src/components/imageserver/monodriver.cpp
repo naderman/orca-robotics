@@ -53,7 +53,7 @@ MonoDriver::init()
         // user specified width and height
         imageGrabber_->setWidth( config_.imageWidth );
         imageGrabber_->setHeight( config_.imageHeight );
-        context_.tracer()->debug("TODO(monodriver::init()): there should be a check here that the image size is compatible with the hardware", 3);
+        context_.tracer().debug("TODO(monodriver::init()): there should be a check here that the image size is compatible with the hardware", 3);
         
         // workaround for setting width and height for firewire cameras
         // opencv requires the mode to be set for the correct width and height to be set also
@@ -68,7 +68,7 @@ MonoDriver::init()
             else
             {
                 std::string errString = "Unknown colour mode";
-                context_.tracer()->error( errString );
+                context_.tracer().error( errString );
                 // this will kill this component
                 throw hydroutil::Exception( ERROR_INFO, errString );
             }
@@ -101,12 +101,12 @@ MonoDriver::init()
     if( config_.imageSize <= 0 )
     {
         std::string errString = "Image size is <= 0. It must be a positive value.";
-        context_.tracer()->error( errString );
+        context_.tracer().error( errString );
         // this will kill this component
         throw hydroutil::Exception( ERROR_INFO, errString );
     }
 
-    context_.tracer()->info( "MonoOpenCVDriver has now been configured to: "+config_.toString() );
+    context_.tracer().info( "MonoOpenCVDriver has now been configured to: "+config_.toString() );
    
     return 0;
 }
@@ -114,14 +114,14 @@ MonoDriver::init()
 int 
 MonoDriver::read( orca::CameraData& data )
 {
-    context_.tracer()->debug( "Grabbing camera data...",8 );
+    context_.tracer().debug( "Grabbing camera data...",8 );
     
     //grab the image and load it into the orca object
     char* rawImage = imageGrabber_->queryFrame();
     if ( rawImage == NULL )
     {
         std::string errString = "Unable to get image from image grabber";
-        context_.tracer()->error( errString );
+        context_.tracer().error( errString );
         // this will kill this component
         throw hydroutil::Exception( ERROR_INFO, errString );
         // exit(1);

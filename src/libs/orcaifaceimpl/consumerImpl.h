@@ -131,7 +131,7 @@ public:
         providerPrx->subscribe( prx_ );
         std::stringstream ss;
         ss << "Subscribed to " << proxyString;
-        context_.tracer()->debug( ss.str() );
+        context_.tracer().debug( ss.str() );
     }
 
     virtual void subscribeWithTag( const std::string& interfaceTag )
@@ -151,7 +151,7 @@ public:
         providerPrx->unsubscribe( prx_ );
         std::stringstream ss;
         ss << "unsubscribed to " << proxyString;
-        context_.tracer()->debug( ss.str() );
+        context_.tracer().debug( ss.str() );
     }
 
     virtual void unsubscribeWithTag( const std::string& interfaceTag )
@@ -179,7 +179,7 @@ public:
                 providerPrx->subscribe( prx_ );
                 std::stringstream ss;
                 ss << "Subscribed to " << proxyString;
-                context_.tracer()->debug( ss.str() );
+                context_.tracer().debug( ss.str() );
                 break;
             }
             catch ( const Ice::Exception &e )
@@ -187,21 +187,21 @@ public:
                 std::stringstream ss;
                 ss << "Failed to subscribe: " << e << std::endl
                    <<"Will retry in "<<retryInterval<<"s.";
-                context_.tracer()->warning( ss.str() );
+                context_.tracer().warning( ss.str() );
             }
             catch ( const std::exception &e )
             {
                 std::stringstream ss;
                 ss << "Failed to subscribe: " << e.what() << std::endl
                    <<"Will retry in "<<retryInterval<<"s.";
-                context_.tracer()->warning( ss.str() );
+                context_.tracer().warning( ss.str() );
             }
             catch ( ... )
             {
                 std::stringstream ss;
                 ss << "Failed to subscribe for unknown reason. "
                    <<"Will retry in "<<retryInterval<<"s.";
-                context_.tracer()->warning( ss.str() );
+                context_.tracer().warning( ss.str() );
             }
             ++count;
             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(retryInterval));

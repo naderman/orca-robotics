@@ -22,7 +22,7 @@ MasterFileWriteHandler::writeReferenceToMasterFile()
 {
     assert( id_ >= 0 );
 //     if ( id_ < 0 ) {
-//         context_.tracer()->warning( interfaceTag_+"LogWriter: received object when not registered. Ignoring.");
+//         context_.tracer().warning( interfaceTag_+"LogWriter: received object when not registered. Ignoring.");
 //         return;
 //     }
 
@@ -36,7 +36,7 @@ MasterFileWriteHandler::writeReferenceToMasterFile()
     if ( numItemsLogged_ % 50 == 1 ) {
         ostringstream ss;
         ss << logWriterInfo_.comment << ": logged " << numItemsLogged_ << " data objects.";
-        // logWriterInfo_.context.tracer()->debug( ss.str() );
+        // logWriterInfo_.context.tracer().debug( ss.str() );
         cout << ss.str() << endl;
     }
 }

@@ -29,8 +29,8 @@ MainLoop::MainLoop( const orcaice::Context & context )
     : context_(context),
       snrWarningThreshhold_(0)
 {
-    context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 10.0 );
-    context_.status()->initialising( SUBSYSTEM );
+    context_.status().setMaxHeartbeatInterval( SUBSYSTEM, 10.0 );
+    context_.status().initialising( SUBSYSTEM );
 
     initNetwork();
     initDriver();
@@ -49,20 +49,20 @@ MainLoop::initNetwork()
     {
         try {
             wifiInterface_->initInterface();
-            context_.tracer()->debug( "wifi interface initialized",2);
+            context_.tracer().debug( "wifi interface initialized",2);
             break;
         }
         catch ( const orcaice::NetworkException& e ) {
             stringstream ss;
             ss << "Failed to setup interface: " << e.what();
-            context_.tracer()->warning( ss.str() );
-            context_.status()->initialising( SUBSYSTEM, ss.str() );
+            context_.tracer().warning( ss.str() );
+            context_.status().initialising( SUBSYSTEM, ss.str() );
         }
         catch ( const Ice::Exception& e ) {
             stringstream ss;
             ss << "Failed to setup interface: " << e;
-            context_.tracer()->warning( ss.str() );
-            context_.status()->initialising( SUBSYSTEM, ss.str() );
+            context_.tracer().warning( ss.str() );
+            context_.status().initialising( SUBSYSTEM, ss.str() );
         }
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
     }
@@ -80,7 +80,7 @@ void MainLoop::initDriver()
     snrWarningThreshhold_ = orcaice::getPropertyAsIntWithDefault( context_.properties(), prefix+"SnrWarningThreshhold",10);
     
     string driverName = orcaice::getPropertyWithDefault( context_.properties(), prefix+"Driver", "hardware" );
-    context_.tracer()->debug( std::string("loading ")+driverName+" driver",3);
+    context_.tracer().debug( std::string("loading ")+driverName+" driver",3);
     if ( driverName == "hardware" )
     {
         driver_ = new HardwareDriver( context_ );
@@ -92,14 +92,14 @@ void MainLoop::initDriver()
     else
     {
         string errorStr = "Unknown driver type.";
-        context_.tracer()->error( errorStr);
-        context_.tracer()->info( "Valid driver values are {'hardware','fake'}" );
+        context_.tracer().error( errorStr);
+        context_.tracer().info( "Valid driver values are {'hardware','fake'}" );
         throw hydroutil::Exception( ERROR_INFO, errorStr );
     }
-    context_.tracer()->debug("driver instantiated",5);
+    context_.tracer().debug("driver instantiated",5);
     
     driver_->init();
-    context_.tracer()->debug("driver initialized",5);
+    context_.tracer().debug("driver initialized",5);
 }
 
 void
@@ -112,7 +112,7 @@ MainLoop::checkWifiSignal( WifiData &data )
         if (iface.linkType!=LinkQualityTypeDbm)
         {
             // we can't judge how good the signal is in relative mode, so just say ok
-            context_.status()->ok( SUBSYSTEM );
+            context_.status().ok( SUBSYSTEM );
             continue;
         }
         
@@ -121,12 +121,12 @@ MainLoop::checkWifiSignal( WifiData &data )
         {
             stringstream ss;
             ss << "Wifi signal strength of interface " << iface.interfaceName << " is below " << snrWarningThreshhold_ << " dBm";
-            context_.status()->warning( SUBSYSTEM, ss.str() );
-            context_.tracer()->warning( ss.str() );
+            context_.status().warning( SUBSYSTEM, ss.str() );
+            context_.tracer().warning( ss.str() );
         }
         else
         {
-            context_.status()->ok( SUBSYSTEM );
+            context_.status().ok( SUBSYSTEM );
         }
     }
     
@@ -135,7 +135,7 @@ MainLoop::checkWifiSignal( WifiData &data )
 void 
 MainLoop::run()
 {   
-    context_.status()->setMaxHeartbeatInterval( SUBSYSTEM, 3.0 );
+    context_.status().setMaxHeartbeatInterval( SUBSYSTEM, 3.0 );
 
     while ( !isStopping() )
     {
@@ -144,8 +144,8 @@ MainLoop::run()
             orca::WifiData data;
             driver_->read( data );
             
-            context_.tracer()->debug("Got new wifi data from driver. Sending it out now.", 3);
-            context_.tracer()->debug(orcaice::toString( data ), 5);
+            context_.tracer().debug("Got new wifi data from driver. Sending it out now.", 3);
+            context_.tracer().debug(orcaice::toString( data ), 5);
                     
             wifiInterface_->localSetAndSend( data );
             
@@ -162,47 +162,47 @@ MainLoop::run()
             } else {
                 ss << e.what();
             }
-            context_.tracer()->error( ss.str() );
-            context_.status()->fault( SUBSYSTEM, ss.str() );
+            context_.tracer().error( ss.str() );
+            context_.status().fault( SUBSYSTEM, ss.str() );
         }
         catch ( const orca::OrcaException & e )
         {
             stringstream ss;
             ss << "unexpected (remote?) orca exception: " << e << ": " << e.what;
-            context_.tracer()->error( ss.str() );
-            context_.status()->fault( SUBSYSTEM, ss.str() );
+            context_.tracer().error( ss.str() );
+            context_.status().fault( SUBSYSTEM, ss.str() );
         }
         catch ( const hydroutil::Exception & e )
         {
             stringstream ss;
             ss << "unexpected (local?) orcaice exception: " << e.what();
-            context_.tracer()->error( ss.str() );
-            context_.status()->fault( SUBSYSTEM, ss.str() );
+            context_.tracer().error( ss.str() );
+            context_.status().fault( SUBSYSTEM, ss.str() );
         }
         catch ( const Ice::Exception & e )
         {
             stringstream ss;
             ss << "unexpected Ice exception: " << e;
-            context_.tracer()->error( ss.str() );
-            context_.status()->fault( SUBSYSTEM, ss.str() );
+            context_.tracer().error( ss.str() );
+            context_.status().fault( SUBSYSTEM, ss.str() );
         }
         catch ( const std::exception & e )
         {
             stringstream ss;
             ss << "unexpected std exception: " << e.what();
-            context_.tracer()->error( ss.str() );
-            context_.status()->fault( SUBSYSTEM, ss.str() );
+            context_.tracer().error( ss.str() );
+            context_.status().fault( SUBSYSTEM, ss.str() );
         }
         catch ( ... )
         {
             string err = "unexpected exception from somewhere.";
-            context_.tracer()->error( err );
-            context_.status()->fault( SUBSYSTEM, err );
+            context_.tracer().error( err );
+            context_.status().fault( SUBSYSTEM, err );
         }
             
     } // end of big while loop
     
-    context_.tracer()->debug( "TRACE(mainloop.cpp): End of run() now...", 5 );
+    context_.tracer().debug( "TRACE(mainloop.cpp): End of run() now...", 5 );
     
     // wait for the component to realize that we are quitting and tell us to stop.
     waitForStop();

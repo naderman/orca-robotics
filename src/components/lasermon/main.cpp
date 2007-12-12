@@ -41,7 +41,7 @@ LaserMonComponent::LaserMonComponent()
 void
 LaserMonComponent::start()
 {
-    tracer()->debug( "Starting component", 2 );
+    tracer().debug( "Starting component", 2 );
 
     //
     // ENABLE NETWORK
@@ -68,7 +68,7 @@ LaserMonComponent::start()
         {
             std::stringstream ss;
             ss << "Failed to connect to remote object: "<<e.what()<<endl<<"Will try again after 3 seconds.";
-            tracer()->error( ss.str() );
+            tracer().error( ss.str() );
             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
         }
         // NOTE: connectToInterfaceWithTag() can also throw ConfigFileException,
@@ -79,36 +79,36 @@ LaserMonComponent::start()
     try
     {
         std::string descr = orcaice::toString( laserPrx->getDescription() );
-        tracer()->info( "Got laser description:\n"+descr );
+        tracer().info( "Got laser description:\n"+descr );
     }
     catch ( const Ice::Exception & e ) 
     {
         std::stringstream ss;
         ss << "Failed to get laser description. Will continue anyway."<<e;
-        tracer()->warning( ss.str() );
+        tracer().warning( ss.str() );
     }
 
     // Get laser data once
     int count = 5;
-    tracer()->info( "Trying to get one scan as a test" );
+    tracer().info( "Trying to get one scan as a test" );
     while ( count-- )
     {
         try
         {
-            tracer()->print( orcaice::toString( laserPrx->getData() ) );
+            tracer().print( orcaice::toString( laserPrx->getData() ) );
             break;
         }
         catch ( const orca::DataNotExistException &e )
         {
             stringstream ss;
             ss << "hardware failure reported when getting a scan: " << e.what;
-            tracer()->warning( ss.str() );
+            tracer().warning( ss.str() );
         }
         catch ( const orca::HardwareFailedException &e )
         {
             stringstream ss;
             ss << "hardware failure reported when getting a scan: " << e.what;
-            tracer()->warning( ss.str() );
+            tracer().warning( ss.str() );
         }
     }
     
@@ -132,7 +132,7 @@ LaserMonComponent::start()
         {
             stringstream ss;
             ss << "failed to subscribe for data updates: "<<e.what<<endl<<"Will try again after 3 seconds.";
-            tracer()->error( ss.str() );
+            tracer().error( ss.str() );
             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
         }
     }

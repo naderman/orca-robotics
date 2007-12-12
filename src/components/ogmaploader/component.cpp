@@ -79,13 +79,13 @@ Component::start()
     // MAIN DRIVER LOOP: No need to do anything here, since we don't need our own thread.
     //
 
-    context().tracer()->info( "Component activated." );
+    context().tracer().info( "Component activated." );
 }
 
 void Component::stop()
 {
     // Nothing to do, since we don't have our own thread.
-    context().tracer()->info( "Component stopped." );
+    context().tracer().info( "Component stopped." );
 }
 
 }

@@ -23,8 +23,8 @@ MainThread::MainThread( const orcaice::Context &context ) :
     driverLib_(0),
     context_(context)
 {
-    context_.status()->setMaxHeartbeatInterval( subsysName(), 20.0 );
-    context_.status()->initialising( subsysName() );
+    context_.status().setMaxHeartbeatInterval( subsysName(), 20.0 );
+    context_.status().initialising( subsysName() );
 
     //
     // Read settings
@@ -41,7 +41,7 @@ MainThread::MainThread( const orcaice::Context &context ) :
     config_.numberOfSamples = orcaice::getPropertyAsIntWithDefault( prop, prefix+"NumberOfSamples", 181 );
 
     if ( !config_.validate() ) {
-        context_.tracer()->error( "Failed to validate laser configuration. "+config_.toString() );
+        context_.tracer().error( "Failed to validate laser configuration. "+config_.toString() );
         // this will kill this component
         throw hydroutil::Exception( ERROR_INFO, "Failed to validate laser configuration" );
     }
@@ -86,7 +86,7 @@ MainThread::initNetworkInterface()
         if ( compensateRoll_ ) {
             // now remove the roll angle, we'll compensate for it internally
             descr.offset.o.r = 0.0;
-            context_.tracer()->info( "the driver will compensate for upside-down mounted sensor" );
+            context_.tracer().info( "the driver will compensate for upside-down mounted sensor" );
         }
     }
     else {
@@ -112,7 +112,7 @@ MainThread::initNetworkInterface()
 void
 MainThread::initHardwareDriver()
 {
-    context_.status()->setMaxHeartbeatInterval( subsysName(), 20.0 );
+    context_.status().setMaxHeartbeatInterval( subsysName(), 20.0 );
 
     // this function works for re-initialization as well
     if ( driver_ ) delete driver_;
@@ -123,7 +123,7 @@ MainThread::initHardwareDriver()
     // Dynamically load the library and find the factory
     std::string driverLibName = 
         orcaice::getPropertyWithDefault( prop, prefix+"DriverLib", "libOrcaLaser2dSickCarmen.so" );
-    context_.tracer()->debug( "MainThread: Loading driver library "+driverLibName, 4 );
+    context_.tracer().debug( "MainThread: Loading driver library "+driverLibName, 4 );
     try {
         driverLib_ = new hydrodll::DynamicallyLoadedLibrary(driverLibName);
         driverFactory_ = 
@@ -132,7 +132,7 @@ MainThread::initHardwareDriver()
     }
     catch (hydrodll::DynamicLoadException &e)
     {
-        context_.tracer()->error( e.what() );
+        context_.tracer().error( e.what() );
         throw;
     }
 
@@ -144,7 +144,7 @@ MainThread::initHardwareDriver()
             context_.properties()->getPropertiesForPrefix(configPrefix), configPrefix );
         hydrointerfaces::Context driverContext( props, context_.tracer(), context_.status() );
         try {
-            context_.tracer()->info( "MainThread: Initialising driver..." );
+            context_.tracer().info( "MainThread: Initialising driver..." );
             driver_ = driverFactory_->createDriver( config_, driverContext );
             return;
         }
@@ -152,41 +152,41 @@ MainThread::initHardwareDriver()
         {
             stringstream ss;
             ss << "MainThread: Caught exception while initialising driver: " << e;
-            context_.tracer()->error( ss.str() );
-            context_.status()->fault( subsysName(), ss.str() );
+            context_.tracer().error( ss.str() );
+            context_.status().fault( subsysName(), ss.str() );
         }
         catch ( std::exception &e )
         {
             stringstream ss;
             ss << "MainThread: Caught exception while initialising driver: " << e.what();
-            context_.tracer()->error( ss.str() );
-            context_.status()->fault( subsysName(), ss.str() );
+            context_.tracer().error( ss.str() );
+            context_.status().fault( subsysName(), ss.str() );
         }
         catch ( char *e )
         {
             stringstream ss;
             ss << "MainThread: Caught exception while initialising driver: " << e;
-            context_.tracer()->error( ss.str() );
-            context_.status()->fault( subsysName(), ss.str() );
+            context_.tracer().error( ss.str() );
+            context_.status().fault( subsysName(), ss.str() );
         }
         catch ( std::string &e )
         {
             stringstream ss;
             ss << "MainThread: Caught exception while initialising driver: " << e;
-            context_.tracer()->error( ss.str() );
-            context_.status()->fault( subsysName(), ss.str() );
+            context_.tracer().error( ss.str() );
+            context_.status().fault( subsysName(), ss.str() );
         }
         catch ( ... )
         {
             stringstream ss;
             ss << "MainThread: Caught unknown exception while initialising driver";
-            context_.tracer()->error( ss.str() );
-            context_.status()->fault( subsysName(), ss.str() );
+            context_.tracer().error( ss.str() );
+            context_.status().fault( subsysName(), ss.str() );
         }
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));        
     }
 
-    context_.status()->setMaxHeartbeatInterval( subsysName(), 1.0 );
+    context_.status().setMaxHeartbeatInterval( subsysName(), 1.0 );
 }
 
 void
@@ -246,16 +246,16 @@ MainThread::walk()
             laserInterface_->localSetAndSend( orcaLaserData_ );
             if ( hydroLaserData_.haveWarnings )
             {
-                context_.status()->warning( subsysName(), hydroLaserData_.warnings );
+                context_.status().warning( subsysName(), hydroLaserData_.warnings );
             }
             else
             {
-                context_.status()->ok( subsysName() );
+                context_.status().ok( subsysName() );
             }
 
             stringstream ss;
             ss << "MainThread: Read laser data: " << orcaice::toString(orcaLaserData_);
-            context_.tracer()->debug( ss.str(), 5 );
+            context_.tracer().debug( ss.str(), 5 );
 
             continue;
 
@@ -269,36 +269,36 @@ MainThread::walk()
         {
             std::stringstream ss;
             ss << "ERROR(mainloop.cpp): Caught unexpected exception: " << e;
-            context_.tracer()->error( ss.str() );
-            context_.status()->fault( subsysName(), ss.str() );
+            context_.tracer().error( ss.str() );
+            context_.status().fault( subsysName(), ss.str() );
         }
         catch ( const std::exception &e )
         {
             std::stringstream ss;
             ss << "ERROR(mainloop.cpp): Caught unexpected exception: " << e.what();
-            context_.tracer()->error( ss.str() );
-            context_.status()->fault( subsysName(), ss.str() );
+            context_.tracer().error( ss.str() );
+            context_.status().fault( subsysName(), ss.str() );
         }
         catch ( const std::string &e )
         {
             std::stringstream ss;
             ss << "ERROR(mainloop.cpp): Caught unexpected string: " << e;
-            context_.tracer()->error( ss.str() );
-            context_.status()->fault( subsysName(), ss.str() );            
+            context_.tracer().error( ss.str() );
+            context_.status().fault( subsysName(), ss.str() );            
         }
         catch ( const char *e )
         {
             std::stringstream ss;
             ss << "ERROR(mainloop.cpp): Caught unexpected char *: " << e;
-            context_.tracer()->error( ss.str() );
-            context_.status()->fault( subsysName(), ss.str() );
+            context_.tracer().error( ss.str() );
+            context_.status().fault( subsysName(), ss.str() );
         }
         catch ( ... )
         {
             std::stringstream ss;
             ss << "ERROR(mainloop.cpp): Caught unexpected unknown exception.";
-            context_.tracer()->error( ss.str() );
-            context_.status()->fault( subsysName(), ss.str() );
+            context_.tracer().error( ss.str() );
+            context_.status().fault( subsysName(), ss.str() );
         }
 
         // If we got to here there's a problem.
@@ -308,5 +308,5 @@ MainThread::walk()
     } // end of while
 
     // Laser hardware will be shut down in the driver's destructor.
-    context_.tracer()->debug( "dropping out from run()", 2 );
+    context_.tracer().debug( "dropping out from run()", 2 );
 }

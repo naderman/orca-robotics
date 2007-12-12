@@ -45,17 +45,17 @@ MainLoop::activate()
         {
             std::stringstream ss;
             ss << "MainLoop::activate(): Caught exception: " << e.what();
-            context_.tracer()->warning( ss.str() );
+            context_.tracer().warning( ss.str() );
         }
         catch ( Ice::Exception & e )
         {
             std::stringstream ss;
             ss << "MainLoop::activate(): Caught exception: " << e;
-            context_.tracer()->warning( ss.str() );
+            context_.tracer().warning( ss.str() );
         }
         catch ( ... )
         {
-            context_.tracer()->warning( "MainLoop::activate(): caught unknown exception." );
+            context_.tracer().warning( "MainLoop::activate(): caught unknown exception." );
         }
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
     }
@@ -68,16 +68,16 @@ MainLoop::establishInterface()
     {
         try {
             cameraObj_.initInterface();
-            context_.tracer()->debug( "Activated Camera interface",2 );
+            context_.tracer().debug( "Activated Camera interface",2 );
             return;
         }
         catch ( hydroutil::Exception &e )
         {
-            context_.tracer()->warning( std::string("MainLoop::establishInterface(): ") + e.what() );
+            context_.tracer().warning( std::string("MainLoop::establishInterface(): ") + e.what() );
         }
         catch ( ... )
         {
-            context_.tracer()->warning( "MainLoop::establishInterface(): caught unknown exception." );
+            context_.tracer().warning( "MainLoop::establishInterface(): caught unknown exception." );
         }
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
     }
@@ -86,14 +86,14 @@ MainLoop::establishInterface()
 int
 MainLoop::readData( orca::CameraData& data )
 {
-     context_.tracer()->debug( "Reading data...", 8 );
+     context_.tracer().debug( "Reading data...", 8 );
 
     //
     // Read from the driver
     //            
     if ( hwDriver_->read( data ) ) 
     {
-        context_.tracer()->warning( "Problem reading from the sensor. Re-initializing hardware." );
+        context_.tracer().warning( "Problem reading from the sensor. Re-initializing hardware." );
         
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
         hwDriver_->init();
@@ -101,9 +101,9 @@ MainLoop::readData( orca::CameraData& data )
         // copy config parameters into object fields
         int ret = hwDriver_->initData( data );
         if ( ret == 0 )
-            context_.tracer()->info( "Re-Initialisation succeeded." );
+            context_.tracer().info( "Re-Initialisation succeeded." );
         else
-            context_.tracer()->info( "Re-Initialisation failed." );
+            context_.tracer().info( "Re-Initialisation failed." );
         return -1;
     }
 
@@ -162,44 +162,44 @@ MainLoop::run()
             {
                 std::stringstream ss;
                 ss << "ERROR(mainloop::run()): Caught unexpected Ice exception: " << e;
-                context_.tracer()->error( ss.str() );
+                context_.tracer().error( ss.str() );
             }
             catch ( std::exception &e )
             {
                 std::stringstream ss;
                 ss << "ERROR(mainloop::run()): Caught unexpected std::exception: ";
-                context_.tracer()->error( ss.str() );
+                context_.tracer().error( ss.str() );
             }
             catch ( ... )
             {
                 std::stringstream ss;
                 ss << "ERROR(mainloop::run()): Caught unexpected unknown exception.";
-                context_.tracer()->error( ss.str() );
+                context_.tracer().error( ss.str() );
             }
 
         } // end of while
 
         // Camera hardware will be shut down in the driver's destructor.
-        context_.tracer()->debug( "dropping out from run()", 5 );
+        context_.tracer().debug( "dropping out from run()", 5 );
 
     } // end of try
     catch ( Ice::Exception &e )
     {
         std::stringstream ss;
         ss << "ERROR(mainloop::run()): Caught unexpected Ice exception: " << e;
-        context_.tracer()->error( ss.str() );
+        context_.tracer().error( ss.str() );
     }
     catch ( std::exception &e )
     {
         std::stringstream ss;
         ss << "ERROR(mainloop::run()): Caught unexpected std::exception: ";
-        context_.tracer()->error( ss.str() );
+        context_.tracer().error( ss.str() );
     }
     catch ( ... )
     {
         std::stringstream ss;
         ss << "ERROR(mainloop::run()): Caught unexpected unknown exception.";
-        context_.tracer()->error( ss.str() );
+        context_.tracer().error( ss.str() );
     }
     
 }

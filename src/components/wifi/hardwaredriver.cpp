@@ -163,7 +163,7 @@ HardwareDriver::init()
         stringstream ss;
         ss << "HardwareDriver: Caught exception: " << e.what();
         ss << "We can't read using ioctl. Will just read from proc in the future"; 
-        context_.tracer()->debug( ss.str(), 1 );
+        context_.tracer().debug( ss.str(), 1 );
     }
   
 }
@@ -199,7 +199,7 @@ HardwareDriver::read( orca::WifiData &data )
         stringstream ss;
         ss << "HardwareDriver: Caught exception: " << e.what();
         ss << "We'll continue because this operation is not critical" << endl;      
-        context_.tracer()->info( ss.str() );
+        context_.tracer().info( ss.str() );
         haveIoctl_ = false;
     }
     

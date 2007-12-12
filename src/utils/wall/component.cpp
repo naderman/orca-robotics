@@ -61,7 +61,7 @@ Component::loadPluginLibraries( const std::string & factoryLibNames )
     {
         stringstream ss;
         ss << "Loading factory library: " << libNames[i];
-        context().tracer()->info( ss.str() );
+        context().tracer().info( ss.str() );
         
         try {
             hydrodll::DynamicallyLoadedLibrary *lib = new hydrodll::DynamicallyLoadedLibrary(libNames[i]);
@@ -83,7 +83,7 @@ Component::loadPluginLibraries( const std::string & factoryLibNames )
 
     if ( factories_.empty() ) {
         std::string err = "No factories were loaded.";
-        context().tracer()->error( err );
+        context().tracer().error( err );
         throw err;
     }
 
@@ -107,7 +107,7 @@ Component::createPlugin( const std::string& interfaceType, const std::string& ta
             continue;
         }
 
-//         context().tracer()->debug( "creating logger type="+interfaceType+" sfx="+interfaceTypeSuffix+" fmt="+format+" prfx="+filenamePrefix, 5);
+//         context().tracer().debug( "creating logger type="+interfaceType+" sfx="+interfaceTypeSuffix+" fmt="+format+" prfx="+filenamePrefix, 5);
         orcawall::InterfaceSim* sim = factories_[i]->create( interfaceType, tag, context() );
 
         if ( sim ) { 
@@ -116,21 +116,21 @@ Component::createPlugin( const std::string& interfaceType, const std::string& ta
         }
         else {
             std::string err = "Error when creating iface sim for supported interface type " + interfaceType;
-            context().tracer()->error( err );
+            context().tracer().error( err );
             throw err;
         }
     }
 
     // none of the factories support this type
     std::string err = "Unsupported interface type " + interfaceType;
-    context().tracer()->error( err );
+    context().tracer().error( err );
     throw err;
 }
 
 void 
 Component::start()
 {
-    context().tracer()->debug( "Starting component", 2 );
+    context().tracer().debug( "Starting component", 2 );
     //
     // enable network connections
     //
@@ -148,50 +148,50 @@ Component::start()
         for ( unsigned int j=0; j<supportedInterfaces.size(); ++j ) {
             ss << "\n\t" << supportedInterfaces[j];
         }
-        context().tracer()->info( ss.str() );
+        context().tracer().info( ss.str() );
     }
 
     std::vector<std::string> providedTags; 
     providedTags = orcaice::getProvidedTags( context() );
     {
         stringstream ss; ss<<"Found "<<providedTags.size()<<" tags for simulated provided interfaces";
-        context().tracer()->info( ss.str() );
+        context().tracer().info( ss.str() );
     }
 
     for ( unsigned int i=0; i<providedTags.size(); ++i ) {
         std::string type, suffix;
         orcawall::parseInterfaceTag( providedTags[i], type, suffix );
-        context().tracer()->debug("Processing interface with tag="+providedTags[i]+": type="+type+" sfx="+suffix,3);
+        context().tracer().debug("Processing interface with tag="+providedTags[i]+": type="+type+" sfx="+suffix,3);
         
         createPlugin( type, providedTags[i] );
     }
     {
         stringstream ss; ss<<"Created "<<sims_.size()<<" simulated interfaces";
-        context().tracer()->debug( ss.str(),3 );
+        context().tracer().debug( ss.str(),3 );
     }
 
     //start the interface simulators
     for ( unsigned int i=0; i<sims_.size(); ++i ) {
         stringstream ss; ss<<"Starting interface simulator "<<i;
-        context().tracer()->debug( ss.str(), 3 );
+        context().tracer().debug( ss.str(), 3 );
         sims_[i]->start();
     }
 
-    context().tracer()->debug( "Component started", 2 );
+    context().tracer().debug( "Component started", 2 );
     // the rest is handled by the application/service
 }
 
 void 
 Component::stop()
 {
-    context().tracer()->debug( "Stopping component", 2 );
+    context().tracer().debug( "Stopping component", 2 );
 
     for ( unsigned int i=0; i<sims_.size(); ++i ) {
         stringstream ss; ss<<"Stopping interface simulator "<<i;
-        context().tracer()->debug( ss.str(), 3 );
+        context().tracer().debug( ss.str(), 3 );
         hydroutil::stopAndJoin( sims_[i] );
     }
-    context().tracer()->debug( "Component stopped", 2 );
+    context().tracer().debug( "Component stopped", 2 );
 }
 
 } // namespace

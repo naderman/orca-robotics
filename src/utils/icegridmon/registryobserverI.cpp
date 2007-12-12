@@ -15,7 +15,7 @@ RegistryObserverI::registryInit( const IceGrid::RegistryInfoSeq &registries,
     std::stringstream ss;
     ss << "RegistryObserverI::registryInit:\n";
     ss << "  registries:\n" << toString<IceGrid::RegistryInfoSeq>(registries,"registry",4);
-    context_.tracer()->info( ss.str() );
+    context_.tracer().info( ss.str() );
 }
 
 void 
@@ -25,7 +25,7 @@ RegistryObserverI::registryUp( const IceGrid::RegistryInfo &info,
     stringstream ss;
     ss << "RegistryObserverI::registryUp:\n"
        << "  info:\n" << toString(info,4);
-    context_.tracer()->info( ss.str() );
+    context_.tracer().info( ss.str() );
 }
 
 void 
@@ -35,7 +35,7 @@ RegistryObserverI::registryDown( const std::string &name,
     stringstream ss;
     ss << "RegistryObserverI::registryDown:\n"
        << "  name: " << name;
-    context_.tracer()->info( ss.str() );
+    context_.tracer().info( ss.str() );
 }
 
 

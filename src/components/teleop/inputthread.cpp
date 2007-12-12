@@ -43,7 +43,7 @@ InputThread::walk()
     Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag() + ".Config.";
 
-    context_.tracer()->debug( "InputThread: Loading driver library.", 4 );
+    context_.tracer().debug( "InputThread: Loading driver library.", 4 );
     std::string driverLibName = 
         orcaice::getPropertyWithDefault( prop, prefix+"InputDriverLib", "libHydroHumanInput2dKbdTermio.so" );
     try {
@@ -55,7 +55,7 @@ InputThread::walk()
     }
     catch (hydrodll::DynamicLoadException &e)
     {
-        context_.tracer()->error( e.what() );
+        context_.tracer().error( e.what() );
         throw;
     }
 
@@ -63,20 +63,20 @@ InputThread::walk()
         context_.properties()->getPropertiesForPrefix(prefix), prefix );
     hydrointerfaces::Context driverContext( props, context_.tracer(), context_.status() );
     try {
-        context_.tracer()->info( "InputThread: Initialising driver..." );
+        context_.tracer().info( "InputThread: Initialising driver..." );
         driver_ = driverFactory_->createDriver( driverContext );
     }
     catch ( ... )
     {
         stringstream ss;
         ss << "MainThread: Caught unknown exception while initialising driver";
-        context_.tracer()->error( ss.str() );
+        context_.tracer().error( ss.str() );
         throw;
     }  
 
     // don't forget to enable the driver, but check !isStopping() to see if we should quit
     while ( driver_->enable() && !isStopping() ) {
-        context_.tracer()->warning("Failed to enable input driver. Will try again in 2 seconds.");
+        context_.tracer().warning("Failed to enable input driver. Will try again in 2 seconds.");
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
     }
 
@@ -84,7 +84,7 @@ InputThread::walk()
     if ( !!isStopping() ) {
         return;
     }
-    context_.tracer()->debug("InputThread: Input driver enabled",2);
+    context_.tracer().debug("InputThread: Input driver enabled",2);
 
     // temp object
     hydrointerfaces::HumanInput2d::Command command;
@@ -94,7 +94,7 @@ InputThread::walk()
     //
     while ( !isStopping() )
     {
-        context_.tracer()->debug( "InputThread: calling driver_->read()", 10 );
+        context_.tracer().debug( "InputThread: calling driver_->read()", 10 );
         if ( !driver_->read( command ) ) {
             network_->newMixedCommand( command );
         }
@@ -106,7 +106,7 @@ InputThread::walk()
 
     // reset the hardware
     if ( driver_->disable() ) {
-        context_.tracer()->warning("Failed to disable input driver");
+        context_.tracer().warning("Failed to disable input driver");
     }
-    context_.tracer()->debug("Input driver disabled",2);
+    context_.tracer().debug("Input driver disabled",2);
 }

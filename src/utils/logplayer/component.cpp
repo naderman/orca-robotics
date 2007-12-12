@@ -73,7 +73,7 @@ Component::loadPluginLibraries( const std::string & factoryLibNames )
     {
         stringstream ss;
         ss << "Loading factory library: " << libNames[i];
-        context().tracer()->info( ss.str() );
+        context().tracer().info( ss.str() );
         
         try {
             hydrodll::DynamicallyLoadedLibrary *lib = new hydrodll::DynamicallyLoadedLibrary(libNames[i]);
@@ -90,7 +90,7 @@ Component::loadPluginLibraries( const std::string & factoryLibNames )
 
     if ( replayerFactories_.empty() ) {
         std::string err = "No replayer factories were loaded.";
-        context().tracer()->error( err );
+        context().tracer().error( err );
         throw err;
     }
 }
@@ -108,7 +108,7 @@ Component::createReplayer( const std::string& interfaceType,
         replayers_.push_back( new orcalog::DummyReplayer );
         std::string s = "Interface replayer is disabled (type="+interfaceType+" file="+filename
                         +". Created dummy log player";
-        context().tracer()->info( s );
+        context().tracer().info( s );
         return;
     }
 
@@ -138,12 +138,12 @@ Component::createReplayer( const std::string& interfaceType,
                 s += " type=" + interfaceType;
                 s += " file=" + filename;
                 s += " fmt=" + format;
-                context().tracer()->info( s );
+                context().tracer().info( s );
                 return;
             }
             else {
                 std::string err = "Error when creating replayer for supported interface type " + interfaceType;
-                context().tracer()->error( err );
+                context().tracer().error( err );
                 throw err;
             }
         }
@@ -152,14 +152,14 @@ Component::createReplayer( const std::string& interfaceType,
             if ( require ) 
             {
                 std::string err = "Format "+format+" is not supported for interface type"+interfaceType;
-                context().tracer()->error( err );
+                context().tracer().error( err );
                 throw err;
             }
             else {
                 replayers_.push_back( new orcalog::DummyReplayer() );
                 std::string s = "Log format is not supported (type="+interfaceType+" fmt="+format+" file="+filename
                                 +". Created dummy log player";
-                context().tracer()->info( s );
+                context().tracer().info( s );
                 return;
             }
         }
@@ -171,14 +171,14 @@ Component::createReplayer( const std::string& interfaceType,
     // all interfaces are required, no dummies
     if ( require ) {
         std::string err = "Unsupported interface type " + interfaceType;
-        context().tracer()->error( err );
+        context().tracer().error( err );
         throw err;
     }
     else {
         replayers_.push_back( new orcalog::DummyReplayer );
         std::string s = "Interface type is not supported (type="+interfaceType+" fmt="+format+" file="+filename
                         +". Created dummy log player";
-        context().tracer()->info( s );
+        context().tracer().info( s );
         return;
     }
 }
@@ -197,14 +197,14 @@ Component::readReplayParams( IceUtil::Time &beginTime, double &replayRate, bool 
     beginTime = orcaice::toIceTime( tempTime );
     if ( beginTime<IceUtil::Time() ) {
         beginTime = IceUtil::Time();
-        tracer()->warning( "Negative BeginTime was reset to 0.0" );
+        tracer().warning( "Negative BeginTime was reset to 0.0" );
     }
 
     // ReplayRate: Adjusts the playback speed
     replayRate = orcaice::getPropertyAsDoubleWithDefault( props, prefix+"ReplayRate", 1.0 );
     stringstream ss;
     ss<<"Replay is triggered by the clock (real/replay="<<replayRate<<").";
-    tracer()->info( ss.str() );
+    tracer().info( ss.str() );
 
     autoStart = orcaice::getPropertyAsIntWithDefault( props, prefix+"AutoStart", 0 );
 }
@@ -243,7 +243,7 @@ Component::start()
     masterFileReader_->getLogs( filenames, interfaceTypes, formats, enableds );
     stringstream ss;
     ss << "found " << filenames.size() << " logs in the master file.";
-    context().tracer()->info( ss.str() );
+    context().tracer().info( ss.str() );
 
     // Instantiate a replayer for each log in the master file
     for ( unsigned int i=0; i<filenames.size(); ++i ) 
@@ -251,7 +251,7 @@ Component::start()
         stringstream ss;
         ss<<"Processing log: file="<<filenames[i]<<" type="+interfaceTypes[i]
           <<" fmt="<<formats[i]<<" on="<<(int)enableds[i];
-        context().tracer()->debug( ss.str(), 3);
+        context().tracer().debug( ss.str(), 3);
 
         //
         // Create replayer
@@ -317,7 +317,7 @@ Component::start()
 void
 Component::stop()
 {
-    context().tracer()->debug("Stopping component", 2 );
+    context().tracer().debug("Stopping component", 2 );
     hydroutil::stopAndJoin( replayConductor_ );
     hydroutil::stopAndJoin( highLevelController_ );
 }

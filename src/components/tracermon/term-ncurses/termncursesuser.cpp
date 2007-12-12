@@ -390,19 +390,19 @@ displayLocalTrace( "TermNcursesUser: exited main loop" );
 
     // reset the hardware
 //     if ( driver_->disable() ) {
-//         context_.tracer()->warning("failed to disable driver");
+//         context_.tracer().warning("failed to disable driver");
 //     }
 
     } // try
     catch ( ... )
     {
-        context_.tracer()->error( "unexpected exception from somewhere.");
+        context_.tracer().error( "unexpected exception from somewhere.");
         context_.communicator()->destroy();
     }
 
     // wait for the component to realize that we are quitting and tell us to stop.
     waitForStop();
-    context_.tracer()->debug( "TermNcursesUser: stopped.",5 );
+    context_.tracer().debug( "TermNcursesUser: stopped.",5 );
 }
 
 void 

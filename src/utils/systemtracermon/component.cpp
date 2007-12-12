@@ -43,7 +43,7 @@ Component::connectForTracingInfo( orca::TracerPrx tracerPrx )
         {
             stringstream ss;
             ss << "Failed to subscribe for data updates: "<<e.what<<endl<<"Will try again after 2 seconds.";
-            tracer()->error( ss.str() );
+            tracer().error( ss.str() );
             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
         }
     }
@@ -107,7 +107,7 @@ Component::start()
             {
                 std::stringstream ss;
                 ss << "Failed to connect to remote object: "<<e.what()<<endl<<"Will try again after 2 seconds.";
-                tracer()->error( ss.str() );
+                tracer().error( ss.str() );
                 IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
             }
         }

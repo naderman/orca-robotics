@@ -40,7 +40,7 @@ createInterfaceWithString( const Context      & context,
     iface.name = proxyString;
     // is this a local call? is there a better way?
     iface.id   = object->ice_id();
-    context.home()->addProvidedInterface( iface );
+    context.home().addProvidedInterface( iface );
 }
 
 void
@@ -200,7 +200,7 @@ isRegistryReachable( const Context& context )
         Ice::LocatorPrx locator = context.communicator()->getDefaultLocator();
 
         // debug
-        context.tracer()->debug( "pinging "+context.communicator()->proxyToString( locator ),5 );
+        context.tracer().debug( "pinging "+context.communicator()->proxyToString( locator ),5 );
         
         // ping the registry
         locator->ice_ping();
@@ -211,13 +211,13 @@ isRegistryReachable( const Context& context )
     {
         std::stringstream ss;
         ss << "orcaice::isRegistryReachable(): caught exception: " << e;
-        context.tracer()->debug( ss.str() ,5 );
+        context.tracer().debug( ss.str() ,5 );
     }
     catch( const std::exception &e )
     {
         std::stringstream ss;
         ss << "orcaice::isRegistryReachable(): caught exception: " << e.what();
-        context.tracer()->debug( ss.str() ,5 );
+        context.tracer().debug( ss.str() ,5 );
     }
     return false;
 }

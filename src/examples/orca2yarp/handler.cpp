@@ -72,7 +72,7 @@ Handler::run()
         // should really subscribe and wait the server to push data to us.
         // This is a remote call, must catch exceptions here!
         odometry2dData = odometry2dPrx->getData();
-        context_.tracer()->print( orcaice::toString( odometry2dData ) );
+        context_.tracer().print( orcaice::toString( odometry2dData ) );
 
         // prepare a yarp message
         yarp::os::Bottle bot; 
@@ -88,7 +88,7 @@ Handler::run()
         bot.addDouble( odometry2dData.pose.o );
 
         // send the yarp message
-        context_.tracer()->debug( "Sending yarp message", 5 );
+        context_.tracer().debug( "Sending yarp message", 5 );
         output.write(bot);
 
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
@@ -100,13 +100,13 @@ Handler::run()
     } // try
     catch ( ... )
     {
-        context_.tracer()->error( "Unexpected exception from somewhere.");
+        context_.tracer().error( "Unexpected exception from somewhere.");
         context_.communicator()->destroy();
     }
 
     // wait for the component to realize that we are quitting and tell us to stop.
     waitForStop();
-    context_.tracer()->debug( "Handler stopped", 2 );
+    context_.tracer().debug( "Handler stopped", 2 );
 }
 
 } // namespace

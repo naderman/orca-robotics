@@ -39,7 +39,7 @@ ComponentThread::run()
                 // Nothing left for us to do!
                 stringstream ss;
                 ss << "orcaice::ComponentThread: Nothing left to do, so quitting. hasStatusInterface: " << hasStatusInterface;
-                context_.tracer()->debug( ss.str() );
+                context_.tracer().debug( ss.str() );
                 return;
             }
 
@@ -63,7 +63,7 @@ ComponentThread::run()
     {
         stringstream ss;
         ss << "orcaice::ComponentThread: caught unexpected exception: " << e.what() <<".  This shouldn't happen.";
-        context_.tracer()->error( ss.str() );
+        context_.tracer().error( ss.str() );
     }
 }
 
@@ -104,14 +104,14 @@ ComponentThread::tryRegisterHome()
         if ( requireRegistry ) {
             std::stringstream ss;
             ss << "Failed to register Home interface: "<<e<<".  Check IceGrid Registry.  You may allow things to continue without registration by setting Orca.RequireRegistry=0.";
-            context_.tracer()->error( ss.str() );
+            context_.tracer().error( ss.str() );
             return false;
         }
         else {
             std::stringstream ss;
             ss << "Failed to register Home interface: "<<e<<".";
-            context_.tracer()->warning( ss.str() );
-            context_.tracer()->info( "You may enforce registration by setting Orca.RequireRegistry=1." );
+            context_.tracer().warning( ss.str() );
+            context_.tracer().info( "You may enforce registration by setting Orca.RequireRegistry=1." );
             return true;
         }
     }

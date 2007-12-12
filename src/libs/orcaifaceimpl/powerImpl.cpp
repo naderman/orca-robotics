@@ -98,7 +98,7 @@ PowerImpl::initInterface( hydroutil::Thread* thread, const std::string& subsysNa
 ::orca::PowerData 
 PowerImpl::internalGetData() const
 {
-    context_.tracer()->debug( "PowerImpl::internalGetData()", 5 );
+    context_.tracer().debug( "PowerImpl::internalGetData()", 5 );
 
     if ( dataProxy_.isEmpty() )
     {
@@ -115,19 +115,19 @@ PowerImpl::internalGetData() const
 void 
 PowerImpl::internalSubscribe(const ::orca::PowerConsumerPrx& subscriber)
 {
-    context_.tracer()->debug( "PowerImpl::internalSubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
+    context_.tracer().debug( "PowerImpl::internalSubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
     try {
         topicPrx_->subscribeAndGetPublisher( IceStorm::QoS(), subscriber->ice_twoway() );
     }
     catch ( const IceStorm::AlreadySubscribed & e ) {
         std::stringstream ss;
         ss <<"Request for subscribe but this proxy has already been subscribed, so I do nothing: "<< e;
-        context_.tracer()->debug( ss.str(), 2 );
+        context_.tracer().debug( ss.str(), 2 );
     }
     catch ( const Ice::Exception & e ) {
         std::stringstream ss;
         ss <<"PowerImpl::internalSubscribe: failed to subscribe: "<< e << endl;
-        context_.tracer()->warning( ss.str() );
+        context_.tracer().warning( ss.str() );
         throw orca::SubscriptionFailedException( ss.str() );
     }
 }
@@ -135,7 +135,7 @@ PowerImpl::internalSubscribe(const ::orca::PowerConsumerPrx& subscriber)
 void 
 PowerImpl::internalUnsubscribe(const ::orca::PowerConsumerPrx& subscriber)
 {
-    context_.tracer()->debug( "PowerImpl::internalUnsubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
+    context_.tracer().debug( "PowerImpl::internalUnsubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
     topicPrx_->unsubscribe( subscriber );
 }
 

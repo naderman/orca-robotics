@@ -51,7 +51,7 @@ SimpleDriver::SimpleDriver( const orca::GpsDescription &descr,
     {
         stringstream ss;
         ss << "Can't handle non-zero antenna roll/pitch.  Received: " << orcaice::toString( descr_.antennaOffset );
-        context_.tracer()->error( ss.str() );
+        context_.tracer().error( ss.str() );
         exit(1);
     }
     antennaTransform_.p.x = -descr_.antennaOffset.p.x;

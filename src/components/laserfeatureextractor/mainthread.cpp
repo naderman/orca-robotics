@@ -25,8 +25,8 @@ MainThread::MainThread( const orcaice::Context &context ) :
     driver_(NULL),
     context_(context)
 {
-    context_.status()->setMaxHeartbeatInterval( subsysName(), 10.0 );
-    context_.status()->initialising( subsysName() );
+    context_.status().setMaxHeartbeatInterval( subsysName(), 10.0 );
+    context_.status().initialising( subsysName() );
 
     sensorOffset_.p.x=0;
     sensorOffset_.p.y=0;
@@ -56,7 +56,7 @@ MainThread::initAlgorithmDriver()
     if ( driverName == "fake" )
     {
         fakeDriver_ = true;
-        context_.tracer()->debug( "loading 'fake' driver",3);
+        context_.tracer().debug( "loading 'fake' driver",3);
         driver_ = new FakeDriver();
     }
     else if ( driverName == "combined" )
@@ -65,17 +65,17 @@ MainThread::initAlgorithmDriver()
         connectToLaser();
         getLaserDescription();
 
-        context_.tracer()->debug( "loading 'combined' driver",3);
+        context_.tracer().debug( "loading 'combined' driver",3);
         driver_ = new CombinedDriver( context_, laserDescr_.maxRange, laserDescr_.numberOfSamples );
     }
     else
     {
         std::string errString = "Unknown algorithm driver: " + driverName;
-        context_.tracer()->error( errString );
+        context_.tracer().error( errString );
         exit(1);
     }
     
-    context_.tracer()->debug("driver instantiated",5);
+    context_.tracer().debug("driver instantiated",5);
 }
 
 void 
@@ -85,27 +85,27 @@ MainThread::connectToLaser()
     {
         try
         {
-            context_.tracer()->debug( "Connecting to laser...", 3 );
+            context_.tracer().debug( "Connecting to laser...", 3 );
             orcaice::connectToInterfaceWithTag<orca::LaserScanner2dPrx>( 
                 context_, laserPrx_, "Laser" );
-            context_.tracer()->debug("connected to a 'Laser' interface", 4 );
+            context_.tracer().debug("connected to a 'Laser' interface", 4 );
             break;
         }
         catch ( const Ice::Exception &e )
         {
             stringstream ss;
             ss << "failed to connect to laser interface: " << e;
-            context_.tracer()->error( ss.str() );
+            context_.tracer().error( ss.str() );
         }
         catch ( const std::exception &e )
         {
             stringstream ss;
             ss << "failed to connect to laser interface: " << e.what();
-            context_.tracer()->error( ss.str() );
+            context_.tracer().error( ss.str() );
         }
         catch ( ... )
         {
-            context_.tracer()->error( "Failed to connect to laser interface for unknown reason." );
+            context_.tracer().error( "Failed to connect to laser interface for unknown reason." );
         }
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
     }
@@ -114,7 +114,7 @@ MainThread::connectToLaser()
     {
         try
         {
-            context_.tracer()->debug( "Subscribing to laser...", 3 );
+            context_.tracer().debug( "Subscribing to laser...", 3 );
             laserPrx_->subscribe( laserConsumer_->consumerPrx() );
             break;
         }
@@ -122,23 +122,23 @@ MainThread::connectToLaser()
         {
             stringstream ss;
             ss << "failed to subscribe to laser: " << e;
-            context_.tracer()->error( ss.str() );
+            context_.tracer().error( ss.str() );
         }
         catch ( const std::exception &e )
         {
             stringstream ss;
             ss << "failed to subscribe to laser: " << e.what();
-            context_.tracer()->error( ss.str() );
+            context_.tracer().error( ss.str() );
         }
         catch ( ... )
         {
-            context_.tracer()->error( "Failed to subscribe to laser for unknown reason." );
+            context_.tracer().error( "Failed to subscribe to laser for unknown reason." );
         }
-        context_.status()->initialising( subsysName(), "connectToLaser()" );
+        context_.status().initialising( subsysName(), "connectToLaser()" );
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
     }
 
-    context_.tracer()->info( "Connected to laser." );
+    context_.tracer().info( "Connected to laser." );
 }
 
 void 
@@ -148,11 +148,11 @@ MainThread::getLaserDescription()
     {
         try
         {
-            context_.tracer()->debug( "Getting laser description...", 2 );
+            context_.tracer().debug( "Getting laser description...", 2 );
             laserDescr_ = laserPrx_->getDescription();
             stringstream ss;
             ss << "Got laser description: " << orcaice::toString( laserDescr_ );
-            context_.tracer()->info( ss.str() );
+            context_.tracer().info( ss.str() );
             sensorOffset_ = laserDescr_.offset;
             if ( sensorOffsetOK( sensorOffset_ ) )
                 return;
@@ -161,19 +161,19 @@ MainThread::getLaserDescription()
         {
             stringstream ss;
             ss << "failed to retreive laser description: " << e;
-            context_.tracer()->error( ss.str() );
+            context_.tracer().error( ss.str() );
         }
         catch ( const std::exception &e )
         {
             stringstream ss;
             ss << "failed to retreive laser description: " << e.what();
-            context_.tracer()->error( ss.str() );
+            context_.tracer().error( ss.str() );
         }
         catch ( ... )
         {
-            context_.tracer()->error( "Failed to retreive laser description for unknown reason." );
+            context_.tracer().error( "Failed to retreive laser description for unknown reason." );
         }
-        context_.status()->initialising( subsysName(), "getLaserDescription()" );
+        context_.status().initialising( subsysName(), "getLaserDescription()" );
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
     }
 }
@@ -207,8 +207,8 @@ MainThread::walk()
     // wake up every now and then to check if we are supposed to stop
     const int timeoutMs = 1000;
 
-    context_.tracer()->debug( "Entering main loop.",2 );
-    context_.status()->setMaxHeartbeatInterval( subsysName(), 2.0 );
+    context_.tracer().debug( "Entering main loop.",2 );
+    context_.status().setMaxHeartbeatInterval( subsysName(), 2.0 );
 
     // Loop forever till we get shut down.
     while ( !isStopping() )
@@ -223,8 +223,8 @@ MainThread::walk()
             if ( ret != 0 ) {
                 stringstream ss;
                 ss << "Timed out (" << timeoutMs << "ms) waiting for laser data.  Reconnecting.";
-                context_.tracer()->warning( ss.str() );
-                context_.status()->warning( subsysName(), ss.str() );
+                context_.tracer().warning( ss.str() );
+                context_.status().warning( subsysName(), ss.str() );
                 connectToLaser();
                 continue;
             }
@@ -237,8 +237,8 @@ MainThread::walk()
                 stringstream ss;
                 ss << "Got laser scan: expected " << laserDescr_.numberOfSamples
                     << " returns, got " << laserData->ranges.size();
-                context_.tracer()->warning( ss.str() );
-                context_.status()->warning( subsysName(), ss.str() );
+                context_.tracer().warning( ss.str() );
+                context_.status().warning( subsysName(), ss.str() );
                 continue;
             }
 
@@ -258,39 +258,39 @@ MainThread::walk()
 
             featureInterface_->localSetAndSend( featureData );
 
-            context_.status()->ok( subsysName() );
+            context_.status().ok( subsysName() );
         } // try
         catch ( const orca::OrcaException & e )
         {
             std::stringstream ss;
             ss << "MainThread: unexpected orca exception: " << e << ": " << e.what;
-            context_.tracer()->error( ss.str() );
+            context_.tracer().error( ss.str() );
         }
         catch ( const Ice::Exception & e )
         {
             std::stringstream ss;
             ss << "MainThread: unexpected Ice exception: " << e;
-            context_.tracer()->error( ss.str() );
+            context_.tracer().error( ss.str() );
         }
         catch ( const std::exception & e )
         {
             std::stringstream ss;
             ss << "MainThread: unexpected std exception: " << e.what();
-            context_.tracer()->error( ss.str() );
+            context_.tracer().error( ss.str() );
         }
         catch ( const std::string &e )
         {
             std::stringstream ss;
             ss << "MainThread: unexpected std::string exception: " << e;
-            context_.tracer()->error( ss.str() );
+            context_.tracer().error( ss.str() );
         }
         catch ( ... )
         {
-            context_.tracer()->error( "MainThread: unexpected exception from somewhere.");
+            context_.tracer().error( "MainThread: unexpected exception from somewhere.");
         }
     } // while
 
-    context_.tracer()->debug( "Exited main loop.",2 );
+    context_.tracer().debug( "Exited main loop.",2 );
 }
 
 void
@@ -403,14 +403,14 @@ MainThread::sensorOffsetOK( const orca::Frame3d & offset )
     {
         stringstream ss;
         ss << "Can't handle non-zero 'z' component in laser offset. Offset: " << orcaice::toString(offset);
-        context_.tracer()->error( ss.str() );
+        context_.tracer().error( ss.str() );
         offsetOk = false;
     }
     if ( offset.o.r != 0.0 || offset.o.p != 0.0 )
     {
         stringstream ss;
         ss << "Can't handle non-zero roll or pitch in laser offset. Offset: " << orcaice::toString(offset);
-        context_.tracer()->error( ss.str() );
+        context_.tracer().error( ss.str() );
         offsetOk = false;
     }
 

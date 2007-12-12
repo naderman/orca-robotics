@@ -42,13 +42,13 @@ CameraReplayer::CameraReplayer( const std::string      &format,
     }
     else if ( format_=="jpeg" )
     {
-        context_.tracer()->info( "Images can only be logged in 'jpeg' format if you have OpenCV." );
-        context_.tracer()->info( "Please have a look at the documentation for ImageServer component for installing OpenCv." );
+        context_.tracer().info( "Images can only be logged in 'jpeg' format if you have OpenCV." );
+        context_.tracer().info( "Please have a look at the documentation for ImageServer component for installing OpenCv." );
         throw orcalog::FormatNotSupportedException( ERROR_INFO, interfaceType_+"Logger: 'jpeg' format not supported because OpenCV is not installed." );
     }
     else
     {
-        context_.tracer()->warning( interfaceType_+"Logger: unknown log format: "+format_ );
+        context_.tracer().warning( interfaceType_+"Logger: unknown log format: "+format_ );
         throw orcalog::FormatNotSupportedException( ERROR_INFO, interfaceType_+"Logger: unknown log format: "+format_ );
     }
 #endif
@@ -58,7 +58,7 @@ CameraReplayer::CameraReplayer( const std::string      &format,
     // check that we support this format
     if ( format_!="ice" && format_!="jpeg" )
     {
-        context_.tracer()->warning( interfaceType_+"Logger: unknown log format: "+format_ );
+        context_.tracer().warning( interfaceType_+"Logger: unknown log format: "+format_ );
         throw orcalog::FormatNotSupportedException( ERROR_INFO, interfaceType_+"Logger: unknown log format: "+format_ );
     }
 #endif     
@@ -126,12 +126,12 @@ CameraReplayer::subscribe(const ::orca::CameraConsumerPrx &subscriber, const ::I
     catch ( const IceStorm::AlreadySubscribed & e ) {
         std::stringstream ss;
         ss <<"Request for subscribe but this proxy has already been subscribed, so I do nothing: "<< e;
-        context_.tracer()->debug( ss.str(), 2 );    
+        context_.tracer().debug( ss.str(), 2 );    
     }
     catch ( const Ice::Exception & e ) {
         std::stringstream ss;
         ss <<"subscribe: failed to subscribe: "<< e << endl;
-        context_.tracer()->warning( ss.str() );
+        context_.tracer().warning( ss.str() );
         throw orca::SubscriptionFailedException( ss.str() );
     }
 }
@@ -147,7 +147,7 @@ CameraReplayer::unsubscribe(const ::orca::CameraConsumerPrx &subscriber, const :
 void
 CameraReplayer::openLogFile()
 {
-    context_.tracer()->debug( "Opening log file "+filename_,2 );
+    context_.tracer().debug( "Opening log file "+filename_,2 );
 
     //
     // open log file, may throw and it will kill us

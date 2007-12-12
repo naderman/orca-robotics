@@ -52,7 +52,7 @@ LogReader::init()
 void
 LogReader::openLogFile()
 {
-    logReaderInfo_.context.tracer()->debug( "Opening log file "+logReaderInfo_.filename,2 );
+    logReaderInfo_.context.tracer().debug( "Opening log file "+logReaderInfo_.filename,2 );
 
     if ( file_ ) {
         std::string s = "Log file already exists.";
@@ -121,7 +121,7 @@ LogReader::advanceLogIndex()
     {
         ostringstream ss;
         ss << logReaderInfo_.interfaceType << "LogReader: replayed " << logIndex_ << " data objects from "<<logReaderInfo_.filename;
-        logReaderInfo_.context.tracer()->info( ss.str() );
+        logReaderInfo_.context.tracer().info( ss.str() );
     } 
 }
 

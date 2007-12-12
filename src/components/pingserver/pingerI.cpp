@@ -30,7 +30,7 @@ PingerI::PingerI( const std::string      &ifaceTag,
     {
         stringstream ss;
         ss << "Experimental ping to localhost failed: " << e.what();
-        context_.tracer()->error( ss.str() );
+        context_.tracer().error( ss.str() );
         throw hydroping::PingException( ss.str() );
     }
 }
@@ -52,18 +52,18 @@ double
 PingerI::ping( const std::string &host, const Ice::Current& )
 {
     stringstream ss; ss << "Pinging "<<host;
-    context_.tracer()->debug( ss.str() );
+    context_.tracer().debug( ss.str() );
 
     try {
         double latencyMs = pinger_->ping( host );
         stringstream ss; ss << "  Ping latency: " << latencyMs << "ms";
-        context_.tracer()->debug( ss.str() );
+        context_.tracer().debug( ss.str() );
         return latencyMs;
     }
     catch ( hydroping::PingException &e )
     {
         stringstream ss; ss << "Error while pinging: " << e.what();
-        context_.tracer()->debug( ss.str() );
+        context_.tracer().debug( ss.str() );
         throw orca::PingException( e.what() );
     }
 }

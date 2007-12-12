@@ -54,7 +54,7 @@ MainLoop::walk()
         {
             // this returns the most derived interface. see also ice_ids()
             objId = obj->ice_id();
-            context_.tracer()->debug( "interface type: "+objId,2 );
+            context_.tracer().debug( "interface type: "+objId,2 );
             break;
         }
         catch ( const Ice::CommunicatorDestroyedException & e )
@@ -64,7 +64,7 @@ MainLoop::walk()
         }
         catch( const Ice::LocalException & e )
         {
-            context_.tracer()->warning( "Failed to lookup ID for "+proxyString+". Will try again after 3 seconds." );
+            context_.tracer().warning( "Failed to lookup ID for "+proxyString+". Will try again after 3 seconds." );
             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
         }
     }
@@ -121,7 +121,7 @@ MainLoop::walk()
 //     }
     else
     {
-        context_.tracer()->error( "Unsupported interface type: "+objId+". Quitting..." );
+        context_.tracer().error( "Unsupported interface type: "+objId+". Quitting..." );
         context_.communicator()->destroy();
     }
 

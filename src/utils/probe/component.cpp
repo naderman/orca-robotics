@@ -68,7 +68,7 @@ Component::loadPluginLibraries( const std::string & factoryLibNames )
     {
         stringstream ss;
         ss << "Loading factory library: " << libNames[i];
-        context().tracer()->info( ss.str() );
+        context().tracer().info( ss.str() );
         
         try {
             hydrodll::DynamicallyLoadedLibrary *lib = new hydrodll::DynamicallyLoadedLibrary(libNames[i]);
@@ -90,7 +90,7 @@ Component::loadPluginLibraries( const std::string & factoryLibNames )
 
     if ( factories_.empty() ) {
         std::string err = "No log factories were loaded.";
-        context().tracer()->error( err );
+        context().tracer().error( err );
         throw err;
     }
 
@@ -127,7 +127,7 @@ Component::start()
     if ( driverName == "gui-qt" ) 
     {
 #ifdef HAVE_GUI_QT_DRIVER        
-        tracer()->info( "Loading GUI Qt driver");
+        tracer().info( "Loading GUI Qt driver");
         display = new GuiQtDisplay( supportedInterfaces );
 #else
         throw hydroutil::Exception( ERROR_INFO, "Can't instantiate driver type 'gui-qt' because it was not compiled." );
@@ -135,12 +135,12 @@ Component::start()
     }
     else if ( driverName == "term-iostream" ) 
     {
-        tracer()->info( "Loading terminal iostream driver");
+        tracer().info( "Loading terminal iostream driver");
         display = new TermIostreamDisplay( supportedInterfaces );
     }
     else {
         std::string errorStr = "Unknown driver type." + driverName + " Cannot talk to hardware.";
-        tracer()->error( errorStr);
+        tracer().error( errorStr);
         throw hydroutil::HardwareException( ERROR_INFO, errorStr );
     }
 

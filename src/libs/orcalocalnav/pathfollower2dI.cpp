@@ -109,7 +109,7 @@ PathFollower2dI::setData( const ::orca::PathFollower2dData& data, bool activateI
     {
         stringstream ss;
         ss << "PathFollower2dI: Received screwy path: " << orcaice::toString(data) << endl << reason;
-        context_.tracer()->warning( ss.str() );
+        context_.tracer().warning( ss.str() );
         throw orca::MalformedParametersException( reason );
     }
 
@@ -117,7 +117,7 @@ PathFollower2dI::setData( const ::orca::PathFollower2dData& data, bool activateI
     {
         stringstream ss;
         ss << "Received dodgy path: " << orcaice::toVerboseString(data) << endl << reason;
-        context_.tracer()->warning( ss.str() );
+        context_.tracer().warning( ss.str() );
     }
 
     cout<<"TRACE(pathfollower2dI.cpp): Received new path: " << orcaice::toVerboseString(data) << endl;
@@ -155,15 +155,15 @@ PathFollower2dI::activateNow( const ::Ice::Current& )
         // This could happen if IceStorm dies.
         // If we're running in an IceBox and the IceBox is shutting down, 
         // this is expected (our co-located IceStorm is obviously going down).
-        context_.tracer()->warning( "PathFollower2dI: Failed push to IceStorm." );
+        context_.tracer().warning( "PathFollower2dI: Failed push to IceStorm." );
 
         // If IceStorm just re-started for some reason though, we want to try to re-connect
         try
         {
-            context_.tracer()->print( "Re-connecting to IceStorm..." );
+            context_.tracer().print( "Re-connecting to IceStorm..." );
             topicPrx_ = orcaice::connectToTopicWithTag<orca::PathFollower2dConsumerPrx>
                 ( context_, consumerPrx_, ifaceTag_ );
-            context_.tracer()->print( "PathFollower2dI: Re-connected to IceStorm." );
+            context_.tracer().print( "PathFollower2dI: Re-connected to IceStorm." );
 
             // try again to push that bit of info
             consumerPrx_->setActivationTime( now,
@@ -172,12 +172,12 @@ PathFollower2dI::activateNow( const ::Ice::Current& )
         catch ( ... )
         {
             // ignore it -- we'll try again next push.
-            context_.tracer()->print( "PathFollower2dI: Re-connection to IceStorm failed." );
+            context_.tracer().print( "PathFollower2dI: Re-connection to IceStorm failed." );
         }
     }
     catch ( ... )
     {
-        context_.tracer()->warning( "PathFollower2dI: Failed push to IceStorm: unknown exception" );
+        context_.tracer().warning( "PathFollower2dI: Failed push to IceStorm: unknown exception" );
     }
 }
 
@@ -246,12 +246,12 @@ PathFollower2dI::subscribe( const ::orca::PathFollower2dConsumerPrx& subscriber,
     catch ( const IceStorm::AlreadySubscribed & e ) {
         std::stringstream ss;
         ss <<"Request for subscribe but this proxy has already been subscribed, so I do nothing: "<< e;
-        context_.tracer()->debug( ss.str(), 2 );
+        context_.tracer().debug( ss.str(), 2 );
     }
     catch ( const Ice::Exception & e ) {
         std::stringstream ss;
         ss <<"subscribe: failed to subscribe: "<< e;
-        context_.tracer()->warning( ss.str() );
+        context_.tracer().warning( ss.str() );
         throw orca::SubscriptionFailedException( ss.str() );
     }
 }
@@ -278,15 +278,15 @@ PathFollower2dI::localSetWaypointIndex( int index )
         // This could happen if IceStorm dies.
         // If we're running in an IceBox and the IceBox is shutting down, 
         // this is expected (our co-located IceStorm is obviously going down).
-        context_.tracer()->warning( "PathFollower2dI: Failed push to IceStorm." );
+        context_.tracer().warning( "PathFollower2dI: Failed push to IceStorm." );
 
         // If IceStorm just re-started for some reason though, we want to try to re-connect
         try
         {
-            context_.tracer()->print( "Re-connecting to IceStorm..." );
+            context_.tracer().print( "Re-connecting to IceStorm..." );
             topicPrx_ = orcaice::connectToTopicWithTag<orca::PathFollower2dConsumerPrx>
                 ( context_, consumerPrx_, ifaceTag_ );
-            context_.tracer()->print( "PathFollower2dI: Re-connected to IceStorm." );
+            context_.tracer().print( "PathFollower2dI: Re-connected to IceStorm." );
 
             // try again to push that bit of info
             consumerPrx_->setWaypointIndex( index );
@@ -294,12 +294,12 @@ PathFollower2dI::localSetWaypointIndex( int index )
         catch ( ... )
         {
             // ignore it -- we'll try again next push.
-            context_.tracer()->print( "PathFollower2dI: Re-connection to IceStorm failed." );
+            context_.tracer().print( "PathFollower2dI: Re-connection to IceStorm failed." );
         }
     }
     catch ( ... )
     {
-        context_.tracer()->warning( "PathFollower2dI: Failed push to IceStorm: unknown exception" );
+        context_.tracer().warning( "PathFollower2dI: Failed push to IceStorm: unknown exception" );
     }
 }
 
@@ -319,15 +319,15 @@ PathFollower2dI::localSetWaypointIndex( int index )
 //         // This could happen if IceStorm dies.
 //         // If we're running in an IceBox and the IceBox is shutting down, 
 //         // this is expected (our co-located IceStorm is obviously going down).
-//         context_.tracer()->warning( "PathFollower2dI: Failed push to IceStorm." );
+//         context_.tracer().warning( "PathFollower2dI: Failed push to IceStorm." );
 
 //         // If IceStorm just re-started for some reason though, we want to try to re-connect
 //         try
 //         {
-//             context_.tracer()->print( "Re-connecting to IceStorm..." );
+//             context_.tracer().print( "Re-connecting to IceStorm..." );
 //             topicPrx_ = orcaice::connectToTopicWithTag<orca::PathFollower2dConsumerPrx>
 //                 ( context_, consumerPrx_, ifaceTag_ );
-//             context_.tracer()->print( "PathFollower2dI: Re-connected to IceStorm." );
+//             context_.tracer().print( "PathFollower2dI: Re-connected to IceStorm." );
 
 //             // try again to push that bit of info
 //             consumerPrx_->setActivationTime( activationTime, 
@@ -336,12 +336,12 @@ PathFollower2dI::localSetWaypointIndex( int index )
 //         catch ( ... )
 //         {
 //             // ignore it -- we'll try again next push.
-//             context_.tracer()->print( "PathFollower2dI: Re-connection to IceStorm failed." );
+//             context_.tracer().print( "PathFollower2dI: Re-connection to IceStorm failed." );
 //         }
 //     }
 //     catch ( ... )
 //     {
-//         context_.tracer()->warning( "PathFollower2dI: Failed push to IceStorm: unknown exception" );
+//         context_.tracer().warning( "PathFollower2dI: Failed push to IceStorm: unknown exception" );
 //     }
 // }
 
@@ -357,15 +357,15 @@ PathFollower2dI::localSetData( const orca::PathFollower2dData &path )
         // This could happen if IceStorm dies.
         // If we're running in an IceBox and the IceBox is shutting down, 
         // this is expected (our co-located IceStorm is obviously going down).
-        context_.tracer()->warning( "PathFollower2dI: Failed push to IceStorm." );
+        context_.tracer().warning( "PathFollower2dI: Failed push to IceStorm." );
 
         // If IceStorm just re-started for some reason though, we want to try to re-connect
         try
         {
-            context_.tracer()->print( "Re-connecting to IceStorm..." );
+            context_.tracer().print( "Re-connecting to IceStorm..." );
             topicPrx_ = orcaice::connectToTopicWithTag<orca::PathFollower2dConsumerPrx>
                 ( context_, consumerPrx_, ifaceTag_ );
-            context_.tracer()->print( "PathFollower2dI: Re-connected to IceStorm." );
+            context_.tracer().print( "PathFollower2dI: Re-connected to IceStorm." );
 
             // try again to push that bit of info
             consumerPrx_->setData( path );
@@ -373,12 +373,12 @@ PathFollower2dI::localSetData( const orca::PathFollower2dData &path )
         catch ( ... )
         {
             // ignore it -- we'll try again next push.
-            context_.tracer()->print( "PathFollower2dI: Re-connection to IceStorm failed." );
+            context_.tracer().print( "PathFollower2dI: Re-connection to IceStorm failed." );
         }
     }
     catch ( ... )
     {
-        context_.tracer()->warning( "PathFollower2dI: Failed push to IceStorm: unknown exception" );
+        context_.tracer().warning( "PathFollower2dI: Failed push to IceStorm: unknown exception" );
     }
 }
 

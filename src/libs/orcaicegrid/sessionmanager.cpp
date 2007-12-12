@@ -41,7 +41,7 @@ SessionManager::tryCreateSession()
         
         if(!registry)
         {
-            context_.tracer()->error( "SessionManager: Could not contact registry" );
+            context_.tracer().error( "SessionManager: Could not contact registry" );
             return false;
         }
     }
@@ -54,21 +54,21 @@ SessionManager::tryCreateSession()
     {
         std::stringstream ss;
         ss << "SessionManager: Error contacting registry: " << e;
-        context_.tracer()->error( ss.str() );
+        context_.tracer().error( ss.str() );
         return false;
     }
     catch ( const std::exception &e )
     {
         std::stringstream ss;
         ss << "SessionManager: Error contacting registry: " << e.what();
-        context_.tracer()->error( ss.str() );
+        context_.tracer().error( ss.str() );
         return false;
     }
     catch ( ... )
     {
         std::stringstream ss;
         ss << "SessionManager: Unknown error contacting registry.";
-        context_.tracer()->error( ss.str() );
+        context_.tracer().error( ss.str() );
         return false;
     }
             
@@ -78,17 +78,17 @@ SessionManager::tryCreateSession()
                                                  "sessionmanager.cpp-assume-no-access-control" );
         timeoutSec_ = registry->getSessionTimeout();
         stringstream ss; ss<<"SessionManager: Created session (timeout="<<timeoutSec_<<"s)";
-        context_.tracer()->info( ss.str() );
+        context_.tracer().info( ss.str() );
 
         bool success = sessionCreationCallback_.actionOnSessionCreation( session_ );
         if ( success )
         {
-            context_.tracer()->debug( "SessionManager: Created session." );
+            context_.tracer().debug( "SessionManager: Created session." );
             return true;
         }
         else
         {
-            context_.tracer()->debug( "SessionManager: actionOnSessionCreation failed." );
+            context_.tracer().debug( "SessionManager: actionOnSessionCreation failed." );
             return false;
         }
     }
@@ -96,14 +96,14 @@ SessionManager::tryCreateSession()
     {
         stringstream ss;
         ss << "SessionManager: Error during actionOnSessionCreation: " << e.what();
-        context_.tracer()->error( ss.str() );
+        context_.tracer().error( ss.str() );
         return false;
     }
     catch( ... )
     {
         stringstream ss;
         ss << "SessionManager: Unknown exception during actionOnSessionCreation.";
-        context_.tracer()->error( ss.str() );
+        context_.tracer().error( ss.str() );
         return false;
     }
 }
@@ -141,7 +141,7 @@ SessionManager::run()
 
                 try
                 {
-                    context_.tracer()->debug( "SessionManager: sending keepAlive()" );
+                    context_.tracer().debug( "SessionManager: sending keepAlive()" );
                     session_->keepAlive();
                 }
                 catch( const Ice::CommunicatorDestroyedException & )
@@ -152,13 +152,13 @@ SessionManager::run()
                 catch( const Ice::Exception& e )
                 {
                     stringstream ss; ss<<"SessionManager: Failed to keep session alive: "<<e;
-                    context_.tracer()->warning( ss.str() );
+                    context_.tracer().warning( ss.str() );
                     break;
                 }
                 catch( const std::exception& e )
                 {
                     stringstream ss; ss<<"SessionManager: Failed to keep session alive: "<<e.what();
-                    context_.tracer()->warning( ss.str() );
+                    context_.tracer().warning( ss.str() );
                     break;
                 }
             }
@@ -171,17 +171,17 @@ SessionManager::run()
         {
             stringstream ss;
             ss << "SessionManager: Caught stray exception: " << e.what();
-            context_.tracer()->warning( ss.str() );
+            context_.tracer().warning( ss.str() );
         }
         catch ( ... )
         {
-            context_.tracer()->warning( "SessionManager: caught unknown stray exception." );
+            context_.tracer().warning( "SessionManager: caught unknown stray exception." );
         }
     }
 
     try {
         // Destroying the session_ will release all allocated objects.
-        context_.tracer()->info( "SessionManager: Destroying session." );
+        context_.tracer().info( "SessionManager: Destroying session." );
         session_->destroy();
     }
     catch ( ... )

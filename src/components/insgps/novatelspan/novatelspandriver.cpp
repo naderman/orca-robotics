@@ -68,10 +68,10 @@ NovatelSpanInsGpsDriver::NovatelSpanInsGpsDriver( const char*             device
 NovatelSpanInsGpsDriver::~NovatelSpanInsGpsDriver()
 {
     disable();
-    // context_.tracer()->debug( "TRACE(novatelspandriver::~novatelspandriver()): NovatelSpan driver disabled", 5 );
+    // context_.tracer().debug( "TRACE(novatelspandriver::~novatelspandriver()): NovatelSpan driver disabled", 5 );
     if(serial_!=NULL)
 	delete serial_;
-    // context_.tracer()->debug( "TRACE(novatelspandriver::~novatelspandriver()): serial_ pointer deleted", 5 );
+    // context_.tracer().debug( "TRACE(novatelspandriver::~novatelspandriver()): serial_ pointer deleted", 5 );
 }
 
 int
@@ -132,12 +132,12 @@ NovatelSpanInsGpsDriver::enable()
     
     if ( init() < 0 )
     {
-        context_.tracer()->error("Couldn't initialise Novatel serial driver");
+        context_.tracer().error("Couldn't initialise Novatel serial driver");
         enabled_ = false;
     }               
     else
     {      
-        context_.tracer()->info("Driver initialised");
+        context_.tracer().info("Driver initialised");
         enabled_ = true;
     }      
 }
@@ -148,7 +148,7 @@ NovatelSpanInsGpsDriver::init()
     if ( enabled_ )
         return 0;
 
-    context_.tracer()->info("NovatelSpanInsGps: Initialising Novatel Span InsGps driver");
+    context_.tracer().info("NovatelSpanInsGps: Initialising Novatel Span InsGps driver");
 
 #ifdef __QNX__
     // get the priority of this thread
@@ -179,7 +179,7 @@ NovatelSpanInsGpsDriver::init()
     put = serial_->writeString( "setimutype imu_hg1700_ag62\r\n" );
     //force the IMU to re-align at every startup
     put = serial_->writeString( "inscommand reset\r\n" );
-    context_.tracer()->info("Reset IMU; Waiting 5 seconds before continuing!");
+    context_.tracer().info("Reset IMU; Waiting 5 seconds before continuing!");
     sleep(5);
 
     // read and set the imu params (orientation of imu and offset to gps antenna)
@@ -212,7 +212,7 @@ NovatelSpanInsGpsDriver::init()
     // receiver status
     enableMsg = orcaice::getPropertyAsIntWithDefault( logProp, prefix+"rxstatusb", 0 );
     if(enableMsg){
-        context_.tracer()->info("turning on receiver status!");
+        context_.tracer().info("turning on receiver status!");
         put = serial_->writeString( "log rxstatusb ontime 1.0\r\n" );
     }
 
@@ -220,7 +220,7 @@ NovatelSpanInsGpsDriver::init()
     // time used to sync with the pps signal
     enableMsg = orcaice::getPropertyAsIntWithDefault( logProp, prefix+"timesyncb", 0 );
     if(enableMsg){
-        context_.tracer()->info("Turning on PPS!");
+        context_.tracer().info("Turning on PPS!");
         put = serial_->writeString( "log timeb ontime 1.0\r\n" );
         put = serial_->writeString( "log timesyncb ontime 1.0\r\n");
     }
@@ -228,7 +228,7 @@ NovatelSpanInsGpsDriver::init()
     // gps position without ins
     enableMsg = orcaice::getPropertyAsIntWithDefault( logProp, prefix+"bestgpsposb", 0 );
     if(enableMsg){
-        context_.tracer()->info("Turning on GPS position at 5Hz!");
+        context_.tracer().info("Turning on GPS position at 5Hz!");
         put = serial_->writeString( "log bestgpsposb ontime 0.2\r\n" );
     }
 
@@ -240,7 +240,7 @@ NovatelSpanInsGpsDriver::init()
     // pva data in wgs84 coordinates
     enableMsg = orcaice::getPropertyAsIntWithDefault( logProp, prefix+"inspvasb", 1 );
     if(enableMsg){
-        context_.tracer()->info("Turning on INS position/velocity/oriantation at 100Hz!");
+        context_.tracer().info("Turning on INS position/velocity/oriantation at 100Hz!");
         put = serial_->writeString( "log inspvasb ontime 0.01\r\n" );
     }
 
@@ -251,17 +251,17 @@ NovatelSpanInsGpsDriver::init()
         sleep(1);
         enableMsg = orcaice::getPropertyAsIntWithDefault( logProp, prefix+"inspvasb", 1 );
         if(enableMsg){
-            context_.tracer()->info("!!We want raw IMU as well!!\n;Turning on INS position/velocity/oriantation at 50Hz only!");
+            context_.tracer().info("!!We want raw IMU as well!!\n;Turning on INS position/velocity/oriantation at 50Hz only!");
             put = serial_->writeString( "log inspvasb ontime 0.02\r\n" );
         }
-        context_.tracer()->info("Turning on raw imu data!");
+        context_.tracer().info("Turning on raw imu data!");
         put = serial_->writeString( "log rawimusb onnew\r\n" );
     }
 
     // pva covariances
     enableMsg = orcaice::getPropertyAsIntWithDefault( logProp, prefix+"inscovsb", 0 );
     if(enableMsg){
-        context_.tracer()->info("Turning on INS covariances!");
+        context_.tracer().info("Turning on INS covariances!");
         put = serial_->writeString( "log inscovsb onchanged\r\n" );
     }
 
@@ -279,7 +279,7 @@ NovatelSpanInsGpsDriver::init()
     //CDGPS
     enableMode = orcaice::getPropertyAsIntWithDefault( modeProp, modePrefix+"CDGPS", 0 );
     if(enableMode){
-        context_.tracer()->info("Turning on CDGPS!");
+        context_.tracer().info("Turning on CDGPS!");
         put = serial_->writeString( "ASSIGNLBAND CDGPS 1547547 4800\r\n" );
     }
 
@@ -295,7 +295,7 @@ NovatelSpanInsGpsDriver::init()
     //rtk
     enableMode = orcaice::getPropertyAsIntWithDefault( modeProp, modePrefix+"rtk", 0 );
     if(enableMode){
-        context_.tracer()->info("Turning on RTK!");
+        context_.tracer().info("Turning on RTK!");
         put = serial_->writeString( "com com2,9600,n,8,1,n,off,on\r\n" );
         put = serial_->writeString( "interfacemode com2 rtca none\r\n" );
     }
@@ -303,25 +303,25 @@ NovatelSpanInsGpsDriver::init()
     //roll pitch correction
     enableMode = orcaice::getPropertyAsIntWithDefault( modeProp, modePrefix+"swappedRollPitch", 0 );
     if(enableMode){
-        context_.tracer()->info("Turning ON roll/pitch swap!");
-        context_.tracer()->warning("!!! Swapping roll and pitch in odometry3d, localise3d and respective rates in imu !!!");
+        context_.tracer().info("Turning ON roll/pitch swap!");
+        context_.tracer().warning("!!! Swapping roll and pitch in odometry3d, localise3d and respective rates in imu !!!");
         swappedRollPitch_=true;
     }else{
-        context_.tracer()->info("Turning OFF roll/pitch swap!");
-        context_.tracer()->warning("!!! NOT swapping roll/pitch !!!");
+        context_.tracer().info("Turning OFF roll/pitch swap!");
+        context_.tracer().warning("!!! NOT swapping roll/pitch !!!");
         swappedRollPitch_=false;
     }
 
     // turn SBAS on/off (essentially global DGPS)
     enableMode = orcaice::getPropertyAsIntWithDefault( modeProp, modePrefix+"SBAS", 0 );
     if(enableMode){
-        context_.tracer()->info("Turning on SBAS!");
+        context_.tracer().info("Turning on SBAS!");
         put = serial_->writeString( "SBASCONTROL ENABLE Auto 0 ZEROTOTWO\r\n");
         //we try to use WAAS satellites even below the horizon
         put = serial_->writeString( "WAASECUTOFF -5.0\r\n");
     }
     else{
-        context_.tracer()->info("Turning off SBAS!");
+        context_.tracer().info("Turning off SBAS!");
         put = serial_->writeString( "SBASCONTROL DISABLE Auto 0 NONE\r\n");
     }
 
@@ -345,7 +345,7 @@ NovatelSpanInsGpsDriver::disable()
 
     if ( !enabled_ ) return 0;
 
-    context_.tracer()->info("Disabling Novatel Span InsGps driver");
+    context_.tracer().info("Disabling Novatel Span InsGps driver");
  
     int put;
 
@@ -368,18 +368,18 @@ NovatelSpanInsGpsDriver::readGps( orca::GpsData& data, int timeoutMs )
     int ret = gpsDataBuffer_.getAndPopNext( data, timeoutMs );
     if ( ret != 0 ) {
         // throw NovatelSpanException( "Timeout while waiting for GPS packet" );
-        context_.tracer()->debug( "novatelspandriver::readGps(): Timeout while waiting for GPS packet", 6 );
+        context_.tracer().debug( "novatelspandriver::readGps(): Timeout while waiting for GPS packet", 6 );
     }
     else
     {
-        context_.tracer()->debug( "novatelspandriver::readGps(): got gps data", 6 );
+        context_.tracer().debug( "novatelspandriver::readGps(): got gps data", 6 );
 
         // cout << "gpsCount_: " << gpsCount_ << endl;
         if (gpsCount_ > 2000 )
         {
             std::string str = "Gps Data Buffer is " + gpsDataBuffer_.size()/100;
             str += "% full";
-            context_.tracer()->info( str, 6 );
+            context_.tracer().info( str, 6 );
             gpsCount_ = 0;
         }
         gpsCount_++;
@@ -396,17 +396,17 @@ NovatelSpanInsGpsDriver::readImu( orca::ImuData& data, int timeoutMs )
     //printf("%s gyro.x %f\n", __PRETTY_FUNCTION__, data.gyro.x);
     if ( ret != 0 ) {
         // throw NovatelSpanException( "Timeout while waiting for IMU packet" );
-        context_.tracer()->debug( "novatelspandriver::readImu(): Timeout while waiting for IMU packet", 6 );
+        context_.tracer().debug( "novatelspandriver::readImu(): Timeout while waiting for IMU packet", 6 );
     }
     else
     {
-        context_.tracer()->debug( "novatelspandriver::readImu(): got imu data", 6 );
+        context_.tracer().debug( "novatelspandriver::readImu(): got imu data", 6 );
 
         if (imuCount_ > 2000 )
         {
             std::string str = "Imu Data Buffer is " + imuDataBuffer_.size()/100;
             str += "% full";
-            context_.tracer()->info( str, 6 );
+            context_.tracer().info( str, 6 );
             imuCount_ = 0;
         }
         imuCount_++;
@@ -426,11 +426,11 @@ NovatelSpanInsGpsDriver::readOdometry3d( orca::Odometry3dData& data, int timeout
     int ret = odometry3dDataBuffer_.getAndPopNext( data, timeoutMs );
     if ( ret != 0 ) {
         // throw NovatelSpanException( "Timeout while waiting for Odometry3d packet" );
-        context_.tracer()->info( "novatelspandriver::readOdometry3d()): odometry3d is not provided by this driver", 6 );
+        context_.tracer().info( "novatelspandriver::readOdometry3d()): odometry3d is not provided by this driver", 6 );
     }
     else
     {
-        context_.tracer()->debug( "novatelspandriver::readOdometry3d()): got odometry3d data", 6 );
+        context_.tracer().debug( "novatelspandriver::readOdometry3d()): got odometry3d data", 6 );
     }
 
     return;
@@ -443,17 +443,17 @@ NovatelSpanInsGpsDriver::readLocalise3d( orca::Localise3dData& data, int timeout
     int ret = localise3dDataBuffer_.getAndPopNext( data, timeoutMs );
     if ( ret != 0 ) {
         // throw NovatelSpanException( "Timeout while waiting for Localise3d packet" );
-        context_.tracer()->debug( "novatelspandriver::readLocalise3d()): Timeout while waiting for Localise3d packet", 6 );
+        context_.tracer().debug( "novatelspandriver::readLocalise3d()): Timeout while waiting for Localise3d packet", 6 );
     }
     else
     {
-        context_.tracer()->debug( "novatelspandriver::readLocalise3d()): got localise3d data", 6 );
+        context_.tracer().debug( "novatelspandriver::readLocalise3d()): got localise3d data", 6 );
 
         if (localise3dCount_ > 2000 )
         {
             std::string str = "Localise3d Data Buffer is " + localise3dDataBuffer_.size()/100;
             str += "% full";
-            context_.tracer()->info( str, 6 );
+            context_.tracer().info( str, 6 );
             localise3dCount_ = 0;
         }
         localise3dCount_++;
@@ -489,8 +489,8 @@ NovatelSpanInsGpsDriver::run()
                 {
                     std::stringstream ss;
                     ss << "ERROR("<<__FILE__<<" _wait_ ): Caught unexpected string: " << e;
-                    context_.tracer()->error( ss.str() );
-                    //context_.status()->fault( SUBSYSTEM, ss.str() );            
+                    context_.tracer().error( ss.str() );
+                    //context_.status().fault( SUBSYSTEM, ss.str() );            
                 }
                 // timeOfRead_ = IceUtil::Time::now();
                 if ( ret < 0 )
@@ -516,49 +516,49 @@ NovatelSpanInsGpsDriver::run()
             {
                 std::stringstream ss;
                 ss<<"Caught NovatelSpanException: " << e.what();
-                context_.tracer()->warning( ss.str() );
+                context_.tracer().warning( ss.str() );
             }
             catch ( SerialException &e )
             {
                 std::stringstream ss;
                 ss<<"Caught SerialException: " << e.what();
-                context_.tracer()->warning( ss.str() );
+                context_.tracer().warning( ss.str() );
             }
             catch ( hydroutil::Exception & e )
             {
                 std::stringstream ss;
                 ss << "novatelspandriver::run(): Caught orcaice::exception: " << e.what();
-                context_.tracer()->warning( ss.str() );
+                context_.tracer().warning( ss.str() );
             }
             catch ( Ice::Exception & e )
             {
                 std::stringstream ss;
                 ss << "novatelspandriver::run(): Caught Ice::exception: " << e;
-                context_.tracer()->warning( ss.str() );
+                context_.tracer().warning( ss.str() );
             }
             catch ( std::exception & e )
             {
                 std::stringstream ss;
                 ss << "novatelspandriver::run(): Caught std::exception: " << e.what();
-                context_.tracer()->warning( ss.str() );
+                context_.tracer().warning( ss.str() );
             }
             catch ( const std::string &e )
             {
                 std::stringstream ss;
                 ss << "ERROR("<<__FILE__<<"): Caught unexpected string: " << e;
-                context_.tracer()->error( ss.str() );
-                //context_.status()->fault( SUBSYSTEM, ss.str() );            
+                context_.tracer().error( ss.str() );
+                //context_.status().fault( SUBSYSTEM, ss.str() );            
             }
             catch ( const char *e )
             {
                 std::stringstream ss;
                 ss << "ERROR("<<__FILE__<<"): Caught unexpected char *: " << e;
-                context_.tracer()->error( ss.str() );
-                //context_.status()->fault( SUBSYSTEM, ss.str() );
+                context_.tracer().error( ss.str() );
+                //context_.status().fault( SUBSYSTEM, ss.str() );
             }
             catch ( ... )
             {
-                context_.tracer()->warning( "Caught some other exception..." );
+                context_.tracer().warning( "Caught some other exception..." );
             }
         } // end of while
 
@@ -572,19 +572,19 @@ NovatelSpanInsGpsDriver::run()
     {
         std::stringstream ss;
         ss << "ERROR(novatelspandriver::run()): Caught unexpected Ice exception: " << e;
-        context_.tracer()->error( ss.str() );
+        context_.tracer().error( ss.str() );
     }
     catch ( std::exception &e )
     {
         std::stringstream ss;
         ss << "ERROR(novatelspandriver::run()): Caught unexpected std::exception: ";
-        context_.tracer()->error( ss.str() );
+        context_.tracer().error( ss.str() );
     }
     catch ( ... )
     {
         std::stringstream ss;
         ss << "ERROR(novatelspandriver::run()): Caught unexpected unknown exception.";
-        context_.tracer()->error( ss.str() );
+        context_.tracer().error( ss.str() );
     }
 
 }
@@ -595,7 +595,7 @@ NovatelSpanInsGpsDriver::readMsgsFromHardware()
 {
     if ( ! enabled_ )
     {
-        context_.tracer()->info( "NovatelSpanInsGps: ERROR: Can't read: not enabled . Sleeping for 1 sec...", 6 );
+        context_.tracer().info( "NovatelSpanInsGps: ERROR: Can't read: not enabled . Sleeping for 1 sec...", 6 );
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
         return -1;
     }
@@ -757,7 +757,7 @@ NovatelSpanInsGpsDriver::populateData( int id )
             memcpy( &TIME_, &serial_data_.raw_message, sizeof(TIME_ ) );
             if( !TIME_.data.bUtcStatus )
             {
-                context_.tracer()->info( "UTC time not available", 8 );
+                context_.tracer().info( "UTC time not available", 8 );
                 break;
             }
 
@@ -807,7 +807,7 @@ NovatelSpanInsGpsDriver::populateData( int id )
             if( gpsData_.positionType == NovatelNone)
             {
                 // newGpsData_ = false;
-                context_.tracer()->debug( "Position not yet available", 8 );
+                context_.tracer().debug( "Position not yet available", 8 );
                 return -1;
             }
 
@@ -857,9 +857,9 @@ NovatelSpanInsGpsDriver::populateData( int id )
             // set flag
             // newGpsData_ = true;
 
-            // context_.tracer()->debug( "TRACE(novatelspandriver::populateData()): Pushing gps data to buffer", 5);
+            // context_.tracer().debug( "TRACE(novatelspandriver::populateData()): Pushing gps data to buffer", 5);
             gpsDataBuffer_.push( gpsData_ );
-            // context_.tracer()->debug( "TRACE(novatelspandriver::populateData()): Pushed gps data to buffer", 5);
+            // context_.tracer().debug( "TRACE(novatelspandriver::populateData()): Pushed gps data to buffer", 5);
 
             return 0;       
             break;
@@ -935,7 +935,7 @@ NovatelSpanInsGpsDriver::populateData( int id )
             static int insStatusCnt;
             if(insStatusCnt++ >=100){
                 insStatusCnt = 0;
-                context_.tracer()->info( insStatusToString( INSPVA_.data.status ), 1 );
+                context_.tracer().info( insStatusToString( INSPVA_.data.status ), 1 );
             }
 
             return 0;       
@@ -1048,7 +1048,7 @@ NovatelSpanInsGpsDriver::populateData( int id )
         {
             std::string str = "message " + id;
             str += "not yet servicable";
-            context_.tracer()->info( str, 8 );
+            context_.tracer().info( str, 8 );
             return -1;
             break;
         }
@@ -1297,9 +1297,9 @@ NovatelSpanInsGpsDriver::setNovatelSpecificParams()
 void
 NovatelSpanInsGpsDriver::shutdown()
 {
-    // context_.tracer()->debug( "stopping driver", 5 );
+    // context_.tracer().debug( "stopping driver", 5 );
     // hydroutil::Thread::stopAndJoin( this );
-    // context_.tracer()->debug( "stopped driver", 5 );
+    // context_.tracer().debug( "stopped driver", 5 );
 }               
 
 } //namespace

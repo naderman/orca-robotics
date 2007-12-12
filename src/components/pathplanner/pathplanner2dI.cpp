@@ -76,7 +76,7 @@ PathPlanner2dI::localSetData( const PathPlanner2dData& data )
         // This could happen if IceStorm dies.
         // If we're running in an IceBox and the IceBox is shutting down, 
         // this is expected (our co-located IceStorm is obviously going down).
-        context_.tracer()->warning( "Failed push to IceStorm." );
+        context_.tracer().warning( "Failed push to IceStorm." );
     }
 }
 
@@ -90,12 +90,12 @@ PathPlanner2dI::subscribe(const PathPlanner2dConsumerPrx &subscriber, const ::Ic
     catch ( const IceStorm::AlreadySubscribed & e ) {
         std::stringstream ss;
         ss <<"Request for subscribe but this proxy has already been subscribed, so I do nothing: "<< e;
-        context_.tracer()->debug( ss.str(), 2 );    
+        context_.tracer().debug( ss.str(), 2 );    
     }
     catch ( const Ice::Exception & e ) {
         std::stringstream ss;
         ss <<"subscribe: failed to subscribe: "<< e << endl;
-        context_.tracer()->warning( ss.str() );
+        context_.tracer().warning( ss.str() );
         throw orca::SubscriptionFailedException( ss.str() );
     }
 }

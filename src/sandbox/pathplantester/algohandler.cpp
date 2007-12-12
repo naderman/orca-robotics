@@ -46,7 +46,7 @@ AlgoHandler::initNetwork()
         }
         catch ( const orcaice::NetworkException & e )
         {
-            context_.tracer()->error( "failed to connect to remote object. Will try again after 3 seconds." );
+            context_.tracer().error( "failed to connect to remote object. Will try again after 3 seconds." );
             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
         }
         // NOTE: connectToInterfaceWithTag() can also throw ConfigFileException,
@@ -121,28 +121,28 @@ AlgoHandler::run()
     } // try
     catch ( const orca::OrcaException & e )
     {
-        context_.tracer()->print( e.what );
-        context_.tracer()->error( "unexpected (remote?) orca exception.");
+        context_.tracer().print( e.what );
+        context_.tracer().error( "unexpected (remote?) orca exception.");
         if ( context_.isApplication() ) {
-            context_.tracer()->info( "this is an stand-alone component. Quitting...");
+            context_.tracer().info( "this is an stand-alone component. Quitting...");
             context_.communicator()->destroy();
         }
     }
     catch ( const hydroutil::Exception & e )
     {
-        context_.tracer()->print( e.what() );
-        context_.tracer()->error( "unexpected (local?) orcaice exception.");
+        context_.tracer().print( e.what() );
+        context_.tracer().error( "unexpected (local?) orcaice exception.");
         if ( context_.isApplication() ) {
-            context_.tracer()->info( "this is an stand-alone component. Quitting...");
+            context_.tracer().info( "this is an stand-alone component. Quitting...");
             context_.communicator()->destroy();
         }
     }
     catch ( const Ice::Exception & e )
     {
         cout<<e<<endl;
-        context_.tracer()->error( "unexpected Ice exception.");
+        context_.tracer().error( "unexpected Ice exception.");
         if ( context_.isApplication() ) {
-            context_.tracer()->info( "this is an stand-alone component. Quitting...");
+            context_.tracer().info( "this is an stand-alone component. Quitting...");
             context_.communicator()->destroy();
         }
     }
@@ -150,17 +150,17 @@ AlgoHandler::run()
     {
         // once caught this beast in here, don't know who threw it 'St9bad_alloc'
         cout<<e.what()<<endl;
-        context_.tracer()->error( "unexpected std exception.");
+        context_.tracer().error( "unexpected std exception.");
         if ( context_.isApplication() ) {
-            context_.tracer()->info( "this is an stand-alone component. Quitting...");
+            context_.tracer().info( "this is an stand-alone component. Quitting...");
             context_.communicator()->destroy();
         }
     }
     catch ( ... )
     {
-        context_.tracer()->error( "unexpected exception from somewhere.");
+        context_.tracer().error( "unexpected exception from somewhere.");
         if ( context_.isApplication() ) {
-            context_.tracer()->info( "this is an stand-alone component. Quitting...");
+            context_.tracer().info( "this is an stand-alone component. Quitting...");
             context_.communicator()->destroy();
         }
     }

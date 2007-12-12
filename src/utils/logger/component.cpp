@@ -58,7 +58,7 @@ Component::loadPluginLibraries( const std::string & factoryLibNames )
     {
         stringstream ss;
         ss << "Loading factory library: " << libNames[i];
-        context().tracer()->info( ss.str() );
+        context().tracer().info( ss.str() );
         
         try {
             hydrodll::DynamicallyLoadedLibrary *lib = new hydrodll::DynamicallyLoadedLibrary(libNames[i]);
@@ -75,7 +75,7 @@ Component::loadPluginLibraries( const std::string & factoryLibNames )
 
     if ( logFactories_.empty() ) {
         std::string err = "No log factories were loaded.";
-        context().tracer()->error( err );
+        context().tracer().error( err );
         throw err;
     }
 }
@@ -110,14 +110,14 @@ Component::createLogger( const std::string  &interfaceType,
         }
         else {
             std::string err = "Error when creating logger for supported interface type " + interfaceType;
-            context().tracer()->error( err );
+            context().tracer().error( err );
             throw err;
         }
     }
 
     // none of the factories support this type
     std::string err = "Unsupported interface type " + interfaceType;
-    context().tracer()->error( err );
+    context().tracer().error( err );
     throw err;
 }
 
@@ -166,12 +166,12 @@ Component::start()
     std::vector<std::string> requiredTags = orcaice::getRequiredTags( context() );
     stringstream ss;
     ss << "found " << requiredTags.size() << " required interfaces in the config file.";
-    context().tracer()->info( ss.str() );
+    context().tracer().info( ss.str() );
 
     // Instantiate a logger for each required interface
     for ( unsigned int i=0; i<requiredTags.size(); ++i ) 
     {
-        context().tracer()->debug( "processing required interface tag="+requiredTags[i], 5);
+        context().tracer().debug( "processing required interface tag="+requiredTags[i], 5);
 
         // parse interface tag into type and suffix
         std::string interfaceType;
@@ -191,7 +191,7 @@ Component::start()
     // doesn't make sense to continue if no loggers were created
     if ( masterFileWriter_->loggerCount() == 0 )
     {
-        context().tracer()->warning("No loggers were created. Quitting.");
+        context().tracer().warning("No loggers were created. Quitting.");
         context().communicator()->shutdown();
     }
 
@@ -205,7 +205,7 @@ Component::start()
 void 
 Component::stop()
 {
-//     context().tracer()->debug("Stopping logger component", 5 );
+//     context().tracer().debug("Stopping logger component", 5 );
     // there are no threads to stop, we are done
 }
 

@@ -46,7 +46,7 @@ MainLoop::MainLoop( const orcaice::Context & context )
     else if ( driverName == "stage" )
     {
 #ifdef HAVE_STAGE_DRIVER
-        context_.tracer()->debug( "loading Player-Client driver",3);
+        context_.tracer().debug( "loading Player-Client driver",3);
         
         std::string driverPrefix = prefix + "Stage.";
         std::string playerHost = orcaice::getPropertyWithDefault( context_.properties(),
@@ -62,7 +62,7 @@ MainLoop::MainLoop( const orcaice::Context & context )
 #endif
     }
     
-    context_.tracer()->debug("driver instantiated",5);
+    context_.tracer().debug("driver instantiated",5);
 }
 
 MainLoop::~MainLoop()
@@ -99,10 +99,10 @@ MainLoop::run()
     // Enable driver
     //
     while ( !isStopping() && driver_->enable() ) {
-        context_.tracer()->warning("failed to enable the driver; will try again in 2 seconds.");
+        context_.tracer().warning("failed to enable the driver; will try again in 2 seconds.");
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
     }
-        context_.tracer()->info("driver enabled");
+        context_.tracer().info("driver enabled");
 
     // This is the main loop
     try 
@@ -126,7 +126,7 @@ MainLoop::run()
             } 
             else 
             {
-                context_.tracer()->error("failed to read data from Segway hardware. Repairing....");
+                context_.tracer().error("failed to read data from Segway hardware. Repairing....");
                 driver_->repair();
             }
 
@@ -143,10 +143,10 @@ MainLoop::run()
 
     // reset the hardware
     if ( driver_->disable() ) {
-        context_.tracer()->warning("failed to disable driver");
+        context_.tracer().warning("failed to disable driver");
     }
     else {
-        context_.tracer()->debug("driver disabled",5);
+        context_.tracer().debug("driver disabled",5);
     }
 
     //
@@ -157,9 +157,9 @@ MainLoop::run()
     {
         stringstream ss;
         ss << "unexpected (remote?) orca exception: " << e << ": " << e.what;
-        context_.tracer()->error( ss.str() );
+        context_.tracer().error( ss.str() );
         if ( context_.isApplication() ) {
-            context_.tracer()->info( "this is an stand-alone component. Quitting...");
+            context_.tracer().info( "this is an stand-alone component. Quitting...");
             context_.communicator()->destroy();
         }
     }
@@ -167,9 +167,9 @@ MainLoop::run()
     {
         stringstream ss;
         ss << "unexpected (local?) orcaice exception: " << e.what();
-        context_.tracer()->error( ss.str() );
+        context_.tracer().error( ss.str() );
         if ( context_.isApplication() ) {
-            context_.tracer()->info( "this is an stand-alone component. Quitting...");
+            context_.tracer().info( "this is an stand-alone component. Quitting...");
             context_.communicator()->destroy();
         }
     }
@@ -177,9 +177,9 @@ MainLoop::run()
     {
         stringstream ss;
         ss << "unexpected Ice exception: " << e;
-        context_.tracer()->error( ss.str() );
+        context_.tracer().error( ss.str() );
         if ( context_.isApplication() ) {
-            context_.tracer()->info( "this is an stand-alone component. Quitting...");
+            context_.tracer().info( "this is an stand-alone component. Quitting...");
             context_.communicator()->destroy();
         }
     }
@@ -188,17 +188,17 @@ MainLoop::run()
         // once caught this beast in here, don't know who threw it 'St9bad_alloc'
         stringstream ss;
         ss << "unexpected std exception: " << e.what();
-        context_.tracer()->error( ss.str() );
+        context_.tracer().error( ss.str() );
         if ( context_.isApplication() ) {
-            context_.tracer()->info( "this is an stand-alone component. Quitting...");
+            context_.tracer().info( "this is an stand-alone component. Quitting...");
             context_.communicator()->destroy();
         }
     }
     catch ( ... )
     {
-        context_.tracer()->error( "unexpected exception from somewhere.");
+        context_.tracer().error( "unexpected exception from somewhere.");
         if ( context_.isApplication() ) {
-            context_.tracer()->info( "this is an stand-alone component. Quitting...");
+            context_.tracer().info( "this is an stand-alone component. Quitting...");
             context_.communicator()->destroy();
         }
     }

@@ -70,7 +70,7 @@ OgMapImpl::~OgMapImpl()
 void
 OgMapImpl::initInterface()
 {
-    context_.tracer()->debug( "OgMapImpl::initInterface()", 5 );
+    context_.tracer().debug( "OgMapImpl::initInterface()", 5 );
 
     // Find IceStorm Topic to which we'll publish
     topicPrx_ = orcaice::connectToTopicWithString<orca::OgMapConsumerPrx>
@@ -86,7 +86,7 @@ OgMapImpl::initInterface()
 void 
 OgMapImpl::initInterface( hydroutil::Thread* thread, const std::string& subsysName, int retryInterval )
 {
-    context_.tracer()->debug( "OgMapImpl::initInterface(thread)", 5 );
+    context_.tracer().debug( "OgMapImpl::initInterface(thread)", 5 );
 
     topicPrx_ = orcaice::connectToTopicWithString<orca::OgMapConsumerPrx>
         ( context_, consumerPrx_, topicName_, thread, subsysName, retryInterval );
@@ -98,7 +98,7 @@ OgMapImpl::initInterface( hydroutil::Thread* thread, const std::string& subsysNa
 orca::OgMapData
 OgMapImpl::internalGetData() const
 {
-    context_.tracer()->debug( "OgMapImpl::internalGetData()", 5 );
+    context_.tracer().debug( "OgMapImpl::internalGetData()", 5 );
 
     if ( dataProxy_.isEmpty() )
     {
@@ -115,19 +115,19 @@ OgMapImpl::internalGetData() const
 void
 OgMapImpl::internalSubscribe(const ::orca::OgMapConsumerPrx& subscriber )
 {
-    context_.tracer()->debug( "OgMapImpl::internalSubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
+    context_.tracer().debug( "OgMapImpl::internalSubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
     try {
         topicPrx_->subscribeAndGetPublisher( IceStorm::QoS(), subscriber->ice_twoway() );
     }
     catch ( const IceStorm::AlreadySubscribed & e ) {
         std::stringstream ss;
         ss <<"Request for subscribe but this proxy has already been subscribed, so I do nothing: "<< e;
-        context_.tracer()->debug( ss.str(), 2 );
+        context_.tracer().debug( ss.str(), 2 );
     }
     catch ( const Ice::Exception & e ) {
         std::stringstream ss;
         ss <<"OgMapImpl::internalSubscribe: failed to subscribe: "<< e << endl;
-        context_.tracer()->warning( ss.str() );
+        context_.tracer().warning( ss.str() );
         throw orca::SubscriptionFailedException( ss.str() );
     }
 }
@@ -135,7 +135,7 @@ OgMapImpl::internalSubscribe(const ::orca::OgMapConsumerPrx& subscriber )
 void
 OgMapImpl::internalUnsubscribe(const ::orca::OgMapConsumerPrx& subscriber )
 {
-    context_.tracer()->debug( "OgMapImpl::internalUnsubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
+    context_.tracer().debug( "OgMapImpl::internalUnsubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
     topicPrx_->unsubscribe( subscriber );
 }
 

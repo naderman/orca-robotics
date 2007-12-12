@@ -50,13 +50,13 @@
 //     }
 //     else if ( format_=="jpeg" )
 //     {
-//         context_.tracer()->info( "Images can only be logged in 'jpeg' format if you have OpenCV." );
-//         context_.tracer()->info( "Please have a look at the documentation for ImageServer component for installing OpenCv." );
+//         context_.tracer().info( "Images can only be logged in 'jpeg' format if you have OpenCV." );
+//         context_.tracer().info( "Please have a look at the documentation for ImageServer component for installing OpenCv." );
 //         throw orcalog::FormatNotSupportedException( ERROR_INFO, interfaceType_+"Logger: 'jpeg' format not supported because OpenCV is not installed." );
 //     }
 //     else
 //     {
-//         context_.tracer()->warning( interfaceType_+"Logger: unknown log format: "+format_ );
+//         context_.tracer().warning( interfaceType_+"Logger: unknown log format: "+format_ );
 //         throw orcalog::FormatNotSupportedException( ERROR_INFO, interfaceType_+"Logger: unknown log format: "+format_ );
 //     }
 // #endif
@@ -71,7 +71,7 @@
 //     // check that we support this format
 //     if ( format_!="ice" && format_!="jpeg" )
 //     {
-//         context_.tracer()->warning( interfaceType_+"Logger: unknown log format: "+format_ );
+//         context_.tracer().warning( interfaceType_+"Logger: unknown log format: "+format_ );
 //         throw orcalog::FormatNotSupportedException( ERROR_INFO, interfaceType_+"Logger: unknown log format: "+format_ );
 //     }
 // #endif
@@ -127,7 +127,7 @@
 //     Ice::ObjectPtr consumer = this;
 //     orca::CameraConsumerPrx callbackPrx = orcaice::createConsumerInterface<orca::CameraConsumerPrx>( context_, consumer );
 
-//     context_.tracer()->debug("Subscribing to IceStorm now.",5);
+//     context_.tracer().debug("Subscribing to IceStorm now.",5);
 //     objectPrx->subscribe( callbackPrx );
 // }
 
@@ -168,7 +168,7 @@
 //     }
 //     else
 //     {
-//         context_.tracer()->warning( interfaceType_+"Logger: unknown log format: "+format_ );
+//         context_.tracer().warning( interfaceType_+"Logger: unknown log format: "+format_ );
 //         throw orcalog::FormatNotSupportedException( ERROR_INFO, interfaceType_+"Logger: unknown log format: "+format_ );
 //     }
 // }
@@ -176,7 +176,7 @@
 // void 
 // CameraLogger::writeDescription( const orca::CameraDescription& obj )
 // {
-//     context_.tracer()->debug( "CameraLogger: Writing description to file", 5 );
+//     context_.tracer().debug( "CameraLogger: Writing description to file", 5 );
     
 //     if ( format_ == "ice" || format_ == "jpeg" )
 //     {
@@ -186,7 +186,7 @@
 //     }
 //     else
 //     {
-//         context_.tracer()->warning( interfaceType_+"Logger: unknown log format: "+format_ );
+//         context_.tracer().warning( interfaceType_+"Logger: unknown log format: "+format_ );
 //         throw orcalog::FormatNotSupportedException( ERROR_INFO, interfaceType_+"Logger: unknown log format: "+format_ );
 //     }
 // } 
@@ -234,7 +234,7 @@
 // 			if (ret != 0)
 // 			{	
 // 					std::string s = "Camera Logger: Could not create directory " + directoryPrefix_;
-// 					context_.tracer()->warning( s );
+// 					context_.tracer().warning( s );
 // 					throw orcalog::FileException( ERROR_INFO, s );
 // 			}
 // 		}

@@ -60,8 +60,8 @@ MainThread::MainThread( const orcaice::Context & context )
       pathPlannerTaskProxy_(0),
       context_(context)
 {
-    context_.status()->setMaxHeartbeatInterval( subsysName(), 30.0 );
-    context_.status()->initialising( subsysName() );
+    context_.status().setMaxHeartbeatInterval( subsysName(), 30.0 );
+    context_.status().initialising( subsysName() );
 }
 
 MainThread::~MainThread()
@@ -75,25 +75,25 @@ MainThread::initNetwork()
     //
     // REQUIRED INTERFACE: OgMap
     //
-    context_.status()->initialising( subsysName(), "Connecting to OgMap" );
+    context_.status().initialising( subsysName(), "Connecting to OgMap" );
     orca::OgMapPrx ogMapPrx;    
     orcaice::connectToInterfaceWithTag<orca::OgMapPrx>( context_, ogMapPrx, "OgMap", this, subsysName() );
 
     // get the og map once
-    context_.status()->initialising( subsysName(), "Getting Og Map" );
+    context_.status().initialising( subsysName(), "Getting Og Map" );
     orca::OgMapData ogMapSlice;
     try
     {
         ogMapSlice = ogMapPrx->getData();
         stringstream ss;
         ss << "MainThread::initDriver(): got ogMap: " << orcaice::toString( ogMapSlice );
-        context_.tracer()->info( ss.str() );
+        context_.tracer().info( ss.str() );
     }
     catch ( const orca::DataNotExistException & e )
     {
         std::stringstream ss;
         ss << "algohandler::initDriver: DataNotExistException: "<<e.what;
-        context_.tracer()->warning( ss.str() );
+        context_.tracer().warning( ss.str() );
     }
     // convert into internal representation
     orcaogmap::convert(ogMapSlice,ogMap_);
@@ -107,7 +107,7 @@ MainThread::initNetwork()
     pathPlannerTaskProxy_ = new hydroutil::Proxy<PathPlanner2dTask>; 
     pathPlannerDataProxy_ = new hydroutil::Proxy<PathPlanner2dData>;
 
-    context_.status()->initialising( subsysName(), "Creating PathPlanner2d Interface" );
+    context_.status().initialising( subsysName(), "Creating PathPlanner2d Interface" );
     pathPlannerI_ = new PathPlanner2dI( *pathPlannerTaskProxy_, *pathPlannerDataProxy_, context_ );
     Ice::ObjectPtr pathPlannerObj = pathPlannerI_;
     
@@ -118,7 +118,7 @@ MainThread::initNetwork()
 void
 MainThread::initDriver()
 {
-    context_.status()->initialising( subsysName(), "Initialising Driver" );
+    context_.status().initialising( subsysName(), "Initialising Driver" );
     //
     // Read settings
     //
@@ -131,7 +131,7 @@ MainThread::initDriver()
 
     // based on the config parameter, create the right driver
     string driverName = orcaice::getPropertyWithDefault( context_.properties(), prefix+"Driver", "simplenav" );
-    context_.tracer()->debug( std::string("loading ")+driverName+" driver",3);
+    context_.tracer().debug( std::string("loading ")+driverName+" driver",3);
     
     if ( driverName == "simplenav" || driverName == "astar")
     {
@@ -181,7 +181,7 @@ MainThread::initDriver()
         {
             std::stringstream ss;
             ss << "Trouble constructing a skeletondriver" << endl << "Problem was: " << e.what();
-            context_.tracer()->error( ss.str() );
+            context_.tracer().error( ss.str() );
             throw hydropathplan::Exception( ss.str() );  // this will exit
         }
         
@@ -192,12 +192,12 @@ MainThread::initDriver()
     }
     else {
         string errorStr = "Unknown driver type.";
-        context_.tracer()->error( errorStr);
-        context_.tracer()->info( "Valid driver values are {'simplenav', 'skeletonnav', 'sparseskeletonnav', 'astar', 'fake'}" );
+        context_.tracer().error( errorStr);
+        context_.tracer().info( "Valid driver values are {'simplenav', 'skeletonnav', 'sparseskeletonnav', 'astar', 'fake'}" );
         throw hydroutil::Exception( ERROR_INFO, errorStr );
     }
 
-    context_.tracer()->debug("driver instantiated",5);
+    context_.tracer().debug("driver instantiated",5);
 }
 
 void 
@@ -216,8 +216,8 @@ MainThread::walk()
     PathPlanner2dTask task; 
     PathPlanner2dData pathData;   
 
-    context_.status()->setMaxHeartbeatInterval( subsysName(), 30 );
-    context_.status()->ok( subsysName() );
+    context_.status().setMaxHeartbeatInterval( subsysName(), 30 );
+    context_.status().ok( subsysName() );
 
     while ( !isStopping() )
     {
@@ -227,7 +227,7 @@ MainThread::walk()
             //
             //  ======== waiting for a task (blocking) =======
             //
-            context_.tracer()->info("waiting for a new task");
+            context_.tracer().info("waiting for a new task");
             bool haveTask=false;
             
             while ( !isStopping() )
@@ -235,10 +235,10 @@ MainThread::walk()
                 int ret = pathPlannerTaskProxy_->getNext( task, 1000 );
                 if ( ret==0 ) {
                     haveTask = true;
-                    context_.tracer()->info("task arrived");  
+                    context_.tracer().info("task arrived");  
                     break;
                 }
-                context_.status()->ok( subsysName() );
+                context_.status().ok( subsysName() );
             }
             
             // the only way of getting out of the above loop without a task
@@ -252,7 +252,7 @@ MainThread::walk()
             // input: ogmap, task; output: path
             try 
             {
-                context_.tracer()->info("telling driver to compute the path now");
+                context_.tracer().info("telling driver to compute the path now");
                 driver_->computePath( task, pathData );
                 pathData.result = orca::PathOk;
                 pathData.resultDescription = "All good";
@@ -261,7 +261,7 @@ MainThread::walk()
             {
                 std::stringstream ss;
                 ss << "Couldn't compute path: " << orcaice::toVerboseString(task) << endl << "Problem was: " << e.what();
-                context_.tracer()->error( ss.str() );
+                context_.tracer().error( ss.str() );
                 pathData.resultDescription = ss.str();
                 pathData.result = orca::PathStartNotValid;
             }
@@ -269,7 +269,7 @@ MainThread::walk()
             {
                 std::stringstream ss;
                 ss << "Couldn't compute path: " << orcaice::toVerboseString(task) << endl << "Problem was: " << e.what();
-                context_.tracer()->error( ss.str() );
+                context_.tracer().error( ss.str() );
                 pathData.resultDescription = ss.str();
                 pathData.result = orca::PathDestinationNotValid;
             }
@@ -277,7 +277,7 @@ MainThread::walk()
             {
                 std::stringstream ss;
                 ss << "Couldn't compute path: " << orcaice::toVerboseString(task) << endl << "Problem was: " << e.what();
-                context_.tracer()->error( ss.str() );
+                context_.tracer().error( ss.str() );
                 pathData.resultDescription = ss.str();
                 pathData.result = orca::PathDestinationUnreachable;
             }
@@ -285,7 +285,7 @@ MainThread::walk()
             {
                 std::stringstream ss;
                 ss << "Couldn't compute path: " << orcaice::toVerboseString(task) << endl << "Problem was: " << e.what();
-                context_.tracer()->error( ss.str() );
+                context_.tracer().error( ss.str() );
                 pathData.resultDescription = ss.str();
                 pathData.result = orca::PathOtherError;
             }
@@ -293,8 +293,8 @@ MainThread::walk()
             //
             // ======= send result (including error code) ===============
             //
-            context_.tracer()->info("sending off the resulting path");
-            context_.tracer()->debug(orcaice::toVerboseString(pathData));
+            context_.tracer().info("sending off the resulting path");
+            context_.tracer().debug(orcaice::toVerboseString(pathData));
     
             // There are three methods to let other components know about the computed path:
             // 1. using the proxy
@@ -308,7 +308,7 @@ MainThread::walk()
             // resize the pathData: future tasks might not compute a path successfully and we would resend the old path
             pathData.path.resize( 0 );
     
-            context_.status()->ok( subsysName() );
+            context_.status().ok( subsysName() );
         //
         // unexpected exceptions
         //
@@ -317,30 +317,30 @@ MainThread::walk()
         {
             stringstream ss;
             ss << "unexpected (remote?) orca exception: " << e << ": " << e.what;
-            context_.status()->fault( subsysName(), ss.str() );
+            context_.status().fault( subsysName(), ss.str() );
         }
         catch ( const hydroutil::Exception & e )
         {
             stringstream ss;
             ss << "unexpected (local?) orcaice exception: " << e.what();
-            context_.status()->fault( subsysName(), ss.str() );
+            context_.status().fault( subsysName(), ss.str() );
         }
         catch ( const Ice::Exception & e )
         {
             stringstream ss;
             ss << "unexpected Ice exception: " << e;
-            context_.status()->fault( subsysName(), ss.str() );
+            context_.status().fault( subsysName(), ss.str() );
         }
         catch ( const std::exception & e )
         {
             // once caught this beast in here, don't know who threw it 'St9bad_alloc'
             stringstream ss;
             ss << "unexpected std exception: " << e.what();
-            context_.status()->fault( subsysName(), ss.str() );
+            context_.status().fault( subsysName(), ss.str() );
         }
         catch ( ... )
         {
-            context_.status()->fault( subsysName(), "unexpected exception from somewhere.");
+            context_.status().fault( subsysName(), "unexpected exception from somewhere.");
         }
     
     } // end of while

@@ -22,16 +22,16 @@ using namespace orcawallfactory;
 class PrivateNotifyHandler : public hydroutil::NotifyHandler<orca::VelocityControl2dData>
 {
 public:
-    PrivateNotifyHandler( hydroutil::Tracer* tracer ) :
+    PrivateNotifyHandler( hydroutil::Tracer& tracer ) :
         tracer_(tracer) {};
 
     // from hydroutil::NotifyHandler
     virtual void handleData( const orca::VelocityControl2dData& data )
     {
-        tracer_->debug( "VelocityControl2dSim::handleData: received "+orcaice::toString(data), 6 );
+        tracer_.debug( "VelocityControl2dSim::handleData: received "+orcaice::toString(data), 6 );
     }
 private:
-    hydroutil::Tracer* tracer_;
+    hydroutil::Tracer& tracer_;
 };
 
 VelocityControl2dSim::VelocityControl2dSim( const std::string& tag, const orcaice::Context& context ) : 
@@ -74,19 +74,19 @@ VelocityControl2dSim::run()
         {
             std::stringstream ss;
             ss << "ERROR(mainloop.cpp): Caught unexpected exception: " << e;
-            context_.tracer()->error( ss.str() );
+            context_.tracer().error( ss.str() );
         }
         catch ( const std::exception &e )
         {
             std::stringstream ss;
             ss << "ERROR(mainloop.cpp): Caught unexpected exception: " << e.what();
-            context_.tracer()->error( ss.str() );
+            context_.tracer().error( ss.str() );
         }
         catch ( ... )
         {
             std::stringstream ss;
             ss << "ERROR(mainloop.cpp): Caught unexpected unknown exception.";
-            context_.tracer()->error( ss.str() );
+            context_.tracer().error( ss.str() );
         }
 
     } // end of while

@@ -103,7 +103,7 @@ RangeScanner2dImpl::initInterface( hydroutil::Thread* thread, const std::string&
 orca::RangeScanner2dDataPtr 
 RangeScanner2dImpl::internalGetData() const
 {
-    context_.tracer()->debug( "RangeScanner2dImpl::internalGetData()", 5 );
+    context_.tracer().debug( "RangeScanner2dImpl::internalGetData()", 5 );
 
     if ( dataProxy_.isEmpty() )
     {
@@ -123,7 +123,7 @@ RangeScanner2dImpl::internalGetData() const
 orca::RangeScanner2dDescription
 RangeScanner2dImpl::internalGetDescription() const
 {
-    context_.tracer()->debug( "RangeScanner2dImpl::internalGetDescription()", 5 );
+    context_.tracer().debug( "RangeScanner2dImpl::internalGetDescription()", 5 );
     return descr_;
 }
 
@@ -131,7 +131,7 @@ RangeScanner2dImpl::internalGetDescription() const
 void 
 RangeScanner2dImpl::internalSubscribe(const ::orca::RangeScanner2dConsumerPrx &subscriber)
 {
-    context_.tracer()->debug( "RangeScanner2dImpl::internalSubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
+    context_.tracer().debug( "RangeScanner2dImpl::internalSubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
 
     if ( topicPrx_==0 ) {
         throw orca::SubscriptionFailedException( "null topic proxy." );
@@ -143,12 +143,12 @@ RangeScanner2dImpl::internalSubscribe(const ::orca::RangeScanner2dConsumerPrx &s
     catch ( const IceStorm::AlreadySubscribed & e ) {
         std::stringstream ss;
         ss <<"Request for subscribe but this proxy has already been subscribed, so I do nothing: "<< e;
-        context_.tracer()->debug( ss.str(), 2 );    
+        context_.tracer().debug( ss.str(), 2 );    
     }
     catch ( const Ice::Exception & e ) {
         std::stringstream ss;
         ss <<"RangeScanner2dImpl::internalSubscribe::failed to subscribe: "<< e << endl;
-        context_.tracer()->warning( ss.str() );
+        context_.tracer().warning( ss.str() );
         throw orca::SubscriptionFailedException( ss.str() );
     }
 }
@@ -157,7 +157,7 @@ RangeScanner2dImpl::internalSubscribe(const ::orca::RangeScanner2dConsumerPrx &s
 void 
 RangeScanner2dImpl::internalUnsubscribe(const ::orca::RangeScanner2dConsumerPrx &subscriber)
 {
-    context_.tracer()->debug( "RangeScanner2dImpl::internalUsubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
+    context_.tracer().debug( "RangeScanner2dImpl::internalUsubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
 
     topicPrx_->unsubscribe( subscriber );
 }
@@ -173,11 +173,11 @@ RangeScanner2dImpl::localSet( const ::orca::RangeScanner2dDataPtr &data )
 void
 RangeScanner2dImpl::localSetAndSend( const ::orca::RangeScanner2dDataPtr &data )
 {
-    if ( context_.tracer()->verbosity( hydroutil::Tracer::DebugTrace, hydroutil::Tracer::ToAny ) >= 5 )
+    if ( context_.tracer().verbosity( hydroutil::Tracer::DebugTrace, hydroutil::Tracer::ToAny ) >= 5 )
     {
         stringstream ss;
         ss << "RangeScanner2dIface: Sending data: " << orcaice::toString(data);
-        context_.tracer()->debug( ss.str(), 5 );
+        context_.tracer().debug( ss.str(), 5 );
     }
     // cout << "RangeScanner2dImpl::internalSet data: " << orcaice::toString( data ) << endl;
     

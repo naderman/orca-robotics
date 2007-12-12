@@ -55,7 +55,7 @@ getProvidedName( const Context& context, const std::string &ifaceTag )
     orcaice::getProperty( context.properties(), context.tag()+".Provides."+ifaceTag+".Name", ifaceName );
     if( ifaceName.empty() )
     {
-//         context.tracer()->debug("getting getProvidedName for tag="+ifaceTag);
+//         context.tracer().debug("getting getProvidedName for tag="+ifaceTag);
         std::string errorString = context.tag()+": "
             + warnMissingProperty("provided interface name for tag '" + ifaceTag + "'",
                                    context.tag()+".Provides."+ifaceTag+".Name");

@@ -97,7 +97,7 @@ PolarFeature2dImpl::initInterface( hydroutil::Thread* thread, const std::string&
 orca::PolarFeature2dData 
 PolarFeature2dImpl::internalGetData() const
 {
-    context_.tracer()->debug( "PolarFeature2dImpl::internalGetData()", 5 );
+    context_.tracer().debug( "PolarFeature2dImpl::internalGetData()", 5 );
 
     if ( dataProxy_.isEmpty() )
     {
@@ -117,7 +117,7 @@ PolarFeature2dImpl::internalGetData() const
 void 
 PolarFeature2dImpl::internalSubscribe(const ::orca::PolarFeature2dConsumerPrx &subscriber)
 {
-    context_.tracer()->debug( "PolarFeature2dImpl::internalSubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
+    context_.tracer().debug( "PolarFeature2dImpl::internalSubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
 
     if ( topicPrx_==0 ) {
         throw orca::SubscriptionFailedException( "null topic proxy." );
@@ -129,12 +129,12 @@ PolarFeature2dImpl::internalSubscribe(const ::orca::PolarFeature2dConsumerPrx &s
     catch ( const IceStorm::AlreadySubscribed & e ) {
         std::stringstream ss;
         ss <<"Request for subscribe but this proxy has already been subscribed, so I do nothing: "<< e;
-        context_.tracer()->debug( ss.str(), 2 );
+        context_.tracer().debug( ss.str(), 2 );
     }
     catch ( const Ice::Exception & e ) {
         std::stringstream ss;
         ss <<"PolarFeature2dImpl::internalSubscribe::failed to subscribe: "<< e << endl;
-        context_.tracer()->warning( ss.str() );
+        context_.tracer().warning( ss.str() );
         throw orca::SubscriptionFailedException( ss.str() );
     }
 }
@@ -143,7 +143,7 @@ PolarFeature2dImpl::internalSubscribe(const ::orca::PolarFeature2dConsumerPrx &s
 void 
 PolarFeature2dImpl::internalUnsubscribe(const ::orca::PolarFeature2dConsumerPrx &subscriber)
 {
-    context_.tracer()->debug( "PolarFeature2dImpl::internalUnsubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
+    context_.tracer().debug( "PolarFeature2dImpl::internalUnsubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
 
     topicPrx_->unsubscribe( subscriber );
 }
@@ -159,11 +159,11 @@ PolarFeature2dImpl::localSet( const ::orca::PolarFeature2dData &data )
 void
 PolarFeature2dImpl::localSetAndSend( const ::orca::PolarFeature2dData &data )
 {
-    if ( context_.tracer()->verbosity( hydroutil::Tracer::DebugTrace, hydroutil::Tracer::ToAny ) >= 5 )
+    if ( context_.tracer().verbosity( hydroutil::Tracer::DebugTrace, hydroutil::Tracer::ToAny ) >= 5 )
     {
         stringstream ss;
         ss << "PolarFeature2dIface: Sending data: " << orcaice::toString(data);
-        context_.tracer()->debug( ss.str(), 5 );
+        context_.tracer().debug( ss.str(), 5 );
     }
 
     // cout << "PolarFeature2dImpl::internalSet data: " << orcaice::toString( data ) << endl;

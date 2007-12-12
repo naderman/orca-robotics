@@ -78,6 +78,6 @@ InputHandler::walk()
 
     // reset the hardware
 //     if ( driver_->disable() ) {
-//         context_.tracer()->warning("failed to disable driver");
+//         context_.tracer().warning("failed to disable driver");
 //     }
 }

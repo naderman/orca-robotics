@@ -73,7 +73,7 @@ MainLoop::run()
         }
         catch ( const orcaice::NetworkException & e )
         {
-            context_.tracer()->error( "failed to connect to remote object. Will try again after 3 seconds." );
+            context_.tracer().error( "failed to connect to remote object. Will try again after 3 seconds." );
             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
         }
         // NOTE: connectToInterfaceWithTag() can also throw ConfigFileException,
@@ -96,7 +96,7 @@ MainLoop::run()
         }
         catch ( const orca::HardwareFailedException & e )
         {
-            context_.tracer()->error( "hardware failure reported when getting a scan. Will subscribe anyway." );
+            context_.tracer().error( "hardware failure reported when getting a scan. Will subscribe anyway." );
         }
     }
 
@@ -117,7 +117,7 @@ MainLoop::run()
         }
         catch ( const orca::SubscriptionFailedException & e )
         {
-            context_.tracer()->error( "failed to subscribe for data updates. Will try again after 3 seconds." );
+            context_.tracer().error( "failed to subscribe for data updates. Will try again after 3 seconds." );
             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
         }
     }
@@ -186,7 +186,7 @@ MainLoop::run()
         else {
             stringstream ss;
             ss << "Timed out (" << timeoutMs << "ms) waiting for camera data.";
-            context_.tracer()->warning( ss.str() );
+            context_.tracer().warning( ss.str() );
         }
 
     } // while
@@ -208,9 +208,9 @@ MainLoop::run()
     {
         stringstream ss;
         ss << "unexpected (remote?) orca exception: " << e << ": " << e.what;
-        context_.tracer()->error( ss.str() );
+        context_.tracer().error( ss.str() );
         if ( context_.isApplication() ) {
-            context_.tracer()->info( "this is an stand-alone component. Quitting...");
+            context_.tracer().info( "this is an stand-alone component. Quitting...");
             context_.communicator()->destroy();
         }
     }
@@ -218,9 +218,9 @@ MainLoop::run()
     {
         stringstream ss;
         ss << "unexpected (local?) orcaice exception: " << e.what();
-        context_.tracer()->error( ss.str() );
+        context_.tracer().error( ss.str() );
         if ( context_.isApplication() ) {
-            context_.tracer()->info( "this is an stand-alone component. Quitting...");
+            context_.tracer().info( "this is an stand-alone component. Quitting...");
             context_.communicator()->destroy();
         }
     }
@@ -228,9 +228,9 @@ MainLoop::run()
     {
         stringstream ss;
         ss << "unexpected Ice exception: " << e;
-        context_.tracer()->error( ss.str() );
+        context_.tracer().error( ss.str() );
         if ( context_.isApplication() ) {
-            context_.tracer()->info( "this is an stand-alone component. Quitting...");
+            context_.tracer().info( "this is an stand-alone component. Quitting...");
             context_.communicator()->destroy();
         }
     }
@@ -239,17 +239,17 @@ MainLoop::run()
         // once caught this beast in here, don't know who threw it 'St9bad_alloc'
         stringstream ss;
         ss << "unexpected std exception: " << e.what();
-        context_.tracer()->error( ss.str() );
+        context_.tracer().error( ss.str() );
         if ( context_.isApplication() ) {
-            context_.tracer()->info( "this is an stand-alone component. Quitting...");
+            context_.tracer().info( "this is an stand-alone component. Quitting...");
             context_.communicator()->destroy();
         }
     }
     catch ( ... )
     {
-        context_.tracer()->error( "unexpected exception from somewhere.");
+        context_.tracer().error( "unexpected exception from somewhere.");
         if ( context_.isApplication() ) {
-            context_.tracer()->info( "this is an stand-alone component. Quitting...");
+            context_.tracer().info( "this is an stand-alone component. Quitting...");
             context_.communicator()->destroy();
         }
     }
@@ -285,5 +285,5 @@ MainLoop::initCvImage()
     cvImage_ = cvCreateImage( cvSize( descr_.imageWidth, descr_.imageHeight ),  8, nChannels );
     // dodgy opencv needs this so it has time to resize
     cvWaitKey(100);
-    context_.tracer()->debug("opencv window created",5);
+    context_.tracer().debug("opencv window created",5);
 }

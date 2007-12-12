@@ -81,7 +81,7 @@ Handler::run()
 
         // check that we were not told to terminate while we were sleeping
         if ( !isStopping() ) {
-            context_.tracer()->debug( "Setting data", 5 );
+            context_.tracer().debug( "Setting data", 5 );
             odometry2dI->localSetAndSend( odometry2dData );
         } 
     }
@@ -89,7 +89,7 @@ Handler::run()
     } // try
     catch ( const Ice::CommunicatorDestroyedException & e )
     {
-        context_.tracer()->debug( "net handler cought CommunicatorDestroyedException",1);        
+        context_.tracer().debug( "net handler cought CommunicatorDestroyedException",1);        
         // it's ok, we must be quitting.
     }
     //
@@ -97,13 +97,13 @@ Handler::run()
     //
     catch ( ... )
     {
-        context_.tracer()->error( "Unexpected exception from somewhere.");
+        context_.tracer().error( "Unexpected exception from somewhere.");
         context_.communicator()->destroy();
     }
 
     // wait for the component to realize that we are quitting and tell us to stop.
     waitForStop();
-    context_.tracer()->debug( "Handler stopped", 2 );
+    context_.tracer().debug( "Handler stopped", 2 );
 }
 
 } // namespace

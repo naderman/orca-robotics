@@ -104,14 +104,14 @@ Component::start()
     else
     {
         std::string errString = "unknown imu type: "+driverName;
-        context().tracer()->error( errString );
+        context().tracer().error( errString );
         throw hydroutil::Exception( ERROR_INFO, errString );
         return;
     }
 
     if(hwDriver_->reset()<0){
         std::string errString = "Failed to reset IMU.";
-        context().tracer()->error( errString );
+        context().tracer().error( errString );
         throw hydroutil::Exception( ERROR_INFO, errString );
         return;
     }
@@ -124,7 +124,7 @@ Component::start()
         ret=hwDriver_->read();
         if(ret==-1){
             std::string errString = "Failed to read from IMU.";
-            context().tracer()->error( errString );
+            context().tracer().error( errString );
             throw hydroutil::Exception( ERROR_INFO, errString );
             return;
         }
@@ -154,15 +154,15 @@ Component::start()
     { 
         try {
             odometry3dImpl_->initInterface();
-            context().tracer()->debug( "odometry interface initialized",2);
+            context().tracer().debug( "odometry interface initialized",2);
             break;
         }
         catch ( const orcaice::NetworkException& e ) {
-            context().tracer()->warning( "Failed to setup interface. Check Registry and IceStorm. Will try again in 2 secs...");
+            context().tracer().warning( "Failed to setup interface. Check Registry and IceStorm. Will try again in 2 secs...");
             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
         }
         catch ( const Ice::Exception& e ) {
-            context().tracer()->warning( "Failed to setup interface. Check Registry and IceStorm. Will try again in 2 secs...");
+            context().tracer().warning( "Failed to setup interface. Check Registry and IceStorm. Will try again in 2 secs...");
             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
         }
     }
@@ -178,7 +178,7 @@ Component::start()
     //
     // MAIN DRIVER LOOP
     //
-    context().tracer()->debug( "entering handler_...",5 );
+    context().tracer().debug( "entering handler_...",5 );
 
     handler_ = new ImuHandler(*imuObj,
                               *odometry3dImpl_,
@@ -193,7 +193,7 @@ Component::start()
 void 
 Component::stop()
 {
-    tracer()->info("stopping component...");
+    tracer().info("stopping component...");
     hydroutil::stopAndJoin( handler_ );
 }
 

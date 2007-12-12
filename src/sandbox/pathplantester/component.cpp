@@ -49,9 +49,9 @@ void Component::stop()
 {
     if ( algoHandler_ ) {
         IceUtil::ThreadControl algoControl = algoHandler_->getThreadControl();
-        tracer()->debug("stopping algorithm handler", 5 );
+        tracer().debug("stopping algorithm handler", 5 );
         algoHandler_->stop();
-        tracer()->debug("joining algorithm handler", 5 );
+        tracer().debug("joining algorithm handler", 5 );
         algoControl.join();
     }
 }

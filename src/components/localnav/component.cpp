@@ -47,7 +47,7 @@ void
 Component::start()
 {
     try {
-    context().tracer()->info( "start()" );
+    context().tracer().info( "start()" );
 
     //
     // INITIAL CONFIGURATION
@@ -83,7 +83,7 @@ Component::start()
     // Instantiate the guys who do the work
     //
 
-    context().tracer()->debug( "Component: Loading driver library.", 4 );
+    context().tracer().debug( "Component: Loading driver library.", 4 );
     std::string driverLibName = 
         orcaice::getPropertyWithDefault( prop, prefix+"DriverLib", "libOrcaLocalNavVfh.so" );
     try {
@@ -95,11 +95,11 @@ Component::start()
     }
     catch (hydrodll::DynamicLoadException &e)
     {
-        context().tracer()->error( e.what() );
+        context().tracer().error( e.what() );
         throw;
     }
 
-    context().tracer()->debug( "Component: Instantiating main loop.", 3 );
+    context().tracer().debug( "Component: Instantiating main loop.", 3 );
     if ( !testInSimulationMode )
     {
         mainLoop_ = new MainLoop( *driverFactory_,
@@ -121,7 +121,7 @@ Component::start()
     //
     activate();
 
-    context().tracer()->debug( "Component: Entering main loop.", 3 );
+    context().tracer().debug( "Component: Entering main loop.", 3 );
 
     //
     // MAIN DRIVER LOOP
@@ -132,12 +132,12 @@ Component::start()
     catch ( Ice::Exception &e )
     {
         stringstream ss; ss << "Exception during component::start(): " << e;
-        context().tracer()->error( ss.str() );
+        context().tracer().error( ss.str() );
     }
     catch ( std::exception &e )
     {
         stringstream ss; ss << "Exception during component::start(): " << e.what();
-        context().tracer()->error( ss.str() );
+        context().tracer().error( ss.str() );
     }
 }
 

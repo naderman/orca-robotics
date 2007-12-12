@@ -82,7 +82,7 @@ Component::start()
 //             desiredCfg.imuFlipped = true;
 //             // now remove the roll angle, we'll compensate for it internally
 //             desiredCfg.imuOffset.o.r = 0.0;
-//             tracer()->info( "the driver will compensate for upside-down mounted sensor" );
+//             tracer().info( "the driver will compensate for upside-down mounted sensor" );
 //     }
 
     orcaice::setInit( desiredCfg.imuSize );
@@ -95,7 +95,7 @@ Component::start()
     desiredCfg.vehiclePlatformToVehicleTransform = orcaice::getPropertyAsFrame3dWithDefault( prop, prefix+"Vehicle.PlatformToVehicleTransform", desiredCfg.vehiclePlatformToVehicleTransform );
    
     if ( !desiredCfg.validate() ) {
-        tracer()->error( "Failed to validate insgps configuration. "+desiredCfg.toString() );
+        tracer().error( "Failed to validate insgps configuration. "+desiredCfg.toString() );
         // this will kill this component
         throw hydroutil::Exception( ERROR_INFO, "Failed to validate insgps configuration" );
     }
@@ -118,19 +118,19 @@ Component::start()
     else if ( driverName == "fake" )
     {
         hwDriver_ = new FakeInsGpsDriver( desiredCfg, context() );
-        tracer()->info( "TRACE(component::start()): Using FakeInsGpsDriver" );
+        tracer().info( "TRACE(component::start()): Using FakeInsGpsDriver" );
     }
     else
     {
         std::string errString = "unknown insgps type: "+driverName;
-        context().tracer()->error( errString );
+        context().tracer().error( errString );
         throw hydroutil::Exception( ERROR_INFO, errString );
         return;
     }
 
     if(hwDriver_->reset()<0){
         std::string errString = "Failed to reset InsGps.";
-        context().tracer()->error( errString );
+        context().tracer().error( errString );
         throw hydroutil::Exception( ERROR_INFO, errString );
         return;
     }
@@ -138,7 +138,7 @@ Component::start()
     if ( hwDriver_->init() < 0)
     {      
         std::string errString = "ERROR(component::start()): Failed to initialise InsGps.";
-        context().tracer()->error( errString );
+        context().tracer().error( errString );
         throw hydroutil::Exception( ERROR_INFO, errString );
         return;
     }
@@ -175,7 +175,7 @@ Component::start()
         ret=hwDriver_->read();
         if(ret==-1){
             std::string errString = "Failed to read from IMU.";
-            context().tracer()->error( errString );
+            context().tracer().error( errString );
             throw hydroutil::Exception( ERROR_INFO, errString );
             return;
         }
@@ -200,22 +200,22 @@ Component::start()
 
     // register each of the objects so that remote calls know that these things exist   
     orcaice::createInterfaceWithTag( context(), gpsObjPtr_, "Gps" );
-    context().tracer()->info("GPS registered",1);
+    context().tracer().info("GPS registered",1);
     orcaice::createInterfaceWithTag( context(), imuObjPtr_, "Imu" );
-    context().tracer()->info("Imu registered",1);
+    context().tracer().info("Imu registered",1);
     orcaice::createInterfaceWithTag( context(), odometry3dObjPtr_, "Odometry3d" );
-    context().tracer()->info("odometry3d registered",1);
+    context().tracer().info("odometry3d registered",1);
     orcaice::createInterfaceWithTag( context(), localise3dObjPtr_, "Localise3d" );
-    context().tracer()->info("localise3d registered",1);
+    context().tracer().info("localise3d registered",1);
 
     ////////////////////////////////////////////////////////////////////////////////
 
     //
     // ENABLE NETWORK CONNECTIONS
     //
-    context().tracer()->debug( "activating..", 2 );
+    context().tracer().debug( "activating..", 2 );
     activate();
-    context().tracer()->info("Network activated",1);
+    context().tracer().info("Network activated",1);
 
     //
     // HANDLERS
@@ -224,7 +224,7 @@ Component::start()
     // It checks if the corresponding message is available. If it is, the message is popped
     // from the buffer and published to the outside world.
     
-    context().tracer()->debug( "entering handlers_...", 2 );
+    context().tracer().debug( "entering handlers_...", 2 );
 
     gpsMainThread_ = new MainThread( *gpsObj_,
                                hwDriver_,
@@ -253,20 +253,20 @@ Component::start()
 void 
 Component::stop()
 {
-    tracer()->debug( "stopping component", 2 );
+    tracer().debug( "stopping component", 2 );
 
-    tracer()->debug( "stopping handlers", 2 );
+    tracer().debug( "stopping handlers", 2 );
     hydroutil::stopAndJoin( gpsMainThread_ );
     hydroutil::stopAndJoin( imuMainThread_ );
     hydroutil::stopAndJoin( odometry3dMainThread_ );   
     hydroutil::stopAndJoin( localise3dMainThread_ );   
-    // tracer()->debug( "stopped handlers", 2 );
+    // tracer().debug( "stopped handlers", 2 );
 
-    tracer()->debug( "stopping driver", 2 );
+    tracer().debug( "stopping driver", 2 );
     hydroutil::stopAndJoin( hwDriver_ );
-    // tracer()->debug( "stopped driver", 2 );
+    // tracer().debug( "stopped driver", 2 );
     
-    tracer()->debug( "stopped component", 2 );
+    tracer().debug( "stopped component", 2 );
 }
 
 } //namespace

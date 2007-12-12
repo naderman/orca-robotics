@@ -16,7 +16,7 @@ ApplicationObserverI::applicationInit( int serial,
     ss << "ApplicationObserverI::applicationInit:\n"
        << "  serial: " << serial << endl;
     ss << "  applications: " << endl << toString(applications,"application",4);
-    context_.tracer()->info( ss.str() );
+    context_.tracer().info( ss.str() );
 }
 
 void 
@@ -28,7 +28,7 @@ ApplicationObserverI::applicationAdded( int serial,
     ss << "ApplicationObserverI::applicationAdded:\n"
        << "  serial: " << serial << endl
        << toString(desc,2);
-    context_.tracer()->info( ss.str() );
+    context_.tracer().info( ss.str() );
 }
 
 void 
@@ -40,7 +40,7 @@ ApplicationObserverI::applicationRemoved( int serial,
     ss << "ApplicationObserverI::applicationRemoved:\n"
        << "  serial: " << serial << endl
        << "  name:   " << name;
-    context_.tracer()->info( ss.str() );
+    context_.tracer().info( ss.str() );
 }
 
 void 
@@ -52,7 +52,7 @@ ApplicationObserverI::applicationUpdated( int serial,
     ss << "ApplicationObserverI::applicationUpdated:\n"
        << "  serial: " << serial << endl
        << toString(desc,2);
-    context_.tracer()->info( ss.str() );
+    context_.tracer().info( ss.str() );
 }
 
 }

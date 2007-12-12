@@ -39,7 +39,7 @@ ReplayConductor::addEvent( const Event &e )
     eventQueue_.push( e );
     stringstream ss;
     ss << "ReplayConductor: Received event: " << toString(e);
-    context_.tracer()->info( ss.str() );    
+    context_.tracer().info( ss.str() );    
 }
 
 void
@@ -200,7 +200,7 @@ ReplayConductor::handleStart()
     bool cursorValid = masterFileReader_.getCursorTime( sec, usec );
     if ( !cursorValid )
     {
-        context_.tracer()->debug( "ReplayConductor: At end of log.  Can't start." );
+        context_.tracer().debug( "ReplayConductor: At end of log.  Can't start." );
         isPlayingOrAboutToStart_ = false;
         return;
     }
@@ -283,7 +283,7 @@ ReplayConductor::handleStepForward()
 {
     if ( isPlaying_ )
     {
-        context_.tracer()->warning( "ReplayConductor: Can't step forward while playing." );
+        context_.tracer().warning( "ReplayConductor: Can't step forward while playing." );
         return;
     }
 
@@ -291,7 +291,7 @@ ReplayConductor::handleStepForward()
     int ret = masterFileReader_.getData( seconds, useconds, id, index );    
     if ( ret != 0 )
     {
-        context_.tracer()->info( "ReplayConductor::handleStepForward: end of file reached." );
+        context_.tracer().info( "ReplayConductor::handleStepForward: end of file reached." );
     }
     else
     {
@@ -304,7 +304,7 @@ ReplayConductor::handleStepBackward()
 {
     if ( isPlaying_ )
     {
-        context_.tracer()->warning( "ReplayConductor: Can't step backward while playing." );
+        context_.tracer().warning( "ReplayConductor: Can't step backward while playing." );
         return;
     }
 
@@ -316,7 +316,7 @@ ReplayConductor::handleStepBackward()
     int ret = masterFileReader_.getData( seconds, useconds, id, index );    
     if ( ret != 0 )
     {
-        context_.tracer()->error( "ReplayConductor::handleStepBackward: getData returned non-zero!" );
+        context_.tracer().error( "ReplayConductor::handleStepBackward: getData returned non-zero!" );
     }
     else
     {
@@ -331,7 +331,7 @@ ReplayConductor::replayData( int id, int index )
     {
         stringstream ss;
         ss << "ReplayConductor: Found unknown replayer ID: " << id << ".  Ignoring.";
-        context_.tracer()->warning( ss.str() );
+        context_.tracer().warning( ss.str() );
         
         return;
     }
@@ -348,19 +348,19 @@ ReplayConductor::replayData( int id, int index )
     {
         stringstream ss;
         ss<<"ReplayConductor: Caught Ice::Exception from replayer '"<<replayers_[id]->toString()<<"': "<<e;
-        context_.tracer()->error( ss.str() );
+        context_.tracer().error( ss.str() );
     }
     catch ( const std::exception  &e ) 
     {
         stringstream ss;
         ss<<"ReplayConductor: Caught std::exception from replayer '"<<replayers_[id]->toString()<<"': "<<e.what();
-        context_.tracer()->error( ss.str() );
+        context_.tracer().error( ss.str() );
     }
     catch ( ... )
     {
         stringstream ss;
         ss<<"ReplayConductor: Caught unknown exception from replayer '"<<replayers_[id]->toString();
-        context_.tracer()->error( ss.str() );
+        context_.tracer().error( ss.str() );
     }
 }
 
@@ -395,7 +395,7 @@ ReplayConductor::walk()
         if ( masterFileReader_.getData( seconds, useconds, id, index ) ) 
         {
             // end of file 
-            context_.tracer()->info( "ReplayConductor: End of File." );
+            context_.tracer().info( "ReplayConductor: End of File." );
             pausePlaying();
             continue;
         }
@@ -404,7 +404,7 @@ ReplayConductor::walk()
         if ( id > (int)replayers_.size() ) {
             stringstream ss;
             ss << "ReplayConductor: Reference to subfile number " << id << ", when only " << replayers_.size() << " exist.";
-            context_.tracer()->error( ss.str() );
+            context_.tracer().error( ss.str() );
             exit(1);
         }
 
@@ -417,7 +417,7 @@ ReplayConductor::walk()
             {
                 if ( realTimeTillNextItem > orcalog::iceUtilTime(1,0) )
                 {
-                    context_.tracer()->warning( "ReplayConductor: long time between replays, could screw with interactivity." );
+                    context_.tracer().warning( "ReplayConductor: long time between replays, could screw with interactivity." );
                 }
                 IceUtil::ThreadControl::sleep(realTimeTillNextItem);
             }

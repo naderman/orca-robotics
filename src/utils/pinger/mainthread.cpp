@@ -78,7 +78,7 @@ MainThread::walk()
             pinger->sequencePing( 1 );
         else  {
             std::string errString = "Unknown operation type: "+operationType;
-            context_.tracer()->error( errString );
+            context_.tracer().error( errString );
             throw hydroutil::Exception( ERROR_INFO, errString );
             return;
         }
@@ -90,7 +90,7 @@ MainThread::walk()
     else 
     {
         std::string errString = "Unknown ping method: "+driverName;
-        context_.tracer()->error( errString );
+        context_.tracer().error( errString );
         throw hydroutil::Exception( ERROR_INFO, errString );
         return;
     }

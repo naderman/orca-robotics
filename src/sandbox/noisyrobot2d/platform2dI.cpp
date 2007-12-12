@@ -112,7 +112,7 @@ Platform2dI::localSetOdom( const ::orca::Position2dData& data )
         // This could happen if IceStorm dies.
         // If we're running in an IceBox and the IceBox is shutting down, 
         // this is expected (our co-located IceStorm is obviously going down).
-        context_.tracer()->warning( "Failed push to IceStorm." );
+        context_.tracer().warning( "Failed push to IceStorm." );
     }
 }
 

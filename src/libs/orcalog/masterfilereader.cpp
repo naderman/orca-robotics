@@ -88,7 +88,7 @@ MasterFileReader::calcConstituentLogs()
         formats_.push_back( format );
         enableds_.push_back( enabled );
 
-        context_.tracer()->debug( "MasterFileReader: Parsed header: file="+filename+" type="+interfaceType+" fmt="+format, 5);
+        context_.tracer().debug( "MasterFileReader: Parsed header: file="+filename+" type="+interfaceType+" fmt="+format, 5);
     }
 }
 
@@ -146,7 +146,7 @@ MasterFileReader::readData( int& seconds, int& useconds, int& id, int& index )
         }
         catch ( const orcalog::Exception& e )
         {
-            context_.tracer()->warning( "parsing error in master file line: '" + line + "'" );
+            context_.tracer().warning( "parsing error in master file line: '" + line + "'" );
             continue;
         }
 

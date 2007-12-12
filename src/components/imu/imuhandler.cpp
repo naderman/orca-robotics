@@ -68,7 +68,7 @@ ImuHandler::run()
                 int ret = hwDriver_->read();
                 if ( ret == -1 )
                 {
-                    context_.tracer()->error( "Problem reading from IMU.  Shutting down hardware." );
+                    context_.tracer().error( "Problem reading from IMU.  Shutting down hardware." );
                     hwDriver_->disable();
 		}
 
@@ -109,11 +109,11 @@ ImuHandler::run()
             {
                 if ( hwDriver_->isEnabled() )
                 {
-                    context_.status()->heartbeat("Imu enabled. " + hwDriver_->heartbeatMessage() );
+                    context_.status().heartbeat("Imu enabled. " + hwDriver_->heartbeatMessage() );
                 }
                 else
                 {
-                    context_.status()->heartbeat( "Imu disabled." );
+                    context_.status().heartbeat( "Imu disabled." );
                 }
                 lastHeartbeatTime = IceUtil::Time::now();
             }
@@ -129,7 +129,7 @@ ImuHandler::run()
     waitForStop();
     
     // IMU hardware will be shut down in the driver's destructor.
-    context_.tracer()->debug( "dropping out from run()", 5 );
+    context_.tracer().debug( "dropping out from run()", 5 );
 }
 
 } //namespace

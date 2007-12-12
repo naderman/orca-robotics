@@ -23,7 +23,7 @@ FakeDriver::FakeDriver( const Config & cfg, const orcaice::Context & context )
     : Driver(cfg, context),
       context_(context)
 {
-     context_.tracer()->info( "Initializing fake driver with config: "+config_.toString() );
+     context_.tracer().info( "Initializing fake driver with config: "+config_.toString() );
 
 //      if ( cfg.format != orca::ImageFormatModeBgr ) {
 //          throw "Unsupported image format. Only 'ModeBgr' is supported";
@@ -39,12 +39,12 @@ FakeDriver::init()
 { 
     config_.imageWidth = 640;
     config_.imageHeight = 480;
-    context_.tracer()->debug("TODO(fakedriver::init()): resize image properly for different modes", 3);
+    context_.tracer().debug("TODO(fakedriver::init()): resize image properly for different modes", 3);
     config_.imageSize = 3 * config_.imageHeight * config_.imageWidth;
   
     config_.format = orca::ImageFormatModeBgr;
     config_.compression = orca::ImageCompressionNone;
-    context_.tracer()->info( "FakeDriver configuration has now been initialised to: "+config_.toString() );
+    context_.tracer().info( "FakeDriver configuration has now been initialised to: "+config_.toString() );
     
     return 0;
 }
@@ -52,7 +52,7 @@ FakeDriver::init()
 int 
 FakeDriver::read( orca::CameraData& data )
 {
-    context_.tracer()->debug( "Generating fake image data...", 6 );
+    context_.tracer().debug( "Generating fake image data...", 6 );
 
     // fill the image with a random colour
     int rr = rand()%256;
@@ -79,7 +79,7 @@ FakeDriver::flatColor( orca::ByteSequence& image,
     // cout << "opencv uses BGR format rather than rgb: " << endl;
     std::stringstream infoString;
     infoString << "B:G:R  (" << (int)B << ":" << (int)G << ":" << (int)R << ")";
-    context_.tracer()->info( infoString.str() );
+    context_.tracer().info( infoString.str() );
 
     orca::ByteSequence::iterator i;
     for ( i= image.begin(); i != image.end(); i+=3 )

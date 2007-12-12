@@ -33,7 +33,7 @@ MainThread::run()
 
     try 
     {
-        context_.tracer()->debug( "TRACE(handler::run()): MainThread thread is running", 6);
+        context_.tracer().debug( "TRACE(handler::run()): MainThread thread is running", 6);
         
         //
         // IMPORTANT: Have to keep this loop rolling, because the '!isStopping()' call checks
@@ -50,9 +50,9 @@ MainThread::run()
                     // blocking read with timeout (2000ms by default)
                     // get & send the gps data to icestorm and to a buffer for direct connections
                     
-                    // context_.tracer()->debug( "TRACE(handler::run()): publishing data", 5 );
+                    // context_.tracer().debug( "TRACE(handler::run()): publishing data", 5 );
                     insGpsI_->publish();
-                    // context_.tracer()->debug( "TRACE(handler::run()): published data", 5 );
+                    // context_.tracer().debug( "TRACE(handler::run()): published data", 5 );
                 }
                 else
                 {
@@ -64,11 +64,11 @@ MainThread::run()
                 {
                     if ( hwDriver_->isEnabled() )
                     {
-                        //context_.status()->heartbeat("InsGps enabled. " + hwDriver_->heartbeatMessage() );
+                        //context_.status().heartbeat("InsGps enabled. " + hwDriver_->heartbeatMessage() );
                     }
                     else
                     {
-                        //context_.status()->heartbeat( "InsGps disabled." );
+                        //context_.status().heartbeat( "InsGps disabled." );
                     }
                     lastHeartbeatTime = IceUtil::Time::now();
                 } 
@@ -89,7 +89,7 @@ MainThread::run()
     waitForStop();
     
     // InsGps hardware will be shut down in the driver's destructor.
-    context_.tracer()->debug( "dropping out from run()", 6 );
+    context_.tracer().debug( "dropping out from run()", 6 );
             
 }
 

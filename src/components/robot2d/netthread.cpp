@@ -98,7 +98,7 @@ NetThread::handleData(const orca::VelocityControl2dData& command)
 {
     stringstream ss;
     ss << "NetThread::handleData: " << orcaice::toString(command);
-    context_.tracer()->debug( ss.str() );
+    context_.tracer().debug( ss.str() );
 
     try {
         hydrointerfaces::Robot2d::Command internalCommand;
@@ -110,19 +110,19 @@ NetThread::handleData(const orca::VelocityControl2dData& command)
     {
         stringstream ss;
         ss<<"NetThread::handleData() Caught unexpected exception: " << e << endl;
-        context_.tracer()->error( ss.str() );
+        context_.tracer().error( ss.str() );
         throw;
     }
     catch ( std::exception &e )
     {
         stringstream ss;
         ss<<"NetThread::handleData() Caught unexpected exception: " << e.what() << endl;
-        context_.tracer()->error( ss.str() );
+        context_.tracer().error( ss.str() );
         throw;
     }
     catch ( ... )
     {
-        context_.tracer()->error( "NetThread::handleData(): Caught unexpected unknown exception." );
+        context_.tracer().error( "NetThread::handleData(): Caught unexpected unknown exception." );
         throw;
     }
 }
@@ -131,7 +131,7 @@ void
 NetThread::walk()
 {
     // multi-try function
-    context_.tracer()->debug( "NetThread: activating..." );
+    context_.tracer().debug( "NetThread: activating..." );
     orcaice::activate( context_, this );
     
     std::string prefix = context_.tag() + ".Config.";
@@ -156,18 +156,18 @@ NetThread::walk()
 
     const int odometryReadTimeout = 500; // [ms]
 
-    context_.tracer()->debug( "NetThread: interface is set up." );
+    context_.tracer().debug( "NetThread: interface is set up." );
 
     //
     // Main loop
     //
     while( !isStopping() )
     {
-        // context_.tracer()->debug( "NetThread: loop spinning ",9);
+        // context_.tracer().debug( "NetThread: loop spinning ",9);
 
         // block on the most frequent data source: odometry
         if ( HwThread_.getData( data, odometryReadTimeout ) ) {
-            context_.tracer()->debug( "Net loop timed out", 5);
+            context_.tracer().debug( "Net loop timed out", 5);
             continue;
         }
 

@@ -39,7 +39,7 @@ public:
     //! This callback simply prints it out to standard output.
     virtual void handleData( const ObjectType& data ) 
     {
-        context_.tracer()->info( orcaice::toString(data) ); 
+        context_.tracer().info( orcaice::toString(data) ); 
     }
 };
 

@@ -60,6 +60,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     - Updated style of checking module dependencies, for both components and libraries.
       Better cmake feedback when a component cannot be built.
 
+  - Source 
+    - Global change to the updated API's of orcaice::Context.
+
 @par New interfaces
 @par New components
 @par New utilities
@@ -68,6 +71,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - libOrcaIce
    - Component standard interfaces can now be configured from the config file in addition to the 
      programatic methond used before. (alex m)
+   - Context now returns references to Tracer and Status instead of pointers (alex m)
 
 @par Updated interfaces
 

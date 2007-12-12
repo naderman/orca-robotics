@@ -103,7 +103,7 @@ Localise3dImpl::initInterface( hydroutil::Thread* thread, const std::string& sub
 ::orca::Localise3dData 
 Localise3dImpl::internalGetData() const
 {
-    context_.tracer()->debug( "Localise3dImpl::internalGetData()", 5 );
+    context_.tracer().debug( "Localise3dImpl::internalGetData()", 5 );
 
     if ( dataProxy_.isEmpty() )
     {
@@ -126,19 +126,19 @@ Localise3dImpl::internalGetVehicleGeometry() const
 void 
 Localise3dImpl::internalSubscribe(const ::orca::Localise3dConsumerPrx& subscriber)
 {
-    context_.tracer()->debug( "Localise3dImpl::internalSubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
+    context_.tracer().debug( "Localise3dImpl::internalSubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
     try {
         topicPrx_->subscribeAndGetPublisher( IceStorm::QoS(), subscriber->ice_twoway() );
     }
     catch ( const IceStorm::AlreadySubscribed & e ) {
         std::stringstream ss;
         ss <<"Request for subscribe but this proxy has already been subscribed, so I do nothing: "<< e;
-        context_.tracer()->debug( ss.str(), 2 );
+        context_.tracer().debug( ss.str(), 2 );
     }
     catch ( const Ice::Exception & e ) {
         std::stringstream ss;
         ss <<"Localise3dImpl::internalSubscribe: failed to subscribe: "<< e << endl;
-        context_.tracer()->warning( ss.str() );
+        context_.tracer().warning( ss.str() );
         throw orca::SubscriptionFailedException( ss.str() );
     }
 }
@@ -146,7 +146,7 @@ Localise3dImpl::internalSubscribe(const ::orca::Localise3dConsumerPrx& subscribe
 void 
 Localise3dImpl::internalUnsubscribe(const ::orca::Localise3dConsumerPrx& subscriber)
 {
-    context_.tracer()->debug( "Localise3dImpl::internalSubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
+    context_.tracer().debug( "Localise3dImpl::internalSubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
     topicPrx_->unsubscribe( subscriber );
 }
 

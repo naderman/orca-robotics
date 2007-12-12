@@ -115,7 +115,7 @@ connectToInterfaceWithString( const Context     & context,
                               hydroutil::Thread*  thread, const std::string& subsysName="", 
                               int retryInterval=2, int retryNumber=-1 )
 {    
-    context.tracer()->debug( "orcaice::connectToInterfaceWithString(thread) proxy="+proxyString, 10 );
+    context.tracer().debug( "orcaice::connectToInterfaceWithString(thread) proxy="+proxyString, 10 );
     int count = 0;
     while ( !thread->isStopping() && ( retryNumber<0 || count<retryNumber) )
     {
@@ -128,12 +128,12 @@ connectToInterfaceWithString( const Context     & context,
             ss << "Failed to connect to interface with string "<<proxyString<<". "
                 <<"Will retry in "<<retryInterval<<"s."
                 << e.what();
-            context.tracer()->warning( ss.str() );
+            context.tracer().warning( ss.str() );
         }
         ++count;
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(retryInterval));
         if ( !subsysName.empty() ) {
-            context.status()->heartbeat( subsysName );
+            context.status().heartbeat( subsysName );
         }
     }
 }
@@ -174,7 +174,7 @@ connectToInterfaceWithTag( const Context     & context,
                            hydroutil::Thread*  thread, const std::string& subsysName="", 
                            int retryInterval=2, int retryNumber=-1 )
 {    
-    context.tracer()->debug( "orcaice::connectToInterfaceWithTag(thread) tag="+interfaceTag, 10 );
+    context.tracer().debug( "orcaice::connectToInterfaceWithTag(thread) tag="+interfaceTag, 10 );
 
     int count = 0;
     while ( !thread->isStopping() && ( retryNumber<0 || count<retryNumber) )
@@ -188,12 +188,12 @@ connectToInterfaceWithTag( const Context     & context,
             ss << "Failed to connect to interface with tag "<<interfaceTag<<". "
                 <<"Will retry in "<<retryInterval<<"s."
                 << e.what();
-            context.tracer()->warning( ss.str() );
+            context.tracer().warning( ss.str() );
         }
         ++count;
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(retryInterval));
         if ( !subsysName.empty() ) {
-            context.status()->heartbeat( subsysName );
+            context.status().heartbeat( subsysName );
         }
     }
 }
@@ -217,7 +217,7 @@ connectToTopicWithString( const Context     & context,
                           hydroutil::Thread*  thread, const std::string& subsysName="", 
                           int retryInterval=2, int retryNumber=-1 )
 {
-    context.tracer()->debug( "orcaice::connectToTopicWithString(thread) topic="+topicName, 10 );
+    context.tracer().debug( "orcaice::connectToTopicWithString(thread) topic="+topicName, 10 );
     IceStorm::TopicPrx topicPrx;
 
     int count = 0;
@@ -232,12 +232,12 @@ connectToTopicWithString( const Context     & context,
             ss << "Failed to connect to topic with string "<<topicName<<". "
                 <<"Will retry in "<<retryInterval<<"s."
                 << e.what();
-            context.tracer()->warning( ss.str() );
+            context.tracer().warning( ss.str() );
         }
         ++count;
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(retryInterval));
         if ( !subsysName.empty() ) {
-            context.status()->heartbeat( subsysName );
+            context.status().heartbeat( subsysName );
         }
     }
     return topicPrx;
@@ -263,7 +263,7 @@ connectToTopicWithTag( const Context      & context,
                        hydroutil::Thread*  thread, const std::string& subsysName="", 
                        int retryInterval=2, int retryNumber=-1 )
 {
-    context.tracer()->debug( "orcaice::connectToTopicWithTag(thread) tag="+interfaceTag, 10 );
+    context.tracer().debug( "orcaice::connectToTopicWithTag(thread) tag="+interfaceTag, 10 );
     IceStorm::TopicPrx topicPrx;
 
     int count = 0;
@@ -278,12 +278,12 @@ connectToTopicWithTag( const Context      & context,
             ss << "Failed to connect to topic with tag "<<interfaceTag<<". "
                 <<"Will retry in "<<retryInterval<<"s."
                 << e.what();
-            context.tracer()->warning( ss.str() );
+            context.tracer().warning( ss.str() );
         }
         ++count;
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(retryInterval));
         if ( !subsysName.empty() ) {
-            context.status()->heartbeat( subsysName );
+            context.status().heartbeat( subsysName );
         }
     }
     return topicPrx;

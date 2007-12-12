@@ -38,7 +38,7 @@ LaserScanner2dElement::getLaserInfo()
     }
     catch ( const orcaqgui::Exception& e )
     {
-        context_.tracer()->warning( e.what() );
+        context_.tracer().warning( e.what() );
     }
     painter_.setLaserMaxRange( descr.maxRange );
 }
@@ -72,7 +72,7 @@ RangeScanner2dElement::getScannerInfo()
     }
     catch ( const orcaqgui::Exception& e )
     {
-        context_.tracer()->warning( e.what() );
+        context_.tracer().warning( e.what() );
     }
     painter_.setLaserMaxRange( descr.maxRange );
 }

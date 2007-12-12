@@ -105,7 +105,7 @@ Odometry3dImpl::initInterface( hydroutil::Thread* thread, const std::string& sub
 ::orca::Odometry3dData 
 Odometry3dImpl::internalGetData() const
 {
-    context_.tracer()->debug( "Odometry3dImpl::internalGetData()", 5 );
+    context_.tracer().debug( "Odometry3dImpl::internalGetData()", 5 );
 
     if ( dataProxy_.isEmpty() )
     {
@@ -128,19 +128,19 @@ Odometry3dImpl::internalGetDescription() const
 void 
 Odometry3dImpl::internalSubscribe(const ::orca::Odometry3dConsumerPrx& subscriber )
 {
-    context_.tracer()->debug( "Odometry3dImpl::internalSubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
+    context_.tracer().debug( "Odometry3dImpl::internalSubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
     try {
         topicPrx_->subscribeAndGetPublisher( IceStorm::QoS(), subscriber->ice_twoway() );
     }
     catch ( const IceStorm::AlreadySubscribed & e ) {
         std::stringstream ss;
         ss <<"Request for subscribe but this proxy has already been subscribed, so I do nothing: "<< e;
-        context_.tracer()->debug( ss.str(), 2 );
+        context_.tracer().debug( ss.str(), 2 );
     }
     catch ( const Ice::Exception & e ) {
         std::stringstream ss;
         ss <<"Odometry3dImpl::internalSubscribe: failed to subscribe: "<< e << endl;
-        context_.tracer()->warning( ss.str() );
+        context_.tracer().warning( ss.str() );
         throw orca::SubscriptionFailedException( ss.str() );
     }
 }
@@ -148,7 +148,7 @@ Odometry3dImpl::internalSubscribe(const ::orca::Odometry3dConsumerPrx& subscribe
 void 
 Odometry3dImpl::internalUnsubscribe(const ::orca::Odometry3dConsumerPrx& subscriber)
 {
-    context_.tracer()->debug( "Odometry3dImpl::internalSubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
+    context_.tracer().debug( "Odometry3dImpl::internalSubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
     topicPrx_->unsubscribe( subscriber );
 }
 

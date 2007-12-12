@@ -61,7 +61,7 @@ ButtonElement::press()
         {
             stringstream ss;
             ss << "ButtonElement: failed to press(): " << e;
-            context_.tracer()->error( ss.str() );
+            context_.tracer().error( ss.str() );
         }
     }
 }

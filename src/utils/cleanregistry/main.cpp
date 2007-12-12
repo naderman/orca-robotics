@@ -49,7 +49,7 @@ Component::purgeObjects( const IceGrid::AdminPrx& admin )
     regData = orcacm::getRegistryHomeData( context(), locatorString, tryToPing );
 
     if ( !regData.isReachable ) {
-        context().tracer()->error( "Registry '"+locatorString+"' is unreachable" );
+        context().tracer().error( "Registry '"+locatorString+"' is unreachable" );
         // nothing else to do
         context().communicator()->shutdown();
     }
@@ -175,7 +175,7 @@ Component::start()
     }
     catch ( const Ice::Exception & e )
     {
-        context().tracer()->error( "Registry '"+locatorString+"' is unreachable" );
+        context().tracer().error( "Registry '"+locatorString+"' is unreachable" );
         // nothing else to do
         context().communicator()->shutdown();
     }

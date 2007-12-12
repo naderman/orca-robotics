@@ -24,7 +24,7 @@ loadIceStream( const orcaice::Context & context, std::string filename, OgMapData
     std::ifstream *logFile = new std::ifstream( filename.c_str(), ios::binary|ios::in );
     if ( !logFile->is_open() )
     {
-        context.tracer()->error("logFile could not be loaded");
+        context.tracer().error("logFile could not be loaded");
         return -1;
     }
                     
@@ -33,7 +33,7 @@ loadIceStream( const orcaice::Context & context, std::string filename, OgMapData
     logFile->read( (char*)&length, sizeof(length) );
     if ( logFile->good() == false )
     {
-        context.tracer()->error("reading from logFile failed");
+        context.tracer().error("reading from logFile failed");
         return -1;
     }
     
@@ -41,7 +41,7 @@ loadIceStream( const orcaice::Context & context, std::string filename, OgMapData
     logFile->read( (char*)&byteData[0], length );
     if ( logFile->good() == false )
     {
-        context.tracer()->error("reading from logFile failed");
+        context.tracer().error("reading from logFile failed");
         return -1;
     }
     

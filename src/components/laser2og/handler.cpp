@@ -127,7 +127,7 @@ Handler::init()
             std::stringstream ss;
             ss << "Failed to connect to remote rangeScanner object: " << e.what()
                << "Will try again after 3 seconds.";
-            context_.tracer()->error( ss.str() );
+            context_.tracer().error( ss.str() );
             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
         }
             // NOTE: connectToInterfaceWithTag() can also throw ConfigFileException,
@@ -146,7 +146,7 @@ Handler::init()
             std::stringstream ss;
             ss << "Failed to connect to remote localise2d object: " << e.what()
                << "Will try again after 3 seconds.";
-            context_.tracer()->error( ss.str() );
+            context_.tracer().error( ss.str() );
             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
         }
     }
@@ -163,7 +163,7 @@ Handler::init()
             std::stringstream ss;
             ss << "Failed to connect to remote ogfusion object: " << e.what()
                << "Will try again after 3 seconds.";
-            context_.tracer()->error( ss.str() );
+            context_.tracer().error( ss.str() );
             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
         }
     }
@@ -195,7 +195,7 @@ Handler::init()
 
     if(ogFusionConfig.offset.o != 0.0){
         std::string errString = "Laser2Og currently only support axis aligned OgMaps";
-        context_.tracer()->error( errString );
+        context_.tracer().error( errString );
         throw hydroutil::Exception( ERROR_INFO, errString );
         return;
     }
@@ -214,7 +214,7 @@ Handler::init()
         }
         catch ( const orca::SubscriptionFailedException & e )
         {
-            context_.tracer()->error( "failed to subscribe for data updates. Will try again after 3 seconds." );
+            context_.tracer().error( "failed to subscribe for data updates. Will try again after 3 seconds." );
             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
         }
     }
@@ -243,7 +243,7 @@ Handler::run()
             {
                 int ret=rangeScannerDataBuffer_.getAndPopNext(rangeScan,1000);
                 if(ret!=0) {
-                    context_.tracer()->info("no range scan available: waiting ...");
+                    context_.tracer().info("no range scan available: waiting ...");
                 } else {
                     break;
                 }
@@ -257,7 +257,7 @@ Handler::run()
             {
                 std::stringstream ss;
                 ss << "handler.cpp: run: could not fetch pose because of: " << e.what;
-                context_.tracer()->warning( ss.str() );
+                context_.tracer().warning( ss.str() );
                 throw;
             }
     
@@ -284,41 +284,41 @@ Handler::run()
         {
             stringstream ss;
             ss << "handler.cpp: run: DataNotExistException, reason: " << e.what;
-            context_.tracer()->warning( ss.str() );
+            context_.tracer().warning( ss.str() );
         }
         catch ( const orca::OrcaException & e )
         {
             stringstream ss;
             ss << "unexpected (remote?) orca exception: " << e << ": " << e.what;
-            context_.tracer()->error( ss.str() );
+            context_.tracer().error( ss.str() );
         }
         catch ( const hydroutil::Exception & e )
         {
             stringstream ss;
             ss << "unexpected (local?) orcaice exception: " << e.what();
-            context_.tracer()->error( ss.str() );
+            context_.tracer().error( ss.str() );
         }
         catch ( const Ice::Exception & e )
         {
             stringstream ss;
             ss << "unexpected Ice exception: " << e;
-            context_.tracer()->error( ss.str() );
+            context_.tracer().error( ss.str() );
         }
         catch ( const std::exception & e )
         {
         // once caught this beast in here, don't know who threw it 'St9bad_alloc'
             stringstream ss;
             ss << "unexpected std exception: " << e.what();
-            context_.tracer()->error( ss.str() );
+            context_.tracer().error( ss.str() );
         }
         catch ( ... )
         {
-            context_.tracer()->error( "unexpected exception from somewhere.");
+            context_.tracer().error( "unexpected exception from somewhere.");
         }
         
     } // end of main loop
     
-    context_.tracer()->debug( "dropping out from run()", 5 );
+    context_.tracer().debug( "dropping out from run()", 5 );
     
     waitForStop();
 }

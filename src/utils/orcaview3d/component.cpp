@@ -52,7 +52,7 @@ Component::loadPluginLibraries( const std::string & factoryLibNames )
     {
         stringstream ss;
         ss << "Loading factory library: " << libNames[i];
-        context().tracer()->info( ss.str() );
+        context().tracer().info( ss.str() );
         
         try {
             hydrodll::DynamicallyLoadedLibrary *lib = new hydrodll::DynamicallyLoadedLibrary(libNames[i]);
@@ -69,7 +69,7 @@ Component::loadPluginLibraries( const std::string & factoryLibNames )
 
     if ( factories_.empty() ) {
         std::string err = "No gui element factories were loaded.";
-        context().tracer()->error( err );
+        context().tracer().error( err );
         throw err;
     }
 }
@@ -162,5 +162,5 @@ Component::start()
 void 
 Component::stop()
 {
-    tracer()->debug("Stopping component",1);
+    tracer().debug("Stopping component",1);
 }

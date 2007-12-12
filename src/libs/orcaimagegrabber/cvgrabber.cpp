@@ -19,7 +19,7 @@ namespace orcaimage {
 CvGrabber::CvGrabber( int cameraIndex, const orcaice::Context& context )
     : ImageGrabber( context )
 {
-    context_.tracer()->debug("initializing image grabber",3);
+    context_.tracer().debug("initializing image grabber",3);
 //  CV_CAP_VFW      200   // platform native
 //  CV_CAP_V4L      200
 //  CV_CAP_V4L2     200
@@ -34,10 +34,10 @@ CvGrabber::CvGrabber( int cameraIndex, const orcaice::Context& context )
     // capture_ = cvCaptureFromCAM( CV_CAP_ANY );
     capture_ = cvCaptureFromCAM( cameraIndex );
     if( capture_ ) {
-        context_.tracer()->debug("CvGrabber initialised",3);
+        context_.tracer().debug("CvGrabber initialised",3);
     } else {
         std::string s = "Failed to initialize image grabber";
-        context_.tracer()->error(s);
+        context_.tracer().error(s);
         throw s;
     }
 
@@ -61,7 +61,7 @@ CvGrabber::grabFrame()
     if ( !cvGrabFrame( capture_ ) )
     {
         std::string s = "Failed to grab a frame from the camera.";
-        context_.tracer()->error(s);
+        context_.tracer().error(s);
         return 0;
     }
     else
@@ -79,7 +79,7 @@ CvGrabber::retrieveFrame()
     if ( !image )
     {
         std::string s = "Failed to retrieve image from the grabbed frame.";
-        context_.tracer()->error(s);
+        context_.tracer().error(s);
         throw s;
     }
     else
@@ -97,7 +97,7 @@ CvGrabber::queryFrame()
     if ( !image )
     {
         std::string s = "Failed to query image from the grabbed frame.";
-        context_.tracer()->error(s);
+        context_.tracer().error(s);
         throw s;
     }
     else

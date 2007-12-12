@@ -330,7 +330,7 @@ LineExtractor::addLines( const std::vector<Section> &sections,
             if ( rejectLikelyGroundObservations_ &&
                  fabs( i->eigVectY() ) < 0.1 )
             {
-                context_.tracer()->debug( "Rejecting likely ground observation", 3 );
+                context_.tracer().debug( "Rejecting likely ground observation", 3 );
                 continue;
             }
             if ( fabs( i->eigVectY() ) < 0.25 )
@@ -344,7 +344,7 @@ LineExtractor::addLines( const std::vector<Section> &sections,
         {
             std::stringstream ss;
             ss << "LineExtractor: strange... endBearing < startBearing.  Endpoints are: " << (*i).start().toStringRB() << " and " << (*i).end().toStringRB();
-            context_.tracer()->debug( ss.str() );
+            context_.tracer().debug( ss.str() );
             continue;
         }
 

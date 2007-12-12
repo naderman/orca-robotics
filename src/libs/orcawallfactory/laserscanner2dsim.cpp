@@ -61,31 +61,31 @@ LaserScanner2dSim::run()
         {
             std::stringstream ss;
             ss << "ERROR(mainloop.cpp): Caught unexpected exception: " << e;
-            context_.tracer()->error( ss.str() );
+            context_.tracer().error( ss.str() );
         }
         catch ( const std::exception &e )
         {
             std::stringstream ss;
             ss << "ERROR(mainloop.cpp): Caught unexpected exception: " << e.what();
-            context_.tracer()->error( ss.str() );
+            context_.tracer().error( ss.str() );
         }
         catch ( const std::string &e )
         {
             std::stringstream ss;
             ss << "ERROR(mainloop.cpp): Caught unexpected string: " << e;
-            context_.tracer()->error( ss.str() );         
+            context_.tracer().error( ss.str() );         
         }
         catch ( const char *e )
         {
             std::stringstream ss;
             ss << "ERROR(mainloop.cpp): Caught unexpected char *: " << e;
-            context_.tracer()->error( ss.str() );
+            context_.tracer().error( ss.str() );
         }
         catch ( ... )
         {
             std::stringstream ss;
             ss << "ERROR(mainloop.cpp): Caught unexpected unknown exception.";
-            context_.tracer()->error( ss.str() );
+            context_.tracer().error( ss.str() );
         }
 
         // If we got to here there's a problem.
@@ -95,5 +95,5 @@ LaserScanner2dSim::run()
     } // end of while
 
     // Laser hardware will be shut down in the driver's destructor.
-    context_.tracer()->debug( "LaserScanner2dSim::run(): Dropping out from run()", 2 );
+    context_.tracer().debug( "LaserScanner2dSim::run(): Dropping out from run()", 2 );
 };

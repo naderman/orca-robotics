@@ -88,13 +88,13 @@ NetworkHandler::walk()
         }
         catch ( const orca::SubscriptionFailedException& e )
         {
-            context_.tracer()->warning( "remote exception orca::SubscriptionFailedException: "+e.what );
-            context_.tracer()->warning( "failed to subscribe for data updates. Will try again after 3 seconds." );
+            context_.tracer().warning( "remote exception orca::SubscriptionFailedException: "+e.what );
+            context_.tracer().warning( "failed to subscribe for data updates. Will try again after 3 seconds." );
             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
         }
         catch ( const Ice::Exception& )
         {
-            context_.tracer()->error( "Ice exception. Will try again after 3 seconds." );
+            context_.tracer().error( "Ice exception. Will try again after 3 seconds." );
             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
         }
     }
@@ -126,7 +126,7 @@ NetworkHandler::walk()
         } // switch
     } // end of main loop
 
-    context_.tracer()->debug( "NetworkHandler: stopped.",2 );
+    context_.tracer().debug( "NetworkHandler: stopped.",2 );
 }
 
 void 
@@ -153,13 +153,13 @@ NetworkHandler::setRemoteVerbosity( int error, int warn, int info, int debug )
         }
         catch ( const orca::SubscriptionFailedException& e )
         {
-            context_.tracer()->warning( "remote exception orca::SubscriptionFailedException: "+e.what );
-            context_.tracer()->warning( "failed to subscribe for data updates. Will try again after 1 seconds." );
+            context_.tracer().warning( "remote exception orca::SubscriptionFailedException: "+e.what );
+            context_.tracer().warning( "failed to subscribe for data updates. Will try again after 1 seconds." );
             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
         }
         catch ( const Ice::Exception& )
         {
-            context_.tracer()->error( "Ice exception. Will try again after 3 seconds." );
+            context_.tracer().error( "Ice exception. Will try again after 3 seconds." );
             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
         }
     }

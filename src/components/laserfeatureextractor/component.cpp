@@ -23,7 +23,7 @@ Component::Component()
 void 
 Component::start()
 {
-    context().tracer()->info( "Starting component...",2 );
+    context().tracer().info( "Starting component...",2 );
 
     mainThread_ = new MainThread( context() );
     mainThread_->start();
@@ -32,6 +32,6 @@ Component::start()
 void 
 Component::stop()
 {
-    context().tracer()->debug("Stopping component", 2 );
+    context().tracer().debug("Stopping component", 2 );
     hydroutil::stopAndJoin( mainThread_ );
 }

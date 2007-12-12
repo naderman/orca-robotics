@@ -37,8 +37,8 @@ void initTracerError( const std::string & message )
 
 void initTracerInfo( const orcaice::Context & context, const std::string & message, const int level )
 {
-    if ( context.tracer() )  {
-        context.tracer()->info( message, level );
+    if ( &context.tracer() )  {
+        context.tracer().info( message, level );
     }
     else {
         // it's ok, the tracer is not initialized yet
@@ -47,7 +47,7 @@ void initTracerInfo( const orcaice::Context & context, const std::string & messa
 /*
     try
     {
-        context.tracer()->info( message, level );
+        context.tracer().info( message, level );
     }
     catch ( const IceUtil::NullHandleException & e )
     {
@@ -59,8 +59,8 @@ void initTracerInfo( const orcaice::Context & context, const std::string & messa
 
 void initTracerWarning( const orcaice::Context & context, const std::string & message, const int level )
 {
-    if ( context.tracer() )  {
-        context.tracer()->warning( message, level );
+    if ( &context.tracer() )  {
+        context.tracer().warning( message, level );
     }
     else {
         // it's ok, the tracer is not initialized yet
@@ -69,7 +69,7 @@ void initTracerWarning( const orcaice::Context & context, const std::string & me
 /*    
     try
     {
-        context.tracer()->warning( message, level );
+        context.tracer().warning( message, level );
     }
     catch ( const IceUtil::NullHandleException & e )
     {
@@ -81,8 +81,8 @@ void initTracerWarning( const orcaice::Context & context, const std::string & me
 
 void initTracerError( const orcaice::Context & context, const std::string & message, const int level )
 {
-    if ( context.tracer() )  {
-        context.tracer()->error( message, level );
+    if ( &context.tracer() )  {
+        context.tracer().error( message, level );
     }
     else {
         // it's ok, the tracer is not initialized yet
@@ -91,7 +91,7 @@ void initTracerError( const orcaice::Context & context, const std::string & mess
 /*
     try
     {
-        context.tracer()->error( message, level );
+        context.tracer().error( message, level );
     }
     catch ( const IceUtil::NullHandleException & e )
     {

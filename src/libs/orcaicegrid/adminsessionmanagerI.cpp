@@ -49,7 +49,7 @@ AdminSessionManagerI::tryCreateSession()
         
         if( !registry )
         {
-            context_.tracer()->error( "AdminSessionManagerI: Could not contact registry" );
+            context_.tracer().error( "AdminSessionManagerI: Could not contact registry" );
             return false;
         }
     }
@@ -62,21 +62,21 @@ AdminSessionManagerI::tryCreateSession()
     {
         std::stringstream ss;
         ss << "AdminSessionManagerI: Error contacting registry: " << e;
-        context_.tracer()->error( ss.str() );
+        context_.tracer().error( ss.str() );
         return false;
     }
     catch ( const std::exception &e )
     {
         std::stringstream ss;
         ss << "AdminSessionManagerI: Error contacting registry: " << e.what();
-        context_.tracer()->error( ss.str() );
+        context_.tracer().error( ss.str() );
         return false;
     }
     catch ( ... )
     {
         std::stringstream ss;
         ss << "AdminSessionManagerI: Unknown error contacting registry.";
-        context_.tracer()->error( ss.str() );
+        context_.tracer().error( ss.str() );
         return false;
     }
             
@@ -89,7 +89,7 @@ AdminSessionManagerI::tryCreateSession()
                                                  "sessionmanager.cpp-assume-no-access-control" );
         timeoutSec_ = registry->getSessionTimeout();
         stringstream ss; ss<<"AdminSessionManagerI: Created session (timeout="<<timeoutSec_<<"s)";
-        context_.tracer()->info( ss.str() );
+        context_.tracer().info( ss.str() );
 
         iceGridAdmin_ = session_->getAdmin();
     }
@@ -97,14 +97,14 @@ AdminSessionManagerI::tryCreateSession()
     {
         stringstream ss;
         ss << "AdminSessionManagerI: Error creating Admin Session: " << e.what();
-        context_.tracer()->error( ss.str() );
+        context_.tracer().error( ss.str() );
         return false;
     }
     catch( ... )
     {
         stringstream ss;
         ss << "AdminSessionManagerI: Unknown exception when creating Admin Session.";
-        context_.tracer()->error( ss.str() );
+        context_.tracer().error( ss.str() );
         return false;
     }
 
@@ -167,9 +167,9 @@ AdminSessionManagerI::run()
                         stringstream ss;
                         ss << "AdminSessionManagerI: failed to send keepAlives quicker than timeout.  timeoutSec_="
                            <<timeoutSec_<<", secSinceLastKeepalive=" << secSinceLastKeepalive;
-                        context_.tracer()->warning( ss.str() );
+                        context_.tracer().warning( ss.str() );
                     }
-                    context_.tracer()->debug( "AdminSessionManagerI: sending keepAlive()" );
+                    context_.tracer().debug( "AdminSessionManagerI: sending keepAlive()" );
                     session_->keepAlive();
                     lastKeepaliveTime_ = IceUtil::Time::now(); //orcaice::getNow();
                     sentKeepalive = true;
@@ -182,13 +182,13 @@ AdminSessionManagerI::run()
                 catch( const Ice::Exception& e )
                 {
                     stringstream ss; ss<<"AdminSessionManagerI: Failed to keep session alive: "<<e;
-                    context_.tracer()->warning( ss.str() );
+                    context_.tracer().warning( ss.str() );
                     break;
                 }
                 catch( const std::exception& e )
                 {
                     stringstream ss; ss<<"AdminSessionManagerI: Failed to keep session alive: "<<e.what();
-                    context_.tracer()->warning( ss.str() );
+                    context_.tracer().warning( ss.str() );
                     break;
                 }
             }
@@ -201,11 +201,11 @@ AdminSessionManagerI::run()
         {
             stringstream ss;
             ss << "AdminSessionManagerI: Caught stray exception: " << e.what();
-            context_.tracer()->warning( ss.str() );
+            context_.tracer().warning( ss.str() );
         }
         catch ( ... )
         {
-            context_.tracer()->warning( "AdminSessionManagerI: caught unknown stray exception." );
+            context_.tracer().warning( "AdminSessionManagerI: caught unknown stray exception." );
         }
         
         // Lost it!
@@ -223,7 +223,7 @@ AdminSessionManagerI::run()
 
     try {
         // Destroying the session_ will release all allocated objects.
-        context_.tracer()->info( "AdminSessionManagerI: Destroying session." );
+        context_.tracer().info( "AdminSessionManagerI: Destroying session." );
         session_->destroy();
     }
     catch ( ... )
@@ -266,18 +266,18 @@ AdminSessionManagerI::performOp( Operation &op )
     {
         try {
             orca::Time startTime = orcaice::getNow();
-            context_.tracer()->debug( string("AdminSessionManagerI: performing ")+op.toString(),10 );
+            context_.tracer().debug( string("AdminSessionManagerI: performing ")+op.toString(),10 );
             op.performOp( iceGridAdmin_ );
             stringstream ss;
             ss << "AdminSessionManagerI: "<<op.toString()<<" done.  Took "<<orcaice::timeDiffAsDouble(orcaice::getNow(),startTime)<<"s";
-            context_.tracer()->debug( ss.str(),10 );
+            context_.tracer().debug( ss.str(),10 );
             return;
         }
         catch ( const Ice::ObjectNotExistException &e )
         {
             stringstream ss;
             ss << "AdminSessionManagerI: "<<op.toString()<<"(): caught exception: "<<e;
-            context_.tracer()->warning( ss.str() );
+            context_.tracer().warning( ss.str() );
             errorLog << "Error " << i << ": " << ss.str();
             tryCreateSession();
         }
@@ -285,7 +285,7 @@ AdminSessionManagerI::performOp( Operation &op )
         {
             stringstream ss;
             ss << "AdminSessionManagerI: "<<op.toString()<<"(): caught exception: "<<e;
-            context_.tracer()->warning( ss.str() );
+            context_.tracer().warning( ss.str() );
             errorLog << "Error " << i << ": " << ss.str();
             tryCreateSession();
         }
@@ -293,7 +293,7 @@ AdminSessionManagerI::performOp( Operation &op )
 
     stringstream ss;
     ss << "AdminSessionManagerI::"<<op.toString()<<": giving up after errors:\n"<<errorLog.str();
-    context_.tracer()->error( ss.str() );
+    context_.tracer().error( ss.str() );
     throw hydroutil::Exception( ERROR_INFO, ss.str() );    
 }
 

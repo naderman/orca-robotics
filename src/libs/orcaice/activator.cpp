@@ -33,9 +33,9 @@ Activator::run()
     while ( !isStopping() )
     {
         try {
-            context_.tracer()->debug( "Activator: Activating..." );
+            context_.tracer().debug( "Activator: Activating..." );
             context_.activate();
-            context_.tracer()->debug( "Activator: Activated." );
+            context_.tracer().debug( "Activator: Activated." );
             break;
         }
         catch ( orcaice::ComponentDeactivatingException &e )
@@ -43,29 +43,29 @@ Activator::run()
             // We must be going down...
             std::stringstream ss;
             ss << "Activator: Giving up because component is going down: " << e.what();
-            context_.tracer()->debug( ss.str() );
+            context_.tracer().debug( ss.str() );
             break;
         }            
         catch ( std::exception &e )
         {
             std::stringstream ss;
             ss << "Activator: Caught exception: " << e.what();
-            context_.tracer()->warning( ss.str() );
+            context_.tracer().warning( ss.str() );
         }
         catch ( ... )
         {
-            context_.tracer()->warning( "Activator: caught unknown exception." );
+            context_.tracer().warning( "Activator: caught unknown exception." );
         }
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
     }
 
     if ( postActivationCallback_ != NULL )
     {
-        context_.tracer()->debug( "Activator: calling postActivationCallback_" );
+        context_.tracer().debug( "Activator: calling postActivationCallback_" );
         postActivationCallback_->actionPostActivation();
     }
 
-    context_.tracer()->debug( "Activator: dropping out of run()", 3 );
+    context_.tracer().debug( "Activator: dropping out of run()", 3 );
 }
 
 }

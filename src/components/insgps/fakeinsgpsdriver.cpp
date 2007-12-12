@@ -29,7 +29,7 @@ FakeInsGpsDriver::FakeInsGpsDriver( const Config&           cfg,
       numReads_(0),
       context_(context)         
 {   
-    context_.tracer()->info( "Initializing fake insgps driver with config: "+config_.toString() );
+    context_.tracer().info( "Initializing fake insgps driver with config: "+config_.toString() );
 }
 
 FakeInsGpsDriver::~FakeInsGpsDriver()
@@ -49,7 +49,7 @@ FakeInsGpsDriver::enable()
 int
 FakeInsGpsDriver::init()
 {
-    context_.tracer()->info( "Initialising FakeInsGpsDriver... " );
+    context_.tracer().info( "Initialising FakeInsGpsDriver... " );
     
     start();
     
@@ -57,7 +57,7 @@ FakeInsGpsDriver::init()
     
     count_ = 0;
     
-    // context_.tracer()->info( "FakeInsGpsDriver configuration has now been initialised to: "+config_.toString() );
+    // context_.tracer().info( "FakeInsGpsDriver configuration has now been initialised to: "+config_.toString() );
     return 0;   
 }               
 
@@ -89,7 +89,7 @@ FakeInsGpsDriver::run()
 int 
 FakeInsGpsDriver::readMsgsFromHardware()
 {
-    context_.tracer()->debug("Generating fake insgps data",5);
+    context_.tracer().debug("Generating fake insgps data",5);
    
     // imu data is sent at 100Hz
     orcaice::setToNow( imuData_.timeStamp );
@@ -259,9 +259,9 @@ FakeInsGpsDriver::readLocalise3d(orca::Localise3dData& data, int timeoutMs )
 void
 FakeInsGpsDriver::shutdown()
 {
-    // context_.tracer()->debug( "stopping fake insgps driver", 5 );
+    // context_.tracer().debug( "stopping fake insgps driver", 5 );
     // hydroutil::stopAndJoin( this );
-    // context_.tracer()->debug( "stopped fake insgps driver", 5 );
+    // context_.tracer().debug( "stopped fake insgps driver", 5 );
 }               
 
 

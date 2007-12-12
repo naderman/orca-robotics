@@ -158,23 +158,23 @@ protected:
     //! Component's "context", which contains component's naming and networking information.
     //! It can be used directly or passed to threads and classes. For example:
     //! @verbatim
-    //!context().tracer()->info("Everything is OK");
+    //!context().tracer().info("Everything is OK");
     //!MainLoop myloop( context() );
     //! @endverbatim
     const Context& context() const { return context_; };
 
     //! Convenience shortcut to component's tag. Often used when parsing configuration files.
     //! Same result as context().tag().
-    const std::string& tag() const { return context_.tag_; };
+    const std::string& tag() const { return context_.tag(); };
     //! Convenience shortcut to component's local tracer API.
     //! Same result as context().tracer().
-    hydroutil::Tracer* tracer() const { return context_.tracer_; };
+    hydroutil::Tracer& tracer() const { return context_.tracer(); };
     //! Convenience shortcut to component's local status API.
     //! Same result as context().status().
-    hydroutil::Status* status() const { return context_.status_; };
+    hydroutil::Status& status() const { return context_.status(); };
     //! Convenience shortcut to component's local home API.
     //! Same result as context().home().
-    Home* home() const { return context_.home_; };
+    Home& home() const { return context_.home(); };
     //! Convenience shortcut to component's configuration properties.
     //! Same result as context().properties().
     Ice::PropertiesPtr properties() const { return context_.properties(); };

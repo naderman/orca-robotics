@@ -53,6 +53,11 @@ friend class Component;
 public:
     Context();
 
+    // need to make these explicit because the compiler does not know what to do with the references
+    // see http://www.dbforums.com/archive/index.php/t-660589.html
+//     Context( const Context& orig );
+//     void operator=( const Context& orig )
+
     //! Component's tag used in configuration files.
     const std::string&     tag() const { return tag_; };
 
@@ -75,11 +80,11 @@ public:
     Ice::PropertiesPtr     properties() const { return communicator_->getProperties(); };
 
     //! Access to setting home information.
-    orcaice::Home*         home() const { return home_; };
+    orcaice::Home&         home() const { return *home_; };
     //! Access tracing functions.
-    hydroutil::Tracer*       tracer() const { return tracer_; };
+    hydroutil::Tracer&     tracer() const { return *tracer_; };
     //! Access status functions.
-    hydroutil::Status*       status() const { return status_; };
+    hydroutil::Status&     status() const { return *status_; };
 
 
     //! Calls Component::activate(). This function is useful when component (adapter)
@@ -91,7 +96,7 @@ private:
     // this function should only be called by Component (it can because it's a friend)
     void init( const orca::FQComponentName& name,
                const bool isApp,
-               const Ice::ObjectAdapterPtr & adapter,
+               const Ice::ObjectAdapterPtr& adapter,
                orcaice::Component* comp  );
 
     std::string            tag_;
@@ -104,8 +109,8 @@ private:
     Component*             component_; 
 
     orcaice::Home*         home_;
-    hydroutil::Tracer*       tracer_;
-    hydroutil::Status*       status_;
+    hydroutil::Tracer*     tracer_;
+    hydroutil::Status*     status_;
 };
 
 } // end namespace

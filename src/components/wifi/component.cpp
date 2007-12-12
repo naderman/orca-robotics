@@ -29,7 +29,7 @@ Component::~Component()
 void
 Component::start()
 {
-    tracer()->info( "Starting component" );
+    tracer().info( "Starting component" );
     
     //
     // ENABLE NETWORK CONNECTIONS
@@ -44,7 +44,7 @@ Component::start()
     mainloop_ = new MainLoop( context() );
     mainloop_->start();
     
-    tracer()->debug( "Component started", 2 );
+    tracer().debug( "Component started", 2 );
     
     // the rest is handled by the application/service
 
@@ -52,9 +52,9 @@ Component::start()
 
 void Component::stop()
 {    
-    tracer()->debug( "Stopping component", 2 );
+    tracer().debug( "Stopping component", 2 );
 //    hydroutil::stopAndJoin( mainloop_ );
-    tracer()->info( "Component stopped" );
+    tracer().info( "Component stopped" );
 }
 
 }

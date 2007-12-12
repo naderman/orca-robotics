@@ -76,7 +76,7 @@ TermDisplayThread::run()
     
     // don't forget to enable the driver, but check !isStopping() to see if we should quit
     while ( driver_->enable() && !isStopping() ) {
-        context_.tracer()->warning("Failed to enable driver. Will try again in 2 seconds.");
+        context_.tracer().warning("Failed to enable driver. Will try again in 2 seconds.");
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
     }
 
@@ -85,7 +85,7 @@ TermDisplayThread::run()
         return;
     }
     
-    context_.tracer()->debug("Display driver enabled",2);
+    context_.tracer().debug("Display driver enabled",2);
     
     hydroutil::EventPtr event;
     int timeoutMs = 500;
@@ -136,18 +136,18 @@ TermDisplayThread::run()
 
     // reset the hardware
     if ( driver_->disable() ) {
-        context_.tracer()->warning("failed to disable driver");
+        context_.tracer().warning("failed to disable driver");
     }
-    context_.tracer()->debug("driver disabled",2);
+    context_.tracer().debug("driver disabled",2);
 
     } // try
     catch ( ... )
     {
-        context_.tracer()->error( "unexpected exception from somewhere.");
+        context_.tracer().error( "unexpected exception from somewhere.");
         context_.communicator()->destroy();
     }
 
     // wait for the component to realize that we are quitting and tell us to stop.
     waitForStop();
-    context_.tracer()->debug( "TermDisplayThread: stopped.",2 );
+    context_.tracer().debug( "TermDisplayThread: stopped.",2 );
 }

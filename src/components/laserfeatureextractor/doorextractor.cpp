@@ -163,14 +163,14 @@ DoorExtractor::findActualDoorJambs( const std::vector<DoorJamb> &possibleDoorSta
 void DoorExtractor::addFeatures( const orca::LaserScanner2dDataPtr &laserData,
                                  orca::PolarFeature2dData &features )
 {
-    context_.tracer()->debug( " --- DoorExtractor::addFeatures() ---", 2 );
+    context_.tracer().debug( " --- DoorExtractor::addFeatures() ---", 2 );
 
     std::vector<DoorJamb> possibleDoorStarts, possibleDoorEnds;
     findPossibleDoorJambs( laserData,
                            possibleDoorStarts,
                            possibleDoorEnds );
 
-    if ( context_.tracer()->verbosity( hydroutil::Tracer::DebugTrace, hydroutil::Tracer::ToAny ) >= 2 )
+    if ( context_.tracer().verbosity( hydroutil::Tracer::DebugTrace, hydroutil::Tracer::ToAny ) >= 2 )
     {
         stringstream ss;
         ss << "Possible door starts:" << endl;
@@ -183,13 +183,13 @@ void DoorExtractor::addFeatures( const orca::LaserScanner2dDataPtr &laserData,
         {
             ss << "  " << possibleDoorEnds[i] << endl;
         }
-        context_.tracer()->debug( ss.str(), 2 );
+        context_.tracer().debug( ss.str(), 2 );
     }
 
     std::vector<DoorJamb> actualDoorStarts, actualDoorEnds;
     findActualDoorJambs( possibleDoorStarts, possibleDoorEnds, actualDoorStarts, actualDoorEnds );
 
-    if ( context_.tracer()->verbosity( hydroutil::Tracer::DebugTrace, hydroutil::Tracer::ToAny ) >= 2 )
+    if ( context_.tracer().verbosity( hydroutil::Tracer::DebugTrace, hydroutil::Tracer::ToAny ) >= 2 )
     {
         stringstream ss;
         ss << "Actual door starts:" << endl;
@@ -202,7 +202,7 @@ void DoorExtractor::addFeatures( const orca::LaserScanner2dDataPtr &laserData,
         {
             ss << "  " << actualDoorEnds[i] << endl;
         }
-        context_.tracer()->debug( ss.str(), 2 );
+        context_.tracer().debug( ss.str(), 2 );
     }
 
     assert( actualDoorStarts.size() == actualDoorEnds.size() );
@@ -222,18 +222,18 @@ void DoorExtractor::addFeatures( const orca::LaserScanner2dDataPtr &laserData,
         features.features.push_back( p );
     }
 
-    if ( context_.tracer()->verbosity( hydroutil::Tracer::DebugTrace, hydroutil::Tracer::ToAny ) >= 2 )
+    if ( context_.tracer().verbosity( hydroutil::Tracer::DebugTrace, hydroutil::Tracer::ToAny ) >= 2 )
     {
         std::stringstream ss;
         ss << "DoorExtractor:: features: " << orcaice::toString( features );
-        context_.tracer()->debug( ss.str() );
+        context_.tracer().debug( ss.str() );
     }
 }
 
 // void DoorExtractor::addFeatures( const orca::LaserScanner2dDataPtr &laserData,
 //                                  orca::PolarFeature2dDataPtr &features )
 // {    
-//     context_.tracer()->debug( " --- DoorExtractor::addFeatures() --- ", 2 );
+//     context_.tracer().debug( " --- DoorExtractor::addFeatures() --- ", 2 );
 
 //     unsigned int i;
 //     bool buildingTarget = false;
@@ -316,7 +316,7 @@ void DoorExtractor::addFeatures( const orca::LaserScanner2dDataPtr &laserData,
 //                 startX = startRange*cos(startBearing);
 //                 startY = startRange*sin(startBearing);
 //                 stringstream ss; ss << "DoorExtractor: starting new target at r,b = " << startRange << "," << startBearing*180.0/M_PI;
-//                 context_.tracer()->debug( ss.str(), 2 );
+//                 context_.tracer().debug( ss.str(), 2 );
 // //             }
 //         }
 //     } // end for each return                                 

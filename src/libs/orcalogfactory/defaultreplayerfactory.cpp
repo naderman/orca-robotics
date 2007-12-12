@@ -34,7 +34,7 @@ DefaultReplayerFactory::DefaultReplayerFactory()
 orcalog::Replayer* 
 DefaultReplayerFactory::create( const orcalog::LogReaderInfo &logReaderInfo )
 {
-    logReaderInfo.context.tracer()->debug( "Creating replayer: file="+logReaderInfo.filename+" type="+logReaderInfo.interfaceType+" fmt="+logReaderInfo.format, 5);
+    logReaderInfo.context.tracer().debug( "Creating replayer: file="+logReaderInfo.filename+" type="+logReaderInfo.interfaceType+" fmt="+logReaderInfo.format, 5);
 
 //     if ( logReaderInfo.interfaceType == "Camera" )
 //     {

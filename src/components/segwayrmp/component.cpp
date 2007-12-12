@@ -66,7 +66,7 @@ Component::start()
     stringstream ss;
     ss<<"TRACE(component.cpp): Read vehicle description from configuration: " 
         << endl << orcaice::toString(descr) << endl;
-    context().tracer()->info( ss.str() );
+    context().tracer().info( ss.str() );
 
     //
     // Check vehicle desciption sanity
@@ -104,17 +104,17 @@ Component::start()
     netThread_->start();
 
     // the rest is handled by the application/service
-    context().tracer()->debug( "Component::start() done." );
+    context().tracer().debug( "Component::start() done." );
 }
 
 void
 Component::stop()
 {
-    tracer()->debug( "stopping component", 2 );
+    tracer().debug( "stopping component", 2 );
     hydroutil::stopAndJoin( netThread_ );
-    tracer()->info( "stopped net handler", 2 );
+    tracer().info( "stopped net handler", 2 );
     hydroutil::stopAndJoin( hwThread_ );
-    tracer()->info( "stopped hw handler", 2 );
+    tracer().info( "stopped hw handler", 2 );
 }
 
 } // namespace

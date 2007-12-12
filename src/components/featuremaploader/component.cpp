@@ -69,14 +69,14 @@ Component::start()
         if ( loadMap( mapFileName, theMap ) != 0 )
         {
             std::string errString = "Failed to load map from file '"+mapFileName+"'";
-            tracer()->error( errString );
+            tracer().error( errString );
             throw hydroutil::Exception( ERROR_INFO, errString );
         }
     }
     else
     {
         std::string errString = "Unknown driver type: "+driverName;
-        tracer()->error( errString );
+        tracer().error( errString );
         throw hydroutil::Exception( ERROR_INFO, errString );
     }
 
@@ -99,13 +99,13 @@ Component::start()
     // MAIN DRIVER LOOP: No need to do anything here, since we don't need our own thread.
     //
 
-    context().tracer()->info( "Component activated." );
+    context().tracer().info( "Component activated." );
 }
 
 void Component::stop()
 {
     // Nothing to do, since we don't have our own thread.
-    context().tracer()->info( "Component stopped." );
+    context().tracer().info( "Component stopped." );
 }
 
 

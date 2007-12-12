@@ -32,9 +32,9 @@ Component::start()
 
 void Component::stop()
 {
-    tracer()->debug("stopping component...",2);
+    tracer().debug("stopping component...",2);
     hydroutil::stopAndJoin( mainThread_ );
-    tracer()->debug("component stopped.",2);
+    tracer().debug("component stopped.",2);
 }
 
 } // namespace
