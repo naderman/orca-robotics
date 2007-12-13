@@ -13,37 +13,34 @@
 #include <hydromapload/pixmaploadutil.h>
 
 using namespace std;
-using namespace orca;
-
-namespace pixmaploader {
+using namespace pixmaploader;
 
 namespace {
 
-    void convert( const std::vector<char> &rgbPixels,
-                  orca::Pixels &orcaPixels )
+void convert( const std::vector<char> &rgbPixels,
+                orca::Pixels &orcaPixels )
+{
+    orcaPixels.resize( rgbPixels.size()/3 );
+
+    for ( uint i=0; i < rgbPixels.size(); i+=3 )
     {
-        orcaPixels.resize( rgbPixels.size()/3 );
+        orca::Pixel pix;
 
-        for ( uint i=0; i < rgbPixels.size(); i+=3 )
-        {
-            orca::Pixel pix;
+        pix.r = rgbPixels[i];
+        pix.g = rgbPixels[i+1];
+        pix.b = rgbPixels[i+2];
 
-            pix.r = rgbPixels[i];
-            pix.g = rgbPixels[i+1];
-            pix.b = rgbPixels[i+2];
-
-            orcaPixels[i/3] = pix;
-        }
+        orcaPixels[i/3] = pix;
     }
+}
 
 }
+
+/////////////////////////////////////////
+
 
 Component::Component()
     : orcaice::Component( "PixMapLoader" )
-{
-}
-
-Component::~Component()
 {
 }
 
@@ -89,24 +86,14 @@ Component::start()
     pixMapInterface_->initInterface();
     pixMapInterface_->localSetAndSend( theMap );
 
-    ////////////////////////////////////////////////////////////////////////////////
-
     //
     // ENABLE NETWORK CONNECTIONS
     //
     activate();
-
-    //
-    // MAIN DRIVER LOOP: No need to do anything here, since we don't need our own thread.
-    //
 }
 
-void Component::stop()
-{
-    // Nothing to do, since we don't have our own thread.
-}
-
-void Component::loadMapFromFile(orca::PixMapData &map)
+void 
+Component::loadMapFromFile(orca::PixMapData &map)
 {
     Ice::PropertiesPtr prop = properties();
     std::string prefix = tag();
@@ -132,6 +119,4 @@ void Component::loadMapFromFile(orca::PixMapData &map)
     map.timeStamp.seconds  = 0;
     map.timeStamp.useconds = 0;
     
-}
-
 }

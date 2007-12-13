@@ -13,16 +13,10 @@
 #include <orcaice/orcaice.h>
 
 using namespace std;
-using namespace orca;
-
-namespace featuremaploader {
+using namespace featuremaploader;
 
 Component::Component()
     : orcaice::Component( "FeatureMapLoader" )
-{
-}
-
-Component::~Component()
 {
 }
 
@@ -47,10 +41,8 @@ Component::start()
     //
     // INITIAL CONFIGURATION
     //
-
     Ice::PropertiesPtr prop = properties();
-    std::string prefix = tag();
-    prefix += ".Config.";
+    std::string prefix = tag() + ".Config.";
 
     //
     // LOAD THE MAP
@@ -88,25 +80,9 @@ Component::start()
     featureMap2dImpl_->initInterface();
     featureMap2dImpl_->localSetAndSend( theMap );
 
-    ////////////////////////////////////////////////////////////////////////////////
 
     //
     // ENABLE NETWORK CONNECTIONS
     //
     activate();
-
-    //
-    // MAIN DRIVER LOOP: No need to do anything here, since we don't need our own thread.
-    //
-
-    context().tracer().info( "Component activated." );
-}
-
-void Component::stop()
-{
-    // Nothing to do, since we don't have our own thread.
-    context().tracer().info( "Component stopped." );
-}
-
-
 }

@@ -14,16 +14,10 @@
 #include "maploader.h"
 
 using namespace std;
-using namespace orca;
-
-namespace ogmaploader {
+using namespace ogmaploader;
 
 Component::Component()
     : orcaice::Component( "OgMapLoader" )
-{
-}
-
-Component::~Component()
 {
 }
 
@@ -33,10 +27,8 @@ Component::start()
     //
     // INITIAL CONFIGURATION
     //
-
     Ice::PropertiesPtr prop = properties();
-    std::string prefix = tag();
-    prefix += ".Config.";
+    std::string prefix = tag() + ".Config.";
 
     //
     // LOAD THE MAP
@@ -63,29 +55,12 @@ Component::start()
     //
     // EXTERNAL PROVIDED INTERFACES
     //
-
     ogMapInterface_ = new orcaifaceimpl::OgMapImpl( "OgMap", context() );
     ogMapInterface_->initInterface();
     ogMapInterface_->localSetAndSend( theMap );
-
-    ////////////////////////////////////////////////////////////////////////////////
 
     //
     // ENABLE NETWORK CONNECTIONS
     //
     activate();
-
-    //
-    // MAIN DRIVER LOOP: No need to do anything here, since we don't need our own thread.
-    //
-
-    context().tracer().info( "Component activated." );
-}
-
-void Component::stop()
-{
-    // Nothing to do, since we don't have our own thread.
-    context().tracer().info( "Component stopped." );
-}
-
 }

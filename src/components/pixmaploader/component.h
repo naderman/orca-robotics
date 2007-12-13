@@ -11,29 +11,21 @@
 #define PIXMAPLOADER_COMPONENT_H
 
 #include <orcaice/component.h>
-#include <orca/pixmap.h>
 #include <orcaifaceimpl/pixmapImpl.h>
 
 namespace pixmaploader {
 
-//
-// Deriving from orcaice::Component means we have to implement start() and stop()
-//
 class Component : public orcaice::Component
 {
 public:
 
     Component();
-    virtual ~Component();
 
     virtual void start();
-    virtual void stop();
+    virtual void stop() {};
 
 private:
 
-    //
-    // EXTERNAL INTERFACE
-    //
     orcaifaceimpl::PixMapImplPtr pixMapInterface_;
     
     void loadMapFromFile(orca::PixMapData &theMap);

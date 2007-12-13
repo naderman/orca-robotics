@@ -11,29 +11,21 @@
 #define OGMAPLOADER_COMPONENT_H
 
 #include <orcaice/component.h>
-#include <orca/ogmap.h>
 #include <orcaifaceimpl/ogmapImpl.h>
 
 namespace ogmaploader {
 
-//
-// Deriving from orcaice::Component means we have to implement start() and stop()
-//
 class Component : public orcaice::Component
 {
 public:
 
     Component();
-    virtual ~Component();
 
     virtual void start();
-    virtual void stop();
+    virtual void stop() {};
 
 private:
 
-    //
-    // EXTERNAL INTERFACE
-    //
     orcaifaceimpl::OgMapImplPtr ogMapInterface_;
 };
 
