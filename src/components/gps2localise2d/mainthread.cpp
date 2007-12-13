@@ -45,7 +45,6 @@ MainThread::initDriver()
     
     if ( driverName == "simple" )
     {
-        connectToGps();
         getGpsDescription();
 
         context_.tracer().debug( "loading 'simple' driver",3);
@@ -53,7 +52,6 @@ MainThread::initDriver()
     }
     else if ( driverName == "odometrybased" )
     {
-        connectToGps();
         getGpsDescription();
 
         context_.tracer().debug( "loading 'odometrybased' driver",3);
@@ -70,65 +68,10 @@ MainThread::initDriver()
 }
 
 void 
-MainThread::connectToGps()
+MainThread::subscribeToGps()
 {
-    while ( !isStopping() )
-    {
-        try
-        {
-            context_.tracer().debug( "Connecting to gps...", 3 );
-            orcaice::connectToInterfaceWithTag<orca::GpsPrx>( context_, gpsPrx_, "Gps" );
-            context_.tracer().debug("connected to a 'Gps' interface", 4 );
-            break;
-        }
-        catch ( const Ice::Exception &e )
-        {
-            stringstream ss;
-            ss << "failed to connect to gps interface: " << e;
-            context_.tracer().error( ss.str() );
-        }
-        catch ( const std::exception &e )
-        {
-            stringstream ss;
-            ss << "failed to connect to gps interface: " << e.what();
-            context_.tracer().error( ss.str() );
-        }
-        catch ( ... )
-        {
-            context_.tracer().error( "Failed to connect to gps interface for unknown reason." );
-        }
-        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
-    }
-
-    while ( !isStopping() )
-    {
-        try
-        {
-            context_.tracer().debug( "Subscribing to gps...", 3 );
-            gpsPrx_->subscribe( gpsConsumer_->consumerPrx() );
-            break;
-        }
-        catch ( const Ice::Exception &e )
-        {
-            stringstream ss;
-            ss << "failed to subscribe to gps: " << e;
-            context_.tracer().error( ss.str() );
-        }
-        catch ( const std::exception &e )
-        {
-            stringstream ss;
-            ss << "failed to subscribe to gps: " << e.what();
-            context_.tracer().error( ss.str() );
-        }
-        catch ( ... )
-        {
-            context_.tracer().error( "Failed to subscribe to gps for unknown reason." );
-        }
-        subStatus().initialising( "connectToGps()" );
-        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
-    }
-
-    context_.tracer().info( "Subscribed to gps." );
+    gpsConsumer_->subscribeWithTag( "Gps", this, subsysName() );
+    context_.tracer().info( "Connected and subscribed to gps." );
 }
 
 void 
@@ -136,10 +79,13 @@ MainThread::getGpsDescription()
 {
     while ( !isStopping() )
     {
+        orca::GpsPrx gpsPrx;
         try
-        {
+        {    
+            orcaice::connectToInterfaceWithTag<orca::GpsPrx>( context_, gpsPrx, "Gps" );
+
             context_.tracer().debug( "Getting gps description...", 2 );
-            gpsDescr_ = gpsPrx_->getDescription();
+            gpsDescr_ = gpsPrx->getDescription();
             stringstream ss;
             ss << "Got gps description: " << orcaice::toString( gpsDescr_ );
             context_.tracer().info( ss.str() );
@@ -174,8 +120,7 @@ MainThread::initNetworkInterface()
     orca::VehicleDescription vehicleDesc;
     
     std::string prefix = context_.tag() + ".Config.";
-    bool requireOdometry = orcaice::getPropertyAsIntWithDefault( context_.properties(),
-    prefix+"RequireOdometry", 1);
+    bool requireOdometry = orcaice::getPropertyAsIntWithDefault( context_.properties(), prefix+"RequireOdometry", 1);
     
     if (!requireOdometry)
     {
@@ -241,11 +186,13 @@ MainThread::walk()
 {
     activate( context_, this, subsysName() );
 
+    subscribeToGps();
     initNetworkInterface();
     initDriver();
 
     orca::GpsData        gpsData;
     orca::Localise2dData localiseData;
+    std::stringstream exceptionSS;
 
     // wake up every now and then to check if we are supposed to stop
     const int timeoutMs = 1000;
@@ -272,7 +219,7 @@ MainThread::walk()
                     ss << "Timed out (" << timeoutMs << "ms) waiting for data.  Reconnecting.";
                     context_.tracer().warning( ss.str() );
                     subStatus().warning( ss.str() );
-                    connectToGps();
+                    subscribeToGps();
                 }
                 continue;
             }
@@ -298,33 +245,25 @@ MainThread::walk()
             subStatus().ok();
 
         } // try
-        catch ( const orca::OrcaException & e )
-        {
-            std::stringstream ss;
-            ss << "MainThread: unexpected orca exception: " << e << ": " << e.what;
-            context_.tracer().error( ss.str() );
+        catch ( const orca::OrcaException & e ) {
+            exceptionSS << subsysName() << ": unexpected orca exception: " << e << ": " << e.what;
         }
-        catch ( const Ice::Exception & e )
-        {
-            std::stringstream ss;
-            ss << "MainThread: unexpected Ice exception: " << e;
-            context_.tracer().error( ss.str() );
+        catch ( const Ice::Exception & e ) {
+            exceptionSS << subsysName() << ": unexpected Ice exception: " << e;
         }
-        catch ( const std::exception & e )
-        {
-            std::stringstream ss;
-            ss << "MainThread: unexpected std exception: " << e.what();
-            context_.tracer().error( ss.str() );
+        catch ( const std::exception & e ) {
+            exceptionSS << subsysName() << ": unexpected std exception: " << e.what();
         }
-        catch ( const std::string &e )
-        {
-            std::stringstream ss;
-            ss << "MainThread: unexpected std::string exception: " << e;
-            context_.tracer().error( ss.str() );
+        catch ( const std::string &e ) {
+            exceptionSS << subsysName() << ": unexpected std::string exception: " << e;
         }
-        catch ( ... )
-        {
-            context_.tracer().error( "MainThread: unexpected exception from somewhere.");
+        catch ( ... ) {
+            exceptionSS << subsysName() << ": unexpected exception from somewhere.";
+        }
+        
+        if ( !exceptionSS.str().empty() ) {
+            context_.tracer().error( exceptionSS.str() );
+            exceptionSS.str().clear();
         }
     } // while
 

@@ -35,7 +35,7 @@ public:
 
 private:
 
-    void connectToGps();
+    void subscribeToGps();
     void getGpsDescription();
     void initNetworkInterface();
     void initDriver();
