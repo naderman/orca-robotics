@@ -21,32 +21,6 @@ Context::Context() :
 {
 }
 
-// Context::Context( const Context& orig ) :
-//     tag_(orig.tag_),
-//     name_(orig.name_),
-//     isApplication_(orig.isApplication_),
-//     communicator_(orig.communicator_),
-//     adapter_(orig.adapter_),
-//     component_(orig.component_),
-//     home_(orig.home_),
-//     tracer_(orig.tracer_),
-//     status_(orig.status_) 
-// {};
-// 
-// void 
-// Context::operator=( const Context& orig )
-// {
-//     tag_ = orig.tag_;
-//     name_ = orig.name_;
-//     isApplication_ = orig.isApplication_;
-//     communicator_ = orig.communicator_;
-//     adapter_ = orig.adapter_;
-//     component_ = orig.component_;
-//     home_ = orig.home_;
-//     tracer_ = orig.tracer_;
-//     status_ = orig.status_; 
-// };
-
 void 
 Context::init( const orca::FQComponentName &name,
                const bool                   isApp,
@@ -67,6 +41,15 @@ Context::activate()
     if ( component_ ) {
         component_->activate();
     }
+}
+
+hydroutil::Context 
+Context::toHydroContext() const
+{
+    std::string prefix = tag() + ".Config.";
+    return hydroutil::Context( hydroutil::Properties( properties()->getPropertiesForPrefix(prefix), prefix ), 
+                               tracer(), 
+                               status() );
 }
 
 } // namespace

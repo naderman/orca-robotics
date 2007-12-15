@@ -17,6 +17,7 @@
 #include <orcaice/home.h>
 #include <hydroutil/tracer.h>
 #include <hydroutil/status.h>
+#include <hydroutil/context.h>
 
 namespace orcaice
 {
@@ -51,12 +52,10 @@ class Context
 friend class Component;
 
 public:
+    // We need the empty constructor because the original one is constucted a bit at a time
+    // during component initialization.
+    // We don't document this constuctor because the user typically only sees the copy constructor.
     Context();
-
-    // need to make these explicit because the compiler does not know what to do with the references
-    // see http://www.dbforums.com/archive/index.php/t-660589.html
-//     Context( const Context& orig );
-//     void operator=( const Context& orig )
 
     //! Component's tag used in configuration files.
     const std::string&     tag() const { return tag_; };
@@ -87,9 +86,16 @@ public:
     hydroutil::Status&     status() const { return *status_; };
 
 
-    //! Calls Component::activate(). This function is useful when component (adapter)
-    //! activation must be delayed until after something is initialized in the child thread.
+    //! Calls Component::activate(). This function is useful when component activation
+    //! (technically Ice::ObjectAdapter activation) must be delayed until after something is 
+    //! initialized in the child thread.
     void activate();
+
+    // WARNING to internal developers:
+    // Do not call this function before the context is fully initialized, i.e.
+    // before Component::start() is called.
+    //! Repackages itself into the form useful for initializing Hydro drivers.
+    hydroutil::Context toHydroContext() const;
 
 private:
 
@@ -108,6 +114,7 @@ private:
     // need this pointer to call activate()
     Component*             component_; 
 
+    // these could be auto_ptr's
     orcaice::Home*         home_;
     hydroutil::Tracer*     tracer_;
     hydroutil::Status*     status_;
