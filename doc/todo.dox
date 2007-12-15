@@ -72,6 +72,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
    - Component standard interfaces can now be configured from the config file in addition to the 
      programatic methond used before. (alex m)
    - Context now returns references to Tracer and Status instead of pointers (alex m)
+   - added conversion function to hydroutil::Context
 
 @par Updated interfaces
 

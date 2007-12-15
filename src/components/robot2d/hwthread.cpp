@@ -51,16 +51,14 @@ HwThread::HwThread( const orcaice::Context &context ) :
     }
 
     // create the driver
-    hydroutil::Properties props( prop->getPropertiesForPrefix(prefix), prefix );
-    hydrointerfaces::Context driverContext( props, context_.tracer(), context_.status() );
     try {
-        context_.tracer().info( "HwThread: Initialising driver..." );
-        driver_.reset( driverFactory->createDriver( driverContext ) );
+        context_.tracer().info( "HwThread: Creating driver..." );
+        driver_.reset( driverFactory->createDriver( context_.toHydroContext() ) );
     }
     catch ( ... )
     {
         stringstream ss;
-        ss << "HwThread: Caught unknown exception while initialising driver";
+        ss << "HwThread: Caught unknown exception while creating driver";
         context_.tracer().error( ss.str() );
         throw;
     }  
@@ -69,6 +67,8 @@ HwThread::HwThread( const orcaice::Context &context ) :
 void
 HwThread::enableDriver()
 {
+    stringstream exceptionSS;
+
     while ( !isStopping() ) 
     {
         try {
@@ -77,22 +77,19 @@ HwThread::enableDriver()
             context_.tracer().info( "HwThread: Enable succeeded." );
             return;
         }
-        catch ( std::exception &e )
-        {
-            std::stringstream ss;
-            ss << "HwThread::enableDriver(): enable failed: " << e.what();
-            context_.tracer().error( ss.str() );
-            subStatus().fault( ss.str() );
-            stateMachine_.setFault( ss.str() );
+        catch ( std::exception &e ) {
+            exceptionSS << "HwThread::enableDriver(): enable failed: " << e.what();
         }
-        catch ( ... )
-        {
-            std::stringstream ss;
-            ss << "HwThread::enableDriver(): enable failed due to unknown exception.";
-            context_.tracer().error( ss.str() );
-            subStatus().fault( ss.str() );
-            stateMachine_.setFault( ss.str() );
+        catch ( ... ) {
+            exceptionSS << "HwThread::enableDriver(): enable failed due to unknown exception.";
         }
+
+        // we get here only after an exception was caught
+        context_.tracer().error( exceptionSS.str() );
+        subStatus().fault( exceptionSS.str() );
+        stateMachine_.setFault( exceptionSS.str() );
+        exceptionSS.clear();
+
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
     }
 }
@@ -100,6 +97,7 @@ HwThread::enableDriver()
 void
 HwThread::walk()
 {
+    stringstream exceptionSS;
     std::string reason;
 
     //
@@ -160,21 +158,17 @@ HwThread::walk()
                 }
             }
         }
-        catch ( std::exception &e )
-        {
-            std::stringstream ss;
-            ss << "HwThread: Failed to read: " << e.what();
-            context_.tracer().error( ss.str() );
-
-            stateMachine_.setFault( ss.str() );
+        catch ( std::exception &e ) {
+            exceptionSS << "HwThread: Failed to read: " << e.what();
         }
-        catch ( ... )
-        {
-            std::stringstream ss;
-            ss << "HwThread: Failed to read due to unknown exception.";
-            context_.tracer().error( ss.str() );
+        catch ( ... ) {
+            exceptionSS << "HwThread: Failed to read due to unknown exception.";
+        }
 
-            stateMachine_.setFault( ss.str() );            
+        if ( !exceptionSS.str().empty() ) {
+            context_.tracer().error( exceptionSS.str() );
+            stateMachine_.setFault( exceptionSS.str() );            
+            exceptionSS.clear();
         }
 
         //
@@ -192,23 +186,18 @@ HwThread::walk()
                 ss << "HwThread: wrote command: " << command.toString();
                 context_.tracer().debug( ss.str() );
             }
-            catch ( std::exception &e )
-            {
-                std::stringstream ss;
-                ss << "HwThread: Failed to write command to hardware: " << e.what();
-                context_.tracer().error( ss.str() );
-
-                // set local state to failure
-                stateMachine_.setFault( ss.str() );
+            catch ( std::exception &e ) {
+                exceptionSS << "HwThread: Failed to write command to hardware: " << e.what();
             }
-            catch ( ... )
-            {
-                std::stringstream ss;
-                ss << "HwThread: Failed to write command to hardware due to unknown exception.";
-                context_.tracer().error( ss.str() );
+            catch ( ... ) {
+                exceptionSS << "HwThread: Failed to write command to hardware due to unknown exception.";
+            }
 
+            if ( !exceptionSS.str().empty() ) {
+                context_.tracer().error( exceptionSS.str() );
                 // set local state to failure
-                stateMachine_.setFault( ss.str() );                
+                stateMachine_.setFault( exceptionSS.str() );           
+                exceptionSS.clear();
             }
         }
 

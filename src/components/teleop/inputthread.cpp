@@ -51,17 +51,14 @@ InputThread::walk()
         throw;
     }
 
-    hydroutil::Properties props(
-        context_.properties()->getPropertiesForPrefix(prefix), prefix );
-    hydrointerfaces::Context driverContext( props, context_.tracer(), context_.status() );
     try {
-        context_.tracer().info( "InputThread: Initialising driver..." );
-        driver_.reset( driverFactory->createDriver( driverContext ) );
+        context_.tracer().info( "HwThread: Creating driver..." );
+        driver_.reset( driverFactory->createDriver( context_.toHydroContext() ) );
     }
     catch ( ... )
     {
         stringstream ss;
-        ss << "MainThread: Caught unknown exception while initialising driver";
+        ss << "MainThread: Caught unknown exception while creating driver";
         context_.tracer().error( ss.str() );
         throw;
     }  

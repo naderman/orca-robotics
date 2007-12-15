@@ -100,6 +100,7 @@ MainThread::initNetworkInterface()
 void
 MainThread::initHardwareDriver()
 {
+    stringstream exceptionSS;
     subStatus().setMaxHeartbeatInterval( 20.0 );
 
     Ice::PropertiesPtr prop = context_.properties();
@@ -126,50 +127,33 @@ MainThread::initHardwareDriver()
     // create the driver
     while ( !isStopping() )
     {
-        string configPrefix = context_.tag()+".Config.";
-        hydroutil::Properties props(
-            context_.properties()->getPropertiesForPrefix(configPrefix), configPrefix );
-        hydrointerfaces::Context driverContext( props, context_.tracer(), context_.status() );
         try {
-            context_.tracer().info( "MainThread: Initialising driver..." );
-            driver_.reset( driverFactory->createDriver( config_, driverContext ) );
+            context_.tracer().info( "HwThread: Creating driver..." );
+            driver_.reset( driverFactory->createDriver( config_, context_.toHydroContext() ) );
+            // alexm: shouldn't this be 'break' ???
             return;
         }
-        catch ( IceUtil::Exception &e )
-        {
-            stringstream ss;
-            ss << "MainThread: Caught exception while initialising driver: " << e;
-            context_.tracer().error( ss.str() );
-            subStatus().fault( ss.str() );
+        catch ( IceUtil::Exception &e ) {
+            exceptionSS << "MainThread: Caught exception while creating driver: " << e;
         }
-        catch ( std::exception &e )
-        {
-            stringstream ss;
-            ss << "MainThread: Caught exception while initialising driver: " << e.what();
-            context_.tracer().error( ss.str() );
-            subStatus().fault( ss.str() );
+        catch ( std::exception &e ) {
+            exceptionSS << "MainThread: Caught exception while initialising driver: " << e.what();
         }
-        catch ( char *e )
-        {
-            stringstream ss;
-            ss << "MainThread: Caught exception while initialising driver: " << e;
-            context_.tracer().error( ss.str() );
-            subStatus().fault( ss.str() );
+        catch ( char *e ) {
+            exceptionSS << "MainThread: Caught exception while initialising driver: " << e;
         }
-        catch ( std::string &e )
-        {
-            stringstream ss;
-            ss << "MainThread: Caught exception while initialising driver: " << e;
-            context_.tracer().error( ss.str() );
-            subStatus().fault( ss.str() );
+        catch ( std::string &e ) {
+            exceptionSS << "MainThread: Caught exception while initialising driver: " << e;
         }
-        catch ( ... )
-        {
-            stringstream ss;
-            ss << "MainThread: Caught unknown exception while initialising driver";
-            context_.tracer().error( ss.str() );
-            subStatus().fault( ss.str() );
+        catch ( ... ) {
+            exceptionSS << "MainThread: Caught unknown exception while initialising driver";
         }
+
+        // we get here only after an exception was caught
+        context_.tracer().error( exceptionSS.str() );
+        subStatus().fault( exceptionSS.str() );          
+        exceptionSS.clear();
+
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));        
     }
 
@@ -200,6 +184,8 @@ MainThread::readData()
 void
 MainThread::walk()
 {
+    stringstream exceptionSS;
+
     // Set up the laser-scan objects
     orcaLaserData_ = new orca::LaserScanner2dData;
     orcaLaserData_->minRange     = config_.minRange;
@@ -247,45 +233,30 @@ MainThread::walk()
             continue;
 
         } // end of try
-        catch ( Ice::CommunicatorDestroyedException & )
-        {
+        catch ( Ice::CommunicatorDestroyedException & ) {
             // This is OK: it means that the communicator shut down (eg via Ctrl-C)
             // somewhere in mainLoop. Eventually, component will tell us to stop.
         }
-        catch ( const Ice::Exception &e )
-        {
-            std::stringstream ss;
-            ss << "ERROR(mainloop.cpp): Caught unexpected exception: " << e;
-            context_.tracer().error( ss.str() );
-            subStatus().fault( ss.str() );
+        catch ( const Ice::Exception &e ) {
+            exceptionSS << "ERROR(mainthread.cpp): Caught unexpected exception: " << e;
         }
-        catch ( const std::exception &e )
-        {
-            std::stringstream ss;
-            ss << "ERROR(mainloop.cpp): Caught unexpected exception: " << e.what();
-            context_.tracer().error( ss.str() );
-            subStatus().fault( ss.str() );
+        catch ( const std::exception &e ) {
+            exceptionSS << "ERROR(mainthread.cpp): Caught unexpected exception: " << e.what();
         }
-        catch ( const std::string &e )
-        {
-            std::stringstream ss;
-            ss << "ERROR(mainloop.cpp): Caught unexpected string: " << e;
-            context_.tracer().error( ss.str() );
-            subStatus().fault( ss.str() );            
+        catch ( const std::string &e ) {
+            exceptionSS << "ERROR(mainthread.cpp): Caught unexpected string: " << e;
         }
-        catch ( const char *e )
-        {
-            std::stringstream ss;
-            ss << "ERROR(mainloop.cpp): Caught unexpected char *: " << e;
-            context_.tracer().error( ss.str() );
-            subStatus().fault( ss.str() );
+        catch ( const char *e ) {
+            exceptionSS << "ERROR(mainthread.cpp): Caught unexpected char *: " << e;
         }
-        catch ( ... )
-        {
-            std::stringstream ss;
-            ss << "ERROR(mainloop.cpp): Caught unexpected unknown exception.";
-            context_.tracer().error( ss.str() );
-            subStatus().fault( ss.str() );
+        catch ( ... ) {
+            exceptionSS << "ERROR(mainthread.cpp): Caught unexpected unknown exception.";
+        }
+
+        if ( !exceptionSS.str().empty() ) {
+            context_.tracer().error( exceptionSS.str() );
+            subStatus().fault( exceptionSS.str() );     
+            exceptionSS.clear();
         }
 
         // If we got to here there's a problem.
@@ -295,5 +266,4 @@ MainThread::walk()
     } // end of while
 
     // Laser hardware will be shut down in the driver's destructor.
-    context_.tracer().debug( "dropping out from run()", 2 );
 }
