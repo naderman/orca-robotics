@@ -17,10 +17,6 @@ using namespace laser2d;
 
 MainThread::MainThread( const orcaice::Context &context ) :
     hydroutil::SubsystemThread( context.tracer(), context.status(), "MainThread" ),
-    laserInterface_(0),
-    driver_(0),
-    driverFactory_(0),
-    driverLib_(0),
     context_(context)
 {
     subStatus().setMaxHeartbeatInterval( 20.0 );
@@ -45,13 +41,6 @@ MainThread::MainThread( const orcaice::Context &context ) :
         throw hydroutil::Exception( ERROR_INFO, "Failed to validate laser configuration" );
     }
 
-}
-
-MainThread::~MainThread()
-{
-    delete driver_;
-    delete driverFactory_;
-    delete driverLib_;
 }
 
 void
@@ -113,9 +102,6 @@ MainThread::initHardwareDriver()
 {
     subStatus().setMaxHeartbeatInterval( 20.0 );
 
-    // this function works for re-initialization as well
-    if ( driver_ ) delete driver_;
-
     Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag() + ".Config.";
 
@@ -123,11 +109,13 @@ MainThread::initHardwareDriver()
     std::string driverLibName = 
         orcaice::getPropertyWithDefault( prop, prefix+"DriverLib", "libOrcaLaser2dSickCarmen.so" );
     context_.tracer().debug( "MainThread: Loading driver library "+driverLibName, 4 );
+    // The factory which creates the driver
+    std::auto_ptr<hydrointerfaces::LaserScanner2dFactory> driverFactory;
     try {
-        driverLib_ = new hydrodll::DynamicallyLoadedLibrary(driverLibName);
-        driverFactory_ = 
+        driverLib_.reset( new hydrodll::DynamicallyLoadedLibrary(driverLibName) );
+        driverFactory.reset( 
             hydrodll::dynamicallyLoadClass<hydrointerfaces::LaserScanner2dFactory,DriverFactoryMakerFunc>
-            ( *driverLib_, "createDriverFactory" );
+            ( *driverLib_, "createDriverFactory" ) );
     }
     catch (hydrodll::DynamicLoadException &e)
     {
@@ -144,7 +132,7 @@ MainThread::initHardwareDriver()
         hydrointerfaces::Context driverContext( props, context_.tracer(), context_.status() );
         try {
             context_.tracer().info( "MainThread: Initialising driver..." );
-            driver_ = driverFactory_->createDriver( config_, driverContext );
+            driver_.reset( driverFactory->createDriver( config_, driverContext ) );
             return;
         }
         catch ( IceUtil::Exception &e )

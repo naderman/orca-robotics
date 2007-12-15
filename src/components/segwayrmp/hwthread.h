@@ -11,6 +11,7 @@
 #ifndef SEGWAYRMP_HARDWARE_THREAD_H
 #define SEGWAYRMP_HARDWARE_THREAD_H
 
+#include <memory>
 #include <hydroutil/subsystemthread.h>
 #include <orcaice/context.h>
 #include <hydrointerfaces/segwayrmp.h>
@@ -46,7 +47,6 @@ public:
 
     // these config settings are checked and possibly limited based on hardware capabilities
     HwThread( Config& config, const orcaice::Context &context );
-    ~HwThread();
     
     // Inherited from SubsystemThread
     virtual void walk();
@@ -91,12 +91,10 @@ private:
     // Looks for late writes (which will cause timeouts in the segway)
     hydroutil::Timer writeTimer_;
 
+    // The library that contains the driver factory (must be declared first so it's destructed last!!!)
+    std::auto_ptr<hydrodll::DynamicallyLoadedLibrary> driverLib_;
     // Generic driver for the hardware
-    hydrointerfaces::SegwayRmp *driver_;
-    // A factory to instantiate the driver
-    hydrointerfaces::SegwayRmpFactory *driverFactory_;
-    // And the library that provides it
-    hydrodll::DynamicallyLoadedLibrary *driverLib_;
+    std::auto_ptr<hydrointerfaces::SegwayRmp> driver_;
 
     orcaice::Context context_;
 };

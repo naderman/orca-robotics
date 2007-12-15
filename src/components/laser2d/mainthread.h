@@ -10,6 +10,7 @@
 #ifndef ORCA2_LASER2D_MAIN_THREAD_H
 #define ORCA2_LASER2D_MAIN_THREAD_H
 
+#include <memory>
 #include <hydroutil/subsystemthread.h>
 #include <orcaice/context.h>
 #include <hydrodll/dynamicload.h>
@@ -29,7 +30,6 @@ class MainThread : public hydroutil::SubsystemThread
 public:
 
     MainThread( const orcaice::Context &context );
-    ~MainThread();
 
     // from SubsystemThread
     virtual void walk();
@@ -45,7 +45,7 @@ private:
     void readData();
 
     // The laser object
-    orcaifaceimpl::LaserScanner2dImpl *laserInterface_;
+    orcaifaceimpl::LaserScanner2dImplPtr laserInterface_;
 
     hydrointerfaces::LaserScanner2d::Config config_;
     // an extra config to allow sensor mounted upside-down
@@ -55,12 +55,10 @@ private:
     orca::LaserScanner2dDataPtr           orcaLaserData_;
     hydrointerfaces::LaserScanner2d::Data hydroLaserData_;
 
+    // The library that contains the driver factory (must be declared first so it's destructed last!!!)
+    std::auto_ptr<hydrodll::DynamicallyLoadedLibrary> driverLib_;
     // Generic driver for the hardware
-    hydrointerfaces::LaserScanner2d *driver_;
-    // A factory to instantiate the driver
-    hydrointerfaces::LaserScanner2dFactory *driverFactory_;
-    // And the library that provides it
-    hydrodll::DynamicallyLoadedLibrary *driverLib_;
+    std::auto_ptr<hydrointerfaces::LaserScanner2d> driver_;
 
     orcaice::Context context_;
 };

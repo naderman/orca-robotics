@@ -11,6 +11,7 @@
 #ifndef ORCA2_LOCALNAV_COMPONENT_H
 #define ORCA2_LOCALNAV_COMPONENT_H
 
+#include <memory>
 #include <orcaice/component.h>
 #include <hydrodll/dynamicload.h>
 #include <orcalocalnav/pathfollower2dI.h>
@@ -18,7 +19,6 @@
 
 namespace localnav {
 
-class MainThread;
 class DriverFactory;
 class Simulator;
 
@@ -44,12 +44,12 @@ private:
     // Simulator for test mode
     Simulator           *testSimulator_;
 
-    MainThread            *mainLoop_;
+    hydroutil::ThreadPtr mainThread_;
 
-    // A factory to instantiate the driver
-    DriverFactory   *driverFactory_;
-    // And the library that provides it
-    hydrodll::DynamicallyLoadedLibrary *driverLib_;
+    // The library that contains the driver factory (must be declared first so it's destructed last!!!)
+    std::auto_ptr<hydrodll::DynamicallyLoadedLibrary> driverLib_;
+    // The factory which creates the driver
+    std::auto_ptr<DriverFactory> driverFactory_;
 
     // The global time
     orcalocalnav::Clock *clock_;

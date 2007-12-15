@@ -11,6 +11,7 @@
 #ifndef ORCA2_TELEOP_INPUT_THREAD_H
 #define ORCA2_TELEOP_INPUT_THREAD_H
 
+#include <memory>
 #include <hydroutil/safethread.h>
 #include <orcaice/context.h>
 #include <hydrointerfaces/humaninput2d.h>
@@ -27,7 +28,6 @@ class InputThread : public hydroutil::SafeThread
 public:
 
     InputThread( Network* network, const orcaice::Context& context );
-    virtual ~InputThread();
 
     // from SafeThread
     virtual void walk();
@@ -36,12 +36,10 @@ private:
 
     Network* network_;
 
+    // The library that contains the driver factory (must be declared first so it's destructed last!!!)
+    std::auto_ptr<hydrodll::DynamicallyLoadedLibrary> driverLib_;
     // Generic driver for the hardware
-    hydrointerfaces::HumanInput2d *driver_;
-    // A factory to instantiate the driver
-    hydrointerfaces::HumanInput2dFactory *driverFactory_;
-    // And the library that provides it
-    hydrodll::DynamicallyLoadedLibrary *driverLib_;
+    std::auto_ptr<hydrointerfaces::HumanInput2d> driver_;
 
     // component current context
     orcaice::Context context_;

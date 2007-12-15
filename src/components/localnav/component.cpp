@@ -16,16 +16,11 @@
 #include <orcaice/orcaice.h>
 
 using namespace std;
-using namespace orca;
-
-namespace localnav {
+using namespace localnav;
 
 Component::Component()
     : orcaice::Component( "LocalNav" ),
       testSimulator_(NULL),
-      mainLoop_(NULL),
-      driverFactory_(NULL),
-      driverLib_(NULL),
       clock_(NULL),
       pathFollowerInterface_(NULL)
 {
@@ -35,12 +30,9 @@ Component::Component()
 
 Component::~Component()
 {
-    if ( mainLoop_  )              delete mainLoop_;
     if ( testSimulator_  )         delete testSimulator_;
-    if ( driverLib_  )             delete driverLib_;
     if ( pathFollowerInterface_  ) delete pathFollowerInterface_;
     if ( clock_ )                  delete clock_;
-    if ( driverFactory_ )          delete driverFactory_;
 }
 
 void
@@ -83,15 +75,15 @@ Component::start()
     // Instantiate the guys who do the work
     //
 
-    context().tracer().debug( "Component: Loading driver library.", 4 );
     std::string driverLibName = 
         orcaice::getPropertyWithDefault( prop, prefix+"DriverLib", "libOrcaLocalNavVfh.so" );
+    context().tracer().debug( "Component: Loading driver library "+driverLibName, 4 );
     try {
         // Dynamically load the driver from its library
-        driverLib_ = new hydrodll::DynamicallyLoadedLibrary(driverLibName);
-        driverFactory_ = 
+        driverLib_.reset( new hydrodll::DynamicallyLoadedLibrary(driverLibName) );
+        driverFactory_.reset( 
             hydrodll::dynamicallyLoadClass<DriverFactory,DriverFactoryMakerFunc>
-            ( *driverLib_, "createDriverFactory" );
+            ( *driverLib_, "createDriverFactory" ) );
     }
     catch (hydrodll::DynamicLoadException &e)
     {
@@ -102,14 +94,14 @@ Component::start()
     context().tracer().debug( "Component: Instantiating main loop.", 3 );
     if ( !testInSimulationMode )
     {
-        mainLoop_ = new MainThread( *driverFactory_,
+        mainThread_ = new MainThread( *driverFactory_,
                                   *clock_,
                                   *pathFollowerInterface_,
                                   context() );
     }
     else
     {
-        mainLoop_ = new MainThread( *driverFactory_,
+        mainThread_ = new MainThread( *driverFactory_,
                                   *clock_,
                                   *pathFollowerInterface_,
                                   *testSimulator_,
@@ -127,7 +119,7 @@ Component::start()
     // MAIN DRIVER LOOP
     //
 
-    mainLoop_->start();
+    mainThread_->start();
     }
     catch ( Ice::Exception &e )
     {
@@ -141,9 +133,8 @@ Component::start()
     }
 }
 
-void Component::stop()
+void 
+Component::stop()
 {
-    hydroutil::stopAndJoin( mainLoop_ );
-}
-
+    hydroutil::stopAndJoin( mainThread_ );
 }

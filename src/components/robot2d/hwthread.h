@@ -11,6 +11,7 @@
 #ifndef ROBOT2D_HARDWARE_THREAD_H
 #define ROBOT2D_HARDWARE_THREAD_H
 
+#include <memory>
 #include <hydroutil/subsystemthread.h>
 #include <orcaice/context.h>
 #include <hydrointerfaces/robot2d.h>
@@ -60,12 +61,10 @@ private:
 
     bool isMotionEnabled_;
 
+    // The library that contains the driver factory (must be declared first so it's destructed last!!!)
+    std::auto_ptr<hydrodll::DynamicallyLoadedLibrary> driverLib_;
     // Generic driver for the hardware
-    hydrointerfaces::Robot2d *driver_;
-    // A factory to instantiate the driver
-    hydrointerfaces::Robot2dFactory *driverFactory_;
-    // And the library that provides it
-    hydrodll::DynamicallyLoadedLibrary *driverLib_;
+    std::auto_ptr<hydrointerfaces::Robot2d> driver_;
 
     orcaice::Context context_;
 };

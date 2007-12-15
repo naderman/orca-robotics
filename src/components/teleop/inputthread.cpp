@@ -20,18 +20,8 @@ using namespace teleop;
 InputThread::InputThread( Network* network, const orcaice::Context& context ) :
     SafeThread( context.tracer() ),
     network_(network),
-    driver_(0),
-    driverFactory_(0),
-    driverLib_(0),
     context_(context)
 {
-}
-
-InputThread::~InputThread()
-{
-    delete driver_;
-    delete driverFactory_;    
-    delete driverLib_;
 }
 
 void
@@ -43,15 +33,17 @@ InputThread::walk()
     Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag() + ".Config.";
 
-    context_.tracer().debug( "InputThread: Loading driver library.", 4 );
     std::string driverLibName = 
         orcaice::getPropertyWithDefault( prop, prefix+"InputDriverLib", "libHydroHumanInput2dKbdTermio.so" );
+    context_.tracer().debug( "InputThread: Loading driver library "+driverLibName, 4 );
+    // The factory which creates the driver
+    std::auto_ptr<hydrointerfaces::HumanInput2dFactory> driverFactory;
     try {
         // Dynamically load the driver from its library
-        driverLib_ = new hydrodll::DynamicallyLoadedLibrary(driverLibName);
-        driverFactory_ = 
+        driverLib_.reset( new hydrodll::DynamicallyLoadedLibrary(driverLibName) );
+        driverFactory.reset( 
             hydrodll::dynamicallyLoadClass<hydrointerfaces::HumanInput2dFactory,DriverFactoryMakerFunc>
-            ( *driverLib_, "createDriverFactory" );
+            ( *driverLib_, "createDriverFactory" ) );
     }
     catch (hydrodll::DynamicLoadException &e)
     {
@@ -64,7 +56,7 @@ InputThread::walk()
     hydrointerfaces::Context driverContext( props, context_.tracer(), context_.status() );
     try {
         context_.tracer().info( "InputThread: Initialising driver..." );
-        driver_ = driverFactory_->createDriver( driverContext );
+        driver_.reset( driverFactory->createDriver( driverContext ) );
     }
     catch ( ... )
     {

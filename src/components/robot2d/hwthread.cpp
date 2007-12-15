@@ -20,9 +20,6 @@ using namespace robot2d;
 
 HwThread::HwThread( const orcaice::Context &context ) :
     SubsystemThread( context.tracer(), context.status(), "HwThread" ),
-    driver_(0),
-    driverFactory_(0),
-    driverLib_(0),
     context_(context)
 {
     subStatus().setMaxHeartbeatInterval( 10.0 );
@@ -39,11 +36,13 @@ HwThread::HwThread( const orcaice::Context &context ) :
     std::string driverLibName = 
         orcaice::getPropertyWithDefault( prop, prefix+"DriverLib", "libHydroRobot2dPlayerClient.so" );
     context_.tracer().debug( "HwThread: Loading driver library "+driverLibName, 4 );
+    // The factory which creates the driver
+    std::auto_ptr<hydrointerfaces::Robot2dFactory> driverFactory;
     try {
-        driverLib_ = new hydrodll::DynamicallyLoadedLibrary(driverLibName);
-        driverFactory_ = 
+        driverLib_.reset( new hydrodll::DynamicallyLoadedLibrary(driverLibName) ); 
+        driverFactory.reset(  
             hydrodll::dynamicallyLoadClass<hydrointerfaces::Robot2dFactory,DriverFactoryMakerFunc>
-            ( *driverLib_, "createDriverFactory" );
+            ( *driverLib_, "createDriverFactory" ) );
     }
     catch (hydrodll::DynamicLoadException &e)
     {
@@ -56,7 +55,7 @@ HwThread::HwThread( const orcaice::Context &context ) :
     hydrointerfaces::Context driverContext( props, context_.tracer(), context_.status() );
     try {
         context_.tracer().info( "HwThread: Initialising driver..." );
-        driver_ = driverFactory_->createDriver( driverContext );
+        driver_.reset( driverFactory->createDriver( driverContext ) );
     }
     catch ( ... )
     {
