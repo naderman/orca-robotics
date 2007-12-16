@@ -92,19 +92,18 @@ public:
     void activate();
 
     // WARNING to internal developers:
-    // Do not call this function before the context is fully initialized, i.e.
-    // before Component::start() is called.
-    //! Repackages itself into the form useful for initializing Hydro drivers.
-    //! Strips 'tag()+".Config."' from the front of all properties.
-    hydroutil::Context toHydroContext() const;
-
-    // WARNING to internal developers:
-    // Do not call this function before the context is fully initialized, i.e.
+    // Do not call these functions before the context is fully initialized, i.e.
     // before Component::start() is called.
     //! Repackages itself into the form useful for initializing Hydro drivers.
     //! Strips 'prefixToStrip' from the front of all properties.
     //! Does not copy properties which do not begin with prefixToStrip.
+    //! Transfers the following config parameters from Orca configs to Hydro configs:
+    //! - Orca.Warn.DefaultProperty
     hydroutil::Context toHydroContext( const std::string &prefixToStrip ) const;
+
+    //! Conveniance function which is a shortcut for the function above with
+    //! @c prefixToStrip = tag()+".Config."
+    hydroutil::Context toHydroContext() const;
 
 private:
 
