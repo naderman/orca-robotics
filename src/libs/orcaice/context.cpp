@@ -46,8 +46,13 @@ Context::activate()
 hydroutil::Context 
 Context::toHydroContext() const
 {
-    std::string prefix = tag() + ".Config.";
-    return hydroutil::Context( hydroutil::Properties( properties()->getPropertiesForPrefix(prefix), prefix ), 
+    return toHydroContext( tag()+".Config." );
+}
+
+hydroutil::Context 
+Context::toHydroContext( const std::string &prefixToStrip ) const
+{
+    return hydroutil::Context( hydroutil::Properties( properties()->getPropertiesForPrefix(prefixToStrip), prefixToStrip ), 
                                tracer(), 
                                status() );
 }
