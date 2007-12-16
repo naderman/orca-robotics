@@ -104,7 +104,7 @@ public:
     //! Repackages itself into the form useful for initializing Hydro drivers.
     //! Strips 'prefixToStrip' from the front of all properties.
     //! Does not copy properties which do not begin with prefixToStrip.
-    hydroutil::Context toHydroContext( const std::string &prefixToStrip="" ) const;
+    hydroutil::Context toHydroContext( const std::string &prefixToStrip ) const;
 
 private:
 
