@@ -23,6 +23,10 @@ namespace orcaifaceimpl {
         Tries to push to IceStorm. If fails tries to reconnect to IceStorm once. If reconnects
         successfully, pushes the data, if not, ignores the problem until the next time. 
         Catches all exceptions. 
+
+        Works only for ConsumerPrxType which has a function setData( DataType ). For non-standard
+        consumers, copy and modify this implementation. (In this case you probably do not need 
+        this function to be templated).
     */
     template<class ConsumerPrxType,
              class DataType>
