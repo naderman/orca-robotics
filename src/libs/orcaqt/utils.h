@@ -8,8 +8,8 @@
  *
  */
  
-#ifndef ORCA2_ORCAQT_UTILS_H
-#define ORCA2_ORCAQT_UTILS_H
+#ifndef ORCA_ORCAQT_UTILS_H
+#define ORCA_ORCAQT_UTILS_H
 
 namespace orcaqt
 {

@@ -7,8 +7,8 @@
  * the LICENSE file included in this distribution.
  *
  */
-#ifndef _ORCA2_OGNODE_SERVICE_H_
-#define _ORCA2_OGNODE_SERVICE_H_
+#ifndef SERVICE_H
+#define SERVICE_H
 
 #include <orcaice/service.h>
 

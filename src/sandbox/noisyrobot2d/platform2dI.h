@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_SEGWAY_PLATFORM2D_I_H
-#define ORCA2_SEGWAY_PLATFORM2D_I_H
+#ifndef ORCA_SEGWAY_PLATFORM2D_I_H
+#define ORCA_SEGWAY_PLATFORM2D_I_H
 
 #include <IceStorm/IceStorm.h>
 #include <orca/platform2d.h>

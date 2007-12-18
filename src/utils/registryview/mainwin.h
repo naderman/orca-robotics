@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_REGISTRY_VIEW_MAIN_WINDOW_H
-#define ORCA2_REGISTRY_VIEW_MAIN_WINDOW_H
+#ifndef MAIN_WINDOW_H
+#define MAIN_WINDOW_H
 
 #include <QMainWindow>
 

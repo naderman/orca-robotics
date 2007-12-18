@@ -8,8 +8,8 @@
  *
  */
  
-#ifndef ORCA2_STAGE_LOCALISER_MAIN_LOOP_H
-#define ORCA2_STAGE_LOCALISER_MAIN_LOOP_H
+#ifndef MAIN_LOOP_H
+#define MAIN_LOOP_H
 
 #include <hydroutil/safethread.h>
 #include <orcaice/context.h>

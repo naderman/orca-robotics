@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_ORCALOG_UTILS_H
-#define ORCA2_ORCALOG_UTILS_H
+#ifndef ORCA_ORCALOG_UTILS_H
+#define ORCA_ORCALOG_UTILS_H
 
 #include <string>
 #include <IceUtil/IceUtil.h>

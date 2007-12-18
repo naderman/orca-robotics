@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_ORCAPROBEFACTORY_GENERIC_GPS_PROBE_H
-#define ORCA2_ORCAPROBEFACTORY_GENERIC_GPS_PROBE_H
+#ifndef ORCA_ORCAPROBEFACTORY_GENERIC_GPS_PROBE_H
+#define ORCA_ORCAPROBEFACTORY_GENERIC_GPS_PROBE_H
 
 #include <orcaprobe/interfaceprobe.h>
 #include <orcaice/connectutils.h>

@@ -8,8 +8,8 @@
  *
  */
  
-#ifndef ORCA2_GOALPLANNER_MAINTHREAD_H
-#define ORCA2_GOALPLANNER_MAINTHREAD_H
+#ifndef MAINTHREAD_H
+#define MAINTHREAD_H
 
 #include <hydroutil/subsystemthread.h>
 #include <orcaice/context.h>

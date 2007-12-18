@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_ORCALOG_EXCEPTIONS_H
-#define ORCA2_ORCALOG_EXCEPTIONS_H
+#ifndef ORCA_ORCALOG_EXCEPTIONS_H
+#define ORCA_ORCALOG_EXCEPTIONS_H
 
 /*
  * STRINGIZE macro converts an expression into a string-literal.

@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_INSGPS_LOCALISE3DI_H
-#define ORCA2_INSGPS_LOCALISE3DI_H
+#ifndef LOCALISE3DI_H
+#define LOCALISE3DI_H
 
 #include <IceStorm/IceStorm.h>
 

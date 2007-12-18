@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_PROPERTY_UTILITIES_H
-#define ORCA2_PROPERTY_UTILITIES_H
+#ifndef ORCAICE_PROPERTY_UTILITIES_H
+#define ORCAICE_PROPERTY_UTILITIES_H
 
 #include <string>
 #include <Ice/Ice.h>
@@ -29,7 +29,7 @@ namespace orcaice
  *
  *  1. Tries to load the file specified in Orca.GlobalConfig configuration parameter.
  *  2. If it is not defined (or empty), tries to load the file specified by the 
- *     environment variable @c ORCA2_GLOBAL_CONFIG
+ *     environment variable @c ORCAICE_GLOBAL_CONFIG
  *  3. If it is not defined (or empty), tries to load the defaultt file from a 
  *     system-dependent location:
  *          > Linux: $HOME/.orcarc

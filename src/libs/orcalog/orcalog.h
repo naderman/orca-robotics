@@ -7,8 +7,8 @@
  * the LICENSE file included in this distribution.
  *
  */
-#ifndef ORCA2_ORCALOG_H
-#define ORCA2_ORCALOG_H
+#ifndef ORCA_ORCALOG_H
+#define ORCA_ORCALOG_H
 
 #include <orcalog/masterfilewriter.h>
 #include <orcalog/logwriter.h>

@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_PRINT_UTILITIES_H
-#define ORCA2_PRINT_UTILITIES_H
+#ifndef ORCAICE_PRINT_UTILITIES_H
+#define ORCAICE_PRINT_UTILITIES_H
 
 #include <orcaice/context.h>
 

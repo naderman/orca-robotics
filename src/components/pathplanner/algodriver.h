@@ -8,8 +8,8 @@
  *
  */
  
-#ifndef ORCA2_PATHPLANNER_ALGORITHM_DRIVER_H
-#define ORCA2_PATHPLANNER_ALGORITHM_DRIVER_H
+#ifndef ALGORITHM_DRIVER_H
+#define ALGORITHM_DRIVER_H
 
 #include <orca/pathplanner2d.h>
 #include <orca/ogmap.h>

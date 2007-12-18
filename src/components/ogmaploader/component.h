@@ -7,8 +7,8 @@
  * the LICENSE file included in this distribution.
  *
  */
-#ifndef OGMAPLOADER_COMPONENT_H
-#define OGMAPLOADER_COMPONENT_H
+#ifndef COMPONENT_H
+#define COMPONENT_H
 
 #include <orcaice/component.h>
 #include <orcaifaceimpl/ogmapImpl.h>

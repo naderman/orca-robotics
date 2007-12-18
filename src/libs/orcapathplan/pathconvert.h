@@ -7,8 +7,8 @@
  * the LICENSE file included in this distribution.
  *
  */
-#ifndef ORCA2_PATH_CONVERT_H
-#define ORCA2_PATH_CONVERT_H
+#ifndef ORCA_PATH_CONVERT_H
+#define ORCA_PATH_CONVERT_H
 
 #include <vector>
 #include <string>

@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_NOVATELSPAN_INSGPS_DRIVER_H
-#define ORCA2_NOVATELSPAN_INSGPS_DRIVER_H
+#ifndef ORCA_NOVATELSPAN_INSGPS_DRIVER_H
+#define ORCA_NOVATELSPAN_INSGPS_DRIVER_H
 
 #include "driver.h"
 #include <orcaice/context.h>

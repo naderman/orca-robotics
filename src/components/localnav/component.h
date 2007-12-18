@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_LOCALNAV_COMPONENT_H
-#define ORCA2_LOCALNAV_COMPONENT_H
+#ifndef ORCA_LOCALNAV_COMPONENT_H
+#define ORCA_LOCALNAV_COMPONENT_H
 
 #include <memory>
 #include <orcaice/component.h>

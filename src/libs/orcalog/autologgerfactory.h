@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_LOGGER_AUTO_LOGGER_FACTORY_H
-#define ORCA2_LOGGER_AUTO_LOGGER_FACTORY_H
+#ifndef ORCA_LOGGER_AUTO_LOGGER_FACTORY_H
+#define ORCA_LOGGER_AUTO_LOGGER_FACTORY_H
 
 #include <orcalog/factory.h>
 #include <orcalog/autologger.h>

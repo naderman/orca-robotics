@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_HOME_EVENT_H
-#define ORCA2_HOME_EVENT_H
+#ifndef ORCA_HOME_EVENT_H
+#define ORCA_HOME_EVENT_H
 
 #include <QEvent>
 #include <orcacm/types.h>

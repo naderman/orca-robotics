@@ -7,8 +7,8 @@
  * the LICENSE file included in this distribution.
  *
  */
-#ifndef ORCA2_IMAGESERVER_FAKE_CAMERA_DRIVER_H
-#define ORCA2_IMAGESERVER_FAKE_CAMERA_DRIVER_H
+#ifndef FAKE_CAMERA_DRIVER_H
+#define FAKE_CAMERA_DRIVER_H
 
 #include <orcaice/context.h>
 #include "driver.h"

@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_TRACERMON_TERM_NCURSES_USER_DRIVER_H
-#define ORCA2_TRACERMON_TERM_NCURSES_USER_DRIVER_H
+#ifndef TERM_NCURSES_USER_DRIVER_H
+#define TERM_NCURSES_USER_DRIVER_H
 
 #include <hydroutil/safethread.h>
 #include <orcaice/context.h>

@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_OCM_MODEL_H
-#define ORCA2_OCM_MODEL_H
+#ifndef ORCA_OCM_MODEL_H
+#define ORCA_OCM_MODEL_H
 
 #include <QAbstractItemModel>
 #include <QDateTime>

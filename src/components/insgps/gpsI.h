@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_INSGPS_GPSI_H
-#define ORCA2_INSGPS_GPSI_H
+#ifndef GPSI_H
+#define GPSI_H
 
 #include <IceStorm/IceStorm.h>
 

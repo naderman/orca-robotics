@@ -8,8 +8,8 @@
  *
  */
  
-#ifndef ORCA2_REGISRY_MAIN_THREAD_H
-#define ORCA2_REGISRY_MAIN_THREAD_H
+#ifndef MAIN_THREAD_H
+#define MAIN_THREAD_H
 
 #include <hydroutil/safethread.h>
 #include <orcaice/context.h>

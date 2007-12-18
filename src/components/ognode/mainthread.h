@@ -7,8 +7,8 @@
  * the LICENSE file included in this distribution.
  *
  */
-#ifndef _ORCA2_OGNODE_HANDLER_H_
-#define _ORCA2_OGNODE_HANDLER_H_
+#ifndef MAIN_THREAD_H
+#define MAIN_THREAD_H
 
 #include <hydroutil/safethread.h>
 #include <hydroutil/buffer.h>

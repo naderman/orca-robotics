@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_IMAGEVIEWER_SERVICE_H
-#define ORCA2_IMAGEVIEWER_SERVICE_H
+#ifndef SERVICE_H
+#define SERVICE_H
 
 #include <orcaice/service.h>
 

@@ -7,8 +7,8 @@
  * the LICENSE file included in this distribution.
  *
  */
-#ifndef OGMAPLOADER_MAPLOAD_H
-#define OGMAPLOADER_MAPLOAD_H
+#ifndef MAPLOAD_H
+#define MAPLOAD_H
 
 #include <iostream>
 #include <orcaice/context.h>

@@ -8,8 +8,8 @@
  *
  */
  
-#ifndef ORCA2_WALKER_ALGORITHM_DRIVER_H
-#define ORCA2_WALKER_ALGORITHM_DRIVER_H
+#ifndef ORCA_WALKER_ALGORITHM_DRIVER_H
+#define ORCA_WALKER_ALGORITHM_DRIVER_H
 
 #include <orca/rangescanner2d.h>
 #include <orca/odometry2d.h>

@@ -7,8 +7,8 @@
  * the LICENSE file included in this distribution.
  *
  */
-#ifndef ORCA2_ORCAICEGRID_SESSIONMANAGER_H
-#define ORCA2_ORCAICEGRID_SESSIONMANAGER_H
+#ifndef ORCA_ORCAICEGRID_SESSIONMANAGER_H
+#define ORCA_ORCAICEGRID_SESSIONMANAGER_H
 
 #include <IceGrid/Registry.h>
 #include <orcaice/context.h>

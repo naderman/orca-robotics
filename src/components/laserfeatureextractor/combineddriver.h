@@ -9,8 +9,8 @@
  *
  */
  
-#ifndef ORCA2_LASERFEATUREEXTRACTOR_COMBINED_DRIVER_H
-#define ORCA2_LASERFEATUREEXTRACTOR_COMBINED_DRIVER_H
+#ifndef COMBINED_DRIVER_H
+#define COMBINED_DRIVER_H
 
 #include <orcaice/context.h>
 #include "algorithmdriver.h"

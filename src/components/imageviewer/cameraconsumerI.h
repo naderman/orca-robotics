@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_IMAGEVIEWER_CAMERA_CONSUMER_I_H
-#define ORCA2_IMAGEVIEWER_CAMERA_CONSUMER_I_H
+#ifndef CAMERA_CONSUMER_I_H
+#define CAMERA_CONSUMER_I_H
 
 #include <orcaice/component.h>
 #include <hydroutil/buffer.h>

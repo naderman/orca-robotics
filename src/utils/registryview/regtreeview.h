@@ -8,8 +8,8 @@
  *
  */
  
-#ifndef ORCA2_REGVIEW_TREE_VIEW_H
-#define ORCA2_REGVIEW_TREE_VIEW_H
+#ifndef ORCA_REGVIEW_TREE_VIEW_H
+#define ORCA_REGVIEW_TREE_VIEW_H
 
 #include <orcaqcm/ocmview.h>
 

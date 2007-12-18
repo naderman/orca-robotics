@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_ORCALOG_REPLAYER_FACTORY_H
-#define ORCA2_ORCALOG_REPLAYER_FACTORY_H
+#ifndef ORCA_ORCALOG_REPLAYER_FACTORY_H
+#define ORCA_ORCALOG_REPLAYER_FACTORY_H
 
 #include <orcalog/factory.h>
 #include <orcalog/logreaderinfo.h>

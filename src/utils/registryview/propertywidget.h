@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_PROPERTY_WIDGET_H
-#define ORCA2_PROPERTY_WIDGET_H
+#ifndef ORCA_PROPERTY_WIDGET_H
+#define ORCA_PROPERTY_WIDGET_H
 
 #include <QTreeView>
 

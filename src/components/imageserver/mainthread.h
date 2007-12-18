@@ -7,8 +7,8 @@
  * the LICENSE file included in this distribution.
  *
  */
-#ifndef ORCA2_IMAGESERVER_MAIN_LOOP_H
-#define ORCA2_IMAGESERVER_MAIN_LOOP_H
+#ifndef MAIN_LOOP_H
+#define MAIN_LOOP_H
 
 #include <hydroutil/safethread.h>
 #include <orcaice/context.h>

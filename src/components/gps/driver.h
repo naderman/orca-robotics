@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_GPS_DRIVER_H
-#define ORCA2_GPS_DRIVER_H
+#ifndef DRIVER_H
+#define DRIVER_H
 
 #include <orca/gps.h>
 #include <string>

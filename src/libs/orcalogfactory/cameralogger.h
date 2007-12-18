@@ -8,8 +8,8 @@
 //  *
 //  */
 
-// #ifndef ORCA2_ORCALOGFACTORY_CAMERA_LOGGER_H
-// #define ORCA2_ORCALOGFACTORY_CAMERA_LOGGER_H
+// #ifndef ORCA_ORCALOGFACTORY_CAMERA_LOGGER_H
+// #define ORCA_ORCALOGFACTORY_CAMERA_LOGGER_H
 
 // #include <orcaice/context.h>
 // #include <orca/camera.h>

@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_POS_CONSUMER_I_H
-#define ORCA2_POS_CONSUMER_I_H
+#ifndef ORCA_POS_CONSUMER_I_H
+#define ORCA_POS_CONSUMER_I_H
 
 #include <iostream>
 

@@ -7,8 +7,8 @@
  * the LICENSE file included in this distribution.
  *
  */
-#ifndef ORCA2_PATHPLAN_H
-#define ORCA2_PATHPLAN_H
+#ifndef ORCA_PATHPLAN_H
+#define ORCA_PATHPLAN_H
 
 #include <orcapathplan/pathconvert.h>
 

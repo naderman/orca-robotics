@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_PATH_FOLLOWER_2D_I_H
-#define ORCA2_PATH_FOLLOWER_2D_I_H
+#ifndef ORCA_PATH_FOLLOWER_2D_I_H
+#define ORCA_PATH_FOLLOWER_2D_I_H
 
 // include defnition of Ice runtime
 #include <Ice/Ice.h>

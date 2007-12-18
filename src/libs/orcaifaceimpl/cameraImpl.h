@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_CAMERA_IMPL_H
-#define ORCA2_CAMERA_IMPL_H
+#ifndef ORCA_CAMERA_IMPL_H
+#define ORCA_CAMERA_IMPL_H
 
 #include <orca/camera.h>
 #include <IceStorm/IceStorm.h>

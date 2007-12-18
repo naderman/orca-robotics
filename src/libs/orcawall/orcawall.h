@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_ORCAWALL_ORCAWALL_H
-#define ORCA2_ORCAWALL_ORCAWALL_H
+#ifndef ORCA_ORCAWALL_ORCAWALL_H
+#define ORCA_ORCAWALL_ORCAWALL_H
 
 #include <orcawall/interfacesim.h>
 #include <orcawall/factory.h>

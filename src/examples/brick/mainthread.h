@@ -8,8 +8,8 @@
  *
  */
  
-#ifndef ORCA2_BRICK_MAIN_THREAD_H
-#define ORCA2_BRICK_MAIN_THREAD_H
+#ifndef MAIN_THREAD_H
+#define MAIN_THREAD_H
 
 #include <hydroutil/subsystemthread.h>
 #include <orcaice/context.h>

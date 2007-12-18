@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_RANGESCANNER2D_IMPL_H
-#define ORCA2_RANGESCANNER2D_IMPL_H
+#ifndef ORCA_RANGESCANNER2D_IMPL_H
+#define ORCA_RANGESCANNER2D_IMPL_H
 
 #include <IceStorm/IceStorm.h>
 

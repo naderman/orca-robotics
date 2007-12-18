@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_ORCAIFACEIMPL_BUTTON_IMPL_H
-#define ORCA2_ORCAIFACEIMPL_BUTTON_IMPL_H
+#ifndef ORCA_ORCAIFACEIMPL_BUTTON_IMPL_H
+#define ORCA_ORCAIFACEIMPL_BUTTON_IMPL_H
 
 #include <orca/button.h>
 #include <IceStorm/IceStorm.h>

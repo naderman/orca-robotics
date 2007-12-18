@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_STAGE_LOCALISER_DRIVER_H
-#define ORCA2_STAGE_LOCALISER_DRIVER_H
+#ifndef DRIVER_H
+#define DRIVER_H
 
 #include <orca/localise2d.h>
 

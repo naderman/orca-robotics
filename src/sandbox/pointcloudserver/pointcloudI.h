@@ -1,6 +1,6 @@
 
-#ifndef ORCA2_POINT_CLOUD_I_H
-#define ORCA2_POINT_CLOUD_I_H
+#ifndef ORCA_POINT_CLOUD_I_H
+#define ORCA_POINT_CLOUD_I_H
 
 #include <orca/pointcloud.h>
 

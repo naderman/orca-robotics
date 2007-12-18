@@ -1,5 +1,5 @@
-#ifndef SYSMON_COMPONENT_H
-#define SYSMON_COMPONENT_H
+#ifndef COMPONENT_H
+#define COMPONENT_H
 
 #include <orcaice/component.h>
 #include <orca/tracer.h>
@@ -7,9 +7,9 @@
 
 namespace sysmon {
 
-//!
-//! @author Alex Brooks
-//!
+//
+// @author Alex Brooks
+//
 class Component : public orcaice::Component
 {
 

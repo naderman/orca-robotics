@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_TRACERMON_USER_INTERFACE_H
-#define ORCA2_TRACERMON_USER_INTERFACE_H
+#ifndef USER_INTERFACE_H
+#define USER_INTERFACE_H
 
 namespace tracermon
 {

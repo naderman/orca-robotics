@@ -7,8 +7,8 @@
  * the LICENSE file included in this distribution.
  *
  */
-#ifndef ORCA2_DIGICLOPS_GRABBER_H
-#define ORCA2_DIGICLOPS_GRABBER_H
+#ifndef ORCA_DIGICLOPS_GRABBER_H
+#define ORCA_DIGICLOPS_GRABBER_H
 
 #include "imagegrabber.h"
 #include "digiclops/digiclops.h"

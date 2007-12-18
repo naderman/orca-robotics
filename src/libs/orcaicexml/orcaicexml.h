@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_ORCAICEXML_H
-#define ORCA2_ORCAICEXML_H
+#ifndef ORCA_ORCAICEXML_H
+#define ORCA_ORCAICEXML_H
 
 #include <orcaicexml/xmlattributeshelper.h>
 

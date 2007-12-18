@@ -9,8 +9,8 @@
  *
  */
 
-#ifndef ORCA2_LASERFEATUREEXTRACTOR_ALGORITHM_DRIVER_H
-#define ORCA2_LASERFEATUREEXTRACTOR_ALGORITHM_DRIVER_H
+#ifndef ALGORITHM_DRIVER_H
+#define ALGORITHM_DRIVER_H
 
 #include <orca/polarfeature2d.h>
 #include <orca/laserscanner2d.h>

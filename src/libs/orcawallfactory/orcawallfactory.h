@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_DEFAULT_WALL_FACTORY_H
-#define ORCA2_DEFAULT_WALL_FACTORY_H
+#ifndef ORCA_DEFAULT_WALL_FACTORY_H
+#define ORCA_DEFAULT_WALL_FACTORY_H
 
 #include <orcawall/factory.h>
 

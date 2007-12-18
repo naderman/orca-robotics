@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_TELEOP_DRIVE_BICYCLE_NETWORK_DRIVER_H
-#define ORCA2_TELEOP_DRIVE_BICYCLE_NETWORK_DRIVER_H
+#ifndef  DRIVE_BICYCLE_NETWORK_DRIVER_H
+#define  DRIVE_BICYCLE_NETWORK_DRIVER_H
 
 #include <orca/drivebicycle.h>
 #include <orcaice/context.h>

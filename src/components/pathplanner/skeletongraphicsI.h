@@ -7,8 +7,8 @@
  * the LICENSE file included in this distribution.
  *
  */
-#ifndef ORCA2_SKELETON_GRAPHICS_I
-#define ORCA2_SKELETON_GRAPHICS_I
+#ifndef ORCA_SKELETON_GRAPHICS_I
+#define ORCA_SKELETON_GRAPHICS_I
 
 
 // include defnition of Ice runtime

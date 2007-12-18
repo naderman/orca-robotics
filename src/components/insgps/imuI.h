@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_INSGPS_IMUI_H
-#define ORCA2_INSGPS_IMUI_H
+#ifndef IMUI_H
+#define IMUI_H
 
 #include <IceStorm/IceStorm.h>
 

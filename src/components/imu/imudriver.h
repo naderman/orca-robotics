@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_IMU_DRIVER_H
-#define ORCA2_IMU_DRIVER_H
+#ifndef DRIVER_H
+#define DRIVER_H
 
 #include <orca/imu.h>
 #include <orca/odometry3d.h>

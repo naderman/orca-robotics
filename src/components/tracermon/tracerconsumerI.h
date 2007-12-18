@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_TRACERMON_TRACER_CONSUMER_I_H
-#define ORCA2_TRACERMON_TRACER_CONSUMER_I_H
+#ifndef TRACER_CONSUMER_I_H
+#define TRACER_CONSUMER_I_H
 
 // #include <iostream>
 

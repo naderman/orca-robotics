@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_ORCAICEGRID__H
-#define ORCA2_ORCAICEGRID__H
+#ifndef ORCA_ORCAICEGRID__H
+#define ORCA_ORCAICEGRID__H
 
 #include <orcaicegrid/sessionmanager.h>
 #include <orcaicegrid/adminsessionmanager.h>

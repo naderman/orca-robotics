@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_TELEOP_IOSTREAM_DISPLAY_DRIVER_H
-#define ORCA2_TELEOP_IOSTREAM_DISPLAY_DRIVER_H
+#ifndef  IOSTREAM_DISPLAY_DRIVER_H
+#define  IOSTREAM_DISPLAY_DRIVER_H
 
 #include "termdisplaydriver.h"
 

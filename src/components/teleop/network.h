@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_TELEOP_NETWORK_INTERFACE_H
-#define ORCA2_TELEOP_NETWORK_INTERFACE_H
+#ifndef  NETWORK_INTERFACE_H
+#define  NETWORK_INTERFACE_H
 
 #include <hydrointerfaces/humaninput2d.h>
 

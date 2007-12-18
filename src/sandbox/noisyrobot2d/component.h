@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_NOISY_ROBOT_COMPONENT_H
-#define ORCA2_NOISY_ROBOT_COMPONENT_H
+#ifndef ORCA_NOISY_ROBOT_COMPONENT_H
+#define ORCA_NOISY_ROBOT_COMPONENT_H
 
 #include <orcaice/component.h>
 #include "inoisemodel.h"

@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_TRACERMON_TERM_UTILS_H
-#define ORCA2_TRACERMON_TERM_UTILS_H
+#ifndef TERM_UTILS_H
+#define TERM_UTILS_H
 
 #include <orca/tracer.h>
 

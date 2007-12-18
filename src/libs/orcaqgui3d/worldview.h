@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_ORCAGUI3D_WORLDVIEW3D_H
-#define ORCA2_ORCAGUI3D_WORLDVIEW3D_H
+#ifndef ORCA_ORCAGUI3D_WORLDVIEW3D_H
+#define ORCA_ORCAGUI3D_WORLDVIEW3D_H
 
 #include <QMouseEvent>
 #include <QFileDialog>

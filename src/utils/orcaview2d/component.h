@@ -8,8 +8,8 @@
  *
  */
  
-#ifndef ORCAVIEW_COMPONENT_H
-#define ORCAVIEW_COMPONENT_H
+#ifndef COMPONENT_H
+#define COMPONENT_H
 
 #include <string>
 #include <orcaice/component.h>

@@ -8,8 +8,8 @@
  *
  */
  
-#ifndef ORCA2_PATH_INPUT_H
-#define ORCA2_PATH_INPUT_H
+#ifndef ORCA_PATH_INPUT_H
+#define ORCA_PATH_INPUT_H
 
 #include <QMatrix>
 #include <QVector>

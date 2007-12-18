@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_ORCAICEGRID_ADMIN_SESSIONMANAGER_I_H
-#define ORCA2_ORCAICEGRID_ADMIN_SESSIONMANAGER_I_H
+#ifndef ORCA_ORCAICEGRID_ADMIN_SESSIONMANAGER_I_H
+#define ORCA_ORCAICEGRID_ADMIN_SESSIONMANAGER_I_H
 
 #include <orcaicegrid/adminsessionmanager.h>
 #include <hydroutil/safethread.h>

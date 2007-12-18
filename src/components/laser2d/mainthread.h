@@ -7,8 +7,8 @@
  * the LICENSE file included in this distribution.
  *
  */
-#ifndef ORCA2_LASER2D_MAIN_THREAD_H
-#define ORCA2_LASER2D_MAIN_THREAD_H
+#ifndef MAIN_THREAD_H
+#define MAIN_THREAD_H
 
 #include <memory>
 #include <hydroutil/subsystemthread.h>

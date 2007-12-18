@@ -7,8 +7,8 @@
  * the LICENSE file included in this distribution.
  *
  */
-#ifndef ORCA2_OGFUSION_I_H
-#define ORCA2_OGFUSION_I_H
+#ifndef OGFUSION_I_H
+#define OGFUSION_I_H
 
 #include <IceStorm/IceStorm.h>
 

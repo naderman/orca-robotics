@@ -8,8 +8,8 @@
  *
  */
  
-#ifndef ORCA2_OCM_VIEW_H
-#define ORCA2_OCM_VIEW_H
+#ifndef ORCA_OCM_VIEW_H
+#define ORCA_OCM_VIEW_H
 
 #include <QTreeView>
 #include <QModelIndex>

@@ -8,8 +8,8 @@
  *
  */
  
-#ifndef ORCA2_PATHPLANTESTER_ALGORITHM_HANDLER_H
-#define ORCA2_PATHPLANTESTER_ALGORITHM_HANDLER_H
+#ifndef ORCA_PATHPLANTESTER_ALGORITHM_HANDLER_H
+#define ORCA_PATHPLANTESTER_ALGORITHM_HANDLER_H
 
 #include <hydroutil/safethread.h>
 #include <orcaice/context.h>

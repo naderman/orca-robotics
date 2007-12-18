@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_ORCAQGUI_STRING_TO_COLOR_MAP_H
-#define ORCA2_ORCAQGUI_STRING_TO_COLOR_MAP_H
+#ifndef ORCA_ORCAQGUI_STRING_TO_COLOR_MAP_H
+#define ORCA_ORCAQGUI_STRING_TO_COLOR_MAP_H
 
 #include <vector>
 #include <QColor>

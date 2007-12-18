@@ -8,8 +8,8 @@
  *
  */
  
-#ifndef ORCA2_WIFI_DRIVER_H
-#define ORCA2_WIFI_DRIVER_H
+#ifndef ORCA_WIFI_DRIVER_H
+#define ORCA_WIFI_DRIVER_H
 
 #include <vector>
 #include <orca/wifi.h>

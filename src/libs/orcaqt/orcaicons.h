@@ -8,8 +8,8 @@
  *
  */
  
-#ifndef ORCA2_QORCAQT_ICONS_H
-#define ORCA2_QORCAQT_ICONS_H
+#ifndef ORCA_QORCAQT_ICONS_H
+#define ORCA_QORCAQT_ICONS_H
 
 namespace orcaqt
 {

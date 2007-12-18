@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_GPS_IMPL_H
-#define ORCA2_GPS_IMPL_H
+#ifndef ORCA_GPS_IMPL_H
+#define ORCA_GPS_IMPL_H
 
 #include <orca/gps.h>
 #include <IceStorm/IceStorm.h>

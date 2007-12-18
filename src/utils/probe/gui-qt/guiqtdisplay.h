@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_PROBE_GUI_QT_DISPLAY_DRIVER_H
-#define ORCA2_PROBE_GUI_QT_DISPLAY_DRIVER_H
+#ifndef GUI_QT_DISPLAY_DRIVER_H
+#define GUI_QT_DISPLAY_DRIVER_H
 
 #include <vector>
 #include <orcaqcm/ocmmodel.h>

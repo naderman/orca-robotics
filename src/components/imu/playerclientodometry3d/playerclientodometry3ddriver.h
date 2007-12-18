@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_PLAYER_ODOMETRY3D_DRIVER_H
-#define ORCA2_PLAYER_ODOMETRY3D_DRIVER_H
+#ifndef ORCA_PLAYER_ODOMETRY3D_DRIVER_H
+#define ORCA_PLAYER_ODOMETRY3D_DRIVER_H
 
 #include "../imudriver.h"
 // #include "../sicklaserutil.h"

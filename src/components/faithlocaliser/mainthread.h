@@ -8,8 +8,8 @@
  *
  */
  
-#ifndef ORCA2_FAITH_LOCALISER_MAIN_LOOP_H
-#define ORCA2_FAITH_LOCALISER_MAIN_LOOP_H
+#ifndef MAIN_LOOP_H
+#define MAIN_LOOP_H
 
 #include <hydroutil/subsystemthread.h>
 #include <orcaice/context.h>

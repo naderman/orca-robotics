@@ -16,8 +16,8 @@
  * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef ORCA2_IMAGE_CONVERSIONS_H
-#define ORCA2_IMAGE_CONVERSIONS_H
+#ifndef ORCA_IMAGE_CONVERSIONS_H
+#define ORCA_IMAGE_CONVERSIONS_H
 
 #include <string.h>
 

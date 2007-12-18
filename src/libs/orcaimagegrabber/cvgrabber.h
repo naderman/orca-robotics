@@ -7,8 +7,8 @@
  * the LICENSE file included in this distribution.
  *
  */
-#ifndef ORCA2_CV_GRABBER_H
-#define ORCA2_CV_GRABBER_H
+#ifndef ORCA_CV_GRABBER_H
+#define ORCA_CV_GRABBER_H
 
 #include "imagegrabber.h"
 #include <cv.h>

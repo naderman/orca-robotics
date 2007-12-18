@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_LATENCY_PINGER_I_H
-#define ORCA2_LATENCY_PINGER_I_H
+#ifndef ORCA_LATENCY_PINGER_I_H
+#define ORCA_LATENCY_PINGER_I_H
 
 #include <IceUtil/Time.h>
 

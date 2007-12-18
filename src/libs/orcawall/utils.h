@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_ORCAWALL_UTILS_H
-#define ORCA2_ORCAWALL_UTILS_H
+#ifndef ORCA_ORCAWALL_UTILS_H
+#define ORCA_ORCAWALL_UTILS_H
 
 #include <string>
 

@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_PROBE_IOSTREAM_DISPLAY_DRIVER_H
-#define ORCA2_PROBE_IOSTREAM_DISPLAY_DRIVER_H
+#ifndef IOSTREAM_DISPLAY_DRIVER_H
+#define IOSTREAM_DISPLAY_DRIVER_H
 
 #include <vector>
 #include <hydroutil/buffer.h>

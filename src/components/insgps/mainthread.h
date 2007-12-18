@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_INSGPS_MAINTHREAD_H
-#define ORCA2_INSGPS_MAINTHREAD_H
+#ifndef MAINTHREAD_H
+#define MAINTHREAD_H
 
 // for context and thread
 #include <orcaice/orcaice.h>

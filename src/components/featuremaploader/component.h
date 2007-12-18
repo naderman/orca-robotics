@@ -7,8 +7,8 @@
  * the LICENSE file included in this distribution.
  *
  */
-#ifndef FEATUREMAPLOADER_COMPONENT_H
-#define FEATUREMAPLOADER_COMPONENT_H
+#ifndef COMPONENT_H
+#define COMPONENT_H
 
 #include <orcaice/component.h>
 #include <orcaifaceimpl/featuremap2dImpl.h>

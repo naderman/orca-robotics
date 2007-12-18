@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_GENERIC_IFACE_H
-#define ORCA2_GENERIC_IFACE_H
+#ifndef ORCA_GENERIC_IFACE_H
+#define ORCA_GENERIC_IFACE_H
 
 #include <IceStorm/IceStorm.h>
 

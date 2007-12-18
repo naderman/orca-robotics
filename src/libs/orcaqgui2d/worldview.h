@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_ORCAVIEW_WORLDVIEW_H
-#define ORCA2_ORCAVIEW_WORLDVIEW_H
+#ifndef ORCA_ORCAVIEW_WORLDVIEW_H
+#define ORCA_ORCAVIEW_WORLDVIEW_H
 
 #include <QMouseEvent>
 #include <QFileDialog>

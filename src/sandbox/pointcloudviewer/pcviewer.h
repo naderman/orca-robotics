@@ -1,5 +1,5 @@
-#ifndef ORCA2_POINT_CLOUD_VIEWER_H
-#define ORCA2_POINT_CLOUD_VIEWER_H
+#ifndef ORCA_POINT_CLOUD_VIEWER_H
+#define ORCA_POINT_CLOUD_VIEWER_H
 
 #include <orca/pointcloud.h>
 #include <orca/ogmap.h>

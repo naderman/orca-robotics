@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_TRACERMON_NETWORK_HANDLER_H
-#define ORCA2_TRACERMON_NETWORK_HANDLER_H
+#ifndef NETWORK_HANDLER_H
+#define NETWORK_HANDLER_H
 
 #include <orca/tracer.h>
 #include <hydroutil/safethread.h>

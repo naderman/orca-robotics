@@ -9,8 +9,8 @@
  *
  */
  
-#ifndef ORCA2_LASERFEATUREEXTRACTOR_FAKE_DRIVER_H
-#define ORCA2_LASERFEATUREEXTRACTOR_FAKE_DRIVER_H
+#ifndef FAKE_DRIVER_H
+#define FAKE_DRIVER_H
 
 #include "algorithmdriver.h"
 

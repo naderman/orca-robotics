@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_ORCAWALL_FACTORY_H
-#define ORCA2_ORCAWALL_FACTORY_H
+#ifndef ORCA_ORCAWALL_FACTORY_H
+#define ORCA_ORCAWALL_FACTORY_H
 
 #include <vector>
 #include <string>

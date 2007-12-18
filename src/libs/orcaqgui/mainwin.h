@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_ORCAQGUI_MAIN_WINDOW_H
-#define ORCA2_ORCAQGUI_MAIN_WINDOW_H
+#ifndef ORCA_ORCAQGUI_MAIN_WINDOW_H
+#define ORCA_ORCAQGUI_MAIN_WINDOW_H
 
 #include <vector>
 #include <QMainWindow>

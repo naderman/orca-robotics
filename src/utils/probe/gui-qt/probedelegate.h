@@ -8,8 +8,8 @@
  *
  */
  
-#ifndef ORCA2_PROBE_PROBE_DELEGATE_H
-#define ORCA2_PROBE_PROBE_DELEGATE_H
+#ifndef PROBE_DELEGATE_H
+#define PROBE_DELEGATE_H
 
 #include <QItemDelegate>
 

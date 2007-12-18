@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_TELEOP_INPUT_THREAD_H
-#define ORCA2_TELEOP_INPUT_THREAD_H
+#ifndef  INPUT_THREAD_H
+#define  INPUT_THREAD_H
 
 #include <memory>
 #include <hydroutil/safethread.h>

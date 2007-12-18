@@ -8,8 +8,8 @@
  *
  */
  
-#ifndef ORCA2_PLAYER2ORCA_HANDLER_H
-#define ORCA2_PLAYER2ORCA_HANDLER_H
+#ifndef MAINTHREAD_H
+#define MAINTHREAD_H
 
 #include <hydroutil/safethread.h>
 #include <orcaice/context.h>

@@ -1,5 +1,5 @@
-#ifndef ORCA2_NOISYROBOT2d_SERVICE_I_H
-#define ORCA2_NOISYROBOT2d_SERVICE_I_H
+#ifndef ORCA_NOISYROBOT2d_SERVICE_I_H
+#define ORCA_NOISYROBOT2d_SERVICE_I_H
 
 #include <orcaice/service.h>
 

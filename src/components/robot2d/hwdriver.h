@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_ROBOT2D_HARDWARE_DRIVER_H
-#define ORCA2_ROBOT2D_HARDWARE_DRIVER_H
+#ifndef HARDWARE_DRIVER_H
+#define HARDWARE_DRIVER_H
 
 // #include <orcarobotdriverutil/ihwdriver.h>
 #include "types.h"

@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_PROBE_TERM_DISPLAY_EVENTS_H
-#define ORCA2_PROBE_TERM_DISPLAY_EVENTS_H
+#ifndef TERM_DISPLAY_EVENTS_H
+#define TERM_DISPLAY_EVENTS_H
 
 #include <hydroutil/eventqueue.h>
 #include <orcacm/types.h>

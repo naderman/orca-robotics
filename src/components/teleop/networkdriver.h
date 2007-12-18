@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_TELEOP_NETWORK_DRIVER_H
-#define ORCA2_TELEOP_NETWORK_DRIVER_H
+#ifndef  NETWORK_DRIVER_H
+#define  NETWORK_DRIVER_H
 
 namespace teleop
 {

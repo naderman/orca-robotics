@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_ORCAPROBE_ORCAPROBE_H
-#define ORCA2_ORCAPROBE_ORCAPROBE_H
+#ifndef ORCA_ORCAPROBE_ORCAPROBE_H
+#define ORCA_ORCAPROBE_ORCAPROBE_H
 
 #include <orcaprobe/interfaceprobe.h>
 #include <orcaprobe/factory.h>

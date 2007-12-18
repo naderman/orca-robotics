@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_PATHPLANNER_COMPONENT_H
-#define ORCA2_PATHPLANNER_COMPONENT_H
+#ifndef COMPONENT_H
+#define COMPONENT_H
 
 #include <orcaice/component.h>
 #include <hydroutil/safethread.h>

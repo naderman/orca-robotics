@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_TRACERMON_TERM_NCURSES_INPUT_HANDLER_H
-#define ORCA2_TRACERMON_TERM_NCURSES_INPUT_HANDLER_H
+#ifndef TERM_NCURSES_INPUT_HANDLER_H
+#define TERM_NCURSES_INPUT_HANDLER_H
 
 #include <hydroutil/safethread.h>
 #include <orcaice/context.h>

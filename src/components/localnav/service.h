@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_LOCALNAV_SERVICE_I_H
-#define ORCA2_LOCALNAV_SERVICE_I_H
+#ifndef ORCA_LOCALNAV_SERVICE_I_H
+#define ORCA_LOCALNAV_SERVICE_I_H
 
 #include <orcaice/service.h>
 

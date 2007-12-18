@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_PRIVATE_UTILITIES_H
-#define ORCA2_PRIVATE_UTILITIES_H
+#ifndef ORCAICE_PRIVATE_UTILITIES_H
+#define ORCAICE_PRIVATE_UTILITIES_H
 
 // include defnition of Ice runtime
 #include <Ice/Ice.h>

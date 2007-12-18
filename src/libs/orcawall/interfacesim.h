@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_ORCAWALL_INTERFACE_SIM_H
-#define ORCA2_ORCAWALL_INTERFACE_SIM_H
+#ifndef ORCA_ORCAWALL_INTERFACE_SIM_H
+#define ORCA_ORCAWALL_INTERFACE_SIM_H
 
 #include <hydroutil/safethread.h>
 #include <orcaice/context.h>

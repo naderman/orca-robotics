@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_INSGPS_ODOMETRY3DI_H
-#define ORCA2_INSGPS_ODOMETRY3DI_H
+#ifndef ODOMETRY3DI_H
+#define ODOMETRY3DI_H
 
 #include <IceStorm/IceStorm.h>
 

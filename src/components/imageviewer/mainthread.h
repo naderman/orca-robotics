@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_IMAGEVIEWER_MAINTHREAD_H
-#define ORCA2_IMAGEVIEWER_MAINTHREAD_H
+#ifndef MAINTHREAD_H
+#define MAINTHREAD_H
 
 #include <highgui.h>
 #include <cv.h>

@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_IMAGE_IMAGEUTILS_H
-#define ORCA2_IMAGE_IMAGEUTILS_H
+#ifndef ORCA_IMAGE_IMAGEUTILS_H
+#define ORCA_IMAGE_IMAGEUTILS_H
 
 #include <orca/camera.h>
 

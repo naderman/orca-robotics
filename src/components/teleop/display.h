@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_TELEOP_DISPLAY_INTERFACE_H
-#define ORCA2_TELEOP_DISPLAY_INTERFACE_H
+#ifndef  DISPLAY_INTERFACE_H
+#define  DISPLAY_INTERFACE_H
 
 namespace teleop
 {

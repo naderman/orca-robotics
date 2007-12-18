@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_ORCAQGUI_GUI_ELEMENT_MODEL_H
-#define ORCA2_ORCAQGUI_GUI_ELEMENT_MODEL_H
+#ifndef ORCA_ORCAQGUI_GUI_ELEMENT_MODEL_H
+#define ORCA_ORCAQGUI_GUI_ELEMENT_MODEL_H
 
 #include <QAbstractTableModel>
 #include <QStringList>

@@ -7,8 +7,8 @@
  * the LICENSE file included in this distribution.
  *
  */
-#ifndef ORCA2_IMAGESERVER_CAMERA_DRIVER_H
-#define ORCA2_IMAGESERVER_CAMERA_DRIVER_H
+#ifndef CAMERA_DRIVER_H
+#define CAMERA_DRIVER_H
 
 #include <orca/camera.h>
 #include <orcaice/context.h>

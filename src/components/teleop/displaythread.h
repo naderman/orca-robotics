@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_TELEOP_DISPLAY_THREAD_H
-#define ORCA2_TELEOP_DISPLAY_THREAD_H
+#ifndef  DISPLAY_THREAD_H
+#define  DISPLAY_THREAD_H
 
 #include <hydroutil/safethread.h>
 #include <orcaice/context.h>

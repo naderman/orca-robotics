@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_ORCAPROBE_UTILS_H
-#define ORCA2_ORCAPROBE_UTILS_H
+#ifndef ORCA_ORCAPROBE_UTILS_H
+#define ORCA_ORCAPROBE_UTILS_H
 
 #include <orca/orca.h>
 #include <orcacm/types.h>

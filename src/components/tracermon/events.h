@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_TRACERMON_EVENTS_H
-#define ORCA2_TRACERMON_EVENTS_H
+#ifndef EVENTS_H
+#define EVENTS_H
 
 #include <hydroutil/eventqueue.h>
 #include <orca/tracer.h>

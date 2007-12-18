@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_PATHPLANNER_CONSUMER_I_H
-#define ORCA2_PATHPLANNER_CONSUMER_I_H
+#ifndef ORCA_PATHPLANNER_CONSUMER_I_H
+#define ORCA_PATHPLANNER_CONSUMER_I_H
 
 #include <orca/pathplanner2d.h>
 

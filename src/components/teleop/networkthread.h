@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_TELEOP_NETWORK_THREAD_H
-#define ORCA2_TELEOP_NETWORK_THREAD_H
+#ifndef  NETWORK_THREAD_H
+#define  NETWORK_THREAD_H
 
 #include <hydroutil/safethread.h>
 #include <orcaice/context.h>

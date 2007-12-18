@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_IMU_HANDLER_H
-#define ORCA2_IMU_HANDLER_H
+#ifndef HANDLER_H
+#define HANDLER_H
 
 #include <orca/imu.h>
 #include <orca/bros1.h>

@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_LOGPLAYER_REPLAY_CLOCK_H
-#define ORCA2_LOGPLAYER_REPLAY_CLOCK_H
+#ifndef REPLAY_CLOCK_H
+#define REPLAY_CLOCK_H
 
 #include <IceUtil/Time.h>
 

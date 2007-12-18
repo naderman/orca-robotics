@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_IMAGESERVER_MONO_DRIVER_H
-#define ORCA2_IMAGESERVER_MONO_DRIVER_H
+#ifndef MONO_DRIVER_H
+#define MONO_DRIVER_H
 
 #include <orcaice/context.h>
 #include <orcaimagegrabber/imagegrabber.h>

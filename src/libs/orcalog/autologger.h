@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_LOGGER_AUTO_LOGGER_H
-#define ORCA2_LOGGER_AUTO_LOGGER_H
+#ifndef ORCA_LOGGER_AUTO_LOGGER_H
+#define ORCA_LOGGER_AUTO_LOGGER_H
 
 namespace orcalog
 {

@@ -9,8 +9,8 @@
  *
  */
 
-#ifndef ORCA2_LASER_FEATURE_EXTRACTOR_SERVICE_I_H
-#define ORCA2_LASER_FEATURE_EXTRACTOR_SERVICE_I_H
+#ifndef SERVICE_I_H
+#define SERVICE_I_H
 
 #include <orcaice/service.h>
 

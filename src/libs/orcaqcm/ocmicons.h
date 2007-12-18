@@ -8,8 +8,8 @@
  *
  */
  
-#ifndef ORCA2_OCM_ICONS_H
-#define ORCA2_OCM_ICONS_H
+#ifndef ORCA_OCM_ICONS_H
+#define ORCA_OCM_ICONS_H
 
 namespace orcaqcm
 {

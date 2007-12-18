@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_ORCALOG_MASTER_FILE_READER_H
-#define ORCA2_ORCALOG_MASTER_FILE_READER_H
+#ifndef ORCA_ORCALOG_MASTER_FILE_READER_H
+#define ORCA_ORCALOG_MASTER_FILE_READER_H
 
 #include <IceUtil/Mutex.h>
 #include <orcaice/context.h>

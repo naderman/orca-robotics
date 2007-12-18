@@ -8,8 +8,8 @@
  *
  */
  
-#ifndef ORCA2_HARDWARE_DRIVER_H
-#define ORCA2_HARDWARE_DRIVER_H
+#ifndef ORCA_HARDWARE_DRIVER_H
+#define ORCA_HARDWARE_DRIVER_H
 
 #include <orcaice/orcaice.h>
 #include <hydrowifi/wifiutil.h>

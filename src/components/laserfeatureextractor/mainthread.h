@@ -9,8 +9,8 @@
  *
  */
 
-#ifndef ORCA2_FEATURE_EXTRACTOR_MAIN_LOOP_H
-#define ORCA2_FEATURE_EXTRACTOR_MAIN_LOOP_H
+#ifndef ORCA_FEATURE_EXTRACTOR_MAIN_LOOP_H
+#define ORCA_FEATURE_EXTRACTOR_MAIN_LOOP_H
 
 #include <hydroutil/subsystemthread.h>
 #include <orcaice/context.h>

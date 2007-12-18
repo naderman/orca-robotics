@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_IMU_I_H
-#define ORCA2_IMU_I_H
+#ifndef I_H
+#define I_H
 
 #include <IceStorm/IceStorm.h>
 

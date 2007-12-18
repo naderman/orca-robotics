@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_LOGPLAYER_COMPONENT_H
-#define ORCA2_LOGPLAYER_COMPONENT_H
+#ifndef COMPONENT_H
+#define COMPONENT_H
 
 #include <vector>
 #include <string>

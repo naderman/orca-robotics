@@ -9,8 +9,8 @@
  */
 
 
-#ifndef ORCA2_WALL_COMPONENT_H
-#define ORCA2_WALL_COMPONENT_H
+#ifndef COMPONENT_H
+#define COMPONENT_H
 
 #include <vector>
 #include <string>

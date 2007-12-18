@@ -7,8 +7,8 @@
  * the LICENSE file included in this distribution.
  *
  */
-#ifndef ORCA2_IMAGE_GRABBER_H
-#define ORCA2_IMAGE_GRABBER_H
+#ifndef ORCA_IMAGE_GRABBER_H
+#define ORCA_IMAGE_GRABBER_H
 
 #include <orca/camera.h>
 #include <orcaice/context.h>      

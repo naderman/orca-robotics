@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_INSGPSI_H
-#define ORCA2_INSGPSI_H
+#ifndef ORCA_INSGPSI_H
+#define ORCA_INSGPSI_H
 
 #include <orcaice/context.h>
 

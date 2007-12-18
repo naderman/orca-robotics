@@ -8,8 +8,8 @@
  *
  */
  
-#ifndef ORCA2_REGISTRY_SELECT_VIEW_H
-#define ORCA2_REGISTRY_SELECT_VIEW_H
+#ifndef ORCA_REGISTRY_SELECT_VIEW_H
+#define ORCA_REGISTRY_SELECT_VIEW_H
 
 #include <orcaqcm/ocmview.h>
 

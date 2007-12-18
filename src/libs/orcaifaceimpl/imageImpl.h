@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_IMAGE_IMPL_H
-#define ORCA2_IMAGE_IMPL_H
+#ifndef ORCA_IMAGE_IMPL_H
+#define ORCA_IMAGE_IMPL_H
 
 #include <orca/image.h>
 #include <IceStorm/IceStorm.h>

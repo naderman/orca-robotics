@@ -8,8 +8,8 @@
  *
  */
  
-#ifndef ORCA2_REACTIVE_WALKER_ALGORITHM_HANDLER_H
-#define ORCA2_REACTIVE_WALKER_ALGORITHM_HANDLER_H
+#ifndef ALGORITHM_HANDLER_H
+#define ALGORITHM_HANDLER_H
 
 #include <hydroutil/subsystemthread.h>
 #include <orcaice/context.h>

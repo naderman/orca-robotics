@@ -8,8 +8,8 @@
  *
  */
  
-#ifndef ORCA2_FAKE_DRIVER_H
-#define ORCA2_FAKE_DRIVER_H
+#ifndef ORCA_FAKE_DRIVER_H
+#define ORCA_FAKE_DRIVER_H
 
 #include "wifidriver.h"
 

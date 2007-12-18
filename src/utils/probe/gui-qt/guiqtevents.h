@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_PROBE_GUI_QT_DISPLAY_EVENTS_H
-#define ORCA2_PROBE_GUI_QT_DISPLAY_EVENTS_H
+#ifndef GUI_QT_DISPLAY_EVENTS_H
+#define GUI_QT_DISPLAY_EVENTS_H
 
 #include <QEvent>
 #include <orcacm/types.h>

@@ -8,8 +8,8 @@
  *
  */
  
-#ifndef ORCA2_ORCAGUI_GUIICONS_H
-#define ORCA2_ORCAGUI_GUIICONS_H
+#ifndef ORCA_ORCAGUI_GUIICONS_H
+#define ORCA_ORCAGUI_GUIICONS_H
 
 // KDE icons can be found in /usr/share/icons
 // To edit icons use kiconedit

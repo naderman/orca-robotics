@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_WIFI_SERVICE_H
-#define ORCA2_WIFI_SERVICE_H
+#ifndef ORCA_WIFI_SERVICE_H
+#define ORCA_WIFI_SERVICE_H
 
 #include <orcaice/service.h>
 

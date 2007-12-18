@@ -8,8 +8,8 @@
  * the LICENSE file included in this distribution.
  *
  */
-#ifndef ORCA2_LASERFEATUREEXTRACTOR_FOREGROUND_EXTRACTOR_H
-#define ORCA2_LASERFEATUREEXTRACTOR_FOREGROUND_EXTRACTOR_H
+#ifndef FOREGROUND_EXTRACTOR_H
+#define FOREGROUND_EXTRACTOR_H
 
 #include <orca/laserscanner2d.h>
 #include <orca/polarfeature2d.h>

@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_STAGE_LOCALISER_STAGE_DRIVER_H
-#define ORCA2_STAGE_LOCALISER_STAGE_DRIVER_H
+#ifndef STAGE_DRIVER_H
+#define STAGE_DRIVER_H
 
 #include "../driver.h"
 

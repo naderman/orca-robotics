@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_INSGPS_DRIVER_H
-#define ORCA2_INSGPS_DRIVER_H
+#ifndef DRIVER_H
+#define DRIVER_H
 
 // this class is a thread which inherits from thread.h
 #include <hydroutil/safethread.h>

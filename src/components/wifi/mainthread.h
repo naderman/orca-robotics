@@ -8,8 +8,8 @@
  *
  */
  
-#ifndef ORCA2_WIFI_MAINTHREAD_H
-#define ORCA2_WIFI_MAINTHREAD_H
+#ifndef ORCA_WIFI_MAINTHREAD_H
+#define ORCA_WIFI_MAINTHREAD_H
 
 #include <hydroutil/subsystemthread.h>
 #include <orcaifaceimpl/wifiImpl.h>

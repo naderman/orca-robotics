@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_PROBE_QTDRIVER_MAIN_WINDOW_H
-#define ORCA2_PROBE_QTDRIVER_MAIN_WINDOW_H
+#ifndef QTDRIVER_MAIN_WINDOW_H
+#define QTDRIVER_MAIN_WINDOW_H
 
 #include <QMainWindow>
 

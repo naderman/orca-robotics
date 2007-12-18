@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_PROBE_BROWSER_HANDLER_H
-#define ORCA2_PROBE_BROWSER_HANDLER_H
+#ifndef BROWSER_HANDLER_H
+#define BROWSER_HANDLER_H
 
 #include <vector>
 #include <hydroutil/eventqueue.h>

@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_PROBE_QTDRIVER_PROBE_VIEW_H
-#define ORCA2_PROBE_QTDRIVER_PROBE_VIEW_H
+#ifndef QTDRIVER_PROBE_VIEW_H
+#define QTDRIVER_PROBE_VIEW_H
 
 #include <QListView>
 

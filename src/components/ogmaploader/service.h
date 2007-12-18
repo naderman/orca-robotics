@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_OGMAPLOADER_SERVICE_H
-#define ORCA2_OGMAPLOADER_SERVICE_H
+#ifndef SERVICE_H
+#define SERVICE_H
 
 #include <orcaice/service.h>
 

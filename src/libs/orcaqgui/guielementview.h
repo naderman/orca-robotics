@@ -8,8 +8,8 @@
  *
  */
  
-#ifndef ORCA2_GUI_ELEMENT_VIEW_H
-#define ORCA2_GUI_ELEMENT_VIEW_H
+#ifndef ORCA_GUI_ELEMENT_VIEW_H
+#define ORCA_GUI_ELEMENT_VIEW_H
 
 #include <QTableView>
 #include <vector>

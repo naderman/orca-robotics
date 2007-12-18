@@ -8,8 +8,8 @@
  *
  */
  
-#ifndef ORCA2_REPLIER_HANDLER_H
-#define ORCA2_REPLIER_HANDLER_H
+#ifndef HANDLER_H
+#define HANDLER_H
 
 #include <hydroutil/safethread.h>
 #include <orcaice/context.h>

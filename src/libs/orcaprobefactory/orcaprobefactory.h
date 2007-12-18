@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_DEFAULT_PROBE_FACTORY_H
-#define ORCA2_DEFAULT_PROBE_FACTORY_H
+#ifndef ORCA_DEFAULT_PROBE_FACTORY_H
+#define ORCA_DEFAULT_PROBE_FACTORY_H
 
 #include <orcaprobe/factory.h>
 

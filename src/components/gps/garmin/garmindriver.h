@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_GARMIN_GPS_DRIVER_H
-#define ORCA2_GARMIN_GPS_DRIVER_H
+#ifndef ORCA_GARMIN_GPS_DRIVER_H
+#define ORCA_GARMIN_GPS_DRIVER_H
 
 #include <orcaice/orcaice.h>
 #include <hydroserial/serial.h>

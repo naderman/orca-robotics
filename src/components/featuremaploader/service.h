@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_FEATUREMAPLOADER_SERVICE_I_H
-#define ORCA2_FEATUREMAPLOADER_SERVICE_I_H
+#ifndef SERVICE_I_H
+#define SERVICE_I_H
 
 #include <orcaice/service.h>
 

@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_SEGWAY_RMP_NETWORK_HANDLER_H
-#define ORCA2_SEGWAY_RMP_NETWORK_HANDLER_H
+#ifndef NETWORK_HANDLER_H
+#define NETWORK_HANDLER_H
 
 #include <hydroutil/subsystemthread.h>
 #include <orcaice/context.h>

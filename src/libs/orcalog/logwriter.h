@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_ORCALOG_LOGWRITER_H
-#define ORCA2_ORCALOG_LOGWRITER_H
+#ifndef ORCA_ORCALOG_LOGWRITER_H
+#define ORCA_ORCALOG_LOGWRITER_H
 
 #include <orcalog/masterfilewriter.h>
 #include <orcalog/logwriterinfo.h>

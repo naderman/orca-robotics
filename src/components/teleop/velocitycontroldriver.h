@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_TELEOP_VELOCITY_CONTROL2D_NETWORK_DRIVER_H
-#define ORCA2_TELEOP_VELOCITY_CONTROL2D_NETWORK_DRIVER_H
+#ifndef  VELOCITY_CONTROL2D_NETWORK_DRIVER_H
+#define  VELOCITY_CONTROL2D_NETWORK_DRIVER_H
 
 #include <orca/velocitycontrol2d.h>
 #include <orcaice/context.h>

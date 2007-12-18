@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_TRACERMON_TERM_IOSTREAM_USER_H
-#define ORCA2_TRACERMON_TERM_IOSTREAM_USER_H
+#ifndef TERM_IOSTREAM_USER_H
+#define TERM_IOSTREAM_USER_H
 
 #include <hydroutil/subsystemthread.h>
 #include <orcaice/context.h>

@@ -7,8 +7,8 @@
  * the LICENSE file included in this distribution.
  *
  */
-#ifndef _ORCA2_OGNODE_COMPONENT_H_
-#define _ORCA2_OGNODE_COMPONENT_H_
+#ifndef COMPONENT_H
+#define COMPONENT_H
 
 #include <orcaice/component.h>
 #include <hydroutil/safethread.h>

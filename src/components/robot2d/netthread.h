@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_ROBOT2D_NETWORK_THREAD_H
-#define ORCA2_ROBOT2D_NETWORK_THREAD_H
+#ifndef NETWORK_THREAD_H
+#define NETWORK_THREAD_H
 
 #include <hydroutil/subsystemthread.h>
 #include <orcaice/context.h>
