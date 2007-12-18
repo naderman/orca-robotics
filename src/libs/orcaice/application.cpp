@@ -197,6 +197,9 @@ Application::run( int argc, char* argv[] )
     catch ( const std::string &e ) {
         exceptionSS << "Caught exception while starting component: " << e;
     }
+    catch ( const char *e ) {
+        exceptionSS << "Caught exception while starting component: " << e;
+    }
     catch ( ... ) {
         exceptionSS << "Caught exception while starting component.";
     }
