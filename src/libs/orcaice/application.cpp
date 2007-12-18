@@ -175,9 +175,9 @@ Application::run( int argc, char* argv[] )
     initTracerInfo( component_.tag()+": Application initialized" );
 
     //
-    // Start the component, catching OrcaIce exceptions.
-    // Other exception types will get caught by the Ice::Application.
+    // Start the component, catching all exceptions
     //
+    stringstream exceptionSS;
     try
     {
         component_.start();
@@ -188,17 +188,18 @@ Application::run( int argc, char* argv[] )
             initTracerInfo( component_.tag()+": Component started" );
         }
     }
-    catch ( const hydroutil::Exception & e )
-    {
-        initTracerError( component_.tag()+": Caught OrcaIce exception: "+e.what() );
+    catch ( const Ice::Exception &e ) {
+        exceptionSS << "Caught exception while starting component : " << e;
+    }
+    catch ( const std::exception &e ) {
+        exceptionSS << "Caught exception while starting component: " << e.what();
+    }
+    catch ( ... ) {
+        exceptionSS << "Caught exception while starting component.";
+    }
 
-        // NOTE: in principle, we should try to stop the component first
-        //       but, if the exception comes from the constructor, have to make sure we don't try to stop
-        //      the threads which were not started yet. Tried in SegwayrRmp and didn't work.
-//         initTracerError( component_.tag()+": Unexpected exception from component. Stopping component..." );
-//         component_.stop();
-//         initTracerInfo( component_.tag()+": Component stopped" );
-        
+    if ( !exceptionSS.str().empty() ) {
+        initTracerError( component_.tag()+": "+exceptionSS.str() );
         initTracerInfo( component_.tag()+": Application quitting. Orca out." );
         return 1;
     }
