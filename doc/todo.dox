@@ -73,6 +73,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
      programatic methond used before. (alex m)
    - Context now returns references to Tracer and Status instead of pointers (alex m)
    - added conversion function to hydroutil::Context
+   - better feedback on exceptions caught during component startup. no need to catch them in Component::start() just to print them out.
 
 @par Updated interfaces
 
