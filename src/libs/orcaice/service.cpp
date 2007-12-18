@@ -186,9 +186,9 @@ Service::start( const ::std::string        & name,
     initTracerInfo( component_->tag()+": Service initialized" );
 
     //
-    // Start the component, catching OrcaIce exceptions.
-    // NOTE: Does IceBox catch any? Doesn't look like it, so we catch Ice exceptions as well.
+    // Start the component, catching all exceptions
     //
+    stringstream exceptionSS;
     try
     {
         component_->start();
@@ -196,20 +196,25 @@ Service::start( const ::std::string        & name,
             initTracerInfo( component_->tag()+": Component started" );
         }
     }
-    catch ( Ice::Exception & e )
-    {
-        initTracerError( component_->tag()+": Caught Ice exception:" );
-        std::cerr << e << std::endl;
-//         initTracerError( component_->tag()+": unexpected Ice exception from component. Stopping component..." );
-//         component_->stop();
-        initTracerInfo( component_->tag()+": Service quitting.." );
+    catch ( const Ice::Exception &e ) {
+        exceptionSS << "Caught exception while starting component : " << e;
     }
-    catch ( hydroutil::Exception & e )
-    {
-        initTracerError( component_->tag()+": Caught OrcaIce exception: "+e.what() );
-//         initTracerError( component_->tag()+": unexpected OrcaIce exception from component. Stopping component..." );
-//         component_->stop();
-        initTracerInfo( component_->tag()+": Service quitting.." );
+    catch ( const std::exception &e ) {
+        exceptionSS << "Caught exception while starting component: " << e.what();
+    }
+    catch ( const std::string &e ) {
+        exceptionSS << "Caught exception while starting component: " << e;
+    }
+    catch ( const char *e ) {
+        exceptionSS << "Caught exception while starting component: " << e;
+    }
+    catch ( ... ) {
+        exceptionSS << "Caught exception while starting component.";
+    }
+
+    if ( !exceptionSS.str().empty() ) {
+        initTracerError( component_->tag()+": "+exceptionSS.str() );
+        initTracerInfo( component_->tag()+": Service quitting." );
     }
 }
 
