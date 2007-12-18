@@ -91,6 +91,7 @@ void TestComponent::start()
     // wait a bit for the ComponentThread to call process()
     IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
 
+    context().status().addSubsystem( "core" );
     context().status().setMaxHeartbeatInterval( "core", 10 );
     context().status().initialising( "core", "holding fingers crossed" );
     context().status().heartbeat( "core" );
