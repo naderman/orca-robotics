@@ -27,7 +27,7 @@ This page describes everything you need to know about writing and using Orca con
 
 @section orca_doc_configfiles_order Sources and Order of Loading
 
-Configuration parameters are loaded in this order, earlier sources overwritten by later once.
+Configuration parameters are loaded in this order, earlier sources overwritten by later ones.
 
 -# Built-in defaults
 -# Global configuration file, specified in one of 3 ways (we use the first one we find):
