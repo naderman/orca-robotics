@@ -31,7 +31,7 @@ PingerI::PingerI( const std::string      &ifaceTag,
         stringstream ss;
         ss << "Experimental ping to localhost failed: " << e.what();
         context_.tracer().error( ss.str() );
-        throw hydroping::PingException( ss.str() );
+        throw hydroping::PingException( ERROR_INFO, ss.str() );
     }
 }
 
