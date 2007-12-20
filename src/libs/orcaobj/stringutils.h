@@ -39,6 +39,7 @@
 #include <orca/tracer.h>
 #include <orca/velocitycontrol2d.h>
 #include <orca/wifi.h>
+#include <orca/properties.h>
 
 namespace orcaice
 {
@@ -253,6 +254,8 @@ std::string toString( const orca::WifiData& );
 std::string toString( const orca::OperationMode &o );
 //! Converts to string (part of wifi interface)
 std::string toString( const orca::LinkQualityType &l );
+//! Converts to string
+std::string toString( const orca::PropertiesData& );
 
 //std::string toString( const orca::PathPlanner2dData& );
 //std::string toString( const orca::PathPlanner2dTask& );

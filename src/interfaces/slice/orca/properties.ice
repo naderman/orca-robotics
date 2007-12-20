@@ -48,6 +48,12 @@ interface Properties
     ["cpp:const"] idempotent PropertiesData getData()
         throws DataNotExistException;
 
+    //! Allow remote clients to set new properties.  
+    //! These will be merged with the working property set:
+    //!   - new properties are added to the set.
+    //!   - properties which already exist in the set are over-written.
+    void setData( PropertiesData data );
+
     /*!
      * Mimics IceStorm's subscribe() but without QoS, for now. The
      * implementation may choose to implement the data push internally

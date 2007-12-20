@@ -13,5 +13,9 @@ IF ( BUILD )
     GLOBAL_ADD_LIBRARY( ${LIB_NAME} SHARED ${SRCS} )
     
     TARGET_LINK_LIBRARIES( ${LIB_NAME} OrcaProbe )
+
+    IF ( BUILD_TESTS )
+        ADD_SUBDIRECTORY ( test )
+    ENDIF ( BUILD_TESTS )
     
 ENDIF (BUILD )

@@ -10,27 +10,20 @@
  
 #include <IceStorm/IceStorm.h> // used in initTracer()
 #include <string>
-
 #include <orca/orca.h>
 #include <orca/properties.h>
 #include <orcaice/orcaice.h>
-
 #include <hydroutil/localstatus.h>
 #include <hydroutil/localtracer.h>
-
 #include "localhome.h"
 #include "homeI.h"
-
 #include "statusI.h"
-
 #include "tracerI.h"
-
 #include "privateutils.h"
-
 #include "component.h"
-
 #include "detail/componentthread.h"
 #include "detail/privateutils.h"
+#include <orcaobj/stringutils.h>
 
 // debug only
 #include <iostream>
@@ -65,8 +58,8 @@ Component::init( const orca::FQComponentName& name,
     //
     context_.tracer_ = initTracer();
     context_.status_ = initStatus();
-    context_.home_   = initHome();
     getNetworkProperties();
+    context_.home_   = initHome();
     componentThread_ = new ComponentThread( homePrx_, *(context_.status_), interfaceFlag_, context_ );
     try {
         componentThread_->start();
@@ -222,36 +215,35 @@ Component::initHome()
 void
 Component::getNetworkProperties()
 {
-    // disabled for now
-#if 0
-    cout<<"TRACE(component.cpp): TODO: AlexB: What properties will Home report??" << endl;
-    cout<<"TRACE(component.cpp): TODO: AlexB: What properties will Home report??" << endl;
-    cout<<"TRACE(component.cpp): TODO: AlexB: What properties will Home report??" << endl;
-    cout<<"TRACE(component.cpp): TODO: AlexB: What properties will Home report??" << endl;
-    cout<<"TRACE(component.cpp): TODO: AlexB: What properties will Home report??" << endl;
-    cout<<"TRACE(component.cpp): TODO: AlexB: What properties will Home report??" << endl;
-    cout<<"TRACE(component.cpp): TODO: AlexB: What properties will Home report??" << endl;
-    cout<<"TRACE(component.cpp): TODO: AlexB: What properties will Home report??" << endl;
-    cout<<"TRACE(component.cpp): TODO: AlexB: What properties will Home report??" << endl;
-
     // If _anything_ goes wrong, print an error message and throw exception
     try {
+        // Connect to the remote properties server
         std::string propertyServerProxyString = orcaice::getPropertyWithDefault( properties(), 
                                                                                  "Orca.PropertyServerProxyString",
                                                                                  "" );
         if ( propertyServerProxyString.empty() )
             return;
 
+        // Get the properties from the remote properties server
         orca::PropertiesPrx propertyPrx;
         orcaice::connectToInterfaceWithString( context(), propertyPrx, propertyServerProxyString );
-        std::map<std::string,std::string> netProps = propertyPrx->getData();
+        orca::PropertiesData propData = propertyPrx->getData();
+        const std::map<std::string,std::string> &netProps = propData.properties;
 
-        for ( std::map<string,string>::iterator it=netProps.begin(); it!=netProps.end(); ++it ) 
+        stringstream ssProps;
+        ssProps << "Component::getNetworkProperties(): got network properties: " << orcaice::toString(propData);
+        context_.tracer().debug( ssProps.str(), 3 );
+
+        // Copy them into our properties, without over-writing anything that's already set
+        for ( std::map<string,string>::const_iterator it=netProps.begin(); it!=netProps.end(); ++it ) 
         {
             const bool forceTransfer = false;
-//            detail::transferProperty( properties(), it->first, it->second, it->first, forceTransfer );
+            const string &fromKey   = it->first;
+            const string &fromValue = it->second;
+            const string &toKey     = it->first;
+//            detail::transferProperty( properties(), fromKey, fromValue, toKey, forceTransfer );
             Ice::PropertiesPtr prop = properties();
-            int ret = detail::transferProperty( prop, it->first, it->second, it->first, forceTransfer );
+            int ret = detail::transferProperty( prop, fromKey, fromValue, toKey, forceTransfer );
             stringstream ss;
             if ( ret == 0 )
             {
@@ -296,7 +288,6 @@ Component::getNetworkProperties()
         context().tracer().error( ss.str() );
         throw;
     }
-#endif
 }
 
 void 

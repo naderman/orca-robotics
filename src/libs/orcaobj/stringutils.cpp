@@ -1403,6 +1403,20 @@ toString( const orca::WifiData &obj )
     return s.str();
 }
 
+std::string
+toString( const orca::PropertiesData &obj )
+{
+    std::ostringstream s;
+    s << " PropertiesData ["<<obj.properties.size() << " elements]:"<<endl;
+    for ( map<string,string>::const_iterator it = obj.properties.begin();
+          it != obj.properties.end();
+          it++ )
+    {
+        s << "  " << it->first << "=" << it->second << endl;
+    }
+    return s.str();
+}
+
 std::string 
 toString( const orca::FeatureMap2dData &obj )
 {
