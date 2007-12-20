@@ -14,7 +14,7 @@
 #include <IceStorm/IceStorm.h>
 
 #include <orca/pathplanner2d.h>
-#include <hydroutil/proxy.h>
+#include <hydroutil/store.h>
 
 namespace pathplanner
 {
@@ -23,8 +23,8 @@ class PathPlanner2dI : public orca::PathPlanner2d
 {
 public:
     PathPlanner2dI( 
-        hydroutil::Proxy<orca::PathPlanner2dTask> &pathPlannerTaskProxy,
-        hydroutil::Proxy<orca::PathPlanner2dData> &pathPlannerDataProxy,
+        hydroutil::Store<orca::PathPlanner2dTask> &pathPlannerTaskProxy,
+        hydroutil::Store<orca::PathPlanner2dData> &pathPlannerDataProxy,
         const orcaice::Context & context
     );
 
@@ -41,10 +41,10 @@ public:
 
 private:
 
-    hydroutil::Proxy<orca::PathPlanner2dTask>& pathPlannerTaskProxy_;
+    hydroutil::Store<orca::PathPlanner2dTask>& pathPlannerTaskStore_;
 
     // the driver puts the latest computed path into here
-    hydroutil::Proxy<orca::PathPlanner2dData>& pathPlannerDataProxy_;
+    hydroutil::Store<orca::PathPlanner2dData>& pathPlannerDataStore_;
 
     // The topic to which we'll publish
     IceStorm::TopicPrx topicPrx_;

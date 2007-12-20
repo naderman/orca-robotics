@@ -15,7 +15,7 @@
 #include <IceStorm/IceStorm.h>
 
 // utilities
-#include <hydroutil/proxy.h>
+#include <hydroutil/store.h>
 #include <orcaice/context.h>
 
 namespace hydroutil {
@@ -66,7 +66,7 @@ private:
     void internalUnsubscribe(const ::orca::CameraConsumerPrx&);
 
     orca::CameraDescription     descr_;
-    hydroutil::Proxy<orca::CameraData> dataProxy_;
+    hydroutil::Store<orca::CameraData> dataStore_;
 
     orca::CameraConsumerPrx    consumerPrx_;
     IceStorm::TopicPrx             topicPrx_;

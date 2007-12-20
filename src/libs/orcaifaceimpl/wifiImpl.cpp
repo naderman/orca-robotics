@@ -87,7 +87,7 @@ WifiImpl::internalGetData() const
 {
     context_.tracer().debug( "WifiImpl::internalGetData()", 5 );
 
-    if ( dataProxy_.isEmpty() )
+    if ( dataStore_.isEmpty() )
     {
         std::stringstream ss;
         ss << "No data available! (interface="<<interfaceName_<<")";
@@ -95,7 +95,7 @@ WifiImpl::internalGetData() const
     }
 
     orca::WifiData data;
-    dataProxy_.get( data );
+    dataStore_.get( data );
     return data;
 }
 
@@ -129,7 +129,7 @@ WifiImpl::internalUnsubscribe(const ::orca::WifiConsumerPrx& subscriber)
 void
 WifiImpl::localSetAndSend( const orca::WifiData& data )
 {
-    dataProxy_.set( data );
+    dataStore_.set( data );
     
     // Try to push to IceStorm.
     tryPushToIceStormWithReconnect<orca::WifiConsumerPrx,orca::WifiData>

@@ -17,7 +17,7 @@
 // include provided interfaces
 #include <orca/pixmap.h>
 
-#include <hydroutil/proxy.h>
+#include <hydroutil/store.h>
 #include <orcaice/context.h>
 
 namespace orcaifaceimpl {
@@ -52,7 +52,7 @@ private:
     void internalUnsubscribe(const ::orca::PixMapConsumerPrx&);
 
     // Holds the latest data
-    hydroutil::Proxy<orca::PixMapData> dataProxy_;
+    hydroutil::Store<orca::PixMapData> dataStore_;
 
     // The topic to which we'll publish
     IceStorm::TopicPrx             topicPrx_;

@@ -57,7 +57,7 @@ namespace {
 
 MainThread::MainThread( const orcaice::Context & context )
     : hydroutil::SubsystemThread( context_.tracer(), context.status(), "MainThread" ),
-      pathPlannerTaskProxy_(0),
+      pathPlannerTaskStore_(0),
       context_(context)
 {
     subStatus().setMaxHeartbeatInterval( 30.0 );
@@ -65,7 +65,7 @@ MainThread::MainThread( const orcaice::Context & context )
 
 MainThread::~MainThread()
 {
-    delete pathPlannerTaskProxy_;
+    delete pathPlannerTaskStore_;
 }
 
 void
@@ -103,11 +103,11 @@ MainThread::initNetwork()
 
     // PathPlanner2d
     // create the proxy/buffer for tasks
-    pathPlannerTaskProxy_ = new hydroutil::Proxy<PathPlanner2dTask>; 
-    pathPlannerDataProxy_ = new hydroutil::Proxy<PathPlanner2dData>;
+    pathPlannerTaskStore_ = new hydroutil::Store<PathPlanner2dTask>; 
+    pathPlannerDataStore_ = new hydroutil::Store<PathPlanner2dData>;
 
     subStatus().initialising("Creating PathPlanner2d Interface" );
-    pathPlannerI_ = new PathPlanner2dI( *pathPlannerTaskProxy_, *pathPlannerDataProxy_, context_ );
+    pathPlannerI_ = new PathPlanner2dI( *pathPlannerTaskStore_, *pathPlannerDataStore_, context_ );
     Ice::ObjectPtr pathPlannerObj = pathPlannerI_;
     
     // two possible exceptions will kill it here, that's what we want
@@ -210,7 +210,7 @@ MainThread::walk()
     initDriver();
 
     assert( driver_.get() );
-    assert( pathPlannerTaskProxy_ );
+    assert( pathPlannerTaskStore_ );
 
     // we are in a different thread now, catch all stray exceptions
 
@@ -233,7 +233,7 @@ MainThread::walk()
             
             while ( !isStopping() )
             {
-                int ret = pathPlannerTaskProxy_->getNext( task, 1000 );
+                int ret = pathPlannerTaskStore_->getNext( task, 1000 );
                 if ( ret==0 ) {
                     haveTask = true;
                     context_.tracer().info("task arrived");  

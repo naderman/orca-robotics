@@ -26,17 +26,15 @@ namespace orcaice
 {
 
 std::string 
-getGlobalConfigFilename( const Ice::StringSeq & args )
+getGlobalConfigFilename( const Ice::PropertiesPtr &props )
 {
     std::string filename;
 
     // first look for Orca.GlobalConfig parameter
-    for ( unsigned int i=0; i<args.size(); ++i ) {
-        if ( !args[i].compare( 0,19, "--Orca.GlobalConfig" ) )
-        {
-            filename = args[i].substr( 20, args[i].size()-1 );
-            return filename;
-        }
+    int ret = orcaice::getProperty( props, "Orca.GlobalConfig", filename );
+    if ( ret == 0 )
+    {
+        return filename;
     }
 
     // now look in this special environment variable

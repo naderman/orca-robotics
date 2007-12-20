@@ -76,16 +76,16 @@ PathMaintainer::checkPathOut( const orca::PathFollower2dData& pathData )
 void
 PathMaintainer::checkForNewPath()
 {
-    if ( pathFollowerInterface_.newPathArrivedProxy().isNewData() || 
-         pathFollowerInterface_.activationArrivedProxy().isNewData() )
+    if ( pathFollowerInterface_.newPathArrivedStore().isNewData() || 
+         pathFollowerInterface_.activationArrivedStore().isNewData() )
     {
         // Load the path if it's there
-        if ( pathFollowerInterface_.newPathArrivedProxy().isNewData() )
+        if ( pathFollowerInterface_.newPathArrivedStore().isNewData() )
         {
             // Clear the newPathArrivedProxy
             bool dummy;
-            pathFollowerInterface_.newPathArrivedProxy().get(dummy);
-            pathFollowerInterface_.pathProxy().get( path_ );
+            pathFollowerInterface_.newPathArrivedStore().get(dummy);
+            pathFollowerInterface_.pathStore().get( path_ );
             pathFollowerInterface_.localSetData( path_ ); //informs consumers
 
             // Issue warnings if the path is screwy
@@ -93,12 +93,12 @@ PathMaintainer::checkForNewPath()
         }
 
         // Have we been told to start?
-        if ( pathFollowerInterface_.activationArrivedProxy().isNewData() )
+        if ( pathFollowerInterface_.activationArrivedStore().isNewData() )
         {
             context_.tracer().debug( "PathMaintainer: activating.", 1 );
             bool dummy;
-            pathFollowerInterface_.activationArrivedProxy().get(dummy);
-            pathFollowerInterface_.activationTimeProxy().get(pathStartTime_);
+            pathFollowerInterface_.activationArrivedStore().get(dummy);
+            pathFollowerInterface_.activationTimeStore().get(pathStartTime_);
             wpIndex_ = 0;
             if ( path_.path.size() == 0 )
             {

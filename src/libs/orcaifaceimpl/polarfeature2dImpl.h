@@ -62,7 +62,7 @@ private:
     void internalUnsubscribe(const ::orca::PolarFeature2dConsumerPrx&);
 
     // Holds the latest data
-    hydroutil::Store<orca::PolarFeature2dData> dataProxy_;
+    hydroutil::Store<orca::PolarFeature2dData> dataStore_;
 
     // The topic to which we'll publish
     IceStorm::TopicPrx              topicPrx_;

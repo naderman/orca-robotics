@@ -30,12 +30,12 @@ MainThread::MainThread( DriverFactory                &driverFactory,
     pathMaintainer_(NULL),
     driver_(NULL),
     driverFactory_(driverFactory),
-    obsConsumer_(new orcaifaceimpl::ProxiedRangeScanner2dConsumerImpl(context)),
-    locConsumer_(new orcaifaceimpl::ProxiedLocalise2dConsumerImpl(context)),
-    odomConsumer_(new orcaifaceimpl::ProxiedOdometry2dConsumerImpl(context)),
-    obsProxy_(NULL),
-    locProxy_(NULL),
-    odomProxy_(NULL),
+    obsConsumer_(new orcaifaceimpl::StoringRangeScanner2dConsumerImpl(context)),
+    locConsumer_(new orcaifaceimpl::StoringLocalise2dConsumerImpl(context)),
+    odomConsumer_(new orcaifaceimpl::StoringOdometry2dConsumerImpl(context)),
+    obsStore_(NULL),
+    locStore_(NULL),
+    odomStore_(NULL),
     pathFollowerInterface_(pathFollowerInterface),
     clock_(clock),
     testMode_(false),
@@ -57,9 +57,9 @@ MainThread::MainThread( DriverFactory               &driverFactory,
     obsConsumer_(NULL),
     locConsumer_(NULL),
     odomConsumer_(NULL),
-    obsProxy_(NULL),
-    locProxy_(NULL),
-    odomProxy_(NULL),
+    obsStore_(NULL),
+    locStore_(NULL),
+    odomStore_(NULL),
     pathFollowerInterface_(pathFollowerInterface),
     testSimulator_(&testSimulator),
     clock_(clock),
@@ -82,9 +82,9 @@ MainThread::ensureProxiesNotEmpty()
     // Ensure that there's something in our proxys
     while ( !isStopping() )
     {
-        bool gotObs  = !obsProxy_->isEmpty();
-        bool gotLoc  = !locProxy_->isEmpty();
-        bool gotOdom = !odomProxy_->isEmpty();
+        bool gotObs  = !obsStore_->isEmpty();
+        bool gotLoc  = !locStore_->isEmpty();
+        bool gotOdom = !odomStore_->isEmpty();
 
 
         if ( gotObs && gotLoc && gotOdom )
@@ -103,7 +103,7 @@ MainThread::ensureProxiesNotEmpty()
     }
     // Set the initial time
     orca::RangeScanner2dDataPtr obs;
-    obsProxy_->get( obs );
+    obsStore_->get( obs );
     clock_.setTime( obs->timeStamp );
 }
 
@@ -361,17 +361,17 @@ MainThread::setup()
         subscribeForLocalisation();
         subscribeForObservations();
 
-        obsProxy_  = &(obsConsumer_->proxy());
-        locProxy_  = &(locConsumer_->proxy());
-        odomProxy_ = &(odomConsumer_->proxy());
+        obsStore_  = &(obsConsumer_->store());
+        locStore_  = &(locConsumer_->store());
+        odomStore_ = &(odomConsumer_->store());
     }
     else
     {
         vehicleDescr_ = testSimulator_->getVehicleDescription();
         scannerDescr_ = testSimulator_->rangeScanner2dDescription();
-        obsProxy_  = &(testSimulator_->obsProxy_);
-        locProxy_  = &(testSimulator_->locProxy_);
-        odomProxy_ = &(testSimulator_->odomProxy_);
+        obsStore_  = &(testSimulator_->obsStore_);
+        locStore_  = &(testSimulator_->locStore_);
+        odomStore_ = &(testSimulator_->odomStore_);
     }
 
     stringstream descrStream;
@@ -467,7 +467,7 @@ MainThread::walk()
         try 
         {
             // The rangeScanner provides the 'clock' which is the trigger for this loop
-            int sensorRet = obsProxy_->getNext( rangeData_, TIMEOUT_MS );
+            int sensorRet = obsStore_->getNext( rangeData_, TIMEOUT_MS );
 
             if ( sensorRet != 0 )
             {
@@ -487,8 +487,8 @@ MainThread::walk()
             // Tell everyone what time it is, boyeee
             clock_.setTime( rangeData_->timeStamp );
 
-            locProxy_->get( localiseData_ );
-            odomProxy_->get( odomData_ );
+            locStore_->get( localiseData_ );
+            odomStore_->get( odomData_ );
 
             const double THRESHOLD = 1.0; // seconds
             if ( areTimestampsDodgy( rangeData_, localiseData_, odomData_, THRESHOLD ) )

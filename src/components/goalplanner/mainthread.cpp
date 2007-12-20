@@ -14,7 +14,6 @@
 #include <orcaobj/timeutils.h>
 #include <orcaogmap/orcaogmap.h>
 #include "pathfollower2dI.h"
-#include "localise2dconsumerI.h"
 
 #include "mainthread.h"
 

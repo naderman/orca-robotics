@@ -247,7 +247,7 @@ Simulator::fillPipes()
     orca::Time ts = now();
 
     scan_->timeStamp = ts;
-    obsProxy_.set(scan_);
+    obsStore_.set(scan_);
     laserInterface_->localSetAndSend(scan_);
 
     orca::Localise2dData locData;
@@ -263,7 +263,7 @@ Simulator::fillPipes()
     locData.hypotheses[0].cov.tt = 1.0*M_PI/180.0;
     locData.hypotheses[0].weight = 1.0;
     locData.timeStamp = ts;
-    locProxy_.set(locData);
+    locStore_.set(locData);
     localiseInterface_->localSetAndSend(locData);
 
     orca::Odometry2dData posData;
@@ -275,7 +275,7 @@ Simulator::fillPipes()
     posData.motion.w   = velRot_;
     posData.timeStamp  = ts;
 
-    odomProxy_.set( posData );
+    odomStore_.set( posData );
 }
 
 void 

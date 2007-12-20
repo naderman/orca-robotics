@@ -19,12 +19,15 @@ using namespace std;
 int 
 main(int argc, char * argv[])
 {
-    cout<<"testing getGlobalConfigFilename() with Orca.GlobalConfig ... ";
+    std::string expect;
+    std::string filename;
     Ice::StringSeq args;
-    args.push_back( "program" );
-    std::string expect = "orca.config_test";
-    args.push_back( "--Orca.GlobalConfig="+expect );
-    std::string filename = orcaice::getGlobalConfigFilename( args );
+    
+    cout<<"testing getGlobalConfigFilename() with Orca.GlobalConfig ... ";
+    Ice::PropertiesPtr prop = Ice::createProperties();
+    prop->setProperty( "Orca.GlobalConfig", "orca.config_test" );
+    expect = "orca.config_test";
+    filename = orcaice::getGlobalConfigFilename( prop );
     if ( filename != expect ) {
         cout<<"failed"<<endl<<"expect="<<expect<<"; got="<<filename<<endl;
         return EXIT_FAILURE;
@@ -46,8 +49,8 @@ main(int argc, char * argv[])
         return EXIT_FAILURE;
     }
 #endif
-    Ice::StringSeq emptyargs;
-    filename = orcaice::getGlobalConfigFilename( emptyargs );
+    Ice::PropertiesPtr emptyProps = Ice::createProperties();
+    filename = orcaice::getGlobalConfigFilename( emptyProps );
     if ( filename != expect ) {
         cout<<"failed"<<endl<<"expect="<<expect<<"; got="<<filename<<endl;
         return EXIT_FAILURE;
@@ -79,7 +82,7 @@ main(int argc, char * argv[])
         cout<<"failed to set HOME env variable."<<endl;
         return EXIT_FAILURE;
     }
-    filename = orcaice::getGlobalConfigFilename( emptyargs );
+    filename = orcaice::getGlobalConfigFilename( emptyProps );
     if ( filename != (expect+"/.orcarc") ) {
         cout<<"failed"<<endl<<"expect="<<expect<<"/.orcarc"<<"; got="<<filename<<endl;
         return EXIT_FAILURE;
@@ -87,7 +90,7 @@ main(int argc, char * argv[])
     cout<<"ok"<<endl;
 #else
     // in windows we don't use the HOME variable.
-    filename = orcaice::getGlobalConfigFilename( emptyargs );
+    filename = orcaice::getGlobalConfigFilename( emptyProps );
     if ( filename != "C:\\orca.ini" ) {
         cout<<"failed"<<endl<<"\texpect=C:\\orca.ini"<<"; got="<<filename<<endl;
         return EXIT_FAILURE;
@@ -108,10 +111,9 @@ main(int argc, char * argv[])
         return EXIT_FAILURE;
     }
 #endif
-    args.clear();
     try
     {
-        filename = orcaice::getGlobalConfigFilename( args );
+        filename = orcaice::getGlobalConfigFilename( emptyProps );
         cout<<"failed"<<endl<<"\texpect to throw exception with no input and no env variables :"<<filename<<endl;
         return EXIT_FAILURE;
     }
@@ -121,8 +123,7 @@ main(int argc, char * argv[])
     }
 #else
     // in windows we don't use the HOME variable.
-    args.clear();
-    filename = orcaice::getGlobalConfigFilename( args );
+    filename = orcaice::getGlobalConfigFilename( emptyProps );
     if ( filename != "C:\\orca.ini" ) {
         cout<<"failed"<<endl<<"\texpect=C:\\orca.ini"<<"; got="<<filename<<endl;
         return EXIT_FAILURE;
@@ -193,7 +194,8 @@ main(int argc, char * argv[])
     cout<<"ok"<<endl;
 
     cout<<"testing getApplicationConfigFilename() with empty input ... ";
-    filename = orcaice::getApplicationConfigFilename( emptyargs );
+    args.clear();
+    filename = orcaice::getApplicationConfigFilename( args );
     expect = "";
     if ( filename != expect ) {
         cout<<"failed"<<endl<<"\texpect="<<expect<<"; got="<<filename<<endl;
@@ -233,7 +235,8 @@ main(int argc, char * argv[])
 
     cout<<"testing getServiceConfigFilename() with empty input ... ";
     try {
-        filename = orcaice::getServiceConfigFilename( emptyargs );
+        args.clear();
+        filename = orcaice::getServiceConfigFilename( args );
         cout<<"failed"<<endl<<"expected to catch an exception."<<endl;
         return EXIT_FAILURE;
     }

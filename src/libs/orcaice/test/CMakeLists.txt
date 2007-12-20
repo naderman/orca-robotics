@@ -3,9 +3,6 @@ INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 ADD_EXECUTABLE( ptrbuffertest ptrbuffertest.cpp )
 GLOBAL_ADD_TEST( PtrBufferTest ptrbuffertest )
 
-ADD_EXECUTABLE( ptrproxytest ptrproxytest.cpp )
-GLOBAL_ADD_TEST( PtrProxyTest ptrproxytest )
-
 ADD_EXECUTABLE( ptrstoretest ptrstoretest.cpp )
 GLOBAL_ADD_TEST( PtrStoreTest ptrstoretest )
 

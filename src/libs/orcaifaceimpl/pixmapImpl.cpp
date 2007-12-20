@@ -87,7 +87,7 @@ PixMapImpl::internalGetData() const
 {
     context_.tracer().debug( "PixMapImpl::internalGetData()", 5 );
 
-    if ( dataProxy_.isEmpty() )
+    if ( dataStore_.isEmpty() )
     {
         std::stringstream ss;
         ss << "No data available! (interface="<<interfaceName_<<")";
@@ -95,7 +95,7 @@ PixMapImpl::internalGetData() const
     }
 
     PixMapData data;
-    dataProxy_.get( data );
+    dataStore_.get( data );
     return data;
 }
 
@@ -131,7 +131,7 @@ PixMapImpl::localSetAndSend( const ::orca::PixMapData &data )
 {
     //cout<<"TRACE(ogmapI.cpp): localSetData: " << orcaice::toString(data) << endl;
 
-    dataProxy_.set( data );
+    dataStore_.set( data );
     
     // Try to push to IceStorm.
     tryPushToIceStormWithReconnect<PixMapConsumerPrx,orca::PixMapData>

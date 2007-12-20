@@ -14,7 +14,7 @@
 #include <orca/button.h>
 #include <IceStorm/IceStorm.h>
 
-#include <hydroutil/proxy.h>
+#include <hydroutil/store.h>
 #include <hydroutil/notify.h>
 #include <orcaice/context.h>
 

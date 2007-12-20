@@ -20,7 +20,7 @@
 #include <orcaice/orcaice.h>
 
 // utilities
-#include <hydroutil/proxy.h>
+#include <hydroutil/store.h>
 
 namespace imu {
 
@@ -52,7 +52,7 @@ public:
 private:
 
     // the driver will put the latest raw data into this
-    hydroutil::Proxy<orca::ImuData> imuDataProxy_;
+    hydroutil::Store<orca::ImuData> imuDataStore_;
     
     //publishers
     orca::ImuConsumerPrx imuPublisher_;

@@ -40,12 +40,12 @@ ImuI::getData(const Ice::Current& current) const
     // create a null pointer. data will be cloned into it.
     orca::ImuData data;
     // we don't need to pop the data here because we don't block on it.
-    if ( imuDataProxy_.isEmpty() )
+    if ( imuDataStore_.isEmpty() )
     {
         cout << "ERROR(imuI.cpp): getData() called when no data had been generated!!" << endl;
         throw orca::DataNotExistException( "Imu proxy is not populated yet" );
     }else{
-        imuDataProxy_.get( data );
+        imuDataStore_.get( data );
     }
 
     return data;
@@ -98,7 +98,7 @@ void
 ImuI::localSetData( const ::orca::ImuData& data )
 {
     // Stick it in the buffer so pullers can get it
-    imuDataProxy_.set( data );
+    imuDataStore_.set( data );
 
     try {
         // push it to IceStorm

@@ -100,7 +100,7 @@ OgMapImpl::internalGetData() const
 {
     context_.tracer().debug( "OgMapImpl::internalGetData()", 5 );
 
-    if ( dataProxy_.isEmpty() )
+    if ( dataStore_.isEmpty() )
     {
         std::stringstream ss;
         ss << "No data available! (interface="<<interfaceName_<<")";
@@ -108,7 +108,7 @@ OgMapImpl::internalGetData() const
     }
 
     orca::OgMapData data;
-    dataProxy_.get( data );
+    dataStore_.get( data );
     return data;
 }
 
@@ -144,7 +144,7 @@ OgMapImpl::localSetAndSend( const ::orca::OgMapData &data )
 {
     //cout<<"TRACE(ogmapI.cpp): localSetData: " << orcaice::toString(data) << endl;
 
-    dataProxy_.set( data );
+    dataStore_.set( data );
     
     // Try to push to IceStorm.
     tryPushToIceStormWithReconnect<orca::OgMapConsumerPrx,orca::OgMapData>

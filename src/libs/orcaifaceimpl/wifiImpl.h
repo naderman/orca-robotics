@@ -9,7 +9,7 @@
 #include <orca/wifi.h>
 
 // utilities
-#include <hydroutil/proxy.h>
+#include <hydroutil/store.h>
 #include <orcaice/context.h>
 
 namespace orcaifaceimpl
@@ -49,7 +49,7 @@ private:
     void internalSubscribe(const ::orca::WifiConsumerPrx&);
     void internalUnsubscribe(const ::orca::WifiConsumerPrx& );
 
-    hydroutil::Proxy<orca::WifiData> dataProxy_;
+    hydroutil::Store<orca::WifiData> dataStore_;
 
     orca::WifiConsumerPrx    consumerPrx_;
     IceStorm::TopicPrx       topicPrx_;

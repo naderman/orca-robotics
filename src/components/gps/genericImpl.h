@@ -13,7 +13,7 @@
 
 #include <IceStorm/IceStorm.h>
 
-#include <hydroutil/proxy.h>
+#include <hydroutil/store.h>
 #include <orcaice/context.h>
 #include <orcaifaceimpl/util.h>
 

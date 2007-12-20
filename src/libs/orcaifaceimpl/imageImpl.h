@@ -15,7 +15,7 @@
 #include <IceStorm/IceStorm.h>
 
 // utilities
-#include <hydroutil/proxy.h>
+#include <hydroutil/store.h>
 #include <orcaice/context.h>
 
 namespace hydroutil {
@@ -66,7 +66,7 @@ private:
 
     orca::ImageDescription     descr_;
     // yes, this is not a typo! It's safe to use a normal proxy with an Ice smart pointer.
-    hydroutil::Proxy<orca::ImageDataPtr> dataProxy_;
+    hydroutil::Store<orca::ImageDataPtr> dataStore_;
 
     orca::ImageConsumerPrx    consumerPrx_;
     IceStorm::TopicPrx        topicPrx_;

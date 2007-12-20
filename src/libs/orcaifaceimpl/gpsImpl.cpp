@@ -106,7 +106,7 @@ GpsImpl::internalGetData() const
 {
     context_.tracer().debug( "GpsImpl::internalGetData()", 5 );
 
-    if ( dataProxy_.isEmpty() )
+    if ( dataStore_.isEmpty() )
     {
         std::stringstream ss;
         ss << "No data available! (interface="<<interfaceName_<<")";
@@ -114,7 +114,7 @@ GpsImpl::internalGetData() const
     }
 
     orca::GpsData data;
-    dataProxy_.get( data );
+    dataStore_.get( data );
     return data;
 }
 
@@ -154,7 +154,7 @@ GpsImpl::internalUnsubscribe(const ::orca::GpsConsumerPrx& subscriber)
 void
 GpsImpl::localSet( const orca::GpsData& data )
 {
-    dataProxy_.set( data );
+    dataStore_.set( data );
 }
 
 void
@@ -162,7 +162,7 @@ GpsImpl::localSetAndSend( const orca::GpsData& data )
 {
 //     cout<<"TRACE(GpsIface.cpp): localSetAndSend: " << orcaice::toString(data) << endl;
 
-    dataProxy_.set( data );
+    dataStore_.set( data );
 
     // Try to push to IceStorm.
     tryPushToIceStormWithReconnect<orca::GpsConsumerPrx,orca::GpsData>

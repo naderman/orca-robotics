@@ -13,7 +13,7 @@
 
 #include <orca/pathfollower2d.h>
 
-#include <hydroutil/proxy.h>
+#include <hydroutil/store.h>
 #include <hydroutil/timer.h>
 
 #include <orcaqgui2d/guielement2d.h>
@@ -36,8 +36,8 @@ public:
     void setActivationTime( const orca::Time& absoluteTime, double relativeTime, const ::Ice::Current& );
     void setEnabledState( bool enabledState, const ::Ice::Current& );
 
-    hydroutil::Proxy<orca::PathFollower2dData> pathPipe_;
-    hydroutil::Proxy<int> indexPipe_;
+    hydroutil::Store<orca::PathFollower2dData> pathPipe_;
+    hydroutil::Store<int> indexPipe_;
 };
 ////////////////////////////////////////////////////////////////////////////////
 

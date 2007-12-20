@@ -25,15 +25,38 @@ namespace orcaice
 class Component;
 namespace detail
 {
+
     // Transfer a property from one property set to another
-    // returns 0 if it was transferred successfully
-    int transferProperty( Ice::PropertiesPtr &fromProperties, Ice::PropertiesPtr &toProperties,
-                            const std::string &fromKey, const std::string &toKey, bool force );
+    // returns:
+    //  0 if it was transferred successfully
+    //  1 if the property already existed in the target set and it was left untouched
+    // -1 if the property was not set in the source set, the target was left untouched
+    int 
+    transferProperty( const Ice::PropertiesPtr &fromProperties, 
+                      Ice::PropertiesPtr       &toProperties,
+                      const std::string        &fromKey,
+                      const std::string        &toKey,
+                      bool                      force );
+
+    // Transfer a property from one property set to another
+    // returns:
+    //  0 if it was transferred successfully
+    //  1 if the property already existed in the target set and it was left untouched
+    int
+    transferProperty( Ice::PropertiesPtr& toProperties,
+                      const std::string&  fromKey,
+                      const std::string&  fromValue,
+                      const std::string&  toKey,
+                      bool                force );
 
     // Internal helper function.
-    // behaves like the function above. if key is missing, sets the toValue to defaultValue.
-    void transferPropertyWithDefault( Ice::PropertiesPtr &fromProperties, Ice::PropertiesPtr &toProperties,
-                        const std::string &fromKey, const std::string &toKey, const std::string &defaultValue, bool force );
+    // behaves like transferProperty. if key is missing, sets the toValue to defaultValue.
+    void transferPropertyWithDefault( const Ice::PropertiesPtr &fromProperties,
+                                      Ice::PropertiesPtr       &toProperties,
+                                      const std::string        &fromKey,
+                                      const std::string        &toKey,
+                                      const std::string        &defaultValue,
+                                      bool                      force );
 
     void setFactoryProperties( Ice::PropertiesPtr &properties, const std::string &compTag );
 
@@ -41,7 +64,7 @@ namespace detail
     void setGlobalProperties( Ice::PropertiesPtr & properties, const std::string & filename );
 
     // throws hydroutil::Exception if can't load the file
-    void setComponentProperties( Ice::PropertiesPtr & properties, const std::string & filename );
+    void setComponentPropertiesFromFile( Ice::PropertiesPtr & properties, const std::string & filename );
 
     /*
      *   Sets the ComponentName parameter.
@@ -62,7 +85,23 @@ namespace detail
     // Prints Ice, Orca, and (if not empty) Project version.
     // Project version is obatained from the component, this allows for non-orca projects
     void printAllVersions( const Component& component );
-    
+
+    // Use for 'Application's:
+    // adds to the set of properties by reading from the component's config file
+    void addPropertiesFromApplicationConfigFile( Ice::PropertiesPtr   &properties,
+                                                 const Ice::StringSeq &commandLineArgs,
+                                                 const std::string    &componentTag );
+
+    // Use for 'Service's:
+    // adds to the set of properties by reading from the component's config file
+    void addPropertiesFromServiceConfigFile( Ice::PropertiesPtr   &properties,
+                                             const Ice::StringSeq &commandLineArgs,
+                                             const std::string    &componentTag );
+
+    // adds to the set of properties by reading from the global config file
+    void addPropertiesFromGlobalConfigFile( Ice::PropertiesPtr   &properties,
+                                            const std::string    &componentTag );
+
 } // namespace
 } // namespace
 

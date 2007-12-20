@@ -99,7 +99,7 @@ PolarFeature2dImpl::internalGetData() const
 {
     context_.tracer().debug( "PolarFeature2dImpl::internalGetData()", 5 );
 
-    if ( dataProxy_.isEmpty() )
+    if ( dataStore_.isEmpty() )
     {
         std::stringstream ss;
         ss << "No data available! (interface="<<interfaceName_<<")";
@@ -108,7 +108,7 @@ PolarFeature2dImpl::internalGetData() const
 
     // create a null pointer. data will be cloned into it.
     orca::PolarFeature2dData data;
-    dataProxy_.get( data );
+    dataStore_.get( data );
 
     return data;
 }
@@ -153,7 +153,7 @@ PolarFeature2dImpl::localSet( const ::orca::PolarFeature2dData &data )
 {
     // cout << "PolarFeature2dImpl::internalSet data: " << orcaice::toString( data ) << endl;
     
-    dataProxy_.set( data );
+    dataStore_.set( data );
 }
 
 void
@@ -168,7 +168,7 @@ PolarFeature2dImpl::localSetAndSend( const ::orca::PolarFeature2dData &data )
 
     // cout << "PolarFeature2dImpl::internalSet data: " << orcaice::toString( data ) << endl;
     
-    dataProxy_.set( data );
+    dataStore_.set( data );
 
     // Try to push to IceStorm
     tryPushToIceStormWithReconnect<PolarFeature2dConsumerPrx,PolarFeature2dData>( context_,

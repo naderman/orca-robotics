@@ -202,6 +202,7 @@ private:
     orcaice::Home*   initHome();
     hydroutil::Tracer* initTracer();
     hydroutil::Status* initStatus();
+    void getNetworkProperties();
 
     // Component's context
     Context context_;

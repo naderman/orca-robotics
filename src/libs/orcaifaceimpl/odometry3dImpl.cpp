@@ -107,7 +107,7 @@ Odometry3dImpl::internalGetData() const
 {
     context_.tracer().debug( "Odometry3dImpl::internalGetData()", 5 );
 
-    if ( dataProxy_.isEmpty() )
+    if ( dataStore_.isEmpty() )
     {
         std::stringstream ss;
         ss << "No data available! (interface="<<interfaceName_<<")";
@@ -115,7 +115,7 @@ Odometry3dImpl::internalGetData() const
     }
 
     orca::Odometry3dData data;
-    dataProxy_.get( data );
+    dataStore_.get( data );
     return data;
 }
 
@@ -155,7 +155,7 @@ Odometry3dImpl::internalUnsubscribe(const ::orca::Odometry3dConsumerPrx& subscri
 void
 Odometry3dImpl::localSet( const orca::Odometry3dData& data )
 {
-    dataProxy_.set( data );
+    dataStore_.set( data );
 }
 
 void
@@ -163,7 +163,7 @@ Odometry3dImpl::localSetAndSend( const orca::Odometry3dData& data )
 {
 //     cout<<"TRACE(Odometry3dIface.cpp): localSetAndSend: " << orcaice::toString(data) << endl;
 
-    dataProxy_.set( data );
+    dataStore_.set( data );
 
     // Try to push to IceStorm.
     tryPushToIceStormWithReconnect<orca::Odometry3dConsumerPrx,orca::Odometry3dData>

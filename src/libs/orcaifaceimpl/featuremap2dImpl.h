@@ -9,7 +9,7 @@
 #include <orca/featuremap2d.h>
 
 // utilities
-#include <hydroutil/proxy.h>
+#include <hydroutil/store.h>
 #include <hydroutil/safethread.h>
 #include <orcaice/context.h>
 
@@ -50,7 +50,7 @@ private:
     void internalSubscribe(const ::orca::FeatureMap2dConsumerPrx&);
     void internalUnsubscribe(const ::orca::FeatureMap2dConsumerPrx& );
 
-    hydroutil::Proxy<orca::FeatureMap2dData> dataProxy_;
+    hydroutil::Store<orca::FeatureMap2dData> dataStore_;
 
     orca::FeatureMap2dConsumerPrx    consumerPrx_;
     IceStorm::TopicPrx       topicPrx_;

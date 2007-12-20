@@ -100,7 +100,7 @@ PowerImpl::internalGetData() const
 {
     context_.tracer().debug( "PowerImpl::internalGetData()", 5 );
 
-    if ( dataProxy_.isEmpty() )
+    if ( dataStore_.isEmpty() )
     {
         std::stringstream ss;
         ss << "No data available! (interface="<<interfaceName_<<")";
@@ -108,7 +108,7 @@ PowerImpl::internalGetData() const
     }
 
     orca::PowerData data;
-    dataProxy_.get( data );
+    dataStore_.get( data );
     return data;
 }
 
@@ -142,7 +142,7 @@ PowerImpl::internalUnsubscribe(const ::orca::PowerConsumerPrx& subscriber)
 void
 PowerImpl::localSet( const orca::PowerData& data )
 {
-    dataProxy_.set( data );
+    dataStore_.set( data );
 }
 
 void
@@ -150,7 +150,7 @@ PowerImpl::localSetAndSend( const orca::PowerData& data )
 {
 //     cout<<"TRACE(PowerIface.cpp): localSetAndSend: " << orcaice::toString(data) << endl;
 
-    dataProxy_.set( data );
+    dataStore_.set( data );
 
     // Try to push to IceStorm.
     tryPushToIceStormWithReconnect<orca::PowerConsumerPrx,orca::PowerData>

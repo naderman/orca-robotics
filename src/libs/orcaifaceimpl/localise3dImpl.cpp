@@ -105,7 +105,7 @@ Localise3dImpl::internalGetData() const
 {
     context_.tracer().debug( "Localise3dImpl::internalGetData()", 5 );
 
-    if ( dataProxy_.isEmpty() )
+    if ( dataStore_.isEmpty() )
     {
         std::stringstream ss;
         ss << "No data available! (interface="<<interfaceName_<<")";
@@ -113,7 +113,7 @@ Localise3dImpl::internalGetData() const
     }
 
     orca::Localise3dData data;
-    dataProxy_.get( data );
+    dataStore_.get( data );
     return data;
 }
 
@@ -155,7 +155,7 @@ Localise3dImpl::localSet( const orca::Localise3dData &data )
 {
     //cout<<"TRACE(localise2dI.cpp): localSetData: " << orcaice::toString(data) << endl;
 
-    dataProxy_.set( data );
+    dataStore_.set( data );
 }
 
 void
@@ -163,7 +163,7 @@ Localise3dImpl::localSetAndSend( const orca::Localise3dData &data )
 {
     //cout<<"TRACE(localise2dI.cpp): localSetData: " << orcaice::toString(data) << endl;
 
-    dataProxy_.set( data );
+    dataStore_.set( data );
     
     // Try to push to IceStorm.
     tryPushToIceStormWithReconnect<orca::Localise3dConsumerPrx,orca::Localise3dData>

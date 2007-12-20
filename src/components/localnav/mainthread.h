@@ -15,8 +15,8 @@
 #include <orca/rangescanner2d.h>
 #include <orcaice/context.h>
 #include <hydroutil/subsystemthread.h>
-#include <hydroutil/proxy.h>
-#include <orcaifaceimpl/proxiedconsumers.h>
+#include <hydroutil/store.h>
+#include <orcaifaceimpl/storingconsumers.h>
 #include <orcalocalnav/speedlimiter.h>
 #include <orcalocalnav/pathmaintainer.h>
 #include <orcalocalnav/clock.h>
@@ -100,13 +100,13 @@ private:
 
     // Incoming observations and pose info
     // Get observations, pose, and odometric velocity
-    orcaifaceimpl::ProxiedRangeScanner2dConsumerImplPtr obsConsumer_;
-    orcaifaceimpl::ProxiedLocalise2dConsumerImplPtr     locConsumer_;
-    orcaifaceimpl::ProxiedOdometry2dConsumerImplPtr     odomConsumer_;
+    orcaifaceimpl::StoringRangeScanner2dConsumerImplPtr obsConsumer_;
+    orcaifaceimpl::StoringLocalise2dConsumerImplPtr     locConsumer_;
+    orcaifaceimpl::StoringOdometry2dConsumerImplPtr     odomConsumer_;
 
-    hydroutil::Proxy<orca::RangeScanner2dDataPtr> *obsProxy_;
-    hydroutil::Proxy<orca::Localise2dData>        *locProxy_;
-    hydroutil::Proxy<orca::Odometry2dData>        *odomProxy_;
+    hydroutil::Store<orca::RangeScanner2dDataPtr> *obsStore_;
+    hydroutil::Store<orca::Localise2dData>        *locStore_;
+    hydroutil::Store<orca::Odometry2dData>        *odomStore_;
 
     orcalocalnav::PathFollower2dI  &pathFollowerInterface_;
 

@@ -87,7 +87,7 @@ FeatureMap2dImpl::internalGetData() const
 {
     context_.tracer().debug( "FeatureMap2dImpl::internalGetData()", 5 );
 
-    if ( dataProxy_.isEmpty() )
+    if ( dataStore_.isEmpty() )
     {
         std::stringstream ss;
         ss << "No data available! (interface="<<interfaceName_<<")";
@@ -95,7 +95,7 @@ FeatureMap2dImpl::internalGetData() const
     }
 
     orca::FeatureMap2dData data;
-    dataProxy_.get( data );
+    dataStore_.get( data );
     return data;
 }
 
@@ -129,7 +129,7 @@ FeatureMap2dImpl::internalUnsubscribe(const ::orca::FeatureMap2dConsumerPrx& sub
 void
 FeatureMap2dImpl::localSetAndSend( const orca::FeatureMap2dData& data )
 {
-    dataProxy_.set( data );
+    dataStore_.set( data );
     
     // Try to push to IceStorm.
     tryPushToIceStormWithReconnect<orca::FeatureMap2dConsumerPrx,orca::FeatureMap2dData>

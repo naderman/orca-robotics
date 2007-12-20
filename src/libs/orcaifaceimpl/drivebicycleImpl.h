@@ -14,7 +14,7 @@
 #include <orca/drivebicycle.h>
 #include <IceStorm/IceStorm.h>
 
-#include <hydroutil/proxy.h>
+#include <hydroutil/store.h>
 #include <hydroutil/notify.h>
 #include <orcaice/context.h>
 
@@ -75,7 +75,7 @@ private:
     IceStorm::TopicPrx                topicPrx_;
 
     // outgoing data
-    hydroutil::Proxy<orca::DriveBicycleData> dataPipe_;
+    hydroutil::Store<orca::DriveBicycleData> dataPipe_;
 
     orcaice::Context                  context_;
 

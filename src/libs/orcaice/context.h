@@ -74,7 +74,7 @@ public:
     //! Returns smart pointer to the component's adapter.
     Ice::ObjectAdapterPtr  adapter() const { return adapter_; };
 
-    //! Conveniance function which returns smart pointer to the component's properties.
+    //! Convenience function which returns smart pointer to the component's properties.
     //! Same as calling communicator()->getProperties()
     Ice::PropertiesPtr     properties() const { return communicator_->getProperties(); };
 

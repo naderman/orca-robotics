@@ -11,7 +11,7 @@
 #ifndef ORCA_ESTOP_IMPL_H
 #define ORCA_ESTOP_IMPL_H
 
-#include <hydroutil/proxy.h>
+#include <hydroutil/store.h>
 #include <orcaice/context.h>
 
 #include <orca/estop.h>
@@ -67,7 +67,7 @@ private:
     void internalUnsubscribe(const ::orca::EStopConsumerPrx&);
 
 
-    hydroutil::Proxy<orca::EStopData> dataProxy_;
+    hydroutil::Store<orca::EStopData> dataStore_;
 
     orca::EStopConsumerPrx    consumerPrx_;
     IceStorm::TopicPrx        topicPrx_;

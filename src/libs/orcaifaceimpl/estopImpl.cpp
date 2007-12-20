@@ -9,7 +9,7 @@
  */
 
 #include <iostream>
-#include <hydroutil/proxy.h>
+#include <hydroutil/store.h>
 
 #include <orca/estop.h>
 #include <orcaice/orcaice.h>
@@ -111,7 +111,7 @@ EStopImpl::internalGet() const
 {
     context_.tracer().debug( "EStopImpl::internalGetData()", 5 );
 
-    if ( dataProxy_.isEmpty() )
+    if ( dataStore_.isEmpty() )
     {
         std::stringstream ss;
         ss << "No data available! (interface="<<interfaceName_<<")";
@@ -120,7 +120,7 @@ EStopImpl::internalGet() const
     
     // Get the most recent 
     orca::EStopData data;
-    dataProxy_.get( data );
+    dataStore_.get( data );
 
     return data;
 }
@@ -157,7 +157,7 @@ EStopImpl::internalUnsubscribe(const ::orca::EStopConsumerPrx& subscriber)
 void
 EStopImpl::localSet( const orca::EStopData data )
 {
-    dataProxy_.set( data );
+    dataStore_.set( data );
 }
 
 
@@ -166,7 +166,7 @@ EStopImpl::localSetAndSend(const orca::EStopData data )
 {
 //     cout<<"TRACE(EStopIface.cpp): localSetAndSend: " << orcaice::toString(data) << endl;
 
-    dataProxy_.set( data );
+    dataStore_.set( data );
 
     // Try to push to IceStorm.
     tryPushToIceStormWithReconnect<orca::EStopConsumerPrx, ::orca::EStopData>

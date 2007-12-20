@@ -103,7 +103,7 @@ LaserScanner2dImpl::internalGetData() const
 {
     context_.tracer().debug( "LaserScanner2dImpl::internalGetData()", 5 );
 
-    if ( dataProxy_.isEmpty() )
+    if ( dataStore_.isEmpty() )
     {
         std::stringstream ss;
         ss << "No data available! (interface="<<interfaceName_<<")";
@@ -112,7 +112,7 @@ LaserScanner2dImpl::internalGetData() const
 
     // create a null pointer. data will be cloned into it.
     orca::LaserScanner2dDataPtr data;
-    dataProxy_.get( data );
+    dataStore_.get( data );
 
     return data;
 }
@@ -165,7 +165,7 @@ LaserScanner2dImpl::localSet( const ::orca::LaserScanner2dDataPtr &data )
 {
     // cout << "LaserScanner2dImpl::internalSet data: " << orcaice::toString( data ) << endl;
     
-    dataProxy_.set( data );
+    dataStore_.set( data );
 }
 
 void
@@ -179,7 +179,7 @@ LaserScanner2dImpl::localSetAndSend( const ::orca::LaserScanner2dDataPtr &data )
     }
     // cout << "LaserScanner2dImpl::internalSet data: " << orcaice::toString( data ) << endl;
     
-    dataProxy_.set( data );
+    dataStore_.set( data );
 
     // Try to push to IceStorm
     tryPushToIceStormWithReconnect<RangeScanner2dConsumerPrx,LaserScanner2dDataPtr>( context_,

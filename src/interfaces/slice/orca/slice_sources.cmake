@@ -47,6 +47,7 @@ SET( SLICE_SOURCE_FILES
     pointcloud.ice
     polarfeature2d.ice
     power.ice
+    properties.ice
     ptz.ice 
     qgraphics2d.ice
     rangescanner2d.ice

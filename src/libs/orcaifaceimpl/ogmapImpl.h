@@ -17,7 +17,7 @@
 // include provided interfaces
 #include <orca/ogmap.h>
 
-#include <hydroutil/proxy.h>
+#include <hydroutil/store.h>
 #include <orcaice/context.h>
 
 namespace hydroutil {
@@ -61,7 +61,7 @@ private:
     void internalUnsubscribe(const ::orca::OgMapConsumerPrx& );
 
     // Holds the latest data
-    hydroutil::Proxy<orca::OgMapData> dataProxy_;
+    hydroutil::Store<orca::OgMapData> dataStore_;
 
     // The topic to which we'll publish
     IceStorm::TopicPrx             topicPrx_;

@@ -67,10 +67,10 @@ PathFollower2dI::PathFollower2dI( const std::string      &ifaceTag,
       context_(context)
 {
     // We're inactive on initialization
-    wpIndexProxy_.set( -1 );
+    wpIndexStore_.set( -1 );
 
     // But enabled
-    enabledProxy_.set( true );
+    enabledStore_.set( true );
 }
 
 void
@@ -92,11 +92,11 @@ orca::PathFollower2dData
 PathFollower2dI::getData( const ::Ice::Current& ) const
 {
     orca::PathFollower2dData data;
-    if ( pathProxy_.isEmpty() )
+    if ( pathStore_.isEmpty() )
     {
         throw orca::DataNotExistException( "No path has been set" );
     }
-    pathProxy_.get( data );
+    pathStore_.get( data );
     return data;
 }
 
@@ -122,8 +122,8 @@ PathFollower2dI::setData( const ::orca::PathFollower2dData& data, bool activateI
 
     cout<<"TRACE(pathfollower2dI.cpp): Received new path: " << orcaice::toVerboseString(data) << endl;
     cout<<"TRACE(pathfollower2dI.cpp): activateImmediately: " << activateImmediately << endl;
-    pathProxy_.set( data );
-    newPathArrivedProxy_.set( true );
+    pathStore_.set( data );
+    newPathArrivedStore_.set( true );
     if ( activateImmediately )
         activateNow();
 }
@@ -140,8 +140,8 @@ PathFollower2dI::activateNow( const ::Ice::Current& )
 {
     // cout << "TRACE(pathfollower2dI.cpp): activateNow called" << endl;
     orca::Time now = clock_.time();
-    activationTimeProxy_.set( now );
-    activationArrivedProxy_.set( true );
+    activationTimeStore_.set( now );
+    activationArrivedStore_.set( true );
 
     localSetWaypointIndex( 0 );
 
@@ -185,7 +185,7 @@ int
 PathFollower2dI::getWaypointIndex( const ::Ice::Current& ) const
 {
     int ret;
-    wpIndexProxy_.get( ret );
+    wpIndexStore_.get( ret );
     return ret;
 }
 
@@ -193,10 +193,10 @@ bool
 PathFollower2dI::getAbsoluteActivationTime(::orca::Time &time, const Ice::Current&) const
 {
     int wpIndex;
-    wpIndexProxy_.get( wpIndex );
+    wpIndexStore_.get( wpIndex );
     if ( wpIndex != -1 )
     {
-        activationTimeProxy_.get( time );
+        activationTimeStore_.get( time );
         return true;
     }
     else
@@ -207,11 +207,11 @@ bool
 PathFollower2dI::getRelativeActivationTime(double &secondsSinceActivation, const Ice::Current&) const
 {
     int wpIndex;
-    wpIndexProxy_.get( wpIndex );
+    wpIndexStore_.get( wpIndex );
     if ( wpIndex != -1 )
     {
         orca::Time timeActivated;
-        activationTimeProxy_.get( timeActivated );
+        activationTimeStore_.get( timeActivated );
         secondsSinceActivation = orcaice::timeDiffAsDouble( clock_.time(), timeActivated );
         return true;
     }
@@ -222,7 +222,7 @@ PathFollower2dI::getRelativeActivationTime(double &secondsSinceActivation, const
 void 
 PathFollower2dI::setEnabled( bool enabled, const ::Ice::Current& )
 {
-    enabledProxy_.set( enabled );
+    enabledStore_.set( enabled );
     // let the consumers know that the enabled state changed
     consumerPrx_->setEnabledState( enabled );
 }
@@ -230,7 +230,7 @@ bool
 PathFollower2dI::enabled(const ::Ice::Current&) const
 {
     bool enabled;
-    enabledProxy_.get( enabled );
+    enabledStore_.get( enabled );
     return enabled;
 }
 
@@ -267,7 +267,7 @@ PathFollower2dI::unsubscribe( const ::orca::PathFollower2dConsumerPrx& subscribe
 void 
 PathFollower2dI::localSetWaypointIndex( int index )
 {
-    wpIndexProxy_.set( index );
+    wpIndexStore_.set( index );
     // Try to push to IceStorm.
 
     try {
@@ -308,7 +308,7 @@ PathFollower2dI::localSetWaypointIndex( int index )
 // {
 // //     cout<<"TRACE(pathfollower2dI.cpp): activationTime: " << orcaice::toString(activationTime) << endl;
 
-// //     activationTimeProxy_.set( activationTime );
+// //     activationTimeStore_.set( activationTime );
 //     // Try to push to IceStorm.
 //     try {
 //         consumerPrx_->setActivationTime( activationTime, 
@@ -348,7 +348,7 @@ PathFollower2dI::localSetWaypointIndex( int index )
 void 
 PathFollower2dI::localSetData( const orca::PathFollower2dData &path )
 {
-    pathProxy_.set( path );
+    pathStore_.set( path );
     try {
         consumerPrx_->setData( path );
     }
@@ -386,7 +386,7 @@ bool
 PathFollower2dI::localIsEnabled() const
 {
     bool enabled;
-    enabledProxy_.get( enabled );
+    enabledStore_.get( enabled );
     return enabled;
 }
 

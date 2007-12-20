@@ -12,6 +12,7 @@
 #include <string>
 
 #include <orca/orca.h>
+#include <orca/properties.h>
 #include <orcaice/orcaice.h>
 
 #include <hydroutil/localstatus.h>
@@ -33,6 +34,7 @@
 
 // debug only
 #include <iostream>
+using namespace std;
 
 namespace orcaice {
 
@@ -64,6 +66,7 @@ Component::init( const orca::FQComponentName& name,
     context_.tracer_ = initTracer();
     context_.status_ = initStatus();
     context_.home_   = initHome();
+    getNetworkProperties();
     componentThread_ = new ComponentThread( homePrx_, *(context_.status_), interfaceFlag_, context_ );
     try {
         componentThread_->start();
@@ -214,6 +217,86 @@ Component::initHome()
 
     orcaice::initTracerInfo( tag()+": Initialized Home interface");
     return (Home*)hobj;
+}
+
+void
+Component::getNetworkProperties()
+{
+    // disabled for now
+#if 0
+    cout<<"TRACE(component.cpp): TODO: AlexB: What properties will Home report??" << endl;
+    cout<<"TRACE(component.cpp): TODO: AlexB: What properties will Home report??" << endl;
+    cout<<"TRACE(component.cpp): TODO: AlexB: What properties will Home report??" << endl;
+    cout<<"TRACE(component.cpp): TODO: AlexB: What properties will Home report??" << endl;
+    cout<<"TRACE(component.cpp): TODO: AlexB: What properties will Home report??" << endl;
+    cout<<"TRACE(component.cpp): TODO: AlexB: What properties will Home report??" << endl;
+    cout<<"TRACE(component.cpp): TODO: AlexB: What properties will Home report??" << endl;
+    cout<<"TRACE(component.cpp): TODO: AlexB: What properties will Home report??" << endl;
+    cout<<"TRACE(component.cpp): TODO: AlexB: What properties will Home report??" << endl;
+
+    // If _anything_ goes wrong, print an error message and throw exception
+    try {
+        std::string propertyServerProxyString = orcaice::getPropertyWithDefault( properties(), 
+                                                                                 "Orca.PropertyServerProxyString",
+                                                                                 "" );
+        if ( propertyServerProxyString.empty() )
+            return;
+
+        orca::PropertiesPrx propertyPrx;
+        orcaice::connectToInterfaceWithString( context(), propertyPrx, propertyServerProxyString );
+        std::map<std::string,std::string> netProps = propertyPrx->getData();
+
+        for ( std::map<string,string>::iterator it=netProps.begin(); it!=netProps.end(); ++it ) 
+        {
+            const bool forceTransfer = false;
+//            detail::transferProperty( properties(), it->first, it->second, it->first, forceTransfer );
+            Ice::PropertiesPtr prop = properties();
+            int ret = detail::transferProperty( prop, it->first, it->second, it->first, forceTransfer );
+            stringstream ss;
+            if ( ret == 0 )
+            {
+                ss << "orcaice::Component::getNetworkProperties(): transferred proeprty '"
+                   <<it->first<<"' -> '"<<it->second<<"'";
+            }
+            else
+            {
+                ss << "orcaice::Component::getNetworkProperties(): retreived network property '"
+                   <<it->first<<"' but did not over-write existing value";
+            }
+            context_.tracer().debug( ss.str() );
+        }
+    }
+    catch ( const Ice::Exception &e )
+    {
+        std::stringstream ss; ss << "orcaice::Component::getNetworkProperties(): caught exception: " << e;
+        context().tracer().error( ss.str() );
+        throw;
+    }
+    catch ( const std::exception &e )
+    {
+        std::stringstream ss; ss << "orcaice::Component::getNetworkProperties(): caught exception: " << e.what();
+        context().tracer().error( ss.str() );
+        throw;
+    }
+    catch ( const std::string &e )
+    {
+        std::stringstream ss; ss << "orcaice::Component::getNetworkProperties(): caught std::string: " << e;
+        context().tracer().error( ss.str() );
+        throw;
+    }
+    catch ( const char* &e )
+    {
+        std::stringstream ss; ss << "orcaice::Component::getNetworkProperties(): caught char*: " << e;
+        context().tracer().error( ss.str() );
+        throw;
+    }
+    catch ( ... )
+    {
+        std::stringstream ss; ss << "orcaice::Component::getNetworkProperties(): caught unknown exception.";
+        context().tracer().error( ss.str() );
+        throw;
+    }
+#endif
 }
 
 void 

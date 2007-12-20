@@ -105,7 +105,7 @@ CameraImpl::internalGetData() const
 {
     context_.tracer().debug( "CameraImpl::internalGetData()", 5 );
 
-    if ( dataProxy_.isEmpty() )
+    if ( dataStore_.isEmpty() )
     {
         std::stringstream ss;
         ss << "No data available! (interface="<<interfaceName_<<")";
@@ -113,7 +113,7 @@ CameraImpl::internalGetData() const
     }
 
     orca::CameraData data;
-    dataProxy_.get( data );
+    dataStore_.get( data );
     return data;
 }
 
@@ -153,7 +153,7 @@ CameraImpl::internalUnsubscribe(const ::orca::CameraConsumerPrx& subscriber)
 void
 CameraImpl::localSet( const orca::CameraData& data )
 {
-    dataProxy_.set( data );
+    dataStore_.set( data );
 }
 
 void
@@ -161,7 +161,7 @@ CameraImpl::localSetAndSend( const orca::CameraData& data )
 {
 //     cout<<"TRACE(CameraIface.cpp): localSetAndSend: " << orcaice::toString(data) << endl;
 
-    dataProxy_.set( data );
+    dataStore_.set( data );
 
     // Try to push to IceStorm.
     tryPushToIceStormWithReconnect<orca::CameraConsumerPrx,orca::CameraData>

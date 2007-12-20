@@ -36,7 +36,7 @@ namespace orcaice
  *          > Win32: C:\orca.ini
  *  Throws hydroutil::Exception if none of the three options work out.
  */
-std::string getGlobalConfigFilename( const Ice::StringSeq & args );
+std::string getGlobalConfigFilename( const Ice::PropertiesPtr &props );
 
 /*!
  *  Platform-independent function to find Orca component configuration file.

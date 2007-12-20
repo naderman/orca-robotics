@@ -15,7 +15,7 @@
 #include <IceStorm/IceStorm.h>
 
 // utilities
-#include <hydroutil/proxy.h>
+#include <hydroutil/store.h>
 #include <orcaice/context.h>
 
 namespace hydroutil {
@@ -65,7 +65,7 @@ private:
     
     orca::VehicleGeometryDescriptionPtr geometry_;
 
-    hydroutil::Proxy<orca::Localise2dData> dataProxy_;
+    hydroutil::Store<orca::Localise2dData> dataStore_;
 
     orca::Localise2dConsumerPrx    consumerPrx_;
     IceStorm::TopicPrx             topicPrx_;

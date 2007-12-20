@@ -39,7 +39,7 @@ private:
 //////////////////////////////////////////////////////////////////////
 
 Particle2dImpl::Particle2dImpl( const std::string       &interfaceTag, 
-                    const orcaice::Context  &context  )
+                                const orcaice::Context  &context  )
     : interfaceName_(getInterfaceNameFromTag(context,interfaceTag)),
       topicName_(getTopicNameFromInterfaceName(context,interfaceName_)),
       context_(context)
@@ -47,7 +47,7 @@ Particle2dImpl::Particle2dImpl( const std::string       &interfaceTag,
 }
 
 Particle2dImpl::Particle2dImpl( const orcaice::Context  &context,
-                    const std::string       &interfaceName )
+                                const std::string       &interfaceName )
     : interfaceName_(interfaceName),
       topicName_(getTopicNameFromInterfaceName(context,interfaceName)),
       context_(context)
@@ -87,7 +87,7 @@ Particle2dImpl::internalGetData() const
 {
     context_.tracer().debug( "Particle2dImpl::internalGetData()", 5 );
 
-    if ( dataProxy_.isEmpty() )
+    if ( dataStore_.isEmpty() )
     {
         std::stringstream ss;
         ss << "No data available! (interface="<<interfaceName_<<")";
@@ -95,7 +95,7 @@ Particle2dImpl::internalGetData() const
     }
 
     orca::Particle2dData data;
-    dataProxy_.get( data );
+    dataStore_.get( data );
     return data;
 }
 
@@ -129,7 +129,7 @@ Particle2dImpl::internalUnsubscribe(const ::orca::Particle2dConsumerPrx& subscri
 void
 Particle2dImpl::localSetAndSend( const orca::Particle2dData& data )
 {
-    dataProxy_.set( data );
+    dataStore_.set( data );
     
     // Try to push to IceStorm.
     tryPushToIceStormWithReconnect<orca::Particle2dConsumerPrx,orca::Particle2dData>

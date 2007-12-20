@@ -13,7 +13,7 @@
 
 #include <hydroutil/subsystemthread.h>
 #include <orcaice/context.h>
-#include <hydroutil/proxy.h>
+#include <hydroutil/store.h>
 
 #include <orca/ogmap.h>
 #include <orca/pathplanner2d.h>
@@ -48,8 +48,8 @@ private:
     hydroogmap::OgMap ogMap_;
 
     PathPlanner2dI* pathPlannerI_;
-    hydroutil::Proxy<orca::PathPlanner2dTask>* pathPlannerTaskProxy_;
-    hydroutil::Proxy<orca::PathPlanner2dData>* pathPlannerDataProxy_;
+    hydroutil::Store<orca::PathPlanner2dTask>* pathPlannerTaskStore_;
+    hydroutil::Store<orca::PathPlanner2dData>* pathPlannerDataStore_;
     
     void initNetwork();
     void initDriver();

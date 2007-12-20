@@ -28,8 +28,35 @@ namespace detail
 //  1 if the property already existed in the target set and it was left untouched
 // -1 if the property was not set in the source set, the target was left untouched
 int
-transferProperty( Ice::PropertiesPtr& fromProperties, Ice::PropertiesPtr& toProperties,
-                        const string& fromKey, const string& toKey, bool force )
+transferProperty( const Ice::PropertiesPtr& fromProperties, 
+                  Ice::PropertiesPtr&       toProperties,
+                  const string&             fromKey,
+                  const string&             toKey,
+                  bool                      force )
+{
+    string fromValue = fromProperties->getProperty( fromKey );
+    bool existFromValue = !fromValue.empty();
+    if ( !existFromValue ) {
+        // the property is not set in the source set, leave the target one untouched
+        return -1;
+    }
+    return transferProperty( toProperties,
+                             fromKey,
+                             fromValue,
+                             toKey,
+                             force );
+}
+
+// Transfer a property from one property set to another
+// returns:
+//  0 if it was transferred successfully
+//  1 if the property already existed in the target set and it was left untouched
+int
+transferProperty( Ice::PropertiesPtr&       toProperties,
+                  const string&             fromKey,
+                  const string&             fromValue,
+                  const string&             toKey,
+                  bool                      force )
 {
     // not forcing the transfer
     if ( !force ) {
@@ -44,23 +71,20 @@ transferProperty( Ice::PropertiesPtr& fromProperties, Ice::PropertiesPtr& toProp
 //         cout<<"DEBUG: nothing in the 'to' field: value='"<<toValue<<"'"<<endl;
     }
 
-    string fromValue = fromProperties->getProperty( fromKey );
-    bool existFromValue = !fromValue.empty();
-    if ( !existFromValue ) {
-        // the property is not set in the source set, leave the target one untouched
-        return -1;
-    }
-    
     // transerring the value
     toProperties->setProperty( toKey, fromValue );
     return 0;
 }
 
 // Internal helper function.
-// behaves like the function above. if key is missing, sets the toValue to defaultValue.
+// behaves like transferProperty. if key is missing, sets the toValue to defaultValue.
 void
-transferPropertyWithDefault( Ice::PropertiesPtr& fromProperties, Ice::PropertiesPtr& toProperties,
-                      const string& fromKey, const string& toKey, const string& defaultValue, bool force )
+transferPropertyWithDefault( const Ice::PropertiesPtr& fromProperties, 
+                             Ice::PropertiesPtr&       toProperties,
+                             const string&             fromKey,
+                             const string&             toKey,
+                             const string&             defaultValue,
+                             bool                      force )
 {
     if ( !force ) {
         // if we asked not to force the transfer,
@@ -201,7 +225,7 @@ setGlobalProperties( Ice::PropertiesPtr& properties, const std::string& filename
 }
 
 void
-setComponentProperties( Ice::PropertiesPtr& properties, const std::string& filename )
+setComponentPropertiesFromFile( Ice::PropertiesPtr& properties, const std::string& filename )
 {    
     // Instantiate a separate property set
     Ice::PropertiesPtr tempProperties = Ice::createProperties();
@@ -315,6 +339,67 @@ printAllVersions( const Component& component )
     }
     initTracerInfo( ss.str() );
 }
+
+void addPropertiesFromApplicationConfigFile( Ice::PropertiesPtr   &properties,
+                                             const Ice::StringSeq &commandLineArgs,
+                                             const std::string    &componentTag )
+{
+    std::string compFilename;
+    try
+    {
+        compFilename = orcaice::getApplicationConfigFilename( commandLineArgs );
+        if ( compFilename.empty() ) {
+            initTracerInfo( componentTag+": "+warnMissingProperty("component properties file","Orca.Config") );
+        }
+        else {
+            orcaice::detail::setComponentPropertiesFromFile( properties, compFilename );
+            initTracerInfo( componentTag+": Loaded component properties from '"+compFilename+"'" );
+        }
+    }
+    catch ( const hydroutil::Exception &e )
+    {
+        initTracerWarning( componentTag+": Failed to open component config file '"+compFilename+"':"+e.what() );
+    }    
+}
+
+void addPropertiesFromServiceConfigFile( Ice::PropertiesPtr   &properties,
+                                         const Ice::StringSeq &commandLineArgs,
+                                         const std::string    &componentTag )
+{
+    std::string servFilename;
+    try
+    {
+        servFilename = orcaice::getServiceConfigFilename( commandLineArgs );
+        if ( servFilename.empty() ) {
+            initTracerInfo( componentTag+": "+warnMissingProperty("component properties file","Orca.Ice") );
+        }
+        else {
+            orcaice::detail::setComponentPropertiesFromFile( properties, servFilename );
+            initTracerInfo( componentTag+": Loaded component properties from '"+servFilename+"'" );
+        }
+    }
+    catch ( const hydroutil::Exception &e )
+    {
+        initTracerWarning( componentTag+": Failed to open component config file : '"+servFilename+"'"+e.what() );
+    }
+}
+
+void addPropertiesFromGlobalConfigFile( Ice::PropertiesPtr   &properties,
+                                        const std::string    &componentTag )
+{
+    std::string globFilename;
+    try
+    {
+        globFilename = orcaice::getGlobalConfigFilename( properties );
+        orcaice::detail::setGlobalProperties( properties, globFilename );
+        initTracerInfo( componentTag+": Loaded global properties from '"+globFilename+"'" );
+    }
+    catch ( const hydroutil::Exception &e )
+    {
+        initTracerWarning( componentTag+": Failed to open global config file '"+globFilename+"': "+e.what() );
+    }
+}
+
 
 } // namespace
 } // namespace

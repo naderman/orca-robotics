@@ -22,6 +22,70 @@ using namespace std;
 namespace orcaice
 {
 
+namespace {
+
+void setProperties( Ice::PropertiesPtr         &properties,
+                    const Ice::StringSeq       &commandLineArgs,
+                    const std::string          &componentTag,
+                    const Ice::CommunicatorPtr &communicator,
+                    bool                       &isSharedCommunicatorConfigured )
+{
+    // pre-parse Orca-specific command line arguments
+    // (nothing here right now)
+    // orcaice::parseOrcaCommandLineOptions( args );
+
+    // Level 4. Highest priority, apply properties from the command line arguments
+    // read in all command line options starting with '--", but not "-"
+    // note that something like --bullshit will be parsed to --bullshit=1
+    // Note that this is a standard Ice function.
+    properties->parseCommandLineOptions( "", commandLineArgs );
+    initTracerInfo( componentTag+": Loaded command line properties" );
+
+    // Level 3. Now, apply properties from this component's config file (do not force!)
+    // Note that unlike in Application, it's possible that all required properties are given
+    // in the icebox.cfg file and the component config file is not specified.
+    detail::addPropertiesFromServiceConfigFile( properties, commandLineArgs, componentTag );
+
+    // (alexb: can we check this outside the function, before calling setProperties()?)
+    // Apply factory defaults and global settings only if
+    //   a) this is private communicator (not shared with others), or
+    //   b) the communicator is shared but not yet configured
+    // The end result is that both private and shared communicators are only
+    // configured once.
+    bool applyFactoryAndGlobals = false;
+    if ( !properties->getPropertyAsInt( componentTag+".UseSharedCommunicator" ) ) {
+        applyFactoryAndGlobals = true;
+        // debug
+        initTracerInfo( componentTag+": Will apply factory and global settings (private communicator).");
+    }
+    else if ( !isSharedCommunicatorConfigured ) {
+        applyFactoryAndGlobals = true;
+        isSharedCommunicatorConfigured = true;
+        // debug
+        initTracerInfo( componentTag+": Will apply factory and global settings (shared communicator, 1st service).");
+    }
+
+    if ( applyFactoryAndGlobals ) 
+    {
+        // Level 2. Now, apply properties from the global Orca config file
+        detail::addPropertiesFromGlobalConfigFile( properties, componentTag );
+
+        // Level 1. apply Orca factory defaults
+        orcaice::detail::setFactoryProperties( properties, componentTag );
+        initTracerInfo( componentTag+": Loaded factory default properties." );
+
+        // Level 0. extra funky stuff
+        // if we can, set some of communicator properties "after the fact"
+        // (the communicator has already been started and will not reload its confg parameters now,
+        // but some things can be changed and will be used in the future).
+        std::string defaultLocatorStr = properties->getProperty( "Ice.Default.Locator" );
+        Ice::LocatorPrx defaultLocator = Ice::LocatorPrx::uncheckedCast( communicator->stringToProxy( defaultLocatorStr ) );
+        communicator->setDefaultLocator( defaultLocator );
+    }
+}
+
+}
+
 bool Service::_isSharedCommunicatorConfigured = false;
 
 Service::Service()
@@ -58,110 +122,17 @@ Service::start( const ::std::string        & name,
 
     // Unlike in Application, the args here do NOT include the executable name
 
-    // pre-parse Orca-specific command line arguments
-    // (nothing here right now)
-    // orcaice::parseOrcaCommandLineOptions( args );
-
     // Unlike in Application which runs before the Communicator is created, here it already
     // exists and the pointer to it is given to us by the IceBox. So we just get a pointer
     // to the properties which also already exist.
     Ice::PropertiesPtr properties = communicator->getProperties();
-//             initTracerInfo("at the start");
-//             orcaice::printComponentProperties( properties, component_->tag() );
 
-    // Level 4. Highest priority, apply properties from the command line arguments
-    // read in all command line optiosn starting with '--", but not "-"
-    // note that something like --bullshit will be parsed to --bullshit=1
-    // Note that this is a standard Ice function.
-    properties->parseCommandLineOptions( "", args );
-    initTracerInfo( component_->tag()+": Loaded command line properties" );
-            // debug
-//             initTracerInfo("after parseCommandLineOptions()");
-//             orcaice::printComponentProperties( properties, component_->tag() );
-
-    // Level 3. Now, apply properties from this component's config file (do not force!)
-    // Note that unlike in Application, it's possible that all required properties are given
-    // in the icebox.cfg file and the component config file is not specified.
-    std::string servFilename;
-    try
-    {
-        servFilename = orcaice::getServiceConfigFilename( args );
-        if ( servFilename.empty() ) {
-            initTracerInfo( component_->tag()+": "+warnMissingProperty("component properties file","Orca.Ice") );
-        }
-        else {
-            orcaice::detail::setComponentProperties( properties, servFilename );
-            initTracerInfo( component_->tag()+": Loaded component properties from '"+servFilename+"'" );
-        }
-    }
-    catch ( const hydroutil::Exception &e )
-    {
-        initTracerWarning( component_->tag()+": Failed to open component config file : '"+servFilename+"'"+e.what() );
-            // debug
-//         initTracerInfo( component_->tag()+": Application quitting. Orca out." );
-//         exit(1);
-    }
-            // debug
-//             initTracerInfo("after setComponentProperties()");
-//             orcaice::printComponentProperties( properties, component_->tag() );
-
-
-    // Apply factory defaults and global settings only if
-    //   a) this is private communicator (not shared with others), or
-    //   b) the communicator is shared but not yet configured
-    // The end result is that both private and shared communicators are only
-    // configured once.
-    bool applyFactoryAndGlobals = false;
-    if ( !properties->getPropertyAsInt( component_->tag()+".UseSharedCommunicator" ) ) {
-        applyFactoryAndGlobals = true;
-        // debug
-        initTracerInfo( component_->tag()+": Will apply factory and global settings (private communicator).");
-    }
-    else if ( !_isSharedCommunicatorConfigured ) {
-        applyFactoryAndGlobals = true;
-        _isSharedCommunicatorConfigured = true;
-        // debug
-        initTracerInfo( component_->tag()+": Will apply factory and global settings (shared communicator, 1st service).");
-    }
-
-    if ( applyFactoryAndGlobals ) 
-    {
-        // Level 2. Now, apply properties from the global Orca config file
-        std::string globFilename;  
-        try
-        {  
-            globFilename = orcaice::getGlobalConfigFilename( args );  
-            orcaice::detail::setGlobalProperties( properties, globFilename );
-            initTracerInfo( component_->tag()+": Loaded global properties from '"+globFilename+"'" );
-        }
-        catch ( const hydroutil::Exception &e )
-        {
-            initTracerWarning( component_->tag()+": Failed to open global config file: '"+globFilename+"'"+e.what() );
-        }
-            // debug
-//             initTracerInfo("after setGlobalProperties()");
-//             orcaice::printComponentProperties( properties, component_->tag() );
-
-        // Level 1. apply Orca factory defaults
-        orcaice::detail::setFactoryProperties( properties, component_->tag() );
-        initTracerInfo( component_->tag()+": Loaded factory default properties." );
-            // debug
-//             initTracerInfo("after setFactoryProperties()");
-//             orcaice::printComponentProperties( properties, component_->tag() );
-
-
-        // Level 0. extra funky stuff
-        // if we can, set some of communicator properties "after the fact"
-        // (the communicator has already been started and will not reload its confg parameters now,
-        // but some things can be changed and will be used in the future).
-        std::string defaultLocatorStr = properties->getProperty( "Ice.Default.Locator" );
-        Ice::LocatorPrx defaultLocator = Ice::LocatorPrx::uncheckedCast( communicator->stringToProxy( defaultLocatorStr ) );
-        communicator->setDefaultLocator( defaultLocator );
-
-            // debug
-//             Ice::LocatorPrx locator = communicator->getDefaultLocator();
-//             initTracerInfo( component_->tag()+": default locator: "+communicator->proxyToString( locator ) );
-    }
+    // Set the component's properties based on the various sources from which properties can be read
+    setProperties( properties,
+                   args,
+                   component_->tag(),
+                   communicator,
+                   _isSharedCommunicatorConfigured );
 
     // now communicator exists. we can further parse properties, make sure all the info is
     // there and set some properties (notably AdapterID)

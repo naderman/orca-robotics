@@ -104,7 +104,7 @@ ImageImpl::internalGetData() const
 {
     context_.tracer().debug( "ImageImpl::internalGetData()", 10 );
 
-    if ( dataProxy_.isEmpty() )
+    if ( dataStore_.isEmpty() )
     {
         std::stringstream ss;
         ss << "No data available! (interface="<<interfaceName_<<")";
@@ -112,7 +112,7 @@ ImageImpl::internalGetData() const
     }
 
     orca::ImageDataPtr data;
-    dataProxy_.get( data );
+    dataStore_.get( data );
     return data;
 }
 
@@ -152,14 +152,14 @@ ImageImpl::internalUnsubscribe(const ::orca::ImageConsumerPrx& subscriber)
 void
 ImageImpl::localSet( const orca::ImageDataPtr& data )
 {
-    dataProxy_.set( data );
+    dataStore_.set( data );
 }
 
 void
 ImageImpl::localSetAndSend( const orca::ImageDataPtr& data )
 {
 //     cout<<"TRACE(ImageIface.cpp): localSetAndSend: " << orcaice::toString(data) << endl;
-    dataProxy_.set( data );
+    dataStore_.set( data );
 
     // Try to push to IceStorm.
     tryPushToIceStormWithReconnect<orca::ImageConsumerPrx,orca::ImageDataPtr>

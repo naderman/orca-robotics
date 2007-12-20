@@ -13,7 +13,7 @@
 
 #include <vector>
 #include <hydroutil/buffer.h>
-#include <hydroutil/proxy.h>
+#include <hydroutil/store.h>
 
 #include <orcaprobe/factory.h>
 

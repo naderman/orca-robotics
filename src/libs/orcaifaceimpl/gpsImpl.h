@@ -15,7 +15,7 @@
 #include <IceStorm/IceStorm.h>
 
 // utilities
-#include <hydroutil/proxy.h>
+#include <hydroutil/store.h>
 #include <orcaice/context.h>
 
 namespace hydroutil {
@@ -65,7 +65,7 @@ private:
     void internalUnsubscribe(const ::orca::GpsConsumerPrx&);
 
     orca::GpsDescription     descr_;
-    hydroutil::Proxy<orca::GpsData> dataProxy_;
+    hydroutil::Store<orca::GpsData> dataStore_;
 
     // IceStorm proxies
     orca::GpsConsumerPrx    consumerPrx_;

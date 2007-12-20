@@ -11,7 +11,7 @@
 #ifndef ORCA_LOCALNAV_CLOCK_H
 #define ORCA_LOCALNAV_CLOCK_H
 
-#include <hydroutil/proxy.h>
+#include <hydroutil/store.h>
 #include <orca/orca.h>
 
 namespace orcalocalnav {
@@ -33,18 +33,18 @@ public:
 
     void setTime( const orca::Time &time )
         {
-            timeProxy_.set( time );
+            timeStore_.set( time );
         }
     orca::Time time() const
         {
             orca::Time t;
-            timeProxy_.get( t );
+            timeStore_.get( t );
             return t;
         }
 
 private: 
 
-    mutable hydroutil::Proxy<orca::Time> timeProxy_;
+    mutable hydroutil::Store<orca::Time> timeStore_;
 
 };
 

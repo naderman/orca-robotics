@@ -53,6 +53,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
    - The ray-trace stuff in here is currently cut-n-pasted from hydroogmap...
 
 
+
+
+
 @section orca_doc_history_head Changes in SVN since Last Release
 
 @par Project wide
@@ -64,6 +67,10 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     - Global change to the updated API's of orcaice::Context.
 
 @par New interfaces
+
+  - Properties (alex b)
+    - Hands out a set of Properties, for use in implementing a centralised properties database.
+
 @par New components
 @par New utilities
 @par New libraries
@@ -98,6 +105,11 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
   - added support for VelocityControl2d interface (alex b)
 
 @par Updated libraries
+
+- libOrcaIce
+  - Removed deprecated orcaice::PtrProxy (replaced with PtrStore) (alex b)
+  - Cleaned up reading of properties in orcaice::Application and orcaice::Service (alex b)
+
 @par Removed
 
 

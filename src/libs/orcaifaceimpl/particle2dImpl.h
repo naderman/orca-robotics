@@ -9,7 +9,7 @@
 #include <orca/particle2d.h>
 
 // utilities
-#include <hydroutil/proxy.h>
+#include <hydroutil/store.h>
 #include <orcaice/context.h>
 #include <hydroutil/safethread.h>
 
@@ -26,10 +26,10 @@ friend class Particle2dI;
 public:
     //! Constructor using interfaceTag (may throw ConfigFileException)
     Particle2dImpl( const std::string       &interfaceTag, 
-              const orcaice::Context  &context );
+                    const orcaice::Context  &context );
     //! constructor using interfaceName
     Particle2dImpl( const orcaice::Context  &context,
-              const std::string       &interfaceName );
+                    const std::string       &interfaceName );
     ~Particle2dImpl();
     
     // local functions
@@ -50,7 +50,7 @@ private:
     void internalSubscribe(const ::orca::Particle2dConsumerPrx&);
     void internalUnsubscribe(const ::orca::Particle2dConsumerPrx& );
 
-    hydroutil::Proxy<orca::Particle2dData> dataProxy_;
+    hydroutil::Store<orca::Particle2dData> dataStore_;
 
     orca::Particle2dConsumerPrx    consumerPrx_;
     IceStorm::TopicPrx       topicPrx_;

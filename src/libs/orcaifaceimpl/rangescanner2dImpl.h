@@ -17,7 +17,7 @@
 #include <orca/rangescanner2d.h>
 
 // utilities
-#include <orcaice/ptrproxy.h>
+#include <orcaice/ptrstore.h>
 #include <orcaice/context.h>
 
 namespace hydroutil {
@@ -67,7 +67,7 @@ private:
     void internalUnsubscribe(const ::orca::RangeScanner2dConsumerPrx& );
 
     // Holds the latest data
-    orcaice::PtrProxy<orca::RangeScanner2dDataPtr> dataProxy_;
+    orcaice::PtrStore<orca::RangeScanner2dDataPtr> dataStore_;
 
     orca::RangeScanner2dDescription descr_;
 

@@ -19,11 +19,11 @@ using namespace orca;
 using namespace pathplanner;
 
 PathPlanner2dI::PathPlanner2dI( 
-        hydroutil::Proxy<orca::PathPlanner2dTask> &pathPlannerTaskProxy,
-        hydroutil::Proxy<orca::PathPlanner2dData> &pathPlannerDataProxy,
+        hydroutil::Store<orca::PathPlanner2dTask> &pathPlannerTaskProxy,
+        hydroutil::Store<orca::PathPlanner2dData> &pathPlannerDataProxy,
         const orcaice::Context & context )
-            : pathPlannerTaskProxy_(pathPlannerTaskProxy),
-              pathPlannerDataProxy_(pathPlannerDataProxy),
+            : pathPlannerTaskStore_(pathPlannerTaskProxy),
+              pathPlannerDataStore_(pathPlannerDataProxy),
               context_(context)
 {
     // Find IceStorm Topic to which we'll publish
@@ -37,7 +37,7 @@ PathPlanner2dI::setTask(const ::orca::PathPlanner2dTask& task, const ::Ice::Curr
 
     cout << "TRACE(pathplanner2dI.cpp): Just received a new task: " << endl << orcaice::toVerboseString(task); 
 
-    pathPlannerTaskProxy_.set( task );
+    pathPlannerTaskStore_.set( task );
 
     return 0;
     
@@ -51,13 +51,13 @@ PathPlanner2dI::getData(const Ice::Current& current ) const
 //     cout << "TRACE(pathplanner2dI.cpp): getData()" << endl;
 
     // we don't need to pop the data here because we don't block on it.
-    if ( pathPlannerDataProxy_.isEmpty() )
+    if ( pathPlannerDataStore_.isEmpty() )
     {
         throw orca::DataNotExistException( "try again later." );
     }
 
     PathPlanner2dData data;
-    pathPlannerDataProxy_.get( data );
+    pathPlannerDataStore_.get( data );
 
     return data;
 }
@@ -65,7 +65,7 @@ PathPlanner2dI::getData(const Ice::Current& current ) const
 void 
 PathPlanner2dI::localSetData( const PathPlanner2dData& data )
 {
-    pathPlannerDataProxy_.set( data );
+    pathPlannerDataStore_.set( data );
 
     // Try to push it out to IceStorm too
     try {
