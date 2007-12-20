@@ -1,5 +1,4 @@
 SET ( COMP_NAME lasermon )
-SET ( SERVICE_NAME OrcaFaithLocaliser )
 
 REQUIRE_OPTION( EXE ${COMP_NAME} ON )
 
@@ -7,9 +6,9 @@ IF ( BUILD )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
-    FILE( GLOB COMP_SRCS *.cpp )
+    FIND_COMPONENT_SOURCES( COMP_SRCS )
     
-    GLOBAL_ADD_EXECUTABLE( ${COMP_NAME} ${COMP_SRCS} )
+    GLOBAL_ADD_EXECUTABLE( ${COMP_NAME} ${COMP_SRCS} main )
     
     GENERATE_CONFIG_FILE( ${COMP_NAME}.def )
 

@@ -8,16 +8,23 @@
  *
  */
 
-#include <orcaice/application.h>
+#ifndef COMPONENT_H
+#define COMPONENT_H
 
-#include "component.h"
+#include <orcaice/component.h>
 
-//
-// Build the component into a stand-alone application
-//
-int main(int argc, char * argv[])
+namespace lasermon {
+
+class Component : public orcaice::Component
 {
-    lasermon::Component component;
-    orcaice::Application app( component );
-    return app.main(argc, argv);
-}
+public:
+    Component();
+
+    // from orcaice::Component
+    virtual void start();
+    virtual void stop();
+};
+
+} // namespace
+
+#endif

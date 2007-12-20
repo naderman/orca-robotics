@@ -16,6 +16,8 @@
 #include <orca/laserscanner2d.h>
 #include <orcaice/orcaice.h>
 
+namespace lasermon {
+
 class RangeScanner2dConsumerI : public orca::RangeScanner2dConsumer
 {
     public:
@@ -33,5 +35,7 @@ class RangeScanner2dConsumerI : public orca::RangeScanner2dConsumer
             }
         }
 };
+
+}
 
 #endif
