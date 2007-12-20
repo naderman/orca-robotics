@@ -74,14 +74,6 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 @par New components
 @par New utilities
 @par New libraries
-
-- libOrcaIce
-   - Component standard interfaces can now be configured from the config file in addition to the 
-     programatic methond used before. (alex m)
-   - Context now returns references to Tracer and Status instead of pointers (alex m)
-   - added conversion function to hydroutil::Context
-   - better feedback on exceptions caught during component startup. no need to catch them in Component::start() just to print them out.
-
 @par Updated interfaces
 
 - VehicleDescription (alex b)
@@ -107,8 +99,14 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 @par Updated libraries
 
 - libOrcaIce
+   - Component standard interfaces can now be configured from the config file in addition to the 
+     programatic method used before. (alex m)
+   - Context now returns references to Tracer and Status instead of pointers (alex m)
+   - added conversion function to hydroutil::Context
+   - better feedback on exceptions caught during component startup. no need to catch them in Component::start() just to print them out.
   - Removed deprecated orcaice::PtrProxy (replaced with PtrStore) (alex b)
   - Cleaned up reading of properties in orcaice::Application and orcaice::Service (alex b)
+  - Added ability to read configuration parameters from network (alex b)
 
 @par Removed
 

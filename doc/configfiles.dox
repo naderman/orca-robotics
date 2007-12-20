@@ -30,6 +30,11 @@ This page describes everything you need to know about writing and using Orca con
 Configuration parameters are loaded in this order, earlier sources overwritten by later ones.
 
 -# Built-in defaults
+-# Network-Loaded configuration
+    - If configured (through one of the sources below) with the
+      parameter @c Orca.NetworkConfig, the component will load properties
+      from the orca::Properties interface supplied through @c Orca.NetworkConfig.
+    - Only properties beginning with the component tag can be set using this method.
 -# Global configuration file, specified in one of 3 ways (we use the first one we find):
     -# The contents of @c Orca.GlobalConfig parameter, e.g.
 @verbatim
