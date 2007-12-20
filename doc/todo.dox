@@ -72,6 +72,10 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     - Hands out a set of Properties, for use in implementing a centralised properties database.
 
 @par New components
+
+  - PropertyServer (alex b)
+    - Implements orca::Properties interface
+
 @par New utilities
 @par New libraries
 @par Updated interfaces
