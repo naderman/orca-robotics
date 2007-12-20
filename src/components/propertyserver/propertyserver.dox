@@ -1,0 +1,38 @@
+/*
+ * Orca-Robotics Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2007 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This copy of Orca is licensed to you under the terms described in
+ * the LICENSE file included in this distribution.
+ *
+ */
+
+/*!
+@ingroup orca_components
+@ingroup orca_apps
+@ingroup orca_cpp
+@ingroup orca_linux
+@defgroup orca_component_propertyserver PropertyServer
+@brief Centralised database of properties
+
+This component can be used as a centralised database of properties.
+To see how to get other components to read their properties from here,
+see @ref orca_doc_configfiles.
+
+@par Provides
+
+- @ref orca_interface_home
+- @ref orca_interface_properties [PropertyServer.Provides.Properties]
+- @ref orca_interface_status
+
+@par Requires
+
+- none
+
+@par Authors
+
+Alex Brooks
+
+*/
+

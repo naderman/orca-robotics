@@ -1,0 +1,10 @@
+DefaultComponentTag=PropertyServer
+
+# Provided Interfaces
+Provides.Properties.Type=::orca::Properties
+Provides.Properties.DefaultName=properties
+
+# Required Interfaces
+
+# Config Parameters
+Config.PlayerClient.Driver.Default=sicklms200
