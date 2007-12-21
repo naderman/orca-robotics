@@ -55,6 +55,8 @@ NetThread::NetThread( HwThread                      &HwThread,
     descr_(descr),
     context_(context)
 {
+    subStatus().setMaxHeartbeatInterval( 10.0 );
+
     // Get vehicle limits
     orca::VehicleControlVelocityDifferentialDescription *controlDescr =
         dynamic_cast<orca::VehicleControlVelocityDifferentialDescription*>(&(*(descr.control)));
@@ -155,6 +157,7 @@ NetThread::walk()
         context_.properties(), prefix+"Odometry2dPublishInterval", 0 );
 
     const int odometryReadTimeout = 500; // [ms]
+    subStatus().setMaxHeartbeatInterval( 2.0*(odometryReadTimeout/1000.0) );
 
     context_.tracer().debug( "NetThread: interface is set up." );
 
@@ -168,6 +171,8 @@ NetThread::walk()
         // block on the most frequent data source: odometry
         if ( HwThread_.getData( data, odometryReadTimeout ) ) {
             context_.tracer().debug( "Net loop timed out", 5);
+            // Don't flag this as an error -- it may happen during normal initialisation.
+            subStatus().ok( "Net loop timed out" );
             continue;
         }
 
@@ -183,6 +188,9 @@ NetThread::walk()
         else {
             odometry2dI_->localSet( odometry2dData );
         }
+
+        // subsystem heartbeat
+        subStatus().ok();
     } // main loop
 }
 
