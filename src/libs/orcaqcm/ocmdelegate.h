@@ -16,6 +16,12 @@
 namespace orcaqcm
 {
 
+//! A controller (as in model-view-controller) controlling how to present information about the Orca
+//! component model (i.e. a hierarchy of platforms, components, interfaces).
+//! 
+//! Determines the paint style of individual entries in the model based on data.
+//!
+//! @see OcmModel, OcmView
 class OcmDelegate : public QItemDelegate
 {
     Q_OBJECT

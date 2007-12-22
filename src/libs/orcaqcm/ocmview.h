@@ -17,6 +17,10 @@
 namespace orcaqcm
 {
 
+//! A view (as in model-view-controller) displaying information about the Orca
+//! component model (i.e. a hierarchy of platforms, components, interfaces).
+//!
+//! @see OcmModel, OcmDelegate
 class OcmView : public QTreeView
 {
     Q_OBJECT

@@ -36,7 +36,12 @@ private:
     QIcon result;
 };
 
-
+//! A model (as in model-view-controller) holding information about the Orca
+//! component model (i.e. a hierarchy of platforms, components, interfaces).
+//! 
+//! Determines the paint style of individual entries in the model based on data.
+//!
+//! @see OcmView, OcmDelegate
 class OcmModel : public QAbstractItemModel
 {
     Q_OBJECT
@@ -63,7 +68,7 @@ public:
     virtual bool hasChildren(const QModelIndex &index) const;
 
     // from QObject
-    //! Process events sent to us by the GetComponentsJob.
+    //! Processes events sent to us by the GetComponentsJob.
     virtual void customEvent( QEvent* e );
 
     // OcmModel specific API

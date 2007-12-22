@@ -14,6 +14,9 @@
 namespace orcaqcm
 {
 
+// these are text representations of the icons used by the library:
+// registry, node, platform, component, interface.
+
 /* XPM */
 static const char * const ocm_platform_xpm[] = {
 /* columns rows colors chars-per-pixel */

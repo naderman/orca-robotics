@@ -17,6 +17,7 @@
 namespace orcaqcm
 {
 
+// This event is internal to the library, not used by the end user.
 class HomeEvent : public QEvent
 {
 public:
