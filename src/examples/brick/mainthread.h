@@ -21,14 +21,12 @@ class MainThread: public hydroutil::SubsystemThread
 {    	
 public:
     MainThread( const orcaice::Context& context );
-    virtual ~MainThread();
 
     // from SubsystemThread
     virtual void walk();
 
 private:
     orcaice::Context context_;
-
 };
 
 } // namespace

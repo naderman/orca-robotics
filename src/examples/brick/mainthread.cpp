@@ -23,15 +23,11 @@ MainThread::MainThread( const orcaice::Context& context ) :
     subStatus().setMaxHeartbeatInterval( 20.0 );
 }
 
-MainThread::~MainThread()
-{
-}
-
 void
 MainThread::walk()
 {
     // multi-try function
-    orcaice::activate( context_, this );
+    orcaice::activate( context_, this, subsysName() );
 
     //
     // Read configuration settings
@@ -42,12 +38,12 @@ MainThread::walk()
             prefix+"SleepIntervalMs", 1000 );
 
     subStatus().ok( "Initialized" );
+
     //
     // Main loop
     //   
-    context_.tracer().debug( "Entering main loop", 2 );
     subStatus().setMaxHeartbeatInterval( sleepIntervalMs * 3.0/1000.0 );
-    subStatus().ok( "Running main loop" );
+
     while( !isStopping() )
     {
         context_.tracer().debug( "Running main loop", 5 );
@@ -57,5 +53,4 @@ MainThread::walk()
 
         IceUtil::ThreadControl::sleep(IceUtil::Time::milliSeconds(sleepIntervalMs));
     }
-    context_.tracer().debug( "Exiting main loop", 2 );
 }

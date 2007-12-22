@@ -19,26 +19,16 @@ Component::Component() :
 {
 }
 
-Component::~Component()
-{
-}
-
 void
 Component::start()
 {
-    tracer().debug( "Starting component", 2 );
-
     //start the main loop and pass it the pointer to the proxy
     mainThread_ = new MainThread( context() );
     mainThread_->start();
-
-    tracer().debug( "Component started", 2 );
 }
 
 void
 Component::stop()
 {
-    tracer().debug( "Stopping component", 2 );
     hydroutil::stopAndJoin( mainThread_ );
-    tracer().debug( "Component stopped", 2 );
 }

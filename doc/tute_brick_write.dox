@@ -12,7 +12,7 @@
 
 @page orca_doc_tutebrickwrite Writing a super-simple component
 
-@note Reviewed for release 2.8.0.
+@note Reviewed for release 2.9.0.
 
 This page describes the basic structure of a typical Orca component. We use @ref orca_component_brick component as an example. When you are done, go to the next tutorial: @ref orca_doc_tutebrickrun
 
@@ -46,36 +46,52 @@ What are all these files? Here we'll just list their purpose, click on the links
 @section orca_doc_tutebrickwrite_cmakelists CMakeLists.txt
 
 @code
-OPTION( BUILD_BRICK "Try to build Brick test component" ON )
+SET ( COMP_NAME brick )
+SET ( SERVICE_NAME OrcaBrick )
 
-IF ( BUILD_BRICK )
+REQUIRE_OPTION( EXE ${COMP_NAME} ON )
+
+IF ( BUILD)
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
     FIND_COMPONENT_SOURCES( COMP_SRCS )
 
-    GLOBAL_ADD_EXECUTABLE( brick ${COMP_SRCS} main )
-    
-    IF ( BUILD_SERVICES )
-        GLOBAL_ADD_LIBRARY( OrcaBrick SHARED ${COMP_SRCS} service )
-    ENDIF ( BUILD_SERVICES )
-    
-    GENERATE_CONFIG_FILE( brick.def )
+    # libs on which our code depends would go here
+#     SET( COMP_DEPS ??? )
 
-ENDIF ( BUILD_BRICK )
+    # build stand-alone component  
+    GLOBAL_ADD_EXECUTABLE( ${COMP_NAME} ${COMP_SRCS} main )
+#     TARGET_LINK_LIBRARIES( ${COMP_NAME} ${COMP_DEPS} )
+
+    # build IceBox service
+    IF ( BUILD_SERVICES AND NOT OS_WIN )
+        GLOBAL_ADD_LIBRARY( ${SERVICE_NAME} SHARED ${COMP_SRCS} service )
+#         TARGET_LINK_LIBRARIES( ${SERVICE_NAME} ${COMP_DEPS} ) 
+    ENDIF ( BUILD_SERVICES AND NOT OS_WIN )
+
+    GENERATE_CONFIG_FILE( ${COMP_NAME}.def )
+
+ENDIF ( BUILD )
 @endcode
  
 @par Line by Line Walkthrough
 
 @verbatim
-OPTION( BUILD_BRICK "Try to build Brick example" ON )
+SET ( COMP_NAME brick )
+SET ( SERVICE_NAME OrcaBrick )
 @endverbatim
-This line defines a user-configurable option called @c BUILD_BRICK which can be used as a variable to implement conditional compilation. The default value of this variable is ON, equivalent to TRUE. CMake comes with a configuration tool called @c ccmake. In Linux, when you type "ccmake ." in the top directory of the Orca distribution, you will see a list of options. Scroll down to BUILD_BRICK and press ENTER, the value of the option will change to OFF. Now configure (press @c c) and generate (press @c g). The build options have now been adjusted such that the Brick example will not be compiled. Repeat the process to turn the compilation back on or delete @c CMakeCache.txt to go back to defaults.
+We define CMake 2 variables to name the component executable and the component IceBox service library. We'll use them in this file.
 
 @verbatim
-IF ( BUILD_BRICK )
+REQUIRE_OPTION( EXE ${COMP_NAME} ON )
 @endverbatim
-Do not compile this example if the user turned it OFF.
+This line calls a CMake macro which defines a user-configurable compilation option. It will be called @c BUILD_BRICK (BUILD + the name of our component in upper case). This option can be used as a variable to implement conditional compilation. The default value of this variable is ON, equivalent to TRUE. CMake comes with a configuration tool called @c ccmake. In Linux, when you type "ccmake ." in the top directory of the Orca distribution, you will see a list of all compilation options. Scroll down to BUILD_BRICK and press ENTER, the value of the option will change to OFF. Now configure (press @c c) and generate (press @c g). The build options have now been adjusted such that the Brick example will not be compiled. Repeat the process to turn the compilation back on or delete @c CMakeCache.txt to go back to defaults.
+
+@verbatim
+IF ( BUILD)
+@endverbatim
+Do not compile this example if any of requirements are not satisfied. In this case we only have one requirement: the wish of the user. Typically, there will be several, e.g. the OS, required libraries, etc.
 
 @verbatim
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
@@ -90,19 +106,38 @@ Because the @c UseComponentRules.cmake script is installed with the rest of the 
 This CMake macro simply gets a list of all *.cpp files in the current directory and removes 2 files from the list: @c main.cpp and @c service.cpp. We'll see the reason for this in a second. The remaining list is assigned to the variable called @c COMP_SRCS.
 
 @verbatim
+    # libs on which our code depends would go here
+#     SET( COMP_DEPS ??? )
+@endverbatim
+Pound sign marks comments. Here we comment out a line which would normally be used to specify library dependencies. This example does not need to be linked to any library besides the typical ones specified by UseComponentRules.cmake script.
+
+@verbatim
     GLOBAL_ADD_EXECUTABLE( brick ${COMP_SRCS} main )
 @endverbatim
 The macro GLOBAL_ADD_EXECUTABLE will tell the build system to create an executable called @c brick (in Windows @c brick.exe) by compiling all source files listed in @c COMP_SRCS plus @c main.cpp. The file @c service.cpp is not needed to produce a stand-alone executable, for this reason it was not included in @c COMP_SRCS. The macro does other convenient things: it will schedule @c brick to be installed into @c [ORCA-INSTALL]/bin, add it to the list of all executables to be displayed at the end of the configuration step, etc.
 
 @verbatim
-    IF ( BUILD_SERVICES )
-        GLOBAL_ADD_LIBRARY( OrcaBrick SHARED ${COMP_SRCS} service )
-    ENDIF ( BUILD_SERVICES )
+#     TARGET_LINK_LIBRARIES( ${COMP_NAME} ${COMP_DEPS} )
 @endverbatim
-If the global option called @c BUILD_SERVICES is ON, create a shared library called @c libOrcaBrick.so (in Windows @c libOrcaBrick.dll) by compiling all source files listed in @c COMP_SRCS plus @c service.cpp. The @c BUILD_SERVICES option is defined globally but can be user-configured with @c ccmake tool. The default setting is OFF. The macro will also schedule this service library to be installed into @c [ORCA-INSTALL]/lib.
+This would be uncommented if we had dependencies.
 
 @verbatim
-ENDIF ( BUILD_BRICK )
+    IF ( BUILD_SERVICES AND NOT OS_WIN )
+        GLOBAL_ADD_LIBRARY( ${SERVICE_NAME} SHARED ${COMP_SRCS} service )
+#         TARGET_LINK_LIBRARIES( ${SERVICE_NAME} ${COMP_DEPS} ) 
+    ENDIF ( BUILD_SERVICES AND NOT OS_WIN )
+@endverbatim
+If the global option called @c BUILD_SERVICES is ON, create a shared library called @c libOrcaBrick.so by compiling all source files listed in @c COMP_SRCS plus @c service.cpp. The @c BUILD_SERVICES option is defined globally but can be user-configured with @c ccmake tool. The default setting is OFF. The macro will also schedule this service library to be installed into @c [ORCA-INSTALL]/lib. We could also link this library to dependencies. 
+
+The global variable @c OS_WIN evaluates to TRUE when the OS belongs the Windows family. In Windows we don't compile this library. It can be done, but shared libraries are more complicated and we haven't the need to figure it all out.
+
+@verbatim
+    GENERATE_CONFIG_FILE( ${COMP_NAME}.def )
+@endverbatim
+We call a macro to automatically generate a configuration file (.cfg) from the component definition file (.def). For more information on config files, see @ref orca_doc_configfiles.
+
+@verbatim
+ENDIF ( BUILD )
 @endverbatim
 End of the IF block. Most of the CMake syntax you'll need you can work out from the existing files. For more details, consult the CMake documentation.
 
@@ -186,7 +221,7 @@ Class definition of orcaice::Service, the second of the two component containers
 @verbatim
 namespace brick {
 @endverbatim
-By convention, each component defines its own namespace. This enforces modularization and allows us not to worry about name clashes.
+By convention, each component defines its own namespace. This enforces modularization and allows us not to worry about name clashes in the service libraries loaded into the same IceBox.
 
 @verbatim
 class Service : public orcaice::Service
@@ -256,7 +291,6 @@ class Component: public orcaice::Component
 
 public:
     Component();
-    virtual ~Component();
 
     virtual void start();
     virtual void stop();
@@ -278,7 +312,7 @@ Definition of the generic orcaice::Component.
 @verbatim
 #include <hydroutil/thread.h>
 @endverbatim
-Definition of the the hydroutil::Thread class, which is a simple extention of the very-well written cross-platform IceUtil::Thread class.
+Definition of the the hydroutil::Thread class, which is a simple extention of the very well-written cross-platform IceUtil::Thread class.
 
 @verbatim
 namespace brick
@@ -297,12 +331,10 @@ Our component derives from the generic orcaice::Component which is designed to b
 In general a specific component class can have a constructor with any number of parameters but this one doesn't have any.
 
 @verbatim
-    virtual ~Component();
-
     virtual void start();
     virtual void stop();
 @endverbatim
-Because we inherit from orcaice::Component, we have to implement its pure virtual functions start() and stop(). We also reimplement the destructor.
+Because we inherit from orcaice::Component, we have to implement its pure virtual functions start() and stop().
 
 @verbatim
 private:
@@ -326,27 +358,17 @@ Component::Component() :
 {
 }
 
-Component::~Component()
-{
-}
-
 void
 Component::start()
 {
-    tracer()->debug( "Starting component", 2 );
-
     mainThread_ = new MainThread( context() );
     mainThread_->start();
-
-    tracer()->debug( "Component started", 2 );
 }
 
 void
 Component::stop()
 {
-    tracer()->debug( "Stopping component", 2 );
     hydroutil::stopAndJoin( mainThread_ );
-    tracer()->debug( "Component stopped", 2 );
 }
 @endcode
 
@@ -383,11 +405,6 @@ Component::start()
 This is an implementation of a function defined in the generic orcaice::Component. It is one of the "hook" functions which will be called on initialization by one of the containers: the application or the service.
 
 @verbatim
-    tracer()->debug( "Starting component", 2 );
-@endverbatim
-We use the tracer to let the user know what's going on. The hydroutil::Tracer defines several types of trace messages: info, warning, error, and debug. Each one can be forwarded to any number of destinations: display, network, log, or file. The default configuration is shown in the documentation. E.g. the default debug-to-display setting is 0, therefore this debug statement of level 2 will not be shown on the screen. In the next tutorial we will show how to change this setting.
-
-@verbatim
     mainThread_ = new MainThread( context() );
 @endverbatim
 Create an instance of the main thread. Notice that we pass a single parameter the thread constructor, so called @e "component context" encapsulated in the class orcaice::Context. Context provides access to many centralized facilities available within an Orca component. The most commonly used ones are:
@@ -419,17 +436,16 @@ This is a utility function which tells the main thread to stop and waits util th
 @section orca_doc_tutebrickwrite_mainthread_h mainthread.h
 
 @code
-#include <hydroutil/safethread.h>
+#include <hydroutil/subsystemthread.h>
 #include <orcaice/context.h>
 
 namespace brick
 {
 
-class MainThread: public hydroutil::SafeThread
+class MainThread: public hydroutil::SubsystemThread
 {       
 public:
     MainThread( const orcaice::Context& context );
-    virtual ~MainThread();
 
     virtual void walk();
 
@@ -443,15 +459,21 @@ private:
 @par Line by Line Walkthrough
 
 @verbatim
-#include <hydroutil/safethread.h>
+#include <hydroutil/subsystemthread.h>
 #include <orcaice/context.h>
 @endverbatim
-Definitions of the hydroutil::SafeThread and orcaice::Context classes.
+Definitions of the hydroutil::SubsystemThread and orcaice::Context classes.
 
 @verbatim
-class MainThread: public hydroutil::SafeThread
+class MainThread: public hydroutil::SubsystemThread
 @endverbatim
-The one and only thread used by our component is derived from hydroutil::SafeThread class. Its only distinction from the hydroutil::Thread class is that it catches all common and uncommon exception which may originate in your  code. This does not mean that you should not worry about exceptions because when SafeThread catches an exception it does not know what to do so it just prints out a statement and waits for the component to shut down. Without this precaution the program would simply seg fault and you wouldn't event know what happened. If something about the way hydroutil::SafeThread behaves doesn't suit your needs, you can always use the more general hydroutil::Thread.
+The one and only thread used by our component is derived from hydroutil::SubsystemThread class. This thread class derives from a basic hydroutil::Thread class and adds a bit of functionality to it. 
+
+Firstly, it catches all common and uncommon exception which may originate in our code. This does not mean that we should not worry about exceptions because when SubsystemThread catches an exception it does not know what to do, so it just prints out a statement and waits for the component to shut down. This behavior is useful because, without this precaution, the program would simply seg fault and you wouldn't event know what happened. 
+
+Secondly, this class simplifies usage of hydroutil::Status class by integrating functionality of hydroutil::SubStatus. Status can keep track of multiple @e subsystems which can be defined arbitrarily and are destinguished by a name. Typically, each thread is a subsystem. It can be in certain state and this state can be reported through the hydroutil::Status facility.
+
+If something about the way hydroutil::SubsystemThread behaves doesn't suit your needs, you can always use the more general hydroutil::Thread.
 
 @verbatim
 public:
@@ -460,11 +482,9 @@ public:
 The context described above is passed down to our thread by the component.
 
 @verbatim
-    virtual ~MainThread();
-
     virtual void walk();
 @endverbatim
-We implement the pure virtual function @c walk() defined in hydroutil::SafeThread and reimplement the destructor. Function @c walk is the entry point of the thread, the thread execution happens in it. (The equivalent function in the more general hydroutil::Thread is called @c run(), i.e. walking is safer than running. :)
+We implement the pure virtual function @c walk() defined in hydroutil::SubsystemThread. Function @c walk is the entry point of the thread, the thread execution happens in it. (The equivalent function in the more general hydroutil::Thread is called @c run(), i.e. walking is safer than running. :)
 
 @verbatim
 private:
@@ -485,27 +505,26 @@ using namespace std;
 using namespace brick;
 
 MainThread::MainThread( const orcaice::Context& context ) :
+    SubsystemThread( context.tracer(), context.status(), "MainThread" ),
     context_(context)
 {
-    context_.status()->setMaxHeartbeatInterval( "main", 10.0 );
-    context_.status()->ok( "main", "initialized" );
-}
-
-MainThread::~MainThread()
-{
+    subStatus().setMaxHeartbeatInterval( 20.0 );
 }
 
 void
 MainThread::walk()
 {
-    orcaice::activate( context_, this );
+    orcaice::activate( context_, this, subsysName() );
 
     std::string prefix = context_.tag() + ".Config.";
     int sleepIntervalMs = orcaice::getPropertyAsIntWithDefault( context_.properties(),
             prefix+"SleepIntervalMs", 1000 );
+    subStatus().ok( "Initialized" );
   
-    context_.tracer()->debug( "Entering main loop", 2 );
-    context_.status()->ok( "main", "running main loop" );
+    subStatus().setMaxHeartbeatInterval( sleepIntervalMs * 3.0/1000.0 );
+    subStatus().ok( "Running main loop" );
+
+    context_.tracer().info( "Entering main loop" );
     while( !isStopping() )
     {
         context_.tracer()->debug( "Running main loop", 5 );
@@ -515,7 +534,6 @@ MainThread::walk()
 
         IceUtil::ThreadControl::sleep(IceUtil::Time::milliSeconds(sleepIntervalMs));
     }
-    context_.tracer()->debug( "Exiting main loop", 2 );
 }
 @endcode
 
@@ -523,27 +541,22 @@ MainThread::walk()
 
 @verbatim
 MainThread::MainThread( const orcaice::Context& context ) :
+    SubsystemThread( context.tracer(), context.status(), "MainThread" ),
     context_(context)
 {
 @endverbatim
-A copy of the context is stored for future use. Note that the constructor is executed in the calling thread, in this case in the thread which created the component.
+A copy of the context is stored for future use. Note that the constructor is executed in the calling thread, in this case in the thread which created the component. We initialize SubsystemThread with the tracer and status objects contained in the context. We also name the subsystem corresponding to this thread. This name will be used for all status reporting.
 
 @verbatim
-    context_.status()->setMaxHeartbeatInterval( "main", 10.0 );
+    subStatus().setMaxHeartbeatInterval( 20.0 );
 @endverbatim
-The thread constructor supplies the status facility with the information about itself. Status can keep track of multiple @e subsystems which can be defined arbitrarily and are destinguished by a name. Typically, each thread is a subsystem. We call our subsystem "main". The status facility implements the heartbeat pattern. Here we promiss that we will update status information at least as often as every 10 seconds. This promiss will allow Status to raise an alarm if there's no update from this subsystem (thread) for longer than 10s.
+The Status facility implements the heartbeat pattern. In this line we make a promiss to Status that we will update status information at least as often as every 20 seconds. This promiss will allow Status to raise an alarm if there's no update from this subsystem (thread) for longer than the specified interval.
 
+Note that this line is equivalento to calling.
 @verbatim
-    context_.status()->ok( "main", "initialized" );
+    context_.status().setMaxHeartbeatInterval( subsysName(), 20.0 );
 @endverbatim
-We make our first status update, i.e. everything is OK and the free-form status description states that the subsystem is "initialized".
-
-@verbatim
-MainThread::~MainThread()
-{
-}
-@endverbatim
-There is nothing to do in the destructor.
+The simplified syntax is provided by SubsystemThread.
 
 @verbatim
 void
@@ -552,14 +565,14 @@ MainThread::walk()
 @endverbatim
 This is the entry point of the thread. Now we are running in our own thread. We get here after Thread::start() is called by the component.
 
-Executing code in a separate thread usually means that we are responsible for catching all possible exceptions. We don't do it here because hydroutil::SafeThread does it for us.
+Executing code in a separate thread usually means that we are responsible for catching all possible exceptions. We don't do it here because hydroutil::SubsystemThread does it for us.
 
 @verbatim
-    orcaice::activate( context_, this );
+    orcaice::activate( context_, this, subsysName() );
 @endverbatim
 We call a @ref orca_library_orcaice function to intialize the server capability of the component. (Technically, we are initializing the Ice::ObjectAdapter). 
 
-We don't perform this step automatically and leave it up to the component designer because this is an important step and you may want to choose when to do it. For example you may want to setup all your required interfaces (i.e. clients) first and then enable the provided interfaces.
+The component does not perform this step automatically and leave it up to the designer because this is an important step and you may want to choose when to do it. For example you may want to setup all your required interfaces (i.e. clients) first and then enable the provided interfaces.
 
 This operation may fail for various reasons. Common ones are: the network cable is unplugged, the Registry is unreachable. This standard function will try to activate indefinitely after sleeping for a few seconds. But we want to be able to get out of this infinite loop (e.g. with a Ctrl-C). For this reason, we supply this function with a pointer to a Thread (i.e. @c this = the pointer to this thread) so it can find out that it's time to stop. By the way, this is also the reason why orcaice::activate() should be called from a thread and not from Component::start().
 
@@ -577,15 +590,35 @@ We use a helper function from @ref orca_library_orcaice which returns an integer
 Note that we should probably do more checks on the specified value, e.g. make sure that it is not negative.
 
 @verbatim
+    subStatus().ok( "Initialized" );
+@endverbatim
+When the SubsystemThread is created it automatically enters @e Initializing state. Now that initialization is complete we inform Status, the status is now @e Ok with a diagnostic string "Initialized". The other 2 possible status states are @e Warning and @e Fault.
+
+@verbatim
+    subStatus().setMaxHeartbeatInterval( sleepIntervalMs * 3.0/1000.0 );
+@endverbatim
+Initialization is complete and thread behavior becomes more predictable, we can now promiss to update Status more frequently.
+
+@verbatim
+    context_.tracer().info( "Entering main loop" );
+@endverbatim
+We use the tracer to let the user know what's going on. The hydroutil::Tracer defines several types of trace messages: info, warning, error, and debug. Each one can be forwarded to any number of destinations: display, network, log, or file. The default configuration is shown in the documentation. E.g. the default debug-to-display setting is 0, therefore this debug statement of level 2 will not be shown on the screen. In the next tutorial we will show how to change this setting.
+
+@verbatim
     while( !isStopping() )
     {
 @endverbatim
 We are entering the main loop. It will execute until the thread is told to stop. After that the value returned by isStopping() function will become TRUE and we will exit from the loop.
 
 @verbatim
-        context_.status()->heartbeat( "main" );
+        context_.tracer().debug( "Running main loop", 5 );
 @endverbatim
-At every iteration of the loop, we call the heartbeat() function of the status object letting it know that we (subsystem called "main") are not stuck.
+The default debug-to-display setting is 0, therefore this debug statement of level 5 will not be shown on the screen. In the next tutorial we will show how to change this setting.
+
+@verbatim
+        subStatus().heartbeat();
+@endverbatim
+At every iteration of the loop, we call the heartbeat() function of the status object letting it know that this subsystem is not stuck.
 
 @verbatim
         // here we can do something useful
@@ -596,7 +629,6 @@ Here we would actually perform some useful operations, e.g. read data from harwa
 
 @verbatim
     }
-    context_.tracer()->debug( "Exiting main loop", 2 );
 }
 @endverbatim
 When the component is told to stop (by calling Component::stop() function), it will tell all of its threads to stop (by calling the Thread::stop() function). After this, the return value of Thread::isStopping() will change to TRUE, we will drop out from the main loop and exit from walk(). The thread will self-destruct and at this point the the main thread "joins" this one.

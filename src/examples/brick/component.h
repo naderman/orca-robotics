@@ -12,7 +12,7 @@
 #define COMPONENT_H
 
 #include <orcaice/component.h>
-#include <hydroutil/safethread.h>
+#include <hydroutil/thread.h>
 
 namespace brick
 {
@@ -22,7 +22,6 @@ class Component: public orcaice::Component
 
 public:
     Component();
-    virtual ~Component();
 
     // from orcaice::Component
     virtual void start();

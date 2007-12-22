@@ -12,7 +12,7 @@
 
 @page orca_doc_tutebrickrun Running a super-simple component
 
-@note Reviewed for release 2.8.0.
+@note Reviewed for release 2.9.0.
 
 In the @ref orca_doc_tutebrickwrite "previous tutorial" we described how to write a basic Orca component. Now we show how to run it.
 
@@ -38,7 +38,7 @@ You'll see a few lines of feedback in the terminal window.
 
 @verbatim
 tutebrick$ brick
-orca: Versions: Ice=3.2.1  Orca=2.7.0+  Project=2.7.0+
+orca: Versions: Ice=3.2.1  Orca=2.9.0
 orca: Brick: Loaded command line properties
 orca: Brick: Loaded component properties from 'brick.cfg'
 orca: Brick: Loaded global properties from '/home/makara/.orcarc'
@@ -47,19 +47,20 @@ orca: Brick: Created object adapter
 orca: Brick: Initialized trace handler.
 orca: Brick: Status connected to status/*@jamaica/brick
 orca: Brick: Initialized status handler
+orca: Set property to default value: Orca.PropertyServerProxyString=
 orca: Brick: Initialized Home interface
 orca: Brick: Application initialized
-[ 12/02/07 00:20:39.277 jamaica/brick:  info: LocalStatus: main is ok : 'initialized' ]
-[ 12/02/07 00:20:39.288 jamaica/brick:  info: LocalStatus: main is ok : 'running main loop' ]
+[ 12/23/07 03:26:34.980 jamaica/brick:  info: LocalStatus: MainThread is ok : 'Initialized' ]
+
 @endverbatim
 
 We'll go through them line-by-line and explain what they mean.
 
 @verbatim
 tutebrick$ brick
-orca: Versions: Ice=3.2.1  Orca=2.7.0+  Project=2.7.0+
+orca: Versions: Ice=3.2.1  Orca=2.9.0
 @endverbatim
-With multiple versions of Ice and Orca installed on the same computer, it's hard sometimes to tell which version you are running. When debugging, always look at this first line to make sure you are not running code from a year ago. Project version refers to the version of the satelite project. For Orca components, Orca version and Project version are always the same.
+With multiple versions of Ice and Orca installed on the same computer, it's hard sometimes to tell which version you are running. When debugging, always look at this first line to make sure you are not running code from a year ago. 
 
 @verbatim
 orca: Brick: Loaded command line properties
@@ -102,6 +103,11 @@ orca: Brick: Initialized status handler
 Initialized Status. Local Status is always created. A networked Status is initialized only if the @ref orca_interface_status interface is enabled. This interface can be disabled with an appropriate value of the orcaice::ComponentInterfaceFlag passed to orcaice::Component.
 
 @verbatim
+orca: Set property to default value: Orca.PropertyServerProxyString=
+@endverbatim
+It is possible to configure the component to use a a remote property server. This is an advanced feature and we don't use it here.
+
+@verbatim
 orca: Brick: Initialized Home interface
 @endverbatim
 Initialized @ref orca_interface_home interface. It is used for accessing various information remotely, e.g a list of provided interfaces, component properties. This interface can be disabled with an appropriate value of the orcaice::ComponentInterfaceFlag passed to orcaice::Component.
@@ -112,14 +118,10 @@ orca: Brick: Application initialized
 The Component::start() function has returned the control to orcaice::Application.
 
 @verbatim
-[ 12/02/07 00:20:39.277 jamaica/brick:  info: LocalStatus: main is ok : 'initialized' ]
+[ 12/23/07 03:26:34.980 jamaica/brick:  info: LocalStatus: MainThread is ok : 'Initialized' ]
 @endverbatim
-The first status call is made from the MainThread constructor.
+This status call is made before entering the main loop.
 
-@verbatim
-[ 12/02/07 00:20:39.288 jamaica/brick:  info: LocalStatus: main is ok : 'running main loop' ]
-@endverbatim
-The second status call is made before entering the main loop.
 
 If you are using default configuration files, you don't see any more statements even though we are printing debug statements inside the main loop. This is because the debug statements are not displayed on the screen by default. 
 
@@ -176,13 +178,9 @@ orca: Brick: Status connected to status/*@jamaica/brick
 orca: Brick: Initialized status handler
 orca: Brick: Initialized Home interface
 orca: Brick: Application initialized
-[ 12/02/07 01:13:51.382 jamaica/brick:  debug: Starting component ]
-[ 12/02/07 01:13:51.382 jamaica/brick:  debug: LocalStatus::setMaxHeartbeatInterval(): Adding new subsystem: 'main' ]
-[ 12/02/07 01:13:51.382 jamaica/brick:  info: LocalStatus: main is ok : 'initialized' ]
-[ 12/02/07 01:13:51.382 jamaica/brick:  debug: Component started ]
+[ 12/23/07 03:33:16.818 jamaica/brick:  debug: LocalStatus::setMaxHeartbeatInterval(): Adding new subsystem: 'MainThread' ]
 [ 12/02/07 01:13:51.429 jamaica/brick:  debug: Adapter activated ]
-[ 12/02/07 01:13:51.429 jamaica/brick:  debug: Entering main loop ]
-[ 12/02/07 01:13:51.430 jamaica/brick:  info: LocalStatus: main is ok : 'running main loop' ]
+[ 12/23/07 03:33:16.887 jamaica/brick:  info: LocalStatus: MainThread is ok : 'Initialized' ]
 [ 12/02/07 01:13:51.430 jamaica/brick:  debug: Running main loop ]
 [ 12/02/07 01:13:52.430 jamaica/brick:  debug: Running main loop ]
 [ 12/02/07 01:13:53.431 jamaica/brick:  debug: Running main loop ]
@@ -197,10 +195,9 @@ A bit more info is displayed on shutdown as well. Press Ctrl-C.
 @verbatim
 orca: Brick: Communicator is destroyed. Stopping component
 [ 12/02/07 01:16:01.308 jamaica/brick:  debug: orcaice::Component: stopping ComponentThread.... ]
+[ 12/23/07 03:33:22.889 jamaica/brick:  debug: Running main loop ]
+[ 12/23/07 03:33:22.891 jamaica/brick:  debug: dropping out from run() ]
 [ 12/02/07 01:16:01.452 jamaica/brick:  debug: orcaice::Component: ComponentThread stopped. ]
-[ 12/02/07 01:16:01.453 jamaica/brick:  debug: Stopping component ]
-[ 12/02/07 01:16:01.471 jamaica/brick:  debug: Exiting main loop ]
-[ 12/02/07 01:16:01.472 jamaica/brick:  debug: Component stopped ]
 orca: Brick: Component stopped
 orca: Brick: Adapter deactivated
 orca: Brick: Application quitting. Orca out.
