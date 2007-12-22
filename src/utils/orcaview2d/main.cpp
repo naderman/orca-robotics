@@ -17,7 +17,7 @@
 //
 int main(int argc, char * argv[])
 {
-    orcaview2d::Component component("OrcaView2d");
+    orcaview2d::Component component;
     // do not install ctrl-c handler
     bool installCtrlCHandler = false;
     orcaice::Application app( component, installCtrlCHandler );

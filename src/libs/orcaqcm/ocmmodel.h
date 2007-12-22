@@ -51,20 +51,20 @@ public:
     };
 
     explicit OcmModel(QObject *parent = 0);
-    ~OcmModel();
 
-    QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const;
-    QModelIndex parent(const QModelIndex &child) const;
-
-    int rowCount(const QModelIndex &parent) const;
-    int columnCount(const QModelIndex &parent) const;
-
-    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
+    // from QAbstractItemModel
+    virtual QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const;
+    virtual QModelIndex parent(const QModelIndex &child) const;
+    virtual int rowCount(const QModelIndex &parent) const;
+    virtual int columnCount(const QModelIndex &parent) const;
+    virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
     //bool setData(const QModelIndex &index, const QVariant &value, int role);
+    virtual QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+    virtual bool hasChildren(const QModelIndex &index) const;
 
-    QVariant headerData(int section, Qt::Orientation orientation, int role) const;
-
-    bool hasChildren(const QModelIndex &index) const;
+    // from QObject
+    //! Process events sent to us by the GetComponentsJob.
+    virtual void customEvent( QEvent* e );
 
     // OcmModel specific API
     

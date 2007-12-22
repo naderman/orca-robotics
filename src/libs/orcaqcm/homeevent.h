@@ -20,9 +20,9 @@ namespace orcaqcm
 class HomeEvent : public QEvent
 {
 public:
-    HomeEvent( const orcacm::ComponentData & data )
-        : QEvent( QEvent::Type(QEvent::User+7154) ),
-          data_(data) {};
+    HomeEvent( const orcacm::ComponentData & data ) : 
+        QEvent( QEvent::Type(QEvent::User+7154) ),
+        data_(data) {};
 
     orcacm::ComponentData data_;
 };

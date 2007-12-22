@@ -13,21 +13,22 @@
 
 #include <QMainWindow>
 
-#include <orcaqcm/networkthread.h>
-#include <orcaqcm/modelthread.h>
+#include <hydroutil/jobqueue.h>
+#include <orcaice/context.h>
+
+namespace orcaqcm {
+    class OcmModel;
+};
 
 class QTreeView;
 class QItemDelegate;
-class QSplitter;
-class QTimer;
 
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    MainWindow( orcaqcm::NetworkThread* networkThread, double refreshInterval,
-                QWidget *parent = 0, Qt::WFlags flags = 0 );
+    MainWindow( hydroutil::JobQueue* jobQueue, double refreshInterval, const orcaice::Context& context );
 
 private slots:
     
@@ -42,14 +43,14 @@ private slots:
 private:
     void setupMenuBar();
 
-    orcaqcm::NetworkThread     *networkThread_;
-    orcaqcm::ModelThread       *modelThread_;
-    
-    QTreeView                   *view_;
-    QItemDelegate               *delegate_;
+    orcaqcm::OcmModel*      model_;
+    QTreeView*              view_;
+    QItemDelegate*          delegate_;
 
+    hydroutil::JobQueue*    jobQueue_;
+    orcaice::Context        context_;
 
-    QTimer* refreshTimer_;
+    QTimer*                 refreshTimer_;
 };
 
 #endif

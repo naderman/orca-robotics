@@ -14,20 +14,18 @@
 
 #include <QtGui>
 
-#include <orcaqcm/ocmdelegate.h>
+#include <orcaqcm/orcaqcm.h>
 #include <orcaqt/orcaqt.h>
 
 #include "mainwin.h"
 #include "regtreeview.h"
 #include "propertywidget.h"
 
-
 using namespace std;
 
-MainWindow::MainWindow( orcaqcm::NetworkThread *networkThread, double refreshInterval,
-                        QWidget *parent, Qt::WFlags flags)
-    : QMainWindow(parent, flags),
-      networkThread_(networkThread)
+MainWindow::MainWindow( hydroutil::JobQueue* jobQueue, double refreshInterval, const orcaice::Context& context ) :
+    jobQueue_(jobQueue),
+    context_(context)
 {
     setWindowTitle("Orca: Registry View");
     setWindowIcon ( QPixmap(orcaqt::orca2_2x3_yellow_130_xpm) );
@@ -43,7 +41,7 @@ MainWindow::MainWindow( orcaqcm::NetworkThread *networkThread, double refreshInt
     // Model
     //
     //model_ = new orcaqcm::OcmTreeModel();
-    modelThread_ = new orcaqcm::ModelThread( *networkThread );
+    model_ = new orcaqcm::OcmModel();
     
     //selections_ = new QItemSelectionModel(model_);
 
@@ -56,7 +54,7 @@ MainWindow::MainWindow( orcaqcm::NetworkThread *networkThread, double refreshInt
     // View
     //
     view_ = new RegTreeView(split);
-    view_->setModel( modelThread_->model() );
+    view_->setModel( model_ );
     view_->setItemDelegate(delegate_);
     //view_->setSelectionModel(selections_);
     view_->header()->setMovable(true);
@@ -105,17 +103,18 @@ MainWindow::setupMenuBar()
 
 void
 MainWindow::updateRegistryView()
-{
-    networkThread_->getComponentInfo();
-    
-//     statusBar()->showMessage( "Downloaded a list of "+QString::number(compNumber)+" components.", 3000 );
+{    
+    string locatorString = context_.communicator()->getDefaultLocator()->ice_toString();
+
+    hydroutil::JobPtr job = new orcaqcm::GetComponentsJob( qApp, model_, context_, locatorString );
+    jobQueue_->add( job );
 }
 
 void
 MainWindow::reloadRegistryView()
 {
     // first clear the model
-    modelThread_->clearModel();
+    model_->clear();
 
     // now update the view
     updateRegistryView();

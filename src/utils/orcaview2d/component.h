@@ -16,14 +16,12 @@
 #include <hydrodll/dynamicload.h>
 #include <orcaqgui/guielementfactory.h>
 
-using namespace std;
-
 namespace orcaview2d {
     
 class Component : public orcaice::Component
 {
 public:
-    Component( std::string compName );
+    Component();
     ~Component();
 
     // component interface

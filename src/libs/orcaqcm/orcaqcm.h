@@ -13,5 +13,6 @@
 
 #include <orcaqcm/ocmmodel.h>
 #include <orcaqcm/ocmdelegate.h>
+#include <orcaqcm/jobs.h>
  
 #endif

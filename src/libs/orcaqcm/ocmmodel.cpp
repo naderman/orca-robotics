@@ -10,10 +10,12 @@
 
 #include <iostream>
 #include <cmath>        // for floor()
+#include <orcaobj/orcaobj.h> // just for toString()
 
 #include "ocmmodel.h"
 
 #include "ocmicons.h"
+#include "homeevent.h"
 
 #include <QApplication>
 #include <QStyle>
@@ -68,15 +70,69 @@ OcmModel::ComponentNode::ComponentNode( const QString &n, PlatformNode* p, const
     timeUp = t.addSecs( tsec - daysUp*24*60*60 );
 }
 
+///////////////////////////
+
 OcmModel::OcmModel( QObject *par )
     : QAbstractItemModel(par)
 {
     headers_ << "Name" << "Details";
 }
 
-OcmModel::~OcmModel()
+void
+OcmModel::customEvent( QEvent* e )
 {
-}
+    HomeEvent* he = dynamic_cast<HomeEvent*>(e);
+    assert( he && "event should be a HomeEvent" );
+
+    // make sure the component is reachable
+    if ( !he->data_.isReachable ) {
+        // unreachable, will also set all children as disconnected
+        setComponent(
+                QString::fromStdString( he->data_.locatorString ),
+                QString::fromStdString( he->data_.adminAddress ),
+                QString::fromStdString( he->data_.name.platform ),
+                QString::fromStdString( he->data_.name.component ),
+                "",
+                false,
+                he->data_.timeUp );
+    }
+    else {
+        // component is reachable
+        //cout<<"reg proxy: "<<he->registryAddress.toStdString()<<endl;
+
+        // provided interfaces
+        for ( unsigned int j=0; j<he->data_.provides.size(); ++j ) {
+            bool isProvided = true;
+            setInterface(
+                QString::fromStdString( he->data_.locatorString ),
+                QString::fromStdString( he->data_.adminAddress ),
+                QString::fromStdString( he->data_.name.platform ),
+                QString::fromStdString( he->data_.name.component ),
+                QString::fromStdString( he->data_.provides[j].name ),
+                isProvided,
+                QString::fromStdString( he->data_.address ),
+                QString::fromStdString( he->data_.provides[j].id ),
+                he->data_.provides[j].isReachable,
+                he->data_.timeUp );
+        }
+        // required interfaces
+        for ( unsigned int j=0; j<he->data_.requires.size(); ++j ) {
+            bool isProvided = false;
+            setInterface( 
+                QString::fromStdString( he->data_.locatorString ),
+                QString::fromStdString( he->data_.adminAddress ),
+                QString::fromStdString( he->data_.name.platform ),
+                QString::fromStdString( he->data_.name.component ),
+                QString::fromStdString( orcaice::toString( he->data_.requires[j].name ) ),
+                isProvided,
+                QString::fromStdString( he->data_.address ),
+                QString::fromStdString( he->data_.requires[j].id ),
+                he->data_.requires[j].isReachable,
+                he->data_.timeUp );
+        }
+    }
+
+} 
 
 QModelIndex
 OcmModel::index(int row, int column, const QModelIndex &parent) const

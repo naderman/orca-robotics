@@ -30,22 +30,22 @@ using namespace std;
 namespace orcaqgui 
 {
 
-    MainWindow::MainWindow( std::string              title,
-                            orcaqcm::NetworkThread *networkThread,
-                            ScreenDumpParams         screenDumpParams,
-                            int                      displayRefreshTime,
-                            const std::vector<std::string> &supportedInterfaces,
-                            QWidget                 *parent, 
-                            Qt::WFlags               flags )
-    : QMainWindow(parent, flags), 
-      networkThread_(networkThread), 
-      screenDumpParams_(screenDumpParams),
-      displayRefreshTime_(displayRefreshTime),
-      elemModel_(NULL),
-      displayView_(NULL),
-      supportedInterfaces_(supportedInterfaces),
-      firstTime_(true),
-      modeOwner_(NULL)
+    MainWindow::MainWindow( 
+                std::string                        title,   
+                ScreenDumpParams                   screenDumpParams,
+                int                                displayRefreshTime,
+                const std::vector<std::string>    &supportedInterfaces,
+                hydroutil::JobQueue               *jobQueue,
+                const orcaice::Context            &context) :
+    screenDumpParams_(screenDumpParams),
+    displayRefreshTime_(displayRefreshTime),
+    elemModel_(NULL),
+    displayView_(NULL),
+    supportedInterfaces_(supportedInterfaces),
+    firstTime_(true),
+    modeOwner_(NULL),
+    jobQueue_(jobQueue),
+    context_(context)
 {
     setWindowTitle(title.c_str());
     setWindowIcon ( QPixmap(orcaqt::orca2_2x3_yellow_130_xpm) );
@@ -65,12 +65,12 @@ namespace orcaqgui
     // Select-from-Registry widget
     //
     // Model
-    regModelThread_ = new orcaqcm::ModelThread( *networkThread );
+    regModel_ = new orcaqcm::OcmModel();
     // Delegate
     regDelegate_ = new orcaqcm::OcmDelegate();
     // View
     regView_ = new RegSelectView(side_);
-    regView_->setModel( regModelThread_->model() );
+    regView_->setModel( regModel_ );
     regView_->setItemDelegate(regDelegate_);
     //regView_->setSelectionModel(selections_);
     regView_->header()->setMovable(true);
@@ -271,16 +271,17 @@ MainWindow::setupInterface()
 void
 MainWindow::updateRegistryView()
 {
-    networkThread_->getComponentInfo();
-    
-//     statusBar()->showMessage( "Downloaded a list of "+QString::number(compNumber)+" components.", 3000 );
+    string locatorString = context_.communicator()->getDefaultLocator()->ice_toString();
+
+    hydroutil::JobPtr job = new orcaqcm::GetComponentsJob( qApp, regModel_, context_, locatorString );
+    jobQueue_->add( job );
 }
 
 void
 MainWindow::reloadRegistryView()
 {
     // first clear the model
-    regModelThread_->clearModel();
+    regModel_->clear();
 
     // now update the view
     updateRegistryView();
@@ -529,6 +530,7 @@ MainWindow::unsubscribeFromKey( QKeySequence key, QObject *parent )
 void
 MainWindow::changePlatformColor(const QString&)
 {
+    //alexm: ???
 }
 
 } // namespace

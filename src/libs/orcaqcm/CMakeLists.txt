@@ -16,7 +16,6 @@ IF ( BUILD )
       ocmmodel.h
       ocmview.h
       ocmdelegate.h
-      modelthread.h
     )
 
     QT4_WRAP_CPP( MOC_SRCS ${MOC_HEADERS} )

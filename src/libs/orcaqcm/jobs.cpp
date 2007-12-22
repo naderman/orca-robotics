@@ -13,21 +13,22 @@
 #include <orcaice/orcaice.h>
 #include <orcacm/orcacm.h>
 
-#include "calls.h"
+#include "jobs.h"
+#include "homeevent.h"
 
 using namespace std;
 using namespace orcaqcm;
 
-GetComponentsCall::GetComponentsCall( const orcaice::Context & context, const std::string & locatorString,
-                hydroutil::Notify<orcacm::ComponentData>* homePipe )
-    : context_(context),
-      locatorString_(locatorString),
-      homePipe_(homePipe)
+GetComponentsJob::GetComponentsJob( QCoreApplication* app, QObject* obj, const orcaice::Context& context, const std::string& locatorString ) : 
+    app_(app),
+    obj_(obj),
+    locatorString_(locatorString),
+    context_(context)
 {
 }
 
 void
-GetComponentsCall::execute()
+GetComponentsJob::execute()
 {
     //cout<<"default locator (refresh) :"<<context_.communicator()->getDefaultLocator()->ice_toString()<<endl;
 
@@ -55,10 +56,12 @@ GetComponentsCall::execute()
 
         compData.locatorString = regData.locatorString;
         compData.adminAddress = regData.address;
+
         //
         // push results one by one to UserHandler
         //
-        homePipe_->set( compData );
+//         homePipe_->set( compData );
+        app_->postEvent( obj_, (QEvent*)new HomeEvent( compData ) );
     }
 
 }

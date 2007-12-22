@@ -14,9 +14,13 @@
 #include <vector>
 #include <QMainWindow>
 
+#include <hydroutil/jobqueue.h>
+#include <orcaice/context.h>
 #include <orcaqgui/ihumanmanager.h>
-#include <orcaqcm/networkthread.h>
-#include <orcaqcm/modelthread.h>
+
+namespace orcaqcm {
+    class OcmModel;
+};
 
 class QTreeView;
 class QItemDelegate;
@@ -44,13 +48,14 @@ class MainWindow : public QMainWindow, public orcaqgui::IHumanManager
 {
     Q_OBJECT
 public:
-    MainWindow( std::string                        title,
-                orcaqcm::NetworkThread           *networkThread,           
+    MainWindow( std::string                        title,   
                 ScreenDumpParams                   screenDumpParams,
                 int                                displayRefreshTime,
                 const std::vector<std::string>    &supportedInterfaces,
-                QWidget                           *parent = 0, 
-                Qt::WFlags                         flags = 0 );
+                hydroutil::JobQueue               *jobQueue,
+                const orcaice::Context            &context );
+//                 QWidget                           *parent = 0, 
+//                 Qt::WFlags                         flags = 0 );
 
     // Returns the parent of the widget that displays everything graphically.
     QWidget *displayViewParent();
@@ -107,8 +112,9 @@ private:
     QSplitter *side_;
 
     // registry
-    orcaqcm::NetworkThread     *networkThread_;
-    orcaqcm::ModelThread       *regModelThread_;
+//     orcaqcm::NetworkThread     *networkThread_;
+//     orcaqcm::ModelThread       *regModelThread_;
+    orcaqcm::OcmModel           *regModel_;
     QTreeView                   *regView_;
     QItemDelegate               *regDelegate_;
     
@@ -155,6 +161,9 @@ private:
     
     // list of shorcut actions
     QList<ShortcutAction*> shortcutActions_;
+
+    hydroutil::JobQueue*    jobQueue_;
+    orcaice::Context        context_;
 };
 
 

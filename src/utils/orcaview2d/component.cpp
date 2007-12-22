@@ -11,12 +11,12 @@
 #include <QApplication>
  
 #include <orcaice/orcaice.h>
-#include <orcaqcm/networkthread.h>
+#include <hydrodll/dynamicload.h>
+#include <hydroutil/jobqueue.h>
 #include <orcaqgui/mainwin.h>
 #include <orcaqgui/guielementmodel.h>
 #include <orcaqgui2d/worldview.h>
 #include <orcaqgui2d/platformcsfinder.h>
-#include <hydrodll/dynamicload.h>
 
 #include "component.h"
         
@@ -33,8 +33,8 @@ orcaqgui::GuiElementFactory* loadFactory( hydrodll::DynamicallyLoadedLibrary &li
     return f;
 }
 
-Component::Component( string compName)
-    : orcaice::Component( compName, orcaice::HomeInterface )
+Component::Component()
+    : orcaice::Component( "OrcaView2d", orcaice::NoStandardInterfaces )
 {
 }
 
@@ -113,9 +113,8 @@ readScreenDumpParams( const orcaice::Context &context,
 void 
 Component::start()
 {
-    //
-    // INITIAL CONFIGURATION
-    //
+    Ice::PropertiesPtr props = context().properties();
+    std::string prefix = context().tag() + ".Config.";
     
     //
     // enable network connections
@@ -124,9 +123,16 @@ Component::start()
     // this may throw, but may as well quit right then
     activate();
     
-    // this runs in its own thread
-    orcaqcm::NetworkThread networkThread( context() );
-    networkThread.start();
+    //
+    // Start job queue
+    //
+    hydroutil::JobQueue::Config jconfig;
+    jconfig.threadPoolSize = orcaice::getPropertyAsIntWithDefault( props, prefix+"JobQueueThreadPoolSize", 1 );
+    jconfig.queueSizeWarn = orcaice::getPropertyAsIntWithDefault( props, prefix+"JobQueueSizeWarning", -1 );
+    jconfig.traceAddEvents = false;
+    jconfig.traceDoneEvents = false;
+    
+    hydroutil::JobQueue jobQueue( context().tracer(), jconfig ) ;
     
     // Set up QT stuff
     char **v = 0;
@@ -136,8 +142,6 @@ Component::start()
     orcaqgui::ScreenDumpParams screenDumpParams;
     readScreenDumpParams( context(), screenDumpParams );
     
-    Ice::PropertiesPtr props = context().properties();
-    std::string prefix = context().tag() + ".Config.";
     int displayRefreshTime = orcaice::getPropertyAsIntWithDefault( props, prefix+"General.DisplayRefreshTime", 200 );
 
     string libNames = orcaice::getPropertyWithDefault( props, prefix+"General.FactoryLibNames", DEFAULT_FACTORY_LIB_NAME );
@@ -146,10 +150,10 @@ Component::start()
 
     // main window for display
     orcaqgui::MainWindow gui( "OrcaView",
-                              &networkThread,
                               screenDumpParams,
                               displayRefreshTime,
-                              supportedInterfaces );
+                              supportedInterfaces,
+                              &jobQueue, context() );
 
     // Qt model for handling elements and their display in each of the widgets
     orcaqgui::GuiElementModel guiElemModel( factories_,
