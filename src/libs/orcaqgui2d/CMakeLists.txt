@@ -10,7 +10,7 @@ IF ( BUILD )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseQt.cmake )
     
-    FILE( GLOB HUMAN_SRCS *.cpp )
+    FILE( GLOB HUMAN_SRCS *.cpp detail/*.cpp )
     
     SET( MOC_HEADERS
         worldview.h

@@ -24,7 +24,7 @@
 #include <cmath>
 #include <iostream>
 #include "cov2d.h"
-#include "exceptions.h"
+#include <orcaqgui/exceptions.h>
 #include <assert.h>
 
 using namespace std;

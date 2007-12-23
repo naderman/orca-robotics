@@ -334,7 +334,7 @@ void
 PathPlannerHI::waypointModeSelected()
 {
     if ( gotMode_ ) return;
-    gotMode_ = humanManager_->requestMode( ppElement_ );
+    gotMode_ = humanManager_->requestBecomeMouseEventReceiver( ppElement_ );
 
     if ( !gotMode_ )
     {
@@ -367,7 +367,7 @@ PathPlannerHI::cancel()
 {
     if ( gotMode_ )
     {
-        humanManager_->relinquishMode( ppElement_ );
+        humanManager_->relinquishMouseEventReceiver( ppElement_ );
         lostMode();
     }
 }

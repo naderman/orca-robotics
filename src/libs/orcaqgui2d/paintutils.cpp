@@ -12,7 +12,7 @@
 #include <sstream>
 #include <hydroutil/mathdefs.h>
 #include <orcaqgui/exceptions.h>
-#include <orcaqgui/cov2d.h>
+#include "detail/cov2d.h"
 #include "paintutils.h"
 
 using namespace std;

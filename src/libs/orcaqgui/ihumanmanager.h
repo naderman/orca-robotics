@@ -47,12 +47,12 @@ public:
     //! WARNING: remember to unsubscribeFromShortcutKey in the destructor, otherwise segfaults will occur
     virtual void unsubscribeFromShortcutKey( QKeySequence key, QObject *parent ) = 0;
 
-    //! There's a global 'mode'.
-    //! Zero or one of the GuiElements 'owns' this mode.
-    virtual GuiElement *modeOwner() const=0;
-    virtual bool requestMode( GuiElement *requester )=0;
-    virtual bool modeIsOwned()=0;
-    virtual void relinquishMode( GuiElement *relinquisher )=0;
+    //! Zero or one of the GuiElements can be the receiver of mouse events.
+    //! (this function returns NULL if no-one's receiving mouse events).
+    virtual GuiElement *mouseEventReceiver() const=0;
+    virtual bool requestBecomeMouseEventReceiver( GuiElement *requester )=0;
+    virtual bool mouseEventReceiverIsSet()=0;
+    virtual void relinquishMouseEventReceiver( GuiElement *relinquisher )=0;
 
     // Allows access to _all_ GuiElements.  Use with caution!
     virtual GuiElementModel &guiElementModel()=0;

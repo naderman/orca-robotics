@@ -72,10 +72,10 @@ public:
     virtual QMenu    *displayMenu() { return displayMenu_; }
     virtual QToolBar *toolBar() { return toolBar_; }
     
-    virtual GuiElement *modeOwner() const { return modeOwner_; }
-    virtual bool requestMode( GuiElement *requester );
-    virtual bool modeIsOwned();
-    virtual void relinquishMode( GuiElement *relinquisher );
+    virtual GuiElement *mouseEventReceiver() const { return mouseEventReceiver_; }
+    virtual bool requestBecomeMouseEventReceiver( GuiElement *requester );
+    virtual bool mouseEventReceiverIsSet();
+    virtual void relinquishMouseEventReceiver( GuiElement *relinquisher );
 
     virtual GuiElementModel &guiElementModel() { return *elemModel_; }
 
@@ -110,8 +110,6 @@ private:
     QSplitter *side_;
 
     // registry
-//     orcaqcm::NetworkThread     *networkThread_;
-//     orcaqcm::ModelThread       *regModelThread_;
     orcaqcm::OcmModel           *regModel_;
     QTreeView                   *regView_;
     QItemDelegate               *regDelegate_;
@@ -155,7 +153,7 @@ private:
     QToolBar *toolBar_;
 
     // NULL means mode is not owned
-    GuiElement *modeOwner_;
+    GuiElement *mouseEventReceiver_;
     
     // list of shorcut actions
     QList<ShortcutAction*> shortcutActions_;

@@ -124,13 +124,6 @@ WorldView::setupInterface()
     mainWin_->displayMenu()->addAction(moveRight);
     mainWin_->displayMenu()->addAction(zoomIn);
     mainWin_->displayMenu()->addAction(zoomOut);
-
-//     mainWin_->addToToolbar(moveUp);
-//     mainWin_->addToToolbar(moveDown);
-//     mainWin_->addToToolbar(moveLeft);
-//     mainWin_->addToToolbar(moveRight);
-//     mainWin_->addToToolbar(zoomIn);
-//     mainWin_->addToToolbar(zoomOut);
 }
 
 bool
@@ -281,10 +274,10 @@ WorldView::paintAllGuiElements( QPainter *painter, int z, bool isCoordinateFrame
 void
 WorldView::mousePressEvent( QMouseEvent* e )
 {
-    if ( mainWin_->modeIsOwned() )
+    if ( mainWin_->mouseEventReceiverIsSet() )
     {
         //cout<<"TRACE(worldview.cpp): giving mousePressEvent to mode owner" << endl;
-        mainWin_->modeOwner()->mousePressEvent( e );
+        mainWin_->mouseEventReceiver()->mousePressEvent( e );
         return;
     }
     else
@@ -298,9 +291,9 @@ WorldView::mousePressEvent( QMouseEvent* e )
 void
 WorldView::mouseMoveEvent( QMouseEvent* e )
 {
-    if ( mainWin_->modeIsOwned() )
+    if ( mainWin_->mouseEventReceiverIsSet() )
     {
-        //mainWin_->modeOwner()->mouseMoveEvent( e );
+        //mainWin_->mouseEventReceiver()->mouseMoveEvent( e );
         return;
     }
     else
@@ -330,10 +323,10 @@ WorldView::mouseMoveEvent( QMouseEvent* e )
 void
 WorldView::mouseReleaseEvent( QMouseEvent* e )
 {
-    if ( mainWin_->modeIsOwned() )
+    if ( mainWin_->mouseEventReceiverIsSet() )
     {
         //cout<<"TRACE(worldview.cpp): Giving mouseReleaseEvent to mode owner" << endl;
-        mainWin_->modeOwner()->mouseReleaseEvent( e );
+        mainWin_->mouseEventReceiver()->mouseReleaseEvent( e );
         return;
     }
 
@@ -359,8 +352,8 @@ WorldView::mouseReleaseEvent( QMouseEvent* e )
 void
 WorldView::mouseDoubleClickEvent( QMouseEvent* e )
 {
-    if ( mainWin_->modeIsOwned() )
-        mainWin_->modeOwner()->mouseDoubleClickEvent( e );
+    if ( mainWin_->mouseEventReceiverIsSet() )
+        mainWin_->mouseEventReceiver()->mouseDoubleClickEvent( e );
 }
 
 void

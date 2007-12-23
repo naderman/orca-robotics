@@ -128,8 +128,8 @@ GuiElementModel::removeRows( int row, int count, const QModelIndex & parent )
     assert( parent==QModelIndex() && "this is a table model, parent must be root" );
 
     // if it's the mode owner, reset the mode
-    if ( elements_[row] == humanManager_->modeOwner() )
-        humanManager_->modeOwner()->lostMode();
+    if ( elements_[row] == humanManager_->mouseEventReceiver() )
+        humanManager_->mouseEventReceiver()->lostMode();
 
     beginRemoveRows( QModelIndex(), row, row );
     // the elements_ list contains pointers, we have to delete the object

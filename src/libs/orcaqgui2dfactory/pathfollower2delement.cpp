@@ -581,7 +581,7 @@ void
 PathFollowerHI::waypointModeSelected()
 {
     if ( gotMode_ ) return;
-    gotMode_ = humanManager_->requestMode( pfElement_ );
+    gotMode_ = humanManager_->requestBecomeMouseEventReceiver( pfElement_ );
     
     if ( !gotMode_ )
     {
@@ -630,7 +630,7 @@ PathFollowerHI::cancel()
     cout<<"TRACE(PathFollowerHI): cancel()" << endl;
     if ( gotMode_ )
     {
-        humanManager_->relinquishMode( pfElement_ );
+        humanManager_->relinquishMouseEventReceiver( pfElement_ );
         lostMode();
     }
 }

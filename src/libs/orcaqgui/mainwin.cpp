@@ -43,7 +43,7 @@ namespace orcaqgui
     displayView_(NULL),
     supportedInterfaces_(supportedInterfaces),
     firstTime_(true),
-    modeOwner_(NULL),
+    mouseEventReceiver_(NULL),
     jobQueue_(jobQueue),
     context_(context)
 {
@@ -463,23 +463,23 @@ MainWindow::grabWindow()
 }
 
 bool 
-MainWindow::requestMode( GuiElement *requester )
+MainWindow::requestBecomeMouseEventReceiver( GuiElement *requester )
 { 
-    if ( modeIsOwned() )
-        modeOwner_->lostMode();
-    modeOwner_ = requester;
+    if ( mouseEventReceiverIsSet() )
+        mouseEventReceiver_->lostMode();
+    mouseEventReceiver_ = requester;
     return true;
 }
 bool 
-MainWindow::modeIsOwned() 
+MainWindow::mouseEventReceiverIsSet() 
 {
-    return modeOwner_!=NULL; 
+    return mouseEventReceiver_!=NULL; 
 }
 void 
-MainWindow::relinquishMode( GuiElement *relinquisher )
+MainWindow::relinquishMouseEventReceiver( GuiElement *relinquisher )
 { 
-    if ( relinquisher==modeOwner_ ) 
-        modeOwner_=NULL;
+    if ( relinquisher==mouseEventReceiver_ ) 
+        mouseEventReceiver_=NULL;
     else showStatusMsg( Error, "Attempt to relinquish mode from non-owner!" );
 }
 
@@ -497,7 +497,7 @@ MainWindow::subscribeToShortcutKey( QAction *elementAction, QKeySequence key, bo
     {
         if (shortcutActions_[i]->key() == key)
         {
-            shortcutActions_[i]->subscribe( parent, elementAction);
+            shortcutActions_[i]->subscribe( parent, elementAction );
             return;
         }
     }
