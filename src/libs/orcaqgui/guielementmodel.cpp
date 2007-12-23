@@ -18,7 +18,7 @@
 #include "guielementfactory.h"
 #include "guielementview.h"
 #include "ihumanmanager.h"
-#include "stringtocolormap.h"
+#include "istringtocolormap.h"
 
 using namespace std;
 
@@ -27,15 +27,16 @@ namespace orcaqgui {
 GuiElementModel::GuiElementModel( const std::vector<orcaqgui::GuiElementFactory*> &factories,
                                   const orcaice::Context & context, 
                                   IHumanManager *messageDisplayer,
+                                  IStringToColorMap *platformColorMap,
                                   QObject *parent )
     : QAbstractTableModel(parent),
       factories_(factories),
       context_(context),
       humanManager_(messageDisplayer),
+      platformColorMap_(platformColorMap),
       view_(0),
       currentTransparency_(true)
 {    
-    platformColors_ = new StringToColorMap;
     headers_ << "Type" << "Details";
     coordinateFramePlatform_ = "global";
     ignoreCoordinateFrameRotation_ = false;
@@ -261,7 +262,7 @@ GuiElementModel::createGuiElement( const QString &elementType,
 {    
     QString platform;
     determinePlatform( elementDetails, platform );
-    QColor platformColor = platformColors_->getColor( platform );
+    QColor platformColor = platformColorMap_->getColor( platform );
     
     // instantiate element
     GuiElement* element = NULL;

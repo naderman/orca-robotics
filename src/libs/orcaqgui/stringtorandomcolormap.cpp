@@ -9,14 +9,14 @@
  */
 
 #include <orcaice/orcaice.h>
-#include "stringtocolormap.h"
+#include "stringtorandomcolormap.h"
 
 using namespace std;
 
 namespace orcaqgui 
 {
     
-StringToColorMap::StringToColorMap() 
+StringToRandomColorMap::StringToRandomColorMap() 
     : colorCounter_(0)
 {
     double timeInSec = orcaice::timeAsDouble( orcaice::getNow() );
@@ -37,7 +37,7 @@ StringToColorMap::StringToColorMap()
 }
 
 QColor
-StringToColorMap::getColor( const QString &str )
+StringToRandomColorMap::getColor( const QString &str )
 {
     QColor color;
 
@@ -65,7 +65,7 @@ StringToColorMap::getColor( const QString &str )
 }
 
 QColor
-StringToColorMap::generateRandomColor()
+StringToRandomColorMap::generateRandomColor()
 {    
     seed_ = seed_ + 10;
     srand(seed_);

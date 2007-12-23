@@ -8,23 +8,24 @@
  *
  */
 
-#ifndef ORCA_ORCAQGUI_STRING_TO_COLOR_MAP_H
-#define ORCA_ORCAQGUI_STRING_TO_COLOR_MAP_H
+#ifndef ORCA_ORCAQGUI_STRING_TO_RANDOM_COLOR_MAP_H
+#define ORCA_ORCAQGUI_STRING_TO_RANDOM_COLOR_MAP_H
 
 #include <vector>
 #include <QColor>
 #include <map>
+#include <orcaqgui/istringtocolormap.h>
 
 namespace orcaqgui 
 {
-    // Manages a mapping from strings to colours.
+    // Manages a mapping from strings to random colours.
     // Remembers colours that have previously been assigned.
     // Author: Tobias Kaupp, Alex Brooks
-    class StringToColorMap
+    class StringToRandomColorMap : public IStringToColorMap
     {
         public:
-            StringToColorMap();
-            ~StringToColorMap() {};
+            StringToRandomColorMap();
+            ~StringToRandomColorMap() {};
             
             // gets the color for a given string, allocating a new one if necessary
             QColor getColor( const QString &str );
@@ -37,8 +38,6 @@ namespace orcaqgui
             unsigned int colorCounter_;
             std::vector<QColor> colorVector_;
             unsigned int seed_;
-            
-        
     };
 
 

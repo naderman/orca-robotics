@@ -8,6 +8,7 @@ REQUIRE_VAR( LIB ${LIB_NAME} QT4_FOUND "Qt4 not found" )
 IF ( BUILD )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseBasicRules.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseQt.cmake )
     
     FILE( GLOB HUMAN_SRCS *.cpp )

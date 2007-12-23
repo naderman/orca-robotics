@@ -26,8 +26,11 @@ class GuiElement;
 class GuiElementFactory;
 class OrcaGuiUserEvent;
 class GuiElementView;
-class StringToColorMap;
+class IStringToColorMap;
 
+//!
+//! @brief Stores the set of GuiElements
+//!
 class GuiElementModel : public QAbstractTableModel
 {
     Q_OBJECT
@@ -40,9 +43,10 @@ public:
     };
     
     explicit GuiElementModel( const std::vector<orcaqgui::GuiElementFactory*> &factories,
-                              const orcaice::Context                         &context, 
-                              IHumanManager                                  *humanManager,
-                              QObject                                        *parent = 0);
+                              const orcaice::Context                          &context, 
+                              IHumanManager                                   *humanManager,
+                              IStringToColorMap                               *platformColorMap,
+                              QObject                                         *parent = 0);
     ~GuiElementModel();
 
     //
@@ -109,7 +113,7 @@ private:
     bool doesPlatformExist( QString &platformName );
     bool doesElementExist( const QStringList& elementDetails, int numElements );
     
-    StringToColorMap *platformColors_;
+    IStringToColorMap *platformColorMap_;
     
     QString platformInFocus_;
     GuiElementView* view_;

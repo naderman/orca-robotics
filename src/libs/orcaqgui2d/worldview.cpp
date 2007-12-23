@@ -46,7 +46,7 @@ WorldView::WorldView( PlatformCSFinder* platformCSFinder,
       mainWin_(mainWin),
       antiAliasing_(false)
 {
-    setMinimumSize( 600, 600 );
+    setMinimumSize( 400, 400 );
     setMaximumSize( 1400, 1050 );
  
     // Use mouse tracking to show tooltips with robot names.

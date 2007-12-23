@@ -14,6 +14,7 @@
 #include <hydrodll/dynamicload.h>
 #include <hydroutil/jobqueue.h>
 #include <orcaqgui/mainwin.h>
+#include <orcaqgui/stringtorandomcolormap.h>
 #include <orcaqgui/guielementmodel.h>
 #include <orcaqgui2d/worldview.h>
 #include <orcaqgui2d/platformcsfinder.h>
@@ -155,10 +156,14 @@ Component::start()
                               supportedInterfaces,
                               &jobQueue, context() );
 
+    // Color scheme
+    orcaqgui::StringToRandomColorMap platformColorScheme;
+
     // Qt model for handling elements and their display in each of the widgets
     orcaqgui::GuiElementModel guiElemModel( factories_,
                                             context(),
-                                            &gui );
+                                            &gui,
+                                            &platformColorScheme );
 
     orcaqgui2d::PlatformCSFinder platformCSFinder;
 

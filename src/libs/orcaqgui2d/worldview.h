@@ -28,6 +28,9 @@ class HumanInput;
 class PlatformCSFinder;
 class GuiQPainter;
 
+//!
+//! @brief Displays a set of GuiElements in a geometrically-correct way
+//!
 class WorldView : public orcaqgui2d::ZoomWidget
 {
    Q_OBJECT
