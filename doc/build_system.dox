@@ -12,7 +12,7 @@
 
 @page orca_doc_buildsystem The Orca Build System
 
-@note Reviewed for release 2.0.0.
+@note Reviewed for release 2.9.0.
 
 Orca uses <a href="http://www.cmake.org">CMake</a> to handle its build system.
 CMake is a cross-platform tool, designed as a replacement for autotools.
@@ -22,24 +22,16 @@ CMake is a cross-platform tool, designed as a replacement for autotools.
 Builds are controlled by a set of files called 'CMakeLists.txt'.  There
 is approximately one in each directory, and builds descend recursively through the source tree.
 
-If you just want to see how to initiate a build, see @ref orca_doc_getting "instructions on getting Orca" or read the 'INSTALL' file at the top level of Orca2 distribution.
+If you just want to see how to initiate a build, see @ref orca_doc_getting "instructions on getting Orca" or read the 'INSTALL' file at the top level of Orca distribution.
 
-@section orca_doc_buildsystem_orca2 Orca Details
+@section orca_doc_buildsystem_orca Details
 
-The build system for orca consists of a set of 'CMakeLists.txt' files, many of which INCLUDE a set of helper '.cmake' files.  The '.cmake' files live in the top-level 'config' directory.
+The build system for orca consists of a set of 'CMakeLists.txt' files, many of which @c INCLUDE a set of helper @c .cmake files.  The @c .cmake files live in the top-level @c [ORCA-SRC]/cmake directory.
 
-The top-level 'CMakeLists.txt' file:
-    - Calls config/global_setup.cmake, which checks for global requirements like Ice.
-    - Calls config/check_depend.cmake, which checks for a bunch of things that might be needed by one or more components.  These checks set variables which can be used by components later on.
+The top-level @c CMakeLists.txt file:
+    - Checks for global requirements, e.i. Ice and Hydro.
+    - Sets globally useful variables, e.g. which OS is being used, location of commonly used directories, etc.
 
-Individual components maintain their own 'CMakeLists.txt' files.  Components will generally INCLUDE the following:
-
-    - config/component_rules.cmake: Contains rules for compiler/linker flags, plus any other component-kruft.
-    - possibly: config/include_orcaice.cmake: Contains all the rules to include libOrcaIce, to avoid repetition.
-
-
-Components should build themselves with GLOBAL_ADD_EXECUTABLE rather than ADD_EXECUTABLE.  This allows their builds to be mediated in a central location.
-
-Note for libraries: In order for files to be able to @c \#include header files the same when they're in situ (within the distribution) as when they're installed, all @c \#include header files live in subdirectories called 'orca'.  Source files then @c \#include the directory above.
+Individual components maintain their own @c CMakeLists.txt files. For more details see a @ref orca_doc_tutebrickwrite_cmakelists "step-by-step commentary" on the CMakeLists.txt file of the example @ref orca_component_brick component.
 
 */

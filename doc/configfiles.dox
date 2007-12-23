@@ -12,7 +12,7 @@
 
 @page orca_doc_configfiles Orca Configuration Files
 
-@note Reviewed for release 2.7.0.
+@note Reviewed for release 2.9.0.
 
 This page describes everything you need to know about writing and using Orca config files.
 
@@ -25,18 +25,20 @@ This page describes everything you need to know about writing and using Orca con
   - @ref orca_doc_configfiles_connection
   - @ref orca_doc_configfiles_config
 
-@section orca_doc_configfiles_order Sources and Order of Loading
+@section orca_doc_configfiles_order Sources, Priorities, and Order of Loading
 
-Configuration parameters are loaded in this order, earlier sources overwritten by later ones.
+Configuration parameters can come from 5 different sources, in any combination. The possible sources are listed here in the order of decreasing generality and increasing priority (i.e. the later more specific sources overwrite the earlier more general ones). At runtime, the properties are loaded in reverse order so that the property @e values from more specific sources (e.g. from the command line) can specify the @e address of the more general sources (e.g. the location of the global config file). Despite the reverse loading order, the priorities are of course preserved.
 
--# Built-in defaults
--# Network-Loaded configuration
-    - If configured (through one of the sources below) with the
-      parameter @c Orca.NetworkConfig, the component will load properties
-      from the orca::Properties interface supplied through @c Orca.NetworkConfig.
-    - Only properties beginning with the component tag can be set using this method.
--# Global configuration file, specified in one of 3 ways (we use the first one we find):
-    -# The contents of @c Orca.GlobalConfig parameter, e.g.
+-# Built-in ("factory") defaults
+    - These are hard-wired into the code of commonly-used libraries and the individual components. The library and component documentation should specify default values. (See for example @ref orca_library_orcaice_config "configuration parameters for libOrcaIce)
+-# Over the network, from a remote interface. Only properties beginning with the component tag can be set using this method. The remote interface proxy (direct or indirect) is specified in one of 2 ways:
+    -# The contents of @c Orca.NetworkConfig parameter (supplied by any of the sources below), e.g.
+@verbatim
+Orca.NetworkConfig=properties@local/propertyserver
+@endverbatim
+    -# Default value: none. Network configuration properties are not used if the proxy is not specified explicitely.
+-# From a global configuration file. The path to the file (absolute or relative) is specified in one of 3 ways (we use the first one we find):
+    -# The contents of @c Orca.GlobalConfig parameter (supplied by any of the sources below), e.g.
 @verbatim
 $ ls *.cfg
 global.cfg
@@ -49,7 +51,7 @@ global.cfg
 $ export ORCA_GLOBAL_CONFIG=global.cfg
 $ mycomponent
 @endverbatim
-    -# Default file, platform-dependent:
+    -# Default value, platform-dependent:
         - Linux: File @c $HOME/.orcarc
 @verbatim
 $ ls $HOME/.orcarc
@@ -57,14 +59,14 @@ $ ls $HOME/.orcarc
 $ mycomponent
 @endverbatim
         - Win32: File @c C:\\orca.ini
--# Component configuration file, specified in one of 4 ways (we use the first one we find):
-    -# The contents of @c Orca.Config parameter
+-# From a component configuration file. The path to the file (absolute or relative) is specified in one of 4 ways (we use the first one we find):
+    -# The contents of @c Orca.Config parameter (supplied by any of the sources below), e.g.
 @verbatim
 $ ls *.cfg
 local.cfg
 $ mycomponent --Orca.Config=local.cfg
 @endverbatim
-    -# The contents of @c Ice.Config parameter
+    -# The contents of @c Ice.Config parameter (supplied by any of the sources below), e.g.
 @verbatim
 $ ls *.cfg
 local.cfg
@@ -83,16 +85,12 @@ $ ls *.cfg
 mycomponent.cfg
 $ mycomponent
 @endverbatim
--# Command-line arguments. For example, the following ways of starting a component are equivalent:
+-# Command-line arguments.  Any property can be specified on the command line by prepending "--" to it. For example, your component's config file has the following property @c MyComponent.Config.MaxSpeed=50. You can change the effective value with a command-line option. (Note that we have to specify the config file name explicitely because the special cases of 4b and 4c no longer apply.)
 @verbatim
-$ export ORCA_GLOBAL_CONFIG=global.cfg
-$ mycomponent --Orca.Config=local.cfg --MyComponent.MaxSpeed=500
-@endverbatim
-@verbatim
-$ mycomponent --Orca.GlobalConfig=global.cfg --MyComponent.MaxSpeed=500 --Orca.Config=local.cfg
+$ mycomponent --Orca.Config=local.cfg --MyComponent.Config.MaxSpeed=500 
 @endverbatim
 
-@note To avoid unexpected interactions between Ice runtime and Orca libraries, do not define ICE_CONFIG environment variable.
+@note To avoid unexpected interactions between Ice runtime and Orca libraries, do @b not define ICE_CONFIG environment variable.
 
 @section orca_doc_configfiles_format File Format
 

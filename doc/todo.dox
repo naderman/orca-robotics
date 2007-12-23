@@ -28,7 +28,10 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 
 
-@section orca_doc_todo_todo To-Do List for Next Release
+@section orca_doc_todo_todo To-Do List
+
+- Documentation
+    - An end-to-end tutorial: create new slice interface, write server, write client. (alex m)
 
 - libOrcaIce
     - Should components quit when there's no registry and Orca.RequireRegistry=1?
@@ -46,9 +49,6 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
      - AlexB: Note: IceGrid writes '.cfg'-style config files to eg. nodedb/servers/<host>.<component>/config/config
    - converter between bin/ascii logs (if can be done automatically)
 
-- libOrcaIfaceImpl
-   - AlexB: prod status on the multi-try initInterface functions?
-
 - laser2og:
    - The ray-trace stuff in here is currently cut-n-pasted from hydroogmap...
 
@@ -59,6 +59,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 @section orca_doc_history_head Changes in SVN since Last Release
 
 @par Project wide
+
   - Build system
     - Updated style of checking module dependencies, for both components and libraries.
       Better cmake feedback when a component cannot be built.

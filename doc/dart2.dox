@@ -53,7 +53,7 @@ ctests/
 @par Experimental Build
 
 That's the simplest test you can run and you do things manually:
--# Reproduce the file structure shown above. Orca2 source tree is checked out from CVS 
+-# Reproduce the file structure shown above. Orca source tree is checked out from CVS 
 -# Create an out-of-source build directory
 -# Copy the CTest script from [ORCA-SRC]/scripts/dart/
 -# Execute the CTest script.

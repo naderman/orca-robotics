@@ -10,9 +10,9 @@
 
 /*!
 
-@page orca_doc_devadd_iface Adding Interfaces to Orca2
+@page orca_doc_devadd_iface Adding Interfaces to Orca
 
-@note Reviewed for release 2.1.2
+@note Reviewed for release 2.9.0
 
 @see @ref orca_doc_devadd_code.
 
@@ -25,7 +25,7 @@ A Slice interface is defined as a set operations. Opararations can contain input
     - In C++, this becomes a simple structure. 
     - Use these unless there is a good reason not to.
 - @e class with member variables only
-    - In C++, this beomes a smart pointer to class. 
+    - In C++, this becomes a smart pointer to class. 
     - Use these if you need inheritance in object definition.
 - @e interface
     - In C++, this becomes a proxy to a remote interface.
@@ -46,9 +46,8 @@ For more information read the chapter on Slice in the Ice Manual <a href="http:/
 
 @par Adding support for you interface
 
-Optionally, consider adding support for you interface in libraries and utilities. Library libOrcaObjects has many functions specialized for data objects, e.g. toString() and setSane(). The following tools have a plug-in structure:
+Optionally, consider adding support for you interface in libraries and utilities. Library libOrcaObjects has many functions specialized for data objects, e.g. toString() and setSane(). The following tools have a plug-in architecture, with a plug-in per interface:
     - @ref orca_util_orcaview2d
-    - @ref orca_util_orcaview3d
     - @ref orca_component_logger
     - @ref orca_component_logplayer
     - @ref orca_util_probe

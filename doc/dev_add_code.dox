@@ -10,9 +10,9 @@
 
 /*!
 
-@page orca_doc_devadd_code Adding Souce Code to Orca2
+@page orca_doc_devadd_code Adding Souce Code to Orca
 
-@note Reviewed for release 2.4.0
+@note Reviewed for release 2.9.0
 
 @see @ref orca_doc_devadd_iface
 
@@ -29,12 +29,10 @@ All source code is divided into 6 categories, each has a subdirectory in [ORCA_S
         - utilitiies used in the build process, etc.
 -# @e Libraries [libs]
         - Code which is used by more than one component or utility is put into shared libraries.
--# @e Tests [tests]
-        - Components and utilities whose sole purpose is to test reliability, performance, etc. of other components and the system as a whole.
 -# @e Examples [examples]
         - Components intended as examples for developers
 -# @e Sandbox [sandbox]
-        - Experimental code. 
+        - Experimental and not currently maintained code. 
         - Compilation is turned off by default     
 
 @par Adding code to the build system
@@ -46,7 +44,7 @@ All source code is divided into 6 categories, each has a subdirectory in [ORCA_S
     - Edit the CMake file @c CMakeLists.txt in the new directory
     - Edit the component definition file @c mymodule.def (does not apply to libraries)
     - Edit the documentation file @c mymodule.dox
-    - Modify the names of classes, namespaces, etc. using the name of your module
+    - Modify the name of module namespace using the name of your module
 -# Add an entry for the new directory to the build system.
     - Edit the file @c CMakeLists.txt in the directory @e containing your new module
         - e.g. @c [ORCA_SRC]/src/components/CMakeLists.txt for components
