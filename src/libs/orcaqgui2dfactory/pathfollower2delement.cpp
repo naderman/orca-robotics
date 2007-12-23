@@ -107,10 +107,10 @@ PathfollowerButtons::PathfollowerButtons( QObject *parent, orcaqgui::IHumanManag
 //     humanManager->toolBar()->addAction( hiStop );
 //     humanManager->toolBar()->addAction( hiGo );
     
-    humanManager->subscribeToKey( hiStop, QKeySequence(Qt::Key_Escape), true, this );
-    humanManager->subscribeToKey( hiWaypoints_, QKeySequence(Qt::Key_F10), false, this );
-    humanManager->subscribeToKey( hiSend, QKeySequence(Qt::Key_F11), false, this );
-    humanManager->subscribeToKey( hiGo, QKeySequence(Qt::Key_F12), true, this );
+    humanManager->subscribeToShortcutKey( hiStop, QKeySequence(Qt::Key_Escape), true, this );
+    humanManager->subscribeToShortcutKey( hiWaypoints_, QKeySequence(Qt::Key_F10), false, this );
+    humanManager->subscribeToShortcutKey( hiSend, QKeySequence(Qt::Key_F11), false, this );
+    humanManager->subscribeToShortcutKey( hiGo, QKeySequence(Qt::Key_F12), true, this );
     humanManager->toolBar()->addAction( hiCancel );
 
     QAction *wpDialogAction = new QAction( QString(proxyString.c_str()) + "\n" + "&PathFollower Waypoint settings", this );
@@ -123,10 +123,10 @@ PathfollowerButtons::PathfollowerButtons( QObject *parent, orcaqgui::IHumanManag
 
 PathfollowerButtons::~PathfollowerButtons() 
 {
-    humanManager_->unsubscribeFromKey( QKeySequence(Qt::Key_Escape), this ); 
-    humanManager_->unsubscribeFromKey( QKeySequence(Qt::Key_F10), this ); 
-    humanManager_->unsubscribeFromKey( QKeySequence(Qt::Key_F11), this ); 
-    humanManager_->unsubscribeFromKey( QKeySequence(Qt::Key_F12), this ); 
+    humanManager_->unsubscribeFromShortcutKey( QKeySequence(Qt::Key_Escape), this ); 
+    humanManager_->unsubscribeFromShortcutKey( QKeySequence(Qt::Key_F10), this ); 
+    humanManager_->unsubscribeFromShortcutKey( QKeySequence(Qt::Key_F11), this ); 
+    humanManager_->unsubscribeFromShortcutKey( QKeySequence(Qt::Key_F12), this ); 
 }
 
 void 

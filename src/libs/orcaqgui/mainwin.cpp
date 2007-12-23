@@ -484,9 +484,9 @@ MainWindow::relinquishMode( GuiElement *relinquisher )
 }
 
 void
-MainWindow::subscribeToKey( QAction *elementAction, QKeySequence key, bool isMultiple, QObject *parent )
+MainWindow::subscribeToShortcutKey( QAction *elementAction, QKeySequence key, bool isMultiple, QObject *parent )
 {
-    cout << "TRACE(mainwin.cpp): subscribeToKey: number of shortcutActions " << shortcutActions_.size() << endl;
+    cout << "TRACE(mainwin.cpp): subscribeToShortcutKey: number of shortcutActions " << shortcutActions_.size() << endl;
     
     // in any case, add the action to the toolbar
     // TODO: check if a shortcut exists and remove it?
@@ -514,7 +514,7 @@ MainWindow::subscribeToKey( QAction *elementAction, QKeySequence key, bool isMul
 }
 
 void 
-MainWindow::unsubscribeFromKey( QKeySequence key, QObject *parent )
+MainWindow::unsubscribeFromShortcutKey( QKeySequence key, QObject *parent )
 {
     for (int i=0; i<shortcutActions_.size(); i++)
     {

@@ -54,8 +54,6 @@ public:
                 const std::vector<std::string>    &supportedInterfaces,
                 hydroutil::JobQueue               *jobQueue,
                 const orcaice::Context            &context );
-//                 QWidget                           *parent = 0, 
-//                 Qt::WFlags                         flags = 0 );
 
     // Returns the parent of the widget that displays everything graphically.
     QWidget *displayViewParent();
@@ -83,8 +81,8 @@ public:
 
     void changePlatformFocusFromView(const QString& platform);
     
-    virtual void subscribeToKey( QAction *elementAction, QKeySequence key, bool isMultiple, QObject *parent  );
-    virtual void unsubscribeFromKey( QKeySequence key, QObject *parent );
+    virtual void subscribeToShortcutKey( QAction *elementAction, QKeySequence key, bool isMultiple, QObject *parent  );
+    virtual void unsubscribeFromShortcutKey( QKeySequence key, QObject *parent );
 
 private slots:
 

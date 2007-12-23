@@ -43,9 +43,9 @@ public:
     //! them in the guielement by doing toolBar()->setShortcut(QKeySequence(Qt::Esc)).
     //! Otherwise you'll end up with an ambiguity Qt can't resolve.
     //! Use this function instead.
-    virtual void subscribeToKey( QAction* elementAction, QKeySequence key, bool isMultiple, QObject *parent ) = 0;
-    //! WARNING: remember to unsubscribeFromKey in the destructor, otherwise segfaults will occur
-    virtual void unsubscribeFromKey( QKeySequence key, QObject *parent ) = 0;
+    virtual void subscribeToShortcutKey( QAction* elementAction, QKeySequence key, bool isMultiple, QObject *parent ) = 0;
+    //! WARNING: remember to unsubscribeFromShortcutKey in the destructor, otherwise segfaults will occur
+    virtual void unsubscribeFromShortcutKey( QKeySequence key, QObject *parent ) = 0;
 
     //! There's a global 'mode'.
     //! Zero or one of the GuiElements 'owns' this mode.
