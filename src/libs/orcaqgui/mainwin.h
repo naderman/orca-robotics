@@ -44,6 +44,14 @@ typedef struct {
 class GuiElementView;
 class ShortcutAction;
 
+//
+// Interaction with the JobQueue:
+// - when you need to update the information about the content of the registry, create 
+// orcaqcm::GetComponentsJob and add it to the JobQueue. The job needs a pointer to an instance
+// of orcaqcm::OcmModel.
+// - the rest will happen automatically in one of the threads of the JobQueue: the job will get
+//   the data from the registry, transfer it to the OcmModel, which will update and repaint itself.
+//
 class MainWindow : public QMainWindow, public orcaqgui::IHumanManager
 {
     Q_OBJECT

@@ -19,9 +19,9 @@
 using namespace std;
 using namespace orcaqcm;
 
-GetComponentsJob::GetComponentsJob( QCoreApplication* app, QObject* obj, const orcaice::Context& context, const std::string& locatorString ) : 
+GetComponentsJob::GetComponentsJob( QCoreApplication* app, QObject* ocmModel, const orcaice::Context& context, const std::string& locatorString ) : 
     app_(app),
-    obj_(obj),
+    ocmModel_(ocmModel),
     locatorString_(locatorString),
     context_(context)
 {
@@ -61,7 +61,7 @@ GetComponentsJob::execute()
         // push results one by one to UserHandler
         //
 //         homePipe_->set( compData );
-        app_->postEvent( obj_, (QEvent*)new HomeEvent( compData ) );
+        app_->postEvent( ocmModel_, (QEvent*)new HomeEvent( compData ) );
     }
 
 }

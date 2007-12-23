@@ -21,20 +21,21 @@ namespace orcaqcm
 //! This job does the following:
 //! - contacts the Registry described by @c locatorString, 
 //! - gets Home interface data and 
-//! - returns results by posting a HomeEvent (a QEvent) to be processed by @c obj - an instance of OcmModel.
+//! - returns results by posting a HomeEvent (a QEvent) to be processed by an instance of OcmModel.
 //!
 //! Currently does not return any error information, probably should.
 class GetComponentsJob : public hydroutil::Job
 {
 public:
-    GetComponentsJob( QCoreApplication* app, QObject* obj, const orcaice::Context& context, const std::string& locatorString );
+    //! Contstructor
+    GetComponentsJob( QCoreApplication* app, QObject* ocmModel, const orcaice::Context& context, const std::string& locatorString );
 
     virtual void execute();
     virtual std::string toString() const { return "GetComponentsJob"; };
 
 private:
     QCoreApplication* app_;
-    QObject* obj_;
+    QObject* ocmModel_;
     std::string locatorString_;
     orcaice::Context context_;
 };
