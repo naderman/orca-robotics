@@ -27,6 +27,6 @@ IF ( BUILD )
     
     TARGET_LINK_LIBRARIES ( ${LIB_NAME} OrcaQt OrcaQCompModel HydroQGui )
     
-    INSTALL_FILES( /include/orcaqgui .*\\.h$ )
+    INSTALL_FILES( /include/orcaqguielementmodelview .*\\.h$ )
 
 ENDIF ( BUILD )
