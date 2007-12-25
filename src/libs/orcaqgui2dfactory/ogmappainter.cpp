@@ -11,15 +11,13 @@
 #include <fstream>
 #include <QPainter>
 
-#include <orcaqgui/ihumanmanager.h>
+#include <hydroqgui/hydroqgui.h>
 #include <orcaice/orcaice.h>
 #include "ogmappainter.h"
-#include <orcaqgui/exceptions.h>
 
-using namespace orcaqgui;
-using namespace orcaqgui2d;
 using namespace std;
 
+namespace orcaqgui2d {
 
 OgMapPainter::OgMapPainter()
 {    
@@ -49,7 +47,7 @@ OgMapPainter::setData( const orca::OgMapData& data )
     {
         stringstream ss;
         ss << "OgMapPainter: Don't know how to display non-axis-aligned map: " << orcaice::toString( data );
-        throw Exception( ss.str() );
+        throw hydroqgui::Exception( ERROR_INFO, ss.str() );
     }
     
     // assemble information to give to pixmapPainter
@@ -83,7 +81,7 @@ OgMapPainter::setData( const orca::OgMapData& data )
 }
 
 ImageFileType
-OgMapPainter::checkFileExtension( QString &fe, orcaqgui::IHumanManager *humanManager )
+OgMapPainter::checkFileExtension( QString &fe, hydroqgui::IHumanManager *humanManager )
 {
     if ( fe.isEmpty() ) 
     {
@@ -101,13 +99,15 @@ OgMapPainter::checkFileExtension( QString &fe, orcaqgui::IHumanManager *humanMan
     else
     {
         cout << "ERROR(ogmappainter.cpp): File extension not supported" << endl;
-        humanManager->showBoxMsg(Error, "File extension not supported" );
+        humanManager->showBoxMsg(hydroqgui::IHumanManager::Error, "File extension not supported" );
         return NOT_SUPPORTED;
     }
 }
 
 int 
-OgMapPainter::saveMap( const orcaice::Context & context, const QString fileName, orcaqgui::IHumanManager *humanManager )
+OgMapPainter::saveMap( const orcaice::Context   &context,
+                       const QString            &fileName,
+                       hydroqgui::IHumanManager *humanManager )
 {
     QString fileExtension = fileName.section('.',-1,-1);
     ImageFileType type = checkFileExtension( fileExtension, humanManager );
@@ -127,7 +127,7 @@ OgMapPainter::saveMap( const orcaice::Context & context, const QString fileName,
         if ( !dataFile->is_open() ) 
         {
             cout << "ERROR(ogmappainter.cpp): Could not create data file " << fileName.toStdString() << endl;
-            humanManager->showBoxMsg(Error, "Could not create ICE_STREAM file " + fileName); 
+            humanManager->showBoxMsg(hydroqgui::IHumanManager::Error, "Could not create ICE_STREAM file " + fileName); 
             return -1;
         }
                 
@@ -147,8 +147,10 @@ OgMapPainter::saveMap( const orcaice::Context & context, const QString fileName,
         dataFile->close();
         delete dataFile;
         cout << "INFO(ogmappainter.cpp): Successfully saved map to file " << fileName.toStdString() << endl;
-        humanManager->showStatusMsg(Information, "Successfully saved ogMap to file: " + fileName);
+        humanManager->showStatusMsg(hydroqgui::IHumanManager::Information, "Successfully saved ogMap to file: " + fileName);
     }
     
     return 0;
+}
+
 }

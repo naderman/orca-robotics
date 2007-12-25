@@ -11,7 +11,7 @@
 #include "ogmapelement.h"
 #include <iostream>
 #include <QFileDialog>
-#include <orcaqgui/exceptions.h>
+#include <hydroqgui/hydroqgui.h>
 
 using namespace std;
 
@@ -19,7 +19,7 @@ namespace orcaqgui2d {
 
 OgMapElement::OgMapElement( const orcaice::Context  &context,
                             const std::string       &proxyString,
-                            orcaqgui::IHumanManager* humanManager )
+                            hydroqgui::IHumanManager* humanManager )
     : IceStormElement<OgMapPainter,
                       orca::OgMapData,
                       orca::OgMapPrx,
@@ -61,7 +61,7 @@ OgMapElement::execute( int action )
     }
     default:
     {
-        throw orcaqgui::Exception( "OgMapElement::execute(): What the hell? bad action." );
+        throw hydroqgui::Exception( ERROR_INFO, "OgMapElement::execute(): What the hell? bad action." );
         break;
     }
     }

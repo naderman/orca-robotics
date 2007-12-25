@@ -18,7 +18,6 @@
 #include <orcaqgui/features.h>
 
 using namespace std;
-using namespace orca;
 using namespace orcaqgui;
 using namespace orcaqgui2d;
 
@@ -109,13 +108,13 @@ PolarFeature2dPainter::paint( QPainter *painter, int z )
         {
         case orca::feature::LINE:
         {
-            const orca::LinePolarFeature2d &lf = dynamic_cast<const LinePolarFeature2d&>(ftr);
+            const orca::LinePolarFeature2d &lf = dynamic_cast<const orca::LinePolarFeature2d&>(ftr);
             drawLineFeature( painter, lf );
             break;
         }
         default:
         {
-            const orca::PointPolarFeature2d &pf = dynamic_cast<const PointPolarFeature2d&>(ftr);
+            const orca::PointPolarFeature2d &pf = dynamic_cast<const orca::PointPolarFeature2d&>(ftr);
             drawPointFeature( painter, pf );
             break;
         }

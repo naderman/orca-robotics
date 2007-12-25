@@ -36,7 +36,7 @@ class PathPainter
     void setRelativeStartTime( double relativeStartTime );
     void paint( QPainter *p, int z );
     bool paintThisLayer(int z) const { return z==Z_PATH; };
-    void setTransparency( bool useTransparency ) { useTransparency_= useTransparency; };
+    void setUseTransparency( bool useTransparency ) { useTransparency_= useTransparency; };
 
     void clear();
     void togglePastWaypoints()
@@ -48,7 +48,7 @@ class PathPainter
     void toggleOlympicMarker()
         { displayOlympicMarker_ = !displayOlympicMarker_; }
     
-    void savePath( const QString fileName, orcaqgui::IHumanManager *humanManager ) const;
+    void savePath( const QString fileName, hydroqgui::IHumanManager *humanManager ) const;
     void setColor( QColor color ) { color_ = color; };
     void setFocus( bool inFocus ) { inFocus_  = inFocus; };
     

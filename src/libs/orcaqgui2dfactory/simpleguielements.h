@@ -21,7 +21,7 @@
 
 #include <orcaqgui2d/ptricestormelement.h>
 #include <orcaqgui2d/icestormelement.h>
-#include <orcaqgui/ihumanmanager.h>
+#include <hydroqgui/hydroqgui.h>
 #include <orcaqgui2d/iknowsplatformposition2d.h>
 #include <orcaqgui2dfactory/connectutils.h>
 
@@ -190,7 +190,7 @@ public:
     
     virtual void setColor( QColor color ) { painter_.setColor(color); }
     virtual void setFocus( bool inFocus ) { painter_.setFocus( inFocus ); };
-    virtual void setTransparency( bool useTransparency ) { painter_.setTransparency( useTransparency ); };
+    virtual void setUseTransparency( bool useTransparency ) { painter_.setUseTransparency( useTransparency ); };
 
     // Need a special update function to set (x,y,theta)
     // The Localise3dElement needs this because it's special kind of GuiElement:
@@ -245,7 +245,7 @@ public:
             ( context_, listener_.interfaceName(), painter_ );
     }
     virtual void setColor( QColor color ) { painter_.setColor(color); }
-    virtual void setTransparency( bool useTransparency ) { painter_.setTransparency( useTransparency ); };
+    virtual void setUseTransparency( bool useTransparency ) { painter_.setUseTransparency( useTransparency ); };
 
 private:
     Particle2dPainter painter_;
@@ -311,7 +311,7 @@ public:
             ( context_, listener_.interfaceName(), painter_ );
     }
     virtual void setColor( QColor color ) { painter_.setColor(color); }
-    virtual void setTransparency( bool useTransparency ) { painter_.setTransparency( useTransparency ); };
+    virtual void setUseTransparency( bool useTransparency ) { painter_.setUseTransparency( useTransparency ); };
 
 private:
     Odometry2dPainter painter_;

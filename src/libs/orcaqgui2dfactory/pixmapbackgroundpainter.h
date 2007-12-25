@@ -19,7 +19,7 @@
 namespace orcaqgui2d
 {
     
-class orcaqgui::IHumanManager;  
+class hydroqgui::IHumanManager;  
 
 class PixMapBackgroundPainter
 {
@@ -37,11 +37,14 @@ class PixMapBackgroundPainter
     void clear() {};
     void toggleDisplayMap() { pixmapPainter_->toggleDisplayMap(); };
     
-    int saveMap( const orcaice::Context & context, const QString fileName, orcaqgui::IHumanManager *humanManager );
+    int saveMap( const orcaice::Context   &context,
+                 const QString            &fileName,
+                 hydroqgui::IHumanManager *humanManager );
     
   private:
     PixmapPainter *pixmapPainter_;
-    bool checkFileExtension( QString &fe, orcaqgui::IHumanManager *humanManager );
+    bool checkFileExtension( QString &fe,
+                             hydroqgui::IHumanManager *humanManager );
 };
 
 } // namespace

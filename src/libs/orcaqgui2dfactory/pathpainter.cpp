@@ -22,9 +22,7 @@
 
 #include "pathpainter.h"
 
-using namespace orca;
 using namespace std;
-using namespace orcaqgui;
 
 namespace orcaqgui2d {
 
@@ -53,12 +51,12 @@ void PathPainter::clear()
     guiPath_.resize(0);
 }
 
-void PathPainter::setData( const PathFollower2dData& path )
+void PathPainter::setData( const orca::PathFollower2dData& path )
 {
     orcaPathToGuiPath( path.path, guiPath_ );
 }
 
-void PathPainter::setData( const PathPlanner2dData& path )
+void PathPainter::setData( const orca::PathPlanner2dData& path )
 {
     orcaPathToGuiPath( path.path, guiPath_ );
 }
@@ -242,18 +240,18 @@ void PathPainter::paint( QPainter *painter, int z )
 }
 
 
-void PathPainter::savePath( const QString fileName, IHumanManager *humanManager ) const
+void PathPainter::savePath( const QString fileName, hydroqgui::IHumanManager *humanManager ) const
 {
     if (guiPath_.size()==0)
     {
-        humanManager->showBoxMsg(Warning, "Path has no waypoints!");
+        humanManager->showBoxMsg(hydroqgui::IHumanManager::Warning, "Path has no waypoints!");
         return;
     }
     
     QFile file(fileName);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
     {
-        humanManager->showBoxMsg(Error, "Cannot create file " + fileName );
+        humanManager->showBoxMsg(hydroqgui::IHumanManager::Error, "Cannot create file " + fileName );
         return;
     }
     

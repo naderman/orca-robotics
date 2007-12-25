@@ -3,16 +3,15 @@
 #include "iknowsplatformposition2d.h"
 
 using namespace std;
-using namespace orcaqgui;
 
 namespace orcaqgui2d {
 
 bool 
-PlatformCSFinder::findPlatformCS( QList<GuiElement*>  elements,
-                                  const QString                       &platform,
-                                  float                               &x,
-                                  float                               &y,
-                                  float                               &theta )
+PlatformCSFinder::findPlatformCS( const QList<hydroqgui::IGuiElement*> &elements,
+                                  const QString                        &platform,
+                                  float                                &x,
+                                  float                                &y,
+                                  float                                &theta )
 {
     //
     // Find the most reliable element that reckons it knows where we are.

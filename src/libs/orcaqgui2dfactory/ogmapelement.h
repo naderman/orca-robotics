@@ -13,7 +13,7 @@
 
 #include <orcaqgui2dfactory/ogmappainter.h>
 #include <orcaqgui2d/icestormelement.h>
-#include <orcaqgui/ihumanmanager.h>
+#include <hydroqgui/hydroqgui.h>
 #include <orcaqgui2dfactory/connectutils.h>
 
 namespace orcaqgui2d {
@@ -29,7 +29,7 @@ class OgMapElement
 public:
     OgMapElement( const orcaice::Context  &context,
                   const std::string       &proxyString,
-                  orcaqgui::IHumanManager* humanManager );
+                  hydroqgui::IHumanManager* humanManager );
 
     virtual bool isInGlobalCS() { return true; }
     virtual void actionOnConnection() 
@@ -48,7 +48,7 @@ public:
 
 private:
     OgMapPainter painter_;
-    orcaqgui::IHumanManager *humanManager_;
+    hydroqgui::IHumanManager *humanManager_;
     QString mapFileName_;
     bool mapFileNameSet_;
 };

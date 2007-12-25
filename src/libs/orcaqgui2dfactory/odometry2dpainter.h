@@ -34,7 +34,7 @@ class Odometry2dPainter
     void setColor( QColor color );
     void paint( QPainter *p, int z1 );
     bool paintThisLayer(int z) const { return z==Z_POSE; }
-    void setTransparency( bool useTransparency ) { useTransparency_= useTransparency; };
+    void setUseTransparency( bool useTransparency ) { useTransparency_= useTransparency; };
     void clear() {};
     
   private:

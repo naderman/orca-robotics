@@ -17,10 +17,9 @@
 
 #include "qgraphics2dpainter.h"
 #include <orcaqgui2d/definitions2d.h>
-#include <orcaqgui/exceptions.h>
+#include <hydroqgui/hydroqgui.h>
 
 using namespace std;
-using namespace orca;
 using namespace orcaqgui2d;
 
 QGraphics2dPainter::QGraphics2dPainter()
@@ -45,7 +44,7 @@ void
 QGraphics2dPainter::setData( const orca::QGraphics2dData& data )
 {
     if ( data.z < 1 || data.z > 12 )
-        throw orcaqgui::Exception( "QGraphics2dPainter::setData(): invalid z" );
+        throw hydroqgui::Exception( ERROR_INFO, "QGraphics2dPainter::setData(): invalid z" );
 
     data_ = data;
     isDataAvailable_ = true;

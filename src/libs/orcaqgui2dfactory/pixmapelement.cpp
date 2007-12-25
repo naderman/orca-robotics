@@ -11,7 +11,7 @@
 #include "pixmapelement.h"
 #include <iostream>
 #include <QFileDialog>
-#include <orcaqgui/exceptions.h>
+#include <hydroqgui/hydroqgui.h>
 
 using namespace std;
 
@@ -19,7 +19,7 @@ namespace orcaqgui2d {
 
 PixMapElement::PixMapElement( const orcaice::Context  &context,
                             const std::string       &proxyString,
-                            orcaqgui::IHumanManager* humanManager )
+                            hydroqgui::IHumanManager* humanManager )
     : IceStormElement<PixMapBackgroundPainter,
                       orca::PixMapData,
                       orca::PixMapPrx,
@@ -61,7 +61,7 @@ PixMapElement::execute( int action )
     }
     default:
     {
-        throw orcaqgui::Exception( "PixMapElement::execute(): What the hell? bad action." );
+        throw hydroqgui::Exception( ERROR_INFO, "PixMapElement::execute(): What the hell? bad action." );
         break;
     }
     }

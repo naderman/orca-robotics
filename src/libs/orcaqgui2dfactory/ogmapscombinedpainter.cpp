@@ -15,8 +15,6 @@
 
 using namespace orcaqgui2d;
 using namespace std;
-using namespace orca;
-
 
 OgMapsCombinedPainter::OgMapsCombinedPainter( const orcaice::Context &context )
 {       

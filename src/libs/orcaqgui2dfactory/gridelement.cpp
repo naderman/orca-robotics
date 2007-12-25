@@ -18,7 +18,8 @@
 #include "gridelement.h"
 
 using namespace std;
-using namespace orcaqgui2d;
+
+namespace orcaqgui2d {
 
 GridElement::GridElement() :
         step_( 1.0 ),   // [m]
@@ -128,3 +129,4 @@ GridElement::execute( int action )
     }
 }
 
+}

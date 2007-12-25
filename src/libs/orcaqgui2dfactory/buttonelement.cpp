@@ -1,7 +1,7 @@
 #include "buttonelement.h"
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include <orcaqgui/exceptions.h>
+#include <hydroqgui/hydroqgui.h>
 
 using namespace std;
 
@@ -41,7 +41,7 @@ ButtonElement::execute( int action )
     default:
         stringstream ss;
         ss << "execute(): What the hell? bad action: " << action;
-        throw orcaqgui::Exception( ss.str() );
+        throw hydroqgui::Exception( ERROR_INFO, ss.str() );
         break;
     }
 }

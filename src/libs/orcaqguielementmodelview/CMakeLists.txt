@@ -1,4 +1,4 @@
-SET ( LIB_NAME OrcaQGui )
+SET ( LIB_NAME OrcaQGuiElementModelView )
 
 REQUIRE_OPTION( LIB ${LIB_NAME} ON )
 SET ( NOT_OS_WIN NOT OS_WIN )
@@ -14,10 +14,10 @@ IF ( BUILD )
     FILE( GLOB HUMAN_SRCS *.cpp )
     
     SET( MOC_HEADERS
-#        guielementmodel.h
-#        guielementview.h
+        guielementmodel.h
+        guielementview.h
 #        mainwin.h
-        regselectview.h
+#        regselectview.h
 #        shortcutaction.h
     )
 

@@ -14,7 +14,7 @@
 #include <QTableView>
 #include <vector>
 
-namespace orcaqgui {
+namespace orcaqgemv {
 
 class GuiElementView : public QTableView
 {
@@ -28,16 +28,15 @@ public:
     // because the model has a pointer to the view. Don't know what's better.
     //
     
-    // Returns a vector of indeces with the currently displayed adapters which are also *selected*
-    // If none are selected, it returns *all* indeces of the currently displayed adapters
-    void selectedAdaptersInView( int numElements, std::vector<int> &indeces);
+    // Returns a vector of indices with the currently displayed adapters which are also *selected*
+    // If none are selected, it returns *all* indices of the currently displayed adapters
+    void selectedAdaptersInView( int numElements, std::vector<int> &indices );
     
     // Show all the elements in the model
     void showAllElements( int numElements );
     
-    // Show all elements in the model except the ones with the passed indeces
-    void hideElements( int numElements, const std::vector<int>& indeces );
-    
+    // Show all elements in the model except the ones with the passed indices
+    void hideElements( int numElements, const std::vector<int>& indices );
 
 protected:
     // Reimplement function from QTableView

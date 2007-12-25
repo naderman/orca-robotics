@@ -13,10 +13,9 @@
 #include <QPainter>
 #include <orcaobj/orcaobj.h>
 #include <hydroutil/mathdefs.h>
-#include <orcaqgui/exceptions.h>
+#include <hydroqgui/hydroqgui.h>
 #include "localise3dpainter.h"
 
-using namespace orca; 
 using namespace std;
 using namespace orcaqgui2d;
 
@@ -51,11 +50,11 @@ Localise3dPainter::setData( const orca::Localise3dData& data )
     if ( isDisplayHistory_ ) {
         if ( data.hypotheses.size() > 0 )
         {
-            const Pose3dHypothesis &h = orcaice::mlHypothesis( data );
+            const orca::Pose3dHypothesis &h = orcaice::mlHypothesis( data );
             history_.addPoint( h.mean.p.x, h.mean.p.y );
         }
         else
-            throw orcaqgui::Exception( "Localise3dPainter::setData(): Localise3dData had zero hypotheses" );
+            throw hydroqgui::Exception( ERROR_INFO, "Localise3dPainter::setData(): Localise3dData had zero hypotheses" );
     }
 
 }
@@ -68,8 +67,8 @@ Localise3dPainter::paintHypothesis( QPainter* p, const orca::Pose3dHypothesis &h
     // Don't bother painting _really_ unlikely hypotheses
     // if ( weight < 0.02 ) continue;
 
-    const Frame3d      &mean = hypothesis.mean;
-    const Covariance3d &cov  = hypothesis.cov;
+    const orca::Frame3d      &mean = hypothesis.mean;
+    const orca::Covariance3d &cov  = hypothesis.cov;
 
     // Translate to where the hypothesis is at
     {

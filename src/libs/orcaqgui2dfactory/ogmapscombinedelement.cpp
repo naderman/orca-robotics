@@ -10,11 +10,10 @@
 #include <iostream>
 #include <QFileDialog>
 #include <orcaogmap/orcaogmap.h>
-#include <orcaqgui/exceptions.h>
+#include <hydroqgui/hydroqgui.h>
 #include "ogmapscombinedelement.h"
 
 using namespace std;
-using namespace orca;
 
 namespace orcaqgui2d {
 
@@ -30,14 +29,14 @@ OgMapsCombinedElement::OgMapsCombinedElement( const orcaice::Context  &context,
     for (int i=0; i<proxyStrList.size(); i++)
     {
         cout << "proxyString: " << proxyStrList[i].toStdString() << endl;
-        orcaqgui::IceStormListener<OgMapData,OgMapPrx,OgMapConsumer,OgMapConsumerPrx>
-            *listener = new orcaqgui::IceStormListener<OgMapData,
-                                             OgMapPrx,
-                                             OgMapConsumer,
-                                             OgMapConsumerPrx>(context, proxyStrList[i].toStdString());
+        orcaqgui::IceStormListener<orca::OgMapData,orca::OgMapPrx,orca::OgMapConsumer,orca::OgMapConsumerPrx>
+            *listener = new orcaqgui::IceStormListener<orca::OgMapData,
+            orca::OgMapPrx,
+            orca::OgMapConsumer,
+            orca::OgMapConsumerPrx>(context, proxyStrList[i].toStdString());
         if ( listener->connect() != 0 ) 
         {
-            throw orcaqgui::Exception("Problem connecting to interface with proxyString " + proxyStrList[i].toStdString());
+            throw hydroqgui::Exception(ERROR_INFO,"Problem connecting to interface with proxyString " + proxyStrList[i].toStdString());
         }
         
         listeners_.push_back(listener);
@@ -82,9 +81,9 @@ void OgMapsCombinedElement::update()
         return;
     }
     
-    OgMapData data0;
+    orca::OgMapData data0;
     listeners_[0]->buffer().getAndPop( data0 );
-    OgMapData data1;
+    orca::OgMapData data1;
     listeners_[1]->buffer().getAndPop( data1 );
     
 //     // for more than two ogMaps:
@@ -105,14 +104,14 @@ void OgMapsCombinedElement::actionOnConnection()
     assert(listeners_.size()>0);
     try 
     {
-        OgMapPrx prx;
+        orca::OgMapPrx prx;
         cout<< "TRACE(actionOnConnection.cpp): connect to interface " << listeners_[0]->interfaceName() << endl;
         orcaice::connectToInterfaceWithString( context_, prx, listeners_[0]->interfaceName() );
-        OgMapData data0 = prx->getData();
+        orca::OgMapData data0 = prx->getData();
         
         cout<< "TRACE(actionOnConnection.cpp): connect to interface " << listeners_[1]->interfaceName() << endl;
         orcaice::connectToInterfaceWithString( context_, prx, listeners_[1]->interfaceName() );
-        OgMapData data1 = prx->getData(); 
+        orca::OgMapData data1 = prx->getData(); 
         
         painter_->setData( data0, data1 );
         
@@ -164,7 +163,7 @@ OgMapsCombinedElement::execute( int action )
         }
         default:
         {
-            throw orcaqgui::Exception( "OgMapsCombinedElement::execute(): What the hell? bad action." );
+            throw hydroqgui::Exception( ERROR_INFO, "OgMapsCombinedElement::execute(): What the hell? bad action." );
             break;
         }
     }

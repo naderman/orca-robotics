@@ -13,23 +13,24 @@
 #include <orcaice/orcaice.h>
 #include <hydrodll/dynamicload.h>
 #include <hydroutil/jobqueue.h>
-#include <orcaqgui/mainwin.h>
-#include <orcaqgui/stringtorandomcolormap.h>
-#include <orcaqgui/guielementmodel.h>
+#include "mainwin.h"
+#include <orcaqguielementmodelview/guielementmodel.h>
 #include <orcaqgui2d/worldview.h>
 #include <orcaqgui2d/platformcsfinder.h>
+#include <orcaqgui2dfactory/defaultfactory.h>
 
 #include "component.h"
         
 using namespace std;
-using namespace orcaview2d;
+
+namespace orcaview2d {
 
 static const char *DEFAULT_FACTORY_LIB_NAME="libOrcaQGui2dFactory.so";
 
-orcaqgui::GuiElementFactory* loadFactory( hydrodll::DynamicallyLoadedLibrary &lib )
+hydroqgui::IGuiElementFactory* loadFactory( hydrodll::DynamicallyLoadedLibrary &lib )
 {
-    orcaqgui::GuiElementFactory *f = 
-        hydrodll::dynamicallyLoadClass<orcaqgui::GuiElementFactory,FactoryMakerFunc>
+    hydroqgui::IGuiElementFactory *f = 
+        hydrodll::dynamicallyLoadClass<hydroqgui::IGuiElementFactory,FactoryMakerFunc>
                                           (lib, "createFactory");
     return f;
 }
@@ -66,7 +67,7 @@ Component::loadPluginLibraries( const std::string& factoryLibNames )
         
         try {
             hydrodll::DynamicallyLoadedLibrary *lib = new hydrodll::DynamicallyLoadedLibrary(libNames[i]);
-            orcaqgui::GuiElementFactory *f = loadFactory( *lib );
+            hydroqgui::IGuiElementFactory *f = loadFactory( *lib );
             libraries_.push_back(lib);
             factories_.push_back(f);
 
@@ -79,6 +80,23 @@ Component::loadPluginLibraries( const std::string& factoryLibNames )
         {
             cout << "ERROR(loggercomponent.cpp): " << e.what() << endl;
             throw;
+        }
+    }
+
+    for ( uint i=0; i < factories_.size(); i++ )
+    {
+        cout<<"TRACE(component.cpp): Setting context for "<<i<<"'th factory" << endl;
+
+        orcaqgui2d::IGuiElementFactory *orcaFactory =
+            dynamic_cast<orcaqgui2d::IGuiElementFactory *>(factories_[i]);
+        if ( orcaFactory != NULL )
+        {
+            cout<<"TRACE(component.cpp): setContext()" << endl;
+            orcaFactory->setContext( context() );
+        }
+        else
+        {
+            cout<<"TRACE(component.cpp): Not orca factory!" << endl;
         }
     }
 
@@ -97,7 +115,7 @@ Component::loadPluginLibraries( const std::string& factoryLibNames )
 
 void
 readScreenDumpParams( const orcaice::Context &context,
-                      orcaqgui::ScreenDumpParams &screenDumpParams )
+                      ScreenDumpParams &screenDumpParams )
 {
     Ice::PropertiesPtr prop = context.properties();
     std::string prefix = context.tag() + ".Config.";
@@ -140,7 +158,7 @@ Component::start()
     int c = 0;
     QApplication qapp(c,v);
 
-    orcaqgui::ScreenDumpParams screenDumpParams;
+    ScreenDumpParams screenDumpParams;
     readScreenDumpParams( context(), screenDumpParams );
     
     int displayRefreshTime = orcaice::getPropertyAsIntWithDefault( props, prefix+"General.DisplayRefreshTime", 200 );
@@ -150,36 +168,55 @@ Component::start()
     std::vector<std::string> supportedInterfaces = loadPluginLibraries( libNames );
 
     // main window for display
-    orcaqgui::MainWindow gui( "OrcaView",
-                              screenDumpParams,
-                              displayRefreshTime,
-                              supportedInterfaces,
-                              &jobQueue, context() );
+    MainWindow mainWin( "OrcaView",
+                        screenDumpParams,
+                        displayRefreshTime,
+                        supportedInterfaces,
+                        &jobQueue, 
+                        context() );
 
     // Color scheme
-    orcaqgui::StringToRandomColorMap platformColorScheme;
+    hydroqgui::StringToRandomColorMap platformColorScheme;
+
+    // Handles coordination of mouse events between GuiElements
+    hydroqgui::MouseEventManager mouseEventManager;
+
+    // Manages the coordinate frome for display
+    hydroqgui::CoordinateFrameManager coordinateFrameManager;
+
+    // Manages use of shortcut keys between Gui Elements
+    hydroqgui::ShortcutKeyManager shortcutKeyManager( mainWin, &mainWin );
+
+    // Stores the set of Gui Elements
+    hydroqgui::GuiElementSet guiElementSet;
 
     // Qt model for handling elements and their display in each of the widgets
-    orcaqgui::GuiElementModel guiElemModel( factories_,
-                                            context(),
-                                            &gui,
-                                            &platformColorScheme );
+    orcaqgemv::GuiElementModel guiElemModel( factories_,
+                                             mainWin,
+                                             mouseEventManager,
+                                             shortcutKeyManager,
+                                             coordinateFrameManager,
+                                             guiElementSet,
+                                             platformColorScheme );
 
+    // Can work out the coordinate system of a platform
     orcaqgui2d::PlatformCSFinder platformCSFinder;
 
     // widget for viewing the actual world
     orcaqgui2d::WorldView worldView( &platformCSFinder,
-                                  &guiElemModel,
-                                  gui.displayViewParent(),
-                                  &gui);
+                                     mouseEventManager,
+                                     guiElementSet,
+                                     coordinateFrameManager,
+                                     mainWin,
+                                     mainWin.displayViewParent() );
 
     // tell the main window about the widgets, model, and factory
-    gui.init( &guiElemModel,
-              &worldView );
+    mainWin.init( &guiElemModel,
+                  &worldView );
 
-    gui.loadElementsFromConfigFile( context() );
+    mainWin.loadElementsFromConfigFile( context() );
 
-    gui.show();
+    mainWin.show();
 
     // note: this does not return!
     qapp.exec();
@@ -195,3 +232,4 @@ void Component::stop()
     tracer().debug("stopping component",5);
 }
 
+}

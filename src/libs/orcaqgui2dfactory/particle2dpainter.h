@@ -36,7 +36,7 @@ class Particle2dPainter
     void setColor( QColor color );
     void paint( QPainter *p, int z1 );
     bool paintThisLayer(int z) const { return z==Z_POSE-2; }
-    void setTransparency( bool useTransparency ) { useTransparency_= useTransparency; };
+    void setUseTransparency( bool useTransparency ) { useTransparency_= useTransparency; };
     void clear();
     
   private:

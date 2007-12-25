@@ -15,14 +15,11 @@
 
 #include <orcaice/orcaice.h>
 #include <orcaqgui/features.h>
-#include <orcaqgui/ihumanmanager.h>
-#include <orcaqgui/exceptions.h>
+#include <hydroqgui/hydroqgui.h>
 #include <orcaqgui2d/paintutils.h>
 #include "featuremap2dpainter.h"
 
 using namespace std;
-using namespace orca;
-using namespace orcaice;
 using namespace orcaqgui;
 
 namespace orcaqgui2d {
@@ -269,7 +266,7 @@ void FeatureMap2dPainter::paint( QPainter *painter, const int z )
     }
 }
 
-int FeatureMap2dPainter::saveMap( const QString fileName, orcaqgui::IHumanManager *humanManager ) const
+int FeatureMap2dPainter::saveMap( const QString fileName, hydroqgui::IHumanManager *humanManager ) const
 {
     cout << "INFO(featuremap2dpainter.cpp): saveMap, fileName is " << fileName.toStdString() << endl;
     
@@ -279,14 +276,14 @@ int FeatureMap2dPainter::saveMap( const QString fileName, orcaqgui::IHumanManage
     FILE *f = fopen( fileName.toStdString().c_str(), "w" );
     if (!f)
     {
-        humanManager->showBoxMsg(Error, "Cannot create file " + fileName );
+        humanManager->showBoxMsg(hydroqgui::IHumanManager::Error, "Cannot create file " + fileName );
         cout << "ERROR(featuremap2dpainter.cpp): cannot create file" <<endl;
         return -1;
     } 
     else 
     {
         orcaice::saveToFile( data_, f );
-        humanManager->showStatusMsg(Information, "Saving feature map to " + fileName );
+        humanManager->showStatusMsg(hydroqgui::IHumanManager::Information, "Saving feature map to " + fileName );
         fclose( f );
     }
     return 0;

@@ -16,7 +16,9 @@
 
 #include <hydroutil/jobqueue.h>
 #include <orcaice/context.h>
-#include <orcaqgui/ihumanmanager.h>
+#include <hydroqgui/ihumanmanager.h>
+#include <orcaqguielementmodelview/guielementmodel.h>
+#include <orcaqguielementmodelview/guielementview.h>
 
 namespace orcaqcm {
     class OcmModel;
@@ -28,8 +30,8 @@ class QSplitter;
 class QTimer;
 class QComboBox;
 
-namespace orcaqgui 
-{
+// namespace orcaqgui 
+// {
 
 // configuration parameters for screen capture
 typedef struct {
@@ -41,18 +43,18 @@ typedef struct {
 } ScreenDumpParams;
 
 
-class GuiElementView;
-class ShortcutAction;
+//class GuiElementView;
+//class ShortcutAction;
 
 //
 // Interaction with the JobQueue:
 // - when you need to update the information about the content of the registry, create 
-// orcaqcm::GetComponentsJob and add it to the JobQueue. The job needs a pointer to an instance
-// of orcaqcm::OcmModel.
+//   orcaqcm::GetComponentsJob and add it to the JobQueue. The job needs a pointer to an instance
+//   of orcaqcm::OcmModel.
 // - the rest will happen automatically in one of the threads of the JobQueue: the job will get
 //   the data from the registry, transfer it to the OcmModel, which will update and repaint itself.
 //
-class MainWindow : public QMainWindow, public orcaqgui::IHumanManager
+class MainWindow : public QMainWindow, public hydroqgui::IHumanManager
 {
     Q_OBJECT
 public:
@@ -66,31 +68,30 @@ public:
     // Returns the parent of the widget that displays everything graphically.
     QWidget *displayViewParent();
 
-    void init( orcaqgui::GuiElementModel           *guiElemModel,
-               QWidget                            *displayView );
+    void init( orcaqgemv::GuiElementModel *guiElemModel,
+               QWidget                    *displayView );
 
     void loadElementsFromConfigFile( const orcaice::Context & context );
 
-    // Inherited from IHumanManager
-    virtual void showBoxMsg( orcaqgui::MessageType type, QString msg );
-    virtual void showStatusMsg( orcaqgui::MessageType type, QString msg );
+    // Inherited from hydroqgui::IHumanManager
+    virtual void showBoxMsg( hydroqgui::IHumanManager::MessageType type, QString msg );
+    virtual void showStatusMsg( hydroqgui::IHumanManager::MessageType type, QString msg );
 
     virtual QMenu    *fileMenu() { return fileMenu_; }
     virtual QMenu    *optionsMenu() { return optionsMenu_; }
     virtual QMenu    *displayMenu() { return displayMenu_; }
     virtual QToolBar *toolBar() { return toolBar_; }
-    
-    virtual GuiElement *mouseEventReceiver() const { return mouseEventReceiver_; }
-    virtual bool requestBecomeMouseEventReceiver( GuiElement *requester );
-    virtual bool mouseEventReceiverIsSet();
-    virtual void relinquishMouseEventReceiver( GuiElement *relinquisher );
 
-    virtual GuiElementModel &guiElementModel() { return *elemModel_; }
+//     virtual hydroqgui::IGuiElement *mouseEventReceiver() const { return mouseEventReceiver_; }
+//     virtual bool requestBecomeMouseEventReceiver( hydroqgui::IGuiElement *requester );
+//     virtual bool mouseEventReceiverIsSet();
+//     virtual void relinquishMouseEventReceiver( hydroqgui::IGuiElement *relinquisher );
+//    virtual GuiElementModel &guiElementModel() { return *elemModel_; }
 
-    void changePlatformFocusFromView(const QString& platform);
+    //    void changePlatformFocusFromView(const QString& platform);
     
-    virtual void subscribeToShortcutKey( QAction *elementAction, QKeySequence key, bool isMultiple, QObject *parent  );
-    virtual void unsubscribeFromShortcutKey( QKeySequence key, QObject *parent );
+//     virtual void subscribeToShortcutKey( QAction *elementAction, QKeySequence key, bool isMultiple, QObject *parent  );
+//     virtual void unsubscribeFromShortcutKey( QKeySequence key, QObject *parent );
 
 private slots:
 
@@ -100,7 +101,7 @@ private slots:
     void updateDisplayView();
 
     void changePlatformFocus(const QString&);
-    void changePlatformColor(const QString&);
+    // void changePlatformColor(const QString&);
     void addPlatformToList(const QString&);
     void removePlatformFromList(const QString&);
     
@@ -127,8 +128,8 @@ private:
     int displayRefreshTime_;
 
     // gui element list
-    GuiElementModel             *elemModel_;
-    GuiElementView              *elemView_;
+    orcaqgemv::GuiElementModel             *elemModel_;
+    orcaqgemv::GuiElementView              *elemView_;
     
     // display
     QWidget                     *displayView_;
@@ -160,16 +161,16 @@ private:
     QMenu* displayMenu_;
     QToolBar *toolBar_;
 
-    // NULL means mode is not owned
-    GuiElement *mouseEventReceiver_;
+//     // NULL means no-one is receiving mouse events
+//     hydroqgui::IGuiElement *mouseEventReceiver_;
     
-    // list of shorcut actions
-    QList<ShortcutAction*> shortcutActions_;
+//    // list of shorcut actions
+//    QList<ShortcutAction*> shortcutActions_;
 
     hydroutil::JobQueue*    jobQueue_;
     orcaice::Context        context_;
 };
 
 
-}
+// }
 #endif

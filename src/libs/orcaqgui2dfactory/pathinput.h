@@ -20,7 +20,7 @@
 #include <orca/pathfollower2d.h>
 #include <orca/pathplanner2d.h>
 #include <orcaice/context.h>
-#include <orcaqgui/ihumanmanager.h>
+#include <hydroqgui/hydroqgui.h>
 
 namespace orcaqgui2d {
 
@@ -136,11 +136,14 @@ class PathInput : public QObject
     Q_OBJECT
             
     public:
-        PathInput( QObject *parent, WaypointSettings *wpSettings, orcaqgui::IHumanManager *humanManager, QString lastSavedPathFile="" );
+        PathInput( QObject *parent,
+                   WaypointSettings *wpSettings,
+                   hydroqgui::IHumanManager *humanManager,
+                   QString lastSavedPathFile="" );
         virtual ~PathInput();  
      
         virtual void paint( QPainter *painter );
-        virtual void setTransparency( bool useTransparency ) { useTransparency_=useTransparency; };
+        virtual void setUseTransparency( bool useTransparency ) { useTransparency_=useTransparency; };
         
         virtual void processPressEvent( QMouseEvent* e);
         virtual void processReleaseEvent( QMouseEvent* e );
@@ -154,7 +157,7 @@ class PathInput : public QObject
         
     protected:    
         WaypointSettings *wpSettings_;
-        orcaqgui::IHumanManager *humanManager_;
+        hydroqgui::IHumanManager *humanManager_;
         QMatrix wmInv_; // win2mm matrix
         
         bool useTransparency_;
@@ -202,10 +205,10 @@ class PathInput : public QObject
 class PathFollowerInput : public PathInput
 { 
     public:
-        PathFollowerInput( QObject *parent,
-                           WaypointSettings *wpSettings,
-                           orcaqgui::IHumanManager *humanManager,
-                           QString lastSavedPathFile )
+        PathFollowerInput( QObject                  *parent,
+                           WaypointSettings         *wpSettings,
+                           hydroqgui::IHumanManager *humanManager,
+                           QString                   lastSavedPathFile )
             : PathInput( parent, wpSettings, humanManager, lastSavedPathFile )
         {};
         virtual ~PathFollowerInput() {};  
@@ -216,7 +219,9 @@ class PathFollowerInput : public PathInput
 class PathPlannerInput : public PathInput
 { 
 public:
-    PathPlannerInput( QObject *parent, WaypointSettings *wpSettings, orcaqgui::IHumanManager *humanManager )
+    PathPlannerInput( QObject                  *parent,
+                      WaypointSettings         *wpSettings,
+                      hydroqgui::IHumanManager *humanManager )
         :PathInput( parent, wpSettings, humanManager )
         {};
     

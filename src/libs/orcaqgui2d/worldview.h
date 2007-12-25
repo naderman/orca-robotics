@@ -16,9 +16,9 @@
 #include <QString>
 
 #include <orcaqgui2d/zoomwidget.h>
+#include <hydroqgui/hydroqgui.h>
 
 namespace orcaqgui {
-    class MainWindow;
     class GuiElementModel;
 }
 
@@ -35,18 +35,20 @@ class WorldView : public orcaqgui2d::ZoomWidget
 {
    Q_OBJECT
 public:
-    WorldView( PlatformCSFinder* platformCSFinder,
-               orcaqgui::GuiElementModel* model,
-               QWidget* parent=0, 
-               orcaqgui::MainWindow* mainWin=0 );
+    WorldView( PlatformCSFinder                   *platformCSFinder,
+               hydroqgui::MouseEventManager       &mouseEventManager,
+               hydroqgui::GuiElementSet           &guiElementSet,
+               hydroqgui::CoordinateFrameManager  &coordinateFrameManager,
+               hydroqgui::IHumanManager           &humanManager,
+               QWidget                            *parent );
   ~WorldView();
   
 public slots:
     // abstract zoom functions
     void zoomFitWin();
     void zoomAllPix();
-    
     void setAntiAliasing(bool antiAliasing);
+    void setUseTransparency(bool useTransparency);
     
 private:
 
@@ -55,11 +57,14 @@ private:
 
     // finds coord system of a platform
     PlatformCSFinder *platformCSFinder_;
-          
-    // model
-    orcaqgui::GuiElementModel* model_;
-    
-    orcaqgui::MainWindow *mainWin_;
+
+    // handles distribution of mouse events to GuiElements
+    hydroqgui::MouseEventManager &mouseEventManager_;
+
+    hydroqgui::GuiElementSet          &guiElementSet_;
+    hydroqgui::CoordinateFrameManager &coordinateFrameManager_;
+
+    hydroqgui::IHumanManager &humanManager_;
 
     void paintAllGuiElements( QPainter *painter, int z, bool isCoordinateFramePlatformLocalised );
     

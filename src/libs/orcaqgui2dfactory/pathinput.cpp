@@ -30,7 +30,6 @@
 #include "pathinput.h"
 
 using namespace std;
-using namespace orcaqgui;
 
 namespace orcaqgui2d {
     
@@ -465,7 +464,10 @@ void WpTable::updateDataStorage(int row, int column)
     
 }
     
-PathInput::PathInput( QObject *parent, WaypointSettings *wpSettings, orcaqgui::IHumanManager *humanManager, QString lastSavedPathFile )
+PathInput::PathInput( QObject                  *parent,
+                      WaypointSettings         *wpSettings,
+                      hydroqgui::IHumanManager *humanManager,
+                      QString                   lastSavedPathFile )
     : wpSettings_(wpSettings),
       humanManager_(humanManager),      
       waypointInFocus_(-1),
@@ -864,7 +866,7 @@ void PathInput::generateFullPath()
             numExpand = expandPathTurn360(indices[i]+totalExpansion);
         }
         else {
-            cout << "Error(pathinput.cpp): Unknown behaviour: " << behaviour.toStdString() << endl;
+            cout << "hydroqgui::IHumanManager::Error(pathinput.cpp): Unknown behaviour: " << behaviour.toStdString() << endl;
             break;
         }
         
@@ -878,7 +880,7 @@ void PathInput::generateFullPath()
     } 
     else 
     {
-        humanManager_->showStatusMsg(Warning, "No waiting times, no list expansion");
+        humanManager_->showStatusMsg(hydroqgui::IHumanManager::Warning, "No waiting times, no list expansion");
     }
 }
 
@@ -889,14 +891,15 @@ PathInput::savePath( const QString &fileName )
     
     if (size==0)
     {
-        humanManager_->showBoxMsg(Warning, "Path has no waypoints!");
+        humanManager_->showBoxMsg(hydroqgui::IHumanManager::Warning, "Path has no waypoints!");
         return;
     }
     
     QFile file(fileName);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
     {
-        humanManager_->showBoxMsg(Error, "Cannot create file " + fileName );
+        humanManager_->showBoxMsg(hydroqgui::IHumanManager::Error,
+                                  "Cannot create file " + fileName );
         return;
     }
     
@@ -913,7 +916,7 @@ PathInput::savePath( const QString &fileName )
     QTextStream out(&file);
     out << QString(orcalogfactory::toLogString( orcaPath ).c_str());
     file.close();
-    humanManager_->showStatusMsg(Information, "Path successfully saved to " + fileName );
+    humanManager_->showStatusMsg(hydroqgui::IHumanManager::Information, "Path successfully saved to " + fileName );
 }
 
 float
@@ -934,7 +937,7 @@ void PathInput::loadPreviousPath()
     if (lastSavedPathFile_!="") {
         loadPath( lastSavedPathFile_ );    
     } else {
-        humanManager_->showStatusMsg(Warning, "No path saved yet!" ); 
+        humanManager_->showStatusMsg(hydroqgui::IHumanManager::Warning, "No path saved yet!" ); 
     }
     
 }
@@ -946,7 +949,7 @@ void PathInput::loadPath( const QString& fileName )
     QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        humanManager_->showStatusMsg(Error, "Problem opening file " + fileName );
+        humanManager_->showStatusMsg(hydroqgui::IHumanManager::Error, "Problem opening file " + fileName );
         return;
     }
     
@@ -965,7 +968,7 @@ void PathInput::loadPath( const QString& fileName )
     orcaPathToGuiPath( orcaPath, guiPath_ );
     waitingTimes_.fill(0.0, orcaPath.size());
     
-    humanManager_->showStatusMsg(Information, "Successfully loaded file " + fileName );
+    humanManager_->showStatusMsg(hydroqgui::IHumanManager::Information, "Successfully loaded file " + fileName );
     wpWidget_->refreshTable();
 }
 

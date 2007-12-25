@@ -1,7 +1,7 @@
 #ifndef GUIELEMENT2D_H
 #define GUIELEMENT2D_H
 
-#include <orcaqgui/guielement.h>
+#include <hydroqgui/iguielement.h>
 
 class QPainter;
 
@@ -10,7 +10,7 @@ namespace orcaqgui2d {
 //!
 //! @author Alex Brooks
 //!
-class GuiElement2d : public orcaqgui::GuiElement
+class GuiElement2d : public hydroqgui::IGuiElement
 {
 
 public: 

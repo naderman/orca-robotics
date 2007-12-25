@@ -15,7 +15,7 @@
 #include <Ice/Ice.h>
 #include <IceStorm/IceStorm.h>
 #include <orcaqgui/ptricestormlistener.h>
-#include <orcaqgui/exceptions.h>
+#include <hydroqgui/hydroqgui.h>
 
 #include <orcaqgui2d/guielement2d.h>
 
@@ -51,7 +51,7 @@ public:
         {
             //try to connect once
             if ( listener_.connect() != 0 ) {
-                throw orcaqgui::Exception("Problem connecting to interface with proxyString " + proxyString);
+                throw hydroqgui::Exception( ERROR_INFO, "Problem connecting to interface with proxyString " + proxyString);
             }
         };
 
@@ -94,12 +94,6 @@ template<class PainterType, class DataType, class DataPtrType, class ProxyType, 
 bool 
 PtrIceStormElement<PainterType,DataType,DataPtrType,ProxyType,ConsumerType,ConsumerPrxType>::needToUpdate()
 {
-    if ( !listener_.buffer().isEmpty() )
-    {
-        // An object has arrived in our buffer.  We need to update.
-        return true;
-    }
-
     if ( !isConnected_ )
     {
         if ( listener_.connect() == 0 )
@@ -108,6 +102,12 @@ PtrIceStormElement<PainterType,DataType,DataPtrType,ProxyType,ConsumerType,Consu
             actionOnConnection();
         }
         return false;
+    }
+
+    if ( !listener_.buffer().isEmpty() )
+    {
+        // An object has arrived in our buffer.  We need to update.
+        return true;
     }
 
     // The buffer is empty.  How long since we last received something?

@@ -14,7 +14,7 @@
 #include <string>
 #include <orcaice/component.h>
 #include <hydrodll/dynamicload.h>
-#include <orcaqgui/guielementfactory.h>
+#include <hydroqgui/hydroqgui.h>
 
 namespace orcaview2d {
     
@@ -30,7 +30,7 @@ public:
 
 private:
 
-    std::vector<orcaqgui::GuiElementFactory*>               factories_;
+    std::vector<hydroqgui::IGuiElementFactory*>      factories_;
     std::vector<hydrodll::DynamicallyLoadedLibrary*> libraries_;
         
     // loads all factory libs and returns a listing of supported interfaces

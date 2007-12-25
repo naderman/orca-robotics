@@ -21,7 +21,7 @@
 
 namespace orcaqgui2d {
 
-class orcaqgui::IHumanManager;
+class hydroqgui::IHumanManager;
 
 // There's two consumer objects: the first one for icestorm (pathplanner pushes out whatever it computed) which is part
 // of the base class IceStormElement.
@@ -47,7 +47,7 @@ class PathplannerButtons : public QObject
     Q_OBJECT
             
 public:
-    PathplannerButtons( QObject *parent, orcaqgui::IHumanManager *humanManager, std::string proxyString);
+    PathplannerButtons( QObject *parent, hydroqgui::IHumanManager *humanManager, std::string proxyString);
     ~PathplannerButtons() 
     { 
         // Qt cleans up for us 
@@ -67,12 +67,13 @@ class PathPlannerHI  : public QObject
 public:
     PathPlannerHI( PathPlanner2dElement *ppElement,
                    std::string proxyString,
-                   orcaqgui::IHumanManager *humanManager,
+                   hydroqgui::IHumanManager *humanManager,
+                   hydroqgui::MouseEventManager *mouseEventManager,
                    PathPainter &painter,
                    WaypointSettings wpSettings );
     ~PathPlannerHI();
 
-    void lostMode();
+    void noLongerMouseEventReceiver();
     void paint( QPainter *p );
 
     void mousePressEvent(QMouseEvent *e) 
@@ -81,7 +82,7 @@ public:
     void mouseReleaseEvent(QMouseEvent *e) {pathInput_->processReleaseEvent(e);}
     void mouseDoubleClickEvent(QMouseEvent *e) {pathInput_->processDoubleClickEvent(e);}
     void setFocus( bool inFocus );
-    void setTransparency( bool useTransparency ); 
+    void setUseTransparency( bool useTransparency ); 
 
 public slots:
     void savePathAs();
@@ -95,7 +96,8 @@ private:
 
     PathPlanner2dElement *ppElement_;
     std::string proxyString_;
-    orcaqgui::IHumanManager *humanManager_;
+    hydroqgui::IHumanManager *humanManager_;
+    hydroqgui::MouseEventManager *mouseEventManager_;
     PathPainter   &painter_;
 
     QString pathFileName_;
@@ -126,9 +128,10 @@ class PathPlanner2dElement : public orcaqgui2d::IceStormElement<PathPainter,
 
 public: 
 
-    PathPlanner2dElement( const orcaice::Context & context,
-                          const std::string &proxyString,
-                          orcaqgui::IHumanManager* humanManager );
+    PathPlanner2dElement( const orcaice::Context       &context,
+                          const std::string            &proxyString,
+                          hydroqgui::IHumanManager     *humanManager,
+                          hydroqgui::MouseEventManager *mouseEventManager );
     ~PathPlanner2dElement();
 
     void update();
@@ -142,9 +145,9 @@ public:
     virtual void execute( int action );
     virtual void setColor( QColor color ) { painter_.setColor( color ); };
     virtual void setFocus( bool inFocus );
-    virtual void setTransparency( bool useTransparency );
+    virtual void setUseTransparency( bool useTransparency );
 
-    virtual void lostMode() { pathHI_.lostMode(); }
+    virtual void noLongerMouseEventReceiver() { pathHI_.noLongerMouseEventReceiver(); }
     virtual void mousePressEvent(QMouseEvent *e) { pathHI_.mousePressEvent(e); }
     virtual void mouseMoveEvent(QMouseEvent *e) { pathHI_.mouseMoveEvent(e); }
     virtual void mouseReleaseEvent(QMouseEvent *e) { pathHI_.mouseReleaseEvent(e); }
@@ -164,7 +167,7 @@ private:
     
     orcaice::Context context_;
     std::string proxyString_;
-    orcaqgui::IHumanManager *humanManager_;
+    hydroqgui::IHumanManager *humanManager_;
 
     bool displayWaypoints_;
     bool currentTransparency_;

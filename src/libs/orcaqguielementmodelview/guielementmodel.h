@@ -16,17 +16,12 @@
 #include <QColor>
 
 #include <orcaice/context.h>
-#include <orcaqgui/guielement.h>
+#include <hydroqgui/hydroqgui.h>
 
-namespace orcaqgui
+namespace orcaqgemv
 {
 
-class IHumanManager;    
-class GuiElement;
-class GuiElementFactory;
-class OrcaGuiUserEvent;
 class GuiElementView;
-class IStringToColorMap;
 
 //!
 //! @brief Stores the set of GuiElements
@@ -41,13 +36,15 @@ public:
         ContextMenuRole,
         FocusRole
     };
-    
-    explicit GuiElementModel( const std::vector<orcaqgui::GuiElementFactory*> &factories,
-                              const orcaice::Context                          &context, 
-                              IHumanManager                                   *humanManager,
-                              IStringToColorMap                               *platformColorMap,
-                              QObject                                         *parent = 0);
-    ~GuiElementModel();
+
+    explicit GuiElementModel( const std::vector<hydroqgui::IGuiElementFactory*> &factories,
+                              hydroqgui::IHumanManager                          &humanManager,
+                              hydroqgui::MouseEventManager                      &mouseEventManager,
+                              hydroqgui::ShortcutKeyManager                     &shortcutKeyManager,
+                              hydroqgui::CoordinateFrameManager                 &coordinateFrameManager,
+                              hydroqgui::GuiElementSet                          &guiElementSet,
+                              hydroqgui::IStringToColorMap                      &platformColorMap,
+                              QObject                                           *parent = 0);
 
     //
     // STANDARD MODEL API
@@ -72,13 +69,13 @@ public:
     void selectedAdaptersInView( std::vector<int> &indices );
     void changePlatformFocus( const QString &platform );
     
-    // access method for platform in focus
-    const QString& coordinateFramePlatform() { return coordinateFramePlatform_; }
-    QString coordinateFramePlatform() const { return coordinateFramePlatform_; }
-
-    bool ignoreCoordinateFrameRotation() const { return ignoreCoordinateFrameRotation_; }
+//     // access method for platform in focus
+//     const QString& coordinateFramePlatform() { return coordinateFramePlatform_; }
+//     QString coordinateFramePlatform() const { return coordinateFramePlatform_; }
+// 
+//    bool ignoreCoordinateFrameRotation() const { return ignoreCoordinateFrameRotation_; }
     
-    const QList<GuiElement*> elements() { return elements_; };
+//    const QList<hydroqgui::IGuiElement*> &elements() { return elements_; };
     
     void createGuiElement( const QString &elementType, QStringList &elementDetails );
     
@@ -89,12 +86,12 @@ signals:
 public slots:
     void removeAllGuiElements();
     void createGuiElementFromSelection( const QList<QStringList> & );
-    void setTransparency(bool transparency);
+    // void setUseTransparency(bool transparency);
 
 private:
 
     // returns true if supported by a factory otherwise false
-    bool instantiateFromFactories( GuiElement* &element, 
+    bool instantiateFromFactories( hydroqgui::IGuiElement* &element, 
                                    const QString &elementType, 
                                    const QColor &platformColor, 
                                    const QStringList &elementDetails );
@@ -102,22 +99,25 @@ private:
     void determinePlatform( QStringList &elementDetails,
                             QString     &platform );
 
-    QList<GuiElement*> elements_;
+    // QList<hydroqgui::IGuiElement*> elements_;
+    hydroqgui::GuiElementSet &guiElementSet_;
+
+    const QList<hydroqgui::IGuiElement*> &elements() const { return guiElementSet_.elements(); }
+    // QList<hydroqgui::IGuiElement*> &elements() { return guiElementSet_.elements(); }
     
-    const std::vector<orcaqgui::GuiElementFactory*> factories_;
+    const std::vector<hydroqgui::IGuiElementFactory*> factories_;
     QStringList headers_;
-    QString coordinateFramePlatform_;
-    bool ignoreCoordinateFrameRotation_;
-    orcaice::Context context_;
-    IHumanManager *humanManager_;
+    hydroqgui::IHumanManager      &humanManager_;
+    hydroqgui::MouseEventManager  &mouseEventManager_;
+    hydroqgui::ShortcutKeyManager &shortcutKeyManager_;
+    hydroqgui::CoordinateFrameManager &coordinateFrameManager_;
     bool doesPlatformExist( QString &platformName );
     bool doesElementExist( const QStringList& elementDetails, int numElements );
     
-    IStringToColorMap *platformColorMap_;
+    hydroqgui::IStringToColorMap &platformColorMap_;
     
     QString platformInFocus_;
     GuiElementView* view_;
-    bool currentTransparency_;
     
     QString lookupTypeFromFactories( QStringList &ids );
 };

@@ -2,9 +2,9 @@
 #ifndef PLATFORMCSFINDER_H
 #define PLATFORMCSFINDER_H
 
-#include <orcaqgui/guielementmodel.h>
 #include <QString>
 #include <QList>
+#include <hydroqgui/iguielement.h>
 
 namespace orcaqgui2d {
 
@@ -25,11 +25,11 @@ public:
     PlatformCSFinder() {};
 
     // returns false if it doesn't know.
-    bool findPlatformCS( const QList<orcaqgui::GuiElement*> elements,
-                         const QString                                &platform,
-                         float                                        &x,
-                         float                                        &y,
-                         float                                        &theta );
+    bool findPlatformCS( const QList<hydroqgui::IGuiElement*> &elements,
+                         const QString                        &platform,
+                         float                                &x,
+                         float                                &y,
+                         float                                &theta );
 
 private: 
 

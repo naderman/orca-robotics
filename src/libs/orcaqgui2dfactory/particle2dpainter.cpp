@@ -16,7 +16,6 @@
 #include <orcaqgui2d/paintutils.h>
 #include <hydroutil/mathdefs.h>
 
-using namespace orca; 
 using namespace std;
 
 namespace orcaqgui2d
@@ -47,7 +46,7 @@ Particle2dPainter::clear()
 }
 
 void 
-Particle2dPainter::setData( const Particle2dData& particleData )
+Particle2dPainter::setData( const orca::Particle2dData& particleData )
 {
     // cout<<"TRACE(particle2dpainter.cpp): setData()" << endl;
 

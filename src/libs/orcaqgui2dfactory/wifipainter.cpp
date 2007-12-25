@@ -14,7 +14,6 @@
 
 #include "wifipainter.h"
 
-using namespace orca; 
 using namespace std;
 
 namespace orcaqgui2d
@@ -34,7 +33,7 @@ WifiPainter::clear()
 }
 
 void 
-WifiPainter::setData( const WifiData& wifiData )
+WifiPainter::setData( const orca::WifiData& wifiData )
 {
 }
 

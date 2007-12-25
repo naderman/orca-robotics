@@ -23,27 +23,29 @@
 
 #include <hydroutil/mathdefs.h>
 #include <orcaqgui2dfactory/gridelement.h>
-#include <orcaqgui/guielementmodel.h>
-#include <orcaqgui/mainwin.h>
 #include <orcaqgui/guiicons.h>
 #include <orcaqgui2d/definitions2d.h>
 #include <orcaqgui2d/platformcsfinder.h>
 #include <orcaqgui2d/iknowsplatformposition2d.h>
 #include "worldview.h"
+#include <IceUtil/IceUtil.h>
 
 using namespace std;
-using namespace orcaqgui;
 
 namespace orcaqgui2d {
     
-WorldView::WorldView( PlatformCSFinder* platformCSFinder,
-                      GuiElementModel* model,
-                      QWidget* parent, 
-                      MainWindow* mainWin )
+WorldView::WorldView( PlatformCSFinder                   *platformCSFinder,
+                      hydroqgui::MouseEventManager       &mouseEventManager,
+                      hydroqgui::GuiElementSet           &guiElementSet,
+                      hydroqgui::CoordinateFrameManager  &coordinateFrameManager,
+                      hydroqgui::IHumanManager           &humanManager,
+                      QWidget*                            parent )
     : ZoomWidget(parent),
       platformCSFinder_(platformCSFinder),
-      model_(model),
-      mainWin_(mainWin),
+      mouseEventManager_(mouseEventManager),
+      guiElementSet_(guiElementSet),
+      coordinateFrameManager_(coordinateFrameManager),
+      humanManager_(humanManager),
       antiAliasing_(false)
 {
     setMinimumSize( 400, 400 );
@@ -107,23 +109,23 @@ WorldView::setupInterface()
     antiAliasing->setCheckable(true);
     antiAliasing->setShortcut( QKeySequence("Ctrl+A") );
     connect(antiAliasing,SIGNAL(toggled(bool)), this, SLOT(setAntiAliasing(bool)) );
-    mainWin_->displayMenu()->addAction(antiAliasing);
+    humanManager_.displayMenu()->addAction(antiAliasing);
     
     QAction* transparency = new QAction(tr("&Transparency"),this);
     transparency->setCheckable(true);
     // initialize to false, could be configurable
     transparency->setChecked(false);
-    model_->setTransparency( false );
+    guiElementSet_.setUseTransparency( false );
     transparency->setShortcut( QKeySequence("Ctrl+T") );
-    connect(transparency,SIGNAL(toggled(bool)), model_, SLOT(setTransparency(bool)) );
-    mainWin_->displayMenu()->addAction(transparency);   
+    connect(transparency,SIGNAL(toggled(bool)), this, SLOT(setUseTransparency(bool)) );
+    humanManager_.displayMenu()->addAction(transparency);   
 
-    mainWin_->displayMenu()->addAction(moveUp);
-    mainWin_->displayMenu()->addAction(moveDown);
-    mainWin_->displayMenu()->addAction(moveLeft);
-    mainWin_->displayMenu()->addAction(moveRight);
-    mainWin_->displayMenu()->addAction(zoomIn);
-    mainWin_->displayMenu()->addAction(zoomOut);
+    humanManager_.displayMenu()->addAction(moveUp);
+    humanManager_.displayMenu()->addAction(moveDown);
+    humanManager_.displayMenu()->addAction(moveLeft);
+    humanManager_.displayMenu()->addAction(moveRight);
+    humanManager_.displayMenu()->addAction(zoomIn);
+    humanManager_.displayMenu()->addAction(zoomOut);
 }
 
 bool
@@ -134,7 +136,7 @@ WorldView::transformToPlatformOwningCS( QPainter *p )
     QMatrix platformCsMatrix;
     
     // special case: global CS
-    if ( model_->coordinateFramePlatform() == "global" )
+    if ( coordinateFrameManager_.coordinateFramePlatform() == "global" )
     {
         // TODO: should we set to identity here??
         platformCsMatrix = QMatrix();
@@ -142,18 +144,21 @@ WorldView::transformToPlatformOwningCS( QPainter *p )
     else
     {
         float x, y, theta;
-        
-        if ( platformCSFinder_->findPlatformCS( model_->elements(), model_->coordinateFramePlatform(), x, y, theta ) )
+        if ( platformCSFinder_->findPlatformCS( guiElementSet_.elements(),
+                                                coordinateFrameManager_.coordinateFramePlatform(),
+                                                x,
+                                                y,
+                                                theta ) )
         {
             QMatrix m;
             m.translate( x, y);
-            if (!model_->ignoreCoordinateFrameRotation())
+            if (!coordinateFrameManager_.ignoreCoordinateFrameRotation())
                 m.rotate( RAD2DEG(theta) + 90);
             platformCsMatrix = m.inverted();
         }
         else
         {
-            flag=false;;
+            flag=false;
         }
     }
     
@@ -187,7 +192,7 @@ WorldView::paintEvent( QPaintEvent* e )
 void
 WorldView::paintAllGuiElements( QPainter *painter, int z, bool isCoordinateFramePlatformLocalised )
 {
-    const QList<GuiElement*> &elements = model_->elements();
+    const QList<hydroqgui::IGuiElement*> &elements = guiElementSet_.elements();
 
     for ( int i=0; i<elements.size(); ++i )
     {
@@ -200,9 +205,9 @@ WorldView::paintAllGuiElements( QPainter *painter, int z, bool isCoordinateFrame
            // also paint all elements of the platform that owns coordinate system even if it's not localised
            // always paint the permanent elements         
             
-            IPermanentElement *permElement = dynamic_cast<IPermanentElement*>(elements[i]);
-            
-            if ( isCoordinateFramePlatformLocalised || elements[i]->platform()==model_->coordinateFramePlatform() || (permElement!=NULL) ) 
+            if ( isCoordinateFramePlatformLocalised || 
+                 elements[i]->platform()==coordinateFrameManager_.coordinateFramePlatform() || 
+                 elements[i]->isPermanentElement() ) 
             {
                 GuiElement2d *elem = dynamic_cast<GuiElement2d*>(elements[i]);
                 assert(elem != NULL);
@@ -221,7 +226,7 @@ WorldView::paintAllGuiElements( QPainter *painter, int z, bool isCoordinateFrame
                         // will not be transformed and the element will be painted at the
                         // saved coords
                         float x, y, theta;
-                        if ( platformCSFinder_->findPlatformCS( model_->elements(), elements[i]->platform(), x, y, theta ) )
+                        if ( platformCSFinder_->findPlatformCS( guiElementSet_.elements(), elements[i]->platform(), x, y, theta ) )
                         {
                             // cout<<"TRACE(worldview.cpp): transforming painter by " << x << ", " << y << ", " << theta*180.0/M_PI << endl;
                             painter->translate( x, y );
@@ -241,7 +246,7 @@ WorldView::paintAllGuiElements( QPainter *painter, int z, bool isCoordinateFrame
                 }
             }
         }
-        catch ( Ice::Exception &e )
+        catch ( IceUtil::Exception &e )
         {
             std::cout<<"TRACE(worldview.cpp): Caught some ice exception during painting of "
                      <<elements[i]->details().toStdString()<<": " << e << std::endl;
@@ -274,10 +279,10 @@ WorldView::paintAllGuiElements( QPainter *painter, int z, bool isCoordinateFrame
 void
 WorldView::mousePressEvent( QMouseEvent* e )
 {
-    if ( mainWin_->mouseEventReceiverIsSet() )
+    if ( mouseEventManager_.mouseEventReceiverIsSet() )
     {
         //cout<<"TRACE(worldview.cpp): giving mousePressEvent to mode owner" << endl;
-        mainWin_->mouseEventReceiver()->mousePressEvent( e );
+        mouseEventManager_.mouseEventReceiver()->mousePressEvent( e );
         return;
     }
     else
@@ -291,9 +296,9 @@ WorldView::mousePressEvent( QMouseEvent* e )
 void
 WorldView::mouseMoveEvent( QMouseEvent* e )
 {
-    if ( mainWin_->mouseEventReceiverIsSet() )
+    if ( mouseEventManager_.mouseEventReceiverIsSet() )
     {
-        //mainWin_->mouseEventReceiver()->mouseMoveEvent( e );
+        //mouseEventManager_.mouseEventReceiver()->mouseMoveEvent( e );
         return;
     }
     else
@@ -323,10 +328,10 @@ WorldView::mouseMoveEvent( QMouseEvent* e )
 void
 WorldView::mouseReleaseEvent( QMouseEvent* e )
 {
-    if ( mainWin_->mouseEventReceiverIsSet() )
+    if ( mouseEventManager_.mouseEventReceiverIsSet() )
     {
         //cout<<"TRACE(worldview.cpp): Giving mouseReleaseEvent to mode owner" << endl;
-        mainWin_->mouseEventReceiver()->mouseReleaseEvent( e );
+        mouseEventManager_.mouseEventReceiver()->mouseReleaseEvent( e );
         return;
     }
 
@@ -336,6 +341,9 @@ WorldView::mouseReleaseEvent( QMouseEvent* e )
 
     if ( e->button() == Qt::LeftButton )          // left button released
     {  
+// AlexB: TODO: Commented this bit out coz I don't understand what's going on here.
+//              Have to ask Tobi.
+#if 0
         // select component
         const double SELECTED_RADIUS_PIXEL = 20.0;
         QString platform = nearestComponent( mouseDownPnt_, SELECTED_RADIUS_PIXEL);
@@ -345,6 +353,7 @@ WorldView::mouseReleaseEvent( QMouseEvent* e )
         {
             mainWin_->changePlatformFocusFromView( platform );
         }
+#endif
     } 
 }
 
@@ -352,8 +361,8 @@ WorldView::mouseReleaseEvent( QMouseEvent* e )
 void
 WorldView::mouseDoubleClickEvent( QMouseEvent* e )
 {
-    if ( mainWin_->mouseEventReceiverIsSet() )
-        mainWin_->mouseEventReceiver()->mouseDoubleClickEvent( e );
+    if ( mouseEventManager_.mouseEventReceiverIsSet() )
+        mouseEventManager_.mouseEventReceiver()->mouseDoubleClickEvent( e );
 }
 
 void
@@ -388,7 +397,7 @@ WorldView::zoomAllPix()
 QString 
 WorldView::nearestComponent( const QPointF& pclick, const double & pixelRadius )
 {
-    const QList<GuiElement*> &elements = model_->elements();
+    const QList<hydroqgui::IGuiElement*> &elements = guiElementSet_.elements();
     
     // potential candidates are stored with distance/platformName key/value pairs
     QMap<double,QString> candidates;
@@ -444,7 +453,13 @@ WorldView::setAntiAliasing(bool antiAliasing)
         str = "on";
     }
     
-    mainWin_->showStatusMsg(Information, "Anti-aliasing is turned " + str);   
+    humanManager_.showStatusMsg(hydroqgui::IHumanManager::Information, "Anti-aliasing is turned " + str);   
+}
+
+void
+WorldView::setUseTransparency(bool useTransparency)
+{
+    guiElementSet_.setUseTransparency(useTransparency);
 }
 
 }

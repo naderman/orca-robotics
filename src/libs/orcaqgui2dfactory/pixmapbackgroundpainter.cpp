@@ -11,15 +11,13 @@
 #include <fstream>
 #include <QPainter>
 #include <orcaice/orcaice.h>
-#include <orcaqgui/exceptions.h>
-#include <orcaqgui/ihumanmanager.h>
+#include <hydroqgui/hydroqgui.h>
 
 #include "pixmapbackgroundpainter.h"
 
-using namespace orcaqgui;
-using namespace orcaqgui2d;
 using namespace std;
 
+namespace orcaqgui2d {
 
 PixMapBackgroundPainter::PixMapBackgroundPainter()
 {    
@@ -47,7 +45,7 @@ PixMapBackgroundPainter::setData( const orca::PixMapData& data )
         stringstream ss;
         ss << "PixMapBackgroundPainter: Don't know how to display non-axis-aligned map: "
            << orcaice::toString( data );
-        throw Exception( ss.str() );
+        throw hydroqgui::Exception( ERROR_INFO, ss.str() );
     }
     
     // assemble information to give to pixmapPainter
@@ -68,7 +66,8 @@ PixMapBackgroundPainter::setData( const orca::PixMapData& data )
 }
 
 bool
-PixMapBackgroundPainter::checkFileExtension( QString &fe, orcaqgui::IHumanManager *humanManager )
+PixMapBackgroundPainter::checkFileExtension( QString &fe,
+                                             hydroqgui::IHumanManager *humanManager )
 {
     if ( fe.isEmpty() ) 
     {
@@ -83,13 +82,15 @@ PixMapBackgroundPainter::checkFileExtension( QString &fe, orcaqgui::IHumanManage
     else
     {
         cout << "ERROR(pixmapbackgroundpainter.cpp): File extension not supported" << endl;
-        humanManager->showBoxMsg(Error, "File extension not supported" );
+        humanManager->showBoxMsg(hydroqgui::IHumanManager::Error, "File extension not supported" );
         return -1;
     }
 }
 
 int 
-PixMapBackgroundPainter::saveMap( const orcaice::Context & context, const QString fileName, orcaqgui::IHumanManager *humanManager )
+PixMapBackgroundPainter::saveMap( const orcaice::Context &  context,
+                                  const QString            &fileName,
+                                  hydroqgui::IHumanManager *humanManager )
 {
     QString fileExtension = fileName.section('.',-1,-1);
     bool isOk = checkFileExtension( fileExtension, humanManager );
@@ -100,4 +101,6 @@ PixMapBackgroundPainter::saveMap( const orcaice::Context & context, const QStrin
         return 0;
     }    
     return -1;
+}
+
 }

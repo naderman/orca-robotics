@@ -11,7 +11,6 @@
 #ifndef ORCAGUI_GRIDELEMENT_H
 #define ORCAGUI_GRIDELEMENT_H
 
-#include <orcaqgui/ipermanentelement.h>
 #include <orcaqgui2d/guielement2d.h>
 #include <orcaqgui2d/definitions2d.h>
 #include <QPainter>
@@ -24,7 +23,7 @@ namespace orcaqgui2d
   @brief Paints a rectangular grid in the display.
   @author Tobias Kaupp, Alex Brooks, Ben Upcroft
 */  
-class GridElement : public GuiElement2d, public orcaqgui::IPermanentElement
+class GridElement : public GuiElement2d
 {
 public:
 
@@ -38,6 +37,8 @@ public:
     virtual QStringList contextMenu();
     
     virtual void execute( int action );
+
+    virtual bool isPermanentElement() const { return true; }
     
 private:
 	

@@ -11,7 +11,7 @@
 #include <iostream>
 #include <sstream>
 #include <hydroutil/mathdefs.h>
-#include <orcaqgui/exceptions.h>
+#include <hydroqgui/exceptions.h>
 #include "detail/cov2d.h"
 #include "paintutils.h"
 
@@ -204,7 +204,7 @@ paintCovarianceEllipse( QPainter *p, const QColor &colour, float pxx, float pxy,
 //         ss << endl << "isnan||isinf(pxx): " << (isnan(pxx)||isinf(pxx));
 //         ss << endl << "isnan||isinf(pxy): " << (isnan(pxy)||isinf(pxy));
 //         ss << endl << "isnan||isinf(pyy): " << (isnan(pyy)||isinf(pyy));
-        throw orcaqgui::Exception( ss.str() );
+        throw hydroqgui::Exception( ERROR_INFO, ss.str() );
     }
 
     // Work out the details of the uncertainty ellipse

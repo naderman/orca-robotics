@@ -16,7 +16,7 @@
 #include <orcaobj/orcaobj.h>
 #include <orcaice/orcaice.h>
 
-#include <orcaqgui/ihumanmanager.h>
+#include <hydroqgui/hydroqgui.h>
 #include <orcaqgui2d/icestormelement.h>
 #include <orcaqgui2d/iknowsplatformposition2d.h>
 #include <orcaqgui2dfactory/connectutils.h>
@@ -36,7 +36,7 @@ class Localise2dElement
 public:
     Localise2dElement( const orcaice::Context  &context,
                        const std::string       &proxyString,
-                       orcaqgui::IHumanManager *humanManager,
+                       hydroqgui::IHumanManager *humanManager,
                        bool                     beginDisplayHistory=false,
                        int                      timeoutMs=30000 )
         : IceStormElement<Localise2dPainter,
@@ -60,7 +60,7 @@ public:
     
     virtual void setColor( QColor color ) { painter_.setColor(color); }
     virtual void setFocus( bool inFocus ) { painter_.setFocus( inFocus ); };
-    virtual void setTransparency( bool useTransparency ) { painter_.setTransparency( useTransparency ); };
+    virtual void setUseTransparency( bool useTransparency ) { painter_.setUseTransparency( useTransparency ); };
 
     // Need a special update function to set (x,y,theta)
     // The Localise2dElement needs this because it's special kind of GuiElement:
@@ -76,7 +76,7 @@ public:
     virtual QPointF pos() const { return QPointF(x_,y_); };
 
 private:
-    orcaqgui::IHumanManager *humanManager_;
+    hydroqgui::IHumanManager *humanManager_;
     Localise2dPainter painter_;
 
     double x_;

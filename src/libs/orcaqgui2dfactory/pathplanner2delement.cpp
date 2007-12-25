@@ -9,7 +9,7 @@
  */
 
 #include "pathplanner2delement.h"
-#include <orcaqgui/ihumanmanager.h>
+#include <hydroqgui/hydroqgui.h>
 #include <orcaqgui/guiicons.h>
 #include <orcaice/orcaice.h>
 #include <QFileDialog>
@@ -17,7 +17,6 @@
 
 
 using namespace std;
-using namespace orca;
 using namespace orcaqgui;
 
 namespace orcaqgui2d {
@@ -27,17 +26,17 @@ void
 PathPlannerTaskAnswerConsumer::setData(const ::orca::PathPlanner2dData& data, const ::Ice::Current& )
 {
     std::cout << "INFO(pathplanner2dconsumerI.cpp): Received results: " << orcaice::toVerboseString(data) << std::endl;
-    if (data.result==PathOk) return; 
+    if (data.result==orca::PathOk) return; 
     
     QString msg("Pathplanner could not compute path!\nReason is: ");
     
-    if (data.result==PathStartNotValid) 
+    if (data.result==orca::PathStartNotValid) 
         msg.append("Path Start not valid");    
-    else if (data.result==PathDestinationNotValid) 
+    else if (data.result==orca::PathDestinationNotValid) 
         msg.append("Path Destination not valid");    
-    else if (data.result==PathDestinationUnreachable) 
+    else if (data.result==orca::PathDestinationUnreachable) 
         msg.append("Destination unreachable");    
-    else if (data.result==PathOtherError) 
+    else if (data.result==orca::PathOtherError) 
         msg.append("OtherError");
 
     msg.append( ": " );
@@ -47,7 +46,7 @@ PathPlannerTaskAnswerConsumer::setData(const ::orca::PathPlanner2dData& data, co
 }
 ////////////////////////////////////////////////////////////////////////////////
 
-PathplannerButtons::PathplannerButtons( QObject *parent, orcaqgui::IHumanManager *humanManager, string proxyString)
+PathplannerButtons::PathplannerButtons( QObject *parent, hydroqgui::IHumanManager *humanManager, string proxyString)
 {
     QPixmap savePathIcon(filesave_path_xpm);
     QPixmap saveAsPathIcon(filesaveas_path_xpm);
@@ -97,9 +96,10 @@ PathplannerButtons::setWpButton( bool onOff )
 }
 /////////////////////////////////////////////////////
 
-PathPlanner2dElement::PathPlanner2dElement( const orcaice::Context & context,
-                                            const std::string &proxyString,
-                                            orcaqgui::IHumanManager* humanManager )
+PathPlanner2dElement::PathPlanner2dElement( const orcaice::Context       &context,
+                                            const std::string            &proxyString,
+                                            hydroqgui::IHumanManager     *humanManager,
+                                            hydroqgui::MouseEventManager *mouseEventManager )
     : IceStormElement<  PathPainter,
                         orca::PathPlanner2dData,
                         orca::PathPlanner2dPrx,
@@ -113,6 +113,7 @@ PathPlanner2dElement::PathPlanner2dElement( const orcaice::Context & context,
       pathHI_( this,
                proxyString,
                humanManager,
+               mouseEventManager,
                painter_,
                readWaypointSettings( context_.properties(), context_.tag() ) )
 {
@@ -141,23 +142,23 @@ PathPlanner2dElement::update()
     {
         QString msg;
         pathTaskAnswerConsumer_->msgStore_.get( msg );
-        humanManager_->showBoxMsg(Error, msg);    
+        humanManager_->showBoxMsg(hydroqgui::IHumanManager::Error, msg);    
     }
 }
 
 void 
-PathPlanner2dElement::setTransparency( bool useTransparency ) 
+PathPlanner2dElement::setUseTransparency( bool useTransparency ) 
 { 
-    cout << "TRACE(pathplanner2delement.cpp): setTransparency: " << useTransparency << endl;
-    painter_.setTransparency( useTransparency ); 
-    pathHI_.setTransparency( useTransparency );
+    cout << "TRACE(pathplanner2delement.cpp): setUseTransparency: " << useTransparency << endl;
+    painter_.setUseTransparency( useTransparency ); 
+    pathHI_.setUseTransparency( useTransparency );
     currentTransparency_ = useTransparency;
 }
 
 void
 PathPlanner2dElement::actionOnConnection()
 {
-    humanManager_->showStatusMsg(Information, "PathplannerElement is trying to connect");
+    humanManager_->showStatusMsg(hydroqgui::IHumanManager::Information, "PathplannerElement is trying to connect");
      
     try 
     {
@@ -165,14 +166,15 @@ PathPlanner2dElement::actionOnConnection()
     }
     catch ( ... )
     {
-        humanManager_->showStatusMsg(Warning, "Problem connecting to pathplanner interface. Will try again later.");
+        humanManager_->showStatusMsg(hydroqgui::IHumanManager::Warning, "Problem connecting to pathplanner interface. Will try again later.");
         //cout << "WARNING(pathplanner2delement.cpp): Problem connecting to interface. Will try again later." << endl;
         return;
     }
-    humanManager_->showStatusMsg(Information, "Connected to pathplanner interface successfully.");
+    humanManager_->showStatusMsg(hydroqgui::IHumanManager::Information, "Connected to pathplanner interface successfully.");
     
     pathPlanner2dConsumerObj_ = pathTaskAnswerConsumer_;
-    taskCallbackPrx_ = orcaice::createConsumerInterface<PathPlanner2dConsumerPrx>( context_, pathPlanner2dConsumerObj_ );
+    taskCallbackPrx_ = orcaice::createConsumerInterface<orca::PathPlanner2dConsumerPrx>( context_,
+                                                                                         pathPlanner2dConsumerObj_ );
 }
 
 QStringList
@@ -206,7 +208,7 @@ PathPlanner2dElement::execute( int action )
     }  
     else if ( action == 1 )
     {
-        setTransparency(!currentTransparency_);
+        setUseTransparency(!currentTransparency_);
     }
     else if ( action == 2 )
     {
@@ -227,7 +229,7 @@ PathPlanner2dElement::sendPath( const PathPlannerInput &pathInput )
 {
     try
     {
-        PathPlanner2dTask task = pathInput.getTask();
+        orca::PathPlanner2dTask task = pathInput.getTask();
         task.prx = taskCallbackPrx_;
         pathPlanner2dPrx_->setTask( task );
     }
@@ -235,7 +237,7 @@ PathPlanner2dElement::sendPath( const PathPlannerInput &pathInput )
     {
         stringstream ss;
         ss << "While trying to set a pathfollowing data: " << endl << e;
-        humanManager_->showStatusMsg( Error, ss.str().c_str() );
+        humanManager_->showStatusMsg( hydroqgui::IHumanManager::Error, ss.str().c_str() );
     }
 }
 
@@ -256,14 +258,16 @@ PathPlanner2dElement::setFocus( bool inFocus )
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 
-PathPlannerHI::PathPlannerHI( PathPlanner2dElement *ppElement,
-                              string proxyString,
-                              orcaqgui::IHumanManager *humanManager, 
-                              PathPainter &painter,
-                              WaypointSettings wpSettings )
+PathPlannerHI::PathPlannerHI( PathPlanner2dElement         *ppElement,
+                              string                        proxyString,
+                              hydroqgui::IHumanManager     *humanManager, 
+                              hydroqgui::MouseEventManager *mouseEventManager, 
+                              PathPainter                  &painter,
+                              WaypointSettings              wpSettings )
     : ppElement_(ppElement),
       proxyString_( proxyString ),
       humanManager_(humanManager),
+      mouseEventManager_(mouseEventManager),
       painter_(painter),
       pathFileName_("/home"),
       pathFileSet_(false),
@@ -334,25 +338,25 @@ void
 PathPlannerHI::waypointModeSelected()
 {
     if ( gotMode_ ) return;
-    gotMode_ = humanManager_->requestBecomeMouseEventReceiver( ppElement_ );
+    gotMode_ = mouseEventManager_->requestBecomeMouseEventReceiver( ppElement_ );
 
     if ( !gotMode_ )
     {
-        humanManager_->showBoxMsg( Warning, "Couldn't take over the mode for PathPlanner waypoints!" );
+        humanManager_->showBoxMsg( hydroqgui::IHumanManager::Warning, "Couldn't take over the mode for PathPlanner waypoints!" );
         return;
     }
 
     pathInput_ = new PathPlannerInput( this, &wpSettings_, humanManager_ );
-    pathInput_->setTransparency( useTransparency_ );
+    pathInput_->setUseTransparency( useTransparency_ );
     buttons_->setWpButton( true );   
 }
 
 void
-PathPlannerHI::setTransparency( bool useTransparency )
+PathPlannerHI::setUseTransparency( bool useTransparency )
 { 
     useTransparency_ = useTransparency;
     if (pathInput_) 
-        pathInput_->setTransparency( useTransparency ); 
+        pathInput_->setUseTransparency( useTransparency ); 
 }
 
 void 
@@ -367,12 +371,12 @@ PathPlannerHI::cancel()
 {
     if ( gotMode_ )
     {
-        humanManager_->relinquishMouseEventReceiver( ppElement_ );
-        lostMode();
+        mouseEventManager_->relinquishMouseEventReceiver( ppElement_ );
+        noLongerMouseEventReceiver();
     }
 }
 void
-PathPlannerHI::lostMode()
+PathPlannerHI::noLongerMouseEventReceiver()
 {
     assert( pathInput_ != NULL );
     delete pathInput_;

@@ -31,7 +31,7 @@ class WifiPainter
     void setColor( QColor color ) { color_ = color; };
     void paint( QPainter *p, int z1 );
     bool paintThisLayer(int z) const { return z==Z_FOREGROUND; }
-    void setTransparency( bool useTransparency ) { useTransparency_= useTransparency; };
+    void setUseTransparency( bool useTransparency ) { useTransparency_= useTransparency; };
     void clear();
     
   private:

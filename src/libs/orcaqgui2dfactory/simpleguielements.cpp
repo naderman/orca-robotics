@@ -12,7 +12,6 @@
 #include "simpleguielements.h"
 
 using namespace std;
-using namespace orca;
 using namespace orcaqgui2d;
 
 namespace orcaqgui2d {
@@ -21,13 +20,13 @@ void
 LaserScanner2dElement::getLaserInfo()
 {
     // Subscribe directly to get geometry etc
-    LaserScanner2dPrx laserPrx;
+    orca::LaserScanner2dPrx laserPrx;
 
     // Don't bother catching exceptions: they'll get caught higher up.
 
     orcaice::connectToInterfaceWithString( context_, laserPrx, listener_.interfaceName() );
     
-    RangeScanner2dDescription descr;
+    orca::RangeScanner2dDescription descr;
     descr = laserPrx->getDescription();
 
     // we may get an exception if the laser is not mounted horizontal
@@ -36,7 +35,7 @@ LaserScanner2dElement::getLaserInfo()
     {
         painter_.setOffset( descr.offset );
     }
-    catch ( const orcaqgui::Exception& e )
+    catch ( const std::exception& e )
     {
         context_.tracer().warning( e.what() );
     }
@@ -55,13 +54,13 @@ void
 RangeScanner2dElement::getScannerInfo()
 {
     // Subscribe directly to get geometry etc
-    RangeScanner2dPrx scannerPrx;
+    orca::RangeScanner2dPrx scannerPrx;
 
     // Don't bother catching exceptions: they'll get caught higher up.
 
     orcaice::connectToInterfaceWithString( context_, scannerPrx, listener_.interfaceName() );
     
-    RangeScanner2dDescription descr;
+    orca::RangeScanner2dDescription descr;
     descr = scannerPrx->getDescription();
 
     // we may get an exception if the laser is not mounted horizontal
@@ -70,7 +69,7 @@ RangeScanner2dElement::getScannerInfo()
     {
         painter_.setOffset( descr.offset );
     }
-    catch ( const orcaqgui::Exception& e )
+    catch ( const std::exception& e )
     {
         context_.tracer().warning( e.what() );
     }
@@ -116,7 +115,7 @@ Localise3dElement::update()
     {
         std::stringstream ss;
         ss << "Localise3dElement::update(): Interface " << listener_.interfaceName() << ": Localise3dData had zero hypotheses";
-        throw orcaqgui::Exception( ss.str() );
+        throw hydroqgui::Exception( ERROR_INFO, ss.str() );
     }
 
     data_.hypotheses[0].mean.p.x -= origin_.x;
@@ -146,7 +145,7 @@ Localise3dElement::actionOnConnection()
 void 
 Localise3dElement::tryToGetGeometry()
 {
-    VehicleGeometryDescriptionPtr geom;
+    orca::VehicleGeometryDescriptionPtr geom;
     
     try 
     {
@@ -155,7 +154,7 @@ Localise3dElement::tryToGetGeometry()
     }
     catch ( std::exception &e)
     {
-//         humanManager_->showStatusMsg(Error,"Exception when trying to get geometry: " + QString(e.what()) );
+//         humanManager_->showStatusMsg(hydroqgui::IHumanManager::Error,"Exception when trying to get geometry: " + QString(e.what()) );
         cout << "Exception when trying to get geometry: " << e.what();
     }
     
@@ -165,22 +164,22 @@ Localise3dElement::tryToGetGeometry()
         return;
     }
     
-    if (geom->type==VehicleGeometryCuboid)
+    if (geom->type==orca::VehicleGeometryCuboid)
     {
-        VehicleGeometryCuboidDescriptionPtr geom = VehicleGeometryCuboidDescriptionPtr::dynamicCast( geom );
+        orca::VehicleGeometryCuboidDescriptionPtr geom = orca::VehicleGeometryCuboidDescriptionPtr::dynamicCast( geom );
         painter_.setTypeAndGeometry( PlatformTypeCubic, geom->size.l, geom->size.w );
         painter_.setOrigin( geom->vehicleToGeometryTransform.p.x, geom->vehicleToGeometryTransform.p.y, geom->vehicleToGeometryTransform.o.y );
     }
-    else if (geom->type==VehicleGeometryCylindrical)
+    else if (geom->type==orca::VehicleGeometryCylindrical)
     {
-        VehicleGeometryCylindricalDescriptionPtr cylGeom = VehicleGeometryCylindricalDescriptionPtr::dynamicCast( geom );
+        orca::VehicleGeometryCylindricalDescriptionPtr cylGeom = orca::VehicleGeometryCylindricalDescriptionPtr::dynamicCast( geom );
         painter_.setTypeAndGeometry( PlatformTypeCylindrical, cylGeom->radius );
         painter_.setOrigin( cylGeom->vehicleToGeometryTransform.p.x, cylGeom->vehicleToGeometryTransform.p.y, cylGeom->vehicleToGeometryTransform.o.y );
     }
     else
     {
-//         humanManager_->showStatusMsg(Warning, "Unknown platform type. Will paint a rectangle");
-        VehicleGeometryCuboidDescriptionPtr cubGeom = VehicleGeometryCuboidDescriptionPtr::dynamicCast( geom );
+//         humanManager_->showStatusMsg(hydroqgui::IHumanManager::Warning, "Unknown platform type. Will paint a rectangle");
+        orca::VehicleGeometryCuboidDescriptionPtr cubGeom = orca::VehicleGeometryCuboidDescriptionPtr::dynamicCast( geom );
         painter_.setTypeAndGeometry( PlatformTypeCubic, cubGeom->size.l, cubGeom->size.w );
         painter_.setOrigin( cubGeom->vehicleToGeometryTransform.p.x, cubGeom->vehicleToGeometryTransform.p.y, cubGeom->vehicleToGeometryTransform.o.y );
     }
@@ -212,7 +211,7 @@ Localise3dElement::execute( int action )
     }
     default:
     {
-        throw orcaqgui::Exception( "execute(): What the hell? bad action." );
+        throw hydroqgui::Exception( ERROR_INFO, "execute(): What the hell? bad action." );
         break;
     }
     }

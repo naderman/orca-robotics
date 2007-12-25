@@ -2,7 +2,7 @@
 #define FEATUREMAP2DELEMENT_H
 
 #include <orcaqgui2d/icestormelement.h>
-#include <orcaqgui/ihumanmanager.h>
+#include <hydroqgui/hydroqgui.h>
 #include <orcaqgui2dfactory/featuremap2dpainter.h>
 #include <orcaqgui2dfactory/connectutils.h>
 
@@ -24,7 +24,7 @@ public:
 
     FeatureMap2dElement( const orcaice::Context  &context,
                          const std::string       &proxyString,
-                         orcaqgui::IHumanManager *humanManager );
+                         hydroqgui::IHumanManager *humanManager );
 
     virtual bool isInGlobalCS() { return true; }
     virtual void actionOnConnection() 
@@ -34,7 +34,7 @@ public:
     }
     virtual QStringList contextMenu();
     virtual void execute( int action );
-    virtual void setTransparency( bool useTransparency ) { painter_.setTransparency( useTransparency ); };
+    virtual void setUseTransparency( bool useTransparency ) { painter_.setUseTransparency( useTransparency ); };
 
  public:
     void saveFeatureMapAs();
@@ -42,7 +42,7 @@ public:
 
 private:
     FeatureMap2dPainter painter_;
-    orcaqgui::IHumanManager *humanManager_;
+    hydroqgui::IHumanManager *humanManager_;
     QString featureMapFileName_;
     bool featureMapFileNameSet_;
 };

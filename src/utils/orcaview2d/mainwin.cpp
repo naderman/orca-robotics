@@ -19,16 +19,14 @@
 #include <orcaqcm/orcaqcm.h>
 
 #include "mainwin.h"
-#include "shortcutaction.h"
-#include "regselectview.h"
-#include "guielementmodel.h"
-#include "guielementview.h"
-#include "guiicons.h"
+//#include "shortcutaction.h"
+#include <orcaqgui/regselectview.h>
+#include <orcaqgui/guiicons.h>
 
 using namespace std;
 
-namespace orcaqgui 
-{
+// namespace orcaqgui 
+// {
 
     MainWindow::MainWindow( 
                 std::string                        title,   
@@ -43,7 +41,7 @@ namespace orcaqgui
     displayView_(NULL),
     supportedInterfaces_(supportedInterfaces),
     firstTime_(true),
-    mouseEventReceiver_(NULL),
+//    mouseEventReceiver_(NULL),
     jobQueue_(jobQueue),
     context_(context)
 {
@@ -69,7 +67,7 @@ namespace orcaqgui
     // Delegate
     regDelegate_ = new orcaqcm::OcmDelegate();
     // View
-    regView_ = new RegSelectView(side_);
+    regView_ = new orcaqgui::RegSelectView(side_);
     regView_->setModel( regModel_ );
     regView_->setItemDelegate(regDelegate_);
     //regView_->setSelectionModel(selections_);
@@ -118,8 +116,8 @@ MainWindow::displayViewParent()
     return win_; 
 }
 
-void MainWindow::init( GuiElementModel                   *guiElemModel,
-                       QWidget                           *displayView )
+void MainWindow::init( orcaqgemv::GuiElementModel *guiElemModel,
+                       QWidget                    *displayView )
 {
     //
     // Active-GUI-Elements widget
@@ -141,7 +139,7 @@ void MainWindow::init( GuiElementModel                   *guiElemModel,
     QObject::connect( elemModel_, SIGNAL(platformNeedsRemoval(const QString&)), this, SLOT(removePlatformFromList(const QString&)) );
 
     // Bottom left part: element view
-    elemView_ = new GuiElementView(side_);
+    elemView_ = new orcaqgemv::GuiElementView(side_);
     elemView_->setModel( elemModel_ );
     elemView_->horizontalHeader()->setMovable(true);
     elemView_->verticalHeader()->hide();
@@ -402,6 +400,9 @@ MainWindow::changePlatformFocus(const QString& platform)
     elemModel_->changePlatformFocus( platform );
 }
 
+// AlexB: TODO: Commented this bit out coz I don't understand what's going on here.
+//              Have to ask Tobi.
+#if 0
 void 
 MainWindow::changePlatformFocusFromView(const QString& platform)
 {
@@ -412,6 +413,7 @@ MainWindow::changePlatformFocusFromView(const QString& platform)
     int i = platformCombo_->findText( platform );
     platformCombo_->setCurrentIndex( i );
 }
+#endif
 
 void 
 MainWindow::toggleScreenCapture( bool capture )
@@ -462,75 +464,75 @@ MainWindow::grabWindow()
     }
 }
 
-bool 
-MainWindow::requestBecomeMouseEventReceiver( GuiElement *requester )
-{ 
-    if ( mouseEventReceiverIsSet() )
-        mouseEventReceiver_->lostMode();
-    mouseEventReceiver_ = requester;
-    return true;
-}
-bool 
-MainWindow::mouseEventReceiverIsSet() 
-{
-    return mouseEventReceiver_!=NULL; 
-}
-void 
-MainWindow::relinquishMouseEventReceiver( GuiElement *relinquisher )
-{ 
-    if ( relinquisher==mouseEventReceiver_ ) 
-        mouseEventReceiver_=NULL;
-    else showStatusMsg( Error, "Attempt to relinquish mode from non-owner!" );
-}
+// bool 
+// MainWindow::requestBecomeMouseEventReceiver( hydroqgui::IGuiElement *requester )
+// { 
+//     if ( mouseEventReceiverIsSet() )
+//         mouseEventReceiver_->noLongerMouseEventReceiver();
+//     mouseEventReceiver_ = requester;
+//     return true;
+// }
+// bool 
+// MainWindow::mouseEventReceiverIsSet() 
+// {
+//     return mouseEventReceiver_!=NULL; 
+// }
+// void 
+// MainWindow::relinquishMouseEventReceiver( hydroqgui::IGuiElement *relinquisher )
+// { 
+//     if ( relinquisher==mouseEventReceiver_ ) 
+//         mouseEventReceiver_=NULL;
+//     else showStatusMsg( Error, "Attempt to relinquish mode from non-owner!" );
+// }
 
-void
-MainWindow::subscribeToShortcutKey( QAction *elementAction, QKeySequence key, bool isMultiple, QObject *parent )
-{
-    cout << "TRACE(mainwin.cpp): subscribeToShortcutKey: number of shortcutActions " << shortcutActions_.size() << endl;
+// void
+// MainWindow::subscribeToShortcutKey( QAction *elementAction, QKeySequence key, bool isMultiple, QObject *parent )
+// {
+//     cout << "TRACE(mainwin.cpp): subscribeToShortcutKey: number of shortcutActions " << shortcutActions_.size() << endl;
     
-    // in any case, add the action to the toolbar
-    // TODO: check if a shortcut exists and remove it?
-    toolBar_->addAction(elementAction);
+//     // in any case, add the action to the toolbar
+//     // TODO: check if a shortcut exists and remove it?
+//     toolBar_->addAction(elementAction);
     
-    // check whether this shortcut already exists
-    for (int i=0; i<shortcutActions_.size(); i++)
-    {
-        if (shortcutActions_[i]->key() == key)
-        {
-            shortcutActions_[i]->subscribe( parent, elementAction );
-            return;
-        }
-    }
+//     // check whether this shortcut already exists
+//     for (int i=0; i<shortcutActions_.size(); i++)
+//     {
+//         if (shortcutActions_[i]->key() == key)
+//         {
+//             shortcutActions_[i]->subscribe( parent, elementAction );
+//             return;
+//         }
+//     }
             
-    // if we get here then the shortcut doesn't exist yet
-    cout << "TRACE(mainwin.cpp): we have a new shortcut" << endl;
-    ShortcutAction *shortcutAction = new ShortcutAction(key,isMultiple);
-    shortcutAction->subscribe( parent, elementAction );
-    // add the action to this widget, so it can catch keys
-    addAction(shortcutAction);
+//     // if we get here then the shortcut doesn't exist yet
+//     cout << "TRACE(mainwin.cpp): we have a new shortcut" << endl;
+//     ShortcutAction *shortcutAction = new ShortcutAction(key,isMultiple);
+//     shortcutAction->subscribe( parent, elementAction );
+//     // add the action to this widget, so it can catch keys
+//     addAction(shortcutAction);
     
-    // put it into the list, so it's persistent and can be checked for its key later
-    shortcutActions_.push_back( shortcutAction );
-}
+//     // put it into the list, so it's persistent and can be checked for its key later
+//     shortcutActions_.push_back( shortcutAction );
+// }
 
-void 
-MainWindow::unsubscribeFromShortcutKey( QKeySequence key, QObject *parent )
-{
-    for (int i=0; i<shortcutActions_.size(); i++)
-    {
-        if (shortcutActions_[i]->key() == key)
-        {
-            shortcutActions_[i]->unsubscribe( parent );
-            return;
-        }
-    }
-}
+// void 
+// MainWindow::unsubscribeFromShortcutKey( QKeySequence key, QObject *parent )
+// {
+//     for (int i=0; i<shortcutActions_.size(); i++)
+//     {
+//         if (shortcutActions_[i]->key() == key)
+//         {
+//             shortcutActions_[i]->unsubscribe( parent );
+//             return;
+//         }
+//     }
+// }
 
 
-void
-MainWindow::changePlatformColor(const QString&)
-{
-    //alexm: ???
-}
+// void
+// MainWindow::changePlatformColor(const QString&)
+// {
+//     //alexm: ???
+// }
 
-} // namespace
+// } // namespace

@@ -15,7 +15,7 @@
 #include <QPixmap>
 #include <QMatrix>
 
-#include <orcaqgui/ihumanmanager.h>
+#include <hydroqgui/hydroqgui.h>
 
 namespace orcaqgui2d
 {
@@ -57,7 +57,9 @@ class PixmapPainter
     void paint( QPainter *p );
 
     void toggleDisplayMap();
-    int saveMap( const QString &fileName, const QString &fileExtension, orcaqgui::IHumanManager *humanManager );
+    int saveMap( const QString            &fileName,
+                 const QString            &fileExtension,
+                 hydroqgui::IHumanManager *humanManager );
     
   private:
     

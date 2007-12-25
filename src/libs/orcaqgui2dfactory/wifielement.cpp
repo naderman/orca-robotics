@@ -20,7 +20,6 @@
 #include "wifielement.h"
 
 using namespace std;
-using namespace orca;
 using namespace orcaqgui2d;
 
 // mimics Windows-style signal level
@@ -51,7 +50,7 @@ WifiWidget::WifiWidget( unsigned int numInterfaces, std::string proxyString )
 }
 
 void
-WifiWidget::refresh( WifiData &data )
+WifiWidget::refresh( orca::WifiData &data )
 {
     //cout << orcaice::toString(data);
     
@@ -60,12 +59,12 @@ WifiWidget::refresh( WifiData &data )
         interfaceLabels_[i]->setText(QString(data.interfaces[i].interfaceName.c_str()));
         accessPointLabels_[i]->setText(QString(data.interfaces[i].accessPoint.c_str()));
         
-        WifiInterface &wifiInt = data.interfaces[i];
+        orca::WifiInterface &wifiInt = data.interfaces[i];
         lcdsSignal_[i]->display(wifiInt.signalLevel);
         lcdsNoise_[i]->display(wifiInt.noiseLevel);
         lcdsLink_[i]->display(wifiInt.linkQuality);
         
-        if (wifiInt.linkType==LinkQualityTypeDbm) {
+        if (wifiInt.linkType==orca::LinkQualityTypeDbm) {
             lcdsMaxSignal_[i]->display("DB");
             lcdsMaxNoise_[i]->display("DB");
             progressBars_[i]->setFormat("%p%");
@@ -192,7 +191,7 @@ WifiElement::update()
     
     assert( !listener_.buffer().isEmpty() );
 
-    WifiData data;
+    orca::WifiData data;
     
     // get data from the buffer
     listener_.buffer().getAndPop( data );

@@ -1,6 +1,6 @@
 #include "featuremap2delement.h"
 #include <iostream>
-#include <orcaqgui/exceptions.h>
+#include <hydroqgui/hydroqgui.h>
 #include <QFileDialog>
 
 using namespace std;
@@ -9,7 +9,7 @@ namespace orcaqgui2d {
 
 FeatureMap2dElement::FeatureMap2dElement( const orcaice::Context  &context,
                                           const std::string       &proxyString,
-                                          orcaqgui::IHumanManager *humanManager )
+                                          hydroqgui::IHumanManager *humanManager )
     : IceStormElement<FeatureMap2dPainter,
                       orca::FeatureMap2dData,
                       orca::FeatureMap2dPrx,
@@ -56,7 +56,7 @@ FeatureMap2dElement::execute( int action )
     }
     default:
     {
-        throw orcaqgui::Exception( "FeatureMap2dElement::execute(): What the hell? bad action." );
+        throw hydroqgui::Exception( ERROR_INFO, "FeatureMap2dElement::execute(): What the hell? bad action." );
         break;
     }
     }

@@ -13,9 +13,9 @@
 
 #include "pixmappainter.h"
 
-using namespace orcaqgui;
-using namespace orcaqgui2d;
 using namespace std;
+
+namespace orcaqgui2d {
 
 PixmapPainter::PixmapPainter()
     : isDisplayMap_(true),
@@ -198,7 +198,9 @@ PixmapPainter::toggleDisplayMap()
 }
 
 int 
-PixmapPainter::saveMap( const QString &fileName, const QString &fileExtension, orcaqgui::IHumanManager *humanManager )
+PixmapPainter::saveMap( const QString &fileName,
+                        const QString &fileExtension,
+                        hydroqgui::IHumanManager *humanManager )
 {   
     // We have to mirror the map first
     QMatrix matrix(1.0, 0.0, 0.0, -1.0, 0.0, 0.0);
@@ -206,12 +208,12 @@ PixmapPainter::saveMap( const QString &fileName, const QString &fileExtension, o
     int ret = qMap_.transformed( matrix ).save( fileName, fileExtension.toLatin1() );
     if (!ret)
     {
-        cout << "ERROR(pixmappainter.cpp): Problems saving file " << fileName.toStdString() << endl; 
-        humanManager->showBoxMsg(Error, "Problems saving pixmap to file " + fileName);
+        humanManager->showBoxMsg(hydroqgui::IHumanManager::Error, "Problems saving pixmap to file " + fileName);
         return -1;
     }
-    cout << "TRACE(pixmappainter.cpp): Successfully saved qMap to file: " << fileName.toStdString() << endl;      
-    humanManager->showStatusMsg(Information, "Successfully saved pixmap to file: " + fileName);
+    humanManager->showStatusMsg(hydroqgui::IHumanManager::Information, "Successfully saved pixmap to file: " + fileName);
     
     return 0;
+}
+
 }

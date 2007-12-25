@@ -22,7 +22,7 @@
 
 namespace orcaqgui2d {
 
-class orcaqgui::IHumanManager;
+class hydroqgui::IHumanManager;
 
 ////////////////////////////////////////////////////////////////////////////////
 // The consumer object. We need this here because PathFollower2dElement cannot inherit from IceStormElement.
@@ -49,14 +49,18 @@ class PathfollowerButtons : public QObject
     Q_OBJECT
             
 public:
-    PathfollowerButtons( QObject *parent, orcaqgui::IHumanManager *humanManager, std::string proxyString);
+    PathfollowerButtons( QObject                       *parent,
+                         hydroqgui::IHumanManager      *humanManager,
+                         hydroqgui::ShortcutKeyManager *shortcutKeyManager,
+                         std::string                    proxyString);
     ~PathfollowerButtons();
     
     void setWpButton( bool onOff );
 
 private:
     QAction *hiWaypoints_;
-    orcaqgui::IHumanManager *humanManager_;
+    hydroqgui::IHumanManager *humanManager_;
+    hydroqgui::ShortcutKeyManager *shortcutKeyManager_;
 };
 //////////////////////////////////////////////////////////////////////////////
 
@@ -71,14 +75,16 @@ class PathFollowerHI  : public QObject
 public:
     PathFollowerHI( PathFollower2dElement *pfElement,
                     std::string proxyString,
-                    orcaqgui::IHumanManager *humanManager,
+                    hydroqgui::IHumanManager *humanManager,
+                    hydroqgui::MouseEventManager *mouseEventManager,
+                    hydroqgui::ShortcutKeyManager *shortcutKeyManager,
                     PathPainter &painter,
                     WaypointSettings wpSettings,
                     bool activateImmediately,
                     QString dumpPath );
     ~PathFollowerHI();
 
-    void lostMode();
+    void noLongerMouseEventReceiver();
     void paint( QPainter *p );
 
     void mousePressEvent(QMouseEvent *e) 
@@ -87,7 +93,7 @@ public:
     void mouseReleaseEvent(QMouseEvent *e) {pathInput_->processReleaseEvent(e);}
     void mouseDoubleClickEvent(QMouseEvent *e) {pathInput_->processDoubleClickEvent(e);}
     void setFocus( bool inFocus );
-    void setTransparency( bool useTransparency ); 
+    void setUseTransparency( bool useTransparency ); 
     
     // to dump the user (green) path to /tmp
     void savePath( const QString &fileName ) const
@@ -111,7 +117,9 @@ private:
 
     PathFollower2dElement *pfElement_;
     std::string proxyString_;
-    orcaqgui::IHumanManager *humanManager_;
+    hydroqgui::IHumanManager *humanManager_;
+    hydroqgui::MouseEventManager *mouseEventManager_;
+    hydroqgui::ShortcutKeyManager *shortcutKeyManager_;
     PathPainter   &painter_;
 
     QString pathFileName_;
@@ -146,7 +154,9 @@ public:
 
     PathFollower2dElement( const orcaice::Context & context,
                            const std::string &proxyString,
-                           orcaqgui::IHumanManager *humanManager );
+                           hydroqgui::IHumanManager *humanManager,
+                           hydroqgui::MouseEventManager *mouseEventManager,
+                           hydroqgui::ShortcutKeyManager *shortcutKeyManager );
     ~PathFollower2dElement();
 
     // inherited from guielement
@@ -160,9 +170,9 @@ public:
     virtual void execute( int action );
     virtual void setColor( QColor color ) { painter_.setColor( color ); };
     virtual void setFocus( bool inFocus ) { painter_.setFocus( inFocus ); pathHI_.setFocus( inFocus); };
-    virtual void setTransparency( bool useTransparency );
+    virtual void setUseTransparency( bool useTransparency );
 
-    virtual void lostMode() { pathHI_.lostMode(); }
+    virtual void noLongerMouseEventReceiver() { pathHI_.noLongerMouseEventReceiver(); }
     virtual void mousePressEvent(QMouseEvent *e) { pathHI_.mousePressEvent(e); }
     virtual void mouseMoveEvent(QMouseEvent *e) { pathHI_.mouseMoveEvent(e); }
     virtual void mouseReleaseEvent(QMouseEvent *e) { pathHI_.mouseReleaseEvent(e); }
@@ -188,7 +198,9 @@ private:
 
     orcaice::Context context_;
     
-    orcaqgui::IHumanManager *humanManager_;
+    hydroqgui::IHumanManager *humanManager_;
+    hydroqgui::MouseEventManager *mouseEventManager_;
+    hydroqgui::ShortcutKeyManager *shortcutKeyManager_;
     
     bool firstTime_;
     hydroutil::Timer *timer_;

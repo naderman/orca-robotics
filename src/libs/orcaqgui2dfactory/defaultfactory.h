@@ -11,32 +11,46 @@
 #ifndef ORCAGUI_DEFAULT_FACTORY_H
 #define ORCAGUI_DEFAULT_FACTORY_H
 
-#include <orcaqgui/guielementfactory.h>
+#include <hydroqgui/hydroqgui.h>
+#include <orcaice/context.h>
 
 namespace orcaqgui2d
 {
-    class orcaqgui::IHumanManager;
-    class GuiElement;
+
+    class IGuiElementFactory
+    {
+    public:
+        virtual void setContext( const orcaice::Context &context )=0;
+    };
 
     //!
     //! Generates 2D Gui Elements based on its type.
     //!
-    class DefaultFactory : public orcaqgui::GuiElementFactory
+    class DefaultFactory : public hydroqgui::IGuiElementFactory,
+                           public IGuiElementFactory
+    
     {
     public:
 
         DefaultFactory();
 
-        virtual orcaqgui::GuiElement* create( const orcaice::Context         &context,
-                                    const QString                  &elementType,
-                                    const QStringList              &elementDetails,
-                                    QColor                          suggestedColor,
-                                    orcaqgui::IHumanManager        *humanManager ) const;
+        void setContext( const orcaice::Context &context )
+            { context_ = context; isContextSet_ = true; }
+
+        virtual hydroqgui::IGuiElement* create( const QString                &elementType,
+                                                const QStringList            &elementDetails,
+                                                QColor                        suggestedColor,
+                                                hydroqgui::IHumanManager     &humanManager,
+                                                hydroqgui::MouseEventManager &mouseEventManager,
+                                                hydroqgui::ShortcutKeyManager &shortcutKeyManager ) const;
         
         bool lookupElementType( const QStringList &ids, QString &elementType ) const;
 
     private:
         
+        bool                      isContextSet_;
+        orcaice::Context          context_;
+
     };
 
 }
@@ -46,7 +60,7 @@ namespace orcaqgui2d
 // Hook for dynamic loading
 //
 extern "C" {
-    orcaqgui::GuiElementFactory *createFactory();
+    hydroqgui::IGuiElementFactory *createFactory();
 }
 
 #endif

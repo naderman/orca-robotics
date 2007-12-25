@@ -9,48 +9,44 @@
  */
 
 #include <iostream>
-#include <orcaqgui/orcaguiuserevent.h>
 #include <orcaice/orcaice.h>
 #include <hydroutil/sysutils.h>
 
-#include "ipermanentelement.h"
 #include "guielementmodel.h"
-#include "guielementfactory.h"
 #include "guielementview.h"
-#include "ihumanmanager.h"
-#include "istringtocolormap.h"
 
 using namespace std;
 
-namespace orcaqgui {
+namespace orcaqgemv {
 
-GuiElementModel::GuiElementModel( const std::vector<orcaqgui::GuiElementFactory*> &factories,
-                                  const orcaice::Context & context, 
-                                  IHumanManager *messageDisplayer,
-                                  IStringToColorMap *platformColorMap,
-                                  QObject *parent )
+GuiElementModel::GuiElementModel( const std::vector<hydroqgui::IGuiElementFactory*> &factories,
+                                  hydroqgui::IHumanManager                          &humanManager,
+                                  hydroqgui::MouseEventManager                      &mouseEventManager,
+                                  hydroqgui::ShortcutKeyManager                     &shortcutKeyManager,
+                                  hydroqgui::CoordinateFrameManager                 &coordinateFrameManager,
+                                  hydroqgui::GuiElementSet                          &guiElementSet,
+                                  hydroqgui::IStringToColorMap                      &platformColorMap,
+                                  QObject                                           *parent )
     : QAbstractTableModel(parent),
+      guiElementSet_(guiElementSet),
       factories_(factories),
-      context_(context),
-      humanManager_(messageDisplayer),
+      humanManager_(humanManager),
+      mouseEventManager_(mouseEventManager),
+      shortcutKeyManager_(shortcutKeyManager),
+      coordinateFrameManager_(coordinateFrameManager),
       platformColorMap_(platformColorMap),
-      view_(0),
-      currentTransparency_(true)
+      view_(0)
 {    
     headers_ << "Type" << "Details";
-    coordinateFramePlatform_ = "global";
-    ignoreCoordinateFrameRotation_ = false;
+//     coordinateFramePlatform_ = "global";
+//     ignoreCoordinateFrameRotation_ = false;
     platformInFocus_ = "global";
-}
-
-GuiElementModel::~GuiElementModel()
-{
 }
 
 int GuiElementModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent);
-    return elements_.size();
+    return elements().size();
 }
 
 int
@@ -77,28 +73,28 @@ GuiElementModel::data(const QModelIndex &idx, int role) const
         switch ( idx.column() ) {
         case 0 :
         {
-            QString fqIName = elements_[idx.row()]->type();
+            QString fqIName = elements()[idx.row()]->type();
             return fqIName;
         }
         case 1 :
-            return elements_[idx.row()]->details();
+            return elements()[idx.row()]->details();
         }
     }  
     else if ( role == InterfaceIdRole ) {
         // for all columns
-        return elements_[idx.row()]->details();
+        return elements()[idx.row()]->details();
     }  
     else if ( role == ContextMenuRole ) {
         // for all columns
-        if ( elements_[idx.row()]==0 ) {
+        if ( elements()[idx.row()]==0 ) {
             return QVariant();
         }
-        return elements_[idx.row()]->contextMenu();
+        return elements()[idx.row()]->contextMenu();
     }
     else if ( role == FocusRole ) {
         // for all columns
         // if it's in Global CS we can set the coordinate frame to it.
-        return elements_[idx.row()]->isInGlobalCS();
+        return elements()[idx.row()]->isInGlobalCS();
     }   // role
 
     return QVariant();
@@ -120,22 +116,19 @@ GuiElementModel::removeRows( int row, int count, const QModelIndex & parent )
     //cout<<"removing row "<<row<<endl;
     
     // save the platform name
-    QString platform = elements_[row]->platform();
+    QString platform = elements()[row]->platform();
     
-    assert( row>-1 && row<elements_.size() && "row number must exist" );
+    assert( row>-1 && row<elements().size() && "row number must exist" );
     // too lazy to implement multi-row removal
     assert( count==1 && "only removal of one row at a time is implemented" );
     assert( parent==QModelIndex() && "this is a table model, parent must be root" );
 
-    // if it's the mode owner, reset the mode
-    if ( elements_[row] == humanManager_->mouseEventReceiver() )
-        humanManager_->mouseEventReceiver()->lostMode();
+    // if it's the mouse-event-receiver, reset the mouse-event-receiver
+    if ( elements()[row] == mouseEventManager_.mouseEventReceiver() )
+        mouseEventManager_.mouseEventReceiver()->noLongerMouseEventReceiver();
 
     beginRemoveRows( QModelIndex(), row, row );
-    // the elements_ list contains pointers, we have to delete the object
-    delete elements_[row];
-    // now remove the entry in the list
-    elements_.removeAt( row );
+    guiElementSet_.removeGuiElement( row );
     endRemoveRows();
     
     
@@ -151,7 +144,10 @@ GuiElementModel::removeRows( int row, int count, const QModelIndex & parent )
 }
 
 bool
-GuiElementModel::instantiateFromFactories( GuiElement* &element, const QString &elementType, const QColor &platformColor, const QStringList &elementDetails )
+GuiElementModel::instantiateFromFactories( hydroqgui::IGuiElement* &element,
+                                           const QString           &elementType,
+                                           const QColor            &platformColor,
+                                           const QStringList       &elementDetails )
 {
     for ( unsigned int i=0; i < factories_.size(); i++ )
     {
@@ -160,7 +156,7 @@ GuiElementModel::instantiateFromFactories( GuiElement* &element, const QString &
             continue;
         
         // if we get here the interface is supported
-        element = factories_[i]->create( context_, elementType, elementDetails, platformColor, humanManager_  );
+        element = factories_[i]->create( elementType, elementDetails, platformColor, humanManager_, mouseEventManager_, shortcutKeyManager_ );
         return true; 
     }
     return false;
@@ -171,10 +167,10 @@ GuiElementModel::doesElementExist( const QStringList& elementDetails, int numEle
 {
     //cout << "proxyStrList.join " << proxyStrList.join(" ").toStdString() << endl;
     
-    for ( int i=0; i<elements_.size(); i++)
+    for ( int i=0; i<elements().size(); i++)
     {
-        cout << "element name: " << elements_[i]->details().toStdString() << endl;
-        if ( elements_[i]->details() == elementDetails.join(" ") + " " ) return true;
+        cout << "element name: " << elements()[i]->details().toStdString() << endl;
+        if ( elements()[i]->details() == elementDetails.join(" ") + " " ) return true;
     }
     
     return false;     
@@ -198,7 +194,7 @@ GuiElementModel::createGuiElementFromSelection( const QList<QStringList> & inter
     //TOBI: this needs to be fixed for config files
     bool haveThisElement = doesElementExist( elementDetails, interfacesInfo.size() );
     if (haveThisElement) {
-        humanManager_->showStatusMsg(Warning,"Interface " + elementDetails.join(" ") + " exists already. Not connecting again!");
+        humanManager_.showStatusMsg(hydroqgui::IHumanManager::Warning,"Interface " + elementDetails.join(" ") + " exists already. Not connecting again!");
         return;
     }
     
@@ -206,7 +202,7 @@ GuiElementModel::createGuiElementFromSelection( const QList<QStringList> & inter
     if (elementType!="") {
         createGuiElement( elementType, elementDetails );
     } else {
-        humanManager_->showStatusMsg(Warning,"Looking up element type from factory resulted in nothing");
+        humanManager_.showStatusMsg(hydroqgui::IHumanManager::Warning,"Looking up element type from factory resulted in nothing");
     }
 }
 
@@ -262,17 +258,17 @@ GuiElementModel::createGuiElement( const QString &elementType,
 {    
     QString platform;
     determinePlatform( elementDetails, platform );
-    QColor platformColor = platformColorMap_->getColor( platform );
+    QColor platformColor = platformColorMap_.getColor( platform );
     
     // instantiate element
-    GuiElement* element = NULL;
+    hydroqgui::IGuiElement* element = NULL;
     bool isSupported = instantiateFromFactories( element, elementType, platformColor, elementDetails );
     if (!isSupported || element==NULL)
     {
         if (!isSupported) 
-            humanManager_->showStatusMsg(orcaqgui::Warning, "Element type " + elementType + " is not supported by any factory.");
+            humanManager_.showStatusMsg(hydroqgui::IHumanManager::Warning, "Element type " + elementType + " is not supported by any factory.");
         else if (element==NULL) 
-            humanManager_->showStatusMsg(orcaqgui::Warning, "Element " + elementDetails.join(" ") + " is supported but the factory returned NULL pointer.");
+            humanManager_.showStatusMsg(hydroqgui::IHumanManager::Warning, "Element " + elementDetails.join(" ") + " is supported but the factory returned NULL pointer.");
         delete element;
         if (!doesPlatformExist( platform ) ) 
             emit platformNeedsRemoval(platform);
@@ -280,7 +276,6 @@ GuiElementModel::createGuiElement( const QString &elementType,
     }
     
     // set properties of guielement
-    element->setTransparency( currentTransparency_ );
     element->setPlatform( platform );
     QString details = "";
     for (int i=0; i<elementDetails.size(); i++)
@@ -299,16 +294,16 @@ GuiElementModel::createGuiElement( const QString &elementType,
         element->setFocus( false );
     }
         
-    int ii = elements_.indexOf( element );
+    int ii = elements().indexOf( element );
     if ( ii==-1 ) {    
-        ii = elements_.size();
+        ii = elements().size();
         //cout<<"TRACE(guielementmodel.cpp): creating element "<<ii<<endl;
 
         //
         // stick new node into the list
         //
         beginInsertRows( QModelIndex(), ii,ii );
-        elements_.append( element );
+        guiElementSet_.addGuiElement( element );
         endInsertRows();
         
         // hide if not in focus
@@ -325,9 +320,9 @@ GuiElementModel::createGuiElement( const QString &elementType,
 bool
 GuiElementModel::doesPlatformExist( QString &platformName )
 {
-    for ( int i=0; i<elements_.size(); ++i )
+    for ( int i=0; i<elements().size(); ++i )
     {
-        if ( elements_[i]->platform() == platformName ) return true;
+        if ( elements()[i]->platform() == platformName ) return true;
     }
     return false;    
 }
@@ -340,39 +335,39 @@ GuiElementModel::changePlatformFocus( const QString &platform )
     platformInFocus_ = platform;
     
     //cout << "TRACE(guielementmodel.cpp): changePlatformFocus: " << platform.toStdString() << endl;
-    for ( int i=0; i<elements_.size(); ++i )
+    for ( int i=0; i<elements().size(); ++i )
     {
         // special case: show everybody with their colours
         if (platform=="global") 
         {
-            elements_[i]->setFocus(true);
+            elements()[i]->setFocus(true);
             continue;
         }
         
-        if ( elements_[i]->platform() == platform )
+        if ( elements()[i]->platform() == platform )
         {
-            elements_[i]->setFocus(true);
+            elements()[i]->setFocus(true);
         }
         else
         {
-            elements_[i]->setFocus(false);  
+            elements()[i]->setFocus(false);  
         }
     }
     
     // tell the guielementview to filter what it shows
     // collect indices
     if (platform=="global") {
-        view_->showAllElements( elements_.size() );
+        view_->showAllElements( elements().size() );
         return;
     }
     
     vector<int> elementIndices;
-    for ( int i=0; i<elements_.size(); ++i )
+    for ( int i=0; i<elements().size(); ++i )
     {
-        if (elements_[i]->platform() != platform)
+        if (elements()[i]->platform() != platform)
             elementIndices.push_back(i);
     }
-    view_->hideElements( elements_.size(), elementIndices );
+    view_->hideElements( elements().size(), elementIndices );
 }
 
 void
@@ -381,11 +376,11 @@ GuiElementModel::removeAllGuiElements()
     QVector<int> indeces;
     
     // compile a list of indeces
-    for ( int i=0; i<elements_.size(); ++i )
+    for ( int i=0; i<elements().size(); ++i )
     {
         // don't delete the permanent elements e.g. grid
-        IPermanentElement *permElement = dynamic_cast<IPermanentElement*>(elements_[i]);
-        if ( permElement==NULL ) {
+        if ( !elements()[i]->isPermanentElement() )
+        {
             indeces.push_back(i);
         }
     }
@@ -404,42 +399,42 @@ GuiElementModel::removeAllGuiElements()
 void
 GuiElementModel::updateGuiElements()
 {
-    for ( int i=0; i<elements_.size(); ++i )
+    for ( int i=0; i<elements().size(); ++i )
     {
-        if ( elements_[i] ) {
+        if ( elements()[i] ) {
             std::stringstream ss;
             try {
-                elements_[i]->update();
+                elements()[i]->update();
             }
             catch ( Ice::Exception &e )
             {
                 ss<<"GuiElementModel: during update of "
-                <<elements_[i]->details().toStdString()<<": " << e << std::endl;
-                humanManager_->showStatusMsg(orcaqgui::Warning,ss.str().c_str());
+                <<elements()[i]->details().toStdString()<<": " << e << std::endl;
+                humanManager_.showStatusMsg(hydroqgui::IHumanManager::Warning,ss.str().c_str());
             }
             catch ( std::exception &e )
             {
                 ss<<"GuiElementModel: during update of "
-                <<elements_[i]->details().toStdString()<<": " << e.what() << std::endl;
-                humanManager_->showStatusMsg(orcaqgui::Warning,ss.str().c_str());
+                <<elements()[i]->details().toStdString()<<": " << e.what() << std::endl;
+                humanManager_.showStatusMsg(hydroqgui::IHumanManager::Warning,ss.str().c_str());
             }
             catch ( std::string &e )
             {
                 ss<<"GuiElementModel: during update of "
-                   <<elements_[i]->details().toStdString()<<": " << e << std::endl;
-                humanManager_->showStatusMsg(orcaqgui::Warning,ss.str().c_str());
+                   <<elements()[i]->details().toStdString()<<": " << e << std::endl;
+                humanManager_.showStatusMsg(hydroqgui::IHumanManager::Warning,ss.str().c_str());
             }
             catch ( char *e )
             {
                 ss<<"GuiElementModel: during update of "
-                   <<elements_[i]->details().toStdString()<<": " << e << std::endl;
-                humanManager_->showStatusMsg(orcaqgui::Warning,ss.str().c_str());
+                   <<elements()[i]->details().toStdString()<<": " << e << std::endl;
+                humanManager_.showStatusMsg(hydroqgui::IHumanManager::Warning,ss.str().c_str());
             }
             catch ( ... )
             {
                 ss<<"GuiElementModel: Caught unknown exception during update of "
-                   <<elements_[i]->details().toStdString()<<": " << std::endl;
-                humanManager_->showStatusMsg(orcaqgui::Warning,ss.str().c_str());
+                   <<elements()[i]->details().toStdString()<<": " << std::endl;
+                humanManager_.showStatusMsg(hydroqgui::IHumanManager::Warning,ss.str().c_str());
             }
         }
     }
@@ -448,32 +443,33 @@ GuiElementModel::updateGuiElements()
 void
 GuiElementModel::setCoordinateFramePlatform( int guiElementIndex )
 {
-    if ( guiElementIndex<0 || guiElementIndex >= elements_.size() ) return;
+    // AlexB: Why can this be outside valid range?  Should we assert rather than silently ignoring?
+    if ( guiElementIndex<0 || guiElementIndex >= elements().size() ) return;
     
     // by convention, Grid's platform is "global"
-    coordinateFramePlatform_ = elements_[guiElementIndex]->platform();
-    ignoreCoordinateFrameRotation_ = false;
+    coordinateFrameManager_.setCoordinateFramePlatform( elements()[guiElementIndex]->platform() );
 }
 
 void
 GuiElementModel::setOriginPlatform( int guiElementIndex )
 {
-    if ( guiElementIndex<0 || guiElementIndex >= elements_.size() ) return;
-    
+    // AlexB: Why can this be outside valid range?  Should we assert rather than silently ignoring?
+    if ( guiElementIndex<0 || guiElementIndex >= elements().size() ) return;
+
     // by convention, Grid's platform is "global"
-    coordinateFramePlatform_ = elements_[guiElementIndex]->platform();
-    ignoreCoordinateFrameRotation_ = true;
+    coordinateFrameManager_.setOriginPlatform( elements()[guiElementIndex]->platform() );
 }
 
 void
 GuiElementModel::executeGuiElement( int guiElementIndex, int actionIndex )
 {
 
-    if ( guiElementIndex<0 || guiElementIndex >= elements_.size() || elements_[guiElementIndex]==NULL ) return;
+    // AlexB: Why can this be outside valid range?  Should we assert rather than silently ignoring?
+    if ( guiElementIndex<0 || guiElementIndex >= elements().size() || elements()[guiElementIndex]==NULL ) return;
     // debug
     cout<<"GuiElementModel:executeGuiElement: executing action #"<<actionIndex<<endl;
 
-    elements_[guiElementIndex]->execute( actionIndex );
+    elements()[guiElementIndex]->execute( actionIndex );
 }
 
 void 
@@ -485,19 +481,7 @@ GuiElementModel::setView( GuiElementView* view )
 void
 GuiElementModel::selectedAdaptersInView( vector<int> &indices )
 {
-    view_->selectedAdaptersInView( elements_.size(), indices );
-}
-
-void 
-GuiElementModel::setTransparency(bool transparency)
-{
-    cout << "TRACE(guielementmodel.cpp): setTransparency to " << transparency << endl;
-    currentTransparency_ = transparency;
-    
-    for ( int i=0; i<elements_.size(); ++i )
-    {
-        elements_[i]->setTransparency( transparency );
-    }    
+    view_->selectedAdaptersInView( elements().size(), indices );
 }
 
 }

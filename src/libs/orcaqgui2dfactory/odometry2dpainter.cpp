@@ -14,7 +14,6 @@
 
 #include "odometry2dpainter.h"
 
-using namespace orca; 
 using namespace std;
 
 namespace orcaqgui2d
@@ -36,7 +35,7 @@ Odometry2dPainter::setColor( QColor color )
 }
 
 void 
-Odometry2dPainter::setData( const Odometry2dData& data )
+Odometry2dPainter::setData( const orca::Odometry2dData& data )
 {
     speedX_ = data.motion.v.x;
     speedY_ = data.motion.v.y;

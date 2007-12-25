@@ -15,7 +15,7 @@
 #include <QPolygonF>
 #include <orca/laserscanner2d.h>
 #include <orcaqgui2d/definitions2d.h>
-#include <orcaqgui/exceptions.h>
+#include <hydroqgui/hydroqgui.h>
 
 class QPainter;
 
@@ -78,6 +78,8 @@ class LaserScanner2dPainter
     double offsetY_;
     double offsetYaw_;
 	double offsetPitch_;
+    bool   isOffsetSet_;
+
     bool isUpsideDown_;
     bool isNotHorizontal_;
 };

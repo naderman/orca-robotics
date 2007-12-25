@@ -42,13 +42,15 @@ class OgMapPainter
     void clear() {};
     void toggleDisplayMap() { pixmapPainter_->toggleDisplayMap(); };
     
-    int saveMap( const orcaice::Context & context, const QString fileName, orcaqgui::IHumanManager *humanManager );
+    int saveMap( const orcaice::Context   &context,
+                 const QString            &fileName,
+                 hydroqgui::IHumanManager *humanManager );
     
   private:
       
     orca::OgMapData data_;
     PixmapPainter *pixmapPainter_;
-    ImageFileType checkFileExtension( QString &fe, orcaqgui::IHumanManager *humanManager );
+    ImageFileType checkFileExtension( QString &fe, hydroqgui::IHumanManager *humanManager );
 };
 
 } // namespace

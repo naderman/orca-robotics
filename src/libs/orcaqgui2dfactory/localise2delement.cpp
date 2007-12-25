@@ -8,14 +8,10 @@
  *
  */
 
-
-#include <orcaqgui/exceptions.h>
+#include <hydroqgui/exceptions.h>
 #include "localise2delement.h"
 
 using namespace std;
-using namespace orca;
-using namespace orcaqgui2d;
-using namespace orcaqgui;
 
 namespace orcaqgui2d {
 
@@ -33,11 +29,11 @@ Localise2dElement::actionOnConnection()
 void 
 Localise2dElement::tryToGetGeometry()
 {
-    VehicleGeometryDescriptionPtr geom;
+    orca::VehicleGeometryDescriptionPtr geom;
     
     if ( !listener_.proxy() )
     {
-        humanManager_->showStatusMsg(Error,"Localise2dElement::tryToGetGeometry(): listener_.proxy() = 0"  );
+        humanManager_->showStatusMsg(hydroqgui::IHumanManager::Error,"Localise2dElement::tryToGetGeometry(): listener_.proxy() = 0"  );
     }
     try 
     {
@@ -50,34 +46,34 @@ Localise2dElement::tryToGetGeometry()
     }
     catch ( std::exception &e)
     {
-        humanManager_->showStatusMsg(Error,"Localise2dElement::tryToGetGeometry(): Exception when trying to get geometry: " + QString(e.what()) );
+        humanManager_->showStatusMsg(hydroqgui::IHumanManager::Error,"Localise2dElement::tryToGetGeometry(): Exception when trying to get geometry: " + QString(e.what()) );
     }
     
     if (!haveGeometry_) 
     {
-        humanManager_->showStatusMsg(Warning,"Localise2dElement::tryToGetGeometry(): couldn't get geometry.  Assuming point vehicle." );
+        humanManager_->showStatusMsg(hydroqgui::IHumanManager::Warning,"Localise2dElement::tryToGetGeometry(): couldn't get geometry.  Assuming point vehicle." );
         const double length = 1e-3, width = 1e-3;
         painter_.setTypeAndGeometry(PlatformTypeCubic, length, width );
         painter_.setOrigin( 0.0, 0.0, 0.0 );
         return;
     }
     
-    if (geom->type==VehicleGeometryCuboid)
+    if (geom->type==orca::VehicleGeometryCuboid)
     {
-        VehicleGeometryCuboidDescriptionPtr geom = VehicleGeometryCuboidDescriptionPtr::dynamicCast( geom );
+        orca::VehicleGeometryCuboidDescriptionPtr geom = orca::VehicleGeometryCuboidDescriptionPtr::dynamicCast( geom );
         painter_.setTypeAndGeometry( PlatformTypeCubic, geom->size.l, geom->size.w );
         painter_.setOrigin( geom->vehicleToGeometryTransform.p.x, geom->vehicleToGeometryTransform.p.y, geom->vehicleToGeometryTransform.o.y );
     }
-    else if (geom->type==VehicleGeometryCylindrical)
+    else if (geom->type==orca::VehicleGeometryCylindrical)
     {
-        VehicleGeometryCylindricalDescriptionPtr cylGeom = VehicleGeometryCylindricalDescriptionPtr::dynamicCast( geom );
+        orca::VehicleGeometryCylindricalDescriptionPtr cylGeom = orca::VehicleGeometryCylindricalDescriptionPtr::dynamicCast( geom );
         painter_.setTypeAndGeometry( PlatformTypeCylindrical, cylGeom->radius );
         painter_.setOrigin( cylGeom->vehicleToGeometryTransform.p.x, cylGeom->vehicleToGeometryTransform.p.y, cylGeom->vehicleToGeometryTransform.o.y );
     }
     else
     {
-        humanManager_->showStatusMsg(Warning, "Localise2dElement::Unknown platform type. Will paint a rectangle");
-        VehicleGeometryCuboidDescriptionPtr cubGeom = VehicleGeometryCuboidDescriptionPtr::dynamicCast( geom );
+        humanManager_->showStatusMsg(hydroqgui::IHumanManager::Warning, "Localise2dElement::Unknown platform type. Will paint a rectangle");
+        orca::VehicleGeometryCuboidDescriptionPtr cubGeom = orca::VehicleGeometryCuboidDescriptionPtr::dynamicCast( geom );
         painter_.setTypeAndGeometry( PlatformTypeCubic, cubGeom->size.l, cubGeom->size.w );
         painter_.setOrigin( cubGeom->vehicleToGeometryTransform.p.x, cubGeom->vehicleToGeometryTransform.p.y, cubGeom->vehicleToGeometryTransform.o.y );
     }
@@ -107,7 +103,7 @@ Localise2dElement::update()
     {
         std::stringstream ss;
         ss << "Localise2dElement::update(): Interface " << listener_.interfaceName() << ": Localise2dData had zero hypotheses";
-        throw orcaqgui::Exception( ss.str() );
+        throw hydroqgui::Exception( ERROR_INFO, ss.str() );
     }
     const orca::Pose2dHypothesis &h = orcaice::mlHypothesis( data_ );
     
@@ -141,7 +137,7 @@ Localise2dElement::execute( int action )
         }
         default:
         {
-            throw orcaqgui::Exception( "execute(): What the hell? bad action." );
+            throw hydroqgui::Exception( ERROR_INFO, "execute(): What the hell? bad action." );
             break;
         }
     }

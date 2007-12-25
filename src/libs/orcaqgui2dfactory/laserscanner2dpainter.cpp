@@ -20,7 +20,6 @@
 #include "laserscanner2dpainter.h"
 
 using namespace std;
-using namespace orca;
 using namespace orcaqgui2d;
 
 LaserScanner2dPainter::LaserScanner2dPainter( QColor outlineColor,
@@ -36,6 +35,7 @@ LaserScanner2dPainter::LaserScanner2dPainter( QColor outlineColor,
       outlineColor_(outlineColor),
       outlineThickness_(outlineThickness),
       brightReturnWidth_(brightReturnWidth),
+      isOffsetSet_(false),
       isUpsideDown_(false),
       isNotHorizontal_(false)
 {
@@ -67,7 +67,7 @@ LaserScanner2dPainter::setOffset( orca::Frame3d &offset )
         isNotHorizontal_ = true;
         stringstream ss;
         ss << "LaserScanner2dPainter::setOffset(): Can only properly deal with (possibly-flipped) horizontal lasers.  Offset: " << orcaice::toString(offset);
-        throw orcaqgui::Exception( ss.str() );
+        throw hydroqgui::Exception( ERROR_INFO, ss.str() );
     }
 
     if ( NEAR( offset.o.r,M_PI,0.01 ) ) {
@@ -80,8 +80,10 @@ LaserScanner2dPainter::setOffset( orca::Frame3d &offset )
         isNotHorizontal_ = true;
         stringstream ss;
         ss << "LaserScanner2dPainter::setOffset(): Cannot properly deal with non-zero z.  Offset: " << orcaice::toString(offset);
-        throw orcaqgui::Exception( ss.str() );
+        throw hydroqgui::Exception( ERROR_INFO, ss.str() );
     }
+
+    isOffsetSet_ = true;
 }
 
 void
@@ -89,8 +91,10 @@ LaserScanner2dPainter::setData( const orca::RangeScanner2dDataPtr & data )
 {
     if ( data==0 ) return;
 
+    assert( isOffsetSet_ );
+
     // Check if this thing is a laser scan.
-    LaserScanner2dDataPtr laserScan = LaserScanner2dDataPtr::dynamicCast( data );
+    orca::LaserScanner2dDataPtr laserScan = orca::LaserScanner2dDataPtr::dynamicCast( data );
     if ( laserScan )
     {
         intensitiesValid_ = true;
