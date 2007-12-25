@@ -13,7 +13,7 @@
 
 #include <orcaice/ptrbuffer.h>
 
-namespace orcaqgui
+namespace orcaqguielementutil
 {
 
 // non-member utility stuff

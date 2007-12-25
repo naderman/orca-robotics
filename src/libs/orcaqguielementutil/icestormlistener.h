@@ -20,9 +20,9 @@
 #include <orcaice/context.h>
 #include <hydroutil/timer.h>
 
-#include <orcaqgui/icestormlistenerdetail.h>
+#include <orcaqguielementutil/icestormlistenerdetail.h>
 
-namespace orcaqgui
+namespace orcaqguielementutil
 {
 
 /*!

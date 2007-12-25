@@ -14,13 +14,12 @@
 #include <QTextStream>
 
 #include <orcaice/orcaice.h>
-#include <orcaqgui/features.h>
+#include <orcaqguielementutil/features.h>
 #include <hydroqgui/hydroqgui.h>
 #include <orcaqgui2d/paintutils.h>
 #include "featuremap2dpainter.h"
 
 using namespace std;
-using namespace orcaqgui;
 
 namespace orcaqgui2d {
 
@@ -52,9 +51,9 @@ void
 paintFeatureNum( QPainter *painter, int featureType, int featureNum, bool useTransparency )
 {
     if ( useTransparency ) {
-        painter->setPen(getTransparentVersion(orcaqgui::featureColour(featureType),0.3));
+        painter->setPen(getTransparentVersion(orcaqguielementutil::featureColour(featureType),0.3));
     } else {
-        painter->setPen(orcaqgui::featureColour(featureType));
+        painter->setPen(orcaqguielementutil::featureColour(featureType));
     }
     painter->setFont( QFont("Helvetica [Cronyx]", 12) );
     const double offset = 0.3;
@@ -77,7 +76,7 @@ FeatureMap2dPainter::paintPointFeature( QPainter *painter,
 {
     // draw a little square on the mean, with weight proportional to pExists.
     const float boxWidth = 0.2;
-    QPen pen(orcaqgui::featureColour(featureType));
+    QPen pen(orcaqguielementutil::featureColour(featureType));
     double newWidth =  MAX(0.1, 0.1 * (probExists-0.2));
     pen.setWidthF( newWidth );
     painter->setPen( pen );
@@ -94,7 +93,7 @@ FeatureMap2dPainter::paintPointFeature( QPainter *painter,
             QMatrix m2win = painter->worldMatrix();
             const float lineThickness = 2.0/m2win.m11();
             paintCovarianceEllipse( painter,
-                                    orcaqgui::featureColour(featureType),
+                                    orcaqguielementutil::featureColour(featureType),
                                     covXX,
                                     covXY,
                                     covYY,
@@ -139,7 +138,7 @@ FeatureMap2dPainter::paintLineFeature( QPainter *painter,
     checkForDodgyEndpoints( f );
 
     // draw the line
-    QPen pen(orcaqgui::featureColour(f.type));
+    QPen pen(orcaqguielementutil::featureColour(f.type));
     double newWidth =  MAX(0.1, 0.2 * (f.pExists-0.2));
     pen.setWidthF( newWidth );
     painter->setPen( pen );
@@ -182,7 +181,7 @@ FeatureMap2dPainter::paintLineFeature( QPainter *painter,
                                            uncertaintyLength, halfLineLength ) );
 
                 // alpha uncertainty: a wedge on the back (non-visible) side of the line
-                paintUncertaintyWedge( painter, orcaqgui::featureColour(f.type), f.c.yy, length, lineThickness );
+                paintUncertaintyWedge( painter, orcaqguielementutil::featureColour(f.type), f.c.yy, length, lineThickness );
             }
             else
             {
@@ -219,7 +218,7 @@ FeatureMap2dPainter::paintPoseFeature( QPainter *painter,
         {
             painter->translate( f.p.p.x, f.p.p.y );
             painter->rotate( f.p.o );
-            paintUncertaintyWedge( painter, orcaqgui::featureColour(f.type), f.c.tt, length, lineThickness );
+            paintUncertaintyWedge( painter, orcaqguielementutil::featureColour(f.type), f.c.tt, length, lineThickness );
         }
         painter->restore();
     }

@@ -22,7 +22,7 @@ IF ( BUILD )
     QT4_WRAP_CPP( MOC_SRCS ${MOC_HEADERS} )
     
     GLOBAL_ADD_EXECUTABLE( ${COMP_NAME} ${HUMAN_SRCS} ${MOC_SRCS} )
-    TARGET_LINK_LIBRARIES( ${COMP_NAME} OrcaQCompModel OrcaQGui OrcaQGuiElementModelView OrcaQGui2d HydroDll )
+    TARGET_LINK_LIBRARIES( ${COMP_NAME} OrcaQCompModel OrcaQGuiElementModelView OrcaQGui2d HydroDll )
 
     GENERATE_CONFIG_FILE( ${COMP_NAME}.def )
 

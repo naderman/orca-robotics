@@ -29,8 +29,8 @@ OgMapsCombinedElement::OgMapsCombinedElement( const orcaice::Context  &context,
     for (int i=0; i<proxyStrList.size(); i++)
     {
         cout << "proxyString: " << proxyStrList[i].toStdString() << endl;
-        orcaqgui::IceStormListener<orca::OgMapData,orca::OgMapPrx,orca::OgMapConsumer,orca::OgMapConsumerPrx>
-            *listener = new orcaqgui::IceStormListener<orca::OgMapData,
+        orcaqguielementutil::IceStormListener<orca::OgMapData,orca::OgMapPrx,orca::OgMapConsumer,orca::OgMapConsumerPrx>
+            *listener = new orcaqguielementutil::IceStormListener<orca::OgMapData,
             orca::OgMapPrx,
             orca::OgMapConsumer,
             orca::OgMapConsumerPrx>(context, proxyStrList[i].toStdString());

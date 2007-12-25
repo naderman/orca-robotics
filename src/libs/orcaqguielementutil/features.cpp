@@ -10,7 +10,7 @@
 #include "features.h"
 #include <orca/featuremap2d.h>
 
-namespace orcaqgui {
+namespace orcaqguielementutil {
 
     QColor featureColour( int featureType )
     {

@@ -20,7 +20,7 @@
 
 #include "mainwin.h"
 //#include "shortcutaction.h"
-#include <orcaqgui/regselectview.h>
+#include <orcaqguielementmodelview/regselectview.h>
 #include <orcaqgui/guiicons.h>
 
 using namespace std;
@@ -67,7 +67,7 @@ using namespace std;
     // Delegate
     regDelegate_ = new orcaqcm::OcmDelegate();
     // View
-    regView_ = new orcaqgui::RegSelectView(side_);
+    regView_ = new orcaqgemv::RegSelectView(side_);
     regView_->setModel( regModel_ );
     regView_->setItemDelegate(regDelegate_);
     //regView_->setSelectionModel(selections_);

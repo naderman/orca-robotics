@@ -24,11 +24,10 @@ IF ( BUILD )
     
     LINK_DIRECTORIES( ${PROJECT_SOURCE_DIR}/src/libs/qorcacm )
     TARGET_LINK_LIBRARIES ( ${LIB_NAME}
-                            OrcaQCompModel 
                             OrcaLogFactory
                             HydroNavUtil
-                            OrcaQGui2d
-                            OrcaQGui )
+                            HydroQGui
+                            OrcaQGui2d )
 
     INSTALL_FILES( /include/orcaqgui2dfactory .*\\.h$ )
     INSTALL_FILES( /share/orcaqgui2dfactory ogHazardLookupTable.png )

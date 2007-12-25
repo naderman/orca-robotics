@@ -17,7 +17,7 @@
 // scheme.
 //
 
-namespace orcaqgui {
+namespace orcaqguielementutil {
 
     //! Return the color associated with this feature type.
     QColor featureColour( int featureType );

@@ -14,7 +14,7 @@
 #include <assert.h>
 #include <Ice/Ice.h>
 #include <IceStorm/IceStorm.h>
-#include <orcaqgui/ptricestormlistener.h>
+#include <orcaqguielementutil/ptricestormlistener.h>
 #include <hydroqgui/hydroqgui.h>
 
 #include <orcaqgui2d/guielement2d.h>
@@ -77,11 +77,11 @@ protected:
     bool needToUpdate();
     
     //! Object to handle network communication, including subscription process
-    orcaqgui::PtrIceStormListener<DataType,
-                     DataPtrType,
-                     ProxyType,
-                     ConsumerType,
-                     ConsumerPrxType> listener_;
+    orcaqguielementutil::PtrIceStormListener<DataType,
+                                             DataPtrType,
+                                             ProxyType,
+                                             ConsumerType,
+                                             ConsumerPrxType> listener_;
 
     //! Object to handle painting to our data to screen
     PainterType                     &painter_;

@@ -12,7 +12,7 @@
 #define OGMAPS_COMBINED_ELEMENT_H
 
 #include <vector>
-#include <orcaqgui/icestormlistener.h>
+#include <orcaqguielementutil/icestormlistener.h>
 #include <orcaqgui2d/guielement2d.h>
 #include <orcaqgui2dfactory/connectutils.h>
 #include <orcaqgui2dfactory/ogmapscombinedpainter.h>
@@ -44,7 +44,7 @@ public:
 
 private:
     orcaice::Context context_;
-    std::vector<orcaqgui::IceStormListener<
+    std::vector<orcaqguielementutil::IceStormListener<
             orca::OgMapData,
             orca::OgMapPrx,
             orca::OgMapConsumer,
