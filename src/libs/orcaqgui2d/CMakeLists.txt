@@ -22,7 +22,7 @@ IF ( BUILD )
     GLOBAL_ADD_LIBRARY( ${LIB_NAME} SHARED ${HUMAN_SRCS} ${MOC_SRCS} )
     
     LINK_DIRECTORIES( ${PROJECT_SOURCE_DIR}/src/libs/qorcacm )
-    TARGET_LINK_LIBRARIES ( ${LIB_NAME} OrcaQCompModel )
+    TARGET_LINK_LIBRARIES ( ${LIB_NAME} OrcaQCompModel OrcaQGuiElementUtil )
     
     INSTALL_FILES( /include/orcaqgui2d .*\\.h$ )
 

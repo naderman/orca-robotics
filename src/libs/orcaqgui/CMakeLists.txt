@@ -13,19 +13,9 @@ IF ( BUILD )
     
     FILE( GLOB HUMAN_SRCS *.cpp )
     
-    SET( MOC_HEADERS
-#        guielementmodel.h
-#        guielementview.h
-#        mainwin.h
-        regselectview.h
-#        shortcutaction.h
-    )
-
-    QT4_WRAP_CPP( MOC_SRCS ${MOC_HEADERS} )
+    GLOBAL_ADD_LIBRARY( ${LIB_NAME} SHARED ${HUMAN_SRCS} )
     
-    GLOBAL_ADD_LIBRARY( ${LIB_NAME} SHARED ${HUMAN_SRCS} ${MOC_SRCS} )
-    
-    TARGET_LINK_LIBRARIES ( ${LIB_NAME} OrcaQt OrcaQCompModel HydroQGui )
+#    TARGET_LINK_LIBRARIES ( ${LIB_NAME} OrcaQt )
     
     INSTALL_FILES( /include/orcaqgui .*\\.h$ )
 

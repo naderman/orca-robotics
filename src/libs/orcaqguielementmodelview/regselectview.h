@@ -13,8 +13,11 @@
 
 #include <orcaqcm/ocmview.h>
 
-namespace orcaqgui {
+namespace orcaqgemv {
 
+//!
+//! @brief Shows the contents of the Registry, allows users to click on things to add them.
+//!
 class RegSelectView : public orcaqcm::OcmView
 {
     Q_OBJECT

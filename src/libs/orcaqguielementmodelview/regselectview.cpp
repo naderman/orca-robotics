@@ -20,7 +20,7 @@
 
 using namespace std;
 
-namespace orcaqgui {
+namespace orcaqgemv {
     
 RegSelectView::RegSelectView( QWidget *parent )
         : OcmView(parent)

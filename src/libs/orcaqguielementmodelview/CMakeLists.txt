@@ -17,7 +17,7 @@ IF ( BUILD )
         guielementmodel.h
         guielementview.h
 #        mainwin.h
-#        regselectview.h
+        regselectview.h
 #        shortcutaction.h
     )
 
