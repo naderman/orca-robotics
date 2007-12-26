@@ -138,7 +138,7 @@ class PathInput : public QObject
     public:
         PathInput( QObject *parent,
                    WaypointSettings *wpSettings,
-                   hydroqgui::IHumanManager *humanManager,
+                   hydroqgui::IHumanManager &humanManager,
                    QString lastSavedPathFile="" );
         virtual ~PathInput();  
      
@@ -157,7 +157,7 @@ class PathInput : public QObject
         
     protected:    
         WaypointSettings *wpSettings_;
-        hydroqgui::IHumanManager *humanManager_;
+        hydroqgui::IHumanManager &humanManager_;
         QMatrix wmInv_; // win2mm matrix
         
         bool useTransparency_;
@@ -207,7 +207,7 @@ class PathFollowerInput : public PathInput
     public:
         PathFollowerInput( QObject                  *parent,
                            WaypointSettings         *wpSettings,
-                           hydroqgui::IHumanManager *humanManager,
+                           hydroqgui::IHumanManager &humanManager,
                            QString                   lastSavedPathFile )
             : PathInput( parent, wpSettings, humanManager, lastSavedPathFile )
         {};
@@ -221,7 +221,7 @@ class PathPlannerInput : public PathInput
 public:
     PathPlannerInput( QObject                  *parent,
                       WaypointSettings         *wpSettings,
-                      hydroqgui::IHumanManager *humanManager )
+                      hydroqgui::IHumanManager &humanManager )
         :PathInput( parent, wpSettings, humanManager )
         {};
     

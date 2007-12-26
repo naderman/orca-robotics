@@ -47,7 +47,7 @@ class PathplannerButtons : public QObject
     Q_OBJECT
             
 public:
-    PathplannerButtons( QObject *parent, hydroqgui::IHumanManager *humanManager, std::string proxyString);
+    PathplannerButtons( QObject *parent, hydroqgui::IHumanManager &humanManager, std::string proxyString);
     ~PathplannerButtons() 
     { 
         // Qt cleans up for us 
@@ -67,8 +67,8 @@ class PathPlannerHI  : public QObject
 public:
     PathPlannerHI( PathPlanner2dElement *ppElement,
                    std::string proxyString,
-                   hydroqgui::IHumanManager *humanManager,
-                   hydroqgui::MouseEventManager *mouseEventManager,
+                   hydroqgui::IHumanManager &humanManager,
+                   hydroqgui::MouseEventManager &mouseEventManager,
                    PathPainter &painter,
                    WaypointSettings wpSettings );
     ~PathPlannerHI();
@@ -96,8 +96,8 @@ private:
 
     PathPlanner2dElement *ppElement_;
     std::string proxyString_;
-    hydroqgui::IHumanManager *humanManager_;
-    hydroqgui::MouseEventManager *mouseEventManager_;
+    hydroqgui::IHumanManager &humanManager_;
+    hydroqgui::MouseEventManager &mouseEventManager_;
     PathPainter   &painter_;
 
     QString pathFileName_;
@@ -130,8 +130,8 @@ public:
 
     PathPlanner2dElement( const orcaice::Context       &context,
                           const std::string            &proxyString,
-                          hydroqgui::IHumanManager     *humanManager,
-                          hydroqgui::MouseEventManager *mouseEventManager );
+                          hydroqgui::IHumanManager     &humanManager,
+                          hydroqgui::MouseEventManager &mouseEventManager );
     ~PathPlanner2dElement();
 
     void update();
@@ -167,7 +167,7 @@ private:
     
     orcaice::Context context_;
     std::string proxyString_;
-    hydroqgui::IHumanManager *humanManager_;
+    hydroqgui::IHumanManager &humanManager_;
 
     bool displayWaypoints_;
     bool currentTransparency_;

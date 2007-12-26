@@ -50,8 +50,8 @@ class PathfollowerButtons : public QObject
             
 public:
     PathfollowerButtons( QObject                       *parent,
-                         hydroqgui::IHumanManager      *humanManager,
-                         hydroqgui::ShortcutKeyManager *shortcutKeyManager,
+                         hydroqgui::IHumanManager      &humanManager,
+                         hydroqgui::ShortcutKeyManager &shortcutKeyManager,
                          std::string                    proxyString);
     ~PathfollowerButtons();
     
@@ -59,8 +59,8 @@ public:
 
 private:
     QAction *hiWaypoints_;
-    hydroqgui::IHumanManager *humanManager_;
-    hydroqgui::ShortcutKeyManager *shortcutKeyManager_;
+    hydroqgui::IHumanManager &humanManager_;
+    hydroqgui::ShortcutKeyManager &shortcutKeyManager_;
 };
 //////////////////////////////////////////////////////////////////////////////
 
@@ -75,9 +75,10 @@ class PathFollowerHI  : public QObject
 public:
     PathFollowerHI( PathFollower2dElement *pfElement,
                     std::string proxyString,
-                    hydroqgui::IHumanManager *humanManager,
-                    hydroqgui::MouseEventManager *mouseEventManager,
-                    hydroqgui::ShortcutKeyManager *shortcutKeyManager,
+                    hydroqgui::IHumanManager &humanManager,
+                    hydroqgui::MouseEventManager &mouseEventManager,
+                    hydroqgui::ShortcutKeyManager &shortcutKeyManager,
+                    const hydroqgui::GuiElementSet &guiElementSet,
                     PathPainter &painter,
                     WaypointSettings wpSettings,
                     bool activateImmediately,
@@ -117,9 +118,10 @@ private:
 
     PathFollower2dElement *pfElement_;
     std::string proxyString_;
-    hydroqgui::IHumanManager *humanManager_;
-    hydroqgui::MouseEventManager *mouseEventManager_;
-    hydroqgui::ShortcutKeyManager *shortcutKeyManager_;
+    hydroqgui::IHumanManager &humanManager_;
+    hydroqgui::MouseEventManager &mouseEventManager_;
+    hydroqgui::ShortcutKeyManager &shortcutKeyManager_;
+    const hydroqgui::GuiElementSet &guiElementSet_;
     PathPainter   &painter_;
 
     QString pathFileName_;
@@ -154,9 +156,10 @@ public:
 
     PathFollower2dElement( const orcaice::Context & context,
                            const std::string &proxyString,
-                           hydroqgui::IHumanManager *humanManager,
-                           hydroqgui::MouseEventManager *mouseEventManager,
-                           hydroqgui::ShortcutKeyManager *shortcutKeyManager );
+                           hydroqgui::IHumanManager &humanManager,
+                           hydroqgui::MouseEventManager &mouseEventManager,
+                           hydroqgui::ShortcutKeyManager &shortcutKeyManager,
+                           const hydroqgui::GuiElementSet &guiElementSet );
     ~PathFollower2dElement();
 
     // inherited from guielement
@@ -198,9 +201,7 @@ private:
 
     orcaice::Context context_;
     
-    hydroqgui::IHumanManager *humanManager_;
-    hydroqgui::MouseEventManager *mouseEventManager_;
-    hydroqgui::ShortcutKeyManager *shortcutKeyManager_;
+    hydroqgui::IHumanManager &humanManager_;
     
     bool firstTime_;
     hydroutil::Timer *timer_;

@@ -18,6 +18,7 @@
 #include <orcaqgui2d/worldview.h>
 #include <orcaqgui2d/platformcsfinder.h>
 #include <orcaqgui2dfactory/defaultfactory.h>
+#include <orcaqguielementmodelview/configfileelements.h>
 
 #include "component.h"
         
@@ -25,15 +26,22 @@ using namespace std;
 
 namespace orcaview2d {
 
-static const char *DEFAULT_FACTORY_LIB_NAME="libOrcaQGui2dFactory.so";
+namespace {
 
-hydroqgui::IGuiElementFactory* loadFactory( hydrodll::DynamicallyLoadedLibrary &lib )
-{
-    hydroqgui::IGuiElementFactory *f = 
-        hydrodll::dynamicallyLoadClass<hydroqgui::IGuiElementFactory,FactoryMakerFunc>
-                                          (lib, "createFactory");
-    return f;
+    static const char *DEFAULT_FACTORY_LIB_NAME="libOrcaQGui2dFactory.so";
+
+    hydroqgui::IGuiElementFactory* loadFactory( hydrodll::DynamicallyLoadedLibrary &lib )
+    {
+        hydroqgui::IGuiElementFactory *f = 
+            hydrodll::dynamicallyLoadClass<hydroqgui::IGuiElementFactory,FactoryMakerFunc>
+            (lib, "createFactory");
+        return f;
+    }
+
 }
+
+//////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
 
 Component::Component()
     : orcaice::Component( "OrcaView2d", orcaice::NoStandardInterfaces )
@@ -191,13 +199,13 @@ Component::start()
     hydroqgui::GuiElementSet guiElementSet;
 
     // Qt model for handling elements and their display in each of the widgets
-    orcaqgemv::GuiElementModel guiElemModel( factories_,
-                                             mainWin,
-                                             mouseEventManager,
-                                             shortcutKeyManager,
-                                             coordinateFrameManager,
-                                             guiElementSet,
-                                             platformColorScheme );
+    orcaqgemv::GuiElementModel guiElementModel( factories_,
+                                                mainWin,
+                                                mouseEventManager,
+                                                shortcutKeyManager,
+                                                coordinateFrameManager,
+                                                guiElementSet,
+                                                platformColorScheme );
 
     // Can work out the coordinate system of a platform
     orcaqgui2d::PlatformCSFinder platformCSFinder;
@@ -211,10 +219,10 @@ Component::start()
                                      mainWin.displayViewParent() );
 
     // tell the main window about the widgets, model, and factory
-    mainWin.init( &guiElemModel,
+    mainWin.init( &guiElementModel,
                   &worldView );
 
-    mainWin.loadElementsFromConfigFile( context() );
+    orcaqgemv::loadElementsFromConfigFile( guiElementModel, context() );
 
     mainWin.show();
 

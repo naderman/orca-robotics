@@ -169,6 +169,8 @@ HwThread::walk()
             context_.tracer().error( exceptionSS.str() );
             stateMachine_.setFault( exceptionSS.str() );            
             exceptionSS.clear();
+            // Slow the loop down a little in case of persistent error
+            sleep(1);
         }
 
         //

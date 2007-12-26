@@ -156,7 +156,7 @@ GuiElementModel::instantiateFromFactories( hydroqgui::IGuiElement* &element,
             continue;
         
         // if we get here the interface is supported
-        element = factories_[i]->create( elementType, elementDetails, platformColor, humanManager_, mouseEventManager_, shortcutKeyManager_ );
+        element = factories_[i]->create( elementType, elementDetails, platformColor, humanManager_, mouseEventManager_, shortcutKeyManager_, guiElementSet_ );
         return true; 
     }
     return false;
@@ -313,7 +313,8 @@ GuiElementModel::createGuiElement( const QString &elementType,
         
     }
     // resize the columns so we can read the text
-    view_->resizeColumnsToContents();
+    if ( view_ )
+        view_->resizeColumnsToContents();
 }
         
 
@@ -356,7 +357,7 @@ GuiElementModel::changePlatformFocus( const QString &platform )
     
     // tell the guielementview to filter what it shows
     // collect indices
-    if (platform=="global") {
+    if ( platform=="global" && view_ ) {
         view_->showAllElements( elements().size() );
         return;
     }
@@ -367,7 +368,8 @@ GuiElementModel::changePlatformFocus( const QString &platform )
         if (elements()[i]->platform() != platform)
             elementIndices.push_back(i);
     }
-    view_->hideElements( elements().size(), elementIndices );
+    if ( view_ )
+        view_->hideElements( elements().size(), elementIndices );
 }
 
 void
@@ -481,7 +483,8 @@ GuiElementModel::setView( GuiElementView* view )
 void
 GuiElementModel::selectedAdaptersInView( vector<int> &indices )
 {
-    view_->selectedAdaptersInView( elements().size(), indices );
+    if ( view_ )
+        view_->selectedAdaptersInView( elements().size(), indices );
 }
 
 }

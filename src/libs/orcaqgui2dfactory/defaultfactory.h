@@ -11,24 +11,17 @@
 #ifndef ORCAGUI_DEFAULT_FACTORY_H
 #define ORCAGUI_DEFAULT_FACTORY_H
 
-#include <hydroqgui/hydroqgui.h>
+#include <orcaqgui2d/iguielementfactory.h>
 #include <orcaice/context.h>
+#include <hydroutil/hydroutil.h>
 
 namespace orcaqgui2d
 {
 
-    class IGuiElementFactory
-    {
-    public:
-        virtual void setContext( const orcaice::Context &context )=0;
-    };
-
     //!
     //! Generates 2D Gui Elements based on its type.
     //!
-    class DefaultFactory : public hydroqgui::IGuiElementFactory,
-                           public IGuiElementFactory
-    
+    class DefaultFactory : public IGuiElementFactory    
     {
     public:
 
@@ -42,7 +35,8 @@ namespace orcaqgui2d
                                                 QColor                        suggestedColor,
                                                 hydroqgui::IHumanManager     &humanManager,
                                                 hydroqgui::MouseEventManager &mouseEventManager,
-                                                hydroqgui::ShortcutKeyManager &shortcutKeyManager ) const;
+                                                hydroqgui::ShortcutKeyManager &shortcutKeyManager,
+                                                const hydroqgui::GuiElementSet &guiElementSet ) const;
         
         bool lookupElementType( const QStringList &ids, QString &elementType ) const;
 

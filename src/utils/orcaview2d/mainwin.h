@@ -30,9 +30,6 @@ class QSplitter;
 class QTimer;
 class QComboBox;
 
-// namespace orcaqgui 
-// {
-
 // configuration parameters for screen capture
 typedef struct {
     int topPad;
@@ -42,9 +39,6 @@ typedef struct {
     int captureTimerInterval;
 } ScreenDumpParams;
 
-
-//class GuiElementView;
-//class ShortcutAction;
 
 //
 // Interaction with the JobQueue:
@@ -71,8 +65,6 @@ public:
     void init( orcaqgemv::GuiElementModel *guiElemModel,
                QWidget                    *displayView );
 
-    void loadElementsFromConfigFile( const orcaice::Context & context );
-
     // Inherited from hydroqgui::IHumanManager
     virtual void showBoxMsg( hydroqgui::IHumanManager::MessageType type, QString msg );
     virtual void showStatusMsg( hydroqgui::IHumanManager::MessageType type, QString msg );
@@ -81,17 +73,6 @@ public:
     virtual QMenu    *optionsMenu() { return optionsMenu_; }
     virtual QMenu    *displayMenu() { return displayMenu_; }
     virtual QToolBar *toolBar() { return toolBar_; }
-
-//     virtual hydroqgui::IGuiElement *mouseEventReceiver() const { return mouseEventReceiver_; }
-//     virtual bool requestBecomeMouseEventReceiver( hydroqgui::IGuiElement *requester );
-//     virtual bool mouseEventReceiverIsSet();
-//     virtual void relinquishMouseEventReceiver( hydroqgui::IGuiElement *relinquisher );
-//    virtual GuiElementModel &guiElementModel() { return *elemModel_; }
-
-    //    void changePlatformFocusFromView(const QString& platform);
-    
-//     virtual void subscribeToShortcutKey( QAction *elementAction, QKeySequence key, bool isMultiple, QObject *parent  );
-//     virtual void unsubscribeFromShortcutKey( QKeySequence key, QObject *parent );
 
 private slots:
 
@@ -115,8 +96,10 @@ private slots:
 
 private:
 
+    // The top-level splitter
     QSplitter *win_;
-    QSplitter *side_;
+    // The splitter on the left
+    QSplitter *leftSide_;
 
     // registry
     orcaqcm::OcmModel           *regModel_;
@@ -161,16 +144,8 @@ private:
     QMenu* displayMenu_;
     QToolBar *toolBar_;
 
-//     // NULL means no-one is receiving mouse events
-//     hydroqgui::IGuiElement *mouseEventReceiver_;
-    
-//    // list of shorcut actions
-//    QList<ShortcutAction*> shortcutActions_;
-
     hydroutil::JobQueue*    jobQueue_;
     orcaice::Context        context_;
 };
 
-
-// }
 #endif

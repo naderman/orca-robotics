@@ -45,7 +45,7 @@ PathPlannerTaskAnswerConsumer::setData(const ::orca::PathPlanner2dData& data, co
 }
 ////////////////////////////////////////////////////////////////////////////////
 
-PathplannerButtons::PathplannerButtons( QObject *parent, hydroqgui::IHumanManager *humanManager, string proxyString)
+PathplannerButtons::PathplannerButtons( QObject *parent, hydroqgui::IHumanManager &humanManager, string proxyString)
 {
     QPixmap savePathIcon(filesave_path_xpm);
     QPixmap saveAsPathIcon(filesaveas_path_xpm);
@@ -72,19 +72,19 @@ PathplannerButtons::PathplannerButtons( QObject *parent, hydroqgui::IHumanManage
     QAction *wpDialogAction = new QAction( QString(proxyString.c_str()) + "\n" + "PathPlanner Waypoint settings", this );
     connect( wpDialogAction, SIGNAL(activated()), parent, SLOT(waypointSettingsDialog()) );
 
-    humanManager->fileMenu()->addAction(fileSavePathAs);
-    humanManager->fileMenu()->addAction(fileSavePath);
+    humanManager.fileMenu()->addAction(fileSavePathAs);
+    humanManager.fileMenu()->addAction(fileSavePath);
 
-//     humanManager->toolBar()->addAction(fileSavePathAs);
-//     humanManager->toolBar()->addAction(fileSavePath);
+//     humanManager.toolBar()->addAction(fileSavePathAs);
+//     humanManager.toolBar()->addAction(fileSavePath);
 
-    humanManager->toolBar()->addAction( hiWaypoints_ );
-    humanManager->toolBar()->addAction( hiSend );
-    humanManager->toolBar()->addAction( hiCancel );
+    humanManager.toolBar()->addAction( hiWaypoints_ );
+    humanManager.toolBar()->addAction( hiSend );
+    humanManager.toolBar()->addAction( hiCancel );
     
-    humanManager->optionsMenu()->addAction( wpDialogAction );
+    humanManager.optionsMenu()->addAction( wpDialogAction );
     
-    QAction *sep = humanManager->toolBar()->addSeparator();
+    QAction *sep = humanManager.toolBar()->addSeparator();
     sep->setParent( this );
 }
 
@@ -97,8 +97,8 @@ PathplannerButtons::setWpButton( bool onOff )
 
 PathPlanner2dElement::PathPlanner2dElement( const orcaice::Context       &context,
                                             const std::string            &proxyString,
-                                            hydroqgui::IHumanManager     *humanManager,
-                                            hydroqgui::MouseEventManager *mouseEventManager )
+                                            hydroqgui::IHumanManager     &humanManager,
+                                            hydroqgui::MouseEventManager &mouseEventManager )
     : IceStormElement<  PathPainter,
                         orca::PathPlanner2dData,
                         orca::PathPlanner2dPrx,
@@ -141,7 +141,7 @@ PathPlanner2dElement::update()
     {
         QString msg;
         pathTaskAnswerConsumer_->msgStore_.get( msg );
-        humanManager_->showBoxMsg(hydroqgui::IHumanManager::Error, msg);    
+        humanManager_.showBoxMsg(hydroqgui::IHumanManager::Error, msg);    
     }
 }
 
@@ -157,7 +157,7 @@ PathPlanner2dElement::setUseTransparency( bool useTransparency )
 void
 PathPlanner2dElement::actionOnConnection()
 {
-    humanManager_->showStatusMsg(hydroqgui::IHumanManager::Information, "PathplannerElement is trying to connect");
+    humanManager_.showStatusMsg(hydroqgui::IHumanManager::Information, "PathplannerElement is trying to connect");
      
     try 
     {
@@ -165,11 +165,11 @@ PathPlanner2dElement::actionOnConnection()
     }
     catch ( ... )
     {
-        humanManager_->showStatusMsg(hydroqgui::IHumanManager::Warning, "Problem connecting to pathplanner interface. Will try again later.");
+        humanManager_.showStatusMsg(hydroqgui::IHumanManager::Warning, "Problem connecting to pathplanner interface. Will try again later.");
         //cout << "WARNING(pathplanner2delement.cpp): Problem connecting to interface. Will try again later." << endl;
         return;
     }
-    humanManager_->showStatusMsg(hydroqgui::IHumanManager::Information, "Connected to pathplanner interface successfully.");
+    humanManager_.showStatusMsg(hydroqgui::IHumanManager::Information, "Connected to pathplanner interface successfully.");
     
     pathPlanner2dConsumerObj_ = pathTaskAnswerConsumer_;
     taskCallbackPrx_ = orcaice::createConsumerInterface<orca::PathPlanner2dConsumerPrx>( context_,
@@ -236,7 +236,7 @@ PathPlanner2dElement::sendPath( const PathPlannerInput &pathInput )
     {
         stringstream ss;
         ss << "While trying to set a pathfollowing data: " << endl << e;
-        humanManager_->showStatusMsg( hydroqgui::IHumanManager::Error, ss.str().c_str() );
+        humanManager_.showStatusMsg( hydroqgui::IHumanManager::Error, ss.str().c_str() );
     }
 }
 
@@ -259,8 +259,8 @@ PathPlanner2dElement::setFocus( bool inFocus )
 
 PathPlannerHI::PathPlannerHI( PathPlanner2dElement         *ppElement,
                               string                        proxyString,
-                              hydroqgui::IHumanManager     *humanManager, 
-                              hydroqgui::MouseEventManager *mouseEventManager, 
+                              hydroqgui::IHumanManager     &humanManager, 
+                              hydroqgui::MouseEventManager &mouseEventManager, 
                               PathPainter                  &painter,
                               WaypointSettings              wpSettings )
     : ppElement_(ppElement),
@@ -337,11 +337,11 @@ void
 PathPlannerHI::waypointModeSelected()
 {
     if ( gotMode_ ) return;
-    gotMode_ = mouseEventManager_->requestBecomeMouseEventReceiver( ppElement_ );
+    gotMode_ = mouseEventManager_.requestBecomeMouseEventReceiver( ppElement_ );
 
     if ( !gotMode_ )
     {
-        humanManager_->showBoxMsg( hydroqgui::IHumanManager::Warning, "Couldn't take over the mode for PathPlanner waypoints!" );
+        humanManager_.showBoxMsg( hydroqgui::IHumanManager::Warning, "Couldn't take over the mode for PathPlanner waypoints!" );
         return;
     }
 
@@ -370,7 +370,7 @@ PathPlannerHI::cancel()
 {
     if ( gotMode_ )
     {
-        mouseEventManager_->relinquishMouseEventReceiver( ppElement_ );
+        mouseEventManager_.relinquishMouseEventReceiver( ppElement_ );
         noLongerMouseEventReceiver();
     }
 }
@@ -395,7 +395,7 @@ PathPlannerHI::savePathAs()
     
     if (!fileName.isEmpty())
     {
-        painter_.savePath( fileName, humanManager_ );
+        painter_.savePath( fileName, &humanManager_ );
         pathFileSet_ = true;
     }
 }
@@ -409,7 +409,7 @@ PathPlannerHI::savePath()
     }
     else
     {
-        painter_.savePath( pathFileName_, humanManager_ );
+        painter_.savePath( pathFileName_, &humanManager_ );
     }
 }
 

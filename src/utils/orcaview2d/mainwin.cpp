@@ -19,31 +19,26 @@
 #include <orcaqcm/orcaqcm.h>
 
 #include "mainwin.h"
-//#include "shortcutaction.h"
 #include <orcaqguielementmodelview/regselectview.h>
 #include <orcaqgui/guiicons.h>
 
 using namespace std;
 
-// namespace orcaqgui 
-// {
-
-    MainWindow::MainWindow( 
-                std::string                        title,   
-                ScreenDumpParams                   screenDumpParams,
-                int                                displayRefreshTime,
-                const std::vector<std::string>    &supportedInterfaces,
-                hydroutil::JobQueue               *jobQueue,
-                const orcaice::Context            &context) :
-    screenDumpParams_(screenDumpParams),
-    displayRefreshTime_(displayRefreshTime),
-    elemModel_(NULL),
-    displayView_(NULL),
-    supportedInterfaces_(supportedInterfaces),
-    firstTime_(true),
-//    mouseEventReceiver_(NULL),
-    jobQueue_(jobQueue),
-    context_(context)
+MainWindow::MainWindow( 
+    std::string                        title,   
+    ScreenDumpParams                   screenDumpParams,
+    int                                displayRefreshTime,
+    const std::vector<std::string>    &supportedInterfaces,
+    hydroutil::JobQueue               *jobQueue,
+    const orcaice::Context            &context)
+    : screenDumpParams_(screenDumpParams),
+      displayRefreshTime_(displayRefreshTime),
+      elemModel_(NULL),
+      displayView_(NULL),
+      supportedInterfaces_(supportedInterfaces),
+      firstTime_(true),
+      jobQueue_(jobQueue),
+      context_(context)
 {
     setWindowTitle(title.c_str());
     setWindowIcon ( QPixmap(orcaqt::orca2_2x3_yellow_130_xpm) );
@@ -56,8 +51,8 @@ using namespace std;
     win_->setMinimumHeight( 500 );
     setCentralWidget(win_);
 
-    side_ = new QSplitter(win_);
-    side_->setOrientation(Qt::Vertical);
+    leftSide_ = new QSplitter(win_);
+    leftSide_->setOrientation(Qt::Vertical);
 
     //
     // Select-from-Registry widget
@@ -67,7 +62,7 @@ using namespace std;
     // Delegate
     regDelegate_ = new orcaqcm::OcmDelegate();
     // View
-    regView_ = new orcaqgemv::RegSelectView(side_);
+    regView_ = new orcaqgemv::RegSelectView(leftSide_);
     regView_->setModel( regModel_ );
     regView_->setItemDelegate(regDelegate_);
     //regView_->setSelectionModel(selections_);
@@ -78,35 +73,14 @@ using namespace std;
     regView_->setSelectionMode ( QAbstractItemView::ExtendedSelection );
     regView_->setColumnWidth( 0, 200 );
             
-    // enable sorting
-    //connect( regView_->header(),SIGNAL(sectionClicked(int)), model_,SLOT(sort(int)) );
-    
-    //
-    // QVBoxLayout
-    //
-    // Platform combo box
-//     QHBoxLayout* platformBox = new QHBoxLayout(side_);
-//     platformCombo_ = new QComboBox;
-//     platformBox->addWidget( platformCombo_ );
-
-    platformCombo_ = new QComboBox(side_);
+    platformCombo_ = new QComboBox(leftSide_);
     platformCombo_->setMinimumHeight(20);
     platformCombo_->setMaximumHeight(20);
     platformCombo_->setFont( QFont(platformCombo_->font().family(), 12, QFont::Bold) );
     connect(platformCombo_,SIGNAL(highlighted(const QString&)),this, SLOT(changePlatformFocus(const QString&)));
-    
-    //
-    // Color combo
-    //
-/*    colorCombo_ = new QComboBox(side_);
-    colorCombo_->setMinimumHeight(20);
-    colorCombo_->setMaximumHeight(20);
-    colorCombo_->setFont( QFont(colorCombo_->font().family(), 12, QFont::Bold) );
-    connect(colorCombo_,SIGNAL(highlighted(const QString&)),this, SLOT(changePlatformColor(const QString&)));
-  */  
+
     // setup all the menus/toolbars etc.
     setupInterface();
-
 }
 
 
@@ -139,7 +113,7 @@ void MainWindow::init( orcaqgemv::GuiElementModel *guiElemModel,
     QObject::connect( elemModel_, SIGNAL(platformNeedsRemoval(const QString&)), this, SLOT(removePlatformFromList(const QString&)) );
 
     // Bottom left part: element view
-    elemView_ = new orcaqgemv::GuiElementView(side_);
+    elemView_ = new orcaqgemv::GuiElementView(leftSide_);
     elemView_->setModel( elemModel_ );
     elemView_->horizontalHeader()->setMovable(true);
     elemView_->verticalHeader()->hide();
@@ -153,7 +127,6 @@ void MainWindow::init( orcaqgemv::GuiElementModel *guiElemModel,
 
     regTimer_ = new QTimer( this );
     QObject::connect( regTimer_,SIGNAL(timeout()), this,SLOT(refreshRegistryView()) );
-    //regTimer_->start( (int)floor(config.refreshInterval*1000.0) );
     regTimer_->start( 10*1000 );
 
     statusBar()->showMessage( "Initialized", 2000 );
@@ -172,58 +145,6 @@ void MainWindow::init( orcaqgemv::GuiElementModel *guiElemModel,
     connect( screenCaptureTimer_,SIGNAL(timeout()), this,SLOT(grabWindow()) );
 }
 
-
-void
-MainWindow::loadElementsFromConfigFile( const orcaice::Context & context )
-{
-    // get properties from config file
-    string prefix = context.tag() + ".Config.Element";
-    int i=0;
-    QString elementType;
-    QStringList elementDetails;
-    
-    while(true)
-    {
-        stringstream key;
-        key << prefix << i;
-        Ice::StringSeq strOut;
-        
-        //  Find elementType
-        int ret = orcaice::getPropertyAsStringSeq( context.properties(), key.str()+".Type", strOut );
-        if (ret!=0) break;
-        elementType = QString(strOut[0].c_str());
-        
-        //  Find elementDetails
-        ret = orcaice::getPropertyAsStringSeq( context.properties(), key.str()+".Detail", strOut );
-        elementDetails.clear();
-        if (ret!=0)
-        {
-            // no detail means special element with no interfaces like Grid
-            elementDetails.push_back("local@global/local");
-        }
-        else
-        {
-            for ( unsigned int k=0; k<strOut.size(); k++ )
-            {
-                elementDetails.push_back(QString(strOut[k].c_str()));
-            }
-        }
-        
-        // Debug output
-        cout << "TRACER(mainwin.cpp): Loading element of type: " << elementType.toStdString() << endl;
-        cout << "TRACER(mainwin.cpp): Loading element with details: ";
-        for (int k=0; k<elementDetails.size(); k++)
-        {
-            cout << elementDetails[k].toStdString() << " ";
-        }
-        cout << endl;
-        // end of debug output
-        
-        elemModel_->createGuiElement( elementType, elementDetails );
-        i++;
-    }
-}
-
 void
 MainWindow::setupInterface()
 {
@@ -240,6 +161,7 @@ MainWindow::setupInterface()
     screenCapture->setCheckable(true);
     connect(screenCapture,SIGNAL(toggled(bool)), this, SLOT(toggleScreenCapture(bool)) );
     screenCapture->setShortcut( QKeySequence("Ctrl+Alt+S") );
+    displayMenu_->addAction(screenCapture);
 
     QMenu *registryMenu = menuBar()->addMenu("&Registry");
     registryMenu->addAction("Toggle &Disconnected", regView_, SLOT(toggleDisconnected()), QKeySequence("Ctrl+`") );
@@ -252,9 +174,6 @@ MainWindow::setupInterface()
     registryMenu->addSeparator();
     registryMenu->addAction("&Update", this, SLOT(updateRegistryView()), QKeySequence("F5") );
     registryMenu->addAction("&Reload", this, SLOT(reloadRegistryView()), QKeySequence("Ctrl+L") );
-
-    displayMenu_->addAction(screenCapture);
-//    toolBar_->addAction(screenCapture);
 
     QMenu* helpMenu = menuBar()->addMenu("&Help");
     helpMenu->addAction("About Orca&View", this, SLOT(aboutApp()), Qt::Key_F1 );
@@ -463,76 +382,3 @@ MainWindow::grabWindow()
         showStatusMsg(Information, "Saved screendump to " + filepath );    
     }
 }
-
-// bool 
-// MainWindow::requestBecomeMouseEventReceiver( hydroqgui::IGuiElement *requester )
-// { 
-//     if ( mouseEventReceiverIsSet() )
-//         mouseEventReceiver_->noLongerMouseEventReceiver();
-//     mouseEventReceiver_ = requester;
-//     return true;
-// }
-// bool 
-// MainWindow::mouseEventReceiverIsSet() 
-// {
-//     return mouseEventReceiver_!=NULL; 
-// }
-// void 
-// MainWindow::relinquishMouseEventReceiver( hydroqgui::IGuiElement *relinquisher )
-// { 
-//     if ( relinquisher==mouseEventReceiver_ ) 
-//         mouseEventReceiver_=NULL;
-//     else showStatusMsg( Error, "Attempt to relinquish mode from non-owner!" );
-// }
-
-// void
-// MainWindow::subscribeToShortcutKey( QAction *elementAction, QKeySequence key, bool isMultiple, QObject *parent )
-// {
-//     cout << "TRACE(mainwin.cpp): subscribeToShortcutKey: number of shortcutActions " << shortcutActions_.size() << endl;
-    
-//     // in any case, add the action to the toolbar
-//     // TODO: check if a shortcut exists and remove it?
-//     toolBar_->addAction(elementAction);
-    
-//     // check whether this shortcut already exists
-//     for (int i=0; i<shortcutActions_.size(); i++)
-//     {
-//         if (shortcutActions_[i]->key() == key)
-//         {
-//             shortcutActions_[i]->subscribe( parent, elementAction );
-//             return;
-//         }
-//     }
-            
-//     // if we get here then the shortcut doesn't exist yet
-//     cout << "TRACE(mainwin.cpp): we have a new shortcut" << endl;
-//     ShortcutAction *shortcutAction = new ShortcutAction(key,isMultiple);
-//     shortcutAction->subscribe( parent, elementAction );
-//     // add the action to this widget, so it can catch keys
-//     addAction(shortcutAction);
-    
-//     // put it into the list, so it's persistent and can be checked for its key later
-//     shortcutActions_.push_back( shortcutAction );
-// }
-
-// void 
-// MainWindow::unsubscribeFromShortcutKey( QKeySequence key, QObject *parent )
-// {
-//     for (int i=0; i<shortcutActions_.size(); i++)
-//     {
-//         if (shortcutActions_[i]->key() == key)
-//         {
-//             shortcutActions_[i]->unsubscribe( parent );
-//             return;
-//         }
-//     }
-// }
-
-
-// void
-// MainWindow::changePlatformColor(const QString&)
-// {
-//     //alexm: ???
-// }
-
-// } // namespace

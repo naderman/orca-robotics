@@ -86,7 +86,8 @@ DefaultFactory::create( const QString                &elementType,
                         QColor                        suggestedColor,
                         hydroqgui::IHumanManager     &humanManager,
                         hydroqgui::MouseEventManager &mouseEventManager,
-                        hydroqgui::ShortcutKeyManager &shortcutKeyManager ) const
+                        hydroqgui::ShortcutKeyManager &shortcutKeyManager,
+                        const hydroqgui::GuiElementSet &guiElementSet ) const
 {
     assert( isContextSet_ );
 
@@ -136,11 +137,11 @@ DefaultFactory::create( const QString                &elementType,
         }
         else if ( elementType == "PathFollower2d" ) {
             cout<<"creating PathFollower2d element with details "<<elementDetails[0].toStdString()<<endl;
-            elem = new orcaqgui2d::PathFollower2dElement( context_, elementDetails[0].toStdString(), &humanManager, &mouseEventManager, &shortcutKeyManager );
+            elem = new orcaqgui2d::PathFollower2dElement( context_, elementDetails[0].toStdString(), humanManager, mouseEventManager, shortcutKeyManager, guiElementSet );
         }
         else if ( elementType == "PathPlanner2d" ) {
             cout<<"creating PathPlanner2d element with details "<<elementDetails[0].toStdString()<<endl;
-            elem = new orcaqgui2d::PathPlanner2dElement( context_, elementDetails[0].toStdString(), &humanManager, &mouseEventManager );
+            elem = new orcaqgui2d::PathPlanner2dElement( context_, elementDetails[0].toStdString(), humanManager, mouseEventManager );
         }
         else if ( elementType == "PixMap" ) {
             cout<<"creating PixMap element with details "<<elementDetails[0].toStdString()<<endl;
