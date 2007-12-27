@@ -15,12 +15,12 @@
 #include <hydroutil/jobqueue.h>
 #include "mainwin.h"
 #include "centralwidget.h"
+#include "selectableelementwidget.h"
 #include <orcaqguielementmodelview/guielementmodel.h>
 #include <orcaqgui2d/worldview.h>
 #include <orcaqgui2d/platformcsfinder.h>
 #include <orcaqgui2dfactory/defaultfactory.h>
 #include <orcaqguielementmodelview/configfileelements.h>
-
 #include "component.h"
         
 using namespace std;
@@ -179,11 +179,14 @@ Component::start()
     // Manages platform(s) in focus
     hydroqgui::PlatformFocusManager platformFocusManager;
 
+    // Gui-Element selecting widget
+    SelectableElementWidget selectableElementWidget( platformFocusManager,
+                                                     jobQueue,
+                                                     context() );
+
     // Central GUI widget
-    CentralWidget centralWidget( platformFocusManager,
-                                 displayRefreshTime,
-                                 jobQueue,
-                                 context() );
+    CentralWidget centralWidget( selectableElementWidget,
+                                 displayRefreshTime );
 
     // main window for display
     MainWindow mainWin( "OrcaView",
@@ -228,10 +231,12 @@ Component::start()
                                      platformFocusManager,
                                      &centralWidget );
 
-    // tell the main window about the widgets, model, and factory
+    // tell this widget about things that were constructed later
+    selectableElementWidget.init( &guiElementModel, mainWin );
+    
+    // tell this widget about things that were constructed later
     centralWidget.init( &guiElementModel,
-                        &worldView,
-                        mainWin );
+                        &worldView );
 
     orcaqgemv::loadElementsFromConfigFile( guiElementModel, context() );
 

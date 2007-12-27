@@ -9,7 +9,6 @@
 #include <orcaqguielementmodelview/guielementmodel.h>
 #include <orcaqguielementmodelview/guielementview.h>
 #include "platformfocuscombo.h"
-#include "selectableelementwidget.h"
 
 namespace orcaqcm {
     class OcmModel;
@@ -21,7 +20,7 @@ class QSplitter;
 class QTimer;
 
 //
-// The CentralWidget manages the layout of the GUI.
+// The CentralWidget manages the layout of the GUI, and regular re-painting of the display view.
 //
 //
 // Interaction with the JobQueue:
@@ -37,14 +36,11 @@ class CentralWidget : public QSplitter
 
 public: 
 
-    CentralWidget( hydroqgui::PlatformFocusManager &platformFocusManager,
-                   int                              displayRefreshTime,
-                   hydroutil::JobQueue             &jobQueue,
-                   const orcaice::Context          &context );
+    CentralWidget( QWidget &leftSideWidget,
+                   int      displayRefreshTime );
 
     void init( orcaqgemv::GuiElementModel *guiElemModel,
-               QWidget                    *displayView,
-               QMainWindow                &mainWindow );
+               QWidget                    *displayView );
 
 private slots:
 
@@ -53,7 +49,7 @@ private slots:
 private: 
 
     // The widget on the left
-    SelectableElementWidget *leftSide_;
+    QWidget &leftSide_;
 
     // gui element list
     orcaqgemv::GuiElementModel             *elemModel_;

@@ -14,9 +14,10 @@ class QTreeView;
 class QItemDelegate;
 class QTimer;
 
-//!
-//! @author Alex Brooks
-//!
+//
+// A Widget which allows users to select (with the mouse) items from a
+// view of the Registry, and transfer them to the list of GuiElements.
+//
 class SelectableElementWidget : public QSplitter
 {
     Q_OBJECT

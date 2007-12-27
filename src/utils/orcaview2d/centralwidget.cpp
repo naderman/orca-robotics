@@ -11,28 +11,21 @@
 
 using namespace std;
 
-CentralWidget::CentralWidget( hydroqgui::PlatformFocusManager &platformFocusManager,
-                              int                              displayRefreshTime,
-                              hydroutil::JobQueue             &jobQueue,
-                              const orcaice::Context          &context )
-    : displayRefreshTime_(displayRefreshTime)
+CentralWidget::CentralWidget( QWidget                         &leftSideWidget,
+                              int                              displayRefreshTime )
+    : leftSide_(leftSideWidget),
+      displayRefreshTime_(displayRefreshTime)
 {
     setOrientation(Qt::Horizontal);
     setMinimumHeight( 400 );
 
-    leftSide_ = new SelectableElementWidget( platformFocusManager,
-                                             jobQueue,
-                                             context,
-                                             this );
+    addWidget( &leftSideWidget );
 }
 
 void 
 CentralWidget::init( orcaqgemv::GuiElementModel *guiElemModel,
-                     QWidget                    *displayView,
-                     QMainWindow                &mainWindow )
+                     QWidget                    *displayView )
 {
-    leftSide_->init( guiElemModel, mainWindow );
-
     elemModel_ = guiElemModel;
     
     //
