@@ -4,10 +4,10 @@
 #include <orcaqguielementmodelview/guielementmodel.h>
 #include <orcaice/context.h>
 
-namespace orcaqgemv {
+namespace orcaqgui {
 
     void
-    loadElementsFromConfigFile( GuiElementModel &guiElementModel,
+    loadElementsFromConfigFile( orcaqgemv::GuiElementModel &guiElementModel,
                                 const orcaice::Context &context );
 
 }

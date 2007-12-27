@@ -10,6 +10,8 @@
 
 using namespace std;
 
+namespace orcaqgui {
+
 SelectableElementWidget::SelectableElementWidget( hydroqgui::PlatformFocusManager &platformFocusManager,
                                                   hydroutil::JobQueue             &jobQueue,
                                                   const orcaice::Context          &context,
@@ -102,4 +104,6 @@ SelectableElementWidget::reloadRegistryView()
 
     // now update the view
     updateRegistryView();
+}
+
 }

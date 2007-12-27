@@ -24,20 +24,18 @@
 
 using namespace std;
 
+namespace orcaqgui {
+
 MainWindow::MainWindow( 
     std::string                        title,   
     ScreenDumpParams                   screenDumpParams,
-//    CentralWidget                     *centralWidget,
     const std::vector<std::string>    &supportedInterfaces )
-//    : centralWidget_(centralWidget),
     : screenDumpParams_(screenDumpParams),
       supportedInterfaces_(supportedInterfaces)
 {
     setWindowTitle( title.c_str() );
     setWindowIcon ( QPixmap(orcaqt::orca2_2x3_yellow_130_xpm) );
 
-//    setCentralWidget( centralWidget );
-    
     //
     // setup all the menus/toolbars etc.
     //
@@ -196,4 +194,6 @@ MainWindow::grabWindow()
     {
         showStatusMsg(Information, "Saved screendump to " + filepath );    
     }
+}
+
 }

@@ -13,13 +13,13 @@
 #include <orcaice/orcaice.h>
 #include <hydrodll/dynamicload.h>
 #include <hydroutil/jobqueue.h>
-#include "mainwin.h"
-#include "selectableelementwidget.h"
+#include <orcaqgui/mainwin.h>
+#include <orcaqgui/selectableelementwidget.h>
+#include <orcaqgui/configfileelements.h>
 #include <orcaqguielementmodelview/guielementmodel.h>
 #include <orcaqgui2d/worldview.h>
 #include <orcaqgui2d/platformcsfinder.h>
 #include <orcaqgui2dfactory/defaultfactory.h>
-#include <orcaqguielementmodelview/configfileelements.h>
 #include "component.h"
         
 using namespace std;
@@ -122,8 +122,8 @@ Component::loadPluginLibraries( const std::string& factoryLibNames )
 }
 
 void
-readScreenDumpParams( const orcaice::Context &context,
-                      ScreenDumpParams &screenDumpParams )
+readScreenDumpParams( const orcaice::Context                 &context,
+                      orcaqgui::MainWindow::ScreenDumpParams &screenDumpParams )
 {
     Ice::PropertiesPtr prop = context.properties();
     std::string prefix = context.tag() + ".Config.";
@@ -166,7 +166,7 @@ Component::start()
     int c = 0;
     QApplication qapp(c,v);
 
-    ScreenDumpParams screenDumpParams;
+    orcaqgui::MainWindow::ScreenDumpParams screenDumpParams;
     readScreenDumpParams( context(), screenDumpParams );
     
     int displayRefreshTime = orcaice::getPropertyAsIntWithDefault( props, prefix+"General.DisplayRefreshTime", 200 );
@@ -179,9 +179,9 @@ Component::start()
     hydroqgui::PlatformFocusManager platformFocusManager;
 
     // main window for display
-    MainWindow mainWin( "OrcaView",
-                        screenDumpParams,
-                        supportedInterfaces );
+    orcaqgui::MainWindow mainWin( "OrcaView",
+                                  screenDumpParams,
+                                  supportedInterfaces );
 
     // Color scheme
     hydroqgui::StringToRandomColorMap platformColorScheme;
@@ -221,18 +221,20 @@ Component::start()
                                      displayRefreshTime );
 
     // Gui-Element-selecting widget
-    SelectableElementWidget selectableElementWidget( platformFocusManager,
-                                                     jobQueue,
-                                                     context(),
-                                                     &guiElementModel,
-                                                     mainWin );
+    orcaqgui::SelectableElementWidget selectableElementWidget( platformFocusManager,
+                                                               jobQueue,
+                                                               context(),
+                                                               &guiElementModel,
+                                                               mainWin );
     
     // Central GUI widget
     QSplitter centralWidget( Qt::Horizontal );
     centralWidget.addWidget( &selectableElementWidget );
     centralWidget.addWidget( &worldView );
 
-    orcaqgemv::loadElementsFromConfigFile( guiElementModel, context() );
+    mainWin.setCentralWidget( &centralWidget );
+
+    orcaqgui::loadElementsFromConfigFile( guiElementModel, context() );
 
     mainWin.show();
 

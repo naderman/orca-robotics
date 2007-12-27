@@ -4,7 +4,7 @@
 
 using namespace std;
 
-namespace orcaqgemv {
+namespace orcaqgui {
 
     void
     loadElementsFromConfigFile( orcaqgemv::GuiElementModel &guiElementModel,

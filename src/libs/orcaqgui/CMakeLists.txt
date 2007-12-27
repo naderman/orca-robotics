@@ -13,9 +13,15 @@ IF ( BUILD )
     
     FILE( GLOB HUMAN_SRCS *.cpp )
     
-#    GLOBAL_ADD_LIBRARY( ${LIB_NAME} SHARED ${HUMAN_SRCS} )
-    
-#    TARGET_LINK_LIBRARIES ( ${LIB_NAME} OrcaQt )
+    SET( MOC_HEADERS
+        mainwin.h
+        selectableelementwidget.h
+        platformfocuscombo.h
+    )
+    QT4_WRAP_CPP( MOC_SRCS ${MOC_HEADERS} )
+
+    GLOBAL_ADD_LIBRARY( ${LIB_NAME} SHARED ${HUMAN_SRCS} ${MOC_SRCS} )
+    TARGET_LINK_LIBRARIES ( ${LIB_NAME} OrcaQt )
     
     INSTALL_FILES( /include/orcaqgui .*\\.h$ )
 

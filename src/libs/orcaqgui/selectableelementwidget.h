@@ -1,5 +1,5 @@
-#ifndef _SELECTABLEELEMENTWIDGET_H
-#define _SELECTABLEELEMENTWIDGET_H
+#ifndef ORCAQGUI_SELECTABLEELEMENTWIDGET_H
+#define ORCAQGUI_SELECTABLEELEMENTWIDGET_H
 
 #include <QSplitter>
 #include <hydroutil/jobqueue.h>
@@ -14,18 +14,20 @@ class QTreeView;
 class QItemDelegate;
 class QTimer;
 
-//
-// A Widget which allows users to select (with the mouse) items from a
-// view of the Registry, and transfer them to the list of GuiElements.
-//
-//
-// Interaction with the JobQueue:
-// - when you need to update the information about the content of the registry, create 
-//   orcaqcm::GetComponentsJob and add it to the JobQueue. The job needs a pointer to an instance
-//   of orcaqcm::OcmModel.
-// - the rest will happen automatically in one of the threads of the JobQueue: the job will get
-//   the data from the registry, transfer it to the OcmModel, which will update and repaint itself.
-//
+namespace orcaqgui {
+
+//!
+//! A Widget which allows users to select (with the mouse) items from a
+//! view of the Registry, and transfer them to the list of GuiElements.
+//!
+//!
+//! Interaction with the JobQueue:
+//! - when you need to update the information about the content of the registry, create 
+//!   orcaqcm::GetComponentsJob and add it to the JobQueue. The job needs a pointer to an instance
+//!   of orcaqcm::OcmModel.
+//! - the rest will happen automatically in one of the threads of the JobQueue: the job will get
+//!   the data from the registry, transfer it to the OcmModel, which will update and repaint itself.
+//!
 class SelectableElementWidget : public QSplitter
 {
     Q_OBJECT
@@ -70,5 +72,7 @@ private:
     orcaice::Context        context_;
 
 };
+
+}
 
 #endif

@@ -102,7 +102,6 @@ private:
     hydroqgui::GuiElementSet &guiElementSet_;
 
     const QList<hydroqgui::IGuiElement*> &elements() const { return guiElementSet_.elements(); }
-    // QList<hydroqgui::IGuiElement*> &elements() { return guiElementSet_.elements(); }
     
     const std::vector<hydroqgui::IGuiElementFactory*> factories_;
     QStringList headers_;

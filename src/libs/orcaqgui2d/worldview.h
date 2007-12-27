@@ -41,7 +41,8 @@ public:
                hydroqgui::CoordinateFrameManager  &coordinateFrameManager,
                hydroqgui::IHumanManager           &humanManager,
                hydroqgui::PlatformFocusManager    &platformFocusManager,
-               QWidget                            *parent );
+               int                                 displayRefreshTime,
+               QWidget                            *parent=NULL );
   ~WorldView();
   
 public slots:
@@ -50,7 +51,11 @@ public slots:
     void zoomAllPix();
     void setAntiAliasing(bool antiAliasing);
     void setUseTransparency(bool useTransparency);
-    
+
+private slots:
+
+ void updateAllGuiElements();
+
 private:
 
     void printStatusMessage(bool antiAliasing);
@@ -83,7 +88,6 @@ private:
     void mouseMoveEvent( QMouseEvent* );
     void mouseReleaseEvent( QMouseEvent* );
     void mouseDoubleClickEvent( QMouseEvent* );
-//     bool event(QEvent *event);
 
     QPointF mouseDownPnt_;
     QPointF mouseMovePnt_;
@@ -91,7 +95,8 @@ private:
     QPoint prevDragPos_;
     
     bool antiAliasing_;
-      
+
+    QTimer *displayTimer_;
 };
 
 }

@@ -40,6 +40,7 @@ WorldView::WorldView( PlatformCSFinder                   *platformCSFinder,
                       hydroqgui::CoordinateFrameManager  &coordinateFrameManager,
                       hydroqgui::IHumanManager           &humanManager,
                       hydroqgui::PlatformFocusManager    &platformFocusManager,
+                      int                                 displayRefreshTime,
                       QWidget*                            parent )
     : ZoomWidget(parent),
       platformCSFinder_(platformCSFinder),
@@ -71,10 +72,63 @@ WorldView::WorldView( PlatformCSFinder                   *platformCSFinder,
     moveDown();moveDown();
 
     update();
+
+    displayTimer_ = new QTimer( this );
+    QObject::connect( displayTimer_,SIGNAL(timeout()), this,SLOT(updateAllGuiElements()) );
+    displayTimer_->start( displayRefreshTime );
 }
 
 WorldView::~WorldView()
 {
+}
+
+void
+WorldView::updateAllGuiElements()
+{
+    for ( int i=0; i<guiElementSet_.elements().size(); ++i )
+    {
+        hydroqgui::IGuiElement *element = guiElementSet_.elements()[i];
+
+        if ( element ) {
+            std::stringstream ss;
+            try {
+                element->update();
+            }
+            catch ( IceUtil::Exception &e )
+            {
+                ss<<"GuiElementModel: during update of "
+                <<element->details().toStdString()<<": " << e << std::endl;
+                humanManager_.showStatusMsg(hydroqgui::IHumanManager::Warning,ss.str().c_str());
+            }
+            catch ( std::exception &e )
+            {
+                ss<<"GuiElementModel: during update of "
+                <<element->details().toStdString()<<": " << e.what() << std::endl;
+                humanManager_.showStatusMsg(hydroqgui::IHumanManager::Warning,ss.str().c_str());
+            }
+            catch ( std::string &e )
+            {
+                ss<<"GuiElementModel: during update of "
+                   <<element->details().toStdString()<<": " << e << std::endl;
+                humanManager_.showStatusMsg(hydroqgui::IHumanManager::Warning,ss.str().c_str());
+            }
+            catch ( char *e )
+            {
+                ss<<"GuiElementModel: during update of "
+                   <<element->details().toStdString()<<": " << e << std::endl;
+                humanManager_.showStatusMsg(hydroqgui::IHumanManager::Warning,ss.str().c_str());
+            }
+            catch ( ... )
+            {
+                ss<<"GuiElementModel: Caught unknown exception during update of "
+                   <<element->details().toStdString()<<": " << std::endl;
+                humanManager_.showStatusMsg(hydroqgui::IHumanManager::Warning,ss.str().c_str());
+            }
+        }
+    }
+
+    // issue a QPaintEvent, all painting must be done from paintEvent().
+    update();
 }
 
 void

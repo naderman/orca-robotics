@@ -1,9 +1,15 @@
-#ifndef _PLATFORMFOCUSCOMBO_H
-#define _PLATFORMFOCUSCOMBO_H
+#ifndef ORCAQGUI_PLATFORMFOCUSCOMBO_H
+#define ORCAQGUI_PLATFORMFOCUSCOMBO_H
 
 #include <hydroqgui/hydroqgui.h>
 #include <QComboBox>
 
+namespace orcaqgui {
+
+//!
+//! @brief A QCombo box allowing users to select the platform in focus.
+//! 
+//! @see hydroqgui::PlatformFocusManager
 //!
 //! @author Alex Brooks
 //!
@@ -13,7 +19,8 @@ class PlatformFocusCombo : public QComboBox,
     Q_OBJECT
 public: 
 
-    PlatformFocusCombo( hydroqgui::PlatformFocusManager &platformFocusManager, QWidget *parent=NULL );
+    PlatformFocusCombo( hydroqgui::PlatformFocusManager &platformFocusManager,
+                        QWidget *parent=NULL );
     void platformFocusChanged( const QString &newPlatformName );
 
 public slots:
@@ -26,5 +33,7 @@ private:
 
     hydroqgui::PlatformFocusManager &platformFocusManager_;
 };
+
+}
 
 #endif

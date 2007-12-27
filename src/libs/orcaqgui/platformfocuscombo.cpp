@@ -3,6 +3,8 @@
 
 using namespace std;
 
+namespace orcaqgui {
+
 PlatformFocusCombo::PlatformFocusCombo( hydroqgui::PlatformFocusManager &platformFocusManager,
                                         QWidget *parent )
     : QComboBox(parent),
@@ -52,3 +54,4 @@ PlatformFocusCombo::removePlatformFromList(const QString& platform)
     removeItem( index );    
 }
 
+}

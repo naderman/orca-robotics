@@ -257,6 +257,8 @@ MainThread::walk()
             context_.tracer().error( exceptionSS.str() );
             subStatus().fault( exceptionSS.str() );     
             exceptionSS.clear();
+            // Slow things down in case of persistent error
+            sleep(1);
         }
 
         // If we got to here there's a problem.

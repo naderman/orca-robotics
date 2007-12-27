@@ -19,7 +19,6 @@
 #include <orcaqguielementmodelview/guielementmodel.h>
 #include <orcaqguielementmodelview/guielementview.h>
 #include "platformfocuscombo.h"
-//#include "centralwidget.h"
 
 namespace orcaqcm {
     class OcmModel;
@@ -30,28 +29,31 @@ class QItemDelegate;
 class QSplitter;
 class QTimer;
 
-// configuration parameters for screen capture
-typedef struct {
-    int topPad;
-    int sidePad;
-    int bottomPad;
-    std::string dumpPath;
-    int captureTimerInterval;
-} ScreenDumpParams;
+namespace orcaqgui {
 
-
-//
-// The MainWindow provides the framework in which all other widgets sit.
-// It also handles screen capture.
-//
+//!
+//! Provides the framework in which all other widgets sit.
+//! It also handles screen capture.
+//!
+//! Call 'setCentralWidget()' to set the central widget.
+//!
 class MainWindow : public QMainWindow, 
                    public hydroqgui::IHumanManager
 {
     Q_OBJECT
 public:
+
+    //! configuration parameters for screen capture
+    struct ScreenDumpParams {
+        int topPad;
+        int sidePad;
+        int bottomPad;
+        std::string dumpPath;
+        int captureTimerInterval;
+    };
+
     MainWindow( std::string                        title,   
                 ScreenDumpParams                   screenDumpParams,
-//                CentralWidget                     *centralWidget,
                 const std::vector<std::string>    &supportedInterfaces );
 
     // Inherited from hydroqgui::IHumanManager
@@ -74,8 +76,6 @@ private slots:
 
 private:
 
-//    CentralWidget *centralWidget_;
-
     // configuration parameters
     ScreenDumpParams screenDumpParams_;
 
@@ -93,5 +93,7 @@ private:
 
     orcaice::Context        context_;
 };
+
+}
 
 #endif
