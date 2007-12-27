@@ -14,7 +14,6 @@
 #include <hydrodll/dynamicload.h>
 #include <hydroutil/jobqueue.h>
 #include "mainwin.h"
-#include "centralwidget.h"
 #include "selectableelementwidget.h"
 #include <orcaqguielementmodelview/guielementmodel.h>
 #include <orcaqgui2d/worldview.h>
@@ -179,19 +178,9 @@ Component::start()
     // Manages platform(s) in focus
     hydroqgui::PlatformFocusManager platformFocusManager;
 
-    // Gui-Element selecting widget
-    SelectableElementWidget selectableElementWidget( platformFocusManager,
-                                                     jobQueue,
-                                                     context() );
-
-    // Central GUI widget
-    CentralWidget centralWidget( selectableElementWidget,
-                                 displayRefreshTime );
-
     // main window for display
     MainWindow mainWin( "OrcaView",
                         screenDumpParams,
-                        &centralWidget,
                         supportedInterfaces );
 
     // Color scheme
@@ -229,14 +218,19 @@ Component::start()
                                      coordinateFrameManager,
                                      mainWin,
                                      platformFocusManager,
-                                     &centralWidget );
+                                     displayRefreshTime );
 
-    // tell this widget about things that were constructed later
-    selectableElementWidget.init( &guiElementModel, mainWin );
+    // Gui-Element-selecting widget
+    SelectableElementWidget selectableElementWidget( platformFocusManager,
+                                                     jobQueue,
+                                                     context(),
+                                                     &guiElementModel,
+                                                     mainWin );
     
-    // tell this widget about things that were constructed later
-    centralWidget.init( &guiElementModel,
-                        &worldView );
+    // Central GUI widget
+    QSplitter centralWidget( Qt::Horizontal );
+    centralWidget.addWidget( &selectableElementWidget );
+    centralWidget.addWidget( &worldView );
 
     orcaqgemv::loadElementsFromConfigFile( guiElementModel, context() );
 

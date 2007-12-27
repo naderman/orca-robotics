@@ -27,16 +27,16 @@ using namespace std;
 MainWindow::MainWindow( 
     std::string                        title,   
     ScreenDumpParams                   screenDumpParams,
-    CentralWidget                     *centralWidget,
+//    CentralWidget                     *centralWidget,
     const std::vector<std::string>    &supportedInterfaces )
-    : centralWidget_(centralWidget),
-      screenDumpParams_(screenDumpParams),
+//    : centralWidget_(centralWidget),
+    : screenDumpParams_(screenDumpParams),
       supportedInterfaces_(supportedInterfaces)
 {
     setWindowTitle( title.c_str() );
     setWindowIcon ( QPixmap(orcaqt::orca2_2x3_yellow_130_xpm) );
 
-    setCentralWidget( centralWidget );
+//    setCentralWidget( centralWidget );
     
     //
     // setup all the menus/toolbars etc.

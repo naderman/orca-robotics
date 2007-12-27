@@ -18,6 +18,14 @@ class QTimer;
 // A Widget which allows users to select (with the mouse) items from a
 // view of the Registry, and transfer them to the list of GuiElements.
 //
+//
+// Interaction with the JobQueue:
+// - when you need to update the information about the content of the registry, create 
+//   orcaqcm::GetComponentsJob and add it to the JobQueue. The job needs a pointer to an instance
+//   of orcaqcm::OcmModel.
+// - the rest will happen automatically in one of the threads of the JobQueue: the job will get
+//   the data from the registry, transfer it to the OcmModel, which will update and repaint itself.
+//
 class SelectableElementWidget : public QSplitter
 {
     Q_OBJECT
@@ -27,10 +35,9 @@ public:
     SelectableElementWidget( hydroqgui::PlatformFocusManager &platformFocusManager,
                              hydroutil::JobQueue             &jobQueue,
                              const orcaice::Context          &context,
+                             orcaqgemv::GuiElementModel      *guiElementModel,
+                             QMainWindow                     &mainWindow,
                              QWidget                         *parent=NULL );
-
-    void init( orcaqgemv::GuiElementModel *guiElemModel,
-               QMainWindow                &mainWindow );
 
 private slots:
 
@@ -45,7 +52,6 @@ private:
     QItemDelegate               *regDelegate_;
 
     // gui element list
-    orcaqgemv::GuiElementModel             *elemModel_;
     orcaqgemv::GuiElementView              *elemView_;
 
     // display

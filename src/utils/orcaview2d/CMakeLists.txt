@@ -18,7 +18,6 @@ IF ( BUILD )
 
     SET( MOC_HEADERS
         mainwin.h
-        centralwidget.h
         selectableelementwidget.h
         platformfocuscombo.h
     )

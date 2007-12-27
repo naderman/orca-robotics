@@ -13,6 +13,8 @@ using namespace std;
 SelectableElementWidget::SelectableElementWidget( hydroqgui::PlatformFocusManager &platformFocusManager,
                                                   hydroutil::JobQueue             &jobQueue,
                                                   const orcaice::Context          &context,
+                                                  orcaqgemv::GuiElementModel      *guiElementModel,
+                                                  QMainWindow                     &mainWindow,
                                                   QWidget                         *parent )
     : QSplitter(parent),
       jobQueue_(jobQueue),
@@ -36,37 +38,30 @@ SelectableElementWidget::SelectableElementWidget( hydroqgui::PlatformFocusManage
     regView_->setColumnWidth( 0, 200 );
 
     platformFocusCombo_ = new PlatformFocusCombo(platformFocusManager,this);
-}
-
-void
-SelectableElementWidget::init( orcaqgemv::GuiElementModel *guiElemModel,
-                               QMainWindow                &mainWindow )
-{
-    elemModel_ = guiElemModel;
 
     // Bottom part: element view
     elemView_ = new orcaqgemv::GuiElementView(this);
-    elemView_->setModel( elemModel_ );
+    elemView_->setModel( guiElementModel );
     elemView_->horizontalHeader()->setMovable(true);
     elemView_->verticalHeader()->hide();
     elemView_->setAlternatingRowColors(true);
     
     // Give the model a pointer to the view
-    elemModel_->setView( elemView_ );
+    guiElementModel->setView( elemView_ );
     
     QObject::connect( regView_,SIGNAL(newSelection( const QList<QStringList> & )),
-                      elemModel_,SLOT(createGuiElementFromSelection( const QList<QStringList> & )) );
+                      guiElementModel,SLOT(createGuiElementFromSelection( const QList<QStringList> & )) );
 
     regTimer_ = new QTimer( this );
     QObject::connect( regTimer_,SIGNAL(timeout()), this,SLOT(refreshRegistryView()) );
     regTimer_->start( 10*1000 );
 
     // Connect the element model and the platformFocusCombo_
-    QObject::connect( elemModel_,
+    QObject::connect( guiElementModel,
                       SIGNAL(newPlatform(const QString&)),
                       platformFocusCombo_,
                       SLOT(addPlatformToList(const QString&)) );    
-    QObject::connect( elemModel_,
+    QObject::connect( guiElementModel,
                       SIGNAL(platformNeedsRemoval(const QString&)),
                       platformFocusCombo_,
                       SLOT(removePlatformFromList(const QString&)) );
