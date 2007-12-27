@@ -34,11 +34,13 @@ class SelectableElementWidget : public QSplitter
 
 public: 
 
+    //! Negative regRefreshPeriodSec means never refresh automatically.
     SelectableElementWidget( hydroqgui::PlatformFocusManager &platformFocusManager,
                              hydroutil::JobQueue             &jobQueue,
                              const orcaice::Context          &context,
                              orcaqgemv::GuiElementModel      *guiElementModel,
                              QMainWindow                     &mainWindow,
+                             int                              regRefreshPeriodSec=10,
                              QWidget                         *parent=NULL );
 
 private slots:

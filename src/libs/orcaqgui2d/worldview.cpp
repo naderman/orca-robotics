@@ -51,8 +51,8 @@ WorldView::WorldView( PlatformCSFinder                   *platformCSFinder,
       platformFocusManager_(platformFocusManager),
       antiAliasing_(false)
 {
-    setMinimumSize( 400, 400 );
-    setMaximumSize( 1400, 1050 );
+//     setMinimumSize( 400, 400 );
+//     setMaximumSize( 1400, 1050 );
  
     // Use mouse tracking to show tooltips with robot names.
     // TODO: make this configurable?
@@ -68,8 +68,10 @@ WorldView::WorldView( PlatformCSFinder                   *platformCSFinder,
     zoomFitWin();
 
     // Get the origin on-screen
-    moveLeft();moveLeft();
-    moveDown();moveDown();
+    for ( uint i=0; i < 2; i++ )
+        moveLeft();
+    for ( uint i=0; i < 5; i++ )
+        moveDown();
 
     update();
 

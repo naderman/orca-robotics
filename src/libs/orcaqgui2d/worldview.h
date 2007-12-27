@@ -44,6 +44,8 @@ public:
                int                                 displayRefreshTime,
                QWidget                            *parent=NULL );
   ~WorldView();
+
+    QSize sizeHint() const { return QSize( 400, 400 ); }
   
 public slots:
     // abstract zoom functions

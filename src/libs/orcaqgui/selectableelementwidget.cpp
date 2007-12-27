@@ -17,6 +17,7 @@ SelectableElementWidget::SelectableElementWidget( hydroqgui::PlatformFocusManage
                                                   const orcaice::Context          &context,
                                                   orcaqgemv::GuiElementModel      *guiElementModel,
                                                   QMainWindow                     &mainWindow,
+                                                  int                              regRefreshPeriodSec,
                                                   QWidget                         *parent )
     : QSplitter(parent),
       jobQueue_(jobQueue),
@@ -54,9 +55,12 @@ SelectableElementWidget::SelectableElementWidget( hydroqgui::PlatformFocusManage
     QObject::connect( regView_,SIGNAL(newSelection( const QList<QStringList> & )),
                       guiElementModel,SLOT(createGuiElementFromSelection( const QList<QStringList> & )) );
 
-    regTimer_ = new QTimer( this );
-    QObject::connect( regTimer_,SIGNAL(timeout()), this,SLOT(refreshRegistryView()) );
-    regTimer_->start( 10*1000 );
+    if ( regRefreshPeriodSec > 0 )
+    {
+        regTimer_ = new QTimer( this );
+        QObject::connect( regTimer_,SIGNAL(timeout()), this,SLOT(updateRegistryView()) );
+        regTimer_->start( 1000 * regRefreshPeriodSec );
+    }
 
     // Connect the element model and the platformFocusCombo_
     QObject::connect( guiElementModel,

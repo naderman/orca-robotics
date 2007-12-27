@@ -44,8 +44,8 @@ namespace orcaqgui {
             }
 
             // Debug output
-            cout << "TRACER(component.cpp): Loading element of type: " << elementType.toStdString() << endl;
-            cout << "TRACER(component.cpp): Loading element with details: ";
+            cout << "TRACER(configfileelements.cpp): Loading element of type: " << elementType.toStdString() << endl;
+            cout << "TRACER(configfileelements.cpp): Loading element with details: ";
             for (int k=0; k<elementDetails.size(); k++)
             {
                 cout << elementDetails[k].toStdString() << " ";
