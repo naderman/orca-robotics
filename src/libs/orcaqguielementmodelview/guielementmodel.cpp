@@ -24,23 +24,26 @@ GuiElementModel::GuiElementModel( const std::vector<hydroqgui::IGuiElementFactor
                                   hydroqgui::MouseEventManager                      &mouseEventManager,
                                   hydroqgui::ShortcutKeyManager                     &shortcutKeyManager,
                                   hydroqgui::CoordinateFrameManager                 &coordinateFrameManager,
+                                  hydroqgui::PlatformFocusManager                   &platformFocusManager,
                                   hydroqgui::GuiElementSet                          &guiElementSet,
                                   hydroqgui::IStringToColorMap                      &platformColorMap,
                                   QObject                                           *parent )
     : QAbstractTableModel(parent),
+      PlatformFocusChangeReceiver(platformFocusManager),
       guiElementSet_(guiElementSet),
       factories_(factories),
       humanManager_(humanManager),
       mouseEventManager_(mouseEventManager),
       shortcutKeyManager_(shortcutKeyManager),
       coordinateFrameManager_(coordinateFrameManager),
+      platformFocusManager_(platformFocusManager),
       platformColorMap_(platformColorMap),
       view_(0)
 {    
     headers_ << "Type" << "Details";
 //     coordinateFramePlatform_ = "global";
 //     ignoreCoordinateFrameRotation_ = false;
-    platformInFocus_ = "global";
+//    platformInFocus_ = "global";
 }
 
 int GuiElementModel::rowCount(const QModelIndex &parent) const
@@ -288,11 +291,9 @@ GuiElementModel::createGuiElement( const QString &elementType,
     //
     // We need to tell the new element whether it's in focus or not
     //
-    if (platform == platformInFocus_ || platformInFocus_== "global" ) {
-        element->setFocus( true );
-    } else  {
-        element->setFocus( false );
-    }
+    const bool isInFocus =  ( platformFocusManager_.platformInFocus() == platform ||
+                              platformFocusManager_.platformInFocus() == "global" );
+    element->setFocus( isInFocus );
         
     int ii = elements().indexOf( element );
     if ( ii==-1 ) {    
@@ -307,9 +308,8 @@ GuiElementModel::createGuiElement( const QString &elementType,
         endInsertRows();
         
         // hide if not in focus
-        if ( (platform != platformInFocus_) && (view_!=NULL) && (platformInFocus_ != "global") ) {
+        if ( view_ && !isInFocus )
             view_->hideRow( ii );
-        }
         
     }
     // resize the columns so we can read the text
@@ -330,34 +330,25 @@ GuiElementModel::doesPlatformExist( QString &platformName )
 
 
 void 
-GuiElementModel::changePlatformFocus( const QString &platform )
+GuiElementModel::platformFocusChanged( const QString &newPlatformName )
 {
-    // keep a local copy
-    platformInFocus_ = platform;
-    
-    //cout << "TRACE(guielementmodel.cpp): changePlatformFocus: " << platform.toStdString() << endl;
     for ( int i=0; i<elements().size(); ++i )
     {
         // special case: show everybody with their colours
-        if (platform=="global") 
-        {
-            elements()[i]->setFocus(true);
-            continue;
-        }
-        
-        if ( elements()[i]->platform() == platform )
+        if (newPlatformName=="global") 
         {
             elements()[i]->setFocus(true);
         }
         else
         {
-            elements()[i]->setFocus(false);  
+            const bool isInFocus = (elements()[i]->platform() == newPlatformName);
+            elements()[i]->setFocus( isInFocus );
         }
     }
     
     // tell the guielementview to filter what it shows
     // collect indices
-    if ( platform=="global" && view_ ) {
+    if ( newPlatformName=="global" && view_ ) {
         view_->showAllElements( elements().size() );
         return;
     }
@@ -365,7 +356,7 @@ GuiElementModel::changePlatformFocus( const QString &platform )
     vector<int> elementIndices;
     for ( int i=0; i<elements().size(); ++i )
     {
-        if (elements()[i]->platform() != platform)
+        if (elements()[i]->platform() != newPlatformName)
             elementIndices.push_back(i);
     }
     if ( view_ )

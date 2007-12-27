@@ -39,6 +39,7 @@ WorldView::WorldView( PlatformCSFinder                   *platformCSFinder,
                       hydroqgui::GuiElementSet           &guiElementSet,
                       hydroqgui::CoordinateFrameManager  &coordinateFrameManager,
                       hydroqgui::IHumanManager           &humanManager,
+                      hydroqgui::PlatformFocusManager    &platformFocusManager,
                       QWidget*                            parent )
     : ZoomWidget(parent),
       platformCSFinder_(platformCSFinder),
@@ -46,6 +47,7 @@ WorldView::WorldView( PlatformCSFinder                   *platformCSFinder,
       guiElementSet_(guiElementSet),
       coordinateFrameManager_(coordinateFrameManager),
       humanManager_(humanManager),
+      platformFocusManager_(platformFocusManager),
       antiAliasing_(false)
 {
     setMinimumSize( 400, 400 );
@@ -78,32 +80,32 @@ WorldView::~WorldView()
 void
 WorldView::setupInterface()
 {
-    // view menu icons    
-    QPixmap leftIcon( left_xpm );
-    QPixmap rightIcon( right_xpm );    
-    QPixmap upIcon( up_xpm );
-    QPixmap downIcon( down_xpm );
-    QPixmap zoomInIcon( zoomIn_xpm );
-    QPixmap zoomOutIcon( zoomOut_xpm );
+//     // view menu icons    
+//     QPixmap leftIcon( left_xpm );
+//     QPixmap rightIcon( right_xpm );    
+//     QPixmap upIcon( up_xpm );
+//     QPixmap downIcon( down_xpm );
+//     QPixmap zoomInIcon( zoomIn_xpm );
+//     QPixmap zoomOutIcon( zoomOut_xpm );
 
-    QAction* moveUp = new QAction(upIcon, tr("Move &up"), this );
-    connect(moveUp, SIGNAL(activated()), this, SLOT(moveUp()));
-    moveUp->setShortcut( Qt::CTRL | Qt::Key_Up );
-    QAction* moveDown = new QAction(downIcon, tr("Move &down"), this );
-    connect(moveDown, SIGNAL(activated()), this, SLOT(moveDown()));
-    moveDown->setShortcut( Qt::CTRL | Qt::Key_Down );
-    QAction* moveLeft = new QAction(leftIcon, tr("Move &left"), this );
-    connect(moveLeft, SIGNAL(activated()), this, SLOT(moveLeft()));
-    moveLeft->setShortcut( Qt::CTRL | Qt::Key_Left );
-    QAction* moveRight = new QAction(rightIcon, tr("Move &right"), this );
-    connect(moveRight, SIGNAL(activated()), this, SLOT(moveRight()));
-    moveRight->setShortcut( Qt::CTRL | Qt::Key_Right );
-    QAction* zoomIn = new QAction(zoomInIcon, tr("Zoom &in"), this );
-    connect(zoomIn, SIGNAL(activated()), this, SLOT(zoomIn()));
-    zoomIn->setShortcut( Qt::CTRL | Qt::Key_Equal );
-    QAction* zoomOut = new QAction(zoomOutIcon, tr("Zoom &out"), this );
-    connect(zoomOut, SIGNAL(activated()), this, SLOT(zoomOut()));
-    zoomOut->setShortcut( Qt::CTRL | Qt::Key_Minus );
+//     QAction* moveUp = new QAction(upIcon, tr("Move &up"), this );
+//     connect(moveUp, SIGNAL(activated()), this, SLOT(moveUp()));
+//     moveUp->setShortcut( Qt::CTRL | Qt::Key_Up );
+//     QAction* moveDown = new QAction(downIcon, tr("Move &down"), this );
+//     connect(moveDown, SIGNAL(activated()), this, SLOT(moveDown()));
+//     moveDown->setShortcut( Qt::CTRL | Qt::Key_Down );
+//     QAction* moveLeft = new QAction(leftIcon, tr("Move &left"), this );
+//     connect(moveLeft, SIGNAL(activated()), this, SLOT(moveLeft()));
+//     moveLeft->setShortcut( Qt::CTRL | Qt::Key_Left );
+//     QAction* moveRight = new QAction(rightIcon, tr("Move &right"), this );
+//     connect(moveRight, SIGNAL(activated()), this, SLOT(moveRight()));
+//     moveRight->setShortcut( Qt::CTRL | Qt::Key_Right );
+//     QAction* zoomIn = new QAction(zoomInIcon, tr("Zoom &in"), this );
+//     connect(zoomIn, SIGNAL(activated()), this, SLOT(zoomIn()));
+//     zoomIn->setShortcut( Qt::CTRL | Qt::Key_Equal );
+//     QAction* zoomOut = new QAction(zoomOutIcon, tr("Zoom &out"), this );
+//     connect(zoomOut, SIGNAL(activated()), this, SLOT(zoomOut()));
+//     zoomOut->setShortcut( Qt::CTRL | Qt::Key_Minus );
 
     QAction* antiAliasing = new QAction(tr("&Anti-Aliasing"),this);
     antiAliasing->setCheckable(true);
@@ -120,12 +122,12 @@ WorldView::setupInterface()
     connect(transparency,SIGNAL(toggled(bool)), this, SLOT(setUseTransparency(bool)) );
     humanManager_.displayMenu()->addAction(transparency);   
 
-    humanManager_.displayMenu()->addAction(moveUp);
-    humanManager_.displayMenu()->addAction(moveDown);
-    humanManager_.displayMenu()->addAction(moveLeft);
-    humanManager_.displayMenu()->addAction(moveRight);
-    humanManager_.displayMenu()->addAction(zoomIn);
-    humanManager_.displayMenu()->addAction(zoomOut);
+//     humanManager_.displayMenu()->addAction(moveUp);
+//     humanManager_.displayMenu()->addAction(moveDown);
+//     humanManager_.displayMenu()->addAction(moveLeft);
+//     humanManager_.displayMenu()->addAction(moveRight);
+//     humanManager_.displayMenu()->addAction(zoomIn);
+//     humanManager_.displayMenu()->addAction(zoomOut);
 }
 
 bool
@@ -341,19 +343,15 @@ WorldView::mouseReleaseEvent( QMouseEvent* e )
 
     if ( e->button() == Qt::LeftButton )          // left button released
     {  
-// AlexB: TODO: Commented this bit out coz I don't understand what's going on here.
-//              Have to ask Tobi.
-#if 0
         // select component
         const double SELECTED_RADIUS_PIXEL = 20.0;
         QString platform = nearestComponent( mouseDownPnt_, SELECTED_RADIUS_PIXEL);
         //cout << "TRACE(worldview.cpp): nearestComponent is: " << platform.toStdString() << endl;
         // alert others
-        if ( platform != "" ) 
+        if ( platform != "" )
         {
-            mainWin_->changePlatformFocusFromView( platform );
+            platformFocusManager_.setFocusPlatform( platform );
         }
-#endif
     } 
 }
 

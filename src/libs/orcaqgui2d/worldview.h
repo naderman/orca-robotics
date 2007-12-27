@@ -40,6 +40,7 @@ public:
                hydroqgui::GuiElementSet           &guiElementSet,
                hydroqgui::CoordinateFrameManager  &coordinateFrameManager,
                hydroqgui::IHumanManager           &humanManager,
+               hydroqgui::PlatformFocusManager    &platformFocusManager,
                QWidget                            *parent );
   ~WorldView();
   
@@ -65,6 +66,7 @@ private:
     hydroqgui::CoordinateFrameManager &coordinateFrameManager_;
 
     hydroqgui::IHumanManager &humanManager_;
+    hydroqgui::PlatformFocusManager &platformFocusManager_;
 
     void paintAllGuiElements( QPainter *painter, int z, bool isCoordinateFramePlatformLocalised );
     

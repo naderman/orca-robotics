@@ -14,6 +14,7 @@
 #include <hydrodll/dynamicload.h>
 #include <hydroutil/jobqueue.h>
 #include "mainwin.h"
+#include "centralwidget.h"
 #include <orcaqguielementmodelview/guielementmodel.h>
 #include <orcaqgui2d/worldview.h>
 #include <orcaqgui2d/platformcsfinder.h>
@@ -175,13 +176,20 @@ Component::start()
     // returns a listing of unique supported interfaces, for display drivers to know what's supported
     std::vector<std::string> supportedInterfaces = loadPluginLibraries( libNames );
 
+    // Manages platform(s) in focus
+    hydroqgui::PlatformFocusManager platformFocusManager;
+
+    // Central GUI widget
+    CentralWidget centralWidget( platformFocusManager,
+                                 displayRefreshTime,
+                                 jobQueue,
+                                 context() );
+
     // main window for display
     MainWindow mainWin( "OrcaView",
                         screenDumpParams,
-                        displayRefreshTime,
-                        supportedInterfaces,
-                        &jobQueue, 
-                        context() );
+                        &centralWidget,
+                        supportedInterfaces );
 
     // Color scheme
     hydroqgui::StringToRandomColorMap platformColorScheme;
@@ -204,6 +212,7 @@ Component::start()
                                                 mouseEventManager,
                                                 shortcutKeyManager,
                                                 coordinateFrameManager,
+                                                platformFocusManager,
                                                 guiElementSet,
                                                 platformColorScheme );
 
@@ -216,11 +225,13 @@ Component::start()
                                      guiElementSet,
                                      coordinateFrameManager,
                                      mainWin,
-                                     mainWin.displayViewParent() );
+                                     platformFocusManager,
+                                     &centralWidget );
 
     // tell the main window about the widgets, model, and factory
-    mainWin.init( &guiElementModel,
-                  &worldView );
+    centralWidget.init( &guiElementModel,
+                        &worldView,
+                        mainWin );
 
     orcaqgemv::loadElementsFromConfigFile( guiElementModel, context() );
 

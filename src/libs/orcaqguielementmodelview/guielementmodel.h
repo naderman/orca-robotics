@@ -26,11 +26,14 @@ class GuiElementView;
 //!
 //! @brief Stores the set of GuiElements
 //!
-class GuiElementModel : public QAbstractTableModel
+class GuiElementModel : public QAbstractTableModel,
+                        public hydroqgui::PlatformFocusChangeReceiver
 {
     Q_OBJECT
 
 public:
+
+    // AlexB: TODO: What is this gear for?
     enum Roles {
         InterfaceIdRole = Qt::UserRole + 1,
         ContextMenuRole,
@@ -42,6 +45,7 @@ public:
                               hydroqgui::MouseEventManager                      &mouseEventManager,
                               hydroqgui::ShortcutKeyManager                     &shortcutKeyManager,
                               hydroqgui::CoordinateFrameManager                 &coordinateFrameManager,
+                              hydroqgui::PlatformFocusManager                   &platformFocusManager,
                               hydroqgui::GuiElementSet                          &guiElementSet,
                               hydroqgui::IStringToColorMap                      &platformColorMap,
                               QObject                                           *parent = 0);
@@ -66,19 +70,15 @@ public:
     void setCoordinateFramePlatform( int guiElementIndex );
     void setOriginPlatform( int guiElementIndex );
     
+    // TODO: AlexB: What the hell is this all about?
     void selectedAdaptersInView( std::vector<int> &indices );
-    void changePlatformFocus( const QString &platform );
     
-//     // access method for platform in focus
-//     const QString& coordinateFramePlatform() { return coordinateFramePlatform_; }
-//     QString coordinateFramePlatform() const { return coordinateFramePlatform_; }
-// 
-//    bool ignoreCoordinateFrameRotation() const { return ignoreCoordinateFrameRotation_; }
-    
-//    const QList<hydroqgui::IGuiElement*> &elements() { return elements_; };
-    
+    // void changePlatformFocus( const QString &platform );
     void createGuiElement( const QString &elementType, QStringList &elementDetails );
-    
+
+    // Inherited from PlatformFocusChangeReceiver
+    void platformFocusChanged( const QString &newPlatformName );
+
 signals:
     void newPlatform( const QString& );
     void platformNeedsRemoval( const QString& );
@@ -86,7 +86,6 @@ signals:
 public slots:
     void removeAllGuiElements();
     void createGuiElementFromSelection( const QList<QStringList> & );
-    // void setUseTransparency(bool transparency);
 
 private:
 
@@ -111,12 +110,12 @@ private:
     hydroqgui::MouseEventManager  &mouseEventManager_;
     hydroqgui::ShortcutKeyManager &shortcutKeyManager_;
     hydroqgui::CoordinateFrameManager &coordinateFrameManager_;
+    hydroqgui::PlatformFocusManager &platformFocusManager_;
     bool doesPlatformExist( QString &platformName );
     bool doesElementExist( const QStringList& elementDetails, int numElements );
     
     hydroqgui::IStringToColorMap &platformColorMap_;
     
-    QString platformInFocus_;
     GuiElementView* view_;
     
     QString lookupTypeFromFactories( QStringList &ids );
