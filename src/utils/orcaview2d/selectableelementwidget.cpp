@@ -1,0 +1,110 @@
+#include "selectableelementwidget.h"
+#include <iostream>
+#include <cmath>        // for floor()
+#include <QtGui>
+#include <orcaice/orcaice.h>
+#include <orcacm/orcacm.h>
+#include <orcaqt/orcaqt.h>
+#include <orcaqcm/orcaqcm.h>
+#include <orcaqguielementmodelview/regselectview.h>
+
+using namespace std;
+
+SelectableElementWidget::SelectableElementWidget( hydroqgui::PlatformFocusManager &platformFocusManager,
+                                                  hydroutil::JobQueue             &jobQueue,
+                                                  const orcaice::Context          &context,
+                                                  QWidget                         *parent )
+    : QSplitter(parent),
+      jobQueue_(jobQueue),
+      context_(context)
+{
+    setOrientation( Qt::Vertical );
+
+
+    // Model
+    regModel_ = new orcaqcm::OcmModel();
+    // Delegate
+    regDelegate_ = new orcaqcm::OcmDelegate();
+    // View
+    regView_ = new orcaqgemv::RegSelectView(this);
+    regView_->setModel( regModel_ );
+    regView_->setItemDelegate(regDelegate_);
+    regView_->header()->setMovable(true);
+    regView_->setUniformRowHeights(true);
+    regView_->setMinimumWidth( 300 );
+    regView_->setSelectionMode ( QAbstractItemView::ExtendedSelection );
+    regView_->setColumnWidth( 0, 200 );
+
+    platformFocusCombo_ = new PlatformFocusCombo(platformFocusManager,this);
+}
+
+void
+SelectableElementWidget::init( orcaqgemv::GuiElementModel *guiElemModel,
+                               QMainWindow                &mainWindow )
+{
+    elemModel_ = guiElemModel;
+
+    // Bottom part: element view
+    elemView_ = new orcaqgemv::GuiElementView(this);
+    elemView_->setModel( elemModel_ );
+    elemView_->horizontalHeader()->setMovable(true);
+    elemView_->verticalHeader()->hide();
+    elemView_->setAlternatingRowColors(true);
+    
+    // Give the model a pointer to the view
+    elemModel_->setView( elemView_ );
+    
+    QObject::connect( regView_,SIGNAL(newSelection( const QList<QStringList> & )),
+                      elemModel_,SLOT(createGuiElementFromSelection( const QList<QStringList> & )) );
+
+    regTimer_ = new QTimer( this );
+    QObject::connect( regTimer_,SIGNAL(timeout()), this,SLOT(refreshRegistryView()) );
+    regTimer_->start( 10*1000 );
+
+    // Connect the element model and the platformFocusCombo_
+    QObject::connect( elemModel_,
+                      SIGNAL(newPlatform(const QString&)),
+                      platformFocusCombo_,
+                      SLOT(addPlatformToList(const QString&)) );    
+    QObject::connect( elemModel_,
+                      SIGNAL(platformNeedsRemoval(const QString&)),
+                      platformFocusCombo_,
+                      SLOT(removePlatformFromList(const QString&)) );
+
+    // refresh right now
+    updateRegistryView();
+
+    //
+    // Set up registry menu
+    //
+    QMenu *registryMenu = mainWindow.menuBar()->addMenu("&Registry");
+    registryMenu->addAction("Toggle &Disconnected", regView_, SLOT(toggleDisconnected()), QKeySequence("Ctrl+`") );
+    registryMenu->addAction("Toggle &Standard", regView_, SLOT(toggleStandard()), QKeySequence("Ctrl+0") );
+    QMenu *levelSubMenu = registryMenu->addMenu("Show &Level");
+    levelSubMenu->addAction("&Registries", regView_, SLOT(showLevelOne()), QKeySequence("Ctrl+1") );
+    levelSubMenu->addAction("&Platforms", regView_, SLOT(showLevelTwo()), QKeySequence("Ctrl+2") );
+    levelSubMenu->addAction("&Components", regView_, SLOT(showLevelThree()), QKeySequence("Ctrl+3") );
+    levelSubMenu->addAction("&Interfaces", regView_, SLOT(showLevelFour()), QKeySequence("Ctrl+4") );
+    registryMenu->addSeparator();
+    registryMenu->addAction("&Update", this, SLOT(updateRegistryView()), QKeySequence("F5") );
+    registryMenu->addAction("&Reload", this, SLOT(reloadRegistryView()), QKeySequence("Ctrl+L") );    
+}
+                     
+void
+SelectableElementWidget::updateRegistryView()
+{
+    string locatorString = context_.communicator()->getDefaultLocator()->ice_toString();
+
+    hydroutil::JobPtr job = new orcaqcm::GetComponentsJob( qApp, regModel_, context_, locatorString );
+    jobQueue_.add( job );
+}
+
+void
+SelectableElementWidget::reloadRegistryView()
+{
+    // first clear the model
+    regModel_->clear();
+
+    // now update the view
+    updateRegistryView();
+}

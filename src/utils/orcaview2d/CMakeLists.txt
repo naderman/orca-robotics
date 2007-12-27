@@ -19,6 +19,7 @@ IF ( BUILD )
     SET( MOC_HEADERS
         mainwin.h
         centralwidget.h
+        selectableelementwidget.h
         platformfocuscombo.h
     )
     QT4_WRAP_CPP( MOC_SRCS ${MOC_HEADERS} )

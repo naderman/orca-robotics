@@ -40,6 +40,10 @@ typedef struct {
 } ScreenDumpParams;
 
 
+//
+// The MainWindow provides the framework in which all other widgets sit.
+// It handles screen capture.
+//
 class MainWindow : public QMainWindow, 
                    public hydroqgui::IHumanManager
 {
