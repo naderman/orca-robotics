@@ -58,7 +58,7 @@ Sorca = [ ...
 2005     5   9  1   0       14639   29838   16056   0   % 0.14.0
 2005     7   2  1   0       19751   27479   20395   0   % 0.15.0
 2005    10  11  1   0       20818   28675   21303   0   % 1.0.0
-% BASE: interfaces/slice
+% BASE: c_ount src/interfaces/slice/orca/*.ice
 % COMP: sloccount src/components
 % UTIL: sloccount src/utils
 2005    11  20  1   Sice212 530    9226         8781        0   % 2.0.0-rc1
@@ -74,16 +74,7 @@ Sorca = [ ...
 2006     9  18  0   Sice310 1094   19317-329    31304+329   0  % 2.0.1
 2006    10   5  0   Sice310 1094   20384-329    32255+329   0  % 2.0.2
 2006    11  23  1   Sice311 1178   21408-1001   35768+1001  0  % 2.1.0
-% BASE: cd src; sloccount libs/orcaice/ 
-%          MINUS sloccount libs/orcaice/test 
-%          PLUS sloccount interfaces/slice
-% COMP: cd src; sloccount components/ libs/ 
-%          MINUS sloccount libs/orcaice* libs/orcaq* libs/orcalog* libs/orcaprobe* libs/orcawall* libs/orcaobj libs/orcaobjutil/
-% UTIL: cd src; sloccount utils libs/orcaq* libs/orcalog* libs/orcaprobe* libs/orcawall* libs/orcaobj libs/orcaice*
-%          MINUS sloccount libs/orcaice/
-%
-%
-% BASE: sloccount src/interfaces/slice
+% BASE: c_ount src/interfaces/slice/orca/*.ice
 % COMP: sloccount src/components
 % UTIL: sloccount src/utils src/libs
 % to count lines in *.ice files, rename them to *.cpp like this:
@@ -97,7 +88,7 @@ Sorca = [ ...
 % A&D: Hydro: sloccount src
 2007    10  28  1   Sice321 1787    23840   54879  12251    % 2.7.0
 2007    12   7  0   Sice321 1750    19312   52762  24104    % 2.8.0
-2008     1  17  1   Sice321 1750    19276   53227  24657    % 2.9.0
+2008     1  17  1   Sice321 1774    19280   53015  25300    % 2.9.0
 ];
 Vorca ={'0.8.6', '0.11.0', '0.12.0', '0.12.1', '0.13.0', '0.13.1', '0.13.2', '0.13.3', '0.14.0', '0.15.0', '1.0.0', ...
     '2.0.0-rc1', '2.0.0-rc2', '2.0.0-rc3', '2.0.0-rc4', '2.0.0-rc5', '2.0.0', '2.0.1', '2.0.2', '2.1.0', '2.1.1', ...
