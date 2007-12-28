@@ -1,0 +1,39 @@
+#
+# WRAP_COMPONENT_INTO_APP ( COMP_NAME COMP_NAMESPACE SOURCE0 [SOURCE1 SOURCE2 ...] )
+#
+MACRO ( WRAP_COMPONENT_INTO_APP COMP_NAME COMP_NAMESPACE )
+
+#     SET ( MAIN_CPP_FILE ${CMAKE_CURRENT_BINARY_DIR}/automain.cpp )
+    SET ( MAIN_CPP_FILE ${CMAKE_CURRENT_BINARY_DIR}/autogen/main.cpp )
+
+    CONFIGURE_FILE( ${ORCA_CMAKE_DIR}/main.cpp.template ${MAIN_CPP_FILE} )
+
+    GLOBAL_ADD_EXECUTABLE( ${COMP_NAME} ${ARGN} ${MAIN_CPP_FILE} )
+
+    INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR} )
+
+ENDMACRO ( WRAP_COMPONENT_INTO_APP COMP_NAME COMP_NAMESPACE )
+
+#
+# WRAP_COMPONENT_INTO_SERVICE ( SERVICE_NAME COMP_NAMESPACE SOURCE0 [SOURCE1 SOURCE2 ...] )
+#
+MACRO ( WRAP_COMPONENT_INTO_SERVICE SERVICE_NAME COMP_NAMESPACE )
+
+#     SET ( SERVICE_H_FILE ${CMAKE_CURRENT_BINARY_DIR}/autoservice.h )
+#     SET ( SERVICE_CPP_FILE ${CMAKE_CURRENT_BINARY_DIR}/autoservice.cpp )
+    SET ( SERVICE_H_FILE ${CMAKE_CURRENT_BINARY_DIR}/autogen/service.h )
+    SET ( SERVICE_CPP_FILE ${CMAKE_CURRENT_BINARY_DIR}/autogen/service.cpp )
+
+    CONFIGURE_FILE( ${ORCA_CMAKE_DIR}/service.h.template ${SERVICE_H_FILE} )
+    CONFIGURE_FILE( ${ORCA_CMAKE_DIR}/service.cpp.template ${SERVICE_CPP_FILE} )
+
+    # This works in Linux.
+    # It's easier to compile STATIC lib in Windows. But I'm not sure if IceBox
+    # would be happy with a static lib. So we should figure out how to do shared
+    # libs properly in Windows. Hopefully, the changes would be confined to
+    # to service.[h/cpp].template files.
+    GLOBAL_ADD_LIBRARY( ${SERVICE_NAME} SHARED ${ARGN} ${SERVICE_CPP_FILE} )
+
+    INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR} )
+
+ENDMACRO ( WRAP_COMPONENT_INTO_SERVICE SERVICE_NAME COMP_NAMESPACE )

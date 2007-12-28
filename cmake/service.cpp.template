@@ -1,0 +1,22 @@
+/*
+ * Auto-generated. Do not modify.
+ */
+
+#include "service.h"
+#include "component.h"
+
+extern "C"
+{
+    //
+    // Factory function
+    //
+    IceBox::Service* create( Ice::CommunicatorPtr communicator )
+    {
+        return new ${COMP_NAMESPACE}::Service;
+    }
+}
+
+${COMP_NAMESPACE}::Service::Service()
+{
+    component_ = new ${COMP_NAMESPACE}::Component();
+}

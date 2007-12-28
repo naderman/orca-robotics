@@ -1,0 +1,22 @@
+/*
+ * Auto-generated. Do not modify.
+ */
+
+#ifndef SERVICE_H
+#define SERVICE_H
+
+#include <orcaice/service.h>
+
+namespace ${COMP_NAMESPACE}
+{
+
+class Service : public orcaice::Service
+{
+public:
+
+    Service();
+};
+
+} // namespace
+
+#endif
