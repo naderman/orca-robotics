@@ -141,7 +141,7 @@ PathPlanner2dElement::update()
     {
         QString msg;
         pathTaskAnswerConsumer_->msgStore_.get( msg );
-        humanManager_.showBoxMsg(hydroqgui::IHumanManager::Error, msg);    
+        humanManager_.showDialogMsg(hydroqgui::IHumanManager::Error, msg);    
     }
 }
 
@@ -341,7 +341,7 @@ PathPlannerHI::waypointModeSelected()
 
     if ( !gotMode_ )
     {
-        humanManager_.showBoxMsg( hydroqgui::IHumanManager::Warning, "Couldn't take over the mode for PathPlanner waypoints!" );
+        humanManager_.showDialogMsg( hydroqgui::IHumanManager::Warning, "Couldn't take over the mode for PathPlanner waypoints!" );
         return;
     }
 

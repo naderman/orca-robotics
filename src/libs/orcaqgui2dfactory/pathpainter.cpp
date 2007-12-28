@@ -244,14 +244,14 @@ void PathPainter::savePath( const QString fileName, hydroqgui::IHumanManager *hu
 {
     if (guiPath_.size()==0)
     {
-        humanManager->showBoxMsg(hydroqgui::IHumanManager::Warning, "Path has no waypoints!");
+        humanManager->showDialogMsg(hydroqgui::IHumanManager::Warning, "Path has no waypoints!");
         return;
     }
     
     QFile file(fileName);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
     {
-        humanManager->showBoxMsg(hydroqgui::IHumanManager::Error, "Cannot create file " + fileName );
+        humanManager->showDialogMsg(hydroqgui::IHumanManager::Error, "Cannot create file " + fileName );
         return;
     }
     

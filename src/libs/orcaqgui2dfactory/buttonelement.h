@@ -5,6 +5,7 @@
 #include <orca/button.h>
 #include <string>
 #include <orcaice/context.h>
+#include <hydroqgui/hydroqgui.h>
 
 namespace orcaqgui2d {
 
@@ -16,8 +17,9 @@ class ButtonElement : public orcaqgui2d::GuiElement2d
 
 public: 
 
-    ButtonElement( const orcaice::Context  &context,
-                   const std::string       &proxyString );
+    ButtonElement( const orcaice::Context   &context,
+                   const std::string        &proxyString,
+                   hydroqgui::IHumanManager &humanManager );
 
     virtual QStringList contextMenu();
     virtual void execute( int action );
@@ -35,6 +37,10 @@ private:
     orcaice::Context context_;
     std::string      proxyString_;
     orca::ButtonPrx  buttonPrx_;
+
+    hydroqgui::IHumanManager &humanManager_;
+
+    bool isConnected_;
 };
 
 }

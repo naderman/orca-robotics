@@ -891,14 +891,14 @@ PathInput::savePath( const QString &fileName )
     
     if (size==0)
     {
-        humanManager_.showBoxMsg(hydroqgui::IHumanManager::Warning, "Path has no waypoints!");
+        humanManager_.showDialogMsg(hydroqgui::IHumanManager::Warning, "Path has no waypoints!");
         return;
     }
     
     QFile file(fileName);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
     {
-        humanManager_.showBoxMsg(hydroqgui::IHumanManager::Error,
+        humanManager_.showDialogMsg(hydroqgui::IHumanManager::Error,
                                   "Cannot create file " + fileName );
         return;
     }

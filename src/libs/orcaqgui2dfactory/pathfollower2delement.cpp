@@ -461,7 +461,7 @@ PathFollower2dElement::stop()
     {
         stringstream ss;
         ss << "While trying to set (empty) pathfollower data: " << endl << e;
-        humanManager_.showBoxMsg(hydroqgui::IHumanManager::Error,QString(ss.str().c_str()));
+        humanManager_.showDialogMsg(hydroqgui::IHumanManager::Error,QString(ss.str().c_str()));
     }
 }
 
@@ -489,7 +489,7 @@ PathFollower2dElement::sendPath( const PathFollowerInput &pathInput, bool activa
     {
         stringstream ss;
         ss << e.what;
-        humanManager_.showBoxMsg( hydroqgui::IHumanManager::Error, ss.str().c_str() );
+        humanManager_.showDialogMsg( hydroqgui::IHumanManager::Error, ss.str().c_str() );
     }
     catch ( const Ice::Exception &e )
     {
@@ -604,7 +604,7 @@ PathFollowerHI::waypointModeSelected()
     
     if ( !gotMode_ )
     {
-        humanManager_.showBoxMsg( hydroqgui::IHumanManager::Warning, "Couldn't take over the mode for PathFollower waypoints!" );
+        humanManager_.showDialogMsg( hydroqgui::IHumanManager::Warning, "Couldn't take over the mode for PathFollower waypoints!" );
         return;
     }
 
@@ -627,7 +627,7 @@ PathFollowerHI::send()
     cout<<"TRACE(PathFollowerHI): send()" << endl;
     
     if (pathInput_==NULL) {
-        humanManager_.showBoxMsg( hydroqgui::IHumanManager::Warning, "Not in path input mode!" );
+        humanManager_.showDialogMsg( hydroqgui::IHumanManager::Warning, "Not in path input mode!" );
         return;
     }
         

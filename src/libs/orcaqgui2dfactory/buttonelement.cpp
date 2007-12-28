@@ -7,19 +7,30 @@ using namespace std;
 
 namespace orcaqgui2d {
 
-ButtonElement::ButtonElement( const orcaice::Context  &context,
-                              const std::string       &proxyString )
+ButtonElement::ButtonElement( const orcaice::Context   &context,
+                              const std::string        &proxyString,
+                              hydroqgui::IHumanManager &humanManager )
     : context_(context),
-      proxyString_(proxyString)
+      proxyString_(proxyString),
+      humanManager_(humanManager),
+      isConnected_(false)
 {
-    // try to connect at once
-    connect();
 }
 
 void
 ButtonElement::connect()
 {
-    orcaice::connectToInterfaceWithString( context_, buttonPrx_, proxyString_ );
+    try {
+        orcaice::connectToInterfaceWithString( context_, buttonPrx_, proxyString_ );
+    }
+    catch ( Ice::Exception &e )
+    {
+        stringstream ss;
+        ss << "ButtonElement::connect(): failed: " << e;
+        humanManager_.showStatusError( ss.str().c_str() );
+        return;
+    }
+    isConnected_ = true;
 }
 
 QStringList
@@ -49,6 +60,9 @@ ButtonElement::execute( int action )
 void
 ButtonElement::press()
 {
+    if ( !isConnected_ ) connect();
+    if ( !isConnected_ ) return;
+
     const uint MAX_TRIES = 2;
 
     for ( uint i=0; i < MAX_TRIES; i++ )
@@ -61,7 +75,7 @@ ButtonElement::press()
         {
             stringstream ss;
             ss << "ButtonElement: failed to press(): " << e;
-            context_.tracer().error( ss.str() );
+            humanManager_.showStatusError( ss.str().c_str() );
         }
     }
 }

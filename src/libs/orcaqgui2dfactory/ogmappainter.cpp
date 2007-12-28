@@ -99,7 +99,7 @@ OgMapPainter::checkFileExtension( QString &fe, hydroqgui::IHumanManager *humanMa
     else
     {
         cout << "ERROR(ogmappainter.cpp): File extension not supported" << endl;
-        humanManager->showBoxMsg(hydroqgui::IHumanManager::Error, "File extension not supported" );
+        humanManager->showDialogMsg(hydroqgui::IHumanManager::Error, "File extension not supported" );
         return NOT_SUPPORTED;
     }
 }
@@ -127,7 +127,7 @@ OgMapPainter::saveMap( const orcaice::Context   &context,
         if ( !dataFile->is_open() ) 
         {
             cout << "ERROR(ogmappainter.cpp): Could not create data file " << fileName.toStdString() << endl;
-            humanManager->showBoxMsg(hydroqgui::IHumanManager::Error, "Could not create ICE_STREAM file " + fileName); 
+            humanManager->showDialogMsg(hydroqgui::IHumanManager::Error, "Could not create ICE_STREAM file " + fileName); 
             return -1;
         }
                 

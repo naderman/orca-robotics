@@ -57,8 +57,8 @@ public:
                 const std::vector<std::string>    &supportedInterfaces );
 
     // Inherited from hydroqgui::IHumanManager
-    virtual void showBoxMsg( hydroqgui::IHumanManager::MessageType type, QString msg );
-    virtual void showStatusMsg( hydroqgui::IHumanManager::MessageType type, QString msg );
+    virtual void showDialogMsg( hydroqgui::IHumanManager::MessageType type, const QString &msg );
+    virtual void showStatusMsg( hydroqgui::IHumanManager::MessageType type, const QString &msg );
     virtual QMenu    *fileMenu() { return fileMenu_; }
     virtual QMenu    *optionsMenu() { return optionsMenu_; }
     virtual QMenu    *displayMenu() { return displayMenu_; }

@@ -642,13 +642,13 @@ MainThread::walk()
             // get robot pose
             bool isLocalisationUncertain;
             const hydronavutil::Pose pose = getPose(isLocalisationUncertain);
-            if ( isLocalisationUncertain )
-            {
-                stringstream ss;
-                ss << "MainThread: Localisation is too uncertain.";
-                const bool isTemporary = true;
-                throw GoalPlanException( ss.str(), isTemporary );
-            }
+//             if ( isLocalisationUncertain )
+//             {
+//                 stringstream ss;
+//                 ss << "MainThread: Localisation is too uncertain.";
+//                 const bool isTemporary = true;
+//                 throw GoalPlanException( ss.str(), isTemporary );
+//             }
             
             // Adjust timing: work out how long it takes to the first waypoint based on straight-line distance 
             // and configured velocityToFirstWaypoint_. Take the max of first wp time and the computed time.
@@ -665,8 +665,18 @@ MainThread::walk()
 
             // Send it off!
             sendPath( pathToSend, activateImmediately );
-            requestIsOutstanding = false;
-            subStatus().ok();
+
+            if ( isLocalisationUncertain )
+            {
+                subStatus().ok( "Generated path, but not certain about localisation..." );
+                // Slow the loop down a little before trying again.
+                sleep(1);
+            }
+            else
+            {
+                requestIsOutstanding = false;
+                subStatus().ok();
+            }
 
         } // try
         catch ( const GoalPlanException &e )

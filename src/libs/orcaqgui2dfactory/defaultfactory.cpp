@@ -108,7 +108,7 @@ DefaultFactory::create( const QString                &elementType,
         cout << ss.str() << endl;
 
         if ( elementType == "Button" ) {
-            elem = new orcaqgui2d::ButtonElement( context_, elementDetails[0].toStdString() );
+            elem = new orcaqgui2d::ButtonElement( context_, elementDetails[0].toStdString(), humanManager );
         }
         else if ( elementType == "Grid" ) {
             elem = new orcaqgui2d::GridElement();

@@ -275,7 +275,7 @@ int FeatureMap2dPainter::saveMap( const QString fileName, hydroqgui::IHumanManag
     FILE *f = fopen( fileName.toStdString().c_str(), "w" );
     if (!f)
     {
-        humanManager->showBoxMsg(hydroqgui::IHumanManager::Error, "Cannot create file " + fileName );
+        humanManager->showDialogMsg(hydroqgui::IHumanManager::Error, "Cannot create file " + fileName );
         cout << "ERROR(featuremap2dpainter.cpp): cannot create file" <<endl;
         return -1;
     } 

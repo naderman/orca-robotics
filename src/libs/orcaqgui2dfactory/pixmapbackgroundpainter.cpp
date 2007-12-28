@@ -82,7 +82,7 @@ PixMapBackgroundPainter::checkFileExtension( QString &fe,
     else
     {
         cout << "ERROR(pixmapbackgroundpainter.cpp): File extension not supported" << endl;
-        humanManager->showBoxMsg(hydroqgui::IHumanManager::Error, "File extension not supported" );
+        humanManager->showDialogMsg(hydroqgui::IHumanManager::Error, "File extension not supported" );
         return -1;
     }
 }

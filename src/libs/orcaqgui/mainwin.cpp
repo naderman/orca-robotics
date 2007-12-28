@@ -79,7 +79,7 @@ MainWindow::quit()
 }
 
 void
-MainWindow::showBoxMsg( MessageType type, QString message )
+MainWindow::showDialogMsg( MessageType type, const QString &message )
 {
     if (type==Information)
     {
@@ -99,7 +99,7 @@ MainWindow::showBoxMsg( MessageType type, QString message )
 }
 
 void 
-MainWindow::showStatusMsg( MessageType type, QString msg )
+MainWindow::showStatusMsg( MessageType type, const QString &msg )
 {
     statusBar()->setFont( QFont(statusBar()->font().family(), 12, QFont::Bold) );
     
