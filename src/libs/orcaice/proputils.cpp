@@ -259,26 +259,26 @@ getPropertyAsIntWithDefault( const Ice::PropertiesPtr & prop, const ::std::strin
 }
 
 int
-getPropertyAsStringSeq( const Ice::PropertiesPtr & prop, const ::std::string& key, Ice::StringSeq & value )
+getPropertyAsStringSeq( const Ice::PropertiesPtr & prop, const ::std::string& key, Ice::StringSeq & value, char delim )
 {
     std::string stringVal;
     if ( getProperty( prop, key, stringVal ) ) {
         return -1;
     }
     else {
-        value = hydroutil::toStringSeq( stringVal, ':' );
+        value = hydroutil::toStringSeq( stringVal, delim );
         return 0;
     }
 }
 
 Ice::StringSeq
-getPropertyAsStringSeqWithDefault( const Ice::PropertiesPtr & prop, const ::std::string& key, const Ice::StringSeq & defaultValue )
+getPropertyAsStringSeqWithDefault( const Ice::PropertiesPtr & prop, const ::std::string& key, const Ice::StringSeq & defaultValue, char delim )
 {
     std::string stringVal;
     if ( getProperty( prop, key, stringVal ) )
         return defaultValue;
     else
-        return hydroutil::toStringSeq( stringVal, ':' );
+        return hydroutil::toStringSeq( stringVal, delim );
 }
 
 int
