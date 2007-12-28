@@ -199,6 +199,7 @@ PathFollower2dElement::update()
             timer_->restart();
         }
     }
+    if ( !isConnected_ ) return;
     
     if ( pathUpdateConsumer_->pathPipe_.isNewData() )
     {

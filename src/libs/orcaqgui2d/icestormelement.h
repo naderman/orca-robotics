@@ -46,10 +46,10 @@ public:
           timeoutMs_(timeoutMs),
           isConnected_(false)
         {            
-            // try to connect once
-            if ( listener_.connect() != 0 ) {
-                throw hydroqgui::Exception( ERROR_INFO, "Problem connecting to interface with proxyString " + proxyString );
-            }
+//             // try to connect once
+//             if ( listener_.connect() != 0 ) {
+//                 throw hydroqgui::Exception( ERROR_INFO, "Problem connecting to interface with proxyString " + proxyString );
+//             }
         };
 
     //! Can do special stuff on connection by inheriting and overloading this
