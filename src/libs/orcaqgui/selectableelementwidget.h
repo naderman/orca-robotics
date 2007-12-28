@@ -40,7 +40,7 @@ public:
                              const orcaice::Context          &context,
                              orcaqgemv::GuiElementModel      *guiElementModel,
                              QMainWindow                     &mainWindow,
-                             int                              regRefreshPeriodSec=10,
+                             int                              regRefreshPeriodSec=-1,
                              QWidget                         *parent=NULL );
 
 private slots:

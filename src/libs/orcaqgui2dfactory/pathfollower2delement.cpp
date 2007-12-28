@@ -148,8 +148,6 @@ PathFollower2dElement::PathFollower2dElement( const orcaice::Context & context,
       proxyString_(proxyString),
       context_(context),
       humanManager_(humanManager),
-//       mouseEventManager_(mouseEventManager),
-//       shortcutKeyManager_(shortcutKeyManager),
       firstTime_(true),
       displayWaypoints_(true),
       displayPastWaypoints_(false),
@@ -173,10 +171,7 @@ PathFollower2dElement::PathFollower2dElement( const orcaice::Context & context,
     
     pathUpdateConsumer_ = new PathUpdateConsumer;
 
-    if (connectToInterface()!=0) 
-        throw hydroqgui::Exception(ERROR_INFO,"Problem connecting to interface with proxyString " + proxyString);
-    
-    getInitialData();
+    doInitialSetup();
     
     timer_ = new hydroutil::Timer;
     activationTimer_ = new hydroutil::Timer;
@@ -297,9 +292,16 @@ PathFollower2dElement::connectToInterface()
         callbackPrx_ = orcaice::createConsumerInterface<orca::PathFollower2dConsumerPrx>( context_, pathFollowerObj );
         pathFollower2dPrx_->subscribe(callbackPrx_);
     }
+    catch ( const IceUtil::Exception &e )
+    {
+        stringstream ss;
+        ss << "PathFollower2dElement:: Problem connecting to pathfollower interface: " << e;
+        humanManager_.showStatusMsg(hydroqgui::IHumanManager::Warning, ss.str().c_str() );
+        return -1;
+    }
     catch ( ... )
     {
-        humanManager_.showStatusMsg(hydroqgui::IHumanManager::Warning, "Problem connecting to pathfollower interface. Will try again later.");
+        humanManager_.showStatusMsg(hydroqgui::IHumanManager::Warning, "PathFollower2dElement: Unknown problem connecting to pathfollower interface.");
         return -1;
     }
     humanManager_.showStatusMsg(hydroqgui::IHumanManager::Information, "Connected to pathfollower interface successfully.");
@@ -330,8 +332,8 @@ PathFollower2dElement::getInitialData()
 void
 PathFollower2dElement::doInitialSetup()
 {
-    connectToInterface();
-    getInitialData();
+    if ( connectToInterface()==0 )
+        getInitialData();
 }
 
 QStringList

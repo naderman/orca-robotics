@@ -73,11 +73,16 @@ public:
     // TODO: AlexB: What the hell is this all about?
     void selectedAdaptersInView( std::vector<int> &indices );
     
-    // void changePlatformFocus( const QString &platform );
     void createGuiElement( const QString &elementType, QStringList &elementDetails );
 
     // Inherited from PlatformFocusChangeReceiver
     void platformFocusChanged( const QString &newPlatformName );
+
+    QColor platformColor( const QString &platformName )
+        { return platformColorMap_.getColor(platformName); }
+
+    // const access to entire gui element set
+    const hydroqgui::GuiElementSet &guiElementSet() const { return guiElementSet_; }
 
 signals:
     void newPlatform( const QString& );
@@ -98,7 +103,6 @@ private:
     void determinePlatform( QStringList &elementDetails,
                             QString     &platform );
 
-    // QList<hydroqgui::IGuiElement*> elements_;
     hydroqgui::GuiElementSet &guiElementSet_;
 
     const QList<hydroqgui::IGuiElement*> &elements() const { return guiElementSet_.elements(); }
