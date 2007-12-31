@@ -84,6 +84,11 @@ PropertiesProbe::loadSetData( orcacm::OperationData & data )
         char *prop=NULL;
         char *val=NULL;
 
+        // AlexB: not sure why this is necessary...
+        char *dummy; sizce_t numDummy;
+        getline( &dummy, &numDummy, stdin );
+        free( dummy );
+
         cout << "Enter property to set: ";
         size_t numProp;
         getline( &prop, &numProp, stdin );
