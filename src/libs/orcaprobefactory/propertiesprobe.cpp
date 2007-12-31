@@ -81,28 +81,25 @@ PropertiesProbe::loadSetData( orcacm::OperationData & data )
     {
         orca::PropertiesPrx derivedPrx = orca::PropertiesPrx::checkedCast(prx_);
 
-        char *prop=NULL;
-        char *val=NULL;
+        // AlexB: Not sure why this is necessary...
+        string dummy;
+        std::getline( cin, dummy );
 
-        // AlexB: not sure why this is necessary...
-        char *dummy; size_t numDummy;
-        getline( &dummy, &numDummy, stdin );
-        free( dummy );
-
+        cout << endl;
         cout << "Enter property to set: ";
-        size_t numProp;
-        getline( &prop, &numProp, stdin );
+        string prop;
+        std::getline( cin, prop );
+        // cout<<"TRACE(propertiesprobe.cpp): read prop: '" << prop << "'" << endl;
+
         cout << "Enter property value: ";
-        size_t numVal;
-        getline( &val, &numVal, stdin );
+        string val;
+        std::getline( cin, val );
+        // cout<<"TRACE(propertiesprobe.cpp): read val: '" << val << "'" << endl;
 
         std::map<string,string> props;
         props[prop] = val;
         orca::PropertiesData propData;
         propData.properties = props;
-
-        free( prop );
-        free( val );
 
         derivedPrx->setData( propData );
     }
