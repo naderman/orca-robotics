@@ -41,6 +41,8 @@ class OrcaObject
 //! A byte array which can store any information.
 sequence<byte> ByteSequence;
 
+//! sequence of strings
+sequence<string> StringSeq;
 
 }; // module
 

@@ -91,9 +91,9 @@ PathfollowerButtons::PathfollowerButtons( QObject                       *parent,
     connect( hiCancel,SIGNAL(activated()), parent ,SLOT(cancel()) );
 
     QAction* hiGo = new QAction(goIcon, QString(proxyString.c_str()) + "\n" + "&PathFollower Go All Robots", this);
-    connect( hiGo, SIGNAL(activated()), parent, SLOT(go()) ); 
+    connect( hiGo, SIGNAL(activated()), parent, SLOT(allGo()) ); 
     QAction* hiStop = new QAction(stopIcon, QString(proxyString.c_str()) + "\n" + "&PathFollower Stop All Robots", this);
-    connect( hiStop, SIGNAL(activated()), parent, SLOT(stop()) ); 
+    connect( hiStop, SIGNAL(activated()), parent, SLOT(allStop()) ); 
 
 //     humanManager->fileMenu()->addAction(fileOpenPath);
     humanManager.fileMenu()->addAction(fileSavePathAs);
