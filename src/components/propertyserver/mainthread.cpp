@@ -81,12 +81,19 @@ MainThread::walk()
             const int TIMEOUT_MS = 1000;
             int ret = propertiesInterface_->localGetRemotelySetDataStore().getNext( incomingProperties,
                                                                                     TIMEOUT_MS );
-
-            if ( ret != 0 )
+            if ( ret == 0 )
             {
                 stringstream ss;
                 ss << "Received new properties: " << orcaice::toString( incomingProperties );
+                context_.tracer().info( ss.str() );
+
+                // Set our local database.
                 propertyDb_.addProperties( incomingProperties.properties );
+
+                // Then inform the world
+                orca::PropertiesData propData;
+                propData.properties = propertyDb_.properties();
+                propertiesInterface_->localSetAndSend( propData );
             }
 
             subStatus().ok();
