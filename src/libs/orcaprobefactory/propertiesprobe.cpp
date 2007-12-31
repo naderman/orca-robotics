@@ -85,7 +85,7 @@ PropertiesProbe::loadSetData( orcacm::OperationData & data )
         char *val=NULL;
 
         // AlexB: not sure why this is necessary...
-        char *dummy; sizce_t numDummy;
+        char *dummy; size_t numDummy;
         getline( &dummy, &numDummy, stdin );
         free( dummy );
 
