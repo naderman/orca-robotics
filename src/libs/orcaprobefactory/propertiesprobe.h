@@ -32,6 +32,7 @@ public:
 private:
 
     int loadGetData( orcacm::OperationData & data );
+    int loadSetData( orcacm::OperationData & data );
     int loadSubscribe( orcacm::OperationData & data );
     int loadUnsubscribe( orcacm::OperationData & data );
 

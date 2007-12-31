@@ -25,6 +25,7 @@ PropertiesProbe::PropertiesProbe( const orca::FQInterfaceName & name, orcaprobe:
     id_ = "::orca::Properties";
     
     addOperation( "getData" );
+    addOperation( "setData" );
     addOperation( "subscribe" );
     addOperation( "unsubscribe" );
 }
@@ -37,8 +38,10 @@ PropertiesProbe::loadOperationEvent( const int index, orcacm::OperationData & da
     case orcaprobe::UserIndex :
         return loadGetData( data );
     case orcaprobe::UserIndex+1 :
-        return loadSubscribe( data );
+        return loadSetData( data );
     case orcaprobe::UserIndex+2 :
+        return loadSubscribe( data );
+    case orcaprobe::UserIndex+3 :
         return loadUnsubscribe( data );
     }
     return 1;
@@ -53,6 +56,50 @@ PropertiesProbe::loadGetData( orcacm::OperationData & data )
         orca::PropertiesPrx derivedPrx = orca::PropertiesPrx::checkedCast(prx_);
         result = derivedPrx->getData();
         orcaprobe::reportResult( data, "data", orcaice::toString(result) );
+    }
+    catch( const orca::DataNotExistException & e )
+    {
+        orcaprobe::reportException( data, "data is not ready on the remote interface" );
+    }
+    catch( const orca::HardwareFailedException & e )
+    {
+        orcaprobe::reportException( data, "remote hardware failure" );
+    }
+    catch( const Ice::Exception & e )
+    {
+        stringstream ss;
+        ss<<e<<endl;
+        orcaprobe::reportException( data, ss.str() );
+    }
+    return 0;
+}
+
+int 
+PropertiesProbe::loadSetData( orcacm::OperationData & data )
+{
+    try
+    {
+        orca::PropertiesPrx derivedPrx = orca::PropertiesPrx::checkedCast(prx_);
+
+        char *prop=NULL;
+        char *val=NULL;
+
+        cout << "Property to set: ";
+        size_t numProp;
+        getline( &prop, &numProp, stdin );
+        cout << "Enter property value:";
+        size_t numVal;
+        getline( &val, &numVal, stdin );
+
+        std::map<string,string> props;
+        props[prop] = val;
+        orca::PropertiesData propData;
+        propData.properties = props;
+
+        free( prop );
+        free( val );
+
+        derivedPrx->setData( propData );
     }
     catch( const orca::DataNotExistException & e )
     {
