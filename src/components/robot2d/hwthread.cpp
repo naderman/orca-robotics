@@ -67,10 +67,9 @@ HwThread::HwThread( const orcaice::Context &context ) :
 void
 HwThread::enableDriver()
 {
-    stringstream exceptionSS;
-
     while ( !isStopping() ) 
     {
+        stringstream exceptionSS;
         try {
             context_.tracer().info("HwThread: (Re-)Enabling driver...");
             driver_->enable();
@@ -88,7 +87,6 @@ HwThread::enableDriver()
         context_.tracer().error( exceptionSS.str() );
         subStatus().fault( exceptionSS.str() );
         stateMachine_.setFault( exceptionSS.str() );
-        exceptionSS.clear();
 
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
     }

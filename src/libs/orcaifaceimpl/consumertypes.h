@@ -13,9 +13,7 @@
 
 #include <orcaifaceimpl/storingconsumers.h>
 #include <orcaifaceimpl/bufferedconsumers.h>
+#include <orcaifaceimpl/notifyingconsumers.h>
 #include <orcaifaceimpl/printingconsumers.h>
-
-// obsolete
-#include <orcaifaceimpl/proxiedconsumers.h>
 
 #endif

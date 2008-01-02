@@ -35,7 +35,7 @@ MainThread::MainThread( const orcaice::Context &context ) :
     sensorOffset_.o.y=0;
 
     // create a callback object to recieve scans
-    laserConsumer_ = new orcaifaceimpl::ProxiedRangeScanner2dConsumerImpl( context_ );
+    laserConsumer_ = new orcaifaceimpl::StoringRangeScanner2dConsumerImpl( context_ );
 }
 
 MainThread::~MainThread()
@@ -218,7 +218,7 @@ MainThread::walk()
             //
             // block on arrival of laser data
             //
-            int ret = laserConsumer_->proxy().getNext( rangeData, timeoutMs );
+            int ret = laserConsumer_->store().getNext( rangeData, timeoutMs );
             if ( ret != 0 ) {
                 stringstream ss;
                 ss << "Timed out (" << timeoutMs << "ms) waiting for laser data.  Reconnecting.";

@@ -100,7 +100,6 @@ MainThread::initNetworkInterface()
 void
 MainThread::initHardwareDriver()
 {
-    stringstream exceptionSS;
     subStatus().setMaxHeartbeatInterval( 20.0 );
 
     Ice::PropertiesPtr prop = context_.properties();
@@ -127,11 +126,11 @@ MainThread::initHardwareDriver()
     // create the driver
     while ( !isStopping() )
     {
+        std::stringstream exceptionSS;
         try {
             context_.tracer().info( "HwThread: Creating driver..." );
             driver_.reset( driverFactory->createDriver( config_, context_.toHydroContext() ) );
-            // alexm: shouldn't this be 'break' ???
-            return;
+            break;
         }
         catch ( IceUtil::Exception &e ) {
             exceptionSS << "MainThread: Caught exception while creating driver: " << e;
@@ -152,7 +151,6 @@ MainThread::initHardwareDriver()
         // we get here only after an exception was caught
         context_.tracer().error( exceptionSS.str() );
         subStatus().fault( exceptionSS.str() );          
-        exceptionSS.clear();
 
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));        
     }
@@ -184,8 +182,6 @@ MainThread::readData()
 void
 MainThread::walk()
 {
-    stringstream exceptionSS;
-
     // Set up the laser-scan objects
     orcaLaserData_ = new orca::LaserScanner2dData;
     orcaLaserData_->minRange     = config_.minRange;
@@ -211,6 +207,7 @@ MainThread::walk()
     //
     while ( !isStopping() )
     {
+        stringstream exceptionSS;
         try 
         {
             // this blocks until new data arrives
@@ -256,7 +253,6 @@ MainThread::walk()
         if ( !exceptionSS.str().empty() ) {
             context_.tracer().error( exceptionSS.str() );
             subStatus().fault( exceptionSS.str() );     
-            exceptionSS.clear();
             // Slow things down in case of persistent error
             sleep(1);
         }

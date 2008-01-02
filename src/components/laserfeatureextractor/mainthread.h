@@ -17,7 +17,7 @@
 
 #include <orca/laserscanner2d.h>
 #include <orcaifaceimpl/polarfeature2dImpl.h>
-#include <orcaifaceimpl/proxiedconsumers.h>
+#include <orcaifaceimpl/storingconsumers.h>
 
 namespace laserfeatures
 {
@@ -65,7 +65,7 @@ private:
     bool fakeDriver_;
 
     // Consumers
-    orcaifaceimpl::ProxiedRangeScanner2dConsumerImplPtr laserConsumer_;
+    orcaifaceimpl::StoringRangeScanner2dConsumerImplPtr laserConsumer_;
 
     orcaice::Context context_;
 };

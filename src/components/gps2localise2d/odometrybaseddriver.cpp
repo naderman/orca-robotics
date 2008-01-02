@@ -24,7 +24,7 @@ OdometryBasedDriver::OdometryBasedDriver( const orca::GpsDescription &descr,
       isSetup_(false),
       context_(context)
 {
-    odomConsumer_ = new orcaifaceimpl::ProxiedOdometry2dConsumerImpl(context);
+    odomConsumer_ = new orcaifaceimpl::StoringOdometry2dConsumerImpl(context);
 
     prevTime_.seconds  = 0;
     prevTime_.useconds = 0;
@@ -132,7 +132,7 @@ OdometryBasedDriver::compute( const orca::GpsData  &gpsData,
     localiseData.hypotheses[0].cov.xx *= 2.0;
     localiseData.hypotheses[0].cov.yy *= 2.0;
 
-    if ( odomConsumer_->proxy().isEmpty() )
+    if ( odomConsumer_->store().isEmpty() )
     {
         context_.tracer().warning( "OdometryBasedDriver: no odometry received yet." );
         return false;
@@ -147,7 +147,7 @@ OdometryBasedDriver::compute( const orca::GpsData  &gpsData,
     else
     {
         orca::Odometry2dData odom;
-        odomConsumer_->proxy().get( odom );
+        odomConsumer_->store().get( odom );
         hydronavutil::Pose delta = odometryDifferentiator_.calcDelta( odom.pose.p.x,
                                                                       odom.pose.p.y,
                                                                       odom.pose.o );

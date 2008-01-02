@@ -43,7 +43,7 @@ private:
     // inherited from ConsumerImpl
     void handleData( const ObjectType &data )
         {
-            // results in mainThread_->handleData(data) being called
+            // results in handler->handleData(data) being called
             set( data );
         }
 

@@ -13,7 +13,7 @@
 #include "driver.h"
 #include <orcaice/context.h>
 #include "simpledriver.h"
-#include <orcaifaceimpl/proxiedconsumers.h>
+#include <orcaifaceimpl/storingconsumers.h>
 #include <hydronavutil/offset.h>
 #include <hydronavutil/odometrydifferentiator.h>
 
@@ -46,7 +46,7 @@ private:
                                    double dt );
 
     SimpleDriver                                simpleDriver_;
-    orcaifaceimpl::ProxiedOdometry2dConsumerImplPtr odomConsumer_;
+    orcaifaceimpl::StoringOdometry2dConsumerImplPtr odomConsumer_;
     bool                                        isSetup_;
 
     hydronavutil::OdometryDifferentiator         odometryDifferentiator_;
