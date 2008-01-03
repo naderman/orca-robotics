@@ -138,7 +138,7 @@ PathfollowerButtons::setWpButton( bool onOff )
 }
 /////////////////////////////////////////////////////
 
-PathFollower2dElement::PathFollower2dElement( const orcaice::Context & context,
+PathFollower2dElement::PathFollower2dElement( const orcaice::Context &context,
                                               const std::string &proxyString,
                                               hydroqgui::IHumanManager &humanManager,
                                               hydroqgui::MouseEventManager &mouseEventManager,
@@ -148,22 +148,15 @@ PathFollower2dElement::PathFollower2dElement( const orcaice::Context & context,
       proxyString_(proxyString),
       context_(context),
       humanManager_(humanManager),
+      mouseEventManager_(mouseEventManager),
+      shortcutKeyManager_(shortcutKeyManager),
+      guiElementSet_(guiElementSet),
       firstTime_(true),
       displayWaypoints_(true),
       displayPastWaypoints_(false),
       displayOlympicMarker_(true),
       currentTransparency_(false),
-      isRemoteInterfaceSick_(false),
-      pathHI_( this,
-               proxyString,
-               humanManager,
-               mouseEventManager,
-               shortcutKeyManager,
-               guiElementSet,
-               painter_,
-               readWaypointSettings( context_.properties(), context_.tag() ),
-               readActivateImmediately( context_.properties(), context_.tag() ),
-               readDumpPath( context_.properties(), context_.tag() ) )
+      isRemoteInterfaceSick_(false)
 {
     cout<<"TRACE(pathfollower2delement.cpp): Instantiating w/ proxyString '" << proxyString << "'" << endl;
     
@@ -178,9 +171,34 @@ PathFollower2dElement::PathFollower2dElement( const orcaice::Context & context,
     activationTimer_->restart();
 }
 
-PathFollower2dElement::~PathFollower2dElement()
+void
+PathFollower2dElement::enableHI()
 {
+    pathHI_.reset( new PathFollowerHI( this,
+                                       proxyString_,
+                                       humanManager_,
+                                       mouseEventManager_,
+                                       shortcutKeyManager_,
+                                       guiElementSet_,
+                                       painter_,
+                                       readWaypointSettings( context_.properties(), context_.tag() ),
+                                       readActivateImmediately( context_.properties(), context_.tag() ),
+                                       readDumpPath( context_.properties(), context_.tag() ) ) );
 }
+
+void
+PathFollower2dElement::disableHI()
+{
+    pathHI_.reset( 0 );
+}
+
+void
+PathFollower2dElement::setFocus( bool inFocus ) 
+{
+    painter_.setFocus( inFocus ); 
+    if ( pathHI_.get() )
+        pathHI_->setFocus( inFocus); 
+};
 
 void
 PathFollower2dElement::update()
@@ -272,7 +290,8 @@ PathFollower2dElement::setUseTransparency( bool useTransparency )
 { 
     cout << "TRACE(pathfollower2delement.cpp): setUseTransparency: " << useTransparency << endl;
     painter_.setUseTransparency( useTransparency ); 
-    pathHI_.setUseTransparency( useTransparency );
+    if ( pathHI_.get() )
+        pathHI_->setUseTransparency( useTransparency );
     currentTransparency_ = useTransparency;
 }
 
@@ -417,11 +436,13 @@ PathFollower2dElement::execute( int action )
     }
     else if ( action == 5 )
     {
-        pathHI_.savePathAs();
+        if ( pathHI_.get() )
+            pathHI_->savePathAs();
     }
     else if ( action == 6 )
     {
-        pathHI_.savePath();
+        if ( pathHI_.get() )
+            pathHI_->savePath();
     }
     else
     {
@@ -504,7 +525,8 @@ void
 PathFollower2dElement::paint( QPainter *p, int z )
 {   
     painter_.paint( p, z );
-    pathHI_.paint( p );
+    if ( pathHI_.get() )
+        pathHI_->paint( p );
 }
 
 //////////////////////////////////////////////////////////////////////

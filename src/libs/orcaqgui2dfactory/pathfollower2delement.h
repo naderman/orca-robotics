@@ -160,7 +160,6 @@ public:
                            hydroqgui::MouseEventManager &mouseEventManager,
                            hydroqgui::ShortcutKeyManager &shortcutKeyManager,
                            const hydroqgui::GuiElementSet &guiElementSet );
-    ~PathFollower2dElement();
 
     // inherited from guielement
     void update();
@@ -172,18 +171,22 @@ public:
     virtual QStringList contextMenu();
     virtual void execute( int action );
     virtual void setColor( QColor color ) { painter_.setColor( color ); };
-    virtual void setFocus( bool inFocus ) { painter_.setFocus( inFocus ); pathHI_.setFocus( inFocus); };
+    virtual void setFocus( bool inFocus );
     virtual void setUseTransparency( bool useTransparency );
 
-    virtual void noLongerMouseEventReceiver() { pathHI_.noLongerMouseEventReceiver(); }
-    virtual void mousePressEvent(QMouseEvent *e) { pathHI_.mousePressEvent(e); }
-    virtual void mouseMoveEvent(QMouseEvent *e) { pathHI_.mouseMoveEvent(e); }
-    virtual void mouseReleaseEvent(QMouseEvent *e) { pathHI_.mouseReleaseEvent(e); }
-    virtual void mouseDoubleClickEvent(QMouseEvent *e) { pathHI_.mouseDoubleClickEvent(e); }
+    virtual void noLongerMouseEventReceiver() { if ( pathHI_.get() ) pathHI_->noLongerMouseEventReceiver(); }
+    virtual void mousePressEvent(QMouseEvent *e) { if ( pathHI_.get() ) pathHI_->mousePressEvent(e); }
+    virtual void mouseMoveEvent(QMouseEvent *e) { if ( pathHI_.get() ) pathHI_->mouseMoveEvent(e); }
+    virtual void mouseReleaseEvent(QMouseEvent *e) { if ( pathHI_.get() ) pathHI_->mouseReleaseEvent(e); }
+    virtual void mouseDoubleClickEvent(QMouseEvent *e) { if ( pathHI_.get() ) pathHI_->mouseDoubleClickEvent(e); }
 
     void go();
     void stop();
     void sendPath( const PathFollowerInput &pathInput, bool activateImmediately );
+
+    void enableHI();
+    void disableHI();
+    bool isHIEnabled() { return pathHI_.get() != 0; }
 
 private: 
     void doInitialSetup();
@@ -201,7 +204,10 @@ private:
 
     orcaice::Context context_;
     
-    hydroqgui::IHumanManager &humanManager_;
+    hydroqgui::IHumanManager       &humanManager_;
+    hydroqgui::MouseEventManager   &mouseEventManager_;
+    hydroqgui::ShortcutKeyManager  &shortcutKeyManager_;
+    const hydroqgui::GuiElementSet &guiElementSet_;
     
     bool firstTime_;
     hydroutil::Timer *timer_;
@@ -216,7 +222,7 @@ private:
     bool isRemoteInterfaceSick_;
     
     // Handles human interface
-    PathFollowerHI pathHI_;
+    std::auto_ptr<PathFollowerHI> pathHI_;
     
     // returns 0 if remote call works otherwise -1
     int isFollowerEnabled( bool &isEnabled );
