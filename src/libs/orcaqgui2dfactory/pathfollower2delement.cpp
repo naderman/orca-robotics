@@ -109,10 +109,10 @@ PathfollowerButtons::PathfollowerButtons( QObject                       *parent,
 //     humanManager->toolBar()->addAction( hiStop );
 //     humanManager->toolBar()->addAction( hiGo );
     
-    shortcutKeyManager.subscribeToShortcutKey( hiStop, QKeySequence(Qt::Key_Escape), true, this );
-    shortcutKeyManager.subscribeToShortcutKey( hiWaypoints_, QKeySequence(Qt::Key_F10), false, this );
-    shortcutKeyManager.subscribeToShortcutKey( hiSend, QKeySequence(Qt::Key_F11), false, this );
-    shortcutKeyManager.subscribeToShortcutKey( hiGo, QKeySequence(Qt::Key_F12), true, this );
+    shortcutKeyManager.subscribeToShortcutKey( hiStop, QKeySequence(Qt::Key_Escape), false, this );
+    shortcutKeyManager.subscribeToShortcutKey( hiWaypoints_, QKeySequence(Qt::Key_F10), true, this );
+    shortcutKeyManager.subscribeToShortcutKey( hiSend, QKeySequence(Qt::Key_F11), true, this );
+    shortcutKeyManager.subscribeToShortcutKey( hiGo, QKeySequence(Qt::Key_F12), false, this );
     humanManager.toolBar()->addAction( hiCancel );
 
     QAction *wpDialogAction = new QAction( QString(proxyString.c_str()) + "\n" + "&PathFollower Waypoint settings", this );
