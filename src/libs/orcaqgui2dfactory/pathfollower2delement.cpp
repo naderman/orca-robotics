@@ -156,9 +156,11 @@ PathFollower2dElement::PathFollower2dElement( const orcaice::Context &context,
       displayPastWaypoints_(false),
       displayOlympicMarker_(true),
       currentTransparency_(false),
+      isInFocus_(false),
       isRemoteInterfaceSick_(false)
 {
     cout<<"TRACE(pathfollower2delement.cpp): Instantiating w/ proxyString '" << proxyString << "'" << endl;
+    enableHI();
     
     painter_.initialize( displayWaypoints_, displayPastWaypoints_, displayOlympicMarker_, currentTransparency_);
     
@@ -184,6 +186,8 @@ PathFollower2dElement::enableHI()
                                        readWaypointSettings( context_.properties(), context_.tag() ),
                                        readActivateImmediately( context_.properties(), context_.tag() ),
                                        readDumpPath( context_.properties(), context_.tag() ) ) );
+    pathHI_->setFocus( isInFocus_ );
+    pathHI_->setUseTransparency( currentTransparency_ );
 }
 
 void
@@ -198,6 +202,7 @@ PathFollower2dElement::setFocus( bool inFocus )
     painter_.setFocus( inFocus ); 
     if ( pathHI_.get() )
         pathHI_->setFocus( inFocus); 
+    isInFocus_ = inFocus;
 };
 
 void

@@ -218,7 +218,8 @@ private:
     bool displayPastWaypoints_;
     bool displayOlympicMarker_;
     bool currentTransparency_;
-    
+    bool isInFocus_;
+
     bool isRemoteInterfaceSick_;
     
     // Handles human interface
