@@ -13,7 +13,7 @@
 
 #include <hydroutil/subsystemthread.h>
 #include <orcaice/context.h>
-#include <hydroutil/store.h>
+#include <hydroutil/buffer.h>
 
 #include <orca/ogmap.h>
 #include <orca/pathplanner2d.h>
@@ -34,7 +34,6 @@ class MainThread : public hydroutil::SubsystemThread
 public: 
 
     MainThread( const orcaice::Context & context );
-    ~MainThread();
 
     virtual void walk();
 
@@ -48,8 +47,7 @@ private:
     hydroogmap::OgMap ogMap_;
 
     PathPlanner2dI* pathPlannerI_;
-    hydroutil::Store<orca::PathPlanner2dTask>* pathPlannerTaskStore_;
-    hydroutil::Store<orca::PathPlanner2dData>* pathPlannerDataStore_;
+    hydroutil::Buffer<orca::PathPlanner2dTask> pathPlannerTaskBuffer_;
     
     void initNetwork();
     void initDriver();

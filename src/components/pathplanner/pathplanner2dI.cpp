@@ -18,12 +18,9 @@ using namespace std;
 using namespace orca;
 using namespace pathplanner;
 
-PathPlanner2dI::PathPlanner2dI( 
-        hydroutil::Store<orca::PathPlanner2dTask> &pathPlannerTaskProxy,
-        hydroutil::Store<orca::PathPlanner2dData> &pathPlannerDataProxy,
-        const orcaice::Context & context )
-            : pathPlannerTaskStore_(pathPlannerTaskProxy),
-              pathPlannerDataStore_(pathPlannerDataProxy),
+PathPlanner2dI::PathPlanner2dI( hydroutil::Buffer<orca::PathPlanner2dTask> &pathPlannerTaskBuffer,
+                                const orcaice::Context &context )
+            : pathPlannerTaskBuffer_(pathPlannerTaskBuffer),
               context_(context)
 {
     // Find IceStorm Topic to which we'll publish
@@ -34,15 +31,15 @@ PathPlanner2dI::PathPlanner2dI(
 Ice::Int
 PathPlanner2dI::setTask(const ::orca::PathPlanner2dTask& task, const ::Ice::Current&)
 {
+    cout << "TRACE(pathplanner2dI.cpp): Just received a new task.";
+    stringstream ss;
+    ss << "PathPlanner2dI: Received task: " << orcaice::toVerboseString(task); 
+    context_.tracer().debug( ss.str() );
 
-    cout << "TRACE(pathplanner2dI.cpp): Just received a new task: " << endl << orcaice::toVerboseString(task); 
+    int numAhead = pathPlannerTaskBuffer_.size();
+    pathPlannerTaskBuffer_.push( task );
 
-    pathPlannerTaskStore_.set( task );
-
-    return 0;
-    
-    //TODO: This can be implemented differently: the return value should be the number of tasks in a queue.
-    // For now, we only allow one task (proxy instead of buffer) and overwrite the task if a new one comes in.
+    return numAhead;
 }
 
 orca::PathPlanner2dData

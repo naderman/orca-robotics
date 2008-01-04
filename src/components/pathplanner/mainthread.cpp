@@ -57,15 +57,10 @@ namespace {
 
 MainThread::MainThread( const orcaice::Context & context )
     : hydroutil::SubsystemThread( context_.tracer(), context.status(), "MainThread" ),
-      pathPlannerTaskStore_(0),
+      pathPlannerTaskBuffer_( 100, hydroutil::BufferTypeQueue ),
       context_(context)
 {
     subStatus().setMaxHeartbeatInterval( 30.0 );
-}
-
-MainThread::~MainThread()
-{
-    delete pathPlannerTaskStore_;
 }
 
 void
@@ -102,12 +97,8 @@ MainThread::initNetwork()
     //
 
     // PathPlanner2d
-    // create the proxy/buffer for tasks
-    pathPlannerTaskStore_ = new hydroutil::Store<PathPlanner2dTask>; 
-    pathPlannerDataStore_ = new hydroutil::Store<PathPlanner2dData>;
-
     subStatus().initialising("Creating PathPlanner2d Interface" );
-    pathPlannerI_ = new PathPlanner2dI( *pathPlannerTaskStore_, *pathPlannerDataStore_, context_ );
+    pathPlannerI_ = new PathPlanner2dI( pathPlannerTaskBuffer_, context_ );
     Ice::ObjectPtr pathPlannerObj = pathPlannerI_;
     
     // two possible exceptions will kill it here, that's what we want
@@ -210,7 +201,6 @@ MainThread::walk()
     initDriver();
 
     assert( driver_.get() );
-    assert( pathPlannerTaskStore_ );
 
     // we are in a different thread now, catch all stray exceptions
 
@@ -233,7 +223,14 @@ MainThread::walk()
             
             while ( !isStopping() )
             {
-                int ret = pathPlannerTaskStore_->getNext( task, 1000 );
+                int timeoutMs = 1000;
+                int ret=0;
+                try {
+                    pathPlannerTaskBuffer_.getAndPop( task );
+                }
+                catch ( const hydroutil::Exception & e ) {
+                    ret = pathPlannerTaskBuffer_.getAndPopNext( task, timeoutMs );
+                }
                 if ( ret==0 ) {
                     haveTask = true;
                     context_.tracer().info("task arrived");  
@@ -290,7 +287,7 @@ MainThread::walk()
                 pathData.resultDescription = ss.str();
                 pathData.result = orca::PathOtherError;
             }
-    
+
             //
             // ======= send result (including error code) ===============
             //
@@ -302,6 +299,10 @@ MainThread::walk()
             if (task.prx!=0)
             {
                 task.prx->setData( pathData );
+            }
+            else
+            {
+                context_.tracer().warning( "task.prx was zero!" );
             }
             // 2. and 3.: use getData or icestorm
             pathPlannerI_->localSetData( pathData );

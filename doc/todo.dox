@@ -91,6 +91,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 - pathplanner (alex b)
   - brought closer to modern standards, implemented status.
+  - implemented handling of simultaneous arrival of tasks properly
 - segwayrmp (alex b)
   - use updated vehicle description.  Limit unfeasible commands in netthread, issue a 
     warning to status when commands are limited.

@@ -52,6 +52,7 @@ struct PathPlanner2dData
 */
 interface PathPlanner2dConsumer
 {
+    //! Transmits _all_ computed paths to the consumer
     void setData( PathPlanner2dData obj );
 };
 
@@ -73,17 +74,25 @@ struct PathPlanner2dTask
 /*!
     @brief Planning a path in 2D
 
-    PathPlanner is an interface that accepts a task consisting of a coarse path with the first entry being the starting waypoint. It serves the computed fine-grained path to the consumer via proxy. "setTask" returns the number of remaining tasks in the buffer.
+    PathPlanner is an interface that accepts a task consisting of a
+    coarse path with the first entry being the starting waypoint. It
+    serves the computed fine-grained path to the consumer via
+    proxy. "setTask" returns the number of tasks in queue ahead of this new task.
 
-    The second method of accessing the computed path is to use the getData method. The third method is via subscribe. These two methods are used when a component wants direct access to the currently computed path rather than a one-shot task-specific result (e.g. a GUI).
+    The second method of accessing the computed path is to use the
+    getData method. The third method is via subscribe. These two
+    methods are used when a component wants direct access to the
+    currently computed path rather than a one-shot task-specific
+    result (e.g. a GUI).
 */
 interface PathPlanner2d
 {
-    //! Set a task
+    //! Set a task.
+    //! Returns the number of tasks currently in the queue (not including the one which was just set).
     int setTask( PathPlanner2dTask task )
             throws BusyException, RequiredInterfaceFailedException;   
 
-    //! Returns the computed path
+    //! Returns the most-recently-computed computed path
     ["cpp:const"] idempotent PathPlanner2dData getData();
 
     /*!

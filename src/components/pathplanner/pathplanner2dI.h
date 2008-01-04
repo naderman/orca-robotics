@@ -8,13 +8,14 @@
  *
  */
 
-#ifndef I_H
-#define I_H
+#ifndef PATHPLANNER2DI_H
+#define PATHPLANNER2DI_H
 
 #include <IceStorm/IceStorm.h>
 
 #include <orca/pathplanner2d.h>
 #include <hydroutil/store.h>
+#include <hydroutil/buffer.h>
 
 namespace pathplanner
 {
@@ -22,11 +23,8 @@ namespace pathplanner
 class PathPlanner2dI : public orca::PathPlanner2d
 {
 public:
-    PathPlanner2dI( 
-        hydroutil::Store<orca::PathPlanner2dTask> &pathPlannerTaskProxy,
-        hydroutil::Store<orca::PathPlanner2dData> &pathPlannerDataProxy,
-        const orcaice::Context & context
-    );
+    PathPlanner2dI( hydroutil::Buffer<orca::PathPlanner2dTask> &pathPlannerTaskStore,
+                    const orcaice::Context                     &context );
 
     // remote calls
     virtual ::Ice::Int setTask(const ::orca::PathPlanner2dTask&, const ::Ice::Current& = ::Ice::Current());
@@ -41,10 +39,10 @@ public:
 
 private:
 
-    hydroutil::Store<orca::PathPlanner2dTask>& pathPlannerTaskStore_;
+    hydroutil::Buffer<orca::PathPlanner2dTask>& pathPlannerTaskBuffer_;
 
-    // the driver puts the latest computed path into here
-    hydroutil::Store<orca::PathPlanner2dData>& pathPlannerDataStore_;
+    // the driver puts the latest computed path into here using localSetData
+    hydroutil::Store<orca::PathPlanner2dData> pathPlannerDataStore_;
 
     // The topic to which we'll publish
     IceStorm::TopicPrx topicPrx_;
