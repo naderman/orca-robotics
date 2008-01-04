@@ -310,7 +310,17 @@ MainThread::walk()
             // resize the pathData: future tasks might not compute a path successfully and we would resend the old path
             pathData.path.resize( 0 );
     
-            subStatus().ok();
+            int numTasksWaiting = pathPlannerTaskBuffer_.size();
+            if ( numTasksWaiting > 1 )
+            {
+                stringstream ss;
+                ss << "Tasks are piling up: there are " << numTasksWaiting << " in the queue.";
+                subStatus().warning( ss.str() );
+            }
+            else
+            {
+                subStatus().ok();
+            }
         //
         // unexpected exceptions
         //

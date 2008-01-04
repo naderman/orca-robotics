@@ -257,7 +257,13 @@ MainThread::planPath( const hydronavutil::Pose &pose,
     stringstream ssSend;
     ssSend << "MainThread: Sending task to pathplanner: " << orcaice::toVerboseString( task );
     context_.tracer().debug(ssSend.str());
-    pathplanner2dPrx_->setTask( task );
+    int numJobsAheadInQueue = pathplanner2dPrx_->setTask( task );
+    if ( numJobsAheadInQueue > 1 )
+    {
+        stringstream ss;
+        ss << "MainThread::planPath(): path planner is busy, there are " << numJobsAheadInQueue << " ahead of us in the queue.";
+        context_.tracer().warning( ss.str() );
+    }
             
     // block until path is computed
     context_.tracer().debug("MainThread: Waiting for pathplanner's answer");
