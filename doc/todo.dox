@@ -96,6 +96,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     warning to status when commands are limited.
 - lasermon
   - brought closer to modern standards (alex m)
+- ognode (alex b)
+  - Allowed beginning with a prior map.
 
 @par Updated utilities
 
