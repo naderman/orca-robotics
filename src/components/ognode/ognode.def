@@ -20,3 +20,5 @@ Config.Map.OriginX.Default=-25.0
 Config.Map.OriginY.Default=-25.0
 Config.Map.Orientation.Default=0
 
+Config.PriorMapProxyString.Comment=If set, get a prior map from the named OgMap interface
+Config.PriorMapProxyString.Default=

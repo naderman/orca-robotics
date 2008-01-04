@@ -25,18 +25,19 @@ class MainThread : public hydroutil::SafeThread
 {
 public:
     MainThread( const orcaice::Context              &context);
-    ~MainThread();
 
     virtual void walk();
 private:
 
     void init();
+    void setUpInternalMapFromPriorMap( const std::string &priorMapProxyString );
+    void setUpInternalMapFromProperties();
 
     Ice::ObjectPtr                        ogFusionObjPtr_;
     orcaifaceimpl::OgMapImplPtr           ogMapImpl_;
     hydroutil::Buffer<orca::OgFusionData> ogFusionDataBuffer_;
 
-    // Representt he occupancy certainty values using doubles internally.
+    // Represent the occupancy certainty values using doubles internally.
     hydroogmap::GenericMap<double> internalMap_;
 
     orcaice::Context context_;

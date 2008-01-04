@@ -38,6 +38,12 @@ as an OgMap interface.
 
 @par Configuration
 
+- @c OgNode.Config.PriorMapProxyString (string)
+    - Proxy string of OgMap interface from which to get prior map
+    - If non-empty, the details of the OgMap obtained from the remote
+      interface will be used instead of the OgNode.Config.Map parameters.
+    - Default: ""
+
 - @c OgNode.Config.Map.SizeXMetres (double) [m]
     - Size of map in metres (X)
     - Default: 50.0

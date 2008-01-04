@@ -41,11 +41,11 @@ namespace {
     void convert( const hydroogmap::GenericMap<double> &doubleMap, orca::OgMapData &ogMapData )
     {
         hydroogmap::OgMap local( doubleMap.numCellsX(),
-                                doubleMap.numCellsY(),
-                                doubleMap.offset(),
-                                doubleMap.metresPerCellX(),
-                                doubleMap.metresPerCellY(),
-                                0 );
+                                 doubleMap.numCellsY(),
+                                 doubleMap.offset(),
+                                 doubleMap.metresPerCellX(),
+                                 doubleMap.metresPerCellY(),
+                                 0 );
 
         for ( int xi=0; xi < local.numCellsX(); xi++ )
         {
@@ -68,8 +68,61 @@ MainThread::MainThread( const orcaice::Context &context ) :
 {
 }
 
-MainThread::~MainThread()
+void
+MainThread::setUpInternalMapFromProperties()
 {
+    // get config
+    Ice::PropertiesPtr prop = context_.properties();
+    std::string prefix = context_.tag();
+    prefix += ".Config.";
+
+    // read map info from config
+    ogfusion::MapConfig mapConfig;
+
+    mapConfig.mapResX = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Map.ResX", 0.5 );
+    mapConfig.mapResY = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Map.ResY", 0.5 );
+    
+    double sizeXMetres = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Map.SizeXMetres", 50.0 );
+    double sizeYMetres = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Map.SizeYMetres", 50.0 );
+    
+    mapConfig.mapSizeX = (int)round(sizeXMetres/mapConfig.mapResX);
+    mapConfig.mapSizeY = (int)round(sizeYMetres/mapConfig.mapResY);
+    mapConfig.mapOriginX=orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Map.OriginX", -25.0 );
+    mapConfig.mapOriginY=orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Map.OriginY", -25.0 );
+    mapConfig.mapOrientation=orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Map.Orientation", 0.0 );
+
+    // setup internal map
+    internalMap_.reallocate( mapConfig.mapSizeX, 
+                             mapConfig.mapSizeY );
+    internalMap_.offset().p.x = mapConfig.mapOriginX;
+    internalMap_.offset().p.y = mapConfig.mapOriginY;
+    internalMap_.offset().o   = mapConfig.mapOrientation;
+    internalMap_.setMetresPerCellX( mapConfig.mapResX );
+    internalMap_.setMetresPerCellY( mapConfig.mapResY );
+
+    // Start with uninformative prior
+    internalMap_.fill( 0.5 );
+}
+
+void
+MainThread::setUpInternalMapFromPriorMap( const std::string &priorMapProxyString )
+{
+    orca::OgMapPrx ogMapPrx;
+    orcaice::connectToInterfaceWithString( context_, ogMapPrx, priorMapProxyString );
+    orca::OgMapData priorMap = ogMapPrx->getData();
+
+    internalMap_.reallocate( priorMap.numCellsX, priorMap.numCellsY );
+    internalMap_.offset().p.x = priorMap.offset.p.x;
+    internalMap_.offset().p.y = priorMap.offset.p.y;
+    internalMap_.offset().o   = priorMap.offset.o;
+    internalMap_.setMetresPerCellX( priorMap.metresPerCellX );
+    internalMap_.setMetresPerCellY( priorMap.metresPerCellY );
+
+    for ( uint i=0; i < priorMap.data.size(); i++ )
+    {
+        internalMap_.data()[i] = (double)priorMap.data[i]/(double)hydroogmap::CELL_OCCUPIED;
+        CLIP_TO_LIMITS( ogfusion::ogLimitLowD, internalMap_.data()[i], ogfusion::ogLimitHighD );
+    }
 }
 
 void
@@ -79,58 +132,40 @@ MainThread::init()
     {
         try {
 
-            // get config
-            Ice::PropertiesPtr prop = context_.properties();
-            std::string prefix = context_.tag();
-            prefix += ".Config.";
-
-            // read map info from config
-            ogfusion::MapConfig mapConfig;
-
-            mapConfig.mapResX = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Map.ResX", 0.5 );
-            mapConfig.mapResY = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Map.ResY", 0.5 );
-    
-            double sizeXMetres = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Map.SizeXMetres", 50.0 );
-            double sizeYMetres = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Map.SizeYMetres", 50.0 );
-    
-            mapConfig.mapSizeX = (int)round(sizeXMetres/mapConfig.mapResX);
-            mapConfig.mapSizeY = (int)round(sizeYMetres/mapConfig.mapResY);
-            mapConfig.mapOriginX=orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Map.OriginX", -25.0 );
-            mapConfig.mapOriginY=orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Map.OriginY", -25.0 );
-            mapConfig.mapOrientation=orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Map.Orientation", 0.0 );
-
             if ( !ogMapImpl_ )
             {
-                // setup internal map
-                internalMap_.reallocate( mapConfig.mapSizeX, 
-                                         mapConfig.mapSizeY );
-                internalMap_.offset().p.x = mapConfig.mapOriginX;
-                internalMap_.offset().p.y = mapConfig.mapOriginY;
-                internalMap_.offset().o   = mapConfig.mapOrientation;
-                internalMap_.setMetresPerCellX( mapConfig.mapResX );
-                internalMap_.setMetresPerCellY( mapConfig.mapResY );
-                internalMap_.fill( 0.5 );
-
-                orca::OgMapData initialOrcaMap;
-                convert( internalMap_, initialOrcaMap );
+                std::string priorMapProxyString = 
+                    orcaice::getPropertyWithDefault( context_.properties(),
+                                                     context_.tag()+".Config.PriorMapProxyString",
+                                                     "" );
+                if ( priorMapProxyString == "" )
+                {
+                    setUpInternalMapFromProperties();
+                }
+                else
+                {
+                    setUpInternalMapFromPriorMap( priorMapProxyString );
+                }
 
                 // set up ogmap interface
                 ogMapImpl_ = new orcaifaceimpl::OgMapImpl( "OgMap", context_ );
                 ogMapImpl_->initInterface( this );
+                orca::OgMapData initialOrcaMap;
+                convert( internalMap_, initialOrcaMap );
                 ogMapImpl_->localSetAndSend( initialOrcaMap );
             }
 
-            if ( !ogFusionObjPtr_ )
+            if ( ogMapImpl_ && !ogFusionObjPtr_ )
             {
                 // duplicate map config for orca::OgFusion Interface
                 orca::OgFusionConfig ogFusionConfig;
-                ogFusionConfig.offset.p.x=mapConfig.mapOriginX;
-                ogFusionConfig.offset.p.y=mapConfig.mapOriginY;
-                ogFusionConfig.offset.o=mapConfig.mapOrientation;
-                ogFusionConfig.numCellsX=mapConfig.mapSizeX;
-                ogFusionConfig.numCellsY=mapConfig.mapSizeY;
-                ogFusionConfig.metresPerCellX=mapConfig.mapResX;
-                ogFusionConfig.metresPerCellY=mapConfig.mapResY;
+                ogFusionConfig.offset.p.x     = internalMap_.offset().p.x;
+                ogFusionConfig.offset.p.y     = internalMap_.offset().p.y;
+                ogFusionConfig.offset.o       = internalMap_.offset().o;
+                ogFusionConfig.numCellsX      = internalMap_.numCellsX();
+                ogFusionConfig.numCellsY      = internalMap_.numCellsY();
+                ogFusionConfig.metresPerCellX = internalMap_.metresPerCellX();
+                ogFusionConfig.metresPerCellY = internalMap_.metresPerCellY();
 
                 // set up ogfusion interface
                 ogFusionObjPtr_ = new OgFusionI( ogFusionConfig, ogFusionDataBuffer_ );
