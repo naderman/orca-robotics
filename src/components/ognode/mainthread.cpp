@@ -137,13 +137,15 @@ MainThread::init()
                 std::string priorMapProxyString = 
                     orcaice::getPropertyWithDefault( context_.properties(),
                                                      context_.tag()+".Config.PriorMapProxyString",
-                                                     "" );
-                if ( priorMapProxyString == "" )
+                                                     "none" );
+                if ( priorMapProxyString == "none" )
                 {
+                    context_.tracer().info( "Reading map info from properties" );
                     setUpInternalMapFromProperties();
                 }
                 else
                 {
+                    context_.tracer().info( "Retreiving prior map from remote interface" );
                     setUpInternalMapFromPriorMap( priorMapProxyString );
                 }
 
