@@ -70,10 +70,11 @@ public:
     void setCoordinateFramePlatform( int guiElementIndex );
     void setOriginPlatform( int guiElementIndex );
     
-    // TODO: AlexB: What the hell is this all about?
+    // Obtains indices of selected adapters from the view
     void selectedAdaptersInView( std::vector<int> &indices );
     
     void createGuiElement( const QString &elementType, QStringList &elementDetails );
+    void removeAndDeleteGuiElement( hydroqgui::IGuiElement *guiElement );
 
     // Inherited from PlatformFocusChangeReceiver
     void platformFocusChanged( const QString &newPlatformName );

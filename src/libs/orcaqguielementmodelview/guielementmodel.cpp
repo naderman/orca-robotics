@@ -134,7 +134,6 @@ GuiElementModel::removeRows( int row, int count, const QModelIndex & parent )
     guiElementSet_.removeGuiElement( row );
     endRemoveRows();
     
-    
     // if the removed element was the last one on its platform, we need to tell
     // mainwin, so it can remove it from the combo box
     if (!doesPlatformExist(platform))
@@ -316,7 +315,27 @@ GuiElementModel::createGuiElement( const QString &elementType,
     if ( view_ )
         view_->resizeColumnsToContents();
 }
-        
+
+void
+GuiElementModel::removeAndDeleteGuiElement( hydroqgui::IGuiElement *guiElement )
+{
+    int row=-1;
+    for ( int i=0; i < elements().size(); i++ )
+    {
+        if ( elements()[i] == guiElement )
+        {
+            row = i;
+            break;
+        }
+    }
+    
+    if ( row == -1 )
+    {
+        throw hydroqgui::Exception( ERROR_INFO, "Tried to deleteGuiElement for non-existent element." );
+    }
+
+    removeRows( row, 1 );
+}
 
 bool
 GuiElementModel::doesPlatformExist( QString &platformName )
