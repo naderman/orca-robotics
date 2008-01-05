@@ -22,6 +22,7 @@
 #include <orca/ogmap.h>
 #include <orca/gps.h>
 #include <orca/pathplanner2d.h>
+#include <orca/properties.h>
 
 namespace orcaifaceimpl
 {
@@ -92,6 +93,13 @@ typedef StoringConsumerImpl<orca::PathPlanner2dPrx,
                         orca::PathPlanner2dConsumerPrx,
                         orca::PathPlanner2dData>           StoringPathPlanner2dConsumerImpl;
 typedef IceUtil::Handle<StoringPathPlanner2dConsumerImpl>  StoringPathPlanner2dConsumerImplPtr;
+
+//! Typedef for a common interface type. There's also a corresponding Ptr.
+typedef StoringConsumerImpl<orca::PropertiesPrx,
+                        orca::PropertiesConsumer,
+                        orca::PropertiesConsumerPrx,
+                        orca::PropertiesData>           StoringPropertiesConsumerImpl;
+typedef IceUtil::Handle<StoringPropertiesConsumerImpl>  StoringPropertiesConsumerImplPtr;
 
 } // namespace
 

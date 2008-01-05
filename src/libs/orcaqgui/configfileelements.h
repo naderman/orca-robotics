@@ -1,5 +1,5 @@
-#ifndef ORCQQGEMV_CONFIGFILEELEMENTS_H
-#define ORCQQGEMV_CONFIGFILEELEMENTS_H
+#ifndef ORCQQGUI_CONFIGFILEELEMENTS_H
+#define ORCQQGUI_CONFIGFILEELEMENTS_H
 
 #include <orcaqguielementmodelview/guielementmodel.h>
 #include <orcaice/context.h>
