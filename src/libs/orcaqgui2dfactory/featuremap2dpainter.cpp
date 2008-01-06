@@ -217,7 +217,7 @@ FeatureMap2dPainter::paintPoseFeature( QPainter *painter,
         painter->save();
         {
             painter->translate( f.p.p.x, f.p.p.y );
-            painter->rotate( f.p.o );
+            painter->rotate( RAD2DEG(f.p.o) );
             paintUncertaintyWedge( painter, orcaqguielementutil::featureColour(f.type), f.c.tt, length, lineThickness );
         }
         painter->restore();
