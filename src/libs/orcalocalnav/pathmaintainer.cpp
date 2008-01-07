@@ -134,8 +134,8 @@ PathMaintainer::waypointReached( const orca::Waypoint2d &wp,
                                  const hydronavutil::Pose &pose,
                                  const double timeNow )
 {
-    double distanceToWp = hypotf( pose.y()-wp.target.p.y,
-                                  pose.x()-wp.target.p.x );
+    double distanceToWp = hypot( pose.y()-wp.target.p.y,
+                                 pose.x()-wp.target.p.x );
     if ( distanceToWp > wp.distanceTolerance )
         return false;
 

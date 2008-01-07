@@ -41,7 +41,7 @@ double
 Section::lineLength() const
 {
     assert( isALine() );
-    return hypotf( start().y()-end().y(), start().x()-end().x() );
+    return hypot( start().y()-end().y(), start().x()-end().x() );
 }
 
 void
@@ -77,8 +77,8 @@ Section::setEndPoints()
     }
 
     // sanity check...
-    assert ( hypotf( start_.y()-elements().front().y(), start_.x()-elements().front().x() ) < 1.0 );
-    assert ( hypotf( end_.y()-elements().back().y(),    end_.x()-elements().back().x() ) < 1.0 );
+    assert ( hypot( start_.y()-elements().front().y(), start_.x()-elements().front().x() ) < 1.0 );
+    assert ( hypot( end_.y()-elements().back().y(),    end_.x()-elements().back().x() ) < 1.0 );
 }
 
 std::string
@@ -290,7 +290,7 @@ breakAndFitLines( std::vector<Section> &sections, int minPointsInLine, double br
         // Instead: use the line defined by the endpoints
         double eigVectX =  (itr->elements().back().y()-itr->elements().front().y());
         double eigVectY = -(itr->elements().back().x()-itr->elements().front().x());
-        double norm = hypotf(eigVectX,eigVectY);
+        double norm = hypot(eigVectX,eigVectY);
         eigVectX /= norm;
         eigVectY /= norm;
         double c = -eigVectX*itr->elements().front().x() - eigVectY*itr->elements().front().y();

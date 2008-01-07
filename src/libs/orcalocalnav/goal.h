@@ -51,7 +51,7 @@ public:
 
 // Non-members    
 inline double distanceToGoal( const Goal &goal )
-{ return hypotf( goal.y, goal.x ); }
+{ return hypot( goal.y, goal.x ); }
 inline double directionToGoal( const Goal &goal )
 { return atan2( goal.y, goal.x ); }
 inline bool translationalGoalPosReached( const Goal &goal )

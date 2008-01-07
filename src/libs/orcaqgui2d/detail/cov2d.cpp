@@ -127,8 +127,8 @@ void Cov2d::eigvect( const double & d1,
     v2y = 1;
 
     // normalise
-    double norm1 = hypotf(v1x,v1y);
-    double norm2 = hypotf(v2x,v2y);
+    double norm1 = hypot(v1x,v1y);
+    double norm2 = hypot(v2x,v2y);
 
     assert( norm1 != 0 );
     assert( norm2 != 0 );

@@ -20,7 +20,7 @@
 namespace localnav {
 
 inline double distance( const hydronavutil::Pose &pose, const geom2d::Point &point )
-{ return hypotf( pose.y()-point.y(), pose.x()-point.x() ); }
+{ return hypot( pose.y()-point.y(), pose.x()-point.x() ); }
 
 inline double distance( const geom2d::Point &point, const hydronavutil::Pose &pose )
 { return distance( pose, point ); }

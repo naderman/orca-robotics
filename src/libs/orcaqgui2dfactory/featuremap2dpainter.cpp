@@ -173,7 +173,7 @@ FeatureMap2dPainter::paintLineFeature( QPainter *painter,
             if ( displayUncertainty_ )
             {
                 // rho uncertainty: lines at the ends
-                double halfLineLength = hypotf( f.end.y-midpointY, f.end.x-midpointX );
+                double halfLineLength = hypot( f.end.y-midpointY, f.end.x-midpointX );
                 double uncertaintyLength = 3*f.c.xx;
                 painter->drawLine( QLineF( -uncertaintyLength, -halfLineLength,
                                            uncertaintyLength, -halfLineLength ) );

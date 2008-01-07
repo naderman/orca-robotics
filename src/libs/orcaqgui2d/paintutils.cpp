@@ -58,7 +58,7 @@ PoseHistory::addPoint( const double x, const double y )
     }
     
     const QPointF last = histories_.last().last();
-    double dist = hypotf( last.x()-x, last.y()-y );
+    double dist = hypot( last.x()-x, last.y()-y );
     
     if ( dist > POSE_HISTORY_MAX_DISTANCE )
     {

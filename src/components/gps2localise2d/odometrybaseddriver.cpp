@@ -86,7 +86,7 @@ OdometryBasedDriver::calcHeadingUncertainty( hydronavutil::Pose &delta,
                                              double dt )
 {
     // Uncertainty is low if we're moving fast in a straight line.
-    double linSpeed = dt*hypotf(delta.x(),delta.y());
+    double linSpeed = dt*hypot(delta.x(),delta.y());
     double rotSpeed = dt*delta.theta();
 
     double rotVal = fabs(rotSpeed);

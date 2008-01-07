@@ -81,7 +81,7 @@ drawLineFeature( QPainter *painter, const orca::LinePolarFeature2d &f )
         painter->translate( x1, y1 );
         painter->rotate( atan2(y2-y1,x2-x1)*180.0/M_PI );
 
-        double len = hypotf(y2-y1,x2-x1);
+        double len = hypot(y2-y1,x2-x1);
 
         painter->drawLine( QLineF( 0,  BOX_WIDTH/2, len,  BOX_WIDTH/2 ) );
         painter->drawLine( QLineF( 0, -BOX_WIDTH/2, len, -BOX_WIDTH/2 ) );

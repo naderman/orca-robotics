@@ -21,7 +21,7 @@ namespace orcalocalnav {
 //                    Non-Member  Functions
 //////////////////////////////////////////////////////////////////////
 
-float requiredTimeToGoalAtMaxSpeed( const Goal &goal )
+double requiredTimeToGoalAtMaxSpeed( const Goal &goal )
 {
     assert ( goal.maxSpeed    >= 0.0 );
 
@@ -29,10 +29,10 @@ float requiredTimeToGoalAtMaxSpeed( const Goal &goal )
     const double LINEAR_EPS     = 1e-5; 
 
     // The goal covers some area (and range of angles).  How far to the border?
-    float distanceToBorder = MAX( 0.0, hypotf(goal.y,goal.x) - goal.distanceTolerance );
+    double distanceToBorder = MAX( 0.0, hypot(goal.y,goal.x) - goal.distanceTolerance );
 
     // work out how long it would take at max speed
-    float translationTime;
+    double translationTime;
     if ( distanceToBorder == 0.0 )
         translationTime = 0.0;
     else
@@ -44,7 +44,7 @@ float requiredTimeToGoalAtMaxSpeed( const Goal &goal )
         else
             translationTime = distanceToBorder / goal.maxSpeed;
     }
-    float requiredTimeAtMaxSpeed = translationTime; // + rotationTime;
+    double requiredTimeAtMaxSpeed = translationTime; // + rotationTime;
     if ( !(requiredTimeAtMaxSpeed >= 0.0) )
     {
         cout << "ERROR(speedlimiter.cpp): requiredTimeAtMaxSpeed: " << requiredTimeAtMaxSpeed << endl;

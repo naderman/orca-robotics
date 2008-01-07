@@ -326,8 +326,8 @@ Simulator::checkProgress()
     const int MIN_NUM_ITERATIONS = 5;
     const int MAX_NUM_ITERATIONS = testPath_.path.size()*400;
 
-    double distanceToGoal = hypotf( pose_.y()-testPath_.path.back().target.p.y,
-                                    pose_.x()-testPath_.path.back().target.p.x );
+    double distanceToGoal = hypot( pose_.y()-testPath_.path.back().target.p.y,
+                                   pose_.x()-testPath_.path.back().target.p.x );
     double angleToGoal = pose_.theta()-testPath_.path.back().target.o;
     NORMALISE_ANGLE( angleToGoal );
     angleToGoal = fabs( angleToGoal );
@@ -419,7 +419,7 @@ Simulator::getRanges()
                                  maxEnd.x(), maxEnd.y(),
                                  actualEnd.x(), actualEnd.y() );
 
-        double actualRange = hypotf( actualEnd.y()-start.y(), actualEnd.x()-start.x() );
+        double actualRange = hypot( actualEnd.y()-start.y(), actualEnd.x()-start.x() );
         scan_->ranges[i] = actualRange;
     }
 }

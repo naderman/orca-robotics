@@ -374,7 +374,7 @@ LineExtractor::addLines( const std::vector<Section> &sections,
 
 
         // Convert to rho-alpha
-        // double rho   = hypotf( py, px );
+        // double rho   = hypot( py, px );
         double alpha = atan2( py, px );
 
         const Section *prevPtr=NULL;
@@ -458,7 +458,7 @@ LineExtractor::addCorners( const std::vector<Section>  &sections,
         double py = -i->eigVectY()*i->c() / d;
 
         // Convert to rho-alpha
-        // double rho   = hypotf( py, px );
+        // double rho   = hypot( py, px );
         double alpha = atan2( py, px );
 
         const Section *prevPtr=NULL;

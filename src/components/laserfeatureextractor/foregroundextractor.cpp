@@ -34,7 +34,7 @@ namespace {
         double xj = ranges[j]*cos((j-i)*angleIncrement);
         double yj = ranges[j]*sin((j-i)*angleIncrement);
 
-        const double distance = hypotf( yi-yj, xi-xj );
+        const double distance = hypot( yi-yj, xi-xj );
         return distance;
     }
 

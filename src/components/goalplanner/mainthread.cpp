@@ -102,11 +102,11 @@ namespace {
 
     double distance( const hydronavutil::Pose &pose, const orca::Waypoint2d &wp )
     {
-        return hypotf( pose.y()-wp.target.p.y, pose.x()-wp.target.p.x );
+        return hypot( pose.y()-wp.target.p.y, pose.x()-wp.target.p.x );
     }
     double distance( const orca::Waypoint2d &wp1, const orca::Waypoint2d &wp2 )
     {
-        return hypotf( wp1.target.p.y-wp2.target.p.y, wp1.target.p.x-wp2.target.p.x );
+        return hypot( wp1.target.p.y-wp2.target.p.y, wp1.target.p.x-wp2.target.p.x );
     }
 }
 

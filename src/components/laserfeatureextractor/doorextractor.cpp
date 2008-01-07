@@ -213,7 +213,7 @@ void DoorExtractor::addFeatures( const orca::LaserScanner2dDataPtr &laserData,
         p->type = orca::feature::DOOR;
         double x = (actualDoorStarts[i].x+actualDoorEnds[i].x)/2.0;
         double y = (actualDoorStarts[i].y+actualDoorEnds[i].y)/2.0;
-        p->p.r = hypotf(y,x);
+        p->p.r = hypot(y,x);
         p->p.o = atan2(y,x);
         p->pFalsePositive = P_FALSE_POSITIVE;
         p->pTruePositive  = P_TRUE_POSITIVE;
