@@ -10,8 +10,8 @@
 #ifndef MAIN_THREAD_H
 #define MAIN_THREAD_H
 
-#include <hydroutil/safethread.h>
-#include <hydroutil/buffer.h>
+#include <hydroiceutil/safethread.h>
+#include <hydroiceutil/buffer.h>
 #include <orcaice/context.h>
 
 #include <orca/ogfusion.h>
@@ -21,10 +21,10 @@
 namespace ognode
 {
 
-class MainThread : public hydroutil::SafeThread
+class MainThread : public hydroiceutil::SafeThread
 {
 public:
-    MainThread( const orcaice::Context              &context);
+    MainThread( const orcaice::Context& context);
 
     virtual void walk();
 private:
@@ -35,7 +35,7 @@ private:
 
     Ice::ObjectPtr                        ogFusionObjPtr_;
     orcaifaceimpl::OgMapImplPtr           ogMapImpl_;
-    hydroutil::Buffer<orca::OgFusionData> ogFusionDataBuffer_;
+    hydroiceutil::Buffer<orca::OgFusionData> ogFusionDataBuffer_;
 
     // Represent the occupancy certainty values using doubles internally.
     hydroogmap::GenericMap<double> internalMap_;

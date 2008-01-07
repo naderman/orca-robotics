@@ -194,7 +194,7 @@ void
 Component::stop()
 {
     tracer().info("stopping component...");
-    hydroutil::stopAndJoin( mainThread_ );
+    hydroiceutil::stopAndJoin( mainThread_ );
 }
 
 } //namespace

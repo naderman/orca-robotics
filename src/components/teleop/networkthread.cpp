@@ -22,12 +22,12 @@ using namespace teleop;
 
 NetworkThread::NetworkThread( Display* display, const orcaice::Context& context ) :
     SafeThread( context.tracer() ),
-    events_(new hydroutil::EventQueue),
+    events_(new hydroiceutil::EventQueue),
     display_(display),
     context_(context)
 {
     // install event optimizer
-    hydroutil::EventQueueOptimizerPtr opt = new TeleopEventQueueOptimizer;
+    hydroiceutil::EventQueueOptimizerPtr opt = new TeleopEventQueueOptimizer;
     events_->setOptimizer( opt );
 }
 
@@ -40,7 +40,7 @@ NetworkThread::newMixedCommand( const hydrointerfaces::HumanInput2d::Command& co
 {
 //     cout<<"DEBUG: NetworkThread::newMixedCommand: "<<command.toString()<<endl;
     
-    hydroutil::EventPtr e = new MixedCommandEvent( 
+    hydroiceutil::EventPtr e = new MixedCommandEvent( 
         command.longitudinal, command.isLongIncrement,
         command.transverse, command.isTransverseIncrement,
         command.angular, command.isAngularIncrement );
@@ -51,7 +51,7 @@ void
 NetworkThread::newIncrementCommand( int longitudinal, int transverse, int angle )
 {
 // cout<<"DEBUG: got command incresment : "<<longitudinal<<" "<<transverse<<" "<<angle<<endl;
-    hydroutil::EventPtr e = new IncrementCommandEvent( longitudinal, transverse, angle );
+    hydroiceutil::EventPtr e = new IncrementCommandEvent( longitudinal, transverse, angle );
     events_->optimizedAdd( e );
 }
 
@@ -59,7 +59,7 @@ void
 NetworkThread::newRelativeCommand( double longitudinal, double transverse, double angle )
 {
 // cout<<"DEBUG: got relative command : "<<longitudinal<<"% "<<transverse<<"% "<<angle<<"%"<<endl;
-    hydroutil::EventPtr e = new RelativeCommandEvent( longitudinal, transverse, angle );
+    hydroiceutil::EventPtr e = new RelativeCommandEvent( longitudinal, transverse, angle );
     events_->optimizedAdd( e );
 }
 
@@ -113,7 +113,7 @@ NetworkThread::walk()
     context_.tracer().debug("Network driver enabled",2);
 
 
-    hydroutil::EventPtr event;    
+    hydroiceutil::EventPtr event;    
     int timeoutMs = (int)floor(1000.0 * orcaice::getPropertyAsDoubleWithDefault(
             context_.properties(), prefix+"RepeatInterval", 0.2 ) );
     //

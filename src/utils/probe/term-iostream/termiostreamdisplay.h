@@ -12,8 +12,8 @@
 #define IOSTREAM_DISPLAY_DRIVER_H
 
 #include <vector>
-#include <hydroutil/buffer.h>
-#include <hydroutil/store.h>
+#include <hydroiceutil/buffer.h>
+#include <hydroiceutil/store.h>
 
 #include <orcaprobe/factory.h>
 
@@ -47,7 +47,7 @@ private:
     std::vector<std::string>    supportedInterfaces_;
     orcaprobe::IBrowser    *browser_;
 
-    hydroutil::EventQueuePtr events_;
+    hydroiceutil::EventQueuePtr events_;
 
     // local data model
     orcacm::RegistryHierarchicalData1 registryData_;

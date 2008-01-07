@@ -27,7 +27,7 @@ class Component : public orcaice::Component
 {
 public:
 
-    Component( const std::string & compName );
+    Component();
     virtual ~Component();
 
     // component interface

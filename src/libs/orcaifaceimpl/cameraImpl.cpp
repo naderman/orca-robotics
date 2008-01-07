@@ -91,7 +91,7 @@ CameraImpl::initInterface()
 }
 
 void 
-CameraImpl::initInterface( hydroutil::Thread* thread, const std::string& subsysName, int retryInterval )
+CameraImpl::initInterface( hydroiceutil::Thread* thread, const std::string& subsysName, int retryInterval )
 {
     topicPrx_ = orcaice::connectToTopicWithString<orca::CameraConsumerPrx>
         ( context_, consumerPrx_, topicName_, thread, subsysName, retryInterval );

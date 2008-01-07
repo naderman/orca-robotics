@@ -35,7 +35,7 @@ enum ColorType
 
 TermNcursesUser::TermNcursesUser( const orcaice::Context & context ) : 
     SafeThread(context.tracer()),
-    events_(new hydroutil::EventQueue),
+    events_(new hydroiceutil::EventQueue),
     context_(context)
 {
 }
@@ -58,7 +58,7 @@ TermNcursesUser::~TermNcursesUser()
     cout<< "************************************************" << endl;
     cout<< "Press any key to continue." << endl;
     cout<< "************************************************" << endl;
-    hydroutil::stopAndJoin( inputMainThread_ );
+    hydroiceutil::stopAndJoin( inputMainThread_ );
 }
 
 void 
@@ -195,42 +195,42 @@ void
 TermNcursesUser::newTraceMessage( const orca::TracerData & data )
 {
 //     cout<<"TermNcursesUser::newTraceMessage"<<endl;
-    hydroutil::EventPtr e = new NewTraceMessageEvent( data );
+    hydroiceutil::EventPtr e = new NewTraceMessageEvent( data );
     events_->add( e );
 }
 
 void 
 TermNcursesUser::previousField()
 {
-    hydroutil::EventPtr e = new PreviousFieldEvent;
+    hydroiceutil::EventPtr e = new PreviousFieldEvent;
     events_->add( e );
 }
 
 void 
 TermNcursesUser::nextField()
 {
-    hydroutil::EventPtr e = new NextFieldEvent;
+    hydroiceutil::EventPtr e = new NextFieldEvent;
     events_->add( e );
 }
 
 void 
 TermNcursesUser::valueUp()
 {
-    hydroutil::EventPtr e = new ValueUpEvent;
+    hydroiceutil::EventPtr e = new ValueUpEvent;
     events_->add( e );
 }
 
 void 
 TermNcursesUser::valueDown()
 {
-    hydroutil::EventPtr e = new ValueDownEvent;
+    hydroiceutil::EventPtr e = new ValueDownEvent;
     events_->add( e );
 }
 
 void 
 TermNcursesUser::action()
 {
-    hydroutil::EventPtr e = new ActionEvent;
+    hydroiceutil::EventPtr e = new ActionEvent;
     events_->add( e );
 }
 
@@ -238,14 +238,14 @@ void
 TermNcursesUser::newVerbosityLevel( int error, int warn, int info, int debug )
 {
 //     cout<<"TermNcursesUser::newTraceMessage"<<endl;
-    hydroutil::EventPtr e = new VerbosityLevelsChangedEvent( error, warn, info, debug );
+    hydroiceutil::EventPtr e = new VerbosityLevelsChangedEvent( error, warn, info, debug );
     events_->add( e );
 }
 
 void 
 TermNcursesUser::newLocalTrace( const std::string& msg )
 {
-    hydroutil::EventPtr e = new NewLocalTraceEvent( msg );
+    hydroiceutil::EventPtr e = new NewLocalTraceEvent( msg );
     events_->add( e );
 }
 
@@ -259,7 +259,7 @@ TermNcursesUser::walk()
     inputMainThread_ = new MainThread( *network_, *this, context_ );
     inputMainThread_->start();
     
-    hydroutil::EventPtr event;
+    hydroiceutil::EventPtr event;
     int timeoutMs = 500;
     
     //

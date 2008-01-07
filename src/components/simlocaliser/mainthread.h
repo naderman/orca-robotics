@@ -11,7 +11,7 @@
 #ifndef MAIN_LOOP_H
 #define MAIN_LOOP_H
 
-#include <hydroutil/safethread.h>
+#include <hydroiceutil/safethread.h>
 #include <orcaice/context.h>
 
 namespace simlocaliser
@@ -19,14 +19,14 @@ namespace simlocaliser
 
 class Driver;
 
-class MainThread : public hydroutil::SafeThread
+class MainThread : public hydroiceutil::SafeThread
 {
 
 public:
     MainThread( const orcaice::Context& context );
     virtual ~MainThread();
 
-    // from hydroutil::SafeThread
+    // from hydroiceutil::SafeThread
     virtual void walk();
 
 private:

@@ -19,19 +19,18 @@ namespace segwayrmp
 class Component : public orcaice::Component
 {
 public:
-
     Component();
 
-    // from Component
+    // from orcaice::Component
     virtual void start();
     virtual void stop();
 
 private:
 
     // thread responsible for interaction with the network
-    hydroutil::ThreadPtr netThread_;
+    hydroiceutil::ThreadPtr netThread_;
     // thread responsible for interaction with local hardware
-    hydroutil::ThreadPtr hwThread_;
+    hydroiceutil::ThreadPtr hwThread_;
 };
 
 } // namespace

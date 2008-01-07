@@ -11,7 +11,7 @@
 #ifndef ORCAQCM_JOBS_H
 #define ORCAQCM_JOBS_H
 
-#include <hydroutil/jobqueue.h>
+#include <hydroiceutil/jobqueue.h>
 #include <orcaice/context.h>
 #include <QCoreApplication>
 
@@ -24,7 +24,7 @@ namespace orcaqcm
 //! - returns results by posting a HomeEvent (a QEvent) to be processed by an instance of OcmModel.
 //!
 //! Currently does not return any error information, probably should.
-class GetComponentsJob : public hydroutil::Job
+class GetComponentsJob : public hydroiceutil::Job
 {
 public:
     //! Contstructor

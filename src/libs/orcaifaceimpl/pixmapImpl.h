@@ -7,18 +7,20 @@
  * the LICENSE file included in this distribution.
  *
  */
-#ifndef __pixmapIface_h__
-#define __pixmapIface_h__
 
-// include defnition of Ice runtime
-#include <Ice/Ice.h>
+#ifndef ORCA_PIXMAP_IMPL_H
+#define ORCA_PIXMAP_IMPL_H
+
+#include <orca/pixmap.h>
 #include <IceStorm/IceStorm.h>
 
-// include provided interfaces
-#include <orca/pixmap.h>
-
-#include <hydroutil/store.h>
+// utilities
+#include <hydroiceutil/store.h>
 #include <orcaice/context.h>
+
+namespace hydroiceutil {
+    class Thread;
+}
 
 namespace orcaifaceimpl {
 
@@ -38,12 +40,20 @@ public:
                 const std::string      &interfaceName );                
     ~PixMapImpl();
 
-    // Local calls:
-    // may throw hydroutil::Exceptions
+    // local interface:
+    //! May throw hydroutil::Exceptions.
     void initInterface();
-    // A local call which sets the data reported by the interface, 
-    // and sends it through IceStorm
-    void localSetAndSend( const ::orca::PixMapData &data );
+
+    //! Sets up interface and connects to IceStorm. Catches all exceptions and retries
+    //! until sucessful. At every iteration, checks if the thread was stopped.
+    void initInterface( hydroiceutil::Thread* thread, const std::string& subsysName="", int retryInterval=2 );
+
+    //! A local call which sets the data reported by the interface
+    void localSet( const orca::PixMapData& data );
+
+    //! A local call which sets the data reported by the interface, 
+    //! and sends it through IceStorm
+    void localSetAndSend( const orca::PixMapData& data );
 
 private:
     // remote call implementations, mimic (but do not inherit) the orca interface
@@ -52,7 +62,7 @@ private:
     void internalUnsubscribe(const ::orca::PixMapConsumerPrx&);
 
     // Holds the latest data
-    hydroutil::Store<orca::PixMapData> dataStore_;
+    hydroiceutil::Store<orca::PixMapData> dataStore_;
 
     // The topic to which we'll publish
     IceStorm::TopicPrx             topicPrx_;

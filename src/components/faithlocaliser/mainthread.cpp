@@ -54,10 +54,6 @@ MainThread::MainThread( const orcaice::Context &context ) :
     stdDevHeading_ = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"StdDevHeading", 1.0 );
 }
 
-MainThread::~MainThread()
-{
-}
-
 void
 MainThread::walk()
 {
@@ -65,13 +61,13 @@ MainThread::walk()
     // ENABLE NETWORK CONNECTIONS
     //
     // multi-try function
-    orcaice::activate( context_, this );
+    orcaice::activate( context_, this, subsysName() );
 
     //
     // EXTERNAL REQUIRED INTERFACES
     //           
     orcaifaceimpl::BufferedOdometry2dConsumerImplPtr odometry2dInterface =
-        new orcaifaceimpl::BufferedOdometry2dConsumerImpl( 10, hydroutil::BufferTypeCircular,context_);
+        new orcaifaceimpl::BufferedOdometry2dConsumerImpl( 10, hydroiceutil::BufferTypeCircular,context_);
     // multi-try function
     odometry2dInterface->subscribeWithTag( "Odometry2d", this );
 
@@ -104,7 +100,7 @@ MainThread::walk()
     orcaifaceimpl::Localise2dImplPtr localiseInterface =
         new orcaifaceimpl::Localise2dImpl( vehicleDescription.geometry, "Localise2d", context_);
     // multi-try function
-    localiseInterface->initInterface( this );
+    localiseInterface->initInterface( this, subsysName() );
 
     // temp variables
     orca::Localise2dData localiseData;

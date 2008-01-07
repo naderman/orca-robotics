@@ -19,7 +19,7 @@
 #include <orcaice/orcaice.h>
 
 // utilities
-#include <hydroutil/buffer.h>
+#include <hydroiceutil/buffer.h>
 
 namespace ognode
 {
@@ -28,7 +28,7 @@ class OgFusionI : public orca::OgFusion
 {
 public:
     OgFusionI( orca::OgFusionConfig &config, 
-               hydroutil::Buffer<orca::OgFusionData> &OgFusionDataBuffer);
+               hydroiceutil::Buffer<orca::OgFusionData> &OgFusionDataBuffer);
 
     virtual void setData(const orca::OgFusionData&, const Ice::Current&);
     virtual orca::OgFusionConfig getConfig(const ::Ice::Current &) const;
@@ -39,7 +39,7 @@ private:
     orca::OgFusionConfig config_;
 
     //buffer
-    hydroutil::Buffer<orca::OgFusionData> &ogFusionDataBuffer_;
+    hydroiceutil::Buffer<orca::OgFusionData> &ogFusionDataBuffer_;
 
 };
 

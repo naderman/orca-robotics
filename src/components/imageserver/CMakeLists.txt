@@ -3,6 +3,10 @@
 # DO NOT USE IT A TEMPLATE FOR NEW DEVELOPMENT
 #
 
+SET ( COMP_NAME imageserver )
+SET ( SERVICE_NAME OrcaImageServerService )
+SET ( COMP_NAMESPACE ${COMP_NAME} )
+
 IF ( OS_LINUX )
 
 OPTION( BUILD_IMAGE_SERVER "Try to build Image Server" ON )
@@ -69,17 +73,19 @@ IF ( BUILD_IMAGE_SERVER )
     ENDIF ( DIGICLOPS_AND_TRICLOPS_FOUND )
     
     # CANNOT use standard macro, because some driver files are optional
-    SET( COMMON_SRCS component mainthread ${DRIVER_SRCS} ${MONO_DRIVER_SRCS} )
+    SET( COMP_SRCS component mainthread ${DRIVER_SRCS} ${MONO_DRIVER_SRCS} )
     
-    GLOBAL_ADD_EXECUTABLE( imageserver main ${COMMON_SRCS} )
+#     GLOBAL_ADD_EXECUTABLE( imageserver main ${COMP_SRCS} )
+    WRAP_COMPONENT_INTO_APP( ${COMP_NAME} ${COMP_NAMESPACE} ${COMP_SRCS} )
+    TARGET_LINK_LIBRARIES( ${COMP_NAME} ${COMP_DEPS} )
     
     # build an IceBox service
-    GLOBAL_ADD_LIBRARY( OrcaImageServer SHARED service ${COMMON_SRCS} )
+    IF ( BUILD_SERVICES )
+        WRAP_COMPONENT_INTO_SERVICE( ${SERVICE_NAME} ${COMP_NAMESPACE} ${COMP_SRCS} )
+        TARGET_LINK_LIBRARIES( ${SERVICE_NAME} ${COMP_DEPS} )    
+    ENDIF ( BUILD_SERVICES )
 
-    TARGET_LINK_LIBRARIES( imageserver ${COMP_DEPS} )
-    TARGET_LINK_LIBRARIES( OrcaImageServer ${COMP_DEPS} )
-
-    GENERATE_CONFIG_FILE( imageserver.def )
+    GENERATE_CONFIG_FILE( ${COMP_NAME}.def )
 
 ENDIF ( BUILD_IMAGE_SERVER )
 ENDIF ( OS_LINUX )

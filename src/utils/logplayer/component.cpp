@@ -318,8 +318,8 @@ void
 Component::stop()
 {
     context().tracer().debug("Stopping component", 2 );
-    hydroutil::stopAndJoin( replayConductor_ );
-    hydroutil::stopAndJoin( highLevelController_ );
+    hydroiceutil::stopAndJoin( replayConductor_ );
+    hydroiceutil::stopAndJoin( highLevelController_ );
 }
 
 } // namespace

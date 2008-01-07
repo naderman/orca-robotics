@@ -18,17 +18,19 @@ namespace pixmaploader {
 class Component : public orcaice::Component
 {
 public:
-
     Component();
 
+    // from orcaice::Component
     virtual void start();
-    virtual void stop() {};
+    virtual void stop();
 
 private:
 
-    orcaifaceimpl::PixMapImplPtr pixMapInterface_;
+    // component owns the interface object, the thread
+    // will simply initialize it and exit.
+    orcaifaceimpl::PixMapImplPtr pixMapImpl_;
     
-    void loadMapFromFile(orca::PixMapData &theMap);
+    hydroiceutil::ThreadPtr thread_;
 };
 
 }

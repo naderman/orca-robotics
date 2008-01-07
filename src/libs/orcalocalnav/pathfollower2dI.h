@@ -14,7 +14,7 @@
 // include defnition of Ice runtime
 #include <Ice/Ice.h>
 #include <IceStorm/IceStorm.h>
-#include <hydroutil/store.h>
+#include <hydroiceutil/store.h>
 
 // include provided interfaces
 #include <orca/pathfollower2d.h>
@@ -73,30 +73,30 @@ public:
     bool localIsEnabled() const;
 
     // local access to proxies
-    hydroutil::Store<orca::PathFollower2dData> &pathStore()           { return pathStore_; }
-    hydroutil::Store<bool>                     &newPathArrivedStore() { return newPathArrivedStore_; }
-    hydroutil::Store<orca::Time>               &activationTimeStore() { return activationTimeStore_; }
-    hydroutil::Store<bool>                     &activationArrivedStore() { return activationArrivedStore_; }
+    hydroiceutil::Store<orca::PathFollower2dData> &pathStore()           { return pathStore_; }
+    hydroiceutil::Store<bool>                     &newPathArrivedStore() { return newPathArrivedStore_; }
+    hydroiceutil::Store<orca::Time>               &activationTimeStore() { return activationTimeStore_; }
+    hydroiceutil::Store<bool>                     &activationArrivedStore() { return activationArrivedStore_; }
 
 private:
 
     double timeSinceActivate( const orca::Time &activationTime );
 
     // New paths from the outside world go in here
-    hydroutil::Store<orca::PathFollower2dData>        pathStore_;
+    hydroiceutil::Store<orca::PathFollower2dData>        pathStore_;
 
     // Let the component know that a new path has arrived
-    hydroutil::Store<bool>                            newPathArrivedStore_;
+    hydroiceutil::Store<bool>                            newPathArrivedStore_;
 
     // Time of Activation from the outside world goes in here
-    hydroutil::Store<bool>                            activationArrivedStore_;
+    hydroiceutil::Store<bool>                            activationArrivedStore_;
 
     // Progress info from the component goes in here
-    hydroutil::Store<int>                             wpIndexStore_;
-    hydroutil::Store<orca::Time>                      activationTimeStore_;
+    hydroiceutil::Store<int>                             wpIndexStore_;
+    hydroiceutil::Store<orca::Time>                      activationTimeStore_;
 
     // Allow external en/dis-able
-    hydroutil::Store<bool>                            enabledStore_;
+    hydroiceutil::Store<bool>                            enabledStore_;
     
     // The topic to which we'll publish
     IceStorm::TopicPrx             topicPrx_;

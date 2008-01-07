@@ -11,13 +11,13 @@
 #ifndef MAIN_THREAD_H
 #define MAIN_THREAD_H
 
-#include <hydroutil/subsystemthread.h>
+#include <hydroiceutil/subsystemthread.h>
 #include <orcaice/context.h>
 
 namespace brick
 {
 
-class MainThread: public hydroutil::SubsystemThread
+class MainThread: public hydroiceutil::SubsystemThread
 {    	
 public:
     MainThread( const orcaice::Context& context );

@@ -11,7 +11,7 @@
 #include <orcaice/application.h>
 #include <orcaice/component.h>
 #include <orcaice/orcaice.h>
-#include <hydroutil/jobqueue.h>
+#include <hydroiceutil/jobqueue.h>
 
 #include <QApplication>
 #include "mainwin.h"
@@ -44,7 +44,7 @@ Component::start()
     // Start job queue
     //
     // standard config is exactly what we want
-    hydroutil::JobQueue jobQueue( context().tracer() ) ;
+    hydroiceutil::JobQueue jobQueue( context().tracer() ) ;
     
     // Set up QT stuff
     char **v = 0;

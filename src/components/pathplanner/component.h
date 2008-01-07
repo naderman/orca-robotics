@@ -12,7 +12,6 @@
 #define COMPONENT_H
 
 #include <orcaice/component.h>
-#include <hydroutil/safethread.h>
 
 namespace pathplanner
 {
@@ -21,15 +20,13 @@ class Component : public orcaice::Component
 {
 public:
     Component();
-    virtual ~Component();
 
-    // component interface
+    // from orcaice::Component
     virtual void start();
     virtual void stop();
 
 private:
-
-    hydroutil::ThreadPtr mainThread_;
+    hydroiceutil::ThreadPtr mainThread_;
 
 };
 

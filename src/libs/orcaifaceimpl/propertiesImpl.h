@@ -15,10 +15,10 @@
 #include <IceStorm/IceStorm.h>
 
 // utilities
-#include <hydroutil/store.h>
+#include <hydroiceutil/store.h>
 #include <orcaice/context.h>
 
-namespace hydroutil {
+namespace hydroiceutil {
     class Thread;
 }
 
@@ -46,7 +46,7 @@ public:
 
     //! Sets up interface and connects to IceStorm. Catches all exceptions and retries
     //! until sucessful. At every iteration, checks if the thread was stopped.
-    void initInterface( hydroutil::Thread* thread, const std::string& subsysName="", int retryInterval=2 );
+    void initInterface( hydroiceutil::Thread* thread, const std::string& subsysName="", int retryInterval=2 );
 
     //! A local call which sets the data reported by the interface
     void localSet( const orca::PropertiesData& data );
@@ -56,7 +56,7 @@ public:
     void localSetAndSend( const orca::PropertiesData& data );
 
     //! A local call which gets the Store that holds remote 'setData' requests.
-    hydroutil::Store<orca::PropertiesData> &localGetRemotelySetDataStore()
+    hydroiceutil::Store<orca::PropertiesData> &localGetRemotelySetDataStore()
         { return remotelySetDataStore_; }
 
 private:
@@ -66,8 +66,8 @@ private:
     void internalSubscribe(const ::orca::PropertiesConsumerPrx&);
     void internalUnsubscribe(const ::orca::PropertiesConsumerPrx&);
 
-    hydroutil::Store<orca::PropertiesData> dataStore_;
-    hydroutil::Store<orca::PropertiesData> remotelySetDataStore_;
+    hydroiceutil::Store<orca::PropertiesData> dataStore_;
+    hydroiceutil::Store<orca::PropertiesData> remotelySetDataStore_;
 
     orca::PropertiesConsumerPrx    consumerPrx_;
     IceStorm::TopicPrx             topicPrx_;

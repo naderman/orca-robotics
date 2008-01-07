@@ -15,10 +15,10 @@
 #include <IceStorm/IceStorm.h>
 
 // utilities
-#include <hydroutil/store.h>
+#include <hydroiceutil/store.h>
 #include <orcaice/context.h>
 
-namespace hydroutil {
+namespace hydroiceutil {
     class Thread;
 }
 
@@ -46,7 +46,7 @@ public:
 
     //! Sets up interface and connects to IceStorm. Catches all exceptions and retries
     //! until sucessful. At every iteration, checks if the thread was stopped.
-    void initInterface( hydroutil::Thread* thread, const std::string& subsysName="", int retryInterval=2 );
+    void initInterface( hydroiceutil::Thread* thread, const std::string& subsysName="", int retryInterval=2 );
 
     //! A local call which sets the data reported by the interface
     void localSet( const orca::PowerData& data );
@@ -61,7 +61,7 @@ private:
     void internalSubscribe(const ::orca::PowerConsumerPrx&);
     void internalUnsubscribe(const ::orca::PowerConsumerPrx&);
 
-    hydroutil::Store<orca::PowerData> dataStore_;
+    hydroiceutil::Store<orca::PowerData> dataStore_;
 
     orca::PowerConsumerPrx    consumerPrx_;
     IceStorm::TopicPrx             topicPrx_;

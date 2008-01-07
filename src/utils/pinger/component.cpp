@@ -8,31 +8,27 @@
  *
  */
 
-#include <orcaice/orcaice.h>
 #include "component.h"
 #include "mainthread.h"
 
-using namespace std;
 using namespace pinger;
 
 Component::Component() :
-    orcaice::Component("Pinger"),
-    mainThread_(0)
+    orcaice::Component("Pinger")
 {
 }
 
 void
 Component::start()
 {
-    //start the main loop and pass it the pointer to the proxy
-    mainThread_ = new MainThread( context() );
-    mainThread_->start();
+    thread_ = new MainThread( context() );
+    thread_->start();
 }
 
 void
 Component::stop()
 {
     tracer().debug( "stopping component", 2 );
-    hydroutil::stopAndJoin( mainThread_ );
+    hydroiceutil::stopAndJoin( thread_ );
     tracer().debug( "component stopped", 2 );
 }

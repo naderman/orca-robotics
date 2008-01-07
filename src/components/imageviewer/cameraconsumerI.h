@@ -12,7 +12,7 @@
 #define CAMERA_CONSUMER_I_H
 
 #include <orcaice/component.h>
-#include <hydroutil/buffer.h>
+#include <hydroiceutil/buffer.h>
 #include <orca/camera.h>
 
 namespace imageviewer{
@@ -20,12 +20,12 @@ namespace imageviewer{
 class CameraConsumerI : public orca::CameraConsumer
 {
 public:
-    CameraConsumerI ( hydroutil::Buffer<orca::CameraData> &dataPipe );
+    CameraConsumerI ( hydroiceutil::Buffer<orca::CameraData> &dataPipe );
     
     virtual void setData(const orca::CameraData& data, const Ice::Current&);
 
 private:
-    hydroutil::Buffer<orca::CameraData> &dataPipe_;
+    hydroiceutil::Buffer<orca::CameraData> &dataPipe_;
 };
 
 } // namespace

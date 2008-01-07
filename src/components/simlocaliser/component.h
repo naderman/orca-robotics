@@ -16,21 +16,17 @@
 namespace simlocaliser
 {
 
-class MainThread;
-
 class Component : public orcaice::Component
 {
 public:
-
     Component();
-    virtual ~Component();
 
     // from orcaice::Component
     virtual void start();
     virtual void stop();
 
 private:
-    MainThread* mainLoop_;
+    hydroiceutil::ThreadPtr thread_;
 };
 
 } // namespace

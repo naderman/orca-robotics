@@ -10,8 +10,7 @@
 #include <orcaice/orcaice.h>
 
 #include "component.h"
-#include "fakemaploader.h"
-#include "maploader.h"
+#include "initthread.h"
 
 using namespace std;
 using namespace ogmaploader;
@@ -25,42 +24,19 @@ void
 Component::start()
 {
     //
-    // INITIAL CONFIGURATION
-    //
-    Ice::PropertiesPtr prop = properties();
-    std::string prefix = tag() + ".Config.";
-
-    //
-    // LOAD THE MAP
-    //
-    orca::OgMapData theMap;
-
-    std::string driverName = orcaice::getPropertyWithDefault( prop, prefix+"Driver", "fake" );
-    if ( driverName == "fake" )
-    {
-        cout<<"TRACE(maploadercomponent.cpp): Instantiating fake driver" << endl;
-        fakeLoadMap( theMap );
-    }
-    else if ( driverName == "file" )
-    {
-        loadMapFromFile(context(),theMap);
-        cout<<"TRACE(component.cpp): Loaded map: " << orcaice::toString(theMap) << endl;
-    }
-    else
-    {
-        std::string errString = "Unknown driver type: "+driverName;
-        throw hydroutil::Exception( ERROR_INFO, errString );
-    }
-
-    //
     // EXTERNAL PROVIDED INTERFACES
     //
-    ogMapInterface_ = new orcaifaceimpl::OgMapImpl( "OgMap", context() );
-    ogMapInterface_->initInterface();
-    ogMapInterface_->localSetAndSend( theMap );
+    // create servant for direct connections
+    ogMapImpl_ = new orcaifaceimpl::OgMapImpl( "OgMap", context() );
 
-    //
-    // ENABLE NETWORK CONNECTIONS
-    //
-    activate();
+    thread_ = new InitThread( ogMapImpl_, context() );
+    thread_->start();
+}
+
+void
+Component::stop()
+{
+    tracer().debug( "stopping component", 5 );
+    hydroiceutil::stopAndJoin( thread_ );
+    tracer().debug( "stopped component", 5 );
 }

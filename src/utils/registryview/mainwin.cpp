@@ -23,7 +23,7 @@
 
 using namespace std;
 
-MainWindow::MainWindow( hydroutil::JobQueue* jobQueue, double refreshInterval, const orcaice::Context& context ) :
+MainWindow::MainWindow( hydroiceutil::JobQueue* jobQueue, double refreshInterval, const orcaice::Context& context ) :
     jobQueue_(jobQueue),
     context_(context)
 {
@@ -106,7 +106,7 @@ MainWindow::updateRegistryView()
 {    
     string locatorString = context_.communicator()->getDefaultLocator()->ice_toString();
 
-    hydroutil::JobPtr job = new orcaqcm::GetComponentsJob( qApp, model_, context_, locatorString );
+    hydroiceutil::JobPtr job = new orcaqcm::GetComponentsJob( qApp, model_, context_, locatorString );
     jobQueue_->add( job );
 }
 

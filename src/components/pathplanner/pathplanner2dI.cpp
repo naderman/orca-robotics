@@ -18,7 +18,7 @@ using namespace std;
 using namespace orca;
 using namespace pathplanner;
 
-PathPlanner2dI::PathPlanner2dI( hydroutil::Buffer<orca::PathPlanner2dTask> &pathPlannerTaskBuffer,
+PathPlanner2dI::PathPlanner2dI( hydroiceutil::Buffer<orca::PathPlanner2dTask> &pathPlannerTaskBuffer,
                                 const orcaice::Context &context )
             : pathPlannerTaskBuffer_(pathPlannerTaskBuffer),
               context_(context)

@@ -1,4 +1,5 @@
 SET ( COMP_NAME orca2yarp )
+SET ( COMP_NAMESPACE ${COMP_NAME} )
 
 REQUIRE_OPTION( EXE ${COMP_NAME} OFF )
 # only tested on Linux but should work where Yarp works.
@@ -26,7 +27,7 @@ IF ( BUILD)
     TARGET_LINK_LIBRARIES( yarp_simple_receiver ${YARP_LIBS} )
 
     # Orca-to-Yarp example 
-    GLOBAL_ADD_EXECUTABLE( ${COMP_NAME} main handler )
+    WRAP_COMPONENT_INTO_APP( ${COMP_NAME} ${COMP_NAMESPACE} component mainthread )
     TARGET_LINK_LIBRARIES( ${COMP_NAME} ${YARP_LIBS} )
 
     GENERATE_CONFIG_FILE( ${COMP_NAME}.def )

@@ -29,8 +29,8 @@ orcalog::AutoLoggerFactory* loadLogFactory( hydrodll::DynamicallyLoadedLibrary &
     return f;
 }
 
-Component::Component( const std::string & compName )
-    : orcaice::Component( compName )
+Component::Component()
+    : orcaice::Component( "Logger" )
 {
 }
 

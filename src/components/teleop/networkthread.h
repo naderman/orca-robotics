@@ -11,9 +11,9 @@
 #ifndef  NETWORK_THREAD_H
 #define  NETWORK_THREAD_H
 
-#include <hydroutil/safethread.h>
+#include <hydroiceutil/safethread.h>
 #include <orcaice/context.h>
-#include <hydroutil/eventqueue.h>
+#include <hydroiceutil/eventqueue.h>
 
 #include "network.h"
 
@@ -23,7 +23,7 @@ namespace teleop
 class Display;
 class NetworkDriver;
 
-class NetworkThread : public hydroutil::SafeThread, public Network
+class NetworkThread : public hydroiceutil::SafeThread, public Network
 {
 public:
 
@@ -42,7 +42,7 @@ public:
 
 private:
 
-    hydroutil::EventQueuePtr events_;
+    hydroiceutil::EventQueuePtr events_;
 
     Display* display_;
 

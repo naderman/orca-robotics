@@ -12,8 +12,8 @@
 #define ORCAICE_DETAIL_STATUS_I_H
 
 #include <orca/status.h>
-#include <hydroutil/localstatus.h>
-#include <hydroutil/timer.h>
+#include <hydroiceutil/localstatus.h>
+#include <hydroiceutil/timer.h>
 
 #include <IceStorm/IceStorm.h>
 #include <IceUtil/Mutex.h>
@@ -24,7 +24,7 @@ namespace detail
 {
 
 // An implementation of the (remote) Status interface.
-class StatusI : public virtual orca::Status, public hydroutil::LocalStatus
+class StatusI : public virtual orca::Status, public hydroiceutil::LocalStatus
 {
 public:
     
@@ -46,7 +46,7 @@ private:
                                 orca::StatusConsumerPrx &publisher,
                                 bool isStatusTopicRequired );
 
-    void setStatusData( const hydroutil::NameStatusMap &subsystemStatus );
+    void setStatusData( const hydroiceutil::NameStatusMap &subsystemStatus );
     void sendToIceStorm( const orca::StatusData &statusData );
 
     IceStorm::TopicPrx topic_;
@@ -57,7 +57,7 @@ private:
 
     // Protect from simultaneous get/set of statusData_
     IceUtil::Mutex mutex_;
-    hydroutil::Timer upTimer_;
+    hydroiceutil::Timer upTimer_;
     orcaice::Context context_;
 };
 

@@ -13,8 +13,8 @@
 #include <orca/orca.h>
 #include <orca/properties.h>
 #include <orcaice/orcaice.h>
-#include <hydroutil/localstatus.h>
-#include <hydroutil/localtracer.h>
+#include <hydroiceutil/localstatus.h>
+#include <hydroiceutil/localtracer.h>
 #include "localhome.h"
 #include "homeI.h"
 #include "statusI.h"
@@ -102,7 +102,7 @@ Component::finalise()
     if ( componentThread_ )
     {
         context_.tracer().debug( "orcaice::Component: stopping ComponentThread....", 2 );
-        hydroutil::stopAndJoin( componentThread_ );
+        hydroiceutil::stopAndJoin( componentThread_ );
         context_.tracer().debug( "orcaice::Component: ComponentThread stopped.", 2 );
     }
 }
@@ -122,7 +122,7 @@ Component::initTracer()
     if ( !enableInterface ) 
     {
         orcaice::initTracerInfo( tag()+": Initialized local trace handler.");
-        return new hydroutil::LocalTracer( 
+        return new hydroiceutil::LocalTracer( 
                 hydroutil::Properties( context_.properties()->getPropertiesForPrefix("Orca.Tracer.")),
                 orcaice::toString(context_.name()) );
     }
@@ -167,7 +167,7 @@ Component::initStatus()
     if ( !enableInterface ) 
     {
         orcaice::initTracerInfo( tag()+": Initialized local status handler");
-        return new hydroutil::LocalStatus( 
+        return new hydroiceutil::LocalStatus( 
             context_.tracer(),
             hydroutil::Properties( context_.properties()->getPropertiesForPrefix("Orca.Status."),"Orca.Status.") );
     }

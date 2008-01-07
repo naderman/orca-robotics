@@ -9,7 +9,7 @@
 #include <orca/wifi.h>
 
 // utilities
-#include <hydroutil/store.h>
+#include <hydroiceutil/store.h>
 #include <orcaice/context.h>
 
 namespace orcaifaceimpl
@@ -37,7 +37,7 @@ public:
 
     //! Sets up interface and connects to IceStorm. Catches all exceptions and retries
     //! until sucessful. At every iteration, checks if the thread was stopped.
-    void initInterface( hydroutil::Thread* thread, const std::string& subsysName="", int retryInterval=2 );
+    void initInterface( hydroiceutil::Thread* thread, const std::string& subsysName="", int retryInterval=2 );
 
     //! A local call which sets the data reported by the interface, 
     //! and sends it through IceStorm
@@ -49,7 +49,7 @@ private:
     void internalSubscribe(const ::orca::WifiConsumerPrx&);
     void internalUnsubscribe(const ::orca::WifiConsumerPrx& );
 
-    hydroutil::Store<orca::WifiData> dataStore_;
+    hydroiceutil::Store<orca::WifiData> dataStore_;
 
     orca::WifiConsumerPrx    consumerPrx_;
     IceStorm::TopicPrx       topicPrx_;

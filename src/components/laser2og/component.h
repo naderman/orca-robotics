@@ -7,30 +7,26 @@
  * the LICENSE file included in this distribution.
  *
  */
-#ifndef _ORCA2_LASER2OG_COMPONENT_H_
-#define _ORCA2_LASER2OG_COMPONENT_H_
 
+#ifndef COMPONENT_H
+#define COMPONENT_H
 
 #include <orcaice/component.h>
 
 namespace laser2og 
 {
 
-class MainThread;
-class Laser2Og;
-
 class Component : public orcaice::Component
 {
 public:
     Component();
-    virtual ~Component();
 
-    // component interface
+    // from orcaice::Component
     virtual void start();
     virtual void stop();
     
 private:
-    MainThread *mainThread_;
+    hydroiceutil::ThreadPtr mainThread_;
 
 };
 

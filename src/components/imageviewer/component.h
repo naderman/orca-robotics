@@ -12,7 +12,7 @@
 #define COMPONENT_H
 
 #include <orcaice/component.h>
-#include <hydroutil/buffer.h>
+#include <hydroiceutil/buffer.h>
 #include <orca/camera.h>
 
 
@@ -33,7 +33,7 @@ public:
 
 private:
 
-    hydroutil::Buffer<orca::CameraData> dataPipe_;
+    hydroiceutil::Buffer<orca::CameraData> dataPipe_;
     MainThread* mainloop_;
 };
     

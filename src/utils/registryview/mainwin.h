@@ -13,7 +13,7 @@
 
 #include <QMainWindow>
 
-#include <hydroutil/jobqueue.h>
+#include <hydroiceutil/jobqueue.h>
 #include <orcaice/context.h>
 
 namespace orcaqcm {
@@ -28,7 +28,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    MainWindow( hydroutil::JobQueue* jobQueue, double refreshInterval, const orcaice::Context& context );
+    MainWindow( hydroiceutil::JobQueue* jobQueue, double refreshInterval, const orcaice::Context& context );
 
 private slots:
     
@@ -47,7 +47,7 @@ private:
     QTreeView*              view_;
     QItemDelegate*          delegate_;
 
-    hydroutil::JobQueue*    jobQueue_;
+    hydroiceutil::JobQueue*    jobQueue_;
     orcaice::Context        context_;
 
     QTimer*                 refreshTimer_;

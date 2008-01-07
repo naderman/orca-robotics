@@ -14,7 +14,7 @@
 #include <vector>
 #include <QMainWindow>
 
-#include <hydroutil/jobqueue.h>
+#include <hydroiceutil/jobqueue.h>
 #include <hydroqgui/ihumanmanager.h>
 #include <orcaqguielementmodelview/guielementmodel.h>
 #include <orcaqguielementmodelview/guielementview.h>

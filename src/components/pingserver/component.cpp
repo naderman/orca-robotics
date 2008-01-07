@@ -8,12 +8,8 @@
  *
  */
 
-#include <orcaice/orcaice.h>
-#include <iostream>
 #include "component.h"
-
-
-using namespace std;
+#include "initthread.h"
 
 namespace pingserver {
 
@@ -22,33 +18,21 @@ Component::Component()
 {
 }
 
-// NOTE: this function returns after it's done, all variable that need to be permanent must
-//       be declared as member variables.
 void
 Component::start()
 {
-    context().tracer().info( "Component::start()" );
-
-    //
-    // ENABLE NETWORK
-    //
-    // this may throw an exception which will be caught in Application
-    // but will cause the app to exit
-    activate();
-
-    //
-    // EXTERNAL PROVIDED INTERFACE
-    //
     pingerInterface_ = new PingerI( "Pinger", context() );
-    pingerInterface_->initInterface();
 
-    // the rest is handled by the application/service
+    thread_ = new InitThread( pingerInterface_, context() );
+    thread_->start();
 }
 
 void
 Component::stop()
 {
-    // nothing to do
+    tracer().debug( "stopping component", 5 );
+    hydroiceutil::stopAndJoin( thread_ );
+    tracer().debug( "stopped component", 5 );
 }
 
 }

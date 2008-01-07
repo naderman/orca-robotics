@@ -11,9 +11,9 @@
 #ifndef  TERMINAL_DISPLAY_THREAD_H
 #define  TERMINAL_DISPLAY_THREAD_H
 
-#include <hydroutil/safethread.h>
+#include <hydroiceutil/safethread.h>
 #include <orcaice/context.h>
-#include <hydroutil/eventqueue.h>
+#include <hydroiceutil/eventqueue.h>
 
 #include "display.h"
 
@@ -22,7 +22,7 @@ namespace teleop
 
 class TermDisplayDriver;
 
-class TermDisplayThread : public hydroutil::SafeThread, public Display
+class TermDisplayThread : public hydroiceutil::SafeThread, public Display
 {
 public:
 
@@ -47,7 +47,7 @@ public:
     
 private:
 
-    hydroutil::EventQueuePtr events_;
+    hydroiceutil::EventQueuePtr events_;
 
     // generic interface to input hardware
     TermDisplayDriver* driver_;

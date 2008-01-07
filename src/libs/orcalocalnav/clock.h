@@ -11,7 +11,7 @@
 #ifndef ORCA_LOCALNAV_CLOCK_H
 #define ORCA_LOCALNAV_CLOCK_H
 
-#include <hydroutil/store.h>
+#include <hydroiceutil/store.h>
 #include <orca/orca.h>
 
 namespace orcalocalnav {
@@ -44,7 +44,7 @@ public:
 
 private: 
 
-    mutable hydroutil::Store<orca::Time> timeStore_;
+    mutable hydroiceutil::Store<orca::Time> timeStore_;
 
 };
 

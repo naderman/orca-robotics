@@ -11,9 +11,9 @@
 #ifndef NETWORK_THREAD_H
 #define NETWORK_THREAD_H
 
-#include <hydroutil/subsystemthread.h>
+#include <hydroiceutil/subsystemthread.h>
 #include <orcaice/context.h>
-#include <hydroutil/notify.h>
+#include <hydroiceutil/notify.h>
 
 #include <orcaifaceimpl/odometry2dImpl.h>
 #include <orcaifaceimpl/velocitycontrol2dImpl.h>
@@ -25,8 +25,8 @@ namespace robot2d
 //
 // Handles network interface
 //
-class NetThread : public hydroutil::SubsystemThread,
-                  public hydroutil::NotifyHandler<orca::VelocityControl2dData>
+class NetThread : public hydroiceutil::SubsystemThread,
+                  public hydroiceutil::NotifyHandler<orca::VelocityControl2dData>
 {
 public:
 

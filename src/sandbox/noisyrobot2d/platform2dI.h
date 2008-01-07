@@ -13,7 +13,7 @@
 
 #include <IceStorm/IceStorm.h>
 #include <orca/platform2d.h>
-#include <hydroutil/store.h>
+#include <hydroiceutil/store.h>
 #include <orcaice/context.h>
 #include "inoisemodel.h"
 

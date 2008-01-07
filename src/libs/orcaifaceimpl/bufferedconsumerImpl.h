@@ -11,7 +11,7 @@
 #ifndef ORCAIFACEIMPL_BUFFERED_CONSUMER_IMPL_H
 #define ORCAIFACEIMPL_BUFFERED_CONSUMER_IMPL_H
 
-#include <hydroutil/buffer.h>
+#include <hydroiceutil/buffer.h>
 #include <orcaifaceimpl/consumerImpl.h>
 
 namespace orcaifaceimpl
@@ -19,7 +19,7 @@ namespace orcaifaceimpl
 
 //!
 //! Implements a consumer interface whose set method is 'SetData'.
-//! Does nothing more than sticking incoming data into an hydroutil::Buffer.
+//! Does nothing more than sticking incoming data into an hydroiceutil::Buffer.
 //!
 template<class ProviderPrxType, class ConsumerType, class ConsumerPrxType, class ObjectType>
 class BufferedConsumerImpl : 
@@ -27,18 +27,18 @@ class BufferedConsumerImpl :
 {
 public:
     //! Constructor.
-    BufferedConsumerImpl( int depth, hydroutil::BufferType type, const orcaice::Context &context )
+    BufferedConsumerImpl( int depth, hydroiceutil::BufferType type, const orcaice::Context &context )
         : ConsumerImpl<ProviderPrxType,ConsumerType,ConsumerPrxType,ObjectType>(context),
           buffer_(depth,type) {}
 
     //! Returns reference to local proxy.
-    hydroutil::Buffer<ObjectType> &buffer() { return buffer_; }
+    hydroiceutil::Buffer<ObjectType> &buffer() { return buffer_; }
 
     //! This callback simply puts the data object into the internal proxy.
     virtual void handleData( const ObjectType& data ) { buffer_.push( data ); }
 
 private:
-    hydroutil::Buffer<ObjectType> buffer_;
+    hydroiceutil::Buffer<ObjectType> buffer_;
 };
 
 } // namespace

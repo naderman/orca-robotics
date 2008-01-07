@@ -11,7 +11,7 @@
 #ifndef ORCA_WALKER_RANDOMWALK_ALGORITHM_DRIVER_H
 #define ORCA_WALKER_RANDOMWALK_ALGORITHM_DRIVER_H
 
-#include <hydroutil/timer.h>
+#include <hydroiceutil/timer.h>
 
 #include "algodriver.h"
 
@@ -32,8 +32,8 @@ public:
 
 private:
 
-    hydroutil::Timer randomTimer_;
-    hydroutil::Timer avoidTimer_;
+    hydroiceutil::Timer randomTimer_;
+    hydroiceutil::Timer avoidTimer_;
 
     // state machine
     int avoidDirection_;

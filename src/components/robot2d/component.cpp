@@ -24,8 +24,6 @@ Component::Component() :
 {
 }
 
-// warning: this function returns after it's done, all variable that need to be permanet must
-//          be declared as member variables.
 void
 Component::start()
 {
@@ -68,8 +66,8 @@ void
 Component::stop()
 {
     tracer().debug( "stopping component", 2 );
-    hydroutil::stopAndJoin( NetThread_ );
+    hydroiceutil::stopAndJoin( NetThread_ );
     tracer().info( "stopped net handler", 2 );
-    hydroutil::stopAndJoin( HwThread_ );
+    hydroiceutil::stopAndJoin( HwThread_ );
     tracer().info( "stopped hw handler", 2 );
 }

@@ -65,7 +65,7 @@ void stdMenu( const std::string& header, const std::string& itemname, const std:
 TermIostreamDisplay::TermIostreamDisplay( const std::vector<std::string> & supportedInterfaces ) : 
     supportedInterfaces_(supportedInterfaces),
     browser_(0),
-    events_(new hydroutil::EventQueue)
+    events_(new hydroiceutil::EventQueue)
 {
     cout<<"The following interfaces are supported:";
     for ( unsigned int j=0; j<supportedInterfaces_.size(); ++j ) {
@@ -90,7 +90,7 @@ TermIostreamDisplay::enable( orcaprobe::IBrowser* browser )
     browser_ = browser;
     browser_->chooseActivate();
 
-    hydroutil::EventPtr event;
+    hydroiceutil::EventPtr event;
     int timeoutMs = 500;
 
     //
@@ -187,49 +187,49 @@ TermIostreamDisplay::enable( orcaprobe::IBrowser* browser )
 void 
 TermIostreamDisplay::showNetworkActivity( bool isActive )
 {
-    hydroutil::EventPtr e = new probe::NetworkActivityChangedEvent( isActive );
+    hydroiceutil::EventPtr e = new probe::NetworkActivityChangedEvent( isActive );
     events_->add( e );
 }
 
 void 
 TermIostreamDisplay::setRegistryData( const orcacm::RegistryHierarchicalData1 & data )
 {
-    hydroutil::EventPtr e = new probe::RegistryDataChangedEvent( data );
+    hydroiceutil::EventPtr e = new probe::RegistryDataChangedEvent( data );
     events_->add( e );
 }
 
 void 
 TermIostreamDisplay::setPlatformData( const orcacm::RegistryHierarchicalData2 & data )
 {
-    hydroutil::EventPtr e = new probe::PlatformDataChangedEvent( data );
+    hydroiceutil::EventPtr e = new probe::PlatformDataChangedEvent( data );
     events_->add( e );
 }
 
 void 
 TermIostreamDisplay::setComponentData( const orcacm::ComponentData & data )
 {
-    hydroutil::EventPtr e = new probe::ComponentDataChangedEvent( data );
+    hydroiceutil::EventPtr e = new probe::ComponentDataChangedEvent( data );
     events_->add( e );
 }
 
 void 
 TermIostreamDisplay::setInterfaceData( const orcacm::InterfaceData & data )
 {
-    hydroutil::EventPtr e = new probe::InterfaceDataChangedEvent( data );
+    hydroiceutil::EventPtr e = new probe::InterfaceDataChangedEvent( data );
     events_->add( e );
 }
 
 void 
 TermIostreamDisplay::setOperationData( const orcacm::OperationData & data )
 {
-    hydroutil::EventPtr e = new probe::OperationDataChangedEvent( data );
+    hydroiceutil::EventPtr e = new probe::OperationDataChangedEvent( data );
     events_->add( e );
 }
 
 void 
 TermIostreamDisplay::setFocus( orcaprobe::IDisplay::FocusType focus )
 {
-    hydroutil::EventPtr e = new probe::FocusChangedEvent( focus );
+    hydroiceutil::EventPtr e = new probe::FocusChangedEvent( focus );
     events_->add( e );
 }
 

@@ -15,27 +15,22 @@
 
 namespace featuremaploader {
 
-//
-// Deriving from orcaice::Component means we have to implement start() and stop()
-//
 class Component : public orcaice::Component
 {
 public:
-
     Component();
 
+    // from orcaice::Component
     virtual void start();
-    virtual void stop() {};
+    virtual void stop();
 
 private:
 
-    // Returns zero on success
-    int loadMap( const std::string &fileName, orca::FeatureMap2dData &theMap );
-
-    //
-    // EXTERNAL INTERFACE: featuremap2d
-    //
+    // component owns the interface object, the thread
+    // will simply initialize it and exit.
     orcaifaceimpl::FeatureMap2dImplPtr featureMap2dImpl_;
+
+    hydroiceutil::ThreadPtr thread_;
 };
 
 }

@@ -16,23 +16,15 @@
 
 #include "term-iostream/termiostreamuser.h"
 #ifdef HAVE_TERM_NCURSES_DRIVER   
-#include "term-ncurses/termncursesuser.h"
+#   include "term-ncurses/termncursesuser.h"
 #endif
 
 using namespace std;
 using namespace tracermon;
 
 Component::Component()
-    : orcaice::Component( "TracerMon", orcaice::HomeInterface ),
-      netMainThread_(0),
-      usrMainThread_(0)
+    : orcaice::Component( "TracerMon", orcaice::HomeInterface )
 {
-}
-
-Component::~Component()
-{
-    // do not delete networkMainThread_ and userMainThread_!!! 
-    // They derive from Ice::Thread and delete itself.
 }
 
 void
@@ -55,7 +47,7 @@ Component::start()
 #ifdef HAVE_TERM_NCURSES_DRIVER        
         tracer().info( "Loading terminal ncurses driver");
         TermNcursesUser* user = new TermNcursesUser( context() );
-        usrMainThread_ = (hydroutil::SafeThread*)user;
+        usrThread_ = (hydroiceutil::SafeThread*)user;
         userDriver = (User*)user;
 #else
         throw hydroutil::Exception( ERROR_INFO, "Can't instantiate driver type 'term-ncurses' because it was not compiled." );
@@ -65,7 +57,7 @@ Component::start()
     {
         tracer().info( "Loading terminal iostream driver");
         TermIostreamUser* userMainThread = new TermIostreamUser( context() );
-        usrMainThread_ = (hydroutil::SafeThread*)userMainThread;
+        usrThread_ = (hydroiceutil::SafeThread*)userMainThread;
         userDriver = (User*)userMainThread;
     }
     else {
@@ -79,21 +71,19 @@ Component::start()
     //
     // the constructor may throw, we'll let the application shut us down
     MainThread* networkMainThread = new MainThread( userDriver, context() );
-    netMainThread_ = (hydroutil::SafeThread*)networkMainThread;
+    netThread_ = (hydroiceutil::SafeThread*)networkMainThread;
     Network* netDriver = (Network*)networkMainThread;
-    netMainThread_->start();
+    netThread_->start();
 
     // important: must use 
     userDriver->enable( netDriver );
-    usrMainThread_->start();
-    
-    // the rest is handled by the application/service
+    usrThread_->start();
 }
 
 void
 Component::stop()
 {
-    hydroutil::stopAndJoin( netMainThread_ );
+    hydroiceutil::stopAndJoin( netThread_ );
 
     // userMainThread_ is blocked on user input
     // the only way for it to realize that we want to stop is to give it some keyboard input.
@@ -102,5 +92,5 @@ Component::stop()
 //     tracer().print( "Press any key or shake the joystick to continue." );
 //     tracer().print( "************************************************" );
     
-    hydroutil::stopAndJoin( usrMainThread_ );
+    hydroiceutil::stopAndJoin( usrThread_ );
 }

@@ -74,7 +74,7 @@ Particle2dImpl::initInterface()
 }
 
 void 
-Particle2dImpl::initInterface( hydroutil::Thread* thread, const std::string& subsysName, int retryInterval )
+Particle2dImpl::initInterface( hydroiceutil::Thread* thread, const std::string& subsysName, int retryInterval )
 {
     topicPrx_ = orcaice::connectToTopicWithString( context_, consumerPrx_, topicName_, thread, subsysName, retryInterval );
 

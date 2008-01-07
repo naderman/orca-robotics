@@ -18,8 +18,8 @@ using namespace orcaice;
 
 namespace goalplanner {
 
-PathFollower2dI::PathFollower2dI( hydroutil::Store<orca::PathFollower2dData> &pathPipe,
-                                  hydroutil::Store<bool> &activationPipe,
+PathFollower2dI::PathFollower2dI( hydroiceutil::Store<orca::PathFollower2dData> &pathPipe,
+                                  hydroiceutil::Store<bool> &activationPipe,
                                   orca::PathFollower2dPrx localNavPrx )
     : pathPipe_(pathPipe),
       activationPipe_(activationPipe),

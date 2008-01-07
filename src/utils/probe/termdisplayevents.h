@@ -11,7 +11,7 @@
 #ifndef TERM_DISPLAY_EVENTS_H
 #define TERM_DISPLAY_EVENTS_H
 
-#include <hydroutil/eventqueue.h>
+#include <hydroiceutil/eventqueue.h>
 #include <orcacm/types.h>
 #include <orcaprobe/idisplay.h> // for focus types
 
@@ -33,7 +33,7 @@ enum EventType
     OperationDataChanged
 };
 
-class NetworkActivityChangedEvent : public hydroutil::Event
+class NetworkActivityChangedEvent : public hydroiceutil::Event
 {
 public:
     NetworkActivityChangedEvent( bool isActive )
@@ -44,7 +44,7 @@ public:
 };
 typedef IceUtil::Handle<NetworkActivityChangedEvent> NetworkActivityChangedEventPtr;
 
-class FocusChangedEvent : public hydroutil::Event
+class FocusChangedEvent : public hydroiceutil::Event
 {
 public:
     FocusChangedEvent( orcaprobe::IDisplay::FocusType focus )
@@ -55,7 +55,7 @@ public:
 };
 typedef IceUtil::Handle<FocusChangedEvent> FocusChangedEventPtr;
 
-class RegistryDataChangedEvent : public hydroutil::Event
+class RegistryDataChangedEvent : public hydroiceutil::Event
 {
 public:
     RegistryDataChangedEvent( const orcacm::RegistryHierarchicalData1 & data )
@@ -66,7 +66,7 @@ public:
 };
 typedef IceUtil::Handle<RegistryDataChangedEvent> RegistryDataChangedEventPtr;
 
-class PlatformDataChangedEvent : public hydroutil::Event
+class PlatformDataChangedEvent : public hydroiceutil::Event
 {
 public:
     PlatformDataChangedEvent( const orcacm::RegistryHierarchicalData2 & data )
@@ -77,7 +77,7 @@ public:
 };
 typedef IceUtil::Handle<PlatformDataChangedEvent> PlatformDataChangedEventPtr;
 
-class ComponentDataChangedEvent : public hydroutil::Event
+class ComponentDataChangedEvent : public hydroiceutil::Event
 {
 public:
     ComponentDataChangedEvent( const orcacm::ComponentData & data )
@@ -88,7 +88,7 @@ public:
 };
 typedef IceUtil::Handle<ComponentDataChangedEvent> ComponentDataChangedEventPtr;
 
-class InterfaceDataChangedEvent : public hydroutil::Event
+class InterfaceDataChangedEvent : public hydroiceutil::Event
 {
 public:
     InterfaceDataChangedEvent( const orcacm::InterfaceData & data )
@@ -100,7 +100,7 @@ public:
 typedef IceUtil::Handle<InterfaceDataChangedEvent> InterfaceDataChangedEventPtr;
 
 
-class OperationDataChangedEvent : public hydroutil::Event
+class OperationDataChangedEvent : public hydroiceutil::Event
 {
 public:
     OperationDataChangedEvent( const orcacm::OperationData & data )

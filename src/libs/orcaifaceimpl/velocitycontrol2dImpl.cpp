@@ -80,7 +80,7 @@ VelocityControl2dImpl::initInterface()
 }
 
 void 
-VelocityControl2dImpl::initInterface( hydroutil::Thread* thread, const std::string& subsysName, int retryInterval )
+VelocityControl2dImpl::initInterface( hydroiceutil::Thread* thread, const std::string& subsysName, int retryInterval )
 {
     ptr_ = new VelocityControl2dI( *this );
     orcaice::createInterfaceWithString( context_, ptr_, interfaceName_, thread, subsysName, retryInterval );

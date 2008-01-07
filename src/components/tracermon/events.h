@@ -11,7 +11,7 @@
 #ifndef EVENTS_H
 #define EVENTS_H
 
-#include <hydroutil/eventqueue.h>
+#include <hydroiceutil/eventqueue.h>
 #include <orca/tracer.h>
 
 namespace tracermon
@@ -41,7 +41,7 @@ enum VerbosityType
     NumberOfVerbosityTypes
 };
 */
-class VerbosityLevelsChangedEvent : public hydroutil::Event
+class VerbosityLevelsChangedEvent : public hydroiceutil::Event
 {
 public:
     VerbosityLevelsChangedEvent( int error, int warn, int info, int debug ) :
@@ -58,7 +58,7 @@ public:
 };
 typedef IceUtil::Handle<VerbosityLevelsChangedEvent> VerbosityLevelsChangedEventPtr;
 
-class FocusChangedEvent : public hydroutil::Event
+class FocusChangedEvent : public hydroiceutil::Event
 {
 public:
     FocusChangedEvent( int focus ) :
@@ -69,7 +69,7 @@ public:
 };
 typedef IceUtil::Handle<FocusChangedEvent> FocusChangedEventPtr;
 
-class NewTraceMessageEvent : public hydroutil::Event
+class NewTraceMessageEvent : public hydroiceutil::Event
 {
 public:
     NewTraceMessageEvent( const orca::TracerData & data ) :
@@ -80,7 +80,7 @@ public:
 };
 typedef IceUtil::Handle<NewTraceMessageEvent> NewTraceMessageEventPtr;
 
-class NewLocalTraceEvent : public hydroutil::Event
+class NewLocalTraceEvent : public hydroiceutil::Event
 {
 public:
     NewLocalTraceEvent( const std::string& msg ) :
@@ -91,35 +91,35 @@ public:
 };
 typedef IceUtil::Handle<NewLocalTraceEvent> NewLocalTraceEventPtr;
 
-class PreviousFieldEvent : public hydroutil::Event
+class PreviousFieldEvent : public hydroiceutil::Event
 {
 public:
     PreviousFieldEvent() :
         Event( PreviousField ) {};
 };
 
-class NextFieldEvent : public hydroutil::Event
+class NextFieldEvent : public hydroiceutil::Event
 {
 public:
     NextFieldEvent() :
         Event( NextField ) {};
 };
 
-class ValueUpEvent : public hydroutil::Event
+class ValueUpEvent : public hydroiceutil::Event
 {
 public:
     ValueUpEvent() :
         Event( ValueUp ) {};
 };
 
-class ValueDownEvent : public hydroutil::Event
+class ValueDownEvent : public hydroiceutil::Event
 {
 public:
     ValueDownEvent() :
         Event( ValueDown ) {};
 };
 
-class ActionEvent : public hydroutil::Event
+class ActionEvent : public hydroiceutil::Event
 {
 public:
     ActionEvent() :

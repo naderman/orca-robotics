@@ -168,8 +168,8 @@ PathFollower2dElement::PathFollower2dElement( const orcaice::Context &context,
 
     doInitialSetup();
     
-    timer_ = new hydroutil::Timer;
-    activationTimer_ = new hydroutil::Timer;
+    timer_ = new hydroiceutil::Timer;
+    activationTimer_ = new hydroiceutil::Timer;
     activationTimer_->restart();
 }
 

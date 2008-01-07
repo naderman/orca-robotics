@@ -37,7 +37,7 @@ Component::~Component()
     // Do not delete the gpsObj_, imuObj_, odometry3dObj_, or localise3dObj_
     // as they are smart pointers and self destruct.
     // Do not delete gpsMainThread_, imuMainThread_, odometry3dMainThread_, localise3dMainThread_, 
-    // or the hwDriver_ as they are hydroutil::SafeThreads and self-destruct.
+    // or the hwDriver_ as they are hydroiceutil::SafeThreads and self-destruct.
 }
 
 void
@@ -256,14 +256,14 @@ Component::stop()
     tracer().debug( "stopping component", 2 );
 
     tracer().debug( "stopping handlers", 2 );
-    hydroutil::stopAndJoin( gpsMainThread_ );
-    hydroutil::stopAndJoin( imuMainThread_ );
-    hydroutil::stopAndJoin( odometry3dMainThread_ );   
-    hydroutil::stopAndJoin( localise3dMainThread_ );   
+    hydroiceutil::stopAndJoin( gpsMainThread_ );
+    hydroiceutil::stopAndJoin( imuMainThread_ );
+    hydroiceutil::stopAndJoin( odometry3dMainThread_ );   
+    hydroiceutil::stopAndJoin( localise3dMainThread_ );   
     // tracer().debug( "stopped handlers", 2 );
 
     tracer().debug( "stopping driver", 2 );
-    hydroutil::stopAndJoin( hwDriver_ );
+    hydroiceutil::stopAndJoin( hwDriver_ );
     // tracer().debug( "stopped driver", 2 );
     
     tracer().debug( "stopped component", 2 );

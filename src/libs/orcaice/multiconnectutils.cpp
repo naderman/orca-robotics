@@ -22,7 +22,7 @@ void
 createInterfaceWithString( const Context       & context,
                             Ice::ObjectPtr      & object,
                             const std::string   & name,
-                            hydroutil::Thread*  thread, const std::string& subsysName, 
+                            hydroiceutil::Thread*  thread, const std::string& subsysName, 
                             int retryInterval, int retryNumber )
 {
     int count = 0;
@@ -57,7 +57,7 @@ void
 createInterfaceWithTag( const Context       & context,
                         Ice::ObjectPtr      & object,
                         const std::string   & interfaceTag,
-                            hydroutil::Thread*  thread, const std::string& subsysName, 
+                            hydroiceutil::Thread*  thread, const std::string& subsysName, 
                             int retryInterval, int retryNumber )
 {
     int count = 0;
@@ -90,7 +90,7 @@ createInterfaceWithTag( const Context       & context,
 
 void
 activate( Context& context, 
-            hydroutil::Thread*  thread, const std::string& subsysName, 
+            hydroiceutil::Thread*  thread, const std::string& subsysName, 
             int retryInterval, int retryNumber )
 {
     int count = 0;
@@ -133,7 +133,7 @@ activate( Context& context,
 
 std::string 
 getInterfaceIdWithString( const Context& context, const std::string& proxyString,
-                            hydroutil::Thread*  thread, const std::string& subsysName, 
+                            hydroiceutil::Thread*  thread, const std::string& subsysName, 
                             int retryInterval, int retryNumber )
 {
     std::string ifaceId;
@@ -162,7 +162,7 @@ getInterfaceIdWithString( const Context& context, const std::string& proxyString
 
 std::string 
 getInterfaceIdWithTag( const Context& context, const std::string& interfaceTag,
-                            hydroutil::Thread*  thread, const std::string& subsysName, 
+                            hydroiceutil::Thread*  thread, const std::string& subsysName, 
                             int retryInterval, int retryNumber )
 {
     std::string ifaceId;

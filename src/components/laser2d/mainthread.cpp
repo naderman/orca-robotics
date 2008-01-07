@@ -16,7 +16,7 @@ using namespace std;
 using namespace laser2d;
 
 MainThread::MainThread( const orcaice::Context &context ) :
-    hydroutil::SubsystemThread( context.tracer(), context.status(), "MainThread" ),
+    hydroiceutil::SubsystemThread( context.tracer(), context.status(), "MainThread" ),
     context_(context)
 {
     subStatus().setMaxHeartbeatInterval( 20.0 );

@@ -63,7 +63,7 @@ namespace {
 
 MainThread::MainThread( const orcaice::Context &context ) :
     SafeThread(context.tracer()),
-    ogFusionDataBuffer_(-1,hydroutil::BufferTypeCircular), // infinite depth
+    ogFusionDataBuffer_(-1,hydroiceutil::BufferTypeCircular), // infinite depth
     context_(context)
 {
 }

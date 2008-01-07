@@ -10,7 +10,7 @@
 #ifndef MAIN_LOOP_H
 #define MAIN_LOOP_H
 
-#include <hydroutil/safethread.h>
+#include <hydroiceutil/safethread.h>
 #include <orcaice/context.h>
 #include <orcaifaceimpl/cameraImpl.h>
 
@@ -24,7 +24,7 @@ namespace imageserver {
 //
 // Note: this thing self-destructs when run() returns.
 //
-class MainThread : public hydroutil::SafeThread
+class MainThread : public hydroiceutil::SafeThread
 {
 
 public:

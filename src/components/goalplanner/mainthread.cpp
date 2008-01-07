@@ -111,7 +111,7 @@ namespace {
 }
 
 MainThread::MainThread( const orcaice::Context & context )
-    : hydroutil::SubsystemThread( context.tracer(), context.status(), "MainThread" ),
+    : hydroiceutil::SubsystemThread( context.tracer(), context.status(), "MainThread" ),
       incomingPathI_(0),
       context_(context)
 {
@@ -124,13 +124,15 @@ MainThread::MainThread( const orcaice::Context & context )
     checkForStaleLocaliseData_ = orcaice::getPropertyAsIntWithDefault( prop, prefix+"CheckForStaleLocaliseData", 1 );
 }
 
-MainThread::~MainThread()
-{
-}
-
 void
 MainThread::initNetwork()
 {
+    //
+    // ENABLE NETWORK CONNECTIONS
+    //
+    // multi-try function
+    orcaice::activate( context_, this, subsysName() );
+
     //
     // REQUIRED INTERFACES: Localise2d, Pathfollower, Pathplanner
     //

@@ -36,6 +36,8 @@ class RangeScanner2dConsumerI : public orca::RangeScanner2dConsumer
         }
 };
 
+typedef IceUtil::Handle<RangeScanner2dConsumerI> RangeScanner2dConsumerIPtr;
+
 }
 
 #endif

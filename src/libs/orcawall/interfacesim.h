@@ -11,13 +11,13 @@
 #ifndef ORCA_ORCAWALL_INTERFACE_SIM_H
 #define ORCA_ORCAWALL_INTERFACE_SIM_H
 
-#include <hydroutil/safethread.h>
+#include <hydroiceutil/safethread.h>
 #include <orcaice/context.h>
 
 namespace orcawall
 {
 
-class InterfaceSim : public hydroutil::SafeThread
+class InterfaceSim : public hydroiceutil::SafeThread
 {
 
 public:

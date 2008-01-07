@@ -23,7 +23,7 @@ using namespace imageviewer;
 
 Component::Component()
     : orcaice::Component( "ImageViewer", orcaice::HomeInterface  ),
-      dataPipe_(2,hydroutil::BufferTypeCircular),
+      dataPipe_(2,hydroiceutil::BufferTypeCircular),
       mainloop_(0)
 {
 }
@@ -62,5 +62,5 @@ void
 Component::stop()
 {
     tracer().info("stopping component...");
-    hydroutil::stopAndJoin( mainloop_ );
+    hydroiceutil::stopAndJoin( mainloop_ );
 }

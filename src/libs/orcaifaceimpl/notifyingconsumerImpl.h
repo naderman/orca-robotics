@@ -10,7 +10,7 @@
 #ifndef ORCAIFACEIMPL_NOTIFYINGCONSUMERIMPL_H
 #define ORCAIFACEIMPL_NOTIFYINGCONSUMERIMPL_H
 
-#include <hydroutil/notify.h>
+#include <hydroiceutil/notify.h>
 #include <orcaifaceimpl/consumerImpl.h>
 #include <iostream>
 
@@ -23,7 +23,7 @@ namespace orcaifaceimpl {
 template<class ProviderPrxType, class ConsumerType, class ConsumerPrxType, class ObjectType>
 class NotifyingConsumerImpl
     : public ConsumerImpl<ProviderPrxType,ConsumerType,ConsumerPrxType,ObjectType>,
-      public hydroutil::Notify<ObjectType>
+      public hydroiceutil::Notify<ObjectType>
 {
 
 public: 
@@ -32,10 +32,10 @@ public:
     NotifyingConsumerImpl( const orcaice::Context &context )
         : ConsumerImpl<ProviderPrxType,ConsumerType,ConsumerPrxType,ObjectType>(context) {}
 
-    // from hydroutil::Notify:
+    // from hydroiceutil::Notify:
     // void  setNotifyHandler( NotifyHandler<Type>* handler );
 
-    // from hydroutil::Notify (calls handler->handleData( const Type & ))
+    // from hydroiceutil::Notify (calls handler->handleData( const Type & ))
     // bool hasNotifyHandler() { return hasNotifyHandler_; };
 
 private:

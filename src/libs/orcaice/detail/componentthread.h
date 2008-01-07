@@ -11,7 +11,7 @@
 #ifndef ORCAICE_COMPONENT_THREAD_H
 #define ORCAICE_COMPONENT_THREAD_H
 
-#include <hydroutil/safethread.h>
+#include <hydroiceutil/safethread.h>
 #include <hydroutil/status.h>
 #include <orcaice/context.h>
 #include <orcaice/component.h>
@@ -25,7 +25,7 @@ namespace orcaice {
 //
 // @author Alex Brooks
 //
-class ComponentThread : public hydroutil::SafeThread
+class ComponentThread : public hydroiceutil::SafeThread
 {
 
 public: 

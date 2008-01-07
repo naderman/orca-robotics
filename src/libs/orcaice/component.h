@@ -13,7 +13,7 @@
 
 #include <orcaice/context.h>
 #include <hydroutil/uncopyable.h>
-#include <hydroutil/safethread.h>
+#include <hydroiceutil/safethread.h>
 
 namespace orcaice
 {
@@ -218,7 +218,7 @@ private:
     Ice::ObjectPrx homePrx_;
 
     // This thread allows us to do house-keeping stuff and manage Status.
-    hydroutil::ThreadPtr componentThread_;
+    hydroiceutil::ThreadPtr componentThread_;
 };
 
 } // end namespace

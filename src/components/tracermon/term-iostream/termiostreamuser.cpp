@@ -24,7 +24,7 @@ namespace tracermon
 
 TermIostreamUser::TermIostreamUser( const orcaice::Context & context ) :
     SubsystemThread( context.tracer(), context.status(), "UserThread" ), // alexm: is this the right name?
-    events_(new hydroutil::EventQueue),
+    events_(new hydroiceutil::EventQueue),
     context_(context)
 {
 }
@@ -47,7 +47,7 @@ TermIostreamUser::enable( Network* network )
 void 
 TermIostreamUser::newTraceMessage( const orca::TracerData & data )
 {
-    hydroutil::EventPtr e = new NewTraceMessageEvent( data );
+    hydroiceutil::EventPtr e = new NewTraceMessageEvent( data );
     events_->add( e );
 }
 
@@ -66,7 +66,7 @@ TermIostreamUser::newLocalTrace( const std::string& msg )
 void
 TermIostreamUser::walk()
 {
-    hydroutil::EventPtr event;
+    hydroiceutil::EventPtr event;
     int timeoutMs = 500;
     
     //

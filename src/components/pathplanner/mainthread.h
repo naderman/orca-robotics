@@ -11,9 +11,9 @@
 #ifndef MAIN_THREAD_H
 #define MAIN_THREAD_H
 
-#include <hydroutil/subsystemthread.h>
+#include <hydroiceutil/subsystemthread.h>
 #include <orcaice/context.h>
-#include <hydroutil/buffer.h>
+#include <hydroiceutil/buffer.h>
 
 #include <orca/ogmap.h>
 #include <orca/pathplanner2d.h>
@@ -28,7 +28,7 @@ class AlgoDriver;
 class SkeletonGraphicsI;
 class PathPlanner2dI;
 
-class MainThread : public hydroutil::SubsystemThread
+class MainThread : public hydroiceutil::SubsystemThread
 {
 
 public: 
@@ -47,7 +47,7 @@ private:
     hydroogmap::OgMap ogMap_;
 
     PathPlanner2dI* pathPlannerI_;
-    hydroutil::Buffer<orca::PathPlanner2dTask> pathPlannerTaskBuffer_;
+    hydroiceutil::Buffer<orca::PathPlanner2dTask> pathPlannerTaskBuffer_;
     
     void initNetwork();
     void initDriver();

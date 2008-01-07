@@ -14,8 +14,8 @@
 #include <orca/localise2d.h>
 #include <orca/rangescanner2d.h>
 #include <orcaice/context.h>
-#include <hydroutil/subsystemthread.h>
-#include <hydroutil/store.h>
+#include <hydroiceutil/subsystemthread.h>
+#include <hydroiceutil/store.h>
 #include <orcaifaceimpl/storingconsumers.h>
 #include <orcalocalnav/speedlimiter.h>
 #include <orcalocalnav/pathmaintainer.h>
@@ -36,7 +36,7 @@ class Simulator;
 //
 // @author Alex Brooks
 //
-class MainThread : public hydroutil::SubsystemThread
+class MainThread : public hydroiceutil::SubsystemThread
 {
 
 public: 
@@ -104,9 +104,9 @@ private:
     orcaifaceimpl::StoringLocalise2dConsumerImplPtr     locConsumer_;
     orcaifaceimpl::StoringOdometry2dConsumerImplPtr     odomConsumer_;
 
-    hydroutil::Store<orca::RangeScanner2dDataPtr> *obsStore_;
-    hydroutil::Store<orca::Localise2dData>        *locStore_;
-    hydroutil::Store<orca::Odometry2dData>        *odomStore_;
+    hydroiceutil::Store<orca::RangeScanner2dDataPtr> *obsStore_;
+    hydroiceutil::Store<orca::Localise2dData>        *locStore_;
+    hydroiceutil::Store<orca::Odometry2dData>        *odomStore_;
 
     orcalocalnav::PathFollower2dI  &pathFollowerInterface_;
 

@@ -19,7 +19,7 @@ using namespace std;
 using namespace imageviewer;
 
 MainThread::MainThread( const orca::CameraConsumerPrx & callbackPrx,
-                    hydroutil::Buffer<orca::CameraData> & dataPipe, 
+                    hydroiceutil::Buffer<orca::CameraData> & dataPipe, 
                     const orcaice::Context & context ) : 
     SafeThread(context.tracer()),
     callbackPrx_(callbackPrx),

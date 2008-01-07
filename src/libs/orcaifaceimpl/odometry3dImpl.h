@@ -15,7 +15,7 @@
 #include <IceStorm/IceStorm.h>
 
 // utilities
-#include <hydroutil/store.h>
+#include <hydroiceutil/store.h>
 #include <orcaice/context.h>
 
 namespace orcaifaceimpl {
@@ -44,7 +44,7 @@ public:
 
     //! Sets up interface and connects to IceStorm. Catches all exceptions and retries
     //! until sucessful. At every iteration, checks if the thread was stopped.
-    void initInterface( hydroutil::Thread* thread, const std::string& subsysName="", int retryInterval=2 );
+    void initInterface( hydroiceutil::Thread* thread, const std::string& subsysName="", int retryInterval=2 );
 
     //! A local call which sets the data reported by the interface
     void localSet( const orca::Odometry3dData& data );
@@ -61,7 +61,7 @@ private:
     void internalUnsubscribe(const ::orca::Odometry3dConsumerPrx&);
 
     orca::VehicleDescription     descr_;
-    hydroutil::Store<orca::Odometry3dData> dataStore_;
+    hydroiceutil::Store<orca::Odometry3dData> dataStore_;
 
     orca::Odometry3dConsumerPrx    consumerPrx_;
     IceStorm::TopicPrx             topicPrx_;

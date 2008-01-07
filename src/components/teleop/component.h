@@ -23,11 +23,9 @@ class InputThread;
 class Component : public orcaice::Component
 {
 public:
-
     Component();
-    virtual ~Component();
 
-    // component interface
+    // from orcaice::Component
     virtual void start();
     virtual void stop();
 

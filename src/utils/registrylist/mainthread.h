@@ -11,22 +11,20 @@
 #ifndef MAIN_THREAD_H
 #define MAIN_THREAD_H
 
-#include <hydroutil/safethread.h>
+#include <hydroiceutil/safethread.h>
 #include <orcaice/context.h>
 
 namespace registrylist
 {
 
-class MainThread: public hydroutil::SafeThread
+class MainThread: public hydroiceutil::SafeThread
 {    	
 public:
     MainThread( const orcaice::Context & context );
-    ~MainThread();
 
     virtual void walk();
 
 private:
-
     orcaice::Context context_;
 
 };

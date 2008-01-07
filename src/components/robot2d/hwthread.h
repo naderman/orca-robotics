@@ -12,11 +12,11 @@
 #define ROBOT2D_HARDWARE_THREAD_H
 
 #include <memory>
-#include <hydroutil/subsystemthread.h>
+#include <hydroiceutil/subsystemthread.h>
 #include <orcaice/context.h>
 #include <hydrointerfaces/robot2d.h>
 #include <hydrodll/dynamicload.h>
-#include <hydroutil/store.h>
+#include <hydroiceutil/store.h>
 #include <orcarobotdriverutil/statemachine.h>
 
 namespace robot2d {
@@ -26,7 +26,7 @@ namespace robot2d {
 //
 // @author Alex Brooks
 //
-class HwThread : public hydroutil::SubsystemThread
+class HwThread : public hydroiceutil::SubsystemThread
 {
 
 public: 
@@ -40,7 +40,7 @@ public:
 
     void setCommand( const hydrointerfaces::Robot2d::Command &command );
 
-    // Return valus same as hydroutil::Store.
+    // Return valus same as hydroiceutil::Store.
     int getData( hydrointerfaces::Robot2d::Data &data, int timeoutMs )
         {
             return dataStore_.getNext( data, timeoutMs );
@@ -55,9 +55,9 @@ private:
     orcarobotdriverutil::StateMachine stateMachine_;
 
     // Stores the data most recently received from the hardware
-    hydroutil::Store<hydrointerfaces::Robot2d::Data>    dataStore_;
+    hydroiceutil::Store<hydrointerfaces::Robot2d::Data>    dataStore_;
     // Stores incoming commands
-    hydroutil::Store<hydrointerfaces::Robot2d::Command> commandStore_;
+    hydroiceutil::Store<hydrointerfaces::Robot2d::Command> commandStore_;
 
     bool isMotionEnabled_;
 

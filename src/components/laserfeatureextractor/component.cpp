@@ -12,7 +12,6 @@
 #include "component.h"
 #include "mainthread.h"
 
-using namespace std;
 using namespace laserfeatures;
 
 Component::Component()
@@ -33,5 +32,5 @@ void
 Component::stop()
 {
     context().tracer().debug("Stopping component", 2 );
-    hydroutil::stopAndJoin( mainThread_ );
+    hydroiceutil::stopAndJoin( mainThread_ );
 }

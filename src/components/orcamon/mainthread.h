@@ -11,13 +11,13 @@
 #ifndef MAIN_THREAD_H
 #define MAIN_THREAD_H
 
-#include <hydroutil/safethread.h>
+#include <hydroiceutil/safethread.h>
 #include <orcaice/context.h>
 
 namespace orcamon
 {
 
-class MainThread : public hydroutil::SafeThread
+class MainThread : public hydroiceutil::SafeThread
 {
 
 public:

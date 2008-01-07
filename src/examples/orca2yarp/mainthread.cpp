@@ -13,7 +13,7 @@
 // orca includes
 #include <orcaice/orcaice.h>
 #include <orca/odometry2d.h>
-#include "thread.h"
+#include "mainthread.h"
 
 // yarp includes
 #include <yarp/os/Network.h>
@@ -22,8 +22,7 @@
 #include <yarp/os/Time.h>
 
 using namespace std;
-
-namespace orca2yarp {
+using namespace orca2yarp;
 
 MainThread::MainThread( const orcaice::Context& context ) :
     SafeThread(context.tracer()),
@@ -31,17 +30,9 @@ MainThread::MainThread( const orcaice::Context& context ) :
 {
 }
 
-MainThread::~MainThread()
-{
-}
-
 void
 MainThread::walk()
 {
-    // we are in a different thread now, catch all stray exceptions
-    try
-    {
-
     // read configuration parameters (config file + command line)
     std::string prefix = context_.tag()+".Config.";
     std::string yarpPortName = orcaice::getPropertyWithDefault( 
@@ -94,20 +85,4 @@ MainThread::walk()
 
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
     }
-
-    //
-    // unexpected exceptions
-    //
-    } // try
-    catch ( ... )
-    {
-        context_.tracer().error( "Unexpected exception from somewhere.");
-        context_.communicator()->destroy();
-    }
-
-    // wait for the component to realize that we are quitting and tell us to stop.
-    waitForStop();
-    context_.tracer().debug( "MainThread stopped", 2 );
 }
-
-} // namespace

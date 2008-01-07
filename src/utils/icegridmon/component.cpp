@@ -49,8 +49,8 @@ private:
 
 //////////////////////////////////////////////////////////////////////
 
-Component::Component( const std::string & compName )
-    : orcaice::Component( compName ),
+Component::Component()
+    : orcaice::Component( "IceGridMon" ),
       sessionCreationCallback_(0),
       sessionManager_(0)
 {
@@ -80,7 +80,7 @@ void
 Component::stop()
 {
     tracer().debug("stopping component...",2);
-    hydroutil::stopAndJoin( sessionManager_ );
+    hydroiceutil::stopAndJoin( sessionManager_ );
 }
 
 } // namespace

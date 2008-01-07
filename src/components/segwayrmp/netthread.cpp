@@ -245,10 +245,10 @@ NetThread::walk()
     orca::Odometry3dData odometry3dData;
     orca::PowerData      powerData;
 
-    hydroutil::Timer odometry2dPublishTimer;
-    hydroutil::Timer odometry3dPublishTimer;
-    hydroutil::Timer powerPublishTimer;
-    hydroutil::Timer eStopDataLastRxTimer;
+    hydroiceutil::Timer odometry2dPublishTimer;
+    hydroiceutil::Timer odometry3dPublishTimer;
+    hydroiceutil::Timer powerPublishTimer;
+    hydroiceutil::Timer eStopDataLastRxTimer;
 
     double odometry2dPublishInterval = orcaice::getPropertyAsDoubleWithDefault( 
         context_.properties(), prefix+"Odometry2dPublishInterval", 0.1 );

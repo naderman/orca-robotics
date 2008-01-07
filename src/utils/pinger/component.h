@@ -12,7 +12,6 @@
 #define COMPONENT_H
 
 #include <orcaice/component.h>
-#include <hydroutil/safethread.h>
 
 namespace pinger
 {
@@ -28,7 +27,7 @@ public:
     
 private:
 
-    hydroutil::ThreadPtr mainThread_;
+    hydroiceutil::ThreadPtr thread_;
 };
 
 } // namespace

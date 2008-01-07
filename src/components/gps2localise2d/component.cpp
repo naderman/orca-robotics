@@ -29,5 +29,5 @@ void
 Component::stop()
 {
     context().tracer().debug("Stopping component", 2 );
-    hydroutil::stopAndJoin( mainThread_ );
+    hydroiceutil::stopAndJoin( mainThread_ );
 }

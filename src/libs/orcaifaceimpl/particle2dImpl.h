@@ -9,9 +9,9 @@
 #include <orca/particle2d.h>
 
 // utilities
-#include <hydroutil/store.h>
+#include <hydroiceutil/store.h>
 #include <orcaice/context.h>
-#include <hydroutil/safethread.h>
+#include <hydroiceutil/safethread.h>
 
 namespace orcaifaceimpl
 {
@@ -38,7 +38,7 @@ public:
 
     //! Sets up interface and connects to IceStorm. Catches all exceptions and retries
     //! until sucessful. At every iteration, checks if the thread was stopped.
-    void initInterface( hydroutil::Thread* thread, const std::string& subsysName="", int retryInterval=2 );
+    void initInterface( hydroiceutil::Thread* thread, const std::string& subsysName="", int retryInterval=2 );
 
     //! A local call which sets the data reported by the interface, 
     //! and sends it through IceStorm
@@ -50,7 +50,7 @@ private:
     void internalSubscribe(const ::orca::Particle2dConsumerPrx&);
     void internalUnsubscribe(const ::orca::Particle2dConsumerPrx& );
 
-    hydroutil::Store<orca::Particle2dData> dataStore_;
+    hydroiceutil::Store<orca::Particle2dData> dataStore_;
 
     orca::Particle2dConsumerPrx    consumerPrx_;
     IceStorm::TopicPrx       topicPrx_;

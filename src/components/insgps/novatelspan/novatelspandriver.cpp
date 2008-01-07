@@ -41,10 +41,10 @@ NovatelSpanInsGpsDriver::NovatelSpanInsGpsDriver( const char*             device
     serial_(0),
     enabled_( false ),
     // configure the buffers so they have depth 100 and are of type queue
-    gpsDataBuffer_( 100 , hydroutil::BufferTypeQueue ),
-    imuDataBuffer_( 100 , hydroutil::BufferTypeQueue ),
-    odometry3dDataBuffer_( 100 , hydroutil::BufferTypeQueue ),
-    localise3dDataBuffer_( 200 , hydroutil::BufferTypeQueue ),
+    gpsDataBuffer_( 100 , hydroiceutil::BufferTypeQueue ),
+    imuDataBuffer_( 100 , hydroiceutil::BufferTypeQueue ),
+    odometry3dDataBuffer_( 100 , hydroiceutil::BufferTypeQueue ),
+    localise3dDataBuffer_( 200 , hydroiceutil::BufferTypeQueue ),
     gpsCount_(0),
     imuCount_(0),
     localise3dCount_(0),
@@ -1298,7 +1298,7 @@ void
 NovatelSpanInsGpsDriver::shutdown()
 {
     // context_.tracer().debug( "stopping driver", 5 );
-    // hydroutil::SafeThread::stopAndJoin( this );
+    // hydroiceutil::SafeThread::stopAndJoin( this );
     // context_.tracer().debug( "stopped driver", 5 );
 }               
 

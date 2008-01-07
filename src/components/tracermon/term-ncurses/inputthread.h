@@ -11,7 +11,7 @@
 #ifndef TERM_NCURSES_INPUT_HANDLER_H
 #define TERM_NCURSES_INPUT_HANDLER_H
 
-#include <hydroutil/safethread.h>
+#include <hydroiceutil/safethread.h>
 #include <orcaice/context.h>
 #include "../user.h"
 #include "../network.h"
@@ -19,7 +19,7 @@
 namespace tracermon
 {
 
-class MainThread : public hydroutil::SafeThread
+class MainThread : public hydroiceutil::SafeThread
 {
 public:
 

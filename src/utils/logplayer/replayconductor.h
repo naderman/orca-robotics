@@ -1,7 +1,7 @@
 #ifndef LOGPLAYER_REPLAYCONDUCTOR_H
 #define LOGPLAYER_REPLAYCONDUCTOR_H
 
-#include <hydroutil/subsystemthread.h>
+#include <hydroiceutil/subsystemthread.h>
 #include <orcaice/context.h>
 #include <orcalog/orcalog.h>
 #include <IceUtil/IceUtil.h>
@@ -17,7 +17,7 @@ namespace logplayer {
 //!
 //! @author Alex Brooks
 //!
-class ReplayConductor : public hydroutil::SubsystemThread
+class ReplayConductor : public hydroiceutil::SubsystemThread
 {
 
 public: 

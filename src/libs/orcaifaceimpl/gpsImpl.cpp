@@ -92,7 +92,7 @@ GpsImpl::initInterface()
 }
 
 void 
-GpsImpl::initInterface( hydroutil::Thread* thread, const std::string& subsysName, int retryInterval )
+GpsImpl::initInterface( hydroiceutil::Thread* thread, const std::string& subsysName, int retryInterval )
 {
     topicPrx_ = orcaice::connectToTopicWithString<orca::GpsConsumerPrx>
         ( context_, consumerPrx_, topicName_, thread, subsysName, retryInterval );

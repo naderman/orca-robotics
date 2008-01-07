@@ -18,9 +18,9 @@ namespace
 {
 
 void 
-convert( const hydroutil::NameStatusMap &internal, orca::SubsystemsStatus &network )
+convert( const hydroiceutil::NameStatusMap &internal, orca::SubsystemsStatus &network )
 {
-    hydroutil::NameStatusMap::const_iterator it;
+    hydroiceutil::NameStatusMap::const_iterator it;
     
     for ( it=internal.begin(); it!=internal.end(); ++it ) 
     {
@@ -51,7 +51,7 @@ convert( const hydroutil::NameStatusMap &internal, orca::SubsystemsStatus &netwo
 } // namespace
 
 StatusI::StatusI( const orcaice::Context& context ) :
-    hydroutil::LocalStatus( 
+    hydroiceutil::LocalStatus( 
             context.tracer(),
             hydroutil::Properties( context.properties()->getPropertiesForPrefix("Orca.Status."),"Orca.Status.") ), 
     topic_(0),
@@ -82,7 +82,7 @@ StatusI::~StatusI()
 }
 
 void
-StatusI::setStatusData( const hydroutil::NameStatusMap &subsystemStatus )
+StatusI::setStatusData( const hydroiceutil::NameStatusMap &subsystemStatus )
 {
     orcaice::setToNow( statusData_.timeStamp );
 

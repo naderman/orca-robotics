@@ -17,6 +17,7 @@
 
 // dependencies
 #include <orcaobj/orcaobj.h>
+#include <hydroiceutil/hydroiceutil.h>
 #include <hydroutil/hydroutil.h>
 
 // orcaice headers

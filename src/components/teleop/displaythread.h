@@ -11,7 +11,7 @@
 #ifndef  DISPLAY_THREAD_H
 #define  DISPLAY_THREAD_H
 
-#include <hydroutil/safethread.h>
+#include <hydroiceutil/safethread.h>
 #include <orcaice/context.h>
 
 #include "inputdriver.h"
@@ -19,7 +19,7 @@
 namespace teleop
 {
 
-class DisplayThread : public hydroutil::SafeThread, public Display
+class DisplayThread : public hydroiceutil::SafeThread, public Display
 {
 public:
 

@@ -28,7 +28,7 @@ AlgoThread::AlgoThread( const orcaice::Context& context ) :
     subStatus().setMaxHeartbeatInterval( 20.0 );
 
     laser_ = new orcaifaceimpl::BufferedRangeScanner2dConsumerImpl(
-                    10, hydroutil::BufferTypeCircular, context );
+                    10, hydroiceutil::BufferTypeCircular, context );
     odometry_ = new orcaifaceimpl::StoringOdometry2dConsumerImpl( context );
 }
 
@@ -58,7 +58,7 @@ AlgoThread::initNetwork()
     odometry_->subscribeWithTag( "Odometry", this );
     context_.tracer().info( "Connected and subscribed to Odometry2d interface.");
 
-    // NOTE: odometry_ has a small buffer called odometry_->store(), see hydroutil::Store.
+    // NOTE: odometry_ has a small buffer called odometry_->store(), see hydroiceutil::Store.
     // it is empty until the first piece of data arrives. if you try to get data from an
     // empty Store an exception will be thrown. It is easier if just wait until it's not
     // empty here so that we don't have to worry about it later.

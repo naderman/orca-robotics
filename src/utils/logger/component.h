@@ -30,10 +30,10 @@ class Component : public orcaice::Component
 {
 public:
 
-    Component( const std::string &compName );
+    Component();
     virtual ~Component();
 
-    // component interface
+    // from orcaice::Component
     virtual void start();
     virtual void stop();
 

@@ -17,7 +17,7 @@ using namespace std;
 namespace propserver {
 
 MainThread::MainThread( const orcaice::Context &context ) :
-    hydroutil::SubsystemThread( context.tracer(), context.status(), "MainThread" ),
+    hydroiceutil::SubsystemThread( context.tracer(), context.status(), "MainThread" ),
     propertiesInterface_( new orcaifaceimpl::PropertiesImpl( "Properties", context ) ),
     context_(context)
 {

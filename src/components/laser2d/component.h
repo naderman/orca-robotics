@@ -27,7 +27,7 @@ public:
 
 private:
 
-    hydroutil::ThreadPtr mainThread_;
+    hydroiceutil::ThreadPtr mainThread_;
 };
 
 } // namespace

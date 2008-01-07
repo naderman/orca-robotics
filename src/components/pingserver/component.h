@@ -11,7 +11,6 @@
 #define COMPONENT_H
 
 #include <orcaice/component.h>
-#include <orca/tracer.h>
 #include "pingerI.h"
 
 namespace pingserver {
@@ -23,7 +22,6 @@ class Component : public orcaice::Component
 {
 
 public: 
-
     Component();
 
     // from orcaice::Component
@@ -32,7 +30,11 @@ public:
 
 private: 
 
-    PingerI *pingerInterface_;
+    // component owns the interface object, the thread
+    // will simply initialize it and exit.
+    PingerIPtr pingerInterface_;
+
+    hydroiceutil::ThreadPtr thread_;
 };
 
 }

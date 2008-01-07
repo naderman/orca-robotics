@@ -9,7 +9,7 @@ IF ( BUILD )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseBasicRules.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseLibProjectInterfaces.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseIceBasics.cmake )
-    INCLUDE( ${ORCA_CMAKE_DIR}/UseHydroUtil.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseHydroIceUtil.cmake )
     
     INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR}/detail )
     

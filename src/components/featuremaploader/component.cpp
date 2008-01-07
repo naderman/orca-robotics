@@ -8,11 +8,8 @@
  *
  */
 #include "component.h"
-#include "fakemaploader.h"
+#include "initthread.h"
 
-#include <orcaice/orcaice.h>
-
-using namespace std;
 using namespace featuremaploader;
 
 Component::Component()
@@ -20,69 +17,23 @@ Component::Component()
 {
 }
 
-int 
-Component::loadMap( const std::string &fileName, orca::FeatureMap2dData &theMap )
-{
-    try
-    {
-        orcaice::loadFromFile( fileName, theMap );
-    }
-    catch ( const std::string &e )
-    {
-        cout<<"error: "<<e<<endl;
-        return -1;
-    }
-    return 0;
-}
-
 void
 Component::start()
 {
-    //
-    // INITIAL CONFIGURATION
-    //
-    Ice::PropertiesPtr prop = properties();
-    std::string prefix = tag() + ".Config.";
-
-    //
-    // LOAD THE MAP
-    //
-    orca::FeatureMap2dData theMap;
-
-    std::string driverName = orcaice::getPropertyWithDefault( prop, prefix+"Driver", "fake" );
-    if ( driverName == "fake" )
-    {
-        cout<<"TRACE(component.cpp): Instantiating fake driver" << endl;
-        fakeLoadMap( theMap );
-    }
-    else if ( driverName == "real" )
-    {
-        std::string mapFileName = orcaice::getPropertyWithDefault( prop, prefix+"MapFileName", "featuremap.txt" );
-        if ( loadMap( mapFileName, theMap ) != 0 )
-        {
-            std::string errString = "Failed to load map from file '"+mapFileName+"'";
-            tracer().error( errString );
-            throw hydroutil::Exception( ERROR_INFO, errString );
-        }
-    }
-    else
-    {
-        std::string errString = "Unknown driver type: "+driverName;
-        tracer().error( errString );
-        throw hydroutil::Exception( ERROR_INFO, errString );
-    }
-
     //
     // EXTERNAL PROVIDED INTERFACES
     //
     // create servant for direct connections
     featureMap2dImpl_ = new orcaifaceimpl::FeatureMap2dImpl( "FeatureMap2d", context() );
-    featureMap2dImpl_->initInterface();
-    featureMap2dImpl_->localSetAndSend( theMap );
 
+    thread_ = new InitThread( featureMap2dImpl_, context() );
+    thread_->start();
+}
 
-    //
-    // ENABLE NETWORK CONNECTIONS
-    //
-    activate();
+void
+Component::stop()
+{
+    tracer().debug( "stopping component", 5 );
+    hydroiceutil::stopAndJoin( thread_ );
+    tracer().debug( "stopped component", 5 );
 }

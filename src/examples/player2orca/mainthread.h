@@ -11,13 +11,13 @@
 #ifndef MAINTHREAD_H
 #define MAINTHREAD_H
 
-#include <hydroutil/safethread.h>
+#include <hydroiceutil/safethread.h>
 #include <orcaice/context.h>
 
 namespace player2orca
 {
 
-class MainThread: public hydroutil::SafeThread
+class MainThread: public hydroiceutil::SafeThread
 {    	
 public:
     MainThread( const orcaice::Context& context );

@@ -26,11 +26,6 @@ Component::Component() :
 {
 }
 
-Component::~Component()
-{
-    // do not delete networkThread_ and displayThread_!!! They derive from Ice::Thread and deletes itself.
-}
-
 // warning: this function returns after it's done, all variable that need to be permanet must
 //          be declared as member variables.
 void
@@ -72,7 +67,7 @@ Component::stop()
     tracer().print( "Press any key or shake the joystick to continue." );
     tracer().print( "************************************************" );
     
-    hydroutil::stopAndJoin( inputThread_ );
-    hydroutil::stopAndJoin( networkThread_ );
-    hydroutil::stopAndJoin( displayThread_ );
+    hydroiceutil::stopAndJoin( inputThread_ );
+    hydroiceutil::stopAndJoin( networkThread_ );
+    hydroiceutil::stopAndJoin( displayThread_ );
 }

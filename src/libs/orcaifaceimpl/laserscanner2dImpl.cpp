@@ -90,7 +90,7 @@ LaserScanner2dImpl::initInterface()
 }
 
 void 
-LaserScanner2dImpl::initInterface( hydroutil::Thread* thread, const std::string& subsysName, int retryInterval )
+LaserScanner2dImpl::initInterface( hydroiceutil::Thread* thread, const std::string& subsysName, int retryInterval )
 {
     topicPrx_ = orcaice::connectToTopicWithString( context_, consumerPrx_, topicName_, thread, subsysName, retryInterval );
 

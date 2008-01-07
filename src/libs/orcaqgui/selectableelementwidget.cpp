@@ -13,7 +13,7 @@ using namespace std;
 namespace orcaqgui {
 
 SelectableElementWidget::SelectableElementWidget( hydroqgui::PlatformFocusManager &platformFocusManager,
-                                                  hydroutil::JobQueue             &jobQueue,
+                                                  hydroiceutil::JobQueue             &jobQueue,
                                                   const orcaice::Context          &context,
                                                   orcaqgemv::GuiElementModel      *guiElementModel,
                                                   QMainWindow                     &mainWindow,
@@ -96,7 +96,7 @@ SelectableElementWidget::updateRegistryView()
 {
     string locatorString = context_.communicator()->getDefaultLocator()->ice_toString();
 
-    hydroutil::JobPtr job = new orcaqcm::GetComponentsJob( qApp, regModel_, context_, locatorString );
+    hydroiceutil::JobPtr job = new orcaqcm::GetComponentsJob( qApp, regModel_, context_, locatorString );
     jobQueue_.add( job );
 }
 

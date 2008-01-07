@@ -11,9 +11,9 @@
 #ifndef MAINTHREAD_H
 #define MAINTHREAD_H
 
-#include <hydroutil/subsystemthread.h>
+#include <hydroiceutil/subsystemthread.h>
 #include <orcaice/context.h>
-#include <hydroutil/store.h>
+#include <hydroiceutil/store.h>
 #include <hydronavutil/pose.h> 
 #include <orca/localise2d.h>
 #include <orca/pathplanner2d.h>
@@ -28,14 +28,14 @@ namespace goalplanner
 
 class PathFollower2dI;
 
-class MainThread : public hydroutil::SubsystemThread
+class MainThread : public hydroiceutil::SubsystemThread
 {
 
 public: 
 
-    MainThread( const orcaice::Context & context );
-    ~MainThread();
+    MainThread( const orcaice::Context& context );
 
+    // from SubsystemThread
     virtual void walk();
 
 private:
@@ -87,9 +87,9 @@ private:
     // ========== provided pathfollower interface (incoming paths) ===============
     PathFollower2dI* incomingPathI_;
     
-    hydroutil::Store<orca::PathFollower2dData> incomingPathStore_;
+    hydroiceutil::Store<orca::PathFollower2dData> incomingPathStore_;
     
-    hydroutil::Store<bool> activationStore_;
+    hydroiceutil::Store<bool> activationStore_;
     // ===========================================================================
 
     hydroogmap::OgMap ogMap_;

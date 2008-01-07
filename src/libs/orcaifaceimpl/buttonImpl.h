@@ -14,11 +14,11 @@
 #include <orca/button.h>
 #include <IceStorm/IceStorm.h>
 
-#include <hydroutil/store.h>
-#include <hydroutil/notify.h>
+#include <hydroiceutil/store.h>
+#include <hydroiceutil/notify.h>
 #include <orcaice/context.h>
 
-namespace hydroutil {
+namespace hydroiceutil {
     class Thread;
 }
 
@@ -28,7 +28,7 @@ namespace orcaifaceimpl {
 //! Implements the Button interface: Handles remote calls.
 //!
 class ButtonImpl : public IceUtil::Shared,
-                   public hydroutil::Notify<bool> // Note: the 'bool' here is meaningless.
+                   public hydroiceutil::Notify<bool> // Note: the 'bool' here is meaningless.
 {
 friend class ButtonI;
 
@@ -46,7 +46,7 @@ public:
 
     //! Sets up interface and connects to IceStorm. Catches all exceptions and retries
     //! until sucessful. At every iteration, checks if the thread was stopped.
-    void initInterface( hydroutil::Thread* thread, const std::string& subsysName="", int retryInterval=2 );
+    void initInterface( hydroiceutil::Thread* thread, const std::string& subsysName="", int retryInterval=2 );
 
 private:
 

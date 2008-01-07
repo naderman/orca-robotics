@@ -9,6 +9,11 @@ void
 tryRemoveInterface( orcaice::Context &context,
                     const std::string &interfaceName )
 {
+    if ( !context.communicator() ) {
+        // the communicator is probably already destroyed.
+        return;
+    }
+
     try {
         context.adapter()->remove( context.communicator()->stringToIdentity( interfaceName ) );
     }

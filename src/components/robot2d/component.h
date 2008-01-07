@@ -19,7 +19,6 @@ namespace robot2d
 class Component : public orcaice::Component
 {
 public:
-
     Component();
 
     // from Component
@@ -28,9 +27,9 @@ public:
 
 private:
     // loop responsible for interaction with the network
-    hydroutil::ThreadPtr NetThread_;
+    hydroiceutil::ThreadPtr NetThread_;
     // loop responsible for interaction with local hardware
-    hydroutil::ThreadPtr HwThread_;
+    hydroiceutil::ThreadPtr HwThread_;
 };
 
 } // namespace

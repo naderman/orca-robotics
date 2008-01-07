@@ -33,7 +33,6 @@ using namespace orca;
 
 Component::Component() : 
     orcaice::Component( "ImageServer" ),
-    mainLoop_(0),
     hwDriver_(0),
     imageGrabber_(0)
 {
@@ -44,7 +43,7 @@ Component::~Component()
     delete hwDriver_;
     delete imageGrabber_;
     
-    // do not delete mainLoop_!!! They derive from Ice::Thread and self-destruct.
+    // do not delete mainThread_!!! They derive from Ice::Thread and self-destruct.
 }
 
 void
@@ -198,15 +197,15 @@ Component::start()
     //
     // MAIN DRIVER LOOP
     //
-    mainLoop_ = new MainThread( *cameraInterface_, hwDriver_, context() );
-    mainLoop_->start();
+    mainThread_ = new MainThread( *cameraInterface_, hwDriver_, context() );
+    mainThread_->start();
 }
 
 void 
 Component::stop()
 {
     tracer().debug("stopping component...",2);
-    hydroutil::stopAndJoin( mainLoop_ );
+    hydroiceutil::stopAndJoin( mainThread_ );
 }
 
 } // namespace

@@ -13,7 +13,7 @@
 
 #include <orca/imu.h>
 #include <orca/bros1.h>
-#include <hydroutil/safethread.h>
+#include <hydroiceutil/safethread.h>
 #include <orcaice/context.h>
 // #include <hydronavutil/mapgrid.h>
 
@@ -28,7 +28,7 @@ namespace imu {
 //
 // Note: this thing self-destructs when run() returns.
 //
-class MainThread : public hydroutil::SafeThread
+class MainThread : public hydroiceutil::SafeThread
 {
 
 public:

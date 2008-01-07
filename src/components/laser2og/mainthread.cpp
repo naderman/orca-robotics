@@ -83,10 +83,9 @@ namespace {
 MainThread::MainThread( const orcaice::Context &context ) :
     SafeThread(context.tracer()),
     context_(context),
-    rangeScannerDataBuffer_(-1,hydroutil::BufferTypeCircular),
+    rangeScannerDataBuffer_(-1,hydroiceutil::BufferTypeCircular),
     laser2Og_(0)
 {
-    init();
 }
 
 MainThread::~MainThread()
@@ -227,6 +226,13 @@ MainThread::init()
 void
 MainThread::walk()
 {
+    //
+    // ENABLE NETWORK CONNECTIONS
+    //
+    // multi-try function
+    orcaice::activate( context_, this );
+
+    init();
 
 	RangeScanner2dDataPtr rangeScan = new RangeScanner2dData;
 	Localise2dData localiseData;
@@ -318,9 +324,4 @@ MainThread::walk()
         }
         
     } // end of main loop
-    
-    context_.tracer().debug( "dropping out from run()", 5 );
-    
-    waitForStop();
 }
-

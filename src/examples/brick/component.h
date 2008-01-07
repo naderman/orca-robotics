@@ -12,7 +12,7 @@
 #define COMPONENT_H
 
 #include <orcaice/component.h>
-#include <hydroutil/thread.h>
+#include <hydroiceutil/thread.h>
 
 namespace brick
 {
@@ -29,7 +29,7 @@ public:
 
 private:
 
-    hydroutil::ThreadPtr mainThread_;
+    hydroiceutil::ThreadPtr mainThread_;
 };
 
 } // namespace

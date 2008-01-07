@@ -9,7 +9,7 @@
  */
 
 #include <iostream>
-#include <hydroutil/store.h>
+#include <hydroiceutil/store.h>
 
 #include <orca/estop.h>
 #include <orcaice/orcaice.h>
@@ -96,7 +96,7 @@ EStopImpl::initInterface()
 
 
 void 
-EStopImpl::initInterface( hydroutil::Thread* thread, const std::string& subsysName, int retryInterval )
+EStopImpl::initInterface( hydroiceutil::Thread* thread, const std::string& subsysName, int retryInterval )
 {
     topicPrx_ = orcaice::connectToTopicWithString<orca::EStopConsumerPrx>
         ( context_, consumerPrx_, topicName_, thread, subsysName, retryInterval );

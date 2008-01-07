@@ -152,7 +152,7 @@ NetThread::walk()
     // temp objects in network format
     orca::Odometry2dData odometry2dData;
 
-    hydroutil::Timer publishTimer;
+    hydroiceutil::Timer publishTimer;
     double publishInterval = orcaice::getPropertyAsDoubleWithDefault( 
         context_.properties(), prefix+"Odometry2dPublishInterval", 0 );
 

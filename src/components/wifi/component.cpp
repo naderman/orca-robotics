@@ -28,8 +28,8 @@ Component::start()
 void Component::stop()
 {    
     tracer().debug( "Stopping component", 2 );
-    // alexm: why is this?
-//    hydroutil::stopAndJoin( mainThread_ );
+    // alexm: why is this commented out?
+//    hydroiceutil::stopAndJoin( mainThread_ );
     tracer().info( "Component stopped" );
 }
 

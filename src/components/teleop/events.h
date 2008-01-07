@@ -11,7 +11,7 @@
 #ifndef  EVENTS_H
 #define  EVENTS_H
 
-#include <hydroutil/eventqueue.h>
+#include <hydroiceutil/eventqueue.h>
 
 namespace teleop
 {
@@ -29,7 +29,7 @@ enum EventType
     RelativeCommand
 };
 
-class SentVelocityCommandEvent : public hydroutil::Event
+class SentVelocityCommandEvent : public hydroiceutil::Event
 {
 public:
     SentVelocityCommandEvent( double vx, double vy, double w, bool vxLimit, bool vyLimit, bool wLimit ) :
@@ -50,7 +50,7 @@ public:
 };
 typedef IceUtil::Handle<SentVelocityCommandEvent> SentVelocityCommandEventPtr;
 
-class SentBicycleCommandEvent : public hydroutil::Event
+class SentBicycleCommandEvent : public hydroiceutil::Event
 {
 public:
     SentBicycleCommandEvent( double speed, double steerAngle, bool speedLimit, bool steerAngleLimit ) :
@@ -67,21 +67,21 @@ public:
 };
 typedef IceUtil::Handle<SentBicycleCommandEvent> SentBicycleCommandEventPtr;
 
-class SentRepeatCommandEvent : public hydroutil::Event
+class SentRepeatCommandEvent : public hydroiceutil::Event
 {
 public:
     SentRepeatCommandEvent() :
         Event( SentRepeatCommand ) {};
 };
 
-class FailedToSendCommandEvent : public hydroutil::Event
+class FailedToSendCommandEvent : public hydroiceutil::Event
 {
 public:
     FailedToSendCommandEvent() :
         Event( FailedToSendCommand ) {};
 };
 
-class MixedCommandEvent : public hydroutil::Event
+class MixedCommandEvent : public hydroiceutil::Event
 {
 public:
     MixedCommandEvent( double lon, bool isLong, double tr, bool isTr, double ang, bool isAng ) :
@@ -102,7 +102,7 @@ public:
 };
 typedef IceUtil::Handle<MixedCommandEvent> MixedCommandEventPtr;
 
-class IncrementCommandEvent : public hydroutil::Event
+class IncrementCommandEvent : public hydroiceutil::Event
 {
 public:
     IncrementCommandEvent( int lon, int tr, int ang ) :
@@ -117,7 +117,7 @@ public:
 };
 typedef IceUtil::Handle<IncrementCommandEvent> IncrementCommandEventPtr;
 
-class RelativeCommandEvent : public hydroutil::Event
+class RelativeCommandEvent : public hydroiceutil::Event
 {
 public:
     RelativeCommandEvent( double lon, double tr, double ang ) :
@@ -133,11 +133,11 @@ public:
 typedef IceUtil::Handle<RelativeCommandEvent> RelativeCommandEventPtr;
 
 
-class TeleopEventQueueOptimizer : public hydroutil::EventQueueOptimizer
+class TeleopEventQueueOptimizer : public hydroiceutil::EventQueueOptimizer
 {
 public:
     // this combine function adds the member variables of the two events
-    virtual bool combine( hydroutil::EventPtr& existing, const hydroutil::EventPtr& extra );
+    virtual bool combine( hydroiceutil::EventPtr& existing, const hydroiceutil::EventPtr& extra );
 };
 
 } // namespace

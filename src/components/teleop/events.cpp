@@ -13,7 +13,7 @@
 using namespace teleop;
 
 bool 
-TeleopEventQueueOptimizer::combine( hydroutil::EventPtr& existing, const hydroutil::EventPtr& extra ) 
+TeleopEventQueueOptimizer::combine( hydroiceutil::EventPtr& existing, const hydroiceutil::EventPtr& extra ) 
 { 
     if ( existing->type()==IncrementCommand && extra->type()==IncrementCommand ) 
     {    

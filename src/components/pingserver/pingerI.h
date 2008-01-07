@@ -46,6 +46,8 @@ private:
     orcaice::Context context_;
 };
 
+typedef IceUtil::Handle<PingerI> PingerIPtr;
+
 }
 
 #endif

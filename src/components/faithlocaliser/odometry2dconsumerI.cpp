@@ -15,7 +15,7 @@
 
 using namespace std;
 
-Odometry2dConsumerI::Odometry2dConsumerI( hydroutil::Buffer<orca::Odometry2dData> &pipe )
+Odometry2dConsumerI::Odometry2dConsumerI( hydroiceutil::Buffer<orca::Odometry2dData> &pipe )
     : pipe_(pipe)
 {
 }

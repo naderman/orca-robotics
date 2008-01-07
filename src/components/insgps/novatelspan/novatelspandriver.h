@@ -18,7 +18,7 @@
 #include <hydroserial/serial.h>
 
 // buffer for gps data
-#include <hydroutil/buffer.h>
+#include <hydroiceutil/buffer.h>
 
 // novatel message definitions      
 #include <hydronovatelutil/header.h>
@@ -140,10 +140,10 @@ private:
     unsigned long pos_type_;
 
     // the driver will put the latest data into this queue buffer of depth 100
-    hydroutil::Buffer<orca::GpsData> gpsDataBuffer_;
-    hydroutil::Buffer<orca::ImuData> imuDataBuffer_;
-    hydroutil::Buffer<orca::Odometry3dData> odometry3dDataBuffer_;
-    hydroutil::Buffer<orca::Localise3dData> localise3dDataBuffer_;
+    hydroiceutil::Buffer<orca::GpsData> gpsDataBuffer_;
+    hydroiceutil::Buffer<orca::ImuData> imuDataBuffer_;
+    hydroiceutil::Buffer<orca::Odometry3dData> odometry3dDataBuffer_;
+    hydroiceutil::Buffer<orca::Localise3dData> localise3dDataBuffer_;
         
     // Where the latest and greatest of each log is stored.
     // The trailing B's indicate binary messages

@@ -23,9 +23,6 @@ Component::Component()
 void
 Component::start()
 {
-    //
-    // create and start the main thread
-    //
     mainThread_ = new MainThread( context() );
     mainThread_->start();
 }
@@ -33,7 +30,7 @@ Component::start()
 void Component::stop()
 {
     tracer().debug("stopping component...",2);
-    hydroutil::stopAndJoin( mainThread_ );
+    hydroiceutil::stopAndJoin( mainThread_ );
     tracer().debug("component stopped.",2);
 }
 

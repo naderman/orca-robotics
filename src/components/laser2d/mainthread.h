@@ -11,7 +11,7 @@
 #define MAIN_THREAD_H
 
 #include <memory>
-#include <hydroutil/subsystemthread.h>
+#include <hydroiceutil/subsystemthread.h>
 #include <orcaice/context.h>
 #include <hydrodll/dynamicload.h>
 // remote interface
@@ -24,7 +24,7 @@ namespace laser2d {
 //
 // @brief the main executing loop of this laser component.
 //
-class MainThread : public hydroutil::SubsystemThread
+class MainThread : public hydroiceutil::SubsystemThread
 {
 
 public:

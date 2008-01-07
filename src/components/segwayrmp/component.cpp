@@ -111,9 +111,9 @@ void
 Component::stop()
 {
     tracer().debug( "stopping component", 2 );
-    hydroutil::stopAndJoin( netThread_ );
+    hydroiceutil::stopAndJoin( netThread_ );
     tracer().info( "stopped net handler", 2 );
-    hydroutil::stopAndJoin( hwThread_ );
+    hydroiceutil::stopAndJoin( hwThread_ );
     tracer().info( "stopped hw handler", 2 );
 }
 

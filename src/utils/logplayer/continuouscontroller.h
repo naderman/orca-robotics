@@ -1,7 +1,7 @@
 #ifndef LOGPLAYER_CONTINUOUSCONTROLLER_H
 #define LOGPLAYER_CONTINUOUSCONTROLLER_H
 
-#include <hydroutil/subsystemthread.h>
+#include <hydroiceutil/subsystemthread.h>
 #include "replayconductor.h"
 
 namespace logplayer {
@@ -9,7 +9,7 @@ namespace logplayer {
 //
 // @author Alex Brooks
 //
-class ContinuousController : public hydroutil::SubsystemThread
+class ContinuousController : public hydroiceutil::SubsystemThread
 {
 
 public: 

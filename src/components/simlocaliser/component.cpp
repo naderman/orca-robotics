@@ -17,12 +17,7 @@ using namespace std;
 using namespace simlocaliser;
 
 Component::Component()
-    : orcaice::Component( "SimLocaliser" ),
-      mainLoop_(0)
-{
-}
-
-Component::~Component()
+    : orcaice::Component( "SimLocaliser" )
 {
 }
 
@@ -32,12 +27,12 @@ Component::start()
     //
     // MAIN DRIVER LOOP
     //
-    mainLoop_ = new MainThread( context() );
-    mainLoop_->start();    
+    thread_ = new MainThread( context() );
+    thread_->start();    
 }
 
 void
 Component::stop()
 {
-    hydroutil::stopAndJoin( mainLoop_ );
+    hydroiceutil::stopAndJoin( thread_ );
 }

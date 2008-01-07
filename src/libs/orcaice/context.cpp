@@ -10,6 +10,7 @@
 
 #include "context.h"
 #include "component.h"
+#include <hydroutil/exceptions.h>
 
 namespace orcaice {
 
@@ -38,8 +39,24 @@ Context::init( const orca::FQComponentName &name,
 void
 Context::activate()
 {
-    if ( component_ ) {
-        component_->activate();
+    if ( !component_ )
+        throw hydroutil::Exception( ERROR_INFO, "Trying to activate component before context initializition." );
+
+    component_->activate();
+}
+
+void
+Context::shutdown()
+{
+    if ( !communicator_ )
+        throw hydroutil::Exception( ERROR_INFO, "Trying to shutdown component before context initializition." );
+
+    if ( isApplication() ) {
+        tracer().info( "Triggering component shutdown ...");
+        communicator()->destroy();
+    }
+    else {
+        tracer().info( "NOT triggering component shutdown because running as a service ...");
     }
 }
 

@@ -56,8 +56,8 @@ namespace {
 }
 
 MainThread::MainThread( const orcaice::Context & context )
-    : hydroutil::SubsystemThread( context_.tracer(), context.status(), "MainThread" ),
-      pathPlannerTaskBuffer_( 100, hydroutil::BufferTypeQueue ),
+    : hydroiceutil::SubsystemThread( context_.tracer(), context.status(), "MainThread" ),
+      pathPlannerTaskBuffer_( 100, hydroiceutil::BufferTypeQueue ),
       context_(context)
 {
     subStatus().setMaxHeartbeatInterval( 30.0 );

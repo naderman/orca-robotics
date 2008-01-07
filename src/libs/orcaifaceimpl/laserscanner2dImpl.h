@@ -20,7 +20,7 @@
 #include <orcaice/ptrstore.h>
 #include <orcaice/context.h>
 
-namespace hydroutil {
+namespace hydroiceutil {
     class Thread;
 }
 
@@ -53,7 +53,7 @@ public:
     //! until sucessful. Before every attempt checks if the thread was stopped. After every
     //! If a non-empty subsystem name is supplied, sends a Status heartbeat after each attempt 
     //! (@see hydroutil::Status).
-    void initInterface( hydroutil::Thread* thread, const std::string& subsysName="", int retryInterval=2 );
+    void initInterface( hydroiceutil::Thread* thread, const std::string& subsysName="", int retryInterval=2 );
 
     //! A local call which sets the data reported by the interface
     void localSet( const orca::LaserScanner2dDataPtr& data );

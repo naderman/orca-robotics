@@ -2,7 +2,7 @@
 #define ORCAROBOTDRIVERUTIL_STATEMACHINE_H
 
 #include <string>
-#include <hydroutil/store.h>
+#include <hydroiceutil/store.h>
 
 namespace orcarobotdriverutil {
 
@@ -55,7 +55,7 @@ private:
     };
     ////////////////////////////////////////
 
-    hydroutil::Store<State> stateStore_;
+    hydroiceutil::Store<State> stateStore_;
 
 };
 

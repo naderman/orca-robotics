@@ -12,29 +12,22 @@
 #define COMPONENT_H
 
 #include <orcaice/component.h>
-#include <hydroutil/safethread.h>
 
 namespace tracermon
 {
 
-class MainThread;
-class UserMainThread;
-
 class Component : public orcaice::Component
 {
 public:
-
     Component();
-    virtual ~Component();
 
-    // component interface
+    // from orcaice::Component
     virtual void start();
     virtual void stop();
 
 private:
-
-    hydroutil::SafeThread* netMainThread_;
-    hydroutil::SafeThread* usrMainThread_;
+    hydroiceutil::ThreadPtr netThread_;
+    hydroiceutil::ThreadPtr usrThread_;
 };
 
 } // namespace

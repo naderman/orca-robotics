@@ -7,23 +7,14 @@
  * the LICENSE file included in this distribution.
  *
  */
-#include <orcaice/orcaice.h>
-#include <orcaogfusion/orcaogfusion.h>
 
 #include "component.h"
 #include "mainthread.h"
-#include "ogfusionI.h"
 
-using namespace std;
-
-namespace ognode {
+using namespace ognode;
 
 Component::Component()
     : orcaice::Component( "OgNode", orcaice::HomeInterface  )
-{
-}
-
-Component::~Component()
 {
 }
 
@@ -37,7 +28,5 @@ Component::start()
 void
 Component::stop()
 {
-    hydroutil::stopAndJoin( mainThread_ );
-}
-
+    hydroiceutil::stopAndJoin( mainThread_ );
 }

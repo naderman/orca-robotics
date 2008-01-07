@@ -72,7 +72,7 @@ void
 PixMapImpl::initInterface()
 {
     // Find IceStorm Topic to which we'll publish
-    topicPrx_ = orcaice::connectToTopicWithString<PixMapConsumerPrx>
+    topicPrx_ = orcaice::connectToTopicWithString<orca::PixMapConsumerPrx>
         ( context_, consumerPrx_, topicName_ );
 
     // Register with the adapter
@@ -80,6 +80,16 @@ PixMapImpl::initInterface()
     // we're holding it in a smart pointer which will clean up when it's done.
     ptr_ = new PixMapI( *this );
     orcaice::createInterfaceWithString( context_, ptr_, interfaceName_ );
+}
+
+void 
+PixMapImpl::initInterface( hydroiceutil::Thread* thread, const std::string& subsysName, int retryInterval )
+{
+    topicPrx_ = orcaice::connectToTopicWithString<orca::PixMapConsumerPrx>
+        ( context_, consumerPrx_, topicName_, thread, subsysName, retryInterval );
+
+    ptr_ = new PixMapI( *this );
+    orcaice::createInterfaceWithString( context_, ptr_, interfaceName_, thread, subsysName, retryInterval );
 }
 
 PixMapData

@@ -16,7 +16,7 @@
 #include <orcaice/component.h>
 #include <hydrodll/dll.h>
 #include "interfacetypecounter.h"
-#include <hydroutil/safethread.h>
+#include <hydroiceutil/safethread.h>
 
 namespace orcalog
 {
@@ -51,8 +51,8 @@ private:
 
     void readReplayParams( IceUtil::Time &beginTime, double &replayRate, bool &autoStart );
 
-    hydroutil::ThreadPtr       replayConductor_;
-    hydroutil::ThreadPtr       highLevelController_;
+    hydroiceutil::ThreadPtr       replayConductor_;
+    hydroiceutil::ThreadPtr       highLevelController_;
 
     orcalog::MasterFileReader *masterFileReader_;
 

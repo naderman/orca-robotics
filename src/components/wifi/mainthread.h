@@ -11,7 +11,7 @@
 #ifndef ORCA_WIFI_MAINTHREAD_H
 #define ORCA_WIFI_MAINTHREAD_H
 
-#include <hydroutil/subsystemthread.h>
+#include <hydroiceutil/subsystemthread.h>
 #include <orcaifaceimpl/wifiImpl.h>
 
 namespace wifi
@@ -19,7 +19,7 @@ namespace wifi
     
 class WifiDriver;
 
-class MainThread : public hydroutil::SubsystemThread
+class MainThread : public hydroiceutil::SubsystemThread
 {
 
 public: 

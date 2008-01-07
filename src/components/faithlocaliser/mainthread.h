@@ -8,22 +8,21 @@
  *
  */
  
-#ifndef MAIN_LOOP_H
-#define MAIN_LOOP_H
+#ifndef MAIN_THREAD_H
+#define MAIN_THREAD_H
 
-#include <hydroutil/subsystemthread.h>
+#include <hydroiceutil/subsystemthread.h>
 #include <orcaice/context.h>
 
 namespace faithlocaliser
 {
 
-class MainThread : public hydroutil::SubsystemThread
+class MainThread : public hydroiceutil::SubsystemThread
 {
 
 public:
 
     MainThread( const orcaice::Context &context );
-    ~MainThread();
 
     // from SubsystemThread
     virtual void walk();

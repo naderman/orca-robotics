@@ -1,5 +1,6 @@
 SET ( COMP_NAME laser2og )
-SET ( SERVICE_NAME OrcaFaithLocaliser )
+SET ( SERVICE_NAME OrcaLaser2OgService )
+SET ( COMP_NAMESPACE ${COMP_NAME} )
 
 REQUIRE_OPTION( EXE ${COMP_NAME} ON )
 REQUIRE_VAR( EXE ${COMP_NAME} OS_LINUX "only Linux OS is supported" )
@@ -11,8 +12,15 @@ IF ( BUILD )
     FILE( GLOB COMP_SRCS *.cpp )
     SET( COMP_DEPS OrcaOgFusion OrcaPathPlan )
     
-    GLOBAL_ADD_EXECUTABLE( ${COMP_NAME} ${COMP_SRCS} )
+    # build stand-alone component 
+    WRAP_COMPONENT_INTO_APP( ${COMP_NAME} ${COMP_NAMESPACE} ${COMP_SRCS} )
     TARGET_LINK_LIBRARIES( ${COMP_NAME} ${COMP_DEPS}  )
+
+    # build IceBox service
+    IF ( BUILD_SERVICES )
+        WRAP_COMPONENT_INTO_SERVICE( ${SERVICE_NAME} ${COMP_NAMESPACE} ${COMP_SRCS} )
+        TARGET_LINK_LIBRARIES( ${SERVICE_NAME} ${COMP_DEPS} )    
+    ENDIF ( BUILD_SERVICES )
 
     GENERATE_CONFIG_FILE( ${COMP_NAME}.def )
 

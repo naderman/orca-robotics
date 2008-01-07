@@ -12,7 +12,7 @@
 #define ORCAICE_TRACER_I_H
 
 #include <orca/tracer.h>
-#include <hydroutil/localtracer.h>
+#include <hydroiceutil/localtracer.h>
 #include "networktracesender.h"
 #include <IceStorm/IceStorm.h>
 
@@ -21,7 +21,7 @@ namespace orcaice
 namespace detail
 {
 
-class TracerI : public virtual orca::Tracer, public hydroutil::LocalTracer
+class TracerI : public virtual orca::Tracer, public hydroiceutil::LocalTracer
 {
 public:
     TracerI( const orcaice::Context & context );

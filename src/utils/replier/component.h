@@ -12,7 +12,6 @@
 #define COMPONENT_H
 
 #include <orcaice/component.h>
-#include <hydroutil/safethread.h>
 
 namespace replier
 {
@@ -27,7 +26,7 @@ public:
     virtual void stop();
     
 private:
-    hydroutil::ThreadPtr mainThread_;
+    hydroiceutil::ThreadPtr thread_;
 };
 
 } // namespace

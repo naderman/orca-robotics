@@ -9,8 +9,8 @@
 #include <orca/featuremap2d.h>
 
 // utilities
-#include <hydroutil/store.h>
-#include <hydroutil/safethread.h>
+#include <hydroiceutil/store.h>
+#include <hydroiceutil/safethread.h>
 #include <orcaice/context.h>
 
 namespace orcaifaceimpl
@@ -38,7 +38,7 @@ public:
 
     //! Sets up interface and connects to IceStorm. Catches all exceptions and retries
     //! until sucessful. At every iteration, checks if the thread was stopped.
-    void initInterface( hydroutil::Thread* thread, const std::string& subsysName="", int retryInterval=2 );
+    void initInterface( hydroiceutil::Thread* thread, const std::string& subsysName="", int retryInterval=2 );
 
     //! A local call which sets the data reported by the interface, 
     //! and sends it through IceStorm
@@ -50,7 +50,7 @@ private:
     void internalSubscribe(const ::orca::FeatureMap2dConsumerPrx&);
     void internalUnsubscribe(const ::orca::FeatureMap2dConsumerPrx& );
 
-    hydroutil::Store<orca::FeatureMap2dData> dataStore_;
+    hydroiceutil::Store<orca::FeatureMap2dData> dataStore_;
 
     orca::FeatureMap2dConsumerPrx    consumerPrx_;
     IceStorm::TopicPrx       topicPrx_;

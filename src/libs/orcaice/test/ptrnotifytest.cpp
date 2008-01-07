@@ -16,7 +16,7 @@
 
 using namespace std;
 
-class TestNotifyHandler : public hydroutil::NotifyHandler<orca::RangeScanner2dDataPtr>
+class TestNotifyHandler : public hydroiceutil::NotifyHandler<orca::RangeScanner2dDataPtr>
 {
 public:
     TestNotifyHandler()
@@ -38,7 +38,7 @@ main(int argc, char * argv[])
     orca::RangeScanner2dDataPtr data = new orca::RangeScanner2dData;
     orcaice::setSane( data );
     
-    hydroutil::NotifyHandler<orca::RangeScanner2dDataPtr>* emptyHandler = 0;
+    hydroiceutil::NotifyHandler<orca::RangeScanner2dDataPtr>* emptyHandler = 0;
     TestNotifyHandler testHandler;
 
     cout<<"testing set() ... ";

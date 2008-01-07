@@ -29,7 +29,7 @@
 
 namespace insgps{
 
-class MainThread : public hydroutil::SafeThread
+class MainThread : public hydroiceutil::SafeThread
 {
 public:
     MainThread(insgps::InsGpsI&  insGpsI,

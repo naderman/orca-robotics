@@ -1,5 +1,6 @@
 SET ( COMP_NAME ognode )
-SET ( SERVICE_NAME OrcaFaithLocaliser )
+SET ( SERVICE_NAME OrcaOgNodeService )
+SET ( COMP_NAMESPACE ${COMP_NAME} )
 
 REQUIRE_OPTION( EXE ${COMP_NAME} ON )
 SET ( NOT_OS_WIN NOT OS_WIN )
@@ -9,14 +10,18 @@ IF ( BUILD )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
     
-    #
-    # This gathers all the source files into the variable 'SRCS'
-    #
-    FILE( GLOB SRCS *.cpp )           
+    FILE( GLOB COMP_SRCS *.cpp )   
+    SET( COMP_DEPS OrcaOgFusion OrcaOgMap OrcaIfaceImpl )        
     
-    GLOBAL_ADD_EXECUTABLE( ${COMP_NAME} ${SRCS} )
-    TARGET_LINK_LIBRARIES( ${COMP_NAME} OrcaOgFusion OrcaOgMap OrcaIfaceImpl )
+    WRAP_COMPONENT_INTO_APP( ${COMP_NAME} ${COMP_NAMESPACE} ${COMP_SRCS} )
+    TARGET_LINK_LIBRARIES( ${COMP_NAME} ${COMP_DEPS} )
     
+    # build IceBox service
+    IF ( BUILD_SERVICES )
+        WRAP_COMPONENT_INTO_SERVICE( ${SERVICE_NAME} ${COMP_NAMESPACE} ${COMP_SRCS} )
+        TARGET_LINK_LIBRARIES( ${SERVICE_NAME} ${COMP_DEPS} ) 
+    ENDIF ( BUILD_SERVICES )
+
     GENERATE_CONFIG_FILE( ${COMP_NAME}.def )
 
 ENDIF ( BUILD )

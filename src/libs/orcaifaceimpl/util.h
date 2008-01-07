@@ -85,18 +85,18 @@ namespace orcaifaceimpl {
 
     }
 
-    // Remove the interface from the adapter if possible.
-    // If not, fail silently.
+    //! Remove the interface from the adapter if possible.
+    //! If something goes wrong, fails silently.
     void
     tryRemoveInterface( orcaice::Context  &context,
                         const std::string &interfaceName );
 
-    // Convenience function for tag->name conversion
-    // (may throw ConfigFileException)
+    //! Convenience function for tag->name conversion
+    //! (may throw ConfigFileException)
     std::string getInterfaceNameFromTag( const orcaice::Context &context,
                                          const std::string      &interfaceTag );
     
-    // Convenience function for interfaceName->topicName conversion
+    //! Convenience function for interfaceName->topicName conversion
     std::string getTopicNameFromInterfaceName( const orcaice::Context &context,
                                                const std::string      &interfaceTag );
 }

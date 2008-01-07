@@ -21,7 +21,7 @@ using namespace tracermon;
 MainThread::MainThread( User* user, const orcaice::Context & context ) :
     SafeThread( context.tracer() ),
     user_(user),
-    events_(new hydroutil::EventQueue),
+    events_(new hydroiceutil::EventQueue),
     context_(context)
 {
 }
@@ -38,7 +38,7 @@ MainThread::setVerbosityLevel( int error, int warn, int info, int debug )
 // ss<<"got verbosity event with ["<<error<<","<<warn<<","<<info<<","<<debug<<"]";
 // user_->newLocalTrace( ss.str() );
 // user_->newLocalTrace( "got fucking verbosity event" );
-    hydroutil::EventPtr e = new VerbosityLevelsChangedEvent( error, warn, info, debug );
+    hydroiceutil::EventPtr e = new VerbosityLevelsChangedEvent( error, warn, info, debug );
     events_->add( e );
 }
 
@@ -99,7 +99,7 @@ MainThread::walk()
         }
     }
 
-    hydroutil::EventPtr event;
+    hydroiceutil::EventPtr event;
     int timeoutMs = 500;
 
     //

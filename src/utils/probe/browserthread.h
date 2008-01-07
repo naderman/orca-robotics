@@ -12,7 +12,7 @@
 #define BROWSER_HANDLER_H
 
 #include <vector>
-#include <hydroutil/eventqueue.h>
+#include <hydroiceutil/eventqueue.h>
 #include <orcaice/context.h>
 #include <orcacm/types.h>
 
@@ -30,7 +30,7 @@ namespace probe
 class ProbeFactory;
 class InterfaceProbe;
 
-class BrowserThread : public orcaprobe::IBrowser, public hydroutil::SafeThread, public BrowserFsm
+class BrowserThread : public orcaprobe::IBrowser, public hydroiceutil::SafeThread, public BrowserFsm
 {
 
 public:
@@ -77,7 +77,7 @@ private:
 
     orcaprobe::IDisplay & display_;
 
-    hydroutil::EventQueuePtr events_;
+    hydroiceutil::EventQueuePtr events_;
  
     orcaprobe::InterfaceProbe* ifaceProbe_;
 

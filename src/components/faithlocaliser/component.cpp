@@ -11,7 +11,6 @@
 #include "component.h"
 #include "mainthread.h"
 
-using namespace std;
 using namespace faithlocaliser;
 
 Component::Component()
@@ -30,6 +29,6 @@ void
 Component::stop()
 {
     tracer().debug( "stopping component", 5 );
-    hydroutil::stopAndJoin( mainThread_ );
+    hydroiceutil::stopAndJoin( mainThread_ );
     tracer().debug( "stopped component", 5 );
 }

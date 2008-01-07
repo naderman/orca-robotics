@@ -86,10 +86,13 @@ public:
     hydroutil::Status&     status() const { return *status_; };
 
 
-    //! Calls Component::activate(). This function is useful when component activation
+    //! Actiates server functionality of the component. This function is useful when component activation
     //! (technically Ice::ObjectAdapter activation) must be delayed until after something is 
     //! initialized in the child thread.
     void activate();
+
+    //! Triggers component shutdown.
+    void shutdown();
 
     // WARNING to internal developers:
     // Do not call these functions before the context is fully initialized, i.e.

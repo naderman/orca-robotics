@@ -17,7 +17,7 @@ using namespace std;
 
 int main(int argc, char * argv[])
 {
-    orcaice::PtrBuffer<orca::RangeScanner2dDataPtr> buffer(-1,hydroutil::BufferTypeCircular);
+    orcaice::PtrBuffer<orca::RangeScanner2dDataPtr> buffer(-1,hydroiceutil::BufferTypeCircular);
     orca::RangeScanner2dDataPtr data = new orca::RangeScanner2dData;
 
     cout<<"testing get() ... ";
@@ -117,8 +117,8 @@ int main(int argc, char * argv[])
     }
     cout<<"ok"<<endl;
     
-    cout<<"testing configure() with hydroutil::BufferTypeCircular ... ";
-    buffer.configure( 300, hydroutil::BufferTypeCircular );
+    cout<<"testing configure() with hydroiceutil::BufferTypeCircular ... ";
+    buffer.configure( 300, hydroiceutil::BufferTypeCircular );
     for ( int i=0; i<400; ++i ) {
         buffer.push( data );
     }
@@ -137,8 +137,8 @@ int main(int argc, char * argv[])
     }
     cout<<"ok"<<endl;
 
-    cout<<"testing configure() with hydroutil::BufferTypeQueue ... ";
-    buffer.configure( 300, hydroutil::BufferTypeQueue );
+    cout<<"testing configure() with hydroiceutil::BufferTypeQueue ... ";
+    buffer.configure( 300, hydroiceutil::BufferTypeQueue );
     for ( int i=0; i<400; ++i ) {
         buffer.push( data );
     }

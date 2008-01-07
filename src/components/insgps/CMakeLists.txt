@@ -1,5 +1,6 @@
 SET ( COMP_NAME insgps )
-SET ( SERVICE_NAME OrcaInsGps )
+SET ( SERVICE_NAME OrcaInsGpsService )
+SET ( COMP_NAMESPACE ${COMP_NAME} )
 
 REQUIRE_OPTION( EXE ${COMP_NAME} ON )
 REQUIRE_VAR( EXE ${COMP_NAME} OS_LINUX "only Linux OS is supported" )
@@ -22,16 +23,16 @@ IF ( BUILD )
         HydroSerial HydroNovatelUtil
     )
     
-    FIND_COMPONENT_SOURCES( COMP_SRCS )
+    FILE( GLOB COMP_SRCS *.cpp )
     SET( COMP_DEPS HydroGpsUtil ${NOVATELSPANINSGPS_LIBS} )
     
     # build stand-alone component  
-    GLOBAL_ADD_EXECUTABLE( ${COMP_NAME} ${COMP_SRCS} main )
+    WRAP_COMPONENT_INTO_APP( ${COMP_NAME} ${COMP_NAMESPACE} ${COMP_SRCS} )
     TARGET_LINK_LIBRARIES( ${COMP_NAME} ${COMP_DEPS} )
     
     # build IceBox service
     IF ( BUILD_SERVICES )
-        GLOBAL_ADD_LIBRARY( ${SERVICE_NAME} SHARED ${COMP_SRCS} service )
+        WRAP_COMPONENT_INTO_SERVICE( ${SERVICE_NAME} ${COMP_NAMESPACE} ${COMP_SRCS} )
         TARGET_LINK_LIBRARIES( ${SERVICE_NAME} ${COMP_DEPS} ) 
     ENDIF ( BUILD_SERVICES )
 

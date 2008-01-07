@@ -30,5 +30,5 @@ Component::start()
 void
 Component::stop()
 {
-    hydroutil::stopAndJoin( mainThread_ );
+    hydroiceutil::stopAndJoin( mainThread_ );
 }

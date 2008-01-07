@@ -92,7 +92,7 @@ Localise2dImpl::initInterface()
 }
 
 void 
-Localise2dImpl::initInterface( hydroutil::Thread* thread, const std::string& subsysName, int retryInterval )
+Localise2dImpl::initInterface( hydroiceutil::Thread* thread, const std::string& subsysName, int retryInterval )
 {
     topicPrx_ = orcaice::connectToTopicWithString<orca::Localise2dConsumerPrx>
         ( context_, consumerPrx_, topicName_, thread, subsysName, retryInterval );

@@ -26,7 +26,7 @@ BrowserThread::BrowserThread( orcaprobe::IDisplay & display,
     SafeThread(context.tracer()),
     factories_(factories),
     display_(display),
-    events_(new hydroutil::EventQueue),
+    events_(new hydroiceutil::EventQueue),
     ifaceProbe_(0),
     context_(context)
 {
@@ -41,28 +41,28 @@ void
 BrowserThread::chooseActivate()
 {
 //     cout<<"chooseActivate"<<endl;
-    hydroutil::EventPtr e = new probe::ActivateEvent;
+    hydroiceutil::EventPtr e = new probe::ActivateEvent;
     events_->add( e );
 }
 
 void 
 BrowserThread::chooseReload()
 {
-    hydroutil::EventPtr e = new probe::ReloadEvent;
+    hydroiceutil::EventPtr e = new probe::ReloadEvent;
     events_->add( e );
 }
 
 void 
 BrowserThread::chooseUp()
 {
-    hydroutil::EventPtr e = new probe::UpEvent;
+    hydroiceutil::EventPtr e = new probe::UpEvent;
     events_->add( e );
 }
 
 void 
 BrowserThread::chooseTop()
 {
-    hydroutil::EventPtr e = new probe::TopEvent;
+    hydroiceutil::EventPtr e = new probe::TopEvent;
     events_->add( e );
 }
 
@@ -70,28 +70,28 @@ void
 BrowserThread::choosePick( int pick )
 {
 //     cout<<"choosePick() pick="<<pick<<endl;
-    hydroutil::EventPtr e = new probe::PickEvent( pick );
+    hydroiceutil::EventPtr e = new probe::PickEvent( pick );
     events_->add( e );
 }
 
 void 
 BrowserThread::chooseFilter( const std::string & filter )
 {
-    hydroutil::EventPtr e = new probe::FilterEvent; // FilterEvent( filter_ );
+    hydroiceutil::EventPtr e = new probe::FilterEvent; // FilterEvent( filter_ );
     events_->add( e );
 }
 
 void
 BrowserThread::chooseDeactivate()
 {
-    hydroutil::EventPtr e = new probe::DeactivateEvent;
+    hydroiceutil::EventPtr e = new probe::DeactivateEvent;
     events_->add( e );
 }
 
 void 
 BrowserThread::walk()
 {
-    hydroutil::EventPtr event;
+    hydroiceutil::EventPtr event;
     int timeoutMs = 500;
     
     while ( !isStopping() )
@@ -147,7 +147,7 @@ BrowserThread::walk()
         }
         default : {
             cout<<"unknown browser event "<<event->type()<<". Ignoring..."<<endl;
-            hydroutil::EventPtr e = new probe::FaultEvent;
+            hydroiceutil::EventPtr e = new probe::FaultEvent;
             events_->add( e );
         }
         } // switch

@@ -15,10 +15,10 @@
 #include <IceStorm/IceStorm.h>
 
 // utilities
-#include <hydroutil/store.h>
+#include <hydroiceutil/store.h>
 #include <orcaice/context.h>
 
-namespace hydroutil {
+namespace hydroiceutil {
     class Thread;
 }
 
@@ -48,7 +48,7 @@ public:
 
     //! Sets up interface and connects to IceStorm. Catches all exceptions and retries
     //! until sucessful. At every iteration, checks if the thread was stopped.
-    void initInterface( hydroutil::Thread* thread, const std::string& subsysName="", int retryInterval=2 );
+    void initInterface( hydroiceutil::Thread* thread, const std::string& subsysName="", int retryInterval=2 );
 
     //! A local call which sets the data reported by the interface
     void localSet( const orca::ImageDataPtr& data );
@@ -66,7 +66,7 @@ private:
 
     orca::ImageDescription     descr_;
     // yes, this is not a typo! It's safe to use a normal proxy with an Ice smart pointer.
-    hydroutil::Store<orca::ImageDataPtr> dataStore_;
+    hydroiceutil::Store<orca::ImageDataPtr> dataStore_;
 
     orca::ImageConsumerPrx    consumerPrx_;
     IceStorm::TopicPrx        topicPrx_;

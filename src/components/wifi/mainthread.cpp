@@ -21,7 +21,7 @@ using namespace wifi;
 
 
 MainThread::MainThread( const orcaice::Context& context ) :
-    hydroutil::SubsystemThread( context.tracer(), context.status(), "MainThread" ),
+    hydroiceutil::SubsystemThread( context.tracer(), context.status(), "MainThread" ),
     context_(context),
     snrWarningThreshhold_(0)
 {

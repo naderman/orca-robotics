@@ -12,7 +12,7 @@
 #define DRIVER_H
 
 // this class is a thread which inherits from thread.h
-#include <hydroutil/safethread.h>
+#include <hydroiceutil/safethread.h>
 
 #include <orca/imu.h>
 #include <orca/odometry3d.h>
@@ -68,7 +68,7 @@ typedef struct Pps{
 }Pps;
 
 
-class Driver : public hydroutil::Thread
+class Driver : public hydroiceutil::Thread
 {
 
 public:

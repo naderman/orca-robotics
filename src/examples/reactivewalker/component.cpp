@@ -14,32 +14,24 @@
 using namespace reactivewalker;
 
 Component::Component()
-    : orcaice::Component( "ReactiveWalker" ),
-      algoThread_(0)
+    : orcaice::Component( "ReactiveWalker" )
 {
 }
 
-Component::~Component()
-{
-    // do not delete handlers!!! They derives from Ice::Thread and delete themselves.
-}
-
-// NOTE: this function returns after it's done, all variable that need to be permanet must
-//       be declared as member variables.
-void Component::start()
+void 
+Component::start()
 {
     //
     // The thread which will handle the algorithm
     //
-    algoThread_ = new AlgoThread( context() );
-    algoThread_->start();
-    
-    // the rest is handled by the application/service
+    thread_ = new AlgoThread( context() );
+    thread_->start();
 }
 
-void Component::stop()
+void 
+Component::stop()
 {
     tracer().debug("stopping component...",2);
-    hydroutil::stopAndJoin( algoThread_ );
+    hydroiceutil::stopAndJoin( thread_ );
     tracer().debug("component stopped.",2);
 }

@@ -18,15 +18,18 @@ namespace ogmaploader {
 class Component : public orcaice::Component
 {
 public:
-
     Component();
 
+    // from orcaice::Component
     virtual void start();
-    virtual void stop() {};
+    virtual void stop();
 
 private:
+    // component owns the interface object, the thread
+    // will simply initialize it and exit.
+    orcaifaceimpl::OgMapImplPtr ogMapImpl_;
 
-    orcaifaceimpl::OgMapImplPtr ogMapInterface_;
+    hydroiceutil::ThreadPtr thread_;
 };
 
 }

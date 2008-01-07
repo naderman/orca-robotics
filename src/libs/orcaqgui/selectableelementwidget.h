@@ -2,7 +2,7 @@
 #define ORCAQGUI_SELECTABLEELEMENTWIDGET_H
 
 #include <QSplitter>
-#include <hydroutil/jobqueue.h>
+#include <hydroiceutil/jobqueue.h>
 #include <orcaice/context.h>
 #include <orcaqguielementmodelview/guielementmodel.h>
 #include <orcaqguielementmodelview/guielementview.h>
@@ -36,7 +36,7 @@ public:
 
     //! Negative regRefreshPeriodSec means never refresh automatically.
     SelectableElementWidget( hydroqgui::PlatformFocusManager &platformFocusManager,
-                             hydroutil::JobQueue             &jobQueue,
+                             hydroiceutil::JobQueue             &jobQueue,
                              const orcaice::Context          &context,
                              orcaqgemv::GuiElementModel      *guiElementModel,
                              QMainWindow                     &mainWindow,
@@ -70,7 +70,7 @@ private:
     
     int displayRefreshTime_;
 
-    hydroutil::JobQueue    &jobQueue_;
+    hydroiceutil::JobQueue    &jobQueue_;
     orcaice::Context        context_;
 
 };

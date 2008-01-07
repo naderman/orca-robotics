@@ -89,7 +89,7 @@ PropertiesImpl::initInterface()
 }
 
 void 
-PropertiesImpl::initInterface( hydroutil::Thread* thread, const std::string& subsysName, int retryInterval )
+PropertiesImpl::initInterface( hydroiceutil::Thread* thread, const std::string& subsysName, int retryInterval )
 {
     topicPrx_ = orcaice::connectToTopicWithString<orca::PropertiesConsumerPrx>
         ( context_, consumerPrx_, topicName_, thread, subsysName, retryInterval );

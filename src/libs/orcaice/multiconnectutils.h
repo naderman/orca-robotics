@@ -12,7 +12,7 @@
 #define ORCAICE_MULTI_CONNECT_UTILITIES_H
 
 #include <orcaice/connectutils.h>
-#include <hydroutil/safethread.h>
+#include <hydroiceutil/safethread.h>
 #include <IceUtil/Thread.h>
 
 namespace orcaice
@@ -33,13 +33,13 @@ We catch hydroutil::Exception, sleep for @c retryInterval [s] and try again.
 Example:
 @verbatim
 Ice::ObjectPtr obj = new MyObjectI;
-orcaice::createInterfaceWithString( context_, obj, "coolname", (hydroutil::Thread*)this );
+orcaice::createInterfaceWithString( context_, obj, "coolname", (hydroiceutil::Thread*)this );
 @endverbatim
  */
 void createInterfaceWithString( const Context       & context,
                                 Ice::ObjectPtr      & object,
                                 const std::string   & name,
-                                hydroutil::Thread*  thread, const std::string& subsysName="", 
+                                hydroiceutil::Thread*  thread, const std::string& subsysName="", 
                                 int retryInterval=2, int retryNumber=-1 );
 
 /*!
@@ -57,7 +57,7 @@ We do NOT catch a possible orcaice::ConfigFileException exception.
 Ice::ObjectPtr obj = new MyObjectI;
 try
 {
-    orcaice::createInterfaceWithTag( context_, obj, "InterfaceTag", (hydroutil::Thread*)this );
+    orcaice::createInterfaceWithTag( context_, obj, "InterfaceTag", (hydroiceutil::Thread*)this );
 }
 catch ( const orcaice::ConfigFileException& e ) {
     // what do we do?
@@ -67,7 +67,7 @@ catch ( const orcaice::ConfigFileException& e ) {
 void createInterfaceWithTag( const Context      & context,
                             Ice::ObjectPtr      & object,
                             const std::string   & interfaceTag,
-                            hydroutil::Thread*  thread, const std::string& subsysName="", 
+                            hydroiceutil::Thread*  thread, const std::string& subsysName="", 
                             int retryInterval=2, int retryNumber=-1 );
 
 /*!
@@ -81,7 +81,7 @@ If a non-empty subsystem name is supplied, sends a Status heartbeat at every ite
 */
 // note: Context::activate() is not a const function, that's why a ref to it is not const.
 void activate( Context& context, 
-                hydroutil::Thread*  thread, const std::string& subsysName="", 
+                hydroiceutil::Thread*  thread, const std::string& subsysName="", 
                 int retryInterval=2, int retryNumber=-1 );
 
 /*!
@@ -100,7 +100,7 @@ Example:
 MyInterfacePrx myInterfacePrx;
 try {
     orcaice::connectToInterfaceWithString<MyInterfacePrx>( 
-        context_, myInterfacePrx, "iface@platform/component", (hydroutil::Thread*)this );
+        context_, myInterfacePrx, "iface@platform/component", (hydroiceutil::Thread*)this );
 }
 catch ( const orcaice::TypeMismatchException& e ) {
     // what do we do?
@@ -112,7 +112,7 @@ void
 connectToInterfaceWithString( const Context     & context,
                               ProxyType         & proxy,
                               const std::string & proxyString,
-                              hydroutil::Thread*  thread, const std::string& subsysName="", 
+                              hydroiceutil::Thread*  thread, const std::string& subsysName="", 
                               int retryInterval=2, int retryNumber=-1 )
 {    
     context.tracer().debug( "orcaice::connectToInterfaceWithString(thread) proxy="+proxyString, 10 );
@@ -156,7 +156,7 @@ Example:
 MyInterfacePrx myInterfacePrx;
 try {
     orcaice::connectToInterfaceWithTag<MyInterfacePrx>( 
-        context_, myInterfacePrx, "MyInterface", (hydroutil::Thread*)this );
+        context_, myInterfacePrx, "MyInterface", (hydroiceutil::Thread*)this );
 }
 catch ( const orcaice::TypeMismatchException& e ) {
     // what do we do?
@@ -171,7 +171,7 @@ void
 connectToInterfaceWithTag( const Context     & context,
                            ProxyType         & proxy,
                            const std::string & interfaceTag,
-                           hydroutil::Thread*  thread, const std::string& subsysName="", 
+                           hydroiceutil::Thread*  thread, const std::string& subsysName="", 
                            int retryInterval=2, int retryNumber=-1 )
 {    
     context.tracer().debug( "orcaice::connectToInterfaceWithTag(thread) tag="+interfaceTag, 10 );
@@ -214,7 +214,7 @@ IceStorm::TopicPrx
 connectToTopicWithString( const Context     & context,
                           ConsumerProxyType & publisher,
                           const std::string & topicName,
-                          hydroutil::Thread*  thread, const std::string& subsysName="", 
+                          hydroiceutil::Thread*  thread, const std::string& subsysName="", 
                           int retryInterval=2, int retryNumber=-1 )
 {
     context.tracer().debug( "orcaice::connectToTopicWithString(thread) topic="+topicName, 10 );
@@ -260,7 +260,7 @@ connectToTopicWithTag( const Context      & context,
                        ConsumerProxyType  & publisher,
                        const std::string  & interfaceTag,
                        const std::string  & subtopic,
-                       hydroutil::Thread*  thread, const std::string& subsysName="", 
+                       hydroiceutil::Thread*  thread, const std::string& subsysName="", 
                        int retryInterval=2, int retryNumber=-1 )
 {
     context.tracer().debug( "orcaice::connectToTopicWithTag(thread) tag="+interfaceTag, 10 );
@@ -299,7 +299,7 @@ sends a Status heartbeat after every attempt (@see hydroutil::Status).
 We catch all orcaice::NetworkException, sleep for @c retryInterval [s] and try again.
 */
 std::string getInterfaceIdWithString( const Context& context, const std::string& proxyString,
-                            hydroutil::Thread*  thread, const std::string& subsysName="", 
+                            hydroiceutil::Thread*  thread, const std::string& subsysName="", 
                             int retryInterval=2, int retryNumber=-1 );
 
 /*!
@@ -314,7 +314,7 @@ We catch all orcaice::NetworkException, sleep for @c retryInterval [s] and try a
 All other exceptions are not likely to be resolved over time so we don't catch them.
 */
 std::string getInterfaceIdWithTag( const Context& context, const std::string& interfaceTag,
-                            hydroutil::Thread*  thread, const std::string& subsysName="", 
+                            hydroiceutil::Thread*  thread, const std::string& subsysName="", 
                             int retryInterval=2, int retryNumber=-1 );
 
 //@}

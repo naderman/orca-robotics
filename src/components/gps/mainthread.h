@@ -11,7 +11,7 @@
 #ifndef MAIN_THREAD_H
 #define MAIN_THREAD_H
 
-#include <hydroutil/subsystemthread.h>
+#include <hydroiceutil/subsystemthread.h>
 #include <orcaice/context.h>
 #include <orcaifaceimpl/gpsImpl.h>
 
@@ -19,7 +19,7 @@ namespace gps {
 
 class Driver;
 
-class MainThread : public hydroutil::SubsystemThread
+class MainThread : public hydroiceutil::SubsystemThread
 {
 
 public:

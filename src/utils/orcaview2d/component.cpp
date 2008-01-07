@@ -12,7 +12,7 @@
  
 #include <orcaice/orcaice.h>
 #include <hydrodll/dynamicload.h>
-#include <hydroutil/jobqueue.h>
+#include <hydroiceutil/jobqueue.h>
 #include <orcaqgui/mainwin.h>
 #include <orcaqgui/selectableelementwidget.h>
 #include <orcaqgui/configfileelements.h>
@@ -153,13 +153,13 @@ Component::start()
     //
     // Start job queue
     //
-    hydroutil::JobQueue::Config jconfig;
+    hydroiceutil::JobQueue::Config jconfig;
     jconfig.threadPoolSize = orcaice::getPropertyAsIntWithDefault( props, prefix+"JobQueueThreadPoolSize", 1 );
     jconfig.queueSizeWarn = orcaice::getPropertyAsIntWithDefault( props, prefix+"JobQueueSizeWarning", -1 );
     jconfig.traceAddEvents = false;
     jconfig.traceDoneEvents = false;
     
-    hydroutil::JobQueue jobQueue( context().tracer(), jconfig ) ;
+    hydroiceutil::JobQueue jobQueue( context().tracer(), jconfig ) ;
     
     // Set up QT stuff
     char **v = 0;

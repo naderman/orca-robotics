@@ -1,4 +1,5 @@
 SET ( COMP_NAME registrylist )
+SET ( COMP_NAMESPACE ${COMP_NAME} )
 
 REQUIRE_OPTION( EXE ${COMP_NAME} ON )
 
@@ -6,9 +7,9 @@ IF ( BUILD )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
-    FILE( GLOB SRCS *.cpp )
+    FILE( GLOB COMP_SRCS *.cpp )
     
-    GLOBAL_ADD_EXECUTABLE( registrylist ${SRCS} )
+    WRAP_COMPONENT_INTO_APP( ${COMP_NAME} ${COMP_NAMESPACE} ${COMP_SRCS} )
         
     IF ( NOT OS_WIN )
         TARGET_LINK_LIBRARIES( ${COMP_NAME} IceGrid OrcaCompModel )

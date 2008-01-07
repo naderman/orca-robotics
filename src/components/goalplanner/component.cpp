@@ -14,40 +14,19 @@
 using namespace goalplanner;
 
 Component::Component()
-    : orcaice::Component( "GoalPlanner" ),
-      mainloop_(0)
+    : orcaice::Component( "GoalPlanner" )
 {
 }
 
-Component::~Component()
-{
-    // do not delete handlers!!! They derive from Ice::Thread and delete themselves.
-}
-
-// NOTE: this function returns after it's done, all variable that need to be permanet must
-//       be declared as member variables.
 void Component::start()
 {
-    //
-    // ENABLE NETWORK CONNECTIONS
-    //
-    // only needed for Home and Status interfaces
-    // this may throw, but may as well quit right then
-    activate();
-
-    //
-    // Hardware handling loop
-    //
-    // the constructor may throw, we'll let the application shut us down
-    mainloop_ = new MainThread( context() );
-    mainloop_->start();
-    
-    // the rest is handled by the application/service
+    mainThread_ = new MainThread( context() );
+    mainThread_->start();
 }
 
 void Component::stop()
 {
     tracer().debug( "stopping component", 5 );
-    hydroutil::stopAndJoin( mainloop_ );
+    hydroiceutil::stopAndJoin( mainThread_ );
     tracer().debug( "stopped component", 5 );
 }

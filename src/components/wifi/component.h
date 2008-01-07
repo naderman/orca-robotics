@@ -14,19 +14,16 @@
 
 namespace wifi {
 
-
 class Component : public orcaice::Component
 {
 public:
-
     Component();
 
     virtual void start();
     virtual void stop();
 
 private:
-
-    hydroutil::ThreadPtr mainThread_;
+    hydroiceutil::ThreadPtr mainThread_;
 };
 
 }

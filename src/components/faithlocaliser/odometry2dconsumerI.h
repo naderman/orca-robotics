@@ -13,17 +13,17 @@
 
 // include defnition of Ice runtime
 #include <Ice/Ice.h>
-#include <hydroutil/buffer.h>
+#include <hydroiceutil/buffer.h>
 #include <orca/odometry2d.h>
 
 class Odometry2dConsumerI : public orca::Odometry2dConsumer
 {
     public:
-        Odometry2dConsumerI( hydroutil::Buffer<orca::Odometry2dData> & pipe );
+        Odometry2dConsumerI( hydroiceutil::Buffer<orca::Odometry2dData> & pipe );
         virtual void setData(const orca::Odometry2dData& data, const Ice::Current&);
 
     private:
-        hydroutil::Buffer<orca::Odometry2dData> & pipe_;
+        hydroiceutil::Buffer<orca::Odometry2dData> & pipe_;
 };
 
 #endif

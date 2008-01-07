@@ -11,7 +11,7 @@
 #ifndef ORCAIFACEIMPL_STORING_CONSUMER_IMPL_H
 #define ORCAIFACEIMPL_STORING_CONSUMER_IMPL_H
 
-#include <hydroutil/store.h>
+#include <hydroiceutil/store.h>
 #include <orcaifaceimpl/consumerImpl.h>
 
 namespace orcaifaceimpl
@@ -19,7 +19,7 @@ namespace orcaifaceimpl
 
 //!
 //! Implements a consumer interface whose set method is 'SetData'.
-//! Does nothing more than sticking incoming data into an hydroutil::Store.
+//! Does nothing more than sticking incoming data into an hydroiceutil::Store.
 //!
 template<class ProviderPrxType, class ConsumerType, class ConsumerPrxType, class ObjectType>
 class StoringConsumerImpl : 
@@ -31,7 +31,7 @@ public:
         : ConsumerImpl<ProviderPrxType,ConsumerType,ConsumerPrxType,ObjectType>(context) {}
 
     //! Returns reference to local store.
-    hydroutil::Store<ObjectType> &store() { return store_; }
+    hydroiceutil::Store<ObjectType> &store() { return store_; }
 
     //! This callback simply puts the data object into the internal store.
     virtual void handleData( const ObjectType& data ) 
@@ -40,7 +40,7 @@ public:
     }
 
 private:
-    hydroutil::Store<ObjectType> store_;
+    hydroiceutil::Store<ObjectType> store_;
 };
 
 } // namespace
