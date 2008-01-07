@@ -32,6 +32,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 - Documentation
     - An end-to-end tutorial: create new slice interface, write server, write client. (alex m)
+    - Update the 'coordinate systems' image.
 
 - libOrcaIce
     - Should components quit when there's no registry and Orca.RequireRegistry=1?
