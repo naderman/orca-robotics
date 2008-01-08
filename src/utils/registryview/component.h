@@ -7,23 +7,22 @@
  * the LICENSE file included in this distribution.
  *
  */
+#ifndef COMPONENT_H
+#define COMPONENT_H
 
-#ifndef ORCA_LOCALNAV_SERVICE_I_H
-#define ORCA_LOCALNAV_SERVICE_I_H
+#include <orcaice/component.h>
 
-#include <orcaice/service.h>
+namespace registryview {
 
-namespace localnav {
-
-//
-// Class to build the component into an icebox service
-//
-class ServiceI : public orcaice::Service
+class Component : public orcaice::Component
 {
-
 public:
-    ServiceI();
+    Component() :
+        orcaice::Component( "RegistryView", orcaice::NoStandardInterfaces ) {};
 
+    // from orcaice::Component
+    virtual void start();
+    virtual void stop() {};
 };
 
 }

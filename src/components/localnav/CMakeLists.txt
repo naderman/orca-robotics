@@ -1,4 +1,5 @@
 SET_COMPONENT_NAMES ( LocalNav )
+SET ( APP_CTRLC_HANDLER 0 )
 
 REQUIRE_OPTION( EXE ${APP_NAME} ON )
 REQUIRE_VAR( EXE ${APP_NAME} OS_LINUX "only Linux OS is supported" )
@@ -20,21 +21,18 @@ IF ( BUILD )
     ADD_SUBDIRECTORY( testsim )
     ADD_SUBDIRECTORY( localnavutil )
 
-    FIND_COMPONENT_SOURCES( COMP_SRCS )
+    FILE( GLOB COMP_SRCS *.cpp )
     SET( COMP_DEPS OrcaLocalNav OrcaLocalNavUtil OrcaLocalNavTestSim HydroDll HydroNavUtil )
 
     # build stand-alone component  
-    GLOBAL_ADD_EXECUTABLE( ${APP_NAME} ${COMP_SRCS} main )
+    WRAP_COMPONENT_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${COMP_SRCS} )
     TARGET_LINK_LIBRARIES( ${APP_NAME} ${COMP_DEPS} )
     
     # build IceBox service
     IF ( BUILD_SERVICES )
-        # Naming clashes with OrcaLocalNav library in src/libs
-        GLOBAL_ADD_LIBRARY( ${SERVICE_NAME} SHARED ${COMP_SRCS} service )
+        WRAP_COMPONENT_INTO_SERVICE( ${SERVICE_NAME} ${COMP_NAMESPACE} ${COMP_SRCS} )
         TARGET_LINK_LIBRARIES( ${SERVICE_NAME} ${COMP_DEPS} ) 
     ENDIF ( BUILD_SERVICES )
-
-    GENERATE_CONFIG_FILE( ${APP_NAME}.def )
 
     IF ( BUILD_TESTS )
 

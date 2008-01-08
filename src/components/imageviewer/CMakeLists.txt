@@ -3,49 +3,36 @@
 # DO NOT USE IT A TEMPLATE FOR NEW DEVELOPMENT
 #
 
-OPTION( BUILD_IMAGE_VIEWER "Try to build Image Viewer" ON )
+SET_COMPONENT_NAMES ( ImageViewer )
+SET ( APP_CTRLC_HANDLER 0 )
 
-IF ( NOT OS_WIN AND BUILD_IMAGE_VIEWER )
+REQUIRE_OPTION( EXE ${APP_NAME} ON )
+SET ( NOT_OS_WIN NOT OS_WIN )
+REQUIRE_VAR( EXE ${APP_NAME} NOT_OS_WIN "Windows OS is not supported" )
+REQUIRE_VAR( EXE ${APP_NAME} OPENCV_FOUND "OpenCV not found" )
+
+IF ( BUILD )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseOpenCV.cmake )
 
-  # this is the only implemenation so far
-  SET ( OPENCV_IMPLEMENTATION 1 )
+    # this is the only implemenation so far
+    ADD_DEFINITIONS( -DOPENCV_IMPLEMENTATION )
+    ADD_DEFINITIONS( -DOPENCV_FOUND )
 
-  IF ( OPENCV_IMPLEMENTATION )
-      ADD_DEFINITIONS( -DOPENCV_IMPLEMENTATION )
-
-      IF( OPENCV_FOUND )
-        INCLUDE_DIRECTORIES( ${OPENCV_INCLUDE_DIRS} )
-        LINK_DIRECTORIES( ${OPENCV_LINK_DIRS} )
-        ADD_DEFINITIONS( -DOPENCV_FOUND )
-
-        IF ( TRICLOPS_FOUND )
-          MESSAGE( STATUS "    The Triclops libraries have been found - you will be able to view images from a digiclops camera")
-        ELSE ( TRICLOPS_FOUND )
-          MESSAGE( STATUS "    The Triclops libraries have not been found - you will not be able to view images from a digiclops camera")
-        ENDIF ( TRICLOPS_FOUND )
+    FILE( GLOB COMP_SRCS *.cpp )
+    SET ( COMP_DEPS OrcaImage ) 
     
-        FIND_COMPONENT_SOURCES( COMP_SRCS )
-        SET ( COMP_DEPS ${OPENCV_LIBS} OrcaImage ) 
-        
-        # build stand-alone component  
-        GLOBAL_ADD_EXECUTABLE( imageviewer ${COMP_SRCS} main )
-        TARGET_LINK_LIBRARIES( imageviewer ${COMP_DEPS} )
-        
-        # build IceBox service
-        IF ( BUILD_SERVICES )
-            GLOBAL_ADD_LIBRARY( OrcaImageViewer SHARED ${COMP_SRCS} service )
-            TARGET_LINK_LIBRARIES( OrcaImageViewer ${COMP_DEPS} ) 
-        ENDIF ( BUILD_SERVICES )
+    # build stand-alone component  
+    WRAP_COMPONENT_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${COMP_SRCS} )
+    TARGET_LINK_LIBRARIES( ${APP_NAME} ${COMP_DEPS} )
+    
+    # build IceBox service
+    IF ( BUILD_SERVICES )
+        WRAP_COMPONENT_INTO_SERVICE( ${SERVICE_NAME} ${COMP_NAMESPACE} ${COMP_SRCS} )
+        TARGET_LINK_LIBRARIES( ${SERVICE_NAME} ${COMP_DEPS} ) 
+    ENDIF ( BUILD_SERVICES )
 
-        GENERATE_CONFIG_FILE( imageviewer.def )
+    GENERATE_CONFIG_FILE( ${APP_NAME}.def )
 
-      ELSE( OPENCV_FOUND )
-        MESSAGE( STATUS "ImageViewer will not be built -- OpenCv (0.9.9) not found." )
-        SET ( BUILD_IMAGE_VIEWER 0)
-      ENDIF( OPENCV_FOUND )  
-
-  ENDIF( OPENCV_IMPLEMENTATION )
-
-ENDIF ( NOT OS_WIN AND BUILD_IMAGE_VIEWER )
+ENDIF ( BUILD )

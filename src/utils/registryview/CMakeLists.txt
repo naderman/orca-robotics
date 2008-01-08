@@ -1,4 +1,5 @@
 SET_COMPONENT_NAMES ( RegistryView )
+SET ( APP_CTRLC_HANDLER 0 )
 
 REQUIRE_OPTION( EXE ${APP_NAME} ON )
 SET ( NOT_OS_WIN NOT OS_WIN )
@@ -17,11 +18,13 @@ IF ( BUILD )
         regtreeview.h
         propertywidget.h
     )
-
     QT4_WRAP_CPP( MOC_SRCS ${MOC_HEADERS} )
 
-    GLOBAL_ADD_EXECUTABLE( ${APP_NAME} ${HUMAN_SRCS} ${MOC_SRCS} )
-    TARGET_LINK_LIBRARIES( ${APP_NAME} OrcaQt OrcaQCompModel )
+    SET( COMP_DEPS OrcaQt OrcaQCompModel ) 
+
+    # build stand-alone component  
+    WRAP_COMPONENT_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${HUMAN_SRCS} ${MOC_SRCS} )
+    TARGET_LINK_LIBRARIES( ${APP_NAME} ${COMP_DEPS} )
 
     GENERATE_CONFIG_FILE( ${APP_NAME}.def )
 

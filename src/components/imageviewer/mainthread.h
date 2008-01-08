@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef MAINTHREAD_H
-#define MAINTHREAD_H
+#ifndef MAIN_THREAD_H
+#define MAIN_THREAD_H
 
 #include <highgui.h>
 #include <cv.h>

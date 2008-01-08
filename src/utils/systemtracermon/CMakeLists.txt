@@ -1,4 +1,6 @@
 SET_COMPONENT_NAMES ( SystemTracerMon )
+SET ( COMP_NAMESPACE sysmon )
+SET ( APP_CTRLC_HANDLER 0 )
 
 REQUIRE_OPTION( EXE ${APP_NAME} ON )
 
@@ -6,10 +8,11 @@ IF ( BUILD )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
-    FILE ( GLOB SRCS *.cpp )
+    FILE ( GLOB COMP_SRCS *.cpp )
 
-    # stand-alone component  
-    GLOBAL_ADD_EXECUTABLE( ${APP_NAME} ${SRCS} )
+    # build stand-alone component  
+    WRAP_COMPONENT_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${COMP_SRCS} )
+    TARGET_LINK_LIBRARIES( ${APP_NAME} ${COMP_DEPS} )
 
     GENERATE_CONFIG_FILE( ${APP_NAME}.def )
 
