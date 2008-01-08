@@ -1,19 +1,27 @@
-SET ( COMP_NAME logplayer )
+SET_COMPONENT_NAMES ( LogPlayer )
 
-REQUIRE_OPTION( EXE ${COMP_NAME} ON )
+REQUIRE_OPTION( EXE ${APP_NAME} ON )
 SET ( NOT_OS_WIN NOT OS_WIN )
-REQUIRE_VAR( EXE ${COMP_NAME} NOT_OS_WIN "Windows OS is not  supported" )
-REQUIRE_VAR( EXE ${COMP_NAME} HYDRODLL_INSTALLED "libHydroDll not installed" )
+REQUIRE_VAR( EXE ${APP_NAME} NOT_OS_WIN "Windows OS is not  supported" )
+REQUIRE_VAR( EXE ${APP_NAME} HYDRODLL_INSTALLED "libHydroDll not installed" )
 
 IF ( BUILD )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
     
-    FILE( GLOB SRCS *.cpp )
+    FILE( GLOB COMP_SRCS *.cpp )
+    SET( COMP_DEPS OrcaLog HydroNavUtil HydroDll )
     
-    GLOBAL_ADD_EXECUTABLE( ${COMP_NAME} ${SRCS} )
-    TARGET_LINK_LIBRARIES( ${COMP_NAME} OrcaLog HydroNavUtil HydroDll )
+    # build stand-alone component  
+    WRAP_MAINTHREAD_INTO_APP( ${APP_NAME} ${COMP_NAMESPACE} ${COMP_NAME} ${COMP_SRCS} )
+    TARGET_LINK_LIBRARIES( ${APP_NAME} ${COMP_DEPS} )
+    
+    # build IceBox service
+    IF ( BUILD_SERVICES )
+        WRAP_MAINTHREAD_INTO_SERVICE( ${SERVICE_NAME} ${COMP_NAMESPACE} ${COMP_NAME}  ${COMP_SRCS} )
+        TARGET_LINK_LIBRARIES( ${SERVICE_NAME} ${COMP_DEPS} )    
+    ENDIF ( BUILD_SERVICES )
 
-    GENERATE_CONFIG_FILE( ${COMP_NAME}.def )
+    GENERATE_CONFIG_FILE( ${APP_NAME}.def )
     
 ENDIF( BUILD )

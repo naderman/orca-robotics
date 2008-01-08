@@ -9,7 +9,7 @@
  */
 
 #include "component.h"
-#include "initthread.h"
+#include "mainthread.h"
 
 using namespace pixmaploader;
 
@@ -27,7 +27,7 @@ Component::start()
     // create servant for direct connections
     pixMapImpl_ = new orcaifaceimpl::PixMapImpl( "PixMap", context() );
 
-    thread_ = new InitThread( pixMapImpl_, context() );
+    thread_ = new MainThread( pixMapImpl_, context() );
     thread_->start();
 }
 

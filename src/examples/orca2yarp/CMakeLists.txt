@@ -1,9 +1,8 @@
-SET ( COMP_NAME orca2yarp )
-SET ( COMP_NAMESPACE ${COMP_NAME} )
+SET_COMPONENT_NAMES ( Orca2Yarp )
 
-REQUIRE_OPTION( EXE ${COMP_NAME} OFF )
+REQUIRE_OPTION( EXE ${APP_NAME} OFF )
 # only tested on Linux but should work where Yarp works.
-REQUIRE_VAR( EXE ${COMP_NAME} OS_LINUX "only Linux OS is supported" )
+REQUIRE_VAR( EXE ${APP_NAME} OS_LINUX "only Linux OS is supported" )
 
 IF ( BUILD)
 
@@ -27,9 +26,9 @@ IF ( BUILD)
     TARGET_LINK_LIBRARIES( yarp_simple_receiver ${YARP_LIBS} )
 
     # Orca-to-Yarp example 
-    WRAP_COMPONENT_INTO_APP( ${COMP_NAME} ${COMP_NAMESPACE} component mainthread )
-    TARGET_LINK_LIBRARIES( ${COMP_NAME} ${YARP_LIBS} )
+    WRAP_MAINTHREAD_INTO_APP( ${APP_NAME} ${COMP_NAMESPACE} ${COMP_NAME} mainthread )
+    TARGET_LINK_LIBRARIES( ${APP_NAME} ${YARP_LIBS} )
 
-    GENERATE_CONFIG_FILE( ${COMP_NAME}.def )
+    GENERATE_CONFIG_FILE( ${APP_NAME}.def )
 
 ENDIF ( BUILD )

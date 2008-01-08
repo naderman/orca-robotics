@@ -8,7 +8,7 @@
  *
  */
 #include "component.h"
-#include "initthread.h"
+#include "mainthread.h"
 
 using namespace featuremaploader;
 
@@ -26,7 +26,7 @@ Component::start()
     // create servant for direct connections
     featureMap2dImpl_ = new orcaifaceimpl::FeatureMap2dImpl( "FeatureMap2d", context() );
 
-    thread_ = new InitThread( featureMap2dImpl_, context() );
+    thread_ = new MainThread( featureMap2dImpl_, context() );
     thread_->start();
 }
 

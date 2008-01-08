@@ -1,6 +1,6 @@
-SET ( COMP_NAME iceping )
+SET ( APP_NAME iceping )
 
-REQUIRE_OPTION( EXE ${COMP_NAME} ON )
+REQUIRE_OPTION( EXE ${APP_NAME} ON )
 
 IF ( BUILD )
 
@@ -13,7 +13,7 @@ IF ( BUILD )
     
     FILE( GLOB SRCS *.cpp )
     
-    GLOBAL_ADD_EXECUTABLE( ${COMP_NAME} ${SRCS} )
+    GLOBAL_ADD_EXECUTABLE( ${APP_NAME} ${SRCS} )
 
     # special case: we don't have a .def file here, installing a sample .cfg
     INSTALL_FILES( /cfg iceping.cfg )

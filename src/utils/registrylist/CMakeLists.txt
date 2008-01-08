@@ -1,7 +1,6 @@
-SET ( COMP_NAME registrylist )
-SET ( COMP_NAMESPACE ${COMP_NAME} )
+SET_COMPONENT_NAMES ( RegistryList )
 
-REQUIRE_OPTION( EXE ${COMP_NAME} ON )
+REQUIRE_OPTION( EXE ${APP_NAME} ON )
 
 IF ( BUILD )
 
@@ -9,17 +8,18 @@ IF ( BUILD )
 
     FILE( GLOB COMP_SRCS *.cpp )
     
-    WRAP_COMPONENT_INTO_APP( ${COMP_NAME} ${COMP_NAMESPACE} ${COMP_SRCS} )
+    WRAP_MAINTHREAD_INTO_APP( ${APP_NAME} ${COMP_NAMESPACE} ${COMP_NAME} ${COMP_SRCS} )
         
     IF ( NOT OS_WIN )
-        TARGET_LINK_LIBRARIES( ${COMP_NAME} IceGrid OrcaCompModel )
+        SET( COMP_DEPS IceGrid OrcaCompModel )
     ELSE ( NOT OS_WIN )
-        TARGET_LINK_LIBRARIES( ${COMP_NAME} 
+        SET( COMP_DEPS 
               optimized IceGrid debug IceGridd
               optimized Glacier2 debug Glacier2d
               OrcaCompModel )
     ENDIF ( NOT OS_WIN )
+    TARGET_LINK_LIBRARIES( ${APP_NAME} ${COMP_DEPS} )
 
-    GENERATE_CONFIG_FILE( ${COMP_NAME}.def )
+    GENERATE_CONFIG_FILE( ${APP_NAME}.def )
 
 ENDIF ( BUILD )

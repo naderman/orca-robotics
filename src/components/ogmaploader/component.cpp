@@ -10,7 +10,7 @@
 #include <orcaice/orcaice.h>
 
 #include "component.h"
-#include "initthread.h"
+#include "mainthread.h"
 
 using namespace std;
 using namespace ogmaploader;
@@ -29,7 +29,7 @@ Component::start()
     // create servant for direct connections
     ogMapImpl_ = new orcaifaceimpl::OgMapImpl( "OgMap", context() );
 
-    thread_ = new InitThread( ogMapImpl_, context() );
+    thread_ = new MainThread( ogMapImpl_, context() );
     thread_->start();
 }
 

@@ -1,0 +1,39 @@
+/*
+ * Orca-Robotics Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2007 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This copy of Orca is licensed to you under the terms described in
+ * the LICENSE file included in this distribution.
+ *
+ */
+ 
+#ifndef MAIN_THREAD_H
+#define MAIN_THREAD_H
+
+#include <hydroiceutil/subsystemthread.h>
+#include "rangescanner2dconsumerI.h"
+#include <orcaice/context.h>
+
+namespace lasermon
+{
+
+class MainThread : public hydroiceutil::SubsystemThread
+{
+
+public:
+
+    MainThread( const Ice::ObjectPtr& consumer, 
+                const orcaice::Context &context );
+
+    // from SubsystemThread
+    virtual void walk();
+
+private:
+    Ice::ObjectPtr consumer_;
+    orcaice::Context context_;
+};
+
+} // namespace
+
+#endif

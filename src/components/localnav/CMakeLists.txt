@@ -1,10 +1,9 @@
-SET ( COMP_NAME localnav )
-SET ( SERVICE_NAME OrcaLocalNavService )
+SET_COMPONENT_NAMES ( LocalNav )
 
-REQUIRE_OPTION( EXE ${COMP_NAME} ON )
-REQUIRE_VAR( EXE ${COMP_NAME} OS_LINUX "only Linux OS is supported" )
-REQUIRE_VAR( EXE ${COMP_NAME} HYDRODLL_INSTALLED "libHydroDll not installed" )
-REQUIRE_VAR( EXE ${COMP_NAME} HYDRONAVUTIL_INSTALLED "libHydroNavUtil not installed" )
+REQUIRE_OPTION( EXE ${APP_NAME} ON )
+REQUIRE_VAR( EXE ${APP_NAME} OS_LINUX "only Linux OS is supported" )
+REQUIRE_VAR( EXE ${APP_NAME} HYDRODLL_INSTALLED "libHydroDll not installed" )
+REQUIRE_VAR( EXE ${APP_NAME} HYDRONAVUTIL_INSTALLED "libHydroNavUtil not installed" )
 
 IF ( BUILD )
 
@@ -14,7 +13,7 @@ IF ( BUILD )
     MESSAGE( STATUS "    VfhDriver for LocalNav - can be built" )
 
     INCLUDE_DIRECTORIES(
-       ${PROJECT_SOURCE_DIR}/src/components/${COMP_NAME}
+       ${PROJECT_SOURCE_DIR}/src/components/${APP_NAME}
        ${PROJECT_SOURCE_DIR}/src/libs/orcalocalnav
        )
 
@@ -25,8 +24,8 @@ IF ( BUILD )
     SET( COMP_DEPS OrcaLocalNav OrcaLocalNavUtil OrcaLocalNavTestSim HydroDll HydroNavUtil )
 
     # build stand-alone component  
-    GLOBAL_ADD_EXECUTABLE( ${COMP_NAME} ${COMP_SRCS} main )
-    TARGET_LINK_LIBRARIES( ${COMP_NAME} ${COMP_DEPS} )
+    GLOBAL_ADD_EXECUTABLE( ${APP_NAME} ${COMP_SRCS} main )
+    TARGET_LINK_LIBRARIES( ${APP_NAME} ${COMP_DEPS} )
     
     # build IceBox service
     IF ( BUILD_SERVICES )
@@ -35,7 +34,7 @@ IF ( BUILD )
         TARGET_LINK_LIBRARIES( ${SERVICE_NAME} ${COMP_DEPS} ) 
     ENDIF ( BUILD_SERVICES )
 
-    GENERATE_CONFIG_FILE( ${COMP_NAME}.def )
+    GENERATE_CONFIG_FILE( ${APP_NAME}.def )
 
     IF ( BUILD_TESTS )
 
@@ -60,8 +59,8 @@ IF ( BUILD )
       # find the vfh library so it can be dynamically loaded.
       #
       GLOBAL_ADD_TEST( LocalNavVfhTest ${LD_LINUX}
-        --library-path vfhdriver:$ENV{LD_LIBRARY_PATH} ${CMAKE_CURRENT_BINARY_DIR}/${COMP_NAME}
-        --Orca.Config=${PROJECT_BINARY_DIR}/src/components/${COMP_NAME}/${COMP_NAME}.cfg
+        --library-path vfhdriver:$ENV{LD_LIBRARY_PATH} ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME}
+        --Orca.Config=${PROJECT_BINARY_DIR}/src/components/${APP_NAME}/${APP_NAME}.cfg
         --LocalNav.Config.TestInSimulationMode=1
         --LocalNav.Config.Vfh.MaxSpeed=2.0
         --LocalNav.Config.Test.NumWaypoints=20

@@ -1,11 +1,9 @@
-SET ( COMP_NAME replier )
-SET ( SERVICE_NAME OrcaReplierService )
-SET ( COMP_NAMESPACE ${COMP_NAME} )
+SET_COMPONENT_NAMES ( Replier )
 
 # This utility is disabled because the C++ header for the interface is compiled by hand.
 # This means that on systems with a slightly different version of Ice this
 # may break. The .ice file should be compiled at compile time.
-REQUIRE_OPTION( EXE ${COMP_NAME} OFF )
+REQUIRE_OPTION( EXE ${APP_NAME} OFF )
 
 IF ( BUILD )
 
@@ -17,17 +15,15 @@ IF ( BUILD )
 #     SET( COMP_DEPS )
     
     # build stand-alone component  
-    WRAP_COMPONENT_INTO_APP( ${COMP_NAME} ${COMP_NAMESPACE} ${COMP_SRCS} )
-#     TARGET_LINK_LIBRARIES( ${COMP_NAME} ${COMP_DEPS} )
+    WRAP_MAINTHREAD_INTO_APP( ${APP_NAME} ${COMP_NAMESPACE} ${COMP_NAME} ${COMP_SRCS} )
+#     TARGET_LINK_LIBRARIES( ${APP_NAME} ${COMP_DEPS} )
     
     # build IceBox service
-    IF ( NOT OS_WIN )    
-        IF ( BUILD_SERVICES )
-            WRAP_COMPONENT_INTO_SERVICE( ${SERVICE_NAME} ${COMP_NAMESPACE} ${COMP_SRCS} )
-#             TARGET_LINK_LIBRARIES( ${SERVICE_NAME} ${COMP_DEPS} ) 
-        ENDIF ( BUILD_SERVICES )
-    ENDIF ( NOT OS_WIN )
+    IF ( BUILD_SERVICES )
+        WRAP_MAINTHREAD_INTO_SERVICE( ${SERVICE_NAME} ${COMP_NAMESPACE} ${COMP_NAME}  ${COMP_SRCS} )
+#         TARGET_LINK_LIBRARIES( ${SERVICE_NAME} ${COMP_DEPS} )    
+    ENDIF ( BUILD_SERVICES )
 
-    GENERATE_CONFIG_FILE( ${COMP_NAME}.def )
+    GENERATE_CONFIG_FILE( ${APP_NAME}.def )
 
 ENDIF ( BUILD )

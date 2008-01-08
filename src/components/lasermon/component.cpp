@@ -10,7 +10,7 @@
 
 
 #include "component.h"
-#include "initthread.h"
+#include "mainthread.h"
 
 using namespace lasermon;
 
@@ -25,7 +25,7 @@ Component::start()
     consumer_ = new RangeScanner2dConsumerI;
     // the rest is handled by the application/service
 
-    thread_ = new InitThread( consumer_, context() );
+    thread_ = new MainThread( consumer_, context() );
     thread_->start();
 }
 

@@ -1,9 +1,7 @@
-SET ( COMP_NAME pathplanner )
-SET ( SERVICE_NAME OrcaPathPlannerService )
-SET ( COMP_NAMESPACE ${COMP_NAME} )
+SET_COMPONENT_NAMES ( PathPlanner )
 
-REQUIRE_OPTION( EXE ${COMP_NAME} ON )
-REQUIRE_VAR( EXE ${COMP_NAME} OS_LINUX "only Linux OS is supported" )
+REQUIRE_OPTION( EXE ${APP_NAME} ON )
+REQUIRE_VAR( EXE ${APP_NAME} OS_LINUX "only Linux OS is supported" )
 
 IF ( BUILD )
 
@@ -20,16 +18,16 @@ IF ( BUILD )
         MESSAGE( STATUS "     Qt4 not found: skeletongraphics will not be built" )
     ENDIF( QT4_FOUND )
     
-    # stand-alone component  
-    WRAP_COMPONENT_INTO_APP( ${COMP_NAME} ${COMP_NAMESPACE} ${COMP_SRCS} )
-    TARGET_LINK_LIBRARIES( ${COMP_NAME} ${COMP_DEPS} )
-
-    # build an IceBox service
+    # build stand-alone component  
+    WRAP_MAINTHREAD_INTO_APP( ${APP_NAME} ${COMP_NAMESPACE} ${COMP_NAME} ${COMP_SRCS} )
+    TARGET_LINK_LIBRARIES( ${APP_NAME} ${COMP_DEPS} )
+    
+    # build IceBox service
     IF ( BUILD_SERVICES )
-        WRAP_COMPONENT_INTO_SERVICE( ${SERVICE_NAME} ${COMP_NAMESPACE} ${COMP_SRCS} )
-        TARGET_LINK_LIBRARIES( ${SERVICE_NAME} ${COMP_DEPS} )
+        WRAP_MAINTHREAD_INTO_SERVICE( ${SERVICE_NAME} ${COMP_NAMESPACE} ${COMP_NAME}  ${COMP_SRCS} )
+        TARGET_LINK_LIBRARIES( ${SERVICE_NAME} ${COMP_DEPS} )    
     ENDIF ( BUILD_SERVICES )
 
-    GENERATE_CONFIG_FILE( ${COMP_NAME}.def )
+    GENERATE_CONFIG_FILE( ${APP_NAME}.def )
 
 ENDIF ( BUILD )

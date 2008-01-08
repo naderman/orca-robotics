@@ -9,7 +9,7 @@
  */
 
 #include "component.h"
-#include "initthread.h"
+#include "mainthread.h"
 
 namespace pingserver {
 
@@ -23,7 +23,7 @@ Component::start()
 {
     pingerInterface_ = new PingerI( "Pinger", context() );
 
-    thread_ = new InitThread( pingerInterface_, context() );
+    thread_ = new MainThread( pingerInterface_, context() );
     thread_->start();
 }
 

@@ -1,6 +1,6 @@
-SET ( COMP_NAME systemtracermon )
+SET_COMPONENT_NAMES ( SystemTracerMon )
 
-REQUIRE_OPTION( EXE ${COMP_NAME} ON )
+REQUIRE_OPTION( EXE ${APP_NAME} ON )
 
 IF ( BUILD )
 
@@ -9,8 +9,8 @@ IF ( BUILD )
     FILE ( GLOB SRCS *.cpp )
 
     # stand-alone component  
-    GLOBAL_ADD_EXECUTABLE( ${COMP_NAME} ${SRCS} )
+    GLOBAL_ADD_EXECUTABLE( ${APP_NAME} ${SRCS} )
 
-    GENERATE_CONFIG_FILE( ${COMP_NAME}.def )
+    GENERATE_CONFIG_FILE( ${APP_NAME}.def )
 
 ENDIF ( BUILD )
