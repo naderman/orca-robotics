@@ -6,6 +6,6 @@ INCLUDE_DIRECTORIES(
 )
 
 INCLUDE( ${HYDRO_HOME}/cmake/UseHydro.cmake )
-INCLUDE( ${HYDRO_HOME}/cmake/UseHydroUtil.cmake )
+INCLUDE( ${HYDRO_HOME}/cmake/UseHydroIceUtil.cmake )
 
 LINK_LIBRARIES( OrcaIce OrcaObjects )
