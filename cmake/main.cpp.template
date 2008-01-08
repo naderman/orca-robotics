@@ -12,6 +12,6 @@
 int main(int argc, char * argv[])
 {
     ${COMP_NAMESPACE}::Component component;
-    orcaice::Application app( component );
+    orcaice::Application app( component, ${APP_CTRLC_HANDLER} );
     return app.main(argc, argv);
 }

@@ -14,7 +14,7 @@ IF ( BUILD )
     SET( COMP_DEPS HydroMapLoad OrcaIfaceImpl )
     
     # build stand-alone component  
-    WRAP_COMPONENT_INTO_APP( ${APP_NAME} ${COMP_NAMESPACE} ${COMP_SRCS} )
+    WRAP_COMPONENT_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${COMP_SRCS} )
     TARGET_LINK_LIBRARIES( ${APP_NAME} ${COMP_DEPS} )
     
     # build IceBox service
