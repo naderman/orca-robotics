@@ -74,7 +74,7 @@ Sorca = [ ...
 2006     9  18  0   Sice310 1094   19317-329    31304+329   0  % 2.0.1
 2006    10   5  0   Sice310 1094   20384-329    32255+329   0  % 2.0.2
 2006    11  23  1   Sice311 1178   21408-1001   35768+1001  0  % 2.1.0
-% BASE: c_ount src/interfaces/slice/orca/*.ice
+% BASE: c_count src/interfaces/slice/orca/*.ice
 % COMP: sloccount src/components
 % UTIL: sloccount src/utils src/libs
 % to count lines in *.ice files, rename them to *.cpp like this:
@@ -88,7 +88,7 @@ Sorca = [ ...
 % A&D: Hydro: sloccount src
 2007    10  28  1   Sice321 1787    23840   54879  12251    % 2.7.0
 2007    12   7  0   Sice321 1750    19312   52762  24104    % 2.8.0
-2008     1  17  1   Sice321 1774    18787   53105  26418    % 2.9.0
+2008     1  31  1   Sice321 1775    18153   52844  26826    % 2.9.0
 ];
 Vorca ={'0.8.6', '0.11.0', '0.12.0', '0.12.1', '0.13.0', '0.13.1', '0.13.2', '0.13.3', '0.14.0', '0.15.0', '1.0.0', ...
     '2.0.0-rc1', '2.0.0-rc2', '2.0.0-rc3', '2.0.0-rc4', '2.0.0-rc5', '2.0.0', '2.0.1', '2.0.2', '2.1.0', '2.1.1', ...
@@ -107,11 +107,6 @@ Torca = datenum(Sorca(:,iyy),Sorca(:,imm),Sorca(:,idd));
 i2 = (Sorca(:,iver)==1);
 Torca2 = Torca(i2);
 Vorca2 = Vorca(i2);
-
-% what can go to Hydra?
-% cd libs; sloccount bros1 orcacolourtext orcadynamicload orcageom2d orcagpsutil orcaiceutil orcaimage orcaimagegrabber orcalocalnav orcalockfile orcamapload orcamisc orcanavutil orcaogfusion orcaogmap orcapathplan orcaping orcaportability orcaserial orcawifi
-% cd components; sloccount gps/garmin/ insgps/novatel insgps/novatelspan/ laser2d/laser2dutil/ laser2d/sickacfr/ laser2d/sickcarmen/ localnav/vfhdriver/ segwayrmp/rmpdriver/ 
-% 15,102 + 10,322
 
 % for comparison, ASN
 %  Sasn = 90433;

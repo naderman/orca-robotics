@@ -22,15 +22,22 @@ ELSE ( DEFINED HYDRO_HOME )
 ENDIF ( DEFINED HYDRO_HOME )
 
 #
-# Special Hydro directories
-#
-SET ( HYDRO_CMAKE_DIR ${HYDRO_HOME}/cmake )
-
-#
 # Load Hydro manifest
 #
 INCLUDE( ${HYDRO_HOME}/hydro_manifest.cmake )
 MESSAGE( STATUS "Loaded Hydro manifest")
+
+# Test Hydro installation
+INCLUDE ( ${ORCA_CMAKE_DIR}/TestHydro.cmake )
+ASSERT ( HYDRO_WORKS
+         "Testing Hydro - failed. Please check or reinstall it, ** delete CMakeCache.txt **, then re-run CMake."
+         "Testing Hydro - ok."
+         1 )
+
+#
+# Special Hydro directories
+#
+SET ( HYDRO_CMAKE_DIR ${HYDRO_HOME}/cmake )
 
 #
 # process version number
