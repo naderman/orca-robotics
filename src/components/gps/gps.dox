@@ -67,11 +67,6 @@ without a fix ever having been achieved.
 
 Geometry
 
-- @c Gps.Config.Offset (Frame2d) [m,m,deg]
-    - Offset of the GPS antenna from the (arbitrarily defined) global coordinate system.
-    - Format: x y orientation (space separated).
-    - Default: [0.0 0.0 0.0]
-    
 - @c Gps.Config.AntennaOffset (Frame3d) [m,m,m,deg,deg,deg]
     - Offset of the GPS antenna from the vehicle's coordinate system.
     - Format: x y z roll pitch yaw (space separated)

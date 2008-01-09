@@ -45,9 +45,6 @@ MainThread::initNetworkInterface()
     //
     descr_.timeStamp = orcaice::getNow();
 
-    orcaice::setInit( descr_.offset );
-    descr_.offset = orcaice::getPropertyAsFrame2dWithDefault( prop, prefix+"Offset", descr_.offset );
-
     orcaice::setInit( descr_.antennaOffset );
     descr_.antennaOffset = orcaice::getPropertyAsFrame3dWithDefault( prop, prefix+"AntennaOffset", descr_.antennaOffset );
 

@@ -163,7 +163,7 @@ Component::start()
     // transfer internal sensor configs
     //
     
-    gpsDescr.offset = actualCfg.gpsOffset;
+//    gpsDescr.offset = actualCfg.gpsOffset;
     gpsDescr.antennaOffset = actualCfg.gpsAntennaOffset;
     imuDescr.offset = actualCfg.imuOffset;
     imuDescr.size = actualCfg.imuSize;

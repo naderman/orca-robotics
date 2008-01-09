@@ -620,9 +620,6 @@ toString( const orca::GpsDescription& obj )
     std::ostringstream s;
     s << toString(obj.timeStamp)
         << " GpsDescription: \n"
-        << "offset.point.x                   " << obj.offset.p.x << "m\n"
-        << "offset.point.y                   " << obj.offset.p.y << "m\n"
-        << "offset.point.o                   " << RAD2DEG(obj.offset.o) << "deg\n"
         << "antennaOffset.point.x            " << obj.antennaOffset.p.x << "m\n"
         << "antennaOffset.point.y            " << obj.antennaOffset.p.y << "m\n"
         << "antennaOffset.point.z            " << obj.antennaOffset.p.z << "m\n"

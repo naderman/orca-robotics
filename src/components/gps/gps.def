@@ -17,9 +17,6 @@ Provides.GpsMapGrid.DefaultInterface=gpsmapgrid
 Config.Driver.Comment=Options are {  'garmin', 'fake' }
 Config.Driver.Default=garmin
 
-Config.Offset.Comment=Offset of the gps antenna from the global origin: x[m] y[m] orientation[deg]
-Config.Offset.Default=0.0 0.0 0.0
-
 Config.AntennaOffset.Comment=Offset of the gps antenna from the vehicle coordinate system: x[m] y[m] z[m] roll[deg] pitch[deg] yaw[deg]
 Config.AntennaOffset.Default=0.0 0.0 0.0  0.0 0.0 0.0
 

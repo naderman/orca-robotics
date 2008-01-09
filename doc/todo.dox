@@ -92,6 +92,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     Rather than defining maxTurnrate as a linear function of speed, put a limit on
     the maximum lateral acceleration due to centripital force.  This gives a hyperbolic relation
     between speed and turnrate.  Better because it has a physical justification.
+- Gps (alex b)
+  - Deleted deprecated 'offset' from GpsDescription.
 
 @par Updated components
 

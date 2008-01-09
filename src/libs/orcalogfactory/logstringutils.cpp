@@ -783,7 +783,6 @@ toLogString( const orca::GpsDescription& obj )
 {
     std::ostringstream s;
     s << toLogString(obj.timeStamp) << " "
-      << toLogString(obj.offset) << " "
       << toLogString(obj.antennaOffset);
     return s.str();
 }
@@ -792,7 +791,6 @@ void
 fromLogString( std::stringstream& s, orca::GpsDescription& obj )
 {
     fromLogString( s, obj.timeStamp );
-    fromLogString( s, obj.offset );
     fromLogString( s, obj.antennaOffset );
 }
 
