@@ -29,7 +29,6 @@ public:
     MainThread( const orca::CameraConsumerPrx & callbackPrx,
                 hydroiceutil::Buffer<orca::CameraData> & dataPipe, 
                 const orcaice::Context & context );
-
     ~MainThread();
 
     virtual void walk();

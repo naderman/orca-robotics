@@ -39,17 +39,9 @@ MainThread::~MainThread()
 
 void 
 MainThread::walk()
-{
-    // we are in a different thread now, catch all stray exceptions
-    try
-    {
-    
+{    
     // don't need to create this one, it will be cloned from the buffer
     orca::CameraData cameraData;
-
-    // try to catch expected errors
-    try
-    {
     
     // count the number of images received
     int numImages = 0;
@@ -191,69 +183,6 @@ MainThread::walk()
         }
 
     } // while
-    
-    }
-    catch ( Ice::CommunicatorDestroyedException &e )
-    {
-        // it's ok, we are probably shutting down
-        cout<<"Communicator has passed away. No worries."<<endl;
-    }
-    
-    cout<<"TRACE(mainloop.cpp): Exitting from run()" << endl;
-
-    //
-    // unexpected exceptions
-    //
-    } // try
-    catch ( const orca::OrcaException & e )
-    {
-        stringstream ss;
-        ss << "unexpected (remote?) orca exception: " << e << ": " << e.what;
-        context_.tracer().error( ss.str() );
-        if ( context_.isApplication() ) {
-            context_.tracer().info( "this is an stand-alone component. Quitting...");
-            context_.communicator()->destroy();
-        }
-    }
-    catch ( const hydroutil::Exception & e )
-    {
-        stringstream ss;
-        ss << "unexpected (local?) orcaice exception: " << e.what();
-        context_.tracer().error( ss.str() );
-        if ( context_.isApplication() ) {
-            context_.tracer().info( "this is an stand-alone component. Quitting...");
-            context_.communicator()->destroy();
-        }
-    }
-    catch ( const Ice::Exception & e )
-    {
-        stringstream ss;
-        ss << "unexpected Ice exception: " << e;
-        context_.tracer().error( ss.str() );
-        if ( context_.isApplication() ) {
-            context_.tracer().info( "this is an stand-alone component. Quitting...");
-            context_.communicator()->destroy();
-        }
-    }
-    catch ( const std::exception & e )
-    {
-        // once caught this beast in here, don't know who threw it 'St9bad_alloc'
-        stringstream ss;
-        ss << "unexpected std exception: " << e.what();
-        context_.tracer().error( ss.str() );
-        if ( context_.isApplication() ) {
-            context_.tracer().info( "this is an stand-alone component. Quitting...");
-            context_.communicator()->destroy();
-        }
-    }
-    catch ( ... )
-    {
-        context_.tracer().error( "unexpected exception from somewhere.");
-        if ( context_.isApplication() ) {
-            context_.tracer().info( "this is an stand-alone component. Quitting...");
-            context_.communicator()->destroy();
-        }
-    }
 }
 
 void 
