@@ -24,7 +24,7 @@ IF ( BUILD )
     
     LINK_DIRECTORIES( ${PROJECT_SOURCE_DIR}/src/libs/qorcacm )
     TARGET_LINK_LIBRARIES ( ${LIB_NAME}
-                            OrcaLogFactory
+                            OrcaLogFactory  # needed for saving path to file (re-factor?)
                             HydroNavUtil
                             HydroQGui
                             OrcaQGui2d )
