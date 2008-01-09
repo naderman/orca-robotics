@@ -8,11 +8,11 @@ IF ( BUILD )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
     
-    INCLUDE (${ORCA_CMAKE_DIR}/FindOpenCV.cmake)
-    IF ( OPENCV_FOUND )
-        INCLUDE (${ORCA_CMAKE_DIR}/UseOpenCV.cmake)
-        ADD_DEFINITIONS( -DOPENCV_FOUND )
-    ENDIF ( OPENCV_FOUND )
+#     INCLUDE (${ORCA_CMAKE_DIR}/FindOpenCV.cmake)
+#     IF ( OPENCV_FOUND )
+#         INCLUDE (${ORCA_CMAKE_DIR}/UseOpenCV.cmake)
+#         ADD_DEFINITIONS( -DOPENCV_FOUND )
+#     ENDIF ( OPENCV_FOUND )
 
     FILE( GLOB SRCS *.cpp )
     
@@ -21,9 +21,9 @@ IF ( BUILD )
     SET( COMP_DEPS OrcaLog OrcaIfaceImpl )
 
     # Need OpenCV to compress images to file
-    IF ( OPENCV_FOUND )
-        SET( COMP_DEPS ${COMP_DEPS} ${OPENCV_LIBS} OrcaImage )
-    ENDIF ( OPENCV_FOUND )
+#     IF ( OPENCV_FOUND )
+#         SET( COMP_DEPS ${COMP_DEPS} ${OPENCV_LIBS} OrcaImage )
+#     ENDIF ( OPENCV_FOUND )
 
     TARGET_LINK_LIBRARIES( ${LIB_NAME} ${COMP_DEPS} )
 
