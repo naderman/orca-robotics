@@ -26,9 +26,7 @@ class MainThread : public hydroiceutil::SafeThread
 {
 public:
 
-    MainThread( const orca::CameraConsumerPrx & callbackPrx,
-                hydroiceutil::Buffer<orca::CameraData> & dataPipe, 
-                const orcaice::Context & context );
+    MainThread( const orcaice::Context& context );
     ~MainThread();
 
     virtual void walk();
@@ -42,7 +40,7 @@ private:
     orca::CameraConsumerPrx callbackPrx_;
     
     // buffers
-    hydroiceutil::Buffer<orca::CameraData> & dataPipe_;
+    hydroiceutil::Buffer<orca::CameraData> dataPipe_;
     
     orca::CameraDescription  descr_;
 

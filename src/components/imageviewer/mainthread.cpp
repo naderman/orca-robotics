@@ -18,12 +18,8 @@
 using namespace std;
 using namespace imageviewer;
 
-MainThread::MainThread( const orca::CameraConsumerPrx & callbackPrx,
-                    hydroiceutil::Buffer<orca::CameraData> & dataPipe, 
-                    const orcaice::Context & context ) : 
+MainThread::MainThread( const orcaice::Context& context ) : 
     SafeThread(context.tracer()),
-    callbackPrx_(callbackPrx),
-    dataPipe_(dataPipe),
     context_(context)
 {
     // initialise opencv stuff
@@ -40,6 +36,18 @@ MainThread::~MainThread()
 void 
 MainThread::walk()
 {    
+
+    // create a callback object to recieve images
+    Ice::ObjectPtr consumer = new CameraConsumerI( dataPipe_ );
+    orca::CameraConsumerPrx callbackPrx =
+        orcaice::createConsumerInterface<orca::CameraConsumerPrx>( context(), consumer );
+
+    //
+    // ENABLE NETWORK CONNECTIONS
+    //
+    // multi-try function
+    orcaice::activate( context_, this, subsysName() );
+
     // don't need to create this one, it will be cloned from the buffer
     orca::CameraData cameraData;
     
@@ -105,7 +113,7 @@ MainThread::walk()
     {
         try
         {
-            cameraPrx_->subscribe( callbackPrx_ );
+            cameraPrx_->subscribe( callbackPrx );
             break;
         }
         catch ( const orca::SubscriptionFailedException & e )
