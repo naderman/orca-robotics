@@ -12,16 +12,18 @@
 #include <orcaice/orcaice.h>
 #include <orcaimage/colourconversions.h>
 #include <orcaimage/imageutils.h>
+#include <orcaifaceimpl/bufferedconsumers.h>
 
 #include "mainthread.h"
 
 using namespace std;
 using namespace imageviewer;
 
-MainThread::MainThread( const orcaice::Context& context ) : 
-    SafeThread(context.tracer()),
+MainThread::MainThread( const orcaice::Context& context ) :
+    SubsystemThread( context.tracer(), context.status(), "MainThread" ),
     context_(context)
 {
+    subStatus().setMaxHeartbeatInterval( 10.0 );
     // initialise opencv stuff
     cvNamedWindow( "ImageViewer", 1 );
 }
@@ -36,12 +38,6 @@ MainThread::~MainThread()
 void 
 MainThread::walk()
 {    
-
-    // create a callback object to recieve images
-    Ice::ObjectPtr consumer = new CameraConsumerI( dataPipe_ );
-    orca::CameraConsumerPrx callbackPrx =
-        orcaice::createConsumerInterface<orca::CameraConsumerPrx>( context(), consumer );
-
     //
     // ENABLE NETWORK CONNECTIONS
     //
@@ -63,44 +59,25 @@ MainThread::walk()
     //
     // REQUIRED INTERFACE: Camera
     //
-
+    //           
     // Connect directly to the interface
-    while( !isStopping() )
-    {
-        try
-        {
-            orcaice::connectToInterfaceWithTag<orca::CameraPrx>( context_, cameraPrx_, "Camera" );
-            break;
-        }
-        catch ( const orcaice::NetworkException & e )
-        {
-            context_.tracer().error( "failed to connect to remote object. Will try again after 3 seconds." );
-            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
-        }
-        // NOTE: connectToInterfaceWithTag() can also throw ConfigFileException,
-        //       but if this happens it's ok if we just quit.
-    }
+    orcaice::connectToInterfaceWithTag<orca::CameraPrx>( context_, cameraPrx_, "Camera", this, subsysName() );
 
     // get description, we need it to size the window
     while( !isStopping() )
     {
         try
         {
-            // workaround... if imageserver and imageviewer are being run in an icebox, the
-            // imageviewer needs to wait until the imageserver has loaded data
-            // into the buffer... this should check rather than waiting
-            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
-    
             descr_ = cameraPrx_->getDescription();
             cout << orcaice::toString(descr_) << endl;
             break;
         }
         catch ( const orca::HardwareFailedException & e )
         {
-            context_.tracer().error( "hardware failure reported when getting a scan. Will subscribe anyway." );
+            context_.tracer().warning( "hardware failure reported when getting a signle image. Will try again." );
+            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
         }
     }
-
 
     // setup opencv image struct for display
     // after we got the camera description!
@@ -109,22 +86,13 @@ MainThread::walk()
     //
     // Subscribe for data
     //
-    while ( !isStopping() )
-    {
-        try
-        {
-            cameraPrx_->subscribe( callbackPrx );
-            break;
-        }
-        catch ( const orca::SubscriptionFailedException & e )
-        {
-            context_.tracer().error( "failed to subscribe for data updates. Will try again after 3 seconds." );
-            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
-        }
-    }
+    orcaifaceimpl::BufferedCameraConsumerImplPtr cameraInterface =
+        new orcaifaceimpl::BufferedCameraConsumerImpl( 10, hydroiceutil::BufferTypeCircular, context_);
+    // multi-try function
+    cameraInterface->subscribeWithTag( "Camera", this, subsysName() );
     
     // wake up every now and then to check if we are supposed to stop
-    const int timeoutMs = 2000;
+    const int timeoutMs = 500;
 
     //
     // This is the main loop
@@ -134,7 +102,7 @@ MainThread::walk()
         //
         // block on arrival of camera data
         //
-        int ret = dataPipe_.getAndPopNext ( cameraData, timeoutMs );
+        int ret = cameraInterface->buffer().getAndPopNext ( cameraData, timeoutMs );
         
         if ( !ret ) 
         {

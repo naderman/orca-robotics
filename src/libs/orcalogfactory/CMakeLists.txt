@@ -8,9 +8,9 @@ IF ( BUILD )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
     
+    INCLUDE (${ORCA_CMAKE_DIR}/FindOpenCV.cmake)
     IF ( OPENCV_FOUND )
-        INCLUDE_DIRECTORIES( ${OPENCV_INCLUDE_DIRS} )
-        LINK_DIRECTORIES( ${OPENCV_LINK_DIRS} )
+        INCLUDE (${ORCA_CMAKE_DIR}/UseOpenCV.cmake)
         ADD_DEFINITIONS( -DOPENCV_FOUND )
     ENDIF ( OPENCV_FOUND )
 

@@ -56,21 +56,6 @@ ASSERT( JAVA_FOUND "Looking for Java - not found" "Looking for Java - found" )
 INCLUDE (${CMAKE_ROOT}/Modules/FindPythonInterp.cmake)
 ASSERT( PYTHONINTERP_FOUND "Looking for the Python interpreter - not found" "Looking for the Python interpreter - found" )
 
-# Check for OpenCV
-INCLUDE (${ORCA_CMAKE_DIR}/FindOpencv.cmake)
-
-# check for digiclops image grabbing libraries
-FIND_LIBRARY( DIGICLOPS_FOUND NAMES digiclops PATHS /usr/lib /usr/local/lib )
-ASSERT( DIGICLOPS_FOUND "Looking for Digiclops - not found" "Looking for Digiclops - found" )
-
-FIND_LIBRARY( TRICLOPS_FOUND NAMES triclops PATHS /usr/lib /usr/local/lib )
-ASSERT( TRICLOPS_FOUND "Looking for Triclops - not found" "Looking for Triclops - found" )
-
-# both digiclops and triclops libraries need to be used
-IF ( DIGICLOPS_FOUND AND TRICLOPS_FOUND ) 
-  SET ( DIGICLOPS_AND_TRICLOPS_FOUND 1 )
-ENDIF ( DIGICLOPS_FOUND AND TRICLOPS_FOUND ) 
-
 # Look for firewire headers (for firewire cameras)
 CHECK_INCLUDE_FILE_CXX( libdc1394/dc1394_control.h 1394_FOUND )
 

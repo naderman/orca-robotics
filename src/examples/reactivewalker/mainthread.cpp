@@ -43,19 +43,19 @@ MainThread::initNetwork()
     //
     // REQUIRED INTERFACE: VelocityControl2d
     //
-    orcaice::connectToInterfaceWithTag<orca::VelocityControl2dPrx>( context_, commandPrx_, "Command", this );
+    orcaice::connectToInterfaceWithTag<orca::VelocityControl2dPrx>( context_, commandPrx_, "Command", this, subsysName() );
     context_.tracer().info( "Connected to VelocityControl2d interface.");
 
     //
     // REQUIRED INTERFACE: Laser
     //
-    laser_->subscribeWithTag( "Laser", this );
+    laser_->subscribeWithTag( "Laser", this, subsysName() );
     context_.tracer().info( "Connected and subscribed to LaserScanner2d interface.");
 
     //
     // REQUIRED INTERFACE: Odometry2d
     //
-    odometry_->subscribeWithTag( "Odometry", this );
+    odometry_->subscribeWithTag( "Odometry", this, subsysName() );
     context_.tracer().info( "Connected and subscribed to Odometry2d interface.");
 
     // NOTE: odometry_ has a small buffer called odometry_->store(), see hydroiceutil::Store.

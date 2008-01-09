@@ -41,6 +41,9 @@ icomp=7;
 iutil=8;
 iad=9;
 
+% the old way to count lines in *.ice files:
+% rename them to *.cpp like this:
+% $cd src/interfaces/slice/orca; for file in *; do mv $file `echo $file | sed s/.ice/.cpp/`; done
 Sorca = [ ...
 % YY    MM  DD  ?   SUB     BASE        COMP           UTILS    A&D VERSION
 % 0.8.6: a single distro, divide in halves arbitrarily
@@ -77,8 +80,6 @@ Sorca = [ ...
 % BASE: c_count src/interfaces/slice/orca/*.ice
 % COMP: sloccount src/components
 % UTIL: sloccount src/utils src/libs
-% to count lines in *.ice files, rename them to *.cpp like this:
-% $cd src/interfaces/slice/orca; for file in *; do mv $file `echo $file | sed s/.ice/.cpp/`; done
 2006    12  17  0   Sice311 1240    23701   40914  0   % 2.1.1
 2007     2   2  1   Sice311 1671    27238   48446  0   % 2.2.0
 2007     4  10  1   Sice320 1671    25512   53828  0   % 2.3.0
@@ -88,7 +89,7 @@ Sorca = [ ...
 % A&D: Hydro: sloccount src
 2007    10  28  1   Sice321 1787    23840   54879  12251    % 2.7.0
 2007    12   7  0   Sice321 1750    19312   52762  24104    % 2.8.0
-2008     1  31  1   Sice321 1775    17695   52741  26826    % 2.9.0
+2008     1  31  1   Sice321 1775    17306   52701  26826    % 2.9.0
 ];
 Vorca ={'0.8.6', '0.11.0', '0.12.0', '0.12.1', '0.13.0', '0.13.1', '0.13.2', '0.13.3', '0.14.0', '0.15.0', '1.0.0', ...
     '2.0.0-rc1', '2.0.0-rc2', '2.0.0-rc3', '2.0.0-rc4', '2.0.0-rc5', '2.0.0', '2.0.1', '2.0.2', '2.1.0', '2.1.1', ...

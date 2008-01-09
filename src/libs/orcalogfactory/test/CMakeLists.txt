@@ -4,6 +4,7 @@ LINK_LIBRARIES( OrcaLog OrcaLogFactory )
 
 #ADD_EXECUTABLE( logreplaytest logreplaytest.cpp )
 ## Need OpenCV to compress images to file
+# INCLUDE (${ORCA_CMAKE_DIR}/FindOpenCV.cmake)
 #IF ( OPENCV_FOUND )
 #    INCLUDE_DIRECTORIES( ${OPENCV_INCLUDE_DIRS} )
 #    TARGET_LINK_LIBRARIES( logreplaytest ${OPENCV_LIBS} OrcaImage )
