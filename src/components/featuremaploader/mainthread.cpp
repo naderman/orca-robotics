@@ -37,10 +37,8 @@ void fakeLoadMap( orca::FeatureMap2dData &theMap )
 
 }
 
-MainThread::MainThread( const orcaifaceimpl::FeatureMap2dImplPtr& obj, 
-                const orcaice::Context &context ) : 
+MainThread::MainThread( const orcaice::Context &context ) : 
     SubsystemThread( context.tracer(), context.status(), "MainThread" ),
-    obj_(obj),
     context_(context)
 {
     subStatus().setMaxHeartbeatInterval( 10.0 );
@@ -89,8 +87,13 @@ MainThread::walk()
         throw hydroutil::Exception( ERROR_INFO, s );
     }
 
-    obj_->initInterface( this, subsysName() );
-    obj_->localSetAndSend( theMap );
+    //
+    // EXTERNAL PROVIDED INTERFACES
+    //
+    // create servant for direct connections
+    featureMap2dImpl_ = new orcaifaceimpl::FeatureMap2dImpl( "FeatureMap2d", context_ );
+    featureMap2dImpl_->initInterface( this, subsysName() );
+    featureMap2dImpl_->localSetAndSend( theMap );
 
     //
     // ENABLE NETWORK CONNECTIONS

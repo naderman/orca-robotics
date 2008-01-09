@@ -12,14 +12,13 @@
 #include <orcaice/orcaice.h>
 
 #include "mainthread.h"
+#include "rangescanner2dconsumerI.h"
 
 using namespace std;
 using namespace lasermon;
 
-MainThread::MainThread( const Ice::ObjectPtr& consumer, 
-                const orcaice::Context &context ) : 
+MainThread::MainThread( const orcaice::Context &context ) : 
     SubsystemThread( context.tracer(), context.status(), "MainThread" ),
-    consumer_(consumer),
     context_(context)
 {
     subStatus().setMaxHeartbeatInterval( 10.0 );
@@ -93,6 +92,7 @@ MainThread::walk()
     }
     
     // create a callback object to recieve scans
+    consumer_ = new RangeScanner2dConsumerI;
     orca::RangeScanner2dConsumerPrx callbackPrx =
         orcaice::createConsumerInterface<orca::RangeScanner2dConsumerPrx>( context_, consumer_ );
     

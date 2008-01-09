@@ -23,14 +23,13 @@ class MainThread : public hydroiceutil::SubsystemThread
 
 public:
 
-    MainThread( const PingerIPtr& obj, 
-                const orcaice::Context &context );
+    MainThread( const orcaice::Context &context );
 
     // from SubsystemThread
     virtual void walk();
 
 private:
-    PingerIPtr obj_;
+    PingerIPtr pingerInterface_;
     orcaice::Context context_;
 };
 

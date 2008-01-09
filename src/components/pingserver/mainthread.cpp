@@ -16,10 +16,8 @@
 using namespace std;
 using namespace pingserver;
 
-MainThread::MainThread( const PingerIPtr& obj, 
-                const orcaice::Context &context ) : 
+MainThread::MainThread( const orcaice::Context &context ) : 
     SubsystemThread( context.tracer(), context.status(), "MainThread" ),
-    obj_(obj),
     context_(context)
 {
     subStatus().setMaxHeartbeatInterval( 10.0 );
@@ -28,9 +26,10 @@ MainThread::MainThread( const PingerIPtr& obj,
 void
 MainThread::walk()
 {
+    pingerInterface_ = new PingerI( "Pinger", context_ );
     // should implement a multitry version
-//     obj_->initInterface( this, subsysName() );
-    obj_->initInterface();
+//     pingerInterface_->initInterface( this, subsysName() );
+    pingerInterface_->initInterface();
 
     //
     // ENABLE NETWORK CONNECTIONS

@@ -12,7 +12,6 @@
 #define MAIN_THREAD_H
 
 #include <hydroiceutil/subsystemthread.h>
-#include "rangescanner2dconsumerI.h"
 #include <orcaice/context.h>
 
 namespace lasermon
@@ -23,8 +22,7 @@ class MainThread : public hydroiceutil::SubsystemThread
 
 public:
 
-    MainThread( const Ice::ObjectPtr& consumer, 
-                const orcaice::Context &context );
+    MainThread( const orcaice::Context &context );
 
     // from SubsystemThread
     virtual void walk();

@@ -23,14 +23,13 @@ class MainThread : public hydroiceutil::SubsystemThread
 
 public:
 
-    MainThread( const orcaifaceimpl::FeatureMap2dImplPtr& obj, 
-                const orcaice::Context &context );
+    MainThread( const orcaice::Context& context );
 
     // from SubsystemThread
     virtual void walk();
 
 private:
-    orcaifaceimpl::FeatureMap2dImplPtr obj_;
+    orcaifaceimpl::FeatureMap2dImplPtr featureMap2dImpl_;
     orcaice::Context context_;
 };
 

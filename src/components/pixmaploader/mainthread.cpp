@@ -69,10 +69,8 @@ loadMapFromFile( orca::PixMapData &map, const orcaice::Context& context )
 
 //////////////////////////////////
 
-MainThread::MainThread( const orcaifaceimpl::PixMapImplPtr& obj, 
-                const orcaice::Context& context ) : 
+MainThread::MainThread( const orcaice::Context& context ) : 
     SubsystemThread( context.tracer(), context.status(), "MainThread" ),
-    obj_(obj),
     context_(context)
 {
     subStatus().setMaxHeartbeatInterval( 10.0 );
@@ -113,9 +111,13 @@ MainThread::walk()
 
     cout<<"TRACE(component.cpp): Loaded map: " << orcaice::toString(theMap) << endl;
     
-
-    obj_->initInterface( this, subsysName() );
-    obj_->localSetAndSend( theMap );
+    //
+    // EXTERNAL PROVIDED INTERFACES
+    //
+    // create servant for direct connections
+    pixMapImpl_ = new orcaifaceimpl::PixMapImpl( "PixMap", context_ );
+    pixMapImpl_->initInterface( this, subsysName() );
+    pixMapImpl_->localSetAndSend( theMap );
 
     //
     // ENABLE NETWORK CONNECTIONS

@@ -18,10 +18,8 @@
 using namespace std;
 using namespace ogmaploader;
 
-MainThread::MainThread( const orcaifaceimpl::OgMapImplPtr& obj, 
-                const orcaice::Context &context ) : 
+MainThread::MainThread( const orcaice::Context &context ) : 
     SubsystemThread( context.tracer(), context.status(), "MainThread" ),
-    obj_(obj),
     context_(context)
 {
     subStatus().setMaxHeartbeatInterval( 10.0 );
@@ -61,8 +59,12 @@ MainThread::walk()
         throw hydroutil::Exception( ERROR_INFO, s );
     }
 
-    obj_->initInterface( this, subsysName() );
-    obj_->localSetAndSend( theMap );
+    //
+    // EXTERNAL PROVIDED INTERFACES
+    //
+    ogMapImpl_ = new orcaifaceimpl::OgMapImpl( "OgMap", context_ );
+    ogMapImpl_->initInterface( this, subsysName() );
+    ogMapImpl_->localSetAndSend( theMap );
 
     //
     // ENABLE NETWORK CONNECTIONS
