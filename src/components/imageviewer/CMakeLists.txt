@@ -12,10 +12,6 @@ IF ( BUILD )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseOpenCV.cmake )
 
-    # this is the only implemenation so far
-    ADD_DEFINITIONS( -DOPENCV_IMPLEMENTATION )
-    ADD_DEFINITIONS( -DOPENCV_FOUND )
-
     FILE( GLOB COMP_SRCS *.cpp )
     SET ( COMP_DEPS OrcaImage ) 
     
