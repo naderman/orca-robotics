@@ -13,6 +13,7 @@
 
 #include <hydroiceutil/subsystemthread.h>
 #include <orcaice/context.h>
+#include <orcaifaceimpl/printingconsumers.h>
 
 namespace lasermon
 {
@@ -21,14 +22,13 @@ class MainThread : public hydroiceutil::SubsystemThread
 {
 
 public:
-
     MainThread( const orcaice::Context &context );
 
     // from SubsystemThread
     virtual void walk();
 
 private:
-    Ice::ObjectPtr consumer_;
+    orcaifaceimpl::PrintingRangeScanner2dConsumerImplPtr consumer_;
     orcaice::Context context_;
 };
 

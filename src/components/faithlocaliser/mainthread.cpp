@@ -108,18 +108,17 @@ MainThread::walk()
     const double varPosition = stdDevPosition_*stdDevPosition_;
     const double varHeading = (stdDevHeading_*M_PI/180.0)*(stdDevHeading_*M_PI/180.0);
     
+    subStatus().ok( "Initialized" );
+    const int timeoutMs = 1000;
+    subStatus().setMaxHeartbeatInterval( 2*timeoutMs );
+
     //
     // MAIN LOOP
     //
     while ( !isStopping() )
     {
-        // Get odometry info, time out every so often to check if we are cancelled
-        const int TIMEOUT_MS = 1000;
-        if ( odometry2dInterface->buffer().getAndPopNext( odomData, TIMEOUT_MS ) != 0 ) 
-        {
-            stringstream ss;
-            ss << "MainThread: received no odometry for " << TIMEOUT_MS << "ms";
-            context_.tracer().debug( ss.str(), 2 );
+        subStatus().heartbeat();
+        if ( odometry2dInterface->buffer().getAndPopNext( odomData, timeoutMs ) != 0 ) {
             continue;
         }
 

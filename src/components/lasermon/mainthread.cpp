@@ -12,7 +12,6 @@
 #include <orcaice/orcaice.h>
 
 #include "mainthread.h"
-#include "rangescanner2dconsumerI.h"
 
 using namespace std;
 using namespace lasermon;
@@ -37,26 +36,12 @@ MainThread::walk()
     // REQUIRED INTERFACE: Laser
     //
     orca::LaserScanner2dPrx laserPrx;
-    // Connect directly to the interface
-    while ( !isStopping() )
-    {
-        try
-        {
-            orcaice::connectToInterfaceWithTag<orca::LaserScanner2dPrx>( context_, laserPrx, "LaserScanner2d" );
-            break;
-        }
-        catch ( const orcaice::NetworkException &e )
-        {
-            std::stringstream ss;
-            ss << "Failed to connect to remote object: "<<e.what()<<endl<<"Will try again after 3 seconds.";
-            context_.tracer().error( ss.str() );
-            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
-        }
-        // NOTE: connectToInterfaceWithTag() can also throw ConfigFileException,
-        //       but if this happens it's ok if we just quit.
-    }
+    // Connect directly to the interface (multi-try)
+    orcaice::connectToInterfaceWithTag<orca::LaserScanner2dPrx>( context_, laserPrx, "LaserScanner2d", 
+        this, subsysName() );
     
-    // Get laser description
+    // Try to get laser description once, continue if fail
+    context_.tracer().info( "Trying to get laser description as a test" );
     try
     {
         std::string descr = orcaice::toString( laserPrx->getDescription() );
@@ -91,29 +76,9 @@ MainThread::walk()
         }
     }
     
-    // create a callback object to recieve scans
-    consumer_ = new RangeScanner2dConsumerI;
-    orca::RangeScanner2dConsumerPrx callbackPrx =
-        orcaice::createConsumerInterface<orca::RangeScanner2dConsumerPrx>( context_, consumer_ );
-    
-    //
-    // Subscribe for data
-    //
-    while ( !isStopping() )
-    {
-        try
-        {
-            laserPrx->subscribe( callbackPrx );
-            break;
-        }
-        catch ( const orca::SubscriptionFailedException &e )
-        {
-            stringstream ss;
-            ss << "failed to subscribe for data updates: "<<e.what<<endl<<"Will try again after 3 seconds.";
-            context_.tracer().error( ss.str() );
-            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
-        }
-    }
+    // subscribe for data updates (multi-try)
+    consumer_ = new orcaifaceimpl::PrintingRangeScanner2dConsumerImpl( context_ );
+    consumer_->subscribeWithTag( "LaserScanner2d", this, subsysName() );
     
     // init subsystem is done and is about to terminate
     subStatus().ok( "Initialized." );
