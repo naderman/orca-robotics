@@ -30,6 +30,7 @@ SET( SLICE_SOURCE_FILES
     hand.ice
     home.ice
     image.ice
+    ins.ice
     imu.ice
     localise2d.ice
     localise3d.ice
