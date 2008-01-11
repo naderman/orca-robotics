@@ -88,22 +88,16 @@ Localise3dPainter::paintHypothesis( QPainter* p, const orca::Pose3dHypothesis &h
         const float lineThickness = 2.0/m2win.m11();
         
         // Rotate to draw the platform correctly
-        ScopedSaver rotateSaver(p);
-        p->rotate( RAD2DEG( mean.o.y ) + originRot_ );
-        if (platformType_ == PlatformTypeCylindrical)
-            paintCylindricalPlatformPose( p, color, radius_, weight, minLength, lineThickness  );
-        else
-            paintCubicPlatformPose( p, color, length_, width_, weight, minLength, lineThickness );
-    
-
-        paintUncertaintyInfo( p,
-                              color,
-                              cov.xx,
-                              cov.xy,
-                              cov.yy,
-                              cov.aa, 
-                              minLength*3.0,
-                              lineThickness );
+        {
+            ScopedSaver rotateSaver(p);
+            p->rotate( RAD2DEG( mean.o.y ) + originRot_ );
+            if (platformType_ == PlatformTypeCylindrical)
+                paintCylindricalPlatformPose( p, color, radius_, weight, minLength, lineThickness  );
+            else
+                paintCubicPlatformPose( p, color, length_, width_, weight, minLength, lineThickness );
+            paintUncertaintyWedge( p, color, cov.aa, minLength*3.0, lineThickness );
+        }    
+        paintCovarianceEllipse( p, color, cov.xx, cov.xy, minLength*3.0, lineThickness );
     }
 }
 

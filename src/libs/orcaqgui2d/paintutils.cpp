@@ -158,20 +158,6 @@ void paintCubicPlatformPose( QPainter *p, const QColor &colour, float length, fl
 }
 
 void
-paintUncertaintyInfo( QPainter *p,
-                      const QColor &colour,
-                      float pxx,
-                      float pxy,
-                      float pyy,
-                      float ptt,
-                      float length,
-                      float lineThickness )
-{
-    paintUncertaintyWedge( p, colour, ptt, length, lineThickness );
-    paintCovarianceEllipse( p, colour, pxx, pxy, pyy, lineThickness );
-}
-
-void
 paintUncertaintyWedge( QPainter *p,
                        const QColor &colour,
                        float ptt,

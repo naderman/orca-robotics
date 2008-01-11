@@ -93,18 +93,6 @@ void paintCylindricalPlatformPose( QPainter *p,
                                    float     minRadius=0.0, 
                                    float     lineThickness=0.2 );
 
-//! Paints an ellipse for the position uncertainty, plus
-//! a little wedge for the heading uncertainty, by calling
-//! 'paintUncertaintyInfo' and 'paintCovarianceEllipse'
-void paintUncertaintyInfo( QPainter     *p, 
-                           const QColor &colour, 
-                           float         pxx, 
-                           float         pxy, 
-                           float         pyy, 
-                           float         ptt, 
-                           float         length, 
-                           float         lineThickness=0.2 );
-
 //! Paints a little wedge of sidelength 'length' representing rotational uncertainty
 void paintUncertaintyWedge( QPainter     *p, 
                             const QColor &colour, 
