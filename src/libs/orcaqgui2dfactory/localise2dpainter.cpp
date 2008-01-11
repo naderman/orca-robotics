@@ -98,7 +98,7 @@ Localise2dPainter::paintHypothesis( QPainter* p, const orca::Pose2dHypothesis &h
                 paintCubicPlatformPose( p, color, length_, width_, weight, minLength, lineThickness );
             paintUncertaintyWedge( p, color, cov.tt, minLength*3.0, lineThickness );
         }
-        paintCovarianceEllipse( p, color, cov.xx, cov.xy, minLength*3.0, lineThickness );
+        paintCovarianceEllipse( p, color, cov.xx, cov.xy, cov.yy, lineThickness );
     }
 }
 
