@@ -89,13 +89,15 @@ Localise2dPainter::paintHypothesis( QPainter* p, const orca::Pose2dHypothesis &h
         const float lineThickness = 2.0/m2win.m11();
         
         // Rotate to draw the platform correctly
-        ScopedSaver rotateSaver(p);
-        p->rotate( RAD2DEG( mean.o ) + originRot_ );
-        if (platformType_ == PlatformTypeCylindrical)
-            paintCylindricalPlatformPose( p, color, radius_, weight, minLength, lineThickness  );
-        else
-            paintCubicPlatformPose( p, color, length_, width_, weight, minLength, lineThickness );
-    
+        {
+            ScopedSaver rotateSaver(p);
+            p->rotate( RAD2DEG( mean.o ) + originRot_ );
+            if (platformType_ == PlatformTypeCylindrical)
+                paintCylindricalPlatformPose( p, color, radius_, weight, minLength, lineThickness  );
+            else
+                paintCubicPlatformPose( p, color, length_, width_, weight, minLength, lineThickness );
+        }
+
         paintUncertaintyInfo( p,
                               color,
                               cov.xx,
