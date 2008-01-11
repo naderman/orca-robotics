@@ -19,6 +19,9 @@
 
 // utilities
 
+namespace hydroiceutil {
+    class Thread;
+}
 
 namespace orcaifaceimpl {
 

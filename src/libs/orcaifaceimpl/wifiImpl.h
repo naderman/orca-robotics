@@ -12,6 +12,10 @@
 #include <hydroiceutil/store.h>
 #include <orcaice/context.h>
 
+namespace hydroiceutil {
+    class Thread;
+}
+
 namespace orcaifaceimpl
 {
     
