@@ -5,7 +5,7 @@
 
 IF ( OS_LINUX  )
 
-OPTION( BUILD_IMU "Try to build Imu component" ON )
+OPTION( BUILD_IMU "Try to build Imu component" OFF )
 
 IF ( BUILD_IMU )
 

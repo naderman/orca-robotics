@@ -1,4 +1,4 @@
-OPTION( BUILD_PATHPLAN_TESTER "Try to build pathplan-tester" ON )
+OPTION( BUILD_PATHPLAN_TESTER "Try to build pathplan-tester" OFF )
 
 IF ( NOT OS_WIN AND BUILD_PATHPLAN_TESTER )
 
