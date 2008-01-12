@@ -112,6 +112,7 @@ OPTION( BUILD_TESTS    "Enables compilation of all tests" ON  )
 OPTION( BUILD_EXAMPLES "Enables compilation of all examples" ON  )
 OPTION( BUILD_SANDBOX  "Enables compilation of everything in the sandbox" OFF )
 OPTION( GENERATE_XML   "Enables generation of XML file for IceGrid" ON )
+OPTION( BUILD_LICENSE  "Enables writing LICENCE file. For admins only." OFF )
 
 #                                                         
 # Look for low-level C headers, write defines to config.h 
@@ -184,6 +185,13 @@ ADD_SUBDIRECTORY ( scripts )
 # Write installation manifest in CMake format
 #
 WRITE_MANIFEST()   
+
+#
+# Print license information to a file
+#
+IF ( BUILD_LICENSE )
+    WRITE_LICENSE()
+ENDIF ( BUILD_LICENSE )
 
 #                                                         
 # Print results of CMake activity                         

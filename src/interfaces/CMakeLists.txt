@@ -1,5 +1,7 @@
 # A place for interface definitions in Slice
 
+GLOBAL_ADD_LICENSE( LGPL )
+
 MESSAGE ( STATUS "== INTERFACES ==" )
 
 ADD_SUBDIRECTORY ( cpp )

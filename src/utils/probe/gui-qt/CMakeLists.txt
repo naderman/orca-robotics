@@ -1,3 +1,5 @@
+GLOBAL_ADD_LICENSE( GPL )
+
 INCLUDE( ${ORCA_CMAKE_DIR}/UseQt.cmake )
 
 # Glob all source files

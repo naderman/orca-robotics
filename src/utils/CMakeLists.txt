@@ -20,3 +20,7 @@ ADD_SUBDIRECTORY ( registryview )
 ADD_SUBDIRECTORY ( replier )
 ADD_SUBDIRECTORY ( systemtracermon )
 ADD_SUBDIRECTORY ( wall )
+
+# putting it after all subdir's because of cmake weirdness:
+# when placed above, only one subdir license appears 
+GLOBAL_ADD_LICENSE( LGPL )

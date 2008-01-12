@@ -1,6 +1,8 @@
 # A place for particularly-well documented and commented components
 # which show how to use Orca libraries, etc.
 
+GLOBAL_ADD_LICENSE( LGPL )
+
 MESSAGE ( STATUS "== EXAMPLES ==" )
 
 IF ( BUILD_EXAMPLES )

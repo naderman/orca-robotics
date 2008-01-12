@@ -1,4 +1,5 @@
 OPTION( BUILD_GORCA "Try to build Gorca -- a system composition utility" OFF )
+GLOBAL_ADD_LICENSE( GPL )
 
 IF ( QT4_FOUND AND BUILD_GORCA )
 

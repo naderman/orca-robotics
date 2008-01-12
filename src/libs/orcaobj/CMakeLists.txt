@@ -1,4 +1,5 @@
 SET ( LIB_NAME OrcaObjects )
+GLOBAL_ADD_LICENSE( LGPL )
 
 # This is one of fundamental libs.
 # Do not include UseComponentRules here because it will link to OrcaIce

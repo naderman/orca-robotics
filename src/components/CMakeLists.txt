@@ -29,3 +29,7 @@ ADD_SUBDIRECTORY ( simlocaliser )
 ADD_SUBDIRECTORY ( teleop )
 ADD_SUBDIRECTORY ( tracermon )
 ADD_SUBDIRECTORY ( wifi )
+
+# putting it after all subdir's because of cmake weirdness:
+# when placed above, only one subdir license appears 
+GLOBAL_ADD_LICENSE( LGPL )

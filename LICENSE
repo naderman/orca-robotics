@@ -1,108 +1,49 @@
-Orca-Robotics Project: Components for robotics 
-              http://orca-robotics.sf.net/
-Copyright (c) 2004-2007 Alex Brooks, Alexei Makarenko, Tobias Kaupp
-
-The Orca-Robotics project does not, as a policy, require code to conform to any 
-specific license to be included in the distribution. However, the code is required 
-to have a license and the license must be Open Source. That is the official policy.
-
-The reality of the situation is that nearly all code in the Orca libraries and 
-components is covered under the Library GNU Public License (LGPL) as defined by 
-the Free Software Foundation (FSF). Most of the remaining code is licensed under 
-the GNU Public License (GPL), also defined by the FSF.
-
-The GNU General Public License is often shipped with GNU software, and is
-generally kept in a file called COPYING or LICENSE. If you do not have a 
-copy of the license, write to the Free Software Foundation, 59 Temple 
-Place, Suite 330, Boston, MA 02111 USA.
-
-The following is a complete list of subdirectories of the 'src' directory 
-in 'orca' distribution. For each subdirectory with a distinct license the 
-license is listed.
-
-DIRECTORY                                 LICENSE
--------------------------------------------------------------
-src
-    components
-        faithlocaliser                     LGPL
-        featuremaploader                   LGPL
-        goalplanner                        LGPL
-        gps                                LGPL
-        imageserver                        LGPL
-        imageviewer                        LGPL
-        imu                                LGPL
-        insgps                             LGPL (with permission from NovAtel Inc.)
-        laser2d                            LGPL
-        laser2og                           LGPL
-        laserfeatureextractor              LGPL
-        lasermon                           LGPL
-        localnav                           LGPL
-        ogmaploader                         GPL
-        ognode                             LGPL
-        orcamon                            LGPL
-        pathplanner                        LGPL
-        robot2d                            LGPL
-        segwayrmp                          LGPL
-        simlocaliser                       LGPL
-        teleop                             LGPL
-        tracermon                          LGPL
-        wifi                               LGPL
-    examples
-        *                                  LGPL
-    interfaces
-        *                                  LGPL
-    libs
-        orcabros1                          LGPL
-        orcacm                             LGPL
-        orcadef                            LGPL
-        orcaice                            LGPL
-        orcaicegrid                        LGPL
-        orcaiceutil                        LGPL
-    	orcaicexml			                GPL
-        orcaimage                           GPL
-        orcalog                            LGPL
-        orcalogfactory                     LGPL
-        orcanavutil                        LGPL
-        orcaobj                            LGPL
-        orcaobjutil                        LGPL
-        orcaogfusion                       LGPL
-        orcaogmap                          LGPL
-        orcapathplan                       LGPL
-        orcaplayer                          GPL
-        orcaprobe                          LGPL
-        orcaprobefactory                   LGPL
-        orcaqcm                             GPL
-        orcaqgui                            GPL
-        orcaqgui2d                          GPL
-        orcaqgui2dfactory                   GPL
-        orcaqgui3d                          GPL
-        orcaqgui3dfactory                   GPL
-        orcaqt                              GPL
-        orcaquml                            GPL
-        orcawall                           LGPL
-        orcawallfactory                    LGPL
-    sandbox
-        gorca                               GPL
-        noisyrobot2d                       LGPL
-        pathplantester                     LGPL
-        pointcloudserver                   LGPL
-        pointcloudviewer                   LGPL
-    utils
-        cleanregistry                      LGPL
-        deftools                           LGPL
-        icegridmon                         LGPL
-        iceping                            LGPL
-        logger                             LGPL
-        logplayer                          LGPL
-        orcaview2d                          GPL
-        orcaview3d                          GPL
-        pinger                             LGPL
-        probe                              LGPL
-            term-iostream                  LGPL
-            gui-qt                          GPL
-        registrylist                       LGPL
-        registryview                        GPL
-        replyer                            LGPL
-        systemtracermon                    LGPL
-        wall                               LGPL
--------------------------------------------------------------
+Autogenerated by CMake for orca project
+----------------------------------------------------------------------
+DIRECTORY                                                   LICENSE
+----------------------------------------------------------------------
+src/interfaces                                              LGPL
+src/libs/orcabros1                                          LGPL
+src/libs/orcaice                                            LGPL
+src/libs/orcacm                                             LGPL
+src/libs/orcadef                                            LGPL
+src/libs/orcaicegrid                                        LGPL
+src/libs/orcaicexml                                         LGPL
+src/libs/orcaifaceimpl                                      LGPL
+src/libs/orcaimage                                          GPL
+src/libs/orcaimagegrabber                                   LGPL
+src/libs/orcalocalnav                                       LGPL
+src/libs/orcalog                                            LGPL
+src/libs/orcalogfactory                                     LGPL
+src/libs/orcanavutil                                        LGPL
+src/libs/orcaobj                                            LGPL
+src/libs/orcaobjutil                                        LGPL
+src/libs/orcaogfusion                                       LGPL
+src/libs/orcaogmap                                          LGPL
+src/libs/orcapathplan                                       LGPL
+src/libs/orcaplayer                                         GPL
+src/libs/orcaprobe                                          LGPL
+src/libs/orcaprobefactory                                   LGPL
+src/libs/orcaqcm                                            GPL
+src/libs/orcaqgui                                           GPL
+src/libs/orcaqguielementutil                                GPL
+src/libs/orcaqguielementmodelview                           GPL
+src/libs/orcaqgui2d                                         GPL
+src/libs/orcaqgui2dfactory                                  GPL
+src/libs/orcaqgui3d                                         GPL
+src/libs/orcaqgui3dfactory                                  GPL
+src/libs/orcaqt                                             GPL
+src/libs/orcaquml                                           GPL
+src/libs/orcarobotdriverutil                                LGPL
+src/libs/orcawall                                           LGPL
+src/libs/orcawallfactory                                    LGPL
+src/utils/orcaview2d                                        GPL
+src/utils/orcaview3d                                        GPL
+src/utils/probe/gui-qt                                      GPL
+src/utils/registryview                                      GPL
+src/utils                                                   LGPL
+src/components/ogmaploader                                  GPL
+src/components                                              LGPL
+src/examples                                                LGPL
+src/sandbox/gorca                                           GPL
+src/sandbox                                                 LGPL
