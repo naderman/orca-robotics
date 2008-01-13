@@ -8,6 +8,8 @@ IF ( NOT OS_WIN AND BUILD_SANDBOX )
 
     # when adding new directories, please maintain alphabetical order
     ADD_SUBDIRECTORY ( gorca )
+    ADD_SUBDIRECTORY ( imu )
+    ADD_SUBDIRECTORY ( insgps )
     ADD_SUBDIRECTORY ( noisyrobot2d )
     ADD_SUBDIRECTORY ( pathplantester )
     ADD_SUBDIRECTORY ( pointcloudserver )
