@@ -21,10 +21,9 @@
 @par Provides
 
 - @ref orca_interface_home
-- @ref orca_interface_imu
-- @ref orca_interface_odometry3d
-- @ref orca_interface_localise3d
+- @ref orca_interface_ins
 - @ref orca_interface_gps
+- @ref orca_interface_imu
 - @ref orca_interface_status
 
 @par Requires
@@ -35,15 +34,22 @@
 
 @par Drivers
 
-- @b novatelspan @ref insgps_novatel
+- @b novatelspan @ref insgps_novatel (not yet implemented)
 - @b fake Useful for testing or if you don't have hardware or a simulator.
 
-This component encapsulates an Inertial Navigation System that is coupled with GPS. In particular, the SPAN systems from Novatel which includes a Novatel Gps receiver and Honeywell IMU.
+This component encapsulates an Inertial Navigation System that is coupled with GPS.
+In particular, the SPAN systems from Novatel which includes a Novatel Gps receiver and Honeywell IMU.
 
 <!--It can run either as a stand-alone component or an IceBox Service. -->
 
 @par Features
-This component provides four interfaces. The first interface (imu) provides raw imu information that all physical intertial measurement units should output. The second interface (odometry3d) is more for a complete Inertial Navigation System in which the position, velocity, and attitude (PVA) information is also output. The third (localise3d) can be used instead of or with odometry3d and adds uncertainty to the PVA information. The fourth (gps) are global gps coordinates.
+This component provides three interfaces.
+The first interface (ins) is more for a complete Inertial Navigation System in which the position, velocity,
+and attitude (PVA) information is output.
+The second interface (imu) provides raw imu information that all physical intertial measurement units should output.
+The third (gps) are global gps coordinates.
+
+!stuff below is old!
   
 @par Configuration
 
