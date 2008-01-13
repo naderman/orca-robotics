@@ -28,15 +28,8 @@ MainThread::MainThread( const orcaice::Context &context ) :
     // Read settings
     Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag() + ".Config.";
-
-    if ( !config_.validate() ) {
-        context_.tracer().error( "Failed to validate insgps configuration. "+config_.toString() );
-        // this will kill this component
-        throw hydroutil::Exception( ERROR_INFO, "Failed to validate insgps configuration" );
-    }
 }
 
-/*
 MainThread::~MainThread()
 {
     context_.tracer().debug( "stopping mainThread", 5 );
@@ -44,7 +37,6 @@ MainThread::~MainThread()
     context_.tracer().debug( "stopped mainThread", 5 );
     return;
 }
-*/
 
 void
 MainThread::initNetworkInterface()
@@ -147,6 +139,6 @@ MainThread::walk()
             sleep(1);
         }
     } // end of while
-    hydroiceutil::stopAndJoin( hwHandler_ );
+    //hydroiceutil::stopAndJoin( hwHandler_ );
 }
 

@@ -13,13 +13,10 @@
 #include <memory>
 #include <hydroiceutil/hydroiceutil.h>
 #include <orcaice/context.h>
-#include <hydrodll/dynamicload.h>
 // remote interfaces
 #include <orcaifaceimpl/insImpl.h>
 #include <orcaifaceimpl/gpsImpl.h>
 #include <orcaifaceimpl/imuImpl.h>
-// hardware interface
-#include <hydrointerfaces/insgps.h>
 
 namespace insgps {
 
@@ -32,12 +29,10 @@ class MainThread : public hydroiceutil::SubsystemThread
 public:
 
     MainThread( const orcaice::Context &context );
-    //virtual ~MainThread();
+    virtual ~MainThread();
 
     // from SubsystemThread
     virtual void walk();
-    // from Thread
-//    virtual void stop();
 
 private:
     // Loops until established
@@ -48,14 +43,12 @@ private:
     orcaifaceimpl::GpsImplPtr gpsInterface_;
     orcaifaceimpl::ImuImplPtr imuInterface_;
 
-    hydrointerfaces::InsGps::Config config_;
-
     // used to shove data from the hardware side to the network side
     // event queue, so we can put through different data types
     hydroiceutil::EventQueuePtr dataPipe_;
 
     // Thread talking to hardware
-    hydroiceutil::SubsystemThreadPtr hwHandler_;
+    hydroiceutil::ThreadPtr hwHandler_;
 
     orcaice::Context context_;
 };
