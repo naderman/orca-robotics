@@ -11,13 +11,13 @@
 #define HARDWARE_THREAD_H
 
 #include <memory>
-#include <hydroiceutil/hydroiceutil.h>
+#include <hydroiceutil/eventqueue.h>
 #include <orcaice/context.h>
 #include <hydrodll/dynamicload.h>
-// remote interfaces
-#include <orcaifaceimpl/insImpl.h>
-#include <orcaifaceimpl/gpsImpl.h>
-#include <orcaifaceimpl/imuImpl.h>
+// orca data types
+#include <orca/ins.h>
+#include <orca/gps.h>
+#include <orca/imu.h>
 // hardware interface
 #include <hydrointerfaces/insgps.h>
 
