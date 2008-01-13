@@ -170,7 +170,7 @@ AdminSessionManagerI::walk()
                            <<timeoutSec_<<", secSinceLastKeepalive=" << secSinceLastKeepalive;
                         context_.tracer().warning( ss.str() );
                     }
-                    context_.tracer().debug( "AdminSessionManagerI: sending keepAlive()" );
+                    context_.tracer().debug( "AdminSessionManagerI: sending keepAlive()", 10 );
                     session_->keepAlive();
                     lastKeepaliveTime_ = IceUtil::Time::now(); //orcaice::getNow();
                     sentKeepalive = true;

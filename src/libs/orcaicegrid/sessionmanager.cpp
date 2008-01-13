@@ -142,7 +142,7 @@ SessionManager::walk()
 
                 try
                 {
-                    context_.tracer().debug( "SessionManager: sending keepAlive()" );
+                    context_.tracer().debug( "SessionManager: sending keepAlive()", 10 );
                     session_->keepAlive();
                 }
                 catch( const Ice::CommunicatorDestroyedException & )
