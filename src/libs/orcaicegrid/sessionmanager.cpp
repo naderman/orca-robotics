@@ -115,7 +115,7 @@ SessionManager::checkedSleep( int sec )
     for ( int i=0; i < sec; i++ )
     {
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
-        if ( !!isStopping() )
+        if ( isStopping() )
             break;
     }
 }

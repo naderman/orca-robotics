@@ -70,7 +70,7 @@ InputThread::walk()
     }
 
     // check again to make sure we are not being terminated
-    if ( !!isStopping() ) {
+    if ( isStopping() ) {
         return;
     }
     context_.tracer().debug("InputThread: Input driver enabled",2);

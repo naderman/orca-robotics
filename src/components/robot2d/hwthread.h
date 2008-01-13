@@ -48,7 +48,7 @@ public:
 
 private: 
 
-    // Keeps trying until success or !!isStopping()
+    // Keeps trying until success or isStopping()
     void enableDriver();
 
     // Faults can be detected in either read or write threads: have to be careful.

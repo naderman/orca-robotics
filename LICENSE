@@ -45,5 +45,4 @@ src/utils                                                   LGPL
 src/components/ogmaploader                                  GPL
 src/components                                              LGPL
 src/examples                                                LGPL
-src/sandbox/gorca                                           GPL
 src/sandbox                                                 LGPL

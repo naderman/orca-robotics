@@ -71,7 +71,7 @@ private:
     // Try and get data from the estop to ensure this is all OK.
     bool isEStopConnected(int timeoutMs);
 
-    // Keeps trying until success or !!isStopping()
+    // Keeps trying until success or isStopping()
     void enableDriver();
 
     // Faults can be detected in either read or write threads: have to be careful.

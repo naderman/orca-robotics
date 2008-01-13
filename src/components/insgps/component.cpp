@@ -179,7 +179,7 @@ Component::start()
             throw hydroutil::Exception( ERROR_INFO, errString );
             return;
         }
-        if(!!isStopping()){
+        if(isStopping()){
             return;
         }
     }while(!hwDriver_->hasFix());

@@ -82,7 +82,7 @@ TermDisplayThread::walk()
     }
 
     // check again to make sure we are not being terminated
-    if ( !!isStopping() ) {
+    if ( isStopping() ) {
         return;
     }
     
