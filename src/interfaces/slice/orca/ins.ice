@@ -48,9 +48,9 @@ struct InsData
     double latitude;
     //! Longitude (degrees)
     double longitude;
-    //! Elevation (metres above ellipsoid)
+    //! [m] (above ellipsoid)
     //! usual output of GPS receivers
-    double elevation;
+    double altitude;
     //! Height (metres above geoid, aka height A_bove M_ean S_ea L_evel)
     //! useful to relate to maps/gis
     double heightAMSL;
