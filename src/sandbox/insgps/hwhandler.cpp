@@ -183,12 +183,11 @@ HwHandler::walk()
 
         // If we got to here there's a problem.
         // Re-initialise the driver.
-// mm: Does this work for insgps??
         initHardwareDriver();
 
     } // end of while
 
-    // insgps hardware will be shut down in the driver's destructor.
+    // insgps hardware will be shut down in the driver_ 's destructor.
 }
 
 OrcaInsEvent::OrcaInsEvent(std::auto_ptr<hydrointerfaces::InsGps::InsData> hydroIns)
