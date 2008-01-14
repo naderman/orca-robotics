@@ -123,7 +123,7 @@ MainThread::walk()
         if ( !exceptionSS.str().empty() ) {
             context_.tracer().error( exceptionSS.str() );
             subStatus().fault( exceptionSS.str() );     
-            exceptionSS.clear();
+            exceptionSS.str("");
         }
     } // end of while
 }

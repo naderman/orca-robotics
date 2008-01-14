@@ -166,7 +166,7 @@ HwThread::walk()
         if ( !exceptionSS.str().empty() ) {
             context_.tracer().error( exceptionSS.str() );
             stateMachine_.setFault( exceptionSS.str() );            
-            exceptionSS.clear();
+            exceptionSS.str("");
             // Slow the loop down a little in case of persistent error
             sleep(1);
         }
@@ -197,7 +197,7 @@ HwThread::walk()
                 context_.tracer().error( exceptionSS.str() );
                 // set local state to failure
                 stateMachine_.setFault( exceptionSS.str() );           
-                exceptionSS.clear();
+                exceptionSS.str("");
                 // Slow the loop down a little in case of persistent error
                 sleep(1);
             }

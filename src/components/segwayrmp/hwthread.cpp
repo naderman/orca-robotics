@@ -188,7 +188,7 @@ HwThread::walk()
         if ( !exceptionSS.str().empty() ) {
             context_.tracer().error( exceptionSS.str() );
             stateMachine_.setFault( exceptionSS.str() );            
-            exceptionSS.clear();
+            exceptionSS.str("");
         }
 
         //
@@ -217,7 +217,7 @@ HwThread::walk()
                 context_.tracer().error( exceptionSS.str() );
                 // set local state to failure
                 stateMachine_.setFault( exceptionSS.str() );           
-                exceptionSS.clear();
+                exceptionSS.str("");
             }
         }
 
