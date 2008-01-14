@@ -118,10 +118,17 @@ HwHandler::walk()
             // and the container to Event; then shove it over to the network side
             switch(generic->type()){
                 case hif::InsGps::Ins:
+                {
+//                     hif::InsGps::InsData *insData = 
+//                         dynamic_cast<hif::InsGps::InsData *>( generic.get() );
+//                     assert( insData != NULL );
+//                     e = new OrcaInsEvent(*insData);
+//                     dataPipe_->add(e);
                     hydroIns = hif::insgpsutil::generic2Ins(generic);
                     e = new OrcaInsEvent(hydroIns);
                     dataPipe_->add(e);
                     break;
+                }
                 case hif::InsGps::Gps:
                     hydroGps = hif::insgpsutil::generic2Gps(generic);
                     e = new OrcaGpsEvent(hydroGps);

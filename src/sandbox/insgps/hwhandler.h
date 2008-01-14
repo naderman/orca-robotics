@@ -72,7 +72,8 @@ typedef IceUtil::Handle<OrcaInsEvent> OrcaInsEventPtr;
 class OrcaGpsEvent : public hydroiceutil::Event
 {
     public:
-        OrcaGpsEvent(std::auto_ptr<hydrointerfaces::InsGps::GpsData> hydroGps);
+//        OrcaGpsEvent(const hydrointerfaces::InsGps::GpsData &hydroGps);
+        OrcaGpsEvent(const std::auto_ptr<hydrointerfaces::InsGps::GpsData> hydroGps);
         orca::GpsData data;
 };
 typedef IceUtil::Handle<OrcaGpsEvent> OrcaGpsEventPtr;
