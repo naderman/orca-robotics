@@ -171,9 +171,10 @@ MainThread::initDriver()
         }
         catch ( hydropathplan::Exception &e )
         {
+            // unrecoverable error
+            context_.shutdown(); 
             std::stringstream ss;
             ss << "Trouble constructing a skeletondriver" << endl << "Problem was: " << e.what();
-            context_.tracer().error( ss.str() );
             throw hydropathplan::Exception( ss.str() );  // this will exit
         }
         
@@ -183,6 +184,8 @@ MainThread::initDriver()
         driver_.reset( new FakeDriver() );
     }
     else {
+        // unrecoverable error
+        context_.shutdown(); 
         string errorStr = "Unknown driver type.";
         context_.tracer().error( errorStr);
         context_.tracer().info( "Valid driver values are {'simplenav', 'skeletonnav', 'sparseskeletonnav', 'astar', 'fake'}" );

@@ -59,10 +59,9 @@ MainThread::initHardwareDriver()
     }
     else
     {
-        string errorStr = "Unknown driver type.";
-        context_.tracer().error( errorStr);
-        context_.tracer().info( "Valid driver values are {'hardware','fake'}" );
-        throw hydroutil::Exception( ERROR_INFO, errorStr );
+        // unrecoverable error
+        context_.shutdown(); 
+        throw hydroutil::Exception( ERROR_INFO, "Unknown driver type. Valid driver values are {'hardware','fake'}" );
     }
     context_.tracer().debug("driver instantiated",5);
     

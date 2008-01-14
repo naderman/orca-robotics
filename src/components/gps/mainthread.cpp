@@ -77,6 +77,8 @@ MainThread::initHardwareDriver()
     int ret = orcaice::getProperty( prop, prefix+"Driver", driverName );
     if ( ret != 0 )
     {
+        // unrecoverable error
+        context_.shutdown(); 
         std::string errString = "Component: Couldn't determine gps type. Expected property '";
         errString += prefix + "Driver'";
         throw GpsException( errString );
@@ -87,6 +89,8 @@ MainThread::initHardwareDriver()
         std::string device;
         int ret = orcaice::getProperty( prop, prefix+"Device", device );
         if (ret!=0) {
+            // unrecoverable error
+            context_.shutdown(); 
             std::string errString = "Component: Couldn't determine serial port for garmin gps. Expected property '";
             errString += prefix + "Device'";
             throw GpsException( errString );
@@ -110,6 +114,8 @@ MainThread::initHardwareDriver()
     }
     else
     {
+        // unrecoverable error
+        context_.shutdown(); 
         std::string errString = "Component: Unknown driver: " + driverName;
         context_.tracer().error( errString );
         throw GpsException( errString );
@@ -121,8 +127,9 @@ MainThread::initHardwareDriver()
     }
     catch( GpsException &e )
     {
-        stringstream ss;
-        ss << "Component: Failed to initialize GPS: " << e.what();
+        // unrecoverable error
+        context_.shutdown(); 
+        stringstream ss; ss << "Component: Failed to initialize GPS: " << e.what();
         context_.tracer().error( ss.str() );
         throw GpsException( ss.str() );
     }

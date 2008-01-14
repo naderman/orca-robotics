@@ -17,7 +17,7 @@ using namespace std;
 namespace orcaicegrid {
 
 namespace {
-    const int MAX_TRIES = 3;
+    const int MAX_TRIES = 1;
 } // namespace
 
 AdminSessionManagerI::AdminSessionManagerI( const orcaice::Context &context ) :
@@ -265,6 +265,7 @@ AdminSessionManagerI::performOp( Operation &op )
 
     for ( int i=0; i < MAX_TRIES; i++ )
     {
+        errorLog.str("");
         try {
             orca::Time startTime = orcaice::getNow();
             context_.tracer().debug( string("AdminSessionManagerI: performing ")+op.toString(),10 );

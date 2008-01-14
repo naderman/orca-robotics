@@ -119,7 +119,8 @@ MainThread::initHardwareDriver()
     }
     catch (hydrodll::DynamicLoadException &e)
     {
-        context_.tracer().error( e.what() );
+        // unrecoverable error
+        context_.shutdown(); 
         throw;
     }
 

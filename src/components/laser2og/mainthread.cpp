@@ -131,11 +131,10 @@ MainThread::init()
     mapConfig.mapOriginY = ogFusionConfig.offset.p.y;
     mapConfig.mapOrientation = ogFusionConfig.offset.o;
 
-    if(ogFusionConfig.offset.o != 0.0){
-        std::string errString = "Laser2Og currently only support axis aligned OgMaps";
-        context_.tracer().error( errString );
-        throw hydroutil::Exception( ERROR_INFO, errString );
-        return;
+    if (ogFusionConfig.offset.o != 0.0) {
+        // unrecoverable error
+        context_.shutdown(); 
+        throw hydroutil::Exception( ERROR_INFO, "Laser2Og currently only support axis aligned OgMaps" );
     }
 
     //
@@ -192,6 +191,7 @@ MainThread::walk()
                 std::stringstream ss;
                 ss << "handler.cpp: run: could not fetch pose because of: " << e.what;
                 context_.tracer().warning( ss.str() );
+                // alexm: what the hell is this? why catch and re-throw?
                 throw;
             }
     

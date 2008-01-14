@@ -54,9 +54,7 @@ MainThread::walk()
     {
         // unrecoverable error
         context_.shutdown();
-
-        std::string s = "Unknown driver type: "+driverName;
-        throw hydroutil::Exception( ERROR_INFO, s );
+        throw hydroutil::Exception( ERROR_INFO, "Unknown driver type: "+driverName );
     }
 
     //

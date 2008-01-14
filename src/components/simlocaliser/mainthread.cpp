@@ -59,6 +59,8 @@ MainThread::MainThread( const orcaice::Context & context ) :
     
         driver_ = new StageDriver( playerHost.c_str(), playerPort, playerId.c_str() );
 #else
+        // unrecoverable error
+        context_.shutdown(); 
         throw hydroutil::Exception( ERROR_INFO, "Can't instantiate driver 'stage' because it was not built!" );
 #endif
     }
