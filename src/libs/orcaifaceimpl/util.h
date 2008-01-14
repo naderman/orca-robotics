@@ -67,7 +67,7 @@ namespace orcaifaceimpl {
                 topicPrx = orcaice::connectToTopicWithString<ConsumerPrxType>
                     ( context, consumerPrx, topicName );
 
-                ss.clear();
+                ss.str("");
                 ss << interfaceName << ": Re-connected to IceStorm.";                
                 context.tracer().info( ss.str() );
 
