@@ -10,7 +10,7 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include "hwhandler.h"
+#include "hwthread.h"
 
 using namespace std;
 using namespace insgps;

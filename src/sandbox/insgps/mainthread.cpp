@@ -10,7 +10,7 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include "hwhandler.h"
+#include "hwthread.h"
 #include "mainthread.h"
 
 using namespace std;
