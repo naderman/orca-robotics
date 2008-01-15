@@ -10,8 +10,8 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include "mainthread.h"
 #include "hwhandler.h"
+#include "mainthread.h"
 
 using namespace std;
 using namespace insgps;
@@ -19,8 +19,7 @@ using namespace insgps;
 
 MainThread::MainThread( const orcaice::Context &context ) :
     hydroiceutil::SubsystemThread( context.tracer(), context.status(), "MainThread" ),
-    dataPipe_(new hydroiceutil::EventQueue),
-    hwHandler_(new HwHandler(context, dataPipe_)),
+    hwThread_(new HwThread(context)),
     context_(context)
 {
     subStatus().setMaxHeartbeatInterval( 20.0 );
@@ -33,7 +32,7 @@ MainThread::MainThread( const orcaice::Context &context ) :
 MainThread::~MainThread()
 {
     context_.tracer().debug( "stopping mainThread", 5 );
-    hydroiceutil::stopAndJoin( hwHandler_ );
+    hydroiceutil::stopAndJoin( hwThread_ );
     context_.tracer().debug( "stopped mainThread", 5 );
     return;
 }
@@ -80,7 +79,7 @@ MainThread::walk()
     // These functions catch their exceptions.
     activate( context_, this, subsysName() );
     initNetworkInterface();
-    hwHandler_->start();
+    hwThread_->start();
 
     //
     // IMPORTANT: Have to keep this loop rolling, because the '!isStopping()' call checks for requests to shut down.
@@ -92,7 +91,7 @@ MainThread::walk()
             hydroiceutil::EventPtr e;
 
             // this blocks until new data arrives
-            if(true == dataPipe_->timedGet(e,1000)){
+            if(true == hwThread_->dataPipe_->timedGet(e,1000)){
                 // determine what we've got and shove it of to IceStorm
                 switch(e->type()){
                     case OrcaIns:
@@ -108,7 +107,7 @@ MainThread::walk()
                         break;
                 }
             }else{
-                subStatus().warning( "timed out read on hwHandler" );
+                subStatus().warning( "timed out read on hwThread" );
             }
             continue;
         } // end of try
@@ -139,6 +138,5 @@ MainThread::walk()
             sleep(1);
         }
     } // end of while
-    //hydroiceutil::stopAndJoin( hwHandler_ );
 }
 

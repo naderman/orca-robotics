@@ -26,15 +26,19 @@ namespace insgps {
 //
 // @brief the hardware loop of this component.
 //
-class HwHandler : public hydroiceutil::SubsystemThread
+class HwThread : public hydroiceutil::SubsystemThread
 {
 
 public:
 
-    HwHandler( const orcaice::Context &context, hydroiceutil::EventQueuePtr dataPipe );
+    HwThread( const orcaice::Context &context);
 
     // from SubsystemThread
     virtual void walk();
+
+    // used to shove data from the hardware side to the network side
+    // event queue, so we can put through different data types
+    hydroiceutil::EventQueuePtr dataPipe_;
 
 private:
 
@@ -42,10 +46,6 @@ private:
     void initHardwareDriver();
 
     hydrointerfaces::InsGps::Config config_;
-
-    // used to shove data from the hardware side to the network side
-    // event queue, so we can put through different data types
-    hydroiceutil::EventQueuePtr dataPipe_;
 
     // The library that contains the driver factory (must be declared first so it's destructed last!!!)
     std::auto_ptr<hydrodll::DynamicallyLoadedLibrary> driverLib_;
@@ -64,7 +64,7 @@ enum EventType {
 class OrcaInsEvent : public hydroiceutil::Event
 {
     public:
-        OrcaInsEvent(std::auto_ptr<hydrointerfaces::InsGps::InsData> hydroIns);
+        OrcaInsEvent(const hydrointerfaces::InsGps::InsData &hydroIns);
         orca::InsData data;
 };
 typedef IceUtil::Handle<OrcaInsEvent> OrcaInsEventPtr;
@@ -72,8 +72,7 @@ typedef IceUtil::Handle<OrcaInsEvent> OrcaInsEventPtr;
 class OrcaGpsEvent : public hydroiceutil::Event
 {
     public:
-//        OrcaGpsEvent(const hydrointerfaces::InsGps::GpsData &hydroGps);
-        OrcaGpsEvent(const std::auto_ptr<hydrointerfaces::InsGps::GpsData> hydroGps);
+        OrcaGpsEvent(const hydrointerfaces::InsGps::GpsData &hydroGps);
         orca::GpsData data;
 };
 typedef IceUtil::Handle<OrcaGpsEvent> OrcaGpsEventPtr;
@@ -81,7 +80,7 @@ typedef IceUtil::Handle<OrcaGpsEvent> OrcaGpsEventPtr;
 class OrcaImuEvent : public hydroiceutil::Event
 {
     public:
-        OrcaImuEvent(std::auto_ptr<hydrointerfaces::InsGps::ImuData> hydroImu);
+        OrcaImuEvent(const hydrointerfaces::InsGps::ImuData &hydroImu);
         orca::ImuData data;
 };
 typedef IceUtil::Handle<OrcaImuEvent> OrcaImuEventPtr;

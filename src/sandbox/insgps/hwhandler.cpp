@@ -15,9 +15,9 @@
 using namespace std;
 using namespace insgps;
 
-HwHandler::HwHandler( const orcaice::Context &context, hydroiceutil::EventQueuePtr dataPipe ) :
-    hydroiceutil::SubsystemThread( context.tracer(), context.status(), "HwHandler" ),
-    dataPipe_(dataPipe),
+HwThread::HwThread( const orcaice::Context &context) :
+    hydroiceutil::SubsystemThread( context.tracer(), context.status(), "HwThread" ),
+    dataPipe_(new hydroiceutil::EventQueue),
     context_(context)
 {
     subStatus().setMaxHeartbeatInterval( 20.0 );
@@ -35,7 +35,7 @@ HwHandler::HwHandler( const orcaice::Context &context, hydroiceutil::EventQueueP
 
 
 void
-HwHandler::initHardwareDriver()
+HwThread::initHardwareDriver()
 {
     subStatus().setMaxHeartbeatInterval( 20.0 );
 
@@ -45,7 +45,7 @@ HwHandler::initHardwareDriver()
     // Dynamically load the library and find the factory
     std::string driverLibName = 
         orcaice::getPropertyWithDefault( prop, prefix+"DriverLib", "libOrcaInsGpsFake.so" );
-    context_.tracer().debug( "HwHandler: Loading driver library "+driverLibName, 4 );
+    context_.tracer().debug( "HwThread: Loading driver library "+driverLibName, 4 );
     // The factory which creates the driver
     std::auto_ptr<hydrointerfaces::InsGpsFactory> driverFactory;
     try {
@@ -55,7 +55,9 @@ HwHandler::initHardwareDriver()
             ( *driverLib_, "createDriverFactory" ) );
     }
     catch(hydrodll::DynamicLoadException &e){
+        // unrecoverable error
         context_.tracer().error( e.what() );
+        context_.shutdown();
         throw;
     }
 
@@ -63,24 +65,24 @@ HwHandler::initHardwareDriver()
     while(!isStopping()){
         std::stringstream exceptionSS;
         try {
-            context_.tracer().info( "HwHandler: Creating driver..." );
+            context_.tracer().info( "HwThread: Creating driver..." );
             driver_.reset( driverFactory->createDriver( config_, context_.toHydroContext() ) );
             break;
         }
         catch ( IceUtil::Exception &e ) {
-            exceptionSS << "HwHandler: Caught exception while creating driver: " << e;
+            exceptionSS << "HwThread: Caught exception while creating driver: " << e;
         }
         catch ( std::exception &e ) {
-            exceptionSS << "HwHandler: Caught exception while initialising driver: " << e.what();
+            exceptionSS << "HwThread: Caught exception while initialising driver: " << e.what();
         }
         catch ( char *e ) {
-            exceptionSS << "HwHandler: Caught exception while initialising driver: " << e;
+            exceptionSS << "HwThread: Caught exception while initialising driver: " << e;
         }
         catch ( std::string &e ) {
-            exceptionSS << "HwHandler: Caught exception while initialising driver: " << e;
+            exceptionSS << "HwThread: Caught exception while initialising driver: " << e;
         }
         catch ( ... ) {
-            exceptionSS << "HwHandler: Caught unknown exception while initialising driver";
+            exceptionSS << "HwThread: Caught unknown exception while initialising driver";
         }
 
         // we get here only after an exception was caught
@@ -94,7 +96,7 @@ HwHandler::initHardwareDriver()
 }
 
 void
-HwHandler::walk()
+HwThread::walk()
 {
     initHardwareDriver();
 
@@ -108,9 +110,6 @@ HwHandler::walk()
             namespace hif = hydrointerfaces;
 
             std::auto_ptr<hif::InsGps::GenericData> generic;
-            std::auto_ptr<hif::InsGps::InsData> hydroIns;
-            std::auto_ptr<hif::InsGps::GpsData> hydroGps;
-            std::auto_ptr<hif::InsGps::ImuData> hydroImu;
             hydroiceutil::EventPtr e;
 
             generic = driver_->read();
@@ -119,26 +118,31 @@ HwHandler::walk()
             switch(generic->type()){
                 case hif::InsGps::Ins:
                 {
-//                     hif::InsGps::InsData *insData = 
-//                         dynamic_cast<hif::InsGps::InsData *>( generic.get() );
-//                     assert( insData != NULL );
-//                     e = new OrcaInsEvent(*insData);
-//                     dataPipe_->add(e);
-                    hydroIns = hif::insgpsutil::generic2Ins(generic);
-                    e = new OrcaInsEvent(hydroIns);
+                    hif::InsGps::InsData *insData = 
+                        dynamic_cast<hif::InsGps::InsData *>( generic.get() );
+                    assert( insData != NULL );
+                    e = new OrcaInsEvent(*insData);
                     dataPipe_->add(e);
                     break;
                 }
                 case hif::InsGps::Gps:
-                    hydroGps = hif::insgpsutil::generic2Gps(generic);
-                    e = new OrcaGpsEvent(hydroGps);
+                {
+                    hif::InsGps::GpsData *gpsData = 
+                        dynamic_cast<hif::InsGps::GpsData *>( generic.get() );
+                    assert( gpsData != NULL );
+                    e = new OrcaGpsEvent(*gpsData);
                     dataPipe_->add(e);
                     break;
+                }
                 case hif::InsGps::Imu:
-                    hydroImu = hif::insgpsutil::generic2Imu(generic);
-                    e = new OrcaImuEvent(hydroImu);
+                {
+                    hif::InsGps::ImuData *imuData = 
+                        dynamic_cast<hif::InsGps::ImuData *>( generic.get() );
+                    assert( imuData != NULL );
+                    e = new OrcaImuEvent(*imuData);
                     dataPipe_->add(e);
                     break;
+                }
                 default:
                     break;
             }
@@ -156,7 +160,7 @@ HwHandler::walk()
             }
 
             stringstream ss;
-            ss << "HwHandler: Read laser data: " << orcaice::toString(orcaLaserData_);
+            ss << "HwThread: Read laser data: " << orcaice::toString(orcaLaserData_);
             context_.tracer().debug( ss.str(), 5 );
             */
             continue;
@@ -197,55 +201,55 @@ HwHandler::walk()
     // insgps hardware will be shut down in the driver_ 's destructor.
 }
 
-OrcaInsEvent::OrcaInsEvent(std::auto_ptr<hydrointerfaces::InsGps::InsData> hydroIns)
+OrcaInsEvent::OrcaInsEvent(const hydrointerfaces::InsGps::InsData &hydroIns)
     : hydroiceutil::Event( OrcaIns )
 {
-    data.latitude = hydroIns->lat;
-    data.longitude = hydroIns->lon;
-    data.altitude = hydroIns->alt;
-    data.heightAMSL = hydroIns->altAMSL;
-    data.vENU.x = hydroIns->vENU[0];
-    data.vENU.y = hydroIns->vENU[1];
-    data.vENU.z = hydroIns->vENU[2];
-    data.o.r = hydroIns->oRPY[0];
-    data.o.p = hydroIns->oRPY[1];
-    data.o.y = hydroIns->oRPY[2];
-    data.timeStamp.seconds = hydroIns->time.tv_sec;
-    data.timeStamp.useconds = hydroIns->time.tv_usec;
+    data.latitude = hydroIns.lat;
+    data.longitude = hydroIns.lon;
+    data.altitude = hydroIns.alt;
+    data.heightAMSL = hydroIns.altAMSL;
+    data.vENU.x = hydroIns.vENU[0];
+    data.vENU.y = hydroIns.vENU[1];
+    data.vENU.z = hydroIns.vENU[2];
+    data.o.r = hydroIns.oRPY[0];
+    data.o.p = hydroIns.oRPY[1];
+    data.o.y = hydroIns.oRPY[2];
+    data.timeStamp.seconds = hydroIns.time.tv_sec;
+    data.timeStamp.useconds = hydroIns.time.tv_usec;
     return;
 }
 
-OrcaGpsEvent::OrcaGpsEvent(std::auto_ptr<hydrointerfaces::InsGps::GpsData> hydroGps)
+OrcaGpsEvent::OrcaGpsEvent(const hydrointerfaces::InsGps::GpsData &hydroGps)
     : hydroiceutil::Event( OrcaGps )
 {
-    data.latitude = hydroGps->lat;
-    data.longitude = hydroGps->lon;
-    data.altitude = hydroGps->alt;
-    data.horizontalPositionError = hydroGps->hDop;
-    data.verticalPositionError = hydroGps->vDop;
-    data.heading = hydroGps->heading;
-    data.speed = hydroGps->speed;
-    data.climbRate = hydroGps->climbRate;
-    data.satellites = hydroGps->sat;
-    data.observationCountOnL1 = hydroGps->obsL1;
-    data.observationCountOnL2 = hydroGps->obsL2;
-    data.geoidalSeparation = data.altitude - hydroGps->altAMSL;
-    data.timeStamp.seconds = hydroGps->time.tv_sec;
-    data.timeStamp.useconds = hydroGps->time.tv_usec;
+    data.latitude = hydroGps.lat;
+    data.longitude = hydroGps.lon;
+    data.altitude = hydroGps.alt;
+    data.horizontalPositionError = hydroGps.hDop;
+    data.verticalPositionError = hydroGps.vDop;
+    data.heading = hydroGps.heading;
+    data.speed = hydroGps.speed;
+    data.climbRate = hydroGps.climbRate;
+    data.satellites = hydroGps.sat;
+    data.observationCountOnL1 = hydroGps.obsL1;
+    data.observationCountOnL2 = hydroGps.obsL2;
+    data.geoidalSeparation = data.altitude - hydroGps.altAMSL;
+    data.timeStamp.seconds = hydroGps.time.tv_sec;
+    data.timeStamp.useconds = hydroGps.time.tv_usec;
     return;
 }
 
-OrcaImuEvent::OrcaImuEvent(std::auto_ptr<hydrointerfaces::InsGps::ImuData> hydroImu)
+OrcaImuEvent::OrcaImuEvent(const hydrointerfaces::InsGps::ImuData &hydroImu)
     : hydroiceutil::Event( OrcaImu )
 {
-    data.accel.x = hydroImu->acc[0];
-    data.accel.y = hydroImu->acc[1];
-    data.accel.z = hydroImu->acc[2];
-    data.gyro.x = hydroImu->turnRate[0];
-    data.gyro.y = hydroImu->turnRate[1];
-    data.gyro.z = hydroImu->turnRate[2];
-    //data.?? = hydroImu->tempr;
-    data.timeStamp.seconds = hydroImu->time.tv_sec;
-    data.timeStamp.useconds = hydroImu->time.tv_usec;
+    data.accel.x = hydroImu.acc[0];
+    data.accel.y = hydroImu.acc[1];
+    data.accel.z = hydroImu.acc[2];
+    data.gyro.x = hydroImu.turnRate[0];
+    data.gyro.y = hydroImu.turnRate[1];
+    data.gyro.z = hydroImu.turnRate[2];
+    //data.?? = hydroImu.tempr;
+    data.timeStamp.seconds = hydroImu.time.tv_sec;
+    data.timeStamp.useconds = hydroImu.time.tv_usec;
     return;
 }

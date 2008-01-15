@@ -43,12 +43,8 @@ private:
     orcaifaceimpl::GpsImplPtr gpsInterface_;
     orcaifaceimpl::ImuImplPtr imuInterface_;
 
-    // used to shove data from the hardware side to the network side
-    // event queue, so we can put through different data types
-    hydroiceutil::EventQueuePtr dataPipe_;
-
     // Thread talking to hardware
-    hydroiceutil::ThreadPtr hwHandler_;
+    IceUtil::Handle<class HwThread> hwThread_;
 
     orcaice::Context context_;
 };
