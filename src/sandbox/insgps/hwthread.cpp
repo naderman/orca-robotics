@@ -146,24 +146,27 @@ HwThread::walk()
                 default:
                     break;
             }
-            /*
-// mm: How do we do this gear for insgps?
-
-            laserInterface_->localSetAndSend( orcaLaserData_ );
-            if ( hydroLaserData_.haveWarnings )
-            {
-                subStatus().warning( hydroLaserData_.warnings );
+            // report status info
+            switch(generic->statusMessageType){
+                case hif::InsGps::Ok:
+                    subStatus().ok( generic.get()->statusMessage );
+                    break;
+                case hif::InsGps::Warning:
+                    subStatus().warning( generic.get()->statusMessage );
+                    break;
+                case hif::InsGps::Fault:
+                    subStatus().fault( generic.get()->statusMessage );
+                    break;
+                case hif::InsGps::NoMsg:
+                    //do nothing
+                    break;
+                default:
+                    //do nothing
+                    break;
             }
-            else
-            {
-                subStatus().ok();
-            }
 
-            stringstream ss;
-            ss << "HwThread: Read laser data: " << orcaice::toString(orcaLaserData_);
-            context_.tracer().debug( ss.str(), 5 );
-            */
             continue;
+
         } // end of try
         catch ( Ice::CommunicatorDestroyedException & ) {
             // This is OK: it means that the communicator shut down (eg via Ctrl-C)
