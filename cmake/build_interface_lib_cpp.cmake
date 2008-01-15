@@ -1,4 +1,4 @@
-MESSAGE( STATUS "Planning to build C++ interfaces." )
+MESSAGE( STATUS "Planning to build C++ version of Slice interfaces." )
 
 #
 # Install sub-directory will be the same as the current sub-directory
@@ -11,6 +11,9 @@ GET_FILENAME_COMPONENT( INTERFACE_NAMESPACE ${CMAKE_CURRENT_SOURCE_DIR} NAME )
 #
 INCLUDE( ${PROJECT_SOURCE_DIR}/src/interfaces/slice/${INTERFACE_NAMESPACE}/slice_sources.cmake )
 
+INCLUDE( ${ORCA_CMAKE_DIR}/UseBasicRules.cmake )
+INCLUDE( ${ORCA_CMAKE_DIR}/UseZeroC.cmake )
+
 #
 # Defines macros for compiling Slice source files.
 #
@@ -21,22 +24,16 @@ INCLUDE( ${ORCA_CMAKE_DIR}/slice2cpp_rules.cmake )
 #
 GENERATE_SLICE2CPP_RULES( SLICE_GENERATED_CPP_FILES SLICE_GENERATED_HEADER_FILES ${SLICE_SOURCE_FILES} )
 
-INCLUDE_DIRECTORIES( BEFORE
-    ${ICE_HOME}/include
+INCLUDE_DIRECTORIES(
     ${PROJECT_BINARY_DIR}/src/interfaces/cpp
     ${PROJECT_BINARY_DIR}/src/interfaces/cpp/${INTERFACE_NAMESPACE}
 )
 
 # for satelite projects, add the orca install directory
 IF ( DEFINED ORCA_HOME )
-    INCLUDE_DIRECTORIES(
-        ${ORCA_HOME}/include
-    )
+    INCLUDE_DIRECTORIES( ${ORCA_HOME}/include )
 ENDIF ( DEFINED ORCA_HOME )
 
-LINK_DIRECTORIES( ${ICE_HOME}/lib )
-
-ADD_DEFINITIONS( "-Wall" )
 
 IF( NOT OS_WIN )
     GLOBAL_ADD_LIBRARY( ${PROJECT_INTERFACE_LIB} SHARED ${SLICE_GENERATED_CPP_FILES} )
@@ -49,4 +46,3 @@ ELSE( NOT OS_WIN )
 ENDIF( NOT OS_WIN ) 
 
 INSTALL_FILES( /include/${INTERFACE_NAMESPACE} FILES ${SLICE_GENERATED_HEADER_FILES} )
-MESSAGE ( STATUS "Will install C++ header files into ${PROJECT_INSTALL_DIR}/install/${INTERFACE_NAMESPACE}" )
