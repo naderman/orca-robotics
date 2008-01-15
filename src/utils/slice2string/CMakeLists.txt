@@ -1,0 +1,20 @@
+SET_COMPONENT_NAMES ( Slice2String )
+
+REQUIRE_OPTION( EXE ${APP_NAME} ON )
+
+IF ( BUILD )
+
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseBasicRules.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseZeroC.cmake )
+
+    FILE( GLOB SRCS *.cpp )
+    SET ( DEPS IceUtil Slice )
+    
+    GLOBAL_ADD_EXECUTABLE( ${APP_NAME} ${SRCS} )
+    TARGET_LINK_LIBRARIES( ${APP_NAME} ${DEPS} )
+
+    IF ( BUILD_TESTS )
+        ADD_SUBDIRECTORY ( test )
+    ENDIF ( BUILD_TESTS )
+
+ENDIF( BUILD )
