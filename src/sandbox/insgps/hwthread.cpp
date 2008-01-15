@@ -26,7 +26,7 @@ HwThread::HwThread( const orcaice::Context &context) :
     Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag() + ".Config.";
 
-    if ( !config_.validate() ) {
+    if ( !config_.isValid() ) {
         context_.tracer().error( "Failed to validate insgps configuration. "+config_.toString() );
         // this will kill this component
         throw hydroutil::Exception( ERROR_INFO, "Failed to validate insgps configuration" );
