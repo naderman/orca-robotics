@@ -158,10 +158,11 @@ HwThread::walk()
                     subStatus().fault( generic.get()->statusMessage );
                     break;
                 case hif::InsGps::NoMsg:
-                    //do nothing
+                    subStatus().heartbeat();
                     break;
                 default:
-                    //do nothing
+                    //shouldn't happen
+                    //do nothing; should we whinge about some unhandled status??
                     break;
             }
 
