@@ -204,7 +204,7 @@ HwThread::walk()
 
                 stringstream ss;
                 ss << "HwThread: wrote command: " << command.toString();
-                context_.tracer().debug( ss.str() );
+                context_.tracer().debug( ss.str(), 2 );
             }
             catch ( std::exception &e ) {
                 exceptionSS << "HwThread: Failed to write command to hardware: " << e.what();
@@ -292,14 +292,14 @@ HwThread::setCommand( const hydrointerfaces::SegwayRmp::Command &command )
         std::stringstream ss;
         ss << "HwDriverMainThread: It's been " << msecs << "ms since we last received a command."<<endl
            << "This will cause the Segway to time out.";
-        context_.tracer().debug( ss.str() );
+        context_.tracer().debug( ss.str(), 2 );
     }
 
     commandStore_.set( command );
 
     stringstream ss;
     ss << "HwThread::setCommand( "<<command.toString()<<" )";
-    context_.tracer().debug( ss.str() );
+    context_.tracer().debug( ss.str(), 2 );
 }
 
 bool

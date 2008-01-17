@@ -190,7 +190,7 @@ NetThread::handleData(const orca::VelocityControl2dData& incomingCommand)
                            maxTurnrate_,
                            maxLateralAcceleration_ ) )
     {
-        hydrointerfaces::SegwayRmp::Command originalCommand;
+        hydrointerfaces::SegwayRmp::Command originalCommand = internalCommand;
         limit( internalCommand.vx,
                internalCommand.w,
                maxForwardSpeed_,
@@ -202,7 +202,7 @@ NetThread::handleData(const orca::VelocityControl2dData& incomingCommand)
         ss << "Requested command ("<<originalCommand.toString()<<") can not be achieved.  " << endl
            << "  maxForwardSpeed        : " << maxForwardSpeed_ << endl
            << "  maxReverseSpeed        : " << maxReverseSpeed_ << endl
-           << "  maxTurnrate            :     " << maxTurnrate_*M_PI/180.0 << endl
+           << "  maxTurnrate            : " << maxTurnrate_*M_PI/180.0 << endl
            << "  maxLateralAcceleration : " << maxLateralAcceleration_ << endl
            << "    --> limiting command to: " << internalCommand.toString();
         subStatus().warning( ss.str() );
