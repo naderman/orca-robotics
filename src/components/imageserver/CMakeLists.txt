@@ -63,7 +63,7 @@ IF ( BUILD )
         ADD_DEFINITIONS( -DBUILD_OPENCV_GRABBER )
         INCLUDE_DIRECTORIES( ${OPENCV_INCLUDE_DIRS} )
         LINK_DIRECTORIES( ${OPENCV_LINK_DIRS} )
-        SET( DEP_LIBS ${COMP_DEPS} ${OPENCV_LIBS} OrcaImageGrabber )
+        SET( DEP_LIBS ${DEP_LIBS} ${OPENCV_LIBS} OrcaImageGrabber )
     ENDIF ( OPENCV_FOUND AND HAVE_CAMERA_HW_LIB )
     
     # check for digiclops image grabbing libraries
@@ -81,7 +81,7 @@ IF ( BUILD )
     IF ( DIGICLOPS_AND_TRICLOPS_FOUND )
         ADD_DEFINITIONS( -DBUILD_DIGICLOPS_GRABBER )
         INCLUDE_DIRECTORIES( /usr/local/include/digiclops /usr/local/include/triclops)
-        SET( DEP_LIBS ${COMP_DEPS} ${OPENCV_LIBS} digiclops triclops OrcaImage OrcaImageGrabber )
+        SET( DEP_LIBS ${DEP_LIBS} ${OPENCV_LIBS} digiclops triclops OrcaImage OrcaImageGrabber )
     ENDIF ( DIGICLOPS_AND_TRICLOPS_FOUND )
     
 
