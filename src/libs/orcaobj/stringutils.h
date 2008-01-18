@@ -233,6 +233,10 @@ std::string toString( const orca::Localise2dData& );
 //! Converts to string
 std::string toString( const orca::Localise3dData& );
 //! Converts to string
+std::string toString( const orca::BatteryData& );
+//! Converts to string
+std::string toString( const orca::BatteriesData& );
+//! Converts to string
 std::string toString( const orca::PowerData& );
 //! Converts to string
 std::string toString( const orca::PixMapData& );

@@ -1095,27 +1095,42 @@ toString( const orca::RangeScanner2dDataPtr & obj, int skip )
 }
 
 std::string 
+toString( const orca::BatteryData& obj )
+{
+    std::ostringstream s;
+    s << endl << "[" 
+      <<obj.name<<","
+      <<obj.voltage<<"V,"
+      <<obj.percent<<"%,";
+    if (obj.isBatteryCharging==orca::ChargingYes) {
+        s << "Yes";
+    } else if (obj.isBatteryCharging==orca::ChargingNo) {
+        s << "No";
+    } else {
+        s << "Unknown";
+    }
+    s<<obj.secRemaining<<"s]";
+    return s.str();
+}
+
+std::string 
+toString( const orca::BatteriesData& obj )
+{
+    std::ostringstream s;
+    s << "(name,volt,%,isCharging,sec) :" << endl;
+    for ( unsigned int i=0; i < obj.size(); ++i )
+    {
+        s << "  " << toString(obj[i]) << endl;
+    }
+    return s.str();
+}
+
+std::string 
 toString( const orca::PowerData& obj )
 {
     std::ostringstream s;
-    s << toString(obj.timeStamp)
-        << " Power ["<<obj.batteries.size()<<" batteries] (name,volt,%,isCharging,sec) :";
-
-    for ( unsigned int i=0; i < obj.batteries.size(); ++i )
-    {
-        s << endl << "[" 
-          <<obj.batteries[i].name<<","
-          <<obj.batteries[i].voltage<<"V,"
-          <<obj.batteries[i].percent<<"%,";
-        if (obj.batteries[i].isBatteryCharging==orca::ChargingYes) {
-            s << "Yes";
-        } else if (obj.batteries[i].isBatteryCharging==orca::ChargingNo) {
-            s << "No";
-        } else {
-            s << "Unknown";
-        }
-        s<<obj.batteries[i].secRemaining<<"s]";
-    }
+    s << toString(obj.timeStamp) << " " << endl;
+    s << toString(obj.batteries);
     return s.str();
 }
 
