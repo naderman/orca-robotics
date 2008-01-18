@@ -64,6 +64,11 @@ namespace {
             ice_writeVehicleDescription( helper.stream_, obj );
             helper.write( file ); 
         }
+        else if ( format == "ascii" )
+        {
+            for ( uint i=0; i < 20; i++ )
+                cout<<"TRACE(logwriters.cpp): TODO: log orca::VehicleDescription" << endl;
+        }
         else
         {
             stringstream ss;
