@@ -1103,9 +1103,9 @@ toString( const orca::BatteryData& obj )
       <<obj.voltage<<"V,"
       <<obj.percent<<"%,";
     if (obj.isBatteryCharging==orca::ChargingYes) {
-        s << "Yes";
+        s << "Yes,";
     } else if (obj.isBatteryCharging==orca::ChargingNo) {
-        s << "No";
+        s << "No,";
     } else {
         s << "Unknown";
     }
