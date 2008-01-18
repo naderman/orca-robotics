@@ -1098,7 +1098,7 @@ std::string
 toString( const orca::BatteryData& obj )
 {
     std::ostringstream s;
-    s << endl << "[" 
+    s << "[" 
       <<obj.name<<","
       <<obj.voltage<<"V,"
       <<obj.percent<<"%,";
