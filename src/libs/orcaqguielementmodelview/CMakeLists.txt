@@ -1,10 +1,17 @@
 SET ( LIB_NAME OrcaQGuiElementModelView )
 GLOBAL_ADD_LICENSE( GPL )
 
-REQUIRE_OPTION( LIB ${LIB_NAME} ON )
+SET ( BUILD TRUE )
+REQUIRE_OPTION( BUILD LIB ${LIB_NAME} ON )
 SET ( NOT_OS_WIN NOT OS_WIN )
-REQUIRE_VAR( LIB ${LIB_NAME} NOT_OS_WIN "Windows OS is not  supported" )
-REQUIRE_VAR( LIB ${LIB_NAME} QT4_FOUND "Qt4 not found" )
+REQUIRE_VAR( BUILD LIB ${LIB_NAME} NOT_OS_WIN "Windows OS is not  supported" )
+REQUIRE_VAR( BUILD LIB ${LIB_NAME} QT4_FOUND "Qt4 not found" )
+
+SET( DEP_LIBS OrcaQt OrcaQCompModel )
+REQUIRE_TARGETS( BUILD LIB ${LIB_NAME} ${DEP_LIBS} )
+
+SET( DEP_LIBS ${DEP_LIBS} HydroQGui )
+REQUIRE_VAR( BUILD LIB ${LIB_NAME} HYDROQGUI_INSTALLED "libHydroQGui not installed" )
 
 IF ( BUILD )
 
@@ -26,7 +33,7 @@ IF ( BUILD )
     
     GLOBAL_ADD_LIBRARY( ${LIB_NAME} SHARED ${HUMAN_SRCS} ${MOC_SRCS} )
     
-    TARGET_LINK_LIBRARIES ( ${LIB_NAME} OrcaQt OrcaQCompModel HydroQGui )
+    TARGET_LINK_LIBRARIES ( ${LIB_NAME} ${DEP_LIBS} )
     
     INSTALL_FILES( /include/orcaqguielementmodelview .*\\.h$ )
 

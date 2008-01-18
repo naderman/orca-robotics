@@ -5,8 +5,12 @@
 
 SET_COMPONENT_NAMES ( ImageServer )
 
-REQUIRE_OPTION( EXE ${APP_NAME} ON )
-REQUIRE_VAR( EXE ${APP_NAME} OS_LINUX "Only Linux is supported" )
+SET ( BUILD TRUE )
+REQUIRE_OPTION( BUILD EXE ${APP_NAME} ON )
+REQUIRE_VAR( BUILD EXE ${APP_NAME} OS_LINUX "Only Linux is supported" )
+
+SET( DEP_LIBS OrcaIfaceImpl )
+REQUIRE_TARGETS( BUILD EXE ${APP_NAME} ${DEP_LIBS} )
 
 IF ( BUILD )
 
@@ -55,13 +59,11 @@ IF ( BUILD )
         MESSAGE( STATUS "     Please install Video4Linux for usb cameras and/or libdc1394 for firewire cameras"  ) 
     ENDIF ( HAVE_CAMERA_HW_LIB )
     
-    SET( COMP_DEPS OrcaIfaceImpl )
-    
     IF ( OPENCV_FOUND AND HAVE_CAMERA_HW_LIB )
         ADD_DEFINITIONS( -DBUILD_OPENCV_GRABBER )
         INCLUDE_DIRECTORIES( ${OPENCV_INCLUDE_DIRS} )
         LINK_DIRECTORIES( ${OPENCV_LINK_DIRS} )
-        SET( COMP_DEPS ${COMP_DEPS} ${OPENCV_LIBS} OrcaImageGrabber )
+        SET( DEP_LIBS ${COMP_DEPS} ${OPENCV_LIBS} OrcaImageGrabber )
     ENDIF ( OPENCV_FOUND AND HAVE_CAMERA_HW_LIB )
     
     # check for digiclops image grabbing libraries
@@ -79,19 +81,19 @@ IF ( BUILD )
     IF ( DIGICLOPS_AND_TRICLOPS_FOUND )
         ADD_DEFINITIONS( -DBUILD_DIGICLOPS_GRABBER )
         INCLUDE_DIRECTORIES( /usr/local/include/digiclops /usr/local/include/triclops)
-        SET( COMP_DEPS ${COMP_DEPS} ${OPENCV_LIBS} digiclops triclops OrcaImage OrcaImageGrabber )
+        SET( DEP_LIBS ${COMP_DEPS} ${OPENCV_LIBS} digiclops triclops OrcaImage OrcaImageGrabber )
     ENDIF ( DIGICLOPS_AND_TRICLOPS_FOUND )
     
 
     SET( COMP_SRCS component mainthread ${DRIVER_SRCS} ${MONO_DRIVER_SRCS} )
     
     WRAP_COMPONENT_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${COMP_SRCS} )
-    TARGET_LINK_LIBRARIES( ${APP_NAME} ${COMP_DEPS} )
+    TARGET_LINK_LIBRARIES( ${APP_NAME} ${DEP_LIBS} )
     
     # build an IceBox service
     IF ( BUILD_SERVICES )
         WRAP_COMPONENT_INTO_SERVICE( ${SERVICE_NAME} ${COMP_NAMESPACE} ${COMP_SRCS} )
-        TARGET_LINK_LIBRARIES( ${SERVICE_NAME} ${COMP_DEPS} )    
+        TARGET_LINK_LIBRARIES( ${SERVICE_NAME} ${DEP_LIBS} )    
     ENDIF ( BUILD_SERVICES )
 
     GENERATE_CONFIG_FILE( ${APP_NAME}.def )

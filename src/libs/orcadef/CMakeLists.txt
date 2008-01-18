@@ -1,7 +1,11 @@
 SET ( LIB_NAME OrcaDef )
 GLOBAL_ADD_LICENSE( LGPL )
 
-REQUIRE_OPTION( LIB ${LIB_NAME} ON )
+SET ( BUILD TRUE )
+REQUIRE_OPTION( BUILD LIB ${LIB_NAME} ON )
+
+SET( DEP_LIBS OrcaObjects )
+REQUIRE_TARGETS( BUILD LIB ${LIB_NAME} ${DEP_LIBS} )
 
 IF ( BUILD )
 
@@ -19,7 +23,7 @@ IF ( BUILD )
         GLOBAL_ADD_LIBRARY( ${LIB_NAME} STATIC ${SRCS} )
     ENDIF (NOT OS_WIN)
     
-    TARGET_LINK_LIBRARIES( ${LIB_NAME} OrcaObjects )
+    TARGET_LINK_LIBRARIES( ${LIB_NAME} ${DEP_LIBS} )
     
     # special dependency on the generated files
     ADD_DEPENDENCIES( ${LIB_NAME} OrcaObjects )

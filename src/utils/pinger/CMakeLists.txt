@@ -1,9 +1,10 @@
 SET_COMPONENT_NAMES ( Pinger )
 
+SET ( BUILD TRUE )
 # This utility is disabled because the C++ header for the interface is compiled by hand.
 # This means that on systems with a slightly different version of Ice this
 # may break. The .ice file should be compiled at compile time.
-REQUIRE_OPTION( EXE ${APP_NAME} OFF )
+REQUIRE_OPTION( BUILD EXE ${APP_NAME} OFF )
 
 IF ( BUILD )
     
@@ -12,16 +13,16 @@ IF ( BUILD )
     INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR} ) 
    
     FILE( GLOB COMP_SRCS *.cpp )
-#     SET( COMP_DEPS )
+#     SET( DEP_LIBS )
     
     # build stand-alone component  
     WRAP_MAINTHREAD_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${COMP_NAME} ${COMP_SRCS} )
-#     TARGET_LINK_LIBRARIES( ${APP_NAME} ${COMP_DEPS} )
+#     TARGET_LINK_LIBRARIES( ${APP_NAME} ${DEP_LIBS} )
     
     # build IceBox service
     IF ( BUILD_SERVICES )
         WRAP_MAINTHREAD_INTO_SERVICE( ${SERVICE_NAME} ${COMP_NAMESPACE} ${COMP_NAME} ${COMP_SRCS} )
-#         TARGET_LINK_LIBRARIES( ${SERVICE_NAME} ${COMP_DEPS} )    
+#         TARGET_LINK_LIBRARIES( ${SERVICE_NAME} ${DEP_LIBS} )    
     ENDIF ( BUILD_SERVICES )
 
     GENERATE_CONFIG_FILE( ${APP_NAME}.def )

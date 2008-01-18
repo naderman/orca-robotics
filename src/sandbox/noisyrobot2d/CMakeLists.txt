@@ -7,7 +7,7 @@ IF ( BUILD_NOISYROBOT2D )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
     FIND_COMPONENT_SOURCES( COMP_SRCS )
-    SET( COMP_DEPS HydroNavUtil  )
+    SET( DEP_LIBS HydroNavUtil  )
     
     # build stand-alone component  
     GLOBAL_ADD_EXECUTABLE( noisyrobot2d ${COMP_SRCS} main )

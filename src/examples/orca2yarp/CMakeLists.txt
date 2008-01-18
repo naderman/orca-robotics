@@ -1,8 +1,9 @@
 SET_COMPONENT_NAMES ( Orca2Yarp )
 
-REQUIRE_OPTION( EXE ${APP_NAME} OFF )
+SET ( BUILD TRUE )
+REQUIRE_OPTION( BUILD EXE ${APP_NAME} OFF )
 # only tested on Linux but should work where Yarp works.
-REQUIRE_VAR( EXE ${APP_NAME} OS_LINUX "only Linux OS is supported" )
+REQUIRE_VAR( BUILD EXE ${APP_NAME} OS_LINUX "only Linux OS is supported" )
 
 IF ( BUILD)
 

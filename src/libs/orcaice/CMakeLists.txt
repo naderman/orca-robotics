@@ -2,7 +2,10 @@ SET ( LIB_NAME OrcaIce )
 GLOBAL_ADD_LICENSE( LGPL )
 
 SET ( BUILD TRUE )
-REQUIRE_VAR( LIB ${LIB_NAME} HYDROUTIL_INSTALLED "libHydroUtil not found" )
+REQUIRE_VAR( BUILD LIB ${LIB_NAME} HYDROUTIL_INSTALLED "libHydroUtil not found" )
+
+SET( DEP_LIBS OrcaObjects )
+REQUIRE_TARGETS( BUILD LIB ${LIB_NAME} ${DEP_LIBS} )
 
 IF ( BUILD )
 
@@ -23,7 +26,7 @@ IF ( BUILD )
         GLOBAL_ADD_LIBRARY( ${LIB_NAME} STATIC ${SRCS} )
     ENDIF ( NOT OS_WIN )
     
-    TARGET_LINK_LIBRARIES( ${LIB_NAME} OrcaObjects )
+    TARGET_LINK_LIBRARIES( ${LIB_NAME} ${DEP_LIBS} )
 
     # special dependency on the generated files
     ADD_DEPENDENCIES( ${LIB_NAME} OrcaInterfaces )

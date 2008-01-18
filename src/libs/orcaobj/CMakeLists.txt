@@ -1,7 +1,8 @@
 SET ( LIB_NAME OrcaObjects )
 GLOBAL_ADD_LICENSE( LGPL )
 
-# This is one of fundamental libs.
+# This is one of fundamental libs. It is not optional (but maybe it should change)
+
 # Do not include UseComponentRules here because it will link to OrcaIce
 # creating circular dependency.
 INCLUDE( ${ORCA_CMAKE_DIR}/UseBasicRules.cmake )

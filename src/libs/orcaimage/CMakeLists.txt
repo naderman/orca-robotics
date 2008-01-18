@@ -1,13 +1,14 @@
 SET ( LIB_NAME OrcaImage )
 GLOBAL_ADD_LICENSE( GPL )
 
-REQUIRE_OPTION( LIB ${LIB_NAME} ON )
+SET ( BUILD TRUE )
+REQUIRE_OPTION( BUILD LIB ${LIB_NAME} ON )
 SET ( NOT_OS_WIN NOT OS_WIN )
-REQUIRE_VAR( LIB ${LIB_NAME} NOT_OS_WIN "Windows OS is not  supported" )
+REQUIRE_VAR( BUILD LIB ${LIB_NAME} NOT_OS_WIN "Windows OS is not  supported" )
 
 # this lib should be split up into sublibraries with simpler dependencies
 # INCLUDE (${ORCA_CMAKE_DIR}/FindOpenCV.cmake)
-# REQUIRE_VAR( EXE ${APP_NAME} OPENCV_FOUND "OpenCV not found" )
+# REQUIRE_VAR( BUILD LIB ${LIB_NAME} OPENCV_FOUND "OpenCV not found" )
 
 IF ( BUILD )
 

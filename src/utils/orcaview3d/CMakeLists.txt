@@ -2,12 +2,18 @@ SET_COMPONENT_NAMES ( OrcaView3d )
 SET ( APP_CTRLC_HANDLER 0 )
 GLOBAL_ADD_LICENSE( GPL )
 
-REQUIRE_OPTION( EXE ${APP_NAME} OFF )
+SET ( BUILD TRUE )
+REQUIRE_OPTION( BUILD EXE ${APP_NAME} OFF )
 SET ( NOT_OS_WIN NOT OS_WIN )
-REQUIRE_VAR( EXE ${APP_NAME} NOT_OS_WIN "Windows OS is not  supported" )
-REQUIRE_VAR( EXE ${APP_NAME} QT4_FOUND "Qt4 not found" )
-REQUIRE_VAR( EXE ${APP_NAME} GLUT_FOUND "libGlut not found" )
-REQUIRE_VAR( EXE ${APP_NAME} HYDRODLL_INSTALLED "libHydroDll not installed" )
+REQUIRE_VAR( BUILD EXE ${APP_NAME} NOT_OS_WIN "Windows OS is not  supported" )
+
+SET( DEP_LIBS OrcaQCompModel OrcaQGui OrcaQGui3d )
+REQUIRE_TARGETS( BUILD EXE ${APP_NAME} ${DEP_LIBS} )
+
+SET( DEP_LIBS ${DEP_LIBS} HydroDll )
+REQUIRE_VAR( BUILD EXE ${APP_NAME} HYDRODLL_INSTALLED "libHydroDll not installed" )
+REQUIRE_VAR( BUILD EXE ${APP_NAME} QT4_FOUND "Qt4 not found" )
+REQUIRE_VAR( BUILD EXE ${APP_NAME} GLUT_FOUND "libGlut not found" )
 
 IF ( BUILD )
     
@@ -18,11 +24,10 @@ IF ( BUILD )
     # This gathers all the source files into the variable 'SRCS'
     #
     FILE( GLOB HUMAN_SRCS *.cpp )
-    SET( COMP_DEPS OrcaQCompModel OrcaQGui OrcaQGui3d HydroDll )
 
     # build stand-alone component  
     WRAP_COMPONENT_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${HUMAN_SRCS} )
-    TARGET_LINK_LIBRARIES( ${APP_NAME} ${COMP_DEPS} )
+    TARGET_LINK_LIBRARIES( ${APP_NAME} ${DEP_LIBS} )
 
     GENERATE_CONFIG_FILE( ${APP_NAME}.def )
 

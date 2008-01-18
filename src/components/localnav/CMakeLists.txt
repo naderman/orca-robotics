@@ -1,10 +1,16 @@
 SET_COMPONENT_NAMES ( LocalNav )
 SET ( APP_CTRLC_HANDLER 0 )
 
-REQUIRE_OPTION( EXE ${APP_NAME} ON )
-REQUIRE_VAR( EXE ${APP_NAME} OS_LINUX "only Linux OS is supported" )
-REQUIRE_VAR( EXE ${APP_NAME} HYDRODLL_INSTALLED "libHydroDll not installed" )
-REQUIRE_VAR( EXE ${APP_NAME} HYDRONAVUTIL_INSTALLED "libHydroNavUtil not installed" )
+SET ( BUILD TRUE )
+REQUIRE_OPTION( BUILD EXE ${APP_NAME} ON )
+REQUIRE_VAR( BUILD EXE ${APP_NAME} OS_LINUX "only Linux OS is supported" )
+
+SET( DEP_LIBS OrcaLocalNav OrcaLocalNavUtil OrcaLocalNavTestSim )
+REQUIRE_TARGETS( BUILD EXE ${APP_NAME} ${DEP_LIBS} )
+
+SET( DEP_LIBS ${DEP_LIBS} HydroDll HydroNavUtil )
+REQUIRE_VAR( BUILD EXE ${APP_NAME} HYDRODLL_INSTALLED "libHydroDll not installed" )
+REQUIRE_VAR( BUILD EXE ${APP_NAME} HYDRONAVUTIL_INSTALLED "libHydroNavUtil not installed" )
 
 IF ( BUILD )
 
@@ -22,16 +28,15 @@ IF ( BUILD )
     ADD_SUBDIRECTORY( localnavutil )
 
     FILE( GLOB COMP_SRCS *.cpp )
-    SET( COMP_DEPS OrcaLocalNav OrcaLocalNavUtil OrcaLocalNavTestSim HydroDll HydroNavUtil )
 
     # build stand-alone component  
     WRAP_COMPONENT_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${COMP_SRCS} )
-    TARGET_LINK_LIBRARIES( ${APP_NAME} ${COMP_DEPS} )
+    TARGET_LINK_LIBRARIES( ${APP_NAME} ${DEP_LIBS} )
     
     # build IceBox service
     IF ( BUILD_SERVICES )
         WRAP_COMPONENT_INTO_SERVICE( ${SERVICE_NAME} ${COMP_NAMESPACE} ${COMP_SRCS} )
-        TARGET_LINK_LIBRARIES( ${SERVICE_NAME} ${COMP_DEPS} ) 
+        TARGET_LINK_LIBRARIES( ${SERVICE_NAME} ${DEP_LIBS} ) 
     ENDIF ( BUILD_SERVICES )
 
     IF ( BUILD_TESTS )

@@ -1,9 +1,12 @@
 SET ( LIB_NAME OrcaPathPlan )
 GLOBAL_ADD_LICENSE( LGPL )
 
-REQUIRE_OPTION( LIB ${LIB_NAME} ON )
-REQUIRE_VAR( LIB ${LIB_NAME} OS_LINUX "only Linux OS is supported" )
-REQUIRE_VAR( LIB ${LIB_NAME} HYDROPATHPLAN_INSTALLED "libHydroPathPlan not installed" )
+SET ( BUILD TRUE )
+REQUIRE_OPTION( BUILD LIB ${LIB_NAME} ON )
+REQUIRE_VAR( BUILD LIB ${LIB_NAME} OS_LINUX "only Linux OS is supported" )
+
+SET( DEP_LIBS ${DEP_LIBS} HydroPathPlan )
+REQUIRE_VAR( BUILD LIB ${LIB_NAME} HYDROPATHPLAN_INSTALLED "libHydroPathPlan not installed" )
 
 IF ( BUILD )
 
@@ -12,7 +15,7 @@ IF ( BUILD )
     FILE( GLOB SRCS *.cpp )
 
     GLOBAL_ADD_LIBRARY( ${LIB_NAME} SHARED ${SRCS} )
-    TARGET_LINK_LIBRARIES( ${LIB_NAME} HydroPathPlan )
+    TARGET_LINK_LIBRARIES( ${LIB_NAME} ${DEP_LIBS} )
     INSTALL_FILES( /include/orcapathplan .*\\.h$ )
     
 ENDIF ( BUILD )

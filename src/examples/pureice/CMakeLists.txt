@@ -1,8 +1,9 @@
 SET ( APP_NAME pureice )
 
-REQUIRE_OPTION( EXE ${APP_NAME} ON )
+SET ( BUILD TRUE )
+REQUIRE_OPTION( BUILD EXE ${APP_NAME} ON )
 SET ( NOT_OS_WIN NOT OS_WIN )
-REQUIRE_VAR( EXE ${APP_NAME} NOT_OS_WIN "Windows OS is not  supported" )
+REQUIRE_VAR( BUILD EXE ${APP_NAME} NOT_OS_WIN "Windows OS is not  supported" )
 
 IF ( BUILD)
 

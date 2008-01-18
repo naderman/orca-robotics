@@ -2,23 +2,24 @@
 
 MESSAGE ( STATUS "== LIBRARIES ==" )
 
-# when adding new directories, please maintain alphabetical order 
-# unless there are inter-dependencies.
+# when adding new directories, please maintain order of inter-dependencies
+# an alphabetical order for the independent libs.
+
+ADD_SUBDIRECTORY ( orcaice )
+ADD_SUBDIRECTORY ( orcaobj )
+ADD_SUBDIRECTORY ( orcaifaceimpl )
 
 ADD_SUBDIRECTORY ( orcabros1 )
-ADD_SUBDIRECTORY ( orcaice )
 ADD_SUBDIRECTORY ( orcacm )
 ADD_SUBDIRECTORY ( orcadef )
 ADD_SUBDIRECTORY ( orcaicegrid )
 ADD_SUBDIRECTORY ( orcaicexml )
-ADD_SUBDIRECTORY ( orcaifaceimpl )
 ADD_SUBDIRECTORY ( orcaimage )
 ADD_SUBDIRECTORY ( orcaimagegrabber )
 ADD_SUBDIRECTORY ( orcalocalnav )
 ADD_SUBDIRECTORY ( orcalog )
 ADD_SUBDIRECTORY ( orcalogfactory )
 ADD_SUBDIRECTORY ( orcanavutil )
-ADD_SUBDIRECTORY ( orcaobj )
 ADD_SUBDIRECTORY ( orcaobjutil )
 ADD_SUBDIRECTORY ( orcaogfusion )
 ADD_SUBDIRECTORY ( orcaogmap )
