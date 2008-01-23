@@ -21,8 +21,7 @@
 #include <orcaice/configutils.h>
 #include <hydroutil/sysutils.h>
 #include <orcaice/printutils.h>
-
-#include <orcaobj/stringutils.h>
+#include <orcaice/stringutils.h>
 
 namespace orcaice
 {
@@ -258,6 +257,11 @@ connectToTopicWithTag( const Context           & context,
     // this generates a standard topic name based on fully-qualified interface name.
     std::string topicName = orcaice::toString(
                     orcaice::getProvidedTopicWithTag( context, interfaceTag, subtopic ) );
+
+    // do the conversion to string by hand, to cut dependency on libOrcaObj
+    // see <orcaobj/stringutils.cpp>
+//     orca::FQTopicName name = orcaice::getProvidedTopicWithTag( context, interfaceTag, subtopic );
+//     std::string topicName =  name.iface + "/" + name.topic + "@" + name.platform + "/" + name.component;
 
     return connectToTopicWithString( context, publisher, topicName );
 }

@@ -235,7 +235,7 @@ MainThread::walk()
             convert( internalMap_, orcaOgMap );
             orcaOgMap.timeStamp = data.timeStamp;
 
-            // cout<<"TRACE(handler.cpp): orcaOgMap: " << orcaice::toString(orcaOgMap) << endl;
+            // cout<<"TRACE(handler.cpp): orcaOgMap: " << orcaobj::toString(orcaOgMap) << endl;
             
 
             ogMapImpl_->localSetAndSend( orcaOgMap );

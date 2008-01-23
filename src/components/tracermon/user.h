@@ -11,6 +11,8 @@
 #ifndef USER_INTERFACE_H
 #define USER_INTERFACE_H
 
+#include <orca/tracer.h>
+
 namespace tracermon
 {
 

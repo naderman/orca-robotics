@@ -13,6 +13,7 @@
 #include <QString>
 
 #include <orcaice/orcaice.h>
+#include <orcaobj/orcaobj.h>
 
 #include "polarfeature2dpainter.h"
 #include <orcaqguielementutil/features.h>

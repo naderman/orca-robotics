@@ -1,6 +1,7 @@
 #include "progressmonitor.h"
 #include <iostream>
 #include <orcaice/orcaice.h>
+#include <orcaobj/orcaobj.h>
 
 using namespace std;
 
@@ -10,10 +11,6 @@ ProgressMonitor::ProgressMonitor()
     : gotData_(false),
       isEnabled_(true),
       wpIndex_(-1)
-{
-}
-
-ProgressMonitor::~ProgressMonitor()
 {
 }
 
@@ -59,7 +56,7 @@ ProgressMonitor::followingPath() const
     if ( wpIndex_ < 0 || wpIndex_ >= (int)(pathData_.path.size()) )
     {
         stringstream ss;
-        ss << "Bad wpIndex_: " << wpIndex_ << " for path: " << orcaice::toString(pathData_);
+        ss << "Bad wpIndex_: " << wpIndex_ << " for path: " << orcaobj::toString(pathData_);
         throw hydroutil::Exception( ERROR_INFO, ss.str() );
     }    
 

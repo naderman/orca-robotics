@@ -31,7 +31,7 @@
 
 using namespace std;
 
-namespace orcaice
+namespace orcaobj
 {
 
 void 
@@ -67,7 +67,7 @@ mlHypothesis( const orca::Localise2dData& obj )
     if ( mlI < 0 )
     {
         std::stringstream ss;
-        ss << "Dodgy Localise2dDataPtr: " << orcaice::toString(obj);
+        ss << "Dodgy Localise2dDataPtr: " << orcaobj::toString(obj);
         throw hydroutil::Exception( ERROR_INFO, ss.str() );
     }
 #endif
@@ -91,7 +91,7 @@ mlHypothesis( const orca::Localise3dData& obj )
     if ( mlI < 0 )
     {
         std::stringstream ss;
-        ss << "Dodgy Localise3dDataPtr: " << orcaice::toString(obj);
+        ss << "Dodgy Localise3dDataPtr: " << orcaobj::toString(obj);
         throw hydroutil::Exception( ERROR_INFO, ss.str() );
     }
 #endif
@@ -105,7 +105,7 @@ bool localisationIsUncertain( const orca::Localise2dData &localiseData,
     if ( localiseData.hypotheses.size() > 2 )
         return true;
 
-    const orca::Pose2dHypothesis h = orcaice::mlHypothesis( localiseData );
+    const orca::Pose2dHypothesis h = orcaobj::mlHypothesis( localiseData );
     if ( h.cov.xx > linearThreshold ||
          h.cov.yy > linearThreshold )
         return true;
@@ -169,7 +169,7 @@ saveToFile( const orca::FeatureMap2dData& fmap, FILE *f )
         else
         {
             stringstream ss;
-            ss << "Don't know how to save feature to file: " << orcaice::toString( *feature );
+            ss << "Don't know how to save feature to file: " << orcaobj::toString( *feature );
             throw hydroutil::Exception( ERROR_INFO, ss.str() );
         }
     }

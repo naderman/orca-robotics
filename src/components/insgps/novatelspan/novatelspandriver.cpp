@@ -875,7 +875,7 @@ NovatelSpanInsGpsDriver::populateData( int id )
             //    printf("%10.10f\n",INSPVA_.data.seconds); 
             localise3dData_.timeStamp = orcaice::toOrcaTime(timeOfRead_);
             odometry3dData_.timeStamp = orcaice::toOrcaTime(timeOfRead_);
-                //cout << "timeOfRead_: " << orcaice::toString(localise3dData_.timeStamp) << endl; 
+                //cout << "timeOfRead_: " << orcaobj::toString(localise3dData_.timeStamp) << endl; 
 
             // load the pva data into the localise3d object       
             if ( localise3dData_.hypotheses.size() == 0 )
@@ -1239,23 +1239,23 @@ NovatelSpanInsGpsDriver::setNovatelSpecificParams()
 
     // vehicle to imu body rotation
     orca::CartesianPoint imuVehicleBodyRotation;
-    orcaice::setInit( imuVehicleBodyRotation );
+    orcaobj::setInit( imuVehicleBodyRotation );
     orcaice::getPropertyAsCartesianPoint( prop, prefix+"VehicleBodyRotation", imuVehicleBodyRotation);
 
     // vehicle to imu body rotation uncertainty
     orca::CartesianPoint imuVehicleBodyRotationUncertainty;
-    orcaice::setInit( imuVehicleBodyRotationUncertainty );
+    orcaobj::setInit( imuVehicleBodyRotationUncertainty );
     orcaice::getPropertyAsCartesianPoint( prop, prefix+"VehicleBodyRotationUncertainty",
                                           imuVehicleBodyRotationUncertainty);
 
     // imuToGpsAntennaOffset
     orca::CartesianPoint imuToGpsAntennaOffset;
-    orcaice::setInit( imuToGpsAntennaOffset );
+    orcaobj::setInit( imuToGpsAntennaOffset );
     orcaice::getPropertyAsCartesianPoint( prop, prefix+"ImuToGpsAntennaOffset", imuToGpsAntennaOffset );
 
     // imuToGpsAntennaOffsetUncertainty
     orca::CartesianPoint imuToGpsAntennaOffsetUncertainty;
-    orcaice::setInit( imuToGpsAntennaOffsetUncertainty );
+    orcaobj::setInit( imuToGpsAntennaOffsetUncertainty );
     orcaice::getPropertyAsCartesianPoint( prop, prefix+"ImuToGpsAntennaOffsetUncertainty",
                                           imuToGpsAntennaOffsetUncertainty );
 

@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
+#include <orcaobj/orcaobj.h>
 #include <orcacm/orcacm.h>
 #include <orcaprobe/orcaprobe.h>
 
@@ -53,7 +54,7 @@ PathFollower2dProbe::loadGetData( orcacm::OperationData & data )
     {
         orca::PathFollower2dPrx derivedPrx = orca::PathFollower2dPrx::checkedCast(prx_);
         result = derivedPrx->getData();
-        orcaprobe::reportResult( data, "data", orcaice::toString(result) );
+        orcaprobe::reportResult( data, "data", orcaobj::toString(result) );
     }
     catch( const orca::DataNotExistException & e )
     {
@@ -109,12 +110,12 @@ PathFollower2dProbe::setData(const orca::PathFollower2dData &pfData, const Ice::
 
     orcacm::ResultHeader res;
     res.name = "data";
-    res.text = orcaice::toVerboseString(pfData);
+    res.text = orcaobj::toVerboseString(pfData);
     data.results.push_back( res );
 
     display_.setOperationData( data );
 
-    std::cout << "PathFollower2dProbe: setData(): " << orcaice::toVerboseString(pfData) << std::endl;
+    std::cout << "PathFollower2dProbe: setData(): " << orcaobj::toVerboseString(pfData) << std::endl;
 };
 
 void 
@@ -143,13 +144,13 @@ PathFollower2dProbe::setActivationTime(const orca::Time &absoluteTime, double re
 
     orcacm::ResultHeader res;
     res.name = "activationTime";
-    stringstream ss; ss << "relative: " << relativeTime << ", absolute: " << orcaice::toString(absoluteTime);
+    stringstream ss; ss << "relative: " << relativeTime << ", absolute: " << orcaobj::toString(absoluteTime);
     res.text = ss.str();
     data.results.push_back( res );
 
     display_.setOperationData( data );
 
-    std::cout << "PathFollower2dProbe: setActivationTime(): rel: " << relativeTime << "s, abs: " << orcaice::toString( absoluteTime ) << std::endl;
+    std::cout << "PathFollower2dProbe: setActivationTime(): rel: " << relativeTime << "s, abs: " << orcaobj::toString( absoluteTime ) << std::endl;
 }
 void 
 PathFollower2dProbe::setEnabledState(bool enabledState, const Ice::Current&)

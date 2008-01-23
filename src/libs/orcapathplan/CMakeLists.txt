@@ -5,7 +5,7 @@ SET ( BUILD TRUE )
 REQUIRE_OPTION( BUILD LIB ${LIB_NAME} ON )
 REQUIRE_VAR( BUILD LIB ${LIB_NAME} OS_LINUX "only Linux OS is supported" )
 
-SET( DEP_LIBS ${DEP_LIBS} HydroPathPlan )
+SET( DEP_LIBS ${DEP_LIBS} HydroPathPlan OrcaObjects )
 REQUIRE_VAR( BUILD LIB ${LIB_NAME} HYDROPATHPLAN_INSTALLED "libHydroPathPlan not installed" )
 
 IF ( BUILD )

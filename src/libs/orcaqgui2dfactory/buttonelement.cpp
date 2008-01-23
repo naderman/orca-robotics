@@ -1,6 +1,7 @@
 #include "buttonelement.h"
 #include <iostream>
 #include <orcaice/orcaice.h>
+#include <orcaobj/orcaobj.h>
 #include <hydroqgui/hydroqgui.h>
 
 using namespace std;

@@ -9,6 +9,7 @@
  */
 #include <iostream>
 #include <orcaice/orcaice.h>
+#include <orcaobj/orcaobj.h>
 #include <hydronavutil/hydronavutil.h>
 #include "pathfollower2dI.h"
 #include "pathmaintainer.h"
@@ -114,7 +115,7 @@ PathMaintainer::checkForNewPath()
         wpIndexChanged_ = true;
 
         std::stringstream ss;
-        ss << "PathMaintainer: new path: " << orcaice::toVerboseString( path_ );
+        ss << "PathMaintainer: new path: " << orcaobj::toVerboseString( path_ );
         context_.tracer().debug( ss.str(), 2 );
     }
 }

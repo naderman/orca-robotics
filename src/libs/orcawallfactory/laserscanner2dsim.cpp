@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
+#include <orcaobj/orcaobj.h>
 #include <orcaifaceimpl/laserscanner2dImpl.h>
 
 #include "laserscanner2dsim.h"
@@ -46,7 +47,7 @@ LaserScanner2dSim::walk()
         try 
         {
             orca::LaserScanner2dDataPtr data = new orca::LaserScanner2dData;
-            orcaice::setSane( data );
+            orcaobj::setSane( data );
             iface->localSetAndSend( data );
 
             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));

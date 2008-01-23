@@ -10,6 +10,7 @@
 #include <iostream>
 #include <cmath>
 #include <orcaice/orcaice.h>
+#include <orcaobj/orcaobj.h>
 #include <hydronavutil/pose.h>
 #include <orcalocalnav/pathfollower2dI.h>
 #include <localnavutil/pose.h>
@@ -375,8 +376,8 @@ MainThread::setup()
     }
 
     stringstream descrStream;
-    descrStream << "Working with the following vehicle: " << orcaice::toString(vehicleDescr_) << endl;
-    descrStream << "And the following range scanner: " << orcaice::toString(scannerDescr_) << endl;
+    descrStream << "Working with the following vehicle: " << orcaobj::toString(vehicleDescr_) << endl;
+    descrStream << "And the following range scanner: " << orcaobj::toString(scannerDescr_) << endl;
     context_.tracer().info( descrStream.str() );
 
     driver_ = driverFactory_.createDriver( context_, vehicleDescr_, scannerDescr_ );
@@ -495,9 +496,9 @@ MainThread::walk()
             {
                 stringstream ss;
                 ss << "Timestamps are more than "<<THRESHOLD<<"sec apart: " << endl
-                   << "\t rangeData:    " << orcaice::toString(rangeData_->timeStamp) << endl
-                   << "\t localiseData: " << orcaice::toString(localiseData_.timeStamp) << endl
-                   << "\t odomData:     " << orcaice::toString(odomData_.timeStamp) << endl
+                   << "\t rangeData:    " << orcaobj::toString(rangeData_->timeStamp) << endl
+                   << "\t localiseData: " << orcaobj::toString(localiseData_.timeStamp) << endl
+                   << "\t odomData:     " << orcaobj::toString(odomData_.timeStamp) << endl
                    << "Maybe something is wrong: Stopping.";
                 context_.tracer().error( ss.str() );
                 subStatus().warning( ss.str() );
@@ -511,16 +512,16 @@ MainThread::walk()
             orca::Time now = orcaice::getNow();
             stringstream ss;
             ss << "Timestamps: " << endl
-               << "\t rangeData:    " << orcaice::toString(rangeData_->timeStamp) << endl
-               << "\t localiseData: " << orcaice::toString(localiseData_.timeStamp) << endl
-               << "\t odomData:     " << orcaice::toString(odomData_.timeStamp) << endl
-               << "\t now:          " << orcaice::toString(now);
+               << "\t rangeData:    " << orcaobj::toString(rangeData_->timeStamp) << endl
+               << "\t localiseData: " << orcaobj::toString(localiseData_.timeStamp) << endl
+               << "\t odomData:     " << orcaobj::toString(odomData_.timeStamp) << endl
+               << "\t now:          " << orcaobj::toString(now);
             context_.tracer().debug( ss.str(), 3 );
 
             // grab the maximum likelihood pose of the vehicle
             hydronavutil::Pose pose = getMLPose( localiseData_ );
             
-            bool uncertainLocalisation = orcaice::localisationIsUncertain( localiseData_ );
+            bool uncertainLocalisation = orcaobj::localisationIsUncertain( localiseData_ );
 //             if ( uncertainLocalisation )
 //                 context_.tracer().warning( "MainThread: Localisation is uncertain..." );
 
@@ -556,7 +557,7 @@ MainThread::walk()
             // For big debug levels, give feedback through tracer.
             {
                 std::stringstream ss;
-                ss << "MainThread: Setting command: " << orcaice::toString( velocityCmd );
+                ss << "MainThread: Setting command: " << orcaobj::toString( velocityCmd );
                 context_.tracer().debug( ss.str(), 5 );
             }
 

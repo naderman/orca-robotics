@@ -28,7 +28,7 @@ public:
 
     virtual void setData(const orca::TracerData& data, const Ice::Current&)
     {
-//         std::cout << orcaice::toString( data ) << std::endl;
+//         std::cout << orcaobj::toString( data ) << std::endl;
         user_.newTraceMessage( data );
     }
 

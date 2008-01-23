@@ -11,6 +11,7 @@
 #include <iostream>
 
 #include <orcaice/orcaice.h>
+#include <orcaobj/orcaobj.h>
 #include "cameraImpl.h"
 #include "util.h"
 
@@ -159,7 +160,7 @@ CameraImpl::localSet( const orca::CameraData& data )
 void
 CameraImpl::localSetAndSend( const orca::CameraData& data )
 {
-//     cout<<"TRACE(CameraIface.cpp): localSetAndSend: " << orcaice::toString(data) << endl;
+//     cout<<"TRACE(CameraIface.cpp): localSetAndSend: " << orcaobj::toString(data) << endl;
 
     dataStore_.set( data );
 

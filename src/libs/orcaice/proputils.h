@@ -92,26 +92,6 @@ int getPropertyAsInt(    const Ice::PropertiesPtr &, const ::std::string& key, i
 //! Note that the Ice PropertiesI::load() method has a line size limitation of 1024 characters 
 //! but quietly fails so there is no way of knowing if you have exceeded this limitation
 int getProperty(         const Ice::PropertiesPtr &, const ::std::string& key, std::string &value );
-//! Parses the value into a sequence of strings using the given delimiter
-//! Returns: 0 = property found (and set in value), non-zero = property not found or parsing failed.
-int getPropertyAsStringSeq( const Ice::PropertiesPtr &, const ::std::string& key, Ice::StringSeq &value, char delim=':' );
-//! Parses the value into a Frame2d object assuming empty space delimeters. The format is assumed to
-//! be: x[m] y[m] yaw[deg]. 
-//! Returns: 0 = property found (and set in value), non-zero = property not found or parsing failed.
-int getPropertyAsFrame2d( const Ice::PropertiesPtr &, const ::std::string& key, orca::Frame2d &value );
-//! Parses the value into a Frame3d object assuming empty space delimeters. The format is assumed to
-//! be: x[m] y[m] z[m] roll[deg] pitch[deg] yaw[deg]. 
-//! Returns: 0 = property found (and set in value), non-zero = property not found or parsing failed.
-int getPropertyAsFrame3d( const Ice::PropertiesPtr &, const ::std::string& key, orca::Frame3d &value );
-//! Parses the value into a Size2d object assuming empty space delimeters.
-//! Returns: 0 = property found (and set in value), non-zero = property not found or parsing failed.
-int getPropertyAsSize2d( const Ice::PropertiesPtr &, const ::std::string& key, orca::Size2d &value );
-//! Parses the value into a Size3d object assuming empty space delimeters.
-//! Returns: 0 = property found (and set in value), non-zero = property not found or parsing failed.
-int getPropertyAsSize3d( const Ice::PropertiesPtr &, const ::std::string& key, orca::Size3d &value );
-//! Parses the value into a CartesianPoint object assuming empty space delimeters.
-//! Returns: 0 = property found (and set in value), non-zero = property not found or parsing failed.
-int getPropertyAsCartesianPoint( const Ice::PropertiesPtr &, const ::std::string& key, orca::CartesianPoint &value );
 //! Parses the value into a vector of ints assuming empty space delimeters. Elements will continue
 //! to be added to the end of the vector until the end of the line is reached.
 //! Returns: 0 = property found (and set in value), non-zero = property not found or parsing failed.
@@ -124,9 +104,6 @@ int getPropertyAsIntVector( const Ice::PropertiesPtr &, const ::std::string& key
 //! Note that the Ice PropertiesI::load() method has a line size limitation of 1024 characters 
 //! but quietly fails so there is no way of knowing if you have exceeded this limitation
 int getPropertyAsDoubleVector( const Ice::PropertiesPtr &, const ::std::string& key, std::vector<double> &value );
-//! Parses the value into a Time object assuming ':' delimeters.
-//! Returns: 0 = property found (and set in value), non-zero = property not found or parsing failed.
-int getPropertyAsTimeDuration( const Ice::PropertiesPtr &, const ::std::string& key, orca::Time &value );
 
 //! Returns the default value if key is not found or cannot be converted to a double.
 Ice::Double getPropertyAsDoubleWithDefault( const Ice::PropertiesPtr &, const ::std::string& key, const Ice::Double defaultValue );
@@ -134,24 +111,10 @@ Ice::Double getPropertyAsDoubleWithDefault( const Ice::PropertiesPtr &, const ::
 int         getPropertyAsIntWithDefault(    const Ice::PropertiesPtr &, const ::std::string& key, const int         defaultValue );
 //! Returns the default value if key is not found.
 std::string getPropertyWithDefault(         const Ice::PropertiesPtr &, const ::std::string& key, const std::string &defaultValue );
-//! Returns the default value if key is not found or cannot be converted to a string sequence.
-Ice::StringSeq getPropertyAsStringSeqWithDefault( const Ice::PropertiesPtr &, const ::std::string& key, const Ice::StringSeq &defaultValue, char delim=':' );
-//! Returns the default value if key is not found or cannot be converted to a Frame2d.
-orca::Frame2d getPropertyAsFrame2dWithDefault( const Ice::PropertiesPtr &, const ::std::string& key, const orca::Frame2d &defaultValue );
-//! Returns the default value if key is not found or cannot be converted to a Frame3d.
-orca::Frame3d getPropertyAsFrame3dWithDefault( const Ice::PropertiesPtr &, const ::std::string& key, const orca::Frame3d &defaultValue );
-//! Returns the default value if key is not found or cannot be converted to a Size3d.
-orca::Size2d getPropertyAsSize2dWithDefault( const Ice::PropertiesPtr &, const ::std::string& key, const orca::Size2d &defaultValue );
-//! Returns the default value if key is not found or cannot be converted to a Size3d.
-orca::Size3d getPropertyAsSize3dWithDefault( const Ice::PropertiesPtr &, const ::std::string& key, const orca::Size3d &defaultValue );
-//! Returns the default value if key is not found or cannot be converted to a CartesianPoint.
-orca::CartesianPoint getPropertyAsCartesianPointWithDefault( const Ice::PropertiesPtr &, const ::std::string& key, const orca::CartesianPoint &defaultValue );
 //! Returns the default value if key is not found or cannot be converted to a vector<int>.
 std::vector<int> getPropertyAsIntVectorWithDefault( const Ice::PropertiesPtr &, const ::std::string& key, const std::vector<int> &defaultValue );
 //! Returns the default value if key is not found or cannot be converted to a vector<double>.
 std::vector<double> getPropertyAsDoubleVectorWithDefault( const Ice::PropertiesPtr &, const ::std::string& key, const std::vector<double> &defaultValue );
-//! Returns the default value if key is not found or cannot be converted to a Time.
-orca::Time getPropertyAsTimeDurationWithDefault( const Ice::PropertiesPtr &, const ::std::string& key, const orca::Time &d );
 
 //! Returns standardized text which warns that a configuration property is not set.
 std::string warnMissingProperty( const std::string & prop );

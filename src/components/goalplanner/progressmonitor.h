@@ -17,7 +17,6 @@ class ProgressMonitor : public orca::PathFollower2dConsumer
 public: 
 
     ProgressMonitor();
-    ~ProgressMonitor();
 
     //
     // Functions called locally

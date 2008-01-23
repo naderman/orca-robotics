@@ -10,7 +10,7 @@ REQUIRE_VAR( BUILD LIB ${LIB_NAME} QT4_FOUND "Qt4 not found" )
 SET( DEP_LIBS OrcaQGui2d OrcaLogFactory ) # OrcaLogFactory needed for saving path to file (re-factor?)
 REQUIRE_TARGETS( BUILD LIB ${LIB_NAME} ${DEP_LIBS} )
 
-SET( DEP_LIBS ${DEP_LIBS} HydroNavUtil HydroQGui )
+SET( DEP_LIBS ${DEP_LIBS} HydroNavUtil HydroQGui OrcaObjects )
 REQUIRE_VAR( BUILD LIB ${LIB_NAME} HYDRONAVUTIL_INSTALLED "libHydroNavUtil not installed" )
 REQUIRE_VAR( BUILD LIB ${LIB_NAME} HYDROQGUI_INSTALLED "libHydroQGui not installed" )
 

@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
+#include <orcaobj/orcaobj.h>
 #include <orcacm/orcacm.h>
 #include <orcaprobe/orcaprobe.h>
 
@@ -57,7 +58,7 @@ Odometry3dProbe::loadGetData( orcacm::OperationData& data )
     {
         orca::Odometry3dPrx derivedPrx = orca::Odometry3dPrx::checkedCast(prx_);
         result = derivedPrx->getData();
-        orcaprobe::reportResult( data, "data", orcaice::toString(result) );
+        orcaprobe::reportResult( data, "data", orcaobj::toString(result) );
     }
     catch( const orca::DataNotExistException& e )
     {
@@ -86,7 +87,7 @@ Odometry3dProbe::loadGetDescription( orcacm::OperationData& data )
     {
         orca::Odometry3dPrx derivedPrx = orca::Odometry3dPrx::checkedCast(prx_);
         result = derivedPrx->getDescription();
-        orcaprobe::reportResult( data, "data", orcaice::toString(result) );
+        orcaprobe::reportResult( data, "data", orcaobj::toString(result) );
     }
     catch( const Ice::Exception& e )
     {
@@ -128,5 +129,5 @@ Odometry3dProbe::loadUnsubscribe( orcacm::OperationData& data )
 void 
 Odometry3dProbe::setData(const orca::Odometry3dData& data, const Ice::Current&)
 {
-    std::cout << orcaice::toString(data) << std::endl;
+    std::cout << orcaobj::toString(data) << std::endl;
 };

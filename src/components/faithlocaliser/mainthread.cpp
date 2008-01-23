@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
+#include <orcaobj/orcaobj.h>
 
 #include "mainthread.h"
 #include <orcaifaceimpl/localise2dImpl.h>
@@ -123,7 +124,7 @@ MainThread::walk()
         }
 
         odometryToLocalise( odomData, localiseData, varPosition, varHeading );
-        context_.tracer().debug( orcaice::toString(localiseData), 5 );
+        context_.tracer().debug( orcaobj::toString(localiseData), 5 );
         
         localiseInterface->localSetAndSend( localiseData );
     }

@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
+#include <orcaobj/orcaobj.h>
 #include "mainthread.h"
 
 using namespace std;
@@ -84,7 +85,7 @@ MainThread::walk()
             if ( ret == 0 )
             {
                 stringstream ss;
-                ss << "Received new properties: " << orcaice::toString( incomingProperties );
+                ss << "Received new properties: " << orcaobj::toString( incomingProperties );
                 context_.tracer().info( ss.str() );
 
                 // Set our local database.

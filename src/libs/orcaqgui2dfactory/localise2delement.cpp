@@ -111,7 +111,7 @@ Localise2dElement::update()
         ss << "Localise2dElement::update(): Interface " << listener_.interfaceName() << ": Localise2dData had zero hypotheses";
         throw hydroqgui::Exception( ERROR_INFO, ss.str() );
     }
-    const orca::Pose2dHypothesis &h = orcaice::mlHypothesis( data_ );
+    const orca::Pose2dHypothesis &h = orcaobj::mlHypothesis( data_ );
     
     x_ = h.mean.p.x;
     y_ = h.mean.p.y;

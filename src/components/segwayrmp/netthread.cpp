@@ -12,6 +12,7 @@
 #include <sstream>
 
 #include <orcaice/orcaice.h>
+#include <orcaobj/orcaobj.h>
 #include "netthread.h"
 #include "estopconsumerI.h"
 

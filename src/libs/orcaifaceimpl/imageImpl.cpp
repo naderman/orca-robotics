@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
+#include <orcaobj/orcaobj.h>
 #include "imageImpl.h"
 #include "util.h"
 
@@ -158,7 +159,7 @@ ImageImpl::localSet( const orca::ImageDataPtr& data )
 void
 ImageImpl::localSetAndSend( const orca::ImageDataPtr& data )
 {
-//     cout<<"TRACE(ImageIface.cpp): localSetAndSend: " << orcaice::toString(data) << endl;
+//     cout<<"TRACE(ImageIface.cpp): localSetAndSend: " << orcaobj::toString(data) << endl;
     dataStore_.set( data );
 
     // Try to push to IceStorm.

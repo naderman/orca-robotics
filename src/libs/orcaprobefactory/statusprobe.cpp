@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
+#include <orcaobj/orcaobj.h>
 #include <orcacm/orcacm.h>
 #include <orcaprobe/orcaprobe.h>
 
@@ -52,7 +53,7 @@ StatusProbe::loadGetData( orcacm::OperationData& data )
     {
         orca::StatusPrx derivedPrx = orca::StatusPrx::checkedCast(prx_);
         result = derivedPrx->getData();
-        orcaprobe::reportResult( data, "data", orcaice::toString(result) );
+        orcaprobe::reportResult( data, "data", orcaobj::toString(result) );
     }
     catch( const Ice::Exception& e )
     {
@@ -94,7 +95,7 @@ StatusProbe::loadUnsubscribe( orcacm::OperationData& data )
 void 
 StatusProbe::setData(const orca::StatusData& result, const Ice::Current&)
 {
-    std::cout << orcaice::toString(result) << std::endl;
+    std::cout << orcaobj::toString(result) << std::endl;
 
     orcacm::OperationData data;
     // this is the result for operation "subscribe" which has user index=2;
@@ -102,7 +103,7 @@ StatusProbe::setData(const orca::StatusData& result, const Ice::Current&)
 
     orcacm::ResultHeader res;
     res.name = "data";
-    res.text = orcaice::toString(result);
+    res.text = orcaobj::toString(result);
     data.results.push_back( res );
 
     display_.setOperationData( data );

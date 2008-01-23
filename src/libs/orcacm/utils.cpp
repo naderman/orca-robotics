@@ -13,6 +13,7 @@
 #include <IceGrid/Query.h>
 #include <orcaice/orcaice.h>
 #include <orcacm/parseutils.h>
+#include <orca/home.h>
 
 #include "utils.h"
 

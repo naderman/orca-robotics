@@ -6,7 +6,7 @@ REQUIRE_OPTION( BUILD LIB ${LIB_NAME} ON )
 SET ( NOT_OS_WIN NOT OS_WIN )
 REQUIRE_VAR( BUILD LIB ${LIB_NAME} NOT_OS_WIN "Windows OS is not  supported" )
 
-SET( DEP_LIBS OrcaLog OrcaIfaceImpl )
+SET( DEP_LIBS OrcaLog OrcaIfaceImpl OrcaObjects )
 REQUIRE_TARGETS( BUILD LIB ${LIB_NAME} ${DEP_LIBS} )
 
 IF ( BUILD )

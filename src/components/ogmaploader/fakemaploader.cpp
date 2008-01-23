@@ -7,19 +7,17 @@
  * the LICENSE file included in this distribution.
  *
  */
-#include <iostream>
-#include <orcaice/orcaice.h>
+#include <orcaobj/orcaobj.h>
 
 #include "fakemaploader.h"
 
-using namespace orca;
 using namespace std;
 
 namespace ogmaploader {
 
 void fakeLoadMap( orca::OgMapData& theMap )
 {
-    orcaice::setSane( theMap );
+    orcaobj::setSane( theMap );
 }
 
 }

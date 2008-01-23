@@ -10,6 +10,7 @@
 #include "pixmapImpl.h"
 #include <iostream>
 #include <orcaice/orcaice.h>
+#include <orcaobj/orcaobj.h>
 #include "util.h"
 
 using namespace std;
@@ -139,7 +140,7 @@ PixMapImpl::internalUnsubscribe(const ::PixMapConsumerPrx& subscriber )
 void 
 PixMapImpl::localSetAndSend( const ::orca::PixMapData &data )
 {
-    //cout<<"TRACE(ogmapI.cpp): localSetData: " << orcaice::toString(data) << endl;
+    //cout<<"TRACE(ogmapI.cpp): localSetData: " << orcaobj::toString(data) << endl;
 
     dataStore_.set( data );
     

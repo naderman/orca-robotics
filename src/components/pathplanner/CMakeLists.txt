@@ -4,7 +4,7 @@ SET ( BUILD TRUE )
 REQUIRE_OPTION( BUILD EXE ${APP_NAME} ON )
 REQUIRE_VAR( BUILD EXE ${APP_NAME} OS_LINUX "only Linux OS is supported" )
 
-SET( DEP_LIBS OrcaOgMap OrcaPathPlan )
+SET( DEP_LIBS OrcaOgMap OrcaPathPlan OrcaObjects )
 REQUIRE_TARGETS( BUILD EXE ${APP_NAME} ${DEP_LIBS} )
 
 IF ( BUILD )

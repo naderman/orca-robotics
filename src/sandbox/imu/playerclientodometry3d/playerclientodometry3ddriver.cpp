@@ -176,7 +176,7 @@ PlayerClientOdometry3dDriver::getData(orca::Odometry3dData& data )
     cout << "WARNING(playerclientposition3ddriver.cpp): geometry values are hardcoded at the moment! " << endl;
     // orca::Position3dGeometryPtr position3dGeometryPtr = new Position3dGeometry;
     Frame3d offset;
-    orcaice::setInit( offset );
+    orcaobj::setInit( offset );
     Size3d size;
     size.l=0.3; size.w=0.3; size.h=0.3;
     geometry->offset = offset;

@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
+#include <orcaobj/orcaobj.h>
 #include <orca/odometry2d.h>
 #include "simpledriver.h"
 #include "odometrybaseddriver.h"
@@ -87,7 +88,7 @@ MainThread::getGpsDescription()
             context_.tracer().debug( "Getting gps description...", 2 );
             gpsDescr_ = gpsPrx->getDescription();
             stringstream ss;
-            ss << "Got gps description: " << orcaice::toString( gpsDescr_ );
+            ss << "Got gps description: " << orcaobj::toString( gpsDescr_ );
             context_.tracer().info( ss.str() );
             antennaOffset_ = gpsDescr_.antennaOffset;
             if ( antennaOffsetOK( antennaOffset_ ) )
@@ -149,7 +150,7 @@ MainThread::initNetworkInterface()
                 context_.tracer().debug( "Getting vehicle description...", 2 );
                 vehicleDesc = odoPrx->getDescription();
                 stringstream ss;
-                ss << "Got vehicle description: " << orcaice::toString( vehicleDesc );
+                ss << "Got vehicle description: " << orcaobj::toString( vehicleDesc );
                 context_.tracer().info( ss.str() );
                 break;
             }
@@ -277,7 +278,7 @@ MainThread::antennaOffsetOK( const orca::Frame3d &offset )
     if ( offset.o.r != 0.0 || offset.o.p != 0.0 || offset.o.y != 0.0 )
     {
         stringstream ss;
-        ss << "Can't handle non-zero roll/pitch/yaw in antenna offset. Offset: " << orcaice::toString(offset);
+        ss << "Can't handle non-zero roll/pitch/yaw in antenna offset. Offset: " << orcaobj::toString(offset);
         context_.tracer().error( ss.str() );
         offsetOk = false;
     }

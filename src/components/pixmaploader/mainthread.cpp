@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
+#include <orcaobj/orcaobj.h>
 #include <hydromapload/pixmaploadutil.h>
 
 #include "mainthread.h"
@@ -94,7 +95,7 @@ MainThread::walk()
     if ( driverName == "fake" )
     {
         cout<<"TRACE(component.cpp): Instantiating fake driver." << endl;
-        orcaice::setSane( theMap );
+        orcaobj::setSane( theMap );
     }
     else if ( driverName == "file" )
     {
@@ -107,7 +108,7 @@ MainThread::walk()
         throw hydroutil::Exception( ERROR_INFO, "Unknown driver type: "+driverName );
     }
 
-    cout<<"TRACE(component.cpp): Loaded map: " << orcaice::toString(theMap) << endl;
+    cout<<"TRACE(component.cpp): Loaded map: " << orcaobj::toString(theMap) << endl;
     
     //
     // EXTERNAL PROVIDED INTERFACES

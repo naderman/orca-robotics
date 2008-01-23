@@ -19,7 +19,7 @@ ELSE (NOT OS_WIN)
   GLOBAL_ADD_LIBRARY( ${LIB_NAME} STATIC ${SRCS} )
 ENDIF (NOT OS_WIN)
 
-TARGET_LINK_LIBRARIES( ${LIB_NAME} OrcaInterfaces )
+TARGET_LINK_LIBRARIES( ${LIB_NAME} OrcaInterfaces OrcaIce )
 
 # special dependency on the generated files
 ADD_DEPENDENCIES( ${LIB_NAME} OrcaInterfaces )

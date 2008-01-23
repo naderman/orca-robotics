@@ -9,6 +9,7 @@
  */
 
 #include <orcaice/orcaice.h>
+#include <orcaobj/orcaobj.h>
 #include <orcalog/orcalog.h>
 #include <hydrodll/dynamicload.h>
 
@@ -319,8 +320,8 @@ MainThread::readReplayParams( IceUtil::Time &beginTime, double &replayRate, bool
 
     // BeginTime: Replay data starting from BeginTime (seconds) from the start of the log
     orca::Time tempTime;
-    orcaice::setInit( tempTime );
-    tempTime = orcaice::getPropertyAsTimeDurationWithDefault( props, prefix+"BeginTime", tempTime );
+    orcaobj::setInit( tempTime );
+    tempTime = orcaobj::getPropertyAsTimeDurationWithDefault( props, prefix+"BeginTime", tempTime );
     beginTime = orcaice::toIceTime( tempTime );
     if ( beginTime<IceUtil::Time() ) {
         beginTime = IceUtil::Time();

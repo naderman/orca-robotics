@@ -13,6 +13,7 @@
 
 #include <orca/estop.h>
 #include <orcaice/orcaice.h>
+#include <orcaobj/orcaobj.h>
 #include "estopImpl.h"
 #include "util.h"
 
@@ -164,7 +165,7 @@ EStopImpl::localSet( const orca::EStopData data )
 void
 EStopImpl::localSetAndSend(const orca::EStopData data )
 {
-//     cout<<"TRACE(EStopIface.cpp): localSetAndSend: " << orcaice::toString(data) << endl;
+//     cout<<"TRACE(EStopIface.cpp): localSetAndSend: " << orcaobj::toString(data) << endl;
 
     dataStore_.set( data );
 

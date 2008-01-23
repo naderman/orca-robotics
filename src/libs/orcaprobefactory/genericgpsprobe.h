@@ -14,6 +14,7 @@
 #include <orcaprobe/interfaceprobe.h>
 #include <orcaice/connectutils.h>
 #include <orcaprobe/orcaprobe.h>
+#include <orcaobj/stringutils.h>
 
 namespace orcaprobefactory
 {
@@ -118,7 +119,7 @@ GenericGpsProbe<ConsumerType,
     {
         InterfacePrxType derivedPrx = InterfacePrxType::checkedCast(prx_);
         result = derivedPrx->getData();
-        orcaprobe::reportResult( data, "data", orcaice::toString(result) );
+        orcaprobe::reportResult( data, "data", orcaobj::toString(result) );
     }
     catch( const Ice::Exception& e )
     {
@@ -148,7 +149,7 @@ GenericGpsProbe<ConsumerType,
     {
         InterfacePrxType derivedPrx = InterfacePrxType::checkedCast(prx_);
         result = derivedPrx->getDescription();
-        orcaprobe::reportResult( data, "data", orcaice::toString(result) );
+        orcaprobe::reportResult( data, "data", orcaobj::toString(result) );
     }
     catch( const Ice::Exception& e )
     {
@@ -230,7 +231,7 @@ GenericGpsProbe<ConsumerType,
                                            const Ice::Current& )
 {
     subscribeOperationData_.results.clear();
-    orcaprobe::reportResult( subscribeOperationData_, "data", orcaice::toString(result) );
+    orcaprobe::reportResult( subscribeOperationData_, "data", orcaobj::toString(result) );
     display_.setOperationData( subscribeOperationData_ );
 };
 

@@ -52,7 +52,7 @@ WifiWidget::WifiWidget( unsigned int numInterfaces, std::string proxyString )
 void
 WifiWidget::refresh( orca::WifiData &data )
 {
-    //cout << orcaice::toString(data);
+    //cout << orcaobj::toString(data);
     
     for (unsigned int i=0; i<numInterfaces_; i++)
     {
@@ -196,7 +196,7 @@ WifiElement::update()
     // get data from the buffer
     listener_.buffer().getAndPop( data );
     
-    //cout << orcaice::toString(data) << endl;
+    //cout << orcaobj::toString(data) << endl;
     
     if (wifiWidget_==0) {
         wifiWidget_ = new WifiWidget( data.interfaces.size(), proxyString_ );

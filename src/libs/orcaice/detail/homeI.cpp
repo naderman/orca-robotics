@@ -9,7 +9,6 @@
  */
 
 #include <orcaice/orcaice.h>
-
 #include "homeI.h"
 
 using namespace orcaice;
@@ -19,7 +18,7 @@ HomeI::HomeI( ComponentInterfaceFlag flag, const orcaice::Context& context )
     IceUtil::Mutex::Lock lock(mutex_);
 
     // start the up-time clock
-    startTime_ = IceUtil::Time::now();
+//     startTime_ = IceUtil::Time::now();
 
     // special cases: add standard interfaces (depending on the startup flag )
     orca::ProvidedInterface provided;
@@ -53,9 +52,11 @@ HomeI::getInterfaces(const ::Ice::Current& ) const
     //std::cout << "Sending data back" << std::endl;
     IceUtil::Mutex::Lock lock(mutex_);
 
-    IceUtil::Time timeUp = IceUtil::Time::now() - startTime_;
+//     IceUtil::Time timeUp = IceUtil::Time::now() - startTime_;
     // we only return the number of seconds
-    homeData_.timeUp = (int)timeUp.toSeconds();
+//     homeData_.timeUp = (int)timeUp.toSeconds();
+
+    homeData_.timeUp = upTimer_.elapsedSec();
 
     return homeData_;
 }
@@ -65,9 +66,11 @@ HomeI::getTimeUp(const ::Ice::Current& ) const
 {
     IceUtil::Mutex::Lock lock(mutex_);
 
-    IceUtil::Time timeUp = IceUtil::Time::now() - startTime_;
+//     IceUtil::Time timeUp = IceUtil::Time::now() - startTime_;
     // we only return the number of seconds
-    return (int)timeUp.toSeconds();
+//     return (int)timeUp.toSeconds();
+
+    return upTimer_.elapsedSec();
 }
 
 orca::ComponentProperties 

@@ -12,6 +12,7 @@
 
 #include <QPainter>
 #include <orcaobj/orcaobj.h>
+#include <orcaice/orcaice.h>
 #include <hydroutil/mathdefs.h>
 #include <hydroqgui/hydroqgui.h>
 #include "localise2dpainter.h"
@@ -43,13 +44,13 @@ Localise2dPainter::setData( const orca::Localise2dData& data )
     data_ = data;
     isDataAvailable_ = true;
 
-//    cout<<"TRACE(localise2dpainter.cpp): got data: " << orcaice::toString(data) << endl;
+//    cout<<"TRACE(localise2dpainter.cpp): got data: " << orcaobj::toString(data) << endl;
 
     // should we keep history even if not displaying?
     if ( isDisplayHistory_ ) {
         if ( data.hypotheses.size() > 0 )
         {
-            const orca::Pose2dHypothesis &h = orcaice::mlHypothesis( data );
+            const orca::Pose2dHypothesis &h = orcaobj::mlHypothesis( data );
             history_.addPoint( h.mean.p.x, h.mean.p.y );
         }
         else
@@ -124,7 +125,7 @@ Localise2dPainter::paint( QPainter *painter, int z )
             }
             else
             {
-                paintHypothesis( painter, orcaice::mlHypothesis( data_ ) );
+                paintHypothesis( painter, orcaobj::mlHypothesis( data_ ) );
             }
         }
     }

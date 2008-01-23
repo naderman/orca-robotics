@@ -30,7 +30,7 @@
 #include <orca/pixmap.h>
 #include <orca/velocitycontrol2d.h>
 
-namespace orcaice
+namespace orcaobj
 {
 /*!
  *  @name Object Initialization Functions

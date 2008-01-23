@@ -13,6 +13,8 @@
 #include <iomanip>
 #include <hydroutil/exceptions.h>
 #include <hydroutil/stringutils.h>
+#include <hydroutil/mathdefs.h>
+#include <orcaice/timeutils.h>
 
 // trying to solve a problem in win, round() is not found
 #ifdef WIN32
@@ -30,15 +32,13 @@ inline double round( double d )
 #   define M_PI 3.14159265358979323846
 #endif
 
-#include <orcaobj/timeutils.h>
 #include <orcaobj/miscutils.h>
-#include <hydroutil/mathdefs.h>
 
 #include "stringutils.h"
 
 using namespace std;
 
-namespace orcaice
+namespace orcaobj
 {
 
 std::string 
@@ -443,7 +443,7 @@ toTimeDuration( const std::string& s, orca::Time& obj )
     int mins;
     ss >> mins;
     if ( !ss ) {
-        obj = toOrcaTime( t );
+        obj = orcaice::toOrcaTime( t );
         if ( isNegative ) {
             obj.seconds *= -1;
             obj.useconds *= -1;
@@ -456,7 +456,7 @@ toTimeDuration( const std::string& s, orca::Time& obj )
     int hours;
     ss >> hours;
     if ( !ss ) {
-        obj = toOrcaTime( t );
+        obj = orcaice::toOrcaTime( t );
         if ( isNegative ) {
             obj.seconds *= -1;
             obj.useconds *= -1;
@@ -469,7 +469,7 @@ toTimeDuration( const std::string& s, orca::Time& obj )
     int days;
     ss >> days;
     if ( !ss ) {
-        obj = toOrcaTime( t );
+        obj = orcaice::toOrcaTime( t );
         if ( isNegative ) {
             obj.seconds *= -1;
             obj.useconds *= -1;
@@ -479,7 +479,7 @@ toTimeDuration( const std::string& s, orca::Time& obj )
 //     cout<<days<<" days"<<endl;
     t += IceUtil::Time::seconds( days*24*3600 );
 
-    obj = toOrcaTime( t );
+    obj = orcaice::toOrcaTime( t );
     if ( isNegative ) {
         obj.seconds *= -1;
         obj.useconds *= -1;
@@ -491,7 +491,7 @@ std::string
 toString( const orca::Time& obj )
 {
     std::ostringstream s;
-    s <<toIceTime( obj ).toDateTime();
+    s <<orcaice::toIceTime( obj ).toDateTime();
     return s.str();
 }
 
@@ -1530,11 +1530,11 @@ toVerboseString( const orca::PathFollower2dData& obj )
 {
     std::stringstream s;
 
-    s << orcaice::toString(obj.timeStamp)
+    s << orcaobj::toString(obj.timeStamp)
       << " PathFollower2dData [" << obj.path.size() << " waypoints]:" << endl;
     for ( unsigned int i=0; i < obj.path.size(); i++ )
     {
-        s << "  " << i << ":" << orcaice::toString(obj.path[i]) << endl;
+        s << "  " << i << ":" << orcaobj::toString(obj.path[i]) << endl;
     }
 
     return s.str();
@@ -1569,7 +1569,7 @@ toVerboseString( const orca::PathPlanner2dData& obj )
     s << "Result description: " << obj.resultDescription << endl;
     for ( unsigned int i=0; i < obj.path.size(); i++ )
     {
-        s << "  " << i << ":" << orcaice::toString(obj.path[i]) << endl;
+        s << "  " << i << ":" << orcaobj::toString(obj.path[i]) << endl;
     }
 
     return s.str();
@@ -1584,7 +1584,7 @@ toVerboseString( const orca::PathPlanner2dTask& obj )
       << " PathPlanner2dTaskPtr [path contains "<< obj.coarsePath.size() << " waypoints]:" << endl;
     for ( unsigned int i=0; i < obj.coarsePath.size(); i++ )
     {
-        s << "  " << i << ":" << orcaice::toString(obj.coarsePath[i]) << endl;
+        s << "  " << i << ":" << orcaobj::toString(obj.coarsePath[i]) << endl;
     }
 
     return s.str();
@@ -1595,7 +1595,7 @@ toVerboseString( const orca::ImuData& obj )
 {
     std::stringstream s;
 
-    s << orcaice::toString(obj.timeStamp)
+    s << orcaobj::toString(obj.timeStamp)
         << " ImuData: \n"
         << "Accelerometer (x,y,z): "
         << obj.accel.x << " "

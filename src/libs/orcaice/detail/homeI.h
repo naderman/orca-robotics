@@ -11,10 +11,9 @@
 #ifndef ORCAICE_HOME_I_H
 #define ORCAICE_HOME_I_H
 
-// #include <Ice/Ice.h>
-#include <IceUtil/Time.h>
 #include <IceUtil/Mutex.h>
 
+#include <hydroiceutil/timer.h>
 #include <orca/home.h>
 #include "../home.h"
 #include "../component.h" // for ComponentInterfaceFlag
@@ -48,7 +47,7 @@ private:
 
     // start time is initialized in the constructor. the component's up time
     // is counted from here.
-    IceUtil::Time startTime_;
+    hydroiceutil::Timer upTimer_;
 
     // We may have multiple threads talking to us
     IceUtil::Mutex mutex_;

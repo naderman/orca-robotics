@@ -17,8 +17,8 @@
 #define M_PI 3.14159265358979323846
 #endif
 
-#include <orcaobj/timeutils.h>
-#include <orcaobj/miscutils.h>
+#include <orcaice/orcaice.h>
+#include <orcaobj/orcaobj.h>
 
 #include "logstringutils.h"
 

@@ -11,6 +11,7 @@
 
 #include "doorextractor.h"
 #include <orcaice/orcaice.h>
+#include <orcaobj/orcaobj.h>
 #include <iostream>
 #include <cmath>
 #include "scanutil.h"
@@ -225,7 +226,7 @@ void DoorExtractor::addFeatures( const orca::LaserScanner2dDataPtr &laserData,
     if ( context_.tracer().verbosity( hydroutil::Tracer::DebugTrace, hydroutil::Tracer::ToAny ) >= 2 )
     {
         std::stringstream ss;
-        ss << "DoorExtractor:: features: " << orcaice::toString( features );
+        ss << "DoorExtractor:: features: " << orcaobj::toString( features );
         context_.tracer().debug( ss.str() );
     }
 }

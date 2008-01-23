@@ -15,6 +15,6 @@
 #include <orcaobj/initutils.h>
 #include <orcaobj/miscutils.h>
 #include <orcaobj/stringutils.h>
-#include <orcaobj/timeutils.h>
+#include <orcaobj/proputils.h>
  
 #endif

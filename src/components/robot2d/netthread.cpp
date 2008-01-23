@@ -12,6 +12,7 @@
 #include <sstream>
 
 #include <orcaice/orcaice.h>
+#include <orcaobj/orcaobj.h>
 #include "netthread.h"
 
 using namespace std;
@@ -99,7 +100,7 @@ void
 NetThread::handleData(const orca::VelocityControl2dData& command)
 {
     stringstream ss;
-    ss << "NetThread::handleData: " << orcaice::toString(command);
+    ss << "NetThread::handleData: " << orcaobj::toString(command);
     context_.tracer().debug( ss.str() );
 
     try {

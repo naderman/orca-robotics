@@ -12,6 +12,7 @@
 #include <hydroqgui/hydroqgui.h>
 #include <orcaqgui/guiicons.h>
 #include <orcaice/orcaice.h>
+#include <orcaobj/orcaobj.h>
 #include <QFileDialog>
 #include <orcaqgui2dfactory/wptolerancesdialog.h>
 
@@ -24,7 +25,7 @@ namespace orcaqgui2d {
 void
 PathPlannerTaskAnswerConsumer::setData(const ::orca::PathPlanner2dData& data, const ::Ice::Current& )
 {
-    std::cout << "INFO(pathplanner2dconsumerI.cpp): Received results: " << orcaice::toVerboseString(data) << std::endl;
+    std::cout << "INFO(pathplanner2dconsumerI.cpp): Received results: " << orcaobj::toVerboseString(data) << std::endl;
     if (data.result==orca::PathOk) return; 
     
     QString msg("Pathplanner could not compute path!\nReason is: ");

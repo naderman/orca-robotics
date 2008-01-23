@@ -16,6 +16,7 @@
 #include <QPolygon>
 
 #include <orcaice/orcaice.h>
+#include <orcaobj/orcaobj.h>
 
 #include "laserscanner2dpainter.h"
 
@@ -66,7 +67,7 @@ LaserScanner2dPainter::setOffset( orca::Frame3d &offset )
     {
         isNotHorizontal_ = true;
         stringstream ss;
-        ss << "LaserScanner2dPainter::setOffset(): Can only properly deal with (possibly-flipped) horizontal lasers.  Offset: " << orcaice::toString(offset);
+        ss << "LaserScanner2dPainter::setOffset(): Can only properly deal with (possibly-flipped) horizontal lasers.  Offset: " << orcaobj::toString(offset);
         throw hydroqgui::Exception( ERROR_INFO, ss.str() );
     }
 
@@ -79,7 +80,7 @@ LaserScanner2dPainter::setOffset( orca::Frame3d &offset )
     {
         isNotHorizontal_ = true;
         stringstream ss;
-        ss << "LaserScanner2dPainter::setOffset(): Cannot properly deal with non-zero z.  Offset: " << orcaice::toString(offset);
+        ss << "LaserScanner2dPainter::setOffset(): Cannot properly deal with non-zero z.  Offset: " << orcaobj::toString(offset);
         throw hydroqgui::Exception( ERROR_INFO, ss.str() );
     }
 

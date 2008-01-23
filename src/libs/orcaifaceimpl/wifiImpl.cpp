@@ -1,5 +1,6 @@
 #include <iostream>
 #include <orcaice/orcaice.h>
+#include <orcaobj/orcaobj.h>
 #include "util.h"
 #include "wifiImpl.h"
 

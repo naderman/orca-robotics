@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
+#include <orcaobj/orcaobj.h>
 #include <orcacm/orcacm.h>
 
 #include "cpuprobe.h"
@@ -49,7 +50,7 @@ CpuProbe::loadGetInfo( orcacm::OperationData& data )
     {
         orca::CpuPrx derivedPrx = orca::CpuPrx::checkedCast(prx_);
         result = derivedPrx->getInfo();
-        orcaprobe::reportResult( data, "data", orcaice::toString(result) );
+        orcaprobe::reportResult( data, "data", orcaobj::toString(result) );
     }
     catch( const Ice::Exception& e )
     {
@@ -68,7 +69,7 @@ CpuProbe::loadGetData( orcacm::OperationData& data )
     {
         orca::CpuPrx derivedPrx = orca::CpuPrx::checkedCast(prx_);
         result = derivedPrx->getData();
-        orcaprobe::reportResult( data, "data", orcaice::toString(result) );
+        orcaprobe::reportResult( data, "data", orcaobj::toString(result) );
     }
     catch( const Ice::Exception& e )
     {

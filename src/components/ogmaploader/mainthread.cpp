@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
+#include <orcaobj/orcaobj.h>
 
 #include "mainthread.h"
 #include "fakemaploader.h"
@@ -48,7 +49,7 @@ MainThread::walk()
     else if ( driverName == "file" )
     {
         loadMapFromFile( context_,theMap );
-        cout<<"TRACE(component.cpp): Loaded map: " << orcaice::toString(theMap) << endl;
+        cout<<"TRACE(component.cpp): Loaded map: " << orcaobj::toString(theMap) << endl;
     }
     else
     {

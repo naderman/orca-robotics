@@ -16,8 +16,6 @@
 
 // for setInit()
 #include <orcaobj/orcaobj.h>
-// for getPropertyAsCartesianPoint
-#include <orcaice/orcaice.h>
 
 #include <orcaqgui2d/ptricestormelement.h>
 #include <orcaqgui2d/icestormelement.h>
@@ -179,8 +177,8 @@ public:
     std::string prefix = context_.tag();
     prefix += ".Config.";
 
-    orcaice::setInit( origin_ );
-    orcaice::getPropertyAsCartesianPoint( prop, prefix+"General.Offset", origin_ );
+    orcaobj::setInit( origin_ );
+    orcaobj::getPropertyAsCartesianPoint( prop, prefix+"General.Offset", origin_ );
 
 }
     virtual bool isInGlobalCS() { return true; }

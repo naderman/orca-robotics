@@ -12,6 +12,7 @@
 #define ORCAIFACEIMPL_PRINTING_CONSUMER_IMPL_H
 
 #include <orcaifaceimpl/consumerImpl.h>
+#include <orcaobj/orcaobj.h>
 
 namespace orcaifaceimpl
 {
@@ -39,7 +40,7 @@ public:
     //! This callback simply prints it out to standard output.
     virtual void handleData( const ObjectType& data ) 
     {
-        context_.tracer().info( orcaice::toString(data) ); 
+        context_.tracer().info( orcaobj::toString(data) ); 
     }
 };
 

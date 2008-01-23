@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
+#include <orcaobj/orcaobj.h>
 #include <orcaobjutil/vehicleutil.h>
 #include <orcaifaceimpl/velocitycontrol2dImpl.h>
 
@@ -28,7 +29,7 @@ public:
     // from hydroiceutil::NotifyHandler
     virtual void handleData( const orca::VelocityControl2dData& data )
     {
-        tracer_.debug( "VelocityControl2dSim::handleData: received "+orcaice::toString(data), 6 );
+        tracer_.debug( "VelocityControl2dSim::handleData: received "+orcaobj::toString(data), 6 );
     }
 private:
     hydroutil::Tracer& tracer_;
@@ -59,7 +60,7 @@ VelocityControl2dSim::walk()
         {
             // unlike DriveBicycle, this interface currently does not serve reference command
 //             orca::VelocityControl2dData data;
-//             orcaice::setSane( data );
+//             orcaobj::setSane( data );
 //             iface->localSetAndSend( data );
 
             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));

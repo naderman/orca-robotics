@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
+#include <orcaobj/orcaobj.h>
 #include <orcacm/orcacm.h>
 #include <orcaprobe/orcaprobe.h>
 
@@ -52,7 +53,7 @@ PowerProbe::loadGetData( orcacm::OperationData & data )
     {
         orca::PowerPrx derivedPrx = orca::PowerPrx::checkedCast(prx_);
         result = derivedPrx->getData();
-        orcaprobe::reportResult( data, "data", orcaice::toString(result) );
+        orcaprobe::reportResult( data, "data", orcaobj::toString(result) );
     }
     catch( const orca::DataNotExistException & e )
     {
@@ -102,5 +103,5 @@ PowerProbe::loadUnsubscribe( orcacm::OperationData & data )
 void 
 PowerProbe::setData(const orca::PowerData & data, const Ice::Current&)
 {
-    std::cout << orcaice::toString(data) << std::endl;
+    std::cout << orcaobj::toString(data) << std::endl;
 };

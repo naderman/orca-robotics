@@ -13,6 +13,7 @@
 
 #include <hydroqgui/hydroqgui.h>
 #include <orcaice/orcaice.h>
+#include <orcaobj/orcaobj.h>
 #include "ogmappainter.h"
 
 using namespace std;
@@ -40,13 +41,13 @@ OgMapPainter::paint( QPainter *p, int z )
 void
 OgMapPainter::setData( const orca::OgMapData& data )
 {
-//     cout << orcaice::toVerboseString(data);
+//     cout << orcaobj::toVerboseString(data);
     data_ = data;
 
     if ( data.offset.o != 0.0 ) 
     {
         stringstream ss;
-        ss << "OgMapPainter: Don't know how to display non-axis-aligned map: " << orcaice::toString( data );
+        ss << "OgMapPainter: Don't know how to display non-axis-aligned map: " << orcaobj::toString( data );
         throw hydroqgui::Exception( ERROR_INFO, ss.str() );
     }
     

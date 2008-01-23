@@ -14,8 +14,8 @@
 #include <cmath>
 #include <IceUtil/Time.h>
 
+#include <orcaice/timeutils.h>
 #include <orcaobj/initutils.h>
-#include <orcaobj/timeutils.h>
 #include <hydroutil/mathdefs.h>
 
 // Random doubles and integers
@@ -25,7 +25,7 @@
 
 using namespace std;
 
-namespace orcaice
+namespace orcaobj
 {
 
 void
@@ -174,13 +174,13 @@ setInit( orca::Odometry2dData& obj )
 void 
 setSane( orca::Time& obj )
 {
-    obj = toOrcaTime( IceUtil::Time::now() );
+    obj = orcaice::toOrcaTime( IceUtil::Time::now() );
 }
 
 void 
 setSane( orca::TimeOfDay& obj )
 {
-    obj = toOrcaTimeOfDay( IceUtil::Time::now() );
+    obj = orcaice::toOrcaTimeOfDay( IceUtil::Time::now() );
 
 //     obj.hours   = RINT%24;
 //     obj.minutes = RINT%59;
@@ -190,7 +190,7 @@ setSane( orca::TimeOfDay& obj )
 void 
 setSane( orca::Date& obj )
 {
-    obj = toOrcaDate( IceUtil::Time::now() );
+    obj = orcaice::toOrcaDate( IceUtil::Time::now() );
 
 //     obj.day   = RINT%31;
 //     obj.month = RINT%12;

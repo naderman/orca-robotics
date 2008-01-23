@@ -18,26 +18,24 @@ Well tested, stable API.
 
 @par Overview
 
-For a full list of functions and classes see @ref orcaice (may be renamed to @b orcaobj).
+For a full list of functions and classes see @ref orcaobj.
 
 Header file:
 @verbatim
 #include <orcaobj/orcaobj.h>
-@endverbatim
-
-This library is used by @ref orca_library_orcaice so there is no need to include the header file separately. 
+@endverbatim 
 
 @par Authors
 Alex Makarenko
   
 */
 
-// /*
-// @namespace orcaobg
-// @brief Utilities for initializing and manipulating Orca data objects.
-// 
-// This namespace is part of a library.
-// 
-// @see @ref orca_library_orcaobj
-// */
+/*!
+@namespace orcaobj
+@brief Utilities for initializing and manipulating Orca data objects.
+ 
+This namespace is part of a library.
+ 
+@see @ref orca_library_orcaobj
+*/
 

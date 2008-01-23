@@ -74,7 +74,7 @@ TestComponent::start()
         orcalogfactory::CameraLogger* logger = 
             new orcalogfactory::CameraLogger( logMaster, "0", "ice", "", context() );
         orca::CameraData dataIn;
-        orcaice::setSane( dataIn, 20, 10 );
+        orcaobj::setSane( dataIn, 20, 10 );
         logger->setData( dataIn, Ice::Current() );
     
         orcalogfactory::CameraReplayer* replayer = 
@@ -107,7 +107,7 @@ TestComponent::start()
             new orcalogfactory::LaserScanner2dLogger( logMaster, "0", "ice", "", context() );
         orca::LaserScanner2dDataPtr dataIn = new orca::LaserScanner2dData;
         const orca::RangeScanner2dDataPtr rangeScanner2dDataIn = dataIn;
-        orcaice::setSane( dataIn );
+        orcaobj::setSane( dataIn );
         logger->setData( rangeScanner2dDataIn, Ice::Current() );
     
         orcalogfactory::LaserScanner2dReplayer* replayer = 
@@ -138,7 +138,7 @@ TestComponent::start()
         orcalogfactory::PowerLogger* logger = 
             new orcalogfactory::PowerLogger( logMaster, "0", "ice", "", context() );
         orca::PowerData dataIn;
-        orcaice::setSane( dataIn );
+        orcaobj::setSane( dataIn );
         logger->setData( dataIn, Ice::Current() );
     
         orcalogfactory::PowerReplayer* replayer = 
@@ -167,7 +167,7 @@ TestComponent::start()
         orcalogfactory::PowerLogger* logger = 
             new orcalogfactory::PowerLogger( logMaster, "0", "ascii", "", context() );
         orca::PowerData dataIn;
-        orcaice::setSane( dataIn );
+        orcaobj::setSane( dataIn );
         logger->setData( dataIn, Ice::Current() );
     
         orcalogfactory::PowerReplayer* replayer = 

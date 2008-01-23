@@ -16,7 +16,7 @@
 #define ORCAICE_ORCAICE_H
 
 // dependencies
-#include <orcaobj/orcaobj.h>
+// #include <orcaobj/orcaobj.h>
 #include <hydroiceutil/hydroiceutil.h>
 #include <hydroutil/hydroutil.h>
 
@@ -29,6 +29,8 @@
 #include <orcaice/configutils.h>
 #include <orcaice/proputils.h>
 #include <orcaice/printutils.h>
+#include <orcaice/stringutils.h>
+#include <orcaice/timeutils.h>
 
 #include <orcaice/connectutils.h>
 #include <orcaice/multiconnectutils.h>

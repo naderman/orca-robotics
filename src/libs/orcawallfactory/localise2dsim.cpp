@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
+#include <orcaobj/orcaobj.h>
 #include <orcaifaceimpl/localise2dImpl.h>
 
 #include "localise2dsim.h"
@@ -27,8 +28,8 @@ Localise2dSim::walk()
 {
     orca::VehicleGeometryCuboidDescriptionPtr geom;
     geom->type = orca::VehicleGeometryCuboid;
-    orcaice::setSane( geom->size );
-    orcaice::setSane( geom->vehicleToGeometryTransform );
+    orcaobj::setSane( geom->size );
+    orcaobj::setSane( geom->vehicleToGeometryTransform );
     
     orcaifaceimpl::Localise2dImplPtr iface;
     iface = new orcaifaceimpl::Localise2dImpl( geom, tag_, context_ );
@@ -39,7 +40,7 @@ Localise2dSim::walk()
         try 
         {
             orca::Localise2dData data;
-            orcaice::setSane( data );
+            orcaobj::setSane( data );
             iface->localSetAndSend( data );
 
             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));

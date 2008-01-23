@@ -22,7 +22,7 @@ void FakeDriver::read( orca::WifiData &data )
     data.timeStamp = orcaice::getNow();
     
     orca::WifiInterface w;
-    orcaice::setInit(w);
+    orcaobj::setInit(w);
     data.interfaces.push_back( w );
 }
 

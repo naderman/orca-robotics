@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
+#include <orcaobj/orcaobj.h>
 #include <orcaobjutil/vehicleutil.h>
 #include <orcaifaceimpl/odometry2dImpl.h>
 
@@ -38,7 +39,7 @@ Odometry2dSim::walk()
         try 
         {
             orca::Odometry2dData data;
-            orcaice::setSane( data );
+            orcaobj::setSane( data );
             iface->localSetAndSend( data );
 
             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));

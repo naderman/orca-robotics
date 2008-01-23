@@ -181,11 +181,11 @@ Component::start()
     descr.imageSize    = actualCfg.imageSize;
 
     // offset from the robot coordinate system
-    orcaice::setInit( descr.offset );
-    descr.offset = orcaice::getPropertyAsFrame3dWithDefault( prop, prefix+"Offset", descr.offset );
+    orcaobj::setInit( descr.offset );
+    descr.offset = orcaobj::getPropertyAsFrame3dWithDefault( prop, prefix+"Offset", descr.offset );
 
-    orcaice::setInit( descr.size );
-    descr.size = orcaice::getPropertyAsSize3dWithDefault( prop, prefix+"Size", descr.size );
+    orcaobj::setInit( descr.size );
+    descr.size = orcaobj::getPropertyAsSize3dWithDefault( prop, prefix+"Size", descr.size );
 
     //
     // EXTERNAL PROVIDED INTERFACE: Camera

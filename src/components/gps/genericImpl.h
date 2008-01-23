@@ -212,7 +212,7 @@ template<typename InterfaceType,
 void
 GenericImpl<InterfaceType,DataType,ConsumerPrxType,DescriptionType>::localSet( const DataType &data )
 {
-    //cout<<"TRACE(localise2dImpl.cpp): localSetData: " << orcaice::toString(data) << std::endl;
+    //cout<<"TRACE(localise2dImpl.cpp): localSetData: " << orcaobj::toString(data) << std::endl;
 
     dataProxy_.set( data );
 }

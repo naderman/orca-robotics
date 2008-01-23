@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
+#include <orcaobj/orcaobj.h>
 #include "pathfollower2dI.h"
 
 using namespace std;
@@ -105,10 +106,10 @@ PathFollower2dI::setData( const ::orca::PathFollower2dData& data, bool activateI
 {
     // Sanity check
     std::string reason;
-    if ( !orcaice::isSane( data, reason ) )
+    if ( !orcaobj::isSane( data, reason ) )
     {
         stringstream ss;
-        ss << "PathFollower2dI: Received screwy path: " << orcaice::toString(data) << endl << reason;
+        ss << "PathFollower2dI: Received screwy path: " << orcaobj::toString(data) << endl << reason;
         context_.tracer().warning( ss.str() );
         throw orca::MalformedParametersException( reason );
     }
@@ -116,11 +117,11 @@ PathFollower2dI::setData( const ::orca::PathFollower2dData& data, bool activateI
     if ( isDodgy( data, reason ) )
     {
         stringstream ss;
-        ss << "Received dodgy path: " << orcaice::toVerboseString(data) << endl << reason;
+        ss << "Received dodgy path: " << orcaobj::toVerboseString(data) << endl << reason;
         context_.tracer().warning( ss.str() );
     }
 
-    cout<<"TRACE(pathfollower2dI.cpp): Received new path: " << orcaice::toVerboseString(data) << endl;
+    cout<<"TRACE(pathfollower2dI.cpp): Received new path: " << orcaobj::toVerboseString(data) << endl;
     cout<<"TRACE(pathfollower2dI.cpp): activateImmediately: " << activateImmediately << endl;
     pathStore_.set( data );
     newPathArrivedStore_.set( true );

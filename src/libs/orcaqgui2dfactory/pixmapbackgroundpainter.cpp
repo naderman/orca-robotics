@@ -11,6 +11,7 @@
 #include <fstream>
 #include <QPainter>
 #include <orcaice/orcaice.h>
+#include <orcaobj/orcaobj.h>
 #include <hydroqgui/hydroqgui.h>
 
 #include "pixmapbackgroundpainter.h"
@@ -44,7 +45,7 @@ PixMapBackgroundPainter::setData( const orca::PixMapData& data )
     {
         stringstream ss;
         ss << "PixMapBackgroundPainter: Don't know how to display non-axis-aligned map: "
-           << orcaice::toString( data );
+           << orcaobj::toString( data );
         throw hydroqgui::Exception( ERROR_INFO, ss.str() );
     }
     

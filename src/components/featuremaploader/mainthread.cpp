@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
+#include <orcaobj/orcaobj.h>
 
 #include "mainthread.h"
 
@@ -69,7 +70,7 @@ MainThread::walk()
         std::string mapFileName = orcaice::getPropertyWithDefault( prop, prefix+"MapFileName", "featuremap.txt" );
         try
         {
-            orcaice::loadFromFile( mapFileName, theMap );
+            orcaobj::loadFromFile( mapFileName, theMap );
         }
         catch ( const hydroutil::Exception& e )
         {   

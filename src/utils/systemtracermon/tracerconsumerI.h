@@ -13,7 +13,7 @@
 
 #include <iostream>
 #include <orca/tracer.h>
-#include <orcaice/orcaice.h>
+#include <orcaobj/orcaobj.h>
 
 namespace sysmon {
 
@@ -22,7 +22,7 @@ class TracerConsumerI : public orca::TracerConsumer
     public:
         virtual void setData(const orca::TracerData& data, const Ice::Current&)
         {
-            std::cout << orcaice::toString(data) << std::endl;
+            std::cout << orcaobj::toString(data) << std::endl;
         }
 };
 

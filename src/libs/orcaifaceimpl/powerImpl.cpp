@@ -11,6 +11,7 @@
 #include <iostream>
 
 #include <orcaice/orcaice.h>
+#include <orcaobj/orcaobj.h>
 #include "powerImpl.h"
 #include "util.h"
 
@@ -148,7 +149,7 @@ PowerImpl::localSet( const orca::PowerData& data )
 void
 PowerImpl::localSetAndSend( const orca::PowerData& data )
 {
-//     cout<<"TRACE(PowerIface.cpp): localSetAndSend: " << orcaice::toString(data) << endl;
+//     cout<<"TRACE(PowerIface.cpp): localSetAndSend: " << orcaobj::toString(data) << endl;
 
     dataStore_.set( data );
 

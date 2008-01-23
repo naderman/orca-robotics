@@ -9,7 +9,7 @@
  */
  
 #include <iostream>
-#include <orcaice/orcaice.h>
+#include <orcaobj/orcaobj.h>
 
 #include "fakedriver.h"
 
@@ -23,7 +23,7 @@ FakeDriver::computeCommand( const orca::RangeScanner2dDataPtr& laserData,
                                 orca::VelocityControl2dData& commandData )
 {
     // generate random command
-    orcaice::setSane( commandData );
+    orcaobj::setSane( commandData );
     
     return 0;
 }

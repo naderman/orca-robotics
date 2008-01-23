@@ -19,7 +19,7 @@
 
 #include <stdio.h>  // for FILE on QNX
 
-namespace orcaice
+namespace orcaobj
 {
 /*!
  *  @name Miscellaneous Object Manipulation Functions

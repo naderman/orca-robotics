@@ -15,6 +15,7 @@
 
 #include <orca/featuremap2d.h>
 #include <orcaice/orcaice.h>
+#include <orcaobj/orcaobj.h>
 #include "foregroundextractor.h"
 #include "polefinder.h"
 
@@ -109,7 +110,7 @@ void ForegroundExtractor::addFeatures( const orca::LaserScanner2dDataPtr &laserD
 {
     assert( laserMaxRange_ > 0.0 );
 
-    double angleIncrement = orcaice::calcAngleIncrement( laserData->fieldOfView,
+    double angleIncrement = orcaobj::calcAngleIncrement( laserData->fieldOfView,
                                                          laserData->ranges.size() );
     std::vector<orca_polefinder::Pole> poles;
     double startAngleFromDodge = DEG2RAD( 2.0 );

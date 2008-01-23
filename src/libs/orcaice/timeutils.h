@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCAOBJ_TIME_UTILITIES_H
-#define ORCAOBJ_TIME_UTILITIES_H
+#ifndef ORCAICE_TIME_UTILITIES_H
+#define ORCAICE_TIME_UTILITIES_H
 
 #include <orca/orca.h>
 

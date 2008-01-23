@@ -59,19 +59,19 @@ Component::start()
 
     // Transformation from global (arbitrarily defined) coordinate system (CS) to
     // the GPS MapGrid CS.
-    orcaice::setInit( desiredCfg.gpsOffset );
-    desiredCfg.gpsOffset = orcaice::getPropertyAsFrame2dWithDefault( prop, prefix+"Gps.Offset", desiredCfg.gpsOffset );
+    orcaobj::setInit( desiredCfg.gpsOffset );
+    desiredCfg.gpsOffset = orcaobj::getPropertyAsFrame2dWithDefault( prop, prefix+"Gps.Offset", desiredCfg.gpsOffset );
 
     // Specifies location of the GPS antenna with respect to the vehicles's
     // coordinate system. 
     // Note that this is different from the Novatel.ImuToGpsAntennaOffset which is the lever arm between
     // the imu and antenna, not vehicle and antenna.
-    orcaice::setInit( desiredCfg.gpsAntennaOffset );
-    desiredCfg.gpsAntennaOffset = orcaice::getPropertyAsFrame3dWithDefault( prop, prefix+"Gps.AntennaOffset", desiredCfg.gpsAntennaOffset );
+    orcaobj::setInit( desiredCfg.gpsAntennaOffset );
+    desiredCfg.gpsAntennaOffset = orcaobj::getPropertyAsFrame3dWithDefault( prop, prefix+"Gps.AntennaOffset", desiredCfg.gpsAntennaOffset );
     
     // offset of the imu with respect to the robot's local coordinate system
-    orcaice::setInit( desiredCfg.imuOffset );
-    desiredCfg.imuOffset = orcaice::getPropertyAsFrame3dWithDefault( prop, prefix+"Imu.Offset", desiredCfg.imuOffset );
+    orcaobj::setInit( desiredCfg.imuOffset );
+    desiredCfg.imuOffset = orcaobj::getPropertyAsFrame3dWithDefault( prop, prefix+"Imu.Offset", desiredCfg.imuOffset );
 
     /*** now read from config file -RF ***/ 
     // consider the special case of the sensor mounted level (pitch=0) but upside-down (roll=180)
@@ -85,14 +85,14 @@ Component::start()
 //             tracer().info( "the driver will compensate for upside-down mounted sensor" );
 //     }
 
-    orcaice::setInit( desiredCfg.imuSize );
-    desiredCfg.imuSize = orcaice::getPropertyAsSize3dWithDefault( prop, prefix+"Imu.Size", desiredCfg.imuSize );
+    orcaobj::setInit( desiredCfg.imuSize );
+    desiredCfg.imuSize = orcaobj::getPropertyAsSize3dWithDefault( prop, prefix+"Imu.Size", desiredCfg.imuSize );
 
     // Transformation:
     // - from: the platform's coordinate system (eg. origin at the GPS antenna),
     // - to:   the coordinate system of the vehicle (eg. rear axle of the vehicle).
-    orcaice::setInit( desiredCfg.vehiclePlatformToVehicleTransform );
-    desiredCfg.vehiclePlatformToVehicleTransform = orcaice::getPropertyAsFrame3dWithDefault( prop, prefix+"Vehicle.PlatformToVehicleTransform", desiredCfg.vehiclePlatformToVehicleTransform );
+    orcaobj::setInit( desiredCfg.vehiclePlatformToVehicleTransform );
+    desiredCfg.vehiclePlatformToVehicleTransform = orcaobj::getPropertyAsFrame3dWithDefault( prop, prefix+"Vehicle.PlatformToVehicleTransform", desiredCfg.vehiclePlatformToVehicleTransform );
    
     if ( !desiredCfg.validate() ) {
         tracer().error( "Failed to validate insgps configuration. "+desiredCfg.toString() );

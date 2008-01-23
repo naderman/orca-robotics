@@ -8,7 +8,7 @@
  *
  */
 
-#include <orcaice/orcaice.h>
+#include <orcaobj/orcaobj.h>
 
 #include "termutils.h"
 
@@ -19,9 +19,9 @@ tracermon::toString( const orca::TracerData& obj )
 {
     string s = "[ ";
 
-    s += orcaice::toString( obj.timeStamp ) + " ";
+    s += orcaobj::toString( obj.timeStamp ) + " ";
 
-    s += orcaice::toString( obj.name );
+    s += orcaobj::toString( obj.name );
     // todo: would be nice to show level here, e.g. debug3:
     // but seems like an overkill to deal with osstreams
     s += " " + obj.category + ": ";

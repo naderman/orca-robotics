@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
+#include <orcaobj/orcaobj.h>
 #include <orcacm/orcacm.h>
 #include <orcaprobe/orcaprobe.h>
 
@@ -58,7 +59,7 @@ Localise2dProbe::loadGetData( orcacm::OperationData& data )
     {
         orca::Localise2dPrx derivedPrx = orca::Localise2dPrx::checkedCast(prx_);
         result = derivedPrx->getData();
-        orcaprobe::reportResult( data, "data", orcaice::toString(result) );
+        orcaprobe::reportResult( data, "data", orcaobj::toString(result) );
     }
     catch( const Ice::Exception& e )
     {
@@ -76,7 +77,7 @@ Localise2dProbe::loadGetVehicleGeometry( orcacm::OperationData& data )
     {
         orca::Localise2dPrx derivedPrx = orca::Localise2dPrx::checkedCast(prx_);
         orca::VehicleGeometryDescriptionPtr result = derivedPrx->getVehicleGeometry();
-        orcaprobe::reportResult( data, "data", orcaice::toString(result) );
+        orcaprobe::reportResult( data, "data", orcaobj::toString(result) );
     }
     catch( const orca::DataNotExistException& e )
     {
@@ -144,6 +145,6 @@ void
 Localise2dProbe::setData(const orca::Localise2dData& result, const Ice::Current&)
 {
     subscribeOperationData_.results.clear();
-    orcaprobe::reportResult( subscribeOperationData_, "data", orcaice::toString(result) );
+    orcaprobe::reportResult( subscribeOperationData_, "data", orcaobj::toString(result) );
     display_.setOperationData( subscribeOperationData_ );
 };

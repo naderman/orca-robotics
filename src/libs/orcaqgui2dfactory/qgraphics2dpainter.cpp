@@ -14,6 +14,7 @@
 #include <QPainter>
 
 #include <orcaice/orcaice.h>
+#include <orcaobj/orcaobj.h>
 
 #include "qgraphics2dpainter.h"
 #include <orcaqgui2d/definitions2d.h>

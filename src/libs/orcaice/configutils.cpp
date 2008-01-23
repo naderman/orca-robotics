@@ -16,8 +16,7 @@
 #include <orcaice/proputils.h>
 #include <orcaice/printutils.h>
 #include <orcaice/exceptions.h>
-
-#include <orcaobj/stringutils.h>
+#include <orcaice/stringutils.h>
 
 #include "privateutils.h"
 

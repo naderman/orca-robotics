@@ -11,6 +11,7 @@
 #include <iostream>
 
 #include <orcaice/orcaice.h>
+#include <orcaobj/orcaobj.h>
 #include "odometry2dImpl.h"
 #include "util.h"
 
@@ -160,7 +161,7 @@ Odometry2dImpl::localSet( const orca::Odometry2dData& data )
 void
 Odometry2dImpl::localSetAndSend( const orca::Odometry2dData& data )
 {
-//     cout<<"TRACE(Odometry2dIface.cpp): localSetAndSend: " << orcaice::toString(data) << endl;
+//     cout<<"TRACE(Odometry2dIface.cpp): localSetAndSend: " << orcaobj::toString(data) << endl;
 
     dataStore_.set( data );
 

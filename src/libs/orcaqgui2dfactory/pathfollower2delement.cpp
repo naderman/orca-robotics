@@ -12,6 +12,7 @@
 #include <iostream>
 #include <QFileDialog>
 #include <orcaice/orcaice.h>
+#include <orcaobj/orcaobj.h>
 #include <orcaobj/stringutils.h>
 #include <hydroqgui/hydroqgui.h>
 #include <orcaqgui/guiicons.h>

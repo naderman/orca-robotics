@@ -1,6 +1,7 @@
 #include "orcanavutil.h"
 #include <iostream>
 #include <orcaice/orcaice.h>
+#include <orcaobj/orcaobj.h>
 
 using namespace std;
 
@@ -36,7 +37,7 @@ namespace orcanavutil {
         {
             stringstream ss;
             ss << "orcanavutil::convert: input Localise2dData has zero hypotheses:"
-               << endl << orcaice::toString( locData );
+               << endl << orcaobj::toString( locData );
             throw hydroutil::Exception( ERROR_INFO, ss.str() );
         }
 
@@ -52,7 +53,7 @@ namespace orcanavutil {
         catch ( const hydronavutil::Exception &e )
         {
             stringstream ss;
-            ss << "While creating Gmm from orca::Localise2dData: " << orcaice::toString(locData)
+            ss << "While creating Gmm from orca::Localise2dData: " << orcaobj::toString(locData)
                << ": " << e.what();
             throw hydronavutil::Exception( ERROR_INFO, ss.str() );
         }

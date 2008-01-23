@@ -12,6 +12,9 @@ GLOBAL_ADD_TEST( PtrNotifyTest ptrnotifytest )
 ADD_EXECUTABLE( proptest proptest.cpp )
 GLOBAL_ADD_TEST( PropUtilsTest proptest )
 
+ADD_EXECUTABLE( timetest timetest.cpp )
+GLOBAL_ADD_TEST( TimeTest timetest )
+
 ADD_EXECUTABLE( privateutilstest privateutilstest.cpp )
 GLOBAL_ADD_TEST( PrivateUtilsTest privateutilstest )
 

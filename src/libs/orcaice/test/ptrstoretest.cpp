@@ -12,15 +12,65 @@
 
 #include <orca/rangescanner2d.h>
 #include <orcaice/ptrstore.h>
-#include <orcaobj/orcaobj.h>
+// #include <orcaobj/orcaobj.h>
+#include <hydroutil/mathdefs.h>
+
+// Random doubles and integers
+#define RDOUBLE (rand()*M_PI)
+#define RINT    (rand())
+#define RCHAR   ((char)rand())
 
 using namespace std;
+
+// copied over from orcaob/initutils.h to cut dependency
+void 
+setSane( const orca::RangeScanner2dDataPtr& obj, int numberOfSamples=361 )
+{
+//     orca::Time t;
+//     setSane( t );
+    obj->timeStamp.seconds = 12345;
+    obj->timeStamp.seconds = 6789;
+
+    obj->maxRange = 80.0;
+    obj->fieldOfView = M_PI;
+    obj->startAngle = -(obj->fieldOfView/2.0);
+
+    for ( int i=0; i<numberOfSamples; ++i ) {
+        obj->ranges.push_back( fmod((float)RINT,80) );
+    }
+}
+
+// copied over from orcaob/stringutils.h to cut dependency
+std::string toString( const orca::RangeScanner2dDataPtr& obj, int skip=-1  )
+{
+    std::ostringstream s;
+//     s << toString(obj->timeStamp)
+    s << obj->timeStamp.seconds<<":"<<obj->timeStamp.useconds
+      << " RangeScanner2dData [" << obj->ranges.size() << " elements]: " << endl;
+
+    s << "minRange=" << obj->minRange << "m" << endl;
+    s << "maxRange=" << obj->maxRange << "m" << endl;
+    s << "fieldOfView=" << obj->fieldOfView * 180.0/M_PI << "deg" << endl;
+    s << "startAngle=" << obj->startAngle * 180.0/M_PI << "deg" << endl;
+
+    if ( skip > -1 ) 
+    {
+        s << ": (";
+        for ( unsigned int i=0; i < obj->ranges.size(); ++i ) {
+            s << obj->ranges[i] << " ";
+            i = i + skip;
+        }
+        s << ")";
+        s << endl;
+    }
+    return s.str();
+}
 
 int main(int argc, char * argv[])
 {
     orcaice::PtrStore<orca::RangeScanner2dDataPtr> store;
     orca::RangeScanner2dDataPtr data = new orca::RangeScanner2dData;
-    orcaice::setSane( data );
+    setSane( data );
     orca::RangeScanner2dDataPtr copy = new orca::RangeScanner2dData;
 
     cout<<"testing get() ... ";
@@ -80,8 +130,8 @@ int main(int argc, char * argv[])
          || data->ranges != copy->ranges )
     {
         cout<<"failed. expecting an exact copy of the data."<<endl;
-        cout<<"\tin\t"<<orcaice::toString(data->timeStamp)<<" "<<data<<endl;
-        cout<<"\tout\t"<<orcaice::toString(copy->timeStamp)<<" "<<copy<<endl;
+        cout<<"\tin\ttime="<<data->timeStamp.seconds<<":"<<data->timeStamp.useconds<<" data="<<data<<endl;
+        cout<<"\tin\ttime="<<copy->timeStamp.seconds<<":"<<copy->timeStamp.useconds<<" data="<<copy<<endl;
         return EXIT_FAILURE;
     }
     if ( store.isEmpty() || store.isNewData() ) {

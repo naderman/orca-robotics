@@ -10,6 +10,7 @@
 #include <iostream>
 #include <cmath>
 #include <orcaice/orcaice.h>
+#include <orcaobj/orcaobj.h>
 
 #include "vfhdriver.h"
 #include "vfh_algorithm.h"
@@ -142,7 +143,7 @@ VfhDriver::getCommand( bool                                   stalled,
     }
 
     stringstream ss;
-    ss << "VFH: Setting command: " << orcaice::toString(cmd);
+    ss << "VFH: Setting command: " << orcaobj::toString(cmd);
     context_.tracer().debug( ss.str(), 5 );
 
     prevCmd_.motion.v.x = cmd.motion.v.x;

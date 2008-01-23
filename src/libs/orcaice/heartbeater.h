@@ -8,11 +8,11 @@
  *
  */
 
-#ifndef HEARTBEATER_H
-#define HEARTBEATER_H
+#ifndef ORCAICE_HEARTBEATER_H
+#define ORCAICE_HEARTBEATER_H
 
-#include <orca/orca.h>
 #include <orcaice/context.h>
+#include <hydroiceutil/timer.h>
 #include <string>
 
 namespace orcaice {
@@ -26,7 +26,7 @@ class Heartbeater
 {
 
 public: 
-
+    // we only need Tracer here, not the whole context
     Heartbeater( const orcaice::Context & context, double secBetweenHeartbeats = 10.0, double urgencyDivider=4.0 );
 
     //! Is it time for the next heartbeat?
@@ -40,12 +40,13 @@ public:
 
 private: 
 
-    orca::Time lastHeartbeatTime_;
+//     orca::Time lastHeartbeatTime_;
+    hydroiceutil::Timer timer_;
 
     double secBetweenHeartbeats_;
     double urgencyDivider_;
 
-    orcaice::Context context_;
+    hydroutil::Tracer& tracer_;
 };
 
 }

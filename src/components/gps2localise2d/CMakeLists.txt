@@ -5,7 +5,7 @@ REQUIRE_OPTION( BUILD EXE ${APP_NAME} ON )
 SET ( NOT_OS_WIN NOT OS_WIN )
 REQUIRE_VAR( BUILD EXE ${APP_NAME} NOT_OS_WIN "Windows OS is not  supported" )
 
-SET( DEP_LIBS OrcaIfaceImpl )
+SET( DEP_LIBS OrcaIfaceImpl OrcaObjects )
 REQUIRE_TARGETS( BUILD EXE ${APP_NAME} ${DEP_LIBS} )
 
 SET( DEP_LIBS ${DEP_LIBS} HydroGpsUtil HydroNavUtil )

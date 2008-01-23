@@ -53,15 +53,15 @@ MainThread::initNetworkInterface()
     imuDescr.timeStamp = orcaice::getNow();
 
     // transfer internal sensor configs
-    orcaice::setInit(insDescr.offset);
-    orcaice::setInit(gpsDescr.antennaOffset);
-    orcaice::setInit(imuDescr.offset);
-    orcaice::setInit(imuDescr.size);
+    orcaobj::setInit(insDescr.offset);
+    orcaobj::setInit(gpsDescr.antennaOffset);
+    orcaobj::setInit(imuDescr.offset);
+    orcaobj::setInit(imuDescr.size);
 
-    insDescr.offset = orcaice::getPropertyAsFrame3dWithDefault( prop, prefix+"Ins.Offset", insDescr.offset );
-    gpsDescr.antennaOffset = orcaice::getPropertyAsFrame3dWithDefault( prop, prefix+"Gps.AntennaOffset", gpsDescr.antennaOffset );
-    imuDescr.offset = orcaice::getPropertyAsFrame3dWithDefault( prop, prefix+"Imu.Offset", imuDescr.offset );
-    imuDescr.size = orcaice::getPropertyAsSize3dWithDefault( prop, prefix+"Imu.Size", imuDescr.size );
+    insDescr.offset = orcaobj::getPropertyAsFrame3dWithDefault( prop, prefix+"Ins.Offset", insDescr.offset );
+    gpsDescr.antennaOffset = orcaobj::getPropertyAsFrame3dWithDefault( prop, prefix+"Gps.AntennaOffset", gpsDescr.antennaOffset );
+    imuDescr.offset = orcaobj::getPropertyAsFrame3dWithDefault( prop, prefix+"Imu.Offset", imuDescr.offset );
+    imuDescr.size = orcaobj::getPropertyAsSize3dWithDefault( prop, prefix+"Imu.Size", imuDescr.size );
 
     // EXTERNAL PROVIDED INTERFACES
     insInterface_ = new orcaifaceimpl::InsImpl( insDescr, "Ins", context_ );

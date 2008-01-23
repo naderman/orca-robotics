@@ -14,10 +14,11 @@
 #include <orcaice/component.h>
 
 #include <orcaice/configutils.h>
+#include <orcaice/stringutils.h>
 #include <hydroutil/sysutils.h>
 #include <orcaice/exceptions.h>
 
-#include <orcaobj/stringutils.h>
+// #include <orcaobj/stringutils.h>
 
 using namespace std;
 

@@ -13,6 +13,7 @@
 #include <orca/localise2d.h>
 #include <orca/ogfusion.h>
 #include <orcaice/orcaice.h>
+#include <orcaobj/orcaobj.h>
 
 #include "laser2og.h"
 #include "mainthread.h"
@@ -113,7 +114,7 @@ MainThread::init()
     
     // Get the configuration
     orca::RangeScanner2dDescription descr = rangeScannerPrx_->getDescription();
-    cout << orcaice::toString(descr) << endl;
+    cout << orcaobj::toString(descr) << endl;
 
     sensorConfig.rangeMax = descr.maxRange;
     sensorConfig.angleIncrement = descr.fieldOfView/(descr.numberOfSamples+1);

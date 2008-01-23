@@ -12,6 +12,7 @@
 #include <vector>
 #include <hydrowifi/wifiutil.h>
 #include <orcaice/orcaice.h>
+#include <orcaobj/orcaobj.h>
 #include "mainthread.h"
 #include "hardwaredriver.h"
 #include "fakedriver.h"
@@ -118,7 +119,7 @@ MainThread::walk()
             driver_->read( data );
             
             context_.tracer().debug("Got new wifi data from driver. Sending it out now.", 3);
-            context_.tracer().debug(orcaice::toString( data ), 5);
+            context_.tracer().debug(orcaobj::toString( data ), 5);
                     
             wifiInterface_->localSetAndSend( data );
             

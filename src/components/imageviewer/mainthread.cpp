@@ -69,7 +69,7 @@ MainThread::walk()
         try
         {
             descr_ = cameraPrx_->getDescription();
-            cout << orcaice::toString(descr_) << endl;
+            cout << orcaobj::toString(descr_) << endl;
             break;
         }
         catch ( const orca::HardwareFailedException & e )

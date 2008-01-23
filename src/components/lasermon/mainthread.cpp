@@ -10,6 +10,8 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
+#include <orcaobj/orcaobj.h>
+#include <orca/laserscanner2d.h>
 
 #include "mainthread.h"
 
@@ -44,7 +46,7 @@ MainThread::walk()
     context_.tracer().info( "Trying to get laser description as a test" );
     try
     {
-        std::string descr = orcaice::toString( laserPrx->getDescription() );
+        std::string descr = orcaobj::toString( laserPrx->getDescription() );
         context_.tracer().info( "Got laser description:\n"+descr );
     }
     catch ( const Ice::Exception & e ) 
@@ -61,7 +63,7 @@ MainThread::walk()
     {
         try
         {
-            context_.tracer().print( orcaice::toString( laserPrx->getData() ) );
+            context_.tracer().print( orcaobj::toString( laserPrx->getData() ) );
             break;
         }
         catch ( const orca::DataNotExistException &e )

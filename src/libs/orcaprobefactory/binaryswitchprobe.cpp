@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
+#include <orcaobj/orcaobj.h>
 #include <orcacm/orcacm.h>
 
 #include "binaryswitchprobe.h"
@@ -65,7 +66,7 @@ BinarySwitchProbe::loadGetData( orcacm::OperationData & data )
         return 1;
     }
 
-    cout<<orcaice::toString(result)<<endl;
+    cout<<orcaobj::toString(result)<<endl;
     return 0;
 }
 

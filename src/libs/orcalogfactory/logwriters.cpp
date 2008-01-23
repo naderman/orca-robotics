@@ -114,7 +114,7 @@ namespace {
         }
         else if ( format == "ascii" )
         {
-            (*file) << orcaice::toString(obj) << endl;
+            (*file) << orcaobj::toString(obj) << endl;
         }
         else
         {

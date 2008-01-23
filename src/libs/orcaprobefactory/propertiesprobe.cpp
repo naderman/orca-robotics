@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
+#include <orcaobj/orcaobj.h>
 #include <orcacm/orcacm.h>
 #include <orcaprobe/orcaprobe.h>
 
@@ -55,7 +56,7 @@ PropertiesProbe::loadGetData( orcacm::OperationData & data )
     {
         orca::PropertiesPrx derivedPrx = orca::PropertiesPrx::checkedCast(prx_);
         result = derivedPrx->getData();
-        orcaprobe::reportResult( data, "data", orcaice::toString(result) );
+        orcaprobe::reportResult( data, "data", orcaobj::toString(result) );
     }
     catch( const orca::DataNotExistException & e )
     {
@@ -151,5 +152,5 @@ PropertiesProbe::loadUnsubscribe( orcacm::OperationData & data )
 void 
 PropertiesProbe::setData(const orca::PropertiesData & data, const Ice::Current&)
 {
-    std::cout << orcaice::toString(data) << std::endl;
+    std::cout << orcaobj::toString(data) << std::endl;
 };

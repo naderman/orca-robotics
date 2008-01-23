@@ -5,7 +5,7 @@ SET ( BUILD TRUE )
 REQUIRE_OPTION( BUILD LIB ${LIB_NAME} ON )
 REQUIRE_VAR( BUILD LIB ${LIB_NAME} OS_LINUX "only Linux OS is supported" )
 
-SET( DEP_LIBS HydroNavUtil )
+SET( DEP_LIBS HydroNavUtil OrcaObjects )
 REQUIRE_VAR( BUILD LIB ${LIB_NAME} HYDRONAVUTIL_INSTALLED "libHydroNavUtil not installed" )
 
 IF ( BUILD )

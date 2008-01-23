@@ -21,6 +21,7 @@
 #include <orca/drivebicycle.h>
 #include <orca/ogmap.h>
 #include <orca/gps.h>
+#include <orca/polarfeature2d.h>
 
 namespace orcaifaceimpl
 {

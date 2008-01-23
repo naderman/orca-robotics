@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
+#include <orcaobj/orcaobj.h>
 #include "pathfollower2dI.h"
 
 using namespace std;
@@ -36,12 +37,12 @@ PathFollower2dI::getData( const ::Ice::Current& ) const
 void
 PathFollower2dI::setData( const ::orca::PathFollower2dData& data, bool activateImmediately, const ::Ice::Current& )
 {
-    cout<<"TRACE(pathfollower2dI.cpp): Received new path: " << orcaice::toString(data) << endl;
+    cout<<"TRACE(pathfollower2dI.cpp): Received new path: " << orcaobj::toString(data) << endl;
     cout<<"TRACE(pathfollower2dI.cpp): activateImmediately: " << activateImmediately << endl;
 
     // Sanity check
     std::string insanityReason;
-    if ( !orcaice::isSane( data, insanityReason ) )
+    if ( !orcaobj::isSane( data, insanityReason ) )
     {
         throw orca::MalformedParametersException( insanityReason );
     }

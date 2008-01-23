@@ -14,6 +14,7 @@
 #include <QTextStream>
 
 #include <orcaice/orcaice.h>
+#include <orcaobj/orcaobj.h>
 #include <orcaqguielementutil/features.h>
 #include <hydroqgui/hydroqgui.h>
 #include <orcaqgui2d/paintutils.h>
@@ -42,7 +43,7 @@ FeatureMap2dPainter::clear()
 void 
 FeatureMap2dPainter::setData( const orca::FeatureMap2dData &data )
 {
-    // cout<<"TRACE(featuremap2dpainter.cpp): got data: " << orcaice::toString(data) << endl;
+    // cout<<"TRACE(featuremap2dpainter.cpp): got data: " << orcaobj::toString(data) << endl;
 
     data_ = data;
 }
@@ -125,7 +126,7 @@ checkForDodgyEndpoints( const orca::CartesianLineFeature2d &f )
          isnan( f.end.y ) )
     {
         stringstream ss;
-        ss << "NaN found in start/end of line: " << orcaice::toString(f);
+        ss << "NaN found in start/end of line: " << orcaobj::toString(f);
         throw hydroutil::Exception( ERROR_INFO, ss.str() );
     }
 }
@@ -281,7 +282,7 @@ int FeatureMap2dPainter::saveMap( const QString fileName, hydroqgui::IHumanManag
     } 
     else 
     {
-        orcaice::saveToFile( data_, f );
+        orcaobj::saveToFile( data_, f );
         humanManager->showStatusMsg(hydroqgui::IHumanManager::Information, "Saving feature map to " + fileName );
         fclose( f );
     }

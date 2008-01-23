@@ -31,6 +31,25 @@ using namespace std;
 
 namespace orcaice {
 
+namespace {
+
+// alexm: copied over from orcaobj/stringutils.h in order to cut dependency
+std::string toString( const orca::PropertiesData &obj )
+{
+    std::ostringstream s;
+    s << " PropertiesData ["<<obj.properties.size() << " elements]:"<<endl;
+    for ( map<string,string>::const_iterator it = obj.properties.begin();
+          it != obj.properties.end();
+          it++ )
+    {
+        s << "  " << it->first << "=" << it->second << endl;
+    }
+    return s.str();
+}
+
+}
+
+//////////////////////////////
 
 Component::Component( const std::string& tag, ComponentInterfaceFlag flag )
     : interfaceFlag_(flag),
@@ -231,7 +250,7 @@ Component::getNetworkProperties()
         const std::map<std::string,std::string> &netProps = propData.properties;
 
         stringstream ssProps;
-        ssProps << "Component::getNetworkProperties(): got network properties: " << orcaice::toString(propData);
+        ssProps << "Component::getNetworkProperties(): got network properties: " << toString(propData);
         context_.tracer().debug( ssProps.str(), 3 );
 
         // Copy them into our properties, without over-writing anything that's already set

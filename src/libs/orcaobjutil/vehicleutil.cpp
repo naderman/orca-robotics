@@ -11,6 +11,7 @@
 #include "vehicleutil.h"
 #include <iostream>
 #include <orcaice/orcaice.h>
+#include <orcaobj/orcaobj.h>
 
 using namespace std;
 
@@ -75,8 +76,8 @@ readVehicleDescription( Ice::PropertiesPtr prop, const std::string &prefix, orca
         throw orcaice::ConfigFileException( ERROR_INFO, ss.str() );
     }
 
-    orcaice::setInit( descr.platformToVehicleTransform );
-    descr.platformToVehicleTransform = orcaice::getPropertyAsFrame3dWithDefault( 
+    orcaobj::setInit( descr.platformToVehicleTransform );
+    descr.platformToVehicleTransform = orcaobj::getPropertyAsFrame3dWithDefault( 
                 prop, vprefix+"PlatformToVehicleTransform", descr.platformToVehicleTransform );
 
     std::string geometryType = orcaice::getPropertyWithDefault( prop, vprefix+"Geometry.Type", "Cylindrical" );
@@ -90,8 +91,8 @@ readVehicleDescription( Ice::PropertiesPtr prop, const std::string &prefix, orca
         g->radius = orcaice::getPropertyAsDoubleWithDefault( prop, gprefix+"Radius", 0.25 );
         g->height = orcaice::getPropertyAsDoubleWithDefault( prop, gprefix+"Height", 1.0 );
 
-        orcaice::setInit( g->vehicleToGeometryTransform );
-        g->vehicleToGeometryTransform = orcaice::getPropertyAsFrame3dWithDefault( 
+        orcaobj::setInit( g->vehicleToGeometryTransform );
+        g->vehicleToGeometryTransform = orcaobj::getPropertyAsFrame3dWithDefault( 
                     prop, gprefix+"VehicleToGeometryTransform", g->vehicleToGeometryTransform );
 
         descr.geometry = g;
@@ -103,11 +104,11 @@ readVehicleDescription( Ice::PropertiesPtr prop, const std::string &prefix, orca
         orca::VehicleGeometryCuboidDescriptionPtr g = new orca::VehicleGeometryCuboidDescription;
         g->type = orca::VehicleGeometryCuboid;
 
-        orcaice::setInit( g->size );
-        g->size = orcaice::getPropertyAsSize3dWithDefault( prop, gprefix+"Size", g->size );
+        orcaobj::setInit( g->size );
+        g->size = orcaobj::getPropertyAsSize3dWithDefault( prop, gprefix+"Size", g->size );
 
-        orcaice::setInit( g->vehicleToGeometryTransform );
-        g->vehicleToGeometryTransform = orcaice::getPropertyAsFrame3dWithDefault( 
+        orcaobj::setInit( g->vehicleToGeometryTransform );
+        g->vehicleToGeometryTransform = orcaobj::getPropertyAsFrame3dWithDefault( 
                     prop, gprefix+"VehicleToGeometryTransform", g->vehicleToGeometryTransform );
 
         descr.geometry = g;

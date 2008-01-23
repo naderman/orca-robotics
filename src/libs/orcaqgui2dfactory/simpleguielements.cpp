@@ -124,7 +124,7 @@ Localise3dElement::update()
     painter_.setData( data_ );
 
     // custom update
-    const orca::Pose3dHypothesis &h = orcaice::mlHypothesis( data_ );
+    const orca::Pose3dHypothesis &h = orcaobj::mlHypothesis( data_ );
     x_ = h.mean.p.x;
     y_ = h.mean.p.y;
     theta_ = h.mean.o.y;

@@ -16,6 +16,7 @@
 #include <QTextStream>
 
 #include <orcaice/orcaice.h>
+#include <orcaobj/orcaobj.h>
 #include <orcalogfactory/logstringutils.h>
 
 #include <orcaqgui2d/paintutils.h>

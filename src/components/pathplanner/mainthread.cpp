@@ -11,6 +11,7 @@
 #include <iostream>
 #include <assert.h>
 #include <orcaice/orcaice.h>
+#include <orcaobj/orcaobj.h>
 #include <hydroutil/hydroutil.h>
 #include "mainthread.h"
 #include "pathplanner2dI.h"
@@ -80,7 +81,7 @@ MainThread::initNetwork()
     {
         ogMapSlice = ogMapPrx->getData();
         stringstream ss;
-        ss << "MainThread::initDriver(): got ogMap: " << orcaice::toString( ogMapSlice );
+        ss << "MainThread::initDriver(): got ogMap: " << orcaobj::toString( ogMapSlice );
         context_.tracer().info( ss.str() );
     }
     catch ( const orca::DataNotExistException & e )
@@ -261,7 +262,7 @@ MainThread::walk()
             catch ( hydropathplan::PathStartNotValidException &e )
             {
                 std::stringstream ss;
-                ss << "Couldn't compute path: " << orcaice::toVerboseString(task) << endl << "Problem was: " << e.what();
+                ss << "Couldn't compute path: " << orcaobj::toVerboseString(task) << endl << "Problem was: " << e.what();
                 context_.tracer().error( ss.str() );
                 pathData.resultDescription = ss.str();
                 pathData.result = orca::PathStartNotValid;
@@ -269,7 +270,7 @@ MainThread::walk()
             catch ( hydropathplan::PathDestinationNotValidException &e )
             {
                 std::stringstream ss;
-                ss << "Couldn't compute path: " << orcaice::toVerboseString(task) << endl << "Problem was: " << e.what();
+                ss << "Couldn't compute path: " << orcaobj::toVerboseString(task) << endl << "Problem was: " << e.what();
                 context_.tracer().error( ss.str() );
                 pathData.resultDescription = ss.str();
                 pathData.result = orca::PathDestinationNotValid;
@@ -277,7 +278,7 @@ MainThread::walk()
             catch ( hydropathplan::PathDestinationUnreachableException &e )
             {
                 std::stringstream ss;
-                ss << "Couldn't compute path: " << orcaice::toVerboseString(task) << endl << "Problem was: " << e.what();
+                ss << "Couldn't compute path: " << orcaobj::toVerboseString(task) << endl << "Problem was: " << e.what();
                 context_.tracer().error( ss.str() );
                 pathData.resultDescription = ss.str();
                 pathData.result = orca::PathDestinationUnreachable;
@@ -285,7 +286,7 @@ MainThread::walk()
             catch ( hydropathplan::Exception &e )
             {
                 std::stringstream ss;
-                ss << "Couldn't compute path: " << orcaice::toVerboseString(task) << endl << "Problem was: " << e.what();
+                ss << "Couldn't compute path: " << orcaobj::toVerboseString(task) << endl << "Problem was: " << e.what();
                 context_.tracer().error( ss.str() );
                 pathData.resultDescription = ss.str();
                 pathData.result = orca::PathOtherError;
@@ -295,7 +296,7 @@ MainThread::walk()
             // ======= send result (including error code) ===============
             //
             context_.tracer().info("sending off the resulting path");
-            context_.tracer().debug(orcaice::toVerboseString(pathData));
+            context_.tracer().debug(orcaobj::toVerboseString(pathData));
     
             // There are three methods to let other components know about the computed path:
             // 1. using the proxy

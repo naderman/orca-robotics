@@ -10,7 +10,7 @@
 
 #include <iostream>
 #include <cmath>        // for floor()
-#include <orcaobj/orcaobj.h> // just for toString()
+#include <orcaice/orcaice.h> // just for toString()
 
 #include "ocmmodel.h"
 

@@ -41,7 +41,7 @@
 #include <orca/wifi.h>
 #include <orca/properties.h>
 
-namespace orcaice
+namespace orcaobj
 {
 
 /*!

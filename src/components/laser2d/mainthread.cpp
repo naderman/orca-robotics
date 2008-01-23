@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
+#include <orcaobj/orcaobj.h>
 #include "mainthread.h"
 
 using namespace std;
@@ -63,8 +64,8 @@ MainThread::initNetworkInterface()
     descr.numberOfSamples = config_.numberOfSamples;
 
     // offset from the robot coordinate system
-    orcaice::setInit( descr.offset );
-    descr.offset = orcaice::getPropertyAsFrame3dWithDefault( prop, prefix+"Offset", descr.offset );
+    orcaobj::setInit( descr.offset );
+    descr.offset = orcaobj::getPropertyAsFrame3dWithDefault( prop, prefix+"Offset", descr.offset );
 
     // consider the special case of the sensor mounted level (pitch=0) but upside-down (roll=180)
     if ( NEAR(descr.offset.o.r,M_PI,0.001) && descr.offset.o.p==0.0 ) {
@@ -83,8 +84,8 @@ MainThread::initNetworkInterface()
     }
 
     // size info should really be stored in the driver
-    orcaice::setInit( descr.size );
-    descr.size = orcaice::getPropertyAsSize3dWithDefault( prop, prefix+"Size", descr.size );
+    orcaobj::setInit( descr.size );
+    descr.size = orcaobj::getPropertyAsSize3dWithDefault( prop, prefix+"Size", descr.size );
 
     //
     // EXTERNAL PROVIDED INTERFACE
@@ -226,7 +227,7 @@ MainThread::walk()
             }
 
             stringstream ss;
-            ss << "MainThread: Read laser data: " << orcaice::toString(orcaLaserData_);
+            ss << "MainThread: Read laser data: " << orcaobj::toString(orcaLaserData_);
             context_.tracer().debug( ss.str(), 5 );
 
             continue;

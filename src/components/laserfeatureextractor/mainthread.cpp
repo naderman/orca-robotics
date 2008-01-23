@@ -11,6 +11,7 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
+#include <orcaobj/orcaobj.h>
 #include "mainthread.h"
 
 // these drivers can always be built
@@ -150,7 +151,7 @@ MainThread::getLaserDescription()
             context_.tracer().debug( "Getting laser description...", 2 );
             laserDescr_ = laserPrx_->getDescription();
             stringstream ss;
-            ss << "Got laser description: " << orcaice::toString( laserDescr_ );
+            ss << "Got laser description: " << orcaobj::toString( laserDescr_ );
             context_.tracer().info( ss.str() );
             sensorOffset_ = laserDescr_.offset;
             if ( sensorOffsetOK( sensorOffset_ ) )
@@ -359,7 +360,7 @@ MainThread::convertToRobotCS( const orca::PolarFeature2dData &featureData )
                 stringstream ss;
                 ss << "MainThread::convertToRobotCS(): bearingDiff < 0 -- line is not visible from sensor pose!"
                    << "  Line was: " 
-                   << orcaice::toString(ftr);
+                   << orcaobj::toString(ftr);
                 throw hydroutil::Exception( ERROR_INFO, ss.str() );
             }
 
@@ -382,7 +383,7 @@ MainThread::convertToRobotCS( const orca::PolarFeature2dData &featureData )
                 ss << "MainThread::convertToRobotCS(): bearingDiff < 0 -- line is not visible from platform pose!"
                    << "  (this is possible when sensor/platforms poses are not co-located).  Ignoring."<<endl
                    << "  Line was: " 
-                   << orcaice::toString(ftr);
+                   << orcaobj::toString(ftr);
                 throw hydroutil::Exception( ERROR_INFO, ss.str() );
             }
         }
@@ -401,14 +402,14 @@ MainThread::sensorOffsetOK( const orca::Frame3d & offset )
     if ( offset.p.z != 0.0 )
     {
         stringstream ss;
-        ss << "Can't handle non-zero 'z' component in laser offset. Offset: " << orcaice::toString(offset);
+        ss << "Can't handle non-zero 'z' component in laser offset. Offset: " << orcaobj::toString(offset);
         context_.tracer().error( ss.str() );
         offsetOk = false;
     }
     if ( offset.o.r != 0.0 || offset.o.p != 0.0 )
     {
         stringstream ss;
-        ss << "Can't handle non-zero roll or pitch in laser offset. Offset: " << orcaice::toString(offset);
+        ss << "Can't handle non-zero roll or pitch in laser offset. Offset: " << orcaobj::toString(offset);
         context_.tracer().error( ss.str() );
         offsetOk = false;
     }

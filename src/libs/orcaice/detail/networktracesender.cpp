@@ -17,6 +17,34 @@ using namespace std;
 namespace orcaice {
 namespace detail {
 
+namespace {
+
+// alexm: copied this function from OrcaObj to cut dependencies
+std::string toString( const orca::TracerData& obj )
+{
+    std::string s;
+
+    s = "[ ";
+    s += orcaice::toString( obj.timeStamp ) + " ";
+    s += orcaice::toString( obj.name );
+    s += " " + obj.category + ": ";
+    s += obj.message + " ]";
+
+    // replace line breaks with spaces
+    string::size_type idx = 0;
+    while((idx = s.find("\n", idx)) != string::npos)
+    {
+        s.insert(idx + 1, "  ");
+        ++idx;
+    }
+
+    return s;
+}
+
+}
+
+///////////////////////////////////////////////
+
 NetworkTraceSender::NetworkTraceSender( const std::string &topicName,
                                         IceUtil::Mutex &mutex,
                                         const orcaice::Context &context )
@@ -80,12 +108,12 @@ NetworkTraceSender::sendToNetwork( const orca::TracerData &tracerData )
     {
         // it's ok, this is what happens on shutdown
         cout<<orcaice::toString(context_.name())<<": tracer: communicator appears to be dead. We must be shutting down."<<endl;
-        cout<<orcaice::toString(context_.name())<<": tracer: unsent message: "<<orcaice::toString(tracerData)<<endl;
+        cout<<orcaice::toString(context_.name())<<": tracer: unsent message: "<<toString(tracerData)<<endl;
     }
     catch ( const Ice::Exception &e )
     {
         cout<<orcaice::toString(context_.name())<<": tracer: Caught exception while tracing to topic: "<<e<<endl;
-        cout<<orcaice::toString(context_.name())<<": tracer: unsent message: "<<orcaice::toString(tracerData)<<endl;
+        cout<<orcaice::toString(context_.name())<<": tracer: unsent message: "<<toString(tracerData)<<endl;
 
         // If IceStorm just re-started for some reason, we want to try to re-connect
         connectToIceStorm();
@@ -93,7 +121,7 @@ NetworkTraceSender::sendToNetwork( const orca::TracerData &tracerData )
     catch ( ... )
     {
         cout<<orcaice::toString(context_.name())<<": tracer: Caught unknown while tracing to topic."<<endl;
-        cout<<orcaice::toString(context_.name())<<": tracer: unsent message: "<<orcaice::toString(tracerData)<<endl;
+        cout<<orcaice::toString(context_.name())<<": tracer: unsent message: "<<toString(tracerData)<<endl;
 
         // If IceStorm just re-started for some reason, we want to try to re-connect
         connectToIceStorm();

@@ -66,7 +66,7 @@ void fillIn( const vector<wifiutil::WirelessConfig> &config,
         if ( i<data.interfaces.size() ) {
             w = data.interfaces[i];
         } else {
-            orcaice::setInit(w);
+            orcaobj::setInit(w);
             data.interfaces.push_back(w);
         }
         
@@ -90,7 +90,7 @@ void fillIn( const vector<wifiutil::ProcData> &procData,
         if ( i<data.interfaces.size() ) {
             w = data.interfaces[i];
         } else {
-            orcaice::setInit(w);
+            orcaobj::setInit(w);
             data.interfaces.push_back(w);
         }
         
@@ -123,7 +123,7 @@ void fillIn( const vector<wifiutil::IoctlData> &ioctlData,
         if ( i<data.interfaces.size() ) {
             w = data.interfaces[i];
         } else {
-            orcaice::setInit(w);
+            orcaobj::setInit(w);
             data.interfaces.push_back(w);
         }
         

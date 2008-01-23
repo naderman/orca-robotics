@@ -9,9 +9,7 @@
  */
  
 #include <orcaice/orcaice.h>
-#include <orcaobj/miscutils.h>
-#include <orcaobj/stringutils.h>
-#include <orcaobj/timeutils.h>
+#include <orcaobj/orcaobj.h>
 #include <orcaogmap/orcaogmap.h>
 #include "pathfollower2dI.h"
 
@@ -69,7 +67,7 @@ namespace {
 
     hydronavutil::Pose mlPose( const orca::Localise2dData &localiseData )
     {
-        const orca::Pose2dHypothesis &mlHyp = orcaice::mlHypothesis( localiseData );
+        const orca::Pose2dHypothesis &mlHyp = orcaobj::mlHypothesis( localiseData );
         return hydronavutil::Pose( mlHyp.mean.p.x, mlHyp.mean.p.y, mlHyp.mean.o );
     }
 
@@ -80,7 +78,7 @@ namespace {
         if ( localiseData.hypotheses.size() == 0 )
         {
             stringstream ss;
-            ss << "Badly formed localiseData: " << orcaice::toString( localiseData );
+            ss << "Badly formed localiseData: " << orcaobj::toString( localiseData );
             throw hydroutil::Exception( ERROR_INFO, ss.str() );
         }
         
@@ -257,7 +255,7 @@ MainThread::planPath( const hydronavutil::Pose &pose,
 
     // send task to pathplanner
     stringstream ssSend;
-    ssSend << "MainThread: Sending task to pathplanner: " << orcaice::toVerboseString( task );
+    ssSend << "MainThread: Sending task to pathplanner: " << orcaobj::toVerboseString( task );
     context_.tracer().debug(ssSend.str());
     int numJobsAheadInQueue = pathplanner2dPrx_->setTask( task );
     if ( numJobsAheadInQueue > 1 )
@@ -294,7 +292,7 @@ MainThread::planPath( const hydronavutil::Pose &pose,
     {
         stringstream ss;
         ss << "MainThread: PathPlanner could not compute.  Gave result " 
-           << orcaice::toString( computedPath.result )<<": "<<computedPath.resultDescription;
+           << orcaobj::toString( computedPath.result )<<": "<<computedPath.resultDescription;
         const bool isTemporary = true;
         throw( GoalPlanException( ss.str(), isTemporary ) );
     }
@@ -356,7 +354,7 @@ MainThread::tryGetLocaliseData( orca::Localise2dData &data )
         try 
         {
             data = localise2dPrx_->getData();
-            stringstream ss; ss << "MainThread: received pose: " << orcaice::toString( data );
+            stringstream ss; ss << "MainThread: received pose: " << orcaobj::toString( data );
             context_.tracer().debug( ss.str(), 4 );
             break;
         }
@@ -439,16 +437,16 @@ MainThread::replan( const hydronavutil::Pose &currentPose, const orca::Waypoint2
     if ( oldPath.path[currentWpIndex] != currentWp )
     {
         stringstream ss;
-        ss << "MainThread::replan(): oldPath.path[currentWpIndex] = " << orcaice::toString(oldPath.path[currentWpIndex]) << endl
-           << "    but currentWp =                                " << orcaice::toString(currentWp) << endl
+        ss << "MainThread::replan(): oldPath.path[currentWpIndex] = " << orcaobj::toString(oldPath.path[currentWpIndex]) << endl
+           << "    but currentWp =                                " << orcaobj::toString(currentWp) << endl
            << "  These should be the same!";
         bool isTemporary = false;
         throw GoalPlanException( ss.str(), isTemporary );
     }
 
-    // cout<<"TRACE(mainloop.cpp): old path:        " << orcaice::toVerboseString(oldPath) << endl;
+    // cout<<"TRACE(mainloop.cpp): old path:        " << orcaobj::toVerboseString(oldPath) << endl;
     // cout<<"TRACE(mainloop.cpp): currentWpIndex:  " << currentWpIndex << endl;
-    // cout<<"TRACE(mainloop.cpp): pathToCurrentWp: " << orcaice::toVerboseString(pathToCurrentWp) << endl;
+    // cout<<"TRACE(mainloop.cpp): pathToCurrentWp: " << orcaobj::toVerboseString(pathToCurrentWp) << endl;
 
     //
     // Shift all the times in the oldPath back because localNav is about to start a new path.
@@ -511,7 +509,7 @@ MainThread::replan( const hydronavutil::Pose &currentPose, const orca::Waypoint2
     }
     
     // cout<<"TRACE(mainloop.cpp): secSinceActivation: " << secSinceActivation << endl;
-    // cout<<"TRACE(mainloop.cpp): new path:        " << orcaice::toVerboseString(newPath) << endl;
+    // cout<<"TRACE(mainloop.cpp): new path:        " << orcaobj::toVerboseString(newPath) << endl;
 
     //
     // Finally, send it off.
@@ -635,7 +633,7 @@ MainThread::walk()
             }
 
             stringstream ssPath;
-            ssPath << "MainThread: Requested path: " << endl << orcaice::toVerboseString(incomingPath);
+            ssPath << "MainThread: Requested path: " << endl << orcaobj::toVerboseString(incomingPath);
             context_.tracer().debug( ssPath.str() );
 
             // special case 'stop': we received an empty path

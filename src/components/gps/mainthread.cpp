@@ -10,6 +10,7 @@
  
 #include <iostream>
 #include <orcaice/orcaice.h>
+#include <orcaobj/orcaobj.h>
 #include <hydrogpsutil/latlon2mga.h>
 
 #include "mainthread.h"
@@ -45,11 +46,11 @@ MainThread::initNetworkInterface()
     //
     descr_.timeStamp = orcaice::getNow();
 
-    orcaice::setInit( descr_.antennaOffset );
-    descr_.antennaOffset = orcaice::getPropertyAsFrame3dWithDefault( prop, prefix+"AntennaOffset", descr_.antennaOffset );
+    orcaobj::setInit( descr_.antennaOffset );
+    descr_.antennaOffset = orcaobj::getPropertyAsFrame3dWithDefault( prop, prefix+"AntennaOffset", descr_.antennaOffset );
 
     stringstream ss;
-    ss << "Loaded sensor description: " << orcaice::toString( descr_ );
+    ss << "Loaded sensor description: " << orcaobj::toString( descr_ );
     context_.tracer().debug( ss.str(), 2 );
 
     // create servant for direct connections
@@ -139,7 +140,7 @@ void
 MainThread::reportBogusValues( orca::GpsData &gpsData )
 {
     context_.tracer().debug("Reporting bogus values with positionType 0", 3);
-    orcaice::setSane(gpsData);
+    orcaobj::setSane(gpsData);
     gpsData.positionType = orca::GpsPositionTypeNotAvailable;
     gpsInterface_->localSetAndSend(gpsData);
 }
@@ -215,7 +216,7 @@ MainThread::walk()
                 
             // Publish gpsData
             context_.tracer().debug("New GpsData: publishing now.", 5);
-            context_.tracer().debug( orcaice::toString( gpsData ), 5 );
+            context_.tracer().debug( orcaobj::toString( gpsData ), 5 );
             gpsInterface_->localSetAndSend(gpsData);
         }        
             

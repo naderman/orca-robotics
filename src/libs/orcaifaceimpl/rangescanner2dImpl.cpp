@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
+#include <orcaobj/orcaobj.h>
 #include <orcaifaceimpl/util.h>
 #include "rangescanner2dImpl.h"
 
@@ -165,7 +166,7 @@ RangeScanner2dImpl::internalUnsubscribe(const ::orca::RangeScanner2dConsumerPrx 
 void
 RangeScanner2dImpl::localSet( const ::orca::RangeScanner2dDataPtr &data )
 {
-    // cout << "RangeScanner2dImpl::internalSet data: " << orcaice::toString( data ) << endl;
+    // cout << "RangeScanner2dImpl::internalSet data: " << orcaobj::toString( data ) << endl;
     
     dataStore_.set( data );
 }
@@ -176,10 +177,10 @@ RangeScanner2dImpl::localSetAndSend( const ::orca::RangeScanner2dDataPtr &data )
     if ( context_.tracer().verbosity( hydroutil::Tracer::DebugTrace, hydroutil::Tracer::ToAny ) >= 5 )
     {
         stringstream ss;
-        ss << "RangeScanner2dIface: Sending data: " << orcaice::toString(data);
+        ss << "RangeScanner2dIface: Sending data: " << orcaobj::toString(data);
         context_.tracer().debug( ss.str(), 5 );
     }
-    // cout << "RangeScanner2dImpl::internalSet data: " << orcaice::toString( data ) << endl;
+    // cout << "RangeScanner2dImpl::internalSet data: " << orcaobj::toString( data ) << endl;
     
     dataStore_.set( data );
 

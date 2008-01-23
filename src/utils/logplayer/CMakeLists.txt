@@ -8,7 +8,7 @@ REQUIRE_VAR( BUILD EXE ${APP_NAME} NOT_OS_WIN "Windows OS is not  supported" )
 SET( DEP_LIBS OrcaLog )
 REQUIRE_TARGETS( BUILD EXE ${APP_NAME} ${DEP_LIBS} )
 
-SET( DEP_LIBS ${DEP_LIBS} HydroDll HydroNavUtil )
+SET( DEP_LIBS ${DEP_LIBS} HydroDll HydroNavUtil OrcaObjects )
 REQUIRE_VAR( BUILD EXE ${APP_NAME} HYDRODLL_INSTALLED "libHydroDll not installed" )
 REQUIRE_VAR( BUILD EXE ${APP_NAME} HYDRONAVUTIL_INSTALLED "libHydroNavUtil not installed" )
 

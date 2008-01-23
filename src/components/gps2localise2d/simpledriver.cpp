@@ -10,6 +10,7 @@
 #include "simpledriver.h"
 #include <iostream>
 #include <orcaice/orcaice.h>
+#include <orcaobj/orcaobj.h>
 #include <hydronavutil/offset.h>
 #include <hydrogpsutil/latlon2mga.h>
 
@@ -43,14 +44,14 @@ SimpleDriver::SimpleDriver( const orca::GpsDescription &descr,
     offset_.p.x = 0;
     offset_.p.y = 0;
     offset_.o   = 0;
-    offset_ = orcaice::getPropertyAsFrame2dWithDefault( prop, prefix+"Offset", offset_ );
+    offset_ = orcaobj::getPropertyAsFrame2dWithDefault( prop, prefix+"Offset", offset_ );
 
     // Ensure that the antenna offset is simple
     if ( descr_.antennaOffset.o.r != 0 ||
          descr_.antennaOffset.o.p != 0 )
     {
         stringstream ss;
-        ss << "Can't handle non-zero antenna roll/pitch.  Received: " << orcaice::toString( descr_.antennaOffset );
+        ss << "Can't handle non-zero antenna roll/pitch.  Received: " << orcaobj::toString( descr_.antennaOffset );
         context_.tracer().error( ss.str() );
         exit(1);
     }
@@ -70,7 +71,7 @@ SimpleDriver::compute( const orca::GpsData  &gpsData,
     if ( gpsData.positionType == orca::GpsPositionTypeNotAvailable )
         return false;
 
-    // cout<<"TRACE(simpledriver.cpp): gpsData: " << orcaice::toString(gpsData) << endl;
+    // cout<<"TRACE(simpledriver.cpp): gpsData: " << orcaobj::toString(gpsData) << endl;
 
     double easting, northing;
     int zone;

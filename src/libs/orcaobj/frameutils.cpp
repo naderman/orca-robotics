@@ -16,7 +16,7 @@ using namespace std;
 using namespace orca;
 
 
-namespace orcaice {
+namespace orcaobj {
 
     // Rotate a 2d point by an angle (about Z-axis)
     CartesianPoint2d rotate2d(const CartesianPoint2d &point, const double &angle)

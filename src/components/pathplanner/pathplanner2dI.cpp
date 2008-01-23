@@ -11,6 +11,7 @@
 #include <iostream>
 
 #include <orcaice/orcaice.h>
+#include <orcaobj/orcaobj.h>
 
 #include "pathplanner2dI.h"
 
@@ -33,7 +34,7 @@ PathPlanner2dI::setTask(const ::orca::PathPlanner2dTask& task, const ::Ice::Curr
 {
     cout << "TRACE(pathplanner2dI.cpp): Just received a new task.";
     stringstream ss;
-    ss << "PathPlanner2dI: Received task: " << orcaice::toVerboseString(task); 
+    ss << "PathPlanner2dI: Received task: " << orcaobj::toVerboseString(task); 
     context_.tracer().debug( ss.str() );
 
     int numAhead = pathPlannerTaskBuffer_.size();

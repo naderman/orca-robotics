@@ -1,6 +1,7 @@
 #include "configfileelements.h"
 #include <iostream>
 #include <orcaice/orcaice.h>
+#include <orcaobj/orcaobj.h>
 
 using namespace std;
 
@@ -23,12 +24,12 @@ namespace orcaqgui {
             Ice::StringSeq strOut;
         
             //  Find elementType
-            int ret = orcaice::getPropertyAsStringSeq( context.properties(), key.str()+".Type", strOut );
+            int ret = orcaobj::getPropertyAsStringSeq( context.properties(), key.str()+".Type", strOut );
             if (ret!=0) break;
             elementType = QString(strOut[0].c_str());
         
             //  Find elementDetails
-            ret = orcaice::getPropertyAsStringSeq( context.properties(), key.str()+".Detail", strOut );
+            ret = orcaobj::getPropertyAsStringSeq( context.properties(), key.str()+".Detail", strOut );
             elementDetails.clear();
             if (ret!=0)
             {

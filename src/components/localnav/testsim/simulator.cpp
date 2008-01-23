@@ -1,6 +1,7 @@
 #include "simulator.h"
 #include <iostream>
 #include <orcaice/orcaice.h>
+#include <orcaobj/orcaobj.h>
 #include <orcaobjutil/vehicleutil.h>
 #include <hydropathplan/hydropathplan.h>
 #include <hydrogeom2d/geom2d.h>
@@ -139,7 +140,7 @@ Simulator::setupInterfaces()
         ogMapInterface_->initInterface();
         ogMapInterface_->localSetAndSend( orcaOgMap );
         cout<<"TRACE(simulator.cpp): done initialising og map." << endl;
-        // cout<<"TRACE(simulator.cpp): map is: " << orcaice::toVerboseString(orcaOgMap) << endl;
+        // cout<<"TRACE(simulator.cpp): map is: " << orcaobj::toVerboseString(orcaOgMap) << endl;
 
     } catch (...) {}
 
@@ -286,7 +287,7 @@ Simulator::setCommand( const orca::VelocityControl2dData &cmd )
     cout<<"TRACE(simulator.cpp): iteration " << iterationNum_ << ": pose_: " << pose_ << endl;
     if ( !batchMode_ )
     {
-        cout<<"TRACE(simulator.cpp): received cmd: " << orcaice::toString(cmd) << endl;
+        cout<<"TRACE(simulator.cpp): received cmd: " << orcaobj::toString(cmd) << endl;
         cout<<"TRACE(simulator.cpp): pose_: " << pose_ << endl;
         cout<<"TRACE(simulator.cpp): ============= hit return to continue ============" << endl;
         getchar();
@@ -401,7 +402,7 @@ void
 Simulator::getRanges()
 {
     double maxRange = scan_->maxRange;
-    double angleIncrement = orcaice::calcAngleIncrement( scan_->fieldOfView,
+    double angleIncrement = orcaobj::calcAngleIncrement( scan_->fieldOfView,
                                                          scan_->ranges.size() );
     for ( unsigned int i=0; i < scan_->ranges.size(); i++ )
     {

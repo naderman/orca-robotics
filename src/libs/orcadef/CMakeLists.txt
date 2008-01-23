@@ -9,10 +9,7 @@ REQUIRE_TARGETS( BUILD LIB ${LIB_NAME} ${DEP_LIBS} )
 
 IF ( BUILD )
 
-    INCLUDE( ${ORCA_CMAKE_DIR}/UseBasicRules.cmake )
-    INCLUDE( ${ORCA_CMAKE_DIR}/UseIce.cmake )
-    INCLUDE( ${ORCA_CMAKE_DIR}/UseLibProjectInterfaces.cmake )
-    INCLUDE( ${ORCA_CMAKE_DIR}/UseHydroUtil.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
     
     FILE( GLOB SRCS *.cpp )
     

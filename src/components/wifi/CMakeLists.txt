@@ -8,7 +8,7 @@ REQUIRE_VAR( BUILD EXE ${APP_NAME} NOT_OS_WIN "Windows OS is not  supported" )
 SET( DEP_LIBS OrcaIfaceImpl )
 REQUIRE_TARGETS( BUILD EXE ${APP_NAME} ${DEP_LIBS} )
 
-SET( DEP_LIBS ${DEP_LIBS} HydroWifi )
+SET( DEP_LIBS ${DEP_LIBS} HydroWifi OrcaObjects )
 REQUIRE_VAR( BUILD EXE ${APP_NAME} HYDROWIFI_INSTALLED "libHydroWifi not installed" )
 
 IF ( BUILD )

@@ -15,6 +15,8 @@ IF ( BUILD )
     ELSE ( NOT OS_WIN )
         GLOBAL_ADD_LIBRARY( ${LIB_NAME} STATIC ${SRCS} )
     ENDIF ( NOT OS_WIN )
+
+    TARGET_LINK_LIBRARIES( ${LIB_NAME} OrcaObjects )
     
     INSTALL_FILES( /include/orcaifaceimpl .*\\.h$ )
     

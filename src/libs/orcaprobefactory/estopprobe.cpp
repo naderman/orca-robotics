@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
+#include <orcaobj/orcaobj.h>
 #include <orcacm/orcacm.h>
 #include <orcaprobe/orcaprobe.h>
 
@@ -53,7 +54,7 @@ EStopProbe::loadGetData( orcacm::OperationData & data )
     {
         orca::EStopPrx derivedPrx = orca::EStopPrx::checkedCast( prx_ );
         result = derivedPrx->getData();
-        orcaprobe::reportResult( data, "data", orcaice::toString(result) );
+        orcaprobe::reportResult( data, "data", orcaobj::toString(result) );
     }
     catch( const orca::DataNotExistException & e )
     {
@@ -103,5 +104,5 @@ EStopProbe::loadUnsubscribe( orcacm::OperationData & data )
 void 
 EStopProbe::setData(const orca::EStopData & data, const Ice::Current&)
 {
-    std::cout << orcaice::toString(data) << std::endl;
+    std::cout << orcaobj::toString(data) << std::endl;
 };

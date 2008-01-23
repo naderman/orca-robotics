@@ -25,7 +25,7 @@
 
 #include <orca/bros1.h>
 
-namespace orcaice
+namespace orcaobj
 {
     //! Rotate a 2d point by an angle (about Z-axis)
     orca::CartesianPoint2d rotate2d(const orca::CartesianPoint2d &point, const double &angle);
