@@ -5,12 +5,14 @@ SET ( BUILD TRUE )
 REQUIRE_OPTION( BUILD EXE ${APP_NAME} ON )
 REQUIRE_VAR( BUILD EXE ${APP_NAME} OS_LINUX "only Linux OS is supported" )
 
-SET( DEP_LIBS OrcaLocalNav OrcaLocalNavUtil OrcaLocalNavTestSim )
+SET( DEP_LIBS OrcaLocalNav OrcaNavUtil )
 REQUIRE_TARGETS( BUILD EXE ${APP_NAME} ${DEP_LIBS} )
 
 SET( DEP_LIBS ${DEP_LIBS} HydroDll HydroNavUtil )
 REQUIRE_VAR( BUILD EXE ${APP_NAME} HYDRODLL_INSTALLED "libHydroDll not installed" )
 REQUIRE_VAR( BUILD EXE ${APP_NAME} HYDRONAVUTIL_INSTALLED "libHydroNavUtil not installed" )
+
+SET( DEP_LIBS ${DEP_LIBS} OrcaLocalNavTestSim OrcaLocalNavUtil )
 
 IF ( BUILD )
 

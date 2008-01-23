@@ -89,9 +89,9 @@ convert( const hydrointerfaces::SegwayRmp::Data& internal, orca::PowerData& netw
 
     network.batteries[1].name = "ui";
     network.batteries[1].voltage = internal.uivolt;
-    network.batteries[1].percent = 0;
+    network.batteries[1].percent = 100;
     network.batteries[1].isBatteryCharging = orca::ChargingUnknown;
-    network.batteries[1].secRemaining = 0;
+    network.batteries[1].secRemaining = 1e6;
 }
 
 void 

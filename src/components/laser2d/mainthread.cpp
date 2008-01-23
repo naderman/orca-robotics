@@ -130,6 +130,7 @@ MainThread::initHardwareDriver()
         std::stringstream exceptionSS;
         try {
             context_.tracer().info( "HwThread: Creating driver..." );
+            driver_.reset(0);
             driver_.reset( driverFactory->createDriver( config_, context_.toHydroContext() ) );
             break;
         }
