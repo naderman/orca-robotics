@@ -7,7 +7,7 @@ REQUIRE_VAR( BUILD EXE ${APP_NAME} NOT_OS_WIN "Windows OS is not supported" )
 INCLUDE (${ORCA_CMAKE_DIR}/FindOpenCV.cmake)
 REQUIRE_VAR( BUILD EXE ${APP_NAME} OPENCV_FOUND "OpenCV not found" )
 
-SET( DEP_LIBS OrcaImage )
+SET( DEP_LIBS OrcaImage OrcaObjects )
 REQUIRE_TARGETS( BUILD EXE ${APP_NAME} ${DEP_LIBS} )
 
 IF ( BUILD )

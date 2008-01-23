@@ -9,6 +9,7 @@
  */
 
 #include <orcaice/orcaice.h>
+#include <orcaobj/orcaobj.h>
 #include "component.h"
 #include "mainthread.h"
 

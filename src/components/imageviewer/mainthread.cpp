@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
+#include <orcaobj/orcaobj.h>
 #include <orcaimage/colourconversions.h>
 #include <orcaimage/imageutils.h>
 #include <orcaifaceimpl/bufferedconsumers.h>
