@@ -15,9 +15,9 @@
 
 namespace gps2localise2d {
 
-//!
-//! @author Alex Brooks
-//!
+//
+// @author Alex Brooks
+//
 class SimpleDriver : public Driver
 {
 

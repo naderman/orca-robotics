@@ -15,9 +15,9 @@ namespace localnav {
 #include "isensormodel.h"
 #include "isensordata.h"
 
-//!
-//! @author Alex Brooks
-//!
+//
+// @author Alex Brooks
+//
 class SimulatedRangeScannerSensorModel : public ISensorModel
 {
 

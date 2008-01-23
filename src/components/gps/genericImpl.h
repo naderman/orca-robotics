@@ -19,9 +19,9 @@
 
 namespace gps {
 
-//!
-//! Implements the Generic interface: Handles remote calls.
-//!
+//
+// Implements the Generic interface: Handles remote calls.
+//
 template<typename InterfaceType,
          typename DataType,
          typename ConsumerPrxType,
@@ -47,14 +47,14 @@ public:
 
     // Local calls:
 
-    //! may throw hydroutil::Exceptions
+    // may throw hydroutil::Exceptions
     void initInterface();
 
-    //! A local call which sets the data reported by the interface
+    // A local call which sets the data reported by the interface
     void localSet( const DataType &data );
 
-    //! A local call which sets the data reported by the interface, 
-    //! and sends it through IceStorm
+    // A local call which sets the data reported by the interface, 
+    // and sends it through IceStorm
     void localSetAndSend( const DataType &data );
 
 private:

@@ -44,6 +44,8 @@ SessionCreationCallback::actionOnSessionCreation( IceGrid::AdminSessionPrx sessi
                            applicationObserverPrx_,
                            adapterObserverPrx_,
                            objectObserverPrx_ );
+
+    context_.tracer().info( "Subscribed all observers" );
     return true;
 }
 

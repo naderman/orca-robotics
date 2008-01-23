@@ -22,7 +22,6 @@ SessionManager::SessionManager( SessionCreationCallback &sessionCreationCallback
     sessionCreationCallback_(sessionCreationCallback),
     timeoutSec_(0),
     context_(context)
-      
 {
 }
 
@@ -110,19 +109,10 @@ SessionManager::tryCreateSession()
 }
 
 void
-SessionManager::checkedSleep( int sec )
-{
-    for ( int i=0; i < sec; i++ )
-    {
-        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
-        if ( isStopping() )
-            break;
-    }
-}
-
-void
 SessionManager::walk()
 {
+    context_.tracer().debug( "SessionManager::walk()" );
+
     // This outer loop is repeated on session failure.
     while( !isStopping() )
     {
@@ -138,7 +128,7 @@ SessionManager::walk()
             // Keep it alive
             while ( !isStopping() )
             {
-                checkedSleep( timeoutSec_/2 );
+                hydroiceutil::checkedSleep( this, IceUtil::Time::seconds(timeoutSec_/2), 1000 );
 
                 try
                 {

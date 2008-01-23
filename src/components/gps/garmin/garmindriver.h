@@ -36,7 +36,7 @@ public:
 
     virtual void init();
 
-//! Read one complete frame of data
+// Read one complete frame of data
     virtual void read(orca::GpsData & gpsData) {return readFrame(gpsData );};
 
 private:

@@ -19,14 +19,14 @@
 
 namespace gps2localise2d {
 
-//!
-//! @brief Assumes that the GPS unit works out heading by differentiating.
-//!
-//!        Works out heading uncertainty  based on this assumption, plus the odometric velocity
-//!        of the platform.
-//!
-//! @author Alex Brooks
-//!
+//
+// @brief Assumes that the GPS unit works out heading by differentiating.
+//
+//        Works out heading uncertainty  based on this assumption, plus the odometric velocity
+//        of the platform.
+//
+// @author Alex Brooks
+//
 class OdometryBasedDriver : public Driver
 {
 

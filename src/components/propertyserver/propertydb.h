@@ -6,11 +6,11 @@
 
 namespace propserver {
 
-//!
-//! @brief Property Database
-//!
-//! @author Alex Brooks
-//!
+//
+// @brief Property Database
+//
+// @author Alex Brooks
+//
 class PropertyDb
 {
 

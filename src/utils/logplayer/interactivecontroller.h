@@ -7,9 +7,9 @@
 
 namespace logplayer {
 
-//!
-//! @author Alex Brooks
-//!
+//
+// @author Alex Brooks
+//
 class InteractiveController : public hydroiceutil::SubsystemThread
 {
 

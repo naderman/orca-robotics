@@ -15,7 +15,7 @@
 namespace laser2og
 {
 
-//! A structure to describe the likelihood function of Laser-to-OG observation model.
+// A structure to describe the likelihood function of Laser-to-OG observation model.
 typedef struct
 {
     int size;

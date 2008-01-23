@@ -21,17 +21,18 @@ namespace orcaicegrid
 //! Derive from this and pass it the SessionManager if you 
 //! want to do anything on connection.
 //!
-class SessionCreationCallback {
+class SessionCreationCallback 
+{
 public:
 
     virtual ~SessionCreationCallback() {};
 
-    // Returns: 
-    // - true  = everything is OK
-    // - false = something didn't work, we should re-establish the session.
-    //
-    // Any exceptions thrown by this method will be caught by SessionManager.
-    //
+    //! Returns: 
+    //! - true  = everything is OK
+    //! - false = something didn't work, we should re-establish the session.
+    //!
+    //! Any exceptions thrown by this method will be caught by SessionManager.
+    //!
     virtual bool actionOnSessionCreation( IceGrid::AdminSessionPrx session )=0;
 };
 
@@ -52,10 +53,6 @@ public:
 private:
 
     bool tryCreateSession();
-
-    // Tries to sleep for the specified number of seconds, but wakes
-    // up if !isStopping() fails.
-    void checkedSleep( int sec );
 
     SessionCreationCallback &sessionCreationCallback_;
 

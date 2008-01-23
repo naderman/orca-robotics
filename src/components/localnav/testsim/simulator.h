@@ -14,9 +14,9 @@
 
 namespace localnav {
 
-//!
-//! @author Alex Brooks
-//!
+//
+// @author Alex Brooks
+//
 class Simulator
 {
 

@@ -283,14 +283,14 @@ NovatelSpanInsGpsDriver::init()
         put = serial_->writeString( "ASSIGNLBAND CDGPS 1547547 4800\r\n" );
     }
 
-    //!!!! NOT active at the moment; might invalidate our OmniSTAR setup !!!!!
+    //!!! NOT active at the moment; might invalidate our OmniSTAR setup !!!!!
     //OmniSTAR
     //enableMode = orcaice::getPropertyAsIntWithDefault( modeProp, modePrefix+"OmniSTAR", 0 );
     //if(enableMode){
         //cout << "turning on OmniSTAR!" << endl;
         //put = serial_->writeString( "ASSIGNLBAND OMNISTAR 1536782 1200\r\n" );
     //}
-    //!!!! NOT active at the moment; might invalidate our OmniSTAR setup !!!!!
+    //!!! NOT active at the moment; might invalidate our OmniSTAR setup !!!!!
 
     //rtk
     enableMode = orcaice::getPropertyAsIntWithDefault( modeProp, modePrefix+"rtk", 0 );

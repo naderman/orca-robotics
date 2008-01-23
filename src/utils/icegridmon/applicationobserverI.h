@@ -9,9 +9,9 @@
 namespace icegridmon
 {
 
-//!
-//! @author Alex Brooks
-//!
+//
+// @author Alex Brooks
+//
 class ApplicationObserverI : public IceGrid::ApplicationObserver
 {
 

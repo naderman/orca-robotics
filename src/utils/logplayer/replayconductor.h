@@ -10,13 +10,13 @@
 
 namespace logplayer {
 
-//!
-//! @brief Orchestrates replaying of the log.
-//!        This thing is a thread, so it can play continuously.
-//!        It's thread-safe so that replay-rate etc can be adjusted during operation.
-//!
-//! @author Alex Brooks
-//!
+//
+// @brief Orchestrates replaying of the log.
+//        This thing is a thread, so it can play continuously.
+//        It's thread-safe so that replay-rate etc can be adjusted during operation.
+//
+// @author Alex Brooks
+//
 class ReplayConductor : public hydroiceutil::SubsystemThread
 {
 

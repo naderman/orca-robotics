@@ -115,6 +115,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
   - added support for Pinger interface (alex m)
   - added support for VelocityControl2d interface (alex b)
 
+- IceGridMon
+  - Updated implementation to modern standards. (alex m)
+
 @par Updated libraries
 
 - libOrcaIce
