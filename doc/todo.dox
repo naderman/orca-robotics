@@ -126,6 +126,14 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
   - Removed deprecated orcaice::PtrProxy (replaced with PtrStore) (alex b)
   - Cleaned up reading of properties in orcaice::Application and orcaice::Service (alex b)
   - Added ability to read configuration parameters from network (alex b)
+  - Imported toString() and getProperty*() functions related to Orca types defined in orca.h and those included from it. These
+    came form libOrcaObjects. The rest of utility functions related to other Orca the objects stayed in libOrcaObjects and 
+    libOrcaIce no longer depens on it.
+
+- libOrcaObjects
+  - Got its own namespace -- orcaobj. Exported toString() and getProperty*() functions related to Orca types defined in orca.h and 
+    those included from it. These came form libOrcaObjects. The rest of utility functions related to other Orca objects stayed in 
+    libOrcaObjects and libOrcaIce no longer depens on it.
 
 @par Removed
 

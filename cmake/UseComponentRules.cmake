@@ -9,7 +9,8 @@ INCLUDE( ${ORCA_CMAKE_DIR}/UseHydroIceUtil.cmake )
 INCLUDE( ${ORCA_CMAKE_DIR}/UseLibProjectInterfaces.cmake )
 INCLUDE( ${ORCA_CMAKE_DIR}/WrapComponent.cmake )
 
-LINK_LIBRARIES( OrcaIce OrcaObjects )
+# LINK_LIBRARIES( OrcaIce OrcaObjects )
+LINK_LIBRARIES( OrcaIce )
 
 #
 # Project-specific rules
