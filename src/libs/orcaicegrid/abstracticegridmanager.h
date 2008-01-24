@@ -1,15 +1,15 @@
 /*
  * Orca-Robotics Project: Components for robotics 
  *               http://orca-robotics.sf.net/
- * Copyright (c) 2004-2008 Alex Brooks
+ * Copyright (c) 2004-2008 Alex Brooks, Alex Makarenko
  *
  * This copy of Orca is licensed to you under the terms described in
  * the LICENSE file included in this distribution.
  *
  */
 
-#ifndef ORCA_ORCAICEGRID_ADMIN_SESSIONMANAGER_H
-#define ORCA_ORCAICEGRID_ADMIN_SESSIONMANAGER_H
+#ifndef ORCAICEGRID_ABSTRACT_ICEGRID_MANAGER_H
+#define ORCAICEGRID_ABSTRACT_ICEGRID_MANAGER_H
 
 #include <IceGrid/Registry.h>
 
@@ -23,14 +23,20 @@ namespace orcaicegrid
 //!
 //! @author Alex Brooks
 //!
-class AdminSessionManager
+class AbstractIceGridManager
 {
 public:
-    //! Tells IceGrid to remove app
-    virtual void removeApplication( const std::string &appName )=0;
-
     //! Tells IceGrid to get app info
     virtual IceGrid::ApplicationInfo getApplicationInfo( const std::string &appName )=0;
+
+    //! Tells IceGrid to add app from file
+    virtual void addApplication( IceGrid::ApplicationDescriptor descriptor )=0;
+
+    //! Tells IceGrid to upadate app from file
+    virtual void updateApplication( IceGrid::ApplicationUpdateDescriptor descriptor )=0;
+
+    //! Tells IceGrid to remove app
+    virtual void removeApplication( const std::string &appName )=0;
 
     //! Tells IceGrid to get server state
     virtual IceGrid::ServerState getServerState( const std::string &serverId )=0;
@@ -40,22 +46,6 @@ public:
 
     //! Tells IceGrid to stop server
     virtual void stopServer( const std::string &serverId )=0;
-
-    //! State of the Session 
-    enum State
-    {
-        //! Disconnected
-        Disconnected,
-        //! Connecting
-        Connecting,
-        //! Connected
-        Connected,
-        //! Disconnecting
-        Disconnecting
-    };
-
-    //! Get the current state of the session. This a local operation.
-    virtual State getState()=0;
 };
 
 } // namespace
