@@ -10,9 +10,14 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
+#include <orcaicegrid/icegridsession.h>
 
 #include "mainthread.h"
-#include "sessioncreationcallback.h"
+#include "registryobserverI.h"
+#include "applicationobserverI.h"
+#include "adapterobserverI.h"
+#include "objectobserverI.h"
+#include "nodeobserverI.h"
 
 using namespace std;
 using namespace icegridmon;
@@ -26,7 +31,7 @@ MainThread::MainThread( const orcaice::Context &context ) :
 
 MainThread::~MainThread()
 {
-    hydroiceutil::stopAndJoin( sessionManager_ );
+    hydroiceutil::stopAndJoin( iceGridSession_ );
 }
 
 void
@@ -41,10 +46,31 @@ MainThread::walk()
     if ( isStopping() )
         return;
 
-    callback_.reset( new SessionCreationCallback( context_ ) );
+    // Create all observers
+    registryObserver_ = new RegistryObserverI( context_ );
+    IceGrid::RegistryObserverPrx regObserverPrx = 
+        orcaice::createConsumerInterface<IceGrid::RegistryObserverPrx> ( context_, registryObserver_ );
 
-    sessionManager_ = new orcaicegrid::SessionManager( *callback_.get(), context_ );
-    sessionManager_->start();
+    applicationObserver_ = new ApplicationObserverI( context_ );
+    IceGrid::ApplicationObserverPrx appObserverPrx = 
+        orcaice::createConsumerInterface<IceGrid::ApplicationObserverPrx> ( context_, applicationObserver_ );
+
+    adapterObserver_ = new AdapterObserverI( context_ );
+    IceGrid::AdapterObserverPrx adapterObserverPrx = 
+        orcaice::createConsumerInterface<IceGrid::AdapterObserverPrx> ( context_, adapterObserver_ );
+
+    objectObserver_ = new ObjectObserverI( context_ );
+    IceGrid::ObjectObserverPrx objectObserverPrx = 
+        orcaice::createConsumerInterface<IceGrid::ObjectObserverPrx> ( context_, objectObserver_ );
+
+    nodeObserver_ = new NodeObserverI( context_ );
+    IceGrid::NodeObserverPrx nodeObserverPrx = 
+        orcaice::createConsumerInterface<IceGrid::NodeObserverPrx> ( context_, nodeObserver_ );    
+
+    // create and start session manager
+    iceGridSession_ = new orcaicegrid::IceGridSession( context_,
+            regObserverPrx, nodeObserverPrx, appObserverPrx, adapterObserverPrx, objectObserverPrx );
+    iceGridSession_->start();
     
     // init subsystem is done and is about to terminate
     subStatus().ok( "Initialized." );

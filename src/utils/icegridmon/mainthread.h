@@ -13,12 +13,10 @@
 
 #include <hydroiceutil/subsystemthread.h>
 #include <orcaice/context.h>
-#include <memory>
+#include <Ice/Ice.h>
 
 namespace icegridmon
 {
-
-class SessionCreationCallback;
 
 class MainThread : public hydroiceutil::SubsystemThread
 {
@@ -32,8 +30,13 @@ public:
 
 private:
 
-    hydroiceutil::ThreadPtr sessionManager_;
-    std::auto_ptr<SessionCreationCallback> callback_;
+    hydroiceutil::ThreadPtr iceGridSession_;
+
+    Ice::ObjectPtr registryObserver_;
+    Ice::ObjectPtr applicationObserver_;
+    Ice::ObjectPtr adapterObserver_;
+    Ice::ObjectPtr objectObserver_;
+    Ice::ObjectPtr nodeObserver_;  
 
     orcaice::Context context_;
 };
