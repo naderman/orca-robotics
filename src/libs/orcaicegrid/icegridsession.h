@@ -20,6 +20,16 @@
 namespace orcaicegrid
 {
 
+//! This exception is raised when the session is not connected.
+class SessionNotConnectedException : public hydroutil::Exception
+{
+public:
+    SessionNotConnectedException(const char *file, const char *line, const char *message)
+            : Exception( file, line, message ) {};
+    SessionNotConnectedException(const char *file, const char *line, const std::string &message)
+            : Exception( file, line, message ) {};
+};
+
 //!
 //! @brief Creates and maintains an IceGrid admin session.
 //!
@@ -68,6 +78,8 @@ public:
 
     // from SafeThread
     virtual void walk();
+
+    static std::string toString( SessionState state );
 
 protected:
     IceGrid::AdminSessionPrx session_;

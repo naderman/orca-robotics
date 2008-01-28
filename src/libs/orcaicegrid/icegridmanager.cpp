@@ -95,8 +95,9 @@ IceGridManager::performOp( Operation &op )
 
 
     if ( !iceGridAdmin ) {
-        tracer->warning( "Operation "+op.toString()+" could not be performed because the proxy to IceGrid/Admin is NULL" );
-        return;
+        string warn = "Operation "+op.toString()+" could not be performed because the proxy to IceGrid/Admin is NULL. "
+                      + "Session state: "+IceGridSession::toString( getState() );
+        throw SessionNotConnectedException( ERROR_INFO, warn );
     }
 
     stringstream exceptionSS;

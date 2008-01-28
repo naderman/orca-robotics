@@ -239,4 +239,22 @@ IceGridSession::getState()
     return state;
 }
 
+std::string 
+IceGridSession::toString( SessionState state )
+{
+    switch ( state )
+    {
+        case Disconnected :
+            return "Disconnected";
+        case Disconnecting :
+            return "Disconnecting";
+        case Connected :
+            return "Connected";
+        case Connecting :
+            return "Connecting";
+        default :
+            return "???Undefined???";
+    }
+}
+
 } // namespace
