@@ -66,6 +66,7 @@ HwThread::initHardwareDriver()
         std::stringstream exceptionSS;
         try {
             context_.tracer().info( "HwThread: Creating driver..." );
+            driver_.reset( 0 ); // if this is a reset, we have to destroy the old driver first
             driver_.reset( driverFactory->createDriver( config_, context_.toHydroContext() ) );
             break;
         }
