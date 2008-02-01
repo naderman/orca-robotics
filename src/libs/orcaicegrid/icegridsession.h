@@ -85,8 +85,9 @@ protected:
     IceGrid::AdminSessionPrx session_;
 //     IceUtil::Mutex   sessionMutex_;
 
-private:
     bool tryCreateSession();
+
+private:
 
     hydroiceutil::Store<SessionState> stateStore_;
     int timeoutSec_;

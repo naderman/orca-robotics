@@ -107,6 +107,10 @@ IceGridSession::tryCreateSession()
         // This is OK, we're shutting down
         return false;
     }
+    catch ( const IceGrid::ObserverAlreadyRegisteredException& ) {
+        // This is OK.
+        context_.tracer().warning( "got ObserverAlreadyRegisteredException exception." );
+    }
     catch ( const Ice::Exception &e ) {
         exceptionSS << "IceGridSession: Error creating Admin Session: " << e;
     }
@@ -166,12 +170,17 @@ IceGridSession::walk()
                     if ( sentKeepalive && secSinceLastKeepalive > timeoutSec_ )
                     {
                         stringstream ss;
-                        ss << "IceGridSession: failed to send keepAlives quicker than timeout.  timeoutSec_="
+                        ss << "IceGridSession: Failed to send keepAlives quicker than timeout.  timeoutSec_="
                            <<timeoutSec_<<", secSinceLastKeepalive=" << secSinceLastKeepalive;
                         context_.tracer().warning( ss.str() );
                     }
                     context_.tracer().debug( "IceGridSession: sending keepAlive()", 10 );
+
+                    //
+                    // remote call
+                    //
                     session_->keepAlive();
+
                     lastKeepaliveTime_ = IceUtil::Time::now(); //orcaice::getNow();
                     sentKeepalive = true;
                 }

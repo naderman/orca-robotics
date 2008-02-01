@@ -21,6 +21,10 @@ namespace orcaicegrid
 //! @brief Wraps up functions remotely controlling an IceGrid Registry.
 //!
 //! This thing is thread-safe.
+//!
+//! Only two exceptions are caught: TimeoutException and ObjectNotExistException. Both
+//! indicate that the remote call time out (just now or earlier). Both conditions lead
+//! to reinitialization of the session.
 //! 
 //! Implementations of all methods inhereted from AbstractIceGridManager
 //! throw hydroutil::Exception when something goes wrong.
@@ -39,14 +43,14 @@ public:
         const IceGrid::ObjectObserverPrx&       obj=IceGrid::ObjectObserverPrx() );
 
     // from AdminSessionManager
-    virtual IceGrid::ApplicationInfo getApplicationInfo( const std::string &appName );
-    virtual void addApplication( IceGrid::ApplicationDescriptor descriptor );
-    virtual void updateApplication( IceGrid::ApplicationUpdateDescriptor descriptor );
-    virtual void removeApplication( const std::string &appName );
+    virtual IceGrid::ApplicationInfo getApplicationInfo( const std::string &appName, int timeoutMs=-1 );
+    virtual void addApplication( IceGrid::ApplicationDescriptor descriptor, int timeoutMs=-1 );
+    virtual void updateApplication( IceGrid::ApplicationUpdateDescriptor descriptor, int timeoutMs=-1 );
+    virtual void removeApplication( const std::string &appName, int timeoutMs=-1 );
 
-    virtual IceGrid::ServerState getServerState( const std::string &serverId );
-    virtual void startServer( const std::string &serverId );
-    virtual void stopServer( const std::string &serverId );
+    virtual IceGrid::ServerState getServerState( const std::string &serverId, int timeoutMs=-1 );
+    virtual void startServer( const std::string &serverId, int timeoutMs=-1 );
+    virtual void stopServer( const std::string &serverId, int timeoutMs=-1 );
 
     // from IceGridSession
     virtual bool connectedEvent();
@@ -55,12 +59,12 @@ public:
 private:
 
     class Operation;
-    void performOp( Operation &op );
+    void performOp( Operation &op, int timeoutMs );
 
     IceGrid::AdminPrx        iceGridAdmin_;
     IceUtil::Mutex   adminMutex_;
 
-    int timeoutSec_;
+//     int timeoutSec_;
 
     orcaice::Context context_;
 };

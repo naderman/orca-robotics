@@ -19,6 +19,9 @@ namespace orcaicegrid
 //!
 //! @brief Creates and maintains an IceGrid admin session.
 //!
+//! All operations can set a timeout in [ms]. Default: no timeout. Note that because this timeout
+//! will be set explicitly, the standard Ice.Override.Timeout will not apply.
+//!
 //! The implementation must be thread-safe.
 //!
 //! @author Alex Brooks
@@ -26,26 +29,26 @@ namespace orcaicegrid
 class AbstractIceGridManager
 {
 public:
-    //! Tells IceGrid to get app info
-    virtual IceGrid::ApplicationInfo getApplicationInfo( const std::string &appName )=0;
+    //! Tells IceGrid to get app info.
+    virtual IceGrid::ApplicationInfo getApplicationInfo( const std::string &appName, int timeoutMs=-1 )=0;
 
     //! Tells IceGrid to add app from file
-    virtual void addApplication( IceGrid::ApplicationDescriptor descriptor )=0;
+    virtual void addApplication( IceGrid::ApplicationDescriptor descriptor, int timeoutMs=-1 )=0;
 
     //! Tells IceGrid to upadate app from file
-    virtual void updateApplication( IceGrid::ApplicationUpdateDescriptor descriptor )=0;
+    virtual void updateApplication( IceGrid::ApplicationUpdateDescriptor descriptor, int timeoutMs=-1 )=0;
 
     //! Tells IceGrid to remove app
-    virtual void removeApplication( const std::string &appName )=0;
+    virtual void removeApplication( const std::string &appName, int timeoutMs=-1 )=0;
 
     //! Tells IceGrid to get server state
-    virtual IceGrid::ServerState getServerState( const std::string &serverId )=0;
+    virtual IceGrid::ServerState getServerState( const std::string &serverId, int timeoutMs=-1 )=0;
 
     //! Tells IceGrid to start server
-    virtual void startServer( const std::string &serverId )=0;
+    virtual void startServer( const std::string &serverId, int timeoutMs=-1 )=0;
 
     //! Tells IceGrid to stop server
-    virtual void stopServer( const std::string &serverId )=0;
+    virtual void stopServer( const std::string &serverId, int timeoutMs=-1 )=0;
 };
 
 } // namespace

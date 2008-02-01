@@ -23,7 +23,7 @@ IceGridManager::IceGridManager( const orcaice::Context &context,
         const IceGrid::AdapterObserverPrx& adpt, 
         const IceGrid::ObjectObserverPrx& obj ) :
     IceGridSession( context, reg, node, app, adpt, obj ),
-    timeoutSec_(0),
+//     timeoutSec_(0),
     context_(context)     
 {
 }
@@ -72,13 +72,13 @@ class IceGridManager::Operation {
 public:
     virtual ~Operation() {}
 
-    virtual void performOp( IceGrid::AdminPrx &iceGridAdmin )=0;
+    virtual void perform( IceGrid::AdminPrx &iceGridAdmin )=0;
 
     virtual std::string toString() const=0;
 };
 
 void
-IceGridManager::performOp( Operation &op )
+IceGridManager::performOp( Operation &op, int timeoutMs )
 {
     // serialize access to admin proxy
     // minimize critical section in order to be able to perform multiple operations
@@ -88,7 +88,7 @@ IceGridManager::performOp( Operation &op )
     {
         IceUtil::Mutex::Lock lock(adminMutex_);
 
-        iceGridAdmin = iceGridAdmin_;
+        iceGridAdmin = IceGrid::AdminPrx::uncheckedCast( iceGridAdmin_->ice_timeout( timeoutMs ) );
         tracer = &context_.tracer();
     }
     // end of critical section
@@ -107,7 +107,7 @@ IceGridManager::performOp( Operation &op )
         tracer->debug( string("IceGridManager: performing ")+op.toString(),10 );
 
         // notice the use of the local copy of the Admin proxy
-        op.performOp( iceGridAdmin );
+        op.perform( iceGridAdmin );
 
         stringstream ss;
         ss << "IceGridManager: "<<op.toString()<<" done.  Took "<<timer.elapsedSec()<<"s";
@@ -121,20 +121,21 @@ IceGridManager::performOp( Operation &op )
         exceptionSS << "IceGridManager: "<<op.toString()<<"(): caught exception: "<<e;
     }
 
+    tryCreateSession();
     tracer->error( exceptionSS.str() );
     throw hydroutil::Exception( ERROR_INFO, exceptionSS.str() );    
 }
 
 
 IceGrid::ServerState 
-IceGridManager::getServerState( const std::string &serverId )
+IceGridManager::getServerState( const std::string &serverId, int timeoutMs )
 {
     class GetServerStateOp : public Operation {
     public:
-        GetServerStateOp( std::string serverId )
-            : serverId_(serverId) {}
+        GetServerStateOp( std::string serverId ) :
+            serverId_(serverId) {};
 
-        virtual void performOp( IceGrid::AdminPrx &iceGridAdmin )
+        virtual void perform( IceGrid::AdminPrx &iceGridAdmin )
             {
                 serverState_ = iceGridAdmin->getServerState( serverId_ );
             }
@@ -146,19 +147,19 @@ IceGridManager::getServerState( const std::string &serverId )
     };
 
     GetServerStateOp op(serverId);
-    performOp( op );
+    performOp( op, timeoutMs );
     return op.serverState_;
 }
 
 void 
-IceGridManager::startServer( const std::string &serverId )
+IceGridManager::startServer( const std::string &serverId, int timeoutMs )
 {
     class StartServerOp : public Operation {
     public:
-        StartServerOp( std::string serverId )
-            : serverId_(serverId) {}
+        StartServerOp( std::string serverId ) :
+            serverId_(serverId) {};
 
-        virtual void performOp( IceGrid::AdminPrx &iceGridAdmin )
+        virtual void perform( IceGrid::AdminPrx &iceGridAdmin )
             { iceGridAdmin->startServer( serverId_ ); }
         
         virtual std::string toString() const { return string("startServer(")+serverId_+")"; }
@@ -167,18 +168,18 @@ IceGridManager::startServer( const std::string &serverId )
     };
 
     StartServerOp op(serverId);
-    performOp( op );
+    performOp( op, timeoutMs );
 }
 
 void 
-IceGridManager::stopServer( const std::string &serverId )
+IceGridManager::stopServer( const std::string &serverId, int timeoutMs )
 {
     class StopServerOp : public Operation {
     public:
-        StopServerOp( std::string serverId )
-            : serverId_(serverId) {}
+        StopServerOp( std::string serverId ) :
+            serverId_(serverId) {};
 
-        virtual void performOp( IceGrid::AdminPrx &iceGridAdmin )
+        virtual void perform( IceGrid::AdminPrx &iceGridAdmin )
             { iceGridAdmin->stopServer( serverId_ ); }
         
         virtual std::string toString() const { return string("stopServer(")+serverId_+")"; }
@@ -187,18 +188,18 @@ IceGridManager::stopServer( const std::string &serverId )
     };
 
     StopServerOp op(serverId);
-    performOp( op );
+    performOp( op, timeoutMs );
 }
 
 void 
-IceGridManager::addApplication( IceGrid::ApplicationDescriptor descriptor )
+IceGridManager::addApplication( IceGrid::ApplicationDescriptor descriptor, int timeoutMs )
 {
     class AddApplicationOp : public Operation {
     public:
-        AddApplicationOp( IceGrid::ApplicationDescriptor descriptor )
-            : descriptor_(descriptor) {}
+        AddApplicationOp( IceGrid::ApplicationDescriptor descriptor ) :
+            descriptor_(descriptor) {};
 
-        virtual void performOp( IceGrid::AdminPrx &iceGridAdmin )
+        virtual void perform( IceGrid::AdminPrx &iceGridAdmin )
             { iceGridAdmin->addApplication( descriptor_ ); }
         
         virtual std::string toString() const { return "addApplication ("+descriptor_.name+")"; }
@@ -207,18 +208,18 @@ IceGridManager::addApplication( IceGrid::ApplicationDescriptor descriptor )
     };
 
     AddApplicationOp op(descriptor);
-    performOp( op );
+    performOp( op, timeoutMs );
 }
 
 void 
-IceGridManager::updateApplication( IceGrid::ApplicationUpdateDescriptor descriptor )
+IceGridManager::updateApplication( IceGrid::ApplicationUpdateDescriptor descriptor, int timeoutMs )
 {
     class UpdateApplicationOp : public Operation {
     public:
-        UpdateApplicationOp( IceGrid::ApplicationUpdateDescriptor descriptor )
-            : descriptor_(descriptor) {}
+        UpdateApplicationOp( IceGrid::ApplicationUpdateDescriptor descriptor ) :
+            descriptor_(descriptor) {};
 
-        virtual void performOp( IceGrid::AdminPrx &iceGridAdmin )
+        virtual void perform( IceGrid::AdminPrx &iceGridAdmin )
             { iceGridAdmin->updateApplication( descriptor_ ); }
         
         virtual std::string toString() const { return "updateApplication ("+descriptor_.name+")"; }
@@ -227,18 +228,18 @@ IceGridManager::updateApplication( IceGrid::ApplicationUpdateDescriptor descript
     };
 
     UpdateApplicationOp op(descriptor);
-    performOp( op );
+    performOp( op, timeoutMs );
 }
 
 void 
-IceGridManager::removeApplication( const std::string &appName )
+IceGridManager::removeApplication( const std::string &appName, int timeoutMs )
 {
     class RemoveApplicationOp : public Operation {
     public:
-        RemoveApplicationOp( std::string appName )
-            : appName_(appName) {}
+        RemoveApplicationOp( std::string appName ) :
+            appName_(appName) {};
 
-        virtual void performOp( IceGrid::AdminPrx &iceGridAdmin )
+        virtual void perform( IceGrid::AdminPrx &iceGridAdmin )
             { iceGridAdmin->removeApplication( appName_ ); }
         
         virtual std::string toString() const { return "removeApplication( "+appName_+")"; }
@@ -247,28 +248,28 @@ IceGridManager::removeApplication( const std::string &appName )
     };
 
     RemoveApplicationOp op(appName);
-    performOp( op );
+    performOp( op, timeoutMs );
 }
 
 IceGrid::ApplicationInfo 
-IceGridManager::getApplicationInfo( const std::string &appName )
+IceGridManager::getApplicationInfo( const std::string &appName, int timeoutMs )
 {
     class GetApplicationInfoOp : public Operation {
     public:
-        GetApplicationInfoOp( std::string appName )
-            : appName_(appName) {}
+        GetApplicationInfoOp( std::string appName ) :
+            appName_(appName) {};
 
-        virtual void performOp( IceGrid::AdminPrx &iceGridAdmin )
+        virtual void perform( IceGrid::AdminPrx &iceGridAdmin )
             { appInfo_ = iceGridAdmin->getApplicationInfo( appName_ ); }
         
         virtual std::string toString() const { return "getApplicationInfo"; }
 
-        IceGrid::ApplicationInfo appInfo_;
         std::string appName_;
+        IceGrid::ApplicationInfo appInfo_;
     };
 
     GetApplicationInfoOp op(appName);
-    performOp( op );
+    performOp( op, timeoutMs );
     return op.appInfo_;
 }
 
