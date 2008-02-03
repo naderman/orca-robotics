@@ -19,6 +19,8 @@ namespace orcaicegrid
 //!
 //! @brief Creates and maintains an IceGrid admin session.
 //!
+//! Defines convenient wrappers for a subset of operations provided by IceGrid::Admin interface.
+//! 
 //! All operations can set a timeout in [ms]. Default: no timeout. Note that because this timeout
 //! will be set explicitly, the standard Ice.Override.Timeout will not apply.
 //!
@@ -37,6 +39,9 @@ public:
 
     //! Tells IceGrid to upadate app from file
     virtual void updateApplication( IceGrid::ApplicationUpdateDescriptor descriptor, int timeoutMs=-1 )=0;
+
+    //! Tells IceGrid to patch app.
+    virtual void patchApplication( const std::string &appName, bool shutdown, int timeoutMs=-1 )=0;
 
     //! Tells IceGrid to remove app
     virtual void removeApplication( const std::string &appName, int timeoutMs=-1 )=0;

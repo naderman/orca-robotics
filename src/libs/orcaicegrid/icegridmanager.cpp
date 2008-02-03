@@ -40,6 +40,13 @@ IceGridManager::connectedEvent()
     try
     {
         iceGridAdmin_ = session_->getAdmin();
+        context_.tracer().info( "Connected to Admin interface" );
+
+        // just to test it...
+        vector<string> appNames = iceGridAdmin_->getAllApplicationNames();
+        stringstream ss;
+        ss<<"got a list of "<<appNames.size()<<" app names";
+        context_.tracer().info( ss.str() );
         return true;
     }
     catch ( const Ice::CommunicatorDestroyedException & ) {
@@ -66,6 +73,7 @@ IceGridManager::disconnectedEvent()
 {
     IceUtil::Mutex::Lock lock(adminMutex_);
     iceGridAdmin_ = 0;
+    context_.tracer().info( "Disconnected from Admin interface" );
 }
 
 class IceGridManager::Operation {
@@ -81,30 +89,33 @@ void
 IceGridManager::performOp( Operation &op, int timeoutMs )
 {
     // serialize access to admin proxy
+        IceUtil::Mutex::Lock lock(adminMutex_);
     // minimize critical section in order to be able to perform multiple operations
     // simultaneously
     IceGrid::AdminPrx iceGridAdmin;
     hydroutil::Tracer* tracer;
     {
-        IceUtil::Mutex::Lock lock(adminMutex_);
+//         IceUtil::Mutex::Lock lock(adminMutex_);
 
-        iceGridAdmin = IceGrid::AdminPrx::uncheckedCast( iceGridAdmin_->ice_timeout( timeoutMs ) );
+        if ( !iceGridAdmin_ ) {
+            string warn = "Operation "+op.toString()+" could not be performed because the proxy to IceGrid/Admin is NULL. "
+                        + "Session state: "+IceGridSession::toString( getState() );
+            throw SessionNotConnectedException( ERROR_INFO, warn );
+        }
+
+        // use the specified timeout
+//         iceGridAdmin = IceGrid::AdminPrx::uncheckedCast( iceGridAdmin_->ice_timeout( timeoutMs ) );
+        iceGridAdmin = iceGridAdmin_;
         tracer = &context_.tracer();
     }
     // end of critical section
 
-
-    if ( !iceGridAdmin ) {
-        string warn = "Operation "+op.toString()+" could not be performed because the proxy to IceGrid/Admin is NULL. "
-                      + "Session state: "+IceGridSession::toString( getState() );
-        throw SessionNotConnectedException( ERROR_INFO, warn );
-    }
-
     stringstream exceptionSS;
-
+    hydroiceutil::Timer timer;
     try {
-        hydroiceutil::Timer timer;
-        tracer->debug( string("IceGridManager: performing ")+op.toString(),10 );
+        stringstream debugSS;
+        debugSS<<"IceGridManager: performing "<<op.toString()<<" with timeout="<<timeoutMs<<"ms";
+        tracer->debug( debugSS.str(),5 );
 
         // notice the use of the local copy of the Admin proxy
         op.perform( iceGridAdmin );
@@ -115,14 +126,22 @@ IceGridManager::performOp( Operation &op, int timeoutMs )
         return;
     }
     catch ( const Ice::ObjectNotExistException &e ) {
-        exceptionSS << "IceGridManager: "<<op.toString()<<"(): caught exception: "<<e;
+        exceptionSS << "IceGridManager: "<<op.toString()<<"(): caught exception after "
+                <<timer.elapsedSec()<<"s : "<<e;
     }
     catch ( const Ice::TimeoutException &e ) {
-        exceptionSS << "IceGridManager: "<<op.toString()<<"(): caught exception: "<<e;
+        exceptionSS << "IceGridManager: "<<op.toString()<<"(): ccaught exception after "
+                <<timer.elapsedSec()<<"s : "<<e;
     }
 
-    tryCreateSession();
     tracer->error( exceptionSS.str() );
+    // destroy old admin proxy, it's no longer valid
+    {
+//         IceUtil::Mutex::Lock lock(adminMutex_);
+        iceGridAdmin_ = 0;
+    }
+    tryCreateSession();
+
     throw hydroutil::Exception( ERROR_INFO, exceptionSS.str() );    
 }
 
@@ -228,6 +247,27 @@ IceGridManager::updateApplication( IceGrid::ApplicationUpdateDescriptor descript
     };
 
     UpdateApplicationOp op(descriptor);
+    performOp( op, timeoutMs );
+}
+
+void 
+IceGridManager::patchApplication( const std::string &appName, bool shutdown, int timeoutMs )
+{
+    class PatchApplicationOp : public Operation {
+    public:
+        PatchApplicationOp( std::string appName, bool shutdown ) :
+            appName_(appName), shutdown_(shutdown) {};
+
+        virtual void perform( IceGrid::AdminPrx &iceGridAdmin )
+            { iceGridAdmin->patchApplication( appName_, shutdown_ ); }
+        
+        virtual std::string toString() const { return "patchApplication( "+appName_+")"; }
+
+        std::string appName_;
+        bool shutdown_;
+    };
+
+    PatchApplicationOp op(appName, shutdown);
     performOp( op, timeoutMs );
 }
 

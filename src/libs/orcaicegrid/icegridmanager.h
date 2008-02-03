@@ -46,6 +46,7 @@ public:
     virtual IceGrid::ApplicationInfo getApplicationInfo( const std::string &appName, int timeoutMs=-1 );
     virtual void addApplication( IceGrid::ApplicationDescriptor descriptor, int timeoutMs=-1 );
     virtual void updateApplication( IceGrid::ApplicationUpdateDescriptor descriptor, int timeoutMs=-1 );
+    virtual void patchApplication( const std::string &appName, bool shutdown, int timeoutMs=-1 );
     virtual void removeApplication( const std::string &appName, int timeoutMs=-1 );
 
     virtual IceGrid::ServerState getServerState( const std::string &serverId, int timeoutMs=-1 );
