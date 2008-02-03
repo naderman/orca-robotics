@@ -36,7 +36,7 @@ Particle2dPainter::~Particle2dPainter()
 void 
 Particle2dPainter::setColor( QColor color )
 {
-    activeColour_ = color;
+    // activeColour_ = color;
 }
 
 void
