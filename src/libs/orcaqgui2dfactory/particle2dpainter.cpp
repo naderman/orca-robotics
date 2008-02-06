@@ -83,7 +83,7 @@ Particle2dPainter::setData( const orca::Particle2dData& particleData )
 
 void Particle2dPainter::paint( QPainter *painter, int z )
 {
-    if ( z != Z_POSE-2 ) return;
+    if ( z != Z_POSE+2 ) return;
 
     painter->setPen( QPen( currentColour_ ) );
 

@@ -29,6 +29,7 @@
 #include <orcaqgui2d/iknowsplatformposition2d.h>
 #include "worldview.h"
 #include <IceUtil/IceUtil.h>
+#include "paintutils.h"
 
 using namespace std;
 
@@ -98,31 +99,31 @@ WorldView::updateAllGuiElements()
             }
             catch ( IceUtil::Exception &e )
             {
-                ss<<"GuiElementModel: during update of "
+                ss<<"WorldView: during update of "
                 <<element->details().toStdString()<<": " << e << std::endl;
                 humanManager_.showStatusMsg(hydroqgui::IHumanManager::Warning,ss.str().c_str());
             }
             catch ( std::exception &e )
             {
-                ss<<"GuiElementModel: during update of "
+                ss<<"WorldView: during update of "
                 <<element->details().toStdString()<<": " << e.what() << std::endl;
                 humanManager_.showStatusMsg(hydroqgui::IHumanManager::Warning,ss.str().c_str());
             }
             catch ( std::string &e )
             {
-                ss<<"GuiElementModel: during update of "
+                ss<<"WorldView: during update of "
                    <<element->details().toStdString()<<": " << e << std::endl;
                 humanManager_.showStatusMsg(hydroqgui::IHumanManager::Warning,ss.str().c_str());
             }
             catch ( char *e )
             {
-                ss<<"GuiElementModel: during update of "
+                ss<<"WorldView: during update of "
                    <<element->details().toStdString()<<": " << e << std::endl;
                 humanManager_.showStatusMsg(hydroqgui::IHumanManager::Warning,ss.str().c_str());
             }
             catch ( ... )
             {
-                ss<<"GuiElementModel: Caught unknown exception during update of "
+                ss<<"WorldView: Caught unknown exception during update of "
                    <<element->details().toStdString()<<": " << std::endl;
                 humanManager_.showStatusMsg(hydroqgui::IHumanManager::Warning,ss.str().c_str());
             }
@@ -257,7 +258,8 @@ WorldView::paintAllGuiElements( QPainter *painter, int z, bool isCoordinateFrame
         if ( !elements[i] ) {
             continue;
         }
-        
+
+        stringstream ss;
         try {
            // paint all elements in the world if platform that owns coordinate system is localised 
            // also paint all elements of the platform that owns coordinate system even if it's not localised
@@ -278,7 +280,8 @@ WorldView::paintAllGuiElements( QPainter *painter, int z, bool isCoordinateFrame
                 }
                 else
                 {
-                    painter->save();
+                    // Save the state of the painter with ScopedSaver, in case an exception is thrown.
+                    ScopedSaver scopedPainterSaver( painter );
                     {
                         // if a localiser element is not found, the coords of the painter
                         // will not be transformed and the element will be painted at the
@@ -293,41 +296,46 @@ WorldView::paintAllGuiElements( QPainter *painter, int z, bool isCoordinateFrame
                         }
                         else
                         {
-                            painter->save();
                             // local view is aligned with y-axis
-                            painter->rotate( 90.0 );
-                            elem->paint( painter, z );
-                            painter->restore();
+                            ScopedSaver saver( painter );
+                            {
+                                painter->rotate( 90.0 );
+                                elem->paint( painter, z );
+                            }
                         }
                     }
-                    painter->restore();
                 }
             }
         }
         catch ( IceUtil::Exception &e )
         {
-            std::cout<<"TRACE(worldview.cpp): Caught some ice exception during painting of "
-                     <<elements[i]->details().toStdString()<<": " << e << std::endl;
+            ss<<"WorldView: during painting of "
+              <<elements[i]->details().toStdString()<<": " << e << std::endl;
+            humanManager_.showStatusMsg(hydroqgui::IHumanManager::Warning,ss.str().c_str());
         }
         catch ( std::exception &e )
         {
-            std::cout<<"TRACE(worldview.cpp): Caught some std exception during painting of "
-                    <<elements[i]->details().toStdString()<<": " << e.what() << std::endl;
+            ss<<"WorldView: during painting of "
+              <<elements[i]->details().toStdString()<<": " << e.what() << std::endl;
+            humanManager_.showStatusMsg(hydroqgui::IHumanManager::Warning,ss.str().c_str());
         }
         catch ( std::string &e )
         {
-            std::cout<<"TRACE(worldview.cpp): Caught std::string during painting of "
-                    <<elements[i]->details().toStdString()<<": " << e << std::endl;
+            ss<<"WorldView: during painting of "
+              <<elements[i]->details().toStdString()<<": " << e << std::endl;
+            humanManager_.showStatusMsg(hydroqgui::IHumanManager::Warning,ss.str().c_str());
         }
         catch ( char *e )
         {
-            std::cout<<"TRACE(worldview.cpp): Caught char * during painting of "
-                    <<elements[i]->details().toStdString()<<": " << e << std::endl;
+            ss<<"WorldView: during painting of "
+              <<elements[i]->details().toStdString()<<": " << e << std::endl;
+            humanManager_.showStatusMsg(hydroqgui::IHumanManager::Warning,ss.str().c_str());
         }
         catch ( ... )
         {
-            std::cout<<"TRACE(worldview.cpp): Caught some other exception during painting of "
-                    <<elements[i]->details().toStdString()<< std::endl;
+            ss<<"WorldView: during painting of "
+              <<elements[i]->details().toStdString()<<": unknown exception." << std::endl;
+            humanManager_.showStatusMsg(hydroqgui::IHumanManager::Warning,ss.str().c_str());
         }
     }
 }

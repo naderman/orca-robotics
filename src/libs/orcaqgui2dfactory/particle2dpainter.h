@@ -35,7 +35,7 @@ class Particle2dPainter
     void setData( const orca::Particle2dData& particleData );
     void setColor( QColor color );
     void paint( QPainter *p, int z1 );
-    bool paintThisLayer(int z) const { return z==Z_POSE-2; }
+    bool paintThisLayer(int z) const { return z==Z_POSE+2; }
     void setUseTransparency( bool useTransparency ) { useTransparency_= useTransparency; };
     void clear();
     
