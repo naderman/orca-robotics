@@ -12,7 +12,7 @@
 
 @page orca_doc_release Release Instructions
 
-@note Reviewed for release 2.8.0.
+@note Reviewed for release 2.9.0.
 
 @section orca_doc_release_release Release
 
@@ -28,11 +28,11 @@
   -# Tag the distributions, eg with:
     - %hydro:
 @verbatim
-$ svn copy --username borax00 https://orca-robotics.svn.sf.net/svnroot/orca-robotics/hydro/trunk https://orca-robotics.svn.sf.net/svnroot/orca-robotics/hydro/tags/RELEASE_2.7.0 -m 'Tagging release 2.7.0'
+$ svn copy --username [USERNAME] https://orca-robotics.svn.sf.net/svnroot/orca-robotics/hydro/trunk https://orca-robotics.svn.sf.net/svnroot/orca-robotics/hydro/tags/RELEASE_2.7.0 -m 'Tagging release 2.7.0'
 @endverbatim
     - %orca:
 @verbatim
-$ svn copy --username borax00 https://orca-robotics.svn.sf.net/svnroot/orca-robotics/orca/trunk https://orca-robotics.svn.sf.net/svnroot/orca-robotics/orca/tags/RELEASE_2.7.0 -m 'Tagging release 2.7.0'
+$ svn copy --username [USERNAME] https://orca-robotics.svn.sf.net/svnroot/orca-robotics/orca/trunk https://orca-robotics.svn.sf.net/svnroot/orca-robotics/orca/tags/RELEASE_2.7.0 -m 'Tagging release 2.7.0'
 @endverbatim
   -# Delete all .svn directories (eg with 'find . -name .svn | xargs rm -rf')
   -# Create tar-balls of these distributions, named eg. 'hydro-2.7.0.tar.gz' and 'orca-2.7.0.tar.gz'

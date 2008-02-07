@@ -22,19 +22,12 @@ Go to the top directory of the Orca distribution and type the following:
 
 @verbatim
 $ ls src/examples/brick
-brick.def  CMakeLists.txt  component.h  mainthread.cpp  service.cpp
-brick.dox  component.cpp   main.cpp     mainthread.h    service.h
+brick.def  brick.dox  CMakeLists.txt  mainthread.cpp  mainthread.h
 @endverbatim
 
 What are all these files? Here we'll just list their purpose, click on the links for the line-by-line explanation of the source.
 
 - @ref orca_doc_tutebrickwrite_cmakelists -- A special text file used by the CMake build system. Based on the CMakeLists.txt in the current directory and the similar files in all directories above, CMake will generate Makefiles (or equivalents for non make-based systems, e.g. MS Visual Studio)
-
-- @ref orca_doc_tutebrickwrite_main -- The entry point into the stand-alone component executable. This executable will contain our component. Running the executable in its own process is the normal way of @e deploying the component.
-
-- @ref orca_doc_tutebrickwrite_service_h and @ref orca_doc_tutebrickwrite_service_cpp -- The entry point into the IceBox service which will contain the same component. IceBox is an @e application @e server supplied with Ice. Our service will be compiled into a shared library which the IceBox can load at runtime. Running the component as a service is an alternative way of deploying our component. Which deployment method to choose depends on the application. The main difference is that all services inside an IceBox run within one process.
-
-- @ref orca_doc_tutebrickwrite_component_h and @ref orca_doc_tutebrickwrite_component_cpp -- The class defining our component. The same component can be placed into an executable or into a service. A component typically launches at least one thread in which it performs some useful task.
 
 - @ref orca_doc_tutebrickwrite_mainthread_h and @ref orca_doc_tutebrickwrite_mainthread_cpp -- The one and only thread of our component.
 
@@ -46,31 +39,26 @@ What are all these files? Here we'll just list their purpose, click on the links
 @section orca_doc_tutebrickwrite_cmakelists CMakeLists.txt
 
 @code
-SET ( COMP_NAME brick )
-SET ( SERVICE_NAME OrcaBrick )
+SET_COMPONENT_NAMES ( Brick )
 
-REQUIRE_OPTION( EXE ${COMP_NAME} ON )
+SET ( BUILD TRUE )
+REQUIRE_OPTION( BUILD EXE ${APP_NAME} ON )
 
 IF ( BUILD)
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
-    FIND_COMPONENT_SOURCES( COMP_SRCS )
+    FILE( GLOB COMP_SRCS *.cpp )
 
-    # libs on which our code depends would go here
-#     SET( COMP_DEPS ??? )
-
-    # build stand-alone component  
-    GLOBAL_ADD_EXECUTABLE( ${COMP_NAME} ${COMP_SRCS} main )
-#     TARGET_LINK_LIBRARIES( ${COMP_NAME} ${COMP_DEPS} )
+    # build stand-alone component
+    WRAP_MAINTHREAD_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${COMP_NAME} ${COMP_SRCS} )
 
     # build IceBox service
-    IF ( BUILD_SERVICES AND NOT OS_WIN )
-        GLOBAL_ADD_LIBRARY( ${SERVICE_NAME} SHARED ${COMP_SRCS} service )
-#         TARGET_LINK_LIBRARIES( ${SERVICE_NAME} ${COMP_DEPS} ) 
-    ENDIF ( BUILD_SERVICES AND NOT OS_WIN )
+    IF ( BUILD_SERVICES )
+        WRAP_MAINTHREAD_INTO_SERVICE( ${SERVICE_NAME} ${COMP_NAMESPACE} ${COMP_NAME} ${COMP_SRCS} )
+    ENDIF ( BUILD_SERVICES )
 
-    GENERATE_CONFIG_FILE( ${COMP_NAME}.def )
+    GENERATE_CONFIG_FILE( ${APP_NAME}.def )
 
 ENDIF ( BUILD )
 @endcode
@@ -78,15 +66,40 @@ ENDIF ( BUILD )
 @par Line by Line Walkthrough
 
 @verbatim
-SET ( COMP_NAME brick )
-SET ( SERVICE_NAME OrcaBrick )
+SET_COMPONENT_NAMES ( Brick )
 @endverbatim
-We define CMake 2 variables to name the component executable and the component IceBox service library. We'll use them in this file.
+Sets component name and 3 other related CMake variables which we'll use later in this file.
+- APP_NAME        application executable name (defaults to the component name converted to lower case)
+- SERVICE_NAME    service library name (defaults to the component name prepended with 
+                  project name and appended with "Service")
+- COMP_NAMESPACE  component namespace (defaults to the component name converted to lower case)
+
+Also sets APP_CTRLC_HANDLER=1 (instructs application to install Ctrl-C Handler)
+
+For custom values, call this function first and then override some or all of the variables manually.
+For example:
+@verbatim
+      SET_COMPONENT_NAMES ( MyComponent )
+      SET ( COMP_NAMESPACE mycomp )
+@endverbatim
 
 @verbatim
-REQUIRE_OPTION( EXE ${COMP_NAME} ON )
+SET ( BUILD TRUE )
 @endverbatim
-This line calls a CMake macro which defines a user-configurable compilation option. It will be called @c BUILD_BRICK (BUILD + the name of our component in upper case). This option can be used as a variable to implement conditional compilation. The default value of this variable is ON, equivalent to TRUE. CMake comes with a configuration tool called @c ccmake. In Linux, when you type "ccmake ." in the top directory of the Orca distribution, you will see a list of all compilation options. Scroll down to BUILD_BRICK and press ENTER, the value of the option will change to OFF. Now configure (press @c c) and generate (press @c g). The build options have now been adjusted such that the Brick example will not be compiled. Repeat the process to turn the compilation back on or delete @c CMakeCache.txt to go back to defaults.
+This and the following few lines determine whether we are going to build this component or not. We start with the assumption that we will and then check a few requirements sequentially. We define a variable called @c BUILD and set it to TRUE, i.e. "this library will be built". Failure to meet any one of the requirements will assign FALSE to this "cumulative variable".
+
+@verbatim
+# Check for human input
+REQUIRE_OPTION( BUILD EXE ${APP_NAME} ON )
+@endverbatim
+This line calls a CMake macro which defines a user-configurable compilation option. It will be called @c BUILD_BRICK (BUILD + the name of our component in upper case). This option can be used as a variable to implement conditional compilation. The default value of this variable is ON, equivalent to TRUE. CMake comes with a configuration tool called @c ccmake. In Linux, when you type "ccmake ." in the top directory of the Orca distribution, you will see a list of all compilation options. Scroll down to @c BUILD_BRICK and press ENTER, the value of the option will change to OFF. Now configure (press @c c) and generate (press @c g). The build options have now been adjusted such that the Brick example will not be compiled. Repeat the process to turn the compilation back on or delete @c CMakeCache.txt to go back to defaults.
+
+@verbatim
+# libs on which our code depends would go here
+# SET( DEP_LIBS ??? )
+# REQUIRE_TARGETS( BUILD EXE ${APP_NAME} ${DEP_LIBS} )
+@endverbatim
+Pound sign marks comments. Here we comment out a line which would normally be used to specify library dependencies on one of the Orca targets (typically libraries but could be executables as well). This example does not need to be linked to any library besides the typical ones specified by UseComponentRules.cmake script.
 
 @verbatim
 IF ( BUILD)
@@ -101,38 +114,39 @@ Most components are compiled with the same compiler options, include the same ty
 Because the @c UseComponentRules.cmake script is installed with the rest of the Orca files, satellite projects which use Orca can use this script file as well. The CMake variable @c ORCA_CMAKE_DIR works out the correct location of Orca CMake scripts.
 
 @verbatim
-    FIND_COMPONENT_SOURCES( COMP_SRCS )
+    FILE( GLOB COMP_SRCS *.cpp )
 @endverbatim
-This CMake macro simply gets a list of all *.cpp files in the current directory and removes 2 files from the list: @c main.cpp and @c service.cpp. We'll see the reason for this in a second. The remaining list is assigned to the variable called @c COMP_SRCS.
+Search for file in the current directory which fit the specified pattern and assign the list to the variables @c COMP_SRCS.  
+    - Instead of searching you can just list the files you need.
+@verbatim
+SET( COMP_SRCS mainthread.cpp )
+@endverbatim
 
 @verbatim
-    # libs on which our code depends would go here
-#     SET( COMP_DEPS ??? )
+    WRAP_MAINTHREAD_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${COMP_NAME} ${COMP_SRCS} )
 @endverbatim
-Pound sign marks comments. Here we comment out a line which would normally be used to specify library dependencies. This example does not need to be linked to any library besides the typical ones specified by UseComponentRules.cmake script.
+This macro wraps an Orca component around a single thread and places that component into an Orca application. It expects to find 
+- files named mainthread.h/cpp 
+- which define a class ${COMP_NAMESPACE}::MainThread
+- which derives from hydroiceutil::Thread or its derivatives
+
+If your component is non-standard (e.g. has several threads or needs to do something special in the constructor) you can create a custom Orca component. There's a macro for this case as well called WRAP_COMPONENT_INTO_APP which will place the custom component into an Orca application. If your @c main.cpp file needs to be nonstandard, then you have to write it by hand without the help of the macros. When writing custom @c component.h/cpp and @c main.cpp files it may be useful to take a look at the automatically generated versions. Look at the contents of @c brick/autogen directory (it is generated during the cmake process).
 
 @verbatim
-    GLOBAL_ADD_EXECUTABLE( brick ${COMP_SRCS} main )
-@endverbatim
-The macro GLOBAL_ADD_EXECUTABLE will tell the build system to create an executable called @c brick (in Windows @c brick.exe) by compiling all source files listed in @c COMP_SRCS plus @c main.cpp. The file @c service.cpp is not needed to produce a stand-alone executable, for this reason it was not included in @c COMP_SRCS. The macro does other convenient things: it will schedule @c brick to be installed into @c [ORCA-INSTALL]/bin, add it to the list of all executables to be displayed at the end of the configuration step, etc.
-
-@verbatim
-#     TARGET_LINK_LIBRARIES( ${COMP_NAME} ${COMP_DEPS} )
+#     TARGET_LINK_LIBRARIES( ${APP_NAME} ${DEP_LIBS} )
 @endverbatim
 This would be uncommented if we had dependencies.
 
 @verbatim
-    IF ( BUILD_SERVICES AND NOT OS_WIN )
-        GLOBAL_ADD_LIBRARY( ${SERVICE_NAME} SHARED ${COMP_SRCS} service )
-#         TARGET_LINK_LIBRARIES( ${SERVICE_NAME} ${COMP_DEPS} ) 
-    ENDIF ( BUILD_SERVICES AND NOT OS_WIN )
+    IF ( BUILD_SERVICES )
+        WRAP_MAINTHREAD_INTO_SERVICE( ${SERVICE_NAME} ${COMP_NAMESPACE} ${COMP_NAME} ${COMP_SRCS} )
+#         TARGET_LINK_LIBRARIES( ${SERVICE_NAME} ${DEP_LIBS} )
+    ENDIF ( BUILD_SERVICES )
 @endverbatim
-If the global option called @c BUILD_SERVICES is ON, create a shared library called @c libOrcaBrick.so by compiling all source files listed in @c COMP_SRCS plus @c service.cpp. The @c BUILD_SERVICES option is defined globally but can be user-configured with @c ccmake tool. The default setting is OFF. The macro will also schedule this service library to be installed into @c [ORCA-INSTALL]/lib. We could also link this library to dependencies. 
-
-The global variable @c OS_WIN evaluates to TRUE when the OS belongs the Windows family. In Windows we don't compile this library. It can be done, but shared libraries are more complicated and we haven't the need to figure it all out.
+If the global option called @c BUILD_SERVICES is ON, create a shared library called @c libOrcaBrick.so (default value for @c ${SERVICE_NAME}). The macro wraps an Orca service around a single thread. The @c BUILD_SERVICES option is defined globally but can be user-configured with @c ccmake tool. The default setting is OFF. The macro will also schedule this service library to be installed into @c [ORCA-INSTALL]/lib. We could also link this library to dependencies. 
 
 @verbatim
-    GENERATE_CONFIG_FILE( ${COMP_NAME}.def )
+    GENERATE_CONFIG_FILE( ${APP_NAME}.def )
 @endverbatim
 We call a macro to automatically generate a configuration file (.cfg) from the component definition file (.def). For more information on config files, see @ref orca_doc_configfiles.
 
@@ -141,309 +155,21 @@ ENDIF ( BUILD )
 @endverbatim
 End of the IF block. Most of the CMake syntax you'll need you can work out from the existing files. For more details, consult the CMake documentation.
 
-@section orca_doc_tutebrickwrite_main main.cpp
-
-@code
-#include <orcaice/application.h>
-#include "component.h"
-
-int main(int argc, char * argv[])
-{
-    brick::Component component;
-    orcaice::Application app( component );
-    return app.main(argc, argv);
-}
-@endcode
-
-@par Line by Line Walkthrough
-
-@verbatim
-#include <orcaice/application.h>
-@endverbatim
-Our component uses @ref orca_library_orcaice library which simplifies component development. In particular, orcaice::Application wraps up the functionality of a stand-alone executable containing a single orcaice::Component. 
-
-This line includes the header file for orcaice::Application class, the first of the two possible component containers.
-
-@verbatim
-#include "component.h"
-@endverbatim
-This line includes the definition of our Component (which derives from a generic orcaice::Component).
-
-@verbatim
-int main(int argc, char * argv[])
-{
-@endverbatim
-The main() function is the entry point to our executable. The argc parameter is the number of command-line arguments and argv is the array of command-line arguments. This is a standard C++ feature.
-
-@verbatim
-    brick::Component component;
-@endverbatim
-We create an instance of our component. The constructor has no parameters.
-
-@verbatim
-    orcaice::Application app( component );
-@endverbatim
-We create an instance of orcaice::Application and pass to it the reference to our component. From now on the application will manage the component.
-
-@verbatim
-    return app.main(argc, argv);
-}
-@endverbatim
-This is where main() passes control to orcaice::Application. Notice that we also give it the command line arguments, these will be parsed properly. The function orcaice::Application::main() will return when the application exits.
-
-
-
-@section orca_doc_tutebrickwrite_service_h service.h
-
-@code
-#include <orcaice/service.h>
-
-namespace brick {
-
-class Service : public orcaice::Service
-{
-public:
-    Service();
-};
-
-} // namespace
-@endcode
-
-@par Line by Line Walkthrough
-
-There only a couple interesting lines of code here.
-
-@verbatim
-#include <orcaice/service.h>
-@endverbatim
-Class definition of orcaice::Service, the second of the two component containers. It derives from the IceBox::Service. but is also desinged to interact with orcaice::Component.
-
-@verbatim
-namespace brick {
-@endverbatim
-By convention, each component defines its own namespace. This enforces modularization and allows us not to worry about name clashes in the service libraries loaded into the same IceBox.
-
-@verbatim
-class Service : public orcaice::Service
-@endverbatim
-Our brick service derives from the generic orcaice::Service.
-
-@section orca_doc_tutebrickwrite_service_cpp service.cpp
-
-@code
-#include "service.h"
-#include "component.h"
-
-extern "C"
-{
-    IceBox::Service* create( Ice::CommunicatorPtr communicator )
-    {
-        return new brick::Service;
-    }
-}
-
-brick::Service::Service()
-{
-    component_ = new brick::Component();
-}
-@endcode
-
-@par Line by Line Walkthrough
-
-@verbatim
-#include "component.h"
-@endverbatim
-Class definition of our component.
-
-@verbatim
-extern "C"
-{
-    IceBox::Service* create( Ice::CommunicatorPtr communicator )
-@endverbatim
-The IceBox application server will call this "factory" C function at runtime to create a service. Notice that it will pass to us a smart pointer to Ice::Communicator -- the main communication object of Ice runtime. We don't have to worry about it right now, orcaice::Service will store a copy of this pointer.
-
-@verbatim
-        return new brick::Service;
-@endverbatim
-When asked to create an instance of the service, our factory function will simply call the constructor.
-
-@verbatim
-brick::Service::Service()
-{
-    component_ = new brick::Component();
-}
-@endverbatim
-The constructor of the service, calls the constructor of our component. 
-
-
-
-@section orca_doc_tutebrickwrite_component_h component.h
-
-@code
-#include <orcaice/component.h>
-#include <hydroutil/thread.h>
-
-namespace brick
-{
-
-class Component: public orcaice::Component
-{
-
-public:
-    Component();
-
-    virtual void start();
-    virtual void stop();
-    
-private:
-    hydroutil::ThreadPtr mainThread_;
-};
-
-} // namespace
-@endcode
-
-@par Line by Line Walkthrough
-
-@verbatim
-#include <orcaice/component.h>
-@endverbatim
-Definition of the generic orcaice::Component.
-
-@verbatim
-#include <hydroutil/thread.h>
-@endverbatim
-Definition of the the hydroutil::Thread class, which is a simple extention of the very well-written cross-platform IceUtil::Thread class.
-
-@verbatim
-namespace brick
-{
-@endverbatim
-All class definitions go into our private namespace.
-
-@verbatim
-class Component: public orcaice::Component
-@endverbatim
-Our component derives from the generic orcaice::Component which is designed to be enclosed in an orcaice::Application or orcaice::Service. See @ref orca_library_orcaice "libOrcaIce documentation" for an illustration of the relationship between the component and its two containers: the application and the service.
-
-@verbatim
-    Component();
-@endverbatim
-In general a specific component class can have a constructor with any number of parameters but this one doesn't have any.
-
-@verbatim
-    virtual void start();
-    virtual void stop();
-@endverbatim
-Because we inherit from orcaice::Component, we have to implement its pure virtual functions start() and stop().
-
-@verbatim
-private:
-    hydroutil::ThreadPtr mainThread_;
-};
-@endverbatim
-The Component class holds a smart pointer to the thread class. Ice smart pointers are similar in concept to other smart pointers, e.g. from the boost library. By convention, Ice smart pointers have @e Ptr appended to the class name. A smart pointer is a class which can be used as a normal C++ pointer but it also performs gargage collection, e.i. it will call a destructor of the object to which it is pointing after the last smart pointer referencing that object goes out of scope. For more information on the use of Ice smart pointers see the Ice manual.
-
-
-@section orca_doc_tutebrickwrite_component_cpp component.cpp
-
-@code
-#include <orcaice/orcaice.h>
-#include "component.h"
-#include "mainthread.h"
-
-using namespace brick;
-
-Component::Component() :
-    orcaice::Component("Brick")
-{
-}
-
-void
-Component::start()
-{
-    mainThread_ = new MainThread( context() );
-    mainThread_->start();
-}
-
-void
-Component::stop()
-{
-    hydroutil::stopAndJoin( mainThread_ );
-}
-@endcode
-
-@par Line by Line Walkthrough
-
-@verbatim
-#include <orcaice/orcaice.h>
-@endverbatim
-We'll use some of the functions provided by @ref orca_library_orcaice. You can include individual header files, but it's easier to use this library header which provides access to most of the library's functionality.
-
-@verbatim
-#include "mainthread.h"
-@endverbatim
-Definition of the MainThread class, we need it here because the thread will be created and launched from the component.
-
-@verbatim
-Component::Component() :
-    orcaice::Component("Brick")
-@endverbatim
-Component constructor sets the @e tag name of the component. This is a string used to identify the properties of this component in the config file. The string hardwired here has to match the tags of the properties in the config files used with this compnent. See @ref orca_doc_tutebrickwrite_brick_def on how this is done with @c .def file.
-
-@verbatim
-Component::Component()
-{
-}
-@endverbatim
-There is nothing to do in the destructor. Notice that we hold a smart pointer to the main thread and, therefore, we do not call the thread's destructor explicitely.
-
-@verbatim
-void
-Component::start()
-{
-@endverbatim
-This is an implementation of a function defined in the generic orcaice::Component. It is one of the "hook" functions which will be called on initialization by one of the containers: the application or the service.
-
-@verbatim
-    mainThread_ = new MainThread( context() );
-@endverbatim
-Create an instance of the main thread. Notice that we pass a single parameter the thread constructor, so called @e "component context" encapsulated in the class orcaice::Context. Context provides access to many centralized facilities available within an Orca component. The most commonly used ones are:
-- component configuration parameters: orcaice::Context::properties()
-- Tracer for local and remote trace statements: orcaice::Context::tracer()
-- Status for remote reporting of subsystem status: orcaice::Context::status(), and
-- the Ice runtime communication object : orcaice::Context::communicator().
-
-The context is passed down to our thread by the component. Had we had more than one thread, each would get its own copy of the context. All public functions and facilities of the context are thread-safe. The holder of the context is allowed to pass it on to others, e.g. to another thread launched from this one or a locally created object.
-
-@verbatim
-    mainThread_->start();
-@endverbatim
-Launch the thread. From now on, the thread runs on its own and the component can continue with its initialization.
-
-Note that the design of @ref orca_library_orcaice requires that the implementation of Component::start() function returns flow of control to the container (application or service) after it's finished. Practically this means that the component is expected to perform some start-up operations, launch a thread or threads, and return without getting into an infinite loop. (The exception to this rule are GUI components using Qt: Qt insists that its main event loop runs in the primary thread).
-
-@verbatim
-void
-Component::stop()
-@endverbatim
-This is the other "hook" function called by the component container on component shutdown. Shutdown occurs when the process receives an interrupt signal, either either from the user who pressed Ctrl-C in the terminal or from the deployment service such as IceGrid Node.
-
-@verbatim
-    hydroutil::stopAndJoin( mainThread_ );
-@endverbatim
-This is a utility function which tells the main thread to stop and waits util the thread terminates (i.e. it "joins" it).
 
 @section orca_doc_tutebrickwrite_mainthread_h mainthread.h
 
 @code
-#include <hydroutil/subsystemthread.h>
+#ifndef MAIN_THREAD_H
+#define MAIN_THREAD_H
+
+#include <hydroiceutil/subsystemthread.h>
 #include <orcaice/context.h>
 
 namespace brick
 {
 
-class MainThread: public hydroutil::SubsystemThread
-{       
+class MainThread: public hydroiceutil::SubsystemThread
+{
 public:
     MainThread( const orcaice::Context& context );
 
@@ -454,7 +180,8 @@ private:
 };
 
 } // namespace
-@endcode
+
+#endif
 
 @par Line by Line Walkthrough
 
@@ -514,21 +241,28 @@ MainThread::MainThread( const orcaice::Context& context ) :
 void
 MainThread::walk()
 {
+    // multi-try function
     orcaice::activate( context_, this, subsysName() );
 
+    //
+    // Read configuration settings
+    //
     std::string prefix = context_.tag() + ".Config.";
+
     int sleepIntervalMs = orcaice::getPropertyAsIntWithDefault( context_.properties(),
             prefix+"SleepIntervalMs", 1000 );
-    subStatus().ok( "Initialized" );
-  
-    subStatus().setMaxHeartbeatInterval( sleepIntervalMs * 3.0/1000.0 );
-    subStatus().ok( "Running main loop" );
 
-    context_.tracer().info( "Entering main loop" );
+    subStatus().ok( "Initialized" );
+
+    //
+    // Main loop
+    //
+    subStatus().setMaxHeartbeatInterval( sleepIntervalMs * 3.0/1000.0 );
+
     while( !isStopping() )
     {
-        context_.tracer()->debug( "Running main loop", 5 );
-        context_.status()->heartbeat( "main" );
+        context_.tracer().debug( "Running main loop", 5 );
+        subStatus().heartbeat();
 
         // here we can do something useful
 
@@ -600,11 +334,6 @@ When the SubsystemThread is created it automatically enters @e Initializing stat
 Initialization is complete and thread behavior becomes more predictable, we can now promiss to update Status more frequently.
 
 @verbatim
-    context_.tracer().info( "Entering main loop" );
-@endverbatim
-We use the tracer to let the user know what's going on. The hydroutil::Tracer defines several types of trace messages: info, warning, error, and debug. Each one can be forwarded to any number of destinations: display, network, log, or file. The default configuration is shown in the documentation. E.g. the default debug-to-display setting is 0, therefore this debug statement of level 2 will not be shown on the screen. In the next tutorial we will show how to change this setting.
-
-@verbatim
     while( !isStopping() )
     {
 @endverbatim
@@ -613,7 +342,7 @@ We are entering the main loop. It will execute until the thread is told to stop.
 @verbatim
         context_.tracer().debug( "Running main loop", 5 );
 @endverbatim
-The default debug-to-display setting is 0, therefore this debug statement of level 5 will not be shown on the screen. In the next tutorial we will show how to change this setting.
+We use the tracer to let the user know what's going on. The hydroutil::Tracer defines several types of trace messages: info, warning, error, and debug. Each one can be forwarded to any number of destinations: display, network, log, or file. The default configuration is shown in the documentation. E.g. the default debug-to-display setting is 0, therefore this debug statement of level 5 will not be shown on the screen. In the next tutorial we will show how to change this setting.
 
 @verbatim
         subStatus().heartbeat();

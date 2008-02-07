@@ -1,6 +1,7 @@
 SET_COMPONENT_NAMES ( Brick )
 
 SET ( BUILD TRUE )
+# Check for human input
 REQUIRE_OPTION( BUILD EXE ${APP_NAME} ON )
 
 # libs on which our code depends would go here
