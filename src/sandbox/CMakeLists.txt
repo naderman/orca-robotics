@@ -7,7 +7,6 @@ MESSAGE ( STATUS "== SANDBOX ==" )
 IF ( NOT OS_WIN AND BUILD_SANDBOX )
 
     # when adding new directories, please maintain alphabetical order
-    ADD_SUBDIRECTORY ( imu )
     ADD_SUBDIRECTORY ( insgps )
 
 ELSE ( NOT OS_WIN AND BUILD_SANDBOX )
