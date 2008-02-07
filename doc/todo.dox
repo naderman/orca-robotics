@@ -59,6 +59,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @section orca_doc_history_head Changes in SVN since Last Release
 
+@section orca_doc_history_290 Changes in Release 2.9.0
+
 @par Project wide
 
 - Build system
@@ -84,8 +86,6 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
   - PropertyServer (alex b)
     - Implements orca::Properties interface
 
-@par New utilities
-@par New libraries
 @par Updated interfaces
 
 - VehicleDescription (alex b)
@@ -141,8 +141,12 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - libOrcaIceGrid
    - Rearranged all code by merging two independent implementations of IceGrid admin sessions into two classes. (alex m)
 
-@par Removed
+@par Turned Off
+    - Image components and libraries are turned off by default because they do not properly check their dependencies and fail
+      to compile under some circumstances. Hopefully they'll be fixed soon.
 
+@par Removed
+   - Imu component. It was never implemented properly and it's component structure was hopelessly obsolete.
 
 @section orca_doc_history_280 Changes in Release 2.8.0
 
