@@ -68,8 +68,45 @@ INCLUDE( ${PROJECT_SOURCE_DIR}/cmake/local/buildtype.cmake )
 INCLUDE( ${PROJECT_SOURCE_DIR}/cmake/local/compiler.cmake )
 
 #
+# Official dependency number 1: Gearbox
+# (this dependency is currently optional)
+#
+IF ( DEFINED GEARBOX_HOME )
+    # the variable is specified with a command line option or is already in cache
+    MESSAGE( STATUS "Gearbox location was specified or using cached value: ${GEARBOX_HOME}")
+ELSE ( DEFINED HYDRO_HOME )
+    # not specified, need to find it
+    INCLUDE ( ${HYDRO_CMAKE_DIR}/FindGearbox.cmake )
+    ASSERT( GEARBOX_FOUND 
+            "Looking for Gearbox - not found." 
+#             "Looking for Gearbox - not found. Please install Gearbox, ** delete CMakeCache.txt **, then re-run CMake." 
+            "Looking for Gearbox - found in ${GEARBOX_HOME}" 
+            0 )
+ENDIF ( DEFINED GEARBOX_HOME )
+
+#
+# Load Gearbox manifest
+#
+IF ( GEARBOX_FOUND )
+INCLUDE( ${GEARBOX_HOME}/gearbox_manifest.cmake )
+ASSERT( GEARBOX_MANIFEST_LOADED 
+        "Loading Gearbox manifest - failed." 
+#         "Loading Gearbox manifest - failed. Please reinstall Gearbox, ** delete CMakeCache.txt **, then re-run CMake." 
+        "Loading Gearbox manifest - loaded." 
+        0 )
+
+# Test Gearbox installation 
+# (we don't have any specific requirements yet)
+# INCLUDE ( ${ORCA_CMAKE_DIR}/TestGearbox.cmake )
+# ASSERT ( GEARBOX_WORKS
+#          "Testing Gearbox - failed. Please check or reinstall it, ** delete CMakeCache.txt **, then re-run CMake."
+#          "Testing Gearbox - ok."
+#          1 )
+ENDIF ( GEARBOX_FOUND )
+
+#
 # 
-# Official dependency number 2: ZeroC's Ice
+# Official dependency number 3: ZeroC's Ice
 # Find Ice installation
 #
 IF ( DEFINED ICE_HOME )
