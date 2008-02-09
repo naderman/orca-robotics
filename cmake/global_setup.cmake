@@ -74,6 +74,8 @@ INCLUDE( ${PROJECT_SOURCE_DIR}/cmake/local/compiler.cmake )
 IF ( DEFINED GEARBOX_HOME )
     # the variable is specified with a command line option or is already in cache
     MESSAGE( STATUS "Gearbox location was specified or using cached value: ${GEARBOX_HOME}")
+    # this is a hack, we'll require gearbox soon anyway
+    SET( GEARBOX_FOUND 1 )
 ELSE ( DEFINED HYDRO_HOME )
     # not specified, need to find it
     INCLUDE ( ${HYDRO_CMAKE_DIR}/FindGearbox.cmake )
