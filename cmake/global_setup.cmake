@@ -10,10 +10,10 @@ MESSAGE( STATUS "Setting project interface lib name to ${PROJECT_INTERFACE_LIB}"
 # Find Hydro installation, we need it early to use its cmake scripts
 #
 IF ( DEFINED HYDRO_HOME )
-    # Hydro home is specified with a command line option or is already in cache
+    # the variable is specified with a command line option or is already in cache
     MESSAGE( STATUS "Hydro location was specified or using cached value: ${HYDRO_HOME}")
 ELSE ( DEFINED HYDRO_HOME )
-    # Find Hydro installation
+    # not specified, need to find it
     INCLUDE ( ${ORCA_CMAKE_DIR}/FindHydro.cmake )
     ASSERT( HYDRO_FOUND 
             "Looking for Hydro - not found. Please install Hydro, ** delete CMakeCache.txt **, then re-run CMake." 
@@ -25,7 +25,10 @@ ENDIF ( DEFINED HYDRO_HOME )
 # Load Hydro manifest
 #
 INCLUDE( ${HYDRO_HOME}/hydro_manifest.cmake )
-MESSAGE( STATUS "Loaded Hydro manifest")
+ASSERT( HYDRO_MANIFEST_LOADED 
+        "Loading Hydro manifest - failed. Please reinstall Hydro, ** delete CMakeCache.txt **, then re-run CMake." 
+        "Loading Hydro manifest - loaded." 
+        1 )
 
 # Test Hydro installation
 INCLUDE ( ${ORCA_CMAKE_DIR}/TestHydro.cmake )
