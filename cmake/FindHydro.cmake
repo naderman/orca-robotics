@@ -21,7 +21,7 @@ FIND_PATH( HYDRO_HOME hydro_manifest.cmake
 
 # NOTE: if HYDRO_HOME is set to *-NOTFOUND it will evaluate to FALSE
 IF ( HYDRO_HOME )
-    SET( HYDRO_FOUND 1 CACHE BOOL "Do we have Orca?" FORCE )
+    SET( HYDRO_FOUND 1 CACHE BOOL "Do we have Hydro?" FORCE )
 ENDIF ( HYDRO_HOME )
 
 # do we need it in cache?

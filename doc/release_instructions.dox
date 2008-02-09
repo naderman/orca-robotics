@@ -16,6 +16,8 @@
 
 @section orca_doc_release_release Release
 
+-# On any machine
+  - Make sure the distributions compile cleanly and the tests don't fail.
 -# On a machine that doesn't build regularly (eg bamboo):
   -# Blow away old installations of orca/hydro.
   -# Check out clean copies of orca/hydro.
