@@ -33,6 +33,10 @@ Config.SickAcfr.Device.Default=/dev/ttyS0
 Config.SickAcfr.Baudrate.Comment=Valid values: { 9600, 19200, 38400, 500000 }
 Config.SickAcfr.Baudrate.Default=38400
 
+Config.SickGbx.Device.Default=/dev/ttyS0
+Config.SickGbx.Baudrate.Comment=Valid values: { 9600, 19200, 38400, 500000 }
+Config.SickGbx.Baudrate.Default=38400
+
 Config.PlayerClient.Host.Default=localhost
 Config.PlayerClient.Port.Default=6665
 Config.PlayerClient.Device.Default=0
