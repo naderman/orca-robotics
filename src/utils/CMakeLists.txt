@@ -18,7 +18,6 @@ ADD_SUBDIRECTORY ( probe )
 ADD_SUBDIRECTORY ( registrylist )
 ADD_SUBDIRECTORY ( registryview )
 ADD_SUBDIRECTORY ( replier )
-ADD_SUBDIRECTORY ( slice2string )
 ADD_SUBDIRECTORY ( systemtracermon )
 ADD_SUBDIRECTORY ( wall )
 
