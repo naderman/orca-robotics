@@ -46,11 +46,6 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - RegistryView
     - fix stale display of components (alexm)
 
-- possible useful utilities
-   - xml2cfg converter
-     - AlexB: Note: IceGrid writes '.cfg'-style config files to eg. nodedb/servers/<host>.<component>/config/config
-   - converter between bin/ascii logs (if can be done automatically)
-
 - laser2og:
    - The ray-trace stuff in here is currently cut-n-pasted from hydroogmap...
 
@@ -65,6 +60,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - Build system
   - Renamed all local cmake variables to low case. Added ORCA_ to all global cmake variables.
     (This follows a much improved Gearbox standard). (alex m)
+
+- Documentation
+  - Cleaned up and shortened the programming style guide.
 
 @par New interfaces
 @par New components

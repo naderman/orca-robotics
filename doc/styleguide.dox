@@ -12,165 +12,107 @@
 
 @page orca_doc_style Orca C++ Programming Style Guide
 
-@note Reviewed for release 2.0.0.
+@note Reviewed for release 2.10.0.
 
-This is a loose style guide for programming within the
-Orca framework.  It exists for two reasons: to maintain
-a legible and uniform code-base, and to reduce bugs. 
-This style guide was mostly taken from the ACFR Fish-Bird project, courtesy of James Hudson.
+This is a guide to programming style used within the Orca framework.  
+Main reason for its existence: to maintain a legible and uniform code-base. 
 
-Some examples and ideas were taken from this useful website: <a
-href="http://www.possibility.com/Cpp/CppCodingStandard.html">http://www.possibility.com/Cpp/CppCodingStandard.html</a>
+Main inspiration came from two modern well-designed C++ frameworks: Qt and Ice.
 
-@section general General Guidelines
+@par Table of Contents
 
-In general, code should err on the side of being amply
-white-spaced and spread out, and newlines should separate
-logical blocks of code.
+- @ref orca_doc_style_vars
+- @ref orca_doc_style_funs
+- @ref orca_doc_style_classes
+    - @ref orca_doc_style_member_vars
+    - @ref orca_doc_style_member_funs
+- @ref orca_doc_style_spaces
+- @ref orca_doc_style_enums
+- @ref orca_doc_style_defs
+- @ref orca_doc_style_files
 
-Use asserts everywhere to check function parameters, to check
-return values and anywhere where there could possibly be an
-error. It is better for the system to crash and burn in a
-blatantly obvious way than to introduce insidious bugs
 
-Try hard to avoid global variables! Use namespaces instead.
+@section orca_doc_style_vars Variables
 
-@section naming Naming Conventions
-
-@par General
-
-When naming code entities, be as descriptive as possible, ie
-maxFeathersPerBird instead of maxFeath.
-
-Do not use "Hungarian" notation, e.g. no fWidth for a double,
-CMyClass for a class or SMyStructure for a structure. It's unnecessary
-with type-safe languages and is very confusing if the type actually
-changes and the name doesn't.
-
-@par Variables
-
-Variable names begin with low-case letter and each next word is
-capitalized.
+Variable names begin with low-case letter and each next word is capitalized.
 
 @verbatim
 int    x;
-my_t   myLittleVariable;
+my_t   myVariable;
 @endverbatim
 
-@par Classes and Structures
+No "Hungarian" notation, e.g. a @c float variable should be @c width and not @c fWidth.
+
+@section orca_doc_style_funs Functions
+
+Function begin with low case letters, each next word is
+capitalized. This is the same rule as normal variables, but member
+function names are followed by parameter lists "(..)".
+
+@verbatim
+void convert( ... );
+std::string toString( ... );
+@endverbatim
+
+@section orca_doc_style_classes Classes and Structures
 
 Class and structure names begin with a capital, and each new word begins with a capital (no "_" or "-").
 
 @verbatim
-Class     BigBird;
-double    bigBird;
+class     MyClass;
+struct    MyStruct;
 @endverbatim
 
-@par Member Variables
+No "Hungarian" notation, e.g. we do not use @c CMyClass.
 
-Same as normal variables but appended by "_". This prevents bugs
-and makes code clearer, letting you know instantly where the variable
-is defined.
+@section orca_doc_style_member_vars Member Variables
 
-@verbatim
-...
-    // normal variable
-    int    x;
-
-    // compare to member variable
-    my_t   myMemberVariable_;
-...
-@endverbatim
-
-@par Member Functions
-
-Member function begin with low case letters, each next word is
-capitalized.  This is the same rule as normal variables, but member
-function names are followed by parameter lists "(..)" and usually
-contain verbs.
+Same as normal variables but appended by @c "_". This makes code clearer, letting you know instantly where to
+look for variable definition.
 
 @verbatim
-...
-    // member function
-    void    setBirdFree();
-
-    // compare to member variable
-    bool    setBirdFree_;
-...
-@endverbatim
-
-@par access functions
-
-same name as the member variable which they provide access to
-(without "_").
-
-@verbatim
-...
-public:
-    // access function
-    int    x();
 private:
-    // member variable
+    int      x_;
+    MyStruct myVariable_;
+@endverbatim
+
+@section orca_doc_style_member_funs Member Functions
+
+Same format as normal functions. 
+
+@verbatim
+public:
+    std::string toString();
+@endverbatim
+
+A common class of member functions are access and assignment functions which serve as public interface to private member variables. 
+Access functions have the name of the member variable which they provide access to
+(without "_"). They are typically have a @c const modifier. Assignment functions preperd @c "set" to the variable name.
+
+@verbatim
+public:
+    int    x() const        { return x_; };
+    void   setX( int x )    { x_ = x; };
+private:
     int    x_;
-...
 @endverbatim
 
-@par assignment functions
+@section orca_doc_style_spaces Namespaces
 
-prepend "set" to member variable without "_"
-@verbatim
-...
-public:
-    // assignment function
-    int    setX();
-private:
-    // member variable
-    int    x_;
-...
-@endverbatim
-
-@par Class Example
-
-@verbatim
-class BigBird
-{
-public:
-
-    BigBird()
-    ~BigBird()
-
-    // Release the named bird
-    bool setBirdFree( char *birdName );
-
-    // access
-    int  numWings() { return numWings_; };
-    void setNumWings( int numWings ) { numWings_ = numWings };
-
-private:
-
-    int numWings_;
-
-};
-@endverbatim
-
-@par Namespaces
-
-Begin with low case, each next word is capitalized. This is the
-same format as used for normal variables and member functions. Easily
-destinguished from the other two by "::".  Keeping namespace names
+All low case. Easily destinguished from functions and variables two by "::".  Keeping namespace names
 reasonably short makes code more readable.
 
 @verbatim
-namespace myProject
+namespace myspace
 {
-    void writeThesis();
+    void myFunction();
 }
 ...
-    // function in namespace
-    myProject::writeThesis();
+// function in namespace
+myspace::myFunction();
 
-    // compare to a class member function
-    MyClass::writeThesis();
+// compare to a class member function
+MyClass::myFunction();
 ...
 @endverbatim
 
@@ -180,269 +122,62 @@ wanted to import the entire namespace (e.g. std). Some projects may have their o
 classes called map, or string, or list and a single "using" statement deep inside nested
 header files can cause unanticipated namespace collisions.
 
-In general, it's safest and most polite to refer to classes canonically in header files (std::string, etc), and keep the "using" statements in your implementation files.
+In general, it's safest and most polite to refer to classes canonically in header files (std::string, etc), and keep the "using" 
+statements in your implementation files.
 
-\b right:
-@verbatim// myclass.h
-...
-class MyClass
-{
-    std::vector<std::string> names_; 
-}
-...
-@endverbatim
+@section orca_doc_style_enums Enums
 
-\b wrong:
+The name of the enum and each element has format of a class: begin with a capital and each new word begins with a capital.
+
 @verbatim
-// myclass.h
-...
-using std;
-
-class MyClass
+enum MyColor
 {
-    vector<string> names_; 
-}
-...
+    Red,
+    Blue,
+    DarkBlue
+};
 @endverbatim
 
+@section orca_doc_style_defs \#defines
 
-      @par \#defines
-
-      all uppercase to distinguish them from functions and variables.
+All uppercase to distinguish them from functions and variables.
 
 @verbatim
 #define VERY_BIG_NUMBER 5
 @endverbatim
 
-
-      @par Enums
-
-      elements should have a prefix similar to their name. Each
-      enum should have a final element called _NUM_OF - this allows
-      bounds checking and is useful for many things besides. E.g.:
-
-@verbatim
-enum PinStateType
-{
-    PST_OFF = 0,
-    PST_ON,
-    ...
-    PST_NUM_OF
-};
-@endverbatim
-
-@par File Names
-
-All low case for ease of porting to non-Unix file systems. To keep the Unix
-systems happy, no spaces in file names are allowed. Extensions should be formed as follows:
-
-\b C++:
-@verbatim
-myclass.h
-myclass.cpp
-@endverbatim
-
-\b C:
-@verbatim
-myclass.h
-myclass.c
-@endverbatim
-
-@section declarations Declarations
-@par  Header Files
-
-As much as possible, keep \#includes out of header files as
-this can create large chains of dependencies that increase
-compile times. Ideally a header file for a class includes only
-the @c baseclass.h.
-
-Parameter lists in header files should always include the
-parameters' names:
-
-\b right:
-@verbatim
-void drawBird( int height, int width, char *title );
-@endverbatim
-
-\b wrong:
-@verbatim
-void drawBird( int, int, char* );
-@endverbatim
-
-Try to use inlines rather than defines to do simple
-operations as it makes debugging a lot easier and lets the
-compiler catch more errors.
-
-A header file should contain exactly one class, and no major
-code.  Inlines should be no longer than a couple of
-statements.
-
-When using \#ifndef to prevent multiple loading of header
-files, make sure that the \#define will remain unique if your
-header file is used in a different project. Prepend project name
+Special case are header file defines (to prevent multiple loading). Make sure that 
+the string will remain unique if the header file is used in a different project. Prepend project name
 or other distinguishing feature. Eg.
 
-\b right:
 @verbatim
-#ifndef MYPROJECTNAME_POINT_H
-...
-#define MYPROJECTNAME_POINT_H
+#ifndef MYLIB_POINT_H
+#define MYLIB_POINT_H
 @endverbatim
 
-\b wrong:
-@verbatim
-#ifndef POINT_H
-...
-#define POINT_H
-@endverbatim
+@section orca_doc_style_files File Names
 
-@par Source Files
-Variables should be declared on their own lines, for ease of
-reading and commenting:
+All low case for ease of porting to non-Unix file systems. Underscores ("_") are generally not used. To keep the Unix
+systems happy, no spaces in file names are allowed.
 
-\b right:
-@verbatim
-char **a;        // add comment
-char  *x;        // add comment
-@endverbatim
+File extentions:
+- C/C++ header files: @c h
+- C++ source files: @c cpp
+- C source files: @c c
 
-\b wrong:
-@verbatim
-char **a, *x;
-@endverbatim
-
-@section documentation Documentation
-
-@par Comments
-
-Ideally, code should be so legible that it should speak for
-itself. In general each comment should be on a line all on its
-own, not placed after code.
-
-Comments inside brackets are handy to say what each case
-does, ie:
+A name of the file defining a class is typically the same as the class name with adjusted capitalization.
 
 @verbatim
-if (error == true)
-{
-    // error occurred, so quit
-    return;
-}
-else
-{
-    // no error
-    printf("hello");
-}
+main.cpp myclass.h myclass.cpp
+device.h device.cpp
 @endverbatim
 
-@par Doxygen
-
-Doxygen is encouraged as a useful tool for generating documentation
-directly from code.  For simple usage:
-
+File names of libraries have each word capitalized. The word @c Orca is prepended to the start to make it clear where this
+library came from.
 @verbatim
-//! This comment will apear in the doxygen documentation
-/*! So will this one */
-function doSomething();
-
-// This one will only appear in the code
-/* So will this one */
-function doSomethingElse();
+libOrcaMyLibrary.so
+libOrcaMyLibrary.a
 @endverbatim
-
-See <a href="http://www.doxygen.org">the doxygen documentation</a> for more details.
-
-@section cosmetics Cosmetics
-
-@par Bracketting
-
-If statements and loops should always be bracketed, even for
-a single line of code. This reduces bugs caused by adding extra
-lines within an if statement.
-
-\b right:
-@verbatim
-if (number == 10)
-{
-    doSomething();
-}
-@endverbatim
-
-\b wrong:
-@verbatim
-if (number == 10)
-   doSomething();
-@endverbatim
-
-Brackets should have a line to themselves as this makes it a
-lot easier to spot missing brackets in large nested constructs.
-
-\b right:
-@verbatim
-if (condition)        while (condition)
-{                     {
-    ...                   ...
-}                     }
-@endverbatim
-
-\b wrong:
-@verbatim
-if (condition) {      while (condition) {
-    ...                   ...
-}                     }
-@endverbatim
-
-@par Indenting
-
-Code should be indented in the 'stroustrup' style.  This
-means four spaces between indentation levels.
-
-There should be no hard tabs.  That is, four spaces should be
-four spaces rather than a single 'tab'.  This means that code is
-still readable if someone else's editor represents tabs
-differently.  Most editors can be set up to do this.
-
-
-@par Conditional Statements
-
-When checking for null pointers or Boolean values, use the
-full == or != sign. This makes the code easier to
-understand:
-
-\b right:
-@verbatim
-if (controller_ != NULL)
-{
-    controller_->doSomething();
-}
-@endverbatim
-
-\b wrong:
-@verbatim
-if (controller_)
-{
-    controller_->doSomething();
-}
-@endverbatim
-
-@par Case statements
-
-These should be amply tabbed to make the code clearer, ie:
-
-@verbatim
-switch (blah)
-{
-case 1 :
-    doSomething();
-    break;
-default :
-    doSomethingDifferent();
-    break;
-}
-@endverbatim
-
-Always include a default case, even if you think it will
-never be hit.  Each case should have a 'break;', even if you
-think it will never be hit.  Adhering to this reduces bugs.
+ 
 
 */
