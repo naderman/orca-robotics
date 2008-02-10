@@ -148,13 +148,13 @@ INCLUDE( ${ORCA_CMAKE_DIR}/OptionalSubLibrary.cmake )
 # (these are defaults. after the user modifies these in GUI they stay in cache)
 #
 OPTION( ORCA_BUILD_SERVICES "Enables compilation of all IceBox services" OFF )
-OPTION( BUILD_JAVA     "Enables compilation of all Java interfaces and components" OFF  )
-OPTION( BUILD_PYTHON   "Enables compilation of all Python interfaces and components" OFF  )
+OPTION( ORCA_BUILD_JAVA     "Enables compilation of all Java interfaces and components" OFF  )
+OPTION( ORCA_BUILD_PYTHON   "Enables compilation of all Python interfaces and components" OFF  )
 OPTION( ORCA_BUILD_TESTS    "Enables compilation of all tests" ON  )
-OPTION( BUILD_EXAMPLES "Enables compilation of all examples" ON  )
-OPTION( BUILD_SANDBOX  "Enables compilation of everything in the sandbox" OFF )
-OPTION( GENERATE_XML   "Enables generation of XML file for IceGrid" ON )
-OPTION( BUILD_LICENSE  "Enables writing LICENCE file. For admins only." OFF )
+OPTION( ORCA_BUILD_EXAMPLES "Enables compilation of all examples" ON  )
+OPTION( ORCA_BUILD_SANDBOX  "Enables compilation of everything in the sandbox" OFF )
+OPTION( ORCA_BUILD_LICENSE  "Enables writing LICENCE file. For admins only." OFF )
+OPTION( ORCA_BUILD_XML      "Enables generation of XML file for IceGrid" ON )
 
 #                                                         
 # Look for low-level C headers, write defines to config.h 
@@ -231,9 +231,9 @@ WRITE_MANIFEST()
 #
 # Print license information to a file
 #
-IF ( BUILD_LICENSE )
+IF ( ORCA_BUILD_LICENSE )
     WRITE_LICENSE()
-ENDIF ( BUILD_LICENSE )
+ENDIF ( ORCA_BUILD_LICENSE )
 
 #                                                         
 # Print results of CMake activity                         
