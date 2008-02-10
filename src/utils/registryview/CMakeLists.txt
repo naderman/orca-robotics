@@ -16,17 +16,17 @@ IF ( build )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseQt.cmake )
 
-    FILE( GLOB HUMAN_srcs *.cpp )
+    FILE( GLOB human_srcs *.cpp )
 
-    SET( MOC_HEADERS
+    SET( moc_hdrs
         mainwin.h
         regtreeview.h
         propertywidget.h
     )
-    QT4_WRAP_CPP( MOC_srcs ${MOC_HEADERS} )
+    QT4_WRAP_CPP( moc_srcs ${moc_hdrs} )
 
     # build stand-alone component  
-    WRAP_COMPONENT_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${HUMAN_srcs} ${MOC_srcs} )
+    WRAP_COMPONENT_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${human_srcs} ${moc_srcs} )
     TARGET_LINK_LIBRARIES( ${APP_NAME} ${dep_libs} )
 
     GENERATE_CONFIG_FILE( ${APP_NAME}.def )

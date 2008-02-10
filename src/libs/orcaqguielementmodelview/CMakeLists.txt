@@ -19,9 +19,9 @@ IF ( build )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseBasicRules.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseQt.cmake )
     
-    FILE( GLOB HUMAN_srcs *.cpp )
+    FILE( GLOB human_srcs *.cpp )
     
-    SET( MOC_HEADERS
+    SET( moc_hdrs
         guielementmodel.h
         guielementview.h
 #        mainwin.h
@@ -29,9 +29,9 @@ IF ( build )
 #        shortcutaction.h
     )
 
-    QT4_WRAP_CPP( MOC_srcs ${MOC_HEADERS} )
+    QT4_WRAP_CPP( moc_srcs ${moc_hdrs} )
     
-    GLOBAL_ADD_LIBRARY( ${lib_name} SHARED ${HUMAN_srcs} ${MOC_srcs} )
+    GLOBAL_ADD_LIBRARY( ${lib_name} SHARED ${human_srcs} ${moc_srcs} )
     
     TARGET_LINK_LIBRARIES ( ${lib_name} ${dep_libs} )
     

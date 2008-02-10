@@ -23,10 +23,10 @@ IF ( build )
     #
     # This gathers all the source files into the variable 'srcs'
     #
-    FILE( GLOB HUMAN_srcs *.cpp )
+    FILE( GLOB human_srcs *.cpp )
 
     # build stand-alone component  
-    WRAP_COMPONENT_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${HUMAN_srcs} )
+    WRAP_COMPONENT_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${human_srcs} )
     TARGET_LINK_LIBRARIES( ${APP_NAME} ${dep_libs} )
 
     GENERATE_CONFIG_FILE( ${APP_NAME}.def )

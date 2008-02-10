@@ -15,16 +15,16 @@ IF ( build )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseQt.cmake )
     
-    FILE( GLOB HUMAN_srcs *.cpp detail/*.cpp )
+    FILE( GLOB human_srcs *.cpp detail/*.cpp )
     
-    SET( MOC_HEADERS
+    SET( moc_hdrs
         worldview.h
         zoomwidget.h
     )
 
-    QT4_WRAP_CPP( MOC_srcs ${MOC_HEADERS} )
+    QT4_WRAP_CPP( moc_srcs ${moc_hdrs} )
     
-    GLOBAL_ADD_LIBRARY( ${lib_name} SHARED ${HUMAN_srcs} ${MOC_srcs} )
+    GLOBAL_ADD_LIBRARY( ${lib_name} SHARED ${human_srcs} ${moc_srcs} )
     
     LINK_DIRECTORIES( ${PROJECT_SOURCE_DIR}/src/libs/qorcacm )
     TARGET_LINK_LIBRARIES ( ${lib_name} ${dep_libs} )

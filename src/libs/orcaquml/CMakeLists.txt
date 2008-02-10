@@ -15,9 +15,9 @@ IF ( build )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseQt.cmake )
 
-    FILE( GLOB HUMAN_srcs *.cpp )
+    FILE( GLOB human_srcs *.cpp )
 
-    GLOBAL_ADD_LIBRARY( ${lib_name} SHARED ${HUMAN_srcs} )
+    GLOBAL_ADD_LIBRARY( ${lib_name} SHARED ${human_srcs} )
     
     TARGET_LINK_LIBRARIES ( ${lib_name} ${dep_libs} )
 
