@@ -61,6 +61,11 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 @section orca_doc_history_head Changes in SVN since Last Release
 
 @par Project wide
+
+- Build system
+  - Renamed all local cmake variables to low case. Added ORCA_ to all global cmake variables.
+    (This follows a much improved Gearbox standard). (alex m)
+
 @par New interfaces
 @par New components
 @par New utilities
