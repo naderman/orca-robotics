@@ -5,6 +5,9 @@ REQUIRE_OPTION( build EXE ${APP_NAME} ON )
 SET ( NOT_ORCA_OS_WIN NOT ORCA_OS_WIN )
 REQUIRE_VAR( build EXE ${APP_NAME} NOT_ORCA_OS_WIN "Windows OS is not  supported" )
 
+SET( int_libs OrcaObjects )
+REQUIRE_TARGETS( build EXE ${APP_NAME} ${int_libs} )
+
 IF ( build )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
@@ -45,7 +48,7 @@ IF ( ORCA_OS_LINUX )
 ENDIF ( ORCA_OS_LINUX )
 
     FILE( GLOB srcs *.cpp )
-    SET( dep_libs ${TERM_IOSTREAM_LIBS} ${TERM_NCURSES_LIBS} OrcaObjects )
+    SET( dep_libs ${ext_libs} ${int_libs} ${TERM_IOSTREAM_LIBS} ${TERM_NCURSES_LIBS} )
 
     WRAP_COMPONENT_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${srcs} )
     TARGET_LINK_LIBRARIES( ${APP_NAME} ${dep_libs} )

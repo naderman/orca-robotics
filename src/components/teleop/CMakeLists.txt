@@ -5,15 +5,15 @@ REQUIRE_OPTION( build EXE ${APP_NAME} ON )
 SET ( NOT_ORCA_OS_WIN NOT ORCA_OS_WIN )
 REQUIRE_VAR( build EXE ${APP_NAME} NOT_ORCA_OS_WIN "Windows OS is not  supported" )
 
-SET( dep_libs HydroDll HydroInterfaces )
-REQUIRE_VAR( build EXE ${APP_NAME} HYDRODLL_INSTALLED "libHydroDll not installed" )
-REQUIRE_VAR( build EXE ${APP_NAME} HYDRONAVUTIL_INSTALLED "libHydroNavUtil not installed" )
+SET( ext_libs HydroDll HydroInterfaces )
+REQUIRE_INSTALLS( build EXE ${APP_NAME} ${ext_libs} )
 
 IF ( build )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
     FILE( GLOB srcs *.cpp )
+    SET( dep_libs ${ext_libs} ${int_libs} )
 
     WRAP_COMPONENT_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${srcs} )
     TARGET_LINK_LIBRARIES( ${APP_NAME} ${dep_libs} )

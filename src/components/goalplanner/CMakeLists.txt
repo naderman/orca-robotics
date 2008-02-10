@@ -3,17 +3,18 @@ SET_COMPONENT_NAMES ( GoalPlanner )
 SET ( build TRUE )
 REQUIRE_OPTION( build EXE ${APP_NAME} ON )
 
-SET( dep_libs OrcaOgMap )
-REQUIRE_TARGETS( build EXE ${APP_NAME} ${dep_libs} )
+SET( ext_libs HydroNavUtil )
+REQUIRE_INSTALLS( build EXE ${APP_NAME} ${ext_libs} )
 
-SET( dep_libs ${dep_libs} HydroNavUtil OrcaObjects )
-REQUIRE_VAR( build EXE ${APP_NAME} HYDRONAVUTIL_INSTALLED "libHydroNavUtil not installed" )
+SET( int_libs OrcaOgMap OrcaObjects )
+REQUIRE_TARGETS( build EXE ${APP_NAME} ${int_libs} )
 
 IF ( build )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
     FILE( GLOB srcs *.cpp )
+    SET( dep_libs ${ext_libs} ${int_libs} )
     
     # build stand-alone component  
     WRAP_MAINTHREAD_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${COMP_NAME} ${srcs} )

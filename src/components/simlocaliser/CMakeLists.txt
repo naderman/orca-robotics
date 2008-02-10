@@ -5,8 +5,8 @@ REQUIRE_OPTION( build EXE ${APP_NAME} ON )
 SET ( NOT_ORCA_OS_WIN NOT ORCA_OS_WIN )
 REQUIRE_VAR( build EXE ${APP_NAME} NOT_ORCA_OS_WIN "Windows OS is not  supported" )
 
-SET( dep_libs OrcaIfaceImpl OrcaObjects )
-REQUIRE_TARGETS( build EXE ${APP_NAME} ${dep_libs} )
+SET( int_libs OrcaIfaceImpl OrcaObjects )
+REQUIRE_TARGETS( build EXE ${APP_NAME} ${int_libs} )
 
 IF ( build )
 
@@ -31,7 +31,7 @@ IF ( build )
     )
 
     FILE( GLOB srcs *.cpp )
-    SET( dep_libs ${dep_libs} ${STAGE_LIBS} )
+    SET( dep_libs ${ext_libs} ${int_libs} ${STAGE_LIBS} )
     
     # build stand-alone component  
     WRAP_MAINTHREAD_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${COMP_NAME} ${srcs} )

@@ -4,14 +4,15 @@ SET ( build TRUE )
 REQUIRE_OPTION( build EXE ${APP_NAME} ON )
 REQUIRE_VAR( build EXE ${APP_NAME} ORCA_OS_LINUX "only Linux OS is supported" )
 
-SET( dep_libs OrcaOgMap OrcaPathPlan OrcaObjects )
-REQUIRE_TARGETS( build EXE ${APP_NAME} ${dep_libs} )
+SET( int_libs OrcaOgMap OrcaPathPlan OrcaObjects )
+REQUIRE_TARGETS( build EXE ${APP_NAME} ${int_libs} )
 
 IF ( build )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
     FIND_COMPONENT_SOURCES( srcs )
+    SET( dep_libs ${ext_libs} ${int_libs} )
 
     IF ( QT4_FOUND )
         INCLUDE( ${ORCA_CMAKE_DIR}/UseQt.cmake )
