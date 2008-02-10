@@ -1,11 +1,11 @@
-SET ( LIB_NAME OrcaImageGrabber )
+SET ( lib_name OrcaImageGrabber )
 GLOBAL_ADD_LICENSE( LGPL )
 
-SET ( BUILD TRUE )
-REQUIRE_OPTION( BUILD LIB ${LIB_NAME} OFF )
-REQUIRE_VAR( BUILD LIB ${LIB_NAME} OS_LINUX "only Linux OS is supported" )
+SET ( build TRUE )
+REQUIRE_OPTION( build LIB ${lib_name} OFF )
+REQUIRE_VAR( build LIB ${lib_name} ORCA_OS_LINUX "only Linux OS is supported" )
 
-IF ( BUILD )
+IF ( build )
 
     # alexm: this seems like a big dependency
     # not sure what is actually needed.
@@ -16,7 +16,7 @@ IF ( BUILD )
     IF ( OPENCV_FOUND )
         MESSAGE( STATUS "    OpenCv Image Grabber (>= OpenCv version 0.9.9)  - can be built" )
         INCLUDE (${ORCA_CMAKE_DIR}/UseOpenCV.cmake)
-        SET( SRCS cvgrabber )
+        SET( srcs cvgrabber )
     ELSE ( OPENCV_FOUND )
         MESSAGE( STATUS "    OpenCv Image Grabber (>= OpenCv version 0.9.9)  - CANNOT be built" )
     ENDIF ( OPENCV_FOUND )
@@ -42,18 +42,18 @@ IF ( BUILD )
             /usr/local/include/triclops
         )
         SET( DIGICLOPS_LIBS digiclops triclops )
-        SET( SRCS ${SRCS} digiclopsgrabber )
+        SET( srcs ${srcs} digiclopsgrabber )
     
     ELSE ( DIGICLOPS_AND_TRICLOPS_FOUND ) 
         MESSAGE( STATUS "    The Digiclops Image Grabber - CANNOT be built" )
     ENDIF ( DIGICLOPS_AND_TRICLOPS_FOUND ) 
     
     IF ( OPENCV_FOUND OR DIGICLOPS_AND_TRICLOPS_FOUND )
-        GLOBAL_ADD_LIBRARY( ${LIB_NAME} SHARED ${SRCS} )
-        TARGET_LINK_LIBRARIES( ${LIB_NAME} ${OPENCV_LIBS} ${DIGICLOPS_LIBS} )
+        GLOBAL_ADD_LIBRARY( ${lib_name} SHARED ${srcs} )
+        TARGET_LINK_LIBRARIES( ${lib_name} ${OPENCV_LIBS} ${DIGICLOPS_LIBS} )
     ENDIF ( OPENCV_FOUND OR DIGICLOPS_AND_TRICLOPS_FOUND )
     
     # we want this file to install for fake drivers
     INSTALL_FILES( /include/orcaimagegrabber .*\\.h$ )
 
-ENDIF( BUILD )
+ENDIF( build )

@@ -1,25 +1,25 @@
-SET ( LIB_NAME OrcaQGui2dFactory )
+SET ( lib_name OrcaQGui2dFactory )
 GLOBAL_ADD_LICENSE( GPL )
 
-SET ( BUILD TRUE )
-REQUIRE_OPTION( BUILD LIB ${LIB_NAME} ON )
-SET ( NOT_OS_WIN NOT OS_WIN )
-REQUIRE_VAR( BUILD LIB ${LIB_NAME} NOT_OS_WIN "Windows OS is not  supported" )
-REQUIRE_VAR( BUILD LIB ${LIB_NAME} QT4_FOUND "Qt4 not found" )
+SET ( build TRUE )
+REQUIRE_OPTION( build LIB ${lib_name} ON )
+SET ( NOT_ORCA_OS_WIN NOT ORCA_OS_WIN )
+REQUIRE_VAR( build LIB ${lib_name} NOT_ORCA_OS_WIN "Windows OS is not  supported" )
+REQUIRE_VAR( build LIB ${lib_name} QT4_FOUND "Qt4 not found" )
 
-SET( DEP_LIBS OrcaQGui2d OrcaLogFactory ) # OrcaLogFactory needed for saving path to file (re-factor?)
-REQUIRE_TARGETS( BUILD LIB ${LIB_NAME} ${DEP_LIBS} )
+SET( dep_libs OrcaQGui2d OrcaLogFactory ) # OrcaLogFactory needed for saving path to file (re-factor?)
+REQUIRE_TARGETS( build LIB ${lib_name} ${dep_libs} )
 
-SET( DEP_LIBS ${DEP_LIBS} HydroNavUtil HydroQGui OrcaObjects )
-REQUIRE_VAR( BUILD LIB ${LIB_NAME} HYDRONAVUTIL_INSTALLED "libHydroNavUtil not installed" )
-REQUIRE_VAR( BUILD LIB ${LIB_NAME} HYDROQGUI_INSTALLED "libHydroQGui not installed" )
+SET( dep_libs ${dep_libs} HydroNavUtil HydroQGui OrcaObjects )
+REQUIRE_VAR( build LIB ${lib_name} HYDRONAVUTIL_INSTALLED "libHydroNavUtil not installed" )
+REQUIRE_VAR( build LIB ${lib_name} HYDROQGUI_INSTALLED "libHydroQGui not installed" )
 
-IF ( BUILD )
+IF ( build )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseQt.cmake )
     
-    FILE( GLOB HUMAN_SRCS *.cpp )
+    FILE( GLOB HUMAN_srcs *.cpp )
     
     SET( MOC_HEADERS
         pathfollower2delement.h
@@ -27,18 +27,18 @@ IF ( BUILD )
         pathplanner2delement.h
     )
 
-    QT4_WRAP_CPP( MOC_SRCS ${MOC_HEADERS} )
+    QT4_WRAP_CPP( MOC_srcs ${MOC_HEADERS} )
     
-    GLOBAL_ADD_LIBRARY( ${LIB_NAME} SHARED ${HUMAN_SRCS} ${MOC_SRCS} )
+    GLOBAL_ADD_LIBRARY( ${lib_name} SHARED ${HUMAN_srcs} ${MOC_srcs} )
     
     LINK_DIRECTORIES( ${PROJECT_SOURCE_DIR}/src/libs/qorcacm )
-    TARGET_LINK_LIBRARIES ( ${LIB_NAME} ${DEP_LIBS} )
+    TARGET_LINK_LIBRARIES ( ${lib_name} ${dep_libs} )
 
     INSTALL_FILES( /include/orcaqgui2dfactory .*\\.h$ )
     INSTALL_FILES( /share/orcaqgui2dfactory ogHazardLookupTable.png )
 
-    IF ( BUILD_TESTS )
+    IF ( ORCA_BUILD_TESTS )
         ADD_SUBDIRECTORY ( test )
-    ENDIF ( BUILD_TESTS )
+    ENDIF ( ORCA_BUILD_TESTS )
     
-ENDIF ( BUILD )
+ENDIF ( build )

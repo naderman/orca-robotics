@@ -2,22 +2,22 @@ SET_COMPONENT_NAMES ( SystemTracerMon )
 SET ( COMP_NAMESPACE sysmon )
 SET ( APP_CTRLC_HANDLER 0 )
 
-SET ( BUILD TRUE )
-REQUIRE_OPTION( BUILD EXE ${APP_NAME} ON )
+SET ( build TRUE )
+REQUIRE_OPTION( build EXE ${APP_NAME} ON )
 
-SET( DEP_LIBS OrcaObjects )
-REQUIRE_TARGETS( BUILD EXE ${APP_NAME} ${DEP_LIBS} )
+SET( dep_libs OrcaObjects )
+REQUIRE_TARGETS( build EXE ${APP_NAME} ${dep_libs} )
 
-IF ( BUILD )
+IF ( build )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
-    FILE ( GLOB COMP_SRCS *.cpp )
+    FILE ( GLOB srcs *.cpp )
 
     # build stand-alone component  
-    WRAP_COMPONENT_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${COMP_SRCS} )
-    TARGET_LINK_LIBRARIES( ${APP_NAME} ${DEP_LIBS} )
+    WRAP_COMPONENT_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${srcs} )
+    TARGET_LINK_LIBRARIES( ${APP_NAME} ${dep_libs} )
 
     GENERATE_CONFIG_FILE( ${APP_NAME}.def )
 
-ENDIF ( BUILD )
+ENDIF ( build )

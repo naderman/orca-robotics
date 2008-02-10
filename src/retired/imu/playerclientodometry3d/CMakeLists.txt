@@ -1,6 +1,6 @@
 INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
 
-FILE( GLOB SRCS *.cpp )
+FILE( GLOB srcs *.cpp )
 
 INCLUDE_DIRECTORIES( ${PLAYER_INCLUDE_DIRS} )
 
@@ -8,6 +8,6 @@ LINK_DIRECTORIES( ${PLAYER_LINK_DIRS} )
 
 ADD_DEFINITIONS( ${PLAYER_DEFINITIONS} )
 
-ADD_LIBRARY( OrcaOdometry3dPlayerClient SHARED ${SRCS} )
+ADD_LIBRARY( OrcaOdometry3dPlayerClient SHARED ${srcs} )
 
 INSTALL_TARGETS( /lib OrcaOdometry3dPlayerClient )

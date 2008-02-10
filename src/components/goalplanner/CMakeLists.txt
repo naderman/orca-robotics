@@ -1,30 +1,30 @@
 SET_COMPONENT_NAMES ( GoalPlanner )
 
-SET ( BUILD TRUE )
-REQUIRE_OPTION( BUILD EXE ${APP_NAME} ON )
+SET ( build TRUE )
+REQUIRE_OPTION( build EXE ${APP_NAME} ON )
 
-SET( DEP_LIBS OrcaOgMap )
-REQUIRE_TARGETS( BUILD EXE ${APP_NAME} ${DEP_LIBS} )
+SET( dep_libs OrcaOgMap )
+REQUIRE_TARGETS( build EXE ${APP_NAME} ${dep_libs} )
 
-SET( DEP_LIBS ${DEP_LIBS} HydroNavUtil OrcaObjects )
-REQUIRE_VAR( BUILD EXE ${APP_NAME} HYDRONAVUTIL_INSTALLED "libHydroNavUtil not installed" )
+SET( dep_libs ${dep_libs} HydroNavUtil OrcaObjects )
+REQUIRE_VAR( build EXE ${APP_NAME} HYDRONAVUTIL_INSTALLED "libHydroNavUtil not installed" )
 
-IF ( BUILD )
+IF ( build )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
-    FILE( GLOB COMP_SRCS *.cpp )
+    FILE( GLOB srcs *.cpp )
     
     # build stand-alone component  
-    WRAP_MAINTHREAD_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${COMP_NAME} ${COMP_SRCS} )
-    TARGET_LINK_LIBRARIES( ${APP_NAME} ${DEP_LIBS} )
+    WRAP_MAINTHREAD_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${COMP_NAME} ${srcs} )
+    TARGET_LINK_LIBRARIES( ${APP_NAME} ${dep_libs} )
     
     # build IceBox service
-    IF ( BUILD_SERVICES )
-        WRAP_MAINTHREAD_INTO_SERVICE( ${SERVICE_NAME} ${COMP_NAMESPACE} ${COMP_NAME} ${COMP_SRCS} )
-        TARGET_LINK_LIBRARIES( ${SERVICE_NAME} ${DEP_LIBS} )    
-    ENDIF ( BUILD_SERVICES )
+    IF ( ORCA_BUILD_SERVICES )
+        WRAP_MAINTHREAD_INTO_SERVICE( ${SERVICE_NAME} ${COMP_NAMESPACE} ${COMP_NAME} ${srcs} )
+        TARGET_LINK_LIBRARIES( ${SERVICE_NAME} ${dep_libs} )    
+    ENDIF ( ORCA_BUILD_SERVICES )
     
     GENERATE_CONFIG_FILE( ${APP_NAME}.def )
 
-ENDIF ( BUILD )
+ENDIF ( build )

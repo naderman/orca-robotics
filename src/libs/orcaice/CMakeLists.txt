@@ -1,13 +1,13 @@
-SET ( LIB_NAME OrcaIce )
+SET ( lib_name OrcaIce )
 GLOBAL_ADD_LICENSE( LGPL )
 
-SET ( BUILD TRUE )
-REQUIRE_VAR( BUILD LIB ${LIB_NAME} HYDROUTIL_INSTALLED "libHydroUtil not found" )
+SET ( build TRUE )
+REQUIRE_VAR( build LIB ${lib_name} HYDROUTIL_INSTALLED "libHydroUtil not found" )
 
-# SET( DEP_LIBS OrcaObjects )
-# REQUIRE_TARGETS( BUILD LIB ${LIB_NAME} ${DEP_LIBS} )
+# SET( dep_libs OrcaObjects )
+# REQUIRE_TARGETS( build LIB ${lib_name} ${dep_libs} )
 
-IF ( BUILD )
+IF ( build )
 
     # these are the same as in UseComponentRules but without project rules
     INCLUDE( ${ORCA_CMAKE_DIR}/UseBasicRules.cmake )
@@ -17,24 +17,24 @@ IF ( BUILD )
     
     INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR}/detail )
     
-    FILE( GLOB SRCS *.cpp detail/*.cpp )
+    FILE( GLOB srcs *.cpp detail/*.cpp )
     
-    IF( NOT OS_WIN )
-        GLOBAL_ADD_LIBRARY( ${LIB_NAME} SHARED ${SRCS} )
-    ELSE ( NOT OS_WIN )
+    IF( NOT ORCA_OS_WIN )
+        GLOBAL_ADD_LIBRARY( ${lib_name} SHARED ${srcs} )
+    ELSE ( NOT ORCA_OS_WIN )
         # building shared libs is complicated in windows
-        GLOBAL_ADD_LIBRARY( ${LIB_NAME} STATIC ${SRCS} )
-    ENDIF ( NOT OS_WIN )
+        GLOBAL_ADD_LIBRARY( ${lib_name} STATIC ${srcs} )
+    ENDIF ( NOT ORCA_OS_WIN )
     
-    TARGET_LINK_LIBRARIES( ${LIB_NAME} ${DEP_LIBS} )
+    TARGET_LINK_LIBRARIES( ${lib_name} ${dep_libs} )
 
     # special dependency on the generated files
-    ADD_DEPENDENCIES( ${LIB_NAME} OrcaInterfaces )
+    ADD_DEPENDENCIES( ${lib_name} OrcaInterfaces )
     
     INSTALL_FILES( /include/orcaice .*\\.h$ )
     
-    IF ( BUILD_TESTS )
+    IF ( ORCA_BUILD_TESTS )
         ADD_SUBDIRECTORY ( test )
-    ENDIF ( BUILD_TESTS )
+    ENDIF ( ORCA_BUILD_TESTS )
 
-ENDIF ( BUILD )
+ENDIF ( build )

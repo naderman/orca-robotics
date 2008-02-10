@@ -44,12 +44,12 @@ MACRO( GENERATE_CONFIG_FILE DEF_FILE )
     # The standard CMAKE_CFG_INTDIR does not seem to get resolved in INSTALL_FILES, do it manually
     # alexm: I'm not sure if this is the right way to do it. I think this is a problem only 
     # when trying to install from command line. so maybe not all the variables are set.
-    IF( OS_WIN )
+    IF( ORCA_OS_WIN )
         # VCC defaults to Debug
         SET( MANUAL_CFG_INTDIR "debug" )
-    ELSE( OS_WIN )
+    ELSE( ORCA_OS_WIN )
         SET( MANUAL_CFG_INTDIR "." )
-    ENDIF( OS_WIN )
+    ENDIF( ORCA_OS_WIN )
     
     STRING( REGEX REPLACE "\\.def" ".cfg" CFG_FILE ${DEF_FILE} )
     ADD_CUSTOM_COMMAND( 

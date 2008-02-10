@@ -1,6 +1,6 @@
-OPTION( BUILD_PURE_ICEJ "Try to build PureIceJ Java Example" ON )
+OPTION( build_PURE_ICEJ "Try to build PureIceJ Java Example" ON )
 
-IF ( NOT OS_WIN AND BUILD_PURE_ICEJ )
+IF ( NOT ORCA_OS_WIN AND build_PURE_ICEJ )
 
     PROJECT( pureicej Java )
 
@@ -32,4 +32,4 @@ IF ( NOT OS_WIN AND BUILD_PURE_ICEJ )
 
     GLOBAL_ADD_ITEM( PureIceJ.jar )
 
-ENDIF ( NOT OS_WIN AND BUILD_PURE_ICEJ )
+ENDIF ( NOT ORCA_OS_WIN AND build_PURE_ICEJ )

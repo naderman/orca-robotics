@@ -1,6 +1,6 @@
 # Glob all source files
-FILE( GLOB SRCS *.cpp )
+FILE( GLOB srcs *.cpp )
 
-ADD_LIBRARY( OrcaProbeTermIostream SHARED ${SRCS} )
+ADD_LIBRARY( OrcaProbeTermIostream SHARED ${srcs} )
 
 INSTALL_TARGETS( /lib OrcaProbeTermIostream )

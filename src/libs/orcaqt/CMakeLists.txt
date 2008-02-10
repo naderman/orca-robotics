@@ -1,20 +1,20 @@
-SET ( LIB_NAME OrcaQt )
+SET ( lib_name OrcaQt )
 GLOBAL_ADD_LICENSE( GPL )
 
-SET ( BUILD TRUE )
-REQUIRE_OPTION( BUILD LIB ${LIB_NAME} ON )
-SET ( NOT_OS_WIN NOT OS_WIN )
-REQUIRE_VAR( BUILD LIB ${LIB_NAME} NOT_OS_WIN "Windows OS is not  supported" )
-REQUIRE_VAR( BUILD LIB ${LIB_NAME} QT4_FOUND "Qt4 not found" )
+SET ( build TRUE )
+REQUIRE_OPTION( build LIB ${lib_name} ON )
+SET ( NOT_ORCA_OS_WIN NOT ORCA_OS_WIN )
+REQUIRE_VAR( build LIB ${lib_name} NOT_ORCA_OS_WIN "Windows OS is not  supported" )
+REQUIRE_VAR( build LIB ${lib_name} QT4_FOUND "Qt4 not found" )
 
-IF ( BUILD )
+IF ( build )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseQt.cmake )
 
-    FILE( GLOB HUMAN_SRCS *.cpp )
+    FILE( GLOB HUMAN_srcs *.cpp )
     
-    GLOBAL_ADD_LIBRARY( ${LIB_NAME} SHARED ${HUMAN_SRCS} )
+    GLOBAL_ADD_LIBRARY( ${lib_name} SHARED ${HUMAN_srcs} )
         
     INSTALL_FILES( /include/orcaqt .*\\.h$ )
 
-ENDIF ( BUILD )
+ENDIF ( build )

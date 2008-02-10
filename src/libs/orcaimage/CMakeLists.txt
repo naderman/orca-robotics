@@ -1,16 +1,16 @@
-SET ( LIB_NAME OrcaImage )
+SET ( lib_name OrcaImage )
 GLOBAL_ADD_LICENSE( GPL )
 
-SET ( BUILD TRUE )
-REQUIRE_OPTION( BUILD LIB ${LIB_NAME} OFF )
-SET ( NOT_OS_WIN NOT OS_WIN )
-REQUIRE_VAR( BUILD LIB ${LIB_NAME} NOT_OS_WIN "Windows OS is not  supported" )
+SET ( build TRUE )
+REQUIRE_OPTION( build LIB ${lib_name} OFF )
+SET ( NOT_ORCA_OS_WIN NOT ORCA_OS_WIN )
+REQUIRE_VAR( build LIB ${lib_name} NOT_ORCA_OS_WIN "Windows OS is not  supported" )
 
 # this lib should be split up into sublibraries with simpler dependencies
 # INCLUDE (${ORCA_CMAKE_DIR}/FindOpenCV.cmake)
-# REQUIRE_VAR( BUILD LIB ${LIB_NAME} OPENCV_FOUND "OpenCV not found" )
+# REQUIRE_VAR( build LIB ${lib_name} OPENCV_FOUND "OpenCV not found" )
 
-IF ( BUILD )
+IF ( build )
 
     # alexm: this seems like a big dependency
     # not sure what is actually needed.
@@ -29,13 +29,13 @@ IF ( BUILD )
     IF ( TRICLOPS_FOUND )
         INCLUDE_DIRECTORIES( /usr/local/include/triclops )
         ADD_DEFINITIONS( -DTRICLOPS_FOUND )
-        TARGET_LINK_LIBRARIES( ${LIB_NAME} triclops )
+        TARGET_LINK_LIBRARIES( ${lib_name} triclops )
     ENDIF ( TRICLOPS_FOUND )
     
 
-    FILE( GLOB SRCS *.cpp )
-    GLOBAL_ADD_LIBRARY( ${LIB_NAME} SHARED ${SRCS} )
+    FILE( GLOB srcs *.cpp )
+    GLOBAL_ADD_LIBRARY( ${lib_name} SHARED ${srcs} )
 
     INSTALL_FILES( /include/orcaimage .*\\.h$ )
 
-ENDIF ( BUILD )
+ENDIF ( build )

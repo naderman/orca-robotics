@@ -1,10 +1,10 @@
-SET ( LIB_NAME OrcaRobotDriverUtil )
+SET ( lib_name OrcaRobotDriverUtil )
 GLOBAL_ADD_LICENSE( LGPL )
 
-SET ( BUILD TRUE )
-REQUIRE_OPTION( BUILD LIB ${LIB_NAME} ON )
+SET ( build TRUE )
+REQUIRE_OPTION( build LIB ${lib_name} ON )
 
-IF ( BUILD )
+IF ( build )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
     
@@ -13,8 +13,8 @@ IF ( BUILD )
         ${PROJECT_SOURCE_DIR}/src/libs
     )
     
-    FILE( GLOB SRCS *.cpp )
-    GLOBAL_ADD_LIBRARY( ${LIB_NAME} SHARED ${SRCS} )
+    FILE( GLOB srcs *.cpp )
+    GLOBAL_ADD_LIBRARY( ${lib_name} SHARED ${srcs} )
     INSTALL_FILES( /include/orcarobotdriverutil .*\\.h$ )
 
-ENDIF ( BUILD )
+ENDIF ( build )

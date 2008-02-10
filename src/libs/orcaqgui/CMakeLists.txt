@@ -1,33 +1,33 @@
-SET ( LIB_NAME OrcaQGui )
+SET ( lib_name OrcaQGui )
 GLOBAL_ADD_LICENSE( GPL )
 
-SET ( BUILD TRUE )
-REQUIRE_OPTION( BUILD LIB ${LIB_NAME} ON )
-SET ( NOT_OS_WIN NOT OS_WIN )
-REQUIRE_VAR( BUILD LIB ${LIB_NAME} NOT_OS_WIN "Windows OS is not  supported" )
-REQUIRE_VAR( BUILD LIB ${LIB_NAME} QT4_FOUND "Qt4 not found" )
+SET ( build TRUE )
+REQUIRE_OPTION( build LIB ${lib_name} ON )
+SET ( NOT_ORCA_OS_WIN NOT ORCA_OS_WIN )
+REQUIRE_VAR( build LIB ${lib_name} NOT_ORCA_OS_WIN "Windows OS is not  supported" )
+REQUIRE_VAR( build LIB ${lib_name} QT4_FOUND "Qt4 not found" )
 
-SET( DEP_LIBS OrcaQt OrcaObjects )
-REQUIRE_TARGETS( BUILD LIB ${LIB_NAME} ${DEP_LIBS} )
+SET( dep_libs OrcaQt OrcaObjects )
+REQUIRE_TARGETS( build LIB ${lib_name} ${dep_libs} )
 
-IF ( BUILD )
+IF ( build )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseBasicRules.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseQt.cmake )
     
-    FILE( GLOB HUMAN_SRCS *.cpp )
+    FILE( GLOB HUMAN_srcs *.cpp )
     
     SET( MOC_HEADERS
         mainwin.h
         selectableelementwidget.h
         platformfocuscombo.h
     )
-    QT4_WRAP_CPP( MOC_SRCS ${MOC_HEADERS} )
+    QT4_WRAP_CPP( MOC_srcs ${MOC_HEADERS} )
 
-    GLOBAL_ADD_LIBRARY( ${LIB_NAME} SHARED ${HUMAN_SRCS} ${MOC_SRCS} )
-    TARGET_LINK_LIBRARIES ( ${LIB_NAME} ${DEP_LIBS} )
+    GLOBAL_ADD_LIBRARY( ${lib_name} SHARED ${HUMAN_srcs} ${MOC_srcs} )
+    TARGET_LINK_LIBRARIES ( ${lib_name} ${dep_libs} )
     
     INSTALL_FILES( /include/orcaqgui .*\\.h$ )
 
-ENDIF ( BUILD )
+ENDIF ( build )

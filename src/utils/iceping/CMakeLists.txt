@@ -1,9 +1,9 @@
 SET ( APP_NAME iceping )
 
-SET ( BUILD TRUE )
-REQUIRE_OPTION( BUILD EXE ${APP_NAME} ON )
+SET ( build TRUE )
+REQUIRE_OPTION( build EXE ${APP_NAME} ON )
 
-IF ( BUILD )
+IF ( build )
 
 	#
 	# This utility is intentionally built without using libOrcaIce.
@@ -12,11 +12,11 @@ IF ( BUILD )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseBasicRules.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseIce.cmake )
     
-    FILE( GLOB SRCS *.cpp )
+    FILE( GLOB srcs *.cpp )
     
-    GLOBAL_ADD_EXECUTABLE( ${APP_NAME} ${SRCS} )
+    GLOBAL_ADD_EXECUTABLE( ${APP_NAME} ${srcs} )
 
     # special case: we don't have a .def file here, installing a sample .cfg
     INSTALL_FILES( /cfg iceping.cfg )
 
-ENDIF ( BUILD )
+ENDIF ( build )

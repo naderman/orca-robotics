@@ -1,18 +1,18 @@
 SET_COMPONENT_NAMES (Probe )
 SET ( APP_CTRLC_HANDLER 0 )
 
-SET ( BUILD TRUE )
-REQUIRE_OPTION( BUILD EXE ${APP_NAME} ON )
-SET ( NOT_OS_WIN NOT OS_WIN )
-REQUIRE_VAR( BUILD EXE ${APP_NAME} NOT_OS_WIN "Windows OS is not  supported" )
+SET ( build TRUE )
+REQUIRE_OPTION( build EXE ${APP_NAME} ON )
+SET ( NOT_ORCA_OS_WIN NOT ORCA_OS_WIN )
+REQUIRE_VAR( build EXE ${APP_NAME} NOT_ORCA_OS_WIN "Windows OS is not  supported" )
 
-SET( DEP_LIBS OrcaCompModel OrcaProbe )
-REQUIRE_TARGETS( BUILD EXE ${APP_NAME} ${DEP_LIBS} )
+SET( dep_libs OrcaCompModel OrcaProbe )
+REQUIRE_TARGETS( build EXE ${APP_NAME} ${dep_libs} )
 
-SET( DEP_LIBS ${DEP_LIBS} HydroDll )
-REQUIRE_VAR( BUILD EXE ${APP_NAME} HYDRODLL_INSTALLED "libHydroDll not installed" )
+SET( dep_libs ${dep_libs} HydroDll )
+REQUIRE_VAR( build EXE ${APP_NAME} HYDRODLL_INSTALLED "libHydroDll not installed" )
 
-IF ( BUILD )
+IF ( build )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
@@ -41,13 +41,13 @@ IF ( BUILD )
         HAVE_GUI_QT_DRIVER
         OrcaQt OrcaQCompModel ${QT_QTGUI_LIBRARY} ${QT_QTCORE_LIBRARY} )
 
-    FILE( GLOB COMP_SRCS *.cpp )
-    SET( DEP_LIBS ${DEP_LIBS} IceGrid ${PROBE_TERM_IOSTREAM_LIBS} ${PROBE_GUI_QT_LIBS} )
+    FILE( GLOB srcs *.cpp )
+    SET( dep_libs ${dep_libs} IceGrid ${PROBE_TERM_IOSTREAM_LIBS} ${PROBE_GUI_QT_LIBS} )
 
     # build stand-alone component  
-    WRAP_COMPONENT_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${COMP_SRCS} )
-    TARGET_LINK_LIBRARIES( ${APP_NAME} ${DEP_LIBS} )
+    WRAP_COMPONENT_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${srcs} )
+    TARGET_LINK_LIBRARIES( ${APP_NAME} ${dep_libs} )
 
     GENERATE_CONFIG_FILE( ${APP_NAME}.def )
 
-ENDIF ( BUILD )
+ENDIF ( build )

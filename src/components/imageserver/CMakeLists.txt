@@ -5,14 +5,14 @@
 
 SET_COMPONENT_NAMES ( ImageServer )
 
-SET ( BUILD TRUE )
-REQUIRE_OPTION( BUILD EXE ${APP_NAME} OFF )
-REQUIRE_VAR( BUILD EXE ${APP_NAME} OS_LINUX "Only Linux is supported" )
+SET ( build TRUE )
+REQUIRE_OPTION( build EXE ${APP_NAME} OFF )
+REQUIRE_VAR( build EXE ${APP_NAME} ORCA_OS_LINUX "Only Linux is supported" )
 
-SET( DEP_LIBS OrcaIfaceImpl )
-REQUIRE_TARGETS( BUILD EXE ${APP_NAME} ${DEP_LIBS} )
+SET( dep_libs OrcaIfaceImpl )
+REQUIRE_TARGETS( build EXE ${APP_NAME} ${dep_libs} )
 
-IF ( BUILD )
+IF ( build )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
     
@@ -40,12 +40,12 @@ IF ( BUILD )
     # 
     
     # these can always be built
-    SET ( DRIVER_SRCS driver fakedriver )
+    SET ( DRIVER_srcs driver fakedriver )
     
     IF ( HAVE_CAMERA_HW_LIB )
         IF ( OPENCV_FOUND OR DIGICLOPS_AND_TRICLOPS_FOUND )
         
-            SET ( MONO_DRIVER_SRCS monodriver)
+            SET ( MONO_DRIVER_srcs monodriver)
     
             # ADD_SUBDIRECTORY( imagegrabber )
     
@@ -60,10 +60,10 @@ IF ( BUILD )
     ENDIF ( HAVE_CAMERA_HW_LIB )
     
     IF ( OPENCV_FOUND AND HAVE_CAMERA_HW_LIB )
-        ADD_DEFINITIONS( -DBUILD_OPENCV_GRABBER )
+        ADD_DEFINITIONS( -Dbuild_OPENCV_GRABBER )
         INCLUDE_DIRECTORIES( ${OPENCV_INCLUDE_DIRS} )
         LINK_DIRECTORIES( ${OPENCV_LINK_DIRS} )
-        SET( DEP_LIBS ${DEP_LIBS} ${OPENCV_LIBS} OrcaImageGrabber )
+        SET( dep_libs ${dep_libs} ${OPENCV_LIBS} OrcaImageGrabber )
     ENDIF ( OPENCV_FOUND AND HAVE_CAMERA_HW_LIB )
     
     # check for digiclops image grabbing libraries
@@ -79,23 +79,23 @@ IF ( BUILD )
     ENDIF ( DIGICLOPS_FOUND AND TRICLOPS_FOUND ) 
 
     IF ( DIGICLOPS_AND_TRICLOPS_FOUND )
-        ADD_DEFINITIONS( -DBUILD_DIGICLOPS_GRABBER )
+        ADD_DEFINITIONS( -Dbuild_DIGICLOPS_GRABBER )
         INCLUDE_DIRECTORIES( /usr/local/include/digiclops /usr/local/include/triclops)
-        SET( DEP_LIBS ${DEP_LIBS} ${OPENCV_LIBS} digiclops triclops OrcaImage OrcaImageGrabber )
+        SET( dep_libs ${dep_libs} ${OPENCV_LIBS} digiclops triclops OrcaImage OrcaImageGrabber )
     ENDIF ( DIGICLOPS_AND_TRICLOPS_FOUND )
     
 
-    SET( COMP_SRCS component mainthread ${DRIVER_SRCS} ${MONO_DRIVER_SRCS} )
+    SET( srcs component mainthread ${DRIVER_srcs} ${MONO_DRIVER_srcs} )
     
-    WRAP_COMPONENT_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${COMP_SRCS} )
-    TARGET_LINK_LIBRARIES( ${APP_NAME} ${DEP_LIBS} )
+    WRAP_COMPONENT_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${srcs} )
+    TARGET_LINK_LIBRARIES( ${APP_NAME} ${dep_libs} )
     
     # build an IceBox service
-    IF ( BUILD_SERVICES )
-        WRAP_COMPONENT_INTO_SERVICE( ${SERVICE_NAME} ${COMP_NAMESPACE} ${COMP_SRCS} )
-        TARGET_LINK_LIBRARIES( ${SERVICE_NAME} ${DEP_LIBS} )    
-    ENDIF ( BUILD_SERVICES )
+    IF ( ORCA_BUILD_SERVICES )
+        WRAP_COMPONENT_INTO_SERVICE( ${SERVICE_NAME} ${COMP_NAMESPACE} ${srcs} )
+        TARGET_LINK_LIBRARIES( ${SERVICE_NAME} ${dep_libs} )    
+    ENDIF ( ORCA_BUILD_SERVICES )
 
     GENERATE_CONFIG_FILE( ${APP_NAME}.def )
 
-ENDIF ( BUILD )
+ENDIF ( build )

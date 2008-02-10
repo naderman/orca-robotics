@@ -29,12 +29,12 @@ GENERATE_CONFIG_FILE( apptest.def apptest 0 )
 # advanced app tests
 ADD_EXECUTABLE( appproptest appproptest.cpp )
 # The standard CFG_INTDIR does not seem to get resolved here, do it manually
-IF( OS_WIN )
+IF( ORCA_OS_WIN )
     # VCC defaults to Debug
     SET( MANUAL_CFG_INTDIR "debug" )
-ELSE( OS_WIN )
+ELSE( ORCA_OS_WIN )
     SET( MANUAL_CFG_INTDIR "." )
-ENDIF( OS_WIN )
+ENDIF( ORCA_OS_WIN )
 # settings: FACT=0, GLOBAL=200, LOCAL=300, ARGS=400
 # test1000 = factory YES, global NO, local NO, args NO --> expect=FACT, which is 0
 # NOTE: the CTEST variable is escaped here so it's ignored by CMake and is put into the CTest script which then
@@ -58,7 +58,7 @@ GENERATE_CONFIG_FILE( appproptestoff.def appproptest 0 )
 
 # can't do this in win 'cause: 1) need shared libs for services, 2) need to copy files
 
-IF ( NOT OS_WIN )
+IF ( NOT ORCA_OS_WIN )
 
 # basic service test
 ADD_LIBRARY( ServiceTest SHARED servicetest )
@@ -71,9 +71,9 @@ ADD_LIBRARY( ServicePropTest SHARED serviceproptest )
 # NOTE: have to copy these files because, unlike with the application, here we CANNOT specify the location
 # of the global file on command line (command line args for individual services are hardwired 
 # into the icebox.cfg file)
-ADD_CUSTOM_COMMAND( TARGET ServicePropTest POST_BUILD COMMAND ${CMAKE_COMMAND} 
+ADD_CUSTOM_COMMAND( TARGET ServicePropTest POST_build COMMAND ${CMAKE_COMMAND} 
                     ARGS -E copy ${CMAKE_CURRENT_SOURCE_DIR}/globalon.cfg ${CMAKE_CURRENT_BINARY_DIR}/. )
-ADD_CUSTOM_COMMAND( TARGET ServicePropTest POST_BUILD COMMAND ${CMAKE_COMMAND} 
+ADD_CUSTOM_COMMAND( TARGET ServicePropTest POST_build COMMAND ${CMAKE_COMMAND} 
                     ARGS -E copy ${CMAKE_CURRENT_SOURCE_DIR}/globaloff.cfg ${CMAKE_CURRENT_BINARY_DIR}/. )
 GENERATE_CONFIG_FILE( serviceproptest2on.def ServicePropTest 0 )
 GENERATE_CONFIG_FILE( serviceproptest2off.def ServicePropTest 0 )
@@ -91,7 +91,7 @@ GLOBAL_ADD_TEST( ServicePropTest1100 ${ICE_HOME}/bin/icebox --Ice.Config=${CMAKE
 GLOBAL_ADD_TEST( ServicePropTest1101 ${ICE_HOME}/bin/icebox --Ice.Config=${CMAKE_CURRENT_SOURCE_DIR}/icebox1101.cfg )
 GLOBAL_ADD_TEST( ServicePropTest1110 ${ICE_HOME}/bin/icebox --Ice.Config=${CMAKE_CURRENT_SOURCE_DIR}/icebox1110.cfg )
 GLOBAL_ADD_TEST( ServicePropTest1111 ${ICE_HOME}/bin/icebox --Ice.Config=${CMAKE_CURRENT_SOURCE_DIR}/icebox1111.cfg )
-ENDIF ( NOT OS_WIN )
+ENDIF ( NOT ORCA_OS_WIN )
 
 ADD_EXECUTABLE( configtest configtest.cpp )
 GLOBAL_ADD_TEST( ConfigUtilsTest configtest )
@@ -100,8 +100,8 @@ GENERATE_CONFIG_FILE( configtest.def configtest 0 )
 # alexm: 
 # This test relies on establishing direct connections which is currently broken
 # not sure why it works in linux actually.
-IF ( NOT OS_QNX )
+IF ( NOT ORCA_OS_QNX )
 ADD_EXECUTABLE( connecttest connecttest.cpp )
 GLOBAL_ADD_TEST( ConnectUtilsTest connecttest )
 GENERATE_CONFIG_FILE( connecttest.def connecttest 0 )
-ENDIF ( NOT OS_QNX )
+ENDIF ( NOT ORCA_OS_QNX )

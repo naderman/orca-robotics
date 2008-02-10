@@ -5,14 +5,14 @@
 
 INCLUDE( ${ORCA_CMAKE_DIR}/UseZeroC.cmake )
 
-IF ( NOT OS_WIN )
+IF ( NOT ORCA_OS_WIN )
 
     LINK_LIBRARIES( Ice IceUtil )
 
-ELSE ( NOT OS_WIN )
+ELSE ( NOT ORCA_OS_WIN )
 
     # windows... have to link to different libs depending on build type
     LINK_LIBRARIES( optimized Ice       debug Iced
                     optimized IceUtil   debug IceUtild )
 
-ENDIF ( NOT OS_WIN )
+ENDIF ( NOT ORCA_OS_WIN )

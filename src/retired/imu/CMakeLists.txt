@@ -3,11 +3,11 @@
 # DO NOT USE IT A TEMPLATE FOR NEW DEVELOPMENT
 #
 
-IF ( OS_LINUX  )
+IF ( ORCA_OS_LINUX  )
 
-OPTION( BUILD_IMU "Try to build Imu component" OFF )
+OPTION( build_IMU "Try to build Imu component" OFF )
 
-IF ( BUILD_IMU )
+IF ( build_IMU )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
     
@@ -41,20 +41,20 @@ ADD_DEFINITIONS( ${PLAYER_DEFINITIONS} )
         ${PLAYER_LIBS} OrcaPlayer
     )
 
-    FIND_COMPONENT_SOURCES( COMP_SRCS )
-    SET( DEP_LIBS HydroSerial HydroNavUtil OrcaIfaceImpl ${PLAYERCLIENT_LIBS} )
+    FIND_COMPONENT_SOURCES( srcs )
+    SET( dep_libs HydroSerial HydroNavUtil OrcaIfaceImpl ${PLAYERCLIENT_LIBS} )
     
     # build stand-alone component  
-    GLOBAL_ADD_EXECUTABLE( imu ${COMP_SRCS} main )
+    GLOBAL_ADD_EXECUTABLE( imu ${srcs} main )
     TARGET_LINK_LIBRARIES( imu ${COMP_DEPS} )
     
     # build IceBox service
-    IF ( BUILD_SERVICES )
-    GLOBAL_ADD_LIBRARY( OrcaImu SHARED ${COMP_SRCS} service )
+    IF ( ORCA_BUILD_SERVICES )
+    GLOBAL_ADD_LIBRARY( OrcaImu SHARED ${srcs} service )
     TARGET_LINK_LIBRARIES( OrcaImu ${COMP_DEPS} ) 
-    ENDIF ( BUILD_SERVICES )
+    ENDIF ( ORCA_BUILD_SERVICES )
 
     GENERATE_CONFIG_FILE( imu.def )
 
-ENDIF ( BUILD_IMU )
-ENDIF ( OS_LINUX )
+ENDIF ( build_IMU )
+ENDIF ( ORCA_OS_LINUX )

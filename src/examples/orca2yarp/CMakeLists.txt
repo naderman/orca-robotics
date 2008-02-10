@@ -1,11 +1,11 @@
 SET_COMPONENT_NAMES ( Orca2Yarp )
 
-SET ( BUILD TRUE )
-REQUIRE_OPTION( BUILD EXE ${APP_NAME} OFF )
+SET ( build TRUE )
+REQUIRE_OPTION( build EXE ${APP_NAME} OFF )
 # only tested on Linux but should work where Yarp works.
-REQUIRE_VAR( BUILD EXE ${APP_NAME} OS_LINUX "only Linux OS is supported" )
+REQUIRE_VAR( build EXE ${APP_NAME} ORCA_OS_LINUX "only Linux OS is supported" )
 
-IF ( BUILD)
+IF ( build)
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
@@ -32,4 +32,4 @@ IF ( BUILD)
 
     GENERATE_CONFIG_FILE( ${APP_NAME}.def )
 
-ENDIF ( BUILD )
+ENDIF ( build )

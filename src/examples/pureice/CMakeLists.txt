@@ -1,18 +1,18 @@
 SET ( APP_NAME pureice )
 
-SET ( BUILD TRUE )
-REQUIRE_OPTION( BUILD EXE ${APP_NAME} ON )
-SET ( NOT_OS_WIN NOT OS_WIN )
-REQUIRE_VAR( BUILD EXE ${APP_NAME} NOT_OS_WIN "Windows OS is not  supported" )
+SET ( build TRUE )
+REQUIRE_OPTION( build EXE ${APP_NAME} ON )
+SET ( NOT_ORCA_OS_WIN NOT ORCA_OS_WIN )
+REQUIRE_VAR( build EXE ${APP_NAME} NOT_ORCA_OS_WIN "Windows OS is not  supported" )
 
-IF ( BUILD)
+IF ( build)
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseBasicRules.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseLibProjectInterfaces.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseIce.cmake )
 
-    FILE( GLOB SRCS *.cpp )
+    FILE( GLOB srcs *.cpp )
     
-    GLOBAL_ADD_EXECUTABLE( ${APP_NAME} ${SRCS} )
+    GLOBAL_ADD_EXECUTABLE( ${APP_NAME} ${srcs} )
 
-ENDIF ( BUILD )
+ENDIF ( build )

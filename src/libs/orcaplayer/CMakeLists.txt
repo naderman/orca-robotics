@@ -1,15 +1,15 @@
-SET ( LIB_NAME OrcaPlayer )
+SET ( lib_name OrcaPlayer )
 GLOBAL_ADD_LICENSE( GPL )
 
-SET ( BUILD TRUE )
-REQUIRE_OPTION( BUILD LIB ${LIB_NAME} ON )
-SET ( NOT_OS_WIN NOT OS_WIN )
-REQUIRE_VAR( BUILD LIB ${LIB_NAME} NOT_OS_WIN "Windows OS is not  supported" )
+SET ( build TRUE )
+REQUIRE_OPTION( build LIB ${lib_name} ON )
+SET ( NOT_ORCA_OS_WIN NOT ORCA_OS_WIN )
+REQUIRE_VAR( build LIB ${lib_name} NOT_ORCA_OS_WIN "Windows OS is not  supported" )
 
 INCLUDE (${HYDRO_CMAKE_DIR}/FindPlayer2.cmake)
-REQUIRE_VAR( BUILD LIB ${LIB_NAME} PLAYER_FOUND "Player not found" )
+REQUIRE_VAR( build LIB ${lib_name} PLAYER_FOUND "Player not found" )
 
-IF ( BUILD )
+IF ( build )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
     INCLUDE( ${HYDRO_CMAKE_DIR}/UsePlayer.cmake )
@@ -17,4 +17,4 @@ IF ( BUILD )
     GLOBAL_ADD_LIBRARY( OrcaPlayer SHARED convertutils.cpp )
     INSTALL_FILES( /include/orcaplayer .*\\.h$ )
 
-ENDIF ( BUILD )
+ENDIF ( build )

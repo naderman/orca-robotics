@@ -34,7 +34,7 @@ SITE:STRING=devdebian.acfr.usyd.edu.au
 CMAKE_BUILD_TYPE:STRING=Debug
 BUILD_JAVA:BOOL=ON
 BUILD_IMAGE_SERVER:BOOL=ON
-BUILD_SERVICES=ON
+ORCA_BUILD_SERVICES=ON
 ")
 
 # set any extra envionment variables here

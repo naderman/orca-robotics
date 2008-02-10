@@ -1,24 +1,24 @@
-SET ( LIB_NAME OrcaQUml )
+SET ( lib_name OrcaQUml )
 GLOBAL_ADD_LICENSE( GPL )
 
-SET ( BUILD TRUE )
-REQUIRE_OPTION( BUILD LIB ${LIB_NAME} ON )
-SET ( NOT_OS_WIN NOT OS_WIN )
-REQUIRE_VAR( BUILD LIB ${LIB_NAME} NOT_OS_WIN "Windows OS is not  supported" )
-REQUIRE_VAR( BUILD LIB ${LIB_NAME} QT4_FOUND "Qt4 not found" )
+SET ( build TRUE )
+REQUIRE_OPTION( build LIB ${lib_name} ON )
+SET ( NOT_ORCA_OS_WIN NOT ORCA_OS_WIN )
+REQUIRE_VAR( build LIB ${lib_name} NOT_ORCA_OS_WIN "Windows OS is not  supported" )
+REQUIRE_VAR( build LIB ${lib_name} QT4_FOUND "Qt4 not found" )
 
-SET( DEP_LIBS OrcaDef )
-REQUIRE_TARGETS( BUILD LIB ${LIB_NAME} ${DEP_LIBS} )
+SET( dep_libs OrcaDef )
+REQUIRE_TARGETS( build LIB ${lib_name} ${dep_libs} )
 
-IF ( BUILD )
+IF ( build )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseQt.cmake )
 
-    FILE( GLOB HUMAN_SRCS *.cpp )
+    FILE( GLOB HUMAN_srcs *.cpp )
 
-    GLOBAL_ADD_LIBRARY( ${LIB_NAME} SHARED ${HUMAN_SRCS} )
+    GLOBAL_ADD_LIBRARY( ${lib_name} SHARED ${HUMAN_srcs} )
     
-    TARGET_LINK_LIBRARIES ( ${LIB_NAME} ${DEP_LIBS} )
+    TARGET_LINK_LIBRARIES ( ${lib_name} ${dep_libs} )
 
-ENDIF ( BUILD )
+ENDIF ( build )

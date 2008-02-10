@@ -1,13 +1,13 @@
 SET_COMPONENT_NAMES ( Gps )
 
-SET ( BUILD TRUE )
-REQUIRE_OPTION( BUILD EXE ${APP_NAME} ON )
-REQUIRE_VAR( BUILD EXE ${APP_NAME} OS_LINUX "only Linux OS is supported" )
+SET ( build TRUE )
+REQUIRE_OPTION( build EXE ${APP_NAME} ON )
+REQUIRE_VAR( build EXE ${APP_NAME} ORCA_OS_LINUX "only Linux OS is supported" )
 
-SET( DEP_LIBS OrcaIfaceImpl OrcaObjects )
-REQUIRE_TARGETS( BUILD EXE ${APP_NAME} ${DEP_LIBS} )
+SET( dep_libs OrcaIfaceImpl OrcaObjects )
+REQUIRE_TARGETS( build EXE ${APP_NAME} ${dep_libs} )
 
-IF ( BUILD )
+IF ( build )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
     
@@ -28,19 +28,19 @@ IF ( BUILD )
         HydroGpsUtil
     )
 
-    FILE( GLOB COMP_SRCS *.cpp )
-    SET( DEP_LIBS ${DEP_LIBS} ${GARMINGPS_LIBS})
+    FILE( GLOB srcs *.cpp )
+    SET( dep_libs ${dep_libs} ${GARMINGPS_LIBS})
     
     # build stand-alone component  
-    WRAP_MAINTHREAD_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${COMP_NAME} ${COMP_SRCS} )
-    TARGET_LINK_LIBRARIES( ${APP_NAME} ${DEP_LIBS} )
+    WRAP_MAINTHREAD_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${COMP_NAME} ${srcs} )
+    TARGET_LINK_LIBRARIES( ${APP_NAME} ${dep_libs} )
     
     # build IceBox service
-    IF ( BUILD_SERVICES )
-        WRAP_MAINTHREAD_INTO_SERVICE( ${SERVICE_NAME} ${COMP_NAMESPACE} ${COMP_NAME} ${COMP_SRCS} )
-        TARGET_LINK_LIBRARIES( ${SERVICE_NAME} ${DEP_LIBS} )    
-    ENDIF ( BUILD_SERVICES )
+    IF ( ORCA_BUILD_SERVICES )
+        WRAP_MAINTHREAD_INTO_SERVICE( ${SERVICE_NAME} ${COMP_NAMESPACE} ${COMP_NAME} ${srcs} )
+        TARGET_LINK_LIBRARIES( ${SERVICE_NAME} ${dep_libs} )    
+    ENDIF ( ORCA_BUILD_SERVICES )
 
     GENERATE_CONFIG_FILE( ${APP_NAME}.def )
 
-ENDIF ( BUILD )
+ENDIF ( build )

@@ -1,27 +1,27 @@
-SET ( LIB_NAME OrcaIfaceImpl )
+SET ( lib_name OrcaIfaceImpl )
 GLOBAL_ADD_LICENSE( LGPL )
 
-SET ( BUILD TRUE )
-REQUIRE_OPTION( BUILD LIB ${LIB_NAME} ON )
+SET ( build TRUE )
+REQUIRE_OPTION( build LIB ${lib_name} ON )
 
-IF ( BUILD )
+IF ( build )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
     
-    FILE( GLOB SRCS *.cpp )
+    FILE( GLOB srcs *.cpp )
     
-    IF ( NOT OS_WIN )
-        GLOBAL_ADD_LIBRARY( ${LIB_NAME} SHARED ${SRCS} )
-    ELSE ( NOT OS_WIN )
-        GLOBAL_ADD_LIBRARY( ${LIB_NAME} STATIC ${SRCS} )
-    ENDIF ( NOT OS_WIN )
+    IF ( NOT ORCA_OS_WIN )
+        GLOBAL_ADD_LIBRARY( ${lib_name} SHARED ${srcs} )
+    ELSE ( NOT ORCA_OS_WIN )
+        GLOBAL_ADD_LIBRARY( ${lib_name} STATIC ${srcs} )
+    ENDIF ( NOT ORCA_OS_WIN )
 
-    TARGET_LINK_LIBRARIES( ${LIB_NAME} OrcaObjects )
+    TARGET_LINK_LIBRARIES( ${lib_name} OrcaObjects )
     
     INSTALL_FILES( /include/orcaifaceimpl .*\\.h$ )
     
-    IF ( BUILD_TESTS )
+    IF ( ORCA_BUILD_TESTS )
         ADD_SUBDIRECTORY ( test )
-    ENDIF ( BUILD_TESTS )
+    ENDIF ( ORCA_BUILD_TESTS )
 
-ENDIF ( BUILD )
+ENDIF ( build )

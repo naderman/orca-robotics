@@ -5,7 +5,7 @@ GLOBAL_ADD_LICENSE( LGPL )
 
 MESSAGE ( STATUS "== EXAMPLES ==" )
 
-IF ( BUILD_EXAMPLES )
+IF ( build_EXAMPLES )
 
     # when adding new directories, please maintain alphabetical order
     ADD_SUBDIRECTORY ( brick )
@@ -13,17 +13,17 @@ IF ( BUILD_EXAMPLES )
     ADD_SUBDIRECTORY ( player2orca )
     ADD_SUBDIRECTORY ( pureice )
     # much easier to check for java here, because the example is build as a separate project
-    IF ( JAVA_FOUND AND BUILD_JAVA )
+    IF ( JAVA_FOUND AND build_JAVA )
         ADD_SUBDIRECTORY ( pureicej )
-    ENDIF ( JAVA_FOUND AND BUILD_JAVA )
+    ENDIF ( JAVA_FOUND AND build_JAVA )
     # much easier to check for python here, because the example is build as a separate project
-    IF ( PYTHON_FOUND AND BUILD_PYTHON )
+    IF ( PYTHON_FOUND AND build_PYTHON )
         ADD_SUBDIRECTORY ( pureicepy )
-    ENDIF ( PYTHON_FOUND AND BUILD_PYTHON )
+    ENDIF ( PYTHON_FOUND AND build_PYTHON )
     ADD_SUBDIRECTORY ( reactivewalker )
 
-ELSE ( BUILD_EXAMPLES )
+ELSE ( build_EXAMPLES )
 
     MESSAGE ( STATUS "Example compilation is disabled" )
 
-ENDIF ( BUILD_EXAMPLES )
+ENDIF ( build_EXAMPLES )

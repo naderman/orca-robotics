@@ -1,23 +1,23 @@
-SET ( LIB_NAME OrcaOgFusion )
+SET ( lib_name OrcaOgFusion )
 GLOBAL_ADD_LICENSE( LGPL )
 
-SET ( BUILD TRUE )
-REQUIRE_OPTION( BUILD LIB ${LIB_NAME} ON )
-SET ( NOT_OS_WIN NOT OS_WIN )
-REQUIRE_VAR( BUILD LIB ${LIB_NAME} NOT_OS_WIN "Windows OS is not  supported" )
+SET ( build TRUE )
+REQUIRE_OPTION( build LIB ${lib_name} ON )
+SET ( NOT_ORCA_OS_WIN NOT ORCA_OS_WIN )
+REQUIRE_VAR( build LIB ${lib_name} NOT_ORCA_OS_WIN "Windows OS is not  supported" )
 
-SET( DEP_LIBS OrcaOgMap )
-REQUIRE_TARGETS( BUILD LIB ${LIB_NAME} ${DEP_LIBS} )
+SET( dep_libs OrcaOgMap )
+REQUIRE_TARGETS( build LIB ${lib_name} ${dep_libs} )
 
-IF ( BUILD )
+IF ( build )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
-    FILE( GLOB SRCS *.cpp )
+    FILE( GLOB srcs *.cpp )
     
-    GLOBAL_ADD_LIBRARY( ${LIB_NAME} SHARED ${SRCS} )
-    TARGET_LINK_LIBRARIES( ${LIB_NAME} ${DEP_LIBS}  )
+    GLOBAL_ADD_LIBRARY( ${lib_name} SHARED ${srcs} )
+    TARGET_LINK_LIBRARIES( ${lib_name} ${dep_libs}  )
     
     INSTALL_FILES( /include/orcaogfusion .*\\.h$ )
 
-ENDIF ( BUILD )
+ENDIF ( build )

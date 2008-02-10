@@ -147,10 +147,10 @@ INCLUDE( ${ORCA_CMAKE_DIR}/OptionalSubLibrary.cmake )
 # Defaults for big source code switches 
 # (these are defaults. after the user modifies these in GUI they stay in cache)
 #
-OPTION( BUILD_SERVICES "Enables compilation of all IceBox services" OFF )
+OPTION( ORCA_BUILD_SERVICES "Enables compilation of all IceBox services" OFF )
 OPTION( BUILD_JAVA     "Enables compilation of all Java interfaces and components" OFF  )
 OPTION( BUILD_PYTHON   "Enables compilation of all Python interfaces and components" OFF  )
-OPTION( BUILD_TESTS    "Enables compilation of all tests" ON  )
+OPTION( ORCA_BUILD_TESTS    "Enables compilation of all tests" ON  )
 OPTION( BUILD_EXAMPLES "Enables compilation of all examples" ON  )
 OPTION( BUILD_SANDBOX  "Enables compilation of everything in the sandbox" OFF )
 OPTION( GENERATE_XML   "Enables generation of XML file for IceGrid" ON )

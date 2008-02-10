@@ -1,26 +1,26 @@
-SET ( LIB_NAME OrcaBros1 )
+SET ( lib_name OrcaBros1 )
 GLOBAL_ADD_LICENSE( LGPL )
 
-SET ( BUILD TRUE )
-REQUIRE_OPTION( BUILD LIB ${LIB_NAME} ON )
-REQUIRE_VAR( BUILD LIB ${LIB_NAME} OS_LINUX "only Linux OS is supported" )
+SET ( build TRUE )
+REQUIRE_OPTION( build LIB ${lib_name} ON )
+REQUIRE_VAR( build LIB ${lib_name} ORCA_OS_LINUX "only Linux OS is supported" )
 
-SET( DEP_LIBS OrcaInterfaces )
-REQUIRE_TARGETS( BUILD LIB ${LIB_NAME} ${DEP_LIBS} )
+SET( dep_libs OrcaInterfaces )
+REQUIRE_TARGETS( build LIB ${lib_name} ${dep_libs} )
 
-SET( DEP_LIBS ${DEP_LIBS} HydroBros1 )
-REQUIRE_VAR( BUILD LIB ${LIB_NAME} HYDROBROS1_INSTALLED "libHydroBros1 not installed" )
+SET( dep_libs ${dep_libs} HydroBros1 )
+REQUIRE_VAR( build LIB ${lib_name} HYDROBROS1_INSTALLED "libHydroBros1 not installed" )
 
-IF ( BUILD )
+IF ( build )
     
     INCLUDE( ${ORCA_CMAKE_DIR}/UseBasicRules.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseIce.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseLibProjectInterfaces.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseHydro.cmake )
 
-    GLOBAL_ADD_LIBRARY( ${LIB_NAME} SHARED convertutils.cpp )
-    TARGET_LINK_LIBRARIES( ${LIB_NAME} ${DEP_LIBS} )
+    GLOBAL_ADD_LIBRARY( ${lib_name} SHARED convertutils.cpp )
+    TARGET_LINK_LIBRARIES( ${lib_name} ${dep_libs} )
 
     INSTALL_FILES( /include/orcabros1 .*\\.h$ )
 
-ENDIF ( BUILD )
+ENDIF ( build )

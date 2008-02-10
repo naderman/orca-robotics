@@ -1,19 +1,19 @@
 # A place for components and utilities which are experimental, untested,
 # undocumented, unmaintaned, or all of the above. 
-# The option BUILD_SANDBOX is OFF by default.
+# The option build_SANDBOX is OFF by default.
 
 MESSAGE ( STATUS "== SANDBOX ==" )
 
-IF ( NOT OS_WIN AND BUILD_SANDBOX )
+IF ( NOT ORCA_OS_WIN AND build_SANDBOX )
 
     # when adding new directories, please maintain alphabetical order
     ADD_SUBDIRECTORY ( insgps )
 
-ELSE ( NOT OS_WIN AND BUILD_SANDBOX )
+ELSE ( NOT ORCA_OS_WIN AND build_SANDBOX )
 
     MESSAGE ( STATUS "Sandbox compilation is disabled" )
 
-ENDIF ( NOT OS_WIN AND BUILD_SANDBOX )
+ENDIF ( NOT ORCA_OS_WIN AND build_SANDBOX )
 
 
 # putting it after all subdir's because of cmake weirdness:

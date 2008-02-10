@@ -4,7 +4,7 @@ INCLUDE_DIRECTORIES(
   ${PROJECT_SOURCE_DIR}/src/components/localnav
 )
 
-FILE( GLOB SRCS *.cpp *.cc )
+FILE( GLOB srcs *.cpp *.cc )
 
-ADD_LIBRARY( OrcaLocalNavVfh SHARED ${SRCS} )
+ADD_LIBRARY( OrcaLocalNavVfh SHARED ${srcs} )
 INSTALL_TARGETS( /lib OrcaLocalNavVfh )

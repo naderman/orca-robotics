@@ -1,6 +1,6 @@
-OPTION( BUILD_PURE_ICEPYTHON "Try to build PureIcePython Python Example" ON )
+OPTION( build_PURE_ICEPYTHON "Try to build PureIcePython Python Example" ON )
 
-IF ( NOT OS_WIN AND BUILD_PURE_ICEPYTHON )
+IF ( NOT ORCA_OS_WIN AND build_PURE_ICEPYTHON )
 
     PROJECT( pureicepython )
 
@@ -25,4 +25,4 @@ IF ( NOT OS_WIN AND BUILD_PURE_ICEPYTHON )
 # 
 #     GLOBAL_ADD_ITEM( pureicepython.py )
 
-ENDIF ( NOT OS_WIN AND BUILD_PURE_ICEPYTHON )
+ENDIF ( NOT ORCA_OS_WIN AND build_PURE_ICEPYTHON )

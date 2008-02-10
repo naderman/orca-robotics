@@ -1,20 +1,20 @@
 SET_COMPONENT_NAMES ( LocalNav )
 SET ( APP_CTRLC_HANDLER 0 )
 
-SET ( BUILD TRUE )
-REQUIRE_OPTION( BUILD EXE ${APP_NAME} ON )
-REQUIRE_VAR( BUILD EXE ${APP_NAME} OS_LINUX "only Linux OS is supported" )
+SET ( build TRUE )
+REQUIRE_OPTION( build EXE ${APP_NAME} ON )
+REQUIRE_VAR( build EXE ${APP_NAME} ORCA_OS_LINUX "only Linux OS is supported" )
 
-SET( DEP_LIBS OrcaLocalNav OrcaNavUtil )
-REQUIRE_TARGETS( BUILD EXE ${APP_NAME} ${DEP_LIBS} )
+SET( dep_libs OrcaLocalNav OrcaNavUtil )
+REQUIRE_TARGETS( build EXE ${APP_NAME} ${dep_libs} )
 
-SET( DEP_LIBS ${DEP_LIBS} HydroDll HydroNavUtil )
-REQUIRE_VAR( BUILD EXE ${APP_NAME} HYDRODLL_INSTALLED "libHydroDll not installed" )
-REQUIRE_VAR( BUILD EXE ${APP_NAME} HYDRONAVUTIL_INSTALLED "libHydroNavUtil not installed" )
+SET( dep_libs ${dep_libs} HydroDll HydroNavUtil )
+REQUIRE_VAR( build EXE ${APP_NAME} HYDRODLL_INSTALLED "libHydroDll not installed" )
+REQUIRE_VAR( build EXE ${APP_NAME} HYDRONAVUTIL_INSTALLED "libHydroNavUtil not installed" )
 
-SET( DEP_LIBS ${DEP_LIBS} OrcaLocalNavTestSim OrcaLocalNavUtil )
+SET( dep_libs ${dep_libs} OrcaLocalNavTestSim OrcaLocalNavUtil )
 
-IF ( BUILD )
+IF ( build )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
@@ -29,19 +29,19 @@ IF ( BUILD )
     ADD_SUBDIRECTORY( testsim )
     ADD_SUBDIRECTORY( localnavutil )
 
-    FILE( GLOB COMP_SRCS *.cpp )
+    FILE( GLOB srcs *.cpp )
 
     # build stand-alone component  
-    WRAP_COMPONENT_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${COMP_SRCS} )
-    TARGET_LINK_LIBRARIES( ${APP_NAME} ${DEP_LIBS} )
+    WRAP_COMPONENT_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${srcs} )
+    TARGET_LINK_LIBRARIES( ${APP_NAME} ${dep_libs} )
     
     # build IceBox service
-    IF ( BUILD_SERVICES )
-        WRAP_COMPONENT_INTO_SERVICE( ${SERVICE_NAME} ${COMP_NAMESPACE} ${COMP_SRCS} )
-        TARGET_LINK_LIBRARIES( ${SERVICE_NAME} ${DEP_LIBS} ) 
-    ENDIF ( BUILD_SERVICES )
+    IF ( ORCA_BUILD_SERVICES )
+        WRAP_COMPONENT_INTO_SERVICE( ${SERVICE_NAME} ${COMP_NAMESPACE} ${srcs} )
+        TARGET_LINK_LIBRARIES( ${SERVICE_NAME} ${dep_libs} ) 
+    ENDIF ( ORCA_BUILD_SERVICES )
 
-    IF ( BUILD_TESTS )
+    IF ( ORCA_BUILD_TESTS )
 
       # Check for 32-bit vs 64-bit
       IF ( CMAKE_SIZEOF_VOID_P EQUAL 8 )
@@ -71,6 +71,6 @@ IF ( BUILD )
         --LocalNav.Config.Test.NumWaypoints=20
         --Orca.RequireRegistry=0
         --LocalNav.Config.Test.BatchMode=1 )
-    ENDIF ( BUILD_TESTS )
+    ENDIF ( ORCA_BUILD_TESTS )
 
-ENDIF ( BUILD )
+ENDIF ( build )
