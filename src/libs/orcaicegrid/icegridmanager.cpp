@@ -43,10 +43,10 @@ IceGridManager::connectedEvent()
         context_.tracer().info( "Connected to Admin interface" );
 
         // just to test it...
-        vector<string> appNames = iceGridAdmin_->getAllApplicationNames();
-        stringstream ss;
-        ss<<"got a list of "<<appNames.size()<<" app names";
-        context_.tracer().info( ss.str() );
+//         vector<string> appNames = iceGridAdmin_->getAllApplicationNames();
+//         stringstream ss;
+//         ss<<"got a list of "<<appNames.size()<<" app names";
+//         context_.tracer().info( ss.str() );
         return true;
     }
     catch ( const Ice::CommunicatorDestroyedException & ) {
