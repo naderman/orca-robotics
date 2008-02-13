@@ -11,14 +11,13 @@
 #include <sstream>
 #include <stdlib.h>             // for getenv()
     
-#include <hydroutil/stringutils.h>    // for toStringSeq()
+#include <hydroutil/stringutils.h>    // for toStringSeq(), toIntVector(), and toDoubleVector()
 #include <hydroutil/mathdefs.h>           // for DEG2RAD_RATIO
 
 #include "proputils.h"
 #include "configutils.h"
 #include "exceptions.h"
 #include "printutils.h"       // initTracerInfo()
-#include "stringutils.h" // for toIntVector(), and toDoubleVector()
 
 using namespace std;
 
@@ -265,7 +264,7 @@ getPropertyAsIntVector( const Ice::PropertiesPtr & prop, const ::std::string& ke
     if ( getProperty( prop, key, stringVal ) )
         return -1;
     else
-        return toIntVector( stringVal, value );
+        return hydroutil::toIntVector( stringVal, value );
     return 0;
 }
 
@@ -301,7 +300,7 @@ getPropertyAsDoubleVector( const Ice::PropertiesPtr & prop, const ::std::string&
     }
     else
     {
-        return toDoubleVector( stringVal, value );
+        return hydroutil::toDoubleVector( stringVal, value );
     }
     return 0;
 }

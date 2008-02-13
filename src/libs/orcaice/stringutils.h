@@ -91,22 +91,6 @@ std::string toString( const orca::Date& );
 
 //@}
 
-/*!
- *  @name Stringify Data Objects
- */
-//@{
-
-//! Parses string of ints separated by spaces.
-//! Returns: 0 = parsing successful, non-zero = parsing failed.
-int toIntVector( const std::string &, std::vector<int>& );
-
-//! Parses string of doubles separated by spaces.
-//! Returns: 0 = parsing successful, non-zero = parsing failed.
-int toDoubleVector( const std::string &, std::vector<double>& );
-
-//}
-
-
 } // namespace
 
 #endif
