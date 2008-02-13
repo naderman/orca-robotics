@@ -11,13 +11,17 @@
 #ifndef MAIN_THREAD_H
 #define MAIN_THREAD_H
 
+#include <memory>
 #include <hydroiceutil/subsystemthread.h>
 #include <orcaice/context.h>
+#include <hydrodll/dynamicload.h>
+// remote interface
 #include <orcaifaceimpl/gpsImpl.h>
+// hardware interface
+#include <hydrointerfaces/gps.h>
 
 namespace gps {
 
-class Driver;
 
 class MainThread : public hydroiceutil::SubsystemThread
 {
@@ -25,17 +29,11 @@ class MainThread : public hydroiceutil::SubsystemThread
 public:
 
     MainThread( const orcaice::Context& context );
-    ~MainThread();
 
     // from SubsystemThread
     virtual void walk();
 
 private:
-
-    orca::GpsDescription descr_;
-    orcaifaceimpl::GpsImplPtr gpsInterface_;
-
-    Driver *driver_;
 
     // Tries repeatedly to instantiate the driver
     void initHardwareDriver();
@@ -43,8 +41,17 @@ private:
     // Loops until established
     void initNetworkInterface();
 
+    orca::GpsDescription descr_;
+    orcaifaceimpl::GpsImplPtr gpsInterface_;
+
+    hydrointerfaces::Gps::Config config_;
     void reportBogusValues( orca::GpsData        &gpsData );
     
+    // The library that contains the driver factory (must be declared first so it's destructed last!!!)
+    std::auto_ptr<hydrodll::DynamicallyLoadedLibrary> driverLib_;
+    // Generic driver for the hardware
+    std::auto_ptr<hydrointerfaces::Gps> driver_;
+
     orcaice::Context context_;
 };
 

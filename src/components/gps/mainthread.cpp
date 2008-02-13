@@ -11,28 +11,52 @@
 #include <iostream>
 #include <orcaice/orcaice.h>
 #include <orcaobj/orcaobj.h>
-#include <hydrogpsutil/latlon2mga.h>
 
 #include "mainthread.h"
-
-#include "driver.h"
-#include "fakegpsdriver.h"
-#include "garmin/garmindriver.h"
 
 using namespace std;
 using namespace gps;
 
+namespace {
+
+void convert( const hydrointerfaces::Gps::Data& hydro, orca::GpsData& orca )
+{
+    orca.timeStamp.seconds = hydro.timeStampSec;
+    orca.timeStamp.useconds = hydro.timeStampUsec;
+    orca.utcTime.hours = hydro.utcTimeHrs;
+    orca.utcTime.minutes = hydro.utcTimeMin;
+    orca.utcTime.seconds = hydro.utcTimeSec;
+
+    orca.latitude = hydro.latitude;
+    orca.longitude = hydro.longitude;
+    orca.altitude = hydro.altitude;
+
+    orca.horizontalPositionError = hydro.horizontalPositionError;
+    orca.verticalPositionError = hydro.verticalPositionError;
+
+    orca.heading = hydro.heading;
+    orca.speed = hydro.speed;
+    orca.climbRate = hydro.climbRate;
+
+    orca.satellites = hydro.satellites;
+    orca.observationCountOnL1 = hydro.observationCountOnL1;
+    orca.observationCountOnL2 = hydro.observationCountOnL2;
+    // relies on the fact that the enums in orca and hydro are identical!
+    orca.positionType = (orca::GpsPositionType)hydro.positionType;
+    orca.geoidalSeparation = hydro.geoidalSeparation;
+}
+
+}
+
+////////////////////////////
+
 MainThread::MainThread( const orcaice::Context& context ) :
     SubsystemThread( context.tracer(), context.status(), "MainThread" ),
-    driver_(0),
     context_(context)
 {
     subStatus().setMaxHeartbeatInterval( 10.0 );
-}
 
-MainThread::~MainThread()
-{
-    delete driver_;
+    // Gps::Config object is currently empty, no properties to read.
 }
 
 void
@@ -65,75 +89,62 @@ MainThread::initHardwareDriver()
 {
     subStatus().setMaxHeartbeatInterval( 10.0 );
 
-    // this function works for re-initialization as well
-    if ( driver_ ) delete driver_;
-
     Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag() + ".Config.";
 
-    //
-    // Driver
-    // 
-    std::string driverName;
-    int ret = orcaice::getProperty( prop, prefix+"Driver", driverName );
-    if ( ret != 0 )
-    {
-        // unrecoverable error
-        context_.shutdown(); 
-        std::string errString = "Component: Couldn't determine gps type. Expected property '";
-        errString += prefix + "Driver'";
-        throw GpsException( errString );
-    }
-
-    if ( driverName == "garmin" )
-    {
-        std::string device;
-        int ret = orcaice::getProperty( prop, prefix+"Device", device );
-        if (ret!=0) {
-            // unrecoverable error
-            context_.shutdown(); 
-            std::string errString = "Component: Couldn't determine serial port for garmin gps. Expected property '";
-            errString += prefix + "Device'";
-            throw GpsException( errString );
-        }
-        driver_ = new GarminGpsDriver( device.c_str(), context_ );
-    }
-    else if ( driverName == "fake" )
-    {
-        std::vector<double> latitudes, longitudes;
-        for(unsigned int i=0; ; i++)
-        {
-            stringstream ss; ss << i;
-            double latitude, longitude;
-            if ( (orcaice::getPropertyAsDouble( prop, prefix+"FakeDriver.Latitude" + ss.str(), latitude )) ||
-                 (orcaice::getPropertyAsDouble( prop, prefix+"FakeDriver.Longitude" + ss.str(), longitude )) )
-            break;
-            latitudes.push_back(latitude);
-            longitudes.push_back(longitude);
-        }
-        driver_ = new FakeGpsDriver(latitudes,longitudes);
-    }
-    else
-    {
-        // unrecoverable error
-        context_.shutdown(); 
-        std::string errString = "Component: Unknown driver: " + driverName;
-        context_.tracer().error( errString );
-        throw GpsException( errString );
-    }
-
-    // initialize driver
+    // Dynamically load the library and find the factory
+    std::string driverLibName = 
+        orcaice::getPropertyWithDefault( prop, prefix+"DriverLib", "libHydroGpsGarmin.so" );
+    context_.tracer().debug( "MainThread: Loading driver library "+driverLibName, 4 );
+    // The factory which creates the driver
+    std::auto_ptr<hydrointerfaces::GpsFactory> driverFactory;
     try {
-        driver_->init();
+        driverLib_.reset( new hydrodll::DynamicallyLoadedLibrary(driverLibName) );
+        driverFactory.reset( 
+            hydrodll::dynamicallyLoadClass<hydrointerfaces::GpsFactory,DriverFactoryMakerFunc>
+            ( *driverLib_, "createDriverFactory" ) );
     }
-    catch( GpsException &e )
+    catch (hydrodll::DynamicLoadException &e)
     {
         // unrecoverable error
         context_.shutdown(); 
-        stringstream ss; ss << "Component: Failed to initialize GPS: " << e.what();
-        context_.tracer().error( ss.str() );
-        throw GpsException( ss.str() );
+        throw;
     }
+
+    // create the driver
+    while ( !isStopping() )
+    {
+        std::stringstream exceptionSS;
+        try {
+            context_.tracer().info( "HwThread: Creating driver..." );
+            driver_.reset(0);
+            driver_.reset( driverFactory->createDriver( config_, context_.toHydroContext() ) );
+            break;
+        }
+        catch ( IceUtil::Exception &e ) {
+            exceptionSS << "MainThread: Caught exception while creating driver: " << e;
+        }
+        catch ( std::exception &e ) {
+            exceptionSS << "MainThread: Caught exception while initialising driver: " << e.what();
+        }
+        catch ( char *e ) {
+            exceptionSS << "MainThread: Caught exception while initialising driver: " << e;
+        }
+        catch ( std::string &e ) {
+            exceptionSS << "MainThread: Caught exception while initialising driver: " << e;
+        }
+        catch ( ... ) {
+            exceptionSS << "MainThread: Caught unknown exception while initialising driver";
+        }
+
+        // we get here only after an exception was caught
+        context_.tracer().error( exceptionSS.str() );
+        subStatus().fault( exceptionSS.str() );          
+
+        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));        
+    }
+
+    subStatus().setMaxHeartbeatInterval( 1.0 );
 }
 
 void 
@@ -162,68 +173,76 @@ MainThread::walk()
     initHardwareDriver();
   
     // temp data object
-    orca::GpsData gpsData;
+    hydrointerfaces::Gps::Data hydroData;
+    orca::GpsData orcaData;
 
     //
     // Main loop
     //
     while ( !isStopping() )
     {
-        context_.tracer().debug("Trying to read from driver.", 4);
-        
-        // keep trying to read until successful
-        while ( !isStopping() )
+        stringstream exceptionSS;
+        try 
         {
-            try 
-            {
-                // Read from hardware: blocking call with timeout, drives the loop
-                driver_->read( gpsData );
-                break;
-            }
-            catch (GpsException &e)
-            {
-                stringstream ss;
-                ss << "MainThread: Problem reading from GPS: " << e.what();
-                context_.tracer().error( ss.str() );
-                subStatus().fault( ss.str() );
-            }
-
-            //If the read threw then we should now try to re-initialise 
-            try 
-            {
-                context_.tracer().debug("Trying to reinitialize now", 2);
-                driver_->init();
-            }
-            catch (GpsException &e)
-            {
-                stringstream ss;
-                ss << "MainThread: Problem reinitializing: " << e.what();
-                context_.tracer().error( ss.str() );
-            }
-                
-        }
-        context_.tracer().debug("Read successfully from driver.", 5);
-
-
-        if ( gpsData.positionType == orca::GpsPositionTypeNotAvailable )
-        {
-            context_.tracer().debug("No GPS fix", 2);
-            if (reportIfNoFix) reportBogusValues(gpsData);
-        }
-        else
-        {
-            context_.tracer().debug("We have a GPS fix", 2);
-                
-            // Publish gpsData
-            context_.tracer().debug("New GpsData: publishing now.", 5);
-            context_.tracer().debug( orcaobj::toString( gpsData ), 5 );
-            gpsInterface_->localSetAndSend(gpsData);
-        }        
+            // this blocks until new data arrives
+            driver_->read( hydroData );
             
-        subStatus().ok();
+            // convert hydro->orca
+            convert( hydroData, orcaData );
+
+            if ( orcaData.positionType == orca::GpsPositionTypeNotAvailable ) {
+                context_.tracer().debug("No GPS fix", 2);
+                // should this be a status warning?
+                if (reportIfNoFix) 
+                    reportBogusValues(orcaData);
+            }
+            else {
+//                 context_.tracer().debug("We have a GPS fix", 2);
+                // Publish gpsData
+                context_.tracer().debug( orcaobj::toString( orcaData ), 5 );
+                gpsInterface_->localSetAndSend(orcaData);
+            }    
+
+            subStatus().ok();
+
+            stringstream ss;
+            ss << "MainThread: Read laser data: " << orcaobj::toString(orcaData);
+            context_.tracer().debug( ss.str(), 5 );
+
+            continue;
+
+        } // end of try
+        catch ( Ice::CommunicatorDestroyedException & ) {
+            // This is OK: it means that the communicator shut down (eg via Ctrl-C)
+            // somewhere in mainLoop. Eventually, component will tell us to stop.
+        }
+        catch ( const Ice::Exception &e ) {
+            exceptionSS << "ERROR(mainthread.cpp): Caught unexpected exception: " << e;
+        }
+        catch ( const std::exception &e ) {
+            exceptionSS << "ERROR(mainthread.cpp): Caught unexpected exception: " << e.what();
+        }
+        catch ( const std::string &e ) {
+            exceptionSS << "ERROR(mainthread.cpp): Caught unexpected string: " << e;
+        }
+        catch ( const char *e ) {
+            exceptionSS << "ERROR(mainthread.cpp): Caught unexpected char *: " << e;
+        }
+        catch ( ... ) {
+            exceptionSS << "ERROR(mainthread.cpp): Caught unexpected unknown exception.";
+        }
+
+        if ( !exceptionSS.str().empty() ) {
+            context_.tracer().error( exceptionSS.str() );
+            subStatus().fault( exceptionSS.str() );     
+            // Slow things down in case of persistent error
+            sleep(1);
+        }
+
+        // If we got to here there's a problem.
+        // Re-initialise the driver.
+        initHardwareDriver();
 
     } // end of while
 
-    // GPS hardware will be shut down in the driver's destructor.
-    context_.tracer().debug( "dropping out from run()", 5 );
 }
