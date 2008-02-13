@@ -63,7 +63,7 @@ IF ( build )
         ADD_DEFINITIONS( -Dbuild_OPENCV_GRABBER )
         INCLUDE_DIRECTORIES( ${OPENCV_INCLUDE_DIRS} )
         LINK_DIRECTORIES( ${OPENCV_LINK_DIRS} )
-        SET( dep_libs ${dep_libs} ${OPENCV_LIBS} OrcaImageGrabber )
+        SET( dep_libs ${dep_libs} ${OPENCV_LIBS} OrcaImageGrabber OrcaImage )
     ENDIF ( OPENCV_FOUND AND HAVE_CAMERA_HW_LIB )
     
     # check for digiclops image grabbing libraries
