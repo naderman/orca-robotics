@@ -1,0 +1,141 @@
+    /*
+ * Orca-Robotics Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2008 Ben Upcroft
+ *
+ * This copy of Orca is licensed to you under the terms described in
+ * the LICENSE file included in this distribution.
+ *
+ */
+
+
+/*!
+@ingroup orca_components
+@ingroup orca_apps
+@ingroup orca_services
+@ingroup orca_cpp
+@ingroup orca_linux
+@defgroup orca_component_insgps InsGps
+@brief A hardware abstraction component for InsGps systems
+
+@par Provides
+
+- @ref orca_interface_home
+- @ref orca_interface_imu
+- @ref orca_interface_odometry3d
+- @ref orca_interface_localise3d
+- @ref orca_interface_gps
+- @ref orca_interface_status
+
+@par Requires
+
+- none
+
+@image html insgps.png
+
+@par Drivers
+
+- @b novatelspan @ref insgps_novatel
+- @b fake Useful for testing or if you don't have hardware or a simulator.
+
+This component encapsulates an Inertial Navigation System that is coupled with GPS. In particular, the SPAN systems from Novatel which includes a Novatel Gps receiver and Honeywell IMU.
+
+<!--It can run either as a stand-alone component or an IceBox Service. -->
+
+@par Features
+This component provides four interfaces. The first interface (imu) provides raw imu information that all physical intertial measurement units should output. The second interface (odometry3d) is more for a complete Inertial Navigation System in which the position, velocity, and attitude (PVA) information is also output. The third (localise3d) can be used instead of or with odometry3d and adds uncertainty to the PVA information. The fourth (gps) are global gps coordinates.
+  
+@par Configuration
+
+- @c InsGps.Config.Driver (string)
+    - See introduction.
+    - Valid values: { "novatelspan", "fake" }
+    - Default: "fake"
+
+- @c InsGps.Config.StartEnabled (bool)
+    - Enable the InsGps on component initialisation?
+    - Default: 1
+
+Description
+
+- @c InsGps.Config.Gps.Offset (Frame2d) [m,m,deg]
+    - Transformation from global (arbitrarily defined) coordinate system (CS) to the GPS MapGrid CS
+    - Format: x y yaw (space separated)
+    - Default: [0.0 0.0 0.0]
+
+- @c InsGps.Config.Gps.AntennaOffset (Frame3d) [m,m,m,deg,deg,deg]
+    - Format: x y z roll pitch azimuth(yaw) (space separated) 
+    - Default: [0.0 0.0 0.0 0.0 0.0 0.0]
+
+- @c InsGps.Config.Imu.Offset (Frame3d) [m,m,m, deg,deg,deg]
+    - Offset of the IMU from the robot's local coord system
+    - Format: x y z roll pitch yaw (space separated)
+    - Default: [0.0 0.0 0.0  0.0 0.0 0.0]
+
+- @c InsGps.Config.Imu.Size (Size3d) [m,m,m]
+    - Physical dimensions of the IMU device.
+    - Format: length width height (space separated)
+    - Default: [0.0 0.0 0.0]
+
+- @c InsGps.Config.Vehicle.PlatformToVehicleTransform.Offset (Frame3d) [m,m,m, deg,deg,deg]
+    - Transformation from the platform's coordinate system (eg. origin at the GPS antenna), to the coordinate system of the vehicle (eg. rear axle of the vehicle)
+    - Format: x y z roll pitch yaw (space separated)
+    - Default: [0.0 0.0 0.0  0.0 0.0 0.0]
+
+Serial
+        
+- @c InsGps.Config.Device (string)
+    - The device to use
+    - Example values: /dev/ttyS0 (for linux)
+    - Default: "/dev/ttyS0"
+
+- @c InsGps.Config.Baud (int)
+    - Baud rate
+    - Default: 9600
+
+An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
+
+@section insgps_novatelspan Novatel Span system
+
+@par Hardware
+- tested with a Novatel ProPak G2-plus GPS receiver and a SPAN compatible Novatel AG17 enclosure which houses a Honeywell HG1700 IMU. 
+
+@par Extra configuration
+
+- @c InsGps.Config.Novatel.ImuToGpsAntennaOffset (CartesianPoint) [m,m,m]
+    - Distance from the centre of the imu to the phase centre of the gps antenna.
+
+    Note that this is different from the Gps.AntennaOffset which is the lever arm between the vehicle and antenna, not imu and antenna.
+
+    - Format: x y z (space separated)
+    - Default: [0.0 0.0 0.0]
+
+- @c InsGps.Config.Novatel.ImuToGpsAntennaOffsetUncertainty (CartesianPoint) [m,m,m]
+    - Imu/Gps antenna offset uncertainty
+    - Format: (standard deviation in x) (std dev in y) (std dev in z) (space separated) 
+    - Default: [0.0 0.0 0.0]
+  
+  @c InsGps.Config.Novatel.ImuOrientation (int)
+    - Imu mounting orientation
+    - Format: c (constant passed to imu in setimuorientation command -- see imu documentation) 
+    - Default: 0
+
+  @c InsGps.Config.Novatel.VehicleBodyRotation (CartesianPoint)
+    - Magic numbers that specify orientation of imu relative to the vehicle. We should eventually be able to determine this from imu offset parameter, but we haven't figured this out yet. Read as a CartesianPoint but it's really roll, pitch, yaw angles
+    - Format: roll pitch yaw (magic numbers -- see imu documentation for vehiclebodyrotation command)
+    - Default: [0 0 0]
+
+  @c InsGps.Config.Novatel.VehicleBodyRotationUncertainty (CartesianPoint)
+    - Uncertainty in vehiclebodyrotation command
+    - Format: (roll uncertainty) (pitch uncertainty) (yaw uncertainty)
+    - Default: [0 0 0] 
+
+  @c InsGps.Config.Novatel.SwappedRollPitch (bool)
+    - Adapt Novatel output coordinate system to Orca's.
+    - Default: 1
+
+@par Authors
+Ben Upcroft, Matthew Ridley, Michael Moser
+
+*/
+

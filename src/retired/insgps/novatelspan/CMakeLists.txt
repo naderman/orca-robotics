@@ -1,0 +1,12 @@
+# INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
+
+FILE( GLOB srcs *.cpp )
+
+ADD_LIBRARY( OrcaNovatelSpanInsGps SHARED ${srcs} )
+
+OPTION( INSGPS_USE_MGA_COORDINATES "Use MGA coordinates (instead of lat/long)" OFF )
+IF( INSGPS_USE_MGA_COORDINATES )
+    ADD_DEFINITIONS( -DINSGPS_USE_MGA_COORDINATES )
+ENDIF( INSGPS_USE_MGA_COORDINATES )
+
+INSTALL_TARGETS( /lib OrcaNovatelSpanInsGps )
