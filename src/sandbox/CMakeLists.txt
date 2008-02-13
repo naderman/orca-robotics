@@ -7,7 +7,6 @@ MESSAGE ( STATUS "== SANDBOX ==" )
 IF ( NOT ORCA_OS_WIN AND ORCA_BUILD_SANDBOX )
 
     # when adding new directories, please maintain alphabetical order
-    ADD_SUBDIRECTORY ( insgps )
     ADD_SUBDIRECTORY ( slice2string )
 
 ELSE ( NOT ORCA_OS_WIN AND ORCA_BUILD_SANDBOX )
