@@ -70,6 +70,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 @par New libraries
 @par Updated interfaces
 @par Updated components
+
+- Big clean up of the component. All driver functionality moved to Hydro. (alex m)
+
 @par Updated utilities
 @par Updated libraries
 @par Removed

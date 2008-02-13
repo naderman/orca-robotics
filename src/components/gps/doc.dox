@@ -21,8 +21,6 @@
 
 - @ref orca_interface_home
 - @ref orca_interface_gps [Gps.Provides.Gps]
-- GpsTime @ref orca_interface_gps [Gps.Provides.GpsTime]
-- GpsMapGrid @ref orca_interface_gps [Gps.Provides.GpsMapGrid]
 - @ref orca_interface_status
 
 @par Requires
@@ -33,12 +31,13 @@
 
 @par Drivers
 
-- @b garmin @ref gps_garmin
-- @b fake @ref gps_fake Useful for testing or if you don't have hardware or a simulator.
+This component dynamically loads an implementation of a Hydro hardware interface hydrointerfaces::Gps. You can also load your own implementation as long as the shared library is in the path. See Hydro documentation for the list of available drivers.
+
+- @ref hydro_drivers_gps
 
 @par Operation
 
-This component encapsulates a GPS receiver.
+This component encapsulates access to a GPS receiver.
 
 It can run either as a stand-alone component or an IceBox Service.
 
@@ -54,10 +53,11 @@ without a fix ever having been achieved.
 
 @par Configuration
 
-- @c Gps.Config.Driver (string)
-    - See introduction.
-    - Valid values: { "garmin", "fake" }
-    - Default: "garmin"
+
+- @c Gps.Config.DriverLib (string)
+    - Name of shared library containing the hardware driver
+    - Valid values are at least: { 'libHydroGpsGarmin.so', 'libHydroGpsFake.so' }
+    - Default: "libHydroGpsGarmin.so"
     
 - @c Gps.Config.ReportIfNoFix (bool)
     - Report values if there is no GPS fix?
@@ -74,42 +74,11 @@ Geometry
 
 An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
 
-@section gps_garmin Garmin driver
-
-Uses Garmin serial impementation. Written for Garmin-GPS15L
-
-@par Extra configuration
-
-- @c Gps.Config.Garmin.Device (string)
-  - The unix device to use
-  - Default: "/dev/ttyS0"
-
-- @c Gps.Config.Garmin.Baud (int)
-    - Baud rate
-    - Default: 4800
+@see Individual drivers may have additional configuration parameters which are specified as Laser2d.Config.XXX. See driver documentation.
     
-@section gps_fake driver
-The fake driver can be used to spit out GPS coordinates which can be specified in the config file.
-This is useful to test the displaying of GPS positions in a GUI for example. The configured positions 
-are served in a ring-like fashion, i.e. 0,1,2,3,0,1,2,...
-
-@par Extra configuration
-
-- @c Gps.Config.FakeDriver.Latitude<X> (double)
-  - Latitude of GPS coordinate <X> (starting with 0)
-  - Default: -35.0
-
-- @c Gps.Config.FakeDriver.Longitude<X> (double)
-  - Latitude of GPS coordinate <X> (starting with 0)
-  - Default: 150.0
-  
-Another feature for debugging is that the fakedriver 'pretends' not to have a fix for the first
-five timesteps. Useful for testing whether clients catch remote exceptions.
-
 @par Authors
-Duncan Mercer,
-Matthew Ridley,
-Tobias Kaupp
+
+Duncan Mercer, Matthew Ridley, Tobias Kaupp
 
 */
 
