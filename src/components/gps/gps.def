@@ -9,14 +9,14 @@ Provides.Gps.DefaultInterface=gps
 # Config Parameters
 
 Config.DriverLib.Comment=Valid values are at least: { 'libHydroGpsGarmin.so', 'libHydroGpsFake.so' }
-#Config.DriverLib.Default=libHydroGpsGarmin.so
-Config.DriverLib.Default=libHydroGpsFake.so
+Config.DriverLib.Default=libHydroGpsGarmin.so
 
 Config.AntennaOffset.Comment=Offset of the gps antenna from the vehicle coordinate system: x[m] y[m] z[m] roll[deg] pitch[deg] yaw[deg]
 Config.AntennaOffset.Default=0.0 0.0 0.0  0.0 0.0 0.0
 
-Config.Device.Default=/dev/ttyS2
 Config.ReportIfNoFix.Default=1
+
+Config.Garmin.Device.Default=/dev/ttyS2
 
 Config.Fake.Latitudes.Default=-35 -35.5;
 Config.Fake.Longitudes.Default=150 -149.5;
