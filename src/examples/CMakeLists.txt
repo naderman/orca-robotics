@@ -5,7 +5,7 @@ GLOBAL_ADD_LICENSE( LGPL )
 
 MESSAGE ( STATUS "== EXAMPLES ==" )
 
-IF ( build_EXAMPLES )
+IF ( ORCA_BUILD_EXAMPLES )
 
     # when adding new directories, please maintain alphabetical order
     ADD_SUBDIRECTORY ( brick )
@@ -22,8 +22,8 @@ IF ( build_EXAMPLES )
     ENDIF ( PYTHON_FOUND AND build_PYTHON )
     ADD_SUBDIRECTORY ( reactivewalker )
 
-ELSE ( build_EXAMPLES )
+ELSE ( ORCA_BUILD_EXAMPLES )
 
     MESSAGE ( STATUS "Example compilation is disabled" )
 
-ENDIF ( build_EXAMPLES )
+ENDIF ( ORCA_BUILD_EXAMPLES )
