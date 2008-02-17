@@ -45,8 +45,8 @@ Component::start()
     // INITIAL CONFIGURATION
     //
 
-    Ice::PropertiesPtr prop = properties();
-    std::string prefix = tag();
+    Ice::PropertiesPtr prop = context().properties();
+    std::string prefix = context().tag();
     prefix += ".Config.";
 
     bool testInSimulationMode = orcaice::getPropertyAsIntWithDefault( prop, prefix+"TestInSimulationMode", 0 );

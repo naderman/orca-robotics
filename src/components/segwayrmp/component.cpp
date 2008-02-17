@@ -111,11 +111,11 @@ Component::start()
 void
 Component::stop()
 {
-    tracer().debug( "stopping component", 2 );
+    context().tracer().debug( "stopping component", 2 );
     hydroiceutil::stopAndJoin( netThread_ );
-    tracer().info( "stopped net handler", 2 );
+    context().tracer().info( "stopped net handler", 2 );
     hydroiceutil::stopAndJoin( hwThread_ );
-    tracer().info( "stopped hw handler", 2 );
+    context().tracer().info( "stopped hw handler", 2 );
 }
 
 } // namespace

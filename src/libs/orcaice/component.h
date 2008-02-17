@@ -163,22 +163,6 @@ protected:
     //! @endverbatim
     const Context& context() const { return context_; };
 
-    //! Convenience shortcut to component's tag. Often used when parsing configuration files.
-    //! Same result as context().tag().
-    const std::string& tag() const { return context_.tag(); };
-    //! Convenience shortcut to component's local tracer API.
-    //! Same result as context().tracer().
-    hydroutil::Tracer& tracer() const { return context_.tracer(); };
-    //! Convenience shortcut to component's local status API.
-    //! Same result as context().status().
-    hydroutil::Status& status() const { return context_.status(); };
-    //! Convenience shortcut to component's local home API.
-    //! Same result as context().home().
-    Home& home() const { return context_.home(); };
-    //! Convenience shortcut to component's configuration properties.
-    //! Same result as context().properties().
-    Ice::PropertiesPtr properties() const { return context_.properties(); };
-
     //! Describes which standard interfaces this component will provide.
     ComponentInterfaceFlag interfaceFlag() const { return interfaceFlag_; };
 
@@ -202,6 +186,7 @@ private:
     orcaice::Home*   initHome();
     hydroutil::Tracer* initTracer();
     hydroutil::Status* initStatus();
+    hydroutil::History* initHistory();
     void getNetworkProperties();
 
     // Component's context

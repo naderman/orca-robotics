@@ -17,6 +17,7 @@
 #include <orcaice/home.h>
 #include <hydroutil/tracer.h>
 #include <hydroutil/status.h>
+#include <hydroutil/history.h>
 #include <hydroutil/context.h>
 
 namespace orcaice
@@ -84,6 +85,8 @@ public:
     hydroutil::Tracer&     tracer() const { return *tracer_; };
     //! Access status functions.
     hydroutil::Status&     status() const { return *status_; };
+    //! Access history functions.
+    hydroutil::History&    history() const { return *history_; };
 
 
     //! Actiates server functionality of the component. This function is useful when component activation
@@ -129,6 +132,7 @@ private:
     orcaice::Home*         home_;
     hydroutil::Tracer*     tracer_;
     hydroutil::Status*     status_;
+    hydroutil::History*    history_;
 };
 
 } // end namespace

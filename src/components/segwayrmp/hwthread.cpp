@@ -113,6 +113,7 @@ HwThread::walk()
     stringstream exceptionSS;
     std::string reason;
     const int eStopTimeoutMs = 1200;
+    std::stringstream historySS;
 
     //
     // Main loop
@@ -177,6 +178,11 @@ HwThread::walk()
                     context_.tracer().info( ss.str() );
                 }
             }
+
+            // keep track of our approximate motion for history
+            historySS.str(" ");
+            historySS << data.x;
+            context_.history().finish( historySS.str() );
         }
         catch ( std::exception &e ) {
             exceptionSS << "HwThread: Failed to read: " << e.what();

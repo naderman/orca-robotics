@@ -130,31 +130,31 @@ Service::start( const ::std::string        & name,
     // Set the component's properties based on the various sources from which properties can be read
     setProperties( properties,
                    args,
-                   component_->tag(),
+                   component_->context().tag(),
                    communicator,
                    _isSharedCommunicatorConfigured );
 
     // now communicator exists. we can further parse properties, make sure all the info is
     // there and set some properties (notably AdapterID)
     orca::FQComponentName fqCompName =
-                orcaice::detail::parseComponentProperties( communicator, component_->tag() );
+                orcaice::detail::parseComponentProperties( communicator, component_->context().tag() );
 
     // print all prop's now, after some stuff was added, e.g. Tag.AdapterId
     // note: is it possible that some of the prop's got stripped off by Ice::Application::main()? I don't think so.
     if ( properties->getPropertyAsInt( "Orca.PrintProperties" ) ) {
-        orcaice::detail::printComponentProperties( properties, component_->tag() );
+        orcaice::detail::printComponentProperties( properties, component_->context().tag() );
     }
 
     // create the one-and-only component adapter
-    adapter_ = communicator->createObjectAdapter( component_->tag() );
-    initTracerInfo( component_->tag()+": Created object adapter" );
+    adapter_ = communicator->createObjectAdapter( component_->context().tag() );
+    initTracerInfo( component_->context().tag()+": Created object adapter" );
 
     //
     // Give the component all the stuff it needs
     //
     bool isApp = false;
     component_->init( fqCompName, isApp, adapter_ );
-    initTracerInfo( component_->tag()+": Service initialized" );
+    initTracerInfo( component_->context().tag()+": Service initialized" );
 
     //
     // Start the component, catching all exceptions
@@ -164,7 +164,7 @@ Service::start( const ::std::string        & name,
     {
         component_->start();
         if ( communicator->getProperties()->getPropertyAsInt( "Orca.PrintComponentStarted" ) ) {
-            initTracerInfo( component_->tag()+": Component started" );
+            initTracerInfo( component_->context().tag()+": Component started" );
         }
     }
     catch ( const Ice::Exception &e ) {
@@ -184,8 +184,8 @@ Service::start( const ::std::string        & name,
     }
 
     if ( !exceptionSS.str().empty() ) {
-        initTracerError( component_->tag()+": "+exceptionSS.str() );
-        initTracerInfo( component_->tag()+": Service quitting." );
+        initTracerError( component_->context().tag()+": "+exceptionSS.str() );
+        initTracerInfo( component_->context().tag()+": Service quitting." );
     }
 }
 
@@ -195,17 +195,17 @@ Service::stop()
 
     if ( component_ )
     {
-        initTracerInfo( component_->tag()+": Stopping service..." );
+        initTracerInfo( component_->context().tag()+": Stopping service..." );
         component_->finalise();
         component_->stop();
-        initTracerInfo( component_->tag()+": Component stopped" );
+        initTracerInfo( component_->context().tag()+": Component stopped" );
     }
 
     adapter_->waitForDeactivate();
-    initTracerInfo( component_->tag()+": Adapter deactivated" );
+    initTracerInfo( component_->context().tag()+": Adapter deactivated" );
 
     adapter_ = 0;
-    initTracerInfo( component_->tag()+": Service stopped." );
+    initTracerInfo( component_->context().tag()+": Service stopped." );
 }
 
 } // namespace

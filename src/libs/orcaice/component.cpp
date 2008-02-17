@@ -15,6 +15,7 @@
 #include <orcaice/orcaice.h>
 #include <hydroiceutil/localstatus.h>
 #include <hydroiceutil/localtracer.h>
+#include <hydroiceutil/localhistory.h>
 #include "localhome.h"
 #include "homeI.h"
 #include "statusI.h"
@@ -79,6 +80,7 @@ Component::init( const orca::FQComponentName& name,
     context_.status_ = initStatus();
     getNetworkProperties();
     context_.home_   = initHome();
+    context_.history_= initHistory();
     componentThread_ = new ComponentThread( homePrx_, *(context_.status_), interfaceFlag_, context_ );
     try {
         componentThread_->start();
@@ -86,31 +88,31 @@ Component::init( const orca::FQComponentName& name,
     catch ( const Ice::Exception &e )
     {
         std::stringstream ss; ss << "orcaice::Component::start(): caught exception: " << e;
-        context().tracer().error( ss.str() );
+        context_.tracer().error( ss.str() );
         throw;
     }
     catch ( const std::exception &e )
     {
         std::stringstream ss; ss << "orcaice::Component::start(): caught exception: " << e.what();
-        context().tracer().error( ss.str() );
+        context_.tracer().error( ss.str() );
         throw;
     }
     catch ( const std::string &e )
     {
         std::stringstream ss; ss << "orcaice::Component::start(): caught std::string: " << e;
-        context().tracer().error( ss.str() );
+        context_.tracer().error( ss.str() );
         throw;
     }
     catch ( const char* &e )
     {
         std::stringstream ss; ss << "orcaice::Component::start(): caught char*: " << e;
-        context().tracer().error( ss.str() );
+        context_.tracer().error( ss.str() );
         throw;
     }
     catch ( ... )
     {
         std::stringstream ss; ss << "orcaice::Component::start(): caught unknown exception.";
-        context().tracer().error( ss.str() );
+        context_.tracer().error( ss.str() );
         throw;
     }
 };
@@ -131,7 +133,7 @@ Component::initTracer()
 {
     // We use programmatic configration as default. Config file settings will always overwrite.
     bool enableInterface = interfaceFlag_ & TracerInterface;
-    enableInterface = properties()->getPropertyAsIntWithDefault( "Orca.Component.EnableTracer", enableInterface );
+    enableInterface = context_.properties()->getPropertyAsIntWithDefault( "Orca.Component.EnableTracer", enableInterface );
     // in case the settings have changed, update the flag (it may be used by someone in the future)
     if ( enableInterface )
         interfaceFlag_ = ComponentInterfaceFlag( interfaceFlag_ | TracerInterface );
@@ -140,7 +142,7 @@ Component::initTracer()
 
     if ( !enableInterface ) 
     {
-        orcaice::initTracerInfo( tag()+": Initialized local trace handler.");
+        orcaice::initTracerInfo( context_.tag()+": Initialized local trace handler.");
         return new hydroiceutil::LocalTracer( 
                 hydroutil::Properties( context_.properties()->getPropertiesForPrefix("Orca.Tracer.")),
                 orcaice::toString(context_.name()) );
@@ -167,7 +169,7 @@ Component::initTracer()
     // a bit of a hack: keep this smart pointer so it's not destroyed with the adapter
     tracerObj_ = obj;
     
-    orcaice::initTracerInfo( tag()+": Initialized trace handler.");
+    orcaice::initTracerInfo( context_.tag()+": Initialized trace handler.");
     return trac;
 }
 
@@ -176,7 +178,7 @@ Component::initStatus()
 {
     // We use programmatic configration as default. Config file settings will always overwrite.
     bool enableInterface = interfaceFlag_ & StatusInterface;
-    enableInterface = properties()->getPropertyAsIntWithDefault( "Orca.Component.EnableStatus", enableInterface );
+    enableInterface = context_.properties()->getPropertyAsIntWithDefault( "Orca.Component.EnableStatus", enableInterface );
     // in case the settings have changed, update the flag (it may be used by someone in the future)
     if ( enableInterface )
         interfaceFlag_ = ComponentInterfaceFlag( interfaceFlag_ | StatusInterface );
@@ -185,7 +187,7 @@ Component::initStatus()
 
     if ( !enableInterface ) 
     {
-        orcaice::initTracerInfo( tag()+": Initialized local status handler");
+        orcaice::initTracerInfo( context_.tag()+": Initialized local status handler");
         return new hydroiceutil::LocalStatus( 
             context_.tracer(),
             hydroutil::Properties( context_.properties()->getPropertiesForPrefix("Orca.Status."),"Orca.Status.") );
@@ -198,7 +200,7 @@ Component::initStatus()
     context_.adapter()->add( statusObj_, context_.communicator()->stringToIdentity("status") );
 
     hydroutil::Status* stat = (hydroutil::Status*)pobj;
-    orcaice::initTracerInfo( tag()+": Initialized status handler");
+    orcaice::initTracerInfo( context_.tag()+": Initialized status handler");
     return stat;
 }
 
@@ -207,7 +209,7 @@ Component::initHome()
 {
     // We use programmatic configration as default. Config file settings will always overwrite.
     bool enableInterface = interfaceFlag_ & HomeInterface;
-    enableInterface = properties()->getPropertyAsIntWithDefault( "Orca.Component.EnableHome", enableInterface );
+    enableInterface = context_.properties()->getPropertyAsIntWithDefault( "Orca.Component.EnableHome", enableInterface );
     // in case the settings have changed, update the flag (it may be used by someone in the future)
     if ( enableInterface )
         interfaceFlag_ = ComponentInterfaceFlag( interfaceFlag_ | HomeInterface );
@@ -227,8 +229,19 @@ Component::initHome()
     std::string homeIdentity = toHomeIdentity( context_.name() );
     homePrx_ = context_.adapter()->add( homeObj, context_.communicator()->stringToIdentity(homeIdentity) );
 
-    orcaice::initTracerInfo( tag()+": Initialized Home interface");
+    orcaice::initTracerInfo( context_.tag()+": Initialized Home interface");
     return (Home*)hobj;
+}
+
+hydroutil::History*
+Component::initHistory()
+{
+    hydroutil::History* history = new hydroiceutil::LocalHistory( 
+        hydroutil::Properties( context_.properties()->getPropertiesForPrefix("Orca.History."),"Orca.History.") );
+
+    orcaice::initTracerInfo( context_.tag()+": Initialized local history handler");
+
+    return history;
 }
 
 void
@@ -237,7 +250,7 @@ Component::getNetworkProperties()
     // If _anything_ goes wrong, print an error message and throw exception
     try {
         // Connect to the remote properties server
-        std::string propertyServerProxyString = orcaice::getPropertyWithDefault( properties(), 
+        std::string propertyServerProxyString = orcaice::getPropertyWithDefault( context_.properties(), 
                                                                                  "Orca.PropertyServerProxyString",
                                                                                  "" );
         if ( propertyServerProxyString.empty() )
@@ -260,8 +273,8 @@ Component::getNetworkProperties()
             const string &fromKey   = it->first;
             const string &fromValue = it->second;
             const string &toKey     = it->first;
-//            detail::transferProperty( properties(), fromKey, fromValue, toKey, forceTransfer );
-            Ice::PropertiesPtr prop = properties();
+//            detail::transferProperty( context_.properties(), fromKey, fromValue, toKey, forceTransfer );
+            Ice::PropertiesPtr prop = context_.properties();
             int ret = detail::transferProperty( prop, fromKey, fromValue, toKey, forceTransfer );
             stringstream ss;
             if ( ret == 0 )
@@ -280,31 +293,31 @@ Component::getNetworkProperties()
     catch ( const Ice::Exception &e )
     {
         std::stringstream ss; ss << "orcaice::Component::getNetworkProperties(): caught exception: " << e;
-        context().tracer().error( ss.str() );
+        context_.tracer().error( ss.str() );
         throw;
     }
     catch ( const std::exception &e )
     {
         std::stringstream ss; ss << "orcaice::Component::getNetworkProperties(): caught exception: " << e.what();
-        context().tracer().error( ss.str() );
+        context_.tracer().error( ss.str() );
         throw;
     }
     catch ( const std::string &e )
     {
         std::stringstream ss; ss << "orcaice::Component::getNetworkProperties(): caught std::string: " << e;
-        context().tracer().error( ss.str() );
+        context_.tracer().error( ss.str() );
         throw;
     }
     catch ( const char* &e )
     {
         std::stringstream ss; ss << "orcaice::Component::getNetworkProperties(): caught char*: " << e;
-        context().tracer().error( ss.str() );
+        context_.tracer().error( ss.str() );
         throw;
     }
     catch ( ... )
     {
         std::stringstream ss; ss << "orcaice::Component::getNetworkProperties(): caught unknown exception.";
-        context().tracer().error( ss.str() );
+        context_.tracer().error( ss.str() );
         throw;
     }
 }
@@ -318,42 +331,42 @@ Component::activate()
         // See: http://www.zeroc.com/forums/help-center/3266-icegrid-activationtimedout.html#post14380
         context_.communicator()->setDefaultLocator(Ice::LocatorPrx::uncheckedCast(context_.communicator()->getDefaultLocator()->ice_collocationOptimized(false)));
         context_.adapter()->activate();
-        tracer().debug( "Adapter activated", 2 );
+        context_.tracer().debug( "Adapter activated", 2 );
     }
     catch ( Ice::DNSException& e )
     {
         std::stringstream ss;
         ss << "orcaice::Component: Error while activating Component: "<<e<<".  Check network.";
-        tracer().warning( ss.str() );
+        context_.tracer().warning( ss.str() );
         throw orcaice::NetworkException( ERROR_INFO, ss.str() );
     }
     catch ( Ice::ConnectionRefusedException& e )
     {
-        bool requireRegistry = properties()->getPropertyAsInt( "Orca.RequireRegistry" );
+        bool requireRegistry = context_.properties()->getPropertyAsInt( "Orca.RequireRegistry" );
         if ( requireRegistry ) {
             std::stringstream ss; 
             ss<<"orcaice::Component: Error while activating Component: "<<e<<". Check IceGrid Registry.";
-            tracer().error( ss.str() );
-            tracer().info( "orcaice::Component: You may allow to continue by setting Orca.RequireRegistry=0." );
+            context_.tracer().error( ss.str() );
+            context_.tracer().info( "orcaice::Component: You may allow to continue by setting Orca.RequireRegistry=0." );
             throw orcaice::NetworkException( ERROR_INFO, ss.str() );
         }
         else {
             std::stringstream ss; ss<<"orcaice::Component: Failed to register Component("<<e<<"), only direct connections will be possible.";
-            tracer().warning( ss.str() );
-            tracer().info( "orcaice::Component: You may enforce registration by setting Orca.RequireRegistry=1." );
+            context_.tracer().warning( ss.str() );
+            context_.tracer().info( "orcaice::Component: You may enforce registration by setting Orca.RequireRegistry=1." );
         }
     }
     catch( const Ice::ObjectAdapterDeactivatedException &e )
     {
         std::stringstream ss;
         ss << "orcaice::Component: Failed to activate component because it's deactivating: " << e;
-        tracer().warning( ss.str() );
+        context_.tracer().warning( ss.str() );
         throw orcaice::ComponentDeactivatingException( ERROR_INFO, ss.str() );
     }
     catch( const Ice::Exception& e )
     {
         std::stringstream ss; ss<<"orcaice::Component: Failed to activate component: "<<e<<".  Check IceGrid Registry.";
-        tracer().warning( ss.str() );
+        context_.tracer().warning( ss.str() );
         throw orcaice::NetworkException( ERROR_INFO, ss.str() );
     }
 }

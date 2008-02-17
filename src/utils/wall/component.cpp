@@ -136,8 +136,8 @@ Component::start()
     //
     activate();
 
-    Ice::PropertiesPtr props = properties();
-    std::string prefix = tag()+".Config.";
+    Ice::PropertiesPtr props = context().properties();
+    std::string prefix = context().tag()+".Config.";
 
     string libNames = orcaice::getPropertyWithDefault( props, prefix+"FactoryLibNames", DEFAULT_FACTORY_NAME );
     // returns a listing of unique supported interfaces, for display drivers to know what's supported

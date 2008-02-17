@@ -31,7 +31,7 @@ Component::Component() :
 void
 Component::start()
 {
-    tracer().debug("starting component",2);
+    context().tracer().debug("starting component",2);
 
     //
     // USER DISPLAY
@@ -62,10 +62,10 @@ Component::stop()
 {
     // inputThread_ is blocked on user input
     // the only way for it to realize that we want to stop is to give it some keyboard input.
-    tracer().info( "Component is quitting but the InputThread is blocked waiting for user input.");
-    tracer().print( "************************************************" );
-    tracer().print( "Press any key or shake the joystick to continue." );
-    tracer().print( "************************************************" );
+    context().tracer().info( "Component is quitting but the InputThread is blocked waiting for user input.");
+    context().tracer().print( "************************************************" );
+    context().tracer().print( "Press any key or shake the joystick to continue." );
+    context().tracer().print( "************************************************" );
     
     hydroiceutil::stopAndJoin( inputThread_ );
     hydroiceutil::stopAndJoin( networkThread_ );

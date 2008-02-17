@@ -43,7 +43,7 @@ Component::connectForTracingInfo( orca::TracerPrx tracerPrx )
         {
             stringstream ss;
             ss << "Failed to subscribe for data updates: "<<e.what<<endl<<"Will try again after 2 seconds.";
-            tracer().error( ss.str() );
+            context().tracer().error( ss.str() );
             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
         }
     }
@@ -85,8 +85,8 @@ Component::start()
                 stringstream tagStream;
                 tagStream << "Tracer" << i;
                 
-                Ice::PropertiesPtr prop = properties();
-                std::string key = tag()+".Requires."+tagStream.str()+".Proxy";
+                Ice::PropertiesPtr prop = context().properties();
+                std::string key = context().tag()+".Requires."+tagStream.str()+".Proxy";
                 std::string endpoint;
                 // cout<<"TRACE(component.cpp): Looking for: " << key << endl;
 
@@ -107,7 +107,7 @@ Component::start()
             {
                 std::stringstream ss;
                 ss << "Failed to connect to remote object: "<<e.what()<<endl<<"Will try again after 2 seconds.";
-                tracer().error( ss.str() );
+                context().tracer().error( ss.str() );
                 IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
             }
         }

@@ -20,8 +20,8 @@ using namespace registryview;
 void 
 Component::start()
 {
-    std::string prefix = tag() + ".Config.";
-    double refreshInterval = orcaice::getPropertyAsDoubleWithDefault( properties(),
+    std::string prefix = context().tag() + ".Config.";
+    double refreshInterval = orcaice::getPropertyAsDoubleWithDefault( context().properties(),
             prefix+"RefreshInterval", 120.0 );
 
     //

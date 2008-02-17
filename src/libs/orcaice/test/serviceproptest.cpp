@@ -51,15 +51,15 @@ extern "C"
 void TestComponent::start()
 {
     cout<<"testing properties in Service ... ";
-    int got = properties()->getPropertyAsInt( "Orca.Tracer.ErrorToFile" );
-    int expect = properties()->getPropertyAsInt( tag()+".Expect" );
+    int got = context().properties()->getPropertyAsInt( "Orca.Tracer.ErrorToFile" );
+    int expect = context().properties()->getPropertyAsInt( context().tag()+".Expect" );
     if ( got != expect ) {
         cout<<"failed"<<endl<<"expect="<<expect<<"; got="<<got<<endl;
         exit(EXIT_FAILURE);
     }
     cout<<"ok"<<endl;
     
-    if ( properties()->getPropertyAsInt( tag()+".Config.Quit" ) )
+    if ( context().properties()->getPropertyAsInt( context().tag()+".Config.Quit" ) )
     {
         cout<<"quitting..."<<endl;
         // NOTE: cannot call communicator()->destroy() from here

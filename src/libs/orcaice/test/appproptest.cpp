@@ -31,8 +31,8 @@ public:
 void TestComponent::start()
 {
     cout<<"testing properties in Application ... ";
-    int got = properties()->getPropertyAsInt( "Orca.Tracer.ErrorToFile" );
-    int expect = properties()->getPropertyAsInt( tag()+".Expect" );
+    int got = context().properties()->getPropertyAsInt( "Orca.Tracer.ErrorToFile" );
+    int expect = context().properties()->getPropertyAsInt( context().tag()+".Expect" );
     if ( got != expect ) {
         cout<<"failed"<<endl<<"expect="<<expect<<"; got="<<got<<endl;
         exit(EXIT_FAILURE);

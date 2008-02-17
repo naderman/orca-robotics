@@ -30,8 +30,8 @@ Component::Component()
 void
 Component::start()
 {
-    Ice::PropertiesPtr props = properties();
-    std::string prefix = tag()+".Config.";
+    Ice::PropertiesPtr props = context().properties();
+    std::string prefix = context().tag()+".Config.";
 
     // which driver to load?
     std::string driverName = orcaice::getPropertyWithDefault( props, prefix+"Driver", "term-iostream" );
@@ -45,7 +45,7 @@ Component::start()
     if ( driverName == "term-ncurses" ) 
     {
 #ifdef HAVE_TERM_NCURSES_DRIVER        
-        tracer().info( "Loading terminal ncurses driver");
+        context().tracer().info( "Loading terminal ncurses driver");
         TermNcursesUser* user = new TermNcursesUser( context() );
         usrThread_ = (hydroiceutil::SafeThread*)user;
         userDriver = (User*)user;
@@ -55,14 +55,14 @@ Component::start()
     }
     else if ( driverName == "term-iostream" ) 
     {
-        tracer().info( "Loading terminal iostream driver");
+        context().tracer().info( "Loading terminal iostream driver");
         TermIostreamUser* userMainThread = new TermIostreamUser( context() );
         usrThread_ = (hydroiceutil::SafeThread*)userMainThread;
         userDriver = (User*)userMainThread;
     }
     else {
         std::string errorStr = "Unknown driver type." + driverName + " Cannot talk to hardware.";
-        tracer().error( errorStr);
+        context().tracer().error( errorStr);
         throw hydroutil::HardwareException( ERROR_INFO, errorStr );
     }
     

@@ -250,7 +250,7 @@ Component::start()
 
 void Component::stop()
 {
-    tracer().debug("stopping component",5);
+    context().tracer().debug("stopping component",5);
 }
 
 }

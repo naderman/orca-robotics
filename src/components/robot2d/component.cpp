@@ -28,7 +28,7 @@ Component::Component() :
 void
 Component::start()
 {
-    tracer().debug( "Starting Component",2 );
+    context().tracer().debug( "Starting Component",2 );
 
     //
     // Read vehicle description from config file
@@ -66,9 +66,9 @@ Component::start()
 void
 Component::stop()
 {
-    tracer().debug( "stopping component", 2 );
+    context().tracer().debug( "stopping component", 2 );
     hydroiceutil::stopAndJoin( NetThread_ );
-    tracer().info( "stopped net handler", 2 );
+    context().tracer().info( "stopped net handler", 2 );
     hydroiceutil::stopAndJoin( HwThread_ );
-    tracer().info( "stopped hw handler", 2 );
+    context().tracer().info( "stopped hw handler", 2 );
 }

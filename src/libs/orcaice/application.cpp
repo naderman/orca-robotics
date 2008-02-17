@@ -109,7 +109,7 @@ Application::main(int argc, char* argv[])
     initData.properties = Ice::createProperties();
 
     // Set the component's properties based on the various sources from which properties can be read
-    setProperties( initData.properties, args, component_.tag() );
+    setProperties( initData.properties, args, component_.context().tag() );
 
     // now pass the startup options to Ice which will start the Communicator
     return IceApplication::main( argc, argv, initData );
@@ -121,17 +121,17 @@ Application::run( int argc, char* argv[] )
     // now communicator exists. we can further parse properties, make sure all the info is
     // there and set some properties (notably AdapterID)
     orca::FQComponentName fqCompName =
-                    orcaice::detail::parseComponentProperties( communicator(), component_.tag() );
+                    orcaice::detail::parseComponentProperties( communicator(), component_.context().tag() );
 
     // print all prop's now, after some stuff was added, e.g. Tag.AdapterId
     // note: is it possible that some of the prop's got stripped off by Ice::Application::main()? I don't think so.
     if ( communicator()->getProperties()->getPropertyAsInt( "Orca.PrintProperties" ) ) {
-        orcaice::detail::printComponentProperties( communicator()->getProperties(), component_.tag() );
+        orcaice::detail::printComponentProperties( communicator()->getProperties(), component_.context().tag() );
     }
 
     // create the one-and-only component adapter
-    adapter_ = communicator()->createObjectAdapter(component_.tag());
-    initTracerInfo( component_.tag()+": Created object adapter" );
+    adapter_ = communicator()->createObjectAdapter(component_.context().tag());
+    initTracerInfo( component_.context().tag()+": Created object adapter" );
 
     //
     // Give the component all the stuff it needs to initialize
@@ -139,7 +139,7 @@ Application::run( int argc, char* argv[] )
     //
     bool isApp = true;
     component_.init( fqCompName, isApp, adapter_ );
-    initTracerInfo( component_.tag()+": Application initialized" );
+    initTracerInfo( component_.context().tag()+": Application initialized" );
 
     //
     // Start the component, catching all exceptions
@@ -152,7 +152,7 @@ Application::run( int argc, char* argv[] )
         // this is optional because after the comp is started we can't assume that dumping to cout 
         // will produce the desired result (e.g. if ncurses are used)
         if ( communicator()->getProperties()->getPropertyAsInt( "Orca.PrintComponentStarted" ) ) {
-            initTracerInfo( component_.tag()+": Component started" );
+            initTracerInfo( component_.context().tag()+": Component started" );
         }
     }
     catch ( const Ice::Exception &e ) {
@@ -172,23 +172,23 @@ Application::run( int argc, char* argv[] )
     }
 
     if ( !exceptionSS.str().empty() ) {
-        initTracerError( component_.tag()+": "+exceptionSS.str() );
-        initTracerInfo( component_.tag()+": Application quitting. Orca out." );
+        initTracerError( component_.context().tag()+": "+exceptionSS.str() );
+        initTracerInfo( component_.context().tag()+": Application quitting. Orca out." );
         return 1;
     }
 
     // component started without a problem. now will wait for Ctrl-C from user or comm
     communicator()->waitForShutdown();
     
-    initTracerInfo( component_.tag()+": Communicator is destroyed. Stopping component" );
+    initTracerInfo( component_.context().tag()+": Communicator is destroyed. Stopping component" );
     component_.finalise();
     component_.stop();
-    initTracerInfo( component_.tag()+": Component stopped" );
+    initTracerInfo( component_.context().tag()+": Component stopped" );
 
     adapter_->waitForDeactivate();
-    initTracerInfo( component_.tag()+": Adapter deactivated" );
+    initTracerInfo( component_.context().tag()+": Adapter deactivated" );
 
-    initTracerInfo( component_.tag()+": Application quitting. Orca out." );
+    initTracerInfo( component_.context().tag()+": Application quitting. Orca out." );
 
     return 0;
 }

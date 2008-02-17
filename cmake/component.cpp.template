@@ -5,6 +5,7 @@
 
 #include "component.h"
 #include "mainthread.h"
+#include <orcaice/proputils.h>
 
 using namespace ${COMP_NAMESPACE};
 
@@ -18,12 +19,20 @@ Component::start()
 {
     mainThread_ = new MainThread( context() );
     mainThread_->start();
+
+    // give MainThread a chance to write something to history
+    context().history().autoStart( false );
+    context().history().flush();
 }
 
 void
 Component::stop()
 {
-    tracer().debug( "stopping component", 5 );
+    context().tracer().debug( "stopping main thread", 5 );
     hydroiceutil::stopAndJoin( mainThread_ );
-    tracer().debug( "stopped component", 5 );
+    context().tracer().debug( "stopped main thread", 5 );
+
+    // give MainThread a chance to write something to history
+    context().history().autoFinish( false );
+    context().history().flush();
 }

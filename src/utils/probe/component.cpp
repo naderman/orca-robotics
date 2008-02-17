@@ -109,8 +109,8 @@ Component::start()
     //
     activate();
 
-    Ice::PropertiesPtr props = properties();
-    std::string prefix = tag()+".Config.";
+    Ice::PropertiesPtr props = context().properties();
+    std::string prefix = context().tag()+".Config.";
 
     string libNames = orcaice::getPropertyWithDefault( props, prefix+"FactoryLibNames", DEFAULT_FACTORY_NAME );
     // returns a listing of unique supported interfaces, for display drivers to know what's supported
@@ -127,7 +127,7 @@ Component::start()
     if ( driverName == "gui-qt" ) 
     {
 #ifdef HAVE_GUI_QT_DRIVER        
-        tracer().info( "Loading GUI Qt driver");
+        context().tracer().info( "Loading GUI Qt driver");
         display = new GuiQtDisplay( supportedInterfaces );
 #else
         throw hydroutil::Exception( ERROR_INFO, "Can't instantiate driver type 'gui-qt' because it was not compiled." );
@@ -135,12 +135,12 @@ Component::start()
     }
     else if ( driverName == "term-iostream" ) 
     {
-        tracer().info( "Loading terminal iostream driver");
+        context().tracer().info( "Loading terminal iostream driver");
         display = new TermIostreamDisplay( supportedInterfaces );
     }
     else {
         std::string errorStr = "Unknown driver type." + driverName + " Cannot talk to hardware.";
-        tracer().error( errorStr);
+        context().tracer().error( errorStr);
         throw hydroutil::HardwareException( ERROR_INFO, errorStr );
     }
 
