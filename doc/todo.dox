@@ -71,10 +71,15 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 @par Updated interfaces
 @par Updated components
 
-- Big clean up of the component. All driver functionality moved to Hydro. (alex m)
+- Gps
+  - Big clean up of the component. All driver functionality moved to Hydro. (alex m)
 
 @par Updated utilities
 @par Updated libraries
+
+- libOrcaIce
+  - Component API: removed now rarely used shortcuts to the contents of Context.
+
 @par Removed
 
 
