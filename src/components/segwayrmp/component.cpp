@@ -104,6 +104,10 @@ Component::start()
     // this thread will try to activate and register the adapter
     netThread_->start();
 
+    // give MainThread a chance to write something to history
+    context().history().autoStart( false );
+    context().history().flush();
+
     // the rest is handled by the application/service
     context().tracer().debug( "Component::start() done." );
 }
@@ -116,6 +120,10 @@ Component::stop()
     context().tracer().info( "stopped net handler", 2 );
     hydroiceutil::stopAndJoin( hwThread_ );
     context().tracer().info( "stopped hw handler", 2 );
+
+    // give MainThread a chance to write something to history
+    context().history().autoFinish( false );
+    context().history().flush();
 }
 
 } // namespace
