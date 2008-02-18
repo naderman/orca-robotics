@@ -50,8 +50,8 @@ Component::~Component()
 void
 Component::start()
 {
-    Ice::PropertiesPtr prop = properties();
-    std::string prefix = tag()+".Config.";
+    Ice::PropertiesPtr prop = context().properties();
+    std::string prefix = context().tag()+".Config.";
 
     //
     // DRIVER CONFIGURATION
@@ -95,7 +95,7 @@ Component::start()
     }    
 
     if ( !desiredCfg.validate() ) {
-        tracer().error( "Failed to validate camera configuration. "+desiredCfg.toString() );
+        context().tracer().error( "Failed to validate camera configuration. "+desiredCfg.toString() );
         // this will kill this component
         throw hydroutil::Exception( ERROR_INFO, "Failed to validate camera configuration" );
     }
@@ -155,7 +155,7 @@ Component::start()
         throw hydroutil::Exception( ERROR_INFO, errString );
         return;
     }
-    tracer().debug( "loaded '"+driverName+"' driver", 2 );
+    context().tracer().debug( "loaded '"+driverName+"' driver", 2 );
 
     //
     // Init driver
@@ -205,7 +205,7 @@ Component::start()
 void 
 Component::stop()
 {
-    tracer().debug("stopping component...",2);
+    context().tracer().debug("stopping component...",2);
     hydroiceutil::stopAndJoin( mainThread_ );
 }
 

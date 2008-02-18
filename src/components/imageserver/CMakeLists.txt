@@ -84,6 +84,7 @@ IF ( build )
         SET( dep_libs ${dep_libs} ${OPENCV_LIBS} digiclops triclops OrcaImage OrcaImageGrabber )
     ENDIF ( DIGICLOPS_AND_TRICLOPS_FOUND )
     
+    SET( dep_libs ${dep_libs} ${OPENCV_LIBS} OrcaImage OrcaImageGrabber )
 
     SET( srcs component mainthread ${DRIVER_srcs} ${MONO_DRIVER_srcs} )
     
