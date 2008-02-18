@@ -204,10 +204,18 @@ getPropertyAsDouble( const Ice::PropertiesPtr & prop, const ::std::string& key, 
         // atof returns 0.0 if failes to convert, can't detect errors
         //d = atof( stringVal.c_str() );
         
-        std::istringstream iss( stringVal );
+        std::istringstream ss( stringVal );
         double d;
-        iss >> d;
-        if ( !iss ) return -1;
+        ss >> d;
+        if ( !ss )
+            throw hydroutil::Exception( ERROR_INFO, "Failed to parse '"+stringVal+"' to a double" );
+
+        // check that there's nothing left (except white space)
+        char test;
+        ss >> test;
+        if ( test!='#' && !ss.eof() )
+            throw hydroutil::Exception( ERROR_INFO, "Failed to parse '"+stringVal+"' to an double" );
+
         value = d;
     }
     return 0;
@@ -238,9 +246,19 @@ getPropertyAsInt( const Ice::PropertiesPtr & prop, const ::std::string& key, int
         // atoi returns 0 if failes to convert, can't detect errors
         //value = atoi( stringVal.c_str() );
         
-        std::istringstream iss( stringVal );
-        iss >> value;
-        if ( !iss ) return -1;
+        std::istringstream ss( stringVal );
+        int i;
+        ss >> i;
+        if ( !ss )
+            throw hydroutil::Exception( ERROR_INFO, "Failed to parse '"+stringVal+"' to an int" );
+
+        // check that there's nothing left (except white space)
+        char test;
+        ss >> test;
+        if ( test!='#' && !ss.eof() )
+            throw hydroutil::Exception( ERROR_INFO, "Failed to parse '"+stringVal+"' to an int" );
+
+        value = i;
     }
     return 0;
 }
@@ -264,7 +282,9 @@ getPropertyAsIntVector( const Ice::PropertiesPtr & prop, const ::std::string& ke
     if ( getProperty( prop, key, stringVal ) )
         return -1;
     else
-        return hydroutil::toIntVector( stringVal, value );
+        if ( hydroutil::toIntVector( stringVal, value ) )
+            throw hydroutil::Exception( ERROR_INFO, "Failed to parse '"+stringVal+"' to a vector of ints" );
+
     return 0;
 }
 
@@ -295,13 +315,11 @@ getPropertyAsDoubleVector( const Ice::PropertiesPtr & prop, const ::std::string&
 {
     std::string stringVal;
     if ( getProperty( prop, key, stringVal ) )
-    {
         return -1;
-    }
     else
-    {
-        return hydroutil::toDoubleVector( stringVal, value );
-    }
+        if ( hydroutil::toDoubleVector( stringVal, value ) )
+            throw hydroutil::Exception( ERROR_INFO, "Failed to parse '"+stringVal+"' to a vector of doubles" );
+ 
     return 0;
 }
 
