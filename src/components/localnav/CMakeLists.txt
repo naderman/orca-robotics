@@ -8,7 +8,7 @@ REQUIRE_VAR( build EXE ${APP_NAME} ORCA_OS_LINUX "only Linux OS is supported" )
 SET( ext_libs HydroDll HydroNavUtil )
 REQUIRE_INSTALLS( build EXE ${APP_NAME} ${ext_libs} )
 
-SET( int_libs OrcaLocalNav OrcaNavUtil )
+SET( int_libs OrcaLocalNav OrcaNavUtil OrcaIfaceImpl OrcaOgMap OrcaPathPlan HydroGeom2d )
 REQUIRE_TARGETS( build EXE ${APP_NAME} ${int_libs} )
 
 IF ( build )
