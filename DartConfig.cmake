@@ -1,6 +1,6 @@
 SET (DROP_METHOD "xmlrpc")
 SET (DROP_SITE "http://opium.acfr.usyd.edu.au:8081")
-SET (DROP_LOCATION "orca2")
+SET (DROP_LOCATION "orca")
 SET (COMPRESS_SUBMISSION ON)
 
 # Dashboard is opened for submissions for a 24 hour period starting at
