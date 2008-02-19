@@ -1,0 +1,49 @@
+/*
+ * Orca-Robotics Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2008 Alex Brooks, Alexei Makarenko, Tobias Kaupp, Ben Upcroft
+ *
+ * This copy of Orca is licensed to you under the terms described in
+ * the LICENSE file included in this distribution.
+ *
+ */
+/*!
+@ingroup orca_utils
+@ingroup orca_apps
+@ingroup orca_services
+@ingroup orca_cpp
+@ingroup orca_linux
+@defgroup orca_component_snapshotlogger Snapshotlogger
+
+@brief Logs data and configurations from interfaces when triggered
+
+@par Provides
+
+- @ref orca_interface_home
+- @ref orca_interface_status
+- @ref orca_interface_tracer
+
+@par Operation
+
+The principle of operation is similar to @ref orca_component_logger.
+
+The difference is that, where @ref orca_component_logger starts
+logging immediately and logs continuously, SnapshotLogger continually
+receives data but only logs to file when triggered.  On receiving a
+trigger, it logs all data received in a small window of time.
+
+@see @ref orca_component_logger
+@see @ref orca_component_logplayer
+
+@par Configuration
+
+Interfaces to log are defined as in @ref orca_component_logger.
+
+@par Logfile Format
+
+Logfile format is identical to @ref orca_component_logger.
+
+@par Authors
+- Alex Brooks, Tobias Kaupp, Alexei Makarenko
+
+*/
