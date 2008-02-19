@@ -32,12 +32,14 @@ MAKECOMMAND:STRING=make
 BUILDNAME:STRING=Debian-gcc42
 SITE:STRING=devdebian.acfr.usyd.edu.au
 CMAKE_BUILD_TYPE:STRING=Debug
-#ORCA_BUILD_JAVA:BOOL=ON
+#BUILD_JAVA:BOOL=ON
 BUILD_IMAGE_SERVER:BOOL=ON
 ")
 
 # set any extra envionment variables here
 SET (CTEST_ENVIRONMENT
+GEARBOX_HOME=/opt/gearbox-cont
+HYDRO_HOME=/opt/hydro-cont
 ORCA_INSTALL=/opt/orca-cont
 CC=/home/users/dart/bin/gcc
 CXX=/home/users/dart/bin/g++

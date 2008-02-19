@@ -13,6 +13,14 @@ while true; do
  date >> $logfile
  echo ----------------------------------- >> $logfile
 
+ echo ===== Building Gearbox  ===== >> $logfile
+ /usr/bin/ctest -S $dashboard/gearbox-cont-linux-gcc42.cmake -V >> $logfile 2>&1
+
+ echo ==== Installing Gearbox  ===== >> $logfile
+ cd $dashboard/build-gearbox >> $logfile 2>&1
+ make install >> $logfile 2>&1
+ cd ~ >> $logfile 2>&1
+   
  echo ===== Building Hydro  ===== >> $logfile
  /usr/bin/ctest -S $dashboard/hydro-cont-linux-gcc42.cmake -V >> $logfile 2>&1
  
@@ -36,6 +44,9 @@ while true; do
  echo ===== Building and Testing empty-project  ===== >> $logfile
  /usr/bin/ctest -S $dashboard/empty-cont-linux-gcc42.cmake -V >> $logfile 2>&1
   
+ echo ===== Building and Testing shh  ===== >> $logfile
+ /usr/bin/ctest -S $dashboard/shh-cont-linux-gcc42.cmake -V >> $logfile 2>&1
+   
  echo ===== Finished  =============== >> $logfile
   
  sleep 311
