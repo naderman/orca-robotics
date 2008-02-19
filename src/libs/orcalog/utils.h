@@ -54,6 +54,8 @@ inline IceUtil::Time iceUtilTime( int sec, int usec )
     return IceUtil::Time::seconds(sec) + IceUtil::Time::microSeconds(usec);
 }
 
+std::string humanReadableTimeStamp();
+
 } //namespace
 
 #endif

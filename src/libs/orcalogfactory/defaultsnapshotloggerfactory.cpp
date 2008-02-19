@@ -9,13 +9,13 @@
  */
 
 // #include <iostream>
-#include "defaultautologgerfactory.h"
-#include "autologgers.h"
+#include "defaultsnapshotloggerfactory.h"
+#include "snapshotloggers.h"
 
 using namespace std;
 using namespace orcalogfactory;
 
-DefaultAutoLoggerFactory::DefaultAutoLoggerFactory()
+DefaultSnapshotLoggerFactory::DefaultSnapshotLoggerFactory()
 {
     addSupportedType("Cpu");
     addSupportedType("DriveBicycle");
@@ -31,57 +31,57 @@ DefaultAutoLoggerFactory::DefaultAutoLoggerFactory()
     addSupportedType("Gps");
 }
 
-orcalog::AutoLogger* 
-DefaultAutoLoggerFactory::create( const std::string &interfaceType )
+orcalog::SnapshotLogger* 
+DefaultSnapshotLoggerFactory::create( const std::string &interfaceType )
 {
-    std::auto_ptr<orcalog::AutoLogger> logger;
+    std::auto_ptr<orcalog::SnapshotLogger> logger;
     if (interfaceType == "Cpu")
     {
-        logger.reset( new CpuAutoLogger );
+        logger.reset( new CpuSnapshotLogger );
     }
     else if (interfaceType == "DriveBicycle")
     {
-        logger.reset( new DriveBicycleAutoLogger );
+        logger.reset( new DriveBicycleSnapshotLogger );
     }
     else if (interfaceType == "Imu")
     {
-        logger.reset( new ImuAutoLogger );
+        logger.reset( new ImuSnapshotLogger );
     }
     else if (interfaceType == "LaserScanner2d")
     {
-        logger.reset( new LaserScanner2dAutoLogger );
+        logger.reset( new LaserScanner2dSnapshotLogger );
     }
     else if (interfaceType == "Localise2d")
     {
-        logger.reset( new Localise2dAutoLogger );
+        logger.reset( new Localise2dSnapshotLogger );
     }
     else if (interfaceType == "Localise3d")
     {
-        logger.reset( new Localise3dAutoLogger );
+        logger.reset( new Localise3dSnapshotLogger );
     }
     else if (interfaceType == "Odometry2d")
     {
-        logger.reset( new Odometry2dAutoLogger );
+        logger.reset( new Odometry2dSnapshotLogger );
     }
     else if (interfaceType == "Odometry3d")
     {
-        logger.reset( new Odometry3dAutoLogger );
+        logger.reset( new Odometry3dSnapshotLogger );
     }
     else if (interfaceType == "PolarFeature2d")
     {
-        logger.reset( new PolarFeature2dAutoLogger );
+        logger.reset( new PolarFeature2dSnapshotLogger );
     }
     else if (interfaceType == "Power")
     {
-        logger.reset( new PowerAutoLogger );
+        logger.reset( new PowerSnapshotLogger );
     }
     else if (interfaceType == "Wifi")
     {
-        logger.reset( new WifiAutoLogger );
+        logger.reset( new WifiSnapshotLogger );
     }
     else if (interfaceType == "Gps")
     {
-        logger.reset( new GpsAutoLogger );
+        logger.reset( new GpsSnapshotLogger );
     }
     else
     {
@@ -91,7 +91,7 @@ DefaultAutoLoggerFactory::create( const std::string &interfaceType )
     return logger.release();
 }
 
-orcalog::AutoLoggerFactory* createAutoLoggerFactory()
+orcalog::SnapshotLoggerFactory* createSnapshotLoggerFactory()
 {
-    return new DefaultAutoLoggerFactory;
+    return new DefaultSnapshotLoggerFactory;
 }

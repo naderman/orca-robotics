@@ -13,6 +13,7 @@
 #include <orcalog/masterfilewriter.h>
 #include <orcalog/logwriter.h>
 #include <orcalog/autologgerfactory.h>
+#include <orcalog/snapshotloggerfactory.h>
 
 #include <orcalog/masterfilereader.h>
 #include <orcalog/logreader.h>

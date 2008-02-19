@@ -13,7 +13,8 @@
 
 #include <orcalog/masterfilewriter.h>
 #include <orcalog/logwriterinfo.h>
-#include <orcalog/masterfilewritethread.h>
+#include <orcalog/masterfilewritehandler.h>
+#include <memory>
 
 namespace orcalog
 {
@@ -29,20 +30,20 @@ class LogWriter
 {
 public:
 
-    //! Params are:
-    //!   logWriterInfo:    struct with required info for all logWriters.
-    //!
-    LogWriter( const LogWriterInfo &logWriterInfo );
+    LogWriter();
     virtual ~LogWriter();
 
-    const LogWriterInfo &logWriterInfo() const { return logWriterInfo_; }
+    const LogWriterInfo &logWriterInfo() const { return *logWriterInfo_; }
+
+    // Throws an orcalog::FormatNotSupportedException if the format isn't supported.
+    virtual void checkFormat( const std::string &format )=0;
 
     //! Creates data file (using createLogFile())
-    void init();
+    void init( const LogWriterInfo &logWriterInfo, MasterFileWriter &masterFileWriter );
 
 protected:
 
-    int numItemsLogged() const { return masterFileWriteHandler_.numItemsLogged(); }
+    int numItemsLogged() const { return masterFileWriteHandler_->numItemsLogged(); }
 
     //! This version correctly handles two standard log file formats:
     //!     ice   : binary file
@@ -55,15 +56,15 @@ protected:
     //! Appends a record to the master file. Supplies the LogWriter ID and the data
     //! counter. Also prints out heartbeat message periodically.
     void writeReferenceToMasterFile()
-        { masterFileWriteHandler_.writeReferenceToMasterFile(); }
+        { masterFileWriteHandler_->writeReferenceToMasterFile(); }
 
     //! Handle to the output file.
     std::ofstream *file_;
 
 private:
 
-    MasterFileWriteThread masterFileWriteHandler_;
-    LogWriterInfo logWriterInfo_;
+    std::auto_ptr<LogWriterInfo>          logWriterInfo_;
+    std::auto_ptr<MasterFileWriteHandler> masterFileWriteHandler_;
 };
 
 

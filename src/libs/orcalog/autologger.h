@@ -11,6 +11,9 @@
 #ifndef ORCA_LOGGER_AUTO_LOGGER_H
 #define ORCA_LOGGER_AUTO_LOGGER_H
 
+#include <orcalog/logwriterinfo.h>
+#include <orcalog/masterfilewriter.h>
+
 namespace orcalog
 {
 
@@ -19,7 +22,8 @@ class AutoLogger {
 public:
     virtual ~AutoLogger() {}
     
-    virtual void initAndStartLogging()=0;
+    virtual void init( const LogWriterInfo &logWriterInfo, MasterFileWriter &masterFileWriter )=0;
+    virtual void startLogging()=0;
 };
 
 }

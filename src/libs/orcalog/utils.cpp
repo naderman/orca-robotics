@@ -112,3 +112,16 @@ orcalog::parseDataLine( const std::string& line, int& seconds, int& useconds, in
         throw orcalog::Exception( ERROR_INFO, "error parsing data line '"+line+"'." );
     }
 }
+
+std::string 
+orcalog::humanReadableTimeStamp()
+{
+    string dateTime =  IceUtil::Time::now().toDateTime();
+    string month = dateTime.substr(0,2);
+    string day = dateTime.substr(3,2);
+    string year = dateTime.substr(6,2);
+    string hour = dateTime.substr(9,2);
+    string minutes = dateTime.substr(12,2);
+    string seconds = dateTime.substr(15,2);
+    return year + month + day + "_" + hour + minutes + seconds;
+}

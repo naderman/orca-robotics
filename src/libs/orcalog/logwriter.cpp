@@ -18,16 +18,17 @@ using namespace std;
 
 namespace orcalog {
 
-LogWriter::LogWriter( const LogWriterInfo &logWriterInfo )
-    : file_(0),
-      masterFileWriteHandler_(logWriterInfo),
-      logWriterInfo_(logWriterInfo)
+LogWriter::LogWriter()
+    : file_(0)
 {
 }
 
 void
-LogWriter::init()
+LogWriter::init( const LogWriterInfo &logWriterInfo, MasterFileWriter &masterFileWriter )
 {
+    logWriterInfo_.reset( new LogWriterInfo( logWriterInfo ) );
+    masterFileWriteHandler_.reset( new MasterFileWriteHandler( *logWriterInfo_, masterFileWriter ) );
+
     //
     // create log file. Derived classes may re-implement this function to modify
     // the standard treatment of log formats.
@@ -35,8 +36,8 @@ LogWriter::init()
     // Note: openLogFile() has to be called from here, because
     // calling it from the constructor would call the base-class's version.
     //
-    createLogFile( logWriterInfo_.filename, 
-                   logWriterInfo_.format );
+    createLogFile( logWriterInfo_->filename, 
+                   logWriterInfo_->format );
 }
 
 LogWriter::~LogWriter()

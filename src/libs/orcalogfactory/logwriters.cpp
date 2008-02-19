@@ -11,12 +11,12 @@ namespace orcalogfactory {
 
 namespace {
 
-    void checkFormats( const orcalog::LogWriterInfo  &logWriterInfo,
+    void checkFormats( const std::string              &format,
                        const std::vector<std::string> &okFormats )
     {
         for ( uint i=0; i < okFormats.size(); i++ )
         {
-            if ( logWriterInfo.format == okFormats[i] )
+            if ( format == okFormats[i] )
             {
                 // format is supported
                 return;
@@ -25,31 +25,31 @@ namespace {
 
         // format is not supported: throw exception
         stringstream ss;
-        ss << logWriterInfo.comment<<": unknown log format: "<<logWriterInfo.format<<endl
+        ss << "Unknown log format: "<<format<<endl
            << "  Supported formats are: ";
         for ( uint i=0; i < okFormats.size(); i++ )
         {
             ss << okFormats[i];
-            if ( i != 0 ) ss << ", ";
+            if ( i != okFormats.size()-1 ) ss << ", ";
         }
         throw orcalog::FormatNotSupportedException( ERROR_INFO, ss.str() );
     }
 
     void
-    checkFormatIceOnly( const orcalog::LogWriterInfo &logWriterInfo )
+    checkFormatIceOnly( const std::string &format )
     {
         vector<string> okFormats;
         okFormats.push_back("ice");
-        checkFormats( logWriterInfo, okFormats );
+        checkFormats( format, okFormats );
     }
 
     void
-    checkFormatIceOrAscii( const orcalog::LogWriterInfo &logWriterInfo )
+    checkFormatIceOrAscii( const std::string &format )
     {
         vector<string> okFormats;
         okFormats.push_back("ice");
         okFormats.push_back("ascii");
-        checkFormats( logWriterInfo, okFormats );
+        checkFormats( format, okFormats );
     }
 
     void 
@@ -423,10 +423,10 @@ namespace {
 
 //////////////////////////////////////////////////////////////////////
 
-CpuLogWriter::CpuLogWriter( const orcalog::LogWriterInfo &logWriterInfo )
-    : orcalog::LogWriter( logWriterInfo )
+void
+CpuLogWriter::checkFormat( const std::string &format )
 {
-    checkFormatIceOrAscii( logWriterInfo );
+    checkFormatIceOrAscii( format );
 }
 void 
 CpuLogWriter::write( const orca::CpuData &obj )
@@ -440,10 +440,10 @@ CpuLogWriter::write( const orca::CpuData &obj )
 
 //////////////////////////////////////////////////////////////////////
 
-DriveBicycleLogWriter::DriveBicycleLogWriter( const orcalog::LogWriterInfo   &logWriterInfo )
-    : orcalog::LogWriter( logWriterInfo )
+void
+DriveBicycleLogWriter::checkFormat( const std::string &format )
 {
-    checkFormatIceOrAscii( logWriterInfo );
+    checkFormatIceOrAscii( format );
 }
 void 
 DriveBicycleLogWriter::write( const orca::DriveBicycleData &obj )
@@ -467,10 +467,10 @@ DriveBicycleLogWriter::write( const orca::VehicleDescription &descr )
 
 //////////////////////////////////////////////////////////////////////
 
-ImuLogWriter::ImuLogWriter( const orcalog::LogWriterInfo      &logWriterInfo )
-    : orcalog::LogWriter( logWriterInfo )
+void
+ImuLogWriter::checkFormat( const std::string &format )
 {
-    checkFormatIceOrAscii( logWriterInfo );
+    checkFormatIceOrAscii( format );
 }
 void 
 ImuLogWriter::write( const orca::ImuData &obj )
@@ -484,11 +484,10 @@ ImuLogWriter::write( const orca::ImuData &obj )
 
 //////////////////////////////////////////////////////////////////////
 
-LaserScanner2dLogWriter::LaserScanner2dLogWriter( const orcalog::LogWriterInfo      &logWriterInfo )
-                                                  
-    : orcalog::LogWriter( logWriterInfo )
+void
+LaserScanner2dLogWriter::checkFormat( const std::string &format )
 {
-    checkFormatIceOrAscii( logWriterInfo );
+    checkFormatIceOrAscii( format );
 }
 void 
 LaserScanner2dLogWriter::write( const orca::LaserScanner2dDataPtr &obj )
@@ -512,10 +511,10 @@ LaserScanner2dLogWriter::write( const orca::RangeScanner2dDescription &descr )
 
 //////////////////////////////////////////////////////////////////////
 
-Localise2dLogWriter::Localise2dLogWriter( const orcalog::LogWriterInfo      &logWriterInfo )
-    : orcalog::LogWriter( logWriterInfo )
+void
+Localise2dLogWriter::checkFormat( const std::string &format )
 {
-    checkFormatIceOrAscii( logWriterInfo );
+    checkFormatIceOrAscii( format );
 }
 void 
 Localise2dLogWriter::write( const orca::Localise2dData &obj )
@@ -539,10 +538,10 @@ Localise2dLogWriter::write( const orca::VehicleGeometryDescriptionPtr &descr )
 
 //////////////////////////////////////////////////////////////////////
 
-Localise3dLogWriter::Localise3dLogWriter( const orcalog::LogWriterInfo      &logWriterInfo )
-    : orcalog::LogWriter( logWriterInfo )
+void
+Localise3dLogWriter::checkFormat( const std::string &format )
 {
-    checkFormatIceOrAscii( logWriterInfo );
+    checkFormatIceOrAscii( format );
 }
 void 
 Localise3dLogWriter::write( const orca::Localise3dData &obj )
@@ -566,10 +565,10 @@ Localise3dLogWriter::write( const orca::VehicleGeometryDescriptionPtr &descr )
 
 //////////////////////////////////////////////////////////////////////
 
-Odometry2dLogWriter::Odometry2dLogWriter( const orcalog::LogWriterInfo &logWriterInfo )
-    : orcalog::LogWriter( logWriterInfo )
+void
+Odometry2dLogWriter::checkFormat( const std::string &format )
 {
-    checkFormatIceOrAscii( logWriterInfo );
+    checkFormatIceOrAscii( format );
 }
 void 
 Odometry2dLogWriter::write( const orca::Odometry2dData &obj )
@@ -593,10 +592,10 @@ Odometry2dLogWriter::write( const orca::VehicleDescription &descr )
 
 //////////////////////////////////////////////////////////////////////
 
-Odometry3dLogWriter::Odometry3dLogWriter( const orcalog::LogWriterInfo &logWriterInfo )
-    : orcalog::LogWriter( logWriterInfo )
+void
+Odometry3dLogWriter::checkFormat( const std::string &format )
 {
-    checkFormatIceOrAscii( logWriterInfo );
+    checkFormatIceOrAscii( format );
 }
 void 
 Odometry3dLogWriter::write( const orca::Odometry3dData &obj )
@@ -620,10 +619,10 @@ Odometry3dLogWriter::write( const orca::VehicleDescription &descr )
 
 //////////////////////////////////////////////////////////////////////
 
-PolarFeature2dLogWriter::PolarFeature2dLogWriter( const orcalog::LogWriterInfo      &logWriterInfo )
-    : orcalog::LogWriter( logWriterInfo )
+void
+PolarFeature2dLogWriter::checkFormat( const std::string &format )
 {
-    checkFormatIceOrAscii( logWriterInfo );
+    checkFormatIceOrAscii( format );
 }
 void 
 PolarFeature2dLogWriter::write( const orca::PolarFeature2dData &obj )
@@ -637,10 +636,10 @@ PolarFeature2dLogWriter::write( const orca::PolarFeature2dData &obj )
 
 //////////////////////////////////////////////////////////////////////
 
-PowerLogWriter::PowerLogWriter( const orcalog::LogWriterInfo      &logWriterInfo )
-    : orcalog::LogWriter( logWriterInfo )
+void
+PowerLogWriter::checkFormat( const std::string &format )
 {
-    checkFormatIceOrAscii( logWriterInfo );
+    checkFormatIceOrAscii( format );
 }
 void 
 PowerLogWriter::write( const orca::PowerData &obj )
@@ -654,10 +653,10 @@ PowerLogWriter::write( const orca::PowerData &obj )
 
 //////////////////////////////////////////////////////////////////////
 
-WifiLogWriter::WifiLogWriter( const orcalog::LogWriterInfo      &logWriterInfo )
-    : orcalog::LogWriter( logWriterInfo )
+void
+WifiLogWriter::checkFormat( const std::string &format )
 {
-    checkFormatIceOrAscii( logWriterInfo );
+    checkFormatIceOrAscii( format );
 }
 void 
 WifiLogWriter::write( const orca::WifiData &obj )
@@ -671,10 +670,10 @@ WifiLogWriter::write( const orca::WifiData &obj )
 
 //////////////////////////////////////////////////////////////////////
 
-GpsLogWriter::GpsLogWriter( const orcalog::LogWriterInfo  &logWriterInfo )
-    : orcalog::LogWriter( logWriterInfo )
+void
+GpsLogWriter::checkFormat( const std::string &format )
 {
-    checkFormatIceOrAscii( logWriterInfo );
+    checkFormatIceOrAscii( format );
 }
 void 
 GpsLogWriter::write( const orca::GpsData &obj )

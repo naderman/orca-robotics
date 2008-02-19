@@ -1,14 +1,14 @@
-#ifndef ORCALOGFACTORY_AUTOLOGGERS_H
-#define ORCALOGFACTORY_AUTOLOGGERS_H
+#ifndef ORCALOGFACTORY_SNAPSHOTLOGGERS_H
+#define ORCALOGFACTORY_SNAPSHOTLOGGERS_H
 
-#include <orcalog/autologger.h>
+#include <orcalog/snapshotloggerfactory.h>
 #include <orcalogfactory/logwriters.h>
 #include <orcaice/connectutils.h>
 
 namespace orcalogfactory {
 
     //
-    // A set of AutoLoggers: ie loggers which run continuously as soon as they're
+    // A set of SnapshotLoggers: ie loggers which run continuously as soon as they're
     //                       initialised
     //
 
@@ -23,42 +23,48 @@ namespace orcalogfactory {
              class ConsumerPrxType,
              class PrxType,
              class LogWriterType>
-    class GenericAutoLogger : public ConsumerType, public orcalog::AutoLogger
+    class GenericSnapshotLogger : public ConsumerType, public orcalog::SnapshotLogger
     {
     public:
 
-        virtual ~GenericAutoLogger() {}
+        virtual ~GenericSnapshotLogger() {}
 
         // Assumes the ConsumerType's method is called setData
         virtual void setData(const DataType& data, const Ice::Current&)
             { logWriter_->write(data); }
 
-        // Inherited from orcalog::AutoLogger
-        virtual void init( const orcalog::LogWriterInfo &logWriterInfo,
-                           orcalog::MasterFileWriter    &masterFileWriter )
+        // Inherited from orcalog::SnapshotLogger
+        virtual void init( const std::string &format )
             {
-                logWriter_.reset( new LogWriterType );
-                logWriter_->checkFormat( logWriterInfo.format );
-                logWriter_->init( logWriterInfo, masterFileWriter );
+                LogWriterType dummyLogWriter;
+                dummyLogWriter.checkFormat( format );
             }
 
-        virtual void startLogging()
+        virtual void subscribe( orcaice::Context &context, const std::string &interfaceTag )
             {
                 // may throw
                 PrxType objectPrx;
-                orcaice::connectToInterfaceWithTag<PrxType>( logWriter_->logWriterInfo().context,
+                orcaice::connectToInterfaceWithTag<PrxType>( context,
                                                              objectPrx,
-                                                             logWriter_->logWriterInfo().interfaceTag );
+                                                             interfaceTag );
 
                 // Allow derived classes to do something special (like get description)
                 setup(objectPrx,*logWriter_);
     
                 Ice::ObjectPtr consumer = this;
                 ConsumerPrxType callbackPrx = 
-                    orcaice::createConsumerInterface<ConsumerPrxType>( logWriter_->logWriterInfo().context,
+                    orcaice::createConsumerInterface<ConsumerPrxType>( context,
                                                                        consumer );
 
                 objectPrx->subscribe( callbackPrx );
+            }
+
+        virtual void takeSnapshot( const orcalog::LogWriterInfo &logWriterInfo,
+                                   orcalog::MasterFileWriter    &masterFileWriter )
+            {
+                std::cout<<"TRACE(snapshotloggers.h): TODO" << std::endl;
+                logWriter_.reset( new LogWriterType );
+                logWriter_->init( logWriterInfo, masterFileWriter );
             }
 
     protected:
@@ -73,15 +79,15 @@ namespace orcalogfactory {
 
     //////////////////////////////////////////////////////////////////////
 
-    typedef GenericAutoLogger<orca::CpuData,
+    typedef GenericSnapshotLogger<orca::CpuData,
                               orca::CpuConsumer,
                               orca::CpuConsumerPrx,
                               orca::CpuPrx,
-                              CpuLogWriter> CpuAutoLogger;
+                              CpuLogWriter> CpuSnapshotLogger;
 
     //////////////////////////////////////////////////////////////////////
 
-    class DriveBicycleAutoLogger : public GenericAutoLogger<orca::DriveBicycleData,
+    class DriveBicycleSnapshotLogger : public GenericSnapshotLogger<orca::DriveBicycleData,
                                                             orca::DriveBicycleConsumer,
                                                             orca::DriveBicycleConsumerPrx,
                                                             orca::DriveBicyclePrx,
@@ -96,18 +102,18 @@ namespace orcalogfactory {
 
     //////////////////////////////////////////////////////////////////////
 
-    typedef GenericAutoLogger<orca::ImuData,
+    typedef GenericSnapshotLogger<orca::ImuData,
                               orca::ImuConsumer,
                               orca::ImuConsumerPrx,
                               orca::ImuPrx,
-                              ImuLogWriter> ImuAutoLogger;
+                              ImuLogWriter> ImuSnapshotLogger;
 
     //////////////////////////////////////////////////////////////////////
 
-    class LaserScanner2dAutoLogger : public orca::RangeScanner2dConsumer, public orcalog::AutoLogger
+    class LaserScanner2dSnapshotLogger : public orca::RangeScanner2dConsumer, public orcalog::SnapshotLogger
     {
     public:
-        virtual ~LaserScanner2dAutoLogger() {}
+        virtual ~LaserScanner2dSnapshotLogger() {}
 
         virtual void setData(const orca::RangeScanner2dDataPtr& data, const Ice::Current&)
             { 
@@ -118,15 +124,13 @@ namespace orcalogfactory {
                 logWriter_->write(laserData);
             }
 
-        virtual void init( const orcalog::LogWriterInfo &logWriterInfo, 
-                           orcalog::MasterFileWriter    &masterFileWriter )
+        virtual void init( const std::string &format )
             {
-                logWriter_.reset( new LaserScanner2dLogWriter );
-                logWriter_->checkFormat( logWriterInfo.format );
-                logWriter_->init( logWriterInfo, masterFileWriter );
+                LaserScanner2dLogWriter dummyLogWriter;
+                dummyLogWriter.checkFormat( format );
             }
 
-        virtual void startLogging()
+        virtual void subscribe( orcaice::Context &context, const std::string &interfaceTag )
             {
                 orca::LaserScanner2dPrx objectPrx;
                 orcaice::connectToInterfaceWithTag( logWriter_->logWriterInfo().context,
@@ -143,13 +147,22 @@ namespace orcalogfactory {
 
                 objectPrx->subscribe( callbackPrx );
             }
+
+        virtual void takeSnapshot( const orcalog::LogWriterInfo &logWriterInfo,
+                                   orcalog::MasterFileWriter &masterFileWriter )
+            {
+                std::cout<<"TRACE(snapshotloggers.h): TODO" << std::endl;
+                logWriter_.reset( new LaserScanner2dLogWriter );
+                logWriter_->init( logWriterInfo, masterFileWriter );
+            }
+
     private:
         std::auto_ptr<LaserScanner2dLogWriter> logWriter_;
     };
 
     //////////////////////////////////////////////////////////////////////
 
-    class Localise2dAutoLogger : public GenericAutoLogger<orca::Localise2dData,
+    class Localise2dSnapshotLogger : public GenericSnapshotLogger<orca::Localise2dData,
                                                           orca::Localise2dConsumer,
                                                           orca::Localise2dConsumerPrx,
                                                           orca::Localise2dPrx,
@@ -164,7 +177,7 @@ namespace orcalogfactory {
 
     //////////////////////////////////////////////////////////////////////
 
-    class Localise3dAutoLogger : public GenericAutoLogger<orca::Localise3dData,
+    class Localise3dSnapshotLogger : public GenericSnapshotLogger<orca::Localise3dData,
                                                             orca::Localise3dConsumer,
                                                             orca::Localise3dConsumerPrx,
                                                             orca::Localise3dPrx,
@@ -179,7 +192,7 @@ namespace orcalogfactory {
 
     //////////////////////////////////////////////////////////////////////
 
-    class Odometry2dAutoLogger : public GenericAutoLogger<orca::Odometry2dData,
+    class Odometry2dSnapshotLogger : public GenericSnapshotLogger<orca::Odometry2dData,
                                                             orca::Odometry2dConsumer,
                                                             orca::Odometry2dConsumerPrx,
                                                             orca::Odometry2dPrx,
@@ -194,7 +207,7 @@ namespace orcalogfactory {
 
     //////////////////////////////////////////////////////////////////////
 
-    class Odometry3dAutoLogger : public GenericAutoLogger<orca::Odometry3dData,
+    class Odometry3dSnapshotLogger : public GenericSnapshotLogger<orca::Odometry3dData,
                                                             orca::Odometry3dConsumer,
                                                             orca::Odometry3dConsumerPrx,
                                                             orca::Odometry3dPrx,
@@ -209,31 +222,31 @@ namespace orcalogfactory {
 
     //////////////////////////////////////////////////////////////////////
 
-    typedef GenericAutoLogger<orca::PolarFeature2dData,
+    typedef GenericSnapshotLogger<orca::PolarFeature2dData,
                               orca::PolarFeature2dConsumer,
                               orca::PolarFeature2dConsumerPrx,
                               orca::PolarFeature2dPrx,
-                              PolarFeature2dLogWriter> PolarFeature2dAutoLogger;
+                              PolarFeature2dLogWriter> PolarFeature2dSnapshotLogger;
 
     //////////////////////////////////////////////////////////////////////
     
-    typedef GenericAutoLogger<orca::PowerData,
+    typedef GenericSnapshotLogger<orca::PowerData,
                               orca::PowerConsumer,
                               orca::PowerConsumerPrx,
                               orca::PowerPrx,
-                              PowerLogWriter> PowerAutoLogger;
+                              PowerLogWriter> PowerSnapshotLogger;
 
     //////////////////////////////////////////////////////////////////////
 
-    typedef GenericAutoLogger<orca::WifiData,
+    typedef GenericSnapshotLogger<orca::WifiData,
                               orca::WifiConsumer,
                               orca::WifiConsumerPrx,
                               orca::WifiPrx,
-                              WifiLogWriter> WifiAutoLogger;
+                              WifiLogWriter> WifiSnapshotLogger;
 
     //////////////////////////////////////////////////////////////////////
 
-    class GpsAutoLogger : public GenericAutoLogger<orca::GpsData,
+    class GpsSnapshotLogger : public GenericSnapshotLogger<orca::GpsData,
                                                             orca::GpsConsumer,
                                                             orca::GpsConsumerPrx,
                                                             orca::GpsPrx,

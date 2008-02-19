@@ -13,19 +13,12 @@
 
 #include <hydroiceutil/subsystemthread.h>
 #include <orcaice/context.h>
-
+#include <orcalog/orcalog.h>
 #include <hydrodll/dll.h>
 #include <string>
 #include <memory>
 
-namespace orcalog
-{
-    class MasterFileWriter;
-    class AutoLoggerFactory;
-    class AutoLogger;
-}
-
-namespace logger
+namespace snapshotlogger
 {
 
 class MainThread: public hydroiceutil::SubsystemThread
@@ -39,17 +32,20 @@ public:
 
 private:
 
+    void init();
     void loadPluginLibraries( const std::string &factoryLibNames );
     // throws exceptions if it can't create the logger
-    orcalog::AutoLogger *createLogger( const std::string  &interfaceType );
+    orcalog::SnapshotLogger *createLogger( const std::string &interfaceType );
 
-    std::vector<orcalog::AutoLoggerFactory*>         logFactories_;
+    std::vector<orcalog::SnapshotLoggerFactory*>     logFactories_;
     std::vector<hydrodll::DynamicallyLoadedLibrary*> libraries_;
 
     // The guy that writes the master file
     std::auto_ptr<orcalog::MasterFileWriter> masterFileWriter_;
     // The guys that write the data files
-    std::vector<orcalog::AutoLogger*> autoLoggers_;
+    std::vector<orcalog::SnapshotLogger*> snapshotLoggers_;
+    // Information about them
+    std::vector<orcalog::LogWriterInfo> logWriterInfos_;
 
     orcaice::Context context_;
 };

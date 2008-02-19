@@ -8,28 +8,28 @@
  *
  */
 
-#ifndef ORCA_LOGGER_DEFAULT_AUTO_LOGGER_FACTORY_H
-#define ORCA_LOGGER_DEFAULT_AUTO_LOGGER_FACTORY_H
+#ifndef ORCA_LOGGER_DEFAULT_SNAPSHOT_LOGGER_FACTORY_H
+#define ORCA_LOGGER_DEFAULT_SNAPSHOT_LOGGER_FACTORY_H
 
-#include <orcalog/autologgerfactory.h>
+#include <orcalog/snapshotloggerfactory.h>
 #include <orcalog/logwriterinfo.h>
 
 namespace orcalogfactory
 {
 
-class DefaultAutoLoggerFactory: public orcalog::AutoLoggerFactory
+class DefaultSnapshotLoggerFactory: public orcalog::SnapshotLoggerFactory
 
 {
 public:
-    DefaultAutoLoggerFactory();
+    DefaultSnapshotLoggerFactory();
     
-    virtual orcalog::AutoLogger* create( const std::string &interfaceType );
+    virtual orcalog::SnapshotLogger* create( const std::string &interfaceType );
 };
 
 } // namespace
 
 extern "C" {
-    orcalog::AutoLoggerFactory *createAutoLoggerFactory();
+    orcalog::SnapshotLoggerFactory *createSnapshotLoggerFactory();
 }
 
 

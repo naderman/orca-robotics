@@ -16,17 +16,18 @@
 #include "mainthread.h"
 
 using namespace std;
-using namespace logger;
+
+namespace snapshotlogger {
 
 namespace {
 
 static const char *DEFAULT_FACTORY_LIB_NAME="libOrcaLogFactory.so";
 
-orcalog::AutoLoggerFactory* loadLogFactory( hydrodll::DynamicallyLoadedLibrary &lib )
+orcalog::SnapshotLoggerFactory* loadLogFactory( hydrodll::DynamicallyLoadedLibrary &lib )
 {
-    orcalog::AutoLoggerFactory *f = 
-        hydrodll::dynamicallyLoadClass<orcalog::AutoLoggerFactory,AutoLoggerFactoryMakerFunc>
-                                              (lib, "createAutoLoggerFactory");
+    orcalog::SnapshotLoggerFactory *f = 
+        hydrodll::dynamicallyLoadClass<orcalog::SnapshotLoggerFactory,SnapshotLoggerFactoryMakerFunc>
+                                              (lib, "createSnapshotLoggerFactory");
     return f;
 }
 
@@ -56,37 +57,19 @@ MainThread::~MainThread()
 }
 
 void
-MainThread::walk()
+MainThread::init()
 {
     // config file parameters
     Ice::PropertiesPtr props = context_.properties();
     std::string prefix = context_.tag() + ".Config.";
 
-    string libNames = orcaice::getPropertyWithDefault( props, prefix+"FactoryLibNames", DEFAULT_FACTORY_LIB_NAME );
+    string libNames = orcaice::getPropertyWithDefault( props,
+                                                       prefix+"FactoryLibNames",
+                                                       DEFAULT_FACTORY_LIB_NAME );
     loadPluginLibraries( libNames );
-
-    string baseMasterFilename = "master.log";
-    bool filenameTimestamp = (bool)orcaice::getPropertyAsIntWithDefault( props, prefix+"FilenameTimestamp", 1 );
-    
-    string filenamePrefix = "";
-    if ( filenameTimestamp ) {
-        filenamePrefix = orcalog::humanReadableTimeStamp() + "_";
-    }
-    string masterFilename = filenamePrefix + baseMasterFilename;
-
-    // create master file
-    try {
-        masterFileWriter_.reset( new orcalog::MasterFileWriter( masterFilename.c_str(), context_ ) );
-    }
-    catch ( ... ) {
-        context_.shutdown();
-        throw;
-    }
-    
 
     // multi-try activation function
     orcaice::activate( context_, this, subsysName() );
-
 
     // Get a list of required tags
     //
@@ -112,7 +95,7 @@ MainThread::walk()
 
         // look up format
         std::string format = orcaice::getPropertyWithDefault( props, prefix+requiredTags[i]+".Format", "ice" );
-
+        
         orcalog::LogWriterInfo logWriterInfo( context_ );
         logWriterInfo.interfaceType = interfaceType;
         logWriterInfo.interfaceTag  = interfaceType+interfaceTypeSuffix;
@@ -120,42 +103,48 @@ MainThread::walk()
                                                                              logWriterInfo.interfaceTag );
         logWriterInfo.comment       = orcaice::resolveLocalPlatform( context_, proxyString );
         logWriterInfo.format        = format;
-        logWriterInfo.filename      = filenamePrefix + logWriterInfo.interfaceTag + ".log";
+        logWriterInfo.filename      = logWriterInfo.interfaceTag + ".log";
 
         //
         // Create logger
         // this will throw on error, not catching it so it will kill us.
         //
-        orcalog::AutoLogger *logger = createLogger( interfaceType );
+        orcalog::SnapshotLogger *logger = createLogger( interfaceType );
 
         try {
-            logger->init( logWriterInfo, *masterFileWriter_ );
+            logger->init( format );
         }
         catch ( std::exception &e )
         {
             context_.shutdown();
             throw;
         }
-        autoLoggers_.push_back( logger );
+        logWriterInfos_.push_back( logWriterInfo );
+        snapshotLoggers_.push_back( logger );
     }
 
-    // Kick them all off
-    for ( uint i=0; i < autoLoggers_.size(); i++ )
+    // initialize and subscribe all interfaces  
+    for ( uint i=0; i < snapshotLoggers_.size(); i++ )
     {
-        autoLoggers_[i]->startLogging();
+        snapshotLoggers_[i]->subscribe( context_, logWriterInfos_[i].interfaceTag );
     }
+}
 
-    // doesn't make sense to continue if no loggers were created
-    if ( masterFileWriter_->loggerCount() == 0 )
-    {
-        context_.tracer().warning("No loggers were created. Quitting.");
-        context_.communicator()->shutdown();
-    }
-
-    
+void
+MainThread::walk()
+{
+    init();
     // init subsystem is done and is about to terminate
     subStatus().ok( "Initialized." );
-    subStatus().setMaxHeartbeatInterval( -1 );
+    subStatus().setMaxHeartbeatInterval( 5.0 );
+
+    while ( !isStopping() )
+    {
+        cout<<"TRACE(mainthread.cpp): main thread." << endl;
+        sleep(1);
+
+        subStatus().ok();        
+    }
 }
 
 void
@@ -172,7 +161,7 @@ MainThread::loadPluginLibraries( const std::string & factoryLibNames )
         
         try {
             hydrodll::DynamicallyLoadedLibrary *lib = new hydrodll::DynamicallyLoadedLibrary(libNames[i]);
-            orcalog::AutoLoggerFactory *f = loadLogFactory( *lib );
+            orcalog::SnapshotLoggerFactory *f = loadLogFactory( *lib );
             libraries_.push_back(lib);
             logFactories_.push_back(f);
         }
@@ -189,7 +178,7 @@ MainThread::loadPluginLibraries( const std::string & factoryLibNames )
     }
 }
 
-orcalog::AutoLogger*
+orcalog::SnapshotLogger *
 MainThread::createLogger( const std::string &interfaceType )
 {
     for ( unsigned int i=0; i < logFactories_.size(); ++i )
@@ -199,7 +188,7 @@ MainThread::createLogger( const std::string &interfaceType )
             continue;
         }
 
-        orcalog::AutoLogger* logger = logFactories_[i]->create( interfaceType );
+        orcalog::SnapshotLogger* logger = logFactories_[i]->create( interfaceType );
 
         if ( logger ) { 
             return logger;
@@ -213,4 +202,6 @@ MainThread::createLogger( const std::string &interfaceType )
     // none of the factories support this type
     context_.shutdown();
     throw hydroutil::Exception( ERROR_INFO, "Unsupported interface type " + interfaceType );
+}
+
 }

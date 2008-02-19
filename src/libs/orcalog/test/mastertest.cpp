@@ -21,10 +21,12 @@ using namespace std;
 class TestAutoLogger : public orcalog::AutoLogger
 {
 public:
-    TestAutoLogger( const orcalog::LogWriterInfo &logWriterInfo )
+    TestAutoLogger()
         {}
     virtual ~TestAutoLogger() {}
-    virtual void initAndStartLogging() {}
+    virtual void init( const orcalog::LogWriterInfo &logWriterInfo,
+                       orcalog::MasterFileWriter &masterFileWriter ) {}
+    virtual void startLogging() {}
 };
 
 class TestComponent : public orcaice::Component
@@ -67,19 +69,21 @@ void TestComponent::start()
     //
     // add a few logs
     //
-    orcalog::LogWriterInfo info( masterFileWriter, context() );
+    orcalog::LogWriterInfo info( context() );
     info.interfaceType = "type0";
     info.interfaceTag  = "Tag0";
     info.comment       = "comment0";
     info.format        = "format0";
     info.filename      = "file0";
-    new TestAutoLogger( info );
+    TestAutoLogger t1;
+    t1.init( info, masterFileWriter );
     info.interfaceType = "type1";
     info.interfaceTag  = "Tag1";
     info.comment       = "comment1";
     info.format        = "format1";
     info.filename      = "file1";
-    new TestAutoLogger( info );
+    TestAutoLogger t2;
+    t2.init( info, masterFileWriter );
 
     //
     // Fake a few instances of arrival of data

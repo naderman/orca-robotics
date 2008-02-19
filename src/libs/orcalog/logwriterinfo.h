@@ -25,10 +25,14 @@ namespace orcalog {
 class LogWriterInfo {
 public:
 
-    LogWriterInfo( MasterFileWriter &theMasterFileWriter,
-                   const orcaice::Context &theContext )
-        : masterFileWriter(theMasterFileWriter),
-          context(theContext)
+//     LogWriterInfo( MasterFileWriter &theMasterFileWriter,
+//                    const orcaice::Context &theContext )
+// //        : masterFileWriter(theMasterFileWriter),
+//         : context(theContext)
+//         {}
+
+    LogWriterInfo( const orcaice::Context &theContext )
+        : context(theContext)
         {}
 
     std::string interfaceType;
@@ -36,7 +40,7 @@ public:
     std::string comment;
     std::string format;
     std::string filename;
-    MasterFileWriter &masterFileWriter;
+//    MasterFileWriter &masterFileWriter;
     orcaice::Context context;
 };
 

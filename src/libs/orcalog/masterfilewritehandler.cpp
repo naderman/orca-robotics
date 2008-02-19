@@ -1,24 +1,26 @@
-#include "masterfilewritethread.h"
+#include "masterfilewritehandler.h"
 #include <iostream>
 
 using namespace std;
 
 namespace orcalog {
 
-MasterFileWriteThread::MasterFileWriteThread( const LogWriterInfo &logWriterInfo )
+MasterFileWriteHandler::MasterFileWriteHandler( const LogWriterInfo &logWriterInfo,
+                                                MasterFileWriter    &masterFileWriter )
     : logWriterInfo_(logWriterInfo),
+      masterFileWriter_(masterFileWriter),
       id_(-1),
       numItemsLogged_(0)
 {
     // record our slave ID
-    id_ = logWriterInfo_.masterFileWriter.addLog( logWriterInfo_.filename,
-                                                  logWriterInfo_.interfaceType,
-                                                  logWriterInfo_.format,
-                                                  logWriterInfo_.comment );
+    id_ = masterFileWriter_.addLog( logWriterInfo_.filename,
+                                    logWriterInfo_.interfaceType,
+                                    logWriterInfo_.format,
+                                    logWriterInfo_.comment );
 }
 
 void
-MasterFileWriteThread::writeReferenceToMasterFile()
+MasterFileWriteHandler::writeReferenceToMasterFile()
 {
     assert( id_ >= 0 );
 //     if ( id_ < 0 ) {
@@ -29,7 +31,7 @@ MasterFileWriteThread::writeReferenceToMasterFile()
     //
     // append master file, increment data counter
     //
-    logWriterInfo_.masterFileWriter.notifyOfLogfileAddition( id_, numItemsLogged_ );
+    masterFileWriter_.notifyOfLogfileAddition( id_, numItemsLogged_ );
     numItemsLogged_++;
 
     // In debug mode, let the user know that something's going on.
