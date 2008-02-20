@@ -188,7 +188,7 @@ HwThread::walk()
             stats.addData( data );
             historySS.str(" ");
             historySS << stats.distance()<<" "<<stats.timeInMotion()<<" "<<stats.maxSpeed();
-            context_.history().finish( historySS.str() );
+            context_.history().setWithFinishSequence( historySS.str() );
         }
         catch ( std::exception &e ) {
             exceptionSS << "HwThread: Failed to read: " << e.what();

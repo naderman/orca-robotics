@@ -43,9 +43,9 @@ Stats::addData( const hydrointerfaces::SegwayRmp::Data& data )
     {
         double deltaX = data.x - lastData_.x;
         double deltaY = data.y - lastData_.y;
-        distance_ =+ sqrtf( deltaX*deltaX + deltaY*deltaY );
+        distance_ += sqrtf( deltaX*deltaX + deltaY*deltaY );
 
-        timeInMotion_ =+ (data.seconds-lastData_.seconds) + (data.useconds-lastData_.useconds)/1e6;
+        timeInMotion_ += (data.seconds-lastData_.seconds) + (data.useconds-lastData_.useconds)/1e6;
 
         maxSpeed_ = MAX( maxSpeed_, fabs(data.vx) );
     }

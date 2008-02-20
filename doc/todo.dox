@@ -79,7 +79,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 - libOrcaIce
   - Component API: removed now rarely used shortcuts to the contents of Context.
-  - Much stricter parsing of properties. Throwing exceptions whenever parsing fails (to int and double,
+  - Much stricter parsing of properties. No changes in API. Throwing exceptions whenever parsing fails (to int and double,
     vectors of ints and doubles). Fails when characters trail a numeric value. This applies to '.'
     meaning that parsing fails when a double is given in place of an int.
     Comments are allowed to trail values.  (alex m)

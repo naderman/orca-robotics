@@ -236,8 +236,13 @@ Component::initHome()
 hydroutil::History*
 Component::initHistory()
 {
-    hydroutil::History* history = new hydroiceutil::LocalHistory( 
-        hydroutil::Properties( context_.properties()->getPropertiesForPrefix("Orca.History."),"Orca.History.") );
+    hydroutil::Properties props( context_.properties()->getPropertiesForPrefix("Orca.History."),"Orca.History.");
+
+    // If DefaultFilename is not specified, add one based on our tag name (i.e. component name)
+    if ( !props.isDefined( "DefaultFilename" ) )
+        props.setProperty( "DefaultFilename", hydroutil::toLowerCase( context_.tag()+"-history.txt" ) );
+
+    hydroutil::History* history = new hydroiceutil::LocalHistory( props );
 
     orcaice::initTracerInfo( context_.tag()+": Initialized local history handler");
 

@@ -20,8 +20,9 @@ Component::start()
     mainThread_ = new MainThread( context() );
     mainThread_->start();
 
-    // give MainThread a chance to write something to history
-    context().history().autoStart( false );
+    // give MainThread a chance to write something to the history
+    bool forceHistory = false;
+    context().history().autoStart( forceHistory );
     context().history().flush();
 }
 
@@ -32,7 +33,8 @@ Component::stop()
     hydroiceutil::stopAndJoin( mainThread_ );
     context().tracer().debug( "stopped main thread", 5 );
 
-    // give MainThread a chance to write something to history
-    context().history().autoFinish( false );
+    // give MainThread a chance to write something to the history
+    bool forceHistory = false;
+    context().history().autoFinish( forceHistory );
     context().history().flush();
 }
