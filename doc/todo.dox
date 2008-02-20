@@ -67,6 +67,10 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 @par New interfaces
 @par New components
 @par New utilities
+
+- SnapshotLogger (alex b)
+  - Logs a small window (in time) of information when something interesting happens.
+
 @par New libraries
 @par Updated interfaces
 @par Updated components
