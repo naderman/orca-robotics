@@ -17,6 +17,7 @@
 // alexm: this is a network object? should it be here?
 #include "estopconsumerI.h"
 #include "hwthread.h"
+#include "stats.h"
 
 using namespace std;
 using namespace segwayrmp;
@@ -113,6 +114,11 @@ HwThread::walk()
     stringstream exceptionSS;
     std::string reason;
     const int eStopTimeoutMs = 1200;
+    // temp data structure. do not use until read() is called.
+    hydrointerfaces::SegwayRmp::Data data;
+
+    // a simple class which summarizes motion information
+    Stats stats;
     std::stringstream historySS;
 
     //
@@ -148,7 +154,6 @@ HwThread::walk()
         // Read data from the hardware
         //
         try {
-            hydrointerfaces::SegwayRmp::Data data;
             bool stateChanged = driver_->read( data );
 
             // stick it in the store, so that NetThread can distribute it                
@@ -180,8 +185,9 @@ HwThread::walk()
             }
 
             // keep track of our approximate motion for history
+            stats.addData( data );
             historySS.str(" ");
-            historySS << data.x;
+            historySS << stats.distance()<<" "<<stats.timeInMotion()<<" "<<stats.maxSpeed();
             context_.history().finish( historySS.str() );
         }
         catch ( std::exception &e ) {
