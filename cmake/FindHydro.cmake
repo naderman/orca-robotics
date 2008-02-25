@@ -7,11 +7,34 @@
 # start with 'not found'
 SET( HYDRO_FOUND 0 CACHE BOOL "Do we have Hydro?" )
 
+# this will work in Orca which has the same version as Hydro
+IF ( ORCA_MOTHERSHIP )
+    SET( HYDRO_SEARCH_DIR_ORCA_ONLY /opt/hydro-${PROJECT_VERSION} )
+ENDIF ( ORCA_MOTHERSHIP )
+
 FIND_PATH( HYDRO_HOME hydro_manifest.cmake
   $ENV{HYDRO_HOME}
   # Test standard installation points
   /opt/hydro
-  /opt/hydro-${PROJECT_VERSION}   # this will work in Orca which has the same version as Hydro
+  ${HYDRO_SEARCH_DIR_ORCA_ONLY}
+  /opt/hydro-2.15.0+
+  /opt/hydro-2.15.0
+  /opt/hydro-2.14.0+
+  /opt/hydro-2.14.0
+  /opt/hydro-2.13.0+
+  /opt/hydro-2.13.0
+  /opt/hydro-2.12.0+
+  /opt/hydro-2.12.0
+  /opt/hydro-2.11.0+
+  /opt/hydro-2.11.0
+  /opt/hydro-2.10.0+
+  /opt/hydro-2.10.0
+  /opt/hydro-2.9.0+
+  /opt/hydro-2.9.0
+  /opt/hydro-2.8.0
+  /opt/hydro-2.8.0
+  /opt/hydro-2.7.0
+  /opt/hydro-2.6.0
   C:/hydro
   C:/hydro-${PROJECT_VERSION}
   )

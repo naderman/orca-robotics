@@ -11,12 +11,19 @@ FIND_PATH( ORCA_HOME orca_manifest.h
   $ENV{ORCA_HOME}
   # Test standard installation points
   /opt/orca
+  /opt/orca-2.15.0+
   /opt/orca-2.15.0
+  /opt/orca-2.14.0+
   /opt/orca-2.14.0
+  /opt/orca-2.13.0+
   /opt/orca-2.13.0
+  /opt/orca-2.12.0+
   /opt/orca-2.12.0
+  /opt/orca-2.11.0+
   /opt/orca-2.11.0
+  /opt/orca-2.10.0+
   /opt/orca-2.10.0
+  /opt/orca-2.9.0+
   /opt/orca-2.9.0
   /opt/orca-2.8.0
   /opt/orca-2.7.0
