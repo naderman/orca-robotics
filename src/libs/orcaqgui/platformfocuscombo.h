@@ -11,7 +11,7 @@ namespace orcaqgui {
 //! 
 //! @see hydroqgui::PlatformFocusManager
 //!
-//! @author Alex Brooks
+//! @author Tobias Kaupp, Alex Brooks
 //!
 class PlatformFocusCombo : public QComboBox,
                            public hydroqgui::PlatformFocusChangeReceiver
