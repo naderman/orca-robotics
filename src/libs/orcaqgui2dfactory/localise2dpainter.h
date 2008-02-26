@@ -12,7 +12,7 @@
 
 #include <QColor>
 #include <hydroqgui/definitions2d.h>
-#include <orcaqgui2d/paintutils.h>
+#include <hydroqguipaint/paintutils.h>
 
 // forward declarations
 class QPainter;
@@ -71,7 +71,7 @@ class Localise2dPainter
 
     bool useTransparency_;
     bool isDisplayHistory_;
-    PoseHistory history_;
+    hydroqguipaint::PoseHistory history_;
 
     bool isDisplayMultiHypothesis_;
 };

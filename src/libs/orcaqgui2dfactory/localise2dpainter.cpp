@@ -72,14 +72,14 @@ Localise2dPainter::paintHypothesis( QPainter* p, const orca::Pose2dHypothesis &h
 
     // Translate to where the hypothesis is at
     {
-        ScopedSaver translateSaver(p);
+        hydroqguipaint::ScopedSaver translateSaver(p);
         
         // translate to mean+origin
         p->translate( mean.p.x+originX_, mean.p.y+originY_ );
 
         QColor color;
         if (useTransparency_) {
-            color = getTransparentVersion( currentColor_, weight );
+            color = hydroqguipaint::getTransparentVersion( currentColor_, weight );
         } else {
             color = currentColor_;
         }
@@ -91,15 +91,15 @@ Localise2dPainter::paintHypothesis( QPainter* p, const orca::Pose2dHypothesis &h
         
         // Rotate to draw the platform correctly
         {
-            ScopedSaver rotateSaver(p);
+            hydroqguipaint::ScopedSaver rotateSaver(p);
             p->rotate( RAD2DEG( mean.o ) + originRot_ );
             if (platformType_ == PlatformTypeCylindrical)
-                paintCylindricalPlatformPose( p, color, radius_, weight, minLength, lineThickness  );
+                hydroqguipaint::paintCylindricalPlatformPose( p, color, radius_, weight, minLength, lineThickness  );
             else
-                paintCubicPlatformPose( p, color, length_, width_, weight, minLength, lineThickness );
-            paintUncertaintyWedge( p, color, cov.tt, minLength*3.0, lineThickness );
+                hydroqguipaint::paintCubicPlatformPose( p, color, length_, width_, weight, minLength, lineThickness );
+            hydroqguipaint::paintUncertaintyWedge( p, color, cov.tt, minLength*3.0, lineThickness );
         }
-        paintCovarianceEllipse( p, color, cov.xx, cov.xy, cov.yy, lineThickness );
+        hydroqguipaint::paintCovarianceEllipse( p, color, cov.xx, cov.xy, cov.yy, lineThickness );
     }
 }
 

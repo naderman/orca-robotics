@@ -15,7 +15,7 @@
 #include <orcaobj/orcaobj.h>
 #include <orcalogfactory/logstringutils.h>
 #include <orcaqgui/guiicons.h>
-#include <orcaqgui2d/paintutils.h>
+#include <hydroqguipaint/paintutils.h>
 #include <orcaqgui2dfactory/waypointdialog.h>
 
 #include <QPainter>
@@ -515,7 +515,7 @@ void PathInput::paint( QPainter *p )
     QColor drawColor;
     
     if (useTransparency_) {
-        fillColor = getTransparentVersion(Qt::green);
+        fillColor = hydroqguipaint::getTransparentVersion(Qt::green);
     } else {
         fillColor=Qt::green;
     }
@@ -531,12 +531,12 @@ void PathInput::paint( QPainter *p )
             drawColor = fillColor;
         }
         
-        paintWaypoint( p, 
-                       fillColor,
-                       drawColor, 
-                       guiPath_[i].heading,
-                       guiPath_[i].distanceTolerance,
-                       guiPath_[i].headingTolerance );
+        hydroqguipaint::paintWaypoint(  p, 
+                                        fillColor,
+                                        drawColor, 
+                                        guiPath_[i].heading,
+                                        guiPath_[i].distanceTolerance,
+                                        guiPath_[i].headingTolerance );
 
         p->restore();
     }
@@ -548,12 +548,12 @@ void PathInput::paint( QPainter *p )
 
         p->translate( guiPath_[waypointInFocus_].position.x(), guiPath_[waypointInFocus_].position.y() );    // move to point
         drawColor = Qt::black;
-        paintWaypoint( p, 
-                        fillColor,
-                        drawColor, 
-                        guiPath_[waypointInFocus_].heading,
-                        guiPath_[waypointInFocus_].distanceTolerance,
-                        guiPath_[waypointInFocus_].headingTolerance );
+        hydroqguipaint::paintWaypoint(  p, 
+                                        fillColor,
+                                        drawColor, 
+                                        guiPath_[waypointInFocus_].heading,
+                                        guiPath_[waypointInFocus_].distanceTolerance,
+                                        guiPath_[waypointInFocus_].headingTolerance );
         p->restore();
     }
     

@@ -17,7 +17,7 @@
 #include <orcaobj/orcaobj.h>
 #include <orcaqguielementutil/features.h>
 #include <hydroqgui/hydroqgui.h>
-#include <orcaqgui2d/paintutils.h>
+#include <hydroqguipaint/paintutils.h>
 #include "featuremap2dpainter.h"
 
 using namespace std;
@@ -52,7 +52,7 @@ void
 paintFeatureNum( QPainter *painter, int featureType, int featureNum, bool useTransparency )
 {
     if ( useTransparency ) {
-        painter->setPen(getTransparentVersion(orcaqguielementutil::featureColour(featureType),0.3));
+        painter->setPen( hydroqguipaint::getTransparentVersion(orcaqguielementutil::featureColour(featureType),0.3));
     } else {
         painter->setPen(orcaqguielementutil::featureColour(featureType));
     }
@@ -93,12 +93,12 @@ FeatureMap2dPainter::paintPointFeature( QPainter *painter,
 
             QMatrix m2win = painter->worldMatrix();
             const float lineThickness = 2.0/m2win.m11();
-            paintCovarianceEllipse( painter,
-                                    orcaqguielementutil::featureColour(featureType),
-                                    covXX,
-                                    covXY,
-                                    covYY,
-                                    lineThickness);
+            hydroqguipaint::paintCovarianceEllipse( painter,
+                                                    orcaqguielementutil::featureColour(featureType),
+                                                    covXX,
+                                                    covXY,
+                                                    covYY,
+                                                    lineThickness);
         }
 
         // Numbers
@@ -182,7 +182,7 @@ FeatureMap2dPainter::paintLineFeature( QPainter *painter,
                                            uncertaintyLength, halfLineLength ) );
 
                 // alpha uncertainty: a wedge on the back (non-visible) side of the line
-                paintUncertaintyWedge( painter, orcaqguielementutil::featureColour(f.type), f.c.yy, length, lineThickness );
+                hydroqguipaint::paintUncertaintyWedge( painter, orcaqguielementutil::featureColour(f.type), f.c.yy, length, lineThickness );
             }
             else
             {
@@ -219,7 +219,7 @@ FeatureMap2dPainter::paintPoseFeature( QPainter *painter,
         {
             painter->translate( f.p.p.x, f.p.p.y );
             painter->rotate( RAD2DEG(f.p.o) );
-            paintUncertaintyWedge( painter, orcaqguielementutil::featureColour(f.type), f.c.tt, length, lineThickness );
+            hydroqguipaint::paintUncertaintyWedge( painter, orcaqguielementutil::featureColour(f.type), f.c.tt, length, lineThickness );
         }
         painter->restore();
     }

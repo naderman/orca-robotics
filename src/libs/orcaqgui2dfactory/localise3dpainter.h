@@ -13,7 +13,7 @@
 #include <QColor>
 #include <hydroqgui/definitions2d.h>
 #include <orca/localise3d.h>
-#include <orcaqgui2d/paintutils.h>
+#include <hydroqguipaint/paintutils.h>
 #include <orcaqgui2dfactory/localise2dpainter.h> // for PlatformType
 
 // forward declarations
@@ -66,7 +66,7 @@ class Localise3dPainter
 
     bool useTransparency_;
     bool isDisplayHistory_;
-    PoseHistory history_;
+    hydroqguipaint::PoseHistory history_;
 
     bool isDisplayMultiHypothesis_;
 };

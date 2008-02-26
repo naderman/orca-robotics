@@ -7,7 +7,7 @@ SET ( NOT_ORCA_OS_WIN NOT ORCA_OS_WIN )
 REQUIRE_VAR( build LIB ${lib_name} NOT_ORCA_OS_WIN "Windows OS is not  supported" )
 REQUIRE_VAR( build LIB ${lib_name} QT4_FOUND "Qt4 not found" )
 
-SET( dep_libs OrcaQCompModel OrcaQGuiElementUtil )
+SET( dep_libs OrcaQCompModel OrcaQGuiElementUtil HydroQGui )
 REQUIRE_TARGETS( build LIB ${lib_name} ${dep_libs} )
 
 IF ( build )

@@ -19,7 +19,7 @@
 #include <orcaobj/orcaobj.h>
 #include <orcalogfactory/logstringutils.h>
 
-#include <orcaqgui2d/paintutils.h>
+#include <hydroqguipaint/paintutils.h>
 
 #include "pathpainter.h"
 
@@ -94,9 +94,9 @@ void PathPainter::paint( QPainter *painter, int z )
     QColor currentWpColor;
     
     if (useTransparency_) {
-        inactiveWpColor = getTransparentVersion(futureWpColor);
-        pastWpColor = getTransparentVersion(futureWpColor,0.25);
-        currentWpColor = getTransparentVersion(futureWpColor,0.75);
+        inactiveWpColor = hydroqguipaint::getTransparentVersion(futureWpColor);
+        pastWpColor = hydroqguipaint::getTransparentVersion(futureWpColor,0.25);
+        currentWpColor = hydroqguipaint::getTransparentVersion(futureWpColor,0.75);
     } else {
         inactiveWpColor = futureWpColor;
         pastWpColor = futureWpColor;
@@ -132,12 +132,12 @@ void PathPainter::paint( QPainter *painter, int z )
  
         painter->save();
         painter->translate( guiPath_[i].position.x(), guiPath_[i].position.y() );    // move to point
-        paintWaypoint( painter, 
-                       fillColor,
-                       drawColor, 
-                       guiPath_[i].heading,
-                       guiPath_[i].distanceTolerance, 
-                       guiPath_[i].headingTolerance );
+        hydroqguipaint::paintWaypoint(  painter, 
+                                        fillColor,
+                                        drawColor, 
+                                        guiPath_[i].heading,
+                                        guiPath_[i].distanceTolerance, 
+                                        guiPath_[i].headingTolerance );
         painter->restore();
     }
     
@@ -148,12 +148,12 @@ void PathPainter::paint( QPainter *painter, int z )
 
         painter->translate( guiPath_[wpIndex_].position.x(), guiPath_[wpIndex_].position.y() );    // move to point
         drawColor = Qt::black;
-        paintWaypoint( painter, 
-                        currentWpColor,
-                        drawColor, 
-                        guiPath_[wpIndex_].heading,
-                        guiPath_[wpIndex_].distanceTolerance, 
-                        guiPath_[wpIndex_].headingTolerance );
+        hydroqguipaint::paintWaypoint(  painter, 
+                                        currentWpColor,
+                                        drawColor, 
+                                        guiPath_[wpIndex_].heading,
+                                        guiPath_[wpIndex_].distanceTolerance, 
+                                        guiPath_[wpIndex_].headingTolerance );
         painter->restore();
     }
     
@@ -223,7 +223,7 @@ void PathPainter::paint( QPainter *painter, int z )
     painter->save();
     painter->translate( x, y );
     QColor c = Qt::blue;
-    paintWaypoint( painter, c, c, 0, 0.3, 360*16 );
+    hydroqguipaint::paintWaypoint( painter, c, c, 0, 0.3, 360*16 );
     
     // drawing velocity values as text
     painter->setFont( QFont("Helvetica [Cronyx]", 12) );

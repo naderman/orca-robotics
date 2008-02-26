@@ -11,13 +11,13 @@
 #include <QTimer>
 
 #include <hydroutil/mathdefs.h>
+#include <hydroqgui/definitions2d.h>
+#include <hydroqguipaint/paintutils.h>
 
 #include <orcaqgui2d/guielement2d.h>
-#include <hydroqgui/definitions2d.h>
 #include <orcaqgui2d/platformcsfinder.h>
 #include <orcaqgui2d/iknowsplatformposition2d.h>
 
-#include "paintutils.h"
 #include "worldview.h"
 
 using namespace std;
@@ -270,7 +270,7 @@ WorldView::paintAllGuiElements( QPainter *painter, int z, bool isCoordinateFrame
                 else
                 {
                     // Save the state of the painter with ScopedSaver, in case an exception is thrown.
-                    ScopedSaver scopedPainterSaver( painter );
+                    hydroqguipaint::ScopedSaver scopedPainterSaver( painter );
                     {
                         // if a localiser element is not found, the coords of the painter
                         // will not be transformed and the element will be painted at the
@@ -286,7 +286,7 @@ WorldView::paintAllGuiElements( QPainter *painter, int z, bool isCoordinateFrame
                         else
                         {
                             // local view is aligned with y-axis
-                            ScopedSaver saver( painter );
+                            hydroqguipaint::ScopedSaver saver( painter );
                             {
                                 painter->rotate( 90.0 );
                                 elem->paint( painter, z );

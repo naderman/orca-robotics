@@ -14,7 +14,7 @@
 
 #include <hydroqgui/definitions2d.h>
 
-#include <orcaqgui2d/paintutils.h>
+#include <hydroqguipaint/paintutils.h>
 #include "gridelement.h"
 
 using namespace std;
@@ -38,7 +38,7 @@ GridElement::paint( QPainter *painter, int z )
     
     if ( z==hydroqgui::Z_ORIGIN && isDisplayOrigin_ ) {
         //cout<<"painting origin"<<endl;
-        paintOrigin( painter, Qt::blue, radius, lineThickness );
+        hydroqguipaint::paintOrigin( painter, Qt::blue, radius, lineThickness );
         return;
     }
 
