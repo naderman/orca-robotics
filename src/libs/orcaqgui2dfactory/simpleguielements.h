@@ -11,9 +11,6 @@
 #ifndef ORCAGUI_SIMPLE_GUI_ELEMENTS_H
 #define ORCAGUI_SIMPLE_GUI_ELEMENTS_H
 
-#include <QPointF>
-#include <QObject>
-
 // for setInit()
 #include <orcaobj/orcaobj.h>
 

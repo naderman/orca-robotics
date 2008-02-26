@@ -11,10 +11,8 @@
 #ifndef ORCAGUI_GRIDELEMENT_H
 #define ORCAGUI_GRIDELEMENT_H
 
-#include <orcaqgui2d/guielement2d.h>
 #include <hydroqgui/definitions2d.h>
-#include <QPainter>
-
+#include <orcaqgui2d/guielement2d.h>
 
 namespace orcaqgui2d
 {

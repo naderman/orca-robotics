@@ -10,11 +10,9 @@
 
 #include <iostream>
 #include <cmath> // for ceil()
-#include <QPainter>
-
-#include <hydroqgui/definitions2d.h>
 
 #include <hydroqguipaint/paintutils.h>
+
 #include "gridelement.h"
 
 using namespace std;
