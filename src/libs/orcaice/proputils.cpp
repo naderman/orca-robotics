@@ -211,7 +211,7 @@ getPropertyAsDouble( const Ice::PropertiesPtr & prop, const ::std::string& key, 
             throw hydroutil::Exception( ERROR_INFO, "Failed to parse '"+stringVal+"' to a double" );
 
         // check that there's nothing left (except white space)
-        char test;
+        char test = 'a'; // set this char to something something valgrind doesn't complain
         ss >> test;
         if ( test!='#' && !ss.eof() )
             throw hydroutil::Exception( ERROR_INFO, "Failed to parse '"+stringVal+"' to an double" );
@@ -253,7 +253,7 @@ getPropertyAsInt( const Ice::PropertiesPtr & prop, const ::std::string& key, int
             throw hydroutil::Exception( ERROR_INFO, "Failed to parse '"+stringVal+"' to an int" );
 
         // check that there's nothing left (except white space)
-        char test;
+        char test = 'a'; // set this char to something something valgrind doesn't complain
         ss >> test;
         if ( test!='#' && !ss.eof() )
             throw hydroutil::Exception( ERROR_INFO, "Failed to parse '"+stringVal+"' to an int" );
