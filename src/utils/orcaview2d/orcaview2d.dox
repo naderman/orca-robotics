@@ -105,7 +105,7 @@ Here's a screenshot of the GUI connected to a few interfaces belonging to two pl
 
 @par Elements and their interfaces
 
-GuiElements typically connect to a single required interface but can also have none or several. To be able to configure them, they have "type" and "details" configuration options. When the GUI starts up, it will go through the list of Elements and will try to set them up (which typically involves trying to connect to interfaces).
+GuiElements typically connect to a single required interface but can also have none or several. To be able to configure them, they have "type" and "details" configuration options. When the GUI starts up, it will setup the elements which handle the network-related stuff like connecting to interfaces.
 
 - @c OrcaView.Config.ElementX.Type (string)
      - GuiElement type

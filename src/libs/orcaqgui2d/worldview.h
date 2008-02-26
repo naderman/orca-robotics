@@ -15,7 +15,7 @@
 #include <QFileDialog>
 #include <QString>
 
-#include <orcaqgui2d/zoomwidget.h>
+#include <hydroqgui/zoomwidget.h>
 #include <hydroqgui/hydroqgui.h>
 
 namespace orcaqgui {
@@ -31,7 +31,7 @@ class GuiQPainter;
 //!
 //! @brief Displays a set of GuiElements in a geometrically-correct way
 //!
-class WorldView : public orcaqgui2d::ZoomWidget
+class WorldView : public hydroqgui::ZoomWidget
 {
    Q_OBJECT
 public:

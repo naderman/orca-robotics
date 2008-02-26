@@ -19,7 +19,6 @@ IF ( build )
     
     SET( moc_hdrs
         worldview.h
-        zoomwidget.h
     )
 
     QT4_WRAP_CPP( moc_srcs ${moc_hdrs} )
