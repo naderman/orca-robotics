@@ -107,11 +107,11 @@ Localise3dPainter::paint( QPainter *painter, int z )
 {
     if ( !isDataAvailable_ ) return;
     
-    if ( z == Z_POSE-2 && isDisplayHistory_ ) {
+    if ( z == hydroqgui::Z_POSE-2 && isDisplayHistory_ ) {
         history_.paint( painter, currentColor_ );
     }
     
-    if ( z == Z_POSE ) 
+    if ( z == hydroqgui::Z_POSE ) 
     {
         if ( data_.hypotheses.size() != 0 )
         {

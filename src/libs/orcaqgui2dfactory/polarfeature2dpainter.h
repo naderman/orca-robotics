@@ -12,7 +12,7 @@
 #define ORCAGUI_POLARFEATURE2D_PAINTER_H
 
 #include <orca/polarfeature2d.h>
-#include <orcaqgui2d/definitions2d.h>
+#include <hydroqgui/definitions2d.h>
 
 class QPainter;
 
@@ -32,7 +32,7 @@ class PolarFeature2dPainter
 
     void setData( const orca::PolarFeature2dData &featureData );
     void paint( QPainter *p, int z );
-    bool paintThisLayer( int z ) const { return z==Z_LASER_FEATURES; }
+    bool paintThisLayer( int z ) const { return z==hydroqgui::Z_LASER_FEATURES; }
 
     void clear();
     

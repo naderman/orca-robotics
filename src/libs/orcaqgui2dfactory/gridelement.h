@@ -12,7 +12,7 @@
 #define ORCAGUI_GRIDELEMENT_H
 
 #include <orcaqgui2d/guielement2d.h>
-#include <orcaqgui2d/definitions2d.h>
+#include <hydroqgui/definitions2d.h>
 #include <QPainter>
 
 
@@ -32,7 +32,7 @@ public:
     virtual bool isInGlobalCS() { return true; }
     
 	virtual void paint( QPainter *p, int z );
-    virtual bool paintThisLayer(int z) const { return z==Z_GRID || z==Z_ORIGIN; }
+    virtual bool paintThisLayer(int z) const { return z==hydroqgui::Z_GRID || z==hydroqgui::Z_ORIGIN; }
 
     virtual QStringList contextMenu();
     

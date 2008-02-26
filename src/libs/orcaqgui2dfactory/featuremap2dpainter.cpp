@@ -227,7 +227,7 @@ FeatureMap2dPainter::paintPoseFeature( QPainter *painter,
 
 void FeatureMap2dPainter::paint( QPainter *painter, const int z )
 {
-    if ( z != orcaqgui2d::Z_SLAM_MAP ) return;
+    if ( z != hydroqgui::Z_SLAM_MAP ) return;
 
     QColor color;
 

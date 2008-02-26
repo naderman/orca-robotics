@@ -10,7 +10,7 @@
 
 #include <qpainter.h>
 #include "boxelement.h"
-#include <orcaqgui2d/definitions2d.h>
+#include <hydroqgui/definitions2d.h>
 
 namespace orcaqgui2d {
 
@@ -29,7 +29,7 @@ BoxElement::~BoxElement()
 
 void BoxElement::paint( QPainter* p, const int z )
 {
-    if ( z != Z_GRID ) return;
+    if ( z != hydroqgui::Z_GRID ) return;
 
     p->save();
     {

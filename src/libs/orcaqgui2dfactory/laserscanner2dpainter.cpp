@@ -131,7 +131,7 @@ LaserScanner2dPainter::setData( const orca::RangeScanner2dDataPtr & data )
 void
 LaserScanner2dPainter::paint( QPainter *painter, int z )
 {
-    if ( z != Z_LASER || !isDisplayScan_ ) return;
+    if ( z != hydroqgui::Z_LASER || !isDisplayScan_ ) return;
     if ( qScan_.isEmpty() ) return;
     
     painter->save();

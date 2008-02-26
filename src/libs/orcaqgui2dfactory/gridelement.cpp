@@ -12,7 +12,7 @@
 #include <cmath> // for ceil()
 #include <QPainter>
 
-#include <orcaqgui2d/definitions2d.h>
+#include <hydroqgui/definitions2d.h>
 
 #include <orcaqgui2d/paintutils.h>
 #include "gridelement.h"
@@ -36,13 +36,13 @@ GridElement::paint( QPainter *painter, int z )
     const double radius  = 6.0/m.m11();
     const double lineThickness = 2.0/m.m11();
     
-    if ( z==Z_ORIGIN && isDisplayOrigin_ ) {
+    if ( z==hydroqgui::Z_ORIGIN && isDisplayOrigin_ ) {
         //cout<<"painting origin"<<endl;
         paintOrigin( painter, Qt::blue, radius, lineThickness );
         return;
     }
 
-    if ( z!=Z_GRID || !isDisplayGrid_ ) return;
+    if ( z!=hydroqgui::Z_GRID || !isDisplayGrid_ ) return;
     
     // save painter settings before doing anything
     painter->save();

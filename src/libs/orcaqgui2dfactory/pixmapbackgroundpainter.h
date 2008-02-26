@@ -13,7 +13,7 @@
 
 #include <orca/pixmap.h>
 #include <orcaice/context.h>
-#include <orcaqgui2d/definitions2d.h>
+#include <hydroqgui/definitions2d.h>
 #include <orcaqgui2dfactory/pixmappainter.h>
 
 namespace orcaqgui2d
@@ -29,7 +29,7 @@ class PixMapBackgroundPainter
     ~PixMapBackgroundPainter();
 
     void paint( QPainter *p, int z );
-    bool paintThisLayer( int z ) const { return z==Z_BACKGROUND; }
+    bool paintThisLayer( int z ) const { return z==hydroqgui::Z_BACKGROUND; }
 
     // Give the PixmapPainter the data relevant for painting
     void setData( const orca::PixMapData& data );

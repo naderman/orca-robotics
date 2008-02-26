@@ -8,28 +8,17 @@
  *
  */
 
-#include <iostream> // debugging only
-#include <cmath>  // for floor()
-#include <map>
-
-#include <QPainter>
-#include <QAction>
 #include <QTimer>
-#include <QPaintEvent>
-#include <QInputDialog>
-#include <QStatusBar>
-#include <QDialog>
-#include <QToolTip>
 
 #include <hydroutil/mathdefs.h>
-#include <orcaqgui2dfactory/gridelement.h>
-#include <orcaqgui/guiicons.h>
-#include <orcaqgui2d/definitions2d.h>
+
+#include <orcaqgui2d/guielement2d.h>
+#include <hydroqgui/definitions2d.h>
 #include <orcaqgui2d/platformcsfinder.h>
 #include <orcaqgui2d/iknowsplatformposition2d.h>
-#include "worldview.h"
-#include <IceUtil/IceUtil.h>
+
 #include "paintutils.h"
+#include "worldview.h"
 
 using namespace std;
 
@@ -242,7 +231,7 @@ WorldView::paintEvent( QPaintEvent* e )
     bool isCoordinateFramePlatformLocalised = transformToPlatformOwningCS( &painter );
 
     // simple z-buffering, higher-z items obscure (are in front of) lower-z items (just like QCanvas)
-    for ( int z=Z_BACKGROUND; z<=Z_FOREGROUND; z++ )
+    for ( int z=hydroqgui::Z_BACKGROUND; z<=hydroqgui::Z_FOREGROUND; z++ )
     {
         paintAllGuiElements(&painter,z,isCoordinateFramePlatformLocalised);
     }

@@ -16,7 +16,7 @@
 #include <QColor>
 
 #include <orcaqgui2dfactory/pathinput.h>
-#include <orcaqgui2d/definitions2d.h>
+#include <hydroqgui/definitions2d.h>
 
 // forward declarations
 class QPainter;
@@ -35,7 +35,7 @@ class PathPainter
     void setWpIndex( int index );
     void setRelativeStartTime( double relativeStartTime );
     void paint( QPainter *p, int z );
-    bool paintThisLayer(int z) const { return z==Z_PATH; };
+    bool paintThisLayer(int z) const { return z==hydroqgui::Z_PATH; };
     void setUseTransparency( bool useTransparency ) { useTransparency_= useTransparency; };
 
     void clear();

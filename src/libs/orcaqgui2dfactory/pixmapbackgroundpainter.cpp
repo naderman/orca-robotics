@@ -34,7 +34,7 @@ PixMapBackgroundPainter::~PixMapBackgroundPainter()
 void 
 PixMapBackgroundPainter::paint( QPainter *p, int z )
 {
-    if (z!=Z_BACKGROUND) return;
+    if (z!=hydroqgui::Z_BACKGROUND) return;
     pixmapPainter_->paint(p); 
 }
 

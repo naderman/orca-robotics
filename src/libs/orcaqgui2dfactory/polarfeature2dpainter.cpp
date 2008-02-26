@@ -98,7 +98,7 @@ drawLineFeature( QPainter *painter, const orca::LinePolarFeature2d &f )
 void
 PolarFeature2dPainter::paint( QPainter *painter, int z )
 {
-    if ( z != Z_LASER_FEATURES ) return;
+    if ( z != hydroqgui::Z_LASER_FEATURES ) return;
 
     painter->setBrush(QBrush());
 

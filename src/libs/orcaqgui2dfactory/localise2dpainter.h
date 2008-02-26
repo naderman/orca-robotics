@@ -11,7 +11,7 @@
 #define ORCAGUI_LOCALISE2D_PAINTER_H
 
 #include <QColor>
-#include <orcaqgui2d/definitions2d.h>
+#include <hydroqgui/definitions2d.h>
 #include <orcaqgui2d/paintutils.h>
 
 // forward declarations
@@ -40,7 +40,7 @@ class Localise2dPainter
     void setOrigin( double x, double y, double o ) { originX_ = x; originY_ = y; originRot_ = o; };
 
     void paint( QPainter *p, int z );
-    bool paintThisLayer(int z) const {return z==Z_POSE || z==Z_POSE-2;}
+    bool paintThisLayer(int z) const {return z==hydroqgui::Z_POSE || z==hydroqgui::Z_POSE-2;}
     void setUseTransparency( bool useTransparency ) { useTransparency_= useTransparency; };
     void clear();
     void setColor( QColor color );

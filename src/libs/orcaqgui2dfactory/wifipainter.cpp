@@ -39,7 +39,7 @@ WifiPainter::setData( const orca::WifiData& wifiData )
 
 void WifiPainter::paint( QPainter *painter, int z )
 {
-    if ( z != Z_FOREGROUND ) return;
+    if ( z != hydroqgui::Z_FOREGROUND ) return;
 }
 
 } // namespace

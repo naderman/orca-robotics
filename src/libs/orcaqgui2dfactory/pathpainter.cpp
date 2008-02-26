@@ -77,7 +77,7 @@ void PathPainter::paint( QPainter *painter, int z )
 {
     if ( !displayWaypoints_ ) return;
     
-    if ( z != Z_PATH ) return;
+    if ( z != hydroqgui::Z_PATH ) return;
 
     QColor fillColor;
     QColor drawColor;

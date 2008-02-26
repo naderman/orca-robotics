@@ -40,7 +40,7 @@ OgMapsCombinedPainter::~OgMapsCombinedPainter()
 void 
 OgMapsCombinedPainter::paint( QPainter *p, int z )
 {
-    if (z!=Z_OG_MAP) return;
+    if (z!=hydroqgui::Z_OG_MAP) return;
     pixmapPainter_->paint(p); 
 }
 

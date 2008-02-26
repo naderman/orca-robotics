@@ -13,7 +13,7 @@
 
 #include <orcaqgui2d/guielement2d.h>
 #include <qcolor.h>
-#include <orcaqgui2d/definitions2d.h>
+#include <hydroqgui/definitions2d.h>
 
 namespace orcaqgui2d {
 
@@ -28,7 +28,7 @@ public:
 	~BoxElement();
 	
 	void paint( QPainter*, int z );
-    bool paintThisLayer( int z ) const { return z == Z_GRID; }
+    bool paintThisLayer( int z ) const { return z == hydroqgui::Z_GRID; }
     bool isInGlobalCS() { return true; }
 
 private:

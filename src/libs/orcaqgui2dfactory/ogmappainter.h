@@ -13,7 +13,7 @@
 
 #include <orca/ogmap.h>
 #include <orcaice/context.h>
-#include <orcaqgui2d/definitions2d.h>
+#include <hydroqgui/definitions2d.h>
 #include <orcaqgui2dfactory/pixmappainter.h>
 
 namespace orcaqgui2d
@@ -34,7 +34,7 @@ class OgMapPainter
     ~OgMapPainter();
 
     void paint( QPainter *p, int z );
-    bool paintThisLayer( int z ) const { return z==Z_OG_MAP; }
+    bool paintThisLayer( int z ) const { return z==hydroqgui::Z_OG_MAP; }
 
     // Give the PixmapPainter the data relevant for painting
     void setData( const orca::OgMapData& data );
