@@ -87,6 +87,7 @@ private:
 
     bool isMotionEnabled_;
     bool isEStopEnabled_;
+    bool driveInReverse_;
 
     // Looks for late writes (which will cause timeouts in the segway)
     hydroiceutil::Timer writeTimer_;

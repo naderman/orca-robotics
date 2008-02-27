@@ -22,6 +22,39 @@
 using namespace std;
 using namespace segwayrmp;
 
+namespace {
+
+    void swap( double &a, double &b )
+    {
+        double temp = a;
+        a = b;
+        b = temp;
+    }
+
+    void reverseDirection( hydrointerfaces::SegwayRmp::Data &data )
+    {
+        data.x     = -data.x;
+        data.y     = -data.y;
+        data.roll  = -data.roll;
+        data.pitch = -data.pitch;
+        data.yaw   = -data.yaw;
+
+        data.vx     = -data.vx;
+        data.droll  = -data.droll;
+        data.dpitch = -data.dpitch;
+        data.dyaw   = -data.dyaw;
+        
+        swap( data.leftTorque, data.rightTorque );
+    }
+
+    void reverseDirection( hydrointerfaces::SegwayRmp::Command &cmd )
+    {
+        cmd.vx = -cmd.vx;
+        cmd.w  = -cmd.w;
+    }
+
+}
+
 HwThread::HwThread( Config& config, const orcaice::Context &context ) :
     SubsystemThread( context.tracer(), context.status(), "HwThread" ),
     context_(context)
@@ -41,6 +74,7 @@ HwThread::HwThread( Config& config, const orcaice::Context &context ) :
     context_.tracer().info( ss.str() );
  
     isMotionEnabled_ = (bool)orcaice::getPropertyAsIntWithDefault( prop, prefix+"EnableMotion", 1 );
+    driveInReverse_  = (bool)orcaice::getPropertyAsIntWithDefault( prop, prefix+"DriveInReverse", 0 );
 
     // Dynamically load the library and find the factory
     std::string driverLibName = 
@@ -155,6 +189,7 @@ HwThread::walk()
         //
         try {
             bool stateChanged = driver_->read( data );
+            if ( driveInReverse_ ) reverseDirection( data );
 
             // stick it in the store, so that NetThread can distribute it                
             dataStore_.set( data );
@@ -210,6 +245,7 @@ HwThread::walk()
         {
             hydrointerfaces::SegwayRmp::Command command;
             commandStore_.get( command );
+            if ( driveInReverse_ ) reverseDirection( command );
 
             try {
                 driver_->write( command );

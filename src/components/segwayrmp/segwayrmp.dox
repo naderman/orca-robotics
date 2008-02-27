@@ -52,6 +52,11 @@ This component dynamically loads an implementation of a Hydro hardware interface
       the platform will not move.
     - Default: 1
     
+  - @c SegwayRmp.Config.DriveInReverse (bool)
+    - If set, reverse all controls and odometry 
+      (to all the RMP to be driven in reverse as though it were driving forward).
+    - Default: 0
+    
   - @c SegwayRmp.Config.Odometry2dPublishInterval (double) [s]
     - How often to send 2D odometry information to the IceStorm server
     - Valid values:
@@ -99,7 +104,7 @@ Parameters describing the vehicle (see orca::VehicleDescription for details)
   - @c SegwayRmp.Config.VehicleDescription.Control.VelocityDifferential.MaxLateralAcceleration (m/s/s)
     - Max centripital acceleration during a turn (limits max turnrate at speed).
       - See @ref orca_interface_vehicleDescription
-    - Default: 3.57
+    - Default: 4.9050
   - @c SegwayRmp.Config.VehicleDescription.Control.VelocityDifferential.MaxForwardAcceleration (m/s/s)
     - Default: 1.0
   - @c SegwayRmp.Config.VehicleDescription.Control.VelocityDifferential.MaxReverseAcceleration (m/s/s)
