@@ -37,12 +37,12 @@ namespace {
         data.y     = -data.y;
         data.roll  = -data.roll;
         data.pitch = -data.pitch;
-        data.yaw   = -data.yaw;
+        // data.yaw   = -data.yaw;
 
         data.vx     = -data.vx;
         data.droll  = -data.droll;
         data.dpitch = -data.dpitch;
-        data.dyaw   = -data.dyaw;
+        // data.dyaw   = -data.dyaw;
         
         swap( data.leftTorque, data.rightTorque );
     }
@@ -50,7 +50,7 @@ namespace {
     void reverseDirection( hydrointerfaces::SegwayRmp::Command &cmd )
     {
         cmd.vx = -cmd.vx;
-        cmd.w  = -cmd.w;
+        // cmd.w  = -cmd.w;
     }
 
 }
