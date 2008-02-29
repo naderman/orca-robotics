@@ -9,7 +9,6 @@
  */
 
 #include <iostream>
-#include <orcaice/orcaice.h>
 #include <hydroutil/sysutils.h>
 
 #include "guielementmodel.h"
@@ -417,12 +416,6 @@ GuiElementModel::updateGuiElements()
             std::stringstream ss;
             try {
                 elements()[i]->update();
-            }
-            catch ( Ice::Exception &e )
-            {
-                ss<<"GuiElementModel: during update of "
-                <<elements()[i]->details().toStdString()<<": " << e << std::endl;
-                humanManager_.showStatusMsg(hydroqgui::IHumanManager::Warning,ss.str().c_str());
             }
             catch ( std::exception &e )
             {

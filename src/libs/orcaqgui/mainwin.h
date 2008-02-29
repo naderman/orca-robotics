@@ -16,6 +16,7 @@
 
 #include <hydroiceutil/jobqueue.h>
 #include <hydroqgui/ihumanmanager.h>
+#include <orcaice/context.h>
 #include <orcaqguielementmodelview/guielementmodel.h>
 #include <orcaqguielementmodelview/guielementview.h>
 #include "platformfocuscombo.h"

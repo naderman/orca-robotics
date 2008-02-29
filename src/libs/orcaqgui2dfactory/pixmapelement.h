@@ -12,14 +12,14 @@
 #define PIXMAPELEMENT_H
 
 #include <orcaqgui2dfactory/pixmapbackgroundpainter.h>
-#include <orcaqgui2d/icestormelement.h>
+#include <orcaqguielementutil/icestormelement.h>
 #include <hydroqgui/hydroqgui.h>
 #include <orcaqgui2dfactory/connectutils.h>
 
 namespace orcaqgui2d {
 
 class PixMapElement
-    : public IceStormElement<PixMapBackgroundPainter,
+    : public orcaqguielementutil::IceStormElement<PixMapBackgroundPainter,
                                              orca::PixMapData,
                                              orca::PixMapPrx,
                                              orca::PixMapConsumer,

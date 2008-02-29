@@ -7,10 +7,10 @@ SET ( NOT_ORCA_OS_WIN NOT ORCA_OS_WIN )
 REQUIRE_VAR( build LIB ${lib_name} NOT_ORCA_OS_WIN "Windows OS is not  supported" )
 REQUIRE_VAR( build LIB ${lib_name} QT4_FOUND "Qt4 not found" )
 
-SET( dep_libs OrcaQGui2d OrcaLogFactory ) # OrcaLogFactory needed for saving path to file (re-factor?)
+SET( dep_libs OrcaLogFactory ) # OrcaLogFactory needed for saving path to file (re-factor?)
 REQUIRE_TARGETS( build LIB ${lib_name} ${dep_libs} )
 
-SET( dep_libs ${dep_libs} HydroNavUtil HydroQGui HydroQGuiPaint OrcaObjects )
+SET( dep_libs ${dep_libs} HydroNavUtil HydroQGui HydroQGuiPaint OrcaObjects OrcaQGuiElementUtil )
 REQUIRE_VAR( build LIB ${lib_name} HYDRONAVUTIL_INSTALLED "libHydroNavUtil not installed" )
 REQUIRE_VAR( build LIB ${lib_name} HYDROQGUI_INSTALLED "libHydroQGui not installed" )
 

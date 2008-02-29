@@ -4,7 +4,7 @@
 #include <hydroqgui/hydroqgui.h>
 #include <orcaice/context.h>
 
-namespace orcaqgui2d {
+namespace orcaqgui {
 
 //!
 //! @brief Simply allows for orcaice::Context to be set.

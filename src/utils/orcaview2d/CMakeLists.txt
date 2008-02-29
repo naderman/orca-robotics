@@ -7,7 +7,7 @@ REQUIRE_OPTION( build EXE ${APP_NAME} ON )
 SET ( NOT_ORCA_OS_WIN NOT ORCA_OS_WIN )
 REQUIRE_VAR( build EXE ${APP_NAME} NOT_ORCA_OS_WIN "Windows OS is not  supported" )
 
-SET( dep_libs OrcaQGui OrcaQGuiElementModelView OrcaQGui2d OrcaObjects )
+SET( dep_libs OrcaQGui OrcaQGuiElementModelView OrcaObjects )
 REQUIRE_TARGETS( build EXE ${APP_NAME} ${dep_libs} )
 
 SET( dep_libs ${dep_libs} HydroDll )

@@ -16,7 +16,7 @@
 #include <hydroiceutil/store.h>
 #include <hydroiceutil/timer.h>
 
-#include <orcaqgui2d/guielement2d.h>
+#include <hydroqgui/guielement2d.h>
 #include <orcaqgui2dfactory/pathpainter.h>
 #include <orcaqgui2dfactory/pathinput.h>
 
@@ -149,7 +149,7 @@ private:
 // Reason is that PathFollower2dConsumer has a non-standard purely virtual 
 // member function setWaypointIndex. 
 // Disadvantage is that we have to subscribe ourselves.
-class PathFollower2dElement : public GuiElement2d
+class PathFollower2dElement : public hydroqgui::GuiElement2d
 {
 
 public: 

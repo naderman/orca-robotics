@@ -100,7 +100,7 @@ PathPlanner2dElement::PathPlanner2dElement( const orcaice::Context       &contex
                                             const std::string            &proxyString,
                                             hydroqgui::IHumanManager     &humanManager,
                                             hydroqgui::MouseEventManager &mouseEventManager )
-    : IceStormElement<  PathPainter,
+    : orcaqguielementutil::IceStormElement<  PathPainter,
                         orca::PathPlanner2dData,
                         orca::PathPlanner2dPrx,
                         orca::PathPlanner2dConsumer,

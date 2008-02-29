@@ -16,13 +16,12 @@
 #include <IceStorm/IceStorm.h>
 #include <orcaqguielementutil/ptricestormlistener.h>
 #include <hydroqgui/hydroqgui.h>
-
-#include <orcaqgui2d/guielement2d.h>
+#include <hydroqgui/guielement2d.h>
 
 // forward declarations
 class QPainter;
 
-namespace orcaqgui2d {
+namespace orcaqguielementutil {
 
 /*!
   @brief Base class for gui elements that receive data from IceStorm.
@@ -32,7 +31,7 @@ namespace orcaqgui2d {
   @author Alex Brooks
 */
 template<class PainterType, class DataType, class DataPtrType, class ProxyType, class ConsumerType, class ConsumerPrxType>
-class PtrIceStormElement : public orcaqgui2d::GuiElement2d
+class PtrIceStormElement : public hydroqgui::GuiElement2d
 {
   
 public:

@@ -13,7 +13,7 @@
 
 #include <vector>
 #include <orcaqguielementutil/icestormlistener.h>
-#include <orcaqgui2d/guielement2d.h>
+#include <hydroqgui/guielement2d.h>
 #include <orcaqgui2dfactory/connectutils.h>
 #include <orcaqgui2dfactory/ogmapscombinedpainter.h>
 
@@ -22,7 +22,7 @@ namespace orcaqgui2d {
 // A GuiElement which can combine several (at the moment two) ogmaps
 // Subscribes to several (at the moment two) OgMap interfaces
 // Author: Tobias Kaupp
-class OgMapsCombinedElement : public GuiElement2d
+class OgMapsCombinedElement : public hydroqgui::GuiElement2d
 {
 
 public:

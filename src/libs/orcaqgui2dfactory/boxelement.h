@@ -11,7 +11,7 @@
 #ifndef QRED_BOXELEMENT_H
 #define QRED_BOXELEMENT_H
 
-#include <orcaqgui2d/guielement2d.h>
+#include <hydroqgui/guielement2d.h>
 #include <qcolor.h>
 #include <hydroqgui/definitions2d.h>
 
@@ -21,7 +21,7 @@ namespace orcaqgui2d {
   \brief Draws a simple square on the map.
   \author Alex Brooks
 */  
-class BoxElement : public GuiElement2d
+class BoxElement : public hydroqgui::GuiElement2d
 {
 public:
 	BoxElement( QColor color, float centreX, float centreY, float width, float height );

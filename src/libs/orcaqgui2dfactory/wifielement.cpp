@@ -165,7 +165,7 @@ void WifiWidget::setupDisplay()
 WifiElement::WifiElement( const orcaice::Context  &context,
                           const std::string       &proxyString,
                           int                      timeoutMs)
-    : IceStormElement<WifiPainter,
+    : orcaqguielementutil::IceStormElement<WifiPainter,
                       orca::WifiData,
                       orca::WifiPrx,
                       orca::WifiConsumer,

@@ -1,7 +1,7 @@
 #ifndef ORCAQGUI2DFACTORY_BUTTONELEMENT_H
 #define ORCAQGUI2DFACTORY_BUTTONELEMENT_H
 
-#include <orcaqgui2d/guielement2d.h>
+#include <hydroqgui/guielement2d.h>
 #include <orca/button.h>
 #include <string>
 #include <orcaice/context.h>
@@ -12,7 +12,7 @@ namespace orcaqgui2d {
 //!
 //! @author Alex Brooks
 //!
-class ButtonElement : public orcaqgui2d::GuiElement2d
+class ButtonElement : public hydroqgui::GuiElement2d
 {
 
 public: 

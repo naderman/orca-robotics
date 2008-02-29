@@ -18,9 +18,10 @@
 #include <orcaqgui/selectableelementwidget.h>
 #include <orcaqgui/configfileelements.h>
 #include <orcaqguielementmodelview/guielementmodel.h>
-#include <orcaqgui2d/worldview.h>
-#include <orcaqgui2d/platformcsfinder.h>
-#include <orcaqgui2dfactory/defaultfactory.h>
+#include <hydroqgui/worldview.h>
+#include <hydroqgui/platformcsfinder.h>
+// #include <orcaqgui2dfactory/defaultfactory.h>
+#include <orcaqgui/iguielementfactory.h>
 #include "component.h"
         
 using namespace std;
@@ -96,8 +97,8 @@ Component::loadPluginLibraries( const std::string& factoryLibNames )
     {
         cout<<"TRACE(component.cpp): Setting context for "<<i<<"'th factory" << endl;
 
-        orcaqgui2d::IGuiElementFactory *orcaFactory =
-            dynamic_cast<orcaqgui2d::IGuiElementFactory *>(factories_[i]);
+        orcaqgui::IGuiElementFactory *orcaFactory = 
+                dynamic_cast<orcaqgui::IGuiElementFactory*>(factories_[i]);
         if ( orcaFactory != NULL )
         {
             cout<<"TRACE(component.cpp): setContext()" << endl;
@@ -210,10 +211,10 @@ Component::start()
                                                 platformColorScheme );
 
     // Can work out the coordinate system of a platform
-    orcaqgui2d::PlatformCSFinder platformCSFinder;
+    hydroqgui::PlatformCSFinder platformCSFinder;
 
     // widget for viewing the actual world
-    orcaqgui2d::WorldView worldView( &platformCSFinder,
+    hydroqgui::WorldView worldView( &platformCSFinder,
                                      mouseEventManager,
                                      guiElementSet,
                                      coordinateFrameManager,

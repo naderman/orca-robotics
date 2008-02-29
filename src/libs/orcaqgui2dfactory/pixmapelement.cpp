@@ -20,7 +20,7 @@ namespace orcaqgui2d {
 PixMapElement::PixMapElement( const orcaice::Context  &context,
                             const std::string       &proxyString,
                             hydroqgui::IHumanManager* humanManager )
-    : IceStormElement<PixMapBackgroundPainter,
+    : orcaqguielementutil::IceStormElement<PixMapBackgroundPainter,
                       orca::PixMapData,
                       orca::PixMapPrx,
                       orca::PixMapConsumer,

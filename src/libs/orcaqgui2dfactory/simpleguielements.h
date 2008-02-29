@@ -14,10 +14,10 @@
 // for setInit()
 #include <orcaobj/orcaobj.h>
 
-#include <orcaqgui2d/ptricestormelement.h>
-#include <orcaqgui2d/icestormelement.h>
+#include <orcaqguielementutil/ptricestormelement.h>
+#include <orcaqguielementutil/icestormelement.h>
 #include <hydroqgui/hydroqgui.h>
-#include <orcaqgui2d/iknowsplatformposition2d.h>
+#include <hydroqgui/iknowsplatformposition2d.h>
 #include <orcaqgui2dfactory/connectutils.h>
 
 // Include various painter types
@@ -37,7 +37,7 @@ namespace orcaqgui2d
 
 ////////////////////////////////////////////////////////////////////////////////
 class PolarFeature2dElement
-    : public IceStormElement<PolarFeature2dPainter,
+    : public orcaqguielementutil::IceStormElement<PolarFeature2dPainter,
                              orca::PolarFeature2dData,
                              orca::PolarFeature2dPrx,
                              orca::PolarFeature2dConsumer,
@@ -47,7 +47,7 @@ public:
     PolarFeature2dElement( const orcaice::Context  &context,
                            const std::string       &proxyString,
                            int                      timeoutMs=30000 )
-        : IceStormElement<PolarFeature2dPainter,
+        : orcaqguielementutil::IceStormElement<PolarFeature2dPainter,
                           orca::PolarFeature2dData,
                           orca::PolarFeature2dPrx,
                           orca::PolarFeature2dConsumer,
@@ -71,7 +71,7 @@ private:
 
 ////////////////////////////////////////////////////////////////////////////////
 class LaserScanner2dElement
-    : public PtrIceStormElement<LaserScanner2dPainter,
+    : public orcaqguielementutil::PtrIceStormElement<LaserScanner2dPainter,
                              orca::RangeScanner2dData,
                              orca::RangeScanner2dDataPtr,
                              orca::LaserScanner2dPrx,
@@ -85,7 +85,7 @@ public:
                   QColor                   outlineColor=QColor( 102,102,153, 255 ),
                   float                    outlineThickness=-1,
                   float                    brightReturnWidth=0.2 )
-        : PtrIceStormElement<LaserScanner2dPainter,
+        : orcaqguielementutil::PtrIceStormElement<LaserScanner2dPainter,
                           orca::RangeScanner2dData,
                           orca::RangeScanner2dDataPtr,
                           orca::LaserScanner2dPrx,
@@ -109,7 +109,7 @@ private:
 
 ////////////////////////////////////////////////////////////////////////////////
 class RangeScanner2dElement
-    : public PtrIceStormElement<LaserScanner2dPainter,
+    : public orcaqguielementutil::PtrIceStormElement<LaserScanner2dPainter,
                                 orca::RangeScanner2dData,
                                 orca::RangeScanner2dDataPtr,
                                 orca::RangeScanner2dPrx,
@@ -123,7 +123,7 @@ public:
                   QColor                   outlineColor=QColor( 102,102,153, 255 ),
                   float                    outlineThickness=-1,
                   float                    brightReturnWidth=0.2 )
-        : PtrIceStormElement<LaserScanner2dPainter,
+        : orcaqguielementutil::PtrIceStormElement<LaserScanner2dPainter,
                              orca::RangeScanner2dData,
                              orca::RangeScanner2dDataPtr,
                              orca::RangeScanner2dPrx,
@@ -148,19 +148,19 @@ private:
 
 ////////////////////////////////////////////////////////////////////////////////
 class Localise3dElement
-    : public IceStormElement<Localise3dPainter,
+    : public orcaqguielementutil::IceStormElement<Localise3dPainter,
                              orca::Localise3dData,
                              orca::Localise3dPrx,
                              orca::Localise3dConsumer,
                              orca::Localise3dConsumerPrx>,
-      public IKnowsPlatformPosition2d
+      public hydroqgui::IKnowsPlatformPosition2d
 {
 public:
     Localise3dElement( const orcaice::Context  &context,
                        const std::string       &proxyString,
                        bool                     beginDisplayHistory=false,
                        int                      timeoutMs=30000 )
-        : IceStormElement<Localise3dPainter,
+        : orcaqguielementutil::IceStormElement<Localise3dPainter,
                             orca::Localise3dData,
                             orca::Localise3dPrx,
                             orca::Localise3dConsumer,
@@ -216,7 +216,7 @@ private:
 ///////////////////////////////////////////////////////////////////////////////
 
 class Particle2dElement
-    : public IceStormElement<Particle2dPainter,
+    : public orcaqguielementutil::IceStormElement<Particle2dPainter,
                              orca::Particle2dData,
                              orca::Particle2dPrx,
                              orca::Particle2dConsumer,
@@ -226,7 +226,7 @@ public:
     Particle2dElement( const orcaice::Context  &context,
                        const std::string       &proxyString,
                        int                      timeoutMs=60000 )
-        : IceStormElement<Particle2dPainter,
+        : orcaqguielementutil::IceStormElement<Particle2dPainter,
                             orca::Particle2dData,
                             orca::Particle2dPrx,
                             orca::Particle2dConsumer,
@@ -250,7 +250,7 @@ private:
 
 
 class QGraphics2dElement
-    : public IceStormElement<QGraphics2dPainter,
+    : public orcaqguielementutil::IceStormElement<QGraphics2dPainter,
                              orca::QGraphics2dData,
                              orca::QGraphics2dPrx,
                              orca::QGraphics2dConsumer,
@@ -260,7 +260,7 @@ public:
     QGraphics2dElement( const orcaice::Context  &context,
                         const std::string       &proxyString,
                         int                      timeoutMs=-1 )
-    : IceStormElement<QGraphics2dPainter,
+    : orcaqguielementutil::IceStormElement<QGraphics2dPainter,
                           orca::QGraphics2dData,
                           orca::QGraphics2dPrx,
                           orca::QGraphics2dConsumer,
@@ -282,7 +282,7 @@ private:
 
 ////////////////////////////////////////////////////////////////////////////////
 class Odometry2dElement
-    : public IceStormElement<Odometry2dPainter,
+    : public orcaqguielementutil::IceStormElement<Odometry2dPainter,
                              orca::Odometry2dData,
                              orca::Odometry2dPrx,
                              orca::Odometry2dConsumer,
@@ -292,7 +292,7 @@ public:
     Odometry2dElement( const orcaice::Context  &context,
                        const std::string       &proxyString,
                        int                      timeoutMs=60000 )
-        : IceStormElement<Odometry2dPainter,
+        : orcaqguielementutil::IceStormElement<Odometry2dPainter,
                             orca::Odometry2dData,
                             orca::Odometry2dPrx,
                             orca::Odometry2dConsumer,

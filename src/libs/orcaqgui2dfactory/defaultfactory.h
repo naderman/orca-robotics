@@ -11,7 +11,7 @@
 #ifndef ORCAGUI_DEFAULT_FACTORY_H
 #define ORCAGUI_DEFAULT_FACTORY_H
 
-#include <orcaqgui2d/iguielementfactory.h>
+#include <orcaqgui/iguielementfactory.h>
 #include <orcaice/context.h>
 #include <hydroutil/hydroutil.h>
 
@@ -21,7 +21,7 @@ namespace orcaqgui2d
     //!
     //! Generates 2D Gui Elements based on its type.
     //!
-    class DefaultFactory : public IGuiElementFactory    
+    class DefaultFactory : public orcaqgui::IGuiElementFactory    
     {
     public:
 

@@ -12,7 +12,7 @@
 #define ORCAGUI_GRIDELEMENT_H
 
 #include <hydroqgui/definitions2d.h>
-#include <orcaqgui2d/guielement2d.h>
+#include <hydroqgui/guielement2d.h>
 
 namespace orcaqgui2d
 {
@@ -21,7 +21,7 @@ namespace orcaqgui2d
   @brief Paints a rectangular grid in the display.
   @author Tobias Kaupp, Alex Brooks, Ben Upcroft
 */  
-class GridElement : public GuiElement2d
+class GridElement : public hydroqgui::GuiElement2d
 {
 public:
 

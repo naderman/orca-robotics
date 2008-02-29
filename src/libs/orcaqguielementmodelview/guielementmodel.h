@@ -15,7 +15,6 @@
 #include <QStringList>
 #include <QColor>
 
-#include <orcaice/context.h>
 #include <hydroqgui/hydroqgui.h>
 
 namespace orcaqgemv

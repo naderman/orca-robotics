@@ -14,8 +14,7 @@
 #include <iostream>
 #include <orca/pathplanner2d.h>
 #include <hydroiceutil/store.h>
-#include <orcaqgui2d/icestormelement.h>
-#include <orcaqgui2d/guielement2d.h>
+#include <orcaqguielementutil/icestormelement.h>
 #include <orcaqgui2dfactory/pathpainter.h>
 #include <orcaqgui2dfactory/pathinput.h>
 
@@ -119,7 +118,7 @@ private:
 //
 // @author Tobias Kaupp
 //
-class PathPlanner2dElement : public orcaqgui2d::IceStormElement<PathPainter,
+class PathPlanner2dElement : public orcaqguielementutil::IceStormElement<PathPainter,
                              orca::PathPlanner2dData,
                              orca::PathPlanner2dPrx,
                              orca::PathPlanner2dConsumer,
