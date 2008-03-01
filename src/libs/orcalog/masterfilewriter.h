@@ -13,6 +13,7 @@
 
 #include <IceUtil/Mutex.h>
 #include <orcaice/context.h>
+#include <orca/orca.h>
 
 namespace orcalog
 {
@@ -43,7 +44,8 @@ public:
 
     //! Call this when an item is written in a sub-logfile
     void notifyOfLogfileAddition( int loggerId,
-                                  int indexInSubLogfile );
+                                  int indexInSubLogfile,
+                                  const orca::Time &arrivalTime );
 
 private:
 

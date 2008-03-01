@@ -55,8 +55,8 @@ protected:
 
     //! Appends a record to the master file. Supplies the LogWriter ID and the data
     //! counter. Also prints out heartbeat message periodically.
-    void writeReferenceToMasterFile()
-        { masterFileWriteHandler_->writeReferenceToMasterFile(); }
+    void writeReferenceToMasterFile( const orca::Time &arrivalTime )
+        { masterFileWriteHandler_->writeReferenceToMasterFile( arrivalTime ); }
 
     //! Handle to the output file.
     std::ofstream *file_;

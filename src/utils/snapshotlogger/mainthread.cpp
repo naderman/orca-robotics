@@ -57,19 +57,20 @@ MainThread::~MainThread()
 }
 
 void
-MainThread::init()
+MainThread::initLoggers()
 {
     // config file parameters
     Ice::PropertiesPtr props = context_.properties();
-    std::string prefix = context_.tag() + ".Config.";
+    const std::string prefix = context_.tag() + ".Config.";
+
+    const double timeWindowSec = orcaice::getPropertyAsDoubleWithDefault( props,
+                                                                          prefix+"TimeWindowSec",
+                                                                          30.0 );
 
     string libNames = orcaice::getPropertyWithDefault( props,
                                                        prefix+"FactoryLibNames",
                                                        DEFAULT_FACTORY_LIB_NAME );
     loadPluginLibraries( libNames );
-
-    // multi-try activation function
-    orcaice::activate( context_, this, subsysName() );
 
     // Get a list of required tags
     //
@@ -112,7 +113,7 @@ MainThread::init()
         orcalog::SnapshotLogger *logger = createLogger( interfaceType );
 
         try {
-            logger->init( format );
+            logger->init( format, timeWindowSec );
         }
         catch ( std::exception &e )
         {
@@ -125,24 +126,65 @@ MainThread::init()
 
     // initialize and subscribe all interfaces  
     for ( uint i=0; i < snapshotLoggers_.size(); i++ )
-    {
         snapshotLoggers_[i]->subscribe( context_, logWriterInfos_[i].interfaceTag );
+}
+
+void
+MainThread::initInterface()
+{
+    while ( !isStopping() )
+    {
+        try {
+            buttonInterface_ = new orcaifaceimpl::ButtonImpl( "Button", context_ );
+            buttonInterface_->setNotifyHandler( this );
+            buttonInterface_->initInterface();
+            context_.tracer().debug( "Activated button interface" );
+            break;
+        }
+        catch ( hydroutil::Exception &e )
+        {
+            stringstream ss;
+            ss << "MainThread::establishInterface(): " << e.what();
+            context_.tracer().warning( ss.str() );
+            subStatus().initialising(ss.str() );
+            sleep(1);
+        }
     }
+}
+
+void
+MainThread::takeSnapshot()
+{
+    cout<<"TRACE(mainthread.cpp): TAKE SNAPSHOT!!" << endl;
+    
 }
 
 void
 MainThread::walk()
 {
-    init();
+    // multi-try activation function
+    orcaice::activate( context_, this, subsysName() );
+
+    initLoggers();
+    initInterface();
+
     // init subsystem is done and is about to terminate
     subStatus().ok( "Initialized." );
     subStatus().setMaxHeartbeatInterval( 5.0 );
 
     while ( !isStopping() )
     {
-        cout<<"TRACE(mainthread.cpp): main thread." << endl;
-        sleep(1);
-
+        bool dummy;
+        const int TIMEOUT_MS = 1000;
+        int ret = requestStore_.getNext( dummy, TIMEOUT_MS );
+        if ( ret == 0 )
+        {
+            takeSnapshot();
+            
+            // Clear any requests that might have arrived while we were taking the snapshot
+            if ( !requestStore_.isEmpty() )
+                requestStore_.get( dummy );
+        }
         subStatus().ok();        
     }
 }
@@ -195,7 +237,9 @@ MainThread::createLogger( const std::string &interfaceType )
         }
         else {
             context_.shutdown();
-            throw hydroutil::Exception( ERROR_INFO, "Error when creating logger for supported interface type " + interfaceType );
+            stringstream ss;
+            ss << "Error when creating logger for supported interface type " << interfaceType << ": factory returned NULL pointer.";
+            throw hydroutil::Exception( ERROR_INFO, ss.str() );
         }
     }
 

@@ -22,7 +22,7 @@ RandomDriver::RandomDriver()
       forceRandomCourseChange_(false)
 {
 }
-
+ 
 //
 // based on Player's examples/randomwalk.cc
 //

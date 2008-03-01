@@ -20,18 +20,14 @@ MasterFileWriteHandler::MasterFileWriteHandler( const LogWriterInfo &logWriterIn
 }
 
 void
-MasterFileWriteHandler::writeReferenceToMasterFile()
+MasterFileWriteHandler::writeReferenceToMasterFile( const orca::Time &arrivalTime )
 {
     assert( id_ >= 0 );
-//     if ( id_ < 0 ) {
-//         context_.tracer().warning( interfaceTag_+"LogWriter: received object when not registered. Ignoring.");
-//         return;
-//     }
 
     //
     // append master file, increment data counter
     //
-    masterFileWriter_.notifyOfLogfileAddition( id_, numItemsLogged_ );
+    masterFileWriter_.notifyOfLogfileAddition( id_, numItemsLogged_, arrivalTime );
     numItemsLogged_++;
 
     // In debug mode, let the user know that something's going on.

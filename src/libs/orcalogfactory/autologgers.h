@@ -4,6 +4,7 @@
 #include <orcalog/autologger.h>
 #include <orcalogfactory/logwriters.h>
 #include <orcaice/connectutils.h>
+#include <orcaice/timeutils.h>
 
 namespace orcalogfactory {
 
@@ -31,7 +32,7 @@ namespace orcalogfactory {
 
         // Assumes the ConsumerType's method is called setData
         virtual void setData(const DataType& data, const Ice::Current&)
-            { logWriter_->write(data); }
+            { logWriter_->write(data,orcaice::getNow()); }
 
         // Inherited from orcalog::AutoLogger
         virtual void init( const orcalog::LogWriterInfo &logWriterInfo,
@@ -115,7 +116,7 @@ namespace orcalogfactory {
                 // we assume that the data is really LaserScanner2dDataPtr but it has to be cast
                 // @todo: what if it's not the right type?
                 orca::LaserScanner2dDataPtr laserData = orca::LaserScanner2dDataPtr::dynamicCast( data );
-                logWriter_->write(laserData);
+                logWriter_->write(laserData,orcaice::getNow());
             }
 
         virtual void init( const orcalog::LogWriterInfo &logWriterInfo, 

@@ -22,12 +22,21 @@ namespace orcalog
 class SnapshotLogger {
 public:
     virtual ~SnapshotLogger() {}
-    
-    virtual void init( const std::string &format )=0;
+
+    // format is any string.  timeWindowSec is the length of history
+    // that will be logged in a snapshot.
+    virtual void init( const std::string &format, double timeWindowSec )=0;
     virtual void subscribe( orcaice::Context &context, const std::string &interfaceTag )=0;
 
-    virtual void takeSnapshot( const LogWriterInfo &logWriterInfo,
-                               MasterFileWriter &masterFileWriter ) = 0;
+    // Call these before and after taking the snapshot
+    virtual void prepareForSnapshot( const LogWriterInfo &logWriterInfo,
+                                     MasterFileWriter &masterFileWriter ) = 0;
+    virtual void finaliseSnapshot()=0;
+
+    // Call these during snapshotting
+    virtual uint snapshotBufferSize() const=0;
+    virtual const orca::Time &oldestArrivalTime() const=0;
+    virtual void writeOldestObjToLogAndDiscard()=0;
 };
 
 }

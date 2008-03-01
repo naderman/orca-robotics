@@ -15,7 +15,7 @@
 
 #include <orcaice/orcaice.h>
 #include <orcaobj/orcaobj.h>
-#include <orcaqguielementutil/features.h>
+#include <orcaqguielementutil/featurecolours.h>
 #include <hydroqgui/hydroqgui.h>
 #include <hydroqguipaint/paintutils.h>
 #include "featuremap2dpainter.h"

@@ -7,7 +7,7 @@
  * the LICENSE file included in this distribution.
  *
  */
-#include "features.h"
+#include "featurecolours.h"
 #include <orca/featuremap2d.h>
 
 namespace orcaqguielementutil {

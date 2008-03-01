@@ -28,7 +28,7 @@ class CpuLogWriter : public orcalog::LogWriter
 {
 public:
     void checkFormat( const std::string &format );
-    void write( const orca::CpuData &obj );       
+    void write( const orca::CpuData &obj, const orca::Time &arrivalTime );
 };
 
 //////////////////////////////////////////////////////////////////////
@@ -37,7 +37,7 @@ class DriveBicycleLogWriter : public orcalog::LogWriter
 {
 public:
     void checkFormat( const std::string &format );
-    void write( const orca::DriveBicycleData &obj );
+    void write( const orca::DriveBicycleData &obj, const orca::Time &arrivalTime  );
     void write( const orca::VehicleDescription &descr );
 };
 
@@ -47,7 +47,7 @@ class ImuLogWriter : public orcalog::LogWriter
 {
 public:
     void checkFormat( const std::string &format );
-    void write( const orca::ImuData &obj );        
+    void write( const orca::ImuData &obj, const orca::Time &arrivalTime  );
 };
 
 //////////////////////////////////////////////////////////////////////
@@ -56,8 +56,8 @@ class LaserScanner2dLogWriter : public orcalog::LogWriter
 {
 public:
     void checkFormat( const std::string &format );
-    void write( const orca::LaserScanner2dDataPtr &obj );        
-    void write( const orca::RangeScanner2dDescription &descr );        
+    void write( const orca::LaserScanner2dDataPtr &obj, const orca::Time &arrivalTime  );
+    void write( const orca::RangeScanner2dDescription &descr );
 };
 
 //////////////////////////////////////////////////////////////////////
@@ -66,7 +66,7 @@ class Localise2dLogWriter : public orcalog::LogWriter
 {
 public:
     void checkFormat( const std::string &format );
-    void write( const orca::Localise2dData &obj );        
+    void write( const orca::Localise2dData &obj, const orca::Time &arrivalTime  );
     void write( const orca::VehicleGeometryDescriptionPtr &descr );
 };
 
@@ -76,7 +76,7 @@ class Localise3dLogWriter : public orcalog::LogWriter
 {
 public:
     void checkFormat( const std::string &format );
-    void write( const orca::Localise3dData &obj );        
+    void write( const orca::Localise3dData &obj, const orca::Time &arrivalTime  );        
     void write( const orca::VehicleGeometryDescriptionPtr &descr );
 };
 
@@ -86,7 +86,7 @@ class Odometry2dLogWriter : public orcalog::LogWriter
 {
 public:
     void checkFormat( const std::string &format );
-    void write( const orca::Odometry2dData &obj );
+    void write( const orca::Odometry2dData &obj, const orca::Time &arrivalTime  );
     void write( const orca::VehicleDescription &descr );
 };
 
@@ -96,7 +96,7 @@ class Odometry3dLogWriter : public orcalog::LogWriter
 {
 public:
     void checkFormat( const std::string &format );
-    void write( const orca::Odometry3dData &obj );
+    void write( const orca::Odometry3dData &obj, const orca::Time &arrivalTime  );
     void write( const orca::VehicleDescription &descr );
 };
 
@@ -106,7 +106,7 @@ class PolarFeature2dLogWriter : public orcalog::LogWriter
 {
 public:
     void checkFormat( const std::string &format );
-    void write( const orca::PolarFeature2dData &obj );
+    void write( const orca::PolarFeature2dData &obj, const orca::Time &arrivalTime  );
 };
 
 //////////////////////////////////////////////////////////////////////
@@ -115,7 +115,7 @@ class PowerLogWriter : public orcalog::LogWriter
 {
 public:
     void checkFormat( const std::string &format );
-    void write( const orca::PowerData &obj );
+    void write( const orca::PowerData &obj, const orca::Time &arrivalTime  );
 };
 
 //////////////////////////////////////////////////////////////////////
@@ -124,7 +124,7 @@ class WifiLogWriter : public orcalog::LogWriter
 {
 public:
     void checkFormat( const std::string &format );
-    void write( const orca::WifiData &obj );
+    void write( const orca::WifiData &obj, const orca::Time &arrivalTime  );
 };
 
 //////////////////////////////////////////////////////////////////////
@@ -133,7 +133,7 @@ class GpsLogWriter : public orcalog::LogWriter
 {
 public:
     void checkFormat( const std::string &format );
-    void write( const orca::GpsData &obj );
+    void write( const orca::GpsData &obj, const orca::Time &arrivalTime  );
     void write( const orca::GpsDescription &descr );
 };
 

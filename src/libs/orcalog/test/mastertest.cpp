@@ -89,18 +89,18 @@ void TestComponent::start()
     // Fake a few instances of arrival of data
     //
     int i0=0, index0=0;
-    masterFileWriter.notifyOfLogfileAddition( i0, index0 );
+    masterFileWriter.notifyOfLogfileAddition( i0, index0, orcaice::getNow() );
     IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
-    masterFileWriter.notifyOfLogfileAddition( 0, 1 );
+    masterFileWriter.notifyOfLogfileAddition( 0, 1, orcaice::getNow() );
     IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
-    masterFileWriter.notifyOfLogfileAddition( 0, 1 );
+    masterFileWriter.notifyOfLogfileAddition( 0, 1, orcaice::getNow() );
     IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
-    masterFileWriter.notifyOfLogfileAddition( 0, 1 );
+    masterFileWriter.notifyOfLogfileAddition( 0, 1, orcaice::getNow() );
     IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
     int id1=1, index1=0;
-    masterFileWriter.notifyOfLogfileAddition( id1, index1 );
+    masterFileWriter.notifyOfLogfileAddition( id1, index1, orcaice::getNow() );
     IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
-    masterFileWriter.notifyOfLogfileAddition( 1, 1 );
+    masterFileWriter.notifyOfLogfileAddition( 1, 1, orcaice::getNow() );
     cout<<"ok"<<endl;
 
     cout<<"testing replaying ... ";

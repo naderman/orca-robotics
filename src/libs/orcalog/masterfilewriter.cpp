@@ -98,7 +98,9 @@ MasterFileWriter::addLog( const std::string &filename,
 }
 
 void 
-MasterFileWriter::notifyOfLogfileAddition( int loggerId, int indexInSubLogfile )
+MasterFileWriter::notifyOfLogfileAddition( int loggerId, 
+                                           int indexInSubLogfile,
+                                           const orca::Time &arrivalTime )
 {
     IceUtil::Mutex::Lock lock(mutex_);
 
@@ -115,8 +117,10 @@ MasterFileWriter::notifyOfLogfileAddition( int loggerId, int indexInSubLogfile )
     //
     // write to master file
     //
-    orca::Time now = orcaice::getNow();
-    (*file_) << orcalog::dataLine( now.seconds, now.useconds, loggerId, indexInSubLogfile ) << endl;
+    (*file_) << orcalog::dataLine( arrivalTime.seconds,
+                                   arrivalTime.useconds,
+                                   loggerId,
+                                   indexInSubLogfile ) << endl;
 
     // count data objects
     ++numItemsLogged_;

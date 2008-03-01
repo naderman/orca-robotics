@@ -1,33 +1,15 @@
 DefaultComponentTag=SnapshotLogger
 
 # Provided Interfaces
+Provides.Button.Type=::orca::Button
+Provides.Button.DefaultName=button
 
 # Required Interfaces
-Requires.Gps0.Type=Gps
-Requires.Gps0.DefaultProxy=gps@local/gps
-
 Requires.LaserScanner2d0.Type=LaserScanner2d
 Requires.LaserScanner2d0.DefaultProxy=laserscanner2d@local/laser2d
-
-Requires.PolarFeature2d0.Type=PolarFeature2d
-Requires.PolarFeature2d0.DefaultProxy=polarfeature2d@local/laserfeatureextractor
-
-Requires.Odometry2d0.Type=Odometry2d
-Requires.Odometry2d0.DefaultProxy=odometry2d@local/robot2d
-
-Requires.Localise2d0.Type=Localise2d
-Requires.Localise2d0.DefaultProxy=localise2d@local/faithlocaliser
-
-Requires.Wifi0.Type=Wifi
-Requires.Wifi0.DefaultProxy=wifi@local/wifi
 
 # Config Parameters
 Config.FilenameTimestamp.Default=1
 Config.FactoryLibNames.Default=libOrcaLogFactory.so
 
-Config.Gps0.Format.Default=ice
 Config.LaserScanner2d0.Format.Default=ice
-Config.PolarFeature2d0.Format.Default=ice
-Config.Odometry2d0.Format.Default=ice
-Config.Localise2d0.Format.Default=ice
-Config.Wifi0.Format.Default=ascii

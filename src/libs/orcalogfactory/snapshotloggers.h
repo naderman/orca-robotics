@@ -1,7 +1,9 @@
 #ifndef ORCALOGFACTORY_SNAPSHOTLOGGERS_H
 #define ORCALOGFACTORY_SNAPSHOTLOGGERS_H
 
+#include <IceUtil/Mutex.h>
 #include <orcalog/snapshotloggerfactory.h>
+#include <orcalog/snapshotlogbuffer.h>
 #include <orcalogfactory/logwriters.h>
 #include <orcaice/connectutils.h>
 
@@ -27,17 +29,29 @@ namespace orcalogfactory {
     {
     public:
 
+        GenericSnapshotLogger()
+            : isTakingSnapshot_(false)
+            {}
         virtual ~GenericSnapshotLogger() {}
 
         // Assumes the ConsumerType's method is called setData
         virtual void setData(const DataType& data, const Ice::Current&)
-            { logWriter_->write(data); }
+            { 
+                {
+                    // Don't accept new data while taking a snapshot.
+                    IceUtil::Mutex::Lock lock(mutex_);
+                    if ( isTakingSnapshot_ ) return;
+                }
+                snapshotLogBuffer_->addItem( data );
+            }
 
         // Inherited from orcalog::SnapshotLogger
-        virtual void init( const std::string &format )
+        virtual void init( const std::string &format, double timeWindowSec )
             {
                 LogWriterType dummyLogWriter;
                 dummyLogWriter.checkFormat( format );
+                snapshotLogBuffer_.reset( new orcalog::SnapshotLogBuffer<DataType,
+                                                                         LogWriterType>( timeWindowSec ) );
             }
 
         virtual void subscribe( orcaice::Context &context, const std::string &interfaceTag )
@@ -48,9 +62,6 @@ namespace orcalogfactory {
                                                              objectPrx,
                                                              interfaceTag );
 
-                // Allow derived classes to do something special (like get description)
-                setup(objectPrx,*logWriter_);
-    
                 Ice::ObjectPtr consumer = this;
                 ConsumerPrxType callbackPrx = 
                     orcaice::createConsumerInterface<ConsumerPrxType>( context,
@@ -59,22 +70,46 @@ namespace orcalogfactory {
                 objectPrx->subscribe( callbackPrx );
             }
 
-        virtual void takeSnapshot( const orcalog::LogWriterInfo &logWriterInfo,
-                                   orcalog::MasterFileWriter    &masterFileWriter )
+        virtual void prepareForSnapshot( const orcalog::LogWriterInfo &logWriterInfo,
+                                         orcalog::MasterFileWriter    &masterFileWriter )
             {
-                std::cout<<"TRACE(snapshotloggers.h): TODO" << std::endl;
+                {
+                    IceUtil::Mutex::Lock lock(mutex_);
+                    isTakingSnapshot_ = true;
+                }
                 logWriter_.reset( new LogWriterType );
                 logWriter_->init( logWriterInfo, masterFileWriter );
+                
+                // Allow interface-specific stuff to happen (eg getting description)
+                doSpecialisedSnapshotPreparation( *logWriter_ );
             }
+
+        virtual void finaliseSnapshot()
+            {
+                {
+                    IceUtil::Mutex::Lock lock(mutex_);
+                    isTakingSnapshot_ = false;
+                }
+            }
+
+        virtual uint snapshotBufferSize() const
+            { return snapshotLogBuffer_->bufferSize(); }
+        virtual const orca::Time &oldestArrivalTime() const
+            { return snapshotLogBuffer_->oldestArrivalTime(); }
+        virtual void writeOldestObjToLogAndDiscard()
+            { snapshotLogBuffer_->writeOldestObjToLogAndDiscard(*logWriter_); }
 
     protected:
 
         // Called during initialisation
-        virtual void setup( PrxType &objectPrx, LogWriterType &logWriter ) {}
+        virtual void doSpecialisedSnapshotPreparation( LogWriterType &logWriter ) {}
 
     private:
 
-        std::auto_ptr<LogWriterType> logWriter_;
+        bool                                      isTakingSnapshot_;
+        std::auto_ptr< orcalog::SnapshotLogBuffer<DataType,LogWriterType> > snapshotLogBuffer_;
+        std::auto_ptr<LogWriterType>              logWriter_;
+        IceUtil::Mutex                            mutex_;
     };
 
     //////////////////////////////////////////////////////////////////////
@@ -94,8 +129,13 @@ namespace orcalogfactory {
                                                             DriveBicycleLogWriter>
     {
     private:
-        void setup( orca::DriveBicyclePrx &objectPrx, DriveBicycleLogWriter &logWriter )
+        void doSpecialisedSnapshotPreparation( DriveBicycleLogWriter &logWriter )
             {
+                // may throw
+                orca::DriveBicyclePrx objectPrx;
+                orcaice::connectToInterfaceWithTag( logWriter.logWriterInfo().context,
+                                                    objectPrx,
+                                                    logWriter.logWriterInfo().interfaceTag );
                 logWriter.write( objectPrx->getDescription() );
             }
     };
@@ -113,51 +153,90 @@ namespace orcalogfactory {
     class LaserScanner2dSnapshotLogger : public orca::RangeScanner2dConsumer, public orcalog::SnapshotLogger
     {
     public:
+
+        LaserScanner2dSnapshotLogger()
+            : isTakingSnapshot_(false)
+            {}
         virtual ~LaserScanner2dSnapshotLogger() {}
 
-        virtual void setData(const orca::RangeScanner2dDataPtr& data, const Ice::Current&)
+        virtual void setData(const orca::RangeScanner2dDataPtr& data, const Ice::Current &c)
             { 
+                {
+                    // Don't accept new data while taking a snapshot.
+                    IceUtil::Mutex::Lock lock(mutex_);
+                    if ( isTakingSnapshot_ ) return;
+                }
                 // special case: do not copy to other loggers!
                 // we assume that the data is really LaserScanner2dDataPtr but it has to be cast
                 // @todo: what if it's not the right type?
                 orca::LaserScanner2dDataPtr laserData = orca::LaserScanner2dDataPtr::dynamicCast( data );
-                logWriter_->write(laserData);
+                snapshotLogBuffer_->addItem( laserData );
             }
 
-        virtual void init( const std::string &format )
+        virtual void init( const std::string &format, double timeWindowSec )
             {
                 LaserScanner2dLogWriter dummyLogWriter;
                 dummyLogWriter.checkFormat( format );
+                snapshotLogBuffer_.reset( new orcalog::SnapshotLogBuffer<orca::LaserScanner2dDataPtr,
+                                                                         LaserScanner2dLogWriter>( timeWindowSec ) );
             }
 
         virtual void subscribe( orcaice::Context &context, const std::string &interfaceTag )
             {
                 orca::LaserScanner2dPrx objectPrx;
-                orcaice::connectToInterfaceWithTag( logWriter_->logWriterInfo().context,
+                orcaice::connectToInterfaceWithTag( context,
                                                     objectPrx,
-                                                    logWriter_->logWriterInfo().interfaceTag );
+                                                    interfaceTag );
 
-                orca::RangeScanner2dDescription descr = objectPrx->getDescription();
-                logWriter_->write( descr );
-    
                 Ice::ObjectPtr consumer = this;
                 orca::RangeScanner2dConsumerPrx callbackPrx = 
-                    orcaice::createConsumerInterface<orca::RangeScanner2dConsumerPrx>( logWriter_->logWriterInfo().context,
+                    orcaice::createConsumerInterface<orca::RangeScanner2dConsumerPrx>( context,
                                                                                        consumer );
 
                 objectPrx->subscribe( callbackPrx );
             }
 
-        virtual void takeSnapshot( const orcalog::LogWriterInfo &logWriterInfo,
-                                   orcalog::MasterFileWriter &masterFileWriter )
+        virtual void prepareForSnapshot( const orcalog::LogWriterInfo &logWriterInfo,
+                                         orcalog::MasterFileWriter    &masterFileWriter )
             {
-                std::cout<<"TRACE(snapshotloggers.h): TODO" << std::endl;
+                {
+                    IceUtil::Mutex::Lock lock(mutex_);
+                    isTakingSnapshot_ = true;
+                }
                 logWriter_.reset( new LaserScanner2dLogWriter );
                 logWriter_->init( logWriterInfo, masterFileWriter );
+                
+                // Allow interface-specific stuff to happen (eg getting description)
+                // doSpecialisedSnapshotPreparation( *logWriter_ );
+                // may throw
+                orca::LaserScanner2dPrx objectPrx;
+                orcaice::connectToInterfaceWithTag( logWriter_->logWriterInfo().context,
+                                                    objectPrx,
+                                                    logWriter_->logWriterInfo().interfaceTag );
+                logWriter_->write( objectPrx->getDescription() );
             }
+        virtual void finaliseSnapshot()
+            {
+                {
+                    IceUtil::Mutex::Lock lock(mutex_);
+                    isTakingSnapshot_ = false;
+                }
+            }
+        virtual uint snapshotBufferSize() const
+            { return snapshotLogBuffer_->bufferSize(); }
+        virtual const orca::Time &oldestArrivalTime() const
+            { return snapshotLogBuffer_->oldestArrivalTime(); }
+        virtual void writeOldestObjToLogAndDiscard()
+            { snapshotLogBuffer_->writeOldestObjToLogAndDiscard(*logWriter_); }
 
     private:
-        std::auto_ptr<LaserScanner2dLogWriter> logWriter_;
+
+        bool                                      isTakingSnapshot_;
+        std::auto_ptr< orcalog::SnapshotLogBuffer<orca::LaserScanner2dDataPtr,
+                                                  LaserScanner2dLogWriter> > snapshotLogBuffer_;
+        std::auto_ptr<LaserScanner2dLogWriter>    logWriter_;
+        IceUtil::Mutex                            mutex_;
+
     };
 
     //////////////////////////////////////////////////////////////////////
@@ -169,8 +248,13 @@ namespace orcalogfactory {
                                                           Localise2dLogWriter>
     {
     private:
-        void setup( orca::Localise2dPrx &objectPrx, Localise2dLogWriter &logWriter )
+        void doSpecialisedSnapshotPreparation( Localise2dLogWriter &logWriter )
             {
+                // may throw
+                orca::Localise2dPrx objectPrx;
+                orcaice::connectToInterfaceWithTag( logWriter.logWriterInfo().context,
+                                                    objectPrx,
+                                                    logWriter.logWriterInfo().interfaceTag );
                 logWriter.write( objectPrx->getVehicleGeometry() );
             }
     };
@@ -184,8 +268,13 @@ namespace orcalogfactory {
                                                             Localise3dLogWriter>
     {
     private:
-        void setup( orca::Localise3dPrx &objectPrx, Localise3dLogWriter &logWriter )
+        void doSpecialisedSnapshotPreparation( Localise3dLogWriter &logWriter )
             {
+                // may throw
+                orca::Localise3dPrx objectPrx;
+                orcaice::connectToInterfaceWithTag( logWriter.logWriterInfo().context,
+                                                    objectPrx,
+                                                    logWriter.logWriterInfo().interfaceTag );
                 logWriter.write( objectPrx->getVehicleGeometry() );
             }
     };
@@ -199,8 +288,13 @@ namespace orcalogfactory {
                                                             Odometry2dLogWriter>
     {
     private:
-        void setup( orca::Odometry2dPrx &objectPrx, Odometry2dLogWriter &logWriter )
+        void doSpecialisedSnapshotPreparation( Odometry2dLogWriter &logWriter )
             {
+                // may throw
+                orca::Odometry2dPrx objectPrx;
+                orcaice::connectToInterfaceWithTag( logWriter.logWriterInfo().context,
+                                                    objectPrx,
+                                                    logWriter.logWriterInfo().interfaceTag );
                 logWriter.write( objectPrx->getDescription() );
             }
     };
@@ -214,8 +308,13 @@ namespace orcalogfactory {
                                                             Odometry3dLogWriter>
     {
     private:
-        void setup( orca::Odometry3dPrx &objectPrx, Odometry3dLogWriter &logWriter )
+        void doSpecialisedSnapshotPreparation( Odometry3dLogWriter &logWriter )
             {
+                // may throw
+                orca::Odometry3dPrx objectPrx;
+                orcaice::connectToInterfaceWithTag( logWriter.logWriterInfo().context,
+                                                    objectPrx,
+                                                    logWriter.logWriterInfo().interfaceTag );
                 logWriter.write( objectPrx->getDescription() );
             }
     };
@@ -253,8 +352,13 @@ namespace orcalogfactory {
                                                             GpsLogWriter>
     {
     private:
-        void setup( orca::GpsPrx &objectPrx, GpsLogWriter &logWriter )
+        void doSpecialisedSnapshotPreparation( GpsLogWriter &logWriter )
             {
+                // may throw
+                orca::GpsPrx objectPrx;
+                orcaice::connectToInterfaceWithTag( logWriter.logWriterInfo().context,
+                                                    objectPrx,
+                                                    logWriter.logWriterInfo().interfaceTag );
                 logWriter.write( objectPrx->getDescription() );
             }
     };

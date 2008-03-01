@@ -16,7 +16,7 @@
 #include <orcaobj/orcaobj.h>
 
 #include "polarfeature2dpainter.h"
-#include <orcaqguielementutil/features.h>
+#include <orcaqguielementutil/featurecolours.h>
 
 using namespace std;
 

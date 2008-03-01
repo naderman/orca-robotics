@@ -7,8 +7,8 @@
  * the LICENSE file included in this distribution.
  *
  */
-#ifndef QORCA_FEATURES_H
-#define QORCA_FEATURES_H
+#ifndef QORCA_FEATURE_COLOURS_H
+#define QORCA_FEATURE_COLOURS_H
 
 #include <qcolor.h>
 

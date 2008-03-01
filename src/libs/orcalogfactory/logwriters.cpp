@@ -429,9 +429,9 @@ CpuLogWriter::checkFormat( const std::string &format )
     checkFormatIceOrAscii( format );
 }
 void 
-CpuLogWriter::write( const orca::CpuData &obj )
+CpuLogWriter::write( const orca::CpuData &obj, const orca::Time &arrivalTime  )
 {
-    writeReferenceToMasterFile();
+    writeReferenceToMasterFile(arrivalTime);
     logToFile( file_,
                orcalog::LogWriter::logWriterInfo().format,
                orcalog::LogWriter::logWriterInfo().context,
@@ -446,9 +446,9 @@ DriveBicycleLogWriter::checkFormat( const std::string &format )
     checkFormatIceOrAscii( format );
 }
 void 
-DriveBicycleLogWriter::write( const orca::DriveBicycleData &obj )
+DriveBicycleLogWriter::write( const orca::DriveBicycleData &obj, const orca::Time &arrivalTime  )
 {
-    writeReferenceToMasterFile();
+    writeReferenceToMasterFile(arrivalTime);
     logToFile( file_,
                orcalog::LogWriter::logWriterInfo().format,
                orcalog::LogWriter::logWriterInfo().context,
@@ -473,9 +473,9 @@ ImuLogWriter::checkFormat( const std::string &format )
     checkFormatIceOrAscii( format );
 }
 void 
-ImuLogWriter::write( const orca::ImuData &obj )
+ImuLogWriter::write( const orca::ImuData &obj, const orca::Time &arrivalTime  )
 {
-    writeReferenceToMasterFile();
+    writeReferenceToMasterFile(arrivalTime);
     logToFile( file_,
                orcalog::LogWriter::logWriterInfo().format,
                orcalog::LogWriter::logWriterInfo().context,
@@ -490,9 +490,9 @@ LaserScanner2dLogWriter::checkFormat( const std::string &format )
     checkFormatIceOrAscii( format );
 }
 void 
-LaserScanner2dLogWriter::write( const orca::LaserScanner2dDataPtr &obj )
+LaserScanner2dLogWriter::write( const orca::LaserScanner2dDataPtr &obj, const orca::Time &arrivalTime  )
 {
-    writeReferenceToMasterFile();
+    writeReferenceToMasterFile(arrivalTime);
     logToFile( file_,
                orcalog::LogWriter::logWriterInfo().format,
                orcalog::LogWriter::logWriterInfo().context,
@@ -517,9 +517,9 @@ Localise2dLogWriter::checkFormat( const std::string &format )
     checkFormatIceOrAscii( format );
 }
 void 
-Localise2dLogWriter::write( const orca::Localise2dData &obj )
+Localise2dLogWriter::write( const orca::Localise2dData &obj, const orca::Time &arrivalTime  )
 {
-    writeReferenceToMasterFile();
+    writeReferenceToMasterFile(arrivalTime);
     logToFile( file_,
                orcalog::LogWriter::logWriterInfo().format,
                orcalog::LogWriter::logWriterInfo().context,
@@ -544,9 +544,9 @@ Localise3dLogWriter::checkFormat( const std::string &format )
     checkFormatIceOrAscii( format );
 }
 void 
-Localise3dLogWriter::write( const orca::Localise3dData &obj )
+Localise3dLogWriter::write( const orca::Localise3dData &obj, const orca::Time &arrivalTime  )
 {
-    writeReferenceToMasterFile();
+    writeReferenceToMasterFile(arrivalTime);
     logToFile( file_,
                orcalog::LogWriter::logWriterInfo().format,
                orcalog::LogWriter::logWriterInfo().context,
@@ -571,9 +571,9 @@ Odometry2dLogWriter::checkFormat( const std::string &format )
     checkFormatIceOrAscii( format );
 }
 void 
-Odometry2dLogWriter::write( const orca::Odometry2dData &obj )
+Odometry2dLogWriter::write( const orca::Odometry2dData &obj, const orca::Time &arrivalTime  )
 {
-    writeReferenceToMasterFile();
+    writeReferenceToMasterFile(arrivalTime);
     logToFile( file_,
                orcalog::LogWriter::logWriterInfo().format,
                orcalog::LogWriter::logWriterInfo().context,
@@ -598,9 +598,9 @@ Odometry3dLogWriter::checkFormat( const std::string &format )
     checkFormatIceOrAscii( format );
 }
 void 
-Odometry3dLogWriter::write( const orca::Odometry3dData &obj )
+Odometry3dLogWriter::write( const orca::Odometry3dData &obj, const orca::Time &arrivalTime  )
 {
-    writeReferenceToMasterFile();
+    writeReferenceToMasterFile(arrivalTime);
     logToFile( file_,
                orcalog::LogWriter::logWriterInfo().format,
                orcalog::LogWriter::logWriterInfo().context,
@@ -625,9 +625,9 @@ PolarFeature2dLogWriter::checkFormat( const std::string &format )
     checkFormatIceOrAscii( format );
 }
 void 
-PolarFeature2dLogWriter::write( const orca::PolarFeature2dData &obj )
+PolarFeature2dLogWriter::write( const orca::PolarFeature2dData &obj, const orca::Time &arrivalTime  )
 {
-    writeReferenceToMasterFile();
+    writeReferenceToMasterFile(arrivalTime);
     logToFile( file_,
                orcalog::LogWriter::logWriterInfo().format,
                orcalog::LogWriter::logWriterInfo().context,
@@ -642,9 +642,9 @@ PowerLogWriter::checkFormat( const std::string &format )
     checkFormatIceOrAscii( format );
 }
 void 
-PowerLogWriter::write( const orca::PowerData &obj )
+PowerLogWriter::write( const orca::PowerData &obj, const orca::Time &arrivalTime  )
 {
-    writeReferenceToMasterFile();
+    writeReferenceToMasterFile(arrivalTime);
     logToFile( file_,
                orcalog::LogWriter::logWriterInfo().format,
                orcalog::LogWriter::logWriterInfo().context,
@@ -659,9 +659,9 @@ WifiLogWriter::checkFormat( const std::string &format )
     checkFormatIceOrAscii( format );
 }
 void 
-WifiLogWriter::write( const orca::WifiData &obj )
+WifiLogWriter::write( const orca::WifiData &obj, const orca::Time &arrivalTime  )
 {
-    writeReferenceToMasterFile();
+    writeReferenceToMasterFile(arrivalTime);
     logToFile( file_,
                orcalog::LogWriter::logWriterInfo().format,
                orcalog::LogWriter::logWriterInfo().context,
@@ -676,9 +676,9 @@ GpsLogWriter::checkFormat( const std::string &format )
     checkFormatIceOrAscii( format );
 }
 void 
-GpsLogWriter::write( const orca::GpsData &obj )
+GpsLogWriter::write( const orca::GpsData &obj, const orca::Time &arrivalTime  )
 {
-    writeReferenceToMasterFile();
+    writeReferenceToMasterFile(arrivalTime);
     logToFile( file_,
                orcalog::LogWriter::logWriterInfo().format,
                orcalog::LogWriter::logWriterInfo().context,

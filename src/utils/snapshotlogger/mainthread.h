@@ -17,11 +17,13 @@
 #include <hydrodll/dll.h>
 #include <string>
 #include <memory>
+#include <orcaifaceimpl/buttonImpl.h>
 
 namespace snapshotlogger
 {
 
-class MainThread: public hydroiceutil::SubsystemThread
+class MainThread: public hydroiceutil::SubsystemThread,
+                  public hydroiceutil::NotifyHandler<bool>
 {    	
 public:
     MainThread( const orcaice::Context& context );
@@ -30,12 +32,20 @@ public:
     // from SubsystemThread
     virtual void walk();
 
+    // from hydroiceutil::NotifyHandler -- called on re-init request
+    // (the value of the bool is meaningless)
+    virtual void handleData( const bool &request )
+        { requestStore_.set( request ); }
+
 private:
 
-    void init();
+    void initLoggers();
+    void initInterface();
     void loadPluginLibraries( const std::string &factoryLibNames );
     // throws exceptions if it can't create the logger
     orcalog::SnapshotLogger *createLogger( const std::string &interfaceType );
+
+    void takeSnapshot();
 
     std::vector<orcalog::SnapshotLoggerFactory*>     logFactories_;
     std::vector<hydrodll::DynamicallyLoadedLibrary*> libraries_;
@@ -46,6 +56,13 @@ private:
     std::vector<orcalog::SnapshotLogger*> snapshotLoggers_;
     // Information about them
     std::vector<orcalog::LogWriterInfo> logWriterInfos_;
+
+    // interface to handle requests to take a snapshot
+    orcaifaceimpl::ButtonImplPtr buttonInterface_;
+
+    // Holds incoming requests to take snapshots
+    // (the value of the bool's are meaningless)
+    hydroiceutil::Store<bool> requestStore_;
 
     orcaice::Context context_;
 };

@@ -22,7 +22,7 @@ public:
 
     //! Appends a record to the master file. Supplies the LogWriter ID and the data
     //! counter. Also prints out heartbeat message periodically.
-    void writeReferenceToMasterFile();
+    void writeReferenceToMasterFile( const orca::Time &arrivalTime );
 
     int numItemsLogged() const { return numItemsLogged_; }
 
