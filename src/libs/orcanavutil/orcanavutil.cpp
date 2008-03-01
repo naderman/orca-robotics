@@ -69,6 +69,26 @@ namespace orcanavutil {
         return hydronavutil::Velocity( odom.motion.v.x, odom.motion.w );
     }
 
+    orca::Pose2dHypothesis convert( const hydronavutil::Gaussian &g, double weight )
+    {
+        orca::Pose2dHypothesis h;
+        
+        h.mean.p.x = g.mean().x();
+        h.mean.p.y = g.mean().y();
+        h.mean.o   = g.mean().theta();
+        
+        h.cov.xx = g.cov().xx();
+        h.cov.xy = g.cov().xy();
+        h.cov.xt = g.cov().xt();
+        h.cov.yy = g.cov().yy();
+        h.cov.yt = g.cov().yt();
+        h.cov.tt = g.cov().tt();        
+
+        h.weight = weight;
+
+        return h;
+    }
+
     orca::Localise2dData   convert( const hydronavutil::Gmm &gmm, int seconds, int useconds )
     {
         orca::Localise2dData l;
@@ -79,22 +99,34 @@ namespace orcanavutil {
 
         for ( uint i=0; i < gmm.size(); i++ )
         {
-            orca::Pose2dHypothesis h;
+            l.hypotheses[i] = convert( gmm.components(i), gmm.weights(i) );
+        }
+        return l;
+    }
 
-            h.mean.p.x = gmm.components(i).mean().x();
-            h.mean.p.y = gmm.components(i).mean().y();
-            h.mean.o   = gmm.components(i).mean().theta();
 
-            h.cov.xx = gmm.components(i).cov().xx();
-            h.cov.xy = gmm.components(i).cov().xy();
-            h.cov.xt = gmm.components(i).cov().xt();
-            h.cov.yy = gmm.components(i).cov().yy();
-            h.cov.yt = gmm.components(i).cov().yt();
-            h.cov.tt = gmm.components(i).cov().tt();
+    orca::Localise2dData convertUpToNHypotheses( const hydronavutil::Gmm &gmm,
+                                                 int maxHypotheses,
+                                                 int seconds,
+                                                 int useconds )
+    {
+        if ( maxHypotheses < 0 || (int)(gmm.size()) <= maxHypotheses )
+        {
+            // convert the lot
+            return convert( gmm, seconds, useconds );
+        }
 
-            h.weight = gmm.weights(i);
+        orca::Localise2dData l;
+        l.timeStamp.seconds  = seconds;
+        l.timeStamp.useconds = useconds;
 
-            l.hypotheses[i] = h;
+        // Make a copy coz we'er gonna modify it.
+        hydronavutil::Gmm gmmCopy = gmm;
+        while ( (int)(l.hypotheses.size()) < maxHypotheses )
+        {
+            int mlI = gmmCopy.mlComponentI();
+            l.hypotheses.push_back( convert( gmmCopy.components(mlI), gmmCopy.weights(mlI) ) );
+            gmmCopy.weights(mlI) = 0;
         }
         return l;
     }
