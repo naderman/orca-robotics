@@ -10,9 +10,9 @@ Requires.Odometry2d.Type=Odometry2d
 Requires.Odometry2d.DefaultProxy=odometry2d@local/robot2d
 
 # configuration
-# Std deviation in position (Metres)
+Config.StdDevPosition.Comment=Std deviation in position (Metres)
 Config.StdDevPosition.Default=0.05
-# Std deviation in Heading (Degrees)
+Config.StdDevHeading.Comment=Std deviation in Heading (Degrees)
 Config.StdDevHeading.Default=1.0
-# How may objects to we keep for getDataAtTime()
-Config.HistoryDepth.Default=50
+Config.MinInterPublishPeriodSec.Comment=Don't publish faster than this
+Config.MinInterPublishPeriodSec.Default=1.0

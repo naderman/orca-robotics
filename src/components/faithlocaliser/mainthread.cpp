@@ -53,6 +53,7 @@ MainThread::MainThread( const orcaice::Context &context ) :
     std::string prefix = context_.tag()+".Config.";
     stdDevPosition_ = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"StdDevPosition", 0.05 );
     stdDevHeading_ = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"StdDevHeading", 1.0 );
+    minInterPublishPeriodSec_ = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"MinInterPublishPeriodSec", 1.0 );
 }
 
 void
@@ -116,6 +117,10 @@ MainThread::walk()
     //
     // MAIN LOOP
     //
+    orca::Time tLastPublish;
+    tLastPublish.seconds=0;
+    tLastPublish.useconds=0;
+
     while ( !isStopping() )
     {
         subStatus().heartbeat();
@@ -123,9 +128,13 @@ MainThread::walk()
             continue;
         }
 
+        double timeSincePublish = orcaice::timeDiffAsDouble( orcaice::getNow(), tLastPublish );
+        if ( timeSincePublish < minInterPublishPeriodSec_ )
+            continue;
+
         odometryToLocalise( odomData, localiseData, varPosition, varHeading );
-        context_.tracer().debug( orcaobj::toString(localiseData), 5 );
-        
+        context_.tracer().debug( orcaobj::toString(localiseData), 5 );        
         localiseInterface->localSetAndSend( localiseData );
+        tLastPublish = orcaice::getNow();
     }
 }

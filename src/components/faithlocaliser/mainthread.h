@@ -31,6 +31,8 @@ private:
     double stdDevPosition_;
     double stdDevHeading_;
 
+    double minInterPublishPeriodSec_;
+
     orcaice::Context context_;
 };
 
