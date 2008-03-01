@@ -325,6 +325,13 @@ PathFollower2dElement::connectToInterface()
         humanManager_.showStatusMsg(hydroqgui::IHumanManager::Warning, ss.str().c_str() );
         return -1;
     }
+    catch ( const std::exception &e )
+    {
+        stringstream ss;
+        ss << "PathFollower2dElement:: Problem connecting to pathfollower interface: " << e.what();
+        humanManager_.showStatusMsg(hydroqgui::IHumanManager::Warning, ss.str().c_str() );
+        return -1;
+    }
     catch ( ... )
     {
         humanManager_.showStatusMsg(hydroqgui::IHumanManager::Warning, "PathFollower2dElement: Unknown problem connecting to pathfollower interface.");
