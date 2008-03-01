@@ -57,21 +57,21 @@ PathplannerButtons::PathplannerButtons( QObject *parent, hydroqgui::IHumanManage
     QPixmap cancelIcon(cancel_xpm);
 
     QAction *fileSavePathAs = new QAction(saveAsPathIcon, QString(proxyString.c_str()) + "\n" + "Save PathPlanner Path As", this );
-    connect(fileSavePathAs, SIGNAL(activated()), parent, SLOT(savePathAs()));
+    connect(fileSavePathAs, SIGNAL(triggered()), parent, SLOT(savePathAs()));
     QAction *fileSavePath = new QAction(savePathIcon, QString(proxyString.c_str()) + "\n" + "Save PathPlanner Path", this );
-    connect(fileSavePath, SIGNAL(activated()), parent, SLOT(savePath()));
+    connect(fileSavePath, SIGNAL(triggered()), parent, SLOT(savePath()));
 
     hiWaypoints_ = new QAction(globalwpIcon, QString(proxyString.c_str()) + "\n" + "PathPlanner waypoints mode", this);
     hiWaypoints_->setCheckable(true);
-    connect( hiWaypoints_,SIGNAL(activated()), parent, SLOT(waypointModeSelected()) );
+    connect( hiWaypoints_,SIGNAL(triggered()), parent, SLOT(waypointModeSelected()) );
 
     QAction *hiSend = new QAction(sendIcon, QString(proxyString.c_str()) + "\n" + "Send PathPlanner Task", this);
-    connect( hiSend,SIGNAL(activated()), parent, SLOT(send()) );
+    connect( hiSend,SIGNAL(triggered()), parent, SLOT(send()) );
     QAction *hiCancel = new QAction(cancelIcon, QString(proxyString.c_str()) + "\n" + "Discard PathPlanner Task", this);
-    connect( hiCancel,SIGNAL(activated()), parent ,SLOT(cancel()) );
+    connect( hiCancel,SIGNAL(triggered()), parent ,SLOT(cancel()) );
     
     QAction *wpDialogAction = new QAction( QString(proxyString.c_str()) + "\n" + "PathPlanner Waypoint settings", this );
-    connect( wpDialogAction, SIGNAL(activated()), parent, SLOT(waypointSettingsDialog()) );
+    connect( wpDialogAction, SIGNAL(triggered()), parent, SLOT(waypointSettingsDialog()) );
 
     humanManager.fileMenu()->addAction(fileSavePathAs);
     humanManager.fileMenu()->addAction(fileSavePath);

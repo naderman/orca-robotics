@@ -140,7 +140,7 @@ WpWidget::WpWidget( PathInput *pathInput,
     QPushButton *sendPath = new QPushButton(sendIcon, tr("Send Path"), this);
     QShortcut *sendShortcut = new QShortcut(QKeySequence(tr("F11")), this );
     QPushButton *cancelPath = new QPushButton(cancelIcon, tr("Cancel Path"), this);
-    QObject::connect(sendShortcut,SIGNAL(activated()),pathInput,SIGNAL(sendPathClicked()));
+    QObject::connect(sendShortcut,SIGNAL(triggered()),pathInput,SIGNAL(sendPathClicked()));
     QObject::connect(sendPath,SIGNAL(clicked()),pathInput,SIGNAL(sendPathClicked()));
     QObject::connect(cancelPath,SIGNAL(clicked()),pathInput,SIGNAL(cancelPathClicked()));
     

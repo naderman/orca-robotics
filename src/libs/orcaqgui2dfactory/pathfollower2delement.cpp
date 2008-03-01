@@ -76,25 +76,25 @@ PathfollowerButtons::PathfollowerButtons( QObject                       *parent,
     QPixmap cancelIcon(cancel_xpm);
 
 //     QAction* fileOpenPath = new QAction(openIcon, QString(proxyString.c_str()) + "\n" + "Open PathFollower Path File", this );
-//     connect(fileOpenPath, SIGNAL(activated()), parent, SLOT(loadPathFromFile()));
+//     connect(fileOpenPath, SIGNAL(triggered()), parent, SLOT(loadPathFromFile()));
     QAction* fileSavePathAs = new QAction(saveAsPathIcon, QString(proxyString.c_str()) + "\n" + "Save PathFollower Path As", this );
-    connect(fileSavePathAs, SIGNAL(activated()), parent, SLOT(savePathAs()));
+    connect(fileSavePathAs, SIGNAL(triggered()), parent, SLOT(savePathAs()));
     QAction* fileSavePath = new QAction(savePathIcon, QString(proxyString.c_str()) + "\n" + "Save PathFollower Path", this );
-    connect(fileSavePath, SIGNAL(activated()), parent, SLOT(savePath()));
+    connect(fileSavePath, SIGNAL(triggered()), parent, SLOT(savePath()));
 
     hiWaypoints_ = new QAction(waypointsIcon, QString(proxyString.c_str()) + "\n" + "&Pathfollower waypoints mode", this);
     hiWaypoints_->setCheckable(true);
-    connect( hiWaypoints_,SIGNAL(activated()), parent, SLOT(waypointModeSelected()) );
+    connect( hiWaypoints_,SIGNAL(triggered()), parent, SLOT(waypointModeSelected()) );
 
     QAction* hiSend = new QAction(sendIcon,QString(proxyString.c_str()) + "\n" + "&Send PathFollower Path", this);
-    connect( hiSend,SIGNAL(activated()), parent, SLOT(send()) );
+    connect( hiSend,SIGNAL(triggered()), parent, SLOT(send()) );
     QAction* hiCancel = new QAction(cancelIcon, QString(proxyString.c_str()) + "\n" + "&Discard PathFollower Path", this);
-    connect( hiCancel,SIGNAL(activated()), parent ,SLOT(cancel()) );
+    connect( hiCancel,SIGNAL(triggered()), parent ,SLOT(cancel()) );
 
     QAction* hiGo = new QAction(goIcon, QString(proxyString.c_str()) + "\n" + "&PathFollower Go All Robots", this);
-    connect( hiGo, SIGNAL(activated()), parent, SLOT(allGo()) ); 
+    connect( hiGo, SIGNAL(triggered()), parent, SLOT(allGo()) ); 
     QAction* hiStop = new QAction(stopIcon, QString(proxyString.c_str()) + "\n" + "&PathFollower Stop All Robots", this);
-    connect( hiStop, SIGNAL(activated()), parent, SLOT(allStop()) ); 
+    connect( hiStop, SIGNAL(triggered()), parent, SLOT(allStop()) ); 
 
 //     humanManager->fileMenu()->addAction(fileOpenPath);
     humanManager.fileMenu()->addAction(fileSavePathAs);
@@ -117,7 +117,7 @@ PathfollowerButtons::PathfollowerButtons( QObject                       *parent,
     humanManager.toolBar()->addAction( hiCancel );
 
     QAction *wpDialogAction = new QAction( QString(proxyString.c_str()) + "\n" + "&PathFollower Waypoint settings", this );
-    connect( wpDialogAction, SIGNAL(activated()), parent, SLOT(waypointSettingsDialog()) );
+    connect( wpDialogAction, SIGNAL(triggered()), parent, SLOT(waypointSettingsDialog()) );
     humanManager.optionsMenu()->addAction( wpDialogAction );
 
     QAction *sep = humanManager.toolBar()->addSeparator();
