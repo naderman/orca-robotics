@@ -44,6 +44,12 @@ void
 EStop::keepAlive()
 {
     IceUtil::Mutex::Lock lock(mutex_);
+    if ( isEStopTriggered_ )
+    {
+        orca::EStopAlreadyTriggeredException e;
+        e.what = "The platform is disabled";
+        throw e;
+    }
     keepAliveTimer_.restart();
 }
 double

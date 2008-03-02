@@ -45,6 +45,9 @@ interface EStopConsumer
     void setData(EStopData state);
 };
 
+//! Raised when a keep-alive is sent to an estop-disabled platform
+exception EStopAlreadyTriggeredException extends OrcaException {};
+
 //! Interface to e-stop.
 interface EStop
 {
@@ -52,7 +55,10 @@ interface EStop
     idempotent void activateEStop();
 
     //! Keep the thing alive: reset the keep-alive timer to zero.
-    idempotent void keepAlive();
+    //! If the e-stop has been already triggered, keep-alives make no
+    //! sense, so an EStopAlreadyTriggeredException is thrown.
+    idempotent void keepAlive()
+        throws EStopAlreadyTriggeredException;
 
     //! Returns the required keep-alive period, in seconds.
     //! If a keep-alive is not heard for longer than this, the e-stop
