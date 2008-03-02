@@ -24,6 +24,9 @@ public:
     EStop( double                  keepAlivePeriodSec,
            const orcaice::Context &context );
 
+    //! Sets up the Ice interface
+    void initInterface( hydroiceutil::Thread* thread );
+
     // If true, we should _NOT_MOVE_ !!
     bool isEStopTriggered();
 

@@ -152,6 +152,9 @@ HwThread::writeCommand( hydrointerfaces::SegwayRmp::Command &command )
 void
 HwThread::walk()
 {
+    // This call catches its own exceptions
+    if ( eStop_.get() ) eStop_->initInterface( this );
+
     stringstream exceptionSS;
     std::string reason;
     // temp data structures.

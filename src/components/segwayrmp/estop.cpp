@@ -14,6 +14,12 @@ EStop::EStop( double                  keepAlivePeriodSec,
 {
 }
 
+void
+EStop::initInterface( hydroiceutil::Thread* thread )
+{
+    eStopImpl_->initInterface( thread );
+}
+
 bool
 EStop::isEStopTriggered()
 {

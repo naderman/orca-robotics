@@ -23,6 +23,31 @@ using namespace segwayrmp;
 namespace {
 
 void 
+saveToFile( const hydrointerfaces::SegwayRmp::Data &data, 
+            const std::string &fname )
+{
+    std::ofstream logfile( fname.c_str(), ios::app );
+    if ( !logfile.is_open() ) 
+    {
+        stringstream ss; ss << "Failed to open file for writing: " << fname;
+        throw hydroutil::Exception( ERROR_INFO, ss.str() );
+    }
+
+    logfile << data.seconds << " " 
+            << data.useconds << " "
+            << data.x << " "
+            << data.y << " "
+            << data.vx << " "
+            << data.leftTorque << " "
+            << data.rightTorque << " "
+            << data.mainvolt << " "
+            << data.uivolt << endl;
+
+    logfile.close();
+}
+
+
+void 
 convert( const hydrointerfaces::SegwayRmp::Data& internal, orca::Odometry2dData& network )
 {
     network.timeStamp.seconds = internal.seconds;
@@ -264,6 +289,9 @@ NetThread::walk()
             subStatus().ok( "Net loop timed out" );
             continue;
         }
+
+        // save to a text file
+        saveToFile( data, "/tmp/segwaybattery.txt" );
 
         // Odometry2d
         convert( data, odometry2dData );
