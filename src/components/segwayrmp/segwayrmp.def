@@ -13,14 +13,14 @@ Provides.VelocityControl2d.DefaultName=velocitycontrol2d
 Provides.Power.Type=Power
 Provides.Power.DefaultName=power
 
-# Required Interfaces
-Requires.HatchMon.Type=EStop
-Requires.HatchMon.DefaultProxy=estop@local/hatchmon
+Provides.EStop.Type=EStop
+Provides.EStop.DefaultName=estop
 
 # Config Parameters
 Config.DriverLib.Comment=Options are { 'libHydroSegwayRmpAcfrCan.so', 'libHydroSegwayRmpAcfrUsb.so', 'libHydroSegwayRmpPlayerClient.so', 'libHydroSegwayRmpFake.so' }
 Config.DriverLib.Default=libHydroSegwayRmpAcfrCan.so
 Config.EnableEStopInterface.Default=0
+Config.EStop.KeepAlivePeriodSec.Default=0
 Config.EnableMotion.Default=1
 
 Config.DriveInReverse.Comment=If set, reverse all controls and odometry

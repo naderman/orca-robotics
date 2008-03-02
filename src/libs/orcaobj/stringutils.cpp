@@ -610,7 +610,7 @@ toString( const orca::EStopData& obj )
 {
     std::ostringstream s;
     s << toString(obj.timeStamp);
-    s << " EStop fault condition is:- "<< obj.hasFaultCondition; 
+    s << " isEStopActivated: "<< obj.isEStopActivated; 
     return s.str();
 }
 

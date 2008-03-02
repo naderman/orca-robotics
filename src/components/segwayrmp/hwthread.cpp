@@ -1,4 +1,3 @@
-
 /*
  * Orca-Robotics Project: Components for robotics 
  *               http://orca-robotics.sf.net/
@@ -11,11 +10,10 @@
 
 #include <iostream>
 #include <cmath>
+#include <orcaice/orcaice.h>
 
 // we need these to throw orca exceptions from the functions executed in the network thread
 #include <orca/exceptions.h>
-// alexm: this is a network object? should it be here?
-#include "estopconsumerI.h"
 #include "hwthread.h"
 #include "stats.h"
 
@@ -37,12 +35,10 @@ namespace {
         data.y     = -data.y;
         data.roll  = -data.roll;
         data.pitch = -data.pitch;
-        // data.yaw   = -data.yaw;
 
         data.vx     = -data.vx;
         data.droll  = -data.droll;
         data.dpitch = -data.dpitch;
-        // data.dyaw   = -data.dyaw;
         
         swap( data.leftTorque, data.rightTorque );
     }
@@ -50,14 +46,13 @@ namespace {
     void reverseDirection( hydrointerfaces::SegwayRmp::Command &cmd )
     {
         cmd.vx = -cmd.vx;
-        // cmd.w  = -cmd.w;
     }
 
 }
 
-HwThread::HwThread( Config& config, const orcaice::Context &context ) :
-    SubsystemThread( context.tracer(), context.status(), "HwThread" ),
-    context_(context)
+HwThread::HwThread( Config& config, const orcaice::Context &context )
+    : SubsystemThread( context.tracer(), context.status(), "HwThread" ),
+      context_(context)
 {
     subStatus().setMaxHeartbeatInterval( 10.0 );
 
@@ -67,14 +62,15 @@ HwThread::HwThread( Config& config, const orcaice::Context &context ) :
     Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag() + ".Config.";
 
-    // By default the estop interface is not enabled...
-    // alexm: this param is read-in twice: here and in NetThread, doesn't seem right.
-    isEStopEnabled_ = (bool)orcaice::getPropertyAsIntWithDefault( prop, prefix+"EnableEStopInterface", 0 );
-    stringstream ss; ss <<"HwThread: isEStopInterfaceEnabled is set to "<< isEStopEnabled_<<endl;
-    context_.tracer().info( ss.str() );
- 
     isMotionEnabled_ = (bool)orcaice::getPropertyAsIntWithDefault( prop, prefix+"EnableMotion", 1 );
     driveInReverse_  = (bool)orcaice::getPropertyAsIntWithDefault( prop, prefix+"DriveInReverse", 0 );
+
+    bool isEStopEnabled = (bool)orcaice::getPropertyAsIntWithDefault( prop, prefix+"EnableEStopInterface", 0 );
+    if ( isEStopEnabled )
+    {
+        double keepAlivePeriodSec = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"EStop.KeepAlivePeriodSec", 3 );
+        eStop_.reset( new EStop( keepAlivePeriodSec, context) );
+    }
 
     // Dynamically load the library and find the factory
     std::string driverLibName = 
@@ -143,13 +139,24 @@ HwThread::enableDriver()
 }
 
 void
+HwThread::writeCommand( hydrointerfaces::SegwayRmp::Command &command )
+{
+    if ( eStop_.get() && eStop_->isEStopTriggered() )
+    {
+        command.vx = 0;
+        command.w  = 0;
+    }
+    driver_->write( command );
+}
+
+void
 HwThread::walk()
 {
     stringstream exceptionSS;
     std::string reason;
-    const int eStopTimeoutMs = 1200;
-    // temp data structure. do not use until read() is called.
+    // temp data structures.
     hydrointerfaces::SegwayRmp::Data data;
+    hydrointerfaces::SegwayRmp::Command command;
 
     // a simple class which summarizes motion information
     Stats stats;
@@ -168,11 +175,6 @@ HwThread::walk()
             // Try to (re-)enable
             subStatus().setMaxHeartbeatInterval( 5.0 );    
 
-            // Is the Estop correctly enabled?
-            if( isEStopEnabled_ && ( !isEStopConnected(eStopTimeoutMs) ))
-               {continue;}
-            
-            
             enableDriver();
 
             // we enabled, so presume we're OK.
@@ -241,14 +243,14 @@ HwThread::walk()
         //
         // Write pending commands to the hardware
         //
-        if ( commandStore_.isNewData() && !stateMachine_.isFault() )
+        if ( !stateMachine_.isFault() && commandStore_.isNewData() )
         {
-            hydrointerfaces::SegwayRmp::Command command;
             commandStore_.get( command );
+
             if ( driveInReverse_ ) reverseDirection( command );
 
             try {
-                driver_->write( command );
+                writeCommand( command );
 
                 stringstream ss;
                 ss << "HwThread: wrote command: " << command.toString();
@@ -269,33 +271,12 @@ HwThread::walk()
             }
         }
 
-        // TODO should this be optional?
-
-        // Does the estop interface indicate a stop now fault!
-        if (isEStopEnabled_) 
-        {
-            if(eStopFaultStatus_.isNewData())
-            {
-                EStopStatus eStopStatus;
-                eStopFaultStatus_.get(eStopStatus);
-                if( eStopStatus == segwayrmp::ESS_FAULT )
-                {
-                    std::stringstream ss; ss << "HwThread: EstopInterface shows error state, disabling motion.";
-                    context_.tracer().error( ss.str() );
-                    // set local state to failure
-                    stateMachine_.setFault( ss.str() );                                
-                }        
-                /*
-                     else if(){
-                     //TODO need to implement timeout
-                   }
-                 */
-            }
-
-        }
-
         // Tell the 'status' engine what our local state machine knows.
-        if ( stateMachine_.isFault(reason) )
+        if ( eStop_.get() && eStop_->isEStopTriggered() )
+        {
+            subStatus().warning( "E-Stop triggered" );
+        }
+        else if ( stateMachine_.isFault(reason) )
         {
             subStatus().fault( reason );
         }
@@ -348,30 +329,4 @@ HwThread::setCommand( const hydrointerfaces::SegwayRmp::Command &command )
     stringstream ss;
     ss << "HwThread::setCommand( "<<command.toString()<<" )";
     context_.tracer().debug( ss.str(), 2 );
-}
-
-bool
-HwThread::isEStopConnected(int timeoutMs)
-{
-    
-    //Get the estop status or timeout.
-    EStopStatus eStopStatus;
-    if(eStopFaultStatus_.getNext(eStopStatus, timeoutMs) != 0)
-    {
-        string Msg("HwThread: No EStop data available. Will try again");
-        context_.tracer().error( Msg );
-        stateMachine_.setFault( Msg );
-        return false;
-    }                
-
-    //Are we showing a fault on the estop
-    if (eStopStatus != segwayrmp::ESS_NO_FAULT)
-    {
-        string Msg( "HwThread: EStop data indicating fault. Trying again" );
-        context_.tracer().error( Msg );
-        stateMachine_.setFault( Msg );
-        return false;
-    }
-
-    return true;
 }

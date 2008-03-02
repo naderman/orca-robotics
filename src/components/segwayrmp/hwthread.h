@@ -20,11 +20,10 @@
 #include <hydroiceutil/store.h>
 #include <orcarobotdriverutil/statemachine.h>
 #include <hydroiceutil/timer.h>
+#include "estop.h"
 
 namespace segwayrmp {
 
-
-enum EStopStatus{ESS_NO_FAULT, ESS_FAULT};
 
 //
 // @brief The thread that runs the driver
@@ -56,11 +55,6 @@ public:
     // used by NetThread to pass commands, events and get data
     void setCommand( const hydrointerfaces::SegwayRmp::Command &command );
 
-    void setEStopFaultStatus( const EStopStatus status )
-        {
-            eStopFaultStatus_.set(status);
-        }
-
     int getData( hydrointerfaces::SegwayRmp::Data &data, int timeoutMs )
         {
             return dataStore_.getNext( data, timeoutMs );
@@ -68,11 +62,9 @@ public:
 
 private: 
 
-    // Try and get data from the estop to ensure this is all OK.
-    bool isEStopConnected(int timeoutMs);
-
     // Keeps trying until success or isStopping()
     void enableDriver();
+    void writeCommand( hydrointerfaces::SegwayRmp::Command &command );
 
     // Faults can be detected in either read or write threads: have to be careful.
     orcarobotdriverutil::StateMachine stateMachine_;
@@ -82,12 +74,10 @@ private:
     // Stores incoming commands
     hydroiceutil::Store<hydrointerfaces::SegwayRmp::Command> commandStore_;
 
-    // Stores incoming EStop Status
-    hydroiceutil::Store<EStopStatus> eStopFaultStatus_;
-
     bool isMotionEnabled_;
-    bool isEStopEnabled_;
     bool driveInReverse_;
+
+    std::auto_ptr<EStop> eStop_;
 
     // Looks for late writes (which will cause timeouts in the segway)
     hydroiceutil::Timer writeTimer_;

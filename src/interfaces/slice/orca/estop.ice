@@ -1,7 +1,7 @@
 /*
  * Orca Project: Components for robotics 
  *               http://orca-robotics.sf.net/
- * Copyright (c) 2004-2008 Alex Brooks, Alexei Makarenko, Tobias Kaupp, Duncan Mercer
+ * Copyright (c) 2004-2008 Alex Brooks
  *
  * This copy of Orca is licensed to you under the terms described in the
  * ORCA_LICENSE file included in this distribution.
@@ -18,25 +18,25 @@ module orca
 /*!
     @ingroup orca_interfaces
     @defgroup orca_interface_estop EStop
-    @brief Interface that provides a 'keep alive' pulse on an interface.
-   
+    @brief Allows emergency-stop if stop signal is received or keep-alive is not received.
 
-The EStop interface provides a mechanism for indicating to a system
-that all is well at some higher level. Regular data is expected across
-the interface. Missing data or data indicating an error state should prompt
-the consumer to 'fail-safe' in the most appropriate manner.
+There are conceptually two modes in which an E-Stop can operate:
+ - Dead-man-switch style: e-stop is activated if a 'keep-going' signal is not received.
+ - Active: e-stop is activated iff a 'stop' signal is received.
+
+This interface allows either/both modes of operation.
 
 */
 
-
+//! Data sent to consumers who are interested in the server's state.
+//! Updates are sent whenever the isEStopActivated state changes.
 struct EStopData
 {
     //! Time when data was generated.
     Time timeStamp;
-    //! 
-    bool hasFaultCondition;
+    //! true if the vehicle is in the emergency-stopp{ed|ing} mode.
+    bool isEStopActivated;
 };
-
 
 
 interface EStopConsumer
@@ -45,13 +45,31 @@ interface EStopConsumer
     void setData(EStopData state);
 };
 
-
-//! Interface to a device with a binary state.
+//! Interface to e-stop.
 interface EStop
 {
+    //! Hit the stop button!
+    idempotent void activateEStop();
+
+    //! Keep the thing alive: reset the keep-alive timer to zero.
+    idempotent void keepAlive();
+
+    //! Returns the required keep-alive period, in seconds.
+    //! If a keep-alive is not heard for longer than this, the e-stop
+    //! will automatically be activated.
+    //! A negative value indicates that keep-alives are not required: the
+    //! e-stop can only be activated using 'activateEStop()'.
+    ["cpp:const"] idempotent double getRequiredKeepAlivePeriodSec();
+
+    //! If the e-stop was activated, sets the vehicle back to the
+    //! operating mode (ie un-sets the e-stop so the vehicle can move again),
+    //! and resets the keep-alive timer to zero.
+    //! If the vehicle was already in teh operating mode, does nothing.
+    idempotent void setToOperatingMode();
+
     //! Returns the latest data. Raises DataNotExistException if data is not available.
     ["cpp:const"] idempotent EStopData getData()
-        throws DataNotExistException, HardwareFailedException;
+        throws DataNotExistException;
 
     /*!
      * Mimics IceStorm's subscribe() but without QoS, for now. The

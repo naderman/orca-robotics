@@ -14,7 +14,6 @@
 #include <orcaice/orcaice.h>
 #include <orcaobj/orcaobj.h>
 #include "netthread.h"
-#include "estopconsumerI.h"
 
 using namespace std;
 using namespace segwayrmp;
@@ -149,7 +148,6 @@ NetThread::NetThread( HwThread                      &hwThread,
                         const orca::VehicleDescription &descr,
                         const orcaice::Context         &context ) :
     SubsystemThread( context.tracer(), context.status(), "NetThread" ),
-    eStopPrx_(0),
     hwThread_(hwThread),
     descr_(descr),
     context_(context)
@@ -168,12 +166,6 @@ NetThread::NetThread( HwThread                      &hwThread,
     maxReverseSpeed_        = controlDescr->maxForwardSpeed;
     maxTurnrate_            = controlDescr->maxTurnrate;
     maxLateralAcceleration_ = controlDescr->maxLateralAcceleration;
-
-    // By default the estop interface is not enabled
-    isEStopEnabled_ = (bool)orcaice::getPropertyAsIntWithDefault( context_.properties(),
-            context_.tag()+".Config.EnableEStopInterface", 0 );
-    stringstream ss; ss <<"NetThread: isEStopInterfaceEnabled is set to "<< isEStopEnabled_<<endl;
-    context_.tracer().info( ss.str() );
 }
 
 // This is a direct callback from the VelocityControl2dImpl object.
@@ -236,11 +228,6 @@ NetThread::walk()
     // register ourselves as data handlers (it will call the handleData() callback).
     velocityControl2dI_->setNotifyHandler( this );
 
-    // Are we using the EStop interface?
-    if( isEStopEnabled_ ){
-        initEStopCallback();    
-    }
-
     // temp objects in network format
     orca::Odometry2dData odometry2dData;
     orca::Odometry3dData odometry3dData;
@@ -249,7 +236,6 @@ NetThread::walk()
     hydroiceutil::Timer odometry2dPublishTimer;
     hydroiceutil::Timer odometry3dPublishTimer;
     hydroiceutil::Timer powerPublishTimer;
-    hydroiceutil::Timer eStopDataLastRxTimer;
 
     double odometry2dPublishInterval = orcaice::getPropertyAsDoubleWithDefault( 
         context_.properties(), prefix+"Odometry2dPublishInterval", 0.1 );
@@ -314,38 +300,4 @@ NetThread::walk()
         // subsystem heartbeat
         subStatus().ok();
     } // main loop
-}
-
-
-
-// TODO modernise this code section.
-void 
-NetThread::initEStopCallback()
-{
-
-    // Keep trying to create the interface until we succeed
-    orcaice::connectToInterfaceWithTag<orca::EStopPrx>( context_, eStopPrx_, "HatchMon", this );
-            
-    // callback object to receive data, and hands it straight the the hwThread thread
-    Ice::ObjectPtr consumerObj = new segwayrmp::EStopConsumerI(hwThread_);
-    orca::EStopConsumerPrx callbackPrx =
-      orcaice::createConsumerInterface<orca::EStopConsumerPrx>( context_, consumerObj );
-    
-    //
-    // Subscribe for EStop data
-    //
-    // will try forever until the user quits with ctrl-c
-    while ( true )
-    {
-        try
-        {
-            eStopPrx_->subscribe( callbackPrx );
-            break;
-        }
-        catch ( const orca::SubscriptionFailedException & )
-        {
-            context_.tracer().error( "failed to subscribe for data updates. Will try again after 3 seconds." );
-            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
-        }
-    }
 }

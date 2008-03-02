@@ -25,12 +25,9 @@
 - @ref orca_interface_odometry3d [SegwayRmp.Provides.Odometry3d]
 - @ref orca_interface_velocitycontrol2d [SegwayRmp.Provides.VelocityControl2d]
 - @ref orca_interface_power [SegwayRmp.Provides.Power]
+- @ref orca_interface_estop
 - @ref orca_interface_status
 - @ref orca_interface_tracer
-
-@par Requires
-
-- @ref orca_interface_estop
 
 @image html segwayrmp.png
 
@@ -86,6 +83,14 @@ This component dynamically loads an implementation of a Hydro hardware interface
     - Valid values:
         - t>0 : send approximately every t seconds
     - Default: 60.0
+
+  - @c SegwayRmp.Config.EnableEStop (bool)
+    - If true, instantiate monitor the EStop interface.
+    - Default: 0
+
+  - @c SegwayRmp.Config.EStop.KeepAlivePeriodSec (double) [s]
+    - How frequently keep-alives need to arrive to keep the vehicle happy.
+    - Default: 3
 
 Parameters describing the vehicle (see orca::VehicleDescription for details)
 
