@@ -70,7 +70,7 @@ interface EStop
     //! If the e-stop was activated, sets the vehicle back to the
     //! operating mode (ie un-sets the e-stop so the vehicle can move again),
     //! and resets the keep-alive timer to zero.
-    //! If the vehicle was already in teh operating mode, does nothing.
+    //! If the vehicle was already in the operating mode, does nothing.
     idempotent void setToOperatingMode();
 
     //! Returns the latest data. Raises DataNotExistException if data is not available.
