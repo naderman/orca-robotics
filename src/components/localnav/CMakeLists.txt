@@ -63,7 +63,7 @@ IF ( build )
       #
       GLOBAL_ADD_TEST( LocalNavVfhTest ${LD_LINUX}
         --library-path vfhdriver:$ENV{LD_LIBRARY_PATH} ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME}
-        --Orca.Config=${PROJECT_BINARY_DIR}/src/components/${APP_NAME}/${APP_NAME}.cfg
+        --Orca.Config=${PROJECT_SOURCE_DIR}/src/components/${APP_NAME}/${APP_NAME}.cfg
         --LocalNav.Config.TestInSimulationMode=1
         --LocalNav.Config.Vfh.MaxSpeed=2.0
         --LocalNav.Config.Test.NumWaypoints=20
