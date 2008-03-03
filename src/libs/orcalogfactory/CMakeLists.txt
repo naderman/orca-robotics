@@ -27,6 +27,8 @@ IF ( build )
 
     TARGET_LINK_LIBRARIES( ${lib_name} ${dep_libs} )
 
+    INSTALL_FILES( /include/orcalogfactory .*\\.h$ ) 
+
     IF ( ORCA_BUILD_TESTS )
         ADD_SUBDIRECTORY ( test )
     ENDIF ( ORCA_BUILD_TESTS )
