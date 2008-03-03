@@ -22,6 +22,7 @@
 #include <orca/ogmap.h>
 #include <orca/gps.h>
 #include <orca/polarfeature2d.h>
+#include <orca/properties.h>
 
 namespace orcaifaceimpl
 {
@@ -92,6 +93,13 @@ typedef NotifyingConsumerImpl<orca::PolarFeature2dPrx,
                         orca::PolarFeature2dConsumerPrx,
                         orca::PolarFeature2dData>              NotifyingPolarFeature2dConsumerImpl;
 typedef IceUtil::Handle<NotifyingPolarFeature2dConsumerImpl>   NotifyingPolarFeature2dConsumerImplPtr;
+
+//! Typedef for a common interface type. There's also a corresponding Ptr.
+typedef NotifyingConsumerImpl<orca::PropertiesPrx,
+                        orca::PropertiesConsumer,
+                        orca::PropertiesConsumerPrx,
+                        orca::PropertiesData>              NotifyingPropertiesConsumerImpl;
+typedef IceUtil::Handle<NotifyingPropertiesConsumerImpl>   NotifyingPropertiesConsumerImplPtr;
 
 } // namespace
 
