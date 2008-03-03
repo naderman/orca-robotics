@@ -53,6 +53,10 @@ IF ( build )
             MESSAGE( STATUS "     Image grabbing libraries CANNOT be found... only the fake driver can be built." ) 
             MESSAGE( STATUS "     Please install opencv for monocular cameras and/or the digiclops libraries for the trinocular digiclops camera."  )
         ENDIF ( OPENCV_FOUND OR DIGICLOPS_AND_TRICLOPS_FOUND )
+
+	IF (OPENCV_FOUND)
+		ADD_DEFINITIONS(-DBUILD_OPENCV_GRABBER)
+	ENDIF (OPENCV_FOUND)
     
     ELSE ( HAVE_CAMERA_HW_LIB )
         MESSAGE( STATUS "     Image grabbing drivers CANNOT be found... only the fake driver can be built." ) 
