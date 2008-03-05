@@ -84,26 +84,26 @@ std::string getServiceConfigFilename( const Ice::StringSeq & args );
 // So everything goes through Ice's 'getProperty' instead, which returns an empty string on 'not found'.
 //
 
-//! Returns: 0 = property found (and set in value), non-zero = property not found.
+//! Returns: 0 = property found (and its value is not empty), non-zero = property not found (or is defined but left empty).
 //! Throws a hydroutil::Exception if the key is found but the value cannot be converted to the desired type.
 int getPropertyAsDouble( const Ice::PropertiesPtr &, const ::std::string& key, Ice::Double &value );
-//! Returns: 0 = property found (and set in value), non-zero = property not found.
+//! Returns: 0 = property found (and its value is not empty), non-zero = property not found (or is defined but left empty).
 //! Throws a hydroutil::Exception if the key is found but the value cannot be converted to the desired type.
 int getPropertyAsInt(    const Ice::PropertiesPtr &, const ::std::string& key, int         &value );
-//! Returns: 0 = property found (and set in value), non-zero = property not found.
+//! Returns: 0 = property found (and its value is not empty), non-zero = property not found (or is defined but left empty).
 //! Note that the Ice PropertiesI::load() method has a line size limitation of 1024 characters 
 //! but quietly fails so there is no way of knowing if you have exceeded this limitation
 int getProperty(         const Ice::PropertiesPtr &, const ::std::string& key, std::string &value );
 //! Parses the value into a vector of ints assuming empty space delimeters. Elements will continue
 //! to be added to the end of the vector until the end of the line is reached.
-//! Returns: 0 = property found (and set in value), non-zero = property not found.
+//! Returns: 0 = property found (and its value is not empty), non-zero = property not found (or is defined but left empty).
 //! Note that the Ice PropertiesI::load() method has a line size limitation of 1024 characters.
 //! but quietly fails so there is no way of knowing if you have exceeded this limitation
 //! Throws a hydroutil::Exception if the key is found but the value cannot be converted to the desired type.
 int getPropertyAsIntVector( const Ice::PropertiesPtr &, const ::std::string& key, std::vector<int> &value );
 //! Parses the value into a vector of doubles assuming empty space delimeters. Elements will continue
 //! to be added to the end of the vector until the end of the line is reached.
-//! Returns: 0 = property found (and set in value), non-zero = property not found.
+//! Returns: 0 = property found (and its value is not empty), non-zero = property not found (or is defined but left empty).
 //! Note that the Ice PropertiesI::load() method has a line size limitation of 1024 characters 
 //! but quietly fails so there is no way of knowing if you have exceeded this limitation.
 //! Throws a hydroutil::Exception if the key is found but the value cannot be converted to the desired type.
