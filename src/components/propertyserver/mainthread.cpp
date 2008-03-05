@@ -38,7 +38,6 @@ MainThread::initPropertiesDb()
         strippedProps.insert( make_pair(it->first.substr(prefix.size()),it->second) );
     }
 
-
     stringstream ss;
     ss << "MainThread: Properties loaded from file: " << toString(strippedProps);
     context_.tracer().debug( ss.str() );
@@ -49,12 +48,12 @@ MainThread::initPropertiesDb()
 void
 MainThread::initNetworkInterface()
 {
-    // set the interface up with the context of the property database
+    // set the interface up with the contents of the property database
     orca::PropertiesData pData;
     pData.properties = propertyDb_.properties();
     propertiesInterface_->localSet( pData );
-
     propertiesInterface_->initInterface( this, subsysName() );
+    propertiesInterface_->localSetAndSend( pData );
 }
 
 void

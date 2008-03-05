@@ -30,6 +30,16 @@ see @ref orca_doc_configfiles.
 
 - none
 
+@par Empty Properties
+
+Properties are a set of key-value pairs.  Ice Properties cannot differentiate between:
+  - a key not being set, and
+  - a value set to an empty string.
+
+To handle this, the special value "NULL" is used to denote
+value-not-set.  It will be internally translated to an empty string.
+
+
 @par Authors
 
 Alex Brooks

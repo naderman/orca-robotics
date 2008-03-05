@@ -22,7 +22,10 @@ PropertyDb::addProperties( const std::map<std::string,std::string> &newPropertie
           it!=newProperties.end();
           ++it ) 
     {
-        properties_[it->first] = it->second;
+        string value = it->second;
+        if ( value == "NULL" )
+            value = "";
+        properties_[it->first] = value;
     }
 }
 
