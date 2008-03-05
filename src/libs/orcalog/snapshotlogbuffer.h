@@ -28,13 +28,14 @@ public:
         {
             buffer_.push_back( LogItem( obj, orcaice::getNow() ) );
 
-            std::cout<<"TRACE(snapshotlogbuffer.h): new time window: " << orcaice::timeDiffAsDouble( buffer_.back().arrivalTime, buffer_.front().arrivalTime ) << std::endl;
+            // std::cout<<"TRACE(snapshotlogbuffer.h): new time window: " << 
+            // orcaice::timeDiffAsDouble( buffer_.back().arrivalTime, buffer_.front().arrivalTime ) << std::endl;
 
             // Delete old stuff if there's too much in the buffer
             while ( orcaice::timeDiffAsDouble( buffer_.back().arrivalTime, buffer_.front().arrivalTime ) > timeWindow_ )
             {
                 buffer_.pop_front();
-                std::cout<<"TRACE(snapshotlogbuffer.h): purgind old data." << std::endl;
+                // std::cout<<"TRACE(snapshotlogbuffer.h): purgind old data." << std::endl;
             }
         }
 

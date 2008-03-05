@@ -52,7 +52,7 @@ MasterFileWriter::MasterFileWriter( const std::string      &filename,
 MasterFileWriter::~MasterFileWriter()
 {
     std::stringstream ss;
-    ss << "shutting down after writing "<<numItemsLogged_<<" objects to "<<numLoggers_<<" logs.";
+    ss << __func__ << ": Finished writing "<<numItemsLogged_<<" objects to "<<numLoggers_<<" logs.";
     context_.tracer().info( ss.str() );
 
     if ( file_ ) {

@@ -44,14 +44,14 @@ private:
     void loadPluginLibraries( const std::string &factoryLibNames );
     // throws exceptions if it can't create the logger
     orcalog::SnapshotLogger *createLogger( const std::string &interfaceType );
+    std::string filenamePrefix();
+    orcalog::MasterFileWriter *createMasterFileWriter( const std::string &filenamePrefix );
 
     void takeSnapshot();
 
     std::vector<orcalog::SnapshotLoggerFactory*>     logFactories_;
     std::vector<hydrodll::DynamicallyLoadedLibrary*> libraries_;
 
-    // The guy that writes the master file
-    std::auto_ptr<orcalog::MasterFileWriter> masterFileWriter_;
     // The guys that write the data files
     std::vector<orcalog::SnapshotLogger*> snapshotLoggers_;
     // Information about them
@@ -63,6 +63,8 @@ private:
     // Holds incoming requests to take snapshots
     // (the value of the bool's are meaningless)
     hydroiceutil::Store<bool> requestStore_;
+
+    bool useFilenameTimestamps_;
 
     orcaice::Context context_;
 };

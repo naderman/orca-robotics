@@ -34,6 +34,7 @@
 #include "tracerprobe.h"
 #include "wifiprobe.h"
 #include "propertiesprobe.h"
+#include "buttonprobe.h"
 
 using namespace orcaprobefactory;
 
@@ -51,6 +52,7 @@ OrcaProbeFactory::OrcaProbeFactory()
     addSupportedType("::orca::LaserScanner2d");
     addSupportedType("::orca::Wifi");
     addSupportedType("::orca::Properties");
+    addSupportedType("::orca::Button");
     addSupportedType("::orca::Localise2d");
     addSupportedType("::orca::Localise3d");
 //     addSupportedType("::orca::PolarFeature2d");
@@ -108,6 +110,9 @@ OrcaProbeFactory::create( const std::string           & interfaceType,
     }
     else if ( interfaceType == "::orca::Properties" ) {
         probe = new PropertiesProbe( name, display, context );
+    }
+    else if ( interfaceType == "::orca::Button" ) {
+        probe = new ButtonProbe( name, display, context );
     }
     else if ( interfaceType == "::orca::Localise2d" ) {
         probe = new Localise2dProbe( name, display, context );

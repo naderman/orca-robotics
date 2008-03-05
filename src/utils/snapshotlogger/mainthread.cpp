@@ -66,6 +66,7 @@ MainThread::initLoggers()
     const double timeWindowSec = orcaice::getPropertyAsDoubleWithDefault( props,
                                                                           prefix+"TimeWindowSec",
                                                                           30.0 );
+    useFilenameTimestamps_ = (bool)orcaice::getPropertyAsIntWithDefault( props, prefix+"FilenameTimestamp", 1 );
 
     string libNames = orcaice::getPropertyWithDefault( props,
                                                        prefix+"FactoryLibNames",
@@ -152,11 +153,144 @@ MainThread::initInterface()
     }
 }
 
+std::string
+MainThread::filenamePrefix()
+{
+    string filenamePrefix = "";
+    if ( useFilenameTimestamps_ ) {
+        filenamePrefix = orcalog::humanReadableTimeStamp() + "_";
+    }    
+    return filenamePrefix;
+}
+
+orcalog::MasterFileWriter *
+MainThread::createMasterFileWriter( const std::string &filenamePrefix )
+{
+    string baseMasterFilename = "master.log";
+    string masterFilename = filenamePrefix + baseMasterFilename;
+
+    try {
+        return new orcalog::MasterFileWriter( masterFilename.c_str(), context_ );
+    }
+    catch ( std::exception &e )
+    {
+        stringstream ss;
+        ss << "Couldn't create masterFileWriter: " << e.what();
+        throw hydroutil::Exception( ERROR_INFO, ss.str() );
+    }
+}
+
+namespace {
+
+    bool
+    atLeastOneNonEmpty( const std::vector<orcalog::SnapshotLogger*> &loggers )
+    {
+        for ( uint i=0; i < loggers.size(); i++ )
+        {
+            if ( loggers[i]->snapshotBufferSize() > 0 )
+                return true;
+        }
+        return false;
+    }
+
+    orcalog::SnapshotLogger*
+    loggerWithOldestObject( std::vector<orcalog::SnapshotLogger*> &loggers )
+    {
+        orca::Time tOldest;
+        orcalog::SnapshotLogger *loggerWithOldest = NULL;
+
+        // Find the age of the oldest item in the first non-empty buffer
+        uint i=0;
+        for ( ; i < loggers.size(); i++ )
+        {
+            if ( loggers[i]->snapshotBufferSize() > 0 )
+            {
+                tOldest = loggers[i]->oldestArrivalTime();
+                loggerWithOldest = loggers[i];
+                break;
+            }
+        }
+    
+        // Compare it with the oldest items in the other non-empty buffers
+        i = i+1;
+        for ( ; i < loggers.size(); i++ )
+        {
+            if ( loggers[i]->snapshotBufferSize() > 0 )
+            {
+                double timeDiff = orcaice::timeDiffAsDouble( loggers[i]->oldestArrivalTime(),
+                                                             tOldest );
+                if ( timeDiff < 0 )
+                {
+                    tOldest = loggers[i]->oldestArrivalTime();
+                    loggerWithOldest = loggers[i];
+                }
+            }
+        }
+
+        assert( loggerWithOldest != NULL );
+        return loggerWithOldest;
+    }
+
+    void
+    orchestrateSaving( std::vector<orcalog::SnapshotLogger*> &loggers )
+    {
+        while ( atLeastOneNonEmpty( loggers ) )
+        {
+            loggerWithOldestObject(loggers)->writeOldestObjToLogAndDiscard();
+        }
+    }
+
+}
+
 void
 MainThread::takeSnapshot()
 {
-    cout<<"TRACE(mainthread.cpp): TAKE SNAPSHOT!!" << endl;
-    
+    cout<<"TRACE(mainthread.cpp): "<<__func__<< endl;
+
+    if ( snapshotLoggers_.size() == 0 ) return;
+
+    std::string fnamePrefix = filenamePrefix();
+
+    // Create Master File
+    std::auto_ptr<orcalog::MasterFileWriter> masterFileWriter( createMasterFileWriter( fnamePrefix ) );
+
+    stringstream exceptionSS;
+    try {
+
+        //
+        // Prepare for snapshot
+        //
+        for ( uint i=0; i < snapshotLoggers_.size(); i++ )
+        {
+            // Prepend the timestamp to the filename
+            orcalog::LogWriterInfo logWriterInfo = logWriterInfos_[i];
+            logWriterInfo.filename = fnamePrefix + logWriterInfos_[i].filename;
+
+            snapshotLoggers_[i]->prepareForSnapshot( logWriterInfo,
+                                                     *masterFileWriter );
+        }
+
+        //
+        // orchestrate saving the snapshot
+        //
+        orchestrateSaving( snapshotLoggers_ );
+    }
+    catch ( std::exception &e )
+    {
+        // This will get thrown after cleanup
+        exceptionSS << e.what();
+    }
+
+    //
+    // Finalise snapshot
+    //
+    for ( uint i=0; i < snapshotLoggers_.size(); i++ )
+        snapshotLoggers_[i]->finaliseSnapshot();
+
+    if ( !exceptionSS.str().empty() )
+    {
+        throw hydroutil::Exception( ERROR_INFO, exceptionSS.str() );
+    }
 }
 
 void
@@ -168,24 +302,53 @@ MainThread::walk()
     initLoggers();
     initInterface();
 
-    // init subsystem is done and is about to terminate
-    subStatus().ok( "Initialized." );
+    // init subsystem is done
+    subStatus().ok( "" );
     subStatus().setMaxHeartbeatInterval( 5.0 );
 
     while ( !isStopping() )
     {
-        bool dummy;
-        const int TIMEOUT_MS = 1000;
-        int ret = requestStore_.getNext( dummy, TIMEOUT_MS );
-        if ( ret == 0 )
-        {
-            takeSnapshot();
+        std::stringstream exceptionSS;
+        try {
+            bool dummy;
+            const int TIMEOUT_MS = 1000;
+            int ret = requestStore_.getNext( dummy, TIMEOUT_MS );
+            if ( ret == 0 )
+            {
+                takeSnapshot();
             
-            // Clear any requests that might have arrived while we were taking the snapshot
-            if ( !requestStore_.isEmpty() )
-                requestStore_.get( dummy );
+                // Clear any requests that might have arrived while we were taking the snapshot
+                if ( !requestStore_.isEmpty() )
+                    requestStore_.get( dummy );
+            }
+            subStatus().ok();
         }
-        subStatus().ok();        
+        catch ( Ice::CommunicatorDestroyedException & ) {
+            // This is OK: it means that the communicator shut down (eg via Ctrl-C)
+            // somewhere in mainLoop. Eventually, component will tell us to stop.
+        }
+        catch ( const Ice::Exception &e ) {
+            exceptionSS << "ERROR(mainthread.cpp): Caught unexpected exception: " << e;
+        }
+        catch ( const std::exception &e ) {
+            exceptionSS << "ERROR(mainthread.cpp): Caught unexpected exception: " << e.what();
+        }
+        catch ( const std::string &e ) {
+            exceptionSS << "ERROR(mainthread.cpp): Caught unexpected string: " << e;
+        }
+        catch ( const char *e ) {
+            exceptionSS << "ERROR(mainthread.cpp): Caught unexpected char *: " << e;
+        }
+        catch ( ... ) {
+            exceptionSS << "ERROR(mainthread.cpp): Caught unexpected unknown exception.";
+        }
+
+        if ( !exceptionSS.str().empty() ) 
+        {
+            subStatus().fault( exceptionSS.str() );     
+            // Slow things down in case of persistent error
+            sleep(1);
+        }
     }
 }
 

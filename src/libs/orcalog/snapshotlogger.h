@@ -31,6 +31,7 @@ public:
     // Call these before and after taking the snapshot
     virtual void prepareForSnapshot( const LogWriterInfo &logWriterInfo,
                                      MasterFileWriter &masterFileWriter ) = 0;
+    // This is always safe to call, even if prepareForSnapshot() hasn't been called.
     virtual void finaliseSnapshot()=0;
 
     // Call these during snapshotting
