@@ -1,0 +1,116 @@
+/*
+ * Orca-Robotics Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2008 Alex Brooks, Ben Upcroft
+ *
+ * This copy of Orca is licensed to you under the terms described in
+ * the LICENSE file included in this distribution.
+ *
+ */
+
+/*!
+@page orca_component_imageserver_examples Examples
+
+Uncomment the lines that you need
+
+@par @c imageserver.cfg
+
+@verbatim
+# Component
+ImageServer.Platform=local
+ImageServer.Component=imageserver
+ImageServer.Endpoints=tcp
+
+# Provided Interfaces
+ImageServer.Provides.Camera.Name=camera
+
+# Configuration Options
+ImageServer.Config.CameraIndex=0
+
+#
+# fake driver for testing
+#
+ImageServer.Config.Driver=fake
+
+#
+# monocular driver for firewire and usb cameras
+#
+# ImageServer.Config.Driver=monoopencv
+# for a bayer encoded camera
+# ImageServer.Config.Format=BAYERBG
+ 
+#
+# For a digiclops camera
+#
+# ImageServer.Config.Driver=digiclops
+# ImageServer.Config.Format=DIGICLOPSSTEREO
+
+ImageServer.Config.Offset.p.o.p=0
+ImageServer.Config.Offset.p.o.r=0
+ImageServer.Config.Offset.p.o.y=0
+ImageServer.Config.Offset.p.x=0
+ImageServer.Config.Offset.p.y=0
+ImageServer.Config.Offset.p.z=0
+ImageServer.Config.StartEnabled=1
+
+# for large images
+Ice.MessageSizeMax=3000
+@endverbatim
+
+@par @c imageviewer.cfg
+
+@verbatim
+# Component
+ImageViewer.Platform=local
+ImageViewer.Component=imageviewer
+ImageViewer.Endpoints=tcp
+
+# Required Interfaces
+# for connecting to the imageserver
+ImageViewer.Requires.Camera.Proxy=camera@local/imageserver
+
+# for connecting to the logplayer
+# ImageViewer.Requires.Camera.Proxy=camera0@local/logplayer
+
+# for large images
+Ice.MessageSizeMax=3000
+@endverbatim
+
+
+@par @c logger.cfg
+
+@verbatim
+# Component
+Logger.Platform=local
+Logger.Component=logger
+Logger.Endpoints=tcp -t 5000
+
+# Required Interfaces
+Logger.Requires.Camera0.Proxy=camera@local/imageserver
+
+# Configuration Options
+Logger.Config.LogEveryNth=1
+Logger.Config.MasterFileName=master.txt
+
+Ice.MessageSizeMax=3000
+@endverbatim
+
+@par @c logplayer.cfg
+
+@verbatim
+# Component
+LogPlayer.Platform=local
+LogPlayer.Component=logplayer
+LogPlayer.Endpoints=tcp -t 5000
+
+# Configuration Options
+LogPlayer.Config.BeginTime=0
+LogPlayer.Config.EndTime=-1
+LogPlayer.Config.LogFileName=1154403166_master.txt
+LogPlayer.Config.TimeMultiplier=1.0
+
+Ice.MessageSizeMax=3000
+@endverbatim
+
+
+*/
