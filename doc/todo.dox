@@ -69,7 +69,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 @par New utilities
 
 - SnapshotLogger (alex b)
-  - Logs a small window (in time) of information when something interesting happens.
+  - Logs a small window (in time) of information when triggered.
 
 @par New libraries
 @par Updated interfaces
@@ -87,6 +87,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     vectors of ints and doubles). Fails when characters trail a numeric value. This applies to '.'
     meaning that parsing fails when a double is given in place of an int.
     Comments are allowed to trail values.  (alex m)
+- libOrcaProbeFactory
+  - Added button probe (alex b)
 
 @par Removed
 
