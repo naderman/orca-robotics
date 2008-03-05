@@ -94,7 +94,7 @@ EXAMPLE_PATTERNS       =
 EXAMPLE_RECURSIVE      = NO
 IMAGE_PATH             = images
 INPUT_FILTER           = 
-FILTER_PATTERNS        = 
+FILTER_PATTERNS        = # *.ice=./slice2doxy
 FILTER_SOURCE_FILES    = NO
 #---------------------------------------------------------------------------
 # configuration options related to source browsing
