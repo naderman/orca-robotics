@@ -34,7 +34,7 @@ public:
     virtual ::orca::ImageDataPtr getData(const ::Ice::Current& )
         { return impl_.internalGetData(); }
 
-    virtual ::orca::ImageDescription getDescription(const ::Ice::Current& )
+    virtual ::orca::ImageDescriptionPtr getDescription(const ::Ice::Current& )
         { return impl_.internalGetDescription(); }
 
     virtual void subscribe(const ::orca::ImageConsumerPrx& consumer,
@@ -51,7 +51,7 @@ private:
 
 //////////////////////////////////////////////////////////////////////
 
-ImageImpl::ImageImpl( const orca::ImageDescription& descr,
+ImageImpl::ImageImpl( const orca::ImageDescriptionPtr& descr,
                       const std::string& interfaceTag,
                       const orcaice::Context& context )
     : descr_(descr),
@@ -61,7 +61,7 @@ ImageImpl::ImageImpl( const orca::ImageDescription& descr,
 {
 }
 
-ImageImpl::ImageImpl( const orca::ImageDescription& descr,
+ImageImpl::ImageImpl( const orca::ImageDescriptionPtr& descr,
                       const orcaice::Context& context,
                       const std::string& interfaceName )
     : descr_(descr),
@@ -117,7 +117,7 @@ ImageImpl::internalGetData() const
     return data;
 }
 
-::orca::ImageDescription
+::orca::ImageDescriptionPtr
 ImageImpl::internalGetDescription() const
 {
     return descr_;

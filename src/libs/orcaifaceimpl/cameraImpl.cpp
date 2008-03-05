@@ -32,10 +32,10 @@ public:
 
     // remote interface
 
-    virtual ::orca::CameraData getData(const ::Ice::Current& ) const
+    virtual ::orca::CameraDataSequence getData(const ::Ice::Current& ) const
         { return impl_.internalGetData(); }
 
-    virtual ::orca::CameraDescription getDescription(const ::Ice::Current& ) const
+    virtual ::orca::CameraDescriptionSequence getDescription(const ::Ice::Current& ) const
         { return impl_.internalGetDescription(); }
 
     virtual void subscribe(const ::orca::CameraConsumerPrx& consumer,
@@ -52,7 +52,7 @@ private:
 
 //////////////////////////////////////////////////////////////////////
 
-CameraImpl::CameraImpl( const orca::CameraDescription& descr,
+CameraImpl::CameraImpl( const orca::CameraDescriptionSequence& descr,
                         const std::string& interfaceTag,
                         const orcaice::Context& context )
     : descr_(descr),
@@ -62,7 +62,7 @@ CameraImpl::CameraImpl( const orca::CameraDescription& descr,
 {
 }
 
-CameraImpl::CameraImpl( const orca::CameraDescription& descr,
+CameraImpl::CameraImpl( const orca::CameraDescriptionSequence& descr,
                         const orcaice::Context& context,
                         const std::string& interfaceName )
     : descr_(descr),
@@ -101,7 +101,7 @@ CameraImpl::initInterface( hydroiceutil::Thread* thread, const std::string& subs
     orcaice::createInterfaceWithString( context_, ptr_, interfaceName_, thread, subsysName, retryInterval );
 }
 
-::orca::CameraData 
+::orca::CameraDataSequence 
 CameraImpl::internalGetData() const
 {
     context_.tracer().debug( "CameraImpl::internalGetData()", 5 );
@@ -113,12 +113,12 @@ CameraImpl::internalGetData() const
         throw orca::DataNotExistException( ss.str() );
     }
 
-    orca::CameraData data;
+    orca::CameraDataSequence data;
     dataStore_.get( data );
     return data;
 }
 
-::orca::CameraDescription
+::orca::CameraDescriptionSequence
 CameraImpl::internalGetDescription() const
 {
     return descr_;
@@ -152,20 +152,20 @@ CameraImpl::internalUnsubscribe(const ::orca::CameraConsumerPrx& subscriber)
 }
 
 void
-CameraImpl::localSet( const orca::CameraData& data )
+CameraImpl::localSet( const orca::CameraDataSequence& data )
 {
     dataStore_.set( data );
 }
 
 void
-CameraImpl::localSetAndSend( const orca::CameraData& data )
+CameraImpl::localSetAndSend( const orca::CameraDataSequence& data )
 {
 //     cout<<"TRACE(CameraIface.cpp): localSetAndSend: " << orcaobj::toString(data) << endl;
 
     dataStore_.set( data );
 
     // Try to push to IceStorm.
-    tryPushToIceStormWithReconnect<orca::CameraConsumerPrx,orca::CameraData>
+    tryPushToIceStormWithReconnect<orca::CameraConsumerPrx,orca::CameraDataSequence>
         ( context_,
           consumerPrx_,
           data,

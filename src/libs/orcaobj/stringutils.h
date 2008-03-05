@@ -169,9 +169,9 @@ std::string toString( const orca::Date& );
 //! Converts to string
 std::string toString( const orca::BinarySwitchData& );
 //! Converts to string
-std::string toString( const orca::CameraData& );
+std::string toString( const orca::CameraDataPtr& );
 //! Converts to string
-std::string toString( const orca::CameraDescription& );
+std::string toString( const orca::CameraDescriptionPtr& );
 //! Converts to string
 std::string toString( const orca::CpuInfo& );
 //! Converts to string
@@ -193,7 +193,7 @@ std::string toString( const orca::ImuDescription& );
 //! Converts to string
 std::string toString( const orca::ImageDataPtr& );
 //! Converts to string
-std::string toString( const orca::ImageDescription& );
+std::string toString( const orca::ImageDescriptionPtr& );
 //! Converts to string
 std::string toString( const orca::ImuData& );
 //! Converts to string

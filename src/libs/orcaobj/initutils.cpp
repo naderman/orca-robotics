@@ -461,12 +461,8 @@ setSane( orca::CameraData& obj, int width, int height )
     setSane( t );
     obj.timeStamp = t;
 
-    obj.imageWidth = width;
-    obj.imageHeight = height;
-    obj.format = orca::ImageFormatModeNfi;
-    obj.compression = orca::ImageCompressionNone;
     // assume RGB/BGR mode
-    obj.image.resize( obj.imageWidth*obj.imageHeight*3, char(88) );
+    obj.data.resize( width*height*3, char(88) );
 }
     
 } // namespace

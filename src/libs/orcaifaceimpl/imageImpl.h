@@ -33,11 +33,11 @@ friend class ImageI;
 
 public:
     //! Constructor using interfaceTag (may throw ConfigFileException)
-    ImageImpl( const orca::ImageDescription &descr,
+    ImageImpl( const orca::ImageDescriptionPtr &descr,
                const std::string            &interfaceTag, 
                const orcaice::Context       &context );
     //! constructor using interfaceName
-    ImageImpl( const orca::ImageDescription &descr,
+    ImageImpl( const orca::ImageDescriptionPtr &descr,
                const orcaice::Context       &context,
                const std::string            &interfaceName );
     ~ImageImpl();
@@ -60,11 +60,11 @@ public:
 private:
     // remote call implementations, mimic (but do not inherit) the orca interface
     ::orca::ImageDataPtr internalGetData() const;
-    ::orca::ImageDescription internalGetDescription() const;
+    ::orca::ImageDescriptionPtr internalGetDescription() const;
     void internalSubscribe(const ::orca::ImageConsumerPrx&);
     void internalUnsubscribe(const ::orca::ImageConsumerPrx&);
 
-    orca::ImageDescription     descr_;
+    orca::ImageDescriptionPtr     descr_;
     // yes, this is not a typo! It's safe to use a normal proxy with an Ice smart pointer.
     hydroiceutil::Store<orca::ImageDataPtr> dataStore_;
 

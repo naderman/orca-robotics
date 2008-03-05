@@ -13,79 +13,24 @@
 
 #include <orca/orca.ice>
 #include <orca/bros1.ice>
+#include <orca/image.ice>
 
 module orca
 {
 /*!
     @ingroup orca_interfaces
     @defgroup orca_interface_camera Camera
-    @brief Monocular camera.
+    @brief Single or Multiple Camera System.
 
-Remote access to images captured by a variety of monocular cameras.
+Remote access to images captured by a variety of cameras either individually or as a group.
 
     @{
 */
 
-//! Specifies the format once it is decoded.
-//! @TODO: is this list reasonable/exhaustive?
-enum ImageFormat {
-    //! Not Quite Sure
-    ImageFormatModeNfi,
-    //! Gray scale
-    ImageFormatModeGray,
-    //! Red-Green-Blue  
-    ImageFormatModeRgb,
-    //! Blue-Green-Red   
-    ImageFormatModeBgr,
-    //! YUV422   
-    ImageFormatModeYuv422,
-    //! Bayer Blue-Green
-    ImageFormatBayerBg, 
-    //! Bayer Green-Blue 
-    ImageFormatBayerGb, 
-    //! Bayer Red-Green  
-    ImageFormatBayerRg,
-    //! Bayer Green-Red   
-    ImageFormatBayerGr,
-    //! Digiclops Stereo
-    ImageFormatDigiclopsStereo,
-    //! Digiclops Right
-    ImageFormatDigiclopsRight,
-    //! Digiclops Both
-    ImageFormatDigiclopsBoth
-};
-
-//! Specifies any encoding of the image. 
-//! @TODO: Is this list reasonable/exhaustive?
-enum ImageCompression { 
-    //! None
-    ImageCompressionNone,
-    //! JPEG
-    ImageCompressionJpeg
-};
-
 //! Camera configuration objectd
-struct CameraDescription {
-    //! Time when data was measured.
-    Time timeStamp;
-
-    //! %Image width [pixels]
-    int   imageWidth; 
-
-    //! %Image height [pixels]
-    int   imageHeight;
-
+class CameraDescription extends ImageDescription {
     //! Frame rate [frames/seconds]
     double frameRate; 
-
-    //! %Image format type
-    ImageFormat format;
-
-    //! %Image compression type
-    ImageCompression compression;
-
-    //! %Image size [bytes]
-    int imageSize;
 
     //! Offset of the sensor with respect to the robot, 
     //! in the robot local coordinate system.
@@ -96,29 +41,14 @@ struct CameraDescription {
 }; 
 
 //!
-//! Camera data structure: an image
+//! Camera data structure: essentially an image
 //!
-struct CameraData
+class CameraData extends ImageData
 {
-    //! Time when data was measured.
-    Time timeStamp;
-
-    //! %Image width [pixels]
-    int imageWidth;
-
-    //! %Image height [pixels]
-    int imageHeight;
-
-    //! %Image format type.
-    ImageFormat format;
-
-    //! %Image compression type.
-    ImageCompression compression;
-
-    //! The image data itself. The structure of this byte sequence
-    //! depends on the image format and compression.
-    ByteSequence image;
 };
+
+sequence<CameraData> CameraDataSequence;
+sequence<CameraDescription> CameraDescriptionSequence;
 
 //!
 //! Data consumer interface
@@ -126,18 +56,18 @@ struct CameraData
 interface CameraConsumer
 {
     //! Transmits the data to the consumer.
-    void setData( CameraData obj );
+    void setData( CameraDataSequence obj );
 };
 
 //! Interface to the camera
 interface Camera
 {
     //! Returns the latest data.
-    ["cpp:const"] idempotent CameraData getData()
+    ["cpp:const"] idempotent CameraDataSequence getData()
         throws HardwareFailedException;
             
     //! Returns the current configuration.
-    ["cpp:const"] idempotent CameraDescription getDescription();
+    ["cpp:const"] idempotent CameraDescriptionSequence getDescription();
 
     /*!
      * Mimics IceStorm's subscribe(). @p subscriber is typically a direct proxy to the consumer object.

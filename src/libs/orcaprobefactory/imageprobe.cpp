@@ -70,7 +70,7 @@ ImageProbe::loadGetData( orcacm::OperationData& data )
 int 
 ImageProbe::loadGetDescription( orcacm::OperationData& data )
 {
-    orca::ImageDescription result;
+    orca::ImageDescriptionPtr result;
     
     try
     {

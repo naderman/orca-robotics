@@ -34,11 +34,11 @@ friend class CameraI;
 public:
 
     //! constructor using interfaceTag (may throw ConfigFileException)
-    CameraImpl( const orca::CameraDescription &descr,
+    CameraImpl( const orca::CameraDescriptionSequence &descr,
                 const std::string             &interfaceTag, 
                 const orcaice::Context        &context );
     //! constructor using interfaceName
-    CameraImpl( const orca::CameraDescription &descr,
+    CameraImpl( const orca::CameraDescriptionSequence &descr,
                 const orcaice::Context        &context,
                 const std::string             &interfaceName );
     ~CameraImpl();
@@ -52,21 +52,21 @@ public:
     void initInterface( hydroiceutil::Thread* thread, const std::string& subsysName="", int retryInterval=2 );
 
     //! A local call which sets the data reported by the interface
-    void localSet( const orca::CameraData& data );
+    void localSet( const orca::CameraDataSequence& data );
 
     //! A local call which sets the data reported by the interface, 
     //! and sends it through IceStorm
-    void localSetAndSend( const orca::CameraData& data );
+    void localSetAndSend( const orca::CameraDataSequence& data );
 
 private:
     // remote call implementations, mimic (but do not inherit) the orca interface
-    ::orca::CameraData internalGetData() const;
-    ::orca::CameraDescription internalGetDescription() const;
+    ::orca::CameraDataSequence internalGetData() const;
+    ::orca::CameraDescriptionSequence internalGetDescription() const;
     void internalSubscribe(const ::orca::CameraConsumerPrx&);
     void internalUnsubscribe(const ::orca::CameraConsumerPrx&);
 
-    orca::CameraDescription     descr_;
-    hydroiceutil::Store<orca::CameraData> dataStore_;
+    orca::CameraDescriptionSequence     descr_;
+    hydroiceutil::Store<orca::CameraDataSequence> dataStore_;
 
     orca::CameraConsumerPrx    consumerPrx_;
     IceStorm::TopicPrx             topicPrx_;

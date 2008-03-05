@@ -12,8 +12,6 @@
 #define ORCA2_IMAGE_INTERFACE_ICE
 
 #include <orca/orca.ice>
-// we are using a couple of enums from Camera interface
-#include <orca/camera.ice>
 
 module orca
 {
@@ -28,8 +26,58 @@ This and several other interfaces -- @ref orca_interface_camera, @ref orca_inter
     @{
 */
 
+//! Specifies the format once it is decoded.
+//! @TODO: is this list reasonable/exhaustive?
+//! @TODO: is digiclops a special format?
+enum ImageFormat {
+    //! Not Quite Sure
+    ImageFormatModeNfi,
+    //! Binary
+    ImageFormatModeBinary,
+    //! Gray scale
+    ImageFormatModeGray,
+    //! Red-Green-Blue  
+    ImageFormatModeRgb,
+    //! Red-Green-Blue-Alpha  
+    ImageFormatModeRgba,
+    //! Alpha-Red-Green-Blue  
+    ImageFormatModeArgb,
+    //! Blue-Green-Red   
+    ImageFormatModeBgr,
+    //! Blue-Green-Red-Alpha   
+    ImageFormatModeBgra,
+    //! YUV422   
+    ImageFormatModeYuv422,
+    //! Bayer Blue-Green
+    ImageFormatBayerBg, 
+    //! Bayer Green-Blue 
+    ImageFormatBayerGb, 
+    //! Bayer Red-Green  
+    ImageFormatBayerRg,
+    //! Bayer Green-Red   
+    ImageFormatBayerGr,
+    //! Digiclops Stereo
+    ImageFormatDigiclopsStereo,
+    //! Digiclops Right
+    ImageFormatDigiclopsRight,
+    //! Digiclops Both
+    ImageFormatDigiclopsBoth
+};
+
+//! Specifies any encoding of the image. 
+//! @TODO: Is this list reasonable/exhaustive?
+enum ImageCompression { 
+    //! None
+    ImageCompressionNone,
+    //! JPEG
+    ImageCompressionJpeg,
+    //! PNG
+    ImageCompressionPng
+};
+
+
 //! Static description of the image source.
-struct ImageDescription 
+class ImageDescription 
 {
     //! %Image width [pixels]
     int imageWidth; 
@@ -47,20 +95,9 @@ struct ImageDescription
 //! A single image.
 class ImageData
 {
-    //! Time when data was measured.
-    Time timeStamp;
+    //! TimeStamp of Data
+    Time timeStamp;    
 
-    //! %Image width [pixels]
-    int width; 
-
-    //! %Image height [pixels]
-    int height;
-
-    //! %Image format type.
-    ImageFormat format;
-
-    //! %Image compression type.
-    ImageCompression compression;
 
     //! The image data itself. The structure of this byte sequence
     //! depends on the image format and compression.

@@ -528,35 +528,30 @@ toString( const orca::BinarySwitchData& obj )
 }
 
 std::string 
-toString( const orca::CameraData& obj )
+toString( const orca::CameraDataPtr& obj )
 {
     std::ostringstream s;
-    s << toString(obj.timeStamp)
-        << " CameraData: ["<<obj.image.size()<<" bytes]\n" 
-        << "Image height              " << obj.imageHeight << "pix\n"
-        << "Image width               " << obj.imageWidth << "pix\n"
-        << "Format                    " << obj.format << "\n"
-        << "Compression               " << obj.compression << "\n";
+    s << toString(obj->timeStamp)
+        << " CameraData: ["<<obj->data.size()<<" bytes]\n"; 
     return s.str();
 }
 
 std::string 
-toString( const orca::CameraDescription& obj )
+toString( const orca::CameraDescriptionPtr& obj )
 {
     std::ostringstream s;
-    s << toString(obj.timeStamp)
-        << " CameraDescription:\n" 
-        << "Image height              " << obj.imageHeight << "pix\n"
-        << "Image width               " << obj.imageWidth << "pix\n"
-        << "Frame rate                " << obj.frameRate << "fps\n"
-        << "Format                    " << obj.format << "\n"
-        << "Compression               " << obj.compression << "\n"
-        << "offset.point.x            " << obj.offset.p.x << "m\n"
-        << "offset.point.y            " << obj.offset.p.y << "m\n"
-        << "offset.point.z            " << obj.offset.p.z << "m\n"
-        << "offset.orientation.roll   " << RAD2DEG(obj.offset.o.r) << "deg\n"
-        << "offset.orientation.pitch  " << RAD2DEG(obj.offset.o.p) << "deg\n"
-        << "offset.orientation.yaw    " << RAD2DEG(obj.offset.o.y) << "deg\n";
+    s   << "CameraDescription:\n" 
+        << "Image height              " << obj->imageHeight << "pix\n"
+        << "Image width               " << obj->imageWidth << "pix\n"
+        << "Frame rate                " << obj->frameRate << "fps\n"
+        << "Format                    " << obj->format << "\n"
+        << "Compression               " << obj->compression << "\n"
+        << "offset.point.x            " << obj->offset.p.x << "m\n"
+        << "offset.point.y            " << obj->offset.p.y << "m\n"
+        << "offset.point.z            " << obj->offset.p.z << "m\n"
+        << "offset.orientation.roll   " << RAD2DEG(obj->offset.o.r) << "deg\n"
+        << "offset.orientation.pitch  " << RAD2DEG(obj->offset.o.p) << "deg\n"
+        << "offset.orientation.yaw    " << RAD2DEG(obj->offset.o.y) << "deg\n";
     return s.str();
 }
 
@@ -729,23 +724,19 @@ toString( const orca::ImageDataPtr& obj )
 {
     std::ostringstream s;
     s << toString(obj->timeStamp)
-        << " ImageData:\n" 
-        << "Image height              " << obj->height << "pix\n"
-        << "Image width               " << obj->width << "pix\n"
-        << "Format                    " << obj->format << "\n"
-        << "Compression               " << obj->compression << "\n";
+        << " ImageData: ["<<obj->data.size()<<" bytes]\n";
     return s.str();
 }
 
 std::string 
-toString( const orca::ImageDescription& obj )
+toString( const orca::ImageDescriptionPtr& obj )
 {
     std::ostringstream s;
     s << "ImageDescription:\n" 
-        << "Image height              " << obj.imageHeight << "pix\n"
-        << "Image width               " << obj.imageWidth << "pix\n"
-        << "Format                    " << obj.format << "\n"
-        << "Compression               " << obj.compression << "\n";
+        << "Image height              " << obj->imageHeight << "pix\n"
+        << "Image width               " << obj->imageWidth << "pix\n"
+        << "Format                    " << obj->format << "\n"
+        << "Compression               " << obj->compression << "\n";
     return s.str();
 }
 

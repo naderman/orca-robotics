@@ -51,13 +51,13 @@ CameraProbe::loadOperationEvent( const int index, orcacm::OperationData& data )
 int 
 CameraProbe::loadGetData( orcacm::OperationData& data )
 {
-    orca::CameraData result;
+    orca::CameraDataSequence result;
     
     try
     {
         orca::CameraPrx derivedPrx = orca::CameraPrx::checkedCast(prx_);
         result = derivedPrx->getData();
-        orcaprobe::reportResult( data, "data", orcaobj::toString(result) );
+        orcaprobe::reportResult( data, "data", orcaobj::toString(result.at(0)) );
     }
     catch( const Ice::Exception& e )
     {
@@ -70,13 +70,13 @@ CameraProbe::loadGetData( orcacm::OperationData& data )
 int 
 CameraProbe::loadGetDescription( orcacm::OperationData& data )
 {
-    orca::CameraDescription result;
+    orca::CameraDescriptionSequence result;
     
     try
     {
         orca::CameraPrx derivedPrx = orca::CameraPrx::checkedCast(prx_);
         result = derivedPrx->getDescription();
-        orcaprobe::reportResult( data, "data", orcaobj::toString(result) );
+        orcaprobe::reportResult( data, "data", orcaobj::toString(result.at(0)) );
     }
     catch( const Ice::Exception& e )
     {
