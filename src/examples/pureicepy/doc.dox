@@ -98,6 +98,21 @@ If it's Python 2.5, you'll need to change the symbolic link for python so it poi
 # ln -s /usr/bin/python2.4 /usr/bin/python
 @endverbatim
 
+When using matplotlib (the plotting tool) you may experience a problem with the plot not updating at all. This can be caused by matplotlib using the wrong backend. To debug this note the backend used when the script starts execution
+@verbatim
+matplotlib version 0.90.1
+verbose.level helpful
+interactive is False
+units is True
+platform is linux2
+numerix numpy 1.0.3
+backend TkAgg version 8.4
+@endverbatim
+The solution is to select the GTKAgg backend in line 20 of the following file
+@verbatim
+/etc/matplotlibrc
+@endverbatim
+
 
 @par Author
 
