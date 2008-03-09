@@ -106,7 +106,9 @@ Component::loadPluginLibraries( const std::string& factoryLibNames )
         }
         else
         {
-            cout<<"TRACE(component.cpp): Not orca factory!" << endl;
+            stringstream ss;
+            ss << "Factory is not an orca factory!  (couldn't cast to orcaqgui::IGuiElementFactory*)";
+            throw hydroutil::Exception( ERROR_INFO, ss.str() );
         }
     }
 

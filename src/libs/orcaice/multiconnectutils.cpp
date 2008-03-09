@@ -20,10 +20,10 @@ namespace orcaice {
 
 void 
 createInterfaceWithString( const Context       & context,
-                            Ice::ObjectPtr      & object,
-                            const std::string   & name,
-                            hydroiceutil::Thread*  thread, const std::string& subsysName, 
-                            int retryInterval, int retryNumber )
+                           Ice::ObjectPtr      & object,
+                           const std::string   & name,
+                           hydroiceutil::Thread*  thread, const std::string& subsysName, 
+                           int retryInterval, int retryNumber )
 {
     int count = 0;
     while ( !thread->isStopping() && ( retryNumber<0 || count<retryNumber) )
@@ -31,7 +31,7 @@ createInterfaceWithString( const Context       & context,
         try {
             createInterfaceWithString( context, object, name );
             break;
-        }     
+        }
         catch ( const std::exception& e ) {
             std::stringstream ss;
             ss << "Failed to create interface with string "<<name<<". Check Registry. "
@@ -66,7 +66,7 @@ createInterfaceWithTag( const Context       & context,
         try {
             createInterfaceWithTag( context, object, interfaceTag );
             break;
-        }     
+        }
         catch ( const std::exception& e ) {
             std::stringstream ss;
             ss << "Failed to create interface with tag "<<interfaceTag<<". Check Registry. "
@@ -99,10 +99,15 @@ activate( Context& context,
         try {
             context.activate();
             break;
-        }     
+        }
         // alexm: in all of these exception handlers we would like to just catch
         // std::exception but Ice 3.2 does not overload e.what() so we have to do it
         // separately.
+        catch ( Ice::CommunicatorDestroyedException )
+        {
+            // This means we're shutting down.
+            break;
+        }
         catch ( const Ice::Exception& e ) {
             std::stringstream ss;
             ss << "Failed to activate component. Check Registry and IceStorm. "

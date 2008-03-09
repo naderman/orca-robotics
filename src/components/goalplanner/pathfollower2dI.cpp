@@ -57,6 +57,7 @@ PathFollower2dI::activateNow( const ::Ice::Current& )
 {
 //     cout << "TRACE(pathfollower2dI.cpp):activateNow: passing on to localnav." << endl;
     try {
+        activationPipe_.set( true );
         localNavPrx_->activateNow(); 
     } catch ( const Ice::Exception & e ) {
         cout << "Error: Exception when calling activateNow on localnav: " << e << endl;
