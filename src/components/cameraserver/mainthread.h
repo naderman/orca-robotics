@@ -15,11 +15,11 @@
 #include <orcaice/context.h>
 #include <hydrodll/dynamicload.h>
 // remote interface
-#include <orcaifaceimpl/imageImpl.h>
+#include <orcaifaceimpl/laserscanner2dImpl.h>
 // hardware interface
-#include <hydrointerfaces/image.h>
+#include <hydrointerfaces/laserscanner2d.h>
 
-namespace imageserver {
+namespace laser2d {
 
 //
 // @brief the main executing loop of this laser component.
@@ -45,15 +45,15 @@ private:
     void readData();
 
     // The laser object
-    orcaifaceimpl::ImageImplPtr imageInterface_;
+    orcaifaceimpl::LaserScanner2dImplPtr laserInterface_;
 
-    hydrointerfaces::Image::Config config_;
+    hydrointerfaces::LaserScanner2d::Config config_;
     // an extra config to allow sensor mounted upside-down
     bool compensateRoll_;
 
     // space for data
-    orca::ImageDataPtr           orcaImageData_;
-    hydrointerfaces::Image::Data hydroImageData_;
+    orca::LaserScanner2dDataPtr           orcaLaserData_;
+    hydrointerfaces::LaserScanner2d::Data hydroLaserData_;
 
     // The library that contains the driver factory (must be declared first so it's destructed last!!!)
     std::auto_ptr<hydrodll::DynamicallyLoadedLibrary> driverLib_;
