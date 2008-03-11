@@ -81,13 +81,13 @@ MainThread::initNetwork()
     {
         ogMapSlice = ogMapPrx->getData();
         stringstream ss;
-        ss << "MainThread::initDriver(): got ogMap: " << orcaobj::toString( ogMapSlice );
+        ss << "MainThread::"<<__func__<<"(): got ogMap: " << orcaobj::toString( ogMapSlice );
         context_.tracer().info( ss.str() );
     }
     catch ( const orca::DataNotExistException & e )
     {
         std::stringstream ss;
-        ss << "algohandler::initDriver: DataNotExistException: "<<e.what;
+        ss << "algohandler::"<<__func__<<": DataNotExistException: "<<e.what;
         context_.tracer().warning( ss.str() );
     }
     // convert into internal representation
