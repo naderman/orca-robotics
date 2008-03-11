@@ -69,6 +69,36 @@ namespace orcanavutil {
         return hydronavutil::Velocity( odom.motion.v.x, odom.motion.w );
     }
 
+    hydronavutil::Velocity convert( const orca::VelocityControl2dData &cmd )
+    {
+        return hydronavutil::Velocity( cmd.motion.v.x, cmd.motion.w );
+    }
+
+    hydronavutil::Pose     convertToPose( const orca::Localise2dData &loc )
+    {
+        double maxWeight  = -1;
+        int    maxWeightI = -1;
+        for ( uint i=0; i < loc.hypotheses.size(); i++ )
+        {
+            if ( loc.hypotheses[i].weight > maxWeight )
+            {
+                maxWeight  = loc.hypotheses[i].weight;
+                maxWeightI = i;
+            }
+        }
+
+        if ( maxWeightI == -1 )
+        {
+            stringstream ss;
+            ss << "orcanavutil::"<<__func__<<"(): weights were all < 0";
+            throw hydronavutil::Exception( ERROR_INFO, ss.str() );
+        }
+
+        return hydronavutil::Pose( loc.hypotheses[maxWeightI].mean.p.x,
+                                   loc.hypotheses[maxWeightI].mean.p.y,
+                                   loc.hypotheses[maxWeightI].mean.o );
+    }
+
     orca::Pose2dHypothesis convert( const hydronavutil::Gaussian &g, double weight )
     {
         orca::Pose2dHypothesis h;
@@ -129,6 +159,25 @@ namespace orcanavutil {
             gmmCopy.weights(mlI) = 0;
         }
         return l;
+    }
+
+    orca::Frame2d convert( const hydronavutil::Pose &pose )
+    {
+        orca::Frame2d frame;
+        frame.p.x = pose.x();
+        frame.p.y = pose.y();
+        frame.o   = pose.theta();
+
+        return frame;
+    }
+
+    orca::VelocityControl2dData convert( const hydronavutil::Velocity &cmd )
+    {
+        orca::VelocityControl2dData orcaCmd;
+        orcaCmd.motion.v.x = cmd.lin();
+        orcaCmd.motion.v.y = 0;
+        orcaCmd.motion.w   = cmd.rot();
+        return orcaCmd;
     }
 }
 

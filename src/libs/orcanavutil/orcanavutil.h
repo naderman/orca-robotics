@@ -4,6 +4,7 @@
 #include <hydronavutil/hydronavutil.h>
 #include <orca/localise2d.h>
 #include <orca/odometry2d.h>
+#include <orca/velocitycontrol2d.h>
 
 namespace orcanavutil {
 
@@ -22,6 +23,10 @@ namespace orcanavutil {
     hydronavutil::Gmm      convert( const orca::Localise2dData &locData );
     hydronavutil::Pose     convertToPose( const orca::Odometry2dData &odom );
     hydronavutil::Velocity convertToVelocity( const orca::Odometry2dData &odom );
+    //! throws away transverse component.
+    hydronavutil::Velocity convert( const orca::VelocityControl2dData &cmd );
+    //! throws away uncertainty information and all but the most likely component.
+    hydronavutil::Pose     convertToPose( const orca::Localise2dData &loc );
 
     //
     // hydro -> orca
@@ -37,6 +42,9 @@ namespace orcanavutil {
                                                  int maxHypotheses,
                                                  int seconds,
                                                  int useconds );
+    orca::Frame2d convert( const hydronavutil::Pose &pose );
+    //! Sets transverse component to zero.
+    orca::VelocityControl2dData convert( const hydronavutil::Velocity &cmd );
 
 }
 
