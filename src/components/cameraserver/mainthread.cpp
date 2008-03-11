@@ -14,7 +14,7 @@
 #include "mainthread.h"
 
 using namespace std;
-using namespace laser2d;
+using namespace camera;
 
 MainThread::MainThread( const orcaice::Context &context ) :
     hydroiceutil::SubsystemThread( context.tracer(), context.status(), "MainThread" ),
@@ -28,18 +28,11 @@ MainThread::MainThread( const orcaice::Context &context ) :
     Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag() + ".Config.";
 
-    config_.minRange = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"MinRange", 0.0 );
-    config_.maxRange = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"MaxRange", 80.0 );
-
-    config_.fieldOfView = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"FieldOfView", 180.0 )*DEG2RAD_RATIO;
-    config_.startAngle = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"StartAngle", -RAD2DEG(config_.fieldOfView)/2.0 )*DEG2RAD_RATIO;
-
-    config_.numberOfSamples = orcaice::getPropertyAsIntWithDefault( prop, prefix+"NumberOfSamples", 181 );
 
     if ( !config_.validate() ) {
-        context_.tracer().error( "Failed to validate laser configuration. "+config_.toString() );
+        context_.tracer().error( "Failed to validate camera configuration. "+config_.toString() );
         // this will kill this component
-        throw hydroutil::Exception( ERROR_INFO, "Failed to validate laser configuration" );
+        throw hydroutil::Exception( ERROR_INFO, "Failed to validate camera configuration" );
     }
 
 }
@@ -91,11 +84,11 @@ MainThread::initNetworkInterface()
     // EXTERNAL PROVIDED INTERFACE
     //
 
-    laserInterface_ = new orcaifaceimpl::LaserScanner2dImpl( descr,
-                                                              "LaserScanner2d",
+    cameraInterface_ = new orcaifaceimpl::CameraImpl( descr,
+                                                              "Camera",
                                                               context_ );
     // init
-    laserInterface_->initInterface( this, subsysName() );
+    cameraInterface_->initInterface( this, subsysName() );
 }
 
 void
@@ -108,14 +101,14 @@ MainThread::initHardwareDriver()
 
     // Dynamically load the library and find the factory
     std::string driverLibName = 
-        orcaice::getPropertyWithDefault( prop, prefix+"DriverLib", "libOrcaLaser2dSickCarmen.so" );
+        orcaice::getPropertyWithDefault( prop, prefix+"DriverLib", "libHydroCameraFake.so" );
     context_.tracer().debug( "MainThread: Loading driver library "+driverLibName, 4 );
     // The factory which creates the driver
-    std::auto_ptr<hydrointerfaces::LaserScanner2dFactory> driverFactory;
+    std::auto_ptr<hydrointerfaces::CameraFactory> driverFactory;
     try {
         driverLib_.reset( new hydrodll::DynamicallyLoadedLibrary(driverLibName) );
         driverFactory.reset( 
-            hydrodll::dynamicallyLoadClass<hydrointerfaces::LaserScanner2dFactory,DriverFactoryMakerFunc>
+            hydrodll::dynamicallyLoadClass<hydrointerfaces::CameraFactory,DriverFactoryMakerFunc>
             ( *driverLib_, "createDriverFactory" ) );
     }
     catch (hydrodll::DynamicLoadException &e)
@@ -165,38 +158,24 @@ void
 MainThread::readData()
 {
     //
-    // Read from the laser driver
+    // Read from the camera driver
     //
     hydroLaserData_.haveWarnings = false;
-    driver_->read( hydroLaserData_ );
+    driver_->read( hydroCameraData_ );
 
-    orcaLaserData_->timeStamp.seconds  = hydroLaserData_.timeStampSec;
-    orcaLaserData_->timeStamp.useconds = hydroLaserData_.timeStampUsec;
-
-    // flip the scan left-to-right if we are configured to do so
-    if ( compensateRoll_ ) {
-        // NOTE: instead of copying around, we should be able to simply change the
-        // start bearing and bearing increment.
-        std::reverse( orcaLaserData_->ranges.begin(), orcaLaserData_->ranges.end() );
-        std::reverse( orcaLaserData_->intensities.begin(), orcaLaserData_->intensities.end() );
-    }
+    orcaCameraData_->timeStamp.seconds  = hydroCameraData_.timeStampSec;
+    orcaCameraData_->timeStamp.useconds = hydroCameraData_.timeStampUsec;
 }
 
 void
 MainThread::walk()
 {
     // Set up the laser-scan objects
-    orcaLaserData_ = new orca::LaserScanner2dData;
-    orcaLaserData_->minRange     = config_.minRange;
-    orcaLaserData_->maxRange     = config_.maxRange;
-    orcaLaserData_->fieldOfView  = config_.fieldOfView;
-    orcaLaserData_->startAngle   = config_.startAngle;
-    orcaLaserData_->ranges.resize( config_.numberOfSamples );
-    orcaLaserData_->intensities.resize( config_.numberOfSamples );
+    orcaCameraData_ = new orca::CameraDataSequence;
+    orcaLaserData_->data.resize( config_.imageSize );
 
     // Point the pointers in hydroLaserData_ at orcaLaserData_
-    hydroLaserData_.ranges      = &(orcaLaserData_->ranges[0]);
-    hydroLaserData_.intensities = &(orcaLaserData_->intensities[0]);
+    hydroCameraData_.data     = &(orcaCameraData_->data[0]);
 
     // These functions catch their exceptions.
     activate( context_, this, subsysName() );

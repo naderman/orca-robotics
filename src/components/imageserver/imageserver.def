@@ -1,44 +1,15 @@
-DefaultComponentTag=Laser2d
+DefaultComponentTag=ImageServer
 
 # Provided Interfaces
-Provides.LaserScanner2d.Type=::orca::LaserScanner2d
-Provides.LaserScanner2d.DefaultName=laserscanner2d
+Provides.Image.Type=::orca::Image
+Provides.Image.DefaultName=imageserver
 
 # Required Interfaces
 
 # Config Parameters
-Config.DriverLib.Comment=Valid values are at least: { 'libHydroLaserScanner2dSickAcfr.so', 'libHydroLaserScanner2dSickCarmen.so', 'libHydroLaserScanner2dPlayerClient.so', 'libHydroLaserScanner2dFake.so' }
-Config.DriverLib.Default=libHydroLaserScanner2dSickCarmen.so
+Config.DriverLib.Comment=Valid values are at least: { 'libHydroImageFake.so', 'libHydroImageFile.so', }
+Config.DriverLib.Default=libHydroImageFake.so
 
-Config.MinRange.Default=0.0
-Config.MaxRange.Default=80.0
-Config.FieldOfView.Default=180.0
-Config.StartAngle.Default=-90.0
-Config.NumberOfSamples.Default=181
-
-Config.Offset.Comment=x[m] y[m] z[m] roll[deg] pitch[deg] yaw[deg]
-Config.Offset.Default=0.0 0.0 0.0  0.0 0.0 0.0
-
-Config.AllowRollCompensation.Default=1
-
-Config.Size.Comment=length[m] width[m] height[m]
-Config.Size.Default=0.155 0.155 0.185
-
-Config.SickCarmen.Device.Default=/dev/ttyS0
-Config.SickCarmen.LaserType.Default=LMS
-Config.SickCarmen.Baudrate.Comment=Valid values: { 9600, 19200, 38400, 500000 }
-Config.SickCarmen.Baudrate.Default=38400
-
-Config.SickAcfr.Device.Default=/dev/ttyS0
-Config.SickAcfr.Baudrate.Comment=Valid values: { 9600, 19200, 38400, 500000 }
-Config.SickAcfr.Baudrate.Default=38400
-
-Config.SickGbx.Device.Default=/dev/ttyS0
-Config.SickGbx.Baudrate.Comment=Valid values: { 9600, 19200, 38400, 500000 }
-Config.SickGbx.Baudrate.Default=38400
-
-Config.PlayerClient.Host.Default=localhost
-Config.PlayerClient.Port.Default=6665
-Config.PlayerClient.Device.Default=0
-Config.PlayerClient.Driver.Comment=Valid values: { "sicklms200", "stage", "gazebo", "urglaser" }
-Config.PlayerClient.Driver.Default=sicklms200
+Config.ImageWidth=640
+Config.ImageHeight=480
+Config.Format=ImageRgb
