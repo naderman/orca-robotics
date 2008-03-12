@@ -15,8 +15,7 @@
 #include <hydroutil/hydroutil.h>
 #include "mainthread.h"
 #include "pathplanner2dI.h"
-#include "fakedriver.h"
-#include "skeletondriver.h"
+#include "pathplannerfactory.h"
 
 #include <orcaogmap/orcaogmap.h>
 
@@ -26,35 +25,8 @@
 
 
 using namespace std;
-using namespace orca;
-using namespace pathplanner;
 
-namespace {
-
-    class DistBasedCostEvaluator : public hydropathplan::CostEvaluator {
-    public:
-        DistBasedCostEvaluator( double distanceThreshold,
-                                double costMultiplier )
-            : distanceThreshold_(distanceThreshold),
-              costMultiplier_(costMultiplier)
-            {}
-
-        double costAtDistFromObstacle( double distInMetres ) const
-            {
-                if ( distInMetres < 0 )
-                    return NAN;
-                else if ( distInMetres < distanceThreshold_ ) 
-                    return costMultiplier_; 
-                else 
-                    return 1;
-            }
-        
-    private:
-        double distanceThreshold_;
-        double costMultiplier_;
-    };
-
-}
+namespace pathplanner {
 
 MainThread::MainThread( const orcaice::Context & context )
     : hydroiceutil::SubsystemThread( context_.tracer(), context.status(), "MainThread" ),
@@ -87,7 +59,7 @@ MainThread::initNetwork()
     catch ( const orca::DataNotExistException & e )
     {
         std::stringstream ss;
-        ss << "algohandler::"<<__func__<<": DataNotExistException: "<<e.what;
+        ss << "MainThread::"<<__func__<<": DataNotExistException: "<<e.what;
         context_.tracer().warning( ss.str() );
     }
     // convert into internal representation
@@ -110,6 +82,47 @@ void
 MainThread::initDriver()
 {
     subStatus().initialising("Initialising Driver" );
+
+    Ice::PropertiesPtr prop = context_.properties();
+    std::string prefix = context_.tag() + ".Config.";
+
+    double traversabilityThreshhold = 
+        orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"TraversabilityThreshhold", 0.3 );
+    double robotDiameterMetres = 
+        orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"RobotDiameterMetres", 0.8 );
+
+    //
+    // Initialise the path-planning algorithm
+    //
+    PathPlannerFactory pathPlannerFactory( context_ );
+    try {
+        pathPlanner_.reset( pathPlannerFactory.getPathPlanner( ogMap_,
+                                                               traversabilityThreshhold,
+                                                               robotDiameterMetres,
+                                                               context_.toHydroContext( context_.tag()+".Config." ) ) );
+    }
+    catch ( std::exception &e )
+    {
+        context_.shutdown();
+        stringstream ss;
+        ss << __func__ << ": Failed to initialise driver: " << e.what();
+    }
+
+    //
+    // And the Driver to manage it
+    //
+    bool jiggleWaypointsOntoClearCells = 
+        orcaice::getPropertyAsIntWithDefault( context_.properties(), prefix+"JiggleWaypointsOntoClearCells", true );
+    driver_.reset( new Driver( *pathPlanner_,
+                               ogMap_,
+                               traversabilityThreshhold,
+                               robotDiameterMetres,
+                               jiggleWaypointsOntoClearCells,
+                               context_ ) );
+
+
+
+#if 0
     //
     // Read settings
     //
@@ -146,7 +159,7 @@ MainThread::initDriver()
                                           doPathOptimization,
                                           jiggleWaypointsOntoClearCells,
                                           context_ ) );
-    }    
+    }
     else if ( driverName == "skeletonnav" || driverName == "sparseskeletonnav" )
     {
         bool useSparseSkeleton = (driverName == "sparseskeletonnav");
@@ -180,19 +193,15 @@ MainThread::initDriver()
         }
         
     }
-    else if ( driverName == "fake" )
-    {
-        driver_.reset( new FakeDriver() );
-    }
     else {
         // unrecoverable error
         context_.shutdown(); 
-        string errorStr = "Unknown driver type.";
+        stringstream  "Unknown algorithm: " << ;
         context_.tracer().error( errorStr);
         context_.tracer().info( "Valid driver values are {'simplenav', 'skeletonnav', 'sparseskeletonnav', 'astar', 'fake'}" );
-        throw hydroutil::Exception( ERROR_INFO, errorStr );
+        throw hydroutil::Exception( ERROR_INFO, ss.str() );
     }
-
+#endif
     context_.tracer().debug("driver instantiated",5);
 }
 
@@ -208,8 +217,8 @@ MainThread::walk()
 
     // we are in a different thread now, catch all stray exceptions
 
-    PathPlanner2dTask task; 
-    PathPlanner2dData pathData;   
+    orca::PathPlanner2dTask task; 
+    orca::PathPlanner2dData pathData;   
 
     subStatus().setMaxHeartbeatInterval( 30 );
     subStatus().ok();
@@ -251,11 +260,11 @@ MainThread::walk()
             // ===== tell driver to compute the path ========
             //
             
-            // input: ogmap, task; output: path
             try 
             {
                 context_.tracer().info("telling driver to compute the path now");
-                driver_->computePath( task, pathData );
+                pathData.timeStamp = task.timeStamp;
+                driver_->computePath( task, pathData.path );
                 pathData.result = orca::PathOk;
                 pathData.resultDescription = "All good";
             }
@@ -295,7 +304,7 @@ MainThread::walk()
             //
             // ======= send result (including error code) ===============
             //
-            context_.tracer().info("sending off the resulting path");
+            context_.tracer().info("MainThread: sending off the resulting path");
             context_.tracer().debug(orcaobj::toVerboseString(pathData));
     
             // There are three methods to let other components know about the computed path:
@@ -306,7 +315,7 @@ MainThread::walk()
             }
             else
             {
-                context_.tracer().warning( "task.prx was zero!" );
+                context_.tracer().warning( "MainThread: task.prx was zero!" );
             }
             // 2. and 3.: use getData or icestorm
             pathPlannerI_->localSetData( pathData );
@@ -318,7 +327,7 @@ MainThread::walk()
             if ( numTasksWaiting > 1 )
             {
                 stringstream ss;
-                ss << "Tasks are piling up: there are " << numTasksWaiting << " in the queue.";
+                ss << "MainThread: Tasks are piling up: there are " << numTasksWaiting << " in the queue.";
                 subStatus().warning( ss.str() );
             }
             else
@@ -332,35 +341,36 @@ MainThread::walk()
         catch ( const orca::OrcaException & e )
         {
             stringstream ss;
-            ss << "unexpected (remote?) orca exception: " << e << ": " << e.what;
+            ss << "MainThread: unexpected orca exception: " << e << ": " << e.what;
             subStatus().fault( ss.str() );
         }
         catch ( const hydroutil::Exception & e )
         {
             stringstream ss;
-            ss << "unexpected (local?) orcaice exception: " << e.what();
+            ss << "MainThread: unexpected exception: " << e.what();
             subStatus().fault( ss.str() );
         }
         catch ( const Ice::Exception & e )
         {
             stringstream ss;
-            ss << "unexpected Ice exception: " << e;
+            ss << "MainThread: unexpected Ice exception: " << e;
             subStatus().fault( ss.str() );
         }
         catch ( const std::exception & e )
         {
-            // once caught this beast in here, don't know who threw it 'St9bad_alloc'
             stringstream ss;
-            ss << "unexpected std exception: " << e.what();
+            ss << "MainThread: unexpected std exception: " << e.what();
             subStatus().fault( ss.str() );
         }
         catch ( ... )
         {
-            subStatus().fault( "unexpected exception from somewhere.");
+            subStatus().fault( "MainThread: unexpected unknown exception.");
         }
     
     } // end of while
     
     // wait for the component to realize that we are quitting and tell us to stop.
     waitForStop();
+}
+
 }

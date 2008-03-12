@@ -1,3 +1,4 @@
+#if 0
 /*
  * Orca-Robotics Project: Components for robotics 
  *               http://orca-robotics.sf.net/
@@ -168,3 +169,4 @@ SkeletonDriver::computePath( const orca::PathPlanner2dTask& task,
 }
 
 }
+#endif

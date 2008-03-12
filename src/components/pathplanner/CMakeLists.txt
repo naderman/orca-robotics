@@ -4,7 +4,10 @@ SET ( build TRUE )
 REQUIRE_OPTION( build EXE ${APP_NAME} ON )
 REQUIRE_VAR( build EXE ${APP_NAME} ORCA_OS_LINUX "only Linux OS is supported" )
 
-SET( int_libs OrcaOgMap OrcaPathPlan OrcaObjects )
+SET( ext_libs HydroPathPlan )
+REQUIRE_INSTALLS( build EXE ${APP_NAME} ${ext_libs} )
+
+SET( int_libs OrcaOgMap OrcaObjects )
 REQUIRE_TARGETS( build EXE ${APP_NAME} ${int_libs} )
 
 IF ( build )

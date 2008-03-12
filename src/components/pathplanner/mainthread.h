@@ -15,18 +15,13 @@
 #include <orcaice/context.h>
 #include <hydroiceutil/buffer.h>
 
-#include <orca/ogmap.h>
-#include <orca/pathplanner2d.h>
-#include <orca/qgraphics2d.h>
 #include <hydropathplan/hydropathplan.h>
 #include <memory>
+#include "driver.h"
+#include "pathplanner2dI.h"
 
 namespace pathplanner
 {
-
-class AlgoDriver;
-class SkeletonGraphicsI;
-class PathPlanner2dI;
 
 class MainThread : public hydroiceutil::SubsystemThread
 {
@@ -39,8 +34,9 @@ public:
 
 private:
 
-    // generic inerface to the algorithm
-    std::auto_ptr<AlgoDriver> driver_;
+    // inerface to the algorithm and its driver
+    std::auto_ptr<hydropathplan::IPathPlanner2d> pathPlanner_;
+    std::auto_ptr<Driver>                        driver_;
 
     // we have to keep the ogmap as member variable,
     // otherwise they get out of scope if we pass references around

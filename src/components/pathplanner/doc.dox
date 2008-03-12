@@ -24,7 +24,7 @@ The pathplanner acts like a service receiving tasks from third parties and retur
 @par Provides
 
 - @ref orca_interface_home
-- @ref orca_interface_qgraphics2d [PathPlanner.Provides.SkeletonGraphics] (@ref orca_pathplanner_skeletonnav and @ref orca_pathplanner_sparseskeletonnav drivers only)
+- @ref orca_interface_qgraphics2d [PathPlanner.Provides.SkeletonGraphics] (@ref orca_pathplanner_skeletonnav and @ref orca_pathplanner_sparseskeletonnav algorithms only)
 - @ref orca_interface_pathplanner2d [PathPlanner.Provides.PathPlanner2d]
 - @ref orca_interface_status
 
@@ -34,19 +34,18 @@ The pathplanner acts like a service receiving tasks from third parties and retur
 
 @image html pathplanner.png
 
-@par Drivers
+@par Algorithms
 
 - @b simplenav @ref orca_pathplanner_simplenav
 - @b skeletonnav @ref orca_pathplanner_skeletonnav
 - @b sparseskeletonnav @ref orca_pathplanner_sparseskeletonnav
 - @b astar @ref orca_pathplanner_astar
-- @b fake Useful for testing
 
 @par Configuration
 
-- @c PathPlanner.Config.Driver (string)
-    - Type of algorithm driver
-    - Valid values: { 'simplenav', 'skeletonnav', 'sparseskeletonnav', 'astar', 'fake' }
+- @c PathPlanner.Config.Algorithm (string)
+    - Type of algorithm
+    - Valid values: { 'simplenav', 'skeletonnav', 'sparseskeletonnav', 'astar' }
     - Default: 'sparseskeletonnav'
 
 - @c PathPlanner.Config.TraversabilityThreshhold (double)
@@ -99,9 +98,9 @@ The pathplanner acts like a service receiving tasks from third parties and retur
 
 An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
 
-@par Drivers
+@par Algorithms
 
-Drivers are listed below.  The quoted (approximate) speed of each
+Algorithms are listed below.  The quoted (approximate) speed of each
 algorithm is for a Release build, for a single path segment on a
 500x500-cell world.
 
@@ -153,7 +152,7 @@ take care of this.
 
 @section orca_pathplanner_astar A* search
 
-This driver uses the famous A* search algorithm to guarantee the
+This algorithm uses the famous A* search algorithm to guarantee the
 shortest path from start to goal. The heuristic takes diagonal
 traversing into account. Original implementation was done by Pham Ngoc
 Hai (h dot pham at acfr.usyd.edu.au). 

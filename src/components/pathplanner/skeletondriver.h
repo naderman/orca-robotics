@@ -1,3 +1,4 @@
+#if 0
 /*
  * Orca-Robotics Project: Components for robotics 
  *               http://orca-robotics.sf.net/
@@ -10,7 +11,6 @@
 #ifndef ORCA_PATHPLANNER_SKELETONDRIVER_H
 #define ORCA_PATHPLANNER_SKELETONDRIVER_H
 
-#include "algodriver.h"
 #include "genericdriver.h"
 #include <orcaice/orcaice.h>
 #include <hydropathplan/hydropathplan.h>
@@ -56,8 +56,8 @@ private:
     #endif
     
     hydropathplan::IPathPlanner2d *pathPlanner_;
-    GenericDriver                *genericDriver_;
-    SkeletonGraphicsI            *skelGraphicsI_;
+    GenericDriver                 *genericDriver_;
+    SkeletonGraphicsI             *skelGraphicsI_;
     
     const orcaice::Context context_;
 
@@ -66,4 +66,5 @@ private:
 
 }
 
+#endif
 #endif
