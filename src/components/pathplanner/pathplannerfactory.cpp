@@ -165,11 +165,11 @@ PathPlannerFactory::getPathPlanner( hydroogmap::OgMap  &ogMap,
 #endif
         return pathPlanner;
     }
-    else {
-        stringstream ss;
-        ss << "Unknown algorithm: " << algorithm;
-        throw hydroutil::Exception( ERROR_INFO, ss.str() );
-    }
+
+    // Only get to here if we didn't return a pathPlanner earlier.
+    stringstream ssUnknown;
+    ssUnknown << "Unknown algorithm: " << algorithm;
+    throw hydroutil::Exception( ERROR_INFO, ssUnknown.str() );
 }
 
 }
