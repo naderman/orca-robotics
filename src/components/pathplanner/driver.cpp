@@ -12,6 +12,7 @@
 #include <hydroutil/rand.h>
 #include <orcaice/orcaice.h>
 #include <iostream>
+#include <orcaobj/stringutils.h>
 
 using namespace std;
 
@@ -119,12 +120,9 @@ Driver::computePathSegment( double startX,
 {
     int startCellX, startCellY, endCellX, endCellY;
     ogMap_.getCellIndices( startX, startY, startCellX, startCellY );
-    ogMap_.getCellIndices( endX, startY, endCellX, endCellY );
+    ogMap_.getCellIndices( endX, endY, endCellX, endCellY );
 
     try {
-        cout<<"TRACE(driver.cpp): startCellX, startCellY: " << startCellX << ", " << startCellY << endl;
-        cout<<"TRACE(driver.cpp): endCellX, endCellY: " << startCellX << ", " << startCellY << endl;
-
         hydropathplan::Cell2DVector pathSegment;
         pathPlanner_.computePath( startCellX,
                                   startCellY,
@@ -218,19 +216,18 @@ Driver::convertAndAppend( const orca::Waypoint2d            &startWp,
     {
         orca::Waypoint2d wp;
 
-        ogMap.getWorldCoords( pathCells[i].x(),
-                              pathCells[i].y(),
-                              wp.target.p.x,
-                              wp.target.p.y );
-
         if ( i < pathCells.size()-1 )
         {
+            ogMap.getWorldCoords( pathCells[i].x(),
+                                  pathCells[i].y(),
+                                  wp.target.p.x,
+                                  wp.target.p.y );
             wp.target.o   = 0;
             wp.headingTolerance = 2*M_PI;
         }
         else
         {
-            wp.target.o = goalWp.target.o;
+            wp.target = goalWp.target;
             wp.headingTolerance = goalWp.headingTolerance;
         }
 
