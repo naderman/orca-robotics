@@ -255,7 +255,7 @@ MainThread::planPath( const hydronavutil::Pose &pose,
 
     // send task to pathplanner
     stringstream ssSend;
-    ssSend << "MainThread: Sending task to pathplanner: " << orcaobj::toVerboseString( task );
+    ssSend << "MainThread::"<<__func__<<": Sending task to pathplanner: " << orcaobj::toVerboseString( task );
     context_.tracer().debug(ssSend.str());
     int numJobsAheadInQueue = pathplanner2dPrx_->setTask( task );
     if ( numJobsAheadInQueue > 1 )
@@ -317,7 +317,9 @@ MainThread::convertToPathFollowerData( const orca::PathPlanner2dData &pathPlan )
 void
 MainThread::sendPath( const orca::PathFollower2dData &pathToSend, bool activateImmediately )
 {
-    context_.tracer().debug("MainThread: Sending path to localnav.");
+    stringstream ss;
+    ss << "MainThread::"<<__func__<<": Sending path to localnav: " << orcaobj::toVerboseString(pathToSend);
+    context_.tracer().debug( ss.str() );
     try {
         localNavPrx_->setData( pathToSend, activateImmediately );
     }
@@ -633,7 +635,7 @@ MainThread::walk()
             }
 
             stringstream ssPath;
-            ssPath << "MainThread: Requested path: " << endl << orcaobj::toVerboseString(incomingPath);
+            ssPath << "MainThread: Received path request: " << endl << orcaobj::toVerboseString(incomingPath);
             context_.tracer().debug( ssPath.str() );
 
             // special case 'stop': we received an empty path
