@@ -122,6 +122,9 @@ Driver::computePathSegment( double startX,
     ogMap_.getCellIndices( endX, startY, endCellX, endCellY );
 
     try {
+        cout<<"TRACE(driver.cpp): startCellX, startCellY: " << startCellX << ", " << startCellY << endl;
+        cout<<"TRACE(driver.cpp): endCellX, endCellY: " << startCellX << ", " << startCellY << endl;
+
         hydropathplan::Cell2DVector pathSegment;
         pathPlanner_.computePath( startCellX,
                                   startCellY,
