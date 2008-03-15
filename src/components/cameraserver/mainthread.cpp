@@ -28,8 +28,27 @@ MainThread::MainThread( const orcaice::Context &context ) :
     //
     Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag() + ".Config.";
-
-    //TODO read settings 
+    uint32_t bpp = 3; //default bytes per pixel value
+    config_.numOfCameras = (unsigned int)orcaice::getPropertyAsIntWithDefault( prop, prefix+"NumOfCameras", 1);
+    std::string format = orcaice::getPropertyWithDefault( prop, prefix+"ImageFormat", "BGR8");
+    if(format == "BGR8" || format == "RGB8") {
+        bpp = 3;
+    } else {
+        bpp = 1;
+    }
+    
+    config_.widths.resize(config_.numOfCameras);
+    config_.heights.resize(config_.numOfCameras);
+    config_.sizes.resize(config_.numOfCameras);
+    
+    for(uint32_t i = 0; i < config_.numOfCameras; ++i)
+    {
+        std::stringstream prefixSS;
+        prefixSS << prefix << i << ".";
+        config_.widths.at(i) = (uint32_t)orcaice::getPropertyAsIntWithDefault( prop, prefixSS.str() + "ImageWidth", 320);
+        config_.heights.at(i) = (uint32_t)orcaice::getPropertyAsIntWithDefault( prop, prefixSS.str() + "ImageHeight", 240);
+        config_.sizes.at(i) = bpp*config_.widths.at(i)*config_.heights.at(i);
+    }
 
     if ( !config_.validate() ) {
         context_.tracer().error( "Failed to validate camera configuration. "+config_.toString() );
