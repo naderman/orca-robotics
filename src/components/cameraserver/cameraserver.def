@@ -8,7 +8,7 @@ Provides.Camera.DefaultName=camera
 
 # Config Parameters
 Config.DriverLib.Comment=Valid values are at least: { 'libHydroCameraOpenCV.so', 'libHydroCameraLDC1394.so', 'libHydroCameraPlayerClient.so', 'libHydroCameraFake.so' }
-Config.DriverLib.Default=libHydroCameraOpenCV.so
+Config.DriverLib.Default=libHydroCameraFake.so
 
 Config.NumOfCameras.Default=1
 Config.ImageFormat.Comment=Valid values are at least: {'Binary', 'Gray8', 'BGR8', 'RGB8'}

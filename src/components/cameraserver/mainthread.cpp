@@ -99,7 +99,7 @@ MainThread::initHardwareDriver()
     // Dynamically load the library and find the factory
     std::string driverLibName = 
         orcaice::getPropertyWithDefault( prop, prefix+"DriverLib", "libHydroCameraFake.so" );
-    context_.tracer().debug( "MainThread: Loading driver library "+driverLibName, 4 );
+    context_.tracer().info( "MainThread: Loading driver library "+driverLibName  );
     // The factory which creates the driver
     std::auto_ptr<hydrointerfaces::CameraFactory> driverFactory;
     try {
@@ -171,23 +171,26 @@ MainThread::readData()
 void
 MainThread::walk()
 {
-    // Set up the camera objects
-    orcaCameraData_.resize( config_.numOfCameras );
+   
 
-    for(unsigned int i = 0; i < orcaCameraData_.size(); ++i)
+    context_.tracer().info( "Setting up Data Pointers" );
+    for(unsigned int i = 0; i < config_.numOfCameras; ++i)
     {
+        orcaCameraData_.push_back(orca::CameraDataPtr(new orca::CameraData()));
         //resize image vectors
         orcaCameraData_.at(i)->data.resize( config_.sizes.at(i) );
         //set hydroCameraData pointers to be the address of orcaCameraData image vectors
-        hydroCameraData_.data.at(i) = &(orcaCameraData_.at(i)->data[0]);
+        hydroCameraData_.data.push_back(&(orcaCameraData_.at(i)->data[0]));
     }
 
     // These functions catch their exceptions.
     activate( context_, this, subsysName() );
-
+    context_.tracer().info( "Setting up Network Interface" );
     initNetworkInterface();
+    context_.tracer().info( "Setting up Hardware Interface" );
     initHardwareDriver();
 
+    context_.tracer().info( "Running..." );
     //
     // IMPORTANT: Have to keep this loop rolling, because the '!isStopping()' call checks for requests to shut down.
     //            So we have to avoid getting stuck anywhere within this main loop.
