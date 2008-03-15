@@ -44,16 +44,14 @@ private:
 
     void readData();
 
-    // The laser object
+    // The camera interface objects
     orcaifaceimpl::CameraImplPtr cameraInterface_;
 
-    std::vector<hydrointerfaces::Camera::Config> config_;
-    // an extra config to allow sensor mounted upside-down
-    bool compensateRoll_;
+    hydrointerfaces::Camera::Config config_;
 
     // space for data
     orca::CameraDataSequence           orcaCameraData_;
-    std::vector<hydrointerfaces::Camera::Data> hydroCameraData_;
+    hydrointerfaces::Camera::Data      hydroCameraData_;
 
     // The library that contains the driver factory (must be declared first so it's destructed last!!!)
     std::auto_ptr<hydrodll::DynamicallyLoadedLibrary> driverLib_;

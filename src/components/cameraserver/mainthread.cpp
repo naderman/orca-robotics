@@ -18,6 +18,7 @@ using namespace cameraserver;
 
 MainThread::MainThread( const orcaice::Context &context ) :
     hydroiceutil::SubsystemThread( context.tracer(), context.status(), "MainThread" ),
+    config_(1),
     context_(context)
 {
     subStatus().setMaxHeartbeatInterval( 20.0 );
@@ -28,14 +29,12 @@ MainThread::MainThread( const orcaice::Context &context ) :
     Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag() + ".Config.";
 
+    //TODO read settings 
 
-    for(unsigned int i = 0; i < config_.size(); ++i)
-    {
-        if ( !config_.at(i).validate() ) {
-            context_.tracer().error( "Failed to validate camera configuration. "+config_.at(i).toString() );
-            // this will kill this component
-            throw hydroutil::Exception( ERROR_INFO, "Failed to validate camera configuration" );
-        }
+    if ( !config_.validate() ) {
+        context_.tracer().error( "Failed to validate camera configuration. "+config_.toString() );
+        // this will kill this component
+        throw hydroutil::Exception( ERROR_INFO, "Failed to validate camera configuration" );
     }
 }
 
@@ -50,7 +49,7 @@ MainThread::initNetworkInterface()
     //
     orca::CameraDescriptionSequence descrs;
     
-    for(int i = 0; i < descrs.size(); i++)
+    for(unsigned int i = 0; i < descrs.size(); i++)
     {
         //transfer internal sensor configs
         
@@ -139,17 +138,14 @@ MainThread::readData()
     //
     // Read from the camera driver
     //
-    for(unsigned int i = 0; i < hydroCameraData_.size(); ++i)
-    {
-        hydroCameraData_.at(i).haveWarnings = false;
-    }
+    hydroCameraData_.haveWarnings = false;
 
     driver_->read( hydroCameraData_ );
 
     for(unsigned int i = 0; i < orcaCameraData_.size(); ++i) 
     {
-        orcaCameraData_.at(i)->timeStamp.seconds  = hydroCameraData_.at(i).timeStampSec;
-        orcaCameraData_.at(i)->timeStamp.useconds = hydroCameraData_.at(i).timeStampUsec;
+        orcaCameraData_.at(i)->timeStamp.seconds  = hydroCameraData_.timeStampSec;
+        orcaCameraData_.at(i)->timeStamp.useconds = hydroCameraData_.timeStampUsec;
     }   
 }
 
@@ -157,14 +153,14 @@ void
 MainThread::walk()
 {
     // Set up the camera objects
-    orcaCameraData_.resize( config_.at(0).numOfCameras );
+    orcaCameraData_.resize( config_.numOfCameras );
 
-    for(int i = 0; i < orcaCameraData_.size(); ++i)
+    for(unsigned int i = 0; i < orcaCameraData_.size(); ++i)
     {
         //resize image vectors
-        orcaCameraData_.at(i)->data.resize( config_.at(0).size );
+        orcaCameraData_.at(i)->data.resize( config_.sizes.at(i) );
         //set hydroCameraData pointers to be the address of orcaCameraData image vectors
-        hydroCameraData_.at(i).data = &(orcaCameraData_.at(i)->data[0]);
+        hydroCameraData_.data.at(i) = &(orcaCameraData_.at(i)->data[0]);
     }
 
     // These functions catch their exceptions.
