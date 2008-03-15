@@ -16,7 +16,7 @@
 @ingroup orca_linux
 @ingroup orca_qnx
 @ingroup orca_win
-@defgroup orca_component_cameraserver Camera_
+@defgroup orca_component_cameraserver CameraServer
 @brief A hardware abstraction component for scanning laser range-finders
 
 @par Provides
