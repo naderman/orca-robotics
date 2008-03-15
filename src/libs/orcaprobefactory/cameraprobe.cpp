@@ -57,7 +57,7 @@ CameraProbe::loadGetData( orcacm::OperationData& data )
     {
         orca::CameraPrx derivedPrx = orca::CameraPrx::checkedCast(prx_);
         result = derivedPrx->getData();
-        orcaprobe::reportResult( data, "data", orcaobj::toString(result.at(0)) );
+        orcaprobe::reportResult( data, "data", orcaobj::toString( result ) );
     }
     catch( const Ice::Exception& e )
     {
@@ -76,7 +76,7 @@ CameraProbe::loadGetDescription( orcacm::OperationData& data )
     {
         orca::CameraPrx derivedPrx = orca::CameraPrx::checkedCast(prx_);
         result = derivedPrx->getDescription();
-        orcaprobe::reportResult( data, "data", orcaobj::toString(result.at(0)) );
+        orcaprobe::reportResult( data, "data", orcaobj::toString( result ) );
     }
     catch( const Ice::Exception& e )
     {

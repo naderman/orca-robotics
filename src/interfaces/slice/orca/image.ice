@@ -90,6 +90,7 @@ class ImageDescription
 
     //! %Image compression type
     ImageCompression compression;
+
 }; 
 
 //! A single image.

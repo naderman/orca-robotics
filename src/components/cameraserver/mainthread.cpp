@@ -14,7 +14,7 @@
 #include "mainthread.h"
 
 using namespace std;
-using namespace camera;
+using namespace cameraserver;
 
 MainThread::MainThread( const orcaice::Context &context ) :
     hydroiceutil::SubsystemThread( context.tracer(), context.status(), "MainThread" ),
@@ -29,12 +29,14 @@ MainThread::MainThread( const orcaice::Context &context ) :
     std::string prefix = context_.tag() + ".Config.";
 
 
-    if ( !config_.validate() ) {
-        context_.tracer().error( "Failed to validate camera configuration. "+config_.toString() );
-        // this will kill this component
-        throw hydroutil::Exception( ERROR_INFO, "Failed to validate camera configuration" );
+    for(unsigned int i = 0; i < config_.size(); ++i)
+    {
+        if ( !config_.at(i).validate() ) {
+            context_.tracer().error( "Failed to validate camera configuration. "+config_.at(i).toString() );
+            // this will kill this component
+            throw hydroutil::Exception( ERROR_INFO, "Failed to validate camera configuration" );
+        }
     }
-
 }
 
 void
@@ -46,45 +48,22 @@ MainThread::initNetworkInterface()
     //
     // SENSOR DESCRIPTION
     //
-    orca::RangeScanner2dDescription descr;
-    descr.timeStamp = orcaice::getNow();
-
-    // transfer internal sensor configs
-    descr.minRange        = config_.minRange;
-    descr.maxRange        = config_.maxRange;
-    descr.fieldOfView     = config_.fieldOfView;
-    descr.startAngle      = config_.startAngle;
-    descr.numberOfSamples = config_.numberOfSamples;
-
-    // offset from the robot coordinate system
-    orcaobj::setInit( descr.offset );
-    descr.offset = orcaobj::getPropertyAsFrame3dWithDefault( prop, prefix+"Offset", descr.offset );
-
-    // consider the special case of the sensor mounted level (pitch=0) but upside-down (roll=180)
-    if ( NEAR(descr.offset.o.r,M_PI,0.001) && descr.offset.o.p==0.0 ) {
-        // the offset is appropriate, now check the user preference (default is TRUE)
-        compensateRoll_ = (bool)orcaice::getPropertyAsIntWithDefault( prop, prefix+"AllowRollCompensation", 1 );
-
-        if ( compensateRoll_ ) {
-            // now remove the roll angle, we'll compensate for it internally
-            descr.offset.o.r = 0.0;
-            context_.tracer().info( "the driver will compensate for upside-down mounted sensor" );
-        }
+    orca::CameraDescriptionSequence descrs;
+    
+    for(int i = 0; i < descrs.size(); i++)
+    {
+        //transfer internal sensor configs
+        
+        // offset from the robot coordinate system
+        orcaobj::setInit( descrs.at(i)->offset );
+        descrs.at(i)->offset = orcaobj::getPropertyAsFrame3dWithDefault( prop, prefix+"Offset", descrs.at(i)->offset );
     }
-    else {
-        // no need to consider it, the offset is inappropriate for roll compensation
-        compensateRoll_ = false;
-    }
-
-    // size info should really be stored in the driver
-    orcaobj::setInit( descr.size );
-    descr.size = orcaobj::getPropertyAsSize3dWithDefault( prop, prefix+"Size", descr.size );
-
+    
     //
     // EXTERNAL PROVIDED INTERFACE
     //
 
-    cameraInterface_ = new orcaifaceimpl::CameraImpl( descr,
+    cameraInterface_ = new orcaifaceimpl::CameraImpl( descrs,
                                                               "Camera",
                                                               context_ );
     // init
@@ -160,22 +139,33 @@ MainThread::readData()
     //
     // Read from the camera driver
     //
-    hydroLaserData_.haveWarnings = false;
+    for(unsigned int i = 0; i < hydroCameraData_.size(); ++i)
+    {
+        hydroCameraData_.at(i).haveWarnings = false;
+    }
+
     driver_->read( hydroCameraData_ );
 
-    orcaCameraData_->timeStamp.seconds  = hydroCameraData_.timeStampSec;
-    orcaCameraData_->timeStamp.useconds = hydroCameraData_.timeStampUsec;
+    for(unsigned int i = 0; i < orcaCameraData_.size(); ++i) 
+    {
+        orcaCameraData_.at(i)->timeStamp.seconds  = hydroCameraData_.at(i).timeStampSec;
+        orcaCameraData_.at(i)->timeStamp.useconds = hydroCameraData_.at(i).timeStampUsec;
+    }   
 }
 
 void
 MainThread::walk()
 {
-    // Set up the laser-scan objects
-    orcaCameraData_ = new orca::CameraDataSequence;
-    orcaLaserData_->data.resize( config_.imageSize );
+    // Set up the camera objects
+    orcaCameraData_.resize( config_.at(0).numOfCameras );
 
-    // Point the pointers in hydroLaserData_ at orcaLaserData_
-    hydroCameraData_.data     = &(orcaCameraData_->data[0]);
+    for(int i = 0; i < orcaCameraData_.size(); ++i)
+    {
+        //resize image vectors
+        orcaCameraData_.at(i)->data.resize( config_.at(0).size );
+        //set hydroCameraData pointers to be the address of orcaCameraData image vectors
+        hydroCameraData_.at(i).data = &(orcaCameraData_.at(i)->data[0]);
+    }
 
     // These functions catch their exceptions.
     activate( context_, this, subsysName() );
@@ -195,18 +185,11 @@ MainThread::walk()
             // this blocks until new data arrives
             readData();
             
-            laserInterface_->localSetAndSend( orcaLaserData_ );
-            if ( hydroLaserData_.haveWarnings )
-            {
-                subStatus().warning( hydroLaserData_.warnings );
-            }
-            else
-            {
-                subStatus().ok();
-            }
+            cameraInterface_->localSetAndSend( orcaCameraData_ );
+            subStatus().ok();
 
             stringstream ss;
-            ss << "MainThread: Read laser data: " << orcaobj::toString(orcaLaserData_);
+            ss << "MainThread: Read camera data: " << orcaobj::toString(orcaCameraData_);
             context_.tracer().debug( ss.str(), 5 );
 
             continue;
@@ -245,5 +228,5 @@ MainThread::walk()
 
     } // end of while
 
-    // Laser hardware will be shut down in the driver's destructor.
+    // Camera hardware will be shut down in the driver's destructor.
 }

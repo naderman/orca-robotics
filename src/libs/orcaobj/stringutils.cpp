@@ -528,30 +528,37 @@ toString( const orca::BinarySwitchData& obj )
 }
 
 std::string 
-toString( const orca::CameraDataPtr& obj )
+toString( const orca::CameraDataSequence& obj )
 {
+    
     std::ostringstream s;
-    s << toString(obj->timeStamp)
-        << " CameraData: ["<<obj->data.size()<<" bytes]\n"; 
+    s << toString(obj.at(0)->timeStamp)
+        << " NumOfCameras: " << obj.size() 
+        << " CameraData: ["<<obj.at(0)->data.size()<<" bytes]\n"; 
     return s.str();
 }
 
 std::string 
-toString( const orca::CameraDescriptionPtr& obj )
+toString( const orca::CameraDescriptionSequence& obj )
 {
     std::ostringstream s;
-    s   << "CameraDescription:\n" 
-        << "Image height              " << obj->imageHeight << "pix\n"
-        << "Image width               " << obj->imageWidth << "pix\n"
-        << "Frame rate                " << obj->frameRate << "fps\n"
-        << "Format                    " << obj->format << "\n"
-        << "Compression               " << obj->compression << "\n"
-        << "offset.point.x            " << obj->offset.p.x << "m\n"
-        << "offset.point.y            " << obj->offset.p.y << "m\n"
-        << "offset.point.z            " << obj->offset.p.z << "m\n"
-        << "offset.orientation.roll   " << RAD2DEG(obj->offset.o.r) << "deg\n"
-        << "offset.orientation.pitch  " << RAD2DEG(obj->offset.o.p) << "deg\n"
-        << "offset.orientation.yaw    " << RAD2DEG(obj->offset.o.y) << "deg\n";
+    
+    for(unsigned int i = 0; i < obj.size(); ++i)
+    {
+        s   << "CameraDescription " << i << ":\n" 
+            << "Image height              " << obj.at(i)->imageHeight << "pix\n"
+            << "Image width               " << obj.at(i)->imageWidth << "pix\n"
+            << "Frame rate                " << obj.at(i)->frameRate << "fps\n"
+            << "Format                    " << obj.at(i)->format << "\n"
+            << "Compression               " << obj.at(i)->compression << "\n"
+            << "offset.point.x            " << obj.at(i)->offset.p.x << "m\n"
+            << "offset.point.y            " << obj.at(i)->offset.p.y << "m\n"
+            << "offset.point.z            " << obj.at(i)->offset.p.z << "m\n"
+            << "offset.orientation.roll   " << RAD2DEG(obj.at(i)->offset.o.r) << "deg\n"
+            << "offset.orientation.pitch  " << RAD2DEG(obj.at(i)->offset.o.p) << "deg\n"
+            << "offset.orientation.yaw    " << RAD2DEG(obj.at(i)->offset.o.y) << "deg\n";
+    }
+
     return s.str();
 }
 

@@ -19,7 +19,7 @@
 // hardware interface
 #include <hydrointerfaces/camera.h>
 
-namespace camera {
+namespace cameraserver {
 
 //
 // @brief the main executing loop of this laser component.
@@ -47,13 +47,13 @@ private:
     // The laser object
     orcaifaceimpl::CameraImplPtr cameraInterface_;
 
-    hydrointerfaces::Camera::Config config_;
+    std::vector<hydrointerfaces::Camera::Config> config_;
     // an extra config to allow sensor mounted upside-down
     bool compensateRoll_;
 
     // space for data
     orca::CameraDataSequence           orcaCameraData_;
-    hydrointerfaces::Camera::Data hydroCameraData_;
+    std::vector<hydrointerfaces::Camera::Data> hydroCameraData_;
 
     // The library that contains the driver factory (must be declared first so it's destructed last!!!)
     std::auto_ptr<hydrodll::DynamicallyLoadedLibrary> driverLib_;

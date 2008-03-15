@@ -169,9 +169,9 @@ std::string toString( const orca::Date& );
 //! Converts to string
 std::string toString( const orca::BinarySwitchData& );
 //! Converts to string
-std::string toString( const orca::CameraDataPtr& );
+std::string toString( const orca::CameraDataSequence& );
 //! Converts to string
-std::string toString( const orca::CameraDescriptionPtr& );
+std::string toString( const orca::CameraDescriptionSequence& );
 //! Converts to string
 std::string toString( const orca::CpuInfo& );
 //! Converts to string
