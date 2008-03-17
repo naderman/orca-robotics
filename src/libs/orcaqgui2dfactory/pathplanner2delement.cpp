@@ -230,6 +230,7 @@ PathPlanner2dElement::sendPath( const PathPlannerInput &pathInput )
     try
     {
         orca::PathPlanner2dTask task = pathInput.getTask();
+        task.timeStamp = orcaice::getNow();
         task.prx = taskCallbackPrx_;
         pathPlanner2dPrx_->setTask( task );
     }
