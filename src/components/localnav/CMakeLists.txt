@@ -39,6 +39,8 @@ IF ( build )
         TARGET_LINK_LIBRARIES( ${SERVICE_NAME} ${dep_libs} ) 
     ENDIF ( ORCA_BUILD_SERVICES )
 
+    GENERATE_CONFIG_FILE( ${APP_NAME}.def )
+
     IF ( ORCA_BUILD_TESTS )
 
       # Check for 32-bit vs 64-bit
