@@ -80,6 +80,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - PathPlanner
   - Big cleanup of the component.  
     Conversion from output of algorithm to orca path improved. (alex b)
+- LaserFeatureExtractor
+  - Moved all the algorithms out to hydro (alex b)
 
 @par Updated utilities
 @par Updated libraries

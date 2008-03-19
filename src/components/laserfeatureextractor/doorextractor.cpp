@@ -47,6 +47,8 @@ DoorExtractor::DoorExtractor( const orca::RangeScanner2dDescription &laserDescr,
     cfg.minReturnsBesideDoor = orcaice::getPropertyAsIntWithDefault( prop, prefix+"MinReturnsBesideDoor", 2 );
 
     cfg.maxDeltaRangeWallBesideDoor = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"MaxDeltaRangeWallBesideDoor", 0.3 );
+    cfg.pFalsePositive = P_FALSE_POSITIVE;
+    cfg.pTruePositive  = P_TRUE_POSITIVE;
 
     doorExtractor_.reset( new hydrolfextract::DoorExtractor( cfg, context.toHydroContext() ) );
 }

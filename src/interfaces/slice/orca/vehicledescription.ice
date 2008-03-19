@@ -58,7 +58,7 @@ class VehicleControlVelocityDifferentialDescription extends VehicleControlDescri
 {
     //! Maximum in-plane forward speed [m/s]
     double maxForwardSpeed;
-    //! Maximum in-plane reverse speed [m/s]
+    //! Maximum in-plane reverse speed [m/s] (note: this is a positive number)
     double maxReverseSpeed;
     //! Maximum in-plane turnrate [rad/s] (assumes equal max turnrate in either direction).
     double maxTurnrate;
