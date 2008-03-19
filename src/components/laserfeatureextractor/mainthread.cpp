@@ -56,7 +56,7 @@ MainThread::getLaserDescription()
         try
         {
             context_.tracer().debug( "Getting laser description...", 2 );
-            orcaice::connectToInterfaceWithString( context_, laserPrx, "Laser" );
+            orcaice::connectToInterfaceWithTag( context_, laserPrx, "Laser" );
             laserDescr_ = laserPrx->getDescription();
             stringstream ss;
             ss << "Got laser description: " << orcaobj::toString( laserDescr_ );
