@@ -1,7 +1,6 @@
 #
 # Rules common to all "standard" componetns
 #
-INCLUDE( ${HYDRO_CMAKE_DIR}/UseGearbox.cmake )
 INCLUDE( ${ORCA_CMAKE_DIR}/UseBasicRules.cmake )
 # we already tested that enough of Ice is installed
 INCLUDE( ${ORCA_CMAKE_DIR}/UseIceBasics.cmake )
@@ -10,7 +9,8 @@ INCLUDE( ${ORCA_CMAKE_DIR}/UseHydroIceUtil.cmake )
 INCLUDE( ${ORCA_CMAKE_DIR}/UseLibProjectInterfaces.cmake )
 INCLUDE( ${ORCA_CMAKE_DIR}/WrapComponent.cmake )
 
-LINK_LIBRARIES( GbxUtilAcfr GbxIceUtilAcfr HydroUtil HydroIceUtil OrcaIce )
+# (other basic libs are linked from the UseHydroIceUtil script)
+LINK_LIBRARIES( OrcaIce )
 
 #
 # Project-specific rules

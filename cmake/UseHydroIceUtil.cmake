@@ -1,4 +1,7 @@
+INCLUDE_DIRECTORIES( ${GEARBOX_HOME}/include/gearbox )
+LINK_DIRECTORIES( ${GEARBOX_HOME}/lib/gearbox )
+
 INCLUDE_DIRECTORIES( ${HYDRO_HOME}/include )
 LINK_DIRECTORIES( ${HYDRO_HOME}/lib )
 
-LINK_LIBRARIES( HydroIceUtil HydroUtil )
+LINK_LIBRARIES( GbxUtilAcfr GbxIceUtilAcfr HydroUtil HydroIceUtil )
