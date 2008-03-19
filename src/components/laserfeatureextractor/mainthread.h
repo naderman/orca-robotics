@@ -37,7 +37,7 @@ private:
     void connectToLaser();
     void getLaserDescription();
     void initDriver();
-    void initNetworkInterface();
+    void initPolarFeatureInterface();
 
     // generic algorithm
     std::auto_ptr<Driver> driver_;
