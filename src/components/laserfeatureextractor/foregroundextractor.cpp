@@ -47,6 +47,8 @@ ForegroundExtractor::ForegroundExtractor( const orca::RangeScanner2dDescription 
     prop = context.properties();
     cfg.rangeSd   = orcaice::getPropertyAsDoubleWithDefault(    prop, prefix+"PointTargetRangeSd", 0.2);
     cfg.bearingSd = (M_PI/180.0)*orcaice::getPropertyAsDoubleWithDefault(    prop, prefix+"PointTargetBearingSd", 5.0);
+
+    foregroundExtractor_.reset( new hydrolfextract::ForegroundExtractor( cfg ) );
 }
 
 void ForegroundExtractor::addFeatures( const orca::LaserScanner2dDataPtr &laserData, 
