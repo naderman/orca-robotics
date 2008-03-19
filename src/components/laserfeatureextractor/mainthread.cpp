@@ -13,9 +13,6 @@
 #include <orcaice/orcaice.h>
 #include <orcaobj/orcaobj.h>
 #include "mainthread.h"
-
-// these drivers can always be built
-#include "fakedriver.h"
 #include "combineddriver.h"
 
 using namespace std;
@@ -26,13 +23,6 @@ MainThread::MainThread( const orcaice::Context &context ) :
     context_(context)
 {
     subStatus().setMaxHeartbeatInterval( 10.0 );
-
-    sensorOffset_.p.x=0;
-    sensorOffset_.p.y=0;
-    sensorOffset_.p.z=0;
-    sensorOffset_.o.r=0;
-    sensorOffset_.o.p=0;
-    sensorOffset_.o.y=0;
 
     // create a callback object to recieve scans
     laserConsumer_ = new orcaifaceimpl::StoringRangeScanner2dConsumerImpl( context_ );
@@ -47,18 +37,8 @@ MainThread::initDriver()
     std::string driverName = orcaice::getPropertyWithDefault( prop,
             prefix+"Driver", "combined" );
     
-    if ( driverName == "fake" )
+    if ( driverName == "combined" )
     {
-        fakeDriver_ = true;
-        context_.tracer().debug( "loading 'fake' driver",3);
-        driver_.reset( new FakeDriver() );
-    }
-    else if ( driverName == "combined" )
-    {
-        fakeDriver_ = false;
-        connectToLaser();
-        getLaserDescription();
-
         context_.tracer().debug( "loading 'combined' driver",3);
         driver_.reset( new CombinedDriver( laserDescr_, context_ ) );
     }
@@ -147,9 +127,6 @@ MainThread::getLaserDescription()
             stringstream ss;
             ss << "Got laser description: " << orcaobj::toString( laserDescr_ );
             context_.tracer().info( ss.str() );
-            sensorOffset_ = laserDescr_.offset;
-            if ( sensorOffsetOK( sensorOffset_ ) )
-                return;
         }
         catch ( const Ice::Exception &e )
         {
@@ -178,7 +155,10 @@ MainThread::initNetworkInterface()
     //
     // Instantiate External Interface
     //
-    featureInterface_ = new orcaifaceimpl::PolarFeature2dImpl( "PolarFeature2d", context_ );
+    orca::PolarFeature2dDescription descr;
+    descr.timeStamp = orcaice::getNow();
+    descr.offset = laserDescr_.offset;
+    featureInterface_ = new orcaifaceimpl::PolarFeature2dImpl( descr, "PolarFeature2d", context_ );
 
     // init
     featureInterface_->initInterface( this, subsysName() );
@@ -190,8 +170,10 @@ MainThread::walk()
     // These functions catch their exceptions.
     activate( context_, this, subsysName() );
 
-    initNetworkInterface();
+    connectToLaser();
+    getLaserDescription();
     initDriver();
+    initNetworkInterface();
 
     orca::PolarFeature2dData featureData;
 
@@ -244,9 +226,6 @@ MainThread::walk()
             //
             driver_->computeFeatures( laserData, featureData );
 
-            // convert to the robot frame CS
-            convertToRobotCS( featureData );
-
             // features have the same time stamp as the raw scan
             featureData.timeStamp = laserData->timeStamp;
 
@@ -287,6 +266,7 @@ MainThread::walk()
     context_.tracer().debug( "Exited main loop.",2 );
 }
 
+#if 0
 void
 convertPointToRobotCS( double &range,
                        double &bearing,
@@ -410,3 +390,4 @@ MainThread::sensorOffsetOK( const orca::Frame3d & offset )
 
     return offsetOk;
 }
+#endif

@@ -23,10 +23,21 @@ module orca
     @brief Range/bearing features relative to robot frame
 
 This interface provides access to features in a polar coordinate system
-centered on the robots centre. The data returned by the interface consists of a sequence of
-features with range in meters and bearing in rad (-pi<angle<pi) and the feature type.
+centered on the sensor. The data returned by the interface consists of a sequence of
+features.
     @{
 */
+
+//! Device description
+struct PolarFeature2dDescription
+{
+    //! Time when description was generated.
+    Time timeStamp;
+
+    //! Offset of the centre of the sensor with respect to the robot, 
+    //! in the robot local coordinate system.
+    Frame3d offset;
+};
 
 //!
 //! A generic polar feature.  Derive from this to fill out the details.
@@ -129,6 +140,9 @@ interface PolarFeature2d
     //! @note In Orca1 this would be called ClientPull_Supplier interface.
     ["cpp:const"] idempotent PolarFeature2dData getData()
             throws DataNotExistException;
+
+    //! Returns device description.
+    ["cpp:const"] idempotent PolarFeature2dDescription getDescription();
 
     /*!
      * Mimics IceStorm's subscribe() but without QoS, for now. The

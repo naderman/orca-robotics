@@ -37,6 +37,9 @@ public:
     virtual ::orca::PolarFeature2dData     getData(const ::Ice::Current& ) const
         { return impl_.internalGetData(); }
 
+    virtual ::orca::PolarFeature2dDescription getDescription(const ::Ice::Current& ) const
+        { return impl_.internalGetDescription(); }
+
     virtual void subscribe(const ::orca::PolarFeature2dConsumerPrx& consumer,
                            const ::Ice::Current& = ::Ice::Current())
         { impl_.internalSubscribe( consumer ); }
@@ -51,17 +54,21 @@ private:
 
 //////////////////////////////////////////////////////////////////////
 
-PolarFeature2dImpl::PolarFeature2dImpl( const std::string             &interfaceTag,
-                                        const orcaice::Context        &context )
-    : interfaceName_(getInterfaceNameFromTag(context,interfaceTag)),
+PolarFeature2dImpl::PolarFeature2dImpl( const orca::PolarFeature2dDescription&  descr,
+                                        const std::string                      &interfaceTag,
+                                        const orcaice::Context                 &context )
+    : descr_(descr),
+      interfaceName_(getInterfaceNameFromTag(context,interfaceTag)),
       topicName_(getTopicNameFromInterfaceName(context,interfaceName_)),
       context_(context)
 {
 }
 
-PolarFeature2dImpl::PolarFeature2dImpl( const orcaice::Context        &context,
-                                        const std::string             &interfaceName )
-    : interfaceName_(interfaceName),
+PolarFeature2dImpl::PolarFeature2dImpl( const orca::PolarFeature2dDescription&  descr,
+                                        const orcaice::Context                 &context,
+                                        const std::string                      &interfaceName )
+    : descr_(descr),
+      interfaceName_(interfaceName),
       topicName_(getTopicNameFromInterfaceName(context,interfaceName)),
       context_(context)
 {
@@ -112,6 +119,14 @@ PolarFeature2dImpl::internalGetData() const
     dataStore_.get( data );
 
     return data;
+}
+
+// serve out the data to the client (it was stored here earlier by the driver)
+orca::PolarFeature2dDescription
+PolarFeature2dImpl::internalGetDescription() const
+{
+    context_.tracer().debug( "PolarFeature2dImpl::internalGetDescription()", 5 );
+    return descr_;
 }
 
 // Subscribe people

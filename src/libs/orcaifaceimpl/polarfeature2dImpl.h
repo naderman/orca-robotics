@@ -35,10 +35,12 @@ friend class PolarFeature2dI;
 
 public:
     //! Constructor using interfaceTag (may throw ConfigFileException)
-    PolarFeature2dImpl( const std::string                     &interfaceTag,
+    PolarFeature2dImpl( const orca::PolarFeature2dDescription &descr,
+                        const std::string                     &interfaceTag,
                         const orcaice::Context                &context );
     //! constructor using interfaceName
-    PolarFeature2dImpl( const orcaice::Context                &context,
+    PolarFeature2dImpl( const orca::PolarFeature2dDescription &descr,
+                        const orcaice::Context                &context,
                         const std::string                     &interfaceName );                        
     ~PolarFeature2dImpl();
 
@@ -61,12 +63,15 @@ public:
 
 private:
     // remote call implementations, mimic (but do not inherit) the orca interface
-    ::orca::PolarFeature2dData     internalGetData() const;
+    ::orca::PolarFeature2dData        internalGetData() const;
+    ::orca::PolarFeature2dDescription internalGetDescription() const;
     void internalSubscribe(const ::orca::PolarFeature2dConsumerPrx&);
     void internalUnsubscribe(const ::orca::PolarFeature2dConsumerPrx&);
 
     // Holds the latest data
     hydroiceutil::Store<orca::PolarFeature2dData> dataStore_;
+
+    orca::PolarFeature2dDescription descr_;
 
     // The topic to which we'll publish
     IceStorm::TopicPrx              topicPrx_;
