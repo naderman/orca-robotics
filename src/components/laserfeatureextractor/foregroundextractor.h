@@ -15,6 +15,7 @@
 #include <orca/polarfeature2d.h>
 #include "iextractor.h"
 #include <orcaice/context.h>
+#include <hydrolaserfeatureextract/hydrolaserfeatureextract.h>
 
 namespace laserfeatures {
 
@@ -23,7 +24,8 @@ namespace laserfeatures {
 
 public: 
 
-    ForegroundExtractor( const orcaice::Context & context, double laserMaxRange );
+    ForegroundExtractor( const orca::RangeScanner2dDescription &laserDescr,
+                         const orcaice::Context                &context );
 
     // Adds laser features to the 'features' data structure
     void addFeatures( const orca::LaserScanner2dDataPtr &laserData,
@@ -31,14 +33,7 @@ public:
 
 private: 
     
-    double minForegroundWidth_;
-    double maxForegroundWidth_;
-    double minForegroundBackgroundSeparation_;
-    double laserMaxRange_;
-    double rangeSd_;
-    double bearingSd_;
-    double pFalsePositive_;
-    double pTruePositive_;
+    std::auto_ptr<hydrolfextract::ForegroundExtractor> foregroundExtractor_;
 };
 
 } // namespace

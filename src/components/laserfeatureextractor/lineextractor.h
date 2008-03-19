@@ -13,9 +13,9 @@
 #include <orca/laserscanner2d.h>
 #include <orca/polarfeature2d.h>
 #include <vector>
-#include "section.h"
 #include <orcaice/context.h>
 #include "iextractor.h"
+#include <hydrolaserfeatureextract/hydrolaserfeatureextract.h>
 
 namespace laserfeatures {
 
@@ -24,10 +24,10 @@ class LineExtractor : public IExtractor
 
 public: 
 
-    LineExtractor( const orcaice::Context &context,
-                   double laserMaxRange,
+    LineExtractor( const orca::RangeScanner2dDescription &laserDescr,
                    bool extractLines,
-                   bool extractCorners );
+                   bool extractCorners,
+                   const orcaice::Context &context );
 
     // Adds laser features to the 'features' data structure
     void addFeatures( const orca::LaserScanner2dDataPtr &laserData,
@@ -42,52 +42,9 @@ public:
     };
 
 private: 
+
+    std::auto_ptr<hydrolfextract::LineExtractor> lineExtractor_;
     
-    double laserMaxRange_;
-
-    bool extractLines_;
-    bool extractCorners_;
-
-    // config
-    double clusterMaxRangeDelta_;
-    double breakDistThreshold_;
-    int    minPointsInLine_;
-    double minLineLength_;
-    
-    double rangeSd_;
-    double bearingSd_;
-
-    // reject observations of lines with near-zero slope
-    bool rejectLikelyGroundObservations_;
-
-    double linePFalsePositive_;
-    double linePFalsePositivePossibleGround_;
-    double linePTruePositive_;
-
-    double cornerPFalsePositive_;
-    double cornerPTruePositive_;
-
-    orcaice::Context context_;
-
-    void addLines( const std::vector<Section> &sections, 
-                   orca::PolarFeature2dData   &features );
-    void addCorners( const std::vector<Section> &sections, 
-                     orca::PolarFeature2dData   &features,
-                     double angleIncrement );
-
-    bool isStartVisible( const Section &section,
-                         double alpha,
-                         const Section *prevSection,
-                         VisibilityReason *reason=NULL,
-                         double minLineLength=-1 );
-    bool isEndVisible( const Section &section,
-                       double alpha,
-                       const Section *nextSection,
-                       VisibilityReason *reason=NULL,
-                       double minLineLength=-1 );
-
-    void determineUncertainty( double &rhoSd, double &alphaSd, const Section &s );
-
 };
 
 }

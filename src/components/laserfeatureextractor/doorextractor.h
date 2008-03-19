@@ -15,6 +15,7 @@
 #include <orca/polarfeature2d.h>
 #include "iextractor.h"
 #include <orcaice/context.h>
+#include <hydrolaserfeatureextract/hydrolaserfeatureextract.h>
 
 namespace laserfeatures {
 
@@ -34,7 +35,8 @@ class DoorExtractor : public IExtractor
 
 public: 
 
-    DoorExtractor( const orcaice::Context & context );
+    DoorExtractor( const orca::RangeScanner2dDescription &laserDescr,
+                   const orcaice::Context & context );
 
 //     Adds laser features to the 'features' data structure
       void addFeatures( const orca::LaserScanner2dDataPtr &laserData,
@@ -42,25 +44,7 @@ public:
 
 private: 
 
-    void findPossibleDoorJambs( const orca::LaserScanner2dDataPtr &data,
-                                std::vector<DoorJamb> &possibleStarts,
-                                std::vector<DoorJamb> &possibleEnds );
-
-    void findActualDoorJambs( const std::vector<DoorJamb> &possibleDoorStarts,
-                              const std::vector<DoorJamb> &possibleDoorEnds,
-                              std::vector<DoorJamb> &actualDoorStarts,
-                              std::vector<DoorJamb> &actualDoorEnds );
-
-    double minDoorWidthSq_;
-    double maxDoorWidthSq_;
-    double minDeltaRangeThruDoor_;
-    double rangeSd_;
-    double bearingSd_;
-    int    minReturnsThruDoor_;
-    int    minReturnsBesideDoor_;
-    double maxDeltaRangeWallBesideDoor_;
-
-    orcaice::Context context_;
+    std::auto_ptr<hydrolfextract::DoorExtractor> doorExtractor_;
       
 };
 

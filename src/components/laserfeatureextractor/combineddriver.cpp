@@ -25,7 +25,8 @@ using namespace orcaice;
 
 namespace laserfeatures {
 
-CombinedDriver::CombinedDriver( const orcaice::Context & context, double maxRange, int numberOfSamples )
+CombinedDriver::CombinedDriver( const orca::RangeScanner2dDescription &laserDescr,
+                                const orcaice::Context                &context )
 {
     std::string prefix = context.tag() + ".Config.";
     Ice::PropertiesPtr prop = context.properties();
@@ -42,13 +43,13 @@ CombinedDriver::CombinedDriver( const orcaice::Context & context, double maxRang
         orcaice::getPropertyAsIntWithDefault(    prop, prefix+"ExtractDoors", 0);
     
     if ( extractReflectors )
-        extractors_.push_back( new ReflectorExtractor(context,maxRange,numberOfSamples) );
+        extractors_.push_back( new ReflectorExtractor(laserDescr,context) );
     if ( extractForegroundPoints )
-        extractors_.push_back( new ForegroundExtractor(context,maxRange) );
+        extractors_.push_back( new ForegroundExtractor(laserDescr,context) );
     if ( extractDoors )
-        extractors_.push_back( new DoorExtractor(context) );
+        extractors_.push_back( new DoorExtractor(laserDescr,context) );
     if ( extractCorners || extractLines ) 
-        extractors_.push_back( new LineExtractor(context,maxRange,extractLines,extractCorners) );
+        extractors_.push_back( new LineExtractor(laserDescr,extractLines,extractCorners,context) );
 
     if ( extractors_.size() == 0 )
     {

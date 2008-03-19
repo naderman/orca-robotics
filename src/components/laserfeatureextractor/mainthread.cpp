@@ -66,7 +66,7 @@ MainThread::initAlgorithmDriver()
         getLaserDescription();
 
         context_.tracer().debug( "loading 'combined' driver",3);
-        driver_ = new CombinedDriver( context_, laserDescr_.maxRange, laserDescr_.numberOfSamples );
+        driver_ = new CombinedDriver( laserDescr_, context_ );
     }
     else
     {
