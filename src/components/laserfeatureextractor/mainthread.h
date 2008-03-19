@@ -45,9 +45,6 @@ private:
     // Our external interface
     orcaifaceimpl::PolarFeature2dImplPtr featureInterface_;
     
-    // Laser proxy
-    orca::LaserScanner2dPrx laserPrx_;
-    
     // Description of laser details
     orca::RangeScanner2dDescription laserDescr_;
 

@@ -47,13 +47,17 @@ MainThread::connectToLaser()
 void 
 MainThread::getLaserDescription()
 {
+    // Laser proxy
+    orca::LaserScanner2dPrx laserPrx;
+    
     while ( !isStopping() )
     {
         stringstream exceptionSS;
         try
         {
             context_.tracer().debug( "Getting laser description...", 2 );
-            laserDescr_ = laserPrx_->getDescription();
+            orcaice::connectToInterfaceWithString( context_, laserPrx, "Laser" );
+            laserDescr_ = laserPrx->getDescription();
             stringstream ss;
             ss << "Got laser description: " << orcaobj::toString( laserDescr_ );
             context_.tracer().info( ss.str() );
