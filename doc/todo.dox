@@ -88,7 +88,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
   - Moved all the algorithms out to hydro (alex b)
   - Made an important functional change: the component no longer does coordinate transformations.
     The interface now reports the sensor's offset, leaving it up to clients to do the transformation.
-    This gives more flexibility, eg clients can transform the uncertainty correctly if they want to.
+    This gives more flexibility, eg clients can transform the uncertainty correctly if they want to. (alex b)
+  - General overhaul and cleanup (alex b)
 
 @par Updated utilities
 @par Updated libraries
