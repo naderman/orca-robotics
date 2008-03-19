@@ -73,6 +73,10 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @par New libraries
 @par Updated interfaces
+
+- PolarFeature2d (alex b)
+  - Added 'description' with the sensor offset.
+
 @par Updated components
 
 - Gps
@@ -82,6 +86,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     Conversion from output of algorithm to orca path improved. (alex b)
 - LaserFeatureExtractor
   - Moved all the algorithms out to hydro (alex b)
+  - Made an important functional change: the component no longer does coordinate transformations.
+    The interface now reports the sensor's offset, leaving it up to clients to do the transformation.
+    This gives more flexibility, eg clients can transform the uncertainty correctly if they want to.
 
 @par Updated utilities
 @par Updated libraries
