@@ -152,7 +152,6 @@ MainThread::initHardwareDriver()
         }
 
         // we get here only after an exception was caught
-        context_.tracer().error( exceptionSS.str() );
         subStatus().fault( exceptionSS.str() );          
 
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));        
@@ -254,7 +253,6 @@ MainThread::walk()
         }
 
         if ( !exceptionSS.str().empty() ) {
-            context_.tracer().error( exceptionSS.str() );
             subStatus().fault( exceptionSS.str() );     
             // Slow things down in case of persistent error
             sleep(1);
