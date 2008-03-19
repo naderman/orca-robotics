@@ -30,7 +30,6 @@ DoorExtractor::DoorExtractor( const orca::RangeScanner2dDescription &laserDescr,
                               const orcaice::Context &context )
 {
     hydrolfextract::DoorExtractor::Config cfg( getLaserConfig( laserDescr ) );
-    cout<<"TRACE(doorextractor.cpp): TODO: CONFIG" << endl;
 
     std::string prefix = context.tag() + ".Config.Doors.";
     Ice::PropertiesPtr prop = context.properties();
