@@ -13,14 +13,14 @@
 #define COMBINED_DRIVER_H
 
 #include <orcaice/context.h>
-#include "algorithmdriver.h"
+#include "driver.h"
 #include <vector>
 #include "iextractor.h"
 
 namespace laserfeatures
 {
 
-class CombinedDriver: public AlgorithmDriver
+class CombinedDriver: public Driver
 {
 
 public:

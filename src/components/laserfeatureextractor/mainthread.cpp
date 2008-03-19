@@ -23,7 +23,6 @@ using namespace laserfeatures;
 
 MainThread::MainThread( const orcaice::Context &context ) :
     SubsystemThread( context.tracer(), context.status(), "MainThread" ),
-    driver_(NULL),
     context_(context)
 {
     subStatus().setMaxHeartbeatInterval( 10.0 );
@@ -39,13 +38,8 @@ MainThread::MainThread( const orcaice::Context &context ) :
     laserConsumer_ = new orcaifaceimpl::StoringRangeScanner2dConsumerImpl( context_ );
 }
 
-MainThread::~MainThread()
-{
-    delete driver_;
-}
-
 void 
-MainThread::initAlgorithmDriver()
+MainThread::initDriver()
 {
     std::string prefix = context_.tag() + ".Config.";
     Ice::PropertiesPtr prop = context_.properties();
@@ -57,7 +51,7 @@ MainThread::initAlgorithmDriver()
     {
         fakeDriver_ = true;
         context_.tracer().debug( "loading 'fake' driver",3);
-        driver_ = new FakeDriver();
+        driver_.reset( new FakeDriver() );
     }
     else if ( driverName == "combined" )
     {
@@ -66,7 +60,7 @@ MainThread::initAlgorithmDriver()
         getLaserDescription();
 
         context_.tracer().debug( "loading 'combined' driver",3);
-        driver_ = new CombinedDriver( laserDescr_, context_ );
+        driver_.reset( new CombinedDriver( laserDescr_, context_ ) );
     }
     else
     {
@@ -197,7 +191,7 @@ MainThread::walk()
     activate( context_, this, subsysName() );
 
     initNetworkInterface();
-    initAlgorithmDriver();
+    initDriver();
 
     orca::PolarFeature2dData featureData;
 

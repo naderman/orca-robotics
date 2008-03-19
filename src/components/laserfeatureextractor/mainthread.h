@@ -18,18 +18,16 @@
 #include <orca/laserscanner2d.h>
 #include <orcaifaceimpl/polarfeature2dImpl.h>
 #include <orcaifaceimpl/storingconsumers.h>
+#include "driver.h"
 
 namespace laserfeatures
 {
-
-class AlgorithmDriver;
 
 class MainThread : public hydroiceutil::SubsystemThread
 {
 public:
 
     MainThread( const orcaice::Context &context );
-    ~MainThread();
 
     // from SubsystemThread
     virtual void walk();
@@ -38,7 +36,7 @@ private:
 
     void connectToLaser();
     void getLaserDescription();
-    void initAlgorithmDriver();
+    void initDriver();
     void initNetworkInterface();
     
     // This component is 2D-centric: can only handle certain orientations.
@@ -47,7 +45,7 @@ private:
     void convertToRobotCS( const orca::PolarFeature2dData &featuresPtr );
 
     // generic algorithm
-    AlgorithmDriver* driver_;
+    std::auto_ptr<Driver> driver_;
     
     // Our external interface
     orcaifaceimpl::PolarFeature2dImplPtr featureInterface_;

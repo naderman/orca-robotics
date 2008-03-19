@@ -25,12 +25,12 @@ namespace laserfeatures
 \author Tobias Kaupp t.kaupp at cas.edu.au, Alex Brooks
 
 */
-class AlgorithmDriver 
+class Driver 
 {
 
 public:
 
-    virtual ~AlgorithmDriver() {};
+    virtual ~Driver() {};
     
     // Computes the features
     virtual int computeFeatures( const orca::LaserScanner2dDataPtr  &laserDataPtr,

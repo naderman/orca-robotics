@@ -12,12 +12,12 @@
 #ifndef FAKE_DRIVER_H
 #define FAKE_DRIVER_H
 
-#include "algorithmdriver.h"
+#include "driver.h"
 
 namespace laserfeatures
 {
 
-class FakeDriver: public AlgorithmDriver
+class FakeDriver: public Driver
 {
 
 public:
