@@ -57,6 +57,7 @@ public:
     virtual bool isInGlobalCS() { return false; }
     virtual void actionOnConnection() 
     { 
+        getExtractorInfo();
         paintInitialData<orca::PolarFeature2dPrx, PolarFeature2dPainter>
             ( context_, listener_.interfaceName(), painter_ ); 
     }
@@ -66,6 +67,7 @@ public:
 
 private:
 
+    void getExtractorInfo();
     PolarFeature2dPainter painter_;
 };
 

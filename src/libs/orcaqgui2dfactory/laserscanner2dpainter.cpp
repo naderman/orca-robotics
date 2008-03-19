@@ -36,9 +36,7 @@ LaserScanner2dPainter::LaserScanner2dPainter( QColor outlineColor,
       outlineColor_(outlineColor),
       outlineThickness_(outlineThickness),
       brightReturnWidth_(brightReturnWidth),
-      isOffsetSet_(false),
-      isUpsideDown_(false),
-      isNotHorizontal_(false)
+      isOffsetSet_(false)
 {
     fillColor_ = QColor(204,204,255,127);
 }
@@ -60,12 +58,12 @@ LaserScanner2dPainter::setOffset( orca::Frame3d &offset )
     offsetY_   = offset.p.y;
     offsetYaw_ = offset.o.y;
     offsetPitch_ = offset.o.p;
+    isUpsideDown_ = false;
 
     // for 2D display, the only thing we know how to paint
     // is a laser mounted horizontally, either right-way-up or upside-down
     if ( !( offset.o.r == 0.0 || NEAR( offset.o.r,M_PI,0.01 ) ) )
     {
-        isNotHorizontal_ = true;
         stringstream ss;
         ss << "LaserScanner2dPainter::setOffset(): Can only properly deal with (possibly-flipped) horizontal lasers.  Offset: " << orcaobj::toString(offset);
         throw hydroqgui::Exception( ERROR_INFO, ss.str() );
@@ -78,7 +76,6 @@ LaserScanner2dPainter::setOffset( orca::Frame3d &offset )
     // Don't really know how to deal with non-zero values here...
     if ( offset.p.z != 0.0 )
     {
-        isNotHorizontal_ = true;
         stringstream ss;
         ss << "LaserScanner2dPainter::setOffset(): Cannot properly deal with non-zero z.  Offset: " << orcaobj::toString(offset);
         throw hydroqgui::Exception( ERROR_INFO, ss.str() );
@@ -118,7 +115,7 @@ LaserScanner2dPainter::setData( const orca::RangeScanner2dDataPtr & data )
             bearing = -bearing;
         }
         
-        // only the x-coordinate becomes "compressed", y is not affected
+        // account for sensor pitch: only the x-coordinate becomes "compressed", y is not affected
         point.setX( ranges_[i] * cos(bearing) * cos(offsetPitch_) );
         point.setY( ranges_[i] * sin(bearing) );
 

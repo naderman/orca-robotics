@@ -81,7 +81,6 @@ class LaserScanner2dPainter
     bool   isOffsetSet_;
 
     bool isUpsideDown_;
-    bool isNotHorizontal_;
 };
 
 } // namespace

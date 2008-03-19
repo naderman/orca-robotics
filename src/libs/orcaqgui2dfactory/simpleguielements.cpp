@@ -42,6 +42,30 @@ LaserScanner2dElement::getLaserInfo()
     painter_.setLaserMaxRange( descr.maxRange );
 }
 
+void
+PolarFeature2dElement::getExtractorInfo()
+{
+    // Subscribe directly to get geometry etc
+    orca::PolarFeature2dPrx prx;
+
+    // Don't bother catching exceptions: they'll get caught higher up.
+
+    orcaice::connectToInterfaceWithString( context_, prx, listener_.interfaceName() );
+    
+    orca::PolarFeature2dDescription descr = prx->getDescription();
+
+    // we may get an exception if the sensor is not mounted horizontal
+    // we display a warning but paint it anyway.
+    try
+    {
+        painter_.setOffset( descr.offset );
+    }
+    catch ( const std::exception& e )
+    {
+        context_.tracer().warning( e.what() );
+    }
+}
+
 QStringList
 LaserScanner2dElement::contextMenu()
 {

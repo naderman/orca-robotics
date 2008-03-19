@@ -28,10 +28,7 @@ namespace {
 }
 
 PolarFeature2dPainter::PolarFeature2dPainter()
-{
-}
-
-PolarFeature2dPainter::~PolarFeature2dPainter()
+    : isOffsetSet_(false)
 {
 }
 
@@ -43,9 +40,77 @@ PolarFeature2dPainter::clear()
 void 
 PolarFeature2dPainter::setData( const orca::PolarFeature2dData &data )
 {
+    assert( isOffsetSet_ );
+
     featureData_ = data;
 
+    for ( unsigned int i=0; i < featureData_.features.size(); i++ )
+    {
+        orca::SinglePolarFeature2d &ftr = *(featureData_.features[i]);
+        switch ( ftr.type )
+        {
+        case orca::feature::LINE:
+        {
+            orca::LinePolarFeature2d &lf = dynamic_cast<orca::LinePolarFeature2d&>(ftr);
+            if ( isUpsideDown_ )
+            {
+                lf.start.o = -lf.start.o;
+                lf.end.o = -lf.end.o;
+            }
+            break;
+        }
+        default:
+        {
+            orca::PointPolarFeature2d &pf = dynamic_cast<orca::PointPolarFeature2d&>(ftr);
+            if ( isUpsideDown_ )
+                pf.p.o = -pf.p.o;
+            break;
+        }
+        }
+    }
+
 //    cout<<"TRACE(polarfeature2dpainter.cpp): setData: " << data << endl;
+}
+
+void
+PolarFeature2dPainter::setOffset( orca::Frame3d &offset )
+{
+    offsetX_   = offset.p.x;
+    offsetY_   = offset.p.y;
+    offsetYaw_ = offset.o.y;
+    offsetPitch_ = offset.o.p;
+    isUpsideDown_ = false;
+
+    // for 2D display, the only thing we know how to paint
+    // is a sensor mounted horizontally, either right-way-up or upside-down
+    if ( !( offset.o.r == 0.0 || NEAR( offset.o.r,M_PI,0.01 ) ) )
+    {
+        stringstream ss;
+        ss << "LaserScanner2dPainter::setOffset(): Can only properly deal with (possibly-flipped) horizontal lasers.  Offset: " << orcaobj::toString(offset);
+        throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, ss.str() );
+    }
+
+    if ( NEAR( offset.o.r,M_PI,0.01 ) ) {
+        isUpsideDown_ = true;
+    }
+    
+    // Don't really know how to deal with non-zero values here...
+    if ( offset.p.z != 0.0 )
+    {
+        stringstream ss;
+        ss << "LaserScanner2dPainter::setOffset(): Cannot properly deal with non-zero z.  Offset: " << orcaobj::toString(offset);
+        throw hydroqgui::Exception( ERROR_INFO, ss.str() );
+    }
+
+    // Can't deal with non-zero pitch
+    if ( offsetPitch_ != 0.0 )
+    {
+        stringstream ss;
+        ss << "LaserScanner2dPainter::setOffset(): Cannot properly deal with non-zero pitch.  Offset: " << orcaobj::toString(offset);
+        throw hydroqgui::Exception( ERROR_INFO, ss.str() );        
+    }
+
+    isOffsetSet_ = true;
 }
 
 void
@@ -99,6 +164,10 @@ void
 PolarFeature2dPainter::paint( QPainter *painter, int z )
 {
     if ( z != hydroqgui::Z_LASER_FEATURES ) return;
+
+    // handle sensor offset
+    painter->translate(offsetX_,offsetY_);
+    painter->rotate( offsetYaw_*180.0/M_PI );    
 
     painter->setBrush(QBrush());
 

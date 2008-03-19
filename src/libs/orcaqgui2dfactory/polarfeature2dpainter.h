@@ -13,6 +13,7 @@
 
 #include <orca/polarfeature2d.h>
 #include <hydroqgui/definitions2d.h>
+#include <hydroqgui/hydroqgui.h>
 
 class QPainter;
 
@@ -28,8 +29,8 @@ class PolarFeature2dPainter
   
   public:
     PolarFeature2dPainter();
-    ~PolarFeature2dPainter();
 
+    void setOffset( orca::Frame3d &offset );
     void setData( const orca::PolarFeature2dData &featureData );
     void paint( QPainter *p, int z );
     bool paintThisLayer( int z ) const { return z==hydroqgui::Z_LASER_FEATURES; }
@@ -37,6 +38,15 @@ class PolarFeature2dPainter
     void clear();
     
   private:
+
+    double offsetX_;
+    double offsetY_;
+    double offsetYaw_;
+	double offsetPitch_;
+    bool   isOffsetSet_;
+
+    bool isUpsideDown_;
+    bool isNotHorizontal_;
 
     orca::PolarFeature2dData featureData_;
 };
