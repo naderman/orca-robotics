@@ -12,7 +12,7 @@
 
 #include <orcaice/proputils.h>
 #include <orcaobj/proputils.h>
-#include <hydroutil/mathdefs.h>
+#include <gbxsickacfr/gbxutilacfr/mathdefs.h>
 #include <orcaobj/stringutils.h>
 
 using namespace std;

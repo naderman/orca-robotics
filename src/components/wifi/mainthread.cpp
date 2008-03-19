@@ -22,7 +22,7 @@ using namespace wifi;
 
 
 MainThread::MainThread( const orcaice::Context& context ) :
-    hydroiceutil::SubsystemThread( context.tracer(), context.status(), "MainThread" ),
+    gbxsickacfr::gbxiceutilacfr::SubsystemThread( context.tracer(), context.status(), "MainThread" ),
     context_(context),
     snrWarningThreshhold_(0)
 {
@@ -62,7 +62,7 @@ MainThread::initHardwareDriver()
     {
         // unrecoverable error
         context_.shutdown(); 
-        throw hydroutil::Exception( ERROR_INFO, "Unknown driver type. Valid driver values are {'hardware','fake'}" );
+        throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, "Unknown driver type. Valid driver values are {'hardware','fake'}" );
     }
     context_.tracer().debug("driver instantiated",5);
     
@@ -146,7 +146,7 @@ MainThread::walk()
             context_.tracer().error( ss.str() );
             subStatus().fault( ss.str() );
         }
-        catch ( const hydroutil::Exception & e )
+        catch ( const gbxsickacfr::gbxutilacfr::Exception & e )
         {
             stringstream ss;
             ss << "unexpected (local?) orcaice exception: " << e.what();

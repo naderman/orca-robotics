@@ -123,12 +123,12 @@ Component::finalise()
     if ( componentThread_ )
     {
         context_.tracer().debug( "orcaice::Component: stopping ComponentThread....", 2 );
-        hydroiceutil::stopAndJoin( componentThread_ );
+        gbxsickacfr::gbxiceutilacfr::stopAndJoin( componentThread_ );
         context_.tracer().debug( "orcaice::Component: ComponentThread stopped.", 2 );
     }
 }
 
-hydroutil::Tracer*
+gbxsickacfr::gbxutilacfr::Tracer*
 Component::initTracer()
 {
     // We use programmatic configration as default. Config file settings will always overwrite.
@@ -153,13 +153,13 @@ Component::initTracer()
     // 2. a smart pointer which derives from Tracer to save in context
     // Ideally we'd have something like StatusTracerPtr which does derive from both.
     // but the smart pointer stuff is then included twice and reference counters get confused.
-    // So first we use the pointer to hydroutil::StatusTracerI, then change to Ice::ObjectPtr and Tracer*.
+    // So first we use the pointer to gbxsickacfr::gbxutilacfr::StatusTracerI, then change to Ice::ObjectPtr and Tracer*.
     orcaice::detail::TracerI* pobj = new orcaice::detail::TracerI( context_ );
     Ice::ObjectPtr obj = pobj;
     //TracerPtr trac = pobj;
     // have to revert to using plain pointers. Otherwise, we get segfault on shutdown when
     // trac tries to delete the object which already doesn't exist. Something wrong with ref counters.
-    hydroutil::Tracer* trac = (hydroutil::Tracer*)pobj;
+    gbxsickacfr::gbxutilacfr::Tracer* trac = (gbxsickacfr::gbxutilacfr::Tracer*)pobj;
     
     //
     // add this object to the adapter and name it 'tracer'
@@ -173,7 +173,7 @@ Component::initTracer()
     return trac;
 }
 
-hydroutil::Status*
+gbxsickacfr::gbxutilacfr::Status*
 Component::initStatus()
 {
     // We use programmatic configration as default. Config file settings will always overwrite.
@@ -199,7 +199,7 @@ Component::initStatus()
     // add this object to the adapter and name it 'status'
     context_.adapter()->add( statusObj_, context_.communicator()->stringToIdentity("status") );
 
-    hydroutil::Status* stat = (hydroutil::Status*)pobj;
+    gbxsickacfr::gbxutilacfr::Status* stat = (gbxsickacfr::gbxutilacfr::Status*)pobj;
     orcaice::initTracerInfo( context_.tag()+": Initialized status handler");
     return stat;
 }

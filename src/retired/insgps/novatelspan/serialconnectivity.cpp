@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#include <hydroserial/serial.h>
+#include <gbxserialacfr/serial.h>
 #include <string>
 #include <vector>
 #include <iostream>
@@ -22,7 +22,7 @@ using namespace hydroserial;
 bool testConnectivity(
         std::string &challenge,
         std::string &ack,
-        hydroserial::Serial* serial,
+        gbxserialacfr::Serial* serial,
         int timeOutMsec,
         int numTry,
         int successThresh,

@@ -211,7 +211,7 @@ setGlobalProperties( Ice::PropertiesPtr& properties, const std::string& filename
     {
         stringstream ss; ss<<"Couldn't load global configuration file '"<<filename<<"': "<<e;
         initTracerError( ss.str() );
-        throw hydroutil::Exception( ERROR_INFO, ss.str() );
+        throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, ss.str() );
     }
 
     // we are transfering prop's from lower to higher priority, this means that
@@ -237,7 +237,7 @@ setComponentPropertiesFromFile( Ice::PropertiesPtr& properties, const std::strin
     catch ( Ice::SyscallException& e ) 
     {
         stringstream ss;ss<<"Couldn't load component configuration file '"<<filename<<"': "<<e;
-        throw hydroutil::Exception( ERROR_INFO, ss.str() );
+        throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, ss.str() );
     }
 
     // debug
@@ -356,7 +356,7 @@ void addPropertiesFromApplicationConfigFile( Ice::PropertiesPtr   &properties,
             initTracerInfo( componentTag+": Loaded component properties from '"+compFilename+"'" );
         }
     }
-    catch ( const hydroutil::Exception &e )
+    catch ( const gbxsickacfr::gbxutilacfr::Exception &e )
     {
         initTracerWarning( componentTag+": Failed to open component config file '"+compFilename+"':"+e.what() );
     }    
@@ -378,7 +378,7 @@ void addPropertiesFromServiceConfigFile( Ice::PropertiesPtr   &properties,
             initTracerInfo( componentTag+": Loaded component properties from '"+servFilename+"'" );
         }
     }
-    catch ( const hydroutil::Exception &e )
+    catch ( const gbxsickacfr::gbxutilacfr::Exception &e )
     {
         initTracerWarning( componentTag+": Failed to open component config file : '"+servFilename+"'"+e.what() );
     }
@@ -394,7 +394,7 @@ void addPropertiesFromGlobalConfigFile( Ice::PropertiesPtr   &properties,
         orcaice::detail::setGlobalProperties( properties, globFilename );
         initTracerInfo( componentTag+": Loaded global properties from '"+globFilename+"'" );
     }
-    catch ( const hydroutil::Exception &e )
+    catch ( const gbxsickacfr::gbxutilacfr::Exception &e )
     {
         initTracerWarning( componentTag+": Failed to open global config file '"+globFilename+"': "+e.what() );
     }

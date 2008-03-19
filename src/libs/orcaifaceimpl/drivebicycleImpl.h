@@ -14,13 +14,11 @@
 #include <orca/drivebicycle.h>
 #include <IceStorm/IceStorm.h>
 
-#include <hydroiceutil/store.h>
-#include <hydroiceutil/notify.h>
+#include <gbxsickacfr/gbxiceutilacfr/store.h>
+#include <gbxsickacfr/gbxiceutilacfr/notify.h>
 #include <orcaice/context.h>
 
-namespace hydroiceutil {
-    class Thread;
-}
+namespace gbxsickacfr { namespace gbxiceutilacfr { class Thread; } }
 
 namespace orcaifaceimpl {
 
@@ -28,7 +26,7 @@ namespace orcaifaceimpl {
 //! Implements the DriveBicycle interface: Handles remote calls.
 //!
 class DriveBicycleImpl : public IceUtil::Shared,
-                          public hydroiceutil::Notify<orca::DriveBicycleCommand>
+                          public gbxsickacfr::gbxiceutilacfr::Notify<orca::DriveBicycleCommand>
 {
 friend class DriveBicycleI;
 
@@ -45,12 +43,12 @@ public:
     ~DriveBicycleImpl();
 
     // Local calls:
-    //! Sets up interface and connects to IceStorm. May throw hydroutil::Exceptions.
+    //! Sets up interface and connects to IceStorm. May throw gbxsickacfr::gbxutilacfr::Exceptions.
     void initInterface();
 
     //! Sets up interface and connects to IceStorm. Catches all exceptions and retries
     //! until sucessful. At every iteration, checks if the thread was stopped.
-    void initInterface( hydroiceutil::Thread* thread, const std::string& subsysName="", int retryInterval=2 );
+    void initInterface( gbxsickacfr::gbxiceutilacfr::Thread* thread, const std::string& subsysName="", int retryInterval=2 );
 
     //! A local call which sets the data reported by the interface
     void localSet( const orca::DriveBicycleData &data );
@@ -75,7 +73,7 @@ private:
     IceStorm::TopicPrx                topicPrx_;
 
     // outgoing data
-    hydroiceutil::Store<orca::DriveBicycleData> dataPipe_;
+    gbxsickacfr::gbxiceutilacfr::Store<orca::DriveBicycleData> dataPipe_;
 
     orcaice::Context                  context_;
 

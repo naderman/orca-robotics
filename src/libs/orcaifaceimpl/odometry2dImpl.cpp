@@ -93,7 +93,7 @@ Odometry2dImpl::initInterface()
 }
 
 void 
-Odometry2dImpl::initInterface( hydroiceutil::Thread* thread, const std::string& subsysName, int retryInterval )
+Odometry2dImpl::initInterface( gbxsickacfr::gbxiceutilacfr::Thread* thread, const std::string& subsysName, int retryInterval )
 {
     topicPrx_ = orcaice::connectToTopicWithString<orca::Odometry2dConsumerPrx>
         ( context_, consumerPrx_, topicName_, thread, subsysName, retryInterval );

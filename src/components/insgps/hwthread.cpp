@@ -16,7 +16,7 @@ using namespace std;
 using namespace insgps;
 
 HwThread::HwThread( const orcaice::Context &context) :
-    hydroiceutil::SubsystemThread( context.tracer(), context.status(), "HwThread" ),
+    gbxsickacfr::gbxiceutilacfr::SubsystemThread( context.tracer(), context.status(), "HwThread" ),
     dataPipe_(new hydroiceutil::EventQueue),
     context_(context)
 {
@@ -29,7 +29,7 @@ HwThread::HwThread( const orcaice::Context &context) :
     if ( !config_.isValid() ) {
         context_.tracer().error( "Failed to validate insgps configuration. "+config_.toString() );
         // this will kill this component
-        throw hydroutil::Exception( ERROR_INFO, "Failed to validate insgps configuration" );
+        throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, "Failed to validate insgps configuration" );
     }
 }
 

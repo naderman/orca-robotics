@@ -15,12 +15,10 @@
 #include <IceStorm/IceStorm.h>
 
 // utilities
-#include <hydroiceutil/store.h>
+#include <gbxsickacfr/gbxiceutilacfr/store.h>
 #include <orcaice/context.h>
 
-namespace hydroiceutil {
-    class Thread;
-}
+namespace gbxsickacfr { namespace gbxiceutilacfr { class Thread; } }
 
 namespace orcaifaceimpl {
 
@@ -43,12 +41,12 @@ public:
     ~Localise3dImpl();
 
     // Local calls:
-    //! Sets up interface and connects to IceStorm. May throw hydroutil::Exceptions.
+    //! Sets up interface and connects to IceStorm. May throw gbxsickacfr::gbxutilacfr::Exceptions.
     void initInterface();
 
     //! Sets up interface and connects to IceStorm. Catches all exceptions and retries
     //! until sucessful. At every iteration, checks if the thread was stopped.
-    void initInterface( hydroiceutil::Thread* thread, const std::string& subsysName="", int retryInterval=2 );
+    void initInterface( gbxsickacfr::gbxiceutilacfr::Thread* thread, const std::string& subsysName="", int retryInterval=2 );
 
     //! A local call which sets the data reported by the interface
     void localSet( const orca::Localise3dData &data );
@@ -66,7 +64,7 @@ private:
     
     orca::VehicleGeometryDescriptionPtr geometry_;
 
-    hydroiceutil::Store<orca::Localise3dData> dataStore_;
+    gbxsickacfr::gbxiceutilacfr::Store<orca::Localise3dData> dataStore_;
 
     orca::Localise3dConsumerPrx    consumerPrx_;
     IceStorm::TopicPrx             topicPrx_;

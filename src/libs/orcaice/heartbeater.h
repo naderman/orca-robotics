@@ -12,7 +12,7 @@
 #define ORCAICE_HEARTBEATER_H
 
 #include <orcaice/context.h>
-#include <hydroiceutil/timer.h>
+#include <gbxsickacfr/gbxiceutilacfr/timer.h>
 #include <string>
 
 namespace orcaice {
@@ -41,12 +41,12 @@ public:
 private: 
 
 //     orca::Time lastHeartbeatTime_;
-    hydroiceutil::Timer timer_;
+    gbxsickacfr::gbxiceutilacfr::Timer timer_;
 
     double secBetweenHeartbeats_;
     double urgencyDivider_;
 
-    hydroutil::Tracer& tracer_;
+    gbxsickacfr::gbxutilacfr::Tracer& tracer_;
 };
 
 }

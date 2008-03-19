@@ -28,9 +28,9 @@ public:
 private:
 
     // thread responsible for interaction with the network
-    hydroiceutil::ThreadPtr netThread_;
+    gbxsickacfr::gbxiceutilacfr::ThreadPtr netThread_;
     // thread responsible for interaction with local hardware
-    hydroiceutil::ThreadPtr hwThread_;
+    gbxsickacfr::gbxiceutilacfr::ThreadPtr hwThread_;
 };
 
 } // namespace

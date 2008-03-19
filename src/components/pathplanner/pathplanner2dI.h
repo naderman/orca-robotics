@@ -14,8 +14,8 @@
 #include <IceStorm/IceStorm.h>
 
 #include <orca/pathplanner2d.h>
-#include <hydroiceutil/store.h>
-#include <hydroiceutil/buffer.h>
+#include <gbxsickacfr/gbxiceutilacfr/store.h>
+#include <gbxsickacfr/gbxiceutilacfr/buffer.h>
 
 namespace pathplanner
 {
@@ -23,7 +23,7 @@ namespace pathplanner
 class PathPlanner2dI : public orca::PathPlanner2d
 {
 public:
-    PathPlanner2dI( hydroiceutil::Buffer<orca::PathPlanner2dTask> &pathPlannerTaskStore,
+    PathPlanner2dI( gbxsickacfr::gbxiceutilacfr::Buffer<orca::PathPlanner2dTask> &pathPlannerTaskStore,
                     const orcaice::Context                     &context );
 
     // remote calls
@@ -39,10 +39,10 @@ public:
 
 private:
 
-    hydroiceutil::Buffer<orca::PathPlanner2dTask>& pathPlannerTaskBuffer_;
+    gbxsickacfr::gbxiceutilacfr::Buffer<orca::PathPlanner2dTask>& pathPlannerTaskBuffer_;
 
     // the driver puts the latest computed path into here using localSetData
-    hydroiceutil::Store<orca::PathPlanner2dData> pathPlannerDataStore_;
+    gbxsickacfr::gbxiceutilacfr::Store<orca::PathPlanner2dData> pathPlannerDataStore_;
 
     // The topic to which we'll publish
     IceStorm::TopicPrx topicPrx_;

@@ -14,7 +14,7 @@
 #include <orcaice/proputils.h>
 #include <orcaobj/stringutils.h>        
 #include <hydroutil/stringutils.h>    // for toStringSeq()
-#include <hydroutil/mathdefs.h>           // for DEG2RAD_RATIO
+#include <gbxsickacfr/gbxutilacfr/mathdefs.h>           // for DEG2RAD_RATIO
 
 #include "proputils.h"
 // #include "configutils.h"

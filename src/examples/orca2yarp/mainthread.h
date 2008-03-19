@@ -11,13 +11,13 @@
 #ifndef MAINTHREAD_H
 #define MAINTHREAD_H
 
-#include <hydroiceutil/safethread.h>
+#include <gbxsickacfr/gbxiceutilacfr/safethread.h>
 #include <orcaice/context.h>
 
 namespace orca2yarp
 {
 
-class MainThread: public hydroiceutil::SafeThread
+class MainThread: public gbxsickacfr::gbxiceutilacfr::SafeThread
 {    	
 public:
     MainThread( const orcaice::Context& context );

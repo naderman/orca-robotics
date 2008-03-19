@@ -19,7 +19,7 @@ using namespace insgps;
 
 
 MainThread::MainThread( const orcaice::Context &context ) :
-    hydroiceutil::SubsystemThread( context.tracer(), context.status(), "MainThread" ),
+    gbxsickacfr::gbxiceutilacfr::SubsystemThread( context.tracer(), context.status(), "MainThread" ),
     hwThread_(new HwThread(context)),
     context_(context)
 {
@@ -33,7 +33,7 @@ MainThread::MainThread( const orcaice::Context &context ) :
 MainThread::~MainThread()
 {
     context_.tracer().debug( "stopping mainThread", 5 );
-    hydroiceutil::stopAndJoin( hwThread_ );
+    gbxsickacfr::gbxiceutilacfr::stopAndJoin( hwThread_ );
     context_.tracer().debug( "stopped mainThread", 5 );
     return;
 }

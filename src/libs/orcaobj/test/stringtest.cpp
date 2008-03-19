@@ -9,7 +9,7 @@
  */
 
 #include <orcaobj/orcaobj.h>
-#include <hydroutil/mathdefs.h>
+#include <gbxsickacfr/gbxutilacfr/mathdefs.h>
 #include <iostream>
 
 using namespace std;

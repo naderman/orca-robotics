@@ -11,7 +11,7 @@
 #ifndef  TERMINAL_DISPLAY_THREAD_H
 #define  TERMINAL_DISPLAY_THREAD_H
 
-#include <hydroiceutil/safethread.h>
+#include <gbxsickacfr/gbxiceutilacfr/safethread.h>
 #include <orcaice/context.h>
 #include <hydroiceutil/eventqueue.h>
 
@@ -22,7 +22,7 @@ namespace teleop
 
 class TermDisplayDriver;
 
-class TermDisplayThread : public hydroiceutil::SafeThread, public Display
+class TermDisplayThread : public gbxsickacfr::gbxiceutilacfr::SafeThread, public Display
 {
 public:
 

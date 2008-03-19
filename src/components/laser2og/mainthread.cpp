@@ -135,14 +135,14 @@ MainThread::init()
     if (ogFusionConfig.offset.o != 0.0) {
         // unrecoverable error
         context_.shutdown(); 
-        throw hydroutil::Exception( ERROR_INFO, "Laser2Og currently only support axis aligned OgMaps" );
+        throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, "Laser2Og currently only support axis aligned OgMaps" );
     }
 
     //
     // Subscribe for observation data
     //
     // create a callback object to recieve scans
-    consumer_ = new orcaifaceimpl::BufferedRangeScanner2dConsumerImpl( -1, hydroiceutil::BufferTypeCircular, context_ );
+    consumer_ = new orcaifaceimpl::BufferedRangeScanner2dConsumerImpl( -1, gbxsickacfr::gbxiceutilacfr::BufferTypeCircular, context_ );
     consumer_->subscribeWithTag( "Observations", this, subsysName() );
 
     //
@@ -223,7 +223,7 @@ MainThread::walk()
             stringstream ss; ss << "unexpected (remote?) orca exception: " << e << ": " << e.what;
             context_.tracer().error( ss.str() );
         }
-        catch ( const hydroutil::Exception & e ) {
+        catch ( const gbxsickacfr::gbxutilacfr::Exception & e ) {
             stringstream ss; ss << "unexpected (local?) orcaice exception: " << e.what();
             context_.tracer().error( ss.str() );
         }

@@ -26,7 +26,7 @@ MainThread::MainThread( DriverFactory                &driverFactory,
                     orcalocalnav::Clock              &clock,
                     orcalocalnav::PathFollower2dI    &pathFollowerInterface,
                     const orcaice::Context           &context ) :
-    hydroiceutil::SubsystemThread( context.tracer(), context.status(), "MainThread" ),
+    gbxsickacfr::gbxiceutilacfr::SubsystemThread( context.tracer(), context.status(), "MainThread" ),
     speedLimiter_(NULL),
     pathMaintainer_(NULL),
     driver_(NULL),
@@ -50,7 +50,7 @@ MainThread::MainThread( DriverFactory               &driverFactory,
                     orcalocalnav::PathFollower2dI   &pathFollowerInterface,
                     Simulator                       &testSimulator,
                     const orcaice::Context          &context ) :
-    hydroiceutil::SubsystemThread( context.tracer(), context.status(), "MainThread" ),
+    gbxsickacfr::gbxiceutilacfr::SubsystemThread( context.tracer(), context.status(), "MainThread" ),
     speedLimiter_(NULL),
     pathMaintainer_(NULL),
     driver_(NULL),
@@ -125,7 +125,7 @@ MainThread::initInterfaces()
             pathFollowerInterface_.initInterface();
             return;
         }
-        catch ( hydroutil::Exception &e )
+        catch ( gbxsickacfr::gbxutilacfr::Exception &e )
         {
             stringstream ss;
             ss << "MainThread: Failed to initialise PathFollower2d interface: " << e.what();

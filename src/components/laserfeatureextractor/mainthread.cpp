@@ -335,7 +335,7 @@ MainThread::convertToRobotCS( const orca::PolarFeature2dData &featureData )
                 ss << "MainThread::convertToRobotCS(): bearingDiff < 0 -- line is not visible from sensor pose!"
                    << "  Line was: " 
                    << orcaobj::toString(ftr);
-                throw hydroutil::Exception( ERROR_INFO, ss.str() );
+                throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, ss.str() );
             }
 
             convertPointToRobotCS( f.start.r, f.start.o, offsetXyz, offsetAngles );
@@ -358,7 +358,7 @@ MainThread::convertToRobotCS( const orca::PolarFeature2dData &featureData )
                    << "  (this is possible when sensor/platforms poses are not co-located).  Ignoring."<<endl
                    << "  Line was: " 
                    << orcaobj::toString(ftr);
-                throw hydroutil::Exception( ERROR_INFO, ss.str() );
+                throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, ss.str() );
             }
         }
         else

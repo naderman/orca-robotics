@@ -17,7 +17,7 @@ using namespace std;
 using namespace cameraserver;
 
 MainThread::MainThread( const orcaice::Context &context ) :
-    hydroiceutil::SubsystemThread( context.tracer(), context.status(), "MainThread" ),
+    gbxsickacfr::gbxiceutilacfr::SubsystemThread( context.tracer(), context.status(), "MainThread" ),
     config_(1),
     context_(context)
 {
@@ -53,7 +53,7 @@ MainThread::MainThread( const orcaice::Context &context ) :
     if ( !config_.validate() ) {
         context_.tracer().error( "Failed to validate camera configuration. "+config_.toString() );
         // this will kill this component
-        throw hydroutil::Exception( ERROR_INFO, "Failed to validate camera configuration" );
+        throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, "Failed to validate camera configuration" );
     }
 }
 

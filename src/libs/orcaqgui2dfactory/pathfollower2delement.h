@@ -13,8 +13,8 @@
 
 #include <orca/pathfollower2d.h>
 
-#include <hydroiceutil/store.h>
-#include <hydroiceutil/timer.h>
+#include <gbxsickacfr/gbxiceutilacfr/store.h>
+#include <gbxsickacfr/gbxiceutilacfr/timer.h>
 
 #include <hydroqgui/guielement2d.h>
 #include <orcaqgui2dfactory/pathpainter.h>
@@ -36,8 +36,8 @@ public:
     void setActivationTime( const orca::Time& absoluteTime, double relativeTime, const ::Ice::Current& );
     void setEnabledState( bool enabledState, const ::Ice::Current& );
 
-    hydroiceutil::Store<orca::PathFollower2dData> pathPipe_;
-    hydroiceutil::Store<int> indexPipe_;
+    gbxsickacfr::gbxiceutilacfr::Store<orca::PathFollower2dData> pathPipe_;
+    gbxsickacfr::gbxiceutilacfr::Store<int> indexPipe_;
 };
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -210,8 +210,8 @@ private:
     const hydroqgui::GuiElementSet &guiElementSet_;
     
     bool firstTime_;
-    hydroiceutil::Timer *timer_;
-    hydroiceutil::Timer *activationTimer_;
+    gbxsickacfr::gbxiceutilacfr::Timer *timer_;
+    gbxsickacfr::gbxiceutilacfr::Timer *activationTimer_;
     
     // toggle states
     bool displayWaypoints_;

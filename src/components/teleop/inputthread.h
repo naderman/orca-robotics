@@ -12,7 +12,7 @@
 #define  INPUT_THREAD_H
 
 #include <memory>
-#include <hydroiceutil/safethread.h>
+#include <gbxsickacfr/gbxiceutilacfr/safethread.h>
 #include <orcaice/context.h>
 #include <hydrointerfaces/humaninput2d.h>
 #include <hydrodll/dynamicload.h>
@@ -23,7 +23,7 @@ namespace teleop
 class Network;
 // class InputDriver;
 
-class InputThread : public hydroiceutil::SafeThread
+class InputThread : public gbxsickacfr::gbxiceutilacfr::SafeThread
 {
 public:
 

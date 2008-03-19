@@ -11,9 +11,9 @@
 #include <iostream>
 #include <sstream>
 #include <iomanip>
-#include <hydroutil/exceptions.h>
+#include <gbxsickacfr/gbxutilacfr/exceptions.h>
 #include <hydroutil/stringutils.h>
-#include <hydroutil/mathdefs.h>
+#include <gbxsickacfr/gbxutilacfr/mathdefs.h>
 #include <orcaice/timeutils.h>
 
 // trying to solve a problem in win, round() is not found
@@ -804,7 +804,7 @@ std::string
 toString( const orca::VehicleControlDescriptionPtr& obj )
 {
     if ( obj == 0 )
-        throw hydroutil::Exception( ERROR_INFO, "VehicleControlDescriptionPtr was zero!" );
+        throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, "VehicleControlDescriptionPtr was zero!" );
 
     std::ostringstream s;
     s << "VehicleControlDescription: "
@@ -859,7 +859,7 @@ std::string
 toString( const orca::VehicleGeometryDescriptionPtr& obj )
 {
     if ( obj == 0 )
-        throw hydroutil::Exception( ERROR_INFO, "VehicleGeometryDescriptionPtr was zero!" );
+        throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, "VehicleGeometryDescriptionPtr was zero!" );
 
     std::ostringstream s;
     s << "VehicleGeometryDescription: "
@@ -1349,7 +1349,7 @@ toString( const orca::LinkQualityType &l )
     case orca::LinkQualityTypeRelative:
         return "LinkQualityTypeRelative";
     }
-    throw hydroutil::Exception( ERROR_INFO, "Don't know how to handle this type in toString()" );
+    throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, "Don't know how to handle this type in toString()" );
 }
 
 std::string
@@ -1372,7 +1372,7 @@ toString( const orca::OperationMode &o )
     case orca::OperationModeSecondRepeater:
         return "OperationModeSecondRepeater";
     }
-    throw hydroutil::Exception( ERROR_INFO, "Don't know how to handle this type in toString()" );
+    throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, "Don't know how to handle this type in toString()" );
 }
 
 std::string 

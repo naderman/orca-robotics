@@ -11,7 +11,7 @@
 #ifndef ORCAICE_ICE_PTR_BUFFER_H
 #define ORCAICE_ICE_PTR_BUFFER_H
 
-#include <hydroiceutil/buffer.h>
+#include <gbxsickacfr/gbxiceutilacfr/buffer.h>
 #include <Ice/Ice.h>
 
 namespace orcaice
@@ -26,9 +26,9 @@ namespace orcaice
  *  @see PtrStore, PtrNotify
  */
 template<class Type>
-class PtrBuffer : public hydroiceutil::Buffer<Type>
+class PtrBuffer : public gbxsickacfr::gbxiceutilacfr::Buffer<Type>
 {
-    using hydroiceutil::Buffer<Type>::queue_;
+    using gbxsickacfr::gbxiceutilacfr::Buffer<Type>::queue_;
 
 public:
     /*!
@@ -37,7 +37,7 @@ public:
      *      - negative numbers for infinite depth, limited by memory size
      *      - zero is undefined
      */
-    PtrBuffer( int depth, hydroiceutil::BufferType type );
+    PtrBuffer( int depth, gbxsickacfr::gbxiceutilacfr::BufferType type );
     
 protected:
     virtual void internalGet( Type & obj ) const ;
@@ -48,8 +48,8 @@ protected:
 };
 
 template<class Type>
-PtrBuffer<Type>::PtrBuffer( int depth, hydroiceutil::BufferType type )
-    : hydroiceutil::Buffer<Type>(depth,type)
+PtrBuffer<Type>::PtrBuffer( int depth, gbxsickacfr::gbxiceutilacfr::BufferType type )
+    : gbxsickacfr::gbxiceutilacfr::Buffer<Type>(depth,type)
 {
 }
 

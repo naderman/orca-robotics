@@ -22,7 +22,7 @@ class VelocityControl2dSim : public orcawall::InterfaceSim
 public:
     VelocityControl2dSim( const std::string& tag, const orcaice::Context& context );
 
-    // from hydroiceutil::Thread
+    // from gbxsickacfr::gbxiceutilacfr::Thread
     virtual void walk();
 };
 

@@ -55,7 +55,7 @@ MainThread::walk()
     {
         // unrecoverable error
         context_.shutdown();
-        throw hydroutil::Exception( ERROR_INFO, "Unknown driver type: "+driverName );
+        throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, "Unknown driver type: "+driverName );
     }
 
     //

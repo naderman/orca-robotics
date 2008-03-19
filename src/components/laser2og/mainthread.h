@@ -11,7 +11,7 @@
 #define MAIN_THREAD_H
 
 #include <memory>
-#include <hydroiceutil/subsystemthread.h>
+#include <gbxsickacfr/gbxiceutilacfr/subsystemthread.h>
 #include <orcaice/context.h>
 
 #include <orca/rangescanner2d.h>
@@ -23,7 +23,7 @@
 namespace laser2og
 {
 
-class MainThread : public hydroiceutil::SubsystemThread
+class MainThread : public gbxsickacfr::gbxiceutilacfr::SubsystemThread
 {
 public:
     

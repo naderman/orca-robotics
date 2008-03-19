@@ -15,7 +15,7 @@
 #include <QLCDNumber>
 #include <QVBoxLayout>
 
-#include <hydroutil/mathdefs.h>
+#include <gbxsickacfr/gbxutilacfr/mathdefs.h>
 
 #include "wifielement.h"
 

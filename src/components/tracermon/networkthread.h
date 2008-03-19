@@ -12,7 +12,7 @@
 #define NETWORK_HANDLER_H
 
 #include <orca/tracer.h>
-#include <hydroiceutil/safethread.h>
+#include <gbxsickacfr/gbxiceutilacfr/safethread.h>
 #include <orcaice/context.h>
 #include <hydroiceutil/eventqueue.h>
 #include "user.h"
@@ -22,7 +22,7 @@ namespace tracermon
 {
 
 // class MainThread : public Network
-class MainThread : public hydroiceutil::SafeThread, public Network //, virtual public orca::TracerConsumer
+class MainThread : public gbxsickacfr::gbxiceutilacfr::SafeThread, public Network //, virtual public orca::TracerConsumer
 {
 public:
 

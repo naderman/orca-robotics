@@ -12,8 +12,8 @@
 #define IOSTREAM_DISPLAY_DRIVER_H
 
 #include <vector>
-#include <hydroiceutil/buffer.h>
-#include <hydroiceutil/store.h>
+#include <gbxsickacfr/gbxiceutilacfr/buffer.h>
+#include <gbxsickacfr/gbxiceutilacfr/store.h>
 
 #include <orcaprobe/factory.h>
 

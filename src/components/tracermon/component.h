@@ -26,8 +26,8 @@ public:
     virtual void stop();
 
 private:
-    hydroiceutil::ThreadPtr netThread_;
-    hydroiceutil::ThreadPtr usrThread_;
+    gbxsickacfr::gbxiceutilacfr::ThreadPtr netThread_;
+    gbxsickacfr::gbxiceutilacfr::ThreadPtr usrThread_;
 };
 
 } // namespace

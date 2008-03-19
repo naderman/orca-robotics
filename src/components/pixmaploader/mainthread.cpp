@@ -105,7 +105,7 @@ MainThread::walk()
     {
         // unrecoverable error
         context_.shutdown();
-        throw hydroutil::Exception( ERROR_INFO, "Unknown driver type: "+driverName );
+        throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, "Unknown driver type: "+driverName );
     }
 
     cout<<"TRACE(component.cpp): Loaded map: " << orcaobj::toString(theMap) << endl;

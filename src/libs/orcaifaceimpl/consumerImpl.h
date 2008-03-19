@@ -13,7 +13,7 @@
 
 #include <orcaice/context.h>
 #include <orcaice/multiconnectutils.h>
-#include <hydroiceutil/safethread.h>
+#include <gbxsickacfr/gbxiceutilacfr/safethread.h>
 
 namespace orcaifaceimpl
 {
@@ -81,13 +81,13 @@ public:
     //! If succesful, tries to subscribe for data using the internal consumer interface.
     //! Catches appropriate exceptions. DOCUMENT!
     virtual void subscribeWithString( const std::string& proxyString, 
-                          hydroiceutil::Thread*  thread, const std::string& subsysName="", 
+                          gbxsickacfr::gbxiceutilacfr::Thread*  thread, const std::string& subsysName="", 
                           int retryInterval=2, int retryNumber=-1 )=0;
 
     //! Same as the threaded version of subscribeWithString() but the interface is looked up 
     //! using the config file and tag interfaceTag.
     virtual void subscribeWithTag( const std::string& interfaceTag, 
-                          hydroiceutil::Thread*  thread, const std::string& subsysName="", 
+                          gbxsickacfr::gbxiceutilacfr::Thread*  thread, const std::string& subsysName="", 
                           int retryInterval=2, int retryNumber=-1 )=0;
 };
 
@@ -164,7 +164,7 @@ public:
     }
 
     virtual void subscribeWithString( const std::string& proxyString, 
-                          hydroiceutil::Thread*  thread, const std::string& subsysName="", 
+                          gbxsickacfr::gbxiceutilacfr::Thread*  thread, const std::string& subsysName="", 
                           int retryInterval=2, int retryNumber=-1 )
     {
         ProviderPrxType providerPrx;
@@ -210,7 +210,7 @@ public:
     }
 
     virtual void subscribeWithTag( const std::string& interfaceTag, 
-                          hydroiceutil::Thread*  thread, const std::string& subsysName="", 
+                          gbxsickacfr::gbxiceutilacfr::Thread*  thread, const std::string& subsysName="", 
                           int retryInterval=2, int retryNumber=-1 )
     {
         // this may throw ConfigFileException, we don't catch it, let the user catch it at the component level

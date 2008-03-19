@@ -130,7 +130,7 @@ Component::start()
         context().tracer().info( "Loading GUI Qt driver");
         display = new GuiQtDisplay( supportedInterfaces );
 #else
-        throw hydroutil::Exception( ERROR_INFO, "Can't instantiate driver type 'gui-qt' because it was not compiled." );
+        throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, "Can't instantiate driver type 'gui-qt' because it was not compiled." );
 #endif
     }
     else if ( driverName == "term-iostream" ) 
@@ -141,7 +141,7 @@ Component::start()
     else {
         std::string errorStr = "Unknown driver type." + driverName + " Cannot talk to hardware.";
         context().tracer().error( errorStr);
-        throw hydroutil::HardwareException( ERROR_INFO, errorStr );
+        throw gbxsickacfr::gbxutilacfr::HardwareException( ERROR_INFO, errorStr );
     }
 
     BrowserThread browserThread( *display, factories_, context() );

@@ -1,4 +1,4 @@
-class hydroserial::Serial;
+class gbxserialacfr::Serial;
 
 // test connectivity to a [serial] device at a [baudrate];
 // Assumes that you can figure out a [challenge] (command ...) to
@@ -12,7 +12,7 @@ class hydroserial::Serial;
 bool testConnectivity(
         std::string &challenge,
         std::string &ack,
-        hydroserial::Serial* serial,
+        gbxserialacfr::Serial* serial,
         int timeOutMsec,
         int numTry,
         int successThresh,

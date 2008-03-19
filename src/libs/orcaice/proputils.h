@@ -34,7 +34,7 @@ namespace orcaice
  *     system-dependent location:
  *          > Linux: $HOME/.orcarc
  *          > Win32: C:\orca.ini
- *  Throws hydroutil::Exception if none of the three options work out.
+ *  Throws gbxsickacfr::gbxutilacfr::Exception if none of the three options work out.
  */
 std::string getGlobalConfigFilename( const Ice::PropertiesPtr &props );
 
@@ -72,7 +72,7 @@ std::string getApplicationConfigFilename( const Ice::StringSeq & args );
  *          IceBox.Service.MyService=MyService:create --Ice.Config=local.cfg
  *              returns "local.cfg"
  *
- *  Throws hydroutil::Exception if the argument list is empty. Returns an empty string if 
+ *  Throws gbxsickacfr::gbxutilacfr::Exception if the argument list is empty. Returns an empty string if 
  *  the argument is non-empty but no suitable properties were found.
  */
 std::string getServiceConfigFilename( const Ice::StringSeq & args );
@@ -85,10 +85,10 @@ std::string getServiceConfigFilename( const Ice::StringSeq & args );
 //
 
 //! Returns: 0 = property found (and its value is not empty), non-zero = property not found (or is defined but left empty).
-//! Throws a hydroutil::Exception if the key is found but the value cannot be converted to the desired type.
+//! Throws a gbxsickacfr::gbxutilacfr::Exception if the key is found but the value cannot be converted to the desired type.
 int getPropertyAsDouble( const Ice::PropertiesPtr &, const ::std::string& key, Ice::Double &value );
 //! Returns: 0 = property found (and its value is not empty), non-zero = property not found (or is defined but left empty).
-//! Throws a hydroutil::Exception if the key is found but the value cannot be converted to the desired type.
+//! Throws a gbxsickacfr::gbxutilacfr::Exception if the key is found but the value cannot be converted to the desired type.
 int getPropertyAsInt(    const Ice::PropertiesPtr &, const ::std::string& key, int         &value );
 //! Returns: 0 = property found (and its value is not empty), non-zero = property not found (or is defined but left empty).
 //! Note that the Ice PropertiesI::load() method has a line size limitation of 1024 characters 
@@ -99,28 +99,28 @@ int getProperty(         const Ice::PropertiesPtr &, const ::std::string& key, s
 //! Returns: 0 = property found (and its value is not empty), non-zero = property not found (or is defined but left empty).
 //! Note that the Ice PropertiesI::load() method has a line size limitation of 1024 characters.
 //! but quietly fails so there is no way of knowing if you have exceeded this limitation
-//! Throws a hydroutil::Exception if the key is found but the value cannot be converted to the desired type.
+//! Throws a gbxsickacfr::gbxutilacfr::Exception if the key is found but the value cannot be converted to the desired type.
 int getPropertyAsIntVector( const Ice::PropertiesPtr &, const ::std::string& key, std::vector<int> &value );
 //! Parses the value into a vector of doubles assuming empty space delimeters. Elements will continue
 //! to be added to the end of the vector until the end of the line is reached.
 //! Returns: 0 = property found (and its value is not empty), non-zero = property not found (or is defined but left empty).
 //! Note that the Ice PropertiesI::load() method has a line size limitation of 1024 characters 
 //! but quietly fails so there is no way of knowing if you have exceeded this limitation.
-//! Throws a hydroutil::Exception if the key is found but the value cannot be converted to the desired type.
+//! Throws a gbxsickacfr::gbxutilacfr::Exception if the key is found but the value cannot be converted to the desired type.
 int getPropertyAsDoubleVector( const Ice::PropertiesPtr &, const ::std::string& key, std::vector<double> &value );
 
 //! Returns the default value if key is not found.
-//! Throws a hydroutil::Exception if the key is found but the value cannot be converted to the desired type.
+//! Throws a gbxsickacfr::gbxutilacfr::Exception if the key is found but the value cannot be converted to the desired type.
 Ice::Double getPropertyAsDoubleWithDefault( const Ice::PropertiesPtr &, const ::std::string& key, const Ice::Double defaultValue );
 //! Returns the default value if key is not found.
-//! Throws a hydroutil::Exception if the key is found but the value cannot be converted to the desired type.
+//! Throws a gbxsickacfr::gbxutilacfr::Exception if the key is found but the value cannot be converted to the desired type.
 int         getPropertyAsIntWithDefault(    const Ice::PropertiesPtr &, const ::std::string& key, const int         defaultValue );
 //! Returns the default value if key is not found.
 std::string getPropertyWithDefault(         const Ice::PropertiesPtr &, const ::std::string& key, const std::string &defaultValue );
 //! Returns the default value if key is not found or cannot be converted to a vector<int>.
 std::vector<int> getPropertyAsIntVectorWithDefault( const Ice::PropertiesPtr &, const ::std::string& key, const std::vector<int> &defaultValue );
 //! Returns the default value if key is not found.
-//! Throws a hydroutil::Exception if the key is found but the value cannot be converted to the desired type.
+//! Throws a gbxsickacfr::gbxutilacfr::Exception if the key is found but the value cannot be converted to the desired type.
 std::vector<double> getPropertyAsDoubleVectorWithDefault( const Ice::PropertiesPtr &, const ::std::string& key, const std::vector<double> &defaultValue );
 
 //! Returns standardized text which warns that a configuration property is not set.

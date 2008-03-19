@@ -3,7 +3,7 @@
 
 #include <IceUtil/Mutex.h>
 #include <orcaifaceimpl/estopImpl.h>
-#include <hydroiceutil/timer.h>
+#include <gbxsickacfr/gbxiceutilacfr/timer.h>
 
 namespace segwayrmp {
 
@@ -25,7 +25,7 @@ public:
            const orcaice::Context &context );
 
     //! Sets up the Ice interface
-    void initInterface( hydroiceutil::Thread* thread );
+    void initInterface( gbxsickacfr::gbxiceutilacfr::Thread* thread );
 
     // If true, we should _NOT_MOVE_ !!
     bool isEStopTriggered();
@@ -42,7 +42,7 @@ private:
 
     bool                isEStopTriggered_;
     double              keepAlivePeriodSec_;
-    hydroiceutil::Timer keepAliveTimer_;
+    gbxsickacfr::gbxiceutilacfr::Timer keepAliveTimer_;
 
     orcaifaceimpl::EStopImplPtr eStopImpl_;
 

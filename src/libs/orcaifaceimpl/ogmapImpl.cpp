@@ -85,7 +85,7 @@ OgMapImpl::initInterface()
 }
 
 void 
-OgMapImpl::initInterface( hydroiceutil::Thread* thread, const std::string& subsysName, int retryInterval )
+OgMapImpl::initInterface( gbxsickacfr::gbxiceutilacfr::Thread* thread, const std::string& subsysName, int retryInterval )
 {
     context_.tracer().debug( "OgMapImpl::initInterface(thread)", 5 );
 

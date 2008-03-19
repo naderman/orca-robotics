@@ -12,7 +12,7 @@
 #define DRIVER_H
 
 // this class is a thread which inherits from thread.h
-#include <hydroiceutil/safethread.h>
+#include <gbxsickacfr/gbxiceutilacfr/safethread.h>
 
 #include <orca/imu.h>
 #include <orca/odometry3d.h>
@@ -68,7 +68,7 @@ typedef struct Pps{
 }Pps;
 
 
-class Driver : public hydroiceutil::Thread
+class Driver : public gbxsickacfr::gbxiceutilacfr::Thread
 {
 
 public:

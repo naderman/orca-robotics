@@ -2,7 +2,7 @@
 #define ORCAROBOTDRIVERUTIL_STATEMACHINE_H
 
 #include <string>
-#include <hydroiceutil/store.h>
+#include <gbxsickacfr/gbxiceutilacfr/store.h>
 
 namespace orcarobotdriverutil {
 
@@ -55,7 +55,7 @@ private:
     };
     ////////////////////////////////////////
 
-    hydroiceutil::Store<State> stateStore_;
+    gbxsickacfr::gbxiceutilacfr::Store<State> stateStore_;
 
 };
 

@@ -95,7 +95,7 @@ DriveBicycleImpl::initInterface()
 }
 
 void 
-DriveBicycleImpl::initInterface( hydroiceutil::Thread* thread, const std::string& subsysName, int retryInterval )
+DriveBicycleImpl::initInterface( gbxsickacfr::gbxiceutilacfr::Thread* thread, const std::string& subsysName, int retryInterval )
 {
     topicPrx_ = orcaice::connectToTopicWithString<orca::DriveBicycleConsumerPrx>
         ( context_, consumerPrx_, topicName_, thread, subsysName, retryInterval );

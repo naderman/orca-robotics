@@ -86,7 +86,7 @@ TestComponent::start()
             orcaice::createInterfaceWithString( context(), homeObj, "homeless" );
             // ok
         }
-        catch ( const hydroutil::Exception & ) {
+        catch ( const gbxsickacfr::gbxutilacfr::Exception & ) {
             cout<<"failed"<<endl<<"should be able to create interface"<<endl;
             exit(EXIT_FAILURE);
         }
@@ -111,7 +111,7 @@ TestComponent::start()
         orcaice::createInterfaceWithTag( context(), homeObj, "P1" );
         // ok
     }
-    catch ( const hydroutil::Exception & ) {
+    catch ( const gbxsickacfr::gbxutilacfr::Exception & ) {
         cout<<"failed"<<endl<<"should be able to create interface"<<endl;
         exit(EXIT_FAILURE);
     }
@@ -125,7 +125,7 @@ TestComponent::start()
     catch ( const orcaice::ConfigFileException & ) {
         // ok
     }
-    catch ( const hydroutil::Exception & ) {
+    catch ( const gbxsickacfr::gbxutilacfr::Exception & ) {
         cout<<"failed"<<endl<<"should get ConfigFileException"<<endl;
         exit(EXIT_FAILURE);
     }

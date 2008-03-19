@@ -20,9 +20,7 @@
 #include <orcaice/ptrstore.h>
 #include <orcaice/context.h>
 
-namespace hydroiceutil {
-    class Thread;
-}
+namespace gbxsickacfr { namespace gbxiceutilacfr { class Thread; } }
 
 namespace orcaifaceimpl {
 
@@ -46,14 +44,14 @@ public:
     ~LaserScanner2dImpl();
 
     // local interface:
-    //! Sets up interface and connects to IceStorm. May throw hydroutil::Exceptions.
+    //! Sets up interface and connects to IceStorm. May throw gbxsickacfr::gbxutilacfr::Exceptions.
     void initInterface();
 
     //! Sets up interface and connects to IceStorm. Catches all exceptions and retries
     //! until sucessful. Before every attempt checks if the thread was stopped. After every
     //! If a non-empty subsystem name is supplied, sends a Status heartbeat after each attempt 
-    //! (@see hydroutil::Status).
-    void initInterface( hydroiceutil::Thread* thread, const std::string& subsysName="", int retryInterval=2 );
+    //! (@see gbxsickacfr::gbxutilacfr::Status).
+    void initInterface( gbxsickacfr::gbxiceutilacfr::Thread* thread, const std::string& subsysName="", int retryInterval=2 );
 
     //! A local call which sets the data reported by the interface
     void localSet( const orca::LaserScanner2dDataPtr& data );

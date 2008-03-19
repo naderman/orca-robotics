@@ -30,7 +30,7 @@ namespace probe
 class ProbeFactory;
 class InterfaceProbe;
 
-class BrowserThread : public orcaprobe::IBrowser, public hydroiceutil::SafeThread, public BrowserFsm
+class BrowserThread : public orcaprobe::IBrowser, public gbxsickacfr::gbxiceutilacfr::SafeThread, public BrowserFsm
 {
 
 public:

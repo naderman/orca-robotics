@@ -21,7 +21,7 @@ Odometry3dI::Odometry3dI( const VehicleDescription&  descr,
                           Driver*                   hwDriver,
                           const orcaice::Context & context )
     :   InsGpsI(context),
-        odometry3dDataBuffer_(100,hydroiceutil::BufferTypeCircular),
+        odometry3dDataBuffer_(100,gbxsickacfr::gbxiceutilacfr::BufferTypeCircular),
         descr_(descr),
         hwDriver_(hwDriver),
         context_(context)

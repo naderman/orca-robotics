@@ -13,7 +13,7 @@
 
 #include <iostream>
 #include <orca/pathplanner2d.h>
-#include <hydroiceutil/store.h>
+#include <gbxsickacfr/gbxiceutilacfr/store.h>
 #include <orcaqguielementutil/icestormelement.h>
 #include <orcaqgui2dfactory/pathpainter.h>
 #include <orcaqgui2dfactory/pathinput.h>
@@ -32,7 +32,7 @@ class PathPlannerTaskAnswerConsumer : public orca::PathPlanner2dConsumer
     public:
 
         virtual void setData(const ::orca::PathPlanner2dData& data, const ::Ice::Current& = ::Ice::Current());
-        hydroiceutil::Store<QString> msgStore_;
+        gbxsickacfr::gbxiceutilacfr::Store<QString> msgStore_;
 };
 ////////////////////////////////////////////////////////////////////////////////
 

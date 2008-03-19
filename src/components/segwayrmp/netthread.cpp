@@ -30,7 +30,7 @@ saveToFile( const hydrointerfaces::SegwayRmp::Data &data,
     if ( !logfile.is_open() ) 
     {
         stringstream ss; ss << "Failed to open file for writing: " << fname;
-        throw hydroutil::Exception( ERROR_INFO, ss.str() );
+        throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, ss.str() );
     }
 
     logfile << data.seconds << " " 
@@ -183,9 +183,9 @@ NetThread::NetThread( HwThread                      &hwThread,
     orca::VehicleControlVelocityDifferentialDescription *controlDescr =
         dynamic_cast<orca::VehicleControlVelocityDifferentialDescription*>(&(*(descr.control)));
     if ( controlDescr == NULL )
-        throw hydroutil::Exception( ERROR_INFO, "Can only deal with differential drive vehicles." );
+        throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, "Can only deal with differential drive vehicles." );
     if ( controlDescr->maxForwardSpeed != controlDescr->maxReverseSpeed ) 
-        throw hydroutil::Exception( ERROR_INFO, "Can't handle max forward speed != max reverse speed." );
+        throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, "Can't handle max forward speed != max reverse speed." );
 
     maxForwardSpeed_        = controlDescr->maxForwardSpeed;
     maxReverseSpeed_        = controlDescr->maxForwardSpeed;
@@ -258,9 +258,9 @@ NetThread::walk()
     orca::Odometry3dData odometry3dData;
     orca::PowerData      powerData;
 
-    hydroiceutil::Timer odometry2dPublishTimer;
-    hydroiceutil::Timer odometry3dPublishTimer;
-    hydroiceutil::Timer powerPublishTimer;
+    gbxsickacfr::gbxiceutilacfr::Timer odometry2dPublishTimer;
+    gbxsickacfr::gbxiceutilacfr::Timer odometry3dPublishTimer;
+    gbxsickacfr::gbxiceutilacfr::Timer powerPublishTimer;
 
     double odometry2dPublishInterval = orcaice::getPropertyAsDoubleWithDefault( 
         context_.properties(), prefix+"Odometry2dPublishInterval", 0.1 );

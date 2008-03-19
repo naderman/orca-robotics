@@ -79,7 +79,7 @@ namespace {
         {
             stringstream ss;
             ss << "Badly formed localiseData: " << orcaobj::toString( localiseData );
-            throw hydroutil::Exception( ERROR_INFO, ss.str() );
+            throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, ss.str() );
         }
         
         const orca::Pose2dHypothesis &h = localiseData.hypotheses[0];
@@ -109,7 +109,7 @@ namespace {
 }
 
 MainThread::MainThread( const orcaice::Context & context )
-    : hydroiceutil::SubsystemThread( context.tracer(), context.status(), "MainThread" ),
+    : gbxsickacfr::gbxiceutilacfr::SubsystemThread( context.tracer(), context.status(), "MainThread" ),
       incomingPathI_(0),
       context_(context)
 {

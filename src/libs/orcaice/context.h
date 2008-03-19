@@ -15,8 +15,8 @@
 
 #include <orca/ocm.h>
 #include <orcaice/home.h>
-#include <hydroutil/tracer.h>
-#include <hydroutil/status.h>
+#include <gbxsickacfr/gbxutilacfr/tracer.h>
+#include <gbxsickacfr/gbxutilacfr/status.h>
 #include <hydroutil/history.h>
 #include <hydroutil/context.h>
 
@@ -82,9 +82,9 @@ public:
     //! Access to setting home information.
     orcaice::Home&         home() const { return *home_; };
     //! Access tracing functions.
-    hydroutil::Tracer&     tracer() const { return *tracer_; };
+    gbxsickacfr::gbxutilacfr::Tracer&     tracer() const { return *tracer_; };
     //! Access status functions.
-    hydroutil::Status&     status() const { return *status_; };
+    gbxsickacfr::gbxutilacfr::Status&     status() const { return *status_; };
     //! Access history functions.
     hydroutil::History&    history() const { return *history_; };
 
@@ -130,8 +130,8 @@ private:
 
     // these could be auto_ptr's
     orcaice::Home*         home_;
-    hydroutil::Tracer*     tracer_;
-    hydroutil::Status*     status_;
+    gbxsickacfr::gbxutilacfr::Tracer*     tracer_;
+    gbxsickacfr::gbxutilacfr::Status*     status_;
     hydroutil::History*    history_;
 };
 

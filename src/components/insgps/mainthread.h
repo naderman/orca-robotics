@@ -23,7 +23,7 @@ namespace insgps {
 //
 // @brief the main executing loop of this insgps component.
 //
-class MainThread : public hydroiceutil::SubsystemThread
+class MainThread : public gbxsickacfr::gbxiceutilacfr::SubsystemThread
 {
 
 public:

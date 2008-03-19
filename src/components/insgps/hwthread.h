@@ -26,7 +26,7 @@ namespace insgps {
 //
 // @brief the hardware loop of this component.
 //
-class HwThread : public hydroiceutil::SubsystemThread
+class HwThread : public gbxsickacfr::gbxiceutilacfr::SubsystemThread
 {
 
 public:

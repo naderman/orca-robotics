@@ -20,7 +20,7 @@
 #include <orcaice/orcaice.h>
 
 // utilities
-#include <hydroiceutil/buffer.h>
+#include <gbxsickacfr/gbxiceutilacfr/buffer.h>
 
 // hardware driver      
 #include "driver.h"
@@ -71,7 +71,7 @@ public:
 private:
 
     // the driver will put the latest pva data into this buffer
-    hydroiceutil::Buffer<orca::Localise3dData> localise3dDataBuffer_;
+    gbxsickacfr::gbxiceutilacfr::Buffer<orca::Localise3dData> localise3dDataBuffer_;
 
     //publishers
     orca::Localise3dConsumerPrx localise3dPublisher_;

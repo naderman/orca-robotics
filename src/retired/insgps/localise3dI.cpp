@@ -21,7 +21,7 @@ Localise3dI::Localise3dI( const VehicleDescription&  descr,
                           Driver*                   hwDriver,
                           const orcaice::Context & context )
     :   InsGpsI(context),
-        localise3dDataBuffer_(100,hydroiceutil::BufferTypeQueue),
+        localise3dDataBuffer_(100,gbxsickacfr::gbxiceutilacfr::BufferTypeQueue),
         descr_(descr),
         hwDriver_(hwDriver),
         context_(context)
@@ -86,7 +86,7 @@ Localise3dI::getDataAtTime(const orca::Time& timeStamp, const ::Ice::Current& ) 
 {
     std::string errString = "localise3dI:getDataAtTime(): NOT IMPLEMENTED YET";
     context_.tracer().error( errString );
-    throw hydroutil::Exception( ERROR_INFO, errString );
+    throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, errString );
 
     ::orca::Localise3dData data;
     return data;

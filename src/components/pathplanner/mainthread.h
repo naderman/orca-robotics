@@ -11,9 +11,9 @@
 #ifndef MAIN_THREAD_H
 #define MAIN_THREAD_H
 
-#include <hydroiceutil/subsystemthread.h>
+#include <gbxsickacfr/gbxiceutilacfr/subsystemthread.h>
 #include <orcaice/context.h>
-#include <hydroiceutil/buffer.h>
+#include <gbxsickacfr/gbxiceutilacfr/buffer.h>
 
 #include <hydropathplan/hydropathplan.h>
 #include <memory>
@@ -23,7 +23,7 @@
 namespace pathplanner
 {
 
-class MainThread : public hydroiceutil::SubsystemThread
+class MainThread : public gbxsickacfr::gbxiceutilacfr::SubsystemThread
 {
 
 public: 
@@ -43,7 +43,7 @@ private:
     hydroogmap::OgMap ogMap_;
 
     PathPlanner2dI* pathPlannerI_;
-    hydroiceutil::Buffer<orca::PathPlanner2dTask> pathPlannerTaskBuffer_;
+    gbxsickacfr::gbxiceutilacfr::Buffer<orca::PathPlanner2dTask> pathPlannerTaskBuffer_;
     
     void initNetwork();
     void initDriver();

@@ -14,7 +14,7 @@
 // include defnition of Ice runtime
 #include <Ice/Ice.h>
 #include <IceStorm/IceStorm.h>
-#include <hydroiceutil/store.h>
+#include <gbxsickacfr/gbxiceutilacfr/store.h>
 
 // include provided interfaces
 #include <orca/pathfollower2d.h>
@@ -73,30 +73,30 @@ public:
     bool localIsEnabled() const;
 
     // local access to proxies
-    hydroiceutil::Store<orca::PathFollower2dData> &pathStore()           { return pathStore_; }
-    hydroiceutil::Store<bool>                     &newPathArrivedStore() { return newPathArrivedStore_; }
-    hydroiceutil::Store<orca::Time>               &activationTimeStore() { return activationTimeStore_; }
-    hydroiceutil::Store<bool>                     &activationArrivedStore() { return activationArrivedStore_; }
+    gbxsickacfr::gbxiceutilacfr::Store<orca::PathFollower2dData> &pathStore()           { return pathStore_; }
+    gbxsickacfr::gbxiceutilacfr::Store<bool>                     &newPathArrivedStore() { return newPathArrivedStore_; }
+    gbxsickacfr::gbxiceutilacfr::Store<orca::Time>               &activationTimeStore() { return activationTimeStore_; }
+    gbxsickacfr::gbxiceutilacfr::Store<bool>                     &activationArrivedStore() { return activationArrivedStore_; }
 
 private:
 
     double timeSinceActivate( const orca::Time &activationTime );
 
     // New paths from the outside world go in here
-    hydroiceutil::Store<orca::PathFollower2dData>        pathStore_;
+    gbxsickacfr::gbxiceutilacfr::Store<orca::PathFollower2dData>        pathStore_;
 
     // Let the component know that a new path has arrived
-    hydroiceutil::Store<bool>                            newPathArrivedStore_;
+    gbxsickacfr::gbxiceutilacfr::Store<bool>                            newPathArrivedStore_;
 
     // Time of Activation from the outside world goes in here
-    hydroiceutil::Store<bool>                            activationArrivedStore_;
+    gbxsickacfr::gbxiceutilacfr::Store<bool>                            activationArrivedStore_;
 
     // Progress info from the component goes in here
-    hydroiceutil::Store<int>                             wpIndexStore_;
-    hydroiceutil::Store<orca::Time>                      activationTimeStore_;
+    gbxsickacfr::gbxiceutilacfr::Store<int>                             wpIndexStore_;
+    gbxsickacfr::gbxiceutilacfr::Store<orca::Time>                      activationTimeStore_;
 
     // Allow external en/dis-able
-    hydroiceutil::Store<bool>                            enabledStore_;
+    gbxsickacfr::gbxiceutilacfr::Store<bool>                            enabledStore_;
     
     // The topic to which we'll publish
     IceStorm::TopicPrx             topicPrx_;

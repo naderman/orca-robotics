@@ -10,7 +10,7 @@
 #ifndef ORCAICE_ACTIVATOR_H
 #define ORCAICE_ACTIVATOR_H
 
-#include <hydroiceutil/safethread.h>
+#include <gbxsickacfr/gbxiceutilacfr/safethread.h>
 #include <orcaice/context.h>
 
 namespace orcaice {
@@ -47,7 +47,7 @@ public:
 //!
 //! @author Alex Brooks
 //!
-class Activator : public hydroiceutil::SafeThread
+class Activator : public gbxsickacfr::gbxiceutilacfr::SafeThread
 {
 
 public: 

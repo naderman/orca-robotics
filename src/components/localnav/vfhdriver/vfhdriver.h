@@ -12,7 +12,7 @@
 
 #include <localnavutil/idriver.h>
 #include <orcaice/context.h>
-#include <hydroiceutil/timer.h>
+#include <gbxsickacfr/gbxiceutilacfr/timer.h>
 #include <orcalocalnav/goal.h>
 #include <vfhdriver/vfh_algorithm.h>
 #include <orcaice/heartbeater.h>
@@ -98,7 +98,7 @@ private:
     float stallRatio_;
 
     // Timing for escapes
-    hydroiceutil::Timer             escapeTimer_;
+    gbxsickacfr::gbxiceutilacfr::Timer             escapeTimer_;
     static const double        escapeTimeMs_ = 1000.0;
 
     // Current state of the algorithm

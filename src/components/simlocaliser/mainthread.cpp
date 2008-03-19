@@ -62,7 +62,7 @@ MainThread::MainThread( const orcaice::Context & context ) :
 #else
         // unrecoverable error
         context_.shutdown(); 
-        throw hydroutil::Exception( ERROR_INFO, "Can't instantiate driver 'stage' because it was not built!" );
+        throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, "Can't instantiate driver 'stage' because it was not built!" );
 #endif
     }
     
@@ -167,7 +167,7 @@ MainThread::walk()
             context_.communicator()->destroy();
         }
     }
-    catch ( const hydroutil::Exception & e )
+    catch ( const gbxsickacfr::gbxutilacfr::Exception & e )
     {
         stringstream ss;
         ss << "unexpected (local?) orcaice exception: " << e.what();

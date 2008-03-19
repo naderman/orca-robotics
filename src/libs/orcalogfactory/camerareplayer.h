@@ -18,7 +18,7 @@
 
 #include <IceStorm/IceStorm.h>
 #include <orca/camera.h>
-#include <hydroiceutil/store.h>
+#include <gbxsickacfr/gbxiceutilacfr/store.h>
 #include <orcalog/replayer.h>
 
 #ifdef OPENCV_FOUND

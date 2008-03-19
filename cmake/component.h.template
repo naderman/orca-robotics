@@ -23,7 +23,7 @@ public:
 
 private:
     
-    hydroiceutil::ThreadPtr mainThread_;
+    gbxsickacfr::gbxiceutilacfr::ThreadPtr mainThread_;
 
 };
 

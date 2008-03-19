@@ -22,10 +22,10 @@ FakeInsGpsDriver::FakeInsGpsDriver( const Config&           cfg,
                                     const orcaice::Context& context )
     : Driver(cfg, context),
       // configure the buffers so they have size 100 and are of type queue
-      gpsDataBuffer_( 100 , hydroiceutil::BufferTypeQueue ),
-      imuDataBuffer_( 100 , hydroiceutil::BufferTypeQueue ),
-      odometry3dDataBuffer_( 100 , hydroiceutil::BufferTypeQueue ),
-      localise3dDataBuffer_( 100 , hydroiceutil::BufferTypeQueue ),
+      gpsDataBuffer_( 100 , gbxsickacfr::gbxiceutilacfr::BufferTypeQueue ),
+      imuDataBuffer_( 100 , gbxsickacfr::gbxiceutilacfr::BufferTypeQueue ),
+      odometry3dDataBuffer_( 100 , gbxsickacfr::gbxiceutilacfr::BufferTypeQueue ),
+      localise3dDataBuffer_( 100 , gbxsickacfr::gbxiceutilacfr::BufferTypeQueue ),
       numReads_(0),
       context_(context)         
 {   
@@ -260,7 +260,7 @@ void
 FakeInsGpsDriver::shutdown()
 {
     // context_.tracer().debug( "stopping fake insgps driver", 5 );
-    // hydroiceutil::stopAndJoin( this );
+    // gbxsickacfr::gbxiceutilacfr::stopAndJoin( this );
     // context_.tracer().debug( "stopped fake insgps driver", 5 );
 }               
 

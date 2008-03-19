@@ -10,8 +10,8 @@
 #ifndef MAIN_THREAD_H
 #define MAIN_THREAD_H
 
-#include <hydroiceutil/safethread.h>
-#include <hydroiceutil/buffer.h>
+#include <gbxsickacfr/gbxiceutilacfr/safethread.h>
+#include <gbxsickacfr/gbxiceutilacfr/buffer.h>
 #include <orcaice/context.h>
 
 #include <orca/ogfusion.h>
@@ -21,7 +21,7 @@
 namespace ognode
 {
 
-class MainThread : public hydroiceutil::SafeThread
+class MainThread : public gbxsickacfr::gbxiceutilacfr::SafeThread
 {
 public:
     MainThread( const orcaice::Context& context);
@@ -35,7 +35,7 @@ private:
 
     Ice::ObjectPtr                        ogFusionObjPtr_;
     orcaifaceimpl::OgMapImplPtr           ogMapImpl_;
-    hydroiceutil::Buffer<orca::OgFusionData> ogFusionDataBuffer_;
+    gbxsickacfr::gbxiceutilacfr::Buffer<orca::OgFusionData> ogFusionDataBuffer_;
 
     // Represent the occupancy certainty values using doubles internally.
     hydroogmap::GenericMap<double> internalMap_;

@@ -20,7 +20,7 @@
 #include <orcaice/orcaice.h>
 
 // utilities
-#include <hydroiceutil/store.h>
+#include <gbxsickacfr/gbxiceutilacfr/store.h>
 
 namespace imu {
 
@@ -52,7 +52,7 @@ public:
 private:
 
     // the driver will put the latest raw data into this
-    hydroiceutil::Store<orca::ImuData> imuDataStore_;
+    gbxsickacfr::gbxiceutilacfr::Store<orca::ImuData> imuDataStore_;
     
     //publishers
     orca::ImuConsumerPrx imuPublisher_;

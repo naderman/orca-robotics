@@ -14,13 +14,11 @@
 #include <orca/velocitycontrol2d.h>
 #include <IceStorm/IceStorm.h>
 
-#include <hydroiceutil/store.h>
-#include <hydroiceutil/notify.h>
+#include <gbxsickacfr/gbxiceutilacfr/store.h>
+#include <gbxsickacfr/gbxiceutilacfr/notify.h>
 #include <orcaice/context.h>
 
-namespace hydroiceutil {
-    class Thread;
-}
+namespace gbxsickacfr { namespace gbxiceutilacfr { class Thread; } }
 
 namespace orcaifaceimpl {
 
@@ -28,7 +26,7 @@ namespace orcaifaceimpl {
 //! Implements the VelocityControl2d interface: Handles remote calls.
 //!
 class VelocityControl2dImpl : public IceUtil::Shared,
-                              public hydroiceutil::Notify<orca::VelocityControl2dData>
+                              public gbxsickacfr::gbxiceutilacfr::Notify<orca::VelocityControl2dData>
 {
 friend class VelocityControl2dI;
 
@@ -43,12 +41,12 @@ public:
                            const std::string& interfaceName );
     ~VelocityControl2dImpl();
 
-    //! Sets up interface and connects to IceStorm. May throw hydroutil::Exceptions.
+    //! Sets up interface and connects to IceStorm. May throw gbxsickacfr::gbxutilacfr::Exceptions.
     void initInterface();
 
     //! Sets up interface and connects to IceStorm. Catches all exceptions and retries
     //! until sucessful. At every iteration, checks if the thread was stopped.
-    void initInterface( hydroiceutil::Thread* thread, const std::string& subsysName="", int retryInterval=2 );
+    void initInterface( gbxsickacfr::gbxiceutilacfr::Thread* thread, const std::string& subsysName="", int retryInterval=2 );
 
 private:
 

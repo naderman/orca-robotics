@@ -17,7 +17,7 @@ using namespace std;
 
 int main(int argc, char * argv[])
 {
-    orcaice::PtrBuffer<orca::RangeScanner2dDataPtr> buffer(-1,hydroiceutil::BufferTypeCircular);
+    orcaice::PtrBuffer<orca::RangeScanner2dDataPtr> buffer(-1,gbxsickacfr::gbxiceutilacfr::BufferTypeCircular);
     orca::RangeScanner2dDataPtr data = new orca::RangeScanner2dData;
 
     cout<<"testing get() ... ";
@@ -28,7 +28,7 @@ int main(int argc, char * argv[])
         cout<<"failed. empty buffer, should've caught exception"<<endl;
         return EXIT_FAILURE;
     }
-    catch ( const hydroutil::Exception & )
+    catch ( const gbxsickacfr::gbxutilacfr::Exception & )
     {
         ; // ok
     }
@@ -41,7 +41,7 @@ int main(int argc, char * argv[])
         cout<<"failed. empty buffer, should've caught exception"<<endl;
         return EXIT_FAILURE;
     }
-    catch ( const hydroutil::Exception & )
+    catch ( const gbxsickacfr::gbxutilacfr::Exception & )
     {
         ; // ok
     }
@@ -86,7 +86,7 @@ int main(int argc, char * argv[])
     {
         buffer.get( data );
     }
-    catch ( const hydroutil::Exception & )
+    catch ( const gbxsickacfr::gbxutilacfr::Exception & )
     {
         cout<<"failed. should be a non-empty buffer."<<endl;
         return EXIT_FAILURE;
@@ -106,7 +106,7 @@ int main(int argc, char * argv[])
             buffer.getAndPop( data );
         }
     }
-    catch ( const hydroutil::Exception & )
+    catch ( const gbxsickacfr::gbxutilacfr::Exception & )
     {
         cout<<"failed. should be a non-empty buffer."<<endl;
         return EXIT_FAILURE;
@@ -117,8 +117,8 @@ int main(int argc, char * argv[])
     }
     cout<<"ok"<<endl;
     
-    cout<<"testing configure() with hydroiceutil::BufferTypeCircular ... ";
-    buffer.configure( 300, hydroiceutil::BufferTypeCircular );
+    cout<<"testing configure() with gbxsickacfr::gbxiceutilacfr::BufferTypeCircular ... ";
+    buffer.configure( 300, gbxsickacfr::gbxiceutilacfr::BufferTypeCircular );
     for ( int i=0; i<400; ++i ) {
         buffer.push( data );
     }
@@ -137,8 +137,8 @@ int main(int argc, char * argv[])
     }
     cout<<"ok"<<endl;
 
-    cout<<"testing configure() with hydroiceutil::BufferTypeQueue ... ";
-    buffer.configure( 300, hydroiceutil::BufferTypeQueue );
+    cout<<"testing configure() with gbxsickacfr::gbxiceutilacfr::BufferTypeQueue ... ";
+    buffer.configure( 300, gbxsickacfr::gbxiceutilacfr::BufferTypeQueue );
     for ( int i=0; i<400; ++i ) {
         buffer.push( data );
     }

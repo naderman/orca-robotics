@@ -34,7 +34,7 @@ public:
 private:
 
 //     MainThread* mainLoop_;
-    hydroiceutil::ThreadPtr mainThread_;
+    gbxsickacfr::gbxiceutilacfr::ThreadPtr mainThread_;
 
     //
     // HARDWARE INTERFACES

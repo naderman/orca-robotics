@@ -20,19 +20,19 @@ using namespace std;
 using namespace orcawallfactory;
 
 
-class PrivateNotifyHandler : public hydroiceutil::NotifyHandler<orca::VelocityControl2dData>
+class PrivateNotifyHandler : public gbxsickacfr::gbxiceutilacfr::NotifyHandler<orca::VelocityControl2dData>
 {
 public:
-    PrivateNotifyHandler( hydroutil::Tracer& tracer ) :
+    PrivateNotifyHandler( gbxsickacfr::gbxutilacfr::Tracer& tracer ) :
         tracer_(tracer) {};
 
-    // from hydroiceutil::NotifyHandler
+    // from gbxsickacfr::gbxiceutilacfr::NotifyHandler
     virtual void handleData( const orca::VelocityControl2dData& data )
     {
         tracer_.debug( "VelocityControl2dSim::handleData: received "+orcaobj::toString(data), 6 );
     }
 private:
-    hydroutil::Tracer& tracer_;
+    gbxsickacfr::gbxutilacfr::Tracer& tracer_;
 };
 
 VelocityControl2dSim::VelocityControl2dSim( const std::string& tag, const orcaice::Context& context ) : 

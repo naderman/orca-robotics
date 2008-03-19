@@ -11,7 +11,7 @@
 #ifndef MAIN_THREAD_H
 #define MAIN_THREAD_H
 
-#include <hydroiceutil/subsystemthread.h>
+#include <gbxsickacfr/gbxiceutilacfr/subsystemthread.h>
 #include <orcaice/context.h>
 #include <orcalog/orcalog.h>
 #include <hydrodll/dll.h>
@@ -22,8 +22,8 @@
 namespace snapshotlogger
 {
 
-class MainThread: public hydroiceutil::SubsystemThread,
-                  public hydroiceutil::NotifyHandler<bool>
+class MainThread: public gbxsickacfr::gbxiceutilacfr::SubsystemThread,
+                  public gbxsickacfr::gbxiceutilacfr::NotifyHandler<bool>
 {    	
 public:
     MainThread( const orcaice::Context& context );
@@ -32,7 +32,7 @@ public:
     // from SubsystemThread
     virtual void walk();
 
-    // from hydroiceutil::NotifyHandler -- called on re-init request
+    // from gbxsickacfr::gbxiceutilacfr::NotifyHandler -- called on re-init request
     // (the value of the bool is meaningless)
     virtual void handleData( const bool &request )
         { requestStore_.set( request ); }
@@ -62,7 +62,7 @@ private:
 
     // Holds incoming requests to take snapshots
     // (the value of the bool's are meaningless)
-    hydroiceutil::Store<bool> requestStore_;
+    gbxsickacfr::gbxiceutilacfr::Store<bool> requestStore_;
 
     bool useFilenameTimestamps_;
 

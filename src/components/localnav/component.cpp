@@ -136,5 +136,5 @@ Component::start()
 void 
 Component::stop()
 {
-    hydroiceutil::stopAndJoin( mainThread_ );
+    gbxsickacfr::gbxiceutilacfr::stopAndJoin( mainThread_ );
 }

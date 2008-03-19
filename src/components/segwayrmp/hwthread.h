@@ -12,14 +12,14 @@
 #define SEGWAYRMP_HARDWARE_THREAD_H
 
 #include <memory>
-#include <hydroiceutil/subsystemthread.h>
+#include <gbxsickacfr/gbxiceutilacfr/subsystemthread.h>
 #include <orcaice/context.h>
 #include <hydrointerfaces/segwayrmp.h>
 #include <hydrodll/dynamicload.h>
 
-#include <hydroiceutil/store.h>
+#include <gbxsickacfr/gbxiceutilacfr/store.h>
 #include <orcarobotdriverutil/statemachine.h>
-#include <hydroiceutil/timer.h>
+#include <gbxsickacfr/gbxiceutilacfr/timer.h>
 #include "estop.h"
 
 namespace segwayrmp {
@@ -30,7 +30,7 @@ namespace segwayrmp {
 //
 // @author Alex Brooks
 //
-class HwThread : public hydroiceutil::SubsystemThread
+class HwThread : public gbxsickacfr::gbxiceutilacfr::SubsystemThread
 {
 
 public: 
@@ -70,9 +70,9 @@ private:
     orcarobotdriverutil::StateMachine stateMachine_;
 
     // Stores the data most recently received from the hardware
-    hydroiceutil::Store<hydrointerfaces::SegwayRmp::Data>    dataStore_;
+    gbxsickacfr::gbxiceutilacfr::Store<hydrointerfaces::SegwayRmp::Data>    dataStore_;
     // Stores incoming commands
-    hydroiceutil::Store<hydrointerfaces::SegwayRmp::Command> commandStore_;
+    gbxsickacfr::gbxiceutilacfr::Store<hydrointerfaces::SegwayRmp::Command> commandStore_;
 
     bool isMotionEnabled_;
     bool driveInReverse_;
@@ -80,7 +80,7 @@ private:
     std::auto_ptr<EStop> eStop_;
 
     // Looks for late writes (which will cause timeouts in the segway)
-    hydroiceutil::Timer writeTimer_;
+    gbxsickacfr::gbxiceutilacfr::Timer writeTimer_;
 
     // The library that contains the driver factory (must be declared first so it's destructed last!!!)
     std::auto_ptr<hydrodll::DynamicallyLoadedLibrary> driverLib_;

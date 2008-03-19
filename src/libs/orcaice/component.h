@@ -13,7 +13,7 @@
 
 #include <orcaice/context.h>
 #include <hydroutil/uncopyable.h>
-#include <hydroiceutil/safethread.h>
+#include <gbxsickacfr/gbxiceutilacfr/safethread.h>
 
 namespace orcaice
 {
@@ -184,8 +184,8 @@ private:
 
     // initialize component services
     orcaice::Home*   initHome();
-    hydroutil::Tracer* initTracer();
-    hydroutil::Status* initStatus();
+    gbxsickacfr::gbxutilacfr::Tracer* initTracer();
+    gbxsickacfr::gbxutilacfr::Status* initStatus();
     hydroutil::History* initHistory();
     void getNetworkProperties();
 
@@ -203,7 +203,7 @@ private:
     Ice::ObjectPrx homePrx_;
 
     // This thread allows us to do house-keeping stuff and manage Status.
-    hydroiceutil::ThreadPtr componentThread_;
+    gbxsickacfr::gbxiceutilacfr::ThreadPtr componentThread_;
 };
 
 } // end namespace

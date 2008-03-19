@@ -40,7 +40,7 @@ Localise2dElement::tryToGetGeometry()
         geom = listener_.proxy()->getVehicleGeometry();
         if ( geom == 0 )
         {
-            throw hydroutil::Exception( ERROR_INFO, "Localise2dElement::tryToGetGeometry(): got NULL vehicle geometry from remote interface!" );
+            throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, "Localise2dElement::tryToGetGeometry(): got NULL vehicle geometry from remote interface!" );
         }
         haveGeometry_ = true;
     }

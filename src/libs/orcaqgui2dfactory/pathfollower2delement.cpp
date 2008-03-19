@@ -169,8 +169,8 @@ PathFollower2dElement::PathFollower2dElement( const orcaice::Context &context,
 
     doInitialSetup();
     
-    timer_ = new hydroiceutil::Timer;
-    activationTimer_ = new hydroiceutil::Timer;
+    timer_ = new gbxsickacfr::gbxiceutilacfr::Timer;
+    activationTimer_ = new gbxsickacfr::gbxiceutilacfr::Timer;
     activationTimer_->restart();
 }
 

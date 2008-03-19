@@ -5,6 +5,7 @@ REQUIRE_OPTION( build EXE ${MODULE_NAME} ON )
 
 IF ( build )
 
+    INCLUDE( ${HYDRO_CMAKE_DIR}/UseGearbox.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseBasicRules.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseIce.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseLibProjectInterfaces.cmake )

@@ -26,19 +26,19 @@ convert( const hydroiceutil::NameStatusMap &internal, orca::SubsystemsStatus &ne
     {
         switch ( it->second.type ) 
         {
-        case hydroutil::Status::Initialising :
+        case gbxsickacfr::gbxutilacfr::Status::Initialising :
             network[it->first].type = orca::SubsystemStatusInitialising;
             break;
-        case hydroutil::Status::Ok :
+        case gbxsickacfr::gbxutilacfr::Status::Ok :
             network[it->first].type = orca::SubsystemStatusOk;
             break;
-        case hydroutil::Status::Warning :
+        case gbxsickacfr::gbxutilacfr::Status::Warning :
             network[it->first].type = orca::SubsystemStatusWarning;
             break;
-        case hydroutil::Status::Fault :
+        case gbxsickacfr::gbxutilacfr::Status::Fault :
             network[it->first].type = orca::SubsystemStatusFault;
             break;
-        case hydroutil::Status::Stalled :
+        case gbxsickacfr::gbxutilacfr::Status::Stalled :
             network[it->first].type = orca::SubsystemStatusStalled;
             break;
         }
@@ -166,7 +166,7 @@ StatusI::connectToIceStorm()
         topic_ = orcaice::connectToTopicWithString<orca::StatusConsumerPrx>(
             context_, publisher_, topicName_ );
     }
-    catch ( const hydroutil::Exception & e )
+    catch ( const gbxsickacfr::gbxutilacfr::Exception & e )
     {
         initTracerError( std::string("Caught exception while connecting to IceStorm: ")+e.what() );
         icestormConnectFailed( topicName_, publisher_, isStatusTopicRequired_ );

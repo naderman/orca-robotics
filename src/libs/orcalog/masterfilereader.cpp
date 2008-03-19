@@ -43,7 +43,7 @@ MasterFileReader::MasterFileReader( const std::string &filename, const orcaice::
     calcCursorInfo();
     if ( !cursorValid_ )
     {
-        throw hydroutil::Exception( ERROR_INFO, "Initial calcCursorInfo failed.  Is there any data in this log?" );
+        throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, "Initial calcCursorInfo failed.  Is there any data in this log?" );
     }
 
     initialCursorTime_ = iceUtilTime(cursorSec_,cursorUsec_);

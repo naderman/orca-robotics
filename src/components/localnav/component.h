@@ -44,7 +44,7 @@ private:
     // Simulator for test mode
     Simulator           *testSimulator_;
 
-    hydroiceutil::ThreadPtr mainThread_;
+    gbxsickacfr::gbxiceutilacfr::ThreadPtr mainThread_;
 
     // The library that contains the driver factory (must be declared first so it's destructed last!!!)
     std::auto_ptr<hydrodll::DynamicallyLoadedLibrary> driverLib_;

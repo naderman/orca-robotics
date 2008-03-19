@@ -8,7 +8,7 @@
 #include <orcaifaceimpl/ogmapImpl.h>
 #include <orca/velocitycontrol2d.h>
 #include <orca/odometry2d.h>
-#include <hydroiceutil/store.h>
+#include <gbxsickacfr/gbxiceutilacfr/store.h>
 #include <orcaice/context.h>
 #include <orca/pathfollower2d.h>
 
@@ -31,9 +31,9 @@ public:
 
     // These can be given out to others: the simulator 
     // will put new data in them on each step.
-    hydroiceutil::Store<orca::RangeScanner2dDataPtr> obsStore_;
-    hydroiceutil::Store<orca::Localise2dData>        locStore_;
-    hydroiceutil::Store<orca::Odometry2dData>        odomStore_;
+    gbxsickacfr::gbxiceutilacfr::Store<orca::RangeScanner2dDataPtr> obsStore_;
+    gbxsickacfr::gbxiceutilacfr::Store<orca::Localise2dData>        locStore_;
+    gbxsickacfr::gbxiceutilacfr::Store<orca::Odometry2dData>        odomStore_;
 
     void printState();
 

@@ -13,7 +13,7 @@
 
 #include <orca/status.h>
 #include <hydroiceutil/localstatus.h>
-#include <hydroiceutil/timer.h>
+#include <gbxsickacfr/gbxiceutilacfr/timer.h>
 
 #include <IceStorm/IceStorm.h>
 #include <IceUtil/Mutex.h>
@@ -57,7 +57,7 @@ private:
 
     // Protect from simultaneous get/set of statusData_
     IceUtil::Mutex mutex_;
-    hydroiceutil::Timer upTimer_;
+    gbxsickacfr::gbxiceutilacfr::Timer upTimer_;
     orcaice::Context context_;
 };
 

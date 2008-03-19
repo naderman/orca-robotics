@@ -14,7 +14,7 @@
 // include defnition of Ice runtime
 #include <Ice/Ice.h>
 #include <IceStorm/IceStorm.h>
-#include <hydroiceutil/store.h>
+#include <gbxsickacfr/gbxiceutilacfr/store.h>
 
 // include provided interfaces
 #include <orca/pathfollower2d.h>
@@ -27,8 +27,8 @@ namespace goalplanner {
 class PathFollower2dI : public orca::PathFollower2d
 {
 public:
-    PathFollower2dI( hydroiceutil::Store<orca::PathFollower2dData> &pathPipe,
-                     hydroiceutil::Store<bool> &activationPipe,
+    PathFollower2dI( gbxsickacfr::gbxiceutilacfr::Store<orca::PathFollower2dData> &pathPipe,
+                     gbxsickacfr::gbxiceutilacfr::Store<bool> &activationPipe,
                      orca::PathFollower2dPrx localNavPrx );
 
     // remote calls:
@@ -62,10 +62,10 @@ public:
 private:
 
     // New paths from the outside world go in here
-    hydroiceutil::Store<orca::PathFollower2dData> &pathPipe_;
+    gbxsickacfr::gbxiceutilacfr::Store<orca::PathFollower2dData> &pathPipe_;
     
     // Are we activated?
-    hydroiceutil::Store<bool> &activationPipe_;
+    gbxsickacfr::gbxiceutilacfr::Store<bool> &activationPipe_;
     
     // because goalplanner is acting like a transparent proxy to localnav, we need to pass on requests to localnav and thus need a remote object
     orca::PathFollower2dPrx localNavPrx_;

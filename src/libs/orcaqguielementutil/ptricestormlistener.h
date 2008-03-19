@@ -18,7 +18,7 @@
 
 #include <orcaice/connectutils.h>
 #include <orcaice/context.h>
-#include <hydroiceutil/timer.h>
+#include <gbxsickacfr/gbxiceutilacfr/timer.h>
 
 #include <orcaqguielementutil/icestormlistenerdetail.h>
 

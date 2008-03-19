@@ -92,7 +92,7 @@ RangeScanner2dImpl::initInterface()
 }
 
 void 
-RangeScanner2dImpl::initInterface( hydroiceutil::Thread* thread, const std::string& subsysName, int retryInterval )
+RangeScanner2dImpl::initInterface( gbxsickacfr::gbxiceutilacfr::Thread* thread, const std::string& subsysName, int retryInterval )
 {
     topicPrx_ = orcaice::connectToTopicWithString<orca::RangeScanner2dConsumerPrx>
         ( context_, consumerPrx_, topicName_, thread, subsysName, retryInterval );
@@ -174,7 +174,7 @@ RangeScanner2dImpl::localSet( const ::orca::RangeScanner2dDataPtr &data )
 void
 RangeScanner2dImpl::localSetAndSend( const ::orca::RangeScanner2dDataPtr &data )
 {
-    if ( context_.tracer().verbosity( hydroutil::Tracer::DebugTrace, hydroutil::Tracer::ToAny ) >= 5 )
+    if ( context_.tracer().verbosity( gbxsickacfr::gbxutilacfr::Tracer::DebugTrace, gbxsickacfr::gbxutilacfr::Tracer::ToAny ) >= 5 )
     {
         stringstream ss;
         ss << "RangeScanner2dIface: Sending data: " << orcaobj::toString(data);

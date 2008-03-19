@@ -8,7 +8,7 @@
  *
  */
 #include <orca/ogfusion.h>
-#include <hydroutil/mathdefs.h>
+#include <gbxsickacfr/gbxutilacfr/mathdefs.h>
 
 #include "ogcellops.h"
 

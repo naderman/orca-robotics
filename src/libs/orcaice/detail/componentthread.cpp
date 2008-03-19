@@ -9,7 +9,7 @@ using namespace std;
 namespace orcaice {
 
 ComponentThread::ComponentThread( const Ice::ObjectPrx   &homePrx,
-                                  hydroutil::Status    &status,
+                                  gbxsickacfr::gbxutilacfr::Status    &status,
                                   ComponentInterfaceFlag  interfaceFlag,
                                   const orcaice::Context &context ) :
     SafeThread(context.tracer()),

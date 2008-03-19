@@ -59,7 +59,7 @@ public:
                                                      const ::Ice::Current& = ::Ice::Current())
         { unsubscribe( platformErrorSender_, subscriber ); }
 
-    // hydroutil::Tracer interface
+    // gbxsickacfr::gbxutilacfr::Tracer interface
     // reimplement from LocalTracer because we are adding toNetwork() option
 
     virtual void info( const std::string &message, int level=1 );
@@ -76,7 +76,7 @@ private:
     void unsubscribe( NetworkTraceSender *sender, const ::orca::TracerConsumerPrx &subscriber );
 
     // to network
-    void toNetwork( hydroutil::Tracer::TraceType traceType,
+    void toNetwork( gbxsickacfr::gbxutilacfr::Tracer::TraceType traceType,
                 const std::string& message,
                 int level );
     void setupAndConnectNetworkSenders();
@@ -85,7 +85,7 @@ private:
                                      bool isTracerTopicRequired );
     void icestormConnectFailed( const std::string &topicName,
                                 bool isTracerTopicRequired );
-    std::string categoryToString( hydroutil::Tracer::TraceType category );
+    std::string categoryToString( gbxsickacfr::gbxutilacfr::Tracer::TraceType category );
 
     // Responsible for sending messages to the component's tracer topic
     NetworkTraceSender *componentTraceSender_;

@@ -18,7 +18,7 @@
 
 #include <orcaice/connectutils.h>
 #include <orcaice/context.h>
-#include <hydroiceutil/timer.h>
+#include <gbxsickacfr/gbxiceutilacfr/timer.h>
 
 #include <orcaqguielementutil/icestormlistenerdetail.h>
 
@@ -60,7 +60,7 @@ public:
             // do not delete consumer_, it's deleted when the smart pointers fall out of scope.
         }
 
-    hydroiceutil::Buffer<DataType> &buffer() { return consumer_->buffer_; }
+    gbxsickacfr::gbxiceutilacfr::Buffer<DataType> &buffer() { return consumer_->buffer_; }
 
     // Returns zero on success
     int connect()

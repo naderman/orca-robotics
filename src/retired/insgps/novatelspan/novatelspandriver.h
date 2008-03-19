@@ -15,10 +15,10 @@
 #include <orcaice/context.h>
 
 // for reading and writing to a serial device
-#include <hydroserial/serial.h>
+#include <gbxserialacfr/serial.h>
 
 // buffer for gps data
-#include <hydroiceutil/buffer.h>
+#include <gbxsickacfr/gbxiceutilacfr/buffer.h>
 
 // novatel message definitions      
 #include <hydronovatelutil/header.h>
@@ -124,7 +124,7 @@ private:
     int baud_;
 
     // serial class for reading and writing to and from a serial device
-    hydroserial::Serial* serial_;
+    gbxserialacfr::Serial* serial_;
     
     bool enabled_;
     bool swappedRollPitch_;
@@ -140,10 +140,10 @@ private:
     unsigned long pos_type_;
 
     // the driver will put the latest data into this queue buffer of depth 100
-    hydroiceutil::Buffer<orca::GpsData> gpsDataBuffer_;
-    hydroiceutil::Buffer<orca::ImuData> imuDataBuffer_;
-    hydroiceutil::Buffer<orca::Odometry3dData> odometry3dDataBuffer_;
-    hydroiceutil::Buffer<orca::Localise3dData> localise3dDataBuffer_;
+    gbxsickacfr::gbxiceutilacfr::Buffer<orca::GpsData> gpsDataBuffer_;
+    gbxsickacfr::gbxiceutilacfr::Buffer<orca::ImuData> imuDataBuffer_;
+    gbxsickacfr::gbxiceutilacfr::Buffer<orca::Odometry3dData> odometry3dDataBuffer_;
+    gbxsickacfr::gbxiceutilacfr::Buffer<orca::Localise3dData> localise3dDataBuffer_;
         
     // Where the latest and greatest of each log is stored.
     // The trailing B's indicate binary messages

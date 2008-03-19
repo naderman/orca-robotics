@@ -42,7 +42,7 @@ MainThread::activate()
             context_.activate();
             break;
         }
-        catch ( hydroutil::Exception & e )
+        catch ( gbxsickacfr::gbxutilacfr::Exception & e )
         {
             std::stringstream ss;
             ss << "MainThread::activate(): Caught exception: " << e.what();
@@ -72,7 +72,7 @@ MainThread::establishInterface()
             context_.tracer().debug( "Activated Camera interface",2 );
             return;
         }
-        catch ( hydroutil::Exception &e )
+        catch ( gbxsickacfr::gbxutilacfr::Exception &e )
         {
             context_.tracer().warning( std::string("MainThread::establishInterface(): ") + e.what() );
         }

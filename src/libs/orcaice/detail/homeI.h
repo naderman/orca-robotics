@@ -13,7 +13,7 @@
 
 #include <IceUtil/Mutex.h>
 
-#include <hydroiceutil/timer.h>
+#include <gbxsickacfr/gbxiceutilacfr/timer.h>
 #include <orca/home.h>
 #include "../home.h"
 #include "../component.h" // for ComponentInterfaceFlag
@@ -47,7 +47,7 @@ private:
 
     // start time is initialized in the constructor. the component's up time
     // is counted from here.
-    hydroiceutil::Timer upTimer_;
+    gbxsickacfr::gbxiceutilacfr::Timer upTimer_;
 
     // We may have multiple threads talking to us
     IceUtil::Mutex mutex_;

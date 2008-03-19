@@ -12,8 +12,8 @@
 #define ORCAICEGRID_ICEGRID_SESSION_H
 
 #include <IceGrid/Registry.h>
-#include <hydroiceutil/safethread.h>
-#include <hydroiceutil/store.h>
+#include <gbxsickacfr/gbxiceutilacfr/safethread.h>
+#include <gbxsickacfr/gbxiceutilacfr/store.h>
 #include <orcaice/context.h>
 #include <IceUtil/Time.h>
 
@@ -21,7 +21,7 @@ namespace orcaicegrid
 {
 
 //! This exception is raised when the session is not connected.
-class SessionNotConnectedException : public hydroutil::Exception
+class SessionNotConnectedException : public gbxsickacfr::gbxutilacfr::Exception
 {
 public:
     SessionNotConnectedException(const char *file, const char *line, const char *message)
@@ -35,7 +35,7 @@ public:
 //!
 //! @author Alex Brooks
 //!
-class IceGridSession : public hydroiceutil::SafeThread
+class IceGridSession : public gbxsickacfr::gbxiceutilacfr::SafeThread
 {
 public:
     //! Constructor.
@@ -89,7 +89,7 @@ protected:
 
 private:
 
-    hydroiceutil::Store<SessionState> stateStore_;
+    gbxsickacfr::gbxiceutilacfr::Store<SessionState> stateStore_;
     int timeoutSec_;
     IceUtil::Time lastKeepaliveTime_;
 

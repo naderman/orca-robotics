@@ -41,10 +41,10 @@ NovatelSpanInsGpsDriver::NovatelSpanInsGpsDriver( const char*             device
     serial_(0),
     enabled_( false ),
     // configure the buffers so they have depth 100 and are of type queue
-    gpsDataBuffer_( 100 , hydroiceutil::BufferTypeQueue ),
-    imuDataBuffer_( 100 , hydroiceutil::BufferTypeQueue ),
-    odometry3dDataBuffer_( 100 , hydroiceutil::BufferTypeQueue ),
-    localise3dDataBuffer_( 200 , hydroiceutil::BufferTypeQueue ),
+    gpsDataBuffer_( 100 , gbxsickacfr::gbxiceutilacfr::BufferTypeQueue ),
+    imuDataBuffer_( 100 , gbxsickacfr::gbxiceutilacfr::BufferTypeQueue ),
+    odometry3dDataBuffer_( 100 , gbxsickacfr::gbxiceutilacfr::BufferTypeQueue ),
+    localise3dDataBuffer_( 200 , gbxsickacfr::gbxiceutilacfr::BufferTypeQueue ),
     gpsCount_(0),
     imuCount_(0),
     localise3dCount_(0),
@@ -524,7 +524,7 @@ NovatelSpanInsGpsDriver::run()
                 ss<<"Caught SerialException: " << e.what();
                 context_.tracer().warning( ss.str() );
             }
-            catch ( hydroutil::Exception & e )
+            catch ( gbxsickacfr::gbxutilacfr::Exception & e )
             {
                 std::stringstream ss;
                 ss << "novatelspandriver::walk(): Caught orcaice::exception: " << e.what();
@@ -625,7 +625,7 @@ NovatelSpanInsGpsDriver::readMsgsFromHardware()
             std::string errString = "Error reading from InsGps: ";
             errString += strerror(errno);
             errString += "--shutting down.";
-            throw hydroutil::Exception( ERROR_INFO, errString );
+            throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, errString );
             // cout << "NovatelSpanInsGps: ERROR: Error reading from InsGps:" << strerror(errno) << " -- shutting down." << endl;
             enabled_ = false;
             return -1;
@@ -1298,7 +1298,7 @@ void
 NovatelSpanInsGpsDriver::shutdown()
 {
     // context_.tracer().debug( "stopping driver", 5 );
-    // hydroiceutil::SafeThread::stopAndJoin( this );
+    // gbxsickacfr::gbxiceutilacfr::SafeThread::stopAndJoin( this );
     // context_.tracer().debug( "stopped driver", 5 );
 }               
 

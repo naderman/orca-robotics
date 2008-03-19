@@ -97,7 +97,7 @@ NetworkThread::walk()
         string errorStr = "Unsupported interface ID="+ifaceId;
         context_.tracer().error( errorStr); 
         context_.tracer().info( "Valid driver values are {'VelocityControl2d', 'DriveBicycle'}" );
-        throw hydroutil::Exception( ERROR_INFO, errorStr );
+        throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, errorStr );
     }    
 
     // don't forget to enable the driver, but check isStopping() to see if we should quit

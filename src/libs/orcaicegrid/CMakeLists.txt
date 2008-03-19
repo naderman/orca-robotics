@@ -7,6 +7,7 @@ REQUIRE_VAR( build LIB ${lib_name} ORCA_OS_LINUX "only Linux OS is supported" )
 
 IF ( build )
 
+    INCLUDE( ${HYDRO_CMAKE_DIR}/UseGearbox.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseBasicRules.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseIce.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseLibProjectInterfaces.cmake )

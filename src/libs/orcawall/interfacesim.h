@@ -11,13 +11,13 @@
 #ifndef ORCA_ORCAWALL_INTERFACE_SIM_H
 #define ORCA_ORCAWALL_INTERFACE_SIM_H
 
-#include <hydroiceutil/safethread.h>
+#include <gbxsickacfr/gbxiceutilacfr/safethread.h>
 #include <orcaice/context.h>
 
 namespace orcawall
 {
 
-class InterfaceSim : public hydroiceutil::SafeThread
+class InterfaceSim : public gbxsickacfr::gbxiceutilacfr::SafeThread
 {
 
 public:

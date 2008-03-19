@@ -13,7 +13,7 @@
 
 #include <string>
 #include <memory>
-#include <hydroiceutil/subsystemthread.h>
+#include <gbxsickacfr/gbxiceutilacfr/subsystemthread.h>
 #include <orcaice/context.h>
 
 #include <hydrodll/dll.h>
@@ -29,7 +29,7 @@ namespace orcalog
 namespace logplayer
 {
 
-class MainThread: public hydroiceutil::SubsystemThread
+class MainThread: public gbxsickacfr::gbxiceutilacfr::SubsystemThread
 {    	
 public:
     MainThread( const orcaice::Context& context );
@@ -50,8 +50,8 @@ private:
 
     void readReplayParams( IceUtil::Time &beginTime, double &replayRate, bool &autoStart );
 
-    hydroiceutil::ThreadPtr       replayConductor_;
-    hydroiceutil::ThreadPtr       highLevelController_;
+    gbxsickacfr::gbxiceutilacfr::ThreadPtr       replayConductor_;
+    gbxsickacfr::gbxiceutilacfr::ThreadPtr       highLevelController_;
 
     std::auto_ptr<orcalog::MasterFileReader> masterFileReader_;
 

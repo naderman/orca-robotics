@@ -9,7 +9,7 @@
  */
 
 #include "stats.h"
-#include <hydroutil/mathdefs.h>
+#include <gbxsickacfr/gbxutilacfr/mathdefs.h>
 
 // In order to avoid creep on the distance counter when standing still, 
 // apply an arbitrary speed threshold. 0.2(m/s)

@@ -29,7 +29,7 @@
 
 namespace insgps{
 
-class MainThread : public hydroiceutil::SafeThread
+class MainThread : public gbxsickacfr::gbxiceutilacfr::SafeThread
 {
 public:
     MainThread(insgps::InsGpsI&  insGpsI,

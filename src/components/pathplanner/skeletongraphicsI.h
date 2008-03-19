@@ -19,7 +19,7 @@
 #include <orca/qgraphics2d.h>
 
 #include <hydropathplan/hydropathplan.h>
-#include <hydroiceutil/store.h>
+#include <gbxsickacfr/gbxiceutilacfr/store.h>
 #include <orcaice/context.h>
 #include <vector>
 #include <qpainter.h>
@@ -59,7 +59,7 @@ private:
                          const hydropathplan::sparseskel::SparseSkel &skel,
                          QPainter                                    &p );
     
-    hydroiceutil::Store<orca::QGraphics2dData> dataStore_;
+    gbxsickacfr::gbxiceutilacfr::Store<orca::QGraphics2dData> dataStore_;
 
     orca::QGraphics2dConsumerPrx    consumerPrx_;
     IceStorm::TopicPrx              topicPrx_;

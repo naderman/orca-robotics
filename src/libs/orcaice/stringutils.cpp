@@ -12,7 +12,7 @@
 #include <sstream>
 #include <iomanip>
 #include <hydroutil/stringutils.h>
-#include <hydroutil/mathdefs.h>
+#include <gbxsickacfr/gbxutilacfr/mathdefs.h>
 #include <orcaice/timeutils.h>
 
 #include "stringutils.h"

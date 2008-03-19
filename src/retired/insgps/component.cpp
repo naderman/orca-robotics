@@ -37,7 +37,7 @@ Component::~Component()
     // Do not delete the gpsObj_, imuObj_, odometry3dObj_, or localise3dObj_
     // as they are smart pointers and self destruct.
     // Do not delete gpsMainThread_, imuMainThread_, odometry3dMainThread_, localise3dMainThread_, 
-    // or the hwDriver_ as they are hydroiceutil::SafeThreads and self-destruct.
+    // or the hwDriver_ as they are gbxsickacfr::gbxiceutilacfr::SafeThreads and self-destruct.
 }
 
 void
@@ -97,7 +97,7 @@ Component::start()
     if ( !desiredCfg.validate() ) {
         tracer().error( "Failed to validate insgps configuration. "+desiredCfg.toString() );
         // this will kill this component
-        throw hydroutil::Exception( ERROR_INFO, "Failed to validate insgps configuration" );
+        throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, "Failed to validate insgps configuration" );
     }
    
     std::string driverName;
@@ -106,7 +106,7 @@ Component::start()
     {
         std::string errString = "Couldn't determine insgps type.  Expected property '";
         errString += prefix + "Driver'";
-        throw hydroutil::Exception( ERROR_INFO, errString );
+        throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, errString );
     }
  
     if ( driverName == "novatelspan" )
@@ -124,14 +124,14 @@ Component::start()
     {
         std::string errString = "unknown insgps type: "+driverName;
         context().tracer().error( errString );
-        throw hydroutil::Exception( ERROR_INFO, errString );
+        throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, errString );
         return;
     }
 
     if(hwDriver_->reset()<0){
         std::string errString = "Failed to reset InsGps.";
         context().tracer().error( errString );
-        throw hydroutil::Exception( ERROR_INFO, errString );
+        throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, errString );
         return;
     }
 
@@ -139,7 +139,7 @@ Component::start()
     {      
         std::string errString = "ERROR(component::start()): Failed to initialise InsGps.";
         context().tracer().error( errString );
-        throw hydroutil::Exception( ERROR_INFO, errString );
+        throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, errString );
         return;
     }
    
@@ -176,7 +176,7 @@ Component::start()
         if(ret==-1){
             std::string errString = "Failed to read from IMU.";
             context().tracer().error( errString );
-            throw hydroutil::Exception( ERROR_INFO, errString );
+            throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, errString );
             return;
         }
         if(isStopping()){
@@ -256,14 +256,14 @@ Component::stop()
     tracer().debug( "stopping component", 2 );
 
     tracer().debug( "stopping handlers", 2 );
-    hydroiceutil::stopAndJoin( gpsMainThread_ );
-    hydroiceutil::stopAndJoin( imuMainThread_ );
-    hydroiceutil::stopAndJoin( odometry3dMainThread_ );   
-    hydroiceutil::stopAndJoin( localise3dMainThread_ );   
+    gbxsickacfr::gbxiceutilacfr::stopAndJoin( gpsMainThread_ );
+    gbxsickacfr::gbxiceutilacfr::stopAndJoin( imuMainThread_ );
+    gbxsickacfr::gbxiceutilacfr::stopAndJoin( odometry3dMainThread_ );   
+    gbxsickacfr::gbxiceutilacfr::stopAndJoin( localise3dMainThread_ );   
     // tracer().debug( "stopped handlers", 2 );
 
     tracer().debug( "stopping driver", 2 );
-    hydroiceutil::stopAndJoin( hwDriver_ );
+    gbxsickacfr::gbxiceutilacfr::stopAndJoin( hwDriver_ );
     // tracer().debug( "stopped driver", 2 );
     
     tracer().debug( "stopped component", 2 );

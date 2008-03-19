@@ -11,7 +11,7 @@
 #ifndef ALGORITHM_HANDLER_H
 #define ALGORITHM_HANDLER_H
 
-#include <hydroiceutil/subsystemthread.h>
+#include <gbxsickacfr/gbxiceutilacfr/subsystemthread.h>
 #include <orcaice/context.h>
 #include <orcaifaceimpl/bufferedconsumers.h>
 #include <orcaifaceimpl/storingconsumers.h>
@@ -22,7 +22,7 @@
 namespace reactivewalker
 {
 
-class MainThread : public hydroiceutil::SubsystemThread
+class MainThread : public gbxsickacfr::gbxiceutilacfr::SubsystemThread
 {
 
 public: 

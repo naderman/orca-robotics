@@ -48,7 +48,7 @@ VfhDriver::VfhDriver( const orcaice::Context & context,
             context_.tracer().error( "Erroneous VFH configuration: " + errors );
             stringstream ss;
             ss << "VfhDriver: Bad VFH config: " << errors;
-            throw hydroutil::Exception( ERROR_INFO, ss.str() );
+            throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, ss.str() );
         }
     }
 
@@ -261,7 +261,7 @@ VfhDriver::copyLaserScan( const orca::RangeScanner2dDataPtr obs, double playerLa
         {
             stringstream ss;
             ss << "VfhDriver: Can't handle weird angle increment: obs size,increment= " << obs->ranges.size() << ", " << angleIncrement*180.0/M_PI << "deg";
-            throw hydroutil::Exception( ERROR_INFO, ss.str() );
+            throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, ss.str() );
         }
         replicateNum = 2;
     }
@@ -271,7 +271,7 @@ VfhDriver::copyLaserScan( const orca::RangeScanner2dDataPtr obs, double playerLa
         {
             stringstream ss;
             ss << "VfhDriver: Can't handle weird angle increment: obs size,increment= " << obs->ranges.size() << ", " << angleIncrement*180.0/M_PI << "deg";
-            throw hydroutil::Exception( ERROR_INFO, ss.str() );
+            throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, ss.str() );
         }
         replicateNum = 1;
     }
@@ -285,7 +285,7 @@ VfhDriver::copyLaserScan( const orca::RangeScanner2dDataPtr obs, double playerLa
             context_.tracer().debug( ss.str(), 5 );
             ss.str("");
             ss << "VfhDriver: Can't handle weird angle increment: obs size,increment= " << obs->ranges.size() << ", " << angleIncrement*180.0/M_PI << "deg";
-            throw hydroutil::Exception( ERROR_INFO, ss.str() );
+            throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, ss.str() );
         }
         // �map the values in the range array to degrees so that they can be copied into the
         // �player structure at the end of this function
@@ -302,7 +302,7 @@ VfhDriver::copyLaserScan( const orca::RangeScanner2dDataPtr obs, double playerLa
     {
         stringstream ss;
         ss << "VfhDriver: Don't know how to handle weird startAngle: " << obs->startAngle;
-        throw hydroutil::Exception( ERROR_INFO, ss.str() );
+        throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, ss.str() );
     }
 
     // Copy the ranges into a player-style structure.  This means converting units: m -> mm.

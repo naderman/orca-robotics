@@ -12,7 +12,7 @@
 #ifndef ORCA_FEATURE_EXTRACTOR_MAIN_LOOP_H
 #define ORCA_FEATURE_EXTRACTOR_MAIN_LOOP_H
 
-#include <hydroiceutil/subsystemthread.h>
+#include <gbxsickacfr/gbxiceutilacfr/subsystemthread.h>
 #include <orcaice/context.h>
 
 #include <orca/laserscanner2d.h>
@@ -23,7 +23,7 @@
 namespace laserfeatures
 {
 
-class MainThread : public hydroiceutil::SubsystemThread
+class MainThread : public gbxsickacfr::gbxiceutilacfr::SubsystemThread
 {
 public:
 

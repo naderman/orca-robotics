@@ -58,7 +58,7 @@ TermNcursesUser::~TermNcursesUser()
     cout<< "************************************************" << endl;
     cout<< "Press any key to continue." << endl;
     cout<< "************************************************" << endl;
-    hydroiceutil::stopAndJoin( inputMainThread_ );
+    gbxsickacfr::gbxiceutilacfr::stopAndJoin( inputMainThread_ );
 }
 
 void 
@@ -409,24 +409,24 @@ displayLocalTrace( "TermNcursesUser: exited main loop" );
 void 
 TermNcursesUser::displayTrace( const orca::TracerData& obj )
 {
-//     hydroutil::Tracer::TraceType type = hydroutil::Tracer::toTraceType( obj.category );
+//     gbxsickacfr::gbxutilacfr::Tracer::TraceType type = gbxsickacfr::gbxutilacfr::Tracer::toTraceType( obj.category );
     ColorType color = DefaultColor;
 
-    switch ( hydroutil::Tracer::toTraceType( obj.category ) )
+    switch ( gbxsickacfr::gbxutilacfr::Tracer::toTraceType( obj.category ) )
     {
-    case hydroutil::Tracer::InfoTrace :
+    case gbxsickacfr::gbxutilacfr::Tracer::InfoTrace :
         color = DefaultColor;
 //         wattron( mainwin_, COLOR_PAIR(DefaultColor) );
         break;
-    case hydroutil::Tracer::WarningTrace :
+    case gbxsickacfr::gbxutilacfr::Tracer::WarningTrace :
         color = WarningColor;
 //         wattron( mainwin_, COLOR_PAIR(WarningColor)|A_BOLD );
         break;
-    case hydroutil::Tracer::ErrorTrace :
+    case gbxsickacfr::gbxutilacfr::Tracer::ErrorTrace :
         color = ErrorColor;
 //         wattron( mainwin_, COLOR_PAIR(ErrorColor)|A_BOLD );
         break;
-    case hydroutil::Tracer::DebugTrace :
+    case gbxsickacfr::gbxutilacfr::Tracer::DebugTrace :
         color = DebugColor;
 //         wattron( mainwin_, COLOR_PAIR(DebugColor)|A_BOLD );
         break;
