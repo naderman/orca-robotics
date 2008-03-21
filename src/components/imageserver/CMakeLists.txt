@@ -1,4 +1,4 @@
-SET_COMPONENT_NAMES ( Laser2d )
+SET_COMPONENT_NAMES ( ImageServer )
 
 SET ( build TRUE )
 REQUIRE_OPTION( build EXE ${APP_NAME} ON )

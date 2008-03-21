@@ -58,7 +58,7 @@ private:
     // The library that contains the driver factory (must be declared first so it's destructed last!!!)
     std::auto_ptr<hydrodll::DynamicallyLoadedLibrary> driverLib_;
     // Generic driver for the hardware
-    std::auto_ptr<hydrointerfaces::LaserScanner2d> driver_;
+    std::auto_ptr<hydrointerfaces::Image> driver_;
 
     orcaice::Context context_;
 };
