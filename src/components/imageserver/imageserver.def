@@ -2,7 +2,7 @@ DefaultComponentTag=ImageServer
 
 # Provided Interfaces
 Provides.Image.Type=::orca::Image
-Provides.Image.DefaultName=imageserver
+Provides.Image.DefaultName=image
 
 # Required Interfaces
 
@@ -10,6 +10,6 @@ Provides.Image.DefaultName=imageserver
 Config.DriverLib.Comment=Valid values are at least: { 'libHydroImageFake.so', 'libHydroImageFile.so', }
 Config.DriverLib.Default=libHydroImageFake.so
 
-Config.ImageWidth=640
-Config.ImageHeight=480
-Config.Format=ImageRgb
+Config.ImageWidth.Default=640
+Config.ImageHeight.Default=480
+Config.Format.Default=ImageBgr

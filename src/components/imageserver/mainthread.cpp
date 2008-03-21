@@ -30,6 +30,7 @@ MainThread::MainThread( const orcaice::Context &context ) :
 
     config_.width = orcaice::getPropertyAsIntWithDefault( prop, prefix+"ImageWidth", 0 );
     config_.height = orcaice::getPropertyAsIntWithDefault( prop, prefix+"ImageHeight", 0 );
+    config_.size = config_.width*config_.height*3; //TODO look at image type
 
     if ( !config_.validate() ) {
         context_.tracer().error( "Failed to validate image configuration. "+config_.toString() );
@@ -51,14 +52,14 @@ MainThread::initNetworkInterface()
     orca::ImageDescriptionPtr descr(new orca::ImageDescription);
     // transfer internal sensor configs
     descr->imageWidth       = config_.width;
-    descr->imageHeight        = config_.height;
+    descr->imageHeight      = config_.height;
 
     //
     // EXTERNAL PROVIDED INTERFACE
     //
 
     imageInterface_ = new orcaifaceimpl::ImageImpl( descr,
-                                                    "ImageServer",
+                                                    "Image",
                                                     context_ );
     // init
     imageInterface_->initInterface( this, subsysName() );
