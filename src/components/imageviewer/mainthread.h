@@ -33,11 +33,11 @@ public:
 private:
 
     // Camera proxy
-    orca::CameraPrx cameraPrx_;
+    orca::ImagePrx imagePrx_;
     // local object to receive data
-    orca::CameraConsumerPrx callbackPrx_;
+    orca::ImageConsumerPrx callbackPrx_;
     
-    orca::CameraDescription  descr_;
+    orca::ImageDescriptionPtr  descr_;
 
     IplImage* cvImage_;
     IplImage* cvImageTmp_;

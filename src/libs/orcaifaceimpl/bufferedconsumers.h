@@ -93,6 +93,12 @@ typedef BufferedConsumerImpl<orca::CameraPrx,
                         orca::CameraData>                  BufferedCameraConsumerImpl;
 typedef IceUtil::Handle<BufferedCameraConsumerImpl>        BufferedCameraConsumerImplPtr;
 
+typedef BufferedConsumerImpl<orca::ImagePrx,
+                             orca::ImageConsumer,
+                             orca::ImageConsumerPrx,
+                             orca::ImageDataPtr>           BufferedImageConsumerImpl;
+typedef IceUtil::Handle<BufferedImageConsumerImpl>         BufferedImageConsumerImplPtr;
+
 } // namespace
 
 #endif
