@@ -70,11 +70,31 @@ MainThread::initNetworkInterface()
     
     for(unsigned int i = 0; i < descrs.size(); i++)
     {
-        //transfer internal sensor configs
+        std::stringstream prefixSS;
+        prefixSS << prefix << i << ".";
+        //create new descr
+        orca::CameraDescriptionPtr descr(new orca::CameraDescription());
         
+        //transfer internal sensor configs
+        descr->imageWidth = config_.widths.at(i);
+        descr->imageHeight = config_.heights.at(i);
+
         // offset from the robot coordinate system
-        orcaobj::setInit( descrs.at(i)->offset );
-        descrs.at(i)->offset = orcaobj::getPropertyAsFrame3dWithDefault( prop, prefix+"Offset", descrs.at(i)->offset );
+        orcaobj::setInit( descr->offset );
+        descr->offset = orcaobj::getPropertyAsFrame3dWithDefault( prop, prefixSS.str() + "Offset", descr->offset );
+       
+        // read sizes
+        orcaobj::setInit( descr->sensorSize );
+        descr->sensorSize = orcaobj::getPropertyAsSize2dWithDefault( prop, prefixSS.str() + "SensorSize", descr->sensorSize );
+
+        orcaobj::setInit( descr->caseSize );
+        descr->caseSize = orcaobj::getPropertyAsSize3dWithDefault( prop, prefixSS.str() + "CaseSize", descr->caseSize );
+
+        // focal length
+        descr->focalLength = orcaice::getPropertyAsDoubleWithDefault( prop, prefixSS.str() + "FocalLength", 0.0 );
+
+        //add descr to vector
+        descrs.push_back(descr);
     }
     
     //

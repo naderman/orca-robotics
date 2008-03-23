@@ -32,12 +32,18 @@ class CameraDescription extends ImageDescription {
     //! Frame rate [frames/seconds]
     double frameRate; 
 
+    //! Focal Length of Lens [mm]
+    double focalLength;
+
     //! Offset of the sensor with respect to the robot, 
     //! in the robot local coordinate system.
     Frame3d offset; 
 
     //! Dimensions of the sensor
-    Size3d  size;
+    Size2d  sensorSize;
+   
+    //! Dimensions of the case
+    Size3d caseSize;
 }; 
 
 //!
