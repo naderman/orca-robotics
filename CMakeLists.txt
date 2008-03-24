@@ -13,7 +13,7 @@ PROJECT( orca )
 # project version string
 SET( PROJECT_VERSION            2.9.0+       CACHE STRING "Version of Orca distribution" )
 # the name of the environment variable which sets installation directory
-SET( PROJECT_INSTALL_ENV_VAR    ORCA_INSTALL )
+SET( PROJECT_INSTALL_VAR        ORCA_INSTALL )
 # the name for project interface library
 SET( PROJECT_INTERFACE_LIB      OrcaInterfaces )
 

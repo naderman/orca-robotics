@@ -48,7 +48,7 @@ Minimum version required 3.2.0 (latest tested: 3.2.1).
 
 Build and install Hydro distribution.
     - Download @ref orca_doc_getting_download "Hydro source" archive and un-tar it.
-    - The default installation directory is  @c /opt/hydro-[VERSION], where [VERSION] is the Hydro version. You can customized this by setting HYDRO_INSTALL environment variable (e.g. 'export HYDRO_INSTALL=~/hydro').
+    - The default installation directory is  @c /opt/hydro-[VERSION], where [VERSION] is the Hydro version (see below on how to change it).
     - Configure using @c cmake . (note the dot after cmake)
     - Compile, and install. If you've changed your mind about the installation directory, you can change it using @c ccmake tool ('$ ccmake .').
 @verbatim
@@ -56,22 +56,23 @@ $ tar -zxf hydro-x.x.x.tar.gz
 $ cd hydro
 $ cmake .
 $ make
-# make install
-# ldconfig
+$ make install
 @endverbatim
 
-Make sure that the binaries and executables are in the path. You may want to add a snippet to your @c ~/.bashrc file similar to the one below. Replace [VERSION] with the version of Hydro you've just installed or create a symbolic link called simply @c hydro (without the version number). Change the directory if you've modified the default install directory. Notice that the environment variable for the Hydro installation to use (HYDRO_HOME) is different from the one which specifies where to install it (HYDRO_INSTALL). This allows multiple installations on the same machine.
-@verbatim
-export HYDRO_HOME=/opt/hydro-[VERSION]
-export PATH=$HYDRO_HOME/bin:$PATH
-export LD_LIBRARY_PATH=$HYDRO_HOME/lib:$LD_LIBRARY_PATH
-@endverbatim
+Installation process can be customized with a few variables which can be supplied in one of two ways:
+1. On the command-line as "-D[VARIABLE_NAME]=[VARIABLE_VALUE]" (preffered option, has precedence)
+2. As environment varialbes as "export [VARIABLE_NAME]=[VARIABLE_VALUE]".
+
+The following are the names of variables which customize Hydro installation.
+- HYDRO_INSTALL - where to install Hydro installation, e.g. "cmake -DHYDRO_INSTALL=/home/myuser/temp ."
+- ICEUTIL_HOME - where to find IceUtil installation, e.g. "cmake -DICEUTIL_HOME=/home/myuser/temp ."
+- GEARBOX_HOME - where to find Gearbox installation, e.g. "cmake -DGEARBOX_HOME=/home/myuser/temp ."
 
 @section orca_doc_installdebian_orca Orca
 
 Build and install Orca distribution.
     - Download @ref orca_doc_getting_download "Orca source" archive and un-tar it.
-    - The default installation directory is  @c /opt/orca-[VERSION], where [VERSION] is the Orca version. You can customized this by setting ORCA_INSTALL environment variable (e.g. 'export ORCA_INSTALL=~/orca').
+    - The default installation directory is  @c /opt/orca-[VERSION], where [VERSION] is the Orca version (see below on how to change it).
     - Configure using @c cmake . (note the dot after cmake)
     - Compile, and install. If you've changed your mind about the installation directory, you can change it using @c ccmake tool ('$ ccmake .').
 @verbatim
@@ -79,23 +80,26 @@ $ tar -zxf orca-x.x.x.tar.gz
 $ cd orca
 $ cmake .
 $ make
-# make install
-# ldconfig
+$ make install
 @endverbatim
 
-Add entries to @c ~/.bashrc file, these are similar to the ones for Hydro.
+The following are the names of variables which customize Orca installation.
+- ORCA_INSTALL - where to install Orca, e.g. "cmake -DORCA_INSTALL=/home/myuser/temp ."
+- ICE_HOME - where to find Ice installation, e.g. "cmake -DICEUTIL_HOME=/home/myuser/temp ."
+- GEARBOX_HOME - where to find Gearbox installation, e.g. "cmake -DGEARBOX_HOME=/home/myuser/temp ."
+- HYDRO_HOME - where to find Hydro installation, e.g. "cmake -DHYDRO_HOME=/home/myuser/temp ."
+
+@section orca_doc_installdebian_using Using your new installation
+
+Don't forget to make sure that the binaries and executables are in the path. You may want to add a snippet to your @c ~/.bashrc file similar to the one below which works for the default installation. Replace [VERSION] with the version of Hydro/Orca you've just installed.
 @verbatim
+HYDRO_HOME=/opt/hydro-[VERSION]
+export PATH=$HYDRO_HOME/bin:$PATH
+export LD_LIBRARY_PATH=$HYDRO_HOME/lib:$LD_LIBRARY_PATH
+
 export ORCA_HOME=/opt/orca-[VERSION]
 export PATH=$ORCA_HOME/bin:$PATH
 export LD_LIBRARY_PATH=$ORCA_HOME/lib:$LD_LIBRARY_PATH
-@endverbatim
-
-These environment variables are optional but you may as well put them into your @c ~/.bashrc file now so that you have easy access to them later.
-@verbatim
-# uncomment to change the default location of Orca installation
-# export ORCA_INSTALL=/opt/orca-[VERSION]
-# uncomment to change the default location of the Orca global config file
-# export ORCA_GLOBAL_CONFIG=$HOME/.orcarc
 @endverbatim
 
 That's it! We are done.

@@ -7,7 +7,7 @@ MESSAGE( STATUS "Setting project interface lib name to ${PROJECT_INTERFACE_LIB}"
 
 #
 # Official dependency number 1: Hydro
-# Find Hydro installation, we need it early to use its cmake scripts
+# (we need to find Hydro early to use its cmake scripts)
 #
 IF ( DEFINED HYDRO_HOME )
     # the variable is specified with a command line option or is already in cache
@@ -50,7 +50,7 @@ INCLUDE( ${HYDRO_CMAKE_DIR}/version.cmake )
 #
 # Project directories
 #
-INCLUDE( ${HYDRO_CMAKE_DIR}/dirs.cmake )
+INCLUDE( ${HYDRO_CMAKE_DIR}/SetupDirectories.cmake )
 
 #
 # Determine OS, and make os-specefic choices
@@ -68,8 +68,7 @@ INCLUDE( ${PROJECT_SOURCE_DIR}/cmake/local/buildtype.cmake )
 INCLUDE( ${PROJECT_SOURCE_DIR}/cmake/local/compiler.cmake )
 
 #
-# Official dependency number 1: Gearbox
-# (this dependency is currently optional)
+# Official dependency number 2: Gearbox
 #
 IF ( DEFINED GEARBOX_HOME AND GEARBOX_HOME )
     # the variable is specified with a command line option or is already in cache
@@ -106,7 +105,6 @@ IF ( GEARBOX_FOUND )
     #          1 )
 ENDIF ( GEARBOX_FOUND )
 
-#
 # 
 # Official dependency number 3: ZeroC's Ice
 # Find Ice installation
@@ -130,7 +128,7 @@ ASSERT ( ICE_WORKS
          "Testing Ice - ok."
          1 )
 
-# Check which parts of Ice are actually installed (produce "manifest")
+# TODO: Check which parts of Ice are actually installed (produce "manifest")
 # INCLUDE ( ${ORCA_CMAKE_DIR}/ManifestIce.cmake )
 
 #

@@ -13,31 +13,34 @@ IF ( ORCA_MOTHERSHIP )
 ENDIF ( ORCA_MOTHERSHIP )
 
 FIND_PATH( HYDRO_HOME hydro_manifest.cmake
-  $ENV{HYDRO_HOME}
-  # Test standard installation points
-  /opt/hydro
-  ${HYDRO_SEARCH_DIR_ORCA_ONLY}
-  /opt/hydro-2.15.0+
-  /opt/hydro-2.15.0
-  /opt/hydro-2.14.0+
-  /opt/hydro-2.14.0
-  /opt/hydro-2.13.0+
-  /opt/hydro-2.13.0
-  /opt/hydro-2.12.0+
-  /opt/hydro-2.12.0
-  /opt/hydro-2.11.0+
-  /opt/hydro-2.11.0
-  /opt/hydro-2.10.0+
-  /opt/hydro-2.10.0
-  /opt/hydro-2.9.0+
-  /opt/hydro-2.9.0
-  /opt/hydro-2.8.0
-  /opt/hydro-2.8.0
-  /opt/hydro-2.7.0
-  /opt/hydro-2.6.0
-  C:/hydro
-  C:/hydro-${PROJECT_VERSION}
-  )
+    # Test user-specified installation point (first look in the dir specified
+    # with command line CMake variable, then with environment variable)
+    ${HYDRO_HOME}
+    $ENV{HYDRO_HOME}
+    # Test standard installation points
+    /opt/hydro
+    ${HYDRO_SEARCH_DIR_ORCA_ONLY}
+    /opt/hydro-2.15.0+
+    /opt/hydro-2.15.0
+    /opt/hydro-2.14.0+
+    /opt/hydro-2.14.0
+    /opt/hydro-2.13.0+
+    /opt/hydro-2.13.0
+    /opt/hydro-2.12.0+
+    /opt/hydro-2.12.0
+    /opt/hydro-2.11.0+
+    /opt/hydro-2.11.0
+    /opt/hydro-2.10.0+
+    /opt/hydro-2.10.0
+    /opt/hydro-2.9.0+
+    /opt/hydro-2.9.0
+    /opt/hydro-2.8.0
+    /opt/hydro-2.8.0
+    /opt/hydro-2.7.0
+    /opt/hydro-2.6.0
+    C:/hydro
+    C:/hydro-${PROJECT_VERSION}
+)
 # MESSAGE( STATUS "DEBUG: manifest.cmake is apparently found in : ${HYDRO_HOME}" )
 
 # NOTE: if HYDRO_HOME is set to *-NOTFOUND it will evaluate to FALSE

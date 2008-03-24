@@ -27,6 +27,7 @@ FIND_PATH( ICE_HOME_INCLUDE_ICE Ice.h
   #    package + source install w/out env.var -> package 
   #
   # installation selected by user
+  ${ICE_HOME}/include/Ice
   $ENV{ICE_HOME}/include/Ice
   # debian package installs Ice here
   /usr/include/Ice
