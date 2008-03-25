@@ -33,7 +33,6 @@ HwThread::HwThread( const orcaice::Context &context) :
     }
 }
 
-
 void
 HwThread::initHardwareDriver()
 {
@@ -113,7 +112,19 @@ HwThread::walk()
             std::auto_ptr<hif::InsGps::GenericData> generic;
             hydroiceutil::EventPtr e;
 
-            generic = driver_->read();
+            try{
+                generic = driver_->read();
+            }
+            catch(std::string& e){
+                context_.tracer().error( e );
+                continue;
+            }
+            catch(...){
+                std::stringstream ss;
+                ss << __func__ << ":" << __LINE__ << " caught unknown exception";
+                context_.tracer().error(ss.str());
+                continue;
+            }
             // figure out what we got; convert the data to orcainterfaces
             // and the container to Event; then shove it over to the network side
             switch(generic->type()){
@@ -145,6 +156,7 @@ HwThread::walk()
                     break;
                 }
                 default:
+                    context_.tracer().error( "Got unknown data from read()" );
                     break;
             }
             // report status info

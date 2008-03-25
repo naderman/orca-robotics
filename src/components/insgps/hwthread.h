@@ -30,7 +30,6 @@ class HwThread : public gbxsickacfr::gbxiceutilacfr::SubsystemThread
 {
 
 public:
-
     HwThread( const orcaice::Context &context);
 
     // from SubsystemThread
@@ -41,7 +40,6 @@ public:
     hydroiceutil::EventQueuePtr dataPipe_;
 
 private:
-
     // Tries repeatedly to instantiate the driver
     void initHardwareDriver();
 

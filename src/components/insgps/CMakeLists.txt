@@ -1,7 +1,7 @@
 SET_COMPONENT_NAMES ( InsGps)
 
 SET ( build TRUE )
-REQUIRE_OPTION( build EXE ${APP_NAME} OFF )
+REQUIRE_OPTION( build EXE ${APP_NAME} ON )
 
 SET( ext_libs HydroDll HydroInterfaces )
 REQUIRE_INSTALLS( build EXE ${APP_NAME} ${ext_libs} )
