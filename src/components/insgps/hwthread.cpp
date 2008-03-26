@@ -115,7 +115,15 @@ HwThread::walk()
             try{
                 generic = driver_->read();
             }
-            catch(std::string& e){
+            catch ( const std::exception& e ){
+                context_.tracer().error( e.what() );
+                continue;
+            }
+            catch(const std::string& e){
+                context_.tracer().error( e );
+                continue;
+            }
+            catch(const char* e){
                 context_.tracer().error( e );
                 continue;
             }
