@@ -53,4 +53,4 @@ MESSAGE ( STATUS "Using custom CMake scripts in ${ORCA_CMAKE_DIR}" )
 #
 # The rest is done by a script common to both Orca and derived projects
 #
-INCLUDE( ${ORCA_CMAKE_DIR}/global_setup.cmake )
+INCLUDE( ${ORCA_CMAKE_DIR}/Setup.cmake )
