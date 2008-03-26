@@ -13,7 +13,7 @@
 ##
 ## INCLUDE( ${CMAKE_ROOT}/Modules/FindPkgConfig.cmake)
 ## 
-## IF ( CMAKE_PKGCONFIG_EXECUTABLE )
+## IF( CMAKE_PKGCONFIG_EXECUTABLE )
 ##
 ##     # Find all the librtk stuff with pkg-config
 ##     PKGCONFIG( "librtk >= 2.0" HAVE_RTK RTK_INCLUDE_DIRS RTK_DEFINES RTK_LINK_DIRS RTK_LIBS )
@@ -22,7 +22,7 @@
 ##
 ##     # Can't find pkg-config -- have to find librtk somehow else
 ##
-## ENDIF ( CMAKE_PKGCONFIG_EXECUTABLE )
+## ENDIF( CMAKE_PKGCONFIG_EXECUTABLE )
 ##
 ##
 ## Notes:

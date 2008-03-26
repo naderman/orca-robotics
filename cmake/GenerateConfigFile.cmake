@@ -11,36 +11,36 @@
 #
 MACRO( GENERATE_CONFIG_FILE def_file )
 
-    IF ( ${ARGC} LESS 1 )
+    IF( ${ARGC} LESS 1 )
         MESSAGE( FATAL_ERROR "GENERATE_CONFIG_FILE requires at least one input parameter." )
-    ENDIF ( ${ARGC} LESS 1 )
+    ENDIF( ${ARGC} LESS 1 )
     
-    IF ( ${ARGC} GREATER 1 )
+    IF( ${ARGC} GREATER 1 )
         # Target name is specified
-        SET ( component_target ${ARGV1} )
+        SET( component_target ${ARGV1} )
     ELSE ( ${ARGC} GREATER 1 )
         # Target name is assumed from the def file name
         GET_FILENAME_COMPONENT( component_target ${def_file} NAME_WE )
-    #     MESSAGE ( STATUS "DEBUG: assumed component target name ${component_target}" )
-    ENDIF ( ${ARGC} GREATER 1 )
+    #     MESSAGE( STATUS "DEBUG: assumed component target name ${component_target}" )
+    ENDIF( ${ARGC} GREATER 1 )
     
-    IF ( ${ARGC} GREATER 2 )
+    IF( ${ARGC} GREATER 2 )
         # Target name is specified
-        SET ( install_def ${ARGV2} )
-        SET ( install_cfg ${ARGV2} )
-        SET ( install_xml ${ARGV2} )
+        SET( install_def ${ARGV2} )
+        SET( install_cfg ${ARGV2} )
+        SET( install_xml ${ARGV2} )
     ELSE ( ${ARGC} GREATER 2 )
         # Default behavior is to install the config file
-        SET ( install_def 1 )
-        SET ( install_cfg 1 )
-        SET ( install_xml 1 )
-    #     MESSAGE ( STATUS "DEBUG: assumed that the config file needs to be installed" )
-    ENDIF ( ${ARGC} GREATER 2 )
+        SET( install_def 1 )
+        SET( install_cfg 1 )
+        SET( install_xml 1 )
+    #     MESSAGE( STATUS "DEBUG: assumed that the config file needs to be installed" )
+    ENDIF( ${ARGC} GREATER 2 )
     
-    IF ( install_def )
+    IF( install_def )
         GBX_ADD_SHARED_FILES( def ${CMAKE_CURRENT_SOURCE_DIR}/${def_file} )
 #         INSTALL_FILES( /def FILES ${CMAKE_CURRENT_SOURCE_DIR}/${def_file} )
-    ENDIF ( install_def )
+    ENDIF( install_def )
     
     # The standard CMAKE_CFG_INTDIR does not seem to get resolved in INSTALL_FILES, do it manually
     # alexm: I'm not sure if this is the right way to do it. I think this is a problem only 
@@ -61,17 +61,17 @@ MACRO( GENERATE_CONFIG_FILE def_file )
     #     COMMENT "-- Generating ${cfg_file} from ${def_file}"
         )
     
-    IF ( ORCA_MOTHERSHIP )
+    IF( ORCA_MOTHERSHIP )
         ADD_DEPENDENCIES( ${component_target} def2cfg def2xml def2xmltemplate )
-    ENDIF ( ORCA_MOTHERSHIP )
+    ENDIF( ORCA_MOTHERSHIP )
     
-    IF ( install_cfg )
+    IF( install_cfg )
         GBX_ADD_SHARED_FILES( cfg ${CMAKE_CURRENT_BINARY_DIR}/${manual_cfg_intdir}/${cfg_file} )
 #         INSTALL_FILES( /cfg FILES ${CMAKE_CURRENT_BINARY_DIR}/${manual_cfg_intdir}/${cfg_file} )
-    ENDIF ( install_cfg )
+    ENDIF( install_cfg )
     
     # this is a global option
-    IF ( ORCA_BUILD_XML )
+    IF( ORCA_BUILD_XML )
         #
         # ICEGRID APPLICATION DESCRIPTOR XML FILE
         #
@@ -84,10 +84,10 @@ MACRO( GENERATE_CONFIG_FILE def_file )
 #             COMMENT "-- Generating ${xml_file} from ${def_file}"
             )
         
-        IF ( install_xml )
+        IF( install_xml )
             GBX_ADD_SHARED_FILES( xml ${CMAKE_CURRENT_BINARY_DIR}/${manual_cfg_intdir}/${xml_file} )
 #             INSTALL_FILES( /xml FILES ${CMAKE_CURRENT_BINARY_DIR}/${manual_cfg_intdir}/${xml_file} )
-        ENDIF ( install_xml )
-    ENDIF ( ORCA_BUILD_XML )
+        ENDIF( install_xml )
+    ENDIF( ORCA_BUILD_XML )
 
 ENDMACRO( GENERATE_CONFIG_FILE def_file )

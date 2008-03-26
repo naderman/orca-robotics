@@ -1,7 +1,7 @@
-SET ( lib_name OrcaBros1 )
+SET( lib_name OrcaBros1 )
 GBX_ADD_LICENSE( LGPL )
 
-SET ( build TRUE )
+SET( build TRUE )
 GBX_REQUIRE_OPTION( build LIB ${lib_name} ON )
 GBX_REQUIRE_VAR( build LIB ${lib_name} GBX_OS_LINUX "only Linux OS is supported" )
 
@@ -11,7 +11,7 @@ GBX_REQUIRE_INSTALLS( build LIB ${lib_name} ${ext_libs} )
 SET( int_libs OrcaInterfaces )
 GBX_REQUIRE_TARGETS( build LIB ${lib_name} ${int_libs} )
 
-IF ( build )
+IF( build )
     
     INCLUDE( ${ORCA_CMAKE_DIR}/UseBasicRules.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseIce.cmake )
@@ -27,4 +27,4 @@ IF ( build )
 
     GBX_ADD_HEADERS( orcabros1 ${hdrs} )
 
-ENDIF ( build )
+ENDIF( build )

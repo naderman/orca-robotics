@@ -1,9 +1,9 @@
-SET ( lib_name OrcaQCompModel )
+SET( lib_name OrcaQCompModel )
 GBX_ADD_LICENSE( GPL )
 
-SET ( build TRUE )
+SET( build TRUE )
 GBX_REQUIRE_OPTION( build LIB ${lib_name} ON )
-SET ( NOT_GBX_OS_WIN NOT GBX_OS_WIN )
+SET( NOT_GBX_OS_WIN NOT GBX_OS_WIN )
 GBX_REQUIRE_VAR( build LIB ${lib_name} NOT_GBX_OS_WIN "Windows OS is not  supported" )
 GBX_REQUIRE_VAR( build LIB ${lib_name} QT4_FOUND "Qt4 not found" )
 
@@ -12,7 +12,7 @@ GBX_REQUIRE_TARGETS( build LIB ${lib_name} ${dep_libs} )
 
 SET( dep_libs ${dep_libs} IceGrid )
 
-IF ( build )
+IF( build )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseQt.cmake )
@@ -34,4 +34,4 @@ IF ( build )
     
     GBX_ADD_HEADERS( orcaqcm ${hdrs} )
 
-ENDIF ( build )
+ENDIF( build )

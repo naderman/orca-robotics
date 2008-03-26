@@ -1,11 +1,11 @@
-SET ( APP_NAME pureice )
+SET( APP_NAME pureice )
 
-SET ( build TRUE )
+SET( build TRUE )
 GBX_REQUIRE_OPTION( build EXE ${APP_NAME} ON )
-SET ( NOT_GBX_OS_WIN NOT GBX_OS_WIN )
+SET( NOT_GBX_OS_WIN NOT GBX_OS_WIN )
 GBX_REQUIRE_VAR( build EXE ${APP_NAME} NOT_GBX_OS_WIN "Windows OS is not  supported" )
 
-IF ( build)
+IF( build)
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseBasicRules.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseLibProjectInterfaces.cmake )
@@ -15,4 +15,4 @@ IF ( build)
     
     GBX_ADD_EXECUTABLE( ${APP_NAME} ${srcs} )
 
-ENDIF ( build )
+ENDIF( build )

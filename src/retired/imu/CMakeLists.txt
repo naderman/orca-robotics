@@ -3,11 +3,11 @@
 # DO NOT USE IT A TEMPLATE FOR NEW DEVELOPMENT
 #
 
-IF ( GBX_OS_LINUX  )
+IF( GBX_OS_LINUX  )
 
 OPTION( build_IMU "Try to build Imu component" OFF )
 
-IF ( build_IMU )
+IF( build_IMU )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
     
@@ -49,12 +49,12 @@ ADD_DEFINITIONS( ${PLAYER_DEFINITIONS} )
     TARGET_LINK_LIBRARIES( imu ${COMP_DEPS} )
     
     # build IceBox service
-    IF ( ORCA_BUILD_SERVICES )
+    IF( ORCA_BUILD_SERVICES )
     GBX_ADD_LIBRARY( OrcaImu SHARED ${srcs} service )
     TARGET_LINK_LIBRARIES( OrcaImu ${COMP_DEPS} ) 
-    ENDIF ( ORCA_BUILD_SERVICES )
+    ENDIF( ORCA_BUILD_SERVICES )
 
     GENERATE_CONFIG_FILE( imu.def )
 
-ENDIF ( build_IMU )
-ENDIF ( GBX_OS_LINUX )
+ENDIF( build_IMU )
+ENDIF( GBX_OS_LINUX )

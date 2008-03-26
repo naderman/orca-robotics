@@ -1,10 +1,10 @@
-SET ( lib_name OrcaRobotDriverUtil )
+SET( lib_name OrcaRobotDriverUtil )
 GBX_ADD_LICENSE( LGPL )
 
-SET ( build TRUE )
+SET( build TRUE )
 GBX_REQUIRE_OPTION( build LIB ${lib_name} ON )
 
-IF ( build )
+IF( build )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
     
@@ -20,4 +20,4 @@ IF ( build )
 
     GBX_ADD_HEADERS( orcarobotdriverutil ${hdrs} )
 
-ENDIF ( build )
+ENDIF( build )

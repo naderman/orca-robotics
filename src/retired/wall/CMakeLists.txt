@@ -1,6 +1,6 @@
-SET_COMPONENT_NAMES ( Wall )
+SET_COMPONENT_NAMES( Wall )
 
-SET ( build TRUE )
+SET( build TRUE )
 GBX_REQUIRE_OPTION( build EXE ${APP_NAME} ON )
 GBX_REQUIRE_VAR( build EXE ${APP_NAME} GBX_OS_LINUX "only Linux OS is supported" )
 
@@ -10,7 +10,7 @@ GBX_REQUIRE_TARGETS( build EXE ${APP_NAME} ${dep_libs} )
 SET( dep_libs ${dep_libs} HydroDll )
 GBX_REQUIRE_VAR( build EXE ${APP_NAME} HYDRODLL_INSTALLED "libHydroDll not installed" )
 
-IF ( build )
+IF( build )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
@@ -21,4 +21,4 @@ IF ( build )
 
     GENERATE_CONFIG_FILE( ${APP_NAME}.def )
 
-ENDIF ( build )
+ENDIF( build )

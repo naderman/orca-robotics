@@ -1,11 +1,11 @@
-SET_COMPONENT_NAMES ( Orca2Yarp )
+SET_COMPONENT_NAMES( Orca2Yarp )
 
-SET ( build TRUE )
+SET( build TRUE )
 GBX_REQUIRE_OPTION( build EXE ${APP_NAME} OFF )
 # only tested on Linux but should work where Yarp works.
 GBX_REQUIRE_VAR( build EXE ${APP_NAME} GBX_OS_LINUX "only Linux OS is supported" )
 
-IF ( build)
+IF( build)
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
@@ -32,4 +32,4 @@ IF ( build)
 
     GENERATE_CONFIG_FILE( ${APP_NAME}.def )
 
-ENDIF ( build )
+ENDIF( build )

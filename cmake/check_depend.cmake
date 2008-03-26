@@ -10,14 +10,14 @@ INCLUDE( ${CMAKE_ROOT}/Modules/CheckIncludeFile.cmake )
 INCLUDE( ${CMAKE_ROOT}/Modules/CheckIncludeFileCXX.cmake )
 
 # Can we use pkg-config?
-INCLUDE (${ORCA_CMAKE_DIR}/FindPkgConfig.cmake)
+INCLUDE(${ORCA_CMAKE_DIR}/FindPkgConfig.cmake)
 
 # Check for Qt
-INCLUDE (${CMAKE_ROOT}/Modules/FindQt4.cmake)
+INCLUDE(${CMAKE_ROOT}/Modules/FindQt4.cmake)
 # we do NOT want 4.0.x
-IF ( QTVERSION MATCHES "4.1.*")
-    SET ( QT4_FOUND FALSE )
-ENDIF ( QTVERSION MATCHES "4.1.*")
+IF( QTVERSION MATCHES "4.1.*")
+    SET( QT4_FOUND FALSE )
+ENDIF( QTVERSION MATCHES "4.1.*")
 IF( QT4_FOUND )
     MESSAGE( STATUS "Looking for Qt4 >= 4.2 - found")
 #    MESSAGE( STATUS "DEBUG:   version: ${QTVERSION}" )
@@ -28,13 +28,13 @@ IF( QT4_FOUND )
 #    MESSAGE( STATUS "DEBUG:   Libraries ${QT_LIBRARIES}" )
 ELSE ( QT4_FOUND )
     MESSAGE( STATUS "Looking for Qt4 >= 4.2 - not found")
-ENDIF ( QT4_FOUND )
+ENDIF( QT4_FOUND )
 # some libraries require v.4.2
-# SET ( QT42_FOUND FALSE )
-# IF ( QTVERSION MATCHES "4.2.*")
-#     SET ( QT42_FOUND TRUE )
+# SET( QT42_FOUND FALSE )
+# IF( QTVERSION MATCHES "4.2.*")
+#     SET( QT42_FOUND TRUE )
 #     MESSAGE( STATUS "Looking for Qt4 >= 4.2 - found")
-# ENDIF ( QTVERSION MATCHES "4.2.*")
+# ENDIF( QTVERSION MATCHES "4.2.*")
 
 # Check for GLUT
 CHECK_INCLUDE_FILE( GL/glut.h GLUT_FOUND )
@@ -43,17 +43,17 @@ CHECK_INCLUDE_FILE( GL/glut.h GLUT_FOUND )
 CHECK_INCLUDE_FILE( lib3ds/node.h LIB3DS_FOUND )
 
 # Check for Java installation
-INCLUDE (${CMAKE_ROOT}/Modules/FindJava.cmake)
+INCLUDE(${CMAKE_ROOT}/Modules/FindJava.cmake)
 # MESSAGE( STATUS "DEBUG:   Java runtime ${JAVA_RUNTIME}" )
 # MESSAGE( STATUS "DEBUG:   Java archive ${JAVA_ARCHIVE}" )
 # MESSAGE( STATUS "DEBUG:   Java compiler ${JAVA_COMPILE}" )
-IF ( JAVA_RUNTIME )
-    SET ( JAVA_FOUND 1 )
-ENDIF ( JAVA_RUNTIME )
+IF( JAVA_RUNTIME )
+    SET( JAVA_FOUND 1 )
+ENDIF( JAVA_RUNTIME )
 ASSERT( JAVA_FOUND "Looking for Java - not found" "Looking for Java - found" )
 
 # Check for Python interpreter installation
-INCLUDE (${CMAKE_ROOT}/Modules/FindPythonInterp.cmake)
+INCLUDE(${CMAKE_ROOT}/Modules/FindPythonInterp.cmake)
 ASSERT( PYTHONINTERP_FOUND "Looking for the Python interpreter - not found" "Looking for the Python interpreter - found" )
 
 # Look for firewire headers (for firewire cameras)

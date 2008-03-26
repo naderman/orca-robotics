@@ -1,13 +1,13 @@
-SET ( lib_name OrcaObjects )
+SET( lib_name OrcaObjects )
 GBX_ADD_LICENSE( LGPL )
 
-SET ( build TRUE )
+SET( build TRUE )
 # This is one of fundamental libs. It is not optional (but maybe it should change)
 
-SET ( ext_libs GbxUtilAcfr GbxIceUtilAcfr HydroUtil )
+SET( ext_libs GbxUtilAcfr GbxIceUtilAcfr HydroUtil )
 GBX_REQUIRE_INSTALLS( build LIB ${lib_name} ${ext_libs} )
 
-IF ( build )
+IF( build )
 
     # Do not include UseComponentRules here because it will link to OrcaIce
     # creating circular dependency.
@@ -33,8 +33,8 @@ IF ( build )
     
     GBX_ADD_HEADERS( orcaobj ${hdrs} )
     
-    IF ( ORCA_BUILD_TESTS )
-        ADD_SUBDIRECTORY ( test )
-    ENDIF ( ORCA_BUILD_TESTS )
+    IF( ORCA_BUILD_TESTS )
+        ADD_SUBDIRECTORY( test )
+    ENDIF( ORCA_BUILD_TESTS )
 
-ENDIF ( build )
+ENDIF( build )

@@ -34,9 +34,9 @@ INCLUDE_DIRECTORIES(
 )
 
 # for satelite projects, add the orca install directory
-IF ( DEFINED ORCA_HOME )
+IF( DEFINED ORCA_HOME )
     INCLUDE_DIRECTORIES( ${ORCA_HOME}/include/orca )
-ENDIF ( DEFINED ORCA_HOME )
+ENDIF( DEFINED ORCA_HOME )
 
 IF( NOT GBX_OS_WIN )
     GBX_ADD_LIBRARY( ${PROJECT_INTERFACE_LIB} SHARED ${slice_generated_sources} )

@@ -1,15 +1,15 @@
-SET ( lib_name OrcaOgFusion )
+SET( lib_name OrcaOgFusion )
 GBX_ADD_LICENSE( LGPL )
 
-SET ( build TRUE )
+SET( build TRUE )
 GBX_REQUIRE_OPTION( build LIB ${lib_name} ON )
-SET ( NOT_GBX_OS_WIN NOT GBX_OS_WIN )
+SET( NOT_GBX_OS_WIN NOT GBX_OS_WIN )
 GBX_REQUIRE_VAR( build LIB ${lib_name} NOT_GBX_OS_WIN "Windows OS is not  supported" )
 
 SET( dep_libs OrcaOgMap )
 GBX_REQUIRE_TARGETS( build LIB ${lib_name} ${dep_libs} )
 
-IF ( build )
+IF( build )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
@@ -21,4 +21,4 @@ IF ( build )
     
     GBX_ADD_HEADERS( orcaogfusion ${hdrs} )
 
-ENDIF ( build )
+ENDIF( build )

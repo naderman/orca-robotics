@@ -3,27 +3,27 @@
 
 GBX_ADD_LICENSE( LGPL )
 
-MESSAGE ( STATUS "== EXAMPLES ==" )
+MESSAGE( STATUS "== EXAMPLES ==" )
 
-IF ( ORCA_BUILD_EXAMPLES )
+IF( ORCA_BUILD_EXAMPLES )
 
     # when adding new directories, please maintain alphabetical order
-    ADD_SUBDIRECTORY ( brick )
-    ADD_SUBDIRECTORY ( orca2yarp )
-    ADD_SUBDIRECTORY ( player2orca )
-    ADD_SUBDIRECTORY ( pureice )
+    ADD_SUBDIRECTORY( brick )
+    ADD_SUBDIRECTORY( orca2yarp )
+    ADD_SUBDIRECTORY( player2orca )
+    ADD_SUBDIRECTORY( pureice )
     # much easier to check for java here, because the example is build as a separate project
-    IF ( JAVA_FOUND AND build_JAVA )
-        ADD_SUBDIRECTORY ( pureicej )
-    ENDIF ( JAVA_FOUND AND build_JAVA )
+    IF( JAVA_FOUND AND build_JAVA )
+        ADD_SUBDIRECTORY( pureicej )
+    ENDIF( JAVA_FOUND AND build_JAVA )
     # much easier to check for python here, because the example is build as a separate project
-    IF ( PYTHON_FOUND AND build_PYTHON )
-        ADD_SUBDIRECTORY ( pureicepy )
-    ENDIF ( PYTHON_FOUND AND build_PYTHON )
-    ADD_SUBDIRECTORY ( reactivewalker )
+    IF( PYTHON_FOUND AND build_PYTHON )
+        ADD_SUBDIRECTORY( pureicepy )
+    ENDIF( PYTHON_FOUND AND build_PYTHON )
+    ADD_SUBDIRECTORY( reactivewalker )
 
 ELSE ( ORCA_BUILD_EXAMPLES )
 
-    MESSAGE ( STATUS "Example compilation is disabled" )
+    MESSAGE( STATUS "Example compilation is disabled" )
 
-ENDIF ( ORCA_BUILD_EXAMPLES )
+ENDIF( ORCA_BUILD_EXAMPLES )

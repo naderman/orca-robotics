@@ -21,7 +21,7 @@ ENDMACRO( FIND_DEFTOOLS DEFTOOLS_HOME )
 # Variable is needed by the install script as this will most likely be run from
 # Root and not have the compelete environment. For some reason I do not understand
 # The 'SET - CACHED' variables are not available in the install scripts (djlm)
-# INSTALL (CODE "SET (SYSTEM_ORCA_SOURCE ${PROJECT_SOURCE_DIR})")
-# INSTALL (CODE "SET (SYSTEM_HYDRO_INSTALL ${HYDRO_HOME})")
+# INSTALL (CODE "SET(SYSTEM_ORCA_SOURCE ${PROJECT_SOURCE_DIR})")
+# INSTALL (CODE "SET(SYSTEM_HYDRO_INSTALL ${HYDRO_HOME})")
 # INSTALL (SCRIPT ${PROJECT_SOURCE_DIR}/cmake/internal/labelInstall.cmake)
 

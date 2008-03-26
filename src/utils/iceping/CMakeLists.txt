@@ -1,9 +1,9 @@
-SET ( APP_NAME iceping )
+SET( APP_NAME iceping )
 
-SET ( build TRUE )
+SET( build TRUE )
 GBX_REQUIRE_OPTION( build EXE ${APP_NAME} ON )
 
-IF ( build )
+IF( build )
 
 	#
 	# This utility is intentionally built without using libOrcaIce.
@@ -19,4 +19,4 @@ IF ( build )
     # special case: we don't have a .def file here, installing a sample .cfg
     GBX_ADD_SHARED_FILES( cfg iceping.cfg )
 
-ENDIF ( build )
+ENDIF( build )

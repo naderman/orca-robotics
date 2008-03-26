@@ -5,8 +5,8 @@
 
 CHECK_INCLUDE_FILE_CXX( boost/numeric/ublas/matrix.hpp BOOST_UBLAS_FOUND )
 
-IF ( BOOST_UBLAS_FOUND )
+IF( BOOST_UBLAS_FOUND )
     MESSAGE( STATUS "Looking for Boost ublas - found")
 ELSE ( BOOST_UBLAS_FOUND )
     MESSAGE( STATUS "Looking for Boost ublas - not found")
-ENDIF ( BOOST_UBLAS_FOUND )
+ENDIF( BOOST_UBLAS_FOUND )

@@ -6,10 +6,10 @@
 # based on slice2cpp_rules.cmake
 #
 
-SET ( SLICE2PY_COMMAND         ${ICE_HOME}/bin/slice2py${EXE_EXTENSION} )
-SET ( SLICE_SOURCE_DIR          ${PROJECT_SOURCE_DIR}/src/interfaces/slice )
-SET ( SLICE_ORCA_SOURCE_DIR          ${PROJECT_SOURCE_DIR}/src/interfaces/slice/orca )
-SET ( SLICE2PY_BINARY_DIR      ${PROJECT_BINARY_DIR}/src/interfaces/python )
+SET( SLICE2PY_COMMAND         ${ICE_HOME}/bin/slice2py${EXE_EXTENSION} )
+SET( SLICE_SOURCE_DIR          ${PROJECT_SOURCE_DIR}/src/interfaces/slice )
+SET( SLICE_ORCA_SOURCE_DIR          ${PROJECT_SOURCE_DIR}/src/interfaces/slice/orca )
+SET( SLICE2PY_BINARY_DIR      ${PROJECT_BINARY_DIR}/src/interfaces/python )
 
 # Install sub-directory will be the same as the current sub-directory
 # which is typically the same as the name of the namespace, e.g. 'orca'
@@ -20,11 +20,11 @@ GET_FILENAME_COMPONENT( INTERFACE_NAMESPACE ${CMAKE_CURRENT_SOURCE_DIR} NAME )
 # are orca/<included file>. slice2py will automatically prepend orca_ to the names of each of the imported modules unless 
 # the SLICE_ORCA_SOURCE_DIR directory is also included. See Sec. 22.15.2 in the Ice manual for how code generation works for
 # python.  
-IF ( DEFINED ORCA_HOME )
-    SET ( SLICE_ARGS ${SLICE_PROJECT_ARGS} -I${SLICE_SOURCE_DIR} -I${SLICE_ORCA_SOURCE_DIR} -I${ICE_SLICE_HOME}/slice -I${ORCA_HOME}/slice --output-dir ${SLICE2PY_BINARY_DIR}/${INTERFACE_NAMESPACE} )
+IF( DEFINED ORCA_HOME )
+    SET( SLICE_ARGS ${SLICE_PROJECT_ARGS} -I${SLICE_SOURCE_DIR} -I${SLICE_ORCA_SOURCE_DIR} -I${ICE_SLICE_HOME}/slice -I${ORCA_HOME}/slice --output-dir ${SLICE2PY_BINARY_DIR}/${INTERFACE_NAMESPACE} )
 ELSE ( DEFINED ORCA_HOME )
-    SET ( SLICE_ARGS ${SLICE_PROJECT_ARGS} -I${SLICE_SOURCE_DIR} -I${SLICE_ORCA_SOURCE_DIR} -I${ICE_SLICE_HOME}/slice --output-dir ${SLICE2PY_BINARY_DIR}/${INTERFACE_NAMESPACE} )
-ENDIF ( DEFINED ORCA_HOME )
+    SET( SLICE_ARGS ${SLICE_PROJECT_ARGS} -I${SLICE_SOURCE_DIR} -I${SLICE_ORCA_SOURCE_DIR} -I${ICE_SLICE_HOME}/slice --output-dir ${SLICE2PY_BINARY_DIR}/${INTERFACE_NAMESPACE} )
+ENDIF( DEFINED ORCA_HOME )
 
 #
 # byte-compile all the python interfaces to produce .pyc files
@@ -47,7 +47,7 @@ MACRO( APPEND ORIGINAL NEW_BIT )
     SET( ${ORIGINAL} ${NEW_BIT} )
   ELSE  ( NOT ${ORIGINAL} )
     SET( ${ORIGINAL} ${${ORIGINAL}} ${NEW_BIT} )
-  ENDIF ( NOT ${ORIGINAL} )
+  ENDIF( NOT ${ORIGINAL} )
 
 ENDMACRO( APPEND ORIGINAL NEW_BIT )
 
@@ -63,12 +63,12 @@ ENDMACRO( APPEND ORIGINAL NEW_BIT )
 # Sets up dependencies: 
 #  - Each .py file depends on all the .ice files.
 #
-MACRO ( GENERATE_SLICE2PY_RULES GENERATED_PY_LIST )
+MACRO( GENERATE_SLICE2PY_RULES GENERATED_PY_LIST )
 
   # debug
-#   MESSAGE ( STATUS "   slice sources    : " ${SLICE_ORCA_SOURCE_DIR} )
-#   MESSAGE ( STATUS "   py destination  : " ${SLICE2PY_BINARY_DIR} )
-#   MESSAGE ( STATUS "GENERATE_SLICE2PY_RULES: ARGN: ${ARGN}" )
+#   MESSAGE( STATUS "   slice sources    : " ${SLICE_ORCA_SOURCE_DIR} )
+#   MESSAGE( STATUS "   py destination  : " ${SLICE2PY_BINARY_DIR} )
+#   MESSAGE( STATUS "GENERATE_SLICE2PY_RULES: ARGN: ${ARGN}" )
 
   #
   # First pass: Loop through the SLICE sources we were given, add the full path for dependencies
@@ -81,7 +81,7 @@ MACRO ( GENERATE_SLICE2PY_RULES GENERATED_PY_LIST )
   #
   # Second pass: Loop through the SLICE sources we were given, add the CMake rules
   #
-  SET ( SLICE_SOURCE_COUNTER 0 )
+  SET( SLICE_SOURCE_COUNTER 0 )
   FOREACH( SLICE_SOURCE_BASENAME ${ARGN} )
     SET( SLICE_SOURCE "${SLICE_ORCA_SOURCE_DIR}/${SLICE_SOURCE_BASENAME}" )
     # MESSAGE( STATUS "DEBUG: Dealing with ${SLICE_SOURCE_BASENAME}")
@@ -114,13 +114,13 @@ MACRO ( GENERATE_SLICE2PY_RULES GENERATED_PY_LIST )
     # Add this output to the list of generated files
     #
     APPEND( ${GENERATED_PY_LIST} ${OUTPUT_BASENAME} )
-    SET ( GENERATED_FILE_TYPE "python script" )
+    SET( GENERATED_FILE_TYPE "python script" )
 
     #
     # Add the command to generate file.py from file.ice
     # Note: when the 'output' is needed, the 'command' will be called with the 'args'
     #
-    # MESSAGE ( STATUS "DEBUG: Adding rule for generating ${OUTPUT_BASENAME} from ${SLICE_SOURCE_BASENAME}" )
+    # MESSAGE( STATUS "DEBUG: Adding rule for generating ${OUTPUT_BASENAME} from ${SLICE_SOURCE_BASENAME}" )
     ADD_CUSTOM_COMMAND(
 	OUTPUT  ${CMAKE_CURRENT_BINARY_DIR}/${OUTPUT_BASENAME}
 	COMMAND ${SLICE2PY_COMMAND} 
@@ -131,13 +131,13 @@ MACRO ( GENERATE_SLICE2PY_RULES GENERATED_PY_LIST )
     # MESSAGE( "DEBUG: Output from custom cmake command for slice2py - ${CMAKE_CURRENT_BINARY_DIR}/${OUTPUT_BASENAME}" )
     # MESSAGE( "DEBUG: ARGS - ${SLICE_SOURCE} ${SLICE_ARGS}" )
 
-    MATH ( EXPR SLICE_SOURCE_COUNTER "${SLICE_SOURCE_COUNTER} + 1" )
+    MATH( EXPR SLICE_SOURCE_COUNTER "${SLICE_SOURCE_COUNTER} + 1" )
 
   ENDFOREACH( SLICE_SOURCE_BASENAME ${ARGN} )
 
-#   MESSAGE ( STATUS "DEBUG: GENERATED_PY_LIST: ${${GENERATED_PY_LIST}}")
+#   MESSAGE( STATUS "DEBUG: GENERATED_PY_LIST: ${${GENERATED_PY_LIST}}")
 
-  MESSAGE ( STATUS "Will generate py source files from ${SLICE_SOURCE_COUNTER} Slice definitions using this command:" )
-  MESSAGE ( STATUS "${SLICE2PY_COMMAND} ${SLICE_ORCA_SOURCE_DIR}/*.ice ${SLICE_ARGS}" )
+  MESSAGE( STATUS "Will generate py source files from ${SLICE_SOURCE_COUNTER} Slice definitions using this command:" )
+  MESSAGE( STATUS "${SLICE2PY_COMMAND} ${SLICE_ORCA_SOURCE_DIR}/*.ice ${SLICE_ARGS}" )
 
-ENDMACRO ( GENERATE_SLICE2PY_RULES GENERATED_PY_LIST )
+ENDMACRO( GENERATE_SLICE2PY_RULES GENERATED_PY_LIST )

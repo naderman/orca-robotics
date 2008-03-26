@@ -1,9 +1,9 @@
-SET_COMPONENT_NAMES ( Slice2String )
+SET_COMPONENT_NAMES( Slice2String )
 
-SET ( build TRUE )
+SET( build TRUE )
 GBX_REQUIRE_OPTION( build EXE ${APP_NAME} ON )
 
-IF ( build )
+IF( build )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseBasicRules.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseZeroC.cmake )
@@ -14,8 +14,8 @@ IF ( build )
     GBX_ADD_EXECUTABLE( ${APP_NAME} ${srcs} )
     TARGET_LINK_LIBRARIES( ${APP_NAME} ${dep_libs} )
 
-    IF ( ORCA_BUILD_TESTS )
-        ADD_SUBDIRECTORY ( test )
-    ENDIF ( ORCA_BUILD_TESTS )
+    IF( ORCA_BUILD_TESTS )
+        ADD_SUBDIRECTORY( test )
+    ENDIF( ORCA_BUILD_TESTS )
 
 ENDIF( build )

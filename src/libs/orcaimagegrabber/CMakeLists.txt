@@ -1,11 +1,11 @@
-SET ( lib_name OrcaImageGrabber )
+SET( lib_name OrcaImageGrabber )
 GBX_ADD_LICENSE( LGPL )
 
-SET ( build TRUE )
+SET( build TRUE )
 GBX_REQUIRE_OPTION( build LIB ${lib_name} OFF )
 GBX_REQUIRE_VAR( build LIB ${lib_name} GBX_OS_LINUX "only Linux OS is supported" )
 
-IF ( build )
+IF( build )
 
     # alexm: this seems like a big dependency
     # not sure what is actually needed.
@@ -13,13 +13,13 @@ IF ( build )
     
     # opencv image grabber checks
     INCLUDE( ${ORCA_CMAKE_DIR}/FindOpenCV.cmake )
-    IF ( OPENCV_FOUND )
+    IF( OPENCV_FOUND )
         MESSAGE( STATUS "    OpenCv Image Grabber (>= OpenCv version 0.9.9)  - can be built" )
         INCLUDE( ${ORCA_CMAKE_DIR}/UseOpenCV.cmake )
         SET( srcs cvgrabber )
     ELSE ( OPENCV_FOUND )
         MESSAGE( STATUS "    OpenCv Image Grabber (>= OpenCv version 0.9.9)  - CANNOT be built" )
-    ENDIF ( OPENCV_FOUND )
+    ENDIF( OPENCV_FOUND )
     
     # check for digiclops image grabbing libraries
     FIND_LIBRARY( DIGICLOPS_FOUND NAMES digiclops PATHS /usr/lib /usr/local/lib )
@@ -29,12 +29,12 @@ IF ( build )
     ASSERT( TRICLOPS_FOUND "Looking for Triclops - not found" "Looking for Triclops - found" )
     
     # both digiclops and triclops libraries need to be used
-    IF ( DIGICLOPS_FOUND AND TRICLOPS_FOUND ) 
-        SET ( DIGICLOPS_AND_TRICLOPS_FOUND 1 )
-    ENDIF ( DIGICLOPS_FOUND AND TRICLOPS_FOUND ) 
+    IF( DIGICLOPS_FOUND AND TRICLOPS_FOUND ) 
+        SET( DIGICLOPS_AND_TRICLOPS_FOUND 1 )
+    ENDIF( DIGICLOPS_FOUND AND TRICLOPS_FOUND ) 
 
     # digiclops image grabber library checks
-    IF ( DIGICLOPS_AND_TRICLOPS_FOUND ) 
+    IF( DIGICLOPS_AND_TRICLOPS_FOUND ) 
         MESSAGE( STATUS "    The Digiclops Image Grabber - can be built" )
     
         INCLUDE_DIRECTORIES(
@@ -46,12 +46,12 @@ IF ( build )
     
     ELSE ( DIGICLOPS_AND_TRICLOPS_FOUND ) 
         MESSAGE( STATUS "    The Digiclops Image Grabber - CANNOT be built" )
-    ENDIF ( DIGICLOPS_AND_TRICLOPS_FOUND ) 
+    ENDIF( DIGICLOPS_AND_TRICLOPS_FOUND ) 
     
-    IF ( OPENCV_FOUND OR DIGICLOPS_AND_TRICLOPS_FOUND )
+    IF( OPENCV_FOUND OR DIGICLOPS_AND_TRICLOPS_FOUND )
         GBX_ADD_LIBRARY( ${lib_name} SHARED ${srcs} )
         TARGET_LINK_LIBRARIES( ${lib_name} ${OPENCV_LIBS} ${DIGICLOPS_LIBS} )
-    ENDIF ( OPENCV_FOUND OR DIGICLOPS_AND_TRICLOPS_FOUND )
+    ENDIF( OPENCV_FOUND OR DIGICLOPS_AND_TRICLOPS_FOUND )
     
     # we want this file to install for fake drivers
     FILE( GLOB hdrs *.h )

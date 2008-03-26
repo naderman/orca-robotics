@@ -1,10 +1,10 @@
-SET ( lib_name OrcaObjectUtil )
+SET( lib_name OrcaObjectUtil )
 GBX_ADD_LICENSE( LGPL )
 
-SET ( build TRUE )
+SET( build TRUE )
 GBX_REQUIRE_OPTION( build LIB ${lib_name} ON )
 
-IF ( build )
+IF( build )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
     
@@ -23,4 +23,4 @@ IF ( build )
     
     GBX_ADD_HEADERS( orcaobjutil ${hdrs} )
 
-ENDIF ( build )
+ENDIF( build )

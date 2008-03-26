@@ -58,7 +58,7 @@ GENERATE_CONFIG_FILE( appproptestoff.def appproptest 0 )
 
 # can't do this in win 'cause: 1) need shared libs for services, 2) need to copy files
 
-IF ( NOT GBX_OS_WIN )
+IF( NOT GBX_OS_WIN )
 
 # basic service test
 ADD_LIBRARY( ServiceTest SHARED servicetest )
@@ -96,7 +96,7 @@ GBX_ADD_TEST( ServicePropTest1100 ${ICE_HOME}/bin/icebox --Ice.Config=${CMAKE_CU
 GBX_ADD_TEST( ServicePropTest1101 ${ICE_HOME}/bin/icebox --Ice.Config=${CMAKE_CURRENT_SOURCE_DIR}/icebox1101.cfg )
 GBX_ADD_TEST( ServicePropTest1110 ${ICE_HOME}/bin/icebox --Ice.Config=${CMAKE_CURRENT_SOURCE_DIR}/icebox1110.cfg )
 GBX_ADD_TEST( ServicePropTest1111 ${ICE_HOME}/bin/icebox --Ice.Config=${CMAKE_CURRENT_SOURCE_DIR}/icebox1111.cfg )
-ENDIF ( NOT GBX_OS_WIN )
+ENDIF( NOT GBX_OS_WIN )
 
 ADD_EXECUTABLE( configtest configtest.cpp )
 GBX_ADD_TEST( ConfigUtilsTest configtest )
@@ -105,8 +105,8 @@ GENERATE_CONFIG_FILE( configtest.def configtest 0 )
 # alexm: 
 # This test relies on establishing direct connections which is currently broken
 # not sure why it works in linux actually.
-IF ( NOT GBX_OS_QNX )
+IF( NOT GBX_OS_QNX )
 ADD_EXECUTABLE( connecttest connecttest.cpp )
 GBX_ADD_TEST( ConnectUtilsTest connecttest )
 GENERATE_CONFIG_FILE( connecttest.def connecttest 0 )
-ENDIF ( NOT GBX_OS_QNX )
+ENDIF( NOT GBX_OS_QNX )

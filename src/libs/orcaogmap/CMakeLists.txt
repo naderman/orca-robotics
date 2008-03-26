@@ -1,15 +1,15 @@
-SET ( lib_name OrcaOgMap )
+SET( lib_name OrcaOgMap )
 GBX_ADD_LICENSE( LGPL )
 
-SET ( build TRUE )
+SET( build TRUE )
 GBX_REQUIRE_OPTION( build LIB ${lib_name} ON )
-SET ( NOT_GBX_OS_WIN NOT GBX_OS_WIN )
+SET( NOT_GBX_OS_WIN NOT GBX_OS_WIN )
 GBX_REQUIRE_VAR( build LIB ${lib_name} NOT_GBX_OS_WIN "Windows OS is not  supported" )
 
 SET( dep_libs HydroOgMap )
 GBX_REQUIRE_VAR( build LIB ${lib_name} HYDROOGMAP_INSTALLED "libHydroOgMap not installed" )
 
-IF ( build )
+IF( build )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
@@ -21,8 +21,8 @@ IF ( build )
 
     GBX_ADD_HEADERS( orcaogmap ${hdrs} )
 
-    IF ( ORCA_BUILD_TESTS )
-        ADD_SUBDIRECTORY ( test )
-    ENDIF ( ORCA_BUILD_TESTS )
+    IF( ORCA_BUILD_TESTS )
+        ADD_SUBDIRECTORY( test )
+    ENDIF( ORCA_BUILD_TESTS )
 
 ENDIF (build )

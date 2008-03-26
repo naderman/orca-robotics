@@ -1,7 +1,7 @@
-SET_COMPONENT_NAMES ( LocalNav )
-SET ( APP_CTRLC_HANDLER 0 )
+SET_COMPONENT_NAMES( LocalNav )
+SET( APP_CTRLC_HANDLER 0 )
 
-SET ( build TRUE )
+SET( build TRUE )
 GBX_REQUIRE_OPTION( build EXE ${APP_NAME} ON )
 GBX_REQUIRE_VAR( build EXE ${APP_NAME} GBX_OS_LINUX "only Linux OS is supported" )
 
@@ -11,7 +11,7 @@ GBX_REQUIRE_INSTALLS( build EXE ${APP_NAME} ${ext_libs} )
 SET( int_libs OrcaLocalNav OrcaNavUtil OrcaIfaceImpl OrcaOgMap OrcaPathPlan )
 GBX_REQUIRE_TARGETS( build EXE ${APP_NAME} ${int_libs} )
 
-IF ( build )
+IF( build )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
@@ -34,30 +34,30 @@ IF ( build )
     TARGET_LINK_LIBRARIES( ${APP_NAME} ${dep_libs} )
     
     # build IceBox service
-    IF ( ORCA_BUILD_SERVICES )
+    IF( ORCA_BUILD_SERVICES )
         WRAP_COMPONENT_INTO_SERVICE( ${SERVICE_NAME} ${COMP_NAMESPACE} ${srcs} )
         TARGET_LINK_LIBRARIES( ${SERVICE_NAME} ${dep_libs} ) 
-    ENDIF ( ORCA_BUILD_SERVICES )
+    ENDIF( ORCA_BUILD_SERVICES )
 
     GENERATE_CONFIG_FILE( ${APP_NAME}.def )
 
-    IF ( ORCA_BUILD_TESTS )
+    IF( ORCA_BUILD_TESTS )
 
       # Check for 32-bit vs 64-bit
-      IF ( CMAKE_SIZEOF_VOID_P EQUAL 8 )
-        SET ( IS_32_BIT FALSE )
-        SET ( IS_64_BIT TRUE )
+      IF( CMAKE_SIZEOF_VOID_P EQUAL 8 )
+        SET( IS_32_BIT FALSE )
+        SET( IS_64_BIT TRUE )
       ELSE ( CMAKE_SIZEOF_VOID_P EQUAL 8 )
-        SET ( IS_32_BIT TRUE )
-        SET ( IS_64_BIT FALSE )
-      ENDIF ( CMAKE_SIZEOF_VOID_P EQUAL 8 )
+        SET( IS_32_BIT TRUE )
+        SET( IS_64_BIT FALSE )
+      ENDIF( CMAKE_SIZEOF_VOID_P EQUAL 8 )
 
       # Work out what ld-linux executable to use
-      IF ( IS_64_BIT )
-        SET ( LD_LINUX /lib/ld-linux-x86-64.so.2 )
+      IF( IS_64_BIT )
+        SET( LD_LINUX /lib/ld-linux-x86-64.so.2 )
       ELSE ( IS_64_BIT )
-        SET ( LD_LINUX /lib/ld-linux.so.2 )
-      ENDIF ( IS_64_BIT )
+        SET( LD_LINUX /lib/ld-linux.so.2 )
+      ENDIF( IS_64_BIT )
 
       #
       # AlexB: The /lib/ld-linux stuff is a bit of magic to make Linux
@@ -71,6 +71,6 @@ IF ( build )
         --LocalNav.Config.Test.NumWaypoints=20
         --Orca.RequireRegistry=0
         --LocalNav.Config.Test.BatchMode=1 )
-    ENDIF ( ORCA_BUILD_TESTS )
+    ENDIF( ORCA_BUILD_TESTS )
 
-ENDIF ( build )
+ENDIF( build )

@@ -1,12 +1,12 @@
-SET_COMPONENT_NAMES ( LaserMon )
+SET_COMPONENT_NAMES( LaserMon )
 
-SET ( build TRUE )
+SET( build TRUE )
 GBX_REQUIRE_OPTION( build EXE ${APP_NAME} ON )
 
 SET( int_libs OrcaObjects )
 GBX_REQUIRE_TARGETS( build EXE ${APP_NAME} ${int_libs} )
 
-IF ( build )
+IF( build )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
@@ -19,4 +19,4 @@ IF ( build )
     
     GENERATE_CONFIG_FILE( ${APP_NAME}.def )
 
-ENDIF ( build )
+ENDIF( build )

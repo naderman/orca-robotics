@@ -1,13 +1,13 @@
-SET ( lib_name OrcaDef )
+SET( lib_name OrcaDef )
 GBX_ADD_LICENSE( LGPL )
 
-SET ( build TRUE )
+SET( build TRUE )
 GBX_REQUIRE_OPTION( build LIB ${lib_name} ON )
 
 SET( dep_libs OrcaObjects )
 GBX_REQUIRE_TARGETS( build LIB ${lib_name} ${dep_libs} )
 
-IF ( build )
+IF( build )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
     
@@ -28,8 +28,8 @@ IF ( build )
     
     GBX_ADD_HEADERS( orcadef ${hdrs} )
     
-    IF ( ORCA_BUILD_TESTS )
-        ADD_SUBDIRECTORY ( test )
-    ENDIF ( ORCA_BUILD_TESTS )
+    IF( ORCA_BUILD_TESTS )
+        ADD_SUBDIRECTORY( test )
+    ENDIF( ORCA_BUILD_TESTS )
 
-ENDIF ( build )
+ENDIF( build )

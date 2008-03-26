@@ -1,9 +1,9 @@
-SET_COMPONENT_NAMES (Probe )
-SET ( APP_CTRLC_HANDLER 0 )
+SET_COMPONENT_NAMES(Probe )
+SET( APP_CTRLC_HANDLER 0 )
 
-SET ( build TRUE )
+SET( build TRUE )
 GBX_REQUIRE_OPTION( build EXE ${APP_NAME} ON )
-SET ( NOT_GBX_OS_WIN NOT GBX_OS_WIN )
+SET( NOT_GBX_OS_WIN NOT GBX_OS_WIN )
 GBX_REQUIRE_VAR( build EXE ${APP_NAME} NOT_GBX_OS_WIN "Windows OS is not  supported" )
 
 SET( dep_libs OrcaCompModel OrcaProbe )
@@ -12,11 +12,11 @@ GBX_REQUIRE_TARGETS( build EXE ${APP_NAME} ${dep_libs} )
 SET( dep_libs ${dep_libs} HydroDll )
 GBX_REQUIRE_VAR( build EXE ${APP_NAME} HYDRODLL_INSTALLED "libHydroDll not installed" )
 
-IF ( build )
+IF( build )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
-    SET ( IOSTREAM_FOUND 1 )
+    SET( IOSTREAM_FOUND 1 )
     OPTIONAL_SUB_LIBRARY( 
         "terminal display driver for Probe using iostreams"
         term-iostream
@@ -27,10 +27,10 @@ IF ( build )
         )
 
     # Qt driver
-    IF ( QT4_FOUND ) 
-        SET ( QT4_OK 1 )
+    IF( QT4_FOUND ) 
+        SET( QT4_OK 1 )
         INCLUDE_DIRECTORIES( ${QT_INCLUDES} )
-    ENDIF ( QT4_FOUND ) 
+    ENDIF( QT4_FOUND ) 
 
     OPTIONAL_SUB_LIBRARY( 
         "GUI display driver for Probe using Qt"
@@ -50,4 +50,4 @@ IF ( build )
 
     GENERATE_CONFIG_FILE( ${APP_NAME}.def )
 
-ENDIF ( build )
+ENDIF( build )

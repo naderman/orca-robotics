@@ -15,7 +15,7 @@ MACRO( APPEND original new_bit )
     SET( ${original} ${new_bit} )
   ELSE  ( NOT ${original} )
     SET( ${original} ${${original}} ${new_bit} )
-  ENDIF ( NOT ${original} )
+  ENDIF( NOT ${original} )
 
 ENDMACRO( APPEND original new_bit )
 
@@ -32,16 +32,16 @@ ENDMACRO( APPEND original new_bit )
 #  - Each .cpp and .h file depends on all the .ice files.
 #  - Each .cpp file depends on all .h files associated with all the previously-listed slice sources.
 #
-MACRO ( GENERATE_SLICE2CPP_RULES generated_cpp_list generated_header_list )
+MACRO( GENERATE_SLICE2CPP_RULES generated_cpp_list generated_header_list )
 
-    SET ( slice_cpp_suffixes        .cpp )
-    SET ( slice_header_suffixes     .h  )
-    SET ( slice_suffixes            ${slice_cpp_suffixes} ${slice_header_suffixes} )
-    SET ( slice2cpp_command         ${ICE_HOME}/bin/slice2cpp${EXE_EXTENSION} )
+    SET( slice_cpp_suffixes        .cpp )
+    SET( slice_header_suffixes     .h  )
+    SET( slice_suffixes            ${slice_cpp_suffixes} ${slice_header_suffixes} )
+    SET( slice2cpp_command         ${ICE_HOME}/bin/slice2cpp${EXE_EXTENSION} )
     
-    SET ( slice_source_dir          ${PROJECT_SOURCE_DIR}/src/interfaces/slice )
-    SET ( slice_binary_dir          ${PROJECT_BINARY_DIR}/src/interfaces/slice )
-    SET ( slice2cpp_binary_dir      ${PROJECT_BINARY_DIR}/src/interfaces/cpp )
+    SET( slice_source_dir          ${PROJECT_SOURCE_DIR}/src/interfaces/slice )
+    SET( slice_binary_dir          ${PROJECT_BINARY_DIR}/src/interfaces/slice )
+    SET( slice2cpp_binary_dir      ${PROJECT_BINARY_DIR}/src/interfaces/cpp )
     
     # Install sub-directory will be the same as the current sub-directory
     # which is typically the same as the name of the namespace, e.g. 'orca'
@@ -49,17 +49,17 @@ MACRO ( GENERATE_SLICE2CPP_RULES generated_cpp_list generated_header_list )
     
     # satellite projects need to include slice files from orca installation
     # NOTE: funky interaction between cmake and slice2cpp: cannot use "" around the slice_args!
-    IF ( ORCA_MOTHERSHIP )
-        SET ( slice_args ${SLICE_PROJECT_ARGS} -I${slice_source_dir} -I${ICE_SLICE_HOME}/slice --stream --output-dir ${slice2cpp_binary_dir}/${slice_module} )
+    IF( ORCA_MOTHERSHIP )
+        SET( slice_args ${SLICE_PROJECT_ARGS} -I${slice_source_dir} -I${ICE_SLICE_HOME}/slice --stream --output-dir ${slice2cpp_binary_dir}/${slice_module} )
     ELSE ( ORCA_MOTHERSHIP )
-        SET ( slice_args ${SLICE_PROJECT_ARGS} -I${slice_source_dir} -I${ICE_SLICE_HOME}/slice -I${ORCA_HOME}/share/orca/slice --stream --output-dir ${slice2cpp_binary_dir}/${slice_module} )
-    ENDIF ( ORCA_MOTHERSHIP )
+        SET( slice_args ${SLICE_PROJECT_ARGS} -I${slice_source_dir} -I${ICE_SLICE_HOME}/slice -I${ORCA_HOME}/share/orca/slice --stream --output-dir ${slice2cpp_binary_dir}/${slice_module} )
+    ENDIF( ORCA_MOTHERSHIP )
 
 
   # debug
-#   MESSAGE ( STATUS "   slice sources    : " ${slice_source_dir} )
-#   MESSAGE ( STATUS "   cpp destination  : " ${slice2cpp_binary_dir} )
-#   MESSAGE ( STATUS "GENERATE_SLICE2CPP_RULES: ARGN: ${ARGN}" )
+#   MESSAGE( STATUS "   slice sources    : " ${slice_source_dir} )
+#   MESSAGE( STATUS "   cpp destination  : " ${slice2cpp_binary_dir} )
+#   MESSAGE( STATUS "GENERATE_SLICE2CPP_RULES: ARGN: ${ARGN}" )
 
   #
   # First pass: Loop through the SLICE sources we were given, add the full path for dependencies
@@ -71,7 +71,7 @@ MACRO ( GENERATE_SLICE2CPP_RULES generated_cpp_list generated_header_list )
   #
   # Second pass: Loop through the SLICE sources we were given, add the CMake rules
   #
-  SET ( slice_source_counter 0 )
+  SET( slice_source_counter 0 )
   FOREACH( slice_source_basename ${ARGN} )
     SET( slice_source "${slice_source_dir}/${slice_module}/${slice_source_basename}" )
     #MESSAGE( STATUS "DEBUG: Dealing with ${slice_source_basename}")
@@ -111,17 +111,17 @@ MACRO ( GENERATE_SLICE2CPP_RULES generated_cpp_list generated_header_list )
       #
       IF( ${suffix} STREQUAL ".cpp" )
         APPEND( ${generated_cpp_list} ${output_basename} )
-        SET ( generated_file_type "source" )
+        SET( generated_file_type "source" )
       ELSE( ${suffix} STREQUAL ".cpp" )
         APPEND( ${generated_header_list} ${output_basename} )
-        SET ( generated_file_type "header" )
+        SET( generated_file_type "header" )
       ENDIF( ${suffix} STREQUAL ".cpp" )
 
       #
       # Add the command to generate file.xxx from file.ice
       # Note: when the 'output' is needed, the 'command' will be called with the 'args'
       #
-#       MESSAGE ( STATUS "DEBUG: Adding rule for generating ${output_basename} from ${slice_source_basename}" )
+#       MESSAGE( STATUS "DEBUG: Adding rule for generating ${output_basename} from ${slice_source_basename}" )
       ADD_CUSTOM_COMMAND(
         OUTPUT  ${CMAKE_CURRENT_BINARY_DIR}/${output_basename}
         COMMAND ${slice2cpp_command} ${slice_args} ${slice_source}
@@ -132,7 +132,7 @@ MACRO ( GENERATE_SLICE2CPP_RULES generated_cpp_list generated_header_list )
 
     ENDFOREACH ( suffix ${slice_suffixes} )
 
-    MATH ( EXPR slice_source_counter "${slice_source_counter} + 1" )
+    MATH( EXPR slice_source_counter "${slice_source_counter} + 1" )
 
   ENDFOREACH( slice_source_basename )
 
@@ -142,10 +142,10 @@ MACRO ( GENERATE_SLICE2CPP_RULES generated_cpp_list generated_header_list )
   # http://www.cmake.org/Wiki/CMake_FAQ#Running_.22make_clean.22_does_not_remove_custom_command_outputs._Why.3F
   # one small problem: the last header file is not deleted on 'make clean' for some reason. don't know why?
 
-#   MESSAGE ( STATUS "DEBUG: generated_cpp_list: ${${generated_cpp_list}}")
-#   MESSAGE ( STATUS "DEBUG: generated_header_list: ${${generated_header_list}}")
+#   MESSAGE( STATUS "DEBUG: generated_cpp_list: ${${generated_cpp_list}}")
+#   MESSAGE( STATUS "DEBUG: generated_header_list: ${${generated_header_list}}")
 
-  MESSAGE ( STATUS "Will generate cpp header and source files from ${slice_source_counter} Slice definitions using this command:" )
-  MESSAGE ( STATUS "${slice2cpp_command} <source.ice> ${slice_args}" )
+  MESSAGE( STATUS "Will generate cpp header and source files from ${slice_source_counter} Slice definitions using this command:" )
+  MESSAGE( STATUS "${slice2cpp_command} <source.ice> ${slice_args}" )
 
-ENDMACRO ( GENERATE_SLICE2CPP_RULES generated_cpp_list generated_header_list )
+ENDMACRO( GENERATE_SLICE2CPP_RULES generated_cpp_list generated_header_list )

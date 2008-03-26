@@ -6,7 +6,7 @@
 INCLUDE( ${ORCA_CMAKE_DIR}/UseZeroC.cmake )
 INCLUDE( ${ORCA_CMAKE_DIR}/UseIce.cmake )
 
-IF ( NOT ORCA_OS_WIN )
+IF( NOT ORCA_OS_WIN )
 
     LINK_LIBRARIES( IceStorm IceBox IceGrid )
 
@@ -17,4 +17,4 @@ ELSE ( NOT ORCA_OS_WIN )
                     optimized IceBox    debug IceBoxd
                     optimized IceGrid   debug IceGridd )
 
-ENDIF ( NOT ORCA_OS_WIN )
+ENDIF( NOT ORCA_OS_WIN )

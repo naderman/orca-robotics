@@ -8,9 +8,9 @@
 SET( HYDRO_FOUND 0 CACHE BOOL "Do we have Hydro?" )
 
 # this will work in Orca which has the same version as Hydro
-IF ( ORCA_MOTHERSHIP )
+IF( ORCA_MOTHERSHIP )
     SET( HYDRO_SEARCH_DIR_ORCA_ONLY /opt/hydro-${PROJECT_VERSION} )
-ENDIF ( ORCA_MOTHERSHIP )
+ENDIF( ORCA_MOTHERSHIP )
 
 FIND_PATH( HYDRO_HOME hydro_manifest.cmake
     # Test user-specified installation point (first look in the dir specified
@@ -45,6 +45,6 @@ FIND_PATH( HYDRO_HOME hydro_manifest.cmake
 # MESSAGE( STATUS "DEBUG: manifest.cmake is apparently found in : ${HYDRO_HOME}" )
 
 # NOTE: if HYDRO_HOME is set to *-NOTFOUND it will evaluate to FALSE
-IF ( HYDRO_HOME )
+IF( HYDRO_HOME )
     SET( HYDRO_FOUND 1 CACHE BOOL "Do we have Hydro?" FORCE )
-ENDIF ( HYDRO_HOME )
+ENDIF( HYDRO_HOME )

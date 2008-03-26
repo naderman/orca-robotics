@@ -1,14 +1,14 @@
-SET ( lib_name OrcaLocalNav )
+SET( lib_name OrcaLocalNav )
 GBX_ADD_LICENSE( LGPL )
 
-SET ( build TRUE )
+SET( build TRUE )
 GBX_REQUIRE_OPTION( build LIB ${lib_name} ON )
 GBX_REQUIRE_VAR( build LIB ${lib_name} GBX_OS_LINUX "only Linux OS is supported" )
 
 SET( dep_libs HydroNavUtil OrcaObjects )
 GBX_REQUIRE_VAR( build LIB ${lib_name} HYDRONAVUTIL_INSTALLED "libHydroNavUtil not installed" )
 
-IF ( build )
+IF( build )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
@@ -25,4 +25,4 @@ IF ( build )
 
     GBX_ADD_HEADERS( orcalocalnav ${hdrs} )
     
-ENDIF ( build )
+ENDIF( build )

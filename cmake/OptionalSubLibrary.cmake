@@ -29,7 +29,7 @@ MACRO( OPTIONAL_SUB_LIBRARY DESCRIPTION SUBDIRECTORY OUTPUT_LIBRARY LINK_LIBS OK
 
   IF( ${${OK_TO_BUILD}} )
     MESSAGE( STATUS "    ${DESCRIPTION} - can be built")
-    ADD_SUBDIRECTORY ( ${SUBDIRECTORY} )
+    ADD_SUBDIRECTORY( ${SUBDIRECTORY} )
     
     # The top level executable will be linked to this optional libraries...
     SET( SUB_LINK_LIBRARIES ${OUTPUT_LIBRARY} )

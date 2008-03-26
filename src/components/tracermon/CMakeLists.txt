@@ -1,19 +1,19 @@
-SET_COMPONENT_NAMES ( TracerMon )
+SET_COMPONENT_NAMES( TracerMon )
 
-SET ( build TRUE )
+SET( build TRUE )
 GBX_REQUIRE_OPTION( build EXE ${APP_NAME} ON )
-SET ( NOT_GBX_OS_WIN NOT GBX_OS_WIN )
+SET( NOT_GBX_OS_WIN NOT GBX_OS_WIN )
 GBX_REQUIRE_VAR( build EXE ${APP_NAME} NOT_GBX_OS_WIN "Windows OS is not  supported" )
 
 SET( int_libs OrcaObjects )
 GBX_REQUIRE_TARGETS( build EXE ${APP_NAME} ${int_libs} )
 
-IF ( build )
+IF( build )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
     # keyboard driver with iostream
-    SET ( ALL_FOUND 1 )
+    SET( ALL_FOUND 1 )
     OPTIONAL_SUB_LIBRARY(
         "Terminal Iostream driver for TracerMon"
         term-iostream
@@ -25,15 +25,15 @@ IF ( build )
     )
 
 # curses exist in QNX but apparently assume_default_colors() is not supported
-IF ( GBX_OS_LINUX )
+IF( GBX_OS_LINUX )
     INCLUDE( ${CMAKE_ROOT}/Modules/FindCurses.cmake )
-    IF ( CURSES_INCLUDE_DIR )
+    IF( CURSES_INCLUDE_DIR )
         MESSAGE( STATUS "Looking for libncurses - found")
         SET( CURSES_FOUND 1 CACHE INTERNAL "libncurses" )
     ELSE ( CURSES_INCLUDE_DIR )
         MESSAGE( STATUS "Looking for libncurses - not found")
         SET( CURSES_FOUND 0 CACHE INTERNAL "libncurses" )
-    ENDIF ( CURSES_INCLUDE_DIR )
+    ENDIF( CURSES_INCLUDE_DIR )
 
     # keyboard driver with libncurses
     OPTIONAL_SUB_LIBRARY(
@@ -45,7 +45,7 @@ IF ( GBX_OS_LINUX )
         HAVE_TERM_NCURSES_DRIVER
         ncurses form
     )
-ENDIF ( GBX_OS_LINUX )
+ENDIF( GBX_OS_LINUX )
 
     FILE( GLOB srcs *.cpp )
     SET( dep_libs ${ext_libs} ${int_libs} ${TERM_IOSTREAM_LIBS} ${TERM_NCURSES_LIBS} )
@@ -55,4 +55,4 @@ ENDIF ( GBX_OS_LINUX )
 
     GENERATE_CONFIG_FILE( ${APP_NAME}.def )
 
-ENDIF ( build )
+ENDIF( build )

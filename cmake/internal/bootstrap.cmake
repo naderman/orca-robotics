@@ -6,32 +6,32 @@
 # This file should be copied verbatim into [PROJECT]/cmake/local
 # directory of satelite projects.
 #
-INCLUDE ( cmake/internal/Assert.cmake )
+INCLUDE( cmake/internal/Assert.cmake )
 
-IF ( ${PROJECT_NAME} MATCHES "orca" )
-    MESSAGE ( STATUS "Setting project type to ORCA MOTHERSHIP" )
-    SET ( ORCA_MOTHERSHIP 1 )
+IF( ${PROJECT_NAME} MATCHES "orca" )
+    MESSAGE( STATUS "Setting project type to ORCA MOTHERSHIP" )
+    SET( ORCA_MOTHERSHIP 1 )
 
-    SET ( ORCA_CMAKE_DIR ${${PROJECT_NAME}_SOURCE_DIR}/cmake )
+    SET( ORCA_CMAKE_DIR ${${PROJECT_NAME}_SOURCE_DIR}/cmake )
 
 ELSE ( ${PROJECT_NAME} MATCHES "orca" )
-    MESSAGE ( STATUS "Setting project type to ORCA SATELLITE" )
-    SET ( ORCA_MOTHERSHIP 0 )
+    MESSAGE( STATUS "Setting project type to ORCA SATELLITE" )
+    SET( ORCA_MOTHERSHIP 0 )
 
     # If this is NOT the Orca project, we need to find Orca installation
-    IF ( DEFINED ORCA_HOME AND ORCA_HOME )
+    IF( DEFINED ORCA_HOME AND ORCA_HOME )
         # Orca home is specified with a command line option or it's already in cache
         MESSAGE( STATUS "Orca location was specified or using cached value: ${ORCA_HOME}" )
     ELSE ( DEFINED ORCA_HOME AND ORCA_HOME  )
         # Find Orca Installation
         # Will search several standard places starting with an env. variable ORCA_HOME
-        INCLUDE ( cmake/internal/FindOrca.cmake )
+        INCLUDE( cmake/internal/FindOrca.cmake )
 
         ASSERT( ORCA_FOUND 
             "Looking for Orca - not found. Please install Orca, ** delete CMakeCache.txt **, then re-run CMake." 
             "Looking for Orca - found in ${ORCA_HOME}" 
             1 )
-    ENDIF ( DEFINED ORCA_HOME AND ORCA_HOME  )
+    ENDIF( DEFINED ORCA_HOME AND ORCA_HOME  )
 
     #
     # Load Orca manifest
@@ -46,9 +46,9 @@ ELSE ( ${PROJECT_NAME} MATCHES "orca" )
     SET( ORCA_CMAKE_DIR ${ORCA_HOME}/share/orca/cmake )
     SET( ORCA_SLICE_DIR ${ORCA_HOME}/share/orca/slice )
 
-ENDIF ( ${PROJECT_NAME} MATCHES "orca" )
+ENDIF( ${PROJECT_NAME} MATCHES "orca" )
 
-MESSAGE ( STATUS "Using custom CMake scripts in ${ORCA_CMAKE_DIR}" )
+MESSAGE( STATUS "Using custom CMake scripts in ${ORCA_CMAKE_DIR}" )
 
 #
 # The rest is done by a script common to both Orca and derived projects

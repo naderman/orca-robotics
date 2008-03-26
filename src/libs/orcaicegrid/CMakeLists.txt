@@ -1,11 +1,11 @@
-SET ( lib_name OrcaIceGrid )
+SET( lib_name OrcaIceGrid )
 GBX_ADD_LICENSE( LGPL )
 
-SET ( build TRUE )
+SET( build TRUE )
 GBX_REQUIRE_OPTION( build LIB ${lib_name} ON )
 GBX_REQUIRE_VAR( build LIB ${lib_name} GBX_OS_LINUX "only Linux OS is supported" )
 
-IF ( build )
+IF( build )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
     
@@ -16,4 +16,4 @@ IF ( build )
 
     GBX_ADD_HEADERS( orcaicegrid ${hdrs} )
 
-ENDIF ( build )
+ENDIF( build )
