@@ -3,12 +3,15 @@ GBX_ADD_LICENSE( GPL )
 
 SET( build TRUE )
 GBX_REQUIRE_OPTION( build LIB ${lib_name} ON )
-SET( NOT_GBX_OS_WIN NOT GBX_OS_WIN )
-GBX_REQUIRE_VAR( build LIB ${lib_name} NOT_GBX_OS_WIN "Windows OS is not  supported" )
+SET( not_os_win NOT GBX_OS_WIN )
+GBX_REQUIRE_VAR( build LIB ${lib_name} not_os_win "Windows OS is not  supported" )
 GBX_REQUIRE_VAR( build LIB ${lib_name} QT4_FOUND "Qt4 not found" )
 
-SET( dep_libs OrcaQt OrcaObjects )
-GBX_REQUIRE_TARGETS( build LIB ${lib_name} ${dep_libs} )
+SET( ext_libs HydroQGui )
+GBX_REQUIRE_INSTALLS( build LIB ${lib_name} ${ext_libs} )
+
+SET( int_libs OrcaQt OrcaObjects )
+GBX_REQUIRE_TARGETS( build LIB ${lib_name} ${int_libs} )
 
 IF( build )
 
@@ -18,6 +21,7 @@ IF( build )
     
     FILE( GLOB hdrs *.h )
     FILE( GLOB human_srcs *.cpp )
+    SET( dep_libs ${ext_libs} ${int_libs} )
     
     SET( moc_hdrs
         mainwin.h

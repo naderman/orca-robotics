@@ -9,17 +9,17 @@ MESSAGE( STATUS "Setting project interface lib name to ${PROJECT_INTERFACE_LIB}"
 # Official dependency number 1: Hydro
 # (we need to find Hydro early to use its cmake scripts)
 #
-IF( DEFINED HYDRO_HOME )
+IF( DEFINED HYDRO_HOME AND HYDRO_HOME )
     # the variable is specified with a command line option or is already in cache
     MESSAGE( STATUS "Hydro location was specified or using cached value: ${HYDRO_HOME}" )
-ELSE ( DEFINED HYDRO_HOME )
+ELSE ( DEFINED HYDRO_HOME AND HYDRO_HOME )
     # not specified, need to find it
     INCLUDE( ${ORCA_CMAKE_DIR}/FindHydro.cmake )
     ASSERT( HYDRO_FOUND 
             "Looking for Hydro - not found. Please install Hydro, ** delete CMakeCache.txt **, then re-run CMake." 
             "Looking for Hydro - found in ${HYDRO_HOME}" 
             1 )
-ENDIF( DEFINED HYDRO_HOME )
+ENDIF( DEFINED HYDRO_HOME AND HYDRO_HOME )
 
 # when we find it, put it into cache
 SET( HYDRO_HOME ${HYDRO_HOME} CACHE PATH "Hydro installed directory" FORCE )
@@ -50,19 +50,19 @@ SET( HYDRO_CMAKE_DIR ${HYDRO_HOME}/share/hydro/cmake )
 #
 # Official dependency number 2: Gearbox
 #
-IF( DEFINED GEARBOX_HOME )
+IF( DEFINED GEARBOX_HOME AND GEARBOX_HOME )
     # the variable is specified with a command line option or is already in cache
     MESSAGE( STATUS "Gearbox location was specified or using cached value: ${GEARBOX_HOME}" )
     # this is a hack, we'll require gearbox soon anyway
     SET( GEARBOX_FOUND 1 )
-ELSE ( DEFINED GEARBOX_HOME )
+ELSE ( DEFINED GEARBOX_HOME AND GEARBOX_HOME )
     # not specified, need to find it
     INCLUDE( ${HYDRO_CMAKE_DIR}/FindGearbox.cmake )
     ASSERT( GEARBOX_FOUND 
             "Looking for Gearbox - not found. Please install Gearbox, ** delete CMakeCache.txt **, then re-run CMake." 
             "Looking for Gearbox - found in ${GEARBOX_HOME}" 
             1 )
-ENDIF( DEFINED GEARBOX_HOME )
+ENDIF( DEFINED GEARBOX_HOME AND GEARBOX_HOME )
 
 # when we find it, put it into cache
 SET( GEARBOX_HOME ${GEARBOX_HOME} CACHE PATH "Gearbox installed directory" FORCE )
