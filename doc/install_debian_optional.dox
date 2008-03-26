@@ -32,7 +32,7 @@ Doxygen is a tool to produce documentation from source code. It can be easily in
 
 @section orca_doc_installdebian_opt_qt Qt
 
-Qt is a cross-platform GUI framework. Minimum version required 4.1.0 (latest tested: 4.3.1)
+Qt is a cross-platform GUI framework. Minimum version required 4.2.0 (latest tested: 4.3.4)
 
 @verbatim
 # apt-get install libqt4-dev qt4-doc qt4-dev-tools

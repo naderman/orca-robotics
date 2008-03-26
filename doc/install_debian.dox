@@ -14,7 +14,7 @@
 
 @note Reviewed for release 2.10.0.
 
-These are detailed instructions for installing Orca on Debian Linux. They are known to work for a system using Debian \b Testing distribution. See @ref orca_doc_getting for general guidelines. These instructions are also applicable to Ubuntu/Kubuntu 6.10 (Edgy).
+These are detailed instructions for installing Orca on Debian Linux. They are known to work for a system using Debian \b Testing distribution. They are also applicable to Ubuntu/Kubuntu 6.10 (Edgy). See @ref orca_doc_getting for general guidelines.
 
 @section orca_doc_installdebian_buildessential Build Essential
 
