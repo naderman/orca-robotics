@@ -33,6 +33,9 @@ ELSE ( ${PROJECT_NAME} MATCHES "orca" )
             1 )
     ENDIF( DEFINED ORCA_HOME AND ORCA_HOME  )
 
+    # when we find it, put it into cache
+    SET( ORCA_HOME ${ORCA_HOME} CACHE PATH "Orca installed directory" FORCE )
+
     #
     # Load Orca manifest
     #

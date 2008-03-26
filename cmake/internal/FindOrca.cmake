@@ -45,6 +45,5 @@ MESSAGE( STATUS "DEBUG: orca_manifest.cmake is apparently found in : ${ORCA_HOME
 
 # NOTE: if ORCA_HOME_INCLUDE_ORCA is set to *-NOTFOUND it will evaluate to FALSE
 IF( ORCA_HOME )
-    SET( ORCA_HOME ${ORCA_HOME} CACHE PATH "Orca installed directory" FORCE )
     SET( ORCA_FOUND 1 CACHE BOOL "Do we have Orca?" FORCE )
 ENDIF( ORCA_HOME )

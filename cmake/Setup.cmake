@@ -19,9 +19,10 @@ ELSE ( DEFINED HYDRO_HOME )
             "Looking for Hydro - not found. Please install Hydro, ** delete CMakeCache.txt **, then re-run CMake." 
             "Looking for Hydro - found in ${HYDRO_HOME}" 
             1 )
-    # when we find it, put it into cache
-    SET( HYDRO_HOME ${HYDRO_HOME} CACHE PATH "Hydro installed directory" FORCE )
 ENDIF( DEFINED HYDRO_HOME )
+
+# when we find it, put it into cache
+SET( HYDRO_HOME ${HYDRO_HOME} CACHE PATH "Hydro installed directory" FORCE )
 
 #
 # Load Hydro manifest
@@ -61,9 +62,10 @@ ELSE ( DEFINED GEARBOX_HOME )
             "Looking for Gearbox - not found. Please install Gearbox, ** delete CMakeCache.txt **, then re-run CMake." 
             "Looking for Gearbox - found in ${GEARBOX_HOME}" 
             1 )
-    # when we find it, put it into cache
-    SET( GEARBOX_HOME ${GEARBOX_HOME} CACHE PATH "Gearbox installed directory" FORCE )
 ENDIF( DEFINED GEARBOX_HOME )
+
+# when we find it, put it into cache
+SET( GEARBOX_HOME ${GEARBOX_HOME} CACHE PATH "Gearbox installed directory" FORCE )
 
 #
 # Load Gearbox manifest
