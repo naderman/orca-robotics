@@ -3,6 +3,6 @@ INCLUDE_DIRECTORIES(
 )
 
 FILE( GLOB srcs *.cpp )
-GLOBAL_ADD_LIBRARY( OrcaLocalNavTestSim SHARED ${srcs} )
+GBX_ADD_LIBRARY( OrcaLocalNavTestSim SHARED ${srcs} )
 TARGET_LINK_LIBRARIES( OrcaLocalNavTestSim OrcaObjectUtil OrcaIfaceImpl 
         OrcaOgMap OrcaPathPlan HydroGeom2d )

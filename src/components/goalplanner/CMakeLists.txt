@@ -1,13 +1,13 @@
 SET_COMPONENT_NAMES ( GoalPlanner )
 
 SET ( build TRUE )
-REQUIRE_OPTION( build EXE ${APP_NAME} ON )
+GBX_REQUIRE_OPTION( build EXE ${APP_NAME} ON )
 
 SET( ext_libs HydroNavUtil )
-REQUIRE_INSTALLS( build EXE ${APP_NAME} ${ext_libs} )
+GBX_REQUIRE_INSTALLS( build EXE ${APP_NAME} ${ext_libs} )
 
 SET( int_libs OrcaOgMap OrcaObjects )
-REQUIRE_TARGETS( build EXE ${APP_NAME} ${int_libs} )
+GBX_REQUIRE_TARGETS( build EXE ${APP_NAME} ${int_libs} )
 
 IF ( build )
 

@@ -1,24 +1,25 @@
 SET ( lib_name OrcaIfaceImpl )
-GLOBAL_ADD_LICENSE( LGPL )
+GBX_ADD_LICENSE( LGPL )
 
 SET ( build TRUE )
-REQUIRE_OPTION( build LIB ${lib_name} ON )
+GBX_REQUIRE_OPTION( build LIB ${lib_name} ON )
 
 IF ( build )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
     
+    FILE( GLOB hdrs *.h )
     FILE( GLOB srcs *.cpp )
     
-    IF ( NOT ORCA_OS_WIN )
-        GLOBAL_ADD_LIBRARY( ${lib_name} SHARED ${srcs} )
-    ELSE ( NOT ORCA_OS_WIN )
-        GLOBAL_ADD_LIBRARY( ${lib_name} STATIC ${srcs} )
-    ENDIF ( NOT ORCA_OS_WIN )
+    IF ( NOT GBX_OS_WIN )
+        GBX_ADD_LIBRARY( ${lib_name} SHARED ${srcs} )
+    ELSE ( NOT GBX_OS_WIN )
+        GBX_ADD_LIBRARY( ${lib_name} STATIC ${srcs} )
+    ENDIF ( NOT GBX_OS_WIN )
 
     TARGET_LINK_LIBRARIES( ${lib_name} OrcaObjects )
     
-    INSTALL_FILES( /include/orcaifaceimpl .*\\.h$ )
+    GBX_ADD_HEADERS( orcaifaceimpl ${hdrs} )
     
     IF ( ORCA_BUILD_TESTS )
         ADD_SUBDIRECTORY ( test )

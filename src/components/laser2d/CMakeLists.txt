@@ -1,13 +1,13 @@
 SET_COMPONENT_NAMES ( Laser2d )
 
 SET ( build TRUE )
-REQUIRE_OPTION( build EXE ${APP_NAME} ON )
+GBX_REQUIRE_OPTION( build EXE ${APP_NAME} ON )
 
 SET( ext_libs HydroDll HydroInterfaces )
-REQUIRE_INSTALLS( build EXE ${APP_NAME} ${ext_libs} )
+GBX_REQUIRE_INSTALLS( build EXE ${APP_NAME} ${ext_libs} )
 
 SET( int_libs OrcaIfaceImpl OrcaObjects )
-REQUIRE_TARGETS( build EXE ${APP_NAME} ${int_libs} )
+GBX_REQUIRE_TARGETS( build EXE ${APP_NAME} ${int_libs} )
 
 IF ( build)
 

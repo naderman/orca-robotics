@@ -1,26 +1,30 @@
 SET ( lib_name OrcaBros1 )
-GLOBAL_ADD_LICENSE( LGPL )
+GBX_ADD_LICENSE( LGPL )
 
 SET ( build TRUE )
-REQUIRE_OPTION( build LIB ${lib_name} ON )
-REQUIRE_VAR( build LIB ${lib_name} ORCA_OS_LINUX "only Linux OS is supported" )
+GBX_REQUIRE_OPTION( build LIB ${lib_name} ON )
+GBX_REQUIRE_VAR( build LIB ${lib_name} GBX_OS_LINUX "only Linux OS is supported" )
 
-SET( dep_libs OrcaInterfaces )
-REQUIRE_TARGETS( build LIB ${lib_name} ${dep_libs} )
+SET( ext_libs HydroBros1 )
+GBX_REQUIRE_INSTALLS( build LIB ${lib_name} ${ext_libs} )
 
-SET( dep_libs ${dep_libs} HydroBros1 )
-REQUIRE_VAR( build LIB ${lib_name} HYDROBROS1_INSTALLED "libHydroBros1 not installed" )
+SET( int_libs OrcaInterfaces )
+GBX_REQUIRE_TARGETS( build LIB ${lib_name} ${int_libs} )
 
 IF ( build )
     
     INCLUDE( ${ORCA_CMAKE_DIR}/UseBasicRules.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseIce.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseLibProjectInterfaces.cmake )
-    INCLUDE( ${ORCA_CMAKE_DIR}/UseHydro.cmake )
+    INCLUDE( ${HYDRO_CMAKE_DIR}/UseHydro.cmake )
 
-    GLOBAL_ADD_LIBRARY( ${lib_name} SHARED convertutils.cpp )
+    FILE( GLOB hdrs *.h )
+    FILE( GLOB srcs *.cpp )
+    SET( dep_libs ${ext_libs} ${int_libs} )
+
+    GBX_ADD_LIBRARY( ${lib_name} SHARED ${srcs} )
     TARGET_LINK_LIBRARIES( ${lib_name} ${dep_libs} )
 
-    INSTALL_FILES( /include/orcabros1 .*\\.h$ )
+    GBX_ADD_HEADERS( orcabros1 ${hdrs} )
 
 ENDIF ( build )

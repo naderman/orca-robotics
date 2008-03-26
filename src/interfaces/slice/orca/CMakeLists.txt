@@ -8,9 +8,9 @@
 #
 # Install all the .ice files, so other projects can use them.
 # Install sub-directory will be the same as the current sub-directory
-# which is typically the same as the name of the namespace, e.g. 'orca'
+# which is typically the same as the name of the Slice module, e.g. 'orca'
 #
-GET_FILENAME_COMPONENT( INTERFACE_NAMESPACE ${CMAKE_CURRENT_SOURCE_DIR} NAME )
+GET_FILENAME_COMPONENT( slice_module ${CMAKE_CURRENT_SOURCE_DIR} NAME )
 
-INSTALL_FILES( /slice/${INTERFACE_NAMESPACE} .*\\.ice$ )
-MESSAGE ( STATUS "Will install Slice files into ${PROJECT_INSTALL_DIR}/slice/${INTERFACE_NAMESPACE}" )
+FILE( GLOB slices *.ice )
+GBX_ADD_SHARED_FILES( slice/${slice_module} ${slices} )

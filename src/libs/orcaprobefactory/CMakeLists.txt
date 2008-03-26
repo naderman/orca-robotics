@@ -1,13 +1,13 @@
 SET ( lib_name OrcaProbeFactory )
-GLOBAL_ADD_LICENSE( LGPL )
+GBX_ADD_LICENSE( LGPL )
 
 SET ( build TRUE )
-REQUIRE_OPTION( build LIB ${lib_name} ON )
-SET ( NOT_ORCA_OS_WIN NOT ORCA_OS_WIN )
-REQUIRE_VAR( build LIB ${lib_name} NOT_ORCA_OS_WIN "Windows OS is not  supported" )
+GBX_REQUIRE_OPTION( build LIB ${lib_name} ON )
+SET ( NOT_GBX_OS_WIN NOT GBX_OS_WIN )
+GBX_REQUIRE_VAR( build LIB ${lib_name} NOT_GBX_OS_WIN "Windows OS is not  supported" )
 
 SET( dep_libs OrcaProbe OrcaObjects )
-REQUIRE_TARGETS( build LIB ${lib_name} ${dep_libs} )
+GBX_REQUIRE_TARGETS( build LIB ${lib_name} ${dep_libs} )
 
 IF ( build )
 
@@ -15,7 +15,7 @@ IF ( build )
     
     FILE( GLOB srcs *.cpp )
     
-    GLOBAL_ADD_LIBRARY( ${lib_name} SHARED ${srcs} )
+    GBX_ADD_LIBRARY( ${lib_name} SHARED ${srcs} )
     
     TARGET_LINK_LIBRARIES( ${lib_name} ${dep_libs} )
 

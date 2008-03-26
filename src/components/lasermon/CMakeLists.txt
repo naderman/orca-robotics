@@ -1,10 +1,10 @@
 SET_COMPONENT_NAMES ( LaserMon )
 
 SET ( build TRUE )
-REQUIRE_OPTION( build EXE ${APP_NAME} ON )
+GBX_REQUIRE_OPTION( build EXE ${APP_NAME} ON )
 
 SET( int_libs OrcaObjects )
-REQUIRE_TARGETS( build EXE ${APP_NAME} ${int_libs} )
+GBX_REQUIRE_TARGETS( build EXE ${APP_NAME} ${int_libs} )
 
 IF ( build )
 

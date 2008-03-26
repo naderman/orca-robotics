@@ -1,14 +1,14 @@
 SET ( lib_name OrcaImage )
-GLOBAL_ADD_LICENSE( GPL )
+GBX_ADD_LICENSE( GPL )
 
 SET ( build TRUE )
-REQUIRE_OPTION( build LIB ${lib_name} OFF )
-SET ( NOT_ORCA_OS_WIN NOT ORCA_OS_WIN )
-REQUIRE_VAR( build LIB ${lib_name} NOT_ORCA_OS_WIN "Windows OS is not  supported" )
+GBX_REQUIRE_OPTION( build LIB ${lib_name} OFF )
+SET ( NOT_GBX_OS_WIN NOT GBX_OS_WIN )
+GBX_REQUIRE_VAR( build LIB ${lib_name} NOT_GBX_OS_WIN "Windows OS is not  supported" )
 
 # this lib should be split up into sublibraries with simpler dependencies
-# INCLUDE (${ORCA_CMAKE_DIR}/FindOpenCV.cmake)
-# REQUIRE_VAR( build LIB ${lib_name} OPENCV_FOUND "OpenCV not found" )
+# INCLUDE( ${ORCA_CMAKE_DIR}/FindOpenCV.cmake )
+# GBX_REQUIRE_VAR( build LIB ${lib_name} OPENCV_FOUND "OpenCV not found" )
 
 IF ( build )
 
@@ -16,7 +16,7 @@ IF ( build )
     # not sure what is actually needed.
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
-    INCLUDE (${ORCA_CMAKE_DIR}/FindOpenCV.cmake)
+    INCLUDE( ${ORCA_CMAKE_DIR}/FindOpenCV.cmake )
     IF ( OPENCV_FOUND )
         INCLUDE( ${ORCA_CMAKE_DIR}/UseOpenCV.cmake )
         ADD_DEFINITIONS( -DOPENCV_FOUND )
@@ -32,10 +32,11 @@ IF ( build )
         TARGET_LINK_LIBRARIES( ${lib_name} triclops )
     ENDIF ( TRICLOPS_FOUND )
     
-
+    FILE( GLOB hdrs *.h )
     FILE( GLOB srcs *.cpp )
-    GLOBAL_ADD_LIBRARY( ${lib_name} SHARED ${srcs} )
 
-    INSTALL_FILES( /include/orcaimage .*\\.h$ )
+    GBX_ADD_LIBRARY( ${lib_name} SHARED ${srcs} )
+
+    GBX_ADD_HEADERS( orcaimage ${hdrs} )
 
 ENDIF ( build )

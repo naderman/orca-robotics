@@ -1,11 +1,11 @@
 SET_COMPONENT_NAMES ( InsGps )
 
 SET ( build TRUE )
-REQUIRE_OPTION( build EXE ${APP_NAME} ON )
-REQUIRE_VAR( build EXE ${APP_NAME} ORCA_OS_LINUX "only Linux OS is supported" )
+GBX_REQUIRE_OPTION( build EXE ${APP_NAME} ON )
+GBX_REQUIRE_VAR( build EXE ${APP_NAME} GBX_OS_LINUX "only Linux OS is supported" )
 
 SET( dep_libs ${dep_libs} HydroGpsUtil )
-REQUIRE_VAR( build EXE ${APP_NAME} HYDROGPSUTIL_INSTALLED "libHydroGpsUtil not installed" )
+GBX_REQUIRE_VAR( build EXE ${APP_NAME} HYDROGPSUTIL_INSTALLED "libHydroGpsUtil not installed" )
 
 IF ( build )
     

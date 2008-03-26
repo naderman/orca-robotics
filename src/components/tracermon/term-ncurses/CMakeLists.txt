@@ -6,5 +6,5 @@ INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
 
 FILE( GLOB srcs *.cpp ../termutil/*.cpp )
 
-GLOBAL_ADD_LIBRARY( OrcaTracerMonTermNcurses SHARED ${srcs} )
+GBX_ADD_LIBRARY( OrcaTracerMonTermNcurses SHARED ${srcs} )
 TARGET_LINK_LIBRARIES( OrcaTracerMonTermNcurses ncurses form )

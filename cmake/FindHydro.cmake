@@ -17,7 +17,8 @@ FIND_PATH( HYDRO_HOME hydro_manifest.cmake
     # with command line CMake variable, then with environment variable)
     ${HYDRO_HOME}
     $ENV{HYDRO_HOME}
-    # Test standard installation points
+    # Test common installation points
+    /usr/local
     /opt/hydro
     ${HYDRO_SEARCH_DIR_ORCA_ONLY}
     /opt/hydro-2.15.0+
@@ -47,7 +48,3 @@ FIND_PATH( HYDRO_HOME hydro_manifest.cmake
 IF ( HYDRO_HOME )
     SET( HYDRO_FOUND 1 CACHE BOOL "Do we have Hydro?" FORCE )
 ENDIF ( HYDRO_HOME )
-
-# do we need it in cache?
-# SET( HYDRO_HOME ${HYDRO_HOME} CACHE PATH "Hydro installed directory" FORCE )
-#   MESSAGE( "Setting Hydro installed directory to ${HYDRO_HOME}" )

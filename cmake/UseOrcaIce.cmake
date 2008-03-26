@@ -1,11 +1,8 @@
 #
 # Include and link against libOrcaIce and its dependencies
 #
-INCLUDE_DIRECTORIES( 
-    ${PROJECT_SOURCE_DIR}/src/libs
-)
+INCLUDE( ${HYDRO_CMAKE_DIR}/UseHydroIceUtil.cmake )
 
-INCLUDE( ${HYDRO_HOME}/cmake/UseHydro.cmake )
-INCLUDE( ${HYDRO_HOME}/cmake/UseHydroIceUtil.cmake )
+INCLUDE( ${ORCA_CMAKE_DIR}/UseIceBasics.cmake )
 
-LINK_LIBRARIES( OrcaIce OrcaObjects )
+LINK_LIBRARIES( OrcaIce )

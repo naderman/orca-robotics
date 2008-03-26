@@ -12,7 +12,7 @@
 
 @page orca_doc_installdebian Installing Orca on Debian Linux
 
-@note Reviewed for release 2.7.0.
+@note Reviewed for release 2.10.0.
 
 These are detailed instructions for installing Orca on Debian Linux. They are known to work for a system using Debian \b Testing distribution. See @ref orca_doc_getting for general guidelines.
 
@@ -28,7 +28,7 @@ These instructions are also applicable for Ubuntu/Kubuntu 6.10 (Edgy). For Ubunt
 
 @section orca_doc_installdebian_cmake CMake
 
-Minimum version required 2.4-patch 2 (latest tested: 2.4-patch 7).
+Minimum version required 2.4-patch 4 (latest tested: 2.4-patch 8).
 
 @verbatim
 # apt-get install cmake
@@ -38,11 +38,30 @@ Minimum version required 2.4-patch 2 (latest tested: 2.4-patch 7).
 
 Minimum version required 3.2.0 (latest tested: 3.2.1).
 
-@note These instructions install Ice using a Debian package. In some cases you may still want to build Ice from source, see @ref orca_doc_installdebian_icefromsource for Debian-specific instructions.
+@note These instructions install Ice using a Debian package. In some cases you may still want to build Ice from source, see @ref orca_doc_installdebian_opt_icefromsource for Debian-specific instructions.
 
 @verbatim
 # apt-get install libzeroc-ice-dev ice-translators ice-slice icestorm icegrid icebox icepatch2
 @endverbatim
+
+@section orca_doc_installdebian_gearbox GearBox
+
+Build and install GearBox distribution.
+    - Download @ref orca_doc_getting_download "GearBox source" archive and un-tar it.
+    - The default installation directory is  @c /usr/local (see below on how to change it).
+    - Configure using @c cmake . (note the dot after cmake)
+    - Compile, and install. If you've changed your mind about the installation directory, you can change it using @c ccmake tool ('$ ccmake .').
+@verbatim
+$ tar -zxf gearbox-x.x.x.tar.gz
+$ cd gearbox
+$ cmake .
+$ make
+$ make install
+@endverbatim
+
+The following are the names of variables which customize GearBox installation.
+- GEARBOX_INSTALL - where to install Hydro installation, e.g. "cmake -DHYDRO_INSTALL=/home/myuser/temp ."
+- ICEUTIL_HOME - where to find IceUtil installation, e.g. "cmake -DICEUTIL_HOME=/home/myuser/temp ."
 
 @section orca_doc_installdebian_hydro Hydro
 
@@ -60,8 +79,8 @@ $ make install
 @endverbatim
 
 Installation process can be customized with a few variables which can be supplied in one of two ways:
-1. On the command-line as "-D[VARIABLE_NAME]=[VARIABLE_VALUE]" (preffered option, has precedence)
-2. As environment varialbes as "export [VARIABLE_NAME]=[VARIABLE_VALUE]".
+-# On the command-line as "-D[VARIABLE_NAME]=[VARIABLE_VALUE]" (preffered option, has precedence)
+-# As environment varialbes as "export [VARIABLE_NAME]=[VARIABLE_VALUE]".
 
 The following are the names of variables which customize Hydro installation.
 - HYDRO_INSTALL - where to install Hydro installation, e.g. "cmake -DHYDRO_INSTALL=/home/myuser/temp ."
@@ -102,242 +121,12 @@ export PATH=$ORCA_HOME/bin:$PATH
 export LD_LIBRARY_PATH=$ORCA_HOME/lib:$LD_LIBRARY_PATH
 @endverbatim
 
+@verbatim
+alias cmake='cmake -DGEARBOX_INSTALL=/opt/gearbox -DGEARBOX_HOME=/opt/gearbox -DHYDRO_INSTALL=/opt/hydro -DHYDRO_HOME=/opt/hydro -DORCA_INSTALL=/opt/orca'
+@endverbatim
+
 That's it! We are done.
 
-<hr>
-
-@b NOTE: Software below is strictly optional. To ensure that Orca knows about these new packages you will have to re-run cmake and make in Orca once the new packages have been installed. You will also have to remove the cmake cache before rerunning cmake.
-@verbatim
-$ cd [ORCA_SRC]
-$ rm CMakeCache.txt
-$ cmake .
-$ make
-# make install
-@endverbatim
-
-@section orca_doc_installdebian_doxygen Doxygen
-
-Doxygen is a tool to produce documentation from source code. It can be easily installed as a package. The standard version can build all Orca documentation except for the Slice interfaces and objects. You may also want to install the @c graphviz package which contains the @c dot utility used by @c doxygen to generate diagrams.
-@verbatim
-# apt-get install doxygen graphviz
-@endverbatim
-
-@section orca_doc_installdebian_qt Qt
-
-Qt is a cross-platform GUI framework. Minimum version required 4.1.0 (latest tested: 4.3.1)
-
-@verbatim
-# apt-get install libqt4-dev qt4-doc qt4-dev-tools
-@endverbatim
-
-
-@section orca_doc_installdebian_pkgconfig PkgConfig
-
-Some components require @c pkg-config utility to check for dependencies
-
-@verbatim
-# apt-get install pkg-config
-@endverbatim
-
-@section orca_doc_installdebian_player_package Player/Stage using debian package
-
-@note Player seems to be in a bit of a flux right now. We list installation from package as the preferred option even though we've had mixed success with it. As of writing, the Debian package has not moved into Testing. When it does, we expect that things will become easier. At the moment, check with the official Player instructions first and if something doesn't work, try @ref orca_doc_installdebian_player_source.
-
-You can download Player and Stage as a debian packages from their website. This has been tested with Player 2.0.4 and Stage 2.0.3. Install dependencies.
-
-@verbatim
-# apt-get install libglib2.0-dev libgtk2.0-dev libltdl3-dev libjpeg-dev
-# apt-get install libboost-dev libboost-signals-dev libboost-thread-dev
-@endverbatim
-
-Now, simply install the Player and Stage packages (as root):
-
-@verbatim
-# dpkg -i player_xxx_i386.deb
-# dpkg -i stage_xxx_i386.deb
-@endverbatim
-
-This will install the libraries in @c /usr/lib, the executables in @c /usr/bin and the configuration files in @c /usr/share/player and @c /usr/share/stage.
-
-For a quick start:
-@verbatim
-$ player /usr/share/stage/worlds/simple.cfg
-@endverbatim
-
-In case of a problem see our short section on @ref orca_doc_installdebian_player_troubleshoot or consult Player mailing lists.
-
-@section orca_doc_installdebian_gazebo Gazebo
-
-<a href="http://playerstage.sourceforge.net/" target="_blank">Gazebo</a> is part of the Player/Stage project. It is an open-source 3D multiple robot simulator with dynamics. These notes were tested with Player 2.0.3, Gazebo 0.7.0, and Open Dynamics Engine 0.7. Note that Gazebo's documentation is not very well maintained at the moment and it has a number of bugs which are not always trivial to fix. Please see the Gazebo <a href="http://sourceforge.net/mailarchive/forum.php?forum=playerstage-gazebo" target="_blank">mailing list</a> and Gazebo manual pages for more help.
-
-Make sure that you have installed Player/Stage first (@ref orca_doc_installdebian_player_source or @ref orca_doc_installdebian_player_package).
-
-Start with Gazebo/ODE dependencies.
-@verbatim
-# apt-get install swig python-wxtools libxml2-dev libglu1-mesa-dev libglut3-dev autoconf automake1.9 python2.4-dev libtool 
-@endverbatim
-Note that there may be a few other dependencies which aren't included here.
-
-You will also have to download and compile <a href="http://ode.org/" target="_blank">Open Dynamics Engine</a> which is Gazebo's physics engine. It is recommended to use the latest release (tested with 0.8). Since Gazebo expects @c libode.so to be in a different location than the standard install, a symbolic link will need to be created.
-@verbatim
-$ unzip ode-src-<versoin>.zip
-$ cd ode-<version>
-$ sh autogen.sh (if you are using a snapshot version)
-$ ./configure --enable-double-precision --enable-release --with-trimesh=opcode
-$ make
-# make install
-# ln -s /usr/local/lib/libode.so /usr/lib/libode.so
-@endverbatim
-
-There are a few optional components for Gazebo. It is recommended to install these, in order to get full Gazebo functionality.
-
-@verbatim
-# apt-get install lib3ds-dev proj libgdal1-1.3.1-dev
-@endverbatim
-
-Get the latest release of <a href="http://playerstage.sourceforge.net/gazebo/gazebo.html" target="_blank">Gazebo</a> (tested with 0.7.0).
-
-Tell gazebo where to find player stuff.
-
-@verbatim
-$ export PKG_CONFIG_PATH=/opt/player-[VERSION]/lib/pkgconfig/:$PKG_CONFIG_PATH
-@endverbatim
-
-Run automake tools (automake version>=1.6, autconf version>=2.53), compile, and install. It is recommended to install Gazebo in the /opt directory.
-@verbatim
-$ tar zxvf gazebo-<version>.tar.gz
-$ cd gazebo-<version>
-$ ./bootstrap
-$ ./configure --prefix=/opt/gazebo-<version>
-$ make
-# make install
-@endverbatim
-
-Append the following to your @c .bashrc file
-
-@verbatim
-export GAZEBO_HOME=/opt/gazebo-<version>
-export PATH=$GAZEBO_HOME/bin:$PATH
-export LD_LIBRARY_PATH=$GAZEBO_HOME/lib:$LD_LIBRARY_PATH
-export PYTHONPATH=$GAZEBO_HOME/lib/python2.4/site-packages/:$PYTHONPATH
-export CPATH=$GAZEBO_HOME/include:$CPATH
-@endverbatim
-
-For a quick start:
-@verbatim
-$ wxgazebo [GAZEBO_SRC]/worlds/example.world
-@endverbatim
-
-If you get an error, please proceed to @ref orca_doc_tute_gazebo. You might also want to consult the Gazebo mailing lists and manuals for additional help.
-
-<hr>
-
-@b NOTE: Below are instructions on how to install software from source. These are moved here after a Debian package has become available. In many cases we stop installing from source and therefore these instructions may become outdated.
-
-@section orca_doc_installdebian_icefromsource Ice from source
-
-Even though there is a Debian package for Ice, sometimes you may want to build Ice from source. Some of the possible reasons:
-- you need an Ice version different from the one in the package (newer or older)
-- you want to install Ice some place other than the standard directory
-- you want to apply a patch to the source.
-
-Following the instructions below will install Ice to the default location @c /opt/Ice-[VERSION]. We recommend doing this but, if you have a good reason, you can change it by editing the file config/Make.rules.
-
-Download source from  <a href="http://www.zeroc.com/download.html">download page</a>.
-    - First, install Ice dependencies. Debian packages for all required libraries exist.
-@verbatim
-# apt-get install libdb4.5++-dev libbz2-dev bzip2 libssl-dev libreadline5-dev libexpat1-dev
-@endverbatim
-    - Unpack the source archive (replace [VERSION] with the version of Ice you are trying to install.)
-@verbatim
-$ tar -xzf Ice-[VERSION].tar.gz
-$ cd Ice-[VERSION]
-@endverbatim
-    - Ice installer is particular about the name of the compiler. If you are using a version of gcc, make sure the names are standard: @c gcc/g++ ! If you skip this step you'll see a cryptic message about @c mkshlib not defined.
-@verbatim
-$ export CC=gcc; export CXX=g++
-@endverbatim
-    - Compile and install
-@verbatim
-$ make
-$ make test (optional, requires python)
-# make install
-# ldconfig
-@endverbatim
-
-Make sure that the Ice binaries and executables are in the path. You may want to add this snippet to your @c ~/.bashrc file (don't forget to replace [VERSION]).
-@verbatim
-export ICE_HOME=/opt/Ice-[VERSION]
-export PATH=$ICE_HOME/bin:$PATH
-export LD_LIBRARY_PATH=$ICE_HOME/lib:$LD_LIBRARY_PATH
-@endverbatim
-
-
-@section orca_doc_installdebian_player_source Player/Stage from source
-
-<a href="http://playerstage.sourceforge.net/" target="_blank">Player/Stage</a> is an open-source device server and simulator. These notes were tested with Player 2.0.3 and Stage 2.0.3. 
-
-Start with Player/Stage dependencies.
-
-@verbatim
-# apt-get install libglib2.0-dev libgtk2.0-dev libltdl3-dev libjpeg-dev
-@endverbatim
-
-Download and unpack player and stage distros. We recommend installing both player and stage to some place other than the default @c /usr/local/ because the different versions quickly become unmanagable.
-
-@verbatim
-$ cd player-[VERSION]
-$ ./configure --prefix=/opt/player-[VERSION]
-$ make
-# make install
-@endverbatim
-
-If you get an error like this
-@verbatim
-make[3]: *** No rule to make target `../libplayercore/libplayererror.la', needed by `libplayercore.la'.  Stop.
-@endverbatim
-try compiling one job a time:
-@verbatim
-$ make -j1
-@endverbatim
-
-Now compile Stage. Tell pkgconfig how to find player stuff.
-
-@verbatim
-$ export PKG_CONFIG_PATH=/opt/player-[VERSION]/lib/pkgconfig/:$PKG_CONFIG_PATH
-$ cd stage-[VERSION]
-$ ./configure --prefix=/opt/stage-[VERSION]
-$ make
-# make install
-@endverbatim
-
-Append the following to your @c .bashrc file
-
-@verbatim
-export PLAYER_HOME=/opt/player-[VERSION]
-export PATH=$PLAYER_HOME/bin:$PATH
-export LD_LIBRARY_PATH=$PLAYER_HOME/lib:$LD_LIBRARY_PATH
-export PKG_CONFIG_PATH=$PLAYER_HOME/lib/pkgconfig/:$PKG_CONFIG_PATH
-
-export STAGE_HOME=/opt/stage-[VERSION]
-export LD_LIBRARY_PATH=$STAGE_HOME/lib:$LD_LIBRARY_PATH
-@endverbatim
-
-For a quick start:
-@verbatim
-$ player [STAGE_SRC]/worlds/simple.cfg
-@endverbatim
-
-@section orca_doc_installdebian_player_troubleshoot Troubleshooting Player
-
-If you experience a crash like this:
-@verbatim
-err: unable to open color database /usr/X11R6/lib/X11/rgb.txt : No such file or directory (stage.c stg_lookup_color)
-Segmentation fault (core dumped)
-@endverbatim
-You can solve it adding a symbolic link to your @c rgb.txt file location, for example
-@verbatim
-# ln -s /etc/X11/rgb.txt /usr/X11R6/lib/X11/rgb.txt
-@endverbatim
+@b NOTE: You may also want to check out notes on @ref orca_doc_installdebian_opt.
 
 */

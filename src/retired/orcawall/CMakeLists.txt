@@ -1,19 +1,20 @@
 SET ( lib_name OrcaWall )
-GLOBAL_ADD_LICENSE( LGPL )
+GBX_ADD_LICENSE( LGPL )
 
 SET ( build TRUE )
-REQUIRE_OPTION( build LIB ${lib_name} ON )
-SET ( NOT_ORCA_OS_WIN NOT ORCA_OS_WIN )
-REQUIRE_VAR( build LIB ${lib_name} NOT_ORCA_OS_WIN "Windows OS is not  supported" )
+GBX_REQUIRE_OPTION( build LIB ${lib_name} ON )
+SET ( NOT_GBX_OS_WIN NOT GBX_OS_WIN )
+GBX_REQUIRE_VAR( build LIB ${lib_name} NOT_GBX_OS_WIN "Windows OS is not  supported" )
 
 IF ( build )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
+    FILE( GLOB hdrs *.h )
     FILE( GLOB srcs *.cpp )
     
-    GLOBAL_ADD_LIBRARY( ${lib_name} SHARED ${srcs} )
+    GBX_ADD_LIBRARY( ${lib_name} SHARED ${srcs} )
     
-    INSTALL_FILES( /include/orcawall .*\\.h$ ) 
+    GBX_ADD_HEADERS( orcawall ${hdrs} )
 
 ENDIF ( build )

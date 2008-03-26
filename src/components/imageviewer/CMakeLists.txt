@@ -1,14 +1,14 @@
 SET_COMPONENT_NAMES ( ImageViewer )
 
 SET ( build TRUE )
-REQUIRE_OPTION( build EXE ${APP_NAME} OFF )
-SET ( NOT_ORCA_OS_WIN NOT ORCA_OS_WIN )
-REQUIRE_VAR( build EXE ${APP_NAME} NOT_ORCA_OS_WIN "Windows OS is not supported" )
-INCLUDE (${ORCA_CMAKE_DIR}/FindOpenCV.cmake)
-REQUIRE_VAR( build EXE ${APP_NAME} OPENCV_FOUND "OpenCV not found" )
+GBX_REQUIRE_OPTION( build EXE ${APP_NAME} OFF )
+SET ( NOT_GBX_OS_WIN NOT GBX_OS_WIN )
+GBX_REQUIRE_VAR( build EXE ${APP_NAME} NOT_GBX_OS_WIN "Windows OS is not supported" )
+INCLUDE( ${ORCA_CMAKE_DIR}/FindOpenCV.cmake )
+GBX_REQUIRE_VAR( build EXE ${APP_NAME} OPENCV_FOUND "OpenCV not found" )
 
 SET( dep_libs OrcaImage OrcaObjects )
-REQUIRE_TARGETS( build EXE ${APP_NAME} ${dep_libs} )
+GBX_REQUIRE_TARGETS( build EXE ${APP_NAME} ${dep_libs} )
 
 IF ( build )
 

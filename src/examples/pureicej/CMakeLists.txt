@@ -1,6 +1,6 @@
 OPTION( build_PURE_ICEJ "Try to build PureIceJ Java Example" ON )
 
-IF ( NOT ORCA_OS_WIN AND build_PURE_ICEJ )
+IF ( NOT GBX_OS_WIN AND build_PURE_ICEJ )
 
     PROJECT( pureicej Java )
 
@@ -30,6 +30,6 @@ IF ( NOT ORCA_OS_WIN AND build_PURE_ICEJ )
     ADD_CUSTOM_TARGET( PureIceJ ALL
         DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/PureIceJ.jar)
 
-    GLOBAL_ADD_ITEM( PureIceJ.jar )
+    GBX_ADD_ITEM( PureIceJ.jar )
 
-ENDIF ( NOT ORCA_OS_WIN AND build_PURE_ICEJ )
+ENDIF ( NOT GBX_OS_WIN AND build_PURE_ICEJ )

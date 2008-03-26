@@ -1,11 +1,11 @@
 SET_COMPONENT_NAMES ( Laser2Og )
 
 SET ( build TRUE )
-REQUIRE_OPTION( build EXE ${APP_NAME} ON )
-REQUIRE_VAR( build EXE ${APP_NAME} ORCA_OS_LINUX "only Linux OS is supported" )
+GBX_REQUIRE_OPTION( build EXE ${APP_NAME} ON )
+GBX_REQUIRE_VAR( build EXE ${APP_NAME} GBX_OS_LINUX "only Linux OS is supported" )
 
 SET( int_libs OrcaOgFusion OrcaPathPlan OrcaObjects )
-REQUIRE_TARGETS( build EXE ${APP_NAME} ${int_libs} )
+GBX_REQUIRE_TARGETS( build EXE ${APP_NAME} ${int_libs} )
 
 IF ( build )
 

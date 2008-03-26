@@ -6,17 +6,17 @@
 SET_COMPONENT_NAMES ( ImageServer )
 
 SET ( build TRUE )
-REQUIRE_OPTION( build EXE ${APP_NAME} OFF )
-REQUIRE_VAR( build EXE ${APP_NAME} ORCA_OS_LINUX "Only Linux is supported" )
+GBX_REQUIRE_OPTION( build EXE ${APP_NAME} OFF )
+GBX_REQUIRE_VAR( build EXE ${APP_NAME} GBX_OS_LINUX "Only Linux is supported" )
 
 SET( dep_libs OrcaIfaceImpl )
-REQUIRE_TARGETS( build EXE ${APP_NAME} ${dep_libs} )
+GBX_REQUIRE_TARGETS( build EXE ${APP_NAME} ${dep_libs} )
 
 IF ( build )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
     
-    INCLUDE (${ORCA_CMAKE_DIR}/FindOpenCV.cmake)
+    INCLUDE( ${ORCA_CMAKE_DIR}/FindOpenCV.cmake )
 
     # automatically generate #ifdef's for component.cpp
     # CONFIGURE_FILE( configimageserver.h.cmake ${PROJECT_SOURCE_DIR}/src/components/imageserver/configimageserver.h )

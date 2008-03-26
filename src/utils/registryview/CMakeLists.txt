@@ -1,15 +1,15 @@
 SET_COMPONENT_NAMES ( RegistryView )
 SET ( APP_CTRLC_HANDLER 0 )
-GLOBAL_ADD_LICENSE( GPL )
+GBX_ADD_LICENSE( GPL )
 
 SET ( build TRUE )
-REQUIRE_OPTION( build EXE ${APP_NAME} ON )
-SET ( NOT_ORCA_OS_WIN NOT ORCA_OS_WIN )
-REQUIRE_VAR( build EXE ${APP_NAME} NOT_ORCA_OS_WIN "Windows OS is not  supported" )
-REQUIRE_VAR( build EXE ${APP_NAME} QT4_FOUND "Qt4 not found" )
+GBX_REQUIRE_OPTION( build EXE ${APP_NAME} ON )
+SET ( NOT_GBX_OS_WIN NOT GBX_OS_WIN )
+GBX_REQUIRE_VAR( build EXE ${APP_NAME} NOT_GBX_OS_WIN "Windows OS is not  supported" )
+GBX_REQUIRE_VAR( build EXE ${APP_NAME} QT4_FOUND "Qt4 not found" )
 
 SET( dep_libs OrcaQt OrcaQCompModel )
-REQUIRE_TARGETS( build EXE ${APP_NAME} ${dep_libs} )
+GBX_REQUIRE_TARGETS( build EXE ${APP_NAME} ${dep_libs} )
 
 IF ( build )
 

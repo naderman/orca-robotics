@@ -2,10 +2,10 @@ SET_COMPONENT_NAMES ( PropertyServer )
 SET ( COMP_NAMESPACE propserver )
 
 SET ( build TRUE )
-REQUIRE_OPTION( build EXE ${APP_NAME} ON )
+GBX_REQUIRE_OPTION( build EXE ${APP_NAME} ON )
 
 SET( int_libs OrcaIfaceImpl OrcaObjects )
-REQUIRE_TARGETS( build EXE ${APP_NAME} ${int_libs} )
+GBX_REQUIRE_TARGETS( build EXE ${APP_NAME} ${int_libs} )
 
 IF ( build)
 

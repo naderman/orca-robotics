@@ -1,15 +1,15 @@
 SET_COMPONENT_NAMES ( PingServer )
 
 SET ( build TRUE )
-REQUIRE_OPTION( build EXE ${APP_NAME} ON )
-REQUIRE_VAR( build EXE ${APP_NAME} ORCA_OS_LINUX "only Linux OS is supported" )
+GBX_REQUIRE_OPTION( build EXE ${APP_NAME} ON )
+GBX_REQUIRE_VAR( build EXE ${APP_NAME} GBX_OS_LINUX "only Linux OS is supported" )
 
 SET( ext_libs HydroPing )
-REQUIRE_INSTALLS( build EXE ${APP_NAME} ${ext_libs} )
+GBX_REQUIRE_INSTALLS( build EXE ${APP_NAME} ${ext_libs} )
 
 # Look for liboping just in case -- library for 'ping'ing from C
-INCLUDE ( ${HYDRO_HOME}/cmake/FindOPing.cmake )
-REQUIRE_VAR( build EXE ${APP_NAME} LIBOPING_FOUND "liboping not found" )
+INCLUDE ( ${HYDRO_CMAKE_DIR}/FindOPing.cmake )
+GBX_REQUIRE_VAR( build EXE ${APP_NAME} LIBOPING_FOUND "liboping not found" )
 
 IF ( build )
     

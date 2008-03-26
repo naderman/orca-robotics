@@ -1,14 +1,14 @@
 SET ( lib_name OrcaQGui )
-GLOBAL_ADD_LICENSE( GPL )
+GBX_ADD_LICENSE( GPL )
 
 SET ( build TRUE )
-REQUIRE_OPTION( build LIB ${lib_name} ON )
-SET ( NOT_ORCA_OS_WIN NOT ORCA_OS_WIN )
-REQUIRE_VAR( build LIB ${lib_name} NOT_ORCA_OS_WIN "Windows OS is not  supported" )
-REQUIRE_VAR( build LIB ${lib_name} QT4_FOUND "Qt4 not found" )
+GBX_REQUIRE_OPTION( build LIB ${lib_name} ON )
+SET ( NOT_GBX_OS_WIN NOT GBX_OS_WIN )
+GBX_REQUIRE_VAR( build LIB ${lib_name} NOT_GBX_OS_WIN "Windows OS is not  supported" )
+GBX_REQUIRE_VAR( build LIB ${lib_name} QT4_FOUND "Qt4 not found" )
 
 SET( dep_libs OrcaQt OrcaObjects )
-REQUIRE_TARGETS( build LIB ${lib_name} ${dep_libs} )
+GBX_REQUIRE_TARGETS( build LIB ${lib_name} ${dep_libs} )
 
 IF ( build )
 
@@ -16,6 +16,7 @@ IF ( build )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseBasicRules.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseQt.cmake )
     
+    FILE( GLOB hdrs *.h )
     FILE( GLOB human_srcs *.cpp )
     
     SET( moc_hdrs
@@ -25,9 +26,9 @@ IF ( build )
     )
     QT4_WRAP_CPP( moc_srcs ${moc_hdrs} )
 
-    GLOBAL_ADD_LIBRARY( ${lib_name} SHARED ${human_srcs} ${moc_srcs} )
+    GBX_ADD_LIBRARY( ${lib_name} SHARED ${human_srcs} ${moc_srcs} )
     TARGET_LINK_LIBRARIES ( ${lib_name} ${dep_libs} )
     
-    INSTALL_FILES( /include/orcaqgui .*\\.h$ )
+    GBX_ADD_HEADERS( orcaqgui ${hdrs} )
 
 ENDIF ( build )

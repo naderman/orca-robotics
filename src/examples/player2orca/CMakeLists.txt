@@ -1,18 +1,18 @@
 SET_COMPONENT_NAMES ( Player2Orca )
 
 SET ( build TRUE )
-REQUIRE_OPTION( build EXE ${APP_NAME} ON )
-REQUIRE_VAR( build EXE ${APP_NAME} ORCA_OS_LINUX "only Linux OS is supported" )
-INCLUDE (${HYDRO_HOME}/cmake/FindPlayer2.cmake)
-REQUIRE_VAR( build EXE ${APP_NAME} PLAYER_FOUND "Player not found" )
+GBX_REQUIRE_OPTION( build EXE ${APP_NAME} ON )
+GBX_REQUIRE_VAR( build EXE ${APP_NAME} GBX_OS_LINUX "only Linux OS is supported" )
+INCLUDE( ${HYDRO_CMAKE_DIR}/FindPlayer2.cmake )
+GBX_REQUIRE_VAR( build EXE ${APP_NAME} PLAYER_FOUND "Player not found" )
 
 SET( dep_libs OrcaIfaceImpl )
-REQUIRE_TARGETS( build EXE ${APP_NAME} ${dep_libs} )
+GBX_REQUIRE_TARGETS( build EXE ${APP_NAME} ${dep_libs} )
 
 IF ( build)
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
-    INCLUDE( ${HYDRO_HOME}/cmake/UsePlayer.cmake )
+    INCLUDE( ${HYDRO_CMAKE_DIR}/UsePlayer.cmake )
 
     FILE( GLOB srcs *.cpp )
 

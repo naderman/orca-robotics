@@ -33,4 +33,4 @@ ADD_SUBDIRECTORY ( wifi )
 
 # putting it after all subdir's because of cmake weirdness:
 # when placed above, only one subdir license appears 
-GLOBAL_ADD_LICENSE( LGPL )
+GBX_ADD_LICENSE( LGPL )

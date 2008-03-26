@@ -1,10 +1,10 @@
 SET_COMPONENT_NAMES ( ReactiveWalker )
 
 SET ( build TRUE )
-REQUIRE_OPTION( build EXE ${APP_NAME} ON )
+GBX_REQUIRE_OPTION( build EXE ${APP_NAME} ON )
 
 SET( dep_libs OrcaObjects )
-REQUIRE_TARGETS( build EXE ${APP_NAME} ${dep_libs} )
+GBX_REQUIRE_TARGETS( build EXE ${APP_NAME} ${dep_libs} )
 
 IF ( build)
 

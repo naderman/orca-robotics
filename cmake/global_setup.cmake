@@ -2,7 +2,7 @@
 # Give feedback on custom entries
 #
 MESSAGE( STATUS "Setting project name to ${PROJECT_NAME}" )
-MESSAGE( STATUS "Setting project version to ${PROJECT_VERSION}" )
+MESSAGE( STATUS "Setting project version to ${GBX_PROJECT_VERSION}" )
 MESSAGE( STATUS "Setting project interface lib name to ${PROJECT_INTERFACE_LIB}" )
 
 #
@@ -11,7 +11,7 @@ MESSAGE( STATUS "Setting project interface lib name to ${PROJECT_INTERFACE_LIB}"
 #
 IF ( DEFINED HYDRO_HOME )
     # the variable is specified with a command line option or is already in cache
-    MESSAGE( STATUS "Hydro location was specified or using cached value: ${HYDRO_HOME}")
+    MESSAGE( STATUS "Hydro location was specified or using cached value: ${HYDRO_HOME}" )
 ELSE ( DEFINED HYDRO_HOME )
     # not specified, need to find it
     INCLUDE ( ${ORCA_CMAKE_DIR}/FindHydro.cmake )
@@ -19,6 +19,8 @@ ELSE ( DEFINED HYDRO_HOME )
             "Looking for Hydro - not found. Please install Hydro, ** delete CMakeCache.txt **, then re-run CMake." 
             "Looking for Hydro - found in ${HYDRO_HOME}" 
             1 )
+    # when we find it, put it into cache
+    SET( HYDRO_HOME ${HYDRO_HOME} CACHE PATH "Hydro installed directory" FORCE )
 ENDIF ( DEFINED HYDRO_HOME )
 
 #
@@ -37,73 +39,85 @@ ASSERT ( HYDRO_WORKS
          "Testing Hydro - ok."
          1 )
 
-#
 # Special Hydro directories
-#
-SET ( HYDRO_CMAKE_DIR ${HYDRO_HOME}/cmake )
-
-#
-# process version number
-#
-INCLUDE( ${HYDRO_CMAKE_DIR}/version.cmake )
-
-#
-# Project directories
-#
-INCLUDE( ${HYDRO_CMAKE_DIR}/SetupDirectories.cmake )
-
-#
-# Determine OS, and make os-specefic choices
-#
-INCLUDE( ${HYDRO_CMAKE_DIR}/os.cmake )
-
-#
-# Set the build type (affects debugging symbols and optimization)
-#
-INCLUDE( ${PROJECT_SOURCE_DIR}/cmake/local/buildtype.cmake )
-
-#
-# check compiler type and version
-#
-INCLUDE( ${PROJECT_SOURCE_DIR}/cmake/local/compiler.cmake )
+SET( HYDRO_BIN_DIR ${HYDRO_HOME}/bin )
+SET( HYDRO_LIB_DIR ${HYDRO_HOME}/lib/hydro )
+SET( HYDRO_INCLUDE_DIR ${HYDRO_HOME}/include/hydro )
+SET( HYDRO_SHARE_DIR ${HYDRO_HOME}/share/hydro )
+SET( HYDRO_CMAKE_DIR ${HYDRO_HOME}/share/hydro/cmake )
 
 #
 # Official dependency number 2: Gearbox
 #
-IF ( DEFINED GEARBOX_HOME AND GEARBOX_HOME )
+IF ( DEFINED GEARBOX_HOME )
     # the variable is specified with a command line option or is already in cache
-    MESSAGE( STATUS "Gearbox location was specified or using cached value: ${GEARBOX_HOME}")
+    MESSAGE( STATUS "Gearbox location was specified or using cached value: ${GEARBOX_HOME}" )
     # this is a hack, we'll require gearbox soon anyway
     SET( GEARBOX_FOUND 1 )
-ELSE ( DEFINED GEARBOX_HOME AND GEARBOX_HOME )
+ELSE ( DEFINED GEARBOX_HOME )
     # not specified, need to find it
     INCLUDE ( ${HYDRO_CMAKE_DIR}/FindGearbox.cmake )
     ASSERT( GEARBOX_FOUND 
-            "Looking for Gearbox - not found." 
-#             "Looking for Gearbox - not found. Please install Gearbox, ** delete CMakeCache.txt **, then re-run CMake." 
+            "Looking for Gearbox - not found. Please install Gearbox, ** delete CMakeCache.txt **, then re-run CMake." 
             "Looking for Gearbox - found in ${GEARBOX_HOME}" 
-            0 )
-ENDIF ( DEFINED GEARBOX_HOME AND GEARBOX_HOME )
+            1 )
+    # when we find it, put it into cache
+    SET( GEARBOX_HOME ${GEARBOX_HOME} CACHE PATH "Gearbox installed directory" FORCE )
+ENDIF ( DEFINED GEARBOX_HOME )
 
 #
 # Load Gearbox manifest
 #
-IF ( GEARBOX_FOUND )
-    INCLUDE( ${GEARBOX_HOME}/gearbox_manifest.cmake )
-    ASSERT( GEARBOX_MANIFEST_LOADED 
-            "Loading Gearbox manifest - failed." 
-    #         "Loading Gearbox manifest - failed. Please reinstall Gearbox, ** delete CMakeCache.txt **, then re-run CMake." 
-            "Loading Gearbox manifest - loaded." 
-            0 )
-    
-    # Test Gearbox installation 
-    # (we don't have any specific requirements yet)
-    # INCLUDE ( ${ORCA_CMAKE_DIR}/TestGearbox.cmake )
-    # ASSERT ( GEARBOX_WORKS
-    #          "Testing Gearbox - failed. Please check or reinstall it, ** delete CMakeCache.txt **, then re-run CMake."
-    #          "Testing Gearbox - ok."
-    #          1 )
-ENDIF ( GEARBOX_FOUND )
+INCLUDE( ${GEARBOX_HOME}/gearbox_manifest.cmake )
+ASSERT( GEARBOX_MANIFEST_LOADED 
+        "Loading Gearbox manifest - failed. Please reinstall Gearbox, ** delete CMakeCache.txt **, then re-run CMake." 
+        "Loading Gearbox manifest - loaded." 
+        1 )
+
+# Test Gearbox installation 
+# (we don't have any specific requirements yet)
+# INCLUDE ( ${ORCA_CMAKE_DIR}/TestGearbox.cmake )
+# ASSERT ( GEARBOX_WORKS
+#          "Testing Gearbox - failed. Please check or reinstall it, ** delete CMakeCache.txt **, then re-run CMake."
+#          "Testing Gearbox - ok."
+#          1 )
+
+# Special Gearbox directories
+SET( GEARBOX_BIN_DIR ${GEARBOX_HOME}/bin )
+SET( GEARBOX_LIB_DIR ${GEARBOX_HOME}/lib/gearbox )
+SET( GEARBOX_INCLUDE_DIR ${GEARBOX_HOME}/include/gearbox )
+SET( GEARBOX_SHARE_DIR ${GEARBOX_HOME}/share/gearbox )
+SET( GEARBOX_CMAKE_DIR ${GEARBOX_HOME}/share/gearbox/cmake )
+
+#
+# Special Hydro directories
+#
+SET ( GEARBOX_CMAKE_DIR ${GEARBOX_HOME}/share/gearbox/cmake )
+
+#
+# process version number
+#
+INCLUDE( ${HYDRO_CMAKE_DIR}/SetupVersion.cmake )
+
+#
+# Project directories
+#
+INCLUDE( ${GEARBOX_CMAKE_DIR}/SetupDirectories.cmake )
+
+#
+# Determine OS, and make os-specefic choices
+#
+INCLUDE( ${GEARBOX_CMAKE_DIR}/SetupOs.cmake )
+
+#
+# Set the build type (affects debugging symbols and optimization)
+#
+INCLUDE( ${PROJECT_SOURCE_DIR}/cmake/internal/buildtype.cmake )
+
+#
+# check compiler type and version
+#
+INCLUDE( ${PROJECT_SOURCE_DIR}/cmake/internal/compiler.cmake )
 
 # 
 # Official dependency number 3: ZeroC's Ice
@@ -131,14 +145,20 @@ ASSERT ( ICE_WORKS
 # TODO: Check which parts of Ice are actually installed (produce "manifest")
 # INCLUDE ( ${ORCA_CMAKE_DIR}/ManifestIce.cmake )
 
+SET( ICE_BIN_DIR ${ICE_HOME}/bin )
+SET( ICE_LIB_DIR ${ICE_HOME}/lib )
+SET( ICE_INCLUDE_DIR ${ICE_HOME}/include )
+
 #
 # Include external and local macro definitions
 #
-INCLUDE( ${HYDRO_CMAKE_DIR}/GlobalAdd.cmake )
-INCLUDE( ${HYDRO_CMAKE_DIR}/Require.cmake )
-INCLUDE( ${HYDRO_CMAKE_DIR}/messages.cmake )
-INCLUDE( ${ORCA_CMAKE_DIR}/FindComponentSources.cmake )
+INCLUDE( ${GEARBOX_CMAKE_DIR}/TargetUtils.cmake )
+INCLUDE( ${GEARBOX_CMAKE_DIR}/DependencyUtils.cmake )
 INCLUDE( ${ORCA_CMAKE_DIR}/GenerateConfigFile.cmake )
+
+# INCLUDE( ${HYDRO_CMAKE_DIR}/messages.cmake )
+# INCLUDE( ${ORCA_CMAKE_DIR}/FindComponentSources.cmake )
+# Obsolete but still used by Probe
 INCLUDE( ${ORCA_CMAKE_DIR}/OptionalSubLibrary.cmake )
 
 #
@@ -157,7 +177,7 @@ OPTION( ORCA_BUILD_XML      "Enables generation of XML file for IceGrid" ON )
 #                                                         
 # Look for low-level C headers, write defines to config.h 
 #                                                         
-INCLUDE( ${ORCA_CMAKE_DIR}/write_config_h.cmake )
+INCLUDE( ${GEARBOX_CMAKE_DIR}/WriteConfigH.cmake )
 
 #                                                         
 # Look for dependencies required by individual components 
@@ -170,7 +190,7 @@ INCLUDE( ${ORCA_CMAKE_DIR}/check_depend.cmake )
 #
 # Project-specific global setup
 #
-INCLUDE( ${PROJECT_SOURCE_DIR}/cmake/local/project_setup.cmake )
+INCLUDE( ${PROJECT_SOURCE_DIR}/cmake/internal/project_setup.cmake )
 
 # Store the location of the command in cache
 # (after the project-specific Find functions are defined ...)
@@ -185,17 +205,24 @@ MESSAGE( STATUS "Using ${ORCA_DEF2CFG_COMMAND}" )
 
 #
 # Installation preferences
+# see: \http://www.cmake.org/Wiki/CMake_RPATH_handling
 #
-# CMake default is FALSE
-# SET( CMAKE_SKIP_BUILD_RPATH TRUE )
-# CMake default is FALSE
-# SET( CMAKE_BUILD_WITH_INSTALL_RPATH TRUE )
-SET( CMAKE_INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/lib ${HYDRO_HOME}/lib ${ICE_HOME}/lib )
+# CMake defaults
 
-IF ( NOT ORCA_MOTHERSHIP )
-    # For satellite projects only, link to Orca
-    SET( CMAKE_INSTALL_RPATH  ${CMAKE_INSTALL_RPATH} ${ORCA_HOME}/lib )
-ENDIF ( NOT ORCA_MOTHERSHIP )
+# use, i.e. don't skip the full RPATH for the build tree
+# SET(CMAKE_SKIP_BUILD_RPATH  FALSE)
+
+# when building, don't use the install RPATH already
+# (but later on when installing)
+# SET(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE) 
+
+# the RPATH to be used when installing
+SET( CMAKE_INSTALL_RPATH 
+        ${GEARBOX_LIB_DIR}
+        ${HYDRO_LIB_DIR} 
+        ${ICE_INCLUDE_DIR}
+        ${ORCA_LIB_DIR}      # this is non-empty only for satellite projects
+        ${GBX_LIB_INSTALL_DIR} )
 
 IF ( ORCA_MOTHERSHIP )
     # For orca project only, install CMake scripts
@@ -224,17 +251,17 @@ ADD_SUBDIRECTORY ( scripts )
 #
 # Write installation manifest in CMake format
 #
-WRITE_MANIFEST()   
+GBX_WRITE_MANIFEST()   
 
 #
 # Print license information to a file
 #
 IF ( ORCA_BUILD_LICENSE )
-    WRITE_LICENSE()
+    GBX_WRITE_LICENSE()
 ENDIF ( ORCA_BUILD_LICENSE )
 
 #                                                         
 # Print results of CMake activity                         
 #                                                  
-GLOBAL_CONFIG_REPORT( "Ice version       ${ICE_VERSION}" )
-GLOBAL_LIST_RESET()
+GBX_CONFIG_REPORT( "Ice version       ${ICE_VERSION}" )
+GBX_RESET_ALL_LISTS()

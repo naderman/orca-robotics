@@ -1,19 +1,19 @@
 SET_COMPONENT_NAMES ( SimLocaliser )
 
 SET ( build TRUE )
-REQUIRE_OPTION( build EXE ${APP_NAME} ON )
-SET ( NOT_ORCA_OS_WIN NOT ORCA_OS_WIN )
-REQUIRE_VAR( build EXE ${APP_NAME} NOT_ORCA_OS_WIN "Windows OS is not  supported" )
+GBX_REQUIRE_OPTION( build EXE ${APP_NAME} ON )
+SET ( NOT_GBX_OS_WIN NOT GBX_OS_WIN )
+GBX_REQUIRE_VAR( build EXE ${APP_NAME} NOT_GBX_OS_WIN "Windows OS is not  supported" )
 
 SET( int_libs OrcaIfaceImpl OrcaObjects )
-REQUIRE_TARGETS( build EXE ${APP_NAME} ${int_libs} )
+GBX_REQUIRE_TARGETS( build EXE ${APP_NAME} ${int_libs} )
 
 IF ( build )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
     # Look for Player
-    INCLUDE (${HYDRO_HOME}/cmake/FindPlayer2.cmake)
+    INCLUDE( ${HYDRO_CMAKE_DIR}/FindPlayer2.cmake )
 
     # these should be in the subdir, but they have no effect there for some reason
     INCLUDE_DIRECTORIES( ${PLAYER_INCLUDE_DIRS} )

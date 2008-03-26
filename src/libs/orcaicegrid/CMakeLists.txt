@@ -1,22 +1,19 @@
 SET ( lib_name OrcaIceGrid )
-GLOBAL_ADD_LICENSE( LGPL )
+GBX_ADD_LICENSE( LGPL )
 
 SET ( build TRUE )
-REQUIRE_OPTION( build LIB ${lib_name} ON )
-REQUIRE_VAR( build LIB ${lib_name} ORCA_OS_LINUX "only Linux OS is supported" )
+GBX_REQUIRE_OPTION( build LIB ${lib_name} ON )
+GBX_REQUIRE_VAR( build LIB ${lib_name} GBX_OS_LINUX "only Linux OS is supported" )
 
 IF ( build )
 
-    INCLUDE( ${HYDRO_CMAKE_DIR}/UseGearbox.cmake )
-    INCLUDE( ${ORCA_CMAKE_DIR}/UseBasicRules.cmake )
-    INCLUDE( ${ORCA_CMAKE_DIR}/UseIce.cmake )
-    INCLUDE( ${ORCA_CMAKE_DIR}/UseLibProjectInterfaces.cmake )
-    INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
     
+    FILE( GLOB hdrs *.h )
     FILE( GLOB srcs *.cpp )
 
-    GLOBAL_ADD_LIBRARY( ${lib_name} SHARED ${srcs} )
+    GBX_ADD_LIBRARY( ${lib_name} SHARED ${srcs} )
 
-    INSTALL_FILES( /include/orcaicegrid .*\\.h$ )
+    GBX_ADD_HEADERS( orcaicegrid ${hdrs} )
 
 ENDIF ( build )

@@ -4,7 +4,7 @@ SET ( build TRUE )
 # This utility is disabled because the C++ header for the interface is compiled by hand.
 # This means that on systems with a slightly different version of Ice this
 # may break. The .ice file should be compiled at compile time.
-REQUIRE_OPTION( build EXE ${APP_NAME} OFF )
+GBX_REQUIRE_OPTION( build EXE ${APP_NAME} OFF )
 
 IF ( build )
 

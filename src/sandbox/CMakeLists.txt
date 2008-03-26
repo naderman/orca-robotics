@@ -4,18 +4,18 @@
 
 MESSAGE ( STATUS "== SANDBOX ==" )
 
-IF ( NOT ORCA_OS_WIN AND ORCA_BUILD_SANDBOX )
+IF ( NOT GBX_OS_WIN AND ORCA_BUILD_SANDBOX )
 
     # when adding new directories, please maintain alphabetical order
     ADD_SUBDIRECTORY ( slice2string )
 
-ELSE ( NOT ORCA_OS_WIN AND ORCA_BUILD_SANDBOX )
+ELSE ( NOT GBX_OS_WIN AND ORCA_BUILD_SANDBOX )
 
     MESSAGE ( STATUS "Sandbox compilation is disabled" )
 
-ENDIF ( NOT ORCA_OS_WIN AND ORCA_BUILD_SANDBOX )
+ENDIF ( NOT GBX_OS_WIN AND ORCA_BUILD_SANDBOX )
 
 
 # putting it after all subdir's because of cmake weirdness:
 # when placed above, only one subdir license appears 
-GLOBAL_ADD_LICENSE( LGPL )
+GBX_ADD_LICENSE( LGPL )

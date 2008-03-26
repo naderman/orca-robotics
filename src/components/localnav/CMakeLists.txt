@@ -2,14 +2,14 @@ SET_COMPONENT_NAMES ( LocalNav )
 SET ( APP_CTRLC_HANDLER 0 )
 
 SET ( build TRUE )
-REQUIRE_OPTION( build EXE ${APP_NAME} ON )
-REQUIRE_VAR( build EXE ${APP_NAME} ORCA_OS_LINUX "only Linux OS is supported" )
+GBX_REQUIRE_OPTION( build EXE ${APP_NAME} ON )
+GBX_REQUIRE_VAR( build EXE ${APP_NAME} GBX_OS_LINUX "only Linux OS is supported" )
 
 SET( ext_libs HydroDll HydroNavUtil HydroGeom2d )
-REQUIRE_INSTALLS( build EXE ${APP_NAME} ${ext_libs} )
+GBX_REQUIRE_INSTALLS( build EXE ${APP_NAME} ${ext_libs} )
 
 SET( int_libs OrcaLocalNav OrcaNavUtil OrcaIfaceImpl OrcaOgMap OrcaPathPlan )
-REQUIRE_TARGETS( build EXE ${APP_NAME} ${int_libs} )
+GBX_REQUIRE_TARGETS( build EXE ${APP_NAME} ${int_libs} )
 
 IF ( build )
 
@@ -63,9 +63,9 @@ IF ( build )
       # AlexB: The /lib/ld-linux stuff is a bit of magic to make Linux
       # find the vfh library so it can be dynamically loaded.
       #
-      GLOBAL_ADD_TEST( LocalNavVfhTest ${LD_LINUX}
+      GBX_ADD_TEST( LocalNavVfhTest ${LD_LINUX}
         --library-path vfhdriver:$ENV{LD_LIBRARY_PATH} ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME}
-        --Orca.Config=${PROJECT_SOURCE_DIR}/src/components/${APP_NAME}/${APP_NAME}.cfg
+        --Orca.Config=${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME}.cfg
         --LocalNav.Config.TestInSimulationMode=1
         --LocalNav.Config.Vfh.MaxSpeed=2.0
         --LocalNav.Config.Test.NumWaypoints=20

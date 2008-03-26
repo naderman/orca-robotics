@@ -1,7 +1,7 @@
 SET_COMPONENT_NAMES ( Slice2String )
 
 SET ( build TRUE )
-REQUIRE_OPTION( build EXE ${APP_NAME} ON )
+GBX_REQUIRE_OPTION( build EXE ${APP_NAME} ON )
 
 IF ( build )
 
@@ -11,7 +11,7 @@ IF ( build )
     FILE( GLOB srcs *.cpp )
     SET( dep_libs IceUtil Slice )
     
-    GLOBAL_ADD_EXECUTABLE( ${APP_NAME} ${srcs} )
+    GBX_ADD_EXECUTABLE( ${APP_NAME} ${srcs} )
     TARGET_LINK_LIBRARIES( ${APP_NAME} ${dep_libs} )
 
     IF ( ORCA_BUILD_TESTS )

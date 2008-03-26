@@ -2,11 +2,11 @@ SET_COMPONENT_NAMES ( Brick )
 
 SET ( build TRUE )
 # Check for human input
-REQUIRE_OPTION( build EXE ${APP_NAME} ON )
+GBX_REQUIRE_OPTION( build EXE ${APP_NAME} ON )
 
 # libs on which our code depends would go here
 # SET( dep_libs ??? )
-# REQUIRE_TARGETS( build EXE ${APP_NAME} ${dep_libs} )
+# GBX_REQUIRE_TARGETS( build EXE ${APP_NAME} ${dep_libs} )
 
 IF ( build)
 

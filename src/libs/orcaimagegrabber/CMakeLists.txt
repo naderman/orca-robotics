@@ -1,9 +1,9 @@
 SET ( lib_name OrcaImageGrabber )
-GLOBAL_ADD_LICENSE( LGPL )
+GBX_ADD_LICENSE( LGPL )
 
 SET ( build TRUE )
-REQUIRE_OPTION( build LIB ${lib_name} OFF )
-REQUIRE_VAR( build LIB ${lib_name} ORCA_OS_LINUX "only Linux OS is supported" )
+GBX_REQUIRE_OPTION( build LIB ${lib_name} OFF )
+GBX_REQUIRE_VAR( build LIB ${lib_name} GBX_OS_LINUX "only Linux OS is supported" )
 
 IF ( build )
 
@@ -12,10 +12,10 @@ IF ( build )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
     
     # opencv image grabber checks
-    INCLUDE (${ORCA_CMAKE_DIR}/FindOpenCV.cmake)
+    INCLUDE( ${ORCA_CMAKE_DIR}/FindOpenCV.cmake )
     IF ( OPENCV_FOUND )
         MESSAGE( STATUS "    OpenCv Image Grabber (>= OpenCv version 0.9.9)  - can be built" )
-        INCLUDE (${ORCA_CMAKE_DIR}/UseOpenCV.cmake)
+        INCLUDE( ${ORCA_CMAKE_DIR}/UseOpenCV.cmake )
         SET( srcs cvgrabber )
     ELSE ( OPENCV_FOUND )
         MESSAGE( STATUS "    OpenCv Image Grabber (>= OpenCv version 0.9.9)  - CANNOT be built" )
@@ -49,11 +49,12 @@ IF ( build )
     ENDIF ( DIGICLOPS_AND_TRICLOPS_FOUND ) 
     
     IF ( OPENCV_FOUND OR DIGICLOPS_AND_TRICLOPS_FOUND )
-        GLOBAL_ADD_LIBRARY( ${lib_name} SHARED ${srcs} )
+        GBX_ADD_LIBRARY( ${lib_name} SHARED ${srcs} )
         TARGET_LINK_LIBRARIES( ${lib_name} ${OPENCV_LIBS} ${DIGICLOPS_LIBS} )
     ENDIF ( OPENCV_FOUND OR DIGICLOPS_AND_TRICLOPS_FOUND )
     
     # we want this file to install for fake drivers
-    INSTALL_FILES( /include/orcaimagegrabber .*\\.h$ )
+    FILE( GLOB hdrs *.h )
+    GBX_ADD_HEADERS( orcaimagegrabber ${hdrs} )  
 
 ENDIF( build )

@@ -1,20 +1,20 @@
 SET_COMPONENT_NAMES ( PathPlanner )
 
 SET ( build TRUE )
-REQUIRE_OPTION( build EXE ${APP_NAME} ON )
-REQUIRE_VAR( build EXE ${APP_NAME} ORCA_OS_LINUX "only Linux OS is supported" )
+GBX_REQUIRE_OPTION( build EXE ${APP_NAME} ON )
+GBX_REQUIRE_VAR( build EXE ${APP_NAME} GBX_OS_LINUX "only Linux OS is supported" )
 
 SET( ext_libs HydroPathPlan )
-REQUIRE_INSTALLS( build EXE ${APP_NAME} ${ext_libs} )
+GBX_REQUIRE_INSTALLS( build EXE ${APP_NAME} ${ext_libs} )
 
 SET( int_libs OrcaOgMap OrcaObjects )
-REQUIRE_TARGETS( build EXE ${APP_NAME} ${int_libs} )
+GBX_REQUIRE_TARGETS( build EXE ${APP_NAME} ${int_libs} )
 
 IF ( build )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
-    FIND_COMPONENT_SOURCES( srcs )
+    FILE( GLOB srcs *.cpp )
     SET( dep_libs ${ext_libs} ${int_libs} )
 
     IF ( QT4_FOUND )

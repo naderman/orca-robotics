@@ -1,6 +1,6 @@
 # A place for interface definitions in Slice
 
-GLOBAL_ADD_LICENSE( LGPL )
+GBX_ADD_LICENSE( LGPL )
 
 MESSAGE ( STATUS "== INTERFACES ==" )
 

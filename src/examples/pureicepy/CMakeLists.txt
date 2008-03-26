@@ -1,6 +1,6 @@
 OPTION( build_PURE_ICEPYTHON "Try to build PureIcePython Python Example" ON )
 
-IF ( NOT ORCA_OS_WIN AND build_PURE_ICEPYTHON )
+IF ( NOT GBX_OS_WIN AND build_PURE_ICEPYTHON )
 
     PROJECT( pureicepython )
 
@@ -23,6 +23,6 @@ IF ( NOT ORCA_OS_WIN AND build_PURE_ICEPYTHON )
 #     ADD_CUSTOM_TARGET( pureicepython.py ALL
 #         DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/pureicepython.py)
 # 
-#     GLOBAL_ADD_ITEM( pureicepython.py )
+#     GBX_ADD_ITEM( pureicepython.py )
 
-ENDIF ( NOT ORCA_OS_WIN AND build_PURE_ICEPYTHON )
+ENDIF ( NOT GBX_OS_WIN AND build_PURE_ICEPYTHON )

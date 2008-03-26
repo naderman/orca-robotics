@@ -1,7 +1,7 @@
 SET ( APP_NAME iceping )
 
 SET ( build TRUE )
-REQUIRE_OPTION( build EXE ${APP_NAME} ON )
+GBX_REQUIRE_OPTION( build EXE ${APP_NAME} ON )
 
 IF ( build )
 
@@ -14,9 +14,9 @@ IF ( build )
     
     FILE( GLOB srcs *.cpp )
     
-    GLOBAL_ADD_EXECUTABLE( ${APP_NAME} ${srcs} )
+    GBX_ADD_EXECUTABLE( ${APP_NAME} ${srcs} )
 
     # special case: we don't have a .def file here, installing a sample .cfg
-    INSTALL_FILES( /cfg iceping.cfg )
+    GBX_ADD_SHARED_FILES( cfg iceping.cfg )
 
 ENDIF ( build )

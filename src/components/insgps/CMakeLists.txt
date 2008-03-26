@@ -1,13 +1,14 @@
 SET_COMPONENT_NAMES ( InsGps)
 
 SET ( build TRUE )
-REQUIRE_OPTION( build EXE ${APP_NAME} ON )
+
+GBX_REQUIRE_OPTION( build EXE ${APP_NAME} ON )
 
 SET( ext_libs HydroDll HydroInterfaces )
-REQUIRE_INSTALLS( build EXE ${APP_NAME} ${ext_libs} )
+GBX_REQUIRE_INSTALLS( build EXE ${APP_NAME} ${ext_libs} )
 
 SET( int_libs OrcaIfaceImpl )
-REQUIRE_TARGETS( build EXE ${APP_NAME} ${int_libs} )
+GBX_REQUIRE_TARGETS( build EXE ${APP_NAME} ${int_libs} )
 
 IF ( build)
 
@@ -21,10 +22,10 @@ IF ( build)
     TARGET_LINK_LIBRARIES( ${APP_NAME} ${dep_libs} )
 
     # build IceBox service
-    IF ( ORCA_BUILD_SERVICES AND NOT ORCA_OS_WIN )
+    IF ( ORCA_BUILD_SERVICES AND NOT GBX_OS_WIN )
         WRAP_MAINTHREAD_INTO_SERVICE( ${SERVICE_NAME} ${COMP_NAMESPACE} ${COMP_NAME} ${srcs} )
         TARGET_LINK_LIBRARIES( ${SERVICE_NAME} ${dep_libs} ) 
-    ENDIF ( ORCA_BUILD_SERVICES AND NOT ORCA_OS_WIN )
+    ENDIF ( ORCA_BUILD_SERVICES AND NOT GBX_OS_WIN )
 
     GENERATE_CONFIG_FILE( ${APP_NAME}.def )
 

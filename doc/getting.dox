@@ -12,7 +12,7 @@
 
 @page orca_doc_getting Download and Install Orca
 
-@note Reviewed for release 2.7.0.
+@note Reviewed for release 2.10.0.
 
 @section depend Overview of dependencies
 
@@ -28,18 +28,14 @@ Practically, this means that you can download build your own components from scr
 
 @section orca_doc_getting_download Download instructions for Hydro and Orca
 
-- Option 1. Download <strong><a href="http://sourceforge.net/project/showfiles.php?group_id=111647" style="text-decoration:none">the latest distribution of Hydro and Orca</a></strong>
+- Option 1. Download the latest distributions of [GEARBOX HAS NOT BEEN RELEASED YET!] and <strong><a href="http://sourceforge.net/project/showfiles.php?group_id=111647" style="text-decoration:none">Hydro and Orca</a></strong>
 
 - Option 2. Checkout source from SVN
-    - Anonymous checkout:
+    - Anonymous checkout (your username/password will be asked on commit):
 @verbatim
+$ svn co https://gearbox.svn.sf.net/svnroot/gearbox/gearbox/trunk gearbox
 $ svn co https://orca-robotics.svn.sf.net/svnroot/orca-robotics/hydro/trunk hydro
 $ svn co https://orca-robotics.svn.sf.net/svnroot/orca-robotics/orca/trunk orca
-@endverbatim
-    - Checkout for registered developers:
-@verbatim
-$ svn co --username [your-sf-username] https://orca-robotics.svn.sf.net/svnroot/orca-robotics/hydro/trunk hydro
-$ svn co --username [your-sf-username] https://orca-robotics.svn.sf.net/svnroot/orca-robotics/orca/trunk orca
 @endverbatim
     - See links @ref orca_doc_version_control "to get started" with SVN.
     - See <strong><a href="http://sourceforge.net/svn/?group_id=111647" style="text-decoration:none">more detailed SourceForge SVN instructions.</a></strong>
@@ -66,6 +62,10 @@ The instructions below are quite general, follow them if your platform/distribut
             - For version requirements see individual component documentation.
         - <a href="http://www.trolltech.com/" target="_blank">Qt</a> is a cross-platform framework for building GUI's. Some components are GUI-only and some have optional GUI drivers.
             - Minimum version required 4.1.0 (latest tested: 4.3.1)
+    -# Build and install GearBox distribution.
+        - Download the @ref orca_doc_getting_download "GearBox source" archive and un-tar it.
+        - Configure using CMake
+        - Compile and install
     -# Build and install Hydro distribution.
         - Download the @ref orca_doc_getting_download "Hydro source" archive and un-tar it.
         - Configure using CMake
@@ -74,6 +74,6 @@ The instructions below are quite general, follow them if your platform/distribut
         - Download the @ref orca_doc_getting_download "Orca source" archive and un-tar it.
         - Configure using CMake
         - Compile and install
-        - Make sure that the binaries and executables are in the path. Finished!
+    -# Make sure that all binaries and executables are in the path. Finished!
 
 */
