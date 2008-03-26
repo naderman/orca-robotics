@@ -28,10 +28,10 @@ Practically, this means that you can download build your own components from scr
 
 @section orca_doc_getting_download Download instructions for Hydro and Orca
 
-- Option 1. Download the latest distributions of [GEARBOX HAS NOT BEEN RELEASED YET!] and <strong><a href="http://sourceforge.net/project/showfiles.php?group_id=111647" style="text-decoration:none">Hydro and Orca</a></strong>
+- Option 1. Download the latest distributions of GearBox [IT HAS NOT BEEN RELEASED YET!] and <strong><a href="http://sourceforge.net/project/showfiles.php?group_id=111647" style="text-decoration:none">Hydro and Orca</a></strong>
 
 - Option 2. Checkout source from SVN
-    - Anonymous checkout (your username/password will be asked on commit):
+    - Anonymous checkout (if you want to commit something later you'll be prompted for username/password):
 @verbatim
 $ svn co https://gearbox.svn.sf.net/svnroot/gearbox/gearbox/trunk gearbox
 $ svn co https://orca-robotics.svn.sf.net/svnroot/orca-robotics/hydro/trunk hydro
@@ -42,7 +42,7 @@ $ svn co https://orca-robotics.svn.sf.net/svnroot/orca-robotics/orca/trunk orca
 
 @section orca_doc_getting_install Installation instructions
 
-Detailed instructions are available for these platforms/distributions:
+Detailed instructions are available for these platforms/distributions (each page indicates for which version these instructions were updated, out-of-date instructions may not be very useful):
     - @ref orca_doc_installdebian "Debian Linux" (also tested with Ubuntu/Kubuntu)
     - @ref orca_doc_installfedora "Fedora Linux"
     - @ref orca_doc_installqnx "QNX Neutrino"
@@ -64,16 +64,13 @@ The instructions below are quite general, follow them if your platform/distribut
             - Minimum version required 4.1.0 (latest tested: 4.3.1)
     -# Build and install GearBox distribution.
         - Download the @ref orca_doc_getting_download "GearBox source" archive and un-tar it.
-        - Configure using CMake
-        - Compile and install
+        - Configure using CMake, compile and install
     -# Build and install Hydro distribution.
         - Download the @ref orca_doc_getting_download "Hydro source" archive and un-tar it.
-        - Configure using CMake
-        - Compile and install
+        - Configure using CMake, compile and install
     -# Build and install Orca distribution.
         - Download the @ref orca_doc_getting_download "Orca source" archive and un-tar it.
-        - Configure using CMake
-        - Compile and install
+        - Configure using CMake, compile and install
     -# Make sure that all binaries and executables are in the path. Finished!
 
 */

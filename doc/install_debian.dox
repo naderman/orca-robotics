@@ -14,11 +14,7 @@
 
 @note Reviewed for release 2.10.0.
 
-These are detailed instructions for installing Orca on Debian Linux. They are known to work for a system using Debian \b Testing distribution. See @ref orca_doc_getting for general guidelines.
-
-@section orca_doc_installdebian_ubuntu Ubuntu\Kubuntu
-
-These instructions are also applicable for Ubuntu/Kubuntu 6.10 (Edgy). For Ubuntu/Kubuntu 6.06 (Dapper) you will need to install CMake and Ice separatley. The default version of CMake on Ubuntu/Kubuntu 6.06 is 2.2.3. You will need to download a compatible version of <a href="http://www.cmake.org/HTML/Download.html">cmake</a>. Version 2.4.3 of cmake has been tested on Ubuntu 6.06. Please see the bottom of this page for instructions on how to build @ref orca_doc_installdebian_icefromsource. 
+These are detailed instructions for installing Orca on Debian Linux. They are known to work for a system using Debian \b Testing distribution. See @ref orca_doc_getting for general guidelines. These instructions are also applicable to Ubuntu/Kubuntu 6.10 (Edgy).
 
 @section orca_doc_installdebian_buildessential Build Essential
 
@@ -47,10 +43,9 @@ Minimum version required 3.2.0 (latest tested: 3.2.1).
 @section orca_doc_installdebian_gearbox GearBox
 
 Build and install GearBox distribution.
-    - Download @ref orca_doc_getting_download "GearBox source" archive and un-tar it.
+    - Download @ref orca_doc_getting_download "GearBox source" archive and un-tar it [IT HAS NOT BEEN RELEASED YET, USE SVN!].
+    - Configure using with CMake (note the dot after cmake), compile, and install.
     - The default installation directory is  @c /usr/local (see below on how to change it).
-    - Configure using @c cmake . (note the dot after cmake)
-    - Compile, and install. If you've changed your mind about the installation directory, you can change it using @c ccmake tool ('$ ccmake .').
 @verbatim
 $ tar -zxf gearbox-x.x.x.tar.gz
 $ cd gearbox
@@ -59,17 +54,12 @@ $ make
 $ make install
 @endverbatim
 
-The following are the names of variables which customize GearBox installation.
-- GEARBOX_INSTALL - where to install Hydro installation, e.g. "cmake -DHYDRO_INSTALL=/home/myuser/temp ."
-- ICEUTIL_HOME - where to find IceUtil installation, e.g. "cmake -DICEUTIL_HOME=/home/myuser/temp ."
-
 @section orca_doc_installdebian_hydro Hydro
 
 Build and install Hydro distribution.
     - Download @ref orca_doc_getting_download "Hydro source" archive and un-tar it.
-    - The default installation directory is  @c /opt/hydro-[VERSION], where [VERSION] is the Hydro version (see below on how to change it).
-    - Configure using @c cmake . (note the dot after cmake)
-    - Compile, and install. If you've changed your mind about the installation directory, you can change it using @c ccmake tool ('$ ccmake .').
+    - Configure using with CMake (note the dot after cmake), compile, and install.
+    - The default installation directory is  @c /usr/local (see below on how to change it).
 @verbatim
 $ tar -zxf hydro-x.x.x.tar.gz
 $ cd hydro
@@ -78,22 +68,12 @@ $ make
 $ make install
 @endverbatim
 
-Installation process can be customized with a few variables which can be supplied in one of two ways:
--# On the command-line as "-D[VARIABLE_NAME]=[VARIABLE_VALUE]" (preffered option, has precedence)
--# As environment varialbes as "export [VARIABLE_NAME]=[VARIABLE_VALUE]".
-
-The following are the names of variables which customize Hydro installation.
-- HYDRO_INSTALL - where to install Hydro installation, e.g. "cmake -DHYDRO_INSTALL=/home/myuser/temp ."
-- ICEUTIL_HOME - where to find IceUtil installation, e.g. "cmake -DICEUTIL_HOME=/home/myuser/temp ."
-- GEARBOX_HOME - where to find Gearbox installation, e.g. "cmake -DGEARBOX_HOME=/home/myuser/temp ."
-
 @section orca_doc_installdebian_orca Orca
 
 Build and install Orca distribution.
     - Download @ref orca_doc_getting_download "Orca source" archive and un-tar it.
-    - The default installation directory is  @c /opt/orca-[VERSION], where [VERSION] is the Orca version (see below on how to change it).
-    - Configure using @c cmake . (note the dot after cmake)
-    - Compile, and install. If you've changed your mind about the installation directory, you can change it using @c ccmake tool ('$ ccmake .').
+    - Configure using with CMake (note the dot after cmake), compile, and install.
+    - The default installation directory is  @c /usr/local (see below on how to change it).
 @verbatim
 $ tar -zxf orca-x.x.x.tar.gz
 $ cd orca
@@ -102,31 +82,52 @@ $ make
 $ make install
 @endverbatim
 
-The following are the names of variables which customize Orca installation.
-- ORCA_INSTALL - where to install Orca, e.g. "cmake -DORCA_INSTALL=/home/myuser/temp ."
-- ICE_HOME - where to find Ice installation, e.g. "cmake -DICEUTIL_HOME=/home/myuser/temp ."
-- GEARBOX_HOME - where to find Gearbox installation, e.g. "cmake -DGEARBOX_HOME=/home/myuser/temp ."
-- HYDRO_HOME - where to find Hydro installation, e.g. "cmake -DHYDRO_HOME=/home/myuser/temp ."
-
-@section orca_doc_installdebian_using Using your new installation
-
-Don't forget to make sure that the binaries and executables are in the path. You may want to add a snippet to your @c ~/.bashrc file similar to the one below which works for the default installation. Replace [VERSION] with the version of Hydro/Orca you've just installed.
-@verbatim
-HYDRO_HOME=/opt/hydro-[VERSION]
-export PATH=$HYDRO_HOME/bin:$PATH
-export LD_LIBRARY_PATH=$HYDRO_HOME/lib:$LD_LIBRARY_PATH
-
-export ORCA_HOME=/opt/orca-[VERSION]
-export PATH=$ORCA_HOME/bin:$PATH
-export LD_LIBRARY_PATH=$ORCA_HOME/lib:$LD_LIBRARY_PATH
-@endverbatim
+That's it! We are done. To make sure that everything worked as expected, try this:
 
 @verbatim
-alias cmake='cmake -DGEARBOX_INSTALL=/opt/gearbox -DGEARBOX_HOME=/opt/gearbox -DHYDRO_INSTALL=/opt/hydro -DHYDRO_HOME=/opt/hydro -DORCA_INSTALL=/opt/orca'
+$ laser2d --version
 @endverbatim
 
-That's it! We are done.
+@section orca_doc_installdebian_custom Customizing installation
 
-@b NOTE: You may also want to check out notes on @ref orca_doc_installdebian_opt.
+Installation process can be customized with a few variables which can be supplied on the command-line, e.g.
+@verbatim
+$ cmake -D[VARIABLE_NAME]=[VARIABLE_VALUE] .
+@endverbatim
+
+The following are the names of variables for each distribution:
+- GearBox
+    - GEARBOX_INSTALL - where to install Hydro installation, e.g. "cmake -DHYDRO_INSTALL=/home/myuser/temp ."
+    - ICEUTIL_HOME - where to find IceUtil installation, e.g. "cmake -DICEUTIL_HOME=/home/myuser/temp ."
+- Hydro
+    - HYDRO_INSTALL - where to install Hydro installation, e.g. "cmake -DHYDRO_INSTALL=/home/myuser/temp ."
+    - ICEUTIL_HOME - where to find IceUtil installation, e.g. "cmake -DICEUTIL_HOME=/home/myuser/temp ."
+    - GEARBOX_HOME - where to find Gearbox installation, e.g. "cmake -DGEARBOX_HOME=/home/myuser/temp ."
+- Orca
+    - ORCA_INSTALL - where to install Orca, e.g. "cmake -DORCA_INSTALL=/home/myuser/temp ."
+    - ICE_HOME - where to find Ice installation, e.g. "cmake -DICEUTIL_HOME=/home/myuser/temp ."
+    - GEARBOX_HOME - where to find Gearbox installation, e.g. "cmake -DGEARBOX_HOME=/home/myuser/temp ."
+    - HYDRO_HOME - where to find Hydro installation, e.g. "cmake -DHYDRO_HOME=/home/myuser/temp ."
+
+@par Example: installing into /opt
+
+We have to tell each distribution where to install, but the dependencies will be found automatically (because e.g. Hydro knows to look for GearBox in /opt/gearbox). One way to do it is to add the following to your @c .bashrc file and then use CMake as usual.
+
+@verbatim
+alias cmake='cmake -DGEARBOX_INSTALL=/opt/gearbox -DHYDRO_INSTALL=/opt/hydro -DORCA_INSTALL=/opt/orca'
+export PATH=/opt/gearbox/bin:/opt/hydro/bin:/opt/orca/bin:$PATH
+@endverbatim
+
+@par Example: installing into your home directory
+
+Now each dependent distribution needs to be told where the others are installed. One way to do it is to add the following to your @c .bashrc file and then use CMake as usual.
+
+@verbatim
+DIR=/home/myuser/install
+alias cmake='cmake -DGEARBOX_INSTALL=$DIR -DGEARBOX_HOME=$DIR -DHYDRO_INSTALL=$DIR -DHYDRO_HOME=$DIR -DORCA_INSTALL=$DIR'
+export PATH=$DIR/bin:$PATH
+@endverbatim
+
+@see You may also want to check out notes on @ref orca_doc_installdebian_opt.
 
 */
