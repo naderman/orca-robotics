@@ -91,14 +91,12 @@ FeatureMap2dPainter::paintPointFeature( QPainter *painter,
         {
             //cout<<"TRACE(featuremap2dpainter.cpp): painting: " << f.c.xx << ","<<f.c.xy<<","<<f.c.yy << endl;
 
-            QMatrix m2win = painter->worldMatrix();
-            const float lineThickness = 2.0/m2win.m11();
+//             QMatrix m2win = painter->worldMatrix();
+//             const float lineThickness = 2.0/m2win.m11();
             hydroqguipaint::paintCovarianceEllipse( painter,
-                                                    orcaqguielementutil::featureColour(featureType),
                                                     covXX,
                                                     covXY,
-                                                    covYY,
-                                                    lineThickness);
+                                                    covYY );
         }
 
         // Numbers
@@ -159,10 +157,6 @@ FeatureMap2dPainter::paintLineFeature( QPainter *painter,
         double midpointY = (f.start.y+f.end.y)/2.0;
         painter->translate( midpointX, midpointY );
         
-        QMatrix m2win = painter->worldMatrix();
-        const int lenghtInPixel = 45;
-        const float length = lenghtInPixel/m2win.m11();
-        const float lineThickness = 2.0/m2win.m11();
         painter->save();
         {
             // The direction from start point to end point.
@@ -182,7 +176,11 @@ FeatureMap2dPainter::paintLineFeature( QPainter *painter,
                                            uncertaintyLength, halfLineLength ) );
 
                 // alpha uncertainty: a wedge on the back (non-visible) side of the line
-                hydroqguipaint::paintUncertaintyWedge( painter, orcaqguielementutil::featureColour(f.type), f.c.yy, length, lineThickness );
+                painter->setPen( QPen(orcaqguielementutil::featureColour(f.type)) );
+                const double length = 2.0;
+                hydroqguipaint::paintUncertaintyWedge( painter,
+                                                       f.c.yy,
+                                                       length );
             }
             else
             {
@@ -214,16 +212,13 @@ FeatureMap2dPainter::paintPoseFeature( QPainter *painter,
         painter->rotate( RAD2DEG(f.p.o) );
         if ( displayUncertainty_ )
         {
-            QMatrix m2win = painter->worldMatrix();
-            const int lenghtInPixel = 45;
-            const float length = lenghtInPixel/m2win.m11();
-            const float lineThickness = 2.0/m2win.m11();
-            
+            cout<<"TRACE(featuremap2dpainter.cpp): f.c.tt: " << f.c.tt << endl;
+            const float length = 2.0;
+            painter->setPen( QPen(orcaqguielementutil::featureColour(f.type)) );
             hydroqguipaint::paintUncertaintyWedge( painter,
-                                                   orcaqguielementutil::featureColour(f.type),
                                                    f.c.tt,
-                                                   length,
-                                                   lineThickness );
+                                                   length );
+            cout<<"TRACE(featuremap2dpainter.cpp): paintUncertaintyWedge done." << endl;
         }
         else
         {

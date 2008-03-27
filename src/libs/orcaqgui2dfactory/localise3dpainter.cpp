@@ -87,18 +87,27 @@ Localise3dPainter::paintHypothesis( QPainter* p, const orca::Pose3dHypothesis &h
         QMatrix m2win = p->worldMatrix();
         const float minLength = 15.0/m2win.m11();
         const float lineThickness = 2.0/m2win.m11();
-        
+        assert( minLength > 0 && !isinf(minLength) );
+        assert( lineThickness > 0 && !isinf(lineThickness) );
+
         // Rotate to draw the platform correctly
         {
             hydroqguipaint::ScopedSaver rotateSaver(p);
             p->rotate( RAD2DEG( mean.o.y ) + originRot_ );
+
+            p->setPen( QPen(Qt::black, lineThickness) );
+            p->setBrush( color );
+
             if (platformType_ == PlatformTypeCylindrical)
-                hydroqguipaint::paintCylindricalPlatformPose( p, color, radius_, weight, minLength, lineThickness  );
+                hydroqguipaint::paintCylindricalPlatformPose( p, radius_, weight, minLength  );
             else
-                hydroqguipaint::paintCubicPlatformPose( p, color, length_, width_, weight, minLength, lineThickness );
-            hydroqguipaint::paintUncertaintyWedge( p, color, cov.aa, minLength*3.0, lineThickness );
-        }    
-        hydroqguipaint::paintCovarianceEllipse( p, color, cov.xx, cov.xy, cov.yy, lineThickness );
+                hydroqguipaint::paintCubicPlatformPose( p, length_, width_, weight, minLength );
+
+            p->setPen( color );
+            hydroqguipaint::paintUncertaintyWedge( p, cov.aa, minLength*3.0 );
+        }
+        p->setPen( color );
+        hydroqguipaint::paintCovarianceEllipse( p, cov.xx, cov.xy, cov.yy );
     }
 }
 
