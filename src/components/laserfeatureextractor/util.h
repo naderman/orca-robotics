@@ -5,7 +5,7 @@
 #include <orca/polarfeature2d.h>
 #include <orcaobj/miscutils.h>
 #include <hydrolaserfeatureextract/scanutil.h>
-#include <hydrofeatureobservations/features.h>
+#include <hydrofeatureobs/features.h>
 
 namespace laserfeatures {
 
