@@ -208,21 +208,30 @@ FeatureMap2dPainter::paintPoseFeature( QPainter *painter,
     paintPointFeature( painter, f.type, featureNum, f.pExists,
                        f.p.p.x, f.p.p.y, f.c.xx, f.c.xy, f.c.yy );
 
-    QMatrix m2win = painter->worldMatrix();
-    const int lenghtInPixel = 45;
-    const float length = lenghtInPixel/m2win.m11();
-    const float lineThickness = 2.0/m2win.m11();
-            
-    if ( displayUncertainty_ )
+    painter->save();
     {
-        painter->save();
+        painter->translate( f.p.p.x, f.p.p.y );
+        painter->rotate( RAD2DEG(f.p.o) );
+        if ( displayUncertainty_ )
         {
-            painter->translate( f.p.p.x, f.p.p.y );
-            painter->rotate( RAD2DEG(f.p.o) );
-            hydroqguipaint::paintUncertaintyWedge( painter, orcaqguielementutil::featureColour(f.type), f.c.tt, length, lineThickness );
+            QMatrix m2win = painter->worldMatrix();
+            const int lenghtInPixel = 45;
+            const float length = lenghtInPixel/m2win.m11();
+            const float lineThickness = 2.0/m2win.m11();
+            
+            hydroqguipaint::paintUncertaintyWedge( painter,
+                                                   orcaqguielementutil::featureColour(f.type),
+                                                   f.c.tt,
+                                                   length,
+                                                   lineThickness );
         }
-        painter->restore();
+        else
+        {
+            // Draw an arrow
+            hydroqguipaint::paintArrow( painter );
+        }
     }
+    painter->restore();
 }
 
 void FeatureMap2dPainter::paint( QPainter *painter, const int z )

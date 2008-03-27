@@ -11,10 +11,9 @@
 #include <iostream>
 #include <QPainter>
 #include <QString>
-
 #include <orcaice/orcaice.h>
 #include <orcaobj/orcaobj.h>
-
+#include <hydroqguipaint/paintutils.h>
 #include "polarfeature2dpainter.h"
 #include <orcaqguielementutil/featurecolours.h>
 
@@ -44,32 +43,43 @@ PolarFeature2dPainter::setData( const orca::PolarFeature2dData &data )
 
     featureData_ = data;
 
-    for ( unsigned int i=0; i < featureData_.features.size(); i++ )
+    //
+    // Deal with isUpsideDown_ by modifying the featureData_
+    //
+    if ( isUpsideDown_ )
     {
-        orca::SinglePolarFeature2d &ftr = *(featureData_.features[i]);
-        switch ( ftr.type )
+        for ( unsigned int i=0; i < featureData_.features.size(); i++ )
         {
-        case orca::feature::LINE:
-        {
-            orca::LinePolarFeature2d &lf = dynamic_cast<orca::LinePolarFeature2d&>(ftr);
-            if ( isUpsideDown_ )
+            orca::SinglePolarFeature2d &ftr = *(featureData_.features[i]);
+
             {
-                lf.start.o = -lf.start.o;
-                lf.end.o = -lf.end.o;
+                orca::PointPolarFeature2d *f = dynamic_cast<orca::PointPolarFeature2d *>(&ftr);
+                if ( f != NULL )
+                {
+                    f->p.o = -f->p.o;            
+                    break;
+                }
             }
-            break;
-        }
-        default:
-        {
-            orca::PointPolarFeature2d &pf = dynamic_cast<orca::PointPolarFeature2d&>(ftr);
-            if ( isUpsideDown_ )
-                pf.p.o = -pf.p.o;
-            break;
-        }
+            {
+                orca::PosePolarFeature2d *f = dynamic_cast<orca::PosePolarFeature2d *>(&ftr);
+                if ( f != NULL )
+                {
+                    f->p.o = -f->p.o;
+                    f->orientation = -f->orientation;
+                    break;
+                }
+            }
+            {
+                orca::LinePolarFeature2d *f = dynamic_cast<orca::LinePolarFeature2d *>(&ftr);
+                if ( f != NULL )
+                {
+                    f->start.o = -f->start.o;
+                    f->end.o   = -f->end.o;
+                    break;
+                }
+            }
         }
     }
-
-//    cout<<"TRACE(polarfeature2dpainter.cpp): setData: " << data << endl;
 }
 
 void
@@ -131,6 +141,28 @@ drawPointFeature( QPainter *painter, const orca::PointPolarFeature2d &f )
 }
 
 void
+drawPoseFeature( QPainter *painter, const orca::PosePolarFeature2d &f )
+{
+    painter->save();
+    {
+        // painter->rotate( (int)floor(RAD2DEG(f.p.o)) );
+        painter->rotate( RAD2DEG(f.p.o) );
+        painter->translate( f.p.r, 0.0 );
+        
+        // Not sure of a better way to represent both pFalsePositive and pTruePositive
+        // with just one number...
+        double lineWidth = LINE_WIDTH_MAX*( f.pTruePositive-f.pFalsePositive );
+        painter->setPen( QPen( orcaqguielementutil::featureColour(f.type),lineWidth) );
+        painter->drawRect( QRectF( -BOX_WIDTH/2.0, -BOX_WIDTH/2.0, BOX_WIDTH, BOX_WIDTH) );
+
+        painter->rotate( RAD2DEG( -f.p.o + f.orientation ) );
+        painter->translate( BOX_WIDTH, 0.0 );
+        hydroqguipaint::paintArrow( painter );
+    }
+    painter->restore();
+}
+
+void
 drawLineFeature( QPainter *painter, const orca::LinePolarFeature2d &f )
 {
     painter->save();
@@ -174,20 +206,29 @@ PolarFeature2dPainter::paint( QPainter *painter, int z )
     for ( unsigned int i=0; i<featureData_.features.size(); ++i )
     {
         const orca::SinglePolarFeature2d &ftr = *(featureData_.features[i]);
-        switch ( ftr.type )
+
         {
-        case orca::feature::LINE:
-        {
-            const orca::LinePolarFeature2d &lf = dynamic_cast<const orca::LinePolarFeature2d&>(ftr);
-            drawLineFeature( painter, lf );
-            break;
+            const orca::PointPolarFeature2d *f = dynamic_cast<const orca::PointPolarFeature2d *>(&ftr);
+            if ( f != NULL )
+            {
+                drawPointFeature( painter, *f );
+                break;
+            }
         }
-        default:
         {
-            const orca::PointPolarFeature2d &pf = dynamic_cast<const orca::PointPolarFeature2d&>(ftr);
-            drawPointFeature( painter, pf );
-            break;
+            const orca::PosePolarFeature2d *f = dynamic_cast<const orca::PosePolarFeature2d *>(&ftr);
+            if ( f != NULL )
+            {
+                drawPoseFeature( painter, *f );
+                break;
+            }
         }
+        {
+            const orca::LinePolarFeature2d *f = dynamic_cast<const orca::LinePolarFeature2d *>(&ftr);
+            if ( f != NULL )
+            {
+                drawLineFeature( painter, *f );
+            }
         }
     }
 }

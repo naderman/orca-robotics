@@ -1261,6 +1261,11 @@ toString( const orca::SinglePolarFeature2dPtr& obj )
         const orca::PointPolarFeature2d& f = dynamic_cast<const orca::PointPolarFeature2d&>(*obj);
         s << "(r="<<f.p.r<<",b="<<f.p.o*180.0/M_PI << "deg)";
     }
+    else if ( obj->ice_isA( "::orca::PosePolarFeature2d" ) )
+    {
+        const orca::PosePolarFeature2d& f = dynamic_cast<const orca::PosePolarFeature2d&>(*obj);
+        s << "(r="<<f.p.r<<",b="<<f.p.o*180.0/M_PI << "deg,o="<<f.orientation*180.0/M_PI<<"deg)";
+    }
     else if ( obj->ice_isA( "::orca::LinePolarFeature2d" ) )
     {
         const orca::LinePolarFeature2d& f = dynamic_cast<const orca::LinePolarFeature2d&>(*obj);

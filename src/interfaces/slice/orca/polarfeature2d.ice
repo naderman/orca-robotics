@@ -66,8 +66,7 @@ class SinglePolarFeature2d
 };
 
 //!
-//! A single polar feature.
-//! If a new feature has more attributes, derive from this.
+//! A range-bearing observation of a point
 //!
 class PointPolarFeature2d extends SinglePolarFeature2d
 {
@@ -79,6 +78,27 @@ class PointPolarFeature2d extends SinglePolarFeature2d
 
     //! standard deviation in bearing
     double bearingSd;
+};
+
+//!
+//! An observation of a point and its orientation
+//!
+class PosePolarFeature2d extends SinglePolarFeature2d
+{
+    //! Feature location.
+    PolarPoint2d p;
+
+    //! Feature orientation
+    double       orientation;
+
+    //! standard deviation in range
+    double rangeSd;
+
+    //! standard deviation in bearing
+    double bearingSd;
+
+    //! standard deviation of the measured (relative) orientation
+    double orientationSd;
 };
 
 //!
