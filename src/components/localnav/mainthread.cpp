@@ -13,7 +13,7 @@
 #include <orcaobj/orcaobj.h>
 #include <hydronavutil/pose.h>
 #include <orcalocalnav/pathfollower2dI.h>
-#include <localnavutil/pose.h>
+#include <orcalocalnavutil/pose.h>
 #include <hydroutil/realtimestopwatch.h>
 
 #include "mainthread.h"
@@ -22,7 +22,7 @@
 using namespace std;
 using namespace localnav;
 
-MainThread::MainThread( DriverFactory                &driverFactory,
+MainThread::MainThread( orcalocalnavutil::DriverFactory &driverFactory,
                     orcalocalnav::Clock              &clock,
                     orcalocalnav::PathFollower2dI    &pathFollowerInterface,
                     const orcaice::Context           &context ) :
@@ -45,7 +45,7 @@ MainThread::MainThread( DriverFactory                &driverFactory,
     subStatus().setMaxHeartbeatInterval( 10.0 );
 }
 
-MainThread::MainThread( DriverFactory               &driverFactory,
+MainThread::MainThread( orcalocalnavutil::DriverFactory &driverFactory,
                     orcalocalnav::Clock             &clock,
                     orcalocalnav::PathFollower2dI   &pathFollowerInterface,
                     Simulator                       &testSimulator,
@@ -519,7 +519,7 @@ MainThread::walk()
             context_.tracer().debug( ss.str(), 3 );
 
             // grab the maximum likelihood pose of the vehicle
-            hydronavutil::Pose pose = getMLPose( localiseData_ );
+            hydronavutil::Pose pose = orcalocalnavutil::getMLPose( localiseData_ );
             
             bool uncertainLocalisation = orcaobj::localisationIsUncertain( localiseData_ );
 //             if ( uncertainLocalisation )

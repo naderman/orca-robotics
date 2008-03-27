@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef POSE_H
-#define POSE_H
+#ifndef ORCALOCALNAVUTIL_POSE_H
+#define ORCALOCALNAVUTIL_POSE_H
 
 #include <cmath>
 #include <hydrogeom2d/geom2d.h>
@@ -17,7 +17,7 @@
 #include <orca/localise2d.h>
 
 
-namespace localnav {
+namespace orcalocalnavutil {
 
 inline double distance( const hydronavutil::Pose &pose, const geom2d::Point &point )
 { return hypot( pose.y()-point.y(), pose.x()-point.x() ); }

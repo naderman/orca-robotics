@@ -5,7 +5,7 @@
 #include <orcaobjutil/vehicleutil.h>
 #include <hydropathplan/hydropathplan.h>
 #include <hydrogeom2d/geom2d.h>
-#include <localnavutil/brosutil.h>
+#include <orcalocalnavutil/brosutil.h>
 #include <orcaogmap/orcaogmap.h>
 
 using namespace std;
@@ -106,7 +106,7 @@ Simulator::setupInterfaces()
     scannerDescr_.fieldOfView = M_PI;
     scannerDescr_.startAngle = -M_PI/2.0;
     scannerDescr_.numberOfSamples = 181;
-    setToZero( scannerDescr_.offset );
+    orcalocalnavutil::setToZero( scannerDescr_.offset );
     scannerDescr_.size.l = 0.1;
     scannerDescr_.size.w = 0.1;
     scannerDescr_.size.h = 0.1;
@@ -443,7 +443,7 @@ Simulator::getVehicleDescription() const
     orcaobjutil::checkVehicleControlVelocityDifferentialDescription( *c );
     d.control = c;
 
-    setToZero( d.platformToVehicleTransform );
+    orcalocalnavutil::setToZero( d.platformToVehicleTransform );
 
     orca::VehicleGeometryCylindricalDescription *g
         = new orca::VehicleGeometryCylindricalDescription;
@@ -451,7 +451,7 @@ Simulator::getVehicleDescription() const
     g->radius = ROBOT_RADIUS;
     g->height = 2.0;
 
-    setToZero( g->vehicleToGeometryTransform );
+    orcalocalnavutil::setToZero( g->vehicleToGeometryTransform );
     d.geometry = g;
 
     return d;

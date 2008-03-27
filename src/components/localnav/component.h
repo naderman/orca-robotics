@@ -17,9 +17,12 @@
 #include <orcalocalnav/pathfollower2dI.h>
 #include <orcalocalnav/clock.h>
 
+namespace orcalocalnavutil {
+    class DriverFactory;
+}
+
 namespace localnav {
 
-class DriverFactory;
 class Simulator;
 
 //
@@ -49,7 +52,7 @@ private:
     // The library that contains the driver factory (must be declared first so it's destructed last!!!)
     std::auto_ptr<hydrodll::DynamicallyLoadedLibrary> driverLib_;
     // The factory which creates the driver
-    std::auto_ptr<DriverFactory> driverFactory_;
+    std::auto_ptr<orcalocalnavutil::DriverFactory> driverFactory_;
 
     // The global time
     orcalocalnav::Clock *clock_;

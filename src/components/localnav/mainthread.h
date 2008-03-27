@@ -20,7 +20,7 @@
 #include <orcalocalnav/speedlimiter.h>
 #include <orcalocalnav/pathmaintainer.h>
 #include <orcalocalnav/clock.h>
-#include <localnavutil/idriver.h>
+#include <orcalocalnavutil/idriver.h>
 
 namespace localnav {
 
@@ -42,13 +42,13 @@ class MainThread : public gbxsickacfr::gbxiceutilacfr::SubsystemThread
 public: 
 
     // This version interacts with the real world
-    MainThread( DriverFactory                 &driverFactory,
+    MainThread( orcalocalnavutil::DriverFactory &driverFactory,
               orcalocalnav::Clock             &clock,
               orcalocalnav::PathFollower2dI   &pathFollowerInterface,
               const orcaice::Context          &context );
 
     // This version is for simulator-based testing.
-    MainThread( DriverFactory                 &driverFactory,
+    MainThread( orcalocalnavutil::DriverFactory &driverFactory,
               orcalocalnav::Clock             &clock,
               orcalocalnav::PathFollower2dI   &pathFollowerInterface,
               Simulator                       &testSimulator,
@@ -93,10 +93,10 @@ private:
     orcalocalnav::PathMaintainer  *pathMaintainer_;
 
     // Using this driver
-    IDriver *driver_;
+    orcalocalnavutil::IDriver *driver_;
 
     // Loaded with this
-    DriverFactory &driverFactory_;
+    orcalocalnavutil::DriverFactory &driverFactory_;
 
     // Incoming observations and pose info
     // Get observations, pose, and odometric velocity

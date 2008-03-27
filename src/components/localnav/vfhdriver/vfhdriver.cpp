@@ -16,7 +16,7 @@
 #include "vfh_algorithm.h"
 #include "vfh_algorithmconfig.h"
 
-using namespace localnav;
+// using namespace localnav;
 using namespace std;
 
 namespace vfh {
@@ -411,6 +411,6 @@ std::ostream &operator<<( std::ostream &s, VfhDriver::DriverState state )
 }
 
 extern "C" {
-    localnav::DriverFactory *createDriverFactory()
+    orcalocalnavutil::DriverFactory *createDriverFactory()
     { return new vfh::VfhDriverFactory; }
 }

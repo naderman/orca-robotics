@@ -3,7 +3,7 @@
 
 using namespace std;
 
-namespace localnav {
+namespace orcalocalnavutil {
 
     void setToZero( orca::Frame3d &f )
     {

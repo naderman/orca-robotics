@@ -17,7 +17,7 @@
 
 using namespace std;
 
-namespace localnav {
+namespace orcalocalnavutil {
 
 hydronavutil::Pose
 getMLPose( const orca::Localise2dData &localiseData )

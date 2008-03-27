@@ -7,8 +7,8 @@
  * the LICENSE file included in this distribution.
  *
  */
-#ifndef LOCALNAVDRIVER_H
-#define LOCALNAVDRIVER_H
+#ifndef ORCALOCALNAVTIL_LOCALNAVDRIVER_H
+#define ORCALOCALNAVTIL_LOCALNAVDRIVER_H
 
 #include <orca/velocitycontrol2d.h>
 #include <orca/rangescanner2d.h>
@@ -18,7 +18,7 @@
 
 #include <orcalocalnav/goal.h>
 
-namespace localnav {
+namespace orcalocalnavutil {
 
 //
 // @author Alex Brooks
@@ -71,6 +71,6 @@ public:
 // extern "C" {
 //     localnav::DriverFactory *createDriverFactory();
 // }
-typedef localnav::DriverFactory *DriverFactoryMakerFunc();
+typedef orcalocalnavutil::DriverFactory *DriverFactoryMakerFunc();
 
 #endif

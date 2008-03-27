@@ -1,7 +1,7 @@
-#ifndef ORCA_LOCALNAVUTIL_UTIL_H
-#define ORCA_LOCALNAVUTIL_UTIL_H
+#ifndef ORCALOCALNAVUTIL_UTIL_H
+#define ORCALOCALNAVUTIL_UTIL_H
 
-namespace localnav {
+namespace orcalocalnavutil {
 
     // Linearly interpolate between min and max steer angle according to the speed.
     // Used for bicycle model robots

@@ -9,7 +9,7 @@
  */
 #include "component.h"
 #include "mainthread.h"
-#include <localnavutil/idriver.h>
+#include <orcalocalnavutil/idriver.h>
 #include <orcalocalnav/pathmaintainer.h>
 #include "testsim/testsim.h"
 
@@ -82,7 +82,7 @@ Component::start()
         // Dynamically load the driver from its library
         driverLib_.reset( new hydrodll::DynamicallyLoadedLibrary(driverLibName) );
         driverFactory_.reset( 
-            hydrodll::dynamicallyLoadClass<DriverFactory,DriverFactoryMakerFunc>
+            hydrodll::dynamicallyLoadClass<orcalocalnavutil::DriverFactory,DriverFactoryMakerFunc>
             ( *driverLib_, "createDriverFactory" ) );
     }
     catch (hydrodll::DynamicLoadException &e)

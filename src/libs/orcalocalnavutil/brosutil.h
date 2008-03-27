@@ -1,9 +1,9 @@
-#ifndef BROSUTIL_H
-#define BROSUTIL_H
+#ifndef ORCALOCALNAVUTIL_BROSUTIL_H
+#define ORCALOCALNAVUTIL_BROSUTIL_H
 
 #include <orca/bros1.h>
 
-namespace localnav {
+namespace orcalocalnavutil {
 
     void setToZero( orca::Frame3d &f );
     bool isZero( const orca::Frame3d &f );

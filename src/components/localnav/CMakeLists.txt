@@ -8,7 +8,7 @@ GBX_REQUIRE_VAR( build EXE ${APP_NAME} GBX_OS_LINUX "only Linux OS is supported"
 SET( ext_libs HydroDll HydroNavUtil HydroGeom2d )
 GBX_REQUIRE_INSTALLS( build EXE ${APP_NAME} ${ext_libs} )
 
-SET( int_libs OrcaLocalNav OrcaNavUtil OrcaIfaceImpl OrcaOgMap OrcaPathPlan )
+SET( int_libs OrcaLocalNav OrcaLocalNavUtil OrcaNavUtil OrcaIfaceImpl OrcaOgMap OrcaPathPlan )
 GBX_REQUIRE_TARGETS( build EXE ${APP_NAME} ${int_libs} )
 
 IF( build )
@@ -24,10 +24,9 @@ IF( build )
        )
 
     ADD_SUBDIRECTORY( testsim )
-    ADD_SUBDIRECTORY( localnavutil )
 
     FILE( GLOB srcs *.cpp )
-    SET( dep_libs ${ext_libs} ${int_libs} OrcaLocalNavTestSim OrcaLocalNavUtil )
+    SET( dep_libs ${ext_libs} ${int_libs} OrcaLocalNavTestSim )
 
     # build stand-alone component  
     WRAP_COMPONENT_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${srcs} )

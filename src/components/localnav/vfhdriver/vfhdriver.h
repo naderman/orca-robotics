@@ -10,7 +10,7 @@
 #ifndef VFHDRIVER_H
 #define VFHDRIVER_H
 
-#include <localnavutil/idriver.h>
+#include <orcalocalnavutil/idriver.h>
 #include <orcaice/context.h>
 #include <gbxsickacfr/gbxiceutilacfr/timer.h>
 #include <orcalocalnav/goal.h>
@@ -27,7 +27,7 @@ namespace vfh {
 //
 // @author Alex Brooks
 //
-class VfhDriver : public localnav::IDriver
+class VfhDriver : public orcalocalnavutil::IDriver
 {
 
 public: 
@@ -117,10 +117,10 @@ private:
 std::ostream &operator<<( std::ostream &s, VfhDriver::DriverState state );
 
 // Used for dynamically loading driver
-class VfhDriverFactory : public localnav::DriverFactory
+class VfhDriverFactory : public orcalocalnavutil::DriverFactory
 {
 public:
-    localnav::IDriver *createDriver( const orcaice::Context &context,
+    orcalocalnavutil::IDriver *createDriver( const orcaice::Context &context,
                                      const orca::VehicleDescription &vehicleDescr,
                                      const orca::RangeScanner2dDescription &scannerDescr ) const
         {
@@ -132,7 +132,7 @@ public:
 
 // Used for dynamically loading driver
 extern "C" {
-    localnav::DriverFactory *createDriverFactory();
+    orcalocalnavutil::DriverFactory *createDriverFactory();
 }
 
 #endif
