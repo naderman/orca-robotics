@@ -18,6 +18,4 @@ SET( moc_hdrs
 
 QT4_WRAP_CPP( moc_srcs ${moc_hdrs} )
 
-ADD_LIBRARY( OrcaProbeGuiQt SHARED ${human_srcs} ${moc_srcs} )
-
-INSTALL_TARGETS( /lib OrcaProbeGuiQt )
+GBX_ADD_LIBRARY( OrcaProbeGuiQt SHARED ${human_srcs} ${moc_srcs} )
