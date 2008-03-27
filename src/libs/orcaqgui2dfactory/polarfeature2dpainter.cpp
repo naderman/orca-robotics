@@ -57,7 +57,7 @@ PolarFeature2dPainter::setData( const orca::PolarFeature2dData &data )
                 if ( f != NULL )
                 {
                     f->p.o = -f->p.o;            
-                    break;
+                    continue;
                 }
             }
             {
@@ -66,7 +66,7 @@ PolarFeature2dPainter::setData( const orca::PolarFeature2dData &data )
                 {
                     f->p.o = -f->p.o;
                     f->orientation = -f->orientation;
-                    break;
+                    continue;
                 }
             }
             {
@@ -75,7 +75,7 @@ PolarFeature2dPainter::setData( const orca::PolarFeature2dData &data )
                 {
                     f->start.o = -f->start.o;
                     f->end.o   = -f->end.o;
-                    break;
+                    continue;
                 }
             }
         }
@@ -212,7 +212,7 @@ PolarFeature2dPainter::paint( QPainter *painter, int z )
             if ( f != NULL )
             {
                 drawPointFeature( painter, *f );
-                break;
+                continue;
             }
         }
         {
@@ -220,7 +220,7 @@ PolarFeature2dPainter::paint( QPainter *painter, int z )
             if ( f != NULL )
             {
                 drawPoseFeature( painter, *f );
-                break;
+                continue;
             }
         }
         {
@@ -228,6 +228,7 @@ PolarFeature2dPainter::paint( QPainter *painter, int z )
             if ( f != NULL )
             {
                 drawLineFeature( painter, *f );
+                continue;
             }
         }
     }
