@@ -49,6 +49,8 @@ private:
 
     hydrointerfaces::Camera::Config config_;
 
+    orca::CameraDescriptionSequence descrs_;
+
     // space for data
     orca::CameraDataSequence           orcaCameraData_;
     hydrointerfaces::Camera::Data      hydroCameraData_;

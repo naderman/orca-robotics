@@ -66,9 +66,8 @@ MainThread::initNetworkInterface()
     //
     // SENSOR DESCRIPTION
     //
-    orca::CameraDescriptionSequence descrs;
     
-    for(unsigned int i = 0; i < descrs.size(); i++)
+    for(unsigned int i = 0; i < config_.numOfCameras; i++)
     {
         std::stringstream prefixSS;
         prefixSS << prefix << i << ".";
@@ -94,14 +93,14 @@ MainThread::initNetworkInterface()
         descr->focalLength = orcaice::getPropertyAsDoubleWithDefault( prop, prefixSS.str() + "FocalLength", 0.0 );
 
         //add descr to vector
-        descrs.push_back(descr);
+        descrs_.push_back(descr);
     }
-    
+    std::cout << "Description Vector Size: " << descrs_.size() << std::endl; 
     //
     // EXTERNAL PROVIDED INTERFACE
     //
 
-    cameraInterface_ = new orcaifaceimpl::CameraImpl( descrs,
+    cameraInterface_ = new orcaifaceimpl::CameraImpl( descrs_,
                                                               "Camera",
                                                               context_ );
     // init
