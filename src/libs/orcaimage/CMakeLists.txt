@@ -2,7 +2,7 @@ SET( lib_name OrcaImage )
 GBX_ADD_LICENSE( GPL )
 
 SET( build TRUE )
-GBX_REQUIRE_OPTION( build LIB ${lib_name} OFF )
+GBX_REQUIRE_OPTION( build LIB ${lib_name} ON )
 SET( NOT_GBX_OS_WIN NOT GBX_OS_WIN )
 GBX_REQUIRE_VAR( build LIB ${lib_name} NOT_GBX_OS_WIN "Windows OS is not  supported" )
 

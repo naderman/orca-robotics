@@ -18,7 +18,7 @@
 #include "mainthread.h"
 
 using namespace std;
-using namespace imageviewer;
+using namespace cameraviewer;
 
 MainThread::MainThread( const orcaice::Context& context ) :
     SubsystemThread( context.tracer(), context.status(), "MainThread" ),
@@ -26,7 +26,7 @@ MainThread::MainThread( const orcaice::Context& context ) :
 {
     subStatus().setMaxHeartbeatInterval( 10.0 );
     // initialise opencv stuff
-    cvNamedWindow( "ImageViewer", 1 );
+    cvNamedWindow( "CameraViewer_Camera0", 1 );
 }
 
 MainThread::~MainThread()
@@ -46,7 +46,7 @@ MainThread::walk()
     orcaice::activate( context_, this, subsysName() );
 
     // don't need to create this one, it will be cloned from the buffer
-    orca::ImageDataPtr imageData;
+    orca::CameraDataSequence imageData;
     
     // count the number of images received
     int numImages = 0;
@@ -62,14 +62,15 @@ MainThread::walk()
     //
     //           
     // Connect directly to the interface
-    orcaice::connectToInterfaceWithTag<orca::ImagePrx>( context_, imagePrx_, "Image", this, subsysName() );
+    orcaice::connectToInterfaceWithTag<orca::CameraPrx>( context_, cameraPrx_, "Camera", this, subsysName() );
 
     // get description, we need it to size the window
     while( !isStopping() )
     {
         try
         {
-            descr_ = imagePrx_->getDescription();
+            descr_ = cameraPrx_->getDescription();
+            cout << "Description Vector Size: " << descr_.size() << endl;
             cout << orcaobj::toString(descr_) << endl;
             break;
         }
@@ -87,10 +88,10 @@ MainThread::walk()
     //
     // Subscribe for data
     //
-    orcaifaceimpl::BufferedImageConsumerImplPtr imageInterface =
-        new orcaifaceimpl::BufferedImageConsumerImpl( 10, gbxsickacfr::gbxiceutilacfr::BufferTypeCircular, context_);
+    orcaifaceimpl::BufferedCameraConsumerImplPtr cameraInterface =
+        new orcaifaceimpl::BufferedCameraConsumerImpl( 10, gbxsickacfr::gbxiceutilacfr::BufferTypeCircular, context_);
     // multi-try function
-    imageInterface->subscribeWithTag( "Image", this, subsysName() );
+    cameraInterface->subscribeWithTag( "Camera", this, subsysName() );
     
     // wake up every now and then to check if we are supposed to stop
     const int timeoutMs = 500;
@@ -103,7 +104,7 @@ MainThread::walk()
         //
         // block on arrival of camera data
         //
-        int ret = imageInterface->buffer().getAndPopNext ( imageData, timeoutMs );
+        int ret = cameraInterface->buffer().getAndPopNext ( imageData, timeoutMs );
         
         if ( !ret ) 
         {
@@ -114,7 +115,7 @@ MainThread::walk()
             // delay checks for sending objects
             int averageOver = 100;
             orcaice::setToNow( arrivalTime );
-            diff += orcaice::timeDiffAsDouble( imageData->timeStamp, arrivalTime );
+            diff += orcaice::timeDiffAsDouble( imageData.at(0)->timeStamp, arrivalTime );
             
             // throughput check
             if ((int)diff == 0)
@@ -146,7 +147,7 @@ MainThread::walk()
             //
             
             // make sure the image is in BGR format which opencv can display       
-            orcaimage::cvtToBgr( cvImage_, bayerImage_, imageData );
+            orcaimage::cvtToBgr( cvImage_, bayerImage_, imageData.at(0) );
             // load the image into the previously created window
             cvShowImage( "ImageViewer", cvImage_ );
             // need this as opencv doesn't display properly otherwise
@@ -165,7 +166,7 @@ MainThread::walk()
 void 
 MainThread::initCvImage()    
 {
-    cout << "TRACE(imagehandler.cpp):Image Format - " << orcaimage::formatName( descr_->format ) << endl;
+    cout << "TRACE(imagehandler.cpp):Image Format - " << orcaimage::formatName( descr_.at(0)->format ) << endl;
     
     // should this be done at the imageserver level and depend on the mode and format?
     // maybe nChannels should be in the Camera object
@@ -174,22 +175,22 @@ MainThread::initCvImage()
     // default number of channels for a colour image
     int nChannels = 3;
     int nBayerChannels = 1;   
-    if( descr_->format == orca::ImageFormatBayerBg  || descr_->format == orca::ImageFormatBayerGb 
-            || descr_->format == orca::ImageFormatBayerRg || descr_->format == orca::ImageFormatBayerGr )
+    if( descr_.at(0)->format == orca::ImageFormatBayerBg  || descr_.at(0)->format == orca::ImageFormatBayerGb 
+            || descr_.at(0)->format == orca::ImageFormatBayerRg || descr_.at(0)->format == orca::ImageFormatBayerGr )
     {
         // set up an IplImage struct for the Greyscale bayer encoded data
-        bayerImage_  = cvCreateImage( cvSize( descr_->imageWidth, descr_->imageHeight ),  8, nBayerChannels );
+        bayerImage_  = cvCreateImage( cvSize( descr_.at(0)->imageWidth, descr_.at(0)->imageHeight ),  8, nBayerChannels );
         cout << "Image is Bayer encoded: " << endl;
         // cout << "bayer encoding: " << format << endl;
     }
-    else if ( descr_->format == orca::ImageFormatModeGray )
+    else if ( descr_.at(0)->format == orca::ImageFormatModeGray )
     {
         // display image is greyscale therefore only 1 channel      
         nChannels = 1;
     }      
 
     // opencv gear here
-    cvImage_ = cvCreateImage( cvSize( descr_->imageWidth, descr_->imageHeight ),  8, nChannels );
+    cvImage_ = cvCreateImage( cvSize( descr_.at(0)->imageWidth, descr_.at(0)->imageHeight ),  8, nChannels );
     // dodgy opencv needs this so it has time to resize
     cvWaitKey(100);
     context_.tracer().debug("opencv window created",5);

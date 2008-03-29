@@ -90,7 +90,7 @@ typedef IceUtil::Handle<BufferedGpsConsumerImpl>           BufferedGpsConsumerIm
 typedef BufferedConsumerImpl<orca::CameraPrx,
                         orca::CameraConsumer,
                         orca::CameraConsumerPrx,
-                        orca::CameraData>                  BufferedCameraConsumerImpl;
+                        orca::CameraDataSequence>                  BufferedCameraConsumerImpl;
 typedef IceUtil::Handle<BufferedCameraConsumerImpl>        BufferedCameraConsumerImplPtr;
 
 typedef BufferedConsumerImpl<orca::ImagePrx,

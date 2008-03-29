@@ -19,7 +19,7 @@
 #include <orcaice/context.h>
 
 
-namespace imageviewer{
+namespace cameraviewer{
 
 class MainThread : public gbxsickacfr::gbxiceutilacfr::SubsystemThread
 {
@@ -33,11 +33,11 @@ public:
 private:
 
     // Camera proxy
-    orca::ImagePrx imagePrx_;
+    orca::CameraPrx cameraPrx_;
     // local object to receive data
-    orca::ImageConsumerPrx callbackPrx_;
+    orca::CameraConsumerPrx callbackPrx_;
     
-    orca::ImageDescriptionPtr  descr_;
+    orca::CameraDescriptionSequence  descr_;
 
     IplImage* cvImage_;
     IplImage* cvImageTmp_;
