@@ -147,7 +147,7 @@ MainThread::walk()
             //
             
             // make sure the image is in BGR format which opencv can display       
-            orcaimage::cvtToBgr( cvImage_, bayerImage_, imageData.at(0) );
+            orcaimage::cvtToBgr( cvImage_, imageData.at(0), descr_.at(0) );
             // load the image into the previously created window
             cvShowImage( "ImageViewer", cvImage_ );
             // need this as opencv doesn't display properly otherwise
