@@ -8,12 +8,12 @@ IF( ${CMAKE_PATCH_VERSION} GREATER 5 )
     # Install sub-directory will be the same as the current sub-directory
     # which is typically the same as the name of the namespace, e.g. 'orca'
     #
-    GET_FILENAME_COMPONENT( INTERFACE_NAMESPACE ${CMAKE_CURRENT_SOURCE_DIR} NAME )
+    GET_FILENAME_COMPONENT( slice_module ${CMAKE_CURRENT_SOURCE_DIR} NAME )
     
     #
     # All Slice source files are defined in one place.
     #
-    INCLUDE( ${PROJECT_SOURCE_DIR}/src/interfaces/slice/${INTERFACE_NAMESPACE}/slice_sources.cmake )
+    INCLUDE( ${PROJECT_SOURCE_DIR}/src/interfaces/slice/${slice_module}/slice_sources.cmake )
     
     #
     # Defines macros for compiling Slice source files.
@@ -32,7 +32,7 @@ IF( ${CMAKE_PATCH_VERSION} GREATER 5 )
 	# based off the wiki entry on compliling latex files with cmake:
 	# http://www.cmake.org/Wiki/CMake_FAQ#How_do_I_use_CMake_to_build_LaTeX_documents.3F 
 	ADD_CUSTOM_TARGET( ${PYTHON_INTERFACE} ALL echo
-	    DEPENDS ${SLICE2PY_BINARY_DIR}/${INTERFACE_NAMESPACE}/${SLICE_SOURCE_FILES} )
+	    DEPENDS ${SLICE2PY_BINARY_DIR}/${slice_module}/${SLICE_SOURCE_FILES} )
     ENDFOREACH( PYTHON_INTERFACE ${SLICE_GENERATED_PY_FILES} )
     
     #
@@ -40,7 +40,7 @@ IF( ${CMAKE_PATCH_VERSION} GREATER 5 )
     # See slice2python_rules.cmake for the custom command for compiling all the .py files
     #
     ADD_CUSTOM_TARGET(orca_ice.pyc ALL echo
-	DEPENDS   ${SLICE2PY_BINARY_DIR}/${INTERFACE_NAMESPACE}/orca_ice.pyc
+	DEPENDS   ${SLICE2PY_BINARY_DIR}/${slice_module}/orca_ice.pyc
 	)
     
     #
@@ -48,13 +48,13 @@ IF( ${CMAKE_PATCH_VERSION} GREATER 5 )
     #
     
     # install .py files
-    INSTALL_FILES( /python/${INTERFACE_NAMESPACE} FILES ${SLICE_GENERATED_PY_FILES} )
+    INSTALL_FILES( /python/${slice_module} FILES ${SLICE_GENERATED_PY_FILES} )
     # install .pyc files
     STRING( REGEX REPLACE "\\.py" .pyc SLICE_GENERATED_PYC_FILES "${SLICE_GENERATED_PY_FILES}" )
-    INSTALL_FILES( /python/${INTERFACE_NAMESPACE} FILES ${SLICE_GENERATED_PYC_FILES} )
+    INSTALL_FILES( /python/${slice_module} FILES ${SLICE_GENERATED_PYC_FILES} )
     # install the orca python module
-    INSTALL(DIRECTORY ${SLICE2PY_BINARY_DIR}/${INTERFACE_NAMESPACE} DESTINATION ${PROJECT_INSTALL_DIR}/python/${INTERFACE_NAMESPACE} )
-    MESSAGE( STATUS "Will install Python files into ${PROJECT_INSTALL_DIR}/python/${INTERFACE_NAMESPACE}" )
+    INSTALL(DIRECTORY ${SLICE2PY_BINARY_DIR}/${slice_module} DESTINATION ${GBX_SHARE_INSTALL_DIR}/python/${slice_module} )
+    MESSAGE( STATUS "Will install Python files into ${GBX_SHARE_INSTALL_DIR}/python/${slice_module}" )
     
     ELSE ( PYTHONINTERP_FOUND AND ORCA_BUILD_PYTHON )
 	MESSAGE( STATUS "Will not build Python interfaces : PYTHONINTERP_FOUND=${PYTHON_FOUND}, ORCA_BUILD_PYTHON=${ORCA_BUILD_PYTHON}" )

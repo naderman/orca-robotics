@@ -70,4 +70,23 @@ The instructions below are quite general, follow them if your platform/distribut
         - Un-tar the archive, configure using CMake, compile and install
     -# Make sure that all executables are in the path.
 
+Installation process can be customized with a few variables which can be supplied on the command-line, e.g.
+@verbatim
+$ cmake -D[VARIABLE_NAME]=[VARIABLE_VALUE] .
+@endverbatim
+
+The following are the names of available variables for each distribution:
+- GearBox
+    - GEARBOX_INSTALL - where to install Hydro installation, e.g. "cmake -DHYDRO_INSTALL=/home/myuser/temp ."
+    - ICEUTIL_HOME - where to find IceUtil installation, e.g. "cmake -DICEUTIL_HOME=/home/myuser/temp ."
+- Hydro
+    - HYDRO_INSTALL - where to install Hydro installation, e.g. "cmake -DHYDRO_INSTALL=/home/myuser/temp ."
+    - ICEUTIL_HOME - where to find IceUtil installation, e.g. "cmake -DICEUTIL_HOME=/home/myuser/temp ."
+    - GEARBOX_HOME - where to find Gearbox installation, e.g. "cmake -DGEARBOX_HOME=/home/myuser/temp ."
+- Orca
+    - ORCA_INSTALL - where to install Orca, e.g. "cmake -DORCA_INSTALL=/home/myuser/temp ."
+    - ICE_HOME - where to find Ice installation, e.g. "cmake -DICEUTIL_HOME=/home/myuser/temp ."
+    - GEARBOX_HOME - where to find Gearbox installation, e.g. "cmake -DGEARBOX_HOME=/home/myuser/temp ."
+    - HYDRO_HOME - where to find Hydro installation, e.g. "cmake -DHYDRO_HOME=/home/myuser/temp ."
+
 */

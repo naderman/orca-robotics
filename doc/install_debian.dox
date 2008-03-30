@@ -82,10 +82,11 @@ $ make
 $ make install
 @endverbatim
 
-That's it! We are done. To make sure that everything worked as expected, try this:
+That's it! We are done. To make sure that everything worked as expected, try this (actual versions may be different):
 
 @verbatim
 $ laser2d --version
+$ orca: Versions: Ice=3.2.1  Orca=2.9.0+
 @endverbatim
 
 @section orca_doc_installdebian_custom Customizing installation
@@ -95,7 +96,7 @@ Installation process can be customized with a few variables which can be supplie
 $ cmake -D[VARIABLE_NAME]=[VARIABLE_VALUE] .
 @endverbatim
 
-The following are the names of variables for each distribution:
+The following are the names of available variables for each distribution:
 - GearBox
     - GEARBOX_INSTALL - where to install Hydro installation, e.g. "cmake -DHYDRO_INSTALL=/home/myuser/temp ."
     - ICEUTIL_HOME - where to find IceUtil installation, e.g. "cmake -DICEUTIL_HOME=/home/myuser/temp ."
@@ -109,18 +110,9 @@ The following are the names of variables for each distribution:
     - GEARBOX_HOME - where to find Gearbox installation, e.g. "cmake -DGEARBOX_HOME=/home/myuser/temp ."
     - HYDRO_HOME - where to find Hydro installation, e.g. "cmake -DHYDRO_HOME=/home/myuser/temp ."
 
-@par Example: installing into /opt
-
-We have to tell each distribution where to install, but the dependencies will be found automatically (because e.g. Hydro knows to look for GearBox in /opt/gearbox). One way to do it is to add the following to your @c .bashrc file and then use CMake as usual.
-
-@verbatim
-alias cmake='cmake -DGEARBOX_INSTALL=/opt/gearbox -DHYDRO_INSTALL=/opt/hydro -DORCA_INSTALL=/opt/orca'
-export PATH=/opt/gearbox/bin:/opt/hydro/bin:/opt/orca/bin:$PATH
-@endverbatim
-
 @par Example: installing into your home directory
 
-Now each dependent distribution needs to be told where the others are installed. One way to do it is to add the following to your @c .bashrc file and then use CMake as usual.
+Each distribution needs to be told where to install. In addition, each dependent distribution needs to be told where its dependents are installed. One way to do it is to add the following to your @c .bashrc file and then use CMake as usual. Note that we also modify the PATH variable.
 
 @verbatim
 DIR=/home/myuser/install
