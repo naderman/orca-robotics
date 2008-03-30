@@ -46,7 +46,7 @@ Implements simple reactive behaviors for mobile robotic platforms. The behavior 
     - Valid values: { 'random', 'fake' }
     - Default: 'random'
 
-An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
+An example configuration file is installed into [ORCA-INSTALL-DIR]/share/orca/cfg/ directory.
 
 @section orca_component_reactivewalker_random  Random walk
 

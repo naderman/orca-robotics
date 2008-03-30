@@ -61,7 +61,7 @@ This component provides two interfaces. The first interface provides raw imu inf
     - Coordinates of the IMU relative to the vehicle it is in. 
     - Default: [0.0 0.0 0.0]
 
-An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
+An example configuration file is installed into [ORCA-INSTALL-DIR]/share/orca/cfg/ directory.
 
 @section imu_playerclientodometry3d Playerclient odometry3d driver
 

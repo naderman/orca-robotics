@@ -51,7 +51,7 @@ This utility loads plug-in libraries containing a @e simulator per interface. Cu
     - Example: 'libMyWallFactory.so libOrcaWallFactory.so'. If MyWallFactory implements the LaserScanner2d simulator it will be used in place of the standard one. 
     - Default: 'libOrcaWallFactory.so'
 
-An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
+An example configuration file is installed into [ORCA-INSTALL-DIR]/share/orca/cfg/ directory.
 
 @par Authors
 

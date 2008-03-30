@@ -51,7 +51,7 @@ Teleop dynamically loads an implementation of a Hydro hardware interface hydroin
         - t=0: Commands are sent as frequently as possible (terribly inefficient)
         - t>0: Commands are sent when new ones are entered, or resent after t seconds (useful if "keep alive" heartbeat is needed).
 
-An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
+An example configuration file is installed into [ORCA-INSTALL-DIR]/share/orca/cfg/ directory.
 
 @section orca_teleop_velocitycontrol2d Output driver for VelocityControl2d interface
 

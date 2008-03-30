@@ -101,7 +101,7 @@ Parameters describing vehicle (see orca::VehicleDescription for details)
     - Format: x y z roll pitch yaw (space separated)
     - Default: 0.0 0.0 0.0  0.0 0.0 0.0
   
-An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
+An example configuration file is installed into [ORCA-INSTALL-DIR]/share/orca/cfg/ directory.
 
 @par Dependancies
 

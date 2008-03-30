@@ -36,7 +36,7 @@ The type of the remote object is determined dynamically at the time of connectio
 @par Configuration
 None.
 
-An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
+An example configuration file is installed into [ORCA-INSTALL-DIR]/share/orca/cfg/ directory.
 
 @par Developer
 Alex Makarenko

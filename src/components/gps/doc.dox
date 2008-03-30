@@ -72,7 +72,7 @@ Geometry
     - Format: x y z roll pitch yaw (space separated)
     - Default: [0.0 0.0 0.0 0.0 0.0 0.0]
 
-An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
+An example configuration file is installed into [ORCA-INSTALL-DIR]/share/orca/cfg/ directory.
 
 @see Individual drivers may have additional configuration parameters which are specified as Laser2d.Config.XXX. See driver documentation.
     

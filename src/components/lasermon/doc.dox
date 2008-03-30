@@ -38,7 +38,7 @@ Laser scans are displayed as soon as they arrive.
 @par Configuration
 None.
 
-An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
+An example configuration file is installed into [ORCA-INSTALL-DIR]/share/orca/cfg/ directory.
 
 @par Authors
 Alex Brooks

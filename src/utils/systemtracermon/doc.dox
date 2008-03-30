@@ -53,7 +53,7 @@ will be ignored.
 
 @par Configuration
 
-An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
+An example configuration file is installed into [ORCA-INSTALL-DIR]/share/orca/cfg/ directory.
 
 @par Authors
 Alex Brooks

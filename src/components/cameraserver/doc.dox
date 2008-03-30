@@ -95,7 +95,7 @@ Geometry
 
 @see Individual drivers may have additional configuration parameters which are specified as Camera.Config.XXX. See driver documentation.
 
-An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
+An example configuration file is installed into [ORCA-INSTALL-DIR]/share/orca/cfg/ directory.
 
 @section internal Internal Structure
     

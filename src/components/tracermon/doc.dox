@@ -64,7 +64,7 @@ Connects to Tracer interface and displays messages on screen.
     - Valid values: same as for InfoVerbosity
     - Default: 1
 
-An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
+An example configuration file is installed into [ORCA-INSTALL-DIR]/share/orca/cfg/ directory.
 
 @par Dependancies
 

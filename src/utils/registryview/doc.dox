@@ -53,7 +53,7 @@ The information about the component is shown in a tree view, aggregated by platf
     - The operation of this utility depends on time-out when the components listed in the registry are not reachable.
     - Default: 150
 
-An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
+An example configuration file is installed into [ORCA-INSTALL-DIR]/share/orca/cfg/ directory.
 
 @par Authors
 Alex Makarenko

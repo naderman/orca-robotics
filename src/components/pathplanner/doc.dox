@@ -96,7 +96,7 @@ The pathplanner acts like a service receiving tasks from third parties and retur
       - If true, provide a QGraphics2d interface showing the skeleton.
       - Default: 1
 
-An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
+An example configuration file is installed into [ORCA-INSTALL-DIR]/share/orca/cfg/ directory.
 
 @par Algorithms
 

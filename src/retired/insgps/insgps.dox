@@ -1,4 +1,4 @@
-    /*
+/*
  * Orca-Robotics Project: Components for robotics 
  *               http://orca-robotics.sf.net/
  * Copyright (c) 2004-2008 Ben Upcroft
@@ -93,7 +93,7 @@ Serial
     - Baud rate
     - Default: 9600
 
-An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
+An example configuration file is installed into [ORCA-INSTALL-DIR]/share/orca/cfg/ directory.
 
 @section insgps_novatelspan Novatel Span system
 

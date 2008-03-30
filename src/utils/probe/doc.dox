@@ -65,7 +65,7 @@ This utility loads plug-in libraries containing a @e probe per interface. Custom
     - Example: 'libMyProbeFactory.so libOrcaProbeFactory.so'. If MyProbeFactory implements the LaserScanner2d probe it will be used in place of the standard one. 
     - Default: 'libOrcaProbeFactory.so'
 
-An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
+An example configuration file is installed into [ORCA-INSTALL-DIR]/share/orca/cfg/ directory.
 
 @section orca_probe_iostream Basic display driver to terminal window.
 

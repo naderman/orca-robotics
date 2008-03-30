@@ -61,7 +61,7 @@ IceGrid.Registry.Admin.Endpoints=default
     - The timeout for deciding when the components listed in the registry are not reachable.
     - Default: 500
 
-An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
+An example configuration file is installed into [ORCA-INSTALL-DIR]/share/orca/cfg/ directory.
 
 @par Authors
 Alex Makarenko

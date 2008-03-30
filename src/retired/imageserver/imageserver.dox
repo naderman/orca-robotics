@@ -82,7 +82,7 @@ This component encapsulates an image grabber for usb and firewire cameras. It ca
     - Example: a laser mounted upside down with now translation: "0.0 0.0 0.0  180.0 0.0 0.0"
     - Default: 0.0 0.0 0.0  0.0 0.0 0.0
 
-An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
+An example configuration file is installed into [ORCA-INSTALL-DIR]/share/orca/cfg/ directory.
 
 Other examples for @c imageserver, @c imageviewer, @c logger, @c logplayer can be found at @ref orca_component_imageserver_examples
 

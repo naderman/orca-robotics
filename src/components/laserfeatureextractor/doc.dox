@@ -187,7 +187,7 @@ Doors
 - @c LaserFeatureExtractor.Config.Doors.MaxDeltaRangeWallBesideDoor (double)
     - Default: 0.3
 
-An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
+An example configuration file is installed into [ORCA-INSTALL-DIR]/share/orca/cfg/ directory.
 
 @par Authors
 Alex Brooks (algorithm), Tobias Kaupp (port from Orca1)

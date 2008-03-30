@@ -198,7 +198,7 @@ These are the default: waypoint settings that can be changed in the menu later. 
     - activate path immediately after sending (1) or wait until go button is pressed (0)
     - default: 1
     
-An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory. 
+An example configuration file is installed into [ORCA-INSTALL-DIR]/share/orca/cfg/ directory. 
 
 @section extensibility Extensibility
 Orcaview is designed in a modular way to allow easy extensions. There are two options of how to paint items in the GUI:

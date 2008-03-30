@@ -35,7 +35,7 @@ Results obtained using this components can be seen here: @ref orca_doc_performan
 
 - none
 
-An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
+An example configuration file is installed into [ORCA-INSTALL-DIR]/share/orca/cfg/ directory.
 
 */
 

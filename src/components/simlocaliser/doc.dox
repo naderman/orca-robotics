@@ -44,7 +44,7 @@ This component simulates localisation information internally or talks to an exte
 @par Configuration
 None.
 
-An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
+An example configuration file is installed into [ORCA-INSTALL-DIR]/share/orca/cfg/ directory.
 
 @section orca_simlocaliser_static Static position driver
 

@@ -43,7 +43,7 @@ None.
     - If Signal-to-Noise Ratio (SNR) falls below this threshhold, a warning is issued through status and tracer
     - Default: 10
 
-An example configuration file is installed into [ORCA-INSTALL-DIR]/cfg/ directory.
+An example configuration file is installed into [ORCA-INSTALL-DIR]/share/orca/cfg/ directory.
 
 @section signal_strength Signal strength
 
