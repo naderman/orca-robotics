@@ -254,6 +254,7 @@ ADD_SUBDIRECTORY( scripts )
 # Write installation manifest in CMake format
 #
 GBX_WRITE_MANIFEST()   
+GBX_WRITE_OPTIONS()
 
 #
 # Print license information to a file
@@ -266,4 +267,9 @@ ENDIF( ORCA_BUILD_LICENSE )
 # Print results of CMake activity                         
 #                                                  
 GBX_CONFIG_REPORT( "Ice version       ${ICE_VERSION}" )
-GBX_RESET_ALL_LISTS()
+
+#
+# House-keeping, clear all lists
+#
+GBX_RESET_ALL_TARGET_LISTS()
+GBX_RESET_ALL_DEPENDENCY_LISTS()
