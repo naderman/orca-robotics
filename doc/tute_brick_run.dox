@@ -12,7 +12,7 @@
 
 @page orca_doc_tutebrickrun Running a super-simple component
 
-@note Reviewed for release 2.9.0.
+@note Reviewed for release 2.10.0.
 
 In the @ref orca_doc_tutebrickwrite "previous tutorial" we described how to write a basic Orca component. Now we show how to run it.
 
@@ -23,7 +23,7 @@ Start IceGrid Registry and IceStorm server as described in the @ref orca_doc_qui
 Create a new system directory and copy Orca sample files.
 @verbatim
 $ mkdir -p ~/sys/tutebrick; cd ~/sys/tutebrick
-$ cp [ORCA-INSTALL]/cfg/brick.cfg .
+$ cp [ORCA-INSTALL]/share/orca/cfg/brick.cfg .
 @endverbatim
 
 @section orca_doc_tutebrickrun_start Starting Brick Component

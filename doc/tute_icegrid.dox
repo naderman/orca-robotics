@@ -12,7 +12,7 @@
 
 @page orca_doc_tute_icegrid Deploying components with the IceGrid Node
 
-@note Reviewed for release 2.5.0.
+@note Reviewed for release 2.10.0.
 
 In this tutorial we will reproduce the setup of the @ref orca_doc_quickstart but now the Laser2d component will be deployed and activated with IceGrid Node. The system diagram is shown below.
 
@@ -46,7 +46,7 @@ First, copy default configuration files for the Laser2d and LaserMon components.
 @verbatim
 $ mkdir -p ~/sys/tuteicegrid; cd ~/sys/tuteicegrid
 $ cp [ORCA-INSTALL]/xml/laser2d.xml .
-$ cp [ORCA-INSTALL]/cfg/lasermon.cfg .
+$ cp [ORCA-INSTALL]/share/orca/cfg/lasermon.cfg .
 @endverbatim
 
 @par The Server

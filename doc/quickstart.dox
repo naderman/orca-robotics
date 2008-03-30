@@ -12,7 +12,7 @@
 
 @page orca_doc_quickstart Quick-Start Guide
 
-@note Reviewed for release 2.7.0.
+@note Reviewed for release 2.10.0.
 
 This page describes how to get a quick demonstration up and running with your new Orca install. Before you begin, make sure that you've installed Orca (see @ref orca_doc_getting ).
 
@@ -73,8 +73,8 @@ Note that only one piece of information is required: the address of the Registry
 Now will connect a fake laser component to a laser monitoring component. First, copy default configuration files for the Laser2d and LaserMon components.
 @verbatim
 $ mkdir -p ~/sys/quickstart; cd ~/sys/quickstart
-$ cp [ORCA-INSTALL]/cfg/laser2d.cfg .
-$ cp [ORCA-INSTALL]/cfg/lasermon.cfg .
+$ cp [ORCA-INSTALL]/share/orca/cfg/laser2d.cfg .
+$ cp [ORCA-INSTALL]/share/orca/cfg/lasermon.cfg .
 @endverbatim
 
 @par The Server

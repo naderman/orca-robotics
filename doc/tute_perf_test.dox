@@ -12,7 +12,7 @@
 
 @page orca_doc_tute_perf_test Testing Orca Latencies
 
-@note Reviewed for release 2.7.1.
+@note Reviewed for release 2.10.0.
 
 In this tutorial we show how to use two utilities to measure communication latencies. The utilities are @ref orca_util_pinger and @ref orca_util_replier. The results we produce will be similar to those shown in @ref orca_doc_performance.
 
@@ -20,8 +20,8 @@ We assume that the IceGrid registry is already running (see earlier tutorials on
 
 @verbatim
 $ cd ~/sys; mkdir perftest; cd perftest
-$ cp [ORCA-INSTALL]/cfg/replier.cfg .
-$ cp [ORCA-INSTALL]/cfg/pinger.cfg .
+$ cp [ORCA-INSTALL]/share/orca/cfg/replier.cfg .
+$ cp [ORCA-INSTALL]/share/orca/cfg/pinger.cfg .
 @endverbatim
 
 @section orca_doc_tute_perftest_replier Start up Replier

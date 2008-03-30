@@ -12,7 +12,7 @@
 
 @page orca_doc_tute_reactive Closed-loop control of a robot simulated with Player/Stage
 
-@note Reviewed for release 2.7.0.
+@note Reviewed for release 2.10.0.
 
 In this tutorial we will connect a simple controller to a robot simulated using 2-D Player/Stage simulator. The system diagram is shown below (IceGrid Registry and IceStorm are not shown).
 
@@ -28,9 +28,9 @@ Start IceGrid Registry and IceStorm server as described in the @ref orca_doc_qui
 Create a new system directory and copy Orca sample files.
 @verbatim
 $ mkdir -p ~/sys/tuteteleop; cd ~/sys/tutereactive
-$ cp [ORCA-INSTALL]/cfg/robot2d.cfg .
-$ cp [ORCA-INSTALL]/cfg/laser2d.cfg .
-$ cp [ORCA-INSTALL]/cfg/reactivewalker.cfg .
+$ cp [ORCA-INSTALL]/share/orca/cfg/robot2d.cfg .
+$ cp [ORCA-INSTALL]/share/orca/cfg/laser2d.cfg .
+$ cp [ORCA-INSTALL]/share/orca/cfg/reactivewalker.cfg .
 @endverbatim
 
 @section orca_doc_tute_reactive_player Starting Player/Stage

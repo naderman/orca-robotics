@@ -12,7 +12,7 @@
 
 @page orca_doc_tute_logtxt Logging interface data in text format
 
-@note Reviewed for release 2.5.0.
+@note Reviewed for release 2.10.0.
 
 In this tutorial we will demonstrate the use of the Orca data logging utility. The system diagram is shown below (IceGrid Registry and IceStorm are not shown).
 
@@ -25,9 +25,9 @@ Repeat the start up instructions of @ref orca_doc_tute_teleop -- but this time I
 Create a new system directory and copy Orca sample files.
 @verbatim
 $ mkdir -p ~/sys/tutelogtxt; cd ~/sys/tutelogtxt
-$ cp [ORCA-INSTALL]/cfg/robot2d.cfg .
-$ cp [ORCA-INSTALL]/cfg/teleop.cfg .
-$ cp [ORCA-INSTALL]/cfg/logger.cfg .
+$ cp [ORCA-INSTALL]/share/orca/cfg/robot2d.cfg .
+$ cp [ORCA-INSTALL]/share/orca/cfg/teleop.cfg .
+$ cp [ORCA-INSTALL]/share/orca/cfg/logger.cfg .
 @endverbatim
 
 @section orca_doc_tute_logtxt_robot Robot component

@@ -12,7 +12,7 @@
 
 @page orca_doc_tute_icebox Running components inside the IceBox server
 
-@note Reviewed for release 2.6.0.
+@note Reviewed for release 2.10.0.
 
 In this tutorial we will reproduce the setup of the @ref orca_doc_quickstart but now the @ref orca_component_laser2d component will run as a service inside the IceBox application server. The difference is that a @b single process is used to run the Laser2d component and IceStorm. Later you can run many components within one IceBox which has advantages with respect to performance and deployment.
 
@@ -29,8 +29,8 @@ Make sure the IceGrid Registry is running and the IceStorm server is @b NOT (See
 First, copy default configuration files for the SickLaser and LaserMon components.
 @verbatim
 $ cd ~/sys; mkdir tuteicebox; cd tuteicebox
-$ cp [ORCA-INSTALL]/cfg/laser2d.cfg .
-$ cp [ORCA-INSTALL]/cfg/lasermon.cfg .
+$ cp [ORCA-INSTALL]/share/orca/cfg/laser2d.cfg .
+$ cp [ORCA-INSTALL]/share/orca/cfg/lasermon.cfg .
 @endverbatim
 
 Also, copy the IceBox configuration files for this tutorial, which are included with your Orca distribution.

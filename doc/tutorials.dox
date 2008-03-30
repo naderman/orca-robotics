@@ -34,7 +34,6 @@
 
 - @ref orca_doc_tute_logtxt
 - @ref orca_doc_tute_utils
-- @ref orca_doc_tute_wall
 - @ref orca_doc_tute_perf_test
 
 @section orca_doc_tutorials_writing Writing Components

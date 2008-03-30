@@ -12,7 +12,7 @@
 
 @page orca_doc_tute_wall Using Wall Interface Simulator
 
-@note Reviewed for release 2.6.0.
+@note Reviewed for release 2.10.0.
 
 In this tutorial we will demonstrate the use of @ref orca_util_wall utility -- a configurable interface simulator. This utility is useful during component development. It lets the developer to setup all required interfaces in one component. The capabilities of this utility are limited. It generally does NOT let you debug the algorithms, for this you can work from logged data (see @ref orca_component_logger) or use a simulator such as Player/Stage. Nevertheless, sometimes all you need from an interface is just to "be there" -- in those cases Wall is exactly what you need.
 
@@ -25,7 +25,7 @@ Repeat the instructions of @ref orca_doc_quickstart for starting up IceGrid Regi
 Create a new system directory and copy Orca sample files.
 @verbatim
 $ mkdir -p ~/sys/tutewall; cd ~/sys/tutewall
-$ cp [ORCA-INSTALL]/cfg/wall.cfg .
+$ cp [ORCA-INSTALL]/share/orca/cfg/wall.cfg .
 @endverbatim
 
 @section orca_doc_tute_wall_config Configuring Interface Simulation
