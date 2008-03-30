@@ -16,15 +16,11 @@
 
 @section depend Overview of dependencies
 
-The diagram below shows an overview of dependencies between Orca and external libraries. Orca distribution is shown in yellow. Source code modules distributed with Orca are highlighted.
-External libraries are shown in white. Dependencies are indicated by dashed arrows.
+The diagram below shows an overview of dependencies between Orca/Hydro and external libraries. Dependencies are indicated by dashed arrows. Note that GearBox as a whole does not have any "official" dependencies but the libraries used by Orca/Hydro require libIceUtil.
 
 @image html orca_hydro_depends.png
-
-@b Orca distribution contains objects and interface definitions. The distribution also contains
-a repository of working, documented components contributed by the developer community. It also contains some examples. The utilities contained in the distribution are strictly optional.
-Practically, this means that you can download build your own components from scratch and communicate with the existing components. Individual components may have their own dependencies as illustrated in the diagram but they never depend on each other.
-
+ 
+For Orca users this dependency structure means that 4 packages need to be installed in the following order: Ice, GearBox, Hydro, Orca. The first one is distributed as binaries for many systems and the last three share the same build system, which simplifies installation. The instructions below step you through the process.
 
 @section orca_doc_getting_download Download instructions for Hydro and Orca
 
