@@ -168,7 +168,7 @@ HwThread::walk()
     //
     // Main loop
     //
-    while( !isStopping() )
+    while ( !isStopping() )
     {
         //
         // Make sure we're OK
@@ -275,11 +275,7 @@ HwThread::walk()
         }
 
         // Tell the 'status' engine what our local state machine knows.
-        if ( eStop_.get() && eStop_->isEStopTriggered() )
-        {
-            subStatus().warning( "E-Stop triggered" );
-        }
-        else if ( stateMachine_.isFault(reason) )
+        if ( stateMachine_.isFault(reason) )
         {
             subStatus().fault( reason );
         }
@@ -289,9 +285,15 @@ HwThread::walk()
         }
         else
         {
-            subStatus().ok();
+            if ( eStop_.get() && eStop_->isEStopTriggered() )
+            {
+                subStatus().warning( "E-Stop triggered" );
+            }
+            else
+            {
+                subStatus().ok();
+            }
         }
-
 
     } // while
 }
