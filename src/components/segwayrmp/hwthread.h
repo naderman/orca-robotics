@@ -66,6 +66,9 @@ private:
     void enableDriver();
     void writeCommand( hydrointerfaces::SegwayRmp::Command &command );
 
+    // Checks with the driver, and sets the stateMachine_ accordingly.
+    void checkStatus();
+
     // Faults can be detected in either read or write threads: have to be careful.
     orcarobotdriverutil::StateMachine stateMachine_;
 

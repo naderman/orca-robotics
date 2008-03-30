@@ -150,6 +150,31 @@ HwThread::writeCommand( hydrointerfaces::SegwayRmp::Command &command )
 }
 
 void
+HwThread::checkStatus()
+{
+    std::string status;
+    bool isWarn, isFault;
+    driver_->getStatus( status, isWarn, isFault );
+    std::stringstream ss;
+    ss << "Saw state change: " << status;
+    if ( isFault )
+    {
+        stateMachine_.setFault( ss.str() );
+        context_.tracer().error( ss.str() );
+    }
+    else if ( isWarn )
+    {
+        stateMachine_.setWarning( ss.str() );
+        context_.tracer().warning( ss.str() );
+    }
+    else
+    {
+        stateMachine_.setOK();
+        context_.tracer().info( ss.str() );
+    }
+}
+
+void
 HwThread::walk()
 {
     // This call catches its own exceptions
@@ -180,8 +205,7 @@ HwThread::walk()
 
             enableDriver();
 
-            // we enabled, so presume we're OK.
-            stateMachine_.setOK();
+            checkStatus();
             subStatus().setMaxHeartbeatInterval( 2.0 );
 
             // but make sure we're not shutting down.
@@ -202,26 +226,7 @@ HwThread::walk()
             // Update status
             if ( stateChanged ) 
             {
-                std::string status;
-                bool isWarn, isFault;
-                driver_->getStatus( status, isWarn, isFault );
-                std::stringstream ss;
-                ss << "Saw state change: " << status;
-                if ( isFault )
-                {
-                    stateMachine_.setFault( ss.str() );
-                    context_.tracer().error( ss.str() );
-                }
-                else if ( isWarn )
-                {
-                    stateMachine_.setWarning( ss.str() );
-                    context_.tracer().warning( ss.str() );
-                }
-                else
-                {
-                    stateMachine_.setOK();
-                    context_.tracer().info( ss.str() );
-                }
+                checkStatus();
             }
 
             // keep track of our approximate motion for history
