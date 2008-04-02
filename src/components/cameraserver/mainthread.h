@@ -48,7 +48,7 @@ private:
     orcaifaceimpl::CameraImplPtr cameraInterface_;
 
     hydrointerfaces::Camera::Config config_;
-
+    
     orca::CameraDescriptionSequence descrs_;
 
     // space for data
@@ -59,7 +59,7 @@ private:
     std::auto_ptr<hydrodll::DynamicallyLoadedLibrary> driverLib_;
     // Generic driver for the hardware
     std::auto_ptr<hydrointerfaces::Camera> driver_;
-
+    
     orcaice::Context context_;
 };
 
