@@ -26,7 +26,7 @@ MainThread::MainThread( const orcaice::Context& context ) :
 {
     subStatus().setMaxHeartbeatInterval( 10.0 );
     // initialise opencv stuff
-    cvNamedWindow( "CameraViewer_Camera0", 1 );
+    cvNamedWindow( "CameraViewer", 1 );
 }
 
 MainThread::~MainThread()
@@ -149,7 +149,7 @@ MainThread::walk()
             // make sure the image is in BGR format which opencv can display       
             orcaimage::cvtToBgr( cvImage_, imageData.at(0), descr_.at(0) );
             // load the image into the previously created window
-            cvShowImage( "ImageViewer", cvImage_ );
+            cvShowImage( "CameraViewer", cvImage_ );
             // need this as opencv doesn't display properly otherwise
             cvWaitKey(15);
 

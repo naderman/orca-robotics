@@ -72,6 +72,7 @@ cvtToBgr( IplImage* dest, const orca::ImageDataPtr src, const orca::ImageDescrip
         case orca::ImageFormatModeNfi:
             cout << "WARNING(colourconversions.cpp): Assuming image mode " 
                     << orcaimage::formatName( descr->format ) << " is in BGR format." << endl;
+            cout << "Copying over " << src->data.size() << " bytes" << endl;
             memcpy( dest->imageData, &src->data[0], src->data.size() );
             break;
 
