@@ -36,7 +36,8 @@ MainThread::MainThread( const orcaice::Context &context ) :
     } else {
         bpp = 1;
     }
-    
+    //get the actual format!
+    //
     config_.widths.resize(config_.numOfCameras);
     config_.heights.resize(config_.numOfCameras);
     config_.sizes.resize(config_.numOfCameras);

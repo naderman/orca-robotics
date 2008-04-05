@@ -63,6 +63,9 @@ orca::CartesianPoint getPropertyAsCartesianPointWithDefault( const Ice::Properti
 //! Returns the default value if key is not found or cannot be converted to a Time.
 orca::Time getPropertyAsTimeDurationWithDefault( const Ice::PropertiesPtr &, const ::std::string& key, const orca::Time &d );
 
+//! Returns the default value if key is not found or cannot be converted to a ImageFormat
+orca::ImageFormat getPropertyAsImageFormatWithDefault( const Ice::PropertiesPtr &, const ::std::string& key, const orca::ImageFormat defaultValue);
+
 //@}
 
 } // namespace

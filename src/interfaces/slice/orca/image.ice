@@ -37,17 +37,17 @@ enum ImageFormat {
     //! Gray scale
     ImageFormatModeGray,
     //! Red-Green-Blue  
-    ImageFormatModeRgb,
+    ImageFormatModeRGB8,
     //! Red-Green-Blue-Alpha  
-    ImageFormatModeRgba,
+    ImageFormatModeRGBA8,
     //! Alpha-Red-Green-Blue  
-    ImageFormatModeArgb,
+    ImageFormatModeARGB8,
     //! Blue-Green-Red   
-    ImageFormatModeBgr,
+    ImageFormatModeBGR8,
     //! Blue-Green-Red-Alpha   
-    ImageFormatModeBgra,
+    ImageFormatModeBGRA8,
     //! YUV422   
-    ImageFormatModeYuv422,
+    ImageFormatModeYUV422,
     //! Bayer Blue-Green
     ImageFormatBayerBg, 
     //! Bayer Green-Blue 
@@ -61,7 +61,9 @@ enum ImageFormat {
     //! Digiclops Right
     ImageFormatDigiclopsRight,
     //! Digiclops Both
-    ImageFormatDigiclopsBoth
+    ImageFormatDigiclopsBoth,
+    //! Last Enum for iteration purposes only
+    ImageFormatEnumSize
 };
 
 //! Specifies any encoding of the image. 

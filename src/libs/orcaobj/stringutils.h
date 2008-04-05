@@ -95,6 +95,14 @@ orca::FQTopicName toTracerTopic( const orca::FQComponentName & fqCName );
  */
 //@{
 
+
+//! Converts to string
+//! @see toImageFormat()
+std::string toString( const orca::ImageFormat& );
+//! Parses result of the corresponding toString().
+//! Returns: 0 = parsing successful, non-zero = parsing failed.
+int toImageFormat( const std::string &, orca::ImageFormat& );
+
 //! Converts to string
 //! @see toCartesianPoint()
 std::string toString( const orca::CartesianPoint& );

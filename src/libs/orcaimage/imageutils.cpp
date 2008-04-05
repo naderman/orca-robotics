@@ -24,13 +24,13 @@ orca::ImageFormat orcaImageMode( int mode )
     case MODE_1024x768_YUV422:
     case MODE_1280x960_YUV422:
     case MODE_1600x1200_YUV422:
-        return orca::ImageFormatModeYuv422;
+        return orca::ImageFormatModeYUV422;
     case MODE_640x480_RGB:
     case MODE_800x600_RGB:
     case MODE_1024x768_RGB:
     case MODE_1280x960_RGB:
     case MODE_1600x1200_RGB:
-        return orca::ImageFormatModeRgb;
+        return orca::ImageFormatModeRGB8;
     case MODE_640x480_MONO:
     case MODE_800x600_MONO:
     case MODE_1024x768_MONO:
@@ -49,7 +49,7 @@ int dc1394ImageMode( orca::ImageFormat mode, int width, int height )
 {
     switch( mode )
     {
-        case orca::ImageFormatModeYuv422:
+        case orca::ImageFormatModeYUV422:
             if ( width==320 & height==240 )         
                 return MODE_320x240_YUV422;
             else if ( width==640 & height==480 )
@@ -68,7 +68,7 @@ int dc1394ImageMode( orca::ImageFormat mode, int width, int height )
                 return -1;
             }          
         
-        case orca::ImageFormatModeRgb:
+        case orca::ImageFormatModeRGB8:
             if ( width==640 & height==480 )
                 return MODE_640x480_RGB;
             else if ( width==800 & height==600 )
@@ -121,13 +121,13 @@ formatName( const orca::ImageFormat& format )
         case orca::ImageFormatModeGray:  
             return "ImageFormatModeGray: Grayscale";
             break;
-        case orca::ImageFormatModeRgb:   
+        case orca::ImageFormatModeRGB8:   
             return "ImageFormatModeRgb: RGB";
             break;
-        case orca::ImageFormatModeBgr:   
+        case orca::ImageFormatModeBGR8:   
             return "ImageFormatModeBgr: BGR";
             break;
-        case orca::ImageFormatModeYuv422:
+        case orca::ImageFormatModeYUV422:
             return "ImageFormatModeUv422: YUV 4:2:2";
             break;
         case orca::ImageFormatBayerBg:  
