@@ -13,6 +13,7 @@
 #include "conversions.h"
 
 #include <orcaimage/imageutils.h>
+#include <orcaobj/orcaobj.h>
 
 #ifdef TRICLOPS_FOUND
 #   include <triclops/triclops.h>
@@ -37,7 +38,7 @@ cvtToRgb( IplImage* dest, const orca::ImageDataPtr src, const orca::ImageDescrip
         case orca::ImageFormatModeBGR8:
         default:
             cout<<"ERROR(colourconversions.cpp): Don't know how to convert from image mode " 
-                    << orcaimage::formatName( descr->format ) << "." << endl;
+                    << orcaobj::toString( descr->format ) << "." << endl;
             exit(1);
     }
 }
@@ -71,14 +72,14 @@ cvtToBgr( IplImage* dest, const orca::ImageDataPtr src, const orca::ImageDescrip
         
         case orca::ImageFormatModeNfi:
             cout << "WARNING(colourconversions.cpp): Assuming image mode " 
-                    << orcaimage::formatName( descr->format ) << " is in BGR format." << endl;
+                    << orcaobj::toString( descr->format ) << " is in BGR format." << endl;
             cout << "Copying over " << src->data.size() << " bytes" << endl;
             memcpy( dest->imageData, &src->data[0], src->data.size() );
             break;
 
         default:
             cout << "ERROR(colourconversions.cpp): Don't know how to convert from image mode " 
-                    << orcaimage::formatName( descr->format ) << "." << endl;
+                    << orcaobj::toString( descr->format ) << "." << endl;
             std::stringstream ss;
             ss << "OrcaImage: unknown image format: " << descr->format<<endl;
             throw( ss.str() );

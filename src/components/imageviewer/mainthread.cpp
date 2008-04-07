@@ -165,7 +165,7 @@ MainThread::walk()
 void 
 MainThread::initCvImage()    
 {
-    cout << "TRACE(imagehandler.cpp):Image Format - " << orcaimage::formatName( descr_->format ) << endl;
+    cout << "TRACE(imagehandler.cpp):Image Format - " << orcaobj::toString( descr_->format ) << endl;
     
     // should this be done at the imageserver level and depend on the mode and format?
     // maybe nChannels should be in the Camera object

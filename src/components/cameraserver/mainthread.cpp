@@ -35,14 +35,15 @@ MainThread::MainThread( const orcaice::Context &context ) :
     config_.widths.resize(config_.numOfCameras);
     config_.heights.resize(config_.numOfCameras);
     config_.sizes.resize(config_.numOfCameras);
-    
+    config_.formats.resize(config_.numOfCameras);
+
     for(uint32_t i = 0; i < config_.numOfCameras; ++i)
     {
         std::stringstream prefixSS;
         prefixSS << prefix << i << ".";
         config_.widths.at(i) = (uint32_t)orcaice::getPropertyAsIntWithDefault( prop, prefixSS.str() + "ImageWidth", 320);
         config_.heights.at(i) = (uint32_t)orcaice::getPropertyAsIntWithDefault( prop, prefixSS.str() + "ImageHeight", 240);
-        config_.formats.at(i) = orcaobj::getPropertyAsImageFormatWithDefault( prop, prefixSS.str() + "ImageFormat", orca::ImageFormatModeBGR8 );
+        config_.formats.at(i) = (ImageFormat)orcaobj::getPropertyAsImageFormatWithDefault( prop, prefixSS.str() + "ImageFormat", orca::ImageFormatModeBGR8 );
         
         config_.sizes.at(i) = bpp*config_.widths.at(i)*config_.heights.at(i);
     }

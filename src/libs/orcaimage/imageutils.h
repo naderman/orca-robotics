@@ -130,9 +130,6 @@ orca::ImageFormat orcaImageMode( int mode );
 // convert from orca colour mode to dc_1394 colour mode
 int dc1394ImageMode( orca::ImageFormat mode, int width, int height );
 
-// returns the image format as character array
-std::string formatName( const orca::ImageFormat& format );
-
 // number of channels used to store the image
 int numChannels( const orca::ImageFormat& format );
 

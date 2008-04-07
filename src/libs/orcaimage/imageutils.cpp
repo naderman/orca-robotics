@@ -10,6 +10,8 @@
 
 #include "imageutils.h"
 
+#include <orcaobj/orcaobj.h>
+
 using namespace std;
 
 namespace orcaimage{
@@ -39,7 +41,7 @@ orca::ImageFormat orcaImageMode( int mode )
         return orca::ImageFormatModeGray;
     default:
         orca::ImageFormat format = orca::ImageFormatModeNfi;
-        cout << "WARNING(conversions.cpp): Unknown colour mode: " << orcaimage::formatName( format ) << endl;
+        cout << "WARNING(conversions.cpp): Unknown colour mode: " << orcaobj::toString( format ) << endl;
         return orca::ImageFormatModeNfi;
     }
 
@@ -110,51 +112,6 @@ int dc1394ImageMode( orca::ImageFormat mode, int width, int height )
 
 }
 
-std::string 
-formatName( const orca::ImageFormat& format )
-{
-    switch( format )
-    {
-        case orca::ImageFormatModeNfi:
-            return "ImageFormatModeNfi: Unknown format";
-            break;
-        case orca::ImageFormatModeGray:  
-            return "ImageFormatModeGray: Grayscale";
-            break;
-        case orca::ImageFormatModeRGB8:   
-            return "ImageFormatModeRgb: RGB";
-            break;
-        case orca::ImageFormatModeBGR8:   
-            return "ImageFormatModeBgr: BGR";
-            break;
-        case orca::ImageFormatModeYUV422:
-            return "ImageFormatModeUv422: YUV 4:2:2";
-            break;
-        case orca::ImageFormatBayerBg:  
-            return "ImageFormatBayerBg: Bayer encoded";
-            break;
-        case orca::ImageFormatBayerGb:   
-            return "ImageFormatBayerGb: Bayer encoded";
-            break;
-        case orca::ImageFormatBayerRg:   
-            return "ImageFormatBayerRg: Bayer encoded";
-            break;
-        case orca::ImageFormatBayerGr:
-            return "ImageFormatBayerGr: Bayer encoded";
-            break;
-        case orca::ImageFormatDigiclopsStereo:
-            return "ImageFormatDigiclopsStereo: All 3 images in RGBU format";
-            break;
-        case orca::ImageFormatDigiclopsRight:
-            return "ImageFormatDigiclopsRight: Right camera image";
-            break;
-        case orca::ImageFormatDigiclopsBoth:
-            return "ImageFormatDigiclopsBoth: All 3 images in RGBU format and the right camera image";
-            break;
-        default:
-            return "WARNING(imageutils.cpp): Image format is not defined";
-    }               
-}
 
 int 
 numChannels( const orca::ImageFormat& format )
@@ -170,7 +127,7 @@ numChannels( const orca::ImageFormat& format )
             break;
         case orca::ImageFormatModeNfi:
             cout << "WARNING(imageutils.cpp): Assuming image mode " 
-                    << orcaimage::formatName( format ) << " is in BGR format." << endl;
+                    << orcaobj::toString( format ) << " is in BGR format." << endl;
             return 3;
             break;              
         default:
