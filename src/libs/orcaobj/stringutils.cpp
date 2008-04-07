@@ -590,7 +590,7 @@ toString( const orca::CameraDataSequence& obj )
     std::ostringstream s;
     s << toString(obj.at(0)->timeStamp)
         << " NumOfCameras: " << obj.size() 
-        << " CameraData: ["<<obj.at(0)->data.size()<<" bytes]\n"; 
+        << " PerCameraData: ["<<obj.at(0)->data.size()<<" bytes]\n"; 
     return s.str();
 }
 

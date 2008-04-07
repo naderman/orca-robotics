@@ -171,4 +171,24 @@ getPropertyAsTimeDurationWithDefault( const Ice::PropertiesPtr & prop, const ::s
         return value;
 }
 
+int
+getPropertyAsImageFormat( const Ice::PropertiesPtr & prop, const ::std::string& key, orca::ImageFormat & value )
+{
+    std::string stringVal;
+    if ( orcaice::getProperty( prop, key, stringVal ) )
+        return -1;
+    else
+        return toImageFormat( stringVal, value );
+}
+
+orca::ImageFormat 
+getPropertyAsImageFormatWithDefault( const Ice::PropertiesPtr & prop, const ::std::string& key, const orca::ImageFormat & defaultValue )
+{
+    orca::ImageFormat value;
+    if ( getPropertyAsImageFormat( prop, key, value ) )
+        return defaultValue;
+    else
+        return value;
+}
+
 } // namespace

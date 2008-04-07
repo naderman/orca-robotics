@@ -30,14 +30,8 @@ MainThread::MainThread( const orcaice::Context &context ) :
     std::string prefix = context_.tag() + ".Config.";
     uint32_t bpp = 3; //default bytes per pixel value
     config_.numOfCameras = (unsigned int)orcaice::getPropertyAsIntWithDefault( prop, prefix+"NumOfCameras", 1);
-    std::string format = orcaice::getPropertyWithDefault( prop, prefix+"ImageFormat", "BGR8");
-    if(format == "BGR8" || format == "RGB8") {
-        bpp = 3;
-    } else {
-        bpp = 1;
-    }
-    //get the actual format!
-    //
+
+
     config_.widths.resize(config_.numOfCameras);
     config_.heights.resize(config_.numOfCameras);
     config_.sizes.resize(config_.numOfCameras);
@@ -48,6 +42,8 @@ MainThread::MainThread( const orcaice::Context &context ) :
         prefixSS << prefix << i << ".";
         config_.widths.at(i) = (uint32_t)orcaice::getPropertyAsIntWithDefault( prop, prefixSS.str() + "ImageWidth", 320);
         config_.heights.at(i) = (uint32_t)orcaice::getPropertyAsIntWithDefault( prop, prefixSS.str() + "ImageHeight", 240);
+        config_.formats.at(i) = orcaobj::getPropertyAsImageFormatWithDefault( prop, prefixSS.str() + "ImageFormat", orca::ImageFormatModeBGR8 );
+        
         config_.sizes.at(i) = bpp*config_.widths.at(i)*config_.heights.at(i);
     }
 
