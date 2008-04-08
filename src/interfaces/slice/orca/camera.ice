@@ -22,7 +22,7 @@ module orca
     @defgroup orca_interface_camera Camera
     @brief Single or Multiple Camera System.
 
-Remote access to images captured by a variety of cameras either individually or as a group.
+Remote access to images captured by a variety of cameras either individually or as a group. All data is sent in a sequence, or vector of classes. The classes inherit those found in image.ice.
 
     @{
 */
