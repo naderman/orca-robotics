@@ -1,7 +1,7 @@
 /*
  * Orca-Robotics Project: Components for robotics 
  *               http://orca-robotics.sf.net/
- * Copyright (c) 2004-2008 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ * Copyright (c) 2004-2008 Tom Burdick, Alex Brooks, Alexei Makarenko, Tobias Kaupp
  *
  * This copy of Orca is licensed to you under the terms described in
  * the LICENSE file included in this distribution.
@@ -45,20 +45,13 @@ This component encapsulates a digital camera (see @ref how_camera_works ). It ca
 
 - @c CameraServer.Config.DriverLib (string)
     - Name of shared library containing the hardware driver
-    - Valid values are at least: { 'libHydroCameraDC1394.so', 'libHydroCameraOpenCV.so', 'libHydroCameraPlayerClient.so', 'libHydoCameraFake.so' }
+    - Valid values are at least: { 'libHydroCameraOpenCV.so', 'libHydoCameraFake.so' }
     - Default: "libHydroCameraOpenCV.so"
 
 CameraServer Settings
 - @c CameraServer.Config.NumOfCameras (int)
     - Valid Values: NumOfCameras>=1
     - Default: 1
-- @c CameraServer.Config.ImageFormat (string)
-    - Desired image format to be transmitted.
-    - Valid Values: {'Binary', 'Gray8', 'BGR8', 'RGB8'}
-    - Default: 'BGR8'
-- @c CameraServer.Config.ImageCompression (string)
-    - Valid Values: {'None', 'Jpeg', 'Jpeg2000', 'PNG'}
-    - Default: 'None'
     
 Individual Camera Settings
 
@@ -89,9 +82,11 @@ Geometry
     - Height of desired image in pixels
     - Default: 240
 - @c CameraServer.Config.N.ImageFormat (string)
-    - The internal image format the camera takes pictures as.
-    - Valid Values: {'Auto', 'Gray8', 'BGR8', 'RBG8', 'YUV422', 'BayerBg', 'BayerGb', 'BayerRg', 'BayerGr'}
-    - Default: 'Auto'
+    - The format of the image that the camera produces. This is what is sent over the wire.
+    - Valid Values: {'ImageFormatModeGray8', 'ImageFormatModeBGR8', 'ImageFormat
+        ModeRGB8', 'ImageFormatModeYUV422', 'ImageFormatBayerBg', 'ImageFormatBayerGb',
+        'ImageFormatBayerRg', 'ImageFormatBayerGr'}
+    - Default: 'ImageFormatModeBGR8'
 
 @see Individual drivers may have additional configuration parameters which are specified as Camera.Config.XXX. See driver documentation.
 
@@ -105,7 +100,7 @@ For developers: the code conforms to the basic approach described in the notes o
 
 @section Notes
 
-This should work on all platforms using the OpenCV component. The DC1394 component should work whenever libdc1394 is fully ported to other platforms.
+This should work on all platforms where opencv is available. The FPS setting at the moment is completely ignored by the available drivers. The width/height settings only need to be correct at the moment relative the default camera settings that opencv uses. In the future a libdc1394 based image grabber may take a more aggresive approach in attempting ot setup the camera to the desired settings.
 
 @par Authors
 

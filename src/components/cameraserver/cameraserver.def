@@ -7,14 +7,10 @@ Provides.Camera.DefaultName=camera
 # Required Interfaces
 
 # Config Parameters
-Config.DriverLib.Comment=Valid values are at least: { 'libHydroCameraOpenCV.so', 'libHydroCameraLDC1394.so', 'libHydroCameraPlayerClient.so', 'libHydroCameraFake.so' }
+Config.DriverLib.Comment=Valid values are at least: { 'libHydroCameraOpenCV.so', 'libHydroCameraFake.so' }
 Config.DriverLib.Default=libHydroCameraFake.so
 
 Config.NumOfCameras.Default=1
-Config.ImageFormat.Comment=Valid values are at least: {'Binary', 'Gray8', 'BGR8', 'RGB8'}
-Config.ImageFormat.Default=BGR8
-Config.ImageCompression.Comment=Valid values are at least: {'None', 'Jpeg', 'Jpeg2000', 'PNG'}
-Config.ImageCompression.Default=None
 
 Config.0.ID.Comment=Unique Device ID Number (usually the firewire device ID).
 Config.0.ID.Default=0
@@ -28,6 +24,6 @@ Config.0.ImageWidth.Comment=Image Width [pixels]
 Config.0.ImageWidth.Default=320
 Config.0.ImageHeight.Comment=Image Height [pixels]
 Config.0.ImageHeight.Default=240
-Config.0.ImageFormat.Comment=Valid values are at least: {'Auto', 'Gray8', 'BGR8', 'RBG8', 'YUV422', 'BayerBg', 'BayerGb', 'BayerRg', 'BayerGr'}
-Config.0.ImageFormat.Default=Auto
+Config.0.ImageFormat.Comment=Valid values are at least: {'ImageFormatModeGray8', 'ImageFormatModeBGR8', 'ImageFormatModeRBG8', 'ImageFormatModeYUV422', 'ImageFormatBayerBg', 'ImageFormatBayerGb', 'ImageFormatBayerRg', 'ImageFormatBayerGr'}
+Config.0.ImageFormat.Default=ImageFormatModeBGR8
 

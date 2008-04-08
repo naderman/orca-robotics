@@ -42,23 +42,23 @@ public:
     virtual void createLogFile();
 
     // from *Consumer
-    virtual void setData(const orca::CameraData& data, const Ice::Current&);
+    virtual void setData(const orca::CameraDataPtr& data, const Ice::Current&);
     
 private:
     // utility function
-    void writeDescription( const orca::CameraDescription& obj );
+    void writeDescription( const orca::CameraDescriptionPtr& obj );
     
     // custom function to mirror ice_writeCameraData()
-    void orca_writeCameraData( Ice::OutputStreamPtr outStreamPtr, const orca::CameraData& data, const std::string & filename );
+    void orca_writeCameraData( Ice::OutputStreamPtr outStreamPtr, const orca::CameraDataPtr& data, const std::string & filename );
 
     // alexm: 'data' cannot be const because we are changing it's format
-    void writeCameraDataAsJpeg( const orca::CameraData& data, const std::string & filename );
+    void writeCameraDataAsJpeg( const orca::CameraDataPtr& data, const std::string & filename );
 
     // use opencv to convert to jpg
    #ifdef OPENCV_FOUND
        	IplImage* cvImage_;
 		//alen: directory prefix length
-  #endif
+    #endif
 
 	//alen: directory prefix for jpeg images
 	std::string directoryPrefix_;
