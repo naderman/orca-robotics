@@ -11,6 +11,12 @@
 #include <iostream>
 #include <orcaice/orcaice.h>
 #include <orcaobj/orcaobj.h>
+
+#include <orcaimage/imageutils.h>
+
+#include <hydroimage/imageformats.h>
+
+
 #include "mainthread.h"
 
 using namespace std;
@@ -43,8 +49,11 @@ MainThread::MainThread( const orcaice::Context &context ) :
         prefixSS << prefix << i << ".";
         config_.widths.at(i) = (uint32_t)orcaice::getPropertyAsIntWithDefault( prop, prefixSS.str() + "ImageWidth", 320);
         config_.heights.at(i) = (uint32_t)orcaice::getPropertyAsIntWithDefault( prop, prefixSS.str() + "ImageHeight", 240);
-        config_.formats.at(i) = (ImageFormat)orcaobj::getPropertyAsImageFormatWithDefault( prop, prefixSS.str() + "ImageFormat", orca::ImageFormatModeBGR8 );
-        
+        config_.formats.at(i) = (hydroimage::ImageFormat)orcaobj::getPropertyAsImageFormatWithDefault( prop, prefixSS.str() + "ImageFormat", orca::ImageFormatModeBGR8 );
+        bpp = orcaimage::numChannels((orca::ImageFormat)config_.formats.at(i));
+        std::stringstream ss;
+        ss << "bpp: " << bpp << " format: " << orcaobj::toString((orca::ImageFormat)config_.formats.at(i)) << endl;
+        context_.tracer().info(ss.str());
         config_.sizes.at(i) = bpp*config_.widths.at(i)*config_.heights.at(i);
     }
 
@@ -76,6 +85,8 @@ MainThread::initNetworkInterface()
         descr->imageWidth = config_.widths.at(i);
         descr->imageHeight = config_.heights.at(i);
 
+        descr->format = (orca::ImageFormat)config_.formats.at(i);
+
         // offset from the robot coordinate system
         orcaobj::setInit( descr->offset );
         descr->offset = orcaobj::getPropertyAsFrame3dWithDefault( prop, prefixSS.str() + "Offset", descr->offset );
@@ -94,6 +105,9 @@ MainThread::initNetworkInterface()
         descrs_.push_back(descr);
     }
     std::cout << "Description Vector Size: " << descrs_.size() << std::endl; 
+
+    std::cout << orcaobj::toString(descrs_) << std::endl;
+
     //
     // EXTERNAL PROVIDED INTERFACE
     //

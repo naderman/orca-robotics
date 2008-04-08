@@ -46,8 +46,28 @@ cvtToRgb( IplImage* dest, const orca::ImageDataPtr src, const orca::ImageDescrip
 void 
 cvtToBgr( IplImage* dest, const orca::ImageDataPtr src, const orca::ImageDescriptionPtr descr )
 {
+    IplImage* graytemp = cvCreateImage(cvSize(descr->imageWidth, descr->imageHeight), 8, 1);
+
     switch( descr->format )
     {
+        case orca::ImageFormatBayerBg:
+            memcpy(graytemp->imageData, &src->data[0], src->data.size() );
+            cvCvtColor(graytemp, dest, CV_BayerBG2BGR);    
+            break;
+        
+        case orca::ImageFormatBayerGb:
+            memcpy(graytemp->imageData, &src->data[0], src->data.size() );
+            cvCvtColor(graytemp, dest, CV_BayerGB2BGR);    
+            break;
+        case orca::ImageFormatBayerRg:
+            memcpy(graytemp->imageData, &src->data[0], src->data.size() );
+            cvCvtColor(graytemp, dest, CV_BayerRG2BGR);    
+            break;
+
+        case orca::ImageFormatBayerGr:
+            memcpy(graytemp->imageData, &src->data[0], src->data.size() );
+            cvCvtColor(graytemp, dest, CV_BayerGR2BGR);    
+            break;
         case orca::ImageFormatModeBGR8:
             memcpy( dest->imageData, &src->data[0], src->data.size() );
             break;
@@ -82,8 +102,11 @@ cvtToBgr( IplImage* dest, const orca::ImageDataPtr src, const orca::ImageDescrip
                     << orcaobj::toString( descr->format ) << "." << endl;
             std::stringstream ss;
             ss << "OrcaImage: unknown image format: " << descr->format<<endl;
+            cvReleaseImage(&graytemp);
             throw( ss.str() );
     }
+
+    cvReleaseImage(&graytemp);
 }
 
 #endif

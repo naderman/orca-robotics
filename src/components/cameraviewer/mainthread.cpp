@@ -115,7 +115,7 @@ MainThread::walk()
             // delay checks for sending objects
             int averageOver = 100;
             orcaice::setToNow( arrivalTime );
-            diff += orcaice::timeDiffAsDouble( imageData.at(0)->timeStamp, arrivalTime );
+            diff += abs(orcaice::timeDiffAsDouble( imageData.at(0)->timeStamp, arrivalTime ));
             
             // throughput check
             if ((int)diff == 0)
@@ -127,13 +127,13 @@ MainThread::walk()
             {
                 // calculate average delay
                 avDiff = diff/averageOver;
-                // cout << "TRACE(imagehandler.cpp): Average delay of images between grabbing and viewing: " << avDiff << "sec" << endl;
+                cout << "TRACE(imagehandler.cpp): Average delay of images between grabbing and viewing: " << avDiff << "sec" << endl;
                 diff = 0.0;
                 
                 // calculate throughput in Hz
                 orcaice::setToNow( finalImageTime );
                 totalTime = orcaice::timeDiffAsDouble( finalImageTime, initialImageTime );
-                // cout << "TRACE(imagehandler.cpp): Images are arriving at " << 1/(totalTime/averageOver) << " Hz." << endl << endl;
+                cout << "TRACE(imagehandler.cpp): Images are arriving at " << 1/(totalTime/averageOver) << " Hz." << endl << endl;
             }
             //end of timing performance **********************************
         }
@@ -151,7 +151,7 @@ MainThread::walk()
             // load the image into the previously created window
             cvShowImage( "CameraViewer", cvImage_ );
             // need this as opencv doesn't display properly otherwise
-            cvWaitKey(15);
+            cvWaitKey(10);
 
         }
         else {
