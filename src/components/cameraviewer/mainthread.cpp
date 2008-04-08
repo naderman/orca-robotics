@@ -26,14 +26,16 @@ MainThread::MainThread( const orcaice::Context& context ) :
 {
     subStatus().setMaxHeartbeatInterval( 10.0 );
     // initialise opencv stuff
-    cvNamedWindow( "CameraViewer", 1 );
+    //its a bit funny here, I just assume max 3 cameras for now
+    cvNamedWindow( "CameraViewer1", 1 );
+    cvNamedWindow( "CameraViewer2", 1 );
+    cvNamedWindow( "CameraViewer3", 1 );
 }
 
 MainThread::~MainThread()
 {
     // delete opencv stuff
     cvReleaseImage( &cvImage_ );
-    cvReleaseImage( &bayerImage_ );
 }
 
 void 
@@ -149,7 +151,17 @@ MainThread::walk()
             // make sure the image is in BGR format which opencv can display       
             orcaimage::cvtToBgr( cvImage_, imageData.at(0), descr_.at(0) );
             // load the image into the previously created window
-            cvShowImage( "CameraViewer", cvImage_ );
+            cvShowImage( "CameraViewer1", cvImage_ );
+            
+            if(imageData.size() >= 2 ) {
+                orcaimage::cvtToBgr( cvImage_, imageData.at(1), descr_.at(1) );
+                cvShowImage( "CameraViewer2", cvImage_ );
+            }
+
+            if(imageData.size() >= 3 ) {
+                orcaimage::cvtToBgr( cvImage_, imageData.at(2), descr_.at(2) );
+                cvShowImage( "CameraViewer3", cvImage_);
+            }            
             // need this as opencv doesn't display properly otherwise
             cvWaitKey(10);
 
@@ -172,25 +184,8 @@ MainThread::initCvImage()
     // maybe nChannels should be in the Camera object
     // TODO: put this nChannel calculation into imageutils as a separate function 
     
-    // default number of channels for a colour image
-    int nChannels = 3;
-    int nBayerChannels = 1;   
-    if( descr_.at(0)->format == orca::ImageFormatBayerBg  || descr_.at(0)->format == orca::ImageFormatBayerGb 
-            || descr_.at(0)->format == orca::ImageFormatBayerRg || descr_.at(0)->format == orca::ImageFormatBayerGr )
-    {
-        // set up an IplImage struct for the Greyscale bayer encoded data
-        bayerImage_  = cvCreateImage( cvSize( descr_.at(0)->imageWidth, descr_.at(0)->imageHeight ),  8, nBayerChannels );
-        cout << "Image is Bayer encoded: " << endl;
-        // cout << "bayer encoding: " << format << endl;
-    }
-    else if ( descr_.at(0)->format == orca::ImageFormatModeGray )
-    {
-        // display image is greyscale therefore only 1 channel      
-        nChannels = 1;
-    }      
-
     // opencv gear here
-    cvImage_ = cvCreateImage( cvSize( descr_.at(0)->imageWidth, descr_.at(0)->imageHeight ),  8, nChannels );
+    cvImage_ = cvCreateImage( cvSize( descr_.at(0)->imageWidth, descr_.at(0)->imageHeight ),  8, 3 );
     // dodgy opencv needs this so it has time to resize
     cvWaitKey(100);
     context_.tracer().debug("opencv window created",5);
