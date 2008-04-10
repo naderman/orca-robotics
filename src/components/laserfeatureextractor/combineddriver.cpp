@@ -14,6 +14,7 @@
 #include <orcaice/orcaice.h>
 #include "util.h"
 #include "combineddriver.h"
+#include <orcaobj/orcaobj.h>
 
 using namespace std;
 using namespace orcaice;
@@ -109,8 +110,8 @@ getDoorExtractor( const orca::RangeScanner2dDescription &laserDescr,
     return new hydrolfextract::DoorFeatureExtractor( cfg,
                                                      rangeSd,
                                                      bearingSd,
-                                                     pTruePositive,
                                                      pFalsePositive,
+                                                     pTruePositive,
                                                      context.toHydroContext() );
 }
 
@@ -255,7 +256,14 @@ CombinedDriver::computeFeatures( const orca::LaserScanner2dDataPtr &laserDataPtr
 
     // Check pFalse/pTrue
     for ( unsigned int i=0; i < featureData.features.size(); i++ )
-        assert ( featureData.features[i]->pTruePositive > featureData.features[i]->pFalsePositive );
+    {
+        if ( featureData.features[i]->pTruePositive <= featureData.features[i]->pFalsePositive )
+        {
+            stringstream ss;
+            ss << "Bad pTrue/pFalse for feature: " << orcaobj::toString(featureData.features[i]);
+            throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, ss.str() );
+        }
+    }
 
     return 0;
 }
