@@ -15,10 +15,25 @@
 #include <orcaice/context.h>
 #include "driver.h"
 #include <vector>
-#include "iextractor.h"
+#include <hydrolaserfeatureextract/hydrolaserfeatureextract.h>
+#include <hydrolaserfeatureextract/linesegments.h>
 
 namespace laserfeatures
 {
+
+class IExtractor
+{
+public: 
+
+    virtual ~IExtractor() {}
+
+    // Adds laser features to the 'features' data structure
+    virtual void addFeatures( const orca::LaserScanner2dDataPtr &laserData,
+                              orca::PolarFeature2dData          &features )=0;
+
+private: 
+
+};
 
 class CombinedDriver: public Driver
 {
@@ -27,14 +42,18 @@ public:
 
     CombinedDriver( const orca::RangeScanner2dDescription &laserDescr,
                     const orcaice::Context &context );
-    virtual ~CombinedDriver();
     
     virtual int computeFeatures( const orca::LaserScanner2dDataPtr &laserDataPtr,
                                  orca::PolarFeature2dData          &featureData );
     
 private:
 
-    std::vector<IExtractor*> extractors_;
+    hydrolfextract::StartOrEnd s;
+
+    std::auto_ptr<hydrolfextract::ReflectorFeatureExtractor>     reflectorExtractor_;
+    std::auto_ptr<hydrolfextract::ForegroundFeatureExtractor>    foregroundExtractor_;
+    std::auto_ptr<hydrolfextract::DoorFeatureExtractor>          doorExtractor_;
+    std::auto_ptr<hydrolfextract::LineAndCornerFeatureExtractor> lineAndCornerExtractor_;
 };
 
 } // namespace

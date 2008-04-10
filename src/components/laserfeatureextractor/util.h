@@ -9,9 +9,9 @@
 
 namespace laserfeatures {
 
-inline hydrolfextract::LaserConfig getLaserConfig( const orca::RangeScanner2dDescription &laserDescr )
+inline hydrolfextract::ScannerConfig getScannerConfig( const orca::RangeScanner2dDescription &laserDescr )
 {
-    return hydrolfextract::LaserConfig( laserDescr.maxRange,
+    return hydrolfextract::ScannerConfig( laserDescr.maxRange,
                                         laserDescr.startAngle,
                                         orcaobj::calcAngleIncrement( laserDescr.fieldOfView, 
                                                                      laserDescr.numberOfSamples ) );

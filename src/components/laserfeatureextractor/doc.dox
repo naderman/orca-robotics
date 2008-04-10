@@ -113,7 +113,7 @@ Lines
 - @c LaserFeatureExtractor.Config.ExtractLines (bool)
     - Default: 1
 
-- @c LaserFeatureExtractor.Config.Lines.ClusterMaxRangeDelta (float) [m]
+- @c LaserFeatureExtractor.Config.Lines.MaxDeltaRangeInCluster (float) [m]
     - Points are first clustered before fitting lines.
     - A change in range greater than this breaks a cluster.
     - Default: 0.5
@@ -127,7 +127,7 @@ Lines
     - Self-explanatory
     - Default: 6
 
-- @c LaserFeatureExtractor.Config.Lines.MinLineLength (float) [m]
+- @c LaserFeatureExtractor.Config.Lines.MinLineLengthForLineFeature (float) [m]
     - Self-explanatory
     - Default: 2.0
 

@@ -31,10 +31,10 @@ Config.FGPoints.MinForegroundBackgroundSeparation.Default=2.0
 Config.FGPoints.PFalsePositive.Default=0.2
 Config.FGPoints.PTruePositive.Default=0.6
 
-Config.Lines.ClusterMaxRangeDelta.Default=0.5
+Config.Lines.MaxDeltaRangeInCluster.Default=0.5
 Config.Lines.BreakDistThreshold.Default=0.02
 Config.Lines.MinPointsInLine.Default=6
-Config.Lines.MinLineLength.Default=1.0
+Config.Lines.MinLineLengthForLineFeature.Default=1.0
 Config.Lines.RejectLikelyGroundObservations.Default=1
 Config.Lines.PFalsePositive.Default=0.4
 Config.Lines.PFalsePositivePossibleGround.Default=0.55

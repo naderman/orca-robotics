@@ -212,13 +212,11 @@ FeatureMap2dPainter::paintPoseFeature( QPainter *painter,
         painter->rotate( RAD2DEG(f.p.o) );
         if ( displayUncertainty_ )
         {
-            cout<<"TRACE(featuremap2dpainter.cpp): f.c.tt: " << f.c.tt << endl;
             const float length = 2.0;
             painter->setPen( QPen(orcaqguielementutil::featureColour(f.type)) );
             hydroqguipaint::paintUncertaintyWedge( painter,
                                                    f.c.tt,
                                                    length );
-            cout<<"TRACE(featuremap2dpainter.cpp): paintUncertaintyWedge done." << endl;
         }
         else
         {
