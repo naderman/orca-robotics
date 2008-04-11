@@ -8,7 +8,7 @@ Requires.Laser.Type=LaserScanner2d
 Requires.Laser.DefaultProxy=laserscanner2d@local/laser2d
 
 # component configuration
-Config.Driver.Default=combined
+Config.DriverLib.Default=libHydroLaserFeatureExtractorCombined.so
 
 Config.PointTargetRangeSd.Default=0.2
 Config.PointTargetBearingSd.Default=5.0

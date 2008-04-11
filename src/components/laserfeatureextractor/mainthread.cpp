@@ -13,11 +13,59 @@
 #include <orcaice/orcaice.h>
 #include <orcaobj/orcaobj.h>
 #include "mainthread.h"
-#include "combineddriver.h"
+#include <hydrofeatureobs/hydrofeatureobs.h>
 
 using namespace std;
 
 namespace laserfeatures {
+
+namespace {
+
+    orca::SinglePolarFeature2dPtr convert( const hydrofeatureobs::FeatureObs &hydroFeature )
+    {
+        orca::SinglePolarFeature2dPtr orcaFeature;
+
+        if ( hydroFeature.isPointFeature() )
+        {
+            const hydrofeatureobs::PointFeatureObs *f =
+                dynamic_cast<const hydrofeatureobs::PointFeatureObs*>(&hydroFeature);
+            assert( f != NULL );
+
+            orca::PointPolarFeature2d *orcaF = new orca::PointPolarFeature2d;
+            orcaFeature = orcaF;
+            orcaF->p.r       = f->range();
+            orcaF->p.o       = f->bearing();
+            orcaF->rangeSd   = f->rangeSd();
+            orcaF->bearingSd = f->bearingSd();
+        }
+        else if ( hydroFeature.isLineFeature() )
+        {
+            const hydrofeatureobs::LineFeatureObs *f =
+                dynamic_cast<const hydrofeatureobs::LineFeatureObs*>(&hydroFeature);
+            assert( f != NULL );
+
+            orca::LinePolarFeature2d *orcaF = new orca::LinePolarFeature2d;
+            orcaFeature = orcaF;
+            orcaF->start.r      = f->start().range();
+            orcaF->start.o      = f->start().bearing();
+            orcaF->end.r        = f->end().range();
+            orcaF->end.o        = f->end().bearing();
+            orcaF->startSighted = f->startSighted();
+            orcaF->endSighted   = f->endSighted();
+            orcaF->rhoSd        = f->rhoSd();
+            orcaF->alphaSd      = f->alphaSd();
+        }
+
+        orcaFeature->type           = hydroFeature.featureType();
+        orcaFeature->pFalsePositive = hydroFeature.pFalsePositive();
+        orcaFeature->pTruePositive  = hydroFeature.pTruePositive();
+
+        return orcaFeature;
+    }
+
+}
+
+////////////////////////////////////////////////////////////////////////////////
 
 MainThread::MainThread( const orcaice::Context &context ) :
     SubsystemThread( context.tracer(), context.status(), "MainThread" ),
@@ -30,9 +78,68 @@ MainThread::MainThread( const orcaice::Context &context ) :
 void 
 MainThread::initDriver()
 {
-    context_.tracer().debug( "loading 'combined' driver",3);
-    driver_.reset( new CombinedDriver( laserDescr_, context_ ) );    
-    context_.tracer().debug("driver instantiated",5);
+    subStatus().setMaxHeartbeatInterval( 10.0 );
+
+    Ice::PropertiesPtr prop = context_.properties();
+    std::string prefix = context_.tag() + ".Config.";
+
+    // Dynamically load the library and find the factory
+    std::string driverLibName = 
+        orcaice::getPropertyWithDefault( prop, prefix+"DriverLib", "libHydroLaserFeatureExtractorCombined.so" );
+    context_.tracer().debug( "MainThread: Loading driver library "+driverLibName, 4 );
+    // The factory which creates the driver
+    std::auto_ptr<hydrointerfaces::LaserFeatureExtractorFactory> driverFactory;
+    try {
+        driverLib_.reset( new hydrodll::DynamicallyLoadedLibrary(driverLibName) );
+        driverFactory.reset( 
+            hydrodll::dynamicallyLoadClass<hydrointerfaces::LaserFeatureExtractorFactory,DriverFactoryMakerFunc>
+            ( *driverLib_, "createDriverFactory" ) );
+    }
+    catch (hydrodll::DynamicLoadException &e)
+    {
+        // unrecoverable error
+        context_.shutdown(); 
+        throw;
+    }
+
+    // create the driver
+    while ( !isStopping() )
+    {
+        std::stringstream exceptionSS;
+        try {
+            context_.tracer().info( "MainThread: Creating driver..." );
+            driver_.reset(0);
+            driver_.reset( driverFactory->createDriver( laserDescr_.maxRange,
+                                                        laserDescr_.startAngle,
+                                                        orcaobj::calcAngleIncrement( laserDescr_.fieldOfView, 
+                                                                                     laserDescr_.numberOfSamples ),
+                                                        context_.toHydroContext() ) );
+            break;
+        }
+        catch ( IceUtil::Exception &e ) {
+            exceptionSS << "MainThread: Caught exception while creating driver: " << e;
+        }
+        catch ( std::exception &e ) {
+            exceptionSS << "MainThread: Caught exception while initialising driver: " << e.what();
+        }
+        catch ( char *e ) {
+            exceptionSS << "MainThread: Caught exception while initialising driver: " << e;
+        }
+        catch ( std::string &e ) {
+            exceptionSS << "MainThread: Caught exception while initialising driver: " << e;
+        }
+        catch ( ... ) {
+            exceptionSS << "MainThread: Caught unknown exception while initialising driver";
+        }
+
+        // we get here only after an exception was caught
+        context_.tracer().error( exceptionSS.str() );
+        subStatus().fault( exceptionSS.str() );          
+
+        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));        
+    }
+
+    subStatus().setMaxHeartbeatInterval( 1.0 );
 }
 
 void 
@@ -108,9 +215,10 @@ MainThread::walk()
     initPolarFeatureInterface();
 
     // Temporaries for use in loop
-    orca::PolarFeature2dData featureData;
+    orca::PolarFeature2dData    featureData;
     orca::LaserScanner2dDataPtr laserData;
     orca::RangeScanner2dDataPtr rangeData;
+    std::vector<hydrofeatureobs::FeatureObs*> hydroFeatures;
 
     context_.tracer().debug( "Entering main loop.",2 );
     subStatus().setMaxHeartbeatInterval( 3.0 );
@@ -150,7 +258,15 @@ MainThread::walk()
             //
             // execute algorithm to compute features
             //
-            driver_->computeFeatures( laserData, featureData );
+            hydroFeatures = driver_->extractFeatures( laserData->ranges, laserData->intensities );
+
+            // Convert format
+            featureData.features.clear();
+            for ( uint i=0; i < hydroFeatures.size(); i++ )
+            {
+                featureData.features.push_back( convert( *hydroFeatures[i] ) );
+                delete hydroFeatures[i];
+            }
 
             // features have the same time stamp as the raw scan
             featureData.timeStamp = laserData->timeStamp;
@@ -186,129 +302,5 @@ MainThread::walk()
 
     context_.tracer().debug( "Exited main loop.",2 );
 }
-
-// void
-// convertPointToRobotCS( double &range,
-//                        double &bearing,
-//                        const orca::CartesianPoint &offsetXyz,
-//                        const orca::OrientationE offsetAngles )
-// {
-//     orca::CartesianPoint LaserXy, RobotXy;
-    
-//     LaserXy.x = cos(bearing) * range;
-//     LaserXy.y = sin(bearing) * range;
-//     RobotXy.x = LaserXy.x*cos(offsetAngles.y) - LaserXy.y*sin(offsetAngles.y) + offsetXyz.x;
-//     RobotXy.y = LaserXy.x*sin(offsetAngles.y) + LaserXy.y*cos(offsetAngles.y) + offsetXyz.y;
-//     range   = sqrt(RobotXy.x*RobotXy.x + RobotXy.y*RobotXy.y);
-//     bearing = atan2(RobotXy.y,RobotXy.x);
-// }
-
-// void 
-// MainThread::convertToRobotCS( const orca::PolarFeature2dData &featureData )
-// {
-//     orca::CartesianPoint offsetXyz = sensorOffset_.p;
-//     orca::OrientationE   offsetAngles = sensorOffset_.o;
-    
-//     for (unsigned int i=0; i<featureData.features.size(); i++ )
-//     {
-//         // a bit ugly...
-//         orca::SinglePolarFeature2dPtr ftr = featureData.features[i];
-//         if ( ftr->ice_isA( "::orca::PointPolarFeature2d" ) )
-//         {
-//             orca::PointPolarFeature2d& f = dynamic_cast<orca::PointPolarFeature2d&>(*ftr);
-//             assert( f.p.r >= 0 && f.p.r < laserDescr_.maxRange );
-//             assert( f.p.o > laserDescr_.startAngle && 
-//                     f.p.o < laserDescr_.startAngle+laserDescr_.fieldOfView );
-//             assert( f.rangeSd >= 0 && f.bearingSd >= 0 );
-//             convertPointToRobotCS( f.p.r, f.p.o, offsetXyz, offsetAngles );
-//         }
-//         else if ( ftr->ice_isA( "::orca::LinePolarFeature2d" ) )
-//         {
-//             orca::LinePolarFeature2d& f = dynamic_cast<orca::LinePolarFeature2d&>(*ftr);
-
-//             // Check a few things...
-//             // (Allow slack because funny things can happen as endpoints are projected)
-//             const bool EPSR=0.5;
-//             const bool EPSB=5*M_PI/180.0;
-//             if ( f.startSighted )
-//             {
-//                 assert( f.start.r >= -EPSR && f.start.r < laserDescr_.maxRange+EPSR );
-//                 assert( f.start.o > laserDescr_.startAngle-EPSB && 
-//                         f.start.o < laserDescr_.startAngle+laserDescr_.fieldOfView+EPSB );
-//             }
-//             if ( f.endSighted )
-//             {
-//                 assert( f.end.r >= -EPSR && f.end.r < laserDescr_.maxRange+EPSR );
-//                 assert( f.end.o > laserDescr_.startAngle-EPSB && 
-//                         f.end.o < laserDescr_.startAngle+laserDescr_.fieldOfView+EPSB );
-//             }
-//             assert ( f.rhoSd >= 0 && f.alphaSd >= 0 );
-
-//             //
-//             // Check: the line should be visible.
-//             //        (prior to conversion to robot-centric CS)
-//             // 
-//             double bearingDiff = f.end.o - f.start.o;
-//             if ( bearingDiff < 0 )
-//             {
-//                 stringstream ss;
-//                 ss << "MainThread::convertToRobotCS(): bearingDiff < 0 -- line is not visible from sensor pose!"
-//                    << "  Line was: " 
-//                    << orcaobj::toString(ftr);
-//                 throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, ss.str() );
-//             }
-
-//             convertPointToRobotCS( f.start.r, f.start.o, offsetXyz, offsetAngles );
-//             convertPointToRobotCS( f.end.r,   f.end.o,   offsetXyz, offsetAngles );
-
-//             //
-//             // Check: the line should be visible.
-//             //        (after conversion to robot-centric CS)
-//             // 
-//             bearingDiff = f.end.o - f.start.o;
-//             if ( bearingDiff < 0 )
-//             {
-//                 //
-//                 // Line is not visible from platform pose (but it was visible from sensor pose -- 
-//                 //   this can happen if the two are not co-located.
-//                 //   So turn the thing around.
-//                 //
-//                 stringstream ss;
-//                 ss << "MainThread::convertToRobotCS(): bearingDiff < 0 -- line is not visible from platform pose!"
-//                    << "  (this is possible when sensor/platforms poses are not co-located).  Ignoring."<<endl
-//                    << "  Line was: " 
-//                    << orcaobj::toString(ftr);
-//                 throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, ss.str() );
-//             }
-//         }
-//         else
-//         {
-//             stringstream ss; ss<<"ERROR(mainloop.cpp): Unknown feature type: " << ftr->type;
-//             throw ss.str();
-//         }
-//     }
-// }
-
-// bool
-// MainThread::sensorOffsetOK( const orca::Frame3d & offset )
-// {
-//     bool offsetOk = true;
-//     if ( offset.p.z != 0.0 )
-//     {
-//         stringstream ss;
-//         ss << "Can't handle non-zero 'z' component in laser offset. Offset: " << orcaobj::toString(offset);
-//         context_.tracer().error( ss.str() );
-//         offsetOk = false;
-//     }
-//     if ( offset.o.r != 0.0 || offset.o.p != 0.0 )
-//     {
-//         stringstream ss;
-//         ss << "Can't handle non-zero roll or pitch in laser offset. Offset: " << orcaobj::toString(offset);
-//         context_.tracer().error( ss.str() );
-//         offsetOk = false;
-//     }
-
-//     return offsetOk;
-// }
 
 }

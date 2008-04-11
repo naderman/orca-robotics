@@ -30,167 +30,24 @@
 
 @image html laserfeatureextractor.png
 
-@par Operation
+@par Drivers
 
-The component receives features from laser scans, useful for navigation. Types of features extracted:
-
-- reflectors: anything with high reflectivity
-- foreground points: things like poles or trees
-- corners: internal and external corners eg. of buildings
-- doors: gaps in walls of a certain width
+This component dynamically loads an implementation of a Hydro
+interface hydrointerfaces::LaserFeatureExtractor. You can also load
+your own implementation as long as the shared library is in the
+path. See Hydro documentation for the list of available drivers.
 
 @par Configuration
 
-The configuration documentation is split into sections for each feature type
-
-General
-
-- The uncertainty of point features
-  - @c LaserFeatureExtractor.Config.PointTargetRangeSd (float) [m]
-    - Default: 0.2
-  - @c LaserFeatureExtractor.Config.PointTargetBearingSd (float) [deg]
-    - Default: 5.0
-      - Note these values need to take into account:
-        - Inherent sensor uncertainty
-        - Sensor offset uncertainty
-        - Timing uncertainty
-
-Reflectors
-
-- @c LaserFeatureExtractor.Config.ExtractReflectors (bool)
-    - Default: true
-
-- @c LaserFeatureExtractor.Config.Reflectors.MaxDeltaRangeNearReflector (float) [m]
-    - Don't extract a feature if there's a jump in the ranges > this threshold
-      near the reflector.
-      This rejects spurious reflectors that are partially-obscured behind a foreground obstacle.
-      It also reduces the angles about which a reflector on a corner can be extracted.
-    - Default: 0.5
-
-- @c LaserFeatureExtractor.Config.Reflectors.MaxDeltaRangeWithinReflector (float) [m]
-    - A reflector that includes a jump in range > this threshold will be ignored.
-      Default: 0.3
-
-- @c LaserFeatureExtractor.Config.Reflectors.MinBrightness (int)
-    - minimum intensity value to be considered a feature
-    - Default: 1
-
-- @c LaserFeatureExtractor.Config.Reflectors.PFalsePositive (float)
-    - porbability of a false positive
-    - Default: 0.1
-
-- @c LaserFeatureExtractor.Config.Reflectors.PTruePositive (float)
-    - probability of a true positive
-    - Default: 0.6
-
-Foreground Points
-
-- @c LaserFeatureExtractor.Config.ExtractForegroundPoints (bool)
-    - Default: 0
-
-- @c LaserFeatureExtractor.Config.FGPoints.MinForegroundWidth (float) [m]
-    - minimum width of poles/trees
-    - Default: 0.01
-
-- @c LaserFeatureExtractor.Config.FGPoints.MaxForegroundWidth (float) [m]
-    - maximum width of poles and trees
-    - Default: 0.5
-
-- @c LaserFeatureExtractor.Config.FGPoints.MinForegroundBackgroundSeparation (float) [m]
-    - how far the pole or tree must be from the background or other clutter
-    - Default: 2.0
-
-- @c LaserFeatureExtractor.Config.FGPoints.PFalsePositive (double)
-    - Probability of detecting a false-positive foreground point
-    - Default: 0.4
-
-- @c LaserFeatureExtractor.Config.FGPoints.PTruePositive (double)
-    - Probability of detecting a true-positive foreground point
-    - Default: 0.5
-
-Lines
-
-- @c LaserFeatureExtractor.Config.ExtractLines (bool)
-    - Default: 1
-
-- @c LaserFeatureExtractor.Config.Lines.MaxDeltaRangeInCluster (float) [m]
-    - Points are first clustered before fitting lines.
-    - A change in range greater than this breaks a cluster.
-    - Default: 0.5
-
-- @c LaserFeatureExtractor.Config.Lines.BreakDistThreshold (float) [m]
-    - For a line to be fit, the orthogonal distance of each point from
-      the line must be less than this.
-    - Default: 0.1
-
-- @c LaserFeatureExtractor.Config.Lines.MinPointsInLine (int)
-    - Self-explanatory
-    - Default: 6
-
-- @c LaserFeatureExtractor.Config.Lines.MinLineLengthForLineFeature (float) [m]
-    - Self-explanatory
-    - Default: 2.0
-
-- @c LaserFeatureExtractor.Config.Lines.RejectLikelyGroundObservations (bool)
-    - Reject lines with near-zero slope
-      - This will be seen if you're leaning forward or moving up a hill
-    - Default: 1
-
-- @c LaserFeatureExtractor.Config.Lines.PFalsePositive (double)
-    - Probability of detecting a false-positive line
-    - Default: 0.4
-
-- @c LaserFeatureExtractor.Config.Lines.PFalsePositivePossibleGround (double)
-    - Probability of detecting a false positive when observing a line with near-zero slope
-    - Default: 0.55
-
-- @c LaserFeatureExtractor.Config.Lines.PTruePositive (double)
-    - Probability of detecting a line when it's really there
-    - Default: 0.6
-
-Corners
-
-- @c LaserFeatureExtractor.Config.ExtractCorners (bool)
-    - Default: 1
-- @c LaserFeatureExtractor.Config.PFalsePositive (double)
-    - Probability of detecting a false-positive corner
-    - Default: 0.2
-- @c LaserFeatureExtractor.Config.PTruePositive (double)
-    - Probability of detecting a true-positive corner
-    - Default: 0.6
-
-- The corner extractor looks for intersecting lines.  It relies
-  on the line extractor, and is therefore affected by the line
-  extractor's configuration (with the exception of the MinLineLength
-  parameter: the corner detector will look for the intersection of 
-  smaller lines than the line detector is configured for).
-
-
-Doors
-
-- @c LaserFeatureExtractor.Config.ExtractDoors (bool)
-    - Default: 0
-- @c LaserFeatureExtractor.Config.Doors.MinDoorWidth (double)
-    - Default: 0.9
-- @c LaserFeatureExtractor.Config.Doors.MaxDoorWidth (double)
-    - Default: 1.2
-- @c LaserFeatureExtractor.Config.Doors.MinDeltaRangeThruDoor (double)
-    - Default: 2.0
-- @c LaserFeatureExtractor.Config.Doors.RangeSd (double)
-    - Default: 0.3
-- @c LaserFeatureExtractor.Config.Doors.BearingSd (double)
-    - Default: 5.0
-- @c LaserFeatureExtractor.Config.Doors.MinReturnsThruDoor (int)
-    - Default: 3
-- @c LaserFeatureExtractor.Config.Doors.MinReturnsBesideDoor (int)
-    - Default: 2
-- @c LaserFeatureExtractor.Config.Doors.MaxDeltaRangeWallBesideDoor (double)
-    - Default: 0.3
+- @c LaserFeatureExtractor.Config.DriverLib (string)
+    - Name of shared library containing the driver
+    - Valid values are at least: { 'libHydroLaserFeatureExtractorCombined.so' }
+    - Default: "libHydroLaserFeatureExtractorCombined.so"
 
 An example configuration file is installed into [ORCA-INSTALL-DIR]/share/orca/cfg/ directory.
 
 @par Authors
-Alex Brooks (algorithm), Tobias Kaupp (port from Orca1)
+Alex Brooks
 
 */
 

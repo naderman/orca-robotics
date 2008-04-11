@@ -5,7 +5,7 @@ SET( build TRUE )
 GBX_REQUIRE_OPTION( build EXE ${APP_NAME} ON )
 GBX_REQUIRE_VAR( build EXE ${APP_NAME} GBX_OS_LINUX "only Linux OS is supported" )
 
-SET( ext_libs HydroGeom2d HydroFeatureObs HydroLaserFeatureExtract )
+SET( ext_libs HydroDll HydroGeom2d HydroFeatureObs )
 GBX_REQUIRE_INSTALLS( build EXE ${APP_NAME} ${ext_libs} )
 
 SET( int_libs OrcaIfaceImpl OrcaObjects )

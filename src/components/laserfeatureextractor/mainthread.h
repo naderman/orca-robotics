@@ -9,16 +9,16 @@
  *
  */
 
-#ifndef ORCA_FEATURE_EXTRACTOR_MAIN_LOOP_H
-#define ORCA_FEATURE_EXTRACTOR_MAIN_LOOP_H
+#ifndef LASER_FEATURE_EXTRACTOR_MAIN_LOOP_H
+#define LASER_FEATURE_EXTRACTOR_MAIN_LOOP_H
 
 #include <gbxsickacfr/gbxiceutilacfr/subsystemthread.h>
 #include <orcaice/context.h>
-
+#include <hydrointerfaces/laserfeatureextractor.h>
 #include <orca/laserscanner2d.h>
 #include <orcaifaceimpl/polarfeature2dImpl.h>
 #include <orcaifaceimpl/storingconsumers.h>
-#include "driver.h"
+#include <hydrodll/dynamicload.h>
 
 namespace laserfeatures
 {
@@ -39,8 +39,10 @@ private:
     void initDriver();
     void initPolarFeatureInterface();
 
-    // generic algorithm
-    std::auto_ptr<Driver> driver_;
+    // The library that contains the driver factory (must be declared first so it's destructed last!!!)
+    std::auto_ptr<hydrodll::DynamicallyLoadedLibrary> driverLib_;
+    // Generic algorithm implementation
+    std::auto_ptr<hydrointerfaces::LaserFeatureExtractor> driver_;
     
     // Our external interface
     orcaifaceimpl::PolarFeature2dImplPtr featureInterface_;
