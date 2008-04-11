@@ -110,13 +110,13 @@ GuiElements typically connect to a single required interface but can also have n
 - @c OrcaView.Config.ElementX.Type (string)
      - GuiElement type
      - X is a number (need to be consecutive)
-     - Supported types are: Grid, LaserScanner2d, Localise2d, Particle2d, PolarFeature2d, PathFollower2d, PathPlanner2d, PixMap, FeatureMap2d, OgMap, Wifi, MultiOgMaps
+     - Supported types are: LaserScanner2d, Localise2d, Particle2d, PolarFeature2d, PathFollower2d, PathPlanner2d, PixMap, FeatureMap2d, OgMap, Wifi, MultiOgMaps
      
 - @c OrcaView.Config.ElementX.Details (string)
     - Network connection details
     - X is a number (need to be consecutive)
     - Details are dependent on the Type:
-        - no interfaces (e.g. Grid): not required
+        - no interfaces (permanent elements such as background images): not required
         - one required interface (e.g. LaserScanner2d): interface@platform/component
         - several required interfaces (e.g. MultiOgMaps): 
           interface1@platform1/component1:interface2@platform2/component2: ... :interfaceN@platformN/componentN

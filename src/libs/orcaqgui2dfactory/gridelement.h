@@ -36,6 +36,8 @@ public:
     
     virtual void execute( int action );
 
+protected:
+
     virtual bool isPermanentElement() const { return true; }
     
 private:

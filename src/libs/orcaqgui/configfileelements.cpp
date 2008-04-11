@@ -1,3 +1,14 @@
+/*
+ * Orca-Robotics Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2008 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This copy of Orca is licensed to you under the terms described in
+ * the LICENSE file included in this distribution.
+ *
+ */
+
+
 #include "configfileelements.h"
 #include <iostream>
 #include <orcaice/orcaice.h>
@@ -6,6 +17,16 @@
 using namespace std;
 
 namespace orcaqgui {
+
+    void
+    loadGrid( orcaqgemv::GuiElementModel &guiElementModel )
+    {
+        const QString elementType("Grid");
+        QStringList elementDetails;
+        elementDetails.push_back("local@global/local");
+
+        guiElementModel.createGuiElement( elementType, elementDetails );
+    }
 
     void
     loadElementsFromConfigFile( orcaqgemv::GuiElementModel &guiElementModel,

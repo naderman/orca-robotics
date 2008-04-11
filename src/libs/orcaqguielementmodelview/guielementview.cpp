@@ -75,20 +75,14 @@ GuiElementView::contextMenuEvent( QContextMenuEvent* e )
     }
 
     menu.addSeparator();
-
-    // make every GUI element focusable.
-    bool isFocusable = true; //currentIndex().data( GuiElementModel::FocusRole ).toBool();
-
-    if ( isFocusable ) {
-//         QAction* act = new QAction( "Set As Coordinate Frame", this);
-//         connect(act, SIGNAL(triggered()), this, SLOT( setCooFrameToCurrentGuiElement() ));
-//         act->setCheckable(true);
-//         menu.addAction( act );
-        menu.addAction( "Set As Coordinate Frame", this, SLOT( setCooFrameToCurrentGuiElement() ) );
-        menu.addAction( "Set As Origin", this, SLOT( setOriginToCurrentGuiElement() ) );
-    }
+    menu.addAction( "Set As Coordinate Frame", this, SLOT( setCooFrameToCurrentGuiElement() ) );
+    menu.addAction( "Set As Origin", this, SLOT( setOriginToCurrentGuiElement() ) );
     
-    menu.addAction( "Remove", this, SLOT( removeCurrentGuiElement() ) );
+    // check whether element is removable
+    GuiElementModel* guiElementModel = dynamic_cast<GuiElementModel*>( model() );
+    if ( guiElementModel->isElementRemovable( currentIndex().row() ) ) {
+        menu.addAction( "Remove", this, SLOT( removeCurrentGuiElement() ) );
+    }
     
     menu.exec( e->globalPos() );
 }

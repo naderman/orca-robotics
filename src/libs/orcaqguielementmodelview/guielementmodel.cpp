@@ -448,8 +448,7 @@ GuiElementModel::updateGuiElements()
 void
 GuiElementModel::setCoordinateFramePlatform( int guiElementIndex )
 {
-    // AlexB: Why can this be outside valid range?  Should we assert rather than silently ignoring?
-    if ( guiElementIndex<0 || guiElementIndex >= elements().size() ) return;
+    assert ( guiElementIndex>=0 && guiElementIndex < elements().size() );
     
     // by convention, Grid's platform is "global"
     coordinateFrameManager_.setCoordinateFramePlatform( elements()[guiElementIndex]->platform() );
@@ -458,21 +457,25 @@ GuiElementModel::setCoordinateFramePlatform( int guiElementIndex )
 void
 GuiElementModel::setOriginPlatform( int guiElementIndex )
 {
-    // AlexB: Why can this be outside valid range?  Should we assert rather than silently ignoring?
-    if ( guiElementIndex<0 || guiElementIndex >= elements().size() ) return;
+    assert ( guiElementIndex>=0 && guiElementIndex < elements().size() );
 
     // by convention, Grid's platform is "global"
     coordinateFrameManager_.setOriginPlatform( elements()[guiElementIndex]->platform() );
 }
 
+bool 
+GuiElementModel::isElementRemovable( int guiElementIndex )
+{
+    assert ( guiElementIndex>=0 && guiElementIndex < elements().size() );
+    return !elements()[guiElementIndex]->isPermanentElement();
+}
+
 void
 GuiElementModel::executeGuiElement( int guiElementIndex, int actionIndex )
 {
-
-    // AlexB: Why can this be outside valid range?  Should we assert rather than silently ignoring?
-    if ( guiElementIndex<0 || guiElementIndex >= elements().size() || elements()[guiElementIndex]==NULL ) return;
+    assert ( guiElementIndex>=0 && guiElementIndex < elements().size() );
     // debug
-    cout<<"GuiElementModel:executeGuiElement: executing action #"<<actionIndex<<endl;
+    // cout<<"GuiElementModel:executeGuiElement: executing action #"<<actionIndex<<endl;
 
     elements()[guiElementIndex]->execute( actionIndex );
 }

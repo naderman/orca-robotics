@@ -237,7 +237,11 @@ Component::start()
     centralWidget.addWidget( &worldView );
 
     mainWin.setCentralWidget( &centralWidget );
+    
+    // Grid is a special element which is always loaded
+    orcaqgui::loadGrid( guiElementModel );
 
+    // Load all elements specified in the config file
     orcaqgui::loadElementsFromConfigFile( guiElementModel, context() );
 
     mainWin.show();

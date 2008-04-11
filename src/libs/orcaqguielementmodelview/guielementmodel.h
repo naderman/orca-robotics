@@ -72,6 +72,7 @@ public:
     // Obtains indices of selected adapters from the view
     void selectedAdaptersInView( std::vector<int> &indices );
     
+    // Creating and removing elements
     void createGuiElement( const QString &elementType, QStringList &elementDetails );
     void removeAndDeleteGuiElement( hydroqgui::IGuiElement *guiElement );
 
@@ -81,8 +82,11 @@ public:
     QColor platformColor( const QString &platformName )
         { return platformColorMap_.getColor(platformName); }
 
+    bool isElementRemovable( int guiElementIndex );
+
     // const access to entire gui element set
     const hydroqgui::GuiElementSet &guiElementSet() const { return guiElementSet_; }
+
 
 signals:
     void newPlatform( const QString& );
