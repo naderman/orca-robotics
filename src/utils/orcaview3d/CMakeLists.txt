@@ -18,7 +18,7 @@ GBX_REQUIRE_VAR( build EXE ${APP_NAME} GLUT_FOUND "libGlut not found" )
 IF( build )
     
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
-    INCLUDE( ${ORCA_CMAKE_DIR}/UseQt.cmake )
+    INCLUDE( ${HYDRO_CMAKE_DIR}/UseQt.cmake )
 
     #
     # This gathers all the source files into the variable 'srcs'

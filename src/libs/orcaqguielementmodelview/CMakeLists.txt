@@ -16,7 +16,7 @@ GBX_REQUIRE_VAR( build LIB ${lib_name} HYDROQGUI_INSTALLED "libHydroQGui not ins
 IF( build )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
-    INCLUDE( ${ORCA_CMAKE_DIR}/UseQt.cmake )
+    INCLUDE( ${HYDRO_CMAKE_DIR}/UseQt.cmake )
     
     FILE( GLOB hdrs *.h )
     FILE( GLOB human_srcs *.cpp )

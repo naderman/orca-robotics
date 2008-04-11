@@ -16,7 +16,7 @@ GBX_REQUIRE_TARGETS( build EXE ${APP_NAME} ${int_libs} )
 IF( build )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
-    INCLUDE( ${ORCA_CMAKE_DIR}/UseQt.cmake )
+    INCLUDE( ${HYDRO_CMAKE_DIR}/UseQt.cmake )
     
     FILE( GLOB srcs *.cpp )
     SET( dep_libs ${ext_libs} ${int_libs} )

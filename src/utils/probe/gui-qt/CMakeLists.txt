@@ -1,6 +1,6 @@
 GBX_ADD_LICENSE( GPL )
 
-INCLUDE( ${ORCA_CMAKE_DIR}/UseQt.cmake )
+INCLUDE( ${HYDRO_CMAKE_DIR}/UseQt.cmake )
 
 # Glob all source files
 FILE( GLOB human_srcs *.cpp )

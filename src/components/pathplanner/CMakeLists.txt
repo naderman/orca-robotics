@@ -18,7 +18,7 @@ IF( build )
     SET( dep_libs ${ext_libs} ${int_libs} )
 
     IF( QT4_FOUND )
-        INCLUDE( ${ORCA_CMAKE_DIR}/UseQt.cmake )
+        INCLUDE( ${HYDRO_CMAKE_DIR}/UseQt.cmake )
         ADD_DEFINITIONS( -DQT4_FOUND )
     ELSE( QT4_FOUND )
         LIST( REMOVE_ITEM srcs "${CMAKE_CURRENT_SOURCE_DIR}/skeletongraphicsI.cpp" )
