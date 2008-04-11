@@ -70,7 +70,7 @@ getForegroundExtractor( const orca::RangeScanner2dDescription &laserDescr,
         orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"MinForegroundBackgroundSeparation", 0.5);
 
     double pFalsePositive =
-        orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"PFalsePositive", 0.3);
+        orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"PFalsePositive", 0.4);
     double pTruePositive =
         orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"PTruePositive", 0.5);
 

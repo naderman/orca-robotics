@@ -102,11 +102,11 @@ Foreground Points
 
 - @c LaserFeatureExtractor.Config.FGPoints.PFalsePositive (double)
     - Probability of detecting a false-positive foreground point
-    - Default: 0.2
+    - Default: 0.4
 
 - @c LaserFeatureExtractor.Config.FGPoints.PTruePositive (double)
     - Probability of detecting a true-positive foreground point
-    - Default: 0.6
+    - Default: 0.5
 
 Lines
 

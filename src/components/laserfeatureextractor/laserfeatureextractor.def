@@ -28,8 +28,8 @@ Config.Reflectors.PTruePositive.Default=0.6
 Config.FGPoints.MinForegroundWidth.Default=0.01
 Config.FGPoints.MaxForegroundWidth.Default=0.5
 Config.FGPoints.MinForegroundBackgroundSeparation.Default=2.0
-Config.FGPoints.PFalsePositive.Default=0.2
-Config.FGPoints.PTruePositive.Default=0.6
+Config.FGPoints.PFalsePositive.Default=0.4
+Config.FGPoints.PTruePositive.Default=0.5
 
 Config.Lines.MaxDeltaRangeInCluster.Default=0.5
 Config.Lines.BreakDistThreshold.Default=0.02
