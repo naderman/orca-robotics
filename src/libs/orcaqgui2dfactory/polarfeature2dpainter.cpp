@@ -13,7 +13,7 @@
 #include <QString>
 #include <orcaice/orcaice.h>
 #include <orcaobj/orcaobj.h>
-#include <hydroqguipaint/paintutils.h>
+#include <hydroqguielementutil/paintutils.h>
 #include "polarfeature2dpainter.h"
 #include <orcaqguielementutil/featurecolours.h>
 
@@ -157,7 +157,7 @@ drawPoseFeature( QPainter *painter, const orca::PosePolarFeature2d &f )
 
         painter->rotate( RAD2DEG( -f.p.o + f.orientation ) );
         painter->translate( BOX_WIDTH, 0.0 );
-        hydroqguipaint::paintArrow( painter );
+        hydroqguielementutil::paintArrow( painter );
     }
     painter->restore();
 }
@@ -195,7 +195,7 @@ drawLineFeature( QPainter *painter, const orca::LinePolarFeature2d &f )
 void
 PolarFeature2dPainter::paint( QPainter *painter, int z )
 {
-    if ( z != hydroqgui::Z_LASER_FEATURES ) return;
+    if ( z != hydroqguielementutil::Z_LASER_FEATURES ) return;
 
     // handle sensor offset
     painter->translate(offsetX_,offsetY_);

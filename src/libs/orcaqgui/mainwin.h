@@ -15,7 +15,7 @@
 #include <QMainWindow>
 
 #include <hydroiceutil/jobqueue.h>
-#include <hydroqgui/ihumanmanager.h>
+#include <hydroqguielementutil/ihumanmanager.h>
 #include <orcaice/context.h>
 #include <orcaqguielementmodelview/guielementmodel.h>
 #include <orcaqguielementmodelview/guielementview.h>
@@ -39,7 +39,7 @@ namespace orcaqgui {
 //! Call 'setCentralWidget()' to set the central widget.
 //!
 class MainWindow : public QMainWindow, 
-                   public hydroqgui::IHumanManager
+                   public hydroqguielementutil::IHumanManager
 {
     Q_OBJECT
 public:
@@ -57,9 +57,9 @@ public:
                 ScreenDumpParams                   screenDumpParams,
                 const std::vector<std::string>    &supportedInterfaces );
 
-    // Inherited from hydroqgui::IHumanManager
-    virtual void showDialogMsg( hydroqgui::IHumanManager::MessageType type, const QString &msg );
-    virtual void showStatusMsg( hydroqgui::IHumanManager::MessageType type, const QString &msg );
+    // Inherited from hydroqguielementutil::IHumanManager
+    virtual void showDialogMsg( hydroqguielementutil::IHumanManager::MessageType type, const QString &msg );
+    virtual void showStatusMsg( hydroqguielementutil::IHumanManager::MessageType type, const QString &msg );
     virtual QMenu    *fileMenu() { return fileMenu_; }
     virtual QMenu    *optionsMenu() { return optionsMenu_; }
     virtual QMenu    *displayMenu() { return displayMenu_; }

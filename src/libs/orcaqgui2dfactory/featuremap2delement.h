@@ -24,7 +24,7 @@ public:
 
     FeatureMap2dElement( const orcaice::Context  &context,
                          const std::string       &proxyString,
-                         hydroqgui::IHumanManager *humanManager );
+                         hydroqguielementutil::IHumanManager *humanManager );
 
     virtual bool isInGlobalCS() { return true; }
     virtual void actionOnConnection() 
@@ -42,7 +42,7 @@ public:
 
 private:
     FeatureMap2dPainter painter_;
-    hydroqgui::IHumanManager *humanManager_;
+    hydroqguielementutil::IHumanManager *humanManager_;
     QString featureMapFileName_;
     bool featureMapFileNameSet_;
 };

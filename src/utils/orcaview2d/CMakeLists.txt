@@ -24,14 +24,6 @@ IF( build )
     #
     FILE( GLOB human_srcs *.cpp )
 
-#    SET( moc_hdrs
-#        mainwin.h
-#        selectableelementwidget.h
-#        platformfocuscombo.h
-#    )
-#    QT4_WRAP_CPP( moc_srcs ${moc_hdrs} )
-    
-
     # build stand-alone component  
     WRAP_COMPONENT_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${human_srcs} )
     TARGET_LINK_LIBRARIES( ${APP_NAME} ${dep_libs} )

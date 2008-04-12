@@ -34,7 +34,7 @@ PixMapBackgroundPainter::~PixMapBackgroundPainter()
 void 
 PixMapBackgroundPainter::paint( QPainter *p, int z )
 {
-    if (z!=hydroqgui::Z_BACKGROUND) return;
+    if (z!=hydroqguielementutil::Z_BACKGROUND) return;
     pixmapPainter_->paint(p); 
 }
 
@@ -68,7 +68,7 @@ PixMapBackgroundPainter::setData( const orca::PixMapData& data )
 
 bool
 PixMapBackgroundPainter::checkFileExtension( QString &fe,
-                                             hydroqgui::IHumanManager *humanManager )
+                                             hydroqguielementutil::IHumanManager *humanManager )
 {
     if ( fe.isEmpty() ) 
     {
@@ -83,7 +83,7 @@ PixMapBackgroundPainter::checkFileExtension( QString &fe,
     else
     {
         cout << "ERROR(pixmapbackgroundpainter.cpp): File extension not supported" << endl;
-        humanManager->showDialogMsg(hydroqgui::IHumanManager::Error, "File extension not supported" );
+        humanManager->showDialogMsg(hydroqguielementutil::IHumanManager::Error, "File extension not supported" );
         return -1;
     }
 }
@@ -91,7 +91,7 @@ PixMapBackgroundPainter::checkFileExtension( QString &fe,
 int 
 PixMapBackgroundPainter::saveMap( const orcaice::Context &  context,
                                   const QString            &fileName,
-                                  hydroqgui::IHumanManager *humanManager )
+                                  hydroqguielementutil::IHumanManager *humanManager )
 {
     QString fileExtension = fileName.section('.',-1,-1);
     bool isOk = checkFileExtension( fileExtension, humanManager );

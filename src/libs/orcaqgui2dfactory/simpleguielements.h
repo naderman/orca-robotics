@@ -17,7 +17,7 @@
 #include <orcaqguielementutil/ptricestormelement.h>
 #include <orcaqguielementutil/icestormelement.h>
 #include <hydroqgui/hydroqgui.h>
-#include <hydroqgui/iknowsplatformposition2d.h>
+#include <hydroqguielementutil/iknowsplatformposition2d.h>
 #include <orcaqgui2dfactory/connectutils.h>
 
 // Include various painter types
@@ -155,7 +155,7 @@ class Localise3dElement
                              orca::Localise3dPrx,
                              orca::Localise3dConsumer,
                              orca::Localise3dConsumerPrx>,
-      public hydroqgui::IKnowsPlatformPosition2d
+      public hydroqguielementutil::IKnowsPlatformPosition2d
 {
 public:
     Localise3dElement( const orcaice::Context  &context,

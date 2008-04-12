@@ -14,7 +14,7 @@
 
 #include <qcolor.h>
 #include <orca/featuremap2d.h>
-#include <hydroqgui/definitions2d.h>
+#include <hydroqguielementutil/definitions2d.h>
 #include <hydroqgui/hydroqgui.h>
 
 // forward declarations
@@ -31,7 +31,7 @@ class FeatureMap2dPainter
 
     void setData( const orca::FeatureMap2dData &featureData );
     void paint( QPainter *p, int z );
-    bool paintThisLayer(int z) const {return z==hydroqgui::Z_SLAM_MAP;}
+    bool paintThisLayer(int z) const {return z==hydroqguielementutil::Z_SLAM_MAP;}
     void setUseTransparency( bool useTransparency ) { useTransparency_= useTransparency; };
     
     void clear();
@@ -39,7 +39,7 @@ class FeatureMap2dPainter
     void toggleFeatureNumbers() { displayFeatureNumbers_ = !displayFeatureNumbers_; }
     void toggleUncertainty() { displayUncertainty_ = !displayUncertainty_; }
     
-    int saveMap( const QString fileName, hydroqgui::IHumanManager *humanManager ) const;
+    int saveMap( const QString fileName, hydroqguielementutil::IHumanManager *humanManager ) const;
 
   private:
 

@@ -17,7 +17,7 @@
 #include <orcaobj/orcaobj.h>
 
 #include "qgraphics2dpainter.h"
-#include <hydroqgui/definitions2d.h>
+#include <hydroqguielementutil/definitions2d.h>
 #include <hydroqgui/hydroqgui.h>
 
 using namespace std;

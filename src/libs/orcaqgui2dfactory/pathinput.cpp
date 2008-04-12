@@ -15,7 +15,7 @@
 #include <orcaobj/orcaobj.h>
 #include <orcalogfactory/logstringutils.h>
 #include <orcaqgui/guiicons.h>
-#include <hydroqguipaint/paintutils.h>
+#include <hydroqguielementutil/paintutils.h>
 #include <orcaqgui2dfactory/waypointdialog.h>
 
 #include <QPainter>
@@ -467,7 +467,7 @@ void WpTable::updateDataStorage(int row, int column)
     
 PathInput::PathInput( QObject                  *parent,
                       WaypointSettings         *wpSettings,
-                      hydroqgui::IHumanManager &humanManager,
+                      hydroqguielementutil::IHumanManager &humanManager,
                       QString                   lastSavedPathFile )
     : wpSettings_(wpSettings),
       humanManager_(humanManager),      
@@ -515,7 +515,7 @@ void PathInput::paint( QPainter *p )
     QColor drawColor;
     
     if (useTransparency_) {
-        fillColor = hydroqguipaint::getTransparentVersion(Qt::green);
+        fillColor = hydroqguielementutil::getTransparentVersion(Qt::green);
     } else {
         fillColor=Qt::green;
     }
@@ -531,7 +531,7 @@ void PathInput::paint( QPainter *p )
             drawColor = fillColor;
         }
         
-        hydroqguipaint::paintWaypoint(  p, 
+        hydroqguielementutil::paintWaypoint(  p, 
                                         fillColor,
                                         drawColor, 
                                         guiPath_[i].heading,
@@ -548,7 +548,7 @@ void PathInput::paint( QPainter *p )
 
         p->translate( guiPath_[waypointInFocus_].position.x(), guiPath_[waypointInFocus_].position.y() );    // move to point
         drawColor = Qt::black;
-        hydroqguipaint::paintWaypoint(  p, 
+        hydroqguielementutil::paintWaypoint(  p, 
                                         fillColor,
                                         drawColor, 
                                         guiPath_[waypointInFocus_].heading,
@@ -881,7 +881,7 @@ void PathInput::generateFullPath()
     } 
     else 
     {
-        humanManager_.showStatusMsg(hydroqgui::IHumanManager::Warning, "No waiting times, no list expansion");
+        humanManager_.showStatusMsg(hydroqguielementutil::IHumanManager::Warning, "No waiting times, no list expansion");
     }
 }
 
@@ -892,14 +892,14 @@ PathInput::savePath( const QString &fileName )
     
     if (size==0)
     {
-        humanManager_.showDialogMsg(hydroqgui::IHumanManager::Warning, "Path has no waypoints!");
+        humanManager_.showDialogMsg(hydroqguielementutil::IHumanManager::Warning, "Path has no waypoints!");
         return;
     }
     
     QFile file(fileName);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
     {
-        humanManager_.showDialogMsg(hydroqgui::IHumanManager::Error,
+        humanManager_.showDialogMsg(hydroqguielementutil::IHumanManager::Error,
                                   "Cannot create file " + fileName );
         return;
     }
@@ -917,7 +917,7 @@ PathInput::savePath( const QString &fileName )
     QTextStream out(&file);
     out << QString(orcalogfactory::toLogString( orcaPath ).c_str());
     file.close();
-    humanManager_.showStatusMsg(hydroqgui::IHumanManager::Information, "Path successfully saved to " + fileName );
+    humanManager_.showStatusMsg(hydroqguielementutil::IHumanManager::Information, "Path successfully saved to " + fileName );
 }
 
 float
@@ -938,7 +938,7 @@ void PathInput::loadPreviousPath()
     if (lastSavedPathFile_!="") {
         loadPath( lastSavedPathFile_ );    
     } else {
-        humanManager_.showStatusMsg(hydroqgui::IHumanManager::Warning, "No path saved yet!" ); 
+        humanManager_.showStatusMsg(hydroqguielementutil::IHumanManager::Warning, "No path saved yet!" ); 
     }
     
 }
@@ -950,7 +950,7 @@ void PathInput::loadPath( const QString& fileName )
     QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        humanManager_.showStatusMsg(hydroqgui::IHumanManager::Error, "Problem opening file " + fileName );
+        humanManager_.showStatusMsg(hydroqguielementutil::IHumanManager::Error, "Problem opening file " + fileName );
         return;
     }
     
@@ -969,7 +969,7 @@ void PathInput::loadPath( const QString& fileName )
     orcaPathToGuiPath( orcaPath, guiPath_ );
     waitingTimes_.fill(0.0, orcaPath.size());
     
-    humanManager_.showStatusMsg(hydroqgui::IHumanManager::Information, "Successfully loaded file " + fileName );
+    humanManager_.showStatusMsg(hydroqguielementutil::IHumanManager::Information, "Successfully loaded file " + fileName );
     wpWidget_->refreshTable();
 }
 

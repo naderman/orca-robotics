@@ -10,8 +10,9 @@ GBX_REQUIRE_VAR( build LIB ${lib_name} QT4_FOUND "Qt4 not found" )
 SET( dep_libs OrcaQt OrcaQCompModel )
 GBX_REQUIRE_TARGETS( build LIB ${lib_name} ${dep_libs} )
 
-SET( dep_libs ${dep_libs} HydroQGui )
+SET( dep_libs ${dep_libs} HydroQGui HydroQGuiElementUtil)
 GBX_REQUIRE_VAR( build LIB ${lib_name} HYDROQGUI_INSTALLED "libHydroQGui not installed" )
+GBX_REQUIRE_VAR( build LIB ${lib_name} HYDROQGUIELEMENTUTIL_INSTALLED "HydroQGuiElementUtil not installed" )
 
 IF( build )
 
@@ -24,9 +25,7 @@ IF( build )
     SET( moc_hdrs
         guielementmodel.h
         guielementview.h
-#        mainwin.h
         regselectview.h
-#        shortcutaction.h
     )
 
     QT4_WRAP_CPP( moc_srcs ${moc_hdrs} )

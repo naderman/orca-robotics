@@ -178,7 +178,7 @@ Localise3dElement::tryToGetGeometry()
     }
     catch ( std::exception &e)
     {
-//         humanManager_->showStatusMsg(hydroqgui::IHumanManager::Error,"Exception when trying to get geometry: " + QString(e.what()) );
+//         humanManager_->showStatusMsg(hydroqguielementutil::IHumanManager::Error,"Exception when trying to get geometry: " + QString(e.what()) );
         cout << "Exception when trying to get geometry: " << e.what();
     }
     
@@ -202,7 +202,7 @@ Localise3dElement::tryToGetGeometry()
     }
     else
     {
-//         humanManager_->showStatusMsg(hydroqgui::IHumanManager::Warning, "Unknown platform type. Will paint a rectangle");
+//         humanManager_->showStatusMsg(hydroqguielementutil::IHumanManager::Warning, "Unknown platform type. Will paint a rectangle");
         orca::VehicleGeometryCuboidDescriptionPtr cubGeom = orca::VehicleGeometryCuboidDescriptionPtr::dynamicCast( geom );
         painter_.setTypeAndGeometry( PlatformTypeCubic, cubGeom->size.l, cubGeom->size.w );
         painter_.setOrigin( cubGeom->vehicleToGeometryTransform.p.x, cubGeom->vehicleToGeometryTransform.p.y, cubGeom->vehicleToGeometryTransform.o.y );

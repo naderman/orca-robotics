@@ -16,7 +16,7 @@
 #include <IceStorm/IceStorm.h>
 #include <orcaqguielementutil/ptricestormlistener.h>
 #include <hydroqgui/hydroqgui.h>
-#include <hydroqgui/guielement2d.h>
+#include <hydroqguielementutil/guielement2d.h>
 
 // forward declarations
 class QPainter;
@@ -31,7 +31,7 @@ namespace orcaqguielementutil {
   @author Alex Brooks
 */
 template<class PainterType, class DataType, class DataPtrType, class ProxyType, class ConsumerType, class ConsumerPrxType>
-class PtrIceStormElement : public hydroqgui::GuiElement2d
+class PtrIceStormElement : public hydroqguielementutil::GuiElement2d
 {
   
 public:

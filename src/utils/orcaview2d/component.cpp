@@ -190,13 +190,13 @@ Component::start()
     hydroqgui::StringToRandomColorMap platformColorScheme;
 
     // Handles coordination of mouse events between GuiElements
-    hydroqgui::MouseEventManager mouseEventManager;
+    hydroqguielementutil::MouseEventManager mouseEventManager;
 
     // Manages the coordinate frome for display
     hydroqgui::CoordinateFrameManager coordinateFrameManager;
 
     // Manages use of shortcut keys between Gui Elements
-    hydroqgui::ShortcutKeyManager shortcutKeyManager( mainWin, &mainWin );
+    hydroqguielementutil::ShortcutKeyManager shortcutKeyManager( mainWin, &mainWin );
 
     // Stores the set of Gui Elements
     hydroqgui::GuiElementSet guiElementSet;

@@ -16,7 +16,7 @@
 #include <IceStorm/IceStorm.h>
 #include <orcaqguielementutil/icestormlistener.h>
 #include <hydroqgui/hydroqgui.h>
-#include <hydroqgui/guielement2d.h>
+#include <hydroqguielementutil/guielement2d.h>
 
 namespace orcaqguielementutil {
 
@@ -28,7 +28,7 @@ namespace orcaqguielementutil {
   @author Alex Brooks
 */
 template<class PainterType, class DataType, class ProxyType, class ConsumerType, class ConsumerPrxType>
-class IceStormElement : public hydroqgui::GuiElement2d
+class IceStormElement : public hydroqguielementutil::GuiElement2d
 {
   
 public:

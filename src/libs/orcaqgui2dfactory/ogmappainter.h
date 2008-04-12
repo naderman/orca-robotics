@@ -13,7 +13,7 @@
 
 #include <orca/ogmap.h>
 #include <orcaice/context.h>
-#include <hydroqgui/definitions2d.h>
+#include <hydroqguielementutil/definitions2d.h>
 #include <orcaqgui2dfactory/pixmappainter.h>
 
 namespace orcaqgui2d
@@ -34,7 +34,7 @@ class OgMapPainter
     ~OgMapPainter();
 
     void paint( QPainter *p, int z );
-    bool paintThisLayer( int z ) const { return z==hydroqgui::Z_OG_MAP; }
+    bool paintThisLayer( int z ) const { return z==hydroqguielementutil::Z_OG_MAP; }
 
     // Give the PixmapPainter the data relevant for painting
     void setData( const orca::OgMapData& data );
@@ -44,13 +44,13 @@ class OgMapPainter
     
     int saveMap( const orcaice::Context   &context,
                  const QString            &fileName,
-                 hydroqgui::IHumanManager *humanManager );
+                 hydroqguielementutil::IHumanManager *humanManager );
     
   private:
       
     orca::OgMapData data_;
     PixmapPainter *pixmapPainter_;
-    ImageFileType checkFileExtension( QString &fe, hydroqgui::IHumanManager *humanManager );
+    ImageFileType checkFileExtension( QString &fe, hydroqguielementutil::IHumanManager *humanManager );
 };
 
 } // namespace

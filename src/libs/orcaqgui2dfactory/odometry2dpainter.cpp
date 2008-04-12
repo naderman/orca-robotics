@@ -10,7 +10,7 @@
  
 #include <iostream>
 #include <gbxsickacfr/gbxutilacfr/mathdefs.h>
-#include <hydroqguipaint/paintutils.h>
+#include <hydroqguielementutil/paintutils.h>
 
 #include "odometry2dpainter.h"
 
@@ -62,7 +62,7 @@ void Odometry2dPainter::paint( QPainter *p, int z )
         p->rotate(-90.0);
         
         // Paint speed arrow
-        p->setPen( QPen( hydroqguipaint::getDarkVersion(currentColour_), 0.1 ) );
+        p->setPen( QPen( hydroqguielementutil::getDarkVersion(currentColour_), 0.1 ) );
         p->save(); //  frame
         arrowLength = speedX_*5.0;
         p->drawLine( QPointF(0.0, 0.0), QPointF(0.0, arrowLength) );

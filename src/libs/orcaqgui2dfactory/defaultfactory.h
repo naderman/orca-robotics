@@ -30,12 +30,12 @@ namespace orcaqgui2d
         void setContext( const orcaice::Context &context )
             { context_ = context; isContextSet_ = true; }
 
-        virtual hydroqgui::IGuiElement* create( const QString                &elementType,
+        virtual hydroqguielementutil::IGuiElement* create( const QString                &elementType,
                                                 const QStringList            &elementDetails,
                                                 QColor                        suggestedColor,
-                                                hydroqgui::IHumanManager     &humanManager,
-                                                hydroqgui::MouseEventManager &mouseEventManager,
-                                                hydroqgui::ShortcutKeyManager &shortcutKeyManager,
+                                                hydroqguielementutil::IHumanManager     &humanManager,
+                                                hydroqguielementutil::MouseEventManager &mouseEventManager,
+                                                hydroqguielementutil::ShortcutKeyManager &shortcutKeyManager,
                                                 const hydroqgui::GuiElementSet &guiElementSet ) const;
         
         bool lookupElementType( const QStringList &ids, QString &elementType ) const;

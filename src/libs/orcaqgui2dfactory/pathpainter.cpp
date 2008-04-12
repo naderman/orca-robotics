@@ -19,7 +19,7 @@
 #include <orcaobj/orcaobj.h>
 #include <orcalogfactory/logstringutils.h>
 
-#include <hydroqguipaint/paintutils.h>
+#include <hydroqguielementutil/paintutils.h>
 
 #include "pathpainter.h"
 
@@ -77,7 +77,7 @@ void PathPainter::paint( QPainter *painter, int z )
 {
     if ( !displayWaypoints_ ) return;
     
-    if ( z != hydroqgui::Z_PATH ) return;
+    if ( z != hydroqguielementutil::Z_PATH ) return;
 
     QColor fillColor;
     QColor drawColor;
@@ -94,9 +94,9 @@ void PathPainter::paint( QPainter *painter, int z )
     QColor currentWpColor;
     
     if (useTransparency_) {
-        inactiveWpColor = hydroqguipaint::getTransparentVersion(futureWpColor);
-        pastWpColor = hydroqguipaint::getTransparentVersion(futureWpColor,0.25);
-        currentWpColor = hydroqguipaint::getTransparentVersion(futureWpColor,0.75);
+        inactiveWpColor = hydroqguielementutil::getTransparentVersion(futureWpColor);
+        pastWpColor = hydroqguielementutil::getTransparentVersion(futureWpColor,0.25);
+        currentWpColor = hydroqguielementutil::getTransparentVersion(futureWpColor,0.75);
     } else {
         inactiveWpColor = futureWpColor;
         pastWpColor = futureWpColor;
@@ -132,7 +132,7 @@ void PathPainter::paint( QPainter *painter, int z )
  
         painter->save();
         painter->translate( guiPath_[i].position.x(), guiPath_[i].position.y() );    // move to point
-        hydroqguipaint::paintWaypoint(  painter, 
+        hydroqguielementutil::paintWaypoint(  painter, 
                                         fillColor,
                                         drawColor, 
                                         guiPath_[i].heading,
@@ -148,7 +148,7 @@ void PathPainter::paint( QPainter *painter, int z )
 
         painter->translate( guiPath_[wpIndex_].position.x(), guiPath_[wpIndex_].position.y() );    // move to point
         drawColor = Qt::black;
-        hydroqguipaint::paintWaypoint(  painter, 
+        hydroqguielementutil::paintWaypoint(  painter, 
                                         currentWpColor,
                                         drawColor, 
                                         guiPath_[wpIndex_].heading,
@@ -223,7 +223,7 @@ void PathPainter::paint( QPainter *painter, int z )
     painter->save();
     painter->translate( x, y );
     QColor c = Qt::blue;
-    hydroqguipaint::paintWaypoint( painter, c, c, 0, 0.3, 360*16 );
+    hydroqguielementutil::paintWaypoint( painter, c, c, 0, 0.3, 360*16 );
     
     // drawing velocity values as text
     painter->setFont( QFont("Helvetica [Cronyx]", 12) );
@@ -241,18 +241,18 @@ void PathPainter::paint( QPainter *painter, int z )
 }
 
 
-void PathPainter::savePath( const QString fileName, hydroqgui::IHumanManager *humanManager ) const
+void PathPainter::savePath( const QString fileName, hydroqguielementutil::IHumanManager *humanManager ) const
 {
     if (guiPath_.size()==0)
     {
-        humanManager->showDialogMsg(hydroqgui::IHumanManager::Warning, "Path has no waypoints!");
+        humanManager->showDialogMsg(hydroqguielementutil::IHumanManager::Warning, "Path has no waypoints!");
         return;
     }
     
     QFile file(fileName);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
     {
-        humanManager->showDialogMsg(hydroqgui::IHumanManager::Error, "Cannot create file " + fileName );
+        humanManager->showDialogMsg(hydroqguielementutil::IHumanManager::Error, "Cannot create file " + fileName );
         return;
     }
     

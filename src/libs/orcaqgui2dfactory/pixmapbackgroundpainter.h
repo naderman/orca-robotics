@@ -13,13 +13,13 @@
 
 #include <orca/pixmap.h>
 #include <orcaice/context.h>
-#include <hydroqgui/definitions2d.h>
+#include <hydroqguielementutil/definitions2d.h>
 #include <orcaqgui2dfactory/pixmappainter.h>
 
 namespace orcaqgui2d
 {
     
-class hydroqgui::IHumanManager;  
+class hydroqguielementutil::IHumanManager;  
 
 class PixMapBackgroundPainter
 {
@@ -29,7 +29,7 @@ class PixMapBackgroundPainter
     ~PixMapBackgroundPainter();
 
     void paint( QPainter *p, int z );
-    bool paintThisLayer( int z ) const { return z==hydroqgui::Z_BACKGROUND; }
+    bool paintThisLayer( int z ) const { return z==hydroqguielementutil::Z_BACKGROUND; }
 
     // Give the PixmapPainter the data relevant for painting
     void setData( const orca::PixMapData& data );
@@ -39,12 +39,12 @@ class PixMapBackgroundPainter
     
     int saveMap( const orcaice::Context   &context,
                  const QString            &fileName,
-                 hydroqgui::IHumanManager *humanManager );
+                 hydroqguielementutil::IHumanManager *humanManager );
     
   private:
     PixmapPainter *pixmapPainter_;
     bool checkFileExtension( QString &fe,
-                             hydroqgui::IHumanManager *humanManager );
+                             hydroqguielementutil::IHumanManager *humanManager );
 };
 
 } // namespace

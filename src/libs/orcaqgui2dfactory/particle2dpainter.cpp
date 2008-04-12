@@ -13,7 +13,7 @@
 #include <qpainter.h>
 
 #include "particle2dpainter.h"
-#include <hydroqguipaint/paintutils.h>
+#include <hydroqguielementutil/paintutils.h>
 #include <gbxsickacfr/gbxutilacfr/mathdefs.h>
 
 using namespace std;
@@ -83,14 +83,14 @@ Particle2dPainter::setData( const orca::Particle2dData& particleData )
 
 void Particle2dPainter::paint( QPainter *painter, int z )
 {
-    if ( z != hydroqgui::Z_POSE+2 ) return;
+    if ( z != hydroqguielementutil::Z_POSE+2 ) return;
 
     painter->setPen( QPen( currentColour_ ) );
 
     for ( int i=0; i < qParticles_.size(); i++ )
     {
         if (useTransparency_) {
-            painter->setPen( QPen( hydroqguipaint::getTransparentVersion( currentColour_, MAX( 0.25, weights_[i]/maxWeight_)  ) ) );
+            painter->setPen( QPen( hydroqguielementutil::getTransparentVersion( currentColour_, MAX( 0.25, weights_[i]/maxWeight_)  ) ) );
         } else {
             painter->setPen( QPen( currentColour_ ) );
         }

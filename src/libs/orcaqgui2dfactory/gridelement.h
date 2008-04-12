@@ -11,8 +11,8 @@
 #ifndef ORCAGUI_GRIDELEMENT_H
 #define ORCAGUI_GRIDELEMENT_H
 
-#include <hydroqgui/definitions2d.h>
-#include <hydroqgui/guielement2d.h>
+#include <hydroqguielementutil/definitions2d.h>
+#include <hydroqguielementutil/guielement2d.h>
 
 namespace orcaqgui2d
 {
@@ -21,7 +21,7 @@ namespace orcaqgui2d
   @brief Paints a rectangular grid in the display.
   @author Tobias Kaupp, Alex Brooks, Ben Upcroft
 */  
-class GridElement : public hydroqgui::GuiElement2d
+class GridElement : public hydroqguielementutil::GuiElement2d
 {
 public:
 
@@ -30,7 +30,7 @@ public:
     virtual bool isInGlobalCS() { return true; }
     
 	virtual void paint( QPainter *p, int z );
-    virtual bool paintThisLayer(int z) const { return z==hydroqgui::Z_GRID || z==hydroqgui::Z_ORIGIN; }
+    virtual bool paintThisLayer(int z) const { return z==hydroqguielementutil::Z_GRID || z==hydroqguielementutil::Z_ORIGIN; }
 
     virtual QStringList contextMenu();
     

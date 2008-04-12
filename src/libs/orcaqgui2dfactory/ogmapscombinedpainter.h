@@ -12,7 +12,7 @@
 #define OGMAPS_COMBINED_PAINTER_H
 
 #include <orca/ogmap.h>
-#include <hydroqgui/definitions2d.h>
+#include <hydroqguielementutil/definitions2d.h>
 #include <orcaqgui2dfactory/pixmappainter.h>
 #include <memory>
 
@@ -28,7 +28,7 @@ class OgMapsCombinedPainter
     ~OgMapsCombinedPainter();
 
     void paint( QPainter *p, int z );
-    bool paintThisLayer( int z ) const { return z==hydroqgui::Z_OG_MAP; }
+    bool paintThisLayer( int z ) const { return z==hydroqguielementutil::Z_OG_MAP; }
 
     // Give the PixmapPainter the data relevant for painting
     void setData( const orca::OgMapData& data0, const orca::OgMapData& data1 );

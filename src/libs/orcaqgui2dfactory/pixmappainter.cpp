@@ -200,7 +200,7 @@ PixmapPainter::toggleDisplayMap()
 int 
 PixmapPainter::saveMap( const QString &fileName,
                         const QString &fileExtension,
-                        hydroqgui::IHumanManager *humanManager )
+                        hydroqguielementutil::IHumanManager *humanManager )
 {   
     // We have to mirror the map first
     QMatrix matrix(1.0, 0.0, 0.0, -1.0, 0.0, 0.0);
@@ -208,10 +208,10 @@ PixmapPainter::saveMap( const QString &fileName,
     int ret = qMap_.transformed( matrix ).save( fileName, fileExtension.toLatin1() );
     if (!ret)
     {
-        humanManager->showDialogMsg(hydroqgui::IHumanManager::Error, "Problems saving pixmap to file " + fileName);
+        humanManager->showDialogMsg(hydroqguielementutil::IHumanManager::Error, "Problems saving pixmap to file " + fileName);
         return -1;
     }
-    humanManager->showStatusMsg(hydroqgui::IHumanManager::Information, "Successfully saved pixmap to file: " + fileName);
+    humanManager->showStatusMsg(hydroqguielementutil::IHumanManager::Information, "Successfully saved pixmap to file: " + fileName);
     
     return 0;
 }

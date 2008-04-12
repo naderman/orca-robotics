@@ -15,6 +15,7 @@
 #include <QStringList>
 #include <QColor>
 
+#include <hydroqguielementutil/hydroqguielementutil.h>
 #include <hydroqgui/hydroqgui.h>
 
 namespace orcaqgemv
@@ -40,9 +41,9 @@ public:
     };
 
     explicit GuiElementModel( const std::vector<hydroqgui::IGuiElementFactory*> &factories,
-                              hydroqgui::IHumanManager                          &humanManager,
-                              hydroqgui::MouseEventManager                      &mouseEventManager,
-                              hydroqgui::ShortcutKeyManager                     &shortcutKeyManager,
+                              hydroqguielementutil::IHumanManager               &humanManager,
+                              hydroqguielementutil::MouseEventManager           &mouseEventManager,
+                              hydroqguielementutil::ShortcutKeyManager          &shortcutKeyManager,
                               hydroqgui::CoordinateFrameManager                 &coordinateFrameManager,
                               hydroqgui::PlatformFocusManager                   &platformFocusManager,
                               hydroqgui::GuiElementSet                          &guiElementSet,
@@ -74,7 +75,7 @@ public:
     
     // Creating and removing elements
     void createGuiElement( const QString &elementType, QStringList &elementDetails );
-    void removeAndDeleteGuiElement( hydroqgui::IGuiElement *guiElement );
+    void removeAndDeleteGuiElement( hydroqguielementutil::IGuiElement *guiElement );
 
     // Inherited from PlatformFocusChangeReceiver
     void platformFocusChanged( const QString &newPlatformName );
@@ -99,7 +100,7 @@ public slots:
 private:
 
     // returns true if supported by a factory otherwise false
-    bool instantiateFromFactories( hydroqgui::IGuiElement* &element, 
+    bool instantiateFromFactories( hydroqguielementutil::IGuiElement* &element, 
                                    const QString &elementType, 
                                    const QColor &platformColor, 
                                    const QStringList &elementDetails );
@@ -109,13 +110,13 @@ private:
 
     hydroqgui::GuiElementSet &guiElementSet_;
 
-    const QList<hydroqgui::IGuiElement*> &elements() const { return guiElementSet_.elements(); }
+    const QList<hydroqguielementutil::IGuiElement*> &elements() const { return guiElementSet_.elements(); }
     
     const std::vector<hydroqgui::IGuiElementFactory*> factories_;
     QStringList headers_;
-    hydroqgui::IHumanManager      &humanManager_;
-    hydroqgui::MouseEventManager  &mouseEventManager_;
-    hydroqgui::ShortcutKeyManager &shortcutKeyManager_;
+    hydroqguielementutil::IHumanManager      &humanManager_;
+    hydroqguielementutil::MouseEventManager  &mouseEventManager_;
+    hydroqguielementutil::ShortcutKeyManager &shortcutKeyManager_;
     hydroqgui::CoordinateFrameManager &coordinateFrameManager_;
     hydroqgui::PlatformFocusManager &platformFocusManager_;
     bool doesPlatformExist( QString &platformName );

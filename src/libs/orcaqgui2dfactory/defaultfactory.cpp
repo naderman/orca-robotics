@@ -80,18 +80,18 @@ DefaultFactory::lookupElementType( const QStringList &ids, QString &elementType 
     return true;
 }
         
-hydroqgui::IGuiElement* 
+hydroqguielementutil::IGuiElement* 
 DefaultFactory::create( const QString                &elementType,
                         const QStringList            &elementDetails,
                         QColor                        suggestedColor,
-                        hydroqgui::IHumanManager     &humanManager,
-                        hydroqgui::MouseEventManager &mouseEventManager,
-                        hydroqgui::ShortcutKeyManager &shortcutKeyManager,
+                        hydroqguielementutil::IHumanManager     &humanManager,
+                        hydroqguielementutil::MouseEventManager &mouseEventManager,
+                        hydroqguielementutil::ShortcutKeyManager &shortcutKeyManager,
                         const hydroqgui::GuiElementSet &guiElementSet ) const
 {
     assert( isContextSet_ );
 
-    hydroqgui::IGuiElement *elem = NULL;
+    hydroqguielementutil::IGuiElement *elem = NULL;
     
     try
     {

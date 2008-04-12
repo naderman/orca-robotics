@@ -16,13 +16,13 @@
 #include <gbxsickacfr/gbxiceutilacfr/store.h>
 #include <gbxsickacfr/gbxiceutilacfr/timer.h>
 
-#include <hydroqgui/guielement2d.h>
+#include <hydroqguielementutil/guielement2d.h>
 #include <orcaqgui2dfactory/pathpainter.h>
 #include <orcaqgui2dfactory/pathinput.h>
 
 namespace orcaqgui2d {
 
-class hydroqgui::IHumanManager;
+class hydroqguielementutil::IHumanManager;
 
 ////////////////////////////////////////////////////////////////////////////////
 // The consumer object. We need this here because PathFollower2dElement cannot inherit from IceStormElement.
@@ -50,8 +50,8 @@ class PathfollowerButtons : public QObject
             
 public:
     PathfollowerButtons( QObject                       *parent,
-                         hydroqgui::IHumanManager      &humanManager,
-                         hydroqgui::ShortcutKeyManager &shortcutKeyManager,
+                         hydroqguielementutil::IHumanManager      &humanManager,
+                         hydroqguielementutil::ShortcutKeyManager &shortcutKeyManager,
                          std::string                    proxyString);
     ~PathfollowerButtons();
     
@@ -59,8 +59,8 @@ public:
 
 private:
     QAction *hiWaypoints_;
-    hydroqgui::IHumanManager &humanManager_;
-    hydroqgui::ShortcutKeyManager &shortcutKeyManager_;
+    hydroqguielementutil::IHumanManager &humanManager_;
+    hydroqguielementutil::ShortcutKeyManager &shortcutKeyManager_;
 };
 //////////////////////////////////////////////////////////////////////////////
 
@@ -75,9 +75,9 @@ class PathFollowerHI  : public QObject
 public:
     PathFollowerHI( PathFollower2dElement *pfElement,
                     std::string proxyString,
-                    hydroqgui::IHumanManager &humanManager,
-                    hydroqgui::MouseEventManager &mouseEventManager,
-                    hydroqgui::ShortcutKeyManager &shortcutKeyManager,
+                    hydroqguielementutil::IHumanManager &humanManager,
+                    hydroqguielementutil::MouseEventManager &mouseEventManager,
+                    hydroqguielementutil::ShortcutKeyManager &shortcutKeyManager,
                     const hydroqgui::GuiElementSet &guiElementSet,
                     PathPainter &painter,
                     WaypointSettings wpSettings,
@@ -118,9 +118,9 @@ private:
 
     PathFollower2dElement *pfElement_;
     std::string proxyString_;
-    hydroqgui::IHumanManager &humanManager_;
-    hydroqgui::MouseEventManager &mouseEventManager_;
-    hydroqgui::ShortcutKeyManager &shortcutKeyManager_;
+    hydroqguielementutil::IHumanManager &humanManager_;
+    hydroqguielementutil::MouseEventManager &mouseEventManager_;
+    hydroqguielementutil::ShortcutKeyManager &shortcutKeyManager_;
     const hydroqgui::GuiElementSet &guiElementSet_;
     PathPainter   &painter_;
 
@@ -149,16 +149,16 @@ private:
 // Reason is that PathFollower2dConsumer has a non-standard purely virtual 
 // member function setWaypointIndex. 
 // Disadvantage is that we have to subscribe ourselves.
-class PathFollower2dElement : public hydroqgui::GuiElement2d
+class PathFollower2dElement : public hydroqguielementutil::GuiElement2d
 {
 
 public: 
 
     PathFollower2dElement( const orcaice::Context & context,
                            const std::string &proxyString,
-                           hydroqgui::IHumanManager &humanManager,
-                           hydroqgui::MouseEventManager &mouseEventManager,
-                           hydroqgui::ShortcutKeyManager &shortcutKeyManager,
+                           hydroqguielementutil::IHumanManager &humanManager,
+                           hydroqguielementutil::MouseEventManager &mouseEventManager,
+                           hydroqguielementutil::ShortcutKeyManager &shortcutKeyManager,
                            const hydroqgui::GuiElementSet &guiElementSet );
 
     // inherited from guielement
@@ -204,9 +204,9 @@ private:
 
     orcaice::Context context_;
     
-    hydroqgui::IHumanManager       &humanManager_;
-    hydroqgui::MouseEventManager   &mouseEventManager_;
-    hydroqgui::ShortcutKeyManager  &shortcutKeyManager_;
+    hydroqguielementutil::IHumanManager       &humanManager_;
+    hydroqguielementutil::MouseEventManager   &mouseEventManager_;
+    hydroqguielementutil::ShortcutKeyManager  &shortcutKeyManager_;
     const hydroqgui::GuiElementSet &guiElementSet_;
     
     bool firstTime_;

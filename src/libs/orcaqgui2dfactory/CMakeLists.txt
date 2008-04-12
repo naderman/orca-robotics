@@ -10,9 +10,10 @@ GBX_REQUIRE_VAR( build LIB ${lib_name} QT4_FOUND "Qt4 not found" )
 SET( dep_libs OrcaLogFactory ) # OrcaLogFactory needed for saving path to file (re-factor?)
 GBX_REQUIRE_TARGETS( build LIB ${lib_name} ${dep_libs} )
 
-SET( dep_libs ${dep_libs} HydroNavUtil HydroQGui HydroQGuiPaint OrcaObjects OrcaQGuiElementUtil )
+SET( dep_libs ${dep_libs} HydroNavUtil HydroQGui HydroQGuiElementUtil OrcaObjects OrcaQGuiElementUtil )
 GBX_REQUIRE_VAR( build LIB ${lib_name} HYDRONAVUTIL_INSTALLED "libHydroNavUtil not installed" )
 GBX_REQUIRE_VAR( build LIB ${lib_name} HYDROQGUI_INSTALLED "libHydroQGui not installed" )
+GBX_REQUIRE_VAR( build LIB ${lib_name} HYDROQGUIELEMENTUTIL_INSTALLED "libHydroQGuiElementUtil not installed" )
 
 IF( build )
 

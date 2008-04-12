@@ -10,7 +10,7 @@ namespace orcaqgui2d {
 
 ButtonElement::ButtonElement( const orcaice::Context   &context,
                               const std::string        &proxyString,
-                              hydroqgui::IHumanManager &humanManager )
+                              hydroqguielementutil::IHumanManager &humanManager )
     : context_(context),
       proxyString_(proxyString),
       humanManager_(humanManager),

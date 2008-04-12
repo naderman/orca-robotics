@@ -33,7 +33,7 @@ Localise2dElement::tryToGetGeometry()
     
     if ( !listener_.proxy() )
     {
-        humanManager_->showStatusMsg(hydroqgui::IHumanManager::Error,"Localise2dElement::tryToGetGeometry(): listener_.proxy() = 0"  );
+        humanManager_->showStatusMsg(hydroqguielementutil::IHumanManager::Error,"Localise2dElement::tryToGetGeometry(): listener_.proxy() = 0"  );
     }
     try 
     {
@@ -48,16 +48,16 @@ Localise2dElement::tryToGetGeometry()
     {
         stringstream ss;
         ss << "Localise2dElement::tryToGetGeometry(): Exception when trying to get geometry: " << e;
-        humanManager_->showStatusMsg( hydroqgui::IHumanManager::Error, ss.str().c_str() );
+        humanManager_->showStatusMsg( hydroqguielementutil::IHumanManager::Error, ss.str().c_str() );
     }
     catch ( std::exception &e)
     {
-        humanManager_->showStatusMsg( hydroqgui::IHumanManager::Error,"Localise2dElement::tryToGetGeometry(): Exception when trying to get geometry: " + QString(e.what()) );
+        humanManager_->showStatusMsg( hydroqguielementutil::IHumanManager::Error,"Localise2dElement::tryToGetGeometry(): Exception when trying to get geometry: " + QString(e.what()) );
     }
     
     if (!haveGeometry_) 
     {
-        humanManager_->showStatusMsg(hydroqgui::IHumanManager::Warning,"Localise2dElement::tryToGetGeometry(): couldn't get geometry.  Assuming point vehicle." );
+        humanManager_->showStatusMsg(hydroqguielementutil::IHumanManager::Warning,"Localise2dElement::tryToGetGeometry(): couldn't get geometry.  Assuming point vehicle." );
         const double length = 1e-3, width = 1e-3;
         painter_.setTypeAndGeometry(PlatformTypeCubic, length, width );
         painter_.setOrigin( 0.0, 0.0, 0.0 );
@@ -78,7 +78,7 @@ Localise2dElement::tryToGetGeometry()
     }
     else
     {
-        humanManager_->showStatusMsg(hydroqgui::IHumanManager::Warning, "Localise2dElement::Unknown platform type. Will paint a rectangle");
+        humanManager_->showStatusMsg(hydroqguielementutil::IHumanManager::Warning, "Localise2dElement::Unknown platform type. Will paint a rectangle");
         orca::VehicleGeometryCuboidDescriptionPtr cubGeom = orca::VehicleGeometryCuboidDescriptionPtr::dynamicCast( geom );
         painter_.setTypeAndGeometry( PlatformTypeCubic, cubGeom->size.l, cubGeom->size.w );
         painter_.setOrigin( cubGeom->vehicleToGeometryTransform.p.x, cubGeom->vehicleToGeometryTransform.p.y, cubGeom->vehicleToGeometryTransform.o.y );

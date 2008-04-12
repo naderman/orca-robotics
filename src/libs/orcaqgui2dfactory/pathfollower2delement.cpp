@@ -58,8 +58,8 @@ void PathUpdateConsumer::setEnabledState( bool enabledState, const ::Ice::Curren
 ////////////////////////////////////////////////////////////////////////////////
 
 PathfollowerButtons::PathfollowerButtons( QObject                       *parent,
-                                          hydroqgui::IHumanManager      &humanManager,
-                                          hydroqgui::ShortcutKeyManager &shortcutKeyManager,
+                                          hydroqguielementutil::IHumanManager      &humanManager,
+                                          hydroqguielementutil::ShortcutKeyManager &shortcutKeyManager,
                                           string                         proxyString)
     : humanManager_(humanManager),
       shortcutKeyManager_(shortcutKeyManager)
@@ -141,9 +141,9 @@ PathfollowerButtons::setWpButton( bool onOff )
 
 PathFollower2dElement::PathFollower2dElement( const orcaice::Context &context,
                                               const std::string &proxyString,
-                                              hydroqgui::IHumanManager &humanManager,
-                                              hydroqgui::MouseEventManager &mouseEventManager,
-                                              hydroqgui::ShortcutKeyManager &shortcutKeyManager,
+                                              hydroqguielementutil::IHumanManager &humanManager,
+                                              hydroqguielementutil::MouseEventManager &mouseEventManager,
+                                              hydroqguielementutil::ShortcutKeyManager &shortcutKeyManager,
                                               const hydroqgui::GuiElementSet &guiElementSet )
     : isConnected_(false),
       proxyString_(proxyString),
@@ -257,13 +257,13 @@ PathFollower2dElement::update()
         {
             stringstream ss;
             ss << e.what;
-            humanManager_.showStatusMsg( hydroqgui::IHumanManager::Error, ss.str().c_str() );
+            humanManager_.showStatusMsg( hydroqguielementutil::IHumanManager::Error, ss.str().c_str() );
         }
         catch ( const Ice::Exception &e )
         {
             stringstream ss;
             ss << "While trying to get activation time: " << endl << e;
-            humanManager_.showStatusMsg( hydroqgui::IHumanManager::Error, ss.str().c_str() );
+            humanManager_.showStatusMsg( hydroqguielementutil::IHumanManager::Error, ss.str().c_str() );
         }
         activationTimer_->restart();
     }
@@ -276,7 +276,7 @@ PathFollower2dElement::isFollowerEnabled( bool &isEnabled )
     {
         isEnabled = pathFollower2dPrx_->enabled();
         if (isRemoteInterfaceSick_) {
-            humanManager_.showStatusMsg( hydroqgui::IHumanManager::Information, "PathFollower2dElement::remote interface is sane again" );
+            humanManager_.showStatusMsg( hydroqguielementutil::IHumanManager::Information, "PathFollower2dElement::remote interface is sane again" );
             isRemoteInterfaceSick_ = false;
         }
         return 0;
@@ -284,7 +284,7 @@ PathFollower2dElement::isFollowerEnabled( bool &isEnabled )
     catch ( ... )
     {
         if (!isRemoteInterfaceSick_) {
-            humanManager_.showStatusMsg( hydroqgui::IHumanManager::Error, "PathFollower2dElement::remote interface seems sick" );
+            humanManager_.showStatusMsg( hydroqguielementutil::IHumanManager::Error, "PathFollower2dElement::remote interface seems sick" );
             isRemoteInterfaceSick_ = true;
         }
         return -1;
@@ -306,7 +306,7 @@ PathFollower2dElement::connectToInterface()
 {
     if (isConnected_) return 0;
     
-    humanManager_.showStatusMsg(hydroqgui::IHumanManager::Information, "PathFollowerElement is trying to connect");
+    humanManager_.showStatusMsg(hydroqguielementutil::IHumanManager::Information, "PathFollowerElement is trying to connect");
     
     // Here's what IceStormElement usually does for you if the GuiElement inherits from IceStormElement (see comments in .h file for more information)
     try 
@@ -322,22 +322,22 @@ PathFollower2dElement::connectToInterface()
     {
         stringstream ss;
         ss << "PathFollower2dElement:: Problem connecting to pathfollower interface: " << e;
-        humanManager_.showStatusMsg(hydroqgui::IHumanManager::Warning, ss.str().c_str() );
+        humanManager_.showStatusMsg(hydroqguielementutil::IHumanManager::Warning, ss.str().c_str() );
         return -1;
     }
     catch ( const std::exception &e )
     {
         stringstream ss;
         ss << "PathFollower2dElement:: Problem connecting to pathfollower interface: " << e.what();
-        humanManager_.showStatusMsg(hydroqgui::IHumanManager::Warning, ss.str().c_str() );
+        humanManager_.showStatusMsg(hydroqguielementutil::IHumanManager::Warning, ss.str().c_str() );
         return -1;
     }
     catch ( ... )
     {
-        humanManager_.showStatusMsg(hydroqgui::IHumanManager::Warning, "PathFollower2dElement: Unknown problem connecting to pathfollower interface.");
+        humanManager_.showStatusMsg(hydroqguielementutil::IHumanManager::Warning, "PathFollower2dElement: Unknown problem connecting to pathfollower interface.");
         return -1;
     }
-    humanManager_.showStatusMsg(hydroqgui::IHumanManager::Information, "Connected to pathfollower interface successfully.");
+    humanManager_.showStatusMsg(hydroqguielementutil::IHumanManager::Information, "Connected to pathfollower interface successfully.");
     
     isConnected_ = true;
     return 0;
@@ -358,7 +358,7 @@ PathFollower2dElement::getInitialData()
     }
     catch ( ... )
     {
-        humanManager_.showStatusMsg(hydroqgui::IHumanManager::Warning, "PathFollower2d: Problem getting initial data.");
+        humanManager_.showStatusMsg(hydroqguielementutil::IHumanManager::Warning, "PathFollower2d: Problem getting initial data.");
     }
 }
 
@@ -445,7 +445,7 @@ PathFollower2dElement::execute( int action )
         } else {
             str = "Pathfollower reports it is DISABLED now.";
         }
-        humanManager_.showStatusMsg(hydroqgui::IHumanManager::Information,str);
+        humanManager_.showStatusMsg(hydroqguielementutil::IHumanManager::Information,str);
     }
     else if ( action == 5 )
     {
@@ -467,7 +467,7 @@ void
 PathFollower2dElement::go()
 {
     cout<<"TRACE(PathFollower2dElement): go()" << endl;
-    humanManager_.showStatusMsg(hydroqgui::IHumanManager::Information,"Received GO signal");
+    humanManager_.showStatusMsg(hydroqguielementutil::IHumanManager::Information,"Received GO signal");
     try
     {
         pathFollower2dPrx_->activateNow();
@@ -476,7 +476,7 @@ PathFollower2dElement::go()
     {
         stringstream ss;
         ss << "While trying to activate pathfollower: " << endl << e;
-        humanManager_.showStatusMsg(hydroqgui::IHumanManager::Error,QString(ss.str().c_str()));
+        humanManager_.showStatusMsg(hydroqguielementutil::IHumanManager::Error,QString(ss.str().c_str()));
     }
 }
 
@@ -484,7 +484,7 @@ void
 PathFollower2dElement::stop()
 {
     cout<<"TRACE(PathFollower2dElement): stop()" << endl;
-    humanManager_.showStatusMsg(hydroqgui::IHumanManager::Information,"Received STOP signal");
+    humanManager_.showStatusMsg(hydroqguielementutil::IHumanManager::Information,"Received STOP signal");
     orca::PathFollower2dData dummyPath;
     const bool activateNow = true;
     try
@@ -495,7 +495,7 @@ PathFollower2dElement::stop()
     {
         stringstream ss;
         ss << "While trying to set (empty) pathfollower data: " << endl << e;
-        humanManager_.showDialogMsg(hydroqgui::IHumanManager::Error,QString(ss.str().c_str()));
+        humanManager_.showDialogMsg(hydroqguielementutil::IHumanManager::Error,QString(ss.str().c_str()));
     }
 }
 
@@ -513,23 +513,23 @@ PathFollower2dElement::sendPath( const PathFollowerInput &pathInput, bool activa
         if (isOk) {
             pathFollower2dPrx_->setData( data, activateImmediately );
         } else {
-            humanManager_.showStatusMsg( hydroqgui::IHumanManager::Warning, "No path to send!" );
+            humanManager_.showStatusMsg( hydroqguielementutil::IHumanManager::Warning, "No path to send!" );
             return;
         }
         if (!activateImmediately) 
-            humanManager_.showStatusMsg( hydroqgui::IHumanManager::Information, "Path needs to be activated by pressing the Go button." );
+            humanManager_.showStatusMsg( hydroqguielementutil::IHumanManager::Information, "Path needs to be activated by pressing the Go button." );
     }
     catch ( const orca::OrcaException &e )
     {
         stringstream ss;
         ss << e.what;
-        humanManager_.showDialogMsg( hydroqgui::IHumanManager::Error, ss.str().c_str() );
+        humanManager_.showDialogMsg( hydroqguielementutil::IHumanManager::Error, ss.str().c_str() );
     }
     catch ( const Ice::Exception &e )
     {
         stringstream ss;
         ss << "While trying to set pathfollowing data: " << endl << e;
-        humanManager_.showStatusMsg( hydroqgui::IHumanManager::Error, ss.str().c_str() );
+        humanManager_.showStatusMsg( hydroqguielementutil::IHumanManager::Error, ss.str().c_str() );
     }
     
 }
@@ -547,9 +547,9 @@ PathFollower2dElement::paint( QPainter *p, int z )
 
 PathFollowerHI::PathFollowerHI( PathFollower2dElement *pfElement,
                                 string proxyString,
-                                hydroqgui::IHumanManager &humanManager, 
-                                hydroqgui::MouseEventManager &mouseEventManager, 
-                                hydroqgui::ShortcutKeyManager &shortcutKeyManager, 
+                                hydroqguielementutil::IHumanManager &humanManager, 
+                                hydroqguielementutil::MouseEventManager &mouseEventManager, 
+                                hydroqguielementutil::ShortcutKeyManager &shortcutKeyManager, 
                                 const hydroqgui::GuiElementSet &guiElementSet, 
                                 PathPainter &painter,
                                 WaypointSettings wpSettings,
@@ -640,7 +640,7 @@ PathFollowerHI::waypointModeSelected()
     
     if ( !gotMode_ )
     {
-        humanManager_.showDialogMsg( hydroqgui::IHumanManager::Warning, "Couldn't take over the mode for PathFollower waypoints!" );
+        humanManager_.showDialogMsg( hydroqguielementutil::IHumanManager::Warning, "Couldn't take over the mode for PathFollower waypoints!" );
         return;
     }
 
@@ -663,7 +663,7 @@ PathFollowerHI::send()
     cout<<"TRACE(PathFollowerHI): send()" << endl;
     
     if (pathInput_==NULL) {
-        humanManager_.showDialogMsg( hydroqgui::IHumanManager::Warning, "Not in path input mode!" );
+        humanManager_.showDialogMsg( hydroqguielementutil::IHumanManager::Warning, "Not in path input mode!" );
         return;
     }
         
@@ -708,7 +708,7 @@ void
 PathFollowerHI::allGo()
 {
     cout<<"TRACE(PathFollowerHI): allGo()" << endl;
-    const QList<hydroqgui::IGuiElement*> elements = guiElementSet_.elements();
+    const QList<hydroqguielementutil::IGuiElement*> elements = guiElementSet_.elements();
     for ( int i=0; i < elements.size(); i++ )
     {
         PathFollower2dElement *typedElem = dynamic_cast<PathFollower2dElement *>(elements[i]);
@@ -722,7 +722,7 @@ void
 PathFollowerHI::allStop()
 {
     cout<<"TRACE(PathFollowerHI): allStop()" << endl;
-    const QList<hydroqgui::IGuiElement*> elements = guiElementSet_.elements();
+    const QList<hydroqguielementutil::IGuiElement*> elements = guiElementSet_.elements();
     for ( int i=0; i < elements.size(); i++ )
     {
         PathFollower2dElement *typedElem = dynamic_cast<PathFollower2dElement *>(elements[i]);

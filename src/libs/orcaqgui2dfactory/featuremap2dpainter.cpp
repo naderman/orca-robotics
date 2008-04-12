@@ -17,7 +17,7 @@
 #include <orcaobj/orcaobj.h>
 #include <orcaqguielementutil/featurecolours.h>
 #include <hydroqgui/hydroqgui.h>
-#include <hydroqguipaint/paintutils.h>
+#include <hydroqguielementutil/paintutils.h>
 #include "featuremap2dpainter.h"
 
 using namespace std;
@@ -52,7 +52,7 @@ void
 paintFeatureNum( QPainter *painter, int featureType, int featureNum, bool useTransparency )
 {
     if ( useTransparency ) {
-        painter->setPen( hydroqguipaint::getTransparentVersion(orcaqguielementutil::featureColour(featureType),0.3));
+        painter->setPen( hydroqguielementutil::getTransparentVersion(orcaqguielementutil::featureColour(featureType),0.3));
     } else {
         painter->setPen(orcaqguielementutil::featureColour(featureType));
     }
@@ -93,7 +93,7 @@ FeatureMap2dPainter::paintPointFeature( QPainter *painter,
 
 //             QMatrix m2win = painter->worldMatrix();
 //             const float lineThickness = 2.0/m2win.m11();
-            hydroqguipaint::paintCovarianceEllipse( painter,
+            hydroqguielementutil::paintCovarianceEllipse( painter,
                                                     covXX,
                                                     covXY,
                                                     covYY );
@@ -178,7 +178,7 @@ FeatureMap2dPainter::paintLineFeature( QPainter *painter,
                 // alpha uncertainty: a wedge on the back (non-visible) side of the line
                 painter->setPen( QPen(orcaqguielementutil::featureColour(f.type)) );
                 const double length = 2.0;
-                hydroqguipaint::paintUncertaintyWedge( painter,
+                hydroqguielementutil::paintUncertaintyWedge( painter,
                                                        f.c.yy,
                                                        length );
             }
@@ -214,14 +214,14 @@ FeatureMap2dPainter::paintPoseFeature( QPainter *painter,
         {
             const float length = 2.0;
             painter->setPen( QPen(orcaqguielementutil::featureColour(f.type)) );
-            hydroqguipaint::paintUncertaintyWedge( painter,
+            hydroqguielementutil::paintUncertaintyWedge( painter,
                                                    f.c.tt,
                                                    length );
         }
         else
         {
             // Draw an arrow
-            hydroqguipaint::paintArrow( painter );
+            hydroqguielementutil::paintArrow( painter );
         }
     }
     painter->restore();
@@ -229,7 +229,7 @@ FeatureMap2dPainter::paintPoseFeature( QPainter *painter,
 
 void FeatureMap2dPainter::paint( QPainter *painter, const int z )
 {
-    if ( z != hydroqgui::Z_SLAM_MAP ) return;
+    if ( z != hydroqguielementutil::Z_SLAM_MAP ) return;
 
     QColor color;
 
@@ -268,7 +268,7 @@ void FeatureMap2dPainter::paint( QPainter *painter, const int z )
     }
 }
 
-int FeatureMap2dPainter::saveMap( const QString fileName, hydroqgui::IHumanManager *humanManager ) const
+int FeatureMap2dPainter::saveMap( const QString fileName, hydroqguielementutil::IHumanManager *humanManager ) const
 {
     cout << "INFO(featuremap2dpainter.cpp): saveMap, fileName is " << fileName.toStdString() << endl;
     
@@ -278,14 +278,14 @@ int FeatureMap2dPainter::saveMap( const QString fileName, hydroqgui::IHumanManag
     FILE *f = fopen( fileName.toStdString().c_str(), "w" );
     if (!f)
     {
-        humanManager->showDialogMsg(hydroqgui::IHumanManager::Error, "Cannot create file " + fileName );
+        humanManager->showDialogMsg(hydroqguielementutil::IHumanManager::Error, "Cannot create file " + fileName );
         cout << "ERROR(featuremap2dpainter.cpp): cannot create file" <<endl;
         return -1;
     } 
     else 
     {
         orcaobj::saveToFile( data_, f );
-        humanManager->showStatusMsg(hydroqgui::IHumanManager::Information, "Saving feature map to " + fileName );
+        humanManager->showStatusMsg(hydroqguielementutil::IHumanManager::Information, "Saving feature map to " + fileName );
         fclose( f );
     }
     return 0;

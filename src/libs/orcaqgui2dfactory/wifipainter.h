@@ -12,7 +12,7 @@
 #define ORCAGUI_WIFI_PAINTER_H
 
 #include <orca/wifi.h>
-#include <hydroqgui/definitions2d.h>
+#include <hydroqguielementutil/definitions2d.h>
 
 // forward declarations
 class QPainter;
@@ -30,7 +30,7 @@ class WifiPainter
     void setData( const orca::WifiData& wifiData );
     void setColor( QColor color ) { color_ = color; };
     void paint( QPainter *p, int z1 );
-    bool paintThisLayer(int z) const { return z==hydroqgui::Z_FOREGROUND; }
+    bool paintThisLayer(int z) const { return z==hydroqguielementutil::Z_FOREGROUND; }
     void setUseTransparency( bool useTransparency ) { useTransparency_= useTransparency; };
     void clear();
     

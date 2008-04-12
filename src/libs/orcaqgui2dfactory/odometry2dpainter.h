@@ -12,7 +12,7 @@
 #define ORCAGUI_ODOMETRY2D_PAINTER_H
 
 #include <orca/odometry2d.h>
-#include <hydroqgui/definitions2d.h>
+#include <hydroqguielementutil/definitions2d.h>
 
 // forward declarations
 class QPainter;
@@ -33,7 +33,7 @@ class Odometry2dPainter
     void setData( const orca::Odometry2dData& data );
     void setColor( QColor color );
     void paint( QPainter *p, int z1 );
-    bool paintThisLayer(int z) const { return z==hydroqgui::Z_POSE; }
+    bool paintThisLayer(int z) const { return z==hydroqguielementutil::Z_POSE; }
     void setUseTransparency( bool useTransparency ) { useTransparency_= useTransparency; };
     void clear() {};
     

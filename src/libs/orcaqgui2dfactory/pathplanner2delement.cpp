@@ -46,7 +46,7 @@ PathPlannerTaskAnswerConsumer::setData(const ::orca::PathPlanner2dData& data, co
 }
 ////////////////////////////////////////////////////////////////////////////////
 
-PathplannerButtons::PathplannerButtons( QObject *parent, hydroqgui::IHumanManager &humanManager, string proxyString)
+PathplannerButtons::PathplannerButtons( QObject *parent, hydroqguielementutil::IHumanManager &humanManager, string proxyString)
 {
     QPixmap savePathIcon(filesave_path_xpm);
     QPixmap saveAsPathIcon(filesaveas_path_xpm);
@@ -98,8 +98,8 @@ PathplannerButtons::setWpButton( bool onOff )
 
 PathPlanner2dElement::PathPlanner2dElement( const orcaice::Context       &context,
                                             const std::string            &proxyString,
-                                            hydroqgui::IHumanManager     &humanManager,
-                                            hydroqgui::MouseEventManager &mouseEventManager )
+                                            hydroqguielementutil::IHumanManager     &humanManager,
+                                            hydroqguielementutil::MouseEventManager &mouseEventManager )
     : orcaqguielementutil::IceStormElement<  PathPainter,
                         orca::PathPlanner2dData,
                         orca::PathPlanner2dPrx,
@@ -142,7 +142,7 @@ PathPlanner2dElement::update()
     {
         QString msg;
         pathTaskAnswerConsumer_->msgStore_.get( msg );
-        humanManager_.showDialogMsg(hydroqgui::IHumanManager::Error, msg);    
+        humanManager_.showDialogMsg(hydroqguielementutil::IHumanManager::Error, msg);    
     }
 }
 
@@ -158,7 +158,7 @@ PathPlanner2dElement::setUseTransparency( bool useTransparency )
 void
 PathPlanner2dElement::actionOnConnection()
 {
-    humanManager_.showStatusMsg(hydroqgui::IHumanManager::Information, "PathplannerElement is trying to connect");
+    humanManager_.showStatusMsg(hydroqguielementutil::IHumanManager::Information, "PathplannerElement is trying to connect");
      
     try 
     {
@@ -166,11 +166,11 @@ PathPlanner2dElement::actionOnConnection()
     }
     catch ( ... )
     {
-        humanManager_.showStatusMsg(hydroqgui::IHumanManager::Warning, "Problem connecting to pathplanner interface. Will try again later.");
+        humanManager_.showStatusMsg(hydroqguielementutil::IHumanManager::Warning, "Problem connecting to pathplanner interface. Will try again later.");
         //cout << "WARNING(pathplanner2delement.cpp): Problem connecting to interface. Will try again later." << endl;
         return;
     }
-    humanManager_.showStatusMsg(hydroqgui::IHumanManager::Information, "Connected to pathplanner interface successfully.");
+    humanManager_.showStatusMsg(hydroqguielementutil::IHumanManager::Information, "Connected to pathplanner interface successfully.");
     
     pathPlanner2dConsumerObj_ = pathTaskAnswerConsumer_;
     taskCallbackPrx_ = orcaice::createConsumerInterface<orca::PathPlanner2dConsumerPrx>( context_,
@@ -238,7 +238,7 @@ PathPlanner2dElement::sendPath( const PathPlannerInput &pathInput )
     {
         stringstream ss;
         ss << "While trying to set a pathfollowing data: " << endl << e;
-        humanManager_.showStatusMsg( hydroqgui::IHumanManager::Error, ss.str().c_str() );
+        humanManager_.showStatusMsg( hydroqguielementutil::IHumanManager::Error, ss.str().c_str() );
     }
 }
 
@@ -261,8 +261,8 @@ PathPlanner2dElement::setFocus( bool inFocus )
 
 PathPlannerHI::PathPlannerHI( PathPlanner2dElement         *ppElement,
                               string                        proxyString,
-                              hydroqgui::IHumanManager     &humanManager, 
-                              hydroqgui::MouseEventManager &mouseEventManager, 
+                              hydroqguielementutil::IHumanManager     &humanManager, 
+                              hydroqguielementutil::MouseEventManager &mouseEventManager, 
                               PathPainter                  &painter,
                               WaypointSettings              wpSettings )
     : ppElement_(ppElement),
@@ -343,7 +343,7 @@ PathPlannerHI::waypointModeSelected()
 
     if ( !gotMode_ )
     {
-        humanManager_.showDialogMsg( hydroqgui::IHumanManager::Warning, "Couldn't take over the mode for PathPlanner waypoints!" );
+        humanManager_.showDialogMsg( hydroqguielementutil::IHumanManager::Warning, "Couldn't take over the mode for PathPlanner waypoints!" );
         return;
     }
 

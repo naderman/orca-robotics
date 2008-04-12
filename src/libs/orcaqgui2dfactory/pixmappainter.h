@@ -16,6 +16,7 @@
 #include <QMatrix>
 
 #include <hydroqgui/hydroqgui.h>
+#include <hydroqguielementutil/hydroqguielementutil.h>
 
 namespace orcaqgui2d
 {
@@ -57,9 +58,9 @@ class PixmapPainter
     void paint( QPainter *p );
 
     void toggleDisplayMap();
-    int saveMap( const QString            &fileName,
-                 const QString            &fileExtension,
-                 hydroqgui::IHumanManager *humanManager );
+    int saveMap( const QString                       &fileName,
+                 const QString                       &fileExtension,
+                 hydroqguielementutil::IHumanManager *humanManager );
     
   private:
     

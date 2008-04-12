@@ -29,7 +29,7 @@ class PixMapElement
 public:
     PixMapElement( const orcaice::Context  &context,
                   const std::string       &proxyString,
-                  hydroqgui::IHumanManager* humanManager );
+                  hydroqguielementutil::IHumanManager* humanManager );
 
     virtual bool isInGlobalCS() { return true; }
     virtual void actionOnConnection() 
@@ -48,7 +48,7 @@ public:
 
 private:
     PixMapBackgroundPainter painter_;
-    hydroqgui::IHumanManager *humanManager_;
+    hydroqguielementutil::IHumanManager *humanManager_;
     QString mapFileName_;
     bool mapFileNameSet_;
 };

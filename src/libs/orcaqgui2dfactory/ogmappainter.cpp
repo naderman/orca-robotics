@@ -34,7 +34,7 @@ OgMapPainter::~OgMapPainter()
 void 
 OgMapPainter::paint( QPainter *p, int z )
 {
-    if (z!=hydroqgui::Z_OG_MAP) return;
+    if (z!=hydroqguielementutil::Z_OG_MAP) return;
     pixmapPainter_->paint(p); 
 }
 
@@ -82,7 +82,7 @@ OgMapPainter::setData( const orca::OgMapData& data )
 }
 
 ImageFileType
-OgMapPainter::checkFileExtension( QString &fe, hydroqgui::IHumanManager *humanManager )
+OgMapPainter::checkFileExtension( QString &fe, hydroqguielementutil::IHumanManager *humanManager )
 {
     if ( fe.isEmpty() ) 
     {
@@ -100,7 +100,7 @@ OgMapPainter::checkFileExtension( QString &fe, hydroqgui::IHumanManager *humanMa
     else
     {
         cout << "ERROR(ogmappainter.cpp): File extension not supported" << endl;
-        humanManager->showDialogMsg(hydroqgui::IHumanManager::Error, "File extension not supported" );
+        humanManager->showDialogMsg(hydroqguielementutil::IHumanManager::Error, "File extension not supported" );
         return NOT_SUPPORTED;
     }
 }
@@ -108,7 +108,7 @@ OgMapPainter::checkFileExtension( QString &fe, hydroqgui::IHumanManager *humanMa
 int 
 OgMapPainter::saveMap( const orcaice::Context   &context,
                        const QString            &fileName,
-                       hydroqgui::IHumanManager *humanManager )
+                       hydroqguielementutil::IHumanManager *humanManager )
 {
     QString fileExtension = fileName.section('.',-1,-1);
     ImageFileType type = checkFileExtension( fileExtension, humanManager );
@@ -128,7 +128,7 @@ OgMapPainter::saveMap( const orcaice::Context   &context,
         if ( !dataFile->is_open() ) 
         {
             cout << "ERROR(ogmappainter.cpp): Could not create data file " << fileName.toStdString() << endl;
-            humanManager->showDialogMsg(hydroqgui::IHumanManager::Error, "Could not create ICE_STREAM file " + fileName); 
+            humanManager->showDialogMsg(hydroqguielementutil::IHumanManager::Error, "Could not create ICE_STREAM file " + fileName); 
             return -1;
         }
                 
@@ -148,7 +148,7 @@ OgMapPainter::saveMap( const orcaice::Context   &context,
         dataFile->close();
         delete dataFile;
         cout << "INFO(ogmappainter.cpp): Successfully saved map to file " << fileName.toStdString() << endl;
-        humanManager->showStatusMsg(hydroqgui::IHumanManager::Information, "Successfully saved ogMap to file: " + fileName);
+        humanManager->showStatusMsg(hydroqguielementutil::IHumanManager::Information, "Successfully saved ogMap to file: " + fileName);
     }
     
     return 0;

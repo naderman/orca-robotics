@@ -18,15 +18,15 @@ using namespace std;
 
 namespace orcaqgemv {
 
-GuiElementModel::GuiElementModel( const std::vector<hydroqgui::IGuiElementFactory*> &factories,
-                                  hydroqgui::IHumanManager                          &humanManager,
-                                  hydroqgui::MouseEventManager                      &mouseEventManager,
-                                  hydroqgui::ShortcutKeyManager                     &shortcutKeyManager,
-                                  hydroqgui::CoordinateFrameManager                 &coordinateFrameManager,
-                                  hydroqgui::PlatformFocusManager                   &platformFocusManager,
-                                  hydroqgui::GuiElementSet                          &guiElementSet,
-                                  hydroqgui::IStringToColorMap                      &platformColorMap,
-                                  QObject                                           *parent )
+GuiElementModel::GuiElementModel(   const std::vector<hydroqgui::IGuiElementFactory*> &factories,
+                                    hydroqguielementutil::IHumanManager               &humanManager,
+                                    hydroqguielementutil::MouseEventManager           &mouseEventManager,
+                                    hydroqguielementutil::ShortcutKeyManager          &shortcutKeyManager,
+                                    hydroqgui::CoordinateFrameManager                 &coordinateFrameManager,
+                                    hydroqgui::PlatformFocusManager                   &platformFocusManager,
+                                    hydroqgui::GuiElementSet                          &guiElementSet,
+                                    hydroqgui::IStringToColorMap                      &platformColorMap,
+                                    QObject                                           *parent )
     : QAbstractTableModel(parent),
       PlatformFocusChangeReceiver(platformFocusManager),
       guiElementSet_(guiElementSet),
@@ -145,10 +145,10 @@ GuiElementModel::removeRows( int row, int count, const QModelIndex & parent )
 }
 
 bool
-GuiElementModel::instantiateFromFactories( hydroqgui::IGuiElement* &element,
-                                           const QString           &elementType,
-                                           const QColor            &platformColor,
-                                           const QStringList       &elementDetails )
+GuiElementModel::instantiateFromFactories( hydroqguielementutil::IGuiElement* &element,
+                                           const QString                      &elementType,
+                                           const QColor                       &platformColor,
+                                           const QStringList                  &elementDetails )
 {
     for ( unsigned int i=0; i < factories_.size(); i++ )
     {
@@ -195,7 +195,7 @@ GuiElementModel::createGuiElementFromSelection( const QList<QStringList> & inter
     //TOBI: this needs to be fixed for config files
     bool haveThisElement = doesElementExist( elementDetails, interfacesInfo.size() );
     if (haveThisElement) {
-        humanManager_.showStatusMsg(hydroqgui::IHumanManager::Warning,"Interface " + elementDetails.join(" ") + " exists already. Not connecting again!");
+        humanManager_.showStatusMsg(hydroqguielementutil::IHumanManager::Warning,"Interface " + elementDetails.join(" ") + " exists already. Not connecting again!");
         return;
     }
     
@@ -203,7 +203,7 @@ GuiElementModel::createGuiElementFromSelection( const QList<QStringList> & inter
     if (elementType!="") {
         createGuiElement( elementType, elementDetails );
     } else {
-        humanManager_.showStatusMsg(hydroqgui::IHumanManager::Warning,"Looking up element type from factory resulted in nothing");
+        humanManager_.showStatusMsg(hydroqguielementutil::IHumanManager::Warning,"Looking up element type from factory resulted in nothing");
     }
 }
 
@@ -262,14 +262,14 @@ GuiElementModel::createGuiElement( const QString &elementType,
     QColor platformColor = platformColorMap_.getColor( platform );
     
     // instantiate element
-    hydroqgui::IGuiElement* element = NULL;
+    hydroqguielementutil::IGuiElement* element = NULL;
     bool isSupported = instantiateFromFactories( element, elementType, platformColor, elementDetails );
     if (!isSupported || element==NULL)
     {
         if (!isSupported) 
-            humanManager_.showStatusMsg(hydroqgui::IHumanManager::Warning, "Element type " + elementType + " is not supported by any factory.");
+            humanManager_.showStatusMsg(hydroqguielementutil::IHumanManager::Warning, "Element type " + elementType + " is not supported by any factory.");
         else if (element==NULL) 
-            humanManager_.showStatusMsg(hydroqgui::IHumanManager::Warning, "Element " + elementDetails.join(" ") + " is supported but the factory returned NULL pointer.");
+            humanManager_.showStatusMsg(hydroqguielementutil::IHumanManager::Warning, "Element " + elementDetails.join(" ") + " is supported but the factory returned NULL pointer.");
         delete element;
         if (!doesPlatformExist( platform ) ) 
             emit platformNeedsRemoval(platform);
@@ -316,7 +316,7 @@ GuiElementModel::createGuiElement( const QString &elementType,
 }
 
 void
-GuiElementModel::removeAndDeleteGuiElement( hydroqgui::IGuiElement *guiElement )
+GuiElementModel::removeAndDeleteGuiElement( hydroqguielementutil::IGuiElement *guiElement )
 {
     int row=-1;
     for ( int i=0; i < elements().size(); i++ )
@@ -421,25 +421,25 @@ GuiElementModel::updateGuiElements()
             {
                 ss<<"GuiElementModel: during update of "
                 <<elements()[i]->details().toStdString()<<": " << e.what() << std::endl;
-                humanManager_.showStatusMsg(hydroqgui::IHumanManager::Warning,ss.str().c_str());
+                humanManager_.showStatusMsg(hydroqguielementutil::IHumanManager::Warning,ss.str().c_str());
             }
             catch ( std::string &e )
             {
                 ss<<"GuiElementModel: during update of "
                    <<elements()[i]->details().toStdString()<<": " << e << std::endl;
-                humanManager_.showStatusMsg(hydroqgui::IHumanManager::Warning,ss.str().c_str());
+                humanManager_.showStatusMsg(hydroqguielementutil::IHumanManager::Warning,ss.str().c_str());
             }
             catch ( char *e )
             {
                 ss<<"GuiElementModel: during update of "
                    <<elements()[i]->details().toStdString()<<": " << e << std::endl;
-                humanManager_.showStatusMsg(hydroqgui::IHumanManager::Warning,ss.str().c_str());
+                humanManager_.showStatusMsg(hydroqguielementutil::IHumanManager::Warning,ss.str().c_str());
             }
             catch ( ... )
             {
                 ss<<"GuiElementModel: Caught unknown exception during update of "
                    <<elements()[i]->details().toStdString()<<": " << std::endl;
-                humanManager_.showStatusMsg(hydroqgui::IHumanManager::Warning,ss.str().c_str());
+                humanManager_.showStatusMsg(hydroqguielementutil::IHumanManager::Warning,ss.str().c_str());
             }
         }
     }

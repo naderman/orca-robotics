@@ -14,7 +14,7 @@
 #include <QColor>
 #include <QPolygonF>
 #include <orca/laserscanner2d.h>
-#include <hydroqgui/definitions2d.h>
+#include <hydroqguielementutil/definitions2d.h>
 #include <hydroqgui/hydroqgui.h>
 
 class QPainter;
@@ -39,7 +39,7 @@ class LaserScanner2dPainter
     void setData( const orca::RangeScanner2dDataPtr &scan );
     
     void paint( QPainter *p, int z );
-    bool paintThisLayer(int z) const {return z==hydroqgui::Z_LASER;}
+    bool paintThisLayer(int z) const {return z==hydroqguielementutil::Z_LASER;}
 
     void clear();
     
