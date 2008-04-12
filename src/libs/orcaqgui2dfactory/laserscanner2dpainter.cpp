@@ -104,6 +104,7 @@ LaserScanner2dPainter::setData( const orca::RangeScanner2dDataPtr & data )
 
     QPointF point;
     qScan_.clear();
+    qReturns_.clear();
     qScan_.push_back( QPointF(0.0,0.0) );    // first point in array is origin
 
     // convert from polar to cartesian coord. sys.
