@@ -25,37 +25,52 @@ namespace {
     {
         orca::SinglePolarFeature2dPtr orcaFeature;
 
-        if ( hydroFeature.isPointFeature() )
         {
             const hydrofeatureobs::PointFeatureObs *f =
                 dynamic_cast<const hydrofeatureobs::PointFeatureObs*>(&hydroFeature);
-            assert( f != NULL );
-
-            orca::PointPolarFeature2d *orcaF = new orca::PointPolarFeature2d;
-            orcaFeature = orcaF;
-            orcaF->p.r       = f->range();
-            orcaF->p.o       = f->bearing();
-            orcaF->rangeSd   = f->rangeSd();
-            orcaF->bearingSd = f->bearingSd();
+            if ( f != NULL )
+            {
+                orca::PointPolarFeature2d *orcaF = new orca::PointPolarFeature2d;
+                orcaFeature = orcaF;
+                orcaF->p.r       = f->range();
+                orcaF->p.o       = f->bearing();
+                orcaF->rangeSd   = f->rangeSd();
+                orcaF->bearingSd = f->bearingSd();
+            }
         }
-        else if ( hydroFeature.isLineFeature() )
+        {
+            const hydrofeatureobs::PoseFeatureObs *f =
+                dynamic_cast<const hydrofeatureobs::PoseFeatureObs*>(&hydroFeature);
+            if ( f != NULL )
+            {
+                orca::PosePolarFeature2d *orcaF = new orca::PosePolarFeature2d;
+                orcaFeature = orcaF;
+                orcaF->p.r           = f->range();
+                orcaF->p.o           = f->bearing();
+                orcaF->orientation   = f->orientation();
+                orcaF->rangeSd       = f->rangeSd();
+                orcaF->bearingSd     = f->bearingSd();
+                orcaF->orientationSd = f->orientationSd();
+            }
+        }
         {
             const hydrofeatureobs::LineFeatureObs *f =
                 dynamic_cast<const hydrofeatureobs::LineFeatureObs*>(&hydroFeature);
-            assert( f != NULL );
-
-            orca::LinePolarFeature2d *orcaF = new orca::LinePolarFeature2d;
-            orcaFeature = orcaF;
-            orcaF->start.r      = f->start().range();
-            orcaF->start.o      = f->start().bearing();
-            orcaF->end.r        = f->end().range();
-            orcaF->end.o        = f->end().bearing();
-            orcaF->startSighted = f->startSighted();
-            orcaF->endSighted   = f->endSighted();
-            orcaF->rhoSd        = f->rhoSd();
-            orcaF->alphaSd      = f->alphaSd();
+            if ( f != NULL )
+            {
+                orca::LinePolarFeature2d *orcaF = new orca::LinePolarFeature2d;
+                orcaFeature = orcaF;
+                orcaF->start.r      = f->rangeStart();
+                orcaF->start.o      = f->bearingStart();
+                orcaF->end.r        = f->rangeEnd();
+                orcaF->end.o        = f->bearingEnd();
+                orcaF->startSighted = f->startSighted();
+                orcaF->endSighted   = f->endSighted();
+                orcaF->rhoSd        = f->rhoSd();
+                orcaF->alphaSd      = f->alphaSd();
+            }
         }
-
+        
         orcaFeature->type           = hydroFeature.featureType();
         orcaFeature->pFalsePositive = hydroFeature.pFalsePositive();
         orcaFeature->pTruePositive  = hydroFeature.pTruePositive();
