@@ -20,7 +20,6 @@
 #include <orcaqguielementmodelview/guielementmodel.h>
 #include <hydroqgui/worldview.h>
 #include <hydroqgui/platformcsfinder.h>
-// #include <orcaqgui2dfactory/defaultfactory.h>
 #include <orcaqgui/iguielementfactory.h>
 #include "component.h"
         
@@ -216,27 +215,27 @@ Component::start()
     hydroqgui::PlatformCSFinder platformCSFinder;
 
     // widget for viewing the actual world
-    hydroqgui::WorldView worldView( &platformCSFinder,
-                                     mouseEventManager,
-                                     guiElementSet,
-                                     coordinateFrameManager,
-                                     mainWin,
-                                     platformFocusManager,
-                                     displayRefreshTime );
-
+    hydroqgui::WorldView *worldView = new hydroqgui::WorldView( &platformCSFinder,
+                                                                 mouseEventManager,
+                                                                 guiElementSet,
+                                                                 coordinateFrameManager,
+                                                                 mainWin,
+                                                                 platformFocusManager,
+                                                                 displayRefreshTime );
+    
     // Gui-Element-selecting widget
-    orcaqgui::SelectableElementWidget selectableElementWidget( platformFocusManager,
-                                                               jobQueue,
-                                                               context(),
-                                                               &guiElementModel,
-                                                               mainWin );
+    orcaqgui::SelectableElementWidget *selectableElementWidget = 
+            new orcaqgui::SelectableElementWidget(  platformFocusManager, 
+                                                    jobQueue, 
+                                                    context(), 
+                                                   &guiElementModel, 
+                                                    mainWin );
     
     // Central GUI widget
-    QSplitter centralWidget( Qt::Horizontal );
-    centralWidget.addWidget( &selectableElementWidget );
-    centralWidget.addWidget( &worldView );
-
-    mainWin.setCentralWidget( &centralWidget );
+    QSplitter *centralWidget = new QSplitter( Qt::Horizontal );
+    centralWidget->addWidget( selectableElementWidget );
+    centralWidget->addWidget( worldView );
+    mainWin.setCentralWidget( centralWidget );
     
     // Grid is a special element which is always loaded
     orcaqgui::loadGrid( guiElementModel );
