@@ -107,16 +107,16 @@ Here's a screenshot of the GUI connected to a few interfaces belonging to two pl
 
 GuiElements typically connect to a single required interface but can also have none or several. To be able to configure them, they have "type" and "details" configuration options. When the GUI starts up, it will setup the elements which handle the network-related stuff like connecting to interfaces.
 
-- @c OrcaView.Config.ElementX.Type (string)
+- @c OrcaView.Config.Element.TypeX (string)
      - GuiElement type
-     - X is a number (need to be consecutive)
+     - X is an arbitrary string, e.g. a number
      - Supported types are: LaserScanner2d, Localise2d, Particle2d, PolarFeature2d, PathFollower2d, PathPlanner2d, PixMap, FeatureMap2d, OgMap, Wifi, MultiOgMaps
      
-- @c OrcaView.Config.ElementX.Details (string)
+- @c OrcaView.Config.Element.DetailsX (string)
     - Network connection details
-    - X is a number (need to be consecutive)
+    - X is an arbitrary string, e.g. a number. Corresponds to 'TypeX' (see above).
     - Details are dependent on the Type:
-        - no interfaces (permanent elements such as background images): not required
+        - no interfaces (permanent elements such as background images): Detail entry is not required
         - one required interface (e.g. LaserScanner2d): interface@platform/component
         - several required interfaces (e.g. MultiOgMaps): 
           interface1@platform1/component1:interface2@platform2/component2: ... :interfaceN@platformN/componentN

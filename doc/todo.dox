@@ -93,6 +93,12 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
   - General overhaul and cleanup (alex b)
 
 @par Updated utilities
+
+- Orcaview2d (tobi)
+  - Elements in config file can have an arbitrary string, no consecutive numbers required any more
+  - Grid element does not need to be configured any more
+  - General cleanup
+
 @par Updated libraries
 
 - libOrcaIce
