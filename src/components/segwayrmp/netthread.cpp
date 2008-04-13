@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <fstream>
 
 #include <orcaice/orcaice.h>
 #include <orcaobj/orcaobj.h>
