@@ -12,7 +12,47 @@
 
 @page orca_doc_installdebian_opt Installing optional dependencies on Debian Linux
 
-@note Reviewed for release 2.7.0.
+@note Reviewed for release 2.10.0.
+
+@section orca_doc_installdebian_opt_icefromsource Ice from source
+
+Even though there is a Debian package for Ice, sometimes you may want to build Ice from source. Some of the possible reasons:
+- you need an Ice version different from the one in the package (newer or older)
+- you want to install Ice some place other than the standard directory
+- you want to apply a patch to the source.
+
+These instructions have been updated to Ice-3.3. They may need to be modified for earlier versions.
+
+Following the instructions below will install Ice to the default location @c /opt/Ice-[VERSION]. We recommend doing this but, if you have a good reason, you can change it by editing the file config/Make.rules.
+
+Download source from  <a href="http://www.zeroc.com/download.html">download page</a>.
+    - First, install Ice dependencies. Debian packages for all required libraries exist. (@b NOTE: as of writing, a package for mcpp as a static library does not seem to be available. Install it from patched source provided by ZeroC).
+@verbatim
+# apt-get install libdb4.6++-dev libbz2-dev bzip2 libssl-dev libreadline5-dev libexpat1-dev
+@endverbatim
+    - Unpack the source archive (replace [VERSION] with the version of Ice you are trying to install.)
+@verbatim
+$ tar -xzf Ice-[VERSION].tar.gz
+$ cd Ice-[VERSION]/cpp
+@endverbatim
+    - Ice installer is particular about the name of the compiler. If you are using a version of gcc, make sure the names are standard: @c gcc/g++ ! If you skip this step you'll see a cryptic message about @c mkshlib not defined.
+@verbatim
+$ export CC=gcc; export CXX=g++
+@endverbatim
+    - Compile and install
+@verbatim
+$ make
+$ make test (optional, requires python)
+# make install
+# ldconfig
+@endverbatim
+
+Make sure that the Ice binaries and executables are in the path. You may want to add this snippet to your @c ~/.bashrc file (don't forget to replace [VERSION]).
+@verbatim
+export ICE_HOME=/opt/Ice-[VERSION]
+export PATH=$ICE_HOME/bin:$PATH
+export LD_LIBRARY_PATH=$ICE_HOME/lib:$LD_LIBRARY_PATH
+@endverbatim
 
 @b NOTE: Software below is strictly optional. To ensure that Orca knows about these new packages you will have to re-run cmake and make in Orca once the new packages have been installed. You will also have to remove the cmake cache before rerunning cmake.
 @verbatim
@@ -137,49 +177,6 @@ $ wxgazebo [GAZEBO_SRC]/worlds/example.world
 @endverbatim
 
 If you get an error, please proceed to @ref orca_doc_tute_gazebo. You might also want to consult the Gazebo mailing lists and manuals for additional help.
-
-<hr>
-
-@b NOTE: Below are instructions on how to install software from source. These are moved here after a Debian package has become available. In many cases we stop installing from source and therefore these instructions may become outdated.
-
-@section orca_doc_installdebian_opt_icefromsource Ice from source
-
-Even though there is a Debian package for Ice, sometimes you may want to build Ice from source. Some of the possible reasons:
-- you need an Ice version different from the one in the package (newer or older)
-- you want to install Ice some place other than the standard directory
-- you want to apply a patch to the source.
-
-Following the instructions below will install Ice to the default location @c /opt/Ice-[VERSION]. We recommend doing this but, if you have a good reason, you can change it by editing the file config/Make.rules.
-
-Download source from  <a href="http://www.zeroc.com/download.html">download page</a>.
-    - First, install Ice dependencies. Debian packages for all required libraries exist.
-@verbatim
-# apt-get install libdb4.5++-dev libbz2-dev bzip2 libssl-dev libreadline5-dev libexpat1-dev
-@endverbatim
-    - Unpack the source archive (replace [VERSION] with the version of Ice you are trying to install.)
-@verbatim
-$ tar -xzf Ice-[VERSION].tar.gz
-$ cd Ice-[VERSION]
-@endverbatim
-    - Ice installer is particular about the name of the compiler. If you are using a version of gcc, make sure the names are standard: @c gcc/g++ ! If you skip this step you'll see a cryptic message about @c mkshlib not defined.
-@verbatim
-$ export CC=gcc; export CXX=g++
-@endverbatim
-    - Compile and install
-@verbatim
-$ make
-$ make test (optional, requires python)
-# make install
-# ldconfig
-@endverbatim
-
-Make sure that the Ice binaries and executables are in the path. You may want to add this snippet to your @c ~/.bashrc file (don't forget to replace [VERSION]).
-@verbatim
-export ICE_HOME=/opt/Ice-[VERSION]
-export PATH=$ICE_HOME/bin:$PATH
-export LD_LIBRARY_PATH=$ICE_HOME/lib:$LD_LIBRARY_PATH
-@endverbatim
-
 
 @section orca_doc_installdebian_opt_player_source Player/Stage from source
 
