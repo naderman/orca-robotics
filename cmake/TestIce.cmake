@@ -29,13 +29,14 @@ ENDIF(NOT ORCA_OS_WIN)
 EXEC_PROGRAM ( ${ICE_HOME}/bin/slice2cpp ARGS --version OUTPUT_VARIABLE ICE_VERSION )
 #MESSAGE( STATUS "DEBUG: Ice version: '${ICE_VERSION}'")
 
-IF( ICE_VERSION MATCHES "3\\.[2-9]\\.[0-9]" )
+# notice that this allows beta versions, e.g. 3.3b
+IF( ICE_VERSION MATCHES "3\\.[2-9]" )
     SET( ICE_VERSION_OK 1 )
-ELSE ( ICE_VERSION MATCHES "3\\.[2-9]\\.[0-9]" )
-    SET( ICE_VERSION_OK 0 )
-ENDIF( ICE_VERSION MATCHES "3\\.[2-9]\\.[0-9]" )
+ELSE ( ICE_VERSION MATCHES "3\\.[2-9]" )
+   SET( ICE_VERSION_OK 0 )
+ENDIF( ICE_VERSION MATCHES "3\\.[2-9]" )
 
 ASSERT ( ICE_VERSION_OK
-            "Checking Ice version - ${ICE_VERSION} - failed. Orca requires Ice v. 3.2.x"
+            "Checking Ice version - ${ICE_VERSION} - failed. Orca requires Ice v. 3.2.x or newer."
             "Checking Ice version - ${ICE_VERSION} - ok"
             1 )

@@ -17,9 +17,18 @@ SET( SLICE_SOURCE_DIR          ${CMAKE_CURRENT_SOURCE_DIR}/../slice )
 SET( SLICE_BINARY_DIR          ${CMAKE_CURRENT_BINARY_DIR}/../slice )
 SET( SLICE2JAVA_BINARY_DIR     ${CMAKE_CURRENT_BINARY_DIR} )
 
+# debian package splits off slice files into a different place
+IF( ICE_HOME MATCHES /usr )
+    SET( ice_slice_dir /usr/share/slice )
+    MESSAGE( STATUS "This is a Debian Ice installation. Slice files are in ${ice_slice_dir}" )
+ELSE ( ICE_HOME MATCHES /usr )
+    SET( ice_slice_dir ${ICE_HOME}/slice )
+    MESSAGE( STATUS "This is NOT a Debian Ice installation. Slice files are in ${ice_slice_dir}" )
+ENDIF( ICE_HOME MATCHES /usr )
+
 # note: compared to slice2cpp, slice2java automatically places generated files into 'namespace dir,
 #       e.g. 'orca'. So the output dir is just 'java' not 'java/<namespace>'
-SET( SLICE_ARGS -I${SLICE_SOURCE_DIR} -I${ICE_SLICE_HOME}/slice --stream --output-dir ${SLICE2JAVA_BINARY_DIR} --meta "java:java5" )
+SET( SLICE_ARGS -I${SLICE_SOURCE_DIR} -I${ice_slice_dir} --stream --output-dir ${SLICE2JAVA_BINARY_DIR} --meta "java:java5" )
 # note: satelite projects need to include slice files from orca installation
 IF( DEFINED ORCA_HOME )
     SET( SLICE_ARGS -I${ORCA_HOME}/slice ${SLICE_ARGS} )

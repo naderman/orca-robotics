@@ -59,15 +59,6 @@ IF( ICE_HOME_INCLUDE_ICE )
     GET_FILENAME_COMPONENT( ICE_HOME ${ICE_HOME_INCLUDE} PATH CACHE )
     MESSAGE( STATUS "Setting ICE_HOME to ${ICE_HOME}" )
 
-    # debian package splits off slice files into a different place
-    IF( ICE_HOME MATCHES /usr )
-        SET( ICE_SLICE_HOME /usr/share CACHE PATH "Installation point of standard Slice files" )
-        MESSAGE( STATUS "This is a Debian Ice installation. Slice files are in ${ICE_SLICE_HOME}" )
-    ELSE ( ICE_HOME MATCHES /usr )
-        SET( ICE_SLICE_HOME ${ICE_HOME} CACHE PATH "Installation point of standard Slice files" )
-        MESSAGE( STATUS "This is NOT a Debian Ice installation. Slice files are in ${ICE_SLICE_HOME}" )
-    ENDIF( ICE_HOME MATCHES /usr )
-
 ENDIF( ICE_HOME_INCLUDE_ICE )
 
 #

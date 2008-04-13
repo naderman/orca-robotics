@@ -39,25 +39,35 @@ MACRO( GENERATE_SLICE2CPP_RULES generated_cpp_list generated_header_list )
     SET( slice_suffixes            ${slice_cpp_suffixes} ${slice_header_suffixes} )
     SET( slice2cpp_command         ${ICE_HOME}/bin/slice2cpp${EXE_EXTENSION} )
     
-    SET( slice_source_dir          ${PROJECT_SOURCE_DIR}/src/interfaces/slice )
-    SET( slice_binary_dir          ${PROJECT_BINARY_DIR}/src/interfaces/slice )
+    SET( proj_slice_src_dir        ${PROJECT_SOURCE_DIR}/src/interfaces/slice )
+    SET( proj_slice_bin_dir        ${PROJECT_BINARY_DIR}/src/interfaces/slice )
     SET( slice2cpp_binary_dir      ${PROJECT_BINARY_DIR}/src/interfaces/cpp )
     
     # Install sub-directory will be the same as the current sub-directory
     # which is typically the same as the name of the namespace, e.g. 'orca'
     GET_FILENAME_COMPONENT( slice_module ${CMAKE_CURRENT_SOURCE_DIR} NAME )
     
+    # debian package splits off slice files into a different place
+    IF( ICE_HOME MATCHES /usr )
+        SET( ice_slice_dir /usr/share/slice )
+        MESSAGE( STATUS "This is a Debian Ice installation. Slice files are in ${ice_slice_dir}" )
+    ELSE ( ICE_HOME MATCHES /usr )
+        SET( ice_slice_dir ${ICE_HOME}/slice )
+        MESSAGE( STATUS "This is NOT a Debian Ice installation. Slice files are in ${ice_slice_dir}" )
+    ENDIF( ICE_HOME MATCHES /usr )
+
     # satellite projects need to include slice files from orca installation
     # NOTE: funky interaction between cmake and slice2cpp: cannot use "" around the slice_args!
     IF( ORCA_MOTHERSHIP )
-        SET( slice_args ${SLICE_PROJECT_ARGS} -I${slice_source_dir} -I${ICE_SLICE_HOME}/slice --stream --output-dir ${slice2cpp_binary_dir}/${slice_module} )
+        SET( slice_args ${SLICE_PROJECT_ARGS} -I${proj_slice_src_dir} -I${ice_slice_dir} --stream --output-dir ${slice2cpp_binary_dir}/${slice_module} )
     ELSE ( ORCA_MOTHERSHIP )
-        SET( slice_args ${SLICE_PROJECT_ARGS} -I${slice_source_dir} -I${ICE_SLICE_HOME}/slice -I${ORCA_HOME}/share/orca/slice --stream --output-dir ${slice2cpp_binary_dir}/${slice_module} )
+        SET( orca_slice_dir ${ORCA_HOME}/share/orca/slice )
+        SET( slice_args ${SLICE_PROJECT_ARGS} -I${proj_slice_src_dir} -I${ice_slice_dir} -I${orca_slice_dir} --stream --output-dir ${slice2cpp_binary_dir}/${slice_module} )
     ENDIF( ORCA_MOTHERSHIP )
 
 
   # debug
-#   MESSAGE( STATUS "   slice sources    : " ${slice_source_dir} )
+#   MESSAGE( STATUS "   slice sources    : " ${proj_slice_src_dir} )
 #   MESSAGE( STATUS "   cpp destination  : " ${slice2cpp_binary_dir} )
 #   MESSAGE( STATUS "GENERATE_SLICE2CPP_RULES: ARGN: ${ARGN}" )
 
@@ -65,7 +75,7 @@ MACRO( GENERATE_SLICE2CPP_RULES generated_cpp_list generated_header_list )
   # First pass: Loop through the SLICE sources we were given, add the full path for dependencies
   #
   FOREACH( slice_source_basename ${ARGN} )
-    APPEND( all_slice_depends "${slice_source_dir}/${slice_module}/${slice_source_basename}" )
+    APPEND( all_slice_depends "${proj_slice_src_dir}/${slice_module}/${slice_source_basename}" )
   ENDFOREACH( slice_source_basename ${ARGN} )
 
   #
@@ -73,7 +83,7 @@ MACRO( GENERATE_SLICE2CPP_RULES generated_cpp_list generated_header_list )
   #
   SET( slice_source_counter 0 )
   FOREACH( slice_source_basename ${ARGN} )
-    SET( slice_source "${slice_source_dir}/${slice_module}/${slice_source_basename}" )
+    SET( slice_source "${proj_slice_src_dir}/${slice_module}/${slice_source_basename}" )
     #MESSAGE( STATUS "DEBUG: Dealing with ${slice_source_basename}")
 
     #

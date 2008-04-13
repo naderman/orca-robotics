@@ -15,15 +15,24 @@ SET( SLICE2PY_BINARY_DIR      ${PROJECT_BINARY_DIR}/src/interfaces/python )
 # which is typically the same as the name of the namespace, e.g. 'orca'
 GET_FILENAME_COMPONENT( INTERFACE_NAMESPACE ${CMAKE_CURRENT_SOURCE_DIR} NAME )
 
+# debian package splits off slice files into a different place
+IF( ICE_HOME MATCHES /usr )
+    SET( ice_slice_dir /usr/share/slice )
+    MESSAGE( STATUS "This is a Debian Ice installation. Slice files are in ${ice_slice_dir}" )
+ELSE ( ICE_HOME MATCHES /usr )
+    SET( ice_slice_dir ${ICE_HOME}/slice )
+    MESSAGE( STATUS "This is NOT a Debian Ice installation. Slice files are in ${ice_slice_dir}" )
+ENDIF( ICE_HOME MATCHES /usr )
+
 # satelite projects need to include slice files from orca installation
 # the SLICE_SOURCE_DIR needs to be included in the search path as all the include files in the slice files
 # are orca/<included file>. slice2py will automatically prepend orca_ to the names of each of the imported modules unless 
 # the SLICE_ORCA_SOURCE_DIR directory is also included. See Sec. 22.15.2 in the Ice manual for how code generation works for
 # python.  
 IF( DEFINED ORCA_HOME )
-    SET( SLICE_ARGS ${SLICE_PROJECT_ARGS} -I${SLICE_SOURCE_DIR} -I${SLICE_ORCA_SOURCE_DIR} -I${ICE_SLICE_HOME}/slice -I${ORCA_HOME}/slice --output-dir ${SLICE2PY_BINARY_DIR}/${INTERFACE_NAMESPACE} )
+    SET( SLICE_ARGS ${SLICE_PROJECT_ARGS} -I${SLICE_SOURCE_DIR} -I${SLICE_ORCA_SOURCE_DIR} -I${ice_slice_dir} -I${ORCA_HOME}/slice --output-dir ${SLICE2PY_BINARY_DIR}/${INTERFACE_NAMESPACE} )
 ELSE ( DEFINED ORCA_HOME )
-    SET( SLICE_ARGS ${SLICE_PROJECT_ARGS} -I${SLICE_SOURCE_DIR} -I${SLICE_ORCA_SOURCE_DIR} -I${ICE_SLICE_HOME}/slice --output-dir ${SLICE2PY_BINARY_DIR}/${INTERFACE_NAMESPACE} )
+    SET( SLICE_ARGS ${SLICE_PROJECT_ARGS} -I${SLICE_SOURCE_DIR} -I${SLICE_ORCA_SOURCE_DIR} -I${ice_slice_dir} --output-dir ${SLICE2PY_BINARY_DIR}/${INTERFACE_NAMESPACE} )
 ENDIF( DEFINED ORCA_HOME )
 
 #
