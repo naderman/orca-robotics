@@ -7,13 +7,11 @@ SET( NOT_GBX_OS_WIN NOT GBX_OS_WIN )
 GBX_REQUIRE_VAR( build LIB ${lib_name} NOT_GBX_OS_WIN "Windows OS is not  supported" )
 GBX_REQUIRE_VAR( build LIB ${lib_name} QT4_FOUND "Qt4 not found" )
 
-SET( dep_libs OrcaLogFactory ) # OrcaLogFactory needed for saving path to file (re-factor?)
-GBX_REQUIRE_TARGETS( build LIB ${lib_name} ${dep_libs} )
+SET( ext_libs ${dep_libs} HydroNavUtil HydroQGui HydroQGuiElementUtil HydroOgMap )
+GBX_REQUIRE_INSTALLS( build LIB ${lib_name} ${ext_libs} )
 
-SET( dep_libs ${dep_libs} HydroNavUtil HydroQGui HydroQGuiElementUtil OrcaObjects OrcaQGuiElementUtil )
-GBX_REQUIRE_VAR( build LIB ${lib_name} HYDRONAVUTIL_INSTALLED "libHydroNavUtil not installed" )
-GBX_REQUIRE_VAR( build LIB ${lib_name} HYDROQGUI_INSTALLED "libHydroQGui not installed" )
-GBX_REQUIRE_VAR( build LIB ${lib_name} HYDROQGUIELEMENTUTIL_INSTALLED "libHydroQGuiElementUtil not installed" )
+SET( int_libs OrcaLogFactory OrcaObjects OrcaQGuiElementUtil OrcaOgMap ) # OrcaLogFactory needed for saving path to file (re-factor?)
+GBX_REQUIRE_TARGETS( build LIB ${lib_name} ${int_libs} )
 
 IF( build )
 
@@ -22,6 +20,7 @@ IF( build )
     
     FILE( GLOB hdrs *.h )
     FILE( GLOB human_srcs *.cpp )
+    SET( dep_libs ${ext_libs} ${int_libs} )
     
     SET( moc_hdrs
         pathfollower2delement.h
