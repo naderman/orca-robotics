@@ -113,15 +113,44 @@ bool localisationIsUncertain( const orca::Localise2dData &localiseData,
     return false;
 }
 
+namespace {
+
+    enum GeomType {
+        GeomTypePoint=0,
+        GeomTypePose=1,
+        GeomTypeLine=2,
+    };
+
+    bool isSane( const orca::CartesianPointFeature2d &f )
+    {
+        return ( f.pExists >= 0 && f.pExists <= 1 &&
+                 f.c.xx >= 0 &&
+                 f.c.yy >= 0 );
+    }
+    bool isSane( const orca::CartesianPoseFeature2d &f )
+    {
+        return ( f.pExists >= 0 && f.pExists <= 1 &&
+                 f.c.xx >= 0 &&
+                 f.c.yy >= 0 &&
+                 f.c.tt >= 0 );
+    }
+    bool isSane( const orca::CartesianLineFeature2d &f )
+    {
+        return ( f.pExists >= 0 && f.pExists <= 1 &&
+                 f.c.xx >= 0 &&
+                 f.c.yy >= 0 &&
+                 f.alpha <= M_PI && f.alpha >= -M_PI );
+    }
+
+}
+
 void 
 saveToFile( const orca::FeatureMap2dData& fmap, FILE *f )
 {
     for ( unsigned int i=0; i < fmap.features.size(); i++ )
     {
         assert( fmap.features[i] != 0 );
-
         const orca::Feature2dPtr &feature = fmap.features[i];
-        fprintf( f, "%d %f ", feature->type, feature->pExists );
 
         //
         // I'm not convinced that this is the best way of doing things...
@@ -129,6 +158,8 @@ saveToFile( const orca::FeatureMap2dData& fmap, FILE *f )
         if ( feature->ice_isA( "::orca::CartesianPointFeature2d" ) )
         {
             const orca::CartesianPointFeature2d& r = dynamic_cast<const orca::CartesianPointFeature2d&>(*feature);
+            fprintf( f, "%d ", GeomTypePoint );
+            fprintf( f, "%d %f ", feature->type, feature->pExists );
             fprintf(f, "%f %f %f %f %f\n",
                     r.p.x,
                     r.p.y,
@@ -139,7 +170,9 @@ saveToFile( const orca::FeatureMap2dData& fmap, FILE *f )
         else if ( feature->ice_isA( "::orca::CartesianPoseFeature2d" ) )
         {
             const orca::CartesianPoseFeature2d& r = dynamic_cast<const orca::CartesianPoseFeature2d&>(*feature);
-            fprintf(f, "%f %f %f %f %f %f %f %f %F\n",
+            fprintf( f, "%d ", GeomTypePose );
+            fprintf( f, "%d %f ", feature->type, feature->pExists );
+            fprintf(f, "%f %f %f %f %f %f %f %f %f\n",
                     r.p.p.x,
                     r.p.p.y,
                     r.p.o,
@@ -153,6 +186,8 @@ saveToFile( const orca::FeatureMap2dData& fmap, FILE *f )
         else if ( feature->ice_isA( "::orca::CartesianLineFeature2d" ) )
         {
             const orca::CartesianLineFeature2d& r = dynamic_cast<const orca::CartesianLineFeature2d&>(*feature);
+            fprintf( f, "%d ", GeomTypeLine );
+            fprintf( f, "%d %f ", feature->type, feature->pExists );
             fprintf(f, "%f %f %f %f %f %f %f %f %f %d %d\n",
                     r.rho,
                     r.alpha,
@@ -203,31 +238,26 @@ loadFromFile( const std::string &filename, orca::FeatureMap2dData &fmap )
         if ( buf[0] == '#' )
             continue;
 
-        char typeAsString[bufSize];
-        int ret = sscanf( buf, "%s ", typeAsString );
+        char geomTypeAsString[bufSize];
+        int ret = sscanf( buf, "%s ", geomTypeAsString );
         if ( ret != 1 )
         {
             // empty line
             continue;
         }
-        int type = atoi(typeAsString);
-        char *featureInfoBuf = &(buf[strlen(typeAsString)]);
+        GeomType geomType = (GeomType)(atoi(geomTypeAsString));
+        char *featureInfoBuf = &(buf[strlen(geomTypeAsString)]);
 
-        switch (type)
+        switch (geomType)
         {
-        case orca::feature::LASERREFLECTOR:
-        case orca::feature::FOREGROUNDPOINT:
-        case orca::feature::DOOR:
-        case orca::feature::CORNER:
-        case orca::feature::INTERNALCORNER:
-        case orca::feature::EXTERNALCORNER:
+        case GeomTypePoint:
         {
             orca::CartesianPointFeature2dPtr feature = new orca::CartesianPointFeature2d;
-            feature->type = type;
             // include conversion char 'l' before 'f' to indicate that the pointers are to doubles
             // (rather than floats)
-            const int numElements = 6;
-            int num = sscanf(featureInfoBuf,"%lf %lf %lf %lf %lf %lf\n",
+            const int numElements = 7;
+            int num = sscanf(featureInfoBuf,"%d %lf %lf %lf %lf %lf %lf\n",
+                             &(feature->type),
                              &(feature->pExists),
                              &(feature->p.x),
                              &(feature->p.y),
@@ -241,19 +271,62 @@ loadFromFile( const std::string &filename, orca::FeatureMap2dData &fmap )
                 f.close();
                 throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, ss.str() );
             }
+            if ( !isSane( *feature ) )
+            {
+                stringstream ss;
+                ss << "Badly-formed feature: " << orcaobj::toString(*feature);
+                f.close();
+                throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, ss.str() );                
+            }
 
             fmap.features.push_back( feature );
             break;
         }
-        case orca::feature::LINE:
+        case GeomTypePose:
         {
-            orca::CartesianLineFeature2dPtr feature = new orca::CartesianLineFeature2d;
-            feature->type = type;
+            orca::CartesianPoseFeature2dPtr feature = new orca::CartesianPoseFeature2d;
             // include conversion char 'l' before 'f' to indicate that the pointers are to doubles
             // (rather than floats)
-            const int numElements = 12;
+            const int numElements = 11;
+            int num = sscanf(featureInfoBuf,"%d %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf\n",
+                             &(feature->type),
+                             &(feature->pExists),
+                             &(feature->p.p.x),
+                             &(feature->p.p.y),
+                             &(feature->p.o),
+                             &(feature->c.xx),
+                             &(feature->c.xy),
+                             &(feature->c.xt),
+                             &(feature->c.yy),
+                             &(feature->c.yt),
+                             &(feature->c.tt) );
+            if ( num != numElements )
+            {
+                std::stringstream ss;
+                ss << "Malformed featuremap file!  Couldn't understand line " << line <<":"<<endl<<buf;
+                f.close();
+                throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, ss.str() );
+            }
+            if ( !isSane( *feature ) )
+            {
+                stringstream ss;
+                ss << "Badly-formed feature: " << orcaobj::toString(*feature);
+                f.close();
+                throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, ss.str() );                
+            }
+
+            fmap.features.push_back( feature );
+            break;
+        }
+        case GeomTypeLine:
+        {
+            orca::CartesianLineFeature2dPtr feature = new orca::CartesianLineFeature2d;
+            // include conversion char 'l' before 'f' to indicate that the pointers are to doubles
+            // (rather than floats)
+            const int numElements = 13;
             int ss, es;
-            int num = sscanf(featureInfoBuf,"%lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %d %d\n",
+            int num = sscanf(featureInfoBuf,"%d %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %d %d\n",
+                             &(feature->type),
                              &(feature->pExists),
                              &(feature->rho),
                              &(feature->alpha),
@@ -276,34 +349,12 @@ loadFromFile( const std::string &filename, orca::FeatureMap2dData &fmap )
             feature->startSighted = ss;
             feature->endSighted = es;
 
-            fmap.features.push_back( feature );
-            line++;
-            break;
-        }
-        case orca::feature::VEHICLEPOSE:
-        {
-            orca::CartesianPoseFeature2dPtr feature = new orca::CartesianPoseFeature2d;
-            feature->type = type;
-            // include conversion char 'l' before 'f' to indicate that the pointers are to doubles
-            // (rather than floats)
-            const int numElements = 10;
-            int num = sscanf(featureInfoBuf,"%lf %lf %lf %lf %lf %lf %lf %lf %lf %lf\n",
-                             &(feature->pExists),
-                             &(feature->p.p.x),
-                             &(feature->p.p.y),
-                             &(feature->p.o),
-                             &(feature->c.xx),
-                             &(feature->c.xy),
-                             &(feature->c.xt),
-                             &(feature->c.yy),
-                             &(feature->c.yt),
-                             &(feature->c.tt) );
-            if ( num != numElements )
+            if ( !isSane( *feature ) )
             {
-                std::stringstream ss;
-                ss << "Malformed featuremap file!  Couldn't understand line " << line <<":"<<endl<<buf;
+                stringstream ss;
+                ss << "Badly-formed feature: " << orcaobj::toString(*feature);
                 f.close();
-                throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, ss.str() );
+                throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, ss.str() );                
             }
 
             fmap.features.push_back( feature );
@@ -312,10 +363,11 @@ loadFromFile( const std::string &filename, orca::FeatureMap2dData &fmap )
         default:
         {
             stringstream ss;
-            ss<<"loadFromFile: don't know how to load with feature type " << type << endl;
+            ss<<"loadFromFile: don't know how to load with geom type " << geomType << endl;
             throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, ss.str() );
         }
         }
+        line++;
     }
     f.close();
 }
