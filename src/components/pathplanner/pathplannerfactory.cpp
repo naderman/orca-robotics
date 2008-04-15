@@ -1,7 +1,9 @@
 #include "pathplannerfactory.h"
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include "skeletongraphicsI.h"
+#ifdef QT4_FOUND
+#  include "skeletongraphicsI.h"
+#endif
 
 using namespace std;
 
