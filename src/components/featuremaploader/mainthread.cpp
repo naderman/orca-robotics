@@ -88,6 +88,10 @@ MainThread::walk()
         throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, s );
     }
 
+    stringstream ssDebug;
+    ssDebug << "Loaded map: " << endl << orcaobj::toString(theMap);
+    context_.tracer().debug( ssDebug.str(), 2 );
+
     //
     // EXTERNAL PROVIDED INTERFACES
     //
