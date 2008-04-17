@@ -7,12 +7,13 @@ SET( not_os_win NOT GBX_OS_WIN )
 GBX_REQUIRE_VAR( build LIB ${lib_name} not_os_win "Windows OS is not  supported" )
 GBX_REQUIRE_VAR( build LIB ${lib_name} QT4_FOUND "Qt4 not found" )
 
-SET( dep_libs OrcaQt OrcaQCompModel )
-GBX_REQUIRE_TARGETS( build LIB ${lib_name} ${dep_libs} )
-
-SET( dep_libs ${dep_libs} HydroQGui HydroQGuiElementUtil)
+SET( ext_libs HydroQGui HydroQGuiElementUtil)
 GBX_REQUIRE_VAR( build LIB ${lib_name} HYDROQGUI_INSTALLED "libHydroQGui not installed" )
 GBX_REQUIRE_VAR( build LIB ${lib_name} HYDROQGUIELEMENTUTIL_INSTALLED "HydroQGuiElementUtil not installed" )
+
+SET( int_libs OrcaQt OrcaQCompModel )
+GBX_REQUIRE_TARGETS( build LIB ${lib_name} ${int_libs} )
+
 
 IF( build )
 
@@ -32,6 +33,7 @@ IF( build )
     
     GBX_ADD_LIBRARY( ${lib_name} SHARED ${human_srcs} ${moc_srcs} )
     
+    SET( dep_libs ${ext_libs} ${int_libs} )
     TARGET_LINK_LIBRARIES ( ${lib_name} ${dep_libs} )
     
     GBX_ADD_HEADERS( orcaqguielementmodelview ${hdrs} )

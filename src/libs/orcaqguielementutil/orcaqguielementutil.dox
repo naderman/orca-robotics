@@ -11,16 +11,14 @@
 /*!
 @ingroup orca_libs
 @ingroup orca_linux
-@defgroup orca_library_orcaqgui libOrcaQGui
-@brief Tools for building Orca-complient GUI's with Qt library.
+@defgroup orca_library_orcaqguielementutil libOrcaQGuiElementUtil
+@brief Library providing classes and functions for building Qt GUI elements with comms
 
 @section Overview
 
-This library contains reusable elements to build an Orca GUI component using the Qt library.
+This library contains classes and functions for building Qt GUI elements, in particular for Ice communication.
 
-For a full list of functions and classes see @ref orcaqgui.
-
-@see @ref orca_library_orcaqgui3d
+@see @ref orca_library_orcaqgui2dfactory
 
 @section Authors
 
@@ -29,11 +27,11 @@ Tobias Kaupp, Alex Brooks, Alex Makarenko
 */
 
 /*!
-@brief libOrcaQGui provides tools for building Orca-complient GUI's with Qt library.
-@namespace orcaqgui
+@brief Library providing widgets to organise GUI elements
+@namespace orcaqguielementutil
 
 This namespace is part of a library.
 
-@see @ref orca_library_orcaqgui
+@see @ref orca_library_orcaqguielementutil
 
 */
