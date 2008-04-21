@@ -4,6 +4,13 @@
 module test
 {
 
+enum Desirability
+{
+    Low,
+    Medium,
+    High
+};
+
 struct Time
 {
     int seconds;

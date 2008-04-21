@@ -1,7 +1,7 @@
 /*
  * Orca-Robotics Project: Components for robotics 
  *               http://orca-robotics.sf.net/
- * Copyright (c) 2004-2008 Alex Brooks
+ * Copyright (c) 2008 Alex Makarenko
  *
  * This copy of Orca is licensed to you under the terms described in
  * the LICENSE file included in this distribution.
@@ -228,6 +228,40 @@ Slice::Gen::TypesVisitor::visitExceptionStart(const ExceptionPtr& p)
 void
 Slice::Gen::TypesVisitor::visitExceptionEnd(const ExceptionPtr& p)
 {
+}
+
+void
+Slice::Gen::TypesVisitor::visitEnum(const EnumPtr& p)
+{
+    string name = fixKwd(p->name());
+    string scope = fixKwd(p->scope());
+    EnumeratorList enumerators = p->getEnumerators();
+
+//     H << sp << nl << "enum " << name;
+//     H << sb;
+
+    H << "\nstd::string toString( const " << scope.substr(2) << name << " );";
+
+    C << "\n\nstd::string";
+    C << nl << scope.substr(2) << "toString( const " << scope.substr(2) << name << " obj )";
+    C << sb;
+    C << nl << "switch ( obj )";
+    C << sb;
+
+    EnumeratorList::const_iterator en = enumerators.begin();
+    while(en != enumerators.end())
+    {
+        C << nl << "case " << fixKwd((*en)->name()) << " :";
+        C << nl << "\treturn \"" << fixKwd((*en)->name()) << "\"";
+        ++en;
+    }
+
+    C << eb;
+    C << nl << "stringstream ss;";
+    C << nl << "ss << \"Unknown case in enumerator " << name << ": \"<< ((int)obj);";
+    C << nl << "throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, ss.str() );";
+
+    C << eb;
 }
 
 bool
@@ -589,124 +623,6 @@ Slice::Gen::TypesVisitor::visitDictionary(const DictionaryPtr& p)
             C << nl << scoped << "::iterator __i = v.insert(v.end(), pair);";
             writeStreamMarshalUnmarshalCode(C, valueType, "__i->second", false, "", _useWstring, p->valueMetaData());
             C << eb;
-            C << eb;
-        }
-    }
-}
-
-void
-Slice::Gen::TypesVisitor::visitEnum(const EnumPtr& p)
-{
-    string name = fixKwd(p->name());
-    EnumeratorList enumerators = p->getEnumerators();
-    H << sp << nl << "enum " << name;
-    H << sb;
-    EnumeratorList::const_iterator en = enumerators.begin();
-    while(en != enumerators.end())
-    {
-        H << nl << fixKwd((*en)->name());
-        if(++en != enumerators.end())
-        {
-            H << ',';
-        }
-    }
-    H << eb << ';';
-
-    if(!p->isLocal())
-    {
-        string scoped = fixKwd(p->scoped());
-        string scope = fixKwd(p->scope());
-        
-        size_t sz = enumerators.size();
-        assert(sz <= 0x7fffffff); // 64-bit enums are not supported
-        
-        H << sp << nl << _dllExport << "void __write(::IceInternal::BasicStream*, " << name << ");";
-        H << nl << _dllExport << "void __read(::IceInternal::BasicStream*, " << name << "&);";
-
-        if(_stream)
-        {
-            H << sp << nl << _dllExport << "void ice_write" << p->name()
-              << "(const ::Ice::OutputStreamPtr&, " << name << ");";
-            H << nl << _dllExport << "void ice_read" << p->name() << "(const ::Ice::InputStreamPtr&, " << name << "&);";
-        }
-
-        C << sp << nl << "void" << nl << scope.substr(2) << "__write(::IceInternal::BasicStream* __os, " << scoped
-          << " v)";
-        C << sb;
-        if(sz <= 0x7f)
-        {
-            C << nl << "__os->write(static_cast< ::Ice::Byte>(v));";
-        }
-        else if(sz <= 0x7fff)
-        {
-            C << nl << "__os->write(static_cast< ::Ice::Short>(v));";
-        }
-        else
-        {
-            C << nl << "__os->write(static_cast< ::Ice::Int>(v));";
-        }
-        C << eb;
-
-        C << sp << nl << "void" << nl << scope.substr(2) << "__read(::IceInternal::BasicStream* __is, " << scoped
-          << "& v)";
-        C << sb;
-        if(sz <= 0x7f)
-        {
-            C << nl << "::Ice::Byte val;";
-            C << nl << "__is->read(val);";
-            C << nl << "v = static_cast< " << scoped << ">(val);";
-        }
-        else if(sz <= 0x7fff)
-        {
-            C << nl << "::Ice::Short val;";
-            C << nl << "__is->read(val);";
-            C << nl << "v = static_cast< " << scoped << ">(val);";
-        }
-        else
-        {
-            C << nl << "::Ice::Int val;";
-            C << nl << "__is->read(val);";
-            C << nl << "v = static_cast< " << scoped << ">(val);";
-        }
-        C << eb;
-
-        if(_stream)
-        {
-            C << sp << nl << "void" << nl << scope.substr(2) << "ice_write" << p->name()
-              << "(const ::Ice::OutputStreamPtr& __outS, " << scoped << " v)";
-            C << sb;
-            if(sz <= 0x7f)
-            {
-                C << nl << "__outS->writeByte(static_cast< ::Ice::Byte>(v));";
-            }
-            else if(sz <= 0x7fff)
-            {
-                C << nl << "__outS->writeShort(static_cast< ::Ice::Short>(v));";
-            }
-            else
-            {
-                C << nl << "__outS->writeInt(static_cast< ::Ice::Int>(v));";
-            }
-            C << eb;
-
-            C << sp << nl << "void" << nl << scope.substr(2) << "ice_read" << p->name()
-              << "(const ::Ice::InputStreamPtr& __inS, " << scoped << "& v)";
-            C << sb;
-            if(sz <= 0x7f)
-            {
-                C << nl << "::Ice::Byte val = __inS->readByte();";
-                C << nl << "v = static_cast< " << scoped << ">(val);";
-            }
-            else if(sz <= 0x7fff)
-            {
-                C << nl << "::Ice::Short val = __inS->readShort();";
-                C << nl << "v = static_cast< " << scoped << ">(val);";
-            }
-            else
-            {
-                C << nl << "::Ice::Int val = __inS->readInt();";
-                C << nl << "v = static_cast< " << scoped << ">(val);";
-            }
             C << eb;
         }
     }
