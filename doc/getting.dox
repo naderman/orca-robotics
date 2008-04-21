@@ -24,7 +24,7 @@ For Orca users this dependency structure means that 4 packages need to be instal
 
 @section orca_doc_getting_download Download instructions for Hydro and Orca
 
-- Option 1. Download the latest distributions of GearBox [IT HAS NOT BEEN RELEASED YET!] and <strong><a href="http://sourceforge.net/project/showfiles.php?group_id=111647" style="text-decoration:none">Hydro and Orca</a></strong>
+- Option 1. Download the latest distributions of <strong><a href="http://sourceforge.net/project/showfiles.php?group_id=216468" style="text-decoration:none">GearBox</a></strong> and <strong><a href="http://sourceforge.net/project/showfiles.php?group_id=111647" style="text-decoration:none">Hydro and Orca</a></strong>
 
 - Option 2. Checkout source from SVN
     - Anonymous checkout (if you want to commit something later you'll be prompted for username/password):
