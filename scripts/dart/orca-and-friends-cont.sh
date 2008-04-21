@@ -3,9 +3,9 @@
 dashboard=/home/users/dart/ctests/orca-and-friends/orca-and-friends-cont
 logfile=$dashboard/orca-and-friends.log
 
-export HYDRO_INSTALL=/opt/hydro-cont
-export HYDRO_HOME=$HYDRO_INSTALL
-export LD_LIBRARY_PATH=$HYDRO_HOME/lib:$LD_LIBRARY_PATH
+#export HYDRO_INSTALL=/opt/hydro-cont
+#export HYDRO_HOME=$HYDRO_INSTALL
+#export LD_LIBRARY_PATH=$HYDRO_HOME/lib:$LD_LIBRARY_PATH
 
 while true; do
  
@@ -32,9 +32,9 @@ while true; do
  echo ===== Building and Testing Orca  ===== >> $logfile
  /usr/bin/ctest -S $dashboard/orca-cont-linux-gcc42.cmake -V >> $logfile 2>&1
  
- echo "===== Re-Building orca, to be 100% sure it is all built ===============" >> $logfile
- cd $dashboard/build-orca >> $logfile 2>&1
- make >> $logfile 2>&1
+# echo "===== Re-Building orca, to be 100% sure it is all built ===============" >> $logfile
+# cd $dashboard/build-orca >> $logfile 2>&1
+# make >> $logfile 2>&1
 
  echo ===== Installing Orca =============== >> $logfile
  cd $dashboard/build-orca >> $logfile 2>&1
@@ -49,6 +49,6 @@ while true; do
    
  echo ===== Finished  =============== >> $logfile
   
- sleep 311
+sleep 311
 
 done
