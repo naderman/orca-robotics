@@ -58,7 +58,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 @par Project wide
 
 - Build system
-  - GearBox distribution is now required to build Orca.
+  - GearBox distribution is now required to build Orca. Orca uses Gearbox cmake scripts.
   - Default installation directories follow GearBox standard (/usr/local).
   - Renamed all local cmake variables to low case. (alex m)
 
