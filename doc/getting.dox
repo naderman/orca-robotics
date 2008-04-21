@@ -73,7 +73,7 @@ $ cmake -D[VARIABLE_NAME]=[VARIABLE_VALUE] .
 
 The following are the names of available variables for each distribution:
 - GearBox
-    - GEARBOX_INSTALL - where to install Hydro installation, e.g. "cmake -DHYDRO_INSTALL=/home/myuser/temp ."
+    - GEARBOX_INSTALL - where to install GearBox installation, e.g. "cmake -DGEARBOX_INSTALL=/home/myuser/temp ."
     - ICEUTIL_HOME - where to find IceUtil installation, e.g. "cmake -DICEUTIL_HOME=/home/myuser/temp ."
 - Hydro
     - HYDRO_INSTALL - where to install Hydro installation, e.g. "cmake -DHYDRO_INSTALL=/home/myuser/temp ."
