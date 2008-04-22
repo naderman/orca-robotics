@@ -34,10 +34,6 @@ IceGridSession::IceGridSession( const orcaice::Context &context,
     stateStore_.set(Disconnected);
 }
 
-IceGridSession::~IceGridSession()
-{
-}
-
 bool
 IceGridSession::tryCreateSession()
 {
@@ -246,6 +242,36 @@ IceGridSession::getState()
     SessionState state;
     stateStore_.get( state );
     return state;
+}
+
+void 
+IceGridSession::setObservers( 
+        const IceGrid::RegistryObserverPrx& reg, 
+        const IceGrid::NodeObserverPrx& node, 
+        const IceGrid::ApplicationObserverPrx& app, 
+        const IceGrid::AdapterObserverPrx& adpt, 
+        const IceGrid::ObjectObserverPrx& obj )
+{
+    registryObserverPrx_ = reg;
+    nodeObserverPrx_ = node;
+    applicationObserverPrx_ = app;
+    adapterObserverPrx_ = adpt;
+    objectObserverPrx_ = obj;
+
+    try
+    {
+        // register observers if ANY of them are not NULL
+        if ( registryObserverPrx_ || nodeObserverPrx_ || applicationObserverPrx_ ||
+                adapterObserverPrx_ || objectObserverPrx_ )
+        {
+            session_->setObservers( registryObserverPrx_, nodeObserverPrx_,
+                        applicationObserverPrx_, adapterObserverPrx_, objectObserverPrx_ );
+        }
+    }
+    catch ( const IceGrid::ObserverAlreadyRegisteredException& ) {
+        // This is OK.
+        context_.tracer().warning( "got ObserverAlreadyRegisteredException exception." );
+    }
 }
 
 std::string 

@@ -50,7 +50,7 @@ public:
         const IceGrid::AdapterObserverPrx&      adpt=IceGrid::AdapterObserverPrx(), 
         const IceGrid::ObjectObserverPrx&       obj=IceGrid::ObjectObserverPrx() );
 
-    ~IceGridSession();
+    ~IceGridSession() {};
 
     //! State of the Session 
     enum SessionState
@@ -67,6 +67,16 @@ public:
 
     //! Returns current state of the session. Thread-safe.
     SessionState getState();
+
+    //! Set the observer proxies that receive notifications when the state of the registry or nodes changes.
+    //! Calls the corresponding method of the Admin session. Catches the ObserverAlreadyRegisteredException
+    //! exception.
+    void setObservers( 
+        const IceGrid::RegistryObserverPrx&     reg =IceGrid::RegistryObserverPrx(), 
+        const IceGrid::NodeObserverPrx&         node=IceGrid::NodeObserverPrx(), 
+        const IceGrid::ApplicationObserverPrx&  app=IceGrid::ApplicationObserverPrx(), 
+        const IceGrid::AdapterObserverPrx&      adpt=IceGrid::AdapterObserverPrx(), 
+        const IceGrid::ObjectObserverPrx&       obj=IceGrid::ObjectObserverPrx() );
 
     //! Reimplement this to perform custom action right after a new session is created.
     //! Returns TRUE if successful. On FALSE the session is destroyed and another one is created.
