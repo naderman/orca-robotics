@@ -2,10 +2,6 @@
 
 dashboard=$HOME/ctests/orca/orca-nightly
 
-export HYDRO_INSTALL=/opt/hydro-nightly
-export HYDRO_HOME=$HYDRO_INSTALL
-export LD_LIBRARY_PATH=$HYDRO_HOME/lib:$LD_LIBRARY_PATH
-
 # compile with gcc-4.2
 logfile=$dashboard/orca.log
 echo ---------------------------------------- >> $logfile
