@@ -1,5 +1,5 @@
 set(CTEST_PROJECT_NAME "Orca")
-set(CTEST_NIGHTLY_START_TIME "04:00:00 EST")
+set(CTEST_NIGHTLY_START_TIME "04:00:00 EAST")
 
 set(CTEST_DROP_METHOD "http")
 set(CTEST_DROP_SITE "cdash.acfr.usyd.edu.au")
