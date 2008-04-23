@@ -3,8 +3,8 @@ SET_COMPONENT_NAMES ( CameraViewer )
 SET ( build TRUE )
 GBX_REQUIRE_OPTION( build EXE ${APP_NAME} ON )
 
-SET ( NOT_GBX_OS_WIN NOT GBX_OS_WIN )
-GBX_REQUIRE_VAR( build EXE ${APP_NAME} NOT_GBX_OS_WIN "Windows OS is not supported" )
+SET ( not_os_win NOT GBX_OS_WIN )
+GBX_REQUIRE_VAR( build EXE ${APP_NAME} not_os_win "Windows OS is not supported" )
 
 INCLUDE (${ORCA_CMAKE_DIR}/FindOpenCV.cmake)
 GBX_REQUIRE_VAR( build EXE ${APP_NAME} OPENCV_FOUND "OpenCV not found" )

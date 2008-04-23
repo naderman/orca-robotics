@@ -12,7 +12,7 @@
 
 @page orca_doc_devproj Starting Your Own Orca Project
 
-@note Reviewed for release 2.7.0.
+@note Reviewed for release 2.10.0.
 
 A common situation is that you want to work on a component outsided of the Orca source tree. This can happen if you want to experiment without the need to keep the code clean and documented (a requirement for Orca SourceForge repository) or you want to work on a closed-source component. In this case you should download and install the main Orca distribution and then setup a parallel workspace for your own project.
 
@@ -30,13 +30,10 @@ We'll walk through the steps of customizing the empty project into a project cal
 - Rename the directory 'empty-export' to 'tractor'
 - Edit the top level CMakeLists.txt file so it looks like this:
 @verbatim
-# project name
 PROJECT( tractor )
-# project version string.
-SET( PROJECT_VERSION                0.0.1       CACHE STRING "Version of Tractor distribution" )
-# the name of the environment variable which sets installation directory.
-SET( PROJECT_INSTALL_ENV_VAR        TRACTOR_INSTALL )
-# the name for project's interface library.
+
+SET( GBX_PROJECT_VERSION            0.0.1       CACHE STRING "Version of 'Empty' distribution" )
+
 SET( PROJECT_INTERFACE_LIB          TractorInterfaces )
 @endverbatim
 - Rename interface subdirectories named after the project main namespace:
@@ -60,6 +57,8 @@ module tractor
 #include <tractor/someinterface.h>
 ...
     tractor::SomeDataPtr someData = new tractor::SomeData;
+...
+    tractor::SomeClassDataPtr someCData = new tractor::SomeClassData;
 @endverbatim
 
 - Edit the source file of the sample utility @c src/utils/someutil/main.cpp so that the include line looks like this:
@@ -67,6 +66,8 @@ module tractor
 #include <tractor/someinterface.h>
 ...
     tractor::SomeDataPtr someData = new tractor::SomeData;
+...
+    tractor::SomeClassDataPtr someCData = new tractor::SomeClassData;
 @endverbatim
 
 - If you're going to use revision control system (e.g. SVN, CVS), it's a good idea to commit your project to your own repository at this point. All the current files are "raw" files which need to be added to CVS. If you commit later and used an in-source build, raw and generated files will be mixed.
@@ -84,12 +85,12 @@ If this is an internal project, then you probably don't bother realeasing distri
 In SVN you do it like this, assuming Orca version 2.12.0. URL is the URL to your repository, not Orca's.
 You can get it easily by typing @c 'svn @c info' at the top level of the local copy.
 @verbatim
-$ svn copy [URL]/tractor/trunk [URL]/tractor/tags/orca-2120 -m "Works with orca release 2.12.0"
+$ svn copy [URL]/tractor/trunk [URL]/tractor/tags/orca-2.12.0 -m "Works with orca release 2.12.0"
 @endverbatim
 
-Here's how we used to do the same thing in CVS.
+(Here's how we used to do the same thing in CVS.)
 @verbatim
-$ cvs tag -f orca-2120
+$ cvs tag -f orca-2.12.0
 @endverbatim
 
 */

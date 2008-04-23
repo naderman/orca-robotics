@@ -3,8 +3,8 @@ GBX_ADD_LICENSE( GPL )
 
 SET( build TRUE )
 GBX_REQUIRE_OPTION( build LIB ${lib_name} OFF )
-SET( NOT_GBX_OS_WIN NOT GBX_OS_WIN )
-GBX_REQUIRE_VAR( build LIB ${lib_name} NOT_GBX_OS_WIN "Windows OS is not  supported" )
+SET( not_os_win NOT GBX_OS_WIN )
+GBX_REQUIRE_VAR( build LIB ${lib_name} not_os_win "Windows OS is not  supported" )
 GBX_REQUIRE_VAR( build LIB ${lib_name} QT4_FOUND "Qt4 not found" )
 GBX_REQUIRE_VAR( build LIB ${lib_name} GLUT_FOUND "libGlut not found" )
 
