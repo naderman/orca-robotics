@@ -39,9 +39,8 @@ private:
     
     orca::CameraDescriptionSequence  descr_;
 
-    IplImage* cvImage_;
-    IplImage* cvImageTmp_;
-    IplImage* bayerImage_;
+    std::vector<IplImage*> images_;
+    
     // setup opencv struct and window for display
     void initCvImage();
 

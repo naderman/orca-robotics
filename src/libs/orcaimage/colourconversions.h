@@ -11,24 +11,30 @@
 #ifndef ORCA_IMAGE_COLOURCONVERSIONS_H
 #define ORCA_IMAGE_COLOURCONVERSIONS_H
 
-#ifdef OPENCV_FOUND
-#   include <cv.h>
-#endif
+#include <opencv/cv.h>
 
 #include <orca/camera.h>
 #include <orca/image.h>
 
+#ifdef USE_QT
+#include <QImage>
+#endif
+
 namespace orcaimage{
 
-#ifdef OPENCV_FOUND
-    //! This function has not been tested very well
+#ifdef USE_QT
+    //! Convert orca::ImageData in any known format to RGB QImage
+    void cvtToQImage( QImage* image, const orca::ImageDataPtr src, const orca::ImageDescriptionPtr descr );
+#endif
+
+#ifdef USE_OPENCV
+    //! Convert orca::ImageData in any known format to RGB IplImage 
     void cvtToRgb( IplImage* dest, const orca::ImageDataPtr src, const orca::ImageDescriptionPtr descr );
-    
+
     //! Often use this function for converting to bgr image format used in opencv
     void cvtToBgr( IplImage* dest, const orca::ImageDataPtr src, const orca::ImageDescriptionPtr descr );
-
 #endif
-    
+
 } // namespace
     
 #endif

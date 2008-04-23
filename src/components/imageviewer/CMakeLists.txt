@@ -4,6 +4,8 @@ SET( build TRUE )
 GBX_REQUIRE_OPTION( build EXE ${APP_NAME} ON )
 SET( not_os_win NOT GBX_OS_WIN )
 GBX_REQUIRE_VAR( build EXE ${APP_NAME} not_os_win "Windows OS is not supported" )
+GBX_REQUIRE_VAR( build EXE ${APP_NAME} QT4_FOUND "Qt4 not found" )
+
 INCLUDE( ${ORCA_CMAKE_DIR}/FindOpenCV.cmake )
 GBX_REQUIRE_VAR( build EXE ${APP_NAME} OPENCV_FOUND "OpenCV not found" )
 
@@ -14,8 +16,9 @@ IF( build )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseOpenCV.cmake )
+    INCLUDE( ${HYDRO_CMAKE_DIR}/UseQt.cmake )
     # need this for an ugly #ifdef in libOrcaImage
-    ADD_DEFINITIONS( -DOPENCV_FOUND )
+    ADD_DEFINITIONS( -DUSE_OPENCV )
 
     FILE( GLOB srcs *.cpp )
     

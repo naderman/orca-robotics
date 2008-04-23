@@ -35,7 +35,10 @@ MainThread::MainThread( const orcaice::Context& context ) :
 MainThread::~MainThread()
 {
     // delete opencv stuff
-    cvReleaseImage( &cvImage_ );
+    for(int i = 0; i < images_.size(); ++i)
+    {
+        cvReleaseImage( &images_[i] );
+    }
 }
 
 void 
@@ -149,18 +152,18 @@ MainThread::walk()
             //
             
             // make sure the image is in BGR format which opencv can display       
-            orcaimage::cvtToBgr( cvImage_, imageData.at(0), descr_.at(0) );
+            orcaimage::cvtToBgr( images_.at(0), imageData.at(0), descr_.at(0) );
             // load the image into the previously created window
-            cvShowImage( "CameraViewer1", cvImage_ );
+            cvShowImage( "CameraViewer1", images_.at(0) );
             
             if(imageData.size() >= 2 ) {
-                orcaimage::cvtToBgr( cvImage_, imageData.at(1), descr_.at(1) );
-                cvShowImage( "CameraViewer2", cvImage_ );
+                orcaimage::cvtToBgr( images_.at(1), imageData.at(1), descr_.at(1) );
+                cvShowImage( "CameraViewer2", images_.at(1) );
             }
 
             if(imageData.size() >= 3 ) {
-                orcaimage::cvtToBgr( cvImage_, imageData.at(2), descr_.at(2) );
-                cvShowImage( "CameraViewer3", cvImage_);
+                orcaimage::cvtToBgr( images_.at(2), imageData.at(2), descr_.at(2) );
+                cvShowImage( "CameraViewer3", images_.at(2));
             }            
             // need this as opencv doesn't display properly otherwise
             cvWaitKey(10);
@@ -185,7 +188,11 @@ MainThread::initCvImage()
     // TODO: put this nChannel calculation into imageutils as a separate function 
     
     // opencv gear here
-    cvImage_ = cvCreateImage( cvSize( descr_.at(0)->imageWidth, descr_.at(0)->imageHeight ),  8, 3 );
+    for(int i = 0; i < descr_.size(); ++i)
+    {
+        images_.push_back(cvCreateImage( cvSize( descr_.at(i)->imageWidth, descr_.at(i)->imageHeight ),  8, 3 ));
+    }
+
     // dodgy opencv needs this so it has time to resize
     cvWaitKey(100);
     context_.tracer().debug("opencv window created",5);
