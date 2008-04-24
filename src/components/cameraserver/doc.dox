@@ -37,10 +37,6 @@ This component dynamically loads an implementation of a Hydro hardware interface
 
 - @ref hydro_drivers_camera
 
-@par Operation
-
-This component encapsulates a digital camera (see @ref how_camera_works ). It can run either as a stand-alone component or an IceBox Service.
-
 @par Configuration
 
 - @c CameraServer.Config.DriverLib (string)
@@ -91,12 +87,6 @@ Geometry
 @see Individual drivers may have additional configuration parameters which are specified as Camera.Config.XXX. See driver documentation.
 
 An example configuration file is installed into [ORCA-INSTALL-DIR]/share/orca/cfg/ directory.
-
-@section internal Internal Structure
-    
-@image html camera_whitebox.png
-
-For developers: the code conforms to the basic approach described in the notes on @ref orca_doc_devcomp.
 
 @section Notes
 
