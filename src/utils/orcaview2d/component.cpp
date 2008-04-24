@@ -87,20 +87,20 @@ Component::loadPluginLibraries( const std::string& factoryLibNames )
         }
         catch (hydrodll::DynamicLoadException &e)
         {
-            cout << "ERROR(loggercomponent.cpp): " << e.what() << endl;
+            cout << "ERROR(orcaview2d:component.cpp): " << e.what() << endl;
             throw;
         }
     }
 
     for ( uint i=0; i < factories_.size(); i++ )
     {
-        cout<<"TRACE(component.cpp): Setting context for "<<i<<"'th factory" << endl;
+        cout<<"TRACE(orcaview2d:component.cpp): Setting context for "<<i<<"'th factory" << endl;
 
         orcaqgui::IGuiElementFactory *orcaFactory = 
                 dynamic_cast<orcaqgui::IGuiElementFactory*>(factories_[i]);
         if ( orcaFactory != NULL )
         {
-            cout<<"TRACE(component.cpp): setContext()" << endl;
+            cout<<"TRACE(orcaview2d:component.cpp): setContext()" << endl;
             orcaFactory->setContext( context() );
         }
         else
