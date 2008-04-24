@@ -12,7 +12,7 @@
 
 @page orca_doc_tutebrickwrite Writing a super-simple component
 
-@note Reviewed for release 2.9.0.
+@note Reviewed for release 2.10.0.
 
 This page describes the basic structure of a typical Orca component. We use @ref orca_component_brick component as an example. When you are done, go to the next tutorial: @ref orca_doc_tutebrickrun
 
@@ -22,7 +22,7 @@ Go to the top directory of the Orca distribution and type the following:
 
 @verbatim
 $ ls src/examples/brick
-brick.def  brick.dox  CMakeLists.txt  mainthread.cpp  mainthread.h
+brick.def  doc.dox  CMakeLists.txt  mainthread.cpp  mainthread.h
 @endverbatim
 
 What are all these files? Here we'll just list their purpose, click on the links for the line-by-line explanation of the source.
@@ -33,40 +33,52 @@ What are all these files? Here we'll just list their purpose, click on the links
 
 - @ref orca_doc_tutebrickwrite_brick_def -- The component definition file. It contains information about the component's provided and required interfaces, configuration parameters, etc. During compilation a special utility @ref orca_util_def2cfg is automatically called to convert @c brick.def file into a sample @c brick.cfg file which is later installed into @c [ORCA_INSTALL]/cfg directory. The format of @c .def file is described in the documentation for the @ref orca_util_def2cfg utility.
 
-- @c brick.dox -- Component documentation in Doxygen format. @ref orca_component_brick "This documentation" is generated from brick.dox. For the details of the  format, see Doxygen documentation.
+- @c doc.dox -- Component documentation in Doxygen format. @ref orca_component_brick "This documentation" is generated from @c doc.dox. For the details of the format, see Doxygen documentation.
 
 
 @section orca_doc_tutebrickwrite_cmakelists CMakeLists.txt
 
 @code
-SET_COMPONENT_NAMES ( Brick )
+ORCA_SET_COMPONENT_NAME( Brick )
 
-SET ( BUILD TRUE )
-REQUIRE_OPTION( BUILD EXE ${APP_NAME} ON )
+SET( build TRUE )
+# Check for human input
+GBX_REQUIRE_OPTION( build EXE ${APP_NAME} ON )
 
-IF ( BUILD)
+# libs on which our code depends would go here
+# SET( dep_libs ??? )
+# GBX_REQUIRE_TARGETS( build EXE ${APP_NAME} ${dep_libs} )
+
+IF( build)
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
-    FILE( GLOB COMP_SRCS *.cpp )
-
-    # build stand-alone component
-    WRAP_MAINTHREAD_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${COMP_NAME} ${COMP_SRCS} )
-
+    FILE( GLOB srcs *.cpp )
+    
+    # build stand-alone component  
+    ORCA_WRAP_MAINTHREAD_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${COMP_NAME} ${srcs} )
+#     TARGET_LINK_LIBRARIES( ${APP_NAME} ${dep_libs} )
+    
     # build IceBox service
-    IF ( BUILD_SERVICES )
-        WRAP_MAINTHREAD_INTO_SERVICE( ${SERVICE_NAME} ${COMP_NAMESPACE} ${COMP_NAME} ${COMP_SRCS} )
-    ENDIF ( BUILD_SERVICES )
+    IF( ORCA_BUILD_SERVICES )
+        ORCA_WRAP_MAINTHREAD_INTO_SERVICE( ${SERVICE_NAME} ${COMP_NAMESPACE} ${COMP_NAME} ${srcs} )
+#         TARGET_LINK_LIBRARIES( ${SERVICE_NAME} ${dep_libs} )    
+    ENDIF( ORCA_BUILD_SERVICES )
 
-    GENERATE_CONFIG_FILE( ${APP_NAME}.def )
+    ORCA_GENERATE_CONFIG_FILE( ${APP_NAME}.def )
 
-ENDIF ( BUILD )
+ENDIF( build )
 @endcode
  
 @par Line by Line Walkthrough
 
+Each directory has a CMakeLists.txt which describes how to compile sources in that directory. CMake uses its own language to describe what needs to be done. Orca project uses standard CMake keywords and a few custom macros which we borrow from the GearBox project. Here's how you can tell where the macros are defined:
+- All GearBox macros start with "GBX_"
+- All Orca macros start with "ORCA_"
+- The rest are standard CMake commands and macros.
+
 @verbatim
-SET_COMPONENT_NAMES ( Brick )
+ORCA_SET_COMPONENT_NAME ( Brick )
 @endverbatim
 Sets component name and 3 other related CMake variables which we'll use later in this file.
 - APP_NAME        application executable name (defaults to the component name converted to lower case)
@@ -79,30 +91,30 @@ Also sets APP_CTRLC_HANDLER=1 (instructs application to install Ctrl-C Handler)
 For custom values, call this function first and then override some or all of the variables manually.
 For example:
 @verbatim
-      SET_COMPONENT_NAMES ( MyComponent )
-      SET ( COMP_NAMESPACE mycomp )
+      ORCA_SET_COMPONENT_NAME( MyComponent )
+      SET( COMP_NAMESPACE mycomp )
 @endverbatim
 
 @verbatim
-SET ( BUILD TRUE )
+SET( build TRUE )
 @endverbatim
 This and the following few lines determine whether we are going to build this component or not. We start with the assumption that we will and then check a few requirements sequentially. We define a variable called @c BUILD and set it to TRUE, i.e. "this library will be built". Failure to meet any one of the requirements will assign FALSE to this "cumulative variable".
 
 @verbatim
 # Check for human input
-REQUIRE_OPTION( BUILD EXE ${APP_NAME} ON )
+GBX_REQUIRE_OPTION( build EXE ${APP_NAME} ON )
 @endverbatim
 This line calls a CMake macro which defines a user-configurable compilation option. It will be called @c BUILD_BRICK (BUILD + the name of our component in upper case). This option can be used as a variable to implement conditional compilation. The default value of this variable is ON, equivalent to TRUE. CMake comes with a configuration tool called @c ccmake. In Linux, when you type "ccmake ." in the top directory of the Orca distribution, you will see a list of all compilation options. Scroll down to @c BUILD_BRICK and press ENTER, the value of the option will change to OFF. Now configure (press @c c) and generate (press @c g). The build options have now been adjusted such that the Brick example will not be compiled. Repeat the process to turn the compilation back on or delete @c CMakeCache.txt to go back to defaults.
 
 @verbatim
 # libs on which our code depends would go here
-# SET( DEP_LIBS ??? )
-# REQUIRE_TARGETS( BUILD EXE ${APP_NAME} ${DEP_LIBS} )
+# SET( dep_libs ??? )
+# GBX_REQUIRE_TARGETS( build EXE ${APP_NAME} ${dep_libs} )
 @endverbatim
 Pound sign marks comments. Here we comment out a line which would normally be used to specify library dependencies on one of the Orca targets (typically libraries but could be executables as well). This example does not need to be linked to any library besides the typical ones specified by UseComponentRules.cmake script.
 
 @verbatim
-IF ( BUILD)
+IF( build)
 @endverbatim
 Do not compile this example if any of requirements are not satisfied. In this case we only have one requirement: the wish of the user. Typically, there will be several, e.g. the OS, required libraries, etc.
 
@@ -114,47 +126,48 @@ Most components are compiled with the same compiler options, include the same ty
 Because the @c UseComponentRules.cmake script is installed with the rest of the Orca files, satellite projects which use Orca can use this script file as well. The CMake variable @c ORCA_CMAKE_DIR works out the correct location of Orca CMake scripts.
 
 @verbatim
-    FILE( GLOB COMP_SRCS *.cpp )
+    FILE( GLOB srcs *.cpp )
 @endverbatim
 Search for file in the current directory which fit the specified pattern and assign the list to the variables @c COMP_SRCS.  
     - Instead of searching you can just list the files you need.
 @verbatim
-SET( COMP_SRCS mainthread.cpp )
+SET( srcs mainthread.cpp )
 @endverbatim
 
 @verbatim
-    WRAP_MAINTHREAD_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${COMP_NAME} ${COMP_SRCS} )
+    ORCA_WRAP_MAINTHREAD_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${COMP_NAME} ${srcs} )
 @endverbatim
 This macro wraps an Orca component around a single thread and places that component into an Orca application. It expects to find 
 - files named mainthread.h/cpp 
 - which define a class ${COMP_NAMESPACE}::MainThread
-- which derives from hydroiceutil::Thread or its derivatives
+- which derives from gbxiceutilacfr::Thread or its derivatives
 
 If your component is non-standard (e.g. has several threads or needs to do something special in the constructor) you can create a custom Orca component. There's a macro for this case as well called WRAP_COMPONENT_INTO_APP which will place the custom component into an Orca application. If your @c main.cpp file needs to be nonstandard, then you have to write it by hand without the help of the macros. When writing custom @c component.h/cpp and @c main.cpp files it may be useful to take a look at the automatically generated versions. Look at the contents of @c brick/autogen directory (it is generated during the cmake process).
 
 @verbatim
-#     TARGET_LINK_LIBRARIES( ${APP_NAME} ${DEP_LIBS} )
+#     TARGET_LINK_LIBRARIES( ${APP_NAME} ${dep_libs} )
 @endverbatim
-This would be uncommented if we had dependencies.
+This would be uncommented in case we had dependencies.
 
 @verbatim
-    IF ( BUILD_SERVICES )
-        WRAP_MAINTHREAD_INTO_SERVICE( ${SERVICE_NAME} ${COMP_NAMESPACE} ${COMP_NAME} ${COMP_SRCS} )
-#         TARGET_LINK_LIBRARIES( ${SERVICE_NAME} ${DEP_LIBS} )
-    ENDIF ( BUILD_SERVICES )
+    IF( ORCA_BUILD_SERVICES )
+        ORCA_WRAP_MAINTHREAD_INTO_SERVICE( ${SERVICE_NAME} ${COMP_NAMESPACE} ${COMP_NAME} ${srcs} )
+#         TARGET_LINK_LIBRARIES( ${SERVICE_NAME} ${dep_libs} )    
+    ENDIF( ORCA_BUILD_SERVICES )
 @endverbatim
 If the global option called @c BUILD_SERVICES is ON, create a shared library called @c libOrcaBrick.so (default value for @c ${SERVICE_NAME}). The macro wraps an Orca service around a single thread. The @c BUILD_SERVICES option is defined globally but can be user-configured with @c ccmake tool. The default setting is OFF. The macro will also schedule this service library to be installed into @c [ORCA-INSTALL]/lib. We could also link this library to dependencies. 
 
 @verbatim
-    GENERATE_CONFIG_FILE( ${APP_NAME}.def )
+    ORCA_GENERATE_CONFIG_FILE( ${APP_NAME}.def )
 @endverbatim
 We call a macro to automatically generate a configuration file (.cfg) from the component definition file (.def). For more information on config files, see @ref orca_doc_configfiles.
 
 @verbatim
-ENDIF ( BUILD )
+ENDIF( build )
 @endverbatim
 End of the IF block. Most of the CMake syntax you'll need you can work out from the existing files. For more details, consult the CMake documentation.
 
+There are additional sources of information on CMake. Take a look at the <strong><a href="http://cmake.org/HTML/Documentation.html" style="text-decoration:none">CMake documentation</a></strong> and a <strong><a href="http://gearbox.sourceforge.net/gbx_doc_buildsys.html" style="text-decoration:none">GearBox build system tutorial</a></strong>.
 
 @section orca_doc_tutebrickwrite_mainthread_h mainthread.h
 
@@ -162,17 +175,18 @@ End of the IF block. Most of the CMake syntax you'll need you can work out from 
 #ifndef MAIN_THREAD_H
 #define MAIN_THREAD_H
 
-#include <hydroiceutil/subsystemthread.h>
+#include <gbxsickacfr/gbxiceutilacfr/subsystemthread.h>
 #include <orcaice/context.h>
 
 namespace brick
 {
 
-class MainThread: public hydroiceutil::SubsystemThread
-{
+class MainThread: public gbxsickacfr::gbxiceutilacfr::SubsystemThread
+{       
 public:
     MainThread( const orcaice::Context& context );
 
+    // from SubsystemThread
     virtual void walk();
 
 private:
@@ -182,17 +196,18 @@ private:
 } // namespace
 
 #endif
+@endcode
 
 @par Line by Line Walkthrough
 
 @verbatim
-#include <hydroutil/subsystemthread.h>
+#include <gbxsickacfr/gbxiceutilacfr/subsystemthread.h>
 #include <orcaice/context.h>
 @endverbatim
-Definitions of the hydroutil::SubsystemThread and orcaice::Context classes.
+Definitions of the thread class from GearBox and orcaice::Context classes.
 
 @verbatim
-class MainThread: public hydroutil::SubsystemThread
+class MainThread: public gbxsickacfr::gbxiceutilacfr::SubsystemThread
 @endverbatim
 The one and only thread used by our component is derived from hydroutil::SubsystemThread class. This thread class derives from a basic hydroutil::Thread class and adds a bit of functionality to it. 
 
@@ -256,7 +271,7 @@ MainThread::walk()
 
     //
     // Main loop
-    //
+    //   
     subStatus().setMaxHeartbeatInterval( sleepIntervalMs * 3.0/1000.0 );
 
     while( !isStopping() )
