@@ -14,9 +14,11 @@ SET( int_libs OrcaLogFactory OrcaObjects OrcaQGuiElementUtil OrcaOgMap ) # OrcaL
 GBX_REQUIRE_TARGETS( build LIB ${lib_name} ${int_libs} )
 
 IF( build )
-
-    INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
+    
+    INCLUDE( ${HYDRO_CMAKE_DIR}/UseHydro.cmake )
     INCLUDE( ${HYDRO_CMAKE_DIR}/UseQt.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseBasicRules.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseLibProjectInterfaces.cmake )
     
     FILE( GLOB hdrs *.h )
     FILE( GLOB human_srcs *.cpp )
