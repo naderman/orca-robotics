@@ -60,7 +60,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - Build system
   - GearBox distribution is now required to build Orca. Orca uses Gearbox cmake scripts.
   - Default installation directories follow GearBox standard (/usr/local).
-  - Renamed all local cmake variables to low case. (alex m)
+  - Renamed all local cmake variables to low case. The names of all CMake macros defined in 
+    Orca now start with "ORCA_" (alex m)
 
 - Documentation
   - Cleaned up and shortened the programming style guide.
