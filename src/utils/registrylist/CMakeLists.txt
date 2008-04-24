@@ -1,4 +1,4 @@
-SET_COMPONENT_NAMES( RegistryList )
+ORCA_SET_COMPONENT_NAME( RegistryList )
 
 SET( build TRUE )
 GBX_REQUIRE_OPTION( build EXE ${APP_NAME} ON )
@@ -12,7 +12,7 @@ IF( build )
 
     FILE( GLOB srcs *.cpp )
     
-    WRAP_MAINTHREAD_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${COMP_NAME} ${srcs} )
+    ORCA_WRAP_MAINTHREAD_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${COMP_NAME} ${srcs} )
         
     IF( NOT GBX_OS_WIN )
         SET( dep_libs ${dep_libs} OrcaCompModel )
@@ -23,6 +23,6 @@ IF( build )
     ENDIF( NOT GBX_OS_WIN )
     TARGET_LINK_LIBRARIES( ${APP_NAME} ${dep_libs} )
 
-    GENERATE_CONFIG_FILE( ${APP_NAME}.def )
+    ORCA_GENERATE_CONFIG_FILE( ${APP_NAME}.def )
 
 ENDIF( build )

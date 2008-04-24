@@ -1,18 +1,18 @@
 #
-# GENERATE_CONFIG_FILE
+# ORCA_GENERATE_CONFIG_FILE
 #   Rule for generating .cfg files from .def files.
 #
-#       GENERATE_CONFIG_FILE( def_file [component_target='DEF_FILE_WE'] [install_cfg=1] )
+#       ORCA_GENERATE_CONFIG_FILE( def_file [component_target='DEF_FILE_WE'] [install_cfg=1] )
 #
 #   For .def file mycomponent.def, generates file mycomponent.cfg
 #   If target name is not specified, it is assumed to be mycomponent.
 #   Generated config files are installed by default, specify install_cfg=0 if installation
 #   is not required (useful for config files used in tests).
 #
-MACRO( GENERATE_CONFIG_FILE def_file )
+MACRO( ORCA_GENERATE_CONFIG_FILE def_file )
 
     IF( ${ARGC} LESS 1 )
-        MESSAGE( FATAL_ERROR "GENERATE_CONFIG_FILE requires at least one input parameter." )
+        MESSAGE( FATAL_ERROR "ORCA_GENERATE_CONFIG_FILE requires at least one input parameter." )
     ENDIF( ${ARGC} LESS 1 )
     
     IF( ${ARGC} GREATER 1 )
@@ -90,4 +90,4 @@ MACRO( GENERATE_CONFIG_FILE def_file )
         ENDIF( install_xml )
     ENDIF( ORCA_BUILD_XML )
 
-ENDMACRO( GENERATE_CONFIG_FILE def_file )
+ENDMACRO( ORCA_GENERATE_CONFIG_FILE def_file )

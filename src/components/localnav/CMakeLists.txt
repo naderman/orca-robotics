@@ -1,4 +1,4 @@
-SET_COMPONENT_NAMES( LocalNav )
+ORCA_SET_COMPONENT_NAME( LocalNav )
 SET( APP_CTRLC_HANDLER 0 )
 
 SET( build TRUE )
@@ -29,16 +29,16 @@ IF( build )
     SET( dep_libs ${ext_libs} ${int_libs} OrcaLocalNavTestSim )
 
     # build stand-alone component  
-    WRAP_COMPONENT_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${srcs} )
+    ORCA_WRAP_COMPONENT_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${srcs} )
     TARGET_LINK_LIBRARIES( ${APP_NAME} ${dep_libs} )
     
     # build IceBox service
     IF( ORCA_BUILD_SERVICES )
-        WRAP_COMPONENT_INTO_SERVICE( ${SERVICE_NAME} ${COMP_NAMESPACE} ${srcs} )
+        ORCA_WRAP_COMPONENT_INTO_SERVICE( ${SERVICE_NAME} ${COMP_NAMESPACE} ${srcs} )
         TARGET_LINK_LIBRARIES( ${SERVICE_NAME} ${dep_libs} ) 
     ENDIF( ORCA_BUILD_SERVICES )
 
-    GENERATE_CONFIG_FILE( ${APP_NAME}.def )
+    ORCA_GENERATE_CONFIG_FILE( ${APP_NAME}.def )
 
     IF( ORCA_BUILD_TESTS )
 

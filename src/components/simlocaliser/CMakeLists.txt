@@ -1,4 +1,4 @@
-SET_COMPONENT_NAMES( SimLocaliser )
+ORCA_SET_COMPONENT_NAME( SimLocaliser )
 
 SET( build TRUE )
 GBX_REQUIRE_OPTION( build EXE ${APP_NAME} ON )
@@ -20,7 +20,7 @@ IF( build )
     LINK_DIRECTORIES( ${PLAYER_LINK_DIRS} )
     ADD_DEFINITIONS( ${PLAYER_DEFINITIONS} )
 
-    OPTIONAL_SUB_LIBRARY(
+    ORCA_OPTIONAL_SUB_LIBRARY(
         "Stage Driver for SimLocaliser"
         stage
         OrcaSimLocaliserStage
@@ -34,15 +34,15 @@ IF( build )
     SET( dep_libs ${ext_libs} ${int_libs} ${STAGE_LIBS} )
     
     # build stand-alone component  
-    WRAP_MAINTHREAD_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${COMP_NAME} ${srcs} )
+    ORCA_WRAP_MAINTHREAD_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${COMP_NAME} ${srcs} )
     TARGET_LINK_LIBRARIES( ${APP_NAME} ${dep_libs} )
     
     # build IceBox service
     IF( ORCA_BUILD_SERVICES )
-        WRAP_MAINTHREAD_INTO_SERVICE( ${SERVICE_NAME} ${COMP_NAMESPACE} ${COMP_NAME} ${srcs} )
+        ORCA_WRAP_MAINTHREAD_INTO_SERVICE( ${SERVICE_NAME} ${COMP_NAMESPACE} ${COMP_NAME} ${srcs} )
         TARGET_LINK_LIBRARIES( ${SERVICE_NAME} ${dep_libs} )    
     ENDIF( ORCA_BUILD_SERVICES )
     
-    GENERATE_CONFIG_FILE( ${APP_NAME}.def )
+    ORCA_GENERATE_CONFIG_FILE( ${APP_NAME}.def )
 
 ENDIF( build )

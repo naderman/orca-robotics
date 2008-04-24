@@ -24,7 +24,7 @@ GBX_ADD_TEST( PropFileTest propfiletest )
 # basic app test
 ADD_EXECUTABLE( apptest apptest.cpp )
 GBX_ADD_TEST( AppTest apptest )
-GENERATE_CONFIG_FILE( apptest.def apptest 0 )
+ORCA_GENERATE_CONFIG_FILE( apptest.def apptest 0 )
 
 # advanced app tests
 ADD_EXECUTABLE( appproptest appproptest.cpp )
@@ -53,8 +53,8 @@ GBX_ADD_TEST( AppPropTest1x00 appproptest --Orca.GlobalConfig=crap.cfg --Orca.Co
 # without a comp config file, have to specify Orca.RequireRegistry on command line
 GBX_ADD_TEST( AppPropTest1xx0 appproptest --Orca.GlobalConfig=crap.cfg --Orca.Config=./\${CTEST_CONFIGURATION_TYPE}/crap.cfg --AppPropTest.Expect=0 --Orca.RequireRegistry=0 )
 GBX_ADD_TEST( AppPropTest11x0 appproptest --Orca.GlobalConfig=${CMAKE_CURRENT_SOURCE_DIR}/globalon.cfg --AppPropTest.Expect=200 --Orca.RequireRegistry=0 )
-GENERATE_CONFIG_FILE( apppropteston.def appproptest 0 )
-GENERATE_CONFIG_FILE( appproptestoff.def appproptest 0 )
+ORCA_GENERATE_CONFIG_FILE( apppropteston.def appproptest 0 )
+ORCA_GENERATE_CONFIG_FILE( appproptestoff.def appproptest 0 )
 
 # can't do this in win 'cause: 1) need shared libs for services, 2) need to copy files
 
@@ -80,10 +80,10 @@ ADD_LIBRARY( ServicePropTest SHARED serviceproptest )
 CONFIGURE_FILE( ${CMAKE_CURRENT_SOURCE_DIR}/globalon.cfg ${CMAKE_CURRENT_BINARY_DIR}/globalon.cfg COPYONLY )
 CONFIGURE_FILE( ${CMAKE_CURRENT_SOURCE_DIR}/globaloff.cfg ${CMAKE_CURRENT_BINARY_DIR}/globaloff.cfg COPYONLY )
 
-GENERATE_CONFIG_FILE( serviceproptest2on.def ServicePropTest 0 )
-GENERATE_CONFIG_FILE( serviceproptest2off.def ServicePropTest 0 )
-GENERATE_CONFIG_FILE( serviceproptest3on.def ServicePropTest 0 )
-GENERATE_CONFIG_FILE( serviceproptest3off.def ServicePropTest 0 )
+ORCA_GENERATE_CONFIG_FILE( serviceproptest2on.def ServicePropTest 0 )
+ORCA_GENERATE_CONFIG_FILE( serviceproptest2off.def ServicePropTest 0 )
+ORCA_GENERATE_CONFIG_FILE( serviceproptest3on.def ServicePropTest 0 )
+ORCA_GENERATE_CONFIG_FILE( serviceproptest3off.def ServicePropTest 0 )
 # each of these icebox config files defines 3 services:
 #   a) service with properties in the same file
 #   b) service with properties in a separate file sharing Communicator with service (a)
@@ -100,7 +100,7 @@ ENDIF( NOT GBX_OS_WIN )
 
 ADD_EXECUTABLE( configtest configtest.cpp )
 GBX_ADD_TEST( ConfigUtilsTest configtest )
-GENERATE_CONFIG_FILE( configtest.def configtest 0 )
+ORCA_GENERATE_CONFIG_FILE( configtest.def configtest 0 )
 
 # alexm: 
 # This test relies on establishing direct connections which is currently broken
@@ -108,5 +108,5 @@ GENERATE_CONFIG_FILE( configtest.def configtest 0 )
 IF( NOT GBX_OS_QNX )
 ADD_EXECUTABLE( connecttest connecttest.cpp )
 GBX_ADD_TEST( ConnectUtilsTest connecttest )
-GENERATE_CONFIG_FILE( connecttest.def connecttest 0 )
+ORCA_GENERATE_CONFIG_FILE( connecttest.def connecttest 0 )
 ENDIF( NOT GBX_OS_QNX )

@@ -1,4 +1,4 @@
-SET_COMPONENT_NAMES( OrcaView3d )
+ORCA_SET_COMPONENT_NAME( OrcaView3d )
 SET( APP_CTRLC_HANDLER 0 )
 GBX_ADD_LICENSE( GPL )
 
@@ -26,10 +26,10 @@ IF( build )
     FILE( GLOB human_srcs *.cpp )
 
     # build stand-alone component  
-    WRAP_COMPONENT_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${human_srcs} )
+    ORCA_WRAP_COMPONENT_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${human_srcs} )
     TARGET_LINK_LIBRARIES( ${APP_NAME} ${dep_libs} )
 
-    GENERATE_CONFIG_FILE( ${APP_NAME}.def )
+    ORCA_GENERATE_CONFIG_FILE( ${APP_NAME}.def )
 
     IF( LIB3DS_FOUND )
         ADD_DEFINITIONS( -DHAVE_LIB3DS )

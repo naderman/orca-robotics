@@ -22,7 +22,7 @@ LINK_DIRECTORIES( ${PLAYER_LINK_DIRS} )
 ADD_DEFINITIONS( ${PLAYER_DEFINITIONS} )
 
 #     SET( HONEYWELLIMU_FOUND 1 )
-#     OPTIONAL_SUB_LIBRARY(
+#     ORCA_OPTIONAL_SUB_LIBRARY(
 #         "Honeywell Driver for Imu"
 #     	honewell
 #         OrcaHoneywellImu
@@ -31,7 +31,7 @@ ADD_DEFINITIONS( ${PLAYER_DEFINITIONS} )
 #         HAVE_HONEYWELLIMU_DRIVER
 #     )
 
-    OPTIONAL_SUB_LIBRARY(
+    ORCA_OPTIONAL_SUB_LIBRARY(
         "Player client driver for Imu component"
         playerclientodometry3d
         OrcaOdometry3dPlayerClient
@@ -54,7 +54,7 @@ ADD_DEFINITIONS( ${PLAYER_DEFINITIONS} )
     TARGET_LINK_LIBRARIES( OrcaImu ${COMP_DEPS} ) 
     ENDIF( ORCA_BUILD_SERVICES )
 
-    GENERATE_CONFIG_FILE( imu.def )
+    ORCA_GENERATE_CONFIG_FILE( imu.def )
 
 ENDIF( build_IMU )
 ENDIF( GBX_OS_LINUX )

@@ -156,12 +156,6 @@ SET( ICE_INCLUDE_DIR ${ICE_HOME}/include )
 #
 INCLUDE( ${GEARBOX_CMAKE_DIR}/TargetUtils.cmake )
 INCLUDE( ${GEARBOX_CMAKE_DIR}/DependencyUtils.cmake )
-INCLUDE( ${ORCA_CMAKE_DIR}/GenerateConfigFile.cmake )
-
-# INCLUDE( ${HYDRO_CMAKE_DIR}/messages.cmake )
-# INCLUDE( ${ORCA_CMAKE_DIR}/FindComponentSources.cmake )
-# Obsolete but still used by Probe
-INCLUDE( ${ORCA_CMAKE_DIR}/OptionalSubLibrary.cmake )
 
 #
 # Defaults for big source code switches 

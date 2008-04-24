@@ -1,4 +1,4 @@
-SET_COMPONENT_NAMES( TracerMon )
+ORCA_SET_COMPONENT_NAME( TracerMon )
 
 SET( build TRUE )
 GBX_REQUIRE_OPTION( build EXE ${APP_NAME} ON )
@@ -14,7 +14,7 @@ IF( build )
 
     # keyboard driver with iostream
     SET( ALL_FOUND 1 )
-    OPTIONAL_SUB_LIBRARY(
+    ORCA_OPTIONAL_SUB_LIBRARY(
         "Terminal Iostream driver for TracerMon"
         term-iostream
         OrcaTracerMonTermIostream
@@ -36,7 +36,7 @@ IF( GBX_OS_LINUX )
     ENDIF( CURSES_INCLUDE_DIR )
 
     # keyboard driver with libncurses
-    OPTIONAL_SUB_LIBRARY(
+    ORCA_OPTIONAL_SUB_LIBRARY(
         "Terminal Ncurses driver for TracerMon"
         term-ncurses
         OrcaTracerMonTermNcurses
@@ -50,9 +50,9 @@ ENDIF( GBX_OS_LINUX )
     FILE( GLOB srcs *.cpp )
     SET( dep_libs ${ext_libs} ${int_libs} ${TERM_IOSTREAM_LIBS} ${TERM_NCURSES_LIBS} )
 
-    WRAP_COMPONENT_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${srcs} )
+    ORCA_WRAP_COMPONENT_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${srcs} )
     TARGET_LINK_LIBRARIES( ${APP_NAME} ${dep_libs} )
 
-    GENERATE_CONFIG_FILE( ${APP_NAME}.def )
+    ORCA_GENERATE_CONFIG_FILE( ${APP_NAME}.def )
 
 ENDIF( build )

@@ -11,7 +11,7 @@ LINK_LIBRARIES( OrcaLog OrcaLogFactory )
 #    ADD_DEFINITIONS( -DOPENCV_FOUND )
 #ENDIF( OPENCV_FOUND )
 #GBX_ADD_TEST( LogReplayTest logreplaytest )
-#GENERATE_CONFIG_FILE( logreplaytest.def logreplaytest 0 )
+#ORCA_GENERATE_CONFIG_FILE( logreplaytest.def logreplaytest 0 )
 
 ADD_EXECUTABLE( defaultautofactoryinstantiate defaultautofactoryinstantiate.cpp )
 GBX_ADD_TEST( DefaultAutoFactoryInstantiate defaultautofactoryinstantiate )

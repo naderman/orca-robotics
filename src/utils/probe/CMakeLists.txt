@@ -1,4 +1,4 @@
-SET_COMPONENT_NAMES(Probe )
+ORCA_SET_COMPONENT_NAME(Probe )
 SET( APP_CTRLC_HANDLER 0 )
 
 SET( build TRUE )
@@ -17,7 +17,7 @@ IF( build )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
     SET( IOSTREAM_FOUND 1 )
-    OPTIONAL_SUB_LIBRARY( 
+    ORCA_OPTIONAL_SUB_LIBRARY( 
         "terminal display driver for Probe using iostreams"
         term-iostream
         OrcaProbeTermIostream
@@ -42,7 +42,7 @@ IF( build )
         INCLUDE( ${HYDRO_CMAKE_DIR}/UseQt.cmake )
 
         # this old macro will be replaced at some point
-        OPTIONAL_SUB_LIBRARY( 
+        ORCA_OPTIONAL_SUB_LIBRARY( 
             "GUI display driver for Probe using Qt"
             gui-qt
             OrcaProbeGuiQt
@@ -59,9 +59,9 @@ IF( build )
     SET( dep_libs ${int_libs} ${ext_libs} IceGrid ${opt_libs} )
 
     # build stand-alone component  
-    WRAP_COMPONENT_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${srcs} )
+    ORCA_WRAP_COMPONENT_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${srcs} )
     TARGET_LINK_LIBRARIES( ${APP_NAME} ${dep_libs} )
 
-    GENERATE_CONFIG_FILE( ${APP_NAME}.def )
+    ORCA_GENERATE_CONFIG_FILE( ${APP_NAME}.def )
 
 ENDIF( build )

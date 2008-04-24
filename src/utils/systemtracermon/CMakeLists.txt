@@ -1,4 +1,4 @@
-SET_COMPONENT_NAMES( SystemTracerMon )
+ORCA_SET_COMPONENT_NAME( SystemTracerMon )
 SET( COMP_NAMESPACE sysmon )
 SET( APP_CTRLC_HANDLER 0 )
 
@@ -15,9 +15,9 @@ IF( build )
     FILE( GLOB srcs *.cpp )
 
     # build stand-alone component  
-    WRAP_COMPONENT_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${srcs} )
+    ORCA_WRAP_COMPONENT_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${srcs} )
     TARGET_LINK_LIBRARIES( ${APP_NAME} ${dep_libs} )
 
-    GENERATE_CONFIG_FILE( ${APP_NAME}.def )
+    ORCA_GENERATE_CONFIG_FILE( ${APP_NAME}.def )
 
 ENDIF( build )

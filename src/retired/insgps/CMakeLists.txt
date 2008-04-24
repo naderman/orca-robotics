@@ -1,4 +1,4 @@
-SET_COMPONENT_NAMES( InsGps )
+ORCA_SET_COMPONENT_NAME( InsGps )
 
 SET( build TRUE )
 GBX_REQUIRE_OPTION( build EXE ${APP_NAME} ON )
@@ -15,7 +15,7 @@ IF( build )
     INCLUDE_DIRECTORIES( ${INSGPS_SRC_DIR} )
 
     SET( NOVATELSPANINSGPS_FOUND 1 )
-    OPTIONAL_SUB_LIBRARY(
+    ORCA_OPTIONAL_SUB_LIBRARY(
         "Novatel Span Driver for InsGps"
     	novatelspan
         OrcaNovatelSpanInsGps
@@ -29,15 +29,15 @@ IF( build )
     SET( dep_libs ${dep_libs} ${NOVATELSPANINSGPS_LIBS} )
     
     # build stand-alone component  
-    WRAP_COMPONENT_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${srcs} )
+    ORCA_WRAP_COMPONENT_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${srcs} )
     TARGET_LINK_LIBRARIES( ${APP_NAME} ${dep_libs} )
     
     # build IceBox service
     IF( ORCA_BUILD_SERVICES )
-        WRAP_COMPONENT_INTO_SERVICE( ${SERVICE_NAME} ${COMP_NAMESPACE} ${srcs} )
+        ORCA_WRAP_COMPONENT_INTO_SERVICE( ${SERVICE_NAME} ${COMP_NAMESPACE} ${srcs} )
         TARGET_LINK_LIBRARIES( ${SERVICE_NAME} ${dep_libs} ) 
     ENDIF( ORCA_BUILD_SERVICES )
 
-    GENERATE_CONFIG_FILE( ${APP_NAME}.def )
+    ORCA_GENERATE_CONFIG_FILE( ${APP_NAME}.def )
 
 ENDIF( build )

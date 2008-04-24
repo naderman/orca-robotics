@@ -6,7 +6,7 @@
 # It's probably just as easy to write this stuff by hand, but
 # using a macro standardizes the trace statements.
 #
-# USAGE: OPTIONAL_SUB_LIBRARY( 
+# USAGE: ORCA_OPTIONAL_SUB_LIBRARY( 
 #                   DESCRIPTION 
 #                   SUBDIRECTORY 
 #                   OUTPUT_LIBRARY 
@@ -25,7 +25,7 @@
 #                       Both indicate the library can be built.
 #  - lib1 ... libn:     The extra libraries that need to be linked against the component
 #
-MACRO( OPTIONAL_SUB_LIBRARY DESCRIPTION SUBDIRECTORY OUTPUT_LIBRARY LINK_LIBS OK_TO_BUILD DEFINITION_TAG )
+MACRO( ORCA_OPTIONAL_SUB_LIBRARY DESCRIPTION SUBDIRECTORY OUTPUT_LIBRARY LINK_LIBS OK_TO_BUILD DEFINITION_TAG )
 
   IF( ${${OK_TO_BUILD}} )
     MESSAGE( STATUS "    ${DESCRIPTION} - can be built")
@@ -48,4 +48,4 @@ MACRO( OPTIONAL_SUB_LIBRARY DESCRIPTION SUBDIRECTORY OUTPUT_LIBRARY LINK_LIBS OK
     SET(${DEFINITION_TAG} FALSE)
   ENDIF( ${${OK_TO_BUILD}} )
 
-ENDMACRO( OPTIONAL_SUB_LIBRARY DESCRIPTION DIRECTORY LIBNAME )
+ENDMACRO( ORCA_OPTIONAL_SUB_LIBRARY DESCRIPTION DIRECTORY LIBNAME )

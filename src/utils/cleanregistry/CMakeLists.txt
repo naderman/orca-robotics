@@ -1,4 +1,4 @@
-SET_COMPONENT_NAMES( CleanRegistry )
+ORCA_SET_COMPONENT_NAME( CleanRegistry )
 
 SET( build TRUE )
 GBX_REQUIRE_OPTION( build EXE ${APP_NAME} ON )
@@ -18,6 +18,6 @@ IF( build )
     GBX_ADD_EXECUTABLE( ${APP_NAME} ${srcs} )
     TARGET_LINK_LIBRARIES( ${APP_NAME} ${dep_libs} )
     
-    GENERATE_CONFIG_FILE( ${APP_NAME}.def )
+    ORCA_GENERATE_CONFIG_FILE( ${APP_NAME}.def )
 
 ENDIF( build )
