@@ -11,7 +11,6 @@
 #include <iostream>
 
 #include <hydroqgui/hydroqgui.h>
-#include <hydroqgui/hydroqgui.h>
 
 #include <orcaqgui2dfactory/buttonelement.h>
 #include <orcaqgui2dfactory/gridelement.h>

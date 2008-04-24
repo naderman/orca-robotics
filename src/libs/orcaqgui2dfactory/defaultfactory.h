@@ -13,7 +13,6 @@
 
 #include <orcaqgui/iguielementfactory.h>
 #include <orcaice/context.h>
-#include <hydroutil/hydroutil.h>
 
 namespace orcaqgui2d
 {
