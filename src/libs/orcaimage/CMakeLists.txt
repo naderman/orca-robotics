@@ -8,8 +8,8 @@ GBX_REQUIRE_VAR( build LIB ${lib_name} not_os_win "Windows OS is not  supported"
 GBX_REQUIRE_VAR( build LIB ${lib_name} QT4_FOUND "Qt4 Not Found" )
 
 # this lib should be split up into sublibraries with simpler dependencies
-# INCLUDE( ${ORCA_CMAKE_DIR}/FindOpenCV.cmake )
-# GBX_REQUIRE_VAR( build LIB ${lib_name} OPENCV_FOUND "OpenCV not found" )
+INCLUDE( ${ORCA_CMAKE_DIR}/FindOpenCV.cmake )
+GBX_REQUIRE_VAR( build LIB ${lib_name} OPENCV_FOUND "OpenCV not found" )
 
 IF( build )
 
