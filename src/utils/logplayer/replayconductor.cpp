@@ -250,7 +250,7 @@ ReplayConductor::handleRewind( const IceUtil::Time &deltaT )
     IceUtil::Time tNew = orcalog::iceUtilTime( sec, usec );
     tNew -= deltaT;
     masterFileReader_.placeCursorAtOrAfterTime( tNew.toSeconds(),
-                                                tNew.toMicroSeconds()-tNew.toSeconds()*1e6 );
+                                                (int)(tNew.toMicroSeconds()-tNew.toSeconds()*1e6) );
 
     if ( wasPlaying )
         handleStart();
@@ -269,7 +269,7 @@ ReplayConductor::handleFastForward( const IceUtil::Time &deltaT )
     IceUtil::Time tNew = orcalog::iceUtilTime( sec, usec );
     tNew += deltaT;
     masterFileReader_.placeCursorAtOrAfterTime( tNew.toSeconds(),
-                                                tNew.toMicroSeconds()-tNew.toSeconds()*1e6 );
+                                                (int)(tNew.toMicroSeconds()-tNew.toSeconds()*1e6) );
     
 
     masterFileReader_.getCursorTime( sec, usec );
