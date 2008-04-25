@@ -1,0 +1,24 @@
+/*
+ * Orca-Robotics Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2008 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This copy of Orca is licensed to you under the terms described in
+ * the LICENSE file included in this distribution.
+ *
+ */
+
+/*!
+@ingroup orca_utils
+@ingroup orca_linux
+@defgroup orca_util_slice2string Slice2String
+@brief Generates string utility code from Slice definition files.
+
+Still in experimental stage.
+
+This utility is used for autogenerating code which is compiled into libOrcaIfaceString.so 
+
+@author Alex Makarenko
+
+*/
+
