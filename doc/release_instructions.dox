@@ -50,5 +50,6 @@ $ svn copy --username [USERNAME] https://orca-robotics.svn.sf.net/svnroot/orca-r
 -# Update the web page
   - Use the script: <distro>/doc/updatesfweb
 -# Increment the version numbers (eg '2.7.0' -> '2.7.0+') in the top-level CMakeLists.txt files.
+-# Add a new section for 'since last release' changes to the history files.
 
 */
