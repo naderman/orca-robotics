@@ -14,9 +14,6 @@ PROJECT( orca )
 # project version string
 SET( GBX_PROJECT_VERSION        2.10.0+       CACHE STRING "Version of Orca distribution" )
 
-# the name for project interface library
-SET( PROJECT_INTERFACE_LIB      OrcaInterfaces )
-
 #
 # The rest is done by a script
 #

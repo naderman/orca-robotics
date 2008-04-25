@@ -68,6 +68,8 @@ main(int argc, char* argv[])
     opts.addOpt("", "checksum");
     opts.addOpt("", "stream");
     opts.addOpt("", "case-sensitive");
+    // alexm: our custom options
+    opts.addOpt("", "module", IceUtil::Options::NeedArg);
 
     vector<string> args;
     try
@@ -141,6 +143,8 @@ main(int argc, char* argv[])
 
     bool caseSensitive = opts.isSet("case-sensitive");
 
+    string module = opts.optArg("module");
+
     if(args.empty())
     {
         cerr << argv[0] << ": no input file" << endl;
@@ -177,7 +181,8 @@ main(int argc, char* argv[])
         else
         {
             Gen gen(argv[0], icecpp.getBaseName(), headerExtension, sourceExtension, extraHeaders, include,
-                    includePaths, dllExport, output, impl, checksum, stream, ice);
+                    includePaths, dllExport, output, impl, checksum, stream, ice,
+                    module );
             if(!gen)
             {
                 u->destroy();

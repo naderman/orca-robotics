@@ -3,7 +3,16 @@
 #
 MESSAGE( STATUS "Setting project name to ${PROJECT_NAME}" )
 MESSAGE( STATUS "Setting project version to ${GBX_PROJECT_VERSION}" )
-MESSAGE( STATUS "Setting project interface lib name to ${PROJECT_INTERFACE_LIB}" )
+
+#
+# We often use different versions of the project name.
+# E.g. for project "orca" we want "ORCA", "orca", "Orca".
+#
+INCLUDE( ${ORCA_CMAKE_DIR}/StringToCapital.cmake )
+ORCA_STRING_TO_CAPITAL( ${PROJECT_NAME} PROJECT_NAME_CAP )
+# MESSAGE( STATUS "Setting capitalized project name to ${PROJECT_NAME_CAP}" )
+STRING( TOUPPER ${PROJECT_NAME} PROJECT_NAME_UPPER )
+STRING( TOLOWER ${PROJECT_NAME} PROJECT_NAME_LOWER )
 
 #
 # Official dependency number 1: Hydro
@@ -184,22 +193,6 @@ INCLUDE( ${GEARBOX_CMAKE_DIR}/WriteConfigH.cmake )
 INCLUDE( ${ORCA_CMAKE_DIR}/check_depend.cmake )
 
 #
-# Project-specific global setup
-#
-INCLUDE( ${PROJECT_SOURCE_DIR}/cmake/internal/project_setup.cmake )
-
-# Store the location of the command in cache
-# (after the project-specific Find functions are defined ...)
-FIND_DEFTOOLS( DEFTOOLS_HOME )
-SET( ORCA_DEF2CFG_COMMAND ${DEFTOOLS_HOME}/def2cfg${EXE_EXTENSION} 
-        CACHE PATH "Path to def2cfg executable." FORCE )
-SET( ORCA_DEF2XML_COMMAND ${DEFTOOLS_HOME}/def2xml${EXE_EXTENSION} 
-        CACHE PATH "Path to def2xml executable." FORCE )
-# SET( ORCA_DEF2XMLTEMPLATE_COMMAND ${DEFTOOLS_HOME}/def2xmltemplate${EXE_EXTENSION} 
-#         CACHE PATH "Path to def2xmltemplate executable." FORCE )
-MESSAGE( STATUS "Using ${ORCA_DEF2CFG_COMMAND}" )
-
-#
 # Installation preferences
 # see: \http://www.cmake.org/Wiki/CMake_RPATH_handling
 #
@@ -220,10 +213,43 @@ SET( CMAKE_INSTALL_RPATH
         ${ORCA_LIB_DIR}      # this is non-empty only for satellite projects
         ${GBX_LIB_INSTALL_DIR} )
 
+#
+# Some setup options are different for Orca itself and the satellite projects
+#
 IF( ORCA_MOTHERSHIP )
+
+    SET( DEFTOOLS_HOME ${PROJECT_BINARY_DIR}/src/utils/deftools/${CMAKE_CFG_INTDIR} )
+    SET( SLICE2STRING_HOME ${PROJECT_BINARY_DIR}/src/utils/slice2string/${CMAKE_CFG_INTDIR} )
+
     # For orca project only, install CMake scripts
     ADD_SUBDIRECTORY( cmake )
+
+ELSE( ORCA_MOTHERSHIP )
+
+    SET( DEFTOOLS_HOME ${ORCA_HOME}/bin )
+    SET( SLICE2STRING_HOME ${ORCA_HOME}/bin )
+
+    # other projet-specific stuff
+    INCLUDE( ${PROJECT_SOURCE_DIR}/cmake/internal/project_setup.cmake )
+
 ENDIF( ORCA_MOTHERSHIP )
+
+#
+# Store the location of utilities in cache
+#
+SET( ORCA_DEF2CFG_COMMAND ${DEFTOOLS_HOME}/def2cfg${EXE_EXTENSION} 
+        CACHE PATH "Path to def2cfg executable." FORCE )
+MESSAGE( STATUS "Using ${ORCA_DEF2CFG_COMMAND}" )
+
+SET( ORCA_DEF2XML_COMMAND ${DEFTOOLS_HOME}/def2xml${EXE_EXTENSION} 
+        CACHE PATH "Path to def2xml executable." FORCE )
+
+# SET( ORCA_DEF2XMLTEMPLATE_COMMAND ${DEFTOOLS_HOME}/def2xmltemplate${EXE_EXTENSION} 
+#         CACHE PATH "Path to def2xmltemplate executable." FORCE )
+
+SET( ORCA_SLICE2STRING_COMMAND ${SLICE2STRING_HOME}/slice2string${EXE_EXTENSION} 
+        CACHE PATH "Path to slice2string executable." FORCE )
+MESSAGE( STATUS "Using ${SLICE2STRING_HOME}" )
 
 #
 # Testing with CTest
