@@ -30,6 +30,8 @@ Simulator::Simulator( const orcaice::Context         &context,
       config_(config),
       context_(context)
 {
+    cout<<"TRACE(simulator.cpp): Config: " << toString(config) << endl;
+
     // set up simulation parameters
     hydrosim2d::VehicleSimulator::Config vehicleSimConfig;
     vehicleSimConfig.robotRadius                  = ROBOT_RADIUS;
@@ -143,15 +145,27 @@ Simulator::setupInterfaces( const hydrosim2d::VehicleSimulator::Config &vehicleS
 void 
 Simulator::act( const hydronavutil::Velocity &cmd )
 {
-    if ( !config_.batchMode )
+    if ( iterationNum_ % 50 == 0 )
+    {
+        cout<<"TRACE(simulator.cpp): iteration: " << iterationNum_ << endl;
+    }
+    if ( !config_.batchMode && iterationNum_ >= config_.numIterationsBatch )
     {
         cout<<"TRACE(simulator.cpp): received cmd: " << cmd << endl;
         cout<<"TRACE(simulator.cpp): pose: " << vehicleSimulator_->pose() << endl;
-        cout<<"TRACE(simulator.cpp): ============= hit return to continue ============" << endl;
+        cout<<"TRACE(simulator.cpp): ============= hit return for iteration " << iterationNum_ << " ============" << endl;
         getchar();
     }
 
-    vehicleSimulator_->act( cmd );
+    try {
+        vehicleSimulator_->act( cmd );
+    }
+    catch ( std::exception &e )
+    {
+        cout << __func__ << "(): " << e.what() << endl;
+        cout<<"TRACE(simulator.cpp): test FAILED" << endl;
+        exit(1);
+    }
 
     iterationNum_++;
     bool pathCompleted, pathFailed;
@@ -184,6 +198,19 @@ Simulator::time() const
     t.useconds = (sec-(int)sec) * 1e6;
 
     return t;
+}
+
+std::string toString( const Simulator::Config &c )
+{
+    stringstream ss;
+    ss << endl;
+    ss << "maxLateralAcceleration       : " << c.maxLateralAcceleration << endl;
+    ss << "checkLateralAcceleration     : " << c.checkLateralAcceleration << endl;
+    ss << "checkDifferentialConstraints : " << c.checkDifferentialConstraints << endl;
+    ss << "useRoom                      : " << c.useRoom << endl;
+    ss << "batchMode                    : " << c.batchMode << endl;
+    ss << "numIterationsBatch           : " << c.numIterationsBatch << endl;
+    return ss.str();
 }
 
 }

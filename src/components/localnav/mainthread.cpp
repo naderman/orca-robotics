@@ -65,19 +65,22 @@ MainThread::MainThread( const orcaice::Context &context )
     if ( testMode_ )
     {
         Simulator::Config cfg;
+        string tprefix = prefix+"Test.";
         cfg.maxLateralAcceleration = 
-            orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"MaxLateralAcceleraton", 1.0 );
+            orcaice::getPropertyAsDoubleWithDefault( prop, tprefix+"MaxLateralAcceleraton", 1.0 );
         cfg.checkLateralAcceleration = 
-            orcaice::getPropertyAsIntWithDefault( prop, prefix+"CheckLateralAcceleration", 0 );
+            orcaice::getPropertyAsIntWithDefault( prop, tprefix+"CheckLateralAcceleration", 0 );
         cfg.checkDifferentialConstraints = 
-            orcaice::getPropertyAsIntWithDefault( prop, prefix+"CheckDifferentialConstraints", 0 );
+            orcaice::getPropertyAsIntWithDefault( prop, tprefix+"CheckDifferentialConstraints", 0 );
         cfg.useRoom = 
-            orcaice::getPropertyAsIntWithDefault( prop, prefix+"UseRoom", 1 );
+            orcaice::getPropertyAsIntWithDefault( prop, tprefix+"UseRoom", 1 );
         cfg.batchMode = 
-            orcaice::getPropertyAsIntWithDefault( prop, prefix+"BatchMode", 1 );
+            orcaice::getPropertyAsIntWithDefault( prop, tprefix+"BatchMode", 1 );
+        cfg.numIterationsBatch = 
+            orcaice::getPropertyAsIntWithDefault( prop, tprefix+"NumIterationsBatch", 0 );
 
         int numObstacles = 
-            orcaice::getPropertyAsIntWithDefault( prop, prefix+"NumObstacles", 25 );
+            orcaice::getPropertyAsIntWithDefault( prop, tprefix+"NumObstacles", 25 );
 
         const double WORLD_SIZE = 40.0;
         const double CELL_SIZE = 0.1;

@@ -23,6 +23,7 @@ public:
         bool   checkDifferentialConstraints;
         bool   useRoom;
         bool   batchMode;
+        int    numIterationsBatch;
     };
 
     Simulator( const orcaice::Context         &context,
@@ -74,6 +75,8 @@ private:
 
     orcaice::Context context_;
 };
+
+std::string toString( const Simulator::Config &c );
 
 }
 
