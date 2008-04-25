@@ -35,7 +35,7 @@ MainThread::MainThread( const orcaice::Context& context ) :
 MainThread::~MainThread()
 {
     // delete opencv stuff
-    for(int i = 0; i < images_.size(); ++i)
+    for(size_t i = 0; i < images_.size(); ++i)
     {
         cvReleaseImage( &images_[i] );
     }
@@ -188,7 +188,7 @@ MainThread::initCvImage()
     // TODO: put this nChannel calculation into imageutils as a separate function 
     
     // opencv gear here
-    for(int i = 0; i < descr_.size(); ++i)
+    for(size_t i = 0; i < descr_.size(); ++i)
     {
         images_.push_back(cvCreateImage( cvSize( descr_.at(i)->imageWidth, descr_.at(i)->imageHeight ),  8, 3 ));
     }
