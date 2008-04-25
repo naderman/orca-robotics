@@ -67,8 +67,8 @@ Slice::Gen::Gen(const string& name, const string& base, const string& headerExte
         _base.erase(0, pos + 1);
     }
 
-    string fileH = _base + "_strings." + _headerExtension;
-    string fileC = _base + "_strings." + _sourceExtension;
+    string fileH = _base + "." + _headerExtension;
+    string fileC = _base + "." + _sourceExtension;
     if(!dir.empty())
     {
         fileH = dir + '/' + fileH;
@@ -131,9 +131,8 @@ Slice::Gen::generate(const UnitPtr& p)
     writeExtraHeaders(C);
 
     string lib_namespace = _module + "ifacestring";
-    string lib_filebase = _base + "_strings";
 
-    C << "\n#include <" << lib_namespace << "/" << lib_filebase << ".h>";
+    C << "\n#include <" << lib_namespace << "/" << _base << ".h>";
     C << "\n#include <gbxsickacfr/gbxutilacfr/exceptions.h>";
     C << "\n#include <sstream>";
     C << "\n";

@@ -91,7 +91,7 @@ MACRO( ORCA_GENERATE_SLICE2STRING_RULES generated_cpp_list generated_header_list
         FOREACH ( suffix ${slice_suffixes} )
         
             # OUTPUT is the target we're generating rules for.
-            STRING( REGEX REPLACE "\\.ice" "_strings${suffix}" output_basename "${slice_source_basename}" )
+            STRING( REGEX REPLACE "\\.ice" ${suffix} output_basename "${slice_source_basename}" )
             SET( output_fullname "${proj_cpp_bin_dir}/${lib_namespace}/${output_basename}" )
         
             #

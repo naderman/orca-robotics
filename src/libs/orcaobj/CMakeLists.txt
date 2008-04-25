@@ -15,6 +15,7 @@ IF( build )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseIce.cmake )
     INCLUDE( ${HYDRO_CMAKE_DIR}/UseHydroUtil.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseLibProjectInterfaces.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseLibProjectIfaceString.cmake )
     
     FILE( GLOB hdrs *.h )
     FILE( GLOB srcs *.cpp )

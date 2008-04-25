@@ -98,10 +98,10 @@ orca::FQTopicName toTracerTopic( const orca::FQComponentName & fqCName );
 
 //! Converts to string
 //! @see toImageFormat()
-std::string toString( const orca::ImageFormat& );
+// std::string toString( const orca::ImageFormat& );
 //! Parses result of the corresponding toString().
 //! Returns: 0 = parsing successful, non-zero = parsing failed.
-int toImageFormat( const std::string &, orca::ImageFormat& );
+// int toImageFormat( const std::string &, orca::ImageFormat& );
 
 //! Converts to string
 //! @see toCartesianPoint()
@@ -262,15 +262,8 @@ std::string toString( const orca::PathFollower2dData& );
 std::string toString( const orca::Waypoint2d& );
 //! Converts to string
 std::string toString( const orca::WifiData& );
-//! Converts to string (part of wifi interface)
-std::string toString( const orca::OperationMode &o );
-//! Converts to string (part of wifi interface)
-std::string toString( const orca::LinkQualityType &l );
 //! Converts to string
 std::string toString( const orca::PropertiesData& );
-
-//std::string toString( const orca::PathPlanner2dData& );
-//std::string toString( const orca::PathPlanner2dTask& );
 
 //
 // More verbose versions of toString.
@@ -283,8 +276,6 @@ std::string toString( const orca::PropertiesData& );
 std::string toVerboseString( const orca::OgMapData& );
 //! Prints out each waypoint
 std::string toVerboseString( const orca::PathFollower2dData& );
-//! Result as human-readable string
- std::string toString( const orca::PathPlanner2dResult &res );
 //! Prints out the path and result code
 std::string toVerboseString( const orca::PathPlanner2dData& );
 //! Prints out the coarse path given as a task

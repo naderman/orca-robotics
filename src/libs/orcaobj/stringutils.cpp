@@ -16,6 +16,11 @@
 #include <gbxsickacfr/gbxutilacfr/mathdefs.h>
 #include <orcaice/timeutils.h>
 
+#include <orcaifacestring/image.h>
+#include <orcaifacestring/gps.h>
+#include <orcaifacestring/pathplanner2d.h>
+#include <orcaifacestring/wifi.h>
+
 // trying to solve a problem in win, round() is not found
 #ifdef WIN32
 #   include <math.h>
@@ -144,60 +149,60 @@ toTracerTopic( const orca::FQComponentName& fqCName )
 // toString()
 //*************************
 
-std::string
-toString( const orca::ImageFormat& obj )
-{
-    switch(obj) {
-    case orca::ImageFormatModeNfi:
-        return "ImageFormatModeNfi";
-    case orca::ImageFormatModeBinary:
-        return "ImageFormatModeBinary";
-    case orca::ImageFormatModeGray:
-        return "ImageFormatModeGray";
-    case orca::ImageFormatModeRGB8:
-        return "ImageFormatModeRGB8";
-    case orca::ImageFormatModeRGBA8:
-        return "ImageFormatModeRGBA8";
-    case orca::ImageFormatModeARGB8:
-        return "ImageFormatModeARGB8";
-    case orca::ImageFormatModeBGR8:
-        return "ImageFormatModeBGR8";
-    case orca::ImageFormatModeBGRA8:
-        return "ImageFormatModeBGRA8";
-    case orca::ImageFormatModeYUV422:
-        return "ImageFormatModeYUV422";
-    case orca::ImageFormatBayerBg:
-        return "ImageFormatBayerBg";
-    case orca::ImageFormatBayerGb:
-        return "ImageFormatBayerGb";
-    case orca::ImageFormatBayerRg:
-        return "ImageFormatBayerRg";
-    case orca::ImageFormatBayerGr:
-        return "ImageFormatBayerGr";
-    case orca::ImageFormatDigiclopsStereo:
-        return "ImageFormatDigiclopsStereo";
-    case orca::ImageFormatDigiclopsRight:
-        return "ImageFormatDigiclopsRight";
-    case orca::ImageFormatDigiclopsBoth:
-        return "ImageFormatDigiclopsBoth";
-    default:
-        return "?? Unknown ??";
-    }
-}
+// std::string
+// toString( const orca::ImageFormat& obj )
+// {
+//     switch(obj) {
+//     case orca::ImageFormatModeNfi:
+//         return "ImageFormatModeNfi";
+//     case orca::ImageFormatModeBinary:
+//         return "ImageFormatModeBinary";
+//     case orca::ImageFormatModeGray:
+//         return "ImageFormatModeGray";
+//     case orca::ImageFormatModeRGB8:
+//         return "ImageFormatModeRGB8";
+//     case orca::ImageFormatModeRGBA8:
+//         return "ImageFormatModeRGBA8";
+//     case orca::ImageFormatModeARGB8:
+//         return "ImageFormatModeARGB8";
+//     case orca::ImageFormatModeBGR8:
+//         return "ImageFormatModeBGR8";
+//     case orca::ImageFormatModeBGRA8:
+//         return "ImageFormatModeBGRA8";
+//     case orca::ImageFormatModeYUV422:
+//         return "ImageFormatModeYUV422";
+//     case orca::ImageFormatBayerBg:
+//         return "ImageFormatBayerBg";
+//     case orca::ImageFormatBayerGb:
+//         return "ImageFormatBayerGb";
+//     case orca::ImageFormatBayerRg:
+//         return "ImageFormatBayerRg";
+//     case orca::ImageFormatBayerGr:
+//         return "ImageFormatBayerGr";
+//     case orca::ImageFormatDigiclopsStereo:
+//         return "ImageFormatDigiclopsStereo";
+//     case orca::ImageFormatDigiclopsRight:
+//         return "ImageFormatDigiclopsRight";
+//     case orca::ImageFormatDigiclopsBoth:
+//         return "ImageFormatDigiclopsBoth";
+//     default:
+//         return "?? Unknown ??";
+//     }
+// }
 
-int
-toImageFormat( const std::string& s, orca::ImageFormat& obj )
-{
-    for(int i = 0; i < orca::ImageFormatEnumSize - 1; i++)
-    {
-        if(s == toString((orca::ImageFormat)i)) 
-        {
-            obj = (orca::ImageFormat)i;
-            return 0;
-        }
-    }
-    return -1;
-}
+// int
+// toImageFormat( const std::string& s, orca::ImageFormat& obj )
+// {
+//     for(int i = 0; i < orca::ImageFormatEnumSize - 1; i++)
+//     {
+//         if(s == toString((orca::ImageFormat)i)) 
+//         {
+//             obj = (orca::ImageFormat)i;
+//             return 0;
+//         }
+//     }
+//     return -1;
+// }
 
 
 std::string 
@@ -605,7 +610,7 @@ toString( const orca::CameraDescriptionSequence& obj )
             << "Image height              " << obj.at(i)->imageHeight << "pix\n"
             << "Image width               " << obj.at(i)->imageWidth << "pix\n"
             << "Frame rate                " << obj.at(i)->frameRate << "fps\n"
-            << "Format                    " << toString(obj.at(i)->format) << "\n"
+            << "Format                    " << orcaifacestring::toString(obj.at(i)->format) << "\n"
             << "Compression               " << obj.at(i)->compression << "\n"
             << "offset.point.x            " << obj.at(i)->offset.p.x << "m\n"
             << "offset.point.y            " << obj.at(i)->offset.p.y << "m\n"
@@ -687,73 +692,6 @@ toString( const orca::GpsDescription& obj )
     return s.str();
 }
 
-std::string
-toString( const orca::GpsPositionType &p )
-{
-    switch ( p )
-    {
-    case orca::GpsPositionTypeNotAvailable:
-        return "GpsPositionTypeNotAvailable";
-    case orca::GpsPositionTypeAutonomous:
-        return "GpsPositionTypeAutonomous";
-    case orca::GpsPositionTypeDifferential:
-        return "GpsPositionTypeDifferential";
-    case orca::NovatelNone:
-        return "NovatelNone";
-    case orca::NovatelFixedPos:
-        return "NovatelFixedPos";
-    case orca::NovatelFixedHeigth:
-        return "NovatelFixedHeigth";
-    case orca::NovatelFloatConv:
-        return "NovatelFloatConv";
-    case orca::NovatelWideLane:
-        return "NovatelWideLane";
-    case orca::NovatelNarrowLane:
-        return "NovatelNarrowLane";
-    case orca::NovatelDopplerVelocity:
-        return "NovatelDopplerVelocity";
-    case orca::NovatelSingle:
-        return "NovatelSingle";
-    case orca::NovatelPsrDiff:
-        return "NovatelPsrDiff";
-    case orca::NovatelWAAS:
-        return "NovatelWAAS";
-    case orca::NovatelPropagated:
-        return "NovatelPropagated";
-    case orca::NovatelOmnistar:
-        return "NovatelOmnistar";
-    case orca::NovatelL1Float:
-        return "NovatelL1Float";
-    case orca::NovatelIonFreeFloat:
-        return "NovatelIonFreeFloat";
-    case orca::NovatelNarrowFloat:
-        return "NovatelNarrowFloat";
-    case orca::NovatelL1Int:
-        return "NovatelL1Int";
-    case orca::NovatelWideInt:
-        return "NovatelWideInt";
-    case orca::NovatelNarrowInt:
-        return "NovatelNarrowInt";
-    case orca::NovatelRTKDirectINS:
-        return "NovatelRTKDirectINS";
-    case orca::NovatelINS:
-        return "NovatelINS";
-    case orca::NovatelINSPSRSP:
-        return "NovatelINSPSRSP";
-    case orca::NovatelINSPSRFLOAT:
-        return "NovatelINSPSRFLOAT";
-    case orca::NovatelINSRTKFLOAT:
-        return "NovatelINSRTKFLOAT";
-    case orca::NovatelINSRTKFIXED:
-        return "NovatelINSRTKFIXED";
-    case orca::NovatelOmnistarHP:
-        return "NovatelOmnistarHP";
-    default:
-        return "??Unknown??";
-    }
-    // assert( false && "Unknown GpsPositionType" );
-}
-
 std::string 
 toString( const orca::GpsData&  obj )
 {
@@ -776,7 +714,7 @@ toString( const orca::GpsData&  obj )
         << obj.satellites << ","
         << obj.observationCountOnL1 << ","
         << obj.observationCountOnL2 << ","
-        << toString(obj.positionType) << ","
+        << orcaifacestring::toString(obj.positionType) << ","
         << obj.geoidalSeparation << ")";
 
     return s.str();
@@ -1200,6 +1138,7 @@ toString( const orca::StatusData& obj )
 
     for ( orca::SubsystemsStatus::const_iterator it=obj.subsystems.begin(); it!=obj.subsystems.end(); ++it ) 
     {
+        // NOTE: this is a special kind of toString operation: the strings are different from enum entries.
         switch ( it->second.type ) {
         case orca::SubsystemStatusInitialising :
             type = "INITIALISING";
@@ -1398,44 +1337,6 @@ toString( const orca::Waypoint2d &obj )
     return s.str();
 }
 
-std::string
-toString( const orca::LinkQualityType &l )
-{
-    switch ( l )
-    {
-    case orca::LinkQualityTypeUnknown:
-        return "LinkQualityTypeUnknown";
-    case orca::LinkQualityTypeDbm:
-        return "LinkQualityTypeDbm";
-    case orca::LinkQualityTypeRelative:
-        return "LinkQualityTypeRelative";
-    }
-    throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, "Don't know how to handle this type in toString()" );
-}
-
-std::string
-toString( const orca::OperationMode &o )
-{
-    switch ( o )
-    {
-    case orca::OperationModeUnknown:
-        return "OperationModeUnknown";
-    case orca::OperationModeAuto:
-        return "OperationModeAuto";
-    case orca::OperationModeAdhoc:
-        return "OperationModeAdhoc";
-    case orca::OperationModeInfrastructure:
-        return "OperationModeInfrastructure";
-    case orca::OperationModeMaster:
-        return "OperationModeMaster";
-    case orca::OperationModeRepeat:
-        return "OperationModeRepeat";
-    case orca::OperationModeSecondRepeater:
-        return "OperationModeSecondRepeater";
-    }
-    throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, "Don't know how to handle this type in toString()" );
-}
-
 std::string 
 toString( const orca::WifiData &obj )
 {
@@ -1460,11 +1361,11 @@ toString( const orca::WifiData &obj )
           << ", numInvalidMisc: " << iface.numInvalidMisc
           << ", numMissedBeacons: " << iface.numMissedBeacons << "\n";
           
-        s << "mode: " << toString(iface.mode) 
+        s << "mode: " << orcaifacestring::toString(iface.mode) 
           << ", bitrate: " << iface.bitrate 
           << ", accessPoint: " << iface.accessPoint 
           << ", throughPut: " << iface.throughPut 
-          << ", linkQualityType: " << toString(iface.linkType) << "\n";
+          << ", linkQualityType: " << orcaifacestring::toString(iface.linkType) << "\n";
         
         s << "maxLinkQuality: " << iface.maxLinkQuality 
           << ", maxSignalLevel: " << iface.maxSignalLevel 
@@ -1599,32 +1500,14 @@ toVerboseString( const orca::PathFollower2dData& obj )
     return s.str();
 }
 
-std::string
-toString( const orca::PathPlanner2dResult &res )
-{
-    switch ( res )
-    {
-    case orca::PathOk:
-        return "PathOk";
-    case orca::PathStartNotValid:
-        return "PathStartNotValid";
-    case orca::PathDestinationNotValid:
-        return "PathDestinationNotValid";
-    case orca::PathDestinationUnreachable:
-        return "PathDestinationUnreachable";
-    case orca::PathOtherError:
-        return "PathOtherError";
-    }
-    return "";
-}
-
 std::string 
 toVerboseString( const orca::PathPlanner2dData& obj )
 {
     std::stringstream s;
 
     s << obj.timeStamp.seconds << "s:" << obj.timeStamp.useconds << "us"
-      << " PathPlanner2dDataPtr [" << obj.path.size() << " waypoints. Result code: " << toString(obj.result) << " ]:" << endl;
+      << " PathPlanner2dDataPtr [" << obj.path.size() << " waypoints. "
+      << "Result code: " << orcaifacestring::toString(obj.result) << " ]:" << endl;
     s << "Result description: " << obj.resultDescription << endl;
     for ( unsigned int i=0; i < obj.path.size(); i++ )
     {
