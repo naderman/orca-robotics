@@ -64,12 +64,37 @@ MainThread::MainThread( const orcaice::Context &context )
     //
     if ( testMode_ )
     {
+        Simulator::Config cfg;
+        cfg.maxLateralAcceleration = 
+            orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"MaxLateralAcceleraton", 1.0 );
+        cfg.checkLateralAcceleration = 
+            orcaice::getPropertyAsIntWithDefault( prop, prefix+"CheckLateralAcceleration", 0 );
+        cfg.checkDifferentialConstraints = 
+            orcaice::getPropertyAsIntWithDefault( prop, prefix+"CheckDifferentialConstraints", 0 );
+        cfg.useRoom = 
+            orcaice::getPropertyAsIntWithDefault( prop, prefix+"UseRoom", 1 );
+        cfg.batchMode = 
+            orcaice::getPropertyAsIntWithDefault( prop, prefix+"BatchMode", 1 );
+
+        int numObstacles = 
+            orcaice::getPropertyAsIntWithDefault( prop, prefix+"NumObstacles", 25 );
+
+        const double WORLD_SIZE = 40.0;
+        const double CELL_SIZE = 0.1;
+        hydroogmap::OgMap ogMap = setupMap( WORLD_SIZE, CELL_SIZE, numObstacles, cfg.useRoom );
+
         int numWaypoints = orcaice::getPropertyAsIntWithDefault( prop, prefix+"Test.NumWaypoints", 10 );
-        cout<<"TRACE(component.cpp): Using " << numWaypoints << " waypoints" << endl;
-        orca::PathFollower2dData testPath;
-        getTestPath( testPath, numWaypoints );
+        bool turnOnSpot = orcaice::getPropertyAsIntWithDefault( prop, prefix+"Test.TurnOnSpot", 1 );
+        bool stressTiming = orcaice::getPropertyAsIntWithDefault( prop, prefix+"Test.StressTiming", 1 );
+
+        orca::PathFollower2dData testPath = getTestPath( ogMap,
+                                                         numWaypoints,
+                                                         stressTiming,
+                                                         turnOnSpot,
+                                                         cfg.useRoom );
         pathFollowerInterface_->setData( testPath, true );
-        testSimulator_ = new Simulator( context_, testPath );
+
+        testSimulator_ = new Simulator( context_, ogMap, testPath, cfg );
     }    
 
     //

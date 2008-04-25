@@ -59,7 +59,7 @@ IF( build )
       # find the vfh library so it can be dynamically loaded.
       #
       GBX_ADD_TEST( LocalNavVfhTest ${LD_LINUX}
-        --library-path vfhdriver:$ENV{LD_LIBRARY_PATH} ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME}
+        --library-path ${CMAKE_CURRENT_BINARY_DIR}/../../libs/orcavfh:$ENV{LD_LIBRARY_PATH} ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME}
         --Orca.Config=${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME}.cfg
         --LocalNav.Config.TestInSimulationMode=1
         --LocalNav.Config.Vfh.MaxSpeed=2.0

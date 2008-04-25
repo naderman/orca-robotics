@@ -3,14 +3,27 @@
 
 #include <testsim/simulator.h>
 #include <pathfollower2dI.h>
+#include <hydroogmap/hydroogmap.h>
 
 namespace localnav {
 
-    void getTestPath( orca::PathFollower2dData &d, int numWaypoints );
+    orca::PathFollower2dData getTestPath( const hydroogmap::OgMap &ogMap,
+                                          int numWaypoints,
+                                          bool stressTiming,
+                                          bool turnOnSpot,
+                                          bool goThruDoor );
 
-    void checkProgress( const orca::PathFollower2dData     &path,
+    hydroogmap::OgMap setupMap( double worldSize, 
+                                double cellSize,
+                                int    numObstacles,
+                                bool   useRoom );
+
+    void checkProgress( const orca::PathFollower2dData     &path, 
                         const hydrosim2d::VehicleSimulator &vehicleSim,
-                        int                                 iterationNum );
+                        int                                 iterationNum,
+                        int                                &wpI,
+                        bool                               &pathCompleted,
+                        bool                               &pathFailed );
                         
 }
 

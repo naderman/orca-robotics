@@ -19,43 +19,26 @@ namespace {
     const double ROBOT_RADIUS = 0.375;
 }
 
-Simulator::Simulator( const orcaice::Context &context,
-                      const orca::PathFollower2dData &testPath )
-    : testPath_(testPath),
+Simulator::Simulator( const orcaice::Context         &context,
+                      const hydroogmap::OgMap        &ogMap, 
+                      const orca::PathFollower2dData &testPath,
+                      const Config                   &config )
+    : ogMap_(ogMap),
+      testPath_(testPath),
       iterationNum_(0),
+      wpI_(0),
+      config_(config),
       context_(context)
 {
-    Ice::PropertiesPtr prop = context.properties();
-    std::string prefix = context.tag();
-    prefix += ".Config.Test.";
-
-    maxLateralAcceleration_ = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"MaxLateralAcceleraton", 1.0 );
-    bool checkLateralAcceleration = orcaice::getPropertyAsIntWithDefault( prop, prefix+"CheckLateralAcceleration", 0 );
-    bool checkDifferentialConstraints = orcaice::getPropertyAsIntWithDefault( prop, prefix+"CheckDifferentialConstraints", 0 );
-    batchMode_ = orcaice::getPropertyAsIntWithDefault( prop, prefix+"BatchMode", 0 );
-
-    cout<<"TRACE(simulator.cpp): batchMode_: " << batchMode_ << endl;
-
-    ogMap_.offset().p.x = -WORLD_SIZE/2.0;
-    ogMap_.offset().p.y = -WORLD_SIZE/2.0;
-    ogMap_.offset().o   = 0.0;
-    
-    const double CELL_SIZE = 0.1;
-    ogMap_.setMetresPerCellX( CELL_SIZE );
-    ogMap_.setMetresPerCellY( CELL_SIZE );
-    ogMap_.reallocate( (int)(WORLD_SIZE/CELL_SIZE), (int)(WORLD_SIZE/CELL_SIZE) );
-
-    setupMap();
-
     // set up simulation parameters
     hydrosim2d::VehicleSimulator::Config vehicleSimConfig;
     vehicleSimConfig.robotRadius                  = ROBOT_RADIUS;
     vehicleSimConfig.timeStep                     = DELTA_T;
-    vehicleSimConfig.checkDifferentialConstraints = checkDifferentialConstraints;
-    vehicleSimConfig.checkLateralAcceleration     = checkLateralAcceleration;
+    vehicleSimConfig.checkDifferentialConstraints = config_.checkDifferentialConstraints;
+    vehicleSimConfig.checkLateralAcceleration     = config_.checkLateralAcceleration;
     vehicleSimConfig.maxLinearAcceleration        = 1.0;
     vehicleSimConfig.maxRotationalAcceleration    = DEG2RAD(90.0);
-    vehicleSimConfig.maxLateralAcceleration       = maxLateralAcceleration_;
+    vehicleSimConfig.maxLateralAcceleration       = config_.maxLateralAcceleration;
     vehicleSimConfig.minVelocity.lin()            = 0.0;
     vehicleSimConfig.maxVelocity.lin()            = 20.0;
     vehicleSimConfig.minVelocity.rot()            = DEG2RAD(-1000.0);
@@ -111,7 +94,7 @@ Simulator::setupInterfaces( const hydrosim2d::VehicleSimulator::Config &vehicleS
     c->maxForwardSpeed           = vehicleSimConfig.maxVelocity.lin();
     c->maxReverseSpeed           = vehicleSimConfig.minVelocity.lin();
     c->maxTurnrate               = vehicleSimConfig.maxVelocity.rot();
-    c->maxLateralAcceleration    = maxLateralAcceleration_;
+    c->maxLateralAcceleration    = config_.maxLateralAcceleration;
     c->maxForwardAcceleration    = vehicleSimConfig.maxLinearAcceleration;
     c->maxReverseAcceleration    = vehicleSimConfig.maxLinearAcceleration;
     c->maxRotationalAcceleration = vehicleSimConfig.maxRotationalAcceleration;
@@ -157,91 +140,10 @@ Simulator::setupInterfaces( const hydrosim2d::VehicleSimulator::Config &vehicleS
     }
 }
 
-void
-placeObstacle( hydroogmap::OgMap &ogMap,
-               double x,
-               double y,
-               double radius )
-{
-    int gridX, gridY;
-    ogMap.getCellIndices( x, y, gridX, gridY );
-
-    int radiusInCellsX = (int)(radius / ogMap.metresPerCellX());
-    int radiusInCellsY = (int)(radius / ogMap.metresPerCellY());
-    for ( int i=-radiusInCellsX; i < radiusInCellsX; i++ )
-    {
-        for ( int j=-radiusInCellsY; j < radiusInCellsY; j++ )
-        {
-            ogMap.gridCell(gridX+i,gridY+j) = hydroogmap::CELL_OCCUPIED;
-        }
-    }
-}
-
-void
-placeRoom( hydroogmap::OgMap &ogMap )
-{
-    double centreX = -14, centreY = 14;
-    double widthX = 4, widthY = 4;
-    double doorWidth = 1.0;
-
-    // the corners in grid-coords
-    int blX, blY;
-    int tlX, tlY;
-    int trX, trY;
-    int brX, brY;
-    ogMap.getCellIndices( centreX-widthX/2, centreY-widthY/2, blX, blY );
-    ogMap.getCellIndices( centreX-widthX/2, centreY+widthY/2, tlX, tlY );
-    ogMap.getCellIndices( centreX+widthX/2, centreY-widthY/2, brX, brY );
-    ogMap.getCellIndices( centreX+widthX/2, centreY+widthY/2, trX, trY );
-
-    // side walls
-    for ( int yi=blY; yi <= tlY; yi++ )
-    {
-        ogMap.gridCell(blX,yi) = hydroogmap::CELL_OCCUPIED;
-        ogMap.gridCell(brX,yi) = hydroogmap::CELL_OCCUPIED;
-    }
-    // top & bottom walls
-    for ( int xi=blX; xi <= brX; xi++ )
-    {
-        ogMap.gridCell(xi,tlY) = hydroogmap::CELL_OCCUPIED;
-        ogMap.gridCell(xi,brY) = hydroogmap::CELL_OCCUPIED;
-    }
-
-    // clear a doorway
-    int doorLeftX, doorRightX, doorY;
-    ogMap.getCellIndices( centreX-doorWidth/2, centreY-widthY/2, doorLeftX, doorY );
-    ogMap.getCellIndices( centreX+doorWidth/2, centreY-widthY/2, doorRightX, doorY );
-
-    for ( int xi=doorLeftX; xi <= doorRightX; xi++ )
-        ogMap.gridCell(xi,doorY) = hydroogmap::CELL_EMPTY;
-}
-
-void
-Simulator::setupMap()
-{
-    ogMap_.fill( 0 );
-
-//#if 0
-    placeObstacle( ogMap_, 7, 4, 0.5 );
-    placeObstacle( ogMap_, -2, -4, 0.5 );
-    placeObstacle( ogMap_, -7, -4, 0.5 );
-    placeObstacle( ogMap_, -5, -9, 0.5 );
-    placeObstacle( ogMap_, 0, -3, 0.5 );
-    placeObstacle( ogMap_, -10, 0, 0.5 );
-
-    placeObstacle( ogMap_, 12, -15, 0.5 );
-    placeObstacle( ogMap_, 14, -18, 0.5 );
-    placeObstacle( ogMap_, 16, -12, 0.5 );
-    placeObstacle( ogMap_, 18, -16, 0.5 );
-//#endif
-
-    placeRoom( ogMap_ );
-}
-
 void 
 Simulator::act( const hydronavutil::Velocity &cmd )
 {
-    if ( !batchMode_ )
+    if ( !config_.batchMode )
     {
         cout<<"TRACE(simulator.cpp): received cmd: " << cmd << endl;
         cout<<"TRACE(simulator.cpp): pose: " << vehicleSimulator_->pose() << endl;
@@ -252,7 +154,24 @@ Simulator::act( const hydronavutil::Velocity &cmd )
     vehicleSimulator_->act( cmd );
 
     iterationNum_++;
-    checkProgress( testPath_, *vehicleSimulator_, iterationNum_ );
+    bool pathCompleted, pathFailed;
+    checkProgress( testPath_,
+                   *vehicleSimulator_,
+                   iterationNum_,
+                   wpI_,
+                   pathCompleted,
+                   pathFailed );
+
+    if ( pathCompleted )
+    {
+        cout<<"TRACE(simulator.cpp): test PASSED" << endl;
+        exit(0);
+    }
+    if ( pathFailed )
+    {
+        cout<<"TRACE(simulator.cpp): test FAILED" << endl;
+        exit(1);
+    }
 }
 
 orca::Time 

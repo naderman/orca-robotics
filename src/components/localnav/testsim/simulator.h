@@ -17,8 +17,18 @@ class Simulator
 
 public: 
 
-    Simulator( const orcaice::Context &context,
-               const orca::PathFollower2dData &testPath );
+    struct Config {
+        double maxLateralAcceleration;
+        bool   checkLateralAcceleration;
+        bool   checkDifferentialConstraints;
+        bool   useRoom;
+        bool   batchMode;
+    };
+
+    Simulator( const orcaice::Context         &context,
+               const hydroogmap::OgMap        &ogMap,
+               const orca::PathFollower2dData &testPath,
+               const Config                   &config );
 
     // This is the trigger to advance the simulator one step.
     void act( const hydronavutil::Velocity &cmd );
@@ -41,11 +51,8 @@ public:
 
 private: 
 
-    void setupMap();
     void setupInterfaces( const hydrosim2d::VehicleSimulator::Config &vehicleSimConfig,
                           const hydrosim2d::RangeScannerSimulator::Config rangeScanSimConfig );
-
-    hydroogmap::OgMap       ogMap_;
 
     std::auto_ptr<orcasim2d::PosePublisher>      posePublisher_;
     std::auto_ptr<orcasim2d::RangeScanPublisher> rangeScanPublisher_;
@@ -54,14 +61,16 @@ private:
     orca::RangeScanner2dDescription scannerDescr_;
     orca::VehicleDescription        vehicleDescr_;
 
+    hydroogmap::OgMap        ogMap_;
     orca::PathFollower2dData testPath_;
 
-    double maxLateralAcceleration_;
     int    iterationNum_;
-    bool   batchMode_;
+    int    wpI_;
 
     std::auto_ptr<hydrosim2d::VehicleSimulator>      vehicleSimulator_;
     std::auto_ptr<hydrosim2d::RangeScannerSimulator> rangeScannerSimulator_;
+
+    const Config config_;
 
     orcaice::Context context_;
 };
