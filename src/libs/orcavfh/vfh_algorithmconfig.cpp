@@ -10,7 +10,7 @@
 #include "vfh_algorithmconfig.h"
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include <orcalocalnavutil/brosutil.h>
+#include <orcaobj/frameutils.h>
 
 using namespace std;
 
@@ -163,9 +163,9 @@ void setFromVehicleDescr( const orca::VehicleDescription &descr,
 
     c.robotRadius = dg->radius;
 
-    if ( !orcalocalnavutil::isZero( descr.platformToVehicleTransform ) )
+    if ( descr.platformToVehicleTransform != orcaobj::zeroFrame3d() )
         throw( "VFH: Can only deal with zero platformToVehicleTransform" );
-    if ( !orcalocalnavutil::isZero( dg->vehicleToGeometryTransform ) )
+    if ( dg->vehicleToGeometryTransform != orcaobj::zeroFrame3d() )
         throw( "VFH: Can only deal with zero vehicleToGeometryTransform" );
 }
 

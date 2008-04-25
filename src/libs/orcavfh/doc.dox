@@ -7,81 +7,23 @@
  * the LICENSE file included in this distribution.
  *
  */
-
 /*!
-@ingroup orca_components
-@ingroup orca_apps
-@ingroup orca_services
-@ingroup orca_cpp
-@ingroup orca_linux
-@defgroup orca_component_localnav LocalNav
-@brief A Local Navigation component: follows a waypoint-defined path while avoiding obstacles.
 
-@par Provides
-
-- @ref orca_interface_home
-- @ref orca_interface_status
-- @ref orca_interface_pathfollower2d [LocalNav.Provides.PathFollower2d]
-
-@par Requires
-
-- @ref orca_interface_rangescanner2d [LocalNav.Requires.Observations]
-- @ref orca_interface_localise2d [LocalNav.Requires.Localisation]
-- @ref orca_interface_velocitycontrol2d [LocalNav.Requires.VelocityControl2d]
-- @ref orca_interface_odometry2d [LocalNav.Requires.Odometry2d]
-
-@image html localnav.png
-
-@par Drivers
-
-- @b vfhdriver @ref orca_localnav_vfh
-
-@par Configuration
-
-- @c LocalNav.Config.Driver (string)
-    - Which local nav algorithm to use
-    - Valid values: { "vfhdriver" }
-    - Default: "vfhdriver"
-
-@section localnav_localnav Local Nav
-
-LocalNav implements the @ref orca_interface_pathfollower2d interface.
-It receives a path, defined by set of waypoints, and follows it while
-avoiding obstacles.  The specfics of the algorithm used to follow the
-path are defined in the driver.
-
-The parameters used in following a path come from three places.  In
-order of precedence, they are:
-
-  1. The parameters of the driver, read from the configuration file, 
-
-  2. The maximum approach speed/turnrate for each waypoint, specified in the path, and
-
-  3. The schedule defined by the path.
-
-The third item exists because the path defines the times at which the
-robot should arrive at each waypoint.  To ignore this constraint, set
-all waypoint times to 'now' or 'yesterday', and the robot will move as
-fast as possible within the constraints set by items 1 and 2.
-
-The second item is again defined by the path object.  Regardless of
-the schedule, the robot won't exceed the max approach speed/turnrate
-defined for a waypoint.  Set these to something massive to ignore this
-constraint.
-
-The first item takes precedence over the other two.  Regardless of the
-specifics of the path, the robot will obey the parameters set in the
-driver.  These should be set to ensure that the robot's motion is
-within reasonable safe limits.
-
-
-
-@section orca_localnav_vfh Vector Field Histogram Plus (VFH+) driver
+@ingroup orca_libs
+@defgroup orca_library_orcavfh libOrcaVfh
+@brief VFH driver for @ref orca_component_localnav
 
     The VFH driver implements the Vector Field Histogram Plus (VFH+)
     local navigation method by Ulrich and Borenstein.  VFH+ provides
     real-time obstacle avoidance and waypoint-following capabilities
     for mobile robots.
+
+@par LocalNav Configuration
+
+- @c LocalNav.Config.Driver (string)
+    - Which local nav algorithm to use
+    - Valid values: { "vfhdriver" }
+    - Default: "vfhdriver"
 
 @par VFH configuration
 
@@ -162,10 +104,7 @@ within reasonable safe limits.
       when the opening is greater than 80 degrees.  This is
       thresholded if the max_speed is decreased at run-time.
 
-
-NOTE TO SELF: CHECK DEFAULTS IN CODE!
-
-    @par Hints for Configuration 
+@par Hints for Configuration 
 
     (some of this is taken from the Player VFH documentation):
 
@@ -214,46 +153,9 @@ The algorithm implemented here is described in this paper:
   Year = {1998}
 }
 @endverbatim
-The code that implements the VFH algorithm was taken from Player, heavily modified, then re-submitted to the Player project.
 
-@section testing Testing
-
-Localnav has an internal simulator which can be used for automated
-testing.  When TestInSimulationMode is enabled, LocalNav will use this internal
-simulator rather than hooking up to external sources of information.
-It will establish the following interfaces to provide external access
-to the state of the simulated world:
-
-- @ref orca_interface_laserscanner2d [LocalNav.Provides.TestLaserScanner]
-- @ref orca_interface_localise2d     [LocalNav.Provides.TestLocalise]
-- @ref orca_interface_ogmap          [LocalNav.Provides.TestOgMap]
-
-The following configuration parameters affect the behaviour of TestInSimulationMode:
-
-- @c LocalNav.Config.TestInSimulationMode (bool)
-    - Enables/Disables test-in-simulation-mode
-    - Default: 0
-
-- @c LocalNav.Config.Test.BatchMode (bool)
-    - In non-batch-mode, the simulator will wait for a keypress before stepping forward.
-    - Default: 0
-
-- @c LocalNav.Config.Test.NumWaypoints (int)
-    - The size of the path to follow in simulation.
-      - The first few waypoints are deterministic, then a number of random waypoints
-        is added to create a path of the required size.
-    - Default: 10
-
-- @c LocalNav.Config.Test.MaxLateralAcceleration (double) [m/s/s]
-    - When the test simulator reports the capabilities of the simulated vehicle,
-      this is the reported max lateral acceleration (constrains max turnrate at speed).
-    - Default: 1.0
-
-- @c LocalNav.Config.Test.CheckLateralAcceleration (bool)
-    - If true, check that the driver doesn't exceed the specified max lateral acceleration.
-      - Fail the test if it's exceeded.
-    - Default: 0
-
+The code that implements the VFH algorithm was taken from Player,
+heavily modified, then re-submitted to the Player project.
 
 @par Authors
 
@@ -261,4 +163,3 @@ The following configuration parameters affect the behaviour of TestInSimulationM
   - VFH:      Chris Jones, Brian Gerkey, Alex Brooks
 
 */
-

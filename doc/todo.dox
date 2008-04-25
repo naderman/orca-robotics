@@ -56,8 +56,14 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 @par New components
 @par New utilities
 @par New libraries
+  - OrcaSim2d (alex b)
+    - Library for simple 2D simulations
+  - OrcaVfh (alex b)
+    - moved out of lovalnav directory
 @par Updated interfaces
 @par Updated components
+  - LocalNav (alex b)
+    - Big overhaul and simpleification
 @par Updated utilities
 @par Updated libraries
 @par Removed

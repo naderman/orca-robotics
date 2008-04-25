@@ -15,13 +15,13 @@
 using namespace std;
 using namespace orcaice;
 
-namespace orcalocalnav {
+namespace localnav {
 
 //////////////////////////////////////////////////////////////////////
 //                    Non-Member  Functions
 //////////////////////////////////////////////////////////////////////
 
-double requiredTimeToGoalAtMaxSpeed( const Goal &goal )
+double requiredTimeToGoalAtMaxSpeed( const orcalocalnav::Goal &goal )
 {
     assert ( goal.maxSpeed    >= 0.0 );
 
@@ -66,7 +66,7 @@ SpeedLimiter::SpeedLimiter( const orcaice::Context& context)
 }
 
 void
-SpeedLimiter::constrainMaxSpeeds( Goal &goal )
+SpeedLimiter::constrainMaxSpeeds( orcalocalnav::Goal &goal )
 {
     double secondsBehindSchedule_;
     double requiredTimeAtMaxSpeed = requiredTimeToGoalAtMaxSpeed( goal );

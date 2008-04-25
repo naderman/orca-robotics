@@ -10,11 +10,11 @@
 #ifndef VFHDRIVER_H
 #define VFHDRIVER_H
 
-#include <orcalocalnavutil/idriver.h>
+#include <orcalocalnav/idriver.h>
 #include <orcaice/context.h>
 #include <gbxsickacfr/gbxiceutilacfr/timer.h>
 #include <orcalocalnav/goal.h>
-#include <vfhdriver/vfh_algorithm.h>
+#include <orcavfh/vfh_algorithm.h>
 #include <orcaice/heartbeater.h>
 
 namespace vfh {
@@ -27,7 +27,7 @@ namespace vfh {
 //
 // @author Alex Brooks
 //
-class VfhDriver : public orcalocalnavutil::IDriver
+class VfhDriver : public orcalocalnav::IDriver
 {
 
 public: 
@@ -45,39 +45,31 @@ public:
 
     ////////////////////////////////////////////////////////////
 
-    VfhDriver( const orcaice::Context &context,
-               const orca::VehicleDescription &descr );
+    VfhDriver( const orcaice::Context                &context,
+               const orca::VehicleDescription        &descr,
+               const orca::RangeScanner2dDescription &scannerDescr );
     virtual ~VfhDriver();
 
     // Goal location is in robot's coordinate frame
-    virtual void getCommand( bool                                   stalled,
-                             bool                                   localisationUncertain,
-                             const hydronavutil::Pose               &pose,
-                             const orca::Twist2d                   &currentVelocity,
-                             const orca::Time                      &poseAndVelocityTime,
-                             const orca::RangeScanner2dDataPtr      obs,
-                             const std::vector<orcalocalnav::Goal> &goals,
-                             orca::VelocityControl2dData           &cmd );
+    virtual hydronavutil::Velocity getCommand( const IDriver::Inputs &inputs );
 
 private: 
 
     void setSpeedConstraints( float maxSpeed, float maxTurnrate );
 
     // Functions for setting commands
-    void setToZero(         orca::VelocityControl2dData& cmd );
-    void setToEscape(       orca::VelocityControl2dData& cmd, const orca::RangeScanner2dDataPtr &obs );
-    void setTurnToGoal(     orca::VelocityControl2dData& cmd, const orcalocalnav::Goal &goal );
-    void setToApproachGoal( orca::VelocityControl2dData       &cmd,
-                            const orcalocalnav::Goal          &goal, 
-                            const orca::Twist2d               &currentVelocity,
-                            const orca::RangeScanner2dDataPtr &obs );
+    hydronavutil::Velocity escapeCommand(       const std::vector<float> &obsRanges );
+    hydronavutil::Velocity turnToGoalCommand(   const orcalocalnav::Goal &goal );
+    hydronavutil::Velocity approachGoalCommand( const orcalocalnav::Goal     &goal, 
+                                                const hydronavutil::Velocity &currentVelocity,
+                                                const std::vector<float>     &obsRanges );
     
     // If we stall a lot, our sensors must have missed something.  
     // We need to try something else.
     bool shouldEscape( bool stalled );
 
     // Copy to Player units
-    void copyLaserScan( const orca::RangeScanner2dDataPtr obs, double playerLaserScan[361][2] );
+    void copyLaserScan( const std::vector<float> &obsRanges, double playerLaserScan[361][2] );
 
     void maybeSendHeartbeat();
 
@@ -105,26 +97,28 @@ private:
     DriverState currentState_;
 
     // Previous command
-    orca::VelocityControl2dData prevCmd_;
+    hydronavutil::Velocity prevCmd_;
 
     // Configuration from file
     VfhAlgorithmConfig vfhConfig_;
 
     orcaice::Heartbeater heartbeater_;
 
+    const orca::RangeScanner2dDescription scannerDescr_;
+
     orcaice::Context context_;
 };
 std::ostream &operator<<( std::ostream &s, VfhDriver::DriverState state );
 
 // Used for dynamically loading driver
-class VfhDriverFactory : public orcalocalnavutil::DriverFactory
+class VfhDriverFactory : public orcalocalnav::DriverFactory
 {
 public:
-    orcalocalnavutil::IDriver *createDriver( const orcaice::Context &context,
-                                     const orca::VehicleDescription &vehicleDescr,
-                                     const orca::RangeScanner2dDescription &scannerDescr ) const
+    orcalocalnav::IDriver *createDriver( const orcaice::Context &context,
+                                         const orca::VehicleDescription &vehicleDescr,
+                                         const orca::RangeScanner2dDescription &scannerDescr ) const
         {
-            return new VfhDriver( context, vehicleDescr );
+            return new VfhDriver( context, vehicleDescr, scannerDescr );
         }
 };
 
@@ -132,7 +126,7 @@ public:
 
 // Used for dynamically loading driver
 extern "C" {
-    orcalocalnavutil::DriverFactory *createDriverFactory();
+    orcalocalnav::DriverFactory *createDriverFactory();
 }
 
 #endif

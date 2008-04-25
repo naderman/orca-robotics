@@ -146,7 +146,12 @@ void
 Driver::computePath( const orca::PathPlanner2dTask &task,
                      orca::Path2d                  &path )
 {
-    assert( task.coarsePath.size() != 0 );
+    if ( task.coarsePath.size() == 0 )
+    {
+        stringstream ss;
+        ss << "task.coarsePath.size() was zero.";
+        throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, ss.str() );
+    }
 
     const orca::Path2d *coarsePath = &(task.coarsePath);
     if ( jiggleWaypointsOntoClearCells_ )
@@ -208,7 +213,14 @@ Driver::convertAndAppend( const orca::Waypoint2d            &startWp,
     }
 
     double timeTotal = orcaice::timeDiffAsDouble(goalWp.timeTarget, startWp.timeTarget);
-    assert( timeTotal >= 0 && "Timestamp difference between goal and start is negative" );    
+    if ( timeTotal < 0 )
+    {
+        stringstream ss;
+        ss << "Time of goal was _before_ time of start!" << endl
+           << "  startWp.timeTarget: " << orcaobj::toString(startWp.timeTarget) << endl
+           << "  goalWp.timeTarget:  " << orcaobj::toString(goalWp.timeTarget);
+        throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, ss.str() );
+    }
     double timeLengthRatio = timeTotal/totalLength;
 
     // Add each leg to the orca-style path

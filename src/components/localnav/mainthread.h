@@ -17,16 +17,16 @@
 #include <gbxsickacfr/gbxiceutilacfr/subsystemthread.h>
 #include <gbxsickacfr/gbxiceutilacfr/store.h>
 #include <orcaifaceimpl/storingconsumers.h>
-#include <orcalocalnav/speedlimiter.h>
-#include <orcalocalnav/pathmaintainer.h>
-#include <orcalocalnav/clock.h>
-#include <orcalocalnavutil/idriver.h>
+#include "speedlimiter.h"
+#include "pathmaintainer.h"
+#include "clock.h"
+#include <orcalocalnav/idriver.h>
+#include <hydronavutil/hydronavutil.h>
+#include <hydrodll/dynamicload.h>
+#include "pathfollower2dI.h"
+#include "testsim/simulator.h"
 
 namespace localnav {
-
-// class PathMaintainer;
-class PathFollower2dI;
-class Simulator;
 
 //
 // @brief the main executing loop of this component.
@@ -41,62 +41,49 @@ class MainThread : public gbxsickacfr::gbxiceutilacfr::SubsystemThread
 
 public: 
 
-    // This version interacts with the real world
-    MainThread( orcalocalnavutil::DriverFactory &driverFactory,
-              orcalocalnav::Clock             &clock,
-              orcalocalnav::PathFollower2dI   &pathFollowerInterface,
-              const orcaice::Context          &context );
-
-    // This version is for simulator-based testing.
-    MainThread( orcalocalnavutil::DriverFactory &driverFactory,
-              orcalocalnav::Clock             &clock,
-              orcalocalnav::PathFollower2dI   &pathFollowerInterface,
-              Simulator                       &testSimulator,
-              const orcaice::Context          &context );
-
-    ~MainThread();
+    MainThread( const orcaice::Context &context );
 
     virtual void walk();
 
 private: 
 
+    void getVehicleDescription();
+    void getRangeScannerDescription();
     void setup();
-    void initInterfaces();
-    void connectToController();
-    void subscribeForOdometry();
-    void subscribeForLocalisation();
-    void subscribeForObservations();
+    void initPathFollowerInterface();
 
-    void sendCommandToPlatform( const orca::VelocityControl2dData& cmd );
+    void sendCommandToPlatform( const hydronavutil::Velocity &cmd );
 
     // Make sure all our sources of info are OK, and that there's something
     // in all our buffers
     void ensureProxiesNotEmpty();
 
-    // Set the command to 'stop'
-    void getStopCommand( orca::VelocityControl2dData& cmd );
-
     // See if we need to follow a new path, plus
     // see if we should update the world on our progress.
     void checkWithOutsideWorld();
 
-    // Returns true if the timestamps differ by more than a threshold.
-    bool areTimestampsDodgy( const orca::RangeScanner2dDataPtr &rangeData,
-                             const orca::Localise2dData&        localiseData,
-                             const orca::Odometry2dData&        odomData,
-                             double                             threshold );
+    void getInputs( hydronavutil::Velocity &velocity,
+                       hydronavutil::Pose     &localisePose,
+                       orca::Time             &poseTime,
+                       bool                   &isLocalisationUncertain,
+                       std::vector<float>     &obsRanges,
+                       orca::Time             &obsTime );
+
+    void stopVehicle();
 
     // Constrains the max speed
-    orcalocalnav::SpeedLimiter *speedLimiter_;
+    std::auto_ptr<SpeedLimiter> speedLimiter_;
 
     // Keeps track of the path we're following
-    orcalocalnav::PathMaintainer  *pathMaintainer_;
+    std::auto_ptr<PathMaintainer>  pathMaintainer_;
 
     // Using this driver
-    orcalocalnavutil::IDriver *driver_;
+    std::auto_ptr<orcalocalnav::IDriver> driver_;
 
-    // Loaded with this
-    orcalocalnavutil::DriverFactory &driverFactory_;
+    // The library that contains the driver factory (must be declared first so it's destructed last!!!)
+    std::auto_ptr<hydrodll::DynamicallyLoadedLibrary> driverLib_;
+    // The factory which creates the driver
+    std::auto_ptr<orcalocalnav::DriverFactory> driverFactory_;
 
     // Incoming observations and pose info
     // Get observations, pose, and odometric velocity
@@ -104,24 +91,20 @@ private:
     orcaifaceimpl::StoringLocalise2dConsumerImplPtr     locConsumer_;
     orcaifaceimpl::StoringOdometry2dConsumerImplPtr     odomConsumer_;
 
-    gbxsickacfr::gbxiceutilacfr::Store<orca::RangeScanner2dDataPtr> *obsStore_;
-    gbxsickacfr::gbxiceutilacfr::Store<orca::Localise2dData>        *locStore_;
-    gbxsickacfr::gbxiceutilacfr::Store<orca::Odometry2dData>        *odomStore_;
-
-    orcalocalnav::PathFollower2dI  &pathFollowerInterface_;
-
-    // data types
-    orca::Localise2dData           localiseData_;
-    orca::Odometry2dData           odomData_;
-    orca::RangeScanner2dDataPtr    rangeData_;
+    std::auto_ptr<PathFollower2dI>  pathFollowerInterface_;
 
     // Outgoing commands: live version
     orca::VelocityControl2dPrx     velControl2dPrx_;
     // Outgoing commands: test version
     Simulator                     *testSimulator_;
 
+    // temporary data
+    orca::Localise2dData           orcaLocaliseData_;
+    orca::Odometry2dData           orcaOdomData_;
+    orca::RangeScanner2dDataPtr    orcaRangeData_;
+
     // A global time reference
-    orcalocalnav::Clock &clock_;
+    std::auto_ptr<Clock> clock_;
 
     orca::VehicleDescription        vehicleDescr_;
     orca::RangeScanner2dDescription scannerDescr_;

@@ -7,18 +7,17 @@
  * the LICENSE file included in this distribution.
  *
  */
-#ifndef ORCALOCALNAVTIL_LOCALNAVDRIVER_H
-#define ORCALOCALNAVTIL_LOCALNAVDRIVER_H
+#ifndef ORCALOCALNAV_LOCALNAVDRIVER_H
+#define ORCALOCALNAV_LOCALNAVDRIVER_H
 
 #include <orca/velocitycontrol2d.h>
 #include <orca/rangescanner2d.h>
 #include <orcaice/context.h>
 #include <orca/vehicledescription.h>
-#include <hydronavutil/pose.h>
-
+#include <hydronavutil/hydronavutil.h>
 #include <orcalocalnav/goal.h>
 
-namespace orcalocalnavutil {
+namespace orcalocalnav {
 
 //
 // @author Alex Brooks
@@ -32,6 +31,21 @@ class IDriver
 
 public: 
 
+    // The pose is in a global coordinate frame, while the goals are
+    // in the local coordinate frame.
+    struct Inputs {
+        bool                            stalled;
+        bool                            isLocalisationUncertain;
+        hydronavutil::Pose              localisePose;
+        orca::Time                      poseTime;
+        hydronavutil::Velocity          currentVelocity;
+        std::vector<float>              obsRanges;
+        orca::Time                      obsTime;
+        std::vector<orcalocalnav::Goal> goals;
+    };
+
+    ////////////////////////////////////////
+
     IDriver() {};
     virtual ~IDriver() {};
 
@@ -39,20 +53,8 @@ public:
     // expect to be provided with)
     virtual int waypointHorizon() { return 1; }
 
-    //
-    // Sets cmd.
-    //
-    // The pose is in a global coordinate frame, while the goals are
-    // in the local coordinate frame.
-    //
-    virtual void getCommand( bool                                   stalled,
-                             bool                                   localisationUncertain,
-                             const hydronavutil::Pose               &pose,
-                             const orca::Twist2d                   &currentVelocity,
-                             const orca::Time                      &poseAndVelocityTime,
-                             const orca::RangeScanner2dDataPtr      obs,
-                             const std::vector<orcalocalnav::Goal> &goals,
-                             orca::VelocityControl2dData           &cmd ) = 0;
+    // Gets a velocity command.
+    virtual hydronavutil::Velocity getCommand( const Inputs &inputs ) = 0;
 };
 
 // Helper class to instantiate drivers
@@ -69,8 +71,8 @@ public:
 // Function for dynamically instantiating drivers.
 // A driver must have a function like so:
 // extern "C" {
-//     localnav::DriverFactory *createDriverFactory();
+//     orcalocalnav::DriverFactory *createDriverFactory();
 // }
-typedef orcalocalnavutil::DriverFactory *DriverFactoryMakerFunc();
+typedef orcalocalnav::DriverFactory *DriverFactoryMakerFunc();
 
 #endif

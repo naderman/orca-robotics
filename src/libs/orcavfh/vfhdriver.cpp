@@ -11,6 +11,7 @@
 #include <cmath>
 #include <orcaice/orcaice.h>
 #include <orcaobj/orcaobj.h>
+#include <gbxsickacfr/gbxutilacfr/mathdefs.h>
 
 #include "vfhdriver.h"
 #include "vfh_algorithm.h"
@@ -24,11 +25,13 @@ namespace vfh {
 // need definition (in case its not inlined)
 const double VfhDriver::escapeTimeMs_;
 	
-VfhDriver::VfhDriver( const orcaice::Context & context,
-                      const orca::VehicleDescription &descr )
+VfhDriver::VfhDriver( const orcaice::Context                &context,
+                      const orca::VehicleDescription        &descr,
+                      const orca::RangeScanner2dDescription &scannerDescr )
     : stallRatio_(0.0),
       currentState_(STATE_GOAL_REACHED),
       heartbeater_(context),
+      scannerDescr_(scannerDescr),
       context_(context)
 {
     // Configure and instantiate the core vfh algorithm
@@ -91,25 +94,17 @@ VfhDriver::setSpeedConstraints( float maxSpeed, float maxTurnrate )
 }
 
 // Goal location is in robot's coordinate frame
-void
-VfhDriver::getCommand( bool                                   stalled,
-                       bool                                   localisationUncertain,
-                       const hydronavutil::Pose               &pose,
-                       const orca::Twist2d                   &currentVelocity,
-                       const orca::Time                      &poseAndVelocityTime,
-                       const orca::RangeScanner2dDataPtr      obs,
-                       const std::vector<orcalocalnav::Goal> &goals,
-                       orca::VelocityControl2dData           &cmd )
+hydronavutil::Velocity
+VfhDriver::getCommand( const IDriver::Inputs &inputs )
 {
-    if ( goals.size() == 0 )
+    if ( inputs.goals.size() == 0 )
     {
-        setToZero( cmd );
         currentState_ = STATE_GOAL_REACHED;
-        return;
+        return hydronavutil::Velocity(0,0);
     }
 
     // Just deal with the current goal
-    orcalocalnav::Goal goal = goals[0];
+    const orcalocalnav::Goal &goal = inputs.goals[0];
 
     maybeSendHeartbeat();
     setSpeedConstraints( goal.maxSpeed, goal.maxTurnrate );
@@ -117,38 +112,38 @@ VfhDriver::getCommand( bool                                   stalled,
     //
     // Four distinct cases
     //
+    hydronavutil::Velocity cmd;
     if ( goalPosReached( goal ) )
     {
         // Stop us
-        setToZero( cmd );
+        cmd = hydronavutil::Velocity(0,0);
         currentState_ = STATE_GOAL_REACHED;
     }
-    else if ( shouldEscape( stalled ) )
+    else if ( shouldEscape( inputs.stalled ) )
     {
         // VFH isn't winning...  Have to try some escape manouvres
-        setToEscape( cmd, obs );
+        cmd = escapeCommand( inputs.obsRanges );
         currentState_ = STATE_ESCAPING;
     }
     else if ( translationalGoalPosReached( goal ) )
     {
         // Turn in place
-        setTurnToGoal( cmd, goal );
+        cmd = turnToGoalCommand( goal );
         currentState_ = STATE_TURNING_AT_GOAL;
     }
     else
     {
         // Head for the goal
-        setToApproachGoal( cmd, goal, currentVelocity, obs );
+        cmd = approachGoalCommand( goal, inputs.currentVelocity, inputs.obsRanges );
         currentState_ = STATE_MOVING_TO_GOAL;
     }
 
     stringstream ss;
-    ss << "VFH: Setting command: " << orcaobj::toString(cmd);
+    ss << "VFH: Setting command: " << cmd;
     context_.tracer().debug( ss.str(), 5 );
 
-    prevCmd_.motion.v.x = cmd.motion.v.x;
-    prevCmd_.motion.v.y = cmd.motion.v.y;
-    prevCmd_.motion.w   = cmd.motion.w;
+    prevCmd_ = cmd;
+    return cmd;
 }
 
 bool
@@ -178,47 +173,33 @@ VfhDriver::shouldEscape( bool stalled )
     return false;
 }
 
-void
-VfhDriver::setToZero( orca::VelocityControl2dData& cmd )
-{
-    cmd.motion.v.x = 0.0;
-    cmd.motion.v.y = 0.0;
-    cmd.motion.w   = 0.0;
-}
-
-void
-VfhDriver::setToEscape( orca::VelocityControl2dData& cmd, const orca::RangeScanner2dDataPtr &obs )
+hydronavutil::Velocity
+VfhDriver::escapeCommand( const std::vector<float> &obsRanges )
 {
     if ( currentState_ != STATE_ESCAPING ||
          escapeTimer_.elapsedMs() > escapeTimeMs_ )
     {
         // Choose a new random escape command
         float escapeSpeed       = ((2.0*(float)rand()/(float)RAND_MAX)-1.0) * maxSpeed_;
-        float maxEscapeTurnrate = vfhAlgorithm_->GetMaxTurnrate((int)(cmd.motion.v.x*1000.0)) * M_PI/180.0;
+        float maxEscapeTurnrate = vfhAlgorithm_->GetMaxTurnrate((int)(escapeSpeed*1000.0)) * M_PI/180.0;
         float escapeTurnrate    = ((2.0*(float)rand()/(float)RAND_MAX)-1.0) * maxEscapeTurnrate;
 
         cout<<"TRACE(vfhdriver.cpp): escapeSpeed: " << escapeSpeed << endl;
         cout<<"TRACE(vfhdriver.cpp): max is: " << maxSpeed_ << endl;
-        cmd.motion.v.x = escapeSpeed;
-        cmd.motion.v.y = 0.0;
-        cmd.motion.w   = escapeTurnrate;
-
         escapeTimer_.restart();
+        return hydronavutil::Velocity( escapeSpeed, escapeTurnrate );
     }
     else
     {
         // Continue the escape
-        cmd.motion.v.x = prevCmd_.motion.v.x;
-        cmd.motion.v.y = prevCmd_.motion.v.y;
-        cmd.motion.w   = prevCmd_.motion.w;
+        return prevCmd_;
     }
 }
 
-void
-VfhDriver::setTurnToGoal( orca::VelocityControl2dData& cmd, const orcalocalnav::Goal &goal )
+hydronavutil::Velocity
+VfhDriver::turnToGoalCommand( const orcalocalnav::Goal &goal )
 {
-    cmd.motion.v.x = 0.0;
-    cmd.motion.v.y = 0.0;
+    hydronavutil::Velocity cmd(0,0);
 
     float posNeg = 1.0;
     if ( goal.theta < 0.0 ) posNeg = -1.0;
@@ -226,16 +207,16 @@ VfhDriver::setTurnToGoal( orca::VelocityControl2dData& cmd, const orcalocalnav::
     if ( currentState_ != STATE_TURNING_AT_GOAL )
     {
         // Just got here: turn hard.
-        cmd.motion.w = posNeg * maxTurnrate_;
+        cmd.rot() = posNeg * maxTurnrate_;
     }
     else
     {
         // We're already turning.  Keep doing so.
-        float maxAllowedTurnrate = fabs(prevCmd_.motion.w);
+        float maxAllowedTurnrate = fabs(prevCmd_.rot());
 
         // Check for overshoot
         float prevPosNeg = 1.0;
-        if ( prevCmd_.motion.w < 0.0 ) prevPosNeg = -1.0;
+        if ( prevCmd_.rot() < 0.0 ) prevPosNeg = -1.0;
 
         if ( posNeg != prevPosNeg )
         {
@@ -243,65 +224,66 @@ VfhDriver::setTurnToGoal( orca::VelocityControl2dData& cmd, const orcalocalnav::
             maxAllowedTurnrate = maxAllowedTurnrate * 0.9;
         }
 
-        cmd.motion.w = posNeg*maxAllowedTurnrate;
+        cmd.rot() = posNeg*maxAllowedTurnrate;
     }
+    return cmd;
 }
 
 void 
-VfhDriver::copyLaserScan( const orca::RangeScanner2dDataPtr obs, double playerLaserScan[401][2] )
+VfhDriver::copyLaserScan( const std::vector<float> &obsRanges, double playerLaserScan[401][2] )
 {
-    double angleIncrement = obs->fieldOfView / double(obs->ranges.size()+1);
+    double angleIncrement = scannerDescr_.fieldOfView / double(scannerDescr_.numberOfSamples-1);
     const float EPS = 1e-9;
 
     // number of times to replicate each scan when copying
     int replicateNum=1;
-    if ( obs->ranges.size() == 181 )
+    if ( obsRanges.size() == 181 )
     {
-        if ( angleIncrement - 1.0*M_PI/180.0 > EPS ) 
+        if ( !NEAR(angleIncrement, 1.0*M_PI/180.0, EPS) )
         {
             stringstream ss;
-            ss << "VfhDriver: Can't handle weird angle increment: obs size,increment= " << obs->ranges.size() << ", " << angleIncrement*180.0/M_PI << "deg";
+            ss << "VfhDriver: Can't handle weird angle increment: obs size,increment= " << obsRanges.size() << ", " << angleIncrement*180.0/M_PI << "deg";
             throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, ss.str() );
         }
         replicateNum = 2;
     }
-    else if ( obs->ranges.size() == 361 )
+    else if ( obsRanges.size() == 361 )
     {
-        if ( angleIncrement - 0.5*M_PI/180.0 > EPS ) 
+        if ( !NEAR(angleIncrement, 0.5*M_PI/180.0, EPS) )
         {
             stringstream ss;
-            ss << "VfhDriver: Can't handle weird angle increment: obs size,increment= " << obs->ranges.size() << ", " << angleIncrement*180.0/M_PI << "deg";
+            ss << "VfhDriver: Can't handle weird angle increment: obs size,increment= " << obsRanges.size() << ", " << angleIncrement*180.0/M_PI << "deg";
             throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, ss.str() );
         }
         replicateNum = 1;
     }
     else
     {
-        if ( angleIncrement - 0.5*M_PI/180.0 > EPS )
-        {
+//         if ( !NEAR(angleIncrement, 0.5*M_PI/180.0, EPS) )
+//         {
             stringstream ss;
-            ss << "VfhDriver: obs size,increment= " << obs->ranges.size() << ", " << angleIncrement*180.0/M_PI << endl;
+            ss << "VfhDriver: obs size,increment= " << obsRanges.size() << ", " << angleIncrement*180.0/M_PI << endl;
             ss << "Expected " << 0.5*M_PI/180.0 << ", found " << angleIncrement;
             context_.tracer().debug( ss.str(), 5 );
             ss.str("");
-            ss << "VfhDriver: Can't handle weird angle increment: obs size,increment= " << obs->ranges.size() << ", " << angleIncrement*180.0/M_PI << "deg";
+            ss << "VfhDriver: Can't handle weird angle increment: obs size,increment= " << obsRanges.size() << ", " << angleIncrement*180.0/M_PI << "deg";
             throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, ss.str() );
-        }
-        // �map the values in the range array to degrees so that they can be copied into the
-        // �player structure at the end of this function
-        // i.e ranges[i] and ranges [i+1] is now set to the range for angle i
-        double currentAngle = 0.0;
-        for ( int i=0; i < (int) obs->ranges.size(); i++ )
-        {
-            obs->ranges[(int) floor(currentAngle)] = obs->ranges[i] ;
-            currentAngle = currentAngle + angleIncrement;
-        }
-        replicateNum = 1;
+//         }
+//         // map the values in the range array to degrees so that they can be copied into the
+//         // player structure at the end of this function
+//         // i.e ranges[i] and ranges [i+1] is now set to the range for angle i
+//         double currentAngle = 0.0;
+//         for ( int i=0; i < (int) obsRanges.size(); i++ )
+//         {
+//             obsRanges[(int) floor(currentAngle)] = obsRanges[i] ;
+//             currentAngle = currentAngle + angleIncrement;
+//         }
+//         replicateNum = 1;
     }
-    if ( obs->startAngle - -90.0*M_PI/180.0 > EPS )
+    if ( !NEAR(scannerDescr_.startAngle, -90.0*M_PI/180.0, EPS) )
     {
         stringstream ss;
-        ss << "VfhDriver: Don't know how to handle weird startAngle: " << obs->startAngle;
+        ss << "VfhDriver: Don't know how to handle weird startAngle: " << scannerDescr_.startAngle;
         throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, ss.str() );
     }
 
@@ -310,7 +292,7 @@ VfhDriver::copyLaserScan( const orca::RangeScanner2dDataPtr obs, double playerLa
     int c = 0;
     for ( int i=0; i < 361; i++ )
     {
-        playerLaserScan[i][0] = obs->ranges[j]*1000;
+        playerLaserScan[i][0] = obsRanges[j]*1000;
         if ( ++c == replicateNum )
         {
             j++;
@@ -319,16 +301,15 @@ VfhDriver::copyLaserScan( const orca::RangeScanner2dDataPtr obs, double playerLa
     }
 }
 
-void
-VfhDriver::setToApproachGoal( orca::VelocityControl2dData& cmd,
-                              const orcalocalnav::Goal &goal, 
-                              const orca::Twist2d &currentVelocity,
-                              const orca::RangeScanner2dDataPtr &obs )
+hydronavutil::Velocity
+VfhDriver::approachGoalCommand( const orcalocalnav::Goal     &goal, 
+                                const hydronavutil::Velocity &currentVelocity,
+                                const std::vector<float>     &obsRanges )
 {
     // Copy stuff into the format required by vfh_algorithm
 
     // speed in mm/s
-    int currentSpeed    = (int) (currentVelocity.v.x * 1000.0);
+    int currentSpeed    = (int) (currentVelocity.lin() * 1000.0);
 
     // goalDirection in [0,360), where 90 is straight ahead
     float goalDirection = (directionToGoal(goal)*180/M_PI)+90.0;
@@ -340,7 +321,7 @@ VfhDriver::setToApproachGoal( orca::VelocityControl2dData& cmd,
     // tolerance in mm
     float goalDistanceTolerance = goal.distanceTolerance * 1000.0;
 
-    copyLaserScan( obs, playerLaserScan_ );
+    copyLaserScan( obsRanges, playerLaserScan_ );
 
 //     cout<<"TRACE(vfhdriver.cpp): calling to algorithm, with:" << endl;
 //     cout<<"TRACE(vfhdriver.cpp):   goalDirection: " << goalDirection << endl;
@@ -357,11 +338,8 @@ VfhDriver::setToApproachGoal( orca::VelocityControl2dData& cmd,
                                chosenTurnrate );
 
     // Now copy back from player format
-    cmd.motion.v.x = (float)chosenSpeed/1000.0;
-    cmd.motion.v.y = 0.0;
-    cmd.motion.w   = chosenTurnrate*M_PI/180.0;
+    return hydronavutil::Velocity( (float)chosenSpeed/1000.0, chosenTurnrate*M_PI/180.0 );
 }
-
 
 void
 VfhDriver::maybeSendHeartbeat()
@@ -411,6 +389,6 @@ std::ostream &operator<<( std::ostream &s, VfhDriver::DriverState state )
 }
 
 extern "C" {
-    orcalocalnavutil::DriverFactory *createDriverFactory()
+    orcalocalnav::DriverFactory *createDriverFactory()
     { return new vfh::VfhDriverFactory; }
 }

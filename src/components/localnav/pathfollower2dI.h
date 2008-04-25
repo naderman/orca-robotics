@@ -22,7 +22,7 @@
 // #include "pathmaintainer.h"
 #include "clock.h"
 
-namespace orcalocalnav {
+namespace localnav {
 
 //
 // Implements the PathFollower interface: Handles all our remote calls.

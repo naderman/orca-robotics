@@ -15,7 +15,7 @@
 #include <hydronavutil/pose.h>
 #include "goal.h"
 
-namespace orcalocalnav {
+namespace localnav {
 
 class PathFollower2dI;
 class Clock;
@@ -47,7 +47,7 @@ public:
     // Goals are in robot's local coordinate system.
     // 
     // returns FALSE if there are no active goals, and TRUE otherwise
-    bool getActiveGoals( std::vector<Goal> &goals,
+    bool getActiveGoals( std::vector<orcalocalnav::Goal> &goals,
                          int maxNumGoals,
                          const hydronavutil::Pose &pose );
 

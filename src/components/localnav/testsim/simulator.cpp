@@ -5,8 +5,8 @@
 #include <orcaobjutil/vehicleutil.h>
 #include <hydropathplan/hydropathplan.h>
 #include <hydrogeom2d/geom2d.h>
-#include <orcalocalnavutil/brosutil.h>
 #include <orcaogmap/orcaogmap.h>
+#include "testsimutil.h"
 
 using namespace std;
 
@@ -15,31 +15,23 @@ namespace localnav {
 namespace {
     const double WORLD_SIZE = 40.0;
     const double MAX_RANGE  = 80.0;
-    const double DELTA_T    = 0.1;
+    const double DELTA_T    = 0.1; // sec
     const double ROBOT_RADIUS = 0.375;
 }
 
 Simulator::Simulator( const orcaice::Context &context,
-               const orca::PathFollower2dData &testPath )
-    : rayTracer_(ogMap_),
-      scan_(new orca::LaserScanner2dData),
-      testPath_(testPath),
+                      const orca::PathFollower2dData &testPath )
+    : testPath_(testPath),
       iterationNum_(0),
       context_(context)
 {
-    // Set up pose
-    pose_.x() = 0;
-    // pose_.y() = 0;
-    pose_.y() = 10;
-    pose_.theta() = 0;
-
     Ice::PropertiesPtr prop = context.properties();
     std::string prefix = context.tag();
     prefix += ".Config.Test.";
 
     maxLateralAcceleration_ = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"MaxLateralAcceleraton", 1.0 );
-    checkLateralAcceleration_ = orcaice::getPropertyAsIntWithDefault( prop, prefix+"CheckLateralAcceleration", 0 );
-
+    bool checkLateralAcceleration = orcaice::getPropertyAsIntWithDefault( prop, prefix+"CheckLateralAcceleration", 0 );
+    bool checkDifferentialConstraints = orcaice::getPropertyAsIntWithDefault( prop, prefix+"CheckDifferentialConstraints", 0 );
     batchMode_ = orcaice::getPropertyAsIntWithDefault( prop, prefix+"BatchMode", 0 );
 
     cout<<"TRACE(simulator.cpp): batchMode_: " << batchMode_ << endl;
@@ -54,98 +46,115 @@ Simulator::Simulator( const orcaice::Context &context,
     ogMap_.reallocate( (int)(WORLD_SIZE/CELL_SIZE), (int)(WORLD_SIZE/CELL_SIZE) );
 
     setupMap();
-    grownOgMap_ = ogMap_;
 
-    hydropathplan::util::growObstaclesOgMap( grownOgMap_,
-                                             0.5,
-                                             (int)(ROBOT_RADIUS/CELL_SIZE) );
+    // set up simulation parameters
+    hydrosim2d::VehicleSimulator::Config vehicleSimConfig;
+    vehicleSimConfig.robotRadius                  = ROBOT_RADIUS;
+    vehicleSimConfig.timeStep                     = DELTA_T;
+    vehicleSimConfig.checkDifferentialConstraints = checkDifferentialConstraints;
+    vehicleSimConfig.checkLateralAcceleration     = checkLateralAcceleration;
+    vehicleSimConfig.maxLinearAcceleration        = 1.0;
+    vehicleSimConfig.maxRotationalAcceleration    = DEG2RAD(90.0);
+    vehicleSimConfig.maxLateralAcceleration       = maxLateralAcceleration_;
+    vehicleSimConfig.minVelocity.lin()            = 0.0;
+    vehicleSimConfig.maxVelocity.lin()            = 20.0;
+    vehicleSimConfig.minVelocity.rot()            = DEG2RAD(-1000.0);
+    vehicleSimConfig.maxVelocity.rot()            = DEG2RAD( 1000.0);
 
-    // setup scan
-    scan_->timeStamp.seconds  = 0;
-    scan_->timeStamp.useconds = 0;
-    scan_->minRange = 0.0;
-    scan_->maxRange = MAX_RANGE;
-    scan_->fieldOfView = M_PI;
-    scan_->startAngle  = -M_PI/2.0;
-    scan_->ranges.resize(181);
-    scan_->intensities.resize( scan_->ranges.size() );
-    for ( unsigned int i=0; i < scan_->ranges.size(); i++ )
-        scan_->intensities[i] = 0;
+    hydrosim2d::RangeScannerSimulator::Config rangeScanSimConfig;
+    rangeScanSimConfig.maxRange       = 80.0;
+    rangeScanSimConfig.startAngle     = DEG2RAD(-90.0);
+    rangeScanSimConfig.angleIncrement = DEG2RAD(1.0);
+    rangeScanSimConfig.numReturns     = 181;
 
-    // setup velocity.
-    // Start negative linear, to make sure the driver can hangle it.
-//    velLin_ = -1.0;
-    velLin_ = 0.0;
-    velRot_ = 0.0;
+    // set up interfaces
+    setupInterfaces( vehicleSimConfig, rangeScanSimConfig );
 
-    // setup interfaces
-    setupInterfaces();
-
-    // give an initial command
-    orca::VelocityControl2dData cmd;
-    cmd.motion.v.x = velLin_;
-    cmd.motion.v.y = 0;
-    cmd.motion.w   = velRot_;
-    setCommand( cmd );
-}
-
-Simulator::~Simulator()
-{
-    delete laserInterface_;
-    delete localiseInterface_;
-    delete ogMapInterface_;
+    // instantiate the simulation
+    vehicleSimulator_.reset( new hydrosim2d::VehicleSimulator( vehicleSimConfig,
+                                                               ogMap_,
+                                                               *posePublisher_ ) );
+    rangeScannerSimulator_.reset( new hydrosim2d::RangeScannerSimulator( rangeScanSimConfig,
+                                                                         ogMap_,
+                                                                         *rangeScanPublisher_ ) );
 }
 
 void
-Simulator::setupInterfaces()
+Simulator::setupInterfaces( const hydrosim2d::VehicleSimulator::Config &vehicleSimConfig,
+                            const hydrosim2d::RangeScannerSimulator::Config rangeScanSimConfig )
 {
-    cout<<"TRACE(simulator.cpp): setupInterfaces()" << endl;
+    scannerDescr_.minRange        = 0.0;
+    scannerDescr_.maxRange        = rangeScanSimConfig.maxRange;
+    scannerDescr_.fieldOfView     = 
+        (rangeScanSimConfig.numReturns-1)*rangeScanSimConfig.angleIncrement;
+    scannerDescr_.startAngle      = rangeScanSimConfig.startAngle;
+    scannerDescr_.numberOfSamples = rangeScanSimConfig.numReturns;
+    scannerDescr_.offset          = orcaobj::zeroFrame3d();
+    scannerDescr_.size.l          = 0.1;
+    scannerDescr_.size.w          = 0.1;
+    scannerDescr_.size.h          = 0.1;
+    scannerDescr_.offset.p.x      = 0;
+    scannerDescr_.offset.p.y      = 0;
+    scannerDescr_.offset.p.z      = 0;
+    scannerDescr_.offset.o.r      = 0;
+    scannerDescr_.offset.o.p      = 0;
+    scannerDescr_.offset.o.y      = 0;
+    scannerDescr_.timeStamp       = orcaice::getNow();
 
-    scannerDescr_.minRange = 0.0;
-    scannerDescr_.maxRange = MAX_RANGE;
-    scannerDescr_.fieldOfView = M_PI;
-    scannerDescr_.startAngle = -M_PI/2.0;
-    scannerDescr_.numberOfSamples = 181;
-    orcalocalnavutil::setToZero( scannerDescr_.offset );
-    scannerDescr_.size.l = 0.1;
-    scannerDescr_.size.w = 0.1;
-    scannerDescr_.size.h = 0.1;
-    scannerDescr_.offset.p.x = 0;
-    scannerDescr_.offset.p.y = 0;
-    scannerDescr_.offset.p.z = 0;
-    scannerDescr_.offset.o.r = 0;
-    scannerDescr_.offset.o.p = 0;
-    scannerDescr_.offset.o.y = 0;
-    scannerDescr_.timeStamp = orcaice::getNow();
-    
-    laserInterface_    = new orcaifaceimpl::LaserScanner2dImpl( scannerDescr_,
-                                                                 "TestLaserScanner",
-                                                                 context_ );
-    localiseInterface_ = new orcaifaceimpl::Localise2dImpl( getVehicleDescription().geometry,
-                                                             "TestLocalise",
-                                                             context_ );
+    rangeScanPublisher_.reset( new orcasim2d::RangeScanPublisher( scannerDescr_,
+                                                                  "TestLaserScanner",
+                                                                  context_ ) );
+
+    orca::VehicleControlVelocityDifferentialDescription *c 
+        = new orca::VehicleControlVelocityDifferentialDescription;
+    c->type                      = orca::VehicleControlVelocityDifferential;
+    c->maxForwardSpeed           = vehicleSimConfig.maxVelocity.lin();
+    c->maxReverseSpeed           = vehicleSimConfig.minVelocity.lin();
+    c->maxTurnrate               = vehicleSimConfig.maxVelocity.rot();
+    c->maxLateralAcceleration    = maxLateralAcceleration_;
+    c->maxForwardAcceleration    = vehicleSimConfig.maxLinearAcceleration;
+    c->maxReverseAcceleration    = vehicleSimConfig.maxLinearAcceleration;
+    c->maxRotationalAcceleration = vehicleSimConfig.maxRotationalAcceleration;
+    orcaobjutil::checkVehicleControlVelocityDifferentialDescription( *c );
+    vehicleDescr_.control        = c;
+
+    vehicleDescr_.platformToVehicleTransform = orcaobj::zeroFrame3d();
+    orca::VehicleGeometryCylindricalDescription *g
+        = new orca::VehicleGeometryCylindricalDescription;
+    g->type = orca::VehicleGeometryCylindrical;
+    g->radius = ROBOT_RADIUS;
+    g->height = 2.0;
+
+    g->vehicleToGeometryTransform = orcaobj::zeroFrame3d();
+    vehicleDescr_.geometry = g;
+
+    posePublisher_.reset( new orcasim2d::PosePublisher( vehicleDescr_.geometry,
+                                                        "TestLocalise",
+                                                        context_ ) );
+
     ogMapInterface_    = new orcaifaceimpl::OgMapImpl( "TestOgMap",
                                                         context_ );
-
     try {
-        laserInterface_->initInterface();
-    } catch (...) {}
+        rangeScanPublisher_->initInterface();
+    } 
+    catch ( std::exception &e ) {
+        cout << "Ignoring problem initialising interface: " << e.what();
+    }
     try {
-        localiseInterface_->initInterface();
-    } catch (...) {}
+        posePublisher_->initInterface();
+    }
+    catch ( std::exception &e ) {
+        cout << "Ignoring problem initialising interface: " << e.what();
+    }
     try {
-        cout<<"TRACE(simulator.cpp): Initialising og map" << endl;
         orca::OgMapData orcaOgMap;
         orcaogmap::convert( ogMap_, orcaOgMap );
         ogMapInterface_->initInterface();
         ogMapInterface_->localSetAndSend( orcaOgMap );
-        cout<<"TRACE(simulator.cpp): done initialising og map." << endl;
-        // cout<<"TRACE(simulator.cpp): map is: " << orcaobj::toVerboseString(orcaOgMap) << endl;
-
-    } catch (...) {}
-
-    cout<<"TRACE(simulator.cpp): Done setup interfaces" << endl;
-
+    }
+    catch ( std::exception &e ) {
+        cout << "Ignoring problem initialising interface: " << e.what();
+    }
 }
 
 void
@@ -229,239 +238,33 @@ Simulator::setupMap()
     placeRoom( ogMap_ );
 }
 
-orca::Time
-Simulator::now()
-{
-    double sec = 1+iterationNum_*DELTA_T;
-    double useconds = fmod( sec, 1.0 ) * 1e6;
-
-    orca::Time t;
-    t.seconds  = (int)(sec);
-    t.useconds = (int)(useconds);
-
-    return t;
-}
-
 void 
-Simulator::fillPipes()
+Simulator::act( const hydronavutil::Velocity &cmd )
 {
-    orca::Time ts = now();
-
-    scan_->timeStamp = ts;
-    obsStore_.set(scan_);
-    laserInterface_->localSetAndSend(scan_);
-
-    orca::Localise2dData locData;
-    locData.hypotheses.resize(1);
-    locData.hypotheses[0].mean.p.x = pose_.x();
-    locData.hypotheses[0].mean.p.y = pose_.y();
-    locData.hypotheses[0].mean.o = pose_.theta();
-    locData.hypotheses[0].cov.xx = 0.1;
-    locData.hypotheses[0].cov.xy = 0.0;
-    locData.hypotheses[0].cov.yy = 0.1;
-    locData.hypotheses[0].cov.xt = 0.0;
-    locData.hypotheses[0].cov.yt = 0.0;
-    locData.hypotheses[0].cov.tt = 1.0*M_PI/180.0;
-    locData.hypotheses[0].weight = 1.0;
-    locData.timeStamp = ts;
-    locStore_.set(locData);
-    localiseInterface_->localSetAndSend(locData);
-
-    orca::Odometry2dData posData;
-    posData.pose.p.x   = 0.0;
-    posData.pose.p.y   = 0.0;
-    posData.pose.o     = 0.0;
-    posData.motion.v.x = velLin_;
-    posData.motion.v.y = 0.0;
-    posData.motion.w   = velRot_;
-    posData.timeStamp  = ts;
-
-    odomStore_.set( posData );
-}
-
-void 
-Simulator::setCommand( const orca::VelocityControl2dData &cmd )
-{
-//     cmd.timeStamp = scan_->timeStamp;
-    
-    cout<<"TRACE(simulator.cpp): iteration " << iterationNum_ << ": pose_: " << pose_ << endl;
     if ( !batchMode_ )
     {
-        cout<<"TRACE(simulator.cpp): received cmd: " << orcaobj::toString(cmd) << endl;
-        cout<<"TRACE(simulator.cpp): pose_: " << pose_ << endl;
+        cout<<"TRACE(simulator.cpp): received cmd: " << cmd << endl;
+        cout<<"TRACE(simulator.cpp): pose: " << vehicleSimulator_->pose() << endl;
         cout<<"TRACE(simulator.cpp): ============= hit return to continue ============" << endl;
         getchar();
     }
 
-    // First apply the current velocity
-    applyCurrentVelocity();
-    
-    // Then set the new commanded velocity
-    velLin_ = cmd.motion.v.x;
-    velRot_ = cmd.motion.w;
-
-    // Get a new observation
-    getRanges();
-
-    fillPipes();
-
-    checkProgress();
-}
-
-bool
-bordersFreeSpace( const hydroogmap::OgMap &ogMap, int x, int y )
-{
-    return ( ogMap.gridCell( x-1, y ) < hydroogmap::CELL_UNKNOWN ||
-             ogMap.gridCell( x+1, y ) < hydroogmap::CELL_UNKNOWN ||
-             ogMap.gridCell( x, y-1 ) < hydroogmap::CELL_UNKNOWN ||
-             ogMap.gridCell( x, y+1 ) < hydroogmap::CELL_UNKNOWN );
-}
-
-void
-Simulator::checkProgress()
-{
-    assert( testPath_.path.size() > 0 );
+    vehicleSimulator_->act( cmd );
 
     iterationNum_++;
-
-    const int MIN_NUM_ITERATIONS = 5;
-    const int MAX_NUM_ITERATIONS = testPath_.path.size()*400;
-
-    double distanceToGoal = hypot( pose_.y()-testPath_.path.back().target.p.y,
-                                   pose_.x()-testPath_.path.back().target.p.x );
-    double angleToGoal = pose_.theta()-testPath_.path.back().target.o;
-    NORMALISE_ANGLE( angleToGoal );
-    angleToGoal = fabs( angleToGoal );
-    bool lastGoalReached = ( distanceToGoal <= testPath_.path.back().distanceTolerance &&
-                             angleToGoal <= testPath_.path.back().headingTolerance );
-
-    if ( iterationNum_ < MIN_NUM_ITERATIONS && lastGoalReached )
-    {
-        cout << "ERROR(simulator.cpp): Huh? How did we reach the goal in only "<< iterationNum_ << " iterations??" << endl;
-        exit(1);
-    }
-    if ( iterationNum_ >= MAX_NUM_ITERATIONS && !lastGoalReached )
-    {
-        cout << "ERROR(simulator.cpp): Failed: didn't reach the goal in " <<  iterationNum_ << " iterations." << endl;
-        exit(1);        
-    }
-    if ( lastGoalReached )
-    {
-        cout<<"TRACE(simulator.cpp): Final Goal reached.  Test passed." << endl;
-        exit(0);
-    }
-
-    // Check for collisions
-    bool coordsWithinMap = grownOgMap_.coordsWithinMap( pose_.x(), pose_.y() );
-    if ( !coordsWithinMap )
-    {
-        cout<<"TRACE(simulator.cpp): Vehicle left the map!" << endl;
-        exit(1);
-    }
-    else if ( grownOgMap_.worldCell( pose_.x(), pose_.y() ) > hydroogmap::CELL_UNKNOWN )
-    {
-        // Cell is occupied.  To be really, sure, make sure we're _inside_ an obstacle
-        // (discrectisation can screw with things, so give the controller the beenfit of the doubt).
-        int cellX, cellY;
-        grownOgMap_.getCellIndices( pose_.x(), pose_.y(), cellX, cellY );
-
-        if ( !bordersFreeSpace( grownOgMap_, cellX, cellY ) )
-        {
-            cout << "ERROR(simulator.cpp): Collision!!" << endl;
-            exit(1);
-        }
-    }
-
-    if ( checkLateralAcceleration_ )
-    {
-        const double lateralAcceleration = velLin_*velRot_;
-        if ( lateralAcceleration > maxLateralAcceleration_ )
-        {
-            cout << "ERROR(simulator.cpp): lateral acceleration limit (of " << maxLateralAcceleration_ << ") exceeded!"
-                 << endl
-                 << "  velLin_: " << velLin_ << "m/s" << endl
-                 << "  velRot_: " << velRot_*180.0/M_PI << "deg/s" << endl;
-            exit(1);
-        }
-    }
+    checkProgress( testPath_, *vehicleSimulator_, iterationNum_ );
 }
 
-void
-Simulator::applyCurrentVelocity()
+orca::Time 
+Simulator::time() const
 {
-    hydronavutil::addPoseOffset( pose_.x(),
-                                pose_.y(),
-                                pose_.theta(),
-                                velLin_*DELTA_T,
-                                0,
-                                velRot_*DELTA_T,
-                                true );
-}
+    double sec = DELTA_T * iterationNum_;
 
-void
-Simulator::getRanges()
-{
-    double maxRange = scan_->maxRange;
-    double angleIncrement = orcaobj::calcAngleIncrement( scan_->fieldOfView,
-                                                         scan_->ranges.size() );
-    for ( unsigned int i=0; i < scan_->ranges.size(); i++ )
-    {
-        double angleRCS = scan_->startAngle + i*angleIncrement;
-        double angleGCS = angleRCS + pose_.theta();
+    orca::Time t;
+    t.seconds = (int)sec;
+    t.useconds = (sec-(int)sec) * 1e6;
 
-        geom2d::Point start( pose_.x(), pose_.y() );
-        geom2d::Point maxEnd( start.x() + maxRange * cos(angleGCS),
-                              start.y() + maxRange * sin(angleGCS) );
-        
-
-        // ray-trace
-        geom2d::Point actualEnd;
-        rayTracer_.isClearWorld( start.x(), start.y(),
-                                 maxEnd.x(), maxEnd.y(),
-                                 actualEnd.x(), actualEnd.y() );
-
-        double actualRange = hypot( actualEnd.y()-start.y(), actualEnd.x()-start.x() );
-        scan_->ranges[i] = actualRange;
-    }
-}
-
-orca::VehicleDescription 
-Simulator::getVehicleDescription() const
-{
-    orca::VehicleDescription d;
-
-    orca::VehicleControlVelocityDifferentialDescription *c 
-        = new orca::VehicleControlVelocityDifferentialDescription;
-    c->type    = orca::VehicleControlVelocityDifferential;
-    c->maxForwardSpeed = 20.0;
-    c->maxReverseSpeed = 20.0;
-    c->maxTurnrate     = DEG2RAD(990.0);
-    c->maxLateralAcceleration = maxLateralAcceleration_;
-    c->maxForwardAcceleration = 1.0;
-    c->maxReverseAcceleration = 1.0;
-    c->maxRotationalAcceleration = DEG2RAD(90.0);
-    orcaobjutil::checkVehicleControlVelocityDifferentialDescription( *c );
-    d.control = c;
-
-    orcalocalnavutil::setToZero( d.platformToVehicleTransform );
-
-    orca::VehicleGeometryCylindricalDescription *g
-        = new orca::VehicleGeometryCylindricalDescription;
-    g->type = orca::VehicleGeometryCylindrical;
-    g->radius = ROBOT_RADIUS;
-    g->height = 2.0;
-
-    orcalocalnavutil::setToZero( g->vehicleToGeometryTransform );
-    d.geometry = g;
-
-    return d;
-}
-
-void
-Simulator::printState()
-{
-    cout<<"TRACE(simulator.cpp): pose: " << pose_ << endl;
-
+    return t;
 }
 
 }

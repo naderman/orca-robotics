@@ -17,7 +17,7 @@
 using namespace std;
 using namespace orcaice;
 
-namespace orcalocalnav {
+namespace localnav {
 
 PathMaintainer::PathMaintainer( PathFollower2dI         &pathFollowerInterface,
                                 const Clock             &clock,
@@ -158,10 +158,10 @@ PathMaintainer::waypointReached( const orca::Waypoint2d &wp,
 }
 
 void
-convert( const orca::Waypoint2d  &wp,
-         Goal                    &goal,
+convert( const orca::Waypoint2d   &wp,
+         orcalocalnav::Goal       &goal,
          const hydronavutil::Pose &pose,
-         double                  secSinceActivation )
+         double                    secSinceActivation )
 {
     double secToWp = orcaice::timeAsDouble(wp.timeTarget) - secSinceActivation;
     
@@ -185,9 +185,9 @@ convert( const orca::Waypoint2d  &wp,
 }
 
 bool
-PathMaintainer::getActiveGoals( std::vector<Goal> &goals,
-                                int maxNumWaypoints,
-                                const hydronavutil::Pose &pose )
+PathMaintainer::getActiveGoals( std::vector<orcalocalnav::Goal> &goals,
+                                int                              maxNumWaypoints,
+                                const hydronavutil::Pose        &pose )
 {
     goals.resize(0);
     if ( wpIndex_ == -1 ) return false;
@@ -204,7 +204,7 @@ PathMaintainer::getActiveGoals( std::vector<Goal> &goals,
           pI < path_.path.size() && wpI < maxNumWaypoints;
           pI++, wpI++ )
     {
-        Goal goal;
+        orcalocalnav::Goal goal;
         convert( path_.path[pI], goal, pose, secSinceActivation() );
         goals.push_back( goal );
     }

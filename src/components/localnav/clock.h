@@ -14,7 +14,7 @@
 #include <gbxsickacfr/gbxiceutilacfr/store.h>
 #include <orca/orca.h>
 
-namespace orcalocalnav {
+namespace localnav {
 
 //
 // A thread-safe clock.

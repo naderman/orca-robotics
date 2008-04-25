@@ -1,16 +1,11 @@
 #ifndef SIMULATOR_H
 #define SIMULATOR_H
 
-#include <orcaogmap/orcaogmap.h>
-#include <hydronavutil/hydronavutil.h>
-#include <orcaifaceimpl/laserscanner2dImpl.h>
-#include <orcaifaceimpl/localise2dImpl.h>
-#include <orcaifaceimpl/ogmapImpl.h>
-#include <orca/velocitycontrol2d.h>
-#include <orca/odometry2d.h>
-#include <gbxsickacfr/gbxiceutilacfr/store.h>
-#include <orcaice/context.h>
+#include <hydrosim2d/hydrosim2d.h>
 #include <orca/pathfollower2d.h>
+#include <orcasim2d/orcasim2d.h>
+#include <memory>
+#include <orcaifaceimpl/ogmapImpl.h>
 
 namespace localnav {
 
@@ -24,58 +19,50 @@ public:
 
     Simulator( const orcaice::Context &context,
                const orca::PathFollower2dData &testPath );
-    ~Simulator();
 
     // This is the trigger to advance the simulator one step.
-    void setCommand( const orca::VelocityControl2dData &cmd );
+    void act( const hydronavutil::Velocity &cmd );
 
-    // These can be given out to others: the simulator 
-    // will put new data in them on each step.
-    gbxsickacfr::gbxiceutilacfr::Store<orca::RangeScanner2dDataPtr> obsStore_;
-    gbxsickacfr::gbxiceutilacfr::Store<orca::Localise2dData>        locStore_;
-    gbxsickacfr::gbxiceutilacfr::Store<orca::Odometry2dData>        odomStore_;
+    void getObsRanges( std::vector<float> &obsRanges )
+        { rangeScannerSimulator_->getRangesFromPose( vehicleSimulator_->pose(), obsRanges ); }
 
-    void printState();
+    hydronavutil::Pose pose() const
+        { return vehicleSimulator_->pose(); }
+    hydronavutil::Velocity velocity() const
+        { return vehicleSimulator_->velocity(); }
 
-    orca::VehicleDescription        getVehicleDescription() const;
-    
+    orca::VehicleDescription vehicleDescription() const
+        { return vehicleDescr_; }
+
     const orca::RangeScanner2dDescription& rangeScanner2dDescription() const
         { return scannerDescr_; }
     
+    orca::Time time() const;
+
 private: 
 
     void setupMap();
-    void setupInterfaces();
-    void applyCurrentVelocity();
-    void getRanges();
-    void fillPipes();
-    void checkProgress();
-    // get simulation time
-    orca::Time now();
+    void setupInterfaces( const hydrosim2d::VehicleSimulator::Config &vehicleSimConfig,
+                          const hydrosim2d::RangeScannerSimulator::Config rangeScanSimConfig );
 
     hydroogmap::OgMap       ogMap_;
-    hydroogmap::OgMap       grownOgMap_;
-    hydroogmap::OgLosTracer rayTracer_;
 
-    hydronavutil::Pose      pose_;
-    double                  velLin_;
-    double                  velRot_;
+    std::auto_ptr<orcasim2d::PosePublisher>      posePublisher_;
+    std::auto_ptr<orcasim2d::RangeScanPublisher> rangeScanPublisher_;
+    orcaifaceimpl::OgMapImplPtr                  ogMapInterface_;
 
-    orcaifaceimpl::LaserScanner2dImpl *laserInterface_;
-    orcaifaceimpl::Localise2dImpl     *localiseInterface_;
-    orcaifaceimpl::OgMapImpl          *ogMapInterface_;
-
-    orca::LaserScanner2dDataPtr     scan_;
     orca::RangeScanner2dDescription scannerDescr_;
+    orca::VehicleDescription        vehicleDescr_;
 
     orca::PathFollower2dData testPath_;
 
     double maxLateralAcceleration_;
-    bool   checkLateralAcceleration_;
+    int    iterationNum_;
+    bool   batchMode_;
 
-    int iterationNum_;
-    bool batchMode_;
-    
+    std::auto_ptr<hydrosim2d::VehicleSimulator>      vehicleSimulator_;
+    std::auto_ptr<hydrosim2d::RangeScannerSimulator> rangeScannerSimulator_;
+
     orcaice::Context context_;
 };
 

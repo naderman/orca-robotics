@@ -12,12 +12,11 @@
 
 #include <orcaice/context.h>
 #include <orcaice/heartbeater.h>
-#include "goal.h"
+#include <orcalocalnav/goal.h>
 
-namespace orcalocalnav {
+namespace localnav {
 
 class LocalNavParameters;
-class Goal;
 
 //
 // Constrains the speed according to the next goal taking into account the time
@@ -34,7 +33,7 @@ public:
     SpeedLimiter( const orcaice::Context &context );
 
     // constrain the max speeds for a particular goal
-    void constrainMaxSpeeds( Goal &goal );
+    void constrainMaxSpeeds( orcalocalnav::Goal &goal );
 
 private: 
 

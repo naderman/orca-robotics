@@ -291,6 +291,11 @@ MainThread::walk()
 
             subStatus().ok();
         } // try
+        catch ( Ice::CommunicatorDestroyedException &e )
+        {
+            // This is OK: it means that the communicator shut down (eg via Ctrl-C)
+            // somewhere in mainLoop.
+        }
         catch ( const orca::OrcaException & e ) {
             exceptionSS << "MainThread: unexpected orca exception: " << e << ": " << e.what;
         }

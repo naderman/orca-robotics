@@ -11,70 +11,85 @@
 #include <cmath>
 #include <orcaice/orcaice.h>
 #include <orcaobj/orcaobj.h>
-#include <hydronavutil/pose.h>
-#include <orcalocalnav/pathfollower2dI.h>
-#include <orcalocalnavutil/pose.h>
+#include "pathfollower2dI.h"
 #include <hydroutil/realtimestopwatch.h>
-
+#include <orcanavutil/orcanavutil.h>
 #include "mainthread.h"
-#include "testsim/simulator.h"
+#include "testsim/testsimutil.h"
 
 using namespace std;
-using namespace localnav;
 
-MainThread::MainThread( orcalocalnavutil::DriverFactory &driverFactory,
-                    orcalocalnav::Clock              &clock,
-                    orcalocalnav::PathFollower2dI    &pathFollowerInterface,
-                    const orcaice::Context           &context ) :
-    gbxsickacfr::gbxiceutilacfr::SubsystemThread( context.tracer(), context.status(), "MainThread" ),
-    speedLimiter_(NULL),
-    pathMaintainer_(NULL),
-    driver_(NULL),
-    driverFactory_(driverFactory),
-    obsConsumer_(new orcaifaceimpl::StoringRangeScanner2dConsumerImpl(context)),
-    locConsumer_(new orcaifaceimpl::StoringLocalise2dConsumerImpl(context)),
-    odomConsumer_(new orcaifaceimpl::StoringOdometry2dConsumerImpl(context)),
-    obsStore_(NULL),
-    locStore_(NULL),
-    odomStore_(NULL),
-    pathFollowerInterface_(pathFollowerInterface),
-    clock_(clock),
-    testMode_(false),
-    context_(context)
+namespace localnav {
+
+namespace {
+
+// Returns true if the timestamps differ by more than a threshold.
+bool areTimestampsDodgy( const orca::RangeScanner2dDataPtr &rangeData, 
+                         const orca::Localise2dData        &localiseData, 
+                         const orca::Odometry2dData        &odomData,
+                         double                             thresholdSec )
 {
-    subStatus().setMaxHeartbeatInterval( 10.0 );
+    if ( fabs( orcaice::timeDiffAsDouble( rangeData->timeStamp, localiseData.timeStamp ) ) >= thresholdSec )
+        return true;
+    if ( fabs( orcaice::timeDiffAsDouble( rangeData->timeStamp, odomData.timeStamp ) ) >= thresholdSec )
+        return true;
+    
+    return false;
 }
 
-MainThread::MainThread( orcalocalnavutil::DriverFactory &driverFactory,
-                    orcalocalnav::Clock             &clock,
-                    orcalocalnav::PathFollower2dI   &pathFollowerInterface,
-                    Simulator                       &testSimulator,
-                    const orcaice::Context          &context ) :
-    gbxsickacfr::gbxiceutilacfr::SubsystemThread( context.tracer(), context.status(), "MainThread" ),
-    speedLimiter_(NULL),
-    pathMaintainer_(NULL),
-    driver_(NULL),
-    driverFactory_(driverFactory),
-    obsConsumer_(NULL),
-    locConsumer_(NULL),
-    odomConsumer_(NULL),
-    obsStore_(NULL),
-    locStore_(NULL),
-    odomStore_(NULL),
-    pathFollowerInterface_(pathFollowerInterface),
-    testSimulator_(&testSimulator),
-    clock_(clock),
-    testMode_(true),
-    context_(context)
-{
-    subStatus().setMaxHeartbeatInterval( 10.0 );
 }
 
-MainThread::~MainThread()
+////////////////////////////////////////////////////////////////////////////////
+
+MainThread::MainThread( const orcaice::Context &context ) 
+    : gbxsickacfr::gbxiceutilacfr::SubsystemThread( context.tracer(), context.status(), "MainThread" ),
+      context_(context)
 {
-    if ( speedLimiter_ ) delete speedLimiter_;
-    if ( pathMaintainer_ ) delete pathMaintainer_;
-    if ( driver_ ) delete driver_;
+    subStatus().setMaxHeartbeatInterval( 10.0 );
+    
+    orca::Time t; t.seconds=0; t.useconds=0;
+    clock_.reset( new Clock( t ) );
+
+    Ice::PropertiesPtr prop = context_.properties();
+    std::string prefix = context_.tag();
+    prefix += ".Config.";
+
+    testMode_ = orcaice::getPropertyAsIntWithDefault( prop, prefix+"TestInSimulationMode", 0 );
+
+    // Create our provided interface
+    pathFollowerInterface_.reset( new PathFollower2dI( "PathFollower2d", *clock_, context_ ) );
+
+    //
+    // Instantiate bogus info sources in test-in-simulation-mode
+    //
+    if ( testMode_ )
+    {
+        int numWaypoints = orcaice::getPropertyAsIntWithDefault( prop, prefix+"Test.NumWaypoints", 10 );
+        cout<<"TRACE(component.cpp): Using " << numWaypoints << " waypoints" << endl;
+        orca::PathFollower2dData testPath;
+        getTestPath( testPath, numWaypoints );
+        pathFollowerInterface_->setData( testPath, true );
+        testSimulator_ = new Simulator( context_, testPath );
+    }    
+
+    //
+    // Instantiate the driver factory
+    //
+    std::string driverLibName = 
+        orcaice::getPropertyWithDefault( prop, prefix+"DriverLib", "libOrcaLocalNavVfh.so" );
+    context_.tracer().debug( "Component: Loading driver library "+driverLibName, 4 );
+    try {
+        // Dynamically load the driver from its library
+        driverLib_.reset( new hydrodll::DynamicallyLoadedLibrary(driverLibName) );
+        driverFactory_.reset( 
+            hydrodll::dynamicallyLoadClass<orcalocalnav::DriverFactory,DriverFactoryMakerFunc>
+            ( *driverLib_, "createDriverFactory" ) );
+    }
+    catch (hydrodll::DynamicLoadException &e)
+    {
+        context_.tracer().error( e.what() );
+        throw;
+    }
 }
 
 void
@@ -83,9 +98,9 @@ MainThread::ensureProxiesNotEmpty()
     // Ensure that there's something in our proxys
     while ( !isStopping() )
     {
-        bool gotObs  = !obsStore_->isEmpty();
-        bool gotLoc  = !locStore_->isEmpty();
-        bool gotOdom = !odomStore_->isEmpty();
+        bool gotObs  = !obsConsumer_->store().isEmpty();
+        bool gotLoc  = !locConsumer_->store().isEmpty();
+        bool gotOdom = !odomConsumer_->store().isEmpty();
 
 
         if ( gotObs && gotLoc && gotOdom )
@@ -102,27 +117,15 @@ MainThread::ensureProxiesNotEmpty()
             sleep(1);
         }
     }
-    // Set the initial time
-    orca::RangeScanner2dDataPtr obs;
-    obsStore_->get( obs );
-    clock_.setTime( obs->timeStamp );
-}
-
-void 
-MainThread::getStopCommand( orca::VelocityControl2dData& cmd )
-{
-    cmd.motion.v.x = 0.0;
-    cmd.motion.v.y = 0.0;
-    cmd.motion.w   = 0.0;
 }
 
 void
-MainThread::initInterfaces()
+MainThread::initPathFollowerInterface()
 {
     while ( !isStopping() )
     {
         try {
-            pathFollowerInterface_.initInterface();
+            pathFollowerInterface_->initInterface();
             return;
         }
         catch ( gbxsickacfr::gbxutilacfr::Exception &e )
@@ -142,213 +145,65 @@ MainThread::initInterfaces()
 }
 
 void
-MainThread::connectToController()
+MainThread::getVehicleDescription()
 {
     while ( !isStopping() )
     {
-        try 
+        stringstream exceptionSS;
+        try
         {
-            // connect to the controller
-            orcaice::connectToInterfaceWithTag( context_, velControl2dPrx_, "VelocityControl2d" );
-            context_.tracer().debug("connected to a 'VelocityControl2d' interface",5);
-            break;
-        }
-        catch ( Ice::Exception &e )
-        {
-            stringstream ss; ss << "Error when connecting to VelocityControl2d interface: " << e;
-            context_.tracer().error( ss.str() );
-        }
-        catch ( std::exception &e )
-        {
-            stringstream ss; ss << "Error when connecting to VelocityControl2d interface: " << e.what();
-            context_.tracer().error( ss.str() );
-        }
-        subStatus().heartbeat();
-        sleep(2);
-    }
-    while ( !isStopping() )
-    {
-        try 
-        {
-            // Get the vehicle description
             vehicleDescr_ = velControl2dPrx_->getDescription();
             break;
         }
-        catch ( Ice::Exception &e )
-        {
-            stringstream ss; ss << "Error when connecting to VelocityControl2d interface: " << e;
-            context_.tracer().error( ss.str() );
+        catch ( const Ice::Exception &e ) {
+            exceptionSS << __func__ << "(): " << e;
         }
-        catch ( std::exception &e )
-        {
-            stringstream ss; ss << "Error when connecting to VelocityControl2d interface: " << e.what();
-            context_.tracer().error( ss.str() );
+        catch ( const std::exception &e ) {
+            exceptionSS << __func__ << "(): " << e.what();
         }
-        subStatus().heartbeat();
-        sleep(2);
+        catch ( ... ) {
+            exceptionSS << __func__ << "(): Caught unknown exception.";
+        }
+
+        if ( !exceptionSS.str().empty() ) {
+            subStatus().warning( exceptionSS.str() );     
+            // Slow things down in case of persistent error
+            sleep(1);
+        }
     }
 }
 
 void
-MainThread::subscribeForOdometry()
+MainThread::getRangeScannerDescription()
 {
-    orca::Odometry2dPrx   odomPrx;
+    orca::RangeScanner2dPrx prx;
     
     while ( !isStopping() )
     {
-        try {
-            orcaice::connectToInterfaceWithTag( context_, odomPrx, "Odometry2d" );
+        stringstream exceptionSS;
+        try
+        {
+            context_.tracer().debug( "Getting range scanner description...", 2 );
+            orcaice::connectToInterfaceWithTag( context_, prx, "Observations" );
+            scannerDescr_ = prx->getDescription();
             break;
         }
-        catch( Ice::Exception &e )
-        {
-            stringstream ss; ss << "Error while connecting to odometry: " << e;
-            context_.tracer().error( ss.str() );
+        catch ( const Ice::Exception &e ) {
+            exceptionSS << __func__ << "(): " << e;
         }
-        catch( std::exception &e )
-        {
-            stringstream ss; ss << "Error while connecting to odometry: " << e.what();
-            context_.tracer().error( ss.str() );
+        catch ( const std::exception &e ) {
+            exceptionSS << __func__ << "(): " << e.what();
         }
-        subStatus().heartbeat();
-        sleep(2);
-    }    
-    while ( !isStopping() )
-    {
-        try {
-            odomPrx->subscribe( odomConsumer_->consumerPrx() );
-            break;
+        catch ( ... ) {
+            exceptionSS << __func__ << "(): Caught unknown exception.";
         }
-        catch( Ice::Exception &e )
-        {
-            stringstream ss; ss << "Error while subscribing to odometry: " << e;
-            context_.tracer().error( ss.str() );
-        }
-        catch( std::exception &e )
-        {
-            stringstream ss; ss << "Error while subscribing to odometry: " << e.what();
-            context_.tracer().error( ss.str() );
-        }
-        subStatus().heartbeat();
-        sleep(2);
-    }
-    context_.tracer().info( "Subscribed for odometry" );
-}
 
-void
-MainThread::subscribeForLocalisation()
-{
-    orca::Localise2dPrx   locPrx;
-        
-    while ( !isStopping() )
-    {
-        try {
-            orcaice::connectToInterfaceWithTag( context_, locPrx, "Localisation" );
-            break;
+        if ( !exceptionSS.str().empty() ) {
+            subStatus().warning( exceptionSS.str() );     
+            // Slow things down in case of persistent error
+            sleep(1);
         }
-        catch( Ice::Exception &e )
-        {
-            stringstream ss; ss << "Error while connecting to localise2d: " << e;
-            context_.tracer().error( ss.str() );
-        }
-        catch( std::exception &e )
-        {
-            stringstream ss; ss << "Error while connecting to localise2d: " << e.what();
-            context_.tracer().error( ss.str() );
-        }
-        catch( std::string &e )
-        {
-            stringstream ss; ss << "Error while connecting to localise2d: " << e;
-            context_.tracer().error( ss.str() );
-        }
-        subStatus().heartbeat();
-        sleep(2);
-    }    
-    while ( !isStopping() )
-    {
-        try {
-            locPrx->subscribe( locConsumer_->consumerPrx() );
-            break;
-        }
-        catch( Ice::Exception &e )
-        {
-            stringstream ss; ss << "Error while subscribing to localise2d: " << e;
-            context_.tracer().error( ss.str() );
-        }
-        catch( std::exception &e )
-        {
-            stringstream ss; ss << "Error while subscribing to localise2d: " << e.what();
-            context_.tracer().error( ss.str() );
-        }
-        subStatus().heartbeat();
-        sleep(2);
     }
-    context_.tracer().info( "Subscribed for localisation" );
-}
-
-void
-MainThread::subscribeForObservations()
-{
-    orca::RangeScanner2dPrx obsPrx;
-
-    while ( !isStopping() )
-    {
-        try {
-            orcaice::connectToInterfaceWithTag( context_, obsPrx, "Observations" );
-            break;
-        }
-        catch( Ice::Exception &e )
-        {
-            stringstream ss; ss << "Error while connecting to laser: " << e;
-            context_.tracer().error( ss.str() );
-        }
-        catch( std::exception &e )
-        {
-            stringstream ss; ss << "Error while connecting to laser: " << e.what();
-            context_.tracer().error( ss.str() );
-        }
-        subStatus().heartbeat();
-        sleep(2);
-    }    
-    while ( !isStopping() )
-    {
-        try {
-            obsPrx->subscribe(  obsConsumer_->consumerPrx() );
-            break;
-        }
-        catch( Ice::Exception &e )
-        {
-            stringstream ss; ss << "Error while subscribing to laser: " << e;
-            context_.tracer().error( ss.str() );
-        }
-        catch( std::exception &e )
-        {
-            stringstream ss; ss << "Error while subscribing to laser: " << e.what();
-            context_.tracer().error( ss.str() );
-        }
-        subStatus().heartbeat();
-        sleep(2);
-    }
-    while ( !isStopping() )
-    {
-        try {
-            scannerDescr_ = obsPrx->getDescription();
-            break;
-        }
-        catch( Ice::Exception &e )
-        {
-            stringstream ss; ss << "Error while subscribing to laser: " << e;
-            context_.tracer().error( ss.str() );
-        }
-        catch( std::exception &e )
-        {
-            stringstream ss; ss << "Error while subscribing to laser: " << e.what();
-            context_.tracer().error( ss.str() );
-        }
-        subStatus().heartbeat();
-        sleep(2);
-    }
-    context_.tracer().info( "Subscribed for laser" );
 }
 
 void
@@ -356,23 +211,26 @@ MainThread::setup()
 {
     if ( !testMode_ )
     {
-        connectToController();
+        orcaice::connectToInterfaceWithTag( context_, velControl2dPrx_, "VelocityControl2d", this, subsysName() );
+        odomConsumer_->subscribeWithTag( "Odometry2d", this, subsysName() );
+        locConsumer_->subscribeWithTag( "Localisation", this, subsysName() );
+        obsConsumer_->subscribeWithTag( "Observations", this, subsysName() );
 
-        subscribeForOdometry();
-        subscribeForLocalisation();
-        subscribeForObservations();
+        getVehicleDescription();
+        getRangeScannerDescription();
 
-        obsStore_  = &(obsConsumer_->store());
-        locStore_  = &(locConsumer_->store());
-        odomStore_ = &(odomConsumer_->store());
+        ensureProxiesNotEmpty();
+
+        // Set the initial time
+        orca::RangeScanner2dDataPtr obs;
+        obsConsumer_->store().get( obs );
+        clock_->setTime( obs->timeStamp );
     }
     else
     {
-        vehicleDescr_ = testSimulator_->getVehicleDescription();
+        vehicleDescr_ = testSimulator_->vehicleDescription();
         scannerDescr_ = testSimulator_->rangeScanner2dDescription();
-        obsStore_  = &(testSimulator_->obsStore_);
-        locStore_  = &(testSimulator_->locStore_);
-        odomStore_ = &(testSimulator_->odomStore_);
+        clock_->setTime( testSimulator_->time() );
     }
 
     stringstream descrStream;
@@ -380,189 +238,188 @@ MainThread::setup()
     descrStream << "And the following range scanner: " << orcaobj::toString(scannerDescr_) << endl;
     context_.tracer().info( descrStream.str() );
 
-    driver_ = driverFactory_.createDriver( context_, vehicleDescr_, scannerDescr_ );
-    pathMaintainer_ = new orcalocalnav::PathMaintainer( pathFollowerInterface_, clock_, context_ );
-    speedLimiter_ = new orcalocalnav::SpeedLimiter( context_ );
+    pathMaintainer_.reset( new PathMaintainer( *pathFollowerInterface_, *clock_, context_ ) );
+    speedLimiter_.reset( new SpeedLimiter( context_ ) );
 
-    initInterfaces();
-    ensureProxiesNotEmpty();
+    //
+    // Instantiate the driver
+    //
+    driver_.reset( driverFactory_->createDriver( context_, vehicleDescr_, scannerDescr_ ) );
+
+    //
+    // Enable our external interface
+    //
+    initPathFollowerInterface();
 }
 
 void
-MainThread::sendCommandToPlatform( const orca::VelocityControl2dData& cmd )
+MainThread::stopVehicle()
 {
-    try {
-        if ( testMode_ )
-            testSimulator_->setCommand( cmd );
-        else
-            velControl2dPrx_->setCommand( cmd );
-    }
-    catch ( orca::HardwareFailedException &e )
+    //
+    // Loop around this -- it might be an emergency, so we want to be certain.
+    //
+    while ( !isStopping() )
     {
-        stringstream ss;
-        ss << e.what;
-        context_.tracer().warning( ss.str() );
+        std::stringstream exceptionSS;
+        try {
+            sendCommandToPlatform( hydronavutil::Velocity(0,0) );
+            break;
+        }
+        catch ( Ice::CommunicatorDestroyedException &e )
+        {
+            // This is OK: it means that the communicator shut down (eg via Ctrl-C)
+            // somewhere in mainLoop.
+        }
+        catch ( const orca::OrcaException & e ) {
+            exceptionSS <<__func__<< "(): " << e << ": " << e.what;
+        }
+        catch ( const Ice::Exception & e ) {
+            exceptionSS <<__func__<<"(): " << e;
+        }
+        catch ( const std::exception & e ) {
+            exceptionSS <<__func__<<"(): " << e.what();
+        }
+        catch ( ... ) {
+            exceptionSS <<__func__<<"(): unkinown exception.";
+        }
+
+        if ( !exceptionSS.str().empty() ) 
+        {
+            subStatus().fault( exceptionSS.str() );
+            // Slow things down in case of persistent error
+            usleep(500000);
+        }
     }
-    catch ( const Ice::Exception &e )
+}
+
+void
+MainThread::sendCommandToPlatform( const hydronavutil::Velocity &cmd )
+{
+    if ( testMode_ )
+        testSimulator_->act( cmd );
+    else
+        velControl2dPrx_->setCommand( orcanavutil::convert(cmd) );
+}
+
+void
+MainThread::getInputs( hydronavutil::Velocity &velocity,
+                       hydronavutil::Pose     &localisePose,
+                       orca::Time             &poseTime,
+                       bool                   &isLocalisationUncertain,
+                       std::vector<float>     &obsRanges,
+                       orca::Time             &obsTime )
+{
+    if ( testMode_ )
     {
-        stringstream ss;
-        ss << "While giving command to platform: " << e;
-        context_.tracer().warning( ss.str() );
-    }    
+        velocity                = testSimulator_->velocity();
+        localisePose            = testSimulator_->pose();
+        isLocalisationUncertain = false;
+        obsTime                 = testSimulator_->time();
+        poseTime                = testSimulator_->time();
+        testSimulator_->getObsRanges( obsRanges );
+    }
+    else
+    {
+        // The rangeScanner provides the 'clock' which triggers new action.
+        const int TIMEOUT_MS = 1000;
+        int sensorRet = obsConsumer_->store().getNext( orcaRangeData_, TIMEOUT_MS );
+        if ( sensorRet != 0 )
+        {
+            stringstream ss;
+            ss << "Timeout waiting for range data: no data for " << TIMEOUT_MS << "ms.";
+            throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, ss.str() );
+        }
+        locConsumer_->store().get( orcaLocaliseData_ );
+        odomConsumer_->store().get( orcaOdomData_ );
+
+        // Check timestamps are in sync
+        const double TS_PROXIMITY_THRESHOLD = 1.0; // seconds
+        if ( areTimestampsDodgy( orcaRangeData_, orcaLocaliseData_, orcaOdomData_, TS_PROXIMITY_THRESHOLD ) )
+        {
+            stringstream ss;
+            ss << "Timestamps are more than "<<TS_PROXIMITY_THRESHOLD<<"sec apart: " << endl
+               << "\t rangeData:    " << orcaobj::toString(orcaRangeData_->timeStamp) << endl
+               << "\t localiseData: " << orcaobj::toString(orcaLocaliseData_.timeStamp) << endl
+               << "\t odomData:     " << orcaobj::toString(orcaOdomData_.timeStamp) << endl
+               << "Maybe something is wrong: Stopping.";
+        }
+
+        //
+        // Convert
+        //
+        velocity = orcanavutil::convertToVelocity( orcaOdomData_ );
+        localisePose = orcanavutil::convertToPose( orcaLocaliseData_ );
+        poseTime = orcaLocaliseData_.timeStamp;
+        obsRanges = orcaRangeData_->ranges;
+        obsTime  = orcaRangeData_->timeStamp;
+        isLocalisationUncertain = orcaobj::localisationIsUncertain( orcaLocaliseData_ );
+    }
 }
 
 void
 MainThread::walk()
 {
-    try {
-        setup();
-    }
-    catch ( Ice::Exception &e )
-    {
-        std::stringstream ss;
-        ss << "ERROR(mainloop.cpp): caught exception during setup/init: " << e;
-        context_.tracer().error( ss.str() );
-        subStatus().fault( ss.str() );
-		exit(1);
-    }
-    catch ( std::exception &e )
-    {
-        std::stringstream ss;
-        ss << "mainloop.cpp: caught exception during setup/init: " << e.what();
-        context_.tracer().error( ss.str() );
-        subStatus().fault( ss.str() );
-		exit(1);
-    }
-    catch ( std::string &e )
-    {
-        std::stringstream ss;
-        ss << "mainloop.cpp: caught exception during setup/init: " << e;
-        context_.tracer().error( ss.str() );
-        subStatus().fault( ss.str() );
-		exit(1);
-    }
-    catch ( char *e )
-    {
-        std::stringstream ss;
-        ss << "mainloop.cpp: caught exception during setup/init: " << e;
-        context_.tracer().error( ss.str() );
-        subStatus().fault( ss.str() );
-		exit(1);
-    }
-    catch ( ... )
-    {
-        context_.tracer().error( "Caught unknown exception during setup/init." );
-        exit(1);
-    }
-
-    const int TIMEOUT_MS = 1000;
-
-    std::vector<orcalocalnav::Goal> currentGoals;
-    bool obsoleteStall = false;
-    orca::VelocityControl2dData velocityCmd;
+    //
+    // ENABLE NETWORK CONNECTIONS
+    //
+    // This function catches its exceptions.
+    activate( context_, this, subsysName() );
+    setup();
 
     subStatus().setMaxHeartbeatInterval( 2.0 );
 
+    orcalocalnav::IDriver::Inputs inputs;
+    inputs.stalled = false;
+    inputs.obsRanges.resize( scannerDescr_.numberOfSamples );
+
     while ( !isStopping() )
     {
+        std::stringstream exceptionSS;
         try 
         {
-            // The rangeScanner provides the 'clock' which is the trigger for this loop
-            int sensorRet = obsStore_->getNext( rangeData_, TIMEOUT_MS );
-
-            if ( sensorRet != 0 )
-            {
-                stringstream ss;
-                ss << "Timeout waiting for range data: no data for " << TIMEOUT_MS << "ms.  Stopping.";
-                context_.tracer().error( ss.str() );
-                subStatus().warning( ss.str() );
-                getStopCommand( velocityCmd );
-                sendCommandToPlatform( velocityCmd );
-                subscribeForObservations();
-                continue;
-            }
-            
-            // Time how long it takes us to make a decision and send the command
-            hydroutil::RealTimeStopwatch timer;
+            getInputs( inputs.currentVelocity,
+                       inputs.localisePose,
+                       inputs.poseTime,
+                       inputs.isLocalisationUncertain,
+                       inputs.obsRanges,
+                       inputs.obsTime );
 
             // Tell everyone what time it is, boyeee
-            clock_.setTime( rangeData_->timeStamp );
+            clock_->setTime( inputs.obsTime );
 
-            locStore_->get( localiseData_ );
-            odomStore_->get( odomData_ );
-
-            const double THRESHOLD = 1.0; // seconds
-            if ( areTimestampsDodgy( rangeData_, localiseData_, odomData_, THRESHOLD ) )
-            {
-                stringstream ss;
-                ss << "Timestamps are more than "<<THRESHOLD<<"sec apart: " << endl
-                   << "\t rangeData:    " << orcaobj::toString(rangeData_->timeStamp) << endl
-                   << "\t localiseData: " << orcaobj::toString(localiseData_.timeStamp) << endl
-                   << "\t odomData:     " << orcaobj::toString(odomData_.timeStamp) << endl
-                   << "Maybe something is wrong: Stopping.";
-                context_.tracer().error( ss.str() );
-                subStatus().warning( ss.str() );
-                getStopCommand( velocityCmd );
-                sendCommandToPlatform( velocityCmd );
-                subscribeForOdometry();
-                subscribeForLocalisation();
-                continue;
-            }
-
-            orca::Time now = orcaice::getNow();
-            stringstream ss;
-            ss << "Timestamps: " << endl
-               << "\t rangeData:    " << orcaobj::toString(rangeData_->timeStamp) << endl
-               << "\t localiseData: " << orcaobj::toString(localiseData_.timeStamp) << endl
-               << "\t odomData:     " << orcaobj::toString(odomData_.timeStamp) << endl
-               << "\t now:          " << orcaobj::toString(now);
-            context_.tracer().debug( ss.str(), 3 );
-
-            // grab the maximum likelihood pose of the vehicle
-            hydronavutil::Pose pose = orcalocalnavutil::getMLPose( localiseData_ );
-            
-            bool uncertainLocalisation = orcaobj::localisationIsUncertain( localiseData_ );
-//             if ( uncertainLocalisation )
-//                 context_.tracer().warning( "MainThread: Localisation is uncertain..." );
+            // Time how long this takes us
+            hydroutil::RealTimeStopwatch timer;
 
             // pathMaintainer knows about the whole path in global coords and where
             // we are in that path. So get the next set of current goals in local 
             // coord system for the pathplanner.
             // Also return a flag indicating if we have an active goal
 			
-			assert(driver_!=NULL && "Driver is not instantiated" );
-            bool haveGoal = pathMaintainer_->getActiveGoals( currentGoals,
+            bool haveGoal = pathMaintainer_->getActiveGoals( inputs.goals,
                                                              driver_->waypointHorizon(),
-                                                             pose );
+                                                             inputs.localisePose );
 
             if ( haveGoal )
             {
                 // If we do have an active goal, limit the max speed for the current goal
                 // and get the pathplanner to work out the next set of actions
-                speedLimiter_->constrainMaxSpeeds( currentGoals.at(0) );
+                speedLimiter_->constrainMaxSpeeds( inputs.goals[0] );
             }     
             
             // The actual driver which determines the path and commands to send to the vehicle.
             // The odometry is required for the velocity, which isn't contained
             // in Localise2d.
-            driver_->getCommand( obsoleteStall,
-                                 uncertainLocalisation,
-                                 pose,
-                                 odomData_.motion,
-                                 localiseData_.timeStamp,
-                                 rangeData_,
-                                 currentGoals,
-                                 velocityCmd );
+            hydronavutil::Velocity velocityCmd = driver_->getCommand( inputs );
             
             // For big debug levels, give feedback through tracer.
             {
                 std::stringstream ss;
-                ss << "MainThread: Setting command: " << orcaobj::toString( velocityCmd );
+                ss << "MainThread: Setting command: " << velocityCmd;
                 context_.tracer().debug( ss.str(), 5 );
             }
 
             // Only send the command if we're enabled.
-            if ( pathFollowerInterface_.localIsEnabled() )
+            if ( pathFollowerInterface_->localIsEnabled() )
             {
                 sendCommandToPlatform( velocityCmd );
             }
@@ -579,7 +436,7 @@ MainThread::walk()
 
             checkWithOutsideWorld();
 
-            if ( uncertainLocalisation )
+            if ( inputs.isLocalisationUncertain )
                 subStatus().warning( "Localisation is uncertain, but everything else is OK." );
             else
                 subStatus().ok();
@@ -589,47 +446,31 @@ MainThread::walk()
             // This is OK: it means that the communicator shut down (eg via Ctrl-C)
             // somewhere in mainLoop.
         }
-        catch ( Ice::Exception &e )
-        {
-            std::stringstream ss;
-            ss << "ERROR(mainloop.cpp): Caught unexpected exception: " << e;
-            context_.tracer().error( ss.str() );
-            subStatus().fault( ss.str() );
+        catch ( const orca::OrcaException & e ) {
+            exceptionSS << "MainThread: unexpected orca exception: " << e << ": " << e.what;
         }
-        catch ( std::exception &e )
-        {
-            std::stringstream ss;
-            ss << "mainloop.cpp: caught std::exception: " << e.what();
-            context_.tracer().error( ss.str() );
-            subStatus().fault( ss.str() );
+        catch ( const Ice::Exception & e ) {
+            exceptionSS << "MainThread: unexpected Ice exception: " << e;
         }
-        catch ( std::string &e )
-        {
-            std::stringstream ss;
-            ss << "mainloop.cpp: caught std::string: " << e;
-            context_.tracer().error( ss.str() );
-            subStatus().fault( ss.str() );
+        catch ( const std::exception & e ) {
+            exceptionSS << "MainThread: unexpected std exception: " << e.what();
         }
-        catch ( char *e )
-        {
-            std::stringstream ss;
-            ss << "mainloop.cpp: caught char*: " << e;
-            context_.tracer().error( ss.str() );
-            subStatus().fault( ss.str() );
+        catch ( const std::string &e ) {
+            exceptionSS << "MainThread: unexpected std::string exception: " << e;
         }
         catch ( ... )
         {
-            std::stringstream ss;
-            ss << "ERROR(mainloop.cpp): Caught unexpected unknown exception.";
-            context_.tracer().error( ss.str() );
-            subStatus().fault( ss.str() );
+            exceptionSS << "MainThread: unexpected unknown exception";
+        }
+
+        if ( !exceptionSS.str().empty() ) 
+        {
+            subStatus().fault( exceptionSS.str() + "\n  Stopping vehicle." );
+            stopVehicle();
+            // Slow things down in case of persistent error
+            sleep(1);
         }
     }
-    
-    // wait for the component to realize that we are quitting and tell us to stop.
-    waitForStop();
-    
-    cout<<"TRACE(mainloop.cpp): Dropping out from run()" << endl;
 }
 
 void
@@ -642,16 +483,4 @@ MainThread::checkWithOutsideWorld()
     pathMaintainer_->checkForWpIndexChange();
 }
 
-bool
-MainThread::areTimestampsDodgy( const orca::RangeScanner2dDataPtr &rangeData, 
-                              const orca::Localise2dData&       localiseData, 
-                              const orca::Odometry2dData&       odomData,
-                              double                           threshold )
-{
-    if ( fabs( orcaice::timeDiffAsDouble( rangeData->timeStamp, localiseData.timeStamp ) ) >= threshold )
-        return true;
-    if ( fabs( orcaice::timeDiffAsDouble( rangeData->timeStamp, odomData.timeStamp ) ) >= threshold )
-        return true;
-
-    return false;
 }
