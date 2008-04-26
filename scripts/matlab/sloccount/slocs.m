@@ -95,7 +95,7 @@ Sorca = [ ...
 % COMMON: Gearbox: sloccount src
 % YY    MM  DD  ?   SUB     BASE    COMP    UTILS  A&D   COMMON VERSION
 2008     4  24  1   Sice321 1825    12851   53186  28196  6750  % 2.10.0 (G 1.0.0)
-2008     6   1  1   Sice330 1825    12851   53186  28196  6750  % 2.11.0 (G 1.1.0)
+2008     6   1  1   Sice330 1825    11843   54296  28196  7659  % 2.11.0 (G 1.1.0)
 ];
 Vorca ={'0.8.6', '0.11.0', '0.12.0', '0.12.1', '0.13.0', '0.13.1', '0.13.2', '0.13.3', '0.14.0', '0.15.0', '1.0.0', ...
     '2.0.0-rc1', '2.0.0-rc2', '2.0.0-rc3', '2.0.0-rc4', '2.0.0-rc5', '2.0.0', '2.0.1', '2.0.2', '2.1.0', '2.1.1', ...
@@ -272,4 +272,4 @@ set(ht,'fontsize',8)
 ht=text(datenum(2003,7,1),-Smax+5, '** see data in [ORCA]/scripts/matlab/sloccount/slocs.m' );
 set(ht,'fontsize',8)
 
-xlim( [ax(1) datenum([2008 6 1])] )
+xlim( [ax(1) datenum([2008 9 1])] )
