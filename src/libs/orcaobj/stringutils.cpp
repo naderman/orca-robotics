@@ -19,6 +19,7 @@
 #include <orcaifacestring/image.h>
 #include <orcaifacestring/gps.h>
 #include <orcaifacestring/pathplanner2d.h>
+#include <orcaifacestring/vehicledescription.h>
 #include <orcaifacestring/wifi.h>
 
 // trying to solve a problem in win, round() is not found
@@ -802,19 +803,7 @@ toString( const orca::VehicleControlDescriptionPtr& obj )
 
     std::ostringstream s;
     s << "VehicleControlDescription: "
-      << "type=";
-    if ( obj->type == orca::VehicleControlVelocityDifferential )
-        s << "VehicleControlVelocityDifferential";
-    else if ( obj->type == orca::VehicleControlVelocityBicycle )
-        s << "VehicleControlVelocityBicycle";
-    else if ( obj->type == orca::VehicleControlVelocitySynchro )
-        s << "VehicleControlVelocitySynchro";
-    else if ( obj->type == orca::VehicleControlVelocityAckerman )
-        s << "VehicleControlVelocityAckerman";
-    else if ( obj->type == orca::VehicleControlOther )
-        s << "VehicleControlOther";
-    else
-        s << "Unknown!!";
+      << "type=" << orcaifacestring::toString( obj->type );
 
     if ( obj->ice_isA( "::orca::VehicleControlVelocityDifferentialDescription" ) )
     {
@@ -857,15 +846,7 @@ toString( const orca::VehicleGeometryDescriptionPtr& obj )
 
     std::ostringstream s;
     s << "VehicleGeometryDescription: "
-      << "type=";
-    if ( obj->type == orca::VehicleGeometryCuboid )
-        s << "VehicleGeometryCuboid";
-    else if ( obj->type == orca::VehicleGeometryCylindrical )
-        s << "VehicleGeometryCylindrical";
-    else if ( obj->type == orca::VehicleGeometryOther )
-        s << "VehicleGeometryOther";
-    else
-        s << "Unknown!!";
+      << "type=" << orcaifacestring::toString( obj->type );
 
     if ( obj->ice_isA( "::orca::VehicleGeometryCylindricalDescription" ) )
     {
