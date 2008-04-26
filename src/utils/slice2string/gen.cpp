@@ -132,21 +132,38 @@ Slice::Gen::generate(const UnitPtr& p)
 
     string lib_namespace = _module + "ifacestring";
 
+    H << "\n#include <string>";
+    H << "\n#include <" << _module << "/" << _base << ".h>";    
+    // includeFiles contains full paths. we want just the base.
+    StringList includes = p->includeFiles();
+    for(StringList::const_iterator q = includes.begin(); q != includes.end(); ++q)
+    { 
+        string include = *q;
+        string::size_type pos = include.find_last_of("/\\");
+        if(pos != string::npos)
+        {
+            include.erase(0, pos + 1);
+        }    
+        if((pos = include.rfind('.')) != string::npos)
+        {
+            include.erase(pos);
+        }
+        H << "\n#include <" << lib_namespace << "/" << include << "." << _headerExtension << ">";
+    }
+    H << "\n";
+    H << "\nnamespace " << lib_namespace;
+    H << "\n{";
+    H << "\n";
+
     C << "\n#include <" << lib_namespace << "/" << _base << ".h>";
     C << "\n#include <gbxsickacfr/gbxutilacfr/exceptions.h>";
     C << "\n#include <sstream>";
+    C << "\n#include \"util.h\"";
     C << "\n";
     C << "\nusing namespace std;";
     C << "\n";
     C << "\nnamespace " << lib_namespace;
     C << "\n{";
-
-    H << "\n#include <string>";
-    H << "\n#include <" << _module << "/" << _base << ".h>";
-    H << "\n";
-    H << "\nnamespace " << lib_namespace;
-    H << "\n{";
-    H << "\n";
 
     TypesVisitor typesVisitor(H, C, _dllExport, _stream);
     p->visit(&typesVisitor, false);
@@ -206,42 +223,36 @@ Slice::Gen::TypesVisitor::visitModuleEnd(const ModulePtr& p)
 bool
 Slice::Gen::TypesVisitor::visitClassDefStart(const ClassDefPtr& p)
 {
-//     if(!p->isLocal())
-//     {
-//         string name = fixKwd(p->name());
-//         string scope = fixKwd(p->scope());
-// 
-//         C << sp << nl << "void";
-//         C << nl << scope.substr(2) << "__addObject(const " << name << "Ptr& p, ::IceInternal::GCCountMap& c)";
-//         C << sb;
-//         C << nl << "p->__addObject(c);";
-//         C << eb;
-// 
-//         C << sp << nl << "bool";
-//         C << nl << scope.substr(2) << "__usesClasses(const " << name << "Ptr& p)";
-//         C << sb;
-//         C << nl << "return p->__usesClasses();";
-//         C << eb;
-// 
-//         C << sp << nl << "void";
-//         C << nl << scope.substr(2) << "__decRefUnsafe(const " << name << "Ptr& p)";
-//         C << sb;
-//         C << nl << "p->__decRefUnsafe();";
-//         C << eb;
-// 
-//         C << sp << nl << "void";
-//         C << nl << scope.substr(2) << "__clearHandleUnsafe(" << name << "Ptr& p)";
-//         C << sb;
-//         C << nl << "p.__clearHandleUnsafe();";
-//         C << eb;
-//     }
-    return false;
+    if ( p->declaration()->isInterface() )
+        return false;
+
+    string name = fixKwd(p->name());
+    string scope = fixKwd(p->scope());
+    
+    H << "\nstd::string toString( const " << scope.substr(2) << name << "Ptr& obj, int indent=0 );";
+
+    C << "\n\nstring";
+    C << nl << "toString( const " << scope.substr(2) << name << "Ptr& objPtr, int indent )";
+    C << sb;
+    C << nl << scope.substr(2) << name << "& obj = *objPtr;";
+    C << nl << "string ind;";
+    C << nl << "for ( int i=0; i<indent; ++i ) ind += ' ';";
+    C << nl << "ostringstream ss;";
+
+    return true;
+}
+
+void
+Slice::Gen::TypesVisitor::visitClassDefEnd(const ClassDefPtr& p)
+{
+    C << nl << "return ss.str();";
+    C << eb;
 }
 
 bool
 Slice::Gen::TypesVisitor::visitExceptionStart(const ExceptionPtr& p)
 {
-    return true;
+    return false;
 }
 
 void
@@ -256,10 +267,11 @@ Slice::Gen::TypesVisitor::visitEnum(const EnumPtr& p)
     string scope = fixKwd(p->scope());
     EnumeratorList enumerators = p->getEnumerators();
 
-    H << "\nstd::string toString( const " << scope.substr(2) << name << " );";
+    H << nl << "std::string toString( const " << scope.substr(2) << name << ", int indent=0 );";
 
-    C << "\n\nstd::string";
-    C << nl << "toString( const " << scope.substr(2) << name << " obj )";
+    C << nl;
+    C << nl << "string";
+    C << nl << "toString( const " << scope.substr(2) << name << " obj, int indent )";
     C << sb;
     C << nl << "switch ( obj )";
     C << sb;
@@ -273,8 +285,8 @@ Slice::Gen::TypesVisitor::visitEnum(const EnumPtr& p)
     }
 
     C << eb;
-    C << nl << "stringstream ss;";
-    C << nl << "ss << \"Unknown case in enumerator " << name << ": \"<< ((int)obj);";
+    C << nl << "ostringstream ss;";
+    C << nl << "ss << \"Unknown case in enumerator " << scope.substr(2) << name << ": \"<< ((int)obj);";
     C << nl << "throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, ss.str() );";
 
     C << eb;
@@ -283,48 +295,71 @@ Slice::Gen::TypesVisitor::visitEnum(const EnumPtr& p)
 bool
 Slice::Gen::TypesVisitor::visitStructStart(const StructPtr& p)
 {
-//     _useWstring = setUseWstring(p, _useWstringHist, _useWstring);
-// 
-//     string name = fixKwd(p->name());
-//     string scope = fixKwd(p->scope());
-// 
-//     
-//     H << "\nstd::string toString( const " << scope.substr(2) << name << "& );";
-// 
-//     C << "\n\nstd::string";
-//     C << nl << scope.substr(2) << "toString( const " << scope.substr(2) << name << "& obj )";
-//     C << sb;
-//     C << nl << "std::ostringstream s;";
-//     C << nl << "s <<";
+    string name = fixKwd(p->name());
+    string scope = fixKwd(p->scope());
+    
+    H << "\nstd::string toString( const " << scope.substr(2) << name << "& obj, int indent=0 );";
+
+    C << "\n\nstring";
+    C << nl << "toString( const " << scope.substr(2) << name << "& obj, int indent )";
+    C << sb;
+    C << nl << "string ind;";
+    C << nl << "for ( int i=0; i<indent; ++i ) ind += ' ';";
+    C << nl << "ostringstream ss;";
     return true;
 }
 
 void
 Slice::Gen::TypesVisitor::visitStructEnd(const StructPtr& p)
 {       
-//     C << ";";
-//     C << "\n    return s.str();";
-//     C << eb;
-// 
-//     _useWstring = resetUseWstring(_useWstringHist);
+    C << nl << "return ss.str();";
+    C << eb;
 }
 
 void
 Slice::Gen::TypesVisitor::visitDataMember(const DataMemberPtr& p)
 {
-//     string name = fixKwd(p->name());
+    string name = fixKwd(p->name());
 
-//     C << "\n      << \"" << name << " = \" << toString( obj." << name << " )";
+    C << nl << "ss << endl << ind << \"" << name << " = \" << toString( obj." << name << ", indent+2 );";
 }
 
 void
 Slice::Gen::TypesVisitor::visitSequence(const SequencePtr& p)
-{
+{    
+    string name = fixKwd(p->name());
+    string scope = fixKwd(p->scope());
+
+    H << nl << "std::string toString( const " << scope.substr(2) << name << "& obj, int indent=0 );";
+
+    C << "\n\nstring";
+    C << nl << "toString( const " << scope.substr(2) << name << "& obj, int indent )";
+    C << sb;
+    C << nl << "string ind;";
+//     C << nl << "for ( int i=0; i<indent; ++i ) ind += ' ';";
+    C << nl << "ostringstream ss;";
+    C << nl << "ss << \"sequence (\" << obj.size() << \")\";";
+    C << nl << "return ss.str();";
+    C << eb;
 }
 
 void
 Slice::Gen::TypesVisitor::visitDictionary(const DictionaryPtr& p)
 {
+    string name = fixKwd(p->name());
+    string scope = fixKwd(p->scope());
+
+    H << nl << "std::string toString( const " << scope.substr(2) << name << "& obj, int indent=0 );";
+
+    C << "\n\nstring";
+    C << nl << "toString( const " << scope.substr(2) << name << "& obj, int indent )";
+    C << sb;
+    C << nl << "string ind;";
+//     C << nl << "for ( int i=0; i<indent; ++i ) ind += ' ';";
+    C << nl << "ostringstream ss;";
+    C << nl << "ss << \"dict (\" << obj.size() << \")\";";
+    C << nl << "return ss.str();";
+    C << eb;
 }
 
 void
