@@ -33,8 +33,18 @@ IF( build )
     IF( NOT ORCA_MOTHERSHIP )
         INCLUDE( ${ORCA_CMAKE_DIR}/UseOrca.cmake )
     ENDIF( NOT ORCA_MOTHERSHIP )
+
+    # add templated utility files
+    SET( util_h_file ${CMAKE_CURRENT_BINARY_DIR}/util.h )
+    SET( util_cpp_file ${CMAKE_CURRENT_BINARY_DIR}/util.cpp )
+
+    CONFIGURE_FILE( ${ORCA_CMAKE_DIR}/ifacestringutil.h.template ${util_h_file} )
+    CONFIGURE_FILE( ${ORCA_CMAKE_DIR}/ifacestringutil.cpp.template ${util_cpp_file} )
+
+    SET( dep_libs ${int_libs} ${ext_libs} )
     
-    GBX_ADD_LIBRARY( ${lib_name} SHARED ${slice_generated_sources} )
+    GBX_ADD_LIBRARY( ${lib_name} SHARED ${slice_generated_sources} ${util_cpp_file} )
+    TARGET_LINK_LIBRARIES( ${lib_name} ${dep_libs} )
     
     IF( ORCA_MOTHERSHIP )
         # only Orca depends on the target, satellite projects use installed version
@@ -45,7 +55,11 @@ IF( build )
             SET( slice_generated_headers_full ${slice_generated_headers_full} ${CMAKE_CURRENT_BINARY_DIR}/${slice_generated_header} )
         ENDFOREACH( slice_generated_header )
         
-        GBX_ADD_HEADERS( ${lib_namespace} ${slice_generated_headers_full} )
+        GBX_ADD_HEADERS( ${lib_namespace} ${slice_generated_headers_full} ${util_h_file} )
+
+        IF ( ORCA_BUILD_TESTS )
+            ADD_SUBDIRECTORY( test )
+        ENDIF ( ORCA_BUILD_TESTS )
     ENDIF( ORCA_MOTHERSHIP )
 
 ENDIF( build )
