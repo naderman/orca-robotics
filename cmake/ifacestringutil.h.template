@@ -11,11 +11,27 @@
 namespace ${slice_module}ifacestring
 {
 
-std::string toString( int x, int indent=0 );
+std::string toString( int x, bool expand=true, int indent=0 );
 
-std::string toString( double x, int indent=0 );
+std::string toString( double x, bool expand=true, int indent=0 );
 
-std::string toString( const std::string& x, int indent=0 );
+std::string toString( const std::string& x, bool expand=true, int indent=0 );
+
+template<class T>
+std::string
+seqToString( const T& x, bool expand=true, int indent=0 )
+{
+    std::string s = "sequence (" + toString((int)x.size()) + ")";
+    if ( expand )
+    {
+        std::string ind;
+        for ( int i=0; i<indent; ++i )
+            ind += ' ';
+        for ( size_t i=0; i<x.size(); ++i )
+            s += '\n' + ind + toString((int)i) + "\t" + toString( x[i], expand, indent+2 );
+    }
+    return s;
+}
 
 }
 

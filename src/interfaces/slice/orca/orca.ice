@@ -55,7 +55,7 @@ sequence<short> ShortSeq;
 sequence<int> IntSeq;
 
 //! A sequence of longs.
-sequence<long> LongSeq;
+// sequence<long> LongSeq;
 
 //! A sequence of floats.
 sequence<float> FloatSeq;
@@ -67,10 +67,10 @@ sequence<double> DoubleSeq;
 sequence<string> StringSeq;
 
 //! A sequence of objects.
-sequence<Object> ObjectSeq;
+// sequence<Object> ObjectSeq;
     
 //! A sequence of object proxies.
-sequence<Object*> ObjectProxySeq;
+// sequence<Object*> ObjectProxySeq;
 
 }; // module
 

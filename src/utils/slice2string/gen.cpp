@@ -229,10 +229,10 @@ Slice::Gen::TypesVisitor::visitClassDefStart(const ClassDefPtr& p)
     string name = fixKwd(p->name());
     string scope = fixKwd(p->scope());
     
-    H << "\nstd::string toString( const " << scope.substr(2) << name << "Ptr& obj, int indent=0 );";
+    H << "\nstd::string toString( const " << scope.substr(2) << name << "Ptr& obj, bool expand=true, int indent=0 );";
 
     C << "\n\nstring";
-    C << nl << "toString( const " << scope.substr(2) << name << "Ptr& objPtr, int indent )";
+    C << nl << "toString( const " << scope.substr(2) << name << "Ptr& objPtr, bool expand, int indent )";
     C << sb;
     C << nl << scope.substr(2) << name << "& obj = *objPtr;";
     C << nl << "string ind;";
@@ -298,10 +298,10 @@ Slice::Gen::TypesVisitor::visitStructStart(const StructPtr& p)
     string name = fixKwd(p->name());
     string scope = fixKwd(p->scope());
     
-    H << "\nstd::string toString( const " << scope.substr(2) << name << "& obj, int indent=0 );";
+    H << "\nstd::string toString( const " << scope.substr(2) << name << "& obj, bool expand=true, int indent=0 );";
 
     C << "\n\nstring";
-    C << nl << "toString( const " << scope.substr(2) << name << "& obj, int indent )";
+    C << nl << "toString( const " << scope.substr(2) << name << "& obj, bool expand, int indent )";
     C << sb;
     C << nl << "string ind;";
     C << nl << "for ( int i=0; i<indent; ++i ) ind += ' ';";
@@ -321,7 +321,15 @@ Slice::Gen::TypesVisitor::visitDataMember(const DataMemberPtr& p)
 {
     string name = fixKwd(p->name());
 
-    C << nl << "ss << endl << ind << \"" << name << " = \" << toString( obj." << name << ", indent+2 );";
+//     if ( p->containedType() == Contained::ContainedTypeSequence ) {
+// cout<<"*** This is a sequence : "<<name<<endl;
+//         string s = typeToString(p->type(), _useWstring, p->getMetaData());
+//         C << nl << "ss << endl << ind << \"" << name << " = \" << seqToString<" << s << ">( obj." << name << ", expand, indent+2 );";
+//     }
+//     else {
+// cout<<"*** This is NOT a sequence : "<<name<<" type="<<p->containedType()<<" kind="<<p->kindOf()<<endl;
+        C << nl << "ss << endl << ind << \"" << name << " = \" << toString( obj." << name << ", expand, indent+2 );";
+//     }
 }
 
 void
@@ -330,16 +338,28 @@ Slice::Gen::TypesVisitor::visitSequence(const SequencePtr& p)
     string name = fixKwd(p->name());
     string scope = fixKwd(p->scope());
 
-    H << nl << "std::string toString( const " << scope.substr(2) << name << "& obj, int indent=0 );";
+    H << nl << "std::string toString( const " << scope.substr(2) << name << "& obj, bool expand=true, int indent=0 );";
 
     C << "\n\nstring";
-    C << nl << "toString( const " << scope.substr(2) << name << "& obj, int indent )";
+    C << nl << "toString( const " << scope.substr(2) << name << "& obj, bool expand, int indent )";
     C << sb;
-    C << nl << "string ind;";
-//     C << nl << "for ( int i=0; i<indent; ++i ) ind += ' ';";
-    C << nl << "ostringstream ss;";
-    C << nl << "ss << \"sequence (\" << obj.size() << \")\";";
-    C << nl << "return ss.str();";
+
+//     string s = typeToString(p->type(), _useWstring, p->getMetaData());
+    C << nl << "return seqToString< " << scope.substr(2) << name << " >( obj, expand, indent+2 );";
+
+//     C << nl << "ostringstream ss;";
+//     C << nl << "ss << \"sequence (\" << obj.size() << \")\";";
+// 
+//     C << nl << "if ( expand )";
+//     C << sb;
+//     C << nl << "string ind;";
+//     C << nl << "for ( int i=0; i<indent; ++i )";
+//     C << nl << "    ind += ' ';";
+//     C << nl << "for ( size_t i=0; i<obj.size(); ++i )";
+//     C << nl << "    ss << endl << ind << i << \"\\t\" << toString( obj[i], expand, indent+2 );";
+//     C << eb;
+// 
+//     C << nl << "return ss.str();";
     C << eb;
 }
 
@@ -349,10 +369,10 @@ Slice::Gen::TypesVisitor::visitDictionary(const DictionaryPtr& p)
     string name = fixKwd(p->name());
     string scope = fixKwd(p->scope());
 
-    H << nl << "std::string toString( const " << scope.substr(2) << name << "& obj, int indent=0 );";
+    H << nl << "std::string toString( const " << scope.substr(2) << name << "& obj, bool expand=true, int indent=0 );";
 
     C << "\n\nstring";
-    C << nl << "toString( const " << scope.substr(2) << name << "& obj, int indent )";
+    C << nl << "toString( const " << scope.substr(2) << name << "& obj, bool expand, int indent )";
     C << sb;
     C << nl << "string ind;";
 //     C << nl << "for ( int i=0; i<indent; ++i ) ind += ' ';";
