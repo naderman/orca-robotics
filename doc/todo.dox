@@ -73,6 +73,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - slice2string (alex m)
   - utility for generating string functions from Slice definitions.
 @par Updated libraries
+- orcaifaceimpl (alex b)
+  - Added QGraphics2dImpl
 @par Removed
 
 @section orca_doc_history_2100 Changes in Release 2.10.0
