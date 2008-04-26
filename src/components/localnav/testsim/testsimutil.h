@@ -2,7 +2,7 @@
 #define TESTSIM_H
 
 #include <testsim/simulator.h>
-#include <pathfollower2dI.h>
+#include <orca/pathfollower2d.h>
 #include <hydroogmap/hydroogmap.h>
 
 namespace localnav {

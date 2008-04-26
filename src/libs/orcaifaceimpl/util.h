@@ -19,6 +19,43 @@
 
 namespace orcaifaceimpl {
 
+    namespace detail {
+
+        // Catches all exceptions.
+        // Returns: true if re-connected OK.
+        template<class ConsumerPrxType>
+        bool
+        tryReconnectToIceStorm( orcaice::Context   &context,
+                                ConsumerPrxType    &consumerPrx,
+                                IceStorm::TopicPrx &topicPrx,
+                                const std::string  &interfaceName,
+                                const std::string  &topicName )
+        {
+            try {
+                std::stringstream ss;
+                ss << interfaceName << ": Re-connecting to IceStorm...";
+                context.tracer().info( ss.str() );
+                topicPrx = orcaice::connectToTopicWithString<ConsumerPrxType>
+                    ( context, consumerPrx, topicName );
+
+                ss.str("");
+                ss << interfaceName << ": Re-connected to IceStorm.";
+                context.tracer().info( ss.str() );
+
+                return true;
+            }
+            catch ( ... )
+            {
+                // ignore it
+                std::stringstream ss;
+                ss << interfaceName << ": Re-connection to IceStorm failed.";
+                context.tracer().info( ss.str() );
+                return false;
+            }
+        }
+
+    }    
+
     /*!
         Tries to push to IceStorm. If fails tries to reconnect to IceStorm once. If reconnects
         successfully, pushes the data, if not, ignores the problem until the next time. 
@@ -59,30 +96,25 @@ namespace orcaifaceimpl {
             context.tracer().warning( ss.str() );
 
             // If IceStorm just re-started for some reason though, we want to try to re-connect
-            try
+            bool reconnected = detail::tryReconnectToIceStorm( context,
+                                                               consumerPrx,
+                                                               topicPrx,
+                                                               interfaceName,
+                                                               topicName );
+            if ( reconnected )
             {
-                std::stringstream ss;
-                ss << interfaceName << ": Re-connecting to IceStorm...";
-                context.tracer().info( ss.str() );
-                topicPrx = orcaice::connectToTopicWithString<ConsumerPrxType>
-                    ( context, consumerPrx, topicName );
-
-                ss.str("");
-                ss << interfaceName << ": Re-connected to IceStorm.";                
-                context.tracer().info( ss.str() );
-
-                // try again to push that bit of info
-                consumerPrx->setData( data );
-            }
-            catch ( ... )
-            {
-                // ignore it -- we'll try again next push.
-                std::stringstream ss;
-                ss << interfaceName << ": Re-connection to IceStorm failed.";
-                context.tracer().info( ss.str() );
+                try {
+                    // try again to push that bit of info
+                    consumerPrx->setData( data );
+                }
+                catch ( Ice::Exception &e )
+                {
+                    std::stringstream ss;
+                    ss << interfaceName << ": Re-push of data failed: " << e;
+                    context.tracer().info( ss.str() );
+                }
             }
         }
-
     }
 
     //! Remove the interface from the adapter if possible.

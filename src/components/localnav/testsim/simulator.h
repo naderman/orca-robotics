@@ -50,6 +50,9 @@ public:
     
     orca::Time time() const;
 
+    const hydrosim2d::VehicleSimulator &vehicleSimulator() const { return *vehicleSimulator_; }
+    const hydroogmap::OgMap &ogMap() const { return ogMap_; }
+
 private: 
 
     void setupInterfaces( const hydrosim2d::VehicleSimulator::Config &vehicleSimConfig,

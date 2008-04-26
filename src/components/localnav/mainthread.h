@@ -23,8 +23,9 @@
 #include <orcalocalnav/idriver.h>
 #include <hydronavutil/hydronavutil.h>
 #include <hydrodll/dynamicload.h>
-#include "pathfollower2dI.h"
+#include "pathfollowerinterface.h"
 #include "testsim/simulator.h"
+#include "algorithmevaluator.h"
 
 namespace localnav {
 
@@ -77,13 +78,12 @@ private:
     // Keeps track of the path we're following
     std::auto_ptr<PathMaintainer>  pathMaintainer_;
 
-    // Using this driver
-    std::auto_ptr<orcalocalnav::IDriver> driver_;
-
     // The library that contains the driver factory (must be declared first so it's destructed last!!!)
     std::auto_ptr<hydrodll::DynamicallyLoadedLibrary> driverLib_;
     // The factory which creates the driver
     std::auto_ptr<orcalocalnav::DriverFactory> driverFactory_;
+    // Does the work
+    std::auto_ptr<orcalocalnav::IDriver> driver_;
 
     // Incoming observations and pose info
     // Get observations, pose, and odometric velocity
@@ -91,7 +91,7 @@ private:
     orcaifaceimpl::StoringLocalise2dConsumerImplPtr     locConsumer_;
     orcaifaceimpl::StoringOdometry2dConsumerImplPtr     odomConsumer_;
 
-    std::auto_ptr<PathFollower2dI>  pathFollowerInterface_;
+    std::auto_ptr<PathFollowerInterface> pathFollowerInterface_;
 
     // Outgoing commands: live version
     orca::VelocityControl2dPrx     velControl2dPrx_;
@@ -110,6 +110,7 @@ private:
     orca::RangeScanner2dDescription scannerDescr_;
 
     bool testMode_;
+    std::auto_ptr<AlgorithmEvaluator> algorithmEvaluator_;
 
     orcaice::Context context_;
 };

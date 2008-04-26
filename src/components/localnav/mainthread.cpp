@@ -11,8 +11,8 @@
 #include <cmath>
 #include <orcaice/orcaice.h>
 #include <orcaobj/orcaobj.h>
-#include "pathfollower2dI.h"
 #include <hydroutil/realtimestopwatch.h>
+#include <hydroutil/cpustopwatch.h>
 #include <orcanavutil/orcanavutil.h>
 #include "mainthread.h"
 #include "testsim/testsimutil.h"
@@ -57,7 +57,7 @@ MainThread::MainThread( const orcaice::Context &context )
     testMode_ = orcaice::getPropertyAsIntWithDefault( prop, prefix+"TestInSimulationMode", 0 );
 
     // Create our provided interface
-    pathFollowerInterface_.reset( new PathFollower2dI( "PathFollower2d", *clock_, context_ ) );
+    pathFollowerInterface_.reset( new PathFollowerInterface( *clock_, "PathFollower2d", context_ ) );
 
     //
     // Instantiate bogus info sources in test-in-simulation-mode
@@ -98,6 +98,10 @@ MainThread::MainThread( const orcaice::Context &context )
         pathFollowerInterface_->setData( testPath, true );
 
         testSimulator_ = new Simulator( context_, ogMap, testPath, cfg );
+
+        bool evaluateAlg = orcaice::getPropertyAsIntWithDefault( prop, prefix+"Test.EvaluateAlg", 0 );
+        if ( evaluateAlg )
+            algorithmEvaluator_.reset( new AlgorithmEvaluator );
     }    
 
     //
@@ -159,7 +163,7 @@ MainThread::initPathFollowerInterface()
         catch ( gbxsickacfr::gbxutilacfr::Exception &e )
         {
             stringstream ss;
-            ss << "MainThread: Failed to initialise PathFollower2d interface: " << e.what();
+            ss << "MainThread: Failed to initialise PathFollower interface: " << e.what();
             context_.tracer().warning( ss.str() );
             if ( testMode_ )
             {
@@ -416,7 +420,8 @@ MainThread::walk()
             clock_->setTime( inputs.obsTime );
 
             // Time how long this takes us
-            hydroutil::RealTimeStopwatch timer;
+            // hydroutil::RealTimeStopwatch timer;
+            hydroutil::CpuStopwatch timer;
 
             // pathMaintainer knows about the whole path in global coords and where
             // we are in that path. So get the next set of current goals in local 
@@ -438,6 +443,9 @@ MainThread::walk()
             // The odometry is required for the velocity, which isn't contained
             // in Localise2d.
             hydronavutil::Velocity velocityCmd = driver_->getCommand( inputs );
+
+            if ( algorithmEvaluator_.get() )
+                timer.stop();
             
             // For big debug levels, give feedback through tracer.
             {
@@ -447,7 +455,7 @@ MainThread::walk()
             }
 
             // Only send the command if we're enabled.
-            if ( pathFollowerInterface_->localIsEnabled() )
+            if ( pathFollowerInterface_->enabled() )
             {
                 sendCommandToPlatform( velocityCmd );
             }
@@ -461,6 +469,11 @@ MainThread::walk()
             std::stringstream timerSS;
             timerSS << "MainThread: time to make and send decision: " << timer.elapsedSeconds()*1000.0 << "ms";
             context_.tracer().debug( timerSS.str(), 3 );
+            
+            if ( testMode_ && algorithmEvaluator_.get() )
+            {
+                algorithmEvaluator_->evaluate( timer.elapsedSeconds(), *testSimulator_ );
+            }
 
             checkWithOutsideWorld();
 

@@ -17,7 +17,7 @@
 
 namespace localnav {
 
-class PathFollower2dI;
+class PathFollowerInterface;
 class Clock;
 
 //
@@ -32,7 +32,7 @@ class PathMaintainer
 
 public: 
 
-    PathMaintainer( PathFollower2dI           &pathFollowerInterface,
+    PathMaintainer( PathFollowerInterface     &pathFollowerInterface,
                     const Clock               &clock,
                     const orcaice::Context    &context );
 
@@ -68,9 +68,6 @@ private:
     // How long since path activation
     double secSinceActivation() const;
     
-    // Issue warnings if the path is screwy in some way
-    void checkPathOut( const orca::PathFollower2dData& pathData );
-
     // Keep a local copy of the path, so we don't have to mess with buffers every 
     // time the nav manager wants to look at it.
     orca::PathFollower2dData path_;
@@ -84,7 +81,7 @@ private:
     // The timing of the entire path is relative to this
     orca::Time pathStartTime_;
 
-    PathFollower2dI &pathFollowerInterface_;
+    PathFollowerInterface &pathFollowerInterface_;
 
     // The global time
     const Clock &clock_;

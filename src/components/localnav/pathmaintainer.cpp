@@ -11,7 +11,7 @@
 #include <orcaice/orcaice.h>
 #include <orcaobj/orcaobj.h>
 #include <hydronavutil/hydronavutil.h>
-#include "pathfollower2dI.h"
+#include "pathfollowerinterface.h"
 #include "pathmaintainer.h"
 
 using namespace std;
@@ -19,7 +19,86 @@ using namespace orcaice;
 
 namespace localnav {
 
-PathMaintainer::PathMaintainer( PathFollower2dI         &pathFollowerInterface,
+namespace {
+
+    bool
+    isPathSketchy( const orca::PathFollower2dData& pathData, std::string &sketchyReason )
+    {
+        std::stringstream ss;
+        bool normal=true;
+        const float epsLinear     = 1e-3;
+        const float epsRotational = 1.0*M_PI/180.0;
+        for ( unsigned int i=0; i < pathData.path.size(); i++ )
+        {
+            const orca::Waypoint2d &wp = pathData.path[i];
+
+            if ( wp.distanceTolerance < epsLinear )
+            {
+                ss << "Waypoint " << i << ": possibly sketchy distance tolerance: " 
+                   << wp.distanceTolerance << "m" << endl;
+                normal = false;
+            }
+            if ( wp.headingTolerance < epsRotational )
+            {
+                ss << "Waypoint " << i << ": possibly sketchy heading tolerance: " 
+                   << wp.headingTolerance*180.0/M_PI << "deg" << endl;
+                normal = false;
+            }
+            if ( wp.maxApproachSpeed < epsLinear )
+            {
+                ss << "Waypoint " << i << ": possibly sketchy maxApproachSpeed: " 
+                   << wp.maxApproachSpeed << "m/s" << endl;
+                normal = false;
+            }
+            if ( wp.maxApproachTurnrate < epsRotational )
+            {
+                ss << "Waypoint " << i << ": possibly sketchy maxApproachTurnrate: " 
+                   << wp.maxApproachTurnrate*180.0/M_PI << "deg/s" << endl;
+                normal = false;
+            }
+        }
+        if ( !normal )
+        {
+            sketchyReason = ss.str();
+            return true;
+        }
+        else
+            return false;
+    }
+
+    // Convert from global to local coords
+    void
+    convert( const orca::Waypoint2d   &wp,
+             orcalocalnav::Goal       &goal,
+             const hydronavutil::Pose &pose,
+             double                    secSinceActivation )
+    {
+        double secToWp = orcaice::timeAsDouble(wp.timeTarget) - secSinceActivation;
+    
+        goal.set( wp.target.p.x,
+                  wp.target.p.y,
+                  wp.target.o,
+                  wp.distanceTolerance,
+                  wp.headingTolerance,
+                  secToWp,
+                  wp.maxApproachSpeed,
+                  wp.maxApproachTurnrate );
+
+        // put the goal in robot's local coord system
+        hydronavutil::subtractInitialOffset( goal.x,
+                                             goal.y,
+                                             goal.theta,
+                                             pose.x(),
+                                             pose.y(),
+                                             pose.theta() );
+        NORMALISE_ANGLE( goal.theta );
+    }
+
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+PathMaintainer::PathMaintainer( PathFollowerInterface   &pathFollowerInterface,
                                 const Clock             &clock,
                                 const orcaice::Context  &context)
     : wpIndex_(-1),
@@ -31,75 +110,30 @@ PathMaintainer::PathMaintainer( PathFollower2dI         &pathFollowerInterface,
 }
 
 void
-PathMaintainer::checkPathOut( const orca::PathFollower2dData& pathData )
-{
-    std::stringstream ss;
-    bool normal=true;
-    const float epsLinear     = 1e-3;
-    const float epsRotational = 1.0*M_PI/180.0;
-    for ( unsigned int i=0; i < pathData.path.size(); i++ )
-    {
-        const orca::Waypoint2d &wp = pathData.path[i];
-
-        if ( wp.distanceTolerance < epsLinear )
-        {
-            ss << "Waypoint " << i << ": possibly sketchy distance tolerance: " 
-               << wp.distanceTolerance << "m" << endl;
-            normal = false;
-        }
-        if ( wp.headingTolerance < epsRotational )
-        {
-            ss << "Waypoint " << i << ": possibly sketchy heading tolerance: " 
-               << wp.headingTolerance*180.0/M_PI << "deg" << endl;
-            normal = false;
-        }
-        if ( wp.maxApproachSpeed < epsLinear )
-        {
-            ss << "Waypoint " << i << ": possibly sketchy maxApproachSpeed: " 
-               << wp.maxApproachSpeed << "m/s" << endl;
-            normal = false;
-        }
-        if ( wp.maxApproachTurnrate < epsRotational )
-        {
-            ss << "Waypoint " << i << ": possibly sketchy maxApproachTurnrate: " 
-               << wp.maxApproachTurnrate*180.0/M_PI << "deg/s" << endl;
-            normal = false;
-        }
-    }
-    if ( !normal )
-    {
-        std::string warnString = "In newly-received path: \n";
-        warnString += ss.str();
-        context_.tracer().warning( warnString );
-    }
-}
-
-void
 PathMaintainer::checkForNewPath()
 {
-    if ( pathFollowerInterface_.newPathArrivedStore().isNewData() || 
-         pathFollowerInterface_.activationArrivedStore().isNewData() )
+    bool gotNewPath=false, gotActivation=false;
+    pathFollowerInterface_.serviceRequests( gotNewPath,
+                                            path_,
+                                            gotActivation,
+                                            pathStartTime_ );
+
+    const bool servicedRequest = (gotNewPath || gotActivation);
+
+    if ( servicedRequest )
     {
-        // Load the path if it's there
-        if ( pathFollowerInterface_.newPathArrivedStore().isNewData() )
+        if ( gotNewPath )
         {
-            // Clear the newPathArrivedProxy
-            bool dummy;
-            pathFollowerInterface_.newPathArrivedStore().get(dummy);
-            pathFollowerInterface_.pathStore().get( path_ );
-            pathFollowerInterface_.localSetData( path_ ); //informs consumers
-
-            // Issue warnings if the path is screwy
-            checkPathOut( path_ );
+            // See if there's anything weird about it
+            std::string reason;
+            if ( isPathSketchy( path_, reason ) )
+            {
+                string warnString = "In newly-received path: \n"+reason;
+                context_.tracer().warning( warnString );                
+            }
         }
-
-        // Have we been told to start?
-        if ( pathFollowerInterface_.activationArrivedStore().isNewData() )
+        if ( gotActivation )
         {
-            context_.tracer().debug( "PathMaintainer: activating.", 1 );
-            bool dummy;
-            pathFollowerInterface_.activationArrivedStore().get(dummy);
-            pathFollowerInterface_.activationTimeStore().get(pathStartTime_);
             wpIndex_ = 0;
             if ( path_.path.size() == 0 )
             {
@@ -118,6 +152,49 @@ PathMaintainer::checkForNewPath()
         ss << "PathMaintainer: new path: " << orcaobj::toVerboseString( path_ );
         context_.tracer().debug( ss.str(), 2 );
     }
+
+
+//     if ( pathFollowerInterface_.newPathArrivedStore().isNewData() || 
+//          pathFollowerInterface_.activationArrivedStore().isNewData() )
+//     {
+//         // Load the path if it's there
+//         if ( pathFollowerInterface_.newPathArrivedStore().isNewData() )
+//         {
+//             // Clear the newPathArrivedProxy
+//             bool dummy;
+//             pathFollowerInterface_.newPathArrivedStore().get(dummy);
+//             pathFollowerInterface_.pathStore().get( path_ );
+//             pathFollowerInterface_.localSetData( path_ ); //informs consumers
+
+//             // Issue warnings if the path is screwy
+//             checkPathOut( path_ );
+//         }
+
+//         // Have we been told to start?
+//         if ( pathFollowerInterface_.activationArrivedStore().isNewData() )
+//         {
+//             context_.tracer().debug( "PathMaintainer: activating.", 1 );
+//             bool dummy;
+//             pathFollowerInterface_.activationArrivedStore().get(dummy);
+//             pathFollowerInterface_.activationTimeStore().get(pathStartTime_);
+//             wpIndex_ = 0;
+//             if ( path_.path.size() == 0 )
+//             {
+//                 context_.tracer().debug( "Path was empty.  Stopping.", 1 );
+//                 wpIndex_ = -1;
+//             }
+//         }
+//         else
+//         {
+//             context_.tracer().debug( "PathMaintainer: received new path, not activating yet...", 1 );
+//             wpIndex_ = -1;
+//         }
+//         wpIndexChanged_ = true;
+
+//         std::stringstream ss;
+//         ss << "PathMaintainer: new path: " << orcaobj::toVerboseString( path_ );
+//         context_.tracer().debug( ss.str(), 2 );
+//     }
 }
 
 void 
@@ -125,7 +202,7 @@ PathMaintainer::checkForWpIndexChange()
 {
     if ( wpIndexChanged_ )
     {
-        pathFollowerInterface_.localSetWaypointIndex( wpIndex_ );
+        pathFollowerInterface_.updateWaypointIndex( wpIndex_ );
         wpIndexChanged_ = false;
     }
 }
@@ -155,33 +232,6 @@ PathMaintainer::waypointReached( const orca::Waypoint2d &wp,
     }
 
     return true;
-}
-
-void
-convert( const orca::Waypoint2d   &wp,
-         orcalocalnav::Goal       &goal,
-         const hydronavutil::Pose &pose,
-         double                    secSinceActivation )
-{
-    double secToWp = orcaice::timeAsDouble(wp.timeTarget) - secSinceActivation;
-    
-    goal.set( wp.target.p.x,
-              wp.target.p.y,
-              wp.target.o,
-              wp.distanceTolerance,
-              wp.headingTolerance,
-              secToWp,
-              wp.maxApproachSpeed,
-              wp.maxApproachTurnrate );
-
-    // put the goal in robot's local coord system
-    hydronavutil::subtractInitialOffset( goal.x,
-                                        goal.y,
-                                        goal.theta,
-                                        pose.x(),
-                                        pose.y(),
-                                        pose.theta() );
-    NORMALISE_ANGLE( goal.theta );
 }
 
 bool
@@ -223,12 +273,6 @@ PathMaintainer::incrementWpIndex()
         wpIndex_ = -1;
     }
 }
-
-// double
-// PathMaintainer::secToNextWp() const
-// {
-//     return orcaice::timeAsDouble(currentWaypoint().timeTarget) - secSinceActivation();
-// }
 
 double
 PathMaintainer::secSinceActivation() const
