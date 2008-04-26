@@ -1,11 +1,11 @@
-SET( lib_name OrcaSim2d )
+ORCA_SET_LIBRARY_NAME( OrcaSim2d )
 GBX_ADD_LICENSE( LGPL )
 
 SET( build TRUE )
-GBX_REQUIRE_OPTION( build LIB ${lib_name} ON )
+GBX_REQUIRE_OPTION( build LIB ${LIB_NAME} ON )
 
 SET( ext_libs HydroSim2d )
-GBX_REQUIRE_INSTALLS( build LIB ${lib_name} ${ext_libs} )
+GBX_REQUIRE_INSTALLS( build LIB ${LIB_NAME} ${ext_libs} )
 
 IF( build )
 
@@ -16,14 +16,14 @@ IF( build )
     SET( dep_libs ${int_libs} ${ext_libs} )
 
     IF( NOT GBX_OS_WIN )
-        GBX_ADD_LIBRARY( ${lib_name} SHARED ${srcs} )
+        GBX_ADD_LIBRARY( ${LIB_NAME} SHARED ${srcs} )
     ELSE ( NOT GBX_OS_WIN )
-        GBX_ADD_LIBRARY( ${lib_name} STATIC ${srcs} )
+        GBX_ADD_LIBRARY( ${LIB_NAME} STATIC ${srcs} )
     ENDIF( NOT GBX_OS_WIN )
 
-    TARGET_LINK_LIBRARIES( ${lib_name} ${dep_libs} ${ext_libs} )
+    TARGET_LINK_LIBRARIES( ${LIB_NAME} ${dep_libs} ${ext_libs} )
 
-    GBX_ADD_HEADERS( orcasim2d ${hdrs} )
+    GBX_ADD_HEADERS( ${LIB_INSTALL} ${hdrs} )
 
 #    IF( ORCA_BUILD_TESTS )
 #        ADD_SUBDIRECTORY( test )

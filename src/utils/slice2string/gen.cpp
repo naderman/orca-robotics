@@ -267,11 +267,11 @@ Slice::Gen::TypesVisitor::visitEnum(const EnumPtr& p)
     string scope = fixKwd(p->scope());
     EnumeratorList enumerators = p->getEnumerators();
 
-    H << nl << "std::string toString( const " << scope.substr(2) << name << ", int indent=0 );";
+    H << nl << "std::string toString( const " << scope.substr(2) << name << ", bool expand=true, int indent=0 );";
 
     C << nl;
     C << nl << "string";
-    C << nl << "toString( const " << scope.substr(2) << name << " obj, int indent )";
+    C << nl << "toString( const " << scope.substr(2) << name << " obj, bool expand, int indent )";
     C << sb;
     C << nl << "switch ( obj )";
     C << sb;

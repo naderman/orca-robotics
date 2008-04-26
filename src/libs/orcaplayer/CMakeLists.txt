@@ -1,14 +1,14 @@
-SET( lib_name OrcaPlayer )
+ORCA_SET_LIBRARY_NAME( OrcaPlayer )
 GBX_ADD_LICENSE( GPL )
 
 SET( build TRUE )
-GBX_REQUIRE_OPTION( build LIB ${lib_name} ON )
+GBX_REQUIRE_OPTION( build LIB ${LIB_NAME} ON )
 
 SET( not_os_win NOT GBX_OS_WIN )
-GBX_REQUIRE_VAR( build LIB ${lib_name} not_os_win "Windows OS is not  supported" )
+GBX_REQUIRE_VAR( build LIB ${LIB_NAME} not_os_win "Windows OS is not  supported" )
 
 INCLUDE( ${HYDRO_CMAKE_DIR}/FindPlayer2.cmake )
-GBX_REQUIRE_VAR( build LIB ${lib_name} PLAYER_FOUND "Player not found" )
+GBX_REQUIRE_VAR( build LIB ${LIB_NAME} PLAYER_FOUND "Player not found" )
 
 IF( build )
 
@@ -19,6 +19,6 @@ IF( build )
 
     GBX_ADD_LIBRARY( OrcaPlayer SHARED convertutils.cpp )
 
-    GBX_ADD_HEADERS( orcaplayer ${hdrs} )
+    GBX_ADD_HEADERS( ${LIB_INSTALL} ${hdrs} )
 
 ENDIF( build )

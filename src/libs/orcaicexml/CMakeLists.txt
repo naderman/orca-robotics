@@ -1,9 +1,9 @@
-SET( lib_name OrcaIceXml )
+ORCA_SET_LIBRARY_NAME( OrcaIceXml )
 GBX_ADD_LICENSE( LGPL )
 
 SET( build TRUE )
-GBX_REQUIRE_OPTION( build LIB ${lib_name} ON )
-GBX_REQUIRE_VAR( build LIB ${lib_name} GBX_OS_LINUX "only Linux OS is supported" )
+GBX_REQUIRE_OPTION( build LIB ${LIB_NAME} ON )
+GBX_REQUIRE_VAR( build LIB ${LIB_NAME} GBX_OS_LINUX "only Linux OS is supported" )
 
 IF( build )
 
@@ -12,9 +12,9 @@ IF( build )
     FILE( GLOB hdrs *.h )
     FILE( GLOB srcs *.cpp )
 
-    GBX_ADD_LIBRARY( ${lib_name} SHARED ${srcs} )
-    TARGET_LINK_LIBRARIES( ${lib_name} IceXML )
+    GBX_ADD_LIBRARY( ${LIB_NAME} SHARED ${srcs} )
+    TARGET_LINK_LIBRARIES( ${LIB_NAME} IceXML )
 
-    GBX_ADD_HEADERS( orcaicexml ${hdrs} )
+    GBX_ADD_HEADERS( ${LIB_INSTALL} ${hdrs} )
 
 ENDIF( build )

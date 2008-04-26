@@ -1,11 +1,11 @@
-SET( lib_name OrcaIce )
+ORCA_SET_LIBRARY_NAME( OrcaIce )
 GBX_ADD_LICENSE( LGPL )
 
 SET( build TRUE )
 # this library is not optional
 
 SET( ext_libs GbxUtilAcfr GbxIceUtilAcfr HydroUtil )
-GBX_REQUIRE_INSTALLS( build LIB ${lib_name} ${ext_libs} )
+GBX_REQUIRE_INSTALLS( build LIB ${LIB_NAME} ${ext_libs} )
 
 IF( build )
 
@@ -22,18 +22,18 @@ IF( build )
     SET( dep_libs ${int_libs} ${ext_libs} )
     
     IF( NOT GBX_OS_WIN )
-        GBX_ADD_LIBRARY( ${lib_name} SHARED ${srcs} )
+        GBX_ADD_LIBRARY( ${LIB_NAME} SHARED ${srcs} )
     ELSE ( NOT GBX_OS_WIN )
         # building shared libs is complicated in windows
-        GBX_ADD_LIBRARY( ${lib_name} STATIC ${srcs} )
+        GBX_ADD_LIBRARY( ${LIB_NAME} STATIC ${srcs} )
     ENDIF( NOT GBX_OS_WIN )
     
-    TARGET_LINK_LIBRARIES( ${lib_name} ${dep_libs} )
+    TARGET_LINK_LIBRARIES( ${LIB_NAME} ${dep_libs} )
 
     # special dependency on the generated files
-    ADD_DEPENDENCIES( ${lib_name} OrcaInterfaces )
+    ADD_DEPENDENCIES( ${LIB_NAME} OrcaInterfaces )
     
-    GBX_ADD_HEADERS( orcaice ${hdrs} )
+    GBX_ADD_HEADERS( ${LIB_INSTALL} ${hdrs} )
     
     IF( ORCA_BUILD_TESTS )
         ADD_SUBDIRECTORY( test )

@@ -1,11 +1,11 @@
-SET( lib_name OrcaDef )
+ORCA_SET_LIBRARY_NAME( OrcaDef )
 GBX_ADD_LICENSE( LGPL )
 
 SET( build TRUE )
-GBX_REQUIRE_OPTION( build LIB ${lib_name} ON )
+GBX_REQUIRE_OPTION( build LIB ${LIB_NAME} ON )
 
 SET( dep_libs OrcaObjects )
-GBX_REQUIRE_TARGETS( build LIB ${lib_name} ${dep_libs} )
+GBX_REQUIRE_TARGETS( build LIB ${LIB_NAME} ${dep_libs} )
 
 IF( build )
 
@@ -15,18 +15,18 @@ IF( build )
     FILE( GLOB srcs *.cpp )
     
     IF(NOT GBX_OS_WIN)
-        GBX_ADD_LIBRARY( ${lib_name} SHARED ${srcs} )
+        GBX_ADD_LIBRARY( ${LIB_NAME} SHARED ${srcs} )
     ELSE (NOT GBX_OS_WIN)
         # for some reason cannot get shared libs working in windows
-        GBX_ADD_LIBRARY( ${lib_name} STATIC ${srcs} )
+        GBX_ADD_LIBRARY( ${LIB_NAME} STATIC ${srcs} )
     ENDIF (NOT GBX_OS_WIN)
     
-    TARGET_LINK_LIBRARIES( ${lib_name} ${dep_libs} )
+    TARGET_LINK_LIBRARIES( ${LIB_NAME} ${dep_libs} )
     
     # special dependency on the generated files
-    ADD_DEPENDENCIES( ${lib_name} OrcaObjects )
+    ADD_DEPENDENCIES( ${LIB_NAME} OrcaObjects )
     
-    GBX_ADD_HEADERS( orcadef ${hdrs} )
+    GBX_ADD_HEADERS( ${LIB_INSTALL} ${hdrs} )
     
     IF( ORCA_BUILD_TESTS )
         ADD_SUBDIRECTORY( test )

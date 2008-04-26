@@ -1,8 +1,8 @@
-SET( lib_name OrcaCompModel )
+ORCA_SET_LIBRARY_NAME( OrcaCompModel )
 GBX_ADD_LICENSE( LGPL )
 
 SET( build TRUE )
-GBX_REQUIRE_OPTION( build LIB ${lib_name} ON )
+GBX_REQUIRE_OPTION( build LIB ${LIB_NAME} ON )
 
 IF( build )
 
@@ -12,18 +12,18 @@ IF( build )
     FILE( GLOB srcs *.cpp )
     
     IF( NOT GBX_OS_WIN )
-        GBX_ADD_LIBRARY( ${lib_name} SHARED ${srcs} )
-        TARGET_LINK_LIBRARIES( ${lib_name} IceGrid )
+        GBX_ADD_LIBRARY( ${LIB_NAME} SHARED ${srcs} )
+        TARGET_LINK_LIBRARIES( ${LIB_NAME} IceGrid )
     ELSE ( NOT GBX_OS_WIN )
-        GBX_ADD_LIBRARY( ${lib_name} STATIC ${srcs} )
-        TARGET_LINK_LIBRARIES( ${lib_name}
+        GBX_ADD_LIBRARY( ${LIB_NAME} STATIC ${srcs} )
+        TARGET_LINK_LIBRARIES( ${LIB_NAME}
                     optimized IceGrid debug IceGridd
                 )
     ENDIF( NOT GBX_OS_WIN )
     
     # special dependency on the generated files
-    ADD_DEPENDENCIES( ${lib_name} OrcaInterfaces )
+    ADD_DEPENDENCIES( ${LIB_NAME} OrcaInterfaces )
     
-    GBX_ADD_HEADERS( orcacm ${hdrs} )
+    GBX_ADD_HEADERS( ${LIB_INSTALL} ${hdrs} )
 
 ENDIF( build )

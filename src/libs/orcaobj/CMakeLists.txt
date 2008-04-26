@@ -1,11 +1,11 @@
-SET( lib_name OrcaObjects )
+ORCA_SET_LIBRARY_NAME( OrcaObjects )
 GBX_ADD_LICENSE( LGPL )
 
 SET( build TRUE )
 # This is one of fundamental libs. It is not optional (but maybe it should change)
 
 SET( ext_libs GbxUtilAcfr GbxIceUtilAcfr HydroUtil )
-GBX_REQUIRE_INSTALLS( build LIB ${lib_name} ${ext_libs} )
+GBX_REQUIRE_INSTALLS( build LIB ${LIB_NAME} ${ext_libs} )
 
 IF( build )
 
@@ -22,15 +22,15 @@ IF( build )
     
     # for some reason cannot get shared libs working in windows
     IF(NOT GBX_OS_WIN)
-        GBX_ADD_LIBRARY( ${lib_name} SHARED ${srcs} )
+        GBX_ADD_LIBRARY( ${LIB_NAME} SHARED ${srcs} )
     ELSE (NOT GBX_OS_WIN)
-        GBX_ADD_LIBRARY( ${lib_name} STATIC ${srcs} )
+        GBX_ADD_LIBRARY( ${LIB_NAME} STATIC ${srcs} )
     ENDIF (NOT GBX_OS_WIN)
     
-    TARGET_LINK_LIBRARIES( ${lib_name} OrcaInterfaces OrcaIce )
+    TARGET_LINK_LIBRARIES( ${LIB_NAME} OrcaInterfaces OrcaIce )
     
     # special dependency on the generated files
-    ADD_DEPENDENCIES( ${lib_name} OrcaInterfaces )
+    ADD_DEPENDENCIES( ${LIB_NAME} OrcaInterfaces )
     
     GBX_ADD_HEADERS( orcaobj ${hdrs} )
     

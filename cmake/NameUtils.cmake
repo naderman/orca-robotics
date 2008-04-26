@@ -13,9 +13,9 @@
 #       ORCA_SET_COMPONENT_NAME( MyComponent )
 #       SET( COMP_NAMESPACE mycomp )
 #
-MACRO( ORCA_SET_COMPONENT_NAME C_NAME )
+MACRO( ORCA_SET_COMPONENT_NAME c_name )
         
-    SET( COMP_NAME ${C_NAME} )
+    SET( COMP_NAME ${c_name} )
 
     # application executable name
     STRING( TOLOWER ${COMP_NAME} APP_NAME )
@@ -28,4 +28,28 @@ MACRO( ORCA_SET_COMPONENT_NAME C_NAME )
 
     SET( APP_CTRLC_HANDLER 1 )
 
-ENDMACRO( ORCA_SET_COMPONENT_NAME C_NAME )
+ENDMACRO( ORCA_SET_COMPONENT_NAME c_name )
+
+
+# ORCA_SET_LIBRARY_NAME( COMP_NAME )
+#
+# Sets library name and other related variables:
+# - LIB_NAMESPACE   library namespace (defaults to the library name converted to lower case).
+# - LIB_INSTALL     the name of the subdirectory where header files are installed
+#                   (defaults to the library name converted to lower case).
+# For custom values, call this function first and then override some or all of the variables manually.
+# For example:
+#       ORCA_SET_LIBRARY_NAME( MyLibrary )
+#       SET( LIB_NAMESPACE mylib )
+#    
+MACRO( ORCA_SET_LIBRARY_NAME l_name )
+        
+    SET( LIB_NAME ${l_name} )
+
+    # library namespace name
+    STRING( TOLOWER ${LIB_NAME} LIB_NAMESPACE )
+
+    # component namespace name
+    STRING( TOLOWER ${LIB_NAME} LIB_INSTALL )
+
+ENDMACRO( ORCA_SET_LIBRARY_NAME l_name )

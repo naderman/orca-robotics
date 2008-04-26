@@ -1,8 +1,8 @@
-SET( lib_name OrcaRobotDriverUtil )
+ORCA_SET_LIBRARY_NAME( OrcaRobotDriverUtil )
 GBX_ADD_LICENSE( LGPL )
 
 SET( build TRUE )
-GBX_REQUIRE_OPTION( build LIB ${lib_name} ON )
+GBX_REQUIRE_OPTION( build LIB ${LIB_NAME} ON )
 
 IF( build )
 
@@ -16,8 +16,8 @@ IF( build )
     FILE( GLOB hdrs *.h )
     FILE( GLOB srcs *.cpp )
 
-    GBX_ADD_LIBRARY( ${lib_name} SHARED ${srcs} )
+    GBX_ADD_LIBRARY( ${LIB_NAME} SHARED ${srcs} )
 
-    GBX_ADD_HEADERS( orcarobotdriverutil ${hdrs} )
+    GBX_ADD_HEADERS( ${LIB_INSTALL} ${hdrs} )
 
 ENDIF( build )

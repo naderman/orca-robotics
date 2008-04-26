@@ -1,15 +1,15 @@
-SET( lib_name OrcaImage )
+ORCA_SET_LIBRARY_NAME( OrcaImage )
 GBX_ADD_LICENSE( GPL )
 
 SET( build TRUE )
-GBX_REQUIRE_OPTION( build LIB ${lib_name} ON )
+GBX_REQUIRE_OPTION( build LIB ${LIB_NAME} ON )
 SET( not_os_win NOT GBX_OS_WIN )
-GBX_REQUIRE_VAR( build LIB ${lib_name} not_os_win "Windows OS is not  supported" )
-GBX_REQUIRE_VAR( build LIB ${lib_name} QT4_FOUND "Qt4 Not Found" )
+GBX_REQUIRE_VAR( build LIB ${LIB_NAME} not_os_win "Windows OS is not  supported" )
+GBX_REQUIRE_VAR( build LIB ${LIB_NAME} QT4_FOUND "Qt4 Not Found" )
 
 # this lib should be split up into sublibraries with simpler dependencies
 INCLUDE( ${ORCA_CMAKE_DIR}/FindOpenCV.cmake )
-GBX_REQUIRE_VAR( build LIB ${lib_name} OPENCV_FOUND "OpenCV not found" )
+GBX_REQUIRE_VAR( build LIB ${LIB_NAME} OPENCV_FOUND "OpenCV not found" )
 
 IF( build )
 
@@ -33,7 +33,7 @@ IF( build )
     IF( TRICLOPS_FOUND )
         INCLUDE_DIRECTORIES( /usr/local/include/triclops )
         ADD_DEFINITIONS( -DTRICLOPS_FOUND )
-        TARGET_LINK_LIBRARIES( ${lib_name} triclops )
+        TARGET_LINK_LIBRARIES( ${LIB_NAME} triclops )
     ENDIF( TRICLOPS_FOUND )
 
     #IF( QT_FOUND )
@@ -44,8 +44,8 @@ IF( build )
     FILE( GLOB hdrs *.h )
     FILE( GLOB srcs *.cpp )
 
-    GBX_ADD_LIBRARY( ${lib_name} SHARED ${srcs} )
+    GBX_ADD_LIBRARY( ${LIB_NAME} SHARED ${srcs} )
 
-    GBX_ADD_HEADERS( orcaimage ${hdrs} )
+    GBX_ADD_HEADERS( ${LIB_INSTALL} ${hdrs} )
 
 ENDIF( build )

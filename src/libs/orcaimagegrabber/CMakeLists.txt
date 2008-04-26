@@ -1,9 +1,9 @@
-SET( lib_name OrcaImageGrabber )
+ORCA_SET_LIBRARY_NAME( OrcaImageGrabber )
 GBX_ADD_LICENSE( LGPL )
 
 SET( build TRUE )
-GBX_REQUIRE_OPTION( build LIB ${lib_name} OFF )
-GBX_REQUIRE_VAR( build LIB ${lib_name} GBX_OS_LINUX "only Linux OS is supported" )
+GBX_REQUIRE_OPTION( build LIB ${LIB_NAME} OFF )
+GBX_REQUIRE_VAR( build LIB ${LIB_NAME} GBX_OS_LINUX "only Linux OS is supported" )
 
 IF( build )
 
@@ -49,12 +49,12 @@ IF( build )
     ENDIF( DIGICLOPS_AND_TRICLOPS_FOUND ) 
     
     IF( OPENCV_FOUND OR DIGICLOPS_AND_TRICLOPS_FOUND )
-        GBX_ADD_LIBRARY( ${lib_name} SHARED ${srcs} )
-        TARGET_LINK_LIBRARIES( ${lib_name} ${OPENCV_LIBS} ${DIGICLOPS_LIBS} )
+        GBX_ADD_LIBRARY( ${LIB_NAME} SHARED ${srcs} )
+        TARGET_LINK_LIBRARIES( ${LIB_NAME} ${OPENCV_LIBS} ${DIGICLOPS_LIBS} )
     ENDIF( OPENCV_FOUND OR DIGICLOPS_AND_TRICLOPS_FOUND )
     
     # we want this file to install for fake drivers
     FILE( GLOB hdrs *.h )
-    GBX_ADD_HEADERS( orcaimagegrabber ${hdrs} )  
+    GBX_ADD_HEADERS( ${LIB_INSTALL} ${hdrs} )  
 
 ENDIF( build )

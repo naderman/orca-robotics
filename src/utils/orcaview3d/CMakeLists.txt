@@ -33,7 +33,7 @@ IF( build )
 
     IF( LIB3DS_FOUND )
         ADD_DEFINITIONS( -DHAVE_LIB3DS )
-        TARGET_LINK_LIBRARIES ( ${lib_name} 3ds )
+        TARGET_LINK_LIBRARIES ( ${LIB_NAME} 3ds )
     ENDIF( LIB3DS_FOUND )
 
 ENDIF( build )

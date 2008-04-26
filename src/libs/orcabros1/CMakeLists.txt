@@ -1,15 +1,15 @@
-SET( lib_name OrcaBros1 )
+ORCA_SET_LIBRARY_NAME( OrcaBros1 )
 GBX_ADD_LICENSE( LGPL )
 
 SET( build TRUE )
-GBX_REQUIRE_OPTION( build LIB ${lib_name} ON )
-GBX_REQUIRE_VAR( build LIB ${lib_name} GBX_OS_LINUX "only Linux OS is supported" )
+GBX_REQUIRE_OPTION( build LIB ${LIB_NAME} ON )
+GBX_REQUIRE_VAR( build LIB ${LIB_NAME} GBX_OS_LINUX "only Linux OS is supported" )
 
 SET( ext_libs HydroBros1 )
-GBX_REQUIRE_INSTALLS( build LIB ${lib_name} ${ext_libs} )
+GBX_REQUIRE_INSTALLS( build LIB ${LIB_NAME} ${ext_libs} )
 
 SET( int_libs OrcaInterfaces )
-GBX_REQUIRE_TARGETS( build LIB ${lib_name} ${int_libs} )
+GBX_REQUIRE_TARGETS( build LIB ${LIB_NAME} ${int_libs} )
 
 IF( build )
     
@@ -22,9 +22,9 @@ IF( build )
     FILE( GLOB srcs *.cpp )
     SET( dep_libs ${ext_libs} ${int_libs} )
 
-    GBX_ADD_LIBRARY( ${lib_name} SHARED ${srcs} )
-    TARGET_LINK_LIBRARIES( ${lib_name} ${dep_libs} )
+    GBX_ADD_LIBRARY( ${LIB_NAME} SHARED ${srcs} )
+    TARGET_LINK_LIBRARIES( ${LIB_NAME} ${dep_libs} )
 
-    GBX_ADD_HEADERS( orcabros1 ${hdrs} )
+    GBX_ADD_HEADERS( ${LIB_INSTALL} ${hdrs} )
 
 ENDIF( build )
