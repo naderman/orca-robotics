@@ -38,16 +38,13 @@ range readings included.  Scans proceed counterclockwise about the laser
     @{
 */
 
-//! A sequence of return intensities.
-sequence<byte> IntensitySequence;
-
 /*!
     @brief %Laser scan data structure adds return-intensity information to rangescanner data.
 */
 class LaserScanner2dData extends RangeScanner2dData
 {
-    //! Adds the intensities to the data already in RangeScanner2dData.
-    IntensitySequence intensities;
+    //! A sequence of return intensities, 1 byte per return.
+    ByteSeq intensities;
 };
 
 /*!

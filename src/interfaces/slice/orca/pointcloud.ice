@@ -36,14 +36,6 @@ subclass the point cloud interface.
 enum PointCloudType { PointCloudTypeNoColour, 
                       PointCloudTypeColour }; 
 
-/*! While it would be nice from a software engineering point of view
-to have a collection of points as structs or classes, OpenGL works
-better with an interleaved arrays, otherwise we'd be spending a lot of
-time just packing and unpacking stuff. 
-*/ 
-sequence<float> FloatSequence; 
-
-
 //! Description of the point cloud
 struct PointCloudDescription
 {
@@ -73,8 +65,13 @@ struct PointCloudData
 /*! Points are interleaved. if the Type is PointCloudTypeNoColour, then the sequence
     is X0,Y0,Z0,X1,Y1,Z1... If the type is PointCloudTypeColour, then it is
     X0,Y0,Z0,R0,G0,B0,.... Colours are specified between 0.0 and 1.0  
+
+While it would be nice from a software engineering point of view
+to have a collection of points as structs or classes, OpenGL works
+better with an interleaved arrays, otherwise we'd be spending a lot of
+time just packing and unpacking stuff. 
 */ 
-    FloatSequence points;
+    FloatSeq points;
 };
 
 /*! 

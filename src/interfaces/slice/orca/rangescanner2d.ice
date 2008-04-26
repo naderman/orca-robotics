@@ -36,9 +36,6 @@ range readings included.  Scans proceed counterclockwise about the sensor
     @{
 */
 
-//! A sequence of ranges [m]
-sequence<float> RangeSequence;
-
 //! Device description
 struct RangeScanner2dDescription
 {
@@ -77,7 +74,7 @@ struct RangeScanner2dDescription
 class RangeScanner2dData extends OrcaObject
 {
     //! Scan ranges [m]
-    RangeSequence     ranges;
+    FloatSeq     ranges;
 
     //! Minimum range [m]
     double minRange;

@@ -38,7 +38,7 @@ class OGPatch extends OrcaObject
     Frame2d location; 
     Size2d sizeInMetres;  
     Size2d sizeInPixels; 
-    ByteSequence array;
+    ByteSeq array;
 };
 
 sequence<OGPatch> PatchList; 
@@ -79,7 +79,7 @@ class OGPatchMapUpdateSubPatch extends OGPatchMapUpdateElement {
    int xOffset;
    int yOffset; 
    Size2d patchSizeInPixels;
-   ByteSequence pixelData;  
+   ByteSeq pixelData;  
 };
 
 class OGPatchMapUpdateFrame extends OGPatchMapUpdateElement {

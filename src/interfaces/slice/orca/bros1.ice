@@ -19,7 +19,7 @@ module orca
 {
 
 // One dimensional ("linear") objects
-// Note: no type aliasing in slice, e.g. typedef (see Ice manual sec.4.20.2)
+// Note: no type aliasing in slice, e.g. typedef (see Ice manual sec.4.21.2)
 
 // double length
 // double width

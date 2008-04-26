@@ -70,7 +70,7 @@ module orca
 */
 
 //! A serialized QPicture
-sequence<byte> SerializedQPicture;
+// sequence<byte> SerializedQPicture;
 
 //! QGraphics2d command structure: tells how to paint something.
 struct QGraphics2dData
@@ -79,7 +79,7 @@ struct QGraphics2dData
     Time timeStamp;
 
     //! The serialized QPicture
-    SerializedQPicture qpicture;
+    ByteSeq qpicture;
 
     //!
     //! The level at which the qpicture should be painted.

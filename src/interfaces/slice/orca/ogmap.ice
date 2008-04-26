@@ -105,7 +105,7 @@ struct OgMapData
 
     //! The occupancy values.  To give a definite mid-point the last level (255) is not used:
     //!   i.e. 0 = unoccupied, 254 = occupied and 127 = unknown. 
-    ByteSequence data;
+    ByteSeq data;
     
     //! Type of certainty grid map (see above)
     //! Useful to distinguish between occupancy, motion, hazard maps etc.

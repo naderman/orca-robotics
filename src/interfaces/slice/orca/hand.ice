@@ -12,7 +12,7 @@
 #define ORCA2_HAND_INTERFACE_ICE
 
 #include <orca/orca.ice>
-#include <orca/bros1.ice>
+// #include <orca/bros1.ice>
 
 module orca
 {
@@ -31,15 +31,13 @@ module orca
 */
 
 //! A sequence of angles, usually for joints. 
-sequence<float>  AngleSequence;
+// sequence<float>  AngleSequence;
 
 //! A sequence of torques -- again, torques on the joints. 
-sequence<float> TorqueSequence;
+// sequence<float> TorqueSequence;
 
 //! A sequence of 1D forces
-
-sequence<float> ForceSequence; 
-
+// sequence<float> ForceSequence; 
 
 //! Laser configuration data structure
 class HandConfig extends OrcaObject
@@ -87,22 +85,38 @@ class HandConfig extends OrcaObject
 */
 class HandData extends OrcaObject
 {
-   AngleSequence mcpAngles; // in degrees. 
+//    AngleSequence mcpAngles; // in degrees. 
+// 
+//    AngleSequence pipAngles; // in degrees. 
+// 
+//    AngleSequence dipAngles; // in degrees. 
+// 
+//    AngleSequence abdAngles; // in degrees. 
+// 
+//    TorqueSequence mcpTorque; // in Nm. 
+// 
+//    TorqueSequence pipTorque; // in Nm. 
+// 
+//    TorqueSequence dipTorque; // in Nm. 
+// 
+//    ForceSequence tipForce; // in N. 
+ 
 
-   AngleSequence pipAngles; // in degrees. 
+   FloatSeq mcpAngles; // in degrees. 
 
-   AngleSequence dipAngles; // in degrees. 
+   FloatSeq pipAngles; // in degrees. 
 
-   AngleSequence abdAngles; // in degrees. 
+   FloatSeq dipAngles; // in degrees. 
 
-   TorqueSequence mcpTorque; // in Nm. 
+   FloatSeq abdAngles; // in degrees. 
 
-   TorqueSequence pipTorque; // in Nm. 
+   FloatSeq mcpTorque; // in Nm. 
 
-   TorqueSequence dipTorque; // in Nm. 
+   FloatSeq pipTorque; // in Nm. 
 
-   ForceSequence tipForce; // in N. 
-    
+   FloatSeq dipTorque; // in Nm. 
+
+   FloatSeq tipForce; // in N.    
 };
 
 /*!

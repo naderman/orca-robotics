@@ -104,7 +104,7 @@ class ImageData
 
     //! The image data itself. The structure of this byte sequence
     //! depends on the image format and compression.
-    ByteSequence data;
+    ByteSeq data;
 };
 
 //! Interface to the image consumer.
