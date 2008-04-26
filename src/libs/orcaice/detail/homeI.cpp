@@ -73,7 +73,7 @@ HomeI::getTimeUp(const ::Ice::Current& ) const
     return upTimer_.elapsedSec();
 }
 
-orca::ComponentProperties 
+orca::StringStringDict 
 HomeI::getProperties(const ::Ice::Current& ) const
 {
     //std::cout << "Sending data back" << std::endl;

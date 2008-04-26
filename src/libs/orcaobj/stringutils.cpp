@@ -611,7 +611,7 @@ toString( const orca::CameraDescriptionSequence& obj )
             << "Image height              " << obj.at(i)->imageHeight << "pix\n"
             << "Image width               " << obj.at(i)->imageWidth << "pix\n"
             << "Frame rate                " << obj.at(i)->frameRate << "fps\n"
-            << "Format                    " << orcaifacestring::toString(obj.at(i)->format) << "\n"
+            << "Format                    " << ifacestring::toString(obj.at(i)->format) << "\n"
             << "Compression               " << obj.at(i)->compression << "\n"
             << "offset.point.x            " << obj.at(i)->offset.p.x << "m\n"
             << "offset.point.y            " << obj.at(i)->offset.p.y << "m\n"
@@ -715,7 +715,7 @@ toString( const orca::GpsData&  obj )
         << obj.satellites << ","
         << obj.observationCountOnL1 << ","
         << obj.observationCountOnL2 << ","
-        << orcaifacestring::toString(obj.positionType) << ","
+        << ifacestring::toString(obj.positionType) << ","
         << obj.geoidalSeparation << ")";
 
     return s.str();
@@ -803,7 +803,7 @@ toString( const orca::VehicleControlDescriptionPtr& obj )
 
     std::ostringstream s;
     s << "VehicleControlDescription: "
-      << "type=" << orcaifacestring::toString( obj->type );
+      << "type=" << ifacestring::toString( obj->type );
 
     if ( obj->ice_isA( "::orca::VehicleControlVelocityDifferentialDescription" ) )
     {
@@ -846,7 +846,7 @@ toString( const orca::VehicleGeometryDescriptionPtr& obj )
 
     std::ostringstream s;
     s << "VehicleGeometryDescription: "
-      << "type=" << orcaifacestring::toString( obj->type );
+      << "type=" << ifacestring::toString( obj->type );
 
     if ( obj->ice_isA( "::orca::VehicleGeometryCylindricalDescription" ) )
     {
@@ -1342,11 +1342,11 @@ toString( const orca::WifiData &obj )
           << ", numInvalidMisc: " << iface.numInvalidMisc
           << ", numMissedBeacons: " << iface.numMissedBeacons << "\n";
           
-        s << "mode: " << orcaifacestring::toString(iface.mode) 
+        s << "mode: " << ifacestring::toString(iface.mode) 
           << ", bitrate: " << iface.bitrate 
           << ", accessPoint: " << iface.accessPoint 
           << ", throughPut: " << iface.throughPut 
-          << ", linkQualityType: " << orcaifacestring::toString(iface.linkType) << "\n";
+          << ", linkQualityType: " << ifacestring::toString(iface.linkType) << "\n";
         
         s << "maxLinkQuality: " << iface.maxLinkQuality 
           << ", maxSignalLevel: " << iface.maxSignalLevel 
@@ -1488,7 +1488,7 @@ toVerboseString( const orca::PathPlanner2dData& obj )
 
     s << obj.timeStamp.seconds << "s:" << obj.timeStamp.useconds << "us"
       << " PathPlanner2dDataPtr [" << obj.path.size() << " waypoints. "
-      << "Result code: " << orcaifacestring::toString(obj.result) << " ]:" << endl;
+      << "Result code: " << ifacestring::toString(obj.result) << " ]:" << endl;
     s << "Result description: " << obj.resultDescription << endl;
     for ( unsigned int i=0; i < obj.path.size(); i++ )
     {

@@ -130,7 +130,9 @@ Slice::Gen::generate(const UnitPtr& p)
 {    
     writeExtraHeaders(C);
 
-    string lib_namespace = _module + "ifacestring";
+//     string lib_namespace = _module + "ifacestring";
+    string lib_namespace = "ifacestring";
+    string lib_dir = _module + "ifacestring";
 
     H << "\n#include <string>";
     H << "\n#include <" << _module << "/" << _base << ".h>";    
@@ -138,24 +140,43 @@ Slice::Gen::generate(const UnitPtr& p)
     StringList includes = p->includeFiles();
     for(StringList::const_iterator q = includes.begin(); q != includes.end(); ++q)
     { 
-        string include = *q;
-        string::size_type pos = include.find_last_of("/\\");
+        // remove everything except the base
+        string include_base = *q;
+        string::size_type pos = include_base.find_last_of("/\\");
         if(pos != string::npos)
         {
-            include.erase(0, pos + 1);
+            include_base.erase(0, pos + 1);
         }    
-        if((pos = include.rfind('.')) != string::npos)
+        if((pos = include_base.rfind('.')) != string::npos)
         {
-            include.erase(pos);
+            include_base.erase(pos);
         }
-        H << "\n#include <" << lib_namespace << "/" << include << "." << _headerExtension << ">";
+        // remove everything except the module
+        string include_module = *q;
+cout<<include_module<<endl;
+        string::size_type pos_mod = include_module.find_last_of("/\\");
+        if(pos_mod != string::npos)
+        {
+            // remove base
+            include_module.erase(pos_mod, string::npos);
+cout<<include_module<<endl;
+            string::size_type pos_dir = include_module.find_last_of("/\\");
+            if(pos_dir != string::npos) {
+                // remove dir
+                include_module.erase(0, pos_dir+1);
+            }
+        }    
+cout<<include_module<<endl;
+        string include_namespace = include_module + "ifacestring";
+
+        H << "\n#include <" << include_namespace << "/" << include_base << "." << _headerExtension << ">";
     }
     H << "\n";
     H << "\nnamespace " << lib_namespace;
     H << "\n{";
     H << "\n";
 
-    C << "\n#include <" << lib_namespace << "/" << _base << ".h>";
+    C << "\n#include <" << lib_dir << "/" << _base << ".h>";
     C << "\n#include <gbxsickacfr/gbxutilacfr/exceptions.h>";
     C << "\n#include <sstream>";
     C << "\n#include \"util.h\"";

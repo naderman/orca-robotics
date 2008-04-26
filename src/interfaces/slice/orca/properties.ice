@@ -11,7 +11,7 @@
 #ifndef ORCA2_PROPERTIES_ICE
 #define ORCA2_PROPERTIES_ICE
 
-#include <orca/home.ice>
+#include <orca/orca.ice>
 
 module orca
 {
@@ -29,7 +29,7 @@ module orca
 struct PropertiesData
 {
     //! The set of properties
-    ComponentProperties properties;
+    StringStringDict properties;
 };
 
 /*!

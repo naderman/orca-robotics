@@ -7,7 +7,8 @@
 
 using namespace std;
 
-namespace ${slice_module}ifacestring
+// namespace ${slice_module}ifacestring
+namespace ifacestring
 {
 
 string toString( int x, bool expand, int indent )

@@ -293,7 +293,7 @@ MainThread::planPath( const hydronavutil::Pose &pose,
     {
         stringstream ss;
         ss << "MainThread: PathPlanner could not compute.  Gave result " 
-           << orcaifacestring::toString( computedPath.result )<<": "<<computedPath.resultDescription;
+           << ifacestring::toString( computedPath.result )<<": "<<computedPath.resultDescription;
         const bool isTemporary = true;
         throw( GoalPlanException( ss.str(), isTemporary ) );
     }

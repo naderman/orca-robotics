@@ -8,7 +8,8 @@
 
 #include <string>
 
-namespace ${slice_module}ifacestring
+// namespace ${slice_module}ifacestring
+namespace ifacestring
 {
 
 std::string toString( int x, bool expand=true, int indent=0 );

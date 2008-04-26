@@ -31,7 +31,7 @@ public:
     // orca::Home interface
     virtual orca::HomeData getInterfaces(const ::Ice::Current& ) const;
     virtual int getTimeUp(const ::Ice::Current& ) const;
-    virtual orca::ComponentProperties getProperties(const ::Ice::Current& ) const;
+    virtual orca::StringStringDict getProperties(const ::Ice::Current& ) const;
 
     // orcaice::Home interface
     virtual void addProvidedInterface( const orca::ProvidedInterface& iface );
@@ -43,7 +43,7 @@ private:
     // we update the timeUp field every time getInterfaces() is called.
     mutable orca::HomeData homeData_;
     
-    orca::ComponentProperties properties_;
+    orca::StringStringDict properties_;
 
     // start time is initialized in the constructor. the component's up time
     // is counted from here.

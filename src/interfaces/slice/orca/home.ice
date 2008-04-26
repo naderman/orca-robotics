@@ -37,9 +37,6 @@ struct HomeData
     int timeUp;
 };
 
-//! Our properties are defined the same way as Ice::PropertyDict.
-dictionary<string,string> ComponentProperties;
-
 /*!
     @brief Access to information about components interfaces.
 */
@@ -52,7 +49,8 @@ interface Home
     ["cpp:const"] idempotent int getTimeUp();
     
     //! Returns all of this component's properties.
-    ["cpp:const"] idempotent ComponentProperties getProperties();
+    //! (Our properties are defined the same way as Ice::PropertyDict.)
+    ["cpp:const"] idempotent StringStringDict getProperties();
 };
 
 /*!

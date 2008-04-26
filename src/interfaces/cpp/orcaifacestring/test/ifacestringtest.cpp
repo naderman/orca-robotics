@@ -19,7 +19,8 @@
 #include <orcaifacestring/vehicledescription.h>
 
 using namespace std;
-using namespace orcaifacestring;
+// using namespace orcaifacestring;
+using namespace ifacestring;
 
 int 
 main( int argc, char **argv )

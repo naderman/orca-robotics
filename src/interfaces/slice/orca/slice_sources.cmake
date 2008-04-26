@@ -13,6 +13,7 @@ SET( ORCA_SLICE_SOURCE_FILES
     ocm.ice
     datetime.ice
     exceptions.ice
+    containers.ice
     orca.ice
     bros1.ice
     stochastic.ice
