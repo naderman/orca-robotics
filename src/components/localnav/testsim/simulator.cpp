@@ -168,24 +168,17 @@ Simulator::act( const hydronavutil::Velocity &cmd )
     }
 
     iterationNum_++;
-    bool pathCompleted, pathFailed;
-    checkProgress( testPath_,
-                   *vehicleSimulator_,
-                   iterationNum_,
-                   wpI_,
-                   pathCompleted,
-                   pathFailed );
+}
 
-    if ( pathCompleted )
-    {
-        cout<<"TRACE(simulator.cpp): test PASSED" << endl;
-        exit(0);
-    }
-    if ( pathFailed )
-    {
-        cout<<"TRACE(simulator.cpp): test FAILED" << endl;
-        exit(1);
-    }
+void
+Simulator::checkProgress( bool &pathCompleted, bool &pathFailed )
+{
+    localnav::checkProgress( testPath_,
+                             *vehicleSimulator_,
+                             iterationNum_,
+                             wpI_,
+                             pathCompleted,
+                             pathFailed );
 }
 
 orca::Time 

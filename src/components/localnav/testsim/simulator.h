@@ -34,6 +34,8 @@ public:
     // This is the trigger to advance the simulator one step.
     void act( const hydronavutil::Velocity &cmd );
 
+    void checkProgress( bool &pathCompleted, bool &pathFailed );
+
     void getObsRanges( std::vector<float> &obsRanges )
         { rangeScannerSimulator_->getRangesFromPose( vehicleSimulator_->pose(), obsRanges ); }
 

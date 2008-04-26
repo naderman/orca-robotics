@@ -92,6 +92,12 @@ namespace {
 AlgorithmEvaluator::~AlgorithmEvaluator()
 {
     cout<<"TRACE(algorithmevaluator.cpp): DESTRUCTOR" << endl;
+    const double avgObstacleCost       = cumObstacleCost_ / (double)numIterations_;
+    const double avgTimeToMakeDecision = cumDecisionTime_ / (double)numIterations_;
+
+    cout << "  avgTimeToMakeDecision: " << avgTimeToMakeDecision*1000.0 << "ms" << endl;
+    cout << "  avgObstacleCost:       " << avgObstacleCost << endl;
+    cout << "  numIterations:         " << numIterations_ << endl;
 }
 
 void
@@ -103,9 +109,8 @@ AlgorithmEvaluator::evaluate( double timeToMakeDecision,
     cumObstacleCost_ += obsCost;
     cumDecisionTime_ += timeToMakeDecision;
 
-    cout<<"TRACE(algorithmevaluator.cpp): timeToMakeDecision: " << timeToMakeDecision*1000.0 << "ms" << endl;
-    cout<<"TRACE(algorithmevaluator.cpp): obsCost: " << obsCost << endl;
-
+//     cout<<"TRACE(algorithmevaluator.cpp): timeToMakeDecision: " << timeToMakeDecision*1000.0 << "ms" << endl;
+//     cout<<"TRACE(algorithmevaluator.cpp): obsCost: " << obsCost << endl;
 }
 
 }

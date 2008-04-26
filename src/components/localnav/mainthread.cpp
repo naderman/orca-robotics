@@ -328,7 +328,9 @@ void
 MainThread::sendCommandToPlatform( const hydronavutil::Velocity &cmd )
 {
     if ( testMode_ )
+    {
         testSimulator_->act( cmd );
+    }
     else
         velControl2dPrx_->setCommand( orcanavutil::convert(cmd) );
 }
@@ -473,6 +475,23 @@ MainThread::walk()
             if ( testMode_ && algorithmEvaluator_.get() )
             {
                 algorithmEvaluator_->evaluate( timer.elapsedSeconds(), *testSimulator_ );
+            }
+
+            if ( testMode_ )
+            {
+                bool pathCompleted, pathFailed;
+                testSimulator_->checkProgress( pathCompleted, pathFailed );
+                if ( pathCompleted )
+                {
+                    cout<<"TRACE(mainthread.cpp): test PASSED" << endl;
+                    context_.communicator()->shutdown();
+                    break;
+                }
+                if ( pathFailed )
+                {
+                    cout << "ERROR(mainthread.cpp): test FAILED" << endl;
+                    exit(1);
+                }
             }
 
             checkWithOutsideWorld();
