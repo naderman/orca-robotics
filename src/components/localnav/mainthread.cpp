@@ -76,6 +76,8 @@ MainThread::MainThread( const orcaice::Context &context )
             orcaice::getPropertyAsIntWithDefault( prop, tprefix+"CheckLateralAcceleration", 0 );
         cfg.checkDifferentialConstraints = 
             orcaice::getPropertyAsIntWithDefault( prop, tprefix+"CheckDifferentialConstraints", 0 );
+        cfg.checkVelocityConstraints = 
+            orcaice::getPropertyAsIntWithDefault( prop, tprefix+"CheckVelocityConstraints", 1 );
         cfg.useRoom = 
             orcaice::getPropertyAsIntWithDefault( prop, tprefix+"UseRoom", 1 );
         cfg.batchMode = 

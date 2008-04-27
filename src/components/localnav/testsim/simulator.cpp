@@ -41,6 +41,7 @@ Simulator::Simulator( const orcaice::Context         &context,
     vehicleSimConfig.maxLinearAcceleration        = 1.0;
     vehicleSimConfig.maxRotationalAcceleration    = DEG2RAD(90.0);
     vehicleSimConfig.maxLateralAcceleration       = config_.maxLateralAcceleration;
+    vehicleSimConfig.checkVelocityConstraints     = config_.checkVelocityConstraints;
     vehicleSimConfig.minVelocity.lin()            = 0.0;
     vehicleSimConfig.maxVelocity.lin()            = 20.0;
     vehicleSimConfig.minVelocity.rot()            = DEG2RAD(-1000.0);

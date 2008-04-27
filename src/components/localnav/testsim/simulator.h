@@ -21,6 +21,7 @@ public:
         double maxLateralAcceleration;
         bool   checkLateralAcceleration;
         bool   checkDifferentialConstraints;
+        bool   checkVelocityConstraints;
         bool   useRoom;
         bool   batchMode;
         int    numIterationsBatch;
