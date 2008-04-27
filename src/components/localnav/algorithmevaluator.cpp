@@ -98,6 +98,13 @@ AlgorithmEvaluator::~AlgorithmEvaluator()
     cout << "  avgTimeToMakeDecision: " << avgTimeToMakeDecision*1000.0 << "ms" << endl;
     cout << "  avgObstacleCost:       " << avgObstacleCost << endl;
     cout << "  numIterations:         " << numIterations_ << endl;
+
+    FILE *f = fopen( saveFile_.c_str(), "w" );
+    assert( f != NULL );
+    {
+        fprintf( f, "%d %f %f\n", numIterations_, avgTimeToMakeDecision, avgObstacleCost );
+    }
+    fclose(f);
 }
 
 void

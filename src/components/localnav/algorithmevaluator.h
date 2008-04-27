@@ -13,10 +13,11 @@ class AlgorithmEvaluator
 
 public: 
 
-    AlgorithmEvaluator()
+    AlgorithmEvaluator( const std::string &saveFile )
         : numIterations_(0),
           cumDecisionTime_(0),
-          cumObstacleCost_(0)
+          cumObstacleCost_(0),
+          saveFile_(saveFile)
         {}
     ~AlgorithmEvaluator();
 
@@ -28,7 +29,7 @@ private:
     int    numIterations_;
     double cumDecisionTime_;
     double cumObstacleCost_;
-
+    const std::string saveFile_;
 };
 
 }

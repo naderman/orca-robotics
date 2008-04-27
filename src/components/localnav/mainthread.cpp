@@ -101,7 +101,10 @@ MainThread::MainThread( const orcaice::Context &context )
 
         bool evaluateAlg = orcaice::getPropertyAsIntWithDefault( prop, prefix+"Test.EvaluateAlg", 0 );
         if ( evaluateAlg )
-            algorithmEvaluator_.reset( new AlgorithmEvaluator );
+        {
+            std::string saveFile = orcaice::getPropertyWithDefault( prop, prefix+"Test.AlgEvalSaveFile", "algEval.txt" );
+            algorithmEvaluator_.reset( new AlgorithmEvaluator(saveFile) );
+        }
     }    
 
     //

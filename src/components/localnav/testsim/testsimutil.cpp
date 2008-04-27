@@ -204,7 +204,8 @@ namespace {
         {
             for ( int j=-radiusInCellsY; j < radiusInCellsY; j++ )
             {
-                ogMap.gridCell(gridX+i,gridY+j) = hydroogmap::CELL_OCCUPIED;
+                // if ( hypot( i, j ) < radiusInCells )
+                    ogMap.gridCell(gridX+i,gridY+j) = hydroogmap::CELL_OCCUPIED;
             }
         }
     }
