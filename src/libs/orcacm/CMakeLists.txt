@@ -1,4 +1,5 @@
 ORCA_SET_LIBRARY_NAME( OrcaCompModel )
+SET( LIB_INSTALL orcacm )
 GBX_ADD_LICENSE( LGPL )
 
 SET( build TRUE )
