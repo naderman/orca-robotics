@@ -153,20 +153,17 @@ Slice::Gen::generate(const UnitPtr& p)
         }
         // remove everything except the module
         string include_module = *q;
-cout<<include_module<<endl;
         string::size_type pos_mod = include_module.find_last_of("/\\");
         if(pos_mod != string::npos)
         {
             // remove base
             include_module.erase(pos_mod, string::npos);
-cout<<include_module<<endl;
             string::size_type pos_dir = include_module.find_last_of("/\\");
             if(pos_dir != string::npos) {
                 // remove dir
                 include_module.erase(0, pos_dir+1);
             }
         }    
-cout<<include_module<<endl;
         string include_namespace = include_module + "ifacestring";
 
         H << "\n#include <" << include_namespace << "/" << include_base << "." << _headerExtension << ">";
@@ -249,17 +246,33 @@ Slice::Gen::TypesVisitor::visitClassDefStart(const ClassDefPtr& p)
 
     string name = fixKwd(p->name());
     string scope = fixKwd(p->scope());
+    ClassList bases = p->bases();
     
     H << "\nstd::string toString( const " << scope.substr(2) << name << "Ptr& obj, bool expand=true, int indent=0 );";
 
     C << "\n\nstring";
     C << nl << "toString( const " << scope.substr(2) << name << "Ptr& objPtr, bool expand, int indent )";
     C << sb;
-    C << nl << scope.substr(2) << name << "& obj = *objPtr;";
     C << nl << "string ind;";
     C << nl << "for ( int i=0; i<indent; ++i ) ind += ' ';";
     C << nl << "ostringstream ss;";
 
+    ClassList::const_iterator q = bases.begin();
+    if(!bases.empty()) {
+        int count = 0;
+        while(q != bases.end())
+        {
+            C << nl << fixKwd((*q)->scoped()) << "Ptr base" << count << "Ptr = objPtr;";
+            C << nl << "ss << endl << ind << toString( base" << count << "Ptr, expand, indent );";
+            ++q;
+            ++count;
+        }
+    }
+
+    if ( !p->dataMembers().empty() ) {
+        C << nl;
+        C << nl << scope.substr(2) << name << "& obj = *objPtr;";
+    }
     return true;
 }
 
