@@ -10,9 +10,9 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include <orcaobj/orcaobj.h>
 #include <orcacm/orcacm.h>
 #include <orcaprobe/orcaprobe.h>
+#include <orcaifacestring/tracer.h>
 
 #include "tracerprobe.h"
 
@@ -96,7 +96,7 @@ TracerProbe::loadSetVerbosity( orcacm::OperationData& data )
 //         return 1;
 //     }
 
-//     cout<<orcaobj::toString(result)<<endl;
+//     cout<<ifacestring::toString(result)<<endl;
     orcaprobe::reportNotImplemented( data );
     return 0;
 }
@@ -146,8 +146,8 @@ TracerProbe::loadUnsubscribe( orcacm::OperationData& data )
 void 
 TracerProbe::setData(const orca::TracerData& result, const Ice::Current&)
 {
-//     std::cout << orcaobj::toString(result) << std::endl;
+//     std::cout << ifacestring::toString(result) << std::endl;
     subscribeOperationData_.results.clear();
-    orcaprobe::reportResult( subscribeOperationData_, "data", orcaobj::toString(result) );
+    orcaprobe::reportResult( subscribeOperationData_, "data", ifacestring::toString(result) );
     display_.setOperationData( subscribeOperationData_ );
 }

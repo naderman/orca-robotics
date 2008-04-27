@@ -10,9 +10,9 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include <orcaobj/orcaobj.h>
 #include <orcacm/orcacm.h>
 #include <orcaprobe/orcaprobe.h>
+#include <orcaifacestring/odometry2d.h>
 
 #include "odometry2dprobe.h"
 
@@ -59,7 +59,7 @@ Odometry2dProbe::loadGetData( orcacm::OperationData& data )
     {
         orca::Odometry2dPrx derivedPrx = orca::Odometry2dPrx::checkedCast(prx_);
         result = derivedPrx->getData();
-        orcaprobe::reportResult( data, "data", orcaobj::toString(result) );
+        orcaprobe::reportResult( data, "data", ifacestring::toString(result) );
     }
     catch( const orca::DataNotExistException& e )
     {
@@ -86,7 +86,7 @@ Odometry2dProbe::loadGetDescription( orcacm::OperationData& data )
     {
         orca::Odometry2dPrx derivedPrx = orca::Odometry2dPrx::checkedCast(prx_);
         result = derivedPrx->getDescription();
-        orcaprobe::reportResult( data, "data", orcaobj::toString(result) );
+        orcaprobe::reportResult( data, "data", ifacestring::toString(result) );
     }
     catch( const Ice::Exception& e )
     {
@@ -143,8 +143,8 @@ Odometry2dProbe::loadUnsubscribe( orcacm::OperationData& data )
 void 
 Odometry2dProbe::setData(const orca::Odometry2dData& result, const Ice::Current&)
 {
-//     std::cout << orcaobj::toString(result) << std::endl;
+//     std::cout << ifacestring::toString(result) << std::endl;
     subscribeOperationData_.results.clear();
-    orcaprobe::reportResult( subscribeOperationData_, "data", orcaobj::toString(result) );
+    orcaprobe::reportResult( subscribeOperationData_, "data", ifacestring::toString(result) );
     display_.setOperationData( subscribeOperationData_ );
 };

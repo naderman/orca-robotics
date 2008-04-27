@@ -10,9 +10,9 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include <orcaobj/orcaobj.h>
 #include <orcacm/orcacm.h>
 #include <orcaprobe/orcaprobe.h>
+#include <orcaifacestring/ogmap.h>
 
 #include "ogmapprobe.h"
 
@@ -54,7 +54,7 @@ OgMapProbe::loadGetData( orcacm::OperationData & data )
     {
         orca::OgMapPrx derivedPrx = orca::OgMapPrx::checkedCast(prx_);
         result = derivedPrx->getData();
-        orcaprobe::reportResult( data, "data", orcaobj::toString(result) );
+        orcaprobe::reportResult( data, "data", ifacestring::toString(result) );
     }
     catch( const Ice::Exception & e )
     {
@@ -96,5 +96,5 @@ OgMapProbe::loadUnsubscribe( orcacm::OperationData & data )
 void 
 OgMapProbe::setData(const orca::OgMapData & data, const Ice::Current&)
 {
-    std::cout << orcaobj::toString(data) << std::endl;
+    std::cout << ifacestring::toString(data) << std::endl;
 };

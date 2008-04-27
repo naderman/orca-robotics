@@ -10,9 +10,9 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include <orcaobj/orcaobj.h>
 #include <orcacm/orcacm.h>
 #include <orcaprobe/orcaprobe.h>
+#include <orcaifacestring/velocitycontrol2d.h>
 
 #include "velocitycontrol2dprobe.h"
 
@@ -48,7 +48,7 @@ VelocityControl2dProbe::loadGetDescription( orcacm::OperationData& data )
     {
         orca::VelocityControl2dPrx derivedPrx = orca::VelocityControl2dPrx::checkedCast(prx_);
         result = derivedPrx->getDescription();
-        orcaprobe::reportResult( data, "data", orcaobj::toString(result) );
+        orcaprobe::reportResult( data, "data", ifacestring::toString(result) );
     }
     catch( const Ice::Exception& e )
     {

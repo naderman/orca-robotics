@@ -10,9 +10,9 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include <orcaobj/orcaobj.h>
 #include <orcacm/orcacm.h>
 #include <orcaprobe/orcaprobe.h>
+#include <orcaifacestring/drivebicycle.h>
 
 #include "drivebicycleprobe.h"
 
@@ -63,7 +63,7 @@ DriveBicycleProbe::loadGetData( orcacm::OperationData& data )
     {
         orca::DriveBicyclePrx derivedPrx = orca::DriveBicyclePrx::checkedCast(prx_);
         result = derivedPrx->getData();
-        orcaprobe::reportResult( data, "data", orcaobj::toString(result) );
+        orcaprobe::reportResult( data, "data", ifacestring::toString(result) );
     }
     catch( const orca::DataNotExistException& e )
     {
@@ -90,7 +90,7 @@ DriveBicycleProbe::loadGetDescription( orcacm::OperationData& data )
     {
         orca::DriveBicyclePrx derivedPrx = orca::DriveBicyclePrx::checkedCast(prx_);
         result = derivedPrx->getDescription();
-        orcaprobe::reportResult( data, "data", orcaobj::toString(result) );
+        orcaprobe::reportResult( data, "data", ifacestring::toString(result) );
     }
     catch( const Ice::Exception& e )
     {
@@ -154,8 +154,8 @@ DriveBicycleProbe::loadSetData( orcacm::OperationData& data )
 void
 DriveBicycleProbe::setData(const orca::DriveBicycleData& result, const Ice::Current&)
 {
-//     std::cout << orcaobj::toString(result) << std::endl;
+//     std::cout << ifacestring::toString(result) << std::endl;
     subscribeOperationData_.results.clear();
-    orcaprobe::reportResult( subscribeOperationData_, "data", orcaobj::toString(result) );
+    orcaprobe::reportResult( subscribeOperationData_, "data", ifacestring::toString(result) );
     display_.setOperationData( subscribeOperationData_ );
 };

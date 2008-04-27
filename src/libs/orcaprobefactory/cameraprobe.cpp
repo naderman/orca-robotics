@@ -10,9 +10,9 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include <orcaobj/orcaobj.h>
 #include <orcacm/orcacm.h>
 #include <orcaprobe/orcaprobe.h>
+#include <orcaifacestring/camera.h>
 
 #include "cameraprobe.h"
 
@@ -57,7 +57,7 @@ CameraProbe::loadGetData( orcacm::OperationData& data )
     {
         orca::CameraPrx derivedPrx = orca::CameraPrx::checkedCast(prx_);
         result = derivedPrx->getData();
-        orcaprobe::reportResult( data, "data", orcaobj::toString( result ) );
+        orcaprobe::reportResult( data, "data", ifacestring::toString( result ) );
     }
     catch( const Ice::Exception& e )
     {
@@ -76,7 +76,7 @@ CameraProbe::loadGetDescription( orcacm::OperationData& data )
     {
         orca::CameraPrx derivedPrx = orca::CameraPrx::checkedCast(prx_);
         result = derivedPrx->getDescription();
-        orcaprobe::reportResult( data, "data", orcaobj::toString( result ) );
+        orcaprobe::reportResult( data, "data", ifacestring::toString( result ) );
     }
     catch( const Ice::Exception& e )
     {

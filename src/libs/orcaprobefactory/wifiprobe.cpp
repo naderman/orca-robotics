@@ -10,9 +10,9 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include <orcaobj/orcaobj.h>
 #include <orcacm/orcacm.h>
 #include <orcaprobe/orcaprobe.h>
+#include <orcaifacestring/wifi.h>
 
 #include "wifiprobe.h"
 
@@ -57,7 +57,7 @@ WifiProbe::loadGetData( orcacm::OperationData& data )
     {
         orca::WifiPrx derivedPrx = orca::WifiPrx::checkedCast(prx_);
         result = derivedPrx->getData();
-        orcaprobe::reportResult( data, "data", orcaobj::toString(result) );
+        orcaprobe::reportResult( data, "data", ifacestring::toString(result) );
     }
     catch( const Ice::Exception& e )
     {
@@ -113,8 +113,8 @@ WifiProbe::loadUnsubscribe( orcacm::OperationData& data )
 void 
 WifiProbe::setData(const orca::WifiData& result, const Ice::Current&)
 {
-//     std::cout << orcaobj::toString(result) << std::endl;
+//     std::cout << ifacestring::toString(result) << std::endl;
     subscribeOperationData_.results.clear();
-    orcaprobe::reportResult( subscribeOperationData_, "data", orcaobj::toString(result) );
+    orcaprobe::reportResult( subscribeOperationData_, "data", ifacestring::toString(result) );
     display_.setOperationData( subscribeOperationData_ );
 };

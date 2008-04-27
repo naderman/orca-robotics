@@ -10,9 +10,9 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include <orcaobj/orcaobj.h>
 #include <orcacm/orcacm.h>
 #include <orcaprobe/orcaprobe.h>
+#include <orcaifacestring/laserscanner2d.h>
 
 #include "laserscanner2dprobe.h"
 
@@ -59,7 +59,7 @@ LaserScanner2dProbe::loadGetData( orcacm::OperationData& data )
     {
         orca::LaserScanner2dPrx derivedPrx = orca::LaserScanner2dPrx::checkedCast(prx_);
         result = derivedPrx->getData();
-        orcaprobe::reportResult( data, "data", orcaobj::toString(result) );
+        orcaprobe::reportResult( data, "data", ifacestring::toString(result) );
     }
     catch( const Ice::Exception& e )
     {
@@ -78,7 +78,7 @@ LaserScanner2dProbe::loadGetDescription( orcacm::OperationData& data )
     {
         orca::LaserScanner2dPrx derivedPrx = orca::LaserScanner2dPrx::checkedCast(prx_);
         result = derivedPrx->getDescription();
-        orcaprobe::reportResult( data, "data", orcaobj::toString(result) );
+        orcaprobe::reportResult( data, "data", ifacestring::toString(result) );
     }
     catch( const Ice::Exception& e )
     {
@@ -134,8 +134,8 @@ LaserScanner2dProbe::loadUnsubscribe( orcacm::OperationData& data )
 void 
 LaserScanner2dProbe::setData(const orca::RangeScanner2dDataPtr& result, const Ice::Current&)
 {
-//     std::cout << orcaobj::toString(result) << std::endl;
+//     std::cout << ifacestring::toString(result) << std::endl;
     subscribeOperationData_.results.clear();
-    orcaprobe::reportResult( subscribeOperationData_, "data", orcaobj::toString(result) );
+    orcaprobe::reportResult( subscribeOperationData_, "data", ifacestring::toString(result) );
     display_.setOperationData( subscribeOperationData_ );
 };

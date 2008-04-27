@@ -10,8 +10,8 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include <orcaobj/orcaobj.h>
 #include <orcacm/orcacm.h>
+#include <orcaifacestring/pinger.h>
 
 #include "pingerprobe.h"
 #include <orcaprobe/orcaprobe.h>

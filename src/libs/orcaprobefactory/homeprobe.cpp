@@ -11,8 +11,8 @@
 #include <iostream>
 #include <iomanip>    // for setw()
 #include <orcaice/orcaice.h>
-#include <orcaobj/orcaobj.h>
 #include <orcacm/orcacm.h>
+#include <orcaifacestring/home.h>
 
 #include "homeprobe.h"
 #include <orcaprobe/orcaprobe.h>
@@ -51,7 +51,7 @@ HomeProbe::loadGetInterfaces( orcacm::OperationData& data )
     {
         orca::HomePrx dereivedPrx = orca::HomePrx::checkedCast(prx_);
         result = dereivedPrx->getInterfaces();
-        orcaprobe::reportResult( data, "data", orcaobj::toString(result) );
+        orcaprobe::reportResult( data, "data", ifacestring::toString(result) );
     }
     catch( const Ice::Exception& e )
     {
