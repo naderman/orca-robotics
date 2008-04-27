@@ -64,8 +64,12 @@ MainThread::MainThread( const orcaice::Context &context )
     //
     if ( testMode_ )
     {
-        Simulator::Config cfg;
         string tprefix = prefix+"Test.";
+
+        int seed = orcaice::getPropertyAsIntWithDefault( prop, tprefix+"RandomSeed", 0 );
+        srand(seed);
+
+        Simulator::Config cfg;
         cfg.maxLateralAcceleration = 
             orcaice::getPropertyAsDoubleWithDefault( prop, tprefix+"MaxLateralAcceleraton", 1.0 );
         cfg.checkLateralAcceleration = 
