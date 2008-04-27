@@ -12,16 +12,16 @@
 namespace ifacestring
 {
 
-std::string toString( int x, bool expand=true, int indent=0 );
+std::string toString( int x, int recurse=1000, int expand=-1, int indent=0 );
 
-std::string toString( double x, bool expand=true, int indent=0 );
+std::string toString( double x, int recurse=1000, int expand=-1, int indent=0 );
 
-std::string toString( const std::string& x, bool expand=true, int indent=0 );
+std::string toString( const std::string& x, int recurse=1000, int expand=-1, int indent=0 );
 
 // use only with std::vector's
 template<class T>
 std::string
-seqToString( const T& x, bool expand=true, int indent=0 )
+seqToString( const T& x, int recurse=1000, int expand=-1, int indent=0 )
 {
     std::string s = "sequence (" + toString((int)x.size()) + ")";
     if ( expand )
@@ -30,8 +30,11 @@ seqToString( const T& x, bool expand=true, int indent=0 )
         for ( int i=0; i<indent; ++i )
             ind += ' ';
 
-        for ( size_t i=0; i<x.size(); ++i )
-            s += '\n' + ind + "[" + toString((int)i) + "]\t" + toString( x[i], expand, indent+2 );
+        size_t size = x.size();
+        if ( expand>0 )
+            size = expand;
+        for ( size_t i=0; i<size; ++i )
+            s += '\n' + ind + "[" + toString((int)i) + "]\t" + toString( x[i], recurse-1, expand, indent+2 );
     }
     return s;
 }
@@ -39,7 +42,7 @@ seqToString( const T& x, bool expand=true, int indent=0 )
 // use only with std::map's
 template<class T, class Iterator>
 std::string
-dictToString( const T& x, bool expand=true, int indent=0 )
+dictToString( const T& x, int recurse=1000, int expand=-1, int indent=0 )
 {
     std::string s = "dictionary (" + toString((int)x.size()) + ")";
     if ( expand )
@@ -48,12 +51,15 @@ dictToString( const T& x, bool expand=true, int indent=0 )
         for ( int i=0; i<indent; ++i )
             ind += ' ';
 
-        int count = 0;
-        for ( Iterator it=x.begin(); it!=x.end(); ++it ) {
-            s += '\n' + ind + "[" + toString(count) + "]"
-               + "\tkey = " + toString( it->first, expand, indent+2 )
-               + "\tvalue = " + toString( it->second, expand, indent+2 );
-            ++count;
+        size_t i = 0;
+        size_t size = x.size();
+        if ( expand>0 )
+            size = expand;
+        for ( Iterator it=x.begin(); i<size; ++it ) {
+            s += '\n' + ind + "[" + toString((int)i) + "]"
+               + "\tkey = " + toString( it->first, recurse-1, expand, indent+2 )
+               + "\tvalue = " + toString( it->second, recurse-1, expand, indent+2 );
+            ++i;
         }
     }
     return s;

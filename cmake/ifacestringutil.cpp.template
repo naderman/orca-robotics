@@ -11,21 +11,21 @@ using namespace std;
 namespace ifacestring
 {
 
-string toString( int x, bool expand, int indent )
+string toString( int x, int recurse, int expand, int indent )
 {
     stringstream ss;
     ss << x;
     return ss.str();
 }
 
-string toString( double x, bool expand, int indent )
+string toString( double x, int recurse, int expand, int indent )
 {
     stringstream ss;
     ss << x;
     return ss.str();
 }
 
-string toString( const string& x, bool expand, int indent )
+string toString( const string& x, int recurse, int expand, int indent )
 {
     return x;
 }

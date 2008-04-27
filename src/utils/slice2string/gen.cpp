@@ -248,14 +248,17 @@ Slice::Gen::TypesVisitor::visitClassDefStart(const ClassDefPtr& p)
     string scope = fixKwd(p->scope());
     ClassList bases = p->bases();
     
-    H << "\nstd::string toString( const " << scope.substr(2)<<name << "Ptr& obj, bool expand=true, int indent=0 );";
+    H << "\nstd::string toString( const " << scope.substr(2)<<name << "Ptr& obj, int recurse=1000, int expand=-1, int indent=0 );";
 
     C << "\n\nstring";
-    C << nl << "toString( const " << scope.substr(2)<<name << "Ptr& objPtr, bool expand, int indent )";
+    C << nl << "toString( const " << scope.substr(2)<<name << "Ptr& objPtr, int recurse, int expand, int indent )";
     C << sb;
     C << nl << "string ind;";
     C << nl << "for ( int i=0; i<indent; ++i ) ind += ' ';";
-    C << nl << "ostringstream ss;";
+
+    C << nl << "string s = \"struct\";";
+    C << nl << "if ( recurse>0 )";
+    C << sb;
 
     ClassList::const_iterator q = bases.begin();
     if(!bases.empty()) {
@@ -263,7 +266,7 @@ Slice::Gen::TypesVisitor::visitClassDefStart(const ClassDefPtr& p)
         while(q != bases.end())
         {
             C << nl << fixKwd((*q)->scoped()) << "Ptr base" << count << "Ptr = objPtr;";
-            C << nl << "ss << endl << ind << toString( base" << count << "Ptr, expand, indent );";
+            C << nl << "s += \'\\n\' + ind + toString( base" << count << "Ptr, expand, indent );";
             ++q;
             ++count;
         }
@@ -279,7 +282,8 @@ Slice::Gen::TypesVisitor::visitClassDefStart(const ClassDefPtr& p)
 void
 Slice::Gen::TypesVisitor::visitClassDefEnd(const ClassDefPtr& p)
 {
-    C << nl << "return ss.str();";
+    C << eb;
+    C << nl << "return s;";
     C << eb;
 }
 
@@ -301,11 +305,11 @@ Slice::Gen::TypesVisitor::visitEnum(const EnumPtr& p)
     string scope = fixKwd(p->scope());
     EnumeratorList enumerators = p->getEnumerators();
 
-    H << nl << "std::string toString( const " << scope.substr(2)<<name << ", bool expand=true, int indent=0 );";
+    H << nl << "std::string toString( const " << scope.substr(2)<<name << ", int recurse=1000, int expand=-1, int indent=0 );";
 
     C << nl;
     C << nl << "string";
-    C << nl << "toString( const " << scope.substr(2)<<name << " obj, bool expand, int indent )";
+    C << nl << "toString( const " << scope.substr(2)<<name << " obj, int recurse, int expand, int indent )";
     C << sb;
     C << nl << "switch ( obj )";
     C << sb;
@@ -332,21 +336,24 @@ Slice::Gen::TypesVisitor::visitStructStart(const StructPtr& p)
     string name = fixKwd(p->name());
     string scope = fixKwd(p->scope());
     
-    H << "\nstd::string toString( const " << scope.substr(2)<<name << "& obj, bool expand=true, int indent=0 );";
+    H << "\nstd::string toString( const " << scope.substr(2)<<name << "& obj, int recurse=1000, int expand=-1, int indent=0 );";
 
     C << "\n\nstring";
-    C << nl << "toString( const " << scope.substr(2)<<name << "& obj, bool expand, int indent )";
+    C << nl << "toString( const " << scope.substr(2)<<name << "& obj, int recurse, int expand, int indent )";
     C << sb;
     C << nl << "string ind;";
     C << nl << "for ( int i=0; i<indent; ++i ) ind += ' ';";
-    C << nl << "ostringstream ss;";
+    C << nl << "string s = \"struct\";";
+    C << nl << "if ( recurse>0 )";
+    C << sb;
     return true;
 }
 
 void
 Slice::Gen::TypesVisitor::visitStructEnd(const StructPtr& p)
 {       
-    C << nl << "return ss.str();";
+    C << eb;
+    C << nl << "return s;";
     C << eb;
 }
 
@@ -355,7 +362,7 @@ Slice::Gen::TypesVisitor::visitDataMember(const DataMemberPtr& p)
 {
     string name = fixKwd(p->name());
 
-    C << nl << "ss << endl << ind << \"" << name << " = \" << toString( obj." << name << ", expand, indent+2 );";
+    C << nl << "s += \'\\n\' + ind + \"" + name + " = \" + toString( obj." + name + ", recurse-1, expand, indent+2 );";
 }
 
 void
@@ -364,12 +371,12 @@ Slice::Gen::TypesVisitor::visitSequence(const SequencePtr& p)
     string name = fixKwd(p->name());
     string scope = fixKwd(p->scope());
 
-    H << nl << "std::string toString( const " << scope.substr(2)<<name << "& obj, bool expand=true, int indent=0 );";
+    H << nl << "std::string toString( const " << scope.substr(2)<<name << "& obj, int recurse=1000, int expand=-1, int indent=0 );";
 
     C << "\n\nstring";
-    C << nl << "toString( const " << scope.substr(2)<<name << "& obj, bool expand, int indent )";
+    C << nl << "toString( const " << scope.substr(2)<<name << "& obj, int recurse, int expand, int indent )";
     C << sb;
-    C << nl << "return seqToString< " << scope.substr(2)<<name << " >( obj, expand, indent+2 );";
+    C << nl << "return seqToString< " << scope.substr(2)<<name << " >( obj, recurse-1, expand, indent+2 );";
     C << eb;
 }
 
@@ -379,12 +386,12 @@ Slice::Gen::TypesVisitor::visitDictionary(const DictionaryPtr& p)
     string name = fixKwd(p->name());
     string scope = fixKwd(p->scope());
 
-    H << nl << "std::string toString( const " << scope.substr(2)<<name << "& obj, bool expand=true, int indent=0 );";
+    H << nl << "std::string toString( const " << scope.substr(2)<<name << "& obj, int recurse=1000, int expand=-1, int indent=0 );";
 
     C << "\n\nstring";
-    C << nl << "toString( const " << scope.substr(2)<<name << "& obj, bool expand, int indent )";
+    C << nl << "toString( const " << scope.substr(2)<<name << "& obj, int recurse, int expand, int indent )";
     C << sb;
-    C << nl << "return dictToString< " << scope.substr(2)<<name << "," << scope.substr(2)<<name << "::const_iterator >( obj, expand, indent+2 );";
+    C << nl << "return dictToString< " << scope.substr(2)<<name << "," << scope.substr(2)<<name << "::const_iterator >( obj, recurse-1, expand, indent+2 );";
     C << eb;
 }
 
