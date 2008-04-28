@@ -2,12 +2,15 @@
 #define LOCALNAV_ALGORITHMEVALUATOR_H
 
 #include "testsim/simulator.h"
+#include <list>
 
 namespace localnav {
 
-//!
-//! @author Alex Brooks
-//!
+//
+// @brief For evaluating algorithms in simulation
+//
+// @author Alex Brooks
+//
 class AlgorithmEvaluator
 {
 
@@ -30,6 +33,8 @@ private:
     double cumDecisionTime_;
     double cumObstacleCost_;
     const std::string saveFile_;
+
+    std::list<hydronavutil::Pose> poseHistory_;
 };
 
 }

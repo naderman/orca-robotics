@@ -7,6 +7,16 @@ namespace localnav {
 
 namespace {
 
+    const double POSE_HISTORY_SIZE = 600;
+
+    bool close( const hydronavutil::Pose &p1,
+                const hydronavutil::Pose &p2 )
+    {
+        double THRESHOLD = 3.0;
+        double dist = hypot( p1.y()-p2.y(), p1.x()-p2.x() );
+        return ( dist < THRESHOLD );
+    }
+
     // The sigmoid function
     inline double sgm( double x )
     {
@@ -118,6 +128,35 @@ AlgorithmEvaluator::evaluate( double timeToMakeDecision,
 
 //     cout<<"TRACE(algorithmevaluator.cpp): timeToMakeDecision: " << timeToMakeDecision*1000.0 << "ms" << endl;
 //     cout<<"TRACE(algorithmevaluator.cpp): obsCost: " << obsCost << endl;
+
+    if ( (int)poseHistory_.size() == POSE_HISTORY_SIZE )
+        poseHistory_.erase( poseHistory_.begin() );
+    poseHistory_.push_back( simulator.vehicleSimulator().pose() );
+
+    if ( poseHistory_.size() == POSE_HISTORY_SIZE &&
+         close(simulator.vehicleSimulator().pose(), poseHistory_.front()) )
+    {
+        // We're near the same spot we were at POSE_HISTORY_SIZE iterations ago.
+        // Have we been stuck here the entire time?
+        bool closeWholeTime=true;
+        for ( std::list<hydronavutil::Pose>::iterator it = poseHistory_.begin();
+              it != poseHistory_.end();
+              it++ )
+        {
+            if ( !close( simulator.vehicleSimulator().pose(), *it ) )
+            {
+                // It's OK, we've moved away at some point.
+                closeWholeTime = false;
+                break;
+            }
+        }
+        if ( closeWholeTime )
+        {
+            cout << "ERROR(algorithmevaluator.cpp): We've been hanging around the pose " << poseHistory_.front() << " for " << POSE_HISTORY_SIZE << " iterations.  Must be stuck in a U-shaped obstacle or something." << endl;
+            cout << "ERROR(algorithmevaluator.cpp): Failing test." << endl;
+            exit(1);
+        }
+    }
 }
 
 }
