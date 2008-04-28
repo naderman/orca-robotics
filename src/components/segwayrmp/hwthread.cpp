@@ -292,7 +292,7 @@ HwThread::walk()
         {
             if ( eStop_.get() && eStop_->isEStopTriggered() )
             {
-                subStatus().warning( "E-Stop triggered" );
+                subStatus().warning( "Software E-Stop triggered" );
             }
             else
             {
