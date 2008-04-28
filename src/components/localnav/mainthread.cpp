@@ -252,12 +252,25 @@ MainThread::setup()
 {
     if ( !testMode_ )
     {
+        context_.tracer().debug( "Connecting to VelocityControl2d" );
         orcaice::connectToInterfaceWithTag( context_, velControl2dPrx_, "VelocityControl2d", this, subsysName() );
+
+        context_.tracer().debug( "Subscribing to VelocityControl2d" );
+        odomConsumer_ = new orcaifaceimpl::StoringOdometry2dConsumerImpl(context_);
         odomConsumer_->subscribeWithTag( "Odometry2d", this, subsysName() );
+
+        context_.tracer().debug( "Subscribing to VelocityControl2d" );
+        locConsumer_ = new orcaifaceimpl::StoringLocalise2dConsumerImpl(context_);
         locConsumer_->subscribeWithTag( "Localisation", this, subsysName() );
+
+        context_.tracer().debug( "Subscribing to VelocityControl2d" );
+        obsConsumer_ = new orcaifaceimpl::StoringRangeScanner2dConsumerImpl(context_);
         obsConsumer_->subscribeWithTag( "Observations", this, subsysName() );
 
+        context_.tracer().debug( "Getting vehicleDescription" );
         getVehicleDescription();
+
+        context_.tracer().debug( "Getting scannerDescription" );
         getRangeScannerDescription();
 
         ensureProxiesNotEmpty();
