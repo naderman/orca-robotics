@@ -7,12 +7,12 @@ namespace localnav {
 
 namespace {
 
-    const double POSE_HISTORY_SIZE = 600;
+    const double POSE_HISTORY_SIZE = 1000;
 
     bool close( const hydronavutil::Pose &p1,
                 const hydronavutil::Pose &p2 )
     {
-        double THRESHOLD = 3.0;
+        double THRESHOLD = 2.0;
         double dist = hypot( p1.y()-p2.y(), p1.x()-p2.x() );
         return ( dist < THRESHOLD );
     }
