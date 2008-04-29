@@ -353,7 +353,7 @@ void checkProgress( const orca::PathFollower2dData     &path,
         exit(1);
     }
 
-    const int MAX_NUM_ITERATIONS = path.path.size()*1000;
+    const int MAX_NUM_ITERATIONS = path.path.size()*3000;
     if ( iterationNum >= MAX_NUM_ITERATIONS )
     {
         cout << "ERROR(simulator.cpp): Failed: didn't reach the goal in " <<  iterationNum << " iterations." << endl;
