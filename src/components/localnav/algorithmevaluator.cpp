@@ -7,7 +7,7 @@ namespace localnav {
 
 namespace {
 
-    const double POSE_HISTORY_SIZE = 1000;
+    const double POSE_HISTORY_SIZE = 2000;
 
     bool close( const hydronavutil::Pose &p1,
                 const hydronavutil::Pose &p2 )
