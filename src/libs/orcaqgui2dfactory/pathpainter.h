@@ -29,7 +29,7 @@ class PathPainter
   public:
     PathPainter();
     ~PathPainter();
-    void initialize( bool displayWaypoints, bool displayPastWaypoints, bool displayOlympicMarker, bool useTransparency);
+    void initialize( bool displayWaypoints, bool displayPastWaypoints, bool displayFutureWaypoints, bool displayOlympicMarker, bool useTransparency);
     void setData( const orca::PathFollower2dData& path );
     void setData( const orca::PathPlanner2dData& path );
     void setWpIndex( int index );
@@ -41,6 +41,8 @@ class PathPainter
     void clear();
     void togglePastWaypoints()
         { displayPastWaypoints_ = !displayPastWaypoints_; }
+    void toggleFutureWaypoints()
+        { displayFutureWaypoints_ = !displayFutureWaypoints_; }
     
     void toggleDisplayWaypoints()
         { displayWaypoints_ = !displayWaypoints_; }
@@ -62,6 +64,7 @@ class PathPainter
     // toggle states
     bool displayWaypoints_;
     bool displayPastWaypoints_;
+    bool displayFutureWaypoints_;
     bool displayOlympicMarker_;
     bool useTransparency_;
     

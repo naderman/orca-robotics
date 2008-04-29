@@ -216,6 +216,7 @@ private:
     // toggle states
     bool displayWaypoints_;
     bool displayPastWaypoints_;
+    bool displayFutureWaypoints_;
     bool displayOlympicMarker_;
     bool currentTransparency_;
     bool isInFocus_;

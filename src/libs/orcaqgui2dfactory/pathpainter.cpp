@@ -39,10 +39,11 @@ PathPainter::~PathPainter()
 {
 }
 
-void PathPainter::initialize(bool displayWaypoints, bool displayPastWaypoints, bool displayOlympicMarker, bool useTransparency)
+void PathPainter::initialize(bool displayWaypoints, bool displayPastWaypoints, bool displayFutureWaypoints, bool displayOlympicMarker, bool useTransparency)
 {
     displayWaypoints_ = displayWaypoints;
     displayPastWaypoints_ = displayPastWaypoints;
+    displayFutureWaypoints_ = displayFutureWaypoints;
     displayOlympicMarker_ = displayOlympicMarker;
     useTransparency_ = useTransparency;
 }
@@ -123,8 +124,9 @@ void PathPainter::paint( QPainter *painter, int z )
                 fillColor = pastWpColor;
                 drawColor = pastWpColor;
             }
-            else
+            else // i > wpIndex
             {
+                if ( !displayFutureWaypoints_ ) break;
                 fillColor = futureWpColor;
                 drawColor = futureWpColor;
             }
@@ -169,8 +171,11 @@ void PathPainter::paint( QPainter *painter, int z )
         if ( !displayPastWaypoints_ ) 
             startI = wpIndex_+1;
         assert( startI >= 0 );
-        
-        for ( int i=startI; i<guiPath_.size(); ++i)
+
+        int endI = guiPath_.size();
+        if ( !displayFutureWaypoints_ ) endI = wpIndex_;
+
+        for ( int i=startI; i<endI; ++i)
         {
             if (i != 0) painter->drawLine(guiPath_[i].position,guiPath_[i-1].position);
         }

@@ -155,6 +155,7 @@ PathFollower2dElement::PathFollower2dElement( const orcaice::Context &context,
       firstTime_(true),
       displayWaypoints_(true),
       displayPastWaypoints_(false),
+      displayFutureWaypoints_(true),
       displayOlympicMarker_(true),
       currentTransparency_(false),
       isInFocus_(false),
@@ -163,7 +164,7 @@ PathFollower2dElement::PathFollower2dElement( const orcaice::Context &context,
     cout<<"TRACE(pathfollower2delement.cpp): Instantiating w/ proxyString '" << proxyString << "'" << endl;
     enableHI();
     
-    painter_.initialize( displayWaypoints_, displayPastWaypoints_, displayOlympicMarker_, currentTransparency_);
+    painter_.initialize( displayWaypoints_, displayPastWaypoints_, displayFutureWaypoints_, displayOlympicMarker_, currentTransparency_);
     
     pathUpdateConsumer_ = new PathUpdateConsumer;
 
@@ -383,6 +384,11 @@ PathFollower2dElement::contextMenu()
     } else {
         s << "Switch past waypoints ON";
     }
+    if (displayFutureWaypoints_) {
+        s << "Switch future waypoints OFF";
+    } else {
+        s << "Switch future waypoints ON";
+    }
     if (displayOlympicMarker_) {
         s << "Switch olympic marker OFF";
     } else {
@@ -426,14 +432,19 @@ PathFollower2dElement::execute( int action )
     }
     else if ( action == 2 )
     {
-        displayOlympicMarker_ = !displayOlympicMarker_;
-        painter_.toggleOlympicMarker();
+        displayFutureWaypoints_ = !displayFutureWaypoints_;
+        painter_.toggleFutureWaypoints();
     }
     else if ( action == 3 )
     {
-        setUseTransparency(!currentTransparency_);
+        displayOlympicMarker_ = !displayOlympicMarker_;
+        painter_.toggleOlympicMarker();
     }
     else if ( action == 4 )
+    {
+        setUseTransparency(!currentTransparency_);
+    }
+    else if ( action == 5 )
     {
         if (isRemoteInterfaceSick_) return;
         pathFollower2dPrx_->setEnabled( !pathFollower2dPrx_->enabled() );
@@ -447,12 +458,12 @@ PathFollower2dElement::execute( int action )
         }
         humanManager_.showStatusMsg(hydroqguielementutil::IHumanManager::Information,str);
     }
-    else if ( action == 5 )
+    else if ( action == 6 )
     {
         if ( pathHI_.get() )
             pathHI_->savePathAs();
     }
-    else if ( action == 6 )
+    else if ( action == 7 )
     {
         if ( pathHI_.get() )
             pathHI_->savePath();

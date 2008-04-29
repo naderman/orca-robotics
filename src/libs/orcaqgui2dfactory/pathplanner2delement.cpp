@@ -119,8 +119,9 @@ PathPlanner2dElement::PathPlanner2dElement( const orcaice::Context       &contex
 {
     cout<<"TRACE(pathplanner2delement.cpp): Instantiating w/ proxyString '" << proxyString << "'" << endl;   
     const bool displayPastWaypoints = true;
+    const bool displayFutureWaypoints = true;
     const bool displayOlympicMarker = false;
-    painter_.initialize( displayWaypoints_, displayPastWaypoints, displayOlympicMarker, currentTransparency_);
+    painter_.initialize( displayWaypoints_, displayPastWaypoints, displayFutureWaypoints, displayOlympicMarker, currentTransparency_);
     pathTaskAnswerConsumer_ = new PathPlannerTaskAnswerConsumer;
 }
 
