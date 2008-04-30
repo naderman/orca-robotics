@@ -40,7 +40,7 @@ IceGridManager::connectedEvent()
     try
     {
         iceGridAdmin_ = session_->getAdmin();
-        context_.tracer().info( "Connected to Admin interface" );
+        context_.tracer().info( "IceGridManager: Connected to Admin interface" );
 
         // just to test it...
 //         vector<string> appNames = iceGridAdmin_->getAllApplicationNames();
@@ -53,13 +53,13 @@ IceGridManager::connectedEvent()
         // This is OK, we're shutting down
     }
     catch ( const Ice::Exception &e ) {
-        exceptionSS << "IceGridSession: Error creating Admin Session: " << e;
+        exceptionSS << "IceGridManager: Error creating Admin Session: " << e;
     }
     catch( const std::exception& e) {
-        exceptionSS << "IceGridSession: Error creating Admin Session: " << e.what();
+        exceptionSS << "IceGridManager: Error creating Admin Session: " << e.what();
     }
     catch( ... ) {
-        exceptionSS << "IceGridSession: Unknown exception when creating Admin Session.";
+        exceptionSS << "IceGridManager: Unknown exception when creating Admin Session.";
     }
 
     if ( !exceptionSS.str().empty() ) {
@@ -73,7 +73,7 @@ IceGridManager::disconnectedEvent()
 {
     IceUtil::Mutex::Lock lock(adminMutex_);
     iceGridAdmin_ = 0;
-    context_.tracer().info( "Disconnected from Admin interface" );
+    context_.tracer().info( "IceGridManager: Disconnected from Admin interface" );
 }
 
 class IceGridManager::Operation {

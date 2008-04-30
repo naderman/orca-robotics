@@ -90,22 +90,10 @@ IceGridSession::tryCreateSession()
         timeoutSec_ = registry->getSessionTimeout();
         stringstream ss; ss<<"IceGridSession: Created session (timeout="<<timeoutSec_<<"s)";
         context_.tracer().info( ss.str() );
-
-        // register observers if any of them are not NULL
-        if ( registryObserverPrx_ || nodeObserverPrx_ || applicationObserverPrx_ ||
-                adapterObserverPrx_ || objectObserverPrx_ )
-        {
-            session_->setObservers( registryObserverPrx_, nodeObserverPrx_,
-                        applicationObserverPrx_, adapterObserverPrx_, objectObserverPrx_ );
-        }
     }
     catch ( const Ice::CommunicatorDestroyedException & ) {
         // This is OK, we're shutting down
         return false;
-    }
-    catch ( const IceGrid::ObserverAlreadyRegisteredException& ) {
-        // This is OK.
-        context_.tracer().warning( "got ObserverAlreadyRegisteredException exception." );
     }
     catch ( const Ice::Exception &e ) {
         exceptionSS << "IceGridSession: Error creating Admin Session: " << e;
@@ -146,6 +134,9 @@ IceGridSession::walk()
                     // Connected!
                     //
                     stateStore_.set( Connected );
+
+                    // register observers if any of them are not NULL
+                    trySetObservers();
                     break;
                 }
                 IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
@@ -236,9 +227,6 @@ IceGridSession::walk()
 IceGridSession::SessionState 
 IceGridSession::getState()
 {
-//     IceUtil::Mutex::Lock lock(mutex_);
-//     return state_;
-
     SessionState state;
     stateStore_.get( state );
     return state;
@@ -252,25 +240,49 @@ IceGridSession::setObservers(
         const IceGrid::AdapterObserverPrx& adpt, 
         const IceGrid::ObjectObserverPrx& obj )
 {
-    registryObserverPrx_ = reg;
-    nodeObserverPrx_ = node;
-    applicationObserverPrx_ = app;
-    adapterObserverPrx_ = adpt;
-    objectObserverPrx_ = obj;
+    {
+        IceUtil::Mutex::Lock lock( observerMutex_ );
+        registryObserverPrx_ = reg;
+        nodeObserverPrx_ = node;
+        applicationObserverPrx_ = app;
+        adapterObserverPrx_ = adpt;
+        objectObserverPrx_ = obj;
+    }
+
+    trySetObservers();
+}
+
+void 
+IceGridSession::trySetObservers()
+{
+    SessionState state;
+    stateStore_.get( state );
+
+    if ( state != Connected ) {
+        context_.tracer().warning( "IceGridSession: Could not set observers because the session is not connected yet." );
+        return;
+    }
 
     try
     {
+        IceUtil::Mutex::Lock lock( observerMutex_ );
         // register observers if ANY of them are not NULL
-        if ( registryObserverPrx_ || nodeObserverPrx_ || applicationObserverPrx_ ||
-                adapterObserverPrx_ || objectObserverPrx_ )
+        int obsCount = (int)(registryObserverPrx_!=0) + (int)(nodeObserverPrx_!=0) 
+                     + (int)(applicationObserverPrx_!=0) + (int)(adapterObserverPrx_!=0) 
+                     + (int)(objectObserverPrx_!=0);
+        if ( obsCount )
         {
             session_->setObservers( registryObserverPrx_, nodeObserverPrx_,
                         applicationObserverPrx_, adapterObserverPrx_, objectObserverPrx_ );
+
+            stringstream ss;
+            ss << "IceGridSession: Set " << obsCount << " observers.";
+            context_.tracer().info( ss.str() );
         }
     }
     catch ( const IceGrid::ObserverAlreadyRegisteredException& ) {
         // This is OK.
-        context_.tracer().warning( "got ObserverAlreadyRegisteredException exception." );
+        context_.tracer().warning( "IceGridSession: Got ObserverAlreadyRegisteredException exception." );
     }
 }
 

@@ -73,13 +73,19 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 @par Updated components
 - LocalNav (alex b)
   - Big overhaul and simpleification
+
 @par Updated utilities
 - slice2string (alex m)
   - utility for generating string functions from Slice definitions.
+
 @par Updated libraries
-- orcaifaceimpl (alex b)
+- OrcaIfaceImpl (alex b)
   - Added QGraphics2dImpl
   - Added PathFollower2dImpl
+- OrcaIceGrid
+  - fixed bug which could lead to uncaught exception under certain conditions when
+    setting observers. (alexm)
+
 @par Removed
 
 @section orca_doc_history_2100 Changes in Release 2.10.0

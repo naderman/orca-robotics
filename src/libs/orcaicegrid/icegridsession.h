@@ -71,6 +71,9 @@ public:
     //! Set the observer proxies that receive notifications when the state of the registry or nodes changes.
     //! Calls the corresponding method of the Admin session. Catches the ObserverAlreadyRegisteredException
     //! exception.
+    //! If the session has already been created, the observers are registered with the session. If the 
+    //! session does not exist, local variables are set and registration will happen the next time
+    //! the session is created.
     void setObservers( 
         const IceGrid::RegistryObserverPrx&     reg =IceGrid::RegistryObserverPrx(), 
         const IceGrid::NodeObserverPrx&         node=IceGrid::NodeObserverPrx(), 
@@ -108,6 +111,11 @@ private:
     IceGrid::ApplicationObserverPrx  applicationObserverPrx_;
     IceGrid::AdapterObserverPrx      adapterObserverPrx_;
     IceGrid::ObjectObserverPrx       objectObserverPrx_;
+
+    // this actually tries to set observers as defined by member variables
+    // if the session is not Connected, does nothing
+    void trySetObservers();
+    IceUtil::Mutex observerMutex_;
 
     orcaice::Context context_;
 };
