@@ -18,6 +18,7 @@
 // #include <sys/stat.h>
 
 using namespace std;
+using namespace slice2string;
 using namespace Slice;
 using namespace IceUtil;
 
@@ -34,7 +35,7 @@ void printHeader( ::IceUtil::Output& out )
 
 }
 
-Slice::Gen::Gen(const string& name, const string& base, const string& headerExtension,
+Gen::Gen(const string& name, const string& base, const string& headerExtension,
                 const string& sourceExtension, const vector<string>& extraHeaders, const string& include,
                 const vector<string>& includePaths, const string& dllExport, const string& dir,
                 bool imp, bool checksum, bool stream, bool ice,
@@ -105,10 +106,13 @@ Slice::Gen::Gen(const string& name, const string& base, const string& headerExte
     H << '\n';
 }
 
-Slice::Gen::~Gen()
+Gen::~Gen()
 {
-    H << nl << eb;
-    H << "\n\n#endif\n";
+//     cout<<"DEBUG: Gen::~Gen()"<<endl;
+//     H << nl << eb;
+    H << "\n\n}";
+    H << "\n\n#endif";
+    H << '\n';
 
     C << '\n';
     C << "\n}";
@@ -116,7 +120,7 @@ Slice::Gen::~Gen()
 }
 
 bool
-Slice::Gen::operator!() const
+Gen::operator!() const
 {
     if(!H || !C)
     {
@@ -126,8 +130,9 @@ Slice::Gen::operator!() const
 }
 
 void
-Slice::Gen::generate(const UnitPtr& p)
+Gen::generate(const UnitPtr& p)
 {    
+//     cout<<"DEBUG: Gen::generate()"<<endl;
     writeExtraHeaders(C);
 
 //     string lib_namespace = _module + "ifacestring";
@@ -188,8 +193,9 @@ Slice::Gen::generate(const UnitPtr& p)
 }
 
 void
-Slice::Gen::writeExtraHeaders(IceUtil::Output& out)
+Gen::writeExtraHeaders(IceUtil::Output& out)
 {
+//     cout<<"DEBUG: Gen::writeExtraHeaders()"<<endl;
     for(vector<string>::const_iterator i = _extraHeaders.begin(); i != _extraHeaders.end(); ++i)
     {
         string hdr = *i;
@@ -218,29 +224,31 @@ Slice::Gen::writeExtraHeaders(IceUtil::Output& out)
     }
 }
 
-Slice::Gen::TypesVisitor::TypesVisitor(Output& h, Output& c, const string& dllExport, bool stream) :
+Gen::TypesVisitor::TypesVisitor(Output& h, Output& c, const string& dllExport, bool stream) :
     H(h), C(c), _dllExport(dllExport), _stream(stream), _doneStaticSymbol(false), _useWstring(false)
 {
 }
 
 bool
-Slice::Gen::TypesVisitor::visitModuleStart(const ModulePtr& p)
+Gen::TypesVisitor::visitModuleStart(const ModulePtr& p)
 {
+//     cout<<"DEBUG: Gen::visitModuleStart()"<<endl;
 //     _useWstring = setUseWstring(p, _useWstringHist, _useWstring);
 //     H << sp << nl << "namespace " << name << nl << '{';
     return true;
 }
 
 void
-Slice::Gen::TypesVisitor::visitModuleEnd(const ModulePtr& p)
+Gen::TypesVisitor::visitModuleEnd(const ModulePtr& p)
 {
 //     H << sp << nl << '}';
 //     _useWstring = resetUseWstring(_useWstringHist);
 }
 
 bool
-Slice::Gen::TypesVisitor::visitClassDefStart(const ClassDefPtr& p)
+Gen::TypesVisitor::visitClassDefStart(const ClassDefPtr& p)
 {
+//     cout<<"DEBUG: Gen::visitClassDefStart()"<<endl;
     if ( p->declaration()->isInterface() )
         return false;
 
@@ -280,7 +288,7 @@ Slice::Gen::TypesVisitor::visitClassDefStart(const ClassDefPtr& p)
 }
 
 void
-Slice::Gen::TypesVisitor::visitClassDefEnd(const ClassDefPtr& p)
+Gen::TypesVisitor::visitClassDefEnd(const ClassDefPtr& p)
 {
     C << eb;
     C << nl << "return s;";
@@ -288,18 +296,18 @@ Slice::Gen::TypesVisitor::visitClassDefEnd(const ClassDefPtr& p)
 }
 
 bool
-Slice::Gen::TypesVisitor::visitExceptionStart(const ExceptionPtr& p)
+Gen::TypesVisitor::visitExceptionStart(const ExceptionPtr& p)
 {
     return false;
 }
 
 void
-Slice::Gen::TypesVisitor::visitExceptionEnd(const ExceptionPtr& p)
+Gen::TypesVisitor::visitExceptionEnd(const ExceptionPtr& p)
 {
 }
 
 void
-Slice::Gen::TypesVisitor::visitEnum(const EnumPtr& p)
+Gen::TypesVisitor::visitEnum(const EnumPtr& p)
 {
     string name = fixKwd(p->name());
     string scope = fixKwd(p->scope());
@@ -331,8 +339,9 @@ Slice::Gen::TypesVisitor::visitEnum(const EnumPtr& p)
 }
 
 bool
-Slice::Gen::TypesVisitor::visitStructStart(const StructPtr& p)
+Gen::TypesVisitor::visitStructStart(const StructPtr& p)
 {
+//     cout<<"DEBUG: Gen::visitStructStart()"<<endl;
     string name = fixKwd(p->name());
     string scope = fixKwd(p->scope());
     
@@ -350,7 +359,7 @@ Slice::Gen::TypesVisitor::visitStructStart(const StructPtr& p)
 }
 
 void
-Slice::Gen::TypesVisitor::visitStructEnd(const StructPtr& p)
+Gen::TypesVisitor::visitStructEnd(const StructPtr& p)
 {       
     C << eb;
     C << nl << "return s;";
@@ -358,16 +367,18 @@ Slice::Gen::TypesVisitor::visitStructEnd(const StructPtr& p)
 }
 
 void
-Slice::Gen::TypesVisitor::visitDataMember(const DataMemberPtr& p)
+Gen::TypesVisitor::visitDataMember(const DataMemberPtr& p)
 {
+//     cout<<"DEBUG: Gen::visitDataMember()"<<endl;
     string name = fixKwd(p->name());
 
     C << nl << "s += \'\\n\' + ind + \"" + name + " = \" + toString( obj." + name + ", recurse-1, expand, indent+2 );";
 }
 
 void
-Slice::Gen::TypesVisitor::visitSequence(const SequencePtr& p)
+Gen::TypesVisitor::visitSequence(const SequencePtr& p)
 {    
+//     cout<<"DEBUG: Gen::visitSequence()"<<endl;
     string name = fixKwd(p->name());
     string scope = fixKwd(p->scope());
 
@@ -381,14 +392,16 @@ Slice::Gen::TypesVisitor::visitSequence(const SequencePtr& p)
 }
 
 void
-Slice::Gen::TypesVisitor::visitDictionary(const DictionaryPtr& p)
+Gen::TypesVisitor::visitDictionary(const DictionaryPtr& p)
 {
+//     cout<<"DEBUG: Gen::visitDictionary()"<<endl;
     string name = fixKwd(p->name());
     string scope = fixKwd(p->scope());
 
     H << nl << "std::string toString( const " << scope.substr(2)<<name << "& obj, int recurse=1000, int expand=-1, int indent=0 );";
 
-    C << "\n\nstring";
+    C << nl;
+    C << nl << "string";
     C << nl << "toString( const " << scope.substr(2)<<name << "& obj, int recurse, int expand, int indent )";
     C << sb;
     C << nl << "return dictToString< " << scope.substr(2)<<name << "," << scope.substr(2)<<name << "::const_iterator >( obj, recurse-1, expand, indent+2 );";
@@ -396,12 +409,12 @@ Slice::Gen::TypesVisitor::visitDictionary(const DictionaryPtr& p)
 }
 
 void
-Slice::Gen::TypesVisitor::visitConst(const ConstPtr& p)
+Gen::TypesVisitor::visitConst(const ConstPtr& p)
 {
 }
 
 void
-Slice::Gen::TypesVisitor::emitUpcall(const ExceptionPtr& base, const string& call, bool isLocal)
+Gen::TypesVisitor::emitUpcall(const ExceptionPtr& base, const string& call, bool isLocal)
 {
     C.zeroIndent();
     C << nl << "#if defined(_MSC_VER) && (_MSC_VER < 1300) // VC++ 6 compiler bug"; // COMPILERBUG
@@ -418,7 +431,7 @@ Slice::Gen::TypesVisitor::emitUpcall(const ExceptionPtr& base, const string& cal
 }
 
 bool
-Slice::Gen::setUseWstring(ContainedPtr p, list<bool>& hist, bool use)
+Gen::setUseWstring(ContainedPtr p, list<bool>& hist, bool use)
 {
     hist.push_back(use);
     StringList metaData = p->getMetaData();
@@ -434,7 +447,7 @@ Slice::Gen::setUseWstring(ContainedPtr p, list<bool>& hist, bool use)
 }
 
 bool
-Slice::Gen::resetUseWstring(list<bool>& hist)
+Gen::resetUseWstring(list<bool>& hist)
 {
     bool use = hist.back();
     hist.pop_back();

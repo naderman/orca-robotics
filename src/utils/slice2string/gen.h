@@ -14,7 +14,7 @@
 #include <Slice/Parser.h>
 #include <IceUtil/OutputUtil.h>
 
-namespace Slice
+namespace slice2string
 {
 
 class Gen : private ::IceUtil::noncopyable
@@ -40,9 +40,9 @@ public:
 
     bool operator!() const; // Returns true if there was a constructor error
 
-    void generate(const UnitPtr&);
+    void generate(const Slice::UnitPtr&);
     
-    static bool setUseWstring(ContainedPtr, std::list<bool>&, bool);
+    static bool setUseWstring(Slice::ContainedPtr, std::list<bool>&, bool);
     static bool resetUseWstring(std::list<bool>&);
 
 private:
@@ -66,13 +66,13 @@ private:
     // custom option
     std::string _module;
 
-    class GlobalIncludeVisitor : private ::IceUtil::noncopyable, public ParserVisitor
+    class GlobalIncludeVisitor : private ::IceUtil::noncopyable, public Slice::ParserVisitor
     {
     public:
 
         GlobalIncludeVisitor(::IceUtil::Output&);
 
-        virtual bool visitModuleStart(const ModulePtr&);
+        virtual bool visitModuleStart(const Slice::ModulePtr&);
 
     private:
 
@@ -81,29 +81,29 @@ private:
         bool _finished;
     };
 
-    class TypesVisitor : private ::IceUtil::noncopyable, public ParserVisitor
+    class TypesVisitor : private ::IceUtil::noncopyable, public Slice::ParserVisitor
     {
     public:
 
         TypesVisitor(::IceUtil::Output&, ::IceUtil::Output&, const std::string&, bool);
 
-        virtual bool visitModuleStart(const ModulePtr&);
-        virtual void visitModuleEnd(const ModulePtr&);
-        virtual bool visitClassDefStart(const ClassDefPtr&);
-        virtual void visitClassDefEnd(const ClassDefPtr&);
-        virtual bool visitExceptionStart(const ExceptionPtr&);
-        virtual void visitExceptionEnd(const ExceptionPtr&);
-        virtual bool visitStructStart(const StructPtr&);
-        virtual void visitStructEnd(const StructPtr&);
-        virtual void visitSequence(const SequencePtr&);
-        virtual void visitDictionary(const DictionaryPtr&);
-        virtual void visitEnum(const EnumPtr&);
-        virtual void visitConst(const ConstPtr&);
-        virtual void visitDataMember(const DataMemberPtr&);
+        virtual bool visitModuleStart(const Slice::ModulePtr&);
+        virtual void visitModuleEnd(const Slice::ModulePtr&);
+        virtual bool visitClassDefStart(const Slice::ClassDefPtr&);
+        virtual void visitClassDefEnd(const Slice::ClassDefPtr&);
+        virtual bool visitExceptionStart(const Slice::ExceptionPtr&);
+        virtual void visitExceptionEnd(const Slice::ExceptionPtr&);
+        virtual bool visitStructStart(const Slice::StructPtr&);
+        virtual void visitStructEnd(const Slice::StructPtr&);
+        virtual void visitSequence(const Slice::SequencePtr&);
+        virtual void visitDictionary(const Slice::DictionaryPtr&);
+        virtual void visitEnum(const Slice::EnumPtr&);
+        virtual void visitConst(const Slice::ConstPtr&);
+        virtual void visitDataMember(const Slice::DataMemberPtr&);
 
     private:
 
-        void emitUpcall(const ExceptionPtr&, const std::string&, bool = false);
+        void emitUpcall(const Slice::ExceptionPtr&, const std::string&, bool = false);
 
         ::IceUtil::Output& H;
         ::IceUtil::Output& C;
