@@ -10,7 +10,7 @@
 
 #include "imageutils.h"
 
-#include <orcaobj/orcaobj.h>
+#include <orcaifacestring/image.h>
 
 using namespace std;
 
@@ -41,7 +41,7 @@ orca::ImageFormat orcaImageMode( int mode )
         return orca::ImageFormatModeGray;
     default:
         orca::ImageFormat format = orca::ImageFormatModeNfi;
-        cout << "WARNING(conversions.cpp): Unknown colour mode: " << orcaobj::toString( format ) << endl;
+        cout << "WARNING(conversions.cpp): Unknown colour mode: " << ifacestring::toString( format ) << endl;
         return orca::ImageFormatModeNfi;
     }
 
@@ -127,7 +127,7 @@ numChannels( const orca::ImageFormat& format )
             break;
         case orca::ImageFormatModeNfi:
             cout << "WARNING(imageutils.cpp): Assuming image mode " 
-                    << orcaobj::toString( format ) << " is in BGR format." << endl;
+                    << ifacestring::toString( format ) << " is in BGR format." << endl;
             return 3;
             break;              
         default:
