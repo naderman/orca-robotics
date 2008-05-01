@@ -31,6 +31,8 @@ namespace orcaicegrid
 class AbstractIceGridManager
 {
 public:
+    virtual ~AbstractIceGridManager() {};
+
     //! Tells IceGrid to get app info.
     virtual IceGrid::ApplicationInfo getApplicationInfo( const std::string &appName, int timeoutMs=-1 )=0;
 
