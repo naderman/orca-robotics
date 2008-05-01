@@ -18,6 +18,7 @@ IF( build )
     INCLUDE( ${HYDRO_CMAKE_DIR}/UseHydro.cmake )
     INCLUDE( ${HYDRO_CMAKE_DIR}/UseQt.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseBasicRules.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseIceBasics.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseLibProjectInterfaces.cmake )
     
     FILE( GLOB hdrs *.h )
