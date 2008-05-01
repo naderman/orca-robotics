@@ -11,7 +11,7 @@
 #include <iostream>
 #include <orcaice/orcaice.h>
 #include <orcaobj/orcaobj.h>
-
+#include <orcaifacestring/image.h>
 #include <orcaimage/imageutils.h>
 
 #include <hydroimage/imageformats.h>
@@ -52,7 +52,7 @@ MainThread::MainThread( const orcaice::Context &context ) :
         config_.formats.at(i) = (hydroimage::ImageFormat)orcaobj::getPropertyAsImageFormatWithDefault( prop, prefixSS.str() + "ImageFormat", orca::ImageFormatModeBGR8 );
         bpp = orcaimage::numChannels((orca::ImageFormat)config_.formats.at(i));
         std::stringstream ss;
-        ss << "bpp: " << bpp << " format: " << orcaobj::toString((orca::ImageFormat)config_.formats.at(i)) << endl;
+        ss << "bpp: " << bpp << " format: " << ifacestring::toString((orca::ImageFormat)config_.formats.at(i)) << endl;
         context_.tracer().info(ss.str());
         config_.sizes.at(i) = bpp*config_.widths.at(i)*config_.heights.at(i);
     }

@@ -13,6 +13,7 @@
 #include <orcaobj/orcaobj.h>
 #include <orcaimage/colourconversions.h>
 #include <orcaimage/imageutils.h>
+#include <orcaifacestring/image.h>
 #include <orcaifaceimpl/bufferedconsumers.h>
 
 #include "mainthread.h"
@@ -181,7 +182,7 @@ MainThread::walk()
 void 
 MainThread::initCvImage()    
 {
-    cout << "TRACE(imagehandler.cpp):Image Format - " << orcaobj::toString( descr_.at(0)->format ) << endl;
+    cout << "TRACE(imagehandler.cpp):Image Format - " << ifacestring::toString( descr_.at(0)->format ) << endl;
     
     // should this be done at the imageserver level and depend on the mode and format?
     // maybe nChannels should be in the Camera object
