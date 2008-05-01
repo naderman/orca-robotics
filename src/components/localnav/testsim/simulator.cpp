@@ -189,7 +189,7 @@ Simulator::time() const
 
     orca::Time t;
     t.seconds = (int)sec;
-    t.useconds = (sec-(int)sec) * 1e6;
+    t.useconds = (int)((sec-(int)sec) * 1e6);
 
     return t;
 }
