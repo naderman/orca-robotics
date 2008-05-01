@@ -16,8 +16,8 @@
 #include <gbxsickacfr/gbxutilacfr/mathdefs.h>
 #include <orcaice/timeutils.h>
 
-#include <orcaifacestring/image.h>
 #include <orcaifacestring/gps.h>
+#include <orcaifacestring/image.h>
 #include <orcaifacestring/pathplanner2d.h>
 #include <orcaifacestring/vehicledescription.h>
 #include <orcaifacestring/wifi.h>
@@ -150,60 +150,19 @@ toTracerTopic( const orca::FQComponentName& fqCName )
 // toString()
 //*************************
 
-// std::string
-// toString( const orca::ImageFormat& obj )
-// {
-//     switch(obj) {
-//     case orca::ImageFormatModeNfi:
-//         return "ImageFormatModeNfi";
-//     case orca::ImageFormatModeBinary:
-//         return "ImageFormatModeBinary";
-//     case orca::ImageFormatModeGray:
-//         return "ImageFormatModeGray";
-//     case orca::ImageFormatModeRGB8:
-//         return "ImageFormatModeRGB8";
-//     case orca::ImageFormatModeRGBA8:
-//         return "ImageFormatModeRGBA8";
-//     case orca::ImageFormatModeARGB8:
-//         return "ImageFormatModeARGB8";
-//     case orca::ImageFormatModeBGR8:
-//         return "ImageFormatModeBGR8";
-//     case orca::ImageFormatModeBGRA8:
-//         return "ImageFormatModeBGRA8";
-//     case orca::ImageFormatModeYUV422:
-//         return "ImageFormatModeYUV422";
-//     case orca::ImageFormatBayerBg:
-//         return "ImageFormatBayerBg";
-//     case orca::ImageFormatBayerGb:
-//         return "ImageFormatBayerGb";
-//     case orca::ImageFormatBayerRg:
-//         return "ImageFormatBayerRg";
-//     case orca::ImageFormatBayerGr:
-//         return "ImageFormatBayerGr";
-//     case orca::ImageFormatDigiclopsStereo:
-//         return "ImageFormatDigiclopsStereo";
-//     case orca::ImageFormatDigiclopsRight:
-//         return "ImageFormatDigiclopsRight";
-//     case orca::ImageFormatDigiclopsBoth:
-//         return "ImageFormatDigiclopsBoth";
-//     default:
-//         return "?? Unknown ??";
-//     }
-// }
-
-// int
-// toImageFormat( const std::string& s, orca::ImageFormat& obj )
-// {
-//     for(int i = 0; i < orca::ImageFormatEnumSize - 1; i++)
-//     {
-//         if(s == toString((orca::ImageFormat)i)) 
-//         {
-//             obj = (orca::ImageFormat)i;
-//             return 0;
-//         }
-//     }
-//     return -1;
-// }
+int
+toImageFormat( const std::string& s, orca::ImageFormat& obj )
+{
+    for(int i = 0; i < orca::ImageFormatEnumSize - 1; i++)
+    {
+        if(s == ifacestring::toString((orca::ImageFormat)i)) 
+        {
+            obj = (orca::ImageFormat)i;
+            return 0;
+        }
+    }
+    return -1;
+}
 
 
 std::string 
