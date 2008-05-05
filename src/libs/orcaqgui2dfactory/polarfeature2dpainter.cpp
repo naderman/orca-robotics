@@ -96,7 +96,7 @@ PolarFeature2dPainter::setOffset( orca::Frame3d &offset )
     if ( !( offset.o.r == 0.0 || NEAR( offset.o.r,M_PI,0.01 ) ) )
     {
         stringstream ss;
-        ss << "LaserScanner2dPainter::setOffset(): Can only properly deal with (possibly-flipped) horizontal lasers.  Offset: " << orcaobj::toString(offset);
+        ss << "PolarFeature2dPainter::setOffset(): Can only properly deal with (possibly-flipped) horizontal lasers.  Offset: " << orcaobj::toString(offset);
         throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, ss.str() );
     }
 
@@ -108,7 +108,7 @@ PolarFeature2dPainter::setOffset( orca::Frame3d &offset )
     if ( offset.p.z != 0.0 )
     {
         stringstream ss;
-        ss << "LaserScanner2dPainter::setOffset(): Cannot properly deal with non-zero z.  Offset: " << orcaobj::toString(offset);
+        ss << "PolarFeature2dPainter::setOffset(): Cannot properly deal with non-zero z.  Offset: " << orcaobj::toString(offset);
         throw hydroqgui::Exception( ERROR_INFO, ss.str() );
     }
 
@@ -116,7 +116,7 @@ PolarFeature2dPainter::setOffset( orca::Frame3d &offset )
     if ( offsetPitch_ != 0.0 )
     {
         stringstream ss;
-        ss << "LaserScanner2dPainter::setOffset(): Cannot properly deal with non-zero pitch.  Offset: " << orcaobj::toString(offset);
+        ss << "PolarFeature2dPainter::setOffset(): Cannot properly deal with non-zero pitch.  Offset: " << orcaobj::toString(offset);
         throw hydroqgui::Exception( ERROR_INFO, ss.str() );        
     }
 
