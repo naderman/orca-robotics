@@ -36,7 +36,11 @@ LaserScanner2dPainter::LaserScanner2dPainter( QColor outlineColor,
       outlineColor_(outlineColor),
       outlineThickness_(outlineThickness),
       brightReturnWidth_(brightReturnWidth),
-      isOffsetSet_(false)
+      offsetX_(0.0),
+      offsetY_(0.0),
+      offsetYaw_(0.0),
+      offsetPitch_(0.0),
+      isUpsideDown_(false)
 {
     fillColor_ = QColor(204,204,255,127);
 }
@@ -58,7 +62,6 @@ LaserScanner2dPainter::setOffset( orca::Frame3d &offset )
     offsetY_   = offset.p.y;
     offsetYaw_ = offset.o.y;
     offsetPitch_ = offset.o.p;
-    isUpsideDown_ = false;
 
     // for 2D display, the only thing we know how to paint
     // is a laser mounted horizontally, either right-way-up or upside-down
@@ -80,16 +83,12 @@ LaserScanner2dPainter::setOffset( orca::Frame3d &offset )
         ss << "LaserScanner2dPainter::setOffset(): Cannot properly deal with non-zero z.  Offset: " << orcaobj::toString(offset);
         throw hydroqgui::Exception( ERROR_INFO, ss.str() );
     }
-
-    isOffsetSet_ = true;
 }
 
 void
 LaserScanner2dPainter::setData( const orca::RangeScanner2dDataPtr & data )
 {
     if ( data==0 ) return;
-
-    assert( isOffsetSet_ );
 
     // Check if this thing is a laser scan.
     orca::LaserScanner2dDataPtr laserScan = orca::LaserScanner2dDataPtr::dynamicCast( data );

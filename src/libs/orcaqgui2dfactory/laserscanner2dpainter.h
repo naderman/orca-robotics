@@ -78,7 +78,6 @@ class LaserScanner2dPainter
     double offsetY_;
     double offsetYaw_;
 	double offsetPitch_;
-    bool   isOffsetSet_;
 
     bool isUpsideDown_;
 };
