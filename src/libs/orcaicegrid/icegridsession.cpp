@@ -60,6 +60,11 @@ IceGridSession::tryCreateSession()
             context_.tracer().error( "IceGridSession: Could not contact registry" );
             return false;
         }
+
+        Ice::ConnectionPtr conn = registry->ice_getConnection();
+        cout<<"Connected to the Registry:"<<endl;
+        cout<<"Proxy\t\t[ "<<registry->ice_toString()<<" ]"<<endl;
+        cout<<"Connection\t[ "<<conn->toString()<<" ]"<<endl;
     }
     catch ( const Ice::CommunicatorDestroyedException & ) {
         // This is OK, we're shutting down
