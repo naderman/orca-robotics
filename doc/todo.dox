@@ -90,6 +90,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @par Removed
 
+- IceGridMon utility because the standard IceGrid GUI is very good.
+
 @section orca_doc_history_2100 Changes in Release 2.10.0
 
 @par Project wide
