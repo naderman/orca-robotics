@@ -89,13 +89,13 @@ void
 IceGridManager::performOp( Operation &op, int timeoutMs )
 {
     // serialize access to admin proxy
-        IceUtil::Mutex::Lock lock(adminMutex_);
+//         IceUtil::Mutex::Lock lock(adminMutex_);
     // minimize critical section in order to be able to perform multiple operations
     // simultaneously
     IceGrid::AdminPrx iceGridAdmin;
     gbxsickacfr::gbxutilacfr::Tracer* tracer;
     {
-//         IceUtil::Mutex::Lock lock(adminMutex_);
+        IceUtil::Mutex::Lock lock(adminMutex_);
 
         if ( !iceGridAdmin_ ) {
             string warn = "Operation "+op.toString()+" could not be performed because the proxy to IceGrid/Admin is NULL. "
@@ -103,9 +103,13 @@ IceGridManager::performOp( Operation &op, int timeoutMs )
             throw SessionNotConnectedException( ERROR_INFO, warn );
         }
 
+        // NOTE: cannot currently change timeout because changing timeout invalidates the secure session!
         // use the specified timeout
-//         iceGridAdmin = IceGrid::AdminPrx::uncheckedCast( iceGridAdmin_->ice_timeout( timeoutMs ) );
-        iceGridAdmin = iceGridAdmin_;
+//         if ( timeoutMs>0 )
+//             iceGridAdmin = IceGrid::AdminPrx::uncheckedCast( iceGridAdmin_->ice_timeout( timeoutMs ) );
+//         else
+            iceGridAdmin = iceGridAdmin_;
+
         tracer = &context_.tracer();
     }
     // end of critical section
@@ -130,17 +134,17 @@ IceGridManager::performOp( Operation &op, int timeoutMs )
                 <<timer.elapsedSec()<<"s : "<<e;
     }
     catch ( const Ice::TimeoutException &e ) {
-        exceptionSS << "IceGridManager: "<<op.toString()<<"(): ccaught exception after "
+        exceptionSS << "IceGridManager: "<<op.toString()<<"(): caught exception after "
                 <<timer.elapsedSec()<<"s : "<<e;
     }
 
     tracer->error( exceptionSS.str() );
     // destroy old admin proxy, it's no longer valid
-    {
+//     {
 //         IceUtil::Mutex::Lock lock(adminMutex_);
-        iceGridAdmin_ = 0;
-    }
-    tryCreateSession();
+//         iceGridAdmin_ = 0;
+//     }
+//     tryCreateSession();
 
     throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, exceptionSS.str() );    
 }
