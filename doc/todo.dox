@@ -54,6 +54,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 @par Project wide
 - Build system
     - Big cleanup of CMake scripts for generating interface code.
+    - cmake files updated for cmake 2.6
+
 @par New interfaces
 @par New components
 @par New utilities
