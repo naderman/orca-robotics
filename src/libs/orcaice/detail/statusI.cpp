@@ -26,19 +26,19 @@ convert( const hydroiceutil::NameStatusMap &internal, orca::SubsystemsStatus &ne
     {
         switch ( it->second.type ) 
         {
-        case gbxsickacfr::gbxutilacfr::Status::Initialising :
+        case gbxsickacfr::gbxutilacfr::SubsystemStatusInitialising :
             network[it->first].type = orca::SubsystemStatusInitialising;
             break;
-        case gbxsickacfr::gbxutilacfr::Status::Ok :
+        case gbxsickacfr::gbxutilacfr::SubsystemStatusOk :
             network[it->first].type = orca::SubsystemStatusOk;
             break;
-        case gbxsickacfr::gbxutilacfr::Status::Warning :
+        case gbxsickacfr::gbxutilacfr::SubsystemStatusWarning :
             network[it->first].type = orca::SubsystemStatusWarning;
             break;
-        case gbxsickacfr::gbxutilacfr::Status::Fault :
+        case gbxsickacfr::gbxutilacfr::SubsystemStatusFault :
             network[it->first].type = orca::SubsystemStatusFault;
             break;
-        case gbxsickacfr::gbxutilacfr::Status::Stalled :
+        case gbxsickacfr::gbxutilacfr::SubsystemStatusStalled :
             network[it->first].type = orca::SubsystemStatusStalled;
             break;
         }
