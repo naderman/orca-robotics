@@ -188,28 +188,6 @@ getTestPath( const hydroogmap::OgMap &ogMap,
 }
 
 namespace {
-
-    void
-    placeObstacle( hydroogmap::OgMap &ogMap,
-                   double x,
-                   double y,
-                   double radius )
-    {
-        int gridX, gridY;
-        ogMap.getCellIndices( x, y, gridX, gridY );
-
-        int radiusInCellsX = (int)(radius / ogMap.metresPerCellX());
-        int radiusInCellsY = (int)(radius / ogMap.metresPerCellY());
-        for ( int i=-radiusInCellsX; i < radiusInCellsX; i++ )
-        {
-            for ( int j=-radiusInCellsY; j < radiusInCellsY; j++ )
-            {
-                // if ( hypot( i, j ) < radiusInCells )
-                if ( ogMap.cellWithinMap(gridX+i,gridY+j) )
-                    ogMap.gridCell(gridX+i,gridY+j) = hydroogmap::CELL_OCCUPIED;
-            }
-        }
-    }
     
     void
     placeRoom( hydroogmap::OgMap &ogMap )
@@ -294,7 +272,7 @@ hydroogmap::OgMap setupMap( double worldSize,
             i--;
             continue;
         }
-        placeObstacle( ogMap, x, y, obsRadius );
+        hydrosim2d::placeSquareObstacle( ogMap, x, y, obsRadius*2.0 );
     }
 
     if ( useRoom )

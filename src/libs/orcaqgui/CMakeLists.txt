@@ -10,7 +10,7 @@ GBX_REQUIRE_VAR( build LIB ${LIB_NAME} QT4_FOUND "Qt4 not found" )
 SET( ext_libs HydroQGui )
 GBX_REQUIRE_INSTALLS( build LIB ${LIB_NAME} ${ext_libs} )
 
-SET( int_libs OrcaQt OrcaObjects )
+SET( int_libs OrcaQt OrcaObjects OrcaQGuiElementModelView OrcaQCompModel )
 GBX_REQUIRE_TARGETS( build LIB ${LIB_NAME} ${int_libs} )
 
 IF( build )
