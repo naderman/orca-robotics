@@ -31,6 +31,8 @@ ComponentThread::walk()
     bool hasStatusInterface = (interfaceFlag_ & StatusInterface);
     bool hasHomeInterface   = (interfaceFlag_ & HomeInterface);
 
+    const int sleepIntervalMs = 1000;
+
     try {
         while ( !isStopping() )
         {
@@ -53,7 +55,7 @@ ComponentThread::walk()
                 status_.process();
             }
 
-            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
+            IceUtil::ThreadControl::sleep(IceUtil::Time::milliSeconds(sleepIntervalMs));
         }
     }
     catch ( Ice::CommunicatorDestroyedException & )

@@ -54,16 +54,16 @@ StatusI::StatusI( const orcaice::Context& context ) :
     hydroiceutil::LocalStatus( 
             context.tracer(),
             hydroutil::Properties( context.properties()->getPropertiesForPrefix("Orca.Status."),"Orca.Status.") ), 
-    topic_(0),
-    publisher_(0),
+    topicPrx_(0),
+    publisherPrx_(0),
     context_(context)
 {
-    IceUtil::Mutex::Lock lock(mutex_);
+//     IceUtil::Mutex::Lock lock(mutex_);
 
     orca::FQTopicName fqTName = orcaice::toStatusTopic( context_.name() );
     topicName_ = orcaice::toString( fqTName );
 
-        // get properties for our component
+    // get properties for our component
     Ice::PropertiesPtr props = context_.properties();
 
     // are we required to connect to status topic? (there's always default value for this property)
@@ -77,29 +77,19 @@ StatusI::StatusI( const orcaice::Context& context ) :
     statusData_.timeUp  = 0;
 }
 
-StatusI::~StatusI()
+void 
+StatusI::publishEvent( const hydroiceutil::NameStatusMap& subsystems )
 {
-}
+    // protect status data structure
+    IceUtil::Mutex::Lock lock(mutex_);
 
-void
-StatusI::setStatusData( const hydroiceutil::NameStatusMap &subsystemStatus )
-{
     orcaice::setToNow( statusData_.timeStamp );
 
     statusData_.name = context_.name();
-
     statusData_.timeUp = (Ice::Int)upTimer_.elapsedSec();
 
-    convert( subsystemStatus, statusData_.subsystems );
-}
+    convert( subsystems, statusData_.subsystems );
 
-void 
-StatusI::publish()
-{
-//     cout<<"StatusI::publish()"<<endl;
-    IceUtil::Mutex::Lock lock(mutex_);
-
-    setStatusData( subsystems_ );
     sendToIceStorm( statusData_ );
 }
 
@@ -109,7 +99,7 @@ StatusI::sendToIceStorm( const orca::StatusData &statusData )
     // send data
     try
     {
-        publisher_->setData( statusData );
+        publisherPrx_->setData( statusData );
     }
     catch ( const Ice::CommunicatorDestroyedException & ) // we are not using the exception
     {
@@ -158,37 +148,37 @@ StatusI::icestormConnectFailed( const std::string &topicName,
 bool
 StatusI::connectToIceStorm()
 {
-    topic_     = 0;
-    publisher_ = 0;
+    topicPrx_     = 0;
+    publisherPrx_ = 0;
 
     try
     {
-        topic_ = orcaice::connectToTopicWithString<orca::StatusConsumerPrx>(
-            context_, publisher_, topicName_ );
+        topicPrx_ = orcaice::connectToTopicWithString<orca::StatusConsumerPrx>(
+            context_, publisherPrx_, topicName_ );
     }
     catch ( const gbxsickacfr::gbxutilacfr::Exception & e )
     {
         initTracerError( std::string("Caught exception while connecting to IceStorm: ")+e.what() );
-        icestormConnectFailed( topicName_, publisher_, isStatusTopicRequired_ );
+        icestormConnectFailed( topicName_, publisherPrx_, isStatusTopicRequired_ );
     } // catch
     catch ( Ice::Exception &e )
     {
         std::stringstream s;
         s << "Caught exception while connecting to IceStorm: " << e;
         initTracerError( s.str() );
-        icestormConnectFailed( topicName_, publisher_, isStatusTopicRequired_ );
+        icestormConnectFailed( topicName_, publisherPrx_, isStatusTopicRequired_ );
     }
     catch ( ... )
     {
         initTracerError( "Caught unknown exception while connecting to IceStorm." );
-        icestormConnectFailed( topicName_, publisher_, isStatusTopicRequired_ );
+        icestormConnectFailed( topicName_, publisherPrx_, isStatusTopicRequired_ );
     }
 
-    if ( publisher_ ) {
+    if ( publisherPrx_ ) {
         initTracerInfo( context_.tag()+": Status connected to "+topicName_ );
     }
 
-    return publisher_ != 0;
+    return publisherPrx_ != 0;
 }
 
 orca::StatusData
@@ -205,35 +195,52 @@ StatusI::getData(const ::Ice::Current& ) const
 void
 StatusI::subscribe(const ::orca::StatusConsumerPrx& subscriber, const ::Ice::Current&)
 {
-    if ( !topic_ ) {
-        throw orca::SubscriptionFailedException("Component does not have a topic to publish its status.");
-    }
-    
+    context_.tracer().debug( "StatusI::subscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
+    // see Ice Manual sec.45.6 "Publishing to a specific subscriber"
+    orca::StatusConsumerPrx individualPublisher;
     try {
-        //cout<<"subscription request"<<endl;
-        topic_->subscribeAndGetPublisher( IceStorm::QoS(), subscriber->ice_twoway());
+        Ice::ObjectPrx pub = topicPrx_->subscribeAndGetPublisher( IceStorm::QoS(), subscriber->ice_twoway());
+        individualPublisher = orca::StatusConsumerPrx::uncheckedCast(pub);
     }
-    catch ( const IceStorm::AlreadySubscribed & e ) {
+    catch ( const IceStorm::AlreadySubscribed&  e ) {
         std::stringstream ss;
         ss <<"Request for subscribe but this proxy has already been subscribed, so I do nothing: "<< e;
-        context_.tracer().debug( ss.str(), 2 );
+        context_.tracer().info( ss.str() );    
+        return;
     }
-    catch ( const Ice::Exception & e ) {
+    catch ( const Ice::Exception&  e ) {
         std::stringstream ss;
-        ss <<"Failed to subscribe: "<< e;
+        ss <<"StatusI::subscribe: failed to subscribe: "<< e << endl;
         context_.tracer().warning( ss.str() );
         throw orca::SubscriptionFailedException( ss.str() );
+    }
+
+    // send all the information we have to the new subscriber (and to no one else)
+    IceUtil::Mutex::Lock lock(mutex_);
+    // Just update the timeUp
+    statusData_.timeUp = (Ice::Int)upTimer_.elapsedSec();
+
+//     cout<<"StatusI::internalSubscribe: sending status info to new subscriber: "<<endl;
+    try
+    {
+        individualPublisher->setData( statusData_ );   
+    }
+    catch ( const Ice::Exception&  e ) {
+        std::stringstream ss;
+        ss <<"StatusI::subscribe: failed to send information to the new subscriber: "<< e << endl;
+        context_.tracer().warning( ss.str() );
+        throw orca::OrcaException( ss.str() );
     }
 }
 
 void
 StatusI::unsubscribe(const ::orca::StatusConsumerPrx& subscriber, const ::Ice::Current&)
 {
-    if ( !topic_ ) {
+    if ( !topicPrx_ ) {
         return;
     }
     
     //cout<<"unsubscription request"<<endl;
-    topic_->unsubscribe( subscriber );
+    topicPrx_->unsubscribe( subscriber );
 }
 

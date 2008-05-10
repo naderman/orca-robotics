@@ -87,6 +87,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - OrcaIceGrid
   - fixed bug which could lead to uncaught exception under certain conditions when
     setting observers. (alexm)
+- OrcaIce
+  - subscribers to component's Status interface get current status on subscription (alex m)
 
 @par Removed
 

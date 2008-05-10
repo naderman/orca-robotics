@@ -28,8 +28,7 @@ class StatusI : public virtual orca::Status, public hydroiceutil::LocalStatus
 {
 public:
     
-    StatusI( const orcaice::Context & context );
-    virtual ~StatusI();
+    StatusI( const orcaice::Context& context );
 
     // from orca::Status interface: remote calls
     virtual ::orca::StatusData getData(const ::Ice::Current& ) const;
@@ -37,7 +36,7 @@ public:
     virtual void unsubscribe(const ::orca::StatusConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
 
     // from LocalStatus
-    virtual void publish();
+    virtual void publishEvent( const hydroiceutil::NameStatusMap& subsystems );
 
 private:
 
@@ -46,11 +45,10 @@ private:
                                 orca::StatusConsumerPrx &publisher,
                                 bool isStatusTopicRequired );
 
-    void setStatusData( const hydroiceutil::NameStatusMap &subsystemStatus );
     void sendToIceStorm( const orca::StatusData &statusData );
 
-    IceStorm::TopicPrx topic_;
-    orca::StatusConsumerPrx publisher_;
+    IceStorm::TopicPrx topicPrx_;
+    orca::StatusConsumerPrx publisherPrx_;
     std::string topicName_;
     bool isStatusTopicRequired_;
     mutable orca::StatusData statusData_;
