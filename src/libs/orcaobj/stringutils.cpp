@@ -1272,7 +1272,7 @@ toString( const orca::Waypoint2d &obj )
     std::ostringstream s;
     s << "target=" << toString(obj.target) 
       << ", tolerances=[" << obj.distanceTolerance << "," << obj.headingTolerance*180.0/M_PI << "deg]"
-      << ", timeTarget=[" << toString(obj.timeTarget) << "]"
+      << ", timeTarget=[" << obj.timeTarget.seconds << ":" << obj.timeTarget.useconds << "]"
       << ", maxApproach=[" << obj.maxApproachSpeed << "m/s," << obj.maxApproachTurnrate*180.0/M_PI << "deg/s]";
     return s.str();
 }

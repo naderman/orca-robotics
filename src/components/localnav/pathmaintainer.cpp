@@ -56,6 +56,12 @@ namespace {
                    << wp.maxApproachTurnrate*180.0/M_PI << "deg/s" << endl;
                 normal = false;
             }
+            if ( wp.timeTarget.seconds < 0 || wp.timeTarget.useconds < 0 )
+            {
+                ss << "Waypoint " << i << ": funky timeTarget: "
+                   << wp.timeTarget.seconds << ":" << wp.timeTarget.useconds << endl;
+                normal = false;
+            }
         }
         if ( !normal )
         {

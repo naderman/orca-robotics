@@ -51,6 +51,8 @@ void guiPathToOrcaPath( const GuiPath &in, orca::Path2d &out, int numLoops, floa
     
     int counter = 0;
     
+    // cout<<"TRACE(pathinput.cpp): timeOffset: " << timeOffset << endl;
+
     for (int k=0; k<numLoops; k++)
     {
         for (int i=0; i<in.size(); i++)
@@ -912,7 +914,7 @@ PathInput::savePath( const QString &fileName )
     // convert gui path to an orca path
     orca::Path2d orcaPath;
     guiPathToOrcaPath( guiPath_, orcaPath, wpWidget_->numberOfLoops(), timeOffset );
-    
+
     // write to a file
     QTextStream out(&file);
     out << QString(orcalogfactory::toLogString( orcaPath ).c_str());

@@ -521,7 +521,11 @@ PathFollower2dElement::sendPath( const PathFollowerInput &pathInput, bool activa
 
         orca::PathFollower2dData data;
         bool isOk = pathInput.getPath( data );
-        if (isOk) {
+
+
+        if (isOk) 
+        {
+            cout<<"TRACE(pathfollower2delement.cpp): setData() with data: " << orcaobj::toVerboseString(data) << endl;
             pathFollower2dPrx_->setData( data, activateImmediately );
         } else {
             humanManager_.showStatusMsg( hydroqguielementutil::IHumanManager::Warning, "No path to send!" );

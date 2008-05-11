@@ -68,6 +68,11 @@ PathFollowerInterface::PathFollowerInterface( const Clock &clock,
 void
 PathFollowerInterface::setData( const orca::PathFollower2dData &pathData, bool activateImmediately )
 {
+    stringstream ss;
+    ss<<"pathfollower2dI: Received new path: " << orcaobj::toVerboseString(pathData) << endl
+      <<"activateImmediately: " << activateImmediately << endl;
+    context_.tracer().debug( ss.str(), 2 );
+
     // Sanity check
     std::string reason;
     if ( !orcaobj::isSane( pathData, reason ) )
@@ -84,9 +89,6 @@ PathFollowerInterface::setData( const orca::PathFollower2dData &pathData, bool a
         ss << "Received dodgy path: " << orcaobj::toVerboseString(pathData) << endl << reason;
         context_.tracer().warning( ss.str() );
     }
-
-    cout<<"TRACE(pathfollower2dI.cpp): Received new path: " << orcaobj::toVerboseString(pathData) << endl;
-    cout<<"TRACE(pathfollower2dI.cpp): activateImmediately: " << activateImmediately << endl;
 
     pendingPathRequestStore_.set( pathData );
     if ( activateImmediately )
