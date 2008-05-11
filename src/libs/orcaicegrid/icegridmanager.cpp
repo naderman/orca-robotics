@@ -23,7 +23,7 @@ IceGridManager::IceGridManager( const orcaice::Context &context,
         const IceGrid::AdapterObserverPrx& adpt, 
         const IceGrid::ObjectObserverPrx& obj ) :
     IceGridSession( context, reg, node, app, adpt, obj ),
-//     timeoutSec_(0),
+    observer_(0),
     context_(context)     
 {
 }
@@ -47,6 +47,9 @@ IceGridManager::connectedEvent()
 //         stringstream ss;
 //         ss<<"got a list of "<<appNames.size()<<" app names";
 //         context_.tracer().info( ss.str() );
+
+        if ( observer_ )
+            observer_->stateChangedEvent( ManagerConnected );
         return true;
     }
     catch ( const Ice::CommunicatorDestroyedException & ) {
@@ -73,6 +76,9 @@ IceGridManager::disconnectedEvent()
 {
     IceUtil::Mutex::Lock lock(adminMutex_);
     iceGridAdmin_ = 0;
+
+    if ( observer_ )
+        observer_->stateChangedEvent( ManagerDisconnected );
     context_.tracer().info( "IceGridManager: Disconnected from Admin interface" );
 }
 
@@ -315,6 +321,24 @@ IceGridManager::getApplicationInfo( const std::string &appName, int timeoutMs )
     GetApplicationInfoOp op(appName);
     performOp( op, timeoutMs );
     return op.appInfo_;
+}
+
+IceGridManagerState 
+IceGridManager::state()
+{
+    IceUtil::Mutex::Lock lock(adminMutex_);
+    
+    if ( iceGridAdmin_ )
+        return ManagerConnected;
+    else
+        return ManagerDisconnected;
+}
+
+void 
+IceGridManager::setObserver( IceGridManagerObserver* observer )
+{
+    IceUtil::Mutex::Lock lock(adminMutex_);
+    observer_ = observer;
 }
 
 } // namespace

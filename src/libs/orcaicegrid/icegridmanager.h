@@ -53,6 +53,9 @@ public:
     virtual void startServer( const std::string &serverId, int timeoutMs=-1 );
     virtual void stopServer( const std::string &serverId, int timeoutMs=-1 );
 
+    virtual IceGridManagerState state();
+    virtual void setObserver( IceGridManagerObserver* observer );
+
     // from IceGridSession
     virtual bool connectedEvent();
     virtual void disconnectedEvent();
@@ -65,7 +68,7 @@ private:
     IceGrid::AdminPrx        iceGridAdmin_;
     IceUtil::Mutex   adminMutex_;
 
-//     int timeoutSec_;
+    IceGridManagerObserver* observer_;
 
     orcaice::Context context_;
 };

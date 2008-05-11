@@ -16,6 +16,19 @@
 namespace orcaicegrid
 {
 
+enum IceGridManagerState
+{
+    ManagerConnected,
+    ManagerDisconnected
+};
+
+class IceGridManagerObserver
+{
+public:
+    virtual ~IceGridManagerObserver() {};
+    virtual void stateChangedEvent( IceGridManagerState newState )=0;
+};
+
 //!
 //! @brief Creates and maintains an IceGrid admin session.
 //!
@@ -56,6 +69,12 @@ public:
 
     //! Tells IceGrid to stop server
     virtual void stopServer( const std::string &serverId, int timeoutMs=-1 )=0;
+
+    //! Returns current state of the manager
+    virtual IceGridManagerState state()=0;
+
+    //! There can be only one observer.
+    virtual void setObserver( IceGridManagerObserver* observer )=0;
 };
 
 } // namespace
