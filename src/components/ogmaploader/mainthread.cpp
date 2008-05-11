@@ -48,8 +48,16 @@ MainThread::walk()
     }
     else if ( driverName == "file" )
     {
-        loadMapFromFile( context_,theMap );
-        cout<<"TRACE(component.cpp): Loaded map: " << orcaobj::toString(theMap) << endl;
+        try {
+            loadMapFromFile( context_,theMap );
+            cout<<"TRACE(component.cpp): Loaded map: " << orcaobj::toString(theMap) << endl;
+        }
+        catch ( const gbxsickacfr::gbxutilacfr::Exception& e )
+        {   
+            // unrecoverable error
+            context_.shutdown();
+            throw;
+        }        
     }
     else
     {

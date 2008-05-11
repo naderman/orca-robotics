@@ -99,7 +99,15 @@ MainThread::walk()
     }
     else if ( driverName == "file" )
     {
-        loadMapFromFile( theMap, context_ );
+        try {
+            loadMapFromFile( theMap, context_ );
+        }
+        catch ( const gbxsickacfr::gbxutilacfr::Exception& e )
+        {   
+            // unrecoverable error
+            context_.shutdown();
+            throw;
+        }        
     }
     else
     {
