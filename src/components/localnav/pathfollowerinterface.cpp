@@ -8,47 +8,6 @@ using namespace std;
 
 namespace localnav {
 
-namespace {
-    
-    bool isDodgy( const orca::PathFollower2dData &pathData, std::string &reason )
-    {
-        std::stringstream ss;
-        bool dodgy=false;
-        for ( unsigned int i=0; i < pathData.path.size(); i++ )
-        {
-            const orca::Waypoint2d &wp = pathData.path[i];
-
-            if ( wp.distanceTolerance < 1e-3 )
-            {
-                ss << "Waypoint " << i << ": tiny distance tolerance: " 
-                   << wp.distanceTolerance << "m" << endl;
-                dodgy = true;
-            }
-            if ( wp.headingTolerance < 1e-3 )
-            {
-                ss << "Waypoint " << i << ": tiny heading tolerance: " 
-                   << wp.headingTolerance*180.0/M_PI << "deg" << endl;
-                dodgy = true;
-            }
-            if ( wp.maxApproachSpeed < 1e-3 )
-            {
-                ss << "Waypoint " << i << ": tiny maxApproachSpeed: " 
-                   << wp.maxApproachSpeed << "m/s" << endl;
-                dodgy = true;
-            }
-            if ( wp.maxApproachTurnrate < 1e-3 )
-            {
-                ss << "Waypoint " << i << ": tiny maxApproachTurnrate: " 
-                   << wp.maxApproachTurnrate*180.0/M_PI << "deg/s" << endl;
-                dodgy = true;
-            }
-        }
-        reason = ss.str();
-        return dodgy;
-    }
-
-}
-
 ////////////////////////////////////////////////////////////////////////////////
 
 PathFollowerInterface::PathFollowerInterface( const Clock &clock,
@@ -83,7 +42,7 @@ PathFollowerInterface::setData( const orca::PathFollower2dData &pathData, bool a
         throw orca::MalformedParametersException( reason );
     }
 
-    if ( isDodgy( pathData, reason ) )
+    if ( orcaobj::isPathSketchy( pathData, reason ) )
     {
         stringstream ss;
         ss << "Received dodgy path: " << orcaobj::toVerboseString(pathData) << endl << reason;

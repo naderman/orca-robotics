@@ -72,6 +72,9 @@ void saveToFile( const orca::FeatureMap2dData &fmap, FILE *f );
 //! Throws gbxsickacfr::gbxutilacfr::Exception on problems
 void loadFromFile( const std::string &filename, orca::FeatureMap2dData &fmap );
 
+bool
+isPathSketchy( const orca::PathFollower2dData& pathData, std::string &sketchyReason );
+
 //@}
 
 } // namespace

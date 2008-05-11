@@ -429,7 +429,55 @@ displayOgmapCell(unsigned char cell)
     return '-';
 }
 
+bool
+isPathSketchy( const orca::PathFollower2dData& pathData, std::string &sketchyReason )
+{
+    std::stringstream ss;
+    bool normal=true;
+    const float epsLinear     = 1e-3;
+    const float epsRotational = 1.0*M_PI/180.0;
+    for ( unsigned int i=0; i < pathData.path.size(); i++ )
+    {
+        const orca::Waypoint2d &wp = pathData.path[i];
 
-
+        if ( wp.distanceTolerance < epsLinear )
+        {
+            ss << "Waypoint " << i << ": possibly sketchy distance tolerance: " 
+               << wp.distanceTolerance << "m" << endl;
+            normal = false;
+        }
+        if ( wp.headingTolerance < epsRotational )
+        {
+            ss << "Waypoint " << i << ": possibly sketchy heading tolerance: " 
+               << wp.headingTolerance*180.0/M_PI << "deg" << endl;
+            normal = false;
+        }
+        if ( wp.maxApproachSpeed < epsLinear )
+        {
+            ss << "Waypoint " << i << ": possibly sketchy maxApproachSpeed: " 
+               << wp.maxApproachSpeed << "m/s" << endl;
+            normal = false;
+        }
+        if ( wp.maxApproachTurnrate < epsRotational )
+        {
+            ss << "Waypoint " << i << ": possibly sketchy maxApproachTurnrate: " 
+               << wp.maxApproachTurnrate*180.0/M_PI << "deg/s" << endl;
+            normal = false;
+        }
+        if ( wp.timeTarget.seconds < 0 || wp.timeTarget.useconds < 0 )
+        {
+            ss << "Waypoint " << i << ": funky timeTarget: "
+               << wp.timeTarget.seconds << ":" << wp.timeTarget.useconds << endl;
+            normal = false;
+        }
+    }
+    if ( !normal )
+    {
+        sketchyReason = ss.str();
+        return true;
+    }
+    else
+        return false;
+}
 
 } // namespace
