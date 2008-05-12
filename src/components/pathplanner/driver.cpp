@@ -201,13 +201,15 @@ Driver::convertAndAppend( const orca::Waypoint2d            &startWp,
                           orca::Path2d                      &path )
 {
     assert( pathCells.size() >= 2 );
-
+    assert( path.size() > 0 );
+    
     // Compute the length of each leg of the trip
     std::vector<double> legLengths;
     double totalLength=0;
     for ( uint i=1; i < pathCells.size(); i++ )
     {
         double thisLength = straightLineDist( pathCells[i-1], pathCells[i], ogMap );
+        thisLength += ogMap.metresPerCellX()/2.0; // avoid divide-by-zero
         legLengths.push_back( thisLength );
         totalLength += thisLength;
     }
@@ -244,6 +246,7 @@ Driver::convertAndAppend( const orca::Waypoint2d            &startWp,
         }
 
         wp.distanceTolerance = goalWp.distanceTolerance;
+        assert( (i-1) < legLengths.size() );
         wp.timeTarget = orcaice::toOrcaTime( orcaice::timeAsDouble(path.back().timeTarget) + timeLengthRatio * legLengths[i-1] );
         wp.maxApproachSpeed = goalWp.maxApproachSpeed;
         wp.maxApproachTurnrate = goalWp.maxApproachTurnrate;
