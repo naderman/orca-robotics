@@ -247,6 +247,16 @@ MainThread::walk()
                 if ( ret==0 ) {
                     haveTask = true;
                     context_.tracer().info("task arrived");  
+                    
+                    std::string sketchReason;
+                    if ( orcaobj::isPathSketchy( task.coarsePath, sketchReason ) )
+                    {
+                        stringstream ss;
+                        ss << "Incoming task is sketchy: " << orcaobj::toVerboseString(task)
+                           << endl << sketchReason;
+                        subStatus().warning( ss.str() );
+                    }
+
                     break;
                 }
                 subStatus().ok();

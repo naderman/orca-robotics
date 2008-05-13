@@ -42,7 +42,7 @@ PathFollowerInterface::setData( const orca::PathFollower2dData &pathData, bool a
         throw orca::MalformedParametersException( reason );
     }
 
-    if ( orcaobj::isPathSketchy( pathData, reason ) )
+    if ( orcaobj::isPathSketchy( pathData.path, reason ) )
     {
         stringstream ss;
         ss << "Received dodgy path: " << orcaobj::toVerboseString(pathData) << endl << reason;

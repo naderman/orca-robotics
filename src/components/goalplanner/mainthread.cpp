@@ -639,6 +639,14 @@ MainThread::walk()
             ssPath << "MainThread: Received path request: " << endl << orcaobj::toVerboseString(incomingPath);
             context_.tracer().debug( ssPath.str() );
 
+            string sketchReason;
+            if ( orcaobj::isPathSketchy( incomingPath.path, sketchReason ) )
+            {
+                stringstream ss;
+                ss << "Sketchy path: " << orcaobj::toVerboseString(incomingPath) << endl << "  " << sketchReason;
+                subStatus().warning( ss.str() );
+            }
+
             // special case 'stop': we received an empty path
             if (incomingPath.path.size()==0) 
             {

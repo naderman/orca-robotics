@@ -81,7 +81,7 @@ PathMaintainer::checkForNewPath()
         {
             // See if there's anything weird about it
             std::string reason;
-            if ( orcaobj::isPathSketchy( path_, reason ) )
+            if ( orcaobj::isPathSketchy( path_.path, reason ) )
             {
                 string warnString = "In newly-received path: \n"+reason;
                 context_.tracer().warning( warnString );                
