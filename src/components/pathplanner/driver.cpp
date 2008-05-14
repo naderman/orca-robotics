@@ -77,6 +77,101 @@ namespace {
         return hypot( c2WorldY-c1WorldY, c2WorldX-c2WorldX );
     }
 
+    double dist( const hydropathplan::Cell2D &c,
+                 const orca::Frame2d         &f,
+                 const hydroogmap::OgMap     &ogMap )
+    {
+        double cWorldX, cWorldY;
+        ogMap.getWorldCoords( c.x(), c.y(), cWorldX, cWorldY );
+        return hypot( f.p.y-cWorldY, f.p.x-cWorldX );
+    }
+
+    double dist( const orca::Frame2d         &f,
+                 const hydropathplan::Cell2D &c,
+                 const hydroogmap::OgMap     &ogMap )
+    { return dist( c, f, ogMap ); }
+
+    // Converts a discrete path through the OgMap (defined by at least two cells)
+    // into a continuous set of waypoints.
+    // The first cell represents 'start' and the last represents 'goal'.
+    std::vector<orca::Waypoint2d>
+    convert( const orca::Waypoint2d &start,
+             const orca::Waypoint2d &goal,
+             const hydropathplan::Cell2DVector &pathCells,
+             const hydroogmap::OgMap &ogMap )
+    {
+        assert( pathCells.size() > 1 );
+
+        // Make sure the start and end-points of pathCells coincide with 'start' and 'goal'
+        assert( (start.target.p.x - ogMap.worldXCoord(pathCells.front().x())) < ogMap.metresPerCellX() );
+        assert( (start.target.p.y - ogMap.worldXCoord(pathCells.front().y())) < ogMap.metresPerCellY() );
+        assert( (goal.target.p.x  - ogMap.worldXCoord(pathCells.back().x()))  < ogMap.metresPerCellX() );
+        assert( (goal.target.p.y  - ogMap.worldXCoord(pathCells.back().y()))  < ogMap.metresPerCellY() );
+
+        // Compute the length of each leg of the trip
+        std::vector<double> legLengths;
+        double totalLength=0;
+        for ( uint i=1; i < pathCells.size(); i++ )
+        {
+            double thisLength;
+            if ( i==1 )
+                thisLength = dist( start.target, pathCells[i], ogMap );
+            else if ( i == pathCells.size()-1 )
+                thisLength = dist( pathCells[i-1], goal.target, ogMap );
+            else
+                thisLength = straightLineDist( pathCells[i-1], pathCells[i], ogMap );
+
+            legLengths.push_back( thisLength );
+            totalLength += thisLength;
+        }
+
+        double totalTime = orcaice::timeDiffAsDouble(goal.timeTarget, start.timeTarget);
+        if ( totalTime < 0 )
+        {
+            stringstream ss;
+            ss << "Time of goal was _before_ time of start!" << endl
+               << "  startWp.timeTarget: " << orcaobj::toString(start.timeTarget) << endl
+               << "  goalWp.timeTarget:  " << orcaobj::toString(goal.timeTarget);
+            throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, ss.str() );
+        }
+        // double avgSpeed = totalLength/totalTime;
+
+        // Add each leg to the orca-style path
+        orca::Path2d path;
+        for ( uint i=0; i < pathCells.size(); i++ )
+        {
+            // For the start and goal, add the real thing
+            if ( i==0 ) { path.push_back( start ); continue; }
+            if ( i==path.size()-1 ) { path.push_back( goal ); continue; }
+
+            // Intermediate points
+            orca::Waypoint2d wp;
+            ogMap.getWorldCoords( pathCells[i].x(),
+                                  pathCells[i].y(),
+                                  wp.target.p.x,
+                                  wp.target.p.y );
+            wp.target.o   = 0;
+            wp.headingTolerance = 2*M_PI;
+
+            wp.distanceTolerance = goal.distanceTolerance;
+            wp.maxApproachSpeed = goal.maxApproachSpeed;
+            wp.maxApproachTurnrate = goal.maxApproachTurnrate;
+            if ( totalTime == 0 )
+            {
+                wp.timeTarget = goal.timeTarget;
+            }
+            else
+            {
+                const double fractionOfTotalLength = legLengths[i-1]/totalLength;
+                const double timeThisLeg = fractionOfTotalLength*totalTime;
+                wp.timeTarget = path.back().timeTarget;
+                orcaice::add( wp.timeTarget, timeThisLeg );
+            }
+            path.push_back( wp );
+        }
+
+        return path;
+    }
 }
 
 Driver::Driver( hydropathplan::IPathPlanner2d  &pathPlanner,
@@ -171,87 +266,22 @@ Driver::computePath( const orca::PathPlanner2dTask &task,
         const orca::Waypoint2d &goalWp = (*coarsePath)[i];
 
         hydroutil::CpuStopwatch stopWatch(true);
-        hydropathplan::Cell2DVector pathSegment = computePathSegment( startWp.target.p.x, 
-                                                                      startWp.target.p.y,
-                                                                      goalWp.target.p.x, 
-                                                                      goalWp.target.p.y );
+        hydropathplan::Cell2DVector pathCells = computePathSegment( startWp.target.p.x, 
+                                                                    startWp.target.p.y,
+                                                                    goalWp.target.p.x, 
+                                                                    goalWp.target.p.y );
         stringstream ss;
         ss << "Driver: Computing path segment took " << stopWatch.elapsedSeconds() << "s";
         context_.tracer().debug(ss.str(),1);
 
         // Add the segment to pathData
-        convertAndAppend( startWp, goalWp, pathSegment, ogMap_, path );
-    }
-}
+        std::vector<orca::Waypoint2d> finePathSegment = convert( startWp, 
+                                                                 goalWp,
+                                                                 pathCells,
+                                                                 ogMap_ );
 
-// This function adds a waypoint for every cell bar the first.
-// It has the following policy for orca::Waypoint2d parameters:
-// (1) All parameters are set as per the end-point, with the exception of the heading and tolerance:
-//       the end-point uses its params as specified, intermediate points use massive heading tolerance.
-// (3) Timing: timeSegment = timeTotal/lengthTotal * lengthSegment where
-//        timeSegment:   time to travel current segment
-//        timeTotal:     total time to get from start to goal
-//        lengthTotal:   total length which is a sum of line lengths connecting all waypoints
-//        lengthSegment: line length of the current segment
-void
-Driver::convertAndAppend( const orca::Waypoint2d            &startWp, 
-                          const orca::Waypoint2d            &goalWp,
-                          const hydropathplan::Cell2DVector &pathCells,
-                          const hydroogmap::OgMap           &ogMap,
-                          orca::Path2d                      &path )
-{
-    assert( pathCells.size() >= 2 );
-    assert( path.size() > 0 );
-    
-    // Compute the length of each leg of the trip
-    std::vector<double> legLengths;
-    double totalLength=0;
-    for ( uint i=1; i < pathCells.size(); i++ )
-    {
-        double thisLength = straightLineDist( pathCells[i-1], pathCells[i], ogMap );
-        thisLength += ogMap.metresPerCellX()/2.0; // avoid divide-by-zero
-        legLengths.push_back( thisLength );
-        totalLength += thisLength;
-    }
-
-    double timeTotal = orcaice::timeDiffAsDouble(goalWp.timeTarget, startWp.timeTarget);
-    if ( timeTotal < 0 )
-    {
-        stringstream ss;
-        ss << "Time of goal was _before_ time of start!" << endl
-           << "  startWp.timeTarget: " << orcaobj::toString(startWp.timeTarget) << endl
-           << "  goalWp.timeTarget:  " << orcaobj::toString(goalWp.timeTarget);
-        throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, ss.str() );
-    }
-    double timeLengthRatio = timeTotal/totalLength;
-
-    // Add each leg to the orca-style path
-    for ( uint i=1; i < pathCells.size(); i++ )
-    {
-        orca::Waypoint2d wp;
-
-        if ( i < pathCells.size()-1 )
-        {
-            ogMap.getWorldCoords( pathCells[i].x(),
-                                  pathCells[i].y(),
-                                  wp.target.p.x,
-                                  wp.target.p.y );
-            wp.target.o   = 0;
-            wp.headingTolerance = 2*M_PI;
-        }
-        else
-        {
-            wp.target = goalWp.target;
-            wp.headingTolerance = goalWp.headingTolerance;
-        }
-
-        wp.distanceTolerance = goalWp.distanceTolerance;
-        assert( (i-1) < legLengths.size() );
-        wp.timeTarget = orcaice::toOrcaTime( orcaice::timeAsDouble(path.back().timeTarget) + timeLengthRatio * legLengths[i-1] );
-        wp.maxApproachSpeed = goalWp.maxApproachSpeed;
-        wp.maxApproachTurnrate = goalWp.maxApproachTurnrate;
-
-        path.push_back( wp );
+        // Add to the path but ignore the first wp (it was the last wp of the previous segment)
+        path.insert( path.end(), finePathSegment.begin()+1, finePathSegment.end() );
     }
 }
 

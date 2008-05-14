@@ -38,12 +38,6 @@ public:
 
 private: 
 
-    void convertAndAppend( const orca::Waypoint2d                       &startWp, 
-                           const orca::Waypoint2d                       &goalWp, 
-                           const hydropathplan::Cell2DVector            &pathCells,
-                           const hydroogmap::OgMap                      &ogMap,
-                           orca::Path2d                                 &path );
-
     hydropathplan::Cell2DVector computePathSegment( double startX,
                                                     double startY,
                                                     double endX,
