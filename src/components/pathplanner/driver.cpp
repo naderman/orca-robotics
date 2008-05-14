@@ -134,15 +134,14 @@ namespace {
                << "  goalWp.timeTarget:  " << orcaobj::toString(goal.timeTarget);
             throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, ss.str() );
         }
-        // double avgSpeed = totalLength/totalTime;
 
         // Add each leg to the orca-style path
-        orca::Path2d path;
+        orca::Path2d orcaPath;
         for ( uint i=0; i < pathCells.size(); i++ )
         {
             // For the start and goal, add the real thing
-            if ( i==0 ) { path.push_back( start ); continue; }
-            if ( i==path.size()-1 ) { path.push_back( goal ); continue; }
+            if ( i==0 ) { orcaPath.push_back( start ); continue; }
+            if ( i==pathCells.size()-1 ) { orcaPath.push_back( goal ); continue; }
 
             // Intermediate points
             orca::Waypoint2d wp;
@@ -164,13 +163,13 @@ namespace {
             {
                 const double fractionOfTotalLength = legLengths[i-1]/totalLength;
                 const double timeThisLeg = fractionOfTotalLength*totalTime;
-                wp.timeTarget = path.back().timeTarget;
+                wp.timeTarget = orcaPath.back().timeTarget;
                 orcaice::add( wp.timeTarget, timeThisLeg );
             }
-            path.push_back( wp );
+            orcaPath.push_back( wp );
         }
 
-        return path;
+        return orcaPath;
     }
 }
 
