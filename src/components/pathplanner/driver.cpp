@@ -20,6 +20,16 @@ namespace pathplanner {
 
 namespace {
 
+    std::string toWorldString( const hydropathplan::Cell2D &c,
+                               const hydroogmap::OgMap &ogMap )
+    {
+        stringstream ss;
+        double cWorldX, cWorldY;
+        ogMap.getWorldCoords( c.x(), c.y(), cWorldX, cWorldY );
+        ss << "[" << cWorldX << ", " << cWorldY << "]";
+        return ss.str();
+    }
+
     bool isClearWorld( double x,
                        double y,
                        const hydroogmap::OgMap &ogMap,
@@ -103,10 +113,16 @@ namespace {
         assert( pathCells.size() > 1 );
 
         // Make sure the start and end-points of pathCells coincide with 'start' and 'goal'
-        assert( (start.target.p.x - ogMap.worldXCoord(pathCells.front().x())) < ogMap.metresPerCellX() );
-        assert( (start.target.p.y - ogMap.worldXCoord(pathCells.front().y())) < ogMap.metresPerCellY() );
-        assert( (goal.target.p.x  - ogMap.worldXCoord(pathCells.back().x()))  < ogMap.metresPerCellX() );
-        assert( (goal.target.p.y  - ogMap.worldXCoord(pathCells.back().y()))  < ogMap.metresPerCellY() );
+        if ( abs(start.target.p.x - ogMap.worldXCoord(pathCells.front().x())) > ogMap.metresPerCellX() ||
+             abs(start.target.p.y - ogMap.worldYCoord(pathCells.front().y())) > ogMap.metresPerCellY() ||
+             abs(goal.target.p.x  - ogMap.worldXCoord(pathCells.back().x()))  > ogMap.metresPerCellX() ||
+             abs(goal.target.p.y  - ogMap.worldYCoord(pathCells.back().y()))  > ogMap.metresPerCellY() )
+        {
+            cout << "ERROR(driver.cpp): start and goal wps aren't on first and last cells." << endl;
+            cout << "ERROR(driver.cpp): start: " << orcaobj::toString(start) << ", pathCells.front(): " << toWorldString(pathCells.front(),ogMap) << endl;
+            cout << "ERROR(driver.cpp): goal:  " << orcaobj::toString(goal) << ", pathCells.back(): " << toWorldString(pathCells.back(),ogMap) << endl;
+            assert( "bad path" && false );
+        }
 
         // Compute the length of each leg of the trip
         std::vector<double> legLengths;
