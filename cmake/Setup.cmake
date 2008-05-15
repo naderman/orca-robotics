@@ -208,11 +208,12 @@ INCLUDE( ${ORCA_CMAKE_DIR}/check_depend.cmake )
 
 # the RPATH to be used when installing
 SET( CMAKE_INSTALL_RPATH 
+        ${ICE_LIB_DIR}
         ${GEARBOX_LIB_DIR}
         ${HYDRO_LIB_DIR} 
-        ${ICE_INCLUDE_DIR}
-        ${ORCA_LIB_DIR}      # this is non-empty only for satellite projects
-        ${GBX_LIB_INSTALL_DIR} )
+        ${ORCA_LIB_DIR}        # this is where satellite projects found Orca
+        ${GBX_LIB_INSTALL_DIR} # this is where Orca project will install libs
+    )
 
 #
 # Some setup options are different for Orca itself and the satellite projects
