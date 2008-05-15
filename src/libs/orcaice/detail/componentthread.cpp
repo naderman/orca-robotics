@@ -84,8 +84,8 @@ ComponentThread::tryRegisterHome()
         // Open an admin session with the registry
         IceGrid::RegistryPrx registry = IceGrid::RegistryPrx::checkedCast(base);
         // This assumes no access control
-        std::string username = "componentthread-no-access-control-assumed";
-        std::string password = "componentthread-no-access-control-assumed";
+        std::string username = "componentthread-no-access-control";
+        std::string password = "componentthread-no-access-control";
         IceGrid::AdminSessionPrx adminSession = registry->createAdminSession( username, password );
 
         // use the adminSession to add our Home interface
@@ -96,6 +96,10 @@ ComponentThread::tryRegisterHome()
         catch ( const IceGrid::ObjectExistsException& ) {
             admin->updateObject( homePrx_ );
         }
+        // we don't need the session anymore
+        // (we can just leave it there and it would be destroyed eventually without being kept alive, but it's
+        // more transparent if we destroy it ourselves)
+        adminSession->destroy();
     }
     catch ( Ice::CommunicatorDestroyedException& ) 
     {
