@@ -266,8 +266,8 @@ hydroogmap::OgMap setupMap( double worldSize,
         }
         const double obsRadius = 0.5;
         // Don't allow an obstacle on the origin
-        if ( abs(x) < 4*obsRadius &&
-             abs(y) < 4*obsRadius )
+        if ( fabs(x) < 4*obsRadius &&
+             fabs(y) < 4*obsRadius )
         {
             i--;
             continue;

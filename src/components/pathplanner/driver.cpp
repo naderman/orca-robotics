@@ -113,10 +113,10 @@ namespace {
         assert( pathCells.size() > 1 );
 
         // Make sure the start and end-points of pathCells coincide with 'start' and 'goal'
-        if ( abs(start.target.p.x - ogMap.worldXCoord(pathCells.front().x())) > ogMap.metresPerCellX() ||
-             abs(start.target.p.y - ogMap.worldYCoord(pathCells.front().y())) > ogMap.metresPerCellY() ||
-             abs(goal.target.p.x  - ogMap.worldXCoord(pathCells.back().x()))  > ogMap.metresPerCellX() ||
-             abs(goal.target.p.y  - ogMap.worldYCoord(pathCells.back().y()))  > ogMap.metresPerCellY() )
+        if ( fabs(start.target.p.x - ogMap.worldXCoord(pathCells.front().x())) > ogMap.metresPerCellX() ||
+             fabs(start.target.p.y - ogMap.worldYCoord(pathCells.front().y())) > ogMap.metresPerCellY() ||
+             fabs(goal.target.p.x  - ogMap.worldXCoord(pathCells.back().x()))  > ogMap.metresPerCellX() ||
+             fabs(goal.target.p.y  - ogMap.worldYCoord(pathCells.back().y()))  > ogMap.metresPerCellY() )
         {
             cout << "ERROR(driver.cpp): start and goal wps aren't on first and last cells." << endl;
             cout << "ERROR(driver.cpp): start: " << orcaobj::toString(start) << ", pathCells.front(): " << toWorldString(pathCells.front(),ogMap) << endl;

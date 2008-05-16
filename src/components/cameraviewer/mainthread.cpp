@@ -121,7 +121,7 @@ MainThread::walk()
             // delay checks for sending objects
             int averageOver = 100;
             orcaice::setToNow( arrivalTime );
-            diff += abs(orcaice::timeDiffAsDouble( imageData.at(0)->timeStamp, arrivalTime ));
+            diff += fabs(orcaice::timeDiffAsDouble( imageData.at(0)->timeStamp, arrivalTime ));
             
             // throughput check
             if ((int)diff == 0)
