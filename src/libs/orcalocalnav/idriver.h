@@ -66,6 +66,10 @@ public:
                                    const orca::RangeScanner2dDescription &rangeScannerDescr ) const=0;
 };
 
+std::string toString( const IDriver::Inputs &inputs );
+inline std::ostream &operator<<( std::ostream &s, const IDriver &inputs )
+{ return s << inputs; }
+
 } // namespace
 
 // Function for dynamically instantiating drivers.

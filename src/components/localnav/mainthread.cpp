@@ -466,7 +466,23 @@ MainThread::walk()
             // The actual driver which determines the path and commands to send to the vehicle.
             // The odometry is required for the velocity, which isn't contained
             // in Localise2d.
-            hydronavutil::Velocity velocityCmd = driver_->getCommand( inputs );
+            hydronavutil::Velocity velocityCmd;
+            try {
+                velocityCmd = driver_->getCommand( inputs );
+            }
+            catch ( Ice::Exception &e )
+            {
+                stringstream ss;
+                ss << "While getting command from driver with inputs: " << orcalocalnav::toString(inputs) << " --> " << e;
+                throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, ss.str() );
+            }
+            catch ( std::exception &e )
+            {
+                stringstream ss;
+                ss << "While getting command from driver with inputs: " << orcalocalnav::toString(inputs) << " --> " << e.what();
+                throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, ss.str() );
+            }
+            
 
             if ( algorithmEvaluator_.get() )
                 timer.stop();
