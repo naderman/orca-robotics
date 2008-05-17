@@ -239,8 +239,8 @@ void PathPainter::paint( QPainter *painter, int z )
     painter->setMatrix( QMatrix() );
     
     painter->drawText( labelPos, "speed:" + QString::number( velocity, 'f', 2 ) + " m/s" );
-    labelPos.setY( labelPos.y() + lineSpacing );
-    painter->drawText( labelPos, "maxSpeed: " + QString::number( guiPath_[wpI].maxSpeed ) + " m/s" );
+//    labelPos.setY( labelPos.y() + lineSpacing );
+//    painter->drawText( labelPos, "maxSpeed: " + QString::number( guiPath_[wpI].maxSpeed ) + " m/s" );
     
     painter->restore();
 }
