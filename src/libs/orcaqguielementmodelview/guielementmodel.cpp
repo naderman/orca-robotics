@@ -262,7 +262,7 @@ GuiElementModel::determinePlatform( QStringList &elementDetails,
     }
 }
     
-void
+hydroqguielementutil::IGuiElement*
 GuiElementModel::createGuiElement( const QString &elementType, 
                                    QStringList   &elementDetails )
 {    
@@ -282,7 +282,7 @@ GuiElementModel::createGuiElement( const QString &elementType,
         delete element;
         if (!doesPlatformExist( platform ) ) 
             emit platformNeedsRemoval(platform);
-        return;   
+        return NULL;   
     }
     
     // set properties of guielement
@@ -322,6 +322,8 @@ GuiElementModel::createGuiElement( const QString &elementType,
     // resize the columns so we can read the text
     if ( view_ )
         view_->resizeColumnsToContents();
+
+    return element;
 }
 
 void

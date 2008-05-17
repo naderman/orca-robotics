@@ -29,10 +29,11 @@ public:
     // This function doesn't need an implementation coz we don't paint anything.
     bool paintThisLayer(int z) const { return false; }    
 
+    void press();
+
 private: 
 
     void connect();
-    void press();
 
     orcaice::Context context_;
     std::string      proxyString_;

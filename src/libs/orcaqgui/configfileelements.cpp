@@ -19,14 +19,14 @@ using namespace std;
 
 namespace orcaqgui {
 
-    void
+    hydroqguielementutil::IGuiElement*
     loadGrid( orcaqgemv::GuiElementModel &guiElementModel )
     {
         const QString elementType("Grid");
         QStringList elementDetails;
         elementDetails.push_back("local@global/local");
 
-        guiElementModel.createGuiElement( elementType, elementDetails );
+        return guiElementModel.createGuiElement( elementType, elementDetails );
     }
     
     

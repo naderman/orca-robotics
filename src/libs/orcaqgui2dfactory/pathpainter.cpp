@@ -232,13 +232,14 @@ void PathPainter::paint( QPainter *painter, int z )
     
     // drawing velocity values as text
     painter->setFont( QFont("Helvetica [Cronyx]", 12) );
-    const double lineSpacing = painter->fontMetrics().lineSpacing();
+    // const double lineSpacing = painter->fontMetrics().lineSpacing();
     const double offset = 0.4;
     QMatrix m = painter->matrix();                       // this is m2win matrix
     QPointF labelPos = QPointF(offset,offset) * m;       // x-label position in window cs
     painter->setMatrix( QMatrix() );
     
-    painter->drawText( labelPos, "speed:" + QString::number( velocity, 'f', 2 ) + " m/s" );
+    painter->drawText( labelPos, QString::number( velocity, 'f', 2 ) + " m/s" );
+//    painter->drawText( labelPos, "speed:" + QString::number( velocity, 'f', 2 ) + " m/s" );
 //    labelPos.setY( labelPos.y() + lineSpacing );
 //    painter->drawText( labelPos, "maxSpeed: " + QString::number( guiPath_[wpI].maxSpeed ) + " m/s" );
     

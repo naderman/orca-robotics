@@ -42,10 +42,13 @@ class PathPainter
     void togglePastWaypoints()
         { displayPastWaypoints_ = !displayPastWaypoints_; }
     void toggleFutureWaypoints()
-        { displayFutureWaypoints_ = !displayFutureWaypoints_; }
-    
+        { displayFutureWaypoints_ = !displayFutureWaypoints_; }    
     void toggleDisplayWaypoints()
         { displayWaypoints_ = !displayWaypoints_; }
+
+    void setDisplayPastWaypoints( bool display )   { displayPastWaypoints_ = display; }
+    void setDisplayFutureWaypoints( bool display ) { displayFutureWaypoints_ = display; }
+    void setDisplayWaypoints( bool display )       { displayWaypoints_ = display; }
     
     void toggleOlympicMarker()
         { displayOlympicMarker_ = !displayOlympicMarker_; }

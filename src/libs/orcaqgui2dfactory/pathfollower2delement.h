@@ -188,6 +188,8 @@ public:
     void disableHI();
     bool isHIEnabled() { return pathHI_.get() != 0; }
 
+    PathPainter &pathPainter() { return painter_; }
+
 private: 
     void doInitialSetup();
 

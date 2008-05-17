@@ -16,7 +16,9 @@
 
 namespace orcaqgui {
 
-    void loadGrid( orcaqgemv::GuiElementModel &guiElementModel );
+    // Returns a pointer to the grid
+    hydroqguielementutil::IGuiElement* 
+    loadGrid( orcaqgemv::GuiElementModel &guiElementModel );
 
     void loadElementsFromConfigFile( orcaqgemv::GuiElementModel &guiElementModel,
                                      const orcaice::Context     &context );

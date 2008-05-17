@@ -36,6 +36,10 @@ public:
     
     virtual void execute( int action );
 
+    void setDisplayGrid( bool display ) { isDisplayGrid_ = display; }
+    void setDisplayOrigin( bool display ) { isDisplayOrigin_ = display; }
+    void setDisplayLabels( bool display ) { isDisplayLabels_ = display; }
+
 protected:
 
     virtual bool isPermanentElement() const { return true; }

@@ -74,7 +74,10 @@ public:
     void selectedAdaptersInView( std::vector<int> &indices );
     
     // Creating and removing elements
-    void createGuiElement( const QString &elementType, QStringList &elementDetails );
+
+    // Returns the created element, or NULL is none was created.
+    hydroqguielementutil::IGuiElement* createGuiElement( const QString &elementType,
+                                                         QStringList &elementDetails );
     void removeAndDeleteGuiElement( hydroqguielementutil::IGuiElement *guiElement );
 
     // Inherited from PlatformFocusChangeReceiver
