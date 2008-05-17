@@ -63,6 +63,7 @@ public:
     virtual QMenu    *fileMenu() { return fileMenu_; }
     virtual QMenu    *optionsMenu() { return optionsMenu_; }
     virtual QMenu    *displayMenu() { return displayMenu_; }
+    virtual QMenuBar *menuBar() { return QMainWindow::menuBar(); }
     virtual QToolBar *toolBar() { return toolBar_; }
 
 private slots:

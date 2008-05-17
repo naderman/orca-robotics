@@ -196,7 +196,7 @@ Component::start()
     hydroqgui::CoordinateFrameManager coordinateFrameManager;
 
     // Manages use of shortcut keys between Gui Elements
-    hydroqguielementutil::ShortcutKeyManager shortcutKeyManager( mainWin, &mainWin );
+    hydroqguielementutil::ShortcutKeyManager shortcutKeyManager( &mainWin );
 
     // Stores the set of Gui Elements
     hydroqgui::GuiElementSet guiElementSet;

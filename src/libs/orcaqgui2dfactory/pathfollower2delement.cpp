@@ -111,9 +111,13 @@ PathfollowerButtons::PathfollowerButtons( QObject                       *parent,
 //     humanManager->toolBar()->addAction( hiGo );
     
     shortcutKeyManager.subscribeToShortcutKey( hiStop, QKeySequence(Qt::Key_Escape), false, this );
+    humanManager.toolBar()->addAction(hiStop);
     shortcutKeyManager.subscribeToShortcutKey( hiWaypoints_, QKeySequence(Qt::Key_F10), true, this );
+    humanManager.toolBar()->addAction(hiWaypoints_);
     shortcutKeyManager.subscribeToShortcutKey( hiSend, QKeySequence(Qt::Key_F11), true, this );
+    humanManager.toolBar()->addAction(hiSend);
     shortcutKeyManager.subscribeToShortcutKey( hiGo, QKeySequence(Qt::Key_F12), false, this );
+    humanManager.toolBar()->addAction(hiGo);
     humanManager.toolBar()->addAction( hiCancel );
 
     QAction *wpDialogAction = new QAction( QString(proxyString.c_str()) + "\n" + "&PathFollower Waypoint settings", this );
