@@ -336,6 +336,9 @@ void WpTable::computeVelocities()
     {
         float deltaS = straightLineDist( guiPath_->at(i).position - guiPath_->at(i-1).position);
         float deltaT = guiPath_->at(i).timeTarget - (guiPath_->at(i-1).timeTarget + waitingTimes_->at(i-1));
+        // need to bound deltaT to avoid division by zero
+        if (deltaT==0.0)
+            deltaT=10e-6;
         velocities_.push_back(deltaS/deltaT);
     }
 }
@@ -400,20 +403,28 @@ void WpTable::updateDataStorage(int row, int column)
         {       
             // first row is not editable
             if (row==0) break;
+            
+            // set velocity of this row
             float velocity =  item->text().toDouble();
             velocities_[row] = velocity;
             
-            // update time to get to here
+            // update time from previous wp to this wp
             float deltaS = straightLineDist( guiPath_->at(row).position - guiPath_->at(row-1).position );
             float oldTime = data[row].timeTarget;
+            // need to bound velocity to avoid division by zero
+            if (velocity==0.0)
+                velocity = 10e-6;
+            
             float newTime = deltaS/velocity + (data[row-1].timeTarget + waitingTimes_->at(row-1));
+            
             // set new absolute time in our row
             data[row].timeTarget = newTime;
-            //all subsequent times will be updated too
+            
+            // all subsequent times will be updated too
             for (int i=row+1; i<rowCount(); i++)
-            {
                 data[i].timeTarget = data[i].timeTarget + (newTime-oldTime);    
-            }
+            
+            // finally, refresh the table
             refreshTable();
             break;
         }
