@@ -460,7 +460,7 @@ MainThread::walk()
             {
                 // If we do have an active goal, limit the max speed for the current goal
                 // and get the pathplanner to work out the next set of actions
-                speedLimiter_->constrainMaxSpeeds( inputs.goals[0] );
+                speedLimiter_->constrainMaxSpeeds( inputs.goals[0], inputs.currentVelocity );
             }     
             
             // The actual driver which determines the path and commands to send to the vehicle.

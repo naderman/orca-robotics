@@ -56,8 +56,10 @@ inline double directionToGoal( const Goal &goal )
 { return atan2( goal.y, goal.x ); }
 inline bool translationalGoalPosReached( const Goal &goal )
 { return ( distanceToGoal(goal) < goal.distanceTolerance ); }
+inline bool rotationalGoalPosReached( const Goal &goal )
+{ return fabs(goal.theta)<goal.headingTolerance; }
 inline bool goalPosReached( const Goal &goal )
-{ return (translationalGoalPosReached(goal) && fabs(goal.theta) < goal.headingTolerance); }
+{ return translationalGoalPosReached(goal) && rotationalGoalPosReached(goal); }
 inline bool goalTimeReached( const Goal &goal )
 { return goal.timeRemaining <= 0; }
 

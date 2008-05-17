@@ -52,6 +52,8 @@ Goal::set( double x,
     assert( headingTolerance >= 0.0 );
     assert( maxSpeed >= 0.0 );
     assert( maxTurnrate >= 0.0 );
+
+    assert( theta >= -M_PI && theta <= M_PI );
 }
 
 void

@@ -13,6 +13,7 @@
 #include <orcaice/context.h>
 #include <orcaice/heartbeater.h>
 #include <orcalocalnav/goal.h>
+#include <hydronavutil/hydronavutil.h>
 
 namespace localnav {
 
@@ -33,11 +34,12 @@ public:
     SpeedLimiter( const orcaice::Context &context );
 
     // constrain the max speeds for a particular goal
-    void constrainMaxSpeeds( orcalocalnav::Goal &goal );
+    void constrainMaxSpeeds( orcalocalnav::Goal &goal,
+                             const hydronavutil::Velocity &currentVelocity );
 
 private: 
 
-    void maybeSendHeartbeat();
+    void maybeSendHeartbeat( double secondsBehindSchedule );
     
     // Maintain these for heartbeat messages
     double  secondsBehindSchedule_;
