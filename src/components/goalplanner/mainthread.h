@@ -104,6 +104,8 @@ private:
 
     bool checkForStaleLocaliseData_;
 
+    bool enableReplan_;
+
     // If the path planner takes more than this amount of time, assume something's wrong.
     double pathPlanTimeout_;
     

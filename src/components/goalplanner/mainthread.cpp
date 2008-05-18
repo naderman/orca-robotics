@@ -121,6 +121,7 @@ MainThread::MainThread( const orcaice::Context & context )
     pathPlanTimeout_ = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"PathPlanTimeout", 10.0 );
     velocityToFirstWaypoint_ = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"VelocityToFirstWaypoint", 1.0 );
     checkForStaleLocaliseData_ = orcaice::getPropertyAsIntWithDefault( prop, prefix+"CheckForStaleLocaliseData", 1 );
+    enableReplan_ = orcaice::getPropertyAsIntWithDefault( prop, prefix+"EnableReplan", 0 );
 }
 
 void
@@ -551,7 +552,7 @@ MainThread::waitForNewPath( orca::PathFollower2dData &newPathData )
                     bool isLocalisationUncertain;
                     hydronavutil::Pose pose = getPose(isLocalisationUncertain);
 
-                    if ( needToReplan( pose, currentWp ) )
+                    if ( enableReplan_ && needToReplan( pose, currentWp ) )
                     {
                         if ( isLocalisationUncertain )
                         {

@@ -21,5 +21,6 @@ Requires.OgMap.DefaultProxy=ogmap@local/ogmaploader
 Config.PathPlanTimeout.Default=10.0
 Config.VelocityToFirstWaypoint.Default=1.0
 Config.CheckForStaleLocaliseData.Default=1
+Config.EnableReplan.Default=0
 
 

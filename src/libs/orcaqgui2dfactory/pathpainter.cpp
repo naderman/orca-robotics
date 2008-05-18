@@ -80,32 +80,29 @@ void PathPainter::paint( QPainter *painter, int z )
     
     if ( z != hydroqguielementutil::Z_PATH ) return;
 
-    QColor fillColor;
-    QColor drawColor;
-    QColor futureWpColor;
-    
+    QColor baseColor;
     if (inFocus_) {
-        futureWpColor = color_;
+        baseColor = color_;
     } else {
-        futureWpColor = Qt::gray;
+        baseColor = Qt::gray;
     }
       
-    QColor inactiveWpColor;
-    QColor pastWpColor;
-    QColor currentWpColor;
+    QColor inactiveWpColor = baseColor;
+    QColor pastWpColor = baseColor;
+    QColor currentWpColor = baseColor;
+    QColor futureWpColor = baseColor;
     
     if (useTransparency_) {
-        inactiveWpColor = hydroqguielementutil::getTransparentVersion(futureWpColor);
-        pastWpColor = hydroqguielementutil::getTransparentVersion(futureWpColor,0.25);
-        currentWpColor = hydroqguielementutil::getTransparentVersion(futureWpColor,0.75);
-    } else {
-        inactiveWpColor = futureWpColor;
-        pastWpColor = futureWpColor;
-        currentWpColor = futureWpColor;
+        inactiveWpColor = hydroqguielementutil::getTransparentVersion(baseColor);
+        pastWpColor = hydroqguielementutil::getTransparentVersion(baseColor,0.25);
+        currentWpColor = hydroqguielementutil::getTransparentVersion(baseColor,0.75);
+        futureWpColor = hydroqguielementutil::getTransparentVersion(baseColor,0.5);
     }
     
     for ( int i=0; i < guiPath_.size(); i++)
     {
+        QColor fillColor;
+        QColor drawColor;
         if ( wpIndex_ == -1 )
         {
             fillColor = inactiveWpColor;
@@ -149,10 +146,9 @@ void PathPainter::paint( QPainter *painter, int z )
         painter->save();
 
         painter->translate( guiPath_[wpIndex_].position.x(), guiPath_[wpIndex_].position.y() );    // move to point
-        drawColor = Qt::black;
         hydroqguielementutil::paintWaypoint(  painter, 
                                         currentWpColor,
-                                        drawColor, 
+                                        Qt::black, 
                                         guiPath_[wpIndex_].heading,
                                         guiPath_[wpIndex_].distanceTolerance, 
                                         guiPath_[wpIndex_].headingTolerance );
