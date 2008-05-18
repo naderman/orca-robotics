@@ -83,7 +83,6 @@ public:
                     WaypointSettings wpSettings,
                     bool activateImmediately,
                     QString dumpPath );
-    ~PathFollowerHI();
 
     void noLongerMouseEventReceiver();
     void paint( QPainter *p );
@@ -130,10 +129,10 @@ private:
     WaypointSettings wpSettings_;
     bool             activateImmediately_;
 
-    PathFollowerInput *pathInput_;
+    std::auto_ptr<PathFollowerInput> pathInput_;
     
     // sets up and destroys buttons and associated actions
-    PathfollowerButtons *buttons_;
+    std::auto_ptr<PathfollowerButtons> buttons_;
 
     // Do we own the global mode?
     bool gotMode_;

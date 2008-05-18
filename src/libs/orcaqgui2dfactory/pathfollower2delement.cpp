@@ -75,8 +75,6 @@ PathfollowerButtons::PathfollowerButtons( QObject                       *parent,
     QPixmap sendIcon(send_xpm);
     QPixmap cancelIcon(cancel_xpm);
 
-//     QAction* fileOpenPath = new QAction(openIcon, QString(proxyString.c_str()) + "\n" + "Open PathFollower Path File", this );
-//     connect(fileOpenPath, SIGNAL(triggered()), parent, SLOT(loadPathFromFile()));
     QAction* fileSavePathAs = new QAction(saveAsPathIcon, QString(proxyString.c_str()) + "\n" + "Save PathFollower Path As", this );
     connect(fileSavePathAs, SIGNAL(triggered()), parent, SLOT(savePathAs()));
     QAction* fileSavePath = new QAction(savePathIcon, QString(proxyString.c_str()) + "\n" + "Save PathFollower Path", this );
@@ -96,20 +94,9 @@ PathfollowerButtons::PathfollowerButtons( QObject                       *parent,
     QAction* hiStop = new QAction(stopIcon, QString(proxyString.c_str()) + "\n" + "&PathFollower Stop All Robots", this);
     connect( hiStop, SIGNAL(triggered()), parent, SLOT(allStop()) ); 
 
-//     humanManager->fileMenu()->addAction(fileOpenPath);
     humanManager.fileMenu()->addAction(fileSavePathAs);
     humanManager.fileMenu()->addAction(fileSavePath);
 
-//     humanManager->toolBar()->addAction(fileOpenPath);
-//     humanManager->toolBar()->addAction(fileSavePathAs);
-//     humanManager->toolBar()->addAction(fileSavePath);
-
-//     humanManager->toolBar()->addAction( hiWaypoints_ );
-//     humanManager->toolBar()->addAction( hiSend );
-//     humanManager->toolBar()->addAction( hiCancel );
-//     humanManager->toolBar()->addAction( hiStop );
-//     humanManager->toolBar()->addAction( hiGo );
-    
     shortcutKeyManager.subscribeToShortcutKey( hiStop, QKeySequence(Qt::Key_Escape), false, this );
     humanManager.toolBar()->addAction(hiStop);
     shortcutKeyManager.subscribeToShortcutKey( hiWaypoints_, QKeySequence(Qt::Key_F10), true, this );
@@ -585,42 +572,32 @@ PathFollowerHI::PathFollowerHI( PathFollower2dElement *pfElement,
       pathFileSet_(false),
       wpSettings_(wpSettings),
       activateImmediately_(activateImmediately),
-      pathInput_(0),
-      buttons_(0),
       gotMode_(false),
       dumpPath_(dumpPath),
       numPathDumps_(0),
       lastSavedPathFile_("")
 {
-    buttons_ = new PathfollowerButtons( this, humanManager, shortcutKeyManager, proxyString );
-}
-
-PathFollowerHI::~PathFollowerHI()
-{
-    if ( pathInput_ ) delete pathInput_;
-    if ( buttons_ ) delete buttons_;
+    buttons_.reset( new PathfollowerButtons( this, humanManager, shortcutKeyManager, proxyString ) );
 }
 
 void 
 PathFollowerHI::setFocus( bool inFocus )
 {
-    if (inFocus) {
-        if (buttons_==0) {
-            buttons_ = new PathfollowerButtons( this, humanManager_, shortcutKeyManager_, proxyString_ );
-        }
-    } else {
-        delete buttons_;
-        buttons_=0;
+    if ( inFocus && !buttons_.get() ) 
+    {
+        buttons_.reset( new PathfollowerButtons( this, humanManager_, shortcutKeyManager_, proxyString_ ) );
+    } 
+    else 
+    {
+        buttons_.reset(0);
     }
 }
 
 void 
 PathFollowerHI::paint( QPainter *p )
 {
-    if ( pathInput_ ) 
-    {
+    if ( pathInput_.get() ) 
         pathInput_->paint(p);
-    }
 }
 
 void PathFollowerHI::waypointSettingsDialog()
@@ -647,7 +624,7 @@ void PathFollowerHI::waypointSettingsDialog()
     wpSettings_.maxApproachSpeed = ui.maxSpeedSpin->value();
     wpSettings_.maxApproachTurnrate = ui.maxTurnrateSpin->value();
 
-    if (pathInput_!=NULL)
+    if ( pathInput_.get() )
         pathInput_->updateWpSettings( &wpSettings_ );
 }
 
@@ -663,16 +640,16 @@ PathFollowerHI::waypointModeSelected()
         return;
     }
 
-    pathInput_ = new PathFollowerInput( this, &wpSettings_, humanManager_, lastSavedPathFile_ );
+    pathInput_.reset( new PathFollowerInput( this, &wpSettings_, humanManager_, lastSavedPathFile_ ) );
     pathInput_->setUseTransparency( useTransparency_ );
-    buttons_->setWpButton( true );    
+    buttons_->setWpButton( true );
 }
 
 void
 PathFollowerHI::setUseTransparency( bool useTransparency )
 { 
     useTransparency_ = useTransparency;
-    if (pathInput_) 
+    if ( pathInput_.get() )
         pathInput_->setUseTransparency( useTransparency ); 
 }
 
@@ -681,7 +658,8 @@ PathFollowerHI::send()
 {
     cout<<"TRACE(PathFollowerHI): send()" << endl;
     
-    if (pathInput_==NULL) {
+    if ( !pathInput_.get() ) 
+    {
         humanManager_.showDialogMsg( hydroqguielementutil::IHumanManager::Warning, "Not in path input mode!" );
         return;
     }
@@ -755,9 +733,7 @@ PathFollowerHI::allStop()
 void
 PathFollowerHI::noLongerMouseEventReceiver()
 {
-    assert( pathInput_ != NULL );
-    delete pathInput_;
-    pathInput_ = NULL;
+    pathInput_.reset(0);
     buttons_->setWpButton( false );
     gotMode_ = false;
 }
