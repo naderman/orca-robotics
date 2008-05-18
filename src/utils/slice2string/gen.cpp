@@ -264,7 +264,7 @@ Gen::TypesVisitor::visitClassDefStart(const ClassDefPtr& p)
     C << nl << "string ind;";
     C << nl << "for ( int i=0; i<indent; ++i ) ind += ' ';";
 
-    C << nl << "string s = \"struct\";";
+    C << nl << "string s = \"class\";";
     C << nl << "if ( recurse>0 )";
     C << sb;
 
@@ -274,7 +274,7 @@ Gen::TypesVisitor::visitClassDefStart(const ClassDefPtr& p)
         while(q != bases.end())
         {
             C << nl << fixKwd((*q)->scoped()) << "Ptr base" << count << "Ptr = objPtr;";
-            C << nl << "s += \'\\n\' + ind + toString( base" << count << "Ptr, expand, indent );";
+            C << nl << "s += \'\\n\' + ind + \"base \" + toString( base" << count << "Ptr, recurse, expand, indent+2 );";
             ++q;
             ++count;
         }
