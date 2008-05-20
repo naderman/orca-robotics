@@ -299,7 +299,7 @@ A copy of the context is stored for future use. Note that the constructor is exe
 @verbatim
     subStatus().setMaxHeartbeatInterval( 20.0 );
 @endverbatim
-The Status facility implements the heartbeat pattern. In this line we make a promiss to Status that we will update status information at least as often as every 20 seconds. This promiss will allow Status to raise an alarm if there's no update from this subsystem (thread) for longer than the specified interval.
+The Status facility implements the heartbeat pattern. In this line we make a promise to Status that we will update status information at least as often as every 20 seconds. This promise will allow Status to raise an alarm if there's no update from this subsystem (thread) for longer than the specified interval.
 
 Note that this line is equivalento to calling.
 @verbatim
@@ -346,7 +346,7 @@ When the SubsystemThread is created it automatically enters @e Initializing stat
 @verbatim
     subStatus().setMaxHeartbeatInterval( sleepIntervalMs * 3.0/1000.0 );
 @endverbatim
-Initialization is complete and thread behavior becomes more predictable, we can now promiss to update Status more frequently.
+Initialization is complete and thread behavior becomes more predictable, we can now promise to update Status more frequently.
 
 @verbatim
     while( !isStopping() )
@@ -369,7 +369,7 @@ At every iteration of the loop, we call the heartbeat() function of the status o
 
         IceUtil::ThreadControl::sleep(IceUtil::Time::milliSeconds(sleepIntervalMs));
 @endverbatim
-Here we would actually perform some useful operations, e.g. read data from harware, perform computations, send messages over the network. Instead, this example component just sleeps for the amount of times specified in the config file. The sleep function provided by libIceUtil is cross-platform.
+Here we would actually perform some useful operations, e.g. read data from hardware, perform computations, send messages over the network. Instead, this example component just sleeps for the amount of times specified in the config file. The sleep function provided by libIceUtil is cross-platform.
 
 @verbatim
     }

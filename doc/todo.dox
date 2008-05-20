@@ -52,6 +52,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 @section orca_doc_history_head Changes in SVN since Last Release
 
 @par Project wide
+
+- Updated dart2 documentation to cdash (Tobi)
 - Build system
     - Big cleanup of CMake scripts for generating interface code.
     - cmake files updated for cmake 2.6
@@ -74,7 +76,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @par Updated components
 - LocalNav (alex b)
-  - Big overhaul and simpleification
+  - Big overhaul and simplification
 
 @par Updated utilities
 - slice2string (alex m)

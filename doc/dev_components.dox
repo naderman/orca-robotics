@@ -31,7 +31,7 @@ The main pieces are:
 
 Derives from orcaice::Component.
 
-This the main class which instantiates and contains the other
+This is the main class which instantiates and contains the other
 pieces.  Deriving from orcaice::Component makes it easy to
 place it within either a stand-alone application or an IceBox
 Service.
@@ -55,7 +55,7 @@ buffers.
 The buffers are instantiations of orcaice::PtrBuffer.
 They're thread-safe (to handle the concurrency issues presented by
 simultaneous access from MainLoop and the outside world), and
-specially designed for Ice classes.
+are specially designed for Ice classes.
 
 @par Main Loop
 

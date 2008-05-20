@@ -20,7 +20,7 @@
 
 Orca interfaces are written in Slice interface definition language. There are no restrictions on what an Orca interface should or should not contain. 
 
-A Slice interface is defined as a set operations. Opararations can contain input and output parameters. These parameters can be represented in different ways listed here in order of increasing complexity:
+A Slice interface is defined as a set operations. Operations can contain input and output parameters. These parameters can be represented in different ways listed here in order of increasing complexity:
 - @e struct
     - In C++, this becomes a simple structure. 
     - Use these unless there is a good reason not to.
@@ -31,7 +31,7 @@ A Slice interface is defined as a set operations. Opararations can contain input
     - In C++, this becomes a proxy to a remote interface.
     - Use these if you need to return an address of another interface.
 - @e class with member variables and functions
-    - Same as class without functioins but requires implementing factories. 
+    - Same as class without functions but requires implementing factories. 
     - Use these if you need to perform local operations using remote objects.
 
 For more information read the chapter on Slice in the Ice Manual <a href="http://www.zeroc.com/download.html#doc" target="_blank">[download]</a>
@@ -46,7 +46,7 @@ For more information read the chapter on Slice in the Ice Manual <a href="http:/
 
 @par Adding support for you interface
 
-Optionally, consider adding support for you interface in libraries and utilities. Library libOrcaObjects has many functions specialized for data objects, e.g. toString() and setSane(). The following tools have a plug-in architecture, with a plug-in per interface:
+Optionally, consider adding support for you interface in libraries and utilities. Library libOrcaObjects has many functions specialized for data objects, e.g. setSane(). The following tools have a plug-in architecture, with a plug-in per interface:
     - @ref orca_util_orcaview2d
     - @ref orca_component_logger
     - @ref orca_component_logplayer

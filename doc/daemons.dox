@@ -22,7 +22,7 @@ To implement a component as a daemon (or Service under Win32), one
 approach is to simply do all the forking etc yourself.  Alternatively,
 daemon support exists if your component derives from
 orcaice::Component and it can run as an IceBox service. To start an icebox as a daemon, 
-simply add an command line option:
+simply add a command line option:
 
 @verbatim
 $ icebox --Ice.Config=Xxxx --daemon

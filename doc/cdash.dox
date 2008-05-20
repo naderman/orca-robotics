@@ -1,0 +1,92 @@
+/*
+ * Orca-Robotics Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2008 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This copy of Orca is licensed to you under the terms described in
+ * the LICENSE file included in this distribution.
+ *
+ */
+
+/*!
+
+@page orca_doc_cdash Automated Testing with CDash
+
+@note Reviewed for release 2.11.0
+
+CDash is a software quality assurance system which can easily be integrated into CMake. The general goal is to make software more reliable by simplifying automated code (re)compilation and testing. Running CDash clients at different sites helps catch bugs caused by cross-platform and cross-hardware issues.
+
+General things to note:
+- It's best to do out-of-source build, i.e. all object/generated files are in one 'binary' directory. The reason is that it makes it simple for CTest to do a clean build every time by simply deleting all files in the build (or 'binary') directory.
+- All scripts listed on this page can be found in the @c [ORCA-SRC]/scripts/dart/ directory, so you can simply copy and edit them.
+- Orca depends on Gearbox and Hydro to be built and installed previously. We only give instructions for Orca except for the continuous case (see below).
+
+@section server CDash Server
+
+The <a href="http://cdash.acfr.usyd.edu.au/index.php?project=Orca">CDash server for Orca</a> is up and running. Users can sign themselves up by clicking on the ''login'' link on top of the page. One useful feature is to send out emails to responsible developers when a build contained errors. After you login there are two fields to fill in: Project and Repository id. Type in ''orca'' for the Project and your sourceforge username as Repository id. After pressing the button Add repository id the mapping will show up in the table on the left. From now on, if you check something in that doesn't compile you'll get blamed by email, so don't screw up!
+
+@section client CDash Client
+
+The suggested directory structure on the client side is shown below. It is assumed in all the scripts which are included in the distribution. The contents of @c orca-exp and @c orca-nightly is similar to @c orca-cont. The *.cmake and *.sh scripts are copies of files from @c orca/scripts/dart (use copies so you can modify them to suit local conditions).
+
+@verbatim
+ctests/
+  orca/
+    orca-exp/
+      build-orca/
+      orca/
+    orca-nightly/
+      build-orca/
+      orca/
+      orca-nightly-linux-gcc42.cmake
+      orca-nightly.sh
+    orca-and-friends/
+      gearbox
+      build-gearbox
+      hydro
+      build-hydro
+      orca
+      build-orca
+      myempty
+      build-empty
+@endverbatim
+
+@par Experimental Build
+
+That's the simplest test you can run and you do things manually:
+-# Reproduce the file structure shown above. Orca source tree is checked out from SVN
+-# Create an out-of-source build directory
+-# Execute ctest manually as shown below
+
+@verbatim
+$ cd ~/ctests/orca/orca-exp/build-orca
+$ cmake ../orca/.
+$ ctest -D Experimental -VV
+@endverbatim
+If this worked you should see the results on the webpage after.
+
+@par Nightly Build
+
+Reproduce the file structure shown above. Then add the shell scripts to your crontab with 
+@verbatim
+$ crontab -e
+@endverbatim
+so it looks something like this:
+@verbatim
+SHELL=/bin/bash
+15  4    * * *  /home/users/dart/ctests/orca/orca-nightly/orca-nightly.sh
+@endverbatim
+
+@par Continuous Build
+
+Continuous testing is useful during active development. Whenever something changed in SVN the tests are run and submitted to the dashboard.
+Reproduce the file structure shown above. Execute the shell script once with @c nohup so that it continues running after you log off.
+@verbatim
+$ cd ~/ctests/orca/orca-and-friends-cont
+$ nohup ./orca-and-friends-cont.sh &
+@endverbatim
+
+Orca depends on Gearbox and Hydro as mentioned above. The orca-and-friends.sh script shows an example of how you can realise the entire sequence
+Gearbox->Hydro->Orca->Satellite_project.
+
+*/

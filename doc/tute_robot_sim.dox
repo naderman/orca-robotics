@@ -119,7 +119,7 @@ $ ogmaploader
 To view the world and the robot we use @ref orca_component_orcaview2d component. One line of the standard config file needs to be modified:
 @verbatim
 ...
-OrcaView2d.Requires.Localise2d.Proxy=localise2d@local/faithlocaliser
+OrcaView2d.Config.Element.Detail01=localise2d@local/faithlocaliser
 ...
 @endverbatim
 Start the GUI component
