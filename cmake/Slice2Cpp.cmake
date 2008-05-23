@@ -45,7 +45,8 @@ MACRO( ORCA_GENERATE_SLICE2CPP_RULES generated_cpp_list generated_header_list )
     SET( slice2cpp_binary_dir      ${PROJECT_BINARY_DIR}/src/interfaces/cpp )
 
     # this auto-generated file will include all individual header files
-    SET( global_header_file        ${slice2cpp_binary_dir}/${slice_module}/${slice_module}.h )
+    SET( global_header_file        ${slice_module}.h )
+    SET( global_header_path        ${slice2cpp_binary_dir}/${slice_module}/${global_header_file} )
 
     # debian package splits off slice files into a different place
     IF( ICE_HOME MATCHES /usr )
@@ -150,8 +151,11 @@ MACRO( ORCA_GENERATE_SLICE2CPP_RULES generated_cpp_list generated_header_list )
     # global header file
     #     
     INCLUDE( ${ORCA_CMAKE_DIR}/WriteGlobalHeaderFile.cmake )
-    WRITE_GLOBAL_HEADER_FILE( ${global_header_file} ${slice_module} "${PROJECT_NAME_UPPER}_${PROJECT_NAME_UPPER}_H"  
+    WRITE_GLOBAL_HEADER_FILE( ${global_header_path} ${slice_module} "${PROJECT_NAME_UPPER}_${PROJECT_NAME_UPPER}_H"  
             ${${generated_header_list}}  )
+
+    APPEND( ${generated_header_list} ${global_header_file} )
+    
 
     #   MESSAGE( STATUS "DEBUG: generated_cpp_list: ${${generated_cpp_list}}")
     #   MESSAGE( STATUS "DEBUG: generated_header_list: ${${generated_header_list}}")
