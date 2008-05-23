@@ -43,17 +43,7 @@ ButtonProbe::loadOperationEvent( const int index, orcacm::OperationData& data )
 int 
 ButtonProbe::loadPress( orcacm::OperationData& data )
 {
-    try
-    {
-        orca::ButtonPrx derivedPrx = orca::ButtonPrx::checkedCast(prx_);
-        derivedPrx->press();
-//        orcaprobe::reportResult( data, "data", "" );
-    }
-    catch( const Ice::Exception& e )
-    {
-        stringstream ss;
-        ss<<e<<endl;
-        orcaprobe::reportException( data, ss.str() );
-    }
+    orca::ButtonPrx derivedPrx = orca::ButtonPrx::checkedCast(prx_);
+    derivedPrx->press();
     return 0;
 }

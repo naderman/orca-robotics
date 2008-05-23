@@ -45,37 +45,15 @@ CpuProbe::loadOperationEvent( const int index, orcacm::OperationData& data )
 int 
 CpuProbe::loadGetInfo( orcacm::OperationData& data )
 {
-    orca::CpuInfo result;
-    try
-    {
-        orca::CpuPrx derivedPrx = orca::CpuPrx::checkedCast(prx_);
-        result = derivedPrx->getInfo();
-        orcaprobe::reportResult( data, "data", ifacestring::toString(result) );
-    }
-    catch( const Ice::Exception& e )
-    {
-        stringstream ss;
-        ss<<e<<endl;
-        orcaprobe::reportException( data, ss.str() );
-    }
+    orca::CpuPrx derivedPrx = orca::CpuPrx::checkedCast(prx_);
+    orcaprobe::reportResult( data, "data", ifacestring::toString( derivedPrx->getInfo() ) );
     return 0;
 }
 
 int 
 CpuProbe::loadGetData( orcacm::OperationData& data )
 {
-    orca::CpuData result;
-    try
-    {
-        orca::CpuPrx derivedPrx = orca::CpuPrx::checkedCast(prx_);
-        result = derivedPrx->getData();
-        orcaprobe::reportResult( data, "data", ifacestring::toString(result) );
-    }
-    catch( const Ice::Exception& e )
-    {
-        stringstream ss;
-        ss<<e<<endl;
-        orcaprobe::reportException( data, ss.str() );
-    }
+    orca::CpuPrx derivedPrx = orca::CpuPrx::checkedCast(prx_);
+    orcaprobe::reportResult( data, "data", ifacestring::toString( derivedPrx->getData() ) );
     return 0;
 }

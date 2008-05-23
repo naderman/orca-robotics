@@ -41,34 +41,18 @@ RangeScanner2dProbe::~RangeScanner2dProbe()
 int 
 RangeScanner2dProbe::loadOperationEvent( const int index, orcacm::OperationData& data )
 {    
-    try
+    switch ( index )
     {
-        switch ( index )
-        {
-        case orcaprobe::UserIndex :
-            return loadGetData( data );
-        case orcaprobe::UserIndex+1 :
-            return loadGetDescription( data );
-        case orcaprobe::UserIndex+2 :
-            return loadSubscribe( data );
-        case orcaprobe::UserIndex+3 :
-            return loadUnsubscribe( data );
-        }
-        return 1;
+    case orcaprobe::UserIndex :
+        return loadGetData( data );
+    case orcaprobe::UserIndex+1 :
+        return loadGetDescription( data );
+    case orcaprobe::UserIndex+2 :
+        return loadSubscribe( data );
+    case orcaprobe::UserIndex+3 :
+        return loadUnsubscribe( data );
     }
-    catch( const Ice::Exception& e )
-    {
-        stringstream ss;
-        ss<<e<<endl;
-        orcaprobe::reportException( data, ss.str() );
-    }
-    catch( const std::exception& e )
-    {
-        stringstream ss;
-        ss<<e.what()<<endl;
-        orcaprobe::reportException( data, ss.str() );
-    }
-    return 0;
+    return 1;
 }
 
 int 

@@ -29,8 +29,15 @@ PropertiesProbe::PropertiesProbe( const orca::FQInterfaceName & name, orcaprobe:
     addOperation( "setData" );
     addOperation( "subscribe" );
     addOperation( "unsubscribe" );
+    
+    consumer_ = new orcaifaceimpl::PrintingPropertiesConsumerImpl( context,1000,1 );
 }
     
+PropertiesProbe::~PropertiesProbe()
+{
+    consumer_->destroy();
+}
+
 int 
 PropertiesProbe::loadOperationEvent( const int index, orcacm::OperationData & data )
 {
@@ -49,29 +56,10 @@ PropertiesProbe::loadOperationEvent( const int index, orcacm::OperationData & da
 }
 
 int 
-PropertiesProbe::loadGetData( orcacm::OperationData & data )
+PropertiesProbe::loadGetData( orcacm::OperationData& data )
 {
-    orca::PropertiesData result;
-    try
-    {
-        orca::PropertiesPrx derivedPrx = orca::PropertiesPrx::checkedCast(prx_);
-        result = derivedPrx->getData();
-        orcaprobe::reportResult( data, "data", ifacestring::toString(result) );
-    }
-    catch( const orca::DataNotExistException & e )
-    {
-        orcaprobe::reportException( data, "data is not ready on the remote interface" );
-    }
-    catch( const orca::HardwareFailedException & e )
-    {
-        orcaprobe::reportException( data, "remote hardware failure" );
-    }
-    catch( const Ice::Exception & e )
-    {
-        stringstream ss;
-        ss<<e<<endl;
-        orcaprobe::reportException( data, ss.str() );
-    }
+    orca::PropertiesPrx derivedPrx = orca::PropertiesPrx::checkedCast(prx_);
+    orcaprobe::reportResult( data, "data", ifacestring::toString( derivedPrx->getData() ) );
     return 0;
 }
 
@@ -122,35 +110,17 @@ PropertiesProbe::loadSetData( orcacm::OperationData & data )
 }
 
 int 
-PropertiesProbe::loadSubscribe( orcacm::OperationData & data )
+PropertiesProbe::loadSubscribe( orcacm::OperationData& data )
 {
-    Ice::ObjectPtr consumer = this;
-    orca::PropertiesConsumerPrx callbackPrx =
-            orcaice::createConsumerInterface<orca::PropertiesConsumerPrx>( ctx_, consumer );
-    try
-    {
-        orca::PropertiesPrx derivedPrx = orca::PropertiesPrx::checkedCast(prx_);
-        derivedPrx->subscribe( callbackPrx );
-        orcaprobe::reportSubscribed( data );
-    }
-    catch( const Ice::Exception & e )
-    {
-        stringstream ss;
-        ss<<e<<endl;
-        orcaprobe::reportException( data, ss.str() );
-    }
+    consumer_->subscribeWithString( orcaice::toString(name_) );
+    orcaprobe::reportSubscribed( data, consumer_->consumerPrx()->ice_toString() );
     return 0;
 }
 
 int 
-PropertiesProbe::loadUnsubscribe( orcacm::OperationData & data )
+PropertiesProbe::loadUnsubscribe( orcacm::OperationData& data )
 {
-    orcaprobe::reportNotImplemented( data );
+    consumer_->unsubscribeWithString( orcaice::toString(name_) );
+    orcaprobe::reportUnsubscribed( data );
     return 0;
 }
-
-void 
-PropertiesProbe::setData(const orca::PropertiesData & data, const Ice::Current&)
-{
-    std::cout << ifacestring::toString(data) << std::endl;
-};

@@ -13,21 +13,21 @@
 
 #include <orcaprobe/interfaceprobe.h>
 #include <orca/odometry3d.h>
+#include <orcaifaceimpl/printingconsumers.h>
 
 namespace orcaprobefactory
 {
 
-class Odometry3dProbe : public orca::Odometry3dConsumer, public orcaprobe::InterfaceProbe
+class Odometry3dProbe :public orcaprobe::InterfaceProbe
 {
 
 public:
 
     Odometry3dProbe( const orca::FQInterfaceName& name, orcaprobe::AbstractDisplay& display,
                                 const orcaice::Context& context );
+    ~Odometry3dProbe();
 
     virtual int loadOperationEvent( const int index, orcacm::OperationData& data );
-    
-    virtual void setData(const orca::Odometry3dData& data, const Ice::Current&);
 
 private:
 
@@ -36,6 +36,7 @@ private:
     int loadSubscribe( orcacm::OperationData& data );
     int loadUnsubscribe( orcacm::OperationData& data );
 
+    orcaifaceimpl::PrintingOdometry3dConsumerImplPtr consumer_;
 };
 
 } // namespace

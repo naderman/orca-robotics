@@ -28,6 +28,13 @@ PowerProbe::PowerProbe( const orca::FQInterfaceName & name, orcaprobe::AbstractD
     addOperation( "getData" );
     addOperation( "subscribe" );
     addOperation( "unsubscribe" );
+
+    consumer_ = new orcaifaceimpl::PrintingPowerConsumerImpl( context,1000,1 );
+}
+    
+PowerProbe::~PowerProbe()
+{
+    consumer_->destroy();
 }
     
 int 
@@ -46,62 +53,25 @@ PowerProbe::loadOperationEvent( const int index, orcacm::OperationData & data )
 }
 
 int 
-PowerProbe::loadGetData( orcacm::OperationData & data )
+PowerProbe::loadGetData( orcacm::OperationData& data )
 {
-    orca::PowerData result;
-    try
-    {
-        orca::PowerPrx derivedPrx = orca::PowerPrx::checkedCast(prx_);
-        result = derivedPrx->getData();
-        orcaprobe::reportResult( data, "data", ifacestring::toString(result) );
-    }
-    catch( const orca::DataNotExistException & e )
-    {
-        orcaprobe::reportException( data, "data is not ready on the remote interface" );
-    }
-    catch( const orca::HardwareFailedException & e )
-    {
-        orcaprobe::reportException( data, "remote hardware failure" );
-    }
-    catch( const Ice::Exception & e )
-    {
-        stringstream ss;
-        ss<<e<<endl;
-        orcaprobe::reportException( data, ss.str() );
-    }
+    orca::PowerPrx derivedPrx = orca::PowerPrx::checkedCast(prx_);
+    orcaprobe::reportResult( data, "data", ifacestring::toString( derivedPrx->getData() ) );
     return 0;
 }
 
 int 
-PowerProbe::loadSubscribe( orcacm::OperationData & data )
+PowerProbe::loadSubscribe( orcacm::OperationData& data )
 {
-    Ice::ObjectPtr consumer = this;
-    orca::PowerConsumerPrx callbackPrx =
-            orcaice::createConsumerInterface<orca::PowerConsumerPrx>( ctx_, consumer );
-    try
-    {
-        orca::PowerPrx derivedPrx = orca::PowerPrx::checkedCast(prx_);
-        derivedPrx->subscribe( callbackPrx );
-        orcaprobe::reportSubscribed( data );
-    }
-    catch( const Ice::Exception & e )
-    {
-        stringstream ss;
-        ss<<e<<endl;
-        orcaprobe::reportException( data, ss.str() );
-    }
+    consumer_->subscribeWithString( orcaice::toString(name_) );
+    orcaprobe::reportSubscribed( data, consumer_->consumerPrx()->ice_toString() );
     return 0;
 }
 
 int 
-PowerProbe::loadUnsubscribe( orcacm::OperationData & data )
+PowerProbe::loadUnsubscribe( orcacm::OperationData& data )
 {
-    orcaprobe::reportNotImplemented( data );
+    consumer_->unsubscribeWithString( orcaice::toString(name_) );
+    orcaprobe::reportUnsubscribed( data );
     return 0;
 }
-
-void 
-PowerProbe::setData(const orca::PowerData & data, const Ice::Current&)
-{
-    std::cout << ifacestring::toString(data) << std::endl;
-};

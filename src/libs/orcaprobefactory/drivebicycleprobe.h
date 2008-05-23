@@ -13,21 +13,21 @@
 
 #include <orcaprobe/interfaceprobe.h>
 #include <orca/drivebicycle.h>
+#include <orcaifaceimpl/printingconsumers.h>
 
 namespace orcaprobefactory
 {
 
-class DriveBicycleProbe : public orca::DriveBicycleConsumer, public orcaprobe::InterfaceProbe
+class DriveBicycleProbe : public orcaprobe::InterfaceProbe
 {
 
 public:
 
     DriveBicycleProbe( const orca::FQInterfaceName& name, orcaprobe::AbstractDisplay& display,
                                 const orcaice::Context& context );
+    ~DriveBicycleProbe();
 
     virtual int loadOperationEvent( const int index, orcacm::OperationData& data );
-    
-    virtual void setData(const orca::DriveBicycleData& data, const Ice::Current&);
 
 private:
 
@@ -37,9 +37,7 @@ private:
     int loadUnsubscribe( orcacm::OperationData& data );
     int loadSetData( orcacm::OperationData& data );
 
-    orca::DriveBicycleConsumerPrx callbackPrx_;
-    orcacm::OperationData subscribeOperationData_;
-
+    orcaifaceimpl::PrintingDriveBicycleConsumerImplPtr consumer_;
 };
 
 } // namespace

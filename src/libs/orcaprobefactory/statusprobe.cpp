@@ -34,6 +34,11 @@ StatusProbe::StatusProbe( const orca::FQInterfaceName& name, orcaprobe::Abstract
     consumer_ = new orcaifaceimpl::PrintingStatusConsumerImpl( context,1000,1 );
 //     consumerManager_.setConsumer( new PrintingSimpleStatusConsumerImpl( context,1000,1 ) );
 }
+
+StatusProbe::~StatusProbe()
+{
+    consumer_->destroy();
+}
     
 int 
 StatusProbe::loadOperationEvent( const int index, orcacm::OperationData& data )
@@ -91,9 +96,3 @@ StatusProbe::loadUnsubscribe( orcacm::OperationData& data )
     orcaprobe::reportUnsubscribed( data );
     return 0;
 }
-
-// void
-// StatusProbe::dataEvent( const orca::StatusData& result ) 
-// {
-//     std::cout << ifacestring::toString(result,1000,1) << std::endl;
-// }

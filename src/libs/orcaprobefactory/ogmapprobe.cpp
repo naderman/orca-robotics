@@ -29,6 +29,13 @@ OgMapProbe::OgMapProbe( const orca::FQInterfaceName & name,
     addOperation( "getData" );
     addOperation( "subscribe" );
     addOperation( "unsubscribe" );
+
+    consumer_ = new orcaifaceimpl::PrintingOgMapConsumerImpl( context,1000,1 );
+}
+
+OgMapProbe::~OgMapProbe()
+{
+    consumer_->destroy();
 }
 
 int 
@@ -47,54 +54,26 @@ OgMapProbe::loadOperationEvent( const int index, orcacm::OperationData & data )
 }
 
 int 
-OgMapProbe::loadGetData( orcacm::OperationData & data )
+OgMapProbe::loadGetData( orcacm::OperationData& data )
 {
-    orca::OgMapData result;
-    try
-    {
-        orca::OgMapPrx derivedPrx = orca::OgMapPrx::checkedCast(prx_);
-        result = derivedPrx->getData();
-        orcaprobe::reportResult( data, "data", ifacestring::toString(result) );
-    }
-    catch( const Ice::Exception & e )
-    {
-        stringstream ss;
-        ss<<e<<endl;
-        orcaprobe::reportException( data, ss.str() );
-    }
+    orca::OgMapPrx derivedPrx = orca::OgMapPrx::checkedCast(prx_);
+    orcaprobe::reportResult( data, "data", ifacestring::toString( derivedPrx->getData() ) );
     return 0;
 }
 
 int 
-OgMapProbe::loadSubscribe( orcacm::OperationData & data )
+OgMapProbe::loadSubscribe( orcacm::OperationData& data )
 {
-    Ice::ObjectPtr consumer = this;
-    orca::OgMapConsumerPrx callbackPrx =
-            orcaice::createConsumerInterface<orca::OgMapConsumerPrx>( ctx_, consumer );
-    try
-    {
-        orca::OgMapPrx derivedPrx = orca::OgMapPrx::checkedCast(prx_);
-        derivedPrx->subscribe( callbackPrx );
-        orcaprobe::reportSubscribed( data );
-    }
-    catch( const Ice::Exception & e )
-    {
-        stringstream ss;
-        ss<<e<<endl;
-        orcaprobe::reportException( data, ss.str() );
-    }
+    consumer_->subscribeWithString( orcaice::toString(name_) );
+    orcaprobe::reportSubscribed( data, consumer_->consumerPrx()->ice_toString() );
     return 0;
 }
 
 int 
-OgMapProbe::loadUnsubscribe( orcacm::OperationData & data )
+OgMapProbe::loadUnsubscribe( orcacm::OperationData& data )
 {
-    orcaprobe::reportNotImplemented( data );
+    consumer_->unsubscribeWithString( orcaice::toString(name_) );
+    orcaprobe::reportUnsubscribed( data );
     return 0;
 }
 
-void 
-OgMapProbe::setData(const orca::OgMapData & data, const Ice::Current&)
-{
-    std::cout << ifacestring::toString(data) << std::endl;
-};

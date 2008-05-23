@@ -13,21 +13,21 @@
 
 #include <orcaprobe/interfaceprobe.h>
 #include <orca/estop.h>
+#include <orcaifaceimpl/printingconsumers.h>
 
 namespace orcaprobefactory
 {
 
-class EStopProbe : public orca::EStopConsumer, public orcaprobe::InterfaceProbe
+class EStopProbe : public orcaprobe::InterfaceProbe
 {
 
 public:
 
     EStopProbe( const orca::FQInterfaceName & name, orcaprobe::AbstractDisplay & display,
                                 const orcaice::Context & context );
+    ~EStopProbe();
 
     virtual int loadOperationEvent( const int index, orcacm::OperationData & data );
-    
-    virtual void setData(const orca::EStopData & data, const Ice::Current&);
 
 private:
 
@@ -35,6 +35,7 @@ private:
     int loadSubscribe( orcacm::OperationData & data );
     int loadUnsubscribe( orcacm::OperationData & data );
 
+    orcaifaceimpl::PrintingEStopConsumerImplPtr consumer_;
 };
 
 } // namespace

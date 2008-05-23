@@ -11,7 +11,7 @@
 #ifndef ORCA2_PING_REPLY_INTERFACE_ICE
 #define ORCA2_PING_REPLY_INTERFACE_ICE
 
-// #include <orca/orca.ice>
+// #include <orca/common.ice>
 
 module orca
 {

@@ -270,9 +270,26 @@ BrowserThread::loadOperation()
     // remote call!
     //
     display_.showNetworkActivity( true );
-    if ( ifaceProbe_->loadOperation( pick_, operationData_ ) ) {
-        events_->add( Fault );
+
+    try
+    {
+        if ( ifaceProbe_->loadOperation( pick_, operationData_ ) ) {
+            events_->add( Fault );
+        }
     }
+    catch( const Ice::Exception& e )
+    {
+        stringstream ss;
+        ss<<e<<endl;
+        orcaprobe::reportException( operationData_, ss.str() );
+    }
+    catch( const std::exception& e )
+    {
+        stringstream ss;
+        ss<<e.what()<<endl;
+        orcaprobe::reportException( operationData_, ss.str() );
+    }
+
     display_.showNetworkActivity( false );
 
     // todo: this is a bit ugly

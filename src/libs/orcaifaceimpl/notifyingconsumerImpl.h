@@ -41,12 +41,11 @@ public:
 private:
 
     // inherited from ConsumerImpl
-    void handleData( const ObjectType &data )
+    void dataEvent( const ObjectType &data )
         {
             // results in handler->handleData(data) being called
             set( data );
         }
-
 };
 
 }

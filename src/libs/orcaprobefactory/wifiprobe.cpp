@@ -30,8 +30,12 @@ WifiProbe::WifiProbe( const orca::FQInterfaceName& name,
     addOperation( "subscribe",      "void subscribe( WifiConsumer *subscriber )" );
     addOperation( "unsubscribe",    "idempotent void unsubscribe( WifiConsumer *subscriber )" );
 
-    Ice::ObjectPtr consumer = this;
-    callbackPrx_ = orcaice::createConsumerInterface<orca::WifiConsumerPrx>( ctx_, consumer );
+    consumer_ = new orcaifaceimpl::PrintingWifiConsumerImpl( context,1000,1 );
+}
+    
+WifiProbe::~WifiProbe()
+{
+    consumer_->destroy();
 }
     
 int 
@@ -52,69 +56,23 @@ WifiProbe::loadOperationEvent( const int index, orcacm::OperationData& data )
 int 
 WifiProbe::loadGetData( orcacm::OperationData& data )
 {
-    orca::WifiData result;
-    try
-    {
-        orca::WifiPrx derivedPrx = orca::WifiPrx::checkedCast(prx_);
-        result = derivedPrx->getData();
-        orcaprobe::reportResult( data, "data", ifacestring::toString(result) );
-    }
-    catch( const Ice::Exception& e )
-    {
-        stringstream ss;
-        ss<<e<<endl;
-        orcaprobe::reportException( data, ss.str() );
-    }
+    orca::WifiPrx derivedPrx = orca::WifiPrx::checkedCast(prx_);
+    orcaprobe::reportResult( data, "data", ifacestring::toString( derivedPrx->getData() ) );
     return 0;
 }
 
 int 
 WifiProbe::loadSubscribe( orcacm::OperationData& data )
 {
-    cout<<"subscribing "<<callbackPrx_->ice_toString()<<endl;
-    try
-    {
-        orca::WifiPrx derivedPrx = orca::WifiPrx::checkedCast(prx_);
-        derivedPrx->subscribe( callbackPrx_ );
-        orcaprobe::reportSubscribed( data );
-
-        // save the op data structure so we can use it when the data arrives
-        subscribeOperationData_ = data;
-    }
-    catch( const Ice::Exception& e )
-    {
-        stringstream ss;
-        ss<<e<<endl;
-        orcaprobe::reportException( data, ss.str() );
-    }
+    consumer_->subscribeWithString( orcaice::toString(name_) );
+    orcaprobe::reportSubscribed( data, consumer_->consumerPrx()->ice_toString() );
     return 0;
 }
 
 int 
 WifiProbe::loadUnsubscribe( orcacm::OperationData& data )
 {
-    cout<<"unsubscribing "<<callbackPrx_->ice_toString()<<endl;
-
-    try
-    {
-        orca::WifiPrx derivedPrx = orca::WifiPrx::checkedCast(prx_);
-        derivedPrx->unsubscribe( callbackPrx_ );
-        orcaprobe::reportUnsubscribed( data );
-    }
-    catch( const Ice::Exception& e )
-    {
-        stringstream ss;
-        ss<<e<<endl;
-        orcaprobe::reportException( data, ss.str() );
-    }
+    consumer_->unsubscribeWithString( orcaice::toString(name_) );
+    orcaprobe::reportUnsubscribed( data );
     return 0;
 }
-
-void 
-WifiProbe::setData(const orca::WifiData& result, const Ice::Current&)
-{
-//     std::cout << ifacestring::toString(result) << std::endl;
-    subscribeOperationData_.results.clear();
-    orcaprobe::reportResult( subscribeOperationData_, "data", ifacestring::toString(result) );
-    display_.setOperationData( subscribeOperationData_ );
-};

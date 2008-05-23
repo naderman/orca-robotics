@@ -91,7 +91,7 @@ OrcaProbeFactory::create( const std::string           & interfaceType,
         probe = new EStopProbe( name, display, context );
     }
     else if ( interfaceType == "::orca::Gps" ) {
-        probe = new GpsProbe( name, display, interfaceType, context );
+        probe = new GpsProbe( name, display, context );
     }
     else if ( interfaceType == "::orca::Home" ) {
         probe = new HomeProbe( name, display, context );

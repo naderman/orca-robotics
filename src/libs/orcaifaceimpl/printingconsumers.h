@@ -101,6 +101,55 @@ typedef PrintingConsumerImpl<orca::StatusPrx,
                         orca::StatusData>                      PrintingStatusConsumerImpl;
 typedef IceUtil::Handle<PrintingStatusConsumerImpl>            PrintingStatusConsumerImplPtr;
 
+//! Typedef for a common interface type. There's also a corresponding Ptr.
+typedef PrintingConsumerImpl<orca::EStopPrx,
+                        orca::EStopConsumer,
+                        orca::EStopConsumerPrx,
+                        orca::EStopData>                      PrintingEStopConsumerImpl;
+typedef IceUtil::Handle<PrintingEStopConsumerImpl>            PrintingEStopConsumerImplPtr;
+
+//! Typedef for a common interface type. There's also a corresponding Ptr.
+typedef PrintingConsumerImpl<orca::ImagePrx,
+                        orca::ImageConsumer,
+                        orca::ImageConsumerPrx,
+                        orca::ImageDataPtr>                      PrintingImageConsumerImpl;
+typedef IceUtil::Handle<PrintingImageConsumerImpl>            PrintingImageConsumerImplPtr;
+
+//! Typedef for a common interface type. There's also a corresponding Ptr.
+typedef PrintingConsumerImpl<orca::CameraPrx,
+                        orca::CameraConsumer,
+                        orca::CameraConsumerPrx,
+                        orca::CameraDataSequence>                      PrintingCameraConsumerImpl;
+typedef IceUtil::Handle<PrintingCameraConsumerImpl>            PrintingCameraConsumerImplPtr;
+
+//! Typedef for a common interface type. There's also a corresponding Ptr.
+typedef PrintingConsumerImpl<orca::PowerPrx,
+                        orca::PowerConsumer,
+                        orca::PowerConsumerPrx,
+                        orca::PowerData>                      PrintingPowerConsumerImpl;
+typedef IceUtil::Handle<PrintingPowerConsumerImpl>            PrintingPowerConsumerImplPtr;
+
+//! Typedef for a common interface type. There's also a corresponding Ptr.
+typedef PrintingConsumerImpl<orca::PropertiesPrx,
+                        orca::PropertiesConsumer,
+                        orca::PropertiesConsumerPrx,
+                        orca::PropertiesData>                      PrintingPropertiesConsumerImpl;
+typedef IceUtil::Handle<PrintingPropertiesConsumerImpl>            PrintingPropertiesConsumerImplPtr;
+
+//! Typedef for a common interface type. There's also a corresponding Ptr.
+typedef PrintingConsumerImpl<orca::TracerPrx,
+                        orca::TracerConsumer,
+                        orca::TracerConsumerPrx,
+                        orca::TracerData>                      PrintingTracerConsumerImpl;
+typedef IceUtil::Handle<PrintingTracerConsumerImpl>            PrintingTracerConsumerImplPtr;
+
+//! Typedef for a common interface type. There's also a corresponding Ptr.
+typedef PrintingConsumerImpl<orca::WifiPrx,
+                        orca::WifiConsumer,
+                        orca::WifiConsumerPrx,
+                        orca::WifiData>                      PrintingWifiConsumerImpl;
+typedef IceUtil::Handle<PrintingWifiConsumerImpl>            PrintingWifiConsumerImplPtr;
+
 } // namespace
 
 #endif

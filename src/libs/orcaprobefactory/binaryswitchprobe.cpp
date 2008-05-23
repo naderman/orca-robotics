@@ -53,19 +53,8 @@ BinarySwitchProbe::loadOperationEvent( const int index, orcacm::OperationData & 
 int 
 BinarySwitchProbe::loadGetData( orcacm::OperationData & data )
 {
-    orca::BinarySwitchData result;
-    
-    try
-    {
-        orca::BinarySwitchPrx derivedPrx = orca::BinarySwitchPrx::checkedCast(prx_);
-        result = derivedPrx->getData();
-    }
-    catch( const Ice::Exception & e )
-    {
-        return 1;
-    }
-
-    cout<<ifacestring::toString(result)<<endl;
+    orca::BinarySwitchPrx derivedPrx = orca::BinarySwitchPrx::checkedCast(prx_);
+    orcaprobe::reportResult( data, "data", ifacestring::toString( derivedPrx->getData() ) );
     return 0;
 }
 
@@ -132,17 +121,20 @@ BinarySwitchProbe::loadSetState( orcacm::OperationData & data )
 int 
 BinarySwitchProbe::loadTimedSetState( orcacm::OperationData & data )
 {
+    orcaprobe::reportNotImplemented( data );
     return 0;
 }
 
 int 
 BinarySwitchProbe::loadToggleState( orcacm::OperationData & data )
 {
+    orcaprobe::reportNotImplemented( data );
     return 0;
 }
 
 int 
 BinarySwitchProbe::loadTimedToggleState( orcacm::OperationData & data )
 {
+    orcaprobe::reportNotImplemented( data );
     return 0;
 }

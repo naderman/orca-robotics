@@ -54,26 +54,11 @@ PingerProbe::loadPing( orcacm::OperationData & data )
         return 1;
     }
 
-    try
-    {
-        orca::PingerPrx derivedPrx = orca::PingerPrx::checkedCast(prx_);
-        double latencyMs = derivedPrx->ping( hostname );
+    orca::PingerPrx derivedPrx = orca::PingerPrx::checkedCast(prx_);
+    double latencyMs = derivedPrx->ping( hostname );
 
-        stringstream ss;
-        ss<<latencyMs<<"ms"<<endl;
-        orcaprobe::reportResult( data, "latency", ss.str() );
-    }
-    catch( const orca::OrcaException & e )
-    {
-        stringstream ss;
-        ss<< e << ": " << e.what <<endl;
-        orcaprobe::reportException( data, ss.str() );
-    }
-    catch( const Ice::Exception & e )
-    {
-        stringstream ss;
-        ss<< e <<endl;
-        orcaprobe::reportException( data, ss.str() );
-    }
+    stringstream ss;
+    ss<<latencyMs<<"ms"<<endl;
+    orcaprobe::reportResult( data, "latency", ss.str() );
     return 0;
 }

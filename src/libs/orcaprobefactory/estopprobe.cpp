@@ -28,8 +28,15 @@ EStopProbe::EStopProbe( const orca::FQInterfaceName & name, orcaprobe::AbstractD
     addOperation( "getData" );
     addOperation( "subscribe" );
     addOperation( "unsubscribe" );
+
+    consumer_ = new orcaifaceimpl::PrintingEStopConsumerImpl( context,1000,1 );
 }
     
+EStopProbe::~EStopProbe()
+{
+    consumer_->destroy();
+}
+
 int 
 EStopProbe::loadOperationEvent( const int index, orcacm::OperationData & data )
 {
@@ -49,60 +56,23 @@ EStopProbe::loadOperationEvent( const int index, orcacm::OperationData & data )
 int 
 EStopProbe::loadGetData( orcacm::OperationData & data )
 {
-    orca::EStopData result;
-    try
-    {
-        orca::EStopPrx derivedPrx = orca::EStopPrx::checkedCast( prx_ );
-        result = derivedPrx->getData();
-        orcaprobe::reportResult( data, "data", ifacestring::toString(result) );
-    }
-    catch( const orca::DataNotExistException & e )
-    {
-        orcaprobe::reportException( data, "data is not ready on the remote interface" );
-    }
-    catch( const orca::HardwareFailedException & e )
-    {
-        orcaprobe::reportException( data, "remote hardware failure" );
-    }
-    catch( const Ice::Exception & e )
-    {
-        stringstream ss;
-        ss<<e<<endl;
-        orcaprobe::reportException( data, ss.str() );
-    }
+    orca::EStopPrx derivedPrx = orca::EStopPrx::checkedCast(prx_);
+    orcaprobe::reportResult( data, "data", ifacestring::toString( derivedPrx->getData() ) );
     return 0;
 }
 
 int 
 EStopProbe::loadSubscribe( orcacm::OperationData & data )
 {
-    Ice::ObjectPtr consumer = this;
-    orca::EStopConsumerPrx callbackPrx =
-            orcaice::createConsumerInterface<orca::EStopConsumerPrx>( ctx_, consumer );
-    try
-    {
-        orca::EStopPrx derivedPrx = orca::EStopPrx::checkedCast(prx_);
-        derivedPrx->subscribe( callbackPrx );
-        orcaprobe::reportSubscribed( data );
-    }
-    catch( const Ice::Exception & e )
-    {
-        stringstream ss;
-        ss<<e<<endl;
-        orcaprobe::reportException( data, ss.str() );
-    }
+    consumer_->subscribeWithString( orcaice::toString(name_) );
+    orcaprobe::reportSubscribed( data, consumer_->consumerPrx()->ice_toString() );
     return 0;
 }
 
 int 
 EStopProbe::loadUnsubscribe( orcacm::OperationData & data )
 {
-    orcaprobe::reportNotImplemented( data );
+    consumer_->unsubscribeWithString( orcaice::toString(name_) );
+    orcaprobe::reportUnsubscribed( data );
     return 0;
 }
-
-void 
-EStopProbe::setData(const orca::EStopData & data, const Ice::Current&)
-{
-    std::cout << ifacestring::toString(data) << std::endl;
-};

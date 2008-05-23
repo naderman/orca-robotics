@@ -13,11 +13,12 @@
 
 #include <orcaprobe/interfaceprobe.h>
 #include <orca/ogmap.h>
+#include <orcaifaceimpl/printingconsumers.h>
 
 namespace orcaprobefactory
 {
 
-class OgMapProbe : public orca::OgMapConsumer, public orcaprobe::InterfaceProbe
+class OgMapProbe : public orcaprobe::InterfaceProbe
 {
 
 public:
@@ -25,10 +26,9 @@ public:
     OgMapProbe( const orca::FQInterfaceName & name,
                 orcaprobe::AbstractDisplay & display,
                 const orcaice::Context & context );
+    ~OgMapProbe();
 
     virtual int loadOperationEvent( const int index, orcacm::OperationData & data );
-    
-    virtual void setData(const orca::OgMapData & data, const Ice::Current&);
 
 private:
 
@@ -36,6 +36,7 @@ private:
     int loadSubscribe( orcacm::OperationData & data );
     int loadUnsubscribe( orcacm::OperationData & data );
 
+    orcaifaceimpl::PrintingOgMapConsumerImplPtr consumer_;
 };
 
 } // namespace

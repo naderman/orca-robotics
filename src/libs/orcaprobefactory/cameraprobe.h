@@ -13,6 +13,7 @@
 
 #include <orcaprobe/interfaceprobe.h>
 #include <orca/camera.h>
+#include <orcaifaceimpl/printingconsumers.h>
 
 namespace orcaprobefactory
 {
@@ -24,6 +25,7 @@ public:
 
     CameraProbe( const orca::FQInterfaceName& name, orcaprobe::AbstractDisplay& display,
                                 const orcaice::Context& context );
+    ~CameraProbe();
 
     virtual int loadOperationEvent( const int index, orcacm::OperationData& data );
     
@@ -33,6 +35,8 @@ private:
     int loadGetDescription( orcacm::OperationData& data );
     int loadSubscribe( orcacm::OperationData& data );
     int loadUnsubscribe( orcacm::OperationData& data );
+
+    orcaifaceimpl::PrintingCameraConsumerImplPtr consumer_;
 };
 
 } // namespace

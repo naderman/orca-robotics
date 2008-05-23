@@ -30,10 +30,14 @@ Odometry2dProbe::Odometry2dProbe( const orca::FQInterfaceName& name, orcaprobe::
     addOperation( "subscribe" );
     addOperation( "unsubscribe" );
 
-    Ice::ObjectPtr consumer = this;
-    callbackPrx_ = orcaice::createConsumerInterface<orca::Odometry2dConsumerPrx>( ctx_, consumer );
+    consumer_ = new orcaifaceimpl::PrintingOdometry2dConsumerImpl( context,1000,1 );
 }
     
+Odometry2dProbe::~Odometry2dProbe()
+{
+    consumer_->destroy();
+}
+
 int 
 Odometry2dProbe::loadOperationEvent( const int index, orcacm::OperationData& data )
 {
@@ -54,97 +58,31 @@ Odometry2dProbe::loadOperationEvent( const int index, orcacm::OperationData& dat
 int 
 Odometry2dProbe::loadGetData( orcacm::OperationData& data )
 {
-    orca::Odometry2dData result;    
-    try
-    {
-        orca::Odometry2dPrx derivedPrx = orca::Odometry2dPrx::checkedCast(prx_);
-        result = derivedPrx->getData();
-        orcaprobe::reportResult( data, "data", ifacestring::toString(result) );
-    }
-    catch( const orca::DataNotExistException& e )
-    {
-        orcaprobe::reportException( data, "data is not ready on the remote interface" );
-    }
-    catch( const orca::HardwareFailedException& e )
-    {
-        orcaprobe::reportException( data, "remote hardware failure" );
-    }
-    catch( const Ice::Exception& e )
-    {
-        stringstream ss;
-        ss<<e<<endl;
-        orcaprobe::reportException( data, ss.str() );
-    }
+    orca::Odometry2dPrx derivedPrx = orca::Odometry2dPrx::checkedCast(prx_);
+    orcaprobe::reportResult( data, "data", ifacestring::toString( derivedPrx->getData() ) );
     return 0;
 }
 
 int 
 Odometry2dProbe::loadGetDescription( orcacm::OperationData& data )
 {
-    orca::VehicleDescription result;
-    try
-    {
-        orca::Odometry2dPrx derivedPrx = orca::Odometry2dPrx::checkedCast(prx_);
-        result = derivedPrx->getDescription();
-        orcaprobe::reportResult( data, "data", ifacestring::toString(result) );
-    }
-    catch( const Ice::Exception& e )
-    {
-        stringstream ss;
-        ss<<e<<endl;
-        orcaprobe::reportException( data, ss.str() );
-    }
+    orca::Odometry2dPrx derivedPrx = orca::Odometry2dPrx::checkedCast(prx_);
+    orcaprobe::reportResult( data, "data", ifacestring::toString( derivedPrx->getDescription() ) );
     return 0;
 }
 
 int 
 Odometry2dProbe::loadSubscribe( orcacm::OperationData& data )
 {
-    cout<<"subscribing "<<callbackPrx_->ice_toString()<<endl;
-
-    try
-    {
-        orca::Odometry2dPrx derivedPrx = orca::Odometry2dPrx::checkedCast(prx_);
-        derivedPrx->subscribe( callbackPrx_ );
-        orcaprobe::reportSubscribed( data );
-
-        // save the op data structure so we can use it when the data arrives
-        subscribeOperationData_ = data;
-    }
-    catch( const Ice::Exception& e )
-    {
-        stringstream ss;
-        ss<<e<<endl;
-        orcaprobe::reportException( data, ss.str() );
-    }
+    consumer_->subscribeWithString( orcaice::toString(name_) );
+    orcaprobe::reportSubscribed( data, consumer_->consumerPrx()->ice_toString() );
     return 0;
 }
 
 int 
 Odometry2dProbe::loadUnsubscribe( orcacm::OperationData& data )
 {
-    cout<<"unsubscribing "<<callbackPrx_->ice_toString()<<endl;
-
-    try
-    {
-        orca::Odometry2dPrx derivedPrx = orca::Odometry2dPrx::checkedCast(prx_);
-        derivedPrx->unsubscribe( callbackPrx_ );
-        orcaprobe::reportUnsubscribed( data );
-    }
-    catch( const Ice::Exception& e )
-    {
-        stringstream ss;
-        ss<<e<<endl;
-        orcaprobe::reportException( data, ss.str() );
-    }
+    consumer_->unsubscribeWithString( orcaice::toString(name_) );
+    orcaprobe::reportUnsubscribed( data );
     return 0;
 }
-
-void 
-Odometry2dProbe::setData(const orca::Odometry2dData& result, const Ice::Current&)
-{
-//     std::cout << ifacestring::toString(result) << std::endl;
-    subscribeOperationData_.results.clear();
-    orcaprobe::reportResult( subscribeOperationData_, "data", ifacestring::toString(result) );
-    display_.setOperationData( subscribeOperationData_ );
-};

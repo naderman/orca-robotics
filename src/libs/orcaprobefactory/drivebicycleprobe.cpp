@@ -32,10 +32,14 @@ DriveBicycleProbe::DriveBicycleProbe( const orca::FQInterfaceName& name,
     addOperation( "unsubscribe" );
     addOperation( "setData" );
 
-    Ice::ObjectPtr consumer = this;
-    callbackPrx_ = orcaice::createConsumerInterface<orca::DriveBicycleConsumerPrx>( ctx_, consumer );
+    consumer_ = new orcaifaceimpl::PrintingDriveBicycleConsumerImpl( context,1000,1 );
 }
     
+DriveBicycleProbe::~DriveBicycleProbe()
+{
+    consumer_->destroy();
+}
+
 int 
 DriveBicycleProbe::loadOperationEvent( const int index, orcacm::OperationData& data )
 {
@@ -58,89 +62,32 @@ DriveBicycleProbe::loadOperationEvent( const int index, orcacm::OperationData& d
 int 
 DriveBicycleProbe::loadGetData( orcacm::OperationData& data )
 {
-    orca::DriveBicycleData result;    
-    try
-    {
-        orca::DriveBicyclePrx derivedPrx = orca::DriveBicyclePrx::checkedCast(prx_);
-        result = derivedPrx->getData();
-        orcaprobe::reportResult( data, "data", ifacestring::toString(result) );
-    }
-    catch( const orca::DataNotExistException& e )
-    {
-        orcaprobe::reportException( data, "data is not ready on the remote interface" );
-    }
-    catch( const orca::HardwareFailedException& e )
-    {
-        orcaprobe::reportException( data, "remote hardware failure" );
-    }
-    catch( const Ice::Exception& e )
-    {
-        stringstream ss;
-        ss<<e<<endl;
-        orcaprobe::reportException( data, ss.str() );
-    }
+    orca::DriveBicyclePrx derivedPrx = orca::DriveBicyclePrx::checkedCast(prx_);
+    orcaprobe::reportResult( data, "data", ifacestring::toString( derivedPrx->getData() ) );
     return 0;
 }
 
 int 
 DriveBicycleProbe::loadGetDescription( orcacm::OperationData& data )
 {
-    orca::VehicleDescription result;
-    try
-    {
-        orca::DriveBicyclePrx derivedPrx = orca::DriveBicyclePrx::checkedCast(prx_);
-        result = derivedPrx->getDescription();
-        orcaprobe::reportResult( data, "data", ifacestring::toString(result) );
-    }
-    catch( const Ice::Exception& e )
-    {
-        stringstream ss;
-        ss<<e<<endl;
-        orcaprobe::reportException( data, ss.str() );
-    }
+    orca::DriveBicyclePrx derivedPrx = orca::DriveBicyclePrx::checkedCast(prx_);
+    orcaprobe::reportResult( data, "data", ifacestring::toString( derivedPrx->getDescription() ) );
     return 0;
 }
 
 int 
 DriveBicycleProbe::loadSubscribe( orcacm::OperationData& data )
 {
-    cout<<"subscribing "<<callbackPrx_->ice_toString()<<endl;
-
-    try
-    {
-        orca::DriveBicyclePrx derivedPrx = orca::DriveBicyclePrx::checkedCast(prx_);
-        derivedPrx->subscribe( callbackPrx_ );
-        orcaprobe::reportSubscribed( data );
-
-        // save the op data structure so we can use it when the data arrives
-        subscribeOperationData_ = data;
-    }
-    catch( const Ice::Exception& e )
-    {
-        stringstream ss;
-        ss<<e<<endl;
-        orcaprobe::reportException( data, ss.str() );
-    }
+    consumer_->subscribeWithString( orcaice::toString(name_) );
+    orcaprobe::reportSubscribed( data, consumer_->consumerPrx()->ice_toString() );
     return 0;
 }
 
 int 
 DriveBicycleProbe::loadUnsubscribe( orcacm::OperationData& data )
 {
-    cout<<"unsubscribing "<<callbackPrx_->ice_toString()<<endl;
-
-    try
-    {
-        orca::DriveBicyclePrx derivedPrx = orca::DriveBicyclePrx::checkedCast(prx_);
-        derivedPrx->unsubscribe( callbackPrx_ );
-        orcaprobe::reportUnsubscribed( data );
-    }
-    catch( const Ice::Exception& e )
-    {
-        stringstream ss;
-        ss<<e<<endl;
-        orcaprobe::reportException( data, ss.str() );
-    }
+    consumer_->unsubscribeWithString( orcaice::toString(name_) );
+    orcaprobe::reportUnsubscribed( data );
     return 0;
 }
 
@@ -150,12 +97,3 @@ DriveBicycleProbe::loadSetData( orcacm::OperationData& data )
     orcaprobe::reportNotImplemented( data );
     return 0;
 }
-
-void
-DriveBicycleProbe::setData(const orca::DriveBicycleData& result, const Ice::Current&)
-{
-//     std::cout << ifacestring::toString(result) << std::endl;
-    subscribeOperationData_.results.clear();
-    orcaprobe::reportResult( subscribeOperationData_, "data", ifacestring::toString(result) );
-    display_.setOperationData( subscribeOperationData_ );
-};

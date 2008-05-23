@@ -29,8 +29,15 @@ Odometry3dProbe::Odometry3dProbe( const orca::FQInterfaceName& name, orcaprobe::
     addOperation( "getData" );
     addOperation( "subscribe" );
     addOperation( "unsubscribe" );
+
+    consumer_ = new orcaifaceimpl::PrintingOdometry3dConsumerImpl( context,1000,1 );
 }
     
+Odometry3dProbe::~Odometry3dProbe()
+{
+    consumer_->destroy();
+}
+
 int 
 Odometry3dProbe::loadOperationEvent( const int index, orcacm::OperationData& data )
 {
@@ -51,83 +58,31 @@ Odometry3dProbe::loadOperationEvent( const int index, orcacm::OperationData& dat
 int 
 Odometry3dProbe::loadGetData( orcacm::OperationData& data )
 {
-    orca::Odometry3dData result;
-    orcacm::ResultHeader res;
-    
-    try
-    {
-        orca::Odometry3dPrx derivedPrx = orca::Odometry3dPrx::checkedCast(prx_);
-        result = derivedPrx->getData();
-        orcaprobe::reportResult( data, "data", ifacestring::toString(result) );
-    }
-    catch( const orca::DataNotExistException& e )
-    {
-        orcaprobe::reportException( data, "data is not ready on the remote interface" );
-    }
-    catch( const orca::HardwareFailedException& e )
-    {
-        orcaprobe::reportException( data, "remote hardware failure" );
-    }
-    catch( const Ice::Exception& e )
-    {
-        stringstream ss;
-        ss<<e<<endl;
-        orcaprobe::reportException( data, ss.str() );
-    }
+    orca::Odometry3dPrx derivedPrx = orca::Odometry3dPrx::checkedCast(prx_);
+    orcaprobe::reportResult( data, "data", ifacestring::toString( derivedPrx->getData() ) );
     return 0;
 }
 
 int 
 Odometry3dProbe::loadGetDescription( orcacm::OperationData& data )
 {
-    orca::VehicleDescription result;
-    orcacm::ResultHeader res;
-
-    try
-    {
-        orca::Odometry3dPrx derivedPrx = orca::Odometry3dPrx::checkedCast(prx_);
-        result = derivedPrx->getDescription();
-        orcaprobe::reportResult( data, "data", ifacestring::toString(result) );
-    }
-    catch( const Ice::Exception& e )
-    {
-        stringstream ss;
-        ss<<e<<endl;
-        orcaprobe::reportException( data, ss.str() );
-    }
+    orca::Odometry3dPrx derivedPrx = orca::Odometry3dPrx::checkedCast(prx_);
+    orcaprobe::reportResult( data, "data", ifacestring::toString( derivedPrx->getDescription() ) );
     return 0;
 }
 
 int 
 Odometry3dProbe::loadSubscribe( orcacm::OperationData& data )
 {
-    Ice::ObjectPtr consumer = this;
-    orca::Odometry3dConsumerPrx callbackPrx =
-            orcaice::createConsumerInterface<orca::Odometry3dConsumerPrx>( ctx_, consumer );
-    try
-    {
-        orca::Odometry3dPrx derivedPrx = orca::Odometry3dPrx::checkedCast(prx_);
-        derivedPrx->subscribe( callbackPrx );
-        orcaprobe::reportSubscribed( data );
-    }
-    catch( const Ice::Exception& e )
-    {
-        stringstream ss;
-        ss<<e<<endl;
-        orcaprobe::reportException( data, ss.str() );
-    }
+    consumer_->subscribeWithString( orcaice::toString(name_) );
+    orcaprobe::reportSubscribed( data, consumer_->consumerPrx()->ice_toString() );
     return 0;
 }
 
 int 
 Odometry3dProbe::loadUnsubscribe( orcacm::OperationData& data )
 {
-    orcaprobe::reportNotImplemented( data );
+    consumer_->unsubscribeWithString( orcaice::toString(name_) );
+    orcaprobe::reportUnsubscribed( data );
     return 0;
 }
-
-void 
-Odometry3dProbe::setData(const orca::Odometry3dData& data, const Ice::Current&)
-{
-    std::cout << ifacestring::toString(data) << std::endl;
-};

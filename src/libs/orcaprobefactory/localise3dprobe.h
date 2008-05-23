@@ -13,21 +13,21 @@
 
 #include <orcaprobe/interfaceprobe.h>
 #include <orca/localise3d.h>
+#include <orcaifaceimpl/printingconsumers.h>
 
 namespace orcaprobefactory
 {
 
-class Localise3dProbe : public orca::Localise3dConsumer, public orcaprobe::InterfaceProbe
+class Localise3dProbe : public orcaprobe::InterfaceProbe
 {
 
 public:
 
     Localise3dProbe( const orca::FQInterfaceName& name, orcaprobe::AbstractDisplay& display,
                                 const orcaice::Context& context );
+    ~Localise3dProbe();
 
     virtual int loadOperationEvent( const int index, orcacm::OperationData& data );
-    
-    virtual void setData(const orca::Localise3dData& data, const Ice::Current&);
 
 private:
 
@@ -37,8 +37,7 @@ private:
     int loadSubscribe( orcacm::OperationData& data );
     int loadUnsubscribe( orcacm::OperationData& data );
 
-    orca::Localise3dConsumerPrx callbackPrx_;
-    orcacm::OperationData subscribeOperationData_;
+    orcaifaceimpl::PrintingLocalise3dConsumerImplPtr consumer_;
 };
 
 } // namespace

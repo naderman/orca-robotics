@@ -46,41 +46,15 @@ HomeProbe::loadOperationEvent( const int index, orcacm::OperationData& data )
 int 
 HomeProbe::loadGetInterfaces( orcacm::OperationData& data )
 {
-    orca::HomeData result;   
-    try
-    {
-        orca::HomePrx dereivedPrx = orca::HomePrx::checkedCast(prx_);
-        result = dereivedPrx->getInterfaces();
-        orcaprobe::reportResult( data, "data", ifacestring::toString(result) );
-    }
-    catch( const Ice::Exception& e )
-    {
-        stringstream ss;
-        ss<<e<<endl;
-        orcaprobe::reportException( data, ss.str() );
-    }
+    orca::HomePrx derivedPrx = orca::HomePrx::checkedCast(prx_);
+    orcaprobe::reportResult( data, "data", ifacestring::toString( derivedPrx->getInterfaces() ) );
     return 0;
 }
 
 int 
 HomeProbe::loadGetProperties( orcacm::OperationData& data )
 {
-    std::map<std::string,std::string> result;
-    try
-    {
-        orca::HomePrx dereivedPrx = orca::HomePrx::checkedCast(prx_);
-        result = dereivedPrx->getProperties();
-        stringstream ss;
-        for ( map<string,string>::iterator it=result.begin(); it!=result.end(); ++it ) {
-            ss<<setw(40)<<it->first<<"\t\t"<<it->second<<endl;
-        }
-        orcaprobe::reportResult( data, "data", ss.str() );
-    }
-    catch( const Ice::Exception& e )
-    {
-        stringstream ss;
-        ss<<e<<endl;
-        orcaprobe::reportException( data, ss.str() );
-    }
+    orca::HomePrx derivedPrx = orca::HomePrx::checkedCast(prx_);
+    orcaprobe::reportResult( data, "data", ifacestring::toString( derivedPrx->getProperties() ) );
     return 0;
 }

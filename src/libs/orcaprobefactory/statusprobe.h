@@ -20,13 +20,13 @@ namespace orcaprobefactory
 {
 
 class StatusProbe : public orcaprobe::InterfaceProbe
-//         public orcaifaceimpl::SimpleConsumerImpl<orca::StatusPrx,orca::StatusConsumer,orca::StatusConsumerPrx,orca::StatusData>
 {
 
 public:
 
     StatusProbe( const orca::FQInterfaceName& name, orcaprobe::AbstractDisplay& display,
                                 const orcaice::Context& context );
+    ~StatusProbe();
 
     virtual int loadOperationEvent( const int index, orcacm::OperationData& data );
     

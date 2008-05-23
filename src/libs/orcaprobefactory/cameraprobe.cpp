@@ -29,6 +29,13 @@ CameraProbe::CameraProbe( const orca::FQInterfaceName& name, orcaprobe::Abstract
     addOperation( "getDescription" );
     addOperation( "subscribe" );
     addOperation( "unsubscribe" );
+
+    consumer_ = new orcaifaceimpl::PrintingCameraConsumerImpl( context,1000,1 );
+}
+    
+CameraProbe::~CameraProbe()
+{
+    consumer_->destroy();
 }
     
 int 
@@ -51,51 +58,31 @@ CameraProbe::loadOperationEvent( const int index, orcacm::OperationData& data )
 int 
 CameraProbe::loadGetData( orcacm::OperationData& data )
 {
-    orca::CameraDataSequence result;
-    
-    try
-    {
-        orca::CameraPrx derivedPrx = orca::CameraPrx::checkedCast(prx_);
-        result = derivedPrx->getData();
-        orcaprobe::reportResult( data, "data", ifacestring::toString( result ) );
-    }
-    catch( const Ice::Exception& e )
-    {
-        return 1;
-    }
-
+    orca::CameraPrx derivedPrx = orca::CameraPrx::checkedCast(prx_);
+    orcaprobe::reportResult( data, "data", ifacestring::toString( derivedPrx->getData() ) );
     return 0;
 }
 
 int 
 CameraProbe::loadGetDescription( orcacm::OperationData& data )
 {
-    orca::CameraDescriptionSequence result;
-    
-    try
-    {
-        orca::CameraPrx derivedPrx = orca::CameraPrx::checkedCast(prx_);
-        result = derivedPrx->getDescription();
-        orcaprobe::reportResult( data, "data", ifacestring::toString( result ) );
-    }
-    catch( const Ice::Exception& e )
-    {
-        return 1;
-    }
-
+    orca::CameraPrx derivedPrx = orca::CameraPrx::checkedCast(prx_);
+    orcaprobe::reportResult( data, "data", ifacestring::toString( derivedPrx->getDescription() ) );
     return 0;
 }
 
 int 
 CameraProbe::loadSubscribe( orcacm::OperationData& data )
-{    
-    orcaprobe::reportNotImplemented( data );
+{
+    consumer_->subscribeWithString( orcaice::toString(name_) );
+    orcaprobe::reportSubscribed( data, consumer_->consumerPrx()->ice_toString() );
     return 0;
 }
 
 int 
 CameraProbe::loadUnsubscribe( orcacm::OperationData& data )
-{    
-    orcaprobe::reportNotImplemented( data );
+{
+    consumer_->unsubscribeWithString( orcaice::toString(name_) );
+    orcaprobe::reportUnsubscribed( data );
     return 0;
 }

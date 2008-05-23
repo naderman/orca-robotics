@@ -31,9 +31,6 @@ public:
 private:
 
     int loadGetDescription( orcacm::OperationData& data );
-
-    orcacm::OperationData subscribeOperationData_;
-
 };
 
 } // namespace

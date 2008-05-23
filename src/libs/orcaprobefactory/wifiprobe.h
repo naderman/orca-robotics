@@ -13,22 +13,21 @@
 
 #include <orcaprobe/interfaceprobe.h>
 #include <orca/wifi.h>
+#include <orcaifaceimpl/printingconsumers.h>
 
 namespace orcaprobefactory
 {
 
-class WifiProbe : public orca::WifiConsumer, public orcaprobe::InterfaceProbe
+class WifiProbe : public orcaprobe::InterfaceProbe
 {
 
 public:
 
     WifiProbe( const orca::FQInterfaceName& name, orcaprobe::AbstractDisplay& display,
                const orcaice::Context& context );
+    ~WifiProbe();
 
     virtual int loadOperationEvent( const int index, orcacm::OperationData& data );
-
-    // from consumer
-    virtual void setData(const orca::WifiData& data, const Ice::Current&);
     
 private:
 
@@ -37,8 +36,7 @@ private:
     int loadSubscribe( orcacm::OperationData& data );
     int loadUnsubscribe( orcacm::OperationData& data );
 
-    orca::WifiConsumerPrx callbackPrx_;
-    orcacm::OperationData subscribeOperationData_;
+    orcaifaceimpl::PrintingWifiConsumerImplPtr consumer_;
 };
 
 } // namespace

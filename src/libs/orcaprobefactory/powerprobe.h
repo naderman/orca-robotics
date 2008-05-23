@@ -13,21 +13,21 @@
 
 #include <orcaprobe/interfaceprobe.h>
 #include <orca/power.h>
+#include <orcaifaceimpl/printingconsumers.h>
 
 namespace orcaprobefactory
 {
 
-class PowerProbe : public orca::PowerConsumer, public orcaprobe::InterfaceProbe
+class PowerProbe : public orcaprobe::InterfaceProbe
 {
 
 public:
 
     PowerProbe( const orca::FQInterfaceName & name, orcaprobe::AbstractDisplay & display,
                                 const orcaice::Context & context );
+    ~PowerProbe();
 
     virtual int loadOperationEvent( const int index, orcacm::OperationData & data );
-    
-    virtual void setData(const orca::PowerData & data, const Ice::Current&);
 
 private:
 
@@ -35,6 +35,7 @@ private:
     int loadSubscribe( orcacm::OperationData & data );
     int loadUnsubscribe( orcacm::OperationData & data );
 
+    orcaifaceimpl::PrintingPowerConsumerImplPtr consumer_;
 };
 
 } // namespace

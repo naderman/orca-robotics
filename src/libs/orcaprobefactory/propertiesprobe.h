@@ -13,21 +13,21 @@
 
 #include <orcaprobe/interfaceprobe.h>
 #include <orca/properties.h>
+#include <orcaifaceimpl/printingconsumers.h>
 
 namespace orcaprobefactory
 {
 
-class PropertiesProbe : public orca::PropertiesConsumer, public orcaprobe::InterfaceProbe
+class PropertiesProbe : public orcaprobe::InterfaceProbe
 {
 
 public:
 
     PropertiesProbe( const orca::FQInterfaceName & name, orcaprobe::AbstractDisplay & display,
                                 const orcaice::Context & context );
+    ~PropertiesProbe();
 
     virtual int loadOperationEvent( const int index, orcacm::OperationData & data );
-    
-    virtual void setData(const orca::PropertiesData & data, const Ice::Current&);
 
 private:
 
@@ -36,6 +36,7 @@ private:
     int loadSubscribe( orcacm::OperationData & data );
     int loadUnsubscribe( orcacm::OperationData & data );
 
+    orcaifaceimpl::PrintingPropertiesConsumerImplPtr consumer_;
 };
 
 } // namespace

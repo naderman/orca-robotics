@@ -13,16 +13,31 @@
 
 #include <orcaprobe/interfaceprobe.h>
 #include <orca/gps.h>
-#include <orcaprobefactory/genericgpsprobe.h>
+#include <orcaifaceimpl/printingconsumers.h>
 
 namespace orcaprobefactory
 {
 
-    typedef GenericGpsProbe<orca::GpsConsumer,
-                            orca::GpsConsumerPrx,
-                            orca::GpsPrx,
-                            orca::GpsData,
-                            orca::GpsDescription>  GpsProbe;
+class GpsProbe : public orcaprobe::InterfaceProbe
+{
+
+public:
+
+    GpsProbe( const orca::FQInterfaceName& name, orcaprobe::AbstractDisplay& display,
+                                const orcaice::Context& context );
+    ~GpsProbe();
+
+    virtual int loadOperationEvent( const int index, orcacm::OperationData& data );
+    
+private:
+
+    int loadGetData( orcacm::OperationData& data );
+    int loadGetDescription( orcacm::OperationData& data );
+    int loadSubscribe( orcacm::OperationData& data );
+    int loadUnsubscribe( orcacm::OperationData& data );
+
+    orcaifaceimpl::PrintingGpsConsumerImplPtr consumer_;
+};
 
 } // namespace
 

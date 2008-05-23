@@ -49,27 +49,8 @@ PathFollower2dProbe::loadOperationEvent( const int index, orcacm::OperationData 
 int 
 PathFollower2dProbe::loadGetData( orcacm::OperationData & data )
 {
-    orca::PathFollower2dData result;
-    try
-    {
-        orca::PathFollower2dPrx derivedPrx = orca::PathFollower2dPrx::checkedCast(prx_);
-        result = derivedPrx->getData();
-        orcaprobe::reportResult( data, "data", ifacestring::toString(result) );
-    }
-    catch( const orca::DataNotExistException & e )
-    {
-        orcaprobe::reportException( data, "data is not ready on the remote interface" );
-    }
-    catch( const orca::HardwareFailedException & e )
-    {
-        orcaprobe::reportException( data, "remote hardware failure" );
-    }
-    catch( const Ice::Exception & e )
-    {
-        stringstream ss;
-        ss<<e<<endl;
-        orcaprobe::reportException( data, ss.str() );
-    }
+    orca::PathFollower2dPrx derivedPrx = orca::PathFollower2dPrx::checkedCast(prx_);
+    orcaprobe::reportResult( data, "data", ifacestring::toString( derivedPrx->getData() ) );
     return 0;
 }
 
@@ -79,18 +60,10 @@ PathFollower2dProbe::loadSubscribe( orcacm::OperationData & data )
     Ice::ObjectPtr consumer = this;
     orca::PathFollower2dConsumerPrx callbackPrx =
             orcaice::createConsumerInterface<orca::PathFollower2dConsumerPrx>( ctx_, consumer );
-    try
-    {
-        orca::PathFollower2dPrx derivedPrx = orca::PathFollower2dPrx::checkedCast(prx_);
-        derivedPrx->subscribe( callbackPrx );
-        orcaprobe::reportSubscribed( data );
-    }
-    catch( const Ice::Exception & e )
-    {
-        stringstream ss;
-        ss<<e<<endl;
-        orcaprobe::reportException( data, ss.str() );
-    }
+
+    orca::PathFollower2dPrx derivedPrx = orca::PathFollower2dPrx::checkedCast(prx_);
+    derivedPrx->subscribe( callbackPrx );
+    orcaprobe::reportSubscribed( data );
     return 0;
 }
 
