@@ -12,7 +12,7 @@
 #include <orcaice/orcaice.h>
 #include <orcaimage/colourconversions.h>
 #include <orcaimage/imageutils.h>
-#include <orcaifacestring/image.h>
+#include <orcaifacestring/camera.h>
 #include <orcaifaceimpl/bufferedconsumers.h>
 
 #include "mainthread.h"
