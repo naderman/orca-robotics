@@ -12,12 +12,13 @@ GBX_REQUIRE_VAR( build EXE ${APP_NAME} not_os_win "Windows OS is not supported" 
 INCLUDE (${HYDRO_CMAKE_DIR}/FindOpenCV.cmake)
 GBX_REQUIRE_VAR( build EXE ${APP_NAME} OPENCV_FOUND "OpenCV not found" )
 
-SET( dep_libs OrcaImage OrcaObjects )
+SET( dep_libs OrcaImage OrcaIfaceImpl )
 GBX_REQUIRE_TARGETS( build EXE ${APP_NAME} ${dep_libs} )
 
 IF ( build )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseLibProjectIfaceString.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseOpenCV.cmake )
     #INCLUDE( ${HYDRO_CMAKE_DIR}/UseQt.cmake )
 

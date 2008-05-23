@@ -10,7 +10,6 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include <orcaobj/orcaobj.h>
 #include <orcaimage/colourconversions.h>
 #include <orcaimage/imageutils.h>
 #include <orcaifacestring/image.h>
@@ -77,7 +76,7 @@ MainThread::walk()
         {
             descr_ = cameraPrx_->getDescription();
             cout << "Description Vector Size: " << descr_.size() << endl;
-            cout << orcaobj::toString(descr_) << endl;
+            cout << ifacestring::toString(descr_) << endl;
             break;
         }
         catch ( const orca::HardwareFailedException & e )
