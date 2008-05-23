@@ -11,7 +11,8 @@
 #ifndef ORCAICE_TIME_UTILITIES_H
 #define ORCAICE_TIME_UTILITIES_H
 
-#include <orca/orca.h>
+#include <orca/common.h>
+#include <IceUtil/Time.h>
 
 namespace orcaice
 {

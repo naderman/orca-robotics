@@ -11,7 +11,7 @@
 #ifndef ORCA2_RANGE_SCANNER_2D_INTERFACE_ICE
 #define ORCA2_RANGE_SCANNER_2D_INTERFACE_ICE
 
-#include <orca/orca.ice>
+#include <orca/common.ice>
 #include <orca/bros1.ice>
 
 module orca
@@ -71,8 +71,11 @@ struct RangeScanner2dDescription
 /*!
     Planar range scan data structure
 */
-class RangeScanner2dData extends OrcaObject
+class RangeScanner2dData
 {
+    //! Time when the object was observed, created, etc.
+    Time timeStamp;
+
     //! Scan ranges [m]
     FloatSeq     ranges;
 

@@ -19,7 +19,7 @@
 using namespace std;
 using namespace orcaprobefactory;
 
-PingerProbe::PingerProbe( const orca::FQInterfaceName & name, orcaprobe::IDisplay & display,
+PingerProbe::PingerProbe( const orca::FQInterfaceName & name, orcaprobe::AbstractDisplay & display,
                                 const orcaice::Context & context )
     : InterfaceProbe(name,display,context)
 {

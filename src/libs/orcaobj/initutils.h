@@ -11,7 +11,7 @@
 #ifndef ORCAOBJ_INIT_UTILS_H
 #define ORCAOBJ_INIT_UTILS_H
 
-#include <orca/orca.h>
+#include <orca/common.h>
 #include <orca/image.h>
 #include <orca/camera.h>
 #include <orca/drivebicycle.h>

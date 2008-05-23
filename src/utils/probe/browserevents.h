@@ -11,7 +11,7 @@
 #ifndef BROWSER_EVENTS_H
 #define BROWSER_EVENTS_H
 
-#include <hydroiceutil/eventqueue.h>
+#include <hydroiceutil/event.h>
 
 namespace probe
 {
@@ -28,56 +28,13 @@ enum EventType
     Pick
 };
 
-class ActivateEvent : public hydroiceutil::Event
-{
-public:
-    ActivateEvent() : Event( Activate ) {};
-};
-
-class ReloadEvent : public hydroiceutil::Event
-{
-public:
-    ReloadEvent() : Event( Reload ) {};
-};
-
-class UpEvent : public hydroiceutil::Event
-{
-public:
-    UpEvent() : Event( Up ) {};
-};
-
-class TopEvent : public hydroiceutil::Event
-{
-public:
-    TopEvent() : Event( Top ) {};
-};
-
-class FaultEvent : public hydroiceutil::Event
-{
-public:
-    FaultEvent() : Event( Fault ) {};
-};
-
-class FilterEvent : public hydroiceutil::Event
-{
-public:
-    FilterEvent() : Event( Filter ) {};
-};
-
-class DeactivateEvent : public hydroiceutil::Event
-{
-public:
-    DeactivateEvent() : Event( Deactivate ) {};
-};
-
 class PickEvent : public hydroiceutil::Event
 {
 public:
-    PickEvent( int pick ) :
+    PickEvent( int i ) :
         Event( Pick ),
-        pick_(pick) {};
-
-    int pick_;
+        pick(i) {};
+    int pick;
 };
 typedef IceUtil::Handle<PickEvent> PickEventPtr;
 

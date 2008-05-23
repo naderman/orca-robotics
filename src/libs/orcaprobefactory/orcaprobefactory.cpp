@@ -70,7 +70,7 @@ OrcaProbeFactory::OrcaProbeFactory()
 orcaprobe::InterfaceProbe* 
 OrcaProbeFactory::create( const std::string           & interfaceType, 
                           const orca::FQInterfaceName & name, 
-                          orcaprobe::IDisplay    & display, 
+                          orcaprobe::AbstractDisplay    & display, 
                           const orcaice::Context      & context )
 {
     orcaprobe::InterfaceProbe* probe = 0;

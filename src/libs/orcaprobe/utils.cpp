@@ -9,17 +9,17 @@
  */
 
 #include <iostream>
-
+#include <IceUtil/Time.h>
 #include "utils.h"
 
 using namespace std;
 
 void 
-orcaprobe::reportResult( orcacm::OperationData& data, const std::string& type, const std::string& error )
+orcaprobe::reportResult( orcacm::OperationData& data, const std::string& type, const std::string& text )
 {
     orcacm::ResultHeader res;
     res.name = type;
-    res.text = error;
+    res.text = text;
     data.results.push_back( res );
 }
 
@@ -30,9 +30,9 @@ orcaprobe::reportException( orcacm::OperationData& data, const std::string& erro
 }
 
 void 
-orcaprobe::reportSubscribed( orcacm::OperationData& data )
+orcaprobe::reportSubscribed( orcacm::OperationData& data, const std::string& proxy )
 { 
-    reportResult( data, "outcome", IceUtil::Time::now().toDateTime()+" Subscribed successfully" ); 
+    reportResult( data, "outcome", IceUtil::Time::now().toDateTime()+" Subscribed successfully, proxy="+proxy ); 
 }
 
 void 

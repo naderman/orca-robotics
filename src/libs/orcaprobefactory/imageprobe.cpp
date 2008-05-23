@@ -19,7 +19,7 @@
 using namespace std;
 using namespace orcaprobefactory;
 
-ImageProbe::ImageProbe( const orca::FQInterfaceName& name, orcaprobe::IDisplay& display,
+ImageProbe::ImageProbe( const orca::FQInterfaceName& name, orcaprobe::AbstractDisplay& display,
                                 const orcaice::Context& context )
     : InterfaceProbe(name,display,context)
 {

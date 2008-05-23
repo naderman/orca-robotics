@@ -20,72 +20,57 @@
 using namespace std;
 using namespace probe;
 
-BrowserThread::BrowserThread( orcaprobe::IDisplay & display,
+BrowserThread::BrowserThread( orcaprobe::AbstractDisplay & display,
                                 std::vector<orcaprobe::Factory*> &factories,
                                 const orcaice::Context & context ) :
     SafeThread(context.tracer()),
     factories_(factories),
     display_(display),
     events_(new hydroiceutil::EventQueue),
-    ifaceProbe_(0),
     context_(context)
 {
-}
-
-BrowserThread::~BrowserThread()
-{
-    delete ifaceProbe_;
 }
 
 void
 BrowserThread::chooseActivate()
 {
-//     cout<<"chooseActivate"<<endl;
-    hydroiceutil::EventPtr e = new probe::ActivateEvent;
-    events_->add( e );
+    events_->add( Activate );
 }
 
 void 
 BrowserThread::chooseReload()
 {
-    hydroiceutil::EventPtr e = new probe::ReloadEvent;
-    events_->add( e );
+    events_->add( Reload );
 }
 
 void 
 BrowserThread::chooseUp()
 {
-    hydroiceutil::EventPtr e = new probe::UpEvent;
-    events_->add( e );
+    events_->add( Up );
 }
 
 void 
 BrowserThread::chooseTop()
 {
-    hydroiceutil::EventPtr e = new probe::TopEvent;
-    events_->add( e );
+    events_->add( Top );
 }
 
 void 
 BrowserThread::choosePick( int pick )
 {
-//     cout<<"choosePick() pick="<<pick<<endl;
-    hydroiceutil::EventPtr e = new probe::PickEvent( pick );
-    events_->add( e );
+    events_->add( new probe::PickEvent( pick ) );
 }
 
 void 
 BrowserThread::chooseFilter( const std::string & filter )
 {
-    hydroiceutil::EventPtr e = new probe::FilterEvent; // FilterEvent( filter_ );
-    events_->add( e );
+    events_->add( Filter );
 }
 
 void
 BrowserThread::chooseDeactivate()
 {
-    hydroiceutil::EventPtr e = new probe::DeactivateEvent;
-    events_->add( e );
+    events_->add( Deactivate );
 }
 
 void 
@@ -106,7 +91,7 @@ BrowserThread::walk()
         case Pick : {
 //             cout<<"pick event"<<endl;
             PickEventPtr e = PickEventPtr::dynamicCast( event );
-            pick_ = e->pick_;
+            pick_ = e->pick;
             pick();
             break;
         }
@@ -147,8 +132,7 @@ BrowserThread::walk()
         }
         default : {
             cout<<"unknown browser event "<<event->type()<<". Ignoring..."<<endl;
-            hydroiceutil::EventPtr e = new probe::FaultEvent;
-            events_->add( e );
+            events_->add( Fault );
         }
         } // switch
     } // while
@@ -177,7 +161,7 @@ BrowserThread::loadRegistry()
 void 
 BrowserThread::showRegistry()
 {
-    display_.setFocus( orcaprobe::IDisplay::RegistryFocus );
+    display_.setFocus( orcaprobe::AbstractDisplay::RegistryFocus );
 }
 
 void 
@@ -203,7 +187,7 @@ BrowserThread::loadPlatform()
 void 
 BrowserThread::showPlatform()
 {
-    display_.setFocus( orcaprobe::IDisplay::PlatformFocus );
+    display_.setFocus( orcaprobe::AbstractDisplay::PlatformFocus );
 }
 
 void 
@@ -229,21 +213,12 @@ BrowserThread::loadComponent()
 void 
 BrowserThread::showComponent()
 {
-    display_.setFocus( orcaprobe::IDisplay::ComponentFocus );
+    display_.setFocus( orcaprobe::AbstractDisplay::ComponentFocus );
 }
 
 void 
 BrowserThread::loadInterface()
-{
-    // special case: the interface is actually created every time, so here we try to delete it to avoid mem leak.
-    //cout<<"unloading interface"<<endl;
-    if ( ifaceProbe_ ) {
-        // most of our interfaces are now Ice smart pointers, can't delete them.
-        // but some of them are not and it's a problem
-//         delete ifaceProbe_;
-        ifaceProbe_ = 0;
-    }
-    
+{   
 //     cout<<"DEBUG: will load interface "<<pick_<<"/"<<componentData_.provides.size()<<endl;
 //     cout<<"DEBUG: loading interface data for "<<componentData_.provides[pick_].name<<endl;
     lastInterfacePick_ = pick_;
@@ -262,6 +237,7 @@ BrowserThread::loadInterface()
     {
         // if this interface is not supported, skip this factory
         if ( factories_[i]->isSupported( interfaceData_.id ) ) {
+            // special case: the interface is actually created every time, using smart pointer to avoid mem leaks
             ifaceProbe_ = factories_[i]->create( interfaceData_.id, interfaceData_.name, display_, context_ );
         }
 
@@ -281,7 +257,7 @@ BrowserThread::loadInterface()
 void 
 BrowserThread::showInterface()
 {
-    display_.setFocus( orcaprobe::IDisplay::InterfaceFocus );
+    display_.setFocus( orcaprobe::AbstractDisplay::InterfaceFocus );
 }
 
 void 
@@ -295,7 +271,7 @@ BrowserThread::loadOperation()
     //
     display_.showNetworkActivity( true );
     if ( ifaceProbe_->loadOperation( pick_, operationData_ ) ) {
-        events_->add( new probe::FaultEvent );
+        events_->add( Fault );
     }
     display_.showNetworkActivity( false );
 
@@ -308,7 +284,7 @@ BrowserThread::loadOperation()
 void 
 BrowserThread::showOperation()
 {
-    display_.setFocus( orcaprobe::IDisplay::OperationFocus );
+    display_.setFocus( orcaprobe::AbstractDisplay::OperationFocus );
 }
 
 void 

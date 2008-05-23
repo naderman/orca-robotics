@@ -19,7 +19,7 @@
 using namespace std;
 using namespace orcaprobefactory;
 
-EStopProbe::EStopProbe( const orca::FQInterfaceName & name, orcaprobe::IDisplay & display,
+EStopProbe::EStopProbe( const orca::FQInterfaceName & name, orcaprobe::AbstractDisplay & display,
                                 const orcaice::Context & context )
     : InterfaceProbe(name,display,context)
 {
@@ -78,7 +78,7 @@ EStopProbe::loadSubscribe( orcacm::OperationData & data )
 {
     Ice::ObjectPtr consumer = this;
     orca::EStopConsumerPrx callbackPrx =
-            orcaice::createConsumerInterface<orca::EStopConsumerPrx>( context_, consumer );
+            orcaice::createConsumerInterface<orca::EStopConsumerPrx>( ctx_, consumer );
     try
     {
         orca::EStopPrx derivedPrx = orca::EStopPrx::checkedCast(prx_);

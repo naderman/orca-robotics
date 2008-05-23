@@ -14,7 +14,7 @@
 #include <orcaprobe/interfaceprobe.h>
 #include <orcaprobe/factory.h>
 
-#include <orcaprobe/idisplay.h>
+#include <orcaprobe/abstractdisplay.h>
 #include <orcaprobe/ibrowser.h>
 
 #include <orcaprobe/utils.h>

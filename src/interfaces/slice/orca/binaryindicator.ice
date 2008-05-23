@@ -11,7 +11,7 @@
 #ifndef ORCA2_BINARY_INDICATOR_ICE
 #define ORCA2_BINARY_INDICATOR_ICE
 
-#include <orca/orca.ice>
+#include <orca/common.ice>
 
 module orca
 {

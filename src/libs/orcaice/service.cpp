@@ -11,7 +11,7 @@
 #include <orcaice/service.h>
 #include <orcaice/component.h>
 
-#include <orca/orca.h>
+#include <orca/common.h>
 #include <orcaice/orcaice.h>
 
 #include "privateutils.h"

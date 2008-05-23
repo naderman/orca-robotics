@@ -22,7 +22,7 @@ class CpuProbe : public orcaprobe::InterfaceProbe
 
 public:
 
-    CpuProbe( const orca::FQInterfaceName & name, orcaprobe::IDisplay & display,
+    CpuProbe( const orca::FQInterfaceName & name, orcaprobe::AbstractDisplay & display,
                                 const orcaice::Context & context );
 
     virtual int loadOperationEvent( const int index, orcacm::OperationData & data );

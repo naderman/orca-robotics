@@ -30,7 +30,7 @@ class GenericGpsProbe : public ConsumerType, public orcaprobe::InterfaceProbe
 public:
 
     GenericGpsProbe( const orca::FQInterfaceName& name,
-                     orcaprobe::IDisplay& display,                     
+                     orcaprobe::AbstractDisplay& display,                     
                      const std::string &id,
                      const orcaice::Context& context );
 
@@ -59,7 +59,7 @@ GenericGpsProbe<ConsumerType,
                 InterfacePrxType,
                 DataType,
                 DescriptionType>::GenericGpsProbe( const orca::FQInterfaceName&  name,
-                                                   orcaprobe::IDisplay&     display,
+                                                   orcaprobe::AbstractDisplay&     display,
                                                    const std::string&            id,
                                                    const orcaice::Context&       context )
     : InterfaceProbe(name,display,context)
@@ -72,7 +72,7 @@ GenericGpsProbe<ConsumerType,
     addOperation( "unsubscribe" );
 
     Ice::ObjectPtr consumer = this;
-    callbackPrx_ = orcaice::createConsumerInterface<ConsumerPrxType>( context_, consumer );
+    callbackPrx_ = orcaice::createConsumerInterface<ConsumerPrxType>( ctx_, consumer );
 }
 
 template<typename ConsumerType,

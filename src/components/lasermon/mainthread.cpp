@@ -9,9 +9,9 @@
  */
 
 #include <iostream>
-#include <orcaice/orcaice.h>
-#include <orcaobj/orcaobj.h>
 #include <orca/laserscanner2d.h>
+#include <orcaice/orcaice.h>
+#include <orcaifacestring/laserscanner2d.h>
 
 #include "mainthread.h"
 
@@ -46,7 +46,7 @@ MainThread::walk()
     context_.tracer().info( "Trying to get laser description as a test" );
     try
     {
-        std::string descr = orcaobj::toString( laserPrx->getDescription() );
+        std::string descr = ifacestring::toString( laserPrx->getDescription() );
         context_.tracer().info( "Got laser description:\n"+descr );
     }
     catch ( const Ice::Exception & e ) 
@@ -63,7 +63,7 @@ MainThread::walk()
     {
         try
         {
-            context_.tracer().print( orcaobj::toString( laserPrx->getData() ) );
+            context_.tracer().print( ifacestring::toString( laserPrx->getData() ) );
             break;
         }
         catch ( const orca::DataNotExistException &e )
@@ -79,7 +79,7 @@ MainThread::walk()
     }
     
     // subscribe for data updates (multi-try)
-    consumer_ = new orcaifaceimpl::PrintingRangeScanner2dConsumerImpl( context_ );
+    consumer_ = new orcaifaceimpl::PrintingRangeScanner2dConsumerImpl( context_, 1000, 1 );
     consumer_->subscribeWithTag( "LaserScanner2d", this, subsysName() );
     
     // init subsystem is done and is about to terminate

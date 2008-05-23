@@ -13,22 +13,21 @@
 
 #include <orcaprobe/interfaceprobe.h>
 #include <orca/laserscanner2d.h>
+#include <orcaifaceimpl/printingconsumers.h>
 
 namespace orcaprobefactory
 {
 
-class LaserScanner2dProbe : public orca::RangeScanner2dConsumer, public orcaprobe::InterfaceProbe
+class LaserScanner2dProbe : public orcaprobe::InterfaceProbe
 {
 
 public:
 
-    LaserScanner2dProbe( const orca::FQInterfaceName& name, orcaprobe::IDisplay& display,
+    LaserScanner2dProbe( const orca::FQInterfaceName& name, orcaprobe::AbstractDisplay& display,
                                 const orcaice::Context& context );
+    ~LaserScanner2dProbe();
 
     virtual int loadOperationEvent( const int index, orcacm::OperationData& data );
-
-    // from consumer
-    virtual void setData(const orca::RangeScanner2dDataPtr& data, const Ice::Current&);
     
 private:
 
@@ -37,8 +36,7 @@ private:
     int loadSubscribe( orcacm::OperationData& data );
     int loadUnsubscribe( orcacm::OperationData& data );
 
-    orca::RangeScanner2dConsumerPrx callbackPrx_;
-    orcacm::OperationData subscribeOperationData_;
+    orcaifaceimpl::PrintingLaserScanner2dConsumerImplPtr consumer_;
 };
 
 } // namespace

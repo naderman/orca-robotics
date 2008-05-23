@@ -14,6 +14,8 @@ IF( build )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseLibProjectInterfaces.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseIceBasics.cmake )
     INCLUDE( ${HYDRO_CMAKE_DIR}/UseHydroIceUtil.cmake )
+    # debug only!
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIfaceString.cmake )
     
     INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR}/detail )
     

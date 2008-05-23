@@ -13,7 +13,7 @@
 
 #include <string>
 #include <Ice/Ice.h>
-#include <orca/orca.h>
+#include <orca/common.h>
 #include <orca/bros1.h>
 
 namespace orcaice

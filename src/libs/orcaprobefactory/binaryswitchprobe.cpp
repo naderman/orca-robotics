@@ -18,7 +18,7 @@
 using namespace std;
 using namespace orcaprobefactory;
 
-BinarySwitchProbe::BinarySwitchProbe( const orca::FQInterfaceName & name, orcaprobe::IDisplay & display,
+BinarySwitchProbe::BinarySwitchProbe( const orca::FQInterfaceName & name, orcaprobe::AbstractDisplay & display,
                                 const orcaice::Context & context )
     : InterfaceProbe(name,display,context)
 {

@@ -12,7 +12,7 @@
 #define ORCAIFACEIMPL_PRINTING_CONSUMER_IMPL_H
 
 #include <orcaifaceimpl/consumerImpl.h>
-#include <orcaobj/orcaobj.h>
+#include <orcaifacestring/orcaifacestring.h>
 
 namespace orcaifaceimpl
 {
@@ -33,15 +33,22 @@ class PrintingConsumerImpl :
 {
 using ConsumerImpl<ProviderPrxType,ConsumerType,ConsumerPrxType,ObjectType>::context_;
 public:
-    //! Constructor.
-    PrintingConsumerImpl( const orcaice::Context &context )
-        : ConsumerImpl<ProviderPrxType,ConsumerType,ConsumerPrxType,ObjectType>(context) {}
+    //! Constructor. The optinal parameter @c recurse specifies the level of detail printed
+    //! out to @c cout when new data arrives.
+    PrintingConsumerImpl( const orcaice::Context &context, int recurse=1000, int expand=-1 ) :
+        ConsumerImpl<ProviderPrxType,ConsumerType,ConsumerPrxType,ObjectType>(context), 
+        recurse_(recurse),
+        expand_(expand) {}
 
     //! This callback simply prints it out to standard output.
-    virtual void handleData( const ObjectType& data ) 
+    virtual void dataEvent( const ObjectType& data ) 
     {
-        context_.tracer().info( orcaobj::toString(data) ); 
+std::cout<<"PrintingConsumerImpl::dataEvent() start"<<std::endl;
+        context_.tracer().info( ifacestring::toString(data,recurse_,expand_) ); 
     }
+private:
+    int recurse_;
+    int expand_;
 };
 
 } // namespace

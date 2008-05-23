@@ -11,7 +11,7 @@
 #ifndef ORCA2_INS_INTERFACE_ICE
 #define ORCA2_INS_INTERFACE_ICE
 
-#include <orca/orca.ice>
+#include <orca/common.ice>
 #include <orca/bros1.ice>
 
 module orca

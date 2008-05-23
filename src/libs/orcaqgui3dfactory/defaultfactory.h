@@ -14,7 +14,7 @@
 #include <QString>
 #include <QGLWidget>
 
-#include <orca/orca.h>
+#include <orca/common.h>
 #include <orcaice/context.h>
 #include <orcaqgui/guielementfactory.h>
 

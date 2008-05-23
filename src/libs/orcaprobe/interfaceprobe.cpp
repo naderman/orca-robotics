@@ -19,11 +19,11 @@
 using namespace std;
 using namespace orcaprobe;
 
-InterfaceProbe::InterfaceProbe( const orca::FQInterfaceName & name, IDisplay & display,
+InterfaceProbe::InterfaceProbe( const orca::FQInterfaceName & name, AbstractDisplay & display,
                             const orcaice::Context & context )
     : name_(name),
       display_(display),
-      context_(context)
+      ctx_(context)
 {
     // this is the least common denominator: all Orca objects derive from Ice::Object.
     // A derived class will OVERWRITE this with its own type.
@@ -34,8 +34,13 @@ InterfaceProbe::InterfaceProbe( const orca::FQInterfaceName & name, IDisplay & d
     addOperation( "ice_ping", "void ice_ping()" );
 
     // the generic proxy is created just once and then reused
-    prx_ = context_.communicator()->stringToProxy( orcaice::toString( name_ ) );
+    prx_ = ctx_.communicator()->stringToProxy( orcaice::toString( name_ ) );
 };
+
+InterfaceProbe::~InterfaceProbe() 
+{
+    cout<<"InterfaceProbe::~InterfaceProbe()"<<endl;
+}
 
 void 
 InterfaceProbe::addOperation( const std::string & name, const std::string & signature )

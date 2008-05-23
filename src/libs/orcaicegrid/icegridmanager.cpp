@@ -95,7 +95,8 @@ void
 IceGridManager::performOp( Operation &op, int timeoutMs )
 {
     // serialize access to admin proxy
-//         IceUtil::Mutex::Lock lock(adminMutex_);
+//     IceUtil::Mutex::Lock lock(adminMutex_);
+
     // minimize critical section in order to be able to perform multiple operations
     // simultaneously
     IceGrid::AdminPrx iceGridAdmin;
@@ -126,13 +127,16 @@ IceGridManager::performOp( Operation &op, int timeoutMs )
         stringstream debugSS;
         debugSS<<"IceGridManager: performing "<<op.toString()<<" with timeout="<<timeoutMs<<"ms";
         tracer->debug( debugSS.str(),5 );
+//         context_.tracer().debug( debugSS.str(),5 );
 
         // notice the use of the local copy of the Admin proxy
         op.perform( iceGridAdmin );
+//         op.perform( iceGridAdmin_ );
 
         stringstream ss;
         ss << "IceGridManager: "<<op.toString()<<" done.  Took "<<timer.elapsedSec()<<"s";
         tracer->debug( ss.str(),10 );
+//         context_.tracer().debug( ss.str(),10 );
         return;
     }
     catch ( const Ice::ObjectNotExistException &e ) {
@@ -145,6 +149,7 @@ IceGridManager::performOp( Operation &op, int timeoutMs )
     }
 
     tracer->error( exceptionSS.str() );
+//     context_.tracer().error( exceptionSS.str() );
     // destroy old admin proxy, it's no longer valid
 //     {
 //         IceUtil::Mutex::Lock lock(adminMutex_);

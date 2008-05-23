@@ -19,7 +19,7 @@
 using namespace std;
 using namespace orcaprobefactory;
 
-Localise2dProbe::Localise2dProbe( const orca::FQInterfaceName& name, orcaprobe::IDisplay& display,
+Localise2dProbe::Localise2dProbe( const orca::FQInterfaceName& name, orcaprobe::AbstractDisplay& display,
                                 const orcaice::Context& context )
     : InterfaceProbe(name,display,context)
 {
@@ -31,7 +31,7 @@ Localise2dProbe::Localise2dProbe( const orca::FQInterfaceName& name, orcaprobe::
     addOperation( "unsubscribe" );
 
     Ice::ObjectPtr consumer = this;
-    callbackPrx_ = orcaice::createConsumerInterface<orca::Localise2dConsumerPrx>( context_, consumer );
+    callbackPrx_ = orcaice::createConsumerInterface<orca::Localise2dConsumerPrx>( ctx_, consumer );
 }
     
 int 

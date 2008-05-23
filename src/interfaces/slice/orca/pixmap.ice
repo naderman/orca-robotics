@@ -11,7 +11,7 @@
 #ifndef ORCA_PIXMAP_ICE
 #define ORCA_PIXMAP_ICE
 
-#include <orca/orca.ice>
+#include <orca/common.ice>
 #include <orca/bros1.ice>
 
 module orca

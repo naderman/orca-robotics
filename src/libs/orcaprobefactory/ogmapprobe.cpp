@@ -20,7 +20,7 @@ using namespace std;
 using namespace orcaprobefactory;
 
 OgMapProbe::OgMapProbe( const orca::FQInterfaceName & name, 
-                        orcaprobe::IDisplay & display,
+                        orcaprobe::AbstractDisplay & display,
                         const orcaice::Context & context )
     : InterfaceProbe(name,display,context)
 {
@@ -70,7 +70,7 @@ OgMapProbe::loadSubscribe( orcacm::OperationData & data )
 {
     Ice::ObjectPtr consumer = this;
     orca::OgMapConsumerPrx callbackPrx =
-            orcaice::createConsumerInterface<orca::OgMapConsumerPrx>( context_, consumer );
+            orcaice::createConsumerInterface<orca::OgMapConsumerPrx>( ctx_, consumer );
     try
     {
         orca::OgMapPrx derivedPrx = orca::OgMapPrx::checkedCast(prx_);

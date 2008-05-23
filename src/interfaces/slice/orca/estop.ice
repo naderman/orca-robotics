@@ -11,7 +11,7 @@
 #ifndef ORCA_ESTOP_ICE
 #define ORCA_ESTOP_ICE
 
-#include <orca/orca.ice>
+#include <orca/common.ice>
 
 module orca
 {

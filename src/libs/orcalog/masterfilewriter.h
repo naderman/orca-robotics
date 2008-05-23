@@ -13,7 +13,7 @@
 
 #include <IceUtil/Mutex.h>
 #include <orcaice/context.h>
-#include <orca/orca.h>
+#include <orca/common.h>
 
 namespace orcalog
 {

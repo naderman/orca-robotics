@@ -6,7 +6,7 @@ GBX_REQUIRE_OPTION( build EXE ${APP_NAME} ON )
 SET( ext_libs HydroNavUtil )
 GBX_REQUIRE_INSTALLS( build EXE ${APP_NAME} ${ext_libs} )
 
-SET( int_libs OrcaOgMap OrcaObjects )
+SET( int_libs OrcaIfaceImpl OrcaOgMap OrcaObjects )
 GBX_REQUIRE_TARGETS( build EXE ${APP_NAME} ${int_libs} )
 
 IF( build )

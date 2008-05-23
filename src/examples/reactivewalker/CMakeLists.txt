@@ -3,12 +3,13 @@ ORCA_SET_COMPONENT_NAME( ReactiveWalker )
 SET( build TRUE )
 GBX_REQUIRE_OPTION( build EXE ${APP_NAME} ON )
 
-SET( dep_libs OrcaObjects )
+SET( dep_libs OrcaIfaceImpl )
 GBX_REQUIRE_TARGETS( build EXE ${APP_NAME} ${dep_libs} )
 
 IF( build)
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseLibProjectIfaceString.cmake )
 
     FILE( GLOB srcs *.cpp )
 

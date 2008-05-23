@@ -11,7 +11,7 @@
 #ifndef ORCA_OGPATCH_ICE
 #define ORCA_OGPATCH_ICE
 
-#include <orca/orca.ice>
+#include <orca/common.ice>
 #include <orca/bros1.ice>
 
 
@@ -33,8 +33,10 @@ sequence simply.
  @{
 */
 
-class OGPatch extends OrcaObject
+class OGPatch
 {
+    //! Time when the object was observed, created, etc.
+    Time timeStamp;
     Frame2d location; 
     Size2d sizeInMetres;  
     Size2d sizeInPixels; 
@@ -46,8 +48,10 @@ sequence<OGPatch> PatchList;
 /*! An OGPatchMap consists of a sequence of OGPatches. 
 */
 
-class OGPatchMap extends OrcaObject
+class OGPatchMap
 {
+    //! Time when the object was observed, created, etc.
+    Time timeStamp;
     PatchList patches; 
 };
 
@@ -65,8 +69,10 @@ update capability could be built.
 */
 
 /*
-class OGPatchMapUpdateElement extends OrcaObject {
-
+class OGPatchMapUpdateElement
+{
+    //! Time when the object was observed, created, etc.
+    Time timeStamp;
 }; 
 
 class OGPatchMapNewPatch extends OGPatchMapUpdateElement {

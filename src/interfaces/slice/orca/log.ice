@@ -11,7 +11,7 @@
 #ifndef ORCA2_LOG_ICE
 #define ORCA2_LOG_ICE
 
-#include <orca/orca.ice>
+#include <orca/common.ice>
 
 module orca
 {

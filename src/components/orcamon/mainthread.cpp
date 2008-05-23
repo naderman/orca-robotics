@@ -23,10 +23,6 @@ MainThread::MainThread( const orcaice::Context &context ) :
 {
 }
 
-MainThread::~MainThread()
-{
-}
-
 void
 MainThread::walk()
 {

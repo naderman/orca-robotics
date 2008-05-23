@@ -20,7 +20,7 @@ using namespace std;
 using namespace orcaprobefactory;
 
 PathFollower2dProbe::PathFollower2dProbe( const orca::FQInterfaceName & name,
-                                          orcaprobe::IDisplay & display,
+                                          orcaprobe::AbstractDisplay & display,
                                           const orcaice::Context & context )
     : InterfaceProbe(name,display,context)
 {
@@ -78,7 +78,7 @@ PathFollower2dProbe::loadSubscribe( orcacm::OperationData & data )
 {
     Ice::ObjectPtr consumer = this;
     orca::PathFollower2dConsumerPrx callbackPrx =
-            orcaice::createConsumerInterface<orca::PathFollower2dConsumerPrx>( context_, consumer );
+            orcaice::createConsumerInterface<orca::PathFollower2dConsumerPrx>( ctx_, consumer );
     try
     {
         orca::PathFollower2dPrx derivedPrx = orca::PathFollower2dPrx::checkedCast(prx_);

@@ -22,7 +22,7 @@ class EStopProbe : public orca::EStopConsumer, public orcaprobe::InterfaceProbe
 
 public:
 
-    EStopProbe( const orca::FQInterfaceName & name, orcaprobe::IDisplay & display,
+    EStopProbe( const orca::FQInterfaceName & name, orcaprobe::AbstractDisplay & display,
                                 const orcaice::Context & context );
 
     virtual int loadOperationEvent( const int index, orcacm::OperationData & data );

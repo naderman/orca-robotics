@@ -12,8 +12,6 @@
 #include <iostream>
 #include <cmath>    // floor()
 
-#include <IceUtil/Time.h>
-
 // for toOrcaTimeOfDay() and toOrcaDate()
 #ifdef _WIN32
 #   include <sys/timeb.h>

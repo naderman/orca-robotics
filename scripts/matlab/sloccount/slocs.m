@@ -21,15 +21,17 @@ clear all
 %  ];
 
 % it's much easier to count the whole of Ice (we use most of it anyway)
-% sloccount cpp/include/ cpp/src/
+% sloccount include/ src/
 % (this does not account for .ice files in [ice]/slice/* but it's a small fraction of total)
+% c_count slice/*/*.ice
 Sice212 = 133523;
 Sice301 = 144513;
 Sice310 = 153243;
 Sice311 = 154145;
 Sice320 = 168475;
 Sice321 = 169725;
-Sice330 = 167422;
+% sloccount cpp/include/ cpp/src/
+Sice330 = 159523;
 
 % indeces
 iyy=1;

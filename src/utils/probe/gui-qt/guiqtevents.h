@@ -13,7 +13,7 @@
 
 #include <QEvent>
 #include <orcacm/types.h>
-#include <orcaprobe/idisplay.h> // for focus types
+#include <orcaprobe/abstractdisplay.h> // for focus types
 
 namespace probe
 {
@@ -42,11 +42,11 @@ public:
 class QorcaFocusChangedEvent : public QEvent
 {
 public:
-    QorcaFocusChangedEvent( orcaprobe::IDisplay::FocusType focus )
+    QorcaFocusChangedEvent( orcaprobe::AbstractDisplay::FocusType focus )
         : QEvent( QEvent::Type(FocusChanged) ),
           focus_(focus)  {};
 
-    orcaprobe::IDisplay::FocusType focus_;
+    orcaprobe::AbstractDisplay::FocusType focus_;
 };
 
 class QorcaRegistryDataChangedEvent : public QEvent

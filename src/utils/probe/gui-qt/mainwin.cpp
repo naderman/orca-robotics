@@ -170,19 +170,19 @@ MainWindow::customEvent( QEvent* e )
 
         switch ( de->focus_ )
         {
-        case orcaprobe::IDisplay::RegistryFocus :
+        case orcaprobe::AbstractDisplay::RegistryFocus :
             regView_->setFocus( Qt::OtherFocusReason );
             break;
-        case orcaprobe::IDisplay::PlatformFocus :
+        case orcaprobe::AbstractDisplay::PlatformFocus :
             platfView_->setFocus( Qt::OtherFocusReason );
             break;
-        case orcaprobe::IDisplay::ComponentFocus :
+        case orcaprobe::AbstractDisplay::ComponentFocus :
             compView_->setFocus( Qt::OtherFocusReason );
             break;
-        case orcaprobe::IDisplay::InterfaceFocus :
+        case orcaprobe::AbstractDisplay::InterfaceFocus :
             ifaceView_->setFocus( Qt::OtherFocusReason );
             break;
-        case orcaprobe::IDisplay::OperationFocus :
+        case orcaprobe::AbstractDisplay::OperationFocus :
             operView_->setFocus( Qt::OtherFocusReason );
             break;
         default :

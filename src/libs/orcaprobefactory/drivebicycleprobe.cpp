@@ -20,7 +20,7 @@ using namespace std;
 using namespace orcaprobefactory;
 
 DriveBicycleProbe::DriveBicycleProbe( const orca::FQInterfaceName& name, 
-                                      orcaprobe::IDisplay& display,
+                                      orcaprobe::AbstractDisplay& display,
                                       const orcaice::Context& context ) :
     InterfaceProbe(name,display,context)
 {
@@ -33,7 +33,7 @@ DriveBicycleProbe::DriveBicycleProbe( const orca::FQInterfaceName& name,
     addOperation( "setData" );
 
     Ice::ObjectPtr consumer = this;
-    callbackPrx_ = orcaice::createConsumerInterface<orca::DriveBicycleConsumerPrx>( context_, consumer );
+    callbackPrx_ = orcaice::createConsumerInterface<orca::DriveBicycleConsumerPrx>( ctx_, consumer );
 }
     
 int 

@@ -13,22 +13,22 @@
 
 #include <orcaprobe/interfaceprobe.h>
 #include <orca/status.h>
+#include <orcaifaceimpl/printingconsumers.h>
+// #include <orcaifaceimpl/consumermanager.h>
 
 namespace orcaprobefactory
 {
 
-class StatusProbe : public orca::StatusConsumer, public orcaprobe::InterfaceProbe
+class StatusProbe : public orcaprobe::InterfaceProbe
+//         public orcaifaceimpl::SimpleConsumerImpl<orca::StatusPrx,orca::StatusConsumer,orca::StatusConsumerPrx,orca::StatusData>
 {
 
 public:
 
-    StatusProbe( const orca::FQInterfaceName& name, orcaprobe::IDisplay& display,
+    StatusProbe( const orca::FQInterfaceName& name, orcaprobe::AbstractDisplay& display,
                                 const orcaice::Context& context );
 
     virtual int loadOperationEvent( const int index, orcacm::OperationData& data );
-
-    // from consumer
-    virtual void setData(const orca::StatusData& data, const Ice::Current&);
     
 private:
 
@@ -36,6 +36,8 @@ private:
     int loadSubscribe( orcacm::OperationData& data );
     int loadUnsubscribe( orcacm::OperationData& data );
 
+    orcaifaceimpl::PrintingStatusConsumerImplPtr consumer_;
+//     orcaifaceimpl::ConsumerManager consumerManager_;
 };
 
 } // namespace

@@ -12,7 +12,7 @@
 #define ORCA_LOCALNAV_CLOCK_H
 
 #include <gbxsickacfr/gbxiceutilacfr/store.h>
-#include <orca/orca.h>
+#include <orca/common.h>
 
 namespace localnav {
 

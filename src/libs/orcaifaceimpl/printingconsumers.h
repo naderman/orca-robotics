@@ -14,6 +14,7 @@
 #include <orcaifaceimpl/printingconsumerImpl.h>
 
 #include <orca/rangescanner2d.h>
+#include <orca/laserscanner2d.h>
 #include <orca/localise3d.h>
 #include <orca/localise2d.h>
 #include <orca/odometry3d.h>
@@ -21,6 +22,7 @@
 #include <orca/drivebicycle.h>
 #include <orca/ogmap.h>
 #include <orca/gps.h>
+#include <orca/status.h>
 
 namespace orcaifaceimpl
 {
@@ -35,6 +37,13 @@ typedef PrintingConsumerImpl<orca::RangeScanner2dPrx,
                         orca::RangeScanner2dConsumerPrx,
                         orca::RangeScanner2dDataPtr>       PrintingRangeScanner2dConsumerImpl;
 typedef IceUtil::Handle<PrintingRangeScanner2dConsumerImpl> PrintingRangeScanner2dConsumerImplPtr;
+
+//! Typedef for a common interface type. There's also a corresponding Ptr.
+typedef PrintingConsumerImpl<orca::LaserScanner2dPrx,
+                        orca::RangeScanner2dConsumer,
+                        orca::RangeScanner2dConsumerPrx,
+                        orca::RangeScanner2dDataPtr>       PrintingLaserScanner2dConsumerImpl;
+typedef IceUtil::Handle<PrintingLaserScanner2dConsumerImpl> PrintingLaserScanner2dConsumerImplPtr;
 
 //! Typedef for a common interface type. There's also a corresponding Ptr.
 typedef PrintingConsumerImpl<orca::Localise2dPrx,
@@ -84,6 +93,13 @@ typedef PrintingConsumerImpl<orca::GpsPrx,
                         orca::GpsConsumerPrx,
                         orca::GpsData>                     PrintingGpsConsumerImpl;
 typedef IceUtil::Handle<PrintingGpsConsumerImpl>            PrintingGpsConsumerImplPtr;
+
+//! Typedef for a common interface type. There's also a corresponding Ptr.
+typedef PrintingConsumerImpl<orca::StatusPrx,
+                        orca::StatusConsumer,
+                        orca::StatusConsumerPrx,
+                        orca::StatusData>                      PrintingStatusConsumerImpl;
+typedef IceUtil::Handle<PrintingStatusConsumerImpl>            PrintingStatusConsumerImplPtr;
 
 } // namespace
 

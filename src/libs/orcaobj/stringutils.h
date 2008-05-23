@@ -12,7 +12,7 @@
 #define ORCAOBJ_STRINGIFY_UTILITIES_H
 
 #include <string>
-#include <orca/orca.h>
+#include <orca/common.h>
 #include <orca/binaryswitch.h>
 #include <orca/camera.h>
 #include <orca/cpu.h>

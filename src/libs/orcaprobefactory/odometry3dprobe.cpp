@@ -19,7 +19,7 @@
 using namespace std;
 using namespace orcaprobefactory;
 
-Odometry3dProbe::Odometry3dProbe( const orca::FQInterfaceName& name, orcaprobe::IDisplay& display,
+Odometry3dProbe::Odometry3dProbe( const orca::FQInterfaceName& name, orcaprobe::AbstractDisplay& display,
                                 const orcaice::Context& context )
     : InterfaceProbe(name,display,context)
 {
@@ -103,7 +103,7 @@ Odometry3dProbe::loadSubscribe( orcacm::OperationData& data )
 {
     Ice::ObjectPtr consumer = this;
     orca::Odometry3dConsumerPrx callbackPrx =
-            orcaice::createConsumerInterface<orca::Odometry3dConsumerPrx>( context_, consumer );
+            orcaice::createConsumerInterface<orca::Odometry3dConsumerPrx>( ctx_, consumer );
     try
     {
         orca::Odometry3dPrx derivedPrx = orca::Odometry3dPrx::checkedCast(prx_);

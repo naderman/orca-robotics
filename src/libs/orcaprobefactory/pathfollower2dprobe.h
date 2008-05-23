@@ -23,7 +23,7 @@ class PathFollower2dProbe : public orca::PathFollower2dConsumer, public orcaprob
 public:
 
     PathFollower2dProbe( const orca::FQInterfaceName & name, 
-                         orcaprobe::IDisplay & display,
+                         orcaprobe::AbstractDisplay & display,
                          const orcaice::Context & context );
 
     virtual int loadOperationEvent( const int index, orcacm::OperationData & data );

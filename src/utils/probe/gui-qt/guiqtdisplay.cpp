@@ -112,7 +112,7 @@ GuiQtDisplay::setOperationData( const orcacm::OperationData & data )
 }
 
 void 
-GuiQtDisplay::setFocus( orcaprobe::IDisplay::FocusType focus )
+GuiQtDisplay::setFocus( orcaprobe::AbstractDisplay::FocusType focus )
 {
     if ( gui_ ) {
         qApp->postEvent( gui_, (QEvent*)new QorcaFocusChangedEvent( focus ) );

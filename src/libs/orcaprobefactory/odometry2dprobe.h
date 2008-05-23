@@ -22,7 +22,7 @@ class Odometry2dProbe : public orca::Odometry2dConsumer, public orcaprobe::Inter
 
 public:
 
-    Odometry2dProbe( const orca::FQInterfaceName& name, orcaprobe::IDisplay& display,
+    Odometry2dProbe( const orca::FQInterfaceName& name, orcaprobe::AbstractDisplay& display,
                                 const orcaice::Context& context );
 
     virtual int loadOperationEvent( const int index, orcacm::OperationData& data );

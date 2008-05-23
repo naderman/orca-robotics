@@ -22,7 +22,7 @@ class ImageProbe : public orcaprobe::InterfaceProbe
 
 public:
 
-    ImageProbe( const orca::FQInterfaceName& name, orcaprobe::IDisplay& display,
+    ImageProbe( const orca::FQInterfaceName& name, orcaprobe::AbstractDisplay& display,
                                 const orcaice::Context& context );
 
     virtual int loadOperationEvent( const int index, orcacm::OperationData& data );

@@ -19,7 +19,7 @@
 using namespace std;
 using namespace orcaprobefactory;
 
-PropertiesProbe::PropertiesProbe( const orca::FQInterfaceName & name, orcaprobe::IDisplay & display,
+PropertiesProbe::PropertiesProbe( const orca::FQInterfaceName & name, orcaprobe::AbstractDisplay & display,
                                 const orcaice::Context & context )
     : InterfaceProbe(name,display,context)
 {
@@ -126,7 +126,7 @@ PropertiesProbe::loadSubscribe( orcacm::OperationData & data )
 {
     Ice::ObjectPtr consumer = this;
     orca::PropertiesConsumerPrx callbackPrx =
-            orcaice::createConsumerInterface<orca::PropertiesConsumerPrx>( context_, consumer );
+            orcaice::createConsumerInterface<orca::PropertiesConsumerPrx>( ctx_, consumer );
     try
     {
         orca::PropertiesPrx derivedPrx = orca::PropertiesPrx::checkedCast(prx_);

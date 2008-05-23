@@ -35,7 +35,7 @@ public:
     gbxsickacfr::gbxiceutilacfr::Buffer<ObjectType> &buffer() { return buffer_; }
 
     //! This callback simply puts the data object into the internal proxy.
-    virtual void handleData( const ObjectType& data ) { buffer_.push( data ); }
+    virtual void dataEvent( const ObjectType& data ) { buffer_.push( data ); }
 
 private:
     gbxsickacfr::gbxiceutilacfr::Buffer<ObjectType> buffer_;

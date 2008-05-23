@@ -11,7 +11,7 @@
 #ifndef ORCA2_DRIVE_BICYCLE_INTERFACE_ICE
 #define ORCA2_DRIVE_BICYCLE_INTERFACE_ICE
 
-#include <orca/orca.ice>
+#include <orca/common.ice>
 #include <orca/vehicledescription.ice>
 
 module orca

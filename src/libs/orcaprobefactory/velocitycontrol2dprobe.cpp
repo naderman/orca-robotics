@@ -20,7 +20,7 @@ using namespace std;
 using namespace orcaprobefactory;
 
 VelocityControl2dProbe::VelocityControl2dProbe( const orca::FQInterfaceName &name, 
-                                                orcaprobe::IDisplay         &display,
+                                                orcaprobe::AbstractDisplay         &display,
                                                 const orcaice::Context      &context )
     : InterfaceProbe(name,display,context)
 {

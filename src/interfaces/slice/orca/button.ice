@@ -11,7 +11,7 @@
 #ifndef ORCA2_BUTTON_ICE
 #define ORCA2_BUTTON_ICE
 
-#include <orca/orca.ice>
+#include <orca/common.ice>
 
 module orca
 {

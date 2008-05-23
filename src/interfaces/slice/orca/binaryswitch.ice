@@ -11,7 +11,7 @@
 #ifndef ORCA2_BINARY_SWITCH_ICE
 #define ORCA2_BINARY_SWITCH_ICE
 
-#include <orca/orca.ice>
+#include <orca/common.ice>
 
 module orca
 {

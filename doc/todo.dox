@@ -61,6 +61,10 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 @par New interfaces
 @par New components
 @par New utilities
+
+- slice2string (alex m)
+  - utility for generating string functions from Slice definitions.
+
 @par New libraries
 - OrcaSim2d (alex b)
   - Library for simple 2D simulations
@@ -72,20 +76,22 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @par Updated interfaces
 - Image, OgPatch, OgMap, RangeScanner2d, LaserScanner2d, QGraphics2d, Hand, PointCloud.
-  - Using newly defined 'standard' sequences of builtin types (defined in orca.ice)
+  - Using newly defined 'standard' sequences of builtin types (defined in containers.ice)
+- RangeScanner2d, OgPatch, Hand 
+  - Not deriving from depricated OrcaObject class. The affected classes define its own time stamp.
+- a global header file is auto-generated which includes all individual interface header files.
 
 @par Updated components
 - LocalNav (alex b)
   - Big overhaul and simplification
 
 @par Updated utilities
-- slice2string (alex m)
-  - utility for generating string functions from Slice definitions.
 
 @par Updated libraries
-- OrcaIfaceImpl (alex b)
-  - Added QGraphics2dImpl
-  - Added PathFollower2dImpl
+- OrcaIfaceImpl
+  - Added QGraphics2dImpl and PathFollower2dImpl (alex b)
+  - ConsumerImpl: fixed a long-standing bug which lead to segfault when the life of the consumer was shorter than
+the life of the Object Adapter. (alex m)
 - OrcaIceGrid
   - fixed bug which could lead to uncaught exception under certain conditions when
     setting observers. (alexm)

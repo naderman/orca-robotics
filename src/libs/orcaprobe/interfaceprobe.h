@@ -11,14 +11,14 @@
 #ifndef ORCA_ORCAPROBE_INTERFACE_PROBE_H
 #define ORCA_ORCAPROBE_INTERFACE_PROBE_H
 
-#include <orca/orca.h>
+#include <orca/common.h>
 #include <orcacm/types.h>
 #include <orcaice/context.h>
 
 namespace orcaprobe
 {
 
-class IDisplay;
+class AbstractDisplay;
 
 enum OperationIndex
 {
@@ -26,15 +26,15 @@ enum OperationIndex
     UserIndex
 };
 
-class InterfaceProbe
+class InterfaceProbe : public IceUtil::Shared
 {
 
 public:
     //! Constructor
-    InterfaceProbe( const orca::FQInterfaceName & name, IDisplay & display,
+    InterfaceProbe( const orca::FQInterfaceName & name, AbstractDisplay & display,
                                 const orcaice::Context & context );
         
-    virtual ~InterfaceProbe() {};
+    virtual ~InterfaceProbe();
 
     //! Returns a listing of operations supported by this probe.
     std::vector<orcacm::OperationHeader> operations() { return operations_; };
@@ -56,10 +56,10 @@ protected:
     //! keep a direct link to display so if get some data asynchronously from browser
     //! (e.g. through subscription) we can display it. it's safe because all of display's
     //! public API is thread-safe.
-    IDisplay & display_;
+    AbstractDisplay & display_;
 
     //! Component communication context with pointers to Communicator, Tracer, etc.
-    orcaice::Context context_;
+    orcaice::Context ctx_;
 
     //! Proxy to the remote object. This probe will use it to call the remote operations.
     Ice::ObjectPrx prx_;
@@ -81,6 +81,8 @@ private:
     int loadIcePing( orcacm::OperationData & data );
 
 };
+//! Ice smart pointer to EventLoop
+typedef IceUtil::Handle<InterfaceProbe> InterfaceProbePtr;
 
 } // namespace
 

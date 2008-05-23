@@ -13,7 +13,8 @@
 
 #include <vector>
 #include <string>
-#include <orca/orca.h>
+#include <orca/common.h>
+#include <orca/ocm.h>
 
 namespace orcaice
 {
@@ -24,7 +25,7 @@ namespace orcaprobe
 {
 
 class InterfaceProbe;
-class IDisplay;
+class AbstractDisplay;
 
 //!
 //! Factory of interface probes
@@ -50,7 +51,7 @@ public:
     //! successful or a NULL pointer if it fails.
     virtual InterfaceProbe* create( const std::string           & id, 
                                     const orca::FQInterfaceName & name, 
-                                    IDisplay               & display, 
+                                    AbstractDisplay             & display, 
                                     const orcaice::Context      & context ) = 0;
 protected:
 

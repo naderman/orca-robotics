@@ -11,7 +11,7 @@
 #ifndef ORCA2_WIFI_ICE
 #define ORCA2_WIFI_ICE
 
-#include <orca/orca.ice>
+#include <orca/common.ice>
 
 module orca
 {

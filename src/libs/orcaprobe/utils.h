@@ -11,17 +11,17 @@
 #ifndef ORCA_ORCAPROBE_UTILS_H
 #define ORCA_ORCAPROBE_UTILS_H
 
-#include <orca/orca.h>
+#include <orca/common.h>
 #include <orcacm/types.h>
 
 namespace orcaprobe
 {
 
-void reportResult( orcacm::OperationData& data, const std::string& type, const std::string& error );
+void reportResult( orcacm::OperationData& data, const std::string& type, const std::string& text );
 
 void reportException( orcacm::OperationData& data, const std::string& error );
 
-void reportSubscribed( orcacm::OperationData& data );
+void reportSubscribed( orcacm::OperationData& data, const std::string& proxy="" );
 
 void reportUnsubscribed( orcacm::OperationData& data );
 

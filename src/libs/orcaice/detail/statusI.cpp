@@ -9,6 +9,7 @@
  */
 
 #include <orcaice/orcaice.h>
+#include <orcaifacestring/status.h>
 #include "statusI.h"
 
 using namespace std;
@@ -220,7 +221,6 @@ StatusI::subscribe(const ::orca::StatusConsumerPrx& subscriber, const ::Ice::Cur
     // Just update the timeUp
     statusData_.timeUp = (Ice::Int)upTimer_.elapsedSec();
 
-//     cout<<"StatusI::internalSubscribe: sending status info to new subscriber: "<<endl;
     try
     {
         individualPublisher->setData( statusData_ );   
@@ -231,6 +231,8 @@ StatusI::subscribe(const ::orca::StatusConsumerPrx& subscriber, const ::Ice::Cur
         context_.tracer().warning( ss.str() );
         throw orca::OrcaException( ss.str() );
     }
+    cout<<"StatusI::subscribe(): sent status info to new subscriber: "<<individualPublisher->ice_toString()<<endl;
+    cout<<ifacestring::toString( statusData_ )<<endl;
 }
 
 void

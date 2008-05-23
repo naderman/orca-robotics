@@ -19,7 +19,7 @@
 using namespace std;
 using namespace orcaprobefactory;
 
-TracerProbe::TracerProbe( const orca::FQInterfaceName& name, orcaprobe::IDisplay& display,
+TracerProbe::TracerProbe( const orca::FQInterfaceName& name, orcaprobe::AbstractDisplay& display,
                                 const orcaice::Context& context )
     : InterfaceProbe(name,display,context)
 {
@@ -31,7 +31,7 @@ TracerProbe::TracerProbe( const orca::FQInterfaceName& name, orcaprobe::IDisplay
     addOperation( "unsubscribe",    "idempotent void unsubscribe( StatusConsumer *subscriber )" );
 
     Ice::ObjectPtr consumer = this;
-    callbackPrx_ = orcaice::createConsumerInterface<orca::TracerConsumerPrx>( context_, consumer );
+    callbackPrx_ = orcaice::createConsumerInterface<orca::TracerConsumerPrx>( ctx_, consumer );
 }
     
 int 
@@ -106,7 +106,7 @@ TracerProbe::loadSubscribe( orcacm::OperationData& data )
 {
     Ice::ObjectPtr consumer = this;
     orca::TracerConsumerPrx callbackPrx = 
-            orcaice::createConsumerInterface<orca::TracerConsumerPrx>( context_, consumer );
+            orcaice::createConsumerInterface<orca::TracerConsumerPrx>( ctx_, consumer );
     try
     {
         orca::TracerPrx derivedPrx = orca::TracerPrx::checkedCast(prx_);

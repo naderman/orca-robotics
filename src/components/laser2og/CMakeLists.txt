@@ -4,7 +4,7 @@ SET( build TRUE )
 GBX_REQUIRE_OPTION( build EXE ${APP_NAME} ON )
 GBX_REQUIRE_VAR( build EXE ${APP_NAME} GBX_OS_LINUX "only Linux OS is supported" )
 
-SET( int_libs OrcaOgFusion OrcaPathPlan OrcaObjects )
+SET( int_libs OrcaIfaceImpl OrcaOgFusion OrcaPathPlan OrcaObjects )
 GBX_REQUIRE_TARGETS( build EXE ${APP_NAME} ${int_libs} )
 
 IF( build )

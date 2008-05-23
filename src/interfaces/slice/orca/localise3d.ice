@@ -12,7 +12,7 @@
 #ifndef ORCA2_LOCALISE_3D_INTERFACE_ICE
 #define ORCA2_LOCALISE_3D_INTERFACE_ICE
 
-#include <orca/orca.ice>
+#include <orca/common.ice>
 #include <orca/bros1.ice>
 #include <orca/stochastic.ice>
 #include <orca/vehicledescription.ice>

@@ -20,7 +20,7 @@
 using namespace std;
 using namespace orcaprobefactory;
 
-HomeProbe::HomeProbe( const orca::FQInterfaceName& name, orcaprobe::IDisplay& display,
+HomeProbe::HomeProbe( const orca::FQInterfaceName& name, orcaprobe::AbstractDisplay& display,
                                 const orcaice::Context& context )
     : InterfaceProbe(name,display,context)
 {

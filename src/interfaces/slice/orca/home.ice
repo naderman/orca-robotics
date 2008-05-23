@@ -11,7 +11,8 @@
 #ifndef ORCA2_HOME_INTERFACE_ICE
 #define ORCA2_HOME_INTERFACE_ICE
 
-#include <orca/orca.ice>
+#include <orca/common.ice>
+#include <orca/ocm.ice>
 
 module orca
 {

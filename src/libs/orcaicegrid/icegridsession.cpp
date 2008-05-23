@@ -90,8 +90,8 @@ IceGridSession::tryCreateSession()
     //
     try
     {
-        session_ = registry->createAdminSession( "sessionmanager.cpp-assume-no-access-control",
-                                                 "sessionmanager.cpp-assume-no-access-control" );
+        session_ = registry->createAdminSession( "icegridsession-no-access-control",
+                                                 "icegridsession-no-access-control" );
         timeoutSec_ = registry->getSessionTimeout();
         stringstream ss; ss<<"IceGridSession: Created session (timeout="<<timeoutSec_<<"s)";
         context_.tracer().info( ss.str() );

@@ -9,9 +9,14 @@
  */
  
 #include <iostream>
-#include <orcaobj/orcaobj.h>
 
 #include "fakedriver.h"
+#include <gbxsickacfr/gbxutilacfr/mathdefs.h>
+
+// Random doubles and integers
+#define RDOUBLE (rand()*M_PI)
+#define RINT    (rand())
+#define RCHAR   ((char)rand())
 
 using namespace std;
 using namespace reactivewalker;
@@ -23,7 +28,9 @@ FakeDriver::computeCommand( const orca::RangeScanner2dDataPtr& laserData,
                                 orca::VelocityControl2dData& commandData )
 {
     // generate random command
-    orcaobj::setSane( commandData );
-    
+    commandData.motion.v.x = double(RINT%10000)/1000.0 - 30.0;
+    commandData.motion.v.y = double(RINT%10000)/1000.0 - 30.0;
+    commandData.motion.w = DEG2RAD( double(RINT%100000)/1000.0 - 50.0 );
+
     return 0;
 }

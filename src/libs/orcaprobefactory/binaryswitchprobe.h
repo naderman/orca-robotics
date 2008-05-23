@@ -22,7 +22,7 @@ class BinarySwitchProbe : public orcaprobe::InterfaceProbe
 
 public:
 
-    BinarySwitchProbe( const orca::FQInterfaceName & name, orcaprobe::IDisplay & display,
+    BinarySwitchProbe( const orca::FQInterfaceName & name, orcaprobe::AbstractDisplay & display,
                                 const orcaice::Context & context );
 
     virtual int loadOperationEvent( const int index, orcacm::OperationData & data );

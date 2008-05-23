@@ -17,13 +17,13 @@
 
 #include <orcaprobe/factory.h>
 
-#include <orcaprobe/idisplay.h>
+#include <orcaprobe/abstractdisplay.h>
 #include <orcaprobe/ibrowser.h>
 
 namespace probe
 {
 
-class TermIostreamDisplay : public orcaprobe::IDisplay
+class TermIostreamDisplay : public orcaprobe::AbstractDisplay
 {
 
 public:
@@ -31,7 +31,7 @@ public:
     TermIostreamDisplay( const std::vector<std::string> & supportedInterfaces );
     virtual ~TermIostreamDisplay();
 
-    // from orcaprobe::IDisplay
+    // from orcaprobe::AbstractDisplay
     // for consistency with the Qt driver, this function will hug the thread
     virtual void enable( orcaprobe::IBrowser* browser );
     virtual void showNetworkActivity( bool isActive );
@@ -40,7 +40,7 @@ public:
     virtual void setComponentData( const orcacm::ComponentData & data );
     virtual void setInterfaceData( const orcacm::InterfaceData & data );
     virtual void setOperationData( const orcacm::OperationData & data );
-    virtual void setFocus( orcaprobe::IDisplay::FocusType focus );
+    virtual void setFocus( orcaprobe::AbstractDisplay::FocusType focus );
 
 private:
 

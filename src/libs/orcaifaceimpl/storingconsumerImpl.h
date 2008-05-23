@@ -34,7 +34,7 @@ public:
     gbxsickacfr::gbxiceutilacfr::Store<ObjectType> &store() { return store_; }
 
     //! This callback simply puts the data object into the internal store.
-    virtual void handleData( const ObjectType& data ) 
+    virtual void dataEvent( const ObjectType& data ) 
     {
         store_.set( data ); 
     }

@@ -1,7 +1,7 @@
 #ifndef ORCALOG_SNAPSHOTLOGBUFFER_H
 #define ORCALOG_SNAPSHOTLOGBUFFER_H
 
-#include <orca/orca.h>
+#include <orca/common.h>
 #include <deque>
 #include <orcalog/logwriter.h>
 #include <orcaice/timeutils.h>

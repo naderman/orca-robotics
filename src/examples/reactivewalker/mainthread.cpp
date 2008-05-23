@@ -11,7 +11,7 @@
 #include <iostream>
 #include <assert.h>
 #include <orcaice/orcaice.h>
-#include <orcaobj/orcaobj.h>
+#include <orcaifacestring/velocitycontrol2d.h>
 #include "mainthread.h"
 
 // algorithm implementations
@@ -154,7 +154,7 @@ MainThread::walk()
         //
         driver_->computeCommand( laserData, odometryData, commandData );
 
-        context_.tracer().debug( orcaobj::toString(commandData), 5 );
+        context_.tracer().debug( ifacestring::toString(commandData), 5 );
 
         //
         // send motion command to the robot

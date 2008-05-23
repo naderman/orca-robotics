@@ -14,7 +14,8 @@
 #include <string>
 #include <vector>
 
-#include <orca/orca.h>
+#include <orca/common.h>
+#include <orca/ocm.h>
 
 namespace orcadef
 {

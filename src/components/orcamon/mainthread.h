@@ -23,7 +23,6 @@ class MainThread : public gbxsickacfr::gbxiceutilacfr::SafeThread
 public:
 
     MainThread( const orcaice::Context &context );
-    ~MainThread();
 
     // from SubsystemThread
     virtual void walk();

@@ -122,7 +122,7 @@ Component::start()
     // generic interface to the user interface
     orcaprobe::IBrowser* browser = 0;
     // generic interface to the display interface
-    orcaprobe::IDisplay* display = 0;
+    orcaprobe::AbstractDisplay* display = 0;
     
     if ( driverName == "gui-qt" ) 
     {

@@ -13,8 +13,8 @@
 
 #include <vector>
 #include <string>
-#include <Ice/BuiltinSequences.h>
-#include <orca/orca.h>
+#include <orca/common.h>
+#include <orca/ocm.h>
 
 namespace orcacm
 {

@@ -101,36 +101,37 @@ TermIostreamDisplay::enable( orcaprobe::IBrowser* browser )
         if ( !events_->timedGet( event, timeoutMs ) ) {
             continue;
         }
+        cout<<"TermIostreamDisplay::enable(): event type="<<event->type()<<endl;
 
         switch ( event->type() )
         {
         // approx in order of call frequency
         case FocusChanged : {
-            //cout<<"focus changed event"<<endl;
+            cout<<"focus changed event"<<endl;
             FocusChangedEventPtr e = FocusChangedEventPtr::dynamicCast( event );
             if ( !e ) {
                 cout<<"failed to cast event to FocusChanged"<<endl;
                 break;
             }
-//             cout<<"changing focus to "<<e->focus_<<endl;
+            cout<<"TermIostreamDisplay::enable(): changing focus to "<<e->focus_<<endl;
             switch ( e->focus_ )
             {
-            case orcaprobe::IDisplay::RegistryFocus :
+            case orcaprobe::AbstractDisplay::RegistryFocus :
                 printRegistryData( registryData_ );
                 break;
-            case orcaprobe::IDisplay::PlatformFocus :
+            case orcaprobe::AbstractDisplay::PlatformFocus :
                 printPlatformData( platformData_ );
                 break;
-            case orcaprobe::IDisplay::ComponentFocus :
+            case orcaprobe::AbstractDisplay::ComponentFocus :
                 printComponentData( componentData_ );
                 break;
-            case orcaprobe::IDisplay::InterfaceFocus :
+            case orcaprobe::AbstractDisplay::InterfaceFocus :
                 printInterfaceData( interfaceData_ );
                 break;
-            case orcaprobe::IDisplay::OperationFocus :
+            case orcaprobe::AbstractDisplay::OperationFocus :
+            case orcaprobe::AbstractDisplay::ResultFocus :
                 printOperationData( operationData_ );
                 break;
-            default : {}
             }
             break;
         }
@@ -187,50 +188,44 @@ TermIostreamDisplay::enable( orcaprobe::IBrowser* browser )
 void 
 TermIostreamDisplay::showNetworkActivity( bool isActive )
 {
-    hydroiceutil::EventPtr e = new probe::NetworkActivityChangedEvent( isActive );
-    events_->add( e );
+    events_->add( new probe::NetworkActivityChangedEvent( isActive ) );
 }
 
 void 
 TermIostreamDisplay::setRegistryData( const orcacm::RegistryHierarchicalData1 & data )
 {
-    hydroiceutil::EventPtr e = new probe::RegistryDataChangedEvent( data );
-    events_->add( e );
+    events_->add( new probe::RegistryDataChangedEvent( data ) );
 }
 
 void 
 TermIostreamDisplay::setPlatformData( const orcacm::RegistryHierarchicalData2 & data )
 {
-    hydroiceutil::EventPtr e = new probe::PlatformDataChangedEvent( data );
-    events_->add( e );
+    events_->add( new probe::PlatformDataChangedEvent( data ) );
 }
 
 void 
 TermIostreamDisplay::setComponentData( const orcacm::ComponentData & data )
 {
-    hydroiceutil::EventPtr e = new probe::ComponentDataChangedEvent( data );
-    events_->add( e );
+    events_->add( new probe::ComponentDataChangedEvent( data ) );
 }
 
 void 
 TermIostreamDisplay::setInterfaceData( const orcacm::InterfaceData & data )
 {
-    hydroiceutil::EventPtr e = new probe::InterfaceDataChangedEvent( data );
-    events_->add( e );
+    events_->add( new probe::InterfaceDataChangedEvent( data ) );
 }
 
 void 
 TermIostreamDisplay::setOperationData( const orcacm::OperationData & data )
 {
-    hydroiceutil::EventPtr e = new probe::OperationDataChangedEvent( data );
-    events_->add( e );
+    events_->add( new probe::OperationDataChangedEvent( data ) );
 }
 
 void 
-TermIostreamDisplay::setFocus( orcaprobe::IDisplay::FocusType focus )
+TermIostreamDisplay::setFocus( orcaprobe::AbstractDisplay::FocusType focus )
 {
-    hydroiceutil::EventPtr e = new probe::FocusChangedEvent( focus );
-    events_->add( e );
+cout<<"TermIostreamDisplay::setFocus: type="<<focus<<endl;
+    events_->add( new probe::FocusChangedEvent( focus ) );
 }
 
 void 

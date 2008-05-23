@@ -15,7 +15,8 @@
 #include <Ice/Ice.h>
 #include <string>
 
-#include <orca/orca.h>
+#include <orca/common.h>
+#include <orca/ocm.h>
 
 //  This file contains only internal functions used inside libOrcaIce
 //  Don't make Doxygen tags so these functions are not included in the public documentation.

@@ -10,7 +10,7 @@
  
 #include <IceStorm/IceStorm.h> // used in initTracer()
 #include <string>
-#include <orca/orca.h>
+#include <orca/common.h>
 #include <orca/properties.h>
 #include <orcaice/orcaice.h>
 #include <hydroiceutil/localstatus.h>

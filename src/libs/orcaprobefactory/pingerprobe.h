@@ -22,7 +22,7 @@ class PingerProbe : public orcaprobe::InterfaceProbe
 
 public:
 
-    PingerProbe( const orca::FQInterfaceName & name, orcaprobe::IDisplay & display,
+    PingerProbe( const orca::FQInterfaceName & name, orcaprobe::AbstractDisplay & display,
                                 const orcaice::Context & context );
 
     virtual int loadOperationEvent( const int index, orcacm::OperationData & data );

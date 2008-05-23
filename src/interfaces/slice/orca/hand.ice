@@ -11,7 +11,7 @@
 #ifndef ORCA2_HAND_INTERFACE_ICE
 #define ORCA2_HAND_INTERFACE_ICE
 
-#include <orca/orca.ice>
+#include <orca/common.ice>
 // #include <orca/bros1.ice>
 
 module orca
@@ -40,10 +40,12 @@ module orca
 // sequence<float> ForceSequence; 
 
 //! Laser configuration data structure
-class HandConfig extends OrcaObject
+class HandConfig
 {
-    //! Number of fingers in the hand. 
+    //! Time when the object was observed, created, etc.
+    Time timeStamp;
 
+    //! Number of fingers in the hand. 
     int numFingers; 
 
     //! This hand can sense or control abduction.
@@ -83,8 +85,11 @@ class HandConfig extends OrcaObject
 /*!
     Hand data structure
 */
-class HandData extends OrcaObject
+class HandData
 {
+    //! Time when the object was observed, created, etc.
+    Time timeStamp;
+
 //    AngleSequence mcpAngles; // in degrees. 
 // 
 //    AngleSequence pipAngles; // in degrees. 

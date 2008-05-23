@@ -13,7 +13,7 @@
 
 #include <orcaice/context.h>
 
-#include <orca/orca.h>
+#include <orca/common.h>
 
 // These functions should've been in privateutils.h but they are needed for templated functions
 // in connectutils.h.

@@ -21,7 +21,7 @@
 
 namespace orcaprobe
 {
-    class orcaprobe::IDisplay;
+    class orcaprobe::AbstractDisplay;
 }
 
 namespace probe
@@ -34,10 +34,9 @@ class BrowserThread : public orcaprobe::IBrowser, public gbxsickacfr::gbxiceutil
 {
 
 public:
-    BrowserThread( orcaprobe::IDisplay & display,
+    BrowserThread( orcaprobe::AbstractDisplay & display,
                     std::vector<orcaprobe::Factory*> &factories,
                     const orcaice::Context & context );
-    virtual ~BrowserThread();
 
     // from orcaprobe::IBrowser
     virtual void chooseActivate();
@@ -75,11 +74,11 @@ private:
 
     std::vector<orcaprobe::Factory*> &factories_;
 
-    orcaprobe::IDisplay & display_;
+    orcaprobe::AbstractDisplay & display_;
 
     hydroiceutil::EventQueuePtr events_;
  
-    orcaprobe::InterfaceProbe* ifaceProbe_;
+    orcaprobe::InterfaceProbePtr ifaceProbe_;
 
     orcaice::Context context_;
 

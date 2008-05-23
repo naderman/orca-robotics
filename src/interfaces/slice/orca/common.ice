@@ -8,10 +8,9 @@
  *
  */
 
-#ifndef ORCA2_ORCA_ICE
-#define ORCA2_ORCA_ICE
+#ifndef ORCA2_COMMON_ICE
+#define ORCA2_COMMON_ICE
 
-#include <orca/ocm.ice>
 #include <orca/datetime.ice>
 #include <orca/exceptions.ice>
 #include <orca/containers.ice>
@@ -24,21 +23,6 @@
 */
 module orca
 {
-
-/*!
-    @brief Base class for data types in Orca.
-    
-    Deriving from this class is optional. It allows polymorphism. 
-    
-    @note An Orca @e object refers to a piece of data whereas an Ice @e object which
-    refers to a remote servant.
-*/
-class OrcaObject
-{
-    //! Time when the object was observed, created, etc.
-    Time timeStamp;
-};
-
 }; // module
 
 #endif

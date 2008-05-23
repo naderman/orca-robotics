@@ -11,9 +11,9 @@
 #ifndef TERM_DISPLAY_EVENTS_H
 #define TERM_DISPLAY_EVENTS_H
 
-#include <hydroiceutil/eventqueue.h>
+#include <hydroiceutil/event.h>
 #include <orcacm/types.h>
-#include <orcaprobe/idisplay.h> // for focus types
+#include <orcaprobe/abstractdisplay.h> // for focus types
 
 // alexm: we put these event definitions on the top level (not with term-iostream driver)
 // in case we write another terminal display driver (e.g. ncurses) which is likely to 
@@ -47,11 +47,10 @@ typedef IceUtil::Handle<NetworkActivityChangedEvent> NetworkActivityChangedEvent
 class FocusChangedEvent : public hydroiceutil::Event
 {
 public:
-    FocusChangedEvent( orcaprobe::IDisplay::FocusType focus )
+    FocusChangedEvent( orcaprobe::AbstractDisplay::FocusType focus )
         : Event( FocusChanged ),
           focus_(focus)  {};
-
-    orcaprobe::IDisplay::FocusType focus_;
+    orcaprobe::AbstractDisplay::FocusType focus_;
 };
 typedef IceUtil::Handle<FocusChangedEvent> FocusChangedEventPtr;
 
@@ -61,7 +60,6 @@ public:
     RegistryDataChangedEvent( const orcacm::RegistryHierarchicalData1 & data )
         : Event( RegistryDataChanged ),
           data_(data) {};
-
     orcacm::RegistryHierarchicalData1 data_;
 };
 typedef IceUtil::Handle<RegistryDataChangedEvent> RegistryDataChangedEventPtr;
@@ -72,7 +70,6 @@ public:
     PlatformDataChangedEvent( const orcacm::RegistryHierarchicalData2 & data )
         : Event( PlatformDataChanged ),
           data_(data) {};
-
     orcacm::RegistryHierarchicalData2 data_;
 };
 typedef IceUtil::Handle<PlatformDataChangedEvent> PlatformDataChangedEventPtr;
@@ -83,7 +80,6 @@ public:
     ComponentDataChangedEvent( const orcacm::ComponentData & data )
         : Event( ComponentDataChanged ),
           data_(data) {};
-
     orcacm::ComponentData data_;
 };
 typedef IceUtil::Handle<ComponentDataChangedEvent> ComponentDataChangedEventPtr;
@@ -94,7 +90,6 @@ public:
     InterfaceDataChangedEvent( const orcacm::InterfaceData & data )
         : Event( InterfaceDataChanged ),
           data_(data) {};
-
     orcacm::InterfaceData data_;
 };
 typedef IceUtil::Handle<InterfaceDataChangedEvent> InterfaceDataChangedEventPtr;
@@ -106,11 +101,9 @@ public:
     OperationDataChangedEvent( const orcacm::OperationData & data )
         : Event( OperationDataChanged ),
           data_(data) {};
-
     orcacm::OperationData data_;
 };
 typedef IceUtil::Handle<OperationDataChangedEvent> OperationDataChangedEventPtr;
-
 
 
 } // namespace

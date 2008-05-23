@@ -23,7 +23,7 @@ class OgMapProbe : public orca::OgMapConsumer, public orcaprobe::InterfaceProbe
 public:
 
     OgMapProbe( const orca::FQInterfaceName & name,
-                orcaprobe::IDisplay & display,
+                orcaprobe::AbstractDisplay & display,
                 const orcaice::Context & context );
 
     virtual int loadOperationEvent( const int index, orcacm::OperationData & data );

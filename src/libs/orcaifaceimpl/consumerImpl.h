@@ -14,42 +14,10 @@
 #include <orcaice/context.h>
 #include <orcaice/multiconnectutils.h>
 #include <gbxsickacfr/gbxiceutilacfr/safethread.h>
+#include <iostream>
 
 namespace orcaifaceimpl
 {
-
-// detail class.
-// Functionality which ConsumerI needs to know about when talking to ConsumerImpl class.
-template<class ObjectType>
-class ConsumerDataHandler
-{
-public:
-    virtual ~ConsumerDataHandler() {};
-    virtual void internalSetData( const ObjectType &data )=0;
-};
-
-// generic consumerI.
-// implements any consumer interface whose set method is called "setData".
-// this is a "detail" class, not used directly by the end user.
-template<class ConsumerType, class ObjectType>
-class ConsumerI : public ConsumerType
-{
-public:
-    ConsumerI( ConsumerDataHandler<ObjectType> &handler )
-        : handler_(handler) {}
-
-    virtual ~ConsumerI() {};
-    
-    // implementation of remote call defined in all *Consumer interfaces
-    // this implementation redirects to the implementation class
-    virtual void setData( const ObjectType& data, const Ice::Current& )
-    {
-        handler_.internalSetData( data );
-    }
-
-private:
-    ConsumerDataHandler<ObjectType> &handler_;
-};
 
 //! Functionality which end users needs to know about when telling the ConsumerImpl class
 //! class to subscribe to data provider. Because this class is not templated it is possible
@@ -57,7 +25,9 @@ private:
 class ConsumerSubscriber
 {
 public:
-    virtual ~ConsumerSubscriber() {};
+    ConsumerSubscriber( const orcaice::Context& context );
+
+    virtual ~ConsumerSubscriber();
 
     //! Tries to connect to remote interface with stringified proxy @c proxyString.
     //! If succesful, tries to subscribe for data using the internal consumer interface.
@@ -69,11 +39,6 @@ public:
     //! Does not catch any exceptions.
     virtual void unsubscribeWithString( const std::string& proxyString )=0;
 
-    //! Same as subscribeWithString() but the interface is looked up using the config file and tag interfaceTag.
-    virtual void subscribeWithTag( const std::string& interfaceTag )=0;
-
-    //! Same as unsubscribeWithString() but the interface is looked up using the config file and tag interfaceTag.
-    virtual void unsubscribeWithTag( const std::string& interfaceTag )=0;
 
     //! Tries to connect to remote interface with stringified proxy @c proxyString.
     //! Will try to connect @c retryNumber number of times (-1 means infinite), waiting for @c retryInterval [s] after
@@ -84,11 +49,22 @@ public:
                           gbxsickacfr::gbxiceutilacfr::Thread*  thread, const std::string& subsysName="", 
                           int retryInterval=2, int retryNumber=-1 )=0;
 
+    //! Same as subscribeWithString() but the interface is looked up using the config file and tag interfaceTag.
+    void subscribeWithTag( const std::string& interfaceTag );
+
+    //! Same as unsubscribeWithString() but the interface is looked up using the config file and tag interfaceTag.
+    void unsubscribeWithTag( const std::string& interfaceTag );
+
     //! Same as the threaded version of subscribeWithString() but the interface is looked up 
     //! using the config file and tag interfaceTag.
-    virtual void subscribeWithTag( const std::string& interfaceTag, 
+    void subscribeWithTag( const std::string& interfaceTag, 
                           gbxsickacfr::gbxiceutilacfr::Thread*  thread, const std::string& subsysName="", 
-                          int retryInterval=2, int retryNumber=-1 )=0;
+                          int retryInterval=2, int retryNumber=-1 );
+
+protected:
+
+    //! Component context.
+    orcaice::Context context_;
 };
 
 /*!
@@ -99,48 +75,52 @@ public:
 //  Note: inheriting from IceUtil::Shared allows us to use Ice smart
 //  pointers with these things.
 template<class ProviderPrxType, class ConsumerType, class ConsumerPrxType, class ObjectType>
-class ConsumerImpl : public ConsumerDataHandler<ObjectType>,
-                     public ConsumerSubscriber,
-                     public IceUtil::Shared
+class ConsumerImpl : virtual public ConsumerType,
+                           public ConsumerSubscriber
+//                            public IceUtil::Shared
 {
-friend class ConsumerI<ConsumerType,ObjectType>;
-
 public:
     //! Constructor
-    ConsumerImpl( const orcaice::Context &context )
-        : context_(context),
-          ptr_(new ConsumerI<ConsumerType,ObjectType>(*this)),
-          // this function does not throw
-          prx_(orcaice::createConsumerInterface<ConsumerPrxType>(context,ptr_))
-    {}
-    // no doxytags, these functions are already documented above.
-    virtual ~ConsumerImpl() 
+    ConsumerImpl( const orcaice::Context &context ) :
+        ConsumerSubscriber(context),
+        isEnabled_(true)
     {
-        try {
-            context_.adapter()->remove( prx_->ice_getIdentity() );
-        }
-        // This can fail if the adapter is shutting down.  We don't care.
-        catch ( ... ) {}
+        Ice::ObjectPtr ptr = this;
+//         this function does not throw
+        consumerPrx_ = orcaice::createConsumerInterface<ConsumerPrxType>(context,ptr);
+
     }
+
+    // no doxytags, these functions are already documented above.
+    virtual ~ConsumerImpl() {};
+
+    // implementation of remote call defined in all *Consumer interfaces
+    // this implementation redirects to the implementation class
+    virtual void setData( const ObjectType& data, const Ice::Current& )
+    {
+// std::cout<<"ConsumerImpl::setData() start"<<std::endl;
+        IceUtil::Mutex::Lock lock(enableMutex_);
+
+//         if ( isEnabled_ ) {
+            dataEvent( data );
+//             std::cout<<"ConsumerImpl::setData() end"<<std::endl;
+//             return;
+//         }
+// std::cout<<"ConsumerImpl::setData() end -- DISABLED"<<std::endl;
+    }
+
+    //! Implement this callback in the derived class. 
+    virtual void dataEvent( const ObjectType& data )=0;
 
     virtual void subscribeWithString( const std::string& proxyString )
     {
         ProviderPrxType providerPrx;
         orcaice::connectToInterfaceWithString<ProviderPrxType>( context_, providerPrx, proxyString );
 
-        providerPrx->subscribe( prx_ );
+        providerPrx->subscribe( consumerPrx_ );
         std::stringstream ss;
         ss << "Subscribed to " << proxyString;
         context_.tracer().debug( ss.str() );
-    }
-
-    virtual void subscribeWithTag( const std::string& interfaceTag )
-    {
-        // this may throw ConfigFileException, we don't catch it, let the user catch it at the component level
-        std::string proxyString = orcaice::getRequiredInterfaceAsString( context_, interfaceTag );
-    
-        // now that we have the stingified proxy, use the function above.
-        subscribeWithString( proxyString );
     }
 
     virtual void unsubscribeWithString( const std::string& proxyString )
@@ -148,19 +128,10 @@ public:
         ProviderPrxType providerPrx;
         orcaice::connectToInterfaceWithString<ProviderPrxType>( context_, providerPrx, proxyString );
 
-        providerPrx->unsubscribe( prx_ );
+        providerPrx->unsubscribe( consumerPrx_ );
         std::stringstream ss;
         ss << "unsubscribed to " << proxyString;
         context_.tracer().debug( ss.str() );
-    }
-
-    virtual void unsubscribeWithTag( const std::string& interfaceTag )
-    {
-        // this may throw ConfigFileException, we don't catch it, let the user catch it at the component level
-        std::string proxyString = orcaice::getRequiredInterfaceAsString( context_, interfaceTag );
-    
-        // now that we have the stingified proxy, use the function above.
-        unsubscribeWithString( proxyString );
     }
 
     virtual void subscribeWithString( const std::string& proxyString, 
@@ -176,7 +147,7 @@ public:
         while ( !thread->isStopping() && ( retryNumber<0 || count<retryNumber) )
         {
             try {
-                providerPrx->subscribe( prx_ );
+                providerPrx->subscribe( consumerPrx_ );
                 std::stringstream ss;
                 ss << "Subscribed to " << proxyString;
                 context_.tracer().debug( ss.str() );
@@ -209,39 +180,35 @@ public:
 
     }
 
-    virtual void subscribeWithTag( const std::string& interfaceTag, 
-                          gbxsickacfr::gbxiceutilacfr::Thread*  thread, const std::string& subsysName="", 
-                          int retryInterval=2, int retryNumber=-1 )
+    //! Access the proxy to the internal consumer interface implementation.
+    ConsumerPrxType consumerPrx() const { return consumerPrx_; }
+
+    //! Disable data forwarding
+    void destroy()
     {
-        // this may throw ConfigFileException, we don't catch it, let the user catch it at the component level
-        std::string proxyString = orcaice::getRequiredInterfaceAsString( context_, interfaceTag );
-    
-        // now that we have the stingified proxy, use the function above.
-        subscribeWithString( proxyString, thread, subsysName, retryInterval, retryNumber );
+        IceUtil::Mutex::Lock lock(enableMutex_);
+        isEnabled_ = false;
+
+        if ( !consumerPrx_ )
+            return;
+
+        try {
+            context_.adapter()->remove( consumerPrx_->ice_getIdentity() );
+std::cout<<"ConsumerImpl::destroy() id="<<consumerPrx_->ice_toString()<<std::endl;
+            
+        }
+        // This can fail if the adapter is shutting down.  We don't care.
+        catch ( ... ) {
+// std::cout<<"ConsumerImpl::disable() failed to unsubscribe."<<std::endl;
+        }
     }
-
-    //! Access to the proxy to the internal consumer interface implementation.
-    ConsumerPrxType consumerPrx() const { return prx_; }
-
-protected:
-    //! Implement this call back in the derived class. 
-    virtual void handleData( const ObjectType &data )=0;
-
-    //! Component context.
-    orcaice::Context context_;
 
 private:
-    // from ConsumerDataHandler
-    virtual void internalSetData( const ObjectType &data )
-    {
-        // callback implemented in derived classes.
-        handleData( data );
-    }
-
-    // Hang onto this so we can remove from the adapter and control when things get deleted
-    Ice::ObjectPtr   ptr_;
     // proxy to the internal consumer interface implementation
-    ConsumerPrxType  prx_;
+    ConsumerPrxType  consumerPrx_;
+
+    IceUtil::Mutex enableMutex_;
+    bool isEnabled_;
 };
 
 } // namespace

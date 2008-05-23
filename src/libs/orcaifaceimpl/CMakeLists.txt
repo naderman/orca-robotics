@@ -7,6 +7,7 @@ GBX_REQUIRE_OPTION( build LIB ${LIB_NAME} ON )
 IF( build )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseLibProjectIfaceString.cmake )
     
     FILE( GLOB hdrs *.h )
     FILE( GLOB srcs *.cpp )

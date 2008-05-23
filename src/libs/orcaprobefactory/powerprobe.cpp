@@ -19,7 +19,7 @@
 using namespace std;
 using namespace orcaprobefactory;
 
-PowerProbe::PowerProbe( const orca::FQInterfaceName & name, orcaprobe::IDisplay & display,
+PowerProbe::PowerProbe( const orca::FQInterfaceName & name, orcaprobe::AbstractDisplay & display,
                                 const orcaice::Context & context )
     : InterfaceProbe(name,display,context)
 {
@@ -77,7 +77,7 @@ PowerProbe::loadSubscribe( orcacm::OperationData & data )
 {
     Ice::ObjectPtr consumer = this;
     orca::PowerConsumerPrx callbackPrx =
-            orcaice::createConsumerInterface<orca::PowerConsumerPrx>( context_, consumer );
+            orcaice::createConsumerInterface<orca::PowerConsumerPrx>( ctx_, consumer );
     try
     {
         orca::PowerPrx derivedPrx = orca::PowerPrx::checkedCast(prx_);

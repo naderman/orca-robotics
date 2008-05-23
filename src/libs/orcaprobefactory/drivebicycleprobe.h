@@ -22,7 +22,7 @@ class DriveBicycleProbe : public orca::DriveBicycleConsumer, public orcaprobe::I
 
 public:
 
-    DriveBicycleProbe( const orca::FQInterfaceName& name, orcaprobe::IDisplay& display,
+    DriveBicycleProbe( const orca::FQInterfaceName& name, orcaprobe::AbstractDisplay& display,
                                 const orcaice::Context& context );
 
     virtual int loadOperationEvent( const int index, orcacm::OperationData& data );

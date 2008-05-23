@@ -22,7 +22,7 @@ class WifiProbe : public orca::WifiConsumer, public orcaprobe::InterfaceProbe
 
 public:
 
-    WifiProbe( const orca::FQInterfaceName& name, orcaprobe::IDisplay& display,
+    WifiProbe( const orca::FQInterfaceName& name, orcaprobe::AbstractDisplay& display,
                const orcaice::Context& context );
 
     virtual int loadOperationEvent( const int index, orcacm::OperationData& data );
