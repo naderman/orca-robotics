@@ -12,34 +12,7 @@
 #define ORCAOBJ_STRINGIFY_UTILITIES_H
 
 #include <string>
-#include <orca/common.h>
-#include <orca/binaryswitch.h>
-#include <orca/camera.h>
-#include <orca/cpu.h>
-#include <orca/drivebicycle.h>
-#include <orca/estop.h>
-#include <orca/gps.h>
-#include <orca/ogmap.h>
-#include <orca/home.h>
-#include <orca/image.h>
-#include <orca/imu.h>
-#include <orca/odometry2d.h>
-#include <orca/odometry3d.h>
-#include <orca/laserscanner2d.h>
-#include <orca/localise2d.h>
-#include <orca/localise3d.h>
-#include <orca/pixmap.h>
-#include <orca/power.h>
-#include <orca/status.h>
-#include <orca/tracer.h>
-#include <orca/polarfeature2d.h>
-#include <orca/featuremap2d.h>
-#include <orca/pathfollower2d.h>
-#include <orca/pathplanner2d.h>
-#include <orca/tracer.h>
-#include <orca/velocitycontrol2d.h>
-#include <orca/wifi.h>
-#include <orca/properties.h>
+#include <orca/orca.h>
 
 namespace orcaobj
 {

@@ -11,25 +11,7 @@
 #ifndef ORCAOBJ_INIT_UTILS_H
 #define ORCAOBJ_INIT_UTILS_H
 
-#include <orca/common.h>
-#include <orca/image.h>
-#include <orca/camera.h>
-#include <orca/drivebicycle.h>
-#include <orca/gps.h>
-#include <orca/ogmap.h>
-#include <orca/home.h>
-#include <orca/laserscanner2d.h>
-#include <orca/odometry2d.h>
-#include <orca/localise2d.h>
-#include <orca/power.h>
-#include <orca/status.h>
-#include <orca/polarfeature2d.h>
-#include <orca/featuremap2d.h>
-#include <orca/pathfollower2d.h>
-#include <orca/pathplanner2d.h>
-#include <orca/wifi.h>
-#include <orca/pixmap.h>
-#include <orca/velocitycontrol2d.h>
+#include <orca/orca.h>
 
 namespace orcaobj
 {
