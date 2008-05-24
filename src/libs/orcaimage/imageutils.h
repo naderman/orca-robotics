@@ -124,12 +124,6 @@ namespace orcaimage{
 #define NUM_COLOR_FORMAT7           (COLOR_FORMAT7_MAX - COLOR_FORMAT7_MIN + 1)
 
 
-
-// convert from dc_1394 colour mode to orca colour mode 
-orca::ImageFormat orcaImageMode( int mode );
-// convert from orca colour mode to dc_1394 colour mode
-int dc1394ImageMode( orca::ImageFormat mode, int width, int height );
-
 // number of channels used to store the image
 int numChannels( const orca::ImageFormat& format );
 

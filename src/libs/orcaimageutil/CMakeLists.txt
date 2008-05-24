@@ -1,4 +1,4 @@
-ORCA_SET_LIBRARY_NAME( OrcaImage )
+ORCA_SET_LIBRARY_NAME( OrcaImageUtil )
 GBX_ADD_LICENSE( GPL )
 
 SET( build TRUE )
@@ -7,7 +7,6 @@ GBX_REQUIRE_OPTION( build LIB ${LIB_NAME} ON )
 IF( build )
     
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
-
     
     FILE( GLOB hdrs *.h )
     FILE( GLOB srcs *.cpp )

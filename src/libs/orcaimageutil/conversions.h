@@ -21,81 +21,90 @@
 
 #include <string.h>
 
-// typedef enum
-// {
-//     NO_STEREO_DECODING,
-//     STEREO_DECODING
-// } stereo_decoding_t;
 
-namespace orcaimage{
+namespace orcaimageutil {
 
 // UYVY <-> YUYV
 void
-uyvy2yuyv (unsigned char *src, unsigned char *dest, int NumPixels);
+uyvy2yuyv (uint8_t *src, uint8_t *dest, uint32_t size);
 
 void
-yuyv2uyvy (unsigned char *src, unsigned char *dest, int NumPixels);
+yuyv2uyvy (uint8_t *src, uint8_t *dest, uint32_t size);
 
 // XXX -> UYVY
 void
-uyyvyy2uyvy (unsigned char *src, unsigned char *dest, int NumPixels);
+uyyvyy2uyvy (uint8_t *src, uint8_t *dest, uint32_t size);
 
 void
-uyv2uyvy (unsigned char *src, unsigned char *dest, int NumPixels);
+uyv2uyvy (uint8_t *src, uint8_t *dest, uint32_t size);
 
 void
-y2uyvy (unsigned char *src, unsigned char *dest, int NumPixels);
+y2uyvy (uint8_t *src, uint8_t *dest, uint32_t size);
 
 void
-y162uyvy (unsigned char *src, unsigned char *dest, int NumPixels, int bits);
+y162uyvy (uint8_t *src, uint8_t *dest, uint32_t size, int bits);
 
 void
-y162y (unsigned char *src, unsigned char *dest, int NumPixels, int bits);
+y162y (uint8_t *src, uint8_t *dest, uint32_t size, int bits);
 
 void
-rgb2uyvy (unsigned char *src, unsigned char *dest, int NumPixels);
+rgb2uyvy (uint8_t *src, uint8_t *dest, uint32_t size);
 
 void
-rgb482uyvy (unsigned char *src, unsigned char *dest, int NumPixels);
+rgb482uyvy (uint8_t *src, uint8_t *dest, uint32_t size);
 
 // XXX -> RGB
 void
-rgb482rgb (unsigned char *src, unsigned char *dest, int NumPixels);
+rgb482rgb (uint8_t *src, uint8_t *dest, uint32_t size);
 
 void
-uyv2rgb (unsigned char *src, unsigned char *dest, int NumPixels);
+uyv2rgb (uint8_t *src, uint8_t *dest, uint32_t size);
 
 void
-uyvy2rgb (unsigned char *src, unsigned char *dest, int NumPixels);
+uyvy2rgb (uint8_t *src, uint8_t *dest, uint32_t size);
 
 void
-uyvy2bgr (unsigned char *src, unsigned char *dest, int NumPixels);
+uyvy2bgr (uint8_t *src, uint8_t *dest, uint32_t size);
 
 void
-uyyvyy2rgb (unsigned char *src, unsigned char *dest, int NumPixels);
+uyyvyy2rgb (uint8_t *src, uint8_t *dest, uint32_t size);
 
 void
-y2rgb (unsigned char *src, unsigned char *dest, int NumPixels);
+y2rgb (uint8_t *src, uint8_t *dest, uint32_t size);
 
 void
-y162rgb (unsigned char *src, unsigned char *dest, int NumPixels, int bits);
-
-// void
-// StereoDecode(unsigned char *src, unsigned char *dest, int NumPixels);
+y162rgb (uint8_t *src, uint8_t *dest, uint32_t size, int bits);
 
 void
-uyv2bgr (unsigned char *src, unsigned char *dest, int NumPixels);
+uyv2bgr (uint8_t *src, uint8_t *dest, uint32_t size);
 
 void
-uyyvyy2bgr (unsigned char *src, unsigned char *dest, int NumPixels);
+uyyvyy2bgr (uint8_t *src, uint8_t *dest, uint32_t size);
 
 // MISC
 
 void
-rgb2bgr (unsigned char *src, unsigned char *dest, int NumPixels);
+rgb2bgr (uint8_t *src, uint8_t *dest, uint32_t size);
 
 void 
-y2bgr (unsigned char *src, unsigned char *dest, int NumPixels);
+y2bgr (uint8_t *src, uint8_t *dest, uint32_t size);
+
+/**
+ * TODO
+ */
+/*
+void
+bgr2bgra (uint8_t *src, uint8_t *dest, uint32_t size);
+
+void
+bgr2argb (uint8_t *src, uint8_t *dest, uint32_t size);
+
+void
+bayer2bgr(uint8_t *src, uint8_t *dest, uint32_t size, BayerFormat bayer);
+
+void
+bayer2bgra(uint8_t *src, uint8_t *dest, uint32_t size, BayerFormat bayer);
+*/
 
 }// namespace
 
