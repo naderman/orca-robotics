@@ -48,6 +48,30 @@ usage(const char* n)
 int
 main(int argc, char* argv[])
 {
+#ifdef ICE_VERSION_33
+    IceUtilInternal::Options opts;
+    opts.addOpt("h", "help");
+    opts.addOpt("v", "version");
+    opts.addOpt("", "header-ext", IceUtilInternal::Options::NeedArg, "h");
+    opts.addOpt("", "source-ext", IceUtilInternal::Options::NeedArg, "cpp");
+    opts.addOpt("", "add-header", IceUtilInternal::Options::NeedArg, "", IceUtilInternal::Options::Repeat);
+    opts.addOpt("D", "", IceUtilInternal::Options::NeedArg, "", IceUtilInternal::Options::Repeat);
+    opts.addOpt("U", "", IceUtilInternal::Options::NeedArg, "", IceUtilInternal::Options::Repeat);
+    opts.addOpt("I", "", IceUtilInternal::Options::NeedArg, "", IceUtilInternal::Options::Repeat);
+    opts.addOpt("E");
+    opts.addOpt("", "include-dir", IceUtilInternal::Options::NeedArg);
+    opts.addOpt("", "output-dir", IceUtilInternal::Options::NeedArg);
+    opts.addOpt("", "dll-export", IceUtilInternal::Options::NeedArg);
+    opts.addOpt("", "impl");
+    opts.addOpt("", "depend");
+    opts.addOpt("d", "debug");
+    opts.addOpt("", "ice");
+    opts.addOpt("", "checksum");
+    opts.addOpt("", "stream");
+    opts.addOpt("", "case-sensitive");
+    // alexm: our custom options
+    opts.addOpt("", "module", IceUtilInternal::Options::NeedArg);
+#else
     IceUtil::Options opts;
     opts.addOpt("h", "help");
     opts.addOpt("v", "version");
@@ -70,13 +94,18 @@ main(int argc, char* argv[])
     opts.addOpt("", "case-sensitive");
     // alexm: our custom options
     opts.addOpt("", "module", IceUtil::Options::NeedArg);
+#endif
 
     vector<string> args;
     try
     {
         args = opts.parse(argc, (const char**)argv);
     }
+#ifdef ICE_VERSION_33
+    catch(const IceUtilInternal::BadOptException& e)
+#else
     catch(const IceUtil::BadOptException& e)
+#endif
     {
         cerr << argv[0] << ": " << e.reason << endl;
         usage(argv[0]);
@@ -100,25 +129,41 @@ main(int argc, char* argv[])
     
     vector<string> extraHeaders = opts.argVec("add-header");
 
+#ifdef ICE_VERSION_33
+    vector<string> cppArgs;
+#else
     string cppArgs;
+#endif
     vector<string> optargs = opts.argVec("D");
     vector<string>::const_iterator i;
     for(i = optargs.begin(); i != optargs.end(); ++i)
     {
+#ifdef ICE_VERSION_33
+        cppArgs.push_back("-D" + *i);
+#else
         cppArgs += " -D" + Preprocessor::addQuotes(*i);
+#endif
     }
 
     optargs = opts.argVec("U");
     for(i = optargs.begin(); i != optargs.end(); ++i)
     {
+#ifdef ICE_VERSION_33
+        cppArgs.push_back("-U" + *i);
+#else
         cppArgs += " -U" + Preprocessor::addQuotes(*i);
+#endif
     }
 
     vector<string> includePaths;
     includePaths = opts.argVec("I");
     for(i = includePaths.begin(); i != includePaths.end(); ++i)
     {
-	cppArgs += " -I" + Preprocessor::normalizeIncludePath(*i);
+#ifdef ICE_VERSION_33
+        cppArgs.push_back("-I" + Preprocessor::normalizeIncludePath(*i));
+#else
+        cppArgs += " -I" + Preprocessor::normalizeIncludePath(*i);
+#endif
     }
 
 //     bool preprocess = opts.isSet("E");
@@ -166,7 +211,11 @@ main(int argc, char* argv[])
         }
 
         UnitPtr u = Unit::createUnit(false, false, ice, caseSensitive);
+#ifdef ICE_VERSION_33
+        int parseStatus = u->parse(*i, cppHandle, debug);
+#else
         int parseStatus = u->parse(cppHandle, debug);
+#endif
     
         if(!icecpp.close())
         {

@@ -54,6 +54,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 @par Project wide
 
 - Updated dart2 documentation to cdash (Tobi)
+- Dependencies
+    - works with Ice-3.3 (continues to work with Ice-3.2)
 - Build system
     - Big cleanup of CMake scripts for generating interface code.
     - cmake files updated for cmake 2.6
@@ -97,6 +99,8 @@ the life of the Object Adapter. (alex m)
     setting observers. (alexm)
 - OrcaIce
   - subscribers to component's Status interface get current status on subscription (alex m)
+- OrcaProbeFactory
+  - implementation cleanup using ConsumerImpl (alex m)
 
 @par Removed
 

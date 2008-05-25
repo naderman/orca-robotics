@@ -10,6 +10,18 @@ IF( build )
 
     FILE( GLOB srcs *.cpp )
     SET( dep_libs IceUtil Slice )
+
+    # we are using internal Ice API which is different between Ice versions
+
+    # Check Ice version
+    EXEC_PROGRAM ( ${ICE_HOME}/bin/slice2cpp ARGS --version OUTPUT_VARIABLE ICE_VERSION )
+    #MESSAGE( STATUS "DEBUG: Ice version: '${ICE_VERSION}'")
+    
+    # notice that this allows beta versions, e.g. 3.3b
+    IF( ICE_VERSION MATCHES "3\\.[3-9]" )
+        MESSAGE( STATUS "DEBUG: this is Ice 3.3")
+        ADD_DEFINITIONS( "-DICE_VERSION_33" )
+    ENDIF( ICE_VERSION MATCHES "3\\.[3-9]" )
     
     GBX_ADD_EXECUTABLE( ${APP_NAME} ${srcs} )
     TARGET_LINK_LIBRARIES( ${APP_NAME} ${dep_libs} )
