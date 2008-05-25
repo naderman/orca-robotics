@@ -259,8 +259,10 @@ MainThread::walk()
         }
 
         // If we got to here there's a problem.
-        // Re-initialise the driver.
-        initHardwareDriver();
+        // Re-initialise the driver, unless we are quitting
+        if ( !isStopping() ) {
+            initHardwareDriver();
+        }
 
     } // end of while
 
