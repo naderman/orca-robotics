@@ -11,6 +11,7 @@
 #ifndef ORCA_IMAGEUTIL_IMAGEUTILS_H
 #define ORCA_IMAGEUTIL_IMAGEUTILS_H
 
+#include <unistd.h>
 #include <orca/image.h>
 
 #include "conversions.h"

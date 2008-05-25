@@ -16,11 +16,11 @@
  * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef ORCA_IMAGE_CONVERSIONS_H
-#define ORCA_IMAGE_CONVERSIONS_H
+#ifndef ORCA_IMAGEUTIL_CONVERSIONS_H
+#define ORCA_IMAGEUTIL_CONVERSIONS_H
 
+#include <stdint.h>
 #include <string.h>
-
 
 namespace orcaimageutil {
 

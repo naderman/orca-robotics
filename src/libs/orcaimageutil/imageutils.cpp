@@ -12,7 +12,8 @@
 
 #include <orcaifacestring/image.h>
 
-using namespace orcaimageutil;
+namespace orcaimageutil
+{
 
 int 
 numChannels( const orca::ImageFormat& format )
@@ -34,4 +35,6 @@ numChannels( const orca::ImageFormat& format )
         default:
             return 3;              
     }                     
-}       
+}
+
+}

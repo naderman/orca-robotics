@@ -69,75 +69,79 @@ using namespace orcaimageutil;
 **********************************************************************/
 
 void
-yuyv2uyvy(uint8_t *src, uint8_t *dest, uint32_t size) {
-#ifdef YUYV
-//  swab(src, dest, size << 1);
-#else
-//  memcpy(dest,src, size<<1);
-#endif
-}
-
-void
-uyvy2yuyv(uint8_t *src, uint8_t *dest, uint32_t size) {
-#ifdef YUYV
-//  swab(src, dest, size << 1);
-#else
-//  memcpy(dest,src, size<<1);
-#endif
-}
-
-void
-uyyvyy2uyvy (uint8_t *src, uint8_t *dest, uint32_t size) {
-register int i=size + (size >> 1)-1;
-register int j=(size << 1)-1;
-register int y0, y1, y2, y3, u, v;
-
-while (i > 0)
+yuyv2uyvy(uint8_t *src, uint8_t *dest, uint32_t size) 
 {
-    y3 = src[i--];
-    y2 = src[i--];
-    v  = src[i--];
-    y1 = src[i--];
-    y0 = src[i--];
-    u  = src[i--];
 #ifdef YUYV
-    dest[j--] = v;
-    dest[j--] = y3;
-    dest[j--] = u;
-    dest[j--] = y2;
+//  swab(src, dest, size << 1);
+#else
+//  memcpy(dest,src, size<<1);
+#endif
+}
 
-    dest[j--] = v;
-    dest[j--] = y1;
-    dest[j--] = u;
-    dest[j--] = y0;
+void
+uyvy2yuyv(uint8_t *src, uint8_t *dest, uint32_t size) 
+{
+#ifdef YUYV
+//  swab(src, dest, size << 1);
+#else
+//  memcpy(dest,src, size<<1);
+#endif
+}
+
+void
+uyyvyy2uyvy (uint8_t *src, uint8_t *dest, uint32_t size) 
+{
+    register uint32_t i=size + (size >> 1)-1;
+    register uint32_t j=(size << 1)-1;
+    register uint32_t y0, y1, y2, y3, u, v;
+
+    while (i > 0)
+    {
+        y3 = src[i--];
+        y2 = src[i--];
+        v  = src[i--];
+        y1 = src[i--];
+        y0 = src[i--];
+        u  = src[i--];
+#ifdef YUYV
+        dest[j--] = v;
+        dest[j--] = y3;
+        dest[j--] = u;
+        dest[j--] = y2;
+
+        dest[j--] = v;
+        dest[j--] = y1;
+        dest[j--] = u;
+        dest[j--] = y0;
 #else // UYVY
-    dest[j--] = y3;
-    dest[j--] = v;
-    dest[j--] = y2;
-    dest[j--] = u;
+        dest[j--] = y3;
+        dest[j--] = v;
+        dest[j--] = y2;
+        dest[j--] = u;
 
-    dest[j--] = y1;
-    dest[j--] = v;
-    dest[j--] = y0;
-    dest[j--] = u;
+        dest[j--] = y1;
+        dest[j--] = v;
+        dest[j--] = y0;
+        dest[j--] = u;
 #endif
-}
+    }
 }
 
 void
-uyv2uyvy (uint8_t *src, uint8_t *dest, uint32_t size) {
-                    register int i = size + (size << 1)-1;
-                    register int j = (size << 1)-1;
-                    register int y0, y1, u0, u1, v0, v1;
-
-while (i > 0)
+uyv2uyvy (uint8_t *src, uint8_t *dest, uint32_t size) 
 {
-    v1 = src[i--];
-    y1 = src[i--];
-    u1 = src[i--];
-    v0 = src[i--];
-    y0 = src[i--];
-    u0 = src[i--];
+    register uint32_t i = size + (size << 1)-1;
+    register uint32_t j = (size << 1)-1;
+    register uint32_t y0, y1, u0, u1, v0, v1;
+
+    while (i > 0)
+    {
+        v1 = src[i--];
+        y1 = src[i--];
+        u1 = src[i--];
+        v0 = src[i--];
+        y0 = src[i--];
+        u0 = src[i--];
 
 #ifdef YUYV
         dest[j--] = (v0+v1) >> 1;
@@ -150,15 +154,17 @@ while (i > 0)
         dest[j--] = y0;
         dest[j--] = (u0+u1) >> 1;
 #endif
-}
+    }
+ 
 }
 
 
 void
-y2uyvy (uint8_t *src, uint8_t *dest, uint32_t size) {
-    register int i= size-1;
-    register int j = (size << 1)-1;
-    register int y0, y1;
+y2uyvy (uint8_t *src, uint8_t *dest, uint32_t size) 
+{
+    register uint32_t i= size-1;
+    register uint32_t j = (size << 1)-1;
+    register uint32_t y0, y1;
 
     while (i > 0)
     {
@@ -179,10 +185,11 @@ y2uyvy (uint8_t *src, uint8_t *dest, uint32_t size) {
 }
 
 void
-y162uyvy (uint8_t *src, uint8_t *dest, uint32_t size, int bits) {
-    register int i = (size << 1)-1;
-    register int j = (size << 1)-1;
-    register int y0, y1;
+y162uyvy (uint8_t *src, uint8_t *dest, uint32_t size, uint32_t bits) 
+{
+    register uint32_t i = (size << 1)-1;
+    register uint32_t j = (size << 1)-1;
+    register uint32_t y0, y1;
     //fprintf(stderr,"bpp:%d\n",bits);
     while (i > 0)
     {
@@ -205,10 +212,11 @@ y162uyvy (uint8_t *src, uint8_t *dest, uint32_t size, int bits) {
 }
 
 void
-y162y (uint8_t *src, uint8_t *dest, uint32_t size, int bits) {
-    register int i = (size<<1)-1;
-    register int j = size-1;
-    register int y;
+y162y (uint8_t *src, uint8_t *dest, uint32_t size, uint32_t bits) 
+{
+    register uint32_t i = (size<<1)-1;
+    register uint32_t j = size-1;
+    register uint32_t y;
 
     while (i > 0)
     {
@@ -219,10 +227,10 @@ y162y (uint8_t *src, uint8_t *dest, uint32_t size, int bits) {
 
 void
 rgb2uyvy (uint8_t *src, uint8_t *dest, uint32_t size) {
-    register int i = size + ( size << 1 )-1;
-    register int j = (size << 1)-1;
-    register int y0, y1, u0, u1, v0, v1 ;
-    register int r, g, b;
+    register uint32_t i = size + ( size << 1 )-1;
+    register uint32_t j = (size << 1)-1;
+    register uint32_t y0, y1, u0, u1, v0, v1 ;
+    register uint32_t r, g, b;
 
     while (i > 0)
     {
@@ -249,11 +257,12 @@ rgb2uyvy (uint8_t *src, uint8_t *dest, uint32_t size) {
 }
 
 void
-rgb482uyvy (uint8_t *src, uint8_t *dest, uint32_t size) {
-    register int i = ( (size + ( size << 1 )) << 1 ) -1;
-    register int j = (size << 1)-1;
-    register int y0, y1, u0, u1, v0, v1 ;
-    register int r, g, b;
+rgb482uyvy (uint8_t *src, uint8_t *dest, uint32_t size) 
+{
+    register uint32_t i = ( (size + ( size << 1 )) << 1 ) -1;
+    register uint32_t j = (size << 1)-1;
+    register uint32_t y0, y1, u0, u1, v0, v1 ;
+    register uint32_t r, g, b;
 
     while (i > 0)
     {
@@ -294,8 +303,8 @@ rgb482uyvy (uint8_t *src, uint8_t *dest, uint32_t size) {
 
 void
 rgb482rgb (uint8_t *src, uint8_t *dest, uint32_t size) {
-    register int i = ((size + ( size << 1 )) << 1)-1;
-    register int j = size + ( size << 1 ) -1;
+    register uint32_t i = ((size + ( size << 1 )) << 1)-1;
+    register uint32_t j = size + ( size << 1 ) -1;
 
     while (i > 0)
     {
@@ -310,12 +319,12 @@ rgb482rgb (uint8_t *src, uint8_t *dest, uint32_t size) {
 
 
 void
-        uyv2rgb (uint8_t *src, uint8_t *dest, uint32_t size)
+uyv2rgb (uint8_t *src, uint8_t *dest, uint32_t size)
 {
-    register int i = (size << 1)-1;
-    register int j = size + ( size << 1 ) -1;
-    register int y, u, v;
-    register int r, g, b;
+    register uint32_t i = (size << 1)-1;
+    register uint32_t j = size + ( size << 1 ) -1;
+    register uint32_t y, u, v;
+    register uint32_t r, g, b;
 
     while (i > 0)
     {
@@ -331,12 +340,12 @@ void
 }
 
 void
-        uyv2bgr (uint8_t *src, uint8_t *dest, uint32_t size)
+uyv2bgr (uint8_t *src, uint8_t *dest, uint32_t size)
 {
-    register int i = (size << 1)-1;
-    register int j = size + ( size << 1 ) -1;
-    register int y, u, v;
-    register int r, g, b;
+    register uint32_t i = (size << 1)-1;
+    register uint32_t j = size + ( size << 1 ) -1;
+    register uint32_t y, u, v;
+    register uint32_t r, g, b;
 
     while (i > 0)
     {
@@ -352,11 +361,12 @@ void
 }
 
 void
-        uyvy2rgb (uint8_t *src, uint8_t *dest, uint32_t size) {
-    register int i = (size << 1)-1;
-    register int j = size + ( size << 1 ) -1;
-    register int y0, y1, u, v;
-    register int r, g, b;
+uyvy2rgb (uint8_t *src, uint8_t *dest, uint32_t size) 
+{
+    register uint32_t i = (size << 1)-1;
+    register uint32_t j = size + ( size << 1 ) -1;
+    register uint32_t y0, y1, u, v;
+    register uint32_t r, g, b;
 
     while (i > 0)
     {
@@ -373,15 +383,16 @@ void
         dest[j--] = g;
         dest[j--] = r;
     }
-        }
+}
 
 
 void
-        uyvy2bgr (uint8_t *src, uint8_t *dest, uint32_t size) {
-    register int i = (size << 1)-1;
-    register int j = size + ( size << 1 ) -1;
-    register int y0, y1, u, v;
-    register int r, g, b;
+uyvy2bgr (uint8_t *src, uint8_t *dest, uint32_t size) 
+{
+    register uint32_t i = (size << 1)-1;
+    register uint32_t j = size + ( size << 1 ) -1;
+    register uint32_t y0, y1, u, v;
+    register uint32_t r, g, b;
 
     while (i > 0)
     {
@@ -398,15 +409,16 @@ void
         dest[j--] = g;
         dest[j--] = b;
     }
-        }
+}
 
 
 void
-uyyvyy2rgb (uint8_t *src, uint8_t *dest, uint32_t size) {
-    register int i = size + ( size >> 1 )-1;
-    register int j = size + ( size << 1 )-1;
-    register int y0, y1, y2, y3, u, v;
-    register int r, g, b;
+uyyvyy2rgb (uint8_t *src, uint8_t *dest, uint32_t size) 
+{
+    register uint32_t i = size + ( size >> 1 )-1;
+    register uint32_t j = size + ( size << 1 )-1;
+    register uint32_t y0, y1, y2, y3, u, v;
+    register uint32_t r, g, b;
 
     while (i > 0)
     {
@@ -436,11 +448,12 @@ uyyvyy2rgb (uint8_t *src, uint8_t *dest, uint32_t size) {
 }
 
 void
-uyyvyy2bgr (uint8_t *src, uint8_t *dest, uint32_t size) {
-    register int i = size + ( size >> 1 )-1;
-    register int j = size + ( size << 1 )-1;
-    register int y0, y1, y2, y3, u, v;
-    register int r, g, b;
+uyyvyy2bgr (uint8_t *src, uint8_t *dest, uint32_t size) 
+{
+    register uint32_t i = size + ( size >> 1 )-1;
+    register uint32_t j = size + ( size << 1 )-1;
+    register uint32_t y0, y1, y2, y3, u, v;
+    register uint32_t r, g, b;
 
     while (i > 0)
     {
@@ -472,9 +485,9 @@ uyyvyy2bgr (uint8_t *src, uint8_t *dest, uint32_t size) {
 void
 y2rgb (uint8_t *src, uint8_t *dest, uint32_t size) 
 {
-    register int i = size-1;
-    register int j = size + ( size << 1 )-1;
-    register int y;
+    register uint32_t i = size-1;
+    register uint32_t j = size + ( size << 1 )-1;
+    register uint32_t y;
 
     while (i > 0)
     {
@@ -486,10 +499,11 @@ y2rgb (uint8_t *src, uint8_t *dest, uint32_t size)
 }
 
 void
-y162rgb (uint8_t *src, uint8_t *dest, uint32_t size, int bits) {
-    register int i = (size << 1)-1;
-    register int j = size + ( size << 1 )-1;
-    register int y;
+y162rgb (uint8_t *src, uint8_t *dest, uint32_t size, uint32_t bits) 
+{
+    register uint32_t i = (size << 1)-1;
+    register uint32_t j = size + ( size << 1 )-1;
+    register uint32_t y;
 
     while (i > 0)
     {
@@ -508,7 +522,7 @@ y162rgb (uint8_t *src, uint8_t *dest, uint32_t size, int bits) {
 void
 rgb2bgr (uint8_t *src, uint8_t *dest, uint32_t size)
 {
-    register int i = 0;
+    register uint32_t i = 0;
 
     for( ; i < size*3; i+=3 )
     {
@@ -521,6 +535,16 @@ rgb2bgr (uint8_t *src, uint8_t *dest, uint32_t size)
 void 
 y2bgr (uint8_t *src, uint8_t *dest, uint32_t size)
 {
-    y2rgb(src, dest, size); //is the same as image is grayscale
+    register uint32_t i = size-1;
+    register uint32_t j = size + ( size << 1 )-1;
+    register uint32_t y;
+
+    while (i > 0)
+    {
+        y = (uint8_t) src[i--];
+        dest[j--] = y;
+        dest[j--] = y;
+        dest[j--] = y;
+    }
 }
 
