@@ -94,7 +94,8 @@ public:
     //! initialized in the child thread.
     void activate();
 
-    //! Triggers component shutdown.
+    //! Triggers component shutdown. Do not call this from inside functions
+    //! implementing Ice remote calls.
     void shutdown();
 
     // WARNING to internal developers:

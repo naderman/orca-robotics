@@ -114,7 +114,7 @@ Orca.Component.EnableHome
     //! Inside this contructor the component context is not initialized yet and cannot be used.
     */
     Component( const std::string& tag, ComponentInterfaceFlag flag=AllStandardInterfaces );
-    virtual ~Component();
+    virtual ~Component() {};
 
     //! This function is called by the component's container (Application or Service).
     //! It should return immediately, possibly after launching a thread. GUI components

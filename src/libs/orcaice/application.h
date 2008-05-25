@@ -55,11 +55,10 @@ public:
      *
      */
     Application( orcaice::Component &component, bool installCtrlCHandler=true );
-    ~Application();
 
-    //!
-    //! Reimplements one of the main functions from Ice::Application
-    //!
+    //
+    // Reimplements one of the main functions from Ice::Application
+    //
     virtual int main(int, char*[]);
 
     //

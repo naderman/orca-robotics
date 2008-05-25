@@ -53,14 +53,9 @@ std::string toString( const orca::PropertiesData &obj )
 //////////////////////////////
 
 Component::Component( const std::string& tag, ComponentInterfaceFlag flag )
-    : interfaceFlag_(flag),
-      componentThread_(0)
+    : interfaceFlag_(flag)
 {
     context_.tag_ = tag;
-}
-
-Component::~Component()
-{
 }
 
 void

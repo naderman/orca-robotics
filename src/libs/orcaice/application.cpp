@@ -65,10 +65,6 @@ Application::Application( orcaice::Component &component, bool installCtrlCHandle
 {
 }
 
-Application::~Application()
-{
-}
-
 /*
     Order priority for different sources of configuration parameters, from lowest to highest:
         1. orca factory defaults
