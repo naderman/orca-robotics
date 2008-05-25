@@ -213,6 +213,8 @@ MainThread::walk()
             // block on arrival of data
             //
             int ret = gpsConsumer_->store().getNext ( gpsData, timeoutMs );
+            subStatus().heartbeat();
+
             if ( ret != 0 ) {
                 if ( numTimeouts++ > reconnectFailTimes )
                 {

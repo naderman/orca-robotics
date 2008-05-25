@@ -144,7 +144,7 @@ MainThread::initHardwareDriver()
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));        
     }
 
-    subStatus().setMaxHeartbeatInterval( 1.0 );
+    subStatus().setMaxHeartbeatInterval( 10.0 );
 }
 
 void 
