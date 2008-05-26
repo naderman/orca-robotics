@@ -54,7 +54,7 @@ MainThread::MainThread( const orcaice::Context& context ) :
     SubsystemThread( context.tracer(), context.status(), "MainThread" ),
     context_(context)
 {
-    subStatus().setMaxHeartbeatInterval( 10.0 );
+//     subStatus().setMaxHeartbeatInterval( 10.0 );
 
     // Gps::Config object is currently empty, no properties to read.
 }
@@ -87,7 +87,7 @@ MainThread::initNetworkInterface()
 void
 MainThread::initHardwareDriver()
 {
-    subStatus().setMaxHeartbeatInterval( 10.0 );
+    subStatus().setMaxHeartbeatInterval( 30.0 );
 
     Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag() + ".Config.";
@@ -159,7 +159,7 @@ MainThread::reportBogusValues( orca::GpsData &gpsData )
 void
 MainThread::walk()
 {
-    subStatus().setMaxHeartbeatInterval( 5.0 );  
+    subStatus().setMaxHeartbeatInterval( 60.0 );  
 
     Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag() + ".Config.";
@@ -186,6 +186,7 @@ MainThread::walk()
         {
             // this blocks until new data arrives
             driver_->read( hydroData );
+            subStatus().heartbeat();
             
             // convert hydro->orca
             convert( hydroData, orcaData );
