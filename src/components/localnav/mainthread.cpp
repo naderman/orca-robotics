@@ -561,7 +561,7 @@ MainThread::walk()
             exceptionSS << "MainThread: unexpected unknown exception";
         }
 
-        if ( !exceptionSS.str().empty() ) 
+        if ( !exceptionSS.str().empty() && !isStopping() ) 
         {
             subStatus().fault( exceptionSS.str() + "\n  Stopping vehicle." );
             stopVehicle();
