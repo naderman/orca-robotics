@@ -136,7 +136,7 @@ MainThread::initHardwareDriver()
             break;
         }
         catch ( IceUtil::Exception &e ) {
-            exceptionSS << "MainThread: Caught exception while creating driver: " << e;
+            exceptionSS << "MainThread: Caught exception while initialising driver: " << e;
         }
         catch ( std::exception &e ) {
             exceptionSS << "MainThread: Caught exception while initialising driver: " << e.what();
@@ -152,9 +152,11 @@ MainThread::initHardwareDriver()
         }
 
         // we get here only after an exception was caught
-        subStatus().fault( exceptionSS.str() );          
-
-        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));        
+        if ( !isStopping() ) {
+            subStatus().fault( exceptionSS.str() );          
+    
+            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
+        }
     }
 
     subStatus().setMaxHeartbeatInterval( 1.0 );
