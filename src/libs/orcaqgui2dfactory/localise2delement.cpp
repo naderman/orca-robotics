@@ -66,9 +66,9 @@ Localise2dElement::tryToGetGeometry()
     
     if (geom->type==orca::VehicleGeometryCuboid)
     {
-        orca::VehicleGeometryCuboidDescriptionPtr geom = orca::VehicleGeometryCuboidDescriptionPtr::dynamicCast( geom );
-        painter_.setTypeAndGeometry( PlatformTypeCubic, geom->size.l, geom->size.w );
-        painter_.setOrigin( geom->vehicleToGeometryTransform.p.x, geom->vehicleToGeometryTransform.p.y, geom->vehicleToGeometryTransform.o.y );
+        orca::VehicleGeometryCuboidDescriptionPtr cuboidGeom = orca::VehicleGeometryCuboidDescriptionPtr::dynamicCast( geom );
+        painter_.setTypeAndGeometry( PlatformTypeCubic, cuboidGeom->size.l, cuboidGeom->size.w );
+        painter_.setOrigin( cuboidGeom->vehicleToGeometryTransform.p.x, cuboidGeom->vehicleToGeometryTransform.p.y, cuboidGeom->vehicleToGeometryTransform.o.y );
     }
     else if (geom->type==orca::VehicleGeometryCylindrical)
     {
