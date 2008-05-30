@@ -12,6 +12,14 @@
 
 namespace orcaqguielementutil {
 
+    namespace {
+        // Color values from /etc/X11/rgb.txt
+        const QColor DARK_GRAY(169, 169, 169);
+        
+        const QColor ORANGE(255, 165, 0);
+        const QColor DARK_ORANGE(200, 110, 0); // a bit diff from /etc/X11/rgb.txt, coz I couldn't tell the diff.
+    }
+
     QColor featureColour( int featureType )
     {
         switch ( featureType )
@@ -37,6 +45,12 @@ namespace orcaqguielementutil {
         case orca::feature::INTERNALCORNER:
             return Qt::yellow;
             break;
+        case orca::feature::VEHICLEPOSE:
+            return Qt::gray;
+            break;
+        case orca::feature::GPSFIX:
+            return ORANGE;
+            break;
 
         case 10 + orca::feature::LASERREFLECTOR:
             return Qt::darkBlue;
@@ -58,6 +72,12 @@ namespace orcaqguielementutil {
             break;
         case 10 + orca::feature::INTERNALCORNER:
             return Qt::darkYellow;
+            break;
+        case 10 + orca::feature::VEHICLEPOSE:
+            return DARK_GRAY;
+            break;
+        case 10 + orca::feature::GPSFIX:
+            return DARK_ORANGE;
             break;
 
         default:

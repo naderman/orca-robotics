@@ -42,8 +42,10 @@ module feature
     const int INTERNALCORNER   = 5;
     //! corner on eg the outside of a building
     const int EXTERNALCORNER   = 6;
-    //! corner on eg the outside of a building
+    //! Pose of a vehicle
     const int VEHICLEPOSE      = 7;
+    //! A GPS Fix
+    const int GPSFIX           = 8;
 };
 
 //! Generic 2D feature.
