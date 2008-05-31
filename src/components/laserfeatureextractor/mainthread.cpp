@@ -251,9 +251,12 @@ MainThread::walk()
             const int timeoutMs = 1000;
             int ret = laserConsumer_->store().getNext( rangeData, timeoutMs );
             if ( ret != 0 ) {
+                if ( isStopping() ) {
+                   break;
+		}
                 stringstream ss;
                 ss << "Timed out (" << timeoutMs << "ms) waiting for laser data.  Reconnecting.";
-                subStatus().warning( ss.str() );
+                subStatus().fault( ss.str() );
                 connectToLaser();
                 continue;
             }
