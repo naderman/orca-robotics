@@ -70,20 +70,22 @@ protected:
 /*!
  A generic consumer: instantiates and looks after a consumerI, i.e. adds it to/removes it from the adapter.
 
- Derived classes need to implement the handleData() callback.
+ Derived classes need to implement the dataEvent() callback function which is called when the new data arrives.
+
+ If the life of the consumer is shorter than the life of the component (e.g. you create and destroy consumers repeatedly),
+ you must call destroy() method before the existing consumer goes out of scope. Otherwise, the application will segfault
+ complaining that a 'pure virtual method called'.
 */
 //  Note: inheriting from IceUtil::Shared allows us to use Ice smart
 //  pointers with these things.
 template<class ProviderPrxType, class ConsumerType, class ConsumerPrxType, class ObjectType>
 class ConsumerImpl : virtual public ConsumerType,
-                           public ConsumerSubscriber
-//                            public IceUtil::Shared
+                     public ConsumerSubscriber
 {
 public:
     //! Constructor
     ConsumerImpl( const orcaice::Context &context ) :
-        ConsumerSubscriber(context),
-        isEnabled_(true)
+        ConsumerSubscriber(context)
     {
         Ice::ObjectPtr ptr = this;
 //         this function does not throw
@@ -91,26 +93,40 @@ public:
 
     }
 
-    // no doxytags, these functions are already documented above.
     virtual ~ConsumerImpl() {};
+
+    //! Implement this callback in the derived class. 
+    virtual void dataEvent( const ObjectType& data )=0;
+
+    //! Remove this consumer from the Object Adapter which will free up memory automatically.
+    //! Call this function if you repeatedly create and destroy consumers thoughout the life of the
+    //! component.
+    void destroy()
+    {
+        if ( !consumerPrx_ )
+            return;
+
+        try {
+            context_.adapter()->remove( consumerPrx_->ice_getIdentity() );
+            
+        }
+        // This can fail if the adapter is shutting down.  We don't care.
+        catch ( ... ) {
+        }
+    }
+
+    //! Access the proxy to the internal consumer interface implementation.
+    ConsumerPrxType consumerPrx() const { return consumerPrx_; }
+
+    // no doxytags, these functions are already documented above.
 
     // implementation of remote call defined in all *Consumer interfaces
     // this implementation redirects to the implementation class
     virtual void setData( const ObjectType& data, const Ice::Current& )
     {
-// std::cout<<"ConsumerImpl::setData() start"<<std::endl;
-        IceUtil::Mutex::Lock lock(enableMutex_);
-
-//         if ( isEnabled_ ) {
-            dataEvent( data );
-//             std::cout<<"ConsumerImpl::setData() end"<<std::endl;
-//             return;
-//         }
-// std::cout<<"ConsumerImpl::setData() end -- DISABLED"<<std::endl;
+        dataEvent( data );
     }
 
-    //! Implement this callback in the derived class. 
-    virtual void dataEvent( const ObjectType& data )=0;
 
     virtual void subscribeWithString( const std::string& proxyString )
     {
@@ -180,35 +196,9 @@ public:
 
     }
 
-    //! Access the proxy to the internal consumer interface implementation.
-    ConsumerPrxType consumerPrx() const { return consumerPrx_; }
-
-    //! Disable data forwarding
-    void destroy()
-    {
-        IceUtil::Mutex::Lock lock(enableMutex_);
-        isEnabled_ = false;
-
-        if ( !consumerPrx_ )
-            return;
-
-        try {
-            context_.adapter()->remove( consumerPrx_->ice_getIdentity() );
-std::cout<<"ConsumerImpl::destroy() id="<<consumerPrx_->ice_toString()<<std::endl;
-            
-        }
-        // This can fail if the adapter is shutting down.  We don't care.
-        catch ( ... ) {
-// std::cout<<"ConsumerImpl::disable() failed to unsubscribe."<<std::endl;
-        }
-    }
-
 private:
     // proxy to the internal consumer interface implementation
     ConsumerPrxType  consumerPrx_;
-
-    IceUtil::Mutex enableMutex_;
-    bool isEnabled_;
 };
 
 } // namespace
