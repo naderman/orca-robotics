@@ -159,7 +159,17 @@ Component::initTracer()
     //
     // add this object to the adapter and name it 'tracer'
     // 
-    context_.adapter()->add( obj, context_.communicator()->stringToIdentity("tracer") );
+    try
+    {
+        context_.adapter()->add( obj, context_.communicator()->stringToIdentity("tracer") );
+    }
+    catch( const Ice::ObjectAdapterDeactivatedException &e )
+    {
+        std::stringstream ss;
+        ss << "orcaice::Component: Failed to add tracer because the adapter is deactivated: " << e;
+        context_.tracer().warning( ss.str() );
+        throw orcaice::ComponentDeactivatingException( ERROR_INFO, ss.str() );
+    }
 
     // a bit of a hack: keep this smart pointer so it's not destroyed with the adapter
     tracerObj_ = obj;
@@ -192,7 +202,17 @@ Component::initStatus()
     orcaice::detail::StatusI* pobj = new orcaice::detail::StatusI( context_ );
     statusObj_ = pobj;
     // add this object to the adapter and name it 'status'
-    context_.adapter()->add( statusObj_, context_.communicator()->stringToIdentity("status") );
+    try
+    {
+        context_.adapter()->add( statusObj_, context_.communicator()->stringToIdentity("status") );
+    }
+    catch( const Ice::ObjectAdapterDeactivatedException &e )
+    {
+        std::stringstream ss;
+        ss << "orcaice::Component: Failed to add status because the adapter is deactivated: " << e;
+        context_.tracer().warning( ss.str() );
+        throw orcaice::ComponentDeactivatingException( ERROR_INFO, ss.str() );
+    }
 
     gbxsickacfr::gbxutilacfr::Status* stat = (gbxsickacfr::gbxutilacfr::Status*)pobj;
     orcaice::initTracerInfo( context_.tag()+": Initialized status handler");
@@ -222,7 +242,17 @@ Component::initHome()
     // add the home interface to our adapter
     Ice::ObjectPtr homeObj = hobj;
     std::string homeIdentity = toHomeIdentity( context_.name() );
-    homePrx_ = context_.adapter()->add( homeObj, context_.communicator()->stringToIdentity(homeIdentity) );
+    try
+    {
+        homePrx_ = context_.adapter()->add( homeObj, context_.communicator()->stringToIdentity(homeIdentity) );
+    }
+    catch( const Ice::ObjectAdapterDeactivatedException &e )
+    {
+        std::stringstream ss;
+        ss << "orcaice::Component: Failed to add home because the adapter is deactivated: " << e;
+        context_.tracer().warning( ss.str() );
+        throw orcaice::ComponentDeactivatingException( ERROR_INFO, ss.str() );
+    }
 
     orcaice::initTracerInfo( context_.tag()+": Initialized Home interface");
     return (Home*)hobj;

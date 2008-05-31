@@ -177,8 +177,10 @@ Application::run( int argc, char* argv[] )
     communicator()->waitForShutdown();
     
     initTracerInfo( component_.context().tag()+": Communicator is destroyed. Stopping component" );
-    component_.finalise();
     component_.stop();
+    initTracerInfo( component_.context().tag()+": Finalising component" );
+    component_.finalise();
+//     component_.stop();
     initTracerInfo( component_.context().tag()+": Component stopped" );
 
     adapter_->waitForDeactivate();
