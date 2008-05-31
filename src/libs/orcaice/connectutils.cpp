@@ -34,6 +34,13 @@ createInterfaceWithString( const Context      & context,
         ss<<"Failed to create interface "<<proxyString<<": "<<e;
         throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, ss.str() );
     }
+    catch( const Ice::ObjectAdapterDeactivatedException &e )
+    {
+        std::stringstream ss;
+        ss << "orcaice::Component: Failed to create interface because the adapter is destroyed : " << e;
+        context.tracer().warning( ss.str() );
+        throw orcaice::ComponentDeactivatingException( ERROR_INFO, ss.str() );
+    }
 
     // locally register this interface with Home interface 
     orca::ProvidedInterface iface;

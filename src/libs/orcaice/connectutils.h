@@ -102,11 +102,21 @@ createConsumerInterface( const Context  & context,
 {
     // create servant and tell adapter about it (let it make up a globally unique name)
     // NOTE: addWithUUID() does not throw exceptions.
-    Ice::ObjectPrx obj = context.adapter()->addWithUUID( consumer );
-    
-    // make a direct proxy
-    Ice::ObjectPrx prx = context.adapter()->createDirectProxy( obj->ice_getIdentity() );
-    return ConsumerProxyType::uncheckedCast( prx );
+    try
+    {
+        Ice::ObjectPrx obj = context.adapter()->addWithUUID( consumer );
+
+        // make a direct proxy
+        Ice::ObjectPrx prx = context.adapter()->createDirectProxy( obj->ice_getIdentity() );
+        return ConsumerProxyType::uncheckedCast( prx );
+    }
+    catch( const Ice::ObjectAdapterDeactivatedException &e )
+    {
+        std::stringstream ss;
+        ss << "orcaice::Component: Failed to create consumer interface because the adapter is destroyed : " << e;
+        context.tracer().warning( ss.str() );
+        throw orcaice::ComponentDeactivatingException( ERROR_INFO, ss.str() );
+    }
 }
 
 //
