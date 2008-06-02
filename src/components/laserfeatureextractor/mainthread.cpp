@@ -251,7 +251,13 @@ MainThread::walk()
             const int timeoutMs = 1000;
             int ret = laserConsumer_->store().getNext( rangeData, timeoutMs );
             if ( ret != 0 ) {
-                if ( isStopping() ) {
+                bool isCommunicatorDestroyed = false;
+                try {
+                    context_.adapter()->getCommunicator();
+                } catch (const Ice::ObjectAdapterDeactivatedException&) {
+                    isCommunicatorDestroyed = true;
+                }
+                if ( isStopping() || isCommunicatorDestroyed ) {
                    break;
 		}
                 stringstream ss;
@@ -316,7 +322,7 @@ MainThread::walk()
             exceptionSS << "MainThread: unexpected unknown exception";
         }
 
-        if ( !exceptionSS.str().empty() ) {
+        if ( !exceptionSS.str().empty() && !isStopping() ) {
             subStatus().fault( exceptionSS.str() );     
             // Slow things down in case of persistent error
             sleep(1);
