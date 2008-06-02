@@ -178,15 +178,15 @@ Application::run( int argc, char* argv[] )
     
     initTracerInfo( component_.context().tag()+": Communicator is destroyed. Stopping component" );
     component_.stop();
-    initTracerInfo( component_.context().tag()+": Finalising component" );
+//     initTracerInfo( component_.context().tag()+": Finalising component" );
     component_.finalise();
-//     component_.stop();
-    initTracerInfo( component_.context().tag()+": Component stopped" );
+//     initTracerInfo( component_.context().tag()+": Component stopped" );
 
     adapter_->waitForDeactivate();
-    initTracerInfo( component_.context().tag()+": Adapter deactivated" );
+//     initTracerInfo( component_.context().tag()+": Adapter deactivated" );
 
-    initTracerInfo( component_.context().tag()+": Application quitting. Orca out." );
+//     initTracerInfo( component_.context().tag()+": Application done." );
+    initTracerInfo( component_.context().tag()+": Orca out." );
 
     return 0;
 }
