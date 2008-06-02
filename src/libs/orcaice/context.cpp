@@ -61,6 +61,18 @@ Context::shutdown()
     }
 }
 
+bool 
+Context::isDeactivating()
+{
+    try {
+        adapter()->getCommunicator();
+        return false;
+    } 
+    catch (const Ice::ObjectAdapterDeactivatedException&) {
+        return true;
+    }
+}
+
 hydroutil::Context 
 Context::toHydroContext() const
 {

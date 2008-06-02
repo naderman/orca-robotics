@@ -94,6 +94,10 @@ public:
     //! initialized in the child thread.
     void activate();
 
+    //! Returns TRUE if the component is in the process of deactivating itself (the communicator
+    //! is already destroyed).
+    bool isDeactivating();
+
     //! Triggers component shutdown. Do not call this from inside functions
     //! implementing Ice remote calls.
     void shutdown();
