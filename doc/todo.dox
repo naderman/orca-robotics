@@ -101,6 +101,8 @@ the life of the Object Adapter. (alex m)
   - subscribers to component's Status interface get current status on subscription (alex m)
   - fixed bug which could lead to uncaught exception under certain conditions during component initialization. (alexm)
   - fixed bug which could lead to unjustified status fault under certain conditions during component shutdown. (alexm)
+  - brought SubsystemThread back from gearbox and made it aware of component deactivation, i.e. status fault is not
+    reported when ComponentDeactivatingException is caught.
   - added function Context::isDeactivating() to check if the component is deactivating.
 - OrcaProbeFactory
   - implementation cleanup using ConsumerImpl (alex m)
