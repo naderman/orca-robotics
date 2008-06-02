@@ -22,7 +22,7 @@ using namespace wifi;
 
 
 MainThread::MainThread( const orcaice::Context& context ) :
-    gbxsickacfr::gbxiceutilacfr::SubsystemThread( context.tracer(), context.status(), "MainThread" ),
+    orcaice::SubsystemThread( context.tracer(), context.status(), "MainThread" ),
     context_(context),
     snrWarningThreshhold_(0)
 {

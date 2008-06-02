@@ -11,7 +11,7 @@
 #define MAIN_THREAD_H
 
 #include <memory>
-#include <gbxsickacfr/gbxiceutilacfr/subsystemthread.h>
+#include <orcaice/subsystemthread.h>
 #include <orcaice/context.h>
 #include <orcaifaceimpl/propertiesImpl.h>
 #include "propertydb.h"
@@ -21,7 +21,7 @@ namespace propserver {
 //
 // @brief the main executing loop of this component.
 //
-class MainThread : public gbxsickacfr::gbxiceutilacfr::SubsystemThread
+class MainThread : public orcaice::SubsystemThread
 {
 
 public:

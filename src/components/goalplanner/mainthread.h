@@ -11,7 +11,7 @@
 #ifndef MAINTHREAD_H
 #define MAINTHREAD_H
 
-#include <gbxsickacfr/gbxiceutilacfr/subsystemthread.h>
+#include <orcaice/subsystemthread.h>
 #include <orcaice/context.h>
 #include <gbxsickacfr/gbxiceutilacfr/store.h>
 #include <hydronavutil/pose.h> 
@@ -28,7 +28,7 @@ namespace goalplanner
 
 class PathFollower2dI;
 
-class MainThread : public gbxsickacfr::gbxiceutilacfr::SubsystemThread
+class MainThread : public orcaice::SubsystemThread
 {
 
 public: 

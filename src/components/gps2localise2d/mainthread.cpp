@@ -21,7 +21,7 @@ using namespace gps2localise2d;
 
 
 MainThread::MainThread( const orcaice::Context &context ) :
-    gbxsickacfr::gbxiceutilacfr::SubsystemThread( context.tracer(), context.status(), "MainThread" ),
+    orcaice::SubsystemThread( context.tracer(), context.status(), "MainThread" ),
     driver_(NULL),
     context_(context)
 {

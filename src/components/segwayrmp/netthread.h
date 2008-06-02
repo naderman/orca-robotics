@@ -11,7 +11,7 @@
 #ifndef NETWORK_HANDLER_H
 #define NETWORK_HANDLER_H
 
-#include <gbxsickacfr/gbxiceutilacfr/subsystemthread.h>
+#include <orcaice/subsystemthread.h>
 #include <orcaice/context.h>
 
 #include <orcaifaceimpl/odometry2dImpl.h>
@@ -24,7 +24,7 @@
 namespace segwayrmp
 {
 
-class NetThread : public gbxsickacfr::gbxiceutilacfr::SubsystemThread,
+class NetThread : public orcaice::SubsystemThread,
                   public gbxsickacfr::gbxiceutilacfr::NotifyHandler<orca::VelocityControl2dData>
 {
 public:

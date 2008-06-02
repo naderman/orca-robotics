@@ -110,7 +110,7 @@ namespace {
 }
 
 MainThread::MainThread( const orcaice::Context & context )
-    : gbxsickacfr::gbxiceutilacfr::SubsystemThread( context.tracer(), context.status(), "MainThread" ),
+    : orcaice::SubsystemThread( context.tracer(), context.status(), "MainThread" ),
       incomingPathI_(0),
       context_(context)
 {

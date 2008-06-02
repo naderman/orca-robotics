@@ -16,12 +16,12 @@
 #define ORCAICE_ORCAICE_H
 
 // dependencies
-// #include <orcaobj/orcaobj.h>
 #include <hydroiceutil/hydroiceutil.h>
 #include <hydroutil/hydroutil.h>
 
 // orcaice headers
 #include <orcaice/exceptions.h>
+#include <orcaice/subsystemthread.h>
 #include <orcaice/ptrbuffer.h>
 #include <orcaice/ptrstore.h>
 #include <orcaice/ptrnotify.h>

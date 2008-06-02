@@ -1,5 +1,8 @@
 INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
+ADD_EXECUTABLE( subsystemthreadtest subsystemthreadtest.cpp )
+GBX_ADD_TEST( OrcaIceSubsystemThreadTest subsystemthreadtest )
+
 ADD_EXECUTABLE( ptrbuffertest ptrbuffertest.cpp )
 GBX_ADD_TEST( PtrBufferTest ptrbuffertest )
 

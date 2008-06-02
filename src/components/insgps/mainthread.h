@@ -11,7 +11,7 @@
 #define MAIN_THREAD_H
 
 #include <memory>
-#include <hydroiceutil/hydroiceutil.h>
+#include <orcaice/subsystemthread.h>
 #include <orcaice/context.h>
 // remote interfaces
 #include <orcaifaceimpl/insImpl.h>
@@ -23,7 +23,7 @@ namespace insgps {
 //
 // @brief the main executing loop of this insgps component.
 //
-class MainThread : public gbxsickacfr::gbxiceutilacfr::SubsystemThread
+class MainThread : public orcaice::SubsystemThread
 {
 
 public:

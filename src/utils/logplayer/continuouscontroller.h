@@ -1,7 +1,7 @@
 #ifndef LOGPLAYER_CONTINUOUSCONTROLLER_H
 #define LOGPLAYER_CONTINUOUSCONTROLLER_H
 
-#include <gbxsickacfr/gbxiceutilacfr/subsystemthread.h>
+#include <orcaice/subsystemthread.h>
 #include "replayconductor.h"
 
 namespace logplayer {
@@ -9,7 +9,7 @@ namespace logplayer {
 //
 // @author Alex Brooks
 //
-class ContinuousController : public gbxsickacfr::gbxiceutilacfr::SubsystemThread
+class ContinuousController : public orcaice::SubsystemThread
 {
 
 public: 

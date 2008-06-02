@@ -11,7 +11,7 @@
 #ifndef ORCA_WIFI_MAINTHREAD_H
 #define ORCA_WIFI_MAINTHREAD_H
 
-#include <gbxsickacfr/gbxiceutilacfr/subsystemthread.h>
+#include <orcaice/subsystemthread.h>
 #include <orcaifaceimpl/wifiImpl.h>
 
 namespace wifi
@@ -19,7 +19,7 @@ namespace wifi
     
 class WifiDriver;
 
-class MainThread : public gbxsickacfr::gbxiceutilacfr::SubsystemThread
+class MainThread : public orcaice::SubsystemThread
 {
 
 public: 

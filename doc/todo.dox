@@ -99,6 +99,9 @@ the life of the Object Adapter. (alex m)
     setting observers. (alexm)
 - OrcaIce
   - subscribers to component's Status interface get current status on subscription (alex m)
+  - fixed bug which could lead to uncaught exception under certain conditions during component initialization. (alexm)
+  - fixed bug which could lead to unjustified status fault under certain conditions during component shutdown. (alexm)
+  - added function Context::isDeactivating() to check if the component is deactivating.
 - OrcaProbeFactory
   - implementation cleanup using ConsumerImpl (alex m)
 

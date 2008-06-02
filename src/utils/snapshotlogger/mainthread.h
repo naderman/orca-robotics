@@ -11,7 +11,7 @@
 #ifndef MAIN_THREAD_H
 #define MAIN_THREAD_H
 
-#include <gbxsickacfr/gbxiceutilacfr/subsystemthread.h>
+#include <orcaice/subsystemthread.h>
 #include <orcaice/context.h>
 #include <orcalog/orcalog.h>
 #include <hydrodll/dll.h>
@@ -22,7 +22,7 @@
 namespace snapshotlogger
 {
 
-class MainThread: public gbxsickacfr::gbxiceutilacfr::SubsystemThread,
+class MainThread: public orcaice::SubsystemThread,
                   public gbxsickacfr::gbxiceutilacfr::NotifyHandler<bool>
 {    	
 public:

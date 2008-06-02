@@ -11,7 +11,7 @@
 #ifndef TERM_IOSTREAM_USER_H
 #define TERM_IOSTREAM_USER_H
 
-#include <gbxsickacfr/gbxiceutilacfr/subsystemthread.h>
+#include <orcaice/subsystemthread.h>
 #include <orcaice/context.h>
 #include <hydroiceutil/eventqueue.h>
 #include "../user.h"
@@ -20,7 +20,7 @@
 namespace tracermon
 {
 
-class TermIostreamUser : public gbxsickacfr::gbxiceutilacfr::SubsystemThread, public User
+class TermIostreamUser : public orcaice::SubsystemThread, public User
 {
 public:
 

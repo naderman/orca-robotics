@@ -23,7 +23,7 @@ using namespace std;
 using namespace cameraserver;
 
 MainThread::MainThread( const orcaice::Context &context ) :
-    gbxsickacfr::gbxiceutilacfr::SubsystemThread( context.tracer(), context.status(), "MainThread" ),
+    orcaice::SubsystemThread( context.tracer(), context.status(), "MainThread" ),
     config_(1),
     context_(context)
 {

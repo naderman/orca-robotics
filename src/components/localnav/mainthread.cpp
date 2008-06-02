@@ -42,7 +42,7 @@ bool areTimestampsDodgy( const orca::RangeScanner2dDataPtr &rangeData,
 ////////////////////////////////////////////////////////////////////////////////
 
 MainThread::MainThread( const orcaice::Context &context ) 
-    : gbxsickacfr::gbxiceutilacfr::SubsystemThread( context.tracer(), context.status(), "MainThread" ),
+    : orcaice::SubsystemThread( context.tracer(), context.status(), "MainThread" ),
       context_(context)
 {
     subStatus().setMaxHeartbeatInterval( 10.0 );
@@ -381,13 +381,7 @@ MainThread::getInputs( hydronavutil::Velocity &velocity,
         int sensorRet = obsConsumer_->store().getNext( orcaRangeData_, TIMEOUT_MS );
         if ( sensorRet != 0 )
         {
-            bool isCommunicatorDestroyed = false;
-            try {
-                context_.adapter()->getCommunicator();
-            } catch (const Ice::ObjectAdapterDeactivatedException&) {
-                isCommunicatorDestroyed = true;
-            }
-            if ( isStopping() || isCommunicatorDestroyed ) {
+            if ( isStopping() || context_.isDeactivating() ) {
                throw orcaice::ComponentDeactivatingException( ERROR_INFO, "Failed to get inputs because the component is deactivating" );
             }
 
@@ -425,9 +419,6 @@ MainThread::getInputs( hydronavutil::Velocity &velocity,
 void
 MainThread::walk()
 {
-    try
-    {
-
     //
     // ENABLE NETWORK CONNECTIONS
     //
@@ -585,12 +576,6 @@ MainThread::walk()
             // Slow things down in case of persistent error
             sleep(1);
         }
-    }
-
-    }
-    catch ( const orcaice::ComponentDeactivatingException& )
-    {
-       // nothing to worry about
     }
 }
 

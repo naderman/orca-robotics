@@ -15,13 +15,13 @@
 #include <cv.h>
 
 #include <orca/camera.h>
-#include <gbxsickacfr/gbxiceutilacfr/subsystemthread.h>
+#include <orcaice/subsystemthread.h>
 #include <orcaice/context.h>
 
 
 namespace imageviewer{
 
-class MainThread : public gbxsickacfr::gbxiceutilacfr::SubsystemThread
+class MainThread : public orcaice::SubsystemThread
 {
 public:
 

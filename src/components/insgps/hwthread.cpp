@@ -16,7 +16,7 @@ using namespace std;
 using namespace insgps;
 
 HwThread::HwThread( const orcaice::Context &context) :
-    gbxsickacfr::gbxiceutilacfr::SubsystemThread( context.tracer(), context.status(), "HwThread" ),
+    orcaice::SubsystemThread( context.tracer(), context.status(), "HwThread" ),
     dataPipe_(new hydroiceutil::EventQueue),
     context_(context)
 {

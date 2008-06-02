@@ -14,7 +14,7 @@
 #include <orca/localise2d.h>
 #include <orca/rangescanner2d.h>
 #include <orcaice/context.h>
-#include <gbxsickacfr/gbxiceutilacfr/subsystemthread.h>
+#include <orcaice/subsystemthread.h>
 #include <gbxsickacfr/gbxiceutilacfr/store.h>
 #include <orcaifaceimpl/storingconsumers.h>
 #include "speedlimiter.h"
@@ -37,7 +37,7 @@ namespace localnav {
 //
 // @author Alex Brooks
 //
-class MainThread : public gbxsickacfr::gbxiceutilacfr::SubsystemThread
+class MainThread : public orcaice::SubsystemThread
 {
 
 public: 

@@ -12,7 +12,7 @@
 #define SEGWAYRMP_HARDWARE_THREAD_H
 
 #include <memory>
-#include <gbxsickacfr/gbxiceutilacfr/subsystemthread.h>
+#include <orcaice/subsystemthread.h>
 #include <orcaice/context.h>
 #include <hydrointerfaces/segwayrmp.h>
 #include <hydrodll/dynamicload.h>
@@ -30,7 +30,7 @@ namespace segwayrmp {
 //
 // @author Alex Brooks
 //
-class HwThread : public gbxsickacfr::gbxiceutilacfr::SubsystemThread
+class HwThread : public orcaice::SubsystemThread
 {
 
 public: 

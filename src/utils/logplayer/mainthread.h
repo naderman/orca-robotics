@@ -13,7 +13,7 @@
 
 #include <string>
 #include <memory>
-#include <gbxsickacfr/gbxiceutilacfr/subsystemthread.h>
+#include <orcaice/subsystemthread.h>
 #include <orcaice/context.h>
 
 #include <hydrodll/dll.h>
@@ -29,7 +29,7 @@ namespace orcalog
 namespace logplayer
 {
 
-class MainThread: public gbxsickacfr::gbxiceutilacfr::SubsystemThread
+class MainThread: public orcaice::SubsystemThread
 {    	
 public:
     MainThread( const orcaice::Context& context );

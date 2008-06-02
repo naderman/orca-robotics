@@ -251,15 +251,9 @@ MainThread::walk()
             const int timeoutMs = 1000;
             int ret = laserConsumer_->store().getNext( rangeData, timeoutMs );
             if ( ret != 0 ) {
-                bool isCommunicatorDestroyed = false;
-                try {
-                    context_.adapter()->getCommunicator();
-                } catch (const Ice::ObjectAdapterDeactivatedException&) {
-                    isCommunicatorDestroyed = true;
+                if ( isStopping() || context_.isDeactivating() ) {
+                    throw orcaice::ComponentDeactivatingException( ERROR_INFO, "Failed to get inputs because the component is deactivating" );
                 }
-                if ( isStopping() || isCommunicatorDestroyed ) {
-                   break;
-		}
                 stringstream ss;
                 ss << "Timed out (" << timeoutMs << "ms) waiting for laser data.  Reconnecting.";
                 subStatus().fault( ss.str() );

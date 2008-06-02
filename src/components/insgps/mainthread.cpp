@@ -19,7 +19,7 @@ using namespace insgps;
 
 
 MainThread::MainThread( const orcaice::Context &context ) :
-    gbxsickacfr::gbxiceutilacfr::SubsystemThread( context.tracer(), context.status(), "MainThread" ),
+    orcaice::SubsystemThread( context.tracer(), context.status(), "MainThread" ),
     hwThread_(new HwThread(context)),
     context_(context)
 {

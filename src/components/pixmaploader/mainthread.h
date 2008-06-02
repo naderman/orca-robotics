@@ -11,14 +11,14 @@
 #ifndef MAIN_THREAD_H
 #define MAIN_THREAD_H
 
-#include <gbxsickacfr/gbxiceutilacfr/subsystemthread.h>
+#include <orcaice/subsystemthread.h>
 #include <orcaifaceimpl/pixmapImpl.h>
 #include <orcaice/context.h>
 
 namespace pixmaploader
 {
 
-class MainThread : public gbxsickacfr::gbxiceutilacfr::SubsystemThread
+class MainThread : public orcaice::SubsystemThread
 {
 
 public:
