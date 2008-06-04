@@ -147,15 +147,6 @@ MainThread::initHardwareDriver()
     subStatus().setMaxHeartbeatInterval( 10.0 );
 }
 
-void 
-MainThread::reportBogusValues( orca::GpsData &gpsData )
-{
-    context_.tracer().debug("Reporting bogus values with positionType 0", 3);
-    orcaobj::setSane(gpsData);
-    gpsData.positionType = orca::GpsPositionTypeNotAvailable;
-    gpsInterface_->localSetAndSend(gpsData);
-}
-
 void
 MainThread::walk()
 {
@@ -164,7 +155,7 @@ MainThread::walk()
     Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag() + ".Config.";
 
-    bool reportIfNoFix = orcaice::getPropertyAsIntWithDefault( prop, prefix+"ReportIfNoFix", 1 );
+    bool publishWithoutFix = orcaice::getPropertyAsIntWithDefault( prop, prefix+"ReportIfNoFix", 1 );
 
     // These functions catch their exceptions.
     orcaice::activate( context_, this, subsysName() );
@@ -191,24 +182,16 @@ MainThread::walk()
             // convert hydro->orca
             convert( hydroData, orcaData );
 
-            if ( orcaData.positionType == orca::GpsPositionTypeNotAvailable ) {
-                context_.tracer().debug("No GPS fix", 2);
-                // should this be a status warning?
-                if (reportIfNoFix) 
-                    reportBogusValues(orcaData);
-            }
-            else {
-//                 context_.tracer().debug("We have a GPS fix", 2);
-                // Publish gpsData
+            if ( orcaData.positionType != orca::GpsPositionTypeNotAvailable || publishWithoutFix ) 
+            {
                 context_.tracer().debug( orcaobj::toString( orcaData ), 5 );
-                gpsInterface_->localSetAndSend(orcaData);
-            }    
-
+                gpsInterface_->localSetAndSend( orcaData );
+            }
+            else
+            {
+                context_.tracer().debug( "No GPS fix. Not publishing data", 6 );
+            }
             subStatus().ok();
-
-            stringstream ss;
-            ss << "MainThread: Read laser data: " << orcaobj::toString(orcaData);
-            context_.tracer().debug( ss.str(), 5 );
 
             continue;
 

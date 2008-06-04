@@ -45,7 +45,6 @@ private:
     orcaifaceimpl::GpsImplPtr gpsInterface_;
 
     hydrointerfaces::Gps::Config config_;
-    void reportBogusValues( orca::GpsData        &gpsData );
     
     // The library that contains the driver factory (must be declared first so it's destructed last!!!)
     std::auto_ptr<hydrodll::DynamicallyLoadedLibrary> driverLib_;
