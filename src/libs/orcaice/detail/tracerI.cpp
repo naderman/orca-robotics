@@ -196,7 +196,7 @@ TracerI::info( const std::string &message, int level )
     LocalTracer::info( message, level );
 
     if ( config_.verbosity[InfoTrace][ToNetwork] >= level ) {
-		toNetwork( gbxsickacfr::gbxutilacfr::Tracer::InfoTrace, message, level );
+		toNetwork( gbxutilacfr::Tracer::InfoTrace, message, level );
     }
 }
 
@@ -206,7 +206,7 @@ TracerI::warning( const std::string &message, int level )
     LocalTracer::warning( message, level );
 
     if ( config_.verbosity[WarningTrace][ToNetwork] >= level ) {
-        toNetwork( gbxsickacfr::gbxutilacfr::Tracer::WarningTrace, message, level );
+        toNetwork( gbxutilacfr::Tracer::WarningTrace, message, level );
     }
 }
     
@@ -216,7 +216,7 @@ TracerI::error( const std::string &message, int level )
     LocalTracer::error( message, level );
 
     if ( config_.verbosity[ErrorTrace][ToNetwork] >= level ) {
-        toNetwork( gbxsickacfr::gbxutilacfr::Tracer::ErrorTrace, message, level );
+        toNetwork( gbxutilacfr::Tracer::ErrorTrace, message, level );
     }
 }
 
@@ -226,27 +226,27 @@ TracerI::debug( const std::string &message, int level )
     LocalTracer::debug( message, level );
 
     if ( config_.verbosity[DebugTrace][ToNetwork] >= level ) {
-        toNetwork( gbxsickacfr::gbxutilacfr::Tracer::DebugTrace, message, level );
+        toNetwork( gbxutilacfr::Tracer::DebugTrace, message, level );
     }
 }
 
 std::string 
-TracerI::categoryToString( gbxsickacfr::gbxutilacfr::Tracer::TraceType category )
+TracerI::categoryToString( gbxutilacfr::Tracer::TraceType category )
 {
-    if ( category == gbxsickacfr::gbxutilacfr::Tracer::InfoTrace )
+    if ( category == gbxutilacfr::Tracer::InfoTrace )
         return "info";
-    else if ( category == gbxsickacfr::gbxutilacfr::Tracer::WarningTrace )
+    else if ( category == gbxutilacfr::Tracer::WarningTrace )
         return "warning";
-    else if ( category == gbxsickacfr::gbxutilacfr::Tracer::ErrorTrace )
+    else if ( category == gbxutilacfr::Tracer::ErrorTrace )
         return "error";
-    else if ( category == gbxsickacfr::gbxutilacfr::Tracer::DebugTrace )
+    else if ( category == gbxutilacfr::Tracer::DebugTrace )
         return "debug";
     else
         return "other";
 }
 
 void
-TracerI::toNetwork( gbxsickacfr::gbxutilacfr::Tracer::TraceType traceType,
+TracerI::toNetwork( gbxutilacfr::Tracer::TraceType traceType,
                     const std::string& message,
                     int level )
 {
@@ -260,17 +260,17 @@ TracerI::toNetwork( gbxsickacfr::gbxutilacfr::Tracer::TraceType traceType,
     assert( componentTraceSender_ != NULL );
     componentTraceSender_->sendToNetwork( tracerData );
 
-    if ( traceType == gbxsickacfr::gbxutilacfr::Tracer::InfoTrace )
+    if ( traceType == gbxutilacfr::Tracer::InfoTrace )
     {
         assert( platformInfoSender_ != NULL );
         platformInfoSender_->sendToNetwork( tracerData );
     }
-    else if ( traceType == gbxsickacfr::gbxutilacfr::Tracer::WarningTrace )
+    else if ( traceType == gbxutilacfr::Tracer::WarningTrace )
     {
         assert( platformWarningSender_ != NULL );
         platformWarningSender_->sendToNetwork( tracerData );
     }
-    else if ( traceType == gbxsickacfr::gbxutilacfr::Tracer::ErrorTrace )
+    else if ( traceType == gbxutilacfr::Tracer::ErrorTrace )
     {
         assert( platformErrorSender_ != NULL );
         platformErrorSender_->sendToNetwork( tracerData );

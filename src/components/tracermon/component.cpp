@@ -47,23 +47,23 @@ Component::start()
 #ifdef HAVE_TERM_NCURSES_DRIVER        
         context().tracer().info( "Loading terminal ncurses driver");
         TermNcursesUser* user = new TermNcursesUser( context() );
-        usrThread_ = (gbxsickacfr::gbxiceutilacfr::SafeThread*)user;
+        usrThread_ = (gbxiceutilacfr::SafeThread*)user;
         userDriver = (User*)user;
 #else
-        throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, "Can't instantiate driver type 'term-ncurses' because it was not compiled." );
+        throw gbxutilacfr::Exception( ERROR_INFO, "Can't instantiate driver type 'term-ncurses' because it was not compiled." );
 #endif
     }
     else if ( driverName == "term-iostream" ) 
     {
         context().tracer().info( "Loading terminal iostream driver");
         TermIostreamUser* userMainThread = new TermIostreamUser( context() );
-        usrThread_ = (gbxsickacfr::gbxiceutilacfr::SafeThread*)userMainThread;
+        usrThread_ = (gbxiceutilacfr::SafeThread*)userMainThread;
         userDriver = (User*)userMainThread;
     }
     else {
         std::string errorStr = "Unknown driver type." + driverName + " Cannot talk to hardware.";
         context().tracer().error( errorStr);
-        throw gbxsickacfr::gbxutilacfr::HardwareException( ERROR_INFO, errorStr );
+        throw gbxutilacfr::HardwareException( ERROR_INFO, errorStr );
     }
     
     //
@@ -71,7 +71,7 @@ Component::start()
     //
     // the constructor may throw, we'll let the application shut us down
     MainThread* networkMainThread = new MainThread( userDriver, context() );
-    netThread_ = (gbxsickacfr::gbxiceutilacfr::SafeThread*)networkMainThread;
+    netThread_ = (gbxiceutilacfr::SafeThread*)networkMainThread;
     Network* netDriver = (Network*)networkMainThread;
     netThread_->start();
 
@@ -83,7 +83,7 @@ Component::start()
 void
 Component::stop()
 {
-    gbxsickacfr::gbxiceutilacfr::stopAndJoin( netThread_ );
+    gbxiceutilacfr::stopAndJoin( netThread_ );
 
     // userMainThread_ is blocked on user input
     // the only way for it to realize that we want to stop is to give it some keyboard input.
@@ -92,5 +92,5 @@ Component::stop()
 //     tracer().print( "Press any key or shake the joystick to continue." );
 //     tracer().print( "************************************************" );
     
-    gbxsickacfr::gbxiceutilacfr::stopAndJoin( usrThread_ );
+    gbxiceutilacfr::stopAndJoin( usrThread_ );
 }

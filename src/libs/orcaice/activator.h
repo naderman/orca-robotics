@@ -47,7 +47,7 @@ public:
 //!
 //! @author Alex Brooks
 //!
-class Activator : public gbxsickacfr::gbxiceutilacfr::SafeThread
+class Activator : public gbxiceutilacfr::SafeThread
 {
 
 public: 

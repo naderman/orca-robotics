@@ -72,7 +72,7 @@ MainThread::walk()
         {
             orcaobj::loadFromFile( mapFileName, theMap );
         }
-        catch ( const gbxsickacfr::gbxutilacfr::Exception& e )
+        catch ( const gbxutilacfr::Exception& e )
         {   
             // unrecoverable error
             context_.shutdown();
@@ -85,7 +85,7 @@ MainThread::walk()
         context_.shutdown();
 
         std::string s = "Unknown driver type: "+driverName;
-        throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, s );
+        throw gbxutilacfr::Exception( ERROR_INFO, s );
     }
 
     stringstream ssDebug;

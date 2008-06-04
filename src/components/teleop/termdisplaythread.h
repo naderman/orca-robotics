@@ -22,7 +22,7 @@ namespace teleop
 
 class TermDisplayDriver;
 
-class TermDisplayThread : public gbxsickacfr::gbxiceutilacfr::SafeThread, public Display
+class TermDisplayThread : public gbxiceutilacfr::SafeThread, public Display
 {
 public:
 

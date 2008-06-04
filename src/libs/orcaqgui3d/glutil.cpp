@@ -12,7 +12,7 @@
 #include <iostream>
 
 #include <GL/glut.h>
-#include <gbxsickacfr/gbxutilacfr/mathdefs.h>
+#include <gbxutilacfr/mathdefs.h>
 
 using namespace std;
 

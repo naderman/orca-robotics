@@ -23,7 +23,7 @@ namespace pathplanner
 class PathPlanner2dI : public orca::PathPlanner2d
 {
 public:
-    PathPlanner2dI( gbxsickacfr::gbxiceutilacfr::Buffer<orca::PathPlanner2dTask> &pathPlannerTaskStore,
+    PathPlanner2dI( gbxiceutilacfr::Buffer<orca::PathPlanner2dTask> &pathPlannerTaskStore,
                     const orcaice::Context                     &context );
 
     // remote calls
@@ -39,10 +39,10 @@ public:
 
 private:
 
-    gbxsickacfr::gbxiceutilacfr::Buffer<orca::PathPlanner2dTask>& pathPlannerTaskBuffer_;
+    gbxiceutilacfr::Buffer<orca::PathPlanner2dTask>& pathPlannerTaskBuffer_;
 
     // the driver puts the latest computed path into here using localSetData
-    gbxsickacfr::gbxiceutilacfr::Store<orca::PathPlanner2dData> pathPlannerDataStore_;
+    gbxiceutilacfr::Store<orca::PathPlanner2dData> pathPlannerDataStore_;
 
     // The topic to which we'll publish
     IceStorm::TopicPrx topicPrx_;

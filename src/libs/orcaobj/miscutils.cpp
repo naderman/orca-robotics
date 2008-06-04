@@ -14,8 +14,8 @@
 
 #include <orcaobj/stringutils.h>
 
-#include <gbxsickacfr/gbxutilacfr/exceptions.h>
-#include <gbxsickacfr/gbxutilacfr/mathdefs.h>
+#include <gbxutilacfr/exceptions.h>
+#include <gbxutilacfr/mathdefs.h>
 #include "miscutils.h"
 #include <fstream>
 
@@ -68,7 +68,7 @@ mlHypothesis( const orca::Localise2dData& obj )
     {
         std::stringstream ss;
         ss << "Dodgy Localise2dDataPtr: " << orcaobj::toString(obj);
-        throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, ss.str() );
+        throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
     }
 #endif
     return obj.hypotheses[mlI];
@@ -92,7 +92,7 @@ mlHypothesis( const orca::Localise3dData& obj )
     {
         std::stringstream ss;
         ss << "Dodgy Localise3dDataPtr: " << orcaobj::toString(obj);
-        throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, ss.str() );
+        throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
     }
 #endif
     return obj.hypotheses[mlI];
@@ -205,7 +205,7 @@ saveToFile( const orca::FeatureMap2dData& fmap, FILE *f )
         {
             stringstream ss;
             ss << "Don't know how to save feature to file: " << orcaobj::toString( *feature );
-            throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, ss.str() );
+            throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
         }
     }
 }
@@ -219,7 +219,7 @@ loadFromFile( const std::string &filename, orca::FeatureMap2dData &fmap )
     {
         std::stringstream ss;
         ss << "Failed to open file: "<<filename;
-        throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, ss.str() );
+        throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
     }
 
     const int bufSize=10000;
@@ -269,14 +269,14 @@ loadFromFile( const std::string &filename, orca::FeatureMap2dData &fmap )
                 std::stringstream ss;
                 ss << "Malformed featuremap file!  Couldn't understand line " << line <<":"<<endl<<buf;
                 f.close();
-                throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, ss.str() );
+                throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
             }
             if ( !isSane( *feature ) )
             {
                 stringstream ss;
                 ss << "Badly-formed feature: " << orcaobj::toString(*feature);
                 f.close();
-                throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, ss.str() );                
+                throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );                
             }
 
             fmap.features.push_back( feature );
@@ -305,14 +305,14 @@ loadFromFile( const std::string &filename, orca::FeatureMap2dData &fmap )
                 std::stringstream ss;
                 ss << "Malformed featuremap file!  Couldn't understand line " << line <<":"<<endl<<buf;
                 f.close();
-                throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, ss.str() );
+                throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
             }
             if ( !isSane( *feature ) )
             {
                 stringstream ss;
                 ss << "Badly-formed feature: " << orcaobj::toString(*feature);
                 f.close();
-                throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, ss.str() );                
+                throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );                
             }
 
             fmap.features.push_back( feature );
@@ -344,7 +344,7 @@ loadFromFile( const std::string &filename, orca::FeatureMap2dData &fmap )
                 std::stringstream ss;
                 ss << "Malformed featuremap file!  Couldn't understand line " << line <<":"<<endl<<buf;
                 f.close();
-                throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, ss.str() );
+                throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
             }
             feature->startSighted = ss;
             feature->endSighted = es;
@@ -354,7 +354,7 @@ loadFromFile( const std::string &filename, orca::FeatureMap2dData &fmap )
                 stringstream ss;
                 ss << "Badly-formed feature: " << orcaobj::toString(*feature);
                 f.close();
-                throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, ss.str() );                
+                throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );                
             }
 
             fmap.features.push_back( feature );
@@ -364,7 +364,7 @@ loadFromFile( const std::string &filename, orca::FeatureMap2dData &fmap )
         {
             stringstream ss;
             ss<<"loadFromFile: don't know how to load with geom type " << geomType << endl;
-            throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, ss.str() );
+            throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
         }
         }
         line++;

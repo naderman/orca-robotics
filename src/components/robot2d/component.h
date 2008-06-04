@@ -27,9 +27,9 @@ public:
 
 private:
     // loop responsible for interaction with the network
-    gbxsickacfr::gbxiceutilacfr::ThreadPtr NetThread_;
+    gbxiceutilacfr::ThreadPtr NetThread_;
     // loop responsible for interaction with local hardware
-    gbxsickacfr::gbxiceutilacfr::ThreadPtr HwThread_;
+    gbxiceutilacfr::ThreadPtr HwThread_;
 };
 
 } // namespace

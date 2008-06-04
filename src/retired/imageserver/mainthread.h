@@ -24,7 +24,7 @@ namespace imageserver {
 //
 // Note: this thing self-destructs when run() returns.
 //
-class MainThread : public gbxsickacfr::gbxiceutilacfr::SafeThread
+class MainThread : public gbxiceutilacfr::SafeThread
 {
 
 public:

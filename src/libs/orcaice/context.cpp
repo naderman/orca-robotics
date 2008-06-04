@@ -10,7 +10,7 @@
 
 #include "context.h"
 #include "component.h"
-#include <gbxsickacfr/gbxutilacfr/exceptions.h>
+#include <gbxutilacfr/exceptions.h>
 
 namespace orcaice {
 
@@ -41,7 +41,7 @@ void
 Context::activate()
 {
     if ( !component_ )
-        throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, "Trying to activate component before context initializition." );
+        throw gbxutilacfr::Exception( ERROR_INFO, "Trying to activate component before context initializition." );
 
     component_->activate();
 }
@@ -50,7 +50,7 @@ void
 Context::shutdown()
 {
     if ( !communicator_ )
-        throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, "Trying to shutdown component before context initializition." );
+        throw gbxutilacfr::Exception( ERROR_INFO, "Trying to shutdown component before context initializition." );
 
     if ( isApplication() ) {
         tracer().info( "Triggering component shutdown ...");

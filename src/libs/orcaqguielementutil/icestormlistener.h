@@ -60,7 +60,7 @@ public:
             // do not delete consumer_, it's deleted when the smart pointers fall out of scope.
         }
 
-    gbxsickacfr::gbxiceutilacfr::Buffer<DataType> &buffer() { return consumer_->buffer_; }
+    gbxiceutilacfr::Buffer<DataType> &buffer() { return consumer_->buffer_; }
 
     // Returns zero on success
     int connect()

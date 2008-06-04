@@ -73,9 +73,9 @@ private:
     orcarobotdriverutil::StateMachine stateMachine_;
 
     // Stores the data most recently received from the hardware
-    gbxsickacfr::gbxiceutilacfr::Store<hydrointerfaces::SegwayRmp::Data>    dataStore_;
+    gbxiceutilacfr::Store<hydrointerfaces::SegwayRmp::Data>    dataStore_;
     // Stores incoming commands
-    gbxsickacfr::gbxiceutilacfr::Store<hydrointerfaces::SegwayRmp::Command> commandStore_;
+    gbxiceutilacfr::Store<hydrointerfaces::SegwayRmp::Command> commandStore_;
 
     bool isMotionEnabled_;
     bool driveInReverse_;
@@ -83,7 +83,7 @@ private:
     std::auto_ptr<EStop> eStop_;
 
     // Looks for late writes (which will cause timeouts in the segway)
-    gbxsickacfr::gbxiceutilacfr::Timer writeTimer_;
+    gbxiceutilacfr::Timer writeTimer_;
 
     // The library that contains the driver factory (must be declared first so it's destructed last!!!)
     std::auto_ptr<hydrodll::DynamicallyLoadedLibrary> driverLib_;

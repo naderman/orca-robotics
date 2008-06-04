@@ -13,7 +13,7 @@
 #include <QPainter>
 #include <orcaobj/orcaobj.h>
 #include <orcaice/orcaice.h>
-#include <gbxsickacfr/gbxutilacfr/mathdefs.h>
+#include <gbxutilacfr/mathdefs.h>
 #include <hydroqgui/hydroqgui.h>
 #include "localise2dpainter.h"
 

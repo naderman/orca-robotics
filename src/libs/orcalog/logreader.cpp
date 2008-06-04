@@ -96,7 +96,7 @@ LogReader::setLogIndex( int index )
         {
             stringstream ss;
             ss << "Failed to find crumb in past.  index="<<index<<", logIndex_="<<logIndex_;
-            throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, ss.str() );
+            throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
         }
         file_->seekg( crumbPos );
     }

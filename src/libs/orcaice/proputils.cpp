@@ -12,7 +12,7 @@
 #include <stdlib.h>             // for getenv()
     
 #include <hydroutil/stringutils.h>    // for toStringSeq(), toIntVector(), and toDoubleVector()
-#include <gbxsickacfr/gbxutilacfr/mathdefs.h>           // for DEG2RAD_RATIO
+#include <gbxutilacfr/mathdefs.h>           // for DEG2RAD_RATIO
 
 #include "proputils.h"
 #include "configutils.h"
@@ -54,7 +54,7 @@ getGlobalConfigFilename( const Ice::PropertiesPtr &props )
     // Linux and friends
     char *home = getenv("HOME");
     if ( home == NULL ) {
-        throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, "Environment variable 'HOME' not set, while trying to load .orcarc" );
+        throw gbxutilacfr::Exception( ERROR_INFO, "Environment variable 'HOME' not set, while trying to load .orcarc" );
     }
     
     // start with the home directory
@@ -74,7 +74,7 @@ getApplicationConfigFilename( const Ice::StringSeq & args )
     if ( args.empty() ) {
         return std::string( "" );
         // throwing this exception leads to 'unhandled ex' in windows for some reason
-        //throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, "Invalid command line options, cannot determine config file name" );
+        //throw gbxutilacfr::Exception( ERROR_INFO, "Invalid command line options, cannot determine config file name" );
     }
 
     // first look for Orca.Config parameter
@@ -137,7 +137,7 @@ std::string
 getServiceConfigFilename( const Ice::StringSeq & args )
 {
     if ( args.empty() ) {
-        throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, "Invalid command line options, cannot determine config file name" );
+        throw gbxutilacfr::Exception( ERROR_INFO, "Invalid command line options, cannot determine config file name" );
     }
 
     // first look for Orca.Config parameter (specified by us manually)
@@ -208,13 +208,13 @@ getPropertyAsDouble( const Ice::PropertiesPtr & prop, const ::std::string& key, 
         double d;
         ss >> d;
         if ( !ss )
-            throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, "Failed to parse '"+stringVal+"' to a double" );
+            throw gbxutilacfr::Exception( ERROR_INFO, "Failed to parse '"+stringVal+"' to a double" );
 
         // check that there's nothing left (except white space)
         char test = 'a'; // set this char to something something valgrind doesn't complain
         ss >> test;
         if ( test!='#' && !ss.eof() )
-            throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, "Failed to parse '"+stringVal+"' to an double" );
+            throw gbxutilacfr::Exception( ERROR_INFO, "Failed to parse '"+stringVal+"' to an double" );
 
         value = d;
     }
@@ -250,13 +250,13 @@ getPropertyAsInt( const Ice::PropertiesPtr & prop, const ::std::string& key, int
         int i;
         ss >> i;
         if ( !ss )
-            throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, "Failed to parse '"+stringVal+"' to an int" );
+            throw gbxutilacfr::Exception( ERROR_INFO, "Failed to parse '"+stringVal+"' to an int" );
 
         // check that there's nothing left (except white space)
         char test = 'a'; // set this char to something something valgrind doesn't complain
         ss >> test;
         if ( test!='#' && !ss.eof() )
-            throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, "Failed to parse '"+stringVal+"' to an int" );
+            throw gbxutilacfr::Exception( ERROR_INFO, "Failed to parse '"+stringVal+"' to an int" );
 
         value = i;
     }
@@ -283,7 +283,7 @@ getPropertyAsIntVector( const Ice::PropertiesPtr & prop, const ::std::string& ke
         return -1;
     else
         if ( hydroutil::toIntVector( stringVal, value ) )
-            throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, "Failed to parse '"+stringVal+"' to a vector of ints" );
+            throw gbxutilacfr::Exception( ERROR_INFO, "Failed to parse '"+stringVal+"' to a vector of ints" );
 
     return 0;
 }
@@ -318,7 +318,7 @@ getPropertyAsDoubleVector( const Ice::PropertiesPtr & prop, const ::std::string&
         return -1;
     else
         if ( hydroutil::toDoubleVector( stringVal, value ) )
-            throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, "Failed to parse '"+stringVal+"' to a vector of doubles" );
+            throw gbxutilacfr::Exception( ERROR_INFO, "Failed to parse '"+stringVal+"' to a vector of doubles" );
  
     return 0;
 }

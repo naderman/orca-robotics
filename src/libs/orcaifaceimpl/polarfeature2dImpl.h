@@ -20,7 +20,7 @@
 #include <gbxsickacfr/gbxiceutilacfr/store.h>
 #include <orcaice/context.h>
 
-namespace gbxsickacfr { namespace gbxiceutilacfr { class Thread; } }
+namespace gbxiceutilacfr { class Thread; }
 
 namespace orcaifaceimpl {
 
@@ -45,12 +45,12 @@ public:
     //
     // Local calls:
     //
-    //! may throw gbxsickacfr::gbxutilacfr::Exceptions
+    //! may throw gbxutilacfr::Exceptions
     void initInterface();
 
     //! Sets up interface and connects to IceStorm. Catches all exceptions and retries
     //! until sucessful. At every iteration, checks if the thread was stopped.
-    void initInterface( gbxsickacfr::gbxiceutilacfr::Thread* thread, const std::string& subsysName="", int retryInterval=2 );
+    void initInterface( gbxiceutilacfr::Thread* thread, const std::string& subsysName="", int retryInterval=2 );
 
     //! A local call which sets the data reported by the interface
     void localSet( const orca::PolarFeature2dData &data );
@@ -67,7 +67,7 @@ private:
     void internalUnsubscribe(const ::orca::PolarFeature2dConsumerPrx&);
 
     // Holds the latest data
-    gbxsickacfr::gbxiceutilacfr::Store<orca::PolarFeature2dData> dataStore_;
+    gbxiceutilacfr::Store<orca::PolarFeature2dData> dataStore_;
 
     orca::PolarFeature2dDescription descr_;
 

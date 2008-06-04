@@ -21,7 +21,7 @@ namespace orcaicegrid
 {
 
 //! This exception is raised when the session is not connected.
-class SessionNotConnectedException : public gbxsickacfr::gbxutilacfr::Exception
+class SessionNotConnectedException : public gbxutilacfr::Exception
 {
 public:
     SessionNotConnectedException(const char *file, const char *line, const char *message)
@@ -35,7 +35,7 @@ public:
 //!
 //! @author Alex Brooks
 //!
-class IceGridSession : public gbxsickacfr::gbxiceutilacfr::SafeThread
+class IceGridSession : public gbxiceutilacfr::SafeThread
 {
 public:
     //! Constructor.
@@ -102,7 +102,7 @@ protected:
 
 private:
 
-    gbxsickacfr::gbxiceutilacfr::Store<SessionState> stateStore_;
+    gbxiceutilacfr::Store<SessionState> stateStore_;
     int timeoutSec_;
     IceUtil::Time lastKeepaliveTime_;
 

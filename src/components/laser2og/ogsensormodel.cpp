@@ -9,7 +9,7 @@
  */
 
 #include <iostream>
-#include <gbxsickacfr/gbxutilacfr/mathdefs.h>
+#include <gbxutilacfr/mathdefs.h>
 
 #include "ogsensormodel.h"
 

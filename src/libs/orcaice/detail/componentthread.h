@@ -12,7 +12,7 @@
 #define ORCAICE_COMPONENT_THREAD_H
 
 #include <gbxsickacfr/gbxiceutilacfr/safethread.h>
-#include <gbxsickacfr/gbxutilacfr/status.h>
+#include <gbxutilacfr/status.h>
 #include <orcaice/context.h>
 #include <orcaice/component.h>
 
@@ -25,13 +25,13 @@ namespace orcaice {
 //
 // @author Alex Brooks
 //
-class ComponentThread : public gbxsickacfr::gbxiceutilacfr::SafeThread
+class ComponentThread : public gbxiceutilacfr::SafeThread
 {
 
 public: 
 
     ComponentThread( const Ice::ObjectPrx   &homePrx,
-                     gbxsickacfr::gbxutilacfr::Status    &status,
+                     gbxutilacfr::Status    &status,
                      ComponentInterfaceFlag  interfaceFlag,
                      const orcaice::Context &context );
     ~ComponentThread();
@@ -46,7 +46,7 @@ private:
     bool registeredHome_;
 
     Ice::ObjectPrx          homePrx_;
-    gbxsickacfr::gbxutilacfr::Status    &status_;
+    gbxutilacfr::Status    &status_;
     ComponentInterfaceFlag  interfaceFlag_;
     orcaice::Context        context_;
 };

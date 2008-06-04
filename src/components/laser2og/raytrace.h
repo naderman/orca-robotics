@@ -14,7 +14,7 @@
 
 #include <vector>
 #include <orca/bros1.h>
-#include <gbxsickacfr/gbxutilacfr/mathdefs.h>
+#include <gbxutilacfr/mathdefs.h>
 #include <hydroogmap/hydroogmap.h>
 #include <hydropathplan/hydropathplan.h>
 

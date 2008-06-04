@@ -29,7 +29,7 @@ HwThread::HwThread( const orcaice::Context &context) :
     if ( !config_.isValid() ) {
         context_.tracer().error( "Failed to validate insgps configuration. "+config_.toString() );
         // this will kill this component
-        throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, "Failed to validate insgps configuration" );
+        throw gbxutilacfr::Exception( ERROR_INFO, "Failed to validate insgps configuration" );
     }
 }
 

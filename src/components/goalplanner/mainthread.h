@@ -87,9 +87,9 @@ private:
     // ========== provided pathfollower interface (incoming paths) ===============
     PathFollower2dI* incomingPathI_;
     
-    gbxsickacfr::gbxiceutilacfr::Store<orca::PathFollower2dData> incomingPathStore_;
+    gbxiceutilacfr::Store<orca::PathFollower2dData> incomingPathStore_;
     
-    gbxsickacfr::gbxiceutilacfr::Store<bool> activationStore_;
+    gbxiceutilacfr::Store<bool> activationStore_;
     // ===========================================================================
 
     hydroogmap::OgMap ogMap_;

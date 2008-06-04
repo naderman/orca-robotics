@@ -41,12 +41,12 @@ public:
 private: 
 
 //     orca::Time lastHeartbeatTime_;
-    gbxsickacfr::gbxiceutilacfr::Timer timer_;
+    gbxiceutilacfr::Timer timer_;
 
     double secBetweenHeartbeats_;
     double urgencyDivider_;
 
-    gbxsickacfr::gbxutilacfr::Tracer& tracer_;
+    gbxutilacfr::Tracer& tracer_;
 };
 
 }

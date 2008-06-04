@@ -31,7 +31,7 @@ MainThread::MainThread( const orcaice::Context &context ) :
 
 MainThread::~MainThread()
 {
-    gbxsickacfr::gbxiceutilacfr::stopAndJoin( iceGridSession_ );
+    gbxiceutilacfr::stopAndJoin( iceGridSession_ );
 }
 
 void

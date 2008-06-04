@@ -67,8 +67,8 @@ void
 Component::stop()
 {
     context().tracer().debug( "stopping component", 2 );
-    gbxsickacfr::gbxiceutilacfr::stopAndJoin( NetThread_ );
+    gbxiceutilacfr::stopAndJoin( NetThread_ );
     context().tracer().info( "stopped net handler", 2 );
-    gbxsickacfr::gbxiceutilacfr::stopAndJoin( HwThread_ );
+    gbxiceutilacfr::stopAndJoin( HwThread_ );
     context().tracer().info( "stopped hw handler", 2 );
 }

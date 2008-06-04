@@ -50,8 +50,8 @@ private:
 
     void readReplayParams( IceUtil::Time &beginTime, double &replayRate, bool &autoStart );
 
-    gbxsickacfr::gbxiceutilacfr::ThreadPtr       replayConductor_;
-    gbxsickacfr::gbxiceutilacfr::ThreadPtr       highLevelController_;
+    gbxiceutilacfr::ThreadPtr       replayConductor_;
+    gbxiceutilacfr::ThreadPtr       highLevelController_;
 
     std::auto_ptr<orcalog::MasterFileReader> masterFileReader_;
 

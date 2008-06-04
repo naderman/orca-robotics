@@ -169,7 +169,7 @@ MainThread::initPathFollowerInterface()
             pathFollowerInterface_->initInterface();
             return;
         }
-        catch ( gbxsickacfr::gbxutilacfr::Exception &e )
+        catch ( gbxutilacfr::Exception &e )
         {
             stringstream ss;
             ss << "MainThread: Failed to initialise PathFollower interface: " << e.what();
@@ -387,7 +387,7 @@ MainThread::getInputs( hydronavutil::Velocity &velocity,
 
             stringstream ss;
             ss << "Timeout waiting for range data: no data for " << TIMEOUT_MS << "ms.";
-            throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, ss.str() );
+            throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
         }
         locConsumer_->store().get( orcaLocaliseData_ );
         odomConsumer_->store().get( orcaOdomData_ );
@@ -478,13 +478,13 @@ MainThread::walk()
             {
                 stringstream ss;
                 ss << "While getting command from driver with inputs: " << orcalocalnav::toString(inputs) << " --> " << e;
-                throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, ss.str() );
+                throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
             }
             catch ( std::exception &e )
             {
                 stringstream ss;
                 ss << "While getting command from driver with inputs: " << orcalocalnav::toString(inputs) << " --> " << e.what();
-                throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, ss.str() );
+                throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
             }
             
 

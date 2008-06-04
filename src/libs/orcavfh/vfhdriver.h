@@ -90,7 +90,7 @@ private:
     float stallRatio_;
 
     // Timing for escapes
-    gbxsickacfr::gbxiceutilacfr::Timer             escapeTimer_;
+    gbxiceutilacfr::Timer             escapeTimer_;
     static const double        escapeTimeMs_ = 1000.0;
 
     // Current state of the algorithm

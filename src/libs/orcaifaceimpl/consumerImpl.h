@@ -46,7 +46,7 @@ public:
     //! If succesful, tries to subscribe for data using the internal consumer interface.
     //! Catches appropriate exceptions. DOCUMENT!
     virtual void subscribeWithString( const std::string& proxyString, 
-                          gbxsickacfr::gbxiceutilacfr::Thread*  thread, const std::string& subsysName="", 
+                          gbxiceutilacfr::Thread*  thread, const std::string& subsysName="", 
                           int retryInterval=2, int retryNumber=-1 )=0;
 
     //! Same as subscribeWithString() but the interface is looked up using the config file and tag interfaceTag.
@@ -58,7 +58,7 @@ public:
     //! Same as the threaded version of subscribeWithString() but the interface is looked up 
     //! using the config file and tag interfaceTag.
     void subscribeWithTag( const std::string& interfaceTag, 
-                          gbxsickacfr::gbxiceutilacfr::Thread*  thread, const std::string& subsysName="", 
+                          gbxiceutilacfr::Thread*  thread, const std::string& subsysName="", 
                           int retryInterval=2, int retryNumber=-1 );
 
 protected:
@@ -151,7 +151,7 @@ public:
     }
 
     virtual void subscribeWithString( const std::string& proxyString, 
-                          gbxsickacfr::gbxiceutilacfr::Thread*  thread, const std::string& subsysName="", 
+                          gbxiceutilacfr::Thread*  thread, const std::string& subsysName="", 
                           int retryInterval=2, int retryNumber=-1 )
     {
         ProviderPrxType providerPrx;

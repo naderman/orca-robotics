@@ -9,7 +9,7 @@
  */
  
 #include <iostream>
-#include <gbxsickacfr/gbxutilacfr/mathdefs.h>
+#include <gbxutilacfr/mathdefs.h>
 #include <hydroqguielementutil/paintutils.h>
 
 #include "odometry2dpainter.h"

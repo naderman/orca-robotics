@@ -185,7 +185,7 @@ MainThread::loadPluginLibraries( const std::string & factoryLibNames )
 
     if ( logFactories_.empty() ) {
         context_.shutdown();
-        throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, "No log factories were loaded." );
+        throw gbxutilacfr::Exception( ERROR_INFO, "No log factories were loaded." );
     }
 }
 
@@ -206,11 +206,11 @@ MainThread::createLogger( const std::string &interfaceType )
         }
         else {
             context_.shutdown();
-            throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, "Error when creating logger for supported interface type " + interfaceType );
+            throw gbxutilacfr::Exception( ERROR_INFO, "Error when creating logger for supported interface type " + interfaceType );
         }
     }
 
     // none of the factories support this type
     context_.shutdown();
-    throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, "Unsupported interface type " + interfaceType );
+    throw gbxutilacfr::Exception( ERROR_INFO, "Unsupported interface type " + interfaceType );
 }

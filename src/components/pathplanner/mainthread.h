@@ -43,7 +43,7 @@ private:
     hydroogmap::OgMap ogMap_;
 
     PathPlanner2dI* pathPlannerI_;
-    gbxsickacfr::gbxiceutilacfr::Buffer<orca::PathPlanner2dTask> pathPlannerTaskBuffer_;
+    gbxiceutilacfr::Buffer<orca::PathPlanner2dTask> pathPlannerTaskBuffer_;
     
     void initNetwork();
     void initDriver();

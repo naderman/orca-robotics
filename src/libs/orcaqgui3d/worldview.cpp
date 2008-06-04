@@ -21,7 +21,7 @@
 #include <QDialog>
 #include <QToolTip>
 
-#include <gbxsickacfr/gbxutilacfr/mathdefs.h>
+#include <gbxutilacfr/mathdefs.h>
 #include <orcaqgui/guielementmodel.h>
 #include <orcaqgui/mainwin.h>
 #include <orcaqgui/ipermanentelement.h>

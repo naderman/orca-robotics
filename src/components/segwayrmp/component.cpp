@@ -75,9 +75,9 @@ Component::start()
     orca::VehicleControlVelocityDifferentialDescription *controlDescr =
         dynamic_cast<orca::VehicleControlVelocityDifferentialDescription*>(&(*(descr.control)));
     if ( controlDescr == NULL )
-        throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, "Can only deal with differential drive vehicles." );
+        throw gbxutilacfr::Exception( ERROR_INFO, "Can only deal with differential drive vehicles." );
     if ( controlDescr->maxForwardSpeed != controlDescr->maxReverseSpeed ) 
-        throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, "Can't handle max forward speed != max reverse speed." );
+        throw gbxutilacfr::Exception( ERROR_INFO, "Can't handle max forward speed != max reverse speed." );
 
     //
     // Hardware handling loop
@@ -116,9 +116,9 @@ void
 Component::stop()
 {
     context().tracer().debug( "stopping component", 2 );
-    gbxsickacfr::gbxiceutilacfr::stopAndJoin( netThread_ );
+    gbxiceutilacfr::stopAndJoin( netThread_ );
     context().tracer().info( "stopped net handler", 2 );
-    gbxsickacfr::gbxiceutilacfr::stopAndJoin( hwThread_ );
+    gbxiceutilacfr::stopAndJoin( hwThread_ );
     context().tracer().info( "stopped hw handler", 2 );
 
     // give MainThread a chance to write something to history

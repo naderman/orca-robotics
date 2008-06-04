@@ -100,7 +100,7 @@ IceGridManager::performOp( Operation &op, int timeoutMs )
     // minimize critical section in order to be able to perform multiple operations
     // simultaneously
     IceGrid::AdminPrx iceGridAdmin;
-    gbxsickacfr::gbxutilacfr::Tracer* tracer;
+    gbxutilacfr::Tracer* tracer;
     {
         IceUtil::Mutex::Lock lock(adminMutex_);
 
@@ -122,7 +122,7 @@ IceGridManager::performOp( Operation &op, int timeoutMs )
     // end of critical section
 
     stringstream exceptionSS;
-    gbxsickacfr::gbxiceutilacfr::Timer timer;
+    gbxiceutilacfr::Timer timer;
     try {
         stringstream debugSS;
         debugSS<<"IceGridManager: performing "<<op.toString()<<" with timeout="<<timeoutMs<<"ms";
@@ -157,7 +157,7 @@ IceGridManager::performOp( Operation &op, int timeoutMs )
 //     }
 //     tryCreateSession();
 
-    throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, exceptionSS.str() );    
+    throw gbxutilacfr::Exception( ERROR_INFO, exceptionSS.str() );    
 }
 
 

@@ -57,7 +57,7 @@ ProgressMonitor::followingPath() const
     {
         stringstream ss;
         ss << "Bad wpIndex_: " << wpIndex_ << " for path: " << orcaobj::toString(pathData_);
-        throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, ss.str() );
+        throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
     }    
 
     return true;

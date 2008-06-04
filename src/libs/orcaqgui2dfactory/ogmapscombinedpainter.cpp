@@ -27,7 +27,7 @@ OgMapsCombinedPainter::OgMapsCombinedPainter( const orcaice::Context &context )
     {
         stringstream ss;
         ss << "OgMapsCombinedPainter: Lookup table file not found.  Tried to find: " << lookupTableFile.toStdString();
-        throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, ss.str() );
+        throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
     }
     pixmapPainter_.reset( new PixmapPainter() );
 }

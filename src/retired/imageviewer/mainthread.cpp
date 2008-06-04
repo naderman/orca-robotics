@@ -88,7 +88,7 @@ MainThread::walk()
     // Subscribe for data
     //
     orcaifaceimpl::BufferedImageConsumerImplPtr imageInterface =
-        new orcaifaceimpl::BufferedImageConsumerImpl( 10, gbxsickacfr::gbxiceutilacfr::BufferTypeCircular, context_);
+        new orcaifaceimpl::BufferedImageConsumerImpl( 10, gbxiceutilacfr::BufferTypeCircular, context_);
     // multi-try function
     imageInterface->subscribeWithTag( "Image", this, subsysName() );
     

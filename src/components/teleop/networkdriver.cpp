@@ -10,7 +10,7 @@
 
 #include "networkdriver.h"
 
-#include <gbxsickacfr/gbxutilacfr/mathdefs.h>
+#include <gbxutilacfr/mathdefs.h>
 
 using namespace teleop;
 

@@ -12,9 +12,9 @@
 #define ORCAICE_SUBSYSTEM_THREAD_H
 
 #include <gbxsickacfr/gbxiceutilacfr/thread.h>
-#include <gbxsickacfr/gbxutilacfr/substatus.h>
-#include <gbxsickacfr/gbxutilacfr/status.h>
-#include <gbxsickacfr/gbxutilacfr/tracer.h>
+#include <gbxutilacfr/substatus.h>
+#include <gbxutilacfr/status.h>
+#include <gbxutilacfr/tracer.h>
 
 namespace orcaice {
 
@@ -41,12 +41,12 @@ void MyThread::walk()
 @endverbatim
 
  */
-class SubsystemThread : public gbxsickacfr::gbxiceutilacfr::Thread
+class SubsystemThread : public gbxiceutilacfr::Thread
 {
 public:
     //! Supply an optional Tracer and Status. The optional @c subsysName is used in reporting status changes
     //! as the subsystem name.
-    SubsystemThread( gbxsickacfr::gbxutilacfr::Tracer& tracer, gbxsickacfr::gbxutilacfr::Status& status, const std::string& subsysName="SubsystemThread" );
+    SubsystemThread( gbxutilacfr::Tracer& tracer, gbxutilacfr::Status& status, const std::string& subsysName="SubsystemThread" );
 
     // from IceUtil::Thread
     //! This implementation calls walk(), catches all possible exceptions, prints out 
@@ -58,14 +58,14 @@ public:
     virtual void walk()=0;
 
     //! Access to subsystem status.
-    gbxsickacfr::gbxutilacfr::SubStatus& subStatus() { return subStatus_; };
+    gbxutilacfr::SubStatus& subStatus() { return subStatus_; };
 
     //! Returns subsystem name assigned to this thread.
     std::string subsysName() const { return subStatus_.name(); };
 
 private:
-    gbxsickacfr::gbxutilacfr::Tracer& tracer_;
-    gbxsickacfr::gbxutilacfr::SubStatus subStatus_;
+    gbxutilacfr::Tracer& tracer_;
+    gbxutilacfr::SubStatus subStatus_;
 };
 //! A smart pointer to the SubsystemThread class.
 typedef IceUtil::Handle<SubsystemThread> SubsystemThreadPtr;

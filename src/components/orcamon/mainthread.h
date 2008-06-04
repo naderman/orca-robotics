@@ -17,7 +17,7 @@
 namespace orcamon
 {
 
-class MainThread : public gbxsickacfr::gbxiceutilacfr::SafeThread
+class MainThread : public gbxiceutilacfr::SafeThread
 {
 
 public:

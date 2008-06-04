@@ -32,8 +32,8 @@ public:
 
 private:
 
-    gbxsickacfr::gbxiceutilacfr::Timer randomTimer_;
-    gbxsickacfr::gbxiceutilacfr::Timer avoidTimer_;
+    gbxiceutilacfr::Timer randomTimer_;
+    gbxiceutilacfr::Timer avoidTimer_;
 
     // state machine
     int avoidDirection_;

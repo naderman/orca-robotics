@@ -27,8 +27,8 @@ namespace goalplanner {
 class PathFollower2dI : public orca::PathFollower2d
 {
 public:
-    PathFollower2dI( gbxsickacfr::gbxiceutilacfr::Store<orca::PathFollower2dData> &pathPipe,
-                     gbxsickacfr::gbxiceutilacfr::Store<bool> &activationPipe,
+    PathFollower2dI( gbxiceutilacfr::Store<orca::PathFollower2dData> &pathPipe,
+                     gbxiceutilacfr::Store<bool> &activationPipe,
                      orca::PathFollower2dPrx localNavPrx );
 
     // remote calls:
@@ -62,10 +62,10 @@ public:
 private:
 
     // New paths from the outside world go in here
-    gbxsickacfr::gbxiceutilacfr::Store<orca::PathFollower2dData> &pathPipe_;
+    gbxiceutilacfr::Store<orca::PathFollower2dData> &pathPipe_;
     
     // Are we activated?
-    gbxsickacfr::gbxiceutilacfr::Store<bool> &activationPipe_;
+    gbxiceutilacfr::Store<bool> &activationPipe_;
     
     // because goalplanner is acting like a transparent proxy to localnav, we need to pass on requests to localnav and thus need a remote object
     orca::PathFollower2dPrx localNavPrx_;

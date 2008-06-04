@@ -161,7 +161,7 @@ GuiElementModel::instantiateFromFactories( hydroqguielementutil::IGuiElement* &e
         {
             element = factories_[i]->create( elementType, elementDetails, platformColor, humanManager_, mouseEventManager_, shortcutKeyManager_, guiElementSet_ );
         } 
-        catch (gbxsickacfr::gbxutilacfr::Exception &e)
+        catch (gbxutilacfr::Exception &e)
         {
             stringstream ss;
             ss << "GuiElementModel: Problem when trying to create element of type " << elementType.toStdString() <<": " << e.what() << std::endl;

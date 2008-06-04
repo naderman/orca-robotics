@@ -27,7 +27,7 @@ namespace orcaicegrid
 //! to reinitialization of the session.
 //! 
 //! Implementations of all methods inhereted from AbstractIceGridManager
-//! throw gbxsickacfr::gbxutilacfr::Exception when something goes wrong.
+//! throw gbxutilacfr::Exception when something goes wrong.
 //!
 //! @author Alex Brooks
 //!

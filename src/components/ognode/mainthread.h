@@ -21,7 +21,7 @@
 namespace ognode
 {
 
-class MainThread : public gbxsickacfr::gbxiceutilacfr::SafeThread
+class MainThread : public gbxiceutilacfr::SafeThread
 {
 public:
     MainThread( const orcaice::Context& context);
@@ -35,7 +35,7 @@ private:
 
     Ice::ObjectPtr                        ogFusionObjPtr_;
     orcaifaceimpl::OgMapImplPtr           ogMapImpl_;
-    gbxsickacfr::gbxiceutilacfr::Buffer<orca::OgFusionData> ogFusionDataBuffer_;
+    gbxiceutilacfr::Buffer<orca::OgFusionData> ogFusionDataBuffer_;
 
     // Represent the occupancy certainty values using doubles internally.
     hydroogmap::GenericMap<double> internalMap_;

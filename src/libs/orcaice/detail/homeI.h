@@ -47,7 +47,7 @@ private:
 
     // start time is initialized in the constructor. the component's up time
     // is counted from here.
-    gbxsickacfr::gbxiceutilacfr::Timer upTimer_;
+    gbxiceutilacfr::Timer upTimer_;
 
     // We may have multiple threads talking to us
     IceUtil::Mutex mutex_;

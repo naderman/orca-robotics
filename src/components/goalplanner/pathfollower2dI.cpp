@@ -19,8 +19,8 @@ using namespace orcaice;
 
 namespace goalplanner {
 
-PathFollower2dI::PathFollower2dI( gbxsickacfr::gbxiceutilacfr::Store<orca::PathFollower2dData> &pathPipe,
-                                  gbxsickacfr::gbxiceutilacfr::Store<bool> &activationPipe,
+PathFollower2dI::PathFollower2dI( gbxiceutilacfr::Store<orca::PathFollower2dData> &pathPipe,
+                                  gbxiceutilacfr::Store<bool> &activationPipe,
                                   orca::PathFollower2dPrx localNavPrx )
     : pathPipe_(pathPipe),
       activationPipe_(activationPipe),

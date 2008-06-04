@@ -22,8 +22,8 @@ namespace detail {
 //
 // Knows how to send trace messages to an IceStorm topic.
 //
-// Note that this does _not_ inherit from gbxsickacfr::gbxutilacfr::Tracer, it's simply
-// a convenience class for use by gbxsickacfr::gbxutilacfr::Tracer classes.
+// Note that this does _not_ inherit from gbxutilacfr::Tracer, it's simply
+// a convenience class for use by gbxutilacfr::Tracer classes.
 //
 // @author Alex Brooks
 //

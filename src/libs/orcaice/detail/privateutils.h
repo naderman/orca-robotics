@@ -61,10 +61,10 @@ namespace detail
 
     void setFactoryProperties( Ice::PropertiesPtr &properties, const std::string &compTag );
 
-    // throws gbxsickacfr::gbxutilacfr::Exception if can't load the file
+    // throws gbxutilacfr::Exception if can't load the file
     void setGlobalProperties( Ice::PropertiesPtr & properties, const std::string & filename );
 
-    // throws gbxsickacfr::gbxutilacfr::Exception if can't load the file
+    // throws gbxutilacfr::Exception if can't load the file
     void setComponentPropertiesFromFile( Ice::PropertiesPtr & properties, const std::string & filename );
 
     /*

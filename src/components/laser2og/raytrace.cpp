@@ -13,7 +13,7 @@
 
 #include <hydropathplan/hydropathplan.h>
 #include <hydroogmap/hydroogmap.h>
-#include <gbxsickacfr/gbxutilacfr/mathdefs.h>
+#include <gbxutilacfr/mathdefs.h>
 
 using namespace orca;
 using namespace hydroogmap;

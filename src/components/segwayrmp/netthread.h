@@ -25,7 +25,7 @@ namespace segwayrmp
 {
 
 class NetThread : public orcaice::SubsystemThread,
-                  public gbxsickacfr::gbxiceutilacfr::NotifyHandler<orca::VelocityControl2dData>
+                  public gbxiceutilacfr::NotifyHandler<orca::VelocityControl2dData>
 {
 public:
 

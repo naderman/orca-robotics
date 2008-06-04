@@ -30,7 +30,7 @@ public:
 
 private:
 
-    gbxsickacfr::gbxiceutilacfr::ThreadPtr iceGridSession_;
+    gbxiceutilacfr::ThreadPtr iceGridSession_;
 
     Ice::ObjectPtr registryObserver_;
     Ice::ObjectPtr applicationObserver_;

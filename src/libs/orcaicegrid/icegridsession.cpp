@@ -151,7 +151,7 @@ IceGridSession::walk()
             std::stringstream exceptionSS;
             while ( !isStopping() )
             {
-                gbxsickacfr::gbxiceutilacfr::checkedSleep( this, IceUtil::Time::seconds( timeoutSec_/4 ), 1000 );
+                gbxiceutilacfr::checkedSleep( this, IceUtil::Time::seconds( timeoutSec_/4 ), 1000 );
 
                 try
                 {

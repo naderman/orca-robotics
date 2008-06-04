@@ -23,7 +23,7 @@ namespace snapshotlogger
 {
 
 class MainThread: public orcaice::SubsystemThread,
-                  public gbxsickacfr::gbxiceutilacfr::NotifyHandler<bool>
+                  public gbxiceutilacfr::NotifyHandler<bool>
 {    	
 public:
     MainThread( const orcaice::Context& context );
@@ -32,7 +32,7 @@ public:
     // from SubsystemThread
     virtual void walk();
 
-    // from gbxsickacfr::gbxiceutilacfr::NotifyHandler -- called on re-init request
+    // from gbxiceutilacfr::NotifyHandler -- called on re-init request
     // (the value of the bool is meaningless)
     virtual void handleData( const bool &request )
         { requestStore_.set( request ); }
@@ -62,7 +62,7 @@ private:
 
     // Holds incoming requests to take snapshots
     // (the value of the bool's are meaningless)
-    gbxsickacfr::gbxiceutilacfr::Store<bool> requestStore_;
+    gbxiceutilacfr::Store<bool> requestStore_;
 
     bool useFilenameTimestamps_;
 

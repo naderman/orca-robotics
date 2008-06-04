@@ -148,7 +148,7 @@ namespace {
             ss << "Time of goal was _before_ time of start!" << endl
                << "  startWp.timeTarget: " << orcaobj::toString(start.timeTarget) << endl
                << "  goalWp.timeTarget:  " << orcaobj::toString(goal.timeTarget);
-            throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, ss.str() );
+            throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
         }
 
         // Add each leg to the orca-style path
@@ -260,7 +260,7 @@ Driver::computePath( const orca::PathPlanner2dTask &task,
     {
         stringstream ss;
         ss << "task.coarsePath.size() was zero.";
-        throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, ss.str() );
+        throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
     }
 
     const orca::Path2d *coarsePath = &(task.coarsePath);

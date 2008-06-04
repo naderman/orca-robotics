@@ -62,9 +62,9 @@ NetThread::NetThread( HwThread                      &HwThread,
     orca::VehicleControlVelocityDifferentialDescription *controlDescr =
         dynamic_cast<orca::VehicleControlVelocityDifferentialDescription*>(&(*(descr.control)));
     if ( controlDescr == NULL )
-        throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, "Can only deal with differential drive vehicles." );
+        throw gbxutilacfr::Exception( ERROR_INFO, "Can only deal with differential drive vehicles." );
     if ( controlDescr->maxForwardSpeed != controlDescr->maxReverseSpeed ) 
-        throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, "Can't handle max forward speed != max reverse speed." );
+        throw gbxutilacfr::Exception( ERROR_INFO, "Can't handle max forward speed != max reverse speed." );
 
     maxSpeed_    = controlDescr->maxForwardSpeed;
     maxTurnrate_ = controlDescr->maxTurnrate;
@@ -153,7 +153,7 @@ NetThread::walk()
     // temp objects in network format
     orca::Odometry2dData odometry2dData;
 
-    gbxsickacfr::gbxiceutilacfr::Timer publishTimer;
+    gbxiceutilacfr::Timer publishTimer;
     double publishInterval = orcaice::getPropertyAsDoubleWithDefault( 
         context_.properties(), prefix+"Odometry2dPublishInterval", 0 );
 

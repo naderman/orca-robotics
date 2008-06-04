@@ -75,7 +75,7 @@ Particle2dImpl::initInterface()
 }
 
 void 
-Particle2dImpl::initInterface( gbxsickacfr::gbxiceutilacfr::Thread* thread, const std::string& subsysName, int retryInterval )
+Particle2dImpl::initInterface( gbxiceutilacfr::Thread* thread, const std::string& subsysName, int retryInterval )
 {
     topicPrx_ = orcaice::connectToTopicWithString( context_, consumerPrx_, topicName_, thread, subsysName, retryInterval );
 

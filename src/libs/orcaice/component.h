@@ -184,8 +184,8 @@ private:
 
     // initialize component services
     orcaice::Home*   initHome();
-    gbxsickacfr::gbxutilacfr::Tracer* initTracer();
-    gbxsickacfr::gbxutilacfr::Status* initStatus();
+    gbxutilacfr::Tracer* initTracer();
+    gbxutilacfr::Status* initStatus();
     hydroutil::History* initHistory();
     void getNetworkProperties();
 
@@ -203,7 +203,7 @@ private:
     Ice::ObjectPrx homePrx_;
 
     // This thread allows us to do house-keeping stuff and manage Status.
-    gbxsickacfr::gbxiceutilacfr::ThreadPtr componentThread_;
+    gbxiceutilacfr::ThreadPtr componentThread_;
 };
 
 } // end namespace

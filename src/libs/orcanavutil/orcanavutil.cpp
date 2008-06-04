@@ -38,7 +38,7 @@ namespace orcanavutil {
             stringstream ss;
             ss << "orcanavutil::convert: input Localise2dData has zero hypotheses:"
                << endl << orcaobj::toString( locData );
-            throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, ss.str() );
+            throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
         }
 
         for ( uint i=0; i < locData.hypotheses.size(); i++ )

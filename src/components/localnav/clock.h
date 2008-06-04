@@ -44,7 +44,7 @@ public:
 
 private: 
 
-    mutable gbxsickacfr::gbxiceutilacfr::Store<orca::Time> timeStore_;
+    mutable gbxiceutilacfr::Store<orca::Time> timeStore_;
 
 };
 

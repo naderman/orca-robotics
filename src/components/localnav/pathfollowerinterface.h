@@ -44,17 +44,17 @@ private:
     orcaifaceimpl::PathFollower2dImplPtr pathFollower2dImpl_;
 
     // New paths from the outside world go in here
-    gbxsickacfr::gbxiceutilacfr::Store<orca::PathFollower2dData>        pendingPathRequestStore_;
+    gbxiceutilacfr::Store<orca::PathFollower2dData>        pendingPathRequestStore_;
 
     // Time of Activation from the outside world goes in here
-    gbxsickacfr::gbxiceutilacfr::Store<orca::Time>                      pendingActivationRequestStore_;
+    gbxiceutilacfr::Store<orca::Time>                      pendingActivationRequestStore_;
 
     // Progress info from the component goes in here
-    gbxsickacfr::gbxiceutilacfr::Store<int>                             wpIndexStore_;
-    gbxsickacfr::gbxiceutilacfr::Store<orca::Time>                      activationTimeStore_;
+    gbxiceutilacfr::Store<int>                             wpIndexStore_;
+    gbxiceutilacfr::Store<orca::Time>                      activationTimeStore_;
 
     // Allow external en/dis-able
-    gbxsickacfr::gbxiceutilacfr::Store<bool>                            enabledStore_;
+    gbxiceutilacfr::Store<bool>                            enabledStore_;
 
     const Clock &clock_;
 

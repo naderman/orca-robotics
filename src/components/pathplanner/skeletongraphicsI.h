@@ -59,7 +59,7 @@ private:
                          const hydropathplan::sparseskel::SparseSkel &skel,
                          QPainter                                    &p );
     
-    gbxsickacfr::gbxiceutilacfr::Store<orca::QGraphics2dData> dataStore_;
+    gbxiceutilacfr::Store<orca::QGraphics2dData> dataStore_;
 
     orca::QGraphics2dConsumerPrx    consumerPrx_;
     IceStorm::TopicPrx              topicPrx_;

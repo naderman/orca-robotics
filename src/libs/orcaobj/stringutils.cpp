@@ -11,9 +11,9 @@
 #include <iostream>
 #include <sstream>
 #include <iomanip>
-#include <gbxsickacfr/gbxutilacfr/exceptions.h>
+#include <gbxutilacfr/exceptions.h>
 #include <hydroutil/stringutils.h>
-#include <gbxsickacfr/gbxutilacfr/mathdefs.h>
+#include <gbxutilacfr/mathdefs.h>
 #include <orcaice/timeutils.h>
 
 #include <orcaifacestring/gps.h>
@@ -758,7 +758,7 @@ std::string
 toString( const orca::VehicleControlDescriptionPtr& obj )
 {
     if ( obj == 0 )
-        throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, "VehicleControlDescriptionPtr was zero!" );
+        throw gbxutilacfr::Exception( ERROR_INFO, "VehicleControlDescriptionPtr was zero!" );
 
     std::ostringstream s;
     s << "VehicleControlDescription: "
@@ -801,7 +801,7 @@ std::string
 toString( const orca::VehicleGeometryDescriptionPtr& obj )
 {
     if ( obj == 0 )
-        throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, "VehicleGeometryDescriptionPtr was zero!" );
+        throw gbxutilacfr::Exception( ERROR_INFO, "VehicleGeometryDescriptionPtr was zero!" );
 
     std::ostringstream s;
     s << "VehicleGeometryDescription: "

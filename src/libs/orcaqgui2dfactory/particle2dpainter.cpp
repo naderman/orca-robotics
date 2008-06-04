@@ -14,7 +14,7 @@
 
 #include "particle2dpainter.h"
 #include <hydroqguielementutil/paintutils.h>
-#include <gbxsickacfr/gbxutilacfr/mathdefs.h>
+#include <gbxutilacfr/mathdefs.h>
 
 using namespace std;
 

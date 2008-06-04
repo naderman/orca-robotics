@@ -23,7 +23,7 @@ namespace teleop
 class Network;
 // class InputDriver;
 
-class InputThread : public gbxsickacfr::gbxiceutilacfr::SafeThread
+class InputThread : public gbxiceutilacfr::SafeThread
 {
 public:
 

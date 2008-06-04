@@ -23,7 +23,7 @@ namespace teleop
 class Display;
 class NetworkDriver;
 
-class NetworkThread : public gbxsickacfr::gbxiceutilacfr::SafeThread, public Network
+class NetworkThread : public gbxiceutilacfr::SafeThread, public Network
 {
 public:
 

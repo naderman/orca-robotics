@@ -70,7 +70,7 @@ MonoDriver::init()
                 std::string errString = "Unknown colour mode";
                 context_.tracer().error( errString );
                 // this will kill this component
-                throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, errString );
+                throw gbxutilacfr::Exception( ERROR_INFO, errString );
             }
         }
     }
@@ -103,7 +103,7 @@ MonoDriver::init()
         std::string errString = "Image size is <= 0. It must be a positive value.";
         context_.tracer().error( errString );
         // this will kill this component
-        throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, errString );
+        throw gbxutilacfr::Exception( ERROR_INFO, errString );
     }
 
     context_.tracer().info( "MonoOpenCVDriver has now been configured to: "+config_.toString() );
@@ -123,7 +123,7 @@ MonoDriver::read( orca::CameraData& data )
         std::string errString = "Unable to get image from image grabber";
         context_.tracer().error( errString );
         // this will kill this component
-        throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, errString );
+        throw gbxutilacfr::Exception( ERROR_INFO, errString );
         // exit(1);
     }
     else

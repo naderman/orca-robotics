@@ -94,7 +94,7 @@ InsImpl::initInterface()
 }
 
 void 
-InsImpl::initInterface( gbxsickacfr::gbxiceutilacfr::Thread* thread, const std::string& subsysName, int retryInterval )
+InsImpl::initInterface( gbxiceutilacfr::Thread* thread, const std::string& subsysName, int retryInterval )
 {
     topicPrx_ = orcaice::connectToTopicWithString<orca::InsConsumerPrx>
         ( context_, consumerPrx_, topicName_, thread, subsysName, retryInterval );

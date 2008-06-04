@@ -55,7 +55,7 @@ bool isInterfaceReachable( const Context& context,
  *  Note that @p name is just the interface name, not its fully-qualified name.
  *  (In Ice terms this will become the object identity.)
  *
- *  Throws gbxsickacfr::gbxutilacfr::Exception if fails to register the new object.
+ *  Throws gbxutilacfr::Exception if fails to register the new object.
  *
 @verbatim
 Ice::ObjectPtr obj = new MyObjectI;
@@ -308,7 +308,7 @@ connectToTopicWithString( const Context     & context,
         //
         publisher = ConsumerProxyType::uncheckedCast(obj);
     }
-    //catch ( const gbxsickacfr::gbxutilacfr::Exception & e ) {
+    //catch ( const gbxutilacfr::Exception & e ) {
         // we'll catch it here if the topic manager does not exist
     //}
     catch ( Ice::ConnectionRefusedException &e )
@@ -324,7 +324,7 @@ connectToTopicWithString( const Context     & context,
         std::stringstream ss;
         ss<<"Error while connecting to IceStorm topic publisher '"<<topicName<<"': "<<e;
         initTracerError( context, ss.str(), 2 );
-        throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, ss.str() );
+        throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
     }
     catch ( Ice::Exception &e )
     {

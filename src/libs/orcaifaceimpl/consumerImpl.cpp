@@ -43,7 +43,7 @@ ConsumerSubscriber::unsubscribeWithTag( const std::string& interfaceTag )
 
 void 
 ConsumerSubscriber::subscribeWithTag( const std::string& interfaceTag, 
-                        gbxsickacfr::gbxiceutilacfr::Thread*  thread, const std::string& subsysName, 
+                        gbxiceutilacfr::Thread*  thread, const std::string& subsysName, 
                         int retryInterval, int retryNumber )
 {
     // this may throw ConfigFileException, we don't catch it, let the user catch it at the component level

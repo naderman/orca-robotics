@@ -55,7 +55,7 @@ private:
     };
     ////////////////////////////////////////
 
-    gbxsickacfr::gbxiceutilacfr::Store<State> stateStore_;
+    gbxiceutilacfr::Store<State> stateStore_;
 
 };
 

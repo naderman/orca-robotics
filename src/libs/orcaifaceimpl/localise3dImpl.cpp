@@ -92,7 +92,7 @@ Localise3dImpl::initInterface()
 }
 
 void 
-Localise3dImpl::initInterface( gbxsickacfr::gbxiceutilacfr::Thread* thread, const std::string& subsysName, int retryInterval )
+Localise3dImpl::initInterface( gbxiceutilacfr::Thread* thread, const std::string& subsysName, int retryInterval )
 {
     topicPrx_ = orcaice::connectToTopicWithString<orca::Localise3dConsumerPrx>
         ( context_, consumerPrx_, topicName_, thread, subsysName, retryInterval );

@@ -13,7 +13,7 @@
 #include <orca/rangescanner2d.h>
 #include <orcaice/ptrstore.h>
 // #include <orcaobj/orcaobj.h>
-#include <gbxsickacfr/gbxutilacfr/mathdefs.h>
+#include <gbxutilacfr/mathdefs.h>
 
 // Random doubles and integers
 #define RDOUBLE (rand()*M_PI)
@@ -81,7 +81,7 @@ int main(int argc, char * argv[])
         cout<<"failed. empty store, should've caught exception"<<endl;
         return EXIT_FAILURE;
     }
-    catch ( const gbxsickacfr::gbxutilacfr::Exception & )
+    catch ( const gbxutilacfr::Exception & )
     {
         ; // ok
     }
@@ -116,7 +116,7 @@ int main(int argc, char * argv[])
     {
         store.get( copy );
     }
-    catch ( const gbxsickacfr::gbxutilacfr::Exception & )
+    catch ( const gbxutilacfr::Exception & )
     {
         cout<<"failed. should be a non-empty store."<<endl;
         return EXIT_FAILURE;

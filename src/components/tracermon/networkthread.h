@@ -22,7 +22,7 @@ namespace tracermon
 {
 
 // class MainThread : public Network
-class MainThread : public gbxsickacfr::gbxiceutilacfr::SafeThread, public Network //, virtual public orca::TracerConsumer
+class MainThread : public gbxiceutilacfr::SafeThread, public Network //, virtual public orca::TracerConsumer
 {
 public:
 

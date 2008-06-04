@@ -80,7 +80,7 @@ namespace {
         {
             stringstream ss;
             ss << "Badly formed localiseData: " << orcaobj::toString( localiseData );
-            throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, ss.str() );
+            throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
         }
         
         const orca::Pose2dHypothesis &h = localiseData.hypotheses[0];

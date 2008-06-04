@@ -15,7 +15,7 @@ EStop::EStop( double                  keepAlivePeriodSec,
 }
 
 void
-EStop::initInterface( gbxsickacfr::gbxiceutilacfr::Thread* thread )
+EStop::initInterface( gbxiceutilacfr::Thread* thread )
 {
     eStopImpl_->initInterface( thread );
 }

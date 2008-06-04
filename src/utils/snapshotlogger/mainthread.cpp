@@ -142,7 +142,7 @@ MainThread::initInterface()
             context_.tracer().debug( "Activated button interface" );
             break;
         }
-        catch ( gbxsickacfr::gbxutilacfr::Exception &e )
+        catch ( gbxutilacfr::Exception &e )
         {
             stringstream ss;
             ss << "MainThread::establishInterface(): " << e.what();
@@ -176,7 +176,7 @@ MainThread::createMasterFileWriter( const std::string &filenamePrefix )
     {
         stringstream ss;
         ss << "Couldn't create masterFileWriter: " << e.what();
-        throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, ss.str() );
+        throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
     }
 }
 
@@ -289,7 +289,7 @@ MainThread::takeSnapshot()
 
     if ( !exceptionSS.str().empty() )
     {
-        throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, exceptionSS.str() );
+        throw gbxutilacfr::Exception( ERROR_INFO, exceptionSS.str() );
     }
 }
 
@@ -379,7 +379,7 @@ MainThread::loadPluginLibraries( const std::string & factoryLibNames )
 
     if ( logFactories_.empty() ) {
         context_.shutdown();
-        throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, "No log factories were loaded." );
+        throw gbxutilacfr::Exception( ERROR_INFO, "No log factories were loaded." );
     }
 }
 
@@ -402,13 +402,13 @@ MainThread::createLogger( const std::string &interfaceType )
             context_.shutdown();
             stringstream ss;
             ss << "Error when creating logger for supported interface type " << interfaceType << ": factory returned NULL pointer.";
-            throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, ss.str() );
+            throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
         }
     }
 
     // none of the factories support this type
     context_.shutdown();
-    throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, "Unsupported interface type " + interfaceType );
+    throw gbxutilacfr::Exception( ERROR_INFO, "Unsupported interface type " + interfaceType );
 }
 
 }

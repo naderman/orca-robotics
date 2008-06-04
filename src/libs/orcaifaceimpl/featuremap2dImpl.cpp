@@ -75,7 +75,7 @@ FeatureMap2dImpl::initInterface()
 }
 
 void 
-FeatureMap2dImpl::initInterface( gbxsickacfr::gbxiceutilacfr::Thread* thread, const std::string& subsysName, int retryInterval )
+FeatureMap2dImpl::initInterface( gbxiceutilacfr::Thread* thread, const std::string& subsysName, int retryInterval )
 {
     topicPrx_ = orcaice::connectToTopicWithString( context_, consumerPrx_, topicName_, thread, subsysName, retryInterval );
 

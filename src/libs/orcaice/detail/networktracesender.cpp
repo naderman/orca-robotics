@@ -70,7 +70,7 @@ NetworkTraceSender::connectToIceStorm()
         initTracerInfo( orcaice::toString(context_.name())+": Tracer connected to topic "+topicName_ );
         return true;
     }
-    catch ( const gbxsickacfr::gbxutilacfr::Exception & e )
+    catch ( const gbxutilacfr::Exception & e )
     {
         initTracerError( orcaice::toString(context_.name())+": Caught exception while connecting to IceStorm: "+e.what() );
     }

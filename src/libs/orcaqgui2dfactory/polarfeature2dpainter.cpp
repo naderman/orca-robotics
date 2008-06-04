@@ -97,7 +97,7 @@ PolarFeature2dPainter::setOffset( orca::Frame3d &offset )
     {
         stringstream ss;
         ss << "PolarFeature2dPainter::setOffset(): Can only properly deal with (possibly-flipped) horizontal lasers.  Offset: " << orcaobj::toString(offset);
-        throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, ss.str() );
+        throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
     }
 
     if ( NEAR( offset.o.r,M_PI,0.01 ) ) {

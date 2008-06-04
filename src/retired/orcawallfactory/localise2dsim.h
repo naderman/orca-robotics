@@ -22,7 +22,7 @@ class Localise2dSim : public orcawall::InterfaceSim
 public:
     Localise2dSim( const std::string& tag, const orcaice::Context& context );
 
-    // from gbxsickacfr::gbxiceutilacfr::Thread
+    // from gbxiceutilacfr::Thread
     virtual void walk();
 };
 

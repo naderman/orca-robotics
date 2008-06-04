@@ -89,7 +89,7 @@ InputThread::walk()
         }
         else {
             string errString = "failed to read from input hardware";
-            throw gbxsickacfr::gbxutilacfr::HardwareException( ERROR_INFO, errString );
+            throw gbxutilacfr::HardwareException( ERROR_INFO, errString );
         }
     } // end of main loop
 

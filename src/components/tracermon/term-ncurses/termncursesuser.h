@@ -23,7 +23,7 @@
 namespace tracermon
 {
 
-class TermNcursesUser : public gbxsickacfr::gbxiceutilacfr::SafeThread, public tracermon::User
+class TermNcursesUser : public gbxiceutilacfr::SafeThread, public tracermon::User
 {
 public:
 
@@ -54,7 +54,7 @@ private:
    
     orcaice::Context context_;
 
-    gbxsickacfr::gbxiceutilacfr::SafeThread* inputMainThread_;
+    gbxiceutilacfr::SafeThread* inputMainThread_;
 
     // obscure ncurses stuff
     WINDOW* mainwin_;

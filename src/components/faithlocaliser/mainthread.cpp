@@ -69,7 +69,7 @@ MainThread::walk()
     // EXTERNAL REQUIRED INTERFACES
     //           
     orcaifaceimpl::BufferedOdometry2dConsumerImplPtr odometry2dInterface =
-        new orcaifaceimpl::BufferedOdometry2dConsumerImpl( 10, gbxsickacfr::gbxiceutilacfr::BufferTypeCircular,context_);
+        new orcaifaceimpl::BufferedOdometry2dConsumerImpl( 10, gbxiceutilacfr::BufferTypeCircular,context_);
     // multi-try function
     odometry2dInterface->subscribeWithTag( "Odometry2d", this, subsysName() );
 

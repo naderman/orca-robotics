@@ -181,7 +181,7 @@ There are additional sources of information on CMake. Take a look at the <strong
 namespace brick
 {
 
-class MainThread: public gbxsickacfr::gbxiceutilacfr::SubsystemThread
+class MainThread: public gbxiceutilacfr::SubsystemThread
 {       
 public:
     MainThread( const orcaice::Context& context );
@@ -207,7 +207,7 @@ private:
 Definitions of the thread class from GearBox and orcaice::Context classes.
 
 @verbatim
-class MainThread: public gbxsickacfr::gbxiceutilacfr::SubsystemThread
+class MainThread: public gbxiceutilacfr::SubsystemThread
 @endverbatim
 The one and only thread used by our component is derived from hydroutil::SubsystemThread class. This thread class derives from a basic hydroutil::Thread class and adds a bit of functionality to it. 
 

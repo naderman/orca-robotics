@@ -18,7 +18,7 @@
 #include <gbxsickacfr/gbxiceutilacfr/store.h>
 #include <orcaice/context.h>
 
-namespace gbxsickacfr { namespace gbxiceutilacfr { class Thread; } }
+namespace gbxiceutilacfr { class Thread; }
 
 namespace orcaifaceimpl {
 
@@ -39,12 +39,12 @@ public:
     ~PropertiesImpl();
 
     // local interface:
-    //! May throw gbxsickacfr::gbxutilacfr::Exceptions.
+    //! May throw gbxutilacfr::Exceptions.
     void initInterface();
 
     //! Sets up interface and connects to IceStorm. Catches all exceptions and retries
     //! until sucessful. At every iteration, checks if the thread was stopped.
-    void initInterface( gbxsickacfr::gbxiceutilacfr::Thread* thread, const std::string& subsysName="", int retryInterval=2 );
+    void initInterface( gbxiceutilacfr::Thread* thread, const std::string& subsysName="", int retryInterval=2 );
 
     //! A local call which sets the data reported by the interface
     void localSet( const orca::PropertiesData& data );
@@ -54,7 +54,7 @@ public:
     void localSetAndSend( const orca::PropertiesData& data );
 
     //! A local call which gets the Store that holds remote 'setData' requests.
-    gbxsickacfr::gbxiceutilacfr::Store<orca::PropertiesData> &localGetRemotelySetDataStore()
+    gbxiceutilacfr::Store<orca::PropertiesData> &localGetRemotelySetDataStore()
         { return remotelySetDataStore_; }
 
 private:
@@ -64,8 +64,8 @@ private:
     void internalSubscribe(const ::orca::PropertiesConsumerPrx&);
     void internalUnsubscribe(const ::orca::PropertiesConsumerPrx&);
 
-    gbxsickacfr::gbxiceutilacfr::Store<orca::PropertiesData> dataStore_;
-    gbxsickacfr::gbxiceutilacfr::Store<orca::PropertiesData> remotelySetDataStore_;
+    gbxiceutilacfr::Store<orca::PropertiesData> dataStore_;
+    gbxiceutilacfr::Store<orca::PropertiesData> remotelySetDataStore_;
 
     orca::PropertiesConsumerPrx    consumerPrx_;
     IceStorm::TopicPrx             topicPrx_;

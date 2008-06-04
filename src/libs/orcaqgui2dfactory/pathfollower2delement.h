@@ -36,8 +36,8 @@ public:
     void setActivationTime( const orca::Time& absoluteTime, double relativeTime, const ::Ice::Current& );
     void setEnabledState( bool enabledState, const ::Ice::Current& );
 
-    gbxsickacfr::gbxiceutilacfr::Store<orca::PathFollower2dData> pathPipe_;
-    gbxsickacfr::gbxiceutilacfr::Store<int> indexPipe_;
+    gbxiceutilacfr::Store<orca::PathFollower2dData> pathPipe_;
+    gbxiceutilacfr::Store<int> indexPipe_;
 };
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -211,8 +211,8 @@ private:
     const hydroqgui::GuiElementSet &guiElementSet_;
     
     bool firstTime_;
-    gbxsickacfr::gbxiceutilacfr::Timer *timer_;
-    gbxsickacfr::gbxiceutilacfr::Timer *activationTimer_;
+    gbxiceutilacfr::Timer *timer_;
+    gbxiceutilacfr::Timer *activationTimer_;
     
     // toggle states
     bool displayWaypoints_;

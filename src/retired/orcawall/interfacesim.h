@@ -17,7 +17,7 @@
 namespace orcawall
 {
 
-class InterfaceSim : public gbxsickacfr::gbxiceutilacfr::SafeThread
+class InterfaceSim : public gbxiceutilacfr::SafeThread
 {
 
 public:

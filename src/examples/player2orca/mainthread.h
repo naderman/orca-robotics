@@ -17,7 +17,7 @@
 namespace player2orca
 {
 
-class MainThread: public gbxsickacfr::gbxiceutilacfr::SafeThread
+class MainThread: public gbxiceutilacfr::SafeThread
 {    	
 public:
     MainThread( const orcaice::Context& context );

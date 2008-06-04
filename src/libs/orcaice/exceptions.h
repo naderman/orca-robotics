@@ -11,7 +11,7 @@
 #ifndef ORCAICE_EXCEPTIONS_H
 #define ORCAICE_EXCEPTIONS_H
 
-#include <gbxsickacfr/gbxutilacfr/exceptions.h>
+#include <gbxutilacfr/exceptions.h>
 
 namespace orcaice
 {
@@ -20,7 +20,7 @@ namespace orcaice
 //! 
 //! Potential problems include file missing, the specified property tag missing, or the property
 //! value is of wrong type.
-class ConfigFileException : public gbxsickacfr::gbxutilacfr::Exception
+class ConfigFileException : public gbxutilacfr::Exception
 {
 public:
     ConfigFileException(const char *file, const char *line, const char *message)
@@ -30,7 +30,7 @@ public:
 };
 
 //! This exception is raised when something is wrong with the network connection.
-class NetworkException : public gbxsickacfr::gbxutilacfr::Exception
+class NetworkException : public gbxutilacfr::Exception
 {
     public:
         NetworkException(const char *file, const char *line, const char *message)
@@ -41,7 +41,7 @@ class NetworkException : public gbxsickacfr::gbxutilacfr::Exception
 
 //! This exception is raised when you try to do something like activate the component
 //! while the component is in the process of deactivating
-class ComponentDeactivatingException : public gbxsickacfr::gbxutilacfr::Exception
+class ComponentDeactivatingException : public gbxutilacfr::Exception
 {
     public:
         ComponentDeactivatingException(const char *file, const char *line, const char *message)

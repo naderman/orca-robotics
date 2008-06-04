@@ -174,7 +174,7 @@ MainThread::walk()
     else
     {
         context_.shutdown();
-        throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, "Unknown ReplayController: "+replayController );
+        throw gbxutilacfr::Exception( ERROR_INFO, "Unknown ReplayController: "+replayController );
     }
 
     //
@@ -222,7 +222,7 @@ MainThread::loadPluginLibraries( const std::string & factoryLibNames )
 
     if ( replayerFactories_.empty() ) {
         context_.shutdown();
-        throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, "No replayer factories were loaded." );
+        throw gbxutilacfr::Exception( ERROR_INFO, "No replayer factories were loaded." );
     }
 }
 
@@ -274,7 +274,7 @@ MainThread::createReplayer( const std::string& interfaceType,
             }
             else {
                 context_.shutdown();
-                throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, "Error when creating replayer for supported interface type " + interfaceType );
+                throw gbxutilacfr::Exception( ERROR_INFO, "Error when creating replayer for supported interface type " + interfaceType );
             }
         }
         catch ( const orcalog::FormatNotSupportedException& e )
@@ -282,7 +282,7 @@ MainThread::createReplayer( const std::string& interfaceType,
             if ( require ) 
             {
                 context_.shutdown();
-                throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, "Format "+format+" is not supported for interface type"+interfaceType );
+                throw gbxutilacfr::Exception( ERROR_INFO, "Format "+format+" is not supported for interface type"+interfaceType );
             }
             else {
                 replayers_.push_back( new orcalog::DummyReplayer() );
@@ -300,7 +300,7 @@ MainThread::createReplayer( const std::string& interfaceType,
     // all interfaces are required, no dummies
     if ( require ) {
         context_.shutdown();
-        throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, "Unsupported interface type " + interfaceType );
+        throw gbxutilacfr::Exception( ERROR_INFO, "Unsupported interface type " + interfaceType );
     }
     else {
         replayers_.push_back( new orcalog::DummyReplayer );

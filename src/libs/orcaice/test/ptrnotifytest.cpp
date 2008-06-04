@@ -13,7 +13,7 @@
 #include <orca/rangescanner2d.h>
 #include <orcaice/ptrnotify.h>
 // #include <orcaobj/orcaobj.h>
-#include <gbxsickacfr/gbxutilacfr/mathdefs.h>
+#include <gbxutilacfr/mathdefs.h>
 
 // Random doubles and integers
 #define RDOUBLE (rand()*M_PI)
@@ -67,7 +67,7 @@ std::string toString( const orca::RangeScanner2dDataPtr& obj, int skip=-1  )
 }
 
 
-class TestNotifyHandler : public gbxsickacfr::gbxiceutilacfr::NotifyHandler<orca::RangeScanner2dDataPtr>
+class TestNotifyHandler : public gbxiceutilacfr::NotifyHandler<orca::RangeScanner2dDataPtr>
 {
 public:
     TestNotifyHandler()
@@ -89,7 +89,7 @@ main(int argc, char * argv[])
     orca::RangeScanner2dDataPtr data = new orca::RangeScanner2dData;
     setSane( data );
     
-    gbxsickacfr::gbxiceutilacfr::NotifyHandler<orca::RangeScanner2dDataPtr>* emptyHandler = 0;
+    gbxiceutilacfr::NotifyHandler<orca::RangeScanner2dDataPtr>* emptyHandler = 0;
     TestNotifyHandler testHandler;
 
     cout<<"testing set() ... ";
@@ -100,7 +100,7 @@ main(int argc, char * argv[])
         cout<<"failed. empty notify handler, should've caught exception"<<endl;
         return EXIT_FAILURE;
     }
-    catch ( const gbxsickacfr::gbxutilacfr::Exception & )
+    catch ( const gbxutilacfr::Exception & )
     {
         ; // ok
     }
@@ -131,7 +131,7 @@ main(int argc, char * argv[])
     {
         notify.set( data );
     }
-    catch ( const gbxsickacfr::gbxutilacfr::Exception & )
+    catch ( const gbxutilacfr::Exception & )
     {
         cout<<"failed. shouldn't have caught exception"<<endl;
         return EXIT_FAILURE;

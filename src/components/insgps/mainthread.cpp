@@ -33,7 +33,7 @@ MainThread::MainThread( const orcaice::Context &context ) :
 MainThread::~MainThread()
 {
     context_.tracer().debug( "stopping hwThread", 5 );
-    gbxsickacfr::gbxiceutilacfr::stopAndJoin( hwThread_ );
+    gbxiceutilacfr::stopAndJoin( hwThread_ );
     context_.tracer().debug( "stopped hwThread", 5 );
     return;
 }

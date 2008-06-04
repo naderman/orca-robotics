@@ -19,14 +19,14 @@ namespace simlocaliser
 
 class Driver;
 
-class MainThread : public gbxsickacfr::gbxiceutilacfr::SafeThread
+class MainThread : public gbxiceutilacfr::SafeThread
 {
 
 public:
     MainThread( const orcaice::Context& context );
     virtual ~MainThread();
 
-    // from gbxsickacfr::gbxiceutilacfr::SafeThread
+    // from gbxiceutilacfr::SafeThread
     virtual void walk();
 
 private:

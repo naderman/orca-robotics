@@ -32,7 +32,7 @@ class PathPlannerTaskAnswerConsumer : public orca::PathPlanner2dConsumer
     public:
 
         virtual void setData(const ::orca::PathPlanner2dData& data, const ::Ice::Current& = ::Ice::Current());
-        gbxsickacfr::gbxiceutilacfr::Store<QString> msgStore_;
+        gbxiceutilacfr::Store<QString> msgStore_;
 };
 ////////////////////////////////////////////////////////////////////////////////
 

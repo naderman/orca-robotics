@@ -32,7 +32,7 @@ LaserScanner2dElement::getLaserInfo()
         descr = laserPrx->getDescription();
         painter_.setDescription( descr );
     }
-    catch ( gbxsickacfr::gbxutilacfr::Exception &e )
+    catch ( gbxutilacfr::Exception &e )
     {
         cout<<"TRACE(laserelement.cpp): got exception :"<<e.what()<<endl;
         // Ignore it.  We'll try reconnecting later.

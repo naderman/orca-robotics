@@ -28,9 +28,9 @@ namespace orcaice
  *  @see PtrBuffer, PtrStore
  */
 template<class Type>
-class PtrNotify : public gbxsickacfr::gbxiceutilacfr::Notify<Type>
+class PtrNotify : public gbxiceutilacfr::Notify<Type>
 {
-    using gbxsickacfr::gbxiceutilacfr::Notify<Type>::handler_;
+    using gbxiceutilacfr::Notify<Type>::handler_;
     
 protected:
     virtual void internalSet( const Type & obj );

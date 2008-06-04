@@ -23,7 +23,7 @@ namespace orcaifaceimpl {
 template<class ProviderPrxType, class ConsumerType, class ConsumerPrxType, class ObjectType>
 class NotifyingConsumerImpl
     : public ConsumerImpl<ProviderPrxType,ConsumerType,ConsumerPrxType,ObjectType>,
-      public gbxsickacfr::gbxiceutilacfr::Notify<ObjectType>
+      public gbxiceutilacfr::Notify<ObjectType>
 {
 
 public: 
@@ -32,10 +32,10 @@ public:
     NotifyingConsumerImpl( const orcaice::Context &context )
         : ConsumerImpl<ProviderPrxType,ConsumerType,ConsumerPrxType,ObjectType>(context) {}
 
-    // from gbxsickacfr::gbxiceutilacfr::Notify:
+    // from gbxiceutilacfr::Notify:
     // void  setNotifyHandler( NotifyHandler<Type>* handler );
 
-    // from gbxsickacfr::gbxiceutilacfr::Notify (calls handler->handleData( const Type & ))
+    // from gbxiceutilacfr::Notify (calls handler->handleData( const Type & ))
     // bool hasNotifyHandler() { return hasNotifyHandler_; };
 
 private:

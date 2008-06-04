@@ -15,7 +15,7 @@ using namespace std;
 using namespace ognode;
 
 OgFusionI::OgFusionI( orca::OgFusionConfig& config,
-                      gbxsickacfr::gbxiceutilacfr::Buffer<orca::OgFusionData>& OgFusionDataBuffer )
+                      gbxiceutilacfr::Buffer<orca::OgFusionData>& OgFusionDataBuffer )
     : config_(config),
       ogFusionDataBuffer_(OgFusionDataBuffer)
 {

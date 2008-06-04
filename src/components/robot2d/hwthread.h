@@ -40,7 +40,7 @@ public:
 
     void setCommand( const hydrointerfaces::Robot2d::Command &command );
 
-    // Return valus same as gbxsickacfr::gbxiceutilacfr::Store.
+    // Return valus same as gbxiceutilacfr::Store.
     int getData( hydrointerfaces::Robot2d::Data &data, int timeoutMs )
         {
             return dataStore_.getNext( data, timeoutMs );
@@ -55,9 +55,9 @@ private:
     orcarobotdriverutil::StateMachine stateMachine_;
 
     // Stores the data most recently received from the hardware
-    gbxsickacfr::gbxiceutilacfr::Store<hydrointerfaces::Robot2d::Data>    dataStore_;
+    gbxiceutilacfr::Store<hydrointerfaces::Robot2d::Data>    dataStore_;
     // Stores incoming commands
-    gbxsickacfr::gbxiceutilacfr::Store<hydrointerfaces::Robot2d::Command> commandStore_;
+    gbxiceutilacfr::Store<hydrointerfaces::Robot2d::Command> commandStore_;
 
     bool isMotionEnabled_;
 

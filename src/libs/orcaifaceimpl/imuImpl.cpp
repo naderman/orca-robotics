@@ -94,7 +94,7 @@ ImuImpl::initInterface()
 }
 
 void 
-ImuImpl::initInterface( gbxsickacfr::gbxiceutilacfr::Thread* thread, const std::string& subsysName, int retryInterval )
+ImuImpl::initInterface( gbxiceutilacfr::Thread* thread, const std::string& subsysName, int retryInterval )
 {
     topicPrx_ = orcaice::connectToTopicWithString<orca::ImuConsumerPrx>
         ( context_, consumerPrx_, topicName_, thread, subsysName, retryInterval );

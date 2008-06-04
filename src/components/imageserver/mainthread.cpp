@@ -35,7 +35,7 @@ MainThread::MainThread( const orcaice::Context &context ) :
     if ( !config_.validate() ) {
         context_.tracer().error( "Failed to validate image configuration. "+config_.toString() );
         // this will kill this component
-        throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, "Failed to validate image configuration" );
+        throw gbxutilacfr::Exception( ERROR_INFO, "Failed to validate image configuration" );
     }
 
 }

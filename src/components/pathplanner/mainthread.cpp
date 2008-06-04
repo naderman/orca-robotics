@@ -30,7 +30,7 @@ namespace pathplanner {
 
 MainThread::MainThread( const orcaice::Context & context )
     : orcaice::SubsystemThread( context_.tracer(), context.status(), "MainThread" ),
-      pathPlannerTaskBuffer_( 100, gbxsickacfr::gbxiceutilacfr::BufferTypeQueue ),
+      pathPlannerTaskBuffer_( 100, gbxiceutilacfr::BufferTypeQueue ),
       context_(context)
 {
     subStatus().setMaxHeartbeatInterval( 30.0 );
@@ -199,7 +199,7 @@ MainThread::initDriver()
         stringstream  "Unknown algorithm: " << ;
         context_.tracer().error( errorStr);
         context_.tracer().info( "Valid driver values are {'simplenav', 'skeletonnav', 'sparseskeletonnav', 'astar', 'fake'}" );
-        throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, ss.str() );
+        throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
     }
 #endif
     context_.tracer().debug("driver instantiated",5);
@@ -241,7 +241,7 @@ MainThread::walk()
                 try {
                     pathPlannerTaskBuffer_.getAndPop( task );
                 }
-                catch ( const gbxsickacfr::gbxutilacfr::Exception & e ) {
+                catch ( const gbxutilacfr::Exception & e ) {
                     ret = pathPlannerTaskBuffer_.getAndPopNext( task, timeoutMs );
                 }
                 if ( ret==0 ) {
@@ -354,7 +354,7 @@ MainThread::walk()
             ss << "MainThread: unexpected orca exception: " << e << ": " << e.what;
             subStatus().fault( ss.str() );
         }
-        catch ( const gbxsickacfr::gbxutilacfr::Exception & e )
+        catch ( const gbxutilacfr::Exception & e )
         {
             stringstream ss;
             ss << "MainThread: unexpected exception: " << e.what();

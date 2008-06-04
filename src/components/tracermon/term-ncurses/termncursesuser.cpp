@@ -58,7 +58,7 @@ TermNcursesUser::~TermNcursesUser()
     cout<< "************************************************" << endl;
     cout<< "Press any key to continue." << endl;
     cout<< "************************************************" << endl;
-    gbxsickacfr::gbxiceutilacfr::stopAndJoin( inputMainThread_ );
+    gbxiceutilacfr::stopAndJoin( inputMainThread_ );
 }
 
 void 
@@ -409,24 +409,24 @@ displayLocalTrace( "TermNcursesUser: exited main loop" );
 void 
 TermNcursesUser::displayTrace( const orca::TracerData& obj )
 {
-//     gbxsickacfr::gbxutilacfr::Tracer::TraceType type = gbxsickacfr::gbxutilacfr::Tracer::toTraceType( obj.category );
+//     gbxutilacfr::Tracer::TraceType type = gbxutilacfr::Tracer::toTraceType( obj.category );
     ColorType color = DefaultColor;
 
-    switch ( gbxsickacfr::gbxutilacfr::Tracer::toTraceType( obj.category ) )
+    switch ( gbxutilacfr::Tracer::toTraceType( obj.category ) )
     {
-    case gbxsickacfr::gbxutilacfr::Tracer::InfoTrace :
+    case gbxutilacfr::Tracer::InfoTrace :
         color = DefaultColor;
 //         wattron( mainwin_, COLOR_PAIR(DefaultColor) );
         break;
-    case gbxsickacfr::gbxutilacfr::Tracer::WarningTrace :
+    case gbxutilacfr::Tracer::WarningTrace :
         color = WarningColor;
 //         wattron( mainwin_, COLOR_PAIR(WarningColor)|A_BOLD );
         break;
-    case gbxsickacfr::gbxutilacfr::Tracer::ErrorTrace :
+    case gbxutilacfr::Tracer::ErrorTrace :
         color = ErrorColor;
 //         wattron( mainwin_, COLOR_PAIR(ErrorColor)|A_BOLD );
         break;
-    case gbxsickacfr::gbxutilacfr::Tracer::DebugTrace :
+    case gbxutilacfr::Tracer::DebugTrace :
         color = DebugColor;
 //         wattron( mainwin_, COLOR_PAIR(DebugColor)|A_BOLD );
         break;

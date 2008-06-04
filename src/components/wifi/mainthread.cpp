@@ -62,7 +62,7 @@ MainThread::initHardwareDriver()
     {
         // unrecoverable error
         context_.shutdown(); 
-        throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, "Unknown driver type. Valid driver values are {'hardware','fake'}" );
+        throw gbxutilacfr::Exception( ERROR_INFO, "Unknown driver type. Valid driver values are {'hardware','fake'}" );
     }
     context_.tracer().debug("driver instantiated",5);
     
@@ -146,7 +146,7 @@ MainThread::walk()
             context_.tracer().error( ss.str() );
             subStatus().fault( ss.str() );
         }
-        catch ( const gbxsickacfr::gbxutilacfr::Exception & e )
+        catch ( const gbxutilacfr::Exception & e )
         {
             stringstream ss;
             ss << "unexpected (local?) orcaice exception: " << e.what();

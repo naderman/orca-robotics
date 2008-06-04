@@ -26,9 +26,9 @@ namespace orcaice
  *  @see PtrStore, PtrNotify
  */
 template<class Type>
-class PtrBuffer : public gbxsickacfr::gbxiceutilacfr::Buffer<Type>
+class PtrBuffer : public gbxiceutilacfr::Buffer<Type>
 {
-    using gbxsickacfr::gbxiceutilacfr::Buffer<Type>::queue_;
+    using gbxiceutilacfr::Buffer<Type>::queue_;
 
 public:
     /*!
@@ -37,7 +37,7 @@ public:
      *      - negative numbers for infinite depth, limited by memory size
      *      - zero is undefined
      */
-    PtrBuffer( int depth, gbxsickacfr::gbxiceutilacfr::BufferType type );
+    PtrBuffer( int depth, gbxiceutilacfr::BufferType type );
     
 protected:
     virtual void internalGet( Type & obj ) const ;
@@ -48,8 +48,8 @@ protected:
 };
 
 template<class Type>
-PtrBuffer<Type>::PtrBuffer( int depth, gbxsickacfr::gbxiceutilacfr::BufferType type )
-    : gbxsickacfr::gbxiceutilacfr::Buffer<Type>(depth,type)
+PtrBuffer<Type>::PtrBuffer( int depth, gbxiceutilacfr::BufferType type )
+    : gbxiceutilacfr::Buffer<Type>(depth,type)
 {
 }
 

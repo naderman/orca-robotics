@@ -32,7 +32,7 @@ createInterfaceWithString( const Context      & context,
     {
         std::stringstream ss;
         ss<<"Failed to create interface "<<proxyString<<": "<<e;
-        throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, ss.str() );
+        throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
     }
     catch( const Ice::ObjectAdapterDeactivatedException &e )
     {
@@ -127,7 +127,7 @@ connectToIceStormTopicPrxWithManager( const Ice::CommunicatorPtr & communicator,
     {
         std::string errorString = "invalid proxy to IceStorm";
         communicator->getLogger()->error( errorString );
-        throw( gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, errorString ) );
+        throw( gbxutilacfr::Exception( ERROR_INFO, errorString ) );
         return IceStorm::TopicPrx();
     }
     
@@ -148,7 +148,7 @@ connectToIceStormTopicPrxWithManager( const Ice::CommunicatorPtr & communicator,
             communicator->getLogger()->warning( "no such topic, name=" + e.name );
             // do not create a new topic
             // @todo what do we do? rethrow?
-            //throw gbxsickacfr::gbxutilacfr::Exception(ERROR_INFO,"Couldn't create topic");
+            //throw gbxutilacfr::Exception(ERROR_INFO,"Couldn't create topic");
         }
     }
     

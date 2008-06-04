@@ -13,8 +13,8 @@
 #include <IceUtil/Time.h>
 
 #include <orcaice/subsystemthread.h>
-#include <gbxsickacfr/gbxutilacfr/trivialtracer.h>
-#include <gbxsickacfr/gbxutilacfr/trivialstatus.h>
+#include <gbxutilacfr/trivialtracer.h>
+#include <gbxutilacfr/trivialstatus.h>
 
 using namespace std;
 
@@ -22,7 +22,7 @@ class TestThread : public orcaice::SubsystemThread
 {
 public:    
     // it's safe to pass zero pointers
-    TestThread( gbxsickacfr::gbxutilacfr::Tracer& tracer, gbxsickacfr::gbxutilacfr::Status& status ) : 
+    TestThread( gbxutilacfr::Tracer& tracer, gbxutilacfr::Status& status ) : 
         SubsystemThread( tracer, status ) {};
     virtual void walk()
     {
@@ -36,7 +36,7 @@ class TestThreadWithThrow : public orcaice::SubsystemThread
 {
 public:
     // it's safe to pass zero pointers
-    TestThreadWithThrow( gbxsickacfr::gbxutilacfr::Tracer& tracer, gbxsickacfr::gbxutilacfr::Status& status ) : 
+    TestThreadWithThrow( gbxutilacfr::Tracer& tracer, gbxutilacfr::Status& status ) : 
         SubsystemThread( tracer, status ) {};
     virtual void walk()
     {
@@ -47,7 +47,7 @@ public:
 class TestThreadWithTools : public orcaice::SubsystemThread
 {
 public:
-    TestThreadWithTools( gbxsickacfr::gbxutilacfr::Tracer& tracer, gbxsickacfr::gbxutilacfr::Status& status ) :
+    TestThreadWithTools( gbxutilacfr::Tracer& tracer, gbxutilacfr::Status& status ) :
         SubsystemThread( tracer, status, "MyName" )
     {
     };
@@ -59,12 +59,12 @@ public:
 
 int main(int argc, char * argv[])
 {
-    gbxsickacfr::gbxutilacfr::TrivialTracer tracer;
-    gbxsickacfr::gbxutilacfr::TrivialStatus status( tracer );
+    gbxutilacfr::TrivialTracer tracer;
+    gbxutilacfr::TrivialStatus status( tracer );
 
     cout<<"testing start() and stop()... ";
     {
-        gbxsickacfr::gbxiceutilacfr::Thread* t=0;
+        gbxiceutilacfr::Thread* t=0;
         try
         {
             t = new TestThread( tracer, status );
@@ -84,7 +84,7 @@ int main(int argc, char * argv[])
 
     cout<<"testing SubsystemThread() with exceptions... ";
     {
-        gbxsickacfr::gbxiceutilacfr::Thread* t=0;
+        gbxiceutilacfr::Thread* t=0;
         try
         {
             t = new TestThreadWithThrow( tracer, status );

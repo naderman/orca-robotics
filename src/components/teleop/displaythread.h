@@ -19,7 +19,7 @@
 namespace teleop
 {
 
-class DisplayThread : public gbxsickacfr::gbxiceutilacfr::SafeThread, public Display
+class DisplayThread : public gbxiceutilacfr::SafeThread, public Display
 {
 public:
 

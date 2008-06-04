@@ -67,7 +67,7 @@ Component::stop()
     context().tracer().print( "Press any key or shake the joystick to continue." );
     context().tracer().print( "************************************************" );
     
-    gbxsickacfr::gbxiceutilacfr::stopAndJoin( inputThread_ );
-    gbxsickacfr::gbxiceutilacfr::stopAndJoin( networkThread_ );
-    gbxsickacfr::gbxiceutilacfr::stopAndJoin( displayThread_ );
+    gbxiceutilacfr::stopAndJoin( inputThread_ );
+    gbxiceutilacfr::stopAndJoin( networkThread_ );
+    gbxiceutilacfr::stopAndJoin( displayThread_ );
 }

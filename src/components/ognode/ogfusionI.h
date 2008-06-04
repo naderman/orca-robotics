@@ -28,7 +28,7 @@ class OgFusionI : public orca::OgFusion
 {
 public:
     OgFusionI( orca::OgFusionConfig &config, 
-               gbxsickacfr::gbxiceutilacfr::Buffer<orca::OgFusionData> &OgFusionDataBuffer);
+               gbxiceutilacfr::Buffer<orca::OgFusionData> &OgFusionDataBuffer);
 
     virtual void setData(const orca::OgFusionData&, const Ice::Current&);
     virtual orca::OgFusionConfig getConfig(const ::Ice::Current &) const;
@@ -39,7 +39,7 @@ private:
     orca::OgFusionConfig config_;
 
     //buffer
-    gbxsickacfr::gbxiceutilacfr::Buffer<orca::OgFusionData> &ogFusionDataBuffer_;
+    gbxiceutilacfr::Buffer<orca::OgFusionData> &ogFusionDataBuffer_;
 
 };
 

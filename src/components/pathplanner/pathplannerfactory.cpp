@@ -171,7 +171,7 @@ PathPlannerFactory::getPathPlanner( hydroogmap::OgMap  &ogMap,
     // Only get to here if we didn't return a pathPlanner earlier.
     stringstream ssUnknown;
     ssUnknown << "Unknown algorithm: " << algorithm;
-    throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, ssUnknown.str() );
+    throw gbxutilacfr::Exception( ERROR_INFO, ssUnknown.str() );
 }
 
 }

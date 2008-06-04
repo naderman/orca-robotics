@@ -52,7 +52,7 @@ MainThread::walk()
             loadMapFromFile( context_,theMap );
             cout<<"TRACE(component.cpp): Loaded map: " << orcaobj::toString(theMap) << endl;
         }
-        catch ( const gbxsickacfr::gbxutilacfr::Exception& e )
+        catch ( const gbxutilacfr::Exception& e )
         {   
             // unrecoverable error
             context_.shutdown();
@@ -63,7 +63,7 @@ MainThread::walk()
     {
         // unrecoverable error
         context_.shutdown();
-        throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, "Unknown driver type: "+driverName );
+        throw gbxutilacfr::Exception( ERROR_INFO, "Unknown driver type: "+driverName );
     }
 
     //

@@ -22,7 +22,7 @@ void
 createInterfaceWithString( const Context       & context,
                            Ice::ObjectPtr      & object,
                            const std::string   & name,
-                           gbxsickacfr::gbxiceutilacfr::Thread*  thread, const std::string& subsysName, 
+                           gbxiceutilacfr::Thread*  thread, const std::string& subsysName, 
                            int retryInterval, int retryNumber )
 {
     int count = 0;
@@ -57,7 +57,7 @@ void
 createInterfaceWithTag( const Context       & context,
                         Ice::ObjectPtr      & object,
                         const std::string   & interfaceTag,
-                            gbxsickacfr::gbxiceutilacfr::Thread*  thread, const std::string& subsysName, 
+                            gbxiceutilacfr::Thread*  thread, const std::string& subsysName, 
                             int retryInterval, int retryNumber )
 {
     int count = 0;
@@ -90,7 +90,7 @@ createInterfaceWithTag( const Context       & context,
 
 void
 activate( Context& context, 
-            gbxsickacfr::gbxiceutilacfr::Thread*  thread, const std::string& subsysName, 
+            gbxiceutilacfr::Thread*  thread, const std::string& subsysName, 
             int retryInterval, int retryNumber )
 {
     int count = 0;
@@ -138,7 +138,7 @@ activate( Context& context,
 
 std::string 
 getInterfaceIdWithString( const Context& context, const std::string& proxyString,
-                            gbxsickacfr::gbxiceutilacfr::Thread*  thread, const std::string& subsysName, 
+                            gbxiceutilacfr::Thread*  thread, const std::string& subsysName, 
                             int retryInterval, int retryNumber )
 {
     std::string ifaceId;
@@ -167,7 +167,7 @@ getInterfaceIdWithString( const Context& context, const std::string& proxyString
 
 std::string 
 getInterfaceIdWithTag( const Context& context, const std::string& interfaceTag,
-                            gbxsickacfr::gbxiceutilacfr::Thread*  thread, const std::string& subsysName, 
+                            gbxiceutilacfr::Thread*  thread, const std::string& subsysName, 
                             int retryInterval, int retryNumber )
 {
     std::string ifaceId;

@@ -79,7 +79,7 @@ MainThread::walk()
         else  {
             std::string errString = "Unknown operation type: "+operationType;
             context_.tracer().error( errString );
-            throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, errString );
+            throw gbxutilacfr::Exception( ERROR_INFO, errString );
             return;
         }
     }
@@ -91,7 +91,7 @@ MainThread::walk()
     {
         std::string errString = "Unknown ping method: "+driverName;
         context_.tracer().error( errString );
-        throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, errString );
+        throw gbxutilacfr::Exception( ERROR_INFO, errString );
         return;
     }
     

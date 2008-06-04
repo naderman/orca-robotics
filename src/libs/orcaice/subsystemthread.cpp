@@ -19,7 +19,7 @@ using namespace orcaice;
 using namespace std;
 
 
-SubsystemThread::SubsystemThread( gbxsickacfr::gbxutilacfr::Tracer& tracer, gbxsickacfr::gbxutilacfr::Status& status, const std::string& subsysName ) :
+SubsystemThread::SubsystemThread( gbxutilacfr::Tracer& tracer, gbxutilacfr::Status& status, const std::string& subsysName ) :
     tracer_(tracer),
     subStatus_( status, subsysName )
 {

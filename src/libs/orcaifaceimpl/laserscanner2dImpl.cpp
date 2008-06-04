@@ -91,7 +91,7 @@ LaserScanner2dImpl::initInterface()
 }
 
 void 
-LaserScanner2dImpl::initInterface( gbxsickacfr::gbxiceutilacfr::Thread* thread, const std::string& subsysName, int retryInterval )
+LaserScanner2dImpl::initInterface( gbxiceutilacfr::Thread* thread, const std::string& subsysName, int retryInterval )
 {
     topicPrx_ = orcaice::connectToTopicWithString( context_, consumerPrx_, topicName_, thread, subsysName, retryInterval );
 
@@ -172,7 +172,7 @@ LaserScanner2dImpl::localSet( const ::orca::LaserScanner2dDataPtr &data )
 void
 LaserScanner2dImpl::localSetAndSend( const ::orca::LaserScanner2dDataPtr &data )
 {
-    if ( context_.tracer().verbosity( gbxsickacfr::gbxutilacfr::Tracer::DebugTrace, gbxsickacfr::gbxutilacfr::Tracer::ToAny ) >= 5 )
+    if ( context_.tracer().verbosity( gbxutilacfr::Tracer::DebugTrace, gbxutilacfr::Tracer::ToAny ) >= 5 )
     {
         stringstream ss;
         ss << "LaserScanner2dIface: Sending data: " << orcaobj::toString(data);

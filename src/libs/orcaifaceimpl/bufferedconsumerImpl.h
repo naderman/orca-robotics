@@ -19,7 +19,7 @@ namespace orcaifaceimpl
 
 //!
 //! Implements a consumer interface whose set method is 'SetData'.
-//! Does nothing more than sticking incoming data into an gbxsickacfr::gbxiceutilacfr::Buffer.
+//! Does nothing more than sticking incoming data into an gbxiceutilacfr::Buffer.
 //!
 template<class ProviderPrxType, class ConsumerType, class ConsumerPrxType, class ObjectType>
 class BufferedConsumerImpl : 
@@ -27,18 +27,18 @@ class BufferedConsumerImpl :
 {
 public:
     //! Constructor.
-    BufferedConsumerImpl( int depth, gbxsickacfr::gbxiceutilacfr::BufferType type, const orcaice::Context &context )
+    BufferedConsumerImpl( int depth, gbxiceutilacfr::BufferType type, const orcaice::Context &context )
         : ConsumerImpl<ProviderPrxType,ConsumerType,ConsumerPrxType,ObjectType>(context),
           buffer_(depth,type) {}
 
     //! Returns reference to local proxy.
-    gbxsickacfr::gbxiceutilacfr::Buffer<ObjectType> &buffer() { return buffer_; }
+    gbxiceutilacfr::Buffer<ObjectType> &buffer() { return buffer_; }
 
     //! This callback simply puts the data object into the internal proxy.
     virtual void dataEvent( const ObjectType& data ) { buffer_.push( data ); }
 
 private:
-    gbxsickacfr::gbxiceutilacfr::Buffer<ObjectType> buffer_;
+    gbxiceutilacfr::Buffer<ObjectType> buffer_;
 };
 
 } // namespace

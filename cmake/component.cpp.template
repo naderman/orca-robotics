@@ -30,7 +30,7 @@ void
 Component::stop()
 {
     context().tracer().debug( "stopping main thread", 5 );
-    gbxsickacfr::gbxiceutilacfr::stopAndJoin( mainThread_ );
+    gbxiceutilacfr::stopAndJoin( mainThread_ );
     context().tracer().debug( "stopped main thread", 5 );
 
     // give MainThread a chance to write something to the history

@@ -55,7 +55,7 @@ private:
 
     // Protect from simultaneous get/set of statusData_
     IceUtil::Mutex mutex_;
-    gbxsickacfr::gbxiceutilacfr::Timer upTimer_;
+    gbxiceutilacfr::Timer upTimer_;
     orcaice::Context context_;
 };
 

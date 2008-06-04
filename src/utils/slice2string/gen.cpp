@@ -187,7 +187,7 @@ Gen::generate(const UnitPtr& p)
     H << "\n";
 
     C << "\n#include <" << lib_dir << "/" << _base << ".h>";
-    C << "\n#include <gbxsickacfr/gbxutilacfr/exceptions.h>";
+    C << "\n#include <gbxutilacfr/exceptions.h>";
     C << "\n#include <sstream>";
     C << "\n#include \"util.h\"";
     C << "\n";
@@ -345,7 +345,7 @@ Gen::TypesVisitor::visitEnum(const EnumPtr& p)
     C << eb;
     C << nl << "ostringstream ss;";
     C << nl << "ss << \"Unknown case in enumerator " << scope.substr(2)<<name << ": \"<< ((int)obj);";
-    C << nl << "throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, ss.str() );";
+    C << nl << "throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );";
 
     C << eb;
 }

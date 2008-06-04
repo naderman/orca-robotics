@@ -87,7 +87,7 @@ PowerImpl::initInterface()
 }
 
 void 
-PowerImpl::initInterface( gbxsickacfr::gbxiceutilacfr::Thread* thread, const std::string& subsysName, int retryInterval )
+PowerImpl::initInterface( gbxiceutilacfr::Thread* thread, const std::string& subsysName, int retryInterval )
 {
     topicPrx_ = orcaice::connectToTopicWithString<orca::PowerConsumerPrx>
         ( context_, consumerPrx_, topicName_, thread, subsysName, retryInterval );

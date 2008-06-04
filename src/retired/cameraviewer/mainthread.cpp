@@ -94,7 +94,7 @@ MainThread::walk()
     // Subscribe for data
     //
     orcaifaceimpl::BufferedCameraConsumerImplPtr cameraInterface =
-        new orcaifaceimpl::BufferedCameraConsumerImpl( 10, gbxsickacfr::gbxiceutilacfr::BufferTypeCircular, context_);
+        new orcaifaceimpl::BufferedCameraConsumerImpl( 10, gbxiceutilacfr::BufferTypeCircular, context_);
     // multi-try function
     cameraInterface->subscribeWithTag( "Camera", this, subsysName() );
     

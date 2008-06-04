@@ -107,7 +107,7 @@ Component::loadPluginLibraries( const std::string& factoryLibNames )
         {
             stringstream ss;
             ss << "Factory is not an orca factory!  (couldn't cast to orcaqgui::IGuiElementFactory*)";
-            throw gbxsickacfr::gbxutilacfr::Exception( ERROR_INFO, ss.str() );
+            throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
         }
     }
 

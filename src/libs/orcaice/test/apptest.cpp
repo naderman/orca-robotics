@@ -67,12 +67,12 @@ void TestComponent::start()
     cout<<"testing Tracer::verbosity() ..."<<endl;
     {
         int verb;
-        verb = context().tracer().verbosity(gbxsickacfr::gbxutilacfr::Tracer::InfoTrace,gbxsickacfr::gbxutilacfr::Tracer::ToDisplay);
+        verb = context().tracer().verbosity(gbxutilacfr::Tracer::InfoTrace,gbxutilacfr::Tracer::ToDisplay);
         if ( verb!=1 ) {
             cout<<"failed. wrong InfoToDisplay verbosity, expect=1, got="<<verb<<endl;
             exit(EXIT_FAILURE);
         }
-        verb = context().tracer().verbosity(gbxsickacfr::gbxutilacfr::Tracer::DebugTrace,gbxsickacfr::gbxutilacfr::Tracer::ToFile);
+        verb = context().tracer().verbosity(gbxutilacfr::Tracer::DebugTrace,gbxutilacfr::Tracer::ToFile);
         if ( verb!=16 ) {
             cout<<"failed. wrong DebugToFile verbosity, expect=16, got="<<verb<<endl;
             exit(EXIT_FAILURE);

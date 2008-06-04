@@ -161,8 +161,8 @@ PathFollower2dElement::PathFollower2dElement( const orcaice::Context &context,
 
     doInitialSetup();
     
-    timer_ = new gbxsickacfr::gbxiceutilacfr::Timer;
-    activationTimer_ = new gbxsickacfr::gbxiceutilacfr::Timer;
+    timer_ = new gbxiceutilacfr::Timer;
+    activationTimer_ = new gbxiceutilacfr::Timer;
     activationTimer_->restart();
 }
 
