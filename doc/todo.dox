@@ -86,6 +86,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 @par Updated components
 - LocalNav (alex b)
   - Big overhaul and simplification
+- Gps
+  - Not messing with gps data in case of no fix. just publishing what the driver provided. (alex m)
 
 @par Updated utilities
 
