@@ -622,6 +622,9 @@ MainThread::walk()
             }
             else
             {
+                //
+                // This will wait until the new path arrives
+                //
                 context_.tracer().info("Waiting for a goal path");
                 bool gotNewPath = waitForNewPath( incomingPath );
                 if ( gotNewPath )
@@ -741,8 +744,6 @@ MainThread::walk()
         }
             
     } // end of big while loop
-    
-    cout << "TRACE(mainloop.cpp): End of loop." << endl;
     
     // wait for the component to realize that we are quitting and tell us to stop.
     waitForStop();

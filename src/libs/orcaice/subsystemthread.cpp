@@ -73,7 +73,7 @@ SubsystemThread::run()
         }
     }
     else {
-        tracer_.debug( subsysName()+": dropping out from run() ", 4 );
+        tracer_.info( subsysName()+": dropping out from run() " );
     }
 
     // wait for somebody to realize that we are quitting and tell us to stop.
