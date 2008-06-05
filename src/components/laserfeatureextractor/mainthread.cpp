@@ -305,6 +305,10 @@ MainThread::walk()
         catch ( const Ice::Exception & e ) {
             exceptionSS << "MainThread: unexpected Ice exception: " << e;
         }
+        catch ( const orcaice::ComponentDeactivatingException & e ) {
+            // nothing to worry
+            break;
+        }
         catch ( const std::exception & e ) {
             exceptionSS << "MainThread: unexpected std exception: " << e.what();
         }
