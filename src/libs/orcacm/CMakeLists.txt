@@ -22,9 +22,6 @@ IF( build )
                 )
     ENDIF( NOT GBX_OS_WIN )
     
-    # special dependency on the generated files
-    ADD_DEPENDENCIES( ${LIB_NAME} OrcaInterfaces )
-    
     GBX_ADD_HEADERS( ${LIB_INSTALL} ${hdrs} )
 
 ENDIF( build )

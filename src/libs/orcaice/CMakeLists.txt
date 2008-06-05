@@ -2,7 +2,7 @@ ORCA_SET_LIBRARY_NAME( OrcaIce )
 GBX_ADD_LICENSE( LGPL )
 
 SET( build TRUE )
-# this library is not optional
+# This is one of fundamental libs. It is not optional.
 
 SET( ext_libs GbxUtilAcfr GbxIceUtilAcfr HydroUtil )
 GBX_REQUIRE_INSTALLS( build LIB ${LIB_NAME} ${ext_libs} )
@@ -31,9 +31,6 @@ IF( build )
     ENDIF( NOT GBX_OS_WIN )
     
     TARGET_LINK_LIBRARIES( ${LIB_NAME} ${dep_libs} )
-
-    # special dependency on the generated files
-    ADD_DEPENDENCIES( ${LIB_NAME} OrcaInterfaces )
     
     GBX_ADD_HEADERS( ${LIB_INSTALL} ${hdrs} )
     

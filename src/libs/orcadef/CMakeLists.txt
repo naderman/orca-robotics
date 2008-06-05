@@ -23,9 +23,6 @@ IF( build )
     
     TARGET_LINK_LIBRARIES( ${LIB_NAME} ${dep_libs} )
     
-    # special dependency on the generated files
-    ADD_DEPENDENCIES( ${LIB_NAME} OrcaObjects )
-    
     GBX_ADD_HEADERS( ${LIB_INSTALL} ${hdrs} )
     
     IF( ORCA_BUILD_TESTS )
