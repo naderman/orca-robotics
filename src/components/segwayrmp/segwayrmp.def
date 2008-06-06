@@ -43,7 +43,6 @@ Config.VehicleDescription.Geometry.Cylindrical.Height.Default=1.0
 Config.VehicleDescription.Geometry.Cylindrical.VehicleToGeometryTransform.Default=0.0 0.0 0.0  0.0 0.0 0.0
 
 Config.Odometry2dPublishInterval.Default=0.1
-Config.ProvideOdometry3d.Default=1
 Config.Odometry3dPublishInterval.Default=0.1
 Config.PowerPublishInterval.Default=20.0
 

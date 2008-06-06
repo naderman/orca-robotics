@@ -61,12 +61,9 @@ This component dynamically loads an implementation of a Hydro hardware interface
         - t>0 : send approximately every t seconds
     - Default: 0.1 (10Hz)
 
-  - @c SegwayRmp.Config.ProvideOdometry3d (bool)
-    - Whether or not to update the Odometry3d interface
-    - Default: 1
-
   - @c SegwayRmp.Config.Odometry3dPublishInterval (double) [s]
-    - How often to send 3D odometry information to the IceStorm server (iff ProvideOdometry3d is set)
+    - How often to send 3D odometry information to the IceStorm server. Set this to a high value if you don't
+      use 3D information and are concerned about bandwidth/cpu load.
     - Valid values:
         - t<0 : send every new data point
         - t>0 : send approximately every t seconds
