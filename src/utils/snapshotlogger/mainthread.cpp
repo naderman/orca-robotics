@@ -126,7 +126,7 @@ MainThread::initLoggers()
     }
 
     // initialize and subscribe all interfaces  
-    for ( uint i=0; i < snapshotLoggers_.size(); i++ )
+    for ( size_t i=0; i < snapshotLoggers_.size(); i++ )
         snapshotLoggers_[i]->subscribe( context_, logWriterInfos_[i].interfaceTag );
 }
 
@@ -185,7 +185,7 @@ namespace {
     bool
     atLeastOneNonEmpty( const std::vector<orcalog::SnapshotLogger*> &loggers )
     {
-        for ( uint i=0; i < loggers.size(); i++ )
+        for ( size_t i=0; i < loggers.size(); i++ )
         {
             if ( loggers[i]->snapshotBufferSize() > 0 )
                 return true;
@@ -200,7 +200,7 @@ namespace {
         orcalog::SnapshotLogger *loggerWithOldest = NULL;
 
         // Find the age of the oldest item in the first non-empty buffer
-        uint i=0;
+        size_t i=0;
         for ( ; i < loggers.size(); i++ )
         {
             if ( loggers[i]->snapshotBufferSize() > 0 )
@@ -260,7 +260,7 @@ MainThread::takeSnapshot()
         //
         // Prepare for snapshot
         //
-        for ( uint i=0; i < snapshotLoggers_.size(); i++ )
+        for ( size_t i=0; i < snapshotLoggers_.size(); i++ )
         {
             // Prepend the timestamp to the filename
             orcalog::LogWriterInfo logWriterInfo = logWriterInfos_[i];
@@ -284,7 +284,7 @@ MainThread::takeSnapshot()
     //
     // Finalise snapshot
     //
-    for ( uint i=0; i < snapshotLoggers_.size(); i++ )
+    for ( size_t i=0; i < snapshotLoggers_.size(); i++ )
         snapshotLoggers_[i]->finaliseSnapshot();
 
     if ( !exceptionSS.str().empty() )

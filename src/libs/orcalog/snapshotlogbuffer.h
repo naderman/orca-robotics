@@ -39,7 +39,7 @@ public:
             }
         }
 
-    const uint bufferSize() const
+    const unsigned int bufferSize() const
         { return buffer_.size(); }
 
     const orca::Time &oldestArrivalTime() const

@@ -19,7 +19,7 @@ std::string toString( const IDriver::Inputs &i )
         // << "  obsRanges:               " << i.obsRanges << endl
        << "  obsTime:                 " << orcaobj::toString(i.obsTime) << endl
        << "  goals: " << endl;
-    for ( uint j=0; j < i.goals.size(); j++ )
+    for ( size_t j=0; j < i.goals.size(); j++ )
     {
         ss << "    " << i.goals[j] << endl;
     }

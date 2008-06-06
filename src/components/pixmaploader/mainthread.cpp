@@ -26,7 +26,7 @@ void convert( const std::vector<char> &rgbPixels,
 {
     orcaPixels.resize( rgbPixels.size()/3 );
 
-    for ( uint i=0; i < rgbPixels.size(); i+=3 )
+    for ( size_t i=0; i < rgbPixels.size(); i+=3 )
     {
         orca::Pixel pix;
 

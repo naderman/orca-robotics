@@ -280,7 +280,7 @@ MainThread::walk()
 
             // Convert format
             featureData.features.clear();
-            for ( uint i=0; i < hydroFeatures.size(); i++ )
+            for ( size_t i=0; i < hydroFeatures.size(); i++ )
             {
                 featureData.features.push_back( convert( *hydroFeatures[i] ) );
                 delete hydroFeatures[i];

@@ -92,7 +92,7 @@ namespace orcalogfactory {
                 }
             }
 
-        virtual uint snapshotBufferSize() const
+        virtual unsigned int snapshotBufferSize() const
             { return snapshotLogBuffer_->bufferSize(); }
         virtual const orca::Time &oldestArrivalTime() const
             { return snapshotLogBuffer_->oldestArrivalTime(); }
@@ -222,7 +222,7 @@ namespace orcalogfactory {
                     isTakingSnapshot_ = false;
                 }
             }
-        virtual uint snapshotBufferSize() const
+        virtual unsigned int snapshotBufferSize() const
             { return snapshotLogBuffer_->bufferSize(); }
         virtual const orca::Time &oldestArrivalTime() const
             { return snapshotLogBuffer_->oldestArrivalTime(); }

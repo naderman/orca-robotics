@@ -64,9 +64,9 @@ ButtonElement::press()
     if ( !isConnected_ ) connect();
     if ( !isConnected_ ) return;
 
-    const uint MAX_TRIES = 2;
+    const int MAX_TRIES = 2;
 
-    for ( uint i=0; i < MAX_TRIES; i++ )
+    for ( int i=0; i < MAX_TRIES; i++ )
     {
         try {
             buttonPrx_->press();

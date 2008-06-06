@@ -41,7 +41,7 @@ namespace orcanavutil {
             throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
         }
 
-        for ( uint i=0; i < locData.hypotheses.size(); i++ )
+        for ( size_t i=0; i < locData.hypotheses.size(); i++ )
         {
             components.push_back( convert( locData.hypotheses[i] ) );
             weights.push_back( locData.hypotheses[i].weight );
@@ -78,7 +78,7 @@ namespace orcanavutil {
     {
         double maxWeight  = -1;
         int    maxWeightI = -1;
-        for ( uint i=0; i < loc.hypotheses.size(); i++ )
+        for ( size_t i=0; i < loc.hypotheses.size(); i++ )
         {
             if ( loc.hypotheses[i].weight > maxWeight )
             {
@@ -127,7 +127,7 @@ namespace orcanavutil {
 
         l.hypotheses.resize( gmm.size() );
 
-        for ( uint i=0; i < gmm.size(); i++ )
+        for ( size_t i=0; i < gmm.size(); i++ )
         {
             l.hypotheses[i] = convert( gmm.components(i), gmm.weights(i) );
         }

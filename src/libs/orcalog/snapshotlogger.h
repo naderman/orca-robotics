@@ -35,7 +35,7 @@ public:
     virtual void finaliseSnapshot()=0;
 
     // Call these during snapshotting
-    virtual uint snapshotBufferSize() const=0;
+    virtual unsigned int snapshotBufferSize() const=0;
     virtual const orca::Time &oldestArrivalTime() const=0;
     virtual void writeOldestObjToLogAndDiscard()=0;
 };

@@ -13,7 +13,7 @@ namespace {
     void checkFormats( const orcalog::LogReaderInfo   &logReaderInfo,
                        const std::vector<std::string> &okFormats )
     {
-        for ( uint i=0; i < okFormats.size(); i++ )
+        for ( size_t i=0; i < okFormats.size(); i++ )
         {
             if ( logReaderInfo.format == okFormats[i] )
             {
@@ -26,7 +26,7 @@ namespace {
         stringstream ss;
         ss << logReaderInfo.interfaceName<<": unknown log format: "<<logReaderInfo.format<<endl
            << "  Supported formats are: ";
-        for ( uint i=0; i < okFormats.size(); i++ )
+        for ( size_t i=0; i < okFormats.size(); i++ )
         {
             ss << okFormats[i];
             if ( i != 0 ) ss << ", ";

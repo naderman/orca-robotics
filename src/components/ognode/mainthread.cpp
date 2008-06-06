@@ -118,7 +118,7 @@ MainThread::setUpInternalMapFromPriorMap( const std::string &priorMapProxyString
     internalMap_.setMetresPerCellX( priorMap.metresPerCellX );
     internalMap_.setMetresPerCellY( priorMap.metresPerCellY );
 
-    for ( uint i=0; i < priorMap.data.size(); i++ )
+    for ( size_t i=0; i < priorMap.data.size(); i++ )
     {
         internalMap_.data()[i] = (double)priorMap.data[i]/(double)hydroogmap::CELL_OCCUPIED;
         CLIP_TO_LIMITS( ogfusion::ogLimitLowD, internalMap_.data()[i], ogfusion::ogLimitHighD );

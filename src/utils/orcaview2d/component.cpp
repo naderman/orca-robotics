@@ -92,7 +92,7 @@ Component::loadPluginLibraries( const std::string& factoryLibNames )
         }
     }
 
-    for ( uint i=0; i < factories_.size(); i++ )
+    for ( size_t i=0; i < factories_.size(); i++ )
     {
         cout<<"TRACE(orcaview2d:component.cpp): Setting context for "<<i<<"'th factory" << endl;
 

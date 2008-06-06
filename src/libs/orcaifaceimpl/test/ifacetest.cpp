@@ -23,7 +23,7 @@ void
 TestComponent::start()
 {
     // Try creating and destroying the interface a few times
-    for ( uint i=0; i < 5; i++ )
+    for ( int i=0; i < 5; i++ )
     {
         cout<<"TRACE(ifacetest.cpp): Creating Interface" << endl;
         orcaifaceimpl::WifiImplPtr wifiIface = new orcaifaceimpl::WifiImpl( context(),

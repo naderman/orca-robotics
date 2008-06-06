@@ -139,7 +139,7 @@ MainThread::walk()
     //
     // Initialise replayer
     //
-    for ( uint i=0; i < replayers_.size(); i++ )
+    for ( size_t i=0; i < replayers_.size(); i++ )
     {
         replayers_[i]->init();
     }

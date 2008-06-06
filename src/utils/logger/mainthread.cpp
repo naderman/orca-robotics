@@ -140,7 +140,7 @@ MainThread::walk()
     }
 
     // Kick them all off
-    for ( uint i=0; i < autoLoggers_.size(); i++ )
+    for ( size_t i=0; i < autoLoggers_.size(); i++ )
     {
         autoLoggers_[i]->startLogging();
     }

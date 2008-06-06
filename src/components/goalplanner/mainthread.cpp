@@ -461,7 +461,7 @@ MainThread::replan( const hydronavutil::Pose &currentPose, const orca::Waypoint2
     {
         throw GoalPlanException( "MainThread::replan(): localNavPrx_->getRelativeActivationTime returned false!", false );
     }
-    for ( uint i = currentWpIndex; i < oldPath.path.size(); i++ )
+    for ( size_t i = currentWpIndex; i < oldPath.path.size(); i++ )
     {
         orca::Waypoint2d &wp = oldPath.path[i];
         if ( orcaice::timeAsDouble(wp.timeTarget) > secSinceActivation )
@@ -483,7 +483,7 @@ MainThread::replan( const hydronavutil::Pose &currentPose, const orca::Waypoint2
     assert( newPath.path.size() > 0 );
     std::vector<double> cumDistances( newPath.path.size() );
     cumDistances[0] = distance( currentPose, newPath.path[0] );
-    for ( uint i=1; i < newPath.path.size(); i++ )
+    for ( size_t i=1; i < newPath.path.size(); i++ )
     {
         cumDistances[i] = cumDistances[i-1] + distance( newPath.path[i-1], newPath.path[i] );
     }
@@ -494,7 +494,7 @@ MainThread::replan( const hydronavutil::Pose &currentPose, const orca::Waypoint2
     assert( totalTime >= 0.0 );
 
     // Spread this time out in proportion to distance
-    for ( uint i=0; i < newPath.path.size(); i++ )
+    for ( size_t i=0; i < newPath.path.size(); i++ )
     {
         double time = (cumDistances[i]/totalDistance) * totalTime;
         newPath.path[i].timeTarget = orcaice::toOrcaTime( time );
@@ -507,7 +507,7 @@ MainThread::replan( const hydronavutil::Pose &currentPose, const orca::Waypoint2
     // orca::Path2d::iterator remainderStart = oldPath.path.begin();
     // remainderStart += currentWpIndex;
     // newPath.path.insert( newPath.path.back(), remainderStart, oldPath.path.end() );
-    for ( uint i = currentWpIndex; i < oldPath.path.size(); i++ )
+    for ( size_t i = currentWpIndex; i < oldPath.path.size(); i++ )
     {
         newPath.path.push_back( oldPath.path[i] );
     }

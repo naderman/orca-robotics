@@ -14,7 +14,7 @@ namespace {
     void checkFormats( const std::string              &format,
                        const std::vector<std::string> &okFormats )
     {
-        for ( uint i=0; i < okFormats.size(); i++ )
+        for ( size_t i=0; i < okFormats.size(); i++ )
         {
             if ( format == okFormats[i] )
             {
@@ -27,7 +27,7 @@ namespace {
         stringstream ss;
         ss << "Unknown log format: "<<format<<endl
            << "  Supported formats are: ";
-        for ( uint i=0; i < okFormats.size(); i++ )
+        for ( size_t i=0; i < okFormats.size(); i++ )
         {
             ss << okFormats[i];
             if ( i != okFormats.size()-1 ) ss << ", ";
@@ -66,7 +66,7 @@ namespace {
         }
         else if ( format == "ascii" )
         {
-            for ( uint i=0; i < 20; i++ )
+            for ( size_t i=0; i < 20; i++ )
                 cout<<"TRACE(logwriters.cpp): TODO: log orca::VehicleDescription" << endl;
         }
         else

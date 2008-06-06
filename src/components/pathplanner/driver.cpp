@@ -127,7 +127,7 @@ namespace {
         // Compute the length of each leg of the trip
         std::vector<double> legLengths;
         double totalLength=0;
-        for ( uint i=1; i < pathCells.size(); i++ )
+        for ( size_t i=1; i < pathCells.size(); i++ )
         {
             double thisLength;
             if ( i==1 )
@@ -153,7 +153,7 @@ namespace {
 
         // Add each leg to the orca-style path
         orca::Path2d orcaPath;
-        for ( uint i=0; i < pathCells.size(); i++ )
+        for ( size_t i=0; i < pathCells.size(); i++ )
         {
             // For the start and goal, add the real thing
             if ( i==0 ) { orcaPath.push_back( start ); continue; }
