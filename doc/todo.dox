@@ -88,6 +88,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
   - Big overhaul and simplification
 - Gps
   - Not messing with gps data in case of no fix. just publishing what the driver provided. (alex m)
+- SegwayRmp
+  - removed obsolete config parameter ProvideOdometry3d. Use Odometry3dPublishInterval instead.
 
 @par Updated utilities
 
