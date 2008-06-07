@@ -160,10 +160,35 @@ MainThread::initDriver()
 void 
 MainThread::connectToLaser()
 {
-    laserConsumer_->subscribeWithTag( "Laser",
-                                      this,
-                                      subsysName() );
-    context_.tracer().info( "Connected to laser." );
+    while ( !isStopping() )
+    {
+        laserConsumer_->subscribeWithTag( "Laser", this, subsysName() );
+    
+        // make sure we get something
+        // when delays happen right after subscription we can be more tolerant (issue warnings instead of faults)
+        int count = 0;
+        const int maxCount = 5;
+        const int timeoutMs = 1000;
+        orca::RangeScanner2dDataPtr rangeData;
+        while ( !isStopping() && count<maxCount )
+        {
+            int ret = laserConsumer_->store().getNext( rangeData, timeoutMs );
+            if ( ret == 0 ) {
+                context_.tracer().info( "Connected to laser." );
+                return;
+            }
+            else {
+                if ( isStopping() ) {
+                    throw orcaice::ComponentDeactivatingException( ERROR_INFO, "Failed to get inputs because the component is deactivating" );
+                }
+                stringstream ss;
+                ss << "Timed out (" << timeoutMs << "ms) waiting for laser data after subscription.";
+                subStatus().warning( ss.str() );
+            }
+            ++count;
+        }
+        // haven't received anything, resubscribe
+    }
 }
 
 void 
