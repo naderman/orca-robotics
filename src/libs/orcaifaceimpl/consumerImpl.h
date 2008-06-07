@@ -124,6 +124,7 @@ public:
     // this implementation redirects to the implementation class
     virtual void setData( const ObjectType& data, const Ice::Current& )
     {
+        context_.tracer().debug( "Received data from provider", 8 );
         dataEvent( data );
     }
 
@@ -191,7 +192,11 @@ public:
                 context_.tracer().warning( ss.str() );
             }
             ++count;
+            if ( !subsysName.empty() )
+                context_.status().heartbeat( subsysName );
             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(retryInterval));
+            if ( !subsysName.empty() )
+                context_.status().heartbeat( subsysName );
         }
 
     }

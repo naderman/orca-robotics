@@ -188,6 +188,7 @@ MainThread::connectToLaser()
             ++count;
         }
         // haven't received anything, resubscribe
+        subStatus().heartbeat();
     }
 }
 
