@@ -250,8 +250,8 @@ OrcaGpsEvent::OrcaGpsEvent(const hydrointerfaces::InsGps::GpsData &hydroGps)
     data.latitude = hydroGps.lat;
     data.longitude = hydroGps.lon;
     data.altitude = hydroGps.alt;
-    data.horizontalPositionError = hydroGps.hDop;
-    data.verticalPositionError = hydroGps.vDop;
+    data.horizontalPositionError = (hydroGps.sigmaLat+hydroGps.sigmaLon)/2.0;//check units
+    data.verticalPositionError = hydroGps.sigmaAlt;
     data.heading = hydroGps.heading;
     data.speed = hydroGps.speed;
     data.climbRate = hydroGps.climbRate;
