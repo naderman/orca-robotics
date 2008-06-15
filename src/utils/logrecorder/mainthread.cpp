@@ -16,7 +16,7 @@
 #include "mainthread.h"
 
 using namespace std;
-using namespace logger;
+using namespace logrecorder;
 
 namespace {
 

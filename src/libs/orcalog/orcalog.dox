@@ -16,7 +16,7 @@
 @section overview Overview
 
 A log consists of a master file and a set of log-files.  See @ref
-orca_component_logger for details.
+orca_component_logrecorder for details.
 
 The main classes in orcalog which support this are:
 
@@ -41,7 +41,7 @@ Header file:
 #include <orcalog/orcalog.h>
 @endverbatim
 
-@see orca_component_logger
+@see orca_component_logrecorder
 @see orca_library_orcalogfactory
 
 @par Responsible Developer
@@ -56,7 +56,7 @@ Alex Brooks, Alexei Makarenko, Tobias Kaupp
 This namespace is part of a library which contains basic definitions for Orca logging facilities.
 
 @see orca_library_orcalog
-@see orca_component_logger
+@see orca_component_logrecorder
 @see orca_library_orcalogfactory
 
 */

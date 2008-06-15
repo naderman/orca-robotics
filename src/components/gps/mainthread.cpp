@@ -201,19 +201,19 @@ MainThread::walk()
             // somewhere in mainLoop. Eventually, component will tell us to stop.
         }
         catch ( const Ice::Exception &e ) {
-            exceptionSS << "ERROR(mainthread.cpp): Caught unexpected exception: " << e;
+            exceptionSS << string(ERROR_INFO) << "Caught unexpected exception: " << e;
         }
         catch ( const std::exception &e ) {
-            exceptionSS << "ERROR(mainthread.cpp): Caught unexpected exception: " << e.what();
+            exceptionSS << string(ERROR_INFO) << "Caught unexpected exception: " << e.what();
         }
         catch ( const std::string &e ) {
-            exceptionSS << "ERROR(mainthread.cpp): Caught unexpected string: " << e;
+            exceptionSS << string(ERROR_INFO) << "Caught unexpected string: " << e;
         }
         catch ( const char *e ) {
-            exceptionSS << "ERROR(mainthread.cpp): Caught unexpected char *: " << e;
+            exceptionSS << string(ERROR_INFO) << "Caught unexpected char *: " << e;
         }
         catch ( ... ) {
-            exceptionSS << "ERROR(mainthread.cpp): Caught unexpected unknown exception.";
+            exceptionSS << string(ERROR_INFO) << "Caught unexpected unknown exception.";
         }
 
         if ( !exceptionSS.str().empty() ) {

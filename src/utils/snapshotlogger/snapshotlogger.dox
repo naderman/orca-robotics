@@ -25,23 +25,23 @@
 
 @par Operation
 
-The principle of operation is similar to @ref orca_component_logger.
+The principle of operation is similar to @ref orca_component_logrecorder.
 
-The difference is that, where @ref orca_component_logger starts
+The difference is that, where @ref orca_component_logrecorder starts
 logging immediately and logs continuously, SnapshotLogger continually
 receives data but only logs to file when triggered.  On receiving a
 trigger, it logs all data received in a small window of time.
 
-@see @ref orca_component_logger
+@see @ref orca_component_logrecorder
 @see @ref orca_component_logplayer
 
 @par Configuration
 
-Interfaces to log are defined as in @ref orca_component_logger.
+Interfaces to log are defined as in @ref orca_component_logrecorder.
 
 @par Logfile Format
 
-Logfile format is identical to @ref orca_component_logger.
+Logfile format is identical to @ref orca_component_logrecorder.
 
 @par Authors
 - Alex Brooks, Tobias Kaupp, Alexei Makarenko

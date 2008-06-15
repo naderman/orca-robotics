@@ -42,7 +42,7 @@ Make sure that you can move the robot with @ref orca_component_teleop (same as d
 
 @section orca_doc_tute_logtxt_keyboard Odometry logger
 
-The sample config file for the @ref orca_component_logger contains a sample line for each supported interface. Most of them need to be deleted because we will log a single interface: orca::Odometry2d. The resulting config file is shown below.
+The sample config file for the @ref orca_component_logrecorder contains a sample line for each supported interface. Most of them need to be deleted because we will log a single interface: orca::Odometry2d. The resulting config file is shown below.
 @verbatim
 # Component
 Logger.Platform=local
@@ -76,7 +76,7 @@ master.log  odometry2d0.log
 
 @section orca_doc_tute_logtxt_contents Examining log files
 
-Lets examine the log files and compare their contents with the log file format described in the documentation of the @ref orca_component_logger component.
+Lets examine the log files and compare their contents with the log file format described in the documentation of the @ref orca_component_logrecorder component.
 
 @par Master file 
 
@@ -95,12 +95,12 @@ The data section consists of 2-line segments, one for each data message. A typic
 601 899999
 1.3562 -0.236412 -34.8 0.25 0 -12
 @endverbatim 
-To understand it, we have to examine the documentation for orcalogfactory::Odometry2dLogger (there is a link to it from @ref orca_component_logger documentation under the heading "Details for specific interfaces"). 
+To understand it, we have to examine the documentation for orcalogfactory::Odometry2dLogger (there is a link to it from @ref orca_component_logrecorder documentation under the heading "Details for specific interfaces"). 
 
 Now we can interpret the segment above. This data point was collected at the time 601 seconds and 899999 microseconds (this is Stage simulation time, not processor time). At that time, the odometric position of the robot was x=1.3562m, y=-0.236412m, theta=-34.8deg. The robot was moving with speed vx=0.25m/s, no cross speed, and turnrate=-12deg/s.
 
 @par Parsing in Matlab
 
-As noted in the @ref orca_component_logger documentation, there's a simple Matlab parsing function for this interface in @c [ORCA_SRC]/scripts/matlab/logutils/parseodometry2ddata.m.
+As noted in the @ref orca_component_logrecorder documentation, there's a simple Matlab parsing function for this interface in @c [ORCA_SRC]/scripts/matlab/logutils/parseodometry2ddata.m.
 
 */

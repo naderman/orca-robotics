@@ -25,7 +25,7 @@ namespace orcalog
     class AutoLogger;
 }
 
-namespace logger
+namespace logrecorder
 {
 
 class MainThread: public orcaice::SubsystemThread

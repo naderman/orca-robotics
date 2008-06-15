@@ -48,7 +48,7 @@ For more information read the chapter on Slice in the Ice Manual <a href="http:/
 
 Optionally, consider adding support for you interface in libraries and utilities. Library libOrcaObjects has many functions specialized for data objects, e.g. setSane(). The following tools have a plug-in architecture, with a plug-in per interface:
     - @ref orca_util_orcaview2d
-    - @ref orca_component_logger
+    - @ref orca_component_logrecorder
     - @ref orca_component_logplayer
     - @ref orca_util_probe
     - @ref orca_component_orcamon

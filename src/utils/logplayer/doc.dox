@@ -33,7 +33,7 @@
 @par Operation
 
 This component plays back logged data: either recorded by the Orca
-@ref orca_component_logger or other non-Orca loggers (see @ref
+@ref orca_component_logrecorder or other non-Orca loggers (see @ref
 logfile_format for an explanation). It sets up provided interfaces to
 which components can hook up to. Data can be accessed by remote calls
 (such as getData(), getConfig()). Data is also "pushed" to IceStorm,
@@ -49,14 +49,14 @@ replayers.  See LogPlayer.Config.FactoryLibNames.
 @section logfile_format Logfile format
 
 The standard way to replay data is to use data logged by the Orca @ref
-orca_component_logger. It generates a human-readable master file
+orca_component_logrecorder. It generates a human-readable master file
 containing a header that specifies subfiles with the actual data. The
 master file body contains timestamps and references to the
-subfiles. See @ref orca_component_logger for a detailed description of
+subfiles. See @ref orca_component_logrecorder for a detailed description of
 the logfile format.
 
 The subfiles can be encoded in different formats using the Orca @ref
-orca_component_logger (eg. {'ice','ascii'}).  Not all interfaces
+orca_component_logrecorder (eg. {'ice','ascii'}).  Not all interfaces
 support replaying in all possible formats.  To distinguish between the
 different encoding types, the master file header contains a field
 called @c encoding @c type.

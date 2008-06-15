@@ -84,7 +84,7 @@ This component encapsulates an image grabber for usb and firewire cameras. It ca
 
 An example configuration file is installed into [ORCA-INSTALL-DIR]/share/orca/cfg/ directory.
 
-Other examples for @c imageserver, @c imageviewer, @c logger, @c logplayer can be found at @ref orca_component_imageserver_examples
+Other examples for @c ImageServer, @c ImageViewer, @c LogRecorder, @c LogPlayer can be found at @ref orca_component_imageserver_examples
 
 @section orca_component_imageserver_hardware Hardware
 
@@ -153,7 +153,7 @@ Drives a digiclops camera, directly connected to the computer.
 
 To access hardware, digiclops and triclops libraries must be installed. They are provided by the digiclops suppliers, <a href="http://www.ptgrey.com" target="_blank">Point Grey</a>. This code has been tested with Digiclops version 2.3.1.4-FC3 and Triclops version 3.2.0.8-FC3 on a Debian installation. The libraries must be installed either in @c /usr/lib or in @c /usr/local/lib. The associated header files must be in @c /usr/local/include/digiclops/ and @c /usr/local/include/triclops/. The easiest way to install these libraries and headers are to copy them from the original directory. 
 
-For viewing, logging, and playing back logs (using @ref orca_component_imageviewer, @ref orca_component_logger, and @ref orca_component_logplayer respectively) you will also need the <a href="http://opencvlibrary.sf.net" target="_blank"> OpenCV library</a>. For our installation instructions see @ref orca_component_imageserver_monoopencv.
+For viewing, logging, and playing back logs (using @ref orca_component_imageviewer, @ref orca_component_logrecorder, and @ref orca_component_logplayer respectively) you will also need the <a href="http://opencvlibrary.sf.net" target="_blank"> OpenCV library</a>. For our installation instructions see @ref orca_component_imageserver_monoopencv.
 
 
 @section orca_component_imageserver_troubles Troubleshooting
