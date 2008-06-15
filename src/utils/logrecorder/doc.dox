@@ -13,7 +13,7 @@
 @ingroup orca_services
 @ingroup orca_cpp
 @ingroup orca_linux
-@defgroup orca_component_logrecorder Logger
+@defgroup orca_component_logrecorder LogRecorder
 
 @brief Logs data and configurations from interfaces
 
@@ -25,25 +25,25 @@
 
 @par Requires (any number and combination of the following)
 
-- @ref orca_interface_camera [Logger.Requires.CameraX]
-- @ref orca_interface_cpu [Logger.Requires.CpuX]
-- @ref orca_interface_drivebicycle [Logger.Requires.DriveBicycleX]
-- @ref orca_interface_gps [Logger.Requires.GpsX]
-- @ref orca_interface_laserscanner2d [Logger.Requires.LaserScanner2dX]
-- @ref orca_interface_localise2d [Logger.Requires.Localise2dX]
-- @ref orca_interface_localise3d [Logger.Requires.Localise3dX]
-- @ref orca_interface_polarfeature2d [Logger.Requires.PolarFeature2dX]
-- @ref orca_interface_odometry2d [Logger.Requires.Odometry2dX]
-- @ref orca_interface_odometry3d [Logger.Requires.Odometry3dX]
-- @ref orca_interface_power [Logger.Requires.PowerX]
+- @ref orca_interface_camera [LogRecorder.Requires.CameraX]
+- @ref orca_interface_cpu [LogRecorder.Requires.CpuX]
+- @ref orca_interface_drivebicycle [LogRecorder.Requires.DriveBicycleX]
+- @ref orca_interface_gps [LogRecorder.Requires.GpsX]
+- @ref orca_interface_laserscanner2d [LogRecorder.Requires.LaserScanner2dX]
+- @ref orca_interface_localise2d [LogRecorder.Requires.Localise2dX]
+- @ref orca_interface_localise3d [LogRecorder.Requires.Localise3dX]
+- @ref orca_interface_polarfeature2d [LogRecorder.Requires.PolarFeature2dX]
+- @ref orca_interface_odometry2d [LogRecorder.Requires.Odometry2dX]
+- @ref orca_interface_odometry3d [LogRecorder.Requires.Odometry3dX]
+- @ref orca_interface_power [LogRecorder.Requires.PowerX]
 
-@image html logger.png
+@image html logrecorder.png
 
 @par Operation
 
-The logger logs data on a per-Slice-interface basis, i.e. it can
+The logrecorder logs data on a per-Slice-interface basis, i.e. it can
 connect to provided interfaces of components. For each interface
-defined in Orca2, the logger instantiates an @c <Interface>Logger class
+defined in Orca2, the logrecorder instantiates an @c <Interface>LogRecorder class
 that handles incoming data and writes them to one file each (e.g. for
 the @ref orca_interface_laserscanner2d interface, the LaserScanner2dLogger class writes data to
 laserscanner2d0.log). Data is received by either @e pulling data
@@ -53,33 +53,33 @@ e.g. with getData() or by subscribing for data @e pushes e.g. with subscribe().
 
 @par Configuration
 
-To allow the setup of several interfaces of the same type in one logger, the interface tags are numbered in the configuration file.  For example:
+To allow the setup of several interfaces of the same type in one logrecorder, the interface tags are numbered in the configuration file.  For example:
 
 @verbatim
-Logger.Requires.Laser0.Proxy=laserscanner2d@alpha/laser2d
-Logger.Requires.Laser1.Proxy=laserscanner2d@bravo/laser2d
-Logger.Requires.Odometry2d0.Proxy=odometry2d@local/segwayrmp
+LogRecorder.Requires.Laser0.Proxy=laserscanner2d@alpha/laser2d
+LogRecorder.Requires.Laser1.Proxy=laserscanner2d@bravo/laser2d
+LogRecorder.Requires.Odometry2d0.Proxy=odometry2d@local/segwayrmp
 @endverbatim
 
-- @c Logger.Config.FactoryLibNames (string)
+- @c LogRecorder.Config.FactoryLibNames (string)
     - A space-separated list of libraries containing slave factories.
     - This list is ordered.  Putting a custom library earlier in the list means that it will be used to 
       instantiate slaves before later factories.
     - Default: libOrcaLogFactory.so
 
-- @c Logger.Config.FilenameTimestamp (bool)
-    - If set to one, creation timestamp is pre-pended to the filenames of the master and log files. Time stamp format is YYMMDD_HHMMSS, e.g. the default master file becomes 060804_153321_master.log. This is usful to avoid accidently overwriting the files when restarting the logger.
+- @c LogRecorder.Config.FilenameTimestamp (bool)
+    - If set to one, creation timestamp is pre-pended to the filenames of the master and log files. Time stamp format is YYMMDD_HHMMSS, e.g. the default master file becomes 060804_153321_master.log. This is usful to avoid accidently overwriting the files when restarting the logrecorder.
     - Default: 1
 
-- @c Logger.Config.<interfaceType><number>.Format (string)
+- @c LogRecorder.Config.<interfaceType><number>.Format (string)
     - Specifies the encoding format for the log file
     - Valid values: common formats: {'ice', 'ascii'}. When format is 'ice', the data is logged in binary form and can be easily played back. It is not human-readable however. The 'ascii' format is human-readable but requires parsing to be interpreted. See "Details for specific interfaces" below for supported formats for individual interfaces.
     - Default: 'ice'
-    - Example: @c Logger.Config.Laser0.Format=ascii
+    - Example: @c LogRecorder.Config.Laser0.Format=ascii
 
 @par Logfile Format
 
-The logger writes a single master file containing all relevant information to replay the data using the @ref orca_component_logplayer. Example for a set of files (3 interfaces were logged on 04/08/06 at 15:33:21):
+The logrecorder writes a single master file containing all relevant information to replay the data using the @ref orca_component_logplayer. Example for a set of files (3 interfaces were logged on 04/08/06 at 15:33:21):
 \verbatim
 060804_153321_master.log
 060804_153321_laserscanner0.log
@@ -89,7 +89,7 @@ The logger writes a single master file containing all relevant information to re
 
 The first records in each subfile are configuration data, after that all records are "pure" data. Subfiles are named according to the interfaces you're logging and have a number attached in case you want to log the same interface type several times (e.g. when logging several lasers). Don't change the file names because they are also recorded in the corresponding master file.
 
-Subfiles contain the logged data. The Orca Logger supports two different encoding types {'ice', 'ascii'} which can be configured on a per-interface basis. 'ice' produces binary files which are generated by Slice's built-in streaming functionality. The disadvantage is that they are not human-readable. 'ascii' produces human-readable ascii files but the streaming functions need to be implemented manually which is error-prone. They are useful because they can be easily parsed (e.g. using Matlab).
+Subfiles contain the logged data. The Orca LogRecorder supports two different encoding types {'ice', 'ascii'} which can be configured on a per-interface basis. 'ice' produces binary files which are generated by Slice's built-in streaming functionality. The disadvantage is that they are not human-readable. 'ascii' produces human-readable ascii files but the streaming functions need to be implemented manually which is error-prone. They are useful because they can be easily parsed (e.g. using Matlab).
 
 Details are given on a separate page: @ref orca_component_logrecorder_log_format
 
@@ -115,10 +115,10 @@ To parse the 'ascii' log files in Matlab, you can use the files provided in [ORC
 
 @section orca_component_logrecorder_plugins Writing custom loggers
 
-In order to instantiate interface loggers, the Logger utility dynamically loads libraries
-using logger factory.  New factories can be written for the interfaces which are not in the Orca distribution. This plug-in architecture allows custom loggers to be written outside of the Orca project.
+In order to instantiate interface loggers, the LogRecorder utility dynamically loads libraries
+using logrecorder factory.  New factories can be written for the interfaces which are not in the Orca distribution. This plug-in architecture allows custom loggers to be written outside of the Orca project.
 
-The default logger factory can be extended with new interfaces, e.g. @c MyInterface by executing the following steps:
+The default logrecorder factory can be extended with new interfaces, e.g. @c MyInterface by executing the following steps:
 -# Create a @c MyInterfaceSlave class which inherits from @c Slave and handles the interface-specific logging (e.g. streaming the data to the file).
 -# Add a few lines of code to [ORCA_SRC]/src/utils/orcalogfactory/defaultlogfactory.cpp
 -# If logging to an 'ascii' file, update the @ref orca_component_logrecorder_formats page (and if you want to parse the 'ascii' log file using Matlab, add a script called [ORCA_SRC]/scripts/matlab/logutils/parse<MyInterface>.m). 
@@ -126,7 +126,7 @@ The default logger factory can be extended with new interfaces, e.g. @c MyInterf
 
 To add a new plug-in slave factory, use orcalogfactory as an example.
 Compile the new factory into a .so, stick it somewhere in your
-LD_LIBRARY_PATH, and edit Logger.Config.FactoryLibNames to point to
+LD_LIBRARY_PATH, and edit LogRecorder.Config.FactoryLibNames to point to
 it.
 
 */

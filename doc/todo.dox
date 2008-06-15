@@ -67,6 +67,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - slice2string (alex m)
   - utility for generating string functions from Slice definitions.
 
+- LogReplayer
+  - renamed from Logger to avoid conflicts with shell logger command.
+
 @par New libraries
 - OrcaSim2d (alex b)
   - Library for simple 2D simulations
@@ -114,6 +117,7 @@ the life of the Object Adapter. (alex m)
 @par Removed
 
 - IceGridMon utility because the standard IceGrid GUI is very good.
+- Logger utility was renamed to LogReplayer to avoid conflicts with shell logger command.
 
 @section orca_doc_history_2100 Changes in Release 2.10.0
 
