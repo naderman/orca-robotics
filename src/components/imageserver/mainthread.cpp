@@ -51,8 +51,8 @@ MainThread::initNetworkInterface()
     //
     orca::ImageDescriptionPtr descr(new orca::ImageDescription);
     // transfer internal sensor configs
-    descr->imageWidth       = config_.width;
-    descr->imageHeight      = config_.height;
+    descr->width       = config_.width;
+    descr->height      = config_.height;
 
     //
     // EXTERNAL PROVIDED INTERFACE

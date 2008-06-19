@@ -1,7 +1,7 @@
 /*
  * Orca-Robotics Project: Components for robotics 
  *               http://orca-robotics.sf.net/
- * Copyright (c) 2004-2008 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ * Copyright (c) 2004-2008 Tom Burdick, Alex Brooks, Alexei Makarenko, Tobias Kaupp
  *
  * This copy of Orca is licensed to you under the terms described in
  * the LICENSE file included in this distribution.
@@ -9,42 +9,42 @@
  */
 
 #include <iostream>
-
 #include <orcaice/orcaice.h>
 #include <orcaobj/orcaobj.h>
+#include <orcaifaceimpl/util.h>
 #include "cameraImpl.h"
-#include "util.h"
 
 using namespace std;
+using namespace orca;
 
 namespace orcaifaceimpl {
-
-//////////////////////////////////////////////////////////////////////
 
 //
 // This is the implementation of the slice-defined interface
 //
-class CameraI : public orca::Camera
+class CameraI : public virtual orca::Camera
 {
 public:
     CameraI( CameraImpl &impl )
         : impl_(impl) {}
 
-    // remote interface
+    //
+    // Remote calls:
+    //
 
-    virtual ::orca::CameraDataSequence getData(const ::Ice::Current& ) const
+    virtual ::orca::ImageDataPtr getData(const ::Ice::Current& ) const
         { return impl_.internalGetData(); }
 
-    virtual ::orca::CameraDescriptionSequence getDescription(const ::Ice::Current& ) const
+    virtual ::orca::ImageDescriptionPtr getDescription(const ::Ice::Current& ) const
         { return impl_.internalGetDescription(); }
 
-    virtual void subscribe(const ::orca::CameraConsumerPrx& consumer,
+    virtual void subscribe(const ::orca::ImageConsumerPrx &consumer,
                            const ::Ice::Current& = ::Ice::Current())
         { impl_.internalSubscribe( consumer ); }
 
-    virtual void unsubscribe(const ::orca::CameraConsumerPrx& consumer,
+    virtual void unsubscribe(const ::orca::ImageConsumerPrx& consumer,
                              const ::Ice::Current& = ::Ice::Current())
-        { impl_.internalSubscribe( consumer ); }
+        { impl_.internalUnsubscribe( consumer ); }
 
 private:
     CameraImpl &impl_;
@@ -52,9 +52,9 @@ private:
 
 //////////////////////////////////////////////////////////////////////
 
-CameraImpl::CameraImpl( const orca::CameraDescriptionSequence& descr,
-                        const std::string& interfaceTag,
-                        const orcaice::Context& context )
+CameraImpl::CameraImpl( const orca::CameraDescriptionPtr &descr,
+                                        const std::string                     &interfaceTag,
+                                        const orcaice::Context                &context )
     : descr_(descr),
       interfaceName_(getInterfaceNameFromTag(context,interfaceTag)),
       topicName_(getTopicNameFromInterfaceName(context,interfaceName_)),
@@ -62,9 +62,9 @@ CameraImpl::CameraImpl( const orca::CameraDescriptionSequence& descr,
 {
 }
 
-CameraImpl::CameraImpl( const orca::CameraDescriptionSequence& descr,
-                        const orcaice::Context& context,
-                        const std::string& interfaceName )
+CameraImpl::CameraImpl( const orca::CameraDescriptionPtr &descr,
+                                        const orcaice::Context                &context,
+                                        const std::string                     &interfaceName )
     : descr_(descr),
       interfaceName_(interfaceName),
       topicName_(getTopicNameFromInterfaceName(context,interfaceName)),
@@ -81,10 +81,9 @@ void
 CameraImpl::initInterface()
 {
     // Find IceStorm Topic to which we'll publish
-    topicPrx_ = orcaice::connectToTopicWithString<orca::CameraConsumerPrx>
-        ( context_, consumerPrx_, topicName_ );
+    topicPrx_ = orcaice::connectToTopicWithString( context_, consumerPrx_, topicName_ );
 
-    // Register with the adapter
+    // Register with the adapter.
     // We don't have to clean up the memory we're allocating here, because
     // we're holding it in a smart pointer which will clean up when it's done.
     ptr_ = new CameraI( *this );
@@ -94,14 +93,13 @@ CameraImpl::initInterface()
 void 
 CameraImpl::initInterface( gbxiceutilacfr::Thread* thread, const std::string& subsysName, int retryInterval )
 {
-    topicPrx_ = orcaice::connectToTopicWithString<orca::CameraConsumerPrx>
-        ( context_, consumerPrx_, topicName_, thread, subsysName, retryInterval );
+    topicPrx_ = orcaice::connectToTopicWithString( context_, consumerPrx_, topicName_, thread, subsysName, retryInterval );
 
     ptr_ = new CameraI( *this );
     orcaice::createInterfaceWithString( context_, ptr_, interfaceName_, thread, subsysName, retryInterval );
 }
 
-::orca::CameraDataSequence 
+orca::ImageDataPtr 
 CameraImpl::internalGetData() const
 {
     context_.tracer().debug( "CameraImpl::internalGetData()", 5 );
@@ -113,65 +111,84 @@ CameraImpl::internalGetData() const
         throw orca::DataNotExistException( ss.str() );
     }
 
-    orca::CameraDataSequence data;
+    // create a null pointer. data will be cloned into it.
+    orca::CameraDataPtr data;
     dataStore_.get( data );
+
     return data;
 }
 
-::orca::CameraDescriptionSequence
+// serve out the data to the client (it was stored here earlier by the driver)
+orca::ImageDescriptionPtr
 CameraImpl::internalGetDescription() const
 {
+    context_.tracer().debug( "CameraImpl::internalGetDescription()", 5 );
     return descr_;
 }
 
+// Subscribe people
 void 
-CameraImpl::internalSubscribe(const ::orca::CameraConsumerPrx& subscriber)
+CameraImpl::internalSubscribe(const ::orca::ImageConsumerPrx &subscriber)
 {
     context_.tracer().debug( "CameraImpl::internalSubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
+
+    if ( topicPrx_==0 ) {
+        throw orca::SubscriptionFailedException( "null topic proxy." );
+    }
+    
     try {
         topicPrx_->subscribeAndGetPublisher( IceStorm::QoS(), subscriber->ice_twoway() );
     }
     catch ( const IceStorm::AlreadySubscribed & e ) {
         std::stringstream ss;
         ss <<"Request for subscribe but this proxy has already been subscribed, so I do nothing: "<< e;
-        context_.tracer().debug( ss.str(), 2 );
+        context_.tracer().debug( ss.str(), 2 );    
     }
     catch ( const Ice::Exception & e ) {
         std::stringstream ss;
-        ss <<"CameraImpl::internalSubscribe: failed to subscribe: "<< e << endl;
+        ss <<"CameraImpl::internalSubscribe::failed to subscribe: "<< e << endl;
         context_.tracer().warning( ss.str() );
         throw orca::SubscriptionFailedException( ss.str() );
     }
 }
 
+// Unsubscribe people
 void 
-CameraImpl::internalUnsubscribe(const ::orca::CameraConsumerPrx& subscriber)
+CameraImpl::internalUnsubscribe(const ::orca::ImageConsumerPrx &subscriber)
 {
-    context_.tracer().debug( "CameraImpl::internalUnsubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
+    context_.tracer().debug( "CameraImpl::internalUsubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
+
     topicPrx_->unsubscribe( subscriber );
 }
 
 void
-CameraImpl::localSet( const orca::CameraDataSequence& data )
+CameraImpl::localSet( const ::orca::CameraDataPtr &data )
 {
+    // cout << "CameraImpl::internalSet data: " << orcaobj::toString( data ) << endl;
+    
     dataStore_.set( data );
 }
 
 void
-CameraImpl::localSetAndSend( const orca::CameraDataSequence& data )
+CameraImpl::localSetAndSend( const ::orca::CameraDataPtr &data )
 {
-//     cout<<"TRACE(CameraIface.cpp): localSetAndSend: " << orcaobj::toString(data) << endl;
-
+    if ( context_.tracer().verbosity( gbxutilacfr::Tracer::DebugTrace, gbxutilacfr::Tracer::ToAny ) >= 5 )
+    {
+        stringstream ss;
+        ss << "CameraIface: Sending data: " << orcaobj::toString(data);
+        context_.tracer().debug( ss.str(), 5 );
+    }
+    // cout << "CameraImpl::internalSet data: " << orcaobj::toString( data ) << endl;
+    
     dataStore_.set( data );
 
-    // Try to push to IceStorm.
-    tryPushToIceStormWithReconnect<orca::CameraConsumerPrx,orca::CameraDataSequence>
-        ( context_,
-          consumerPrx_,
-          data,
-          topicPrx_,
-          interfaceName_,
-          topicName_ );
+    // Try to push to IceStorm
+    tryPushToIceStormWithReconnect<ImageConsumerPrx,CameraDataPtr>( context_,
+                                                                                     consumerPrx_,
+                                                                                     data,
+                                                                                     topicPrx_,
+                                                                                     interfaceName_,
+                                                                                     topicName_ );
 }
 
 } // namespace

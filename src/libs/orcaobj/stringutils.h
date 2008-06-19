@@ -68,10 +68,6 @@ orca::FQTopicName toTracerTopic( const orca::FQComponentName & fqCName );
  */
 //@{
 
-//! Parses result of the ifacestring::toString().
-//! Returns: 0 = parsing successful, non-zero = parsing failed.
-int toImageFormat( const std::string &, orca::ImageFormat& );
-
 //! Converts to string
 //! @see toCartesianPoint()
 std::string toString( const orca::CartesianPoint& );
@@ -146,9 +142,9 @@ std::string toString( const orca::Date& );
 //! Converts to string
 std::string toString( const orca::BinarySwitchData& );
 //! Converts to string
-std::string toString( const orca::CameraDataSequence& );
+std::string toString( const orca::CameraDataPtr& );
 //! Converts to string
-std::string toString( const orca::CameraDescriptionSequence& );
+std::string toString( const orca::CameraDescriptionPtr& );
 //! Converts to string
 std::string toString( const orca::CpuInfo& );
 //! Converts to string
@@ -173,6 +169,10 @@ std::string toString( const orca::ImageDataPtr& );
 std::string toString( const orca::ImageDescriptionPtr& );
 //! Converts to string
 std::string toString( const orca::ImuData& );
+//! Converts to string
+std::string toString( const orca::MultiCameraDescription& );
+//! Converts to string
+std::string toString( const orca::MultiCameraData& );
 //! Converts to string
 std::string toString( const orca::Odometry2dData& );
 //! Converts to string

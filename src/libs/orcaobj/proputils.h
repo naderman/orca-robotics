@@ -47,9 +47,6 @@ int getPropertyAsCartesianPoint( const Ice::PropertiesPtr &, const ::std::string
 //! Parses the value into a Time object assuming ':' delimeters.
 //! Returns: 0 = property found (and set in value), non-zero = property not found or parsing failed.
 int getPropertyAsTimeDuration( const Ice::PropertiesPtr &, const ::std::string& key, orca::Time &value );
-//! Parses the value into a ImageFormat object assuming ':' delimeters.
-//! Returns: 0 = property found (and set in value), non-zero = property not found or parsing failed.
-int getPropertyAsImageFormat( const Ice::PropertiesPtr &, const ::std::string& key, orca::ImageFormat &value);
 
 //! Returns the default value if key is not found or cannot be converted to a string sequence.
 Ice::StringSeq getPropertyAsStringSeqWithDefault( const Ice::PropertiesPtr &, const ::std::string& key, const Ice::StringSeq &defaultValue, char delim=':' );
@@ -65,8 +62,6 @@ orca::Size3d getPropertyAsSize3dWithDefault( const Ice::PropertiesPtr &, const :
 orca::CartesianPoint getPropertyAsCartesianPointWithDefault( const Ice::PropertiesPtr &, const ::std::string& key, const orca::CartesianPoint &defaultValue );
 //! Returns the default value if key is not found or cannot be converted to a Time.
 orca::Time getPropertyAsTimeDurationWithDefault( const Ice::PropertiesPtr &, const ::std::string& key, const orca::Time &d );
-//! Returns the default value if key is not found or cannot be converted to a ImageFormat
-orca::ImageFormat getPropertyAsImageFormatWithDefault( const Ice::PropertiesPtr &, const ::std::string& key, const orca::ImageFormat &defaultValue);
 
 //@}
 

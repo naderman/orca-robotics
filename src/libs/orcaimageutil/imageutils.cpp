@@ -14,7 +14,7 @@
 
 namespace orcaimageutil
 {
-
+/*
 int 
 numChannels( const orca::ImageFormat& format )
 {
@@ -36,5 +36,5 @@ numChannels( const orca::ImageFormat& format )
             return 3;              
     }                     
 }
-
+*/
 }

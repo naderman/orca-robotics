@@ -31,10 +31,10 @@ public:
 
     // remote interface
 
-    virtual ::orca::ImageDataPtr getData(const ::Ice::Current& )
+    virtual ::orca::ImageDataPtr getData(const ::Ice::Current& ) const
         { return impl_.internalGetData(); }
 
-    virtual ::orca::ImageDescriptionPtr getDescription(const ::Ice::Current& )
+    virtual ::orca::ImageDescriptionPtr getDescription(const ::Ice::Current& ) const
         { return impl_.internalGetDescription(); }
 
     virtual void subscribe(const ::orca::ImageConsumerPrx& consumer,

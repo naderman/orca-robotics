@@ -36,6 +36,7 @@ SET( ORCA_SLICE_SOURCE_FILES
     localise2d.ice
     localise3d.ice
     log.ice
+    multicamera.ice
     odometry2d.ice
     odometry3d.ice
     ogfusion.ice

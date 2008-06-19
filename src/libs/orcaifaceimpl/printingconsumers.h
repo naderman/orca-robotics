@@ -117,9 +117,9 @@ typedef IceUtil::Handle<PrintingImageConsumerImpl>            PrintingImageConsu
 
 //! Typedef for a common interface type. There's also a corresponding Ptr.
 typedef PrintingConsumerImpl<orca::CameraPrx,
-                        orca::CameraConsumer,
-                        orca::CameraConsumerPrx,
-                        orca::CameraDataSequence>                      PrintingCameraConsumerImpl;
+                        orca::ImageConsumer,
+                        orca::ImageConsumerPrx,
+                        orca::ImageDataPtr>                      PrintingCameraConsumerImpl;
 typedef IceUtil::Handle<PrintingCameraConsumerImpl>            PrintingCameraConsumerImplPtr;
 
 //! Typedef for a common interface type. There's also a corresponding Ptr.

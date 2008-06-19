@@ -88,9 +88,9 @@ typedef IceUtil::Handle<BufferedGpsConsumerImpl>           BufferedGpsConsumerIm
 
 //! Typedef for a common interface type. There's also a corresponding Ptr.
 typedef BufferedConsumerImpl<orca::CameraPrx,
-                        orca::CameraConsumer,
-                        orca::CameraConsumerPrx,
-                        orca::CameraDataSequence>                  BufferedCameraConsumerImpl;
+                        orca::ImageConsumer,
+                        orca::ImageConsumerPrx,
+                        orca::ImageDataPtr>                  BufferedCameraConsumerImpl;
 typedef IceUtil::Handle<BufferedCameraConsumerImpl>        BufferedCameraConsumerImplPtr;
 
 typedef BufferedConsumerImpl<orca::ImagePrx,

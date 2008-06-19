@@ -26,81 +26,27 @@ This and several other interfaces -- @ref orca_interface_camera, @ref orca_inter
     @{
 */
 
-//! Specifies the format once it is decoded.
-//! @TODO: is this list reasonable/exhaustive?
-//! @TODO: is digiclops a special format?
-enum ImageFormat {
-    //! Not Quite Sure
-    ImageFormatModeNfi,
-    //! Binary
-    ImageFormatModeBinary,
-    //! Gray scale
-    ImageFormatModeGray,
-    //! Red-Green-Blue  
-    ImageFormatModeRGB8,
-    //! Red-Green-Blue-Alpha  
-    ImageFormatModeRGBA8,
-    //! Alpha-Red-Green-Blue  
-    ImageFormatModeARGB8,
-    //! Blue-Green-Red   
-    ImageFormatModeBGR8,
-    //! Blue-Green-Red-Alpha   
-    ImageFormatModeBGRA8,
-    //! YUV422   
-    ImageFormatModeYUV422,
-    //! Bayer Blue-Green
-    ImageFormatBayerBg, 
-    //! Bayer Green-Blue 
-    ImageFormatBayerGb, 
-    //! Bayer Red-Green  
-    ImageFormatBayerRg,
-    //! Bayer Green-Red   
-    ImageFormatBayerGr,
-    //! Digiclops Stereo
-    ImageFormatDigiclopsStereo,
-    //! Digiclops Right
-    ImageFormatDigiclopsRight,
-    //! Digiclops Both
-    ImageFormatDigiclopsBoth,
-    //! Last Enum for iteration purposes only
-    ImageFormatEnumSize
-};
-
-//! Specifies any encoding of the image. 
-//! @TODO: Is this list reasonable/exhaustive?
-enum ImageCompression { 
-    //! None
-    ImageCompressionNone,
-    //! JPEG
-    ImageCompressionJpeg,
-    //! PNG
-    ImageCompressionPng
-};
-
-
 //! Static description of the image source.
 class ImageDescription 
 {
     //! %Image width [pixels]
-    int imageWidth; 
+    int width; 
 
     //! %Image height [pixels]
-    int imageHeight;
+    int height;
 
-    //! %Image format type
-    ImageFormat format;
-
-    //! %Image compression type
-    ImageCompression compression;
-
+    //! %Image format string
+    string format;
 }; 
 
 //! A single image.
 class ImageData
 {
     //! TimeStamp of Data
-    Time timeStamp;    
+    Time timeStamp;   
 
+    //! ImageDescription of Data, for convienence purposes
+    ImageDescription description;
 
     //! The image data itself. The structure of this byte sequence
     //! depends on the image format and compression.
@@ -118,11 +64,11 @@ interface ImageConsumer
 interface Image
 {
     //! Returns the latest data.
-    idempotent ImageData getData()
-        throws HardwareFailedException;
+    ["cpp:const"] idempotent ImageData getData()
+        throws DataNotExistException, HardwareFailedException;
             
     //! Returns the image source description.
-    idempotent ImageDescription getDescription();
+    ["cpp:const"] idempotent ImageDescription getDescription();
 
     /*!
      * Mimics IceStorm's subscribe(). @p subscriber is typically a direct proxy to the consumer object.

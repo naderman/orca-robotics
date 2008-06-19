@@ -25,10 +25,10 @@ CameraProbe::CameraProbe( const orca::FQInterfaceName& name, orcaprobe::Abstract
 {
     id_ = "::orca::Camera";
     
-    addOperation( "getData" );
-    addOperation( "getDescription" );
-    addOperation( "subscribe" );
-    addOperation( "unsubscribe" );
+    addOperation( "getData", "ImageData getData()" );
+    addOperation( "getDescription", "ImageDescription getDescription()" );
+    addOperation( "subscribe", "void subscribe( ImageConsumer *subscriber )");
+    addOperation( "unsubscribe", "idempotent void unsubscribe( ImageConsumer *subscriber )" );
 
     consumer_ = new orcaifaceimpl::PrintingCameraConsumerImpl( context,1000,1 );
 }

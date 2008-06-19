@@ -49,10 +49,10 @@ private:
 
     hydrointerfaces::Camera::Config config_;
     
-    orca::CameraDescriptionSequence descrs_;
+    orca::CameraDescriptionPtr descr_;
 
     // space for data
-    orca::CameraDataSequence           orcaCameraData_;
+    orca::CameraDataPtr           orcaCameraData_;
     hydrointerfaces::Camera::Data      hydroCameraData_;
 
     // The library that contains the driver factory (must be declared first so it's destructed last!!!)

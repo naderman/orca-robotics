@@ -150,21 +150,6 @@ toTracerTopic( const orca::FQComponentName& fqCName )
 // toString()
 //*************************
 
-int
-toImageFormat( const std::string& s, orca::ImageFormat& obj )
-{
-    for(int i = 0; i < orca::ImageFormatEnumSize - 1; i++)
-    {
-        if(s == ifacestring::toString((orca::ImageFormat)i)) 
-        {
-            obj = (orca::ImageFormat)i;
-            return 0;
-        }
-    }
-    return -1;
-}
-
-
 std::string 
 toString( const orca::CartesianPoint2d& obj )
 {
@@ -549,36 +534,32 @@ toString( const orca::BinarySwitchData& obj )
 }
 
 std::string 
-toString( const orca::CameraDataSequence& obj )
+toString( const orca::CameraDataPtr& obj )
 {
     
     std::ostringstream s;
-    s << toString(obj.at(0)->timeStamp)
-        << " NumOfCameras: " << obj.size() 
-        << " PerCameraData: ["<<obj.at(0)->data.size()<<" bytes]\n"; 
+    s << toString(obj->timeStamp) << endl;
+    s << " Image Width: " << obj->description->width << "pix" << endl;
+    s << " Image Height: " << obj->description->height << "pix" << endl;
+    s << " Image Format: " << obj->description->format << endl;
+    s << " Number of Bytes: [" << obj->data.size() << " bytes]" << endl; 
     return s.str();
 }
 
 std::string 
-toString( const orca::CameraDescriptionSequence& obj )
+toString( const orca::CameraDescriptionPtr& obj )
 {
     std::ostringstream s;
-    
-    for(unsigned int i = 0; i < obj.size(); ++i)
-    {
-        s   << "CameraDescription " << i << ":\n" 
-            << "Image height              " << obj.at(i)->imageHeight << "pix\n"
-            << "Image width               " << obj.at(i)->imageWidth << "pix\n"
-            << "Frame rate                " << obj.at(i)->frameRate << "fps\n"
-            << "Format                    " << ifacestring::toString(obj.at(i)->format) << "\n"
-            << "Compression               " << obj.at(i)->compression << "\n"
-            << "offset.point.x            " << obj.at(i)->offset.p.x << "m\n"
-            << "offset.point.y            " << obj.at(i)->offset.p.y << "m\n"
-            << "offset.point.z            " << obj.at(i)->offset.p.z << "m\n"
-            << "offset.orientation.roll   " << RAD2DEG(obj.at(i)->offset.o.r) << "deg\n"
-            << "offset.orientation.pitch  " << RAD2DEG(obj.at(i)->offset.o.p) << "deg\n"
-            << "offset.orientation.yaw    " << RAD2DEG(obj.at(i)->offset.o.y) << "deg\n";
-    }
+    s << "Image height              " << obj->height << "pix" << endl;
+    s << "Image width               " << obj->width << "pix" << endl;
+    s << "Frame rate                " << obj->frameRate << "fps" << endl;
+    s << "Format                    " << obj->format << endl;
+    s << "offset.point.x            " << obj->offset.p.x << "m" << endl;
+    s << "offset.point.y            " << obj->offset.p.y << "m" << endl;
+    s << "offset.point.z            " << obj->offset.p.z << "m" << endl;
+    s << "offset.orientation.roll   " << RAD2DEG(obj->offset.o.r) << "deg" << endl;
+    s << "offset.orientation.pitch  " << RAD2DEG(obj->offset.o.p) << "deg" << endl;
+    s << "offset.orientation.yaw    " << RAD2DEG(obj->offset.o.y) << "deg" << endl;
 
     return s.str();
 }
@@ -694,10 +675,9 @@ toString( const orca::ImageDescriptionPtr& obj )
 {
     std::ostringstream s;
     s << "ImageDescription:\n" 
-        << "Image height              " << obj->imageHeight << "pix\n"
-        << "Image width               " << obj->imageWidth << "pix\n"
-        << "Format                    " << obj->format << "\n"
-        << "Compression               " << obj->compression << "\n";
+      << "Image height              " << obj->height << "pix\n"
+      << "Image width               " << obj->width << "pix\n"
+      << "Format                    " << obj->format << "\n";
     return s.str();
 }
 

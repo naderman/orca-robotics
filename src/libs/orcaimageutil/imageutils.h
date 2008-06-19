@@ -19,7 +19,7 @@
 namespace orcaimageutil {
     
 // number of channels used to store the image
-int numChannels( const orca::ImageFormat& format );
+//int numChannels( const orca::ImageFormat& format );
 
 } // namespace
 

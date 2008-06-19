@@ -34,28 +34,10 @@ MainThread::MainThread( const orcaice::Context &context ) :
     //
     Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag() + ".Config.";
-    uint32_t bpp = 3; //default bytes per pixel value
-    config_.numOfCameras = (unsigned int)orcaice::getPropertyAsIntWithDefault( prop, prefix+"NumOfCameras", 1);
-
-
-    config_.widths.resize(config_.numOfCameras);
-    config_.heights.resize(config_.numOfCameras);
-    config_.sizes.resize(config_.numOfCameras);
-    config_.formats.resize(config_.numOfCameras);
-
-    for(uint32_t i = 0; i < config_.numOfCameras; ++i)
-    {
-        std::stringstream prefixSS;
-        prefixSS << prefix << i << ".";
-        config_.widths.at(i) = (uint32_t)orcaice::getPropertyAsIntWithDefault( prop, prefixSS.str() + "ImageWidth", 320);
-        config_.heights.at(i) = (uint32_t)orcaice::getPropertyAsIntWithDefault( prop, prefixSS.str() + "ImageHeight", 240);
-        config_.formats.at(i) = (hydroimage::ImageFormat)orcaobj::getPropertyAsImageFormatWithDefault( prop, prefixSS.str() + "ImageFormat", orca::ImageFormatModeBGR8 );
-        bpp = orcaimageutil::numChannels((orca::ImageFormat)config_.formats.at(i));
-        std::stringstream ss;
-        ss << "bpp: " << bpp << " format: " << ifacestring::toString((orca::ImageFormat)config_.formats.at(i)) << endl;
-        context_.tracer().info(ss.str());
-        config_.sizes.at(i) = bpp*config_.widths.at(i)*config_.heights.at(i);
-    }
+    
+    config_.width = (uint32_t)orcaice::getPropertyAsIntWithDefault( prop, prefixSS.str() + "ImageWidth", 320);
+    config_.height = (uint32_t)orcaice::getPropertyAsIntWithDefault( prop, prefixSS.str() + "ImageHeight", 240);
+    config_.format = orcaobj::getPropertyWithDefault( prop, prefixSS.str() + "ImageFormat", "RGB8" );
 
     if ( !config_.validate() ) {
         context_.tracer().error( "Failed to validate camera configuration. "+config_.toString() );
