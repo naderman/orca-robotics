@@ -28,10 +28,10 @@ while true
         break;
     end
     
-    time(i,:) = timeTmp'
+    time(i,:) = timeTmp';
 
     % read number of batteries
-    numBatteries = fscanf(fid, '%d', 1)
+    numBatteries = fscanf(fid, '%d', 1);
     
     for j=1:numBatteries
         
