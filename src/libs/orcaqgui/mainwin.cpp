@@ -9,17 +9,13 @@
  */
 
 #include <iostream>
-#include <cmath>        // for floor()
 
 #include <QtGui>
 
 #include <orcaice/orcaice.h>
-#include <orcacm/orcacm.h>
 #include <orcaqt/orcaqt.h>
-#include <orcaqcm/orcaqcm.h>
 
 #include "mainwin.h"
-#include <orcaqguielementmodelview/regselectview.h>
 #include <orcaqgui/guiicons.h>
 
 using namespace std;

@@ -14,20 +14,11 @@
 #include <vector>
 #include <QMainWindow>
 
-#include <hydroiceutil/jobqueue.h>
 #include <hydroqguielementutil/ihumanmanager.h>
 #include <orcaice/context.h>
 #include <orcaqguielementmodelview/guielementmodel.h>
 #include <orcaqguielementmodelview/guielementview.h>
-#include "platformfocuscombo.h"
 
-namespace orcaqcm {
-    class OcmModel;
-};
-
-class QTreeView;
-class QItemDelegate;
-class QSplitter;
 class QTimer;
 
 namespace orcaqgui {
