@@ -37,19 +37,20 @@ $ svn copy --username [USERNAME] https://orca-robotics.svn.sf.net/svnroot/orca-r
 @verbatim
 $ svn copy --username [USERNAME] https://orca-robotics.svn.sf.net/svnroot/orca-robotics/orca/trunk https://orca-robotics.svn.sf.net/svnroot/orca-robotics/orca/tags/RELEASE_2.7.0 -m 'Tagging release 2.7.0'
 @endverbatim
-  -# Delete all .svn directories (eg with 'find . -name .svn | xargs rm -rf')
+  -# Delete all build and .svn directories (eg with 'find . -name .svn | xargs rm -rf')
   -# Create tar-balls of these distributions, named eg. 'hydro-2.7.0.tar.gz' and 'orca-2.7.0.tar.gz'
   -# Now the tar-balls are ready to roll.  But first test that the originals build cleanly.
   -# Copy the tar-balls to a machine with external access (eg lowrider).
 -# From eg lowrider:
-  -# ftp to upload.sf.net (anonymous login)
-  -# cd /incoming
+  -# sftp [USERNAME]@frs.sf.net
+  -# cd upload
   -# 'put' both tarballs
 -# Create the distros through the sourceforge web interface
   - (Go through "'Admin' -> 'File Releases'" from the Orca project page)
 -# Update the web page
-  - Use the script: <distro>/doc/updatesfweb
--# Increment the version numbers (eg '2.7.0' -> '2.7.0+') in the top-level CMakeLists.txt files.
--# Add a new section for 'since last release' changes to the history files.
+  - Use the script from lowrider: <distro>/doc/updatesfweb
+-# On any machine increment the version again
+  - Increment the version numbers (eg '2.7.0' -> '2.7.0+') in the top-level CMakeLists.txt files.
+  - Add a new section for 'since last release' changes to the history files.
 
 */
