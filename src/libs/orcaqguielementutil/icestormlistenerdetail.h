@@ -74,10 +74,10 @@ template< class ProxyType,
             class SubscriptionMakerType >
 void
 subscribeListener( orcaice::Context      &context,
-                    const std::string     &proxyString,
-                    ConsumerType          *consumer,
-                    ConsumerPrxType       &callbackPrx,
-                    ProxyType             &proxy )
+                   const std::string     &proxyString,
+                   ConsumerType          *consumer,
+                   ConsumerPrxType       &callbackPrx,
+                   ProxyType             &proxy )
 {
     try {
         // Connect to remote interface

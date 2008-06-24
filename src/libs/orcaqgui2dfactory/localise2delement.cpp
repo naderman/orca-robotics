@@ -31,9 +31,9 @@ Localise2dElement::tryToGetGeometry()
 {
     orca::VehicleGeometryDescriptionPtr geom;
     
-    if ( !listener_.proxy() )
+    if ( listener_.proxy()==0 )
     {
-        humanManager_->showStatusMsg(hydroqguielementutil::IHumanManager::Error,"Localise2dElement::tryToGetGeometry(): listener_.proxy() = 0"  );
+        humanManager_->showStatusMsg(hydroqguielementutil::IHumanManager::Error,"Localise2dElement::tryToGetGeometry(): listener_.proxy()==0"  );
     }
     try 
     {
@@ -88,8 +88,11 @@ Localise2dElement::tryToGetGeometry()
 void
 Localise2dElement::update()
 {
-    if (!haveGeometry_)
-        tryToGetGeometry();
+//     if (!haveGeometry_)
+//     {
+//         cout<<"TRACE(localise2delement.cpp): "<<__func__<<": calling tryToGetGeometry()" << endl;
+//         tryToGetGeometry();
+//     }
     
     // standard update as in IceStormElement
     if ( !orcaqguielementutil::IceStormElement<Localise2dPainter,

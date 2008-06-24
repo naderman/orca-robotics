@@ -90,6 +90,7 @@ IceStormElement<PainterType,DataType,ProxyType,ConsumerType,ConsumerPrxType>::ne
         if ( listener_.connect() == 0 )
         {
             isConnected_ = true;
+            assert( listener_.proxy() != 0 );
             actionOnConnection();
         }
         return false;
@@ -112,6 +113,8 @@ IceStormElement<PainterType,DataType,ProxyType,ConsumerType,ConsumerPrxType>::ne
         listener_.resetTimer();
         if ( listener_.connect() == 0 )
             actionOnConnection();
+        else
+            isConnected_ = false;
     }
     return false;
 }

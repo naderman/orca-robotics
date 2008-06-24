@@ -348,9 +348,24 @@ PathFollower2dElement::getInitialData()
         int wpIndex = pathFollower2dPrx_->getWaypointIndex();
         pathUpdateConsumer_->indexPipe_.set( wpIndex );
     }
+    catch ( Ice::Exception &e )
+    {
+        stringstream ss;
+        ss << "PathFollower2dElement::"<<__func__<<": "<< e << endl;
+        // humanManager_.showStatusMsg(hydroqguielementutil::IHumanManager::Warning, ss.str().c_str() );
+        cout << ss.str().c_str();
+    }
+    catch ( std::exception &e )
+    {
+        stringstream ss;
+        ss << "PathFollower2dElement::"<<__func__<<": "<< e.what() << endl;
+        // humanManager_.showStatusMsg(hydroqguielementutil::IHumanManager::Warning, ss.str().c_str() );
+        cout << ss.str().c_str();
+    }
     catch ( ... )
     {
-        humanManager_.showStatusMsg(hydroqguielementutil::IHumanManager::Warning, "PathFollower2d: Problem getting initial data.");
+        // humanManager_.showStatusMsg(hydroqguielementutil::IHumanManager::Warning, "PathFollower2d: Problem getting initial data.");
+        cout << "PathFollower2dElement: Unknown exception in " << __func__ << endl;
     }
 }
 
