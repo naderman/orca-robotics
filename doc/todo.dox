@@ -54,6 +54,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 @section orca_doc_history_2110 Changes in Release 2.11.0
 
 @par Project wide
+
 - Updated dart2 documentation to cdash (Tobi)
 - Dependencies
     - works with Ice-3.3 (continues to work with Ice-3.2)
@@ -62,13 +63,14 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     - cmake files updated for cmake 2.6
 
 @par New utilities
+
 - slice2string (alex m)
   - utility for generating string functions from Slice definitions.
-
 - LogReplayer
   - renamed from Logger to avoid conflicts with shell logger command.
 
 @par New libraries
+
 - OrcaSim2d (alex b)
   - Library for simple 2D simulations
 - OrcaVfh (alex b)
@@ -78,6 +80,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     It contains string utilities for Slice data types (enums, structures, classes).  
 
 @par Updated interfaces
+
 - Image, OgPatch, OgMap, RangeScanner2d, LaserScanner2d, QGraphics2d, Hand, PointCloud.
   - Using newly defined 'standard' sequences of builtin types (defined in containers.ice)
 - RangeScanner2d, OgPatch, Hand 
@@ -85,6 +88,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - a global header file is auto-generated which includes all individual interface header files.
 
 @par Updated components
+
 - LocalNav (alex b)
   - Big overhaul and simplification
 - Gps
@@ -93,6 +97,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
   - removed obsolete config parameter ProvideOdometry3d. Use Odometry3dPublishInterval instead.
 
 @par Updated libraries
+
 - OrcaIfaceImpl
   - Added QGraphics2dImpl and PathFollower2dImpl (alex b)
   - ConsumerImpl: fixed a long-standing bug which lead to segfault when the life of the consumer was shorter than
@@ -111,6 +116,7 @@ the life of the Object Adapter. (alex m)
   - implementation cleanup using ConsumerImpl (alex m)
 
 @par Removed
+
 - IceGridMon utility because the standard IceGrid GUI is very good.
 - Logger utility was renamed to LogReplayer to avoid conflicts with shell logger command.
 
