@@ -1,6 +1,6 @@
 #include "interactivecontroller.h"
 #include <iostream>
-#include <hydroutil/tokenise.h>
+#include <gbxutilacfr/tokenise.h>
 
 using namespace std;
 
@@ -14,7 +14,7 @@ namespace {
     {
         int sec, usec;
 
-        std::vector<string> tokens = hydroutil::tokenise(timeString,":");
+        std::vector<string> tokens = gbxutilacfr::tokenise(timeString,":");
         if ( tokens.size() == 1 )
         {
             int num = sscanf( tokens[0].c_str(), "%d", &sec );
@@ -89,7 +89,7 @@ InteractiveController::walk()
 void
 InteractiveController::parseInput( const std::string &input )
 {
-    std::vector<string> tokens = hydroutil::tokenise( input, " " );
+    std::vector<string> tokens = gbxutilacfr::tokenise( input, " " );
 
     if ( tokens.size() == 0 )
     {
