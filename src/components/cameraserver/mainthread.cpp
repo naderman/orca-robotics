@@ -24,7 +24,7 @@ using namespace cameraserver;
 
 MainThread::MainThread( const orcaice::Context &context ) :
     orcaice::SubsystemThread( context.tracer(), context.status(), "MainThread" ),
-    config_(1),
+    config_(),
     context_(context)
 {
     subStatus().setMaxHeartbeatInterval( 20.0 );
@@ -35,9 +35,9 @@ MainThread::MainThread( const orcaice::Context &context ) :
     Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag() + ".Config.";
     
-    config_.width = (uint32_t)orcaice::getPropertyAsIntWithDefault( prop, prefixSS.str() + "ImageWidth", 320);
-    config_.height = (uint32_t)orcaice::getPropertyAsIntWithDefault( prop, prefixSS.str() + "ImageHeight", 240);
-    config_.format = orcaobj::getPropertyWithDefault( prop, prefixSS.str() + "ImageFormat", "RGB8" );
+    config_.width = (uint32_t)orcaice::getPropertyAsIntWithDefault( prop, prefix + "ImageWidth", 320);
+    config_.height = (uint32_t)orcaice::getPropertyAsIntWithDefault( prop, prefix + "ImageHeight", 240);
+    config_.format = orcaice::getPropertyWithDefault( prop, prefix + "ImageFormat", "BGR8" );
 
     if ( !config_.validate() ) {
         context_.tracer().error( "Failed to validate camera configuration. "+config_.toString() );
@@ -56,45 +56,37 @@ MainThread::initNetworkInterface()
     // SENSOR DESCRIPTION
     //
     
-    for(unsigned int i = 0; i < config_.numOfCameras; i++)
-    {
-        std::stringstream prefixSS;
-        prefixSS << prefix << i << ".";
-        //create new descr
-        orca::CameraDescriptionPtr descr(new orca::CameraDescription());
-        
-        //transfer internal sensor configs
-        descr->imageWidth = config_.widths.at(i);
-        descr->imageHeight = config_.heights.at(i);
+    //create new descr
+    orca::CameraDescriptionPtr descr_(new orca::CameraDescription());
 
-        descr->format = (orca::ImageFormat)config_.formats.at(i);
+    //transfer internal sensor configs
+    descr_->width = config_.width;
+    descr_->height = config_.height;
 
-        // offset from the robot coordinate system
-        orcaobj::setInit( descr->offset );
-        descr->offset = orcaobj::getPropertyAsFrame3dWithDefault( prop, prefixSS.str() + "Offset", descr->offset );
-       
-        // read sizes
-        orcaobj::setInit( descr->sensorSize );
-        descr->sensorSize = orcaobj::getPropertyAsSize2dWithDefault( prop, prefixSS.str() + "SensorSize", descr->sensorSize );
+    descr_->format = config_.format;
 
-        orcaobj::setInit( descr->caseSize );
-        descr->caseSize = orcaobj::getPropertyAsSize3dWithDefault( prop, prefixSS.str() + "CaseSize", descr->caseSize );
+    // offset from the robot coordinate system
+    orcaobj::setInit( descr_->offset );
+    descr_->offset = orcaobj::getPropertyAsFrame3dWithDefault( prop, prefix + "Offset", descr_->offset );
 
-        // focal length
-        descr->focalLength = orcaice::getPropertyAsDoubleWithDefault( prop, prefixSS.str() + "FocalLength", 0.0 );
+    // read size
+    orcaobj::setInit( descr_->sensorSize );
+    descr_->sensorSize = orcaobj::getPropertyAsSize2dWithDefault( prop, prefix + "SensorSize", descr_->sensorSize );
 
-        //add descr to vector
-        descrs_.push_back(descr);
-    }
-    std::cout << "Description Vector Size: " << descrs_.size() << std::endl; 
+    orcaobj::setInit( descr_->caseSize );
+    descr_->caseSize = orcaobj::getPropertyAsSize3dWithDefault( prop, prefix + "CaseSize", descr_->caseSize );
 
-    std::cout << orcaobj::toString(descrs_) << std::endl;
+    // focal length
+    descr_->focalLength = orcaice::getPropertyAsDoubleWithDefault( prop, prefix + "FocalLength", 0.0 );
+
+    //add descr to vector
+    std::cout << orcaobj::toString(descr_) << std::endl;
 
     //
     // EXTERNAL PROVIDED INTERFACE
     //
 
-    cameraInterface_ = new orcaifaceimpl::CameraImpl( descrs_,
+    cameraInterface_ = new orcaifaceimpl::CameraImpl( descr_,
                                                               "Camera",
                                                               context_ );
     // init
@@ -111,14 +103,14 @@ MainThread::initHardwareDriver()
 
     // Dynamically load the library and find the factory
     std::string driverLibName = 
-        orcaice::getPropertyWithDefault( prop, prefix+"DriverLib", "libHydroCameraFake.so" );
+        orcaice::getPropertyWithDefault( prop, prefix+"DriverLib", "libHydroImageFake.so" );
     context_.tracer().info( "MainThread: Loading driver library "+driverLibName  );
     // The factory which creates the driver
-    std::auto_ptr<hydrointerfaces::CameraFactory> driverFactory;
+    std::auto_ptr<hydrointerfaces::ImageFactory> driverFactory;
     try {
         driverLib_.reset( new hydrodll::DynamicallyLoadedLibrary(driverLibName) );
         driverFactory.reset( 
-            hydrodll::dynamicallyLoadClass<hydrointerfaces::CameraFactory,DriverFactoryMakerFunc>
+            hydrodll::dynamicallyLoadClass<hydrointerfaces::ImageFactory,DriverFactoryMakerFunc>
             ( *driverLib_, "createDriverFactory" ) );
     }
     catch (hydrodll::DynamicLoadException &e)
@@ -174,11 +166,8 @@ MainThread::readData()
 
     driver_->read( hydroCameraData_ );
 
-    for(unsigned int i = 0; i < orcaCameraData_.size(); ++i) 
-    {
-        orcaCameraData_.at(i)->timeStamp.seconds  = hydroCameraData_.timeStampSec;
-        orcaCameraData_.at(i)->timeStamp.useconds = hydroCameraData_.timeStampUsec;
-    }   
+    orcaCameraData_->timeStamp.seconds  = hydroCameraData_.timeStampSec;
+    orcaCameraData_->timeStamp.useconds = hydroCameraData_.timeStampUsec;
 }
 
 void
@@ -187,14 +176,12 @@ MainThread::walk()
    
 
     context_.tracer().info( "Setting up Data Pointers" );
-    for(unsigned int i = 0; i < config_.numOfCameras; ++i)
-    {
-        orcaCameraData_.push_back(orca::CameraDataPtr(new orca::CameraData()));
-        //resize image vectors
-        orcaCameraData_.at(i)->data.resize( config_.sizes.at(i) );
-        //set hydroCameraData pointers to be the address of orcaCameraData image vectors
-        hydroCameraData_.data.push_back(&(orcaCameraData_.at(i)->data[0]));
-    }
+
+    orcaCameraData_ = orca::CameraDataPtr(new orca::CameraData());
+    //resize image vectors
+    orcaCameraData_->data.resize( config_.size );
+    //set hydroCameraData pointers to be the address of orcaCameraData image vectors
+    hydroCameraData_.data = &(orcaCameraData_->data[0]);
 
     // These functions catch their exceptions.
     activate( context_, this, subsysName() );

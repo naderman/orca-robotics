@@ -17,7 +17,7 @@
 // remote interface
 #include <orcaifaceimpl/cameraImpl.h>
 // hardware interface
-#include <hydrointerfaces/camera.h>
+#include <hydrointerfaces/image.h>
 
 namespace cameraserver {
 
@@ -47,18 +47,18 @@ private:
     // The camera interface objects
     orcaifaceimpl::CameraImplPtr cameraInterface_;
 
-    hydrointerfaces::Camera::Config config_;
+    hydrointerfaces::Image::Config config_;
     
     orca::CameraDescriptionPtr descr_;
 
     // space for data
     orca::CameraDataPtr           orcaCameraData_;
-    hydrointerfaces::Camera::Data      hydroCameraData_;
+    hydrointerfaces::Image::Data      hydroCameraData_;
 
     // The library that contains the driver factory (must be declared first so it's destructed last!!!)
     std::auto_ptr<hydrodll::DynamicallyLoadedLibrary> driverLib_;
     // Generic driver for the hardware
-    std::auto_ptr<hydrointerfaces::Camera> driver_;
+    std::auto_ptr<hydrointerfaces::Image> driver_;
     
     orcaice::Context context_;
 };
