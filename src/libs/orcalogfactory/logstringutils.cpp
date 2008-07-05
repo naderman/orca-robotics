@@ -401,10 +401,17 @@ toLogString( const orca::LaserScanner2dDataPtr& obj )
 {
     std::stringstream s;
 
-    // time stamp, start angle, and number of points in one laser scan
-    s << toLogString(obj->timeStamp) << " ";
-    s << obj->startAngle << " ";
-    s << obj->ranges.size() << " ";
+    s << toLogString(obj->timeStamp) << " "
+      << obj->minRange << " "
+      << obj->maxRange << " "
+      << obj->fieldOfView << " "
+      << obj->startAngle << " "
+      << obj->ranges.size() << " ";
+
+    if ( obj->ranges.size() != obj->intensities.size() )
+    {
+        throw orcalog::Exception( ERROR_INFO, "toLogString(orca::LaserScanner2dDataPtr): ranges and intensities were not of same size!" );
+    }
 
     // ranges
     for ( unsigned int i=0; i < obj->ranges.size(); i++ )
@@ -424,20 +431,20 @@ toLogString( const orca::LaserScanner2dDataPtr& obj )
 void
 fromLogString( std::stringstream &s, orca::LaserScanner2dData& obj )
 {
-    // time stamp, start angle, and number of points in one laser scan
-    // separated by spaces on the 1st line
     fromLogString(s,obj.timeStamp);
+    fromLogString(s,obj.minRange);
+    fromLogString(s,obj.maxRange);
+    fromLogString(s,obj.fieldOfView);
     fromLogString(s,obj.startAngle);
     int numRanges;
     fromLogString(s,numRanges);
+    assert( numRanges >= 0 );
     obj.ranges.resize(numRanges);
     obj.intensities.resize(numRanges);
 
-    // ranges on the second line
     for ( unsigned int i=0; i < obj.ranges.size(); i++ )
         fromLogString(s,obj.ranges[i]);
 
-    // intensites on the third line
     for ( unsigned int i=0; i < obj.intensities.size(); i++ )
         fromLogString(s,obj.intensities[i]);
 }
