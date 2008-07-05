@@ -55,7 +55,10 @@ std::string toLogString( const orca::GpsData& );
 //! Parses from ASCII log. Throws orcalog::ParseException on error.
 void fromLogString( std::stringstream& stream, orca::GpsData& );
 
+std::string toLogString( const orca::RangeScanner2dDescription& );
+void fromLogString( std::stringstream &, orca::RangeScanner2dDescription& );
 std::string toLogString( const orca::LaserScanner2dDataPtr& );
+void fromLogString( std::stringstream &, orca::LaserScanner2dData& );
 std::string toLogString( const orca::Localise2dData& );
 std::string toLogString( const orca::Localise3dData& );
 //! Prints out resulting fine path to text in a parsable format
@@ -65,6 +68,7 @@ std::string toLogString( const orca::PathPlanner2dTask& );
 // //! Prints out polarfeature2d data to text which is easy to parse
 // std::string toLogString( const orca::PolarFeature2dData& )
 std::string toLogString( const orca::Odometry2dData& );
+void fromLogString( std::stringstream &, orca::Odometry2dData& );
 std::string toLogString( const orca::Odometry3dData& );
 //! Prints out imu data to text which is easy to parse
 std::string toLogString( const orca::ImuData& obj );
@@ -89,6 +93,10 @@ void fromLogString( std::stringstream& stream, orca::GpsDescription& );
 
 //! Converts vehicle geometry to text which is easy to parse
 std::string toLogString( const orca::VehicleGeometryDescriptionPtr& );
+void fromLogString( std::stringstream &, orca::VehicleGeometryDescriptionPtr& );
+//! Converts vehicle description to text which is easy to parse
+std::string toLogString( const orca::VehicleDescription& );
+void fromLogString( std::stringstream &, orca::VehicleDescription& );
 //}
 
 

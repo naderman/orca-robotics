@@ -66,8 +66,7 @@ namespace {
         }
         else if ( format == "ascii" )
         {
-            for ( size_t i=0; i < 20; i++ )
-                cout<<"TRACE(logwriters.cpp): TODO: log orca::VehicleDescription" << endl;
+            (*file) << toLogString(obj) << endl;
         }
         else
         {
@@ -91,7 +90,7 @@ namespace {
         }
         else if ( format == "ascii" )
         {
-            (*file) << toLogString(obj) << flush;
+            (*file) << toLogString(obj) << endl;
         }
         else
         {
@@ -114,7 +113,7 @@ namespace {
         }
         else if ( format == "ascii" )
         {
-            (*file) << orcaobj::toString(obj) << endl;
+            (*file) << toLogString(obj) << endl;
         }
         else
         {

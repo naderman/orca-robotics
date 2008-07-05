@@ -282,7 +282,7 @@ MainThread::createReplayer( const std::string& interfaceType,
             if ( require ) 
             {
                 context_.shutdown();
-                throw gbxutilacfr::Exception( ERROR_INFO, "Format "+format+" is not supported for interface type"+interfaceType );
+                throw gbxutilacfr::Exception( ERROR_INFO, "Format "+format+" is not supported for interface type "+interfaceType );
             }
             else {
                 replayers_.push_back( new orcalog::DummyReplayer() );

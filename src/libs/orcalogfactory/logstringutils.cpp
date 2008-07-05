@@ -20,6 +20,7 @@
 #include <orcaice/orcaice.h>
 #include <orcaobj/orcaobj.h>
 
+#include <orcalog/exceptions.h>
 #include "logstringutils.h"
 
 // this is a copy from orcaice/mathdefs.h
@@ -51,7 +52,8 @@ namespace {
     { s >> i; }
     inline void fromLogString( std::stringstream &s, float &i )
     { s >> i; }
-
+    inline void fromLogString( std::stringstream &s, unsigned char &i )
+    { s >> i; }
 
     std::string toLogString( const orca::CartesianPoint &o )
     {
@@ -81,6 +83,8 @@ namespace {
         ss << toLogString(o.p) << " " << toLogString(o.o);
         return ss.str();
     }
+    inline std::ostream &operator<<( std::ostream &s, const orca::Frame3d &o )
+    { return s << toLogString(o); }
     void fromLogString( std::stringstream &s, orca::Frame3d &o )
     {
         fromLogString( s, o.p );
@@ -109,6 +113,17 @@ namespace {
         fromLogString( s, o.p );
         s >> o.o;
     }
+
+    std::string toLogString( const orca::Twist2d &o )
+    {
+        stringstream ss;
+        ss << o.v.x << " " << o.v.y << " " << o.w;
+        return ss.str();
+    }
+    void fromLogString( std::stringstream &s, orca::Twist2d &o )
+    {
+        s >> o.v.x >> o.v.y >> o.w;
+    }
     
     std::string toLogString( const orca::Size3d &o )
     {
@@ -116,6 +131,8 @@ namespace {
         ss << o.l << " " << o.w << " " << o.h;
         return ss.str();
     }
+    inline std::ostream &operator<<( std::ostream &s, const orca::Size3d &o )
+    { return s << toLogString(o); }
     void fromLogString( std::stringstream &s, orca::Size3d &o )
     {
         s >> o.l >> o.w >> o.h;
@@ -164,11 +181,10 @@ toLogString( const orca::CpuData& obj )
 {
     std::ostringstream s;
     s << toLogString(obj.timeStamp)
-        << " " << obj.userLoad
-        << " " << obj.systemLoad
-        << " " << obj.idleLoad
-        << " " << obj.temperature
-        << endl;
+      << " " << obj.userLoad
+      << " " << obj.systemLoad
+      << " " << obj.idleLoad
+      << " " << obj.temperature;
     return s.str();
 }
 
@@ -355,29 +371,75 @@ fromLogString( std::stringstream &s, orca::GpsData& obj )
 }
 
 std::string 
+toLogString( const orca::RangeScanner2dDescription& obj )
+{
+    stringstream s;
+    s << obj.minRange << " "
+      << obj.maxRange << " "
+      << obj.fieldOfView << " "
+      << obj.startAngle << " "
+      << obj.numberOfSamples << " "
+      << obj.offset << " "
+      << obj.size;
+    return s.str();
+}
+
+void
+fromLogString( std::stringstream &s, orca::RangeScanner2dDescription& obj )
+{
+    fromLogString(s,obj.minRange);
+    fromLogString(s,obj.maxRange);
+    fromLogString(s,obj.fieldOfView);
+    fromLogString(s,obj.startAngle);
+    fromLogString(s,obj.numberOfSamples);
+    fromLogString(s,obj.offset);
+    fromLogString(s,obj.size);
+}
+
+std::string 
 toLogString( const orca::LaserScanner2dDataPtr& obj )
 {
     std::stringstream s;
 
     // time stamp, start angle, and number of points in one laser scan
-    // separated by spaces on the 1st line
     s << toLogString(obj->timeStamp) << " ";
-    s << RAD2DEG( obj->startAngle ) << " ";
-    s << obj->ranges.size() << " \n";
+    s << obj->startAngle << " ";
+    s << obj->ranges.size() << " ";
 
-    // ranges on the second line
+    // ranges
     for ( unsigned int i=0; i < obj->ranges.size(); i++ )
     {
         s << obj->ranges[i] << " ";
     }
-    s << "\n";
-    // intensites on the third line
-    for ( unsigned int i=0; i < obj->ranges.size(); i++ )
+
+    // intensites
+    for ( unsigned int i=0; i < obj->intensities.size(); i++ )
     {
 	   s << (float)obj->intensities[i] << " ";
     }
 
     return s.str();
+}
+
+void
+fromLogString( std::stringstream &s, orca::LaserScanner2dData& obj )
+{
+    // time stamp, start angle, and number of points in one laser scan
+    // separated by spaces on the 1st line
+    fromLogString(s,obj.timeStamp);
+    fromLogString(s,obj.startAngle);
+    int numRanges;
+    fromLogString(s,numRanges);
+    obj.ranges.resize(numRanges);
+    obj.intensities.resize(numRanges);
+
+    // ranges on the second line
+    for ( unsigned int i=0; i < obj.ranges.size(); i++ )
+        fromLogString(s,obj.ranges[i]);
+
+    // intensites on the third line
+    for ( unsigned int i=0; i < obj.intensities.size(); i++ )
+        fromLogString(s,obj.intensities[i]);
 }
 
 /*! 
@@ -488,33 +550,23 @@ toLogString( const orca::Localise3dData& obj )
     return s.str();
 }
 
-/*! 
-@brief Prints out Odometry2d data to text which is easy to parse.
-
-- line1: timestamp in seconds and microseconds of Unix time
-- line2: {2D pose} {2D velocities}
-
-Components of both pose and velocities are written in this order {x y yaw}.
-
-Units: positions are in [m], angles are in [deg], linear velocities are in [m/s], angular velocities are in [deg/s]
-*/
 std::string 
 toLogString( const orca::Odometry2dData& obj )
 {
     std::stringstream s;
-    
-    // timestamp on the first line
-    s << toLogString(obj.timeStamp) << " \n";
 
-    // x,y position, orientation(deg), and respective velocities
-    s << obj.pose.p.x << " " 
-      << obj.pose.p.y << " "
-      << RAD2DEG(obj.pose.o) << " "
-      << obj.motion.v.x << " "
-      << obj.motion.v.y << " "
-      << RAD2DEG(obj.motion.w);
-
+    s << toLogString(obj.timeStamp) << " "
+      << toLogString(obj.pose) << " "
+      << toLogString(obj.motion);
     return s.str();
+}
+
+void
+fromLogString( stringstream &s, orca::Odometry2dData &obj )
+{
+    fromLogString(s,obj.timeStamp);
+    fromLogString(s,obj.pose);
+    fromLogString(s,obj.motion);
 }
 
 /*! 
@@ -799,9 +851,9 @@ toLogString( const orca::VehicleGeometryDescriptionPtr& obj )
 {
     std::ostringstream s;
 
+    s << obj->type << " ";
     if ( (obj->type)==(orca::VehicleGeometryCylindrical) )
     {
-        s << "VehicleGeometryCylindrical" << " ";
         orca::VehicleGeometryCylindricalDescriptionPtr cylObj =
                 orca::VehicleGeometryCylindricalDescriptionPtr::dynamicCast( obj );
         s << cylObj->radius << " " << cylObj->height;
@@ -809,15 +861,150 @@ toLogString( const orca::VehicleGeometryDescriptionPtr& obj )
     }
     else if (obj->type==orca::VehicleGeometryCuboid)
     {
-        s << "VehicleGeometryCuboid" << " ";
         orca::VehicleGeometryCuboidDescriptionPtr cubObj =
                 orca::VehicleGeometryCuboidDescriptionPtr::dynamicCast( obj );
         s << toLogString( cubObj->size );   
         s << toLogString( cubObj->vehicleToGeometryTransform );
     }
+    else
+    {
+        stringstream ssErr;
+        ssErr << "Can't deal with type: " << obj->type;
+        throw orcalog::Exception( ERROR_INFO, ssErr.str() );
+    }
     
     return s.str();
 }
+void
+fromLogString( std::stringstream &s, orca::VehicleGeometryDescriptionPtr& obj )
+{
+    cout<<"TRACE(logstringutils.cpp): geomFromLogString" << endl;
 
+    int type;
+    s >> type;
+
+    cout<<"TRACE(logstringutils.cpp): type: " << type << endl;
+
+    if ( type == orca::VehicleGeometryCylindrical )
+    {
+        cout<<"TRACE(logstringutils.cpp): cylindrical" << endl;
+        orca::VehicleGeometryCylindricalDescriptionPtr cObj =
+            new orca::VehicleGeometryCylindricalDescription;
+        obj = cObj;
+        cout<<"TRACE(logstringutils.cpp): setting type" << endl;
+        cObj->type = (orca::VehicleGeometryType)type;
+        cout<<"TRACE(logstringutils.cpp): done setting type" << endl;
+        fromLogString(s,cObj->radius);
+        fromLogString(s,cObj->height);
+        fromLogString(s,cObj->vehicleToGeometryTransform);
+    }
+    else if ( type == orca::VehicleGeometryCuboid )
+    {
+        orca::VehicleGeometryCuboidDescriptionPtr cObj =
+            new orca::VehicleGeometryCuboidDescription;
+        obj = cObj;
+        cObj->type = (orca::VehicleGeometryType)type;
+        fromLogString( s, cObj->size );
+        fromLogString( s, cObj->vehicleToGeometryTransform );
+    }
+    else
+    {
+        cout<<"TRACE(logstringutils.cpp): bad" << endl;
+
+        stringstream ssErr;
+        ssErr << "Can't deal with type: " << type;
+        throw orcalog::Exception( ERROR_INFO, ssErr.str() );
+    }
+
+    cout<<"TRACE(logstringutils.cpp): geomFromLogString done" << endl;
 }
 
+std::string
+toLogString( const orca::VehicleControlVelocityDifferentialDescription &obj )
+{
+    stringstream ss;
+    ss << obj.maxForwardSpeed << " "
+       << obj.maxReverseSpeed << " "
+       << obj.maxTurnrate << " "
+       << obj.maxLateralAcceleration << " "
+       << obj.maxForwardAcceleration << " "
+       << obj.maxReverseAcceleration << " "
+       << obj.maxRotationalAcceleration;
+    return ss.str();
+}
+void
+fromLogString( stringstream &s, orca::VehicleControlVelocityDifferentialDescription& obj )
+{
+    fromLogString(s,obj.maxForwardSpeed);
+    fromLogString(s,obj.maxReverseSpeed);
+    fromLogString(s,obj.maxTurnrate);
+    fromLogString(s,obj.maxLateralAcceleration);
+    fromLogString(s,obj.maxForwardAcceleration);
+    fromLogString(s,obj.maxReverseAcceleration);
+    fromLogString(s,obj.maxRotationalAcceleration);
+}
+
+std::string
+toLogString( const orca::VehicleControlDescriptionPtr& obj )
+{
+    stringstream ss;
+    ss << obj->type << " ";
+    if ( obj->type == orca::VehicleControlVelocityDifferential )
+    {
+        const orca::VehicleControlVelocityDifferentialDescriptionPtr cObj =
+            orca::VehicleControlVelocityDifferentialDescriptionPtr::dynamicCast(obj);
+        ss << toLogString( *cObj );
+    }
+    else
+    {
+        stringstream errSS;
+        errSS << "Don't know how to deal with type " << obj->type;
+        throw orcalog::Exception( ERROR_INFO, errSS.str() );
+    }
+    return ss.str();
+}
+void
+fromLogString( stringstream &s, orca::VehicleControlDescriptionPtr& obj )
+{
+    int type;
+    s >> type;
+    if ( type == orca::VehicleControlVelocityDifferential )
+    {
+        orca::VehicleControlVelocityDifferentialDescriptionPtr cObj = 
+            new orca::VehicleControlVelocityDifferentialDescription;
+        obj = cObj;
+        cObj->type = (orca::VehicleControlType)type;
+        fromLogString(s,*cObj);
+    }
+    else
+    {
+        stringstream errSS;
+        errSS << "Don't know how to deal with type " << type;
+        throw orcalog::Exception( ERROR_INFO, errSS.str() );
+    }
+}
+
+std::string
+toLogString( const orca::VehicleDescription& obj )
+{
+    stringstream ss;
+    ss << toLogString(obj.control) << " ";
+    ss << toLogString(obj.platformToVehicleTransform) << " ";
+    ss << toLogString(obj.geometry);
+    return ss.str();
+}
+
+void
+fromLogString( stringstream &s, orca::VehicleDescription& obj )
+{
+    cout<<"TRACE(logstringutils.cpp): reading control" << endl;
+    fromLogString(s,obj.control);
+    cout<<"TRACE(logstringutils.cpp): reading xform" << endl;
+    fromLogString(s,obj.platformToVehicleTransform);
+    cout<<"TRACE(logstringutils.cpp): reading geom" << endl;
+    fromLogString(s,obj.geometry);
+    cout<<"TRACE(logstringutils.cpp): readed geom" << endl;
+}
+
+
+}
