@@ -67,12 +67,14 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @par Project wide
 
-- Updated dart2 documentation to cdash (Tobi)
+- Updated dart2 documentation to cdash (tobi)
 - Dependencies
     - works with Ice-3.3 (continues to work with Ice-3.2)
 - Build system
     - Big cleanup of CMake scripts for generating interface code.
     - cmake files updated for cmake 2.6
+- Compiler
+    - compiles cleanly with gcc43, tested nightly (tobi)
 
 @par New utilities
 
