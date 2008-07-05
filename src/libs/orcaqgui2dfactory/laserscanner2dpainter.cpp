@@ -204,6 +204,11 @@ LaserScanner2dPainter::paint( QPainter *painter, int z )
             if ( intensities_[i] > 0 )
             {
                 int greenness = intensities_[i] * 36;    // splits up the green colorspace into 8 equal spaces
+                if ( intensities_[i] > 7 )
+                {
+                    cout << "ERROR(laserscanner2dpainter.cpp): invalid intensity: " << (int)(intensities_[i]) << endl;
+                    continue;
+                }
                 intensityColor.setRgb( 0, greenness, 255 );
                 painter->setPen( QPen( intensityColor ) );
                 painter->setBrush( intensityColor );
@@ -239,6 +244,7 @@ LaserScanner2dPainter::execute( int action )
     case 1 :
         // toggle points
         isDisplayPoints_ = !isDisplayPoints_;
+        cout<<"TRACE(laserscanner2dpainter.cpp): isDisplayPoints_ set to " << isDisplayPoints_ << endl;
         break;
     case 2 :
         // toggle walls
