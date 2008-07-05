@@ -374,7 +374,8 @@ std::string
 toLogString( const orca::RangeScanner2dDescription& obj )
 {
     stringstream s;
-    s << obj.minRange << " "
+    s << toLogString(obj.timeStamp) << " "
+      << obj.minRange << " "
       << obj.maxRange << " "
       << obj.fieldOfView << " "
       << obj.startAngle << " "
@@ -387,6 +388,7 @@ toLogString( const orca::RangeScanner2dDescription& obj )
 void
 fromLogString( std::stringstream &s, orca::RangeScanner2dDescription& obj )
 {
+    fromLogString(s,obj.timeStamp);
     fromLogString(s,obj.minRange);
     fromLogString(s,obj.maxRange);
     fromLogString(s,obj.fieldOfView);
