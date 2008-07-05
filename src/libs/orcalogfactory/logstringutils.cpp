@@ -53,7 +53,7 @@ namespace {
     inline void fromLogString( std::stringstream &s, float &i )
     { s >> i; }
     inline void fromLogString( std::stringstream &s, unsigned char &i )
-    { s >> i; }
+    { int j; s >> j; i=(unsigned char)j; }
 
     std::string toLogString( const orca::CartesianPoint &o )
     {
