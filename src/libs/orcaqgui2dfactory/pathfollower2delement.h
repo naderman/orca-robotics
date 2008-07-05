@@ -22,8 +22,6 @@
 
 namespace orcaqgui2d {
 
-class hydroqguielementutil::IHumanManager;
-
 ////////////////////////////////////////////////////////////////////////////////
 // The consumer object. We need this here because PathFollower2dElement cannot inherit from IceStormElement.
 // Reason is that PathFollower2dConsumer has several non-standard purely virtual member functions.

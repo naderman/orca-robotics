@@ -20,8 +20,6 @@
 
 namespace orcaqgui2d {
 
-class hydroqguielementutil::IHumanManager;
-
 // There's two consumer objects: the first one for icestorm (pathplanner pushes out whatever it computed) which is part
 // of the base class IceStormElement.
 // The second one here is for answers to tasks which were set by the GUI.
