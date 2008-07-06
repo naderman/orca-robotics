@@ -22,6 +22,9 @@ ReplayConductor::ReplayConductor( orcalog::MasterFileReader       &masterFileRea
 {
     clock_.setReplayRate(replayRate);
 
+    bool cursorValid = masterFileReader_.getCursorTime( firstItemSec_, firstItemUsec_ );
+    assert( cursorValid );
+
     // Fast-forward if non-zero beginTime
     if ( beginTime > orcalog::iceUtilTime(0,0) )
     {

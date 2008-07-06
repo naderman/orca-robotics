@@ -69,6 +69,9 @@ public:
     // returns 'cursorValid' (is invalid at end of log)
     bool getCursorTime( int &sec, int &usec );
 
+    void timeOfFirstItem( int &sec, int &usec ) const
+        { sec = firstItemSec_; usec = firstItemUsec_; }
+
 private:
 
     ////////////////////////////////////////
@@ -158,6 +161,9 @@ private:
     // This is for outsiders: if we're either playing or have received
     // a Play event that's not processed yet.
     bool isPlayingOrAboutToStart_;
+
+    // The time of the first item
+    int firstItemSec_, firstItemUsec_;
 
     // The clock by which replay occurs (might not run in real-time).
     ReplayClock clock_;

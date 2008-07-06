@@ -59,11 +59,7 @@ InteractiveController::printMenu()
     {
         cout << "    -- LogPlayer is PAUSED -- " << endl;
     }
-    int sec, usec;
-    if ( replayConductor_.getCursorTime(sec,usec) )
-    {
-        cout << "  cursorTime: " << sec << ":" << usec << endl;
-    }
+    cout << cursorInfo() << endl;
 
     cout << "  (p)lay/(p)ause               : toggle playing"  << endl
          << "  (r)eplay-rate <rate>         : set replay rate" << endl
@@ -71,6 +67,32 @@ InteractiveController::printMenu()
          << "  (f)ast-forward [sec[:usec]]  : fast-forward (no arg = 'to end')" << endl
          << "  (l),(j)                      : step backward/forward" << endl
          << "  (q)uit" << endl;
+}
+
+std::string
+InteractiveController::cursorInfo()
+{
+    stringstream ss;
+
+    int cursorSec, cursorUsec;
+    if ( replayConductor_.getCursorTime(cursorSec,cursorUsec) )
+    {
+        int firstItemSec, firstItemUsec;
+        replayConductor_.timeOfFirstItem( firstItemSec, firstItemUsec );
+        IceUtil::Time timeInto = 
+            orcalog::iceUtilTime(cursorSec,cursorUsec) -
+            orcalog::iceUtilTime(firstItemSec,firstItemUsec);
+        int intoSec = timeInto.toSeconds();
+        int intoUsec = (int)(timeInto.toMicroSeconds()-timeInto.toSeconds()*1e6);
+
+        ss << "cursorTime: " << cursorSec << ":" << cursorUsec << endl;
+        ss << "            ("<<intoSec<<":"<<intoUsec<<" into log)";
+    }
+    else
+    {
+        ss << "cursor at end of log";
+    }
+    return ss.str();
 }
 
 void
@@ -83,6 +105,7 @@ InteractiveController::walk()
 
     while ( !isStopping() )
     {
+        cout << cursorInfo() << endl;
         cout << " => ";
 
         const int NUM = 1000;
