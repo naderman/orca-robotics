@@ -114,6 +114,27 @@ namespace {
         s >> o.o;
     }
 
+    std::string toLogString( const orca::Covariance2d &o )
+    {
+        stringstream ss;
+        ss << o.xx << " "
+           << o.xy << " "
+           << o.yy << " "
+           << o.xt << " "
+           << o.yt << " "
+           << o.tt << " ";
+        return ss.str();
+    }
+    void fromLogString( std::stringstream &s, orca::Covariance2d &o )
+    {
+        s >> o.xx
+          >> o.xy
+          >> o.yy
+          >> o.xt
+          >> o.yt
+          >> o.tt;
+    }
+
     std::string toLogString( const orca::Twist2d &o )
     {
         stringstream ss;
@@ -451,50 +472,41 @@ fromLogString( std::stringstream &s, orca::LaserScanner2dData& obj )
         fromLogString(s,obj.intensities[i]);
 }
 
-/*! 
-@brief Prints out localise2d data to text which is easy to parse.
-
-- line1: timestamp in seconds and microseconds of Unix time
-- line2: number of hypotheses (N)
-- line3: hypothesis 1: {means covariances weight}. For element order see below.
-- ...
-- line2+N: hypothesis N
-
-The state is written in this order: {x y yaw}
-
-The covariance matrix is written in this order, e.i. {xx xy yy xyaw yyaw yawyaw}
-
-Units: means are in [m], angles are in [deg].
-*/
 std::string 
 toLogString( const orca::Localise2dData& obj )
 {
     std::stringstream s;
     
-    // timestamp on the first line
-    s << toLogString(obj.timeStamp) << endl;
-
-    // number of hypotheses on a line
-    s << obj.hypotheses.size() << endl;
+    s << toLogString(obj.timeStamp) << " "
+      << obj.hypotheses.size() << " ";
 
     for ( unsigned int i=0; i < obj.hypotheses.size(); i++ )
     {
         const orca::Pose2dHypothesis &h = obj.hypotheses[i];
 
-        s << h.mean.p.x << " "
-          << h.mean.p.y << " "
-          << RAD2DEG(h.mean.o) << " "
-          << h.cov.xx << " "
-          << h.cov.xy << " "
-          << h.cov.yy << " "
-          << h.cov.xt << " "
-          << h.cov.yt << " "
-          << h.cov.tt << " "
-          << h.weight << "\n";
+        s << toLogString(h.mean) << " "
+          << toLogString(h.cov) << " "
+          << h.weight << " ";
     }
     return s.str();
 }
+void
+fromLogString( std::stringstream &s, orca::Localise2dData &obj )
+{
+    fromLogString(s,obj.timeStamp);
+    int numHypotheses;
+    fromLogString(s,numHypotheses);
+    obj.hypotheses.resize(numHypotheses);
 
+    for ( unsigned int i=0; i < obj.hypotheses.size(); i++ )
+    {
+        orca::Pose2dHypothesis &h = obj.hypotheses[i];
+
+        fromLogString(s,h.mean);
+        fromLogString(s,h.cov);
+        fromLogString(s,h.weight);
+    }
+}
 
 /*! 
 @brief Prints out localise3d data to text which is easy to parse.
