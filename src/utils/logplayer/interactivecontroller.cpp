@@ -59,6 +59,12 @@ InteractiveController::printMenu()
     {
         cout << "    -- LogPlayer is PAUSED -- " << endl;
     }
+    int sec, usec;
+    if ( replayConductor_.getCursorTime(sec,usec) )
+    {
+        cout << "  cursorTime: " << sec << ":" << usec << endl;
+    }
+
     cout << "  (p)lay/(p)ause               : toggle playing"  << endl
          << "  (r)eplay-rate <rate>         : set replay rate" << endl
          << "  re(w)ind [sec[:usec]]        : rewind (no arg = 'to start')" << endl

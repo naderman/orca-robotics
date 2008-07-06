@@ -283,7 +283,7 @@ MasterFileReader::getDataAtOrAfterTime( int& seconds,
 
 bool
 MasterFileReader::getCursorTime( int &seconds,
-                                 int &useconds )
+                                 int &useconds ) const
 {
     if ( !cursorValid_ )
         return false;

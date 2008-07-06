@@ -28,7 +28,6 @@ public:
                      const IceUtil::Time             &beginTime,
                      double                           replayRate,
                      const orcaice::Context          &context );
-    ~ReplayConductor();
 
     // 'rate' is a multiple of real-time (ie >1.0 means faster-than-real-time)
     void setReplayRate( double rate );
@@ -65,6 +64,10 @@ public:
 
     // This is the main thread function.
     void walk();
+
+    // gets the time of the item we're about to play.
+    // returns 'cursorValid' (is invalid at end of log)
+    bool getCursorTime( int &sec, int &usec );
 
 private:
 
