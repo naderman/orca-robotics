@@ -244,6 +244,14 @@ namespace {
             ice_readLocalise2dData( helper.stream_, obj );
             helper.read();
         }
+        else if ( format=="ascii" )
+        {   
+            std::string line;
+            std::getline( *file, line );
+
+            std::stringstream ss( line );
+            fromLogString( ss, obj );
+        }    
         else
         {
             stringstream ss;
@@ -456,7 +464,7 @@ LaserScanner2dLogReader::read( orca::RangeScanner2dDescription &obj )
 Localise2dLogReader::Localise2dLogReader( const orcalog::LogReaderInfo &logReaderInfo )
     : orcalog::LogReader( logReaderInfo )
 {
-    checkFormatIceOnly( logReaderInfo );
+    checkFormatIceOrAscii( logReaderInfo );
 }
 void
 Localise2dLogReader::read( orca::Localise2dData &obj )

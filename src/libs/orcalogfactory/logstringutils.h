@@ -60,6 +60,7 @@ void fromLogString( std::stringstream &, orca::RangeScanner2dDescription& );
 std::string toLogString( const orca::LaserScanner2dDataPtr& );
 void fromLogString( std::stringstream &, orca::LaserScanner2dData& );
 std::string toLogString( const orca::Localise2dData& );
+void fromLogString( std::stringstream &, orca::Localise2dData & );
 std::string toLogString( const orca::Localise3dData& );
 //! Prints out resulting fine path to text in a parsable format
 std::string toLogString( const orca::PathPlanner2dData& );
