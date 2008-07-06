@@ -15,6 +15,9 @@ if ( fid == -1 )
     error(sprintf('Couldnt open file: %s\n',file));
 end
 
+% skip the description information
+fgetl(fid);
+
 % time stamp format
 timeStampFormat = '%f %f';
 
@@ -26,7 +29,7 @@ while true
     % read time stamp
     timeTmp = fscanf(fid, timeStampFormat, 2);
 
-    % check if we have reached then of the file
+    % check if we have reached the end of the file
     if size(timeTmp,1) ~= 2
         break;
     end
