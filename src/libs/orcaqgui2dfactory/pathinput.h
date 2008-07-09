@@ -28,8 +28,19 @@ class PathInput;
 class WpTable;
 
 // internal Gui representation for waypoint and path
-struct GuiWaypoint
+class GuiWaypoint
 {
+public:
+    GuiWaypoint()
+    : position(QPointF(0.0,0.0)), 
+      heading(0), 
+      timeTarget(0.0), 
+      distanceTolerance(0.0), 
+      headingTolerance(0.0), 
+      maxSpeed(0.0),
+      maxTurnrate(0)
+    {}
+    
     QPointF position;           // in m
     int     heading;            // in 1/16 deg from 0 to 360*16
     float   timeTarget;         // number of seconds until arrival at waypoint
