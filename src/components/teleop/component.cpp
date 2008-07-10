@@ -61,13 +61,6 @@ Component::start()
 void
 Component::stop()
 {
-    // inputThread_ is blocked on user input
-    // the only way for it to realize that we want to stop is to give it some keyboard input.
-    context().tracer().info( "Component is quitting but the InputThread is blocked waiting for user input.");
-    context().tracer().print( "************************************************" );
-    context().tracer().print( "Press any key or shake the joystick to continue." );
-    context().tracer().print( "************************************************" );
-    
     gbxiceutilacfr::stopAndJoin( inputThread_ );
     gbxiceutilacfr::stopAndJoin( networkThread_ );
     gbxiceutilacfr::stopAndJoin( displayThread_ );
