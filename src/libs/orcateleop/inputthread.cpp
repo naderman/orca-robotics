@@ -84,8 +84,14 @@ InputThread::walk()
     while ( !isStopping() )
     {
         context_.tracer().debug( "InputThread: calling driver_->read()", 10 );
-        if ( !driver_->read( command ) ) {
+        int ret = driver_->read( command );
+        if ( ret == 0 )
+        {
             network_->newMixedCommand( command );
+        }
+        else if ( ret == hydrointerfaces::HumanInput2d::TIMEOUT )
+        {
+            continue;
         }
         else {
             string errString = "failed to read from input hardware";
