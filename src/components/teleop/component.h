@@ -13,12 +13,14 @@
 
 #include <orcaice/component.h>
 
+namespace orcateleop {
+    class NetworkThread;
+    class TermDisplayThread;
+    class InputThread;
+}
+
 namespace teleop
 {
-
-class NetworkThread;
-class TermDisplayThread;
-class InputThread;
 
 class Component : public orcaice::Component
 {
@@ -30,9 +32,9 @@ public:
     virtual void stop();
 
 private:
-    NetworkThread* networkThread_;
-    TermDisplayThread* displayThread_;
-    InputThread* inputThread_;
+    orcateleop::NetworkThread* networkThread_;
+    orcateleop::TermDisplayThread* displayThread_;
+    orcateleop::InputThread* inputThread_;
 };
 
 } // namespace

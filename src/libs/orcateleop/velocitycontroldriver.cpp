@@ -16,7 +16,7 @@
 #include <iostream>
 
 using namespace std;
-using namespace teleop;
+using namespace orcateleop;
 
 VelocityControl2dDriver::VelocityControl2dDriver( Display* display, const orcaice::Context& context ) :
     display_(display),

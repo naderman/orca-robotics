@@ -15,7 +15,7 @@
 #include "network.h"
 
 using namespace std;
-using namespace teleop;
+using namespace orcateleop;
 
 InputThread::InputThread( Network* network, const orcaice::Context& context ) :
     SafeThread( context.tracer() ),

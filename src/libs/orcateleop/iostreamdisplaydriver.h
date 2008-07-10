@@ -13,7 +13,7 @@
 
 #include "termdisplaydriver.h"
 
-namespace teleop
+namespace orcateleop
 {
 
 class IostreamDisplayDriver : public TermDisplayDriver

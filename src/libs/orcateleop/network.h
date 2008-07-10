@@ -15,7 +15,7 @@
 
 #define TELEOP_COMMAND_UNCHANGED 1e6
 
-namespace teleop
+namespace orcateleop
 {
 
 class Network

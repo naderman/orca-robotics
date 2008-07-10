@@ -12,7 +12,7 @@
 
 #include <gbxutilacfr/mathdefs.h>
 
-using namespace teleop;
+using namespace orcateleop;
 
 void 
 NetworkDriver::incrementValue( double& value, double delta, double minValue, double maxValue )

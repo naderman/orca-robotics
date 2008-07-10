@@ -17,7 +17,7 @@
 
 #include "display.h"
 
-namespace teleop
+namespace orcateleop
 {
 
 class TermDisplayDriver;

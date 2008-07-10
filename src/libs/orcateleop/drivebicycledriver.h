@@ -16,7 +16,7 @@
 
 #include "networkdriver.h"
 
-namespace teleop
+namespace orcateleop
 {
 
 class Display;

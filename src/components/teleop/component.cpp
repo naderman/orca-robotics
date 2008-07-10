@@ -16,7 +16,8 @@
 #include <orcateleop/inputthread.h>
 
 using namespace std;
-using namespace teleop;
+
+namespace teleop {
 
 Component::Component() :
     orcaice::Component( "Teleop", orcaice::HomeInterface ),
@@ -37,21 +38,21 @@ Component::start()
     // USER DISPLAY
     //
     // the constructor may throw, we'll let the application shut us down
-    displayThread_ = new TermDisplayThread( context() );
+    displayThread_ = new orcateleop::TermDisplayThread( context() );
     displayThread_->start();
     
     //
     // NETWORK
     //
     // the constructor may throw, we'll let the application shut us down
-    networkThread_ = new NetworkThread( (Display*)displayThread_, context() );
+    networkThread_ = new orcateleop::NetworkThread( (orcateleop::Display*)displayThread_, context() );
     networkThread_->start();
 
     //
     // USER INPUT
     //
     // the constructor may throw, we'll let the application shut us down
-    inputThread_ = new InputThread( (Network*)networkThread_, context() );
+    inputThread_ = new orcateleop::InputThread( (orcateleop::Network*)networkThread_, context() );
     inputThread_->start();
 
     // the rest is handled by the application/service
@@ -71,3 +72,6 @@ Component::stop()
     gbxiceutilacfr::stopAndJoin( networkThread_ );
     gbxiceutilacfr::stopAndJoin( displayThread_ );
 }
+
+}
+

@@ -13,7 +13,7 @@
 
 #include <hydroiceutil/eventqueue.h>
 
-namespace teleop
+namespace orcateleop
 {
 
 enum EventType  

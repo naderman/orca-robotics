@@ -10,7 +10,7 @@
 
 #include "events.h"
 
-using namespace teleop;
+using namespace orcateleop;
 
 bool 
 TeleopEventQueueOptimizer::combine( hydroiceutil::EventPtr& existing, const hydroiceutil::EventPtr& extra ) 

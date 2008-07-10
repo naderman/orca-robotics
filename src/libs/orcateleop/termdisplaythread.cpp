@@ -15,7 +15,7 @@
 #include "events.h"
 
 using namespace std;
-using namespace teleop;
+using namespace orcateleop;
 
 TermDisplayThread::TermDisplayThread( const orcaice::Context& context ) : 
     SafeThread(context.tracer()),

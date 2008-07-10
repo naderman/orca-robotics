@@ -11,7 +11,7 @@
 #ifndef  TERMINAL_DISPLAY_DRIVER_H
 #define  TERMINAL_DISPLAY_DRIVER_H
 
-namespace teleop
+namespace orcateleop
 {
 
 class TermDisplayDriver

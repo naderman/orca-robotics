@@ -18,7 +18,7 @@
 #include "drivebicycledriver.h"
 
 using namespace std;
-using namespace teleop;
+using namespace orcateleop;
 
 NetworkThread::NetworkThread( Display* display, const orcaice::Context& context ) :
     SafeThread( context.tracer() ),

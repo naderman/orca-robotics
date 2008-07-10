@@ -17,7 +17,7 @@
 #include <hydrointerfaces/humaninput2d.h>
 #include <hydrodll/dynamicload.h>
 
-namespace teleop
+namespace orcateleop
 {
 
 class Network;

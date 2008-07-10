@@ -14,7 +14,7 @@
 #include "iostreamdisplaydriver.h"
 
 using namespace std;
-using namespace teleop;
+using namespace orcateleop;
 
 int 
 IostreamDisplayDriver::enable()

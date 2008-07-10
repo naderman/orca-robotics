@@ -16,7 +16,7 @@
 #include <iostream>
 
 using namespace std;
-using namespace teleop;
+using namespace orcateleop;
 
 DriveBicycleDriver::DriveBicycleDriver( Display* display, const orcaice::Context& context ) :
     display_(display),

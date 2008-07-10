@@ -11,7 +11,7 @@
 #ifndef  DISPLAY_INTERFACE_H
 #define  DISPLAY_INTERFACE_H
 
-namespace teleop
+namespace orcateleop
 {
 
 class Display

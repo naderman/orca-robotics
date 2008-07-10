@@ -17,7 +17,7 @@
 
 #include "network.h"
 
-namespace teleop
+namespace orcateleop
 {
 
 class Display;
