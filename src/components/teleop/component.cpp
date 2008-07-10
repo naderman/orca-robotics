@@ -11,9 +11,9 @@
 #include <iostream>
 
 #include "component.h"
-#include "networkthread.h"
-#include "termdisplaythread.h"
-#include "inputthread.h"
+#include <orcateleop/networkthread.h>
+#include <orcateleop/termdisplaythread.h>
+#include <orcateleop/inputthread.h>
 
 using namespace std;
 using namespace teleop;
