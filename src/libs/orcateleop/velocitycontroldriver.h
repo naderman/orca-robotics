@@ -41,6 +41,8 @@ public:
     virtual void processIncrementCommand( int longitudinal, int transverse, int angular );
     virtual void processRelativeCommand( double longitudinal, double transverse, double angular );
 
+    int enableWithString( std::string &proxyString );
+    
 private:
 
     void sendCommand();

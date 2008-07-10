@@ -60,6 +60,26 @@ VelocityControl2dDriver::enable()
 
     return 0;
 }
+
+    
+int 
+VelocityControl2dDriver::enableWithString( string &proxyString )
+{
+    try
+    {
+        orcaice::connectToInterfaceWithString<orca::VelocityControl2dPrx>( context_, prx_, proxyString );
+    }
+    // includes common ex's: ConnectionRefusedException, ConnectTimeoutException
+    catch ( const Ice::LocalException & e )
+    {
+        stringstream ss;
+        ss << "VelocityControl2dDriver::enableWithString() failed: " << e;
+        context_.tracer().warning( ss.str() );
+        return 1;
+    }
+
+    return 0;
+}
     
 int 
 VelocityControl2dDriver::disable()
