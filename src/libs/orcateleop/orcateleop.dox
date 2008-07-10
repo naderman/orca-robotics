@@ -1,0 +1,29 @@
+/*
+ * Orca-Robotics Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2008 Alex Brooks, Alexei Makarenko, Tobias Kaupp, George Mathews
+ *
+ * This copy of Orca is licensed to you under the terms described in
+ * the LICENSE file included in this distribution.
+ *
+ */
+/*!
+@ingroup orca_libs
+@defgroup orca_library_orcateleop libOrcaTeleop
+@brief Library providing teleoperation functionality
+
+This library contains abstract classes & thread implementation to assemble a teleoperation component. Different input modes (terminal, joystick) are supported. See @ref orca_component_teleop for an example of a component using this libary.
+
+@par Responsible Developer
+Alex Makarenko
+  
+*/
+
+/*!
+@brief Library providing teleoperation functionality
+@namespace orcaoteleop
+
+@see @ref orca_component_teleop
+
+
+*/
