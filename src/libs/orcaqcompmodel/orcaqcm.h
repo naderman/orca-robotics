@@ -11,8 +11,8 @@
 #ifndef ORCAQCM_ORCAQCM_H
 #define ORCAQCM_ORCAQCM_H
 
-#include <orcaqcm/ocmmodel.h>
-#include <orcaqcm/ocmdelegate.h>
-#include <orcaqcm/jobs.h>
+#include <orcaqcompmodel/ocmmodel.h>
+#include <orcaqcompmodel/ocmdelegate.h>
+#include <orcaqcompmodel/jobs.h>
  
 #endif

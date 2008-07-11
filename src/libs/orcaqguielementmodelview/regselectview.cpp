@@ -14,7 +14,7 @@
 #include <QInputDialog>
 #include <QHeaderView>
 
-#include <orcaqcm/ocmmodel.h>   // need to access custom API
+#include <orcaqcompmodel/ocmmodel.h>   // need to access custom API
 
 #include "regselectview.h"
 

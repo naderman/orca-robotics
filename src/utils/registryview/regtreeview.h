@@ -11,7 +11,7 @@
 #ifndef ORCA_REGVIEW_TREE_VIEW_H
 #define ORCA_REGVIEW_TREE_VIEW_H
 
-#include <orcaqcm/ocmview.h>
+#include <orcaqcompmodel/ocmview.h>
 
 class RegTreeView : public orcaqcm::OcmView
 {

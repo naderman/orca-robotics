@@ -14,7 +14,7 @@
 
 #include <QtGui>
 
-#include <orcaqcm/orcaqcm.h>
+#include <orcaqcompmodel/orcaqcm.h>
 #include <orcaqt/orcaqt.h>
 
 #include "mainwin.h"

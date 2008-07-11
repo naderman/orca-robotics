@@ -11,7 +11,7 @@
 #ifndef ORCA_REGISTRY_SELECT_VIEW_H
 #define ORCA_REGISTRY_SELECT_VIEW_H
 
-#include <orcaqcm/ocmview.h>
+#include <orcaqcompmodel/ocmview.h>
 
 namespace orcaqgemv {
 

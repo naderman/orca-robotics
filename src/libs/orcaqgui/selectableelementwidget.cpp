@@ -15,7 +15,7 @@
 #include <orcaice/orcaice.h>
 #include <orcacm/orcacm.h>
 #include <orcaqt/orcaqt.h>
-#include <orcaqcm/orcaqcm.h>
+#include <orcaqcompmodel/orcaqcm.h>
 #include <orcaqguielementmodelview/regselectview.h>
 
 using namespace std;
