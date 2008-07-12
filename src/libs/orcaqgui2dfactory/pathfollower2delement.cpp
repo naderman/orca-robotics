@@ -422,6 +422,23 @@ PathFollower2dElement::contextMenu()
     return s;
 }
 
+bool
+PathFollower2dElement::tryEnableRemoteInterface( bool enable )
+{
+    try 
+    {
+        pathFollower2dPrx_->setEnabled( enable );
+    }
+    catch ( std::exception &e )
+    {
+        stringstream ss;
+        ss << "Error when switching remote interface to " << enable << ". Reason: " << e.what() << endl;
+        humanManager_.showStatusMsg(hydroqguielementutil::IHumanManager::Error, QString(ss.str().c_str()) );  
+        return false;
+    }
+    return true;
+}
+
 void 
 PathFollower2dElement::execute( int action )
 {

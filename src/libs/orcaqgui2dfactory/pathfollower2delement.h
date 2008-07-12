@@ -176,6 +176,9 @@ public:
     virtual void mouseMoveEvent(QMouseEvent *e) { if ( pathHI_.get() ) pathHI_->mouseMoveEvent(e); }
     virtual void mouseReleaseEvent(QMouseEvent *e) { if ( pathHI_.get() ) pathHI_->mouseReleaseEvent(e); }
     virtual void mouseDoubleClickEvent(QMouseEvent *e) { if ( pathHI_.get() ) pathHI_->mouseDoubleClickEvent(e); }
+    
+    // Tries to enable or disable the remote interface. Returns true if successful
+    bool tryEnableRemoteInterface( bool enable );
 
     void go();
     void stop();
