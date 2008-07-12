@@ -24,7 +24,6 @@ class Component : public orcaice::Component
 {
 public:
     Component( std::string compName );
-    ~Component();
 
     // component interface
     virtual void start();
@@ -34,7 +33,7 @@ private:
 
     void loadPluginLibraries( const std::string &factoryLibNames );
 
-    std::vector<orcaqgui::GuiElementFactory*>                factories_;
+    std::vector<orcaqgui::GuiElementFactory*>        factories_;
     std::vector<hydrodll::DynamicallyLoadedLibrary*> libraries_;
           
 };

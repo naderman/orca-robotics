@@ -38,10 +38,6 @@ Component::Component( string compName)
 {
 }
 
-Component::~Component()
-{
-}       
-
 void
 Component::loadPluginLibraries( const std::string & factoryLibNames )
 {
@@ -138,9 +134,9 @@ Component::start()
 
     // widget for viewing the actual world
     orcaqgui3d::WorldView worldView3d( &platformCSFinder,
-                                      &guiElemModel,
-                                      gui.displayViewParent(),
-                                      &gui );
+                                       &guiElemModel,
+                                       gui.displayViewParent(),
+                                       &gui );
 
     // tell the main window about the widgets, model, and factory
     gui.init( &guiElemModel,

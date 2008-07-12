@@ -39,9 +39,9 @@ public:
     //! timeoutMs is how long we wait before assuming a problem and trying to reconnect.
     //! (timoutMs = -1 means we never timeout)
     PtrIceStormElement( const orcaice::Context  &context,
-                     const std::string       &proxyString,
-                     PainterType             &painter,
-                     const double            timeoutMs=5000.0 )
+                        const std::string       &proxyString,
+                        PainterType             &painter,
+                        const double            timeoutMs=5000.0 )
         : context_(context),
           listener_(context,proxyString),
           painter_(painter),
