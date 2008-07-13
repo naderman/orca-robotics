@@ -10,9 +10,10 @@
 
 #include "glutil.h"
 #include <iostream>
-
+#include <sstream>
 #include <GL/glut.h>
 #include <gbxutilacfr/mathdefs.h>
+#include <gbxutilacfr/exceptions.h>
 
 using namespace std;
 
@@ -153,6 +154,56 @@ drawIcosahedron()
             glVertex3fv(&vdata[tindices[i][1]][0]); 
             glVertex3fv(&vdata[tindices[i][2]][0]);    
         glEnd(); 
+    }
+}
+
+void makeCheckImage( GLubyte img[64][64][3] )
+{
+    const int width=64;
+    const int height=64;
+
+    int i, j, c;
+
+    for (i = 0; i < width; i++) {
+        for (j = 0; j < height; j++) {
+            c = ((((i&0x8)==0)^((j&0x8))==0))*255;
+            img[i][j][0] = (GLubyte) c;
+            img[i][j][1] = (GLubyte) c;
+            img[i][j][2] = (GLubyte) c;
+        }
+    }
+}
+
+std::string
+errorToString( GLenum error )
+{
+    switch ( error )
+    {
+    case GL_NO_ERROR          : return "GL_NO_ERROR";
+    case GL_INVALID_ENUM      : return "GL_INVALID_ENUM";
+    case GL_INVALID_VALUE     : return "GL_INVALID_VALUE";
+    case GL_INVALID_OPERATION : return "GL_INVALID_OPERATION";
+    case GL_STACK_OVERFLOW    : return "GL_STACK_OVERFLOW";
+    case GL_STACK_UNDERFLOW   : return "GL_STACK_UNDERFLOW";
+    case GL_OUT_OF_MEMORY     : return "GL_OUT_OF_MEMORY";
+    default: 
+    {
+        stringstream ss;
+        ss << "Unknown("<<error<<")";
+        return ss.str();
+    }
+    }
+}
+
+void
+checkGLError()
+{
+    GLenum error = glGetError();
+    if ( error != GL_NO_ERROR )
+    {
+        stringstream ss;
+        ss << "OpenGL Error: " << errorToString(error);
+        throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
     }
 }
 

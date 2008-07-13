@@ -11,6 +11,9 @@
 #ifndef ORCAGUI3D_GLUTIL_H
 #define ORCAGUI3D_GLUTIL_H
 
+#include <GL/gl.h>
+#include <string>
+
 namespace orcaqgui3d {
 
 namespace glutil {
@@ -27,6 +30,14 @@ void transform( float x,
 void drawBox( float d, float w, float h, bool drawSurfaces, bool drawWireFrame );
 
 void drawIcosahedron();
+
+// Makes a little checkerboard (nicked from the redbook)
+void makeCheckImage( GLubyte img[64][64][3] );
+
+std::string errorToString( GLenum error );
+
+// Throws an exception if there's an error condition
+void checkGLError();
 
 //
 // Calls glPushMatrix() in the constructor, and glPopMatrix() in the destructor.

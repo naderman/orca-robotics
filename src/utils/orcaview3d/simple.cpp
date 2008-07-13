@@ -107,10 +107,85 @@ private:
         }
 };
 
+class Billboard {
+private:
+    static const int IMG_WIDTH=64;
+public:
+
+    void init()
+        {
+            // Draw the chess-board
+            orcaqgui3d::glutil::makeCheckImage( checkImage_ );
+
+            // Says how to read the texture in the next call
+            glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+            // Create the texture map
+            glTexImage2D(GL_TEXTURE_2D, 0, 3, IMG_WIDTH, 
+                         IMG_WIDTH, 0, GL_RGB, GL_UNSIGNED_BYTE, 
+                         &checkImage_[0][0][0]);
+        }
+
+    void paint()
+        {
+            glEnable( GL_TEXTURE_2D );
+            {
+                ////////////////////////////////////////
+                glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+                glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+                glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+                glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+                ////////////////////////////////////////
+                glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+
+                const float w = 3.0;
+
+                glBegin(GL_QUADS);
+                glNormal3f( 1.0, 0.0, 0.0);
+                glColor3f( 0.0, 1.0, 1.0 );
+                glTexCoord2f(0.0, 0.0); glVertex3f(0,w/2.0,0);
+                glTexCoord2f(0.0, 1.0); glVertex3f(0,w/2.0,w);
+                glTexCoord2f(1.0, 1.0); glVertex3f(0,-w/2.0,w);
+                glTexCoord2f(1.0, 0.0); glVertex3f(0,-w/2.0,0);
+                glEnd();
+            }
+            glDisable( GL_TEXTURE_2D );
+        }
+
+private:
+
+    GLubyte checkImage_[IMG_WIDTH][IMG_WIDTH][3];
+};
+
 class MainWindow : public QGLWidget
 {
 public:
-    MainWindow() {}
+
+    class Config {
+    public:
+        enum Quality {
+            Nicest,
+            Fastest,
+        };
+
+        Config( Quality pQuality )
+            : quality(pQuality)
+            {
+                enableAntialiasing = (quality == Nicest);
+                enableTexturing = (quality == Nicest);
+            }
+
+        // General quality
+        Quality quality;
+        bool    enableAntialiasing;
+        bool    enableTexturing;
+    };
+
+    //////////////////////////////////////////////////////////////////////
+
+    MainWindow( const Config &config ) 
+        : config_(config)
+        {}
 
     // from QGLWidget
     void initializeGL()
@@ -125,10 +200,17 @@ public:
 
             // GL_SMOOTH is the default
             // glShadeModel( GL_SMOOTH );
+
+            // Only load the texture-map once
+            billboard_.init();
         }
     void paintGL()
         {
             cout<<"TRACE(worldview3d.cpp): ==================== paintGL() ====================" << endl;
+
+            // Set config
+            // (don't really need to do this on every draw, just when it's changed...)
+            setQuality();
 
             // Start from a clean slate
             glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
@@ -150,29 +232,58 @@ public:
 //             glPopMatrix();
 
             // Ground plane
-            glColor3f( 0.0, 1.0, 0.0 );
             glBegin(GL_QUADS);
             glNormal3f( 0.0, 0.0, 1.0);
             const double infty = 1000;
+            glColor3f( 0.0, 1.0, 0.0 );
             glVertex3f(-infty,-infty,0);
             glVertex3f(-infty,infty,0);
             glVertex3f(infty,infty,0);
             glVertex3f(infty,-infty,0);
             glEnd();
 
-//             glBegin (GL_TRIANGLES);
-//             glColor3f (1.0, 0.0, 0.0);
-//             glVertex2f (5.0, 5.0);
-//             glColor3f (0.0, 1.0, 0.0);
-//             glVertex2f (25.0, 5.0);
-//             glColor3f (0.0, 0.0, 1.0);
-//             glVertex2f (5.0, 25.0);
-//             glEnd ();
 
-            GridElement gridElement;
-            gridElement.paint( this );
+            // gradient-ed square
+            glBegin(GL_QUADS);
+            glNormal3f( 0.0, 0.0, 1.0);
+            const double in = 3;
+            const double height = 4;
+            glColor3f( 0.0, 1.0, 1.0 );
+            glVertex3f(-in,-in,height);
+            glVertex3f(-in,in,height);
+            glColor3f( 1.0, 0.0, 0.0 );
+            glVertex3f(in,in,height);
+            glColor3f( 1.0, 1.0, 0.0 );
+            glVertex3f(in,-in,height);
+            glEnd();
 
-            glFlush();
+            // Grid
+            glPushMatrix();
+            {
+                glTranslatef( 0, 0, 0.05 );
+                GridElement gridElement;
+                gridElement.paint( this );
+            }
+            glPopMatrix();
+
+            // Another Grid
+            glPushMatrix();
+            {
+                glTranslatef( 0, 10, 0.05 );
+                GridElement gridElement;
+                gridElement.paint( this );
+            }
+            glPopMatrix();
+
+            // Billboard
+            glPushMatrix();
+            {
+                glTranslatef( 4, 0, 0 );
+                billboard_.paint();
+            }
+            glPopMatrix();
+
+            orcaqgui3d::glutil::checkGLError();
         }
     void resizeGL(int w, int h)
         {
@@ -210,8 +321,62 @@ public:
 
 private:
 
+    void setQuality()
+        {
+            // TODO: this is bad: in fact we can turn quality params
+            // on and off per-element.
+            return;
+
+            // Set all the hints
+            GLenum hint = GL_DONT_CARE;
+            switch ( config_.quality )
+            {
+            case Config::Nicest:
+            {
+                cout<<"TRACE(simple.cpp): Setting quality to nicest" << endl;
+                hint = GL_NICEST; break;
+            }
+            case Config::Fastest:
+            {
+                cout<<"TRACE(simple.cpp): Setting quality to fastest" << endl;
+                hint = GL_FASTEST; break;
+            }
+            }
+            glHint( GL_POINT_SMOOTH_HINT, hint );
+            glHint( GL_LINE_SMOOTH_HINT, hint );
+            glHint( GL_POLYGON_SMOOTH_HINT, hint );
+            glHint( GL_FOG_HINT, hint );
+            glHint( GL_PERSPECTIVE_CORRECTION_HINT, hint );            
+
+            // Antialiasing
+            if ( config_.enableAntialiasing )
+            {
+                glEnable( GL_POINT_SMOOTH );
+                glEnable( GL_LINE_SMOOTH );
+                glEnable( GL_BLEND );
+                glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+            }
+            else
+            {
+                glDisable( GL_POINT_SMOOTH );
+                glDisable( GL_LINE_SMOOTH );
+                glDisable( GL_BLEND );
+            }
+
+            // Texturing (2D only)
+            if ( config_.enableTexturing )
+                glEnable( GL_TEXTURE_2D );
+            else
+                glDisable( GL_TEXTURE_2D );
+        }
+
+    Config config_;
+
     // Handles viewpoint
     orcaview3d::ViewHandler viewHandler_;
+
+
+    Billboard billboard_;
 };
 
 int main()
@@ -221,7 +386,9 @@ int main()
     int c = 0;
     QApplication qapp(c,v);
 
-    MainWindow mainWin;
+    MainWindow::Config config( MainWindow::Config::Nicest );
+
+    MainWindow mainWin( config );
     mainWin.show();
     
     // note: this does not return!

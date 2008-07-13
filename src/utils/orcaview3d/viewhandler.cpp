@@ -15,10 +15,10 @@ namespace {
 
 ViewHandler::ViewHandler()
     : zoomFactor_(INIT_ZOOM),
-      xOffset_(0),
-      yOffset_(-7),
-      zOffset_(5),
-      yaw_(0),
+      xOffset_(-7),
+      yOffset_(0),
+      zOffset_(2),
+      yaw_(90),
       pitch_(INIT_PITCH)
 {
 }
@@ -104,12 +104,13 @@ ViewHandler::mouseMoveEvent( QMouseEvent* e )
 bool 
 ViewHandler::keyPressEvent(QKeyEvent *e)
 {
+    const double amt = 0.2;
+
     bool needUpdate=true;
     switch ( e->key() )
     {
     case Qt::Key_O:
     {
-        double amt = 0.1;
         double yawRad = yaw_*M_PI/180.0;
         xOffset_ += amt*cos(yawRad);
         yOffset_ -= amt*sin(yawRad);
@@ -117,7 +118,6 @@ ViewHandler::keyPressEvent(QKeyEvent *e)
     }
     case Qt::Key_U:
     {
-        double amt = 0.1;
         double yawRad = yaw_*M_PI/180.0;
         xOffset_ -= amt*cos(yawRad);
         yOffset_ += amt*sin(yawRad);
@@ -125,7 +125,6 @@ ViewHandler::keyPressEvent(QKeyEvent *e)
     }
     case Qt::Key_K:
     {
-        double amt = 0.1;
         double yawRad = yaw_*M_PI/180.0;
         xOffset_ += -amt*sin(yawRad);
         yOffset_ -=  amt*cos(yawRad);
@@ -133,7 +132,6 @@ ViewHandler::keyPressEvent(QKeyEvent *e)
     }
     case Qt::Key_I:
     {
-        double amt = 0.1;
         double yawRad = yaw_*M_PI/180.0;
         xOffset_ -= -amt*sin(yawRad);
         yOffset_ +=  amt*cos(yawRad);

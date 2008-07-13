@@ -2,6 +2,8 @@
 #define ORCAVIEW3D_VIEWHANDLER_H
 
 #include <QMouseEvent>
+#include <cmath>
+#include <assert.h>
 
 namespace orcaview3d {
 
@@ -28,6 +30,20 @@ public:
     bool mouseMoveEvent( QMouseEvent* );
     // Returns true if the viewpoint has been modified
     bool keyPressEvent(QKeyEvent *e);
+
+    // Get the pose of the camera in world-coordinates, in S.I. units.
+    // (might be stored weirdly internally for OpenGL-reasons)
+    float x() const { return xOffset_; }
+    float y() const { return xOffset_; }
+    float z() const { return xOffset_; }
+    float roll() const { return M_PI*180.0*(0.0); }
+    float pitch() const 
+        {
+            assert( false && "Not sure how this should be defined...." );
+            return M_PI/180.0*pitch_; 
+        }
+    float yaw() const { return M_PI/180.0*(yaw_-90); }
+        
 
 private: 
 
