@@ -215,13 +215,13 @@ Component::start()
     hydroqgui::PlatformCSFinder platformCSFinder;
 
     // widget for viewing the actual world
-    hydroqgui::WorldView *worldView = new hydroqgui::WorldView( &platformCSFinder,
-                                                                 mouseEventManager,
-                                                                 guiElementSet,
-                                                                 coordinateFrameManager,
-                                                                 mainWin,
-                                                                 platformFocusManager,
-                                                                 displayRefreshTime );
+    hydroqgui::WorldView *worldView = new hydroqgui::WorldView( platformCSFinder,
+                                                                mouseEventManager,
+                                                                guiElementSet,
+                                                                coordinateFrameManager,
+                                                                mainWin,
+                                                                platformFocusManager,
+                                                                displayRefreshTime );
     
     // Gui-Element-selecting widget
     orcaqgui::SelectableElementWidget *selectableElementWidget = 

@@ -8,31 +8,14 @@
  *
  */
 
-#include <iostream> // debugging only
-#include <cmath>  // for floor()
-#include <map>
-
-#include <QPainter>
-#include <QAction>
-#include <QTimer>
-#include <QPaintEvent>
-#include <QInputDialog>
-#include <QStatusBar>
-#include <QDialog>
-#include <QToolTip>
 
 #include <gbxutilacfr/mathdefs.h>
-#include <orcaqgui/guielementmodel.h>
-#include <orcaqgui/mainwin.h>
-#include <orcaqgui/ipermanentelement.h>
-
-#include "guielement3d.h"
-#include "glutil.h"
 #include "worldview.h"
+#include <orcaqgui3d/glutil.h>
 
 using namespace std;
 
-namespace orcaqgui3d {
+namespace orcaview3d {
 
     namespace {
         const int INIT_ZOOM  = 5;
@@ -40,74 +23,43 @@ namespace orcaqgui3d {
         const int INIT_PITCH = -60;
     }
 
-WorldView::WorldView( PlatformCSFinder *platformCSFinder,
-                      orcaqgui::GuiElementModel* model,
-                      QWidget* parent, 
-                      orcaqgui::MainWindow* mainWin )
-    : QGLWidget(QGLFormat(QGL::AlphaChannel), parent),
+WorldView::WorldView( orcaqgui3d::PlatformCSFinder              &platformCSFinder,
+                      ::hydroqguielementutil::MouseEventManager &mouseEventManager,
+                      hydroqgui::GuiElementSet                  &guiElementSet,
+                      ::hydroqguielementutil::IHumanManager     &humanManager,
+                      hydroqgui::PlatformFocusManager           &platformFocusManager,
+                      int                                        displayRefreshTime,
+                      QWidget                                   *parent )
+    : QGLWidget(parent),
       platformCSFinder_(platformCSFinder),
-      model_(model),
-      mainWin_(mainWin),
+      mouseEventManager_(mouseEventManager),
+      guiElementSet_(guiElementSet),
+      humanManager_(humanManager),
+      platformFocusManager_(platformFocusManager),
       zoomFactor_(INIT_ZOOM),
       xOffset_(0),
       yOffset_(0),
       zOffset_(0),
       yaw_(INIT_YAW),
-      pitch_(INIT_PITCH),
-//      fudgeFactor_(3),
-      showOGs_(true),
-      showSnaps_(true),
-      showLabels_(true),
-      showGrids_(true),
-      showRobots_(true),
-      showPointclouds_(true),
-      showPatchBorders_(true),
-      pointSize_(3)
+      pitch_(INIT_PITCH)
 {
-    setMinimumSize( 600, 600 );
-    setMaximumSize( 1400, 1050 );
-    setFocusPolicy(Qt::StrongFocus);
-//    makeCurrent();
- 
-    //connect( this,SIGNAL(platformFocusChanged(const QString&)), this, SLOT(changePlatformFocus(const QString&)) );
-    QObject::connect( this,SIGNAL(platformFocusChanged(const QString&)), mainWin_, SLOT(changePlatformFocusFromView(const QString&)) );
-
-    // to show tooltips with robot names, make this configurable?
-    // setMouseTracking(true);
-    
-    // reset();
-    // update();
+    displayTimer_ = new QTimer( this );
+    QObject::connect( displayTimer_,SIGNAL(timeout()), this,SLOT(updateAllGuiElements()) );
+    displayTimer_->start( displayRefreshTime );    
 }
-
-WorldView::~WorldView()
-{
-}
-
-// void
-// WorldView::paintEvent( QPaintEvent* e )
-// {
-//     QPainter painter(this);
-//     painter.setRenderHint(QPainter::Antialiasing);
-// 
-//     // set world martrix
-//     // painter.setMatrix( wm_ );
-// 
-//     model_->transformToFocusPlatformCS( &painter );
-// 
-//     // simple z-buffering, higher-z items obscure (are in front of) lower-z items (just like QCanvas)
-//     for ( int z=orcaqgui::Z_BACKGROUND; z<=orcaqgui::Z_FOREGROUND; z+=1 )
-//     {
-//         // paint guiElements
-//         model_->paintGuiElements( &painter, z );
-// //         if (humanInput_!=NULL) {
-// //             humanInput_->paint( &painter, z);
-// //         }
-//     }
-// }
-
+      
 void 
 WorldView::initializeGL()
 {
+    // Set the default (background) color
+    glClearColor(0.70f, 0.7f, 0.7f, 0.0f);
+
+    // Enable the depth buffer: to handle hidden surface removal
+    glEnable(GL_DEPTH_TEST);
+
+
+
+#if 0
     glClearColor(0.70f, 0.7f, 0.7f, 1.0f);
     glDepthFunc(GL_LEQUAL);
     glEnable(GL_DEPTH_TEST);
@@ -134,6 +86,7 @@ WorldView::initializeGL()
 //    renderText(0,0,0,"");
 //     displayList_ = glGenLists(1);
 //     cerr << "Display list is: " <<  displayList_ << endl;
+#endif
 }
 
 void 
@@ -142,14 +95,14 @@ WorldView::resizeGL(int w, int h)
     cout<<"TRACE(worldview3d.cpp): resizeGL()" << endl;
 //     screenWidth_ = w;
 //     screenHeight_ = h;
-    float aspectRatio = ((float) w)/((float) h);
+//    float aspectRatio = ((float) w)/((float) h);
 
     // update projection
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     //qDebug("Aspect ratio set to %f", aspectRatio); 
     //glOrtho(-aspectRatio, aspectRatio, -1, 1, -1000, 1000); 
-    gluPerspective(60, aspectRatio, 1,1000);
+    //gluPerspective(60, aspectRatio, 1,1000);
 
     // update model/view matrix
     glMatrixMode(GL_MODELVIEW);
@@ -168,6 +121,14 @@ WorldView::paintGL()
 {
     cout<<"TRACE(worldview3d.cpp): ==================== paintGL() ====================" << endl;
 
+    // Start from a clean slate
+    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+
+
+    orcaqgui3d::glutil::drawBox( 1, 1, 1, true, true );
+    glFlush();
+
+#if 0
     {
         //qDebug("paintGL on mapview called");
 
@@ -193,10 +154,11 @@ WorldView::paintGL()
     GLfloat diffuseMaterial[4] = { 0.1, 0.1, 0.5, 1.0 };
     glMaterialfv( GL_FRONT, GL_DIFFUSE, diffuseMaterial);
 
-    glutil::drawBox( 1, 1, 1, true, true );
+    orcaqgui3d::glutil::drawBox( 1, 1, 1, true, true );
 //     glutil::drawIcosahedron();
 
     glPopMatrix();
+#endif
 }
 
 // void WorldView::paintGL()
@@ -249,8 +211,61 @@ WorldView::paintGL()
 // }
 
 void
+WorldView::updateAllGuiElements()
+{
+    for ( int i=0; i<guiElementSet_.elements().size(); ++i )
+    {
+        ::hydroqguielementutil::IGuiElement *element = guiElementSet_.elements()[i];
+
+        if ( element ) {
+            std::stringstream ss;
+            try {
+                element->update();
+            }
+            catch ( IceUtil::Exception &e )
+            {
+                ss<<"WorldView: during update of "
+                <<element->details().toStdString()<<": " << e << std::endl;
+                humanManager_.showStatusMsg(::hydroqguielementutil::IHumanManager::Warning,ss.str().c_str());
+            }
+            catch ( std::exception &e )
+            {
+                ss<<"WorldView: during update of "
+                <<element->details().toStdString()<<": " << e.what() << std::endl;
+                humanManager_.showStatusMsg(::hydroqguielementutil::IHumanManager::Warning,ss.str().c_str());
+            }
+            catch ( std::string &e )
+            {
+                ss<<"WorldView: during update of "
+                   <<element->details().toStdString()<<": " << e << std::endl;
+                humanManager_.showStatusMsg(::hydroqguielementutil::IHumanManager::Warning,ss.str().c_str());
+            }
+            catch ( char *e )
+            {
+                ss<<"WorldView: during update of "
+                   <<element->details().toStdString()<<": " << e << std::endl;
+                humanManager_.showStatusMsg(::hydroqguielementutil::IHumanManager::Warning,ss.str().c_str());
+            }
+            catch ( ... )
+            {
+                ss<<"WorldView: Caught unknown exception during update of "
+                   <<element->details().toStdString()<<": " << std::endl;
+                humanManager_.showStatusMsg(::hydroqguielementutil::IHumanManager::Warning,ss.str().c_str());
+            }
+        }
+    }
+
+    // issue a QPaintEvent to force a repaint
+    updateGL();
+}
+
+void
 WorldView::paintAllGuiElements( bool isFocusLocalised )
 {
+    cout<<"TRACE(worldview.cpp): "<<__func__<< endl;
+    return;
+
+#if 0
     const QList<orcaqgui::GuiElement*> &elements = model_->elements();
 
     for ( int i=0; i<elements.size(); ++i )
@@ -281,14 +296,14 @@ WorldView::paintAllGuiElements( bool isFocusLocalised )
                         // will not be transformed and the element will be painted at the
                         // saved coords
                         float x, y, z, roll, pitch, yaw;
-                        if ( platformCSFinder_->findPlatformCS( model_->elements(),
-                                                                model_->coordinateFramePlatform(),
-                                                                x,
-                                                                y,
-                                                                z,
-                                                                roll,
-                                                                pitch,
-                                                                yaw ) )
+                        if ( platformCSFinder_.findPlatformCS( model_->elements(),
+                                                               model_->coordinateFramePlatform(),
+                                                               x,
+                                                               y,
+                                                               z,
+                                                               roll,
+                                                               pitch,
+                                                               yaw ) )
                         {
                             orcaqgui3d::glutil::transform( x,y,z,roll,pitch,yaw );
                         }
@@ -324,38 +339,7 @@ WorldView::paintAllGuiElements( bool isFocusLocalised )
 //                      <<elements[i]->id.toStdString()<<": " << std::endl;
         }
     }
-}
-
-bool
-WorldView::transformToFocusPlatformCS()
-{
-    // special case: global CS
-    if ( model_->coordinateFramePlatform() == "global" )
-    {
-        // TODO: should we set to identity here??
-        // focusMatrix = QMatrix();
-        return true;
-    }
-    else
-    {
-        float x, y, z, roll, pitch, yaw;
-        if ( platformCSFinder_->findPlatformCS( model_->elements(),
-                                                model_->coordinateFramePlatform(),
-                                                x,
-                                                y,
-                                                z,
-                                                roll,
-                                                pitch,
-                                                yaw ) )
-        {
-            orcaqgui3d::glutil::transform( x,y,z,roll,pitch,yaw );
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
+#endif
 }
 
 void 
@@ -372,13 +356,6 @@ WorldView::keyPressEvent(QKeyEvent *e)
     }
     else if(e->key() == Qt::Key_D){
         xOffset_ += 0.1*zoomFactor_;
-    }
-    else if(e->key() == Qt::Key_P){
-        pointSize_ += 1;
-    }
-    else if(e->key() == Qt::Key_O){
-        pointSize_ -= 1;
-        if(pointSize_ < 1) pointSize_ = 1;
     }
     else if(e->key() == Qt::Key_BracketLeft){
         zoomFactor_ *= 1.1;
@@ -407,76 +384,63 @@ WorldView::keyPressEvent(QKeyEvent *e)
         yaw_=INIT_YAW;
         pitch_=INIT_PITCH;
     }
-
-// AlexB: what does the fudgefactor do??
-#if 0
-    else if(e->text() == "="){
-        fudgeFactor_ *=1.25;
-        qDebug("Fudge factor set to %f", fudgeFactor_);
-    }
-    else if(e->text()=="-"){
-        fudgeFactor_ /=1.25;
-        qDebug("Fudge factor set to %f", fudgeFactor_);
-    }
-    else if(e->text() == "0"){
-        fudgeFactor_=3;
-        qDebug("Fudge factor set to %f", fudgeFactor_);
-    }
-#endif    
     
-    update();
+    updateGL();
 }
-
-// void WorldView::focusInEvent(QFocusEvent *fe){
-//     makeCurrent();
-//     glClearColor(0.7f,0.7f,0.7f,1.0f);
-//     updateGL();
-// }
-
-// void WorldView::focusOutEvent(QFocusEvent *fe){
-//     makeCurrent();
-//     //glClearColor(0.3f,0.3f,0.3f,1.0f);  
-//     updateGL();
-// }
-
-QImage 
-WorldView::captureMap()
-{
-    return grabFrameBuffer();
-}
-
 
 // COMMON VIEW MANIPULATION FUNCTIONS ====================
-
 
 void
 WorldView::mousePressEvent( QMouseEvent* e )
 {
-    prevMousePt_ = e->pos();
-    currentButton_ = e->button();
+    if ( mouseEventManager_.mouseEventReceiverIsSet() )
+    {
+        //cout<<"TRACE(worldview.cpp): giving mousePressEvent to mode owner" << endl;
+        mouseEventManager_.mouseEventReceiver()->mousePressEvent( e );
+        return;
+    }
+    else
+    {
+        //cout<<"TRACE(worldview.cpp): Using mousePressEvent ourself" << endl;
+        mouseDownPnt_ = e->pos();
+        prevDragPos_ = e->pos();
+    }
 }
 
 void
 WorldView::mouseMoveEvent( QMouseEvent* e )
 {
+    if ( mouseEventManager_.mouseEventReceiverIsSet() )
+    {
+        //mouseEventManager_.mouseEventReceiver()->mouseMoveEvent( e );
+        return;
+    }
+
     const float sensitivity = 0.02;
 
-    float dx = e->pos().x() - prevMousePt_.x();
-    float dy = e->pos().y() - prevMousePt_.y();
-    prevMousePt_ = e->pos();
+    float dx=0, dy=0;
+    if ( e->buttons() & Qt::LeftButton ||
+         e->buttons() & Qt::RightButton ||
+         e->buttons() & Qt::MidButton )
+    {
+        dx = e->pos().x() - prevDragPos_.x();
+        dy = e->pos().y() - prevDragPos_.y();        
+        prevDragPos_ = e->pos();        
+    }
 
     // cout<<"TRACE(worldview3d.cpp): dx, dy: " << dx << "," << dy << endl;
 
-    if ( currentButton_ == Qt::LeftButton )
+    if ( e->buttons() & Qt::LeftButton )
     {
         // Rotate camera
         //cout<<"TRACE(worldview3d.cpp): rotate" << endl;
         yaw_   += sensitivity*dx*10;
         pitch_ += sensitivity*dy*10;
-        if(pitch_ > 0) pitch_ = 0;
-        if(pitch_ < -90) pitch_ = -90;
+        if (pitch_ > 0)   pitch_ = 0;
+        if (pitch_ < -90) pitch_ = -90;
+        updateGL();
     }
-    else if ( currentButton_ == Qt::RightButton )
+    else if ( e->buttons() & Qt::RightButton )
     {
         // Pan camera (relative to the view-point)
         float x = sensitivity*dx*0.1*zoomFactor_;
@@ -487,71 +451,38 @@ WorldView::mouseMoveEvent( QMouseEvent* e )
         xOffset_ += x*cos(yawRad) - y*sin(yawRad);
         yOffset_ -= x*sin(yawRad) + y*cos(yawRad);
         //cout<<"TRACE(worldview3d.cpp): pan" << endl;
+        updateGL();
     }
-    else if ( currentButton_ == Qt::MidButton )
+    else if ( e->buttons() & Qt::MidButton )
     {
         // Zoom camera
         //cout<<"TRACE(worldview3d.cpp): zooming.  old zoomFactor: " << zoomFactor_<< endl;
         float multZoomFactor = (1.0+sensitivity*dy);
 
-        multZoomFactor = CHECK_LIMITS( 1.2, multZoomFactor, 0.8 );
+        CLIP_TO_LIMITS<float>( 0.8, multZoomFactor, 1.2 );
         zoomFactor_ *= multZoomFactor;
+        updateGL();
     }
 }
 
-// void
-// WorldView::mouseReleaseEvent( QMouseEvent* e )
-// {
-    
-//     if (humanInput_!=NULL)
-//     {
-//         humanInput_->processReleaseEvent( e );
-//         return;
-//     }
-
-//     // here comes what you if no humaninput class is initiated
-//     QPointF mouseUpPnt = e->pos();
-
-//     if ( e->button() == Qt::LeftButton )          // left button released
-//     {
-//         const double MOVE_RADIUS_PIXEL = 10.0;
-
-//         QPointF diff(mouseDownPnt_ - mouseUpPnt);
-//         double dist = sqrt(diff.x()*diff.x() + diff.y()*diff.y());
-//         //cout << "TRACE(worldview.cpp): Diff is " << diff.x() << " " << diff.y() << endl;
-//         //cout << "TRACE(worldview.cpp): dist is " << dist << endl;
-
-//         if (dist>MOVE_RADIUS_PIXEL)
-//         { // move canvas
-//             moveView( mouseUpPnt - mouseDownPnt_ );
-//         }
-  
-//         // select component
-//         const double SELECTED_RADIUS_M = 0.6;
-//         QMatrix wmInv = wm_.inverted();
-//         QString platform = model_->nearestComponent( wmInv.map(mouseDownPnt_), SELECTED_RADIUS_M );
-//         //cout << "TRACE(worldview.cpp): nearestComponent is: " << platform.toStdString() << endl;
-//         // alert others
-//         if ( platform != "" ) 
-//         {
-//             cout << "Platform focus changed" << endl;
-//             mainWin_->changePlatformFocusFromView( platform );
-//         }
-//     } 
-// }
+void
+WorldView::mouseReleaseEvent( QMouseEvent* e )
+{
+    if ( mouseEventManager_.mouseEventReceiverIsSet() )
+    {
+        //cout<<"TRACE(worldview.cpp): Giving mouseReleaseEvent to mode owner" << endl;
+        mouseEventManager_.mouseEventReceiver()->mouseReleaseEvent( e );
+        return;
+    }
+}
 
 
-// bool WorldView::event(QEvent *event)
-// {
-//     if (event->type() == QEvent::ToolTip) 
-//     {
-//         QHelpEvent *helpEvent = static_cast<QHelpEvent *>(event);
-//         const double SELECTED_RADIUS_M = 0.6;
-//         QMatrix wmInv = wm_.inverted();
-//         QString platform = model_->nearestComponent( wmInv.map(mouseMovePnt_), SELECTED_RADIUS_M );
-//         if (platform!="") QToolTip::showText(helpEvent->globalPos(), platform);
-//     }
-//     return QWidget::event(event);
-// }
+void
+WorldView::mouseDoubleClickEvent( QMouseEvent* e )
+{
+    if ( mouseEventManager_.mouseEventReceiverIsSet() )
+        mouseEventManager_.mouseEventReceiver()->mouseDoubleClickEvent( e );
+}
+
 
 } // namespace

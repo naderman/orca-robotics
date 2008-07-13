@@ -20,7 +20,7 @@ IF( build )
     FILE( GLOB human_srcs *.cpp )
     
     SET( moc_hdrs
-        worldview.h
+      #worldview.h
     )
         
     QT4_WRAP_CPP( moc_srcs ${moc_hdrs} )

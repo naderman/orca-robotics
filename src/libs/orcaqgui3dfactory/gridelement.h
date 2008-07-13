@@ -1,7 +1,7 @@
 /*
  * Orca-Robotics Project: Components for robotics 
  *               http://orca-robotics.sf.net/
- * Copyright (c) 2004-2008 Alex Brooks, Alexei Makarenko, Tobias Kaupp, Ben Upcroft
+ * Copyright (c) 2004-2008 Alex Brooks
  *
  * This copy of Orca is licensed to you under the terms described in
  * the LICENSE file included in this distribution.
@@ -20,7 +20,7 @@ namespace orcaqgui3d
 
 /*!
   @brief Paints a rectangular grid in the 3d display.
-  @author Alex Brooks, Tobias Kaupp
+  @author Alex Brooks
 */  
 class GridElement : public GuiElement3d, public orcaqgui::IPermanentElement
 {

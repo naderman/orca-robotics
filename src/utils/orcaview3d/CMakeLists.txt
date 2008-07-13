@@ -23,10 +23,15 @@ IF( build )
     #
     # This gathers all the source files into the variable 'srcs'
     #
-    FILE( GLOB human_srcs *.cpp )
+    FILE( GLOB human_srcs component.cpp worldview.cpp )
+
+    SET( moc_hdrs
+      worldview.h
+    )        
+    QT4_WRAP_CPP( moc_srcs ${moc_hdrs} )
 
     # build stand-alone component  
-    ORCA_WRAP_COMPONENT_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${human_srcs} )
+    ORCA_WRAP_COMPONENT_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${human_srcs} ${moc_srcs} )
     TARGET_LINK_LIBRARIES( ${APP_NAME} ${dep_libs} )
 
     ORCA_GENERATE_CONFIG_FILE( ${APP_NAME}.def )
@@ -35,5 +40,8 @@ IF( build )
         ADD_DEFINITIONS( -DHAVE_LIB3DS )
         TARGET_LINK_LIBRARIES ( ${LIB_NAME} 3ds )
     ENDIF( LIB3DS_FOUND )
+
+    GBX_ADD_EXECUTABLE( simple viewhandler.cpp simple.cpp )
+    TARGET_LINK_LIBRARIES( simple ${dep_libs} )
 
 ENDIF( build )

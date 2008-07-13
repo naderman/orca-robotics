@@ -13,17 +13,16 @@
 
 #include <string>
 #include <orcaice/component.h>
-#include <orcaqgui/guielementfactory.h>
 #include <hydrodll/dynamicload.h>
-
-using namespace std;
+#include <hydroqgui/hydroqgui.h>
 
 namespace orcaview3d {
     
 class Component : public orcaice::Component
 {
 public:
-    Component( std::string compName );
+    Component();
+    ~Component();
 
     // component interface
     virtual void start();
@@ -31,11 +30,11 @@ public:
 
 private:
 
-    void loadPluginLibraries( const std::string &factoryLibNames );
-
-    std::vector<orcaqgui::GuiElementFactory*>        factories_;
+    std::vector<hydroqgui::IGuiElementFactory*>      factories_;
     std::vector<hydrodll::DynamicallyLoadedLibrary*> libraries_;
-          
+        
+    // loads all factory libs and returns a listing of supported interfaces
+    std::vector<std::string> loadPluginLibraries( const std::string &factoryLibNames );  
 };
 
 }
