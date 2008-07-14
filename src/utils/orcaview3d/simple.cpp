@@ -7,6 +7,75 @@
 
 using namespace std;
 
+class GroundPlane {
+
+public:
+
+    void init()
+        {
+
+            glGenTextures( 1, &textureName_ );
+            glBindTexture( GL_TEXTURE_2D, textureName_ );
+            cout<<"TRACE(simple.cpp): GroundPlane textureName: " << textureName_ << endl;
+
+            // Draw the chess-board in memory
+            orcaqgui3d::glutil::makeCheckImage64x64x3( checkImage_, 2, 100, 200 );
+
+            // Says how to read the texture in the next call
+            glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+            // Create the texture map
+            glTexImage2D(GL_TEXTURE_2D, 0, 3, 64, 64,
+                         0, GL_RGB, GL_UNSIGNED_BYTE, 
+                         &checkImage_[0][0][0]);            
+        }
+
+    void paint()
+        {
+            const double infty=100;
+            const double metresPerSquare=1;
+            const double metresPerTile=2*metresPerSquare;
+            const double texCoordExtreme=2*infty/metresPerTile;
+
+            glColor3f( 0.0, 1.0, 0.0 );
+
+            glEnable( GL_TEXTURE_2D );
+            {
+                cout<<"TRACE(simple.cpp): binding GroundPlane texture..." << endl;
+                glBindTexture( GL_TEXTURE_2D, textureName_ );
+
+                glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+                glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+                glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+                glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+                glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+
+                glBegin(GL_QUADS);
+                glNormal3f( 0.0, 0.0, 1.0);
+                glTexCoord2f(0,0);
+                  glVertex3f(-infty,-infty,0);
+                glTexCoord2f(0,texCoordExtreme); 
+                  glVertex3f(-infty,infty,0);
+                glTexCoord2f(texCoordExtreme,texCoordExtreme); 
+                  glVertex3f(infty,infty,0);
+                glTexCoord2f(texCoordExtreme,0); 
+                  glVertex3f(infty,-infty,0);
+                glEnd();
+            }
+            glDisable( GL_TEXTURE_2D );
+        }
+
+    void finit()
+        {
+            glDeleteTextures( 1, &textureName_ );
+        }
+
+private:
+
+    GLubyte checkImage_[64][64][3];
+    GLuint  textureName_;
+};
+
 /*!
   @brief Paints a rectangular grid in the 3d display.
   @author Alex Brooks
@@ -114,8 +183,12 @@ public:
 
     void init()
         {
-            // Draw the chess-board
-            orcaqgui3d::glutil::makeCheckImage( checkImage_ );
+            glGenTextures( 1, &textureName_ );
+            glBindTexture( GL_TEXTURE_2D, textureName_ );
+            cout<<"TRACE(simple.cpp): Billboard textureName: " << textureName_ << endl;
+
+            // Draw the chess-board in memory
+            orcaqgui3d::glutil::makeCheckImage64x64x3( checkImage_, 16 );
 
             // Says how to read the texture in the next call
             glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
@@ -130,12 +203,12 @@ public:
         {
             glEnable( GL_TEXTURE_2D );
             {
-                ////////////////////////////////////////
+                glBindTexture( GL_TEXTURE_2D, textureName_ );
+
                 glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
                 glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
                 glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
                 glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-                ////////////////////////////////////////
                 glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
 
                 const float w = 3.0;
@@ -152,9 +225,15 @@ public:
             glDisable( GL_TEXTURE_2D );
         }
 
+    void finit()
+        {
+            glDeleteTextures( 1, &textureName_ );
+        }
+
 private:
 
     GLubyte checkImage_[IMG_WIDTH][IMG_WIDTH][3];
+    GLuint  textureName_;
 };
 
 class MainWindow : public QGLWidget
@@ -201,8 +280,9 @@ public:
             // GL_SMOOTH is the default
             // glShadeModel( GL_SMOOTH );
 
-            // Only load the texture-map once
+            // Only load the texture-maps once
             billboard_.init();
+            groundPlane_.init();
         }
     void paintGL()
         {
@@ -232,15 +312,20 @@ public:
 //             glPopMatrix();
 
             // Ground plane
-            glBegin(GL_QUADS);
-            glNormal3f( 0.0, 0.0, 1.0);
-            const double infty = 1000;
-            glColor3f( 0.0, 1.0, 0.0 );
-            glVertex3f(-infty,-infty,0);
-            glVertex3f(-infty,infty,0);
-            glVertex3f(infty,infty,0);
-            glVertex3f(infty,-infty,0);
-            glEnd();
+//             glBegin(GL_QUADS);
+//             glNormal3f( 0.0, 0.0, 1.0);
+//             const double infty = 1000;
+//             glColor3f( 0.0, 1.0, 0.0 );
+//             glVertex3f(-infty,-infty,0);
+//             glVertex3f(-infty,infty,0);
+//             glVertex3f(infty,infty,0);
+//             glVertex3f(infty,-infty,0);
+//             glEnd();
+            glPushMatrix();
+            {
+                groundPlane_.paint();
+            }
+            glPopMatrix();
 
 
             // gradient-ed square
@@ -376,7 +461,8 @@ private:
     orcaview3d::ViewHandler viewHandler_;
 
 
-    Billboard billboard_;
+    Billboard   billboard_;
+    GroundPlane groundPlane_;
 };
 
 int main()
