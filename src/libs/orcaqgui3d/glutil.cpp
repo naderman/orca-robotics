@@ -157,16 +157,32 @@ drawIcosahedron()
     }
 }
 
-void makeCheckImage( GLubyte img[64][64][3] )
+void makeCheckImage64x64x3( GLubyte img[64][64][3],
+                            int numSquaresPerEdge,
+                            int lowVal, 
+                            int highVal )
 {
-    const int width=64;
-    const int height=64;
+    const int widthInPixels=64;
+    const int heightInPixels=64;
+    assert( lowVal >= 0 && lowVal <= 255 );
+    assert( highVal >= 0 && highVal <= 255 );
 
-    int i, j, c;
+    int wOn=0;
+    int hOn=0;
+    for (int i = 0; i < widthInPixels; i++) 
+    {
+        if ( (i % (widthInPixels/numSquaresPerEdge)) == 0 )
+            wOn = wOn ? 0 : 1;
 
-    for (i = 0; i < width; i++) {
-        for (j = 0; j < height; j++) {
-            c = ((((i&0x8)==0)^((j&0x8))==0))*255;
+        for (int j = 0; j < heightInPixels; j++) 
+        {
+            if ( (j % (heightInPixels/numSquaresPerEdge)) == 0 )
+                hOn = hOn ? 0 : 1;
+
+            int c = (wOn^hOn);
+            if ( c==0 ) c = lowVal;
+            else c = highVal;
+            // cout<<"TRACE(glutil.cpp): hOn: " << hOn << ", wOn: " << wOn << ", c: " << c << endl;
             img[i][j][0] = (GLubyte) c;
             img[i][j][1] = (GLubyte) c;
             img[i][j][2] = (GLubyte) c;

@@ -94,8 +94,8 @@ Localise2dElement::update()
 //         tryToGetGeometry();
 //     }
     
-    // standard update as in IceStormElement
-    if ( !orcaqguielementutil::IceStormElement<Localise2dPainter,
+    // standard update as in IceStormElement2d
+    if ( !orcaqguielementutil::IceStormElement2d<Localise2dPainter,
             orca::Localise2dData,
             orca::Localise2dPrx,
             orca::Localise2dConsumer,

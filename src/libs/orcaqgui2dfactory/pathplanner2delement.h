@@ -14,14 +14,14 @@
 #include <iostream>
 #include <orca/pathplanner2d.h>
 #include <gbxsickacfr/gbxiceutilacfr/store.h>
-#include <orcaqguielementutil/icestormelement.h>
+#include <orcaqguielementutil/icestormelement2d.h>
 #include <orcaqgui2dfactory/pathpainter.h>
 #include <orcaqgui2dfactory/pathinput.h>
 
 namespace orcaqgui2d {
 
 // There's two consumer objects: the first one for icestorm (pathplanner pushes out whatever it computed) which is part
-// of the base class IceStormElement.
+// of the base class IceStormElement2d.
 // The second one here is for answers to tasks which were set by the GUI.
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -116,7 +116,7 @@ private:
 //
 // @author Tobias Kaupp
 //
-class PathPlanner2dElement : public orcaqguielementutil::IceStormElement<PathPainter,
+class PathPlanner2dElement : public orcaqguielementutil::IceStormElement2d<PathPainter,
                              orca::PathPlanner2dData,
                              orca::PathPlanner2dPrx,
                              orca::PathPlanner2dConsumer,

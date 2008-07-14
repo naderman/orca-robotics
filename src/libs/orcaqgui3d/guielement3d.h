@@ -13,6 +13,7 @@
 
 #include <QGLWidget>
 #include <orcaqgui/guielement.h>
+#include <orcaqgui3d/view.h>
 
 namespace orcaqgui3d {
 
@@ -27,7 +28,7 @@ public:
     virtual ~GuiElement3d() {}
 
     //! Paint is called periodically to paint the internal state of the guielement
-    virtual void paint( QGLWidget *p ) {};
+    virtual void paint( const View &v ) {};
 
 private: 
 

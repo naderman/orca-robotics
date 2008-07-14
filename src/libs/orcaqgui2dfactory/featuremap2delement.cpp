@@ -10,7 +10,7 @@ namespace orcaqgui2d {
 FeatureMap2dElement::FeatureMap2dElement( const orcaice::Context  &context,
                                           const std::string       &proxyString,
                                           hydroqguielementutil::IHumanManager *humanManager )
-    : orcaqguielementutil::IceStormElement<FeatureMap2dPainter,
+    : orcaqguielementutil::IceStormElement2d<FeatureMap2dPainter,
                       orca::FeatureMap2dData,
                       orca::FeatureMap2dPrx,
                       orca::FeatureMap2dConsumer,

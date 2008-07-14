@@ -23,7 +23,7 @@
 namespace orcaqgui2d {
 
 ////////////////////////////////////////////////////////////////////////////////
-// The consumer object. We need this here because PathFollower2dElement cannot inherit from IceStormElement.
+// The consumer object. We need this here because PathFollower2dElement cannot inherit from IceStormElement2d.
 // Reason is that PathFollower2dConsumer has several non-standard purely virtual member functions.
 class PathUpdateConsumer : public orca::PathFollower2dConsumer
 {
@@ -142,7 +142,7 @@ private:
     QString lastSavedPathFile_;
 };
 
-// We need to inherit from GuiElement2d, not from IceStormElement. 
+// We need to inherit from GuiElement2d, not from IceStormElement2d. 
 // Reason is that PathFollower2dConsumer has a non-standard purely virtual 
 // member function setWaypointIndex. 
 // Disadvantage is that we have to subscribe ourselves.

@@ -38,27 +38,19 @@ public:
     IceStormElement( const orcaice::Context  &context,
                      const std::string       &proxyString,
                      PainterType             &painter,
-                     const double            timeoutMs=5000.0 )
+                     const double            timeoutMs )
         : context_(context),
           listener_(context,proxyString),
           painter_(painter),
           timeoutMs_(timeoutMs),
           isConnected_(false)
-    {            
-    };
+    {};
 
     //! Can do special stuff on connection by inheriting and overloading this
     virtual void actionOnConnection()=0;
 
     //! Here we pop data from the consumer buffer, and give it to the painter.
     virtual void update();
-
-    //! Derived classes may override this if they have to paint other stuff than just interface data (e.g. user input)
-    virtual void paint( QPainter *p, int z )
-        { painter_.paint( p, z ); }
-
-    bool paintThisLayer( int z ) const
-        { return painter_.paintThisLayer( z ); }
 
 protected:
 

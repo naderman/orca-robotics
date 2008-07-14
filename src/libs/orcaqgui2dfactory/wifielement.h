@@ -13,7 +13,7 @@
 
 #include <QVector>
 #include <orca/wifi.h>
-#include <orcaqguielementutil/icestormelement.h>
+#include <orcaqguielementutil/icestormelement2d.h>
 #include <orcaqgui2dfactory/wifipainter.h>
 
 class QProgressBar;
@@ -53,7 +53,7 @@ class WifiWidget : public QWidget
 };
 
 class WifiElement
-    : public orcaqguielementutil::IceStormElement<WifiPainter,
+    : public orcaqguielementutil::IceStormElement2d<WifiPainter,
                              orca::WifiData,
                              orca::WifiPrx,
                              orca::WifiConsumer,

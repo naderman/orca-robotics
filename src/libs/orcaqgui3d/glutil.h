@@ -31,8 +31,11 @@ void drawBox( float d, float w, float h, bool drawSurfaces, bool drawWireFrame )
 
 void drawIcosahedron();
 
-// Makes a little checkerboard (nicked from the redbook)
-void makeCheckImage( GLubyte img[64][64][3] );
+// Makes a little grayscale checkerboard.
+void makeCheckImage64x64x3( GLubyte img[64][64][3],
+                            int numSquaresPerEdge,
+                            int lowVal=0,
+                            int highVal=255 );
 
 std::string errorToString( GLenum error );
 

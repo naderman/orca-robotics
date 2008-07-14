@@ -300,7 +300,7 @@ PathFollower2dElement::connectToInterface()
     
     humanManager_.showStatusMsg(hydroqguielementutil::IHumanManager::Information, "PathFollowerElement is trying to connect");
     
-    // Here's what IceStormElement usually does for you if the GuiElement inherits from IceStormElement (see comments in .h file for more information)
+    // Here's what IceStormElement2d usually does for you if the GuiElement inherits from IceStormElement (see comments in .h file for more information)
     try 
     {
         orcaice::connectToInterfaceWithString( context_, pathFollower2dPrx_, proxyString_ );
