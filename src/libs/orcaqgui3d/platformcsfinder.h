@@ -41,7 +41,7 @@ public:
                          float                                           &z,
                          float                                           &roll,
                          float                                           &pitch,
-                         float                                           &yaw );
+                         float                                           &yaw ) const;
 
 private: 
 

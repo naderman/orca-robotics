@@ -16,13 +16,13 @@ public:
 
     // All in S.I. units and Orca-style coordinate system
     virtual double cameraX() const=0;
-    virtual double cameraX() const=0;
+    virtual double cameraY() const=0;
     virtual double cameraZ() const=0;
     virtual double cameraRoll() const=0;
     virtual double cameraPitch() const=0;
     virtual double cameraYaw() const=0;
 
-    virtual bool isAntialiasingEnabled() const=0
+    virtual bool isAntialiasingEnabled() const=0;
 
 private: 
 

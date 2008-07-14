@@ -8,14 +8,12 @@ using namespace std;
 namespace orcaview3d {
 
 namespace {
-    const int INIT_ZOOM  = 1;
     const int INIT_YAW   = 0;
     const int INIT_PITCH = -60;
 }
 
 ViewHandler::ViewHandler()
-    : zoomFactor_(INIT_ZOOM),
-      xOffset_(-7),
+    : xOffset_(-7),
       yOffset_(0),
       zOffset_(2),
       yaw_(90),
@@ -26,15 +24,12 @@ ViewHandler::ViewHandler()
 void 
 ViewHandler::applyViewingTransformation() const
 {
-    cout<<"TRACE(viewhandler.cpp): "<<__func__<<": x,y,z:     "<<xOffset_<<","<<yOffset_<<","<<zOffset_ << endl;
-    cout<<"TRACE(viewhandler.cpp): "<<__func__<<": pitch,yaw: "<<pitch_<<","<<yaw_ << endl;
-    //cout<<"TRACE(viewhandler.cpp): "<<__func__<<": zoom:   x   "<<zoomFactor_<< endl;
+//     cout<<"TRACE(viewhandler.cpp): "<<__func__<<": x,y,z:     "<<xOffset_<<","<<yOffset_<<","<<zOffset_ << endl;
+//     cout<<"TRACE(viewhandler.cpp): "<<__func__<<": pitch,yaw: "<<pitch_<<","<<yaw_ << endl;
 
     // Put the camera in position
     // It starts looking down the negative-z axis, with y being 'up'.
     // OpenGL uses a left-handed coordinate-system?
-
-    // glScalef(1.0/zoomFactor_, 1.0/zoomFactor_, 1.0/zoomFactor_);
 
     glRotatef(pitch_,1,0,0);
     glRotatef(yaw_,0,0,1);
@@ -88,16 +83,6 @@ ViewHandler::mouseMoveEvent( QMouseEvent* e )
         //cout<<"TRACE(worldview3d.cpp): pan" << endl;
         return true;
     }
-//     else if ( e->buttons() & Qt::MidButton )
-//     {
-//         // Zoom camera
-//         //cout<<"TRACE(worldview3d.cpp): zooming.  old zoomFactor: " << zoomFactor_<< endl;
-//         float multZoomFactor = (1.0+sensitivity*dy);
-
-//         CLIP_TO_LIMITS<float>( 0.8, multZoomFactor, 1.2 );
-//         zoomFactor_ *= multZoomFactor;
-//         return true;
-//     }
     return false;
 }
 

@@ -176,9 +176,7 @@ Component::start()
 
     string libNames = orcaice::getPropertyWithDefault( props, prefix+"General.FactoryLibNames", DEFAULT_FACTORY_LIB_NAME );
     // returns a listing of unique supported interfaces, for display drivers to know what's supported
-    cout<<"TRACE(component.cpp): TODO: re-enable loadPluginLibraries" << endl;
-    std::vector<std::string> supportedInterfaces;
-//    std::vector<std::string> supportedInterfaces = loadPluginLibraries( libNames );
+    std::vector<std::string> supportedInterfaces = loadPluginLibraries( libNames );
 
     // Manages platform(s) in focus
     hydroqgui::PlatformFocusManager platformFocusManager;
@@ -220,6 +218,7 @@ Component::start()
     WorldView *worldView = new WorldView( platformCSFinder,
                                           mouseEventManager,
                                           guiElementSet,
+                                          coordinateFrameManager,
                                           mainWin,
                                           platformFocusManager,
                                           displayRefreshTime );

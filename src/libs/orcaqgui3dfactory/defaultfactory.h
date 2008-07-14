@@ -11,38 +11,39 @@
 #ifndef ORCAVIEW3D_DEFAULT_FACTORY_H
 #define ORCAVIEW3D_DEFAULT_FACTORY_H
 
-#include <QString>
-#include <QGLWidget>
-
-#include <orca/common.h>
+#include <orcaqgui/iguielementfactory.h>
 #include <orcaice/context.h>
-#include <orcaqgui/guielementfactory.h>
-
-
-namespace orcaqgui
-{
-    class GuiElement;
-}
 
 namespace orcaqgui3d {
 
 //!
 //! Generates 3D Gui Elements based on its type.
 //!
-class DefaultFactory : public orcaqgui::GuiElementFactory
+class DefaultFactory : public orcaqgui::IGuiElementFactory
 {
 public:
 
     DefaultFactory();
 
-    // returns a NULL pointer if something goes wrong
-    virtual orcaqgui::GuiElement* create(const orcaice::Context     &context,
-                                         const QStringList          &interfaceId,
-                                         const QStringList          &proxyStrList,
-                                         QColor                      suggestedColor,
-                                         orcaqgui::IHumanManager    *humanManager) const;
+        void setContext( const orcaice::Context &context )
+            { context_ = context; isContextSet_ = true; }
 
+    // returns a NULL pointer if something goes wrong
+    virtual hydroqguielementutil::IGuiElement* create( 
+        const QString                            &elementType,
+        const QStringList                        &elementDetails,
+        QColor                                    suggestedColor,
+        hydroqguielementutil::IHumanManager      &humanManager,
+        hydroqguielementutil::MouseEventManager  &mouseEventManager,
+        hydroqguielementutil::ShortcutKeyManager &shortcutKeyManager,
+        const hydroqgui::GuiElementSet           &guiElementSet ) const;
+
+        bool lookupElementType( const QStringList &ids, QString &elementType ) const;
+    
 private:
+
+        bool                      isContextSet_;
+        orcaice::Context          context_;
 };
 
 } // namespace
@@ -52,7 +53,7 @@ private:
 // Hook for dynamic loading
 //
 extern "C" {
-    orcaqgui::GuiElementFactory *createFactory();
+    hydroqgui::IGuiElementFactory *createFactory();
 }
 
 #endif

@@ -34,4 +34,8 @@ IF( build )
         TARGET_LINK_LIBRARIES ( ${LIB_NAME} 3ds )
     ENDIF( LIB3DS_FOUND )
 
+    IF( ORCA_BUILD_TESTS )
+        ADD_SUBDIRECTORY( test )
+    ENDIF( ORCA_BUILD_TESTS )
+
 ENDIF( build )

@@ -24,7 +24,7 @@ PlatformCSFinder::findPlatformCS( const QList<hydroqguielementutil::IGuiElement*
                                   float                                           &z,
                                   float                                           &roll,
                                   float                                           &pitch,
-                                  float                                           &yaw )
+                                  float                                           &yaw ) const
 {
     //
     // Find the most reliable element that reckons it knows where we are.

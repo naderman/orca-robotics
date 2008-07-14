@@ -15,20 +15,23 @@
 #include <QFileDialog>
 #include <QString>
 #include <QtOpenGL>
-//#include <GL/glut.h>
 #include <hydroqgui/hydroqgui.h>
 #include <orcaqgui3d/platformcsfinder.h>
+#include <orcaqgui3d/view.h>
+#include "viewhandler.h"
 
 namespace orcaview3d 
 {
 
-class WorldView : public QGLWidget
+class WorldView : public QGLWidget, 
+                  public orcaqgui3d::View
 {
    Q_OBJECT
 public:
     WorldView( orcaqgui3d::PlatformCSFinder              &platformCSFinder,
                ::hydroqguielementutil::MouseEventManager &mouseEventManager,
                hydroqgui::GuiElementSet                  &guiElementSet,
+               hydroqgui::CoordinateFrameManager         &coordinateFrameManager,
                ::hydroqguielementutil::IHumanManager     &humanManager,
                hydroqgui::PlatformFocusManager           &platformFocusManager,
                int                                        displayRefreshTime,
@@ -36,15 +39,32 @@ public:
 
     QSize sizeHint() const { return QSize( 400, 400 ); }
 
+    // All in S.I. units and Orca-style coordinate system
+    virtual double cameraX() const { return viewHandler_.x(); }
+    virtual double cameraY() const { return viewHandler_.y(); }
+    virtual double cameraZ() const { return viewHandler_.z(); }
+    virtual double cameraRoll() const { return viewHandler_.roll(); }
+    virtual double cameraPitch() const { return viewHandler_.pitch(); }
+    virtual double cameraYaw() const { return viewHandler_.yaw(); }
+
+    virtual bool isAntialiasingEnabled() const { return isAntialiasingEnabled_; }
+
+public slots:
+
+    void setAntiAliasing( bool antiAliasing );
+
 private slots:
 
- void updateAllGuiElements();
+    void reDisplay();
 
 private:
 
-    void paintAllGuiElements( bool isFocusLocalised );
+    void updateAllGuiElements();
+    void paintAllGuiElements( bool isCoordinateFramePlatformLocalised );
 
+    // finds coord system of a platform
     const orcaqgui3d::PlatformCSFinder &platformCSFinder_;
+    hydroqgui::CoordinateFrameManager &coordinateFrameManager_;
 
     // handles distribution of mouse events to GuiElements
     ::hydroqguielementutil::MouseEventManager &mouseEventManager_;
@@ -53,6 +73,10 @@ private:
 
     ::hydroqguielementutil::IHumanManager &humanManager_;
     hydroqgui::PlatformFocusManager &platformFocusManager_;
+
+    // Returns true if the platform which owns the coordinate system is localised
+    // or if "global" owns the coordinate system 
+    bool transformToPlatformOwningCS();
 
     // from QGLWidget
     void initializeGL();
@@ -66,31 +90,12 @@ private:
     void mouseDoubleClickEvent( QMouseEvent* );
     void keyPressEvent(QKeyEvent *e);
     
-    QPointF mouseDownPnt_;
-    QPoint prevDragPos_;
-    
     QTimer *displayTimer_;
 
-    // Current viewpoint
-    float zoomFactor_;
-    float xOffset_, yOffset_, zOffset_;
-    float yaw_, pitch_;
-    
+    bool isAntialiasingEnabled_;
 
-
-//     // void renderPointCloud();
-// //     int screenWidth_;
-// //     int screenHeight_;
-//     // float fudgeFactor_;
-//     //int displayList; 
-//     bool showOGs_;
-//     bool showSnaps_;
-//     bool showLabels_;
-//     bool showGrids_;
-//     bool showRobots_;
-//     bool showPointclouds_;
-//     bool showPatchBorders_;
-//     float pointSize_;
+    // Current camera viewpoint
+    ViewHandler viewHandler_;
 };
 
 } // namespace

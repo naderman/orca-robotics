@@ -9,7 +9,6 @@
  */
  
 #include <iostream>
-
 #include <hydroqgui/hydroqgui.h>
 
 #include <orcaqgui2dfactory/buttonelement.h>
@@ -89,7 +88,6 @@ DefaultFactory::create( const QString                &elementType,
                         const hydroqgui::GuiElementSet &guiElementSet ) const
 {
     assert( isContextSet_ );
-
     hydroqguielementutil::IGuiElement *elem = NULL;
     
     try

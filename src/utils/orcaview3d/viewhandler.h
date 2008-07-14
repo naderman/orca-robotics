@@ -8,7 +8,7 @@
 namespace orcaview3d {
 
 //!
-//! @brief Handles pan/zoom via mouse dragging
+//! @brief Handles the camera's view position via keypresses and mouse dragging
 //!
 //! @author Alex Brooks
 //!
@@ -34,8 +34,8 @@ public:
     // Get the pose of the camera in world-coordinates, in S.I. units.
     // (might be stored weirdly internally for OpenGL-reasons)
     float x() const { return xOffset_; }
-    float y() const { return xOffset_; }
-    float z() const { return xOffset_; }
+    float y() const { return yOffset_; }
+    float z() const { return zOffset_; }
     float roll() const { return M_PI*180.0*(0.0); }
     float pitch() const 
         {
@@ -51,7 +51,6 @@ private:
     QPoint prevDragPos_;
 
     // Current viewpoint
-    float zoomFactor_;
     float xOffset_, yOffset_, zOffset_;
     float yaw_, pitch_;
 

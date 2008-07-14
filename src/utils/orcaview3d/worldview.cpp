@@ -12,203 +12,152 @@
 #include <gbxutilacfr/mathdefs.h>
 #include "worldview.h"
 #include <orcaqgui3d/glutil.h>
+#include <orcaqgui3d/guielement3d.h>
 
 using namespace std;
 
 namespace orcaview3d {
 
-    namespace {
-        const int INIT_ZOOM  = 5;
-        const int INIT_YAW   = 30;
-        const int INIT_PITCH = -60;
-    }
-
 WorldView::WorldView( orcaqgui3d::PlatformCSFinder              &platformCSFinder,
                       ::hydroqguielementutil::MouseEventManager &mouseEventManager,
                       hydroqgui::GuiElementSet                  &guiElementSet,
+                      hydroqgui::CoordinateFrameManager         &coordinateFrameManager,
                       ::hydroqguielementutil::IHumanManager     &humanManager,
                       hydroqgui::PlatformFocusManager           &platformFocusManager,
                       int                                        displayRefreshTime,
                       QWidget                                   *parent )
     : QGLWidget(parent),
       platformCSFinder_(platformCSFinder),
+      coordinateFrameManager_(coordinateFrameManager),
       mouseEventManager_(mouseEventManager),
       guiElementSet_(guiElementSet),
       humanManager_(humanManager),
       platformFocusManager_(platformFocusManager),
-      zoomFactor_(INIT_ZOOM),
-      xOffset_(0),
-      yOffset_(0),
-      zOffset_(0),
-      yaw_(INIT_YAW),
-      pitch_(INIT_PITCH)
+      isAntialiasingEnabled_(true)
 {
+    // Allow receipt of keyboard events
+    setFocusPolicy( Qt::StrongFocus );
+
     displayTimer_ = new QTimer( this );
-    QObject::connect( displayTimer_,SIGNAL(timeout()), this,SLOT(updateAllGuiElements()) );
+    QObject::connect( displayTimer_,SIGNAL(timeout()), this,SLOT(reDisplay()) );
     displayTimer_->start( displayRefreshTime );    
+
+    // Antialiasing
+    QAction* antiAliasing = new QAction(tr("&Anti-Aliasing"),this);
+    antiAliasing->setCheckable(true);
+    antiAliasing->setShortcut( QKeySequence("Ctrl+A") );
+    connect(antiAliasing,SIGNAL(toggled(bool)), this, SLOT(setAntiAliasing(bool)) );
+    humanManager_.displayMenu()->addAction(antiAliasing);
 }
-      
+
+bool
+WorldView::transformToPlatformOwningCS()
+{    
+    if ( coordinateFrameManager_.coordinateFramePlatform() == "global" )
+    {
+        return true;
+    }
+    else
+    {
+        float x, y, theta, roll, pitch, yaw;
+        if ( platformCSFinder_.findPlatformCS( guiElementSet_.elements(),
+                                               coordinateFrameManager_.coordinateFramePlatform(),
+                                               x, y, theta,
+                                               roll, pitch, yaw ) )
+        {
+            orcaqgui3d::glutil::transform( x, y, theta, roll, pitch, yaw );
+
+            assert( !coordinateFrameManager_.ignoreCoordinateFrameRotation() && "Huh?" );
+//             if (!coordinateFrameManager_.ignoreCoordinateFrameRotation())
+//                 m.rotate( RAD2DEG(theta) + 90);
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+}
+
 void 
 WorldView::initializeGL()
 {
     // Set the default (background) color
     glClearColor(0.70f, 0.7f, 0.7f, 0.0f);
-
+    
     // Enable the depth buffer: to handle hidden surface removal
     glEnable(GL_DEPTH_TEST);
-
-
-
-#if 0
-    glClearColor(0.70f, 0.7f, 0.7f, 1.0f);
-    glDepthFunc(GL_LEQUAL);
-    glEnable(GL_DEPTH_TEST);
-
-    {
-        // light
-        glShadeModel( GL_SMOOTH );
-
-        GLfloat lmodel_ambient[] = { 0.2, 0.2, 0.2, 1.0 };
-        glLightModelfv(GL_LIGHT_MODEL_AMBIENT, lmodel_ambient);
-
-        GLfloat light_position[] = { 1.0, 1.0, 1.0, 0.0 };    
-//         GLfloat light_position[] = { 1.0, 0, 0, 0.0 };    
-        glLightfv(GL_LIGHT0, GL_POSITION, light_position);
-        GLfloat light_ambient[] = { 0.5, 0.5, 0.5, 1.0 };
-        glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
-
-        glEnable(GL_LIGHTING);
-        glEnable(GL_LIGHT0);    
-
-    }
-    
-    // Some stupid crap for QT
-//    renderText(0,0,0,"");
-//     displayList_ = glGenLists(1);
-//     cerr << "Display list is: " <<  displayList_ << endl;
-#endif
 }
 
 void 
 WorldView::resizeGL(int w, int h)
 {
-    cout<<"TRACE(worldview3d.cpp): resizeGL()" << endl;
-//     screenWidth_ = w;
-//     screenHeight_ = h;
-//    float aspectRatio = ((float) w)/((float) h);
-
-    // update projection
+    // Set the projection matrix
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    //qDebug("Aspect ratio set to %f", aspectRatio); 
-    //glOrtho(-aspectRatio, aspectRatio, -1, 1, -1000, 1000); 
-    //gluPerspective(60, aspectRatio, 1,1000);
+    // sets the perspective:
+    //  (left,right,bottom,top,near,far)
+    glFrustum (-1.0, 1.0, -1.0, 1.0, 1.0, 200.0); 
 
-    // update model/view matrix
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    glTranslatef(0,0,-2);
+    // back to modelview matrix
+    glMatrixMode (GL_MODELVIEW);
+    // define the viewport
+    glViewport (0, 0, w, h);
 
-    // viewport
-    glViewport(0,0,w,h);
-
-    // Qt call to redraw
-    updateGL();
+#if 1
+    // Not sure what difference this maeks exactly...
+    GLenum hint = GL_DONT_CARE;
+    glHint( GL_POINT_SMOOTH_HINT, hint );
+    glHint( GL_LINE_SMOOTH_HINT, hint );
+    glHint( GL_POLYGON_SMOOTH_HINT, hint );
+    glHint( GL_FOG_HINT, hint );
+    glHint( GL_PERSPECTIVE_CORRECTION_HINT, hint );
+#endif
 }
 
 void 
 WorldView::paintGL()
 {
-    cout<<"TRACE(worldview3d.cpp): ==================== paintGL() ====================" << endl;
+    // Antialiasing
+    if ( isAntialiasingEnabled_ )
+    {
+        glEnable( GL_POINT_SMOOTH );
+        glEnable( GL_LINE_SMOOTH );
+        glEnable( GL_BLEND );
+        glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+    }
+    else
+    {
+        glDisable( GL_POINT_SMOOTH );
+        glDisable( GL_LINE_SMOOTH );
+        glDisable( GL_BLEND );
+    }
 
     // Start from a clean slate
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
+    // Clear the viewing transformation
+    glLoadIdentity();
 
-    orcaqgui3d::glutil::drawBox( 1, 1, 1, true, true );
-    glFlush();
+    // Are we viewing relative to a platform?
+    const bool isCoordinateFramePlatformLocalised = transformToPlatformOwningCS();
 
-#if 0
-    {
-        //qDebug("paintGL on mapview called");
+    // Put the camera in position
+    viewHandler_.applyViewingTransformation();
 
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    paintAllGuiElements( isCoordinateFramePlatformLocalised );
 
-        glPushMatrix();
-
-        // Put the camera in position
-        glScalef(1.0/zoomFactor_, 1.0/zoomFactor_, 1.0/zoomFactor_);
-        glRotatef(pitch_,1,0,0);
-        glRotatef(yaw_,0,0,1);
-        glTranslatef(xOffset_, yOffset_, zOffset_);
-    }
-
-//     GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
-//     GLfloat mat_specular[] = { 0.0, 0.0, 1, 1 };
-//     GLfloat mat_shininess[] = { 50.0 };
-//     glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
-//     glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
-
-//     glColor3f( 0.0, 0.0, 1.0 );
-
-    GLfloat diffuseMaterial[4] = { 0.1, 0.1, 0.5, 1.0 };
-    glMaterialfv( GL_FRONT, GL_DIFFUSE, diffuseMaterial);
-
-    orcaqgui3d::glutil::drawBox( 1, 1, 1, true, true );
-//     glutil::drawIcosahedron();
-
-    glPopMatrix();
-#endif
+    orcaqgui3d::glutil::checkGLError();
 }
 
-// void WorldView::paintGL()
-// {
-//     cout<<"TRACE(worldview3d.cpp): ==================== paintGL() ====================" << endl;
+void
+WorldView::reDisplay()
+{
+    updateAllGuiElements();
 
-//     {
-//         //qDebug("paintGL on mapview called");
-
-//         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-//         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-//         glEnable(GL_BLEND);
-//         glDisable(GL_DEPTH_TEST);
-//         glEnable(GL_POINT_SMOOTH);
-//         glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
-//         glEnable(GL_LINE_SMOOTH);
-//         glEnable(GL_POLYGON_SMOOTH);
-// //        glMatrixMode(GL_MODELVIEW);
-
-//         glPushMatrix();
-//         glScalef(1.0/zoomFactor_, 1.0/zoomFactor_, 1.0/zoomFactor_);
-
-// //         // Try to get light working...
-// //         {
-// //             GLfloat light_position[] = { 10.0, 10.0, 10.0, 0.0 };
-// //             glLightfv(GL_LIGHT0, GL_POSITION, light_position);
-
-// //             glEnable(GL_LIGHTING);
-// //             glEnable(GL_LIGHT0);
-// //             glDepthFunc(GL_LEQUAL);
-// //         }
-
-//         glRotatef(pitch_,1,0,0);
-//         glRotatef(yaw_,0,0,1);
-//         glTranslatef(xOffset_, yOffset_, zOffset_);
-//     }
-
-// //    glutil::drawBox( 1, 1, 1, true, true );
-
-//    bool isFocusLocalised = transformToFocusPlatformCS();
-//    paintAllGuiElements( isFocusLocalised );
-
-//     glDisable(GL_BLEND);
-//     glEnable(GL_DEPTH_TEST);
-//     glDisable(GL_POINT_SMOOTH);
-//     glDisable(GL_LINE_SMOOTH);
-//     glDisable(GL_POLYGON_SMOOTH);
-//     glPopMatrix();
-// }
+    // force a repaint
+    updateGL();    
+}
 
 void
 WorldView::updateAllGuiElements()
@@ -254,220 +203,161 @@ WorldView::updateAllGuiElements()
             }
         }
     }
-
-    // issue a QPaintEvent to force a repaint
-    updateGL();
 }
 
 void
-WorldView::paintAllGuiElements( bool isFocusLocalised )
+WorldView::paintAllGuiElements( bool isCoordinateFramePlatformLocalised )
 {
-    cout<<"TRACE(worldview.cpp): "<<__func__<< endl;
-    return;
-
-#if 0
-    const QList<orcaqgui::GuiElement*> &elements = model_->elements();
+    const QList< ::hydroqguielementutil::IGuiElement*> &elements = guiElementSet_.elements();
 
     for ( int i=0; i<elements.size(); ++i )
     {
         if ( !elements[i] ) {
             continue;
         }
-        
-        orcaqgui::IPermanentElement *permElement = dynamic_cast<orcaqgui::IPermanentElement*>(elements[i]);
-        
+
+        orcaqgui3d::GuiElement3d *elem = dynamic_cast<orcaqgui3d::GuiElement3d*>(elements[i]);
+        assert(elem != NULL);
+
+        stringstream ss;
         try {
-           // paint the platform that has focus and the background grid         
-            
-            if ( isFocusLocalised || elements[i]->platform()==model_->coordinateFramePlatform() || (permElement!=NULL) )
+            if ( elem->needsInit() )
             {
-                GuiElement3d *elem = dynamic_cast<GuiElement3d*>(elements[i]);
-                assert(elem != NULL);
+                elem->init(*this);
+                elem->initialisationDone();
+            }
+
+            // paint all elements in the world if platform that owns coordinate system is localised 
+            // also paint all elements of the platform that owns coordinate system even if it's not localised
+            // always paint the permanent elements                     
+            if ( isCoordinateFramePlatformLocalised || 
+                 elem->platform()==coordinateFrameManager_.coordinateFramePlatform() || 
+                 elem->isPermanentElement() ) 
+            {
+                // Save the matrix, in case an exception is thrown.
+                orcaqgui3d::glutil::ScopedMatrixSave sms;
 
                 if ( elem->isInGlobalCS() )
                 {
-                    elem->paint( this );
+                    elem->paint( *this, *this );
                 }
                 else
                 {
-                    glPushMatrix();
+                    // This GuiElement is in a local coordinate system: find the platform's CS
+                    float x, y, z, roll, pitch, yaw;
+                    const bool platformCSFound = platformCSFinder_.findPlatformCS( guiElementSet_.elements(),
+                                                                                   elements[i]->platform(),
+                                                                                   x, y, z, 
+                                                                                   roll, pitch, yaw );
+                    if ( !platformCSFound )
                     {
-                        // if a localiser element is not found, the coords of the painter
-                        // will not be transformed and the element will be painted at the
-                        // saved coords
-                        float x, y, z, roll, pitch, yaw;
-                        if ( platformCSFinder_.findPlatformCS( model_->elements(),
-                                                               model_->coordinateFramePlatform(),
-                                                               x,
-                                                               y,
-                                                               z,
-                                                               roll,
-                                                               pitch,
-                                                               yaw ) )
-                        {
-                            orcaqgui3d::glutil::transform( x,y,z,roll,pitch,yaw );
-                        }
-                        elem->paint( this );
+                        // Can't find the location of this platform -- paint in the global CS
+                        elem->paint( *this, *this );
                     }
-                    glPopMatrix();
+                    else
+                    {
+                        orcaqgui3d::glutil::transform(x,y,z,roll,pitch,yaw);
+                        elem->paint( *this, *this );
+                    }
                 }
             }
         }
-        catch ( Ice::Exception &e )
+        catch ( IceUtil::Exception &e )
         {
-            std::cout<<"TRACE(worldview3d.cpp): Caught some ice exception during painting of ";
-//                      <<elements[i]->id.toStdString()<<": " << e << std::endl;
+            ss<<"WorldView: during painting of "
+              <<elements[i]->details().toStdString()<<": " << e << std::endl;
+            humanManager_.showStatusMsg(::hydroqguielementutil::IHumanManager::Warning,ss.str().c_str());
         }
         catch ( std::exception &e )
         {
-            std::cout<<"TRACE(worldview3d.cpp): Caught some std exception during painting of ";
-//                      <<elements[i]->id.toStdString()<<": " << e.what() << std::endl;
+            ss<<"WorldView: during painting of "
+              <<elements[i]->details().toStdString()<<": " << e.what() << std::endl;
+            humanManager_.showStatusMsg(::hydroqguielementutil::IHumanManager::Warning,ss.str().c_str());
         }
         catch ( std::string &e )
         {
-            std::cout<<"TRACE(worldview3d.cpp): Caught std::string during painting of ";
-//                      <<elements[i]->id.toStdString()<<": " << e << std::endl;
+            ss<<"WorldView: during painting of "
+              <<elements[i]->details().toStdString()<<": " << e << std::endl;
+            humanManager_.showStatusMsg(::hydroqguielementutil::IHumanManager::Warning,ss.str().c_str());
         }
         catch ( char *e )
         {
-            std::cout<<"TRACE(worldview3d.cpp): Caught char * during painting of ";
-//                      <<elements[i]->id.toStdString()<<": " << e << std::endl;
+            ss<<"WorldView: during painting of "
+              <<elements[i]->details().toStdString()<<": " << e << std::endl;
+            humanManager_.showStatusMsg(::hydroqguielementutil::IHumanManager::Warning,ss.str().c_str());
         }
         catch ( ... )
         {
-            std::cout<<"TRACE(worldview3d.cpp): Caught some other exception during painting of ";
-//                      <<elements[i]->id.toStdString()<<": " << std::endl;
+            ss<<"WorldView: during painting of "
+              <<elements[i]->details().toStdString()<<": unknown exception." << std::endl;
+            humanManager_.showStatusMsg(::hydroqguielementutil::IHumanManager::Warning,ss.str().c_str());
         }
     }
-#endif
+}
+
+void 
+WorldView::setAntiAliasing(bool antiAliasing)
+{
+    isAntialiasingEnabled_ = antiAliasing;
+
+    QString str;
+    if (antiAliasing==false) {
+        str = "off";
+    } else {
+        str = "on";
+    }
+    
+    humanManager_.showStatusMsg(::hydroqguielementutil::IHumanManager::Information, "Anti-aliasing is turned " + str);   
 }
 
 void 
 WorldView::keyPressEvent(QKeyEvent *e)
 {
-    if(e->key() == Qt::Key_W){
-        yOffset_ += 0.1*zoomFactor_;
-    }
-    else if(e->key() == Qt::Key_S){
-        yOffset_ -= 0.1*zoomFactor_;
-    }
-    else if(e->key() == Qt::Key_A){
-        xOffset_ -= 0.1*zoomFactor_;
-    }
-    else if(e->key() == Qt::Key_D){
-        xOffset_ += 0.1*zoomFactor_;
-    }
-    else if(e->key() == Qt::Key_BracketLeft){
-        zoomFactor_ *= 1.1;
-    }
-    else if(e->key() == Qt::Key_BracketRight){
-        zoomFactor_ /= 1.1;
-    }
-    else if(e->key() == Qt::Key_Left){
-        yaw_ += 5;
-    
-    }
-    else if(e->key() == Qt::Key_Right){
-        yaw_ -= 5;
-    }
-    else if(e->key() == Qt::Key_Up){
-        pitch_ += 5;
-        if(pitch_ > 0) pitch_ = 0;
-    }
-    else if(e->key() == Qt::Key_Down){
-        pitch_ -= 5;
-        if(pitch_ < -90) pitch_ = -90;
-    }
-    else if(e->key() == Qt::Key_R){
-        zoomFactor_=INIT_ZOOM;
-        xOffset_= yOffset_=zOffset_=0;
-        yaw_=INIT_YAW;
-        pitch_=INIT_PITCH;
-    }
-    
-    updateGL();
+    cout<<"TRACE(worldview.cpp): "<<__func__ << endl;
+    const bool needUpdate = viewHandler_.keyPressEvent(e);
+    if ( needUpdate )
+        updateGL();
+    else
+        QGLWidget::keyPressEvent(e);
 }
-
-// COMMON VIEW MANIPULATION FUNCTIONS ====================
 
 void
 WorldView::mousePressEvent( QMouseEvent* e )
-{
+{ 
+    cout<<"TRACE(worldview.cpp): "<<__func__ << endl;
     if ( mouseEventManager_.mouseEventReceiverIsSet() )
     {
-        //cout<<"TRACE(worldview.cpp): giving mousePressEvent to mode owner" << endl;
         mouseEventManager_.mouseEventReceiver()->mousePressEvent( e );
         return;
     }
     else
     {
         //cout<<"TRACE(worldview.cpp): Using mousePressEvent ourself" << endl;
-        mouseDownPnt_ = e->pos();
-        prevDragPos_ = e->pos();
+        viewHandler_.mousePressEvent(e);
     }
 }
 
 void
 WorldView::mouseMoveEvent( QMouseEvent* e )
 {
+    cout<<"TRACE(worldview.cpp): "<<__func__ << endl;
     if ( mouseEventManager_.mouseEventReceiverIsSet() )
     {
         //mouseEventManager_.mouseEventReceiver()->mouseMoveEvent( e );
         return;
     }
-
-    const float sensitivity = 0.02;
-
-    float dx=0, dy=0;
-    if ( e->buttons() & Qt::LeftButton ||
-         e->buttons() & Qt::RightButton ||
-         e->buttons() & Qt::MidButton )
+    else
     {
-        dx = e->pos().x() - prevDragPos_.x();
-        dy = e->pos().y() - prevDragPos_.y();        
-        prevDragPos_ = e->pos();        
-    }
-
-    // cout<<"TRACE(worldview3d.cpp): dx, dy: " << dx << "," << dy << endl;
-
-    if ( e->buttons() & Qt::LeftButton )
-    {
-        // Rotate camera
-        //cout<<"TRACE(worldview3d.cpp): rotate" << endl;
-        yaw_   += sensitivity*dx*10;
-        pitch_ += sensitivity*dy*10;
-        if (pitch_ > 0)   pitch_ = 0;
-        if (pitch_ < -90) pitch_ = -90;
-        updateGL();
-    }
-    else if ( e->buttons() & Qt::RightButton )
-    {
-        // Pan camera (relative to the view-point)
-        float x = sensitivity*dx*0.1*zoomFactor_;
-        float y = sensitivity*dy*0.1*zoomFactor_;
-
-        float yawRad = yaw_*M_PI/180.0;
-
-        xOffset_ += x*cos(yawRad) - y*sin(yawRad);
-        yOffset_ -= x*sin(yawRad) + y*cos(yawRad);
-        //cout<<"TRACE(worldview3d.cpp): pan" << endl;
-        updateGL();
-    }
-    else if ( e->buttons() & Qt::MidButton )
-    {
-        // Zoom camera
-        //cout<<"TRACE(worldview3d.cpp): zooming.  old zoomFactor: " << zoomFactor_<< endl;
-        float multZoomFactor = (1.0+sensitivity*dy);
-
-        CLIP_TO_LIMITS<float>( 0.8, multZoomFactor, 1.2 );
-        zoomFactor_ *= multZoomFactor;
-        updateGL();
+        const bool needUpdate = viewHandler_.mouseMoveEvent(e);
+        if ( needUpdate )
+            updateGL();
     }
 }
 
 void
 WorldView::mouseReleaseEvent( QMouseEvent* e )
 {
+    cout<<"TRACE(worldview.cpp): "<<__func__ << endl;
     if ( mouseEventManager_.mouseEventReceiverIsSet() )
     {
         //cout<<"TRACE(worldview.cpp): Giving mouseReleaseEvent to mode owner" << endl;
@@ -480,6 +370,7 @@ WorldView::mouseReleaseEvent( QMouseEvent* e )
 void
 WorldView::mouseDoubleClickEvent( QMouseEvent* e )
 {
+    cout<<"TRACE(worldview.cpp): "<<__func__ << endl;
     if ( mouseEventManager_.mouseEventReceiverIsSet() )
         mouseEventManager_.mouseEventReceiver()->mouseDoubleClickEvent( e );
 }

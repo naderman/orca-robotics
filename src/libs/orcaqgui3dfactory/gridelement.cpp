@@ -13,80 +13,174 @@
 #include <sstream>
 
 #include "gridelement.h"
-#include <GL/glut.h>
+#include <orcaqgui3d/glutil.h>
 
 using namespace std;
 using namespace orcaqgui3d;
 
-GridElement::GridElement()
-    : isDisplayGrid_(true),
+GridElement::GridElement( double wireGridSpacing,
+                          double groundPlaneSquareSpacing )
+    : isDisplayWireGrid_(true),
+      isDisplayGroundPlane_(true),
       isDisplayOrigin_(true),
-      isDisplayLabels_(true)
+      isDisplayLabels_(true),
+      wireGridSpacing_(wireGridSpacing),
+      groundPlaneSquareSpacing_(groundPlaneSquareSpacing)
 {
 }
 
-void
-GridElement::paint( QGLWidget *p )
+GridElement::~GridElement()
 {
-//     cout<<"TRACE(gridelement3d.cpp): TODO: remove early return." << endl;
-//     return;
+    cout<<"TRACE(gridelement.cpp): Does this work in here???" << endl;
+    finit();
+}
+
+void
+GridElement::init( const orcaqgui3d::View &view )
+{
+    cout<<"TRACE(gridelement.cpp): init()" << endl;
+
+    //
+    // Load the checkerboard texture
+    //
+
+    glGenTextures( 1, &textureName_ );
+    glBindTexture( GL_TEXTURE_2D, textureName_ );
+
+    // Draw the chess-board in memory
+    orcaqgui3d::glutil::makeCheckImage64x64x3( checkImage_, 2, 120, 130 );
+
+    // Says how to read the texture in the next call
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+    // Create the texture map
+    glTexImage2D(GL_TEXTURE_2D, 0, 3, 64, 64,
+                 0, GL_RGB, GL_UNSIGNED_BYTE, 
+                 &checkImage_[0][0][0]);    
+}
+
+void
+GridElement::finit()
+{
+    glDeleteTextures( 1, &textureName_ );    
+}
+
+void
+GridElement::paint( const orcaqgui3d::View &view, QGLWidget &p )
+{
+    if ( isDisplayGroundPlane_ )
+        drawGroundPlane( view );
 
     if ( isDisplayOrigin_ ) {
         //cout<<"painting origin"<<endl;
         drawOrigin();
     }
-
-    if ( isDisplayGrid_ )
-        drawGridAndLabels( p );
-
-    if ( isDisplayOrigin_ )
-        drawOrigin();
+    
+    if ( isDisplayWireGrid_ )
+        drawWireGridAndLabels( view, p );
 }
 
 void
-GridElement::drawGridAndLabels( QGLWidget *p )
+GridElement::drawGroundPlane( const orcaqgui3d::View &view )
 {
-    // Major line every N lines (others are minor)
-    const int majorEveryN=2;
-    const int numMajor=3;
-    const float gridWidth=6; // [m]
+    // cout<<"TRACE(worldview.cpp): "<<__func__ << endl;
 
-    int gridLinesEachDirn=numMajor*majorEveryN;
-
-//    cout<<"TRACE(grid3d.cpp): zoomFactor: " << guiGLPainter_->zoomFactor_ << endl;
-
-    float w = gridWidth/2.0;
-
-    for(int i=-gridLinesEachDirn; i <= gridLinesEachDirn; i++)
+    glPushMatrix();
     {
-        float d = gridWidth*(float)i/(float)(2*gridLinesEachDirn);
-        if(i%(majorEveryN)==0)
-        {
-            glColor4f(0,0,0,0.5);
+        const double infty=1000;
+        const double metresPerTile=2*groundPlaneSquareSpacing_;
+        const double texCoordExtreme=2*infty/metresPerTile;
 
-            if ( isDisplayLabels_ )
+//         // Centre the ground plane near the camera, so we can never walk off.
+//         int tilesFromOriginX = view.cameraX() / metresPerTile;
+//         int tilesFromOriginY = view.cameraY() / metresPerTile;
+//         glTranslatef( tilesFromOriginX*metresPerTile,
+//                       tilesFromOriginY*metresPerTile,
+//                       0.0 );
+
+        glColor3f( 0.5, 0.5, 0.5 );
+
+        glEnable( GL_TEXTURE_2D );
+        {
+            glBindTexture( GL_TEXTURE_2D, textureName_ );
+
+            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+
+            glBegin(GL_QUADS);
+            glNormal3f( 0.0, 0.0, 1.0);
+            glTexCoord2f(0,0);
+            glVertex3f(-infty,-infty,0);
+            glTexCoord2f(0,texCoordExtreme); 
+            glVertex3f(-infty,infty,0);
+            glTexCoord2f(texCoordExtreme,texCoordExtreme); 
+            glVertex3f(infty,infty,0);
+            glTexCoord2f(texCoordExtreme,0); 
+            glVertex3f(infty,-infty,0);
+            glEnd();
+        }
+        glDisable( GL_TEXTURE_2D );
+    }
+    glPopMatrix();
+}
+
+void
+GridElement::drawWireGridAndLabels( const orcaqgui3d::View &view, QGLWidget &p )
+{
+    const int xOffset = view.cameraX();
+    const int yOffset = view.cameraY();
+
+    glPushMatrix();
+    {
+        // Centre near the camera, slightly off the ground so it's visible
+        // glTranslatef( xOffset, yOffset, 0.001 );
+        glTranslatef( xOffset, yOffset, 0.0 );
+
+        // Major line every N lines (others are minor)
+        const int majorEveryN=2;
+        const int numMajor=4;
+        const float gridWidth=numMajor*majorEveryN*wireGridSpacing_; // [m]
+
+        int gridLinesEachDirn=numMajor*majorEveryN;
+
+        float w = gridWidth/2.0;
+
+        for(int i=-gridLinesEachDirn; i <= gridLinesEachDirn; i++)
+        {
+            float d = gridWidth*(float)i/(float)(2*gridLinesEachDirn);
+            if(i%(majorEveryN)==0)
             {
-                if ( i != 0 )
+                glColor4f(0,0,0,0.5);
+
+                if ( isDisplayLabels_ )
                 {
-                    std::stringstream ss;
-                    ss << (int)d;
-                    p->renderText( d, 0, 0, ss.str().c_str() );
-                    p->renderText( 0, d, 0, ss.str().c_str() );
+                    if ( i != 0 )
+                    {
+                        std::stringstream ssX, ssY;
+                        ssX << (int)d+xOffset;
+                        ssY << (int)d+yOffset;
+                        p.renderText( d, 0, 0, ssX.str().c_str() );
+                        p.renderText( 0, d, 0, ssY.str().c_str() );
+                    }
                 }
             }
-        }
-        else 
-        {
-            glColor4f(0.5,0.5,0.5,0.5);
-        }
+            else 
+            {
+                glColor4f(0.5,0.5,0.5,0.5);
+            }
 
-        glBegin(GL_LINES);
-        glVertex3f(-w, d, 0);
-        glVertex3f(w,  d, 0);
-        glVertex3f(d, -w, 0);
-        glVertex3f(d,  w, 0);
-        glEnd();
+            glBegin(GL_LINES);
+            glVertex3f(-w, d, 0);
+            glVertex3f(w,  d, 0);
+            glVertex3f(d, -w, 0);
+            glVertex3f(d,  w, 0);
+            glEnd();
+        }
     }
+    glPopMatrix();
 }
 
 void
@@ -132,7 +226,7 @@ QStringList
 GridElement::contextMenu()
 {
     QStringList s;
-    s<<"Toggle Grid"<<"Toggle Origin"<<"Toggle Labels";
+    s<<"Toggle Grid"<<"Toggle Origin"<<"Toggle Labels"<<"Toggle Ground Plane";
     return s;
 }
 
@@ -143,15 +237,19 @@ GridElement::execute( int action )
     {
     case 0 :
         // toggle grid
-        isDisplayGrid_ = !isDisplayGrid_;
+        isDisplayWireGrid_ = !isDisplayWireGrid_;
         break;
     case 1 :
         // toggle origin
         isDisplayOrigin_ = !isDisplayOrigin_;
         break;
     case 2 :
-        // toggle origin
+        // toggle labels
         isDisplayLabels_ = !isDisplayLabels_;
+        break;
+    case 3 :
+        // toggle ground plane
+        isDisplayGroundPlane_ = !isDisplayGroundPlane_;
         break;
     }
 }

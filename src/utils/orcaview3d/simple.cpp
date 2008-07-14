@@ -13,7 +13,6 @@ public:
 
     void init()
         {
-
             glGenTextures( 1, &textureName_ );
             glBindTexture( GL_TEXTURE_2D, textureName_ );
             cout<<"TRACE(simple.cpp): GroundPlane textureName: " << textureName_ << endl;

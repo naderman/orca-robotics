@@ -23,7 +23,7 @@ IF( build )
     #
     # This gathers all the source files into the variable 'srcs'
     #
-    FILE( GLOB human_srcs component.cpp worldview.cpp )
+    FILE( GLOB human_srcs component.cpp worldview.cpp viewhandler.cpp )
 
     SET( moc_hdrs
       worldview.h

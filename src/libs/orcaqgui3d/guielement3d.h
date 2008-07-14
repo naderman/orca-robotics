@@ -11,28 +11,51 @@
 #ifndef ORCAGUI3D_GUIELEMENT3D_H
 #define ORCAGUI3D_GUIELEMENT3D_H
 
-#include <QGLWidget>
-#include <orcaqgui/guielement.h>
+#include <hydroqguielementutil/iguielement.h>
 #include <orcaqgui3d/view.h>
+#include <QGLWidget>
 
 namespace orcaqgui3d {
 
 //!
 //! @author Alex Brooks
 //!
-class GuiElement3d : public orcaqgui::GuiElement
+class GuiElement3d : public hydroqguielementutil::IGuiElement 
 {
 
 public: 
 
+    GuiElement3d()
+        : needsInit_(true)
+        {}
+
     virtual ~GuiElement3d() {}
 
     //! Paint is called periodically to paint the internal state of the guielement
-    virtual void paint( const View &v ) {};
+    //! (The view gives information about stuff like the camera position,
+    //!  the QGLWidget allows things like drawing text)
+    virtual void paint( const View &v, QGLWidget &p ) {};
+
+    //! This is a special function: if we have to do OpenGL initialisation stuff,
+    //! we can't do it in the constructor (We might not be in the OpenGL context).
+    //! Have to do it here.
+    virtual void init( const View &v ) {}
+    //! This is a special function: if we have to do OpenGL destruction stuff,
+    //! we can't do it in the destructor (We might not be in the OpenGL context).
+    //! Have to do it here.
+    virtual void finit( const View &v ) {}
+
+    //! Since there's init/finit stuff we can't do in the
+    //! constructor/destructor, need to track it here.
+    // TODO: How to handle the finit gear ???
+    bool needsInit() const { return needsInit_; }
+
+    // Call this once the thing has been initialised
+    void initialisationDone() { needsInit_ = false; }
 
 private: 
 
-
+    bool needsInit_;
 };
 
 }

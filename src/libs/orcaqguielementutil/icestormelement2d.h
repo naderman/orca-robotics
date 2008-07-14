@@ -45,10 +45,6 @@ namespace orcaqguielementutil {
                   ProxyType,
                   ConsumerType,
                   ConsumerPrxType>::painter_.paintThisLayer( z ); }
-
-    protected:
-        
-
     };
 
 }

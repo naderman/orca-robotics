@@ -45,10 +45,6 @@ LaserScanner2dPainter::LaserScanner2dPainter( QColor outlineColor,
     fillColor_ = QColor(204,204,255,127);
 }
 
-LaserScanner2dPainter::~LaserScanner2dPainter()
-{
-}
-
 void
 LaserScanner2dPainter::clear()
 {

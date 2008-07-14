@@ -23,11 +23,11 @@ namespace orcaqgui3d {
 //!
 class LaserScanner2dElement
     : public PtrIceStormElement3d<LaserScanner2dPainter,
-                               orca::RangeScanner2dData,
-                               orca::RangeScanner2dDataPtr,
-                               orca::LaserScanner2dPrx,
-                               orca::RangeScanner2dConsumer,
-                               orca::RangeScanner2dConsumerPrx>
+                                  orca::RangeScanner2dData,
+                                  orca::RangeScanner2dDataPtr,
+                                  orca::LaserScanner2dPrx,
+                                  orca::RangeScanner2dConsumer,
+                                  orca::RangeScanner2dConsumerPrx>
 {           
 public:
     LaserScanner2dElement( const orcaice::Context  &context,
