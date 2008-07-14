@@ -19,7 +19,7 @@ public:
             cout<<"TRACE(simple.cpp): GroundPlane textureName: " << textureName_ << endl;
 
             // Draw the chess-board in memory
-            orcaqgui3d::glutil::makeCheckImage64x64x3( checkImage_, 2, 100, 200 );
+            orcaqgui3d::glutil::makeCheckImage64x64x3( checkImage_, 2, 120, 130 );
 
             // Says how to read the texture in the next call
             glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
@@ -32,12 +32,12 @@ public:
 
     void paint()
         {
-            const double infty=100;
+            const double infty=1000;
             const double metresPerSquare=1;
             const double metresPerTile=2*metresPerSquare;
             const double texCoordExtreme=2*infty/metresPerTile;
 
-            glColor3f( 0.0, 1.0, 0.0 );
+            glColor3f( 0.5, 0.5, 0.5 );
 
             glEnable( GL_TEXTURE_2D );
             {
@@ -345,7 +345,7 @@ public:
             // Grid
             glPushMatrix();
             {
-                glTranslatef( 0, 0, 0.05 );
+                glTranslatef( 0, 0, 0.01 );
                 GridElement gridElement;
                 gridElement.paint( this );
             }
@@ -354,7 +354,7 @@ public:
             // Another Grid
             glPushMatrix();
             {
-                glTranslatef( 0, 10, 0.05 );
+                glTranslatef( 0, 10, 0.01 );
                 GridElement gridElement;
                 gridElement.paint( this );
             }
