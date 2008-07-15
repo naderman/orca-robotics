@@ -76,7 +76,7 @@ private:
 
     // Returns true if the platform which owns the coordinate system is localised
     // or if "global" owns the coordinate system 
-    bool transformToPlatformOwningCS();
+    bool getCoordinateFrame(float &x,float &y,float &z,float &roll,float &pitch,float &yaw);
 
     // from QGLWidget
     void initializeGL();

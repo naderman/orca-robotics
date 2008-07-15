@@ -51,21 +51,23 @@ WorldView::WorldView( orcaqgui3d::PlatformCSFinder              &platformCSFinde
 }
 
 bool
-WorldView::transformToPlatformOwningCS()
+WorldView::getCoordinateFrame(float &x,float &y,float &z,float &roll,float &pitch,float &yaw)
 {    
     if ( coordinateFrameManager_.coordinateFramePlatform() == "global" )
     {
+        x=0;y=0;z=0;roll=0;pitch=0;yaw=0;
         return true;
     }
     else
     {
-        float x, y, theta, roll, pitch, yaw;
         if ( platformCSFinder_.findPlatformCS( guiElementSet_.elements(),
                                                coordinateFrameManager_.coordinateFramePlatform(),
-                                               x, y, theta,
+                                               x, y, z,
                                                roll, pitch, yaw ) )
         {
-            orcaqgui3d::glutil::transform( x, y, theta, roll, pitch, yaw );
+            cout<<"TRACE(worldview.cpp): transforming to platform: x,y,z  r,p,y = " <<x<<","<<y<<","<<z<<"  "<<roll<<","<<pitch<<","<<yaw << endl;
+
+            orcaqgui3d::glutil::transform( x, y, z, roll, pitch, yaw );
 
             assert( !coordinateFrameManager_.ignoreCoordinateFrameRotation() && "Huh?" );
 //             if (!coordinateFrameManager_.ignoreCoordinateFrameRotation())
@@ -140,7 +142,14 @@ WorldView::paintGL()
     glLoadIdentity();
 
     // Are we viewing relative to a platform?
-    const bool isCoordinateFramePlatformLocalised = transformToPlatformOwningCS();
+    float x,y,z,roll,pitch,yaw;
+    const bool isCoordinateFramePlatformLocalised = 
+        getCoordinateFrame(x,y,z,roll,pitch,yaw);
+
+    if ( isCoordinateFramePlatformLocalised )
+    {
+        orcaqgui3d::glutil::transform(x,y,z,roll,pitch,yaw);
+    }
 
     // Put the camera in position
     viewHandler_.applyViewingTransformation();

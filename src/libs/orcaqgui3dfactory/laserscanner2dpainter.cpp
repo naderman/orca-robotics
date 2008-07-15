@@ -91,7 +91,7 @@ LaserScanner2dPainter::paint( const orcaqgui3d::View &view, QGLWidget &p )
 
     const bool drawSurfaces  = true;
     const bool drawWireFrame = true;
-    glColor4f( 0, 0, 1, 0.3 );
+    glColor3f( 0, 0, 1 );
     orcaqgui3d::glutil::drawBox( size_.l,
                                  size_.w,
                                  size_.h,
@@ -104,7 +104,7 @@ LaserScanner2dPainter::paint( const orcaqgui3d::View &view, QGLWidget &p )
 //    Polygon doesn't work so good...  slows things _right_ down.
 //    glBegin( GL_POLYGON );  
     glBegin( GL_LINE_LOOP );  
-    glColor4f( outlineColor_.red(), outlineColor_.green(), outlineColor_.blue(), 1 );
+    glColor3f( outlineColor_.red(), outlineColor_.green(), outlineColor_.blue() );
     glVertex3f( 0, 0, 0 );
     double angleIncrement = fieldOfView_ / double(ranges_.size()+1);
     for ( unsigned int i=0; i < ranges_.size(); ++i )

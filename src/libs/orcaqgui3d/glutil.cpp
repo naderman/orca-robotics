@@ -48,7 +48,6 @@ drawBox( float d, float w, float h, bool drawSurfaces, bool drawWireFrame )
         {
             // surfaces
             if ( !drawSurfaces ) continue;
-            glBegin(GL_QUADS);
             type = GL_QUADS;
         }
         else
