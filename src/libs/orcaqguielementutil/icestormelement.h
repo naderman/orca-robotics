@@ -28,7 +28,7 @@ namespace orcaqguielementutil {
   @author Alex Brooks
 */
 template<class PainterType, class DataType, class ProxyType, class ConsumerType, class ConsumerPrxType>
-class IceStormElement : public hydroqguielementutil::GuiElement2d
+class IceStormElement
 {
   
 public:
@@ -50,7 +50,7 @@ public:
     virtual void actionOnConnection()=0;
 
     //! Here we pop data from the consumer buffer, and give it to the painter.
-    virtual void update();
+    void updateFromBuffer();
 
 protected:
 
@@ -113,7 +113,7 @@ IceStormElement<PainterType,DataType,ProxyType,ConsumerType,ConsumerPrxType>::ne
 
 template<class PainterType, class DataType, class ProxyType, class ConsumerType, class ConsumerPrxType>
 void 
-IceStormElement<PainterType,DataType,ProxyType,ConsumerType,ConsumerPrxType>::update()
+IceStormElement<PainterType,DataType,ProxyType,ConsumerType,ConsumerPrxType>::updateFromBuffer()
 {
     if ( !needToUpdate() ) {
         return;

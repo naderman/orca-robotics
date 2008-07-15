@@ -53,6 +53,15 @@ public:
     ~ScopedMatrixSave();
 };
 
+//! Paints 2-sigma ellipse for the position uncertainty
+void paintCovarianceEllipse( float pxx, float pxy, float pyy );
+
+//! draws an axis-aligned ellipse
+void drawEllipse( float radiusX, float radiusY, int numPts=25 );
+
+//! draws a cylinder oriented in the +z direction
+void drawCyclinder( float height, float radiusX, float radiusY, int numFacets=25 );
+
 } // namespace
 } // namespace
 

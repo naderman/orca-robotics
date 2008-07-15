@@ -13,7 +13,7 @@
 
 #include <orcaqgui3dfactory/gridelement.h>
 #include <orcaqgui3dfactory/laserscanner2delement.h>
-//#include <orcaqgui3dfactory/position3delement.h>
+#include <orcaqgui3dfactory/localise2delement.h>
 
 #include "defaultfactory.h"
 
@@ -25,14 +25,13 @@ DefaultFactory::DefaultFactory()
 {
     addSupportedType("Grid");
     addSupportedType("LaserScanner2d");
-//    addSupportedType("::orca::Position3d");
+    addSupportedType("Localise2d");
 }
 
 bool 
 DefaultFactory::lookupElementType( const QStringList &ids, QString &elementType ) const
 {
     // One-to-one mappings (one interface per element):
-    // ::orca::LaserScanner2d maps to LaserScanner2d
     if (ids.size()==1)
     {
         elementType = ids[0].section(':',4,4);
@@ -82,6 +81,12 @@ DefaultFactory::create( const QString                            &elementType,
 
         if ( elementType == "Grid" ) {
             elem = new orcaqgui3d::GridElement();
+        }
+        else if ( elementType == "LaserScanner2d" ) {
+            elem = new orcaqgui3d::LaserScanner2dElement( context_, elementDetails[0].toStdString() );
+        }
+        else if ( elementType == "Localise2d" ) {
+            elem = new orcaqgui3d::Localise2dElement( context_, elementDetails[0].toStdString(), &humanManager );
         }
         else
         {

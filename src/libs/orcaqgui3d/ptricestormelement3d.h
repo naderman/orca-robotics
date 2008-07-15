@@ -13,12 +13,15 @@
 
 #include <orcaqguielementutil/ptricestormelement.h>
 #include <orcaqgui3d/view.h>
+#include <QGLWidget>
+#include <orcaqgui3d/guielement3d.h>
 
 namespace orcaqgui3d {
 
     template<class PainterType, class DataType, class DataPtrType, class ProxyType, class ConsumerType, class ConsumerPrxType>
     class
-    PtrIceStormElement3d : public orcaqguielementutil::PtrIceStormElement<PainterType,
+    PtrIceStormElement3d : public GuiElement3d,
+                           public orcaqguielementutil::PtrIceStormElement<PainterType,
                                                                           DataType,
                                                                           DataPtrType,
                                                                           ProxyType,
@@ -44,13 +47,22 @@ namespace orcaqgui3d {
         
 
         //! Derived classes may override this if they have to paint other stuff than just interface data (e.g. user input)
-        virtual void paint( const View &view )
+        virtual void paint( const View &view, QGLWidget &p )
             { orcaqguielementutil::PtrIceStormElement<PainterType,
                   DataType,
                   DataPtrType,
                   ProxyType,
                   ConsumerType,
-                  ConsumerPrxType>::painter_.paint( view ); }
+                  ConsumerPrxType>::painter_.paint( view, p ); }
+
+        // From GuiElement3d
+        void update()
+            { orcaqguielementutil::PtrIceStormElement<PainterType,
+                  DataType,
+                  DataPtrType,
+                  ProxyType,
+                  ConsumerType,
+                  ConsumerPrxType>::updateFromBuffer(); }
 
     };
 

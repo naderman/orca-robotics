@@ -13,6 +13,7 @@
 
 #include <QColor>
 #include <QGLWidget>
+#include <orcaqgui3d/view.h>
 #include <orca/laserscanner2d.h>
 
 namespace orcaqgui3d
@@ -34,7 +35,7 @@ class LaserScanner2dPainter
     void setSize( const orca::Size3d &size );
     void setData( const orca::RangeScanner2dDataPtr &scan );
 
-    void paint();
+    void paint( const orcaqgui3d::View &view, QGLWidget &p );
 
     void clear();
     

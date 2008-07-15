@@ -29,7 +29,6 @@ enum PlatformType
 class Localise2dPainter
 {
   public:
-    // The default color is the color when the robot is not selected.
     Localise2dPainter( bool beginDisplayHistory );
 
     void setData( const orca::Localise2dData& data );

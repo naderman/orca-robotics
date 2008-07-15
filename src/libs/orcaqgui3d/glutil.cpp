@@ -14,12 +14,13 @@
 #include <GL/glut.h>
 #include <gbxutilacfr/mathdefs.h>
 #include <gbxutilacfr/exceptions.h>
+#include <hydroqguielementutil/cov2d.h>
 
 using namespace std;
 
 namespace orcaqgui3d {
 
-    namespace glutil {
+namespace glutil {
 
 void
 transform( float x,
@@ -231,6 +232,69 @@ ScopedMatrixSave::ScopedMatrixSave()
 ScopedMatrixSave::~ScopedMatrixSave()
 {
     glPopMatrix();
+}
+
+void paintCovarianceEllipse( float pxx, float pxy, float pyy )
+{
+    // Quick checks first (note that this is a necessary but not
+    // sufficient condition for positive-definiteness)
+    if ( pxx < 0.0 ||
+         pyy < 0.0 ||
+         fabs(pxy) >= sqrt( pxx*pyy ) ||
+         (isnan(pxx)||isinf(pxx))    ||
+         (isnan(pxy)||isinf(pxy))    ||
+         (isnan(pyy)||isinf(pyy))    )
+    {
+        std::stringstream ss;
+        ss << "paintCovarianceEllipse(): covariance matrix not PD: pxx,pxy,pyy = "<<pxx<<","<<pxy<<","<<pyy;
+        throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
+    }
+
+    // Work out the details of the uncertainty ellipse
+    double a, b, psi;
+    hydroqguielementutil::Cov2d cov( pxx, pxy, pyy );
+    cov.ellipse( a, b, psi );
+
+    {
+        ScopedMatrixSave sms;
+        glRotatef( psi, 0.0, 0.0, 1.0 );
+        drawEllipse( a, b );
+    }
+}
+
+void 
+drawEllipse( float radiusX, float radiusY, int numPts )
+{
+    glBegin( GL_LINE_LOOP );
+        
+    float angle=0;
+    for ( int i=0; i < numPts; i++ )
+    {
+        glVertex2f( radiusX*cos(angle), radiusY*sin(angle) );
+        angle += 2*M_PI/(float)(numPts);
+    }
+
+    glEnd();
+}
+
+void drawCyclinder( float height, float radiusX, float radiusY, int numFacets )
+{
+    glBegin( GL_QUADS );
+
+    float angle=0;
+    for ( int i=0; i < numFacets; i++ )
+    {
+        float nextAngle = angle + 2*M_PI/(float)(numFacets);
+
+        glVertex3f( radiusX*cos(angle), radiusY*sin(angle), 0.0 );
+        glVertex3f( radiusX*cos(nextAngle), radiusY*sin(nextAngle), 0.0 );
+        glVertex3f( radiusX*cos(nextAngle), radiusY*sin(nextAngle), height );
+        glVertex3f( radiusX*cos(angle), radiusY*sin(angle), height );
+
+        angle = nextAngle;
+    }    
+
+    glEnd();
 }
 
 } // namespace

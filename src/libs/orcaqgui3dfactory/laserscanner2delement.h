@@ -31,24 +31,22 @@ class LaserScanner2dElement
 {           
 public:
     LaserScanner2dElement( const orcaice::Context  &context,
-                    const std::string       &proxyString,
-                    int                      timeoutMs=5000,
-                    QColor                   outlineColor=QColor( 102,102,153, 255 ),
-                    float                    outlineThickness=-1,
-                    float                    brightReturnWidth=0.2 )
+                           const std::string       &proxyString,
+                           int                      timeoutMs=5000,
+                           QColor                   outlineColor=QColor( 102,102,153, 255 ) )
         : PtrIceStormElement3d<LaserScanner2dPainter,
-                            orca::RangeScanner2dData,
-                            orca::RangeScanner2dDataPtr,
-                            orca::LaserScanner2dPrx,
-                            orca::RangeScanner2dConsumer,
-                            orca::RangeScanner2dConsumerPrx>(context, proxyString, painter_, timeoutMs ),
-          painter_( outlineColor, outlineThickness, brightReturnWidth )
+                               orca::RangeScanner2dData,
+                               orca::RangeScanner2dDataPtr,
+                               orca::LaserScanner2dPrx,
+                               orca::RangeScanner2dConsumer,
+                               orca::RangeScanner2dConsumerPrx>(context, proxyString, painter_, timeoutMs ),
+          painter_( outlineColor )
         {};
 
     virtual bool isInGlobalCS() { return false; }
     virtual void actionOnConnection() { getLaserInfo(); }
-    virtual QStringList contextMenu();
-    virtual void execute( int action ) { painter_.execute( action ); };
+//    virtual QStringList contextMenu() {}
+//    virtual void execute( int action ) {}
     virtual void setColor( QColor color ) { painter_.setColor(color); }
     virtual void setFocus( bool inFocus ) { painter_.setFocus( inFocus ); };
 

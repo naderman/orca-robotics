@@ -13,12 +13,15 @@
 
 #include <orcaqguielementutil/icestormelement.h>
 #include <orcaqgui3d/view.h>
+#include <QGLWidget>
+#include <orcaqgui3d/guielement3d.h>
 
 namespace orcaqgui3d {
 
     template<class PainterType, class DataType, class ProxyType, class ConsumerType, class ConsumerPrxType>
     class
-    IceStormElement3d : public orcaqguielementutil::IceStormElement<PainterType,
+    IceStormElement3d : public GuiElement3d,
+                        public orcaqguielementutil::IceStormElement<PainterType,
                                                                     DataType,
                                                                     ProxyType,
                                                                     ConsumerType,
@@ -32,21 +35,29 @@ namespace orcaqgui3d {
                            const std::string       &proxyString,
                            PainterType             &painter,
                            const double            timeoutMs=5000.0 )
-            : orcaqguielementutilIceStormElement<PainterType,
-                                                 DataType,
-                                                 ProxyType,
-                                                 ConsumerType,
-                                                 ConsumerPrxType>(
+            : orcaqguielementutil::IceStormElement<PainterType,
+                                                   DataType,
+                                                   ProxyType,
+                                                   ConsumerType,
+                                                   ConsumerPrxType>(
                 context,proxyString,painter,timeoutMs)
             {}
 
         //! Derived classes may override this if they have to paint other stuff than just interface data (e.g. user input)
-        virtual void paint( const View &view )
-            { IceStormElement<PainterType,
+        virtual void paint( const View &view, QGLWidget &p )
+            { orcaqguielementutil::IceStormElement<PainterType,
                   DataType,
                   ProxyType,
                   ConsumerType,
-                  ConsumerPrxType>::painter_.paint( view ); }
+                  ConsumerPrxType>::painter_.paint( view, p ); }
+
+        // From GuiElement3d
+        void update()
+            { orcaqguielementutil::IceStormElement<PainterType,
+                  DataType,
+                  ProxyType,
+                  ConsumerType,
+                  ConsumerPrxType>::updateFromBuffer(); }
     };
 
 }

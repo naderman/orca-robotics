@@ -12,3 +12,8 @@ Config.ScreenCapture.CaptureTimerInterval.Default = 1000
 
 # external configuration options
 ExternalConfig.Ice.Override.ConnectTimeout.Default=150
+
+Config.Element.Type00.Default = LaserScanner2d
+Config.Element.Detail00.Default = laserscanner2d@local/laser2d
+Config.Element.Type01.Default = Localise2d
+Config.Element.Detail01.Default = localise2d@local/faithlocaliser

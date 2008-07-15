@@ -17,7 +17,8 @@ namespace orcaqguielementutil {
 
     template<class PainterType, class DataType, class ProxyType, class ConsumerType, class ConsumerPrxType>
     class
-    IceStormElement2d : public IceStormElement<PainterType,DataType,ProxyType,ConsumerType,ConsumerPrxType>
+    IceStormElement2d : public hydroqguielementutil::GuiElement2d,
+                        public IceStormElement<PainterType,DataType,ProxyType,ConsumerType,ConsumerPrxType>
     {
     public:
 
@@ -45,6 +46,14 @@ namespace orcaqguielementutil {
                   ProxyType,
                   ConsumerType,
                   ConsumerPrxType>::painter_.paintThisLayer( z ); }
+
+        //! From GuiElement2d
+        void update() 
+            { IceStormElement<PainterType,
+                  DataType,
+                  ProxyType,
+                  ConsumerType,
+                  ConsumerPrxType>::updateFromBuffer(); }
     };
 
 }

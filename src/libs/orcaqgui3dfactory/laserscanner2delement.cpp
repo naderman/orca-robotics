@@ -22,44 +22,18 @@ void
 LaserScanner2dElement::getLaserInfo()
 {
     // Subscribe directly to get geometry etc
-    LaserScanner2dPrx laserPrx;
+    orca::LaserScanner2dPrx laserPrx;
 
-    try
-    {
-        orcaice::connectToInterfaceWithString( context_, laserPrx, listener_.interfaceName() );
+    // Don't bother catching exceptions: they'll get caught higher up.
 
-        RangeScanner2dDescription descr;
-        descr = laserPrx->getDescription();
-        painter_.setDescription( descr );
-    }
-    catch ( gbxutilacfr::Exception &e )
-    {
-        cout<<"TRACE(laserelement.cpp): got exception :"<<e.what()<<endl;
-        // Ignore it.  We'll try reconnecting later.
-    }
-    catch ( Ice::Exception &e )
-    {
-        cout<<"TRACE(laserelement.cpp): got Ice exception :"<<e<<endl;
-        // Ignore it.  We'll try reconnecting later.
-    }
-    catch ( std::exception &e )
-    {
-        cout<<"TRACE(laserelement.cpp): got std exception :"<<e.what()<<endl;
-        // Ignore it.  We'll try reconnecting later.
-    }
-    catch ( ... )
-    {
-        cout<<"TRACE(laserelement.cpp): got some exception"<<endl;
-        // Ignore it.  We'll try reconnecting later.
-    }
-}
+    orcaice::connectToInterfaceWithString( context_, laserPrx, listener_.interfaceName() );
+    
+    orca::RangeScanner2dDescription descr;
+    descr = laserPrx->getDescription();
 
-QStringList
-LaserScanner2dElement::contextMenu()
-{
-    QStringList s;
-    s<<"Toggle Scan"<<"Toggle Walls"<<"Toggle Reflectors";
-    return s;
+    painter_.setOffset( descr.offset );
+    painter_.setSize( descr.size );
+    painter_.setLaserMaxRange( descr.maxRange );
 }
 
 

@@ -146,8 +146,6 @@ WorldView::paintGL()
     viewHandler_.applyViewingTransformation();
 
     paintAllGuiElements( isCoordinateFramePlatformLocalised );
-
-    orcaqgui3d::glutil::checkGLError();
 }
 
 void
@@ -260,6 +258,9 @@ WorldView::paintAllGuiElements( bool isCoordinateFramePlatformLocalised )
                         elem->paint( *this, *this );
                     }
                 }
+
+                // Raises an exception on an OpenGL error
+                orcaqgui3d::glutil::checkGLError();
             }
         }
         catch ( IceUtil::Exception &e )

@@ -12,7 +12,6 @@
 #include <cmath>
 #include <assert.h>
 #include <QString>
-#include <GL/glut.h>
 #include <orcaqgui3d/glutil.h>
 #include <orcaice/orcaice.h>
 
@@ -84,7 +83,7 @@ LaserScanner2dPainter::setData( const orca::RangeScanner2dDataPtr & data )
 }
 
 void
-LaserScanner2dPainter::paint()
+LaserScanner2dPainter::paint( const orcaqgui3d::View &view, QGLWidget &p )
 {
     // Apply the vehicle-to-sensor transformation
     orcaqgui3d::glutil::transform( offsetX_, offsetY_, offsetZ_,
