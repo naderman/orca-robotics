@@ -615,9 +615,12 @@ PathFollowerHI::PathFollowerHI( PathFollower2dElement *pfElement,
 void 
 PathFollowerHI::setFocus( bool inFocus )
 {
-    if ( inFocus && !buttons_.get() ) 
+    if ( inFocus )
     {
-        buttons_.reset( new PathfollowerButtons( this, humanManager_, shortcutKeyManager_, proxyString_ ) );
+        if ( !buttons_.get() ) 
+        {
+            buttons_.reset( new PathfollowerButtons( this, humanManager_, shortcutKeyManager_, proxyString_ ) );
+        }
     } 
     else 
     {
