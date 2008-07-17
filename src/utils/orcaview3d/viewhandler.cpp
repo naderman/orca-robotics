@@ -1,39 +1,36 @@
 #include "viewhandler.h"
 #include <iostream>
 #include <GL/gl.h>
+#include <GL/glu.h>
 #include <gbxutilacfr/mathdefs.h>
 
 using namespace std;
 
 namespace orcaview3d {
 
-namespace {
-    const int INIT_YAW   = 0;
-    const int INIT_PITCH = -60;
-}
-
 ViewHandler::ViewHandler()
-    : xOffset_(-7),
-      yOffset_(0),
-      zOffset_(2),
-      yaw_(90),
-      pitch_(INIT_PITCH)
 {
+    camera_.setLookDir( Vector3(1,0,0) );
+    camera_.setV( Vector3(0,0,1) );
+    camera_.setU( cross(camera_.getDir(),-camera_.getV()) );
+
+    camera_.setPos( Vector3( -7, 0, 2 ) );
 }
 
 void 
 ViewHandler::applyViewingTransformation() const
 {
-//     cout<<"TRACE(viewhandler.cpp): "<<__func__<<": x,y,z:     "<<xOffset_<<","<<yOffset_<<","<<zOffset_ << endl;
-//     cout<<"TRACE(viewhandler.cpp): "<<__func__<<": pitch,yaw: "<<pitch_<<","<<yaw_ << endl;
+//     cout<<"TRACE(viewhandler.cpp): "<<__func__<<": x,y,z:     "<<camera_.getPos().x<<","<<camera_.getPos().y<<","<<camera_.getPos().z << endl;
+//     cout<<"TRACE(viewhandler.cpp): "<<__func__<<": roll="<<camera_.getRoll()*180.0/M_PI<<", pitch="<<camera_.getPitch()*180.0/M_PI<<", yaw="<<camera_.getYaw()*180.0/M_PI << endl;
 
-    // Put the camera in position
-    // It starts looking down the negative-z axis, with y being 'up'.
-    // OpenGL uses a left-handed coordinate-system?
+    // cout<<"TRACE(viewhandler.cpp): camera_: " << toString(camera_) << endl;
 
-    glRotatef(pitch_,1,0,0);
-    glRotatef(yaw_,0,0,1);
-    glTranslatef(-xOffset_, -yOffset_, -zOffset_);    
+    Vector3 center = camera_.getPos() + camera_.getDir();
+    gluLookAt( camera_.getPos().x,
+               camera_.getPos().y,
+               camera_.getPos().z,
+               center.x, center.y, center.z,
+               camera_.getV().x, camera_.getV().y, camera_.getV().z );
 }
 
 void
@@ -62,13 +59,11 @@ ViewHandler::mouseMoveEvent( QMouseEvent* e )
     if ( e->buttons() & Qt::LeftButton )
     {
         // Rotate camera
-        //cout<<"TRACE(worldview3d.cpp): rotate" << endl;
-        yaw_   -= sensitivity*dx*10;
-        pitch_ -= sensitivity*dy*10;
-        if (pitch_ > 0)   pitch_ = 0;
-        if (pitch_ < -90) pitch_ = -90;
+        camera_.yawPlanet( M_PI/180.0 * sensitivity*dx*10 );
+        camera_.pitch( M_PI/180.0 * sensitivity*dy*10 );
         return true;
     }
+#if 0
     else if ( e->buttons() & Qt::RightButton )
     {
         // Pan camera (relative to the view-point)
@@ -83,63 +78,76 @@ ViewHandler::mouseMoveEvent( QMouseEvent* e )
         //cout<<"TRACE(worldview3d.cpp): pan" << endl;
         return true;
     }
+#endif
     return false;
 }
 
 bool 
 ViewHandler::keyPressEvent(QKeyEvent *e)
 {
-    const double amt = 0.2;
-
     bool needUpdate=true;
+
+    double amtLin = 0.2;
+    double amtRot = 5*M_PI/180.0;
+    if ( e->modifiers() & Qt::ShiftModifier )
+    {
+        amtLin *= 8;
+        amtRot *= 2;
+    }
+    else if ( e->modifiers() & Qt::ControlModifier )
+    {
+        amtLin /= 8;
+        amtRot /= 2;
+    }
+
     switch ( e->key() )
     {
-    case Qt::Key_O:
+    case Qt::Key_I:
     {
-        double yawRad = yaw_*M_PI/180.0;
-        xOffset_ += amt*cos(yawRad);
-        yOffset_ -= amt*sin(yawRad);
-        break;
-    }
-    case Qt::Key_U:
-    {
-        double yawRad = yaw_*M_PI/180.0;
-        xOffset_ -= amt*cos(yawRad);
-        yOffset_ += amt*sin(yawRad);
+        Vector3 fwd = camera_.getDir();
+        fwd.z = 0;
+        normalise(fwd);
+        camera_.move(amtLin*fwd);
         break;
     }
     case Qt::Key_K:
     {
-        double yawRad = yaw_*M_PI/180.0;
-        xOffset_ += -amt*sin(yawRad);
-        yOffset_ -=  amt*cos(yawRad);
+        Vector3 fwd = camera_.getDir();
+        fwd.z = 0;
+        normalise(fwd);
+        camera_.move(-amtLin*fwd);
         break;
     }
-    case Qt::Key_I:
+    case Qt::Key_U:
     {
-        double yawRad = yaw_*M_PI/180.0;
-        xOffset_ -= -amt*sin(yawRad);
-        yOffset_ +=  amt*cos(yawRad);
+        Vector3 left = camera_.getU();
+        camera_.move(amtLin*left);
+        break;
+    }
+    case Qt::Key_O:
+    {
+        Vector3 left = camera_.getU();
+        camera_.move(-amtLin*left);
         break;        
     }
     case Qt::Key_J:
     {
-        yaw_ -= 5;
+        camera_.yawPlanet(amtRot);
         break;
     }
     case Qt::Key_L:
     {
-        yaw_ += 5;
+        camera_.yawPlanet(-amtRot);
         break;        
     }
     case Qt::Key_Up:
     {
-        zOffset_ += 0.1;
+        camera_.move( Vector3( 0, 0, amtLin ) );
         break;
     }
     case Qt::Key_Down:
     {
-        zOffset_ -= 0.1;
+        camera_.move( Vector3( 0, 0, -amtLin ) );
         break;        
     }
     default:

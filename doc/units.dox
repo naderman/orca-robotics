@@ -37,6 +37,8 @@ All quantities are displayed in S.I. units with one \b exception: angular quanti
     
 @section orca_doc_units_coord Coordinate Frames
 
+Orca uses a <a href="http://en.wikipedia.org/wiki/Cartesian_coordinate_system#Orientation_and_handedness">right-handed coordinate system</a>.
+
 All angles are defined from -pi to pi, NOT 0 to 2pi.
 
 @par Inidvidual Coordinate Frames

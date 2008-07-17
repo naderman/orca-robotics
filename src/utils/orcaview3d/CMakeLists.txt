@@ -10,10 +10,10 @@ GBX_REQUIRE_VAR( build EXE ${APP_NAME} not_os_win "Windows OS is not  supported"
 SET( dep_libs OrcaQCompModel OrcaQGui OrcaQGui3d )
 GBX_REQUIRE_TARGETS( build EXE ${APP_NAME} ${dep_libs} )
 
-SET( dep_libs ${dep_libs} HydroDll )
 GBX_REQUIRE_VAR( build EXE ${APP_NAME} HYDRODLL_INSTALLED "libHydroDll not installed" )
 GBX_REQUIRE_VAR( build EXE ${APP_NAME} QT4_FOUND "Qt4 not found" )
 GBX_REQUIRE_VAR( build EXE ${APP_NAME} GLUT_FOUND "libGlut not found" )
+SET( dep_libs ${dep_libs} HydroDll glut )
 
 IF( build )
     
@@ -23,7 +23,7 @@ IF( build )
     #
     # This gathers all the source files into the variable 'srcs'
     #
-    FILE( GLOB human_srcs component.cpp worldview.cpp viewhandler.cpp )
+    FILE( GLOB human_srcs component.cpp worldview.cpp viewhandler.cpp camera.cpp vector3.cpp matrix3.cpp matrix4.cpp )
 
     SET( moc_hdrs
       worldview.h
@@ -41,7 +41,7 @@ IF( build )
         TARGET_LINK_LIBRARIES ( ${LIB_NAME} 3ds )
     ENDIF( LIB3DS_FOUND )
 
-    GBX_ADD_EXECUTABLE( simple viewhandler.cpp simple.cpp )
+    GBX_ADD_EXECUTABLE( simple viewhandler.cpp camera.cpp vector3.cpp matrix3.cpp matrix4.cpp simple.cpp )
     TARGET_LINK_LIBRARIES( simple ${dep_libs} )
 
 ENDIF( build )

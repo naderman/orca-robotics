@@ -4,6 +4,7 @@
 #include <QApplication>
 #include "viewhandler.h"
 #include <sstream>
+#include "camera.h"
 
 using namespace std;
 
@@ -464,8 +465,38 @@ private:
     GroundPlane groundPlane_;
 };
 
+void testCamera()
+{
+    using namespace orcaview3d;
+
+    Camera cam;
+    cam.setLookDir( Vector3(1,0,0) );
+    cam.setV( Vector3(0,0,1) );
+    cam.setU( cross(cam.getDir(),-cam.getV()) );
+    cam.setPos( Vector3( -7, 0, 2 ) );
+    cout<<"TRACE(simple.cpp): cam: " << toString(cam) << endl;
+    cout<<"TRACE(simple.cpp): cam.homogeneousMatrix(): " << toString(cam.homogeneousMatrix()) << endl;
+
+    Matrix4 m = cam.homogeneousMatrix();
+    
+    Camera cam2;
+    cam2.setLookDir( Vector3(0,0,1) );
+    cam2.setV( Vector3(0,1,0) );
+    cam2.setU( cross(cam2.getDir(),-cam2.getV()) );
+    cam2.setPos( Vector3( 0, 0, 0 ) );    
+    cout<<"TRACE(simple.cpp): cam2: " << toString(cam2) << endl;
+    cout<<"TRACE(simple.cpp): cam2.homogeneousMatrix: " << toString(cam2.homogeneousMatrix()) << endl;
+
+    m = m * cam2.homogeneousMatrix();
+    cout<<"TRACE(simple.cpp): combined m: " << toString(m) << endl;
+
+}
+
 int main()
 {
+    testCamera();
+    return 0;
+
     // Set up QT stuff
     char **v = 0;
     int c = 0;
