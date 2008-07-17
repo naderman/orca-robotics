@@ -26,7 +26,8 @@ IF( build )
     SET( dep_libs ${ext_libs} ${int_libs} )
     
     SET( moc_hdrs
-        pathfollower2delement.h
+        pathfollowerbuttons.h
+        pathfollowerhi.h
         pathinput.h
         pathplanner2delement.h
     )

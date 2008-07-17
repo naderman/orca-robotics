@@ -18,10 +18,14 @@
 
 #include <hydroqguielementutil/guielement2d.h>
 #include <orcaqgui2dfactory/pathpainter.h>
-#include <orcaqgui2dfactory/pathinput.h>
+#include <orcaqgui2dfactory/pathfollowerhi.h>
+
 
 namespace orcaqgui2d {
-
+    
+class PathFollowerInput;
+class PathFollowerHI;
+    
 ////////////////////////////////////////////////////////////////////////////////
 // The consumer object. We need this here because PathFollower2dElement cannot inherit from IceStormElement2d.
 // Reason is that PathFollower2dConsumer has several non-standard purely virtual member functions.
@@ -39,108 +43,6 @@ public:
 };
 ////////////////////////////////////////////////////////////////////////////////
 
-///////////////////////////////////////////////////////////////////////////////
-// This class sets up all the buttons and actions for user interaction.
-// It can be instantiated on the heap and deleted, Qt cleans up for us
-class PathfollowerButtons : public QObject
-{
-    Q_OBJECT
-            
-public:
-    PathfollowerButtons( QObject                       *parent,
-                         hydroqguielementutil::IHumanManager      &humanManager,
-                         hydroqguielementutil::ShortcutKeyManager &shortcutKeyManager,
-                         std::string                    proxyString);
-    ~PathfollowerButtons();
-    
-    void setWpButton( bool onOff );
-
-private:
-    QAction *hiWaypoints_;
-    hydroqguielementutil::IHumanManager &humanManager_;
-    hydroqguielementutil::ShortcutKeyManager &shortcutKeyManager_;
-};
-//////////////////////////////////////////////////////////////////////////////
-
-class PathFollower2dElement;
-//
-// Handles the human-interface stuff for the PathFollower2dElement
-//
-class PathFollowerHI  : public QObject
-{
-    Q_OBJECT
-
-public:
-    PathFollowerHI( PathFollower2dElement *pfElement,
-                    std::string proxyString,
-                    hydroqguielementutil::IHumanManager &humanManager,
-                    hydroqguielementutil::MouseEventManager &mouseEventManager,
-                    hydroqguielementutil::ShortcutKeyManager &shortcutKeyManager,
-                    const hydroqgui::GuiElementSet &guiElementSet,
-                    PathPainter &painter,
-                    WaypointSettings wpSettings,
-                    bool activateImmediately,
-                    QString dumpPath );
-
-    void noLongerMouseEventReceiver();
-    void paint( QPainter *p );
-
-    void mousePressEvent(QMouseEvent *e) 
-        {pathInput_->processPressEvent(e);}
-    void mouseMoveEvent(QMouseEvent *e) {pathInput_->processMoveEvent(e);}
-    void mouseReleaseEvent(QMouseEvent *e) {pathInput_->processReleaseEvent(e);}
-    void mouseDoubleClickEvent(QMouseEvent *e) {pathInput_->processDoubleClickEvent(e);}
-    void setFocus( bool inFocus );
-    void setUseTransparency( bool useTransparency ); 
-    
-    // to dump the user (green) path to /tmp
-    void savePath( const QString &fileName ) const
-    {
-        pathInput_->savePath( fileName );
-    }
-
-public slots:
-    void savePathAs();
-    void savePath();
-    void waypointSettingsDialog();
-    void waypointModeSelected();
-    void send();
-    void cancel();
-    void allGo();
-    void allStop();
-    void go();
-    void stop();
-
-private:
-
-    PathFollower2dElement *pfElement_;
-    std::string proxyString_;
-    hydroqguielementutil::IHumanManager &humanManager_;
-    hydroqguielementutil::MouseEventManager &mouseEventManager_;
-    hydroqguielementutil::ShortcutKeyManager &shortcutKeyManager_;
-    const hydroqgui::GuiElementSet &guiElementSet_;
-    PathPainter   &painter_;
-
-    QString pathFileName_;
-    bool pathFileSet_;
-
-    WaypointSettings wpSettings_;
-    bool             activateImmediately_;
-
-    std::auto_ptr<PathFollowerInput> pathInput_;
-    
-    // sets up and destroys buttons and associated actions
-    std::auto_ptr<PathfollowerButtons> buttons_;
-
-    // Do we own the global mode?
-    bool gotMode_;
-    
-    bool useTransparency_;
-    
-    QString dumpPath_;
-    int numPathDumps_;
-    QString lastSavedPathFile_;
-};
 
 // We need to inherit from GuiElement2d, not from IceStormElement2d. 
 // Reason is that PathFollower2dConsumer has a non-standard purely virtual 
