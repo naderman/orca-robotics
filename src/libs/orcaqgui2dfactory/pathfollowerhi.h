@@ -14,6 +14,7 @@
 #include <memory>
 #include <QObject>
 #include <hydroqguielementutil/mouseeventmanager.h>
+#include <orcaqgui2dfactory/pathfollowerbuttons.h>
 #include <orcaqgui2dfactory/pathinput.h>
 
 namespace hydroqgui {
@@ -30,7 +31,6 @@ namespace orcaqgui2d {
 
 class PathFollower2dElement;    
 class PathPainter;
-class PathfollowerButtons;
     
 //
 // Handles the human-interface stuff for the PathFollower2dElement
