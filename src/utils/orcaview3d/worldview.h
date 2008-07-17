@@ -40,12 +40,12 @@ public:
     QSize sizeHint() const { return QSize( 400, 400 ); }
 
     // All in S.I. units and Orca-style coordinate system
-    virtual double cameraX() const { return viewHandler_.x(); }
-    virtual double cameraY() const { return viewHandler_.y(); }
-    virtual double cameraZ() const { return viewHandler_.z(); }
-    virtual double cameraRoll() const { return viewHandler_.roll(); }
-    virtual double cameraPitch() const { return viewHandler_.pitch(); }
-    virtual double cameraYaw() const { return viewHandler_.yaw(); }
+    virtual double cameraX() const { return cameraPose_.pos().x(); }
+    virtual double cameraY() const { return cameraPose_.pos().y(); }
+    virtual double cameraZ() const { return cameraPose_.pos().z(); }
+    virtual double cameraRoll()  const { return cameraPose_.roll(); }
+    virtual double cameraPitch() const { return cameraPose_.pitch(); }
+    virtual double cameraYaw()   const { return cameraPose_.yaw(); }
 
     virtual bool isAntialiasingEnabled() const { return isAntialiasingEnabled_; }
 
@@ -74,9 +74,7 @@ private:
     ::hydroqguielementutil::IHumanManager &humanManager_;
     hydroqgui::PlatformFocusManager &platformFocusManager_;
 
-    // Returns true if the platform which owns the coordinate system is localised
-    // or if "global" owns the coordinate system 
-    bool getCoordinateFrame(float &x,float &y,float &z,float &roll,float &pitch,float &yaw);
+    CoordinateFrame getCameraPose( bool &isCameraPoseLocalised );
 
     // from QGLWidget
     void initializeGL();
@@ -94,8 +92,11 @@ private:
 
     bool isAntialiasingEnabled_;
 
-    // Current camera viewpoint
+    // Current user input in terms of viewpoint manipulation
     ViewHandler viewHandler_;
+
+    // Current camera pose
+    CoordinateFrame cameraPose_;
 };
 
 } // namespace

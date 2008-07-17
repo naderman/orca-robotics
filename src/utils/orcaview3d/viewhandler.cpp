@@ -10,27 +10,25 @@ namespace orcaview3d {
 
 ViewHandler::ViewHandler()
 {
-    camera_.setLookDir( Vector3(1,0,0) );
-    camera_.setV( Vector3(0,0,1) );
-    camera_.setU( cross(camera_.getDir(),-camera_.getV()) );
-
-    camera_.setPos( Vector3( -7, 0, 2 ) );
+    // Reasonable starting point: where we can see the origin
+    cameraPose_.translate( Vector3( -2, 0, 2 ) );
 }
 
 void 
 ViewHandler::applyViewingTransformation() const
 {
-//     cout<<"TRACE(viewhandler.cpp): "<<__func__<<": x,y,z:     "<<camera_.getPos().x<<","<<camera_.getPos().y<<","<<camera_.getPos().z << endl;
-//     cout<<"TRACE(viewhandler.cpp): "<<__func__<<": roll="<<camera_.getRoll()*180.0/M_PI<<", pitch="<<camera_.getPitch()*180.0/M_PI<<", yaw="<<camera_.getYaw()*180.0/M_PI << endl;
+    // cout<<"TRACE(viewhandler.cpp): cameraPose_: " << toString(cameraPose_) << endl;
 
-    // cout<<"TRACE(viewhandler.cpp): camera_: " << toString(camera_) << endl;
-
-    Vector3 center = camera_.getPos() + camera_.getDir();
-    gluLookAt( camera_.getPos().x,
-               camera_.getPos().y,
-               camera_.getPos().z,
-               center.x, center.y, center.z,
-               camera_.getV().x, camera_.getV().y, camera_.getV().z );
+    Vector3 center = cameraPose_.pos() + cameraPose_.fwd();
+    gluLookAt( cameraPose_.pos().x(),
+               cameraPose_.pos().y(),
+               cameraPose_.pos().z(),
+               center.x(), 
+               center.y(), 
+               center.z(),
+               cameraPose_.up().x(), 
+               cameraPose_.up().y(), 
+               cameraPose_.up().z() );
 }
 
 void
@@ -59,8 +57,8 @@ ViewHandler::mouseMoveEvent( QMouseEvent* e )
     if ( e->buttons() & Qt::LeftButton )
     {
         // Rotate camera
-        camera_.yawPlanet( M_PI/180.0 * sensitivity*dx*10 );
-        camera_.pitch( M_PI/180.0 * sensitivity*dy*10 );
+        cameraPose_.increaseYawPlanet( sensitivity*dx*10*M_PI/180.0 );
+        cameraPose_.increasePitch( sensitivity*dy*10*M_PI/180.0 );
         return true;
     }
 #if 0
@@ -104,50 +102,55 @@ ViewHandler::keyPressEvent(QKeyEvent *e)
     {
     case Qt::Key_I:
     {
-        Vector3 fwd = camera_.getDir();
-        fwd.z = 0;
-        normalise(fwd);
-        camera_.move(amtLin*fwd);
+        Vector3 fwd = cameraPose_.fwd();
+        fwd.z() = 0;
+        fwd.normalise();
+        cameraPose_.translate(amtLin*fwd);
         break;
     }
     case Qt::Key_K:
     {
-        Vector3 fwd = camera_.getDir();
-        fwd.z = 0;
-        normalise(fwd);
-        camera_.move(-amtLin*fwd);
+        Vector3 fwd = cameraPose_.fwd();
+        fwd.z() = 0;
+        fwd.normalise();
+        cameraPose_.translate(-amtLin*fwd);
         break;
     }
     case Qt::Key_U:
     {
-        Vector3 left = camera_.getU();
-        camera_.move(amtLin*left);
+        cameraPose_.translate(amtLin*cameraPose_.left());
         break;
     }
     case Qt::Key_O:
     {
-        Vector3 left = camera_.getU();
-        camera_.move(-amtLin*left);
+        cameraPose_.translate(-amtLin*cameraPose_.left());
         break;        
     }
     case Qt::Key_J:
     {
-        camera_.yawPlanet(amtRot);
+        cameraPose_.increaseYawPlanet(amtRot);
         break;
     }
     case Qt::Key_L:
     {
-        camera_.yawPlanet(-amtRot);
+        cameraPose_.increaseYawPlanet(-amtRot);
         break;        
     }
     case Qt::Key_Up:
     {
-        camera_.move( Vector3( 0, 0, amtLin ) );
+        cameraPose_.translate( Vector3( 0, 0, amtLin ) );
         break;
     }
     case Qt::Key_Down:
     {
-        camera_.move( Vector3( 0, 0, -amtLin ) );
+        cameraPose_.translate( Vector3( 0, 0, -amtLin ) );
+        break;        
+    }
+    case Qt::Key_R:
+    {
+        // reset
+        cameraPose_ = CoordinateFrame();
+        cameraPose_.translate( Vector3(-2,0,2) );
         break;        
     }
     default:

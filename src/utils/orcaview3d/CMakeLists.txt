@@ -23,7 +23,7 @@ IF( build )
     #
     # This gathers all the source files into the variable 'srcs'
     #
-    FILE( GLOB human_srcs component.cpp worldview.cpp viewhandler.cpp camera.cpp vector3.cpp matrix3.cpp matrix4.cpp )
+    FILE( GLOB human_srcs component.cpp worldview.cpp viewhandler.cpp camera.cpp vector3.cpp matrix3.cpp matrix4.cpp coordinateframe.cpp )
 
     SET( moc_hdrs
       worldview.h
@@ -41,7 +41,7 @@ IF( build )
         TARGET_LINK_LIBRARIES ( ${LIB_NAME} 3ds )
     ENDIF( LIB3DS_FOUND )
 
-    GBX_ADD_EXECUTABLE( simple viewhandler.cpp camera.cpp vector3.cpp matrix3.cpp matrix4.cpp simple.cpp )
+    GBX_ADD_EXECUTABLE( simple viewhandler.cpp camera.cpp vector3.cpp matrix3.cpp matrix4.cpp simple.cpp coordinateframe.cpp )
     TARGET_LINK_LIBRARIES( simple ${dep_libs} )
 
 ENDIF( build )

@@ -1,3 +1,4 @@
+#if 0
 #include "matrix3.h"
 #include <iostream>
 
@@ -222,3 +223,4 @@ Matrix3 operator*(const Matrix3& A, const Matrix3& B)
 
 }
 
+#endif

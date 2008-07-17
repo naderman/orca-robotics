@@ -9,12 +9,12 @@ namespace orcaview3d {
 
 double Vector3::length() const
 {
-    return sqrt(x * x + y * y + z * z);
+    return sqrt(x()*x() + y()*y() + z()*z());
 }
       
 double length(const Vector3 &v)
 {
-    return sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
+    return sqrt(v.x()*v.x() + v.y()*v.y() + v.z()*v.z());
 }
 
 void Vector3::normalise()
@@ -22,9 +22,9 @@ void Vector3::normalise()
     double l = length();
     if(l != 0)
     {
-        x /= l;
-        y /= l;
-        z /= l;
+        x() /= l;
+        y() /= l;
+        z() /= l;
     }    
 }
       
@@ -37,32 +37,32 @@ Vector3 normalise(const Vector3 &v)
 
 double Vector3::distance(const Vector3 &v) const
 {
-    return sqrt((v.x - x) * (v.x - x) + (v.y - y) * (v.y - y) + (v.z - z) * (v.z - z));
+    return sqrt((v.x()-x())*(v.x()-x()) + (v.y()-y())*(v.y()-y()) + (v.z()-z())*(v.z()-z()));
 }  
       
 double distance(const Vector3 &v, const Vector3 &w)
 {
-    return sqrt((v.x - w.x) * (v.x - w.x) + (v.y - w.y) * (v.y - w.y) + (v.z - w.z) * (v.z - w.z));
+    return sqrt((v.x()-w.x())*(v.x()-w.x()) + (v.y()-w.y())*(v.y()-w.y()) + (v.z()-w.z())*(v.z()-w.z()));
 }
 
 double Vector3::dot(const Vector3 &v) const
 {
-    return v.x * x + v.y * y + v.z * z;
+    return v.x()*x() + v.y()*y() + v.z()*z();
 }            
       
       
 double dot(const Vector3 &v, const Vector3 &w)
 {
-    return v.x * w.x + v.y * w.y + v.z * w.z;
+    return v.x()*w.x() + v.y()*w.y() + v.z()*w.z();
 }
 
 Vector3 Vector3::cross(const Vector3 &v) const
 {
     Vector3 u;
       
-    u.x = ((v.y * z) - (v.z * y));
-    u.y = ((v.z * x) - (v.x * z));
-    u.z = ((v.x * y) - (v.y * x));
+    u.x() = ((v.y() * z()) - (v.z() * y()));
+    u.y() = ((v.z() * x()) - (v.x() * z()));
+    u.z() = ((v.x() * y()) - (v.y() * x()));
     return u;    
 } 
       
@@ -70,9 +70,9 @@ Vector3 cross(const Vector3 &v, const Vector3 &w)
 {
     Vector3 u;
       
-    u.x = ((v.y * w.z) - (v.z * w.y));
-    u.y = ((v.z * w.x) - (v.x * w.z));
-    u.z = ((v.x * w.y) - (v.y * w.x));
+    u.x() = ((v.y() * w.z()) - (v.z() * w.y()));
+    u.y() = ((v.z() * w.x()) - (v.x() * w.z()));
+    u.z() = ((v.x() * w.y()) - (v.y() * w.x()));
     return u;
 }
 
@@ -80,9 +80,9 @@ Vector3 cross(const Vector3 &v, const Vector3 &w)
 Vector3 operator-(const Vector3 &v, const Vector3 &w)
 {
     Vector3 u;
-    u.x = v.x - w.x;
-    u.y = v.y - w.y;
-    u.z = v.z - w.z;
+    u.x() = v.x() - w.x();
+    u.y() = v.y() - w.y();
+    u.z() = v.z() - w.z();
     return u;
 }
       
@@ -90,9 +90,9 @@ Vector3 operator-(const Vector3 &v, const Vector3 &w)
 Vector3 operator-(const Vector3 &v)
 {
     Vector3 u;
-    u.x = -v.x;
-    u.y = -v.y;
-    u.z = -v.z;
+    u.x() = -v.x();
+    u.y() = -v.y();
+    u.z() = -v.z();
     return u;
 }
       
@@ -100,9 +100,9 @@ Vector3 operator-(const Vector3 &v)
 Vector3 operator+(const Vector3 &v, const Vector3 &w)
 {
     Vector3 u;
-    u.x = v.x + w.x;
-    u.y = v.y + w.y;
-    u.z = v.z + w.z;
+    u.x() = v.x() + w.x();
+    u.y() = v.y() + w.y();
+    u.z() = v.z() + w.z();
     return u;
 }
       
@@ -110,9 +110,9 @@ Vector3 operator+(const Vector3 &v, const Vector3 &w)
 Vector3 operator*(const Vector3 &v, double a)
 {
     Vector3 w;
-    w.x = v.x * a;
-    w.y = v.y * a;
-    w.z = v.z * a;
+    w.x() = v.x() * a;
+    w.y() = v.y() * a;
+    w.z() = v.z() * a;
     return w;
 }
       
@@ -120,9 +120,9 @@ Vector3 operator*(const Vector3 &v, double a)
 Vector3 operator*(double a, const Vector3 &v)
 {
     Vector3 w;
-    w.x = v.x * a;
-    w.y = v.y * a;
-    w.z = v.z * a;
+    w.x() = v.x() * a;
+    w.y() = v.y() * a;
+    w.z() = v.z() * a;
     return w;
 }
       
@@ -130,9 +130,9 @@ Vector3 operator*(double a, const Vector3 &v)
 Vector3 operator/(const Vector3 &v, double a)
 {
     Vector3 w;
-    w.x = v.x / a;
-    w.y = v.y / a;
-    w.z = v.z / a;
+    w.x() = v.x() / a;
+    w.y() = v.y() / a;
+    w.z() = v.z() / a;
     return w;
 }
 
@@ -148,12 +148,12 @@ double vectorAngle(const Vector3 &v, const Vector3 &w)
     return -acos(cosineOfAngle);
 }
 
-//Rotate vector v around arbitrary axis for angle radians
-//It can only rotate around an axis through our object, to rotate around another axis:
-//first translate the object to the axis, then use this function, then translate back in the new direction.
+//Rotate vector v around arbitrary() ax()is for angle radians
+//It can only() rotate around an ax()is through our object, to rotate around another ax()is:
+//first translate the object to the ax()is, then use this function, then translate back in the new direction.
 Vector3 rotateAroundArbitrary(const Vector3 &v, const Vector3 &axis, double angle)
 {
-    if((v.x == 0) && (v.y == 0) && (v.z == 0)) return Vector3();
+    if((v.x() == 0) && (v.y() == 0) && (v.z() == 0)) return Vector3();
       
     Vector3 w;
     double c, s, t;
@@ -161,23 +161,23 @@ Vector3 rotateAroundArbitrary(const Vector3 &v, const Vector3 &axis, double angl
     Vector3 nAxis = axis;
     nAxis.normalise();
       
-    //calculate parameters of the rotation matrix
+    //calculate parameters of the rotation matrix()
     c = cos(angle);
     s = sin(angle);
     t = 1 - c;
       
-    //multiply v with rotation matrix
-    w.x = (t * nAxis.x * nAxis.x +           c) * v.x
-        + (t * nAxis.x * nAxis.y + s * nAxis.z) * v.y
-        + (t * nAxis.x * nAxis.z - s * nAxis.y) * v.z;
+    //multiply() v with rotation matrix()
+    w.x() = (t * nAxis.x() * nAxis.x() +             c) * v.x()
+          + (t * nAxis.x() * nAxis.y() + s * nAxis.z()) * v.y()
+          + (t * nAxis.x() * nAxis.z() - s * nAxis.y()) * v.z();
              
-    w.y = (t * nAxis.x * nAxis.y - s * nAxis.z) * v.x 
-        + (t * nAxis.y * nAxis.y +           c) * v.y 
-        + (t * nAxis.y * nAxis.z + s * nAxis.x) * v.z;
+    w.y() = (t * nAxis.x() * nAxis.y() - s * nAxis.z()) * v.x() 
+          + (t * nAxis.y() * nAxis.y() +             c) * v.y() 
+          + (t * nAxis.y() * nAxis.z() + s * nAxis.x()) * v.z();
              
-    w.z = (t * nAxis.x * nAxis.z + s * nAxis.y) * v.x 
-        + (t * nAxis.y * nAxis.z - s * nAxis.x) * v.y 
-        + (t * nAxis.z * nAxis.z +           c) * v.z;
+    w.z() = (t * nAxis.x() * nAxis.z() + s * nAxis.y()) * v.x() 
+          + (t * nAxis.y() * nAxis.z() - s * nAxis.x()) * v.y() 
+          + (t * nAxis.z() * nAxis.z() +             c) * v.z();
       
     w.normalise();
     w = w * v.length();
@@ -189,9 +189,9 @@ std::string toString( const Vector3 &v )
 {
     const double eps = 1e-9;
     stringstream ss;
-    ss << "[ "<<((fabs(v.x)<eps)?0:v.x)
-       <<", "<<((fabs(v.y)<eps)?0:v.y)
-       <<", "<<((fabs(v.z)<eps)?0:v.z)<<" ]";
+    ss << "[ "<<((fabs(v.x())<eps)?0:v.x())
+       <<", "<<((fabs(v.y())<eps)?0:v.y())
+       <<", "<<((fabs(v.z())<eps)?0:v.z())<<" ]";
     return ss.str();
 }
 

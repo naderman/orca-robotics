@@ -4,7 +4,7 @@
 #include <QMouseEvent>
 #include <cmath>
 #include <assert.h>
-#include "camera.h"
+#include "coordinateframe.h"
 
 namespace orcaview3d {
 
@@ -32,15 +32,7 @@ public:
     // Returns true if the viewpoint has been modified
     bool keyPressEvent(QKeyEvent *e);
 
-    // Get the pose of the camera in world-coordinates, in S.I. units.
-    // (might be stored weirdly internally for OpenGL-reasons)
-    float x() const { return camera_.getPos().x; }
-    float y() const { return camera_.getPos().y; }
-    float z() const { return camera_.getPos().z; }
-    float roll() const { assert(false); return camera_.getRoll(); }
-    float pitch() const { assert(false); return camera_.getPitch(); }
-    float yaw() const { assert(false); return camera_.getYaw(); }
-        
+    const CoordinateFrame &pose() const { return cameraPose_; }
 
 private: 
 
@@ -48,7 +40,7 @@ private:
     QPoint prevDragPos_;
 
     // Current viewpoint
-    Camera camera_;
+    CoordinateFrame cameraPose_;
 
 };
 

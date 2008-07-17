@@ -18,20 +18,30 @@ class Vector3
 {
 public:
 
-    double x;
-    double y;
-    double z;
-    
-    Vector3(double xp, double yp, double zp)
-        : x(xp),y(yp),z(zp) {}
+    Vector3(double x, double y, double z)
+        { v_[0]=x; v_[1]=y; v_[2]=z; }
     Vector3()
-        : x(0),y(0),z(0) {}
+        { v_[0]=0; v_[1]=0; v_[2]=0; }
+    
+    double x() const { return v_[0]; }
+    double y() const { return v_[1]; }
+    double z() const { return v_[2]; }
+
+    double &x() { return v_[0]; }
+    double &y() { return v_[1]; }
+    double &z() { return v_[2]; }
+
+    double operator[](int i) const { return v_[i]; }
+    double &operator[](int i) { return v_[i]; }
     
     double length() const;
     void normalise();
     double distance(const Vector3 &v) const;
     double dot(const Vector3 &v) const;
     Vector3 cross(const Vector3 &v) const;
+
+private:
+    double v_[3];
 };
 
 double length(const Vector3 &v);
@@ -56,6 +66,8 @@ double vectorAngle(const Vector3 &v, const Vector3 &w);
 Vector3 rotateAroundArbitrary(const Vector3 &v, const Vector3 &axis, double angle);
 
 std::string toString( const Vector3 &v );
+inline std::ostream &operator<<( std::ostream &s, const Vector3 &v )
+{ return s << toString(v); }
 
 }
 

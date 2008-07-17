@@ -1,3 +1,4 @@
+#if 0
 #ifndef ORCAQGUI3D_MATRIX3_H
 #define ORCAQGUI3D_MATRIX3_H
 
@@ -45,4 +46,5 @@ Matrix3 operator*(const Matrix3 &A, const Matrix3 &B);
 
 }
 
+#endif
 #endif
