@@ -8,25 +8,21 @@
  *
  */
  
-#include <iostream>
-#include <cmath>
- 
-#include <orcaice/orcaice.h>
-#include <orcaobj/orcaobj.h>
-#include <orcalogfactory/logstringutils.h>
-#include <orcaqgui/guiicons.h>
-#include <hydroqguielementutil/paintutils.h>
-#include <orcaqgui2dfactory/waypointdialog.h>
-
 #include <QPainter>
 #include <QString>
 #include <QDialog>
 #include <QFile>
-#include <QTextStream>
-#include <QVBoxLayout>
 #include <QFileDialog>
+#include <QTextStream>
 #include <QComboBox>
 #include <QShortcut>
+ 
+#include <orcaobj/orcaobj.h>
+#include <orcalogfactory/logstringutils.h>
+#include <orcaqgui/guiicons.h>
+#include <hydroqguielementutil/ihumanmanager.h>
+#include <hydroqguielementutil/paintutils.h>
+#include <orcaqgui2dfactory/waypointdialog.h>
 
 #include "pathinput.h"
 

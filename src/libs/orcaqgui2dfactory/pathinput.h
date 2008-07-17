@@ -17,10 +17,13 @@
 #include <QTableWidget>
 #include <QSpinBox>
 
+#include <orcaice/orcaice.h>
 #include <orca/pathfollower2d.h>
 #include <orca/pathplanner2d.h>
-#include <orcaice/context.h>
-#include <hydroqgui/hydroqgui.h>
+
+namespace hydroqguielementutil {
+    class IHumanManager;
+}
 
 namespace orcaqgui2d {
 

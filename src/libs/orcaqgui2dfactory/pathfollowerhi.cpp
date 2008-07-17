@@ -7,7 +7,10 @@
  * the LICENSE file included in this distribution.
  *
  */
-
+ 
+#include <QFileDialog>
+#include <hydroqgui/guielementset.h>
+#include <hydroqguielementutil/ihumanmanager.h>
 #include <orcaqgui2dfactory/pathfollower2delement.h>
 #include <orcaqgui2dfactory/wptolerancesdialog.h>
 #include <orcaqgui2dfactory/pathfollowerbuttons.h>

@@ -8,18 +8,12 @@
  *
  */
 
-#include <cmath>
-#include <qpainter.h>
-#include <qstring.h>
-
 #include <QFile>
 #include <QTextStream>
 
-#include <orcaice/orcaice.h>
-#include <orcaobj/orcaobj.h>
 #include <orcalogfactory/logstringutils.h>
-
 #include <hydroqguielementutil/paintutils.h>
+#include <hydroqguielementutil/ihumanmanager.h>
 
 #include "pathpainter.h"
 

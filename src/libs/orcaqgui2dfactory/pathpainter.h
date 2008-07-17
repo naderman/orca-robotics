@@ -8,13 +8,10 @@
  *
  */
 
-#ifndef QORC_PATHPAINTER_H
-#define QORC_PATHPAINTER_H
+#ifndef PATHPAINTER_H
+#define PATHPAINTER_H
 
-
-#include <QPolygon>
 #include <QColor>
-
 #include <orcaqgui2dfactory/pathinput.h>
 #include <hydroqguielementutil/definitions2d.h>
 

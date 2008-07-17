@@ -12,6 +12,7 @@
 #include <iostream>
 #include <orcaice/orcaice.h>
 #include <orcaobj/stringutils.h>
+#include <hydroqguielementutil/ihumanmanager.h>
 
 #include "pathfollower2delement.h"
 
