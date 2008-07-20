@@ -18,6 +18,35 @@ using namespace std;
 
 namespace orcaview3d {
 
+namespace {
+
+    osg::LightSource *getLighting()
+    {
+//         osg::Vec4f lightPosition (osg::Vec4f(-5.0,-2.0,3.0,1.0f));
+        osg::ref_ptr<osg::Light> light = new osg::Light;
+        light->setLightNum(0);
+//         myLight->setPosition(lightPosition);
+        light->setAmbient(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
+//         myLight->setAmbient(osg::Vec4(0.2f,0.2f,0.2f,1.0f));
+//         myLight->setDiffuse(osg::Vec4(0.1f,0.4f,0.1f,1.0f));
+//         myLight->setConstantAttenuation(1.0f);
+
+        osg::LightSource *lightSource = new osg::LightSource;
+        lightSource->setLight(light.get());
+        lightSource->setLocalStateSetModes(osg::StateAttribute::ON); 
+        return lightSource;
+
+//        osg::ref_ptr<osg::StateSet> lightSS (root->getOrCreateStateSet());
+//        lightSource->setStateSetModes(*lightSS,osg::StateAttribute::ON);
+       
+//         osg::Group *lightGroup(new osg::Group);
+//         lightGroup->addChild(lightSource.get());
+//         return lightGroup;
+    }
+
+}
+
+
 WorldView::WorldView( orcaqgui3d::PlatformCSFinder              &platformCSFinder,
                       ::hydroqguielementutil::MouseEventManager &mouseEventManager,
                       hydroqgui::GuiElementSet                  &guiElementSet,
@@ -48,6 +77,8 @@ WorldView::WorldView( orcaqgui3d::PlatformCSFinder              &platformCSFinde
     antiAliasing->setShortcut( QKeySequence("Ctrl+A") );
     connect(antiAliasing,SIGNAL(toggled(bool)), this, SLOT(setAntiAliasing(bool)) );
     humanManager_.displayMenu()->addAction(antiAliasing);
+
+    lightSource_ = getLighting();
 }
 
 CoordinateFrame
@@ -90,80 +121,63 @@ WorldView::getCameraPose(bool &isCameraPoseLocalised)
 void 
 WorldView::initializeGL()
 {
+    sceneView_ = new osgUtil::SceneView;
+    sceneView_->setDefaults();
+
     // Set the default (background) color
-    glClearColor(0.70f, 0.7f, 0.7f, 0.0f);
-    
-    // Enable the depth buffer: to handle hidden surface removal
-    glEnable(GL_DEPTH_TEST);
+    sceneView_->setClearColor( osg::Vec4( 0.7, 0.7, 0.7, 1.0 ) );
 }
 
 void 
 WorldView::resizeGL(int w, int h)
 {
-    // Set the projection matrix
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
     // sets the perspective:
     //  (left,right,bottom,top,near,far)
-    glFrustum (-1.0, 1.0, -1.0, 1.0, 1.0, 200.0); 
+    sceneView_->setProjectionMatrixAsFrustum( -1.0, 1.0, -1.0, 1.0, 1.0, 200.0 );
 
-    // back to modelview matrix
-    glMatrixMode (GL_MODELVIEW);
     // define the viewport
-    glViewport (0, 0, w, h);
-
-#if 1
-    // Not sure what difference this makes exactly...
-    GLenum hint = GL_DONT_CARE;
-    glHint( GL_POINT_SMOOTH_HINT, hint );
-    glHint( GL_LINE_SMOOTH_HINT, hint );
-    glHint( GL_POLYGON_SMOOTH_HINT, hint );
-    glHint( GL_FOG_HINT, hint );
-    glHint( GL_PERSPECTIVE_CORRECTION_HINT, hint );
-#endif
+    sceneView_->setViewport( 0, 0, w, h );
 }
 
 void 
 WorldView::paintGL()
 {
-    // Antialiasing
-    if ( isAntialiasingEnabled_ )
-    {
-        glEnable( GL_POINT_SMOOTH );
-        glEnable( GL_LINE_SMOOTH );
-        glEnable( GL_BLEND );
-        glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-    }
-    else
-    {
-        glDisable( GL_POINT_SMOOTH );
-        glDisable( GL_LINE_SMOOTH );
-        glDisable( GL_BLEND );
-    }
-
-    // Start from a clean slate
-    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-
-    // Clear the viewing transformation
-    glLoadIdentity();
-
     // Work out where to put the camera
     bool isCameraPoseLocalised = false;
     cameraPose_ = getCameraPose( isCameraPoseLocalised );
 
     // Put the camera in position
     Vector3 center = cameraPose_.pos() + cameraPose_.fwd();
-    gluLookAt( cameraPose_.pos().x(),
-               cameraPose_.pos().y(),
-               cameraPose_.pos().z(),
-               center.x(), 
-               center.y(), 
-               center.z(),
-               cameraPose_.up().x(), 
-               cameraPose_.up().y(), 
-               cameraPose_.up().z() );
+    sceneView_->setViewMatrixAsLookAt( osg::Vec3( cameraPose_.pos().x(),
+                                                  cameraPose_.pos().y(),
+                                                  cameraPose_.pos().z() ),
+                                       osg::Vec3( center.x(),
+                                                  center.y(),
+                                                  center.z() ),
+                                       osg::Vec3( cameraPose_.up().x(),
+                                                  cameraPose_.up().y(),
+                                                  cameraPose_.up().z() ) );
 
-    paintAllGuiElements( isCameraPoseLocalised );
+    osg::ref_ptr<osg::Group> root = new osg::Group();
+
+    // Add lights
+    root->addChild( lightSource_.get() );
+    osg::ref_ptr<osg::StateSet> lightSS (root->getOrCreateStateSet());
+    lightSource_->setStateSetModes(*lightSS,osg::StateAttribute::ON);
+
+    paintAllGuiElements( isCameraPoseLocalised, root.get() );
+
+    sceneView_->setSceneData( root.get() );
+
+    // do the update traversal the scene graph - such as updating animations
+    sceneView_->update();
+
+    // do the cull traversal, collect all objects in the view frustum 
+    // into a sorted set of rendering bins
+    sceneView_->cull();
+            
+    // draw the rendering bins.
+    sceneView_->draw();
 }
 
 void
@@ -222,7 +236,7 @@ WorldView::updateAllGuiElements()
 }
 
 void
-WorldView::paintAllGuiElements( bool isCoordinateFramePlatformLocalised )
+WorldView::paintAllGuiElements( bool isCoordinateFramePlatformLocalised, osg::Group *root )
 {
     const QList< ::hydroqguielementutil::IGuiElement*> &elements = guiElementSet_.elements();
 
@@ -250,12 +264,10 @@ WorldView::paintAllGuiElements( bool isCoordinateFramePlatformLocalised )
                  elem->platform()==coordinateFrameManager_.coordinateFramePlatform() || 
                  elem->isPermanentElement() ) 
             {
-                // Save the matrix, in case an exception is thrown.
-                orcaqgui3d::glutil::ScopedMatrixSave sms;
-
                 if ( elem->isInGlobalCS() )
                 {
                     elem->paint( *this, *this );
+                    root->addChild( elem->osgNode() );
                 }
                 else
                 {
@@ -269,16 +281,18 @@ WorldView::paintAllGuiElements( bool isCoordinateFramePlatformLocalised )
                     {
                         // Can't find the location of this platform -- paint in the global CS
                         elem->paint( *this, *this );
+                        root->addChild( elem->osgNode() );
                     }
                     else
                     {
-                        orcaqgui3d::glutil::transform(x,y,z,roll,pitch,yaw);
+//                         osg::ref_ptr<osg::PositionAttitudeTransform> pos = new osg::PositionAttitudeTransform;
+//                         pos->setPosition( osg::Vec3( x, y, z ) );
+//                         pos->setAttitude();
+                        cout<<"TRACE(worldview.cpp): TODO: xfrom to platform CS" << endl;
+
                         elem->paint( *this, *this );
                     }
                 }
-
-                // Raises an exception on an OpenGL error
-                orcaqgui3d::glutil::checkGLError();
             }
         }
         catch ( IceUtil::Exception &e )
@@ -314,20 +328,20 @@ WorldView::paintAllGuiElements( bool isCoordinateFramePlatformLocalised )
     }
 }
 
-void 
-WorldView::setAntiAliasing(bool antiAliasing)
-{
-    isAntialiasingEnabled_ = antiAliasing;
+// void 
+// WorldView::setAntiAliasing(bool antiAliasing)
+// {
+//     isAntialiasingEnabled_ = antiAliasing;
 
-    QString str;
-    if (antiAliasing==false) {
-        str = "off";
-    } else {
-        str = "on";
-    }
+//     QString str;
+//     if (antiAliasing==false) {
+//         str = "off";
+//     } else {
+//         str = "on";
+//     }
     
-    humanManager_.showStatusMsg(::hydroqguielementutil::IHumanManager::Information, "Anti-aliasing is turned " + str);   
-}
+//     humanManager_.showStatusMsg(::hydroqguielementutil::IHumanManager::Information, "Anti-aliasing is turned " + str);   
+// }
 
 void 
 WorldView::keyPressEvent(QKeyEvent *e)

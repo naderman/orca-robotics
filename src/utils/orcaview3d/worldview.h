@@ -19,6 +19,9 @@
 #include <orcaqgui3d/platformcsfinder.h>
 #include <orcaqgui3d/view.h>
 #include "viewhandler.h"
+#include <osgUtil/SceneView>
+#include <osg/Group>
+#include <osg/LightSource>
 
 namespace orcaview3d 
 {
@@ -51,7 +54,7 @@ public:
 
 public slots:
 
-    void setAntiAliasing( bool antiAliasing );
+// void setAntiAliasing( bool antiAliasing );
 
 private slots:
 
@@ -60,7 +63,8 @@ private slots:
 private:
 
     void updateAllGuiElements();
-    void paintAllGuiElements( bool isCoordinateFramePlatformLocalised );
+    void paintAllGuiElements( bool isCoordinateFramePlatformLocalised,
+                              osg::Group *root );
 
     // finds coord system of a platform
     const orcaqgui3d::PlatformCSFinder &platformCSFinder_;
@@ -97,6 +101,12 @@ private:
 
     // Current camera pose
     CoordinateFrame cameraPose_;
+
+    // SceneView: Literally the view of the scene, encapsulating
+    // how it's rendered.
+    osg::ref_ptr<osgUtil::SceneView> sceneView_;
+
+    osg::ref_ptr<osg::LightSource> lightSource_;
 };
 
 } // namespace

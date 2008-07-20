@@ -1,3 +1,4 @@
+#if 0
 #include <iostream>
 #include <orcaqgui3d/glutil.h>
 #include <QGLWidget>
@@ -509,3 +510,4 @@ int main()
 
     return 0;
 }
+#endif

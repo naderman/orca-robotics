@@ -11,215 +11,358 @@
 #include <iostream>
 #include <cmath>
 #include <sstream>
-
-#include "gridelement.h"
 #include <orcaqgui3d/glutil.h>
+#include "gridelement.h"
+
+#include <osg/Node>
+#include <osg/Group>
+#include <osg/BlendFunc>
+
+#include <osgDB/ReadFile>
 
 using namespace std;
-using namespace orcaqgui3d;
+
+namespace orcaqgui3d {
+
+namespace {
+
+    osg::Image *
+    createCheckImage()
+    {
+        osg::Image *img = new osg::Image;
+        img->allocateImage( 64, 64, 3, GL_RGB, GL_UNSIGNED_BYTE );
+
+        GLubyte checkImage[64][64][3];
+
+        // Draw the chess-board in memory
+        orcaqgui3d::glutil::makeCheckImage64x64x3( checkImage, 2, 240, 255 );
+        
+        // copy to the image
+        int n=0;
+        for ( uint i=0; i < 64; i++ )
+            for ( uint j=0; j < 64; j++ )
+                for ( uint k=0; k < 3; k++ )
+                    img->data()[n++] = checkImage[i][j][k];
+        
+        return img;
+    }
+
+}
 
 GridElement::GridElement( double wireGridSpacing,
                           double groundPlaneSquareSpacing )
-    : isDisplayWireGrid_(true),
-      isDisplayGroundPlane_(true),
-      isDisplayOrigin_(true),
-      isDisplayLabels_(true),
-      wireGridSpacing_(wireGridSpacing),
+    : wireGridSpacing_(wireGridSpacing),
       groundPlaneSquareSpacing_(groundPlaneSquareSpacing)
 {
-}
+    root_ = new osg::Group();
 
-GridElement::~GridElement()
-{
-    cout<<"TRACE(gridelement.cpp): Does this work in here???" << endl;
-    finit();
-}
+    drawOrigin();
+    root_->addChild( originGeode_.get() );
 
-void
-GridElement::init( const orcaqgui3d::View &view )
-{
-    cout<<"TRACE(gridelement.cpp): init()" << endl;
+    viewOffset_ = new osg::PositionAttitudeTransform();
+    root_->addChild( viewOffset_.get() );
 
-    //
-    // Load the checkerboard texture
-    //
+    drawGroundPlane();    
+    root_->addChild( groundPlaneGeode_.get() );
+    
+    drawWireGrid();
+    viewOffset_->addChild( wireGridGeode_.get() );
 
-    glGenTextures( 1, &textureName_ );
-    glBindTexture( GL_TEXTURE_2D, textureName_ );
+//    drawLabels();
+    
+#if 0
+    // Enable anti-aliasing
+    osg::ref_ptr<osg::StateSet> stateSet = new osg::StateSet();
+    osg::ref_ptr<osg::BlendFunc> blendFunc = new osg::BlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+    stateSet->setAttribute( blendFunc.get() );
 
-    // Draw the chess-board in memory
-    orcaqgui3d::glutil::makeCheckImage64x64x3( checkImage_, 2, 120, 130 );
-
-    // Says how to read the texture in the next call
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-
-    // Create the texture map
-    glTexImage2D(GL_TEXTURE_2D, 0, 3, 64, 64,
-                 0, GL_RGB, GL_UNSIGNED_BYTE, 
-                 &checkImage_[0][0][0]);    
-}
-
-void
-GridElement::finit()
-{
-    glDeleteTextures( 1, &textureName_ );    
+    stateSet->setMode( GL_POINT_SMOOTH, osg::StateAttribute::ON );
+    stateSet->setMode( GL_LINE_SMOOTH, osg::StateAttribute::ON );
+    stateSet->setMode( GL_BLEND, osg::StateAttribute::ON );
+    root_->setStateSet( stateSet.get() );
+#endif
 }
 
 void
 GridElement::paint( const orcaqgui3d::View &view, QGLWidget &p )
 {
-    if ( isDisplayGroundPlane_ )
-        drawGroundPlane( view );
+    const int xOffset = (int)(view.cameraX());
+    const int yOffset = (int)(view.cameraY());
 
-    if ( isDisplayOrigin_ ) {
-        //cout<<"painting origin"<<endl;
-        drawOrigin();
+    viewOffset_->setPosition( osg::Vec3( xOffset, yOffset, 0 ) );
+
+//     osg::ref_ptr<osg::Vec4Array> colors = new osg::Vec4Array;
+//     // colors->push_back(osg::Vec4(0.3, 0.3, 0.3, 1.0) );
+//     colors->push_back(osg::Vec4(0.0, 0.5, 0.5, 1.0) );
+//     groundPlaneGeometry->setColorArray(colors.get());
+}
+
+void
+GridElement::drawGroundPlane() // const orcaqgui3d::View &view )
+{
+    //
+    // Create the geode
+    //
+    groundPlaneGeode_ = new osg::Geode;
+
+    //
+    // Create the texture
+    //
+    osg::ref_ptr<osg::Image> checkImage = createCheckImage();
+
+    osg::ref_ptr<osg::Texture2D> checkTexture = new osg::Texture2D;
+    // protect from being optimized away as static state:
+    checkTexture->setDataVariance(osg::Object::DYNAMIC); 
+    checkTexture->setImage( checkImage.get() );
+
+    // Tell the texture to repeat
+    checkTexture->setWrap( osg::Texture::WRAP_S, osg::Texture::REPEAT );
+    checkTexture->setWrap( osg::Texture::WRAP_T, osg::Texture::REPEAT );
+
+    // Create a new StateSet with default settings: 
+    osg::ref_ptr<osg::StateSet> groundPlaneStateSet = new osg::StateSet();
+
+    // Assign texture unit 0 of our new StateSet to the texture 
+    // we just created and enable the texture.
+    groundPlaneStateSet->setTextureAttributeAndModes(0,checkTexture.get(),osg::StateAttribute::ON);
+
+    // Texture mode
+    osg::TexEnv* texEnv = new osg::TexEnv;
+    texEnv->setMode(osg::TexEnv::DECAL);
+//    texEnv->setMode(osg::TexEnv::MODULATE);
+    groundPlaneStateSet->setTextureAttribute(0,texEnv);
+
+    // Associate this state set with our Geode
+//    groundPlaneGeode_->setStateSet(groundPlaneStateSet.get());
+
+    //
+    // Create the ground plane
+    //
+    osg::ref_ptr<osg::Geometry> groundPlaneGeometry = new osg::Geometry();
+//    groundPlaneGeometry = new osg::Geometry();
+    
+    const double infty=10;
+
+    const double metresPerTile=2*groundPlaneSquareSpacing_;
+    const double texCoordExtreme=2*infty/metresPerTile;
+
+    osg::ref_ptr<osg::Vec3Array> vertices = new osg::Vec3Array;
+    groundPlaneGeometry->setVertexArray( vertices.get() );
+    
+    osg::ref_ptr<osg::Vec2Array> texCoords = new osg::Vec2Array;
+    groundPlaneGeometry->setTexCoordArray( 0, texCoords.get() );
+
+    vertices->push_back( osg::Vec3d( -infty, -infty, 0 ) );
+    texCoords->push_back( osg::Vec2( 0, 0 ) );
+    vertices->push_back( osg::Vec3d( -infty,  infty, 0 ) );
+    texCoords->push_back( osg::Vec2( 0, texCoordExtreme ) );
+    vertices->push_back( osg::Vec3d(  infty,  infty, 0 ) );
+    texCoords->push_back( osg::Vec2( texCoordExtreme, texCoordExtreme ) );
+    vertices->push_back( osg::Vec3d(  infty, -infty, 0 ) );
+    texCoords->push_back( osg::Vec2( texCoordExtreme, 0 ) );
+
+    osg::ref_ptr<osg::Vec4Array> colors = new osg::Vec4Array;
+    // colors->push_back(osg::Vec4(0.3, 0.3, 0.3, 1.0) );
+    colors->push_back(osg::Vec4(0.0, 0.5, 0.0, 1.0) );
+    groundPlaneGeometry->setColorArray(colors.get());
+    groundPlaneGeometry->setColorBinding(osg::Geometry::BIND_PER_PRIMITIVE_SET);
+
+    osg::ref_ptr<osg::DrawElementsUInt> quad = 
+        new osg::DrawElementsUInt(osg::PrimitiveSet::QUADS);
+    for ( uint i=0; i < vertices->size(); i++ )
+        quad->push_back( i );
+
+    groundPlaneGeometry->addPrimitiveSet( quad.get() );
+
+
+    groundPlaneGeode_->addDrawable( groundPlaneGeometry.get() );
+}
+
+// void
+// GridElement::drawLabels()
+// {
+// //     const int xOffset = view.cameraX();
+// //     const int yOffset = view.cameraY();
+//     const int xOffset = 0;
+//     const int yOffset = 0;
+    
+//     const int gridLinesEachDirn = 8;
+//     const float gridWidth = 2*gridLinesEachDirn*wireGridSpacing_; // [m]
+
+//     for ( int i=-gridLinesEachDirn; i <= gridLinesEachDirn; i++ )
+//     {
+//         const float d = gridWidth*(float)i/(float)(2*gridLinesEachDirn);
+//         if ( i != 0 )
+//         {
+//             std::stringstream ssX, ssY;
+//             ssX << (int)d+xOffset;
+//             ssY << (int)d+yOffset;
+            
+//             osg::ref_ptr<osgText::Text> labelX = new osgText::Text;
+//             osg::ref_ptr<osgText::Text> labelY = new osgText::Text;
+
+//             labelX->setText( ssX.str() );
+//             labelY->setText( ssY.str() );
+
+//             labelX->setPosition( osg::Vec3(d, 0, 0) );
+//             labelY->setPosition( osg::Vec3(0, d, 0) );
+
+//             geode_->addDrawable( labelX.get() );
+//             geode_->addDrawable( labelY.get() );
+            
+//             labels_.push_back( labelX );
+//             labels_.push_back( labelY );
+//         }
+//     }
+// }
+
+void
+GridElement::drawWireGrid()
+{
+    osg::ref_ptr<osg::Geometry> wireGridGeometry = new osg::Geometry();
+
+    osg::ref_ptr<osg::Vec3Array> wireGridVertices = new osg::Vec3Array;
+    wireGridGeometry->setVertexArray( wireGridVertices.get() );
+
+    osg::ref_ptr<osg::DrawElementsUInt> prim = 
+        new osg::DrawElementsUInt(osg::PrimitiveSet::LINES);
+    wireGridGeometry->addPrimitiveSet(prim.get());
+
+    const int gridLinesEachDirn = 8;
+    const float gridWidth = 2*gridLinesEachDirn*wireGridSpacing_; // [m]
+    const float w = gridWidth/2.0;
+
+    for ( int i=-gridLinesEachDirn; i <= gridLinesEachDirn; i++ )
+    {
+        const float d = gridWidth*(float)i/(float)(2*gridLinesEachDirn);
+
+        // Lines in one direction
+        wireGridVertices->push_back( osg::Vec3(-w, d, 0) );
+        wireGridVertices->push_back( osg::Vec3( w, d, 0) );
+
+        // Lines at 90deg
+        wireGridVertices->push_back( osg::Vec3( d,-w, 0) );
+        wireGridVertices->push_back( osg::Vec3( d, w, 0) );
     }
     
-    if ( isDisplayWireGrid_ )
-        drawWireGridAndLabels( view, p );
-}
+    for ( uint i=0; i < wireGridVertices->size(); i++ )
+        prim->push_back(i);
 
-void
-GridElement::drawGroundPlane( const orcaqgui3d::View &view )
-{
-    // cout<<"TRACE(worldview.cpp): "<<__func__ << endl;
+    wireGridGeode_ = new osg::Geode();
+    wireGridGeode_->addDrawable( wireGridGeometry.get() );
 
-    glPushMatrix();
-    {
-        const double infty=1000;
-        const double metresPerTile=2*groundPlaneSquareSpacing_;
-        const double texCoordExtreme=2*infty/metresPerTile;
+    osg::ref_ptr<osg::Vec4Array> colors = new osg::Vec4Array;
+    colors->push_back(osg::Vec4(0.0, 0.0, 0.0, 1.0) );
+    wireGridGeometry->setColorArray(colors.get());
+    wireGridGeometry->setColorBinding(osg::Geometry::BIND_PER_PRIMITIVE_SET);
 
-//         // Centre the ground plane near the camera, so we can never walk off.
-//         int tilesFromOriginX = view.cameraX() / metresPerTile;
-//         int tilesFromOriginY = view.cameraY() / metresPerTile;
-//         glTranslatef( tilesFromOriginX*metresPerTile,
-//                       tilesFromOriginY*metresPerTile,
-//                       0.0 );
+//     const int xOffset = view.cameraX();
+//     const int yOffset = view.cameraY();
 
-        glColor3f( 0.5, 0.5, 0.5 );
+//     glPushMatrix();
+//     {
+//         // Centre near the camera, slightly off the ground so it's visible
+//         // glTranslatef( xOffset, yOffset, 0.001 );
+//         glTranslatef( xOffset, yOffset, 0.0 );
 
-        glEnable( GL_TEXTURE_2D );
-        {
-            glBindTexture( GL_TEXTURE_2D, textureName_ );
+//         // Major line every N lines (others are minor)
+//         const int majorEveryN=2;
+//         const int numMajor=4;
+//         const float gridWidth=numMajor*majorEveryN*wireGridSpacing_; // [m]
 
-            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-            glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+//         int gridLinesEachDirn=numMajor*majorEveryN;
 
-            glBegin(GL_QUADS);
-            glNormal3f( 0.0, 0.0, 1.0);
-            glTexCoord2f(0,0);
-            glVertex3f(-infty,-infty,0);
-            glTexCoord2f(0,texCoordExtreme); 
-            glVertex3f(-infty,infty,0);
-            glTexCoord2f(texCoordExtreme,texCoordExtreme); 
-            glVertex3f(infty,infty,0);
-            glTexCoord2f(texCoordExtreme,0); 
-            glVertex3f(infty,-infty,0);
-            glEnd();
-        }
-        glDisable( GL_TEXTURE_2D );
-    }
-    glPopMatrix();
-}
+//         float w = gridWidth/2.0;
 
-void
-GridElement::drawWireGridAndLabels( const orcaqgui3d::View &view, QGLWidget &p )
-{
-    const int xOffset = view.cameraX();
-    const int yOffset = view.cameraY();
+//         for(int i=-gridLinesEachDirn; i <= gridLinesEachDirn; i++)
+//         {
+//             float d = gridWidth*(float)i/(float)(2*gridLinesEachDirn);
+//             if(i%(majorEveryN)==0)
+//             {
+//                 glColor4f(0,0,0,0.5);
 
-    glPushMatrix();
-    {
-        // Centre near the camera, slightly off the ground so it's visible
-        // glTranslatef( xOffset, yOffset, 0.001 );
-        glTranslatef( xOffset, yOffset, 0.0 );
+//                 if ( isDisplayLabels_ )
+//                 {
+//                     if ( i != 0 )
+//                     {
+//                         std::stringstream ssX, ssY;
+//                         ssX << (int)d+xOffset;
+//                         ssY << (int)d+yOffset;
+//                         p.renderText( d, 0, 0, ssX.str().c_str() );
+//                         p.renderText( 0, d, 0, ssY.str().c_str() );
+//                     }
+//                 }
+//             }
+//             else 
+//             {
+//                 glColor4f(0.5,0.5,0.5,0.5);
+//             }
 
-        // Major line every N lines (others are minor)
-        const int majorEveryN=2;
-        const int numMajor=4;
-        const float gridWidth=numMajor*majorEveryN*wireGridSpacing_; // [m]
-
-        int gridLinesEachDirn=numMajor*majorEveryN;
-
-        float w = gridWidth/2.0;
-
-        for(int i=-gridLinesEachDirn; i <= gridLinesEachDirn; i++)
-        {
-            float d = gridWidth*(float)i/(float)(2*gridLinesEachDirn);
-            if(i%(majorEveryN)==0)
-            {
-                glColor4f(0,0,0,0.5);
-
-                if ( isDisplayLabels_ )
-                {
-                    if ( i != 0 )
-                    {
-                        std::stringstream ssX, ssY;
-                        ssX << (int)d+xOffset;
-                        ssY << (int)d+yOffset;
-                        p.renderText( d, 0, 0, ssX.str().c_str() );
-                        p.renderText( 0, d, 0, ssY.str().c_str() );
-                    }
-                }
-            }
-            else 
-            {
-                glColor4f(0.5,0.5,0.5,0.5);
-            }
-
-            glBegin(GL_LINES);
-            glVertex3f(-w, d, 0);
-            glVertex3f(w,  d, 0);
-            glVertex3f(d, -w, 0);
-            glVertex3f(d,  w, 0);
-            glEnd();
-        }
-    }
-    glPopMatrix();
+//             glBegin(GL_LINES);
+//             glVertex3f(-w, d, 0);
+//             glVertex3f(w,  d, 0);
+//             glVertex3f(d, -w, 0);
+//             glVertex3f(d,  w, 0);
+//             glEnd();
+//         }
+//     }
+//     glPopMatrix();
 }
 
 void
 GridElement::drawOrigin()
 {
-    // Draw axes on origin
-    const float scaleAxes=1.0;
+    const float scaleAxes=2.0;
     const float d = 0.2*scaleAxes;
-    glBegin(GL_LINES);
-    glColor4f(0,0,1,1);
-    glVertex3f(0,0,0);
-    glVertex3f(d,0,0);
-    glVertex3f(0,0,0);
-    glVertex3f(0,d,0);
-    glVertex3f(0,0,0);
-    glVertex3f(0,0,d);
+    
+    osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry();
 
+    osg::ref_ptr<osg::Vec3Array> vertices = new osg::Vec3Array;
+    geometry->setVertexArray( vertices.get() );
+
+    // Axes
+    vertices->push_back( osg::Vec3(0,0,0) );
+    vertices->push_back( osg::Vec3(d,0,0) );
+    vertices->push_back( osg::Vec3(0,0,0) );
+    vertices->push_back( osg::Vec3(0,d,0) );
+    vertices->push_back( osg::Vec3(0,0,0) );
+    vertices->push_back( osg::Vec3(0,0,d) );
+    
     const float p=0.1*scaleAxes;
     // x
-    glVertex3f(d+p  ,p/2.0,0);
-    glVertex3f(d+2*p,-p/2.0,0);
-    glVertex3f(d+p  ,-p/2.0,0);
-    glVertex3f(d+2*p,p/2.0,0);
+    vertices->push_back( osg::Vec3(d+p  ,p/2.0,0) );
+    vertices->push_back( osg::Vec3(d+2*p,-p/2.0,0) );
+    vertices->push_back( osg::Vec3(d+p  ,-p/2.0,0) );
+    vertices->push_back( osg::Vec3(d+2*p,p/2.0,0) );
 
     // y
-    glVertex3f(-p/2.0,d+p,0);
-    glVertex3f(p/2.0 ,d+2*p,0);
-    glVertex3f(-p/2.0,d+2*p,0);
-    glVertex3f(0     ,d+1.5*p,0);
+    vertices->push_back( osg::Vec3(-p/2.0,d+p,0) );
+    vertices->push_back( osg::Vec3(p/2.0 ,d+2*p,0) );
+    vertices->push_back( osg::Vec3(-p/2.0,d+2*p,0) );
+    vertices->push_back( osg::Vec3(0     ,d+1.5*p,0) );
 
     // z
-    glVertex3f(-p/2.0,0,d+p);
-    glVertex3f(p/2.0, 0,d+p);
-    glVertex3f(-p/2.0,0,d+p);
-    glVertex3f(p/2.0, 0,d+2*p);
-    glVertex3f(-p/2.0,0,d+2*p);
-    glVertex3f(p/2.0, 0,d+2*p);
+    vertices->push_back( osg::Vec3(-p/2.0,0,d+p) );
+    vertices->push_back( osg::Vec3(p/2.0, 0,d+p) );
+    vertices->push_back( osg::Vec3(-p/2.0,0,d+p) );
+    vertices->push_back( osg::Vec3(p/2.0, 0,d+2*p) );
+    vertices->push_back( osg::Vec3(-p/2.0,0,d+2*p) );
+    vertices->push_back( osg::Vec3(p/2.0, 0,d+2*p) );
 
-    glEnd();
+    osg::ref_ptr<osg::DrawElementsUInt> prim = 
+        new osg::DrawElementsUInt(osg::PrimitiveSet::LINES);
+
+    for ( uint i=0; i < vertices->size(); i++ )
+        prim->push_back( i );
+    geometry->addPrimitiveSet( prim.get() );
+
+    osg::ref_ptr<osg::Vec4Array> colors = new osg::Vec4Array;
+    colors->push_back(osg::Vec4(0.0, 0.0, 1.0, 1.0) );
+    geometry->setColorArray(colors.get());
+    geometry->setColorBinding(osg::Geometry::BIND_PER_PRIMITIVE_SET);
+
+    originGeode_ = new osg::Geode();
+    originGeode_->addDrawable( geometry.get() );
 }
 
 QStringList
@@ -236,21 +379,39 @@ GridElement::execute( int action )
     switch ( action )
     {
     case 0 :
+    {
         // toggle grid
-        isDisplayWireGrid_ = !isDisplayWireGrid_;
+        if ( viewOffset_->containsNode( wireGridGeode_.get() ) )
+            viewOffset_->removeChild( wireGridGeode_.get() );
+        else
+            viewOffset_->addChild( wireGridGeode_.get() );
         break;
+    }
     case 1 :
+    {
         // toggle origin
-        isDisplayOrigin_ = !isDisplayOrigin_;
+        if ( root_->containsNode( wireGridGeode_.get() ) )
+            root_->removeChild( wireGridGeode_.get() );
+        else
+            root_->addChild( wireGridGeode_.get() );
         break;
+    }
     case 2 :
+    {
         // toggle labels
-        isDisplayLabels_ = !isDisplayLabels_;
         break;
+    }
     case 3 :
+    {
         // toggle ground plane
-        isDisplayGroundPlane_ = !isDisplayGroundPlane_;
+        if ( root_->containsNode( groundPlaneGeode_.get() ) )
+            root_->removeChild( groundPlaneGeode_.get() );
+        else
+            root_->addChild( groundPlaneGeode_.get() );
         break;
+        break;
+    }
     }
 }
 
+}

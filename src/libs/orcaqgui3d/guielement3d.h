@@ -14,6 +14,7 @@
 #include <hydroqguielementutil/iguielement.h>
 #include <orcaqgui3d/view.h>
 #include <QGLWidget>
+#include <osg/Node>
 
 namespace orcaqgui3d {
 
@@ -44,6 +45,9 @@ public:
     //! we can't do it in the destructor (We might not be in the OpenGL context).
     //! Have to do it here.
     virtual void finit( const View &v ) {}
+
+    //! Returns the OpenSceneGraph Node
+    virtual osg::Node *osgNode() const=0;
 
     //! Since there's init/finit stuff we can't do in the
     //! constructor/destructor, need to track it here.

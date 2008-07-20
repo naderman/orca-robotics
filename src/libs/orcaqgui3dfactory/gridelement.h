@@ -14,6 +14,10 @@
 #include <orcaqgui3d/view.h>
 #include <orcaqgui3d/guielement3d.h>
 #include <GL/gl.h>
+#include <osg/Geometry>
+#include <osg/Geode>
+#include <osgText/Text>
+#include <osg/PositionAttitudeTransform>
 
 namespace orcaqgui3d
 {
@@ -28,32 +32,34 @@ public:
 
     GridElement( double wireGridSpacing=2,
                  double groundPlaneSquareSpacing=1 );
-	~GridElement();
 
     virtual bool isInGlobalCS() { return true; }
     
-    virtual void init( const orcaqgui3d::View &view  );
-    virtual void finit();
     virtual void paint( const orcaqgui3d::View &view, QGLWidget &p );
     virtual QStringList contextMenu();
     virtual void execute( int action );
     
+    osg::Node *osgNode() const { return root_.get(); }
+
 private:
 
-    void drawGroundPlane( const orcaqgui3d::View &view );
-    void drawWireGridAndLabels( const orcaqgui3d::View &view, QGLWidget &p );
+    void drawGroundPlane();
+    void drawWireGrid();
+    // void drawLabels();
     void drawOrigin();
-	
-    bool isDisplayWireGrid_;
-    bool isDisplayGroundPlane_;
-    bool isDisplayOrigin_;
-    bool isDisplayLabels_;
     
     double wireGridSpacing_;
     double groundPlaneSquareSpacing_;
 
-    GLubyte checkImage_[64][64][3];
-    GLuint textureName_;
+//    osg::ref_ptr<osg::Geometry> groundPlaneGeometry;
+
+    osg::ref_ptr<osg::PositionAttitudeTransform> viewOffset_;
+    osg::ref_ptr<osg::Geode> groundPlaneGeode_;
+    osg::ref_ptr<osg::Geode> wireGridGeode_;
+
+    osg::ref_ptr<osg::Geode> originGeode_;
+
+    osg::ref_ptr<osg::Group> root_;
 };
 
 } // namespace
