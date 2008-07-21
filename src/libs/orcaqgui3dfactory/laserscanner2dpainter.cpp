@@ -43,8 +43,6 @@ void
 LaserScanner2dPainter::setDescr(  const orca::Frame3d &offset,
                                   const orca::Size3d  &size )
 {
-    cout<<"TRACE(laserscanner2dpainter.cpp): offset: " << offset.p.x << ", " << offset.p.y << ", " << offset.p.z << endl;
-
     xformNode_ = orcaqgui3d::getPositionAttitudeTransform( offset.p.x,
                                                            offset.p.y,
                                                            offset.p.z,
