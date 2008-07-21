@@ -1,3 +1,4 @@
+#if 0
 /*
  * Orca-Robotics Project: Components for robotics 
  *               http://orca-robotics.sf.net/
@@ -65,4 +66,5 @@ void drawCyclinder( float height, float radiusX, float radiusY, int numFacets=25
 } // namespace
 } // namespace
 
+#endif
 #endif

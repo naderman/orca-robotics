@@ -111,10 +111,7 @@ LaserScanner2dPainter::setData( const orca::RangeScanner2dDataPtr & data )
         prim->push_back(i);
 
     osg::ref_ptr<osg::Vec4Array> colors = new osg::Vec4Array;
-    colors->push_back( osg::Vec4( outlineColor_.red(),
-                                  outlineColor_.green(),
-                                  outlineColor_.blue(),
-                                  1.0 ) );
+    colors->push_back( orcaqgui3d::toVec4( outlineColor_ ) );
     geometry->setColorArray(colors.get());
     geometry->setColorBinding(osg::Geometry::BIND_PER_PRIMITIVE_SET);    
 
@@ -122,41 +119,6 @@ LaserScanner2dPainter::setData( const orca::RangeScanner2dDataPtr & data )
     scanNode_->addDrawable( geometry.get() );
 
     xformNode_->addChild( scanNode_.get() );
-}
-
-void
-LaserScanner2dPainter::paint( const orcaqgui3d::View &view, QGLWidget &p )
-{
-//     // Apply the vehicle-to-sensor transformation
-//     orcaqgui3d::glutil::transform( offsetX_, offsetY_, offsetZ_,
-//                                    offsetRoll_, offsetPitch_, offsetYaw_ );
-
-//     const bool drawSurfaces  = true;
-//     const bool drawWireFrame = true;
-//     glColor3f( 0, 0, 1 );
-//     orcaqgui3d::glutil::drawBox( size_.l,
-//                                  size_.w,
-//                                  size_.h,
-//                                  drawSurfaces, 
-//                                  drawWireFrame );
-    
-//     if ( !isDisplayScan_ ) return;
-//     if ( ranges_.size() == 0 ) return;
-
-// //    Polygon doesn't work so good...  slows things _right_ down.
-// //    glBegin( GL_POLYGON );  
-//     glBegin( GL_LINE_LOOP );  
-//     glColor3f( outlineColor_.red(), outlineColor_.green(), outlineColor_.blue() );
-//     glVertex3f( 0, 0, 0 );
-//     double angleIncrement = fieldOfView_ / double(ranges_.size()+1);
-//     for ( unsigned int i=0; i < ranges_.size(); ++i )
-//     {
-//         float bearing = startAngle_ + i * angleIncrement;
-//         glVertex3f( ranges_[i] * cos(bearing),
-//                     ranges_[i] * sin(bearing),
-//                     0 );
-//     }
-//     glEnd();  
 }
 
 void LaserScanner2dPainter::setColor( QColor color )

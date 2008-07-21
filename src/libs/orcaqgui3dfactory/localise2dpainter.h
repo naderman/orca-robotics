@@ -39,14 +39,12 @@ class Localise2dPainter
                               double height,
                               const orca::Frame3d &vehicleToGeometryTransform );
 
-    void paint( const orcaqgui3d::View &view, QGLWidget &p ) {};
-    void setUseTransparency( bool useTransparency ) { useTransparency_= useTransparency; };
     void clear();
     void setColor( QColor color );
     void setFocus( bool inFocus );
 
-    void toggleDisplayHistory()  { isDisplayHistory_ = !isDisplayHistory_; }
     void toggleMultiHypothesis() { isDisplayMultiHypothesis_ = !isDisplayMultiHypothesis_; }
+    void setUseTransparency(bool u)  { useTransparency_ = u; }
 
     osg::Node *osgNode() const { return root_.get(); }
 
@@ -57,16 +55,10 @@ class Localise2dPainter
 
     void paintHypothesis( const orca::Pose2dHypothesis &hypothesis );
 
-//    orca::Localise2dData data_;
-//    bool isDataAvailable_;
-
     QColor basicColor_;
     QColor currentColor_;
 
     bool useTransparency_;
-    bool isDisplayHistory_;
-    hydroqguielementutil::PoseHistory history_;
-
     bool isDisplayMultiHypothesis_;
 
     osg::ref_ptr<osg::PositionAttitudeTransform> platformNode_;

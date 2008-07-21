@@ -122,8 +122,6 @@ drawCylinder( float height,
     geode->addDrawable( topCircle.get() );
     geode->addDrawable( bottomCircle.get() );
 
-    cout<<"TRACE(osgutil.cpp): drawn the cylinder." << endl;
-
     return geode;
 }
 

@@ -138,8 +138,9 @@ namespace {
     {
         return ( f.pExists >= 0 && f.pExists <= 1 &&
                  f.c.xx >= 0 &&
-                 f.c.yy >= 0 &&
-                 f.alpha <= M_PI && f.alpha >= -M_PI );
+                 f.c.yy >= 0 );
+// Could check for this, but it's not strictly-speaking an error...
+//                 && f.alpha <= M_PI && f.alpha >= -M_PI );
     }
 
 }

@@ -1,3 +1,4 @@
+#if 0
 #ifndef ORCAQGUI3D_VIEW_H
 #define ORCAQGUI3D_VIEW_H
 
@@ -30,4 +31,5 @@ private:
 
 }
 
+#endif
 #endif

@@ -33,7 +33,6 @@ class FeatureMap2dPainter
 
     void setData( const orca::FeatureMap2dData &featureData );
     void clear() {}
-    void paint( const orcaqgui3d::View &view, QGLWidget &p ) {};
     
     int saveMap( const QString fileName, hydroqguielementutil::IHumanManager *humanManager ) const;
 

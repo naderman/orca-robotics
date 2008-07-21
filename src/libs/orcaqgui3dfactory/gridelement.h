@@ -35,7 +35,7 @@ public:
 
     virtual bool isInGlobalCS() { return true; }
     
-    virtual void paint( const orcaqgui3d::View &view, QGLWidget &p );
+    virtual void setCameraPose( const orcaqgui3d::CoordinateFrame &cameraPose );
     virtual QStringList contextMenu();
     virtual void execute( int action );
     

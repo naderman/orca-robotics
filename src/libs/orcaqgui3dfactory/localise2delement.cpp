@@ -115,7 +115,7 @@ QStringList
 Localise2dElement::contextMenu()
 {
     QStringList s;
-    s<<"Toggle History"<<"Toggle Multi-Hypothesis";
+    s<<"Toggle Multi-Hypothesis";
     return s;
 }
 
@@ -125,11 +125,6 @@ Localise2dElement::execute( int action )
     switch ( action )
     {
         case 0 :
-        {
-            painter_.toggleDisplayHistory();
-            break;
-        }
-        case 1 :
         {
             painter_.toggleMultiHypothesis();
             break;

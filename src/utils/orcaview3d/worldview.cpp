@@ -25,24 +25,12 @@ namespace {
     {
         osg::ref_ptr<osg::Light> light = new osg::Light;
         light->setLightNum(0);
-//         osg::Vec4f lightPosition (osg::Vec4f(0,0,30,1.0f));
-//         light->setPosition(lightPosition);
         light->setAmbient(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
-//         myLight->setAmbient(osg::Vec4(0.2f,0.2f,0.2f,1.0f));
-//         myLight->setDiffuse(osg::Vec4(0.1f,0.4f,0.1f,1.0f));
-//         myLight->setConstantAttenuation(1.0f);
 
         osg::ref_ptr<osg::LightSource> lightSource = new osg::LightSource;
         lightSource->setLight(light.get());
         lightSource->setLocalStateSetModes(osg::StateAttribute::ON); 
         return lightSource;
-
-//        osg::ref_ptr<osg::StateSet> lightSS (root->getOrCreateStateSet());
-//        lightSource->setStateSetModes(*lightSS,osg::StateAttribute::ON);
-       
-//         osg::Group *lightGroup(new osg::Group);
-//         lightGroup->addChild(lightSource.get());
-//         return lightGroup;
     }
 }
 
@@ -61,8 +49,7 @@ WorldView::WorldView( orcaqgui3d::PlatformCSFinder              &platformCSFinde
       mouseEventManager_(mouseEventManager),
       guiElementSet_(guiElementSet),
       humanManager_(humanManager),
-      platformFocusManager_(platformFocusManager),
-      isAntialiasingEnabled_(true)
+      platformFocusManager_(platformFocusManager)
 {
     // Allow receipt of keyboard events
     setFocusPolicy( Qt::StrongFocus );
@@ -70,13 +57,6 @@ WorldView::WorldView( orcaqgui3d::PlatformCSFinder              &platformCSFinde
     displayTimer_ = new QTimer( this );
     QObject::connect( displayTimer_,SIGNAL(timeout()), this,SLOT(reDisplay()) );
     displayTimer_->start( displayRefreshTime );    
-
-    // Antialiasing
-    QAction* antiAliasing = new QAction(tr("&Anti-Aliasing"),this);
-    antiAliasing->setCheckable(true);
-    antiAliasing->setShortcut( QKeySequence("Ctrl+A") );
-    connect(antiAliasing,SIGNAL(toggled(bool)), this, SLOT(setAntiAliasing(bool)) );
-    humanManager_.displayMenu()->addAction(antiAliasing);
 
     lightSource_ = getLighting();
 }
@@ -168,7 +148,7 @@ WorldView::paintGL()
     // Set Antialiasing
     orcaqgui3d::setAntiAliasing( root.get() );
 
-    paintAllGuiElements( isCameraPoseLocalised, root.get() );
+    attachAllGuiElements( isCameraPoseLocalised, root.get() );
 
     sceneView_->setSceneData( root.get() );
 
@@ -239,7 +219,7 @@ WorldView::updateAllGuiElements()
 }
 
 void
-WorldView::paintAllGuiElements( bool isCoordinateFramePlatformLocalised, osg::Group *root )
+WorldView::attachAllGuiElements( bool isCoordinateFramePlatformLocalised, osg::Group *root )
 {
     const QList< ::hydroqguielementutil::IGuiElement*> &elements = guiElementSet_.elements();
 
@@ -254,12 +234,6 @@ WorldView::paintAllGuiElements( bool isCoordinateFramePlatformLocalised, osg::Gr
 
         stringstream ss;
         try {
-            if ( elem->needsInit() )
-            {
-                elem->init(*this);
-                elem->initialisationDone();
-            }
-
             // paint all elements in the world if platform that owns coordinate system is localised 
             // also paint all elements of the platform that owns coordinate system even if it's not localised
             // always paint the permanent elements                     
@@ -267,9 +241,10 @@ WorldView::paintAllGuiElements( bool isCoordinateFramePlatformLocalised, osg::Gr
                  elem->platform()==coordinateFrameManager_.coordinateFramePlatform() || 
                  elem->isPermanentElement() ) 
             {
+                elem->setCameraPose( cameraPose_ );
+
                 if ( elem->isInGlobalCS() )
                 {
-                    elem->paint( *this, *this );
                     root->addChild( elem->osgNode() );
                 }
                 else
@@ -282,8 +257,7 @@ WorldView::paintAllGuiElements( bool isCoordinateFramePlatformLocalised, osg::Gr
                                                                                    roll, pitch, yaw );
                     if ( !platformCSFound )
                     {
-                        // Can't find the location of this platform -- paint in the global CS
-                        elem->paint( *this, *this );
+                        // Can't find the location of this platform -- put in the global CS
                         root->addChild( elem->osgNode() );
                     }
                     else
@@ -291,7 +265,6 @@ WorldView::paintAllGuiElements( bool isCoordinateFramePlatformLocalised, osg::Gr
                         osg::ref_ptr<osg::PositionAttitudeTransform> pos = 
                             orcaqgui3d::getPositionAttitudeTransform( x, y, z,
                                                                       roll, pitch, yaw );
-                        elem->paint( *this, *this );
                         root->addChild( pos.get() );
                         pos->addChild( elem->osgNode() );
                     }
@@ -300,51 +273,36 @@ WorldView::paintAllGuiElements( bool isCoordinateFramePlatformLocalised, osg::Gr
         }
         catch ( IceUtil::Exception &e )
         {
-            ss<<"WorldView: during painting of "
+            ss<<"WorldView: during "<<__func__<<" of "
               <<elements[i]->details().toStdString()<<": " << e << std::endl;
             humanManager_.showStatusMsg(::hydroqguielementutil::IHumanManager::Warning,ss.str().c_str());
         }
         catch ( std::exception &e )
         {
-            ss<<"WorldView: during painting of "
+            ss<<"WorldView: during "<<__func__<<" of "
               <<elements[i]->details().toStdString()<<": " << e.what() << std::endl;
             humanManager_.showStatusMsg(::hydroqguielementutil::IHumanManager::Warning,ss.str().c_str());
         }
         catch ( std::string &e )
         {
-            ss<<"WorldView: during painting of "
+            ss<<"WorldView: during "<<__func__<<" of "
               <<elements[i]->details().toStdString()<<": " << e << std::endl;
             humanManager_.showStatusMsg(::hydroqguielementutil::IHumanManager::Warning,ss.str().c_str());
         }
         catch ( char *e )
         {
-            ss<<"WorldView: during painting of "
+            ss<<"WorldView: during "<<__func__<<" of "
               <<elements[i]->details().toStdString()<<": " << e << std::endl;
             humanManager_.showStatusMsg(::hydroqguielementutil::IHumanManager::Warning,ss.str().c_str());
         }
         catch ( ... )
         {
-            ss<<"WorldView: during painting of "
+            ss<<"WorldView: during "<<__func__<<" of "
               <<elements[i]->details().toStdString()<<": unknown exception." << std::endl;
             humanManager_.showStatusMsg(::hydroqguielementutil::IHumanManager::Warning,ss.str().c_str());
         }
     }
 }
-
-// void 
-// WorldView::setAntiAliasing(bool antiAliasing)
-// {
-//     isAntialiasingEnabled_ = antiAliasing;
-
-//     QString str;
-//     if (antiAliasing==false) {
-//         str = "off";
-//     } else {
-//         str = "on";
-//     }
-    
-//     humanManager_.showStatusMsg(::hydroqguielementutil::IHumanManager::Information, "Anti-aliasing is turned " + str);   
-// }
 
 void 
 WorldView::keyPressEvent(QKeyEvent *e)

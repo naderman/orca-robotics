@@ -37,6 +37,9 @@ FeatureMap2dPainter::setData( const orca::FeatureMap2dData &data )
 {
     data_ = data;
 
+    // Clear out the old
+    root_ = new osg::Group;
+
     // Paint all lines first, so the less-obvious point features are on top.
     for ( unsigned int i=0; i < data_.features.size(); i++ )
     {
@@ -82,11 +85,13 @@ FeatureMap2dPainter::paintPointFeature( int featureType,
                                         double covYY )
 {
     const float radius = 0.2;
-    const float height = 1.5;
+    float height = 1.5;
+    if ( featureType == orca::feature::VEHICLEPOSE ||
+         featureType == orca::feature::VEHICLEPOSE+10 )
+        height = 0.1;
 
-    QColor qc = orcaqguielementutil::featureColour(featureType);
-    osg::Vec4 color( qc.red(), qc.green(), qc.blue(), 1.0 );
-    osg::ref_ptr<osg::Geode> geode = orcaqgui3d::drawCylinder( height, radius, color );
+    QColor color = orcaqguielementutil::featureColour(featureType);
+    osg::ref_ptr<osg::Geode> geode = orcaqgui3d::drawCylinder( height, radius, orcaqgui3d::toVec4(color) );
 
     osg::ref_ptr<osg::PositionAttitudeTransform> pos = new osg::PositionAttitudeTransform();
     pos->setPosition( osg::Vec3(centreX, centreY, height/2.0) );
@@ -141,7 +146,7 @@ FeatureMap2dPainter::paintLineFeature( const orca::CartesianLineFeature2d &f,
 
     QColor qc = orcaqguielementutil::featureColour(f.type);
     osg::ref_ptr<osg::Vec4Array> colors = new osg::Vec4Array;
-    colors->push_back( osg::Vec4( qc.red(), qc.green(), qc.blue(), 1.0 ) );
+    colors->push_back( orcaqgui3d::toVec4(qc) );
     geometry->setColorArray(colors.get());
     geometry->setColorBinding(osg::Geometry::BIND_PER_PRIMITIVE_SET);
 

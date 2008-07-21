@@ -26,8 +26,7 @@
 namespace orcaview3d 
 {
 
-class WorldView : public QGLWidget, 
-                  public orcaqgui3d::View
+class WorldView : public QGLWidget
 {
    Q_OBJECT
 public:
@@ -42,20 +41,6 @@ public:
 
     QSize sizeHint() const { return QSize( 400, 400 ); }
 
-    // All in S.I. units and Orca-style coordinate system
-    virtual double cameraX() const { return cameraPose_.pos().x(); }
-    virtual double cameraY() const { return cameraPose_.pos().y(); }
-    virtual double cameraZ() const { return cameraPose_.pos().z(); }
-    virtual double cameraRoll()  const { return cameraPose_.roll(); }
-    virtual double cameraPitch() const { return cameraPose_.pitch(); }
-    virtual double cameraYaw()   const { return cameraPose_.yaw(); }
-
-    virtual bool isAntialiasingEnabled() const { return isAntialiasingEnabled_; }
-
-public slots:
-
-// void setAntiAliasing( bool antiAliasing );
-
 private slots:
 
     void reDisplay();
@@ -63,8 +48,8 @@ private slots:
 private:
 
     void updateAllGuiElements();
-    void paintAllGuiElements( bool isCoordinateFramePlatformLocalised,
-                              osg::Group *root );
+    void attachAllGuiElements( bool isCoordinateFramePlatformLocalised,
+                               osg::Group *root );
 
     // finds coord system of a platform
     const orcaqgui3d::PlatformCSFinder &platformCSFinder_;
@@ -93,8 +78,6 @@ private:
     void keyPressEvent(QKeyEvent *e);
     
     QTimer *displayTimer_;
-
-    bool isAntialiasingEnabled_;
 
     // Current user input in terms of viewpoint manipulation
     ViewHandler viewHandler_;

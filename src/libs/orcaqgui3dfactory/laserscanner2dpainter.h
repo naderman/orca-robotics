@@ -37,8 +37,6 @@ class LaserScanner2dPainter
 
     void setData( const orca::RangeScanner2dDataPtr &scan );
 
-    void paint( const orcaqgui3d::View &view, QGLWidget &p );
-
     void clear();
     
     void setColor( QColor color );

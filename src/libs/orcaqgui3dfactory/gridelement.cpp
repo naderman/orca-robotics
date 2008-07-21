@@ -27,6 +27,39 @@ namespace orcaqgui3d {
 
 namespace {
 
+    void makeCheckImage64x64x3( GLubyte img[64][64][3],
+                                int numSquaresPerEdge,
+                                int lowVal, 
+                                int highVal )
+    {
+        const int widthInPixels=64;
+        const int heightInPixels=64;
+        assert( lowVal >= 0 && lowVal <= 255 );
+        assert( highVal >= 0 && highVal <= 255 );
+
+        int wOn=0;
+        int hOn=0;
+        for (int i = 0; i < widthInPixels; i++) 
+        {
+            if ( (i % (widthInPixels/numSquaresPerEdge)) == 0 )
+                wOn = wOn ? 0 : 1;
+
+            for (int j = 0; j < heightInPixels; j++) 
+            {
+                if ( (j % (heightInPixels/numSquaresPerEdge)) == 0 )
+                    hOn = hOn ? 0 : 1;
+
+                int c = (wOn^hOn);
+                if ( c==0 ) c = lowVal;
+                else c = highVal;
+                // cout<<"TRACE(glutil.cpp): hOn: " << hOn << ", wOn: " << wOn << ", c: " << c << endl;
+                img[i][j][0] = (GLubyte) c;
+                img[i][j][1] = (GLubyte) c;
+                img[i][j][2] = (GLubyte) c;
+            }
+        }
+    }
+
     osg::Image *
     createCheckImage()
     {
@@ -36,7 +69,7 @@ namespace {
         GLubyte checkImage[64][64][3];
 
         // Draw the chess-board in memory
-        orcaqgui3d::glutil::makeCheckImage64x64x3( checkImage, 2, 120, 130 );
+        makeCheckImage64x64x3( checkImage, 2, 120, 130 );
         
         // copy to the image
         int n=0;
@@ -73,21 +106,16 @@ GridElement::GridElement( double wireGridSpacing,
 }
 
 void
-GridElement::paint( const orcaqgui3d::View &view, QGLWidget &p )
+GridElement::setCameraPose( const orcaqgui3d::CoordinateFrame &cameraPose )
 {
-    const int xOffset = (int)(view.cameraX());
-    const int yOffset = (int)(view.cameraY());
+    const int xOffset = (int)floor(cameraPose.pos().x());
+    const int yOffset = (int)floor(cameraPose.pos().y());
 
     viewOffset_->setPosition( osg::Vec3( xOffset, yOffset, 0 ) );
-
-//     osg::ref_ptr<osg::Vec4Array> colors = new osg::Vec4Array;
-//     // colors->push_back(osg::Vec4(0.3, 0.3, 0.3, 1.0) );
-//     colors->push_back(osg::Vec4(0.0, 0.5, 0.5, 1.0) );
-//     groundPlaneGeometry->setColorArray(colors.get());
 }
 
 void
-GridElement::drawGroundPlane() // const orcaqgui3d::View &view )
+GridElement::drawGroundPlane()
 {
     //
     // Create the geode

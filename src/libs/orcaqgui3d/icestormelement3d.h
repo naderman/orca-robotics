@@ -43,14 +43,6 @@ namespace orcaqgui3d {
                 context,proxyString,painter,timeoutMs)
             {}
 
-        //! Derived classes may override this if they have to paint other stuff than just interface data (e.g. user input)
-        virtual void paint( const View &view, QGLWidget &p )
-            { orcaqguielementutil::IceStormElement<PainterType,
-                  DataType,
-                  ProxyType,
-                  ConsumerType,
-                  ConsumerPrxType>::painter_.paint( view, p ); }
-
         // From GuiElement3d
         void update()
             { orcaqguielementutil::IceStormElement<PainterType,

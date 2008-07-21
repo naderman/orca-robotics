@@ -25,9 +25,7 @@ using namespace std;
 namespace orcaqgui3d {
 
 Localise2dPainter::Localise2dPainter( bool beginDisplayHistory )
-    : // isDataAvailable_(false),
-      basicColor_(Qt::blue),
-      isDisplayHistory_(beginDisplayHistory),
+    : basicColor_(Qt::blue),
       isDisplayMultiHypothesis_(true)
 {
     root_ = new osg::Group();
@@ -50,7 +48,7 @@ Localise2dPainter::setCubicDescr( double length,
 
     osg::ref_ptr<osg::Box> box = new osg::Box( osg::Vec3( 0, 0, 0 ), length, width, height );
     osg::ref_ptr<osg::ShapeDrawable> drawable = new osg::ShapeDrawable(box.get());
-    drawable->setColor( osg::Vec4( currentColor_.red(), currentColor_.green(), currentColor_.blue(), 1.0 ) );
+    drawable->setColor( orcaqgui3d::toVec4( currentColor_ ) );
 
     osg::ref_ptr<osg::Geode> geode = new osg::Geode;
     geode->addDrawable( drawable.get() );
@@ -72,45 +70,19 @@ Localise2dPainter::setCylindricalDescr( double radius,
                                            vehicleToGeometryTransform.p.y,
                                            vehicleToGeometryTransform.p.z ) );
 
-    osg::Vec4 color( currentColor_.red(), currentColor_.green(), currentColor_.blue(), 1.0 );
+    osg::Vec4 color = orcaqgui3d::toVec4( currentColor_ );
     platformNode_->addChild( orcaqgui3d::drawCylinder( height, radius, color ).get() );
-
-
-//     osg::ref_ptr<osg::Cylinder> cyl = new osg::Cylinder( osg::Vec3( 0, 0, 0 ), radius, height );
-//     // Filled cylinder in the vehicle colour
-//     osg::ref_ptr<osg::ShapeDrawable> drawable = new osg::ShapeDrawable(cyl.get());
-//     drawable->setColor( osg::Vec4( currentColor_.red(), currentColor_.green(), currentColor_.blue(), 1.0 ) );
-//     osg::ref_ptr<osg::Geode> geode = new osg::Geode;
-//     geode->addDrawable( drawable.get() );
-//     platformNode_->addChild( geode.get() );
 }
 
 void
 Localise2dPainter::clear()
 {
     cout<<"TRACE(localise2dpainter.cpp): TODO: "<<__func__ << endl;
-//    isDataAvailable_ = false;
 }
 
 void 
 Localise2dPainter::setData( const orca::Localise2dData& data )
 {    
-    // data_ = data;
-//    isDataAvailable_ = true;
-
-//    cout<<"TRACE(localise2dpainter.cpp): got data: " << orcaobj::toString(data) << endl;
-
-//     // should we keep history even if not displaying?
-//     if ( isDisplayHistory_ ) {
-//         if ( data.hypotheses.size() > 0 )
-//         {
-//             const orca::Pose2dHypothesis &h = orcaobj::mlHypothesis( data );
-//             history_.addPoint( h.mean.p.x, h.mean.p.y );
-//         }
-//         else
-//             throw hydroqgui::Exception( ERROR_INFO, "Localise2dPainter::setData(): Localise2dData had zero hypotheses" );
-//     }
-
     // Clear
     root_->removeChildren( 0, root_->getNumChildren() );
 
@@ -200,33 +172,6 @@ Localise2dPainter::paintHypothesis( const orca::Pose2dHypothesis &hypothesis )
 #endif
 }
 
-// void 
-// Localise2dPainter::paint( const orcaqgui3d::View &view, QGLWidget &p )
-// {
-// //    if ( !isDataAvailable_ ) return;
-
-//     if ( isDisplayHistory_ )
-//     {
-//         cout<<"TRACE(localise2dpainter.cpp): TODO: display history" << endl;
-//         // history_.paint( currentColor_ );
-//     }
-    
-//     if ( data_.hypotheses.size() != 0 )
-//     {
-//         if ( isDisplayMultiHypothesis_ )
-//         {
-//             for ( unsigned int i=0; i<data_.hypotheses.size(); ++i )
-//             {
-//                 paintHypothesis( data_.hypotheses[i] );
-//             }
-//         }
-//         else
-//         {
-//             paintHypothesis( orcaobj::mlHypothesis( data_ ) );
-//         }
-//     }
-// }
-    
 void Localise2dPainter::setColor( QColor color )
 {
     basicColor_ = color;

@@ -4,6 +4,7 @@
 #include <osg/PositionAttitudeTransform>
 #include <osg/Geometry>
 #include <orcaqgui3d/coordinateframe.h>
+#include <QColor>
 
 namespace orcaqgui3d {
 
@@ -35,6 +36,12 @@ osg::ref_ptr<osg::Geode>
 drawCylinder( float height,
               float radius,
               const osg::Vec4 &color );
+
+inline osg::Vec4 toVec4( const QColor &color )
+{ return osg::Vec4( color.red()/255.0,
+                    color.green()/255.0,
+                    color.blue()/255.0,
+                    color.alpha()/255.0 ); }
 
 }
 
