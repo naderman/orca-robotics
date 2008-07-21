@@ -12,6 +12,7 @@
 #include <cmath>
 #include <sstream>
 #include <orcaqgui3d/glutil.h>
+#include <orcaqgui3d/osgutil.h>
 #include "gridelement.h"
 
 #include <osg/Node>
@@ -56,31 +57,19 @@ GridElement::GridElement( double wireGridSpacing,
 {
     root_ = new osg::Group();
 
+    drawGroundPlane();    
+    root_->addChild( groundPlaneGeode_.get() );
+    
     drawOrigin();
     root_->addChild( originGeode_.get() );
 
     viewOffset_ = new osg::PositionAttitudeTransform();
     root_->addChild( viewOffset_.get() );
 
-    drawGroundPlane();    
-    root_->addChild( groundPlaneGeode_.get() );
-    
     drawWireGrid();
     viewOffset_->addChild( wireGridGeode_.get() );
 
 //    drawLabels();
-    
-#if 0
-    // Enable anti-aliasing
-    osg::ref_ptr<osg::StateSet> stateSet = new osg::StateSet();
-    osg::ref_ptr<osg::BlendFunc> blendFunc = new osg::BlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-    stateSet->setAttribute( blendFunc.get() );
-
-    stateSet->setMode( GL_POINT_SMOOTH, osg::StateAttribute::ON );
-    stateSet->setMode( GL_LINE_SMOOTH, osg::StateAttribute::ON );
-    stateSet->setMode( GL_BLEND, osg::StateAttribute::ON );
-    root_->setStateSet( stateSet.get() );
-#endif
 }
 
 void
@@ -128,8 +117,7 @@ GridElement::drawGroundPlane() // const orcaqgui3d::View &view )
 
     // Texture mode
     osg::TexEnv* texEnv = new osg::TexEnv;
-    texEnv->setMode(osg::TexEnv::DECAL);
-//    texEnv->setMode(osg::TexEnv::MODULATE);
+    texEnv->setMode(osg::TexEnv::DECAL); // (osg::TexEnv::MODULATE);
     groundPlaneStateSet->setTextureAttribute(0,texEnv);
 
     // Associate this state set with our Geode
@@ -139,9 +127,8 @@ GridElement::drawGroundPlane() // const orcaqgui3d::View &view )
     // Create the ground plane
     //
     osg::ref_ptr<osg::Geometry> groundPlaneGeometry = new osg::Geometry();
-//    groundPlaneGeometry = new osg::Geometry();
     
-    const double infty=10;
+    const double infty=1000;
 
     const double metresPerTile=2*groundPlaneSquareSpacing_;
     const double texCoordExtreme=2*infty/metresPerTile;
@@ -161,11 +148,11 @@ GridElement::drawGroundPlane() // const orcaqgui3d::View &view )
     vertices->push_back( osg::Vec3d(  infty, -infty, 0 ) );
     texCoords->push_back( osg::Vec2( texCoordExtreme, 0 ) );
 
-    osg::ref_ptr<osg::Vec4Array> colors = new osg::Vec4Array;
-    colors->push_back(osg::Vec4(0.2, 0.2, 0.2, 1.0) );
-    // colors->push_back(osg::Vec4(0.0, 0.5, 0.0, 1.0) );
-    groundPlaneGeometry->setColorArray(colors.get());
-    groundPlaneGeometry->setColorBinding(osg::Geometry::BIND_PER_PRIMITIVE_SET);
+//     osg::ref_ptr<osg::Vec4Array> colors = new osg::Vec4Array;
+//     colors->push_back(osg::Vec4(0.2, 0.2, 0.2, 1.0) );
+//     // colors->push_back(osg::Vec4(0.0, 0.5, 0.0, 1.0) );
+//     groundPlaneGeometry->setColorArray(colors.get());
+//     groundPlaneGeometry->setColorBinding(osg::Geometry::BIND_PER_PRIMITIVE_SET);
 
     osg::ref_ptr<osg::DrawElementsUInt> quad = 
         new osg::DrawElementsUInt(osg::PrimitiveSet::QUADS);
@@ -173,7 +160,6 @@ GridElement::drawGroundPlane() // const orcaqgui3d::View &view )
         quad->push_back( i );
 
     groundPlaneGeometry->addPrimitiveSet( quad.get() );
-
 
     groundPlaneGeode_->addDrawable( groundPlaneGeometry.get() );
 }

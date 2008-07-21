@@ -21,18 +21,18 @@ namespace orcaview3d {
 
 namespace {
 
-    osg::LightSource *getLighting()
+    osg::ref_ptr<osg::LightSource> getLighting()
     {
         osg::ref_ptr<osg::Light> light = new osg::Light;
         light->setLightNum(0);
-        osg::Vec4f lightPosition (osg::Vec4f(0,0,30,1.0f));
+//         osg::Vec4f lightPosition (osg::Vec4f(0,0,30,1.0f));
 //         light->setPosition(lightPosition);
-//         light->setAmbient(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
+        light->setAmbient(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
 //         myLight->setAmbient(osg::Vec4(0.2f,0.2f,0.2f,1.0f));
 //         myLight->setDiffuse(osg::Vec4(0.1f,0.4f,0.1f,1.0f));
 //         myLight->setConstantAttenuation(1.0f);
 
-        osg::LightSource *lightSource = new osg::LightSource;
+        osg::ref_ptr<osg::LightSource> lightSource = new osg::LightSource;
         lightSource->setLight(light.get());
         lightSource->setLocalStateSetModes(osg::StateAttribute::ON); 
         return lightSource;
@@ -44,7 +44,6 @@ namespace {
 //         lightGroup->addChild(lightSource.get());
 //         return lightGroup;
     }
-
 }
 
 
@@ -165,6 +164,9 @@ WorldView::paintGL()
     root->addChild( lightSource_.get() );
     osg::ref_ptr<osg::StateSet> lightSS(root->getOrCreateStateSet());
     lightSource_->setStateSetModes(*lightSS,osg::StateAttribute::ON);
+
+    // Set Antialiasing
+    orcaqgui3d::setAntiAliasing( root.get() );
 
     paintAllGuiElements( isCameraPoseLocalised, root.get() );
 

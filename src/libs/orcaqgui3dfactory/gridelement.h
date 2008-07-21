@@ -51,8 +51,6 @@ private:
     double wireGridSpacing_;
     double groundPlaneSquareSpacing_;
 
-//    osg::ref_ptr<osg::Geometry> groundPlaneGeometry;
-
     osg::ref_ptr<osg::PositionAttitudeTransform> viewOffset_;
     osg::ref_ptr<osg::Geode> groundPlaneGeode_;
     osg::ref_ptr<osg::Geode> wireGridGeode_;
