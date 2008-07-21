@@ -14,6 +14,7 @@
 #include <orcaqgui3dfactory/gridelement.h>
 #include <orcaqgui3dfactory/laserscanner2delement.h>
 #include <orcaqgui3dfactory/localise2delement.h>
+#include <orcaqgui3dfactory/featuremap2delement.h>
 
 #include "defaultfactory.h"
 
@@ -26,6 +27,7 @@ DefaultFactory::DefaultFactory()
     addSupportedType("Grid");
     addSupportedType("LaserScanner2d");
     addSupportedType("Localise2d");
+    addSupportedType("FeatureMap2d");
 }
 
 bool 
@@ -87,6 +89,9 @@ DefaultFactory::create( const QString                            &elementType,
         }
         else if ( elementType == "Localise2d" ) {
             elem = new orcaqgui3d::Localise2dElement( context_, elementDetails[0].toStdString(), &humanManager );
+        }
+        else if ( elementType == "FeatureMap2d" ) {
+            elem = new orcaqgui3d::FeatureMap2dElement( context_, elementDetails[0].toStdString(), &humanManager );
         }
         else
         {
