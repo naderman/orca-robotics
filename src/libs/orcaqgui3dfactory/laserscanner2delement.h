@@ -50,6 +50,8 @@ public:
     virtual void setColor( QColor color ) { painter_.setColor(color); }
     virtual void setFocus( bool inFocus ) { painter_.setFocus( inFocus ); };
 
+    virtual osg::Node *osgNode() const { return painter_.osgNode(); }
+
 private:
     void getLaserInfo();
     LaserScanner2dPainter painter_;

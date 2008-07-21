@@ -4,7 +4,7 @@
 #include <QMouseEvent>
 #include <cmath>
 #include <assert.h>
-#include "coordinateframe.h"
+#include <orcaqgui3d/coordinateframe.h>
 
 namespace orcaview3d {
 
@@ -20,10 +20,6 @@ public:
 
     ViewHandler();
 
-    // 'Puts the camera in position'
-    // Calls OpenGL commands to modify the matrix
-    void applyViewingTransformation() const;
-
     // event handlers: these aren't actually hooked up to Qt,
     // they have to be called explicitly.
     void mousePressEvent( QMouseEvent* );
@@ -32,7 +28,7 @@ public:
     // Returns true if the viewpoint has been modified
     bool keyPressEvent(QKeyEvent *e);
 
-    const CoordinateFrame &pose() const { return cameraPose_; }
+    const orcaqgui3d::CoordinateFrame &pose() const { return cameraPose_; }
 
 private: 
 
@@ -40,7 +36,7 @@ private:
     QPoint prevDragPos_;
 
     // Current viewpoint
-    CoordinateFrame cameraPose_;
+    orcaqgui3d::CoordinateFrame cameraPose_;
 
 };
 

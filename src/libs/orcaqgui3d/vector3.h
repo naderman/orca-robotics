@@ -7,7 +7,7 @@
 // From http://student.kuleuven.be/~m0216922/CG/3dbasics.html
 //
 
-namespace orcaview3d {
+namespace orcaqgui3d {
 
 ////////////////////////////////////////////////////////////////////////////////
 //               [ x ]                                                        //

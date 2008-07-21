@@ -13,6 +13,7 @@
 #include "worldview.h"
 #include <orcaqgui3d/glutil.h>
 #include <orcaqgui3d/guielement3d.h>
+#include <orcaqgui3d/osgutil.h>
 
 using namespace std;
 
@@ -22,11 +23,11 @@ namespace {
 
     osg::LightSource *getLighting()
     {
-//         osg::Vec4f lightPosition (osg::Vec4f(-5.0,-2.0,3.0,1.0f));
         osg::ref_ptr<osg::Light> light = new osg::Light;
         light->setLightNum(0);
-//         myLight->setPosition(lightPosition);
-        light->setAmbient(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
+        osg::Vec4f lightPosition (osg::Vec4f(0,0,30,1.0f));
+//         light->setPosition(lightPosition);
+//         light->setAmbient(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
 //         myLight->setAmbient(osg::Vec4(0.2f,0.2f,0.2f,1.0f));
 //         myLight->setDiffuse(osg::Vec4(0.1f,0.4f,0.1f,1.0f));
 //         myLight->setConstantAttenuation(1.0f);
@@ -81,7 +82,7 @@ WorldView::WorldView( orcaqgui3d::PlatformCSFinder              &platformCSFinde
     lightSource_ = getLighting();
 }
 
-CoordinateFrame
+orcaqgui3d::CoordinateFrame
 WorldView::getCameraPose(bool &isCameraPoseLocalised)
 {
     if ( coordinateFrameManager_.coordinateFramePlatform() == "global" )
@@ -103,7 +104,7 @@ WorldView::getCameraPose(bool &isCameraPoseLocalised)
             isCameraPoseLocalised = true;
 
             // Begin with the platform's CF
-            CoordinateFrame cf( Vector3(x,y,z), roll,pitch,yaw );
+            orcaqgui3d::CoordinateFrame cf( orcaqgui3d::Vector3(x,y,z), roll,pitch,yaw );
 
             // Add the user's input
             cf.multMatrix( viewHandler_.pose().homogeneousMatrix() );
@@ -147,7 +148,7 @@ WorldView::paintGL()
     cameraPose_ = getCameraPose( isCameraPoseLocalised );
 
     // Put the camera in position
-    Vector3 center = cameraPose_.pos() + cameraPose_.fwd();
+    orcaqgui3d::Vector3 center = cameraPose_.pos() + cameraPose_.fwd();
     sceneView_->setViewMatrixAsLookAt( osg::Vec3( cameraPose_.pos().x(),
                                                   cameraPose_.pos().y(),
                                                   cameraPose_.pos().z() ),
@@ -162,7 +163,7 @@ WorldView::paintGL()
 
     // Add lights
     root->addChild( lightSource_.get() );
-    osg::ref_ptr<osg::StateSet> lightSS (root->getOrCreateStateSet());
+    osg::ref_ptr<osg::StateSet> lightSS(root->getOrCreateStateSet());
     lightSource_->setStateSetModes(*lightSS,osg::StateAttribute::ON);
 
     paintAllGuiElements( isCameraPoseLocalised, root.get() );
@@ -285,12 +286,12 @@ WorldView::paintAllGuiElements( bool isCoordinateFramePlatformLocalised, osg::Gr
                     }
                     else
                     {
-//                         osg::ref_ptr<osg::PositionAttitudeTransform> pos = new osg::PositionAttitudeTransform;
-//                         pos->setPosition( osg::Vec3( x, y, z ) );
-//                         pos->setAttitude();
-                        cout<<"TRACE(worldview.cpp): TODO: xfrom to platform CS" << endl;
-
+                        osg::ref_ptr<osg::PositionAttitudeTransform> pos = 
+                            orcaqgui3d::getPositionAttitudeTransform( x, y, z,
+                                                                      roll, pitch, yaw );
                         elem->paint( *this, *this );
+                        root->addChild( pos.get() );
+                        pos->addChild( elem->osgNode() );
                     }
                 }
             }

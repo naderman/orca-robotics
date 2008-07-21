@@ -11,24 +11,7 @@ namespace orcaview3d {
 ViewHandler::ViewHandler()
 {
     // Reasonable starting point: where we can see the origin
-    cameraPose_.translate( Vector3( -2, 0, 2 ) );
-}
-
-void 
-ViewHandler::applyViewingTransformation() const
-{
-    // cout<<"TRACE(viewhandler.cpp): cameraPose_: " << toString(cameraPose_) << endl;
-
-    Vector3 center = cameraPose_.pos() + cameraPose_.fwd();
-    gluLookAt( cameraPose_.pos().x(),
-               cameraPose_.pos().y(),
-               cameraPose_.pos().z(),
-               center.x(), 
-               center.y(), 
-               center.z(),
-               cameraPose_.up().x(), 
-               cameraPose_.up().y(), 
-               cameraPose_.up().z() );
+    cameraPose_.translate( orcaqgui3d::Vector3( -2, 0, 2 ) );
 }
 
 void
@@ -102,7 +85,7 @@ ViewHandler::keyPressEvent(QKeyEvent *e)
     {
     case Qt::Key_I:
     {
-        Vector3 fwd = cameraPose_.fwd();
+        orcaqgui3d::Vector3 fwd = cameraPose_.fwd();
         fwd.z() = 0;
         fwd.normalise();
         cameraPose_.translate(amtLin*fwd);
@@ -110,7 +93,7 @@ ViewHandler::keyPressEvent(QKeyEvent *e)
     }
     case Qt::Key_K:
     {
-        Vector3 fwd = cameraPose_.fwd();
+        orcaqgui3d::Vector3 fwd = cameraPose_.fwd();
         fwd.z() = 0;
         fwd.normalise();
         cameraPose_.translate(-amtLin*fwd);
@@ -138,19 +121,19 @@ ViewHandler::keyPressEvent(QKeyEvent *e)
     }
     case Qt::Key_Up:
     {
-        cameraPose_.translate( Vector3( 0, 0, amtLin ) );
+        cameraPose_.translate( orcaqgui3d::Vector3( 0, 0, amtLin ) );
         break;
     }
     case Qt::Key_Down:
     {
-        cameraPose_.translate( Vector3( 0, 0, -amtLin ) );
+        cameraPose_.translate( orcaqgui3d::Vector3( 0, 0, -amtLin ) );
         break;        
     }
     case Qt::Key_R:
     {
         // reset
-        cameraPose_ = CoordinateFrame();
-        cameraPose_.translate( Vector3(-2,0,2) );
+        cameraPose_ = orcaqgui3d::CoordinateFrame();
+        cameraPose_.translate( orcaqgui3d::Vector3(-2,0,2) );
         break;        
     }
     default:

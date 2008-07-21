@@ -35,7 +35,7 @@ namespace {
         GLubyte checkImage[64][64][3];
 
         // Draw the chess-board in memory
-        orcaqgui3d::glutil::makeCheckImage64x64x3( checkImage, 2, 240, 255 );
+        orcaqgui3d::glutil::makeCheckImage64x64x3( checkImage, 2, 120, 130 );
         
         // copy to the image
         int n=0;
@@ -133,7 +133,7 @@ GridElement::drawGroundPlane() // const orcaqgui3d::View &view )
     groundPlaneStateSet->setTextureAttribute(0,texEnv);
 
     // Associate this state set with our Geode
-//    groundPlaneGeode_->setStateSet(groundPlaneStateSet.get());
+    groundPlaneGeode_->setStateSet(groundPlaneStateSet.get());
 
     //
     // Create the ground plane
@@ -162,8 +162,8 @@ GridElement::drawGroundPlane() // const orcaqgui3d::View &view )
     texCoords->push_back( osg::Vec2( texCoordExtreme, 0 ) );
 
     osg::ref_ptr<osg::Vec4Array> colors = new osg::Vec4Array;
-    // colors->push_back(osg::Vec4(0.3, 0.3, 0.3, 1.0) );
-    colors->push_back(osg::Vec4(0.0, 0.5, 0.0, 1.0) );
+    colors->push_back(osg::Vec4(0.2, 0.2, 0.2, 1.0) );
+    // colors->push_back(osg::Vec4(0.0, 0.5, 0.0, 1.0) );
     groundPlaneGeometry->setColorArray(colors.get());
     groundPlaneGeometry->setColorBinding(osg::Geometry::BIND_PER_PRIMITIVE_SET);
 

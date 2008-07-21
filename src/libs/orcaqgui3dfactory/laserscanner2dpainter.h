@@ -15,6 +15,9 @@
 #include <QGLWidget>
 #include <orcaqgui3d/view.h>
 #include <orca/laserscanner2d.h>
+#include <osg/Group>
+#include <osg/Geode>
+#include <osg/PositionAttitudeTransform>
 
 namespace orcaqgui3d
 {
@@ -28,21 +31,20 @@ class LaserScanner2dPainter
   public:
     // -1 means 'default'
     LaserScanner2dPainter( QColor outlineColor=QColor( 102,102,153, 255 ) );
-//                            float  outlineThickness=-1,
-//                            float  brightReturnWidth=0.2 );
 
-    void setOffset( const orca::Frame3d &offset );
-    void setSize( const orca::Size3d &size );
+    void setDescr( const orca::Frame3d &offset,
+                   const orca::Size3d  &size );
+
     void setData( const orca::RangeScanner2dDataPtr &scan );
 
     void paint( const orcaqgui3d::View &view, QGLWidget &p );
 
     void clear();
     
-    void setLaserMaxRange( float laserMaxRange ) { laserMaxRange_ = laserMaxRange; }
-    
     void setColor( QColor color );
     void setFocus( bool inFocus );
+
+    osg::Node *osgNode() const { return root_.get(); }    
 
   private:
 
@@ -50,27 +52,15 @@ class LaserScanner2dPainter
     std::vector<unsigned char> intensities_;
     bool                       intensitiesValid_;
 
-    double laserMaxRange_;
-    double fieldOfView_;
-    double startAngle_;
-
     bool isDisplayScan_;
-    // bool isDisplayWalls_;
     bool isDisplayReflectors_;
     QColor outlineColor_;
     QColor basisColor_;
 
-//     float  outlineThickness_;
-//     float  brightReturnWidth_;
+    osg::ref_ptr<osg::PositionAttitudeTransform> xformNode_;
+    osg::ref_ptr<osg::Geode>                     scanNode_;
 
-    double offsetX_;
-    double offsetY_;
-    double offsetZ_;
-    double offsetRoll_;
-	double offsetPitch_;
-    double offsetYaw_;
-
-    orca::Size3d size_;
+    osg::ref_ptr<osg::Group> root_;
 };
 
 } // namespace

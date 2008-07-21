@@ -5,7 +5,7 @@
 
 using namespace std;
 
-namespace orcaview3d {
+namespace orcaqgui3d {
 
 double Vector3::length() const
 {

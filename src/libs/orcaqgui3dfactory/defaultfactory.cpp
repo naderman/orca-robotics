@@ -12,7 +12,7 @@
 #include <hydroqgui/hydroqgui.h>
 
 #include <orcaqgui3dfactory/gridelement.h>
-//#include <orcaqgui3dfactory/laserscanner2delement.h>
+#include <orcaqgui3dfactory/laserscanner2delement.h>
 #include <orcaqgui3dfactory/localise2delement.h>
 
 #include "defaultfactory.h"
@@ -24,7 +24,7 @@ namespace orcaqgui3d {
 DefaultFactory::DefaultFactory()
 {
     addSupportedType("Grid");
-//    addSupportedType("LaserScanner2d");
+    addSupportedType("LaserScanner2d");
     addSupportedType("Localise2d");
 }
 
@@ -82,9 +82,9 @@ DefaultFactory::create( const QString                            &elementType,
         if ( elementType == "Grid" ) {
             elem = new orcaqgui3d::GridElement();
         }
-//         else if ( elementType == "LaserScanner2d" ) {
-//             elem = new orcaqgui3d::LaserScanner2dElement( context_, elementDetails[0].toStdString() );
-//         }
+        else if ( elementType == "LaserScanner2d" ) {
+            elem = new orcaqgui3d::LaserScanner2dElement( context_, elementDetails[0].toStdString() );
+        }
         else if ( elementType == "Localise2d" ) {
             elem = new orcaqgui3d::Localise2dElement( context_, elementDetails[0].toStdString(), &humanManager );
         }

@@ -5,7 +5,7 @@
 
 using namespace std;
 
-namespace orcaview3d {
+namespace orcaqgui3d {
 
 CoordinateFrame::CoordinateFrame()
     : fwd_ (1,0,0),

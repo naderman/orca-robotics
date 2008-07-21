@@ -6,7 +6,7 @@
 #include <iostream>
 #include <string>
 
-namespace orcaview3d {
+namespace orcaqgui3d {
 
 //
 // @author Alex Brooks

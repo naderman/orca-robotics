@@ -31,9 +31,7 @@ LaserScanner2dElement::getLaserInfo()
     orca::RangeScanner2dDescription descr;
     descr = laserPrx->getDescription();
 
-    painter_.setOffset( descr.offset );
-    painter_.setSize( descr.size );
-    painter_.setLaserMaxRange( descr.maxRange );
+    painter_.setDescr( descr.offset, descr.size );
 }
 
 

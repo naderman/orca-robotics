@@ -78,7 +78,7 @@ private:
     ::hydroqguielementutil::IHumanManager &humanManager_;
     hydroqgui::PlatformFocusManager &platformFocusManager_;
 
-    CoordinateFrame getCameraPose( bool &isCameraPoseLocalised );
+    orcaqgui3d::CoordinateFrame getCameraPose( bool &isCameraPoseLocalised );
 
     // from QGLWidget
     void initializeGL();
@@ -100,7 +100,7 @@ private:
     ViewHandler viewHandler_;
 
     // Current camera pose
-    CoordinateFrame cameraPose_;
+    orcaqgui3d::CoordinateFrame cameraPose_;
 
     // SceneView: Literally the view of the scene, encapsulating
     // how it's rendered.
