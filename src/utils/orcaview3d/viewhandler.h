@@ -25,10 +25,14 @@ public:
     void mousePressEvent( QMouseEvent* );
     // Returns true if the viewpoint has been modified
     bool mouseMoveEvent( QMouseEvent* );
-    // Returns true if the viewpoint has been modified
-    bool keyPressEvent(QKeyEvent *e);
+    // Returns true if the viewpoint has been modified.
+    // Sets 'needResize' if the eindow needs a resizeEvent (eg due to a zoom operation)
+    bool keyPressEvent(QKeyEvent *e, bool &needResize);
 
     const orcaqgui3d::CoordinateFrame &pose() const { return cameraPose_; }
+    double zoomFactor() const { return zoomFactor_; }
+
+    std::string keyDescription() const;
 
 private: 
 
@@ -38,6 +42,7 @@ private:
     // Current viewpoint
     orcaqgui3d::CoordinateFrame cameraPose_;
 
+    double zoomFactor_;
 };
 
 }

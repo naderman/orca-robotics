@@ -59,6 +59,8 @@ WorldView::WorldView( orcaqgui3d::PlatformCSFinder              &platformCSFinde
     displayTimer_->start( displayRefreshTime );    
 
     lightSource_ = getLighting();
+
+    cout<<"TRACE(worldview.cpp): Keys: " << viewHandler_.keyDescription() << endl;    
 }
 
 orcaqgui3d::CoordinateFrame
@@ -111,9 +113,19 @@ WorldView::initializeGL()
 void 
 WorldView::resizeGL(int w, int h)
 {
+    // Set the viewing angle based on the viewport size
+    // (the near/far clipping planes are made up randomly)
+    const float leftRightBase = (1.0/640.0) / 2.0;
+    const float bottomTopBase = (1.0/480.0) / 2.0;
+
     // sets the perspective:
     //  (left,right,bottom,top,near,far)
-    sceneView_->setProjectionMatrixAsFrustum( -1.0, 1.0, -1.0, 1.0, 1.0, 200.0 );
+    sceneView_->setProjectionMatrixAsFrustum( -leftRightBase*w/(viewHandler_.zoomFactor()),
+                                               leftRightBase*w/(viewHandler_.zoomFactor()),
+                                              -bottomTopBase*h/(viewHandler_.zoomFactor()),
+                                               bottomTopBase*h/(viewHandler_.zoomFactor()),
+                                              1.0,
+                                              100.0 );
 
     // define the viewport
     sceneView_->setViewport( 0, 0, w, h );
@@ -308,8 +320,11 @@ void
 WorldView::keyPressEvent(QKeyEvent *e)
 {
     cout<<"TRACE(worldview.cpp): "<<__func__ << endl;
-    const bool needUpdate = viewHandler_.keyPressEvent(e);
-    if ( needUpdate )
+    bool needResize = false;
+    const bool needUpdate = viewHandler_.keyPressEvent(e,needResize);
+    if ( needResize )
+        resizeEvent( NULL );
+    else if ( needUpdate )
         updateGL();
     else
         QGLWidget::keyPressEvent(e);
@@ -359,7 +374,6 @@ WorldView::mouseReleaseEvent( QMouseEvent* e )
         return;
     }
 }
-
 
 void
 WorldView::mouseDoubleClickEvent( QMouseEvent* e )

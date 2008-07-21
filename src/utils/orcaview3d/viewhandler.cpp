@@ -3,12 +3,14 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <gbxutilacfr/mathdefs.h>
+#include <sstream>
 
 using namespace std;
 
 namespace orcaview3d {
 
 ViewHandler::ViewHandler()
+    : zoomFactor_(1.0)
 {
     // Reasonable starting point: where we can see the origin
     cameraPose_.translate( orcaqgui3d::Vector3( -2, 0, 2 ) );
@@ -63,10 +65,25 @@ ViewHandler::mouseMoveEvent( QMouseEvent* e )
     return false;
 }
 
+std::string
+ViewHandler::keyDescription() const
+{
+    stringstream ss;
+    ss << endl
+       << " u i o        : " << endl
+       << " j k l        : move camera in x-y plane" << endl
+       << "              : " << endl
+       << " up/dn arrows : move cam in z-dimension" << endl
+       << " r            : reset camera params" << endl
+       << " +/-          : zoom" << endl;
+    return ss.str();
+}
+
 bool 
-ViewHandler::keyPressEvent(QKeyEvent *e)
+ViewHandler::keyPressEvent( QKeyEvent *e, bool &needResize )
 {
     bool needUpdate=true;
+    needResize = false;
 
     double amtLin = 0.2;
     double amtRot = 5*M_PI/180.0;
@@ -134,7 +151,20 @@ ViewHandler::keyPressEvent(QKeyEvent *e)
         // reset
         cameraPose_ = orcaqgui3d::CoordinateFrame();
         cameraPose_.translate( orcaqgui3d::Vector3(-2,0,2) );
+        zoomFactor_ = 1.0;
         break;        
+    }
+    case Qt::Key_Minus:
+    {
+        zoomFactor_ /= 1.05;
+        needResize = true;
+        break;
+    }
+    case Qt::Key_Plus:
+    {
+        zoomFactor_ *= 1.05;
+        needResize = true;
+        break;
     }
     default:
     {
