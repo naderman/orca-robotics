@@ -14,8 +14,7 @@
 @ingroup orca_linux
 @defgroup orca_util_orcaview3d OrcaView3d
 
-@brief Graphical display of global and local 3D information.
-       This thing is _very_much_ alpha-quality at this stage...
+@brief 3D Graphical viewer.
 
 @par Provides
     
@@ -24,31 +23,25 @@
 @par Requires
 
 - @ref orca_interface_laserscanner2d [OrcaView3d.Requires.LaserScanner2d]
-- @ref orca_interface_position2d [OrcaView3d.Requires.Position2d]
+- @ref orca_interface_localise2d [OrcaView3d.Requires.Localise2d]
 
 @image html orcaview3d.png
 
 @par Operation
 
-OrcaView3d is a 3d-generalisation of OrcaView.
+OrcaView3d is a 3d-generalisation of OrcaView2d.
 
 @section dependencies Dependencies   
 - Qt GUI library >= version 4.1
-- OpenGL: libglut
-- 3DS loading: lib3ds
+- OpenSceneGraph
 
 On Debian: 
 @verbatim
-# apt-get install libglut3-dev lib3ds-dev
-@endverbatim
-
-For OpenGL utilities, install this Debian package:
-@verbatim
-# apt-get install mesa-utils
+# apt-get install libqt4-dev libopenscenegraph-dev
 @endverbatim
 
 @section authors Authors
-Ben Upcroft, Alex Brooks, Tobias Kaupp, Alexei Makarenko
+Alex Brooks
 
 */
 
