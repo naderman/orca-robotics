@@ -12,7 +12,6 @@
 
 #include <QColor>
 #include <QGLWidget>
-#include <orcaqgui3d/view.h>
 #include <orca/localise2d.h>
 #include <hydroqguielementutil/paintutils.h>
 #include <osg/Group>

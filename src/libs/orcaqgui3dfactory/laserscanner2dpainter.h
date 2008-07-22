@@ -13,7 +13,6 @@
 
 #include <QColor>
 #include <QGLWidget>
-#include <orcaqgui3d/view.h>
 #include <orca/laserscanner2d.h>
 #include <osg/Group>
 #include <osg/Geode>

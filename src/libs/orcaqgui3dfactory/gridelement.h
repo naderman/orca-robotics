@@ -11,7 +11,6 @@
 #ifndef ORCAGUI3D_GRIDELEMENT3D_H
 #define ORCAGUI3D_GRIDELEMENT3D_H
 
-#include <orcaqgui3d/view.h>
 #include <orcaqgui3d/guielement3d.h>
 #include <GL/gl.h>
 #include <osg/Geometry>
