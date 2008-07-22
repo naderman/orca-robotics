@@ -17,7 +17,6 @@
 #include <QtOpenGL>
 #include <hydroqgui/hydroqgui.h>
 #include <orcaqgui3d/platformcsfinder.h>
-#include <orcaqgui3d/view.h>
 #include "viewhandler.h"
 #include <osgUtil/SceneView>
 #include <osg/Group>
