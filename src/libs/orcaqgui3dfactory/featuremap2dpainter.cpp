@@ -84,7 +84,7 @@ FeatureMap2dPainter::paintPointFeature( int featureType,
                                         double covXY,
                                         double covYY )
 {
-    const float radius = 0.2;
+    const float radius = 0.1;
     float height = 1.5;
     if ( featureType == orca::feature::VEHICLEPOSE ||
          featureType == orca::feature::VEHICLEPOSE+10 )
