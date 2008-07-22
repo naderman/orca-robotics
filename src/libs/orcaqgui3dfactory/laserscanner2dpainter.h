@@ -12,7 +12,6 @@
 #define ORCAGUI3D_LASERSCANNER2D_PAINTER_H
 
 #include <QColor>
-#include <QGLWidget>
 #include <orca/laserscanner2d.h>
 #include <osg/Group>
 #include <osg/Geode>

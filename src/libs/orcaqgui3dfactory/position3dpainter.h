@@ -13,7 +13,6 @@
 #define ORCAGUI3D_POSITION3D_PAINTER_H
 
 #include <QColor>
-#include <QGLWidget>
 #include <orca/position3d.h>
 #include <orcaqgui3dfactory/objectmodel.h>
 

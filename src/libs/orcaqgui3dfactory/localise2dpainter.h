@@ -11,7 +11,6 @@
 #define ORCAGUI3D_LOCALISE2D_PAINTER_H
 
 #include <QColor>
-#include <QGLWidget>
 #include <orca/localise2d.h>
 #include <hydroqguielementutil/paintutils.h>
 #include <osg/Group>

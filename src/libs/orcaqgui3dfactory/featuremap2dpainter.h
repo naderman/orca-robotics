@@ -11,7 +11,6 @@
 #ifndef QORC_FEATUREMAP2D_PAINTER_H
 #define QORC_FEATUREMAP2D_PAINTER_H
 
-#include <QGLWidget>
 #include <qcolor.h>
 #include <orca/featuremap2d.h>
 #include <hydroqguielementutil/definitions2d.h>
