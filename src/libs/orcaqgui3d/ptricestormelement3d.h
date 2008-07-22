@@ -12,8 +12,6 @@
 #define ORCAGUI_PTRICESTORM_ELEMENT_3D_H
 
 #include <orcaqguielementutil/ptricestormelement.h>
-#include <orcaqgui3d/view.h>
-#include <QGLWidget>
 #include <orcaqgui3d/guielement3d.h>
 
 namespace orcaqgui3d {
