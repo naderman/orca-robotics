@@ -33,11 +33,12 @@ OrcaView3d is a 3d-generalisation of OrcaView2d.
 
 @section dependencies Dependencies   
 - Qt GUI library >= version 4.1
+  - QtOpenGL
 - OpenSceneGraph
 
 On Debian: 
 @verbatim
-# apt-get install libqt4-dev libopenscenegraph-dev
+# apt-get install libqt4-dev libqt4-opengl libopenscenegraph-dev
 @endverbatim
 
 @section authors Authors
