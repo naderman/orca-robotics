@@ -115,8 +115,10 @@ WorldView::resizeGL(int w, int h)
 {
     // Set the viewing angle based on the viewport size
     // (the near/far clipping planes are made up randomly)
-    const float leftRightBase = (1.0/640.0) / 2.0;
-    const float bottomTopBase = (1.0/480.0) / 2.0;
+    // const float leftRightBase = (1.0/640.0) / 2.0;
+//     const float bottomTopBase = (1.0/480.0) / 2.0;
+    const float leftRightBase = (1.0/400.0);
+    const float bottomTopBase = (1.0/400.0);
 
     // sets the perspective:
     //  (left,right,bottom,top,near,far)

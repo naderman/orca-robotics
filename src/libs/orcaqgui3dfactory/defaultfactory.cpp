@@ -15,6 +15,7 @@
 #include <orcaqgui3dfactory/laserscanner2delement.h>
 #include <orcaqgui3dfactory/localise2delement.h>
 #include <orcaqgui3dfactory/featuremap2delement.h>
+#include <orcaqgui3dfactory/ogmapelement.h>
 
 #include "defaultfactory.h"
 
@@ -28,6 +29,7 @@ DefaultFactory::DefaultFactory()
     addSupportedType("LaserScanner2d");
     addSupportedType("Localise2d");
     addSupportedType("FeatureMap2d");
+    addSupportedType("OgMap");
 }
 
 bool 
@@ -91,6 +93,9 @@ DefaultFactory::create( const QString                            &elementType,
             elem = new orcaqgui3d::Localise2dElement( context_, elementDetails[0].toStdString(), &humanManager );
         }
         else if ( elementType == "FeatureMap2d" ) {
+            elem = new orcaqgui3d::FeatureMap2dElement( context_, elementDetails[0].toStdString(), &humanManager );
+        }
+        else if ( elementType == "OgMap" ) {
             elem = new orcaqgui3d::FeatureMap2dElement( context_, elementDetails[0].toStdString(), &humanManager );
         }
         else

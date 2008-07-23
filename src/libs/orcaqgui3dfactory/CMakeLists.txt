@@ -8,7 +8,7 @@ GBX_REQUIRE_VAR( build LIB ${LIB_NAME} not_os_win "Windows OS is not  supported"
 GBX_REQUIRE_VAR( build LIB ${LIB_NAME} QT4_FOUND "Qt4 not found" )
 GBX_REQUIRE_VAR( build LIB ${LIB_NAME} OPENSCENEGRAPH_FOUND "OpenSceneGraph not found" )
 
-SET( dep_libs OrcaQGui OrcaQGui3d OrcaQCompModel OrcaQGuiElementUtil )
+SET( dep_libs OrcaQGui OrcaQGui3d OrcaQCompModel OrcaQGuiElementUtil OrcaOgMap )
 GBX_REQUIRE_TARGETS( build LIB ${LIB_NAME} ${dep_libs} )
 
 SET( ext_libs osg osgText )

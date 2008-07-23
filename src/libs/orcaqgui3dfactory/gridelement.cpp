@@ -169,12 +169,12 @@ GridElement::drawGroundPlane()
 
     vertices->push_back( osg::Vec3d( -infty, -infty, 0 ) );
     texCoords->push_back( osg::Vec2( 0, 0 ) );
-    vertices->push_back( osg::Vec3d( -infty,  infty, 0 ) );
-    texCoords->push_back( osg::Vec2( 0, texCoordExtreme ) );
-    vertices->push_back( osg::Vec3d(  infty,  infty, 0 ) );
-    texCoords->push_back( osg::Vec2( texCoordExtreme, texCoordExtreme ) );
     vertices->push_back( osg::Vec3d(  infty, -infty, 0 ) );
     texCoords->push_back( osg::Vec2( texCoordExtreme, 0 ) );
+    vertices->push_back( osg::Vec3d(  infty,  infty, 0 ) );
+    texCoords->push_back( osg::Vec2( texCoordExtreme, texCoordExtreme ) );
+    vertices->push_back( osg::Vec3d( -infty,  infty, 0 ) );
+    texCoords->push_back( osg::Vec2( 0, texCoordExtreme ) );
 
 //     osg::ref_ptr<osg::Vec4Array> colors = new osg::Vec4Array;
 //     colors->push_back(osg::Vec4(0.2, 0.2, 0.2, 1.0) );

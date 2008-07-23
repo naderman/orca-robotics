@@ -45,6 +45,9 @@ CHECK_INCLUDE_FILE( lib3ds/node.h LIB3DS_FOUND )
 # Check for OpenSceneGraph
 CHECK_INCLUDE_FILE_CXX( osg/Node OPENSCENEGRAPH_FOUND )
 
+# Check for potrace
+CHECK_INCLUDE_FILE( potrace/potracelib.h POTRACE_FOUND )
+
 # Check for Java installation
 INCLUDE(${CMAKE_ROOT}/Modules/FindJava.cmake)
 # MESSAGE( STATUS "DEBUG:   Java runtime ${JAVA_RUNTIME}" )
