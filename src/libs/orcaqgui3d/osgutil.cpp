@@ -23,10 +23,10 @@ getPositionAttitudeTransform( double x,
     pos->setPosition( osg::Vec3(x,y,z) );
 
     // Not sure this order is right...
-    osg::Quat rot;
-    rot.makeRotate( roll,  osg::Vec3(1,0,0) );
-    rot.makeRotate( pitch, osg::Vec3(0,1,0) );
-    rot.makeRotate( yaw,   osg::Vec3(0,0,1) );
+    osg::Quat rot = 
+        osg::Quat( roll,  osg::Vec3(1,0,0) ) * 
+        osg::Quat( pitch, osg::Vec3(0,1,0) ) * 
+        osg::Quat( yaw,   osg::Vec3(0,0,1) );
 
     pos->setAttitude( rot );
     return pos;

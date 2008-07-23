@@ -17,6 +17,7 @@
 #include <orcaice/orcaice.h>
 #include <osg/ShapeDrawable>
 #include <osg/Geometry>
+#include <orcaifacestring/bros1.h>
 
 #include "laserscanner2dpainter.h"
 

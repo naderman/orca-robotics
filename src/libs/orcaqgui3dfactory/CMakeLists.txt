@@ -13,6 +13,11 @@ GBX_REQUIRE_TARGETS( build LIB ${LIB_NAME} ${dep_libs} )
 
 SET( ext_libs osg osgText )
 
+IF ( POTRACE_FOUND )
+  ADD_DEFINITIONS( -DHAVE_POTRACE=1 )
+  SET( ext_libs ${ext_libs} potrace )
+ENDIF ( POTRACE_FOUND )
+
 IF( build )
     
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
@@ -28,8 +33,7 @@ IF( build )
     GBX_ADD_LIBRARY( ${LIB_NAME} SHARED ${human_srcs} ${moc_srcs} )
     
     LINK_DIRECTORIES( ${PROJECT_SOURCE_DIR}/src/libs/qorcacm )
-    TARGET_LINK_LIBRARIES ( ${LIB_NAME} ${dep_libs} ${ext_libs} ${QT_QTOPENGL_LIBRARY}
-    )
+    TARGET_LINK_LIBRARIES ( ${LIB_NAME} ${dep_libs} ${ext_libs} ${QT_QTOPENGL_LIBRARY} )
 
     IF( ORCA_BUILD_TESTS )
         ADD_SUBDIRECTORY( test )
