@@ -49,7 +49,8 @@ WorldView::WorldView( orcaqgui3d::PlatformCSFinder              &platformCSFinde
       mouseEventManager_(mouseEventManager),
       guiElementSet_(guiElementSet),
       humanManager_(humanManager),
-      platformFocusManager_(platformFocusManager)
+      platformFocusManager_(platformFocusManager),
+      isOrthographicProjection_(false)
 {
     // Allow receipt of keyboard events
     setFocusPolicy( Qt::StrongFocus );
@@ -59,6 +60,11 @@ WorldView::WorldView( orcaqgui3d::PlatformCSFinder              &platformCSFinde
     displayTimer_->start( displayRefreshTime );    
 
     lightSource_ = getLighting();
+
+    QAction* orthoProj = new QAction(tr("Orthographic Projection"),this);
+    orthoProj->setCheckable(true);
+    connect(orthoProj,SIGNAL(toggled(bool)), this, SLOT(setOrthographicProjection(bool)) );
+    humanManager_.displayMenu()->addAction(orthoProj);
 
     cout<<"TRACE(worldview.cpp): Keys: " << viewHandler_.keyDescription() << endl;    
 }
@@ -115,19 +121,33 @@ WorldView::resizeGL(int w, int h)
 {
     // Set the viewing angle based on the viewport size
     // (the near/far clipping planes are made up randomly)
-    // const float leftRightBase = (1.0/640.0) / 2.0;
-//     const float bottomTopBase = (1.0/480.0) / 2.0;
-    const float leftRightBase = (1.0/400.0);
-    const float bottomTopBase = (1.0/400.0);
+    const float leftRightBase = (1.0/640.0) / 2.0;
+    const float bottomTopBase = (1.0/480.0) / 2.0;
+//     const float leftRightBase = (1.0/400.0);
+//     const float bottomTopBase = (1.0/400.0);
 
-    // sets the perspective:
-    //  (left,right,bottom,top,near,far)
-    sceneView_->setProjectionMatrixAsFrustum( -leftRightBase*w/(viewHandler_.zoomFactor()),
-                                               leftRightBase*w/(viewHandler_.zoomFactor()),
-                                              -bottomTopBase*h/(viewHandler_.zoomFactor()),
-                                               bottomTopBase*h/(viewHandler_.zoomFactor()),
-                                              1.0,
-                                              100.0 );
+    if ( isOrthographicProjection_ )
+    {
+        // sets an enginerring-type projection
+        //  (left,right,bottom,top,near,far)
+        sceneView_->setProjectionMatrixAsOrtho( -leftRightBase*w/(viewHandler_.zoomFactor()),
+                                                  leftRightBase*w/(viewHandler_.zoomFactor()),
+                                                  -bottomTopBase*h/(viewHandler_.zoomFactor()),
+                                                  bottomTopBase*h/(viewHandler_.zoomFactor()),
+                                                  1.0,
+                                                  100.0 );
+    }
+    else
+    {
+        // sets the perspective:
+        //  (left,right,bottom,top,near,far)
+        sceneView_->setProjectionMatrixAsFrustum( -leftRightBase*w/(viewHandler_.zoomFactor()),
+                                                  leftRightBase*w/(viewHandler_.zoomFactor()),
+                                                  -bottomTopBase*h/(viewHandler_.zoomFactor()),
+                                                  bottomTopBase*h/(viewHandler_.zoomFactor()),
+                                                  1.0,
+                                                  100.0 );
+    }
 
     // define the viewport
     sceneView_->setViewport( 0, 0, w, h );
@@ -316,6 +336,13 @@ WorldView::attachAllGuiElements( bool isCoordinateFramePlatformLocalised, osg::G
             humanManager_.showStatusMsg(::hydroqguielementutil::IHumanManager::Warning,ss.str().c_str());
         }
     }
+}
+
+void
+WorldView::setOrthographicProjection( bool orthoProj )
+{
+    isOrthographicProjection_ = orthoProj;
+    resizeEvent(NULL);
 }
 
 void 

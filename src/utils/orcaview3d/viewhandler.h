@@ -36,6 +36,8 @@ public:
 
 private: 
 
+    void reset();
+
     QPointF mouseDownPnt_;
     QPoint prevDragPos_;
 

@@ -43,6 +43,7 @@ public:
 private slots:
 
     void reDisplay();
+    void setOrthographicProjection(bool orthoProj);
 
 private:
 
@@ -89,6 +90,8 @@ private:
     osg::ref_ptr<osgUtil::SceneView> sceneView_;
 
     osg::ref_ptr<osg::LightSource> lightSource_;
+
+    bool isOrthographicProjection_;
 };
 
 } // namespace

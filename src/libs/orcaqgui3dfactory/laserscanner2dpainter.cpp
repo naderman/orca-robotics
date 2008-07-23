@@ -43,6 +43,9 @@ void
 LaserScanner2dPainter::setDescr(  const orca::Frame3d &offset,
                                   const orca::Size3d  &size )
 {
+    if ( root_->containsNode( xformNode_.get() ) )
+        root_->removeChild( xformNode_.get() );
+
     xformNode_ = orcaqgui3d::getPositionAttitudeTransform( offset.p.x,
                                                            offset.p.y,
                                                            offset.p.z,

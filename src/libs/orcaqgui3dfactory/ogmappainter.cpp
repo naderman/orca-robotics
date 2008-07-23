@@ -32,14 +32,15 @@ namespace {
         img->allocateImage( ogMap.numCellsX(),
                             ogMap.numCellsY(),
                             3,
-                            GL_LUMINANCE,
+                            GL_RGB,
                             GL_UNSIGNED_BYTE );
 
-        // copy to the image
+        // copy to the image (seems to be column-major...)
         int n=0;
-        for ( int i=0; i < ogMap.numCellsX(); i++ )
-            for ( int j=0; j < ogMap.numCellsY(); j++ )
-                img->data()[n++] = ogMap.gridCell(i,j);
+        for ( int j=0; j < ogMap.numCellsY(); j++ )
+            for ( int i=0; i < ogMap.numCellsX(); i++ )
+                for ( int k=0; k < 3; k++ )
+                    img->data()[n++] = hydroogmap::CELL_OCCUPIED - ogMap.gridCell(i,j);
         
         return img;
     }
@@ -57,6 +58,10 @@ OgMapPainter::setData( const orca::OgMapData& data )
 {
     hydroogmap::OgMap ogMap;
     orcaogmap::convert( data, ogMap );
+
+    // Remove the old one
+    if ( root_->containsNode( offsetNode_.get() ) )
+        root_->removeChild( offsetNode_.get() );
 
     offsetNode_ = orcaqgui3d::getPositionAttitudeTransform( ogMap.offset().p.x,
                                                             ogMap.offset().p.y,
@@ -136,14 +141,15 @@ OgMapPainter::drawAsGroundPlane( const hydroogmap::OgMap &ogMap )
     // Create a new StateSet with default settings: 
     osg::ref_ptr<osg::StateSet> groundPlaneStateSet = new osg::StateSet();
 
-    // Assign texture unit 0 of our new StateSet to the texture 
+    // Assign texture unit n of our new StateSet to the texture 
     // we just created and enable the texture.
-    groundPlaneStateSet->setTextureAttributeAndModes(0,checkTexture.get(),osg::StateAttribute::ON);
+    const int unit = 1;
+    groundPlaneStateSet->setTextureAttributeAndModes(unit,checkTexture.get(),osg::StateAttribute::ON);
 
     // Texture mode
     osg::TexEnv* texEnv = new osg::TexEnv;
     texEnv->setMode(osg::TexEnv::DECAL);
-    groundPlaneStateSet->setTextureAttribute(0,texEnv);
+    groundPlaneStateSet->setTextureAttribute(unit,texEnv);
 
     // Associate this state set with our Geode
     geode->setStateSet(groundPlaneStateSet.get());
@@ -157,7 +163,7 @@ OgMapPainter::drawAsGroundPlane( const hydroogmap::OgMap &ogMap )
     groundPlaneGeometry->setVertexArray( vertices.get() );
     
     osg::ref_ptr<osg::Vec2Array> texCoords = new osg::Vec2Array;
-    groundPlaneGeometry->setTexCoordArray( 0, texCoords.get() );
+    groundPlaneGeometry->setTexCoordArray( unit, texCoords.get() );
 
     vertices->push_back( osg::Vec3d( 0, 0, 0 ) );
     texCoords->push_back( osg::Vec2( 0, 0 ) );

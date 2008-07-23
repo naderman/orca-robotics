@@ -10,10 +10,18 @@ using namespace std;
 namespace orcaview3d {
 
 ViewHandler::ViewHandler()
-    : zoomFactor_(1.0)
 {
+    reset();
+}
+
+void
+ViewHandler::reset()
+{
+    zoomFactor_ = 1.0;
+    cameraPose_ = orcaqgui3d::CoordinateFrame();
+
     // Reasonable starting point: where we can see the origin
-    cameraPose_.translate( orcaqgui3d::Vector3( -2, 0, 2 ) );
+    cameraPose_.translate( orcaqgui3d::Vector3(-2,0,2) );
 }
 
 void
@@ -148,10 +156,8 @@ ViewHandler::keyPressEvent( QKeyEvent *e, bool &needResize )
     }
     case Qt::Key_R:
     {
-        // reset
-        cameraPose_ = orcaqgui3d::CoordinateFrame();
-        cameraPose_.translate( orcaqgui3d::Vector3(-2,0,2) );
-        zoomFactor_ = 1.0;
+        reset();
+        needResize = true;
         break;        
     }
     case Qt::Key_Minus:
