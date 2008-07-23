@@ -13,13 +13,13 @@
 
 #include <QMatrix>
 #include <QVector>
-#include <QMouseEvent>
 #include <QTableWidget>
 #include <QSpinBox>
 
 #include <orcaice/orcaice.h>
-#include <orca/pathfollower2d.h>
 #include <orca/pathplanner2d.h>
+#include "ipathinput.h"
+#include "pathutils.h"
 
 namespace hydroqguielementutil {
     class IHumanManager;
@@ -30,60 +30,6 @@ namespace orcaqgui2d {
 class PathInput;
 class WpTable;
 
-// internal Gui representation for waypoint and path
-class GuiWaypoint
-{
-public:
-    GuiWaypoint()
-    : position(QPointF(0.0,0.0)), 
-      heading(0), 
-      timeTarget(0.0), 
-      distanceTolerance(0.0), 
-      headingTolerance(0.0), 
-      maxSpeed(0.0),
-      maxTurnrate(0)
-    {}
-    
-    QPointF position;           // in m
-    int     heading;            // in 1/16 deg from 0 to 360*16
-    float   timeTarget;         // number of seconds until arrival at waypoint
-    float   distanceTolerance;  // distance tolerances in m
-    int     headingTolerance;   // heading tolerances in 1/16 deg from 0 to 360*16
-    float   maxSpeed;           // max speed in m/s
-    int     maxTurnrate;        // max turnrate in deg/s
-};
-
-typedef QVector<GuiWaypoint> GuiPath;
-
-// conversion functions
-void guiPathToOrcaPath( const GuiPath &in, 
-                        orca::Path2d  &out, 
-                        int            numLoops = 1, 
-                        float          timeOffset = 0.0 );
-
-void orcaPathToGuiPath( const orca::Path2d &in, 
-                        GuiPath            &out );
-
-
-// all units are SI units
-class WaypointSettings
-{
-    public:
-        WaypointSettings(std::string a, float b, float c, int d, float e, int f):
-            spacingProperty(a), 
-            spacingValue(b), 
-            distanceTolerance(c), 
-            headingTolerance(d), 
-            maxApproachSpeed(e), 
-            maxApproachTurnrate(f)
-            {}
-            std::string spacingProperty;
-            float spacingValue;
-            float distanceTolerance;
-            int headingTolerance;
-            float maxApproachSpeed;
-            int maxApproachTurnrate;
-};
 
 class WpWidget : public QWidget
 {
@@ -145,7 +91,7 @@ class WpTable : public QTableWidget
         void updateDataStorage(int row, int column);
 };
 
-class PathInput : public QObject
+class PathInput : public QObject, public IPathInput
 { 
     Q_OBJECT
             
@@ -243,12 +189,6 @@ public:
     
     orca::PathPlanner2dTask getTask() const;
 };
-
-WaypointSettings readWaypointSettings( const Ice::PropertiesPtr & props, const std::string & tag );
-
-bool readActivateImmediately( const Ice::PropertiesPtr & props, const std::string & tag );
-
-QString readDumpPath( const Ice::PropertiesPtr & props, const std::string & tag );
 
 } // namespace
 
