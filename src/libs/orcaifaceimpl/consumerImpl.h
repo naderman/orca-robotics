@@ -132,7 +132,7 @@ public:
     virtual void subscribeWithString( const std::string& proxyString )
     {
         ProviderPrxType providerPrx;
-        orcaice::connectToInterfaceWithString<ProviderPrxType>( context_, providerPrx, proxyString );
+        orcaice::connectToInterfaceWithString( context_, providerPrx, proxyString );
 
         providerPrx->subscribe( consumerPrx_ );
         std::stringstream ss;
@@ -143,7 +143,7 @@ public:
     virtual void unsubscribeWithString( const std::string& proxyString )
     {
         ProviderPrxType providerPrx;
-        orcaice::connectToInterfaceWithString<ProviderPrxType>( context_, providerPrx, proxyString );
+        orcaice::connectToInterfaceWithString( context_, providerPrx, proxyString );
 
         providerPrx->unsubscribe( consumerPrx_ );
         std::stringstream ss;
@@ -157,8 +157,13 @@ public:
     {
         ProviderPrxType providerPrx;
         // multi-try
-        orcaice::connectToInterfaceWithString<ProviderPrxType>( 
-                context_, providerPrx, proxyString, thread, subsysName, retryInterval, retryNumber );
+        orcaice::connectToInterfaceWithString( context_,
+                                               providerPrx,
+                                               proxyString,
+                                               thread,
+                                               subsysName,
+                                               retryInterval,
+                                               retryNumber );
 
         int count = 0;
         while ( !thread->isStopping() && ( retryNumber<0 || count<retryNumber) )

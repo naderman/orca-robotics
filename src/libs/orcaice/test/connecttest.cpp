@@ -150,7 +150,7 @@ TestComponent::start()
     homelessFqName.component = "connecttest";
     homelessFqName.iface = "homeless";
     try {
-        orcaice::connectToInterfaceWithString<orca::HomePrx>( context(), homePrx, orcaice::toString( homelessFqName ) );
+        orcaice::connectToInterfaceWithString( context(), homePrx, orcaice::toString( homelessFqName ) );
     }
     catch ( const orcaice::NetworkException & e ) {
         cout<<"failed"<<endl<<e.what()<<endl;

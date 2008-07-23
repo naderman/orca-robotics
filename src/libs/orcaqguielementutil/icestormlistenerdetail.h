@@ -88,19 +88,19 @@ subscribeListener( orcaice::Context      &context,
     }
     // Ignore all exceptions, and try again next time.
     catch ( Ice::ConnectionRefusedException &e ) {
-        std::cout<<"TRACE(PtrIceStormListener::subscribeListener): Caught exception: " << e << std::endl;
+        std::cout<<"TRACE(subscribeListener): Caught exception: " << e << std::endl;
         throw;
     }
     catch ( Ice::Exception &e ) {
-        std::cout<<"TRACE(PtrIceStormListener::subscribeListener): Caught ice exception: " << e << std::endl;
+        std::cout<<"TRACE(subscribeListener): Caught ice exception: " << e << std::endl;
         throw;
     }
     catch ( std::exception &e ) {
-        std::cout<<"TRACE(PtrIceStormListener::subscribeListener): Caught std exception: " << e.what() << std::endl;
+        std::cout<<"TRACE(subscribeListener): Caught std exception: " << e.what() << std::endl;
         throw;
     }
     catch ( ... ) {
-        std::cout<<"TRACE(PtrIceStormListener::subscribeListener): Caught unknown exception." << std::endl;
+        std::cout<<"TRACE(subscribeListener): Caught unknown exception." << std::endl;
         throw;
     }
 }
@@ -124,19 +124,19 @@ unSubscribeListener( orcaice::Context      &context,
     }
     // Ignore all exceptions, and try again next time.
     catch ( Ice::ConnectionRefusedException &e ) {
-        std::cout<<"TRACE(PtrIceStormListener::unSubscribeListener): Caught exception: " << e << std::endl;
+        std::cout<<"TRACE(unSubscribeListener): Caught exception: " << e << std::endl;
         throw;
     }
     catch ( Ice::Exception &e ) {
-        std::cout<<"TRACE(PtrIceStormListener::unSubscribeListener): Caught ice exception: " << e << std::endl;
+        std::cout<<"TRACE(unSubscribeListener): Caught ice exception: " << e << std::endl;
         throw;
     }
     catch ( std::exception &e ) {
-        std::cout<<"TRACE(PtrIceStormListener::unSubscribeListener): Caught std exception: " << e.what() << std::endl;
+        std::cout<<"TRACE(unSubscribeListener): Caught std exception: " << e.what() << std::endl;
         throw;
     }
     catch ( ... ) {
-        std::cout<<"TRACE(PtrIceStormListener::unSubscribeListener): Caught unknown exception." << std::endl;
+        std::cout<<"TRACE(unSubscribeListener): Caught unknown exception." << std::endl;
         throw;
     }
 }

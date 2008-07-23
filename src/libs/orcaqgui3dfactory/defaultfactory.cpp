@@ -96,7 +96,7 @@ DefaultFactory::create( const QString                            &elementType,
             elem = new orcaqgui3d::FeatureMap2dElement( context_, elementDetails[0].toStdString(), &humanManager );
         }
         else if ( elementType == "OgMap" ) {
-            elem = new orcaqgui3d::FeatureMap2dElement( context_, elementDetails[0].toStdString(), &humanManager );
+            elem = new orcaqgui3d::OgMapElement( context_, elementDetails[0].toStdString(), &humanManager );
         }
         else
         {

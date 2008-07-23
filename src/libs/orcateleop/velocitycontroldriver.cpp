@@ -65,7 +65,7 @@ VelocityControl2dDriver::enable()
 void 
 VelocityControl2dDriver::enableWithString( const string &proxyString )
 {
-    orcaice::connectToInterfaceWithString<orca::VelocityControl2dPrx>( context_, prx_, proxyString );
+    orcaice::connectToInterfaceWithString( context_, prx_, proxyString );
 }
     
 int 
