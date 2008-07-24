@@ -17,8 +17,6 @@ IF( build )
     ELSE ( NOT GBX_OS_WIN )
         GBX_ADD_LIBRARY( ${LIB_NAME} STATIC ${srcs} )
     ENDIF( NOT GBX_OS_WIN )
-
-    TARGET_LINK_LIBRARIES( ${LIB_NAME} OrcaObjects )
     
     GBX_ADD_HEADERS( ${LIB_INSTALL} ${hdrs} )
     

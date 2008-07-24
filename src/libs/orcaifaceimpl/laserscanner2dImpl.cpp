@@ -10,7 +10,6 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include <orcaobj/orcaobj.h>
 #include <orcaifaceimpl/util.h>
 #include "laserscanner2dImpl.h"
 
@@ -164,8 +163,6 @@ LaserScanner2dImpl::internalUnsubscribe(const ::orca::RangeScanner2dConsumerPrx 
 void
 LaserScanner2dImpl::localSet( const ::orca::LaserScanner2dDataPtr &data )
 {
-    // cout << "LaserScanner2dImpl::internalSet data: " << orcaobj::toString( data ) << endl;
-    
     dataStore_.set( data );
 }
 
@@ -174,11 +171,8 @@ LaserScanner2dImpl::localSetAndSend( const ::orca::LaserScanner2dDataPtr &data )
 {
     if ( context_.tracer().verbosity( gbxutilacfr::Tracer::DebugTrace, gbxutilacfr::Tracer::ToAny ) >= 5 )
     {
-        stringstream ss;
-        ss << "LaserScanner2dIface: Sending data: " << orcaobj::toString(data);
-        context_.tracer().debug( ss.str(), 5 );
+        context_.tracer().debug( "Sending data", 5 );
     }
-    // cout << "LaserScanner2dImpl::internalSet data: " << orcaobj::toString( data ) << endl;
     
     dataStore_.set( data );
 

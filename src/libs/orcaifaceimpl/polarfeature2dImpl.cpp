@@ -10,7 +10,6 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include <orcaobj/orcaobj.h>
 #include <orcaifaceimpl/util.h>
 #include "polarfeature2dImpl.h"
 
@@ -167,8 +166,6 @@ PolarFeature2dImpl::internalUnsubscribe(const ::orca::PolarFeature2dConsumerPrx 
 void
 PolarFeature2dImpl::localSet( const ::orca::PolarFeature2dData &data )
 {
-    // cout << "PolarFeature2dImpl::internalSet data: " << orcaobj::toString( data ) << endl;
-    
     dataStore_.set( data );
 }
 
@@ -177,13 +174,9 @@ PolarFeature2dImpl::localSetAndSend( const ::orca::PolarFeature2dData &data )
 {
     if ( context_.tracer().verbosity( gbxutilacfr::Tracer::DebugTrace, gbxutilacfr::Tracer::ToAny ) >= 5 )
     {
-        stringstream ss;
-        ss << "PolarFeature2dIface: Sending data: " << orcaobj::toString(data);
-        context_.tracer().debug( ss.str(), 5 );
+        context_.tracer().debug( "Sending data", 5 );
     }
 
-    // cout << "PolarFeature2dImpl::internalSet data: " << orcaobj::toString( data ) << endl;
-    
     dataStore_.set( data );
 
     // Try to push to IceStorm

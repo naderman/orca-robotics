@@ -11,7 +11,6 @@
 #include "drivebicycleImpl.h"
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include <orcaobj/orcaobj.h>
 #include "util.h"
 
 using namespace std;
@@ -159,16 +158,12 @@ DriveBicycleImpl::internalUnsubscribe(const ::orca::DriveBicycleConsumerPrx& sub
 void
 DriveBicycleImpl::localSet( const orca::DriveBicycleData &data )
 {
-//     cout<<"TRACE(drivebicycleIface.cpp): localSet(): " << orcaobj::toString(data) << endl;
-
     dataPipe_.set( data );
 }
 
 void
 DriveBicycleImpl::localSetAndSend( const orca::DriveBicycleData &data )
 {
-//     cout<<"TRACE(drivebicycleiface.cpp): localSetAndSend(): " << orcaobj::toString(data) << endl;
-
     dataPipe_.set( data );
     
     // Try to push to IceStorm.

@@ -11,7 +11,6 @@
 #include <iostream>
 
 #include <orcaice/orcaice.h>
-#include <orcaobj/orcaobj.h>
 #include "odometry3dImpl.h"
 #include "util.h"
 
@@ -162,8 +161,6 @@ Odometry3dImpl::localSet( const orca::Odometry3dData& data )
 void
 Odometry3dImpl::localSetAndSend( const orca::Odometry3dData& data )
 {
-//     cout<<"TRACE(Odometry3dIface.cpp): localSetAndSend: " << orcaobj::toString(data) << endl;
-
     dataStore_.set( data );
 
     // Try to push to IceStorm.

@@ -10,7 +10,6 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include <orcaobj/orcaobj.h>
 #include "localise2dImpl.h"
 #include "util.h"
 
@@ -155,16 +154,12 @@ Localise2dImpl::internalUnsubscribe(const ::orca::Localise2dConsumerPrx& subscri
 void
 Localise2dImpl::localSet( const orca::Localise2dData &data )
 {
-    //cout<<"TRACE(localise2dIface.cpp): localSetData: " << orcaobj::toString(data) << endl;
-
     dataStore_.set( data );
 }
 
 void
 Localise2dImpl::localSetAndSend( const orca::Localise2dData &data )
 {
-    //cout<<"TRACE(localise2dIface.cpp): localSetData: " << orcaobj::toString(data) << endl;
-
     dataStore_.set( data );
     
     // Try to push to IceStorm.

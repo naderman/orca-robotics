@@ -2,7 +2,6 @@
 #include <orcaice/component.h>
 #include <orcaice/application.h>
 #include <orcaice/orcaice.h>
-#include <orcaobj/orcaobj.h>
 #include <orcaifaceimpl/wifiImpl.h>
 
 using namespace std;

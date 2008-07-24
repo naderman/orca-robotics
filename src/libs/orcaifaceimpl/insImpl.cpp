@@ -11,7 +11,6 @@
 #include <iostream>
 
 #include <orcaice/orcaice.h>
-#include <orcaobj/orcaobj.h>
 #include "insImpl.h"
 #include "util.h"
 
@@ -162,8 +161,6 @@ InsImpl::localSet( const orca::InsData& data )
 void
 InsImpl::localSetAndSend( const orca::InsData& data )
 {
-//     cout<<"TRACE(InsIface.cpp): localSetAndSend: " << orcaobj::toString(data) << endl;
-
     dataStore_.set( data );
 
     // Try to push to IceStorm.

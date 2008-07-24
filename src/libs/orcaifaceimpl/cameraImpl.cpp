@@ -10,7 +10,6 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include <orcaobj/orcaobj.h>
 #include <orcaifaceimpl/util.h>
 #include "cameraImpl.h"
 
@@ -163,9 +162,7 @@ CameraImpl::internalUnsubscribe(const ::orca::ImageConsumerPrx &subscriber)
 
 void
 CameraImpl::localSet( const ::orca::CameraDataPtr &data )
-{
-    // cout << "CameraImpl::internalSet data: " << orcaobj::toString( data ) << endl;
-    
+{    
     dataStore_.set( data );
 }
 
@@ -174,11 +171,8 @@ CameraImpl::localSetAndSend( const ::orca::CameraDataPtr &data )
 {
     if ( context_.tracer().verbosity( gbxutilacfr::Tracer::DebugTrace, gbxutilacfr::Tracer::ToAny ) >= 5 )
     {
-        stringstream ss;
-        ss << "CameraIface: Sending data: " << orcaobj::toString(data);
-        context_.tracer().debug( ss.str(), 5 );
+        context_.tracer().debug( "Sending data", 5 );
     }
-    // cout << "CameraImpl::internalSet data: " << orcaobj::toString( data ) << endl;
     
     dataStore_.set( data );
 

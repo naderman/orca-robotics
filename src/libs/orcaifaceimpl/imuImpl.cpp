@@ -11,7 +11,6 @@
 #include <iostream>
 
 #include <orcaice/orcaice.h>
-#include <orcaobj/orcaobj.h>
 #include "imuImpl.h"
 #include "util.h"
 
@@ -162,8 +161,6 @@ ImuImpl::localSet( const orca::ImuData& data )
 void
 ImuImpl::localSetAndSend( const orca::ImuData& data )
 {
-//     cout<<"TRACE(ImuIface.cpp): localSetAndSend: " << orcaobj::toString(data) << endl;
-
     dataStore_.set( data );
 
     // Try to push to IceStorm.
