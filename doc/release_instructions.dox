@@ -42,8 +42,8 @@ $ svn copy --username [USERNAME] https://orca-robotics.svn.sf.net/svnroot/orca-r
   -# Now the tar-balls are ready to roll.  But first test that the originals build cleanly.
   -# Copy the tar-balls to a machine with external access (eg lowrider).
 -# From eg lowrider:
-  -# sftp [USERNAME]@frs.sf.net
-  -# cd upload
+  -# sftp [USERNAME]\@frs.sf.net
+  -# cd uploads
   -# 'put' both tarballs
 -# Create the distros through the sourceforge web interface
   - (Go through "'Admin' -> 'File Releases'" from the Orca project page)
