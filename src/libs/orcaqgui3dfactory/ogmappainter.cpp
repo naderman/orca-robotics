@@ -18,6 +18,7 @@
 #include <orcaogmap/orcaogmap.h>
 #include <orcaqgui3d/osgutil.h>
 #include "ogmappainter.h"
+#include "ogmaptopolygons.h"
 
 using namespace std;
 
@@ -59,7 +60,7 @@ OgMapPainter::setData( const orca::OgMapData& data )
     hydroogmap::OgMap ogMap;
     orcaogmap::convert( data, ogMap );
 
-    // Remove the old one
+    // Remove the old gear
     if ( root_->containsNode( offsetNode_.get() ) )
         root_->removeChild( offsetNode_.get() );
 
@@ -74,7 +75,42 @@ OgMapPainter::setData( const orca::OgMapData& data )
     groundPlaneGeode_ = drawAsGroundPlane( ogMap );
     offsetNode_->addChild( groundPlaneGeode_.get() );
 
-//    ::IceInternal::ProxyHandle< orca::OgMap > ogMapPrx;
+#if HAVE_POTRACE
+    GridToPolygonParams params;
+    wallsGeode_ = convertToPolygons( ogMap, params );
+    offsetNode_->addChild( wallsGeode_.get() );
+
+    //
+    // Create the texture
+    //
+    osg::ref_ptr<osg::Image> image = createImage( ogMap );
+
+    osg::ref_ptr<osg::Texture2D> checkTexture = new osg::Texture2D;
+    // protect from being optimized away as static state:
+    checkTexture->setDataVariance(osg::Object::DYNAMIC); 
+    checkTexture->setImage( image.get() );
+
+//     // Tell the texture to repeat
+//     checkTexture->setWrap( osg::Texture::WRAP_S, osg::Texture::REPEAT );
+//     checkTexture->setWrap( osg::Texture::WRAP_T, osg::Texture::REPEAT );
+
+    // Create a new StateSet with default settings: 
+    osg::ref_ptr<osg::StateSet> stateSet = new osg::StateSet();
+
+    // Assign texture unit n of our new StateSet to the texture 
+    // we just created and enable the texture.
+    const int unit = 0;
+    stateSet->setTextureAttributeAndModes(unit,checkTexture.get(),osg::StateAttribute::ON);
+
+    // Texture mode
+    osg::TexEnv* texEnv = new osg::TexEnv;
+    // texEnv->setMode(osg::TexEnv::DECAL);
+    texEnv->setMode(osg::TexEnv::MODULATE);
+    stateSet->setTextureAttribute(unit,texEnv);
+
+    // Associate this state set with our Geode
+    wallsGeode_->setStateSet(stateSet.get());    
+#endif
 
 
 #if 0
@@ -143,7 +179,7 @@ OgMapPainter::drawAsGroundPlane( const hydroogmap::OgMap &ogMap )
 
     // Assign texture unit n of our new StateSet to the texture 
     // we just created and enable the texture.
-    const int unit = 1;
+    const int unit = 0;
     groundPlaneStateSet->setTextureAttributeAndModes(unit,checkTexture.get(),osg::StateAttribute::ON);
 
     // Texture mode

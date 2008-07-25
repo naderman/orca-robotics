@@ -46,6 +46,7 @@ class OgMapPainter
     osg::ref_ptr<osg::Group>                     root_;
     osg::ref_ptr<osg::PositionAttitudeTransform> offsetNode_;
     osg::ref_ptr<osg::Geode>                     groundPlaneGeode_;
+    osg::ref_ptr<osg::Geode>                     wallsGeode_;
 };
 
 } // namespace

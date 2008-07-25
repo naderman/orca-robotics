@@ -50,8 +50,8 @@ ViewHandler::mouseMoveEvent( QMouseEvent* e )
     if ( e->buttons() & Qt::LeftButton )
     {
         // Rotate camera
-        cameraPose_.increaseYawPlanet( sensitivity*dx*10*M_PI/180.0 );
-        cameraPose_.increasePitch( sensitivity*dy*10*M_PI/180.0 );
+        cameraPose_.increaseYawPlanet( -sensitivity*dx*10*M_PI/180.0 );
+        cameraPose_.increasePitch( -0.5 * sensitivity*dy*10*M_PI/180.0 );
         return true;
     }
 #if 0

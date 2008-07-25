@@ -15,7 +15,7 @@ SET( ext_libs osg osgText )
 
 IF ( POTRACE_FOUND )
   ADD_DEFINITIONS( -DHAVE_POTRACE=1 )
-  SET( ext_libs ${ext_libs} potrace )
+  SET( ext_libs ${ext_libs} OrcaPotrace )
 ENDIF ( POTRACE_FOUND )
 
 IF( build )

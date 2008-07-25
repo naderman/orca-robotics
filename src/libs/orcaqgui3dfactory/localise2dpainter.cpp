@@ -19,6 +19,7 @@
 #include <orcaqgui3d/glutil.h>
 #include <osg/ShapeDrawable>
 #include <orcaqgui3d/osgutil.h>
+#include <orcaifacestring/localise2d.h>
 
 using namespace std;
 
@@ -37,9 +38,11 @@ Localise2dPainter::setCubicDescr( double length,
                                   double height,
                                   const orca::Frame3d &vehicleToGeometryTransform )
 {
-    assert( vehicleToGeometryTransform.o.r == 0 &&
-            vehicleToGeometryTransform.o.p == 0 &&
-            vehicleToGeometryTransform.o.y == 0 && "Not implemented!" );
+    cout<<"TRACE(localise2dpainter.cpp): vehicleToGeometryTransform: " << ifacestring::toString(vehicleToGeometryTransform) << endl;
+
+    assert( fabs(vehicleToGeometryTransform.o.r) < 1e-9 &&
+            fabs(vehicleToGeometryTransform.o.p) < 1e-9 &&
+            fabs(vehicleToGeometryTransform.o.y) < 1e-9 && "Not implemented!" );
 
     platformNode_ = new osg::PositionAttitudeTransform;
     platformNode_->setPosition( osg::Vec3( vehicleToGeometryTransform.p.x,
@@ -61,9 +64,11 @@ Localise2dPainter::setCylindricalDescr( double radius,
                                         double height,
                                         const orca::Frame3d &vehicleToGeometryTransform )
 {
-    assert( vehicleToGeometryTransform.o.r == 0 &&
-            vehicleToGeometryTransform.o.p == 0 &&
-            vehicleToGeometryTransform.o.y == 0 && "Not implemented!" );
+    cout<<"TRACE(localise2dpainter.cpp): vehicleToGeometryTransform: " << ifacestring::toString(vehicleToGeometryTransform) << endl;
+
+    assert( fabs(vehicleToGeometryTransform.o.r) < 1e-9 &&
+            fabs(vehicleToGeometryTransform.o.p) < 1e-9 &&
+            fabs(vehicleToGeometryTransform.o.y) < 1e-9 && "Not implemented!" );
 
     platformNode_ = new osg::PositionAttitudeTransform;
     platformNode_->setPosition( osg::Vec3( vehicleToGeometryTransform.p.x,
