@@ -59,6 +59,7 @@ The instructions below are quite general, follow them if your platform/distribut
         - <a href="http://www.trolltech.com/" target="_blank">Qt</a> is a cross-platform framework for building GUI's. Some components are GUI-only and some have optional GUI drivers.
             - Minimum version required 4.2.0 (latest tested: 4.4.0)
     -# Build and install GearBox distribution.
+        - Minimum version required 8.07
         - Un-tar the archive, configure using CMake, compile and install
     -# Build and install Hydro distribution.
         - Un-tar the archive, configure using CMake, compile and install

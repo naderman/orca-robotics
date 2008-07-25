@@ -42,8 +42,8 @@ Minimum version required 3.2.0 (latest tested: 3.3.0).
 
 @section orca_doc_installdebian_gearbox GearBox
 
-Build and install GearBox distribution.
-    - Download @ref orca_doc_getting_download "GearBox source" archive and un-tar it [IT HAS NOT BEEN RELEASED YET, USE SVN!].
+Minimum version required 8.07
+    - Download @ref orca_doc_getting_download "GearBox source" archive and un-tar it.
     - Configure using with CMake (note the dot after cmake), compile, and install.
     - The default installation directory is  @c /usr/local (see below on how to change it).
 @verbatim
