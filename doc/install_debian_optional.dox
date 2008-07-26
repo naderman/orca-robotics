@@ -26,9 +26,9 @@ These instructions have been updated to Ice-3.3. They may need to be modified fo
 Following the instructions below will install Ice to the default location @c /opt/Ice-[VERSION]. We recommend doing this but, if you have a good reason, you can change it by editing the file config/Make.rules.
 
 Download source from  <a href="http://www.zeroc.com/download.html">download page</a>.
-    - First, install Ice dependencies. Debian packages for all required libraries exist. (@b NOTE: as of writing, a package for mcpp as a static library does not seem to be available. Install it from patched source provided by ZeroC).
+    - First, install Ice dependencies. Debian packages for all required libraries exist.
 @verbatim
-# apt-get install libdb4.6++-dev libbz2-dev bzip2 libssl-dev libreadline5-dev libexpat1-dev
+# apt-get install libdb4.6++-dev libbz2-dev bzip2 libssl-dev libreadline5-dev libexpat1-dev mcpp
 @endverbatim
     - Unpack the source archive (replace [VERSION] with the version of Ice you are trying to install.)
 @verbatim
@@ -45,6 +45,16 @@ $ make
 $ make test (optional, requires python)
 # make install
 # ldconfig
+@endverbatim
+
+@note On some installations you can get an error "c++ does not exist". Ice build system internally uses @c c++ as the name of the compiler when @c gcc was specified. Make sure @c++ exists in the pah (e.g. with 'which c++'). If it does not exist, create a symbolic link manually.
+@verbatim
+# ln -s usr/bin/g++ /usr/bin/c++
+@endverbatim
+
+@note On some installations you can get an error "mcpp does not exist". Make sure @c mcpp package was installed. Then try creating the following symbolic link.
+@verbatim
+# ln -s usr/lib/libmcpp.so.0 usr/lib/libmcpp.so
 @endverbatim
 
 Make sure that the Ice binaries and executables are in the path. You may want to add this snippet to your @c ~/.bashrc file (don't forget to replace [VERSION]).
