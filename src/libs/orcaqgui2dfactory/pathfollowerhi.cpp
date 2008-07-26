@@ -15,23 +15,22 @@
 #include <orcaqgui2dfactory/pathfollower2delement.h>
 #include <orcaqgui2dfactory/wptolerancesdialog.h>
 
-
 #include "pathfollowerhi.h"
 
 using namespace std;
 
 namespace orcaqgui2d {
 
-PathFollowerHI::PathFollowerHI( PathFollower2dElement *pfElement,
-                                string proxyString,
-                                hydroqguielementutil::IHumanManager &humanManager, 
-                                hydroqguielementutil::MouseEventManager &mouseEventManager, 
-                                hydroqguielementutil::ShortcutKeyManager &shortcutKeyManager, 
-                                const hydroqgui::GuiElementSet &guiElementSet, 
-                                const PathPainter &painter,
-                                const WaypointSettings &wpSettings,
-                                bool activateImmediately,
-                                QString dumpPath )
+PathFollowerHI::PathFollowerHI( PathFollower2dElement                    *pfElement,
+                                const std::string                        &proxyString,
+                                hydroqguielementutil::IHumanManager      &humanManager,
+                                hydroqguielementutil::MouseEventManager  &mouseEventManager,
+                                hydroqguielementutil::ShortcutKeyManager &shortcutKeyManager,
+                                const hydroqgui::GuiElementSet           &guiElementSet,
+                                const PathPainter                        &painter,
+                                const WaypointSettings                   &wpSettings,
+                                bool                                      activateImmediately,
+                                const QString                            &dumpPath )
     : pfElement_(pfElement),
       proxyString_( proxyString ),
       humanManager_(humanManager),

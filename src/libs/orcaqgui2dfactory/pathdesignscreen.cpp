@@ -8,18 +8,14 @@
  *
  */
  
-#include <QFile>
-#include <QTextStream>
- 
-#include <orcalogfactory/logstringutils.h>
-#include <orcaqgui/guiicons.h>
+#include <QPainter>
+#include <QDialog>
 #include <hydroqguielementutil/ihumanmanager.h>
 #include <hydroqguielementutil/paintutils.h>
 #include <orcaqgui2dfactory/waypointdialog.h>
+#include <orcaqgui2dfactory/pathutils.h>
 
-#include "pathutils.h"
 #include "pathdesignscreen.h"
-#include "pathdesigntablewidget.h"
 
 using namespace std;
 
@@ -35,8 +31,8 @@ int guiNormalise( int heading )
 }
 
     
-PathDesignScreen::PathDesignScreen( GuiPath                  &guiPath,
-                                    WaypointSettings         *wpSettings,
+PathDesignScreen::PathDesignScreen( GuiPath                             &guiPath,
+                                    WaypointSettings                    *wpSettings,
                                     hydroqguielementutil::IHumanManager &humanManager )
     : guiPath_(guiPath),
       wpSettings_(wpSettings),

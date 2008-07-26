@@ -12,10 +12,11 @@
 #define PATH_FILE_HANDLER_H
 
 #include <QString>
-#include <hydroqguielementutil/ihumanmanager.h>
-#include "pathutils.h"
+#include <orcaqgui2dfactory/pathutils.h>
 
 namespace orcaqgui2d {
+    
+class IHumanManager;
 
 class PathFileHandler
 {

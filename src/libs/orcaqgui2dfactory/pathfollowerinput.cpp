@@ -1,4 +1,4 @@
-#include "pathfollowerhi.h"
+#include <orcaqgui2dfactory/pathfollowerhi.h>
 #include "pathfollowerinput.h"
 
 namespace orcaqgui2d {

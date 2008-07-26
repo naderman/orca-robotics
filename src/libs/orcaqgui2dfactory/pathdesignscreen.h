@@ -12,12 +12,11 @@
 #define ORCA_PATH_INPUT_H
 
 #include <QMatrix>
-#include <QVector>
-#include <QTableWidget>
-#include <QSpinBox>
+#include <orcaqgui2dfactory/pathutils.h>
 
-#include <orcaice/orcaice.h>
-#include "pathutils.h"
+class QPainter;
+class QMouseEvent;
+
 
 namespace hydroqguielementutil {
     class IHumanManager;
@@ -28,12 +27,14 @@ namespace orcaqgui2d {
 class PathDesignScreen
 {           
     public:
-        PathDesignScreen( GuiPath &guiPath,
-                          WaypointSettings *wpSettings,
+        PathDesignScreen( GuiPath                             &guiPath,
+                          WaypointSettings                    *wpSettings,
                           hydroqguielementutil::IHumanManager &humanManager );  
      
         void paint( QPainter *painter );
-        void setUseTransparency( bool useTransparency ) { useTransparency_=useTransparency; };
+        
+        void setUseTransparency( bool useTransparency ) 
+            { useTransparency_=useTransparency; };
         
         void processPressEvent( QMouseEvent* e);
         void processReleaseEvent( QMouseEvent* e );

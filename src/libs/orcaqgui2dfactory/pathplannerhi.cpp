@@ -9,7 +9,6 @@
  */
 
 #include <QFileDialog>
-#include <hydroqgui/guielementset.h>
 #include <hydroqguielementutil/ihumanmanager.h>
 #include <orcaqgui2dfactory/pathplanner2delement.h>
 #include <orcaqgui2dfactory/wptolerancesdialog.h>
@@ -19,12 +18,12 @@ using namespace std;
 
 namespace orcaqgui2d {
     
-PathPlannerHI::PathPlannerHI( PathPlanner2dElement         *ppElement,
-                              string                        proxyString,
-                              hydroqguielementutil::IHumanManager     &humanManager, 
-                              hydroqguielementutil::MouseEventManager &mouseEventManager, 
-                              PathPainter                  &painter,
-                              WaypointSettings              wpSettings )
+PathPlannerHI::PathPlannerHI( PathPlanner2dElement                    *ppElement,
+                              const std::string                       &proxyString,
+                              hydroqguielementutil::IHumanManager     &humanManager,
+                              hydroqguielementutil::MouseEventManager &mouseEventManager,
+                              PathPainter                             &painter,
+                              const WaypointSettings                  &wpSettings )
     : ppElement_(ppElement),
       proxyString_( proxyString ),
       humanManager_(humanManager),

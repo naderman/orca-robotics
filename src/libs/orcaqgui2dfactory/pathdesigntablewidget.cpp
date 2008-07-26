@@ -11,6 +11,8 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <orcaqgui/guiicons.h>
+#include <orcaqgui2dfactory/ipathinput.h>
+
 #include "pathdesigntablewidget.h"
 
 using namespace std;

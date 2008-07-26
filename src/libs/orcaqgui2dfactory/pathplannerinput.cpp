@@ -1,4 +1,4 @@
-#include "pathplannerhi.h"
+#include <orcaqgui2dfactory/pathplannerhi.h>
 #include "pathplannerinput.h"
 
 namespace orcaqgui2d {

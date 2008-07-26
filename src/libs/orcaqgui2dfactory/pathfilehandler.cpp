@@ -11,8 +11,9 @@
 #include <sstream>
 #include <QFile>
 #include <QTextStream>
-#include <orca/pathfollower2d.h>
 #include <orcalogfactory/logstringutils.h>
+#include <hydroqguielementutil/ihumanmanager.h>
+
 #include "pathfilehandler.h"
 
 using namespace std;

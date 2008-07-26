@@ -11,13 +11,17 @@
 #ifndef PATHDESIGN_TABLE_H
 #define PATHDESIGN_TABLE_H
 
-#include "pathdesignscreen.h"
-#include "ipathinput.h"
-#include "pathutils.h"
+#include <QWidget>
+#include <QSpinBox>
+#include <QTableWidget>
+
+#include <orcaqgui2dfactory/pathdesignscreen.h>
+#include <orcaqgui2dfactory/pathutils.h>
 
 namespace orcaqgui2d {
     
 class PathDesignTable;
+class IPathInput;
 
 class PathDesignWidget : public QWidget
 {
@@ -26,7 +30,6 @@ class PathDesignWidget : public QWidget
     public:
         PathDesignWidget(IPathInput *pathInput,
                          GuiPath    &guiPath );
-        ~PathDesignWidget() {};
         int numberOfLoops() { return numLoopsSpin_->value(); };
     
     private:
@@ -57,7 +60,6 @@ class PathDesignTable : public QTableWidget
         PathDesignTable( PathDesignWidget *parent,
                          IPathInput       *pathInput,
                          GuiPath          &guiPath );
-        ~PathDesignTable() {};
         void refreshTable();
         void computeVelocities();
         

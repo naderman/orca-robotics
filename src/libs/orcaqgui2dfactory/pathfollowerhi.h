@@ -41,27 +41,33 @@ class PathFollowerHI  : public QObject
     Q_OBJECT
 
 public:
-    PathFollowerHI( PathFollower2dElement *pfElement,
-                    std::string proxyString,
-                    hydroqguielementutil::IHumanManager &humanManager,
-                    hydroqguielementutil::MouseEventManager &mouseEventManager,
+    PathFollowerHI( PathFollower2dElement                    *pfElement,
+                    const std::string                        &proxyString,
+                    hydroqguielementutil::IHumanManager      &humanManager,
+                    hydroqguielementutil::MouseEventManager  &mouseEventManager,
                     hydroqguielementutil::ShortcutKeyManager &shortcutKeyManager,
-                    const hydroqgui::GuiElementSet &guiElementSet,
-                    const PathPainter &painter,
-                    const WaypointSettings &wpSettings,
-                    bool activateImmediately,
-                    QString dumpPath );
+                    const hydroqgui::GuiElementSet           &guiElementSet,
+                    const PathPainter                        &painter,
+                    const WaypointSettings                   &wpSettings,
+                    bool                                      activateImmediately,
+                    const QString                            &dumpPath );
 
     void noLongerMouseEventReceiver();
     void paint( QPainter *p );
+    void setFocus( bool inFocus );
+    void setUseTransparency( bool useTransparency ); 
 
     void mousePressEvent(QMouseEvent *e) 
         {pathInput_->processPressEvent(e);}
-    void mouseMoveEvent(QMouseEvent *e) {pathInput_->processMoveEvent(e);}
-    void mouseReleaseEvent(QMouseEvent *e) {pathInput_->processReleaseEvent(e);}
-    void mouseDoubleClickEvent(QMouseEvent *e) {pathInput_->processDoubleClickEvent(e);}
-    void setFocus( bool inFocus );
-    void setUseTransparency( bool useTransparency ); 
+    
+    void mouseMoveEvent(QMouseEvent *e) 
+        {pathInput_->processMoveEvent(e);}
+    
+    void mouseReleaseEvent(QMouseEvent *e) 
+        {pathInput_->processReleaseEvent(e);}
+    
+    void mouseDoubleClickEvent(QMouseEvent *e) 
+        {pathInput_->processDoubleClickEvent(e);}
     
 
 public slots:

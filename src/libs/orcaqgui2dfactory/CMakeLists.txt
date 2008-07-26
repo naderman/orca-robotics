@@ -26,12 +26,11 @@ IF( build )
     SET( dep_libs ${ext_libs} ${int_libs} )
     
     SET( moc_hdrs
+        pathdesigntablewidget.h
         pathfollowerbuttons.h
         pathfollowerhi.h
-        pathdesigntablewidget.h
-        pathplanner2delement.h
-        pathplannerhi.h
         pathplannerbuttons.h
+        pathplannerhi.h
     )
 
     QT4_WRAP_CPP( moc_srcs ${moc_hdrs} )

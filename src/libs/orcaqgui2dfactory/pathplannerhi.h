@@ -37,12 +37,12 @@ class PathPlannerHI  : public QObject
     Q_OBJECT
 
 public:
-    PathPlannerHI( PathPlanner2dElement *ppElement,
-                   std::string proxyString,
-                   hydroqguielementutil::IHumanManager &humanManager,
+    PathPlannerHI( PathPlanner2dElement                    *ppElement,
+                   const std::string                       &proxyString,
+                   hydroqguielementutil::IHumanManager     &humanManager,
                    hydroqguielementutil::MouseEventManager &mouseEventManager,
-                   PathPainter &painter,
-                   WaypointSettings wpSettings );
+                   PathPainter                             &painter,
+                   const WaypointSettings                  &wpSettings );
 
     void noLongerMouseEventReceiver();
     void paint( QPainter *p );
@@ -69,7 +69,7 @@ private:
     std::string proxyString_;
     hydroqguielementutil::IHumanManager &humanManager_;
     hydroqguielementutil::MouseEventManager &mouseEventManager_;
-    PathPainter   &painter_;
+    PathPainter &painter_;
 
     QString pathFileName_;
     bool pathFileSet_;
