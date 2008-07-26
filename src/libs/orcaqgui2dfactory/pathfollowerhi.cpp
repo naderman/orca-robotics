@@ -49,6 +49,7 @@ PathFollowerHI::PathFollowerHI( PathFollower2dElement *pfElement,
       lastSavedPathFile_("")
 {
     buttons_.reset( new PathfollowerButtons( this, humanManager, shortcutKeyManager, proxyString ) );
+    pathFileHandler_.reset( new PathFileHandler( humanManager ) );
 }
 
 void 
@@ -215,7 +216,7 @@ PathFollowerHI::noLongerMouseEventReceiver()
 
 void 
 PathFollowerHI::savePathAs()
-{
+{   
     QString fileName = QFileDialog::getSaveFileName(
             0,
             "Choose a filename to save under",
@@ -224,7 +225,7 @@ PathFollowerHI::savePathAs()
     
     if (!fileName.isEmpty())
     {
-        painter_.savePath( fileName, &humanManager_ );
+        pathFileHandler_->savePath( fileName, painter_.currentPath() );
         pathFileName_ = fileName;
         pathFileSet_ = true;
     }
@@ -239,7 +240,7 @@ PathFollowerHI::savePath()
     }
     else
     {
-        painter_.savePath( pathFileName_, &humanManager_ );
+        pathFileHandler_->savePath( pathFileName_, painter_.currentPath() );
     }
 }
 

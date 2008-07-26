@@ -43,7 +43,6 @@ public:
                    hydroqguielementutil::MouseEventManager &mouseEventManager,
                    PathPainter &painter,
                    WaypointSettings wpSettings );
-    ~PathPlannerHI();
 
     void noLongerMouseEventReceiver();
     void paint( QPainter *p );
@@ -77,10 +76,11 @@ private:
 
     WaypointSettings wpSettings_;
 
-    PathPlannerInput *pathInput_;
+    std::auto_ptr<PathPlannerInput> pathInput_;
     
     // sets up and destroys buttons and associated actions
-    PathplannerButtons *buttons_;
+    std::auto_ptr<PathplannerButtons> buttons_;
+    std::auto_ptr<PathFileHandler> pathFileHandler_;
     
     // Do we own the global mode?
     bool gotMode_;

@@ -33,38 +33,30 @@ PathPlannerHI::PathPlannerHI( PathPlanner2dElement         *ppElement,
       pathFileName_("/home"),
       pathFileSet_(false),
       wpSettings_(wpSettings),
-      pathInput_(NULL),
       gotMode_(false)
 {
-    buttons_ = new PathplannerButtons( this, humanManager, proxyString );
+    buttons_.reset( new PathplannerButtons( this, humanManager, proxyString ) );
+    pathFileHandler_.reset( new PathFileHandler( humanManager ) );
 }
 
-PathPlannerHI::~PathPlannerHI()
-{
-    if ( pathInput_ ) delete pathInput_;
-    if ( buttons_ ) delete buttons_;
-}
 
 void 
 PathPlannerHI::setFocus( bool inFocus )
 {
     if (inFocus) {
-        if (buttons_==0) {
-            buttons_ = new PathplannerButtons( this, humanManager_, proxyString_ );
+        if (buttons_.get()==0) {
+            buttons_.reset( new PathplannerButtons( this, humanManager_, proxyString_ ) );
         }
     } else {
-        delete buttons_;
-        buttons_=0;
+        buttons_.reset(0);
     }
 }
 
 void 
 PathPlannerHI::paint( QPainter *p )
 {
-    if ( pathInput_ ) 
-    {
+    if ( pathInput_.get() ) 
         pathInput_->paint(p);
-    }
 }
 
 void PathPlannerHI::waypointSettingsDialog()
@@ -91,7 +83,7 @@ void PathPlannerHI::waypointSettingsDialog()
     wpSettings_.maxApproachSpeed = ui.maxSpeedSpin->value();
     wpSettings_.maxApproachTurnrate = ui.maxTurnrateSpin->value();
 
-    if (pathInput_!=NULL)
+    if ( pathInput_.get() )
         pathInput_->updateWpSettings( &wpSettings_ );
 }
 
@@ -107,7 +99,7 @@ PathPlannerHI::waypointModeSelected()
         return;
     }
 
-    pathInput_ = new PathPlannerInput( *this, &wpSettings_, humanManager_ );
+    pathInput_.reset( new PathPlannerInput( *this, &wpSettings_, humanManager_ ) );
     pathInput_->setUseTransparency( useTransparency_ );
     buttons_->setWpButton( true );   
 }
@@ -116,15 +108,15 @@ void
 PathPlannerHI::setUseTransparency( bool useTransparency )
 { 
     useTransparency_ = useTransparency;
-    if (pathInput_) 
+    if ( pathInput_.get() ) 
         pathInput_->setUseTransparency( useTransparency ); 
 }
 
 void 
 PathPlannerHI::send()
 {
-    if ( pathInput_ != NULL )
-        ppElement_->sendPath( *pathInput_ );
+    if ( pathInput_.get() )
+        ppElement_->sendPath( *pathInput_.get() );
     cancel();
 }
 void 
@@ -139,9 +131,8 @@ PathPlannerHI::cancel()
 void
 PathPlannerHI::noLongerMouseEventReceiver()
 {
-    assert( pathInput_ != NULL );
-    delete pathInput_;
-    pathInput_ = NULL;
+    assert( pathInput_.get() );
+    pathInput_.reset(0);
     buttons_->setWpButton( false );
     gotMode_ = false;
 }
@@ -157,7 +148,7 @@ PathPlannerHI::savePathAs()
     
     if (!fileName.isEmpty())
     {
-        painter_.savePath( fileName, &humanManager_ );
+        pathFileHandler_->savePath( fileName, painter_.currentPath() );
         pathFileSet_ = true;
     }
 }
@@ -171,7 +162,7 @@ PathPlannerHI::savePath()
     }
     else
     {
-        painter_.savePath( pathFileName_, &humanManager_ );
+        pathFileHandler_->savePath( pathFileName_, painter_.currentPath() );
     }
 }
     

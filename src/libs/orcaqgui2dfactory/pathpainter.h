@@ -26,34 +26,59 @@ class PathPainter
 
   public:
     PathPainter();
-    ~PathPainter();
-    void initialize( bool displayWaypoints, bool displayPastWaypoints, bool displayFutureWaypoints, bool displayOlympicMarker, bool useTransparency);
+    void initialize( bool displayWaypoints, 
+                     bool displayPastWaypoints, 
+                     bool displayFutureWaypoints, 
+                     bool displayOlympicMarker, 
+                     bool useTransparency);
+    
     void setData( const orca::PathFollower2dData& path );
+    
     void setData( const orca::PathPlanner2dData& path );
+    
     void setWpIndex( int index );
+    
     void setRelativeStartTime( double relativeStartTime );
+    
     void paint( QPainter *p, int z );
-    bool paintThisLayer(int z) const { return z==hydroqguielementutil::Z_PATH; };
-    void setUseTransparency( bool useTransparency ) { useTransparency_= useTransparency; };
+    
+    bool paintThisLayer(int z) const 
+        { return z==hydroqguielementutil::Z_PATH; };
+    
+    void setUseTransparency( bool useTransparency ) 
+        { useTransparency_= useTransparency; };
 
     void clear();
+    
     void togglePastWaypoints()
         { displayPastWaypoints_ = !displayPastWaypoints_; }
+    
     void toggleFutureWaypoints()
         { displayFutureWaypoints_ = !displayFutureWaypoints_; }    
+    
     void toggleDisplayWaypoints()
         { displayWaypoints_ = !displayWaypoints_; }
 
-    void setDisplayPastWaypoints( bool display )   { displayPastWaypoints_ = display; }
-    void setDisplayFutureWaypoints( bool display ) { displayFutureWaypoints_ = display; }
-    void setDisplayWaypoints( bool display )       { displayWaypoints_ = display; }
+    void setDisplayPastWaypoints( bool display )   
+        { displayPastWaypoints_ = display; }
+    
+    void setDisplayFutureWaypoints( bool display ) 
+        { displayFutureWaypoints_ = display; }
+    
+    void setDisplayWaypoints( bool display )       
+        { displayWaypoints_ = display; }
     
     void toggleOlympicMarker()
         { displayOlympicMarker_ = !displayOlympicMarker_; }
+
+    void setColor( QColor color ) 
+        { color_ = color; };
     
-    void savePath( const QString fileName, hydroqguielementutil::IHumanManager *humanManager ) const;
-    void setColor( QColor color ) { color_ = color; };
-    void setFocus( bool inFocus ) { inFocus_  = inFocus; };
+    void setFocus( bool inFocus ) 
+        { inFocus_  = inFocus; };
+    
+    const GuiPath &currentPath() const 
+        { return guiPath_; }; 
     
   private:
 

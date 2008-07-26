@@ -16,6 +16,7 @@
 #include <orcaqgui2dfactory/pathfollowerbuttons.h>
 #include <orcaqgui2dfactory/pathdesignscreen.h>
 #include <orcaqgui2dfactory/pathfollowerinput.h>
+#include <orcaqgui2dfactory/pathfilehandler.h>
 
 namespace hydroqgui {
     class GuiElementSet;
@@ -62,11 +63,6 @@ public:
     void setFocus( bool inFocus );
     void setUseTransparency( bool useTransparency ); 
     
-    // to dump the user (green) path to /tmp
-    void savePath( const QString &fileName ) const
-    {
-        pathInput_->savePath( fileName );
-    }
 
 public slots:
     void savePathAs();
@@ -100,6 +96,7 @@ private:
     
     // sets up and destroys buttons and associated actions
     std::auto_ptr<PathfollowerButtons> buttons_;
+    std::auto_ptr<PathFileHandler> pathFileHandler_;
 
     // Do we own the global mode?
     bool gotMode_;
