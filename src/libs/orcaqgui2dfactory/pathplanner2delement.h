@@ -13,10 +13,12 @@
 
 #include <iostream>
 #include <orca/pathplanner2d.h>
+
 #include <gbxsickacfr/gbxiceutilacfr/store.h>
 #include <orcaqguielementutil/icestormelement2d.h>
+
 #include <orcaqgui2dfactory/pathpainter.h>
-#include <orcaqgui2dfactory/pathplannerinput.h>
+#include <orcaqgui2dfactory/pathplannerhi.h>
 
 namespace orcaqgui2d {
 
@@ -34,84 +36,6 @@ class PathPlannerTaskAnswerConsumer : public orca::PathPlanner2dConsumer
 };
 ////////////////////////////////////////////////////////////////////////////////
 
-
-///////////////////////////////////////
-
-// This class sets up all the buttons and actions for user interaction.
-// It can be instantiated on the heap and deleted, Qt cleans up for us
-class PathplannerButtons : public QObject
-{
-    Q_OBJECT
-            
-public:
-    PathplannerButtons( QObject *parent, hydroqguielementutil::IHumanManager &humanManager, std::string proxyString);
-    ~PathplannerButtons() 
-    { 
-        // Qt cleans up for us 
-    };
-    void setWpButton( bool onOff );
-
-private:
-    QAction *hiWaypoints_;
-};
-/////////////////////////////////////////
-
-class PathPlanner2dElement;
-class PathPlannerHI  : public QObject
-{
-    Q_OBJECT
-
-public:
-    PathPlannerHI( PathPlanner2dElement *ppElement,
-                   std::string proxyString,
-                   hydroqguielementutil::IHumanManager &humanManager,
-                   hydroqguielementutil::MouseEventManager &mouseEventManager,
-                   PathPainter &painter,
-                   WaypointSettings wpSettings );
-    ~PathPlannerHI();
-
-    void noLongerMouseEventReceiver();
-    void paint( QPainter *p );
-
-    void mousePressEvent(QMouseEvent *e) 
-        {pathInput_->processPressEvent(e);}
-    void mouseMoveEvent(QMouseEvent *e) {pathInput_->processMoveEvent(e);}
-    void mouseReleaseEvent(QMouseEvent *e) {pathInput_->processReleaseEvent(e);}
-    void mouseDoubleClickEvent(QMouseEvent *e) {pathInput_->processDoubleClickEvent(e);}
-    void setFocus( bool inFocus );
-    void setUseTransparency( bool useTransparency ); 
-
-public slots:
-    void savePathAs();
-    void savePath();
-    void waypointSettingsDialog();
-    void waypointModeSelected();
-    void send();
-    void cancel();
-
-private:
-
-    PathPlanner2dElement *ppElement_;
-    std::string proxyString_;
-    hydroqguielementutil::IHumanManager &humanManager_;
-    hydroqguielementutil::MouseEventManager &mouseEventManager_;
-    PathPainter   &painter_;
-
-    QString pathFileName_;
-    bool pathFileSet_;
-
-    WaypointSettings wpSettings_;
-
-    PathPlannerInput *pathInput_;
-    
-    // sets up and destroys buttons and associated actions
-    PathplannerButtons *buttons_;
-    
-    // Do we own the global mode?
-    bool gotMode_;
-    
-    bool useTransparency_;
-};
 
 //
 // @author Tobias Kaupp
@@ -171,7 +95,6 @@ private:
         
     // Handles human interface
     PathPlannerHI pathHI_;
-
 };
 
 }

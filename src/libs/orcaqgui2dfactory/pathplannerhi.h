@@ -8,15 +8,15 @@
  *
  */
 
-#ifndef PATHFOLLOWER_HI_H
-#define PATHFOLLOWER_HI_H
+#ifndef PATHPLANNER_HI_H
+#define PATHPLANNER_HI_H
 
 #include <memory>
 #include <QObject>
-#include <orcaqgui2dfactory/pathfollowerbuttons.h>
+#include <orcaqgui2dfactory/pathplannerbuttons.h>
 #include <orcaqgui2dfactory/pathdesignscreen.h>
-#include <orcaqgui2dfactory/pathfollowerinput.h>
-
+#include <orcaqgui2dfactory/pathplannerinput.h>
+    
 namespace hydroqgui {
     class GuiElementSet;
 }
@@ -29,27 +29,21 @@ namespace hydroqguielementutil {
 
 namespace orcaqgui2d {
 
-class PathFollower2dElement;    
+class PathPlanner2dElement;
 class PathPainter;
-    
-//
-// Handles the human-interface stuff for the PathFollower2dElement
-//
-class PathFollowerHI  : public QObject
+
+class PathPlannerHI  : public QObject
 {
     Q_OBJECT
 
 public:
-    PathFollowerHI( PathFollower2dElement *pfElement,
-                    std::string proxyString,
-                    hydroqguielementutil::IHumanManager &humanManager,
-                    hydroqguielementutil::MouseEventManager &mouseEventManager,
-                    hydroqguielementutil::ShortcutKeyManager &shortcutKeyManager,
-                    const hydroqgui::GuiElementSet &guiElementSet,
-                    const PathPainter &painter,
-                    const WaypointSettings &wpSettings,
-                    bool activateImmediately,
-                    QString dumpPath );
+    PathPlannerHI( PathPlanner2dElement *ppElement,
+                   std::string proxyString,
+                   hydroqguielementutil::IHumanManager &humanManager,
+                   hydroqguielementutil::MouseEventManager &mouseEventManager,
+                   PathPainter &painter,
+                   WaypointSettings wpSettings );
+    ~PathPlannerHI();
 
     void noLongerMouseEventReceiver();
     void paint( QPainter *p );
@@ -61,12 +55,6 @@ public:
     void mouseDoubleClickEvent(QMouseEvent *e) {pathInput_->processDoubleClickEvent(e);}
     void setFocus( bool inFocus );
     void setUseTransparency( bool useTransparency ); 
-    
-    // to dump the user (green) path to /tmp
-    void savePath( const QString &fileName ) const
-    {
-        pathInput_->savePath( fileName );
-    }
 
 public slots:
     void savePathAs();
@@ -75,42 +63,31 @@ public slots:
     void waypointModeSelected();
     void send();
     void cancel();
-    void allGo();
-    void allStop();
-    void go();
-    void stop();
 
 private:
 
-    PathFollower2dElement *pfElement_;
+    PathPlanner2dElement *ppElement_;
     std::string proxyString_;
     hydroqguielementutil::IHumanManager &humanManager_;
     hydroqguielementutil::MouseEventManager &mouseEventManager_;
-    hydroqguielementutil::ShortcutKeyManager &shortcutKeyManager_;
-    const hydroqgui::GuiElementSet &guiElementSet_;
-    const PathPainter &painter_;
+    PathPainter   &painter_;
 
     QString pathFileName_;
     bool pathFileSet_;
 
     WaypointSettings wpSettings_;
-    bool activateImmediately_;
 
-    std::auto_ptr<PathFollowerInput> pathInput_;
+    PathPlannerInput *pathInput_;
     
     // sets up and destroys buttons and associated actions
-    std::auto_ptr<PathfollowerButtons> buttons_;
-
+    PathplannerButtons *buttons_;
+    
     // Do we own the global mode?
     bool gotMode_;
     
     bool useTransparency_;
-    
-    QString dumpPath_;
-    int numPathDumps_;
-    QString lastSavedPathFile_;
 };
 
-} // end of namespace
+}
 
 #endif

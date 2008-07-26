@@ -25,7 +25,7 @@ void
 PathFollowerInput::setUseTransparency( bool useTransparency ) 
 {
     pathDesignScreen_->setUseTransparency( useTransparency );
-};
+}
 
 void 
 PathFollowerInput::processPressEvent( QMouseEvent* e)

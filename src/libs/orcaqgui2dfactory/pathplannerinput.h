@@ -11,46 +11,52 @@
 #ifndef PATHPLANNER_INPUT_H
 #define PATHPLANNER_INPUT_H
 
-#include <QObject>
-#include <hydroqguielementutil/ihumanmanager.h>
-#include <orcaqgui2dfactory/pathutils.h>
-#include <orcaqgui2dfactory/pathdesignscreen.h>
 #include <orca/pathplanner2d.h>
-#include "ipathinput.h"
+#include <orcaqgui2dfactory/pathutils.h>
+#include <orcaqgui2dfactory/ipathinput.h>
+#include <orcaqgui2dfactory/pathdesignscreen.h>
+#include "pathdesigntablewidget.h"
+#include "pathfilehandler.h"
 
 namespace orcaqgui2d {
+    
+class PathPlannerHI;
 
 class PathPlannerInput : public IPathInput
 { 
 public:
-    PathPlannerInput( QObject                  *parent,
-                      WaypointSettings         *wpSettings,
+    PathPlannerInput( PathPlannerHI                       &pathPlannerHI,
+                      WaypointSettings                    *wpSettings,
                       hydroqguielementutil::IHumanManager &humanManager );
     
     virtual ~PathPlannerInput() {};  
     
-    virtual void paint( QPainter *painter ) {};
-    virtual void setUseTransparency( bool useTransparency ) {};
+    virtual void paint( QPainter *painter );
+    virtual void setUseTransparency( bool useTransparency );
         
-    virtual void processPressEvent( QMouseEvent* e) {};
-    virtual void processReleaseEvent( QMouseEvent* e ) {};
+    virtual void processPressEvent( QMouseEvent* e);
+    virtual void processReleaseEvent( QMouseEvent* e );
     virtual void processDoubleClickEvent( QMouseEvent* e) {};
     virtual void processMoveEvent( QMouseEvent* e) {};
-    virtual void updateWpSettings( WaypointSettings* wpSettings ) {};
+    virtual void updateWpSettings( WaypointSettings* wpSettings );
         
-    virtual void savePath( const QString &filename ) {};
-    virtual void loadPath( const QString &filename ) {};
-    virtual void loadPreviousPath() {};
-    virtual void sendPath() {};
-    virtual void cancelPath() {};
+    virtual void savePath( const QString &filename );
+    virtual void loadPath( const QString &filename );
+    virtual void loadPreviousPath();
+    virtual void sendPath();
+    virtual void cancelPath();
     
-    virtual void setWaypointFocus( int waypointId ) {};
+    virtual void setWaypointFocus( int waypointId );
     
     orca::PathPlanner2dTask getTask() const;
             
     private:
-        std::auto_ptr<GuiPath> guiPath_;
+        PathPlannerHI &pathPlannerHI_;
+        
         std::auto_ptr<PathDesignScreen> pathDesignScreen_;
+        std::auto_ptr<PathDesignWidget> pathDesignWidget_;
+        std::auto_ptr<GuiPath> guiPath_;
+        std::auto_ptr<PathFileHandler> pathFileHandler_;
 
 };
 

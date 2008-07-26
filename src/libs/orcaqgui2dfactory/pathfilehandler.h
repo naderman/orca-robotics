@@ -21,7 +21,7 @@ class PathFileHandler
 {
     public:
         PathFileHandler( hydroqguielementutil::IHumanManager &humanManager,
-                         const QString                       &lastSavedPathFile );
+                         const QString                       &lastSavedPathFile = "" );
         
         void savePath( const QString &filename, 
                        const GuiPath &guiPath, 

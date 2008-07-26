@@ -30,6 +30,8 @@ IF( build )
         pathfollowerhi.h
         pathdesigntablewidget.h
         pathplanner2delement.h
+        pathplannerhi.h
+        pathplannerbuttons.h
     )
 
     QT4_WRAP_CPP( moc_srcs ${moc_hdrs} )
