@@ -95,5 +95,10 @@ QString readDumpPath( const Ice::PropertiesPtr &props,
     return QString(strOut[0].c_str());
 }
 
+float straightLineDist( QPointF line )
+{
+    return sqrt(line.x()*line.x() + line.y()*line.y());
+}
+
 
 }

@@ -40,7 +40,6 @@ class WaypointSettings
             int maxApproachTurnrate;
 };
     
-    
 // internal Gui representation for waypoint and path
 class GuiWaypoint
 {
@@ -65,6 +64,9 @@ public:
 };
 
 typedef QVector<GuiWaypoint> GuiPath;
+
+    
+float straightLineDist( QPointF line );
 
 // conversion functions
 void guiPathToOrcaPath( const GuiPath &in, 

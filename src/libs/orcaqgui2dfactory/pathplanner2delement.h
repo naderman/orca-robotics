@@ -16,7 +16,7 @@
 #include <gbxsickacfr/gbxiceutilacfr/store.h>
 #include <orcaqguielementutil/icestormelement2d.h>
 #include <orcaqgui2dfactory/pathpainter.h>
-#include <orcaqgui2dfactory/pathinput.h>
+#include <orcaqgui2dfactory/pathplannerinput.h>
 
 namespace orcaqgui2d {
 

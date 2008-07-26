@@ -42,8 +42,8 @@ public:
     QSpacerItem *spacerItem;
     QGridLayout *gridLayout1;
     QLabel *timeLabel;
-    QDoubleSpinBox *waitingTimeSpin;
-    QLabel *waitingTimeLabel;
+//     QDoubleSpinBox *waitingTimeSpin;
+//     QLabel *waitingTimeLabel;
     QDoubleSpinBox *timeSpin;
     QSpacerItem *spacerItem1;
     QGridLayout *gridLayout2;
@@ -144,20 +144,20 @@ public:
 
     gridLayout1->addWidget(timeLabel, 0, 0, 1, 1);
 
-    waitingTimeSpin = new QDoubleSpinBox(layoutWidget);
-    waitingTimeSpin->setObjectName(QString::fromUtf8("waitingTimeSpin"));
-    waitingTimeSpin->setDecimals(1);
-    waitingTimeSpin->setMaximum(10000);
-    waitingTimeSpin->setMinimum(-10000);
-    waitingTimeSpin->setSingleStep(0.5);
-    waitingTimeSpin->setValue(5);
+//     waitingTimeSpin = new QDoubleSpinBox(layoutWidget);
+//     waitingTimeSpin->setObjectName(QString::fromUtf8("waitingTimeSpin"));
+//     waitingTimeSpin->setDecimals(1);
+//     waitingTimeSpin->setMaximum(10000);
+//     waitingTimeSpin->setMinimum(-10000);
+//     waitingTimeSpin->setSingleStep(0.5);
+//     waitingTimeSpin->setValue(5);
 
-    gridLayout1->addWidget(waitingTimeSpin, 1, 1, 1, 1);
+//     gridLayout1->addWidget(waitingTimeSpin, 1, 1, 1, 1);
 
-    waitingTimeLabel = new QLabel(layoutWidget);
-    waitingTimeLabel->setObjectName(QString::fromUtf8("waitingTimeLabel"));
+//     waitingTimeLabel = new QLabel(layoutWidget);
+//     waitingTimeLabel->setObjectName(QString::fromUtf8("waitingTimeLabel"));
 
-    gridLayout1->addWidget(waitingTimeLabel, 0, 1, 1, 1);
+//     gridLayout1->addWidget(waitingTimeLabel, 0, 1, 1, 1);
 
     timeSpin = new QDoubleSpinBox(layoutWidget);
     timeSpin->setObjectName(QString::fromUtf8("timeSpin"));
@@ -292,7 +292,7 @@ public:
     xLabel->setText(QApplication::translate("WaypointDialog", "x [m]:", 0, QApplication::UnicodeUTF8));
     yLabel->setText(QApplication::translate("WaypointDialog", "y [m]:", 0, QApplication::UnicodeUTF8));
     timeLabel->setText(QApplication::translate("WaypointDialog", "time to reach [s]:", 0, QApplication::UnicodeUTF8));
-    waitingTimeLabel->setText(QApplication::translate("WaypointDialog", "waiting time [s]:", 0, QApplication::UnicodeUTF8));
+//     waitingTimeLabel->setText(QApplication::translate("WaypointDialog", "waiting time [s]:", 0, QApplication::UnicodeUTF8));
     headingTolLabel->setText(QApplication::translate("WaypointDialog", "Heading tol. (+/-)  [deg]:", 0, QApplication::UnicodeUTF8));
     distanceTolLabel->setText(QApplication::translate("WaypointDialog", "Distance tolerance [m]:", 0, QApplication::UnicodeUTF8));
     maxTurnrateLabel->setText(QApplication::translate("WaypointDialog", "Maximum turnrate [deg/s]:", 0, QApplication::UnicodeUTF8));

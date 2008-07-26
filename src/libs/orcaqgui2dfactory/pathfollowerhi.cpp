@@ -112,7 +112,7 @@ PathFollowerHI::waypointModeSelected()
         return;
     }
 
-    pathInput_.reset( new PathFollowerInput( this, &wpSettings_, humanManager_, lastSavedPathFile_ ) );
+    pathInput_.reset( new PathFollowerInput( *this, &wpSettings_, humanManager_, lastSavedPathFile_ ) );
     pathInput_->setUseTransparency( useTransparency_ );
     buttons_->setWpButton( true );
 }
@@ -205,6 +205,7 @@ PathFollowerHI::allStop()
 void
 PathFollowerHI::noLongerMouseEventReceiver()
 {
+    cout << "TRACE(PathFollowerHI): noLongerMouseEventReceiver()" << endl;
     pathInput_.reset(0);
     buttons_->setWpButton( false );
     gotMode_ = false;

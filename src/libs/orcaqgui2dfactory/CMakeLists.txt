@@ -28,7 +28,7 @@ IF( build )
     SET( moc_hdrs
         pathfollowerbuttons.h
         pathfollowerhi.h
-        pathinput.h
+        pathdesigntablewidget.h
         pathplanner2delement.h
     )
 

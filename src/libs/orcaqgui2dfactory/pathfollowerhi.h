@@ -15,7 +15,8 @@
 #include <QObject>
 #include <hydroqguielementutil/mouseeventmanager.h>
 #include <orcaqgui2dfactory/pathfollowerbuttons.h>
-#include <orcaqgui2dfactory/pathinput.h>
+#include <orcaqgui2dfactory/pathdesignscreen.h>
+#include <orcaqgui2dfactory/pathfollowerinput.h>
 
 namespace hydroqgui {
     class GuiElementSet;
