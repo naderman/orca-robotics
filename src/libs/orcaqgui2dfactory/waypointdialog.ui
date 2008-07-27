@@ -5,14 +5,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>260</width>
-    <height>405</height>
+    <width>288</width>
+    <height>386</height>
    </rect>
   </property>
   <property name="sizePolicy" >
-   <sizepolicy>
-    <hsizetype>0</hsizetype>
-    <vsizetype>0</vsizetype>
+   <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
@@ -20,22 +18,16 @@
   <property name="windowTitle" >
    <string>Waypoint Paramters</string>
   </property>
-  <widget class="QWidget" name="layoutWidget" >
+  <widget class="QWidget" name="" >
    <property name="geometry" >
     <rect>
-     <x>0</x>
-     <y>21</y>
-     <width>248</width>
-     <height>362</height>
+     <x>1</x>
+     <y>22</y>
+     <width>274</width>
+     <height>348</height>
     </rect>
    </property>
-   <layout class="QVBoxLayout" >
-    <property name="margin" >
-     <number>0</number>
-    </property>
-    <property name="spacing" >
-     <number>6</number>
-    </property>
+   <layout class="QVBoxLayout" name="verticalLayout" >
     <item>
      <widget class="QLabel" name="label" >
       <property name="text" >
@@ -60,11 +52,11 @@
       </item>
       <item row="1" column="0" >
        <widget class="QDoubleSpinBox" name="xSpin" >
-        <property name="maximum" >
-         <double>10000.000000000000000</double>
-        </property>
         <property name="minimum" >
          <double>-10000.000000000000000</double>
+        </property>
+        <property name="maximum" >
+         <double>10000.000000000000000</double>
         </property>
         <property name="singleStep" >
          <double>0.200000000000000</double>
@@ -83,11 +75,11 @@
       </item>
       <item row="1" column="1" >
        <widget class="QDoubleSpinBox" name="ySpin" >
-        <property name="maximum" >
-         <double>10000.000000000000000</double>
-        </property>
         <property name="minimum" >
          <double>-10000.000000000000000</double>
+        </property>
+        <property name="maximum" >
+         <double>10000.000000000000000</double>
         </property>
         <property name="singleStep" >
          <double>0.200000000000000</double>
@@ -124,52 +116,20 @@
       <property name="orientation" >
        <enum>Qt::Vertical</enum>
       </property>
-      <property name="sizeHint" >
+      <property name="sizeHint" stdset="0" >
        <size>
-        <width>221</width>
-        <height>21</height>
+        <width>269</width>
+        <height>15</height>
        </size>
       </property>
      </spacer>
     </item>
     <item>
-     <layout class="QGridLayout" >
-      <property name="margin" >
-       <number>0</number>
-      </property>
-      <property name="spacing" >
-       <number>6</number>
-      </property>
-      <item row="0" column="0" >
+     <layout class="QGridLayout" name="globalGridLayout" >
+      <item row="0" column="0" colspan="2" >
        <widget class="QLabel" name="timeLabel" >
         <property name="text" >
-         <string>time to reach [s]:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1" >
-       <widget class="QDoubleSpinBox" name="waitingTimeSpin" >
-        <property name="decimals" >
-         <number>1</number>
-        </property>
-        <property name="maximum" >
-         <double>10000.000000000000000</double>
-        </property>
-        <property name="minimum" >
-         <double>-10000.000000000000000</double>
-        </property>
-        <property name="singleStep" >
-         <double>0.500000000000000</double>
-        </property>
-        <property name="value" >
-         <double>5.000000000000000</double>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1" >
-       <widget class="QLabel" name="waitingTimeLabel" >
-        <property name="text" >
-         <string>waiting time [s]:</string>
+         <string>Time to reach [s]:</string>
         </property>
        </widget>
       </item>
@@ -178,11 +138,11 @@
         <property name="decimals" >
          <number>1</number>
         </property>
-        <property name="maximum" >
-         <double>10000.000000000000000</double>
-        </property>
         <property name="minimum" >
          <double>-10000.000000000000000</double>
+        </property>
+        <property name="maximum" >
+         <double>10000.000000000000000</double>
         </property>
         <property name="singleStep" >
          <double>0.500000000000000</double>
@@ -192,6 +152,19 @@
         </property>
        </widget>
       </item>
+      <item row="1" column="1" >
+       <spacer name="horizontalSpacer" >
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0" >
+         <size>
+          <width>138</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
      </layout>
     </item>
     <item>
@@ -199,10 +172,10 @@
       <property name="orientation" >
        <enum>Qt::Vertical</enum>
       </property>
-      <property name="sizeHint" >
+      <property name="sizeHint" stdset="0" >
        <size>
-        <width>171</width>
-        <height>21</height>
+        <width>269</width>
+        <height>15</height>
        </size>
       </property>
      </spacer>
@@ -262,10 +235,10 @@
       <property name="orientation" >
        <enum>Qt::Vertical</enum>
       </property>
-      <property name="sizeHint" >
+      <property name="sizeHint" stdset="0" >
        <size>
-        <width>211</width>
-        <height>21</height>
+        <width>269</width>
+        <height>16</height>
        </size>
       </property>
      </spacer>
@@ -325,28 +298,28 @@
       <property name="orientation" >
        <enum>Qt::Vertical</enum>
       </property>
-      <property name="sizeHint" >
+      <property name="sizeHint" stdset="0" >
        <size>
-        <width>171</width>
-        <height>21</height>
+        <width>269</width>
+        <height>15</height>
        </size>
       </property>
      </spacer>
     </item>
     <item>
      <layout class="QHBoxLayout" >
-      <property name="margin" >
-       <number>0</number>
-      </property>
       <property name="spacing" >
        <number>6</number>
+      </property>
+      <property name="margin" >
+       <number>0</number>
       </property>
       <item>
        <spacer>
         <property name="orientation" >
          <enum>Qt::Horizontal</enum>
         </property>
-        <property name="sizeHint" >
+        <property name="sizeHint" stdset="0" >
          <size>
           <width>41</width>
           <height>31</height>

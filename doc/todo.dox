@@ -89,6 +89,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @par New libraries
 
+- OrcaTeleop (tobi)
+  - Moved files from teleop component directory
 - OrcaSim2d (alex b)
   - Library for simple 2D simulations
 - OrcaVfh (alex b)
@@ -116,10 +118,11 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @par Updated libraries
 
+-Orca2dQGuiFactory2d
+  - big overhaul of user interaction with pathfollower/planner (tobi)
 - OrcaIfaceImpl
   - Added QGraphics2dImpl and PathFollower2dImpl (alex b)
-  - ConsumerImpl: fixed a long-standing bug which lead to segfault when the life of the consumer was shorter than
-the life of the Object Adapter. (alex m)
+  - ConsumerImpl: fixed a long-standing bug which lead to segfault when the life of the consumer was shorter than the life of the Object Adapter. (alex m)
 - OrcaIceGrid
   - fixed bug which could lead to uncaught exception under certain conditions when
     setting observers. (alexm)
