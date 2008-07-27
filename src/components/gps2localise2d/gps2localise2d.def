@@ -10,6 +10,7 @@ Requires.Odometry2d.Type=Odometry2d
 Requires.Odometry2d.DefaultProxy=odometry2d@local/robot2d
 
 # component configuration
+Config.Driver.Comment='simple' or 'odometrybased'
 Config.Driver.Default=simple
 Config.Offset.Default=0 0 0
 Config.RequireOdometry = 1
