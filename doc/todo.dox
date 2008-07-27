@@ -59,6 +59,10 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 @par Updated interfaces
 @par Updated components
 @par Updated utilities
+
+- RegistryView
+  - Toggling display of standard interfaces also affects Tracer interface (alexm)
+
 @par Updated libraries
 @par Removed
 

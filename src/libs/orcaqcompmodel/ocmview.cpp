@@ -77,7 +77,7 @@ OcmView::isToBeHidden( const QModelIndex & ind )
     {
         QString iface = model()->data( ind.sibling(ind.row(),1) ).toString();
         
-        if ( iface=="::orca::Home" || iface=="::orca::Status" ) {
+        if ( iface=="::orca::Home" || iface=="::orca::Status" || iface=="::orca::Tracer" ) {
             // this is a standard item, hide
             return true;
         }
