@@ -78,7 +78,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     - Big cleanup of CMake scripts for generating interface code.
     - cmake files updated for cmake 2.6
 - Compiler
-    - compiles cleanly with gcc43, tested nightly (tobi)
+    - compiles cleanly with gcc43, tested nightly and continuously (tobi)
 
 @par New utilities
 
@@ -120,6 +120,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 -Orca2dQGuiFactory2d
   - big overhaul of user interaction with pathfollower/planner (tobi)
+  - created a factory for path input (tobi) 
 - OrcaIfaceImpl
   - Added QGraphics2dImpl and PathFollower2dImpl (alex b)
   - ConsumerImpl: fixed a long-standing bug which lead to segfault when the life of the consumer was shorter than the life of the Object Adapter. (alex m)
