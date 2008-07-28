@@ -42,18 +42,24 @@ public:
                    hydroqguielementutil::IHumanManager     &humanManager,
                    hydroqguielementutil::MouseEventManager &mouseEventManager,
                    PathPainter                             &painter,
-                   const WaypointSettings                  &wpSettings );
+                   const orcaice::Context                  &context );
 
     void noLongerMouseEventReceiver();
     void paint( QPainter *p );
+    void setFocus( bool inFocus );
+    void setUseTransparency( bool useTransparency ); 
 
     void mousePressEvent(QMouseEvent *e) 
         {pathInput_->processPressEvent(e);}
-    void mouseMoveEvent(QMouseEvent *e) {pathInput_->processMoveEvent(e);}
-    void mouseReleaseEvent(QMouseEvent *e) {pathInput_->processReleaseEvent(e);}
-    void mouseDoubleClickEvent(QMouseEvent *e) {pathInput_->processDoubleClickEvent(e);}
-    void setFocus( bool inFocus );
-    void setUseTransparency( bool useTransparency ); 
+    
+    void mouseMoveEvent(QMouseEvent *e) 
+        {pathInput_->processMoveEvent(e);}
+    
+    void mouseReleaseEvent(QMouseEvent *e) 
+        {pathInput_->processReleaseEvent(e);}
+    
+    void mouseDoubleClickEvent(QMouseEvent *e) 
+        {pathInput_->processDoubleClickEvent(e);}
 
 public slots:
     void savePathAs();
@@ -70,17 +76,19 @@ private:
     hydroqguielementutil::IHumanManager &humanManager_;
     hydroqguielementutil::MouseEventManager &mouseEventManager_;
     PathPainter &painter_;
-
-    QString pathFileName_;
-    bool pathFileSet_;
-
+    orcaice::Context context_;
     WaypointSettings wpSettings_;
 
+    // saving the path which the pathplanner interface holds
+    // (as opposed to the path the user enters in green)
+    QString ifacePathFileName_;
+    bool haveIfacePathFileName_;
+    std::auto_ptr<PathFileHandler> ifacePathFileHandler_;
+
+    // handles all user input through clicking, tables, etc.
     std::auto_ptr<PathPlannerInput> pathInput_;
-    
     // sets up and destroys buttons and associated actions
     std::auto_ptr<PathplannerButtons> buttons_;
-    std::auto_ptr<PathFileHandler> pathFileHandler_;
     
     // Do we own the global mode?
     bool gotMode_;

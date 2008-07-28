@@ -48,9 +48,7 @@ public:
                     hydroqguielementutil::ShortcutKeyManager &shortcutKeyManager,
                     const hydroqgui::GuiElementSet           &guiElementSet,
                     const PathPainter                        &painter,
-                    const WaypointSettings                   &wpSettings,
-                    bool                                      activateImmediately,
-                    const QString                            &dumpPath );
+                    const orcaice::Context                   &context );
 
     void noLongerMouseEventReceiver();
     void paint( QPainter *p );
@@ -91,27 +89,30 @@ private:
     hydroqguielementutil::ShortcutKeyManager &shortcutKeyManager_;
     const hydroqgui::GuiElementSet &guiElementSet_;
     const PathPainter &painter_;
-
-    QString pathFileName_;
-    bool pathFileSet_;
-
+    orcaice::Context context_;
     WaypointSettings wpSettings_;
-    bool activateImmediately_;
 
+    // saving the path which the pathfollower interface holds
+    // (as opposed to the path the user enters in green)
+    QString ifacePathFileName_;
+    bool haveIfacePathFileName_;
+    std::auto_ptr<PathFileHandler> ifacePathFileHandler_;
+    
+    // handles all user input through clicking, tables, etc.
     std::auto_ptr<PathFollowerInput> pathInput_;
+    // automatic saving of paths on send
+    int numAutoPathDumps_;
+    // remember the filename of the green user path
+    QString loadPreviousPathFilename_;
     
     // sets up and destroys buttons and associated actions
     std::auto_ptr<PathfollowerButtons> buttons_;
-    std::auto_ptr<PathFileHandler> pathFileHandler_;
 
     // Do we own the global mode?
     bool gotMode_;
     
     bool useTransparency_;
     
-    QString dumpPath_;
-    int numPathDumps_;
-    QString lastSavedPathFile_;
 };
 
 } // end of namespace

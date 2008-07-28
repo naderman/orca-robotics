@@ -28,9 +28,7 @@ PathFollowerHI::PathFollowerHI( PathFollower2dElement                    *pfElem
                                 hydroqguielementutil::ShortcutKeyManager &shortcutKeyManager,
                                 const hydroqgui::GuiElementSet           &guiElementSet,
                                 const PathPainter                        &painter,
-                                const WaypointSettings                   &wpSettings,
-                                bool                                      activateImmediately,
-                                const QString                            &dumpPath )
+                                const orcaice::Context                   &context )
     : pfElement_(pfElement),
       proxyString_( proxyString ),
       humanManager_(humanManager),
@@ -38,17 +36,16 @@ PathFollowerHI::PathFollowerHI( PathFollower2dElement                    *pfElem
       shortcutKeyManager_(shortcutKeyManager),
       guiElementSet_(guiElementSet),
       painter_(painter),
-      pathFileName_("/tmp"),
-      pathFileSet_(false),
-      wpSettings_(wpSettings),
-      activateImmediately_(activateImmediately),
-      gotMode_(false),
-      dumpPath_(dumpPath),
-      numPathDumps_(0),
-      lastSavedPathFile_("")
+      context_(context),
+      ifacePathFileName_("/tmp"),
+      haveIfacePathFileName_(false),    
+      numAutoPathDumps_(0),
+      loadPreviousPathFilename_(""),
+      gotMode_(false)
 {
+    wpSettings_ = readWaypointSettings( context.properties(), context.tag() );
     buttons_.reset( new PathfollowerButtons( this, humanManager, shortcutKeyManager, proxyString ) );
-    pathFileHandler_.reset( new PathFileHandler( humanManager ) );
+    ifacePathFileHandler_.reset( new PathFileHandler( humanManager ) );
 }
 
 void 
@@ -58,7 +55,10 @@ PathFollowerHI::setFocus( bool inFocus )
     {
         if ( !buttons_.get() ) 
         {
-            buttons_.reset( new PathfollowerButtons( this, humanManager_, shortcutKeyManager_, proxyString_ ) );
+            buttons_.reset( new PathfollowerButtons( this, 
+                                                     humanManager_, 
+                                                     shortcutKeyManager_, 
+                                                     proxyString_ ) );
         }
     } 
     else 
@@ -110,11 +110,14 @@ PathFollowerHI::waypointModeSelected()
     
     if ( !gotMode_ )
     {
-        humanManager_.showDialogMsg( hydroqguielementutil::IHumanManager::Warning, "Couldn't take over the mode for PathFollower waypoints!" );
+        humanManager_.showDialogWarning( "Couldn't take over the mode for PathFollower waypoints!" );
         return;
     }
 
-    pathInput_.reset( new PathFollowerInput( *this, &wpSettings_, humanManager_, lastSavedPathFile_ ) );
+    pathInput_.reset( new PathFollowerInput( *this, 
+                                             &wpSettings_, 
+                                              humanManager_, 
+                                              loadPreviousPathFilename_ ) );
     pathInput_->setUseTransparency( useTransparency_ );
     buttons_->setWpButton( true );
 }
@@ -134,18 +137,18 @@ PathFollowerHI::send()
     
     if ( !pathInput_.get() ) 
     {
-        humanManager_.showDialogMsg( hydroqguielementutil::IHumanManager::Warning, "Not in path input mode!" );
+        humanManager_.showDialogWarning( "Not in path input mode!" );
         return;
     }
         
     // save path to file automatically
     char buffer [5];
-    sprintf(buffer,"%05d",numPathDumps_++);
-    QString filename = dumpPath_ + "/pathdump" + QString(buffer) + ".txt";
+    sprintf(buffer,"%05d",numAutoPathDumps_++);
+    QString filename = readDumpPath(context_.properties(), context_.tag()) + "/pathdump" + QString(buffer) + ".txt";
     pathInput_->savePath( filename );
-    lastSavedPathFile_ = filename;
+    loadPreviousPathFilename_ = filename;
     
-    pfElement_->sendPath( *pathInput_, activateImmediately_ );
+    pfElement_->sendPath( *pathInput_, readActivateImmediately(context_.properties(), context_.tag()) );
     
     cancel();
 }
@@ -219,27 +222,27 @@ PathFollowerHI::savePathAs()
     QString fileName = QFileDialog::getSaveFileName(
             0,
             "Choose a filename to save under",
-            pathFileName_,
+            ifacePathFileName_,
             "*.txt");
     
     if (!fileName.isEmpty())
     {
-        pathFileHandler_->savePath( fileName, painter_.currentPath() );
-        pathFileName_ = fileName;
-        pathFileSet_ = true;
+        ifacePathFileHandler_->savePath( fileName, painter_.currentPath() );
+        ifacePathFileName_ = fileName;
+        haveIfacePathFileName_ = true;
     }
 }
 
 void 
 PathFollowerHI::savePath()
 {
-    if (!pathFileSet_)
+    if (!haveIfacePathFileName_)
     {   
         savePathAs();
     }
     else
     {
-        pathFileHandler_->savePath( pathFileName_, painter_.currentPath() );
+        ifacePathFileHandler_->savePath( ifacePathFileName_, painter_.currentPath() );
     }
 }
 

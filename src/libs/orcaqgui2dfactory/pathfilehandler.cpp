@@ -36,15 +36,14 @@ PathFileHandler::savePath( const QString &filename,
 {
     if (guiPath.size()==0)
     {
-        humanManager_.showDialogMsg(hydroqguielementutil::IHumanManager::Warning, "Path has no waypoints!");
+        humanManager_.showDialogWarning( "Path has no waypoints!" );
         return;
     }
     
     QFile file( filename );
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
     {
-        humanManager_.showDialogMsg(hydroqguielementutil::IHumanManager::Error,
-                                  "Cannot create file " + filename );
+        humanManager_.showDialogError( "Cannot create file " + filename );
         return;
     }
     
@@ -59,7 +58,7 @@ PathFileHandler::savePath( const QString &filename,
     QTextStream out(&file);
     out << QString(orcalogfactory::toLogString( orcaPath ).c_str());
     file.close();
-    humanManager_.showStatusMsg(hydroqguielementutil::IHumanManager::Information, "Path successfully saved to " + filename );
+    humanManager_.showStatusInformation( "Path successfully saved to " + filename );
 }
 
 void 
@@ -68,7 +67,7 @@ PathFileHandler::loadPath( const QString &filename, GuiPath &guiPath )
     QFile file(filename);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        humanManager_.showStatusMsg(hydroqguielementutil::IHumanManager::Error, "Problem opening file " + filename );
+        humanManager_.showStatusError( "Problem opening file " + filename );
         return;
     }
         
@@ -86,7 +85,7 @@ PathFileHandler::loadPath( const QString &filename, GuiPath &guiPath )
         
     orcaPathToGuiPath( orcaPath, guiPath );
         
-    humanManager_.showStatusMsg(hydroqguielementutil::IHumanManager::Information, "Successfully loaded file " + filename );
+    humanManager_.showStatusInformation( "Successfully loaded file " + filename );
 }
 
 void 
@@ -99,7 +98,7 @@ PathFileHandler::loadPreviousPath( GuiPath &guiPath )
     } 
     else 
     {
-        humanManager_.showStatusMsg(hydroqguielementutil::IHumanManager::Warning, "No path saved yet!" ); 
+        humanManager_.showStatusWarning( "No path saved yet!" ); 
     }
 }
     

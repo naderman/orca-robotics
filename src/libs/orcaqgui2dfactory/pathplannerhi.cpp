@@ -23,19 +23,20 @@ PathPlannerHI::PathPlannerHI( PathPlanner2dElement                    *ppElement
                               hydroqguielementutil::IHumanManager     &humanManager,
                               hydroqguielementutil::MouseEventManager &mouseEventManager,
                               PathPainter                             &painter,
-                              const WaypointSettings                  &wpSettings )
+                              const orcaice::Context                  &context )
     : ppElement_(ppElement),
       proxyString_( proxyString ),
       humanManager_(humanManager),
       mouseEventManager_(mouseEventManager),
       painter_(painter),
-      pathFileName_("/home"),
-      pathFileSet_(false),
-      wpSettings_(wpSettings),
+      context_(context),
+      ifacePathFileName_("/tmp"),
+      haveIfacePathFileName_(false),
       gotMode_(false)
 {
+    wpSettings_ = readWaypointSettings( context_.properties(), context_.tag() );
     buttons_.reset( new PathplannerButtons( this, humanManager, proxyString ) );
-    pathFileHandler_.reset( new PathFileHandler( humanManager ) );
+    ifacePathFileHandler_.reset( new PathFileHandler( humanManager ) );
 }
 
 
@@ -94,7 +95,7 @@ PathPlannerHI::waypointModeSelected()
 
     if ( !gotMode_ )
     {
-        humanManager_.showDialogMsg( hydroqguielementutil::IHumanManager::Warning, "Couldn't take over the mode for PathPlanner waypoints!" );
+        humanManager_.showDialogWarning( "Couldn't take over the mode for PathPlanner waypoints!" );
         return;
     }
 
@@ -142,26 +143,26 @@ PathPlannerHI::savePathAs()
     QString fileName = QFileDialog::getSaveFileName(
             0,
             "Choose a filename to save under",
-            pathFileName_,
+            ifacePathFileName_,
             "*.txt");
     
     if (!fileName.isEmpty())
     {
-        pathFileHandler_->savePath( fileName, painter_.currentPath() );
-        pathFileSet_ = true;
+        ifacePathFileHandler_->savePath( fileName, painter_.currentPath() );
+        haveIfacePathFileName_ = true;
     }
 }
 
 void 
 PathPlannerHI::savePath()
 {
-    if (!pathFileSet_)
+    if (!haveIfacePathFileName_)
     {   
         savePathAs();
     }
     else
     {
-        pathFileHandler_->savePath( pathFileName_, painter_.currentPath() );
+        ifacePathFileHandler_->savePath( ifacePathFileName_, painter_.currentPath() );
     }
 }
     

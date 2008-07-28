@@ -63,7 +63,7 @@ PathPlanner2dElement::PathPlanner2dElement( const orcaice::Context       &contex
                humanManager,
                mouseEventManager,
                painter_,
-               readWaypointSettings( context_.properties(), context_.tag() ) )
+               context_ )
 {
     cout<<"TRACE(pathplanner2delement.cpp): Instantiating w/ proxyString '" << proxyString << "'" << endl;   
     const bool displayPastWaypoints = true;
@@ -91,7 +91,7 @@ PathPlanner2dElement::update()
     {
         QString msg;
         pathTaskAnswerConsumer_->msgStore_.get( msg );
-        humanManager_.showDialogMsg(hydroqguielementutil::IHumanManager::Error, msg);    
+        humanManager_.showDialogError( msg );    
     }
 }
 
@@ -107,7 +107,7 @@ PathPlanner2dElement::setUseTransparency( bool useTransparency )
 void
 PathPlanner2dElement::actionOnConnection()
 {
-    humanManager_.showStatusMsg(hydroqguielementutil::IHumanManager::Information, "PathplannerElement is trying to connect");
+    humanManager_.showStatusInformation( "PathplannerElement is trying to connect" );
      
     try 
     {
@@ -115,11 +115,11 @@ PathPlanner2dElement::actionOnConnection()
     }
     catch ( ... )
     {
-        humanManager_.showStatusMsg(hydroqguielementutil::IHumanManager::Warning, "Problem connecting to pathplanner interface. Will try again later.");
+        humanManager_.showStatusWarning( "Problem connecting to pathplanner interface. Will try again later.");
         //cout << "WARNING(pathplanner2delement.cpp): Problem connecting to interface. Will try again later." << endl;
         return;
     }
-    humanManager_.showStatusMsg(hydroqguielementutil::IHumanManager::Information, "Connected to pathplanner interface successfully.");
+    humanManager_.showStatusInformation( "Connected to pathplanner interface successfully." );
     
     pathPlanner2dConsumerObj_ = pathTaskAnswerConsumer_;
     taskCallbackPrx_ = orcaice::createConsumerInterface<orca::PathPlanner2dConsumerPrx>( context_,
@@ -187,7 +187,7 @@ PathPlanner2dElement::sendPath( const PathPlannerInput &pathInput )
     {
         stringstream ss;
         ss << "While trying to set a pathfollowing data: " << endl << e;
-        humanManager_.showStatusMsg( hydroqguielementutil::IHumanManager::Error, ss.str().c_str() );
+        humanManager_.showStatusError( ss.str().c_str() );
     }
 }
 

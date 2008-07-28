@@ -24,6 +24,7 @@ const int QT_ANGLE_MULTIPLIER=16;
 class WaypointSettings
 {
     public:
+        WaypointSettings() {};
         WaypointSettings(std::string a, float b, float c, int d, float e, int f):
             spacingProperty(a), 
             spacingValue(b), 
@@ -32,12 +33,12 @@ class WaypointSettings
             maxApproachSpeed(e), 
             maxApproachTurnrate(f)
             {}
-            std::string spacingProperty;
-            float spacingValue;
-            float distanceTolerance;
-            int headingTolerance;
-            float maxApproachSpeed;
-            int maxApproachTurnrate;
+        std::string spacingProperty;
+        float spacingValue;
+        float distanceTolerance;
+        int headingTolerance;
+        float maxApproachSpeed;
+        int maxApproachTurnrate;
 };
     
 // internal Gui representation for waypoint and path
