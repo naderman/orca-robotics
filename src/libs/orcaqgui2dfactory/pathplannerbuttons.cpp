@@ -1,6 +1,6 @@
 #include <hydroqguielementutil/ihumanmanager.h>
 #include <hydroqguielementutil/shortcutkeymanager.h>
-#include <orcaqgui/guiicons.h>
+#include <hydroqgui/guiicons.h>
 #include "pathplannerbuttons.h"
 
 namespace orcaqgui2d {
