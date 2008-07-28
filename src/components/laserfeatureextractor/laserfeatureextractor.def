@@ -28,7 +28,7 @@ Config.Reflectors.PTruePositive.Default=0.6
 Config.FGPoints.MinForegroundWidth.Default=0.01
 Config.FGPoints.MaxForegroundWidth.Default=0.5
 Config.FGPoints.MinForegroundBackgroundSeparation.Default=0.3
-Config.FGPoints.ClearForegroundBackgroundSeparation.Default=2.0
+Config.FGPoints.ClearForegroundBackgroundSeparation.Default=3.0
 Config.FGPoints.PFalsePositive.Default=0.5
 Config.FGPoints.PTruePositive.Default=0.8
 
