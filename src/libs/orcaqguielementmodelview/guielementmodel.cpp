@@ -276,9 +276,9 @@ GuiElementModel::createGuiElement( const QString &elementType,
     if (!isSupported || element==NULL)
     {
         if (!isSupported) 
-            humanManager_.showStatusMsg(hydroqguielementutil::IHumanManager::Warning, "Element type " + elementType + " is not supported by any factory.");
+            humanManager_.showStatusWarning( "Element type " + elementType + " is not supported by any factory.");
         else if (element==NULL) 
-            humanManager_.showStatusMsg(hydroqguielementutil::IHumanManager::Warning, "Element " + elementDetails.join(" ") + " is supported but the factory returned NULL pointer.");
+            humanManager_.showStatusWarning( "Element " + elementDetails.join(" ") + " is supported but the factory returned NULL pointer.");
         delete element;
         if (!doesPlatformExist( platform ) ) 
             emit platformNeedsRemoval(platform);
