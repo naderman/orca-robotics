@@ -71,8 +71,8 @@ PathFollower2dElement::PathFollower2dElement( const orcaice::Context &context,
       currentTransparency_(false),
       isInFocus_(false),
       isRemoteInterfaceSick_(false)
-{
-    cout<<"TRACE(pathfollower2delement.cpp): Instantiating w/ proxyString '" << proxyString << "'" << endl;
+{ 
+    inputFactory_.reset( new DefaultPathFollowerInputFactory );
     enableHI();
     
     painter_.initialize( displayWaypoints_, displayPastWaypoints_, displayFutureWaypoints_, displayOlympicMarker_, currentTransparency_);
@@ -87,32 +87,41 @@ PathFollower2dElement::PathFollower2dElement( const orcaice::Context &context,
 }
 
 void
+PathFollower2dElement::setInputFactory ( std::auto_ptr<PathFollowerInputFactory> inputFactory )
+{
+    disableHI();
+    inputFactory_ = inputFactory;
+    enableHI();
+}
+
+void
 PathFollower2dElement::enableHI()
 {
-    pathHI_.reset( new PathFollowerUserInteraction( this,
+    pathUI_.reset( new PathFollowerUserInteraction( this,
                                                     proxyString_,
                                                     humanManager_,
                                                     mouseEventManager_,
                                                     shortcutKeyManager_,
                                                     guiElementSet_,
                                                     painter_, 
-                                                    context_ ) );
-    pathHI_->setFocus( isInFocus_ );
-    pathHI_->setUseTransparency( currentTransparency_ );
+                                                    context_,
+                                                    inputFactory_.get()) );
+    pathUI_->setFocus( isInFocus_ );
+    pathUI_->setUseTransparency( currentTransparency_ );
 }
 
 void
 PathFollower2dElement::disableHI()
 {
-    pathHI_.reset( 0 );
+    pathUI_.reset( 0 );
 }
 
 void
 PathFollower2dElement::setFocus( bool inFocus ) 
 {
     painter_.setFocus( inFocus ); 
-    if ( pathHI_.get() )
-        pathHI_->setFocus( inFocus); 
+    if ( pathUI_.get() )
+        pathUI_->setFocus( inFocus); 
     isInFocus_ = inFocus;
 };
 
@@ -206,8 +215,8 @@ PathFollower2dElement::setUseTransparency( bool useTransparency )
 { 
     cout << "TRACE(pathfollower2delement.cpp): setUseTransparency: " << useTransparency << endl;
     painter_.setUseTransparency( useTransparency ); 
-    if ( pathHI_.get() )
-        pathHI_->setUseTransparency( useTransparency );
+    if ( pathUI_.get() )
+        pathUI_->setUseTransparency( useTransparency );
     currentTransparency_ = useTransparency;
 }
 
@@ -401,13 +410,13 @@ PathFollower2dElement::execute( int action )
     }
     else if ( action == 6 )
     {
-        if ( pathHI_.get() )
-            pathHI_->savePathAs();
+        if ( pathUI_.get() )
+            pathUI_->savePathAs();
     }
     else if ( action == 7 )
     {
-        if ( pathHI_.get() )
-            pathHI_->savePath();
+        if ( pathUI_.get() )
+            pathUI_->savePath();
     }
     else
     {
@@ -452,16 +461,16 @@ PathFollower2dElement::stop()
 }
 
 void 
-PathFollower2dElement::sendPath( const PathFollowerInput &pathInput, bool activateImmediately )
+PathFollower2dElement::sendPath( const IPathInput *pathInput, bool activateImmediately )
 {
     try
     {
         // it's possible that we were desubscribed before, let's resubscribe to make sure
         // if we are already subscribed, the server will just do nothing
         pathFollower2dPrx_->subscribe(callbackPrx_);
-
+        
         orca::PathFollower2dData data;
-        bool isOk = pathInput.getPath( data );
+        bool isOk = pathInput->getPath( data );
 
 
         if (isOk) 
@@ -494,8 +503,8 @@ void
 PathFollower2dElement::paint( QPainter *p, int z )
 {   
     painter_.paint( p, z );
-    if ( pathHI_.get() )
-        pathHI_->paint( p );
+    if ( pathUI_.get() )
+        pathUI_->paint( p );
 }
 
 }

@@ -11,12 +11,23 @@
 #ifndef ORCA_IPATH_INPUT_H
 #define ORCA_IPATH_INPUT_H
 
+#include <memory>
+
 class QMouseEvent;
 class QPainter;
+
+namespace hydroqguielementutil {
+    class IHumanManager;
+}
+
+namespace orca {
+    class PathFollower2dData;
+}
 
 namespace orcaqgui2d {
 
 class WaypointSettings;
+class PathFollowerUserInteraction;
     
 //!
 //! Abstract class for user path input
@@ -49,7 +60,29 @@ class IPathInput
         virtual void sendPath() = 0;
         virtual void cancelPath() = 0;
         virtual void setWaypointFocus( int waypointId ) = 0;
+        
+        // This is not fully virtual but avoids having to inherit from PathFollower2dData
+        virtual bool getPath( orca::PathFollower2dData &pathData ) const { return false; };
+        
 };
+
+//!
+//! A factory that can create PathFollowerInput objects at runtime
+//!
+//! @author Tobias Kaupp
+//!
+class PathFollowerInputFactory
+{
+    public:
+    
+        virtual std::auto_ptr<IPathInput> 
+            createPathFollowerInput( PathFollowerUserInteraction        &pathFollowerUI,
+                                    WaypointSettings                    *wpSettings,
+                                    hydroqguielementutil::IHumanManager &humanManager,
+                                    const QString                       &lastSavedPathFile ) const = 0;
+};
+
+
 
 }
 

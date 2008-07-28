@@ -50,7 +50,8 @@ public:
                                  hydroqguielementutil::ShortcutKeyManager &shortcutKeyManager,
                                  const hydroqgui::GuiElementSet           &guiElementSet,
                                  const PathPainter                        &painter,
-                                 const orcaice::Context                   &context );
+                                 const orcaice::Context                   &context,
+                                 const PathFollowerInputFactory           *inputFactory );
 
     void noLongerMouseEventReceiver();
     void paint( QPainter *p );
@@ -92,18 +93,21 @@ private:
     const hydroqgui::GuiElementSet &guiElementSet_;
     const PathPainter &painter_;
     orcaice::Context context_;
+    const PathFollowerInputFactory *inputFactory_;
     WaypointSettings wpSettings_;
 
-    // saving the path which the pathfollower interface holds
+    // saving the path which the pathfollower *interface* holds
     // (as opposed to the path the user enters in green)
     QString ifacePathFileName_;
     bool haveIfacePathFileName_;
     std::auto_ptr<PathFileHandler> ifacePathFileHandler_;
     
     // handles all user input through clicking, tables, etc.
-    std::auto_ptr<PathFollowerInput> pathInput_;
+    std::auto_ptr<IPathInput> pathInput_;
+    
     // automatic saving of paths on send
     int numAutoPathDumps_;
+    
     // remember the filename of the green user path
     QString loadPreviousPathFilename_;
     

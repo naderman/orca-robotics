@@ -52,17 +52,33 @@ class PathFollowerInput : public IPathInput
         
         virtual void setWaypointFocus( int waypointId );
 
-        bool getPath( orca::PathFollower2dData &pathData ) const;    
+        virtual bool getPath( orca::PathFollower2dData &pathData ) const;    
         
     private:
+               
        PathFollowerUserInteraction &pathFollowerUI_;
-       
        std::auto_ptr<PathDesignScreen> pathDesignScreen_;
        std::auto_ptr<PathDesignWidget> pathDesignWidget_;
        std::auto_ptr<GuiPath> guiPath_;
        std::auto_ptr<PathFileHandler> pathFileHandler_;
        
 };
+
+class DefaultPathFollowerInputFactory : public PathFollowerInputFactory
+{
+public:
+    
+    std::auto_ptr<IPathInput> 
+            createPathFollowerInput( PathFollowerUserInteraction         &pathFollowerUI,
+                                     WaypointSettings                    *wpSettings,
+                                     hydroqguielementutil::IHumanManager &humanManager,
+                                     const QString                       &lastSavedPathFile ) const
+            {
+                std::auto_ptr<IPathInput> input;
+                input.reset( new PathFollowerInput( pathFollowerUI, wpSettings, humanManager, lastSavedPathFile ) );
+                return input;     
+            }
+};      
 
 }
 

@@ -20,7 +20,6 @@
 #include <orcaqgui2dfactory/pathpainter.h>
 #include <orcaqgui2dfactory/pathfolloweruserinteraction.h>
 
-
 namespace orcaqgui2d {
     
 class PathFollowerInput;
@@ -72,26 +71,30 @@ public:
     virtual void setFocus( bool inFocus );
     virtual void setUseTransparency( bool useTransparency );
 
-    virtual void noLongerMouseEventReceiver() { if ( pathHI_.get() ) pathHI_->noLongerMouseEventReceiver(); }
-    virtual void mousePressEvent(QMouseEvent *e) { if ( pathHI_.get() ) pathHI_->mousePressEvent(e); }
-    virtual void mouseMoveEvent(QMouseEvent *e) { if ( pathHI_.get() ) pathHI_->mouseMoveEvent(e); }
-    virtual void mouseReleaseEvent(QMouseEvent *e) { if ( pathHI_.get() ) pathHI_->mouseReleaseEvent(e); }
-    virtual void mouseDoubleClickEvent(QMouseEvent *e) { if ( pathHI_.get() ) pathHI_->mouseDoubleClickEvent(e); }
+    virtual void noLongerMouseEventReceiver() { if ( pathUI_.get() ) pathUI_->noLongerMouseEventReceiver(); }
+    virtual void mousePressEvent(QMouseEvent *e) { if ( pathUI_.get() ) pathUI_->mousePressEvent(e); }
+    virtual void mouseMoveEvent(QMouseEvent *e) { if ( pathUI_.get() ) pathUI_->mouseMoveEvent(e); }
+    virtual void mouseReleaseEvent(QMouseEvent *e) { if ( pathUI_.get() ) pathUI_->mouseReleaseEvent(e); }
+    virtual void mouseDoubleClickEvent(QMouseEvent *e) { if ( pathUI_.get() ) pathUI_->mouseDoubleClickEvent(e); }
+    
+    // sets an inputFactory different from the default one
+    void setInputFactory ( std::auto_ptr<PathFollowerInputFactory> inputFactory );
     
     // Tries to enable or disable the remote interface. Returns true if successful
     bool tryEnableRemoteInterface( bool enable );
 
     void go();
     void stop();
-    void sendPath( const PathFollowerInput &pathInput, bool activateImmediately );
+    void sendPath( const IPathInput *pathInput, bool activateImmediately );
 
     void enableHI();
     void disableHI();
-    bool isHIEnabled() { return pathHI_.get() != 0; }
+    bool isHIEnabled() { return pathUI_.get() != 0; }
 
     PathPainter &pathPainter() { return painter_; }
 
 private: 
+    
     void doInitialSetup();
 
     PathPainter painter_;
@@ -110,7 +113,8 @@ private:
     hydroqguielementutil::IHumanManager       &humanManager_;
     hydroqguielementutil::MouseEventManager   &mouseEventManager_;
     hydroqguielementutil::ShortcutKeyManager  &shortcutKeyManager_;
-    const hydroqgui::GuiElementSet &guiElementSet_;
+    const hydroqgui::GuiElementSet            &guiElementSet_;
+    std::auto_ptr<PathFollowerInputFactory>   inputFactory_;
     
     bool firstTime_;
     gbxiceutilacfr::Timer *timer_;
@@ -127,7 +131,7 @@ private:
     bool isRemoteInterfaceSick_;
     
     // Handles human interface
-    std::auto_ptr<PathFollowerUserInteraction> pathHI_;
+    std::auto_ptr<PathFollowerUserInteraction> pathUI_;
     
     // returns 0 if remote call works otherwise -1
     int isFollowerEnabled( bool &isEnabled );

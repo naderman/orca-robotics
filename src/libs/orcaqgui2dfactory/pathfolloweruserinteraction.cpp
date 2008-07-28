@@ -28,7 +28,8 @@ PathFollowerUserInteraction::PathFollowerUserInteraction( PathFollower2dElement 
                                                           hydroqguielementutil::ShortcutKeyManager &shortcutKeyManager,
                                                           const hydroqgui::GuiElementSet           &guiElementSet,
                                                           const PathPainter                        &painter,
-                                                          const orcaice::Context                   &context )
+                                                          const orcaice::Context                   &context,
+                                                          const PathFollowerInputFactory           *inputFactory )
     : pfElement_(pfElement),
       proxyString_( proxyString ),
       humanManager_(humanManager),
@@ -37,6 +38,7 @@ PathFollowerUserInteraction::PathFollowerUserInteraction( PathFollower2dElement 
       guiElementSet_(guiElementSet),
       painter_(painter),
       context_(context),
+      inputFactory_(inputFactory),
       ifacePathFileName_("/tmp"),
       haveIfacePathFileName_(false),    
       numAutoPathDumps_(0),
@@ -113,11 +115,12 @@ PathFollowerUserInteraction::waypointModeSelected()
         humanManager_.showDialogWarning( "Couldn't take over the mode for PathFollower waypoints!" );
         return;
     }
-
-    pathInput_.reset( new PathFollowerInput( *this, 
-                                             &wpSettings_, 
-                                              humanManager_, 
-                                              loadPreviousPathFilename_ ) );
+    
+    pathInput_ = inputFactory_->createPathFollowerInput( *this, 
+                                                         &wpSettings_, 
+                                                          humanManager_, 
+                                                          loadPreviousPathFilename_ );
+    
     pathInput_->setUseTransparency( useTransparency_ );
     buttons_->setWpButton( true );
 }
@@ -148,7 +151,7 @@ PathFollowerUserInteraction::send()
     pathInput_->savePath( filename );
     loadPreviousPathFilename_ = filename;
     
-    pfElement_->sendPath( *pathInput_, readActivateImmediately(context_.properties(), context_.tag()) );
+    pfElement_->sendPath( pathInput_.get(), readActivateImmediately(context_.properties(), context_.tag()) );
     
     cancel();
 }
