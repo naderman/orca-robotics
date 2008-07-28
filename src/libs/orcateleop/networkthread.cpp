@@ -45,6 +45,8 @@ NetworkThread::newMixedCommand( const hydrointerfaces::HumanInput2d::Command& co
         command.transverse, command.isTransverseIncrement,
         command.angular, command.isAngularIncrement );
     events_->optimizedAdd( e );
+
+    cout<<endl<<"DEBUG: NetworkThread::newMixedCommand: events stack size = "<<events_->size()<<endl;
 }
 
 void 
