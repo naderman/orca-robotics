@@ -12,25 +12,31 @@
 #define PATHDESIGN_TABLE_H
 
 #include <QWidget>
-#include <QSpinBox>
 #include <QTableWidget>
 
 #include <orcaqgui2dfactory/pathdesignscreen.h>
 #include <orcaqgui2dfactory/pathutils.h>
+
+class QSpinBox;
 
 namespace orcaqgui2d {
     
 class PathDesignTable;
 class IPathInput;
 
-class PathDesignWidget : public QWidget
+//!
+//! A class used to design paths by manipulating values in a table
+//!
+//! @author Tobias Kaupp
+//! 
+class PathDesignTableWidget : public QWidget
 {
     Q_OBJECT
     
     public:
-        PathDesignWidget(IPathInput *pathInput,
-                         GuiPath    &guiPath );
-        int numberOfLoops() { return numLoopsSpin_->value(); };
+        PathDesignTableWidget ( IPathInput *pathInput,
+                                GuiPath    &guiPath );
+        int numberOfLoops();
     
     private:
         IPathInput *pathInput_;
@@ -57,20 +63,18 @@ class PathDesignTable : public QTableWidget
     Q_OBJECT
             
     public:
-        PathDesignTable( PathDesignWidget *parent,
-                         IPathInput       *pathInput,
-                         GuiPath          &guiPath );
+        PathDesignTable( QWidget     *parent,
+                         IPathInput  *pathInput,
+                         GuiPath     &guiPath );
         void refreshTable();
         void computeVelocities();
         
     private:
-        PathDesignWidget *parent_;
-        IPathInput       *pathInput_;
         
-        // data which is shared with pathinput
+        IPathInput *pathInput_;
         GuiPath &guiPath_;
         
-        // this one is only local
+        // not part of the path representation
         QVector<float> velocities_;
         
         // lock up the cellUpdate signal: it should only be emitted if the user changes cell entries
@@ -78,6 +82,7 @@ class PathDesignTable : public QTableWidget
         bool isLocked_;
     
     private slots:
+        
         // called after user interaction
         void updateDataStorage(int row, int column);
         void setWaypointFocus(int, int);

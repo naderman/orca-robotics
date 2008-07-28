@@ -11,7 +11,7 @@ PathPlannerInput::PathPlannerInput( PathPlannerUserInteraction          &pathPla
     guiPath_.reset( new GuiPath() );
     
     pathDesignScreen_.reset( new PathDesignScreen( *guiPath_.get(), wpSettings, humanManager ) );
-    pathDesignWidget_.reset( new PathDesignWidget( this, *guiPath_.get() ) );
+    pathDesignTableWidget_.reset( new PathDesignTableWidget( this, *guiPath_.get() ) );
     pathFileHandler_.reset( new PathFileHandler( humanManager ) );
 }
 
@@ -37,9 +37,9 @@ void PathPlannerInput::processReleaseEvent( QMouseEvent* e )
 {
     pathDesignScreen_->processReleaseEvent( e );
     
-    if ( pathDesignWidget_->isHidden() ) 
-        pathDesignWidget_->show();
-    pathDesignWidget_->refreshTable();
+    if ( pathDesignTableWidget_->isHidden() ) 
+        pathDesignTableWidget_->show();
+    pathDesignTableWidget_->refreshTable();
 }
 
 void 
@@ -65,7 +65,7 @@ PathPlannerInput::getTask() const
 void 
 PathPlannerInput::savePath( const QString &filename )
 {
-    int numLoops = pathDesignWidget_->numberOfLoops();
+    int numLoops = pathDesignTableWidget_->numberOfLoops();
     
     float timeOffset = 0.0;
     if (numLoops > 1)
@@ -78,14 +78,14 @@ void
 PathPlannerInput::loadPath( const QString &filename ) 
 {  
     pathFileHandler_->loadPath( filename, *guiPath_.get() );
-    pathDesignWidget_->refreshTable(); 
+    pathDesignTableWidget_->refreshTable(); 
 }
 
 void 
 PathPlannerInput::loadPreviousPath()
 {
     pathFileHandler_->loadPreviousPath( *guiPath_.get() );
-    pathDesignWidget_->refreshTable(); 
+    pathDesignTableWidget_->refreshTable(); 
 }
 
 void

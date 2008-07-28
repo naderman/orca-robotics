@@ -18,30 +18,12 @@
 
 namespace orcaqgui2d {
 
-const int QT_ANGLE_MULTIPLIER=16;    
+const int QT_ANGLE_MULTIPLIER = 16;    
     
-// all units are SI units
-class WaypointSettings
-{
-    public:
-        WaypointSettings() {};
-        WaypointSettings(std::string a, float b, float c, int d, float e, int f):
-            spacingProperty(a), 
-            spacingValue(b), 
-            distanceTolerance(c), 
-            headingTolerance(d), 
-            maxApproachSpeed(e), 
-            maxApproachTurnrate(f)
-            {}
-        std::string spacingProperty;
-        float spacingValue;
-        float distanceTolerance;
-        int headingTolerance;
-        float maxApproachSpeed;
-        int maxApproachTurnrate;
-};
-    
-// internal Gui representation for waypoint and path
+//
+// Internal Gui representation for waypoint and path
+// Author: Tobias Kaupp 
+//
 class GuiWaypoint
 {
 public:
@@ -66,10 +48,36 @@ public:
 
 typedef QVector<GuiWaypoint> GuiPath;
 
-    
+//
+// Tolerances and other parameters of waypoint
+// The units are the same as above
+//
+class WaypointSettings
+{
+    public:
+        WaypointSettings() {};
+        WaypointSettings(std::string a, float b, float c, int d, float e, int f):
+            spacingProperty(a), 
+            spacingValue(b), 
+            distanceTolerance(c), 
+            headingTolerance(d), 
+            maxApproachSpeed(e), 
+            maxApproachTurnrate(f)
+            {}
+        std::string spacingProperty;
+        float spacingValue;
+        float distanceTolerance;
+        int headingTolerance;
+        float maxApproachSpeed;
+        int maxApproachTurnrate;
+};
+
+// Compute straight line distance of two points in [m]   
 float straightLineDist( QPointF line );
 
-// conversion functions
+//
+// Conversion functions
+//
 void guiPathToOrcaPath( const GuiPath &in, 
                         orca::Path2d  &out, 
                         int            numLoops = 1, 
@@ -78,7 +86,9 @@ void guiPathToOrcaPath( const GuiPath &in,
 void orcaPathToGuiPath( const orca::Path2d &in, 
                         GuiPath            &out );
 
-
+//
+// Reading stuff from cfg file
+//
 WaypointSettings readWaypointSettings( const Ice::PropertiesPtr &props, 
                                        const std::string        &tag );
 

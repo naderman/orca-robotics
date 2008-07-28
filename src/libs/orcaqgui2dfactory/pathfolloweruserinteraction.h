@@ -33,11 +33,11 @@ namespace orcaqgui2d {
 class PathFollower2dElement;    
 class PathPainter;
     
-//
-// Handles all user interaction for the PathFollower2dElement
-//
-// Author: Tobias Kaupp
-//
+//!
+//! Handles all user interaction with the PathFollower
+//!
+//! @author Tobias Kaupp
+//!
 class PathFollowerUserInteraction  : public QObject
 {
     Q_OBJECT
@@ -102,7 +102,7 @@ private:
     bool haveIfacePathFileName_;
     std::auto_ptr<PathFileHandler> ifacePathFileHandler_;
     
-    // handles all user input through clicking, tables, etc.
+    // handles all user path input through clicking, tables, etc.
     std::auto_ptr<IPathInput> pathInput_;
     
     // automatic saving of paths on send

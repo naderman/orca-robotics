@@ -32,6 +32,11 @@ namespace orcaqgui2d {
 class PathPlanner2dElement;
 class PathPainter;
 
+//!
+//! Handles all user interaction with the PathPlanner
+//!
+//! @author Tobias Kaupp
+//!
 class PathPlannerUserInteraction  : public QObject
 {
     Q_OBJECT
@@ -79,7 +84,7 @@ private:
     orcaice::Context context_;
     WaypointSettings wpSettings_;
 
-    // saving the path which the pathplanner interface holds
+    // saving the path which the pathplanner *interface* holds
     // (as opposed to the path the user enters in green)
     QString ifacePathFileName_;
     bool haveIfacePathFileName_;

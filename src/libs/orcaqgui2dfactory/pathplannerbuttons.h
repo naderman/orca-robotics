@@ -22,8 +22,11 @@ namespace hydroqguielementutil {
 
 namespace orcaqgui2d {
 
-// This class sets up all the buttons and actions for user interaction.
-// It can be instantiated on the heap and deleted, Qt cleans up for us
+//
+// This class sets up all the buttons and actions user interaction with the pathplanner.
+//
+// Author: Tobias Kaupp
+//
 class PathplannerButtons : public QObject
 {
     Q_OBJECT

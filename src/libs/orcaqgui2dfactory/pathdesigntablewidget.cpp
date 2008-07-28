@@ -6,6 +6,7 @@
 #include <QTextStream>
 #include <QComboBox>
 #include <QShortcut>
+#include <QSpinBox>
 #include <QPushButton>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -32,8 +33,8 @@ enum ColumnDataType {
     NumColumns
 };
     
-PathDesignWidget::PathDesignWidget( IPathInput *pathInput, 
-                                    GuiPath    &guiPath )
+PathDesignTableWidget::PathDesignTableWidget( IPathInput *pathInput, 
+                                              GuiPath    &guiPath )
     : pathInput_(pathInput),
       pathFileSet_(false),
       pathFileName_("/tmp")
@@ -91,14 +92,21 @@ PathDesignWidget::PathDesignWidget( IPathInput *pathInput,
     this->show();
 }
 
-void PathDesignWidget::refreshTable()
+void 
+PathDesignTableWidget::refreshTable()
 {
     wpTable_->computeVelocities();
     wpTable_->refreshTable();    
 }
 
+int 
+PathDesignTableWidget::numberOfLoops() 
+{ 
+    return numLoopsSpin_->value(); 
+}
+
 void 
-PathDesignWidget::savePathAs()
+PathDesignTableWidget::savePathAs()
 {
     QString fileName = QFileDialog::getSaveFileName(
             0,
@@ -115,7 +123,7 @@ PathDesignWidget::savePathAs()
 }
 
 void 
-PathDesignWidget::savePath()
+PathDesignTableWidget::savePath()
 {
     if (!pathFileSet_)
     {   
@@ -128,7 +136,7 @@ PathDesignWidget::savePath()
 }
 
 void 
-PathDesignWidget::loadPath()
+PathDesignTableWidget::loadPath()
 {
     QString fileName = QFileDialog::getOpenFileName(
             0,
@@ -145,30 +153,29 @@ PathDesignWidget::loadPath()
 }
 
 void
-PathDesignWidget::loadPreviousPath()
+PathDesignTableWidget::loadPreviousPath()
 {
     pathInput_->loadPreviousPath();   
 }
 
 void 
-PathDesignWidget::sendPath()
+PathDesignTableWidget::sendPath()
 {
     pathInput_->sendPath();
 }
 
 void 
-PathDesignWidget::cancelPath()
+PathDesignTableWidget::cancelPath()
 {
     pathInput_->cancelPath();
 }
 
 // ==================================================================
     
-PathDesignTable::PathDesignTable( PathDesignWidget *parent,
-                                  IPathInput       *pathInput,
-                                  GuiPath          &guiPath )
+PathDesignTable::PathDesignTable( QWidget    *parent,
+                                  IPathInput *pathInput,
+                                  GuiPath    &guiPath )
     : QTableWidget( parent ),
-      parent_(parent),
       pathInput_(pathInput),
       guiPath_(guiPath),
       isLocked_(true)

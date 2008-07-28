@@ -11,7 +11,7 @@ PathFollowerInput::PathFollowerInput ( PathFollowerUserInteraction         &path
 {
     guiPath_.reset( new GuiPath() );
     pathDesignScreen_.reset( new PathDesignScreen( *guiPath_.get(), wpSettings, humanManager ) );
-    pathDesignWidget_.reset( new PathDesignWidget( this, *guiPath_.get() ) );
+    pathDesignTableWidget_.reset( new PathDesignTableWidget( this, *guiPath_.get() ) );
     pathFileHandler_.reset( new PathFileHandler( humanManager, lastSavedPathFile ) );
 }
 
@@ -37,9 +37,9 @@ void PathFollowerInput::processReleaseEvent( QMouseEvent* e )
 {
     pathDesignScreen_->processReleaseEvent( e );
     
-    if ( pathDesignWidget_->isHidden() ) 
-        pathDesignWidget_->show();
-    pathDesignWidget_->refreshTable();
+    if ( pathDesignTableWidget_->isHidden() ) 
+        pathDesignTableWidget_->show();
+    pathDesignTableWidget_->refreshTable();
 }
 
 void 
@@ -57,12 +57,12 @@ PathFollowerInput::setWaypointFocus( int waypointId )
 bool
 PathFollowerInput::getPath( orca::PathFollower2dData &pathData ) const
 {    
-    int size = pathDesignWidget_->numberOfLoops() * guiPath_->size();
+    int size = pathDesignTableWidget_->numberOfLoops() * guiPath_->size();
     //cout << "DEBUG(pathinput.cpp): getPath: size of waypoints is " << size << endl;
     if (size==0) return false;
     
     const float timeOffset = guiPath_->last().timeTarget + pathDesignScreen_->secondsToCompleteLoop();
-    guiPathToOrcaPath( *guiPath_.get(), pathData.path, pathDesignWidget_->numberOfLoops(), timeOffset );
+    guiPathToOrcaPath( *guiPath_.get(), pathData.path, pathDesignTableWidget_->numberOfLoops(), timeOffset );
     
     return true;
 }
@@ -70,7 +70,7 @@ PathFollowerInput::getPath( orca::PathFollower2dData &pathData ) const
 void 
 PathFollowerInput::savePath( const QString &filename )
 {
-    int numLoops = pathDesignWidget_->numberOfLoops();
+    int numLoops = pathDesignTableWidget_->numberOfLoops();
     
     float timeOffset = 0.0;
     if (numLoops > 1)
@@ -83,14 +83,14 @@ void
 PathFollowerInput::loadPath( const QString &filename ) 
 {  
     pathFileHandler_->loadPath( filename, *guiPath_.get() );
-    pathDesignWidget_->refreshTable(); 
+    pathDesignTableWidget_->refreshTable(); 
 }
 
 void 
 PathFollowerInput::loadPreviousPath()
 {
     pathFileHandler_->loadPreviousPath( *guiPath_.get() );
-    pathDesignWidget_->refreshTable(); 
+    pathDesignTableWidget_->refreshTable(); 
 }
 
 void

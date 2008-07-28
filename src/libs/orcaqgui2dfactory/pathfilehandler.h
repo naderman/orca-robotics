@@ -18,9 +18,15 @@ namespace orcaqgui2d {
     
 class IHumanManager;
 
+//!
+//! A class which handles loading and saving paths from/to a file
+//!
+//! @author Tobias Kaupp
+//! 
 class PathFileHandler
 {
     public:
+        
         PathFileHandler( hydroqguielementutil::IHumanManager &humanManager,
                          const QString                       &lastSavedPathFile = "" );
         
@@ -34,7 +40,9 @@ class PathFileHandler
         
         void loadPreviousPath( GuiPath &guiPath );
         
+        
     private:
+        
         hydroqguielementutil::IHumanManager &humanManager_;
         QString lastSavedPathFile_;
 };

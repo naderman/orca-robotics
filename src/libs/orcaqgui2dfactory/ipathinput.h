@@ -8,8 +8,8 @@
  *
  */
  
-#ifndef ORCA_IPATH_INPUT_H
-#define ORCA_IPATH_INPUT_H
+#ifndef IPATH_INPUT_H
+#define IPATH_INPUT_H
 
 #include <memory>
 
@@ -62,12 +62,13 @@ class IPathInput
         virtual void setWaypointFocus( int waypointId ) = 0;
         
         // This is not fully virtual but avoids having to inherit from PathFollower2dData
+        // Returns false if path is empty
         virtual bool getPath( orca::PathFollower2dData &pathData ) const { return false; };
         
 };
 
 //!
-//! A factory that can create PathFollowerInput objects at runtime
+//! Abstract factory class for PathFollower object creation at run-time
 //!
 //! @author Tobias Kaupp
 //!
@@ -76,10 +77,10 @@ class PathFollowerInputFactory
     public:
     
         virtual std::auto_ptr<IPathInput> 
-            createPathFollowerInput( PathFollowerUserInteraction        &pathFollowerUI,
-                                    WaypointSettings                    *wpSettings,
-                                    hydroqguielementutil::IHumanManager &humanManager,
-                                    const QString                       &lastSavedPathFile ) const = 0;
+            createPathFollowerInput( PathFollowerUserInteraction         &pathFollowerUI,
+                                     WaypointSettings                    *wpSettings,
+                                     hydroqguielementutil::IHumanManager &humanManager,
+                                     const QString                       &lastSavedPathFile ) const = 0;
 };
 
 

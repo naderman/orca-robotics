@@ -22,6 +22,12 @@ namespace orcaqgui2d {
     
 class PathFollowerUserInteraction;
 
+//!
+//! An implementation of PathInput for the PathFollower
+//! Enables user to click on screen and manipulate path using a table
+//!
+//! @author Tobias Kaupp
+//!
 class PathFollowerInput : public IPathInput
 { 
             
@@ -56,14 +62,17 @@ class PathFollowerInput : public IPathInput
         
     private:
                
-       PathFollowerUserInteraction &pathFollowerUI_;
-       std::auto_ptr<PathDesignScreen> pathDesignScreen_;
-       std::auto_ptr<PathDesignWidget> pathDesignWidget_;
-       std::auto_ptr<GuiPath> guiPath_;
-       std::auto_ptr<PathFileHandler> pathFileHandler_;
+        PathFollowerUserInteraction &pathFollowerUI_;
+        std::auto_ptr<PathDesignScreen> pathDesignScreen_;
+        std::auto_ptr<PathDesignTableWidget> pathDesignTableWidget_;
+        std::auto_ptr<GuiPath> guiPath_;
+        std::auto_ptr<PathFileHandler> pathFileHandler_;
        
 };
 
+//!
+//! A factory used to create a PathFollowerInput object at runtime
+//!
 class DefaultPathFollowerInputFactory : public PathFollowerInputFactory
 {
 public:

@@ -21,13 +21,16 @@ using namespace std;
 
 namespace orcaqgui2d {
     
-// normalises heading to 0<angle<360*16 for Gui painting
-int guiNormalise( int heading )
-{
-    if (heading < 0) return (heading + 360*QT_ANGLE_MULTIPLIER);
-    if (heading > 360*QT_ANGLE_MULTIPLIER) return (heading - 360*QT_ANGLE_MULTIPLIER);
+namespace {    
     
-    return heading;
+    // normalises heading to 0<angle<360*16 for Gui painting
+    int guiNormalise( int heading )
+    {
+        if (heading < 0) return (heading + 360*QT_ANGLE_MULTIPLIER);
+        if (heading > 360*QT_ANGLE_MULTIPLIER) return (heading - 360*QT_ANGLE_MULTIPLIER);
+        
+        return heading;
+    }
 }
 
     
@@ -129,8 +132,7 @@ void PathDesignScreen::updateWpSettings( WaypointSettings* wpSettings )
 
 void PathDesignScreen::processPressEvent( QMouseEvent* e)
 {
-    mouseDownPnt_ = e->pos();
-    mouseMovePnt_ = mouseDownPnt_;  // initialisation of mouseMovePnt_ to same position   
+    mouseDownPnt_ = e->pos(); 
 }
 
 void PathDesignScreen::processReleaseEvent( QMouseEvent* e)
@@ -268,11 +270,14 @@ void PathDesignScreen::changeWpParameters( QPointF p1 )
 float
 PathDesignScreen::secondsToCompleteLoop() const
 {
-    // time from last waypoint to first waypoint to complete the loop
     float timeToCompleteLoop;
-    if( wpSettings_->spacingProperty=="Time" ) {
+    
+    if( wpSettings_->spacingProperty=="Time" ) 
+    {
         timeToCompleteLoop = wpSettings_->spacingValue;
-    } else {
+    } 
+    else 
+    {
         timeToCompleteLoop = straightLineDist( guiPath_.last().position - guiPath_.first().position ) / (wpSettings_->spacingValue);
     }
     return timeToCompleteLoop;

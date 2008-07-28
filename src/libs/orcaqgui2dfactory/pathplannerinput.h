@@ -22,6 +22,12 @@ namespace orcaqgui2d {
     
 class PathPlannerUserInteraction;
 
+//!
+//! An implementation of PathInput for the PathPlanner
+//! Enables user to click on screen and manipulate path using a table
+//!
+//! @author Tobias Kaupp
+//!
 class PathPlannerInput : public IPathInput
 { 
 public:
@@ -50,13 +56,14 @@ public:
     
     orca::PathPlanner2dTask getTask() const;
             
-    private:
-        PathPlannerUserInteraction &pathPlannerUI_;
+private:
         
-        std::auto_ptr<PathDesignScreen> pathDesignScreen_;
-        std::auto_ptr<PathDesignWidget> pathDesignWidget_;
-        std::auto_ptr<GuiPath> guiPath_;
-        std::auto_ptr<PathFileHandler> pathFileHandler_;
+    PathPlannerUserInteraction &pathPlannerUI_;
+    
+    std::auto_ptr<PathDesignScreen> pathDesignScreen_;
+    std::auto_ptr<PathDesignTableWidget> pathDesignTableWidget_;
+    std::auto_ptr<GuiPath> guiPath_;
+    std::auto_ptr<PathFileHandler> pathFileHandler_;
 
 };
 

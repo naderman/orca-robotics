@@ -17,16 +17,21 @@
 class QPainter;
 class QMouseEvent;
 
-
 namespace hydroqguielementutil {
     class IHumanManager;
 }
 
 namespace orcaqgui2d {
 
+//!
+//! A class used to design paths by clicking on the screen
+//!
+//! @author Tobias Kaupp
+//!  
 class PathDesignScreen
 {           
     public:
+        
         PathDesignScreen( GuiPath                             &guiPath,
                           WaypointSettings                    *wpSettings,
                           hydroqguielementutil::IHumanManager &humanManager );  
@@ -42,15 +47,17 @@ class PathDesignScreen
         void updateWpSettings( WaypointSettings* wpSettings );
         void setWaypointFocus( int waypointId );
         
+        // Return the time it takes to complete a loop given the current path
+        // (last waypoint to first waypoint of path)
         float secondsToCompleteLoop() const;
         
-    protected:    
         
-        // The path in Gui representation. Shared with wpWidget
+    private:    
+       
         GuiPath &guiPath_;
-        
         WaypointSettings *wpSettings_;
         hydroqguielementutil::IHumanManager &humanManager_;
+        
         QMatrix wmInv_; // win2mm matrix
         
         bool useTransparency_;
@@ -62,8 +69,6 @@ class PathDesignScreen
                
         QPointF mouseDownPnt_;
         QPointF mouseUpPnt_;
-        QPointF mouseMovePnt_;
-        QPointF doubleClick_;
         
         int waypointInFocus_;
         

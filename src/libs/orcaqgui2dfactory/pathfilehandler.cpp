@@ -48,7 +48,6 @@ PathFileHandler::savePath( const QString &filename,
     }
     
     lastSavedPathFile_ = filename;
-    cout << "TRACE(PathFileHandler): lastSavedPathFile_ " << lastSavedPathFile_.toStdString() << endl;
     
     // convert gui path to an orca path
     orca::Path2d orcaPath;
@@ -91,7 +90,6 @@ PathFileHandler::loadPath( const QString &filename, GuiPath &guiPath )
 void 
 PathFileHandler::loadPreviousPath( GuiPath &guiPath )
 {
-    cout << "TRACE(PathFileHandler): lastSavedPathFile_ " << lastSavedPathFile_.toStdString() << endl;
     if (lastSavedPathFile_!="") 
     {
         loadPath( lastSavedPathFile_, guiPath );    
