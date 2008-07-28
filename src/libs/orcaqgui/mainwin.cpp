@@ -16,7 +16,7 @@
 #include <orcaqt/orcaqt.h>
 
 #include "mainwin.h"
-#include <orcaqgui/guiicons.h>
+#include <hydroqgui/guiicons.h>
 
 using namespace std;
 
