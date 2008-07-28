@@ -10,10 +10,11 @@
  
 #include <QFileDialog>
 #include <hydroqguielementutil/mouseeventmanager.h>
-#include <hydroqgui/guielementset.h>
 #include <hydroqguielementutil/ihumanmanager.h>
+#include <hydroqgui/guielementset.h>
+#include <hydroqguipath/wptolerancesdialog.h>
+#include <orcaqgui2dfactory/pathconversionutil.h>
 #include <orcaqgui2dfactory/pathfollower2delement.h>
-#include <orcaqgui2dfactory/wptolerancesdialog.h>
 
 #include "pathfolloweruserinteraction.h"
 

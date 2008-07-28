@@ -10,7 +10,7 @@
 
 #include <QString>
 #include <orcaobj/orcaobj.h>
-#include "pathutils.h"
+#include "pathconversionutil.h"
 
 namespace orcaqgui2d {
         
@@ -94,11 +94,5 @@ QString readDumpPath( const Ice::PropertiesPtr &props,
     strOut = orcaobj::getPropertyAsStringSeqWithDefault( props, tag+".Config.General.DumpPath", strIn );
     return QString(strOut[0].c_str());
 }
-
-float straightLineDist( QPointF line )
-{
-    return sqrt(line.x()*line.x() + line.y()*line.y());
-}
-
 
 }

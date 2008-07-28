@@ -13,6 +13,7 @@
 #include <QTextStream>
 #include <orcalogfactory/logstringutils.h>
 #include <hydroqguielementutil/ihumanmanager.h>
+#include <orcaqgui2dfactory/pathconversionutil.h>
 
 #include "pathfilehandler.h"
 

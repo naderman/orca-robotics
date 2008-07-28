@@ -12,7 +12,7 @@
 #define PATHPAINTER_H
 
 #include <QColor>
-#include <orcaqgui2dfactory/pathutils.h>
+#include <hydroqguipath/pathutils.h>
 #include <hydroqguielementutil/definitions2d.h>
 #include <orca/pathplanner2d.h>
 

@@ -8,13 +8,11 @@
  *
  */
 
-
 #include <orcaice/orcaice.h>
 #include <orcaobj/orcaobj.h>
-#include <orcaqgui2dfactory/wptolerancesdialog.h>
+#include <hydroqguipath/wptolerancesdialog.h>
 
 #include "pathplanner2delement.h"
-
 
 using namespace std;
 

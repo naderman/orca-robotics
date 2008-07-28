@@ -11,12 +11,11 @@
 #ifndef PATHFOLLOWER_INPUT_H
 #define PATHFOLLOWER_INPUT_H
 
-#include <orcaqgui2dfactory/ipathinput.h>
-#include <orcaqgui2dfactory/pathutils.h>
-#include <orcaqgui2dfactory/pathdesignscreen.h>
-#include <orcaqgui2dfactory/pathdesigntablewidget.h>
+#include <hydroqguipath/pathdesignscreen.h>
+#include <hydroqguipath/pathdesigntablewidget.h>
+#include <hydroqguipath/ipathinput.h>
+#include <hydroqguipath/pathutils.h>
 #include <orcaqgui2dfactory/pathfilehandler.h>
-
 
 namespace orcaqgui2d {
     

@@ -10,8 +10,9 @@
 
 #include <QFileDialog>
 #include <hydroqguielementutil/ihumanmanager.h>
+#include <hydroqguipath/wptolerancesdialog.h>
 #include <orcaqgui2dfactory/pathplanner2delement.h>
-#include <orcaqgui2dfactory/wptolerancesdialog.h>
+#include <orcaqgui2dfactory/pathconversionutil.h>
 #include "pathplanneruserinteraction.h"
 
 using namespace std;

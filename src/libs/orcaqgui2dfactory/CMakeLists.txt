@@ -7,7 +7,7 @@ SET( not_os_win NOT GBX_OS_WIN )
 GBX_REQUIRE_VAR( build LIB ${LIB_NAME} not_os_win "Windows OS is not  supported" )
 GBX_REQUIRE_VAR( build LIB ${LIB_NAME} QT4_FOUND "Qt4 not found" )
 
-SET( ext_libs ${dep_libs} HydroNavUtil HydroQGui HydroQGuiElementUtil HydroOgMap )
+SET( ext_libs ${dep_libs} HydroNavUtil HydroQGui HydroQGuiPath HydroQGuiElementUtil HydroOgMap )
 GBX_REQUIRE_INSTALLS( build LIB ${LIB_NAME} ${ext_libs} )
 
 SET( int_libs OrcaLogFactory OrcaObjects OrcaQGuiElementUtil OrcaOgMap ) # OrcaLogFactory needed for saving path to file (re-factor?)
@@ -26,10 +26,7 @@ IF( build )
     SET( dep_libs ${ext_libs} ${int_libs} )
     
     SET( moc_hdrs
-        pathdesigntablewidget.h
-        pathfollowerbuttons.h
         pathfolloweruserinteraction.h
-        pathplannerbuttons.h
         pathplanneruserinteraction.h
     )
 

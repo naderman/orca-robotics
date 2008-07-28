@@ -13,8 +13,9 @@
 
 #include <memory>
 #include <QObject>
-#include <orcaqgui2dfactory/pathplannerbuttons.h>
-#include <orcaqgui2dfactory/pathdesignscreen.h>
+#include <orcaice/context.h>
+#include <hydroqguipath/pathdesignscreen.h>
+#include <hydroqguipath/pathplannerbuttons.h>
 #include <orcaqgui2dfactory/pathplannerinput.h>
     
 namespace hydroqgui {

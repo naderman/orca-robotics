@@ -13,8 +13,9 @@
 
 #include <memory>
 #include <QObject>
-#include <orcaqgui2dfactory/pathfollowerbuttons.h>
-#include <orcaqgui2dfactory/pathdesignscreen.h>
+#include <orcaice/context.h>
+#include <hydroqguipath/pathdesignscreen.h>
+#include <hydroqguipath/pathfollowerbuttons.h>
 #include <orcaqgui2dfactory/pathfollowerinput.h>
 #include <orcaqgui2dfactory/pathfilehandler.h>
 

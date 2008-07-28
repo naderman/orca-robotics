@@ -12,10 +12,10 @@
 #define PATHPLANNER_INPUT_H
 
 #include <orca/pathplanner2d.h>
-#include <orcaqgui2dfactory/ipathinput.h>
-#include <orcaqgui2dfactory/pathutils.h>
-#include <orcaqgui2dfactory/pathdesignscreen.h>
-#include <orcaqgui2dfactory/pathdesigntablewidget.h>
+#include <hydroqguipath/pathdesignscreen.h>
+#include <hydroqguipath/pathdesigntablewidget.h>
+#include <hydroqguipath/ipathinput.h>
+#include <hydroqguipath/pathutils.h>
 #include <orcaqgui2dfactory/pathfilehandler.h>
 
 namespace orcaqgui2d {

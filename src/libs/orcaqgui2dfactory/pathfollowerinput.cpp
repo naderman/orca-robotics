@@ -1,4 +1,5 @@
 #include <orcaqgui2dfactory/pathfolloweruserinteraction.h>
+#include <orcaqgui2dfactory/pathconversionutil.h>
 #include "pathfollowerinput.h"
 
 namespace orcaqgui2d {

@@ -12,7 +12,7 @@
 #define PATH_FILE_HANDLER_H
 
 #include <QString>
-#include <orcaqgui2dfactory/pathutils.h>
+#include <hydroqguipath/pathutils.h>
 
 namespace orcaqgui2d {
     

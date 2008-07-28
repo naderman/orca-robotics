@@ -10,6 +10,7 @@
 
 #include <hydroqguielementutil/paintutils.h>
 #include <hydroqguielementutil/ihumanmanager.h>
+#include <orcaqgui2dfactory/pathconversionutil.h>
 
 #include "pathpainter.h"
 

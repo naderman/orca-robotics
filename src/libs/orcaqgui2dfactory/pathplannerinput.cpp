@@ -1,4 +1,5 @@
 #include <orcaqgui2dfactory/pathplanneruserinteraction.h>
+#include <orcaqgui2dfactory/pathconversionutil.h>
 #include "pathplannerinput.h"
 
 namespace orcaqgui2d {
