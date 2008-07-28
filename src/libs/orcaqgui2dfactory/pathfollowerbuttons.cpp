@@ -10,7 +10,7 @@
 
 #include <hydroqguielementutil/ihumanmanager.h>
 #include <hydroqguielementutil/shortcutkeymanager.h>
-#include <orcaqgui/guiicons.h>
+#include <hydroqgui/guiicons.h>
 #include "pathfollowerbuttons.h"
 
 using namespace std;
