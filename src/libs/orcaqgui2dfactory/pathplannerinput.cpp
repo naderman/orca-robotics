@@ -5,14 +5,14 @@
 namespace orcaqgui2d {
 
 PathPlannerInput::PathPlannerInput( PathPlannerUserInteraction          &pathPlannerUI,
-                                    WaypointSettings                    *wpSettings,
+                                    hydroqguipath::WaypointSettings     *wpSettings,
                                     hydroqguielementutil::IHumanManager &humanManager )
     : pathPlannerUI_(pathPlannerUI)
 {
-    guiPath_.reset( new GuiPath() );
+    guiPath_.reset( new hydroqguipath::GuiPath() );
     
-    pathDesignScreen_.reset( new PathDesignScreen( *guiPath_.get(), wpSettings, humanManager ) );
-    pathDesignTableWidget_.reset( new PathDesignTableWidget( this, *guiPath_.get() ) );
+    pathDesignScreen_.reset( new hydroqguipath::PathDesignScreen( *guiPath_.get(), wpSettings, humanManager ) );
+    pathDesignTableWidget_.reset( new hydroqguipath::PathDesignTableWidget( this, *guiPath_.get() ) );
     pathFileHandler_.reset( new PathFileHandler( humanManager ) );
 }
 
@@ -44,7 +44,7 @@ void PathPlannerInput::processReleaseEvent( QMouseEvent* e )
 }
 
 void 
-PathPlannerInput::updateWpSettings( WaypointSettings* wpSettings )
+PathPlannerInput::updateWpSettings( hydroqguipath::WaypointSettings* wpSettings )
 {
     pathDesignScreen_->updateWpSettings( wpSettings );
 }

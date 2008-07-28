@@ -77,12 +77,12 @@ class PathPainter
     void setFocus( bool inFocus ) 
         { inFocus_  = inFocus; };
     
-    const GuiPath &currentPath() const 
+    const hydroqguipath::GuiPath &currentPath() const 
         { return guiPath_; }; 
     
   private:
 
-    GuiPath guiPath_;
+    hydroqguipath::GuiPath guiPath_;
 
     // The index of the waypoint we're currently pursuing
     int wpIndex_;

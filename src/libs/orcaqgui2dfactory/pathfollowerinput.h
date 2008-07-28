@@ -27,14 +27,14 @@ class PathFollowerUserInteraction;
 //!
 //! @author Tobias Kaupp
 //!
-class PathFollowerInput : public IPathInput
+class PathFollowerInput : public hydroqguipath::IPathInput
 { 
             
     public:
-        PathFollowerInput( PathFollowerUserInteraction         &pathFollowerUI,
-                           WaypointSettings                    *wpSettings,
-                           hydroqguielementutil::IHumanManager &humanManager,
-                           const QString                       &lastSavedPathFile );
+        PathFollowerInput( hydroqguipath::IPathUserInteraction  *pathUI,
+                           hydroqguipath::WaypointSettings            *wpSettings,
+                           hydroqguielementutil::IHumanManager        &humanManager,
+                           const QString                              &lastSavedPathFile );
         
         virtual ~PathFollowerInput() {};  
   
@@ -46,7 +46,7 @@ class PathFollowerInput : public IPathInput
         virtual void processDoubleClickEvent( QMouseEvent* e) {};
         virtual void processMoveEvent( QMouseEvent* e) {};
         
-        virtual void updateWpSettings( WaypointSettings* wpSettings );
+        virtual void updateWpSettings( hydroqguipath::WaypointSettings* wpSettings );
         
         virtual void savePath( const QString &filename );
         virtual void loadPath( const QString &filename );
@@ -61,10 +61,10 @@ class PathFollowerInput : public IPathInput
         
     private:
                
-        PathFollowerUserInteraction &pathFollowerUI_;
-        std::auto_ptr<PathDesignScreen> pathDesignScreen_;
-        std::auto_ptr<PathDesignTableWidget> pathDesignTableWidget_;
-        std::auto_ptr<GuiPath> guiPath_;
+        hydroqguipath::IPathUserInteraction *pathUI_;
+        std::auto_ptr<hydroqguipath::PathDesignScreen> pathDesignScreen_;
+        std::auto_ptr<hydroqguipath::PathDesignTableWidget> pathDesignTableWidget_;
+        std::auto_ptr<hydroqguipath::GuiPath> guiPath_;
         std::auto_ptr<PathFileHandler> pathFileHandler_;
        
 };
@@ -72,20 +72,20 @@ class PathFollowerInput : public IPathInput
 //!
 //! A factory used to create a PathFollowerInput object at runtime
 //!
-class DefaultPathFollowerInputFactory : public PathFollowerInputFactory
+class PathFollowerInputFactory : public hydroqguipath::PathInputFactory
 {
 public:
     
-    std::auto_ptr<IPathInput> 
-            createPathFollowerInput( PathFollowerUserInteraction         &pathFollowerUI,
-                                     WaypointSettings                    *wpSettings,
-                                     hydroqguielementutil::IHumanManager &humanManager,
-                                     const QString                       &lastSavedPathFile ) const
-            {
-                std::auto_ptr<IPathInput> input;
-                input.reset( new PathFollowerInput( pathFollowerUI, wpSettings, humanManager, lastSavedPathFile ) );
-                return input;     
-            }
+    virtual std::auto_ptr<hydroqguipath::IPathInput> 
+        createPathInput( hydroqguipath::IPathUserInteraction  *pathUI,
+                         hydroqguipath::WaypointSettings      *wpSettings,
+                         hydroqguielementutil::IHumanManager  &humanManager,
+                         const QString                        &lastSavedPathFile ) const
+        {
+            std::auto_ptr<hydroqguipath::IPathInput> input;
+            input.reset( new PathFollowerInput( pathUI, wpSettings, humanManager, lastSavedPathFile ) );
+            return input;     
+        }
 };      
 
 }

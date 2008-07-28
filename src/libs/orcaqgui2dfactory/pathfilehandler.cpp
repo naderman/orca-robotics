@@ -30,10 +30,10 @@ PathFileHandler::PathFileHandler( hydroqguielementutil::IHumanManager &humanMana
         
     
 void 
-PathFileHandler::savePath( const QString &filename, 
-                           const GuiPath &guiPath, 
-                           int            numLoops, 
-                           float          timeOffset ) 
+PathFileHandler::savePath( const QString                &filename, 
+                           const hydroqguipath::GuiPath &guiPath, 
+                           int                           numLoops, 
+                           float                         timeOffset ) 
 {
     if (guiPath.size()==0)
     {
@@ -62,7 +62,8 @@ PathFileHandler::savePath( const QString &filename,
 }
 
 void 
-PathFileHandler::loadPath( const QString &filename, GuiPath &guiPath ) 
+PathFileHandler::loadPath( const QString          &filename, 
+                           hydroqguipath::GuiPath &guiPath ) 
 {
     QFile file(filename);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
@@ -89,7 +90,7 @@ PathFileHandler::loadPath( const QString &filename, GuiPath &guiPath )
 }
 
 void 
-PathFileHandler::loadPreviousPath( GuiPath &guiPath )
+PathFileHandler::loadPreviousPath( hydroqguipath::GuiPath &guiPath )
 {
     if (lastSavedPathFile_!="") 
     {

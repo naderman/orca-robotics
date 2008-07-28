@@ -78,14 +78,15 @@ public:
     virtual void mouseDoubleClickEvent(QMouseEvent *e) { if ( pathUI_.get() ) pathUI_->mouseDoubleClickEvent(e); }
     
     // sets an inputFactory different from the default one
-    void setInputFactory ( std::auto_ptr<PathFollowerInputFactory> inputFactory );
+    void setInputFactory ( std::auto_ptr<hydroqguipath::PathInputFactory> inputFactory );
     
     // Tries to enable or disable the remote interface. Returns true if successful
     bool tryEnableRemoteInterface( bool enable );
 
     void go();
     void stop();
-    void sendPath( const IPathInput *pathInput, bool activateImmediately );
+    void sendPath( const hydroqguipath::IPathInput *pathInput, 
+                   bool                             activateImmediately );
 
     void enableHI();
     void disableHI();
@@ -114,7 +115,8 @@ private:
     hydroqguielementutil::MouseEventManager   &mouseEventManager_;
     hydroqguielementutil::ShortcutKeyManager  &shortcutKeyManager_;
     const hydroqgui::GuiElementSet            &guiElementSet_;
-    std::auto_ptr<PathFollowerInputFactory>   inputFactory_;
+    
+    std::auto_ptr<hydroqguipath::PathInputFactory> inputFactory_;
     
     bool firstTime_;
     gbxiceutilacfr::Timer *timer_;

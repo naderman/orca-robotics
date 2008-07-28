@@ -28,11 +28,11 @@ class PathPlannerUserInteraction;
 //!
 //! @author Tobias Kaupp
 //!
-class PathPlannerInput : public IPathInput
+class PathPlannerInput : public hydroqguipath::IPathInput
 { 
 public:
     PathPlannerInput( PathPlannerUserInteraction          &pathPlannerUI,
-                      WaypointSettings                    *wpSettings,
+                      hydroqguipath::WaypointSettings     *wpSettings,
                       hydroqguielementutil::IHumanManager &humanManager );
     
     virtual ~PathPlannerInput() {};  
@@ -44,7 +44,7 @@ public:
     virtual void processReleaseEvent( QMouseEvent* e );
     virtual void processDoubleClickEvent( QMouseEvent* e) {};
     virtual void processMoveEvent( QMouseEvent* e) {};
-    virtual void updateWpSettings( WaypointSettings* wpSettings );
+    virtual void updateWpSettings( hydroqguipath::WaypointSettings* wpSettings );
         
     virtual void savePath( const QString &filename );
     virtual void loadPath( const QString &filename );
@@ -60,9 +60,9 @@ private:
         
     PathPlannerUserInteraction &pathPlannerUI_;
     
-    std::auto_ptr<PathDesignScreen> pathDesignScreen_;
-    std::auto_ptr<PathDesignTableWidget> pathDesignTableWidget_;
-    std::auto_ptr<GuiPath> guiPath_;
+    std::auto_ptr<hydroqguipath::PathDesignScreen> pathDesignScreen_;
+    std::auto_ptr<hydroqguipath::PathDesignTableWidget> pathDesignTableWidget_;
+    std::auto_ptr<hydroqguipath::GuiPath> guiPath_;
     std::auto_ptr<PathFileHandler> pathFileHandler_;
 
 };

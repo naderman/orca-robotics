@@ -30,15 +30,15 @@ class PathFileHandler
         PathFileHandler( hydroqguielementutil::IHumanManager &humanManager,
                          const QString                       &lastSavedPathFile = "" );
         
-        void savePath( const QString &filename, 
-                       const GuiPath &guiPath, 
-                       int            numLoops = 1, 
-                       float          timeOffset = 0.0 );
+        void savePath( const QString                &filename, 
+                       const hydroqguipath::GuiPath &guiPath, 
+                       int                           numLoops = 1, 
+                       float                         timeOffset = 0.0 );
         
-        void loadPath( const QString &filename, 
-                       GuiPath       &guiPath );
+        void loadPath( const QString           &filename, 
+                       hydroqguipath::GuiPath  &guiPath );
         
-        void loadPreviousPath( GuiPath &guiPath );
+        void loadPreviousPath( hydroqguipath::GuiPath &guiPath );
         
         
     private:

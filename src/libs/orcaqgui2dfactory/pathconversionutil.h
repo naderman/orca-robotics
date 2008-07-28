@@ -22,19 +22,19 @@ namespace orcaqgui2d {
 //
 // Conversion functions
 //
-void guiPathToOrcaPath( const GuiPath &in, 
-                        orca::Path2d  &out, 
-                        int            numLoops = 1, 
-                        float          timeOffset = 0.0 );
+void guiPathToOrcaPath( const hydroqguipath::GuiPath &in, 
+                        orca::Path2d                 &out, 
+                        int                           numLoops = 1, 
+                        float                         timeOffset = 0.0 );
 
-void orcaPathToGuiPath( const orca::Path2d &in, 
-                        GuiPath            &out );
+void orcaPathToGuiPath( const orca::Path2d     &in, 
+                        hydroqguipath::GuiPath &out );
 
 //
 // Reading stuff from cfg file
 //
-WaypointSettings readWaypointSettings( const Ice::PropertiesPtr &props, 
-                                       const std::string        &tag );
+hydroqguipath::WaypointSettings readWaypointSettings( const Ice::PropertiesPtr &props, 
+                                                      const std::string        &tag );
 
 bool readActivateImmediately( const Ice::PropertiesPtr &props, 
                               const std::string        &tag );

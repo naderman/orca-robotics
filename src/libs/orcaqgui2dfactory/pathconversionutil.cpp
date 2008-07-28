@@ -14,8 +14,8 @@
 
 namespace orcaqgui2d {
         
-void guiPathToOrcaPath( const GuiPath &in, 
-                        orca::Path2d  &out, 
+void guiPathToOrcaPath( const hydroqguipath::GuiPath &in, 
+                        orca::Path2d                 &out,  
                         int            numLoops, 
                         float          timeOffset )
 {
@@ -27,14 +27,14 @@ void guiPathToOrcaPath( const GuiPath &in,
     {
         for (int i=0; i<in.size(); i++)
         {
-            double heading = DEG2RAD((double)in[i].heading/QT_ANGLE_MULTIPLIER);
+            double heading = DEG2RAD((double)in[i].heading/hydroqguipath::QT_ANGLE_MULTIPLIER);
             NORMALISE_ANGLE( heading );
 
             out[counter].target.p.x = in[i].position.x();
             out[counter].target.p.y = in[i].position.y();
             out[counter].target.o = heading;
             out[counter].distanceTolerance = in[i].distanceTolerance;
-            out[counter].headingTolerance = DEG2RAD((float)in[i].headingTolerance/QT_ANGLE_MULTIPLIER);      
+            out[counter].headingTolerance = DEG2RAD((float)in[i].headingTolerance/hydroqguipath::QT_ANGLE_MULTIPLIER);      
             out[counter].timeTarget = orcaice::toOrcaTime( in[i].timeTarget + k*timeOffset );
             out[counter].maxApproachSpeed = in[i].maxSpeed;
             out[counter].maxApproachTurnrate = DEG2RAD((float)in[i].maxTurnrate);
@@ -44,8 +44,8 @@ void guiPathToOrcaPath( const GuiPath &in,
     }
 }
 
-void orcaPathToGuiPath( const orca::Path2d &in, 
-                        GuiPath            &out )
+void orcaPathToGuiPath( const orca::Path2d     &in, 
+                        hydroqguipath::GuiPath &out )
 {
     out.resize( in.size() );
 
@@ -53,9 +53,9 @@ void orcaPathToGuiPath( const orca::Path2d &in,
     {
         out[i].position.setX( in[i].target.p.x );
         out[i].position.setY( in[i].target.p.y );
-        out[i].heading = (int)floor(RAD2DEG(in[i].target.o))*QT_ANGLE_MULTIPLIER;
+        out[i].heading = (int)floor(RAD2DEG(in[i].target.o))*hydroqguipath::QT_ANGLE_MULTIPLIER;
         out[i].distanceTolerance = in[i].distanceTolerance;
-        out[i].headingTolerance = (int)floor(RAD2DEG(in[i].headingTolerance))*QT_ANGLE_MULTIPLIER;   
+        out[i].headingTolerance = (int)floor(RAD2DEG(in[i].headingTolerance))*hydroqguipath::QT_ANGLE_MULTIPLIER;   
         out[i].timeTarget = orcaice::timeAsDouble(in[i].timeTarget);
         out[i].maxSpeed = in[i].maxApproachSpeed;
         out[i].maxTurnrate = (int)floor(RAD2DEG(in[i].maxApproachTurnrate));
@@ -63,8 +63,8 @@ void orcaPathToGuiPath( const orca::Path2d &in,
 }
 
 
-WaypointSettings readWaypointSettings( const Ice::PropertiesPtr &props, 
-                                       const std::string        &tag )
+hydroqguipath::WaypointSettings readWaypointSettings( const Ice::PropertiesPtr &props, 
+                                                      const std::string        &tag )
 {
     std::string prefix = tag + ".Config.Waypoints.";
 
@@ -76,7 +76,14 @@ WaypointSettings readWaypointSettings( const Ice::PropertiesPtr &props,
     int headingTolerance = orcaice::getPropertyAsIntWithDefault( props, prefix+"HeadingTolerance", 90 );
     float maxApproachSpeed = orcaice::getPropertyAsDoubleWithDefault( props, prefix+"MaxApproachSpeed", 2e6 );
     int maxApproachTurnrate = orcaice::getPropertyAsIntWithDefault( props, prefix+"MaxApproachTurnRate", 6000000 );
-    WaypointSettings wpSettings(spacingProperty, spacingValue, distanceTolerance, headingTolerance, maxApproachSpeed, maxApproachTurnrate);
+    
+    hydroqguipath::WaypointSettings wpSettings( spacingProperty, 
+                                                spacingValue, 
+                                                distanceTolerance, 
+                                                headingTolerance, 
+                                                maxApproachSpeed, 
+                                                maxApproachTurnrate );
+    
     return wpSettings;
 }
 

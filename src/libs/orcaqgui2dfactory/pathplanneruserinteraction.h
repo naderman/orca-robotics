@@ -16,6 +16,7 @@
 #include <orcaice/context.h>
 #include <hydroqguipath/pathdesignscreen.h>
 #include <hydroqguipath/pathplannerbuttons.h>
+#include <hydroqguipath/ipathinput.h>
 #include <orcaqgui2dfactory/pathplannerinput.h>
     
 namespace hydroqgui {
@@ -38,7 +39,8 @@ class PathPainter;
 //!
 //! @author Tobias Kaupp
 //!
-class PathPlannerUserInteraction  : public QObject
+class PathPlannerUserInteraction  : public QObject, 
+                                    public hydroqguipath::IPathUserInteraction
 {
     Q_OBJECT
 
@@ -83,7 +85,7 @@ private:
     hydroqguielementutil::MouseEventManager &mouseEventManager_;
     PathPainter &painter_;
     orcaice::Context context_;
-    WaypointSettings wpSettings_;
+    hydroqguipath::WaypointSettings wpSettings_;
 
     // saving the path which the pathplanner *interface* holds
     // (as opposed to the path the user enters in green)
@@ -94,7 +96,7 @@ private:
     // handles all user input through clicking, tables, etc.
     std::auto_ptr<PathPlannerInput> pathInput_;
     // sets up and destroys buttons and associated actions
-    std::auto_ptr<PathplannerButtons> buttons_;
+    std::auto_ptr<hydroqguipath::PathplannerButtons> buttons_;
     
     // Do we own the global mode?
     bool gotMode_;

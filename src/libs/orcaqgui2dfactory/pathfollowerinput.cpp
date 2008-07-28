@@ -4,15 +4,15 @@
 
 namespace orcaqgui2d {
 
-PathFollowerInput::PathFollowerInput ( PathFollowerUserInteraction         &pathFollowerUI,
-                                       WaypointSettings                    *wpSettings,
-                                       hydroqguielementutil::IHumanManager &humanManager,
-                                       const QString                       &lastSavedPathFile )
-    : pathFollowerUI_(pathFollowerUI)
+PathFollowerInput::PathFollowerInput ( hydroqguipath::IPathUserInteraction *pathUI,
+                                       hydroqguipath::WaypointSettings           *wpSettings,
+                                       hydroqguielementutil::IHumanManager       &humanManager,
+                                       const QString                             &lastSavedPathFile )
+    : pathUI_(pathUI)
 {
-    guiPath_.reset( new GuiPath() );
-    pathDesignScreen_.reset( new PathDesignScreen( *guiPath_.get(), wpSettings, humanManager ) );
-    pathDesignTableWidget_.reset( new PathDesignTableWidget( this, *guiPath_.get() ) );
+    guiPath_.reset( new hydroqguipath::GuiPath() );
+    pathDesignScreen_.reset( new hydroqguipath::PathDesignScreen( *guiPath_.get(), wpSettings, humanManager ) );
+    pathDesignTableWidget_.reset( new hydroqguipath::PathDesignTableWidget( this, *guiPath_.get() ) );
     pathFileHandler_.reset( new PathFileHandler( humanManager, lastSavedPathFile ) );
 }
 
@@ -44,7 +44,7 @@ void PathFollowerInput::processReleaseEvent( QMouseEvent* e )
 }
 
 void 
-PathFollowerInput::updateWpSettings( WaypointSettings* wpSettings )
+PathFollowerInput::updateWpSettings( hydroqguipath::WaypointSettings* wpSettings )
 {
     pathDesignScreen_->updateWpSettings( wpSettings );
 }
@@ -97,13 +97,13 @@ PathFollowerInput::loadPreviousPath()
 void
 PathFollowerInput::sendPath() 
 { 
-    pathFollowerUI_.send(); 
+    pathUI_->send(); 
 }
 
 void 
 PathFollowerInput::cancelPath() 
 { 
-    pathFollowerUI_.cancel(); 
+    pathUI_->cancel(); 
 }
 
 }

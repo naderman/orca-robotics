@@ -36,7 +36,7 @@ PathPlannerUserInteraction::PathPlannerUserInteraction( PathPlanner2dElement    
       gotMode_(false)
 {
     wpSettings_ = readWaypointSettings( context_.properties(), context_.tag() );
-    buttons_.reset( new PathplannerButtons( this, humanManager, proxyString ) );
+    buttons_.reset( new hydroqguipath::PathplannerButtons( this, humanManager, proxyString ) );
     ifacePathFileHandler_.reset( new PathFileHandler( humanManager ) );
 }
 
@@ -46,7 +46,7 @@ PathPlannerUserInteraction::setFocus( bool inFocus )
 {
     if (inFocus) {
         if (buttons_.get()==0) {
-            buttons_.reset( new PathplannerButtons( this, humanManager_, proxyString_ ) );
+            buttons_.reset( new hydroqguipath::PathplannerButtons( this, humanManager_, proxyString_ ) );
         }
     } else {
         buttons_.reset(0);
@@ -120,6 +120,7 @@ PathPlannerUserInteraction::send()
         ppElement_->sendPath( *pathInput_.get() );
     cancel();
 }
+
 void 
 PathPlannerUserInteraction::cancel()
 {

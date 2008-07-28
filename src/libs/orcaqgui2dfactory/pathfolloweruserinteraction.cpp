@@ -22,15 +22,15 @@ using namespace std;
 
 namespace orcaqgui2d {
 
-PathFollowerUserInteraction::PathFollowerUserInteraction( PathFollower2dElement                    *pfElement,
-                                                          const std::string                        &proxyString,
-                                                          hydroqguielementutil::IHumanManager      &humanManager,
-                                                          hydroqguielementutil::MouseEventManager  &mouseEventManager,
-                                                          hydroqguielementutil::ShortcutKeyManager &shortcutKeyManager,
-                                                          const hydroqgui::GuiElementSet           &guiElementSet,
-                                                          const PathPainter                        &painter,
-                                                          const orcaice::Context                   &context,
-                                                          const PathFollowerInputFactory           *inputFactory )
+PathFollowerUserInteraction::PathFollowerUserInteraction( PathFollower2dElement                         *pfElement,
+                                                          const std::string                             &proxyString,
+                                                          hydroqguielementutil::IHumanManager           &humanManager,
+                                                          hydroqguielementutil::MouseEventManager       &mouseEventManager,
+                                                          hydroqguielementutil::ShortcutKeyManager      &shortcutKeyManager,
+                                                          const hydroqgui::GuiElementSet                &guiElementSet,
+                                                          const PathPainter                             &painter,
+                                                          const orcaice::Context                        &context,
+                                                          const hydroqguipath::PathInputFactory         *inputFactory )
     : pfElement_(pfElement),
       proxyString_( proxyString ),
       humanManager_(humanManager),
@@ -47,7 +47,7 @@ PathFollowerUserInteraction::PathFollowerUserInteraction( PathFollower2dElement 
       gotMode_(false)
 {
     wpSettings_ = readWaypointSettings( context.properties(), context.tag() );
-    buttons_.reset( new PathfollowerButtons( this, humanManager, shortcutKeyManager, proxyString ) );
+    buttons_.reset( new hydroqguipath::PathfollowerButtons( this, humanManager, shortcutKeyManager, proxyString ) );
     ifacePathFileHandler_.reset( new PathFileHandler( humanManager ) );
 }
 
@@ -58,10 +58,10 @@ PathFollowerUserInteraction::setFocus( bool inFocus )
     {
         if ( !buttons_.get() ) 
         {
-            buttons_.reset( new PathfollowerButtons( this, 
-                                                     humanManager_, 
-                                                     shortcutKeyManager_, 
-                                                     proxyString_ ) );
+            buttons_.reset( new hydroqguipath::PathfollowerButtons( this, 
+                                                                    humanManager_, 
+                                                                    shortcutKeyManager_, 
+                                                                    proxyString_ ) );
         }
     } 
     else 
@@ -117,10 +117,7 @@ PathFollowerUserInteraction::waypointModeSelected()
         return;
     }
     
-    pathInput_ = inputFactory_->createPathFollowerInput( *this, 
-                                                         &wpSettings_, 
-                                                          humanManager_, 
-                                                          loadPreviousPathFilename_ );
+    pathInput_ = inputFactory_->createPathInput( this, &wpSettings_, humanManager_, loadPreviousPathFilename_ );
     
     pathInput_->setUseTransparency( useTransparency_ );
     buttons_->setWpButton( true );

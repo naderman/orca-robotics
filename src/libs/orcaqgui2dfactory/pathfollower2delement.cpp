@@ -72,7 +72,7 @@ PathFollower2dElement::PathFollower2dElement( const orcaice::Context &context,
       isInFocus_(false),
       isRemoteInterfaceSick_(false)
 { 
-    inputFactory_.reset( new DefaultPathFollowerInputFactory );
+    inputFactory_.reset( new PathFollowerInputFactory );
     enableHI();
     
     painter_.initialize( displayWaypoints_, displayPastWaypoints_, displayFutureWaypoints_, displayOlympicMarker_, currentTransparency_);
@@ -87,7 +87,7 @@ PathFollower2dElement::PathFollower2dElement( const orcaice::Context &context,
 }
 
 void
-PathFollower2dElement::setInputFactory ( std::auto_ptr<PathFollowerInputFactory> inputFactory )
+PathFollower2dElement::setInputFactory ( std::auto_ptr<hydroqguipath::PathInputFactory> inputFactory )
 {
     disableHI();
     inputFactory_ = inputFactory;
@@ -461,7 +461,8 @@ PathFollower2dElement::stop()
 }
 
 void 
-PathFollower2dElement::sendPath( const IPathInput *pathInput, bool activateImmediately )
+PathFollower2dElement::sendPath( const hydroqguipath::IPathInput *pathInput, 
+                                 bool                             activateImmediately )
 {
     try
     {
