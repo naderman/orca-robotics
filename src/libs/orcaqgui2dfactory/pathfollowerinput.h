@@ -20,13 +20,13 @@
 
 namespace orcaqgui2d {
     
-class PathFollowerHI;
+class PathFollowerUserInteraction;
 
 class PathFollowerInput : public IPathInput
 { 
             
     public:
-        PathFollowerInput( PathFollowerHI                      &pathFollowerHI,
+        PathFollowerInput( PathFollowerUserInteraction         &pathFollowerUI,
                            WaypointSettings                    *wpSettings,
                            hydroqguielementutil::IHumanManager &humanManager,
                            const QString                       &lastSavedPathFile );
@@ -55,7 +55,7 @@ class PathFollowerInput : public IPathInput
         bool getPath( orca::PathFollower2dData &pathData ) const;    
         
     private:
-       PathFollowerHI &pathFollowerHI_;
+       PathFollowerUserInteraction &pathFollowerUI_;
        
        std::auto_ptr<PathDesignScreen> pathDesignScreen_;
        std::auto_ptr<PathDesignWidget> pathDesignWidget_;

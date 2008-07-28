@@ -18,7 +18,7 @@
 #include <orcaqguielementutil/icestormelement2d.h>
 
 #include <orcaqgui2dfactory/pathpainter.h>
-#include <orcaqgui2dfactory/pathplannerhi.h>
+#include <orcaqgui2dfactory/pathplanneruserinteraction.h>
 
 namespace orcaqgui2d {
 
@@ -93,8 +93,8 @@ private:
     bool displayWaypoints_;
     bool currentTransparency_;
         
-    // Handles human interface
-    PathPlannerHI pathHI_;
+    // Handles user interaction
+    PathPlannerUserInteraction pathHI_;
 };
 
 }

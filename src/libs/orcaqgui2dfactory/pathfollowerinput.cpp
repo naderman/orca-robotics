@@ -1,13 +1,13 @@
-#include <orcaqgui2dfactory/pathfollowerhi.h>
+#include <orcaqgui2dfactory/pathfolloweruserinteraction.h>
 #include "pathfollowerinput.h"
 
 namespace orcaqgui2d {
 
-PathFollowerInput::PathFollowerInput ( PathFollowerHI                      &pathFollowerHI,
+PathFollowerInput::PathFollowerInput ( PathFollowerUserInteraction         &pathFollowerUI,
                                        WaypointSettings                    *wpSettings,
                                        hydroqguielementutil::IHumanManager &humanManager,
                                        const QString                       &lastSavedPathFile )
-    : pathFollowerHI_(pathFollowerHI)
+    : pathFollowerUI_(pathFollowerUI)
 {
     guiPath_.reset( new GuiPath() );
     pathDesignScreen_.reset( new PathDesignScreen( *guiPath_.get(), wpSettings, humanManager ) );
@@ -96,13 +96,13 @@ PathFollowerInput::loadPreviousPath()
 void
 PathFollowerInput::sendPath() 
 { 
-    pathFollowerHI_.send(); 
+    pathFollowerUI_.send(); 
 }
 
 void 
 PathFollowerInput::cancelPath() 
 { 
-    pathFollowerHI_.cancel(); 
+    pathFollowerUI_.cancel(); 
 }
 
 }

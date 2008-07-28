@@ -28,9 +28,9 @@ IF( build )
     SET( moc_hdrs
         pathdesigntablewidget.h
         pathfollowerbuttons.h
-        pathfollowerhi.h
+        pathfolloweruserinteraction.h
         pathplannerbuttons.h
-        pathplannerhi.h
+        pathplanneruserinteraction.h
     )
 
     QT4_WRAP_CPP( moc_srcs ${moc_hdrs} )

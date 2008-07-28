@@ -15,20 +15,20 @@
 #include <orcaqgui2dfactory/pathfollower2delement.h>
 #include <orcaqgui2dfactory/wptolerancesdialog.h>
 
-#include "pathfollowerhi.h"
+#include "pathfolloweruserinteraction.h"
 
 using namespace std;
 
 namespace orcaqgui2d {
 
-PathFollowerHI::PathFollowerHI( PathFollower2dElement                    *pfElement,
-                                const std::string                        &proxyString,
-                                hydroqguielementutil::IHumanManager      &humanManager,
-                                hydroqguielementutil::MouseEventManager  &mouseEventManager,
-                                hydroqguielementutil::ShortcutKeyManager &shortcutKeyManager,
-                                const hydroqgui::GuiElementSet           &guiElementSet,
-                                const PathPainter                        &painter,
-                                const orcaice::Context                   &context )
+PathFollowerUserInteraction::PathFollowerUserInteraction( PathFollower2dElement                    *pfElement,
+                                                          const std::string                        &proxyString,
+                                                          hydroqguielementutil::IHumanManager      &humanManager,
+                                                          hydroqguielementutil::MouseEventManager  &mouseEventManager,
+                                                          hydroqguielementutil::ShortcutKeyManager &shortcutKeyManager,
+                                                          const hydroqgui::GuiElementSet           &guiElementSet,
+                                                          const PathPainter                        &painter,
+                                                          const orcaice::Context                   &context )
     : pfElement_(pfElement),
       proxyString_( proxyString ),
       humanManager_(humanManager),
@@ -49,7 +49,7 @@ PathFollowerHI::PathFollowerHI( PathFollower2dElement                    *pfElem
 }
 
 void 
-PathFollowerHI::setFocus( bool inFocus )
+PathFollowerUserInteraction::setFocus( bool inFocus )
 {
     if ( inFocus )
     {
@@ -68,13 +68,13 @@ PathFollowerHI::setFocus( bool inFocus )
 }
 
 void 
-PathFollowerHI::paint( QPainter *p )
+PathFollowerUserInteraction::paint( QPainter *p )
 {
     if ( pathInput_.get() ) 
         pathInput_->paint(p);
 }
 
-void PathFollowerHI::waypointSettingsDialog()
+void PathFollowerUserInteraction::waypointSettingsDialog()
 {
     QDialog *myDialog = new QDialog;
     Ui::WpTolerancesDialog ui;
@@ -103,7 +103,7 @@ void PathFollowerHI::waypointSettingsDialog()
 }
 
 void 
-PathFollowerHI::waypointModeSelected()
+PathFollowerUserInteraction::waypointModeSelected()
 {
     if ( gotMode_ ) return;
     gotMode_ = mouseEventManager_.requestBecomeMouseEventReceiver( pfElement_ );
@@ -123,7 +123,7 @@ PathFollowerHI::waypointModeSelected()
 }
 
 void
-PathFollowerHI::setUseTransparency( bool useTransparency )
+PathFollowerUserInteraction::setUseTransparency( bool useTransparency )
 { 
     useTransparency_ = useTransparency;
     if ( pathInput_.get() )
@@ -131,9 +131,9 @@ PathFollowerHI::setUseTransparency( bool useTransparency )
 }
 
 void 
-PathFollowerHI::send()
+PathFollowerUserInteraction::send()
 {
-    cout<<"TRACE(PathFollowerHI): send()" << endl;
+    cout<<"TRACE(PathFollowerUserInteraction): send()" << endl;
     
     if ( !pathInput_.get() ) 
     {
@@ -154,9 +154,9 @@ PathFollowerHI::send()
 }
 
 void 
-PathFollowerHI::cancel()
+PathFollowerUserInteraction::cancel()
 {
-    cout<<"TRACE(PathFollowerHI): cancel()" << endl;
+    cout<<"TRACE(PathFollowerUserInteraction): cancel()" << endl;
     if ( gotMode_ )
     {
         mouseEventManager_.relinquishMouseEventReceiver( pfElement_ );
@@ -165,23 +165,23 @@ PathFollowerHI::cancel()
 }
 
 void 
-PathFollowerHI::go()
+PathFollowerUserInteraction::go()
 {
-    cout<<"TRACE(PathFollowerHI): go()" << endl;
+    cout<<"TRACE(PathFollowerUserInteraction): go()" << endl;
     pfElement_->go();
 }
 
 void 
-PathFollowerHI::stop()
+PathFollowerUserInteraction::stop()
 {
-    cout<<"TRACE(PathFollowerHI): stop()" << endl;
+    cout<<"TRACE(PathFollowerUserInteraction): stop()" << endl;
     pfElement_->stop();
 }
 
 void 
-PathFollowerHI::allGo()
+PathFollowerUserInteraction::allGo()
 {
-    cout<<"TRACE(PathFollowerHI): allGo()" << endl;
+    cout<<"TRACE(PathFollowerUserInteraction): allGo()" << endl;
     const QList<hydroqguielementutil::IGuiElement*> elements = guiElementSet_.elements();
     for ( int i=0; i < elements.size(); i++ )
     {
@@ -193,9 +193,9 @@ PathFollowerHI::allGo()
     }
 }
 void 
-PathFollowerHI::allStop()
+PathFollowerUserInteraction::allStop()
 {
-    cout<<"TRACE(PathFollowerHI): allStop()" << endl;
+    cout<<"TRACE(PathFollowerUserInteraction): allStop()" << endl;
     const QList<hydroqguielementutil::IGuiElement*> elements = guiElementSet_.elements();
     for ( int i=0; i < elements.size(); i++ )
     {
@@ -208,16 +208,16 @@ PathFollowerHI::allStop()
 }
 
 void
-PathFollowerHI::noLongerMouseEventReceiver()
+PathFollowerUserInteraction::noLongerMouseEventReceiver()
 {
-    cout << "TRACE(PathFollowerHI): noLongerMouseEventReceiver()" << endl;
+    cout << "TRACE(PathFollowerUserInteraction): noLongerMouseEventReceiver()" << endl;
     pathInput_.reset(0);
     buttons_->setWpButton( false );
     gotMode_ = false;
 }
 
 void 
-PathFollowerHI::savePathAs()
+PathFollowerUserInteraction::savePathAs()
 {   
     QString fileName = QFileDialog::getSaveFileName(
             0,
@@ -234,7 +234,7 @@ PathFollowerHI::savePathAs()
 }
 
 void 
-PathFollowerHI::savePath()
+PathFollowerUserInteraction::savePath()
 {
     if (!haveIfacePathFileName_)
     {   

@@ -18,13 +18,12 @@
 
 #include <hydroqguielementutil/guielement2d.h>
 #include <orcaqgui2dfactory/pathpainter.h>
-#include <orcaqgui2dfactory/pathfollowerhi.h>
+#include <orcaqgui2dfactory/pathfolloweruserinteraction.h>
 
 
 namespace orcaqgui2d {
     
 class PathFollowerInput;
-class PathFollowerHI;
     
 ////////////////////////////////////////////////////////////////////////////////
 // The consumer object. We need this here because PathFollower2dElement cannot inherit from IceStormElement2d.
@@ -128,7 +127,7 @@ private:
     bool isRemoteInterfaceSick_;
     
     // Handles human interface
-    std::auto_ptr<PathFollowerHI> pathHI_;
+    std::auto_ptr<PathFollowerUserInteraction> pathHI_;
     
     // returns 0 if remote call works otherwise -1
     int isFollowerEnabled( bool &isEnabled );

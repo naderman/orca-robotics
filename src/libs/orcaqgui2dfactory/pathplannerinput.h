@@ -20,12 +20,12 @@
 
 namespace orcaqgui2d {
     
-class PathPlannerHI;
+class PathPlannerUserInteraction;
 
 class PathPlannerInput : public IPathInput
 { 
 public:
-    PathPlannerInput( PathPlannerHI                       &pathPlannerHI,
+    PathPlannerInput( PathPlannerUserInteraction          &pathPlannerUI,
                       WaypointSettings                    *wpSettings,
                       hydroqguielementutil::IHumanManager &humanManager );
     
@@ -51,7 +51,7 @@ public:
     orca::PathPlanner2dTask getTask() const;
             
     private:
-        PathPlannerHI &pathPlannerHI_;
+        PathPlannerUserInteraction &pathPlannerUI_;
         
         std::auto_ptr<PathDesignScreen> pathDesignScreen_;
         std::auto_ptr<PathDesignWidget> pathDesignWidget_;

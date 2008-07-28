@@ -89,14 +89,14 @@ PathFollower2dElement::PathFollower2dElement( const orcaice::Context &context,
 void
 PathFollower2dElement::enableHI()
 {
-    pathHI_.reset( new PathFollowerHI( this,
-                                       proxyString_,
-                                       humanManager_,
-                                       mouseEventManager_,
-                                       shortcutKeyManager_,
-                                       guiElementSet_,
-                                       painter_, 
-                                       context_ ) );
+    pathHI_.reset( new PathFollowerUserInteraction( this,
+                                                    proxyString_,
+                                                    humanManager_,
+                                                    mouseEventManager_,
+                                                    shortcutKeyManager_,
+                                                    guiElementSet_,
+                                                    painter_, 
+                                                    context_ ) );
     pathHI_->setFocus( isInFocus_ );
     pathHI_->setUseTransparency( currentTransparency_ );
 }

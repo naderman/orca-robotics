@@ -1,12 +1,12 @@
-#include <orcaqgui2dfactory/pathplannerhi.h>
+#include <orcaqgui2dfactory/pathplanneruserinteraction.h>
 #include "pathplannerinput.h"
 
 namespace orcaqgui2d {
 
-PathPlannerInput::PathPlannerInput( PathPlannerHI                       &pathPlannerHI,
+PathPlannerInput::PathPlannerInput( PathPlannerUserInteraction          &pathPlannerUI,
                                     WaypointSettings                    *wpSettings,
                                     hydroqguielementutil::IHumanManager &humanManager )
-    : pathPlannerHI_(pathPlannerHI)
+    : pathPlannerUI_(pathPlannerUI)
 {
     guiPath_.reset( new GuiPath() );
     
@@ -91,13 +91,13 @@ PathPlannerInput::loadPreviousPath()
 void
 PathPlannerInput::sendPath() 
 { 
-    pathPlannerHI_.send(); 
+    pathPlannerUI_.send(); 
 }
 
 void 
 PathPlannerInput::cancelPath() 
 { 
-    pathPlannerHI_.cancel(); 
+    pathPlannerUI_.cancel(); 
 }
             
             

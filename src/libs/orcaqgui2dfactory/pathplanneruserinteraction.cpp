@@ -12,18 +12,18 @@
 #include <hydroqguielementutil/ihumanmanager.h>
 #include <orcaqgui2dfactory/pathplanner2delement.h>
 #include <orcaqgui2dfactory/wptolerancesdialog.h>
-#include "pathplannerhi.h"
+#include "pathplanneruserinteraction.h"
 
 using namespace std;
 
 namespace orcaqgui2d {
     
-PathPlannerHI::PathPlannerHI( PathPlanner2dElement                    *ppElement,
-                              const std::string                       &proxyString,
-                              hydroqguielementutil::IHumanManager     &humanManager,
-                              hydroqguielementutil::MouseEventManager &mouseEventManager,
-                              PathPainter                             &painter,
-                              const orcaice::Context                  &context )
+PathPlannerUserInteraction::PathPlannerUserInteraction( PathPlanner2dElement                    *ppElement,
+                                                        const std::string                       &proxyString,
+                                                        hydroqguielementutil::IHumanManager     &humanManager,
+                                                        hydroqguielementutil::MouseEventManager &mouseEventManager,
+                                                        PathPainter                             &painter,
+                                                        const orcaice::Context                  &context )
     : ppElement_(ppElement),
       proxyString_( proxyString ),
       humanManager_(humanManager),
@@ -41,7 +41,7 @@ PathPlannerHI::PathPlannerHI( PathPlanner2dElement                    *ppElement
 
 
 void 
-PathPlannerHI::setFocus( bool inFocus )
+PathPlannerUserInteraction::setFocus( bool inFocus )
 {
     if (inFocus) {
         if (buttons_.get()==0) {
@@ -53,13 +53,13 @@ PathPlannerHI::setFocus( bool inFocus )
 }
 
 void 
-PathPlannerHI::paint( QPainter *p )
+PathPlannerUserInteraction::paint( QPainter *p )
 {
     if ( pathInput_.get() ) 
         pathInput_->paint(p);
 }
 
-void PathPlannerHI::waypointSettingsDialog()
+void PathPlannerUserInteraction::waypointSettingsDialog()
 {
     QDialog *myDialog = new QDialog;
     Ui::WpTolerancesDialog ui;
@@ -88,7 +88,7 @@ void PathPlannerHI::waypointSettingsDialog()
 }
 
 void 
-PathPlannerHI::waypointModeSelected()
+PathPlannerUserInteraction::waypointModeSelected()
 {
     if ( gotMode_ ) return;
     gotMode_ = mouseEventManager_.requestBecomeMouseEventReceiver( ppElement_ );
@@ -105,7 +105,7 @@ PathPlannerHI::waypointModeSelected()
 }
 
 void
-PathPlannerHI::setUseTransparency( bool useTransparency )
+PathPlannerUserInteraction::setUseTransparency( bool useTransparency )
 { 
     useTransparency_ = useTransparency;
     if ( pathInput_.get() ) 
@@ -113,14 +113,14 @@ PathPlannerHI::setUseTransparency( bool useTransparency )
 }
 
 void 
-PathPlannerHI::send()
+PathPlannerUserInteraction::send()
 {
     if ( pathInput_.get() )
         ppElement_->sendPath( *pathInput_.get() );
     cancel();
 }
 void 
-PathPlannerHI::cancel()
+PathPlannerUserInteraction::cancel()
 {
     if ( gotMode_ )
     {
@@ -129,7 +129,7 @@ PathPlannerHI::cancel()
     }
 }
 void
-PathPlannerHI::noLongerMouseEventReceiver()
+PathPlannerUserInteraction::noLongerMouseEventReceiver()
 {
     assert( pathInput_.get() );
     pathInput_.reset(0);
@@ -138,7 +138,7 @@ PathPlannerHI::noLongerMouseEventReceiver()
 }
 
 void 
-PathPlannerHI::savePathAs()
+PathPlannerUserInteraction::savePathAs()
 {
     QString fileName = QFileDialog::getSaveFileName(
             0,
@@ -154,7 +154,7 @@ PathPlannerHI::savePathAs()
 }
 
 void 
-PathPlannerHI::savePath()
+PathPlannerUserInteraction::savePath()
 {
     if (!haveIfacePathFileName_)
     {   

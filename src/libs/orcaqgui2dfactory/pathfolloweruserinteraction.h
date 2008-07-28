@@ -8,15 +8,16 @@
  *
  */
 
-#ifndef PATHPLANNER_HI_H
-#define PATHPLANNER_HI_H
+#ifndef PATHFOLLOWER_UI_H
+#define PATHFOLLOWER_UI_H
 
 #include <memory>
 #include <QObject>
-#include <orcaqgui2dfactory/pathplannerbuttons.h>
+#include <orcaqgui2dfactory/pathfollowerbuttons.h>
 #include <orcaqgui2dfactory/pathdesignscreen.h>
-#include <orcaqgui2dfactory/pathplannerinput.h>
-    
+#include <orcaqgui2dfactory/pathfollowerinput.h>
+#include <orcaqgui2dfactory/pathfilehandler.h>
+
 namespace hydroqgui {
     class GuiElementSet;
 }
@@ -29,20 +30,27 @@ namespace hydroqguielementutil {
 
 namespace orcaqgui2d {
 
-class PathPlanner2dElement;
+class PathFollower2dElement;    
 class PathPainter;
-
-class PathPlannerHI  : public QObject
+    
+//
+// Handles all user interaction for the PathFollower2dElement
+//
+// Author: Tobias Kaupp
+//
+class PathFollowerUserInteraction  : public QObject
 {
     Q_OBJECT
 
 public:
-    PathPlannerHI( PathPlanner2dElement                    *ppElement,
-                   const std::string                       &proxyString,
-                   hydroqguielementutil::IHumanManager     &humanManager,
-                   hydroqguielementutil::MouseEventManager &mouseEventManager,
-                   PathPainter                             &painter,
-                   const orcaice::Context                  &context );
+    PathFollowerUserInteraction( PathFollower2dElement                    *pfElement,
+                                 const std::string                        &proxyString,
+                                 hydroqguielementutil::IHumanManager      &humanManager,
+                                 hydroqguielementutil::MouseEventManager  &mouseEventManager,
+                                 hydroqguielementutil::ShortcutKeyManager &shortcutKeyManager,
+                                 const hydroqgui::GuiElementSet           &guiElementSet,
+                                 const PathPainter                        &painter,
+                                 const orcaice::Context                   &context );
 
     void noLongerMouseEventReceiver();
     void paint( QPainter *p );
@@ -60,6 +68,7 @@ public:
     
     void mouseDoubleClickEvent(QMouseEvent *e) 
         {pathInput_->processDoubleClickEvent(e);}
+    
 
 public slots:
     void savePathAs();
@@ -68,34 +77,46 @@ public slots:
     void waypointModeSelected();
     void send();
     void cancel();
+    void allGo();
+    void allStop();
+    void go();
+    void stop();
 
 private:
 
-    PathPlanner2dElement *ppElement_;
+    PathFollower2dElement *pfElement_;
     std::string proxyString_;
     hydroqguielementutil::IHumanManager &humanManager_;
     hydroqguielementutil::MouseEventManager &mouseEventManager_;
-    PathPainter &painter_;
+    hydroqguielementutil::ShortcutKeyManager &shortcutKeyManager_;
+    const hydroqgui::GuiElementSet &guiElementSet_;
+    const PathPainter &painter_;
     orcaice::Context context_;
     WaypointSettings wpSettings_;
 
-    // saving the path which the pathplanner interface holds
+    // saving the path which the pathfollower interface holds
     // (as opposed to the path the user enters in green)
     QString ifacePathFileName_;
     bool haveIfacePathFileName_;
     std::auto_ptr<PathFileHandler> ifacePathFileHandler_;
-
-    // handles all user input through clicking, tables, etc.
-    std::auto_ptr<PathPlannerInput> pathInput_;
-    // sets up and destroys buttons and associated actions
-    std::auto_ptr<PathplannerButtons> buttons_;
     
+    // handles all user input through clicking, tables, etc.
+    std::auto_ptr<PathFollowerInput> pathInput_;
+    // automatic saving of paths on send
+    int numAutoPathDumps_;
+    // remember the filename of the green user path
+    QString loadPreviousPathFilename_;
+    
+    // sets up and destroys buttons and associated actions
+    std::auto_ptr<PathfollowerButtons> buttons_;
+
     // Do we own the global mode?
     bool gotMode_;
     
     bool useTransparency_;
+    
 };
 
-}
+} // end of namespace
 
 #endif
