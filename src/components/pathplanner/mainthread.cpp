@@ -360,12 +360,12 @@ MainThread::walk()
             ss << "MainThread: unexpected exception: " << e.what();
             subStatus().fault( ss.str() );
         }
-        catch ( const Ice::Exception & e )
-        {
-            stringstream ss;
-            ss << "MainThread: unexpected Ice exception: " << e;
-            subStatus().fault( ss.str() );
-        }
+//         catch ( const Ice::Exception & e )
+//         {
+//             stringstream ss;
+//             ss << "MainThread: unexpected Ice exception: " << e;
+//             subStatus().fault( ss.str() );
+//         }
         catch ( const std::exception & e )
         {
             stringstream ss;
@@ -379,8 +379,7 @@ MainThread::walk()
     
     } // end of while
     
-    // wait for the component to realize that we are quitting and tell us to stop.
-    waitForStop();
+cout<<"DEBUG: out of mainthread."<<endl;
 }
 
 }
