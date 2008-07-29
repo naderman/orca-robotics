@@ -1,5 +1,6 @@
 #include "util.h"
 #include <iostream>
+#include <sstream>
 #include <orcaice/orcaice.h>
 
 using namespace std;
@@ -24,7 +25,9 @@ tryRemoveInterface( orcaice::Context &context,
     }
     catch ( Ice::Exception &e )
     {
-        cout << "orcaifaceimpl: Exception when removing Ice::ObjectPtr from adapter: " << e << endl;
+        stringstream ss;
+        ss << "Caught orcaifaceimpl: Exception when removing Ice::ObjectPtr from adapter: " << e;
+        context.tracer().warning( ss.str() );
     }
 }
 
