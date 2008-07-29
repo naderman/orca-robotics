@@ -29,7 +29,7 @@ using namespace std;
 namespace pathplanner {
 
 MainThread::MainThread( const orcaice::Context & context )
-    : orcaice::SubsystemThread( context_.tracer(), context.status(), "MainThread" ),
+    : orcaice::SubsystemThread( context.tracer(), context.status(), "MainThread" ),
       pathPlannerTaskBuffer_( 100, gbxiceutilacfr::BufferTypeQueue ),
       context_(context)
 {
