@@ -24,7 +24,7 @@ public:
     EStop( double                  keepAlivePeriodSec,
            const orcaice::Context &context );
 
-    //! Sets up the Ice interface
+    // Sets up the Ice interface
     void initInterface( gbxiceutilacfr::Thread* thread );
 
     // If true, we should _NOT_MOVE_ !!
