@@ -62,8 +62,8 @@ public:
             ( context_, listener_.interfaceName(), painter_ ); 
     }
 
-    virtual QStringList contextMenu();
-//     virtual void execute( int action ) { painter_.execute( action ); };
+    virtual QStringList contextMenu() { return painter_.contextMenu(); }
+    virtual void execute( int action ) { painter_.execute( action ); };
 
 private:
 

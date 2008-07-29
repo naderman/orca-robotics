@@ -54,6 +54,10 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 @par Project wide
 @par New interfaces
 @par New components
+
+- OrcaView3d
+  - Complete re-write, basic functionality now works. (alex b)
+
 @par New utilities
 @par New libraries
 @par Updated interfaces

@@ -108,14 +108,6 @@ RangeScanner2dElement::contextMenu()
     return s;
 }
 
-QStringList
-PolarFeature2dElement::contextMenu()
-{
-    QStringList s;
-    s<<"Toggle Laser Reflectors"<<"Toggle Corners";
-    return s;
-}
-
 void
 Localise3dElement::update()
 {

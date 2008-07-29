@@ -25,7 +25,7 @@ QStringList
 FeatureMap2dElement::contextMenu()
 {
     QStringList s;
-    s<<"Toggle Uncertainty"<<"Toggle Feature Numbers"<<"Save Feature Map"<<"Save Feature Map As";
+    s<<"Toggle Uncertainty"<<"Toggle Display"<<"Toggle Flashing"<<"Toggle Feature Numbers"<<"Save Feature Map"<<"Save Feature Map As";
     return s;
 }
 
@@ -41,15 +41,25 @@ FeatureMap2dElement::execute( int action )
     }
     case 1 :
     {
-        painter_.toggleFeatureNumbers();
+        painter_.toggleDisplay();
         break;
     }
     case 2 :
     {
-        saveFeatureMap();
+        painter_.toggleFlashing();
         break;
     }
     case 3 :
+    {
+        painter_.toggleFeatureNumbers();
+        break;
+    }
+    case 4 :
+    {
+        saveFeatureMap();
+        break;
+    }
+    case 5 :
     {
         saveFeatureMapAs();
         break;

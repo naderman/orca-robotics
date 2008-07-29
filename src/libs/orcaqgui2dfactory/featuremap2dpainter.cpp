@@ -26,19 +26,12 @@ namespace orcaqgui2d {
 
 FeatureMap2dPainter::FeatureMap2dPainter()
     : displayFeatureNumbers_(false),
-      displayUncertainty_(false)
+      displayUncertainty_(false),
+      isDisplay_(true),
+      isFlashing_(false),
+      isFlashOn_(false)
 {
 }
-
-FeatureMap2dPainter::~FeatureMap2dPainter()
-{
-}
-
-void 
-FeatureMap2dPainter::clear()
-{
-}
-
 
 void 
 FeatureMap2dPainter::setData( const orca::FeatureMap2dData &data )
@@ -229,7 +222,13 @@ FeatureMap2dPainter::paintPoseFeature( QPainter *painter,
 
 void FeatureMap2dPainter::paint( QPainter *painter, const int z )
 {
+    if ( !isDisplay_ ) return;
     if ( z != hydroqguielementutil::Z_SLAM_MAP ) return;
+    if ( isFlashing_ )
+    {
+        isFlashOn_ = !isFlashOn_;
+        if ( !isFlashOn_ ) return;
+    }
 
     QColor color;
 
