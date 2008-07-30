@@ -84,6 +84,9 @@ FeatureMap2dPainter::paintPointFeature( QPainter *painter,
         {
             //cout<<"TRACE(featuremap2dpainter.cpp): painting: " << f.c.xx << ","<<f.c.xy<<","<<f.c.yy << endl;
 
+            // Reset the thickness
+            painter->setPen( QPen( pen.color() ) );
+
 //             QMatrix m2win = painter->worldMatrix();
 //             const float lineThickness = 2.0/m2win.m11();
             hydroqguielementutil::paintCovarianceEllipse( painter,
