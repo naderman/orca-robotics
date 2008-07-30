@@ -24,7 +24,6 @@ class SimpleDriver : public Driver
 public: 
 
     SimpleDriver( const orca::GpsDescription &descr, const orcaice::Context &context );
-    ~SimpleDriver();
 
     // Converts the GPS info into localise2d format.
     // Returns 'false' if the conversion can't be done (eg because GPS doesn't have a fix).

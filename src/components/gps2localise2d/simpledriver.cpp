@@ -60,16 +60,19 @@ SimpleDriver::SimpleDriver( const orca::GpsDescription &descr,
     antennaTransform_.o   = -descr_.antennaOffset.o.y;
 }
 
-SimpleDriver::~SimpleDriver()
-{
-}
-
 bool 
 SimpleDriver::compute( const orca::GpsData  &gpsData,
                        orca::Localise2dData &localiseData )
 {
+    const int MIN_NUM_SATELLITES = 4;
+
     if ( gpsData.positionType == orca::GpsPositionTypeNotAvailable )
         return false;
+    if ( gpsData.satellites < MIN_NUM_SATELLITES )
+    {
+        cout<<"TRACE(simpledriver.cpp): Warning: not enough satellites("<<gpsData.satellites<<") for reliable fix." << endl;
+        return false;
+    }
 
     // cout<<"TRACE(simpledriver.cpp): gpsData: " << orcaobj::toString(gpsData) << endl;
 
@@ -87,7 +90,7 @@ SimpleDriver::compute( const orca::GpsData  &gpsData,
 
     localiseData.hypotheses[0].mean.p.x = easting;
     localiseData.hypotheses[0].mean.p.y = northing;
-    localiseData.hypotheses[0].mean.o   = M_PI/2.0*3.0 - gpsData.heading;
+    localiseData.hypotheses[0].mean.o   = M_PI/2.0-gpsData.heading; // M_PI/2.0*3.0 - gpsData.heading;
 
     const double linearSigma = gpsData.horizontalPositionError;
     const double linearVariance = linearSigma*linearSigma;
