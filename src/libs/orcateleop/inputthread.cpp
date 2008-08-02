@@ -73,7 +73,7 @@ InputThread::walk()
     if ( isStopping() ) {
         return;
     }
-    context_.tracer().debug("InputThread: Input driver enabled",2);
+    context_.tracer().debug("InputThread: Input driver enabled",1);
 
     // temp object
     hydrointerfaces::HumanInput2d::Command command;
@@ -103,5 +103,5 @@ InputThread::walk()
     if ( driver_->disable() ) {
         context_.tracer().warning("Failed to disable input driver");
     }
-    context_.tracer().debug("Input driver disabled",2);
+    context_.tracer().debug("Input driver disabled",1);
 }

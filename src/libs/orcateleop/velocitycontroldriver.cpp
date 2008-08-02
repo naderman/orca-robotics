@@ -154,6 +154,8 @@ VelocityControl2dDriver::processRelativeCommand( double longitudinal, double tra
 void 
 VelocityControl2dDriver::sendCommand()
 {
+//     cout<<"DEBUG: VelocityControl2dDriver::sendCommand():"
+//         <<" v.x="<<command_.motion.v.x<<" v.y="<<command_.motion.v.y<<" w="<<command_.motion.w<<endl;
     try 
     {
         prx_->setCommand( command_ );

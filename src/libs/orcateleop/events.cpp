@@ -9,6 +9,7 @@
  */
 
 #include "events.h"
+// #include <iostream>
 
 using namespace orcateleop;
 
@@ -30,6 +31,7 @@ TeleopEventQueueOptimizer::combine( hydroiceutil::EventPtr& existing, const hydr
         if ( (!eExisting->isLongIncrement && eExtra->isLongIncrement) ||
              (!eExisting->isTransverseIncrement && eExtra->isTransverseIncrement) ||
              (!eExisting->isAngularIncrement && eExtra->isAngularIncrement) ) {
+//             std::cout<<"DEBUG: cannot optimize events"<<std::endl;
             return false;
         }
 
