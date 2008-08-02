@@ -62,6 +62,10 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 @par New libraries
 @par Updated interfaces
 @par Updated components
+
+- Gps2Localise2d
+  - Added a bunch of (configurable) heuristics to discard faulty records (tobi)
+
 @par Updated utilities
 
 - RegistryView

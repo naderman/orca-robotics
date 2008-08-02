@@ -7,6 +7,7 @@
  * the LICENSE file included in this distribution.
  *
  */
+ 
 #ifndef SIMPLEDRIVER_H
 #define SIMPLEDRIVER_H
 
@@ -38,9 +39,9 @@ private:
     // Offset from gps origin to global coord system
     orca::Frame2d offset_;
 
-    orca::GpsDescription     gpsDescr_;
+    orca::GpsDescription gpsDescr_;
     
-    // Antenna offset as Frame2d.
+    // Antenna offset as Frame2d
     orca::Frame2d         antennaTransform_;
     orcaice::Context      context_;
     

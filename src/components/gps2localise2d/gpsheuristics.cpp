@@ -1,12 +1,13 @@
 /*
- * Orca-Robotics Project: Components for robotics 
+ * Orca Project: Components for robotics 
  *               http://orca-robotics.sf.net/
- * Copyright (c) 2004-2008 Alex Brooks
+ * Copyright (c) 2004-2008 Alex Brooks, Alexei Makarenko, Tobias Kaupp
  *
- * This copy of Orca is licensed to you under the terms described in
- * the LICENSE file included in this distribution.
+ * This copy of Orca is licensed to you under the terms described in the
+ * ORCA_LICENSE file included in this distribution.
  *
  */
+
 
 #include <sstream>
 #include <iomanip>
@@ -17,22 +18,24 @@ using namespace std;
 
 namespace gps2localise2d {
     
-const int MIN_NUM_SATELLITES = 4;
-const double MAX_TIME_DIFF = 1.5;
-const double SPEED_DIFF_THRESHOLD = 2.0;
-    
 GpsHeuristics::GpsHeuristics( const orcaice::Context &context,
-                              const double           &maxForwardSpeed ) 
+                              const double           &maxSpeed ) 
     : context_(context),
-      maxForwardSpeed_(maxForwardSpeed),
-      firstTime_(true)
+      firstTime_(true),
+      maxSpeed_(maxSpeed)
+      
 {
+    Ice::PropertiesPtr prop = context_.properties();
+    std::string prefix = context_.tag() + ".Config.";
+    minNumSatellites_ = orcaice::getPropertyAsIntWithDefault( prop, prefix+"MinNumSatellites", 4 );
+    maxTimeDiff_ = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"MaxTimeDifferenceSeconds", 2.5 );
+    speedDiffFactor_ = orcaice::getPropertyAsIntWithDefault( prop, prefix+"SpeedDifferenceFactor", 2.0 );
 }
 
 bool
 GpsHeuristics::haveEnoughSatellites( int numSat )
 {
-    if (numSat < MIN_NUM_SATELLITES)
+    if (numSat < minNumSatellites_)
     {
         stringstream ss;
         ss << "Not enough satellites: " << numSat << ". Fix not reliable";
@@ -86,7 +89,7 @@ GpsHeuristics::checkSpeedAndPosition( const double     &northing,
     
     // check whether we've received anything recently
     double timeDiff = orcaice::timeDiffAsDouble( timeStamp, lastTimeStamp_);
-    if ( timeDiff > MAX_TIME_DIFF ) {
+    if ( timeDiff > maxTimeDiff_ ) {
         stringstream ss; 
         ss << "Too long since the last time we've received a timestamp: " << fixed << setprecision(1) << timeDiff << "s. Can't compute an estimate for speed or travelled distance.";
         context_.tracer().debug( ss.str(), 2 );
@@ -98,10 +101,10 @@ GpsHeuristics::checkSpeedAndPosition( const double     &northing,
     double distanceTravelled = computeDistanceTravelled( northing, easting );
     
     // save for next time
-    saveData( northing, easting, timeStamp );;
+    saveData( northing, easting, timeStamp );
     
     // check for teleport
-    if ( distanceTravelled > (maxForwardSpeed_*timeDiff) )
+    if ( distanceTravelled > (maxSpeed_*timeDiff) )
     {
         stringstream ss;
         ss << "It looks like we've teleported, travelled " << fixed << setprecision(1) << distanceTravelled << "m in " << timeDiff << "s";
@@ -115,7 +118,7 @@ GpsHeuristics::checkSpeedAndPosition( const double     &northing,
             
     // check for speed consistency
     double speedDiff = abs(speedComputed - speedReported);
-    if ( (speedDiff > SPEED_DIFF_THRESHOLD) && (speedReported!=0.0) )
+    if ( (speedDiff > speedDiffFactor_ * speedReported) && (speedReported!=0.0) )
     {
         stringstream ss;
         ss << "Reported speed (" << speedReported << "m/s) is inconsistent with what we've computed based on positions (" << speedComputed << "m/s)";

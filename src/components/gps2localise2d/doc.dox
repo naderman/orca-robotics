@@ -40,12 +40,26 @@ It does this by:
 
 - @c Gps2Localise2d.Config.Driver (string)
     - valid values are { "simple" , "odometrybased" }
-    - 
+    - description as below
+    - default: simple
 
 - @c Gps2Localise2d.Config.Offset (Frame2d) [m, deg]
     - Position of the Localise2d rood. system's origin w/r/t the mapgrid origin.
     - Format: x y z roll pitch yaw (space separated)
     - Default: 0.0 0.0 0.0
+    
+- @c Gps2Localise2d.Config.MinNumSatellites (int)
+    - Minimum number of satellites required to declare the GPS frame valid
+    - Default: 4
+    
+- @c Gps2Localise2d.Config.MaxTimeDifferenceSeconds (double) [s]
+    - Maximum allowed time period between GPS frames to compute a valid speed estimate based on position differentials
+    - Default: 2.5
+    
+- @c Gps2Localise2d.Config.SpeedDifferenceFactor (double)
+    - If abs(reportedSpeed-computedSpeed) > SpeedDifferenceFactor * reportedSpeed, frame is discarded
+    - reportedSpeed is what we get from receiver, computedSpeed is computed based on position differentials
+    - Default: 2.0
 
 An example configuration file is installed into [ORCA-INSTALL-DIR]/share/orca/cfg/ directory.
 
@@ -57,7 +71,7 @@ Reports a single Gaussian, with the mean being the reported GPS
 position, and the x-y uncertainties being those reported by the GPS unit.
 Assumes that heading information is unreliable, so reports heading s.d. of 2*pi.
 
-@par OdomteryBased
+@par OdometryBased
 
 Just like "simple", but assumes that heading is calculated internal to
 the GPS unit by differentiating position.  Heading is therefore most
@@ -70,7 +84,7 @@ Requires:
 - @ref orca_interface_odometry2d [Gps2Localise2d.Requires.Odometry2d]
 
 @par Authors
-Alex Brooks
+Alex Brooks, Tobias Kaupp
 
 */
 

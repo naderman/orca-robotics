@@ -1,12 +1,13 @@
 /*
- * Orca-Robotics Project: Components for robotics 
+ * Orca Project: Components for robotics 
  *               http://orca-robotics.sf.net/
- * Copyright (c) 2004-2008 Alex Brooks
+ * Copyright (c) 2004-2008 Alex Brooks, Alexei Makarenko, Tobias Kaupp
  *
- * This copy of Orca is licensed to you under the terms described in
- * the LICENSE file included in this distribution.
+ * This copy of Orca is licensed to you under the terms described in the
+ * ORCA_LICENSE file included in this distribution.
  *
  */
+
 
 #ifndef GPS_HEURISTICS_H
 #define GPS_HEURISTICS_H
@@ -28,7 +29,7 @@ class GpsHeuristics
 public:
     
     GpsHeuristics( const orcaice::Context &context,
-                   const double           &maxForwardSpeed );
+                   const double           &maxSpeed );
     
     // returns true if there are enough satellites
     bool haveEnoughSatellites( int numSat );
@@ -49,11 +50,17 @@ private:
     
     orcaice::Context context_;
     
-    double maxForwardSpeed_;
+    // saved data to compute differentials
     bool firstTime_;
     double lastEasting_;
     double lastNorthing_;
     orca::Time lastTimeStamp_;
+    
+    // config variables
+    double maxSpeed_;
+    int minNumSatellites_;
+    double maxTimeDiff_;
+    double speedDiffFactor_;
     
     void saveData( const double     &northing,
                    const double     &easting,

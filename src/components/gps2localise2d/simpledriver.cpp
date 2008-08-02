@@ -7,6 +7,7 @@
  * the LICENSE file included in this distribution.
  *
  */
+ 
 #include "simpledriver.h"
 #include <iostream>
 #include <orca/vehicledescription.h>
@@ -90,10 +91,11 @@ bool
 SimpleDriver::compute( const orca::GpsData  &gpsData,
                        orca::Localise2dData &localiseData )
 {
-    if (!gpsHeuristics_->haveEnoughSatellites( gpsData.satellites ) )
-        return false;
-        
+    
     if (!gpsHeuristics_->haveValidFix( gpsData.positionType ) )
+        return false;
+    
+    if (!gpsHeuristics_->haveEnoughSatellites( gpsData.satellites ) )
         return false;
 
     // cout<<"TRACE(simpledriver.cpp): gpsData: " << orcaobj::toString(gpsData) << endl;
