@@ -9,6 +9,7 @@
  */
 #include "simpledriver.h"
 #include <iostream>
+#include <orca/vehicledescription.h>
 #include <orcaice/orcaice.h>
 #include <orcaobj/orcaobj.h>
 #include <hydronavutil/offset.h>
@@ -31,9 +32,10 @@ namespace {
     }
 }
 
-SimpleDriver::SimpleDriver( const orca::GpsDescription &descr,
-                            const orcaice::Context &context )
-    : descr_(descr),
+SimpleDriver::SimpleDriver( const orca::GpsDescription     &gpsDescr, 
+                            const orca::VehicleDescription &vehicleDescr,
+                            const orcaice::Context         &context )
+    : gpsDescr_(gpsDescr),
       context_(context)
 {
     Ice::PropertiesPtr prop = context_.properties();
@@ -47,32 +49,52 @@ SimpleDriver::SimpleDriver( const orca::GpsDescription &descr,
     offset_ = orcaobj::getPropertyAsFrame2dWithDefault( prop, prefix+"Offset", offset_ );
 
     // Ensure that the antenna offset is simple
-    if ( descr_.antennaOffset.o.r != 0 ||
-         descr_.antennaOffset.o.p != 0 )
+    if ( gpsDescr_.antennaOffset.o.r != 0 ||
+         gpsDescr_.antennaOffset.o.p != 0 )
     {
         stringstream ss;
-        ss << "Can't handle non-zero antenna roll/pitch.  Received: " << orcaobj::toString( descr_.antennaOffset );
+        ss << "Can't handle non-zero antenna roll/pitch.  Received: " << orcaobj::toString( gpsDescr_.antennaOffset );
         context_.tracer().error( ss.str() );
         exit(1);
     }
-    antennaTransform_.p.x = -descr_.antennaOffset.p.x;
-    antennaTransform_.p.y = -descr_.antennaOffset.p.y;
-    antennaTransform_.o   = -descr_.antennaOffset.o.y;
+    antennaTransform_.p.x = -gpsDescr_.antennaOffset.p.x;
+    antennaTransform_.p.y = -gpsDescr_.antennaOffset.p.y;
+    antennaTransform_.o   = -gpsDescr_.antennaOffset.o.y;
+    
+    // Initialise GpsHeuristics
+    double maxSpeed = 0.0;
+    if (vehicleDescr.control->type==orca::VehicleControlVelocityDifferential)
+    {
+        orca::VehicleControlVelocityDifferentialDescription *controlDesc =        
+            dynamic_cast<orca::VehicleControlVelocityDifferentialDescription*>(&(*(vehicleDescr.control)));
+        maxSpeed = controlDesc->maxForwardSpeed;
+    }
+    else if (vehicleDescr.control->type==orca::VehicleControlVelocityBicycle)
+    {
+        orca::VehicleControlVelocityBicycleDescription *controlDesc =
+                dynamic_cast<orca::VehicleControlVelocityBicycleDescription*>(&(*(vehicleDescr.control)));
+        maxSpeed = controlDesc->maxForwardSpeed;   
+    }
+    else
+    {
+        maxSpeed = 100.0;
+        stringstream ss;
+        ss << "VehicleDescription unknown to this driver. Will set maximum vehicle speed to " << maxSpeed << "m/s";       
+        context_.tracer().warning( ss.str() );
+    }
+        
+    gpsHeuristics_.reset( new GpsHeuristics( context, maxSpeed ) );
 }
 
 bool 
 SimpleDriver::compute( const orca::GpsData  &gpsData,
                        orca::Localise2dData &localiseData )
 {
-    const int MIN_NUM_SATELLITES = 4;
-
-    if ( gpsData.positionType == orca::GpsPositionTypeNotAvailable )
+    if (!gpsHeuristics_->haveEnoughSatellites( gpsData.satellites ) )
         return false;
-    if ( gpsData.satellites < MIN_NUM_SATELLITES )
-    {
-        cout<<"TRACE(simpledriver.cpp): Warning: not enough satellites("<<gpsData.satellites<<") for reliable fix." << endl;
+        
+    if (!gpsHeuristics_->haveValidFix( gpsData.positionType ) )
         return false;
-    }
 
     // cout<<"TRACE(simpledriver.cpp): gpsData: " << orcaobj::toString(gpsData) << endl;
 
@@ -80,10 +102,16 @@ SimpleDriver::compute( const orca::GpsData  &gpsData,
     int zone;
 
     hydrogpsutil::LatLon2MGA( gpsData.latitude, 
-                             gpsData.longitude,
-                             northing,
-                             easting,
-                             zone );
+                              gpsData.longitude,
+                              northing,
+                              easting,
+                              zone );
+    
+    int ret = gpsHeuristics_->checkSpeedAndPosition( northing, 
+                                                     easting, 
+                                                     gpsData.speed,
+                                                     gpsData.timeStamp );
+    if (ret!=0) return false;
 
     localiseData.timeStamp = gpsData.timeStamp;
     localiseData.hypotheses.resize(1);

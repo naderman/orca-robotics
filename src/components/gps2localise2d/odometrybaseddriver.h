@@ -32,7 +32,9 @@ class OdometryBasedDriver : public Driver
 
 public: 
 
-    OdometryBasedDriver( const orca::GpsDescription &descr, const orcaice::Context &context );
+    OdometryBasedDriver( const orca::GpsDescription     &gpsDescr, 
+                         const orca::VehicleDescription &vehicleDescr,
+                         const orcaice::Context         &context );
     ~OdometryBasedDriver();
 
     // Converts the GPS info into localise2d format.

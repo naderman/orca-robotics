@@ -7,20 +7,23 @@
  * the LICENSE file included in this distribution.
  *
  */
-#include "odometrybaseddriver.h"
+ 
 #include <iostream>
 #include <orcaice/orcaice.h>
 #include <hydronavutil/offset.h>
 #include <hydrogpsutil/latlon2mga.h>
 #include <orcaice/orcaice.h>
 
+#include "odometrybaseddriver.h"
+
 using namespace std;
 
 namespace gps2localise2d {
 
-OdometryBasedDriver::OdometryBasedDriver( const orca::GpsDescription &descr,
-                                          const orcaice::Context &context )
-    : simpleDriver_(descr,context),
+OdometryBasedDriver::OdometryBasedDriver( const orca::GpsDescription     &gpsDescr, 
+                                          const orca::VehicleDescription &vehicleDescr,
+                                          const orcaice::Context         &context )
+    : simpleDriver_(gpsDescr,vehicleDescr,context),
       isSetup_(false),
       context_(context)
 {
@@ -112,6 +115,7 @@ OdometryBasedDriver::calcHeadingUncertainty( hydronavutil::Pose &delta,
     return uncertainty;
 }
 
+
 bool 
 OdometryBasedDriver::compute( const orca::GpsData  &gpsData,
                               orca::Localise2dData &localiseData )
@@ -123,7 +127,10 @@ OdometryBasedDriver::compute( const orca::GpsData  &gpsData,
     }
 
     if ( simpleDriver_.compute( gpsData, localiseData ) == false )
+    {
+        context_.tracer().info( "OdometryBasedDriver: could not (reliably) convert GPS data to Localise2d data." );
         return false;
+    }
 
     // Expand position uncertainty: the GPS unit is calculating it
     // based on the locations of satellites, but it's not taking into
