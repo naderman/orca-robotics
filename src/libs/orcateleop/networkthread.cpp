@@ -31,10 +31,6 @@ NetworkThread::NetworkThread( Display* display, const orcaice::Context& context 
     events_->setOptimizer( opt );
 }
 
-NetworkThread::~NetworkThread()
-{
-}
-
 void 
 NetworkThread::newMixedCommand( const hydrointerfaces::HumanInput2d::Command& command )
 {
@@ -46,13 +42,14 @@ NetworkThread::newMixedCommand( const hydrointerfaces::HumanInput2d::Command& co
         command.angular, command.isAngularIncrement );
     events_->optimizedAdd( e );
 
-    cout<<endl<<"DEBUG: NetworkThread::newMixedCommand: events stack size = "<<events_->size()<<endl;
+//     if ( events_->size()>1 )
+//         cout<<endl<<"DEBUG: NetworkThread::newMixedCommand: events stack size = "<<events_->size()<<endl;
 }
 
 void 
 NetworkThread::newIncrementCommand( int longitudinal, int transverse, int angle )
 {
-// cout<<"DEBUG: got command incresment : "<<longitudinal<<" "<<transverse<<" "<<angle<<endl;
+// cout<<"DEBUG: got command increment : "<<longitudinal<<" "<<transverse<<" "<<angle<<endl;
     hydroiceutil::EventPtr e = new IncrementCommandEvent( longitudinal, transverse, angle );
     events_->optimizedAdd( e );
 }

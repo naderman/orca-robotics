@@ -28,7 +28,6 @@ class NetworkThread : public gbxiceutilacfr::SafeThread, public Network
 public:
 
     NetworkThread( Display* display, const orcaice::Context& context );
-    virtual ~NetworkThread();
 
     // from SafeThread
     virtual void walk();

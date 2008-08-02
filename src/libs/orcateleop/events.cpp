@@ -17,46 +17,47 @@ TeleopEventQueueOptimizer::combine( hydroiceutil::EventPtr& existing, const hydr
 { 
     if ( existing->type()==MixedCommand && extra->type()==MixedCommand ) 
     {  
-        return false;
+        // this is to disable this who section
+//         return false;
 
-//         MixedCommandEventPtr eExisting = MixedCommandEventPtr::dynamicCast( existing );
-//         MixedCommandEventPtr eExtra = MixedCommandEventPtr::dynamicCast( extra );
-//         if ( !eExisting || !eExtra ) {
-//             return false; 
-//         }
-// 
-//         // an incremental command following a relative one cannot be combined
-//         if ( (!eExisting->isLongIncrement && eExtra->isLongIncrement) ||
-//              (!eExisting->isTransverseIncrement && eExtra->isTransverseIncrement) ||
-//              (!eExisting->isAngularIncrement && eExtra->isAngularIncrement) ) {
-//             return false;
-//         }
-// 
-//         // incremental commands add up
-//         if ( eExisting->isLongIncrement && eExtra->isLongIncrement )
-//             eExisting->longitudinal    += eExtra->longitudinal;
-//         if ( eExisting->isTransverseIncrement && eExtra->isTransverseIncrement )
-//             eExisting->transverse      += eExtra->transverse;
-//         if ( eExisting->isAngularIncrement && eExtra->isAngularIncrement )
-//             eExisting->angular         += eExtra->angular;
-// 
-//         // relative command simply replaces any incremental one
-//         if ( eExisting->isLongIncrement && !eExtra->isLongIncrement )
-//             eExisting->longitudinal    = eExtra->longitudinal;
-//         if ( eExisting->isTransverseIncrement && !eExtra->isTransverseIncrement )
-//             eExisting->transverse      = eExtra->transverse;
-//         if ( eExisting->isAngularIncrement && !eExtra->isAngularIncrement )
-//             eExisting->angular         = eExtra->angular;
-// 
-//         // newer relative command replaces an older one
-//         if ( !eExisting->isLongIncrement && !eExtra->isLongIncrement )
-//             eExisting->longitudinal    = eExtra->longitudinal;
-//         if ( !eExisting->isTransverseIncrement && !eExtra->isTransverseIncrement )
-//             eExisting->transverse      = eExtra->transverse;
-//         if ( !eExisting->isAngularIncrement && !eExtra->isAngularIncrement )
-//             eExisting->angular         = eExtra->angular;
-// 
-//         return true;
+        MixedCommandEventPtr eExisting = MixedCommandEventPtr::dynamicCast( existing );
+        MixedCommandEventPtr eExtra = MixedCommandEventPtr::dynamicCast( extra );
+        if ( !eExisting || !eExtra ) {
+            return false; 
+        }
+
+        // an incremental command following a relative one cannot be combined
+        if ( (!eExisting->isLongIncrement && eExtra->isLongIncrement) ||
+             (!eExisting->isTransverseIncrement && eExtra->isTransverseIncrement) ||
+             (!eExisting->isAngularIncrement && eExtra->isAngularIncrement) ) {
+            return false;
+        }
+
+        // incremental commands add up
+        if ( eExisting->isLongIncrement && eExtra->isLongIncrement )
+            eExisting->longitudinal    += eExtra->longitudinal;
+        if ( eExisting->isTransverseIncrement && eExtra->isTransverseIncrement )
+            eExisting->transverse      += eExtra->transverse;
+        if ( eExisting->isAngularIncrement && eExtra->isAngularIncrement )
+            eExisting->angular         += eExtra->angular;
+
+        // relative command simply replaces any incremental one
+        if ( eExisting->isLongIncrement && !eExtra->isLongIncrement )
+            eExisting->longitudinal    = eExtra->longitudinal;
+        if ( eExisting->isTransverseIncrement && !eExtra->isTransverseIncrement )
+            eExisting->transverse      = eExtra->transverse;
+        if ( eExisting->isAngularIncrement && !eExtra->isAngularIncrement )
+            eExisting->angular         = eExtra->angular;
+
+        // newer relative command replaces an older one
+        if ( !eExisting->isLongIncrement && !eExtra->isLongIncrement )
+            eExisting->longitudinal    = eExtra->longitudinal;
+        if ( !eExisting->isTransverseIncrement && !eExtra->isTransverseIncrement )
+            eExisting->transverse      = eExtra->transverse;
+        if ( !eExisting->isAngularIncrement && !eExtra->isAngularIncrement )
+            eExisting->angular         = eExtra->angular;
+
+        return true;
     }
     else if ( existing->type()==IncrementCommand && extra->type()==IncrementCommand ) 
     {    
