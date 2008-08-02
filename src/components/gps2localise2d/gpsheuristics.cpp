@@ -18,6 +18,19 @@ using namespace std;
 
 namespace gps2localise2d {
     
+namespace {
+    
+    double computeDistanceTravelled( const double &northing, 
+                                     const double &easting,
+                                     const double &lastNorthing,
+                                     const double &lastEasting )
+    {
+        double dX = easting - lastEasting;
+        double dY = northing - lastNorthing;
+        return sqrt( dX*dX + dY*dY );
+    }   
+}
+    
 GpsHeuristics::GpsHeuristics( const orcaice::Context &context,
                               const double           &maxSpeed ) 
     : context_(context),
@@ -56,22 +69,14 @@ GpsHeuristics::haveValidFix( const orca::GpsPositionType &type )
     return true;
 }
 
-void GpsHeuristics::saveData( const double     &northing,
-                              const double     &easting,
-                              const orca::Time &timeStamp )
+void 
+GpsHeuristics::saveData( const double     &northing,
+                         const double     &easting,
+                         const orca::Time &timeStamp )
 {
     lastNorthing_ = northing;
     lastEasting_ = easting;
     lastTimeStamp_ = timeStamp;
-}
-
-double 
-GpsHeuristics::computeDistanceTravelled( const double &northing, 
-                                         const double &easting )
-{
-    double dX = easting - lastEasting_;
-    double dY = northing - lastNorthing_;
-    return sqrt( dX*dX + dY*dY );
 }
     
 int
@@ -98,8 +103,10 @@ GpsHeuristics::checkSpeedAndPosition( const double     &northing,
     }
     
     // compute travelled distance since last time
-    double distanceTravelled = computeDistanceTravelled( northing, easting );
-    
+    double distanceTravelled = computeDistanceTravelled( northing, 
+                                                         easting, 
+                                                         lastNorthing_, 
+                                                         lastEasting_ );
     // save for next time
     saveData( northing, easting, timeStamp );
     
@@ -121,12 +128,12 @@ GpsHeuristics::checkSpeedAndPosition( const double     &northing,
     if ( (speedDiff > speedDiffFactor_ * speedReported) && (speedReported!=0.0) )
     {
         stringstream ss;
-        ss << "Reported speed (" << speedReported << "m/s) is inconsistent with what we've computed based on positions (" << speedComputed << "m/s)";
+        ss << "Reported speed (" << fixed << setprecision(2) << speedReported << "m/s) is inconsistent with what we've computed based on positions (" << speedComputed << "m/s)";
         context_.tracer().debug( ss.str(), 2 );
         return 1;
     }
     
-    context_.tracer().debug("Speed and position checks successfully passed. The GPS record seems valid", 2 );
+    context_.tracer().debug("Speed and position checks have passed. The GPS record seems valid.", 3 );
     return 0;
 }
     

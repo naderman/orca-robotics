@@ -31,16 +31,16 @@ public:
     GpsHeuristics( const orcaice::Context &context,
                    const double           &maxSpeed );
     
-    // returns true if there are enough satellites
+    // Returns true if there are enough satellites
     bool haveEnoughSatellites( int numSat );
     
-    // returns true if we have a valid fix
+    // Returns true if we have a valid fix
     bool haveValidFix( const orca::GpsPositionType &type );
     
     // Checks two things: (1) whether the reported speed is consistent with the speed 
     // calculated based on position diffs, and (2) whether we have 'teleoported' based
     // on the maximum speed the vehicle can do
-    // Returns 0 if consistent, 1 if inconsistent, and 2 if we can't determine
+    // Returns 0 if ok (both checks pass), 1 if not ok (at least one check fails), and 2 if we can't determine
     int checkSpeedAndPosition( const double     &northing,
                                const double     &easting,
                                const double     &speedReported,
@@ -50,7 +50,7 @@ private:
     
     orcaice::Context context_;
     
-    // saved data to compute differentials
+    // one-step memory to compute differentials
     bool firstTime_;
     double lastEasting_;
     double lastNorthing_;
@@ -65,9 +65,6 @@ private:
     void saveData( const double     &northing,
                    const double     &easting,
                    const orca::Time &timeStamp );
-    
-    double computeDistanceTravelled( const double &northing, 
-                                     const double &easting );
 
 };
 
