@@ -84,7 +84,7 @@ MainThread::walk()
     // EXTERNAL PROVIDED INTERFACE
     //
         
-    orca::VehicleGeometryCuboidDescriptionPtr geom;
+    orca::VehicleGeometryCuboidDescriptionPtr geom = new orca::VehicleGeometryCuboidDescription;
     geom->type = orca::VehicleGeometryCuboid;
     orcaobj::setSane( geom->size );
     orcaobj::setSane( geom->vehicleToGeometryTransform );
