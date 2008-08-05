@@ -15,6 +15,7 @@
 #include <orcaice/context.h>
 #include "driver.h"
 #include "gpsheuristics.h"
+#include <hydronavutil/pose.h>
 
 namespace gps2localise2d {
 
@@ -37,12 +38,11 @@ public:
 private: 
 
     // Offset from gps origin to global coord system
-    orca::Frame2d offset_;
+    hydronavutil::Pose offset_;
 
     orca::GpsDescription gpsDescr_;
     
-    // Antenna offset as Frame2d
-    orca::Frame2d         antennaTransform_;
+    hydronavutil::Pose    antennaTransform_;
     orcaice::Context      context_;
     
     std::auto_ptr<GpsHeuristics> gpsHeuristics_;

@@ -13,25 +13,25 @@
 #include <orca/vehicledescription.h>
 #include <orcaice/orcaice.h>
 #include <orcaobj/orcaobj.h>
-#include <hydronavutil/offset.h>
 #include <hydrogpsutil/latlon2mga.h>
+#include <orcanavutil/orcanavutil.h>
 
 using namespace std;
 
 namespace gps2localise2d {
 
-namespace {
-    void transform( orca::Frame2d &p, const orca::Frame2d &f )
-    {
-        hydronavutil::transformPoint2d( p.p.x,
-                                       p.p.y,
-                                       f.p.x,
-                                       f.p.y,
-                                       f.o );
-        p.o += f.o;
-        hydronavutil::normaliseAngle( p.o );
-    }
-}
+//namespace {
+//     void transform( orca::Frame2d &p, const orca::Frame2d &f )
+//     {
+//         hydronavutil::transformPoint2d( p.p.x,
+//                                         p.p.y,
+//                                         f.p.x,
+//                                         f.p.y,
+//                                         f.o );
+//         p.o += f.o;
+//         hydronavutil::normaliseAngle( p.o );
+//     }
+//}
 
 SimpleDriver::SimpleDriver( const orca::GpsDescription     &gpsDescr, 
                             const orca::VehicleDescription &vehicleDescr,
@@ -44,10 +44,12 @@ SimpleDriver::SimpleDriver( const orca::GpsDescription     &gpsDescr,
     prefix += ".Config.";
 
     // Read the offset, with zero as default
-    offset_.p.x = 0;
-    offset_.p.y = 0;
-    offset_.o   = 0;
-    offset_ = orcaobj::getPropertyAsFrame2dWithDefault( prop, prefix+"Offset", offset_ );
+    orca::Frame2d offset;
+    offset.p.x = 0;
+    offset.p.y = 0;
+    offset.o   = 0;
+    offset = orcaobj::getPropertyAsFrame2dWithDefault( prop, prefix+"Offset", offset );
+    offset_ = orcanavutil::convert( offset );
 
     // Ensure that the antenna offset is simple
     if ( gpsDescr_.antennaOffset.o.r != 0 ||
@@ -58,10 +60,10 @@ SimpleDriver::SimpleDriver( const orca::GpsDescription     &gpsDescr,
         context_.tracer().error( ss.str() );
         exit(1);
     }
-    antennaTransform_.p.x = -gpsDescr_.antennaOffset.p.x;
-    antennaTransform_.p.y = -gpsDescr_.antennaOffset.p.y;
-    antennaTransform_.o   = -gpsDescr_.antennaOffset.o.y;
-    
+    antennaTransform_ = hydronavutil::Pose( -gpsDescr_.antennaOffset.p.x,
+                                            -gpsDescr_.antennaOffset.p.y,
+                                            -gpsDescr_.antennaOffset.o.y );
+
     // Initialise GpsHeuristics
     double maxSpeed = 0.0;
     if (vehicleDescr.control->type==orca::VehicleControlVelocityDifferential)
@@ -91,7 +93,8 @@ bool
 SimpleDriver::compute( const orca::GpsData  &gpsData,
                        orca::Localise2dData &localiseData )
 {
-    
+//     cout<<"TRACE(simpledriver.cpp): " << __func__ << endl;
+
     if (!gpsHeuristics_->haveValidFix( gpsData.positionType ) )
         return false;
     
@@ -115,15 +118,36 @@ SimpleDriver::compute( const orca::GpsData  &gpsData,
                                                      gpsData.timeStamp );
     if (ret!=0) return false;
 
+    hydronavutil::Pose poseInGpsCS( easting, 
+                                    northing, 
+                                    M_PI/2.0 - gpsData.heading );
+
+    // Get the pose of the antenna in global coordinates
+    hydronavutil::Pose antennaPoseInGlobalCS;
+    hydronavutil::subtractInitialOffset( poseInGpsCS,
+                                         offset_,
+                                         antennaPoseInGlobalCS );
+
+    // Get the pose of the platform (relative to the antenna)
+    hydronavutil::Pose platformPoseInGlobalCS;
+    hydronavutil::addPoseOffset( antennaPoseInGlobalCS,
+                                 antennaTransform_,
+                                 platformPoseInGlobalCS,
+                                 true );
+
+    // Set uncertainties
+    const double linearSigma = gpsData.horizontalPositionError;
+    const double linearVariance = linearSigma*linearSigma;
+    
+    //
+    // convert
+    //
     localiseData.timeStamp = gpsData.timeStamp;
     localiseData.hypotheses.resize(1);
 
-    localiseData.hypotheses[0].mean.p.x = easting;
-    localiseData.hypotheses[0].mean.p.y = northing;
-    localiseData.hypotheses[0].mean.o   = M_PI/2.0-gpsData.heading; // M_PI/2.0*3.0 - gpsData.heading;
-
-    const double linearSigma = gpsData.horizontalPositionError;
-    const double linearVariance = linearSigma*linearSigma;
+    localiseData.hypotheses[0].mean.p.x = platformPoseInGlobalCS.x();
+    localiseData.hypotheses[0].mean.p.y = platformPoseInGlobalCS.y();
+    localiseData.hypotheses[0].mean.o   = platformPoseInGlobalCS.theta();
 
     localiseData.hypotheses[0].cov.xx = linearVariance;
     localiseData.hypotheses[0].cov.yy = linearVariance;
@@ -134,18 +158,6 @@ SimpleDriver::compute( const orca::GpsData  &gpsData,
     localiseData.hypotheses[0].cov.tt = 2*M_PI;
 
     localiseData.hypotheses[0].weight = 1.0;
-
-    // Get the pose of the antenna in global coordinates
-    transform( localiseData.hypotheses[0].mean, offset_ );
-
-    // Get the pose of the platform
-    hydronavutil::addPoseOffset( localiseData.hypotheses[0].mean.p.x,
-                                localiseData.hypotheses[0].mean.p.y,
-                                localiseData.hypotheses[0].mean.o,
-                                antennaTransform_.p.x,
-                                antennaTransform_.p.y,
-                                antennaTransform_.o,
-                                true );
 
     return true;
 }

@@ -44,7 +44,7 @@ It does this by:
     - default: simple
 
 - @c Gps2Localise2d.Config.Offset (Frame2d) [m, deg]
-    - Position of the Localise2d rood. system's origin w/r/t the mapgrid origin.
+    - Position of the magrid origin in the global CS.
     - Format: x y z roll pitch yaw (space separated)
     - Default: 0.0 0.0 0.0
     
