@@ -92,8 +92,15 @@ GpsHeuristics::checkSpeedAndPosition( const double     &northing,
         return 2;
     }
     
-    // check whether we've received anything recently
+    // compute difference between timestamps
     double timeDiff = orcaice::timeDiffAsDouble( timeStamp, lastTimeStamp_);
+    if (timeDiff==0.0) {
+        context_.tracer().debug( "Time difference between consecutive timestamps is 0.0", 2 );
+        saveData( northing, easting, timeStamp );
+        return 2;
+    }
+    
+    // check whether we've received anything recently
     if ( timeDiff > maxTimeDiff_ ) {
         stringstream ss; 
         ss << "Too long since the last time we've received a timestamp: " << fixed << setprecision(1) << timeDiff << "s. Can't compute an estimate for speed or travelled distance.";
