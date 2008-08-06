@@ -148,9 +148,9 @@ MainThread::initDriver()
         }
 
         // we get here only after an exception was caught
-        context_.tracer().error( exceptionSS.str() );
         subStatus().fault( exceptionSS.str() );          
 
+        // Slow things down in case of persistent fault
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));        
     }
 
@@ -162,33 +162,26 @@ MainThread::connectToLaser()
 {
     while ( !isStopping() )
     {
-        laserConsumer_->subscribeWithTag( "Laser", this, subsysName() );
-    
-        // make sure we get something
-        // when delays happen right after subscription we can be more tolerant (issue warnings instead of faults)
-        int count = 0;
-        const int maxCount = 5;
-        const int timeoutMs = 1000;
-        orca::RangeScanner2dDataPtr rangeData;
-        while ( !isStopping() && count<maxCount )
-        {
-            int ret = laserConsumer_->store().getNext( rangeData, timeoutMs );
-            if ( ret == 0 ) {
-                context_.tracer().info( "Connected to laser." );
-                return;
-            }
-            else {
-                if ( isStopping() ) {
-                    throw orcaice::ComponentDeactivatingException( ERROR_INFO, "Failed to get inputs because the component is deactivating" );
-                }
-                stringstream ss;
-                ss << "Timed out (" << timeoutMs << "ms) waiting for laser data after subscription.";
-                subStatus().warning( ss.str() );
-            }
-            ++count;
+        std::stringstream exceptionSS;
+        try {
+            laserConsumer_->subscribeWithTag( "Laser", this, subsysName() );
+            break;
         }
-        // haven't received anything, resubscribe
-        subStatus().heartbeat();
+        catch ( Ice::Exception &e ) {
+            exceptionSS << "MainThread: Caught exception while subscribing to laser: " << e;
+        }
+        catch ( std::exception &e ) {
+            exceptionSS << "MainThread: Caught exception while subscribing to laser: " << e.what();
+        }
+        catch ( ... ) {
+            exceptionSS << "MainThread: Caught unknown exception while subscribing to laser";
+        }
+
+        // we get here only after an exception was caught
+        subStatus().fault( exceptionSS.str() );          
+
+        // Slow things down in case of persistent fault
+        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));        
     }
 }
 
