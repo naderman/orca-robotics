@@ -17,3 +17,6 @@ Config.Element.Type00.Default = LaserScanner2d
 Config.Element.Detail00.Default = laserscanner2d@local/laser2d
 Config.Element.Type01.Default = Localise2d
 Config.Element.Detail01.Default = localise2d@local/faithlocaliser
+
+# Ice default message size too small for displaying debugging graphics on large maps
+ExternalConfig.Ice.MessageSizeMax.Default=3000
