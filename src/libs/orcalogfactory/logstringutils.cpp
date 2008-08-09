@@ -877,14 +877,14 @@ toLogString( const orca::VehicleGeometryDescriptionPtr& obj )
     {
         orca::VehicleGeometryCylindricalDescriptionPtr cylObj =
                 orca::VehicleGeometryCylindricalDescriptionPtr::dynamicCast( obj );
-        s << cylObj->radius << " " << cylObj->height;
+        s << cylObj->radius << " " << cylObj->height << " ";
         s << toLogString( cylObj->vehicleToGeometryTransform );
     }
     else if (obj->type==orca::VehicleGeometryCuboid)
     {
         orca::VehicleGeometryCuboidDescriptionPtr cubObj =
                 orca::VehicleGeometryCuboidDescriptionPtr::dynamicCast( obj );
-        s << toLogString( cubObj->size );   
+        s << toLogString( cubObj->size ) << " ";
         s << toLogString( cubObj->vehicleToGeometryTransform );
     }
     else

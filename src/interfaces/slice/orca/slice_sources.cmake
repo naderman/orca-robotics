@@ -28,7 +28,6 @@ SET( ORCA_SLICE_SOURCE_FILES
     estop.ice
     featuremap2d.ice
     gps.ice
-    hand.ice
     home.ice
     image.ice
     ins.ice

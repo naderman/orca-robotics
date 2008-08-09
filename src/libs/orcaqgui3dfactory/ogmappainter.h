@@ -41,6 +41,7 @@ class OgMapPainter
 
   private:
 
+    osg::ref_ptr<osg::Geode> drawAsWalls( const hydroogmap::OgMap &ogMap );
     osg::ref_ptr<osg::Geode> drawAsGroundPlane( const hydroogmap::OgMap &ogMap );
       
     osg::ref_ptr<osg::Group>                     root_;

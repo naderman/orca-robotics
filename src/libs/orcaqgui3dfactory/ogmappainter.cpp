@@ -53,7 +53,6 @@ OgMapPainter::OgMapPainter()
 {    
 }
 
-
 void
 OgMapPainter::setData( const orca::OgMapData& data )
 {
@@ -75,81 +74,9 @@ OgMapPainter::setData( const orca::OgMapData& data )
     groundPlaneGeode_ = drawAsGroundPlane( ogMap );
     offsetNode_->addChild( groundPlaneGeode_.get() );
 
-#if HAVE_POTRACE
-    GridToPolygonParams params;
-    wallsGeode_ = convertToPolygons( ogMap, params );
-    offsetNode_->addChild( wallsGeode_.get() );
-
-    //
-    // Create the texture
-    //
-    osg::ref_ptr<osg::Image> image = createImage( ogMap );
-
-    osg::ref_ptr<osg::Texture2D> checkTexture = new osg::Texture2D;
-    // protect from being optimized away as static state:
-    checkTexture->setDataVariance(osg::Object::DYNAMIC); 
-    checkTexture->setImage( image.get() );
-
-//     // Tell the texture to repeat
-//     checkTexture->setWrap( osg::Texture::WRAP_S, osg::Texture::REPEAT );
-//     checkTexture->setWrap( osg::Texture::WRAP_T, osg::Texture::REPEAT );
-
-    // Create a new StateSet with default settings: 
-    osg::ref_ptr<osg::StateSet> stateSet = new osg::StateSet();
-
-    // Assign texture unit n of our new StateSet to the texture 
-    // we just created and enable the texture.
-    const int unit = 0;
-    stateSet->setTextureAttributeAndModes(unit,checkTexture.get(),osg::StateAttribute::ON);
-
-    // Texture mode
-    osg::TexEnv* texEnv = new osg::TexEnv;
-    // texEnv->setMode(osg::TexEnv::DECAL);
-    texEnv->setMode(osg::TexEnv::MODULATE);
-    stateSet->setTextureAttribute(unit,texEnv);
-
-    // Associate this state set with our Geode
-    wallsGeode_->setStateSet(stateSet.get());    
-#endif
-
-
-#if 0
-    if ( data.offset.o != 0.0 ) 
-    {
-        stringstream ss;
-        ss << "OgMapPainter: Don't know how to display non-axis-aligned map: " << orcaobj::toString( data );
-        throw hydroqgui::Exception( ERROR_INFO, ss.str() );
-    }
-    
-    // assemble information to give to pixmapPainter
-    PixmapData pixmapData;
-    pixmapData.cellSize = QSizeF(data.metresPerCellX,data.metresPerCellY);
-    pixmapData.mapSizePix = QSize(data.numCellsX,data.numCellsY);
-    pixmapData.offset = QPointF(data.offset.p.x,data.offset.p.y);
-    
-    if (data.mapType==orca::OgMapHazard) 
-    {
-        for (int i=0; i<(data.numCellsX*data.numCellsY); i++)
-        {   
-            // unoccupied: yellow, occupied: red
-            pixmapData.rgbR.push_back(255);
-            pixmapData.rgbG.push_back(255-data.data[i]);
-            pixmapData.rgbB.push_back(0);
-        }
-    } 
-    else 
-    {
-        for (int i=0; i<(data.numCellsX*data.numCellsY); i++)
-        {
-            // unoccupied: white, occupied: black
-            pixmapData.rgbR.push_back(255-data.data[i]);
-            pixmapData.rgbG.push_back(255-data.data[i]);
-            pixmapData.rgbB.push_back(255-data.data[i]);
-        }
-    }
-    
-    pixmapPainter_->setData( pixmapData );
-#endif
+    wallsGeode_ = drawAsWalls( ogMap );
+    if ( wallsGeode_.get() )
+        offsetNode_->addChild( wallsGeode_.get() );
 }
 
 osg::ref_ptr<osg::Geode>
@@ -169,10 +96,6 @@ OgMapPainter::drawAsGroundPlane( const hydroogmap::OgMap &ogMap )
     // protect from being optimized away as static state:
     checkTexture->setDataVariance(osg::Object::DYNAMIC); 
     checkTexture->setImage( image.get() );
-
-//     // Tell the texture to repeat
-//     checkTexture->setWrap( osg::Texture::WRAP_S, osg::Texture::REPEAT );
-//     checkTexture->setWrap( osg::Texture::WRAP_T, osg::Texture::REPEAT );
 
     // Create a new StateSet with default settings: 
     osg::ref_ptr<osg::StateSet> groundPlaneStateSet = new osg::StateSet();
@@ -222,5 +145,51 @@ OgMapPainter::drawAsGroundPlane( const hydroogmap::OgMap &ogMap )
     return geode;
 }
 
+osg::ref_ptr<osg::Geode>
+OgMapPainter::drawAsWalls( const hydroogmap::OgMap &ogMap )
+{
+#if HAVE_POTRACE
+    //
+    // Create the polygons
+    //
+    GridToPolygonParams params;
+    osg::ref_ptr<osg::Geode> wallsGeode = convertToPolygons( ogMap, params );
+
+    //
+    // Create the texture
+    //
+    osg::ref_ptr<osg::Image> image = createImage( ogMap );
+
+    osg::ref_ptr<osg::Texture2D> checkTexture = new osg::Texture2D;
+    // protect from being optimized away as static state:
+    checkTexture->setDataVariance(osg::Object::DYNAMIC); 
+    checkTexture->setImage( image.get() );
+
+//     // Tell the texture to repeat
+//     checkTexture->setWrap( osg::Texture::WRAP_S, osg::Texture::REPEAT );
+//     checkTexture->setWrap( osg::Texture::WRAP_T, osg::Texture::REPEAT );
+
+    // Create a new StateSet with default settings: 
+    osg::ref_ptr<osg::StateSet> stateSet = new osg::StateSet();
+
+    // Assign texture unit n of our new StateSet to the texture 
+    // we just created and enable the texture.
+    const int unit = 0;
+    stateSet->setTextureAttributeAndModes(unit,checkTexture.get(),osg::StateAttribute::ON);
+
+    // Texture mode
+    osg::TexEnv* texEnv = new osg::TexEnv;
+    // texEnv->setMode(osg::TexEnv::DECAL);
+    texEnv->setMode(osg::TexEnv::MODULATE);
+    stateSet->setTextureAttribute(unit,texEnv);
+
+    // Associate this state set with our Geode
+    wallsGeode->setStateSet(stateSet.get());    
+
+    return wallsGeode;
+#else
+    return 0;
+#endif
+}
 
 }

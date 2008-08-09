@@ -3,6 +3,7 @@
 
 #include <hydroogmap/hydroogmap.h>
 
+// Fwd decls
 struct potrace_bitmap_s;
 struct potrace_param_s;
 struct potrace_state_s;
@@ -36,7 +37,7 @@ private:
 //////////////////////////////////////////////////////////////////////
 //!
 //! @brief Encapsulates a potrace tracer object
-//!        (see potrace.sourceforge.net)
+//!        (see http://potrace.sourceforge.net)
 //!
 //! @author Alex Brooks
 //!
