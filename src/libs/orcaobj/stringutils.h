@@ -140,7 +140,7 @@ std::string toString( const orca::TimeOfDay& );
 std::string toString( const orca::Date& );
 
 //! Converts to string
-std::string toString( const orca::BinarySwitchData& );
+//std::string toString( const orca::BinarySwitchData& );
 //! Converts to string
 std::string toString( const orca::CameraDataPtr& );
 //! Converts to string

@@ -517,21 +517,21 @@ toString( const orca::Date& obj )
     return s.str();
 }
 
-std::string 
-toString( const orca::BinarySwitchData& obj )
-{
-    std::ostringstream s;
-    s << toString(obj.timeStamp)
-        << " BinarySwitch ["<<obj.devices.size()<<" devices] (name,state) :";
+// std::string 
+// toString( const orca::BinarySwitchData& obj )
+// {
+//     std::ostringstream s;
+//     s << toString(obj.timeStamp)
+//         << " BinarySwitch ["<<obj.devices.size()<<" devices] (name,state) :";
 
-    for ( unsigned int i=0; i < obj.devices.size(); i++ )
-    {
-        s << endl << "    " << i << " [" 
-          <<obj.devices[i].name<<","
-          <<(int)obj.devices[i].state<<"]";
-    }
-    return s.str();
-}
+//     for ( unsigned int i=0; i < obj.devices.size(); i++ )
+//     {
+//         s << endl << "    " << i << " [" 
+//           <<obj.devices[i].name<<","
+//           <<(int)obj.devices[i].state<<"]";
+//     }
+//     return s.str();
+// }
 
 std::string 
 toString( const orca::CameraDataPtr& obj )
