@@ -35,7 +35,7 @@ addLine( const potrace_dpoint_t      &start,
          osg::ref_ptr<osg::Geode>    &geode,
          const GridToPolygonParams   &params )
 {
-    cout << "  line: " << orcapotrace::toString(start) << " -> " << orcapotrace::toString(end) << endl;
+    // cout << "  line: " << orcapotrace::toString(start) << " -> " << orcapotrace::toString(end) << endl;
 
     osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry;
     geode->addDrawable( geometry.get() );
@@ -76,8 +76,8 @@ scale( const potrace_dpoint_t &p,
     sp.x = p.x * ogMap.metresPerCellX();
     sp.y = p.y * ogMap.metresPerCellY();
 
-    cout<<"TRACE(ogmaptopolygons.cpp): p: " << orcapotrace::toString(p) << " -> sp: " << orcapotrace::toString(sp) << endl;
-    cout<<"TRACE(ogmaptopolygons.cpp): ogMap.worldSizeX(): " << ogMap.worldSizeX() << endl;
+    // cout<<"TRACE(ogmaptopolygons.cpp): p: " << orcapotrace::toString(p) << " -> sp: " << orcapotrace::toString(sp) << endl;
+    // cout<<"TRACE(ogmaptopolygons.cpp): ogMap.worldSizeX(): " << ogMap.worldSizeX() << endl;
 
     return sp;
 }
@@ -130,14 +130,10 @@ osg::ref_ptr<osg::Geode>
 convertToPolygons( const hydroogmap::OgMap   &ogMap,
                    const GridToPolygonParams &params )
 {
-    cout<<"TRACE(gridtopolygons.cpp): Creating tracer" << endl;
     orcapotrace::Potracer      potracer;
-    cout<<"TRACE(gridtopolygons.cpp): Creating bitmap" << endl;
     orcapotrace::PotraceBitmap bitmap( ogMap );
 
-    cout<<"TRACE(gridtopolygons.cpp): tracing" << endl;
     potracer.trace( bitmap.bitmap() );
-    cout<<"TRACE(gridtopolygons.cpp): done tracing" << endl;
 
     osg::ref_ptr<osg::Geode> geode = new osg::Geode;
 
@@ -149,7 +145,6 @@ convertToPolygons( const hydroogmap::OgMap   &ogMap,
 //        cout<<"TRACE(gridtopolygons.cpp): path: " << ((char)path->sign) << path->area << endl;
         addPolygons( path->curve, geode, ogMap, params );
     }
-    cout<<"TRACE(gridtopolygons.cpp): numPaths: " << numPaths << endl;
 
     return geode;
 }

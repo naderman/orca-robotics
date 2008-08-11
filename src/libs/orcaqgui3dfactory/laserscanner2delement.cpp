@@ -14,7 +14,6 @@
 #include "laserscanner2delement.h"
 
 using namespace std;
-using namespace orca;
 
 namespace orcaqgui3d {
 
@@ -34,5 +33,32 @@ LaserScanner2dElement::getLaserInfo()
     painter_.setDescr( descr.offset, descr.size );
 }
 
+QStringList
+LaserScanner2dElement::contextMenu()
+{
+    QStringList s;
+//    s<<"Set Colour";
+    return s;
+}
+
+void 
+LaserScanner2dElement::execute( int action )
+{
+//     switch ( action )
+//     {
+//     case 0 :
+//     {
+//         QColor color = QColorDialog::getColor();
+//         if ( color.isValid() )
+//             setColor( color );
+//         break;
+//     }
+//     default:
+//     {
+//         throw hydroqgui::Exception( ERROR_INFO, "OgMapElement::execute(): What the hell? bad action." );
+//         break;
+//     }
+//     }
+}
 
 }

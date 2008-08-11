@@ -67,7 +67,8 @@ public:
     // Access to ML estimate.
     virtual float x() const { return x_; }
     virtual float y() const { return y_; }
-    virtual float z() const { return 0.0; }
+    // HACK: z hard-coded to 0.35 !!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    virtual float z() const { return 0.35; }
     virtual float roll() const { return 0.0; }
     virtual float pitch() const { return 0.0; }
     virtual float yaw() const { return yaw_; }

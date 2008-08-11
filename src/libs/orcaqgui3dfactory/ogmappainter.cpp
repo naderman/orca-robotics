@@ -46,10 +46,26 @@ namespace {
         return img;
     }
 
+    void setDisplay( osg::Group *parent,
+                     osg::Node *child,
+                     bool display )
+    {
+        if ( !child ) return;
+
+        bool isDisplayed = parent->containsNode( child );
+        if ( display && !isDisplayed )
+            parent->addChild( child );
+        else if ( !display && isDisplayed )
+            parent->removeChild( child );
+    }
+
 }
 
 OgMapPainter::OgMapPainter()
-    : root_(new osg::Group)
+    : root_(new osg::Group),
+      isDisplay_(true),
+      isDisplayWalls_(true),
+      isDisplayGroundPlane_(false)
 {    
 }
 
@@ -72,11 +88,9 @@ OgMapPainter::setData( const orca::OgMapData& data )
     root_->addChild( offsetNode_.get() );
 
     groundPlaneGeode_ = drawAsGroundPlane( ogMap );
-    offsetNode_->addChild( groundPlaneGeode_.get() );
-
     wallsGeode_ = drawAsWalls( ogMap );
-    if ( wallsGeode_.get() )
-        offsetNode_->addChild( wallsGeode_.get() );
+
+    setDisplayElements();
 }
 
 osg::ref_ptr<osg::Geode>
@@ -190,6 +204,19 @@ OgMapPainter::drawAsWalls( const hydroogmap::OgMap &ogMap )
 #else
     return 0;
 #endif
+}
+
+void 
+OgMapPainter::setDisplayElements()
+{
+    setDisplay( offsetNode_.get(),
+                groundPlaneGeode_.get(),
+                isDisplay_ && isDisplayGroundPlane_ );
+
+    cout<<"TRACE(ogmappainter.cpp): isDisplayWalls_: " << isDisplayWalls_ << endl;
+    setDisplay( offsetNode_.get(),
+                wallsGeode_.get(),
+                isDisplay_ && isDisplayWalls_ );
 }
 
 }

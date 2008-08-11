@@ -35,7 +35,7 @@ QStringList
 OgMapElement::contextMenu()
 {
     QStringList s;
-    s<<"Toggle Map";
+    s<<"Toggle Display"<<"Toggle GroundPlane"<<"Toggle Walls";
     return s;
 }
 
@@ -46,7 +46,17 @@ OgMapElement::execute( int action )
     {
     case 0 :
     {
-        painter_.toggleDisplayMap();
+        painter_.toggleDisplay();
+        break;
+    }
+    case 1 :
+    {
+        painter_.toggleGroundPlane();
+        break;
+    }
+    case 2 :
+    {
+        painter_.toggleWalls();
         break;
     }
     default:

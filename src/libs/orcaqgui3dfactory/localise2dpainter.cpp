@@ -113,12 +113,16 @@ Localise2dPainter::paintHypothesis( const orca::Pose2dHypothesis &hypothesis )
 {
     if ( !platformNode_ ) return;
 
+    // Paint outselves a fixed height off the ground
+    // (note: there's a similar hack in localise2delement.h)
+    const double Z_OFFSET = 0.35;
+
 //    const float weight = hypothesis.weight;
     const orca::Frame2d      &mean = hypothesis.mean;
 //    const orca::Covariance2d &cov  = hypothesis.cov;
 
     osg::ref_ptr<osg::PositionAttitudeTransform> pos = new osg::PositionAttitudeTransform;
-    pos->setPosition( osg::Vec3( mean.p.x, mean.p.y, 0 ) );
+    pos->setPosition( osg::Vec3( mean.p.x, mean.p.y, Z_OFFSET ) );
     osg::Quat rotation; rotation.makeRotate( mean.o, osg::Vec3(0,0,1) );
     pos->setAttitude( rotation );
 
@@ -127,60 +131,14 @@ Localise2dPainter::paintHypothesis( const orca::Pose2dHypothesis &hypothesis )
 
 
     // TODO: draw uncertainty.
-
-#if 0
-    float weight = hypothesis.weight;
-
-    // Don't bother painting _really_ unlikely hypotheses
-    // if ( weight < 0.02 ) continue;
-
-    const orca::Frame2d      &mean = hypothesis.mean;
-    const orca::Covariance2d &cov  = hypothesis.cov;
-
-    // Translate to where the hypothesis is at
-    {
-        orcaqgui3d::glutil::ScopedMatrixSave sms;
-
-        // Translate to centre of vehicle coords
-        glTranslatef( mean.p.x, mean.p.y, 0.0 );
-        glRotatef( RAD2DEG(mean.o), 0.0, 0.0, 1.0 );
-        orcaqgui3d::glutil::transform( vehicleToGeometryTransform_.p.x,
-                                       vehicleToGeometryTransform_.p.y,
-                                       vehicleToGeometryTransform_.p.z,
-                                       vehicleToGeometryTransform_.o.r,
-                                       vehicleToGeometryTransform_.o.p,
-                                       vehicleToGeometryTransform_.o.y );
-
-        float alpha;
-        if (useTransparency_)
-            alpha = weight;
-        else
-            alpha = 1.0;
-        glColor4f( currentColor_.red(), currentColor_.green(), currentColor_.blue(), alpha );
-
-        // Rotate to draw the platform correctly
-        if (platformType_ == PlatformTypeCylindrical)
-            paintCylindricalPlatformPose( height_, radius_  );
-        else
-            paintCubicPlatformPose( length_, width_, weight );
-        glColor4f( currentColor_.red(), currentColor_.green(), currentColor_.blue(), alpha );
-        cout<<"TRACE(localise2dpainter.cpp): TODO: uncertainty wedge" << endl;
-//        hydroqguielementutil::paintUncertaintyWedge( cov.tt );
-
-        // Rotate back to world coords for the uncertainty ellipse
-        glRotatef( RAD2DEG(-vehicleToGeometryTransform_.o.y-mean.o), 0.0, 0.0, 1.0 );
-        // And down to ground level (plus a bit so we can see the ellipse)
-        glTranslatef( 0, 0, -vehicleToGeometryTransform_.p.z+0.01 );
-
-        orcaqgui3d::glutil::paintCovarianceEllipse( cov.xx, cov.xy, cov.yy );
-    }
-#endif
 }
 
 void Localise2dPainter::setColor( QColor color )
 {
     basicColor_ = color;
-    currentColor_ = color; 
+    currentColor_ = color;
+
+    // TODO: we should also modify the scenegraph here, or nothing will happen...
 }
     
 void Localise2dPainter::setFocus( bool inFocus )

@@ -45,8 +45,8 @@ public:
 
     virtual bool isInGlobalCS() { return false; }
     virtual void actionOnConnection() { getLaserInfo(); }
-//    virtual QStringList contextMenu() {}
-//    virtual void execute( int action ) {}
+    virtual QStringList contextMenu();
+    virtual void execute( int action );
     virtual void setColor( QColor color ) { painter_.setColor(color); }
     virtual void setFocus( bool inFocus ) { painter_.setFocus( inFocus ); };
 
