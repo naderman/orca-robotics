@@ -70,6 +70,8 @@ public:
     void setCoordinateFramePlatform( int guiElementIndex );
     void setOriginPlatform( int guiElementIndex );
     
+    void setGuiElementColor( int guiElementIndex, const QColor &color );
+
     // Obtains indices of selected adapters from the view
     void selectedAdaptersInView( std::vector<int> &indices );
     

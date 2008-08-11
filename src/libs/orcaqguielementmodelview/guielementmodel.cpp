@@ -474,6 +474,14 @@ GuiElementModel::setOriginPlatform( int guiElementIndex )
     coordinateFrameManager_.setOriginPlatform( elements()[guiElementIndex]->platform() );
 }
 
+void
+GuiElementModel::setGuiElementColor( int guiElementIndex, const QColor &color )
+{
+    assert ( guiElementIndex>=0 && guiElementIndex < elements().size() );
+
+    elements()[guiElementIndex]->setColor( color );
+}
+
 bool 
 GuiElementModel::isElementRemovable( int guiElementIndex )
 {
