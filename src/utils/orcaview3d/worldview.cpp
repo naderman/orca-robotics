@@ -348,7 +348,7 @@ WorldView::setOrthographicProjection( bool orthoProj )
 void 
 WorldView::keyPressEvent(QKeyEvent *e)
 {
-    cout<<"TRACE(worldview.cpp): "<<__func__ << endl;
+    // cout<<"TRACE(worldview.cpp): "<<__func__ << endl;
     bool needResize = false;
     const bool needUpdate = viewHandler_.keyPressEvent(e,needResize);
     if ( needResize )
@@ -362,7 +362,7 @@ WorldView::keyPressEvent(QKeyEvent *e)
 void
 WorldView::mousePressEvent( QMouseEvent* e )
 { 
-    cout<<"TRACE(worldview.cpp): "<<__func__ << endl;
+    // cout<<"TRACE(worldview.cpp): "<<__func__ << endl;
     if ( mouseEventManager_.mouseEventReceiverIsSet() )
     {
         mouseEventManager_.mouseEventReceiver()->mousePressEvent( e );
@@ -378,7 +378,7 @@ WorldView::mousePressEvent( QMouseEvent* e )
 void
 WorldView::mouseMoveEvent( QMouseEvent* e )
 {
-    cout<<"TRACE(worldview.cpp): "<<__func__ << endl;
+    // cout<<"TRACE(worldview.cpp): "<<__func__ << endl;
     if ( mouseEventManager_.mouseEventReceiverIsSet() )
     {
         //mouseEventManager_.mouseEventReceiver()->mouseMoveEvent( e );
@@ -395,7 +395,7 @@ WorldView::mouseMoveEvent( QMouseEvent* e )
 void
 WorldView::mouseReleaseEvent( QMouseEvent* e )
 {
-    cout<<"TRACE(worldview.cpp): "<<__func__ << endl;
+    // cout<<"TRACE(worldview.cpp): "<<__func__ << endl;
     if ( mouseEventManager_.mouseEventReceiverIsSet() )
     {
         //cout<<"TRACE(worldview.cpp): Giving mouseReleaseEvent to mode owner" << endl;
@@ -407,7 +407,7 @@ WorldView::mouseReleaseEvent( QMouseEvent* e )
 void
 WorldView::mouseDoubleClickEvent( QMouseEvent* e )
 {
-    cout<<"TRACE(worldview.cpp): "<<__func__ << endl;
+    // cout<<"TRACE(worldview.cpp): "<<__func__ << endl;
     if ( mouseEventManager_.mouseEventReceiverIsSet() )
         mouseEventManager_.mouseEventReceiver()->mouseDoubleClickEvent( e );
 }
