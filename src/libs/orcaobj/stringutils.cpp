@@ -729,7 +729,6 @@ toString( const orca::VehicleDescription& obj )
     std::ostringstream s;
     s << "VehicleDescription: " << endl
       << "  " << toString(obj.control) << endl
-      << "  platformToVehicleTransform: " << toString(obj.platformToVehicleTransform) << endl
       << toString(obj.geometry);
     return s.str();
 }
@@ -795,7 +794,7 @@ toString( const orca::VehicleGeometryDescriptionPtr& obj )
             s << endl << "VehicleGeometryCylindricalDescription: " << endl
             << "  radius: " << v->radius << "m" << endl
             << "  height: " << v->height << "m" << endl
-            << "  vehicleToGeometryTransform: " << toString(v->vehicleToGeometryTransform);
+            << "  platformToGeometryTransform: " << toString(v->platformToGeometryTransform);
         }
     }
     else if ( obj->ice_isA( "::orca::VehicleGeometryCuboidDescription" ) )
@@ -807,7 +806,7 @@ toString( const orca::VehicleGeometryDescriptionPtr& obj )
             << "  length: " << v->size.l << "m" << endl
             << "  width:  " << v->size.w << "m" << endl
             << "  height: " << v->size.h << "m" << endl
-            << "  vehicleToGeometryTransform: " << toString(v->vehicleToGeometryTransform);
+            << "  platformToGeometryTransform: " << toString(v->platformToGeometryTransform);
         }
     }
     return s.str();

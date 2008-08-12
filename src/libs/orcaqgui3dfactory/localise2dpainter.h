@@ -32,10 +32,10 @@ class Localise2dPainter
     void setCubicDescr( double length,
                         double width,
                         double height,
-                        const orca::Frame3d &vehicleToGeometryTransform );
+                        const orca::Frame3d &platformToGeometryTransform );
     void setCylindricalDescr( double radius,
                               double height,
-                              const orca::Frame3d &vehicleToGeometryTransform );
+                              const orca::Frame3d &platformToGeometryTransform );
 
     void clear();
     void setColor( QColor color );

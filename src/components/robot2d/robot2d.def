@@ -23,11 +23,10 @@ Config.VehicleDescription.Control.VelocityDifferential.MaxLateralAcceleration.De
 Config.VehicleDescription.Control.VelocityDifferential.MaxForwardAcceleration.Default=1.0
 Config.VehicleDescription.Control.VelocityDifferential.MaxReverseAcceleration.Default=1.0
 Config.VehicleDescription.Control.VelocityDifferential.MaxRotationalAcceleration.Default=60.0
-Config.VehicleDescription.PlatformToVehicleTransform.Default=0.0 0.0 0.0  0.0 0.0 0.0
 Config.VehicleDescription.Geometry.Type.Default=Cylindrical
 Config.VehicleDescription.Geometry.Cylindrical.Radius.Default=0.25
 Config.VehicleDescription.Geometry.Cylindrical.Height.Default=1.0
-Config.VehicleDescription.Geometry.Cylindrical.VehicleToGeometryTransform.Default=0.0 0.0 0.0  0.0 0.0 0.0
+Config.VehicleDescription.Geometry.Cylindrical.PlatformToGeometryTransform.Default=0.0 0.0 0.0  0.0 0.0 0.0
 
 Config.Odometry2dPublishInterval.Default=0.1
 Config.StatusPublishInterval.Default=60.0

@@ -878,14 +878,12 @@ toLogString( const orca::VehicleGeometryDescriptionPtr& obj )
         orca::VehicleGeometryCylindricalDescriptionPtr cylObj =
                 orca::VehicleGeometryCylindricalDescriptionPtr::dynamicCast( obj );
         s << cylObj->radius << " " << cylObj->height << " ";
-        s << toLogString( cylObj->vehicleToGeometryTransform );
     }
     else if (obj->type==orca::VehicleGeometryCuboid)
     {
         orca::VehicleGeometryCuboidDescriptionPtr cubObj =
                 orca::VehicleGeometryCuboidDescriptionPtr::dynamicCast( obj );
         s << toLogString( cubObj->size ) << " ";
-        s << toLogString( cubObj->vehicleToGeometryTransform );
     }
     else
     {
@@ -893,6 +891,7 @@ toLogString( const orca::VehicleGeometryDescriptionPtr& obj )
         ssErr << "Can't deal with type: " << obj->type;
         throw orcalog::Exception( ERROR_INFO, ssErr.str() );
     }
+    s << obj->platformToGeometryTransform << " ";
     
     return s.str();
 }
@@ -917,7 +916,6 @@ fromLogString( std::stringstream &s, orca::VehicleGeometryDescriptionPtr& obj )
         cout<<"TRACE(logstringutils.cpp): done setting type" << endl;
         fromLogString(s,cObj->radius);
         fromLogString(s,cObj->height);
-        fromLogString(s,cObj->vehicleToGeometryTransform);
     }
     else if ( type == orca::VehicleGeometryCuboid )
     {
@@ -926,7 +924,6 @@ fromLogString( std::stringstream &s, orca::VehicleGeometryDescriptionPtr& obj )
         obj = cObj;
         cObj->type = (orca::VehicleGeometryType)type;
         fromLogString( s, cObj->size );
-        fromLogString( s, cObj->vehicleToGeometryTransform );
     }
     else
     {
@@ -936,6 +933,7 @@ fromLogString( std::stringstream &s, orca::VehicleGeometryDescriptionPtr& obj )
         ssErr << "Can't deal with type: " << type;
         throw orcalog::Exception( ERROR_INFO, ssErr.str() );
     }
+    fromLogString( s, obj->platformToGeometryTransform );
 
     cout<<"TRACE(logstringutils.cpp): geomFromLogString done" << endl;
 }
@@ -1010,7 +1008,6 @@ toLogString( const orca::VehicleDescription& obj )
 {
     stringstream ss;
     ss << toLogString(obj.control) << " ";
-    ss << toLogString(obj.platformToVehicleTransform) << " ";
     ss << toLogString(obj.geometry);
     return ss.str();
 }
@@ -1020,11 +1017,8 @@ fromLogString( stringstream &s, orca::VehicleDescription& obj )
 {
     cout<<"TRACE(logstringutils.cpp): reading control" << endl;
     fromLogString(s,obj.control);
-    cout<<"TRACE(logstringutils.cpp): reading xform" << endl;
-    fromLogString(s,obj.platformToVehicleTransform);
     cout<<"TRACE(logstringutils.cpp): reading geom" << endl;
     fromLogString(s,obj.geometry);
-    cout<<"TRACE(logstringutils.cpp): readed geom" << endl;
 }
 
 

@@ -30,9 +30,6 @@ Config.Imu.Offset.Default=0.0 0.0 0.0 0.0 0.0 0.0
 Config.Imu.Size.Comment=IMU sensor size x[m] y[m] z[m]
 Config.Imu.Size.Default=0.0 0.0 0.0
 
-Config.Vehicle.PlatformToVehicleTransform.Comment=Transformation from the platform's coordinate system (eg. origin at the GPS antenna), to the coordinate system of the vehicle (eg. rear axle of the vehicle) x[m] y[m] z[m] roll[deg] pitch[deg] yaw[deg]
-Config.Vehicle.PlatformToVehicleTransform.Default=0.0 0.0 0.0 0.0 0.0 0.0
-
 Config.Device.Comment=device used to communicate with the sensor/s eg. /dev/ttyS0 (for linux) or /dev/ser1 (for qnx)
 Config.Device.Default=/dev/ttyS0
 Config.Baud.Default=9600

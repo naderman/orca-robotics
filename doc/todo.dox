@@ -61,6 +61,11 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 @par New utilities
 @par New libraries
 @par Updated interfaces
+
+- VehicleDescription (alexb)
+  - Removed 'platformToVehicleTransform', renamed 'vehicleToGeometryTransform' -> 'platformToGeometryTransform'
+    - (note: this invalidates old log files)
+
 @par Updated components
 
 - Gps2Localise2d

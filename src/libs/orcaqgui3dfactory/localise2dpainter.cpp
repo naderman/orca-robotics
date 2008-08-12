@@ -36,18 +36,18 @@ void
 Localise2dPainter::setCubicDescr( double length,
                                   double width,
                                   double height,
-                                  const orca::Frame3d &vehicleToGeometryTransform )
+                                  const orca::Frame3d &platformToGeometryTransform )
 {
-    cout<<"TRACE(localise2dpainter.cpp): vehicleToGeometryTransform: " << ifacestring::toString(vehicleToGeometryTransform) << endl;
+    cout<<"TRACE(localise2dpainter.cpp): platformToGeometryTransform: " << ifacestring::toString(platformToGeometryTransform) << endl;
 
-    assert( fabs(vehicleToGeometryTransform.o.r) < 1e-9 &&
-            fabs(vehicleToGeometryTransform.o.p) < 1e-9 &&
-            fabs(vehicleToGeometryTransform.o.y) < 1e-9 && "Not implemented!" );
+    assert( fabs(platformToGeometryTransform.o.r) < 1e-9 &&
+            fabs(platformToGeometryTransform.o.p) < 1e-9 &&
+            fabs(platformToGeometryTransform.o.y) < 1e-9 && "Not implemented!" );
 
     platformNode_ = new osg::PositionAttitudeTransform;
-    platformNode_->setPosition( osg::Vec3( vehicleToGeometryTransform.p.x,
-                                           vehicleToGeometryTransform.p.y,
-                                           vehicleToGeometryTransform.p.z ) );
+    platformNode_->setPosition( osg::Vec3( platformToGeometryTransform.p.x,
+                                           platformToGeometryTransform.p.y,
+                                           platformToGeometryTransform.p.z ) );
 
     osg::ref_ptr<osg::Box> box = new osg::Box( osg::Vec3( 0, 0, 0 ), length, width, height );
     osg::ref_ptr<osg::ShapeDrawable> drawable = new osg::ShapeDrawable(box.get());
@@ -62,18 +62,18 @@ Localise2dPainter::setCubicDescr( double length,
 void
 Localise2dPainter::setCylindricalDescr( double radius,
                                         double height,
-                                        const orca::Frame3d &vehicleToGeometryTransform )
+                                        const orca::Frame3d &platformToGeometryTransform )
 {
-    cout<<"TRACE(localise2dpainter.cpp): vehicleToGeometryTransform: " << ifacestring::toString(vehicleToGeometryTransform) << endl;
+    cout<<"TRACE(localise2dpainter.cpp): platformToGeometryTransform: " << ifacestring::toString(platformToGeometryTransform) << endl;
 
-    assert( fabs(vehicleToGeometryTransform.o.r) < 1e-9 &&
-            fabs(vehicleToGeometryTransform.o.p) < 1e-9 &&
-            fabs(vehicleToGeometryTransform.o.y) < 1e-9 && "Not implemented!" );
+    assert( fabs(platformToGeometryTransform.o.r) < 1e-9 &&
+            fabs(platformToGeometryTransform.o.p) < 1e-9 &&
+            fabs(platformToGeometryTransform.o.y) < 1e-9 && "Not implemented!" );
 
     platformNode_ = new osg::PositionAttitudeTransform;
-    platformNode_->setPosition( osg::Vec3( vehicleToGeometryTransform.p.x,
-                                           vehicleToGeometryTransform.p.y,
-                                           vehicleToGeometryTransform.p.z ) );
+    platformNode_->setPosition( osg::Vec3( platformToGeometryTransform.p.x,
+                                           platformToGeometryTransform.p.y,
+                                           platformToGeometryTransform.p.z ) );
 
     osg::Vec4 color = orcaqgui3d::toVec4( currentColor_ );
     platformNode_->addChild( orcaqgui3d::drawCylinder( height, radius, color ).get() );

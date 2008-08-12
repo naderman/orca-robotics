@@ -20,12 +20,7 @@ module orca {
     @defgroup orca_interface_pointcloud PointCloud
     @brief Interface for point cloud producers and consumers
 
-The Pointcloud interface supports devices that generate point clouds of some kind. This 
-can include range imagers, data loaded from files, or 3d scanning lasers. 
-
-Because of the wide variety of devices, it is difficult to define a
-single configuration interface. Particular devices may wish to
-subclass the point cloud interface.
+The PointCloud interface gives access to clouds of 3d points.
 
     @{
 */
@@ -33,18 +28,12 @@ subclass the point cloud interface.
 /*! Currently supports uncoloured and coloured point clouds. 
 */ 
 
-enum PointCloudType { PointCloudTypeNoColour, 
-                      PointCloudTypeColour }; 
-
 //! Description of the point cloud
 struct PointCloudDescription
 {
     //! Time when data was measured.
     Time timeStamp;
   
-    //! type of point cloud: colour or uncoloured
-    PointCloudType type;
-    
     //! Offset of the centre of the sensor from the robot, in the robot coord system
     Frame3d offset; 
     
@@ -60,7 +49,7 @@ struct PointCloudData
     Time timeStamp;
 
     //! type of point cloud: colour or uncoloured
-    PointCloudType type; 
+//    PointCloudType type; 
 
 /*! Points are interleaved. if the Type is PointCloudTypeNoColour, then the sequence
     is X0,Y0,Z0,X1,Y1,Z1... If the type is PointCloudTypeColour, then it is

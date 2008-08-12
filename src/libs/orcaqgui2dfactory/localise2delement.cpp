@@ -68,20 +68,20 @@ Localise2dElement::tryToGetGeometry()
     {
         orca::VehicleGeometryCuboidDescriptionPtr cuboidGeom = orca::VehicleGeometryCuboidDescriptionPtr::dynamicCast( geom );
         painter_.setTypeAndGeometry( PlatformTypeCubic, cuboidGeom->size.l, cuboidGeom->size.w );
-        painter_.setOrigin( cuboidGeom->vehicleToGeometryTransform.p.x, cuboidGeom->vehicleToGeometryTransform.p.y, cuboidGeom->vehicleToGeometryTransform.o.y );
+        painter_.setOrigin( cuboidGeom->platformToGeometryTransform.p.x, cuboidGeom->platformToGeometryTransform.p.y, cuboidGeom->platformToGeometryTransform.o.y );
     }
     else if (geom->type==orca::VehicleGeometryCylindrical)
     {
         orca::VehicleGeometryCylindricalDescriptionPtr cylGeom = orca::VehicleGeometryCylindricalDescriptionPtr::dynamicCast( geom );
         painter_.setTypeAndGeometry( PlatformTypeCylindrical, cylGeom->radius );
-        painter_.setOrigin( cylGeom->vehicleToGeometryTransform.p.x, cylGeom->vehicleToGeometryTransform.p.y, cylGeom->vehicleToGeometryTransform.o.y );
+        painter_.setOrigin( cylGeom->platformToGeometryTransform.p.x, cylGeom->platformToGeometryTransform.p.y, cylGeom->platformToGeometryTransform.o.y );
     }
     else
     {
         humanManager_->showStatusMsg(hydroqguielementutil::IHumanManager::Warning, "Localise2dElement::Unknown platform type. Will paint a rectangle");
         orca::VehicleGeometryCuboidDescriptionPtr cubGeom = orca::VehicleGeometryCuboidDescriptionPtr::dynamicCast( geom );
         painter_.setTypeAndGeometry( PlatformTypeCubic, cubGeom->size.l, cubGeom->size.w );
-        painter_.setOrigin( cubGeom->vehicleToGeometryTransform.p.x, cubGeom->vehicleToGeometryTransform.p.y, cubGeom->vehicleToGeometryTransform.o.y );
+        painter_.setOrigin( cubGeom->platformToGeometryTransform.p.x, cubGeom->platformToGeometryTransform.p.y, cubGeom->platformToGeometryTransform.o.y );
     }
 }
 

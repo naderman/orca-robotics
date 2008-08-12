@@ -62,14 +62,14 @@ Localise2dElement::tryToGetGeometry()
         painter_.setCubicDescr( cuboidGeom->size.l,
                                 cuboidGeom->size.w,
                                 cuboidGeom->size.h,
-                                cuboidGeom->vehicleToGeometryTransform );
+                                cuboidGeom->platformToGeometryTransform );
     }
     else if (haveGeometry_ && geom->type==orca::VehicleGeometryCylindrical)
     {
         orca::VehicleGeometryCylindricalDescriptionPtr cylGeom = orca::VehicleGeometryCylindricalDescriptionPtr::dynamicCast( geom );
         painter_.setCylindricalDescr( cylGeom->radius,
                                       cylGeom->height,
-                                      cylGeom->vehicleToGeometryTransform );
+                                      cylGeom->platformToGeometryTransform );
     }
     else
     {

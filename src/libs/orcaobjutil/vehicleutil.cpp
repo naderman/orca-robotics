@@ -76,10 +76,6 @@ readVehicleDescription( Ice::PropertiesPtr prop, const std::string &prefix, orca
         throw orcaice::ConfigFileException( ERROR_INFO, ss.str() );
     }
 
-    orcaobj::setInit( descr.platformToVehicleTransform );
-    descr.platformToVehicleTransform = orcaobj::getPropertyAsFrame3dWithDefault( 
-                prop, vprefix+"PlatformToVehicleTransform", descr.platformToVehicleTransform );
-
     std::string geometryType = orcaice::getPropertyWithDefault( prop, vprefix+"Geometry.Type", "Cylindrical" );
     if ( geometryType == "Cylindrical" )
     {
@@ -91,9 +87,9 @@ readVehicleDescription( Ice::PropertiesPtr prop, const std::string &prefix, orca
         g->radius = orcaice::getPropertyAsDoubleWithDefault( prop, gprefix+"Radius", 0.25 );
         g->height = orcaice::getPropertyAsDoubleWithDefault( prop, gprefix+"Height", 1.0 );
 
-        orcaobj::setInit( g->vehicleToGeometryTransform );
-        g->vehicleToGeometryTransform = orcaobj::getPropertyAsFrame3dWithDefault( 
-                    prop, gprefix+"VehicleToGeometryTransform", g->vehicleToGeometryTransform );
+        orcaobj::setInit( g->platformToGeometryTransform );
+        g->platformToGeometryTransform = orcaobj::getPropertyAsFrame3dWithDefault( 
+                    prop, gprefix+"PlatformToGeometryTransform", g->platformToGeometryTransform );
 
         descr.geometry = g;
     }
@@ -107,9 +103,9 @@ readVehicleDescription( Ice::PropertiesPtr prop, const std::string &prefix, orca
         orcaobj::setInit( g->size );
         g->size = orcaobj::getPropertyAsSize3dWithDefault( prop, gprefix+"Size", g->size );
 
-        orcaobj::setInit( g->vehicleToGeometryTransform );
-        g->vehicleToGeometryTransform = orcaobj::getPropertyAsFrame3dWithDefault( 
-                    prop, gprefix+"VehicleToGeometryTransform", g->vehicleToGeometryTransform );
+        orcaobj::setInit( g->platformToGeometryTransform );
+        g->platformToGeometryTransform = orcaobj::getPropertyAsFrame3dWithDefault( 
+                    prop, gprefix+"PlatformToGeometryTransform", g->platformToGeometryTransform );
 
         descr.geometry = g;
     }
