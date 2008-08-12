@@ -10,6 +10,6 @@ IF( build )
 
   ADD_EXECUTABLE( simple simple.cpp )
   TARGET_LINK_LIBRARIES( simple OrcaPotrace ${dep_libs} )
-  GBX_ADD_TEST( OrcaPotraceSimple simple )
+  GBX_ADD_TEST( OrcaPotraceSimple simple testmap.png )
 
 ENDIF( build )

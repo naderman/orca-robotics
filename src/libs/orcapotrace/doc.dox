@@ -30,7 +30,7 @@ OrcaPotrace also handles interfacing to hydroogmap.
 Requires libpotrace.  This is not so easy to install...  I had to do
 the following:
 
-- Download libpotrace source distribution (latests tested: v1.8).
+- Download libpotrace source distribution (latest tested: v1.8).
 - Hack configure.in:
   - Uncomment AC_PROG_LIBTOOL
 - Hack src/Makefile.am and Makefile.in:
