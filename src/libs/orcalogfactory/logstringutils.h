@@ -13,7 +13,6 @@
 
 #include <string>
 #include <orca/common.h>
-#include <orca/binaryswitch.h>
 #include <orca/camera.h>
 #include <orca/cpu.h>
 #include <orca/drivebicycle.h>
