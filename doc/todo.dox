@@ -81,6 +81,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - libOrcaTeleop
   - added event optimization to mixed command, reducing delays in command propagation through the event queue. (alexm)
 
+- libOrcaQGui2dFactory
+  - painted width of walls and return points in LaserScanner2dPainter is now zoom-independent. (alexm)
+
 @par Removed
 
 
