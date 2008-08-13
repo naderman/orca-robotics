@@ -127,6 +127,9 @@ LaserScanner2dPainter::paint( QPainter *painter, int z )
     if ( z != hydroqguielementutil::Z_LASER || !isDisplayScan_ ) return;
     if ( qScan_.isEmpty() ) return;
     
+    // scaling
+    qreal onePix = painter->worldMatrix().inverted().mapRect(QRectF(0, 0, 1, 1)).width();
+
     painter->save();
     
     // handle laser offset
@@ -165,7 +168,7 @@ LaserScanner2dPainter::paint( QPainter *painter, int z )
             if ( isCurrWall != isPrevWall || i==qScan_.size()-1 ) {
                 if ( isWallSegment ) {
                     finish = i-1;
-                    painter->setPen( QPen( outlineColor_, .2 ) );
+                    painter->setPen( QPen( outlineColor_, 3.0*onePix ) );
                     painter->drawPolyline( &qScan_[start], finish-start+1 );
                     // start of next segment
                     start = i-1;
@@ -185,7 +188,8 @@ LaserScanner2dPainter::paint( QPainter *painter, int z )
 
     if ( isDisplayPoints_ )
     {
-        painter->setPen( QPen( Qt::black, .1 ) );
+        painter->setPen( QPen( Qt::black, 3.0*onePix ) );
+//         painter->setPen( QPen( Qt::black ) );
         painter->drawPoints( qReturns_ );
     }
 
@@ -206,7 +210,7 @@ LaserScanner2dPainter::paint( QPainter *painter, int z )
                     continue;
                 }
                 intensityColor.setRgb( 0, greenness, 255 );
-                painter->setPen( QPen( intensityColor ) );
+                painter->setPen( QPen(intensityColor, 1.0*onePix) );
                 painter->setBrush( intensityColor );
 
                 painter->save();
