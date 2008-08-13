@@ -37,28 +37,31 @@ QStringList
 LaserScanner2dElement::contextMenu()
 {
     QStringList s;
-//    s<<"Set Colour";
+    s<<"Toggle Display Points"<<"Toggle Display";
     return s;
 }
 
 void 
 LaserScanner2dElement::execute( int action )
 {
-//     switch ( action )
-//     {
-//     case 0 :
-//     {
-//         QColor color = QColorDialog::getColor();
-//         if ( color.isValid() )
-//             setColor( color );
-//         break;
-//     }
-//     default:
-//     {
-//         throw hydroqgui::Exception( ERROR_INFO, "OgMapElement::execute(): What the hell? bad action." );
-//         break;
-//     }
-//     }
+    switch ( action )
+    {
+    case 0 :
+    {
+        painter_.toggleDisplayPoints();
+        break;
+    }
+    case 1 :
+    {
+        painter_.toggleDisplayScan();
+        break;
+    }
+    default:
+    {
+        throw hydroqgui::Exception( ERROR_INFO, "OgMapElement::execute(): What the hell? bad action." );
+        break;
+    }
+    }
 }
 
 }

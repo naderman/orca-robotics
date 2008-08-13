@@ -25,22 +25,8 @@ The PointCloud interface gives access to clouds of 3d points.
     @{
 */
 
-/*! Currently supports uncoloured and coloured point clouds. 
-*/ 
-
-//! Description of the point cloud
-struct PointCloudDescription
-{
-    //! Time when data was measured.
-    Time timeStamp;
-  
-    //! Offset of the centre of the sensor from the robot, in the robot coord system
-    Frame3d offset; 
-    
-    //! Dimensions of the sensor
-    Size3d size; 
-
-};
+//! A sequence of points
+sequence<CartesianPoint> CartesianPointSequence;
 
 //! Point cloud data structure
 struct PointCloudData
@@ -48,19 +34,8 @@ struct PointCloudData
     //! Time when data was measured.
     Time timeStamp;
 
-    //! type of point cloud: colour or uncoloured
-//    PointCloudType type; 
-
-/*! Points are interleaved. if the Type is PointCloudTypeNoColour, then the sequence
-    is X0,Y0,Z0,X1,Y1,Z1... If the type is PointCloudTypeColour, then it is
-    X0,Y0,Z0,R0,G0,B0,.... Colours are specified between 0.0 and 1.0  
-
-While it would be nice from a software engineering point of view
-to have a collection of points as structs or classes, OpenGL works
-better with an interleaved arrays, otherwise we'd be spending a lot of
-time just packing and unpacking stuff. 
-*/ 
-    FloatSeq points;
+    //! The point cloud: a set of points, all in platform-centred coordinate system.
+    CartesianPointSequence points;
 };
 
 /*! 
@@ -72,17 +47,14 @@ interface PointCloudConsumer
 };
 
 /*!
-    @brief Interface for a 3d point cloud
+    @brief Interface for a 3d point cloud source
 */
 interface PointCloud
 {
     //! Returns the latest data.
     //! May raise DataNotExistException if the requested information is not available.
-    ["cpp:const"] idempotent PointCloudData     getData()
+    ["cpp:const"] idempotent PointCloudData getData()
             throws DataNotExistException; 
-
-    //! Returns device description
-    ["cpp:const"] idempotent PointCloudDescription getDescription();  
 
     /*!
      * Mimics IceStorm's subscribe(). @p subscriber is typically a direct proxy to the consumer object.

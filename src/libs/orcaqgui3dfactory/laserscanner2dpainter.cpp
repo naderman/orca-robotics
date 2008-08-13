@@ -17,6 +17,7 @@
 #include <orcaice/orcaice.h>
 #include <osg/ShapeDrawable>
 #include <osg/Geometry>
+#include <osg/Point>
 #include <orcaifacestring/bros1.h>
 
 #include "laserscanner2dpainter.h"
@@ -27,7 +28,7 @@ using namespace orcaqgui3d;
 
 LaserScanner2dPainter::LaserScanner2dPainter( QColor outlineColor )
     : isDisplayScan_(true),
-      isDisplayReflectors_(true),
+      isDisplayPoints_(true),
       outlineColor_(outlineColor)
 {
     root_ = new osg::Group;
@@ -75,7 +76,7 @@ LaserScanner2dPainter::setDescr(  const orca::Frame3d &offset,
 }
 
 void
-LaserScanner2dPainter::setData( const orca::RangeScanner2dDataPtr & data )
+LaserScanner2dPainter::setData( const orca::RangeScanner2dDataPtr &data )
 {
     if ( data==0 ) return;
 
@@ -98,9 +99,18 @@ LaserScanner2dPainter::setData( const orca::RangeScanner2dDataPtr & data )
     osg::ref_ptr<osg::Vec3Array> vertices = new osg::Vec3Array;
     geometry->setVertexArray( vertices.get() );
 
-    osg::ref_ptr<osg::DrawElementsUInt> prim =
+    // Line primitive
+    osg::ref_ptr<osg::DrawElementsUInt> linePrim =
         new osg::DrawElementsUInt(osg::PrimitiveSet::LINE_LOOP);
-    geometry->addPrimitiveSet(prim.get());
+    geometry->addPrimitiveSet(linePrim.get());
+
+    // Points primitive
+    osg::ref_ptr<osg::DrawElementsUInt> pointsPrim;
+    if ( isDisplayPoints_ )
+    {
+        pointsPrim = new osg::DrawElementsUInt(osg::PrimitiveSet::POINTS);
+        geometry->addPrimitiveSet(pointsPrim.get());        
+    }
 
     vertices->push_back( osg::Vec3(0,0,0) );
     double angleIncrement = data->fieldOfView / double(data->ranges.size()+1);
@@ -112,15 +122,30 @@ LaserScanner2dPainter::setData( const orca::RangeScanner2dDataPtr & data )
                                         0 ) );
     }
     for ( unsigned int i=0; i < vertices->size(); i++ )
-        prim->push_back(i);
+    {
+        linePrim->push_back(i);
+        if ( isDisplayPoints_ )
+            pointsPrim->push_back(i);
+    }
 
     osg::ref_ptr<osg::Vec4Array> colors = new osg::Vec4Array;
     colors->push_back( orcaqgui3d::toVec4( outlineColor_ ) );
+    if ( isDisplayPoints_ )
+        colors->push_back( osg::Vec4( 0, 0, 0, 1 ) );
     geometry->setColorArray(colors.get());
     geometry->setColorBinding(osg::Geometry::BIND_PER_PRIMITIVE_SET);    
 
     scanNode_ = new osg::Geode;
     scanNode_->addDrawable( geometry.get() );
+
+    // Set the point size
+    if ( isDisplayPoints_ )
+    {
+        const float pointSize = 3.0;
+        osg::ref_ptr<osg::Point> pointAttr = new osg::Point( pointSize );
+        osg::StateSet *stateSet = scanNode_->getOrCreateStateSet();        
+        stateSet->setAttribute( pointAttr.get() );
+    }
 
     xformNode_->addChild( scanNode_.get() );
 }

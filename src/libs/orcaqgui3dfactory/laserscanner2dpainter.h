@@ -40,6 +40,9 @@ class LaserScanner2dPainter
     void setColor( QColor color );
     void setFocus( bool inFocus );
 
+    void toggleDisplayScan() { isDisplayScan_ = !isDisplayScan_; }
+    void toggleDisplayPoints() { isDisplayPoints_ = !isDisplayPoints_; }
+
     osg::Node *osgNode() const { return root_.get(); }    
 
   private:
@@ -49,7 +52,8 @@ class LaserScanner2dPainter
     bool                       intensitiesValid_;
 
     bool isDisplayScan_;
-    bool isDisplayReflectors_;
+    bool isDisplayPoints_;
+
     QColor outlineColor_;
     QColor basisColor_;
 
