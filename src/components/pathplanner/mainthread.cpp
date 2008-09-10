@@ -211,6 +211,10 @@ MainThread::walk()
     activate( context_, this, subsysName() );
 
     initNetwork();
+
+    subStatus().ok();
+    subStatus().setMaxHeartbeatInterval( -1 );
+
     initDriver();
 
     assert( driver_.get() );
@@ -220,9 +224,7 @@ MainThread::walk()
     orca::PathPlanner2dTask task; 
     orca::PathPlanner2dData pathData;   
 
-    subStatus().setMaxHeartbeatInterval( 30 );
-    subStatus().ok();
-
+    subStatus().setMaxHeartbeatInterval( 5 );
     while ( !isStopping() )
     {
         try
