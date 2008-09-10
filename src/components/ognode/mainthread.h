@@ -40,6 +40,8 @@ private:
     // Represent the occupancy certainty values using doubles internally.
     hydroogmap::GenericMap<double> internalMap_;
 
+    double maxPushPeriodSec_;
+
     orcaice::Context context_;
 };
 

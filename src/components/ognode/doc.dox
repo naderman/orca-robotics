@@ -66,6 +66,10 @@ as an OgMap interface.
     - The orientation of the map in degrees
     - Default: 0.0
 
+- @c OgNode.Config.MaxPushPeriodSec (double) [sec]
+    - The maximum rate at which we'll publish maps.
+    - Default: 1.0 sec
+
 @par Authors
 Matthew Ridley
 

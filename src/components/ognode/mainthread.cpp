@@ -13,6 +13,7 @@
 #include <orcaice/orcaice.h>
 #include "ogfusionI.h"
 #include "mainthread.h"
+#include <gbxsickacfr/gbxiceutilacfr/timer.h>
 
 using namespace std;
 
@@ -102,6 +103,8 @@ MainThread::setUpInternalMapFromProperties()
 
     // Start with uninformative prior
     internalMap_.fill( 0.5 );
+
+    maxPushPeriodSec_ = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"MaxPushPeriodSec", 1.0 );
 }
 
 void
@@ -205,7 +208,8 @@ MainThread::walk()
 
     orca::OgFusionData data;
     orca::OgMapData map;
-    
+    gbxiceutilacfr::Timer pushTimer;
+
     while ( !isStopping() )
     {
         try
@@ -231,14 +235,18 @@ MainThread::walk()
                 add( data.observation[i], internalMap_ );
                 // ogfusion::add(localMap_,data.observation[i]);
             }
-            orca::OgMapData orcaOgMap;
-            convert( internalMap_, orcaOgMap );
-            orcaOgMap.timeStamp = data.timeStamp;
-
-            // cout<<"TRACE(handler.cpp): orcaOgMap: " << orcaobj::toString(orcaOgMap) << endl;
             
+            if ( pushTimer.elapsedSec() > maxPushPeriodSec_ )
+            {
+                orca::OgMapData orcaOgMap;
+                convert( internalMap_, orcaOgMap );
+                orcaOgMap.timeStamp = data.timeStamp;
 
-            ogMapImpl_->localSetAndSend( orcaOgMap );
+                // cout<<"TRACE(handler.cpp): orcaOgMap: " << orcaobj::toString(orcaOgMap) << endl;
+
+                ogMapImpl_->localSetAndSend( orcaOgMap );
+                pushTimer.restart();
+            }
 
         } // try
         catch ( const Ice::Exception & e )
