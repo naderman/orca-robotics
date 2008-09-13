@@ -209,6 +209,12 @@ PathFollowerUserInteraction::allStop()
 }
 
 void
+PathFollowerUserInteraction::toggleEnabled()
+{
+    pfElement_->toggleEnabled();
+}
+
+void
 PathFollowerUserInteraction::noLongerMouseEventReceiver()
 {
     cout << "TRACE(PathFollowerUserInteraction): noLongerMouseEventReceiver()" << endl;

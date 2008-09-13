@@ -82,7 +82,6 @@ public:
     
     // Tries to enable or disable the remote interface. Returns true if successful
     bool tryEnableRemoteInterface( bool enable );
-
     void go();
     void stop();
     void sendPath( const hydroqguipath::IPathInput *pathInput, 
@@ -91,6 +90,9 @@ public:
     void enableHI();
     void disableHI();
     bool isHIEnabled() { return pathUI_.get() != 0; }
+
+    // pathUI_ will call this
+    void toggleEnabled();
 
     PathPainter &pathPainter() { return painter_; }
 

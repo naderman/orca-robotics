@@ -396,17 +396,8 @@ PathFollower2dElement::execute( int action )
     }
     else if ( action == 5 )
     {
-        if (isRemoteInterfaceSick_) return;
-        pathFollower2dPrx_->setEnabled( !pathFollower2dPrx_->enabled() );
-        bool isEnabled;
-        isFollowerEnabled( isEnabled );
-        QString str;
-        if (isEnabled) {
-            str = "Pathfollower reports it is ENABLED now.";
-        } else {
-            str = "Pathfollower reports it is DISABLED now.";
-        }
-        humanManager_.showStatusInformation(str);
+        // alexm: this function makes remote calls, is somebody catching exceptions?
+        toggleEnabled();
     }
     else if ( action == 6 )
     {
@@ -422,6 +413,41 @@ PathFollower2dElement::execute( int action )
     {
         assert( false && "PathFollower2dElement::execute(): bad action" );
     }
+}
+
+void
+PathFollower2dElement::toggleEnabled()
+{
+    if ( !pathFollower2dPrx_ ) {
+        humanManager_.showStatusInformation("Proxy to PathFollower2d interface is not initialized");
+        return;
+    }
+
+    if (isRemoteInterfaceSick_) return;
+
+    bool isEnabled;
+    try {
+        pathFollower2dPrx_->setEnabled( !pathFollower2dPrx_->enabled() );
+        isFollowerEnabled( isEnabled );
+    }
+    catch ( const orca::OrcaException &e ) {
+        stringstream ss;
+        ss << "While trying to toggle enabled status: " << e.what;
+        humanManager_.showStatusError(  ss.str().c_str() );
+    }
+    catch ( const Ice::Exception &e ) {
+        stringstream ss;
+        ss << "While trying to toggle enabled status: " << endl << e;
+        humanManager_.showStatusError(  ss.str().c_str() );
+    }
+
+    QString str;
+    if (isEnabled) {
+        str = "Pathfollower reports it is ENABLED now.";
+    } else {
+        str = "Pathfollower reports it is DISABLED now.";
+    }
+    humanManager_.showStatusInformation(str);
 }
 
 void 
