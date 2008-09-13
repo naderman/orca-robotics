@@ -300,9 +300,14 @@ TermIostreamDisplay::printRegistryData( const orcacm::RegistryHierarchicalData1&
         else if ( userInput[0]>='0' && userInput[0]<='9' ) {
             int selection = atoi( userInput.c_str() );
             cout<<"you picked "<<selection<<endl;
-
-            browser_->choosePick( selection );
-            break;
+            // check
+            if ( selection>=0 && selection<data.platforms.size() ) {
+                browser_->choosePick( selection );
+                break;
+            }
+            else {
+                cout<<"invalid numeric selection: '"<<selection<<"'. try again"<<endl;
+            }
         }
         else {
             cout<<"invalid selection: '"<<userInput<<"'. try again"<<endl;
@@ -374,10 +379,7 @@ TermIostreamDisplay::printPlatformData( const orcacm::RegistryHierarchicalData2&
                 browser_->choosePick( selection );
                 break;
             }
-            else {
-                cout<<"invalid numeric selection: '"<<selection<<"'. try again"<<endl;
-            }
-            break;
+            cout<<"invalid numeric selection: '"<<selection<<"'. try again"<<endl;
         }
         else {
             cout<<"invalid selection: '"<<userInput<<"'. try again"<<endl;
