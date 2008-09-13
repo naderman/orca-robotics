@@ -68,6 +68,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @par Updated components
 
+- PathPlanner
+  - Fixed long-standing segfault on shutdown (alexm)
+
 - Gps2Localise2d
   - Added a bunch of (configurable) heuristics to discard faulty records (tobi)
 
