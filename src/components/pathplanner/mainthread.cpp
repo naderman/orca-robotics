@@ -213,6 +213,9 @@ MainThread::walk()
     initNetwork();
 
     subStatus().ok();
+    // Initialising the driver may require a long time to process the map.
+    // (this may still lead to a timeout if somebody is waiting for a status update.
+    // ideally, map processing should be done in a separate thread.)
     subStatus().setMaxHeartbeatInterval( -1 );
 
     initDriver();
