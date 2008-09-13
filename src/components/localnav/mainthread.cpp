@@ -433,6 +433,8 @@ MainThread::walk()
     inputs.stalled = false;
     inputs.obsRanges.resize( scannerDescr_.numberOfSamples );
 
+    bool prevIsEnabled = pathFollowerInterface_->enabled();
+
     while ( !isStopping() )
     {
         std::stringstream exceptionSS;
@@ -499,13 +501,23 @@ MainThread::walk()
                 context_.tracer().debug( ss.str(), 5 );
             }
 
+            // send zero stop-command as soon we "take our hands of the wheel"
+            // (otherwise the platform will execute the last command for a while)
+            // Note that we call enabled() only once in order to avoid possibility of state
+            // change between our calls.
+            bool isEnabled = pathFollowerInterface_->enabled();
+            bool isJustDisabled = ( prevIsEnabled && !isEnabled );
+            if ( isJustDisabled ) {
+                hydronavutil::Velocity zeroVelocityCmd( 0.0, 0.0 );
+                sendCommandToPlatform( zeroVelocityCmd );
+            }
+            prevIsEnabled = isEnabled;
+
             // Only send the command if we're enabled.
-            if ( pathFollowerInterface_->enabled() )
-            {
+            if ( isEnabled ) {
                 sendCommandToPlatform( velocityCmd );
             }
-            else
-            {
+            else {
                 context_.tracer().debug( "Doing nothing because disabled" );
                 subStatus().ok();
                 continue;
