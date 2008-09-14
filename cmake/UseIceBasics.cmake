@@ -8,13 +8,14 @@ INCLUDE( ${ORCA_CMAKE_DIR}/UseIce.cmake )
 
 IF( NOT ORCA_OS_WIN )
 
-    LINK_LIBRARIES( IceStorm IceBox IceGrid )
+    LINK_LIBRARIES( IceStorm IceBox IceGrid Glacier2 )
 
 ELSE ( NOT ORCA_OS_WIN )
 
     # windows... have to link to different libs depending on build type
     LINK_LIBRARIES( optimized IceStorm  debug IceStormd 
                     optimized IceBox    debug IceBoxd
-                    optimized IceGrid   debug IceGridd )
+                    optimized IceGrid   debug IceGridd
+                    optimized Glacier2   debug Glacier2d )
 
 ENDIF( NOT ORCA_OS_WIN )
