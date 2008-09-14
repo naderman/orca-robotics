@@ -301,7 +301,7 @@ TermIostreamDisplay::printRegistryData( const orcacm::RegistryHierarchicalData1&
             int selection = atoi( userInput.c_str() );
             cout<<"you picked "<<selection<<endl;
             // check
-            if ( selection>=0 && selection<data.platforms.size() ) {
+            if ( selection>=0 && selection<(int)data.platforms.size() ) {
                 browser_->choosePick( selection );
                 break;
             }
