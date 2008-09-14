@@ -4,6 +4,7 @@ GBX_ADD_LICENSE( LGPL )
 SET( build TRUE )
 # This is one of fundamental libs. It is not optional (but maybe it should change)
 
+# these 2 lines just check prereq's, but linking is specified in the macros below.
 SET( ext_libs GbxUtilAcfr GbxIceUtilAcfr HydroIceUtil )
 GBX_REQUIRE_INSTALLS( build LIB ${LIB_NAME} ${ext_libs} )
 
