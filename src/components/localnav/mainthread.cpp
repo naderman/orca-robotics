@@ -16,6 +16,7 @@
 #include <orcanavutil/orcanavutil.h>
 #include "mainthread.h"
 #include "testsim/testsimutil.h"
+#include "stats.h"
 
 using namespace std;
 
@@ -435,6 +436,10 @@ MainThread::walk()
 
     bool prevIsEnabled = pathFollowerInterface_->enabled();
 
+    // a simple class which summarizes motion information
+    Stats stats;
+    std::stringstream historySS;
+
     while ( !isStopping() )
     {
         std::stringstream exceptionSS;
@@ -512,6 +517,15 @@ MainThread::walk()
                 sendCommandToPlatform( zeroVelocityCmd );
             }
             prevIsEnabled = isEnabled;
+
+            // keep track of our approximate motion for history
+            stats.addData( inputs.poseTime.seconds, inputs.poseTime.useconds, 
+                           inputs.localisePose, inputs.currentVelocity, 
+                           isEnabled );
+            historySS.str(" ");
+            historySS << stats.distance()<<" "<<stats.timeInMotion()<<" "<<stats.maxSpeed();
+            // keep history up to date, ready to be dumped to file when the component stops
+            context_.history().setWithFinishSequence( historySS.str() );
 
             // Only send the command if we're enabled.
             if ( isEnabled ) {
