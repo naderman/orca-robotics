@@ -176,7 +176,7 @@ BrowserThread::filterRegistry()
 void 
 BrowserThread::loadPlatform()
 {
-    if ( pick_ >= registryData_.platforms.size() ) {
+    if ( pick_ >= (int)registryData_.platforms.size() ) {
         events_->add( Fault );
         return;
     }
