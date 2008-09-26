@@ -103,9 +103,10 @@ MainThread::initDriver()
     }
     catch ( std::exception &e )
     {
-        context_.shutdown();
         stringstream ss;
         ss << __func__ << ": Failed to initialise driver: " << e.what();
+        subStatus().fault( ss.str() );
+        context_.shutdown();
     }
 
     //
