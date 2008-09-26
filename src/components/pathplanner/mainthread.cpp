@@ -121,88 +121,6 @@ MainThread::initDriver()
                                jiggleWaypointsOntoClearCells,
                                context_ ) );
 
-
-
-#if 0
-    //
-    // Read settings
-    //
-    std::string prefix = context_.tag() + ".Config.";
-
-    double traversabilityThreshhold = orcaice::getPropertyAsDoubleWithDefault( context_.properties(), prefix+"TraversabilityThreshhold", 0.3 );
-    double robotDiameterMetres = orcaice::getPropertyAsDoubleWithDefault( context_.properties(), prefix+"RobotDiameterMetres", 0.8 );
-    int doPathOptimization = orcaice::getPropertyAsIntWithDefault( context_.properties(), prefix+"DoPathOptimization", 0 );
-    bool jiggleWaypointsOntoClearCells = orcaice::getPropertyAsIntWithDefault( context_.properties(), prefix+"JiggleWaypointsOntoClearCells", true );
-
-    // based on the config parameter, create the right driver
-    string driverName = orcaice::getPropertyWithDefault( context_.properties(), prefix+"Driver", "simplenav" );
-    context_.tracer().debug( std::string("loading ")+driverName+" driver",3);
-    
-    if ( driverName == "simplenav" || driverName == "astar")
-    {
-        hydropathplan::IPathPlanner2d *pathPlanner=NULL;
-        
-        if (driverName == "simplenav") {
-            pathPlanner = new hydropathplan::SimpleNavPathPlanner( ogMap_,
-                                                           robotDiameterMetres,
-                                                           traversabilityThreshhold,
-                                                           doPathOptimization );
-        } else if (driverName == "astar") {
-            pathPlanner = new hydropathplan::AStarPathPlanner( ogMap_,
-                                                           robotDiameterMetres,
-                                                           traversabilityThreshhold,
-                                                           doPathOptimization );
-        }
-        driver_.reset( new GenericDriver( pathPlanner,
-                                          ogMap_,
-                                          robotDiameterMetres,
-                                          traversabilityThreshhold,
-                                          doPathOptimization,
-                                          jiggleWaypointsOntoClearCells,
-                                          context_ ) );
-    }
-    else if ( driverName == "skeletonnav" || driverName == "sparseskeletonnav" )
-    {
-        bool useSparseSkeleton = (driverName == "sparseskeletonnav");
-
-        double distanceThreshold = orcaice::getPropertyAsDoubleWithDefault( context_.properties(), prefix+"Skeleton.Cost.DistanceThreshold", 0.3 );
-        double costMultiplier = orcaice::getPropertyAsDoubleWithDefault( context_.properties(), prefix+"Skeleton.Cost.CostMultiplier", 10 );
-        double addExtraSparseSkelNodes = orcaice::getPropertyAsDoubleWithDefault( context_.properties(), prefix+"Skeleton.SparseSkelAddExtraNodes", 1 );
-        double sparseSkelExtraNodeResolution = orcaice::getPropertyAsDoubleWithDefault( context_.properties(), prefix+"Skeleton.SparseSkelExtraNodeResolution", 5 );
-
-        costEvaluator_.reset( new DistBasedCostEvaluator( distanceThreshold, costMultiplier ) );
-
-        try {
-            driver_.reset( new SkeletonDriver( ogMap_,
-                                               robotDiameterMetres,
-                                               traversabilityThreshhold,
-                                               doPathOptimization,
-                                               jiggleWaypointsOntoClearCells,
-                                               useSparseSkeleton,
-                                               addExtraSparseSkelNodes,
-                                               sparseSkelExtraNodeResolution,
-                                               *costEvaluator_,
-                                               context_ ) );
-        }
-        catch ( hydropathplan::Exception &e )
-        {
-            // unrecoverable error
-            context_.shutdown(); 
-            std::stringstream ss;
-            ss << "Trouble constructing a skeletondriver" << endl << "Problem was: " << e.what();
-            throw hydropathplan::Exception( ss.str() );  // this will exit
-        }
-        
-    }
-    else {
-        // unrecoverable error
-        context_.shutdown(); 
-        stringstream  "Unknown algorithm: " << ;
-        context_.tracer().error( errorStr);
-        context_.tracer().info( "Valid driver values are {'simplenav', 'skeletonnav', 'sparseskeletonnav', 'astar', 'fake'}" );
-        throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
-    }
-#endif
     context_.tracer().debug("driver instantiated",5);
 }
 
@@ -385,7 +303,7 @@ MainThread::walk()
     
     } // end of while
     
-cout<<"DEBUG: out of mainthread."<<endl;
+    cout<<"DEBUG: out of mainthread."<<endl;
 }
 
 }
