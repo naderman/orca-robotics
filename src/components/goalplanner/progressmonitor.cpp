@@ -53,7 +53,7 @@ ProgressMonitor::followingPath() const
     if ( !gotData_ ) return false;
     if ( !isEnabled_ ) return false;
     if ( wpIndex_ == -1 ) return false;
-    if ( pathData_.size() == 0 ) return false;
+    if ( pathData_.path.size() == 0 ) return false;
     if ( wpIndex_ < 0 || wpIndex_ >= (int)(pathData_.path.size()) )
     {
         stringstream ss;
