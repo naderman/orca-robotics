@@ -136,12 +136,16 @@ PathPlannerFactory::getPathPlanner( hydroogmap::OgMap  &ogMap,
         {
             double addExtraSparseSkelNodes = prop.getPropertyAsDoubleWithDefault( "Skeleton.SparseSkelAddExtraNodes", 1 );
             double sparseSkelExtraNodeResolution = prop.getPropertyAsDoubleWithDefault( "Skeleton.SparseSkelExtraNodeResolution", 5 );
+            bool jiggleWaypointsOntoClearCells = 
+                prop.getPropertyAsIntWithDefault( "JiggleWaypointsOntoClearCells", true );
+
             pathPlanner = new hydropathplan::SparseSkeletonPathPlanner( ogMap,
                                                                         robotDiameterMetres,
                                                                         traversabilityThreshhold,
                                                                         doPathOptimization,
                                                                         addExtraSparseSkelNodes,
                                                                         sparseSkelExtraNodeResolution,
+                                                                        jiggleWaypointsOntoClearCells,
                                                                         costEvaluator );
         }
         else

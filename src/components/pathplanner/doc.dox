@@ -63,6 +63,7 @@ The pathplanner acts like a service receiving tasks from third parties and retur
     - Default: 0
 
 - @c PathPlanner.Config.JiggleWaypointsOntoClearCells (bool)
+    - Currently only works for sparse skeleton!!!
     - If true, incoming paths will be fixed up by moving waypoints off of obstacles.
     - Valid values: 0 or 1
     - Default: 1

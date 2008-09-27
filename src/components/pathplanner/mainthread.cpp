@@ -112,13 +112,13 @@ MainThread::initDriver()
     //
     // And the Driver to manage it
     //
-    bool jiggleWaypointsOntoClearCells = 
-        orcaice::getPropertyAsIntWithDefault( context_.properties(), prefix+"JiggleWaypointsOntoClearCells", true );
+    double intermediateMinDistTolerance = 
+            orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"IntermediateWaypointMinDistanceTolerance", 1.5 );
     driver_.reset( new Driver( *pathPlanner_,
                                ogMap_,
                                traversabilityThreshhold,
                                robotDiameterMetres,
-                               jiggleWaypointsOntoClearCells,
+                               intermediateMinDistTolerance,
                                context_ ) );
 
     context_.tracer().debug("driver instantiated",5);
