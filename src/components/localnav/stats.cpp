@@ -55,8 +55,8 @@ Stats::addData( int seconds, int useconds,
     const double MAX_LOCALISER_JUMP = 10.0;
     if ( localiserDistance < MAX_LOCALISER_JUMP*odometryDistance )
         distance_  += localiserDistance;
-    else
-        std::cout<<"LocalNavStats: suspect localization jump, not integrating this motion element."<<std::endl;
+    //else
+    //    std::cout<<"LocalNavStats: suspect localization jump, not integrating this motion element."<<std::endl;
         // ignore this data
 
     const double MIN_TIMED_SPEED = 0.10;
