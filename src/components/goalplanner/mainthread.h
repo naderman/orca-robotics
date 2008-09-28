@@ -22,6 +22,7 @@
 #include "progressmonitor.h"
 #include <memory>
 #include <orcaifaceimpl/storingconsumers.h>
+#include <gbxsickacfr/gbxiceutilacfr/timer.h>
 
 namespace goalplanner
 {
@@ -105,6 +106,12 @@ private:
     bool checkForStaleLocaliseData_;
 
     bool enableReplan_;
+
+    // These guys are used to implement a little hysteresis: don't
+    // replan unless it has been requested for a bit.
+    bool                  replanRequested_;
+    gbxiceutilacfr::Timer replanRequestTimer_;
+    double                requiredReplanRequestTime_;
 
     // If the path planner takes more than this amount of time, assume something's wrong.
     double pathPlanTimeout_;

@@ -112,6 +112,7 @@ namespace {
 MainThread::MainThread( const orcaice::Context & context )
     : orcaice::SubsystemThread( context.tracer(), context.status(), "MainThread" ),
       incomingPathI_(0),
+      replanRequested_(false),
       context_(context)
 {
     subStatus().setMaxHeartbeatInterval( 10.0 );
@@ -122,6 +123,7 @@ MainThread::MainThread( const orcaice::Context & context )
     velocityToFirstWaypoint_ = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"VelocityToFirstWaypoint", 1.0 );
     checkForStaleLocaliseData_ = orcaice::getPropertyAsIntWithDefault( prop, prefix+"CheckForStaleLocaliseData", 1 );
     enableReplan_ = orcaice::getPropertyAsIntWithDefault( prop, prefix+"EnableReplan", 0 );
+    requiredReplanRequestTime_ = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"RequiredReplanRequestTime", 2.0 );
 }
 
 void
@@ -394,6 +396,7 @@ MainThread::needToReplan( const hydronavutil::Pose &currentPose, const orca::Way
                                                          currentPose.y(),
                                                          currentWp.target.p.x,
                                                          currentWp.target.p.y );
+    //cout<<"TRACE(mainthread.cpp): lineOfSightToGoal: " << lineOfSightToGoal << endl;
     return !lineOfSightToGoal;
 }
 
@@ -533,9 +536,10 @@ MainThread::waitForNewPath( orca::PathFollower2dData &newPathData )
             if ( ret==0 )
             {
                 // Got a new request.
+                replanRequested_ = false;
                 return true;
             }
-            else
+            else // no new path
             {
                 //
                 // Don't have any new requests.  Check
@@ -554,17 +558,49 @@ MainThread::waitForNewPath( orca::PathFollower2dData &newPathData )
 
                     if ( enableReplan_ && needToReplan( pose, currentWp ) )
                     {
-                        if ( isLocalisationUncertain )
+                        //cout<<"TRACE(mainthread.cpp): Need to replan!" << endl;
+                        if ( !replanRequested_ )
                         {
-                            stringstream ss;
-                            ss << "MainThread: need to replan, but localisation is too uncertain!";
-                            context_.tracer().warning( ss.str() );
-                            subStatus().warning( ss.str() );
-                            continue;
+                            //cout<<"TRACE(mainthread.cpp): Starting timer..." << endl;
+
+                            context_.tracer().info( "MainThread: current wp is not visible -- requesting replan." );
+                            replanRequested_ = true;
+                            replanRequestTimer_.restart();
                         }
-                        context_.tracer().info( "MainThread: current wp is not visible -- replanning." );
-                        replan( pose, currentWp );
+                        else
+                        {
+                            // Replan previously requested
+                            //cout<<"TRACE(mainthread.cpp): replan request timer: " << replanRequestTimer_.elapsedSec() << "s" << endl;
+                            if ( replanRequestTimer_.elapsedSec() >= requiredReplanRequestTime_ )
+                            {
+                                // Time has elapsed
+
+                                if ( isLocalisationUncertain )
+                                {
+                                    stringstream ss;
+                                    ss << "MainThread: need to replan, but localisation is too uncertain!";
+                                    context_.tracer().warning( ss.str() );
+                                    subStatus().warning( ss.str() );
+                                    continue;
+                                }
+                                else
+                                {
+                                    context_.tracer().info( "MainThread: current wp is not visible -- replanning." );
+                                    replan( pose, currentWp );
+                                    replanRequested_ = false;
+                                }
+                            }
+                        }
                     }
+                    else
+                    {
+                        //cout<<"TRACE(mainthread.cpp): Don't need to replan, stopping timer." << endl;
+                        replanRequested_ = false;
+                    }
+                }
+                else
+                {
+                    replanRequested_ = false;
                 }
 
                 // Let the world know we're alive.
