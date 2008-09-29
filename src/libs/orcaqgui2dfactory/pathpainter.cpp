@@ -52,8 +52,13 @@ void PathPainter::setData( const orca::PathPlanner2dData& path )
 
 void PathPainter::setRelativeStartTime( double relativeStartTime )
 {
-    //cout << "TRACE(pathpainter.cpp): new relative time: " << relativeStartTime << endl;
+//     cout << "TRACE(pathpainter.cpp): new relative time: " << relativeStartTime << endl;
     relativeStartTime_ = relativeStartTime;
+    
+    // Start a timer to keep track of the time since activation internally.
+    // Whenever this function is called again, we get an updated relativeStartTime 
+    // which will reset the internal clock.
+    olympicMarkerTimer_.restart();
 }
 
 void PathPainter::setWpIndex( int index )
@@ -167,12 +172,15 @@ void PathPainter::paint( QPainter *painter, int z )
     // ====== draw the olympic marker: shows where we should be according to the plan ========
     if (!displayOlympicMarker_) return;
     if (relativeStartTime_==NAN) return;
+    if (wpIndex_==-1) return;
+    
+    double relStartTimeLocal = relativeStartTime_ + olympicMarkerTimer_.elapsedSec();
     
     int wpI = -1;
     // find the waypoint we should be going towards according to the plan
     for (int i=0; i<guiPath_.size(); i++)
     {
-        if (relativeStartTime_ <= guiPath_[i].timeTarget) {
+        if (relStartTimeLocal <= guiPath_[i].timeTarget) {
             wpI = i;
             break;
         }
@@ -197,7 +205,7 @@ void PathPainter::paint( QPainter *painter, int z )
     else
     {    
         // ratio of how much we accomplished of the distance between the two current waypoints
-        float ratio = (relativeStartTime_-guiPath_[wpI-1].timeTarget) /
+        float ratio = (relStartTimeLocal-guiPath_[wpI-1].timeTarget) /
                       (guiPath_[wpI].timeTarget - guiPath_[wpI-1].timeTarget);
     
         // compute position of sliding point

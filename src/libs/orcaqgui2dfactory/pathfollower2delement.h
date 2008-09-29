@@ -38,6 +38,7 @@ public:
 
     gbxiceutilacfr::Store<orca::PathFollower2dData> pathPipe_;
     gbxiceutilacfr::Store<int> indexPipe_;
+    gbxiceutilacfr::Store<double> relativeTimePipe_;
 };
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -121,8 +122,7 @@ private:
     std::auto_ptr<hydroqguipath::PathInputFactory> inputFactory_;
     
     bool firstTime_;
-    gbxiceutilacfr::Timer *timer_;
-    gbxiceutilacfr::Timer *activationTimer_;
+    gbxiceutilacfr::Timer timer_;
     
     // toggle states
     bool displayWaypoints_;
