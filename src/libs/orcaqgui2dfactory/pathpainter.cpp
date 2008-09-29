@@ -87,8 +87,8 @@ void PathPainter::paint( QPainter *painter, int z )
     if (useTransparency_) {
         inactiveWpColor = hydroqguielementutil::getTransparentVersion(baseColor);
         pastWpColor = hydroqguielementutil::getTransparentVersion(baseColor,0.25);
-        currentWpColor = hydroqguielementutil::getTransparentVersion(baseColor,0.75);
-        futureWpColor = hydroqguielementutil::getTransparentVersion(baseColor,0.5);
+        currentWpColor = hydroqguielementutil::getTransparentVersion(baseColor,0.8);
+        futureWpColor = hydroqguielementutil::getTransparentVersion(baseColor,0.75);
     }
     
     for ( int i=0; i < guiPath_.size(); i++)
