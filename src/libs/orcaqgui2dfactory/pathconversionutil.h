@@ -11,8 +11,6 @@
 #ifndef ORCA_PATH_UTILS_H
 #define ORCA_PATH_UTILS_H
 
-#include <QPointF>
-#include <QVector>
 #include <hydroqguipath/pathutils.h>
 #include <orca/pathfollower2d.h>
 #include <orcaice/orcaice.h>
