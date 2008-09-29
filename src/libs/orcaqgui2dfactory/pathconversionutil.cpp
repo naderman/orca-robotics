@@ -25,7 +25,7 @@ void guiPathToOrcaPath( const hydroqguipath::GuiPath &in,
 
     for (int k=0; k<numLoops; k++)
     {
-        for (int i=0; i<in.size(); i++)
+        for (unsigned int i=0; i<in.size(); i++)
         {
             double heading = DEG2RAD((double)in[i].heading/hydroqguipath::QT_ANGLE_MULTIPLIER);
             NORMALISE_ANGLE( heading );
