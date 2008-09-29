@@ -149,7 +149,8 @@ PathMaintainer::waypointReached( const orca::Waypoint2d &wp,
 bool
 PathMaintainer::getActiveGoals( std::vector<orcalocalnav::Goal> &goals,
                                 int                              maxNumWaypoints,
-                                const hydronavutil::Pose        &pose )
+                                const hydronavutil::Pose        &pose,
+                                bool                            &wpIncremented )
 {
     goals.resize(0);
     if ( wpIndex_ == -1 ) return false;
@@ -158,8 +159,12 @@ PathMaintainer::getActiveGoals( std::vector<orcalocalnav::Goal> &goals,
     double timeNow = orcaice::timeDiffAsDouble( clock_.time(), pathStartTime_ );
 
     // Peel off waypoints if they're reached
+    wpIncremented=false;
     while ( waypointReached( path_.path[wpIndex_], pose, timeNow ) )
+    {
         incrementWpIndex();
+        wpIncremented=true;
+    }
 
     int wpI=0;
     for ( unsigned int pI=wpIndex_;

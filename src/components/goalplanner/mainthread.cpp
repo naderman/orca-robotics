@@ -665,6 +665,7 @@ MainThread::walk()
                 bool gotNewPath = waitForNewPath( incomingPath );
                 if ( gotNewPath )
                 {
+                    cout<<"TRACE(mainthread.cpp): Got a new path." << endl;
                     requestIsOutstanding = true;
                 }
                 else
@@ -690,6 +691,7 @@ MainThread::walk()
             // special case 'stop': we received an empty path
             if (incomingPath.path.size()==0) 
             {
+                cout<<"TRACE(mainthread.cpp): Received an empty path; stopping robot." << endl;
                 stopRobot();
                 subStatus().ok();
                 requestIsOutstanding = false;
@@ -721,11 +723,12 @@ MainThread::walk()
             context_.tracer().debug(ss.str());
 
             // Send it off!
+            cout<<"TRACE(mainthread.cpp): Sending path." << endl;
             sendPath( pathToSend, activateImmediately );
 
             if ( isLocalisationUncertain )
             {
-                subStatus().ok( "Generated path, but not certain about localisation..." );
+                subStatus().ok( "Generated path, but not certain about localisation.  Sent path, but will try again soon." );
                 // Slow the loop down a little before trying again.
                 sleep(1);
             }

@@ -464,12 +464,19 @@ MainThread::walk()
             // coord system for the pathplanner.
             // Also return a flag indicating if we have an active goal
 			
+            bool wpIncremented = false;
             bool haveGoal = pathMaintainer_->getActiveGoals( inputs.goals,
                                                              driver_->waypointHorizon(),
-                                                             inputs.localisePose );
+                                                             inputs.localisePose,
+                                                             wpIncremented );
 
             if ( haveGoal )
             {
+                if ( wpIncremented )
+                {
+                    speedLimiter_->setIntendedSpeedThisLeg( inputs.goals[0] );
+                }
+
                 // If we do have an active goal, limit the max speed for the current goal
                 // and get the pathplanner to work out the next set of actions
                 speedLimiter_->constrainMaxSpeeds( inputs.goals[0], inputs.currentVelocity );

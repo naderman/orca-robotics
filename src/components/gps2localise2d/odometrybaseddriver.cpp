@@ -128,7 +128,7 @@ OdometryBasedDriver::compute( const orca::GpsData  &gpsData,
 
     if ( simpleDriver_.compute( gpsData, localiseData ) == false )
     {
-        context_.tracer().info( "OdometryBasedDriver: could not (reliably) convert GPS data to Localise2d data." );
+        context_.tracer().debug( "OdometryBasedDriver: could not (reliably) convert GPS data to Localise2d data." );
         return false;
     }
 

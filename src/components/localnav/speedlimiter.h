@@ -33,18 +33,19 @@ public:
 
     SpeedLimiter( const orcaice::Context &context );
 
+    void setIntendedSpeedThisLeg( const orcalocalnav::Goal &goal );
+
     // constrain the max speeds for a particular goal
     void constrainMaxSpeeds( orcalocalnav::Goal &goal,
                              const hydronavutil::Velocity &currentVelocity );
 
 private: 
 
-    void maybeSendHeartbeat( double secondsBehindSchedule );
+//     void maybeSendHeartbeat( double secondsBehindSchedule );
     
-    // Maintain these for heartbeat messages
-    double  secondsBehindSchedule_;
+    double intendedSpeedThisLeg_;
 
-    orcaice::Heartbeater heartbeater_;
+//     orcaice::Heartbeater heartbeater_;
     orcaice::Context  context_;
 };
 

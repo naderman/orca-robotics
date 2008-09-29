@@ -49,7 +49,8 @@ public:
     // returns FALSE if there are no active goals, and TRUE otherwise
     bool getActiveGoals( std::vector<orcalocalnav::Goal> &goals,
                          int maxNumGoals,
-                         const hydronavutil::Pose &pose );
+                         const hydronavutil::Pose &pose,
+                         bool &wpIncremented );
 
     //
     // Functions called by MainLoop, to trigger comms with outside world
