@@ -364,7 +364,6 @@ PathFollower2dElement::execute( int action )
     }
     else if ( action == 5 )
     {
-        // alexm: this function makes remote calls, is somebody catching exceptions?
         toggleEnabled();
     }
     else if ( action == 6 )
