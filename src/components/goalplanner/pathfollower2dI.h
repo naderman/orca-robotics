@@ -15,6 +15,7 @@
 #include <Ice/Ice.h>
 #include <IceStorm/IceStorm.h>
 #include <gbxsickacfr/gbxiceutilacfr/store.h>
+#include <orcaice/context.h>
 
 // include provided interfaces
 #include <orca/pathfollower2d.h>
@@ -29,7 +30,8 @@ class PathFollower2dI : public orca::PathFollower2d
 public:
     PathFollower2dI( gbxiceutilacfr::Store<orca::PathFollower2dData> &pathPipe,
                      gbxiceutilacfr::Store<bool> &activationPipe,
-                     orca::PathFollower2dPrx localNavPrx );
+                     orca::PathFollower2dPrx localNavPrx,
+                     const orcaice::Context &context );
 
     // remote calls:
 
@@ -69,6 +71,8 @@ private:
     
     // because goalplanner is acting like a transparent proxy to localnav, we need to pass on requests to localnav and thus need a remote object
     orca::PathFollower2dPrx localNavPrx_;
+
+    orcaice::Context context_;
 };
 
 }

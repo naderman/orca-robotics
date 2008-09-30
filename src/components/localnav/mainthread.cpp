@@ -547,7 +547,7 @@ MainThread::walk()
             std::stringstream timerSS;
             timerSS << "MainThread: time to make and send decision: " << timer.elapsedSeconds()*1000.0 << "ms";
             context_.tracer().debug( timerSS.str(), 3 );
-            
+
             if ( testMode_ && algorithmEvaluator_.get() )
             {
                 algorithmEvaluator_->evaluate( timer.elapsedSeconds(), *testSimulator_ );

@@ -22,5 +22,7 @@ Config.PathPlanTimeout.Default=10.0
 Config.VelocityToFirstWaypoint.Default=1.0
 Config.CheckForStaleLocaliseData.Default=1
 Config.EnableReplan.Default=0
+Config.RequiredReplanRequestTime.Comment=Replan if it has been continuously required for this long.
+Config.RequiredReplanRequestTime.Default=3.0
 
 

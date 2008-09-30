@@ -58,6 +58,7 @@ PathMaintainer::PathMaintainer( PathFollowerInterface   &pathFollowerInterface,
                                 const orcaice::Context  &context)
     : wpIndex_(-1),
       wpIndexChanged_(false),
+      justReceivedNewPath_(false),
       pathFollowerInterface_(pathFollowerInterface),
       clock_(clock),
       context_(context)
@@ -79,12 +80,14 @@ PathMaintainer::checkForNewPath()
     {
         if ( gotNewPath )
         {
+            justReceivedNewPath_ = true;
+
             // See if there's anything weird about it
             std::string reason;
             if ( orcaobj::isPathSketchy( path_.path, reason ) )
             {
                 string warnString = "In newly-received path: \n"+reason;
-                context_.tracer().warning( warnString );                
+                context_.tracer().warning( warnString );
             }
         }
         if ( gotActivation )
@@ -159,7 +162,8 @@ PathMaintainer::getActiveGoals( std::vector<orcalocalnav::Goal> &goals,
     double timeNow = orcaice::timeDiffAsDouble( clock_.time(), pathStartTime_ );
 
     // Peel off waypoints if they're reached
-    wpIncremented=false;
+    wpIncremented=justReceivedNewPath_;
+    justReceivedNewPath_ = false;
     while ( waypointReached( path_.path[wpIndex_], pose, timeNow ) )
     {
         incrementWpIndex();

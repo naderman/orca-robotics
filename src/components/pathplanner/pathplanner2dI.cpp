@@ -32,7 +32,7 @@ PathPlanner2dI::PathPlanner2dI( gbxiceutilacfr::Buffer<orca::PathPlanner2dTask> 
 Ice::Int
 PathPlanner2dI::setTask(const ::orca::PathPlanner2dTask& task, const ::Ice::Current&)
 {
-    cout << "TRACE(pathplanner2dI.cpp): Just received a new task.";
+    cout << "TRACE(pathplanner2dI.cpp): Just received a new task ("<<task.coarsePath.size()<<" waypoints).";
     stringstream ss;
     ss << "PathPlanner2dI: Received task: " << orcaobj::toVerboseString(task); 
     context_.tracer().debug( ss.str() );

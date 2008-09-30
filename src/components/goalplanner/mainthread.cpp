@@ -188,7 +188,8 @@ MainThread::initNetwork()
     // create the proxy/buffer for incoming path
     incomingPathI_ = new PathFollower2dI( incomingPathStore_,
                                           activationStore_,
-                                          localNavPrx_ );
+                                          localNavPrx_,
+                                          context_ );
     
     Ice::ObjectPtr pathFollowerObj = incomingPathI_;
 
