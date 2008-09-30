@@ -91,7 +91,7 @@ void PathPainter::paint( QPainter *painter, int z )
         futureWpColor = hydroqguielementutil::getTransparentVersion(baseColor,0.75);
     }
     
-    for ( int i=0; i < guiPath_.size(); i++)
+    for ( unsigned int i=0; i < guiPath_.size(); i++)
     {
         QColor fillColor;
         QColor drawColor;
@@ -178,7 +178,7 @@ void PathPainter::paint( QPainter *painter, int z )
     
     int wpI = -1;
     // find the waypoint we should be going towards according to the plan
-    for (int i=0; i<guiPath_.size(); i++)
+    for (unsigned int i=0; i<guiPath_.size(); i++)
     {
         if (relStartTimeLocal <= guiPath_[i].timeTarget) {
             wpI = i;
