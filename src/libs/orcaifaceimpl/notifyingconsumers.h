@@ -23,6 +23,8 @@
 #include <orca/gps.h>
 #include <orca/polarfeature2d.h>
 #include <orca/properties.h>
+#include <orca/ins.h>
+#include <orca/pointcloud.h>
 
 namespace orcaifaceimpl
 {
@@ -100,6 +102,20 @@ typedef NotifyingConsumerImpl<orca::PropertiesPrx,
                         orca::PropertiesConsumerPrx,
                         orca::PropertiesData>              NotifyingPropertiesConsumerImpl;
 typedef IceUtil::Handle<NotifyingPropertiesConsumerImpl>   NotifyingPropertiesConsumerImplPtr;
+
+//! Typedef for a common interface type. There's also a corresponding Ptr.
+typedef NotifyingConsumerImpl<orca::InsPrx,
+                        orca::InsConsumer,
+                        orca::InsConsumerPrx,
+                        orca::InsData>                     NotifyingInsConsumerImpl;
+typedef IceUtil::Handle<NotifyingInsConsumerImpl>            NotifyingInsConsumerImplPtr;
+
+//! Typedef for a common interface type. There's also a corresponding Ptr.
+typedef NotifyingConsumerImpl<orca::PointCloudPrx,
+                        orca::PointCloudConsumer,
+                        orca::PointCloudConsumerPrx,
+                        orca::PointCloudData>                     NotifyingPointCloudConsumerImpl;
+typedef IceUtil::Handle<NotifyingPointCloudConsumerImpl>            NotifyingPointCloudConsumerImplPtr;
 
 } // namespace
 

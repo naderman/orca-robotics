@@ -23,6 +23,8 @@
 #include <orca/gps.h>
 #include <orca/pathplanner2d.h>
 #include <orca/properties.h>
+#include <orca/ins.h>
+#include <orca/pointcloud.h>
 
 namespace orcaifaceimpl
 {
@@ -100,6 +102,20 @@ typedef StoringConsumerImpl<orca::PropertiesPrx,
                         orca::PropertiesConsumerPrx,
                         orca::PropertiesData>           StoringPropertiesConsumerImpl;
 typedef IceUtil::Handle<StoringPropertiesConsumerImpl>  StoringPropertiesConsumerImplPtr;
+
+//! Typedef for a common interface type. There's also a corresponding Ptr.
+typedef StoringConsumerImpl<orca::InsPrx,
+                        orca::InsConsumer,
+                        orca::InsConsumerPrx,
+                        orca::InsData>                     StoringInsConsumerImpl;
+typedef IceUtil::Handle<StoringInsConsumerImpl>            StoringInsConsumerImplPtr;
+
+//! Typedef for a common interface type. There's also a corresponding Ptr.
+typedef StoringConsumerImpl<orca::PointCloudPrx,
+                        orca::PointCloudConsumer,
+                        orca::PointCloudConsumerPrx,
+                        orca::PointCloudData>                     StoringPointCloudConsumerImpl;
+typedef IceUtil::Handle<StoringPointCloudConsumerImpl>            StoringPointCloudConsumerImplPtr;
 
 } // namespace
 

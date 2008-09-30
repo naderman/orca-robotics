@@ -23,6 +23,8 @@
 #include <orca/ogmap.h>
 #include <orca/gps.h>
 #include <orca/status.h>
+#include <orca/ins.h>
+#include <orca/pointcloud.h>
 
 namespace orcaifaceimpl
 {
@@ -149,6 +151,22 @@ typedef PrintingConsumerImpl<orca::WifiPrx,
                         orca::WifiConsumerPrx,
                         orca::WifiData>                      PrintingWifiConsumerImpl;
 typedef IceUtil::Handle<PrintingWifiConsumerImpl>            PrintingWifiConsumerImplPtr;
+
+//! Typedef for a common interface type. There's also a corresponding Ptr.
+typedef PrintingConsumerImpl<orca::InsPrx,
+                        orca::InsConsumer,
+                        orca::InsConsumerPrx,
+                        orca::InsData>                     PrintingInsConsumerImpl;
+typedef IceUtil::Handle<PrintingInsConsumerImpl>            PrintingInsConsumerImplPtr;
+
+
+//! Typedef for a common interface type. There's also a corresponding Ptr.
+typedef PrintingConsumerImpl<orca::PointCloudPrx,
+                        orca::PointCloudConsumer,
+                        orca::PointCloudConsumerPrx,
+                        orca::PointCloudData>                     PrintingPointCloudConsumerImpl;
+typedef IceUtil::Handle<PrintingPointCloudConsumerImpl>            PrintingPointCloudConsumerImplPtr;
+
 
 } // namespace
 
