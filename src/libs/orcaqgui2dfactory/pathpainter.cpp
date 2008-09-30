@@ -73,11 +73,11 @@ void PathPainter::paint( QPainter *painter, int z )
     if ( z != hydroqguielementutil::Z_PATH ) return;
 
     QColor baseColor;
-    if (inFocus_) {
+//     if (inFocus_) {
         baseColor = color_;
-    } else {
-        baseColor = Qt::gray;
-    }
+//     } else {
+//         baseColor = Qt::gray;
+//     }
       
     QColor inactiveWpColor = baseColor;
     QColor pastWpColor = baseColor;
