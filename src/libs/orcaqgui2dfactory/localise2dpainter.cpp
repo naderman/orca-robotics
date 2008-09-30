@@ -105,9 +105,11 @@ Localise2dPainter::paintHypothesis( QPainter* p, const orca::Pose2dHypothesis &h
                 if ( isInFocus_ )
                 {
                     p->save();
-                    p->setBrush( Qt::white );
-                    hydroqguielementutil::paintCylindricalPlatformPose( p, radius_*1.1, weight, minLength  );
+                    p->setPen( QPen( Qt::black, lineThickness*1.2 ) );
+                    p->setBrush( hydroqguielementutil::getTransparentVersion( Qt::white, weight ) );
+                    hydroqguielementutil::paintCylindricalPlatformPose( p, radius_*1.2, weight, minLength*1.2  );
                     p->restore();
+                    p->setPen( QPen( Qt::black, lineThickness*1.2) );
                 }
                 hydroqguielementutil::paintCylindricalPlatformPose( p, radius_, weight, minLength  );
             }
