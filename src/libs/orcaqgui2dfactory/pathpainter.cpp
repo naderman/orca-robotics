@@ -91,7 +91,7 @@ void PathPainter::paint( QPainter *painter, int z )
         futureWpColor = hydroqguielementutil::getTransparentVersion(baseColor,0.75);
     }
     
-    for ( unsigned int i=0; i < guiPath_.size(); i++)
+    for ( int i=0; i < (int)guiPath_.size(); i++)
     {
         QColor fillColor;
         QColor drawColor;
