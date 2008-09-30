@@ -16,6 +16,7 @@
 #include <orcaqgui3dfactory/localise2delement.h>
 #include <orcaqgui3dfactory/featuremap2delement.h>
 #include <orcaqgui3dfactory/ogmapelement.h>
+#include <orcaqgui3dfactory/pointcloudelement.h>
 
 #include "defaultfactory.h"
 
@@ -30,6 +31,7 @@ DefaultFactory::DefaultFactory()
     addSupportedType("Localise2d");
     addSupportedType("FeatureMap2d");
     addSupportedType("OgMap");
+    addSupportedType("PointCloud");
 }
 
 bool 
@@ -97,6 +99,9 @@ DefaultFactory::create( const QString                            &elementType,
         }
         else if ( elementType == "OgMap" ) {
             elem = new orcaqgui3d::OgMapElement( context_, elementDetails[0].toStdString(), &humanManager );
+        }
+        else if ( elementType == "PointCloud" ) {
+            elem = new orcaqgui3d::PointCloudElement( context_, elementDetails[0].toStdString() );
         }
         else
         {
