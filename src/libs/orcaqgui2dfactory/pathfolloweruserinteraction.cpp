@@ -47,7 +47,11 @@ PathFollowerUserInteraction::PathFollowerUserInteraction( PathFollower2dElement 
       gotMode_(false)
 {
     wpSettings_ = readWaypointSettings( context.properties(), context.tag() );
-    buttons_.reset( new hydroqguipath::PathfollowerButtons( this, humanManager, shortcutKeyManager, proxyString ) );
+    buttons_.reset( new hydroqguipath::PathfollowerButtons( this, 
+                                                            humanManager, 
+                                                            shortcutKeyManager, 
+                                                            proxyString,
+                                                            !readActivateImmediately(context.properties(), context.tag())) );
     ifacePathFileHandler_.reset( new PathFileHandler( humanManager ) );
 }
 
@@ -61,7 +65,8 @@ PathFollowerUserInteraction::setFocus( bool inFocus )
             buttons_.reset( new hydroqguipath::PathfollowerButtons( this, 
                                                                     humanManager_, 
                                                                     shortcutKeyManager_, 
-                                                                    proxyString_ ) );
+                                                                    proxyString_,
+                                                                    !readActivateImmediately(context_.properties(), context_.tag()) ) );
         }
     } 
     else 
