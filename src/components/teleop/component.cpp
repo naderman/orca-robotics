@@ -20,7 +20,7 @@ using namespace std;
 namespace teleop {
 
 Component::Component() :
-    orcaice::Component( "Teleop", orcaice::HomeInterface ),
+    orcaice::Component( "Teleop", orcaice::NoStandardInterfaces ),
     networkThread_(0),
     displayThread_(0),
     inputThread_(0)
@@ -67,4 +67,3 @@ Component::stop()
 }
 
 }
-
