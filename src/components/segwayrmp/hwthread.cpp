@@ -205,6 +205,9 @@ HwThread::walk()
 
             enableDriver();
 
+            // tell stats object that the odometry stream is (possibly) reset.
+            stats.resetRawData();
+
             checkStatus();
             subStatus().setMaxHeartbeatInterval( 2.0 );
 
