@@ -246,7 +246,7 @@ HwThread::walk()
         }
 
         if ( !exceptionSS.str().empty() ) {
-            context_.tracer().error( exceptionSS.str() );
+            subStatus().fault( exceptionSS.str() );
             stateMachine_.setFault( exceptionSS.str() );            
             exceptionSS.str("");
         }
@@ -275,7 +275,7 @@ HwThread::walk()
             }
 
             if ( !exceptionSS.str().empty() ) {
-                context_.tracer().error( exceptionSS.str() );
+                subStatus().fault( exceptionSS.str() );
                 // set local state to failure
                 stateMachine_.setFault( exceptionSS.str() );           
                 exceptionSS.str("");
@@ -283,15 +283,7 @@ HwThread::walk()
         }
 
         // Tell the 'status' engine what our local state machine knows.
-        if ( stateMachine_.isFault(reason) )
-        {
-            subStatus().fault( reason );
-        }
-        else if ( stateMachine_.isWarning(reason) )
-        {
-            subStatus().warning( reason );
-        }
-        else
+        if ( !stateMachine_.isFault(reason) && !stateMachine_.isWarning(reason) )
         {
             if ( eStop_.get() && eStop_->isEStopTriggered() )
             {
