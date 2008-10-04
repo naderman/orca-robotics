@@ -51,7 +51,7 @@ $ tar -zxf gearbox-x.x.x.tar.gz
 $ cd gearbox
 $ cmake .
 $ make
-$ make install
+# make install
 @endverbatim
 
 @section orca_doc_installdebian_hydro Hydro
@@ -65,7 +65,7 @@ $ tar -zxf hydro-x.x.x.tar.gz
 $ cd hydro
 $ cmake .
 $ make
-$ make install
+# make install
 @endverbatim
 
 @section orca_doc_installdebian_orca Orca
@@ -79,7 +79,7 @@ $ tar -zxf orca-x.x.x.tar.gz
 $ cd orca
 $ cmake .
 $ make
-$ make install
+# make install
 @endverbatim
 
 That's it! We are done. To make sure that everything worked as expected, try this (actual versions may be different):
