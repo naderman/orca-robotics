@@ -46,6 +46,8 @@ public:
           isConnected_(false)
     {};
 
+    virtual ~IceStormElement() {}
+
     //! Can do special stuff on connection by inheriting and overloading this
     virtual void actionOnConnection()=0;
 

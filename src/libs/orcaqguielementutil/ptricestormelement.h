@@ -50,6 +50,8 @@ public:
     {
     };
 
+    virtual ~PtrIceStormElement() {}
+
     //! Can do special stuff on connection by inheriting and overloading this
     virtual void actionOnConnection()=0;
 
