@@ -19,11 +19,6 @@
 #include "browserfsm.h"
 #include <orcaprobe/ibrowser.h>
 
-namespace orcaprobe
-{
-    class orcaprobe::AbstractDisplay;
-}
-
 namespace probe
 {
 

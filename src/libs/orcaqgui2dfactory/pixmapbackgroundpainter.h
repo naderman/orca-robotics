@@ -19,8 +19,6 @@
 namespace orcaqgui2d
 {
     
-class hydroqguielementutil::IHumanManager;  
-
 class PixMapBackgroundPainter
 {
     

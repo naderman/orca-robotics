@@ -208,7 +208,7 @@ PixmapPainter::saveMap( const QString &fileName,
     int ret = qMap_.transformed( matrix ).save( fileName, fileExtension.toLatin1() );
     if (!ret)
     {
-        humanManager->showDialogMsg(hydroqguielementutil::IHumanManager::Error, "Problems saving pixmap to file " + fileName);
+        humanManager->showDialogError( "Problems saving pixmap to file " + fileName );
         return -1;
     }
     humanManager->showStatusMsg(hydroqguielementutil::IHumanManager::Information, "Successfully saved pixmap to file: " + fileName);

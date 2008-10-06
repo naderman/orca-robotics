@@ -52,6 +52,7 @@ private:
     orca::GpsPrx gpsPrx_;
     orca::Frame3d antennaOffset_;
     orca::GpsDescription gpsDescr_;
+    orca::VehicleDescription vehicleDescr_;
 
     // Consumers
     orcaifaceimpl::StoringGpsConsumerImplPtr gpsConsumer_;

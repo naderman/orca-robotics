@@ -27,17 +27,18 @@ class FeatureMap2dPainter
 {
   public:
     FeatureMap2dPainter();
-    ~FeatureMap2dPainter();
 
     void setData( const orca::FeatureMap2dData &featureData );
     void paint( QPainter *p, int z );
     bool paintThisLayer(int z) const {return z==hydroqguielementutil::Z_SLAM_MAP;}
     void setUseTransparency( bool useTransparency ) { useTransparency_= useTransparency; };
-    
-    void clear();
+
+    void clear() {}
     
     void toggleFeatureNumbers() { displayFeatureNumbers_ = !displayFeatureNumbers_; }
     void toggleUncertainty() { displayUncertainty_ = !displayUncertainty_; }
+    void toggleDisplay() { isDisplay_ = !isDisplay_; }
+    void toggleFlashing() { isFlashing_ = !isFlashing_; }
     
     int saveMap( const QString fileName, hydroqguielementutil::IHumanManager *humanManager ) const;
 
@@ -68,6 +69,9 @@ class FeatureMap2dPainter
     bool useTransparency_;
     bool displayFeatureNumbers_;
     bool displayUncertainty_;
+    bool isDisplay_;
+    bool isFlashing_;
+    bool isFlashOn_;
 };
 
 }

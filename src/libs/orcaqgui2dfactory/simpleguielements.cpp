@@ -108,22 +108,14 @@ RangeScanner2dElement::contextMenu()
     return s;
 }
 
-QStringList
-PolarFeature2dElement::contextMenu()
-{
-    QStringList s;
-    s<<"Toggle Laser Reflectors"<<"Toggle Corners";
-    return s;
-}
-
 void
 Localise3dElement::update()
 {
     if (!haveGeometry_)
         tryToGetGeometry();
     
-    // standard update as in IceStormElement
-    if ( !orcaqguielementutil::IceStormElement<Localise3dPainter,
+    // standard update as in IceStormElement2d
+    if ( !orcaqguielementutil::IceStormElement2d<Localise3dPainter,
             orca::Localise3dData,
             orca::Localise3dPrx,
             orca::Localise3dConsumer,
@@ -192,20 +184,20 @@ Localise3dElement::tryToGetGeometry()
     {
         orca::VehicleGeometryCuboidDescriptionPtr geom = orca::VehicleGeometryCuboidDescriptionPtr::dynamicCast( geom );
         painter_.setTypeAndGeometry( PlatformTypeCubic, geom->size.l, geom->size.w );
-        painter_.setOrigin( geom->vehicleToGeometryTransform.p.x, geom->vehicleToGeometryTransform.p.y, geom->vehicleToGeometryTransform.o.y );
+        painter_.setOrigin( geom->platformToGeometryTransform.p.x, geom->platformToGeometryTransform.p.y, geom->platformToGeometryTransform.o.y );
     }
     else if (geom->type==orca::VehicleGeometryCylindrical)
     {
         orca::VehicleGeometryCylindricalDescriptionPtr cylGeom = orca::VehicleGeometryCylindricalDescriptionPtr::dynamicCast( geom );
         painter_.setTypeAndGeometry( PlatformTypeCylindrical, cylGeom->radius );
-        painter_.setOrigin( cylGeom->vehicleToGeometryTransform.p.x, cylGeom->vehicleToGeometryTransform.p.y, cylGeom->vehicleToGeometryTransform.o.y );
+        painter_.setOrigin( cylGeom->platformToGeometryTransform.p.x, cylGeom->platformToGeometryTransform.p.y, cylGeom->platformToGeometryTransform.o.y );
     }
     else
     {
 //         humanManager_->showStatusMsg(hydroqguielementutil::IHumanManager::Warning, "Unknown platform type. Will paint a rectangle");
         orca::VehicleGeometryCuboidDescriptionPtr cubGeom = orca::VehicleGeometryCuboidDescriptionPtr::dynamicCast( geom );
         painter_.setTypeAndGeometry( PlatformTypeCubic, cubGeom->size.l, cubGeom->size.w );
-        painter_.setOrigin( cubGeom->vehicleToGeometryTransform.p.x, cubGeom->vehicleToGeometryTransform.p.y, cubGeom->vehicleToGeometryTransform.o.y );
+        painter_.setOrigin( cubGeom->platformToGeometryTransform.p.x, cubGeom->platformToGeometryTransform.p.y, cubGeom->platformToGeometryTransform.o.y );
     }
 
 }

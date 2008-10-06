@@ -29,6 +29,7 @@ namespace orcaqgui2d
         void setContext( const orcaice::Context &context )
             { context_ = context; isContextSet_ = true; }
 
+        // returns a NULL pointer if something goes wrong
         virtual hydroqguielementutil::IGuiElement* create( const QString                &elementType,
                                                 const QStringList            &elementDetails,
                                                 QColor                        suggestedColor,

@@ -2,11 +2,11 @@ ORCA_SET_LIBRARY_NAME( OrcaQGui3d )
 GBX_ADD_LICENSE( GPL )
 
 SET( build TRUE )
-GBX_REQUIRE_OPTION( build LIB ${LIB_NAME} OFF )
+GBX_REQUIRE_OPTION( build LIB ${LIB_NAME} ON )
 SET( not_os_win NOT GBX_OS_WIN )
 GBX_REQUIRE_VAR( build LIB ${LIB_NAME} not_os_win "Windows OS is not  supported" )
 GBX_REQUIRE_VAR( build LIB ${LIB_NAME} QT4_FOUND "Qt4 not found" )
-GBX_REQUIRE_VAR( build LIB ${LIB_NAME} GLUT_FOUND "libGlut not found" )
+GBX_REQUIRE_VAR( build EXE ${LIB_NAME} OPENSCENEGRAPH_FOUND "OpenSceneGraph not found" )
 
 SET( dep_libs OrcaQCompModel )
 GBX_REQUIRE_TARGETS( build LIB ${LIB_NAME} ${dep_libs} )
@@ -20,7 +20,7 @@ IF( build )
     FILE( GLOB human_srcs *.cpp )
     
     SET( moc_hdrs
-        worldview.h
+      #worldview.h
     )
         
     QT4_WRAP_CPP( moc_srcs ${moc_hdrs} )

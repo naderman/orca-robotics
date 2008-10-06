@@ -31,9 +31,9 @@ Localise2dElement::tryToGetGeometry()
 {
     orca::VehicleGeometryDescriptionPtr geom;
     
-    if ( !listener_.proxy() )
+    if ( listener_.proxy()==0 )
     {
-        humanManager_->showStatusMsg(hydroqguielementutil::IHumanManager::Error,"Localise2dElement::tryToGetGeometry(): listener_.proxy() = 0"  );
+        humanManager_->showStatusMsg(hydroqguielementutil::IHumanManager::Error,"Localise2dElement::tryToGetGeometry(): listener_.proxy()==0"  );
     }
     try 
     {
@@ -68,31 +68,34 @@ Localise2dElement::tryToGetGeometry()
     {
         orca::VehicleGeometryCuboidDescriptionPtr cuboidGeom = orca::VehicleGeometryCuboidDescriptionPtr::dynamicCast( geom );
         painter_.setTypeAndGeometry( PlatformTypeCubic, cuboidGeom->size.l, cuboidGeom->size.w );
-        painter_.setOrigin( cuboidGeom->vehicleToGeometryTransform.p.x, cuboidGeom->vehicleToGeometryTransform.p.y, cuboidGeom->vehicleToGeometryTransform.o.y );
+        painter_.setOrigin( cuboidGeom->platformToGeometryTransform.p.x, cuboidGeom->platformToGeometryTransform.p.y, cuboidGeom->platformToGeometryTransform.o.y );
     }
     else if (geom->type==orca::VehicleGeometryCylindrical)
     {
         orca::VehicleGeometryCylindricalDescriptionPtr cylGeom = orca::VehicleGeometryCylindricalDescriptionPtr::dynamicCast( geom );
         painter_.setTypeAndGeometry( PlatformTypeCylindrical, cylGeom->radius );
-        painter_.setOrigin( cylGeom->vehicleToGeometryTransform.p.x, cylGeom->vehicleToGeometryTransform.p.y, cylGeom->vehicleToGeometryTransform.o.y );
+        painter_.setOrigin( cylGeom->platformToGeometryTransform.p.x, cylGeom->platformToGeometryTransform.p.y, cylGeom->platformToGeometryTransform.o.y );
     }
     else
     {
         humanManager_->showStatusMsg(hydroqguielementutil::IHumanManager::Warning, "Localise2dElement::Unknown platform type. Will paint a rectangle");
         orca::VehicleGeometryCuboidDescriptionPtr cubGeom = orca::VehicleGeometryCuboidDescriptionPtr::dynamicCast( geom );
         painter_.setTypeAndGeometry( PlatformTypeCubic, cubGeom->size.l, cubGeom->size.w );
-        painter_.setOrigin( cubGeom->vehicleToGeometryTransform.p.x, cubGeom->vehicleToGeometryTransform.p.y, cubGeom->vehicleToGeometryTransform.o.y );
+        painter_.setOrigin( cubGeom->platformToGeometryTransform.p.x, cubGeom->platformToGeometryTransform.p.y, cubGeom->platformToGeometryTransform.o.y );
     }
 }
 
 void
 Localise2dElement::update()
 {
-    if (!haveGeometry_)
-        tryToGetGeometry();
+//     if (!haveGeometry_)
+//     {
+//         cout<<"TRACE(localise2delement.cpp): "<<__func__<<": calling tryToGetGeometry()" << endl;
+//         tryToGetGeometry();
+//     }
     
-    // standard update as in IceStormElement
-    if ( !orcaqguielementutil::IceStormElement<Localise2dPainter,
+    // standard update as in IceStormElement2d
+    if ( !orcaqguielementutil::IceStormElement2d<Localise2dPainter,
             orca::Localise2dData,
             orca::Localise2dPrx,
             orca::Localise2dConsumer,

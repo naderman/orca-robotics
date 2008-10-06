@@ -49,14 +49,14 @@ MainThread::initDriver()
         getGpsDescription();
 
         context_.tracer().debug( "loading 'simple' driver",3);
-        driver_ = new SimpleDriver( gpsDescr_, context_ );
+        driver_ = new SimpleDriver( gpsDescr_, vehicleDescr_, context_ );
     }
     else if ( driverName == "odometrybased" )
     {
         getGpsDescription();
 
         context_.tracer().debug( "loading 'odometrybased' driver",3);
-        driver_ = new OdometryBasedDriver( gpsDescr_, context_ );
+        driver_ = new OdometryBasedDriver( gpsDescr_, vehicleDescr_, context_ );
     }
     else
     {
@@ -117,9 +117,7 @@ MainThread::getGpsDescription()
 
 void
 MainThread::initNetworkInterface()
-{
-    orca::VehicleDescription vehicleDesc;
-    
+{   
     std::string prefix = context_.tag() + ".Config.";
     bool requireOdometry = orcaice::getPropertyAsIntWithDefault( context_.properties(), prefix+"RequireOdometry", 1);
     
@@ -128,7 +126,7 @@ MainThread::initNetworkInterface()
         context_.tracer().debug("Odometry interface is not required: VehicleDescription is set to unknown", 3);
         orca::VehicleGeometryDescriptionPtr geometry = new orca::VehicleGeometryDescription;
         geometry->type = orca::VehicleGeometryOther;
-        vehicleDesc.geometry = geometry; 
+        vehicleDescr_.geometry = geometry; 
     }
     else
     {
@@ -148,9 +146,9 @@ MainThread::initNetworkInterface()
                 orcaice::connectToInterfaceWithTag<orca::Odometry2dPrx>( context_, odoPrx, "Odometry2d" );
                 context_.tracer().debug("connected to a 'Odometry2d' interface", 4 );
                 context_.tracer().debug( "Getting vehicle description...", 2 );
-                vehicleDesc = odoPrx->getDescription();
+                vehicleDescr_ = odoPrx->getDescription();
                 stringstream ss;
-                ss << "Got vehicle description: " << orcaobj::toString( vehicleDesc );
+                ss << "Got vehicle description: " << orcaobj::toString( vehicleDescr_ );
                 context_.tracer().info( ss.str() );
                 break;
             }
@@ -178,7 +176,7 @@ MainThread::initNetworkInterface()
     //
     // Initialize Provided Interface
     //
-    localiseInterface_ = new orcaifaceimpl::Localise2dImpl( vehicleDesc.geometry, "Localise2d", context_ );
+    localiseInterface_ = new orcaifaceimpl::Localise2dImpl( vehicleDescr_.geometry, "Localise2d", context_ );
     localiseInterface_->initInterface( this, subsysName() );
 }
 

@@ -11,7 +11,7 @@ Requires.Laser.DefaultProxy=laserscanner2d@local/laser2d
 Config.DriverLib.Default=libHydroLaserFeatureExtractorCombined.so
 
 Config.PointTargetRangeSd.Default=0.2
-Config.PointTargetBearingSd.Default=5.0
+Config.PointTargetBearingSd.Default=2.0
 
 Config.ExtractReflectors.Default=1
 Config.ExtractForegroundPoints.Default=0
@@ -27,9 +27,11 @@ Config.Reflectors.PTruePositive.Default=0.6
 
 Config.FGPoints.MinForegroundWidth.Default=0.01
 Config.FGPoints.MaxForegroundWidth.Default=0.5
-Config.FGPoints.MinForegroundBackgroundSeparation.Default=2.0
-Config.FGPoints.PFalsePositive.Default=0.4
-Config.FGPoints.PTruePositive.Default=0.5
+Config.FGPoints.MinForegroundBackgroundSeparation.Default=0.3
+Config.FGPoints.ClearForegroundBackgroundSeparation.Default=3.0
+Config.FGPoints.ReliableScannerRange.Default=8.0
+Config.FGPoints.PFalsePositive.Default=0.5
+Config.FGPoints.PTruePositive.Default=0.8
 
 Config.Lines.MaxDeltaRangeInCluster.Default=0.5
 Config.Lines.MaxDeltaInLine.Default=0.02

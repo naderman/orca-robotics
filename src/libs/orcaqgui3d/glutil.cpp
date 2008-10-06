@@ -1,3 +1,4 @@
+#if 0
 /*
  * Orca-Robotics Project: Components for robotics 
  *               http://orca-robotics.sf.net/
@@ -10,15 +11,17 @@
 
 #include "glutil.h"
 #include <iostream>
-
+#include <sstream>
 #include <GL/glut.h>
 #include <gbxutilacfr/mathdefs.h>
+#include <gbxutilacfr/exceptions.h>
+#include <hydroqguielementutil/cov2d.h>
 
 using namespace std;
 
 namespace orcaqgui3d {
 
-    namespace glutil {
+namespace glutil {
 
 void
 transform( float x,
@@ -46,7 +49,6 @@ drawBox( float d, float w, float h, bool drawSurfaces, bool drawWireFrame )
         {
             // surfaces
             if ( !drawSurfaces ) continue;
-            glBegin(GL_QUADS);
             type = GL_QUADS;
         }
         else
@@ -156,6 +158,72 @@ drawIcosahedron()
     }
 }
 
+void makeCheckImage64x64x3( GLubyte img[64][64][3],
+                            int numSquaresPerEdge,
+                            int lowVal, 
+                            int highVal )
+{
+    const int widthInPixels=64;
+    const int heightInPixels=64;
+    assert( lowVal >= 0 && lowVal <= 255 );
+    assert( highVal >= 0 && highVal <= 255 );
+
+    int wOn=0;
+    int hOn=0;
+    for (int i = 0; i < widthInPixels; i++) 
+    {
+        if ( (i % (widthInPixels/numSquaresPerEdge)) == 0 )
+            wOn = wOn ? 0 : 1;
+
+        for (int j = 0; j < heightInPixels; j++) 
+        {
+            if ( (j % (heightInPixels/numSquaresPerEdge)) == 0 )
+                hOn = hOn ? 0 : 1;
+
+            int c = (wOn^hOn);
+            if ( c==0 ) c = lowVal;
+            else c = highVal;
+            // cout<<"TRACE(glutil.cpp): hOn: " << hOn << ", wOn: " << wOn << ", c: " << c << endl;
+            img[i][j][0] = (GLubyte) c;
+            img[i][j][1] = (GLubyte) c;
+            img[i][j][2] = (GLubyte) c;
+        }
+    }
+}
+
+std::string
+errorToString( GLenum error )
+{
+    switch ( error )
+    {
+    case GL_NO_ERROR          : return "GL_NO_ERROR";
+    case GL_INVALID_ENUM      : return "GL_INVALID_ENUM";
+    case GL_INVALID_VALUE     : return "GL_INVALID_VALUE";
+    case GL_INVALID_OPERATION : return "GL_INVALID_OPERATION";
+    case GL_STACK_OVERFLOW    : return "GL_STACK_OVERFLOW";
+    case GL_STACK_UNDERFLOW   : return "GL_STACK_UNDERFLOW";
+    case GL_OUT_OF_MEMORY     : return "GL_OUT_OF_MEMORY";
+    default: 
+    {
+        stringstream ss;
+        ss << "Unknown("<<error<<")";
+        return ss.str();
+    }
+    }
+}
+
+void
+checkGLError()
+{
+    GLenum error = glGetError();
+    if ( error != GL_NO_ERROR )
+    {
+        stringstream ss;
+        ss << "OpenGL Error: " << errorToString(error);
+        throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
+    }
+}
+
 ScopedMatrixSave::ScopedMatrixSave()
 {
     glPushMatrix();
@@ -166,5 +234,69 @@ ScopedMatrixSave::~ScopedMatrixSave()
     glPopMatrix();
 }
 
+void paintCovarianceEllipse( float pxx, float pxy, float pyy )
+{
+    // Quick checks first (note that this is a necessary but not
+    // sufficient condition for positive-definiteness)
+    if ( pxx < 0.0 ||
+         pyy < 0.0 ||
+         fabs(pxy) >= sqrt( pxx*pyy ) ||
+         (isnan(pxx)||isinf(pxx))    ||
+         (isnan(pxy)||isinf(pxy))    ||
+         (isnan(pyy)||isinf(pyy))    )
+    {
+        std::stringstream ss;
+        ss << "paintCovarianceEllipse(): covariance matrix not PD: pxx,pxy,pyy = "<<pxx<<","<<pxy<<","<<pyy;
+        throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
+    }
+
+    // Work out the details of the uncertainty ellipse
+    double a, b, psi;
+    hydroqguielementutil::Cov2d cov( pxx, pxy, pyy );
+    cov.ellipse( a, b, psi );
+
+    {
+        ScopedMatrixSave sms;
+        glRotatef( psi, 0.0, 0.0, 1.0 );
+        drawEllipse( a, b );
+    }
+}
+
+void 
+drawEllipse( float radiusX, float radiusY, int numPts )
+{
+    glBegin( GL_LINE_LOOP );
+        
+    float angle=0;
+    for ( int i=0; i < numPts; i++ )
+    {
+        glVertex2f( radiusX*cos(angle), radiusY*sin(angle) );
+        angle += 2*M_PI/(float)(numPts);
+    }
+
+    glEnd();
+}
+
+void drawCyclinder( float height, float radiusX, float radiusY, int numFacets )
+{
+    glBegin( GL_QUADS );
+
+    float angle=0;
+    for ( int i=0; i < numFacets; i++ )
+    {
+        float nextAngle = angle + 2*M_PI/(float)(numFacets);
+
+        glVertex3f( radiusX*cos(angle), radiusY*sin(angle), 0.0 );
+        glVertex3f( radiusX*cos(nextAngle), radiusY*sin(nextAngle), 0.0 );
+        glVertex3f( radiusX*cos(nextAngle), radiusY*sin(nextAngle), height );
+        glVertex3f( radiusX*cos(angle), radiusY*sin(angle), height );
+
+        angle = nextAngle;
+    }    
+
+    glEnd();
+}
+
 } // namespace
 } // namespace
+#endif

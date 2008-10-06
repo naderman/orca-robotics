@@ -22,15 +22,14 @@ ReplayConductor::ReplayConductor( orcalog::MasterFileReader       &masterFileRea
 {
     clock_.setReplayRate(replayRate);
 
+    bool cursorValid = masterFileReader_.getCursorTime( firstItemSec_, firstItemUsec_ );
+    assert( cursorValid );
+
     // Fast-forward if non-zero beginTime
     if ( beginTime > orcalog::iceUtilTime(0,0) )
     {
         fastForward( beginTime );
     }
-}
-
-ReplayConductor::~ReplayConductor()
-{
 }
 
 void
@@ -127,6 +126,13 @@ ReplayConductor::rewindToStartAndStop()
 {
     IceUtil::Mutex::Lock lock(mutex_);
     addEvent( Event( RewindToStartAndStop ) );
+}
+
+bool
+ReplayConductor::getCursorTime( int &sec, int &usec )
+{
+    IceUtil::Mutex::Lock lock(mutex_);
+    return masterFileReader_.getCursorTime( sec, usec );
 }
 
 void
@@ -272,7 +278,7 @@ ReplayConductor::handleFastForward( const IceUtil::Time &deltaT )
                                                 (int)(tNew.toMicroSeconds()-tNew.toSeconds()*1e6) );
     
 
-    masterFileReader_.getCursorTime( sec, usec );
+    //masterFileReader_.getCursorTime( sec, usec );
 
     if ( wasPlaying )
         handleStart();

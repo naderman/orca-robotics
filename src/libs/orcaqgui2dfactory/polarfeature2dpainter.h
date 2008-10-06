@@ -37,6 +37,9 @@ class PolarFeature2dPainter
 
     void clear();
     
+    QStringList contextMenu();
+    void execute( int action );
+
   private:
 
     double offsetX_;
@@ -47,6 +50,8 @@ class PolarFeature2dPainter
 
     bool isUpsideDown_;
     bool isNotHorizontal_;
+
+    bool isDisplay_;
 
     orca::PolarFeature2dData featureData_;
 };

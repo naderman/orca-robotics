@@ -69,7 +69,7 @@ public:
 
     //! Gives the time of the item which would be returned if getData() were called.
     //! Returns: cursorIsValid (is invalid at end of log)
-    bool getCursorTime( int &seconds, int &useconds );
+    bool getCursorTime( int &seconds, int &useconds ) const;
 
     //! Steps the cursor backward (unless it's already at the start).
     //! Ie interleaved calls to stepBackward() and getData() will move the cursor back

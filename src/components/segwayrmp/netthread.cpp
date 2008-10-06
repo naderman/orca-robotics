@@ -155,15 +155,12 @@ limit( double &cmdSpeed,
        double maxTurnrate,
        double maxLateralAcceleration )
 {
-    if ( cmdSpeed > maxForwardSpeed ) cmdSpeed = maxForwardSpeed;
     // Note that maxReverseSpeed is a positive number.
-    if ( cmdSpeed < -maxReverseSpeed ) cmdSpeed = -maxReverseSpeed;
-    if ( cmdTurnrate > maxTurnrate ) cmdTurnrate = maxTurnrate;
-    if ( cmdTurnrate < -maxTurnrate ) cmdTurnrate = -maxTurnrate;
+    CLIP_TO_LIMITS( -maxReverseSpeed, cmdSpeed, maxForwardSpeed );
+    CLIP_TO_LIMITS( -maxTurnrate, cmdTurnrate, maxTurnrate );
 
-    double maxTurnrateToSatisfyLateralAcc = maxLateralAcceleration / cmdSpeed;
-    if ( cmdTurnrate > maxTurnrateToSatisfyLateralAcc )
-        cmdTurnrate = maxTurnrateToSatisfyLateralAcc;
+    double maxTurnrateToSatisfyLateralAcc = maxLateralAcceleration / fabs(cmdSpeed);
+    CLIP_TO_LIMITS( -maxTurnrateToSatisfyLateralAcc, cmdTurnrate, maxTurnrateToSatisfyLateralAcc );
 }
 
 }
@@ -221,7 +218,7 @@ NetThread::handleData(const orca::VelocityControl2dData& incomingCommand)
         ss << "Requested command ("<<originalCommand.toString()<<") can not be achieved.  " << endl
            << "  maxForwardSpeed        : " << maxForwardSpeed_ << endl
            << "  maxReverseSpeed        : " << maxReverseSpeed_ << endl
-           << "  maxTurnrate            : " << maxTurnrate_*M_PI/180.0 << endl
+           << "  maxTurnrate            : " << maxTurnrate_*180.0/M_PI << "deg/s" << endl
            << "  maxLateralAcceleration : " << maxLateralAcceleration_ << endl
            << "    --> limiting command to: " << internalCommand.toString();
         subStatus().warning( ss.str() );

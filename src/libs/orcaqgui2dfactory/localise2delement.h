@@ -18,7 +18,7 @@
 
 #include <hydroqgui/hydroqgui.h>
 #include <hydroqguielementutil/iknowsplatformposition2d.h>
-#include <orcaqguielementutil/icestormelement.h>
+#include <orcaqguielementutil/icestormelement2d.h>
 #include <orcaqgui2dfactory/connectutils.h>
 #include <orcaqgui2dfactory/localise2dpainter.h>
 
@@ -26,7 +26,7 @@ namespace orcaqgui2d
 {
 
 class Localise2dElement
-    : public orcaqguielementutil::IceStormElement<Localise2dPainter,
+    : public orcaqguielementutil::IceStormElement2d<Localise2dPainter,
                              orca::Localise2dData,
                              orca::Localise2dPrx,
                              orca::Localise2dConsumer,
@@ -39,7 +39,7 @@ public:
                        hydroqguielementutil::IHumanManager *humanManager,
                        bool                     beginDisplayHistory=false,
                        int                      timeoutMs=30000 )
-        : orcaqguielementutil::IceStormElement<Localise2dPainter,
+        : orcaqguielementutil::IceStormElement2d<Localise2dPainter,
                             orca::Localise2dData,
                             orca::Localise2dPrx,
                             orca::Localise2dConsumer,

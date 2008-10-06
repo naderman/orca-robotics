@@ -120,7 +120,7 @@ connectToInterfaceWithString( const Context     & context,
     while ( !thread->isStopping() && ( retryNumber<0 || count<retryNumber) )
     {
         try {
-            connectToInterfaceWithString<ProxyType>( context, proxy, proxyString );
+            connectToInterfaceWithString( context, proxy, proxyString );
             break;
         }
         catch ( const orcaice::NetworkException& e ) {

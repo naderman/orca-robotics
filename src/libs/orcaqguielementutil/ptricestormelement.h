@@ -31,7 +31,7 @@ namespace orcaqguielementutil {
   @author Alex Brooks
 */
 template<class PainterType, class DataType, class DataPtrType, class ProxyType, class ConsumerType, class ConsumerPrxType>
-class PtrIceStormElement : public hydroqguielementutil::GuiElement2d
+class PtrIceStormElement // : public hydroqguielementutil::GuiElement2d
 {
   
 public:
@@ -39,9 +39,9 @@ public:
     //! timeoutMs is how long we wait before assuming a problem and trying to reconnect.
     //! (timoutMs = -1 means we never timeout)
     PtrIceStormElement( const orcaice::Context  &context,
-                     const std::string       &proxyString,
-                     PainterType             &painter,
-                     const double            timeoutMs=5000.0 )
+                        const std::string       &proxyString,
+                        PainterType             &painter,
+                        const double            timeoutMs=5000.0 )
         : context_(context),
           listener_(context,proxyString),
           painter_(painter),
@@ -53,15 +53,9 @@ public:
     //! Can do special stuff on connection by inheriting and overloading this
     virtual void actionOnConnection()=0;
 
-    //! Here we pop data from the consumer buffer, and give it to the painter.
-    virtual void update();
-
-    //! Derived classes may override this if they have to paint other stuff than just interface data (e.g. user input)
-    virtual void paint( QPainter *p, int z )
-        { painter_.paint( p, z ); }
-
-    bool paintThisLayer( int z ) const
-        { return painter_.paintThisLayer( z ); }
+    //! From GuiElement2d:
+    //!   Here we pop data from the consumer buffer, and give it to the painter.
+    void updateFromBuffer();
 
 protected:
 
@@ -122,7 +116,7 @@ PtrIceStormElement<PainterType,DataType,DataPtrType,ProxyType,ConsumerType,Consu
 
 template<class PainterType, class DataType, class DataPtrType, class ProxyType, class ConsumerType, class ConsumerPrxType>
 void 
-PtrIceStormElement<PainterType,DataType,DataPtrType,ProxyType,ConsumerType,ConsumerPrxType>::update()
+PtrIceStormElement<PainterType,DataType,DataPtrType,ProxyType,ConsumerType,ConsumerPrxType>::updateFromBuffer()
 {
     if ( !needToUpdate() ) {
         return;

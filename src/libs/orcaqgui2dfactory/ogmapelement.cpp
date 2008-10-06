@@ -20,7 +20,7 @@ namespace orcaqgui2d {
 OgMapElement::OgMapElement( const orcaice::Context  &context,
                             const std::string       &proxyString,
                             hydroqguielementutil::IHumanManager* humanManager )
-    : orcaqguielementutil::IceStormElement<OgMapPainter,
+    : orcaqguielementutil::IceStormElement2d<OgMapPainter,
                       orca::OgMapData,
                       orca::OgMapPrx,
                       orca::OgMapConsumer,

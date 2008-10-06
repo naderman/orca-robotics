@@ -104,14 +104,13 @@ Simulator::setupInterfaces( const hydrosim2d::VehicleSimulator::Config &vehicleS
     orcaobjutil::checkVehicleControlVelocityDifferentialDescription( *c );
     vehicleDescr_.control        = c;
 
-    vehicleDescr_.platformToVehicleTransform = orcaobj::zeroFrame3d();
     orca::VehicleGeometryCylindricalDescription *g
         = new orca::VehicleGeometryCylindricalDescription;
     g->type = orca::VehicleGeometryCylindrical;
     g->radius = ROBOT_RADIUS;
     g->height = 2.0;
 
-    g->vehicleToGeometryTransform = orcaobj::zeroFrame3d();
+    g->platformToGeometryTransform = orcaobj::zeroFrame3d();
     vehicleDescr_.geometry = g;
 
     posePublisher_.reset( new orcasim2d::PosePublisher( vehicleDescr_.geometry,

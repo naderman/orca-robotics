@@ -63,6 +63,14 @@ namespace {
             ice_readRangeScanner2dDescription( helper.stream_, obj );
             helper.read();
         }
+        else if ( format=="ascii" )
+        {   
+            std::string line;
+            std::getline( *file, line );
+    
+            std::stringstream ss( line );
+            fromLogString( ss, obj );
+        }    
         else
         {
             stringstream ss;
@@ -83,6 +91,14 @@ namespace {
             ice_readVehicleDescription( helper.stream_, obj );
             helper.read();
         }
+        else if ( format=="ascii" )
+        {   
+            std::string line;
+            std::getline( *file, line );
+    
+            std::stringstream ss( line );
+            fromLogString( ss, obj );
+        }    
         else
         {
             stringstream ss;
@@ -199,6 +215,15 @@ namespace {
             ice_readLaserScanner2dData( helper.stream_, obj );
             helper.read();
         }
+        else if ( format=="ascii" )
+        {   
+            obj = new orca::LaserScanner2dData;
+            std::string line;
+            std::getline( *file, line );
+
+            std::stringstream ss( line );
+            fromLogString( ss, *obj );
+        }    
         else
         {
             stringstream ss;
@@ -219,6 +244,14 @@ namespace {
             ice_readLocalise2dData( helper.stream_, obj );
             helper.read();
         }
+        else if ( format=="ascii" )
+        {   
+            std::string line;
+            std::getline( *file, line );
+
+            std::stringstream ss( line );
+            fromLogString( ss, obj );
+        }    
         else
         {
             stringstream ss;
@@ -259,6 +292,14 @@ namespace {
             ice_readOdometry2dData( helper.stream_, obj );
             helper.read();
         }
+        else if ( format=="ascii" )
+        {   
+            std::string line;
+            std::getline( *file, line );
+    
+            std::stringstream ss( line );
+            fromLogString( ss, obj );
+        }    
         else
         {
             stringstream ss;
@@ -396,7 +437,7 @@ GpsLogReader::read( orca::GpsDescription &obj )
 LaserScanner2dLogReader::LaserScanner2dLogReader( const orcalog::LogReaderInfo &logReaderInfo )
     : orcalog::LogReader( logReaderInfo )
 {
-    checkFormatIceOnly( logReaderInfo );
+    checkFormatIceOrAscii( logReaderInfo );
 }
 void
 LaserScanner2dLogReader::read( orca::LaserScanner2dDataPtr &obj )
@@ -423,7 +464,7 @@ LaserScanner2dLogReader::read( orca::RangeScanner2dDescription &obj )
 Localise2dLogReader::Localise2dLogReader( const orcalog::LogReaderInfo &logReaderInfo )
     : orcalog::LogReader( logReaderInfo )
 {
-    checkFormatIceOnly( logReaderInfo );
+    checkFormatIceOrAscii( logReaderInfo );
 }
 void
 Localise2dLogReader::read( orca::Localise2dData &obj )
@@ -477,7 +518,7 @@ Localise3dLogReader::read( orca::VehicleGeometryDescriptionPtr &obj )
 Odometry2dLogReader::Odometry2dLogReader( const orcalog::LogReaderInfo &logReaderInfo )
     : orcalog::LogReader( logReaderInfo )
 {
-    checkFormatIceOnly( logReaderInfo );
+    checkFormatIceOrAscii( logReaderInfo );
 }
 void
 Odometry2dLogReader::read( orca::Odometry2dData &obj )

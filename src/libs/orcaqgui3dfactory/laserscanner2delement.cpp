@@ -14,7 +14,6 @@
 #include "laserscanner2delement.h"
 
 using namespace std;
-using namespace orca;
 
 namespace orcaqgui3d {
 
@@ -22,45 +21,47 @@ void
 LaserScanner2dElement::getLaserInfo()
 {
     // Subscribe directly to get geometry etc
-    LaserScanner2dPrx laserPrx;
+    orca::LaserScanner2dPrx laserPrx;
 
-    try
-    {
-        orcaice::connectToInterfaceWithString( context_, laserPrx, listener_.interfaceName() );
+    // Don't bother catching exceptions: they'll get caught higher up.
 
-        RangeScanner2dDescription descr;
-        descr = laserPrx->getDescription();
-        painter_.setDescription( descr );
-    }
-    catch ( gbxutilacfr::Exception &e )
-    {
-        cout<<"TRACE(laserelement.cpp): got exception :"<<e.what()<<endl;
-        // Ignore it.  We'll try reconnecting later.
-    }
-    catch ( Ice::Exception &e )
-    {
-        cout<<"TRACE(laserelement.cpp): got Ice exception :"<<e<<endl;
-        // Ignore it.  We'll try reconnecting later.
-    }
-    catch ( std::exception &e )
-    {
-        cout<<"TRACE(laserelement.cpp): got std exception :"<<e.what()<<endl;
-        // Ignore it.  We'll try reconnecting later.
-    }
-    catch ( ... )
-    {
-        cout<<"TRACE(laserelement.cpp): got some exception"<<endl;
-        // Ignore it.  We'll try reconnecting later.
-    }
+    orcaice::connectToInterfaceWithString( context_, laserPrx, listener_.interfaceName() );
+    
+    orca::RangeScanner2dDescription descr;
+    descr = laserPrx->getDescription();
+
+    painter_.setDescr( descr.offset, descr.size );
 }
 
 QStringList
 LaserScanner2dElement::contextMenu()
 {
     QStringList s;
-    s<<"Toggle Scan"<<"Toggle Walls"<<"Toggle Reflectors";
+    s<<"Toggle Display Points"<<"Toggle Display";
     return s;
 }
 
+void 
+LaserScanner2dElement::execute( int action )
+{
+    switch ( action )
+    {
+    case 0 :
+    {
+        painter_.toggleDisplayPoints();
+        break;
+    }
+    case 1 :
+    {
+        painter_.toggleDisplayScan();
+        break;
+    }
+    default:
+    {
+        throw hydroqgui::Exception( ERROR_INFO, "OgMapElement::execute(): What the hell? bad action." );
+        break;
+    }
+    }
+}
 
 }

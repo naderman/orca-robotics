@@ -25,6 +25,7 @@ private:
 
     void parseInput( const std::string &input );
     void printMenu();
+    std::string cursorInfo();
 
     ReplayConductor &replayConductor_;
     bool             autoStart_;

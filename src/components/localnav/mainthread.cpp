@@ -334,7 +334,7 @@ MainThread::stopVehicle()
             exceptionSS <<__func__<<"(): " << e.what();
         }
         catch ( ... ) {
-            exceptionSS <<__func__<<"(): unkinown exception.";
+            exceptionSS <<__func__<<"(): unknown exception.";
         }
 
         if ( !exceptionSS.str().empty() ) 
@@ -402,6 +402,7 @@ MainThread::getInputs( hydronavutil::Velocity &velocity,
                << "\t localiseData: " << orcaobj::toString(orcaLocaliseData_.timeStamp) << endl
                << "\t odomData:     " << orcaobj::toString(orcaOdomData_.timeStamp) << endl
                << "Maybe something is wrong: Stopping.";
+            throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
         }
 
         //

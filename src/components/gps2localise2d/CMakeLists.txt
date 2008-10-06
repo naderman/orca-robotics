@@ -8,7 +8,7 @@ GBX_REQUIRE_VAR( build EXE ${APP_NAME} not_os_win "Windows OS is not  supported"
 SET( ext_libs HydroGpsUtil HydroNavUtil )
 GBX_REQUIRE_INSTALLS( build EXE ${APP_NAME} ${ext_libs} )
 
-SET( int_libs OrcaIfaceImpl OrcaObjects )
+SET( int_libs OrcaIfaceImpl OrcaObjects OrcaNavUtil )
 GBX_REQUIRE_TARGETS( build EXE ${APP_NAME} ${int_libs} )
 
 IF( build )

@@ -8,18 +8,9 @@
  *
  */
 
-#include <cmath>
-#include <qpainter.h>
-#include <qstring.h>
-
-#include <QFile>
-#include <QTextStream>
-
-#include <orcaice/orcaice.h>
-#include <orcaobj/orcaobj.h>
-#include <orcalogfactory/logstringutils.h>
-
 #include <hydroqguielementutil/paintutils.h>
+#include <hydroqguielementutil/ihumanmanager.h>
+#include <orcaqgui2dfactory/pathconversionutil.h>
 
 #include "pathpainter.h"
 
@@ -32,10 +23,6 @@ PathPainter::PathPainter()
       color_(Qt::blue),
       inFocus_(true),
       relativeStartTime_(NAN)
-{
-}
-
-PathPainter::~PathPainter()
 {
 }
 
@@ -240,32 +227,6 @@ void PathPainter::paint( QPainter *painter, int z )
 //    painter->drawText( labelPos, "maxSpeed: " + QString::number( guiPath_[wpI].maxSpeed ) + " m/s" );
     
     painter->restore();
-}
-
-
-void PathPainter::savePath( const QString fileName, hydroqguielementutil::IHumanManager *humanManager ) const
-{
-    if (guiPath_.size()==0)
-    {
-        humanManager->showDialogMsg(hydroqguielementutil::IHumanManager::Warning, "Path has no waypoints!");
-        return;
-    }
-    
-    QFile file(fileName);
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
-    {
-        humanManager->showDialogMsg(hydroqguielementutil::IHumanManager::Error, "Cannot create file " + fileName );
-        return;
-    }
-    
-    // convert gui path to an orca path
-    orca::Path2d orcaPath;
-    guiPathToOrcaPath( guiPath_, orcaPath );
-    
-    // save to file
-    QTextStream out(&file);
-    out << QString(orcalogfactory::toLogString( orcaPath ).c_str());
-    file.close();
 }
 
 }

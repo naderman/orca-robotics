@@ -50,9 +50,6 @@ private:
     orcaifaceimpl::PowerImplPtr                powerI_;
     orcaifaceimpl::VelocityControl2dImplPtr    velocityControl2dI_;
     
-    // proxy to our optional 'required interface'
-    orca::EStopPrx eStopPrx_;
-
     // we need this reference to call a couple of get/set functions
     HwThread &hwThread_;
 

@@ -78,6 +78,7 @@ public:
                 ConsumerType,
                 ConsumerPrxType,
                 SubscriptionMakerType>( context_, proxyString_, consumer_, callbackPrx_, proxy_ );
+            assert( proxy_ != 0 );
             isSubscribed_ = true;
             return 0;
         }

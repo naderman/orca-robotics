@@ -12,7 +12,6 @@
 #include <sstream>
 #include <assert.h>
 
-#include <orcaobj/orcaobj.h>
 #include <orcaice/stringutils.h>
 #include <hydroutil/hydroutil.h>
 

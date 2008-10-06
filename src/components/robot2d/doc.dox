@@ -82,10 +82,6 @@ Parameters describing vehicle (see orca::VehicleDescription for details)
     - Default: 1.0
   - @c Robot2d.Config.VehicleDescription.Control.VelocityDifferential.MaxRotationalAcceleration (deg/s/s)
     - Default: 45.0
-  - @c Robot2d.Config.VehicleDescription.PlatformToVehicleTransform (Frame3d) [m, deg]
-    - Position of the vehicle's local coord system with respect to the platform's local coord system.
-    - Format: x y z roll pitch yaw (space separated)
-    - Default: 0.0 0.0 0.0  0.0 0.0 0.0
   - @c Robot2d.Config.VehicleDescription.Geometry.Type (string)
     - valid values: 'Cylindrical'
     - Default: 'Cylindrical'
@@ -95,7 +91,7 @@ Parameters describing vehicle (see orca::VehicleDescription for details)
   - @c Robot2d.Config.VehicleDescription.Geometry.Cylindrical.Height (m)
     - Height of the vehicle's bounding cylinder
     - Default: 1.0
-  - @c Robot2d.Config.VehicleDescription.Geometry.Cylindrical.VehicleToGeometryTransform (Frame3d) [m, deg]
+  - @c Robot2d.Config.VehicleDescription.Geometry.Cylindrical.PlatformToGeometryTransform (Frame3d) [m, deg]
     - Position of the cylinder centre with respect to the vehicle's local coord system.
       (cylinder extends in +/- z direction from here)
     - Format: x y z roll pitch yaw (space separated)

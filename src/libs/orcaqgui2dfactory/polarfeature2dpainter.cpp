@@ -27,7 +27,8 @@ namespace {
 }
 
 PolarFeature2dPainter::PolarFeature2dPainter()
-    : isOffsetSet_(false)
+    : isOffsetSet_(false),
+      isDisplay_(true)
 {
 }
 
@@ -195,6 +196,8 @@ drawLineFeature( QPainter *painter, const orca::LinePolarFeature2d &f )
 void
 PolarFeature2dPainter::paint( QPainter *painter, int z )
 {
+    if ( !isDisplay_ ) return;
+
     if ( z != hydroqguielementutil::Z_LASER_FEATURES ) return;
 
     // handle sensor offset
@@ -231,6 +234,25 @@ PolarFeature2dPainter::paint( QPainter *painter, int z )
                 continue;
             }
         }
+    }
+}
+
+QStringList
+PolarFeature2dPainter::contextMenu()
+{
+    QStringList s;
+    s<<"Toggle Display";
+    return s;
+}
+
+void
+PolarFeature2dPainter::execute( int action )
+{
+    switch ( action )
+    {
+    case 0:
+        isDisplay_ = !isDisplay_;
+        break;
     }
 }
 

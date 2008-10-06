@@ -45,10 +45,6 @@ LaserScanner2dPainter::LaserScanner2dPainter( QColor outlineColor,
     fillColor_ = QColor(204,204,255,127);
 }
 
-LaserScanner2dPainter::~LaserScanner2dPainter()
-{
-}
-
 void
 LaserScanner2dPainter::clear()
 {
@@ -131,6 +127,9 @@ LaserScanner2dPainter::paint( QPainter *painter, int z )
     if ( z != hydroqguielementutil::Z_LASER || !isDisplayScan_ ) return;
     if ( qScan_.isEmpty() ) return;
     
+    // scaling
+    qreal onePix = painter->worldMatrix().inverted().mapRect(QRectF(0, 0, 1, 1)).width();
+
     painter->save();
     
     // handle laser offset
@@ -169,7 +168,7 @@ LaserScanner2dPainter::paint( QPainter *painter, int z )
             if ( isCurrWall != isPrevWall || i==qScan_.size()-1 ) {
                 if ( isWallSegment ) {
                     finish = i-1;
-                    painter->setPen( QPen( outlineColor_, .2 ) );
+                    painter->setPen( QPen( outlineColor_, 3.0*onePix ) );
                     painter->drawPolyline( &qScan_[start], finish-start+1 );
                     // start of next segment
                     start = i-1;
@@ -189,7 +188,8 @@ LaserScanner2dPainter::paint( QPainter *painter, int z )
 
     if ( isDisplayPoints_ )
     {
-        painter->setPen( QPen( Qt::black, .1 ) );
+        painter->setPen( QPen( Qt::black, 3.0*onePix ) );
+//         painter->setPen( QPen( Qt::black ) );
         painter->drawPoints( qReturns_ );
     }
 
@@ -204,8 +204,13 @@ LaserScanner2dPainter::paint( QPainter *painter, int z )
             if ( intensities_[i] > 0 )
             {
                 int greenness = intensities_[i] * 36;    // splits up the green colorspace into 8 equal spaces
+                if ( intensities_[i] > 7 )
+                {
+                    cout << "ERROR(laserscanner2dpainter.cpp): invalid intensity: " << (int)(intensities_[i]) << endl;
+                    continue;
+                }
                 intensityColor.setRgb( 0, greenness, 255 );
-                painter->setPen( QPen( intensityColor ) );
+                painter->setPen( QPen(intensityColor, 1.0*onePix) );
                 painter->setBrush( intensityColor );
 
                 painter->save();
@@ -239,6 +244,7 @@ LaserScanner2dPainter::execute( int action )
     case 1 :
         // toggle points
         isDisplayPoints_ = !isDisplayPoints_;
+        cout<<"TRACE(laserscanner2dpainter.cpp): isDisplayPoints_ set to " << isDisplayPoints_ << endl;
         break;
     case 2 :
         // toggle walls

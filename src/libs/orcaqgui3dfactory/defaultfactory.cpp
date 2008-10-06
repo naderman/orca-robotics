@@ -9,12 +9,13 @@
  */
  
 #include <iostream>
-#include <orcaqgui/guielement.h>
-#include <orcaqgui/ihumanmanager.h>
+#include <hydroqgui/hydroqgui.h>
 
 #include <orcaqgui3dfactory/gridelement.h>
 #include <orcaqgui3dfactory/laserscanner2delement.h>
-//#include <orcaqgui3dfactory/position3delement.h>
+#include <orcaqgui3dfactory/localise2delement.h>
+#include <orcaqgui3dfactory/featuremap2delement.h>
+#include <orcaqgui3dfactory/ogmapelement.h>
 
 #include "defaultfactory.h"
 
@@ -24,46 +25,90 @@ namespace orcaqgui3d {
 
 DefaultFactory::DefaultFactory()
 {
-    addSupportedType(QStringList("::local::Grid"));
-    addSupportedType(QStringList("::orca::LaserScanner2d"));
-//    addSupportedType(QStringList("::orca::Position3d"));
+    addSupportedType("Grid");
+    addSupportedType("LaserScanner2d");
+    addSupportedType("Localise2d");
+    addSupportedType("FeatureMap2d");
+    addSupportedType("OgMap");
 }
 
-
-orcaqgui::GuiElement*
-DefaultFactory::create( const orcaice::Context  &context,
-                        const QStringList       &interfaceIds,
-                        const QStringList       &proxyStrList,
-                        QColor                   suggestedColor,
-                        orcaqgui::IHumanManager *humanManager) const
+bool 
+DefaultFactory::lookupElementType( const QStringList &ids, QString &elementType ) const
 {
-    orcaqgui::GuiElement *elem = NULL;
-   
-    if (interfaceIds.size()>1)
+    // One-to-one mappings (one interface per element):
+    if (ids.size()==1)
     {
-        cout << "ERROR(guielementfactory.cpp): Factory does not support elements with more than one interface" << endl;
-        return elem;
+        elementType = ids[0].section(':',4,4);
     }
-    
-    QString interfaceId = interfaceIds[0];
-    QString proxyString = proxyStrList[0];
-    
-    if ( interfaceId == "::local::Grid" ) {
-        cout<<"creating Grid element"<<endl;
-        elem = new orcaqgui3d::GridElement();
+    // One element with two interfaces
+    // Please extend as required
+    else if (ids.size()==2)
+    {
+        if (ids[0]=="::orca::OgMap" && ids[1]=="::orca::OgMap")
+            elementType="MultiOgMaps";
+        else
+            return false;
     }
-    else if ( interfaceId == "::orca::LaserScanner2d" ) {
-        cout<<"creating LaserScanner2d element"<<endl;
-        elem = new orcaqgui3d::LaserScanner2dElement( context, proxyString.toStdString() );
-    }
-//     else if ( interfaceId == "::orca::Position3d" ) {
-//         cout<<"creating Position3d element"<<endl;
-//         elem = new orcaqgui3d::Position3dElement( context, proxyString.toStdString() );
-//     }
     else
     {
-        cout << "ERROR(guielementfactory.cpp): Don't know how to handle interfaceId '" << interfaceId.toStdString() << "'" << endl;
-        elem = NULL;
+        return false;    
+    }
+    
+    return true;
+}
+
+hydroqguielementutil::IGuiElement*
+DefaultFactory::create( const QString                            &elementType,
+                        const QStringList                        &elementDetails,
+                        QColor                                    suggestedColor,
+                        hydroqguielementutil::IHumanManager      &humanManager,
+                        hydroqguielementutil::MouseEventManager  &mouseEventManager,
+                        hydroqguielementutil::ShortcutKeyManager &shortcutKeyManager,
+                        const hydroqgui::GuiElementSet           &guiElementSet ) const
+{
+    assert( isContextSet_ );
+    hydroqguielementutil::IGuiElement *elem = NULL;
+
+    try
+    {
+        stringstream ss;
+        ss<<"DefaultFactory::create(): creating "<<elementType.toStdString()<<" element";
+        if ( elementDetails.size() > 0 )
+        {
+            ss << " with details:";
+            for ( int i=0; i < elementDetails.size(); i++ )
+            {
+                ss << " " << elementDetails[i].toStdString();
+            }
+        }
+        cout << ss.str() << endl;
+
+        if ( elementType == "Grid" ) {
+            elem = new orcaqgui3d::GridElement();
+        }
+        else if ( elementType == "LaserScanner2d" ) {
+            elem = new orcaqgui3d::LaserScanner2dElement( context_, elementDetails[0].toStdString() );
+        }
+        else if ( elementType == "Localise2d" ) {
+            elem = new orcaqgui3d::Localise2dElement( context_, elementDetails[0].toStdString(), &humanManager );
+        }
+        else if ( elementType == "FeatureMap2d" ) {
+            elem = new orcaqgui3d::FeatureMap2dElement( context_, elementDetails[0].toStdString(), &humanManager );
+        }
+        else if ( elementType == "OgMap" ) {
+            elem = new orcaqgui3d::OgMapElement( context_, elementDetails[0].toStdString(), &humanManager );
+        }
+        else
+        {
+            cout << "DefaultFactory::create(): Don't know how to handle elementType '" << elementType.toStdString() << "'" << endl;
+        }
+    
+    } 
+    catch (hydroqgui::Exception &e)
+    {
+        cout << "DefaultFactory::create(): Element creation failed: " << e.what() << endl;
+        delete elem;
+        elem=NULL;
     }
 
     if ( elem != NULL )
@@ -73,8 +118,7 @@ DefaultFactory::create( const orcaice::Context  &context,
 
 }
 
-
-orcaqgui::GuiElementFactory *createFactory()
+hydroqgui::IGuiElementFactory *createFactory()
 {
     return new orcaqgui3d::DefaultFactory;
 }

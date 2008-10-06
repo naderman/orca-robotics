@@ -8,13 +8,13 @@
 #
 INCLUDE( cmake/internal/Assert.cmake )
 
-IF( ${PROJECT_NAME} MATCHES "orca" )
+IF( ${PROJECT_NAME} STREQUAL "orca" )
     MESSAGE( STATUS "Setting project type to ORCA MOTHERSHIP" )
     SET( ORCA_MOTHERSHIP 1 )
 
     SET( ORCA_CMAKE_DIR ${${PROJECT_NAME}_SOURCE_DIR}/cmake )
 
-ELSE ( ${PROJECT_NAME} MATCHES "orca" )
+ELSE ( ${PROJECT_NAME} STREQUAL "orca" )
     MESSAGE( STATUS "Setting project type to ORCA SATELLITE" )
     SET( ORCA_MOTHERSHIP 0 )
 
@@ -49,7 +49,7 @@ ELSE ( ${PROJECT_NAME} MATCHES "orca" )
     SET( ORCA_CMAKE_DIR ${ORCA_HOME}/share/orca/cmake )
     SET( ORCA_SLICE_DIR ${ORCA_HOME}/share/orca/slice )
 
-ENDIF( ${PROJECT_NAME} MATCHES "orca" )
+ENDIF( ${PROJECT_NAME} STREQUAL "orca" )
 
 MESSAGE( STATUS "Using custom CMake scripts in ${ORCA_CMAKE_DIR}" )
 

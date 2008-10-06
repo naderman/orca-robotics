@@ -7,7 +7,7 @@ SET( not_os_win NOT GBX_OS_WIN )
 GBX_REQUIRE_VAR( build LIB ${LIB_NAME} not_os_win "Windows OS is not  supported" )
 
 SET( dep_libs HydroOgMap )
-GBX_REQUIRE_VAR( build LIB ${LIB_NAME} HYDROOGMAP_INSTALLED "libHydroOgMap not installed" )
+GBX_REQUIRE_INSTALLS( build LIB ${LIB_NAME} ${dep_libs} )
 
 IF( build )
 

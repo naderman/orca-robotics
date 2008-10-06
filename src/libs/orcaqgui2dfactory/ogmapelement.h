@@ -12,14 +12,14 @@
 #define OGMAPELEMENT_H
 
 #include <orcaqgui2dfactory/ogmappainter.h>
-#include <orcaqguielementutil/icestormelement.h>
+#include <orcaqguielementutil/icestormelement2d.h>
 #include <hydroqgui/hydroqgui.h>
 #include <orcaqgui2dfactory/connectutils.h>
 
 namespace orcaqgui2d {
 
 class OgMapElement
-    : public orcaqguielementutil::IceStormElement<OgMapPainter,
+    : public orcaqguielementutil::IceStormElement2d<OgMapPainter,
                              orca::OgMapData,
                              orca::OgMapPrx,
                              orca::OgMapConsumer,

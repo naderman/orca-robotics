@@ -18,8 +18,6 @@ SET( ORCA_SLICE_SOURCE_FILES
     bros1.ice
     stochastic.ice
 #interfaces
-    binaryindicator.ice
-    binaryswitch.ice
     button.ice
     camera.ice
     cpu.ice
@@ -28,20 +26,17 @@ SET( ORCA_SLICE_SOURCE_FILES
     estop.ice
     featuremap2d.ice
     gps.ice
-    hand.ice
     home.ice
     image.ice
     ins.ice
     imu.ice
     localise2d.ice
     localise3d.ice
-    log.ice
     multicamera.ice
     odometry2d.ice
     odometry3d.ice
     ogfusion.ice
     ogmap.ice
-    ogpatch.ice 
     particle2d.ice
     pathfollower2d.ice
     pathplanner2d.ice
@@ -51,11 +46,9 @@ SET( ORCA_SLICE_SOURCE_FILES
     polarfeature2d.ice
     power.ice
     properties.ice
-    ptz.ice 
     qgraphics2d.ice
     rangescanner2d.ice
     laserscanner2d.ice
-    replay.ice
     status.ice
     tracer.ice
     vehicledescription.ice

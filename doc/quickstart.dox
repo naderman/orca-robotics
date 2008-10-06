@@ -82,7 +82,7 @@ $ cp [ORCA-INSTALL]/share/orca/cfg/lasermon.cfg .
 Configure the laser for fake (simulated) operation (or skip this step if you're connected to a real SICK laser).  Edit @c laser2d.cfg, and replace the default library name @c 'libHydroLaserScanner2dSickCarmen.so' with @c 'libHydroLaserScanner2dFake.so', so it looks like this:
 
 @verbatim
-Laser2d.Config.DriverLib=libHydroLaserScanner2dFake.so.so
+Laser2d.Config.DriverLib=libHydroLaserScanner2dFake.so
 @endverbatim
 
 Start the Laser2d component.

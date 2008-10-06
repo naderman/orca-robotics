@@ -10,6 +10,8 @@ if ( fid == -1 )
     error(sprintf('Couldnt open file: %s\n',file));
 end
 
+error('AlexB: The Laser ascii log file format has changed, and I have not updated this function: needs to be updated.');
+
 % skip the header
 for i=1:15
     % read a line

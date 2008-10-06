@@ -11,7 +11,7 @@
 #ifndef ORCAGUI3D_PLATFORMCSFINDER_H
 #define ORCAGUI3D_PLATFORMCSFINDER_H
 
-#include <orcaqgui/guielementmodel.h>
+#include <hydroqguielementutil/iguielement.h>
 #include <QString>
 #include <QList>
 
@@ -34,14 +34,14 @@ public:
     PlatformCSFinder() {};
 
     // returns false if it doesn't know.
-    bool findPlatformCS( const QList<orcaqgui::GuiElement*> elements,
-                         const QString                                &platform,
-                         float                                        &x,
-                         float                                        &y,
-                         float                                        &z,
-                         float                                        &roll,
-                         float                                        &pitch,
-                         float                                        &yaw );
+    bool findPlatformCS( const QList<hydroqguielementutil::IGuiElement*> &elements,
+                         const QString                                   &platform,
+                         float                                           &x,
+                         float                                           &y,
+                         float                                           &z,
+                         float                                           &roll,
+                         float                                           &pitch,
+                         float                                           &yaw ) const;
 
 private: 
 

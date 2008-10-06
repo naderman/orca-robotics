@@ -26,7 +26,16 @@ MainThread::MainThread( const orcaice::Context &context ) :
 void
 MainThread::walk()
 {
-    pingerInterface_ = new PingerI( "Pinger", context_ );
+    try {
+        pingerInterface_ = new PingerI( "Pinger", context_ );
+    }
+    catch ( std::exception &e )
+    {
+        stringstream ss;
+        ss << "Failed to activate Pinger: " << e.what();
+        subStatus().fault( ss.str() );
+        context_.shutdown();
+    }
     // should implement a multitry version
 //     pingerInterface_->initInterface( this, subsysName() );
     pingerInterface_->initInterface();

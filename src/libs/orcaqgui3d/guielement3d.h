@@ -11,27 +11,31 @@
 #ifndef ORCAGUI3D_GUIELEMENT3D_H
 #define ORCAGUI3D_GUIELEMENT3D_H
 
-#include <QGLWidget>
-#include <orcaqgui/guielement.h>
+#include <hydroqguielementutil/iguielement.h>
+#include <orcaqgui3d/coordinateframe.h>
+#include <osg/Node>
 
 namespace orcaqgui3d {
 
 //!
 //! @author Alex Brooks
 //!
-class GuiElement3d : public orcaqgui::GuiElement
+class GuiElement3d : public hydroqguielementutil::IGuiElement 
 {
 
 public: 
 
+    GuiElement3d()
+        {}
+
     virtual ~GuiElement3d() {}
 
-    //! Paint is called periodically to paint the internal state of the guielement
-    virtual void paint( QGLWidget *p ) {};
+    //! Tells the GuiElements about the camera location, in case it wants
+    //! to adjust accordingly.
+    virtual void setCameraPose( const CoordinateFrame &cameraPose ) {};
 
-private: 
-
-
+    //! Returns the OpenSceneGraph Node
+    virtual osg::Node *osgNode() const=0;
 };
 
 }

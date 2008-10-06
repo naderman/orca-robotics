@@ -124,27 +124,24 @@ class VehicleGeometryDescription
 {
     //! Geometry Type
     VehicleGeometryType type;
+
+    //! Transformation:
+    //! - from: the platform's coordinate system,
+    //! - to:   the centre of the vehicle's physical extents
+    Frame3d                    platformToGeometryTransform;
 };
 
 //! Geometry description for a vehicle which can be described by a simple
 //! bounding cylinder.
+//!
+//! The cylinder is assumed to be centred, extruded in the z-direction 
+//! (so a slice through the x-y plane is circular).
 class VehicleGeometryCylindricalDescription extends VehicleGeometryDescription
 {
     //! Radius of the cylinder [m]
     double radius;
     //! Height of the cylinder [m]
     double height;
-
-    //!
-    //! The transformation:
-    //! - from: the platform coordinate system,
-    //! - to:   the coordinate system about which the vehicle geometry extends.
-    //!
-    //! The cylinder is assumed to be centred on the vehicle coordinate system,
-    //! extruded in the z-direction 
-    //! (so a slice through the vehicle-CS x-y plane is circular).
-    //!
-    Frame3d vehicleToGeometryTransform;
 };
 
 //! Geometry description for a vehicle which can be described by a simple
@@ -153,17 +150,6 @@ class VehicleGeometryCuboidDescription extends VehicleGeometryDescription
 {
     //! Size in 3 dimensions.
     Size3d size;
-
-    //!
-    //! The transformation:
-    //! - from: the platform coordinate system,
-    //! - to:   the coordinate system about which the vehicle geometry extends.
-    //!
-    //! The cylinder is assumed to be centred on the vehicle coordinate system,
-    //! extruded in the z-direction 
-    //! (so a slice through the vehicle-CS x-y plane is circular).
-    //!
-    Frame3d vehicleToGeometryTransform;
 };
 
 //! General description of a robotic vehicle.
@@ -172,14 +158,6 @@ struct VehicleDescription
     //! Description of the mechanism by which the vehicle can be controlled.
     //! Describes constraints on the vehicle's dynamics.
     VehicleControlDescription  control;
-
-    //! Transformation:
-    //! - from: the platform's coordinate system,
-    //! - to:   the coordinate system of the vehicle.
-    //!
-    //! These will often be identical.  An example where they are different may be a car, where one
-    //! wants the platform CS to be at the GPS antenna, but the vehicle CS to be on the rear axle.
-    Frame3d                    platformToVehicleTransform;
 
     //! A description of the physical size and shape of the vehicle.
     VehicleGeometryDescription geometry;

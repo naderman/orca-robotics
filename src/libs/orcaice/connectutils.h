@@ -134,14 +134,14 @@ createConsumerInterface( const Context  & context,
  *  Example: to connect to interface of type MyInterface, use
 @verbatim
 MyInterfacePrx myInterfacePrx;
-orcaice::connectToInterfaceWithString<MyInterfacePrx>( context(), myInterfacePrx, "iface@platform/component" );
+orcaice::connectToInterfaceWithString( context(), myInterfacePrx, "iface@platform/component" );
 @endverbatim
  */
-template<class ProxyType>
+template<class InterfaceType>
 void
-connectToInterfaceWithString( const Context     & context,
-                              ProxyType         & proxy,
-                              const std::string & proxyString)
+connectToInterfaceWithString( const Context                             &context,
+                              ::IceInternal::ProxyHandle<InterfaceType> &proxy,
+                              const std::string                         &proxyString)
 {
 
     // for indirect proxies only: if platform is set to 'local', replace it by hostname
@@ -152,10 +152,13 @@ connectToInterfaceWithString( const Context     & context,
     // check with the server that the one we found is of the right type
     // the check operation is remote and may fail (see sec.6.11.2)
     try {
-        proxy = ProxyType::checkedCast( base );
+        proxy = ::IceInternal::ProxyHandle<InterfaceType>::checkedCast( base );
         // got some answer, check that it's the right type
         if ( !proxy ) {
-            std::string errString = "Required interface '" + resolvedProxyString + "' is of wrong type.";
+            std::string errString = "Required interface '" + resolvedProxyString +
+                "' is of wrong type."+
+                "  Tried to connect proxy of type "+InterfaceType::ice_staticId()+
+                " to remote interface of type "+base->ice_id();
             initTracerWarning( context, errString, 2 );
             throw orcaice::TypeMismatchException( ERROR_INFO, errString );
         }

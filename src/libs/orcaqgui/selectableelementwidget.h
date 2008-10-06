@@ -17,7 +17,7 @@
 #include <orcaqguielementmodelview/guielementmodel.h>
 #include <orcaqguielementmodelview/guielementview.h>
 #include <orcacm/orcacm.h>
-#include <orcaqcm/orcaqcm.h>
+#include <orcaqcompmodel/orcaqcm.h>
 #include "platformfocuscombo.h"
 
 class QTreeView;

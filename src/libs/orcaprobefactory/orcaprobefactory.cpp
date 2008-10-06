@@ -11,7 +11,6 @@
 #include "orcaprobefactory.h"
 
 // all plug-ins
-#include "binaryswitchprobe.h"
 #include "cameraprobe.h"
 #include "cpuprobe.h"
 #include "drivebicycleprobe.h"
@@ -40,7 +39,6 @@ using namespace orcaprobefactory;
 
 OrcaProbeFactory::OrcaProbeFactory()
 {
-    addSupportedType("::orca::BinarySwitch");
     addSupportedType("::orca::Camera");
     addSupportedType("::orca::Cpu");
     addSupportedType("::orca::DriveBicycle");
@@ -75,10 +73,7 @@ OrcaProbeFactory::create( const std::string           & interfaceType,
 {
     orcaprobe::InterfaceProbe* probe = 0;
 
-    if ( interfaceType == "::orca::BinarySwitch" ) {
-        probe = new BinarySwitchProbe( name, display, context );
-    }
-    else if ( interfaceType == "::orca::Camera" ) {
+    if ( interfaceType == "::orca::Camera" ) {
         probe = new CameraProbe( name, display, context );
     }
     else if ( interfaceType == "::orca::Cpu" ) {

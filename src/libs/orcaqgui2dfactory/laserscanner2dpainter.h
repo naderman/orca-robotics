@@ -33,7 +33,6 @@ class LaserScanner2dPainter
     LaserScanner2dPainter( QColor outlineColor=QColor( 102,102,153, 255 ),
                            float  outlineThickness=-1,
                            float  brightReturnWidth=0.2 );
-    ~LaserScanner2dPainter();
 
     void setOffset( orca::Frame3d &offset );
     void setData( const orca::RangeScanner2dDataPtr &scan );

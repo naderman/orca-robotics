@@ -163,10 +163,8 @@ void setFromVehicleDescr( const orca::VehicleDescription &descr,
 
     c.robotRadius = dg->radius;
 
-    if ( descr.platformToVehicleTransform != orcaobj::zeroFrame3d() )
-        throw( "VFH: Can only deal with zero platformToVehicleTransform" );
-    if ( dg->vehicleToGeometryTransform != orcaobj::zeroFrame3d() )
-        throw( "VFH: Can only deal with zero vehicleToGeometryTransform" );
+    if ( dg->platformToGeometryTransform != orcaobj::zeroFrame3d() )
+        throw( "VFH: Can only deal with zero platformToGeometryTransform" );
 }
 
 }

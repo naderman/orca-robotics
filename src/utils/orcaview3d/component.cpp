@@ -11,43 +11,63 @@
 #include <QApplication>
  
 #include <orcaice/orcaice.h>
-#include <orcaqcm/networkthread.h>
-#include <orcaqgui/mainwin.h>
-#include <orcaqgui/guielementmodel.h>
-#include <orcaqgui3d/worldview.h>
-#include <orcaqgui3d/platformcsfinder.h>
+#include <orcaobj/orcaobj.h>
 #include <hydrodll/dynamicload.h>
+#include <hydroiceutil/jobqueue.h>
+#include <orcaqgui/mainwin.h>
+#include <orcaqgui/selectableelementwidget.h>
+#include <orcaqgui/configfileelements.h>
+#include <orcaqguielementmodelview/guielementmodel.h>
+#include <hydroqgui/platformcsfinder.h>
+#include <orcaqgui/iguielementfactory.h>
 #include "component.h"
-#include <orcaqgui/guielementfactory.h>
+#include "worldview.h"
         
 using namespace std;
-using namespace orcaview3d;
 
-static const char *DEFAULT_FACTORY_LIB_NAME="libOrcaQGui3dFactory.so";
+namespace orcaview3d {
 
-orcaqgui::GuiElementFactory* loadFactory( hydrodll::DynamicallyLoadedLibrary &lib )
-{
-    orcaqgui::GuiElementFactory *f = 
-        hydrodll::dynamicallyLoadClass<orcaqgui::GuiElementFactory,FactoryMakerFunc>
-                                          (lib, "createFactory");
-    return f;
+namespace {
+
+    static const char *DEFAULT_FACTORY_LIB_NAME="libOrcaQGui3dFactory.so";
+
+    hydroqgui::IGuiElementFactory* loadFactory( hydrodll::DynamicallyLoadedLibrary &lib )
+    {
+        hydroqgui::IGuiElementFactory *f = 
+            hydrodll::dynamicallyLoadClass<hydroqgui::IGuiElementFactory,FactoryMakerFunc>
+            (lib, "createFactory");
+        return f;
+    }
+
 }
 
-Component::Component( string compName)
-    : orcaice::Component( compName, orcaice::HomeInterface )
+//////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+
+Component::Component()
+    : orcaice::Component( "OrcaView3d", orcaice::NoStandardInterfaces )
 {
 }
 
 Component::~Component()
 {
+    assert( libraries_.size() == factories_.size() );
+    for ( unsigned int i=0; i < libraries_.size(); i++ ){
+        delete factories_[i];
+        delete libraries_[i];
+    }
 }       
 
-void
-Component::loadPluginLibraries( const std::string & factoryLibNames )
+std::vector<std::string>
+Component::loadPluginLibraries( const std::string& factoryLibNames )
 {
     // Parse space-separated list of lib names
     vector<string> libNames = hydroutil::toStringSeq( factoryLibNames, ' ' );
     
+    // this will be a listing of unique supported interfaces
+    std::vector<std::string> supportedInterfaces;
+    std::vector<std::string> ifaces;
+
     for ( unsigned int i=0; i < libNames.size(); i++ )
     {
         stringstream ss;
@@ -56,9 +76,14 @@ Component::loadPluginLibraries( const std::string & factoryLibNames )
         
         try {
             hydrodll::DynamicallyLoadedLibrary *lib = new hydrodll::DynamicallyLoadedLibrary(libNames[i]);
-            orcaqgui::GuiElementFactory *f = loadFactory( *lib );
+            hydroqgui::IGuiElementFactory *f = loadFactory( *lib );
             libraries_.push_back(lib);
             factories_.push_back(f);
+
+            ifaces = f->supportedElementTypesAsStdString();
+            for ( unsigned int j=0; j<ifaces.size(); ++j ) {
+                supportedInterfaces.push_back( ifaces[j] );
+            }    
         }
         catch (hydrodll::DynamicLoadException &e)
         {
@@ -67,16 +92,41 @@ Component::loadPluginLibraries( const std::string & factoryLibNames )
         }
     }
 
+    for ( size_t i=0; i < factories_.size(); i++ )
+    {
+        cout<<"TRACE(orcaview3d:component.cpp): Setting context for "<<i<<"'th factory" << endl;
+
+        orcaqgui::IGuiElementFactory *orcaFactory = 
+                dynamic_cast<orcaqgui::IGuiElementFactory*>(factories_[i]);
+        if ( orcaFactory != NULL )
+        {
+            cout<<"TRACE(orcaview3d:component.cpp): setContext()" << endl;
+            orcaFactory->setContext( context() );
+        }
+        else
+        {
+            stringstream ss;
+            ss << "Factory is not an orca factory!  (couldn't cast to orcaqgui::IGuiElementFactory*)";
+            throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
+        }
+    }
+
     if ( factories_.empty() ) {
         std::string err = "No gui element factories were loaded.";
         context().tracer().error( err );
         throw err;
     }
+
+    // eliminate duplicates from the listing of supported interfaces
+    std::sort( supportedInterfaces.begin(), supportedInterfaces.end() );
+    std::unique( supportedInterfaces.begin(), supportedInterfaces.end() );
+
+    return supportedInterfaces;
 }
 
 void
-readScreenDumpParams( const orcaice::Context &context,
-                      orcaqgui::ScreenDumpParams &screenDumpParams )
+readScreenDumpParams( const orcaice::Context                 &context,
+                      orcaqgui::MainWindow::ScreenDumpParams &screenDumpParams )
 {
     Ice::PropertiesPtr prop = context.properties();
     std::string prefix = context.tag() + ".Config.";
@@ -93,9 +143,8 @@ readScreenDumpParams( const orcaice::Context &context,
 void 
 Component::start()
 {
-    //
-    // INITIAL CONFIGURATION
-    //
+    Ice::PropertiesPtr props = context().properties();
+    std::string prefix = context().tag() + ".Config.";
     
     //
     // enable network connections
@@ -104,51 +153,97 @@ Component::start()
     // this may throw, but may as well quit right then
     activate();
     
-    // this runs in its own thread
-    orcaqcm::NetworkThread networkThread( context() );
-    networkThread.start();
+    //
+    // Start job queue
+    //
+    hydroiceutil::JobQueue::Config jconfig;
+    jconfig.threadPoolSize = orcaice::getPropertyAsIntWithDefault( props, prefix+"JobQueueThreadPoolSize", 1 );
+    jconfig.queueSizeWarn = orcaice::getPropertyAsIntWithDefault( props, prefix+"JobQueueSizeWarning", -1 );
+    jconfig.traceAddEvents = false;
+    jconfig.traceDoneEvents = false;
+    
+    hydroiceutil::JobQueue jobQueue( context().tracer(), jconfig ) ;
     
     // Set up QT stuff
     char **v = 0;
     int c = 0;
     QApplication qapp(c,v);
 
-    orcaqgui::ScreenDumpParams screenDumpParams;
+    orcaqgui::MainWindow::ScreenDumpParams screenDumpParams;
     readScreenDumpParams( context(), screenDumpParams );
     
-    Ice::PropertiesPtr props = context().properties();
-    std::string prefix = context().tag() + ".Config.";
     int displayRefreshTime = orcaice::getPropertyAsIntWithDefault( props, prefix+"General.DisplayRefreshTime", 200 );
 
     string libNames = orcaice::getPropertyWithDefault( props, prefix+"General.FactoryLibNames", DEFAULT_FACTORY_LIB_NAME );
-    loadPluginLibraries( libNames );
-   
+    // returns a listing of unique supported interfaces, for display drivers to know what's supported
+    std::vector<std::string> supportedInterfaces = loadPluginLibraries( libNames );
+
+    // Manages platform(s) in focus
+    hydroqgui::PlatformFocusManager platformFocusManager;
+
     // main window for display
-    orcaqgui::MainWindow gui( "OrcaView3d",
-                             &networkThread,
-                             screenDumpParams,
-                             displayRefreshTime );
+    orcaqgui::MainWindow mainWin( "OrcaView3d",
+                                  screenDumpParams,
+                                  supportedInterfaces );
+
+    // Color scheme
+    hydroqgui::StringToRandomColorMap platformColorScheme;
+
+    // Handles coordination of mouse events between GuiElements
+    hydroqguielementutil::MouseEventManager mouseEventManager;
+
+    // Manages the coordinate frome for display
+    hydroqgui::CoordinateFrameManager coordinateFrameManager;
+
+    // Manages use of shortcut keys between Gui Elements
+    hydroqguielementutil::ShortcutKeyManager shortcutKeyManager( &mainWin );
+
+    // Stores the set of Gui Elements
+    hydroqgui::GuiElementSet guiElementSet;
 
     // Qt model for handling elements and their display in each of the widgets
-    orcaqgui::GuiElementModel guiElemModel( factories_,
-                                           context(),
-                                           &gui );
+    orcaqgemv::GuiElementModel guiElementModel( factories_,
+                                                mainWin,
+                                                mouseEventManager,
+                                                shortcutKeyManager,
+                                                coordinateFrameManager,
+                                                platformFocusManager,
+                                                guiElementSet,
+                                                platformColorScheme );
 
+    // Can work out the coordinate system of a platform
     orcaqgui3d::PlatformCSFinder platformCSFinder;
 
     // widget for viewing the actual world
-    orcaqgui3d::WorldView worldView3d( &platformCSFinder,
-                                      &guiElemModel,
-                                      gui.displayViewParent(),
-                                      &gui );
+    WorldView *worldView = new WorldView( platformCSFinder,
+                                          mouseEventManager,
+                                          guiElementSet,
+                                          coordinateFrameManager,
+                                          mainWin,
+                                          platformFocusManager,
+                                          displayRefreshTime );
+    
+    // Gui-Element-selecting widget
+    orcaqgui::SelectableElementWidget *selectableElementWidget = 
+            new orcaqgui::SelectableElementWidget(  platformFocusManager, 
+                                                    jobQueue, 
+                                                    context(), 
+                                                   &guiElementModel, 
+                                                    mainWin );
+    
+    // Central GUI widget
+    QSplitter *centralWidget = new QSplitter( Qt::Horizontal );
+    centralWidget->addWidget( selectableElementWidget );
+    centralWidget->addWidget( worldView );
+    mainWin.setCentralWidget( centralWidget );
+    
+    // Grid is a special element which is always loaded
+    orcaqgui::loadGrid( guiElementModel );
 
-    // tell the main window about the widgets, model, and factory
-    gui.init( &guiElemModel,
-              &worldView3d );
+    // Load all elements specified in the config file
+    orcaqgui::loadElementsFromConfigFile( guiElementModel, context() );
 
-    gui.loadElementsFromConfigFile( context() );
-
-    gui.show();
+    mainWin.show();
 
     // note: this does not return!
     qapp.exec();
@@ -159,8 +254,9 @@ Component::start()
     // the rest is handled by the application/service
 }
 
-void 
-Component::stop()
+void Component::stop()
 {
-    tracer().debug("Stopping component",1);
+    context().tracer().debug("stopping component",5);
+}
+
 }

@@ -11,7 +11,6 @@
 #include <iostream>
 
 #include <orcaice/orcaice.h>
-#include <orcaobj/orcaobj.h>
 #include "gpsImpl.h"
 #include "util.h"
 
@@ -161,8 +160,6 @@ GpsImpl::localSet( const orca::GpsData& data )
 void
 GpsImpl::localSetAndSend( const orca::GpsData& data )
 {
-//     cout<<"TRACE(GpsIface.cpp): localSetAndSend: " << orcaobj::toString(data) << endl;
-
     dataStore_.set( data );
 
     // Try to push to IceStorm.

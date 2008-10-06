@@ -13,6 +13,7 @@
 #include <QStringList>
 #include <QMouseEvent>
 #include <QMenu>
+#include <QColorDialog>
 
 #include "guielementview.h"
 #include "guielementmodel.h"   // need to access custom API
@@ -77,6 +78,7 @@ GuiElementView::contextMenuEvent( QContextMenuEvent* e )
     menu.addSeparator();
     menu.addAction( "Set As Coordinate Frame", this, SLOT( setCooFrameToCurrentGuiElement() ) );
     menu.addAction( "Set As Origin", this, SLOT( setOriginToCurrentGuiElement() ) );
+    menu.addAction( "Set Colour", this, SLOT( setColourOfCurrentGuiElement() ) );
     
     // check whether element is removable
     GuiElementModel* guiElementModel = dynamic_cast<GuiElementModel*>( model() );
@@ -160,6 +162,17 @@ GuiElementView::setOriginToCurrentGuiElement()
 {
     GuiElementModel* guiElementModel = dynamic_cast<GuiElementModel*>( model() );
     guiElementModel->setOriginPlatform( currentIndex().row() );
+}
+
+void
+GuiElementView::setColourOfCurrentGuiElement()
+{
+    QColor color = QColorDialog::getColor();
+    if ( color.isValid() )
+    {
+        GuiElementModel* guiElementModel = dynamic_cast<GuiElementModel*>( model() );
+        guiElementModel->setGuiElementColor( currentIndex().row(), color );
+    }
 }
 
 void

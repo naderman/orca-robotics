@@ -26,19 +26,12 @@ namespace orcaqgui2d {
 
 FeatureMap2dPainter::FeatureMap2dPainter()
     : displayFeatureNumbers_(false),
-      displayUncertainty_(false)
+      displayUncertainty_(false),
+      isDisplay_(true),
+      isFlashing_(false),
+      isFlashOn_(false)
 {
 }
-
-FeatureMap2dPainter::~FeatureMap2dPainter()
-{
-}
-
-void 
-FeatureMap2dPainter::clear()
-{
-}
-
 
 void 
 FeatureMap2dPainter::setData( const orca::FeatureMap2dData &data )
@@ -90,6 +83,9 @@ FeatureMap2dPainter::paintPointFeature( QPainter *painter,
         if ( displayUncertainty_ )
         {
             //cout<<"TRACE(featuremap2dpainter.cpp): painting: " << f.c.xx << ","<<f.c.xy<<","<<f.c.yy << endl;
+
+            // Reset the thickness
+            painter->setPen( QPen( pen.color() ) );
 
 //             QMatrix m2win = painter->worldMatrix();
 //             const float lineThickness = 2.0/m2win.m11();
@@ -229,7 +225,13 @@ FeatureMap2dPainter::paintPoseFeature( QPainter *painter,
 
 void FeatureMap2dPainter::paint( QPainter *painter, const int z )
 {
+    if ( !isDisplay_ ) return;
     if ( z != hydroqguielementutil::Z_SLAM_MAP ) return;
+    if ( isFlashing_ )
+    {
+        isFlashOn_ = !isFlashOn_;
+        if ( !isFlashOn_ ) return;
+    }
 
     QColor color;
 
@@ -278,7 +280,7 @@ int FeatureMap2dPainter::saveMap( const QString fileName, hydroqguielementutil::
     FILE *f = fopen( fileName.toStdString().c_str(), "w" );
     if (!f)
     {
-        humanManager->showDialogMsg(hydroqguielementutil::IHumanManager::Error, "Cannot create file " + fileName );
+        humanManager->showDialogError( "Cannot create file " + fileName );
         cout << "ERROR(featuremap2dpainter.cpp): cannot create file" <<endl;
         return -1;
     } 

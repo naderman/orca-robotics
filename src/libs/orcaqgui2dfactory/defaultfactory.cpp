@@ -9,7 +9,6 @@
  */
  
 #include <iostream>
-
 #include <hydroqgui/hydroqgui.h>
 
 #include <orcaqgui2dfactory/buttonelement.h>
@@ -57,7 +56,6 @@ bool
 DefaultFactory::lookupElementType( const QStringList &ids, QString &elementType ) const
 {
     // One-to-one mappings (one interface per element):
-    // ::orca::LaserScanner2d maps to LaserScanner2d
     if (ids.size()==1)
     {
         elementType = ids[0].section(':',4,4);
@@ -89,7 +87,6 @@ DefaultFactory::create( const QString                &elementType,
                         const hydroqgui::GuiElementSet &guiElementSet ) const
 {
     assert( isContextSet_ );
-
     hydroqguielementutil::IGuiElement *elem = NULL;
     
     try

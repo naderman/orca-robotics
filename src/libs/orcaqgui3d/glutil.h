@@ -1,3 +1,4 @@
+#if 0
 /*
  * Orca-Robotics Project: Components for robotics 
  *               http://orca-robotics.sf.net/
@@ -10,6 +11,9 @@
 
 #ifndef ORCAGUI3D_GLUTIL_H
 #define ORCAGUI3D_GLUTIL_H
+
+#include <GL/gl.h>
+#include <string>
 
 namespace orcaqgui3d {
 
@@ -28,6 +32,17 @@ void drawBox( float d, float w, float h, bool drawSurfaces, bool drawWireFrame )
 
 void drawIcosahedron();
 
+// Makes a little grayscale checkerboard.
+void makeCheckImage64x64x3( GLubyte img[64][64][3],
+                            int numSquaresPerEdge,
+                            int lowVal=0,
+                            int highVal=255 );
+
+std::string errorToString( GLenum error );
+
+// Throws an exception if there's an error condition
+void checkGLError();
+
 //
 // Calls glPushMatrix() in the constructor, and glPopMatrix() in the destructor.
 //
@@ -39,7 +54,17 @@ public:
     ~ScopedMatrixSave();
 };
 
+//! Paints 2-sigma ellipse for the position uncertainty
+void paintCovarianceEllipse( float pxx, float pxy, float pyy );
+
+//! draws an axis-aligned ellipse
+void drawEllipse( float radiusX, float radiusY, int numPts=25 );
+
+//! draws a cylinder oriented in the +z direction
+void drawCyclinder( float height, float radiusX, float radiusY, int numFacets=25 );
+
 } // namespace
 } // namespace
 
+#endif
 #endif

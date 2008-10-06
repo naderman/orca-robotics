@@ -11,12 +11,13 @@
 #include <iostream>
 
 #include "component.h"
-#include "networkthread.h"
-#include "termdisplaythread.h"
-#include "inputthread.h"
+#include <orcateleop/networkthread.h>
+#include <orcateleop/termdisplaythread.h>
+#include <orcateleop/inputthread.h>
 
 using namespace std;
-using namespace teleop;
+
+namespace teleop {
 
 Component::Component() :
     orcaice::Component( "Teleop", orcaice::HomeInterface ),
@@ -37,21 +38,21 @@ Component::start()
     // USER DISPLAY
     //
     // the constructor may throw, we'll let the application shut us down
-    displayThread_ = new TermDisplayThread( context() );
+    displayThread_ = new orcateleop::TermDisplayThread( context() );
     displayThread_->start();
     
     //
     // NETWORK
     //
     // the constructor may throw, we'll let the application shut us down
-    networkThread_ = new NetworkThread( (Display*)displayThread_, context() );
+    networkThread_ = new orcateleop::NetworkThread( (orcateleop::Display*)displayThread_, context() );
     networkThread_->start();
 
     //
     // USER INPUT
     //
     // the constructor may throw, we'll let the application shut us down
-    inputThread_ = new InputThread( (Network*)networkThread_, context() );
+    inputThread_ = new orcateleop::InputThread( (orcateleop::Network*)networkThread_, context() );
     inputThread_->start();
 
     // the rest is handled by the application/service
@@ -60,14 +61,10 @@ Component::start()
 void
 Component::stop()
 {
-    // inputThread_ is blocked on user input
-    // the only way for it to realize that we want to stop is to give it some keyboard input.
-    context().tracer().info( "Component is quitting but the InputThread is blocked waiting for user input.");
-    context().tracer().print( "************************************************" );
-    context().tracer().print( "Press any key or shake the joystick to continue." );
-    context().tracer().print( "************************************************" );
-    
     gbxiceutilacfr::stopAndJoin( inputThread_ );
     gbxiceutilacfr::stopAndJoin( networkThread_ );
     gbxiceutilacfr::stopAndJoin( displayThread_ );
 }
+
+}
+

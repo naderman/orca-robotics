@@ -13,7 +13,7 @@
 #include <QMenu>
 #include <QInputDialog>
 
-#include <orcaqcm/ocmmodel.h>
+#include <orcaqcompmodel/ocmmodel.h>
 
 #include "regtreeview.h"
 

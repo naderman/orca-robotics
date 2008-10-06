@@ -17,14 +17,14 @@ using namespace std;
 namespace orcaqgui3d {
 
 bool 
-PlatformCSFinder::findPlatformCS( const QList<orcaqgui::GuiElement*> elements,
-                                    const QString                                &platform,
-                                    float                                        &x,
-                                    float                                        &y,
-                                    float                                        &z,
-                                    float                                        &roll,
-                                    float                                        &pitch,
-                                    float                                        &yaw )
+PlatformCSFinder::findPlatformCS( const QList<hydroqguielementutil::IGuiElement*> &elements,
+                                  const QString                                   &platform,
+                                  float                                           &x,
+                                  float                                           &y,
+                                  float                                           &z,
+                                  float                                           &roll,
+                                  float                                           &pitch,
+                                  float                                           &yaw ) const
 {
     //
     // Find the most reliable element that reckons it knows where we are.

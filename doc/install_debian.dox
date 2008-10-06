@@ -12,7 +12,7 @@
 
 @page orca_doc_installdebian Installing Orca on Debian Linux
 
-@note Reviewed for release 2.10.0.
+@note Reviewed for release 2.11.0.
 
 These are detailed instructions for installing Orca on Debian Linux. They are known to work for a system using Debian \b Testing distribution. They are also applicable to Ubuntu/Kubuntu 6.10 (Edgy). See @ref orca_doc_getting for general guidelines.
 
@@ -24,7 +24,7 @@ These are detailed instructions for installing Orca on Debian Linux. They are kn
 
 @section orca_doc_installdebian_cmake CMake
 
-Minimum version required 2.4-patch 4 (latest tested: 2.4-patch 8).
+Minimum version required 2.4-patch 4 (latest tested: 2.6-patch 0).
 
 @verbatim
 # apt-get install cmake
@@ -32,9 +32,9 @@ Minimum version required 2.4-patch 4 (latest tested: 2.4-patch 8).
 
 @section orca_doc_installdebian_ice Ice
 
-Minimum version required 3.2.0 (latest tested: 3.2.1).
+Minimum version required 3.2.0 (latest tested: 3.3.0).
 
-@note These instructions install Ice using a Debian package. In some cases you may still want to build Ice from source, see @ref orca_doc_installdebian_opt_icefromsource for Debian-specific instructions.
+@note These instructions install Ice 3.2.1 using a Debian package. In some cases you may still want to build Ice from source, see @ref orca_doc_installdebian_opt_icefromsource for Debian-specific instructions.
 
 @verbatim
 # apt-get install libzeroc-ice-dev ice-translators ice-slice icestorm icegrid icebox icepatch2
@@ -42,8 +42,8 @@ Minimum version required 3.2.0 (latest tested: 3.2.1).
 
 @section orca_doc_installdebian_gearbox GearBox
 
-Build and install GearBox distribution.
-    - Download @ref orca_doc_getting_download "GearBox source" archive and un-tar it [IT HAS NOT BEEN RELEASED YET, USE SVN!].
+Minimum version required 8.07
+    - Download @ref orca_doc_getting_download "GearBox source" archive and un-tar it.
     - Configure using with CMake (note the dot after cmake), compile, and install.
     - The default installation directory is  @c /usr/local (see below on how to change it).
 @verbatim

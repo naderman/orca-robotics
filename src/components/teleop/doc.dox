@@ -17,7 +17,7 @@
 @defgroup orca_component_teleop Teleop
 @brief Teleoperational control from a keyboard or joystick.
 
-This component connects to a robot base and issues motion commands according to user input from a keyboard or joystick.
+This component connects to a robot base and issues motion commands according to user input from a keyboard or joystick. The implementation code lives in the @ref orca_library_orcateleop library.
 
 @par Provides
 
