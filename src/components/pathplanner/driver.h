@@ -30,7 +30,8 @@ public:
             const hydroogmap::OgMap       &ogMap,
             double                        robotDiameterMetres,
             double                        traversabilityThreshhold,
-            bool                          jiggleWaypointsOntoClearCells,
+            double                        intermediateMinDistTolerance,
+            // bool                          jiggleWaypointsOntoClearCells,
             const orcaice::Context       &context );
     
     void computePath( const orca::PathPlanner2dTask &task,
@@ -43,17 +44,18 @@ private:
                                                     double endX,
                                                     double endY );
 
-    void jiggleOntoClearCells( orca::Path2d &path );
+    // void jiggleOntoClearCells( orca::Path2d &path );
 
     hydropathplan::IPathPlanner2d  &pathPlanner_;
     const hydroogmap::OgMap        &ogMap_;
-    hydroogmap::OgMap               grownOgMap_;
+//    hydroogmap::OgMap               grownOgMap_;
     
     double traversabilityThreshhold_;
+    double intermediateMinDistTolerance_; 
     
-    orca::Path2d jiggledPath_;
+//    orca::Path2d jiggledPath_;
     
-    bool jiggleWaypointsOntoClearCells_;
+//    bool jiggleWaypointsOntoClearCells_;
     const orcaice::Context context_;
 };
 

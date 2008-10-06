@@ -85,6 +85,7 @@ public slots:
     void allStop();
     void go();
     void stop();
+    void toggleEnabled();
 
 private:
 

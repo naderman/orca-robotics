@@ -16,6 +16,7 @@
 #include <orcanavutil/orcanavutil.h>
 #include "mainthread.h"
 #include "testsim/testsimutil.h"
+#include "stats.h"
 
 using namespace std;
 
@@ -433,6 +434,12 @@ MainThread::walk()
     inputs.stalled = false;
     inputs.obsRanges.resize( scannerDescr_.numberOfSamples );
 
+    bool prevIsEnabled = pathFollowerInterface_->enabled();
+
+    // a simple class which summarizes motion information
+    Stats stats;
+    std::stringstream historySS;
+
     while ( !isStopping() )
     {
         std::stringstream exceptionSS;
@@ -457,12 +464,19 @@ MainThread::walk()
             // coord system for the pathplanner.
             // Also return a flag indicating if we have an active goal
 			
+            bool wpIncremented = false;
             bool haveGoal = pathMaintainer_->getActiveGoals( inputs.goals,
                                                              driver_->waypointHorizon(),
-                                                             inputs.localisePose );
+                                                             inputs.localisePose,
+                                                             wpIncremented );
 
             if ( haveGoal )
             {
+                if ( wpIncremented )
+                {
+                    speedLimiter_->setIntendedSpeedThisLeg( inputs.goals[0] );
+                }
+
                 // If we do have an active goal, limit the max speed for the current goal
                 // and get the pathplanner to work out the next set of actions
                 speedLimiter_->constrainMaxSpeeds( inputs.goals[0], inputs.currentVelocity );
@@ -499,13 +513,32 @@ MainThread::walk()
                 context_.tracer().debug( ss.str(), 5 );
             }
 
+            // send zero stop-command as soon we "take our hands of the wheel"
+            // (otherwise the platform will execute the last command for a while)
+            // Note that we call enabled() only once in order to avoid possibility of state
+            // change between our calls.
+            bool isEnabled = pathFollowerInterface_->enabled();
+            bool isJustDisabled = ( prevIsEnabled && !isEnabled );
+            if ( isJustDisabled ) {
+                hydronavutil::Velocity zeroVelocityCmd( 0.0, 0.0 );
+                sendCommandToPlatform( zeroVelocityCmd );
+            }
+            prevIsEnabled = isEnabled;
+
+            // keep track of our approximate motion for history
+            stats.addData( inputs.poseTime.seconds, inputs.poseTime.useconds, 
+                           inputs.localisePose, inputs.currentVelocity, 
+                           isEnabled );
+            historySS.str(" ");
+            historySS << stats.distance()<<" "<<stats.timeInMotion()<<" "<<stats.maxSpeed();
+            // keep history up to date, ready to be dumped to file when the component stops
+            context_.history().setWithFinishSequence( historySS.str() );
+
             // Only send the command if we're enabled.
-            if ( pathFollowerInterface_->enabled() )
-            {
+            if ( isEnabled ) {
                 sendCommandToPlatform( velocityCmd );
             }
-            else
-            {
+            else {
                 context_.tracer().debug( "Doing nothing because disabled" );
                 subStatus().ok();
                 continue;
@@ -514,7 +547,7 @@ MainThread::walk()
             std::stringstream timerSS;
             timerSS << "MainThread: time to make and send decision: " << timer.elapsedSeconds()*1000.0 << "ms";
             context_.tracer().debug( timerSS.str(), 3 );
-            
+
             if ( testMode_ && algorithmEvaluator_.get() )
             {
                 algorithmEvaluator_->evaluate( timer.elapsedSeconds(), *testSimulator_ );

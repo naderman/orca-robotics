@@ -42,7 +42,7 @@ GpsHeuristics::GpsHeuristics( const orcaice::Context &context,
     std::string prefix = context_.tag() + ".Config.";
     minNumSatellites_ = orcaice::getPropertyAsIntWithDefault( prop, prefix+"MinNumSatellites", 4 );
     maxTimeDiff_ = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"MaxTimeDifferenceSeconds", 2.5 );
-    speedDiffFactor_ = orcaice::getPropertyAsIntWithDefault( prop, prefix+"SpeedDifferenceFactor", 2.0 );
+    speedDiffFactor_ = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"SpeedDifferenceFactor", 2.0 );
 }
 
 bool

@@ -21,10 +21,12 @@ namespace goalplanner {
 
 PathFollower2dI::PathFollower2dI( gbxiceutilacfr::Store<orca::PathFollower2dData> &pathPipe,
                                   gbxiceutilacfr::Store<bool> &activationPipe,
-                                  orca::PathFollower2dPrx localNavPrx )
+                                  orca::PathFollower2dPrx localNavPrx,
+                                  const orcaice::Context &context )
     : pathPipe_(pathPipe),
       activationPipe_(activationPipe),
-      localNavPrx_(localNavPrx)
+      localNavPrx_(localNavPrx),
+      context_(context)
 {
 }
 
@@ -44,7 +46,11 @@ PathFollower2dI::setData( const ::orca::PathFollower2dData& data, bool activateI
     std::string insanityReason;
     if ( !orcaobj::isSane( data, insanityReason ) )
     {
-        throw orca::MalformedParametersException( insanityReason );
+        stringstream ss;
+        ss << "Path not valid.  Path was: " << orcaobj::toVerboseString(data) << endl;
+        ss << "Problem: " << insanityReason;
+        context_.tracer().warning( ss.str() );
+        throw orca::MalformedParametersException( ss.str() );
     }
 
     // give the data to the buffer
@@ -55,7 +61,7 @@ PathFollower2dI::setData( const ::orca::PathFollower2dData& data, bool activateI
 void
 PathFollower2dI::activateNow( const ::Ice::Current& )
 {
-//     cout << "TRACE(pathfollower2dI.cpp):activateNow: passing on to localnav." << endl;
+    cout << "TRACE(pathfollower2dI.cpp):activateNow: passing on to localnav." << endl;
     try {
         activationPipe_.set( true );
         localNavPrx_->activateNow(); 

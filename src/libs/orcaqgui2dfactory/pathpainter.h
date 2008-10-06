@@ -98,6 +98,8 @@ class PathPainter
     bool inFocus_;
     
     double relativeStartTime_;
+    
+    gbxiceutilacfr::Timer olympicMarkerTimer_;
 
 };
 

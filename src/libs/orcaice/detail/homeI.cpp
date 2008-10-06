@@ -52,11 +52,8 @@ HomeI::getInterfaces(const ::Ice::Current& ) const
     //std::cout << "Sending data back" << std::endl;
     IceUtil::Mutex::Lock lock(mutex_);
 
-//     IceUtil::Time timeUp = IceUtil::Time::now() - startTime_;
     // we only return the number of seconds
-//     homeData_.timeUp = (int)timeUp.toSeconds();
-
-    homeData_.timeUp = upTimer_.elapsedSec();
+    homeData_.timeUp = (int)(upTimer_.elapsedSec());
 
     return homeData_;
 }
@@ -66,11 +63,8 @@ HomeI::getTimeUp(const ::Ice::Current& ) const
 {
     IceUtil::Mutex::Lock lock(mutex_);
 
-//     IceUtil::Time timeUp = IceUtil::Time::now() - startTime_;
     // we only return the number of seconds
-//     return (int)timeUp.toSeconds();
-
-    return upTimer_.elapsedSec();
+    return (int)(upTimer_.elapsedSec());
 }
 
 orca::StringStringDict 

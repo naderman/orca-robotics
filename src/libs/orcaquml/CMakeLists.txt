@@ -16,10 +16,10 @@ IF( build )
     INCLUDE( ${HYDRO_CMAKE_DIR}/UseQt.cmake )
 
     FILE( GLOB human_srcs *.cpp )
+    SET( dep_libs ${int_libs} )
 
     GBX_ADD_LIBRARY( ${LIB_NAME} SHARED ${human_srcs} )
     
-    SET( dep_libs ${int_libs} )
     TARGET_LINK_LIBRARIES ( ${LIB_NAME} ${dep_libs} )
 
 ENDIF( build )

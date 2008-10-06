@@ -51,11 +51,12 @@ public:
     // Inherited from hydroqguielementutil::IHumanManager
     virtual void showDialogMsg( hydroqguielementutil::IHumanManager::MessageType type, const QString &msg );
     virtual void showStatusMsg( hydroqguielementutil::IHumanManager::MessageType type, const QString &msg );
-    virtual QMenu    *fileMenu() { return fileMenu_; }
-    virtual QMenu    *optionsMenu() { return optionsMenu_; }
-    virtual QMenu    *displayMenu() { return displayMenu_; }
-    virtual QMenuBar *menuBar() { return QMainWindow::menuBar(); }
-    virtual QToolBar *toolBar() { return toolBar_; }
+    virtual QMenu      *fileMenu() { return fileMenu_; }
+    virtual QMenu      *optionsMenu() { return optionsMenu_; }
+    virtual QMenu      *displayMenu() { return displayMenu_; }
+    virtual QMenuBar   *menuBar() { return QMainWindow::menuBar(); }
+    virtual QToolBar   *toolBar() { return toolBar_; }
+    virtual QStatusBar *statusBar() { return QMainWindow::statusBar(); }
 
 private slots:
 

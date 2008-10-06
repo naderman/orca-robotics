@@ -273,9 +273,10 @@ MainThread::walk()
                 if ( isStopping() || context_.isDeactivating() ) {
                     throw orcaice::ComponentDeactivatingException( ERROR_INFO, "Failed to get inputs because the component is deactivating" );
                 }
-                stringstream ss;
-                ss << "Timed out (" << timeoutMs << "ms) waiting for laser data.  Reconnecting.";
-                subStatus().fault( ss.str() );
+                // alexm: not calling it a fault
+//                 stringstream ss;
+//                 ss << "Timed out (" << timeoutMs << "ms) waiting for laser data.  Reconnecting.";
+//                 subStatus().fault( ss.str() );
                 connectToLaser();
                 continue;
             }

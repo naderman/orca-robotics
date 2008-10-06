@@ -28,7 +28,8 @@ Localise2dPainter::Localise2dPainter( bool beginDisplayHistory )
       isDataAvailable_(false),
       basicColor_(Qt::blue),
       isDisplayHistory_(beginDisplayHistory),
-      isDisplayMultiHypothesis_(true)
+      isDisplayMultiHypothesis_(true),
+      isInFocus_(false)
 {
 }
 
@@ -100,9 +101,22 @@ Localise2dPainter::paintHypothesis( QPainter* p, const orca::Pose2dHypothesis &h
             p->setBrush( color );
 
             if (platformType_ == PlatformTypeCylindrical)
+            {
+                if ( isInFocus_ )
+                {
+                    p->save();
+                    p->setPen( QPen( Qt::black, lineThickness*1.2 ) );
+                    p->setBrush( hydroqguielementutil::getTransparentVersion( Qt::white, weight ) );
+                    hydroqguielementutil::paintCylindricalPlatformPose( p, radius_*1.2, weight, minLength*1.2  );
+                    p->restore();
+                    p->setPen( QPen( Qt::black, lineThickness*1.2) );
+                }
                 hydroqguielementutil::paintCylindricalPlatformPose( p, radius_, weight, minLength  );
+            }
             else
+            {
                 hydroqguielementutil::paintCubicPlatformPose( p, length_, width_, weight, minLength );
+            }
 
             p->setPen( color );
             hydroqguielementutil::paintUncertaintyWedge( p, cov.tt, minLength*3.0 );
@@ -148,12 +162,13 @@ void Localise2dPainter::setColor( QColor color )
     
 void Localise2dPainter::setFocus( bool inFocus )
 {
-    //cout << "TRACE(localise2dpainter.pp): inFocus is " << inFocus << endl;
-    if (!inFocus) {
-        currentColor_=Qt::gray;
-    } else {
+    isInFocus_ = inFocus;
+
+//     if (!inFocus) {
+//         currentColor_=Qt::gray;
+//     } else {
         currentColor_=basicColor_;
-    }
+//     }
 }
 
     

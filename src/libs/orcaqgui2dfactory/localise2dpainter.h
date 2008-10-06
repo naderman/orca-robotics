@@ -73,6 +73,8 @@ class Localise2dPainter
     hydroqguielementutil::PoseHistory history_;
 
     bool isDisplayMultiHypothesis_;
+
+    bool isInFocus_;
 };
 
 }

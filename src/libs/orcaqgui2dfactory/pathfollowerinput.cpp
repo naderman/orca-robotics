@@ -62,7 +62,7 @@ PathFollowerInput::getPath( orca::PathFollower2dData &pathData ) const
     //cout << "DEBUG(pathinput.cpp): getPath: size of waypoints is " << size << endl;
     if (size==0) return false;
     
-    const float timeOffset = guiPath_->last().timeTarget + pathDesignScreen_->secondsToCompleteLoop();
+    const float timeOffset = guiPath_->back().timeTarget + pathDesignScreen_->secondsToCompleteLoop();
     guiPathToOrcaPath( *guiPath_.get(), pathData.path, pathDesignTableWidget_->numberOfLoops(), timeOffset );
     
     return true;
@@ -75,7 +75,7 @@ PathFollowerInput::savePath( const QString &filename )
     
     float timeOffset = 0.0;
     if (numLoops > 1)
-        timeOffset = guiPath_->last().timeTarget + pathDesignScreen_->secondsToCompleteLoop();
+        timeOffset = guiPath_->back().timeTarget + pathDesignScreen_->secondsToCompleteLoop();
   
     pathFileHandler_->savePath( filename, *guiPath_.get(), numLoops, timeOffset );  
 }

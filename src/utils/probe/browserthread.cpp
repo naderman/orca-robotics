@@ -176,6 +176,11 @@ BrowserThread::filterRegistry()
 void 
 BrowserThread::loadPlatform()
 {
+    if ( pick_ >= (int)registryData_.platforms.size() ) {
+        events_->add( Fault );
+        return;
+    }
+
 //     cout<<"loading platform data for "<<registryData_.platforms[pick_].name<<endl;
     lastPlatformPick_ = pick_;
     

@@ -20,13 +20,13 @@
 #include <osg/Point>
 #include <orcaifacestring/bros1.h>
 
-#include "laserscanner2dpainter.h"
+#include "pointcloudpainter.h"
 
 using namespace std;
 using namespace orca;
 using namespace orcaqgui3d;
 
-LaserScanner2dPainter::LaserScanner2dPainter( QColor outlineColor )
+PointCloudPainter::PointCloudPainter( QColor outlineColor )
     : isDisplayScan_(true),
       isDisplayPoints_(true),
       outlineColor_(outlineColor)
@@ -35,16 +35,17 @@ LaserScanner2dPainter::LaserScanner2dPainter( QColor outlineColor )
 }
 
 void
-LaserScanner2dPainter::clear()
+PointCloudPainter::clear()
 {
 //    ranges_.clear();
-    cout<<"TRACE(laserscanner2dpainter.cpp): TODO: " << __func__ << endl;    
+    cout<<"TRACE(pointcloudpainter.cpp): TODO: " << __func__ << endl;    
 }
 
 void
-LaserScanner2dPainter::setDescr(  const orca::Frame3d &offset,
+PointCloudPainter::setDescr(  const orca::Frame3d &offset,
                                   const orca::Size3d  &size )
 {
+    cout<<"TRACE(pointcloudpainter.cpp): start: " << __func__ << endl;    
     if ( root_->containsNode( xformNode_.get() ) )
         root_->removeChild( xformNode_.get() );
 
@@ -73,65 +74,42 @@ LaserScanner2dPainter::setDescr(  const orca::Frame3d &offset,
     xformNode_->addChild( wireFrameGeode.get() );
 
     root_->addChild( xformNode_.get() );
+    cout<<"TRACE(pointcloudpainter.cpp): end: " << __func__ << endl;    
 }
 
 void
-LaserScanner2dPainter::setData( const orca::RangeScanner2dDataPtr &data )
+PointCloudPainter::setData( const orca::PointCloudData &data )
 {
-    if ( data==0 ) return;
+    cout<<"TRACE(pointcloudpainter.cpp): start: " << __func__ << endl;    
+    //if ( data==0 ) return;
 
     // Clear out the old one
-    if ( scanNode_.get() )
-        xformNode_->removeChild( scanNode_.get() );
-
-    // Check if this thing is a laser scan.
-    orca::LaserScanner2dDataPtr laserScan = orca::LaserScanner2dDataPtr::dynamicCast( data );
-    if ( laserScan )
-    {
-        intensitiesValid_ = true;
-        intensities_      = laserScan->intensities;        
+    if ( scanNode_.get() ){
+        //xformNode_->removeChild( scanNode_.get() );
+        root_->removeChild( scanNode_.get() );
     }
 
-    if ( !isDisplayScan_ ) return;
-    if ( data->ranges.size() == 0 ) return;
+    //if ( !isDisplayScan_ ) return;
+    if ( data.points.size() == 0 ) return;
     
     osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry();    
     osg::ref_ptr<osg::Vec3Array> vertices = new osg::Vec3Array;
     geometry->setVertexArray( vertices.get() );
 
-    // Line primitive
-    osg::ref_ptr<osg::DrawElementsUInt> linePrim =
-        new osg::DrawElementsUInt(osg::PrimitiveSet::LINE_LOOP);
-    geometry->addPrimitiveSet(linePrim.get());
-
     // Points primitive
     osg::ref_ptr<osg::DrawElementsUInt> pointsPrim;
-    if ( isDisplayPoints_ )
-    {
-        pointsPrim = new osg::DrawElementsUInt(osg::PrimitiveSet::POINTS);
-        geometry->addPrimitiveSet(pointsPrim.get());        
-    }
+    pointsPrim = new osg::DrawElementsUInt(osg::PrimitiveSet::POINTS);
+    geometry->addPrimitiveSet(pointsPrim.get());        
 
-    vertices->push_back( osg::Vec3(0,0,0) );
-    double angleIncrement = data->fieldOfView / double(data->ranges.size()+1);
-    for ( unsigned int i=0; i < data->ranges.size(); i++ )
-    {
-        float bearing = data->startAngle + i * angleIncrement;
-        vertices->push_back( osg::Vec3( data->ranges[i]*cos(bearing),
-                                        data->ranges[i]*sin(bearing),
-                                        0 ) );
-    }
-    for ( unsigned int i=0; i < vertices->size(); i++ )
-    {
-        linePrim->push_back(i);
-        if ( isDisplayPoints_ )
-            pointsPrim->push_back(i);
+    for ( unsigned int i=0; i < data.points.size(); i++ ) {
+        vertices->push_back( osg::Vec3( data.points[i].x,
+                                        data.points[i].y,
+                                        data.points[i].z) );
+        pointsPrim->push_back(i);
     }
 
     osg::ref_ptr<osg::Vec4Array> colors = new osg::Vec4Array;
-    colors->push_back( orcaqgui3d::toVec4( outlineColor_ ) );
-    if ( isDisplayPoints_ )
-        colors->push_back( osg::Vec4( 0, 0, 0, 1 ) );
+    colors->push_back( osg::Vec4( 0, 0, 0, 1 ) );
     geometry->setColorArray(colors.get());
     geometry->setColorBinding(osg::Geometry::BIND_PER_PRIMITIVE_SET);    
 
@@ -139,29 +117,32 @@ LaserScanner2dPainter::setData( const orca::RangeScanner2dDataPtr &data )
     scanNode_->addDrawable( geometry.get() );
 
     // Set the point size
-    if ( isDisplayPoints_ )
-    {
-        const float pointSize = 3.0;
-        osg::ref_ptr<osg::Point> pointAttr = new osg::Point( pointSize );
-        pointAttr->setSize(pointSize);
-        osg::StateSet *stateSet = scanNode_->getOrCreateStateSet();        
-        stateSet->setAttribute( pointAttr.get() );
-    }
+    const float pointSize = 3.0;
+    osg::ref_ptr<osg::Point> pointAttr = new osg::Point( );
+    pointAttr->setSize(pointSize);
+    osg::StateSet *stateSet = scanNode_->getOrCreateStateSet();        
+    stateSet->setAttribute( pointAttr.get() );
 
-    xformNode_->addChild( scanNode_.get() );
+    //xformNode_->addChild( scanNode_.get() );
+    root_->addChild( scanNode_.get() );
+    cout<<"TRACE(pointcloudpainter.cpp): end: " << __func__ << endl;    
 }
 
-void LaserScanner2dPainter::setColor( QColor color )
+void PointCloudPainter::setColor( QColor color )
 { 
+    cout<<"TRACE(pointcloudpainter.cpp): start: " << __func__ << endl;    
     basisColor_ = color; 
     outlineColor_ = color;
+    cout<<"TRACE(pointcloudpainter.cpp): end: " << __func__ << endl;    
 }
 
-void LaserScanner2dPainter::setFocus( bool inFocus )
+void PointCloudPainter::setFocus( bool inFocus )
 {
+    cout<<"TRACE(pointcloudpainter.cpp): start: " << __func__ << endl;    
     if (!inFocus) {
         outlineColor_=Qt::gray;
     } else {
         outlineColor_=basisColor_;
     }    
+    cout<<"TRACE(pointcloudpainter.cpp): end: " << __func__ << endl;    
 }

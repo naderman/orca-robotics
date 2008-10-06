@@ -49,7 +49,8 @@ public:
     // returns FALSE if there are no active goals, and TRUE otherwise
     bool getActiveGoals( std::vector<orcalocalnav::Goal> &goals,
                          int maxNumGoals,
-                         const hydronavutil::Pose &pose );
+                         const hydronavutil::Pose &pose,
+                         bool &wpIncremented );
 
     //
     // Functions called by MainLoop, to trigger comms with outside world
@@ -77,6 +78,9 @@ private:
 
     // If the index changes, we need to tell the world.
     bool wpIndexChanged_;
+
+    // Used to handle corner-case of 'wpIncremented' on first call to getActiveGoals after new path.
+    bool justReceivedNewPath_;
 
     // The timing of the entire path is relative to this
     orca::Time pathStartTime_;

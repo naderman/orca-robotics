@@ -85,6 +85,12 @@ InputThread::walk()
     {
         context_.tracer().debug( "InputThread: calling driver_->read()", 10 );
         int ret = driver_->read( command );
+
+        // before doing anything else, check to make sure we are not being terminated
+        if ( isStopping() ) {
+            return;
+        }
+
         if ( ret == 0 )
         {
             network_->newMixedCommand( command );

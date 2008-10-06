@@ -43,37 +43,43 @@ namespace {
         return false;   
     }
 
-    void jiggleOntoClearCell( orca::Waypoint2d &wp,
-                              const hydroogmap::OgMap &ogMap,
-                              double traversabilityThreshhold )
-    {
-        if ( isClearWorld( wp.target.p.x, wp.target.p.y, ogMap, traversabilityThreshhold ) )
-            return;
+//     void jiggleOntoClearCell( orca::Waypoint2d &wp,
+//                               const hydroogmap::OgMap &ogMap,
+//                               double traversabilityThreshhold )
+//     {
+//         cout<<"TRACE(driver.cpp): jiggleOntoClearCell( " << orcaobj::toString(wp.target.p) << ")" << endl;
 
-        for ( int numSteps=2; numSteps < 10000; numSteps = (int)(numSteps*1.5) )
-        {
-            int xCell,yCell;
-            ogMap.getCellIndices( wp.target.p.x, wp.target.p.y, xCell, yCell );
-            hydropathplan::Cell2D cell(xCell,yCell);
+//         if ( isClearWorld( wp.target.p.x, wp.target.p.y, ogMap, traversabilityThreshhold ) )
+//             return;
 
-            // perform a random walk of numSteps steps.
-            for ( int i=0; i < numSteps; i++ )
-            {
-                cell = hydropathplan::surroundCell( cell, (int)(hydroutil::randNum(0,8)) );
+//         cout<<"TRACE(driver.cpp): Jiggling waypoint " << orcaobj::toString(wp.target.p) << " onto clear cell..." << endl;
 
-                if ( hydropathplan::util::isTraversable( ogMap, cell.x(), cell.y(), traversabilityThreshhold ) )
-                {
-                    double worldX, worldY;
-                    ogMap.getWorldCoords( cell.x(), cell.y(), worldX, worldY );
-                    wp.target.p.x = worldX;
-                    wp.target.p.y = worldY;
-                    assert( isClearWorld( wp.target.p.x, wp.target.p.y, ogMap, traversabilityThreshhold ) );
-                    return;
-                }
-            }
-        }
-        throw( hydropathplan::Exception( "Couldn't jiggle onto clear cell." ) );
-    }
+//         for ( int numSteps=2; numSteps < 10000; numSteps = (int)(numSteps*1.5) )
+//         {
+//             int xCell,yCell;
+//             ogMap.getCellIndices( wp.target.p.x, wp.target.p.y, xCell, yCell );
+//             hydropathplan::Cell2D cell(xCell,yCell);
+
+//             // perform a random walk of numSteps steps.
+//             for ( int i=0; i < numSteps; i++ )
+//             {
+//                 cell = hydropathplan::surroundCell( cell, (int)(hydroutil::randNum(0,8)) );
+
+//                 if ( hydropathplan::util::isTraversable( ogMap, cell.x(), cell.y(), traversabilityThreshhold ) )
+//                 {
+//                     double worldX, worldY;
+//                     ogMap.getWorldCoords( cell.x(), cell.y(), worldX, worldY );
+//                     wp.target.p.x = worldX;
+//                     wp.target.p.y = worldY;
+//                     assert( isClearWorld( wp.target.p.x, wp.target.p.y, ogMap, traversabilityThreshhold ) );
+//                     cout<<"  TRACE(driver.cpp): Jiggled onto: " << orcaobj::toString(wp.target.p) << endl;
+
+//                     return;
+//                 }
+//             }
+//         }
+//         throw( hydropathplan::Exception( "Couldn't jiggle onto clear cell." ) );
+//     }
     
     double straightLineDist( const hydropathplan::Cell2D &c1,
                              const hydropathplan::Cell2D &c2,
@@ -108,21 +114,23 @@ namespace {
     convert( const orca::Waypoint2d &start,
              const orca::Waypoint2d &goal,
              const hydropathplan::Cell2DVector &pathCells,
-             const hydroogmap::OgMap &ogMap )
+             const hydroogmap::OgMap &ogMap,
+             double interDistTolerance )
     {
         assert( pathCells.size() > 1 );
 
-        // Make sure the start and end-points of pathCells coincide with 'start' and 'goal'
-        if ( fabs(start.target.p.x - ogMap.worldXCoord(pathCells.front().x())) > ogMap.metresPerCellX() ||
-             fabs(start.target.p.y - ogMap.worldYCoord(pathCells.front().y())) > ogMap.metresPerCellY() ||
-             fabs(goal.target.p.x  - ogMap.worldXCoord(pathCells.back().x()))  > ogMap.metresPerCellX() ||
-             fabs(goal.target.p.y  - ogMap.worldYCoord(pathCells.back().y()))  > ogMap.metresPerCellY() )
-        {
-            cout << "ERROR(driver.cpp): start and goal wps aren't on first and last cells." << endl;
-            cout << "ERROR(driver.cpp): start: " << orcaobj::toString(start) << ", pathCells.front(): " << toWorldString(pathCells.front(),ogMap) << endl;
-            cout << "ERROR(driver.cpp): goal:  " << orcaobj::toString(goal) << ", pathCells.back(): " << toWorldString(pathCells.back(),ogMap) << endl;
-            assert( "bad path" && false );
-        }
+        // AlexB: commented out this check since jiggling moved to hydropathplan.
+//         // Make sure the start and end-points of pathCells coincide with 'start' and 'goal'
+//         if ( fabs(start.target.p.x - ogMap.worldXCoord(pathCells.front().x())) > ogMap.metresPerCellX() ||
+//              fabs(start.target.p.y - ogMap.worldYCoord(pathCells.front().y())) > ogMap.metresPerCellY() ||
+//              fabs(goal.target.p.x  - ogMap.worldXCoord(pathCells.back().x()))  > ogMap.metresPerCellX() ||
+//              fabs(goal.target.p.y  - ogMap.worldYCoord(pathCells.back().y()))  > ogMap.metresPerCellY() )
+//         {
+//             cout << "ERROR(driver.cpp): start and goal wps aren't on first and last cells." << endl;
+//             cout << "ERROR(driver.cpp): start: " << orcaobj::toString(start) << ", pathCells.front(): " << toWorldString(pathCells.front(),ogMap) << endl;
+//             cout << "ERROR(driver.cpp): goal:  " << orcaobj::toString(goal) << ", pathCells.back(): " << toWorldString(pathCells.back(),ogMap) << endl;
+//             assert( "bad path" && false );
+//         }
 
         // Compute the length of each leg of the trip
         std::vector<double> legLengths;
@@ -168,7 +176,7 @@ namespace {
             wp.target.o   = 0;
             wp.headingTolerance = 2*M_PI;
 
-            wp.distanceTolerance = goal.distanceTolerance;
+            wp.distanceTolerance = interDistTolerance;
             wp.maxApproachSpeed = goal.maxApproachSpeed;
             wp.maxApproachTurnrate = goal.maxApproachTurnrate;
             if ( totalTime == 0 )
@@ -193,34 +201,36 @@ Driver::Driver( hydropathplan::IPathPlanner2d  &pathPlanner,
                 const hydroogmap::OgMap        &ogMap,
                 double                         robotDiameterMetres,
                 double                         traversabilityThreshhold,
-                bool                           jiggleWaypointsOntoClearCells,
+                double                         intermediateMinDistTolerance,
+//                bool                           jiggleWaypointsOntoClearCells,
                 const orcaice::Context         &context)
     : pathPlanner_(pathPlanner),
       ogMap_(ogMap),
       traversabilityThreshhold_(traversabilityThreshhold),
-      jiggleWaypointsOntoClearCells_(jiggleWaypointsOntoClearCells),
+      intermediateMinDistTolerance_(intermediateMinDistTolerance),
+//      jiggleWaypointsOntoClearCells_(jiggleWaypointsOntoClearCells),
       context_(context)
       
 {
-    if ( jiggleWaypointsOntoClearCells_ )
-    {
-        grownOgMap_ = ogMap_;
-        assert( ogMap_.metresPerCellX() == ogMap_.metresPerCellY() && "Can only deal with square cells" );
-        // TODO: AlexB: why are we growing by the diameter, not the radius??
-        hydropathplan::util::growObstaclesOgMap( grownOgMap_,
-                                                 traversabilityThreshhold_,
-                                                 (int)(robotDiameterMetres/grownOgMap_.metresPerCellX()) );
-    }
+//     if ( jiggleWaypointsOntoClearCells_ )
+//     {
+//         grownOgMap_ = ogMap_;
+//         assert( ogMap_.metresPerCellX() == ogMap_.metresPerCellY() && "Can only deal with square cells" );
+//         // TODO: AlexB: why are we growing by the diameter, not the radius??
+//         hydropathplan::util::growObstaclesOgMap( grownOgMap_,
+//                                                  traversabilityThreshhold_,
+//                                                  (int)(robotDiameterMetres/grownOgMap_.metresPerCellX()) );
+//     }
 }
 
-void
-Driver::jiggleOntoClearCells( orca::Path2d &path )
-{
-    for ( unsigned int i=0; i < path.size(); i++ )
-    {
-        jiggleOntoClearCell( path[i], grownOgMap_, traversabilityThreshhold_ );
-    }
-}
+// void
+// Driver::jiggleOntoClearCells( orca::Path2d &path )
+// {
+//     for ( unsigned int i=0; i < path.size(); i++ )
+//     {
+//         jiggleOntoClearCell( path[i], grownOgMap_, traversabilityThreshhold_ );
+//     }
+// }
 
 hydropathplan::Cell2DVector
 Driver::computePathSegment( double startX,
@@ -264,12 +274,12 @@ Driver::computePath( const orca::PathPlanner2dTask &task,
     }
 
     const orca::Path2d *coarsePath = &(task.coarsePath);
-    if ( jiggleWaypointsOntoClearCells_ )
-    {
-        jiggledPath_ = task.coarsePath;
-        jiggleOntoClearCells( jiggledPath_ );
-        coarsePath = &(jiggledPath_);
-    }
+//     if ( jiggleWaypointsOntoClearCells_ )
+//     {
+//         jiggledPath_ = task.coarsePath;
+//         jiggleOntoClearCells( jiggledPath_ );
+//         coarsePath = &(jiggledPath_);
+//     }
 
     // Add the first waypoint un-touched
     path.push_back( (*coarsePath)[0] );
@@ -293,7 +303,8 @@ Driver::computePath( const orca::PathPlanner2dTask &task,
         std::vector<orca::Waypoint2d> finePathSegment = convert( startWp, 
                                                                  goalWp,
                                                                  pathCells,
-                                                                 ogMap_ );
+                                                                 ogMap_,
+                                                                 intermediateMinDistTolerance_ );
 
         // Add to the path but ignore the first wp (it was the last wp of the previous segment)
         path.insert( path.end(), finePathSegment.begin()+1, finePathSegment.end() );

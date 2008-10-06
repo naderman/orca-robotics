@@ -86,6 +86,8 @@ public:
             input.reset( new PathFollowerInput( pathUI, wpSettings, humanManager, lastSavedPathFile ) );
             return input;     
         }
+
+    virtual ~PathFollowerInputFactory() {}
 };      
 
 }

@@ -25,6 +25,12 @@ Stats::Stats() :
 {
 }
 
+void
+Stats::resetRawData()
+{
+    haveData_ = false;
+}
+
 void 
 Stats::addData( const hydrointerfaces::SegwayRmp::Data& data )
 {

@@ -68,13 +68,23 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @par Updated components
 
+- PathPlanner
+  - Fixed long-standing segfault on shutdown (alexm)
+
 - Gps2Localise2d
   - Added a bunch of (configurable) heuristics to discard faulty records (tobi)
+
+- LocalNav
+  - When PathFollower2d interface becomes disabled the component now sends a zero-velocoty command
+    (once). This is done for safety. (alexm)
 
 @par Updated utilities
 
 - RegistryView
   - Toggling display of standard interfaces also affects Tracer interface (alexm)
+
+- Probe
+  - Fixed segfault when providing incorrect platform selection (alexm)
 
 @par Updated libraries
 

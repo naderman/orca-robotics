@@ -38,6 +38,7 @@ public:
 
     gbxiceutilacfr::Store<orca::PathFollower2dData> pathPipe_;
     gbxiceutilacfr::Store<int> indexPipe_;
+    gbxiceutilacfr::Store<double> relativeTimePipe_;
 };
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -82,7 +83,6 @@ public:
     
     // Tries to enable or disable the remote interface. Returns true if successful
     bool tryEnableRemoteInterface( bool enable );
-
     void go();
     void stop();
     void sendPath( const hydroqguipath::IPathInput *pathInput, 
@@ -91,6 +91,9 @@ public:
     void enableHI();
     void disableHI();
     bool isHIEnabled() { return pathUI_.get() != 0; }
+
+    // pathUI_ will call this
+    void toggleEnabled();
 
     PathPainter &pathPainter() { return painter_; }
 
@@ -119,8 +122,7 @@ private:
     std::auto_ptr<hydroqguipath::PathInputFactory> inputFactory_;
     
     bool firstTime_;
-    gbxiceutilacfr::Timer *timer_;
-    gbxiceutilacfr::Timer *activationTimer_;
+    gbxiceutilacfr::Timer timer_;
     
     // toggle states
     bool displayWaypoints_;

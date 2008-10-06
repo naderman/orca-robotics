@@ -70,7 +70,7 @@ PathPlannerInput::savePath( const QString &filename )
     
     float timeOffset = 0.0;
     if (numLoops > 1)
-        timeOffset = guiPath_->last().timeTarget + pathDesignScreen_->secondsToCompleteLoop();
+        timeOffset = guiPath_->back().timeTarget + pathDesignScreen_->secondsToCompleteLoop();
   
     pathFileHandler_->savePath( filename, *guiPath_.get(), numLoops, timeOffset );  
 }

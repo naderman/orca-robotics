@@ -182,8 +182,9 @@ resolveLocalPlatform( const Context& context, const std::string& proxy )
         if ( fqname.platform=="local" ) 
         {
             fqname.platform = hydroutil::getHostname();
-            initTracerWarning( context, "set remote platform name to hostname="+fqname.platform, 2 );
-            return orcaice::toString( fqname );
+            string resolvedProxy = orcaice::toString( fqname );
+            initTracerInfo( context, "resolved platform 'local' to hostname in proxy '"+resolvedProxy+"'", 2 );
+            return resolvedProxy;
         }
     }
     // no changes were made

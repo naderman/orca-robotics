@@ -29,23 +29,19 @@ PathUpdateConsumer::setData( const orca::PathFollower2dData& newPath, const ::Ic
 void
 PathUpdateConsumer::setWaypointIndex( int index, const ::Ice::Current& )
 {
+//     cout << "PathUpdateConsumer::Received a new index, it's " << index << endl;
     indexPipe_.set( index );
 }
 
 void PathUpdateConsumer::setActivationTime( const orca::Time& absoluteTime, double relativeTime, const ::Ice::Current& )
 {
-    static bool _havePrintedDbug(false);
-    if (!_havePrintedDbug)
-    {
-        cout << "PathFollower2d: got a new activation time. Not used, we rely on getData calls." << endl;
-        cout << "That warning is only printed once." << endl;
-        _havePrintedDbug = true;
-    }
+//     cout << "PathUpdateConsumer::Received a new activation time! " << endl;
+    relativeTimePipe_.set( relativeTime );
 }
 
 void PathUpdateConsumer::setEnabledState( bool enabledState, const ::Ice::Current& )
 {
-    cout << "PathFollower2d: enable state changed. Not used, we rely on getData calls." << endl;
+//     cout << "PathUpdateConsumer: enable state changed. Not used, we rely on getData calls." << endl;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -80,10 +76,6 @@ PathFollower2dElement::PathFollower2dElement( const orcaice::Context &context,
     pathUpdateConsumer_ = new PathUpdateConsumer;
 
     doInitialSetup();
-    
-    timer_ = new gbxiceutilacfr::Timer;
-    activationTimer_ = new gbxiceutilacfr::Timer;
-    activationTimer_->restart();
 }
 
 void
@@ -134,12 +126,12 @@ PathFollower2dElement::update()
     {
         if (firstTime_) {
             doInitialSetup();
-            timer_->restart();
-            firstTime_=false;
+            timer_.restart();
+            firstTime_ = false;
         }
-        if (timer_->elapsedSec()>5.0) {
+        if (timer_.elapsedSec() > 5.0) {
             doInitialSetup();
-            timer_->restart();
+            timer_.restart();
         }
     }
     if ( !isConnected_ ) return;
@@ -156,35 +148,11 @@ PathFollower2dElement::update()
         pathUpdateConsumer_->indexPipe_.get( index );
         painter_.setWpIndex( index );
     }
-    
-    // get the activation time
-    bool isEnabled;
-    int ret = isFollowerEnabled(isEnabled);
-    if (ret!=0) return;
-    
-    if ( (activationTimer_->elapsedSec()>0.5) && isEnabled) 
+    if ( pathUpdateConsumer_->relativeTimePipe_.isNewData() )
     {
-        try
-        {
-            double secondsSinceActivation;
-            if (pathFollower2dPrx_->getRelativeActivationTime( secondsSinceActivation )) 
-            {
-                painter_.setRelativeStartTime( secondsSinceActivation );
-            }
-        }
-        catch ( const orca::OrcaException &e )
-        {
-            stringstream ss;
-            ss << e.what;
-            humanManager_.showStatusError(  ss.str().c_str() );
-        }
-        catch ( const Ice::Exception &e )
-        {
-            stringstream ss;
-            ss << "While trying to get activation time: " << endl << e;
-            humanManager_.showStatusError(  ss.str().c_str() );
-        }
-        activationTimer_->restart();
+        double relTime;
+        pathUpdateConsumer_->relativeTimePipe_.get( relTime );
+        painter_.setRelativeStartTime( relTime );
     }
 }
 
@@ -396,17 +364,7 @@ PathFollower2dElement::execute( int action )
     }
     else if ( action == 5 )
     {
-        if (isRemoteInterfaceSick_) return;
-        pathFollower2dPrx_->setEnabled( !pathFollower2dPrx_->enabled() );
-        bool isEnabled;
-        isFollowerEnabled( isEnabled );
-        QString str;
-        if (isEnabled) {
-            str = "Pathfollower reports it is ENABLED now.";
-        } else {
-            str = "Pathfollower reports it is DISABLED now.";
-        }
-        humanManager_.showStatusInformation(str);
+        toggleEnabled();
     }
     else if ( action == 6 )
     {
@@ -422,6 +380,41 @@ PathFollower2dElement::execute( int action )
     {
         assert( false && "PathFollower2dElement::execute(): bad action" );
     }
+}
+
+void
+PathFollower2dElement::toggleEnabled()
+{
+    if ( !pathFollower2dPrx_ ) {
+        humanManager_.showStatusInformation("Proxy to PathFollower2d interface is not initialized");
+        return;
+    }
+
+    if (isRemoteInterfaceSick_) return;
+
+    bool isEnabled;
+    try {
+        pathFollower2dPrx_->setEnabled( !pathFollower2dPrx_->enabled() );
+        isFollowerEnabled( isEnabled );
+    }
+    catch ( const orca::OrcaException &e ) {
+        stringstream ss;
+        ss << "While trying to toggle enabled status: " << e.what;
+        humanManager_.showStatusError(  ss.str().c_str() );
+    }
+    catch ( const Ice::Exception &e ) {
+        stringstream ss;
+        ss << "While trying to toggle enabled status: " << endl << e;
+        humanManager_.showStatusError(  ss.str().c_str() );
+    }
+
+    QString str;
+    if (isEnabled) {
+        str = "Pathfollower reports it is ENABLED now.";
+    } else {
+        str = "Pathfollower reports it is DISABLED now.";
+    }
+    humanManager_.showStatusInformation(str);
 }
 
 void 

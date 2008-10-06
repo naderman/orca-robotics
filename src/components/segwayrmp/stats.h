@@ -16,7 +16,7 @@
 namespace segwayrmp {
 
 
-/*!
+/*
 Not thread safe.
 
 @author Alex Makarenko, based on earlier code by Duncan Mercer
@@ -27,6 +27,12 @@ class Stats
 public: 
     Stats();
 
+    // The raw data stream may be reset during the life time of Stats object.
+    // This happens for example when the hardware driver is reinitialized.
+    // The stats collected so far will not be lost.
+    void resetRawData();
+
+    // Add new piece of data to stats
     void addData( const hydrointerfaces::SegwayRmp::Data& data );
 
     // total distance travelled [m]
@@ -37,10 +43,11 @@ public:
     double maxSpeed() const { return maxSpeed_; };
 
 private: 
-
+    // keep record of raw data
     hydrointerfaces::SegwayRmp::Data lastData_;
     bool haveData_;
     
+    // stats
     double distance_;
     double timeInMotion_;
     double maxSpeed_;

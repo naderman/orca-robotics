@@ -11,8 +11,8 @@
 #ifndef ORCA2_POINT_CLOUD_INTERFACE_ICE
 #define ORCA2_POINT_CLOUD_INTERFACE_ICE
 
-#include "orca/common.ice" 
-#include "orca/bros1.ice"
+#include <orca/common.ice>
+#include <orca/bros1.ice>
 
 module orca {
 /*!

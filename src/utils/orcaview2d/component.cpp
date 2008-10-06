@@ -182,7 +182,7 @@ Component::start()
     hydroqgui::PlatformFocusManager platformFocusManager;
 
     // main window for display
-    orcaqgui::MainWindow mainWin( "OrcaView",
+    orcaqgui::MainWindow mainWin( "OrcaView2d",
                                   screenDumpParams,
                                   supportedInterfaces );
 
