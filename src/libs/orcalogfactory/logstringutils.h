@@ -70,6 +70,7 @@ std::string toLogString( const orca::PathPlanner2dTask& );
 std::string toLogString( const orca::Odometry2dData& );
 void fromLogString( std::stringstream &, orca::Odometry2dData& );
 std::string toLogString( const orca::Odometry3dData& );
+void fromLogString( std::stringstream &s, orca::Odometry3dData&);
 //! Prints out imu data to text which is easy to parse
 std::string toLogString( const orca::ImuData& obj );
 //! Prints out wifi data to text which is easy to parse

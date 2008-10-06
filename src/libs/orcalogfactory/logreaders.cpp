@@ -2,6 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include <orcalog/orcalog.h>
+#include <orcaobj/stringutils.h>
 #include "logstringutils.h"
 
 using namespace std;
@@ -320,6 +321,14 @@ namespace {
             ice_readOdometry3dData( helper.stream_, obj );
             helper.read();
         }
+        else if ( format=="ascii" )
+        {
+            std::string line;
+            std::getline( *file, line );
+
+            std::stringstream ss( line );
+            fromLogString( ss, obj );
+        }
         else
         {
             stringstream ss;
@@ -545,7 +554,7 @@ Odometry2dLogReader::read( orca::VehicleDescription &obj )
 Odometry3dLogReader::Odometry3dLogReader( const orcalog::LogReaderInfo &logReaderInfo )
     : orcalog::LogReader( logReaderInfo )
 {
-    checkFormatIceOnly( logReaderInfo );
+    checkFormatIceOrAscii( logReaderInfo );
 }
 void
 Odometry3dLogReader::read( orca::Odometry3dData &obj )
