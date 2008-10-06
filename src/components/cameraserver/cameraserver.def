@@ -7,23 +7,19 @@ Provides.Camera.DefaultName=camera
 # Required Interfaces
 
 # Config Parameters
-Config.DriverLib.Comment=Valid values are at least: { 'libHydroCameraOpenCV.so', 'libHydroCameraFake.so' }
-Config.DriverLib.Default=libHydroCameraFake.so
+Config.DriverLib.Comment=Valid values are at least: { 'libHydroImageCvCamera.so', 'libHydroImageFile.so', 'libHydroImageFake.so' }
+Config.DriverLib.Default=libHydroImageFake.so
 
-Config.NumOfCameras.Default=1
-
-Config.0.ID.Comment=Unique Device ID Number (usually the firewire device ID).
-Config.0.ID.Default=0
-Config.0.Offset.Comment=x[m] y[m] z[m] roll[deg] pitch[deg] yaw[deg]
-Config.0.Offset.Default=0.0 0.0 0.0  0.0 0.0 0.0
-Config.0.FocalLength.Comment=focal length of lense [mm]
-Config.0.FocalLength.Default=0
-Config.0.SensorSize.Comment=width[cm] height[cm]
-Config.0.SensorSize.Default=0.846 0.846
-Config.0.ImageWidth.Comment=Image Width [pixels]
-Config.0.ImageWidth.Default=320
-Config.0.ImageHeight.Comment=Image Height [pixels]
-Config.0.ImageHeight.Default=240
-Config.0.ImageFormat.Comment=Valid values are at least: {'ImageFormatModeGray8', 'ImageFormatModeBGR8', 'ImageFormatModeRBG8', 'ImageFormatModeYUV422', 'ImageFormatBayerBg', 'ImageFormatBayerGb', 'ImageFormatBayerRg', 'ImageFormatBayerGr'}
-Config.0.ImageFormat.Default=ImageFormatModeBGR8
+Config.Offset.Comment=x[m] y[m] z[m] roll[deg] pitch[deg] yaw[deg]
+Config.Offset.Default=0.0 0.0 0.0  0.0 0.0 0.0
+Config.FocalLength.Comment=focal length of lense [mm]
+Config.FocalLength.Default=0
+Config.SensorSize.Comment=width[cm] height[cm]
+Config.SensorSize.Default=0.846 0.846
+Config.ImageWidth.Comment=Image Width [pixels]
+Config.ImageWidth.Default=320
+Config.ImageHeight.Comment=Image Height [pixels]
+Config.ImageHeight.Default=240
+Config.ImageFormat.Comment=Valid values are at least: {'BGR8'}
+Config.ImageFormat.Default=BGR8
 

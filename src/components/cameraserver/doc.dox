@@ -45,52 +45,41 @@ This component dynamically loads an implementation of a Hydro hardware interface
     - Default: "libHydroCameraOpenCV.so"
 
 CameraServer Settings
-- @c CameraServer.Config.NumOfCameras (int)
-    - Valid Values: NumOfCameras>=1
-    - Default: 1
-    
-Individual Camera Settings
-
-For each camera in a set several options are available. Replace N with the camera number.
-
-
-Geometry
-- @c CameraServer.Config.N.ID (int) 
-    - The unique device identity number.
-    - Useful to ensure the camera N is described correctly here.
-    - Default: ID taken from the Nth camera on the bus that is found.
-- @c CameraServer.Config.N.Offset (Frame3d) [m, deg]
+- @c CameraServer.Config.Offset (Frame3d) [m, deg]
     - Position of the camera sensor plane with respect to the robot's local coordinate system.
     - Format: x y z roll pitch yaw (space separated)
     - Example: a camera mounted upside down with now translation: "0.0 0.0 0.0  180.0 0.0 0.0"
     - Default: 0.0 0.0 0.0  0.0 0.0 0.0
-- @c CameraServer.Config.N.FocalLength (double) [mm]
+- @c CameraServer.Config.FocalLength (double) [mm]
     - Focal length of attached lense. Useful to other components.
     - Default: 0
-- @c CameraServer.Config.N.SensorSize (Size2d) [cm,cm]
+- @c CameraServer.Config.SensorSize (Size2d) [cm,cm]
     - Physical dimensions of the CCD or CMOS sensor.
     - Format: width height (space separated)
     - Default: 0.846 0.846 (1/3" 1/3", a typical sensor size)
-- @c CameraServer.Config.N.ImageWidth (int) [pixels]
+- @c CameraServer.Config.ImageWidth (int) [pixels]
     - Width of desired image in pixels
     - Default: 320
-- @c CameraServer.Config.N.ImageHeight (int) [pixels]
+- @c CameraServer.Config.ImageHeight (int) [pixels]
     - Height of desired image in pixels
     - Default: 240
-- @c CameraServer.Config.N.ImageFormat (string)
-    - The format of the image that the camera produces. This is what is sent over the wire.
-    - Valid Values: {'ImageFormatModeGray8', 'ImageFormatModeBGR8', 'ImageFormat
-        ModeRGB8', 'ImageFormatModeYUV422', 'ImageFormatBayerBg', 'ImageFormatBayerGb',
-        'ImageFormatBayerRg', 'ImageFormatBayerGr'}
-    - Default: 'ImageFormatModeBGR8'
-
+- @c CameraServer.Config.ImageFormat (string)
+    - The format of the image that the camera produces. This is what is sent over the wire. 
+    - Valid Values: {'BGR8', Any other format you choose!}
+    - Default: 'BGR8'
 @see Individual drivers may have additional configuration parameters which are specified as Camera.Config.XXX. See driver documentation.
 
 An example configuration file is installed into [ORCA-INSTALL-DIR]/share/orca/cfg/ directory.
 
 @section Notes
 
-This should work on all platforms where opencv is available. The FPS setting at the moment is completely ignored by the available drivers. The width/height settings only need to be correct at the moment relative the default camera settings that opencv uses. In the future a libdc1394 based image grabber may take a more aggresive approach in attempting ot setup the camera to the desired settings.
+ImageFormat is a string. This means that you can easily send your data in whatever format you choose. It is assumed the default opencv driver is good enough in most cases and in special cases a custom driver can be written.
+
+ImageWidth and ImageHeight are sanity checked and an exception is thrown if they do not match the default capture values OpenCV gets with the cvcamera driver.
+
+Individual cameras have different options, different formats, and sometimes even their own unusual requirements. It was therefore thought by the author of this interface and set of drivers that it would be more beneficial to have the very basic framework and interface for sending data defined with maximum flexibility in mind given to driver writters. The cvcamera, image, and fake drivers should suffice for most robotics needs in all other cases.
+
+The viewer and logger expect the format to be BGR8 and will complain but should continue to work so long as the image byte size is correct, though the result may not be very useful.
 
 @par Authors
 
