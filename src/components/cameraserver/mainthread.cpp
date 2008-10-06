@@ -14,7 +14,6 @@
 #include <orcaifacestring/image.h>
 #include <orcaimageutil/imageutils.h>
 
-#include <hydroimage/imageformats.h>
 
 
 #include "mainthread.h"
