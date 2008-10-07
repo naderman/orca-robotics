@@ -103,9 +103,9 @@ To display the world in the GUI we'll use the @ref orca_component_ogmaploader co
 ...
 OgMapLoader.Config.MapFileName=./worlds/bitmaps/cave.png
 OgMapLoader.Config.Negate=0
-OgMapLoader.Config.Origin.Orientation=0.0
-OgMapLoader.Config.Origin.X=-8.0
-OgMapLoader.Config.Origin.Y=-8.0
+OgMapLoader.Config.Offset.Orientation=0.0
+OgMapLoader.Config.Offset.X=-8.0
+OgMapLoader.Config.Offset.Y=-8.0
 OgMapLoader.Config.Size.X=16.0
 OgMapLoader.Config.Size.Y=16.0
 ... 
