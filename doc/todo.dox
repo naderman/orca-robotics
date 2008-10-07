@@ -75,7 +75,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
   - Added a bunch of (configurable) heuristics to discard faulty records (tobi)
 
 - LocalNav
-  - When PathFollower2d interface becomes disabled the component now sends a zero-velocoty command
+  - When PathFollower2d interface becomes disabled the component now sends a zero-velocity command
     (once). This is done for safety. (alexm)
 
 @par Updated utilities
@@ -93,6 +93,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 - libOrcaQGui2dFactory
   - painted width of walls and return points in LaserScanner2dPainter is now zoom-independent. (alexm)
+
+- libOrcaIfaceString
+  - added documentation.
 
 @par Removed
 

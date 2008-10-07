@@ -83,7 +83,7 @@ class ConsumerImpl : virtual public ConsumerType,
                      public ConsumerSubscriber
 {
 public:
-    //! Constructor
+    //! Constructor. Does not contain any remote calls.
     ConsumerImpl( const orcaice::Context &context ) :
         ConsumerSubscriber(context)
     {
