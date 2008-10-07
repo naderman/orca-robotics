@@ -178,7 +178,8 @@ MainThread::initNetwork()
 
     ogLosTracer_.reset( new hydroogmap::OgLosTracer( ogMap_ ) );
 
-    // Create consumer to receive planned paths from the path-planner
+    // Create consumer to receive planned paths from the path-planner.
+    // (no remote calls).
     computedPathConsumer_ = new orcaifaceimpl::StoringPathPlanner2dConsumerImpl( context_ );
     
     //
