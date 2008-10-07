@@ -49,7 +49,7 @@ MACRO( GENERATE_SLICE2JAVA_RULES GENERATED_CPP_LIST GENERATED_HEADER_LIST )
         OUTPUT  ${CMAKE_CURRENT_BINARY_DIR}/output.fake
         COMMAND ${SLICE2JAVA_COMMAND} 
         ARGS    "*.ice ${SLICE_ARGS}"
-        DEPENDS ${SLICE_SOURCE_DIR}/${INTERFACE_NAMESPACE}/orca.ice
+        DEPENDS ${SLICE_SOURCE_DIR}/${INTERFACE_NAMESPACE}/common.ice
         COMMENT "-- Generating .java files from all Slice sources"
     )
 

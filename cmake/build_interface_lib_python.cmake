@@ -31,7 +31,7 @@ IF( build )
     #
     # Work out the list of generated files from the list of slice sources
     #
-    GENERATE_SLICE2PY_RULES( SLICE_GENERATED_PY_FILES ${SLICE_SOURCE_FILES} )
+    GENERATE_SLICE2PY_RULES( SLICE_GENERATED_PY_FILES ${ORCA_SLICE_SOURCE_FILES} )
     
     #
     # tell "make" to create the .py targets by looping through over each <interface>.py
@@ -40,7 +40,7 @@ IF( build )
 	# based off the wiki entry on compliling latex files with cmake:
 	# http://www.cmake.org/Wiki/CMake_FAQ#How_do_I_use_CMake_to_build_LaTeX_documents.3F 
 	ADD_CUSTOM_TARGET( ${PYTHON_INTERFACE} ALL echo
-	    DEPENDS ${SLICE2PY_BINARY_DIR}/${slice_module}/${SLICE_SOURCE_FILES} )
+	    DEPENDS ${SLICE2PY_BINARY_DIR}/${slice_module}/${ORCA_SLICE_SOURCE_FILES} )
     ENDFOREACH( PYTHON_INTERFACE ${SLICE_GENERATED_PY_FILES} )
     
     #
