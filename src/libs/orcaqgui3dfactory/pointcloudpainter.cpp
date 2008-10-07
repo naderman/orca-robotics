@@ -26,6 +26,33 @@ using namespace std;
 using namespace orca;
 using namespace orcaqgui3d;
 
+namespace{
+void
+height2Color(const float &height, float &r,float &g, float &b){
+    float min=-.5, max=1.5, mid=.5;
+    if(min>height){
+	// below min all black
+	r=0.0; g=0.0; b=0.0;
+    }
+    else if( (mid>height) && (min<height) ){
+	// min to mid maps from blue to green
+	r=0.0;
+	g=(height-min)/(mid-min);
+	b=1.0-(height-min)/(mid-min);
+    }
+    else if( (mid<height) && (max>height) ){
+	// mid to max maps from green to red
+	b=0.0;
+	r=(height-mid)/(max-mid);
+	g=1.0-(height-mid)/(max-mid);
+    }
+    else if(max<height){
+	r=1.0; g=1.0; b=1.0; // are all white points visible??
+    }
+}
+
+} //namespace
+
 PointCloudPainter::PointCloudPainter( QColor outlineColor )
     : isDisplayScan_(true),
       isDisplayPoints_(true),
@@ -101,17 +128,20 @@ PointCloudPainter::setData( const orca::PointCloudData &data )
     pointsPrim = new osg::DrawElementsUInt(osg::PrimitiveSet::POINTS);
     geometry->addPrimitiveSet(pointsPrim.get());        
 
+    osg::ref_ptr<osg::Vec4Array> colors = new osg::Vec4Array;
+
     for ( unsigned int i=0; i < data.points.size(); i++ ) {
         vertices->push_back( osg::Vec3( data.points[i].x,
                                         data.points[i].y,
                                         data.points[i].z) );
         pointsPrim->push_back(i);
+	float r,g,b;
+	height2Color(data.points[i].z, r, g, b);
+	colors->push_back( osg::Vec4( r, g, b, 1 ) );
     }
 
-    osg::ref_ptr<osg::Vec4Array> colors = new osg::Vec4Array;
-    colors->push_back( osg::Vec4( 0, 0, 0, 1 ) );
     geometry->setColorArray(colors.get());
-    geometry->setColorBinding(osg::Geometry::BIND_PER_PRIMITIVE_SET);    
+    geometry->setColorBinding(osg::Geometry::BIND_PER_VERTEX);    
 
     scanNode_ = new osg::Geode;
     scanNode_->addDrawable( geometry.get() );
