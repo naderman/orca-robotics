@@ -47,6 +47,8 @@ void setProperties( Ice::PropertiesPtr         &properties,
     detail::addPropertiesFromServiceConfigFile( properties, commandLineArgs, componentTag );
 
     // (alexb: can we check this outside the function, before calling setProperties()?)
+    // (alexm: i'm not sure, have to check if UseSharedCommunicator property is loaded before this
+    //         function is called).
     // Apply factory defaults and global settings only if
     //   a) this is private communicator (not shared with others), or
     //   b) the communicator is shared but not yet configured
