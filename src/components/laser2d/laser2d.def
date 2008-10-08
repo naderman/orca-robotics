@@ -8,7 +8,7 @@ Provides.LaserScanner2d.DefaultName=laserscanner2d
 
 # Config Parameters
 Config.DriverLib.Comment=Valid values are at least: { 'libHydroLaserScanner2dSickGbx.so', 'libHydroLaserScanner2dSickCarmen.so', 'libHydroLaserScanner2dPlayerClient.so', 'libHydroLaserScanner2dFake.so' }
-Config.DriverLib.Default=libHydroLaserScanner2dSickCarmen.so
+Config.DriverLib.Default=libHydroLaserScanner2dSickGbx.so
 
 Config.MinRange.Default=0.0
 Config.MaxRange.Default=80.0
