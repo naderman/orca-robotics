@@ -142,7 +142,7 @@ LaserScanner2dPainter::setData( const orca::RangeScanner2dDataPtr &data )
     if ( isDisplayPoints_ )
     {
         const float pointSize = 3.0;
-        osg::ref_ptr<osg::Point> pointAttr = new osg::Point( pointSize );
+        osg::ref_ptr<osg::Point> pointAttr = new osg::Point( );
         pointAttr->setSize(pointSize);
         osg::StateSet *stateSet = scanNode_->getOrCreateStateSet();        
         stateSet->setAttribute( pointAttr.get() );
