@@ -23,9 +23,10 @@ src/libs/orcaogmap                                          LGPL
 src/libs/orcaogfusion                                       LGPL
 src/libs/orcapathplan                                       LGPL
 src/libs/orcaplayer                                         GPL
+src/libs/orcapotrace                                        GPL
 src/libs/orcaprobe                                          LGPL
 src/libs/orcaprobefactory                                   LGPL
-src/libs/orcaqcm                                            GPL
+src/libs/orcaqcompmodel                                     GPL
 src/libs/orcaqt                                             GPL
 src/libs/orcaqguielementmodelview                           GPL
 src/libs/orcaqgui                                           GPL
@@ -36,6 +37,7 @@ src/libs/orcaqgui3dfactory                                  GPL
 src/libs/orcaquml                                           GPL
 src/libs/orcarobotdriverutil                                LGPL
 src/libs/orcasim2d                                          LGPL
+src/libs/orcateleop                                         LGPL
 src/libs/orcavfh                                            LGPL
 src/utils/orcaview2d                                        GPL
 src/utils/orcaview3d                                        GPL

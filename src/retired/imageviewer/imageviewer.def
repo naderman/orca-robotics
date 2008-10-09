@@ -1,8 +1,0 @@
-DefaultComponentTag=ImageViewer
-
-# Provided Interfaces
-
-# Required Interfaces
-Requires.Camera.Type=Camera
-Requires.Camera.DefaultProxy=camera@local/imageserver
-
