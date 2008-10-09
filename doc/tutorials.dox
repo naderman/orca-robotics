@@ -12,6 +12,8 @@
 
 @page orca_doc_tutorials Orca Tutorials
 
+@note Our goal is to make the info in these tutorials clear and accurate, but ... things change in how the components are configured and run. Since we don't have an automated way to test the tutorials so we don't catch the errors right away. So let us know when something is not quite right. Signing up to the <strong><a href="https://lists.sourceforge.net/lists/listinfo/orca-robotics-users" style="text-decoration:none">user mailing list</a></strong></p> is easy and does not require an approval. Send us a quick a email, we'll help you out and fix the documentation. Thanks.
+
 @section orca_doc_tutorials_composition System composition
 
 - @ref orca_doc_quickstart (with optional @ref orca_doc_quickstart_explained "explanation")
