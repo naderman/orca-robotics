@@ -49,6 +49,19 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - laser2og:
    - The ray-trace stuff in here is currently cut-n-pasted from hydroogmap...
 
+@section orca_doc_history_head Changes in SVN since Last Release
+
+@par Project wide
+@par New interfaces
+@par New components
+@par New utilities
+@par New libraries
+@par Updated interfaces
+@par Updated components
+@par Updated utilities
+@par Updated libraries
+@par Removed
+
 @section orca_doc_history_2120 Changes in Release 2.12.0
 
 @par New components
