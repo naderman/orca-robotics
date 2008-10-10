@@ -30,6 +30,10 @@ Download source from  <a href="http://www.zeroc.com/download.html">download page
 @verbatim
 # apt-get install libdb4.6++-dev libbz2-dev bzip2 libssl-dev libreadline5-dev libexpat1-dev mcpp
 @endverbatim
+    - In some cases the compiler complains about not being able to link to libmcpp.so ("cannot find -lmcpp"). You can help it by creating an extra symbolic link.
+@verbatim
+# ln -s /usr/lib/libmcpp.so.0.2.0 /usr/lib/libmcpp.so
+@endverbatim
     - Unpack the source archive (replace [VERSION] with the version of Ice you are trying to install.)
 @verbatim
 $ tar -xzf Ice-[VERSION].tar.gz
