@@ -33,7 +33,7 @@
 
 @par Drivers
 
-This component dynamically loads an implementation of a Hydro hardware interface hydrointerfaces::Camera. You can also load your own implementation as long as the shared library is in the path. See Hydro documentation for the list of available drivers.
+This component dynamically loads an implementation of a Hydro hardware interface hydrointerfaces::Image. You can also load your own implementation as long as the shared library is in the path. See Hydro documentation for the list of available drivers.
 
 - @ref hydro_drivers_camera
 
@@ -41,8 +41,8 @@ This component dynamically loads an implementation of a Hydro hardware interface
 
 - @c CameraServer.Config.DriverLib (string)
     - Name of shared library containing the hardware driver
-    - Valid values are at least: { 'libHydroCameraOpenCV.so', 'libHydoCameraFake.so' }
-    - Default: "libHydroCameraOpenCV.so"
+    - Valid values are at least: { 'libHydroImageFake.so', 'libHydoImageCvCamera.so' }
+    - Default: "libHydroImageFake.so"
 
 CameraServer Settings
 - @c CameraServer.Config.Offset (Frame3d) [m, deg]
@@ -64,8 +64,9 @@ CameraServer Settings
     - Height of desired image in pixels
     - Default: 240
 - @c CameraServer.Config.ImageFormat (string)
-    - The format of the image that the camera produces. This is what is sent over the wire. 
-    - Valid Values: {'BGR8', Any other format you choose!}
+    - The format of the image that the camera produces. This is what is sent over the wire.
+    - The viewer and logger support any format so long as there is a conversion plugin for your format to 'BGR8' or 'GRAY8'
+    - Valid Values: {'BGR8', 'GRAY8' Any other format you choose!}
     - Default: 'BGR8'
 @see Individual drivers may have additional configuration parameters which are specified as Camera.Config.XXX. See driver documentation.
 
@@ -77,9 +78,10 @@ ImageFormat is a string. This means that you can easily send your data in whatev
 
 ImageWidth and ImageHeight are sanity checked and an exception is thrown if they do not match the default capture values OpenCV gets with the cvcamera driver.
 
-Individual cameras have different options, different formats, and sometimes even their own unusual requirements. It was therefore thought by the author of this interface and set of drivers that it would be more beneficial to have the very basic framework and interface for sending data defined with maximum flexibility in mind given to driver writters. The cvcamera, image, and fake drivers should suffice for most robotics needs in all other cases.
+Individual cameras have different options, different formats, and sometimes even their own unusual requirements. It was therefore thought by the author of this interface that it would be more beneficial to have the very basic framework and interface for sending data defined with maximum flexibility in mind given to driver writters. The cvcamera, image, and fake drivers should suffice for most robotics needs in all other cases.
 
-The viewer and logger expect the format to be BGR8 and will complain but should continue to work so long as the image byte size is correct, though the result may not be very useful.
+In order for the logger and viewer to properly show your custom image format (should you have one) you need to write a conversion plugin if one doesn't exist already.
+It should convert to either BGR8 for color logging/viewing or GRAY8 for grayscale logging and viewing.
 
 @par Authors
 

@@ -20,6 +20,6 @@ Config.ImageWidth.Comment=Image Width [pixels]
 Config.ImageWidth.Default=320
 Config.ImageHeight.Comment=Image Height [pixels]
 Config.ImageHeight.Default=240
-Config.ImageFormat.Comment=Valid values are at least: {'BGR8'}
+Config.ImageFormat.Comment=Valid values are at least: {'BGR8', 'GRAY8'}
 Config.ImageFormat.Default=BGR8
 
