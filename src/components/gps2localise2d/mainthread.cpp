@@ -180,6 +180,21 @@ MainThread::initNetworkInterface()
     localiseInterface_->initInterface( this, subsysName() );
 }
 
+bool
+MainThread::antennaOffsetOK( const orca::Frame3d &offset )
+{
+    bool offsetOk = true;
+    if ( offset.o.r != 0.0 || offset.o.p != 0.0 || offset.o.y != 0.0 )
+    {
+        stringstream ss;
+        ss << "Can't handle non-zero roll/pitch/yaw in antenna offset. Offset: " << orcaobj::toString(offset);
+        context_.tracer().error( ss.str() );
+        offsetOk = false;
+    }
+
+    return offsetOk;
+}
+
 void 
 MainThread::walk()
 {
@@ -268,20 +283,6 @@ MainThread::walk()
         }
     } // while
 
-    context_.tracer().debug( "Exited main loop.",2 );
-}
-
-bool
-MainThread::antennaOffsetOK( const orca::Frame3d &offset )
-{
-    bool offsetOk = true;
-    if ( offset.o.r != 0.0 || offset.o.p != 0.0 || offset.o.y != 0.0 )
-    {
-        stringstream ss;
-        ss << "Can't handle non-zero roll/pitch/yaw in antenna offset. Offset: " << orcaobj::toString(offset);
-        context_.tracer().error( ss.str() );
-        offsetOk = false;
-    }
-
-    return offsetOk;
+    // to be nice to the publisher of information, unsubscribe before quitting.
+    gpsConsumer_->unsubscribe();
 }

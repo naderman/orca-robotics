@@ -419,6 +419,16 @@ MainThread::getInputs( hydronavutil::Velocity &velocity,
 }
 
 void
+MainThread::checkWithOutsideWorld()
+{
+    // (1): world->localnav: Have we received a new path?
+    pathMaintainer_->checkForNewPath();
+
+    // (2): world<-localnav: Have we modified our wp index?
+    pathMaintainer_->checkForWpIndexChange();
+}
+
+void
 MainThread::walk()
 {
     //
@@ -611,16 +621,11 @@ MainThread::walk()
             sleep(1);
         }
     }
-}
 
-void
-MainThread::checkWithOutsideWorld()
-{
-    // (1): world->localnav: Have we received a new path?
-    pathMaintainer_->checkForNewPath();
-
-    // (2): world<-localnav: Have we modified our wp index?
-    pathMaintainer_->checkForWpIndexChange();
+    // to be nice to the publisher of information, unsubscribe before quitting.
+    obsConsumer_->unsubscribe();
+    locConsumer_->unsubscribe();
+    odomConsumer_->unsubscribe();
 }
 
 }

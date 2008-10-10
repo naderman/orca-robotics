@@ -142,8 +142,8 @@ MainThread::init()
     // Subscribe for observation data
     //
     // create a callback object to recieve scans
-    consumer_ = new orcaifaceimpl::BufferedRangeScanner2dConsumerImpl( -1, gbxiceutilacfr::BufferTypeCircular, context_ );
-    consumer_->subscribeWithTag( "Observations", this, subsysName() );
+    rangeScannerConsumer_ = new orcaifaceimpl::BufferedRangeScanner2dConsumerImpl( -1, gbxiceutilacfr::BufferTypeCircular, context_ );
+    rangeScannerConsumer_->subscribeWithTag( "Observations", this, subsysName() );
 
     //
     // Algorithm
@@ -177,7 +177,7 @@ MainThread::walk()
         try
         {
             subStatus().heartbeat();
-            if ( consumer_->buffer().getAndPopNext( rangeScan, timeoutMs ) != 0 ) {
+            if ( rangeScannerConsumer_->buffer().getAndPopNext( rangeScan, timeoutMs ) != 0 ) {
                 context_.tracer().info("no range scan available: waiting ...");
                 continue;
             }
@@ -241,4 +241,7 @@ MainThread::walk()
         }
         
     } // end of main loop
+
+    // to be nice to the publisher of information, unsubscribe before quitting.
+    rangeScannerConsumer_->unsubscribe();
 }

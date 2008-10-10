@@ -42,7 +42,7 @@ private:
     // for setting ogfusion data
     orca::OgFusionPrx ogFusionPrx_;
     // for receiving the data
-    orcaifaceimpl::BufferedRangeScanner2dConsumerImplPtr consumer_;
+    orcaifaceimpl::BufferedRangeScanner2dConsumerImplPtr rangeScannerConsumer_;
 
     std::auto_ptr<Laser2Og> laser2Og_;
 

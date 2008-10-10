@@ -68,10 +68,10 @@ MainThread::walk()
     //
     // EXTERNAL REQUIRED INTERFACES
     //           
-    orcaifaceimpl::BufferedOdometry2dConsumerImplPtr odometry2dInterface =
+    orcaifaceimpl::BufferedOdometry2dConsumerImplPtr odometry2dConsumer =
         new orcaifaceimpl::BufferedOdometry2dConsumerImpl( 10, gbxiceutilacfr::BufferTypeCircular,context_);
     // multi-try function
-    odometry2dInterface->subscribeWithTag( "Odometry2d", this, subsysName() );
+    odometry2dConsumer->subscribeWithTag( "Odometry2d", this, subsysName() );
 
     //
     // Get vehicleDescription
@@ -124,7 +124,7 @@ MainThread::walk()
     while ( !isStopping() )
     {
         subStatus().heartbeat();
-        if ( odometry2dInterface->buffer().getAndPopNext( odomData, timeoutMs ) != 0 ) {
+        if ( odometry2dConsumer->buffer().getAndPopNext( odomData, timeoutMs ) != 0 ) {
             continue;
         }
 
@@ -137,4 +137,7 @@ MainThread::walk()
         localiseInterface->localSetAndSend( localiseData );
         tLastPublish = orcaice::getNow();
     }
+
+    // to be nice to the publisher of information, unsubscribe before quitting.
+    odometry2dConsumer->unsubscribe();
 }
