@@ -34,9 +34,10 @@ FIND_PATH( ICE_HOME_INCLUDE_ICE Ice.h
   # Test standard installation points: generic symlinks first, then standard dirs, newer first
   /opt/Ice/include/Ice
   /opt/Ice-3/include/Ice
+  /opt/Ice-3.5/include/Ice
+  /opt/Ice-3.4/include/Ice
+  /opt/Ice-3.3/include/Ice
   /opt/Ice-3.2/include/Ice
-  /opt/Ice-3.2.1/include/Ice
-  /opt/Ice-3.2.0/include/Ice
   # some people may manually choose to install Ice here
   /usr/local/include/Ice
   # windows
