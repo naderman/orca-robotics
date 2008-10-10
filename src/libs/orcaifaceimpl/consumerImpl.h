@@ -13,8 +13,9 @@
 
 #include <orcaice/context.h>
 #include <orcaice/multiconnectutils.h>
+#include <gbxsickacfr/gbxiceutilacfr/store.h>
 #include <gbxsickacfr/gbxiceutilacfr/safethread.h>
-#include <iostream>
+// #include <iostream>
 
 namespace orcaifaceimpl
 {
@@ -39,6 +40,9 @@ public:
     //! Does not catch any exceptions.
     virtual void unsubscribeWithString( const std::string& proxyString )=0;
 
+    //! When currently subscribed, tries to connect to remote interface with internally stored stringified proxy.
+    //! Otherwise, same as above. When not currently subscribed, quietly returns.
+    virtual void unsubscribe()=0;
 
     //! Tries to connect to remote interface with stringified proxy @c proxyString.
     //! Will try to connect @c retryNumber number of times (-1 means infinite), waiting for @c retryInterval [s] after
@@ -62,6 +66,11 @@ public:
                           int retryInterval=2, int retryNumber=-1 );
 
 protected:
+
+    //! Store the proxy of the interface after we subscribed to it. This lets us unsubscribe before destroying.
+    //! This store is empty initially, contains the proxy string after the subscription and is emptied again after
+    //! unsubscription. 
+    gbxiceutilacfr::Store<std::string> proxyString_;
 
     //! Component context.
     orcaice::Context context_;
@@ -93,7 +102,22 @@ public:
 
     }
 
-    virtual ~ConsumerImpl() {};
+    virtual ~ConsumerImpl() 
+    {
+        context_.tracer().debug( "Unsubscribing on destruction.", 4 );
+        // catch all exception, it's too late to do anything about them
+        try {
+            unsubscribe();
+        }
+        catch ( const std::exception& e ) {
+            std::stringstream ss;
+            ss << "failed to unsubscribe in destructor: " << e.what();
+            context_.tracer().warning( ss.str() );
+        }
+        catch ( ... ) {
+            context_.tracer().warning( "failed to unsubscribe in destructor." );
+        }
+    }
 
     //! Implement this callback in the derived class. 
     virtual void dataEvent( const ObjectType& data )=0;
@@ -138,6 +162,8 @@ public:
         std::stringstream ss;
         ss << "Subscribed to " << proxyString;
         context_.tracer().debug( ss.str() );
+
+        proxyString_.set( proxyString );
     }
 
     virtual void unsubscribeWithString( const std::string& proxyString )
@@ -149,6 +175,18 @@ public:
         std::stringstream ss;
         ss << "unsubscribed to " << proxyString;
         context_.tracer().debug( ss.str() );
+
+        proxyString_.purge();
+    }
+
+    virtual void unsubscribe()
+    {
+        if ( proxyString_.isEmpty() )
+            return;
+
+        std::string proxyString;
+        proxyString_.get( proxyString );
+        unsubscribeWithString( proxyString );
     }
 
     virtual void subscribeWithString( const std::string& proxyString, 
@@ -204,6 +242,7 @@ public:
                 context_.status().heartbeat( subsysName );
         }
 
+        proxyString_.set( proxyString );
     }
 
 private:

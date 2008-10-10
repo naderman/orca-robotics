@@ -11,9 +11,8 @@
 #ifndef ORCAICE_APPLICATION_H
 #define ORCAICE_APPLICATION_H
 
-#include <Ice/Ice.h>
-
-#include <orcaice/iceapplication.h>
+#include <Ice/Application.h>
+#include <IceUtil/Mutex.h>
 
 namespace orcaice
 {
@@ -36,7 +35,7 @@ int main(int argc, char * argv[])
  *   @author Alex Brooks
  *   @sa Service, Component
  */
-class Application : public orcaice::IceApplication
+class Application : public Ice::Application
 {
 public:
 
@@ -54,12 +53,12 @@ public:
      *  from Component::start().
      *
      */
-    Application( orcaice::Component &component, bool installCtrlCHandler=true );
+    Application( orcaice::Component &component, Ice::SignalPolicy policy=Ice::HandleSignals );
 
     //
     // Reimplements one of the main functions from Ice::Application
     //
-    virtual int main(int, char*[]);
+    virtual int orcaMain(int, char*[]);
 
     //
     // Implements the run function from Ice::Application
@@ -67,14 +66,26 @@ public:
     //
     virtual int run(int, char*[]);
 
+    //
+    // Called by Ice::Application when a signal is received
+    //
+    virtual void interruptCallback( int signal );
+
 private:
 
     // By convention there is exactly one adapter per component and, therefore, per application
     // Keep the pointer to it here, so it does not get destroyed too soon.
-    Ice::ObjectAdapterPtr   adapter_;
+    Ice::ObjectAdapterPtr adapter_;
 
     // An application contains only one Component.
     orcaice::Component &component_;
+
+    // Application may stop for 2 reasons: a) an interrupt signal or b) communicator destruction.
+    // Those two events may happen in different threads. No matter which event happens we need to
+    // to know whether we already stopped the component or not.
+    void stopComponent();
+    bool isComponentStopped_;
+    IceUtil::Mutex mutex_;
 };
 
 } // namespace

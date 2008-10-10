@@ -12,12 +12,12 @@
 #include <iostream>
 #include <orcaice/orcaice.h>
 #include <orcaobj/orcaobj.h>
-#include "mainthread.h"
 #include <hydrofeatureobs/hydrofeatureobs.h>
 
-using namespace std;
+#include "mainthread.h"
 
-namespace laserfeatures {
+using namespace std;
+using namespace laserfeatures;
 
 namespace {
 
@@ -217,7 +217,7 @@ MainThread::getLaserDescription()
         if ( !exceptionSS.str().empty() ) {
             subStatus().warning( exceptionSS.str() );     
             // Slow things down in case of persistent error
-            sleep(1);
+            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
         }
     }
 }
@@ -343,11 +343,10 @@ MainThread::walk()
         if ( !exceptionSS.str().empty() && !isStopping() ) {
             subStatus().fault( exceptionSS.str() );     
             // Slow things down in case of persistent error
-            sleep(1);
+            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
         }
     } // while
 
-    context_.tracer().debug( "Exited main loop.",2 );
-}
-
+    // to be nice to the publisher of information, unsubscribe before quitting.
+    laserConsumer_->unsubscribe();
 }

@@ -204,5 +204,5 @@ main(int argc, char * argv[])
 {
     Component component;
     orcaice::Application app( component );
-    return app.main(argc, argv);
+    return app.orcaMain(argc, argv);
 }

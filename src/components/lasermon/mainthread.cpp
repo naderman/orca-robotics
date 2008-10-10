@@ -10,8 +10,9 @@
 
 #include <iostream>
 #include <orca/laserscanner2d.h>
-#include <orcaice/orcaice.h>
 #include <orcaifacestring/laserscanner2d.h>
+#include <orcaice/orcaice.h>
+#include <orcaifaceimpl/printingconsumers.h>
 
 #include "mainthread.h"
 
@@ -79,10 +80,16 @@ MainThread::walk()
     }
     
     // subscribe for data updates (multi-try)
-    consumer_ = new orcaifaceimpl::PrintingRangeScanner2dConsumerImpl( context_, 1000, 1 );
-    consumer_->subscribeWithTag( "LaserScanner2d", this, subsysName() );
+    orcaifaceimpl::PrintingRangeScanner2dConsumerImplPtr consumer =
+            new orcaifaceimpl::PrintingRangeScanner2dConsumerImpl( context_, 1000, 1 );
+    consumer->subscribeWithTag( "LaserScanner2d", this, subsysName() );
     
-    // init subsystem is done and is about to terminate
     subStatus().ok( "Initialized." );
     subStatus().setMaxHeartbeatInterval( -1 );
+
+    // this will spin until we are told to stop.
+    waitForStop();
+
+    // to be nice to the publisher of information, unsubscribe before quitting.
+    consumer->unsubscribe();
 }

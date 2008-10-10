@@ -69,9 +69,9 @@ enum ComponentInterfaceFlag {
 //!   2. Component::start()
 //!
 //!      - start() is called after all resources in Context are initialised.
-//!        - Home and Status interfaces are initialized from a separate thread and it
+//!        - Home and Status interfaces are initialized from a separate thread and
 //!          it may take multiple attempts to do this.
-//!      - This is the place to launch threads from.
+//!      - This is the place to launch threads from and get out.
 //!        - Don't do anything that might loop forever in here, otherwise it won't be possible
 //!          to bring the component down cleanly.
 //!
@@ -175,7 +175,8 @@ private:
                const bool isApp,
                const Ice::ObjectAdapterPtr& adapter );
 
-    // Cleans up resources prior to stop() being called.
+    // Cleans up internal resources after stop() was called
+    // but before complete shutdown.
     void finalise();
 
     // Only Service should need to use this when the IceBox tells it

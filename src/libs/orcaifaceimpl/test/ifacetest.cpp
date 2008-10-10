@@ -66,5 +66,5 @@ main(int argc, char * argv[])
 {
     TestComponent component;
     orcaice::Application app( component );
-    return app.main(argc, argv);
+    return app.orcaMain(argc, argv);
 }

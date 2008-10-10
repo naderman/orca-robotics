@@ -58,10 +58,10 @@ void setProperties( Ice::PropertiesPtr   &properties,
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 
-// argc/argv here are unnecessary.
-Application::Application( orcaice::Component &component, bool installCtrlCHandler )
-    : IceApplication(installCtrlCHandler),
-      component_(component)
+Application::Application( orcaice::Component &component, Ice::SignalPolicy policy ) :
+    Ice::Application(policy),
+    component_(component),
+    isComponentStopped_(false)
 {
 }
 
@@ -73,7 +73,7 @@ Application::Application( orcaice::Component &component, bool installCtrlCHandle
         4. command line arguments
 */
 int
-Application::main(int argc, char* argv[])
+Application::orcaMain(int argc, char* argv[])
 {
     // convert to string sequence for convenience
     Ice::StringSeq args = Ice::argsToStringSeq( argc, argv );
@@ -108,12 +108,16 @@ Application::main(int argc, char* argv[])
     setProperties( initData.properties, args, component_.context().tag() );
 
     // now pass the startup options to Ice which will start the Communicator
-    return IceApplication::main( argc, argv, initData );
+    return Ice::Application::main( argc, argv, initData );
 }
 
 int
 Application::run( int argc, char* argv[] )
 {
+    // when a signal is received (e.g. Ctrl-C), we want to get a change to shut down our
+    // component before destroying the communicator
+    callbackOnInterrupt();
+
     // now communicator exists. we can further parse properties, make sure all the info is
     // there and set some properties (notably AdapterID)
     orca::FQComponentName fqCompName =
@@ -173,22 +177,67 @@ Application::run( int argc, char* argv[] )
         return 1;
     }
 
-    // component started without a problem. now will wait for Ctrl-C from user or comm
+    // component started without a problem. now will wait for the communicator to shutdown
+    // this will typically happen after a signal is recieved from Ctrl-C or from IceGrid.
     communicator()->waitForShutdown();
-    
-    initTracerInfo( component_.context().tag()+": Communicator is destroyed. Stopping component" );
-    component_.stop();
-//     initTracerInfo( component_.context().tag()+": Finalising component" );
-    component_.finalise();
-//     initTracerInfo( component_.context().tag()+": Component stopped" );
+    initTracerInfo( component_.context().tag()+": Communicator destroyed." );
+
+    stopComponent();
 
     adapter_->waitForDeactivate();
-//     initTracerInfo( component_.context().tag()+": Adapter deactivated" );
+    initTracerInfo( component_.context().tag()+": Adapter deactivated" );
 
 //     initTracerInfo( component_.context().tag()+": Application done." );
     initTracerInfo( component_.context().tag()+": Orca out." );
 
     return 0;
+}
+
+void
+Application::stopComponent()
+{
+    IceUtil::Mutex::Lock lock(mutex_);
+    
+    if ( isComponentStopped_ )
+        return;
+
+    // first tell component to shutdown
+    initTracerInfo( component_.context().tag()+": Received interrupt signal. Stopping component" );
+    component_.stop();
+//     initTracerInfo( component_.context().tag()+": Finalising component" );
+    component_.finalise();
+    initTracerInfo( component_.context().tag()+": Component stopped" );
+    isComponentStopped_ = true;
+}
+
+void 
+Application::interruptCallback( int signal )
+{
+    stopComponent();
+
+    // now we can just destroy the communicator
+    // (being extra careful here, copy exception handling from Ice::Application::destroyOnInterruptCallback() )
+    stringstream exceptionSS;
+    try
+    {
+        assert(communicator() != 0);
+        communicator()->destroy();
+    }
+    catch(const std::exception& ex) {
+        exceptionSS << " (while destroying in response to signal " << signal << "): " << ex.what();
+    }
+    catch(const std::string& msg) {
+        exceptionSS << " (while destroying in response to signal " << signal << "): " << msg;
+    }
+    catch(const char* msg) {
+        exceptionSS << " (while destroying in response to signal " << signal << "): " << msg;
+    }
+    catch(...) {
+        exceptionSS << " (while destroying in response to signal " << signal << "): unknown exception";
+    }
+
+    if ( !exceptionSS.str().empty() )
+        initTracerError( component_.context().tag()+": "+exceptionSS.str() );
 }
 
 } // namespace

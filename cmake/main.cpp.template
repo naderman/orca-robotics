@@ -12,6 +12,13 @@
 int main(int argc, char * argv[])
 {
     ${COMP_NAMESPACE}::Component component;
-    orcaice::Application app( component, ${APP_CTRLC_HANDLER} );
-    return app.main(argc, argv);
+
+    Ice::SignalPolicy policy;
+    if ( ${APP_CTRLC_HANDLER} )
+        policy = Ice::HandleSignals;
+    else
+        policy = Ice::NoSignalHandling;
+
+    orcaice::Application app( component, policy );
+    return app.orcaMain(argc, argv);
 }

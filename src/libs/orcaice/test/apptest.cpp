@@ -40,7 +40,7 @@ TestComponent::~TestComponent()
 
 void TestComponent::start()
 {
-    cout<<"testing compoenent interface settings ... ";
+    cout<<"testing component interface settings ... ";
     {
         // ON implicitly
         bool enabled;
@@ -123,5 +123,5 @@ int main(int argc, char * argv[])
 {
     TestComponent component;
     orcaice::Application app( component );
-    return app.main(argc, argv);
+    return app.orcaMain(argc, argv);
 }
