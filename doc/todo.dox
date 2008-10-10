@@ -56,6 +56,12 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 @par New components
 @par New utilities
 @par New libraries
+
+- libOrcaIce
+  - Removed IceApplication, using Ice::Application directly.
+  - Application stops component before shutting down the Communicator. This means that the component has a chance to unsubscribe
+    or perform other remote operations before stopping. (alexm)
+
 @par Updated interfaces
 @par Updated components
 @par Updated utilities
