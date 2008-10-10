@@ -699,7 +699,7 @@ toLogString( const orca::PolarFeature2dData& obj )
         s << "\n";   
         
         const orca::SinglePolarFeature2dPtr &f = features[i];
-        s << f->type << " " << f->pFalsePositive << " " << f->pTruePositive;
+        s << f->type << " " << f->pFalsePositive << " " << f->pTruePositive << " ";
         
         orca::PointPolarFeature2dPtr pointF = orca::PointPolarFeature2dPtr::dynamicCast( f );
         if (pointF!=0)
