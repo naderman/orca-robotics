@@ -158,6 +158,13 @@ namespace {
     {
         s >> o.l >> o.w >> o.h;
     }
+    
+    std::string toLogString( const orca::PolarPoint2d &pp )
+    {
+        stringstream ss;
+        ss << pp.r << " " << pp.o;
+        return ss.str();
+    }
 
 //////////////////////////////////////////////////////////////////////
 }
@@ -676,34 +683,52 @@ toLogString( const orca::DriveBicycleData& obj )
     return s.str();
 }
 
-// std::string 
-// toLogString( const orca::PolarFeature2dData& obj )
-// {
-//     std::stringstream s;
-
-//     // timestamp on the first line
-//     s << toLogString(obj.timeStamp) << " \n";
-
-//     // feature type, range, and bearing (deg) on second line
-//     const orca::PolarFeature2dSequence &features = obj.features;
-//     for (unsigned int i=0; i < obj.features.size(); i++)
-//     {
-//         if ( features[i] == 0 )
-//         {
-//             s << "  " << i << ": ERROR: Feature was NULL!" << endl;
-//         }
-//         else
-//         {
-//             const orca::SinglePolarFeature2d&f = features[i];
-//             s << f->type << " "
-//               << f->p.r << " "
-//               << f->p.o*180.0/M_PI << " ";
-//         }
-//     }
-//     s << "\n";
+std::string 
+toLogString( const orca::PolarFeature2dData& obj )
+{
+    std::stringstream s;
     
-//     return s.str();
-// }
+    const orca::PolarFeature2dSequence &features = obj.features;
+
+    // timestamp and number of features on the first line
+    s << toLogString(obj.timeStamp) << " " << features.size();
+
+    // one line per feature: type, probabilities, and feature-specific values
+    for (unsigned int i=0; i < features.size(); i++)
+    {
+        s << "\n";   
+        
+        const orca::SinglePolarFeature2dPtr &f = features[i];
+        s << f->type << " " << f->pFalsePositive << " " << f->pTruePositive;
+        
+        orca::PointPolarFeature2dPtr pointF = orca::PointPolarFeature2dPtr::dynamicCast( f );
+        if (pointF!=0)
+        {
+            s << toLogString(pointF->p) << " " << pointF->rangeSd << " " << pointF->bearingSd;
+            continue;
+        }
+        
+        orca::PosePolarFeature2dPtr poseF = orca::PosePolarFeature2dPtr::dynamicCast( f );
+        if (poseF!=0)
+        {
+            s << toLogString(poseF->p) << " " << poseF->orientation << " " << poseF->rangeSd << " " << poseF->bearingSd << " " << poseF->orientationSd;
+            continue;
+        }
+        
+        orca::LinePolarFeature2dPtr lineF = orca::LinePolarFeature2dPtr::dynamicCast( f );
+        if (lineF!=0)
+        {
+            s << toLogString(lineF->start) << " " << toLogString(lineF->end) << " " << lineF->rhoSd << " " << lineF->alphaSd << " " << lineF->startSighted << " " << lineF->endSighted;
+            continue;
+        }
+        
+        stringstream ssErr;
+        ssErr << "Did not recognize the type of PolarFeature2d. Specified type was " << f->type;
+        throw orcalog::Exception( ERROR_INFO, ssErr.str() );
+    }
+    
+    return s.str();
+}
 
 std::string
 toLogString( const orca::ChargingState &c )

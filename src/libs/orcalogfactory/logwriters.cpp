@@ -341,6 +341,10 @@ namespace {
             ice_writePolarFeature2dData( helper.stream_, obj );
             helper.write( file );
         }
+        else if ( format == "ascii" )
+        {
+            (*file) << toLogString(obj) << endl;
+        }
         else
         {
             stringstream ss;
