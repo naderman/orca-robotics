@@ -70,6 +70,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 - libOrcaLogFactory
   - added logging to ascii for PolarFeature2d (tobi)
+  - added matlab scripts to read ascii files for PolarFeature2d and LaserScanner2d (tobi)
 
 @par Removed
 

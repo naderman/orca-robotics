@@ -704,21 +704,24 @@ toLogString( const orca::PolarFeature2dData& obj )
         orca::PointPolarFeature2dPtr pointF = orca::PointPolarFeature2dPtr::dynamicCast( f );
         if (pointF!=0)
         {
-            s << toLogString(pointF->p) << " " << pointF->rangeSd << " " << pointF->bearingSd;
+            int classType = 0;
+            s << classType << " " << toLogString(pointF->p) << " " << pointF->rangeSd << " " << pointF->bearingSd;
             continue;
         }
         
         orca::PosePolarFeature2dPtr poseF = orca::PosePolarFeature2dPtr::dynamicCast( f );
         if (poseF!=0)
         {
-            s << toLogString(poseF->p) << " " << poseF->orientation << " " << poseF->rangeSd << " " << poseF->bearingSd << " " << poseF->orientationSd;
+            int classType = 1;
+            s << classType << " " << toLogString(poseF->p) << " " << poseF->orientation << " " << poseF->rangeSd << " " << poseF->bearingSd << " " << poseF->orientationSd;
             continue;
         }
         
         orca::LinePolarFeature2dPtr lineF = orca::LinePolarFeature2dPtr::dynamicCast( f );
         if (lineF!=0)
         {
-            s << toLogString(lineF->start) << " " << toLogString(lineF->end) << " " << lineF->rhoSd << " " << lineF->alphaSd << " " << lineF->startSighted << " " << lineF->endSighted;
+            int classType = 2;
+            s << classType << " " << toLogString(lineF->start) << " " << toLogString(lineF->end) << " " << lineF->rhoSd << " " << lineF->alphaSd << " " << lineF->startSighted << " " << lineF->endSighted;
             continue;
         }
         
