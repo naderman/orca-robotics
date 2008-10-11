@@ -1,0 +1,61 @@
+/*
+ * Orca-Robotics Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2008 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This copy of Orca is licensed to you under the terms described in
+ * the LICENSE file included in this distribution.
+ *
+ */
+
+/*!
+@ingroup orca_utils
+@ingroup orca_linux
+@defgroup orca_util_slice2init Slice2Init
+@brief Generates initialization utility code from Slice definition files.
+
+This utility is used for autogenerating code which is compiled into libOrcaIfaceInit.so 
+
+@par Usage
+
+@verbatim
+$ slice2init <.ice file>
+@endverbatim
+
+@par Generated Functions
+
+Slice2Init generates zeroAndClear() function for every Slice-defined:
+- Enum
+- Struct
+- Class
+- Sequence
+- Dictionary
+- ObjectPrx
+
+Example:
+@verbatim
+// C++
+#include <orcaifaceinit/datetime.h>
+#include <orcaifaceinit/bros1.h>
+
+orca::Time t;
+ifaceinit::zeroAndClear( t ); 
+
+t.seconds = 123;
+t.useconds = 45;
+ifaceinit::zeroAndClear( t ); 
+@endverbatim
+
+This program will set both seconds and useconds to zero, then reset them to zero again.
+
+The signature of the zeroAndClear() function is the same for all data types. E.g. for a data type @c Type in
+Slice module @c module (e.g. orca), the generated function would have the following signature:
+
+@verbatim
+void zeroAndClear( const module::Type& obj );
+@endverbatim
+
+@author Alex Makarenko
+
+*/
+

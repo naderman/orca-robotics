@@ -26,10 +26,27 @@ struct Date
 
 sequence<Date> DateSeq;
 
+dictionary<string,Desirability> NameDesirabilityDict;
+
+class Place
+{
+    double x;
+};
+
+class Restaurant extends Place
+{
+    string name;
+};
+
 interface Calendar
 {
     Date getNextDate();
 //         throws DataNotExistException, HardwareFailedException;
+};
+
+struct Information
+{
+    Calendar* cal;
 };
 
 }; // module

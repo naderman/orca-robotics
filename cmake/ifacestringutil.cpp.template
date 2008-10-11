@@ -3,6 +3,8 @@
  * Do not modify or commit to source repository.
  */
 
+#include "util.h"
+
 #include <sstream>
 
 using namespace std;

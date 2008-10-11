@@ -222,6 +222,7 @@ IF( ORCA_MOTHERSHIP )
 
     SET( DEFTOOLS_HOME ${PROJECT_BINARY_DIR}/src/utils/deftools/${CMAKE_CFG_INTDIR} )
     SET( SLICE2STRING_HOME ${PROJECT_BINARY_DIR}/src/utils/slice2string/${CMAKE_CFG_INTDIR} )
+    SET( SLICE2INIT_HOME ${PROJECT_BINARY_DIR}/src/utils/slice2init/${CMAKE_CFG_INTDIR} )
 
     # For orca project only, install CMake scripts
     ADD_SUBDIRECTORY( cmake )
@@ -230,6 +231,7 @@ ELSE( ORCA_MOTHERSHIP )
 
     SET( DEFTOOLS_HOME ${ORCA_HOME}/bin )
     SET( SLICE2STRING_HOME ${ORCA_HOME}/bin )
+    SET( SLICE2INIT_HOME ${ORCA_HOME}/bin )
 
     # other projet-specific stuff
     INCLUDE( ${PROJECT_SOURCE_DIR}/cmake/internal/project_setup.cmake )
@@ -251,7 +253,10 @@ SET( ORCA_DEF2XML_COMMAND ${DEFTOOLS_HOME}/def2xml${EXE_EXTENSION}
 
 SET( ORCA_SLICE2STRING_COMMAND ${SLICE2STRING_HOME}/slice2string${EXE_EXTENSION} 
         CACHE PATH "Path to slice2string executable." FORCE )
-MESSAGE( STATUS "Using ${SLICE2STRING_HOME}" )
+# MESSAGE( STATUS "Using ${SLICE2STRING_HOME}" )
+
+SET( ORCA_SLICE2INIT_COMMAND ${SLICE2INIT_HOME}/slice2init${EXE_EXTENSION} 
+        CACHE PATH "Path to slice2init$ executable." FORCE )
 
 #
 # Testing with CTest

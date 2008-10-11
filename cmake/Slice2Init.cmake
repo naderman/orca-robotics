@@ -1,6 +1,6 @@
 #
 # This file contains a set of macros used for generating 
-# C++ source of string utilities from Slice files
+# C++ source of init utilities from Slice files
 #
 # Author: Alex Makarenko
 #
@@ -23,7 +23,7 @@ ENDMACRO( APPEND original new_bit )
 # Generate rules for SLICE->C++ files generation, for each
 # of the named slice source files.
 #
-# ORCA_GENERATE_SLICE2STRING_RULES( generated_cpp_list generated_header_list SRC1 [SRC2 [SRC3...]] )
+# ORCA_GENERATE_SLICE2INIT_RULES( generated_cpp_list generated_header_list SRC1 [SRC2 [SRC3...]] )
 # 
 # Returns lists of all the .cpp and .h files that will be generated.
 #   (ie modifies the first two arguments: generated_cpp_list and generated_header_list)
@@ -32,18 +32,18 @@ ENDMACRO( APPEND original new_bit )
 #  - Each .cpp and .h file depends on all the .ice files.
 #  - Each .cpp file depends on all .h files associated with all the previously-listed slice sources.
 #
-MACRO( ORCA_GENERATE_SLICE2STRING_RULES generated_cpp_list generated_header_list )
+MACRO( ORCA_GENERATE_SLICE2INIT_RULES generated_cpp_list generated_header_list )
 
     SET( slice_cpp_suffixes        .cpp )
     SET( slice_header_suffixes     .h  )
     SET( slice_suffixes            ${slice_cpp_suffixes} ${slice_header_suffixes} )
-    SET( generator_command         ${ORCA_SLICE2STRING_COMMAND} )
+    SET( generator_command        ${ORCA_SLICE2INIT_COMMAND} )
     
     SET( proj_slice_src_dir        ${PROJECT_SOURCE_DIR}/src/interfaces/slice )
     SET( proj_slice_bin_dir        ${PROJECT_BINARY_DIR}/src/interfaces/slice )
 
     SET( slice_module              ${PROJECT_NAME_LOWER} )
-    SET( lib_namespace             ${PROJECT_NAME_LOWER}ifacestring )
+    SET( lib_namespace             ${PROJECT_NAME_LOWER}ifaceinit )
     SET( proj_cpp_bin_dir          ${PROJECT_BINARY_DIR}/src/interfaces/cpp )
     
     # this auto-generated file will include all individual header files
@@ -72,7 +72,7 @@ MACRO( ORCA_GENERATE_SLICE2STRING_RULES generated_cpp_list generated_header_list
   # debug
 #   MESSAGE( STATUS "   slice sources    : " ${proj_slice_src_dir} )
 #   MESSAGE( STATUS "   cpp destination  : " ${proj_cpp_bin_dir} )
-#   MESSAGE( STATUS "ORCA_GENERATE_SLICE2STRING_RULES: ARGN: ${ARGN}" )
+#   MESSAGE( STATUS "ORCA_GENERATE_SLICE2INIT_RULES: ARGN: ${ARGN}" )
     
     #
     # First pass: Loop through the SLICE sources we were given, add the full path for dependencies
@@ -161,4 +161,4 @@ MACRO( ORCA_GENERATE_SLICE2STRING_RULES generated_cpp_list generated_header_list
     MESSAGE( STATUS "Will generate cpp header and source files from ${slice_source_counter} Slice definitions using this command:" )
     MESSAGE( STATUS "${generator_command} <source.ice> ${slice_args}" )
 
-ENDMACRO( ORCA_GENERATE_SLICE2STRING_RULES generated_cpp_list generated_header_list )
+ENDMACRO( ORCA_GENERATE_SLICE2INIT_RULES generated_cpp_list generated_header_list )
