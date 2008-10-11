@@ -123,8 +123,7 @@ HwThread::enableDriver()
             return;
         }
         catch ( ... ) {
-            int sleepIntervalMSec = 2000;
-            string problem = orcaice::catchAllExceptionsWithSleep( subStatus(), "enabling hardware driver", sleepIntervalMSec );
+            string problem = orcaice::catchExceptionsWithStatusAndSleep( "initialising", subStatus(), gbxutilacfr::SubsystemStatusFault, 2000 );
 
             stateMachine_.setFault( problem );
         }
@@ -232,7 +231,7 @@ HwThread::walk()
             context_.history().setWithFinishSequence( historySS.str() );
         }
         catch ( ... ) {
-            string problem = orcaice::catchAllExceptions( subStatus(), "reading from hardware" );
+            string problem = orcaice::catchExceptionsWithStatus( "reading from hardware", subStatus() );
             stateMachine_.setFault( problem ); 
         }
 
@@ -253,7 +252,7 @@ HwThread::walk()
                 context_.tracer().debug( ss.str(), 2 );
             }
             catch ( ... ) {
-                string problem = orcaice::catchAllExceptions( subStatus(), "writing to hardware" );
+                string problem = orcaice::catchExceptionsWithStatus( "writing to hardware", subStatus() );
                 stateMachine_.setFault( problem ); 
             }
         }

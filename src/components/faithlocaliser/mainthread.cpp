@@ -89,8 +89,7 @@ MainThread::walk()
             break;
         }
         catch ( ... ) {
-            int sleepIntervalMSec = 3000;
-            orcaice::catchAllExceptionsWithSleep( subStatus(), "getting vehicle description", sleepIntervalMSec );
+            orcaice::catchExceptionsWithStatusAndSleep( "getting vehicle description", subStatus(), gbxutilacfr::SubsystemStatusFault, 3000 );
         }   
     }
     

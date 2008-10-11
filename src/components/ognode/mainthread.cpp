@@ -183,7 +183,7 @@ MainThread::init()
             return;
         }
         catch ( ... ) {
-            orcaice::catchAllExceptionsWithSleep( subStatus(), "initialising" );
+            orcaice::catchExceptionsWithStatusAndSleep( "initialising", subStatus() );
         }
     }
 }

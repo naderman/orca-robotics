@@ -131,7 +131,7 @@ MainThread::initDriver()
             break;
         }
         catch ( ... ) {
-            orcaice::catchAllExceptionsWithSleep( subStatus(), "initialising algorithm driver" );
+            orcaice::catchExceptionsWithStatusAndSleep( "initialising algorithm driver", subStatus() );
         }
     }
 
@@ -148,7 +148,7 @@ MainThread::connectToLaser()
             break;
         }
         catch ( ... ) {
-            orcaice::catchAllExceptionsWithSleep( subStatus(), "connecting to laser" );
+            orcaice::catchExceptionsWithStatusAndSleep( "connecting to laser", subStatus() );
         }       
     }
 }
@@ -172,7 +172,7 @@ MainThread::getLaserDescription()
             break;
         }
         catch ( ... ) {
-            orcaice::catchAllExceptionsWithSleep( subStatus(), "getting laser description" );
+            orcaice::catchExceptionsWithStatusAndSleep( "getting laser description", subStatus() );
         }
     }
 }

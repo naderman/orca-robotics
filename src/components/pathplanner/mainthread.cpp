@@ -102,7 +102,7 @@ MainThread::initDriver()
                                                                context_.toHydroContext( context_.tag()+".Config." ) ) );
     }
     catch ( ... ) {
-        orcaice::catchAllExceptions( subStatus(), "initialising algorithm driver" );
+        orcaice::catchExceptionsWithStatusAndSleep( "initialising algorithm driver", subStatus() );
 
         // this is a fatal error!
         context_.shutdown();

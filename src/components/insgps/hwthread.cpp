@@ -70,7 +70,7 @@ HwThread::initHardwareDriver()
             break;
         }
         catch ( ... ) {
-            orcaice::catchAllExceptionsWithSleep( subStatus(), "initialising hardware driver" );
+            orcaice::catchExceptionsWithStatusAndSleep( "initialising hardware driver", subStatus() );
         }
     }
 
@@ -98,7 +98,7 @@ HwThread::walk()
                 generic = driver_->read();
             }
             catch ( ... ) {
-                orcaice::catchAllExceptions( subStatus(), "getting vehicle description" );
+                orcaice::catchExceptionsWithStatusAndSleep( "getting vehicle description", subStatus() );
 
                 // didn't get anything
                 continue;

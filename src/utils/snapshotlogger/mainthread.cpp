@@ -144,7 +144,7 @@ MainThread::initInterface()
             break;
         }
         catch ( ... ) {
-            orcaice::catchAllExceptionsWithSleep( subStatus(), "initialising Button interface" );
+            orcaice::catchExceptionsWithStatusAndSleep( "initialising Button interface", subStatus() );
         }
     }
 }

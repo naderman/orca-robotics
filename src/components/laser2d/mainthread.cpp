@@ -136,7 +136,7 @@ MainThread::initHardwareDriver()
             break;
         }
         catch ( ... ) {
-            orcaice::catchAllExceptionsWithSleep( subStatus(), "initialising hardware driver" );
+            orcaice::catchExceptionsWithStatusAndSleep( "initialising hardware driver", subStatus() );
         }   
     }
 

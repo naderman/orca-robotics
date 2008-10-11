@@ -172,12 +172,12 @@ MainThread::initPathFollowerInterface()
         }
         catch ( ... ) {
             if ( testMode_ ) {
-                context_.tracer().warning( "(while initialising PathFollower2d interface) failed : no specific error information." );
-                context_.tracer().warning( "Continuing regardless..." );
+                orcaice::catchExceptionsWithStatus( "initialising PathFollower interface", subStatus(), gbxutilacfr::SubsystemStatusWarning );
                 return;
             }
-            int sleepIntervalMSec = 2000;
-            orcaice::catchAllExceptionsWithSleep( subStatus(), "initialising PathFollower interface", sleepIntervalMSec );
+            else {
+                orcaice::catchExceptionsWithStatusAndSleep( "initialising PathFollower interface", subStatus(), gbxutilacfr::SubsystemStatusFault, 2000 );
+            }
         }
     }
 }
@@ -193,7 +193,7 @@ MainThread::getVehicleDescription()
             break;
         }
         catch ( ... ) {
-            orcaice::catchAllExceptionsWithSleep( subStatus(), "getting vehicle description" );
+            orcaice::catchExceptionsWithStatusAndSleep( "getting vehicle description", subStatus() );
         }
     }
 }
@@ -213,7 +213,7 @@ MainThread::getRangeScannerDescription()
             break;
         }
         catch ( ... ) {
-            orcaice::catchAllExceptionsWithSleep( subStatus(), "getting range scanner description" );
+            orcaice::catchExceptionsWithStatusAndSleep( "getting range scanner description", subStatus() );
         }
     }
 }
@@ -295,8 +295,7 @@ MainThread::stopVehicle()
             // This is OK: it means that the communicator shut down (eg via Ctrl-C)
         }
         catch ( ... ) {
-            int sleepIntervalMSec = 500;
-            orcaice::catchAllExceptionsWithSleep( subStatus(), "getting vehicle description", sleepIntervalMSec );
+            orcaice::catchExceptionsWithStatusAndSleep( "getting vehicle description", subStatus(), gbxutilacfr::SubsystemStatusFault, 500 );
         }
     }
 }

@@ -610,7 +610,7 @@ MainThread::waitForNewPath( orca::PathFollower2dData &newPathData )
             }
         }
         catch ( ... ) {
-            orcaice::catchAllExceptions( subStatus(), "waiting for new path" );
+            orcaice::catchExceptionsWithStatusAndSleep( "waiting for new path", subStatus() );
         }   
     }
     return false;

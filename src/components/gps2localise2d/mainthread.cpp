@@ -95,8 +95,7 @@ MainThread::getGpsDescription()
                 return;
         }
         catch ( ... ) {
-            int sleepIntervalMSec = 2000;
-            orcaice::catchAllExceptionsWithSleep( subStatus(), "getting Gps description", sleepIntervalMSec );
+            orcaice::catchExceptionsWithStatusAndSleep( "getting Gps description", subStatus(), gbxutilacfr::SubsystemStatusFault, 2000 );
         }
     }
 }
@@ -139,8 +138,7 @@ MainThread::initNetworkInterface()
                 break;
             }
             catch ( ... ) {
-                int sleepIntervalMSec = 2000;
-                orcaice::catchAllExceptionsWithSleep( subStatus(), "initialising network interface", sleepIntervalMSec );
+                orcaice::catchExceptionsWithStatusAndSleep( "initialising network interface", subStatus(), gbxutilacfr::SubsystemStatusFault, 2000 );
             }
         }
     }
