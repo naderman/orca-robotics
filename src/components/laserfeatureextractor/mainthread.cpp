@@ -120,7 +120,6 @@ MainThread::initDriver()
     // create the driver
     while ( !isStopping() )
     {
-        std::stringstream exceptionSS;
         try {
             context_.tracer().info( "MainThread: Creating driver..." );
             driver_.reset(0);
@@ -131,27 +130,9 @@ MainThread::initDriver()
                                                         context_.toHydroContext() ) );
             break;
         }
-        catch ( IceUtil::Exception &e ) {
-            exceptionSS << "MainThread: Caught exception while creating driver: " << e;
-        }
-        catch ( std::exception &e ) {
-            exceptionSS << "MainThread: Caught exception while initialising driver: " << e.what();
-        }
-        catch ( char *e ) {
-            exceptionSS << "MainThread: Caught exception while initialising driver: " << e;
-        }
-        catch ( std::string &e ) {
-            exceptionSS << "MainThread: Caught exception while initialising driver: " << e;
-        }
         catch ( ... ) {
-            exceptionSS << "MainThread: Caught unknown exception while initialising driver";
+            orcaice::catchAllExceptionsWithSleep( subStatus(), "initialising algorithm driver" );
         }
-
-        // we get here only after an exception was caught
-        subStatus().fault( exceptionSS.str() );          
-
-        // Slow things down in case of persistent fault
-        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));        
     }
 
     subStatus().setMaxHeartbeatInterval( 1.0 );
@@ -162,26 +143,13 @@ MainThread::connectToLaser()
 {
     while ( !isStopping() )
     {
-        std::stringstream exceptionSS;
         try {
             laserConsumer_->subscribeWithTag( "Laser", this, subsysName() );
             break;
         }
-        catch ( Ice::Exception &e ) {
-            exceptionSS << "MainThread: Caught exception while subscribing to laser: " << e;
-        }
-        catch ( std::exception &e ) {
-            exceptionSS << "MainThread: Caught exception while subscribing to laser: " << e.what();
-        }
         catch ( ... ) {
-            exceptionSS << "MainThread: Caught unknown exception while subscribing to laser";
-        }
-
-        // we get here only after an exception was caught
-        subStatus().fault( exceptionSS.str() );          
-
-        // Slow things down in case of persistent fault
-        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));        
+            orcaice::catchAllExceptionsWithSleep( subStatus(), "connecting to laser" );
+        }       
     }
 }
 
@@ -193,7 +161,6 @@ MainThread::getLaserDescription()
     
     while ( !isStopping() )
     {
-        stringstream exceptionSS;
         try
         {
             context_.tracer().debug( "Getting laser description...", 2 );
@@ -204,20 +171,8 @@ MainThread::getLaserDescription()
             context_.tracer().info( ss.str() );
             break;
         }
-        catch ( const Ice::Exception &e ) {
-            exceptionSS << __func__ << "(): " << e;
-        }
-        catch ( const std::exception &e ) {
-            exceptionSS << __func__ << "(): " << e.what();
-        }
         catch ( ... ) {
-            exceptionSS << __func__ << "(): Caught unknown exception.";
-        }
-
-        if ( !exceptionSS.str().empty() ) {
-            subStatus().warning( exceptionSS.str() );     
-            // Slow things down in case of persistent error
-            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
+            orcaice::catchAllExceptionsWithSleep( subStatus(), "getting laser description" );
         }
     }
 }
@@ -261,7 +216,6 @@ MainThread::walk()
     while ( !isStopping() )
     {
         // this try makes this component robust to exceptions
-        std::stringstream exceptionSS;
         try
         {                
             //
@@ -314,36 +268,9 @@ MainThread::walk()
 
             subStatus().ok();
         } // try
-        catch ( Ice::CommunicatorDestroyedException &e )
+        catch ( ... ) 
         {
-            // This is OK: it means that the communicator shut down (eg via Ctrl-C)
-            // somewhere in mainLoop.
-        }
-        catch ( const orca::OrcaException & e ) {
-            exceptionSS << "MainThread: unexpected orca exception: " << e << ": " << e.what;
-        }
-        catch ( const Ice::Exception & e ) {
-            exceptionSS << "MainThread: unexpected Ice exception: " << e;
-        }
-        catch ( const orcaice::ComponentDeactivatingException & e ) {
-            // nothing to worry
-            break;
-        }
-        catch ( const std::exception & e ) {
-            exceptionSS << "MainThread: unexpected std exception: " << e.what();
-        }
-        catch ( const std::string &e ) {
-            exceptionSS << "MainThread: unexpected std::string exception: " << e;
-        }
-        catch ( ... )
-        {
-            exceptionSS << "MainThread: unexpected unknown exception";
-        }
-
-        if ( !exceptionSS.str().empty() && !isStopping() ) {
-            subStatus().fault( exceptionSS.str() );     
-            // Slow things down in case of persistent error
-            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
+            orcaice::catchMainLoopExceptions( subStatus() );
         }
     } // while
 

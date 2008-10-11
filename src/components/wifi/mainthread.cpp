@@ -113,6 +113,7 @@ MainThread::walk()
 
     while ( !isStopping() )
     {
+        // this try makes this component robust to exceptions
         try
         {
             orca::WifiData data;
@@ -127,51 +128,9 @@ MainThread::walk()
             
             IceUtil::ThreadControl::sleep(IceUtil::Time::milliSeconds(500));            
         }
-        catch ( const wifiutil::Exception & e )
+        catch ( ... ) 
         {
-            stringstream ss;
-            if (e.type()==wifiutil::NoWirelessInterface) {
-                ss << "No wireless interface available at the moment. We'll try again in two seconds\n" << e.what();
-                IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
-            } else {
-                ss << e.what();
-            }
-            context_.tracer().error( ss.str() );
-            subStatus().fault( ss.str() );
-        }
-        catch ( const orca::OrcaException & e )
-        {
-            stringstream ss;
-            ss << "unexpected (remote?) orca exception: " << e << ": " << e.what;
-            context_.tracer().error( ss.str() );
-            subStatus().fault( ss.str() );
-        }
-        catch ( const gbxutilacfr::Exception & e )
-        {
-            stringstream ss;
-            ss << "unexpected (local?) orcaice exception: " << e.what();
-            context_.tracer().error( ss.str() );
-            subStatus().fault( ss.str() );
-        }
-        catch ( const Ice::Exception & e )
-        {
-            stringstream ss;
-            ss << "unexpected Ice exception: " << e;
-            context_.tracer().error( ss.str() );
-            subStatus().fault( ss.str() );
-        }
-        catch ( const std::exception & e )
-        {
-            stringstream ss;
-            ss << "unexpected std exception: " << e.what();
-            context_.tracer().error( ss.str() );
-            subStatus().fault( ss.str() );
-        }
-        catch ( ... )
-        {
-            string err = "unexpected exception from somewhere.";
-            context_.tracer().error( err );
-            subStatus().fault( err );
+            orcaice::catchMainLoopExceptions( subStatus() );
         }
             
     } // end of big while loop

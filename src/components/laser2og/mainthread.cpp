@@ -190,10 +190,9 @@ MainThread::walk()
             catch( orca::DataNotExistException e )
             {
                 std::stringstream ss;
-                ss << "handler.cpp: run: could not fetch pose because of: " << e.what;
+                ss << "could not fetch pose because of: " << e.what;
                 context_.tracer().warning( ss.str() );
-                // alexm: what the hell is this? why catch and re-throw?
-                throw;
+                continue;
             }
     
             // TODO: could be more accurate by interpolating here...
@@ -215,31 +214,10 @@ MainThread::walk()
             }
             
         }   // end of try
-        catch ( orca::DataNotExistException e ) {
-            stringstream ss; ss << "handler.cpp: run: DataNotExistException, reason: " << e.what;
-            context_.tracer().warning( ss.str() );
+        catch ( ... ) 
+        {
+            orcaice::catchMainLoopExceptions( subStatus() );
         }
-        catch ( const orca::OrcaException & e ) {
-            stringstream ss; ss << "unexpected (remote?) orca exception: " << e << ": " << e.what;
-            context_.tracer().error( ss.str() );
-        }
-        catch ( const gbxutilacfr::Exception & e ) {
-            stringstream ss; ss << "unexpected (local?) orcaice exception: " << e.what();
-            context_.tracer().error( ss.str() );
-        }
-        catch ( const Ice::Exception & e ) {
-            stringstream ss; ss << "unexpected Ice exception: " << e;
-            context_.tracer().error( ss.str() );
-        }
-        catch ( const std::exception & e ) {
-            // once caught this beast in here, don't know who threw it 'St9bad_alloc'
-            stringstream ss; ss << "unexpected std exception: " << e.what();
-            context_.tracer().error( ss.str() );
-        }
-        catch ( ... ) {
-            context_.tracer().error( "unexpected exception from somewhere.");
-        }
-        
     } // end of main loop
 
     // to be nice to the publisher of information, unsubscribe before quitting.

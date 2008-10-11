@@ -121,27 +121,9 @@ MainThread::initHardwareDriver()
             driver_.reset( driverFactory->createDriver( config_, context_.toHydroContext() ) );
             break;
         }
-        catch ( IceUtil::Exception &e ) {
-            exceptionSS << "MainThread: Caught exception while creating driver: " << e;
-        }
-        catch ( std::exception &e ) {
-            exceptionSS << "MainThread: Caught exception while initialising driver: " << e.what();
-        }
-        catch ( char *e ) {
-            exceptionSS << "MainThread: Caught exception while initialising driver: " << e;
-        }
-        catch ( std::string &e ) {
-            exceptionSS << "MainThread: Caught exception while initialising driver: " << e;
-        }
         catch ( ... ) {
-            exceptionSS << "MainThread: Caught unknown exception while initialising driver";
-        }
-
-        // we get here only after an exception was caught
-        context_.tracer().error( exceptionSS.str() );
-        subStatus().fault( exceptionSS.str() );          
-
-        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));        
+            orcaice::catchAllExceptionsWithSleep( subStatus(), "initialising hardware driver" );
+        }       
     }
 
     subStatus().setMaxHeartbeatInterval( 10.0 );
@@ -172,7 +154,7 @@ MainThread::walk()
     //
     while ( !isStopping() )
     {
-        stringstream exceptionSS;
+        // this try makes this component robust to exceptions
         try 
         {
             // this blocks until new data arrives
@@ -196,37 +178,14 @@ MainThread::walk()
             continue;
 
         } // end of try
-        catch ( Ice::CommunicatorDestroyedException & ) {
-            // This is OK: it means that the communicator shut down (eg via Ctrl-C)
-            // somewhere in mainLoop. Eventually, component will tell us to stop.
-        }
-        catch ( const Ice::Exception &e ) {
-            exceptionSS << string(__FILE__) << " Caught unexpected exception: " << e;
-        }
-        catch ( const std::exception &e ) {
-            exceptionSS << string(__FILE__) << " Caught unexpected exception: " << e.what();
-        }
-        catch ( const std::string &e ) {
-            exceptionSS << string(__FILE__) << " Caught unexpected string: " << e;
-        }
-        catch ( const char *e ) {
-            exceptionSS << string(__FILE__) << " Caught unexpected char *: " << e;
-        }
-        catch ( ... ) {
-            exceptionSS << string(__FILE__) << " Caught unexpected unknown exception.";
-        }
+        catch ( ... ) 
+        {
+            orcaice::catchMainLoopExceptions( subStatus() );
 
-        if ( !exceptionSS.str().empty() ) {
-            context_.tracer().error( exceptionSS.str() );
-            subStatus().fault( exceptionSS.str() );     
-            // Slow things down in case of persistent error
-            sleep(1);
-        }
-
-        // If we got to here there's a problem.
-        // Re-initialise the driver, unless we are quitting
-        if ( !isStopping() ) {
-            initHardwareDriver();
+            // Re-initialise the driver, unless we are stopping
+            if ( !isStopping() ) {
+                initHardwareDriver();
+            }
         }
 
     } // end of while

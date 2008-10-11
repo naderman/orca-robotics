@@ -10,7 +10,7 @@
 #ifndef MAIN_THREAD_H
 #define MAIN_THREAD_H
 
-#include <gbxsickacfr/gbxiceutilacfr/safethread.h>
+#include <orcaice/subsystemthread.h>
 #include <gbxsickacfr/gbxiceutilacfr/buffer.h>
 #include <orcaice/context.h>
 
@@ -21,7 +21,7 @@
 namespace ognode
 {
 
-class MainThread : public gbxiceutilacfr::SafeThread
+class MainThread : public orcaice::SubsystemThread
 {
 public:
     MainThread( const orcaice::Context& context);

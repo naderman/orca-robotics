@@ -31,6 +31,7 @@
 #include <orcaice/printutils.h>
 #include <orcaice/stringutils.h>
 #include <orcaice/timeutils.h>
+#include <orcaice/catchutils.h>
 
 #include <orcaice/connectutils.h>
 #include <orcaice/multiconnectutils.h>

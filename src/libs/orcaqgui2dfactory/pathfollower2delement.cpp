@@ -243,13 +243,6 @@ PathFollower2dElement::getInitialData()
         int wpIndex = pathFollower2dPrx_->getWaypointIndex();
         pathUpdateConsumer_->indexPipe_.set( wpIndex );
     }
-    catch ( Ice::Exception &e )
-    {
-        stringstream ss;
-        ss << "PathFollower2dElement::"<<__func__<<": "<< e << endl;
-        // humanManager_.showStatusWarning( ss.str().c_str() );
-        cout << ss.str().c_str();
-    }
     catch ( std::exception &e )
     {
         stringstream ss;

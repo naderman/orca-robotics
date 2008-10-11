@@ -191,10 +191,6 @@ TestComponent::start()
     cout<<"ok"<<endl;
 
     }
-    catch ( const Ice::Exception& e ) {
-        cout<<e<<endl;
-        exit(EXIT_FAILURE);
-    }
     catch ( const std::exception& e ) {
         cout<<e.what()<<endl;
         exit(EXIT_FAILURE);

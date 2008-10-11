@@ -23,7 +23,7 @@ using namespace std;
 using namespace simlocaliser;
 
 MainThread::MainThread( const orcaice::Context & context ) :  
-    SafeThread(context.tracer()),
+    orcaice::SubsystemThread( context.tracer(), context.status(), "MainThread" ),
     context_(context)
 {
     //
@@ -69,17 +69,9 @@ MainThread::MainThread( const orcaice::Context & context ) :
     context_.tracer().debug("driver instantiated",5);
 }
 
-MainThread::~MainThread()
-{
-}
-
 void
 MainThread::walk()
 {
-    // we are in a different thread now, catch all stray exceptions
-    try
-    {
-
     //
     // EXTERNAL PROVIDED INTERFACE
     //
@@ -97,25 +89,25 @@ MainThread::walk()
     // ENABLE NETWORK CONNECTIONS
     //
     // this may throw, but may as well quit right then
-    orcaice::activate( context_, this );
+    orcaice::activate( context_, this, subsysName() );
 
     //
     // Enable driver
     //
-    while ( !isStopping() && driver_->enable() ) {
+    while ( !isStopping() && driver_->enable() ) 
+    {
         context_.tracer().warning("failed to enable the driver; will try again in 2 seconds.");
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
     }
-        context_.tracer().info("driver enabled");
+    context_.tracer().info("driver enabled");
 
-    // This is the main loop
-    try 
-    {
-        int readStatus;
+    int readStatus;
          
-        while ( !isStopping() )
+    // This is the main loop
+    while ( !isStopping() )
+    {
+        try
         {
-
             //
             // Read data
             //
@@ -133,16 +125,11 @@ MainThread::walk()
                 context_.tracer().error("failed to read data from Segway hardware. Repairing....");
                 driver_->repair();
             }
-
+        } // try            
+        catch ( ... ) 
+        {
+            orcaice::catchMainLoopExceptions( subStatus() );
         }
-    }
-    catch ( Ice::CommunicatorDestroyedException &e )
-    {
-        // This is OK: it means that the communicator shut down (eg via Ctrl-C)
-        // somewhere in mainLoop.
-        //
-        // Could probably handle it better for an Application by stopping the component on Ctrl-C
-        // before shutting down communicator.
     }
 
     // reset the hardware
@@ -152,61 +139,4 @@ MainThread::walk()
     else {
         context_.tracer().debug("driver disabled",5);
     }
-
-    //
-    // unexpected exceptions
-    //
-    } // try
-    catch ( const orca::OrcaException & e )
-    {
-        stringstream ss;
-        ss << "unexpected (remote?) orca exception: " << e << ": " << e.what;
-        context_.tracer().error( ss.str() );
-        if ( context_.isApplication() ) {
-            context_.tracer().info( "this is an stand-alone component. Quitting...");
-            context_.communicator()->destroy();
-        }
-    }
-    catch ( const gbxutilacfr::Exception & e )
-    {
-        stringstream ss;
-        ss << "unexpected (local?) orcaice exception: " << e.what();
-        context_.tracer().error( ss.str() );
-        if ( context_.isApplication() ) {
-            context_.tracer().info( "this is an stand-alone component. Quitting...");
-            context_.communicator()->destroy();
-        }
-    }
-    catch ( const Ice::Exception & e )
-    {
-        stringstream ss;
-        ss << "unexpected Ice exception: " << e;
-        context_.tracer().error( ss.str() );
-        if ( context_.isApplication() ) {
-            context_.tracer().info( "this is an stand-alone component. Quitting...");
-            context_.communicator()->destroy();
-        }
-    }
-    catch ( const std::exception & e )
-    {
-        // once caught this beast in here, don't know who threw it 'St9bad_alloc'
-        stringstream ss;
-        ss << "unexpected std exception: " << e.what();
-        context_.tracer().error( ss.str() );
-        if ( context_.isApplication() ) {
-            context_.tracer().info( "this is an stand-alone component. Quitting...");
-            context_.communicator()->destroy();
-        }
-    }
-    catch ( ... )
-    {
-        context_.tracer().error( "unexpected exception from somewhere.");
-        if ( context_.isApplication() ) {
-            context_.tracer().info( "this is an stand-alone component. Quitting...");
-            context_.communicator()->destroy();
-        }
-    }
-    
-    // wait for the component to realize that we are quitting and tell us to stop.
-    waitForStop();
 }

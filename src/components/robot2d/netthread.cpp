@@ -109,13 +109,6 @@ NetThread::handleData(const orca::VelocityControl2dData& command)
         limit( internalCommand );
         HwThread_.setCommand( internalCommand );
     }
-    catch ( Ice::Exception &e )
-    {
-        stringstream ss;
-        ss<<"NetThread::handleData() Caught unexpected exception: " << e << endl;
-        context_.tracer().error( ss.str() );
-        throw;
-    }
     catch ( std::exception &e )
     {
         stringstream ss;

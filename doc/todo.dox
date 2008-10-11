@@ -56,17 +56,22 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 @par New components
 @par New utilities
 @par New libraries
+@par Updated interfaces
+@par Updated components
+
+- all components
+  - all components which subscribe to remote interfaces now attempt to unsubscribe before stopping. (alexm)
+  - all components catch exeptions in a consise and standardised manner using new orcaice:: functions. (alexm)
+
+@par Updated utilities
+
+@par Updated libraries
 
 - libOrcaIce
   - Removed IceApplication, using Ice::Application directly.
   - Application stops component before shutting down the Communicator. This means that the component has a chance to unsubscribe
     or perform other remote operations before stopping. (alexm)
-
-@par Updated interfaces
-@par Updated components
-@par Updated utilities
-
-@par Updated libraries
+  - new functions for catching exceptions in a consise and standardised manner from inside components. (alexm)
 
 - libOrcaLogFactory
   - added logging to ascii for PolarFeature2d (tobi)

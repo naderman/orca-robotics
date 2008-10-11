@@ -88,12 +88,10 @@ MainThread::walk()
             vehicleDescription = odometryPrx->getDescription();
             break;
         }
-        catch ( std::exception &e )
-        {
-            stringstream ss; ss << "Failed to get vehicle description from odometry interface: " << e.what() << " Will try again after 3 seconds.";
-            context_.tracer().error( ss.str() );
-            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
-        }
+        catch ( ... ) {
+            int sleepIntervalMSec = 3000;
+            orcaice::catchAllExceptionsWithSleep( subStatus(), "getting vehicle description", sleepIntervalMSec );
+        }   
     }
     
     // 
@@ -123,19 +121,27 @@ MainThread::walk()
 
     while ( !isStopping() )
     {
-        subStatus().heartbeat();
-        if ( odometry2dConsumer->buffer().getAndPopNext( odomData, timeoutMs ) != 0 ) {
-            continue;
+        // this try makes this component robust to exceptions
+        try
+        {
+            subStatus().heartbeat();
+            if ( odometry2dConsumer->buffer().getAndPopNext( odomData, timeoutMs ) != 0 ) {
+                continue;
+            }
+    
+            double timeSincePublish = orcaice::timeDiffAsDouble( orcaice::getNow(), tLastPublish );
+            if ( timeSincePublish < minInterPublishPeriodSec_ )
+                continue;
+    
+            odometryToLocalise( odomData, localiseData, varPosition, varHeading );
+            context_.tracer().debug( orcaobj::toString(localiseData), 5 );        
+            localiseInterface->localSetAndSend( localiseData );
+            tLastPublish = orcaice::getNow();
         }
-
-        double timeSincePublish = orcaice::timeDiffAsDouble( orcaice::getNow(), tLastPublish );
-        if ( timeSincePublish < minInterPublishPeriodSec_ )
-            continue;
-
-        odometryToLocalise( odomData, localiseData, varPosition, varHeading );
-        context_.tracer().debug( orcaobj::toString(localiseData), 5 );        
-        localiseInterface->localSetAndSend( localiseData );
-        tLastPublish = orcaice::getNow();
+        catch ( ... ) 
+        {
+            orcaice::catchMainLoopExceptions( subStatus() );
+        }
     }
 
     // to be nice to the publisher of information, unsubscribe before quitting.

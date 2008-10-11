@@ -45,12 +45,6 @@ Localise2dElement::tryToGetGeometry()
         }
         haveGeometry_ = true;
     }
-    catch ( Ice::Exception &e)
-    {
-        stringstream ss;
-        ss << "Localise2dElement::tryToGetGeometry(): Exception when trying to get geometry: " << e;
-        humanManager_->showStatusMsg( hydroqguielementutil::IHumanManager::Error, ss.str().c_str() );
-    }
     catch ( std::exception &e)
     {
         humanManager_->showStatusMsg( hydroqguielementutil::IHumanManager::Error,"Localise2dElement::tryToGetGeometry(): Exception when trying to get geometry: " + QString(e.what()) );

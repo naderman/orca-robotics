@@ -281,13 +281,7 @@ BrowserThread::loadOperation()
         if ( ifaceProbe_->loadOperation( pick_, operationData_ ) ) {
             events_->add( Fault );
         }
-    }
-    catch( const Ice::Exception& e )
-    {
-        stringstream ss;
-        ss<<e<<endl;
-        orcaprobe::reportException( operationData_, ss.str() );
-    }
+    }   
     catch( const std::exception& e )
     {
         stringstream ss;

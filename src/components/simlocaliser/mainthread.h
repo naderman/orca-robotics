@@ -8,10 +8,10 @@
  *
  */
  
-#ifndef MAIN_LOOP_H
-#define MAIN_LOOP_H
+#ifndef MAIN_THREAD_H
+#define MAIN_THREAD_H
 
-#include <gbxsickacfr/gbxiceutilacfr/safethread.h>
+#include <orcaice/subsystemthread.h>
 #include <orcaice/context.h>
 
 namespace simlocaliser
@@ -19,14 +19,13 @@ namespace simlocaliser
 
 class Driver;
 
-class MainThread : public gbxiceutilacfr::SafeThread
+class MainThread : public orcaice::SubsystemThread
 {
 
 public:
     MainThread( const orcaice::Context& context );
-    virtual ~MainThread();
 
-    // from gbxiceutilacfr::SafeThread
+    // from orcaice::SubsystemThread
     virtual void walk();
 
 private:

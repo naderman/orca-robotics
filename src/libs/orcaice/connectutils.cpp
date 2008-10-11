@@ -214,12 +214,6 @@ isRegistryReachable( const Context& context )
 
         return true;
     }
-    catch( const Ice::Exception &e )
-    {
-        std::stringstream ss;
-        ss << "orcaice::isRegistryReachable(): caught exception: " << e;
-        context.tracer().debug( ss.str() ,5 );
-    }
     catch( const std::exception &e )
     {
         std::stringstream ss;

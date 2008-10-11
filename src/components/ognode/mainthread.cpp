@@ -62,8 +62,8 @@ namespace {
 
 //////////////////////////////////////////////////////////////////////
 
-MainThread::MainThread( const orcaice::Context &context ) :
-    SafeThread(context.tracer()),
+MainThread::MainThread( const orcaice::Context &context ) : 
+    orcaice::SubsystemThread( context.tracer(), context.status(), "MainThread" ),
     ogFusionDataBuffer_(-1,gbxiceutilacfr::BufferTypeCircular), // infinite depth
     context_(context)
 {
@@ -182,21 +182,8 @@ MainThread::init()
 
             return;
         }
-        catch ( const Ice::Exception & e )
-        {
-            stringstream ss;
-            ss << "MainThread: unexpected exception: " << e;
-            context_.tracer().error( ss.str() );
-        }
-        catch ( const std::exception & e )
-        {
-            stringstream ss;
-            ss << "MainThread: unexpected exception: " << e.what();
-            context_.tracer().error( ss.str() );
-        }
-        catch ( ... )
-        {
-            context_.tracer().error( "MainThread: unexpected unknown exception.");
+        catch ( ... ) {
+            orcaice::catchAllExceptionsWithSleep( subStatus(), "initialising" );
         }
     }
 }
@@ -249,27 +236,11 @@ MainThread::walk()
             }
 
         } // try
-        catch ( const Ice::Exception & e )
+        catch ( ... ) 
         {
-            stringstream ss;
-            ss << "MainThread: unexpected exception: " << e;
-            context_.tracer().error( ss.str() );
-        }
-        catch ( const std::exception & e )
-        {
-            stringstream ss;
-            ss << "MainThread: unexpected exception: " << e.what();
-            context_.tracer().error( ss.str() );
-        }
-        catch ( ... )
-        {
-            context_.tracer().error( "MainThread: unexpected unknown exception.");
+            orcaice::catchMainLoopExceptions( subStatus() );
         }
     } // end of main loop
-    
-    
-    context_.tracer().debug( "dropping out from run()", 5 );
-    waitForStop();
 }
 
 }

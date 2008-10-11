@@ -350,12 +350,6 @@ ReplayConductor::replayData( int id, int index )
         // This is OK, it means we're shutting down.
         throw;
     }
-    catch ( const Ice::Exception  &e ) 
-    {
-        stringstream ss;
-        ss<<"ReplayConductor: Caught Ice::Exception from replayer '"<<replayers_[id]->toString()<<"': "<<e;
-        context_.tracer().error( ss.str() );
-    }
     catch ( const std::exception  &e ) 
     {
         stringstream ss;

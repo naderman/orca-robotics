@@ -169,9 +169,6 @@ Service::start( const ::std::string        & name,
             initTracerInfo( component_->context().tag()+": Component started" );
         }
     }
-    catch ( const Ice::Exception &e ) {
-        exceptionSS << "Caught exception while starting component : " << e;
-    }
     catch ( const std::exception &e ) {
         exceptionSS << "Caught exception while starting component: " << e.what();
     }

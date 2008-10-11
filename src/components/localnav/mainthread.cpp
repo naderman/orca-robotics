@@ -170,19 +170,15 @@ MainThread::initPathFollowerInterface()
             pathFollowerInterface_->initInterface();
             return;
         }
-        catch ( gbxutilacfr::Exception &e )
-        {
-            stringstream ss;
-            ss << "MainThread: Failed to initialise PathFollower interface: " << e.what();
-            context_.tracer().warning( ss.str() );
-            if ( testMode_ )
-            {
+        catch ( ... ) {
+            if ( testMode_ ) {
+                context_.tracer().warning( "(while initialising PathFollower2d interface) failed : no specific error information." );
                 context_.tracer().warning( "Continuing regardless..." );
                 return;
             }
+            int sleepIntervalMSec = 2000;
+            orcaice::catchAllExceptionsWithSleep( subStatus(), "initialising PathFollower interface", sleepIntervalMSec );
         }
-        subStatus().initialising( "initInterfaces()" );
-        sleep(2);
     }
 }
 
@@ -191,26 +187,13 @@ MainThread::getVehicleDescription()
 {
     while ( !isStopping() )
     {
-        stringstream exceptionSS;
         try
         {
             vehicleDescr_ = velControl2dPrx_->getDescription();
             break;
         }
-        catch ( const Ice::Exception &e ) {
-            exceptionSS << __func__ << "(): " << e;
-        }
-        catch ( const std::exception &e ) {
-            exceptionSS << __func__ << "(): " << e.what();
-        }
         catch ( ... ) {
-            exceptionSS << __func__ << "(): Caught unknown exception.";
-        }
-
-        if ( !exceptionSS.str().empty() ) {
-            subStatus().warning( exceptionSS.str() );     
-            // Slow things down in case of persistent error
-            sleep(1);
+            orcaice::catchAllExceptionsWithSleep( subStatus(), "getting vehicle description" );
         }
     }
 }
@@ -222,7 +205,6 @@ MainThread::getRangeScannerDescription()
     
     while ( !isStopping() )
     {
-        stringstream exceptionSS;
         try
         {
             context_.tracer().debug( "Getting range scanner description...", 2 );
@@ -230,20 +212,8 @@ MainThread::getRangeScannerDescription()
             scannerDescr_ = prx->getDescription();
             break;
         }
-        catch ( const Ice::Exception &e ) {
-            exceptionSS << __func__ << "(): " << e;
-        }
-        catch ( const std::exception &e ) {
-            exceptionSS << __func__ << "(): " << e.what();
-        }
         catch ( ... ) {
-            exceptionSS << __func__ << "(): Caught unknown exception.";
-        }
-
-        if ( !exceptionSS.str().empty() ) {
-            subStatus().warning( exceptionSS.str() );     
-            // Slow things down in case of persistent error
-            sleep(1);
+            orcaice::catchAllExceptionsWithSleep( subStatus(), "getting range scanner description" );
         }
     }
 }
@@ -323,26 +293,10 @@ MainThread::stopVehicle()
         catch ( Ice::CommunicatorDestroyedException &e )
         {
             // This is OK: it means that the communicator shut down (eg via Ctrl-C)
-            // somewhere in mainLoop.
-        }
-        catch ( const orca::OrcaException & e ) {
-            exceptionSS <<__func__<< "(): " << e << ": " << e.what;
-        }
-        catch ( const Ice::Exception & e ) {
-            exceptionSS <<__func__<<"(): " << e;
-        }
-        catch ( const std::exception & e ) {
-            exceptionSS <<__func__<<"(): " << e.what();
         }
         catch ( ... ) {
-            exceptionSS <<__func__<<"(): unknown exception.";
-        }
-
-        if ( !exceptionSS.str().empty() ) 
-        {
-            subStatus().fault( exceptionSS.str() );
-            // Slow things down in case of persistent error
-            usleep(500000);
+            int sleepIntervalMSec = 500;
+            orcaice::catchAllExceptionsWithSleep( subStatus(), "getting vehicle description", sleepIntervalMSec );
         }
     }
 }
@@ -452,7 +406,6 @@ MainThread::walk()
 
     while ( !isStopping() )
     {
-        std::stringstream exceptionSS;
         try 
         {
             getInputs( inputs.currentVelocity,
@@ -499,16 +452,10 @@ MainThread::walk()
             try {
                 velocityCmd = driver_->getCommand( inputs );
             }
-            catch ( Ice::Exception &e )
-            {
-                stringstream ss;
-                ss << "While getting command from driver with inputs: " << orcalocalnav::toString(inputs) << " --> " << e;
-                throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
-            }
             catch ( std::exception &e )
             {
                 stringstream ss;
-                ss << "While getting command from driver with inputs: " << orcalocalnav::toString(inputs) << " --> " << e.what();
+                ss << "(while getting command from driver with inputs: " << orcalocalnav::toString(inputs) << ") failed: " << e.what();
                 throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
             }
             
@@ -586,39 +533,13 @@ MainThread::walk()
                 subStatus().warning( "Localisation is uncertain, but everything else is OK." );
             else
                 subStatus().ok();
-        }
-        catch ( Ice::CommunicatorDestroyedException &e )
+        } // try
+        catch ( ... ) 
         {
-            // This is OK: it means that the communicator shut down (eg via Ctrl-C)
-            // somewhere in mainLoop.
-        }
-        catch ( const orca::OrcaException & e ) {
-            exceptionSS << "MainThread: unexpected orca exception: " << e << ": " << e.what;
-        }
-        catch ( const Ice::Exception & e ) {
-            exceptionSS << "MainThread: unexpected Ice exception: " << e;
-        }
-        catch ( const orcaice::ComponentDeactivatingException & e ) {
-            // nothing to worry
-            break;
-        }
-        catch ( const std::exception & e ) {
-            exceptionSS << "MainThread: unexpected std exception: " << e.what();
-        }
-        catch ( const std::string &e ) {
-            exceptionSS << "MainThread: unexpected std::string exception: " << e;
-        }
-        catch ( ... )
-        {
-            exceptionSS << "MainThread: unexpected unknown exception";
-        }
-
-        if ( !exceptionSS.str().empty() && !isStopping() ) 
-        {
-            subStatus().fault( exceptionSS.str() + "\n  Stopping vehicle." );
+            // before doing anything else, stop the vehicle!
             stopVehicle();
-            // Slow things down in case of persistent error
-            sleep(1);
+
+            orcaice::catchMainLoopExceptions( subStatus() );
         }
     }
 

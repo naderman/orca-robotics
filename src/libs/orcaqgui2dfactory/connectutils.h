@@ -20,11 +20,6 @@ namespace orcaqgui2d {
             orcaice::connectToInterfaceWithString( context, prx, proxyString );
             painter.setData( prx->getData() );
         }
-        catch ( Ice::Exception &e )
-        {
-            std::cout<<"TRACE(connectutils::paintInitialData): exception: " << e << std::endl;
-            throw;
-        }
         catch ( std::exception &e )
         {
             std::cout<<"TRACE(connectutils::paintInitialData): exception: " << e.what() << std::endl;

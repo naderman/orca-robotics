@@ -69,27 +69,9 @@ HwThread::initHardwareDriver()
             driver_.reset( driverFactory->createDriver( config_, context_.toHydroContext() ) );
             break;
         }
-        catch ( IceUtil::Exception &e ) {
-            exceptionSS << "HwThread: Caught exception while creating driver: " << e;
-        }
-        catch ( std::exception &e ) {
-            exceptionSS << "HwThread: Caught exception while initialising driver: " << e.what();
-        }
-        catch ( char *e ) {
-            exceptionSS << "HwThread: Caught exception while initialising driver: " << e;
-        }
-        catch ( std::string &e ) {
-            exceptionSS << "HwThread: Caught exception while initialising driver: " << e;
-        }
         catch ( ... ) {
-            exceptionSS << "HwThread: Caught unknown exception while initialising driver";
+            orcaice::catchAllExceptionsWithSleep( subStatus(), "initialising hardware driver" );
         }
-
-        // we get here only after an exception was caught
-        context_.tracer().error( exceptionSS.str() );
-        subStatus().fault( exceptionSS.str() );
-
-        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
     }
 
     subStatus().setMaxHeartbeatInterval( 1.0 );
@@ -115,24 +97,13 @@ HwThread::walk()
             try{
                 generic = driver_->read();
             }
-            catch ( const std::exception& e ){
-                context_.tracer().error( e.what() );
+            catch ( ... ) {
+                orcaice::catchAllExceptions( subStatus(), "getting vehicle description" );
+
+                // didn't get anything
                 continue;
-            }
-            catch(const std::string& e){
-                context_.tracer().error( e );
-                continue;
-            }
-            catch(const char* e){
-                context_.tracer().error( e );
-                continue;
-            }
-            catch(...){
-                std::stringstream ss;
-                ss << __func__ << ":" << __LINE__ << " caught unknown exception";
-                context_.tracer().error(ss.str());
-                continue;
-            }
+            }  
+
             // figure out what we got; convert the data to orcainterfaces
             // and the container to Event; then shove it over to the network side
             switch(generic->type()){
@@ -190,37 +161,15 @@ HwThread::walk()
             continue;
 
         } // end of try
-        catch ( Ice::CommunicatorDestroyedException & ) {
-            // This is OK: it means that the communicator shut down (eg via Ctrl-C)
-            // somewhere in mainLoop. Eventually, component will tell us to stop.
-        }
-        catch ( const Ice::Exception &e ) {
-            exceptionSS << "ERROR(mainthread.cpp): Caught unexpected exception: " << e;
-        }
-        catch ( const std::exception &e ) {
-            exceptionSS << "ERROR(mainthread.cpp): Caught unexpected exception: " << e.what();
-        }
-        catch ( const std::string &e ) {
-            exceptionSS << "ERROR(mainthread.cpp): Caught unexpected string: " << e;
-        }
-        catch ( const char *e ) {
-            exceptionSS << "ERROR(mainthread.cpp): Caught unexpected char *: " << e;
-        }
-        catch ( ... ) {
-            exceptionSS << "ERROR(mainthread.cpp): Caught unexpected unknown exception.";
-        }
+        catch ( ... ) 
+        {
+            orcaice::catchMainLoopExceptions( subStatus() );
 
-        if ( !exceptionSS.str().empty() ) {
-            context_.tracer().error( exceptionSS.str() );
-            subStatus().fault( exceptionSS.str() );     
-            // Slow things down in case of persistent error
-            sleep(1);
+            // Re-initialise the driver, unless we are stopping
+            if ( !isStopping() ) {
+                initHardwareDriver();
+            }
         }
-
-        // If we got to here there's a problem.
-        // Re-initialise the driver.
-        initHardwareDriver();
-
     } // end of while
 
     // insgps hardware will be shut down in the driver_ 's destructor.

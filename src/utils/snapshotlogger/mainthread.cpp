@@ -118,6 +118,7 @@ MainThread::initLoggers()
         }
         catch ( std::exception &e )
         {
+            // fatal error!
             context_.shutdown();
             throw;
         }
@@ -142,13 +143,8 @@ MainThread::initInterface()
             context_.tracer().debug( "Activated button interface" );
             break;
         }
-        catch ( gbxutilacfr::Exception &e )
-        {
-            stringstream ss;
-            ss << "MainThread::establishInterface(): " << e.what();
-            context_.tracer().warning( ss.str() );
-            subStatus().initialising(ss.str() );
-            sleep(1);
+        catch ( ... ) {
+            orcaice::catchAllExceptionsWithSleep( subStatus(), "initialising Button interface" );
         }
     }
 }
@@ -308,7 +304,6 @@ MainThread::walk()
 
     while ( !isStopping() )
     {
-        std::stringstream exceptionSS;
         try {
             bool dummy;
             const int TIMEOUT_MS = 1000;
@@ -323,31 +318,9 @@ MainThread::walk()
             }
             subStatus().ok();
         }
-        catch ( Ice::CommunicatorDestroyedException & ) {
-            // This is OK: it means that the communicator shut down (eg via Ctrl-C)
-            // somewhere in mainLoop. Eventually, component will tell us to stop.
-        }
-        catch ( const Ice::Exception &e ) {
-            exceptionSS << "ERROR(mainthread.cpp): Caught unexpected exception: " << e;
-        }
-        catch ( const std::exception &e ) {
-            exceptionSS << "ERROR(mainthread.cpp): Caught unexpected exception: " << e.what();
-        }
-        catch ( const std::string &e ) {
-            exceptionSS << "ERROR(mainthread.cpp): Caught unexpected string: " << e;
-        }
-        catch ( const char *e ) {
-            exceptionSS << "ERROR(mainthread.cpp): Caught unexpected char *: " << e;
-        }
-        catch ( ... ) {
-            exceptionSS << "ERROR(mainthread.cpp): Caught unexpected unknown exception.";
-        }
-
-        if ( !exceptionSS.str().empty() ) 
+        catch ( ... ) 
         {
-            subStatus().fault( exceptionSS.str() );     
-            // Slow things down in case of persistent error
-            sleep(1);
+            orcaice::catchMainLoopExceptions( subStatus() );
         }
     }
 }

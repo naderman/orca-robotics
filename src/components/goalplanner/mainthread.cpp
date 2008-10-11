@@ -609,25 +609,9 @@ MainThread::waitForNewPath( orca::PathFollower2dData &newPathData )
                 subStatus().ok();
             }
         }
-        catch ( const Ice::Exception & e )
-        {
-            stringstream ss;
-            ss << "MainThread::waitForNewPath: Caught exception: " << e;
-            context_.tracer().error( ss.str() );
-            subStatus().fault( ss.str() );
-        }
-        catch ( const std::exception & e )
-        {
-            stringstream ss;
-            ss << "MainThread:waitForNewPath: Caught exception: " << e.what();
-            context_.tracer().error( ss.str() );
-            subStatus().fault( ss.str() );
-        }
-        catch ( ... )
-        {
-            context_.tracer().error( "MainThread::waitForNewPath: caught unknown unexpected exception.");
-            subStatus().fault( "MainThread::waitForNewPath: caught unknown unexpected exception.");
-        }
+        catch ( ... ) {
+            orcaice::catchAllExceptions( subStatus(), "waiting for new path" );
+        }   
     }
     return false;
 }
@@ -761,33 +745,14 @@ MainThread::walk()
                 requestIsOutstanding = false;
             }
         }
-        catch ( const Ice::Exception & e )
+        catch ( ... ) 
         {
-            stringstream ss;
-            ss << "MainThread:: Caught exception: " << e;
-            context_.tracer().error( ss.str() );
-            subStatus().fault( ss.str() );
-            requestIsOutstanding = false;
-        }
-        catch ( const std::exception & e )
-        {
-            stringstream ss;
-            ss << "MainThread: Caught exception: " << e.what();
-            context_.tracer().error( ss.str() );
-            subStatus().fault( ss.str() );
-            requestIsOutstanding = false;
-        }
-        catch ( ... )
-        {
-            context_.tracer().error( "MainThread: caught unknown unexpected exception.");
-            subStatus().fault( "MainThread: caught unknown unexpected exception.");
+            orcaice::catchMainLoopExceptions( subStatus() );
+
             requestIsOutstanding = false;
         }
             
     } // end of big while loop
-    
-    // wait for the component to realize that we are quitting and tell us to stop.
-    waitForStop();
 }
 
 }

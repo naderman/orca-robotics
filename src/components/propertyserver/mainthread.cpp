@@ -59,8 +59,6 @@ MainThread::initNetworkInterface()
 void
 MainThread::walk()
 {
-    stringstream exceptionSS;
-
     orca::PropertiesData incomingProperties;
 
     // These functions catch their exceptions.
@@ -100,30 +98,9 @@ MainThread::walk()
             continue;
 
         } // end of try
-        catch ( Ice::CommunicatorDestroyedException & ) {
-            // This is OK: it means that the communicator shut down (eg via Ctrl-C)
-            // somewhere in mainLoop. Eventually, component will tell us to stop.
-        }
-        catch ( const Ice::Exception &e ) {
-            exceptionSS << "ERROR(mainthread.cpp): Caught unexpected exception: " << e;
-        }
-        catch ( const std::exception &e ) {
-            exceptionSS << "ERROR(mainthread.cpp): Caught unexpected exception: " << e.what();
-        }
-        catch ( const std::string &e ) {
-            exceptionSS << "ERROR(mainthread.cpp): Caught unexpected string: " << e;
-        }
-        catch ( const char *e ) {
-            exceptionSS << "ERROR(mainthread.cpp): Caught unexpected char *: " << e;
-        }
-        catch ( ... ) {
-            exceptionSS << "ERROR(mainthread.cpp): Caught unexpected unknown exception.";
-        }
-
-        if ( !exceptionSS.str().empty() ) {
-            context_.tracer().error( exceptionSS.str() );
-            subStatus().fault( exceptionSS.str() );     
-            exceptionSS.str("");
+        catch ( ... ) 
+        {
+            orcaice::catchMainLoopExceptions( subStatus() );
         }
     } // end of while
 }

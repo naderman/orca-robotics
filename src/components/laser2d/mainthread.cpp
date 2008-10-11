@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
+#include <orcaifacestring/laserscanner2d.h>
 #include <orcaobj/orcaobj.h>
 #include "mainthread.h"
 
@@ -128,35 +129,15 @@ MainThread::initHardwareDriver()
     // create the driver
     while ( !isStopping() )
     {
-        std::stringstream exceptionSS;
         try {
             context_.tracer().info( "HwThread: Creating driver..." );
             driver_.reset(0);
             driver_.reset( driverFactory->createDriver( config_, context_.toHydroContext() ) );
             break;
         }
-        catch ( IceUtil::Exception &e ) {
-            exceptionSS << "MainThread: Caught exception while initialising driver: " << e;
-        }
-        catch ( std::exception &e ) {
-            exceptionSS << "MainThread: Caught exception while initialising driver: " << e.what();
-        }
-        catch ( char *e ) {
-            exceptionSS << "MainThread: Caught exception while initialising driver: " << e;
-        }
-        catch ( std::string &e ) {
-            exceptionSS << "MainThread: Caught exception while initialising driver: " << e;
-        }
         catch ( ... ) {
-            exceptionSS << "MainThread: Caught unknown exception while initialising driver";
-        }
-
-        // we get here only after an exception was caught
-        if ( !isStopping() ) {
-            subStatus().fault( exceptionSS.str() );          
-    
-            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
-        }
+            orcaice::catchAllExceptionsWithSleep( subStatus(), "initialising hardware driver" );
+        }   
     }
 
     subStatus().setMaxHeartbeatInterval( 1.0 );
@@ -211,7 +192,6 @@ MainThread::walk()
     //
     while ( !isStopping() )
     {
-        stringstream exceptionSS;
         try 
         {
             // this blocks until new data arrives
@@ -228,42 +208,17 @@ MainThread::walk()
             }
 
             stringstream ss;
-            ss << "MainThread: Read laser data: " << orcaobj::toString(orcaLaserData_);
+            ss << "MainThread: Read laser data: " << ifacestring::toString(orcaLaserData_);
             context_.tracer().debug( ss.str(), 5 );
+        }
+        catch ( ... ) 
+        {
+            orcaice::catchMainLoopExceptions( subStatus() );
 
-            continue;
-
-        } // end of try
-        catch ( Ice::CommunicatorDestroyedException & ) {
-            // This is OK: it means that the communicator shut down (eg via Ctrl-C)
-            // somewhere in mainLoop. Eventually, component will tell us to stop.
-        }
-        catch ( const Ice::Exception &e ) {
-            exceptionSS << "ERROR(mainthread.cpp): Caught unexpected exception: " << e;
-        }
-        catch ( const std::exception &e ) {
-            exceptionSS << "ERROR(mainthread.cpp): Caught unexpected exception: " << e.what();
-        }
-        catch ( const std::string &e ) {
-            exceptionSS << "ERROR(mainthread.cpp): Caught unexpected string: " << e;
-        }
-        catch ( const char *e ) {
-            exceptionSS << "ERROR(mainthread.cpp): Caught unexpected char *: " << e;
-        }
-        catch ( ... ) {
-            exceptionSS << "ERROR(mainthread.cpp): Caught unexpected unknown exception.";
-        }
-
-        if ( !exceptionSS.str().empty() ) {
-            subStatus().fault( exceptionSS.str() );     
-            // Slow things down in case of persistent error
-            sleep(1);
-        }
-
-        // If we got to here there's a problem.
-        // Re-initialise the driver, unless we are quitting
-        if ( !isStopping() ) {
-            initHardwareDriver();
+            // Re-initialise the driver, unless we are stopping
+            if ( !isStopping() ) {
+                initHardwareDriver();
+            }
         }
 
     } // end of while

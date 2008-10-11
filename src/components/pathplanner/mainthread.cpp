@@ -101,11 +101,10 @@ MainThread::initDriver()
                                                                robotDiameterMetres,
                                                                context_.toHydroContext( context_.tag()+".Config." ) ) );
     }
-    catch ( std::exception &e )
-    {
-        stringstream ss;
-        ss << __func__ << ": Failed to initialise driver: " << e.what();
-        subStatus().fault( ss.str() );
+    catch ( ... ) {
+        orcaice::catchAllExceptions( subStatus(), "initialising algorithm driver" );
+
+        // this is a fatal error!
         context_.shutdown();
     }
 
@@ -138,10 +137,7 @@ MainThread::walk()
     subStatus().setMaxHeartbeatInterval( -1 );
 
     initDriver();
-
     assert( driver_.get() );
-
-    // we are in a different thread now, catch all stray exceptions
 
     orca::PathPlanner2dTask task; 
     orca::PathPlanner2dData pathData;   
@@ -268,42 +264,12 @@ MainThread::walk()
             {
                 subStatus().ok();
             }
-        //
-        // unexpected exceptions
-        //
         } // try
-        catch ( const orca::OrcaException & e )
+        catch ( ... ) 
         {
-            stringstream ss;
-            ss << "MainThread: unexpected orca exception: " << e << ": " << e.what;
-            subStatus().fault( ss.str() );
+            orcaice::catchMainLoopExceptions( subStatus() );
         }
-        catch ( const gbxutilacfr::Exception & e )
-        {
-            stringstream ss;
-            ss << "MainThread: unexpected exception: " << e.what();
-            subStatus().fault( ss.str() );
-        }
-//         catch ( const Ice::Exception & e )
-//         {
-//             stringstream ss;
-//             ss << "MainThread: unexpected Ice exception: " << e;
-//             subStatus().fault( ss.str() );
-//         }
-        catch ( const std::exception & e )
-        {
-            stringstream ss;
-            ss << "MainThread: unexpected std exception: " << e.what();
-            subStatus().fault( ss.str() );
-        }
-        catch ( ... )
-        {
-            subStatus().fault( "MainThread: unexpected unknown exception.");
-        }
-    
     } // end of while
-    
-    cout<<"DEBUG: out of mainthread."<<endl;
 }
 
 }

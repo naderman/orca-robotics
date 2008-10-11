@@ -129,10 +129,6 @@ void OgMapsCombinedElement::actionOnConnection()
     {
         std::cout<<"TRACE(actionOnConnection.cpp): Caught exception: " << e << std::endl;
     }
-    catch ( Ice::Exception &e )
-    {
-        std::cout<<"TRACE(actionOnConnection.cpp): Caught some ice exception: " << e << std::endl;
-    }
     catch ( std::exception &e )
     {
         std::cout<<"TRACE(actionOnConnection.cpp): Caught some std exception: " << e.what() << std::endl;

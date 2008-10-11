@@ -213,13 +213,6 @@ public:
                 context_.tracer().debug( ss.str() );
                 break;
             }
-            catch ( const Ice::Exception &e )
-            {
-                std::stringstream ss;
-                ss << "Failed to subscribe: " << e << std::endl
-                   <<"Will retry in "<<retryInterval<<"s.";
-                context_.tracer().warning( ss.str() );
-            }
             catch ( const std::exception &e )
             {
                 std::stringstream ss;

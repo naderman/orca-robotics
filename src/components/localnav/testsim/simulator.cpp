@@ -125,12 +125,14 @@ Simulator::setupInterfaces( const hydrosim2d::VehicleSimulator::Config &vehicleS
     catch ( std::exception &e ) {
         cout << "Ignoring problem initialising interface: " << e.what();
     }
+
     try {
         posePublisher_->initInterface();
     }
     catch ( std::exception &e ) {
         cout << "Ignoring problem initialising interface: " << e.what();
     }
+
     try {
         orca::OgMapData orcaOgMap;
         orcaogmap::convert( ogMap_, orcaOgMap );

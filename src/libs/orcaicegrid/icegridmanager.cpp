@@ -55,9 +55,6 @@ IceGridManager::connectedEvent()
     catch ( const Ice::CommunicatorDestroyedException & ) {
         // This is OK, we're shutting down
     }
-    catch ( const Ice::Exception &e ) {
-        exceptionSS << "IceGridManager: Error creating Admin Session: " << e;
-    }
     catch( const std::exception& e) {
         exceptionSS << "IceGridManager: Error creating Admin Session: " << e.what();
     }

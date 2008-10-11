@@ -51,12 +51,6 @@ OdometryBasedDriver::setup()
     try {
         orcaice::connectToInterfaceWithTag<orca::Odometry2dPrx>( context_, odomPrx, "Odometry2d" );
     }
-    catch( Ice::Exception &e )
-    {
-        stringstream ss; ss << "Error while connecting to odometry: " << e;
-        context_.tracer().error( ss.str() );
-        return false;
-    }
     catch( std::exception &e )
     {
         stringstream ss; ss << "Error while connecting to odometry: " << e.what();
@@ -66,12 +60,6 @@ OdometryBasedDriver::setup()
     
     try {
         odomPrx->subscribe( odomConsumer_->consumerPrx() );
-    }
-    catch( Ice::Exception &e )
-    {
-        stringstream ss; ss << "Error while subscribing to odometry: " << e;
-        context_.tracer().error( ss.str() );
-        return false;
     }
     catch( std::exception &e )
     {

@@ -91,10 +91,6 @@ subscribeListener( orcaice::Context      &context,
         std::cout<<"TRACE(subscribeListener): Caught exception: " << e << std::endl;
         throw;
     }
-    catch ( Ice::Exception &e ) {
-        std::cout<<"TRACE(subscribeListener): Caught ice exception: " << e << std::endl;
-        throw;
-    }
     catch ( std::exception &e ) {
         std::cout<<"TRACE(subscribeListener): Caught std exception: " << e.what() << std::endl;
         throw;
@@ -125,10 +121,6 @@ unSubscribeListener( orcaice::Context      &context,
     // Ignore all exceptions, and try again next time.
     catch ( Ice::ConnectionRefusedException &e ) {
         std::cout<<"TRACE(unSubscribeListener): Caught exception: " << e << std::endl;
-        throw;
-    }
-    catch ( Ice::Exception &e ) {
-        std::cout<<"TRACE(unSubscribeListener): Caught ice exception: " << e << std::endl;
         throw;
     }
     catch ( std::exception &e ) {

@@ -94,24 +94,10 @@ MainThread::getGpsDescription()
             if ( antennaOffsetOK( antennaOffset_ ) )
                 return;
         }
-        catch ( const Ice::Exception &e )
-        {
-            stringstream ss;
-            ss << "failed to retreive gps description: " << e;
-            context_.tracer().error( ss.str() );
+        catch ( ... ) {
+            int sleepIntervalMSec = 2000;
+            orcaice::catchAllExceptionsWithSleep( subStatus(), "getting Gps description", sleepIntervalMSec );
         }
-        catch ( const std::exception &e )
-        {
-            stringstream ss;
-            ss << "failed to retreive gps description: " << e.what();
-            context_.tracer().error( ss.str() );
-        }
-        catch ( ... )
-        {
-            context_.tracer().error( "Failed to retreive gps description for unknown reason." );
-        }
-        subStatus().initialising( "getGpsDescription()" );
-        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
     }
 }
 
@@ -152,24 +138,10 @@ MainThread::initNetworkInterface()
                 context_.tracer().info( ss.str() );
                 break;
             }
-            catch ( const Ice::Exception &e )
-            {
-                stringstream ss;
-                ss << "failed to retrieve vehicle description: " << e;
-                context_.tracer().error( ss.str() );
+            catch ( ... ) {
+                int sleepIntervalMSec = 2000;
+                orcaice::catchAllExceptionsWithSleep( subStatus(), "initialising network interface", sleepIntervalMSec );
             }
-            catch ( const std::exception &e )
-            {
-                stringstream ss;
-                ss << "failed to retreive vehicle description: " << e.what();
-                context_.tracer().error( ss.str() );
-            }
-            catch ( ... )
-            {
-                context_.tracer().error( "Failed to retreive vehicle description for unknown reason." );
-            }
-            subStatus().initialising( "getVehicleDescription()" );
-            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
         }
     }
     
@@ -206,7 +178,6 @@ MainThread::walk()
 
     orca::GpsData        gpsData;
     orca::Localise2dData localiseData;
-    std::stringstream exceptionSS;
 
     // wake up every now and then to check if we are supposed to stop
     const int timeoutMs = 1000;
@@ -261,25 +232,9 @@ MainThread::walk()
             subStatus().ok();
 
         } // try
-        catch ( const orca::OrcaException & e ) {
-            exceptionSS << subsysName() << ": unexpected orca exception: " << e << ": " << e.what;
-        }
-        catch ( const Ice::Exception & e ) {
-            exceptionSS << subsysName() << ": unexpected Ice exception: " << e;
-        }
-        catch ( const std::exception & e ) {
-            exceptionSS << subsysName() << ": unexpected std exception: " << e.what();
-        }
-        catch ( const std::string &e ) {
-            exceptionSS << subsysName() << ": unexpected std::string exception: " << e;
-        }
-        catch ( ... ) {
-            exceptionSS << subsysName() << ": unexpected exception from somewhere.";
-        }
-        
-        if ( !exceptionSS.str().empty() ) {
-            context_.tracer().error( exceptionSS.str() );
-            exceptionSS.str().clear();
+        catch ( ... ) 
+        {
+            orcaice::catchMainLoopExceptions( subStatus() );
         }
     } // while
 

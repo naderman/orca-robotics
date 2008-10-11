@@ -70,9 +70,6 @@ IceGridSession::tryCreateSession()
         // This is OK, we're shutting down
         return false;
     }
-    catch ( const Ice::Exception &e ) {
-        exceptionSS << "IceGridSession: Error contacting registry: " << e;
-    }
     catch ( const std::exception &e ) {
         exceptionSS << "IceGridSession: Error contacting registry: " << e.what();
     }
@@ -99,9 +96,6 @@ IceGridSession::tryCreateSession()
     catch ( const Ice::CommunicatorDestroyedException & ) {
         // This is OK, we're shutting down
         return false;
-    }
-    catch ( const Ice::Exception &e ) {
-        exceptionSS << "IceGridSession: Error creating Admin Session: " << e;
     }
     catch( const std::exception& e) {
         exceptionSS << "IceGridSession: Error creating Admin Session: " << e.what();
@@ -179,9 +173,6 @@ IceGridSession::walk()
                 catch( const Ice::CommunicatorDestroyedException & ) {
                     // This is OK, we're shutting down.
                     break;
-                }
-                catch( const Ice::Exception& e ) {
-                    exceptionSS<<"IceGridSession: Failed to keep session alive: "<<e;
                 }
                 catch( const std::exception& e ) {
                     exceptionSS<<"IceGridSession: Failed to keep session alive: "<<e.what();

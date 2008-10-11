@@ -108,13 +108,6 @@ activate( Context& context,
             // This means we're shutting down.
             break;
         }
-        catch ( const Ice::Exception& e ) {
-            std::stringstream ss;
-            ss << "Failed to activate component. Check Registry and IceStorm. "
-                <<"Will retry in "<<retryInterval<<"s.\n"
-                <<e;
-            context.tracer().warning( ss.str() );
-        }
         catch ( const std::exception& e ) {
             std::stringstream ss;
             ss << "Failed to activate component. Check Registry and IceStorm. "

@@ -86,9 +86,10 @@ MainThread::walk()
     // IMPORTANT: Have to keep this loop rolling, because the '!isStopping()' call checks for requests to shut down.
     //            So we have to avoid getting stuck anywhere within this main loop.
     //
-    while(!isStopping()){
-        stringstream exceptionSS;
-        try{
+    while(!isStopping())
+    {
+        try
+        {
             hydroiceutil::EventPtr e;
 
             // this blocks until new data arrives
@@ -112,32 +113,11 @@ MainThread::walk()
             }
             continue;
         } // end of try
-        catch ( Ice::CommunicatorDestroyedException & ) {
-            // This is OK: it means that the communicator shut down (eg via Ctrl-C)
-            // somewhere in mainLoop. Eventually, component will tell us to stop.
-        }
-        catch ( const Ice::Exception &e ) {
-            exceptionSS << "ERROR(mainthread.cpp): Caught unexpected exception: " << e;
-        }
-        catch ( const std::exception &e ) {
-            exceptionSS << "ERROR(mainthread.cpp): Caught unexpected exception: " << e.what();
-        }
-        catch ( const std::string &e ) {
-            exceptionSS << "ERROR(mainthread.cpp): Caught unexpected string: " << e;
-        }
-        catch ( const char *e ) {
-            exceptionSS << "ERROR(mainthread.cpp): Caught unexpected char *: " << e;
-        }
-        catch ( ... ) {
-            exceptionSS << "ERROR(mainthread.cpp): Caught unexpected unknown exception.";
+        catch ( ... ) 
+        {
+            orcaice::catchMainLoopExceptions( subStatus() );
         }
 
-        if ( !exceptionSS.str().empty() ) {
-            context_.tracer().error( exceptionSS.str() );
-            subStatus().fault( exceptionSS.str() );     
-            // Slow things down in case of persistent error
-            sleep(1);
-        }
     } // end of while
 }
 

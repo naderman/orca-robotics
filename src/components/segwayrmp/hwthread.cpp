@@ -122,19 +122,12 @@ HwThread::enableDriver()
             context_.tracer().info( "HwThread: Enable succeeded." );
             return;
         }
-        catch ( std::exception &e ) {
-            exceptionSS << "HwThread::enableDriver(): enable failed: " << e.what();
-        }
         catch ( ... ) {
-            exceptionSS << "HwThread::enableDriver(): enable failed due to unknown exception.";
+            int sleepIntervalMSec = 2000;
+            string problem = orcaice::catchAllExceptionsWithSleep( subStatus(), "enabling hardware driver", sleepIntervalMSec );
+
+            stateMachine_.setFault( problem );
         }
-
-        // we get here only after an exception was caught
-        context_.tracer().error( exceptionSS.str() );
-        subStatus().fault( exceptionSS.str() );
-        stateMachine_.setFault( exceptionSS.str() );
-
-        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
     }
 }
 
@@ -238,17 +231,9 @@ HwThread::walk()
             historySS << stats.distance()<<" "<<stats.timeInMotion()<<" "<<stats.maxSpeed();
             context_.history().setWithFinishSequence( historySS.str() );
         }
-        catch ( std::exception &e ) {
-            exceptionSS << "HwThread: Failed to read: " << e.what();
-        }
         catch ( ... ) {
-            exceptionSS << "HwThread: Failed to read due to unknown exception.";
-        }
-
-        if ( !exceptionSS.str().empty() ) {
-            subStatus().fault( exceptionSS.str() );
-            stateMachine_.setFault( exceptionSS.str() );            
-            exceptionSS.str("");
+            string problem = orcaice::catchAllExceptions( subStatus(), "reading from hardware" );
+            stateMachine_.setFault( problem ); 
         }
 
         //
@@ -267,18 +252,9 @@ HwThread::walk()
                 ss << "HwThread: wrote command: " << command.toString();
                 context_.tracer().debug( ss.str(), 2 );
             }
-            catch ( std::exception &e ) {
-                exceptionSS << "HwThread: Failed to write command to hardware: " << e.what();
-            }
             catch ( ... ) {
-                exceptionSS << "HwThread: Failed to write command to hardware due to unknown exception.";
-            }
-
-            if ( !exceptionSS.str().empty() ) {
-                subStatus().fault( exceptionSS.str() );
-                // set local state to failure
-                stateMachine_.setFault( exceptionSS.str() );           
-                exceptionSS.str("");
+                string problem = orcaice::catchAllExceptions( subStatus(), "writing to hardware" );
+                stateMachine_.setFault( problem ); 
             }
         }
 

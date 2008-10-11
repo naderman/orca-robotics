@@ -80,12 +80,6 @@ Component::init( const orca::FQComponentName& name,
     try {
         componentThread_->start();
     }
-    catch ( const Ice::Exception &e )
-    {
-        std::stringstream ss; ss << "orcaice::Component::start(): caught exception: " << e;
-        context_.tracer().error( ss.str() );
-        throw;
-    }
     catch ( const std::exception &e )
     {
         std::stringstream ss; ss << "orcaice::Component::start(): caught exception: " << e.what();
@@ -319,12 +313,6 @@ Component::getNetworkProperties()
             }
             context_.tracer().debug( ss.str() );
         }
-    }
-    catch ( const Ice::Exception &e )
-    {
-        std::stringstream ss; ss << "orcaice::Component::getNetworkProperties(): caught exception: " << e;
-        context_.tracer().error( ss.str() );
-        throw;
     }
     catch ( const std::exception &e )
     {
