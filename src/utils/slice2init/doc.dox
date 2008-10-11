@@ -36,7 +36,6 @@ Example:
 @verbatim
 // C++
 #include <orcaifaceinit/datetime.h>
-#include <orcaifaceinit/bros1.h>
 
 orca::Time t;
 ifaceinit::zeroAndClear( t ); 
@@ -52,7 +51,7 @@ The signature of the zeroAndClear() function is the same for all data types. E.g
 Slice module @c module (e.g. orca), the generated function would have the following signature:
 
 @verbatim
-void zeroAndClear( const module::Type& obj );
+void zeroAndClear( module::Type& obj );
 @endverbatim
 
 @author Alex Makarenko
