@@ -264,7 +264,7 @@ Gen::TypesVisitor::visitClassDefStart(const ClassDefPtr& p)
     C << nl << "string ind;";
     C << nl << "for ( int i=0; i<indent; ++i ) ind += ' ';";
 
-    C << nl << "string s = \"class\";";
+    C << nl << "string s = \"class " << scope.substr(2)<<name << "\";";
     C << nl << "if ( recurse>0 )";
     C << sb;
 
@@ -352,7 +352,7 @@ Gen::TypesVisitor::visitStructStart(const StructPtr& p)
     C << sb;
     C << nl << "string ind;";
     C << nl << "for ( int i=0; i<indent; ++i ) ind += ' ';";
-    C << nl << "string s = \"struct\";";
+    C << nl << "string s = \"struct " << scope.substr(2)<<name << "\";";
     C << nl << "if ( recurse>0 )";
     C << sb;
     return true;

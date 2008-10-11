@@ -22,6 +22,115 @@ This utility is used for autogenerating code which is compiled into libOrcaIface
 $ slice2string <.ice file>
 @endverbatim
 
+@par Generated Functions
+
+Slice2String generates toString() function for every Slice-defined:
+- Enum
+- Struct
+- Class
+- Sequence
+- Dictionary
+
+Example:
+@verbatim
+// C++
+#include <orcaifacestring/datetime.h>
+#include <orcaifacestring/bros1.h>
+
+orca::Time t;
+t.seconds = 123;
+t.useconds = 45;
+cout<<ifacestring::toString( t )<<endl;
+
+orca::Frame2d f;
+f.p.x = 1.2;
+f.p.y = 3.4;
+f.o = 5.6;
+cout<<ifacestring::toString( f )<<endl;
+@endverbatim
+
+This program will produce the following output:
+@verbatim
+struct orca::Time
+seconds = 123
+useconds = 45
+
+struct orca::Frame2d
+p = struct orca::CartesianPoint2d
+  x = 1.2
+  y = 3.4
+o = 5.6
+@endverbatim
+
+The signature of the toString() function is the same for all data types. E.g. for a data type @c Type in
+Slice module @c module (e.g. orca), the generated function would have the following signature:
+
+@verbatim
+std::string toString( const module::Type& obj, int recurse=1000, int expand=-1, int indent=0 );
+@endverbatim
+where
+- @c recurse is the number of recursive calls, toString() will make. Default is 1000, i.e. it will most likely
+  recurse through entire type hierarchy.
+- @c expand is the number of sequence or dictionary elements toString() will print out. Default is -1, which
+  means "all elements".
+- @c indent determines the number of characters used to indent to top level of the data type. This parameter is
+  incremented as toString() is called recursively.
+
+Examples:
+- Full recursion and full expansion
+@verbatim
+// C++
+cout<<ifacestring::toString( scan )<<endl<<endl;
+// output
+class orca::RangeScanner2dData
+timeStamp = struct orca::Time
+  seconds = 123
+  useconds = 45
+ranges = sequence (2)
+    [0] 3
+    [1] 13
+minRange = 0
+maxRange = 33
+fieldOfView = 77
+startAngle = 13
+@endverbatim
+- No recursion
+@verbatim
+// C++
+cout<<ifacestring::toString( scan, 0 )<<endl
+// output
+class orca::RangeScanner2dData
+@endverbatim
+- Recursion limited to 1
+@verbatim
+// C++
+cout<<ifacestring::toString( scan, 1 )<<endl
+// output
+class orca::RangeScanner2dData
+timeStamp = struct orca::Time
+ranges = sequence (2)
+    [0] 3
+    [1] 13
+minRange = 0
+maxRange = 33
+fieldOfView = 77
+startAngle = 13
+@endverbatim
+- No expansion
+// C++
+cout<<ifacestring::toString( scan, 1000, 0 )<<endl<<endl;
+// output
+class orca::RangeScanner2dData
+timeStamp = struct orca::Time
+  seconds = 123
+  useconds = 45
+ranges = sequence (2)
+minRange = 0
+maxRange = 33
+fieldOfView = 77
+startAngle = 13
+@endverbatim
+
 @author Alex Makarenko
 
 */
