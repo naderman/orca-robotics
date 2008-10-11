@@ -47,17 +47,10 @@ public:
 
 private:
 
-#ifdef ICE_VERSION_33
     void writeExtraHeaders(::IceUtilInternal::Output&);
 
     ::IceUtilInternal::Output H;
     ::IceUtilInternal::Output C;
-#else
-    void writeExtraHeaders(::IceUtil::Output&);
-
-    ::IceUtil::Output H;
-    ::IceUtil::Output C;
-#endif
 
     std::string _base;
     std::string _headerExtension;
@@ -77,21 +70,13 @@ private:
     {
     public:
 
-#ifdef ICE_VERSION_33
         GlobalIncludeVisitor(::IceUtilInternal::Output&);
-#else
-        GlobalIncludeVisitor(::IceUtil::Output&);
-#endif
 
         virtual bool visitModuleStart(const Slice::ModulePtr&);
 
     private:
 
-#ifdef ICE_VERSION_33
         ::IceUtilInternal::Output& H;
-#else
-        ::IceUtil::Output& H;
-#endif
 
         bool _finished;
     };
@@ -100,11 +85,7 @@ private:
     {
     public:
 
-#ifdef ICE_VERSION_33
         TypesVisitor(::IceUtilInternal::Output&, ::IceUtilInternal::Output&, const std::string&, bool);
-#else
-        TypesVisitor(::IceUtil::Output&, ::IceUtil::Output&, const std::string&, bool);
-#endif
 
         virtual bool visitModuleStart(const Slice::ModulePtr&);
         virtual void visitModuleEnd(const Slice::ModulePtr&);
@@ -124,13 +105,8 @@ private:
 
         void emitUpcall(const Slice::ExceptionPtr&, const std::string&, bool = false);
 
-#ifdef ICE_VERSION_33
         ::IceUtilInternal::Output& H;
         ::IceUtilInternal::Output& C;
-#else
-        ::IceUtil::Output& H;
-        ::IceUtil::Output& C;
-#endif
 
         std::string _dllExport;
         bool _stream;
