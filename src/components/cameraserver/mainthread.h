@@ -14,14 +14,10 @@
 #include <orcaice/subsystemthread.h>
 #include <orcaice/context.h>
 #include <orcaimagecommon/imagecomponentthread.h>
-
 #include <hydrodll/dynamicload.h>
 
 // remote interface
 #include <orcaifaceimpl/cameraImpl.h>
-
-// hardware interface
-#include <hydrointerfaces/image.h>
 
 namespace cameraserver {
 
@@ -32,6 +28,7 @@ class MainThread : public orcaimagecommon::ImageComponentThread
 {
 
 public:
+
     MainThread( const orcaice::Context &context );
 
     // from SubsystemThread

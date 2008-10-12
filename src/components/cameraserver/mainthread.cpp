@@ -84,14 +84,14 @@ MainThread::readData()
 void
 MainThread::walk()
 {
-   
-
     context_.tracer().info( "Setting up Data Pointers" );
-
-    orcaCameraData_ = orca::CameraDataPtr(new orca::CameraData());
-    //resize image vectors
+    
+    // Set up the image objects
+    orcaCameraData_ = new orca::CameraData();
     orcaCameraData_->data.resize( config_.size );
-    //set hydroCameraData pointers to be the address of orcaCameraData image vectors, avoiding a memcpy
+    orcaCameraData_->description = orcaCameraDescr_;
+
+    // Point the pointers in hydroImageData_ at orcaCameraData_
     hydroImageData_.data = &(orcaCameraData_->data[0]);
 
     // These functions catch their exceptions.
@@ -102,6 +102,7 @@ MainThread::walk()
     initHardwareDriver();
 
     context_.tracer().info( "Running..." );
+    
     //
     // IMPORTANT: Have to keep this loop rolling, because the '!isStopping()' call checks for requests to shut down.
     //            So we have to avoid getting stuck anywhere within this main loop.
@@ -115,7 +116,14 @@ MainThread::walk()
             readData();
             
             cameraInterface_->localSetAndSend( orcaCameraData_ );
-            subStatus().ok();
+            if ( hydroImageData_.haveWarnings )
+            {
+                subStatus().warning( hydroImageData_.warnings );
+            }
+            else
+            {
+                subStatus().ok();
+            }
 
             stringstream ss;
             ss << "MainThread: Read camera data: " << orcaobj::toString(orcaCameraData_);

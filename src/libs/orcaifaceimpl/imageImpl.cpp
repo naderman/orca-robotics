@@ -79,8 +79,7 @@ void
 ImageImpl::initInterface()
 {
     // Find IceStorm Topic to which we'll publish
-    topicPrx_ = orcaice::connectToTopicWithString<orca::ImageConsumerPrx>
-        ( context_, consumerPrx_, topicName_ );
+    topicPrx_ = orcaice::connectToTopicWithString( context_, consumerPrx_, topicName_ );
 
     // Register with the adapter
     // We don't have to clean up the memory we're allocating here, because
