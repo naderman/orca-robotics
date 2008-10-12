@@ -41,6 +41,7 @@ SET( PROJECT_INTERFACE_LIB          TractorInterfaces )
 $ mv src/interfaces/slice/empty src/interfaces/slice/tractor
 $ mv src/interfaces/cpp/empty src/interfaces/cpp/tractor
 $ mv src/interfaces/cpp/emptyifacestring src/interfaces/cpp/tractorifacestring
+$ mv src/interfaces/cpp/emptyifaceinit src/interfaces/cpp/tractorifaceinit
 @endverbatim
 - Edit the corresponding CMakeLists.txt files (e.g. @c src/interfaces/slice/CMakeLists.txt), change the argument of SUBDIRS() command from 'empty' to 'tractor'.
 - Rename the module name in the sample interface .ice file @c src/interfaces/slice/tractor/someinterface.ice so that the include line looks like this:

@@ -81,6 +81,7 @@ Examples:
 @verbatim
 // C++
 cout<<ifacestring::toString( scan )<<endl<<endl;
+
 // output
 class orca::RangeScanner2dData
 timeStamp = struct orca::Time
@@ -98,6 +99,7 @@ startAngle = 13
 @verbatim
 // C++
 cout<<ifacestring::toString( scan, 0 )<<endl
+
 // output
 class orca::RangeScanner2dData
 @endverbatim
@@ -105,6 +107,7 @@ class orca::RangeScanner2dData
 @verbatim
 // C++
 cout<<ifacestring::toString( scan, 1 )<<endl
+
 // output
 class orca::RangeScanner2dData
 timeStamp = struct orca::Time
@@ -117,8 +120,10 @@ fieldOfView = 77
 startAngle = 13
 @endverbatim
 - No expansion
+@verbatim
 // C++
 cout<<ifacestring::toString( scan, 1000, 0 )<<endl<<endl;
+
 // output
 class orca::RangeScanner2dData
 timeStamp = struct orca::Time
