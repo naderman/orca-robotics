@@ -9,12 +9,13 @@
  */
 
 #include "mainthread.h"
+#include "imagequeue.h"
 
 #include <orcaice/orcaice.h>
 
 using namespace orcaimageview;
 
-MainThread::MainThread( orcaice::PtrBuffer<orca::ImageDataPtr>* imageQueue, const orcaice::Context& context )
+MainThread::MainThread( ImageQueue* imageQueue, const orcaice::Context& context )
 : SubsystemThread( context.tracer(), context.status(), "MainThread" )
 , imageQueue_(imageQueue)
 , context_(context)

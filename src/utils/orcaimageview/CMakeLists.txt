@@ -24,9 +24,10 @@ IF( build )
     # This gathers all the source files into the variable 'srcs'
     #
     FILE( GLOB human_srcs *.cpp )
+    QT4_WRAP_CPP( moc_srcs imagequeue.h viewwidget.h )
 
     # build stand-alone component  
-    ORCA_WRAP_COMPONENT_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${human_srcs} )
+    ORCA_WRAP_COMPONENT_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${human_srcs} ${moc_srcs} )
     TARGET_LINK_LIBRARIES( ${APP_NAME} ${dep_libs} ${QT_QTOPENGL_LIBRARY} )
 
     ORCA_GENERATE_CONFIG_FILE( ${APP_NAME}.def )

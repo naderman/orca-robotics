@@ -9,16 +9,21 @@
  */
 
 #include <QDebug>
+#include <cmath>
+
 #include "viewwidget.h"
+#include "imagequeue.h"
 
 using namespace orcaimageview;
 
-ViewWidget::ViewWidget(orcaice::PtrBuffer<orca::ImageDataPtr>* imageQueue, QWidget* parent)
+ViewWidget::ViewWidget(ImageQueue* imageQueue, QWidget* parent)
 : QGLWidget(parent)
 , imageQueue_(imageQueue)
 , texture_(0)
 , textureInitialized_(false)
 {
+    timer_.start();
+    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 }
 
 ViewWidget::~ViewWidget()
@@ -66,6 +71,7 @@ ViewWidget::resizeGL(int width, int height)
 void
 ViewWidget::paintGL()
 {
+
     updateTexture();
 
     glActiveTexture(GL_TEXTURE0_ARB);
@@ -134,8 +140,7 @@ ViewWidget::updateTexture()
         return;
     }
     
-    orca::ImageDataPtr image;
-    imageQueue_->getAndPop(image);
+    orca::ImageDataPtr image = imageQueue_->pop();
     orca::ImageDescriptionPtr descr = image->description;
 
     if( !textureInitialized_ 
@@ -150,6 +155,10 @@ ViewWidget::updateTexture()
     // update the texture with the latest buffer
     glTexSubImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, 0, 0, textureWidth_, textureHeight_,
                     formatFromString(descr->format), GL_UNSIGNED_BYTE, &(image->data[0]));
+
+    int timediff = timer_.restart();
+    int thisfps = floor(1000.0/(float)(timediff));
+    Q_EMIT(fps(thisfps));
 }
 
 

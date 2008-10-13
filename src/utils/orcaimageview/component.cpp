@@ -11,16 +11,20 @@
 #include "component.h"
 #include "mainthread.h"
 #include "viewwidget.h"
+#include "imagequeue.h"
 
 #include <QApplication>
-#include <QTimer>
+#include <QWidget>
+#include <QLabel>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
 
 using namespace orcaimageview;
 
 Component::Component()
 : orcaice::Component( "OrcaImageView" )
+, imageQueue_(new ImageQueue(5))
 {
-    imageQueue_ = new orcaice::PtrBuffer<orca::ImageDataPtr>( 10, gbxiceutilacfr::BufferTypeCircular );
 }
 
 Component::~Component()
@@ -37,16 +41,31 @@ Component::start()
     char **argv = 0;
     
     QApplication app(argc, argv);
+    QWidget* window = new QWidget();
+    window->setWindowTitle("Orca Image Viewer");
 
-    QTimer *timer = new QTimer();
-    timer->start(10); //start timer with an update of 10ms
-
-    // create and show viewer
+    // create and show viewer and some information in labels
     ViewWidget* viewer = new ViewWidget(imageQueue_);
-    viewer->show();
+
+    QLabel * fpsLabel = new QLabel("FPS: ");
+    QLabel * fpsDisplay = new QLabel;
+    QHBoxLayout *hbox1 = new QHBoxLayout;
+    hbox1->addWidget(fpsLabel);
+    hbox1->addWidget(fpsDisplay);
+    QWidget* labels = new QWidget;
+    labels->setLayout(hbox1);
+    labels->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+
+    QVBoxLayout *vbox = new QVBoxLayout;
+    vbox->addWidget(viewer);
+    vbox->addWidget(labels);
+
+    window->setLayout(vbox);
+    window->show();
 
     // connect signal from timer to slot of widget to update
-    QObject::connect(timer, SIGNAL(timeout()), viewer, SLOT(updateGL()));
+    QObject::connect(imageQueue_, SIGNAL(imagePushed()), viewer, SLOT(updateGL()));
+    QObject::connect(viewer, SIGNAL(fps(int)), fpsDisplay, SLOT(setNum(int)));
 
     // start network thread
     mainThread_ = new MainThread(imageQueue_, context() );
@@ -57,7 +76,6 @@ Component::start()
     app.exec();
     
     //app loop is done, delete gui objects
-    delete timer;
     delete viewer;
   
     // normally ctrl-c handler does this, now we have to because UserThread keeps the thread

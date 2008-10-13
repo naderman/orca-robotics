@@ -11,9 +11,9 @@
 #ifndef MAINTHREAD_H
 #define MAINTHREAD_H
 
+
 #include <orcaice/subsystemthread.h>
 #include <orcaice/context.h>
-#include <orcaice/ptrbuffer.h>
 #include <orcaifaceimpl/imageImpl.h>
 #include <orcaifaceimpl/bufferedconsumers.h>
 
@@ -21,11 +21,12 @@
 
 namespace orcaimageview
 {
+class ImageQueue;
 
 class MainThread : public orcaice::SubsystemThread
 {
 public:
-    MainThread( orcaice::PtrBuffer<orca::ImageDataPtr>* imageQueue, const orcaice::Context& context );
+    MainThread( ImageQueue* imageQueue, const orcaice::Context& context );
 
     virtual void walk();
 
@@ -36,7 +37,7 @@ private:
     orcaifaceimpl::BufferedImageConsumerImplPtr consumer_;
 
     // endless queue for display
-    orcaice::PtrBuffer<orca::ImageDataPtr>* imageQueue_;
+    ImageQueue* imageQueue_;
 
     // context
     orcaice::Context context_;

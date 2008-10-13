@@ -18,6 +18,9 @@
 
 namespace orcaimageview
 {
+
+class ImageQueue;
+
 class Component : public orcaice::Component
 {
 public:
@@ -29,7 +32,7 @@ public:
     virtual void stop();
 
 private:
-    orcaice::PtrBuffer<orca::ImageDataPtr> *imageQueue_;
+    ImageQueue *imageQueue_;
     gbxiceutilacfr::ThreadPtr mainThread_;    
 };
 
