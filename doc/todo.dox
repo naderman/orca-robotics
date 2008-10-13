@@ -52,6 +52,10 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 @section orca_doc_history_head Changes in SVN since Last Release
 
 @par Project wide
+
+- Build system
+  - Made searching for Ice and IceUtil more robust.
+
 @par New interfaces
 @par New components
 @par New utilities

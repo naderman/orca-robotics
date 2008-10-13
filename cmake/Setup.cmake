@@ -132,19 +132,12 @@ INCLUDE( ${PROJECT_SOURCE_DIR}/cmake/internal/compiler.cmake )
 
 # 
 # Official dependency number 3: ZeroC's Ice
-# Find Ice installation
 #
-IF( DEFINED ICE_HOME )
-    # Ice home is specified with a command line option or it's already in cache
-    MESSAGE( STATUS "Ice location was specified or using cached value: ${ICE_HOME}")
-ELSE ( DEFINED ICE_HOME )
-    # Find Ice installation
-    INCLUDE( ${ORCA_CMAKE_DIR}/FindIce.cmake )
-    ASSERT( ICE_FOUND 
-            "Looking for Ice - not found. Please install Ice, ** delete CMakeCache.txt **, then re-run CMake." 
-            "Looking for Ice - found in ${ICE_HOME}" 
-            1 )
-ENDIF( DEFINED ICE_HOME )
+INCLUDE( ${ORCA_CMAKE_DIR}/FindIce.cmake )
+ASSERT( ICE_FOUND 
+        "Looking for Ice - not found. Please install Ice, ** delete CMakeCache.txt **, then re-run CMake." 
+        "Looking for Ice - found in ${ICE_HOME}" 
+        1 )
 
 # Test Ice installation
 INCLUDE( ${ORCA_CMAKE_DIR}/TestIce.cmake )
@@ -153,7 +146,7 @@ ASSERT ( ICE_WORKS
          "Testing Ice - ok."
          1 )
 
-# TODO: Check which parts of Ice are actually installed (produce "manifest")
+# TODO: Check which parts of Ice are actually installed (produce "manifest"?)
 # INCLUDE( ${ORCA_CMAKE_DIR}/ManifestIce.cmake )
 
 SET( ICE_BIN_DIR ${ICE_HOME}/bin )
@@ -161,7 +154,7 @@ SET( ICE_LIB_DIR ${ICE_HOME}/lib )
 SET( ICE_INCLUDE_DIR ${ICE_HOME}/include )
 
 #
-# Include external and local macro definitions
+# Include various external and local macro definitions
 #
 INCLUDE( ${GEARBOX_CMAKE_DIR}/TargetUtils.cmake )
 INCLUDE( ${GEARBOX_CMAKE_DIR}/DependencyUtils.cmake )
@@ -169,7 +162,7 @@ INCLUDE( ${ORCA_CMAKE_DIR}/NameUtils.cmake )
 
 #
 # Defaults for big source code switches 
-# (these are defaults. after the user modifies these in GUI they stay in cache)
+# (these are defaults. after the user modifies these in ccmake, the values stay in cache)
 #
 OPTION( ORCA_BUILD_SERVICES "Enables compilation of all IceBox services" OFF )
 OPTION( ORCA_BUILD_JAVA     "Enables compilation of all Java interfaces and components" OFF  )
@@ -241,7 +234,8 @@ ELSE( ORCA_MOTHERSHIP )
 ENDIF( ORCA_MOTHERSHIP )
 
 #
-# Store the location of utilities in cache
+# Store the location of utilities in cache.
+# These are special because they are used for code and config file generation.
 #
 SET( ORCA_DEF2CFG_COMMAND ${DEFTOOLS_HOME}/def2cfg${EXE_EXTENSION} 
         CACHE PATH "Path to def2cfg executable." FORCE )

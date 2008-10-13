@@ -33,18 +33,19 @@ FIND_PATH( ICE_HOME_INCLUDE_ICE Ice.h
   /usr/include/Ice
   # Test standard installation points: generic symlinks first, then standard dirs, newer first
   /opt/Ice/include/Ice
+  /opt/Ice-4/include/Ice
+  /opt/Ice-4.0/include/Ice
   /opt/Ice-3/include/Ice
   /opt/Ice-3.5/include/Ice
   /opt/Ice-3.4/include/Ice
   /opt/Ice-3.3/include/Ice
-  /opt/Ice-3.2/include/Ice
   # some people may manually choose to install Ice here
   /usr/local/include/Ice
   # windows
-  C:/Ice-3.2.1-VC80/include/Ice
-  C:/Ice-3.2.1/include/Ice
-  C:/Ice-3.2.0-VC80/include/Ice
-  C:/Ice-3.2.0/include/Ice
+  C:/Ice-3.4.0-VC80/include/Ice
+  C:/Ice-3.4.0/include/Ice
+  C:/Ice-3.3.0-VC80/include/Ice
+  C:/Ice-3.3.0/include/Ice
   )
 # MESSAGE( STATUS "DEBUG: Ice.h is apparently found in : ${ICE_HOME_INCLUDE_ICE}" )
 
@@ -59,12 +60,13 @@ IF( ICE_HOME_INCLUDE_ICE )
     #MESSAGE( STATUS "DEBUG: ICE_HOME_INCLUDE=" ${ICE_HOME_INCLUDE} )
     GET_FILENAME_COMPONENT( ICE_HOME ${ICE_HOME_INCLUDE} PATH CACHE )
 
-    # some libs only care about IceUtil
-    SET( ICEUTIL_HOME ${ICE_HOME} )
-
     MESSAGE( STATUS "Setting ICE_HOME to ${ICE_HOME}" )
 
 ENDIF( ICE_HOME_INCLUDE_ICE )
+
+# some libs only care about IceUtil, we tell them to find IceUtil in the same place as Ice.
+SET( ICEUTIL_HOME ${ICE_HOME} )
+MESSAGE( STATUS "Setting ICEUTIL_HOME to ${ICEUTIL_HOME}" )
 
 #
 # Ice for Java
