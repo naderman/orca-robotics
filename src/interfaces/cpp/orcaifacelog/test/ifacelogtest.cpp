@@ -30,11 +30,11 @@ main( int argc, char **argv )
         in.platform = "alpha";
         in.component = "laser2d";
         in.iface = "laserscanner2d";
-        stringstream ss; toLogString( in, ss );
+        stringstream ss; toLogStream( in, ss );
         cout << "FQInterfaceName\n" << ss.str() << endl << endl;
-        fromLogString( out, ss );
+        fromLogStream( out, ss );
         if ( in != out ) {
-            stringstream ss; toLogString( out, ss );
+            stringstream ss; toLogStream( out, ss );
             cout<<"failed! out: '"<<ss.str()<<"'"<<endl;
             return EXIT_FAILURE;
         }
@@ -43,11 +43,11 @@ main( int argc, char **argv )
         orca::Time in, out;
         in.seconds = 233232;
         in.useconds = 35343;
-        stringstream ss; toLogString( in, ss );
+        stringstream ss; toLogStream( in, ss );
         cout << "Time\n" << ss.str() << endl << endl;
-        fromLogString( out, ss );
+        fromLogStream( out, ss );
         if ( in != out ) {
-            stringstream ss; toLogString( out, ss );
+            stringstream ss; toLogStream( out, ss );
             cout<<"failed! out: '"<<ss.str()<<"'"<<endl;
             return EXIT_FAILURE;
         }
@@ -57,11 +57,11 @@ main( int argc, char **argv )
         in.push_back( "one" );
         in.push_back( "two" );
         in.push_back( "three" );
-        stringstream ss; toLogString( in, ss );
+        stringstream ss; toLogStream( in, ss );
         cout << "StringSeq\n" << ss.str() << endl << endl;
-        fromLogString( out, ss );
+        fromLogStream( out, ss );
         if ( in != out ) {
-            stringstream ss; toLogString( out, ss );
+            stringstream ss; toLogStream( out, ss );
             cout<<"failed! out: '"<<ss.str()<<"'"<<endl;
             return EXIT_FAILURE;
         }
@@ -70,11 +70,11 @@ main( int argc, char **argv )
         orca::CartesianPoint2d in, out;
         in.x = 2.43;
         in.y = 14.546;
-        stringstream ss; toLogString( in, ss );
+        stringstream ss; toLogStream( in, ss );
         cout << "CartesianPoint2d\n" << ss.str() << endl << endl;
-        fromLogString( out, ss );
+        fromLogStream( out, ss );
         if ( in != out ) {
-            stringstream ss; toLogString( out, ss );
+            stringstream ss; toLogStream( out, ss );
             cout<<"failed! out: '"<<ss.str()<<"'"<<endl;
             return EXIT_FAILURE;
         }
@@ -84,11 +84,11 @@ main( int argc, char **argv )
         in.p.x = 2.43;
         in.p.y = 14.546;
         in.o = 0.232;
-        stringstream ss; toLogString( in, ss );
+        stringstream ss; toLogStream( in, ss );
         cout << "Frame2d\n" << ss.str() << endl << endl;
-        fromLogString( out, ss );
+        fromLogStream( out, ss );
         if ( in != out ) {
-            stringstream ss; toLogString( out, ss );
+            stringstream ss; toLogStream( out, ss );
             cout<<"failed! out: '"<<ss.str()<<"'"<<endl;
             return EXIT_FAILURE;
         }
@@ -102,12 +102,12 @@ main( int argc, char **argv )
         in->startAngle = 4.0;
         in->ranges.push_back( 1.0 );
         in->ranges.push_back( 2.0 );
-        stringstream ss; toLogString( in, ss );
+        stringstream ss; toLogStream( in, ss );
         cout << "RangeScanner2dDataPtr\n" << ss.str() << endl << endl;
-        fromLogString( out, ss );
+        fromLogStream( out, ss );
         // I think we just need to do an approx. comparison
 //         if ( !(*in == *out) ) {
-//             stringstream ss; toLogString( out, ss );
+//             stringstream ss; toLogStream( out, ss );
 //             cout<<"failed! out: '"<<ss.str()<<"'"<<endl;
 //             return EXIT_FAILURE;
 //         }
@@ -123,15 +123,15 @@ main( int argc, char **argv )
 //         geometry->type = orca::VehicleGeometryCylindrical;
 //         geometry->radius = .8;
 //         in.geometry = geometry;
-//         stringstream ss; toLogString( in, ss );
+//         stringstream ss; toLogStream( in, ss );
 //         cout << "VehicleDescription\n" << ss.str() << endl << endl;
 // 
 //         orca::VehicleDescription out;
 //         out.control = new orca::VehicleControlVelocityBicycleDescription();
 //         out.geometry = new orca::VehicleGeometryCylindricalDescription();
-//         fromLogString( out, ss );
+//         fromLogStream( out, ss );
 //         if ( in != out ) {
-//             stringstream ss; toLogString( out, ss );
+//             stringstream ss; toLogStream( out, ss );
 //             cout<<"failed! out: '"<<ss.str()<<"'"<<endl;
 //             return EXIT_FAILURE;
 //         }
