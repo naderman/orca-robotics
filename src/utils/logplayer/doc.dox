@@ -56,7 +56,7 @@ subfiles. See @ref orca_component_logrecorder for a detailed description of
 the logfile format.
 
 The subfiles can be encoded in different formats using the Orca @ref
-orca_component_logrecorder (eg. {'ice','ascii'}).  Not all interfaces
+orca_component_logrecorder (eg. {'ice','ascii','asciigenerated'}).  Not all interfaces
 support replaying in all possible formats.  To distinguish between the
 different encoding types, the master file header contains a field
 called @c encoding @c type.
