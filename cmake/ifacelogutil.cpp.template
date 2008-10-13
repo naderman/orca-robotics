@@ -11,99 +11,99 @@ using namespace std;
 namespace ifacelog
 {
 
-void toLogString( bool x, std::stringstream& ss )
+void toLogStream( bool x, std::ostream& os )
 {
-    ss << " " << x;
+    os << " " << x;
 }
 
-void toLogString( Ice::Byte x, std::stringstream& ss )
+void toLogStream( Ice::Byte x, std::ostream& os )
 {
-    ss << " " << x;
+    os << " " << x;
 }
 
-void toLogString( Ice::Short x, std::stringstream& ss )
+void toLogStream( Ice::Short x, std::ostream& os )
 {
-    ss << " " << x;
+    os << " " << x;
 }
 
-void toLogString( Ice::Int x, std::stringstream& ss )
+void toLogStream( Ice::Int x, std::ostream& os )
 {
-    ss << " " << x;
+    os << " " << x;
 }
 
-void toLogString( Ice::Long x, std::stringstream& ss )
+void toLogStream( Ice::Long x, std::ostream& os )
 {
-    ss << " " << x;
+    os << " " << x;
 }
 
-void toLogString( Ice::Float x, std::stringstream& ss )
+void toLogStream( Ice::Float x, std::ostream& os )
 {
-    ss << " " << x;
+    os << " " << x;
 }
 
-void toLogString( Ice::Double x, std::stringstream& ss )
+void toLogStream( Ice::Double x, std::ostream& os )
 {
-    ss << " " << x;
+    os << " " << x;
 }
 
-void toLogString( const std::string& x, std::stringstream& ss )
+void toLogStream( const std::string& x, std::ostream& os )
 {
     // save the number of characters in this string
-    ss << " " << x.size();
+    os << " " << x.size();
     // now save the string itself
-    ss << " " << x;
+    os << " " << x;
 }
 
 ////////
 
-void fromLogString( bool& x, std::stringstream& ss )
+void fromLogStream( bool& x, std::istream& is )
 {
-    ss >> x;
+    is >> x;
 }
 
-void fromLogString( Ice::Byte& x, std::stringstream& ss )
+void fromLogStream( Ice::Byte& x, std::istream& is )
 {
-    ss >> x;
+    is >> x;
 }
 
-void fromLogString( Ice::Short& x, std::stringstream& ss )
+void fromLogStream( Ice::Short& x, std::istream& is )
 {
-    ss >> x;
+    is >> x;
 }
 
-void fromLogString( Ice::Int& x, std::stringstream& ss )
+void fromLogStream( Ice::Int& x, std::istream& is )
 {
-    ss >> x;
+    is >> x;
 }
 
-void fromLogString( Ice::Long& x, std::stringstream& ss )
+void fromLogStream( Ice::Long& x, std::istream& is )
 {
-    ss >> x;
+    is >> x;
 }
 
-void fromLogString( Ice::Float& x, std::stringstream& ss )
+void fromLogStream( Ice::Float& x, std::istream& is )
 {
-    ss >> x;
+    is >> x;
 }
 
-void fromLogString( Ice::Double& x, std::stringstream& ss )
+void fromLogStream( Ice::Double& x, std::istream& is )
 {
-    ss >> x;
+    is >> x;
 }
 
-void fromLogString( std::string& x, std::stringstream& ss )
+void fromLogStream( std::string& x, std::istream& is )
 {
     // read the number of characters in this string
     size_t size;
-    ss >> size;
+    is >> size;
     // now read the string itself
     // TODO: there's probably a more efficient way to do this
     char c;
     // remove the leading space
-    // ss >> c;
+    // is >> c;
     // now get the actual string
     for ( size_t i=0; i<size; ++i ) {
-        ss >> c;
+        is >> c;
         x += c;
     }
 }

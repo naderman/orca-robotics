@@ -7,82 +7,82 @@
 #define IFACELOG_UTIL_H
 
 #include <Ice/Ice.h>
-#include <sstream>
+#include <iostream>
 
 // namespace ${slice_module}ifacelog
 namespace ifacelog
 {
 
-void toLogString( bool x, std::stringstream& ss );
-void toLogString( Ice::Byte x, std::stringstream& ss );
-void toLogString( Ice::Short x, std::stringstream& ss );
-void toLogString( Ice::Int x, std::stringstream& ss );
-void toLogString( Ice::Long x, std::stringstream& ss );
-void toLogString( Ice::Float x, std::stringstream& ss );
-void toLogString( Ice::Double x, std::stringstream& ss );
-void toLogString( const std::string& x, std::stringstream& ss );
+void toLogStream( bool x, std::ostream& os );
+void toLogStream( Ice::Byte x, std::ostream& os );
+void toLogStream( Ice::Short x, std::ostream& os );
+void toLogStream( Ice::Int x, std::ostream& os );
+void toLogStream( Ice::Long x, std::ostream& os );
+void toLogStream( Ice::Float x, std::ostream& os );
+void toLogStream( Ice::Double x, std::ostream& os );
+void toLogStream( const std::string& x, std::ostream& os );
 
 // use only with std::vector's
 template<class T>
-void seqToLogString( const T& x, std::stringstream& ss )
+void seqToLogStream( const T& x, std::ostream& os )
 {
     // save the number of elements in this sequence
-    toLogString( (Ice::Int)x.size(), ss );
+    toLogStream( (Ice::Int)x.size(), os );
     // now save all elements of the sequence
     for ( size_t i=0; i<x.size(); ++i )
-        toLogString( x[i], ss );
+        toLogStream( x[i], os );
 }
 
 // use only with std::map's
 template<class T, class Iterator>
-void dictToLogString( const T& x, std::stringstream& ss )
+void dictToLogStream( const T& x, std::ostream& os )
 {
     // save the number of elements in this sequence
-    toLogString( (Ice::Int)x.size(), ss );
+    toLogStream( (Ice::Int)x.size(), os );
     // now save all key/value pairs
     for ( Iterator it=x.begin(); it!=x.end(); ++it ) {
-        toLogString( it->first, ss );
-        toLogString( it->second, ss );
+        toLogStream( it->first, os );
+        toLogStream( it->second, os );
     }
 }
 
-void fromLogString( bool& x, std::stringstream& ss );
-void fromLogString( Ice::Byte& x, std::stringstream& ss );
-void fromLogString( Ice::Short& x, std::stringstream& ss );
-void fromLogString( Ice::Int& x, std::stringstream& ss );
-void fromLogString( Ice::Long& x, std::stringstream& ss );
-void fromLogString( Ice::Float& x, std::stringstream& ss );
-void fromLogString( Ice::Double& x, std::stringstream& ss );
-void fromLogString( std::string& x, std::stringstream& ss );
+void fromLogStream( bool& x, std::istream& is );
+void fromLogStream( Ice::Byte& x, std::istream& is );
+void fromLogStream( Ice::Short& x, std::istream& is );
+void fromLogStream( Ice::Int& x, std::istream& is );
+void fromLogStream( Ice::Long& x, std::istream& is );
+void fromLogStream( Ice::Float& x, std::istream& is );
+void fromLogStream( Ice::Double& x, std::istream& is );
+void fromLogStream( std::string& x, std::istream& is );
 
 // use only with std::vector's
 template<class E>
-void seqFromLogString( std::vector<E>& x, std::stringstream& ss )
+void seqFromLogStream( std::vector<E>& x, std::istream& is )
 {
     // read the number of elements in this sequence
     size_t size;
-    ss >> size;
+    is >> size;
     // now read the sequence itself
     for ( size_t i=0; i<size; ++i ) {
         E element;
-        fromLogString( element, ss );
+        fromLogStream( element, is );
         x.push_back( element );
     }
 }
 
 // use only with std::map's
 template<class K, class V>
-void dictFromLogString( std::map<K,V>& x, std::stringstream& ss )
+void dictFromLogStream( std::map<K,V>& x, std::istream& is )
 {
     // read the number of elements in this sequence
     size_t size;
-    ss >> size;
+    is >> size;
     // now read all key/value pairs
     for ( size_t i=0; i<size; ++i ) {
         K key;
         V value;
-        fromLogString( key, ss );
-        fromLogString( value, ss );
+        fromLogStream( key, is );
+        fromLogStream( value, is );
         x[key] = value;
     }
 }

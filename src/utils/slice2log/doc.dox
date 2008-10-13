@@ -24,7 +24,7 @@ $ slice2log <.ice file>
 
 @par Generated Functions
 
-Slice2Log generates toLogString() and fromLogString() functions for every Slice-defined:
+Slice2Log generates toLogStream() and fromLogStream() functions for every Slice-defined:
 - Enum
 - Struct
 - Class
@@ -35,9 +35,11 @@ The signature of the toLog() function is the same for all data types. E.g. for a
 Slice module @c module (e.g. orca), the generated function would have the following signature:
 
 @verbatim
-void toLogString( const module::Type& obj, std::stringstream& ss );
-void fromLogString( module::Type& obj, std::stringstream& ss );
+void toLogStream( const module::Type& obj, std::ostream& os );
+void fromLogStream( module::Type& obj, std::istream& is );
 @endverbatim
+
+They can be used with std::[i/o]fstream (logging) or std::[i/o]stringstream (easier for testing) objects
 
 @author Alex Makarenko
 

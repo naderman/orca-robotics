@@ -139,7 +139,7 @@ Gen::generate(const UnitPtr& p)
     string lib_namespace = "ifacelog";
     string lib_dir = _module + "ifacelog";
 
-    H << "\n#include <sstream>";
+    H << "\n#include <fstream>";
     H << "\n#include <" << _module << "/" << _base << ".h>";    
     // includeFiles contains full paths. we want just the base.
     StringList includes = p->includeFiles();
@@ -264,10 +264,10 @@ Gen::ToLogVisitor::visitClassDefStart(const ClassDefPtr& p)
     string scope = fixKwd(p->scope());
     ClassList bases = p->bases();
     
-    H << "\nvoid toLogString( const " << scope.substr(2)<<name << "Ptr& obj, std::stringstream& ss );";
+    H << "\nvoid toLogStream( const " << scope.substr(2)<<name << "Ptr& obj, std::ostream& os );";
 
     C << "\n\nvoid";
-    C << nl << "toLogString( const " << scope.substr(2)<<name << "Ptr& objPtr, std::stringstream& ss )";
+    C << nl << "toLogStream( const " << scope.substr(2)<<name << "Ptr& objPtr, std::ostream& os )";
     C << sb;
 
     ClassList::const_iterator q = bases.begin();
@@ -276,7 +276,7 @@ Gen::ToLogVisitor::visitClassDefStart(const ClassDefPtr& p)
         while(q != bases.end())
         {
             C << nl << fixKwd((*q)->scoped()) << "Ptr base" << count << "Ptr = objPtr;";
-            C << nl << "toLogString( base" << count << "Ptr, ss );";
+            C << nl << "toLogStream( base" << count << "Ptr, os );";
             ++q;
             ++count;
         }
@@ -313,13 +313,13 @@ Gen::ToLogVisitor::visitEnum(const EnumPtr& p)
     string scope = fixKwd(p->scope());
     EnumeratorList enumerators = p->getEnumerators();
 
-    H << nl << "void toLogString( const " << scope.substr(2)<<name << " obj, std::stringstream& ss );";
+    H << nl << "void toLogStream( const " << scope.substr(2)<<name << " obj, std::ostream& os );";
 
     C << nl;
     C << nl << "void";
-    C << nl << "toLogString( const " << scope.substr(2)<<name << " obj, std::stringstream& ss )";
+    C << nl << "toLogStream( const " << scope.substr(2)<<name << " obj, std::ostream& os )";
     C << sb;
-    C << nl << "toLogString( (Ice::Int)obj, ss );";
+    C << nl << "toLogStream( (Ice::Int)obj, os );";
     C << eb;
 }
 
@@ -330,10 +330,10 @@ Gen::ToLogVisitor::visitStructStart(const StructPtr& p)
     string name = fixKwd(p->name());
     string scope = fixKwd(p->scope());
     
-    H << "\nvoid toLogString( const " << scope.substr(2)<<name << "& obj, std::stringstream& ss );";
+    H << "\nvoid toLogStream( const " << scope.substr(2)<<name << "& obj, std::ostream& os );";
 
     C << "\n\nvoid";
-    C << nl << "toLogString( const " << scope.substr(2)<<name << "& obj, std::stringstream& ss )";
+    C << nl << "toLogStream( const " << scope.substr(2)<<name << "& obj, std::ostream& os )";
     C << sb;
     return true;
 }
@@ -350,7 +350,7 @@ Gen::ToLogVisitor::visitDataMember(const DataMemberPtr& p)
 //     cout<<"DEBUG: Gen::visitDataMember()"<<endl;
     string name = fixKwd(p->name());
 
-    C << nl << "toLogString( obj." + name + ", ss );";
+    C << nl << "toLogStream( obj." + name + ", os );";
 }
 
 void
@@ -360,12 +360,12 @@ Gen::ToLogVisitor::visitSequence(const SequencePtr& p)
     string name = fixKwd(p->name());
     string scope = fixKwd(p->scope());
 
-    H << nl << "void toLogString( const " << scope.substr(2)<<name << "& obj, std::stringstream& ss );";
+    H << nl << "void toLogStream( const " << scope.substr(2)<<name << "& obj, std::ostream& os );";
 
     C << "\n\nvoid";
-    C << nl << "toLogString( const " << scope.substr(2)<<name << "& obj, std::stringstream& ss )";
+    C << nl << "toLogStream( const " << scope.substr(2)<<name << "& obj, std::ostream& os )";
     C << sb;
-    C << nl << "seqToLogString< " << scope.substr(2)<<name << " >( obj, ss );";
+    C << nl << "seqToLogStream< " << scope.substr(2)<<name << " >( obj, os );";
     C << eb;
 }
 
@@ -376,13 +376,13 @@ Gen::ToLogVisitor::visitDictionary(const DictionaryPtr& p)
     string name = fixKwd(p->name());
     string scope = fixKwd(p->scope());
 
-    H << nl << "void toLogString( const " << scope.substr(2)<<name << "& obj, std::stringstream& ss );";
+    H << nl << "void toLogStream( const " << scope.substr(2)<<name << "& obj, std::ostream& os );";
 
     C << nl;
     C << nl << "void";
-    C << nl << "toLogString( const " << scope.substr(2)<<name << "& obj, std::stringstream& ss )";
+    C << nl << "toLogStream( const " << scope.substr(2)<<name << "& obj, std::ostream& os )";
     C << sb;
-    C << nl << "dictToLogString< " << scope.substr(2)<<name << "," << scope.substr(2)<<name << "::const_iterator >( obj, ss );";
+    C << nl << "dictToLogStream< " << scope.substr(2)<<name << "," << scope.substr(2)<<name << "::const_iterator >( obj, os );";
     C << eb;
 }
 
@@ -442,10 +442,10 @@ Gen::FromLogVisitor::visitClassDefStart(const ClassDefPtr& p)
     string scope = fixKwd(p->scope());
     ClassList bases = p->bases();
     
-    H << "\nvoid fromLogString( " << scope.substr(2)<<name << "Ptr& obj, std::stringstream& ss );";
+    H << "\nvoid fromLogStream( " << scope.substr(2)<<name << "Ptr& obj, std::istream& is );";
 
     C << "\n\nvoid";
-    C << nl << "fromLogString( " << scope.substr(2)<<name << "Ptr& objPtr, std::stringstream& ss )";
+    C << nl << "fromLogStream( " << scope.substr(2)<<name << "Ptr& objPtr, std::istream& is )";
     C << sb;
 
     ClassList::const_iterator q = bases.begin();
@@ -454,7 +454,7 @@ Gen::FromLogVisitor::visitClassDefStart(const ClassDefPtr& p)
         while(q != bases.end())
         {
             C << nl << fixKwd((*q)->scoped()) << "Ptr base" << count << "Ptr = objPtr;";
-            C << nl << "toLogString( base" << count << "Ptr, ss );";
+            C << nl << "fromLogStream( base" << count << "Ptr, is );";
             ++q;
             ++count;
         }
@@ -491,14 +491,14 @@ Gen::FromLogVisitor::visitEnum(const EnumPtr& p)
     string scope = fixKwd(p->scope());
     EnumeratorList enumerators = p->getEnumerators();
 
-    H << nl << "void fromLogString( " << scope.substr(2)<<name << "& obj, std::stringstream& ss );";
+    H << nl << "void fromLogStream( " << scope.substr(2)<<name << "& obj, std::istream& is );";
 
     C << nl;
     C << nl << "void";
-    C << nl << "fromLogString( " << scope.substr(2)<<name << "& obj, std::stringstream& ss )";
+    C << nl << "fromLogStream( " << scope.substr(2)<<name << "& obj, std::istream& is )";
     C << sb;
     C << nl << "Ice::Int i;";
-    C << nl << "fromLogString( i, ss );";
+    C << nl << "fromLogStream( i, is );";
     C << nl << "obj =  (" << scope.substr(2)<<name << ")i;";
     C << eb;
 }
@@ -510,10 +510,10 @@ Gen::FromLogVisitor::visitStructStart(const StructPtr& p)
     string name = fixKwd(p->name());
     string scope = fixKwd(p->scope());
     
-    H << "\nvoid fromLogString( " << scope.substr(2)<<name << "& obj, std::stringstream& ss );";
+    H << "\nvoid fromLogStream( " << scope.substr(2)<<name << "& obj, std::istream& is );";
 
     C << "\n\nvoid";
-    C << nl << "fromLogString( " << scope.substr(2)<<name << "& obj, std::stringstream& ss )";
+    C << nl << "fromLogStream( " << scope.substr(2)<<name << "& obj, std::istream& is )";
     C << sb;
     return true;
 }
@@ -530,7 +530,7 @@ Gen::FromLogVisitor::visitDataMember(const DataMemberPtr& p)
 //     cout<<"DEBUG: Gen::visitDataMember()"<<endl;
     string name = fixKwd(p->name());
 
-    C << nl << "fromLogString( obj." + name + ", ss );";
+    C << nl << "fromLogStream( obj." + name + ", is );";
 }
 
 void
@@ -555,12 +555,12 @@ Gen::FromLogVisitor::visitSequence(const SequencePtr& p)
 
     string scope = fixKwd(p->scope());
 
-    H << nl << "void fromLogString( " << scope.substr(2)<<name << "& obj, std::stringstream& ss );";
+    H << nl << "void fromLogStream( " << scope.substr(2)<<name << "& obj, std::istream& is );";
 
     C << "\n\nvoid";
-    C << nl << "fromLogString( " << scope.substr(2)<<name << "& obj, std::stringstream& ss )";
+    C << nl << "fromLogStream( " << scope.substr(2)<<name << "& obj, std::istream& is )";
     C << sb;
-    C << nl << "seqFromLogString<"<<es<<">( obj, ss );";
+    C << nl << "seqFromLogStream<"<<es<<">( obj, is );";
     C << eb;
 }
 
@@ -580,13 +580,13 @@ Gen::FromLogVisitor::visitDictionary(const DictionaryPtr& p)
 
     string scope = fixKwd(p->scope());
 
-    H << nl << "void fromLogString( " << scope.substr(2)<<name << "& obj, std::stringstream& ss );";
+    H << nl << "void fromLogStream( " << scope.substr(2)<<name << "& obj, std::istream& is );";
 
     C << nl;
     C << nl << "void";
-    C << nl << "fromLogString( " << scope.substr(2)<<name << "& obj, std::stringstream& ss )";
+    C << nl << "fromLogStream( " << scope.substr(2)<<name << "& obj, std::istream& is )";
     C << sb;
-    C << nl << "dictFromLogString<"<<ks<<","<<vs<<">( obj, ss );";
+    C << nl << "dictFromLogStream<"<<ks<<","<<vs<<">( obj, is );";
     C << eb;
 }
 
@@ -643,12 +643,12 @@ Gen::HandleVisitor::visitClassDecl(const ClassDeclPtr& p)
 
     if(!p->isLocal())
     {
-        C << nl << "void toLogString( const " << scoped << "Prx& prx, std::stringstream& ss )";
+        C << nl << "void toLogStream( const " << scoped << "Prx& prx, std::ostream& os )";
         C << sb;
         C << nl << "// this data is not logged.";
         C << eb;
 
-        C << nl << "void fromLogString( " << scoped << "Prx& prx, std::stringstream& ss )";
+        C << nl << "void fromLogStream( " << scoped << "Prx& prx, std::istream& is )";
         C << sb;
         C << nl << "// this data is not logged.";
         C << eb;
