@@ -89,17 +89,19 @@ typedef BufferedConsumerImpl<orca::GpsPrx,
 typedef IceUtil::Handle<BufferedGpsConsumerImpl>           BufferedGpsConsumerImplPtr;
 
 //! Typedef for a common interface type. There's also a corresponding Ptr.
+typedef BufferedConsumerImpl<orca::ImagePrx,
+                        orca::ImageConsumer,
+                        orca::ImageConsumerPrx,
+                        orca::ImageDataPtr>                  BufferedImageConsumerImpl;
+typedef IceUtil::Handle<BufferedImageConsumerImpl>        BufferedImageConsumerImplPtr;
+
+
+//! Typedef for a common interface type. There's also a corresponding Ptr.
 typedef BufferedConsumerImpl<orca::CameraPrx,
                         orca::ImageConsumer,
                         orca::ImageConsumerPrx,
                         orca::ImageDataPtr>                  BufferedCameraConsumerImpl;
 typedef IceUtil::Handle<BufferedCameraConsumerImpl>        BufferedCameraConsumerImplPtr;
-
-typedef BufferedConsumerImpl<orca::ImagePrx,
-                             orca::ImageConsumer,
-                             orca::ImageConsumerPrx,
-                             orca::ImageDataPtr>           BufferedImageConsumerImpl;
-typedef IceUtil::Handle<BufferedImageConsumerImpl>         BufferedImageConsumerImplPtr;
 
 //! Typedef for a common interface type. There's also a corresponding Ptr.
 typedef BufferedConsumerImpl<orca::InsPrx,
