@@ -3,6 +3,7 @@
 #include <fstream>
 #include <orcalog/orcalog.h>
 #include <orcaobj/stringutils.h>
+#include <orcaifacelog/orcaifacelog.h>  // catch-all for auto-generated (ascii) to/fromStream functions
 #include "logstringutils.h"
 
 using namespace std;
@@ -40,6 +41,7 @@ namespace {
     {
         vector<string> okFormats;
         okFormats.push_back("ice");
+        okFormats.push_back("asciigenerated"); // auto-generated -> always available; need to adjust function name
         checkFormats( logReaderInfo, okFormats );
     }
 
@@ -49,6 +51,7 @@ namespace {
         vector<string> okFormats;
         okFormats.push_back("ice");
         okFormats.push_back("ascii");
+        okFormats.push_back("asciigenerated");
         checkFormats( logReaderInfo, okFormats );
     }
 
@@ -63,6 +66,10 @@ namespace {
             orcalog::IceReadHelper helper( context.communicator(), file );
             ice_readRangeScanner2dDescription( helper.stream_, obj );
             helper.read();
+        }
+        else if ( format=="asciigenerated" )
+        {
+            ifacelog::fromLogStream( obj, *file);
         }
         else if ( format=="ascii" )
         {   
@@ -92,6 +99,10 @@ namespace {
             ice_readVehicleDescription( helper.stream_, obj );
             helper.read();
         }
+        else if ( format=="asciigenerated" )
+        {
+            ifacelog::fromLogStream( obj, *file);
+        }
         else if ( format=="ascii" )
         {   
             std::string line;
@@ -120,6 +131,10 @@ namespace {
             ice_readVehicleGeometryDescription( helper.stream_, obj );
             helper.read();
         }
+        else if ( format=="asciigenerated" )
+        {
+            ifacelog::fromLogStream( obj, *file);
+        }
         else
         {
             stringstream ss;
@@ -139,6 +154,10 @@ namespace {
             orcalog::IceReadHelper helper( context.communicator(), file );
             ice_readGpsDescription( helper.stream_, obj );
             helper.read();
+        }
+        else if ( format=="asciigenerated" )
+        {
+            ifacelog::fromLogStream( obj, *file);
         }
         else if ( format=="ascii" )
         {   
@@ -168,6 +187,10 @@ namespace {
             ice_readDriveBicycleData( helper.stream_, obj );
             helper.read();
         }
+        else if ( format=="asciigenerated" )
+        {
+            ifacelog::fromLogStream( obj, *file);
+        }
         else
         {
             stringstream ss;
@@ -187,6 +210,10 @@ namespace {
             orcalog::IceReadHelper helper( context.communicator(), file );
             ice_readGpsData( helper.stream_, obj );
             helper.read();
+        }
+        else if ( format=="asciigenerated" )
+        {
+            ifacelog::fromLogStream( obj, *file);
         }
         else if ( format=="ascii" )
         {   
@@ -215,6 +242,10 @@ namespace {
             orcalog::IceReadHelper helper( context.communicator(), file );
             ice_readLaserScanner2dData( helper.stream_, obj );
             helper.read();
+        }
+        else if ( format=="asciigenerated" )
+        {
+            ifacelog::fromLogStream( obj, *file);
         }
         else if ( format=="ascii" )
         {   
@@ -245,6 +276,10 @@ namespace {
             ice_readLocalise2dData( helper.stream_, obj );
             helper.read();
         }
+        else if ( format=="asciigenerated" )
+        {
+            ifacelog::fromLogStream( obj, *file);
+        }
         else if ( format=="ascii" )
         {   
             std::string line;
@@ -273,6 +308,10 @@ namespace {
             ice_readLocalise3dData( helper.stream_, obj );
             helper.read();
         }
+        else if ( format=="asciigenerated" )
+        {
+            ifacelog::fromLogStream( obj, *file);
+        }
         else
         {
             stringstream ss;
@@ -292,6 +331,10 @@ namespace {
             orcalog::IceReadHelper helper( context.communicator(), file );
             ice_readOdometry2dData( helper.stream_, obj );
             helper.read();
+        }
+        else if ( format=="asciigenerated" )
+        {
+            ifacelog::fromLogStream( obj, *file);
         }
         else if ( format=="ascii" )
         {   
@@ -321,6 +364,10 @@ namespace {
             ice_readOdometry3dData( helper.stream_, obj );
             helper.read();
         }
+        else if ( format=="asciigenerated" )
+        {
+            ifacelog::fromLogStream( obj, *file);
+        }
         else if ( format=="ascii" )
         {
             std::string line;
@@ -349,6 +396,10 @@ namespace {
             ice_readPowerData( helper.stream_, obj );
             helper.read();
         }
+        else if ( format=="asciigenerated" )
+        {
+            ifacelog::fromLogStream( obj, *file);
+        }
         else if ( format=="ascii" )
         {   
             std::string line;
@@ -376,6 +427,10 @@ namespace {
             orcalog::IceReadHelper helper( context.communicator(), file );
             ice_readWifiData( helper.stream_, obj );
             helper.read();
+        }
+        else if ( format=="asciigenerated" )
+        {
+            ifacelog::fromLogStream( obj, *file);
         }
         else
         {

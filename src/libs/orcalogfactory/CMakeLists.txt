@@ -6,7 +6,7 @@ GBX_REQUIRE_OPTION( build LIB ${LIB_NAME} ON )
 SET( not_os_win NOT GBX_OS_WIN )
 GBX_REQUIRE_VAR( build LIB ${LIB_NAME} not_os_win "Windows OS is not  supported" )
 
-SET( dep_libs OrcaLog OrcaIfaceImpl OrcaObjects )
+SET( dep_libs OrcaLog OrcaIfaceImpl OrcaObjects OrcaIfaceLog )
 GBX_REQUIRE_TARGETS( build LIB ${LIB_NAME} ${dep_libs} )
 
 IF( build )
