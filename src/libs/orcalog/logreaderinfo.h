@@ -11,7 +11,7 @@ namespace orcalog {
 //! - interfaceType:    eg 'LaserScanner2d'
 //! - interfaceName:    This is the name under which the interface will be registered for replay.
 //! - format:           How the data is stored to files
-//!                     Standard types are "ice" (binary) and "ascii".
+//!                     Standard types are "ice" (binary), "ascii" and "asciigenerated" (ascii in an auto-generated format)
 //!                     Derived slaves are free to invent their own encodings.
 //! - filename:         filename where actual received data is stored.
 //! - context:          The communicator is required for Ice streaming operations.

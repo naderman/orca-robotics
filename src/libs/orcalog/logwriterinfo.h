@@ -16,7 +16,7 @@ namespace orcalog {
 //!                      E.g. Laser0, Laser1, ..., Laser12, etc.)
 //! - comment:          something informative to note at the beginning of the master log (eg 'laserscanner2d@mango/laser2d')
 //! - format:           How the data is stored to files
-//!                     Standard types are "ice" (binary) and "ascii".
+//!                     Standard types are "ice" (binary), "ascii" and "asciigenerated" (ascii in an auto-generated format)
 //!                     Derived slaves are free to invent their own encodings.
 //! - filename:         filename where actual received data is stored.
 //! - MasterFileWriter: A reference to the class that writes the master file.

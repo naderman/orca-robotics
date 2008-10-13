@@ -65,8 +65,14 @@ LogReader::openLogFile()
     if ( logReaderInfo_.format == "ice" ) {
         file_ = openBinaryFileForReading( logReaderInfo_.filename );
     }
+    else if ( logReaderInfo_.format == "asciigenerated" ) {
+        file_ = openAsciiFileForReading( logReaderInfo_.filename );
+    }
     else if ( logReaderInfo_.format == "ascii" ) {
         file_ = openAsciiFileForReading( logReaderInfo_.filename );
+    }
+    else {
+        assert( false && "base class can only handle 'ice' and 'ascii' and 'asciigenerated' formats" );
     }
 }
 

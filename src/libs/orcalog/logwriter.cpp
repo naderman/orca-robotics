@@ -65,11 +65,14 @@ LogWriter::createLogFile( const std::string &filename, const std::string &format
     if ( format == "ice" ) {
         file_ = openBinaryFileForWriting(filename);
     }
+    else if ( format == "asciigenerated" ) {
+        file_ = openAsciiFileForWriting(filename);
+    }
     else if ( format == "ascii" ) {
         file_ = openAsciiFileForWriting(filename);
     }
     else {
-        assert( false && "base class can only handle 'ice' and 'ascii' formats" );
+        assert( false && "base class can only handle 'ice' and 'ascii' and 'asciigenerated' formats" );
     }
 }
 
