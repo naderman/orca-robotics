@@ -330,7 +330,8 @@ toXmlText( const ComponentDef &def, bool withTemplate )
         <<"name=\""<<def.tag<<"\" "
         // it's enough to state special endpoints under the adapter name below
 //         <<"endpoints=\""<<def.endpoints<<"\" "
-        <<"register-process=\"true\" "
+        // this tag is no longer used as of Ice-3.3.0
+//         <<"register-process=\"true\" "
         <<"id=\""<<cfg.fqname.platform<<"/"<<cfg.fqname.component<<"\"/>" << endl;
 
     // We can register Home as a well known objects easily from here
@@ -462,7 +463,8 @@ toXmlTemplateText( const ComponentDef &def )
         <<"name=\""<<def.tag<<"\" "
         // it's enough to state special endpoints under the adapter name below
 //         <<"endpoints=\""<<def.endpoints<<"\" "
-        <<"register-process=\"true\" "
+        // this tag is no longer used as of Ice-3.3.0
+//         <<"register-process=\"true\" "
         <<"id=\"${platform}/"<<cfg.fqname.component<<"\"/>" << endl;
 
     // We can register Home as a well known objects easily from here
