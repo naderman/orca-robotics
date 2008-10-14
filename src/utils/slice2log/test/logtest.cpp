@@ -14,6 +14,7 @@ using namespace std;
 
 int main( int argc, char **argv )
 {    
+    try {
     {
         test::MyEnum in, out;
         in = test::Low;
@@ -100,6 +101,7 @@ int main( int argc, char **argv )
         }
         cout << "ok" << endl<<endl;
     }
+    // base class
     {
         test::MyClass0Ptr in = new test::MyClass0;
         test::MyClass0Ptr out;
@@ -116,6 +118,7 @@ int main( int argc, char **argv )
         }
         cout << "ok" << endl<<endl;
     }
+    // mid-derived class
     {
         test::MyClass1Ptr in = new test::MyClass1;
         test::MyClass1Ptr out;
@@ -133,6 +136,7 @@ int main( int argc, char **argv )
         }
         cout << "ok" << endl<<endl;
     }
+    // top-derived class
     {
         test::MyClass3Ptr in = new test::MyClass3;
         test::MyClass3Ptr out;
@@ -157,8 +161,8 @@ int main( int argc, char **argv )
         test::MyClass1Ptr out;
         in->mBool = 0;
         in->mInt = 3;
-        test::MyClass3Ptr alias = test::MyClass3Ptr::dynamicCast( in );
-        alias->mDouble = 6.;
+        test::MyClass3Ptr dIn = test::MyClass3Ptr::dynamicCast( in );
+        dIn->mDouble = 6.;
         stringstream ss; 
         ifacelog::toLogStream( in, ss );
         cout << "MyClass1Ptr\n'" << ss.str() << "' (" << ss.str().size() << ")" << endl;
@@ -167,13 +171,69 @@ int main( int argc, char **argv )
             cout<<"failed! resultant Ptr is null"<<endl;
             return EXIT_FAILURE;
         }
-        if ( in->mBool!=out->mBool || in->mInt!=out->mInt ) {
+        test::MyClass3Ptr dOut = test::MyClass3Ptr::dynamicCast( out );
+        if ( !dOut ) {
+            cout<<"failed! resultant Ptr is not of the derived type"<<endl;
+            return EXIT_FAILURE;
+        }
+        if ( in->mBool!=out->mBool || in->mInt!=out->mInt || dIn->mDouble != dOut->mDouble ) {
             stringstream ss; 
             ifacelog::toLogStream( out, ss );
             cout<<"failed! out: '"<<ss.str()<<"'"<<endl;
             return EXIT_FAILURE;
         }
         cout << "ok" << endl<<endl;
+    }
+    // class derived from another file/module (potentially from another distro)
+    {
+        test::MyClass4Ptr in = new test::MyClass4;
+        test::MyClass4Ptr out;
+        in->type = 99;
+        in->pFalsePositive=.05;
+        in->pTruePositive=.95;
+        in->mInt = 3;
+        stringstream ss; 
+        ifacelog::toLogStream( in, ss );
+        cout << "MyClass4Ptr\n'" << ss.str() << "' (" << ss.str().size() << ")" << endl;
+        ifacelog::fromLogStream( out, ss );
+        if ( in->type!=out->type || in->mInt!=out->mInt ) {
+            stringstream ss; 
+            ifacelog::toLogStream( out, ss );
+            cout<<"failed! out: '"<<ss.str()<<"'"<<endl;
+            return EXIT_FAILURE;
+        }
+        cout << "ok" << endl<<endl;
+    }
+    // the super tough one, generic pointer from orca, derived object from satellite project.
+    // THIS DOES NOT WORK
+//     {
+//         orca::SinglePolarFeature2dPtr in = new test::MyClass4;
+//         orca::SinglePolarFeature2dPtr out;
+//         in->type = 99;
+//         in->pFalsePositive=.05;
+//         in->pTruePositive=.95;
+//         test::MyClass4Ptr dIn = test::MyClass4Ptr::dynamicCast( in );
+//         dIn->mInt = 3;
+//         stringstream ss; 
+//         ifacelog::toLogStream( in, ss );
+//         cout << "SinglePolarFeature2dPtr\n'" << ss.str() << "' (" << ss.str().size() << ")" << endl;
+//         ifacelog::fromLogStream( out, ss );
+//         if ( !out ) {
+//             cout<<"failed! resultant Ptr is null"<<endl;
+//             return EXIT_FAILURE;
+//         }
+//         if ( in->type!=out->type ) {
+//             stringstream ss; 
+//             ifacelog::toLogStream( out, ss );
+//             cout<<"failed! out: '"<<ss.str()<<"'"<<endl;
+//             return EXIT_FAILURE;
+//         }
+//         cout << "ok" << endl<<endl;
+//     }
+    }
+    catch ( const std::exception& e ) {
+        cout<<endl<<"caught exception : "<<e.what()<<endl;
+        return EXIT_FAILURE;
     }
     return EXIT_SUCCESS;
 }

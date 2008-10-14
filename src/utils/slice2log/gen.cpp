@@ -279,6 +279,10 @@ Gen::ToLogVisitor::visitClassDefStart(const ClassDefPtr& p)
     C << nl << "if ( !fromDerived )";
     C << sb;
     C << nl << "string mostDerivedType = objPtr->ice_id();";
+    C << nl << "if ( mostDerivedType.empty() )";
+    C << sb;
+    C << nl << "throw gbxutilacfr::Exception( ERROR_INFO, \"(while logging class " << scoped << ") got empty type ID\" );";
+    C << eb;
     C << nl << "if ( mostDerivedType == \"" << scoped << "\" )";
     C << sb;
     C << nl << "// we are the most derived class, log our type";
@@ -479,6 +483,10 @@ Gen::FromLogVisitor::visitClassDefStart(const ClassDefPtr& p)
     C << nl << "if ( !iAmTheOne )";
     C << sb;
     C << nl << "fromLogStream( mostDerivedType, is );";
+    C << nl << "if ( mostDerivedType.empty() )";
+    C << sb;
+    C << nl << "throw gbxutilacfr::Exception( ERROR_INFO, \"(while replaying class " << scoped << ") got empty type ID\" );";
+    C << eb;
     C << nl << "// we are the most derived class";
     C << nl << "if ( mostDerivedType == \"" << scoped << "\" )";
     C << sb;
@@ -700,24 +708,29 @@ Gen::HandleVisitor::visitModuleEnd(const ModulePtr& p)
         C << nl << "void";
         C << nl << toFunctionName << "( const string& derivedType, const " << base << "Ptr& objPtr, std::ostream& os )";
         C << sb;
-
-        C << nl << "// " << derives.size() << " derivatives";
-        if ( derives.empty() ) {
-            C << nl << "assert( false && \"should not get here\" );";
-        }
-
-        for ( size_t i=0; i<derives.size(); ++i ) {
-            C << nl;
-            if ( i==0 )
-                C << "if ";
-            else
-                C << "else if ";
-            C << "( derivedType == \"" << derives[i] << "\" )";
-            C << sb;
-            C << nl << derives[i] << "Ptr derivedPtr = " << derives[i] << "Ptr::dynamicCast( objPtr );";
-            C << nl << libNamespace_<<"::toLogStream( derivedPtr, os );";
-            C << eb;
-        }
+            C << nl << "// " << derives.size() << " derivatives";
+            if ( derives.empty() ) {
+                C << nl << "assert( false && \"should not get here\" );";
+            }
+    
+            for ( size_t i=0; i<derives.size(); ++i ) {
+                C << nl;
+                if ( i==0 )
+                    C << "if ";
+                else
+                    C << "else if ";
+                C << "( derivedType == \"" << derives[i] << "\" )";
+                C << sb;
+                C << nl << derives[i] << "Ptr derivedPtr = " << derives[i] << "Ptr::dynamicCast( objPtr );";
+                C << nl << libNamespace_<<"::toLogStream( derivedPtr, os );";
+                C << eb;
+            }
+            if ( !derives.empty() ) {
+                C << nl << "else";
+                C << sb;
+                C << nl << "assert( false && \"unknown derived class for " << base << "\" );";  
+                C << eb;
+            }
         C << eb;
 
         // FROM
@@ -725,25 +738,30 @@ Gen::HandleVisitor::visitModuleEnd(const ModulePtr& p)
         C << nl << "void";
         C << nl << fromFunctionName << "( const string& derivedType, " << base << "Ptr& objPtr, std::istream& is )";
         C << sb;
-
-        C << nl << "// " << derives.size() << " derivatives";
-        if ( derives.empty() ) {
-            C << nl << "assert( false && \"should not get here\" );";
-        }
-
-        for ( size_t i=0; i<derives.size(); ++i ) {
-            C << nl;
-            if ( i==0 )
-                C << "if ";
-            else
-                C << "else if ";
-            C << "( derivedType == \"" << derives[i] << "\" )";
-            C << sb;
-            C << nl << derives[i] << "Ptr derivedPtr = " << derives[i] << "Ptr::dynamicCast( objPtr );";
-            C << nl << libNamespace_<<"::fromLogStream( derivedPtr, is, false, true );";
-            C << nl << "objPtr = derivedPtr;";
-            C << eb;
-        }
+            C << nl << "// " << derives.size() << " derivatives";
+            if ( derives.empty() ) {
+                C << nl << "assert( false && \"should not get here\" );";
+            }
+    
+            for ( size_t i=0; i<derives.size(); ++i ) {
+                C << nl;
+                if ( i==0 )
+                    C << "if ";
+                else
+                    C << "else if ";
+                C << "( derivedType == \"" << derives[i] << "\" )";
+                C << sb;
+                C << nl << derives[i] << "Ptr derivedPtr = " << derives[i] << "Ptr::dynamicCast( objPtr );";
+                C << nl << libNamespace_<<"::fromLogStream( derivedPtr, is, false, true );";
+                C << nl << "objPtr = derivedPtr;";
+                C << eb;
+            }
+            if ( !derives.empty() ) {
+                C << nl << "else";
+                C << sb;
+                C << nl << "assert( false && \"unknown derived class for " << base << "\" );";  
+                C << eb;
+            }
         C << eb;
     }
 

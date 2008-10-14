@@ -1,5 +1,17 @@
-#ifndef TEST_ICE
-#define TEST_ICE
+/*
+ * Orca Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2008 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This copy of Orca is licensed to you under the terms described in the
+ * ORCA_LICENSE file included in this distribution.
+ *
+ */
+
+#ifndef ORCA_TEST_ICE
+#define ORCA_TEST_ICE
+
+#include <orca/polarfeature2d.ice>
 
 module test
 {
@@ -50,6 +62,11 @@ struct MyStruct1
 class MyClass3 extends MyClass1
 {
     double mDouble;
+};
+
+class MyClass4 extends orca::SinglePolarFeature2d
+{
+    int mInt;
 };
 
 interface MyInterface0

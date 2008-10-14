@@ -112,7 +112,6 @@ main( int argc, char **argv )
             return EXIT_FAILURE;
         }
     }
-    // this is broken, because of the different derived types
     {
         orca::VehicleDescription in, out;
         orca::VehicleControlVelocityBicycleDescriptionPtr control = new orca::VehicleControlVelocityBicycleDescription();
