@@ -15,7 +15,6 @@ GBX_REQUIRE_VAR( build EXE ${APP_NAME} HYDRODLL_INSTALLED "libHydroDll not insta
 GBX_REQUIRE_VAR( build EXE ${APP_NAME} QT4_FOUND "Qt4 not found" )
 
 IF( build )
-
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
     SET( QT_USE_QTOPENGL TRUE )
     INCLUDE( ${HYDRO_CMAKE_DIR}/UseQt.cmake )

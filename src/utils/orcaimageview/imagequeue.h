@@ -1,5 +1,5 @@
 #include <orca/image.h>
-#include <orcaice/ptrbuffer.h>
+#include <gbxsickacfr/gbxiceutilacfr/buffer.h>
 
 #include <QObject>
 
@@ -40,7 +40,7 @@ signals:
     void imagePushed();
 
 private:
-    orcaice::PtrBuffer<orca::ImageDataPtr> imageQueue_;
+    gbxiceutilacfr::Buffer<orca::ImageDataPtr> imageQueue_;
 };
 
 }
