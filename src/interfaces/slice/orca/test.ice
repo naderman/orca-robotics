@@ -28,18 +28,28 @@ dictionary<string,MyStruct0> MyStruct0Dict;
 
 class MyClass0
 {
-    int mInt;
+    bool mBool;
 };
 
 class MyClass1 extends MyClass0
 {
-    double mDouble;
+    int mInt;
+};
+
+class MyClass2 extends MyClass0
+{
+    long mLong;
 };
 
 struct MyStruct1
 {   
     MyStruct0 mStruct;
     MyClass0 mClass;
+};
+
+class MyClass3 extends MyClass1
+{
+    double mDouble;
 };
 
 interface MyInterface0

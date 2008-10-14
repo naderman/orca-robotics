@@ -1,3 +1,4 @@
+
 /*
  * Orca-Robotics Project: Components for robotics 
  *               http://orca-robotics.sf.net/
@@ -94,8 +95,8 @@ main( int argc, char **argv )
         }
     }
     {
-        orca::RangeScanner2dDataPtr in = new orca::RangeScanner2dData;
-        orca::RangeScanner2dDataPtr out = new orca::RangeScanner2dData;
+        orca::RangeScanner2dDataPtr in, out;
+        in = new orca::RangeScanner2dData;
         in->minRange = 1.0;
         in->maxRange = 2.0;
         in->fieldOfView = 3.0;
@@ -105,36 +106,39 @@ main( int argc, char **argv )
         stringstream ss; toLogStream( in, ss );
         cout << "RangeScanner2dDataPtr\n" << ss.str() << endl << endl;
         fromLogStream( out, ss );
-        // I think we just need to do an approx. comparison
-//         if ( !(*in == *out) ) {
-//             stringstream ss; toLogStream( out, ss );
-//             cout<<"failed! out: '"<<ss.str()<<"'"<<endl;
-//             return EXIT_FAILURE;
-//         }
+        if ( in->minRange != out->minRange ) {
+            stringstream ss; toLogStream( out, ss );
+            cout<<"failed! out: '"<<ss.str()<<"'"<<endl;
+            return EXIT_FAILURE;
+        }
     }
     // this is broken, because of the different derived types
-//     {
-//         orca::VehicleDescription in;
-//         orca::VehicleControlVelocityBicycleDescriptionPtr control = new orca::VehicleControlVelocityBicycleDescription();
-//         control->type = orca::VehicleControlVelocityBicycle;
-//         control->maxForwardSpeed = 3.5;
-//         in.control = control;
-//         orca::VehicleGeometryCylindricalDescriptionPtr geometry = new orca::VehicleGeometryCylindricalDescription();
-//         geometry->type = orca::VehicleGeometryCylindrical;
-//         geometry->radius = .8;
-//         in.geometry = geometry;
-//         stringstream ss; toLogStream( in, ss );
-//         cout << "VehicleDescription\n" << ss.str() << endl << endl;
-// 
-//         orca::VehicleDescription out;
-//         out.control = new orca::VehicleControlVelocityBicycleDescription();
-//         out.geometry = new orca::VehicleGeometryCylindricalDescription();
-//         fromLogStream( out, ss );
-//         if ( in != out ) {
-//             stringstream ss; toLogStream( out, ss );
-//             cout<<"failed! out: '"<<ss.str()<<"'"<<endl;
-//             return EXIT_FAILURE;
-//         }
-//     }
+    {
+        orca::VehicleDescription in, out;
+        orca::VehicleControlVelocityBicycleDescriptionPtr control = new orca::VehicleControlVelocityBicycleDescription();
+        control->type = orca::VehicleControlVelocityBicycle;
+        control->maxForwardSpeed = 1;
+        control->maxReverseSpeed = 2;
+        control->maxSteerAngle = 3;
+        control->maxSteerAngleAtMaxSpeed = 4;
+        control->maxForwardAcceleration = 5;
+        control->maxReverseAcceleration = 6;
+        control->maxSteerAngleRate = 7;
+        in.control = control;
+        orca::VehicleGeometryCylindricalDescriptionPtr geometry = new orca::VehicleGeometryCylindricalDescription();
+        geometry->type = orca::VehicleGeometryCylindrical;
+        geometry->radius = 1;
+        geometry->height = 2;
+        in.geometry = geometry;
+        stringstream ss; toLogStream( in, ss );
+        cout << "VehicleDescription\n" << ss.str() << endl << endl;
+
+        fromLogStream( out, ss );
+        if ( in.control->type != out.control->type ) {
+            stringstream ss; toLogStream( out, ss );
+            cout<<"failed! out: '"<<ss.str()<<"'"<<endl;
+            return EXIT_FAILURE;
+        }
+    }
     return EXIT_SUCCESS;
 }

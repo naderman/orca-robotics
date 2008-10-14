@@ -4,6 +4,7 @@
  */
 
 #include "util.h"
+#include <iomanip> // for setw()
 
 using namespace std;
 
@@ -13,12 +14,12 @@ namespace ifacelog
 
 void toLogStream( bool x, std::ostream& os )
 {
-    os << " " << x;
+    os << " " << (int)x;
 }
 
 void toLogStream( Ice::Byte x, std::ostream& os )
 {
-    os << " " << x;
+    os << " " << (int)x;
 }
 
 void toLogStream( Ice::Short x, std::ostream& os )
@@ -58,12 +59,16 @@ void toLogStream( const std::string& x, std::ostream& os )
 
 void fromLogStream( bool& x, std::istream& is )
 {
-    is >> x;
+    int i;
+    is >> i;
+    x = (bool)i;
 }
 
 void fromLogStream( Ice::Byte& x, std::istream& is )
 {
-    is >> x;
+    int i;
+    is >> i;
+    x = (Ice::Byte)i;
 }
 
 void fromLogStream( Ice::Short& x, std::istream& is )
@@ -96,16 +101,22 @@ void fromLogStream( std::string& x, std::istream& is )
     // read the number of characters in this string
     size_t size;
     is >> size;
+    // cout<<"reading "<<size<<" chars from the stream"<<endl;
+
     // now read the string itself
-    // TODO: there's probably a more efficient way to do this
-    char c;
     // remove the leading space
-    // is >> c;
-    // now get the actual string
+    char c;
+    is >> noskipws >> c;
+
+    // this should also work but doesn't.
+    //      is >> noskipws >> setw(size+1) >> x;
+
+    // now get the actual string ( noskipws is still set!)
     for ( size_t i=0; i<size; ++i ) {
         is >> c;
         x += c;
     }
+    is >> skipws;
 }
 
 }

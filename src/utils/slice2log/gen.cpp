@@ -179,7 +179,7 @@ Gen::generate(const UnitPtr& p)
     H << "\n";
 
     C << "\n#include <" << lib_dir << "/" << _base << ".h>";
-//     C << "\n#include <gbxutilacfr/exceptions.h>";
+    C << "\n#include <gbxutilacfr/exceptions.h>";
     C << "\n#include \"util.h\"";
     C << "\n";
     C << "\nusing namespace std;";
@@ -189,6 +189,7 @@ Gen::generate(const UnitPtr& p)
 
     // only used to define bogus Prx functions
     HandleVisitor handleVisitor(H, C, _dllExport, _stream);
+    handleVisitor.libNamespace_ = lib_namespace;
     p->visit(&handleVisitor, false);
 
     ToLogVisitor toLogVisitor(H, C, _dllExport, _stream);
@@ -262,13 +263,35 @@ Gen::ToLogVisitor::visitClassDefStart(const ClassDefPtr& p)
 
     string name = fixKwd(p->name());
     string scope = fixKwd(p->scope());
+    string scoped = fixKwd(p->scoped());
     ClassList bases = p->bases();
     
-    H << "\nvoid toLogStream( const " << scope.substr(2)<<name << "Ptr& obj, std::ostream& os );";
+    H << "\nvoid toLogStream( const " << scope.substr(2)<<name << "Ptr& obj, std::ostream& os, bool fromDerived=false );";
 
     C << "\n\nvoid";
-    C << nl << "toLogStream( const " << scope.substr(2)<<name << "Ptr& objPtr, std::ostream& os )";
+    C << nl << "toLogStream( const " << scoped << "Ptr& objPtr, std::ostream& os, bool fromDerived )";
     C << sb;
+    C << nl << "if ( objPtr == 0 )";
+    C << sb;
+    C << nl << "throw gbxutilacfr::Exception( ERROR_INFO, \"(while logging class " << scoped << ") cannot log a null pointer\" );";
+    C << eb;
+
+    C << nl << "if ( !fromDerived )";
+    C << sb;
+    C << nl << "string mostDerivedType = objPtr->ice_id();";
+    C << nl << "if ( mostDerivedType == \"" << scoped << "\" )";
+    C << sb;
+    C << nl << "// we are the most derived class, log our type";
+    C << nl << "cout << \"DEBUG: logging \" << mostDerivedType << endl;";
+    C << nl << "toLogStream( string(\"" << scoped << "\"), os );";
+    C << eb;
+    C << nl << "else";
+    C << sb;
+    C << nl << "// redirect to most derived class, and wait for him to come down to the bases";
+    C << nl << "to_downCast( mostDerivedType, objPtr, os );";
+    C << nl << "return;";
+    C << eb;
+    C << eb;
 
     ClassList::const_iterator q = bases.begin();
     if(!bases.empty()) {
@@ -276,7 +299,7 @@ Gen::ToLogVisitor::visitClassDefStart(const ClassDefPtr& p)
         while(q != bases.end())
         {
             C << nl << fixKwd((*q)->scoped()) << "Ptr base" << count << "Ptr = objPtr;";
-            C << nl << "toLogStream( base" << count << "Ptr, os );";
+            C << nl << "toLogStream( base" << count << "Ptr, os, true );";
             ++q;
             ++count;
         }
@@ -284,7 +307,7 @@ Gen::ToLogVisitor::visitClassDefStart(const ClassDefPtr& p)
 
     if ( !p->dataMembers().empty() ) {
         C << nl;
-        C << nl << scope.substr(2)<<name << "& obj = *objPtr;";
+        C << nl << scoped << "& obj = *objPtr;";
     }
     return true;
 }
@@ -440,13 +463,46 @@ Gen::FromLogVisitor::visitClassDefStart(const ClassDefPtr& p)
 
     string name = fixKwd(p->name());
     string scope = fixKwd(p->scope());
+    string scoped = fixKwd(p->scoped());
     ClassList bases = p->bases();
     
-    H << "\nvoid fromLogStream( " << scope.substr(2)<<name << "Ptr& obj, std::istream& is );";
+    H << "\nvoid fromLogStream( " << scope.substr(2)<<name << "Ptr& obj, std::istream& is, bool fromDerived=false, bool fromBase=false );";
 
     C << "\n\nvoid";
-    C << nl << "fromLogStream( " << scope.substr(2)<<name << "Ptr& objPtr, std::istream& is )";
+    C << nl << "fromLogStream( " << scoped << "Ptr& objPtr, std::istream& is, bool fromDerived, bool fromBase )";
     C << sb;
+
+    C << nl << "if ( !fromDerived )";
+    C << sb;
+    C << nl << "bool iAmTheOne = fromBase;";
+    C << nl << "string mostDerivedType;";
+    C << nl << "if ( !iAmTheOne )";
+    C << sb;
+    C << nl << "fromLogStream( mostDerivedType, is );";
+    C << nl << "// we are the most derived class";
+    C << nl << "if ( mostDerivedType == \"" << scoped << "\" )";
+    C << sb;
+    C << nl << "cout << \"DEBUG: replaying \" << mostDerivedType << endl;";
+    C << nl << "iAmTheOne = true;";
+    C << eb;
+    C << nl << "else";
+    C << sb;
+    C << nl << "cout << \"DEBUG: redirecting replay to \" << mostDerivedType << endl;";
+    C << eb;
+    C << eb;
+    C << nl << "if ( iAmTheOne )";
+    C << sb;
+    C << nl << "// instantiate ourselves";
+    C << nl << "cout << \"DEBUG: replaying " << scoped << "\" << endl;";
+    C << nl << "objPtr = new " << scoped << ";";
+    C << eb;
+    C << nl << "else";
+    C << sb;
+    C << nl << "// redirect to most derived class, and wait for him to come down to the bases";
+    C << nl << "from_downCast( mostDerivedType, objPtr, is );";
+    C << nl << "return;";
+    C << eb;
+    C << eb;
 
     ClassList::const_iterator q = bases.begin();
     if(!bases.empty()) {
@@ -454,7 +510,7 @@ Gen::FromLogVisitor::visitClassDefStart(const ClassDefPtr& p)
         while(q != bases.end())
         {
             C << nl << fixKwd((*q)->scoped()) << "Ptr base" << count << "Ptr = objPtr;";
-            C << nl << "fromLogStream( base" << count << "Ptr, is );";
+            C << nl << "fromLogStream( base" << count << "Ptr, is, true );";
             ++q;
             ++count;
         }
@@ -631,6 +687,66 @@ Gen::HandleVisitor::visitModuleStart(const ModulePtr& p)
 void
 Gen::HandleVisitor::visitModuleEnd(const ModulePtr& p)
 {
+    // have to put into the main namespace because we are calling public functions from here
+
+    string toFunctionName = "to_downCast";
+    string fromFunctionName = "from_downCast";
+    for ( InheritanceMap::const_iterator it=inherit_.begin(); it!=inherit_.end(); ++it ) {
+        const string& base = it->first;
+        const vector<string>& derives = it->second;
+
+        // TO
+        C << nl;
+        C << nl << "void";
+        C << nl << toFunctionName << "( const string& derivedType, const " << base << "Ptr& objPtr, std::ostream& os )";
+        C << sb;
+
+        C << nl << "// " << derives.size() << " derivatives";
+        if ( derives.empty() ) {
+            C << nl << "assert( false && \"should not get here\" );";
+        }
+
+        for ( size_t i=0; i<derives.size(); ++i ) {
+            C << nl;
+            if ( i==0 )
+                C << "if ";
+            else
+                C << "else if ";
+            C << "( derivedType == \"" << derives[i] << "\" )";
+            C << sb;
+            C << nl << derives[i] << "Ptr derivedPtr = " << derives[i] << "Ptr::dynamicCast( objPtr );";
+            C << nl << libNamespace_<<"::toLogStream( derivedPtr, os );";
+            C << eb;
+        }
+        C << eb;
+
+        // FROM
+        C << nl;
+        C << nl << "void";
+        C << nl << fromFunctionName << "( const string& derivedType, " << base << "Ptr& objPtr, std::istream& is )";
+        C << sb;
+
+        C << nl << "// " << derives.size() << " derivatives";
+        if ( derives.empty() ) {
+            C << nl << "assert( false && \"should not get here\" );";
+        }
+
+        for ( size_t i=0; i<derives.size(); ++i ) {
+            C << nl;
+            if ( i==0 )
+                C << "if ";
+            else
+                C << "else if ";
+            C << "( derivedType == \"" << derives[i] << "\" )";
+            C << sb;
+            C << nl << derives[i] << "Ptr derivedPtr = " << derives[i] << "Ptr::dynamicCast( objPtr );";
+            C << nl << libNamespace_<<"::fromLogStream( derivedPtr, is, false, true );";
+            C << nl << "objPtr = derivedPtr;";
+            C << eb;
+        }
+        C << eb;
+    }
+
     C << sp;
     C << nl << '}';
 }
@@ -641,7 +757,7 @@ Gen::HandleVisitor::visitClassDecl(const ClassDeclPtr& p)
     string name = p->name();
     string scoped = fixKwd(p->scoped());
 
-    if(!p->isLocal())
+    if(!p->isLocal() && p->isInterface())
     {
         C << nl << "void toLogStream( const " << scoped << "Prx& prx, std::ostream& os )";
         C << sb;
@@ -658,6 +774,40 @@ Gen::HandleVisitor::visitClassDecl(const ClassDeclPtr& p)
 bool
 Gen::HandleVisitor::visitClassDefStart(const ClassDefPtr& p)
 {
+    if ( p->declaration()->isInterface() )
+        return false;
+
+    string derived = fixKwd(p->scoped());
+    ClassList bases = p->bases();
+
+    // make sure this (possibly) derived class is in the database
+    // we want all classes to be here so we can define a function for each (possibly empty)
+    InheritanceMap::iterator it = inherit_.find( derived );
+    if ( it == inherit_.end() ) {
+        vector<string> emptyVector;
+        inherit_[derived] = emptyVector;
+    }
+
+    ClassList::const_iterator q = bases.begin();
+    if(!bases.empty()) {
+        while(q != bases.end())
+        {
+            string base = fixKwd((*q)->scoped());
+            // make sure this base is in the database
+            // cannot rely on the order of definition, because classes can be declared before
+            InheritanceMap::iterator it = inherit_.find( base );
+            if ( it == inherit_.end() ) {
+                vector<string> emptyVector;
+                inherit_[base] = emptyVector;
+                // look for it again, now it should be here
+                it = inherit_.find( base );
+                assert( it != inherit_.end() && "twice failed to find base" );
+            }
+            it->second.push_back( derived );
+            ++q;
+        }
+    }
+
     return true;
 }
 

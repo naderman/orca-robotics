@@ -13,14 +13,49 @@ using namespace std;
 namespace ifacestring
 {
 
-string toString( int x, int recurse, int expand, int indent )
+string toString( bool x, int recurse, int expand, int indent )
 {
     stringstream ss;
     ss << x;
     return ss.str();
 }
 
-string toString( double x, int recurse, int expand, int indent )
+string toString( Ice::Byte x, int recurse, int expand, int indent )
+{
+    stringstream ss;
+    ss << x;
+    return ss.str();
+}
+
+string toString( Ice::Short x, int recurse, int expand, int indent )
+{
+    stringstream ss;
+    ss << x;
+    return ss.str();
+}
+
+string toString( Ice::Int x, int recurse, int expand, int indent )
+{
+    stringstream ss;
+    ss << x;
+    return ss.str();
+}
+
+string toString( Ice::Long x, int recurse, int expand, int indent )
+{
+    stringstream ss;
+    ss << x;
+    return ss.str();
+}
+
+string toString( Ice::Float x, int recurse, int expand, int indent )
+{
+    stringstream ss;
+    ss << x;
+    return ss.str();
+}
+
+string toString( Ice::Double x, int recurse, int expand, int indent )
 {
     stringstream ss;
     ss << x;
@@ -29,6 +64,7 @@ string toString( double x, int recurse, int expand, int indent )
 
 string toString( const string& x, int recurse, int expand, int indent )
 {
+    // should we limit the size, depending on 'expand' ???
     return x;
 }
 

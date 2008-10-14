@@ -55,7 +55,6 @@ void fromLogStream( Ice::Float& x, std::istream& is );
 void fromLogStream( Ice::Double& x, std::istream& is );
 void fromLogStream( std::string& x, std::istream& is );
 
-// use only with std::vector's
 template<class E>
 void seqFromLogStream( std::vector<E>& x, std::istream& is )
 {
@@ -70,7 +69,6 @@ void seqFromLogStream( std::vector<E>& x, std::istream& is )
     }
 }
 
-// use only with std::map's
 template<class K, class V>
 void dictFromLogStream( std::map<K,V>& x, std::istream& is )
 {

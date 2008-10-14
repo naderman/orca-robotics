@@ -54,4 +54,6 @@ SET( ORCA_SLICE_SOURCE_FILES
     vehicledescription.ice
     velocitycontrol2d.ice
     wifi.ice
+# only used for testing utilities
+    test.ice
 )

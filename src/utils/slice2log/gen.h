@@ -13,6 +13,8 @@
 
 #include <Slice/Parser.h>
 #include <IceUtil/OutputUtil.h>
+#include <map>
+#include <vector>
 
 namespace slice2log
 {
@@ -160,6 +162,8 @@ private:
         virtual void visitClassDecl(const Slice::ClassDeclPtr&);
         virtual bool visitClassDefStart(const Slice::ClassDefPtr&);
 
+        // alexm: the namespace of the generated library
+        std::string libNamespace_;
     private:
 
         ::IceUtilInternal::Output& H;
@@ -167,6 +171,15 @@ private:
 
         std::string _dllExport;
         bool _stream;
+
+        // alexm: store inheritance information
+        // e.g. Base <-- Derived <-- Super
+        // as we go through derived classes we compile information for each base class
+        // the map<string,vector<string> will contains the following
+        // [B],<D,S>
+        // [D],<S>
+        typedef std::map<std::string,std::vector<std::string> > InheritanceMap;
+        InheritanceMap inherit_;
     };
 };
 
