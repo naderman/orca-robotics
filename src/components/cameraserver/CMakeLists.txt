@@ -1,6 +1,6 @@
 ORCA_SET_COMPONENT_NAME( CameraServer )
 
-SET( build FALSE )
+SET( build TRUE )
 GBX_REQUIRE_OPTION( build EXE ${APP_NAME} ON )
 
 SET( ext_libs HydroDll HydroInterfaces )
