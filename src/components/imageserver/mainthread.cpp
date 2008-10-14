@@ -16,28 +16,10 @@
 using namespace std;
 using namespace imageserver;
 
-MainThread::MainThread( const orcaice::Context &context ) :
-    orcaice::SubsystemThread( context.tracer(), context.status(), "MainThread" ),
-    context_(context)
+MainThread::MainThread( const orcaice::Context &context ) 
+: orcaimagecommon::ImageComponentThread( context )
+, orcaImageDescr_(new orca::ImageDescription())
 {
-    subStatus().setMaxHeartbeatInterval( 20.0 );
-
-    //
-    // Read settings
-    //
-    Ice::PropertiesPtr prop = context_.properties();
-    std::string prefix = context_.tag() + ".Config.";
-
-    config_.width = orcaice::getPropertyAsIntWithDefault( prop, prefix+"ImageWidth", 0 );
-    config_.height = orcaice::getPropertyAsIntWithDefault( prop, prefix+"ImageHeight", 0 );
-    config_.size = config_.width*config_.height*3; //TODO look at image type
-
-    if ( !config_.validate() ) {
-        context_.tracer().error( "Failed to validate image configuration. "+config_.toString() );
-        // this will kill this component
-        throw gbxutilacfr::Exception( ERROR_INFO, "Failed to validate image configuration" );
-    }
-
 }
 
 void
@@ -49,72 +31,31 @@ MainThread::initNetworkInterface()
     //
     // SENSOR DESCRIPTION
     //
-    orca::ImageDescriptionPtr descr(new orca::ImageDescription);
-    // transfer internal sensor configs
-    descr->width       = config_.width;
-    descr->height      = config_.height;
+    
+    //transfer internal sensor configs
+    orcaImageDescr_->width = config_.width;
+    orcaImageDescr_->height = config_.height;
+    orcaImageDescr_->format = config_.format;
 
     //
     // EXTERNAL PROVIDED INTERFACE
     //
+    
+    //create new interface
+    imageInterface_ = new orcaifaceimpl::ImageImpl( orcaImageDescr_
+                                                  , "Image"
+                                                  , context_ );
 
-    imageInterface_ = new orcaifaceimpl::ImageImpl( descr,
-                                                    "Image",
-                                                    context_ );
-    // init
+    //initialize the interface
     imageInterface_->initInterface( this, subsysName() );
-}
 
-void
-MainThread::initHardwareDriver()
-{
-    subStatus().setMaxHeartbeatInterval( 20.0 );
-
-    Ice::PropertiesPtr prop = context_.properties();
-    std::string prefix = context_.tag() + ".Config.";
-
-    // Dynamically load the library and find the factory
-    std::string driverLibName = 
-        orcaice::getPropertyWithDefault( prop, prefix+"DriverLib", "libHydroImageFake.so" );
-    context_.tracer().debug( "MainThread: Loading driver library "+driverLibName, 4 );
-    // The factory which creates the driver
-    std::auto_ptr<hydrointerfaces::ImageFactory> driverFactory;
-    try {
-        driverLib_.reset( new hydrodll::DynamicallyLoadedLibrary(driverLibName) );
-        driverFactory.reset( 
-            hydrodll::dynamicallyLoadClass<hydrointerfaces::ImageFactory,DriverFactoryMakerFunc>
-            ( *driverLib_, "createDriverFactory" ) );
-    }
-    catch (hydrodll::DynamicLoadException &e)
-    {
-        // unrecoverable error
-        context_.shutdown(); 
-        throw;
-    }
-
-    // create the driver
-    while ( !isStopping() )
-    {
-        std::stringstream exceptionSS;
-        try {
-            context_.tracer().info( "HwThread: Creating driver..." );
-            driver_.reset(0);
-            driver_.reset( driverFactory->createDriver( config_, context_.toHydroContext() ) );
-            break;
-        }
-        catch ( ... ) {
-            orcaice::catchExceptionsWithStatusAndSleep( "initialising hardware driver", subStatus() );
-        }   
-    }
-
-    subStatus().setMaxHeartbeatInterval( 1.0 );
 }
 
 void
 MainThread::readData()
 {
     //
-    // Read from the laser driver
+    // Read from the image driver
     //
     hydroImageData_.haveWarnings = false;
     driver_->read( hydroImageData_ );
@@ -126,25 +67,32 @@ MainThread::readData()
 void
 MainThread::walk()
 {
-    // Set up the laser-scan objects
+    context_.tracer().info( "Setting up Data Pointers" );
+    
+    // Set up the image objects
     orcaImageData_ = new orca::ImageData;
     orcaImageData_->data.resize( config_.width*config_.height*3 );
+    orcaImageData_->description = orcaImageDescr_;
 
     // Point the pointers in hydroImageData_ at orcaImageData_
     hydroImageData_.data      = &(orcaImageData_->data[0]);
 
     // These functions catch their exceptions.
     activate( context_, this, subsysName() );
-
+    context_.tracer().info( "Setting up Network Interface" );
     initNetworkInterface();
+    context_.tracer().info( "Setting up Hardware Interface" );
     initHardwareDriver();
 
+    context_.tracer().info( "Running..." );
+    
     //
     // IMPORTANT: Have to keep this loop rolling, because the '!isStopping()' call checks for requests to shut down.
     //            So we have to avoid getting stuck anywhere within this main loop.
     //
     while ( !isStopping() )
     {
+        stringstream exceptionSS;
         try 
         {
             // this blocks until new data arrives
@@ -161,21 +109,42 @@ MainThread::walk()
             }
 
             stringstream ss;
-            ss << "MainThread: Read laser data: " << orcaobj::toString(orcaImageData_);
+            ss << "MainThread: Read image data: " << orcaobj::toString(orcaImageData_);
             context_.tracer().debug( ss.str(), 5 );
 
             continue;
 
         } // end of try
-        catch ( ... ) 
-        {
-            orcaice::catchMainLoopExceptions( subStatus() );
-
-            // Re-initialise the driver, unless we are stopping
-            if ( !isStopping() ) {
-                initHardwareDriver();
-            }
+        catch ( Ice::CommunicatorDestroyedException & ) {
+            // This is OK: it means that the communicator shut down (eg via Ctrl-C)
+            // somewhere in mainLoop. Eventually, component will tell us to stop.
         }
+        catch ( const Ice::Exception &e ) {
+            exceptionSS << "ERROR(mainthread.cpp): Caught unexpected exception: " << e;
+        }
+        catch ( const std::exception &e ) {
+            exceptionSS << "ERROR(mainthread.cpp): Caught unexpected exception: " << e.what();
+        }
+        catch ( const std::string &e ) {
+            exceptionSS << "ERROR(mainthread.cpp): Caught unexpected string: " << e;
+        }
+        catch ( const char *e ) {
+            exceptionSS << "ERROR(mainthread.cpp): Caught unexpected char *: " << e;
+        }
+        catch ( ... ) {
+            exceptionSS << "ERROR(mainthread.cpp): Caught unexpected unknown exception.";
+        }
+
+        if ( !exceptionSS.str().empty() ) {
+            context_.tracer().error( exceptionSS.str() );
+            subStatus().fault( exceptionSS.str() );     
+            // Slow things down in case of persistent error
+            sleep(1);
+        }
+
+        // If we got to here there's a problem.
+        // Re-initialise the driver.
+        initHardwareDriver();
 
     } // end of while
 

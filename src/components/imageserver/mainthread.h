@@ -1,7 +1,7 @@
 /*
  * Orca-Robotics Project: Components for robotics 
  *               http://orca-robotics.sf.net/
- * Copyright (c) 2004-2008 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ * Copyright (c) 2004-2008 Tom Burdick, Alex Brooks, Alexei Makarenko, Tobias Kaupp
  *
  * This copy of Orca is licensed to you under the terms described in
  * the LICENSE file included in this distribution.
@@ -13,18 +13,18 @@
 #include <memory>
 #include <orcaice/subsystemthread.h>
 #include <orcaice/context.h>
+#include <orcaimagecommon/imagecomponentthread.h>
 #include <hydrodll/dynamicload.h>
+
 // remote interface
 #include <orcaifaceimpl/imageImpl.h>
-// hardware interface
-#include <hydrointerfaces/image.h>
 
 namespace imageserver {
 
 //
-// @brief the main executing loop of this laser component.
+// @brief the main executing loop of this image component.
 //
-class MainThread : public orcaice::SubsystemThread
+class MainThread : public orcaimagecommon::ImageComponentThread
 {
 
 public:
@@ -35,32 +35,20 @@ public:
     virtual void walk();
 
 private:
-
-    // Tries repeatedly to instantiate the driver
-    void initHardwareDriver();
-
     // Loops until established
     void initNetworkInterface();
 
     void readData();
 
-    // The laser object
+    // The Network Image Interface object
     orcaifaceimpl::ImageImplPtr imageInterface_;
 
-    hydrointerfaces::Image::Config config_;
-    // an extra config to allow sensor mounted upside-down
-    bool compensateRoll_;
+    // The Network Image Interface Data Structure
+    orca::ImageDataPtr orcaImageData_;
 
-    // space for data
-    orca::ImageDataPtr           orcaImageData_;
-    hydrointerfaces::Image::Data hydroImageData_;
+    // The Network Image Interface Description Structure
+    orca::ImageDescriptionPtr orcaImageDescr_;
 
-    // The library that contains the driver factory (must be declared first so it's destructed last!!!)
-    std::auto_ptr<hydrodll::DynamicallyLoadedLibrary> driverLib_;
-    // Generic driver for the hardware
-    std::auto_ptr<hydrointerfaces::Image> driver_;
-
-    orcaice::Context context_;
 };
 
 } // namespace

@@ -1,7 +1,7 @@
 /*
  * Orca-Robotics Project: Components for robotics 
  *               http://orca-robotics.sf.net/
- * Copyright (c) 2004-2008 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ * Copyright (c) 2004-2008 Tom Burdick, Alex Brooks, Alexei Makarenko, Tobias Kaupp
  *
  * This copy of Orca is licensed to you under the terms described in
  * the LICENSE file included in this distribution.
@@ -11,11 +11,13 @@
 #ifndef ORCA_IMAGE_IMPL_H
 #define ORCA_IMAGE_IMPL_H
 
-#include <orca/image.h>
 #include <IceStorm/IceStorm.h>
 
+// include provided interfaces
+#include <orca/image.h>
+
 // utilities
-#include <gbxsickacfr/gbxiceutilacfr/store.h>
+#include <orcaice/ptrstore.h>
 #include <orcaice/context.h>
 
 namespace gbxiceutilacfr { class Thread; }
@@ -62,12 +64,15 @@ private:
     void internalSubscribe(const ::orca::ImageConsumerPrx&);
     void internalUnsubscribe(const ::orca::ImageConsumerPrx&);
 
+    // Holds the latest data
     orca::ImageDescriptionPtr     descr_;
-    // yes, this is not a typo! It's safe to use a normal proxy with an Ice smart pointer.
-    gbxiceutilacfr::Store<orca::ImageDataPtr> dataStore_;
+    
+    orcaice::PtrStore<orca::ImageDataPtr> dataStore_;
 
-    orca::ImageConsumerPrx    consumerPrx_;
+    // The topic to which we'll publish
     IceStorm::TopicPrx        topicPrx_;
+    // The interface to which we'll publish
+    orca::ImageConsumerPrx    consumerPrx_;
 
     // Hang onto this so we can remove from the adapter and control when things get deleted
     Ice::ObjectPtr          ptr_;

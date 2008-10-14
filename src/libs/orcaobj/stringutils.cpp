@@ -520,13 +520,9 @@ toString( const orca::Date& obj )
 std::string 
 toString( const orca::CameraDataPtr& obj )
 {
-    
     std::ostringstream s;
-    s << toString(obj->timeStamp) << endl;
-    s << " Image Width: " << obj->description->width << "pix" << endl;
-    s << " Image Height: " << obj->description->height << "pix" << endl;
-    s << " Image Format: " << obj->description->format << endl;
-    s << " Number of Bytes: [" << obj->data.size() << " bytes]" << endl; 
+    s << toString(obj->timeStamp)
+      << " CameraData: ["<<obj->data.size()<<" bytes]\n";
     return s.str();
 }
 
@@ -650,7 +646,7 @@ toString( const orca::ImageDataPtr& obj )
 {
     std::ostringstream s;
     s << toString(obj->timeStamp)
-        << " ImageData: ["<<obj->data.size()<<" bytes]\n";
+      << " ImageData: ["<<obj->data.size()<<" bytes]\n";
     return s.str();
 }
 
