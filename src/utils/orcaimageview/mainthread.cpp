@@ -61,5 +61,7 @@ MainThread::walk()
             context_.tracer().debug("Adding Image to Queue");
             imageQueue_->push(imageData);
         }
+        //pushing too fast will cause the gui to not respond, sleep to prevent that
+        IceUtil::ThreadControl::sleep(IceUtil::Time::milliSeconds(8));
     }
 }
