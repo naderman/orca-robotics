@@ -114,9 +114,12 @@ Application::orcaMain(int argc, char* argv[])
 int
 Application::run( int argc, char* argv[] )
 {
+    // communicator is already initialized by Ice::Application
+
     // when a signal is received (e.g. Ctrl-C), we want to get a change to shut down our
     // component before destroying the communicator
-    callbackOnInterrupt();
+//     callbackOnInterrupt();
+    shutdownOnInterrupt();
 
     // now communicator exists. we can further parse properties, make sure all the info is
     // there and set some properties (notably AdapterID)
@@ -177,7 +180,7 @@ Application::run( int argc, char* argv[] )
     // component started without a problem. now will wait for the communicator to shutdown
     // this will typically happen after a signal is recieved from Ctrl-C or from IceGrid.
     communicator()->waitForShutdown();
-    initTracerInfo( component_.context().tag()+": Communicator destroyed." );
+    initTracerInfo( component_.context().tag()+": Communicator has shut down." );
 
     stopComponent();
 
@@ -187,6 +190,7 @@ Application::run( int argc, char* argv[] )
 //     initTracerInfo( component_.context().tag()+": Application done." );
     initTracerInfo( component_.context().tag()+": Orca out." );
 
+    // communicator will be destroyed by Ice::Application
     return 0;
 }
 
@@ -199,7 +203,8 @@ Application::stopComponent()
         return;
 
     // first tell component to shutdown
-    initTracerInfo( component_.context().tag()+": Received interrupt signal. Stopping component" );
+//     initTracerInfo( component_.context().tag()+": Received interrupt signal. Stopping component" );
+    initTracerInfo( component_.context().tag()+": Stopping component" );
     component_.stop();
 //     initTracerInfo( component_.context().tag()+": Finalising component" );
     component_.finalise();
@@ -218,6 +223,8 @@ Application::interruptCallback( int signal )
     try
     {
         assert(communicator() != 0);
+        // somebody must destroy communicator before leaving main().
+        // 
         communicator()->destroy();
     }
     catch(const std::exception& ex) {
