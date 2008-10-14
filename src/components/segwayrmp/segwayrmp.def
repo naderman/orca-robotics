@@ -45,6 +45,8 @@ Config.Odometry2dPublishInterval.Default=0.1
 Config.Odometry3dPublishInterval.Default=0.1
 Config.PowerPublishInterval.Default=20.0
 
+Config.Fake.SleepInterval.Default=100
+
 Config.Acfr.GainSchedule.Comment=SegwayRmpUsb And SegwayRmpCan drivers only
 Config.Acfr.GainSchedule.Default=normal
 Config.Acfr.MaxVelocityScale.Default=0.75

@@ -24,6 +24,8 @@ Config.AllowRollCompensation.Default=1
 Config.Size.Comment=length[m] width[m] height[m]
 Config.Size.Default=0.155 0.155 0.185
 
+Config.Fake.SleepInterval.Default=100
+
 Config.SickCarmen.Device.Default=/dev/ttyS0
 Config.SickCarmen.LaserType.Default=LMS
 Config.SickCarmen.Baudrate.Comment=Valid values: { 9600, 19200, 38400, 500000 }
