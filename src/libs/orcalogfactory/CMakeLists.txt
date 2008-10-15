@@ -6,8 +6,8 @@ GBX_REQUIRE_OPTION( build LIB ${LIB_NAME} ON )
 SET( not_os_win NOT GBX_OS_WIN )
 GBX_REQUIRE_VAR( build LIB ${LIB_NAME} not_os_win "Windows OS is not  supported" )
 
-SET( dep_libs OrcaLog OrcaIfaceImpl OrcaObjects OrcaIfaceLog )
-GBX_REQUIRE_TARGETS( build LIB ${LIB_NAME} ${dep_libs} )
+SET( int_libs OrcaLog OrcaIfaceImpl OrcaObjects OrcaIfaceLog )
+GBX_REQUIRE_TARGETS( build LIB ${LIB_NAME} ${int_libs} )
 
 IF( build )
 
@@ -15,6 +15,7 @@ IF( build )
     
     FILE( GLOB hdrs *.h )
     FILE( GLOB srcs *.cpp )
+    SET( dep_libs ${int_libs} )
     
     GBX_ADD_LIBRARY( ${LIB_NAME} SHARED ${srcs} )
 
