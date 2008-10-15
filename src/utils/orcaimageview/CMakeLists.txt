@@ -15,7 +15,7 @@ GBX_REQUIRE_TARGETS( build EXE ${APP_NAME} ${dep_libs} )
 SET( dep_libs ${dep_libs} HydroDll )
 GBX_REQUIRE_VAR( build EXE ${APP_NAME} HYDRODLL_INSTALLED "libHydroDll not installed" )
 GBX_REQUIRE_VAR( build EXE ${APP_NAME} QT4_FOUND "Qt4 not found" )
-GBX_REQUIRE_VAR( build EXE ${APP_NAME} QT_OPENGL_LIBRARY "QtOpenGL not found" )
+GBX_REQUIRE_VAR( build EXE ${APP_NAME} QT_QTOPENGL_LIBRARY "QtOpenGL not found" )
 GBX_REQUIRE_VAR( build EXE ${APP_NAME} OPENGL_GLU_FOUND "OpenGL Util not found" )
 
 IF( build )
