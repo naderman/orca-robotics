@@ -51,7 +51,7 @@ Laser Settings
     - Valid Values: ImageHeight>0
     - Example: a laser mounted upside down with now translation: "0.0 0.0 0.0  180.0 0.0 0.0"
 
-@see Individual drivers may have additional configuration parameters which are specified as Laser2d.Config.XXX. See driver documentation.
+@see Individual drivers may have additional configuration parameters which are specified as ImageServer.Config.XXX. See driver documentation.
 
 An example configuration file is installed into [ORCA-INSTALL-DIR]/share/orca/cfg/ directory.
 
