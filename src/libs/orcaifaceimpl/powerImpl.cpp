@@ -98,7 +98,7 @@ PowerImpl::initInterface( gbxiceutilacfr::Thread* thread, const std::string& sub
 ::orca::PowerData 
 PowerImpl::internalGetData() const
 {
-    context_.tracer().debug( "PowerImpl::internalGetData()", 5 );
+//     context_.tracer().debug( "PowerImpl::internalGetData()", 5 );
 
     if ( dataStore_.isEmpty() )
     {
