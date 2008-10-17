@@ -104,10 +104,10 @@ public:
 
     virtual ~ConsumerImpl() 
     {
-        context_.tracer().debug( "Unsubscribing on destruction.", 4 );
         // catch all exception, it's too late to do anything about them
         try {
             unsubscribe();
+            context_.tracer().debug( "Unsubscribed on destruction.", 4 );
         }
         catch ( const std::exception& e ) {
             std::stringstream ss;
@@ -173,7 +173,7 @@ public:
 
         providerPrx->unsubscribe( consumerPrx_ );
         std::stringstream ss;
-        ss << "unsubscribed to " << proxyString;
+        ss << "Unsubscribed from " << proxyString;
         context_.tracer().debug( ss.str() );
 
         proxyString_.purge();
