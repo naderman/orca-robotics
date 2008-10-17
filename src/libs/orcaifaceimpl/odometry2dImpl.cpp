@@ -147,7 +147,7 @@ Odometry2dImpl::internalSubscribe(const ::orca::Odometry2dConsumerPrx& subscribe
 void 
 Odometry2dImpl::internalUnsubscribe(const ::orca::Odometry2dConsumerPrx& subscriber)
 {
-    context_.tracer().debug( "Odometry2dImpl::internalSubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
+    context_.tracer().debug( "Odometry2dImpl::internalUnsubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
     topicPrx_->unsubscribe( subscriber );
 }
 
