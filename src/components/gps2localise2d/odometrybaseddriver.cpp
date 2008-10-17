@@ -41,34 +41,15 @@ OdometryBasedDriver::OdometryBasedDriver( const orca::GpsDescription     &gpsDes
 
 OdometryBasedDriver::~OdometryBasedDriver()
 {
+    if ( odomConsumer_ && isSetup_ ) {
+        odomConsumer_->unsubscribe();
+    }
 }
 
 bool
 OdometryBasedDriver::setup()
 {
-    orca::Odometry2dPrx   odomPrx;
-    
-    try {
-        orcaice::connectToInterfaceWithTag<orca::Odometry2dPrx>( context_, odomPrx, "Odometry2d" );
-    }
-    catch( std::exception &e )
-    {
-        stringstream ss; ss << "Error while connecting to odometry: " << e.what();
-        context_.tracer().error( ss.str() );
-        return false;
-    }
-    
-    try {
-        odomPrx->subscribe( odomConsumer_->consumerPrx() );
-    }
-    catch( std::exception &e )
-    {
-        stringstream ss; ss << "Error while subscribing to odometry: " << e.what();
-        context_.tracer().error( ss.str() );
-        return false;
-    }
-    context_.tracer().info( "Subscribed for odometry" );
-
+    odomConsumer_->subscribeWithTag( "Odometry2d" );
     return true;
 }
 
@@ -102,7 +83,6 @@ OdometryBasedDriver::calcHeadingUncertainty( hydronavutil::Pose &delta,
 
     return uncertainty;
 }
-
 
 bool 
 OdometryBasedDriver::compute( const orca::GpsData  &gpsData,
@@ -154,6 +134,5 @@ OdometryBasedDriver::compute( const orca::GpsData  &gpsData,
     prevTime_ = gpsData.timeStamp;
     return true;
 }
-
 
 }
