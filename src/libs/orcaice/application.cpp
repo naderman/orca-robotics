@@ -118,8 +118,8 @@ Application::run( int argc, char* argv[] )
 
     // when a signal is received (e.g. Ctrl-C), we want to get a change to shut down our
     // component before destroying the communicator
-//     callbackOnInterrupt();
-    shutdownOnInterrupt();
+    callbackOnInterrupt();
+//    shutdownOnInterrupt();
 
     // now communicator exists. we can further parse properties, make sure all the info is
     // there and set some properties (notably AdapterID)
@@ -223,21 +223,21 @@ Application::interruptCallback( int signal )
     try
     {
         assert(communicator() != 0);
-        // somebody must destroy communicator before leaving main().
+        // we just shutdown the communicator, Ice::Application will destroy it later.
         // 
-        communicator()->destroy();
+        communicator()->shutdown();
     }
     catch(const std::exception& ex) {
-        exceptionSS << " (while destroying in response to signal " << signal << "): " << ex.what();
+        exceptionSS << " (while shutting down in response to signal " << signal << "): " << ex.what();
     }
     catch(const std::string& msg) {
-        exceptionSS << " (while destroying in response to signal " << signal << "): " << msg;
+        exceptionSS << " (while shutting down in response to signal " << signal << "): " << msg;
     }
     catch(const char* msg) {
-        exceptionSS << " (while destroying in response to signal " << signal << "): " << msg;
+        exceptionSS << " (while shutting down in response to signal " << signal << "): " << msg;
     }
     catch(...) {
-        exceptionSS << " (while destroying in response to signal " << signal << "): unknown exception";
+        exceptionSS << " (while shutting down in response to signal " << signal << "): unknown exception";
     }
 
     if ( !exceptionSS.str().empty() )
