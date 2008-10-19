@@ -12,21 +12,34 @@ tryRemoveInterface( orcaice::Context &context,
                     const std::string &interfaceName )
 {
     if ( !context.communicator() ) {
-        // the communicator is probably already destroyed.
+        // the communicator is already destroyed.
+        return;
+    }
+
+    const Ice::Identity id = context.communicator()->stringToIdentity( interfaceName );
+    tryRemoveInterfaceWithIdentity( context, id );
+}
+
+void 
+tryRemoveInterfaceWithIdentity( orcaice::Context  &context,
+                            const Ice::Identity &interfaceId )
+{
+    if ( !context.communicator() ) {
+        // the communicator is already destroyed.
         return;
     }
 
     try {
-        context.adapter()->remove( context.communicator()->stringToIdentity( interfaceName ) );
+        context.adapter()->remove( interfaceId );
     }
     catch ( Ice::ObjectAdapterDeactivatedException & )
     {
-        // This is OK, we're shutting down.
+        // the communicator is already shut down.
     }
-    catch ( Ice::Exception &e )
+    catch ( std::exception &e )
     {
         stringstream ss;
-        ss << "Caught orcaifaceimpl: Exception when removing Ice::ObjectPtr from adapter: " << e;
+        ss << "Caught exception when removing Ice::ObjectPtr from adapter: " << e.what();
         context.tracer().warning( ss.str() );
     }
 }

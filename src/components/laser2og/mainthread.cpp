@@ -219,7 +219,4 @@ MainThread::walk()
             orcaice::catchMainLoopExceptions( subStatus() );
         }
     } // end of main loop
-
-    // to be nice to the publisher of information, unsubscribe before quitting.
-    rangeScannerConsumer_->unsubscribe();
 }

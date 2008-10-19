@@ -41,9 +41,6 @@ OdometryBasedDriver::OdometryBasedDriver( const orca::GpsDescription     &gpsDes
 
 OdometryBasedDriver::~OdometryBasedDriver()
 {
-    if ( odomConsumer_ && isSetup_ ) {
-        odomConsumer_->unsubscribe();
-    }
 }
 
 bool

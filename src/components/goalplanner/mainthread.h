@@ -99,9 +99,9 @@ private:
     std::auto_ptr<hydroogmap::OgLosTracer> ogLosTracer_;
 
     // Monitors how far we are along the path
-    ProgressMonitor                 *progressMonitor_;
-    Ice::ObjectPtr                   progressMonitorPtr_;
-    orca::PathFollower2dConsumerPrx  progressMonitorPrx_;
+    ProgressMonitorPtr progressMonitor_;
+//     Ice::ObjectPtr                   progressMonitorPtr_;
+//     orca::PathFollower2dConsumerPrx  progressMonitorPrx_;
 
     bool checkForStaleLocaliseData_;
 

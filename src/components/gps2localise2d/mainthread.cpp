@@ -235,16 +235,4 @@ MainThread::walk()
             orcaice::catchMainLoopExceptions( subStatus() );
         }
     } // while
-
-    // to be nice to the publisher of information, unsubscribe before quitting.
-    gpsConsumer_->unsubscribe();
-    // this type of driver may be using network resources.
-    // we destroy the driver here so it disconnects/unsubscribes now, while the
-    // the network is still up.
-    // TODO: it may be cleaner to have a special disconnect() function instead of
-    // deleting it.
-    if ( driver_ ) {
-        delete driver_;
-        driver_=0;
-    }
 }

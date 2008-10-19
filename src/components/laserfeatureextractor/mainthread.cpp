@@ -273,7 +273,4 @@ MainThread::walk()
             orcaice::catchMainLoopExceptions( subStatus() );
         }
     } // while
-
-    // to be nice to the publisher of information, unsubscribe before quitting.
-    laserConsumer_->unsubscribe();
 }

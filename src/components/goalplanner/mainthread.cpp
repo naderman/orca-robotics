@@ -144,27 +144,28 @@ MainThread::initNetwork()
                                         localise2dPrx_,
                                         "Localise2d",
                                         this,
-                                        subStatus().name() );
+                                        subsysName() );
 
     subStatus().initialising( "Connecting to PathFollower2d" );
     orcaice::connectToInterfaceWithTag( context_,
                                         localNavPrx_,
                                         "PathFollower2d",
                                         this,
-                                        subStatus().name() );
+                                        subsysName() );
 
     subStatus().initialising( "Subscribing for PathFollower2d updates" );
-    progressMonitor_ = new ProgressMonitor;
-    progressMonitorPtr_ = progressMonitor_;
-    progressMonitorPrx_ = orcaice::createConsumerInterface<orca::PathFollower2dConsumerPrx>( context_, progressMonitorPtr_ );
-    localNavPrx_->subscribe( progressMonitorPrx_ );
+    progressMonitor_ = new ProgressMonitor( context_ );
+    progressMonitor_->subscribeWithTag( "PathFollower2d", this, subsysName() );
+//     progressMonitorPtr_ = progressMonitor_;
+//     progressMonitorPrx_ = orcaice::createConsumerInterface<orca::PathFollower2dConsumerPrx>( context_, progressMonitorPtr_ );
+//     localNavPrx_->subscribe( progressMonitor_ );
 
     subStatus().initialising( "Connecting to PathPlanner2d" );
     orcaice::connectToInterfaceWithTag( context_,
                                         pathplanner2dPrx_,
                                         "PathPlanner2d",
                                         this,
-                                        subStatus().name() );
+                                        subsysName() );
 
     subStatus().initialising( "Connecting to OgMap" );
     orca::OgMapPrx ogMapPrx_;
@@ -172,7 +173,7 @@ MainThread::initNetwork()
                                         ogMapPrx_,
                                         "OgMap",
                                         this,
-                                        subStatus().name() );
+                                        subsysName() );
     orca::OgMapData orcaOgMap = ogMapPrx_->getData();
     orcaogmap::convert( orcaOgMap, ogMap_ );
 

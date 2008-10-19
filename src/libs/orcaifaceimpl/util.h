@@ -119,9 +119,11 @@ namespace orcaifaceimpl {
 
     //! Remove the interface from the adapter if possible.
     //! If something goes wrong, fails silently.
-    void
-    tryRemoveInterface( orcaice::Context  &context,
-                        const std::string &interfaceName );
+    void tryRemoveInterface( orcaice::Context  &context,
+                             const std::string &interfaceName );
+
+    void tryRemoveInterfaceWithIdentity( orcaice::Context  &context,
+                             const Ice::Identity &interfaceId );
 
     //! Convenience function for tag->name conversion
     //! (may throw ConfigFileException)

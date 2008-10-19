@@ -86,10 +86,4 @@ MainThread::walk()
     
     subStatus().ok( "Initialized." );
     subStatus().setMaxHeartbeatInterval( -1 );
-
-    // this will spin until we are told to stop.
-    waitForStop();
-
-    // to be nice to the publisher of information, unsubscribe before quitting.
-    consumer->unsubscribe();
 }

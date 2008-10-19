@@ -541,11 +541,6 @@ MainThread::walk()
             orcaice::catchMainLoopExceptions( subStatus() );
         }
     }
-
-    // to be nice to the publisher of information, unsubscribe before quitting.
-    obsConsumer_->unsubscribe();
-    locConsumer_->unsubscribe();
-    odomConsumer_->unsubscribe();
 }
 
 }

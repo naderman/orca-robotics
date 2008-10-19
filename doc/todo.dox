@@ -64,7 +64,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 @par Updated components
 
 - all components
-  - all components which subscribe to remote interfaces now attempt to unsubscribe before stopping. (alexm)
+  - all components which subscribe to remote interfaces now unsubscribe using the improved ConsumerImpl and the updated auto-generated component.cpp. (alexm)
   - all components catch exeptions in a consise and standardised manner using new orcaice:: functions. (alexm)
 
 @par Updated utilities
@@ -80,6 +80,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - libOrcaLogFactory
   - added logging to ascii for PolarFeature2d (tobi)
   - added matlab scripts to read ascii files for PolarFeature2d and LaserScanner2d (tobi)
+
+- libOrcaIfaceImpl
+  - overhaul of ConsumerImpl to allow auto-unsubscription on destruction. (alexm)
 
 @par Removed
 

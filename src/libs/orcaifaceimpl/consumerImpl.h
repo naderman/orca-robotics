@@ -15,7 +15,8 @@
 #include <orcaice/multiconnectutils.h>
 #include <gbxsickacfr/gbxiceutilacfr/store.h>
 #include <gbxsickacfr/gbxiceutilacfr/safethread.h>
-// #include <iostream>
+#include <orcaifaceimpl/util.h>
+#include <iostream>
 
 namespace orcaifaceimpl
 {
@@ -76,6 +77,44 @@ protected:
     orcaice::Context context_;
 };
 
+// have to define it as a separate abstract class
+// because ConsumerTypeI only needs to know about dataEvent()
+// (and does not know about the 2 extra template parameters in
+// ConsumerImpl)
+template<class ObjectType>
+class AbstractConsumer
+{
+public:
+    // Implement this callback in the derived class. 
+    virtual void dataEvent( const ObjectType& data )=0;
+};
+
+// implements Slice consumer interface
+// the end user does not need to know about it.
+// redirects incoming data to ConsumerImpl's derivatives.
+template<class ConsumerType, class ObjectType>
+class ConsumerTypeI : virtual public ConsumerType
+{
+public:
+    ConsumerTypeI( AbstractConsumer<ObjectType> &impl ) :
+        impl_(impl) {}
+    virtual ~ConsumerTypeI()
+    {
+        std::cout<<"ConsumerTypeI::~ConsumerTypeI()"<<std::endl;
+    }
+
+    // implementation of remote call defined in all *Consumer interfaces
+    // this implementation redirects to the Impl class
+    virtual void setData( const ObjectType& data, const Ice::Current& )
+    {
+//         context_.tracer().debug( "Received data from provider", 8 );
+        impl_.dataEvent( data );
+    }
+
+private:
+    AbstractConsumer<ObjectType>& impl_;
+};
+
 /*!
  A generic consumer: instantiates and looks after a consumerI, i.e. adds it to/removes it from the adapter.
 
@@ -85,29 +124,27 @@ protected:
  you must call destroy() method before the existing consumer goes out of scope. Otherwise, the application will segfault
  complaining that a 'pure virtual method called'.
 */
-//  Note: inheriting from IceUtil::Shared allows us to use Ice smart
-//  pointers with these things.
 template<class ProviderPrxType, class ConsumerType, class ConsumerPrxType, class ObjectType>
-class ConsumerImpl : virtual public ConsumerType,
-                     public ConsumerSubscriber
+class ConsumerImpl : public ConsumerSubscriber, 
+                     public AbstractConsumer<ObjectType>,
+                     public IceUtil::Shared
 {
 public:
-    //! Constructor. Does not contain any remote calls.
+    //! Constructor creates consumer interface object. Does not contain any remote calls.
     ConsumerImpl( const orcaice::Context &context ) :
         ConsumerSubscriber(context)
     {
-        Ice::ObjectPtr ptr = this;
-//         this function does not throw
-        consumerPrx_ = orcaice::createConsumerInterface<ConsumerPrxType>(context,ptr);
-
+        consumerPtr_ = new ConsumerTypeI<ConsumerType,ObjectType>( *this );
+        // this function does not throw, because it never talks to the Registry
+        consumerPrx_ = orcaice::createConsumerInterface<ConsumerPrxType>(context_,consumerPtr_);
     }
 
     virtual ~ConsumerImpl() 
     {
-        // catch all exception, it's too late to do anything about them
+        context_.tracer().debug( "ConsumerImpl::~ConsumerImpl()" );
+        // unsubscribe from the info provider
         try {
             unsubscribe();
-            context_.tracer().debug( "Unsubscribed on destruction.", 4 );
         }
         catch ( const std::exception& e ) {
             std::stringstream ss;
@@ -117,10 +154,13 @@ public:
         catch ( ... ) {
             context_.tracer().warning( "failed to unsubscribe in destructor." );
         }
-    }
 
-    //! Implement this callback in the derived class. 
-    virtual void dataEvent( const ObjectType& data )=0;
+        // now destroy our consumer object
+        if ( !consumerPrx_ )
+            return;
+
+        tryRemoveInterfaceWithIdentity( context_, consumerPrx_->ice_getIdentity() );
+    }
 
     //! Remove this consumer from the Object Adapter which will free up memory automatically.
     //! Call this function if you repeatedly create and destroy consumers thoughout the life of the
@@ -130,28 +170,31 @@ public:
         if ( !consumerPrx_ )
             return;
 
-        try {
-            context_.adapter()->remove( consumerPrx_->ice_getIdentity() );
-            
-        }
-        // This can fail if the adapter is shutting down.  We don't care.
-        catch ( ... ) {
-        }
+        tryRemoveInterfaceWithIdentity( context_, consumerPrx_->ice_getIdentity() );
+
+//         try {
+//             context_.adapter()->remove( consumerPrx_->ice_getIdentity() );
+//             
+//         }
+//         // This can fail if the adapter is shutting down.  We don't care.
+//         catch ( ... ) {
+//         }
     }
 
     //! Access the proxy to the internal consumer interface implementation.
     ConsumerPrxType consumerPrx() const { return consumerPrx_; }
 
-    // no doxytags, these functions are already documented above.
-
-    // implementation of remote call defined in all *Consumer interfaces
-    // this implementation redirects to the implementation class
-    virtual void setData( const ObjectType& data, const Ice::Current& )
+    // This is tricky! Can't leave it pure virtual because we unsubscribe and detsroy
+    // in ConsumerImpl destructor. By that time, the derived class (e.g. StoringConsumer)
+    // is already destroyed and we'll get "pure virtual method called".
+    //! This function is called when new data arrives to the consumer.
+    //! Default implementation does nothing. 
+    //! Re-implement this callback in the derived class. 
+    virtual void dataEvent( const ObjectType& data )
     {
-        context_.tracer().debug( "Received data from provider", 8 );
-        dataEvent( data );
     }
 
+    // no doxytags, these functions are already documented above.
 
     virtual void subscribeWithString( const std::string& proxyString )
     {
@@ -238,9 +281,14 @@ public:
         proxyString_.set( proxyString );
     }
 
-private:
-    // proxy to the internal consumer interface implementation
-    ConsumerPrxType  consumerPrx_;
+protected:
+    // these are protected so that it's possible to re-implement initConsumer()
+
+    //! Proxy to the internal consumer interface implementation
+    ConsumerPrxType consumerPrx_;
+
+    //! Hang onto this so we can remove from the adapter and control when things get deleted
+    Ice::ObjectPtr consumerPtr_;
 };
 
 } // namespace
