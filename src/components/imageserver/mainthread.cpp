@@ -69,20 +69,21 @@ MainThread::walk()
 {
     context_.tracer().info( "Setting up Data Pointers" );
     
+       // These functions catch their exceptions.
+    activate( context_, this, subsysName() );
+    
+    context_.tracer().info( "Setting up Hardware Interface" );
+    initHardwareDriver();
+    context_.tracer().info( "Setting up Network Interface" );
+    initNetworkInterface();
+    
     // Set up the image objects
     orcaImageData_ = new orca::ImageData;
-    orcaImageData_->data.resize( config_.width*config_.height*3 );
+    orcaImageData_->data.resize( config_.size );
     orcaImageData_->description = orcaImageDescr_;
 
     // Point the pointers in hydroImageData_ at orcaImageData_
     hydroImageData_.data      = &(orcaImageData_->data[0]);
-
-    // These functions catch their exceptions.
-    activate( context_, this, subsysName() );
-    context_.tracer().info( "Setting up Network Interface" );
-    initNetworkInterface();
-    context_.tracer().info( "Setting up Hardware Interface" );
-    initHardwareDriver();
 
     context_.tracer().info( "Running..." );
     

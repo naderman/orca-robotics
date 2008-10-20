@@ -154,11 +154,11 @@ ViewWidget::updateTexture()
 
     // update the texture with the latest buffer
     glTexSubImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, 0, 0, textureWidth_, textureHeight_,
-                    formatFromString(descr->format), GL_UNSIGNED_BYTE, &(image->data[0]));
+                    textureFormat_, GL_UNSIGNED_BYTE, &(image->data[0]));
 
     int timediff = timer_.restart();
     int thisfps = floor(1000.0/(float)(timediff));
-    Q_EMIT(fps(thisfps));
+    emit(fps(thisfps));
 }
 
 
