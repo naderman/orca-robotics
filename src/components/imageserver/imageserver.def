@@ -12,7 +12,7 @@ Config.DriverLib.Default=libHydroImageFake.so
 
 Config.ImageWidth.Default=640
 Config.ImageHeight.Default=480
-Config.Format.Default=ImageBgr
+Config.ImageFormat.Default=BGR8
 
 # driver-specific configs
 Config.Fake.Mode.Comment=Valid values are {'noise','smooth'}
