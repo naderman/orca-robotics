@@ -79,16 +79,16 @@ ViewWidget::paintGL()
 
     glBegin(GL_QUADS);
     
-    glTexCoord2f( 0.0, 0.0 );
+    glTexCoord2f( 0.0, textureHeight_ );
     glVertex2f( 0.0, 0.0 );
     
-    glTexCoord2f( 0.0, textureHeight_ );
+    glTexCoord2f( 0.0, 0.0 );
     glVertex2f( 0.0, height() );
     
-    glTexCoord2f( textureWidth_, textureHeight_ );
+    glTexCoord2f( textureWidth_, 0.0 );
     glVertex2f( width(), height() );
     
-    glTexCoord2f( textureWidth_, 0.0 );
+    glTexCoord2f( textureWidth_, textureHeight_ );
     glVertex2f( width(), 0.0 );
     
     glEnd();
