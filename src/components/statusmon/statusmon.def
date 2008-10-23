@@ -1,0 +1,8 @@
+DefaultComponentTag=StatusMon
+
+# interfaces
+Requires.Status0.Type=Status
+Requires.Status0.DefaultProxy=status@local/laser2d
+Requires.Status1.Type=Status
+Requires.Status1.DefaultProxy=status@local/robot2d
+

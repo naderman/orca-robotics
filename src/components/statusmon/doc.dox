@@ -1,0 +1,50 @@
+/*
+ * Orca-Robotics Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2008 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This copy of Orca is licensed to you under the terms described in
+ * the LICENSE file included in this distribution.
+ *
+ */
+
+/*!
+@ingroup orca_components
+@ingroup orca_apps
+@ingroup orca_cpp
+@ingroup orca_linux
+@ingroup orca_qnx
+@defgroup orca_component_statusmon StatusMon
+@brief Connects to any number of Status interfaces and displays status information
+
+Connects to any number of Status interfaces and displays status information
+
+@par Provides
+
+- @ref orca_interface_home
+
+@par Requires
+
+- @ref orca_interface_status
+
+@par Drivers
+
+- Currently output on screen only
+- Planned: 
+    - matrix format ala sysadminmon
+    - driver providing a system level status interface
+
+@par Configuration
+
+
+An example configuration file is installed into [ORCA-INSTALL-DIR]/share/orca/cfg/ directory.
+
+@par Dependancies
+
+None for the component.
+
+@par Authors
+
+Tobias Kaupp   
+
+*/
