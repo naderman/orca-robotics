@@ -34,7 +34,6 @@ PowerProbe::PowerProbe( const orca::FQInterfaceName & name, orcaprobe::AbstractD
     
 PowerProbe::~PowerProbe()
 {
-    consumer_->destroy();
 }
     
 int 

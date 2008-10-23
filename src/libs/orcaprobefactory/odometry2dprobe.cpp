@@ -35,7 +35,6 @@ Odometry2dProbe::Odometry2dProbe( const orca::FQInterfaceName& name, orcaprobe::
     
 Odometry2dProbe::~Odometry2dProbe()
 {
-    consumer_->destroy();
 }
 
 int 

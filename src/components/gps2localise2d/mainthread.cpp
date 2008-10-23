@@ -135,10 +135,12 @@ MainThread::initNetworkInterface()
                 stringstream ss;
                 ss << "Got vehicle description: " << orcaobj::toString( vehicleDescr_ );
                 context_.tracer().info( ss.str() );
+
+                localiseInterface_ = new orcaifaceimpl::Localise2dImpl( vehicleDescr_.geometry, "Localise2d", context_ );
                 break;
             }
             catch ( ... ) {
-                orcaice::catchExceptionsWithStatusAndSleep( "initialising network interface", subStatus(), gbxutilacfr::SubsystemStatusFault, 2000 );
+                orcaice::catchExceptionsWithStatusAndSleep( "getting vehicle description", subStatus(), gbxutilacfr::SubsystemStatusFault, 2000 );
             }
         }
     }
@@ -146,7 +148,6 @@ MainThread::initNetworkInterface()
     //
     // Initialize Provided Interface
     //
-    localiseInterface_ = new orcaifaceimpl::Localise2dImpl( vehicleDescr_.geometry, "Localise2d", context_ );
     localiseInterface_->initInterface( this, subsysName() );
 }
 

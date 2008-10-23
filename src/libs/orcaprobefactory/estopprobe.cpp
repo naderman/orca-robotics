@@ -34,7 +34,6 @@ EStopProbe::EStopProbe( const orca::FQInterfaceName & name, orcaprobe::AbstractD
     
 EStopProbe::~EStopProbe()
 {
-    consumer_->destroy();
 }
 
 int 

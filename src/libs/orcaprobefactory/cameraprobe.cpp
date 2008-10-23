@@ -35,7 +35,6 @@ CameraProbe::CameraProbe( const orca::FQInterfaceName& name, orcaprobe::Abstract
     
 CameraProbe::~CameraProbe()
 {
-    consumer_->destroy();
 }
     
 int 

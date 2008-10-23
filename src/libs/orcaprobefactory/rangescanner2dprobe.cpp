@@ -35,7 +35,6 @@ RangeScanner2dProbe::RangeScanner2dProbe( const orca::FQInterfaceName& name, orc
     
 RangeScanner2dProbe::~RangeScanner2dProbe()
 {
-    consumer_->destroy();
 }
 
 int 

@@ -31,6 +31,9 @@ tryRemoveInterfaceWithIdentity( orcaice::Context  &context,
 
     try {
         context.adapter()->remove( interfaceId );
+        stringstream ss;
+        ss << "Removed Ice::ObjectPtr with identity "<<context.communicator()->identityToString(interfaceId)<<" from adapter.";
+        context.tracer().debug( ss.str() );
     }
     catch ( Ice::ObjectAdapterDeactivatedException & )
     {
@@ -39,7 +42,7 @@ tryRemoveInterfaceWithIdentity( orcaice::Context  &context,
     catch ( std::exception &e )
     {
         stringstream ss;
-        ss << "Caught exception when removing Ice::ObjectPtr from adapter: " << e.what();
+        ss << "(while removing Ice::ObjectPtr with identity "<<context.communicator()->identityToString(interfaceId)<<" from adapter): " << e.what();
         context.tracer().warning( ss.str() );
     }
 }

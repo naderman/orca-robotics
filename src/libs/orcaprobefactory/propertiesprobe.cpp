@@ -35,7 +35,6 @@ PropertiesProbe::PropertiesProbe( const orca::FQInterfaceName & name, orcaprobe:
     
 PropertiesProbe::~PropertiesProbe()
 {
-    consumer_->destroy();
 }
 
 int 

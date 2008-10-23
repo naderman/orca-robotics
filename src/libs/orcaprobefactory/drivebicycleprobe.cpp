@@ -37,7 +37,6 @@ DriveBicycleProbe::DriveBicycleProbe( const orca::FQInterfaceName& name,
     
 DriveBicycleProbe::~DriveBicycleProbe()
 {
-    consumer_->destroy();
 }
 
 int 

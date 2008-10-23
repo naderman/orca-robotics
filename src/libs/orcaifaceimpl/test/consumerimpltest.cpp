@@ -22,11 +22,11 @@ TestComponent::start()
     // Try creating and destroying the interface a few times
     for ( int i=0; i < 2; i++ )
     {
-        cout<<"TRACE(ifacetest.cpp): Creating Interface" << endl;        
+        cout<<"TRACE(consumerimpltest.cpp): Creating Interface" << endl;        
         orcaifaceimpl::StoringGpsConsumerImplPtr consumer = 
             new orcaifaceimpl::StoringGpsConsumerImpl( context() );
-
-        consumer->destroy();
+        cout<<"TRACE(consumerimpltest.cpp): Destroying Interface" << endl;
+        consumer = 0;
     }
     
     // NOTE: cannot call communicator()->destroy() from here

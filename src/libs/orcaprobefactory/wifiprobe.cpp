@@ -35,7 +35,6 @@ WifiProbe::WifiProbe( const orca::FQInterfaceName& name,
     
 WifiProbe::~WifiProbe()
 {
-    consumer_->destroy();
 }
     
 int 

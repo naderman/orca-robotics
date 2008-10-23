@@ -35,7 +35,6 @@ GpsProbe::GpsProbe( const orca::FQInterfaceName& name, orcaprobe::AbstractDispla
     
 GpsProbe::~GpsProbe()
 {
-    consumer_->destroy();
 }
 
 int 

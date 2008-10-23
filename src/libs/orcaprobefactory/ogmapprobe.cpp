@@ -35,7 +35,6 @@ OgMapProbe::OgMapProbe( const orca::FQInterfaceName & name,
 
 OgMapProbe::~OgMapProbe()
 {
-    consumer_->destroy();
 }
 
 int 

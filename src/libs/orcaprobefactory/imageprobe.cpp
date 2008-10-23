@@ -35,7 +35,6 @@ ImageProbe::ImageProbe( const orca::FQInterfaceName& name, orcaprobe::AbstractDi
     
 ImageProbe::~ImageProbe()
 {
-    consumer_->destroy();
 }
 
 int 

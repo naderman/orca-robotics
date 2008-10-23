@@ -35,7 +35,6 @@ Localise2dProbe::Localise2dProbe( const orca::FQInterfaceName& name, orcaprobe::
     
 Localise2dProbe::~Localise2dProbe()
 {
-    consumer_->destroy();
 }
 
 int 

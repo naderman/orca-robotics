@@ -52,8 +52,10 @@ private:
 
 Localise2dImpl::Localise2dImpl( const orca::VehicleGeometryDescriptionPtr &geometry,
                                 const std::string &interfaceTag,
-                                const orcaice::Context &context )
+                                const orcaice::Context &context,
+                                TopicPolicy policy )
     : geometry_(geometry),
+      policy_(policy),
       interfaceName_(getInterfaceNameFromTag(context,interfaceTag)),
       topicName_(getTopicNameFromInterfaceName(context,interfaceName_)),
       context_(context)
@@ -63,8 +65,10 @@ Localise2dImpl::Localise2dImpl( const orca::VehicleGeometryDescriptionPtr &geome
 
 Localise2dImpl::Localise2dImpl( const orca::VehicleGeometryDescriptionPtr &geometry,
                                 const orcaice::Context &context,
-                                const std::string &interfaceName )
+                                const std::string &interfaceName,
+                                TopicPolicy policy )
     : geometry_(geometry),
+      policy_(policy),
       interfaceName_(interfaceName),
       topicName_(getTopicNameFromInterfaceName(context,interfaceName)),
       context_(context)
@@ -75,6 +79,25 @@ Localise2dImpl::Localise2dImpl( const orca::VehicleGeometryDescriptionPtr &geome
 Localise2dImpl::~Localise2dImpl()
 {
     tryRemoveInterface( context_, interfaceName_ );
+
+    if ( policy_ == DestroyTopic ) {
+    //     tryDestroyTopic( topicPrx_ );
+        if ( !context_.communicator() ) {
+            // the communicator is already destroyed.
+            return;
+        }
+    
+        try {
+            topicPrx_->destroy();
+            context_.tracer().info( "Destroyed IceStorm topic "+topicName_ );
+        }
+        catch ( std::exception &e )
+        {
+            stringstream ss;
+            ss << "(while destroying IceStorm topic) caught exception: " << e.what();
+            context_.tracer().warning( ss.str() );
+        }
+    }
 }
 
 void

@@ -37,7 +37,6 @@ StatusProbe::StatusProbe( const orca::FQInterfaceName& name, orcaprobe::Abstract
 
 StatusProbe::~StatusProbe()
 {
-    consumer_->destroy();
 }
     
 int 

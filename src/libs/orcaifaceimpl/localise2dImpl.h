@@ -22,6 +22,14 @@ namespace gbxiceutilacfr { class Thread; }
 
 namespace orcaifaceimpl {
 
+// experimental.
+// Determines whether the IceStorm topic is destroyed when the Impl is destroyed.
+enum TopicPolicy
+{
+    DestroyTopic,
+    NoTopicDestruction
+};
+
 //!
 //! Implements the Localise2d interface: Handles remote calls.
 //!
@@ -30,13 +38,18 @@ class Localise2dImpl : public IceUtil::Shared
 friend class Localise2dI;
 
 public:
-    //! Constructor using interfaceTag (may throw ConfigFileException)
+    //! Constructor using interfaceTag. Interface name will be looked up
+    //! in configuration properties. May throw ConfigFileException if interface name
+    //! cannot be looked up.
     Localise2dImpl( const orca::VehicleGeometryDescriptionPtr &geometry,
                     const std::string &interfaceTag,
-                    const orcaice::Context &context );
+                    const orcaice::Context &context,
+                    TopicPolicy policy=NoTopicDestruction );
+    //! Constructor using interface name.
     Localise2dImpl( const orca::VehicleGeometryDescriptionPtr &geometry,
                     const orcaice::Context &context,
-                    const std::string &interfaceName );                    
+                    const std::string &interfaceName,
+                    TopicPolicy policy=NoTopicDestruction );                    
     ~Localise2dImpl();
 
     // Local calls:
@@ -67,6 +80,7 @@ private:
 
     orca::Localise2dConsumerPrx    consumerPrx_;
     IceStorm::TopicPrx             topicPrx_;
+    TopicPolicy policy_;
 
     // Hang onto this so we can remove from the adapter and control when things get deleted
     Ice::ObjectPtr          ptr_;

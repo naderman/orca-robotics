@@ -35,7 +35,6 @@ LaserScanner2dProbe::LaserScanner2dProbe( const orca::FQInterfaceName& name, orc
     
 LaserScanner2dProbe::~LaserScanner2dProbe()
 {
-    consumer_->destroy();
 }
 
 int 

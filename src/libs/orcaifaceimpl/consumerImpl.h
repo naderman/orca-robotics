@@ -119,11 +119,10 @@ private:
  A generic consumer: instantiates and looks after a consumerI, i.e. adds it to/removes it from the adapter.
 
  Derived classes need to implement the dataEvent() callback function which is called when the new data arrives.
-
- If the life of the consumer is shorter than the life of the component (e.g. you create and destroy consumers repeatedly),
- you must call destroy() method before the existing consumer goes out of scope. Otherwise, the application will segfault
- complaining that a 'pure virtual method called'.
 */
+//  If the life of the consumer is shorter than the life of the component (e.g. you create and destroy consumers repeatedly),
+//  you must call destroy() method before the existing consumer goes out of scope. Otherwise, the application will segfault
+//  complaining that a 'pure virtual method called'.
 template<class ProviderPrxType, class ConsumerType, class ConsumerPrxType, class ObjectType>
 class ConsumerImpl : public ConsumerSubscriber, 
                      public AbstractConsumer<ObjectType>,
@@ -161,7 +160,7 @@ public:
 
         tryRemoveInterfaceWithIdentity( context_, consumerPrx_->ice_getIdentity() );
     }
-
+/*
     //! Remove this consumer from the Object Adapter which will free up memory automatically.
     //! Call this function if you repeatedly create and destroy consumers thoughout the life of the
     //! component.
@@ -180,7 +179,7 @@ public:
 //         catch ( ... ) {
 //         }
     }
-
+*/
     //! Access the proxy to the internal consumer interface implementation.
     ConsumerPrxType consumerPrx() const { return consumerPrx_; }
 
