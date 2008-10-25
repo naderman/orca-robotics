@@ -18,7 +18,7 @@
 using namespace std;
 using namespace tracermon;
 
-MainThread::MainThread( User* user, const orcaice::Context & context ) :
+NetworkThread::NetworkThread( User* user, const orcaice::Context & context ) :
     SafeThread( context.tracer() ),
     user_(user),
     events_(new hydroiceutil::EventQueue),
@@ -26,13 +26,13 @@ MainThread::MainThread( User* user, const orcaice::Context & context ) :
 {
 }
 
-MainThread::~MainThread()
+NetworkThread::~NetworkThread()
 {
-    user_->newLocalTrace( "MainThread distructor" );
+    user_->newLocalTrace( "NetworkThread distructor" );
 }
 
 void 
-MainThread::setVerbosityLevel( int error, int warn, int info, int debug )
+NetworkThread::setVerbosityLevel( int error, int warn, int info, int debug )
 {
 // stringstream ss;
 // ss<<"got verbosity event with ["<<error<<","<<warn<<","<<info<<","<<debug<<"]";
@@ -43,7 +43,7 @@ MainThread::setVerbosityLevel( int error, int warn, int info, int debug )
 }
 
 void
-MainThread::walk()
+NetworkThread::walk()
 {    
     // configs
     std::string prefix = context_.tag() + ".Config.";
@@ -121,16 +121,16 @@ MainThread::walk()
         }
         default : {
             stringstream ss; ss<<"unknown network event "<<event->type()<<". Ignoring...";
-            user_->newLocalTrace( "MainThread: entering main loop" );
+            user_->newLocalTrace( "NetworkThread: entering main loop" );
         }
         } // switch
     } // end of main loop
 
-    context_.tracer().debug( "MainThread: stopped.",2 );
+    context_.tracer().debug( "NetworkThread: stopped.",2 );
 }
 
 void 
-MainThread::setRemoteVerbosity( int error, int warn, int info, int debug )
+NetworkThread::setRemoteVerbosity( int error, int warn, int info, int debug )
 {
     stringstream ss; ss<<"trying to set verbosity with ["<<error<<","<<warn<<","<<info<<","<<debug<<"]";
     user_->newLocalTrace( ss.str() );
@@ -166,8 +166,8 @@ MainThread::setRemoteVerbosity( int error, int warn, int info, int debug )
 }
 
 // void 
-// MainThread::setData(const orca::TracerData& data, const Ice::Current&)
+// NetworkThread::setData(const orca::TracerData& data, const Ice::Current&)
 // {
-//     cout<<"MainThread::setData "<<endl;
+//     cout<<"NetworkThread::setData "<<endl;
 //     user_->newTraceMessage( data );
 // }

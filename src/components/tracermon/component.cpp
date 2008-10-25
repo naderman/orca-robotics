@@ -70,9 +70,9 @@ Component::start()
     // NETWORK
     //
     // the constructor may throw, we'll let the application shut us down
-    MainThread* networkMainThread = new MainThread( userDriver, context() );
-    netThread_ = (gbxiceutilacfr::SafeThread*)networkMainThread;
-    Network* netDriver = (Network*)networkMainThread;
+    NetworkThread* networkThread = new NetworkThread( userDriver, context() );
+    netThread_ = (gbxiceutilacfr::SafeThread*)networkThread;
+    Network* netDriver = (Network*)networkThread;
     netThread_->start();
 
     // important: must use 

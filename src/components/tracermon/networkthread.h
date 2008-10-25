@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef NETWORK_HANDLER_H
-#define NETWORK_HANDLER_H
+#ifndef NETWORK_THREAD_H
+#define NETWORK_THREAD_H
 
 #include <orca/tracer.h>
 #include <gbxsickacfr/gbxiceutilacfr/safethread.h>
@@ -21,14 +21,13 @@
 namespace tracermon
 {
 
-// class MainThread : public Network
-class MainThread : public gbxiceutilacfr::SafeThread, public Network //, virtual public orca::TracerConsumer
+class NetworkThread : public gbxiceutilacfr::SafeThread, public Network //, virtual public orca::TracerConsumer
 {
 public:
 
-    MainThread( User* user,
+    NetworkThread( User* user,
                     const orcaice::Context & context );
-    virtual ~MainThread();
+    virtual ~NetworkThread();
 
     // from SafeThread
     virtual void walk();
