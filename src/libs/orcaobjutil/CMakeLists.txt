@@ -16,12 +16,7 @@ IF( build )
     FILE( GLOB srcs *.cpp )
     SET( dep_libs ${int_libs} )
     
-    IF(NOT GBX_OS_WIN)
-        GBX_ADD_LIBRARY( ${LIB_NAME} SHARED ${srcs} )
-    ELSE (NOT GBX_OS_WIN)
-        # for some reason cannot get shared libs working in windows
-        GBX_ADD_LIBRARY( ${LIB_NAME} STATIC ${srcs} )
-    ENDIF (NOT GBX_OS_WIN)
+    GBX_ADD_LIBRARY( ${LIB_NAME} DEFAULT ${srcs} )
 
     TARGET_LINK_LIBRARIES( ${LIB_NAME} ${dep_libs} )
     

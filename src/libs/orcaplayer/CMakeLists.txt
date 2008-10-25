@@ -17,7 +17,7 @@ IF( build )
     
     FILE( GLOB hdrs *.h )
 
-    GBX_ADD_LIBRARY( OrcaPlayer SHARED convertutils.cpp )
+    GBX_ADD_LIBRARY( OrcaPlayer DEFAULT convertutils.cpp )
 
     GBX_ADD_HEADERS( ${LIB_INSTALL} ${hdrs} )
 

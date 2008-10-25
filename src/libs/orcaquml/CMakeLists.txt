@@ -18,7 +18,7 @@ IF( build )
     FILE( GLOB human_srcs *.cpp )
     SET( dep_libs ${int_libs} )
 
-    GBX_ADD_LIBRARY( ${LIB_NAME} SHARED ${human_srcs} )
+    GBX_ADD_LIBRARY( ${LIB_NAME} DEFAULT ${human_srcs} )
     
     TARGET_LINK_LIBRARIES ( ${LIB_NAME} ${dep_libs} )
 

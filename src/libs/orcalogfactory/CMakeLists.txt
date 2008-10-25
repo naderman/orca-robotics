@@ -17,7 +17,7 @@ IF( build )
     FILE( GLOB srcs *.cpp )
     SET( dep_libs ${int_libs} )
     
-    GBX_ADD_LIBRARY( ${LIB_NAME} SHARED ${srcs} )
+    GBX_ADD_LIBRARY( ${LIB_NAME} DEFAULT ${srcs} )
 
 # camera logging is broken. all of image stuff requires a major overhaul
 #     INCLUDE( ${ORCA_CMAKE_DIR}/FindOpenCV.cmake )

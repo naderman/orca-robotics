@@ -31,7 +31,7 @@ IF( build )
 
     QT4_WRAP_CPP( moc_srcs ${moc_hdrs} )
     
-    GBX_ADD_LIBRARY( ${LIB_NAME} SHARED ${human_srcs} ${moc_srcs} )
+    GBX_ADD_LIBRARY( ${LIB_NAME} DEFAULT ${human_srcs} ${moc_srcs} )
     
     SET( dep_libs ${ext_libs} ${int_libs} )
     TARGET_LINK_LIBRARIES ( ${LIB_NAME} ${dep_libs} )

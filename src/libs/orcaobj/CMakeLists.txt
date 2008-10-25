@@ -1,4 +1,5 @@
 ORCA_SET_LIBRARY_NAME( OrcaObjects )
+SET( LIB_INSTALL orcaobj )
 GBX_ADD_LICENSE( LGPL )
 
 SET( build TRUE )
@@ -18,14 +19,9 @@ IF( build )
     FILE( GLOB hdrs *.h )
     FILE( GLOB srcs *.cpp )
     
-    # for some reason cannot get shared libs working in windows
-    IF(NOT GBX_OS_WIN)
-        GBX_ADD_LIBRARY( ${LIB_NAME} SHARED ${srcs} )
-    ELSE (NOT GBX_OS_WIN)
-        GBX_ADD_LIBRARY( ${LIB_NAME} STATIC ${srcs} )
-    ENDIF (NOT GBX_OS_WIN)
+    GBX_ADD_LIBRARY( ${LIB_NAME} DEFAULT ${srcs} )
     
-    GBX_ADD_HEADERS( orcaobj ${hdrs} )
+    GBX_ADD_HEADERS( ${LIB_INSTALL} ${hdrs} )
     
     IF( ORCA_BUILD_TESTS )
         ADD_SUBDIRECTORY( test )

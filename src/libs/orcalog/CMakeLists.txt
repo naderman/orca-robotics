@@ -13,7 +13,7 @@ IF( build )
     FILE( GLOB hdrs *.h )
     FILE( GLOB srcs *.cpp )
     
-    GBX_ADD_LIBRARY( ${LIB_NAME} SHARED ${srcs} )
+    GBX_ADD_LIBRARY( ${LIB_NAME} DEFAULT ${srcs} )
 
     GBX_ADD_HEADERS( ${LIB_INSTALL} ${hdrs} )
     

@@ -16,7 +16,7 @@ IF( build )
     FILE( GLOB hdrs *.h )
     FILE( GLOB srcs *.cpp )
 
-    GBX_ADD_LIBRARY( ${LIB_NAME} SHARED ${srcs} )
+    GBX_ADD_LIBRARY( ${LIB_NAME} DEFAULT ${srcs} )
     TARGET_LINK_LIBRARIES( ${LIB_NAME} ${dep_libs} )
 
     GBX_ADD_HEADERS( ${LIB_INSTALL} ${hdrs} )
