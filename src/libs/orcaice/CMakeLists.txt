@@ -17,18 +17,14 @@ IF( build )
     # debug only!
     INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIfaceString.cmake )
     
-    INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR}/detail )
+    # files from detail dir refer to public files
+    INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR} )
     
     FILE( GLOB hdrs *.h )
     FILE( GLOB srcs *.cpp detail/*.cpp )
     SET( dep_libs ${int_libs} ${ext_libs} )
     
-    IF( NOT GBX_OS_WIN )
-        GBX_ADD_LIBRARY( ${LIB_NAME} SHARED ${srcs} )
-    ELSE ( NOT GBX_OS_WIN )
-        # building shared libs is complicated in windows
-        GBX_ADD_LIBRARY( ${LIB_NAME} STATIC ${srcs} )
-    ENDIF( NOT GBX_OS_WIN )
+    GBX_ADD_LIBRARY( ${LIB_NAME} DEFAULT ${srcs} )
     
     TARGET_LINK_LIBRARIES( ${LIB_NAME} ${dep_libs} )
     

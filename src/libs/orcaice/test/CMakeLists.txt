@@ -64,10 +64,12 @@ ORCA_GENERATE_CONFIG_FILE( appproptestoff.def appproptest 0 )
 IF( NOT GBX_OS_WIN )
 
 # basic service test
+# Do NOT use DEFAULT setting here!
 ADD_LIBRARY( ServiceTest SHARED servicetest )
 GBX_ADD_TEST( ServiceTest ${ICE_HOME}/bin/icebox --Ice.Config=${CMAKE_CURRENT_SOURCE_DIR}/iceboxbasic.cfg )
 
 # advanced service tests
+# Do NOT use DEFAULT setting here!
 ADD_LIBRARY( ServicePropTest SHARED serviceproptest )
 # settings: FACT=0, GLOBAL=200, LOCAL=300, ARGS=400
 # test1000 = factory YES, global NO, local NO, args NO --> expect=FACT=0
@@ -113,3 +115,8 @@ ADD_EXECUTABLE( connecttest connecttest.cpp )
 GBX_ADD_TEST( ConnectUtilsTest connecttest )
 ORCA_GENERATE_CONFIG_FILE( connecttest.def connecttest 0 )
 ENDIF( NOT GBX_OS_QNX )
+
+
+# alexm: experimental
+# ADD_EXECUTABLE( subsystemtest subsystemtest.cpp )
+# GBX_ADD_TEST( OrcaIceSubsystemTest subsystemtest )

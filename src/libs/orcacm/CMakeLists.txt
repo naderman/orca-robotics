@@ -12,15 +12,7 @@ IF( build )
     FILE( GLOB hdrs *.h )
     FILE( GLOB srcs *.cpp )
     
-    IF( NOT GBX_OS_WIN )
-        GBX_ADD_LIBRARY( ${LIB_NAME} SHARED ${srcs} )
-        TARGET_LINK_LIBRARIES( ${LIB_NAME} IceGrid )
-    ELSE ( NOT GBX_OS_WIN )
-        GBX_ADD_LIBRARY( ${LIB_NAME} STATIC ${srcs} )
-        TARGET_LINK_LIBRARIES( ${LIB_NAME}
-                    optimized IceGrid debug IceGridd
-                )
-    ENDIF( NOT GBX_OS_WIN )
+    GBX_ADD_LIBRARY( ${LIB_NAME} DEFAULT ${srcs} )
     
     GBX_ADD_HEADERS( ${LIB_INSTALL} ${hdrs} )
 

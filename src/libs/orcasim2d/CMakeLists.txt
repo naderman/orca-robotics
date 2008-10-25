@@ -15,18 +15,10 @@ IF( build )
     FILE( GLOB srcs *.cpp )
     SET( dep_libs ${int_libs} ${ext_libs} )
 
-    IF( NOT GBX_OS_WIN )
-        GBX_ADD_LIBRARY( ${LIB_NAME} SHARED ${srcs} )
-    ELSE ( NOT GBX_OS_WIN )
-        GBX_ADD_LIBRARY( ${LIB_NAME} STATIC ${srcs} )
-    ENDIF( NOT GBX_OS_WIN )
+    GBX_ADD_LIBRARY( ${LIB_NAME} DEFAULT ${srcs} )
 
-    TARGET_LINK_LIBRARIES( ${LIB_NAME} ${dep_libs} ${ext_libs} )
+    TARGET_LINK_LIBRARIES( ${LIB_NAME} ${dep_libs} )
 
     GBX_ADD_HEADERS( ${LIB_INSTALL} ${hdrs} )
-
-#    IF( ORCA_BUILD_TESTS )
-#        ADD_SUBDIRECTORY( test )
-#    ENDIF( ORCA_BUILD_TESTS )
 
 ENDIF( build )
