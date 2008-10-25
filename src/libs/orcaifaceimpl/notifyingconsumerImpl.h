@@ -32,6 +32,11 @@ public:
     NotifyingConsumerImpl( const orcaice::Context &context )
         : ConsumerImpl<ProviderPrxType,ConsumerType,ConsumerPrxType,ObjectType>(context) {}
 
+    ~NotifyingConsumerImpl()
+        {
+            std::cout<<"NotifyingConsumerImpl::~NotifyingConsumerImpl()"<<std::endl;
+        }
+
     // from gbxiceutilacfr::Notify:
     // void  setNotifyHandler( NotifyHandler<Type>* handler );
 
@@ -41,7 +46,7 @@ public:
 private:
 
     // inherited from ConsumerImpl
-    void dataEvent( const ObjectType &data )
+    virtual void dataEvent( const ObjectType &data )
         {
             // results in handler->handleData(data) being called
             set( data );

@@ -116,9 +116,18 @@ private:
 };
 
 /*!
- A generic consumer: instantiates and looks after a consumerI, i.e. adds it to/removes it from the adapter.
+A generic consumer: instantiates and looks after a consumerI, i.e. adds it to/removes it from the adapter. 
 
- Derived classes need to implement the dataEvent() callback function which is called when the new data arrives.
+Derived classes need to implement the dataEvent() callback function which is called when the new data arrives.
+
+This consumer subscribes for data updates in the constructor and unsubscribes in the
+destructor. There's still a small chance that IceStorm will report an error when data delivery and
+unsubscription are closely spaced, e.g.:
+@verbatim
+Oct 25 03:26:47 tango /usr/bin/icebox[2474]: Topic: status/*@tango/localnav: subscribeAndGetPublisher: 07394FBF-586C-4128-AA28-1727B9DA2E19 QoS:  subscriptions: []
+Oct 25 03:26:49 tango /usr/bin/icebox[2474]: Topic: status/*@tango/localnav: unsubscribe: 07394FBF-586C-4128-AA28-1727B9DA2E19[07394FBF-586C-4128-AA28-1727B9DA2E19]
+Oct 25 03:26:49 tango /usr/bin/icebox[2474]: Subscriber: 0x81182e0 07394FBF-586C-4128-AA28-1727B9DA2E19: subscriber errored out: OutgoingAsync.cpp:305: Ice::ObjectNotExistException: object does not exist: identity: `07394FBF-586C-4128-AA28-1727B9DA2E19' facet:  operation: setData retry: 0/0
+@endverbatim
 */
 //  If the life of the consumer is shorter than the life of the component (e.g. you create and destroy consumers repeatedly),
 //  you must call destroy() method before the existing consumer goes out of scope. Otherwise, the application will segfault
