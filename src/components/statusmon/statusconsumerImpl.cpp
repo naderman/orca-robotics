@@ -22,6 +22,7 @@ StatusConsumerImpl::StatusConsumerImpl( const Config& config, const orcaice::Con
     isDestructing_(false),
     config_(config)
 {
+//     proxyString_.set( string("status@")+config_.platformName+"/"+config_.componentName );
 }
 
 StatusConsumerImpl::~StatusConsumerImpl()
@@ -43,6 +44,8 @@ StatusConsumerImpl::init()
     }
 
     std::string proxyStr = string("status@")+config_.platformName+"/"+config_.componentName;
+//     string proxyStr;
+//     proxyString_.get( proxyStr );
     subscribeWithString( proxyStr );
 
     IceUtil::Mutex::Lock lock(statusMutex_);
@@ -88,6 +91,8 @@ StatusConsumerImpl::getStatus()
 
                 try {
                     std::string proxyStr = string("status@")+config_.platformName+"/"+config_.componentName;
+//                     string proxyStr;
+//                     proxyString_.get( proxyStr );
                     subscribeWithString( proxyStr );
                     lastResubscribeTime_ = IceUtil::Time::now();
                 }
