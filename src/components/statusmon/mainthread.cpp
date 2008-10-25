@@ -54,13 +54,15 @@ MainThread::getComponentPlatformPairs()
 void 
 MainThread::createMonitors()
 {
-    //TODO: make configurable
+    Ice::PropertiesPtr props = context_.properties();
+    std::string prefix = context_.tag()+".Config.";
+    
     hydroiceutil::JobQueue::Config config;
-    config.threadPoolSize = 2;
-    config.queueSizeWarn = 1;
-    config.traceAddEvents = true;
-    config.traceStartEvents = true;
-    config.traceDoneEvents = true;
+    config.threadPoolSize = orcaice::getPropertyAsIntWithDefault( props, prefix+"JobQueueThreadPoolSize", 2 );
+    config.queueSizeWarn = orcaice::getPropertyAsIntWithDefault( props, prefix+"JobQueueSizeWarning", 2 );
+    config.traceAddEvents = orcaice::getPropertyAsIntWithDefault( props, prefix+"JobQueueTraceAdded", 0 );
+    config.traceStartEvents = orcaice::getPropertyAsIntWithDefault( props, prefix+"JobQueueTraceStart", 0 );
+    config.traceDoneEvents = orcaice::getPropertyAsIntWithDefault( props, prefix+"JobQueueTraceDone", 0 );
     
     jobQueue_ = new hydroiceutil::JobQueue( context_.tracer(), config );
     

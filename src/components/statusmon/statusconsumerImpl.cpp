@@ -22,6 +22,8 @@ StatusConsumerImpl::StatusConsumerImpl( const Config& config, const orcaice::Con
     isDestructing_(false),
     config_(config)
 {
+    IceUtil::Mutex::Lock lock(statusMutex_);
+    lastDataReceivedTime_ = IceUtil::Time::now();
 }
 
 StatusConsumerImpl::~StatusConsumerImpl()
@@ -37,24 +39,12 @@ StatusConsumerImpl::subscribe()
         return;
     }
     
-    resubscribe();
-
-    IceUtil::Mutex::Lock lock(statusMutex_);
-    lastDataReceivedTime_ = IceUtil::Time::now();
-}
-
-void
-StatusConsumerImpl::resubscribe()
-{
-    if ( isDestructing_ ) {
-        return;
-    }
-
-    std::string proxyStr = string("status@")+config_.platformName+"/"+config_.componentName;
-    subscribeWithString( proxyStr );
-
     IceUtil::Mutex::Lock lock(statusMutex_);
     lastResubscribeTime_  = IceUtil::Time::now();
+
+    std::string proxyStr = string("status@")+config_.platformName+"/"+config_.componentName;
+    // this may throw
+    subscribeWithString( proxyStr );
 }
 
 
@@ -72,14 +62,17 @@ bool
 StatusConsumerImpl::getStatus( StatusDetails &details )
 {
     IceUtil::Mutex::Lock lock(statusMutex_);
-    
-    // the return parameter
-    bool shouldResubscribe=false;
-    
+
     details.isStale = false;
     details.dataAvailable = hasValidData_;
     details.statusData = statusData_;
+    
+    // if we've never received any data, tell the caller to subscribe us
+    if (!hasValidData_) return true;
 
+    // the return value
+    bool shouldResubscribe=false;
+    
     IceUtil::Time timeSinceLastUpdate = IceUtil::Time::now() - lastDataReceivedTime_;
     details.secSinceHeard = timeSinceLastUpdate.toSeconds();
 

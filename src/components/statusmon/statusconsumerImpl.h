@@ -75,9 +75,6 @@ public:
 
     // Thread-safe. Makes a remote call, you may consider using a Job to call this fct.
     void subscribe();
-    
-    // Thread-safe. Makes a remote call, you may consider using a Job to call this fct.
-    void resubscribe();
 
     // Non-blocking, thread-safe, local call.
     // Returns true if the caller should resubscribe.
