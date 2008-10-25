@@ -79,10 +79,13 @@ MainThread::walk()
     // multi-try
     orcaice::activate( context_, this ); 
 
+    // create the monitors
+    createMonitors();
+    
+    
     //
     // Main loop
     //
-    createMonitors();
     
     StatusDetails details;
     

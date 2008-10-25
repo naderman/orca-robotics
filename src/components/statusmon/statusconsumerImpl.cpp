@@ -22,37 +22,41 @@ StatusConsumerImpl::StatusConsumerImpl( const Config& config, const orcaice::Con
     isDestructing_(false),
     config_(config)
 {
-//     proxyString_.set( string("status@")+config_.platformName+"/"+config_.componentName );
 }
 
 StatusConsumerImpl::~StatusConsumerImpl()
 {
     IceUtil::Mutex::Lock lock(statusMutex_);
     isDestructing_ = true;
-
-    // it would be nice to unsubscribe when destructing but ...
-    // this would be a remote call which would need to be done as a job.
-    // the extra complexity does not seem necessary, we'll just let IceStorm
-    // figure it out and drop us on the next data push.
 }
 
 void
-StatusConsumerImpl::init()
+StatusConsumerImpl::subscribe()
+{
+    if ( isDestructing_ ) {
+        return;
+    }
+    
+    resubscribe();
+
+    IceUtil::Mutex::Lock lock(statusMutex_);
+    lastDataReceivedTime_ = IceUtil::Time::now();
+}
+
+void
+StatusConsumerImpl::resubscribe()
 {
     if ( isDestructing_ ) {
         return;
     }
 
     std::string proxyStr = string("status@")+config_.platformName+"/"+config_.componentName;
-//     string proxyStr;
-//     proxyString_.get( proxyStr );
     subscribeWithString( proxyStr );
 
     IceUtil::Mutex::Lock lock(statusMutex_);
-
-    lastStatusTime_      = IceUtil::Time::now();
-    lastResubscribeTime_ = IceUtil::Time::now();
+    lastResubscribeTime_  = IceUtil::Time::now();
 }
+
 
 void
 StatusConsumerImpl::dataEvent( const orca::StatusData& data ) 
@@ -61,63 +65,44 @@ StatusConsumerImpl::dataEvent( const orca::StatusData& data )
 
     statusData_ = data;
     hasValidData_ = true;
-    lastStatusTime_ = IceUtil::Time::now();
+    lastDataReceivedTime_ = IceUtil::Time::now();
 }
 
-StatusDetails
-StatusConsumerImpl::getStatus()
+bool
+StatusConsumerImpl::getStatus( StatusDetails &details )
 {
     IceUtil::Mutex::Lock lock(statusMutex_);
-
-    StatusDetails details;
+    
+    // the return parameter
+    bool shouldResubscribe=false;
+    
     details.isStale = false;
     details.dataAvailable = hasValidData_;
+    details.statusData = statusData_;
 
-    // alexm: why would this throw?
-    try {
-        details.statusData = statusData_;
+    IceUtil::Time timeSinceLastUpdate = IceUtil::Time::now() - lastDataReceivedTime_;
+    details.secSinceHeard = timeSinceLastUpdate.toSeconds();
 
-        IceUtil::Time timeSinceLastUpdate = IceUtil::Time::now() - lastStatusTime_;
-        details.secSinceHeard = timeSinceLastUpdate.toSeconds();
-    
-        if ( details.secSinceHeard > config_.resubscribeTimeout )
-        {
-            IceUtil::Time timeSinceLastResubscribe = IceUtil::Time::now() - lastResubscribeTime_;
-            if ( timeSinceLastResubscribe.toSeconds() > config_.resubscribeInterval )
-            {
-                stringstream ss;
-                ss << "StatusConsumerI("<<config_.platformName<<"/"<<config_.componentName<<"): Haven't heard from Status for "<<timeSinceLastUpdate << " -- resubscribing.";
-                context_.tracer().warning( ss.str() );
-
-                try {
-                    std::string proxyStr = string("status@")+config_.platformName+"/"+config_.componentName;
-//                     string proxyStr;
-//                     proxyString_.get( proxyStr );
-                    subscribeWithString( proxyStr );
-                    lastResubscribeTime_ = IceUtil::Time::now();
-                }
-                catch ( const std::exception &e )
-                {
-                    stringstream ssErr;
-                    ssErr << "StatusConsumerI("<<config_.platformName<<"/"<<config_.componentName<<"): Failed to subscribe to status interface: " << e.what();
-                    context_.tracer().warning( ssErr.str() );
-                }
-            }
-
-            if ( details.secSinceHeard > config_.staleTimeout )
-            {
-                details.isStale = true;
-            }
-        }
-        return details;
-    }
-    catch ( const std::exception &e )
+    if ( details.secSinceHeard > config_.resubscribeTimeout )
     {
-        stringstream ss;
-        ss << "StatusConsumerI::getStatus(): Unexpected exception: " << e.what();
-        context_.tracer().error( ss.str() );
-        throw;        
+        IceUtil::Time timeSinceLastResubscribe = IceUtil::Time::now() - lastResubscribeTime_;
+        if ( timeSinceLastResubscribe.toSeconds() > config_.resubscribeInterval )
+        {
+            stringstream ss;
+            ss << "StatusConsumerImp(" << config_.platformName << "/"<< config_.componentName << "): Haven't heard from Status for "<< timeSinceLastUpdate << " Caller should try to resubscribe!";
+            context_.tracer().warning( ss.str() );
+            
+            shouldResubscribe=true;
+        }
+
+        if ( details.secSinceHeard > config_.staleTimeout )
+        {
+            details.isStale = true;
+        }
     }
+    
+    return shouldResubscribe;
+
 }
 
 } // namespace

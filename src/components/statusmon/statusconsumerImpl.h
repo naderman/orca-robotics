@@ -19,15 +19,14 @@
 
 namespace statusmon {
 
-// Data stucture returned by StatusConsumerImpl::getStatus()
 struct StatusDetails {
     // Have we received any status data yet?
-    bool             dataAvailable;
+    bool dataAvailable;
     // How long since we last received status data?
     // (only filled in if dataAvailable)
-    double           secSinceHeard;
+    double secSinceHeard;
     // Does the StatusConsumerImpl consider status to have failed send frequently enough?
-    bool             isStale;
+    bool isStale;
 
     // The actual statusData object.
     // (only filled in if dataAvailable)
@@ -35,7 +34,7 @@ struct StatusDetails {
 };
 
 //
-// Listens to components' Status interfaces
+// Listens to component's Status interface
 //
 class StatusConsumerImpl : 
         public orcaifaceimpl::ConsumerImpl<orca::StatusPrx,orca::StatusConsumer,orca::StatusConsumerPrx,orca::StatusData>
@@ -44,15 +43,16 @@ public:
 
     struct Config
     {
-        Config( const std::string& platform, const std::string& comp, 
-                int resubTimeout=45, 
-                int resubInterval=5, int staleTime=60 ) : 
+        Config( const std::string& platform, 
+                const std::string& comp, 
+                int resubTimeout = 45, 
+                int resubInterval = 5, 
+                int staleTime = 60 ) : 
             platformName(platform),
             componentName(comp),
             resubscribeTimeout(resubTimeout),
             resubscribeInterval(resubInterval),
             staleTimeout(staleTime) {}
-        // NOTE: platform and component names are different from the ones in context!
         std::string platformName;
         std::string componentName;
         // If we don't hear for longer than this timeout [sec], try to re-subscribe.
@@ -73,21 +73,24 @@ public:
     // from orcaifaceimpl::ConsumerImpl
     virtual void dataEvent( const orca::StatusData& data );
 
-    // Thread-safe.
-    void init();
+    // Thread-safe
+    void subscribe();
+    
+    // Thread-safe
+    void resubscribe();
 
-    // local call, non-blocking. Thread-safe.
-    StatusDetails getStatus();
+    // Non-blocking, thread-safe, local call.
+    // Returns true if the caller should resubscribe.
+    bool getStatus( StatusDetails &details );
 
 private: 
-    // none of the private functions lock mutex.
-
+    
     IceUtil::Mutex  statusMutex_;
     orca::StatusData statusData_;
 
     bool hasValidData_;
 
-    IceUtil::Time    lastStatusTime_;
+    IceUtil::Time    lastDataReceivedTime_;
     IceUtil::Time    lastResubscribeTime_;
 
     // this state is needed because the base class destructor needs access to protected structures
@@ -96,6 +99,7 @@ private:
 
     Config config_;
 };
+
 typedef IceUtil::Handle<StatusConsumerImpl> StatusConsumerImplPtr;
 
 }

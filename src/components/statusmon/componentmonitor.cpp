@@ -8,14 +8,15 @@
  *
  */
 
+#include <orcaice/orcaice.h>
 #include "componentmonitor.h"
 
 namespace statusmon {
-    
-class ConnectJob : public hydroiceutil::Job 
+        
+class SubscribeJob : public hydroiceutil::Job 
 {
     public:  
-        ConnectJob( const orcaice::Context &context, 
+        SubscribeJob( const orcaice::Context &context, 
                     StatusConsumerImplPtr   statusConsumer ) :
             context_(context),
             statusConsumer_(statusConsumer)
@@ -24,12 +25,40 @@ class ConnectJob : public hydroiceutil::Job
         virtual void execute()
         {
             context_.tracer().debug("Executing job", 2);
-            statusConsumer_->init();
+            //TODO: catch exceptions
+            statusConsumer_->subscribe();
         };
 
         virtual std::string toString() const
         {
-            return "ConnectJob";
+            return "SubscribeJob";
+        };
+        
+    private:
+        orcaice::Context       context_;
+        StatusConsumerImplPtr  statusConsumer_;
+};
+
+    
+class ResubscribeJob : public hydroiceutil::Job 
+{
+    public:  
+        ResubscribeJob( const orcaice::Context &context, 
+                    StatusConsumerImplPtr   statusConsumer ) :
+            context_(context),
+            statusConsumer_(statusConsumer)
+        {};
+              
+        virtual void execute()
+        {
+            context_.tracer().debug("Executing job", 2);
+            //TODO: catch exceptions
+            statusConsumer_->resubscribe();
+        };
+
+        virtual std::string toString() const
+        {
+            return "ResubscribeJob";
         };
         
     private:
@@ -41,19 +70,42 @@ ComponentMonitor::ComponentMonitor( hydroiceutil::JobQueuePtr  jobQueue,
                                     const std::string         &platform,
                                     const std::string         &component,
                                     const orcaice::Context    &context )
-    : context_(context),
-      config_( platform, component )
+    : jobQueue_(jobQueue),
+      context_(context)
 {
-    statusConsumer_ = new StatusConsumerImpl( config_, context_ );
+    Ice::PropertiesPtr prop = context_.properties();
+    std::string prefix = context_.tag()+".Config.";
+    int resubscribeTimeout = orcaice::getPropertyAsIntWithDefault( prop, prefix+"ResubscribeTimeout", 45 );
+    int resubscribeInterval = orcaice::getPropertyAsIntWithDefault( prop, prefix+"ResubscribeInterval", 5 );
+    int staleTimeout = orcaice::getPropertyAsIntWithDefault( prop, prefix+"StaleTimeout", 60 );
     
-    job_ = new ConnectJob( context_, statusConsumer_ );
-    jobQueue->add( job_ );   
+    StatusConsumerImpl::Config config( platform, component, 
+                                       resubscribeTimeout, resubscribeInterval, staleTimeout ) ;
+    
+    statusConsumer_ = new StatusConsumerImpl( config, context_ );
+    
+    context_.tracer().info( "Launching a SubscribeJob now" );
+    hydroiceutil::JobPtr job = new SubscribeJob( context_, statusConsumer_ );
+    jobQueue_->add( job );   
+}
+
+ComponentMonitor::~ComponentMonitor()
+{
 }
     
 StatusDetails 
 ComponentMonitor::getStatus()
 {
-    return statusConsumer_->getStatus();
+    StatusDetails details;
+    bool shouldResubscribe = statusConsumer_->getStatus( details );
+    
+    if (shouldResubscribe) {
+        context_.tracer().info( "Launching a ResubscribeJob now" );
+        hydroiceutil::JobPtr job = new ResubscribeJob( context_, statusConsumer_ );
+        jobQueue_->add( job );
+    }
+    
+    return details;
 }
 
 }
