@@ -13,6 +13,7 @@
 
 #include <orcaice/subsystemthread.h>
 #include <orcaice/context.h>
+#include <orcaifaceimpl/printingconsumers.h>
 
 namespace lasermon
 {
@@ -27,6 +28,8 @@ public:
     virtual void walk();
 
 private:
+    orcaifaceimpl::PrintingRangeScanner2dConsumerImplPtr consumer_;
+
     orcaice::Context context_;
 };
 

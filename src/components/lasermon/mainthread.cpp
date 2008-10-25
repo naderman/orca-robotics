@@ -12,7 +12,6 @@
 #include <orca/laserscanner2d.h>
 #include <orcaifacestring/laserscanner2d.h>
 #include <orcaice/orcaice.h>
-#include <orcaifaceimpl/printingconsumers.h>
 
 #include "mainthread.h"
 
@@ -80,9 +79,8 @@ MainThread::walk()
     }
     
     // subscribe for data updates (multi-try)
-    orcaifaceimpl::PrintingRangeScanner2dConsumerImplPtr consumer =
-            new orcaifaceimpl::PrintingRangeScanner2dConsumerImpl( context_, 1000, 1 );
-    consumer->subscribeWithTag( "LaserScanner2d", this, subsysName() );
+    consumer_ = new orcaifaceimpl::PrintingRangeScanner2dConsumerImpl( context_, 1000, 1 );
+    consumer_->subscribeWithTag( "LaserScanner2d", this, subsysName() );
     
     subStatus().ok( "Initialized." );
     subStatus().setMaxHeartbeatInterval( -1 );
