@@ -12,20 +12,41 @@
 #include "componentmonitor.h"
 
 namespace statusmon {
+    
+class ConnectJob : public hydroiceutil::Job 
+{
+    public:  
+        ConnectJob( const orcaice::Context &context, 
+                    StatusConsumerImplPtr   statusConsumer ) :
+            context_(context),
+            statusConsumer_(statusConsumer)
+            {};
+            
+        virtual void executeConnect() = 0;
+            
+        virtual void execute()
+        {
+            context_.tracer().debug("Executing job", 2);
+            // could catch exceptions here
+            executeConnect();
+
+        };
+    
+    protected:
+        orcaice::Context       context_;
+        StatusConsumerImplPtr  statusConsumer_;
+};
         
-class SubscribeJob : public hydroiceutil::Job 
+class SubscribeJob : public ConnectJob
 {
     public:  
         SubscribeJob( const orcaice::Context &context, 
                     StatusConsumerImplPtr   statusConsumer ) :
-            context_(context),
-            statusConsumer_(statusConsumer)
+            ConnectJob( context, statusConsumer )
         {};
               
-        virtual void execute()
+        virtual void executeConnect()
         {
-            context_.tracer().debug("Executing job", 2);
-            //TODO: catch exceptions
             statusConsumer_->subscribe();
         };
 
@@ -33,26 +54,19 @@ class SubscribeJob : public hydroiceutil::Job
         {
             return "SubscribeJob";
         };
-        
-    private:
-        orcaice::Context       context_;
-        StatusConsumerImplPtr  statusConsumer_;
 };
 
     
-class ResubscribeJob : public hydroiceutil::Job 
+class ResubscribeJob : public ConnectJob
 {
     public:  
         ResubscribeJob( const orcaice::Context &context, 
                     StatusConsumerImplPtr   statusConsumer ) :
-            context_(context),
-            statusConsumer_(statusConsumer)
-        {};
+            ConnectJob( context, statusConsumer )
+            {};
               
-        virtual void execute()
+        virtual void executeConnect()
         {
-            context_.tracer().debug("Executing job", 2);
-            //TODO: catch exceptions
             statusConsumer_->resubscribe();
         };
 
@@ -60,10 +74,6 @@ class ResubscribeJob : public hydroiceutil::Job
         {
             return "ResubscribeJob";
         };
-        
-    private:
-        orcaice::Context       context_;
-        StatusConsumerImplPtr  statusConsumer_;
 };
 
 ComponentMonitor::ComponentMonitor( hydroiceutil::JobQueuePtr  jobQueue,
