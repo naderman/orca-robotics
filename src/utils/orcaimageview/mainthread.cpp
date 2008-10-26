@@ -39,7 +39,7 @@ MainThread::walk()
     subStatus().ok( "Initialized" );
 
     // SUBSCRIBE
-    orcaifaceimpl::BufferedImageConsumerImplPtr imageInterface = new orcaifaceimpl::BufferedImageConsumerImpl( 10, gbxiceutilacfr::BufferTypeCircular, context_ );
+    orcaifaceimpl::BufferedImageConsumerImplPtr imageInterface = new orcaifaceimpl::BufferedImageConsumerImpl( 1, gbxiceutilacfr::BufferTypeCircular, context_ );
 
     // try multiple times
     imageInterface->subscribeWithTag( "Image", this, subsysName() );
@@ -62,6 +62,6 @@ MainThread::walk()
             imageQueue_->push(imageData);
         }
         //pushing too fast will cause the gui to not respond, sleep to prevent that
-        IceUtil::ThreadControl::sleep(IceUtil::Time::milliSeconds(8));
+        IceUtil::ThreadControl::sleep(IceUtil::Time::milliSeconds(5));
     }
 }

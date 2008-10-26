@@ -23,7 +23,7 @@ using namespace orcaimageview;
 
 Component::Component()
 : orcaice::Component( "OrcaImageView" )
-, imageQueue_(new ImageQueue(5))
+, imageQueue_(new ImageQueue(1))
 {
 }
 
@@ -65,7 +65,7 @@ Component::start()
 
     // connect signal from timer to slot of widget to update
     QObject::connect(imageQueue_, SIGNAL(imagePushed()), viewer, SLOT(updateGL()));
-    QObject::connect(viewer, SIGNAL(fps(int)), fpsDisplay, SLOT(setNum(int)));
+    QObject::connect(viewer, SIGNAL(fpsChanged(int)), fpsDisplay, SLOT(setNum(int)));
 
     // start network thread
     mainThread_ = new MainThread(imageQueue_, context() );
