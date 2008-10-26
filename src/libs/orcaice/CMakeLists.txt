@@ -18,7 +18,8 @@ IF( build )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIfaceString.cmake )
     
     # files from detail dir refer to public files
-    INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR} )
+    INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR} 
+       ${CMAKE_CURRENT_SOURCE_DIR}/detail )
     
     FILE( GLOB hdrs *.h )
     FILE( GLOB srcs *.cpp detail/*.cpp )
