@@ -17,10 +17,6 @@ ConsumerSubscriber::ConsumerSubscriber( const orcaice::Context& context ) :
 {
 }
 
-ConsumerSubscriber::~ConsumerSubscriber()
-{
-}
-
 void 
 ConsumerSubscriber::subscribeWithTag( const std::string& interfaceTag )
 {
@@ -41,7 +37,7 @@ ConsumerSubscriber::unsubscribeWithTag( const std::string& interfaceTag )
     unsubscribeWithString( proxyString );
 }
 
-void 
+bool 
 ConsumerSubscriber::subscribeWithTag( const std::string& interfaceTag, 
                         gbxiceutilacfr::Thread*  thread, const std::string& subsysName, 
                         int retryInterval, int retryNumber )
@@ -50,6 +46,6 @@ ConsumerSubscriber::subscribeWithTag( const std::string& interfaceTag,
     std::string proxyString = orcaice::getRequiredInterfaceAsString( context_, interfaceTag );
 
     // now that we have the stingified proxy, use the function above.
-    subscribeWithString( proxyString, thread, subsysName, retryInterval, retryNumber );
+    return subscribeWithString( proxyString, thread, subsysName, retryInterval, retryNumber );
 }
 

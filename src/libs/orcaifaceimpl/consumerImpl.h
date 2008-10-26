@@ -29,7 +29,7 @@ class ConsumerSubscriber
 public:
     ConsumerSubscriber( const orcaice::Context& context );
 
-    virtual ~ConsumerSubscriber();
+    virtual ~ConsumerSubscriber() {};
 
     //! Tries to connect to remote interface with stringified proxy @c proxyString.
     //! If succesful, tries to subscribe for data using the internal consumer interface.
@@ -50,7 +50,9 @@ public:
     //! each attempt.
     //! If succesful, tries to subscribe for data using the internal consumer interface.
     //! Catches appropriate exceptions. DOCUMENT!
-    virtual void subscribeWithString( const std::string& proxyString, 
+    //! 
+    //! Returns TRUE if subscribed succesfully, FALSE otherwise.
+    virtual bool subscribeWithString( const std::string& proxyString,  
                           gbxiceutilacfr::Thread*  thread, const std::string& subsysName="", 
                           int retryInterval=2, int retryNumber=-1 )=0;
 
@@ -62,7 +64,9 @@ public:
 
     //! Same as the threaded version of subscribeWithString() but the interface is looked up 
     //! using the config file and tag interfaceTag.
-    void subscribeWithTag( const std::string& interfaceTag, 
+    //! 
+    //! Returns TRUE if subscribed succesfully, FALSE otherwise.
+    bool subscribeWithTag( const std::string& interfaceTag, 
                           gbxiceutilacfr::Thread*  thread, const std::string& subsysName="", 
                           int retryInterval=2, int retryNumber=-1 );
 
@@ -122,10 +126,10 @@ Derived classes need to implement the dataEvent() callback function which is cal
 
 This consumer subscribes for data updates in the constructor and unsubscribes in the
 destructor. There's still a small chance that IceStorm will report an error when data delivery and
-unsubscription are closely spaced, e.g.:
+unsubscription are closely spaced, e.g. ('ast' in 'status/ast' means asterisk, replaced to avoid compiler warning):
 @verbatim
-Oct 25 03:26:47 tango /usr/bin/icebox[2474]: Topic: status/*@tango/localnav: subscribeAndGetPublisher: 07394FBF-586C-4128-AA28-1727B9DA2E19 QoS:  subscriptions: []
-Oct 25 03:26:49 tango /usr/bin/icebox[2474]: Topic: status/*@tango/localnav: unsubscribe: 07394FBF-586C-4128-AA28-1727B9DA2E19[07394FBF-586C-4128-AA28-1727B9DA2E19]
+Oct 25 03:26:47 tango /usr/bin/icebox[2474]: Topic: status/ast@tango/localnav: subscribeAndGetPublisher: 07394FBF-586C-4128-AA28-1727B9DA2E19 QoS:  subscriptions: []
+Oct 25 03:26:49 tango /usr/bin/icebox[2474]: Topic: status/ast@tango/localnav: unsubscribe: 07394FBF-586C-4128-AA28-1727B9DA2E19[07394FBF-586C-4128-AA28-1727B9DA2E19]
 Oct 25 03:26:49 tango /usr/bin/icebox[2474]: Subscriber: 0x81182e0 07394FBF-586C-4128-AA28-1727B9DA2E19: subscriber errored out: OutgoingAsync.cpp:305: Ice::ObjectNotExistException: object does not exist: identity: `07394FBF-586C-4128-AA28-1727B9DA2E19' facet:  operation: setData retry: 0/0
 @endverbatim
 */
@@ -240,7 +244,7 @@ public:
         unsubscribeWithString( proxyString );
     }
 
-    virtual void subscribeWithString( const std::string& proxyString, 
+    virtual bool subscribeWithString( const std::string& proxyString, 
                           gbxiceutilacfr::Thread*  thread, const std::string& subsysName="", 
                           int retryInterval=2, int retryNumber=-1 )
     {
@@ -259,10 +263,11 @@ public:
         {
             try {
                 providerPrx->subscribe( consumerPrx_ );
+                proxyString_.set( proxyString );
                 std::stringstream ss;
                 ss << "Subscribed to " << proxyString;
                 context_.tracer().debug( ss.str() );
-                break;
+                return true;
             }
             catch ( const std::exception &e )
             {
@@ -286,7 +291,7 @@ public:
                 context_.status().heartbeat( subsysName );
         }
 
-        proxyString_.set( proxyString );
+        return false;
     }
 
 protected:
