@@ -65,7 +65,6 @@ ViewWidget::resizeGL(int width, int height)
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     gluOrtho2D(0.0, width, 0.0, height);
-
 }
 
 void
@@ -95,6 +94,47 @@ ViewWidget::paintGL()
     
     glFlush();
 
+}
+
+void
+ViewWidget::initializeVertices()
+{
+
+}
+
+void 
+ViewWidget::updateVertices()
+{
+
+}
+
+void
+ViewWidget::flipX(bool flipX)
+{
+    flipX_ = flipX;
+    updateVertices();
+}
+
+void
+ViewWidget::flipY(bool flipY)
+{
+   flipY_ = flipY;
+   updateVertices();
+}
+
+void
+ViewWidget::fixedSize(bool fixedSize)
+{
+    fixedSize_ = fixedSize;
+    updateVertices();
+}
+
+void 
+ViewWidget::zoom(double zoom)
+{
+    zoom_ = zoom;
+    updateVertices();
+    emit(zoomChanged(zoom_));
 }
 
 void
@@ -158,7 +198,7 @@ ViewWidget::updateTexture()
 
     int timediff = timer_.restart();
     int thisfps = floor(1000.0/(float)(timediff));
-    emit(fps(thisfps));
+    emit(fpsChanged(thisfps));
 }
 
 
