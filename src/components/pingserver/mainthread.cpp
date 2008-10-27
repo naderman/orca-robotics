@@ -12,6 +12,7 @@
 #include <orcaice/orcaice.h>
 
 #include "mainthread.h"
+#include <sys/prctl.h>
 
 using namespace std;
 using namespace pingserver;
@@ -21,6 +22,12 @@ MainThread::MainThread( const orcaice::Context &context ) :
     context_(context)
 {
     subStatus().setMaxHeartbeatInterval( 10.0 );
+
+    //
+    // Allow core dumps even if we're setuid root.
+    //
+    const int dummy=0;
+    prctl(PR_SET_DUMPABLE,1,dummy,dummy,dummy);
 }
 
 void
