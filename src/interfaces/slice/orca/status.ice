@@ -54,10 +54,10 @@ enum SubsystemHealth
 //! Status for a single subsystem of a component.
 struct SubsystemStatus
 {
-    //! Current state in the subsystem's state machine. E.i. what is the subsystem doing?
+    //! Current state in the subsystem's state machine. I.e. what is the subsystem doing?
     SubsystemState state;
 
-    //! Subsystem's health. E.i. how is the subsystem doing?
+    //! Subsystem's health. I.e. how is the subsystem doing?
     SubsystemHealth health;
 
     //! Human-readable status description
