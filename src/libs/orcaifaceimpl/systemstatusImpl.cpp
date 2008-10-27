@@ -176,5 +176,4 @@ SystemStatusImpl::localSetAndSend( const ::orca::SystemStatusData &data )
 }
 
 }
-    
-    
+
