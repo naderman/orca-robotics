@@ -50,6 +50,7 @@ SET( ORCA_SLICE_SOURCE_FILES
     rangescanner2d.ice
     laserscanner2d.ice
     status.ice
+    systemstatus.ice
     tracer.ice
     vehicledescription.ice
     velocitycontrol2d.ice

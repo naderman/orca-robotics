@@ -115,7 +115,6 @@ interface Status
     idempotent void unsubscribe( StatusConsumer* subscriber );
 };
 
-
 /*!
     @}
 */

@@ -1,10 +1,15 @@
 DefaultComponentTag=StatusMon
 
 # interfaces
+Provides.SystemStatus.Type=::orca::SystemStatus
+Provides.SystemStatus.DefaultName=systemstatus
+
 Requires.Status0.Type=Status
 Requires.Status0.DefaultProxy=status@local/laser2d
 Requires.Status1.Type=Status
 Requires.Status1.DefaultProxy=status@local/robot2d
+
+Config.DisplayName.Default=text
 Config.JobQueueThreadPoolSize.Default=2
 Config.JobQueueSizeWarning.Default=2
 Config.JobQueueTraceAdded.Default=0
@@ -13,4 +18,5 @@ Config.JobQueueTraceDone.Default=0
 Config.ResubscribeTimeout.Default=45
 Config.ResubscribeInterval.Default=5
 Config.StaleTimeout.Default=60
+
 

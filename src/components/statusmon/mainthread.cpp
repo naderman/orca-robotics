@@ -15,6 +15,7 @@
 
 #include "componentmonitor.h"
 #include "mainthread.h"
+#include "displays.h"
 
 using namespace std;
 
@@ -75,6 +76,29 @@ MainThread::createMonitors()
     }
 }
 
+void 
+MainThread::loadDisplay()
+{
+
+    std::string prefix = context_.tag()+".Config.";    
+    std::string displayName = orcaice::getPropertyWithDefault( context_.properties(), prefix+"Display", "text" );
+        
+    if (displayName == "text")
+    {
+        display_ = new TextDisplay( context_ );
+    }
+    else if (displayName == "interface")
+    {
+        display_ = new InterfaceDisplay( context_, this );
+    }
+    else 
+    {
+        std::string errorStr = "Unknown display type." + displayName;
+        context_.tracer().error( errorStr);
+        throw gbxutilacfr::HardwareException( ERROR_INFO, errorStr );
+    }            
+}
+
 void
 MainThread::walk()
 {    
@@ -84,36 +108,24 @@ MainThread::walk()
     // create the monitors
     createMonitors();
     
+    // load the display
+    loadDisplay();
+    
     
     //
     // Main loop
     //
     
-    StatusDetails details;
-    
     while ( !isStopping() )
     {
+        vector<StatusDetails> systemStatusDetails;
         context_.tracer().info( "MainThread: waiting..." );
         
         for (unsigned int i=0; i<monitors_.size(); i++)
         {
-            details = monitors_[i].getStatus();
-            
-            if (details.dataAvailable)
-            {
-                cout << "MainThread: we have data " << endl << orcaobj::toString( details.statusData ) << endl;
-                
-                if (details.isStale) {
-                    cout << "MainThread: we have stale data " << endl;
-                }
-            }
-            else
-            {
-                cout << "MainThread: NO data available " << endl;
-            }
-            cout << endl;
-
+            systemStatusDetails.push_back( monitors_[i].getStatus() );
         }
+        display_->setSystemStatus( systemStatusDetails );
                 
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
         

@@ -128,8 +128,13 @@ This consumer subscribes for data updates in the constructor and unsubscribes in
 destructor. There's still a small chance that IceStorm will report an error when data delivery and
 unsubscription are closely spaced, e.g. ('ast' in 'status/ast' means asterisk, replaced to avoid compiler warning):
 @verbatim
+<<<<<<< .mine
+Oct 25 03:26:47 tango /usr/bin/icebox[2474]: Topic: status\*@tango/localnav: subscribeAndGetPublisher: 07394FBF-586C-4128-AA28-1727B9DA2E19 QoS:  subscriptions: []
+Oct 25 03:26:49 tango /usr/bin/icebox[2474]: Topic: status\*@tango/localnav: unsubscribe: 07394FBF-586C-4128-AA28-1727B9DA2E19[07394FBF-586C-4128-AA28-1727B9DA2E19]
+=======
 Oct 25 03:26:47 tango /usr/bin/icebox[2474]: Topic: status/ast@tango/localnav: subscribeAndGetPublisher: 07394FBF-586C-4128-AA28-1727B9DA2E19 QoS:  subscriptions: []
 Oct 25 03:26:49 tango /usr/bin/icebox[2474]: Topic: status/ast@tango/localnav: unsubscribe: 07394FBF-586C-4128-AA28-1727B9DA2E19[07394FBF-586C-4128-AA28-1727B9DA2E19]
+>>>>>>> .r5129
 Oct 25 03:26:49 tango /usr/bin/icebox[2474]: Subscriber: 0x81182e0 07394FBF-586C-4128-AA28-1727B9DA2E19: subscriber errored out: OutgoingAsync.cpp:305: Ice::ObjectNotExistException: object does not exist: identity: `07394FBF-586C-4128-AA28-1727B9DA2E19' facet:  operation: setData retry: 0/0
 @endverbatim
 */

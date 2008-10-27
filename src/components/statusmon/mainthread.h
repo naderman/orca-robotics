@@ -16,6 +16,8 @@
 namespace statusmon
 {
     
+class AbstractDisplay;
+    
 class MainThread : public gbxiceutilacfr::SafeThread
 {
 public:
@@ -33,9 +35,14 @@ private:
     orcaice::Context context_;
     std::vector<ComponentMonitor> monitors_;
     
+    AbstractDisplay *display_;
+    void loadDisplay();
+    
     // using a map assumes that there's only one status interface per component
     std::map<std::string,std::string> getComponentPlatformPairs();
     void createMonitors();
+    
+    
 
 
 };
