@@ -18,7 +18,7 @@
 #include <orcaice/exceptions.h>
 #include <orcaice/stringutils.h>
 
-#include "privateutils.h"
+#include "detail/privateutils.h"
 
 using namespace std;
 

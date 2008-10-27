@@ -12,10 +12,9 @@
 #define ORCA_IFACE_IMPL_UTIL_H
 
 #include <orcaice/context.h>
-#include <orcaice/connectutils.h>
+#include <orcaice/icestormutils.h>
 #include <sstream>
 #include <iostream>
-#include <IceStorm/IceStorm.h>
 
 namespace orcaifaceimpl {
 

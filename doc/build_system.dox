@@ -12,7 +12,7 @@
 
 @page orca_doc_buildsystem The Orca Build System
 
-@note Reviewed for release 2.9.0.
+@note Reviewed for release 2.13.0.
 
 Orca uses <a href="http://www.cmake.org">CMake</a> to handle its build system.
 CMake is a cross-platform tool, designed as a replacement for autotools.
@@ -29,7 +29,7 @@ If you just want to see how to initiate a build, see @ref orca_doc_getting "inst
 The build system for orca consists of a set of 'CMakeLists.txt' files, many of which @c INCLUDE a set of helper @c .cmake files.  The @c .cmake files live in the top-level @c [ORCA-SRC]/cmake directory.
 
 The top-level @c CMakeLists.txt file:
-    - Checks for global requirements, e.i. Ice and Hydro.
+    - Checks for global requirements, e.i. Ice, Hydro, and Gearbox.
     - Sets globally useful variables, e.g. which OS is being used, location of commonly used directories, etc.
 
 Individual components maintain their own @c CMakeLists.txt files. For more details see a @ref orca_doc_tutebrickwrite_cmakelists "step-by-step commentary" on the CMakeLists.txt file of the example @ref orca_component_brick component.

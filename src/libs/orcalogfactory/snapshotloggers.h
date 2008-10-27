@@ -6,6 +6,7 @@
 #include <orcalog/snapshotlogbuffer.h>
 #include <orcalogfactory/logwriters.h>
 #include <orcaice/connectutils.h>
+#include <orcaice/icestormutils.h>
 
 namespace orcalogfactory {
 

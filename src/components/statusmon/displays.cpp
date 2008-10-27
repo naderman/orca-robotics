@@ -1,5 +1,5 @@
 
-#include <orcaobj/stringutils.h>
+#include <orcaifacestring/systemstatus.h>
 #include "displays.h"
 
 namespace statusmon
@@ -30,7 +30,7 @@ TextDisplay::setSystemStatus( const std::vector<StatusDetails> &systemStatusDeta
         
         // output data
         stringstream ss; 
-        ss << "TextDisplay: system status:" << endl << orcaobj::toString( details.statusData ) << endl;
+        ss << "TextDisplay: system status:" << endl << ifacestring::toString( details.statusData ) << endl;
         context_.tracer().info( ss.str() );
     }
 }

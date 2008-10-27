@@ -73,7 +73,7 @@ std::string catchExceptionsWithSleep( gbxutilacfr::Tracer& tracer, const std::st
 }
 
 std::string catchExceptionsWithStatus( const std::string& activity, 
-            gbxutilacfr::SubStatus& subStatus, gbxutilacfr::SubsystemStatusType newStatus )
+            gbxutilacfr::SubStatus& subStatus, gbxutilacfr::SubsystemHealth newHealth )
 {
     stringstream exceptionSS;
     if ( !activity.empty() )
@@ -109,33 +109,29 @@ std::string catchExceptionsWithStatus( const std::string& activity,
     if ( !exceptionSS.str().empty() )
         return exceptionSS.str();
 
-    switch ( newStatus )
+    switch ( newHealth )
     {
-    case gbxutilacfr::SubsystemStatusFault :
-    // We treat Stalled status same as Fault.
-    // The right thing would be to through an exception but we are here to catch exceptions
-    // not to throw them.
-    case gbxutilacfr::SubsystemStatusStalled :
+    case gbxutilacfr::SubsystemFault :
         subStatus.fault( exceptionSS.str() );
         break;
-    case gbxutilacfr::SubsystemStatusWarning :
+    case gbxutilacfr::SubsystemWarning :
         subStatus.warning( exceptionSS.str() );
         break;
-    case gbxutilacfr::SubsystemStatusInitialising :
-        subStatus.initialising( exceptionSS.str() );
-        break;
-    case gbxutilacfr::SubsystemStatusOk :
+    case gbxutilacfr::SubsystemOk :
         subStatus.ok( exceptionSS.str() );
+        break;
+    case gbxutilacfr::SubsystemStalled :
+        assert( false && "Stalled health should not be reported from within the subsystem" );
     }
 
     return exceptionSS.str();
 }
 
 std::string catchExceptionsWithStatusAndSleep( const std::string& activity, 
-            gbxutilacfr::SubStatus& subStatus, gbxutilacfr::SubsystemStatusType newStatus, 
+            gbxutilacfr::SubStatus& subStatus, gbxutilacfr::SubsystemHealth newHealth, 
             int sleepIntervalMSec )
 {    
-    string problem = catchExceptionsWithStatus( activity, subStatus, newStatus );
+    string problem = catchExceptionsWithStatus( activity, subStatus, newHealth );
 
     // Slow things down in case of persistent error
     if ( sleepIntervalMSec>0 ) {
@@ -150,7 +146,7 @@ std::string catchExceptionsWithStatusAndSleep( const std::string& activity,
 
 void catchMainLoopExceptions( gbxutilacfr::SubStatus& subStatus )
 {
-    catchExceptionsWithStatusAndSleep( string("running in main loop"), subStatus, gbxutilacfr::SubsystemStatusFault );
+    catchExceptionsWithStatusAndSleep( string("running in main loop"), subStatus, gbxutilacfr::SubsystemFault );
 }
 
 } // namespace

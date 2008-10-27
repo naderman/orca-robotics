@@ -14,7 +14,7 @@
 #include <orca/common.h>
 #include <orcaice/orcaice.h>
 
-#include "privateutils.h"
+#include "detail/privateutils.h"
 
 
 using namespace std;
@@ -97,6 +97,8 @@ Service::Service()
 
 Service::~Service()
 {
+    // unlike the Application, we hold a (dumb) pointer to the component
+    // (because we have to set it in the derived Service constructor)
     delete component_;
 }
 
@@ -170,16 +172,16 @@ Service::start( const ::std::string        & name,
         }
     }
     catch ( const std::exception &e ) {
-        exceptionSS << "Caught exception while starting component: " << e.what();
+        exceptionSS << "(while starting component) : " << e.what();
     }
     catch ( const std::string &e ) {
-        exceptionSS << "Caught exception while starting component: " << e;
+        exceptionSS << "(while starting component) : " << e;
     }
     catch ( const char *e ) {
-        exceptionSS << "Caught exception while starting component: " << e;
+        exceptionSS << "(while starting component) : " << e;
     }
     catch ( ... ) {
-        exceptionSS << "Caught exception while starting component.";
+        exceptionSS << "(while starting component) .";
     }
 
     if ( !exceptionSS.str().empty() ) {
@@ -191,19 +193,22 @@ Service::start( const ::std::string        & name,
 void
 Service::stop()
 {
+    initTracerInfo( component_->context().tag()+": Stopping service..." );
 
     if ( component_ )
     {
-        initTracerInfo( component_->context().tag()+": Stopping service..." );
-        component_->finalise();
+        initTracerInfo( component_->context().tag()+": Stopping component..." );
         component_->stop();
+        component_->finalise();
         initTracerInfo( component_->context().tag()+": Component stopped" );
     }
 
+    // Apparently, communicator is not shutdown at this point so nobody told our
+    // adapter to deactivate. (This is different from stand-alone application).
+    adapter_->deactivate();
     adapter_->waitForDeactivate();
     initTracerInfo( component_->context().tag()+": Adapter deactivated" );
 
-    adapter_ = 0;
     initTracerInfo( component_->context().tag()+": Service stopped." );
 }
 

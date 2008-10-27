@@ -8,29 +8,28 @@
  *
  */
  
-#ifndef MAIN_THREAD_H
-#define MAIN_THREAD_H
+#ifndef MAIN_SUBSYSTEM_H
+#define MAIN_SUBSYSTEM_H
 
-#include <orcaice/subsystemthread.h>
-#include <orcaice/context.h>
+#include <orcaice/subsystem.h>
 #include <orcaifaceimpl/printingconsumers.h>
 
 namespace lasermon
 {
 
-class MainThread : public orcaice::SubsystemThread
+class MainSubsystem : public orcaice::Subsystem
 {
 
 public:
-    MainThread( const orcaice::Context &context );
+    MainSubsystem( const orcaice::Context &context );
 
-    // from SubsystemThread
-    virtual void walk();
+    // from Subsystem
+    virtual void initialise();
+//     virtual void work();
+//     virtual void finalise();
 
 private:
     orcaifaceimpl::PrintingRangeScanner2dConsumerImplPtr consumer_;
-
-    orcaice::Context context_;
 };
 
 } // namespace

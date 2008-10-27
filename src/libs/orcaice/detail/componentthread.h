@@ -20,7 +20,7 @@ namespace orcaice {
 
 //
 // This thread is started by the component, and used to:
-// - repeatedly try to register the Home interface, if the first one failed.
+// - repeatedly try to register the Home interface, if the first attempt failed.
 // - check on component Status.
 //
 // @author Alex Brooks
@@ -34,7 +34,6 @@ public:
                      gbxutilacfr::Status    &status,
                      ComponentInterfaceFlag  interfaceFlag,
                      const orcaice::Context &context );
-    ~ComponentThread();
 
     virtual void walk();
 

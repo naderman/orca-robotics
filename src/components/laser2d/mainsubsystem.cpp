@@ -11,18 +11,82 @@
 #include <iostream>
 #include <orcaice/orcaice.h>
 #include <orcaifacestring/laserscanner2d.h>
-#include <orcaobj/orcaobj.h>
-#include "mainthread.h"
+#include <orcaobj/orcaobj.h> // for setInit()
+#include "mainsubsystem.h"
 
 using namespace std;
 using namespace laser2d;
 
-MainThread::MainThread( const orcaice::Context &context ) :
-    orcaice::SubsystemThread( context.tracer(), context.status(), "MainThread" ),
-    context_(context)
+MainSubsystem::MainSubsystem( const orcaice::Context &context ) :
+    orcaice::Subsystem( context, "MainSubsystem" )
+{
+}
+
+void
+MainSubsystem::initialise()
 {
     subStatus().setMaxHeartbeatInterval( 20.0 );
 
+    initSettings();
+
+    initHardwareDriver();
+
+    if ( isStopping() )
+        return;
+
+    initNetworkInterface();
+}
+
+void
+MainSubsystem::work() 
+{
+    subStatus().setMaxHeartbeatInterval( 1.0 );
+
+    while ( !isStopping() )
+    {
+        try 
+        {
+            // this blocks until new data arrives
+            readData();
+            
+            laserInterface_->localSetAndSend( orcaLaserData_ );
+            if ( hydroLaserData_.haveWarnings )
+            {
+                subStatus().warning( hydroLaserData_.warnings );
+            }
+            else
+            {
+                subStatus().ok();
+            }
+
+            stringstream ss;
+            ss << "MainSubsystem: Read laser data: " << ifacestring::toString(orcaLaserData_);
+            context_.tracer().debug( ss.str(), 5 );
+        }
+        catch ( ... ) 
+        {
+            orcaice::catchMainLoopExceptions( subStatus() );
+
+            // Re-initialise the driver, unless we are stopping
+            if ( !isStopping() ) {
+                initHardwareDriver();
+            }
+        }
+
+    } // end of while
+}
+
+void
+MainSubsystem::finalise() 
+{
+    // Laser hardware will be shut down in the driver's destructor.
+}
+
+////////////////////
+
+void
+MainSubsystem::initSettings()
+{
     //
     // Read settings
     //
@@ -43,11 +107,26 @@ MainThread::MainThread( const orcaice::Context &context ) :
         throw gbxutilacfr::Exception( ERROR_INFO, "Failed to validate laser configuration" );
     }
 
+    // Set up the laser-scan objects
+    orcaLaserData_ = new orca::LaserScanner2dData;
+    orcaLaserData_->minRange     = config_.minRange;
+    orcaLaserData_->maxRange     = config_.maxRange;
+    orcaLaserData_->fieldOfView  = config_.fieldOfView;
+    orcaLaserData_->startAngle   = config_.startAngle;
+    orcaLaserData_->ranges.resize( config_.numberOfSamples );
+    orcaLaserData_->intensities.resize( config_.numberOfSamples );
+
+    // Point the pointers in hydroLaserData_ at orcaLaserData_
+    hydroLaserData_.ranges      = &(orcaLaserData_->ranges[0]);
+    hydroLaserData_.intensities = &(orcaLaserData_->intensities[0]);
 }
 
 void
-MainThread::initNetworkInterface()
+MainSubsystem::initNetworkInterface()
 {
+    // activate component's communication
+    activate( context_, this, subsysName() );
+
     Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag() + ".Config.";
 
@@ -100,19 +179,18 @@ MainThread::initNetworkInterface()
 }
 
 void
-MainThread::initHardwareDriver()
+MainSubsystem::initHardwareDriver()
 {
-    subStatus().setMaxHeartbeatInterval( 20.0 );
-
     Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag() + ".Config.";
 
     // Dynamically load the library and find the factory
     std::string driverLibName = 
         orcaice::getPropertyWithDefault( prop, prefix+"DriverLib", "libOrcaLaser2dSickCarmen.so" );
-    context_.tracer().debug( "MainThread: Loading driver library "+driverLibName, 4 );
+    context_.tracer().debug( "MainSubsystem: Loading driver library "+driverLibName, 4 );
     // The factory which creates the driver
     std::auto_ptr<hydrointerfaces::LaserScanner2dFactory> driverFactory;
+
     try {
         driverLib_.reset( new hydrodll::DynamicallyLoadedLibrary(driverLibName) );
         driverFactory.reset( 
@@ -139,12 +217,10 @@ MainThread::initHardwareDriver()
             orcaice::catchExceptionsWithStatusAndSleep( "initialising hardware driver", subStatus() );
         }   
     }
-
-    subStatus().setMaxHeartbeatInterval( 1.0 );
 }
 
 void
-MainThread::readData()
+MainSubsystem::readData()
 {
     //
     // Read from the laser driver
@@ -162,66 +238,4 @@ MainThread::readData()
         std::reverse( orcaLaserData_->ranges.begin(), orcaLaserData_->ranges.end() );
         std::reverse( orcaLaserData_->intensities.begin(), orcaLaserData_->intensities.end() );
     }
-}
-
-void
-MainThread::walk()
-{
-    // Set up the laser-scan objects
-    orcaLaserData_ = new orca::LaserScanner2dData;
-    orcaLaserData_->minRange     = config_.minRange;
-    orcaLaserData_->maxRange     = config_.maxRange;
-    orcaLaserData_->fieldOfView  = config_.fieldOfView;
-    orcaLaserData_->startAngle   = config_.startAngle;
-    orcaLaserData_->ranges.resize( config_.numberOfSamples );
-    orcaLaserData_->intensities.resize( config_.numberOfSamples );
-
-    // Point the pointers in hydroLaserData_ at orcaLaserData_
-    hydroLaserData_.ranges      = &(orcaLaserData_->ranges[0]);
-    hydroLaserData_.intensities = &(orcaLaserData_->intensities[0]);
-
-    // These functions catch their exceptions.
-    activate( context_, this, subsysName() );
-
-    initNetworkInterface();
-    initHardwareDriver();
-
-    //
-    // IMPORTANT: Have to keep this loop rolling, because the '!isStopping()' call checks for requests to shut down.
-    //            So we have to avoid getting stuck anywhere within this main loop.
-    //
-    while ( !isStopping() )
-    {
-        try 
-        {
-            // this blocks until new data arrives
-            readData();
-            
-            laserInterface_->localSetAndSend( orcaLaserData_ );
-            if ( hydroLaserData_.haveWarnings )
-            {
-                subStatus().warning( hydroLaserData_.warnings );
-            }
-            else
-            {
-                subStatus().ok();
-            }
-
-            stringstream ss;
-            ss << "MainThread: Read laser data: " << ifacestring::toString(orcaLaserData_);
-            context_.tracer().debug( ss.str(), 5 );
-        }
-        catch ( ... ) 
-        {
-            orcaice::catchMainLoopExceptions( subStatus() );
-
-            // Re-initialise the driver, unless we are stopping
-            if ( !isStopping() ) {
-                initHardwareDriver();
-            }
-        }
-
-    } // end of while
-
-    // Laser hardware will be shut down in the driver's destructor.
 }

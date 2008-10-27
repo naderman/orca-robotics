@@ -216,8 +216,6 @@ std::string toString( const orca::PowerData& );
 //! Converts to string
 std::string toString( const orca::PixMapData& );
 //! Converts to string
-std::string toString( const orca::StatusData& );
-//! Converts to string
 std::string toString( const orca::VelocityControl2dData& );
 //! Converts to string
 std::string toString( const orca::TracerData& );

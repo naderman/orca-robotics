@@ -159,16 +159,16 @@ Application::run( int argc, char* argv[] )
         }
     }
     catch ( const std::exception &e ) {
-        exceptionSS << "Caught exception while starting component: " << e.what();
+        exceptionSS << "(while starting component) : " << e.what();
     }
     catch ( const std::string &e ) {
-        exceptionSS << "Caught exception while starting component: " << e;
+        exceptionSS << "(while starting component) : " << e;
     }
     catch ( const char *e ) {
-        exceptionSS << "Caught exception while starting component: " << e;
+        exceptionSS << "(while starting component) : " << e;
     }
     catch ( ... ) {
-        exceptionSS << "Caught exception while starting component.";
+        exceptionSS << "(while starting component) .";
     }
 
     if ( !exceptionSS.str().empty() ) {

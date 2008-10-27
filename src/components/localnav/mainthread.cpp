@@ -172,11 +172,11 @@ MainThread::initPathFollowerInterface()
         }
         catch ( ... ) {
             if ( testMode_ ) {
-                orcaice::catchExceptionsWithStatus( "initialising PathFollower interface", subStatus(), gbxutilacfr::SubsystemStatusWarning );
+                orcaice::catchExceptionsWithStatus( "initialising PathFollower interface", subStatus(), gbxutilacfr::SubsystemWarning );
                 return;
             }
             else {
-                orcaice::catchExceptionsWithStatusAndSleep( "initialising PathFollower interface", subStatus(), gbxutilacfr::SubsystemStatusFault, 2000 );
+                orcaice::catchExceptionsWithStatusAndSleep( "initialising PathFollower interface", subStatus(), gbxutilacfr::SubsystemFault, 2000 );
             }
         }
     }
@@ -295,7 +295,7 @@ MainThread::stopVehicle()
             // This is OK: it means that the communicator shut down (eg via Ctrl-C)
         }
         catch ( ... ) {
-            orcaice::catchExceptionsWithStatusAndSleep( "getting vehicle description", subStatus(), gbxutilacfr::SubsystemStatusFault, 500 );
+            orcaice::catchExceptionsWithStatusAndSleep( "getting vehicle description", subStatus(), gbxutilacfr::SubsystemFault, 500 );
         }
     }
 }

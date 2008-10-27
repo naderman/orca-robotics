@@ -12,7 +12,7 @@
 
 @page orca_doc_getting Download and Install Orca
 
-@note Reviewed for release 2.11.0.
+@note Reviewed for release 2.13.0.
 
 @section depend Overview of dependencies
 
@@ -51,13 +51,13 @@ The instructions below are quite general, follow them if your platform/distribut
 	- Minimum version required 2.4-patch 4 (latest tested: 2.6-patch 0).
         - Full instructions are available from the <a href="http://www.cmake.org/HTML/Download.html">download page</a>.
     -# Download and install Ice libraries.
-        - Minimum version required 3.2.0 (latest tested: 3.3.0)
+        - Minimum version required 3.3.0 (latest tested: 3.3.0)
         - Full instructions are available from the <a href="http://www.zeroc.com/download.html">download page</a>. Several binaries distributions exists, for others building from source may be required.
     -# Download and install any optional dependencies you'd like. Or just skip this step and do it later.
         - <a href="http://playerstage.sourceforge.net/" target="_blank">Player/Stage</a>, is required for some hardware support and for use of the Stage simulator (you probably want this).
             - For version requirements see individual component documentation.
         - <a href="http://www.trolltech.com/" target="_blank">Qt</a> is a cross-platform framework for building GUI's. Some components are GUI-only and some have optional GUI drivers.
-            - Minimum version required 4.2.0 (latest tested: 4.4.0)
+            - Minimum version required 4.3.0 (latest tested: 4.4.0)
     -# Build and install GearBox distribution.
         - Minimum version required 8.07
         - Un-tar the archive, configure using CMake, compile and install
@@ -86,4 +86,6 @@ The following are the names of available variables for each distribution:
     - GEARBOX_HOME - where to find Gearbox installation, e.g. "cmake -DGEARBOX_HOME=/home/myuser/temp ."
     - HYDRO_HOME - where to find Hydro installation, e.g. "cmake -DHYDRO_HOME=/home/myuser/temp ."
 
+Other build configuration variables available for all distributions:
+- GBX_DEFAULT_LIB_TYPE - select default library type between SHARED (default) and STATIC. This is more useful in Windows. Note that not all libraries are configured use default setting and may be hardwired to be either static or dynamic.
 */

@@ -13,21 +13,21 @@
 #include <orcaifacestring/laserscanner2d.h>
 #include <orcaice/orcaice.h>
 
-#include "mainthread.h"
+#include "mainsubsystem.h"
 
 using namespace std;
 using namespace lasermon;
 
-MainThread::MainThread( const orcaice::Context &context ) : 
-    SubsystemThread( context.tracer(), context.status(), "MainThread" ),
-    context_(context)
+MainSubsystem::MainSubsystem( const orcaice::Context &context ) : 
+    Subsystem( context, "MainSubsystem" )
 {
-    subStatus().setMaxHeartbeatInterval( 10.0 );
 }
 
 void
-MainThread::walk()
+MainSubsystem::initialise()
 {
+    subStatus().setMaxHeartbeatInterval( 10.0 );
+
     //
     // ENABLE NETWORK CONNECTIONS
     //
@@ -39,8 +39,8 @@ MainThread::walk()
     //
     orca::LaserScanner2dPrx laserPrx;
     // Connect directly to the interface (multi-try)
-    orcaice::connectToInterfaceWithTag<orca::LaserScanner2dPrx>( context_, laserPrx, "LaserScanner2d", 
-        this, subsysName() );
+    orcaice::connectToInterfaceWithTag<orca::LaserScanner2dPrx>( 
+        context_, laserPrx, "LaserScanner2d", this, subsysName() );
     
     // Try to get laser description once, continue if fail
     context_.tracer().info( "Trying to get laser description as a test" );
@@ -82,6 +82,6 @@ MainThread::walk()
     consumer_ = new orcaifaceimpl::PrintingRangeScanner2dConsumerImpl( context_, 1000, 1 );
     consumer_->subscribeWithTag( "LaserScanner2d", this, subsysName() );
     
-    subStatus().ok( "Initialized." );
+    // we won't be updating heartbeat after this
     subStatus().setMaxHeartbeatInterval( -1 );
 }

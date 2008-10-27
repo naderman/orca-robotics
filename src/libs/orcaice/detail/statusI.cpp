@@ -15,6 +15,8 @@
 using namespace std;
 using namespace orcaice::detail;
 
+//////////////////////////////////////////////////////////////
+
 namespace
 {
 
@@ -25,22 +27,37 @@ convert( const hydroiceutil::NameStatusMap &internal, orca::SubsystemsStatus &ne
     
     for ( it=internal.begin(); it!=internal.end(); ++it ) 
     {
-        switch ( it->second.type ) 
+        switch ( it->second.state ) 
         {
-        case gbxutilacfr::SubsystemStatusInitialising :
-            network[it->first].type = orca::SubsystemStatusInitialising;
+        case gbxutilacfr::SubsystemIdle :
+            network[it->first].state = orca::SubsystemIdle;
             break;
-        case gbxutilacfr::SubsystemStatusOk :
-            network[it->first].type = orca::SubsystemStatusOk;
+        case gbxutilacfr::SubsystemInitialising :
+            network[it->first].state = orca::SubsystemInitialising;
             break;
-        case gbxutilacfr::SubsystemStatusWarning :
-            network[it->first].type = orca::SubsystemStatusWarning;
+        case gbxutilacfr::SubsystemWorking :
+            network[it->first].state = orca::SubsystemWorking;
             break;
-        case gbxutilacfr::SubsystemStatusFault :
-            network[it->first].type = orca::SubsystemStatusFault;
+        case gbxutilacfr::SubsystemFinalising :
+            network[it->first].state = orca::SubsystemFinalising;
             break;
-        case gbxutilacfr::SubsystemStatusStalled :
-            network[it->first].type = orca::SubsystemStatusStalled;
+        case gbxutilacfr::SubsystemShutdown :
+            network[it->first].state = orca::SubsystemShutdown;
+            break;
+        }
+        switch ( it->second.health ) 
+        {
+        case gbxutilacfr::SubsystemOk :
+            network[it->first].health = orca::SubsystemOk;
+            break;
+        case gbxutilacfr::SubsystemWarning :
+            network[it->first].health = orca::SubsystemWarning;
+            break;
+        case gbxutilacfr::SubsystemFault :
+            network[it->first].health = orca::SubsystemFault;
+            break;
+        case gbxutilacfr::SubsystemStalled :
+            network[it->first].health = orca::SubsystemStalled;
             break;
         }
         network[it->first].message = it->second.message;
@@ -50,6 +67,8 @@ convert( const hydroiceutil::NameStatusMap &internal, orca::SubsystemsStatus &ne
 }
 
 } // namespace
+
+//////////////////////////////////////////////////////////////
 
 StatusI::StatusI( const orcaice::Context& context ) :
     hydroiceutil::LocalStatus( 

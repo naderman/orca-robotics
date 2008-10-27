@@ -13,10 +13,11 @@
 
 #include <orcaice/context.h>
 #include <orcaice/multiconnectutils.h>
+#include <orcaice/icestormutils.h>
 #include <gbxsickacfr/gbxiceutilacfr/store.h>
-#include <gbxsickacfr/gbxiceutilacfr/safethread.h>
+#include <gbxsickacfr/gbxiceutilacfr/thread.h>
 #include <orcaifaceimpl/util.h>
-#include <iostream>
+// #include <iostream>
 
 namespace orcaifaceimpl
 {
@@ -102,10 +103,7 @@ class ConsumerTypeI : virtual public ConsumerType
 public:
     ConsumerTypeI( AbstractConsumer<ObjectType> &impl ) :
         impl_(impl) {}
-    virtual ~ConsumerTypeI()
-    {
-        std::cout<<"ConsumerTypeI::~ConsumerTypeI()"<<std::endl;
-    }
+    virtual ~ConsumerTypeI() {};
 
     // implementation of remote call defined in all *Consumer interfaces
     // this implementation redirects to the Impl class
@@ -138,9 +136,6 @@ Oct 25 03:26:49 tango /usr/bin/icebox[2474]: Topic: status/ast@tango/localnav: u
 Oct 25 03:26:49 tango /usr/bin/icebox[2474]: Subscriber: 0x81182e0 07394FBF-586C-4128-AA28-1727B9DA2E19: subscriber errored out: OutgoingAsync.cpp:305: Ice::ObjectNotExistException: object does not exist: identity: `07394FBF-586C-4128-AA28-1727B9DA2E19' facet:  operation: setData retry: 0/0
 @endverbatim
 */
-//  If the life of the consumer is shorter than the life of the component (e.g. you create and destroy consumers repeatedly),
-//  you must call destroy() method before the existing consumer goes out of scope. Otherwise, the application will segfault
-//  complaining that a 'pure virtual method called'.
 template<class ProviderPrxType, class ConsumerType, class ConsumerPrxType, class ObjectType>
 class ConsumerImpl : public ConsumerSubscriber, 
                      public AbstractConsumer<ObjectType>,
@@ -178,26 +173,7 @@ public:
 
         tryRemoveInterfaceWithIdentity( context_, consumerPrx_->ice_getIdentity() );
     }
-/*
-    //! Remove this consumer from the Object Adapter which will free up memory automatically.
-    //! Call this function if you repeatedly create and destroy consumers thoughout the life of the
-    //! component.
-    void destroy()
-    {
-        if ( !consumerPrx_ )
-            return;
 
-        tryRemoveInterfaceWithIdentity( context_, consumerPrx_->ice_getIdentity() );
-
-//         try {
-//             context_.adapter()->remove( consumerPrx_->ice_getIdentity() );
-//             
-//         }
-//         // This can fail if the adapter is shutting down.  We don't care.
-//         catch ( ... ) {
-//         }
-    }
-*/
     //! Access the proxy to the internal consumer interface implementation.
     ConsumerPrxType consumerPrx() const { return consumerPrx_; }
 

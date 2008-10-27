@@ -16,7 +16,7 @@
 #include <Ice/Ice.h>
 #include <IceStorm/IceStorm.h>
 
-#include <orcaice/connectutils.h>
+#include <orcaice/icestormutils.h>
 #include <orcaice/context.h>
 #include <gbxsickacfr/gbxiceutilacfr/timer.h>
 

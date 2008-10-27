@@ -77,7 +77,7 @@ HwThread::enableDriver()
             return;
         }
         catch ( ... ) {
-            string problem = orcaice::catchExceptionsWithStatusAndSleep( "enabling hardware driver", subStatus(), gbxutilacfr::SubsystemStatusFault, 2000 );
+            string problem = orcaice::catchExceptionsWithStatusAndSleep( "enabling hardware driver", subStatus(), gbxutilacfr::SubsystemFault, 2000 );
 
             stateMachine_.setFault( problem );
         }

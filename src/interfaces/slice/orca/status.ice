@@ -23,26 +23,42 @@ module orca
     @{
 */
 
-//! Possible subsystem status values
-enum SubsystemStatusType
-{
-    //! Subsystem is initialising -- it's not exactly OK yet, but there's also no fault yet.
-    SubsystemStatusInitialising,
-    //! Subsystem is OK
-    SubsystemStatusOk,
-    //! Subsystem has encountered an abnormal but non-fault condition
-    SubsystemStatusWarning,
-    //! Subsystem has declared a fault
-    SubsystemStatusFault,
-    //! Subsystem has not been heard from for an abnormally long time
-    SubsystemStatusStalled
+//! Possible subsystem states
+enum SubsystemState
+{    
+    //! Subsystem has been created but has not started initialisation process.
+    SubsystemIdle,
+    //! Subsystem is preparing to work, e.g. initialising its resources, etc.
+    SubsystemInitialising,
+    //! Subsystem is fully initialised and is performing its function.
+    SubsystemWorking,
+    //! Subsystem is preparing to shutdown, e.g. releasing its resources, etc.
+    SubsystemFinalising,
+    //! Subsystem is not longer functioning.
+    SubsystemShutdown
 };
 
-//! Status for a single subsystem of this component
+//! Possible subsystem status values
+enum SubsystemHealth
+{
+    //! Subsystem is OK
+    SubsystemOk,
+    //! Subsystem has encountered an abnormal but non-fault condition
+    SubsystemWarning,
+    //! Subsystem has encountered a fault
+    SubsystemFault,
+    //! Subsystem has not been heard from for an abnormally long time
+    SubsystemStalled
+};
+
+//! Status for a single subsystem of a component.
 struct SubsystemStatus
 {
-    //! Machine-readable status description
-    SubsystemStatusType type;
+    //! Current state in the subsystem's state machine. E.i. what is the subsystem doing?
+    SubsystemState state;
+
+    //! Subsystem's health. E.i. how is the subsystem doing?
+    SubsystemHealth health;
 
     //! Human-readable status description
     string message;

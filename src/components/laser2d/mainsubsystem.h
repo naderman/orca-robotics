@@ -7,12 +7,12 @@
  * the LICENSE file included in this distribution.
  *
  */
-#ifndef MAIN_THREAD_H
-#define MAIN_THREAD_H
+
+#ifndef MAIN_SUBSYSTEM_H
+#define MAIN_SUBSYSTEM_H
 
 #include <memory>
-#include <orcaice/subsystemthread.h>
-#include <orcaice/context.h>
+#include <orcaice/subsystem.h>
 #include <hydrodll/dynamicload.h>
 // remote interface
 #include <orcaifaceimpl/laserscanner2dImpl.h>
@@ -21,20 +21,21 @@
 
 namespace laser2d {
 
-//
-// @brief the main executing loop of this laser component.
-//
-class MainThread : public orcaice::SubsystemThread
+class MainSubsystem : public orcaice::Subsystem
 {
 
 public:
 
-    MainThread( const orcaice::Context &context );
+    MainSubsystem( const orcaice::Context &context );
 
-    // from SubsystemThread
-    virtual void walk();
+    // from Subsystem
+    virtual void initialise();
+    virtual void work();
+    virtual void finalise();
 
 private:
+
+    void initSettings();
 
     // Tries repeatedly to instantiate the driver
     void initHardwareDriver();
@@ -59,8 +60,6 @@ private:
     std::auto_ptr<hydrodll::DynamicallyLoadedLibrary> driverLib_;
     // Generic driver for the hardware
     std::auto_ptr<hydrointerfaces::LaserScanner2d> driver_;
-
-    orcaice::Context context_;
 };
 
 } // namespace

@@ -43,14 +43,14 @@ public:
     Service();
     virtual ~Service();
 
-    //! Implements virtual function called by IceBox on start-up.
-    //! Input parameters @p name and @p args come from the service configuration line
-    //! of the IceBox config file (the line which specifies @e create entry point ).
+    // Implements virtual function called by IceBox on start-up.
+    // Input parameters @p name and @p args come from the service configuration line
+    // of the IceBox config file (the line which specifies @e create entry point ).
     virtual void start(const ::std::string        & name,
                        const Ice::CommunicatorPtr & communicator,
                        const Ice::StringSeq       & args);
 
-    //! Implements virtual function called by IceBox on shut-down.
+    // Implements virtual function called by IceBox on shut-down.
     virtual void stop();
 
 protected:
@@ -61,7 +61,7 @@ protected:
     
 private:
 
-    // By convention there is exactly one adapter per component and, therefore, per service
+    // By Orca convention there is exactly one adapter per component and, therefore, per service
     // Keep the pointer to it here, so it does not get destroyed too soon.
     Ice::ObjectAdapterPtr   adapter_;
 

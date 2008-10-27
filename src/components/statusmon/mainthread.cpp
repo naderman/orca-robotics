@@ -11,7 +11,6 @@
 #include <iostream>
 #include <hydroiceutil/jobqueue.h>
 #include <orcaice/orcaice.h>
-#include <orcaobj/stringutils.h>
 
 #include "componentmonitor.h"
 #include "mainthread.h"

@@ -95,7 +95,7 @@ MainThread::getGpsDescription()
                 return;
         }
         catch ( ... ) {
-            orcaice::catchExceptionsWithStatusAndSleep( "getting Gps description", subStatus(), gbxutilacfr::SubsystemStatusFault, 2000 );
+            orcaice::catchExceptionsWithStatusAndSleep( "getting Gps description", subStatus(), gbxutilacfr::SubsystemFault, 2000 );
         }
     }
 }
@@ -140,7 +140,7 @@ MainThread::initNetworkInterface()
                 break;
             }
             catch ( ... ) {
-                orcaice::catchExceptionsWithStatusAndSleep( "getting vehicle description", subStatus(), gbxutilacfr::SubsystemStatusFault, 2000 );
+                orcaice::catchExceptionsWithStatusAndSleep( "getting vehicle description", subStatus(), gbxutilacfr::SubsystemFault, 2000 );
             }
         }
     }

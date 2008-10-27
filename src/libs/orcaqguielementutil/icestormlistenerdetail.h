@@ -12,6 +12,7 @@
 #define ORCAGUI_ICESTORM_LISTENER_DETAIL_H
 
 #include <orcaice/ptrbuffer.h>
+#include <orcaice/connectutils.h>
 
 namespace orcaqguielementutil
 {

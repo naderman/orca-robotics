@@ -68,8 +68,8 @@ while ( !isStopping() )
 std::string catchExceptionsWithSleep( gbxutilacfr::Tracer& tracer, const std::string& activity, int sleepIntervalMSec=1000 );
 
 /*! 
-Same as catchExceptions() but also changes subsystem's status the newStatus. All status types are allowed accept 
-SubsystemStatusStalled (using it is equivalent to SubsystemStatusFault). Default new status is gbxutilacfr::SubsystemStatusFault.
+Same as catchExceptions() but also changes subsystem's health to newHealth. All status health types are allowed accept 
+SubsystemStalled (a subsystem can not decide for itself that it's stalled). Default new health is gbxutilacfr::SubsystemFault.
 
 Example:
 @verbatim
@@ -81,14 +81,14 @@ while ( !isStopping() )
     }
     catch ( ... ) 
     {
-        // will issue a status Warning instead of a normal Fault.
-        orcaice::catchExceptionsWithSleep( "initializing hardware driver", subStatus(), gbxutilacfr::SubsystemStatusWarning );
+        // will issue a status Warning instead of the default Fault.
+        orcaice::catchExceptionsWithSleep( "initializing hardware driver", subStatus(), gbxutilacfr::SubsystemWarning );
     } 
 } 
 @endverbatim
 */
 std::string catchExceptionsWithStatus( const std::string& activity, 
-            gbxutilacfr::SubStatus& subStatus, gbxutilacfr::SubsystemStatusType newStatus=gbxutilacfr::SubsystemStatusFault );
+            gbxutilacfr::SubStatus& subStatus, gbxutilacfr::SubsystemHealth newHealth=gbxutilacfr::SubsystemFault );
 
 /*!
 Same as catchExceptionsWithStatus() but also sleeps for specified number of milliseconds before returning.
@@ -113,13 +113,13 @@ while ( !isStopping() )
 @endverbatim
 */
 std::string catchExceptionsWithStatusAndSleep( const std::string& activity, 
-            gbxutilacfr::SubStatus& subStatus, gbxutilacfr::SubsystemStatusType newStatus=gbxutilacfr::SubsystemStatusFault, 
+            gbxutilacfr::SubStatus& subStatus, gbxutilacfr::SubsystemHealth newHealth=gbxutilacfr::SubsystemFault, 
             int sleepIntervalMSec=1000 );
 
 /*!
 Convenience function which is equivalent to
 @verbatim
-catchExceptionsWithStatusAndSleep( "running in main loop", subStatus(), gbxutilacfr::SubsystemStatusFault );
+catchExceptionsWithStatusAndSleep( "running in main loop", subStatus(), gbxutilacfr::SubsystemFault );
 @endverbatim
 */
 void catchMainLoopExceptions( gbxutilacfr::SubStatus& subStatus );

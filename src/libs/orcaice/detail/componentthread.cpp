@@ -1,12 +1,11 @@
 #include "componentthread.h"
 #include <orcaice/exceptions.h>
+#include <orcaice/catchutils.h>
 #include <iostream>
-#include <IceUtil/Thread.h>
 #include <IceGrid/Registry.h>  // used to register Home interface as a well-known object
 
 using namespace std;
-
-namespace orcaice {
+using namespace orcaice;
 
 ComponentThread::ComponentThread( const Ice::ObjectPrx   &homePrx,
                                   gbxutilacfr::Status    &status,
@@ -18,10 +17,6 @@ ComponentThread::ComponentThread( const Ice::ObjectPrx   &homePrx,
     status_(status),
     interfaceFlag_(interfaceFlag),
     context_(context)
-{
-}
-
-ComponentThread::~ComponentThread()
 {
 }
 
@@ -58,15 +53,9 @@ ComponentThread::walk()
             IceUtil::ThreadControl::sleep(IceUtil::Time::milliSeconds(sleepIntervalMs));
         }
     }
-    catch ( Ice::CommunicatorDestroyedException & )
+    catch ( ... )
     {
-        // This is OK, we must be shutting down.
-    }
-    catch ( std::exception &e )
-    {
-        stringstream ss;
-        ss << "orcaice::ComponentThread: caught unexpected exception: " << e.what() <<".  This shouldn't happen.";
-        context_.tracer().error( ss.str() );
+        orcaice::catchExceptions( context_.tracer(), "running component utility thread" );
     }
 }
 
@@ -123,7 +112,4 @@ ComponentThread::tryRegisterHome()
         }
     }
     return true;
-}
-
-
 }

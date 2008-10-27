@@ -1026,47 +1026,6 @@ toString( const orca::PowerData& obj )
 }
 
 std::string 
-toString( const orca::StatusData& obj )
-{
-    std::ostringstream s;
-    s << "Status for " << toString( obj.name )  << endl
-      << "time up = " << IceUtil::Time::seconds(obj.timeUp).toDuration() << endl
-      << "subsystems [" << obj.subsystems.size() << "] (name, status, msg, since beat) :";
-
-    string type;
-
-    for ( orca::SubsystemsStatus::const_iterator it=obj.subsystems.begin(); it!=obj.subsystems.end(); ++it ) 
-    {
-        // NOTE: this is a special kind of toString operation: the strings are different from enum entries.
-        switch ( it->second.type ) {
-        case orca::SubsystemStatusInitialising :
-            type = "INITIALISING";
-            break;
-        case orca::SubsystemStatusOk :
-            type = "OK";
-            break;
-        case orca::SubsystemStatusWarning :
-            type = "WARN";
-            break;
-        case orca::SubsystemStatusFault :
-            type = "FAULT";
-            break;
-        case orca::SubsystemStatusStalled :
-            type = "STALLED";
-            break;
-        }
-
-        s << endl << "[" 
-          <<it->first<<", "
-          <<type<<", "
-          <<it->second.message<<", "
-          <<it->second.sinceHeartbeat*100.0<<"%]";
-    }
-
-    return s.str();
-}
-
-std::string 
 toString( const orca::TracerData& obj )
 {
     std::string s;

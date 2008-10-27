@@ -16,12 +16,12 @@
 #include <hydroiceutil/localstatus.h>
 #include <hydroiceutil/localtracer.h>
 #include <hydroiceutil/localhistory.h>
-#include "localhome.h"
-#include "homeI.h"
-#include "statusI.h"
-#include "tracerI.h"
-#include "privateutils.h"
 #include "component.h"
+#include "detail/localhome.h"
+#include "detail/homeI.h"
+#include "detail/statusI.h"
+#include "detail/tracerI.h"
+#include "detail/privateutils.h"
 #include "detail/componentthread.h"
 #include "detail/privateutils.h"
 #include <orcaobj/stringutils.h>

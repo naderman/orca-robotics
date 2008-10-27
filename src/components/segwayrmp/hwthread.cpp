@@ -123,7 +123,7 @@ HwThread::enableDriver()
             return;
         }
         catch ( ... ) {
-            string problem = orcaice::catchExceptionsWithStatusAndSleep( "initialising", subStatus(), gbxutilacfr::SubsystemStatusFault, 2000 );
+            string problem = orcaice::catchExceptionsWithStatusAndSleep( "initialising", subStatus(), gbxutilacfr::SubsystemFault, 2000 );
 
             stateMachine_.setFault( problem );
         }

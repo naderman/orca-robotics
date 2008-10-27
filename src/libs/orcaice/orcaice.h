@@ -35,6 +35,8 @@
 
 #include <orcaice/connectutils.h>
 #include <orcaice/multiconnectutils.h>
+#include <orcaice/icestormutils.h>
+#include <orcaice/multiicestormutils.h>
 #include <orcaice/activator.h>
 
 #endif

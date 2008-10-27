@@ -28,7 +28,7 @@ int main(int argc, char * argv[])
 {
     MyComponent component;
     orcaice::Application app( component );
-    return app.main(argc, argv);
+    return app.orcaMain(argc, argv);
 }
 @endverbatim
  *
@@ -73,7 +73,7 @@ public:
 
 private:
 
-    // By convention there is exactly one adapter per component and, therefore, per application
+    // By Orca convention there is exactly one adapter per component and, therefore, per application
     // Keep the pointer to it here, so it does not get destroyed too soon.
     Ice::ObjectAdapterPtr adapter_;
 
