@@ -19,16 +19,15 @@ namespace lasermon
 
 class MainSubsystem : public orcaice::Subsystem
 {
-
 public:
     MainSubsystem( const orcaice::Context &context );
 
+private:
     // from Subsystem
     virtual void initialise();
 //     virtual void work();
 //     virtual void finalise();
 
-private:
     orcaifaceimpl::PrintingRangeScanner2dConsumerImplPtr consumer_;
 };
 

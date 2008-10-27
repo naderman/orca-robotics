@@ -17,44 +17,87 @@
 namespace orcaice {
 
 /*!
-@brief A version of the Thread class which catches all possible exceptions and integrates some Status operations.
+@brief A class implementing a common subsystem state machine.
 
-If an exception is caught when the thread is not stopping, a status fault is issued.
-Then the thread will wait for someone to call stop().
+The (simple) state machine implemented by this class is a chain of state transitions 
+(with one extra link):
 
-To use this class, simply implement the pure virtual walk() function.
+Idle --> Initialising --> Working --> Finalising --> Shutdown
+              |___________________________^
+
+The following represents the Subsystem state machine in the format of
+State Machine Compiler (see smc.sf.net) :
 @verbatim
-void MyThread::walk()
+Idle
+Entry { init(); }
 {
-    // initialize
-
-    // main loop
-    while ( !isStopping() )
-    {
-        // do something
-    }
-
-    // clean up
+    init
+    Initialising
+    {}
 }
-@endverbatim
 
+Initialising
+Entry { initialise(); }
+{
+    [ !isStopping ] finished
+    Working
+    {}
+
+    [ isStopping ] finished
+    Finalising
+    {}
+}
+
+Working
+Entry { work(); }
+{
+    finished
+    Finalising
+    {}
+}
+
+Finalising
+Entry { finalise(); }
+{
+    finished
+    Shutdown
+    {}
+}
+
+Shutdown
+{
+}   
+@endverbatim
  */
 class Subsystem : public orcaice::SubsystemThread
 {
 public: 
+    //! Constructor.
     Subsystem( const orcaice::Context &context, const std::string& subsysName="MainSubsystem" );
     virtual ~Subsystem() {};
 
-    // FSM actions
-    virtual void initialise();
-    virtual void work();
-    virtual void finalise();
+protected:
+    // implementation note: FSM actions need to be protected so that the derived class
+    // can call them without re-implementing.
 
+    //! Action performed when in Intialising state.
+    //! Default imlementation does nothing.
+    virtual void initialise() {};
+    
+    //! Action performed when in Working state.
+    //! Default imlementation does nothing.
+    virtual void work() {};
+
+    //! Action performed when in Finalising state.
+    //! Default imlementation does nothing.
+    virtual void finalise() {};
+
+    //! Component context.
+    orcaice::Context context_;
+
+private:
     // from SubsystemThread
     virtual void walk();
-
-protected:
-    orcaice::Context context_;
 
 };
 //! A smart pointer to the Subsystem class.

@@ -10,9 +10,6 @@
 
 #include "subsystem.h"
 
-// #include <iostream>
-
-// using namespace std;
 using namespace orcaice;
 
 Subsystem::Subsystem( const orcaice::Context &context, const std::string& subsysName ) : 
@@ -22,35 +19,29 @@ Subsystem::Subsystem( const orcaice::Context &context, const std::string& subsys
 }
 
 void 
-Subsystem::initialise() 
-{
-}
-
-void 
-Subsystem::work() 
-{
-}
-
-void 
-Subsystem::finalise() 
-{
-}
-
-void 
 Subsystem::walk()
 {
+    // init: Idle --> Initialising
     subStatus().initialising();
     initialise();
-
-
+    
     if ( !isStopping() )
     {
+        // finished: Initialising --> Working
         subStatus().working();
         work();
+
+        // finished: Working --> Finalising
+        subStatus().finalising();
+        finalise();
+    }
+    else 
+    {
+        // finished: Initialising --> Finalising
+        subStatus().finalising();
+        finalise();
     }
 
-    subStatus().finalising();
-    finalise();
-
+    // finished: Finalising --> Shutdown
     subStatus().status().setSubsystemStatus( subStatus().name(), gbxutilacfr::SubsystemShutdown, gbxutilacfr::SubsystemOk );
 }

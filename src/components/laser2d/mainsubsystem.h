@@ -23,17 +23,14 @@ namespace laser2d {
 
 class MainSubsystem : public orcaice::Subsystem
 {
-
 public:
-
     MainSubsystem( const orcaice::Context &context );
 
+private:
     // from Subsystem
     virtual void initialise();
     virtual void work();
     virtual void finalise();
-
-private:
 
     void initSettings();
 

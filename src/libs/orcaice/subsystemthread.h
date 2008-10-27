@@ -53,10 +53,6 @@ public:
     //! errors and waits for someone to call stop().
     virtual void run();
 
-    //! Implement this function in the derived class and put here all the stuff which your
-    //! thread needs to do.
-    virtual void walk()=0;
-
     //! Access to subsystem status.
     gbxutilacfr::SubStatus& subStatus() { return subStatus_; };
 
@@ -64,6 +60,11 @@ public:
     std::string subsysName() const { return subStatus_.name(); };
 
 private:
+
+    //! Implement this function in the derived class and put here all the stuff which your
+    //! thread needs to do.
+    virtual void walk()=0;
+
     gbxutilacfr::Tracer& tracer_;
     gbxutilacfr::SubStatus subStatus_;
 };

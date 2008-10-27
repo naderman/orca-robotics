@@ -13,6 +13,7 @@
 #include <orcaice/application.h>
 #include <orcaice/component.h>
 #include <orcaice/subsystem.h>
+#include <orcaice/catchutils.h>
 
 // #include <orcaice/orcaice.h>
 
@@ -43,32 +44,49 @@ TestSubsystem::TestSubsystem( Config config, const orcaice::Context &context ) :
     Subsystem( context ),
     config_( config )
 {
-    if ( config_ & ThrowSubsysConstructor )
-        throw "throwing from subsystem constructor";
 }
 
 void 
 TestSubsystem::initialise() 
 {
     context_.tracer().info( "TestSubsystem::initialise()" );
-    if ( config_ & ExitFromInitialise )
-        context_.shutdown();
+    try
+    {
+        throw string("Error in initialise()");
+    }
+    catch (...)
+    {
+        orcaice::catchExceptions( context_.tracer(), "initialising" );
+    }
 }
 
 void 
 TestSubsystem::work() 
 {
     context_.tracer().info( "TestSubsystem::work()" );
-    if ( config_ & ExitFromWork )
-        context_.shutdown();
+    try
+    {
+        try
+        {
+            throw string("Error in work()");
+        }
+        catch ( const string& e )
+        {
+            context_.tracer().info( "caught string the first time. Rethrowing ..." );
+            throw;
+        }
+    }
+    catch (...)
+    {
+        orcaice::catchExceptions( context_.tracer(), "working" );
+    }
 }
 
 void 
 TestSubsystem::finalise() 
 {
     context_.tracer().info( "TestSubsystem::finalise()" );
-    if ( config_ & ExitFromFinalise )
-        context_.shutdown();
+    context_.shutdown();
 }
 
 //////////////////////////////////////
@@ -91,8 +109,8 @@ TestComponent::TestComponent( Config config ) :
     orcaice::Component( "Test", orcaice::NoStandardInterfaces ),
     config_(config)
 {
-    if ( config_ & ThrowCompConstructor )
-        throw "throwing from component constructor";
+//     if ( config_ & ThrowCompConstructor )
+//         throw "throwing from component constructor";
 }
 
 void 
