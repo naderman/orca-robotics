@@ -11,12 +11,11 @@
 #ifndef MAINTHREAD_H
 #define MAINTHREAD_H
 
+#include <orcaifaceimpl/systemstatusImpl.h>
 #include "componentmonitor.h"
 
 namespace statusmon
 {
-    
-class AbstractDisplay;
     
 class MainThread : public gbxiceutilacfr::SafeThread
 {
@@ -28,22 +27,16 @@ public:
     // from SafeThread
     virtual void walk();
     
-
 private:
     
     hydroiceutil::JobQueuePtr jobQueue_;
     orcaice::Context context_;
-    std::vector<ComponentMonitor> monitors_;
-    
-    AbstractDisplay *display_;
-    void loadDisplay();
+    std::vector<ComponentMonitor> monitors_;    
+    orcaifaceimpl::SystemStatusImplPtr systemStatusIface_;
     
     // using a map assumes that there's only one status interface per component
     std::map<std::string,std::string> getComponentPlatformPairs();
     void createMonitors();
-    
-    
-
 
 };
 

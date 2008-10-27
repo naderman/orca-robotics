@@ -9,7 +9,6 @@ Requires.Status0.DefaultProxy=status@local/laser2d
 Requires.Status1.Type=Status
 Requires.Status1.DefaultProxy=status@local/robot2d
 
-Config.DisplayName.Default=text
 Config.JobQueueThreadPoolSize.Default=2
 Config.JobQueueSizeWarning.Default=2
 Config.JobQueueTraceAdded.Default=0

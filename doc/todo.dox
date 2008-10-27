@@ -58,6 +58,11 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
   - Simplified the task of switching to static libraries in Windows. GBX_ADD_LIBRARY is now called with DEFAULT flag which resolves to the new GBX_DEFAULT_LIB_TYPE variable.
 
 @par New interfaces
+
+    - SystemStatus (tobi)
+        - provides the status of a whole system consisting of a bunch of components
+        - see StatusMon below which implements the interface
+
 @par New components
 
     - StatusMon (tobi)

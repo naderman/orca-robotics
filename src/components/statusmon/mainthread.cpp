@@ -12,13 +12,17 @@
 #include <hydroiceutil/jobqueue.h>
 #include <orcaice/orcaice.h>
 
-#include "componentmonitor.h"
 #include "mainthread.h"
-#include "displays.h"
 
 using namespace std;
 
 namespace statusmon {
+    
+void convert( const std::vector<StatusDetails> &from, 
+              orca::SystemStatusData           &to )
+{
+    cout << "MainThread: convert: implement me" << endl;
+}
     
 
 MainThread::MainThread( const orcaice::Context & context ) :
@@ -75,56 +79,41 @@ MainThread::createMonitors()
     }
 }
 
-void 
-MainThread::loadDisplay()
-{
-
-    std::string prefix = context_.tag()+".Config.";    
-    std::string displayName = orcaice::getPropertyWithDefault( context_.properties(), prefix+"Display", "text" );
-        
-    if (displayName == "text")
-    {
-        display_ = new TextDisplay( context_ );
-    }
-    else if (displayName == "interface")
-    {
-        display_ = new InterfaceDisplay( context_, this );
-    }
-    else 
-    {
-        std::string errorStr = "Unknown display type." + displayName;
-        context_.tracer().error( errorStr);
-        throw gbxutilacfr::HardwareException( ERROR_INFO, errorStr );
-    }            
-}
-
 void
 MainThread::walk()
 {    
     // multi-try
-    orcaice::activate( context_, this ); 
+    orcaice::activate( context_, this );
+     
+    // provided interface
+    systemStatusIface_ = new orcaifaceimpl::SystemStatusImpl( "SystemStatus", context_ );
+    systemStatusIface_->initInterface( this );
 
     // create the monitors
     createMonitors();
-    
-    // load the display
-    loadDisplay();
     
     
     //
     // Main loop
     //
     
+    orca::SystemStatusData data;
+    vector<StatusDetails> systemStatusDetails;
+    
     while ( !isStopping() )
     {
-        vector<StatusDetails> systemStatusDetails;
         context_.tracer().info( "MainThread: waiting..." );
         
+        // get status data from all monitors
+        systemStatusDetails.clear();
         for (unsigned int i=0; i<monitors_.size(); i++)
         {
             systemStatusDetails.push_back( monitors_[i].getStatus() );
         }
-        display_->setSystemStatus( systemStatusDetails );
+        
+        // convert and tell the world
+        convert( systemStatusDetails, data );
+        systemStatusIface_->localSetAndSend( data );
                 
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
         
