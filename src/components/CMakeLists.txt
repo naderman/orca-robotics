@@ -31,10 +31,6 @@ ADD_SUBDIRECTORY( teleop )
 ADD_SUBDIRECTORY( tracermon )
 ADD_SUBDIRECTORY( wifi )
 
-# experimental
-#ADD_SUBDIRECTORY( fsmlaser2d )
-#ADD_SUBDIRECTORY( ssmlaser2d )
-
 # putting it after all subdir's because of cmake weirdness:
 # when placed above, only one subdir license appears 
 GBX_ADD_LICENSE( LGPL )

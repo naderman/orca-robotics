@@ -72,6 +72,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
   - all components which subscribe to remote interfaces now attempt to unsubscribe before stopping. (alexm)
   - all components catch exeptions in a consise and standardised manner using new orcaice:: functions. (alexm)
 
+- Laser2d, LaserMon
+  - converted to new Subsystem implementation. (alexm)
+
 - Gps2Localise2d
   - fixed rare bug which lead to assertion failure when the component is stopped shortly after starting (alexm)
 
@@ -84,6 +87,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
   - Application stops component before shutting down the Communicator. This means that the component has a chance to unsubscribe
     or perform other remote operations before stopping. (alexm)
   - new functions for catching exceptions in a consise and standardised manner from inside components. (alexm)
+  - status-related classes are updated for new SubsystemStatus representation. (alexm)
+  - new class Subsystem which encodes a simple state machine Idle->Initialising->Working->Finalising->Shutdown (with an extra
+    transition Initialising->Finalising) (alexm)
 
 - libOrcaLogFactory
   - added logging to ascii for PolarFeature2d (tobi)
