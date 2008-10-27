@@ -65,7 +65,7 @@ Component::start()
 
     // connect signal from timer to slot of widget to update
     QObject::connect(imageQueue_, SIGNAL(imagePushed()), viewer, SLOT(updateGL()));
-    QObject::connect(viewer, SIGNAL(fpsChanged(int)), fpsDisplay, SLOT(setNum(int)));
+    QObject::connect(viewer, SIGNAL(fpsChanged(double)), fpsDisplay, SLOT(setNum(double)));
 
     // start network thread
     mainThread_ = new MainThread(imageQueue_, context() );

@@ -197,7 +197,7 @@ ViewWidget::updateTexture()
                     textureFormat_, GL_UNSIGNED_BYTE, &(image->data[0]));
 
     int timediff = timer_.restart();
-    int thisfps = floor(1000.0/(float)(timediff));
+    double thisfps = 1000.0/(double)(timediff);
     emit(fpsChanged(thisfps));
 }
 
