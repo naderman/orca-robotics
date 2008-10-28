@@ -18,6 +18,7 @@ using namespace std;
 
 namespace systemstatus {
     
+// converts from internal to Slice-defined representation
 void convert( const map<string,StatusDetails> &from, 
               orca::SystemStatusData          &to )
 {    

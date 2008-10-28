@@ -14,20 +14,19 @@
 @ingroup orca_cpp
 @ingroup orca_linux
 @ingroup orca_qnx
-@defgroup orca_component_systemstatus SystemStatus
-@brief Connects to any number of Status interfaces and aggregates their information
+@defgroup orca_component_systemstatusmon SystemStatusMon
+@brief Connects to a SystemStatus interface and displays its information
 
-Connects to any number of Status interfaces and aggregates their information. Clients can display the information in different formats (@see @ref orca_component_systemstatusmon)
+Connects to a SystemStatus interface and displays its information in different formats (@see @ref orca_component_systemstatus)
 
 
 @par Provides
 
 - @ref orca_interface_home
-- @ref orca_interface_systemstatus
 
 @par Requires
 
-- @ref orca_interface_status
+- @ref orca_interface_systemstatus
 
 
 @par Configuration
