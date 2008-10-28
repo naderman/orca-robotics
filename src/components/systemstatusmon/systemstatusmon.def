@@ -1,0 +1,7 @@
+DefaultComponentTag=SystemStatusMon
+
+# Provided Interfaces
+
+# Required Interfaces
+Requires.SystemStatus.Type=SystemStatus
+Requires.SystemStatus.DefaultProxy=systemstatus@local/systemstatus

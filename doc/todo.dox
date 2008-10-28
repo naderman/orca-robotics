@@ -77,6 +77,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
     - SystemStatus (tobi)
         - provides a system-level overview of status
+        
+    - SystemStatusMon (tobi)
+        - reads from SystemStatus and displays in different formats
 
 @par New utilities
 @par New libraries

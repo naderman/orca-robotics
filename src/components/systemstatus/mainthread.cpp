@@ -118,7 +118,6 @@ MainThread::walk()
             string platComp;
             monitors_[i].getComponentStatus( platComp, details ); 
             systemStatusDetails[platComp] = details;
-//             systemStatusDetails.push_back( monitors_[i].getStatus() );
         }
         
         // convert and tell the world

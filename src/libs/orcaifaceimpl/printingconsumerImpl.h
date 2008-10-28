@@ -43,7 +43,7 @@ public:
     //! This callback simply prints it out to standard output.
     virtual void dataEvent( const ObjectType& data ) 
     {
-std::cout<<"PrintingConsumerImpl::dataEvent() start"<<std::endl;
+        std::cout << "PrintingConsumerImpl::dataEvent() start" << std::endl;
         context_.tracer().info( ifacestring::toString(data,recurse_,expand_) ); 
     }
 private:

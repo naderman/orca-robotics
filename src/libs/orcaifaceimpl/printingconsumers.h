@@ -13,19 +13,6 @@
 
 #include <orcaifaceimpl/printingconsumerImpl.h>
 
-#include <orca/rangescanner2d.h>
-#include <orca/laserscanner2d.h>
-#include <orca/localise3d.h>
-#include <orca/localise2d.h>
-#include <orca/odometry3d.h>
-#include <orca/odometry2d.h>
-#include <orca/drivebicycle.h>
-#include <orca/ogmap.h>
-#include <orca/gps.h>
-#include <orca/status.h>
-#include <orca/ins.h>
-#include <orca/pointcloud.h>
-
 namespace orcaifaceimpl
 {
 
@@ -164,8 +151,15 @@ typedef IceUtil::Handle<PrintingInsConsumerImpl>            PrintingInsConsumerI
 typedef PrintingConsumerImpl<orca::PointCloudPrx,
                         orca::PointCloudConsumer,
                         orca::PointCloudConsumerPrx,
-                        orca::PointCloudData>                     PrintingPointCloudConsumerImpl;
-typedef IceUtil::Handle<PrintingPointCloudConsumerImpl>            PrintingPointCloudConsumerImplPtr;
+                        orca::PointCloudData>           PrintingPointCloudConsumerImpl;
+typedef IceUtil::Handle<PrintingPointCloudConsumerImpl> PrintingPointCloudConsumerImplPtr;
+
+//! Typedef for a common interface type. There's also a corresponding Ptr.
+typedef PrintingConsumerImpl<orca::SystemStatusPrx,
+                        orca::SystemStatusConsumer,
+                        orca::SystemStatusConsumerPrx,
+                        orca::SystemStatusData>            PrintingSystemStatusConsumerImpl;
+typedef IceUtil::Handle<PrintingSystemStatusConsumerImpl>  PrintingSystemStatusConsumerImplPtr;
 
 
 } // namespace
