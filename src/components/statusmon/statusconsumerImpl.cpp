@@ -74,9 +74,9 @@ StatusConsumerImpl::getStatus( StatusDetails &details )
     bool shouldResubscribe=false;
     
     IceUtil::Time timeSinceLastUpdate = IceUtil::Time::now() - lastDataReceivedTime_;
-    details.secSinceHeard = timeSinceLastUpdate.toSeconds();
+    int secSinceHeard = timeSinceLastUpdate.toSeconds();
 
-    if ( details.secSinceHeard > config_.resubscribeTimeout )
+    if ( secSinceHeard > config_.resubscribeTimeout )
     {
         IceUtil::Time timeSinceLastResubscribe = IceUtil::Time::now() - lastResubscribeTime_;
         if ( timeSinceLastResubscribe.toSeconds() > config_.resubscribeInterval )
@@ -88,7 +88,7 @@ StatusConsumerImpl::getStatus( StatusDetails &details )
             shouldResubscribe=true;
         }
 
-        if ( details.secSinceHeard > config_.staleTimeout )
+        if ( secSinceHeard > config_.staleTimeout )
         {
             details.isStale = true;
         }

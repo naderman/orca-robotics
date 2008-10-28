@@ -22,8 +22,9 @@ module orca
     @{
 */
 
-//! A sequence of StatusData
-sequence<StatusData> SystemStatusData;
+//! Hold the StatusData of an entire system
+//! The string contains "component/platform"
+dictionary<string,StatusData> SystemStatusData;
 
 /*!
     Data consumer interface.

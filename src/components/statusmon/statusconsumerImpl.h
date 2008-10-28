@@ -20,17 +20,16 @@
 namespace statusmon {
 
 struct StatusDetails {
-    // Have we received any status data yet?
+    
+    // Have we ever received any status data?
     bool dataAvailable;
-    // How long since we last received status data?
-    // (only filled in if dataAvailable)
-    double secSinceHeard;
-    // Does the StatusConsumerImpl consider status to have failed send frequently enough?
+
+    // Does we consider status to have failed sending frequently enough?
     bool isStale;
 
-    // The actual statusData object.
-    // (only filled in if dataAvailable)
+    // The actual statusData object (only filled in if dataAvailable)
     orca::StatusData statusData;
+    
 };
 
 //
@@ -55,11 +54,11 @@ public:
             staleTimeout(staleTime) {}
         std::string platformName;
         std::string componentName;
-        // If we don't hear for longer than this timeout [sec], try to re-subscribe.
+        // If we don't hear for longer than this timeout [sec], caller should try to resubscribe.
         int resubscribeTimeout;
         // Don't try to resubscribe more frequently than this interval [sec]
         int resubscribeInterval;
-        // If we don't hear for longer than this timeout [sec], flag an error.
+        // If we don't hear for longer than this timeout [sec], data is considered stale.
         int staleTimeout;
     };
 
@@ -67,6 +66,7 @@ public:
     // Throws exceptions if _anything_ goes wrong.
     //
     StatusConsumerImpl( const Config& config, const orcaice::Context& context );
+    
     // Thread-safe (has to be because this object can be destroyed at any time)
     ~StatusConsumerImpl();
 

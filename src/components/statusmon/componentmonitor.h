@@ -35,10 +35,13 @@ class ComponentMonitor
                           const orcaice::Context    &context );
         ~ComponentMonitor();
         
-        StatusDetails getStatus();
+        void getComponentStatus( std::string   &platComp, 
+                                 StatusDetails &componentStatus );
         
     private:
         hydroiceutil::JobQueuePtr jobQueue_;
+        std::string platformName_;
+        std::string componentName_;
         orcaice::Context context_;
         StatusConsumerImplPtr statusConsumer_;
 };

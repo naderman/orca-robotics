@@ -53,6 +53,8 @@ ComponentMonitor::ComponentMonitor( hydroiceutil::JobQueuePtr  jobQueue,
                                     const std::string         &component,
                                     const orcaice::Context    &context )
     : jobQueue_(jobQueue),
+      platformName_(platform),
+      componentName_(component),
       context_(context)
 {
     Ice::PropertiesPtr prop = context_.properties();
@@ -75,19 +77,19 @@ ComponentMonitor::~ComponentMonitor()
 {
 }
     
-StatusDetails 
-ComponentMonitor::getStatus()
+void 
+ComponentMonitor::getComponentStatus( string        &platComp, 
+                                      StatusDetails &componentStatus )
 {
-    StatusDetails details;
-    bool shouldResubscribe = statusConsumer_->getStatus( details );
+    platComp =  platformName_ + "/" + componentName_;
+    
+    bool shouldResubscribe = statusConsumer_->getStatus( componentStatus );
     
     if (shouldResubscribe) 
     {
         hydroiceutil::JobPtr job = new SubscribeJob( context_, statusConsumer_ );
         jobQueue_->add( job );
     }
-    
-    return details;
 }
 
 }

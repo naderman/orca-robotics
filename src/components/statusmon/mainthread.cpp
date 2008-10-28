@@ -18,10 +18,16 @@ using namespace std;
 
 namespace statusmon {
     
-void convert( const std::vector<StatusDetails> &from, 
-              orca::SystemStatusData           &to )
+void convert( const map<string,StatusDetails> &from, 
+              orca::SystemStatusData          &to )
 {
-    cout << "MainThread: convert: implement me" << endl;
+    
+    for ( map<string,StatusDetails>::const_iterator it=from.begin(); it!=from.end(); ++it )
+    {
+        to[it->first] = it->second.statusData;
+    }
+    
+    //TODO: add stale field!
 }
     
 
@@ -98,7 +104,7 @@ MainThread::walk()
     //
     
     orca::SystemStatusData data;
-    vector<StatusDetails> systemStatusDetails;
+    map<string,StatusDetails> systemStatusDetails;
     
     while ( !isStopping() )
     {
@@ -108,7 +114,11 @@ MainThread::walk()
         systemStatusDetails.clear();
         for (unsigned int i=0; i<monitors_.size(); i++)
         {
-            systemStatusDetails.push_back( monitors_[i].getStatus() );
+            StatusDetails details;
+            string platComp;
+            monitors_[i].getComponentStatus( platComp, details ); 
+            systemStatusDetails[platComp] = details;
+//             systemStatusDetails.push_back( monitors_[i].getStatus() );
         }
         
         // convert and tell the world
