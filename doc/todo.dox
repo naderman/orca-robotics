@@ -49,6 +49,13 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - laser2og:
    - The ray-trace stuff in here is currently cut-n-pasted from hydroogmap...
 
+- image stuff:
+   - create an multiimageserver and multicameraserver (both with commonality in a simple base class)
+   - update the viewer to allow viewer to modify slightly for common 
+     needs... rotation, zoom, mirroring of the display and showing statistics
+     on image frequency and delay between the capture the the display of it.
+   - extend the viewer to show one of many image streams from a multiimage
+
 @section orca_doc_history_head Changes in SVN since Last Release
 
 @par Project wide
@@ -65,12 +72,22 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @par New components
 
+    - OrcaImageView (tom)
+        - qt4 opengl driven image stream viewer
+
     - SystemStatus (tobi)
         - provides a system-level overview of status
 
 @par New utilities
 @par New libraries
 @par Updated interfaces
+
+- ImageInterface
+  - uses string to define format instead of an enum
+
+- CameraInterface
+  - data types derive from ones found in the Image interface
+
 @par Updated components
 
 - all components
