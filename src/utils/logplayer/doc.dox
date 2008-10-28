@@ -64,9 +64,9 @@ called @c encoding @c type.
 @section Configuration
 
 - @c LogPlayer.Config.FactoryLibNames (string)
-    - A space-separated list of libraries containing slave factories.
+    - A space-separated list of libraries containing logreader factories.
     - This list is ordered.  Putting a custom library earlier in the list means that it will be used to 
-      instantiate slaves before later factories.
+      instantiate logreaders before later factories.
     - default: libOrcaLogFactory.so
 
 - @c LogPlayer.Config.AutoStart (bool)

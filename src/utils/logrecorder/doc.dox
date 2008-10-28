@@ -62,9 +62,9 @@ LogRecorder.Requires.Odometry2d0.Proxy=odometry2d@local/segwayrmp
 @endverbatim
 
 - @c LogRecorder.Config.FactoryLibNames (string)
-    - A space-separated list of libraries containing slave factories.
+    - A space-separated list of libraries containing logwriter factories.
     - This list is ordered.  Putting a custom library earlier in the list means that it will be used to 
-      instantiate slaves before later factories.
+      instantiate loggers before later factories.
     - Default: libOrcaLogFactory.so
 
 - @c LogRecorder.Config.FilenameTimestamp (bool)
@@ -113,20 +113,15 @@ To parse the 'ascii' log files in Matlab, you can use the files provided in [ORC
 @par Authors
 - Tobias Kaupp, Alex Brooks, Alexei Makarenko
 
-@section orca_component_logrecorder_plugins Writing custom loggers
-
-In order to instantiate interface loggers, the LogRecorder utility dynamically loads libraries
-using logrecorder factory.  New factories can be written for the interfaces which are not in the Orca distribution. This plug-in architecture allows custom loggers to be written outside of the Orca project.
+@section orca_component_logrecorder_plugins Writing custom logwriters
 
 The default logrecorder factory can be extended with new interfaces, e.g. @c MyInterface by executing the following steps:
--# Create a @c MyInterfaceSlave class which inherits from @c Slave and handles the interface-specific logging (e.g. streaming the data to the file).
--# Add a few lines of code to [ORCA_SRC]/src/utils/orcalogfactory/defaultlogfactory.cpp
--# If logging to an 'ascii' file, update the @ref orca_component_logrecorder_formats page (and if you want to parse the 'ascii' log file using Matlab, add a script called [ORCA_SRC]/scripts/matlab/logutils/parse<MyInterface>.m). 
+-# Create a @c MyInterfaceLogWriter class which inherits from @c orcalog::LogWriter and handles the interface-specific logging (e.g. streaming the data to the file).
+-# Add a few lines of code to [ORCA_SRC]/src/utils/orcalogfactory/defaultlogautologgerfactory.cpp
 -# Update this documentation page.
 
-To add a new plug-in slave factory, use orcalogfactory as an example.
-Compile the new factory into a .so, stick it somewhere in your
-LD_LIBRARY_PATH, and edit LogRecorder.Config.FactoryLibNames to point to
-it.
+In order to instantiate interface logwriters, the LogRecorder utility dynamically loads libraries using logrecorder factories. New factories can be written for the interfaces which are not in the Orca distribution. This plug-in architecture allows logging data from interfaces which are part of an Orca satellite project.
+
+To add a new plug-in logrecorder factory, use orcalogfactory as an example. Compile the new factory into a .so, stick it somewhere in your LD_LIBRARY_PATH, and edit LogRecorder.Config.FactoryLibNames to point to it.
 
 */
