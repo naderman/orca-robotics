@@ -3,14 +3,14 @@
 
 #include "replayconductor.h"
 #include <orcaice/context.h>
-#include <orcaice/subsystemthread.h>
+#include <gbxsickacfr/gbxiceutilacfr/safethread.h>
 
 namespace logplayer {
 
 //
 // @author Alex Brooks
 //
-class InteractiveController : public orcaice::SubsystemThread
+class InteractiveController : public gbxiceutilacfr::SafeThread
 {
 
 public: 

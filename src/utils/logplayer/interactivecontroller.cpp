@@ -41,7 +41,7 @@ namespace {
 InteractiveController::InteractiveController( ReplayConductor        &replayConductor,
                                               bool                    autoStart,
                                               const orcaice::Context &context )
-    : SubsystemThread( context.tracer(), context.status() ),
+    : gbxiceutilacfr::SafeThread(context.tracer()),
       replayConductor_(replayConductor),
       autoStart_(autoStart),
       context_(context)
