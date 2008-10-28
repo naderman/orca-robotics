@@ -30,9 +30,9 @@ public:
 
     MainThread( const orcaice::Context & context );
 
-    virtual void walk();
-
 private:
+
+    virtual void walk();
 
     // inerface to the algorithm and its driver
     std::auto_ptr<hydropathplan::IPathPlanner2d> pathPlanner_;

@@ -126,6 +126,8 @@ NetThread::handleData(const orca::VelocityControl2dData& command)
 void
 NetThread::walk()
 {
+    subStatus().initialising();
+
     // multi-try function
     context_.tracer().debug( "NetThread: activating..." );
     orcaice::activate( context_, this );
@@ -150,10 +152,9 @@ NetThread::walk()
     double publishInterval = orcaice::getPropertyAsDoubleWithDefault( 
         context_.properties(), prefix+"Odometry2dPublishInterval", 0 );
 
+    subStatus().working();
     const int odometryReadTimeout = 500; // [ms]
     subStatus().setMaxHeartbeatInterval( 2.0*(odometryReadTimeout/1000.0) );
-
-    context_.tracer().debug( "NetThread: interface is set up." );
 
     //
     // Main loop

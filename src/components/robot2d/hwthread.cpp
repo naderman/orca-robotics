@@ -87,6 +87,8 @@ HwThread::enableDriver()
 void
 HwThread::walk()
 {
+    subStatus().working();
+
     stringstream exceptionSS;
     std::string reason;
 

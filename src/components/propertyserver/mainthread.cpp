@@ -22,7 +22,6 @@ MainThread::MainThread( const orcaice::Context &context ) :
     propertiesInterface_( new orcaifaceimpl::PropertiesImpl( "Properties", context ) ),
     context_(context)
 {
-    subStatus().setMaxHeartbeatInterval( 20.0 );
 }
 
 void
@@ -59,6 +58,9 @@ MainThread::initNetworkInterface()
 void
 MainThread::walk()
 {
+    subStatus().initialising();
+    subStatus().setMaxHeartbeatInterval( 20.0 );
+
     orca::PropertiesData incomingProperties;
 
     // These functions catch their exceptions.
@@ -67,10 +69,8 @@ MainThread::walk()
     initPropertiesDb();
     initNetworkInterface();
 
-    //
-    // IMPORTANT: Have to keep this loop rolling, because the '!isStopping()' call checks for requests to shut down.
-    //            So we have to avoid getting stuck anywhere within this main loop.
-    //
+    subStatus().working();
+
     while ( !isStopping() )
     {
         try 

@@ -175,6 +175,7 @@ NetThread::NetThread( HwThread                      &hwThread,
     descr_(descr),
     context_(context)
 {
+    subStatus().initialising();
     subStatus().setMaxHeartbeatInterval( 10.0 );
 
     // Get vehicle limits
@@ -267,6 +268,7 @@ NetThread::walk()
     double powerPublishInterval = orcaice::getPropertyAsDoubleWithDefault( 
         context_.properties(), prefix+"PowerPublishInterval", 20.0 );
 
+    subStatus().working();
     const int odometryReadTimeout = 500; // [ms]
     subStatus().setMaxHeartbeatInterval( 2.0*(odometryReadTimeout/1000.0) );
     

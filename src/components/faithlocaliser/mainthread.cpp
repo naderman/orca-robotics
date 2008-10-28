@@ -47,6 +47,12 @@ MainThread::MainThread( const orcaice::Context &context ) :
     SubsystemThread( context.tracer(), context.status(), "MainThread" ),
     context_(context)
 {
+}
+
+void
+MainThread::walk()
+{
+    subStatus().initialising();
     subStatus().setMaxHeartbeatInterval( 10.0 );
 
     Ice::PropertiesPtr prop = context_.properties();
@@ -54,11 +60,7 @@ MainThread::MainThread( const orcaice::Context &context ) :
     stdDevPosition_ = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"StdDevPosition", 0.05 );
     stdDevHeading_ = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"StdDevHeading", 1.0 );
     minInterPublishPeriodSec_ = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"MinInterPublishPeriodSec", 1.0 );
-}
 
-void
-MainThread::walk()
-{
     //
     // ENABLE NETWORK CONNECTIONS
     //
@@ -80,6 +82,8 @@ MainThread::walk()
     // multi-try function
     orcaice::connectToInterfaceWithTag<orca::Odometry2dPrx>( context_, odometryPrx, "Odometry2d", this );
  
+    subStatus().working();
+
     orca::VehicleDescription vehicleDescription;
     while ( !isStopping() )
     {

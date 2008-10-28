@@ -30,10 +30,10 @@ public:
 
     MainThread( const orcaice::Context& context );
 
+private:
+
     // from SubsystemThread
     virtual void walk();
-
-private:
 
     // Tries repeatedly to instantiate the driver
     void initHardwareDriver();

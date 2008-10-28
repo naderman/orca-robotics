@@ -20,17 +20,6 @@ HwThread::HwThread( const orcaice::Context &context) :
     dataPipe_(new hydroiceutil::EventQueue),
     context_(context)
 {
-    subStatus().setMaxHeartbeatInterval( 20.0 );
-
-    // Read settings
-    Ice::PropertiesPtr prop = context_.properties();
-    std::string prefix = context_.tag() + ".Config.";
-
-    if ( !config_.isValid() ) {
-        context_.tracer().error( "Failed to validate insgps configuration. "+config_.toString() );
-        // this will kill this component
-        throw gbxutilacfr::Exception( ERROR_INFO, "Failed to validate insgps configuration" );
-    }
 }
 
 void
@@ -80,12 +69,23 @@ HwThread::initHardwareDriver()
 void
 HwThread::walk()
 {
+    subStatus().initialising();
+    subStatus().setMaxHeartbeatInterval( 20.0 );
+
+    // Read settings
+    Ice::PropertiesPtr prop = context_.properties();
+    std::string prefix = context_.tag() + ".Config.";
+
+    if ( !config_.isValid() ) {
+        context_.tracer().error( "Failed to validate insgps configuration. "+config_.toString() );
+        // unrecoverable
+        context_.shutdown();
+    }
+
     initHardwareDriver();
 
-    //
-    // IMPORTANT: Have to keep this loop rolling, because the '!isStopping()' call checks for requests to shut down.
-    //            So we have to avoid getting stuck anywhere within this main loop.
-    //
+    subStatus().working();
+
     while(!isStopping()){
         stringstream exceptionSS;
         try{

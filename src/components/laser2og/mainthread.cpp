@@ -83,7 +83,6 @@ MainThread::MainThread( const orcaice::Context &context ) :
     SubsystemThread( context.tracer(), context.status(), "MainThread" ),
     context_(context)
 {
-    subStatus().setMaxHeartbeatInterval( 10.0 );
 }
 
 void
@@ -154,6 +153,9 @@ MainThread::init()
 void
 MainThread::walk()
 {
+    subStatus().initialising();
+    subStatus().setMaxHeartbeatInterval( 10.0 );
+
     //
     // ENABLE NETWORK CONNECTIONS
     //
@@ -165,7 +167,7 @@ MainThread::walk()
 	orca::RangeScanner2dDataPtr rangeScan;
 	orca::Localise2dData localiseData;
 
-    subStatus().ok( "Initialized" );
+    subStatus().working();
     const int timeoutMs = 1000;
     subStatus().setMaxHeartbeatInterval( 2*timeoutMs );
 

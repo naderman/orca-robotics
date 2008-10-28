@@ -26,9 +26,10 @@ public:
 
     MainThread( const orcaice::Context & context );
 
+private:
+
     virtual void walk();
 
-private:
     orcaice::Context context_;
     orcaifaceimpl::WifiImplPtr wifiInterface_;
     WifiDriver *driver_;

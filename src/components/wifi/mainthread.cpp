@@ -26,7 +26,6 @@ MainThread::MainThread( const orcaice::Context& context ) :
     context_(context),
     snrWarningThreshhold_(0)
 {
-    subStatus().setMaxHeartbeatInterval( 10.0 );
 }
 
 void 
@@ -103,12 +102,16 @@ MainThread::checkWifiSignal( orca::WifiData &data )
 void 
 MainThread::walk()
 {   
+    subStatus().initialising();
+    subStatus().setMaxHeartbeatInterval( 10.0 );
+
     // These functions catch their exceptions.
     activate( context_, this, subsysName() );
 
     initNetworkInterface();
     initHardwareDriver();
 
+    subStatus().working();
     subStatus().setMaxHeartbeatInterval( 3.0 );
 
     while ( !isStopping() )

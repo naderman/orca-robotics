@@ -67,6 +67,7 @@ MainThread::readData()
 void
 MainThread::walk()
 {
+    subStatus().initialising();
     context_.tracer().info( "Setting up Data Pointers" );
     
        // These functions catch their exceptions.
@@ -85,6 +86,7 @@ MainThread::walk()
     // Point the pointers in hydroImageData_ at orcaImageData_
     hydroImageData_.data      = &(orcaImageData_->data[0]);
 
+    subStatus().working();
     context_.tracer().info( "Running..." );
     
     //

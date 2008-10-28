@@ -191,7 +191,11 @@ MainThread::init()
 void
 MainThread::walk()
 {
+    subStatus().initialising();
+
     init();
+    
+    subStatus().working();
 
     orca::OgFusionData data;
     orca::OgMapData map;

@@ -115,15 +115,6 @@ MainThread::MainThread( const orcaice::Context & context )
       replanRequested_(false),
       context_(context)
 {
-    subStatus().setMaxHeartbeatInterval( 10.0 );
-
-    Ice::PropertiesPtr prop = context_.properties();
-    std::string prefix = context_.tag()+".Config.";
-    pathPlanTimeout_ = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"PathPlanTimeout", 10.0 );
-    velocityToFirstWaypoint_ = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"VelocityToFirstWaypoint", 1.0 );
-    checkForStaleLocaliseData_ = orcaice::getPropertyAsIntWithDefault( prop, prefix+"CheckForStaleLocaliseData", 1 );
-    enableReplan_ = orcaice::getPropertyAsIntWithDefault( prop, prefix+"EnableReplan", 0 );
-    requiredReplanRequestTime_ = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"RequiredReplanRequestTime", 2.0 );
 }
 
 void
@@ -139,35 +130,35 @@ MainThread::initNetwork()
     // REQUIRED INTERFACES: Localise2d, Pathfollower, Pathplanner
     //
 
-    subStatus().initialising( "Connecting to Localise2d" );
+//     subStatus().initialising( "Connecting to Localise2d" );
     orcaice::connectToInterfaceWithTag( context_,
                                         localise2dPrx_,
                                         "Localise2d",
                                         this,
                                         subsysName() );
 
-    subStatus().initialising( "Connecting to PathFollower2d" );
+//     subStatus().initialising( "Connecting to PathFollower2d" );
     orcaice::connectToInterfaceWithTag( context_,
                                         localNavPrx_,
                                         "PathFollower2d",
                                         this,
                                         subsysName() );
 
-    subStatus().initialising( "Subscribing for PathFollower2d updates" );
+//     subStatus().initialising( "Subscribing for PathFollower2d updates" );
     progressMonitor_ = new ProgressMonitor( context_ );
     progressMonitor_->subscribeWithTag( "PathFollower2d", this, subsysName() );
 //     progressMonitorPtr_ = progressMonitor_;
 //     progressMonitorPrx_ = orcaice::createConsumerInterface<orca::PathFollower2dConsumerPrx>( context_, progressMonitorPtr_ );
 //     localNavPrx_->subscribe( progressMonitor_ );
 
-    subStatus().initialising( "Connecting to PathPlanner2d" );
+//     subStatus().initialising( "Connecting to PathPlanner2d" );
     orcaice::connectToInterfaceWithTag( context_,
                                         pathplanner2dPrx_,
                                         "PathPlanner2d",
                                         this,
                                         subsysName() );
 
-    subStatus().initialising( "Connecting to OgMap" );
+//     subStatus().initialising( "Connecting to OgMap" );
     orca::OgMapPrx ogMapPrx_;
     orcaice::connectToInterfaceWithTag( context_,
                                         ogMapPrx_,
@@ -620,11 +611,23 @@ MainThread::waitForNewPath( orca::PathFollower2dData &newPathData )
 void 
 MainThread::walk()
 {
+    subStatus().initialising();
+    subStatus().setMaxHeartbeatInterval( 10.0 );
+
+    Ice::PropertiesPtr prop = context_.properties();
+    std::string prefix = context_.tag()+".Config.";
+    pathPlanTimeout_ = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"PathPlanTimeout", 10.0 );
+    velocityToFirstWaypoint_ = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"VelocityToFirstWaypoint", 1.0 );
+    checkForStaleLocaliseData_ = orcaice::getPropertyAsIntWithDefault( prop, prefix+"CheckForStaleLocaliseData", 1 );
+    enableReplan_ = orcaice::getPropertyAsIntWithDefault( prop, prefix+"EnableReplan", 0 );
+    requiredReplanRequestTime_ = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"RequiredReplanRequestTime", 2.0 );
+
     initNetwork();
 
     orca::PathFollower2dData incomingPath;
     bool requestIsOutstanding = false;
 
+    subStatus().working();
     subStatus().setMaxHeartbeatInterval( 3.0 );
 
     // main loop

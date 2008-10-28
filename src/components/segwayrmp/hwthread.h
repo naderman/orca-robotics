@@ -46,9 +46,6 @@ public:
 
     // these config settings are checked and possibly limited based on hardware capabilities
     HwThread( Config& config, const orcaice::Context &context );
-    
-    // Inherited from SubsystemThread
-    virtual void walk();
 
     // local interface, used by NetThread
 
@@ -61,6 +58,9 @@ public:
         }
 
 private: 
+
+    // Inherited from SubsystemThread
+    virtual void walk();
 
     // Keeps trying until success or isStopping()
     void enableDriver();

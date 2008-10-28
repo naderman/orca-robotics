@@ -72,6 +72,8 @@ MainThread::MainThread( const orcaice::Context & context ) :
 void
 MainThread::walk()
 {
+    subStatus().initialising();
+
     //
     // EXTERNAL PROVIDED INTERFACE
     //
@@ -100,6 +102,8 @@ MainThread::walk()
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
     }
     context_.tracer().info("driver enabled");
+
+    subStatus().working();
 
     int readStatus;
          

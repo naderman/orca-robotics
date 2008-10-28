@@ -87,7 +87,6 @@ MainThread::MainThread( const orcaice::Context &context ) :
     laserConsumer_(new orcaifaceimpl::StoringRangeScanner2dConsumerImpl(context)),
     context_(context)
 {
-    subStatus().setMaxHeartbeatInterval( 10.0 );
 }
 
 void 
@@ -195,6 +194,9 @@ MainThread::initPolarFeatureInterface()
 void 
 MainThread::walk()
 {
+    subStatus().initialising();
+    subStatus().setMaxHeartbeatInterval( 10.0 );
+
     // These functions catch their exceptions.
     activate( context_, this, subsysName() );
 
@@ -209,7 +211,7 @@ MainThread::walk()
     orca::RangeScanner2dDataPtr rangeData;
     std::vector<hydrofeatureobs::FeatureObs*> hydroFeatures;
 
-    context_.tracer().debug( "Entering main loop.",2 );
+    subStatus().working();
     subStatus().setMaxHeartbeatInterval( 3.0 );
 
     // Loop forever till we get shut down.

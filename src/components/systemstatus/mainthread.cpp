@@ -33,12 +33,8 @@ void convert( const map<string,StatusDetails> &from,
     
 
 MainThread::MainThread( const orcaice::Context & context ) :
-    SafeThread( context.tracer() ),
+    orcaice::SubsystemThread( context.tracer(), context.status(), "MainThread" ),
     context_(context)
-{
-}
-
-MainThread::~MainThread()
 {
 }
 
@@ -89,8 +85,10 @@ MainThread::createMonitors()
 void
 MainThread::walk()
 {    
+    subStatus().initialising();
+
     // multi-try
-    orcaice::activate( context_, this );
+    orcaice::activate( context_, this, subsysName() );
      
     // provided interface
     systemStatusIface_ = new orcaifaceimpl::SystemStatusImpl( "SystemStatus", context_ );
@@ -99,11 +97,11 @@ MainThread::walk()
     // create the monitors
     createMonitors();
     
-    
+    subStatus().working();
+
     //
     // Main loop
     //
-    
     orca::SystemStatusData data;
     map<string,StatusDetails> systemStatusDetails;
     
@@ -128,8 +126,6 @@ MainThread::walk()
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
         
     } // end of main loop
-
-    context_.tracer().debug( "MainThread: stopped.",2 );
 }
 
 }

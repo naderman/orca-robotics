@@ -8,27 +8,28 @@
  *
  */
 
-#ifndef MAINTHREAD_H
-#define MAINTHREAD_H
+#ifndef MAIN_THREAD_H
+#define MAIN_THREAD_H
 
+#include <orcaice/subsystemthread.h>
+#include <orcaice/context.h>
 #include <orcaifaceimpl/systemstatusImpl.h>
 #include "componentmonitor.h"
 
 namespace systemstatus
 {
     
-class MainThread : public gbxiceutilacfr::SafeThread
+class MainThread : public orcaice::SubsystemThread
 {
 public:
 
     MainThread( const orcaice::Context & context );
-    virtual ~MainThread();
-
-    // from SafeThread
-    virtual void walk();
     
 private:
     
+    // from SubsystemThread
+    virtual void walk();
+
     hydroiceutil::JobQueuePtr jobQueue_;
     orcaice::Context context_;
     std::vector<ComponentMonitor> monitors_;    

@@ -25,10 +25,6 @@ MainThread::MainThread( const orcaice::Context &context ) :
     driver_(NULL),
     context_(context)
 {
-    subStatus().setMaxHeartbeatInterval( 10.0 );
-    
-    // create a callback object to recieve data
-    gpsConsumer_ = new orcaifaceimpl::StoringGpsConsumerImpl( context_ );
 }
 
 MainThread::~MainThread()
@@ -169,6 +165,12 @@ MainThread::antennaOffsetOK( const orca::Frame3d &offset )
 void 
 MainThread::walk()
 {
+    subStatus().initialising();
+    subStatus().setMaxHeartbeatInterval( 10.0 );
+    
+    // create a callback object to recieve data
+    gpsConsumer_ = new orcaifaceimpl::StoringGpsConsumerImpl( context_ );
+
     activate( context_, this, subsysName() );
 
     subscribeToGps();
@@ -184,7 +186,7 @@ MainThread::walk()
     const int reconnectFailTimes = 10;
     int numTimeouts = 0;
 
-    context_.tracer().debug( "Entering main loop.",2 );
+    subStatus().working();
     subStatus().setMaxHeartbeatInterval( 3.0 );
 
     // Loop forever till we get shut down.

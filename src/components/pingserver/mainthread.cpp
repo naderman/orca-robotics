@@ -21,6 +21,12 @@ MainThread::MainThread( const orcaice::Context &context ) :
     SubsystemThread( context.tracer(), context.status(), "MainThread" ),
     context_(context)
 {
+}
+
+void
+MainThread::walk()
+{
+    subStatus().initialising();
     subStatus().setMaxHeartbeatInterval( 10.0 );
 
     //
@@ -28,11 +34,7 @@ MainThread::MainThread( const orcaice::Context &context ) :
     //
     const int dummy=0;
     prctl(PR_SET_DUMPABLE,1,dummy,dummy,dummy);
-}
 
-void
-MainThread::walk()
-{
     try {
         pingerInterface_ = new PingerI( "Pinger", context_ );
     }
@@ -54,6 +56,6 @@ MainThread::walk()
     orcaice::activate( context_, this, subsysName() );
 
     // init subsystem is done and is about to terminate
-    subStatus().ok( "Initialized." );
+    subStatus().working();
     subStatus().setMaxHeartbeatInterval( -1 );
 }

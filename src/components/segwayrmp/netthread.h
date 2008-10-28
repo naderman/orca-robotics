@@ -33,14 +33,14 @@ public:
                 const orca::VehicleDescription &descr,
                 const orcaice::Context         &context );
 
+private:
+
     // from SubsystemThread
     virtual void walk();
 
     // from NotifyHandler
     // this call originates in orcaifaceimpl::VelocityControl2dImpl
     virtual void handleData(const orca::VelocityControl2dData &incomingCommand);
-
-private:
 
     void initEStopCallback();
 

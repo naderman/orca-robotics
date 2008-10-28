@@ -54,9 +54,6 @@ MainThread::MainThread( const orcaice::Context& context ) :
     SubsystemThread( context.tracer(), context.status(), "MainThread" ),
     context_(context)
 {
-//     subStatus().setMaxHeartbeatInterval( 10.0 );
-
-    // Gps::Config object is currently empty, no properties to read.
 }
 
 void
@@ -132,6 +129,7 @@ MainThread::initHardwareDriver()
 void
 MainThread::walk()
 {
+    subStatus().initialising();
     subStatus().setMaxHeartbeatInterval( 60.0 );  
 
     Ice::PropertiesPtr prop = context_.properties();
@@ -149,6 +147,7 @@ MainThread::walk()
     hydrointerfaces::Gps::Data hydroData;
     orca::GpsData orcaData;
 
+    subStatus().working();
     //
     // Main loop
     //

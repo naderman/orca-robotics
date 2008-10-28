@@ -46,6 +46,7 @@ MainThread::MainThread( const orcaice::Context &context )
     : orcaice::SubsystemThread( context.tracer(), context.status(), "MainThread" ),
       context_(context)
 {
+    subStatus().initialising();
     subStatus().setMaxHeartbeatInterval( 10.0 );
     
     orca::Time t; t.seconds=0; t.useconds=0;
@@ -391,6 +392,7 @@ MainThread::walk()
     activate( context_, this, subsysName() );
     setup();
 
+    subStatus().working();
     subStatus().setMaxHeartbeatInterval( 2.0 );
 
     orcalocalnav::IDriver::Inputs inputs;

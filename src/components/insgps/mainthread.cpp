@@ -23,11 +23,6 @@ MainThread::MainThread( const orcaice::Context &context ) :
     hwThread_(new HwThread(context)),
     context_(context)
 {
-    subStatus().setMaxHeartbeatInterval( 20.0 );
-
-    // Read settings
-    Ice::PropertiesPtr prop = context_.properties();
-    std::string prefix = context_.tag() + ".Config.";
 }
 
 MainThread::~MainThread()
@@ -77,15 +72,16 @@ MainThread::initNetworkInterface()
 void
 MainThread::walk()
 {
+    subStatus().initialising();
+    subStatus().setMaxHeartbeatInterval( 20.0 );
+
     // These functions catch their exceptions.
     activate( context_, this, subsysName() );
     initNetworkInterface();
     hwThread_->start();
 
-    //
-    // IMPORTANT: Have to keep this loop rolling, because the '!isStopping()' call checks for requests to shut down.
-    //            So we have to avoid getting stuck anywhere within this main loop.
-    //
+    subStatus().working();
+
     while(!isStopping())
     {
         try

@@ -54,6 +54,7 @@ HwThread::HwThread( Config& config, const orcaice::Context &context )
     : SubsystemThread( context.tracer(), context.status(), "HwThread" ),
       context_(context)
 {
+    subStatus().initialising();
     subStatus().setMaxHeartbeatInterval( 10.0 );
 
     //
@@ -181,6 +182,8 @@ HwThread::walk()
     // a simple class which summarizes motion information
     Stats stats;
     std::stringstream historySS;
+
+    subStatus().working();
 
     //
     // Main loop

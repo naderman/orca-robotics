@@ -33,7 +33,6 @@ MainThread::MainThread( const orcaice::Context & context )
       pathPlannerTaskBuffer_( 100, gbxiceutilacfr::BufferTypeQueue ),
       context_(context)
 {
-    subStatus().setMaxHeartbeatInterval( 30.0 );
 }
 
 void
@@ -126,6 +125,9 @@ MainThread::initDriver()
 void 
 MainThread::walk()
 {
+    subStatus().initialising();
+    subStatus().setMaxHeartbeatInterval( 30.0 );
+    
     activate( context_, this, subsysName() );
 
     initNetwork();
@@ -142,6 +144,7 @@ MainThread::walk()
     orca::PathPlanner2dTask task; 
     orca::PathPlanner2dData pathData;   
 
+    subStatus().working();
     subStatus().setMaxHeartbeatInterval( 5 );
     while ( !isStopping() )
     {

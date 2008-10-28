@@ -84,6 +84,7 @@ MainThread::readData()
 void
 MainThread::walk()
 {
+    subStatus().initialising();
     context_.tracer().info( "Setting up Data Pointers" );
     
     // Set up the image objects
@@ -102,7 +103,8 @@ MainThread::walk()
     initHardwareDriver();
 
     context_.tracer().info( "Running..." );
-    
+    subStatus().working();    
+
     //
     // IMPORTANT: Have to keep this loop rolling, because the '!isStopping()' call checks for requests to shut down.
     //            So we have to avoid getting stuck anywhere within this main loop.
