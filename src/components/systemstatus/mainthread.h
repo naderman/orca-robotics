@@ -14,7 +14,7 @@
 #include <orcaifaceimpl/systemstatusImpl.h>
 #include "componentmonitor.h"
 
-namespace statusmon
+namespace systemstatus
 {
     
 class MainThread : public gbxiceutilacfr::SafeThread

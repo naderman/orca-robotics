@@ -17,7 +17,7 @@
 #include <IceUtil/Mutex.h>
 #include <string>
 
-namespace statusmon {
+namespace systemstatus {
 
 struct StatusDetails {
     

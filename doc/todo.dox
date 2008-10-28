@@ -65,7 +65,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @par New components
 
-    - StatusMon (tobi)
+    - SystemStatus (tobi)
         - provides a system-level overview of status
 
 @par New utilities

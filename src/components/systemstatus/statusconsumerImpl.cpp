@@ -14,7 +14,7 @@
 #include "statusconsumerImpl.h"
 
 using namespace std;
-namespace statusmon {
+namespace systemstatus {
 
 StatusConsumerImpl::StatusConsumerImpl( const Config& config, const orcaice::Context& context ) :
     orcaifaceimpl::ConsumerImpl<orca::StatusPrx,orca::StatusConsumer,orca::StatusConsumerPrx,orca::StatusData>(context),

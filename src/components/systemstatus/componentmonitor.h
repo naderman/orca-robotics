@@ -18,7 +18,7 @@
 
 using namespace std;
 
-namespace statusmon {
+namespace systemstatus {
     
 //
 // Monitors individual component's status interface

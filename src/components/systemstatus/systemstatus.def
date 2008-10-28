@@ -1,4 +1,4 @@
-DefaultComponentTag=StatusMon
+DefaultComponentTag=SystemStatus
 
 # interfaces
 Provides.SystemStatus.Type=::orca::SystemStatus

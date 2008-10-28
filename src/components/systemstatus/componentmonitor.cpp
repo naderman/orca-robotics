@@ -11,7 +11,7 @@
 #include <orcaice/orcaice.h>
 #include "componentmonitor.h"
 
-namespace statusmon {
+namespace systemstatus {
         
 class SubscribeJob : public hydroiceutil::Job 
 {

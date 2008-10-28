@@ -16,7 +16,7 @@
 
 using namespace std;
 
-namespace statusmon {
+namespace systemstatus {
     
 void convert( const map<string,StatusDetails> &from, 
               orca::SystemStatusData          &to )
