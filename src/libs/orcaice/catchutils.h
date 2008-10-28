@@ -39,8 +39,6 @@ catch ( ... )
     orcaice::catchExceptions( context_.tracer(), "initializing hardware driver" );
 } 
 @endverbatim
-
-This will produce the falling warning:
 */
 std::string catchExceptions( gbxutilacfr::Tracer& tracer, const std::string& activity="" );
 

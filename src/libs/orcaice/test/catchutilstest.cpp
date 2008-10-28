@@ -15,6 +15,7 @@
 #include <orcaice/subsystem.h>
 #include <orcaice/catchutils.h>
 
+#include <gbxutilacfr/gbxutilacfr.h>
 // #include <orcaice/orcaice.h>
 
 using namespace std;
@@ -86,6 +87,17 @@ void
 TestSubsystem::finalise() 
 {
     context_.tracer().info( "TestSubsystem::finalise()" );
+
+    try {
+        throw gbxutilacfr::Exception( ERROR_INFO, "Error in finalise()" );
+    }
+    catch ( ... ) {
+//         orcaice::catchExceptions( context_.tracer(), "finalising" );
+//         orcaice::catchExceptionsWithStatus( "finalising", subStatus() );
+        orcaice::catchExceptionsWithStatus( "finalising", subStatus(), gbxutilacfr::SubsystemWarning );
+//         orcaice::catchExceptionsWithStatusAndSleep( "finalising", subStatus(), gbxutilacfr::SubsystemWarning );
+    }
+
     context_.shutdown();
 }
 

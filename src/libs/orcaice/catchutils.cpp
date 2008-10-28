@@ -76,8 +76,10 @@ std::string catchExceptionsWithStatus( const std::string& activity,
             gbxutilacfr::SubStatus& subStatus, gbxutilacfr::SubsystemHealth newHealth )
 {
     stringstream exceptionSS;
+
+    string fullActivity;
     if ( !activity.empty() )
-        exceptionSS << "(while " + activity + ") ";
+        fullActivity = "(while " + activity + ") ";
 
     try {
         // re-throw 
@@ -94,6 +96,7 @@ std::string catchExceptionsWithStatus( const std::string& activity,
     }
     catch ( const std::exception &e ) {
         exceptionSS << "caught unexpected exception: " << e.what();
+cout<<exceptionSS.str()<<endl;
     }
     catch ( const std::string &e ) {
         exceptionSS << "caught unexpected string: " << e;
@@ -105,26 +108,22 @@ std::string catchExceptionsWithStatus( const std::string& activity,
         exceptionSS << "caught unexpected unknown exception.";
     }
 
-    // empty string indicates that the problem can be ignored status-wise.
-    if ( !exceptionSS.str().empty() )
-        return exceptionSS.str();
-
     switch ( newHealth )
     {
     case gbxutilacfr::SubsystemFault :
-        subStatus.fault( exceptionSS.str() );
+        subStatus.fault( fullActivity + exceptionSS.str() );
         break;
     case gbxutilacfr::SubsystemWarning :
-        subStatus.warning( exceptionSS.str() );
+        subStatus.warning( fullActivity + exceptionSS.str() );
         break;
     case gbxutilacfr::SubsystemOk :
-        subStatus.ok( exceptionSS.str() );
+        subStatus.ok( fullActivity + exceptionSS.str() );
         break;
     case gbxutilacfr::SubsystemStalled :
         assert( false && "Stalled health should not be reported from within the subsystem" );
     }
 
-    return exceptionSS.str();
+    return ( fullActivity + exceptionSS.str() );
 }
 
 std::string catchExceptionsWithStatusAndSleep( const std::string& activity, 
