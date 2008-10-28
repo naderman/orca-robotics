@@ -20,14 +20,14 @@ namespace statusmon {
     
 void convert( const map<string,StatusDetails> &from, 
               orca::SystemStatusData          &to )
-{
-    
+{    
     for ( map<string,StatusDetails>::const_iterator it=from.begin(); it!=from.end(); ++it )
     {
-        to[it->first] = it->second.statusData;
+        orca::ComponentStatusData compStatData;
+        compStatData.isDataStale = it->second.isDataStale;
+        compStatData.data = it->second.data;
+        to[it->first] = compStatData;
     }
-    
-    //TODO: add stale field!
 }
     
 

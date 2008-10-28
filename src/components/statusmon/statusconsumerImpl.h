@@ -25,10 +25,10 @@ struct StatusDetails {
     bool dataAvailable;
 
     // Does we consider status to have failed sending frequently enough?
-    bool isStale;
+    bool isDataStale;
 
     // The actual statusData object (only filled in if dataAvailable)
-    orca::StatusData statusData;
+    orca::StatusData data;
     
 };
 

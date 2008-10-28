@@ -63,9 +63,9 @@ StatusConsumerImpl::getStatus( StatusDetails &details )
 {
     IceUtil::Mutex::Lock lock(statusMutex_);
 
-    details.isStale = false;
+    details.isDataStale = false;
     details.dataAvailable = hasValidData_;
-    details.statusData = statusData_;
+    details.data = statusData_;
     
     // if we've never received any data, tell the caller to subscribe us
     if (!hasValidData_) return true;
@@ -90,7 +90,7 @@ StatusConsumerImpl::getStatus( StatusDetails &details )
 
         if ( secSinceHeard > config_.staleTimeout )
         {
-            details.isStale = true;
+            details.isDataStale = true;
         }
     }
     

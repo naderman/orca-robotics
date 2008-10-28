@@ -22,9 +22,17 @@ module orca
     @{
 */
 
+//! StatusData for a single component
+//! Interface provider decides whether it considers the data to be stale
+struct ComponentStatusData
+{
+    bool isDataStale;
+    StatusData data;
+};
+
 //! Hold the StatusData of an entire system
 //! The string contains "component/platform"
-dictionary<string,StatusData> SystemStatusData;
+dictionary<string,ComponentStatusData> SystemStatusData;
 
 /*!
     Data consumer interface.
