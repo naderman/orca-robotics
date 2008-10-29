@@ -64,13 +64,10 @@ SubsystemThread::run()
 
     // report status fault if there was an exception and we are not stopping
     if ( !ss.str().empty() ) {
-        if ( !isStopping() ) {
-            tracer_.error( ss.str() );
+        if ( !isStopping() )
             subStatus().fault( ss.str() );
-        }
-        else {
-            tracer_.warning( subsysName()+": Caught exception when stopping: "+ss.str() );
-        }
+        else
+            tracer_.warning( subsysName()+": (while stopping subsystem thread): "+ss.str() );
     }
     else {
         tracer_.info( subsysName()+": dropping out from run() " );
