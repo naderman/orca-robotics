@@ -17,56 +17,10 @@
 namespace orcaice {
 
 /*!
-@brief A class implementing a common subsystem state machine.
+@brief A class implementing the common subsystem state machine.
 
-The (simple) state machine implemented by this class is a chain of state transitions 
-(with one extra link):
-
-Idle --> Initialising --> Working --> Finalising --> Shutdown
-              |___________________________^
-
-The following represents the Subsystem state machine in the format of
-State Machine Compiler (see smc.sf.net) :
-@verbatim
-Idle
-Entry { init(); }
-{
-    init
-    Initialising
-    {}
-}
-
-Initialising
-Entry { initialise(); }
-{
-    [ !isStopping ] finished
-    Working
-    {}
-
-    [ isStopping ] finished
-    Finalising
-    {}
-}
-
-Working
-Entry { work(); }
-{
-    finished
-    Finalising
-    {}
-}
-
-Finalising
-Entry { finalise(); }
-{
-    finished
-    Shutdown
-    {}
-}
-
-Shutdown
-{
-}   
+The state machine is defined by gbxutilacfr::Status.
+  
 @endverbatim
  */
 class Subsystem : public orcaice::SubsystemThread
