@@ -59,7 +59,6 @@ MainSubsystem::MainSubsystem( const orcaice::Context& context ) :
 void
 MainSubsystem::initialise()
 {
-    subStatus().initialising();
     subStatus().setMaxHeartbeatInterval( 60.0 );  
 
     Ice::PropertiesPtr prop = context_.properties();
