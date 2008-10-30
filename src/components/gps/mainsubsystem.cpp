@@ -10,9 +10,10 @@
  
 #include <iostream>
 #include <orcaice/orcaice.h>
+#include <orcaifacestring/gps.h>
 #include <orcaobj/orcaobj.h>
 
-#include "mainthread.h"
+#include "mainsubsystem.h"
 
 using namespace std;
 using namespace gps;
@@ -50,14 +51,76 @@ void convert( const hydrointerfaces::Gps::Data& hydro, orca::GpsData& orca )
 
 ////////////////////////////
 
-MainThread::MainThread( const orcaice::Context& context ) :
-    SubsystemThread( context.tracer(), context.status(), "MainThread" ),
-    context_(context)
+MainSubsystem::MainSubsystem( const orcaice::Context& context ) :
+    Subsystem( context )
 {
 }
 
 void
-MainThread::initNetworkInterface()
+MainSubsystem::initialise()
+{
+    subStatus().initialising();
+    subStatus().setMaxHeartbeatInterval( 60.0 );  
+
+    Ice::PropertiesPtr prop = context_.properties();
+    std::string prefix = context_.tag() + ".Config.";
+
+    publishWithoutFix_ = orcaice::getPropertyAsIntWithDefault( prop, prefix+"ReportIfNoFix", 1 );
+
+    // These functions catch their exceptions.
+    orcaice::activate( context_, this, subsysName() );
+
+    initNetworkInterface();
+    initHardwareDriver();
+}
+
+void
+MainSubsystem::work() 
+{
+    // temp data object
+    hydrointerfaces::Gps::Data hydroData;
+    orca::GpsData orcaData;
+
+    while ( !isStopping() )
+    {
+        // this try makes this component robust to exceptions
+        try 
+        {
+            // this blocks until new data arrives
+            driver_->read( hydroData );
+            subStatus().heartbeat();
+            
+            // convert hydro->orca
+            convert( hydroData, orcaData );
+
+            if ( orcaData.positionType != orca::GpsPositionTypeNotAvailable || publishWithoutFix_ ) 
+            {
+                context_.tracer().debug( ifacestring::toString( orcaData ), 5 );
+                gpsInterface_->localSetAndSend( orcaData );
+            }
+            else
+            {
+                context_.tracer().debug( "No GPS fix. Not publishing data", 6 );
+            }
+            subStatus().ok();
+
+            continue;
+
+        } // end of try
+        catch ( ... ) 
+        {
+            orcaice::catchMainLoopExceptions( subStatus() );
+
+            // Re-initialise the driver, unless we are stopping
+            if ( !isStopping() ) {
+                initHardwareDriver();
+            }
+        }
+    } // end of while
+}
+
+void
+MainSubsystem::initNetworkInterface()
 {
     Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag() + ".Config.";
@@ -82,7 +145,7 @@ MainThread::initNetworkInterface()
 }
 
 void
-MainThread::initHardwareDriver()
+MainSubsystem::initHardwareDriver()
 {
     subStatus().setMaxHeartbeatInterval( 30.0 );
 
@@ -92,7 +155,7 @@ MainThread::initHardwareDriver()
     // Dynamically load the library and find the factory
     std::string driverLibName = 
         orcaice::getPropertyWithDefault( prop, prefix+"DriverLib", "libHydroGpsGarmin.so" );
-    context_.tracer().debug( "MainThread: Loading driver library "+driverLibName, 4 );
+    context_.tracer().debug( "MainSubsystem: Loading driver library "+driverLibName, 4 );
     // The factory which creates the driver
     std::auto_ptr<hydrointerfaces::GpsFactory> driverFactory;
     try {
@@ -124,69 +187,4 @@ MainThread::initHardwareDriver()
     }
 
     subStatus().setMaxHeartbeatInterval( 10.0 );
-}
-
-void
-MainThread::walk()
-{
-    subStatus().initialising();
-    subStatus().setMaxHeartbeatInterval( 60.0 );  
-
-    Ice::PropertiesPtr prop = context_.properties();
-    std::string prefix = context_.tag() + ".Config.";
-
-    bool publishWithoutFix = orcaice::getPropertyAsIntWithDefault( prop, prefix+"ReportIfNoFix", 1 );
-
-    // These functions catch their exceptions.
-    orcaice::activate( context_, this, subsysName() );
-
-    initNetworkInterface();
-    initHardwareDriver();
-  
-    // temp data object
-    hydrointerfaces::Gps::Data hydroData;
-    orca::GpsData orcaData;
-
-    subStatus().working();
-    //
-    // Main loop
-    //
-    while ( !isStopping() )
-    {
-        // this try makes this component robust to exceptions
-        try 
-        {
-            // this blocks until new data arrives
-            driver_->read( hydroData );
-            subStatus().heartbeat();
-            
-            // convert hydro->orca
-            convert( hydroData, orcaData );
-
-            if ( orcaData.positionType != orca::GpsPositionTypeNotAvailable || publishWithoutFix ) 
-            {
-                context_.tracer().debug( orcaobj::toString( orcaData ), 5 );
-                gpsInterface_->localSetAndSend( orcaData );
-            }
-            else
-            {
-                context_.tracer().debug( "No GPS fix. Not publishing data", 6 );
-            }
-            subStatus().ok();
-
-            continue;
-
-        } // end of try
-        catch ( ... ) 
-        {
-            orcaice::catchMainLoopExceptions( subStatus() );
-
-            // Re-initialise the driver, unless we are stopping
-            if ( !isStopping() ) {
-                initHardwareDriver();
-            }
-        }
-
-    } // end of while
-
 }

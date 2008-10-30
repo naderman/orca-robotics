@@ -8,12 +8,11 @@
  *
  */
 
-#ifndef MAIN_THREAD_H
-#define MAIN_THREAD_H
+#ifndef MAIN_SUBSYSTEM_H
+#define MAIN_SUBSYSTEM_H
 
 #include <memory>
-#include <orcaice/subsystemthread.h>
-#include <orcaice/context.h>
+#include <orcaice/subsystem.h>
 #include <hydrodll/dynamicload.h>
 // remote interface
 #include <orcaifaceimpl/gpsImpl.h>
@@ -22,18 +21,18 @@
 
 namespace gps {
 
-
-class MainThread : public orcaice::SubsystemThread
+class MainSubsystem : public orcaice::Subsystem
 {
 
 public:
 
-    MainThread( const orcaice::Context& context );
+    MainSubsystem( const orcaice::Context& context );
 
 private:
 
-    // from SubsystemThread
-    virtual void walk();
+    // from Subsystem
+    virtual void initialise();
+    virtual void work();
 
     // Tries repeatedly to instantiate the driver
     void initHardwareDriver();
@@ -51,7 +50,8 @@ private:
     // Generic driver for the hardware
     std::auto_ptr<hydrointerfaces::Gps> driver_;
 
-    orcaice::Context context_;
+    // options
+    bool publishWithoutFix_;
 };
 
 } // namespace
