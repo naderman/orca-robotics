@@ -11,7 +11,7 @@
 #include <iostream>
 #include <orcaice/orcaice.h>
 #include <orcaifacestring/gps.h>
-#include <orcaobj/orcaobj.h>
+#include <orcaobj/orcaobj.h>    // setInit() only
 
 #include "mainsubsystem.h"
 
