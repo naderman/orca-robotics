@@ -12,11 +12,12 @@
 #define MAIN_THREAD_H
 
 #include <gbxsickacfr/gbxiceutilacfr/safethread.h>
-#include <orcaifaceimpl/printingconsumers.h>
 #include <orcaice/context.h>
 
 namespace systemstatusmon
 {
+    
+class Display;
 
 class MainThread : public gbxiceutilacfr::SafeThread
 {
@@ -30,7 +31,7 @@ public:
 
 private:
     orcaice::Context context_;
-    orcaifaceimpl::PrintingSystemStatusConsumerImplPtr consumer_;
+    Display *display_;
 };
 
 } // namespace

@@ -30,18 +30,17 @@ class ComponentMonitor
 {
     public:
         ComponentMonitor( hydroiceutil::JobQueuePtr  jobQueue,
-                          const std::string         &platform,
-                          const std::string         &component,
+                          const std::string         &platformName,
+                          const std::string         &componentName,
                           const orcaice::Context    &context );
         ~ComponentMonitor();
         
-        void getComponentStatus( std::string   &platComp, 
+        void getComponentStatus( std::string   &platformName, 
                                  StatusDetails &componentStatus );
         
     private:
         hydroiceutil::JobQueuePtr jobQueue_;
         std::string platformName_;
-        std::string componentName_;
         orcaice::Context context_;
         StatusConsumerImplPtr statusConsumer_;
 };

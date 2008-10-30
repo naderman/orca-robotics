@@ -30,9 +30,11 @@ struct ComponentStatusData
     StatusData data;
 };
 
+sequence<ComponentStatusData> ComponentStatusDataSeq;
+
 //! Hold the StatusData of an entire system
-//! The string contains "component/platform"
-dictionary<string,ComponentStatusData> SystemStatusData;
+//! The dictionary contains a sequence of ComponentStatusData indexed by the platform name
+dictionary<string,ComponentStatusDataSeq> SystemStatusData;
 
 /*!
     Data consumer interface.

@@ -19,15 +19,47 @@ using namespace std;
 namespace systemstatus {
     
 // converts from internal to Slice-defined representation
-void convert( const map<string,StatusDetails> &from, 
-              orca::SystemStatusData          &to )
+void convert( const multimap<string,StatusDetails> &from, 
+              orca::SystemStatusData               &to )
 {    
-    for ( map<string,StatusDetails>::const_iterator it=from.begin(); it!=from.end(); ++it )
+    multimap<string,StatusDetails>::const_iterator it;
+    pair<multimap<string,StatusDetails>::const_iterator,multimap<string,StatusDetails>::const_iterator> ret;
+    
+    // assemble a vector of *unique* platform names
+    vector<string> uniquePlatformNames;
+    for (it=from.begin(); it!=from.end(); ++it)
     {
-        orca::ComponentStatusData compStatData;
-        compStatData.isDataStale = it->second.isDataStale;
-        compStatData.data = it->second.data;
-        to[it->first] = compStatData;
+        const string &platform = it->first;
+        bool isNew = true;
+        for (unsigned int i=0; i<uniquePlatformNames.size(); i++ )
+        {
+            if (uniquePlatformNames[i]==platform) {
+                isNew = false;
+                break;
+            }
+        }
+        if (isNew) 
+            uniquePlatformNames.push_back( platform );
+    }
+    
+    // go through all unique platforms and create a map indexed by platform name
+    for ( unsigned int i=0; i<uniquePlatformNames.size(); i++ )
+    {
+        vector<orca::ComponentStatusData> componentsPerPlatform;
+        
+        // obtain all records of a given platform name
+        ret = from.equal_range( uniquePlatformNames[i] );
+        
+        // create a vector of ComponentStatusData
+        for (it=ret.first; it!=ret.second; ++it)
+        {
+            orca::ComponentStatusData compStatData;
+            compStatData.isDataStale = (*it).second.isDataStale;
+            compStatData.data = (*it).second.data;
+            componentsPerPlatform.push_back( compStatData );
+        }
+        
+        to[uniquePlatformNames[i]] = componentsPerPlatform;
     }
 }
     
@@ -102,8 +134,11 @@ MainThread::walk()
     //
     // Main loop
     //
+    // slice-defined systemstatus
     orca::SystemStatusData data;
-    map<string,StatusDetails> systemStatusDetails;
+    
+    // statusDetails referenced by platformName
+    multimap<string,StatusDetails> systemStatusDetails;
     
     while ( !isStopping() )
     {
@@ -114,9 +149,9 @@ MainThread::walk()
         for (unsigned int i=0; i<monitors_.size(); i++)
         {
             StatusDetails details;
-            string platComp;
-            monitors_[i].getComponentStatus( platComp, details ); 
-            systemStatusDetails[platComp] = details;
+            string platformName;
+            monitors_[i].getComponentStatus( platformName, details ); 
+            systemStatusDetails.insert(pair<string,StatusDetails>(platformName,details));
         }
         
         // convert and tell the world

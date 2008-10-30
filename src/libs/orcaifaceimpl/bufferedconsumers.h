@@ -24,6 +24,7 @@
 #include <orca/camera.h>
 #include <orca/ins.h>
 #include <orca/pointcloud.h>
+#include <orca/systemstatus.h>
 
 namespace orcaifaceimpl
 {
@@ -115,7 +116,14 @@ typedef BufferedConsumerImpl<orca::PointCloudPrx,
                         orca::PointCloudConsumer,
                         orca::PointCloudConsumerPrx,
                         orca::PointCloudData>                     BufferedPointCloudConsumerImpl;
-typedef IceUtil::Handle<BufferedPointCloudConsumerImpl>           BufferedPointCloudConsumerImplPtr;
+                        typedef IceUtil::Handle<BufferedPointCloudConsumerImpl>           BufferedPointCloudConsumerImplPtr;
+
+//! Typedef for a common interface type. There's also a corresponding Ptr.
+typedef BufferedConsumerImpl<orca::SystemStatusPrx,
+                        orca::SystemStatusConsumer,
+                        orca::SystemStatusConsumerPrx,
+                        orca::SystemStatusData>           BufferedSystemStatusConsumerImpl;
+typedef IceUtil::Handle<BufferedSystemStatusConsumerImpl> BufferedSystemStatusConsumerImplPtr;
 
 } // namespace
 

@@ -49,12 +49,11 @@ class SubscribeJob : public hydroiceutil::Job
 
 
 ComponentMonitor::ComponentMonitor( hydroiceutil::JobQueuePtr  jobQueue,
-                                    const std::string         &platform,
-                                    const std::string         &component,
+                                    const std::string         &platformName,
+                                    const std::string         &componentName,
                                     const orcaice::Context    &context )
     : jobQueue_(jobQueue),
-      platformName_(platform),
-      componentName_(component),
+      platformName_(platformName),
       context_(context)
 {
     Ice::PropertiesPtr prop = context_.properties();
@@ -63,7 +62,7 @@ ComponentMonitor::ComponentMonitor( hydroiceutil::JobQueuePtr  jobQueue,
     int resubscribeInterval = orcaice::getPropertyAsIntWithDefault( prop, prefix+"ResubscribeInterval", 5 );
     int staleTimeout = orcaice::getPropertyAsIntWithDefault( prop, prefix+"StaleTimeout", 60 );
     
-    StatusConsumerImpl::Config config( platform, component, 
+    StatusConsumerImpl::Config config( platformName, componentName, 
                                        resubscribeTimeout, resubscribeInterval, staleTimeout ) ;
     
     statusConsumer_ = new StatusConsumerImpl( config, context_ );
@@ -78,10 +77,10 @@ ComponentMonitor::~ComponentMonitor()
 }
     
 void 
-ComponentMonitor::getComponentStatus( string        &platComp, 
+ComponentMonitor::getComponentStatus( string        &platformName, 
                                       StatusDetails &componentStatus )
 {
-    platComp =  platformName_ + "/" + componentName_;
+    platformName =  platformName_;
     
     bool shouldResubscribe = statusConsumer_->getStatus( componentStatus );
     

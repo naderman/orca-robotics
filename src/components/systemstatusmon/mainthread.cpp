@@ -11,6 +11,7 @@
 #include <iostream>
 #include <orcaice/orcaice.h>
 
+#include "display.h"
 #include "mainthread.h"
 
 using namespace std;
@@ -31,18 +32,29 @@ MainThread::walk()
     //
     // multi-try function
     orcaice::activate( context_, this );
-
-    //
-    // REQUIRED INTERFACE: SystemStatus
-    //
-    orca::SystemStatusPrx systemStatusPrx;
     
-    // Connect directly to the interface (multi-try)
-    orcaice::connectToInterfaceWithTag<orca::SystemStatusPrx>( 
-            context_, systemStatusPrx, "SystemStatus", this );
+    //TODO: make configurable
+    string displayType = "colourtext";
     
-    consumer_ = new orcaifaceimpl::PrintingSystemStatusConsumerImpl( context_ );
-    consumer_->subscribeWithTag( "SystemStatus", this );
+    if (displayType=="simpletext")
+    {
+        display_ = new SimpleDisplay( context_, this );
+    }
+    else if (displayType=="colourtext")
+    {
+        display_ = new ColourTextDisplay( context_, this );
+    }
+    else
+    {
+        throw gbxutilacfr::Exception( ERROR_INFO, "Unknown display type: " + displayType );
+    }
+    
+    while (!isStopping())
+    {
+        cout << "Refreshing display now" << endl;
+        display_->refresh();
+        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
+    }
 }
 
 }
