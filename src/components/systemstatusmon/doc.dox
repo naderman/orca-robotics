@@ -31,6 +31,11 @@ Connects to a SystemStatus interface and displays its information in different f
 
 @par Configuration
 
+- @c SystemStatusMon.Config.DisplayType (string)
+    - Which type of display to use
+    - Valid values: { "colourtext", "simpletext" }
+    - Default: "colourtext"
+
 An example configuration file is installed into [ORCA-INSTALL-DIR]/share/orca/cfg/ directory.
 
 

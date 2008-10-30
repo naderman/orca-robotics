@@ -97,11 +97,11 @@ MainThread::createMonitors()
     std::string prefix = context_.tag()+".Config.";
     
     hydroiceutil::JobQueue::Config config;
-    config.threadPoolSize = orcaice::getPropertyAsIntWithDefault( props, prefix+"JobQueueThreadPoolSize", 2 );
+    config.threadPoolSize = orcaice::getPropertyAsIntWithDefault( props, prefix+"JobQueueThreadPoolSize", 10 );
     config.queueSizeWarn = orcaice::getPropertyAsIntWithDefault( props, prefix+"JobQueueSizeWarning", 2 );
-    config.traceAddEvents = orcaice::getPropertyAsIntWithDefault( props, prefix+"JobQueueTraceAdded", 0 );
-    config.traceStartEvents = orcaice::getPropertyAsIntWithDefault( props, prefix+"JobQueueTraceStart", 0 );
-    config.traceDoneEvents = orcaice::getPropertyAsIntWithDefault( props, prefix+"JobQueueTraceDone", 0 );
+    config.traceAddEvents = false;
+    config.traceStartEvents = false;
+    config.traceDoneEvents = false;
     
     jobQueue_ = new hydroiceutil::JobQueue( context_.tracer(), config );
     

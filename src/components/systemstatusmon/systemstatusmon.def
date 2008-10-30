@@ -5,3 +5,7 @@ DefaultComponentTag=SystemStatusMon
 # Required Interfaces
 Requires.SystemStatus.Type=SystemStatus
 Requires.SystemStatus.DefaultProxy=systemstatus@local/systemstatus
+
+# Config Parameters
+Config.DisplayType.Comment=Options are {'simpletext','colourtext'}
+Config.DisplayType.Default=colourtext

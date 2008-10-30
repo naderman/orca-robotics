@@ -161,7 +161,7 @@ std::string getSystemStateIcon( const orca::StatusData &statusData )
         case orca::SubsystemInitialising:
             return hydroctext::emph( "^", hydroctext::Style( hydroctext::Reverse, hydroctext::Blue ) );
         case orca::SubsystemWorking:
-            return hydroctext::emph( "o", hydroctext::Style( hydroctext::Reverse, hydroctext::Green ) );
+            return hydroctext::emph( "-", hydroctext::Style( hydroctext::Reverse, hydroctext::Green ) );
         case orca::SubsystemFinalising:
             return hydroctext::emph( "v", hydroctext::Style( hydroctext::Reverse, hydroctext::Blue ) );
         case orca::SubsystemShutdown:
@@ -255,5 +255,6 @@ ColourTextDisplay::display( const orca::SystemStatusData &data )
 }
         
 }
-    
+
+
         

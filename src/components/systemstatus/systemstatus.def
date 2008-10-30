@@ -9,11 +9,8 @@ Requires.Status0.DefaultProxy=status@local/laser2d
 Requires.Status1.Type=Status
 Requires.Status1.DefaultProxy=status@local/robot2d
 
-Config.JobQueueThreadPoolSize.Default=2
+Config.JobQueueThreadPoolSize.Default=10
 Config.JobQueueSizeWarning.Default=2
-Config.JobQueueTraceAdded.Default=0
-Config.JobQueueTraceStart.Default=0
-Config.JobQueueTraceDone.Default=0
 Config.ResubscribeTimeout.Default=45
 Config.ResubscribeInterval.Default=5
 Config.StaleTimeout.Default=60

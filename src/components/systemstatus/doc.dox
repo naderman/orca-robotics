@@ -32,6 +32,26 @@ Connects to any number of Status interfaces and aggregates their information. Cl
 
 @par Configuration
 
+- @c SystemStatus.Config.JobQueueThreadPoolSize (int)
+    - Thread pool size for making connections to status interfaces
+    - Default: 10
+
+- @c SystemStatus.Config.JobQueueSizeWarning (int)
+    - When the queue of pending jobs reaches this number, a warning is issued through the Tracer interface
+    - Default: 2
+
+- @c SystemStatus.Config.ResubscribeTimeout (int) [sec]
+    - How long to wait, without hearing from the status interface, before we should try to resubscribe
+    - Default: 45
+    
+- @c SystemStatus.Config.ResubscribeInterval (int) [sec]
+    - The minimum time period between resubscription attempts
+    - Default: 5
+
+- @c SystemStatus.Config.StaleTimeout (int) [sec]
+    - After what time period, without hearing from the status interface, do we consider the data to be stale?
+    - Default: 60
+
 An example configuration file is installed into [ORCA-INSTALL-DIR]/share/orca/cfg/ directory.
 
 

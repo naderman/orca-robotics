@@ -33,8 +33,9 @@ MainThread::walk()
     // multi-try function
     orcaice::activate( context_, this );
     
-    //TODO: make configurable
-    string displayType = "colourtext";
+    Ice::PropertiesPtr props = context_.properties();
+    std::string prefix = context_.tag()+".Config.";
+    string displayType = orcaice::getPropertyWithDefault( props, prefix+"DisplayType", "colourtext" );
     
     if (displayType=="simpletext")
     {
@@ -51,7 +52,6 @@ MainThread::walk()
     
     while (!isStopping())
     {
-        cout << "Refreshing display now" << endl;
         display_->refresh();
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
     }
