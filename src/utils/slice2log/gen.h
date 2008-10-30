@@ -36,8 +36,11 @@ public:
         bool,
         bool,
         bool,
-        // custom option
-        const std::string& module);
+        // custom options
+        const std::string& module,
+        bool,
+        bool,
+        bool);
     ~Gen();
 
     bool operator!() const; // Returns true if there was a constructor error
@@ -65,8 +68,11 @@ private:
     bool _checksum;
     bool _stream;
     bool _ice;
-    // custom option
+    // custom options
     std::string _module;
+    bool _string;
+    bool _log;
+    bool _init;
 
     class GlobalIncludeVisitor : private ::IceUtil::noncopyable, public Slice::ParserVisitor
     {
@@ -81,6 +87,40 @@ private:
         ::IceUtilInternal::Output& H;
 
         bool _finished;
+    };
+
+    class ToStringVisitor : private ::IceUtil::noncopyable, public Slice::ParserVisitor
+    {
+    public:
+
+        ToStringVisitor(::IceUtilInternal::Output&, ::IceUtilInternal::Output&, const std::string&, bool);
+
+        virtual bool visitModuleStart(const Slice::ModulePtr&);
+        virtual void visitModuleEnd(const Slice::ModulePtr&);
+        virtual bool visitClassDefStart(const Slice::ClassDefPtr&);
+        virtual void visitClassDefEnd(const Slice::ClassDefPtr&);
+        virtual bool visitExceptionStart(const Slice::ExceptionPtr&);
+        virtual void visitExceptionEnd(const Slice::ExceptionPtr&);
+        virtual bool visitStructStart(const Slice::StructPtr&);
+        virtual void visitStructEnd(const Slice::StructPtr&);
+        virtual void visitSequence(const Slice::SequencePtr&);
+        virtual void visitDictionary(const Slice::DictionaryPtr&);
+        virtual void visitEnum(const Slice::EnumPtr&);
+        virtual void visitConst(const Slice::ConstPtr&);
+        virtual void visitDataMember(const Slice::DataMemberPtr&);
+
+    private:
+
+        void emitUpcall(const Slice::ExceptionPtr&, const std::string&, bool = false);
+
+        ::IceUtilInternal::Output& H;
+        ::IceUtilInternal::Output& C;
+
+        std::string _dllExport;
+        bool _stream;
+        bool _doneStaticSymbol;
+        bool _useWstring;
+        std::list<bool> _useWstringHist;
     };
 
     class ToLogVisitor : private ::IceUtil::noncopyable, public Slice::ParserVisitor

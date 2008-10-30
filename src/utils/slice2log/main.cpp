@@ -19,8 +19,17 @@ using namespace Slice;
 void
 usage(const char* n)
 {
-    cerr << "Usage: " << n << " [options] slice-files...\n";
+    cerr << "Usage: " << n << " --module MOD [output] [options] slice-files...\n";
     cerr <<     
+    // alexm: our custom options
+        "--module                 The nominal module name of this project.\n"
+        "                         e.g. Orca project : '--module orca'\n"
+        "                              Empty project: '--module empty'\n"
+        "Output (at least one of the following):\n"
+        "--string                 Generate to-string conversion functions.\n"
+        "--log                    Generate ASCII log/replay functions.\n"
+        "--init                   Generate initialization functions.\n"
+    // alexm: standard options
         "Options:\n"
         "-h, --help               Show this message.\n"
         "-v, --version            Display the Ice version.\n"
@@ -31,16 +40,16 @@ usage(const char* n)
         "-DNAME=DEF               Define NAME as DEF.\n"
         "-UNAME                   Remove any definition for NAME.\n"
         "-IDIR                    Put DIR in the include file search path.\n"
-        "-E                       Print preprocessor output on stdout.\n"
+//         "-E                       Print preprocessor output on stdout.\n"
         "--include-dir DIR        Use DIR as the header include directory in source files.\n"
         "--output-dir DIR         Create files in the directory DIR.\n"
-        "--dll-export SYMBOL      Use SYMBOL for DLL exports.\n"
-        "--impl                   Generate sample implementations.\n"
-        "--depend                 Generate Makefile dependencies.\n"
+//         "--dll-export SYMBOL      Use SYMBOL for DLL exports.\n"
+//         "--impl                   Generate sample implementations.\n"
+//         "--depend                 Generate Makefile dependencies.\n"
         "-d, --debug              Print debug messages.\n"
-        "--ice                    Permit `Ice' prefix (for building Ice source code only)\n"
-        "--checksum               Generate checksums for Slice definitions.\n"
-        "--stream                 Generate marshaling support for public stream API.\n"
+//         "--ice                    Permit `Ice' prefix (for building Ice source code only)\n"
+//         "--checksum               Generate checksums for Slice definitions.\n"
+//         "--stream                 Generate marshaling support for public stream API.\n"
         ;
     // Note: --case-sensitive is intentionally not shown here!
 }
@@ -70,6 +79,9 @@ main(int argc, char* argv[])
     opts.addOpt("", "case-sensitive");
     // alexm: our custom options
     opts.addOpt("", "module", IceUtilInternal::Options::NeedArg);
+    opts.addOpt("", "string");
+    opts.addOpt("", "log");
+    opts.addOpt("", "init");
 
     vector<string> args;
     try
@@ -143,7 +155,24 @@ main(int argc, char* argv[])
 
     bool caseSensitive = opts.isSet("case-sensitive");
 
+    // alexm: custom options
+
     string module = opts.optArg("module");
+
+    bool genString = opts.isSet("string");
+
+    bool genLog = opts.isSet("log");
+
+    bool genInit = opts.isSet("init");
+
+    if ( !genString && !genLog && !genInit ) 
+    {    
+        cerr << argv[0] << ": no output type specified" << endl;
+        usage(argv[0]);
+        return EXIT_FAILURE;
+    }
+
+    // alexm: end custom options
 
     if(args.empty())
     {
@@ -182,7 +211,7 @@ main(int argc, char* argv[])
         {
             slice2log::Gen gen(argv[0], icecpp.getBaseName(), headerExtension, sourceExtension, extraHeaders, include,
                     includePaths, dllExport, output, impl, checksum, stream, ice,
-                    module );
+                    module, genString, genLog, genInit );
             if(!gen)
             {
                 u->destroy();

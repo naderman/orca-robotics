@@ -80,6 +80,7 @@ TestSubsystem::work()
     catch (...)
     {
         orcaice::catchExceptions( context_.tracer(), "working" );
+//         orcaice::catchExceptions( context_.tracer(), string(__func__) );
     }
 }
 

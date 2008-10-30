@@ -39,8 +39,8 @@ Gen::Gen(const string& name, const string& base, const string& headerExtension,
                 const string& sourceExtension, const vector<string>& extraHeaders, const string& include,
                 const vector<string>& includePaths, const string& dllExport, const string& dir,
                 bool imp, bool checksum, bool stream, bool ice,
-        // custom option
-        const std::string& module) :
+        // custom options
+        const std::string& module, bool genString, bool log, bool init) :
     _base(base),
     _headerExtension(headerExtension),
     _sourceExtension(sourceExtension),
@@ -52,7 +52,10 @@ Gen::Gen(const string& name, const string& base, const string& headerExtension,
     _checksum(checksum),
     _stream(stream),
     _ice(ice),
-    _module(module)
+    _module(module),
+    _string(genString),
+    _log(log),
+    _init(init)
 {
     for(vector<string>::iterator p = _includePaths.begin(); p != _includePaths.end(); ++p)
     {
@@ -135,11 +138,28 @@ Gen::generate(const UnitPtr& p)
 //     cout<<"DEBUG: Gen::generate()"<<endl;
     writeExtraHeaders(C);
 
-//     string lib_namespace = _module + "ifacelog";
-    string lib_namespace = "ifacelog";
-    string lib_dir = _module + "ifacelog";
+    string base_namespace;
+    if ( _string )
+    {
+        base_namespace = "ifacestring";
+    }
+    else if ( _log )
+    {
+        base_namespace = "ifacelog";
+    }
+//     string lib_namespace = _module + base_namespace;
+    string lib_namespace = base_namespace;
+    string lib_dir = _module + lib_namespace;
 
-    H << "\n#include <fstream>";
+    if ( _string )
+    {
+        H << "\n#include <string>";
+    }
+    if ( _log )
+    {
+        H << "\n#include <fstream>";
+    }
+
     H << "\n#include <" << _module << "/" << _base << ".h>";    
     // includeFiles contains full paths. we want just the base.
     StringList includes = p->includeFiles();
@@ -169,7 +189,7 @@ Gen::generate(const UnitPtr& p)
                 include_module.erase(0, pos_dir+1);
             }
         }    
-        string include_namespace = include_module + "ifacelog";
+        string include_namespace = include_module + base_namespace;
 
         H << "\n#include <" << include_namespace << "/" << include_base << "." << _headerExtension << ">";
     }
@@ -187,18 +207,26 @@ Gen::generate(const UnitPtr& p)
     C << "\nnamespace " << lib_namespace;
     C << "\n{";
 
-    // only used to define bogus Prx functions
-    HandleVisitor handleVisitor(H, C, _dllExport, _stream);
-    handleVisitor.libNamespace_ = lib_namespace;
-    p->visit(&handleVisitor, false);
-
-    ToLogVisitor toLogVisitor(H, C, _dllExport, _stream);
-    p->visit(&toLogVisitor, false);
-
-    H << "\n";
-
-    FromLogVisitor fromLogVisitor(H, C, _dllExport, _stream);
-    p->visit(&fromLogVisitor, false);
+    if ( _string )
+    {
+        ToStringVisitor toStringVisitor(H, C, _dllExport, _stream);
+        p->visit(&toStringVisitor, false);
+    }
+    if ( _log )
+    {
+        // only used to define bogus Prx functions
+        HandleVisitor handleVisitor(H, C, _dllExport, _stream);
+        handleVisitor.libNamespace_ = lib_namespace;
+        p->visit(&handleVisitor, false);
+    
+        ToLogVisitor toLogVisitor(H, C, _dllExport, _stream);
+        p->visit(&toLogVisitor, false);
+    
+        H << "\n";
+    
+        FromLogVisitor fromLogVisitor(H, C, _dllExport, _stream);
+        p->visit(&fromLogVisitor, false);
+    }
 }
 
 void
@@ -231,6 +259,213 @@ Gen::writeExtraHeaders(IceUtilInternal::Output& out)
             out << "\n#endif";
         }
     }
+}
+
+
+Gen::ToStringVisitor::ToStringVisitor(Output& h, Output& c, const string& dllExport, bool stream) :
+    H(h), C(c), _dllExport(dllExport), _stream(stream), _doneStaticSymbol(false), _useWstring(false)
+{
+}
+
+bool
+Gen::ToStringVisitor::visitModuleStart(const ModulePtr& p)
+{
+//     cout<<"DEBUG: Gen::visitModuleStart()"<<endl;
+//     _useWstring = setUseWstring(p, _useWstringHist, _useWstring);
+//     H << sp << nl << "namespace " << name << nl << '{';
+    return true;
+}
+
+void
+Gen::ToStringVisitor::visitModuleEnd(const ModulePtr& p)
+{
+//     H << sp << nl << '}';
+//     _useWstring = resetUseWstring(_useWstringHist);
+}
+
+bool
+Gen::ToStringVisitor::visitClassDefStart(const ClassDefPtr& p)
+{
+//     cout<<"DEBUG: Gen::visitClassDefStart()"<<endl;
+    if ( p->declaration()->isInterface() )
+        return false;
+
+    string name = fixKwd(p->name());
+    string scope = fixKwd(p->scope());
+    ClassList bases = p->bases();
+    
+    H << "\nstd::string toString( const " << scope.substr(2)<<name << "Ptr& obj, int recurse=1000, int expand=-1, int indent=0 );";
+
+    C << "\n\nstring";
+    C << nl << "toString( const " << scope.substr(2)<<name << "Ptr& objPtr, int recurse, int expand, int indent )";
+    C << sb;
+    C << nl << "string ind;";
+    C << nl << "for ( int i=0; i<indent; ++i ) ind += ' ';";
+
+    C << nl << "string s = \"class " << scope.substr(2)<<name << "\";";
+    C << nl << "if ( recurse>0 )";
+    C << sb;
+
+    ClassList::const_iterator q = bases.begin();
+    if(!bases.empty()) {
+        int count = 0;
+        while(q != bases.end())
+        {
+            C << nl << fixKwd((*q)->scoped()) << "Ptr base" << count << "Ptr = objPtr;";
+            C << nl << "s += \'\\n\' + ind + \"base \" + toString( base" << count << "Ptr, recurse, expand, indent+2 );";
+            ++q;
+            ++count;
+        }
+    }
+
+    if ( !p->dataMembers().empty() ) {
+        C << nl;
+        C << nl << scope.substr(2)<<name << "& obj = *objPtr;";
+    }
+    return true;
+}
+
+void
+Gen::ToStringVisitor::visitClassDefEnd(const ClassDefPtr& p)
+{
+    C << eb;
+    C << nl << "return s;";
+    C << eb;
+}
+
+bool
+Gen::ToStringVisitor::visitExceptionStart(const ExceptionPtr& p)
+{
+    return false;
+}
+
+void
+Gen::ToStringVisitor::visitExceptionEnd(const ExceptionPtr& p)
+{
+}
+
+void
+Gen::ToStringVisitor::visitEnum(const EnumPtr& p)
+{
+    string name = fixKwd(p->name());
+    string scope = fixKwd(p->scope());
+    EnumeratorList enumerators = p->getEnumerators();
+
+    H << nl << "std::string toString( const " << scope.substr(2)<<name << ", int recurse=1000, int expand=-1, int indent=0 );";
+
+    C << nl;
+    C << nl << "string";
+    C << nl << "toString( const " << scope.substr(2)<<name << " obj, int recurse, int expand, int indent )";
+    C << sb;
+    C << nl << "switch ( obj )";
+    C << sb;
+
+    EnumeratorList::const_iterator en = enumerators.begin();
+    while(en != enumerators.end())
+    {
+        C << nl << "case " << scope.substr(2) << fixKwd((*en)->name()) << " :";
+        C << nl << "\treturn \"" << fixKwd((*en)->name()) << "\";";
+        ++en;
+    }
+
+    C << eb;
+    C << nl << "ostringstream ss;";
+    C << nl << "ss << \"Unknown case in enumerator " << scope.substr(2)<<name << ": \"<< ((int)obj);";
+    C << nl << "throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );";
+
+    C << eb;
+}
+
+bool
+Gen::ToStringVisitor::visitStructStart(const StructPtr& p)
+{
+//     cout<<"DEBUG: Gen::visitStructStart()"<<endl;
+    string name = fixKwd(p->name());
+    string scope = fixKwd(p->scope());
+    
+    H << "\nstd::string toString( const " << scope.substr(2)<<name << "& obj, int recurse=1000, int expand=-1, int indent=0 );";
+
+    C << "\n\nstring";
+    C << nl << "toString( const " << scope.substr(2)<<name << "& obj, int recurse, int expand, int indent )";
+    C << sb;
+    C << nl << "string ind;";
+    C << nl << "for ( int i=0; i<indent; ++i ) ind += ' ';";
+    C << nl << "string s = \"struct " << scope.substr(2)<<name << "\";";
+    C << nl << "if ( recurse>0 )";
+    C << sb;
+    return true;
+}
+
+void
+Gen::ToStringVisitor::visitStructEnd(const StructPtr& p)
+{       
+    C << eb;
+    C << nl << "return s;";
+    C << eb;
+}
+
+void
+Gen::ToStringVisitor::visitDataMember(const DataMemberPtr& p)
+{
+//     cout<<"DEBUG: Gen::visitDataMember()"<<endl;
+    string name = fixKwd(p->name());
+
+    C << nl << "s += \'\\n\' + ind + \"" + name + " = \" + toString( obj." + name + ", recurse-1, expand, indent+2 );";
+}
+
+void
+Gen::ToStringVisitor::visitSequence(const SequencePtr& p)
+{    
+//     cout<<"DEBUG: Gen::visitSequence()"<<endl;
+    string name = fixKwd(p->name());
+    string scope = fixKwd(p->scope());
+
+    H << nl << "std::string toString( const " << scope.substr(2)<<name << "& obj, int recurse=1000, int expand=-1, int indent=0 );";
+
+    C << "\n\nstring";
+    C << nl << "toString( const " << scope.substr(2)<<name << "& obj, int recurse, int expand, int indent )";
+    C << sb;
+    C << nl << "return seqToString< " << scope.substr(2)<<name << " >( obj, recurse-1, expand, indent+2 );";
+    C << eb;
+}
+
+void
+Gen::ToStringVisitor::visitDictionary(const DictionaryPtr& p)
+{
+//     cout<<"DEBUG: Gen::visitDictionary()"<<endl;
+    string name = fixKwd(p->name());
+    string scope = fixKwd(p->scope());
+
+    H << nl << "std::string toString( const " << scope.substr(2)<<name << "& obj, int recurse=1000, int expand=-1, int indent=0 );";
+
+    C << nl;
+    C << nl << "string";
+    C << nl << "toString( const " << scope.substr(2)<<name << "& obj, int recurse, int expand, int indent )";
+    C << sb;
+    C << nl << "return dictToString< " << scope.substr(2)<<name << "," << scope.substr(2)<<name << "::const_iterator >( obj, recurse-1, expand, indent+2 );";
+    C << eb;
+}
+
+void
+Gen::ToStringVisitor::visitConst(const ConstPtr& p)
+{
+}
+
+void
+Gen::ToStringVisitor::emitUpcall(const ExceptionPtr& base, const string& call, bool isLocal)
+{
+    C.zeroIndent();
+    C << nl << "#if defined(_MSC_VER) && (_MSC_VER < 1300) // VC++ 6 compiler bug"; // COMPILERBUG
+    C.restoreIndent();
+    C << nl << (base ? fixKwd(base->name()) : string(isLocal ? "LocalException" : "UserException")) << call;
+    C.zeroIndent();
+    C << nl << "#else";
+    C.restoreIndent();
+    C << nl << (base ? fixKwd(base->scoped()) : string(isLocal ? "::Ice::LocalException" : "::Ice::UserException")) 
+      << call;
+    C.zeroIndent();
+    C << nl << "#endif";
+    C.restoreIndent();
 }
 
 Gen::ToLogVisitor::ToLogVisitor(Output& h, Output& c, const string& dllExport, bool stream) :

@@ -137,7 +137,7 @@ MACRO( ORCA_GENERATE_SLICE2LOG_RULES generated_cpp_list generated_header_list )
 #             MESSAGE( STATUS "DEBUG: Adding rule for generating ${output_basename} from ${slice_source_basename}" )
             ADD_CUSTOM_COMMAND(
                 OUTPUT  ${CMAKE_CURRENT_BINARY_DIR}/${output_basename}
-                COMMAND ${generator_command} ${slice_args} ${slice_source}
+                COMMAND ${generator_command} --log ${slice_args} ${slice_source}
                 DEPENDS ${all_depends}
                 COMMENT "-- Generating ${generated_file_type} file of log utilities from ${slice_source}"
                 VERBATIM
