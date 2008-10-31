@@ -3,7 +3,7 @@ ORCA_SET_COMPONENT_NAME( SystemStatusMon )
 SET( build TRUE )
 GBX_REQUIRE_OPTION( build EXE ${APP_NAME} ON )
 
-SET( ext_libs HydroColourText GbxUtilAcfr ) 
+SET( ext_libs HydroColourText HydroUtil GbxUtilAcfr ) 
 GBX_REQUIRE_INSTALLS( build EXE ${APP_NAME} ${ext_libs} )
 
 SET( int_libs OrcaIfaceImpl OrcaIfaceString OrcaObjects )

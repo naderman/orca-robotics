@@ -19,6 +19,11 @@
 namespace systemstatusmon
 {
     
+//
+// Abstract Display class
+// 
+// Author: Tobias Kaupp
+// 
 class Display
 {
     public:
@@ -26,6 +31,9 @@ class Display
         virtual void refresh()=0;
 };
     
+//
+// A simple implementation of a Display: plain print-out of SystemStatusData on console
+// 
 class SimpleDisplay : public Display
 {
     public:
@@ -40,15 +48,19 @@ class SimpleDisplay : public Display
         orcaifaceimpl::PrintingSystemStatusConsumerImplPtr consumer_;
 };    
 
+//
+// An implementation of Display presenting SystemStatusData in a coloured matrix on the console
+//
 class ColourTextDisplay : public Display
 {
     public:
-        ColourTextDisplay( const orcaice::Context &context, gbxiceutilacfr::SafeThread *thread);
+        ColourTextDisplay( const orcaice::Context     &context, 
+                           gbxiceutilacfr::SafeThread *thread );
         void refresh();
         
     private:
+        orcaice::Context context_;
         orcaifaceimpl::BufferedSystemStatusConsumerImplPtr consumer_;
-        
         void display( const orca::SystemStatusData &data );
 };
 
