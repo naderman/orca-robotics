@@ -153,7 +153,7 @@ public:
 
     virtual ~ConsumerImpl() 
     {
-        context_.tracer().debug( "ConsumerImpl::~ConsumerImpl()" );
+//         context_.tracer().debug( "ConsumerImpl::~ConsumerImpl()" );
         // unsubscribe from the info provider
         try {
             unsubscribe();
