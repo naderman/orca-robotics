@@ -70,13 +70,12 @@ namespace systemstatusmon
         return maxNum;
     }
     
-    hydroctext::Style toStyle( const orca::ComponentStatusData& compData )
+    hydroctext::Style systemHealthStyle( const orca::ComponentStatusData& compData )
     { 
         if (compData.isDataStale)
             return hydroctext::Style( hydroctext::Reverse, hydroctext::White );
         
-        const orca::StatusData statusData = compData.data;
-        const orca::SubsystemsStatus &subSysSt = statusData.subsystems;
+        const orca::SubsystemsStatus &subSysSt = compData.data.subsystems;
         map<string,orca::SubsystemStatus>::const_iterator it;
     
         orca::SubsystemHealth worstHealth = orca::SubsystemOk;           
@@ -101,9 +100,12 @@ namespace systemstatusmon
         }
     }
     
-    std::string systemStateIcon( const orca::StatusData &statusData )
+    std::string systemStateIcon( const orca::ComponentStatusData& compData )
     {
-        const orca::SubsystemsStatus &subSysSt = statusData.subsystems;
+        if (compData.isDataStale)
+            return hydroctext::emph( " ", hydroctext::Style( hydroctext::Reverse, hydroctext::White ) );
+        
+        const orca::SubsystemsStatus &subSysSt = compData.data.subsystems;
         map<string,orca::SubsystemStatus>::const_iterator it;
     
         orca::SubsystemState highestState = orca::SubsystemIdle;           
@@ -116,11 +118,11 @@ namespace systemstatusmon
         switch (highestState)
         {
             case orca::SubsystemIdle: 
-                return hydroctext::emph( "^", hydroctext::Style( hydroctext::Reverse, hydroctext::Yellow ) );
+                return hydroctext::emph( "-", hydroctext::Style( hydroctext::Reverse, hydroctext::Yellow ) );
             case orca::SubsystemInitialising:
                 return hydroctext::emph( "^", hydroctext::Style( hydroctext::Reverse, hydroctext::Blue ) );
             case orca::SubsystemWorking:
-                return hydroctext::emph( "-", hydroctext::Style( hydroctext::Reverse, hydroctext::Green ) );
+                return hydroctext::emph( " ", hydroctext::Style( hydroctext::Reverse, hydroctext::Green ) );
             case orca::SubsystemFinalising:
                 return hydroctext::emph( "v", hydroctext::Style( hydroctext::Reverse, hydroctext::Blue ) );
             case orca::SubsystemShutdown:
@@ -137,8 +139,8 @@ namespace systemstatusmon
         stringstream ss;
         int stateUsedWidth = 1;
         
-        ss << systemStateIcon(compData.data) 
-        << hydroctext::emph(hydroutil::toFixedWidth(extractComponent(compPlat),stateWidth-stateUsedWidth, ' ', true), toStyle(compData) );
+        ss << systemStateIcon(compData) 
+        << hydroctext::emph(hydroutil::toFixedWidth(extractComponent(compPlat),stateWidth-stateUsedWidth, ' ', true), systemHealthStyle(compData) );
         
         return ss.str();
     }
