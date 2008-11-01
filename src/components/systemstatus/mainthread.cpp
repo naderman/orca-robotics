@@ -70,10 +70,10 @@ MainThread::MainThread( const orcaice::Context & context ) :
 {
 }
 
-std::map<string,string> 
+vector<PlatformComponentPair>
 MainThread::getComponentPlatformPairs()
-{
-    std::map<string,string> pairs;
+{   
+    vector<PlatformComponentPair> pairs;
     
     // get all tags starting with "Status"
     vector<std::string> requiredTags = orcaice::getRequiredTags( context_, "Status" );
@@ -83,9 +83,12 @@ MainThread::getComponentPlatformPairs()
         string proxyString = orcaice::getRequiredInterfaceAsString( context_, requiredTags[i] );
         string resolvedProxyString = orcaice::resolveLocalPlatform( context_, proxyString );
         orca::FQInterfaceName name = orcaice::toInterfaceName( resolvedProxyString );
-        pairs[name.component] = name.platform;
         
-        //cout << requiredTags[i] << ": " << resolvedProxyString << ": " << name.platform << ": " << name.component << endl;
+        PlatformComponentPair pair;
+        pair.platformName = name.platform;
+        pair.componentName = name.component;
+        pairs.push_back(pair);
+//         cout << requiredTags[i] << ": " << resolvedProxyString << ": " << name.platform << ": " << name.component << endl;
     }
     return pairs;
 }
@@ -105,11 +108,10 @@ MainThread::createMonitors()
     
     jobQueue_ = new hydroiceutil::JobQueue( context_.tracer(), config );
     
-    std::map<string,string> pairs = getComponentPlatformPairs();
-    
-    for ( map<string,string>::const_iterator it=pairs.begin(); it!=pairs.end(); ++it )
+    vector<PlatformComponentPair> pairs = getComponentPlatformPairs();
+    for ( unsigned int i=0; i<pairs.size(); i++)
     {
-        ComponentMonitor mon( jobQueue_, it->second, it->first, context_ );
+        ComponentMonitor mon( jobQueue_, pairs[i].platformName, pairs[i].componentName, context_ );
         monitors_.push_back(mon);
     }
 }

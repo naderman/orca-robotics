@@ -19,6 +19,12 @@
 namespace systemstatus
 {
     
+struct PlatformComponentPair
+{
+    std::string platformName;
+    std::string componentName;
+};
+    
 class MainThread : public orcaice::SubsystemThread
 {
 public:
@@ -35,8 +41,7 @@ private:
     std::vector<ComponentMonitor> monitors_;    
     orcaifaceimpl::SystemStatusImplPtr systemStatusIface_;
     
-    // using a map assumes that there's only one status interface per component
-    std::map<std::string,std::string> getComponentPlatformPairs();
+    std::vector<PlatformComponentPair> getComponentPlatformPairs();
     void createMonitors();
 
 };
