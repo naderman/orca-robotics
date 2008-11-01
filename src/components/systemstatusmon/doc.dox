@@ -43,16 +43,25 @@ An example configuration file is installed into [ORCA-INSTALL-DIR]/share/orca/cf
 @par Display Types
 
 SimpleText
-    - SystemStatusData is printed to the console as a "flat" representation
+    - SystemStatusData is printed to the console in a "flat" representation
 
 ColourText
     - SystemStatusData is shown as a table: rows are platforms in the system, columns show all components per platform
-    - Each cell displays the SubsystemState and SubsystemHealth of a component. Since each component may have several subsystems, the displayed health and state refer to the subsystem with the "worst" SubsystemHealth.  
+    - Each cell displays the state and health of a component. Since each component may have several subsystems, the displayed health and state refer to the subsystem with the "worst" SubsystemHealth.  
     - In addition, a human-readable message is displayed if the SubsystemHealth is anything other than "Ok"
     - The key to interpret the display:
-        - Color: green->health_ok, yellow->health_warning, red->health_fault, black->health_stalled, grey->data_stale
-        - Icon: "-"->state_idle, "^"->state_initialising, " "->state_working, "v"->state_finalising, "x"->state_shutdown
-
+        - Colors: 
+            - green: health_ok
+            - yellow: health_warning
+            - red: health_fault
+            - black: health_stalled
+            - grey: data_stale
+        - Icons: 
+            - @c '-': state_idle
+            - @c '^': state_initialising
+            - @c '_': state_working
+            - @c 'v': state_finalising
+            - @c 'x': state_shutdown
 
 @par Authors
 
