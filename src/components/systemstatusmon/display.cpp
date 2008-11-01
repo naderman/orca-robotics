@@ -203,16 +203,25 @@ ColourTextDisplay::ColourTextDisplay( const orcaice::Context     &context,
 void 
 ColourTextDisplay::refresh()
 {
+    if (consumer_->buffer().isEmpty()) {
+        context_.tracer().debug( "ColourTextDisplay:refresh(): systemstatus buffer is empty", 5 );
+        return;
+    }
+        
     orca::SystemStatusData data;
-    if ( !consumer_->buffer().isEmpty() )
+    consumer_->buffer().getAndPop( data );
+    
+    try 
     {
-        consumer_->buffer().getAndPop( data );
         display( data );
     }
-    else
+    catch (std::exception &e)
     {
-        context_.tracer().debug( "ColourTextDisplay:refresh(): systemstatus buffer is empty", 5 );
+        stringstream ss;
+        ss << "ColourTextDisplay: Caught unexpected exception: " << e.what();
+        context_.tracer().error( ss.str() );
     }
+    
 }
 
     
