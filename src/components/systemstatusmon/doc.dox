@@ -38,6 +38,17 @@ Connects to a SystemStatus interface and displays its information in different f
 
 An example configuration file is installed into [ORCA-INSTALL-DIR]/share/orca/cfg/ directory.
 
+@par Display Types
+
+SimpleText
+    - SystemStatusData is printed to the console as a "flat" representation
+
+ColourText
+    - SystemStatusData is shown as a table: rows are platforms in the system, columns show all components per platform
+    - Each cell displays the SubsystemState and SubsystemHealth of a component. TODO: describe the matrix
+    - Each component may have several subsystems: the health and the state of the subsystem with the "worst" SubsystemHealth is displayed  
+    - In addition, a human-readable message is displayed if the SubsystemHealth is anything other than "Ok"
+
 
 @par Authors
 
