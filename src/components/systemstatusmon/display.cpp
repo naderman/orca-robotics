@@ -120,12 +120,15 @@ namespace systemstatusmon
             case orca::SubsystemWarning:  
                 healthStyle = hydroctext::Style( hydroctext::Reverse, hydroctext::Yellow );
                 stateIcon = hydroctext::emph( stateToString(itWorstHealth->second.state), hydroctext::Style( hydroctext::Reverse, hydroctext::Yellow ) );
+                return;
             case orca::SubsystemFault:  
                 healthStyle = hydroctext::Style( hydroctext::Reverse, hydroctext::Red );
                 stateIcon = hydroctext::emph( stateToString(itWorstHealth->second.state), hydroctext::Style( hydroctext::Reverse, hydroctext::Red ) );
+                return;
             case orca::SubsystemStalled:  
                 healthStyle = hydroctext::Style( hydroctext::Reverse, hydroctext::Black );
                 stateIcon = hydroctext::emph( stateToString(itWorstHealth->second.state), hydroctext::Style( hydroctext::Reverse, hydroctext::Black ) );
+                return;
             default:
                 assert( false && "unknown health type" );
         }
