@@ -9,7 +9,6 @@
  */
  
 #include <gbxutilacfr/tokenise.h>
-#include <hydroutil/stringutils.h>
 #include <hydrocolourtext/colourtext.h>
 #include <orcaobj/stringutils.h>
 #include "display.h"
@@ -26,9 +25,9 @@ namespace systemstatusmon
     std::string toHorizontalLine( int platformCount, int nameWidth, int stateWidth )
     {
         stringstream ss;
-        ss << hydroutil::toFixedWidth("-----------------------------------", nameWidth) << " +";
+        ss << hydroctext::toFixedWidth("-----------------------------------", nameWidth) << " +";
         for ( int i=0; i<platformCount; ++i )
-            ss << hydroutil::toFixedWidth("-------------------------------------", stateWidth) << " +";
+            ss << hydroctext::toFixedWidth("-------------------------------------", stateWidth) << " +";
         return ss.str();
     }
     
@@ -140,7 +139,44 @@ namespace systemstatusmon
         int stateUsedWidth = 1;
         
         ss << systemStateIcon(compData) 
-        << hydroctext::emph(hydroutil::toFixedWidth(extractComponent(compPlat),stateWidth-stateUsedWidth, ' ', true), systemHealthStyle(compData) );
+        << hydroctext::emph(hydroctext::toFixedWidth(extractComponent(compPlat),stateWidth-stateUsedWidth), systemHealthStyle(compData) );
+        
+        return ss.str();
+    }
+    
+    std::string toBoldString( const string &input )
+    {
+        return hydroctext::emph(input, hydroctext::Style( hydroctext::Bold ) );
+    }
+    
+    std::string humanErrorMsgString( const orca::SystemStatusData &ssData )
+    {
+        
+        stringstream ss;
+        
+        map<string,vector<orca::ComponentStatusData> >::const_iterator itCs;
+        for ( itCs=ssData.begin(); itCs!=ssData.end(); ++itCs )
+        {
+            const vector<orca::ComponentStatusData> &components = itCs->second;
+            
+            // per component
+            for (unsigned int i=0; i<components.size(); i++)
+            {
+                const orca::StatusData &statusData = components[i].data;
+                string platComp = orcaobj::toString(statusData.name);
+                
+                const orca::SubsystemsStatus &subSysSt = statusData.subsystems;
+                map<string,orca::SubsystemStatus>::const_iterator itSs;
+                
+                // per subsystem
+                for ( itSs=subSysSt.begin(); itSs!=subSysSt.end(); ++itSs )
+                {
+                    if (itSs->second.health!=orca::SubsystemOk)
+                        ss << toBoldString(platComp + ", " + itSs->first + ": ") << endl
+                           << itSs->second.message << endl << endl;
+                }
+            }
+        }
         
         return ss.str();
     }
@@ -185,10 +221,10 @@ ColourTextDisplay::display( const orca::SystemStatusData &data )
     cout << hydroctext::reset();  
     
     // platform names
-    cout << hydroutil::toFixedWidth( "PLATFORMS", compNameWidth, ' ', true ) << sep;
+    cout << hydroctext::toFixedWidth( toBoldString("PLATFORMS"), compNameWidth ) << sep;
     for ( it=data.begin(); it!=data.end(); ++it )
     {
-        cout << hydroutil::toFixedWidth( "    " + it->first, compStateWidth, ' ', true ) << sep;
+        cout << hydroctext::toFixedWidth( "    " + toBoldString(it->first), compStateWidth ) << sep;
     }
     cout << endl;
     
@@ -203,9 +239,9 @@ ColourTextDisplay::display( const orca::SystemStatusData &data )
 
         // row label
         if (compCounter==0)
-            cout << hydroutil::toFixedWidth( "COMPONENTS", compNameWidth, ' ', true ) << sep;
+            cout << hydroctext::toFixedWidth( toBoldString("COMPONENTS"), compNameWidth ) << sep;
         else
-            cout << hydroutil::toFixedWidth( " ", compNameWidth ) << sep;
+            cout << hydroctext::toFixedWidth( " ", compNameWidth ) << sep;
         
         // per platform (column)
         for ( it=data.begin(); it!=data.end(); ++it )
@@ -218,6 +254,10 @@ ColourTextDisplay::display( const orca::SystemStatusData &data )
         }
         cout << endl;
     }
+    
+    // print the human-readable text, TODO: make configurable? or interactive?
+    cout << endl;
+    cout << humanErrorMsgString( data );
     
     // space between consecutive records
     cout << endl << endl;
