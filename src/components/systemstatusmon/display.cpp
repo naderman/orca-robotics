@@ -74,15 +74,15 @@ namespace systemstatusmon
         switch (state)
         {
             case orca::SubsystemIdle: 
-                return "-";
+                return "- ";
             case orca::SubsystemInitialising:
-                return "^";
+                return "^ ";
             case orca::SubsystemWorking:
-                return " ";
+                return "  ";
             case orca::SubsystemFinalising:
-                return "v";
+                return "v ";
             case orca::SubsystemShutdown:
-                return "x";
+                return "x ";
             default:
                 assert( false && "unknown state type" );
         }
@@ -141,7 +141,7 @@ namespace systemstatusmon
         extractStateAndHealth( compData, healthStyle, stateIcon );
         
         stringstream ss;
-        int stateUsedWidth = 1;
+        int stateUsedWidth = 2;
         string compPlat = orcaobj::toString(compData.data.name);
         ss << stateIcon
            << hydroctext::emph(hydroctext::toFixedWidth(extractComponent(compPlat),stateWidth-stateUsedWidth), healthStyle );
@@ -156,7 +156,6 @@ namespace systemstatusmon
     
     std::string humanErrorMsgString( const orca::SystemStatusData &ssData )
     {
-        
         stringstream ss;
         
         map<string,vector<orca::ComponentStatusData> >::const_iterator itCs;

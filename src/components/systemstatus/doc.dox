@@ -17,7 +17,9 @@
 @defgroup orca_component_systemstatus SystemStatus
 @brief Connects to any number of Status interfaces and aggregates their information
 
-Connects to any number of Status interfaces and aggregates their information. Clients can display the information in different formats (@see @ref orca_component_systemstatusmon)
+Connects to any number of Status interfaces and aggregates their information. Clients can display the information in different formats.
+
+@see @ref orca_component_systemstatusmon
 
 
 @par Provides

@@ -17,7 +17,9 @@
 @defgroup orca_component_systemstatusmon SystemStatusMon
 @brief Connects to a SystemStatus interface and displays its information
 
-Connects to a SystemStatus interface and displays its information in different formats (@see @ref orca_component_systemstatus)
+Connects to a SystemStatus interface and displays its information in different formats
+
+@see @ref orca_component_systemstatus
 
 
 @par Provides
@@ -45,9 +47,11 @@ SimpleText
 
 ColourText
     - SystemStatusData is shown as a table: rows are platforms in the system, columns show all components per platform
-    - Each cell displays the SubsystemState and SubsystemHealth of a component. TODO: describe the matrix
-    - Each component may have several subsystems: the health and the state of the subsystem with the "worst" SubsystemHealth is displayed  
+    - Each cell displays the SubsystemState and SubsystemHealth of a component. Since each component may have several subsystems, the displayed health and state refer to the subsystem with the "worst" SubsystemHealth.  
     - In addition, a human-readable message is displayed if the SubsystemHealth is anything other than "Ok"
+    - The key to interpret the display:
+        - Color: green->health_ok, yellow->health_warning, red->health_fault, black->health_stalled, grey->data_stale
+        - Icon: "-"->state_idle, "^"->state_initialising, " "->state_working, "v"->state_finalising, "x"->state_shutdown
 
 
 @par Authors
