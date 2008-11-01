@@ -94,11 +94,15 @@ namespace systemstatusmon
     {
         if (compData.isDataStale) {
             healthStyle = hydroctext::Style( hydroctext::Reverse, hydroctext::White );
-            stateIcon = hydroctext::emph( " ", hydroctext::Style( hydroctext::Reverse, hydroctext::White ) );
+            stateIcon = hydroctext::emph( "  ", hydroctext::Style( hydroctext::Reverse, hydroctext::White ) );
             return;
         }
         
         const orca::SubsystemsStatus &subSysSt = compData.data.subsystems;
+        
+        if (subSysSt.size()==0)
+            throw gbxutilacfr::Exception(  ERROR_INFO, "SubsystemStatus field is empty" );
+        
         map<string,orca::SubsystemStatus>::const_iterator itWorstHealth;
     
         orca::SubsystemHealth worstHealth = orca::SubsystemOk;           

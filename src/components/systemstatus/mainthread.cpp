@@ -152,8 +152,9 @@ MainThread::walk()
         {
             StatusDetails details;
             string platformName;
-            monitors_[i].getComponentStatus( platformName, details ); 
-            systemStatusDetails.insert(pair<string,StatusDetails>(platformName,details));
+            monitors_[i].getComponentStatus( platformName, details );
+            if (details.dataAvailable) 
+                systemStatusDetails.insert(pair<string,StatusDetails>(platformName,details));
         }
         
         // convert and tell the world
