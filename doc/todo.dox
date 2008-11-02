@@ -66,24 +66,29 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @par New interfaces
 
-    - SystemStatus (tobi)
-        - provides the status of a whole system consisting of a bunch of components
-        - see StatusMon below which implements the interface
+- SystemStatus (tobi)
+   - provides the status of a whole system consisting of a bunch of components
+   - see StatusMon below which implements the interface
 
 @par New components
 
-    - OrcaImageView (tom)
-        - qt4 opengl driven image stream viewer
+- OrcaImageView (tom)
+  - qt4 opengl driven image stream viewer
 
-    - SystemStatus (tobi)
-        - provides a system-level overview of status
+- SystemStatus (tobi)
+  - provides a system-level overview of status
         
-    - SystemStatusMon (tobi)
-        - reads from SystemStatus and displays in different formats
+- SystemStatusMon (tobi)
+  - reads from SystemStatus and displays in different formats
 
 @par New utilities
 @par New libraries
 @par Updated interfaces
+
+- all existing interfaces
+  - removed cpp:const directive from idempotent methods. This was a leftover from the old days with 'nonmutating'
+    keyword. Clients did not need any changes. Servers required the removal of 'const' qualifier in interface 
+    implementations  (alexm)
 
 - ImageInterface
   - uses string to define format instead of an enum
