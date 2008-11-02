@@ -3,6 +3,9 @@
 # This module defines the following variables:
 # ICE_FOUND : 1 if Ice is found, 0 otherwise
 # ICE_HOME  : path where to find include, lib, bin, etc.
+# ICE_INCLUDE_DIR
+# ICE_LIBRARY_DIR 
+# ICE_SLICE_DIR
 #
 #
 # ICEJ_FOUND : 1 if Ice for Java is found, 0 otherwise
@@ -62,11 +65,24 @@ IF( ICE_HOME_INCLUDE_ICE )
 
     MESSAGE( STATUS "Setting ICE_HOME to ${ICE_HOME}" )
 
-ENDIF( ICE_HOME_INCLUDE_ICE )
+    # include and lib dirs are easy
+    SET( ICE_INCLUDE_DIR ${ICE_HOME}/include )
+    SET( ICE_LIBRARY_DIR ${ICE_HOME}/lib )
+    
+    # debian package splits off slice files into a different place
+    IF( ICE_HOME MATCHES /usr )
+        SET( ICE_SLICE_DIR /usr/share/slice )
+#         MESSAGE( STATUS "This is a Debian Ice installation. Slice files are in ${ice_slice_dir}" )
+    ELSE ( ICE_HOME MATCHES /usr )
+        SET( ICE_SLICE_DIR ${ICE_HOME}/slice )
+#         MESSAGE( STATUS "This is NOT a Debian Ice installation. Slice files are in ${ice_slice_dir}" )
+    ENDIF( ICE_HOME MATCHES /usr )
 
-# some libs only care about IceUtil, we tell them to find IceUtil in the same place as Ice.
-SET( ICEUTIL_HOME ${ICE_HOME} )
-MESSAGE( STATUS "Setting ICEUTIL_HOME to ${ICEUTIL_HOME}" )
+    # some libs only care about IceUtil, we tell them to find IceUtil in the same place as Ice.
+    SET( ICEUTIL_HOME ${ICE_HOME} )
+    MESSAGE( STATUS "Setting ICEUTIL_HOME to ${ICEUTIL_HOME}" )
+
+ENDIF( ICE_HOME_INCLUDE_ICE )
 
 #
 # Ice for Java
