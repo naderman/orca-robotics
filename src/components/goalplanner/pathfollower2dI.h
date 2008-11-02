@@ -36,22 +36,22 @@ public:
     // remote calls:
 
     // Get the current path
-    virtual ::orca::PathFollower2dData getData(const ::Ice::Current& = ::Ice::Current()) const;
+    virtual ::orca::PathFollower2dData getData(const ::Ice::Current& = ::Ice::Current());
 
     // Set a path
     virtual void setData(const ::orca::PathFollower2dData& data, bool activateImmediately, const ::Ice::Current& = ::Ice::Current());
 
     virtual void activateNow(const ::Ice::Current& = ::Ice::Current());
     
-    virtual int  getWaypointIndex(const ::Ice::Current& = ::Ice::Current()) const;
+    virtual int  getWaypointIndex(const ::Ice::Current& = ::Ice::Current());
     
-    virtual bool getAbsoluteActivationTime(orca::Time &activationTime, const Ice::Current&) const;
+    virtual bool getAbsoluteActivationTime(orca::Time &activationTime, const Ice::Current&);
     
-    virtual bool getRelativeActivationTime(double &secondsSinceActivation, const Ice::Current&) const;
+    virtual bool getRelativeActivationTime(double &secondsSinceActivation, const Ice::Current&);
             
 
     virtual void setEnabled( bool enabled, const ::Ice::Current& = ::Ice::Current() );
-    virtual bool enabled(const ::Ice::Current& = ::Ice::Current()) const;
+    virtual bool enabled(const ::Ice::Current& = ::Ice::Current());
 
     // Subscribe people
     virtual void subscribe(const ::orca::PathFollower2dConsumerPrx&, const ::Ice::Current& = ::Ice::Current());

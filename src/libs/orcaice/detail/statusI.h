@@ -31,7 +31,7 @@ public:
     StatusI( const orcaice::Context& context );
 
     // from orca::Status interface: remote calls
-    virtual ::orca::StatusData getData(const ::Ice::Current& ) const;
+    virtual ::orca::StatusData getData(const ::Ice::Current& );
     virtual void subscribe(const ::orca::StatusConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
     virtual void unsubscribe(const ::orca::StatusConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
     virtual IceStorm::TopicPrx topic(const ::Ice::Current& = ::Ice::Current());

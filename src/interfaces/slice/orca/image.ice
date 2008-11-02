@@ -64,11 +64,11 @@ interface ImageConsumer
 interface Image
 {
     //! Returns the latest data.
-    ["cpp:const"] idempotent ImageData getData()
+    idempotent ImageData getData()
         throws DataNotExistException, HardwareFailedException;
             
     //! Returns the image source description.
-    ["cpp:const"] idempotent ImageDescription getDescription();
+    idempotent ImageDescription getDescription();
 
     /*!
      * Mimics IceStorm's subscribe(). @p subscriber is typically a direct proxy to the consumer object.

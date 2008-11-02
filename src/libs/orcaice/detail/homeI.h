@@ -29,9 +29,9 @@ public:
     HomeI( ComponentInterfaceFlag flag, const orcaice::Context& context );
 
     // orca::Home interface
-    virtual orca::HomeData getInterfaces(const ::Ice::Current& ) const;
-    virtual int getTimeUp(const ::Ice::Current& ) const;
-    virtual orca::StringStringDict getProperties(const ::Ice::Current& ) const;
+    virtual orca::HomeData getInterfaces(const ::Ice::Current& );
+    virtual int getTimeUp(const ::Ice::Current& );
+    virtual orca::StringStringDict getProperties(const ::Ice::Current& );
 
     // orcaice::Home interface
     virtual void addProvidedInterface( const orca::ProvidedInterface& iface );

@@ -47,7 +47,7 @@ HomeI::HomeI( ComponentInterfaceFlag flag, const orcaice::Context& context )
 }
 
 orca::HomeData
-HomeI::getInterfaces(const ::Ice::Current& ) const
+HomeI::getInterfaces(const ::Ice::Current& )
 {
     //std::cout << "Sending data back" << std::endl;
     IceUtil::Mutex::Lock lock(mutex_);
@@ -59,7 +59,7 @@ HomeI::getInterfaces(const ::Ice::Current& ) const
 }
 
 int
-HomeI::getTimeUp(const ::Ice::Current& ) const
+HomeI::getTimeUp(const ::Ice::Current& )
 {
     IceUtil::Mutex::Lock lock(mutex_);
 
@@ -68,7 +68,7 @@ HomeI::getTimeUp(const ::Ice::Current& ) const
 }
 
 orca::StringStringDict 
-HomeI::getProperties(const ::Ice::Current& ) const
+HomeI::getProperties(const ::Ice::Current& )
 {
     //std::cout << "Sending data back" << std::endl;
     IceUtil::Mutex::Lock lock(mutex_);

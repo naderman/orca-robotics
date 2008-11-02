@@ -64,11 +64,11 @@ interface Localise3dConsumer
 interface Localise3d
 {
     //! Returns the latest data.
-    ["cpp:const"] idempotent Localise3dData getData()
+    idempotent Localise3dData getData()
             throws DataNotExistException;
     
     //! Get the geometry of the localised vehicle
-    ["cpp:const"] idempotent VehicleGeometryDescription getVehicleGeometry();
+    idempotent VehicleGeometryDescription getVehicleGeometry();
 
     /*!
      * Mimics IceStorm's subscribe(). @p subscriber is typically a direct proxy

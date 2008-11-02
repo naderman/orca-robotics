@@ -112,7 +112,7 @@ interface QGraphics2dConsumer
 interface QGraphics2d
 {
    //! Returns the latest data.
-   ["cpp:const"] idempotent QGraphics2dData getData()
+   idempotent QGraphics2dData getData()
             throws DataNotExistException;
    /*!
     * Mimics IceStorm's subscribe() but without QoS, for now. The

@@ -33,10 +33,10 @@ public:
 
     // remote interface
 
-    virtual ::orca::PointCloudData getData(const ::Ice::Current& ) const
+    virtual ::orca::PointCloudData getData(const ::Ice::Current& )
         { return impl_.internalGetData(); }
 
-    //virtual ::orca::PointCloudDescription getDescription(const ::Ice::Current& ) const
+    //virtual ::orca::PointCloudDescription getDescription(const ::Ice::Current& )
         //{ return impl_.internalGetDescription(); }
 
     virtual void subscribe(const ::orca::PointCloudConsumerPrx& consumer,

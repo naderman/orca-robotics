@@ -93,7 +93,7 @@ interface PathPlanner2d
             throws BusyException, RequiredInterfaceFailedException;   
 
     //! Returns the most-recently-computed computed path
-    ["cpp:const"] idempotent PathPlanner2dData getData();
+    idempotent PathPlanner2dData getData();
 
     /*!
      *

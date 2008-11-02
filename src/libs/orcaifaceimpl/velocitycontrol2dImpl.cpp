@@ -29,7 +29,7 @@ public:
     VelocityControl2dI( VelocityControl2dImpl &impl )
         : impl_(impl) {}
 
-    virtual orca::VehicleDescription getDescription( const Ice::Current& c ) const
+    virtual orca::VehicleDescription getDescription( const Ice::Current& )
         { return impl_.internalGetDescription(); }
 
     virtual void setCommand(const ::orca::VelocityControl2dData& command, 

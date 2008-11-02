@@ -158,11 +158,11 @@ interface PolarFeature2d
 {
     //! Returns the latest data.
     //! @note In Orca1 this would be called ClientPull_Supplier interface.
-    ["cpp:const"] idempotent PolarFeature2dData getData()
+    idempotent PolarFeature2dData getData()
             throws DataNotExistException;
 
     //! Returns device description.
-    ["cpp:const"] idempotent PolarFeature2dDescription getDescription();
+    idempotent PolarFeature2dDescription getDescription();
 
     /*!
      * Mimics IceStorm's subscribe() but without QoS, for now. The

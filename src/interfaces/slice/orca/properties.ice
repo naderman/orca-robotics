@@ -45,7 +45,7 @@ interface PropertiesConsumer
 interface Properties
 {
     //! Get current Properties state. Raises DataNotExistException if data is not available.
-    ["cpp:const"] idempotent PropertiesData getData()
+    idempotent PropertiesData getData()
         throws DataNotExistException;
 
     //! Allow remote clients to set new properties.  

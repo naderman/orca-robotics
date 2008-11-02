@@ -44,7 +44,7 @@ PathPlanner2dI::setTask(const ::orca::PathPlanner2dTask& task, const ::Ice::Curr
 }
 
 orca::PathPlanner2dData
-PathPlanner2dI::getData(const Ice::Current& current ) const 
+PathPlanner2dI::getData(const Ice::Current&) 
 {
 //     cout << "TRACE(pathplanner2dI.cpp): getData()" << endl;
 

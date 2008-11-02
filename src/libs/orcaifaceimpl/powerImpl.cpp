@@ -33,7 +33,7 @@ public:
 
     // remote interface
 
-    virtual ::orca::PowerData getData(const ::Ice::Current& ) const
+    virtual ::orca::PowerData getData(const ::Ice::Current& )
         { return impl_.internalGetData(); }
 
     virtual void subscribe(const ::orca::PowerConsumerPrx& consumer,

@@ -23,7 +23,7 @@ public:
 
     // remote functions
 
-    virtual ::orca::PathFollower2dData getData(const Ice::Current&) const
+    virtual ::orca::PathFollower2dData getData(const Ice::Current&)
         { return impl_.internalGetData(); }
     virtual void subscribe(const ::orca::PathFollower2dConsumerPrx& consumer,
                            const Ice::Current&)
@@ -36,15 +36,15 @@ public:
         { callback_.setData(path,activateImmediately); }
     virtual void activateNow(const Ice::Current&)
         { callback_.activateNow(); }
-    virtual int  getWaypointIndex(const Ice::Current&) const
+    virtual int  getWaypointIndex(const Ice::Current&)
         { return callback_.getWaypointIndex(); }
-    virtual bool getAbsoluteActivationTime( orca::Time &activationTime, const Ice::Current& ) const
+    virtual bool getAbsoluteActivationTime( orca::Time &activationTime, const Ice::Current& )
         { return callback_.getAbsoluteActivationTime(activationTime); }
-    virtual bool getRelativeActivationTime( double &secondsSinceActivation, const Ice::Current& ) const
+    virtual bool getRelativeActivationTime( double &secondsSinceActivation, const Ice::Current& )
         { return callback_.getRelativeActivationTime(secondsSinceActivation); }
     virtual void setEnabled( bool enabled, const Ice::Current& )
         { callback_.setEnabled(enabled); }
-    virtual bool enabled(const Ice::Current&) const
+    virtual bool enabled(const Ice::Current&)
         { return callback_.enabled(); }
 
 private:

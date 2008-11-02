@@ -31,7 +31,7 @@ public:
                gbxiceutilacfr::Buffer<orca::OgFusionData> &OgFusionDataBuffer);
 
     virtual void setData(const orca::OgFusionData&, const Ice::Current&);
-    virtual orca::OgFusionConfig getConfig(const ::Ice::Current &) const;
+    virtual orca::OgFusionConfig getConfig(const ::Ice::Current&);
 
 private:
 

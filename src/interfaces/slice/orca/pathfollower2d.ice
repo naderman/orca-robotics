@@ -110,7 +110,7 @@ interface PathFollower2d
 {
     //! Returns the path currently being followed, or throws DataNotExistException
     //! if none has been set.
-    ["cpp:const"] idempotent PathFollower2dData getData();
+    idempotent PathFollower2dData getData();
             
     //! Loads the follower with a path to follow.
     //! If @c activateImmediately is false, the follower won't go anywhere
@@ -132,7 +132,7 @@ interface PathFollower2d
     //! Returns the index of the waypoint which is currently pursued:
     //!   - '-1'    : none (inactive)
     //!   - [0,n-1] : an index into the list of n waypoints.
-    ["cpp:const"] idempotent int getWaypointIndex();
+    idempotent int getWaypointIndex();
 
     //! If the PathFollower is active (alexm: what does that mean? has path?)
     //!   - returns TRUE and
@@ -140,7 +140,7 @@ interface PathFollower2d
     //! If the PathFollower is inactive:
     //!   - returns FALSE and
     //!   - does not set the activation time
-    ["cpp:const"] idempotent bool getAbsoluteActivationTime( out Time activationTime );
+    idempotent bool getAbsoluteActivationTime( out Time activationTime );
     
     //! If the PathFollower is active:
     //!   - returns true and
@@ -149,7 +149,7 @@ interface PathFollower2d
     //! If the PathFollower is inactive:
     //!   - returns false and
     //!     does not set secondsSinceActivation
-    ["cpp:const"] idempotent bool getRelativeActivationTime( out double secondsSinceActivation );
+    idempotent bool getRelativeActivationTime( out double secondsSinceActivation );
 
     //! Disabling the PathFollower stops it from sending any commands to the 
     //! robot.  It says, "Take your hands off the wheel!".  No commands can
@@ -157,7 +157,7 @@ interface PathFollower2d
     idempotent void setEnabled( bool enabled );
 
     //! Get the enabled/disabled state.
-    ["cpp:const"] idempotent bool enabled();
+    idempotent bool enabled();
     
     /*!
      *

@@ -31,7 +31,7 @@ PathFollower2dI::PathFollower2dI( gbxiceutilacfr::Store<orca::PathFollower2dData
 }
 
 orca::PathFollower2dData
-PathFollower2dI::getData( const ::Ice::Current& ) const
+PathFollower2dI::getData( const ::Ice::Current&)
 {
     return localNavPrx_->getData();
 }
@@ -71,7 +71,7 @@ PathFollower2dI::activateNow( const ::Ice::Current& )
 }
 
 int
-PathFollower2dI::getWaypointIndex( const ::Ice::Current& ) const
+PathFollower2dI::getWaypointIndex( const ::Ice::Current&)
 {
 //     cout << "TRACE(pathfollower2dI.cpp): getWaypointIndex: passing request on to localnav" << endl;
     try {
@@ -83,7 +83,7 @@ PathFollower2dI::getWaypointIndex( const ::Ice::Current& ) const
 }
 
 bool
-PathFollower2dI::getAbsoluteActivationTime(::orca::Time &activationTime, const Ice::Current&) const
+PathFollower2dI::getAbsoluteActivationTime(::orca::Time &activationTime, const Ice::Current&)
 {
 //     cout << "TRACE(pathfollower2dI.cpp): getAbsoluteActivationTime: passing request on to localnav" << endl;
     try {
@@ -96,7 +96,7 @@ PathFollower2dI::getAbsoluteActivationTime(::orca::Time &activationTime, const I
 }
     
 bool 
-PathFollower2dI::getRelativeActivationTime(double &secondsSinceActivation, const Ice::Current&) const
+PathFollower2dI::getRelativeActivationTime(double &secondsSinceActivation, const Ice::Current&)
 {
 //     cout << "TRACE(pathfollower2dI.cpp): getRelativeActivationTime: passing request on to localnav" << endl;
     try {
@@ -120,7 +120,7 @@ PathFollower2dI::setEnabled( bool enabled, const ::Ice::Current& )
 }
 
 bool 
-PathFollower2dI::enabled(const ::Ice::Current&) const
+PathFollower2dI::enabled(const ::Ice::Current&)
 {
 //     cout << "TRACE(pathfollower2dI.cpp):enabled: passing request on to localnav" << endl;
     try {

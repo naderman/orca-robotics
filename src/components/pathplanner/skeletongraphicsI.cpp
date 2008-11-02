@@ -28,7 +28,7 @@ SkeletonGraphicsI::SkeletonGraphicsI( const orcaice::Context & context, const st
 }
 
 QGraphics2dData
-SkeletonGraphicsI::getData(const Ice::Current& current) const
+SkeletonGraphicsI::getData(const Ice::Current&)
 {
     // create a null pointer. data will be cloned into it.
     orca::QGraphics2dData data;
@@ -45,7 +45,7 @@ SkeletonGraphicsI::getData(const Ice::Current& current) const
 
 void
 SkeletonGraphicsI::subscribe(const ::QGraphics2dConsumerPrx& subscriber,
-                             const Ice::Current& current)
+                             const Ice::Current&)
 {
     cout<<"subscribe()"<<endl;
     try {
@@ -66,7 +66,7 @@ SkeletonGraphicsI::subscribe(const ::QGraphics2dConsumerPrx& subscriber,
 
 void
 SkeletonGraphicsI::unsubscribe(const ::QGraphics2dConsumerPrx& subscriber,
-                    const Ice::Current& current)
+                    const Ice::Current&)
 {
     cout<<"unsubscribe()"<<endl;
     topicPrx_->unsubscribe( subscriber );

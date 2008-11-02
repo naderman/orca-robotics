@@ -31,10 +31,10 @@ public:
     // Remote calls:
     //
 
-    virtual ::orca::RangeScanner2dDataPtr     getData(const ::Ice::Current& ) const
+    virtual ::orca::RangeScanner2dDataPtr     getData(const ::Ice::Current& )
         { return impl_.internalGetData(); }
 
-    virtual ::orca::RangeScanner2dDescription getDescription(const ::Ice::Current& ) const
+    virtual ::orca::RangeScanner2dDescription getDescription(const ::Ice::Current& )
         { return impl_.internalGetDescription(); }
 
     virtual void subscribe(const ::orca::RangeScanner2dConsumerPrx &consumer,

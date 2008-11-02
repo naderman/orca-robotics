@@ -32,7 +32,7 @@ public:
     virtual void subscribe(const ::orca::PathPlanner2dConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
     virtual void unsubscribe(const ::orca::PathPlanner2dConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
 
-    virtual ::orca::PathPlanner2dData getData(const ::Ice::Current& ) const;
+    virtual ::orca::PathPlanner2dData getData(const ::Ice::Current&);
 
     // local calls
     void localSetData( const ::orca::PathPlanner2dData& data );

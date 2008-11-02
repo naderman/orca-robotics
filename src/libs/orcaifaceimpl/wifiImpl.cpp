@@ -21,7 +21,7 @@ public:
 
     // remote functions
 
-    virtual ::orca::WifiData getData(const Ice::Current&) const
+    virtual ::orca::WifiData getData(const Ice::Current&)
         { return impl_.internalGetData(); }
 
     virtual void subscribe(const ::orca::WifiConsumerPrx& consumer,

@@ -78,10 +78,10 @@ interface Ins
 {
     //! Returns the latest data.
     //! @note In Orca1 this would be called ClientPull_Supplier interface.
-    ["cpp:const"] idempotent InsData getData()
+    idempotent InsData getData()
             throws HardwareFailedException;
 
-    ["cpp:const"] idempotent InsDescription getDescription();
+    idempotent InsDescription getDescription();
 
     /*!
      * Mimics IceStorm's subscribe() but without QoS, for now. The

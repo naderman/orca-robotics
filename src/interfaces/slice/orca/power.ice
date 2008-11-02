@@ -84,7 +84,7 @@ interface Power
 {
     //! Returns the latest data. Raises DataNotExistException if data is not available. Raises 
     //! HardwareFailedException there is a problem with the underlying hardware.
-    ["cpp:const"] idempotent PowerData getData()
+    idempotent PowerData getData()
         throws DataNotExistException, HardwareFailedException;
 
     /*!

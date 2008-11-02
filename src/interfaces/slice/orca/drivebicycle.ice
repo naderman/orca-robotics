@@ -74,12 +74,12 @@ interface DriveBicycleConsumer
 interface DriveBicycle
 {
     //! Get vehicle description
-    ["cpp:const"] idempotent VehicleDescription getDescription();
+    idempotent VehicleDescription getDescription();
 
     //! Returns the latest data.
     //! May raise DataNotExistException if the requested information is not available.
     //! May raise HardwareFailedException if there is some problem with hardware.
-    ["cpp:const"] idempotent DriveBicycleData getData()
+    idempotent DriveBicycleData getData()
             throws DataNotExistException, HardwareFailedException;
     
     //! Set velocity command

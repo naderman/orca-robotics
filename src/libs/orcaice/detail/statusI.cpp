@@ -202,7 +202,7 @@ StatusI::connectToIceStorm()
 }
 
 orca::StatusData
-StatusI::getData(const ::Ice::Current& ) const
+StatusI::getData(const ::Ice::Current& )
 {
     IceUtil::Mutex::Lock lock(mutex_);
 

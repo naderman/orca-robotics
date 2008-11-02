@@ -44,14 +44,14 @@ struct HomeData
 interface Home
 {
     //! Returns a list the component's interfaces.
-    ["cpp:const"] idempotent HomeData getInterfaces();
+    idempotent HomeData getInterfaces();
 
     //! Returns the number of seconds since the start of the component.
-    ["cpp:const"] idempotent int getTimeUp();
+    idempotent int getTimeUp();
     
     //! Returns all of this component's properties.
     //! (Our properties are defined the same way as Ice::PropertyDict.)
-    ["cpp:const"] idempotent StringStringDict getProperties();
+    idempotent StringStringDict getProperties();
 };
 
 /*!

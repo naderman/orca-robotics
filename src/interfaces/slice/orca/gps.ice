@@ -129,11 +129,11 @@ interface GpsConsumer
 interface Gps
 {
     //! Returns the latest data
-    ["cpp:const"] idempotent GpsData getData()
+    idempotent GpsData getData()
             throws HardwareFailedException;
 
     //! Return the gps description
-    ["cpp:const"] idempotent GpsDescription getDescription();
+    idempotent GpsDescription getDescription();
 
     /*!
      * Mimics IceStorm's subscribe() but without QoS, for now. The

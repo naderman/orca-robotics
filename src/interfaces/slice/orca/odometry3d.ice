@@ -55,11 +55,11 @@ interface Odometry3d
     //! Returns the latest data.
     //! May raise DataNotExistException if the requested information is not available.
     //! May raise HardwareFailedException if there is some problem with hardware.
-    ["cpp:const"] idempotent Odometry3dData getData()
+    idempotent Odometry3dData getData()
             throws DataNotExistException, HardwareFailedException;
     
     //! Returns description         
-    ["cpp:const"] idempotent VehicleDescription getDescription();
+    idempotent VehicleDescription getDescription();
 
     /*!
      * Mimics IceStorm's subscribe(). @p subscriber is typically a direct proxy to the consumer object.

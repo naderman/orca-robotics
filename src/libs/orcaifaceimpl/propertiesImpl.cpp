@@ -33,7 +33,7 @@ public:
 
     // remote interface
 
-    virtual ::orca::PropertiesData getData(const ::Ice::Current& ) const
+    virtual ::orca::PropertiesData getData(const ::Ice::Current& )
         { return impl_.internalGetData(); }
 
     virtual void setData( const ::orca::PropertiesData &data, const ::Ice::Current& )

@@ -36,7 +36,7 @@ public:
     // Remote calls:
 
     // Hand out data to people
-    orca::QGraphics2dData getData(const Ice::Current&) const;
+    orca::QGraphics2dData getData(const Ice::Current&);
 
     virtual void subscribe(const ::orca::QGraphics2dConsumerPrx&,
                            const Ice::Current&);

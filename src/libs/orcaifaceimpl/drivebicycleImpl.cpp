@@ -28,7 +28,7 @@ public:
     DriveBicycleI( DriveBicycleImpl &impl )
         : impl_(impl) {}
 
-    virtual ::orca::DriveBicycleData getData(const ::Ice::Current& ) const
+    virtual ::orca::DriveBicycleData getData(const ::Ice::Current& )
         { return impl_.internalGetData(); }
 
     virtual void subscribe(const ::orca::DriveBicycleConsumerPrx& subscriber,
@@ -39,7 +39,7 @@ public:
                              const ::Ice::Current& = ::Ice::Current())
         { impl_.internalUnsubscribe( subscriber ); }
 
-    virtual orca::VehicleDescription getDescription( const Ice::Current& c ) const
+    virtual orca::VehicleDescription getDescription( const Ice::Current& )
         { return impl_.internalGetDescription(); }
 
     virtual void setCommand(const ::orca::DriveBicycleCommand& command, 

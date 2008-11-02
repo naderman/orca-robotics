@@ -29,7 +29,7 @@ public:
 
     // orca::Tracer interface
 
-    virtual ::orca::TracerVerbosityConfig getVerbosity( const ::Ice::Current& = ::Ice::Current()) const;
+    virtual ::orca::TracerVerbosityConfig getVerbosity( const ::Ice::Current& = ::Ice::Current());
 
     virtual void setVerbosity( const ::orca::TracerVerbosityConfig&, const ::Ice::Current& = ::Ice::Current());
 

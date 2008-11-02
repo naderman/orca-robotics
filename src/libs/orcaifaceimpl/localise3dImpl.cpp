@@ -30,10 +30,10 @@ public:
 
     // remote calls:
 
-    virtual ::orca::Localise3dData getData(const ::Ice::Current& ) const
+    virtual ::orca::Localise3dData getData(const ::Ice::Current& )
         { return impl_.internalGetData(); }
     
-    virtual ::orca::VehicleGeometryDescriptionPtr getVehicleGeometry( const ::Ice::Current& ) const
+    virtual ::orca::VehicleGeometryDescriptionPtr getVehicleGeometry( const ::Ice::Current& )
         { return impl_.internalGetVehicleGeometry(); }    
 
     virtual void subscribe(const ::orca::Localise3dConsumerPrx& subscriber,

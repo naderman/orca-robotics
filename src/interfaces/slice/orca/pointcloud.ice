@@ -53,7 +53,7 @@ interface PointCloud
 {
     //! Returns the latest data.
     //! May raise DataNotExistException if the requested information is not available.
-    ["cpp:const"] idempotent PointCloudData getData()
+    idempotent PointCloudData getData()
             throws DataNotExistException; 
 
     /*!

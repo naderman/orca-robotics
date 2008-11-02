@@ -33,10 +33,10 @@ public:
     // Remote calls:
     //
 
-    virtual ::orca::PolarFeature2dData     getData(const ::Ice::Current& ) const
+    virtual ::orca::PolarFeature2dData     getData(const ::Ice::Current& )
         { return impl_.internalGetData(); }
 
-    virtual ::orca::PolarFeature2dDescription getDescription(const ::Ice::Current& ) const
+    virtual ::orca::PolarFeature2dDescription getDescription(const ::Ice::Current& )
         { return impl_.internalGetDescription(); }
 
     virtual void subscribe(const ::orca::PolarFeature2dConsumerPrx& consumer,

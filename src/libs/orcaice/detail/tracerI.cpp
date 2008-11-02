@@ -118,7 +118,7 @@ TracerI::icestormConnectFailed( const std::string &topicName,
 }
 
 ::orca::TracerVerbosityConfig 
-TracerI::getVerbosity( const ::Ice::Current& ) const
+TracerI::getVerbosity( const ::Ice::Current& )
 {
     ::orca::TracerVerbosityConfig config;
 

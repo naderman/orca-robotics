@@ -23,7 +23,7 @@ public:
 
     // remote functions
 
-    virtual ::orca::EStopData getData(const Ice::Current&) const
+    virtual ::orca::EStopData getData(const Ice::Current&)
         { return impl_.internalGetData(); }
 
     virtual void subscribe(const ::orca::EStopConsumerPrx& consumer,
@@ -38,7 +38,7 @@ public:
         { nonStandardImpl_.activateEStop(); }
     virtual void keepAlive( const Ice::Current& )
         { nonStandardImpl_.keepAlive(); }
-    virtual double getRequiredKeepAlivePeriodSec( const Ice::Current& ) const
+    virtual double getRequiredKeepAlivePeriodSec( const Ice::Current& )
         { return nonStandardImpl_.getRequiredKeepAlivePeriodSec(); }
     virtual void setToOperatingMode( const Ice::Current& )
         { nonStandardImpl_.setToOperatingMode(); }

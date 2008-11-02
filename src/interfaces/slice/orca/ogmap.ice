@@ -127,7 +127,7 @@ interface OgMapConsumer
 interface OgMap
 {
     //! Returns the latest data.
-    ["cpp:const"] idempotent OgMapData getData()
+    idempotent OgMapData getData()
             throws DataNotExistException;
 
     /*!

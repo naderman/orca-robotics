@@ -21,7 +21,7 @@ public:
 
     // remote functions
 
-    virtual ::orca::FeatureMap2dData getData(const Ice::Current&) const
+    virtual ::orca::FeatureMap2dData getData(const Ice::Current&)
         { return impl_.internalGetData(); }
 
     virtual void subscribe(const ::orca::FeatureMap2dConsumerPrx& consumer,

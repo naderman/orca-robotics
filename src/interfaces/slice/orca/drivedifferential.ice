@@ -62,7 +62,7 @@ struct DriveDifferentialData
 interface DriveDifferential
 {
     //! Get desciption
-    ["cpp:const"] idempotent DriveDifferentialDescription getDescription();
+    idempotent DriveDifferentialDescription getDescription();
 
     //! Set velocity command
     idempotent void setCommand( DriveDifferentialData data )

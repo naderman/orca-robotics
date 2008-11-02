@@ -65,7 +65,7 @@ interface EStop
     //! will automatically be activated.
     //! A negative value indicates that keep-alives are not required: the
     //! e-stop can only be activated using 'activateEStop()'.
-    ["cpp:const"] idempotent double getRequiredKeepAlivePeriodSec();
+    idempotent double getRequiredKeepAlivePeriodSec();
 
     //! If the e-stop was activated, sets the vehicle back to the
     //! operating mode (ie un-sets the e-stop so the vehicle can move again),
@@ -74,7 +74,7 @@ interface EStop
     idempotent void setToOperatingMode();
 
     //! Returns the latest data. Raises DataNotExistException if data is not available.
-    ["cpp:const"] idempotent EStopData getData()
+    idempotent EStopData getData()
         throws DataNotExistException;
 
     /*!

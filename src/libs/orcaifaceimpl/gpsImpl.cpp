@@ -32,10 +32,10 @@ public:
 
     // remote interface
 
-    virtual ::orca::GpsData getData(const ::Ice::Current& ) const
+    virtual ::orca::GpsData getData(const ::Ice::Current& )
         { return impl_.internalGetData(); }
 
-    virtual ::orca::GpsDescription getDescription(const ::Ice::Current& ) const
+    virtual ::orca::GpsDescription getDescription(const ::Ice::Current& )
         { return impl_.internalGetDescription(); }
 
     virtual void subscribe(const ::orca::GpsConsumerPrx& consumer,

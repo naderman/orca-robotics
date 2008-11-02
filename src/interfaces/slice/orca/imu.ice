@@ -75,10 +75,10 @@ interface Imu
 {
     //! Returns the latest data.
     //! @note In Orca1 this would be called ClientPull_Supplier interface.
-    ["cpp:const"] idempotent ImuData getData()
+    idempotent ImuData getData()
             throws HardwareFailedException;
 
-    ["cpp:const"] idempotent ImuDescription getDescription();
+    idempotent ImuDescription getDescription();
 
     /*!
      * Mimics IceStorm's subscribe() but without QoS, for now. The

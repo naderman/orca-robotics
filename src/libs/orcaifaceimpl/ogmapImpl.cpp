@@ -29,7 +29,7 @@ public:
         : impl_(impl) {}
 
     // Remote calls:
-    orca::OgMapData getData(const Ice::Current&) const
+    orca::OgMapData getData(const Ice::Current&)
         { return impl_.internalGetData(); }
 
     virtual void subscribe(const ::orca::OgMapConsumerPrx& consumer,

@@ -135,7 +135,7 @@ interface WifiConsumer
 interface Wifi
 {
     //! Get current Wifi data. Raises DataNotExistException if data is not available.
-    ["cpp:const"] idempotent WifiData getData()
+    idempotent WifiData getData()
         throws DataNotExistException;
 
     /*!

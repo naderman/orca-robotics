@@ -29,7 +29,7 @@ OgFusionI::setData(const orca::OgFusionData& data, const Ice::Current& context)
 }
 
 orca::OgFusionConfig
-OgFusionI::getConfig(const ::Ice::Current& ) const
+OgFusionI::getConfig(const ::Ice::Current&)
 {
     return config_;
 }
