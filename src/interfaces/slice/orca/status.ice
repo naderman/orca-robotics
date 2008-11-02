@@ -13,6 +13,7 @@
 
 #include <orca/common.ice>
 #include <orca/ocm.ice>
+#include <IceStorm/IceStorm.ice>
 
 module orca
 {
@@ -129,6 +130,11 @@ interface Status
      * @see subscribe
      */
     idempotent void unsubscribe( StatusConsumer* subscriber );
+
+    //
+    // experimental!
+    //
+    idempotent IceStorm::Topic* topic();
 };
 
 /*!

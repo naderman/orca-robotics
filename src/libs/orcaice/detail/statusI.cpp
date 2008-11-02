@@ -265,3 +265,8 @@ StatusI::unsubscribe(const ::orca::StatusConsumerPrx& subscriber, const ::Ice::C
     topicPrx_->unsubscribe( subscriber );
 }
 
+IceStorm::TopicPrx 
+StatusI::topic(const ::Ice::Current&)
+{
+    return topicPrx_;
+}

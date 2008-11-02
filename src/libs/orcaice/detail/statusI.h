@@ -34,6 +34,7 @@ public:
     virtual ::orca::StatusData getData(const ::Ice::Current& ) const;
     virtual void subscribe(const ::orca::StatusConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
     virtual void unsubscribe(const ::orca::StatusConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
+    virtual IceStorm::TopicPrx topic(const ::Ice::Current& = ::Ice::Current());
 
     // from LocalStatus
     virtual void publishEvent( const hydroiceutil::NameStatusMap& subsystems );
