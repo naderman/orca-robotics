@@ -43,7 +43,7 @@ IF( build )
 
     SET( dep_libs ${int_libs} ${ext_libs} )
     
-    GBX_ADD_LIBRARY( ${lib_name} SHARED ${slice_generated_sources} ${util_cpp_file} )
+    GBX_ADD_LIBRARY( ${lib_name} DEFAULT ${slice_generated_sources} ${util_cpp_file} )
     TARGET_LINK_LIBRARIES( ${lib_name} ${dep_libs} )
     
     IF( ORCA_MOTHERSHIP )

@@ -41,6 +41,17 @@ void fromLogStream( module::Type& obj, std::istream& is );
 
 They can be used with std::[i/o]fstream (logging) or std::[i/o]stringstream (easier for testing) objects
 
+@par Limitations
+
+This tool is limited compared to slice2cpp.
+
+- Not all types of objects can be used in private data types (i.e. structs, classes, sequences, dictionaries).  Specifically no Ice, IceStorm types, etc. are allowed. This limitation stems from the fact that we don't run @c slice2util on the Ice-supplied types.
+    - Orca project: only Orca types are allowed.
+    - Satellite projects: only Orca and project types are allowed.
+- There is a limitation when working with derived classes. The following combination is not supported:
+    - Holding a pointer to a base class, AND
+    - The actual object is a derived class defined in a file different from the base class.
+
 @author Alex Makarenko
 
 */

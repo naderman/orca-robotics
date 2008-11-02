@@ -101,6 +101,19 @@ int main( int argc, char **argv )
         }
         cout << "ok" << endl<<endl;
     }
+    // null class
+    cout<<"logging null class pointer...";
+    {
+        test::MyClass0Ptr in;
+        stringstream ss; 
+        try {
+            ifacelog::toLogStream( in, ss );
+            cout<<"should've thrown"<<endl;
+            return EXIT_FAILURE;
+        }
+        catch (...) {}
+    }
+    cout<<"ok"<<endl;
     // base class
     {
         test::MyClass0Ptr in = new test::MyClass0;

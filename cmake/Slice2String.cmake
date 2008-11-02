@@ -37,7 +37,7 @@ MACRO( ORCA_GENERATE_SLICE2STRING_RULES generated_cpp_list generated_header_list
     SET( slice_cpp_suffixes        .cpp )
     SET( slice_header_suffixes     .h  )
     SET( slice_suffixes            ${slice_cpp_suffixes} ${slice_header_suffixes} )
-    SET( generator_command         ${ORCA_SLICE2STRING_COMMAND} )
+    SET( generator_command         ${ORCA_SLICE2LOG_COMMAND} )
     
     SET( proj_slice_src_dir        ${PROJECT_SOURCE_DIR}/src/interfaces/slice )
     SET( proj_slice_bin_dir        ${PROJECT_BINARY_DIR}/src/interfaces/slice )
@@ -50,30 +50,15 @@ MACRO( ORCA_GENERATE_SLICE2STRING_RULES generated_cpp_list generated_header_list
     SET( global_header_file        ${lib_namespace}.h )
     SET( global_header_path        ${proj_cpp_bin_dir}/${lib_namespace}/${global_header_file} )
 
-    # debian package splits off slice files into a different place
-    IF( ICE_HOME MATCHES /usr )
-        SET( ice_slice_dir /usr/share/slice )
-        MESSAGE( STATUS "This is a Debian Ice installation. Slice files are in ${ice_slice_dir}" )
-    ELSE ( ICE_HOME MATCHES /usr )
-        SET( ice_slice_dir ${ICE_HOME}/slice )
-        MESSAGE( STATUS "This is NOT a Debian Ice installation. Slice files are in ${ice_slice_dir}" )
-    ENDIF( ICE_HOME MATCHES /usr )
-
     # satellite projects need to include slice files from orca installation
     # NOTE: funky interaction between cmake and slice2cpp: cannot use "" around the slice_args!
     IF( ORCA_MOTHERSHIP )
-        SET( slice_args -I${proj_slice_src_dir} -I${ice_slice_dir} --module ${slice_module} --output-dir ${proj_cpp_bin_dir}/${lib_namespace} )
+        SET( slice_args -I${proj_slice_src_dir} -I${ICE_SLICE_DIR} --module ${slice_module} --output-dir ${proj_cpp_bin_dir}/${lib_namespace} )
     ELSE ( ORCA_MOTHERSHIP )
         SET( orca_slice_dir ${ORCA_HOME}/share/orca/slice )
-        SET( slice_args -I${proj_slice_src_dir} -I${ice_slice_dir} -I${orca_slice_dir} --module ${slice_module} --output-dir ${proj_cpp_bin_dir}/${lib_namespace} )
+        SET( slice_args -I${proj_slice_src_dir} -I${ICE_SLICE_DIR} -I${orca_slice_dir} --module ${slice_module} --output-dir ${proj_cpp_bin_dir}/${lib_namespace} )
     ENDIF( ORCA_MOTHERSHIP )
 
-
-  # debug
-#   MESSAGE( STATUS "   slice sources    : " ${proj_slice_src_dir} )
-#   MESSAGE( STATUS "   cpp destination  : " ${proj_cpp_bin_dir} )
-#   MESSAGE( STATUS "ORCA_GENERATE_SLICE2STRING_RULES: ARGN: ${ARGN}" )
-    
     #
     # First pass: Loop through the SLICE sources we were given, add the full path for dependencies
     #
@@ -137,7 +122,7 @@ MACRO( ORCA_GENERATE_SLICE2STRING_RULES generated_cpp_list generated_header_list
 #             MESSAGE( STATUS "DEBUG: Adding rule for generating ${output_basename} from ${slice_source_basename}" )
             ADD_CUSTOM_COMMAND(
                 OUTPUT  ${CMAKE_CURRENT_BINARY_DIR}/${output_basename}
-                COMMAND ${generator_command} ${slice_args} ${slice_source}
+                COMMAND ${generator_command} --string ${slice_args} ${slice_source}
                 DEPENDS ${all_depends}
                 COMMENT "-- Generating ${generated_file_type} file of string utilities from ${slice_source}"
                 VERBATIM

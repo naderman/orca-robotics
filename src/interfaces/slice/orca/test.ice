@@ -11,7 +11,14 @@
 #ifndef ORCA_TEST_ICE
 #define ORCA_TEST_ICE
 
+// example of including another orca Slice file with classes
 #include <orca/polarfeature2d.ice>
+// should it be this:
+// #include <orcaiface/polarfeature2d.ice>
+
+// example of including an Ice Slice file
+// it will be ignored slice2util
+#include <IceStorm/IceStorm.ice>
 
 module test
 {
@@ -79,6 +86,8 @@ interface MyInterface0
 interface MyInterface1 extends MyInterface0
 {
     void set( MyInterface0* iface );
+
+//     idempotent IceStorm::Topic* topic();
 };
 
 }; // module

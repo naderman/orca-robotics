@@ -48,29 +48,14 @@ MACRO( ORCA_GENERATE_SLICE2CPP_RULES generated_cpp_list generated_header_list )
     SET( global_header_file        ${slice_module}.h )
     SET( global_header_path        ${slice2cpp_binary_dir}/${slice_module}/${global_header_file} )
 
-    # debian package splits off slice files into a different place
-    IF( ICE_HOME MATCHES /usr )
-        SET( ice_slice_dir /usr/share/slice )
-        MESSAGE( STATUS "This is a Debian Ice installation. Slice files are in ${ice_slice_dir}" )
-    ELSE ( ICE_HOME MATCHES /usr )
-        SET( ice_slice_dir ${ICE_HOME}/slice )
-        MESSAGE( STATUS "This is NOT a Debian Ice installation. Slice files are in ${ice_slice_dir}" )
-    ENDIF( ICE_HOME MATCHES /usr )
-
     # satellite projects need to include slice files from orca installation
     # NOTE: funky interaction between cmake and slice2cpp: cannot use "" around the slice_args!
     IF( ORCA_MOTHERSHIP )
-        SET( slice_args ${SLICE_PROJECT_ARGS} -I${proj_slice_src_dir} -I${ice_slice_dir} --include-dir ${slice_module} --stream --output-dir ${slice2cpp_binary_dir}/${slice_module} )
+        SET( slice_args ${SLICE_PROJECT_ARGS} -I${proj_slice_src_dir} -I${ICE_SLICE_DIR} --include-dir ${slice_module} --stream --output-dir ${slice2cpp_binary_dir}/${slice_module} )
     ELSE ( ORCA_MOTHERSHIP )
         SET( orca_slice_dir ${ORCA_HOME}/share/orca/slice )
-        SET( slice_args ${SLICE_PROJECT_ARGS} -I${proj_slice_src_dir} -I${ice_slice_dir} -I${orca_slice_dir} --include-dir ${slice_module} --stream --output-dir ${slice2cpp_binary_dir}/${slice_module} )
+        SET( slice_args ${SLICE_PROJECT_ARGS} -I${proj_slice_src_dir} -I${ICE_SLICE_DIR} -I${orca_slice_dir} --include-dir ${slice_module} --stream --output-dir ${slice2cpp_binary_dir}/${slice_module} )
     ENDIF( ORCA_MOTHERSHIP )
-
-
-  # debug
-#   MESSAGE( STATUS "   slice sources    : " ${proj_slice_src_dir} )
-#   MESSAGE( STATUS "   cpp destination  : " ${slice2cpp_binary_dir} )
-#   MESSAGE( STATUS "ORCA_GENERATE_SLICE2CPP_RULES: ARGN: ${ARGN}" )
 
     #
     # First pass: Loop through the SLICE sources we were given, add the full path for dependencies

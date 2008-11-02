@@ -191,11 +191,17 @@ private:
         std::list<bool> _useWstringHist;
     };
 
+    enum OutputType
+    {
+        OutputString,
+        OutputLog
+    };
+
     class HandleVisitor : private ::IceUtil::noncopyable, public Slice::ParserVisitor
     {
     public:
 
-        HandleVisitor(::IceUtilInternal::Output&, ::IceUtilInternal::Output&, const std::string&, bool);
+        HandleVisitor(::IceUtilInternal::Output&, ::IceUtilInternal::Output&, const std::string&, bool, OutputType);
 
         virtual bool visitModuleStart(const Slice::ModulePtr&);
         virtual void visitModuleEnd(const Slice::ModulePtr&);
@@ -220,6 +226,8 @@ private:
         // [D],<S>
         typedef std::map<std::string,std::vector<std::string> > InheritanceMap;
         InheritanceMap inherit_;
+
+        OutputType outputType_;
     };
 };
 

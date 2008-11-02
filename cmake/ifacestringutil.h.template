@@ -7,6 +7,7 @@
 #define IFACESTRING_UTIL_H
 
 #include <string>
+#include <sstream>
 #include <Ice/Ice.h>
 
 // namespace ${slice_module}ifacestring
@@ -22,10 +23,8 @@ std::string toString( Ice::Float x, int recurse=1000, int expand=-1, int indent=
 std::string toString( Ice::Double x, int recurse=1000, int expand=-1, int indent=0 );
 std::string toString( const std::string& x, int recurse=1000, int expand=-1, int indent=0 );
 
-// use only with std::vector's
-template<class T>
-std::string
-seqToString( const T& x, int recurse=1000, int expand=-1, int indent=0 )
+template<class E>
+std::string seqToString( const std::vector<E>& x, int recurse=1000, int expand=-1, int indent=0 )
 {
     std::string s = "sequence (" + toString((int)x.size()) + ")";
     if ( expand )
@@ -35,19 +34,29 @@ seqToString( const T& x, int recurse=1000, int expand=-1, int indent=0 )
             ind += ' ';
 
         size_t size = x.size();
-        if ( expand>0 )
-            size = expand;
+        size_t skipped = 0;
+        if ( expand>0 && (size_t)expand<size ) {
+            size = (size_t)expand;
+            skipped = x.size() - size;
+        }
+
         for ( size_t i=0; i<size; ++i )
             s += '\n' + ind + "[" + toString((int)i) + "]\t" + toString( x[i], recurse-1, expand, indent+2 );
+
+        if ( skipped ) {
+            std::stringstream ss;
+            ss << '\n' << ind << "[skipped " << skipped << " elements]";
+            s += ss.str();
+        }
     }
     return s;
 }
 
-// use only with std::map's
-template<class T, class Iterator>
-std::string
-dictToString( const T& x, int recurse=1000, int expand=-1, int indent=0 )
+template<class K, class V>
+std::string dictToString( const std::map<K,V>& x, int recurse=1000, int expand=-1, int indent=0 )
 {
+    typedef typename std::map<K,V>::const_iterator KVConstIterator;
+
     std::string s = "dictionary (" + toString((int)x.size()) + ")";
     if ( expand )
     {
@@ -57,13 +66,23 @@ dictToString( const T& x, int recurse=1000, int expand=-1, int indent=0 )
 
         size_t i = 0;
         size_t size = x.size();
-        if ( expand>0 )
-            size = expand;
-        for ( Iterator it=x.begin(); i<size; ++it ) {
+        size_t skipped = 0;
+        if ( expand>0 && (size_t)expand<size ) {
+            size = (size_t)expand;
+            skipped = x.size() - size;
+        }
+
+        for ( KVConstIterator it=x.begin(); i<size; ++it ) {
             s += '\n' + ind + "[" + toString((int)i) + "]"
                + "\tkey = " + toString( it->first, recurse-1, expand, indent+2 )
                + "\tvalue = " + toString( it->second, recurse-1, expand, indent+2 );
             ++i;
+        }
+
+        if ( skipped ) {
+            std::stringstream ss;
+            ss << '\n' << ind << "[skipped " << skipped << " pairs]";
+            s += ss.str();
         }
     }
     return s;

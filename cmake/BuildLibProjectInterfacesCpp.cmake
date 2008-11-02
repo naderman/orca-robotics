@@ -31,7 +31,11 @@ IF( build )
         INCLUDE( ${ORCA_CMAKE_DIR}/UseOrca.cmake )
     ENDIF( NOT ORCA_MOTHERSHIP )
     
-    GBX_ADD_LIBRARY( ${lib_name} SHARED ${slice_generated_sources} )
+    # IceStorm is not included in UseIce.cmake
+    SET( dep_libs ${int_libs} ${ext_libs} IceStorm )
+
+    GBX_ADD_LIBRARY( ${lib_name} DEFAULT ${slice_generated_sources} )
+    TARGET_LINK_LIBRARIES( ${lib_name} ${dep_libs} )
     
     IF( ORCA_MOTHERSHIP )    
         # only Orca installs generated headers

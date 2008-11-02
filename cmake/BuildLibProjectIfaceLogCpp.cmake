@@ -41,9 +41,10 @@ IF( build )
     CONFIGURE_FILE( ${ORCA_CMAKE_DIR}/ifacelogutil.h.template ${util_h_file} )
     CONFIGURE_FILE( ${ORCA_CMAKE_DIR}/ifacelogutil.cpp.template ${util_cpp_file} )
 
-    SET( dep_libs ${int_libs} ${ext_libs} )
+    # IceStorm is not included in UseIce.cmake
+    SET( dep_libs ${int_libs} ${ext_libs} IceStorm )
     
-    GBX_ADD_LIBRARY( ${lib_name} SHARED ${slice_generated_sources} ${util_cpp_file} )
+    GBX_ADD_LIBRARY( ${lib_name} DEFAULT ${slice_generated_sources} ${util_cpp_file} )
     TARGET_LINK_LIBRARIES( ${lib_name} ${dep_libs} )
     
     IF( ORCA_MOTHERSHIP )

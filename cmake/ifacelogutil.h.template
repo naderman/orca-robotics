@@ -22,9 +22,8 @@ void toLogStream( Ice::Float x, std::ostream& os );
 void toLogStream( Ice::Double x, std::ostream& os );
 void toLogStream( const std::string& x, std::ostream& os );
 
-// use only with std::vector's
-template<class T>
-void seqToLogStream( const T& x, std::ostream& os )
+template<class E>
+void seqToLogStream( const std::vector<E>& x, std::ostream& os )
 {
     // save the number of elements in this sequence
     toLogStream( (Ice::Int)x.size(), os );
@@ -33,14 +32,15 @@ void seqToLogStream( const T& x, std::ostream& os )
         toLogStream( x[i], os );
 }
 
-// use only with std::map's
-template<class T, class Iterator>
-void dictToLogStream( const T& x, std::ostream& os )
+template<class K, class V>
+void dictToLogStream( const std::map<K,V>& x, std::ostream& os )
 {
+    typedef typename std::map<K,V>::const_iterator KVConstIterator;
+
     // save the number of elements in this sequence
     toLogStream( (Ice::Int)x.size(), os );
     // now save all key/value pairs
-    for ( Iterator it=x.begin(); it!=x.end(); ++it ) {
+    for ( KVConstIterator it=x.begin(); it!=x.end(); ++it ) {
         toLogStream( it->first, os );
         toLogStream( it->second, os );
     }
