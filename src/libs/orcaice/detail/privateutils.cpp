@@ -155,6 +155,13 @@ setFactoryProperties( Ice::PropertiesPtr& properties, const std::string& compTag
     tempProperties->setProperty( "Orca.RequireRegistry",       "1" );
     tempProperties->setProperty( "Orca.Warn.DefaultProperty",  "1" );
     tempProperties->setProperty( "Orca.Warn.FactoryProperty",  "0" );
+    
+    // Application properties
+    // This is advance property. Default value should be good for most cases.
+    // The alternative is to request ShutdownOnInterrupt.
+    tempProperties->setProperty( "Orca.Application.CallbackOnInterrupt",  "1" );
+
+    // Component properties
 
     // all tracer tempProperties have default values
     tempProperties->setProperty( "Orca.Tracer.RequireIceStorm",    "0" );
@@ -260,10 +267,11 @@ setComponentPropertiesFromFile( Ice::PropertiesPtr& properties, const std::strin
 //     transferProperty( properties, properties, "Ice.Default.Locator", compTag + ".Locator", forceTransfer );
 }
 
-orca::FQComponentName
-parseComponentProperties( const Ice::CommunicatorPtr& communicator, const std::string& compTag )
+// orca::FQComponentName
+void
+parseComponentProperties( const Ice::PropertiesPtr& properties, const std::string& compTag )
 {
-    Ice::PropertiesPtr properties = communicator->getProperties();
+//     Ice::PropertiesPtr properties = communicator->getProperties();
 
     // default was already set
     bool warnFactoryProp = (bool)properties->getPropertyAsInt("Orca.Warn.FactoryProperty");
@@ -272,43 +280,59 @@ parseComponentProperties( const Ice::CommunicatorPtr& communicator, const std::s
 
     string adapter;
     // first, check for concise syntax: "platform/component"
-    if ( !orcaice::getProperty( properties, compTag+".AdapterId", adapter ) ) {
+    // NOTE: this feature is undocumented.
+    // alexm: I think this we don't documentit to simplify explanation of config files,
+    // but we need this for running components through IceGrid (I think).
+    if ( !orcaice::getProperty( properties, compTag+".AdapterId", adapter ) ) 
+    {
+        // When AdapterId is specified, it overwrites platform and component properties.
         fqCName = orcaice::toComponentName( adapter );
+        properties->setProperty( compTag+".Platform", fqCName.platform );
+        properties->setProperty( compTag+".Component", fqCName.component );
     }
-    else { 
-    // otherwise, check extended syntax: platform and component separately
-        fqCName.platform = properties->getProperty(compTag+".Platform");
-        // lookup component name
-        fqCName.component = properties->getProperty(compTag+".Component");
+    else 
+    { 
+        // When AdapterId is NOT specified, we read individual properties and set the AdapterId
+        properties->getProperty( compTag+".Platform" );
+        properties->getProperty( compTag+".Component" );
+        properties->setProperty( compTag+".AdapterId", orcaice::toString(fqCName) );
     }
 
     // check that we have platform name, if missing set it to 'local'
-    if ( fqCName.platform.empty() ) {
+    // this may easily happen if the component is executed without a config file.
+    if ( fqCName.platform.empty() ) 
+    {
         fqCName.platform = "local";
         if ( warnFactoryProp )
             initTracerInfo( "Set property to factory default value: "+compTag+".Platform="+fqCName.platform );
+        properties->setProperty( compTag+".Platform", fqCName.platform );
+        properties->setProperty( compTag+".AdapterId", orcaice::toString(fqCName) );
     }
-    // check that we have component name, if missing set it to 'ComponentTag' converted to lower case
+
+    // check that we have component name, if missing set it to 'ComponentTag' converted to lower case.
+    // this may easily happen if the component is executed without a config file.
     if( fqCName.component.empty() )
     {
         fqCName.component = hydroutil::toLowerCase( compTag );
         if ( warnFactoryProp )
             initTracerInfo( "Set property to factory default value: "+compTag+".Component="+fqCName.component );
+        properties->setProperty( compTag+".Component", fqCName.component );
+        properties->setProperty( compTag+".AdapterId", orcaice::toString(fqCName) );
     }
 
     // special case: replace 'local' platform with actual hostname
-    if ( fqCName.platform == "local" ) {
+    if ( fqCName.platform == "local" ) 
+    {
         fqCName.platform = hydroutil::getHostname();
         // update properties
         properties->setProperty( compTag+".Platform", fqCName.platform );
         properties->setProperty( compTag+".AdapterId", orcaice::toString(fqCName) );
         if ( warnFactoryProp ) {
-            initTracerInfo( "Replaced property (local<-hostname): "+compTag+".Platform="+fqCName.platform );
-            initTracerInfo( "Replaced property (local<-hostname): "+compTag+".AdapterId="+orcaice::toString(fqCName) );
+            initTracerInfo( "Replaced 'local' with hostname: "+compTag+".Platform="+fqCName.platform );
+            initTracerInfo( "Replaced 'local' with hostname: "+compTag+".AdapterId="+orcaice::toString(fqCName) );
         }
     }
-
-    return fqCName;
+//     return fqCName;
 }
 
 void

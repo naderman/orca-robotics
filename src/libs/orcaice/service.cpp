@@ -75,8 +75,14 @@ void setProperties( Ice::PropertiesPtr         &properties,
         // Level 1. apply Orca factory defaults
         orcaice::detail::setFactoryProperties( properties, componentTag );
         initTracerInfo( componentTag+": Loaded factory default properties." );
+    }
 
-        // Level 0. extra funky stuff
+    // Level 0. sort out platform and component names, apply defaults, set adapter names.
+    orcaice::detail::parseComponentProperties( properties, componentTag );
+
+    if ( applyFactoryAndGlobals ) 
+    {
+        // Level -1. extra funky stuff
         // if we can, set some of communicator properties "after the fact"
         // (the communicator has already been started and will not reload its confg parameters now,
         // but some things can be changed and will be used in the future).
@@ -129,10 +135,10 @@ Service::start( const ::std::string        & name,
     // Unlike in Application which runs before the Communicator is created, here it already
     // exists and the pointer to it is given to us by the IceBox. So we just get a pointer
     // to the properties which also already exist.
-    Ice::PropertiesPtr properties = communicator->getProperties();
+    Ice::PropertiesPtr props = communicator->getProperties();
 
     // Set the component's properties based on the various sources from which properties can be read
-    setProperties( properties,
+    setProperties( props,
                    args,
                    component_->context().tag(),
                    communicator,
@@ -140,13 +146,13 @@ Service::start( const ::std::string        & name,
 
     // now communicator exists. we can further parse properties, make sure all the info is
     // there and set some properties (notably AdapterID)
-    orca::FQComponentName fqCompName =
-                orcaice::detail::parseComponentProperties( communicator, component_->context().tag() );
+//     orca::FQComponentName fqCompName =
+//                 orcaice::detail::parseComponentProperties( props, component_->context().tag() );
 
     // print all prop's now, after some stuff was added, e.g. Tag.AdapterId
     // note: is it possible that some of the prop's got stripped off by Ice::Application::main()? I don't think so.
-    if ( properties->getPropertyAsInt( "Orca.PrintProperties" ) ) {
-        orcaice::detail::printComponentProperties( properties, component_->context().tag() );
+    if ( props->getPropertyAsInt( "Orca.PrintProperties" ) ) {
+        orcaice::detail::printComponentProperties( props, component_->context().tag() );
     }
 
     // create the one-and-only component adapter
@@ -156,6 +162,10 @@ Service::start( const ::std::string        & name,
     //
     // Give the component all the stuff it needs
     //
+    orca::FQComponentName fqCompName;
+    fqCompName.platform = props->getProperty( component_->context().tag()+".Platform" );
+    fqCompName.component = props->getProperty( component_->context().tag()+".Component" );
+
     bool isApp = false;
     component_->init( fqCompName, isApp, adapter_ );
     initTracerInfo( component_->context().tag()+": Service initialized" );

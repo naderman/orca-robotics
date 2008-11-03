@@ -51,6 +51,9 @@ void setProperties( Ice::PropertiesPtr   &properties,
     // Level 1. apply Orca factory defaults
     orcaice::detail::setFactoryProperties( properties, componentTag );
     initTracerInfo( componentTag+": Loaded factory default properties" );
+
+    // Level 0. sort out platform and component names, apply defaults, set adapter names.
+    orcaice::detail::parseComponentProperties( properties, componentTag );
 }
 
 }
@@ -65,13 +68,6 @@ Application::Application( orcaice::Component &component, Ice::SignalPolicy polic
 {
 }
 
-/*
-    Order priority for different sources of configuration parameters, from lowest to highest:
-        1. orca factory defaults
-        2. global config file
-        3. component config file
-        4. command line arguments
-*/
 int
 Application::orcaMain(int argc, char* argv[])
 {
@@ -115,21 +111,23 @@ int
 Application::run( int argc, char* argv[] )
 {
     // communicator is already initialized by Ice::Application
+    // all defaults are already applied
+    Ice::PropertiesPtr props = communicator()->getProperties();
 
-    // when a signal is received (e.g. Ctrl-C), we want to get a change to shut down our
-    // component before destroying the communicator
-    callbackOnInterrupt();
-//    shutdownOnInterrupt();
-
-    // now communicator exists. we can further parse properties, make sure all the info is
-    // there and set some properties (notably AdapterID)
-    orca::FQComponentName fqCompName =
-                    orcaice::detail::parseComponentProperties( communicator(), component_.context().tag() );
+    // what to do when a signal is received (e.g. Ctrl-C)
+    if ( props->getPropertyAsInt("Orca.Application.CallbackOnInterrupt") ) {
+        // normally, we want to get a change to shut down our component before 
+        //shutting down the communicator
+        callbackOnInterrupt();
+    }
+    else {
+        shutdownOnInterrupt();
+    }
 
     // print all prop's now, after some stuff was added, e.g. Tag.AdapterId
     // note: is it possible that some of the prop's got stripped off by Ice::Application::main()? I don't think so.
-    if ( communicator()->getProperties()->getPropertyAsInt( "Orca.PrintProperties" ) ) {
-        orcaice::detail::printComponentProperties( communicator()->getProperties(), component_.context().tag() );
+    if ( props->getPropertyAsInt( "Orca.PrintProperties" ) ) {
+        orcaice::detail::printComponentProperties( props, component_.context().tag() );
     }
 
     // create the one-and-only component adapter
@@ -140,6 +138,10 @@ Application::run( int argc, char* argv[] )
     // Give the component all the stuff it needs to initialize
     // Cannot change anything in Component::context_ after this step.
     //
+    orca::FQComponentName fqCompName;
+    fqCompName.platform = props->getProperty( component_.context().tag()+".Platform" );
+    fqCompName.component = props->getProperty( component_.context().tag()+".Component" );
+
     bool isApp = true;
     component_.init( fqCompName, isApp, adapter_ );
     initTracerInfo( component_.context().tag()+": Application initialized" );
@@ -154,7 +156,7 @@ Application::run( int argc, char* argv[] )
         // for the components which hug the thread, eg. Qt-based, this will be printed at shutdown
         // this is optional because after the comp is started we can't assume that dumping to cout 
         // will produce the desired result (e.g. if ncurses are used)
-        if ( communicator()->getProperties()->getPropertyAsInt( "Orca.PrintComponentStarted" ) ) {
+        if ( props->getPropertyAsInt( "Orca.PrintComponentStarted" ) ) {
             initTracerInfo( component_.context().tag()+": Component started" );
         }
     }

@@ -59,29 +59,24 @@ namespace detail
                                       const std::string        &defaultValue,
                                       bool                      force );
 
-    void setFactoryProperties( Ice::PropertiesPtr &properties, const std::string &compTag );
+    void setFactoryProperties( Ice::PropertiesPtr&properties, const std::string& compTag );
 
     // throws gbxutilacfr::Exception if can't load the file
-    void setGlobalProperties( Ice::PropertiesPtr & properties, const std::string & filename );
+    void setGlobalProperties( Ice::PropertiesPtr& properties, const std::string& filename );
 
     // throws gbxutilacfr::Exception if can't load the file
-    void setComponentPropertiesFromFile( Ice::PropertiesPtr & properties, const std::string & filename );
+    void setComponentPropertiesFromFile( Ice::PropertiesPtr& properties, const std::string& filename );
 
     /*
-     *   Sets the ComponentName parameter.
-     *   Replaces special platform 'local' with host name.
-     *   Combines platform and component names into adapter ID.
-     *
-     *   The default for IceStorm server location assumes that one is running
-     *   on our host at port 10000.
-     *
-     *   @note Cannot use Current structure because the component is not fully initialized yet.
+     *   - Sets defaults for component and platform name properties.
+     *   - Replaces special platform 'local' with host name.
+     *   - Combines platform and component names into adapter ID property.
      */
-    orca::FQComponentName parseComponentProperties( const Ice::CommunicatorPtr &communicator,
-                                                    const std::string &compTag );
+//     orca::FQComponentName 
+    void parseComponentProperties( const Ice::PropertiesPtr& properties, const std::string& compTag );
 
     // Prints out all component properties. Tag is used only for tracing.
-    void printComponentProperties( const Ice::PropertiesPtr &properties, const std::string &compTag );
+    void printComponentProperties( const Ice::PropertiesPtr& properties, const std::string& compTag );
 
     // Prints Ice, Orca, and (if not empty) Project version.
     // Project version is obatained from the component, this allows for non-orca projects
@@ -91,17 +86,17 @@ namespace detail
     // adds to the set of properties by reading from the component's config file
     void addPropertiesFromApplicationConfigFile( Ice::PropertiesPtr   &properties,
                                                  const Ice::StringSeq &commandLineArgs,
-                                                 const std::string    &componentTag );
+                                                 const std::string    &compTag );
 
     // Use for 'Service's:
     // adds to the set of properties by reading from the component's config file
     void addPropertiesFromServiceConfigFile( Ice::PropertiesPtr   &properties,
                                              const Ice::StringSeq &commandLineArgs,
-                                             const std::string    &componentTag );
+                                             const std::string    &compTag );
 
     // adds to the set of properties by reading from the global config file
     void addPropertiesFromGlobalConfigFile( Ice::PropertiesPtr   &properties,
-                                            const std::string    &componentTag );
+                                            const std::string    &compTag );
 
 } // namespace
 } // namespace
