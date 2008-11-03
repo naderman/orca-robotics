@@ -20,10 +20,11 @@ GBX_ADD_TEST( Slice2LogRunTestLog
 # Use the generated files
 #
 INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
-INCLUDE( ${ORCA_CMAKE_DIR}/UseLibProjectIfaceLog.cmake )
 
 ADD_EXECUTABLE( slice2utilstringtest stringtest.cpp )
+TARGET_LINK_LIBRARIES( slice2utilstringtest OrcaIfaceString )
 GBX_ADD_TEST( Slice2UtilStringTest slice2utilstringtest )
 
 ADD_EXECUTABLE( slice2utillogtest logtest.cpp )
+TARGET_LINK_LIBRARIES( slice2utillogtest OrcaIfaceLog )
 GBX_ADD_TEST( Slice2UtilLogTest slice2utillogtest )
