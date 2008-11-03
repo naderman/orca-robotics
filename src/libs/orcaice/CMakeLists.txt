@@ -15,10 +15,7 @@ IF( build )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseIceBasics.cmake )
     INCLUDE( ${HYDRO_CMAKE_DIR}/UseHydroIceUtil.cmake )
     # debug only!
-    INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIfaceString.cmake )
-    
-    # files from detail dir refer to public files
-#     INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR} )
+#     INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIfaceString.cmake )
     
     FILE( GLOB hdrs *.h )
     FILE( GLOB srcs *.cpp detail/*.cpp )
