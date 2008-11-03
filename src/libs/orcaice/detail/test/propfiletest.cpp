@@ -11,8 +11,8 @@
 #include <iostream>
 #include <stdlib.h> // for getenv(), etc.
 
-#include <orcaice/proputils.h>
-#include <orcaice/exceptions.h>
+#include "../propfileutils.h"
+// #include <orcaice/exceptions.h>
 
 using namespace std;
 
@@ -27,7 +27,7 @@ main(int argc, char * argv[])
     Ice::PropertiesPtr prop = Ice::createProperties();
     prop->setProperty( "Orca.GlobalConfig", "orca.config_test" );
     expect = "orca.config_test";
-    filename = orcaice::getGlobalConfigFilename( prop );
+    filename = orcaice::detail::getGlobalConfigFilename( prop );
     if ( filename != expect ) {
         cout<<"failed"<<endl<<"expect="<<expect<<"; got="<<filename<<endl;
         return EXIT_FAILURE;
@@ -50,7 +50,7 @@ main(int argc, char * argv[])
     }
 #endif
     Ice::PropertiesPtr emptyProps = Ice::createProperties();
-    filename = orcaice::getGlobalConfigFilename( emptyProps );
+    filename = orcaice::detail::getGlobalConfigFilename( emptyProps );
     if ( filename != expect ) {
         cout<<"failed"<<endl<<"expect="<<expect<<"; got="<<filename<<endl;
         return EXIT_FAILURE;
@@ -82,7 +82,7 @@ main(int argc, char * argv[])
         cout<<"failed to set HOME env variable."<<endl;
         return EXIT_FAILURE;
     }
-    filename = orcaice::getGlobalConfigFilename( emptyProps );
+    filename = orcaice::detail::getGlobalConfigFilename( emptyProps );
     if ( filename != (expect+"/.orcarc") ) {
         cout<<"failed"<<endl<<"expect="<<expect<<"/.orcarc"<<"; got="<<filename<<endl;
         return EXIT_FAILURE;
@@ -90,7 +90,7 @@ main(int argc, char * argv[])
     cout<<"ok"<<endl;
 #else
     // in windows we don't use the HOME variable.
-    filename = orcaice::getGlobalConfigFilename( emptyProps );
+    filename = orcaice::detail::getGlobalConfigFilename( emptyProps );
     if ( filename != "C:\\orca.ini" ) {
         cout<<"failed"<<endl<<"\texpect=C:\\orca.ini"<<"; got="<<filename<<endl;
         return EXIT_FAILURE;
@@ -113,17 +113,17 @@ main(int argc, char * argv[])
 #endif
     try
     {
-        filename = orcaice::getGlobalConfigFilename( emptyProps );
+        filename = orcaice::detail::getGlobalConfigFilename( emptyProps );
         cout<<"failed"<<endl<<"\texpect to throw exception with no input and no env variables :"<<filename<<endl;
         return EXIT_FAILURE;
     }
-    catch ( const gbxutilacfr::Exception & )
+    catch ( const std::exception & )
     {
         cout<<"ok"<<endl;
     }
 #else
     // in windows we don't use the HOME variable.
-    filename = orcaice::getGlobalConfigFilename( emptyProps );
+    filename = orcaice::detail::getGlobalConfigFilename( emptyProps );
     if ( filename != "C:\\orca.ini" ) {
         cout<<"failed"<<endl<<"\texpect=C:\\orca.ini"<<"; got="<<filename<<endl;
         return EXIT_FAILURE;
@@ -136,7 +136,7 @@ main(int argc, char * argv[])
     args.clear();
     args.push_back( "program" );
     args.push_back( "--Orca.Config="+expect );
-    filename = orcaice::getApplicationConfigFilename( args );
+    filename = orcaice::detail::getApplicationConfigFilename( args );
     if ( filename != expect ) {
         cout<<"failed"<<endl<<"expect="<<expect<<"; got="<<filename<<endl;
         return EXIT_FAILURE;
@@ -148,7 +148,7 @@ main(int argc, char * argv[])
     args.clear();
     args.push_back( "program" );
     args.push_back( "--Ice.Config="+expect );
-    filename = orcaice::getApplicationConfigFilename( args );
+    filename = orcaice::detail::getApplicationConfigFilename( args );
     if ( filename != expect ) {
         cout<<"failed"<<endl<<"expect="<<expect<<"; got="<<filename<<endl;
         return EXIT_FAILURE;
@@ -160,7 +160,7 @@ main(int argc, char * argv[])
     expect = "mycomponent.cfg";
     args.push_back( "program" );
     args.push_back( expect );
-    filename = orcaice::getApplicationConfigFilename( args );
+    filename = orcaice::detail::getApplicationConfigFilename( args );
     if ( filename != expect ) {
         cout<<"failed"<<endl<<"expect="<<expect<<"; got="<<filename<<endl;
         return EXIT_FAILURE;
@@ -171,7 +171,7 @@ main(int argc, char * argv[])
     args.clear();
     expect = "mycomponent.cfg";
     args.push_back( "mycomponent" );
-    filename = orcaice::getApplicationConfigFilename( args );
+    filename = orcaice::detail::getApplicationConfigFilename( args );
     if ( filename != expect ) {
         cout<<"failed"<<endl<<"expect="<<expect<<"; got="<<filename<<endl;
         return EXIT_FAILURE;
@@ -186,7 +186,7 @@ main(int argc, char * argv[])
 #else
     args.push_back( "C:\\orca\\bin\\mycomponent" );
 #endif
-    filename = orcaice::getApplicationConfigFilename( args );
+    filename = orcaice::detail::getApplicationConfigFilename( args );
     if ( filename != expect ) {
         cout<<"failed"<<endl<<"\texpect="<<expect<<"; got="<<filename<<endl;
         return EXIT_FAILURE;
@@ -195,7 +195,7 @@ main(int argc, char * argv[])
 
     cout<<"testing getApplicationConfigFilename() with empty input ... ";
     args.clear();
-    filename = orcaice::getApplicationConfigFilename( args );
+    filename = orcaice::detail::getApplicationConfigFilename( args );
     expect = "";
     if ( filename != expect ) {
         cout<<"failed"<<endl<<"\texpect="<<expect<<"; got="<<filename<<endl;
@@ -208,7 +208,7 @@ main(int argc, char * argv[])
     args.clear();
     args.push_back( "program" );
     args.push_back( "--Ice.Config="+expect );
-    filename = orcaice::getServiceConfigFilename( args );
+    filename = orcaice::detail::getServiceConfigFilename( args );
     if ( filename != expect ) {
         cout<<"failed"<<endl<<"expect="<<expect<<"; got="<<filename<<endl;
         return EXIT_FAILURE;
@@ -221,14 +221,14 @@ main(int argc, char * argv[])
     args.push_back( "program" );
     args.push_back( "--Orca.Bullshit=42" );
     try {
-        filename = orcaice::getServiceConfigFilename( args );
+        filename = orcaice::detail::getServiceConfigFilename( args );
         if ( filename != expect ) {
             cout<<"failed"<<endl<<"\texpect="<<expect<<"; got="<<filename<<endl;
             return EXIT_FAILURE;
         }
         cout<<"ok"<<endl;
     }
-    catch ( const gbxutilacfr::Exception & ) {
+    catch ( const std::exception & ) {
         cout<<"failed"<<endl<<"did not expect to catch an exception."<<endl;
         return EXIT_FAILURE;
     }
@@ -236,7 +236,7 @@ main(int argc, char * argv[])
     cout<<"testing getServiceConfigFilename() with empty input ... ";
     expect = "";
     args.clear();
-    filename = orcaice::getServiceConfigFilename( args );
+    filename = orcaice::detail::getServiceConfigFilename( args );
     if ( filename != expect ) {
         cout<<"failed"<<endl<<"expected an empty string."<<endl;
         return EXIT_FAILURE;

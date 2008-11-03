@@ -21,9 +21,6 @@ GBX_ADD_TEST( OrcaIceTimeTest timetest )
 ADD_EXECUTABLE( privateutilstest privateutilstest.cpp )
 GBX_ADD_TEST( OrcaIcePrivateUtilsTest privateutilstest )
 
-ADD_EXECUTABLE( propfiletest propfiletest.cpp )
-GBX_ADD_TEST( OrcaIcePropFileTest propfiletest )
-
 # basic app test
 ADD_EXECUTABLE( apptest apptest.cpp )
 GBX_ADD_TEST( OrcaIceAppTest apptest )

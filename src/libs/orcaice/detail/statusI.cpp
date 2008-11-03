@@ -9,7 +9,7 @@
  */
 
 #include <orcaice/orcaice.h>
-#include <orcaifacestring/status.h>
+// #include <orcaifacestring/status.h>
 #include "statusI.h"
 
 using namespace std;
@@ -251,7 +251,7 @@ StatusI::subscribe(const ::orca::StatusConsumerPrx& subscriber, const ::Ice::Cur
         throw orca::OrcaException( ss.str() );
     }
     cout<<"StatusI::subscribe(): sent status info to new subscriber: "<<individualPublisher->ice_toString()<<endl;
-    cout<<ifacestring::toString( statusData_ )<<endl;
+//     cout<<ifacestring::toString( statusData_ )<<endl;
 }
 
 void

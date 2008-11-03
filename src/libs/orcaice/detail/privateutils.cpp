@@ -11,6 +11,7 @@
 #include <iostream>
 
 #include "privateutils.h"
+#include "propfileutils.h"
 
 #include "../orcaice.h"
 #include "../component.h"
@@ -371,7 +372,7 @@ void addPropertiesFromApplicationConfigFile( Ice::PropertiesPtr   &properties,
     std::string compFilename;
     try
     {
-        compFilename = orcaice::getApplicationConfigFilename( commandLineArgs );
+        compFilename = orcaice::detail::getApplicationConfigFilename( commandLineArgs );
         if ( compFilename.empty() ) {
             initTracerInfo( componentTag+": "+warnMissingProperty("component properties file","Orca.Config") );
         }
@@ -398,7 +399,7 @@ void addPropertiesFromServiceConfigFile( Ice::PropertiesPtr   &properties,
     std::string servFilename;
     try
     {
-        servFilename = orcaice::getServiceConfigFilename( commandLineArgs );
+        servFilename = orcaice::detail::getServiceConfigFilename( commandLineArgs );
         if ( servFilename.empty() ) {
             initTracerInfo( componentTag+": Component config file is not specified." );
         }
@@ -419,7 +420,7 @@ void addPropertiesFromGlobalConfigFile( Ice::PropertiesPtr   &properties,
     std::string globFilename;
     try
     {
-        globFilename = orcaice::getGlobalConfigFilename( properties );
+        globFilename = orcaice::detail::getGlobalConfigFilename( properties );
         orcaice::detail::setGlobalProperties( properties, globFilename );
         initTracerInfo( componentTag+": Loaded global properties from '"+globFilename+"'" );
     }
