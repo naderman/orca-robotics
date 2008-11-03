@@ -43,7 +43,7 @@ MainSubsystem::initialise()
         context_, laserPrx, "LaserScanner2d", this, subsysName() );
     
     // Try to get laser description once, continue if fail
-    context_.tracer().info( "Trying to get laser description as a test" );
+    context_.tracer().info( "Trying to get laser description" );
     try
     {
         std::string descr = ifacestring::toString( laserPrx->getDescription() );
@@ -63,7 +63,26 @@ MainSubsystem::initialise()
     {
         try
         {
-            context_.tracer().print( ifacestring::toString( laserPrx->getData() ) );
+            // NOTE: we receive the data as a pointer to a generic RangeScanner2dData
+            // But we know that we connected to a Laser2d interface which actually sends out
+            // LaserScanner2dData objects. So in order to use all the information (e.g. intensities)
+            // we need to upcast the object to the derived class.
+            // We could print it out 'as is' and the toString() function would slice it (treat it as
+            // the base class) -- this is exactly what will happen when we start receiving data
+            // through the subscription.
+            orca::RangeScanner2dDataPtr rangeDataPtr = laserPrx->getData();
+            orca::LaserScanner2dDataPtr laserDataPtr = orca::LaserScanner2dDataPtr::dynamicCast( rangeDataPtr );
+            if ( laserDataPtr ) {
+                context_.tracer().info( "got experimental laser scan" );
+                context_.tracer().print( ifacestring::toString( laserDataPtr ) );
+            }
+            else {
+                context_.tracer().error( "got range scan but failed to convert it to laser scan" );
+                // NOTE: this should never happen because above we insisted on connecting specifically
+                // to a LaserScanner2dPrx not some generic RangeScanner2dPrx.
+                // May as well shutdown now.
+                context_.shutdown();
+            }
             break;
         }
         catch ( const orca::DataNotExistException &e )
