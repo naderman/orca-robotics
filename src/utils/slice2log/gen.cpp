@@ -22,6 +22,19 @@ using namespace slice2log;
 using namespace Slice;
 using namespace IceUtilInternal;
 
+/*
+alexm: notes to self.
+
+tricky cases of fromLogVisitor:
+
+enter               readtype=1  
+native                          instantiate=1
+upcasted to derived             instantiate=1
+sliced to base                  instantiate=1
+calling base
+
+*/
+
 namespace detail {
 
 void printHeader( ::IceUtilInternal::Output& out )
@@ -354,8 +367,8 @@ Gen::ToStringVisitor::visitClassDefStart(const ClassDefPtr& p)
         while(q != bases.end())
         {
             C << nl << fixKwd((*q)->scoped()) << "Ptr base" << count << "Ptr = objPtr;";
-            C << nl << "bool testTypeInBases = false;";
-            C << nl << "s += \'\\n\' + ind + \"base \" + toString( base" << count << "Ptr, recurse, expand, indent+2, testTypeInBases );";
+            C << nl << "bool testTypeSetting = false;";
+            C << nl << "s += \'\\n\' + ind + \"base \" + toString( base" << count << "Ptr, recurse, expand, indent+2, testTypeSetting );";
             ++q;
             ++count;
         }
@@ -589,9 +602,9 @@ Gen::ToLogVisitor::visitClassDefStart(const ClassDefPtr& p)
     C << eb;
     C << nl << "if ( mostDerivedType == \"" << scoped << "\" )";
     C << sb;
-    C << nl << "// we are the most derived class, log our type";
+    C << nl << "// we are the most derived class";
 //     C << nl << "cout << \"DEBUG: logging \" << mostDerivedType << endl;";
-    // VERY IMPORTANT! we have to log the type of the object we are about to log.
+    C << nl << "// critical: we have to log the type of the object we are about to log.";
     C << nl << "toLogStream( string(\"" << scoped << "\"), os );";
     C << eb;
     C << nl << "else";
@@ -608,8 +621,8 @@ Gen::ToLogVisitor::visitClassDefStart(const ClassDefPtr& p)
         while(q != bases.end())
         {
             C << nl << fixKwd((*q)->scoped()) << "Ptr base" << count << "Ptr = objPtr;";
-            C << nl << "bool testTypeInBases = false;";
-            C << nl << "toLogStream( base" << count << "Ptr, os, testTypeInBases );";
+            C << nl << "bool testTypeSetting = false;";
+            C << nl << "toLogStream( base" << count << "Ptr, os, testTypeSetting );";
             ++q;
             ++count;
         }
@@ -799,37 +812,27 @@ Gen::FromLogVisitor::visitClassDefStart(const ClassDefPtr& p)
     string scoped = fixKwd(p->scoped());
     ClassList bases = p->bases();
     
-    H << "\nvoid fromLogStream( " << scope.substr(2)<<name << "Ptr& obj, std::istream& is, bool testType=true, bool fromBase=false );";
+    H << "\n// Only the first 2 input parameters are for public use."; 
+    H << "\nvoid fromLogStream( " << scope.substr(2)<<name << "Ptr& obj, std::istream& is, bool testType=true, bool instantiateType=false );";
 
     C << "\n\nvoid";
-    C << nl << "fromLogStream( " << scoped << "Ptr& objPtr, std::istream& is, bool testType, bool fromBase )";
+    C << nl << "fromLogStream( " << scoped << "Ptr& objPtr, std::istream& is, bool testType, bool instantiateType )";
     C << sb;
 
     C << nl << "if ( testType )";
     C << sb;
-    C << nl << "bool iAmTheOne = fromBase;";
     C << nl << "string mostDerivedType;";
-    C << nl << "if ( !iAmTheOne )";
-    C << sb;
+    C << nl << "// critical: reading logged type from the log. can only do it once!";
     C << nl << "fromLogStream( mostDerivedType, is );";
     C << nl << "if ( mostDerivedType.empty() )";
     C << sb;
     C << nl << "throw gbxutilacfr::Exception( ERROR_INFO, \"(while replaying class " << scoped << ") got empty type ID\" );";
     C << eb;
-    C << nl << "// we are the most derived class";
     C << nl << "if ( mostDerivedType == \"" << scoped << "\" )";
     C << sb;
-    C << nl << "iAmTheOne = true;";
-    C << eb;
-    C << nl << "else";
-    C << sb;
-    C << nl << "cout << \"DEBUG: redirecting replay to \" << mostDerivedType << endl;";
-    C << eb;
-    C << eb;
-    C << nl << "if ( iAmTheOne )";
-    C << sb;
-    C << nl << "// instantiate ourselves";
+    C << nl << "// we are the most derived class: instantiate ourselves";
 //     C << nl << "cout << \"DEBUG: replaying " << scoped << "\" << endl;";
+    C << nl << "// critical: one of 2 possible instantiation points";
     C << nl << "objPtr = new " << scoped << ";";
     C << eb;
     C << nl << "else";
@@ -839,6 +842,13 @@ Gen::FromLogVisitor::visitClassDefStart(const ClassDefPtr& p)
     C << nl << "return;";
     C << eb;
     C << eb;
+    C << nl << "else if ( instantiateType )";
+    C << sb;
+    C << nl << "// this happens in 2 cases: a) we are the most derived class, b) we are the most accessible base (slicing).";
+//     C << nl << "cout << \"DEBUG: replaying " << scoped << "\" << endl;";
+    C << nl << "// critical: one of 2 possible instantiation points";
+    C << nl << "objPtr = new " << scoped << ";";
+    C << eb;
 
     ClassList::const_iterator q = bases.begin();
     if(!bases.empty()) {
@@ -846,8 +856,8 @@ Gen::FromLogVisitor::visitClassDefStart(const ClassDefPtr& p)
         while(q != bases.end())
         {
             C << nl << fixKwd((*q)->scoped()) << "Ptr base" << count << "Ptr = objPtr;";
-            C << nl << "bool testTypeInBases = false;";
-            C << nl << "fromLogStream( base" << count << "Ptr, is, testTypeInBases );";
+            C << nl << "bool testTypeSetting = false;";
+            C << nl << "fromLogStream( base" << count << "Ptr, is, testTypeSetting );";
             ++q;
             ++count;
         }
@@ -1062,7 +1072,7 @@ if ( outputType_ == OutputString ) {
 }
 else if ( outputType_ == OutputLog ) {
                 // for logs it's unsafe to ignore this
-                C << nl << "assert( false && \"unknown derived class for " << base << "\" );";  
+                C << nl << "assert( !\"unknown derived class for " << base << "\" );";  
 }
 else
     assert( !"unknown OutputType" );
@@ -1102,7 +1112,7 @@ if ( outputType_ == OutputString ) {
 }
 else if ( outputType_ == OutputLog ) {
                 // for logs it's unsafe to ignore this
-                C << nl << "assert( false && \"unknown derived class for " << base << "\" );";  
+                C << nl << "assert( !\"unknown derived class for " << base << "\" );";  
 }
 else
     assert( !"unknown OutputType" );
@@ -1120,7 +1130,7 @@ if ( outputType_ == OutputLog )
         C << sb;
             C << nl << "// " << derives.size() << " derivatives";
             if ( derives.empty() ) {
-                C << nl << "assert( false && \"should not get here\" );";
+                C << nl << "assert( !\"should not get here\" );";
             }
     
             for ( size_t i=0; i<derives.size(); ++i ) {
@@ -1132,14 +1142,21 @@ if ( outputType_ == OutputLog )
                 C << "( derivedType == \"" << derives[i] << "\" )";
                 C << sb;
                 C << nl << derives[i] << "Ptr derivedPtr = " << derives[i] << "Ptr::dynamicCast( objPtr );";
-                C << nl << libNamespace_<<"::fromLogStream( derivedPtr, is, false, true );";
+                C << nl << "bool testTypeSetting = false;";
+                C << nl << "bool instantiateTypeSetting = true;";
+                C << nl << libNamespace_<<"::fromLogStream( derivedPtr, is, testTypeSetting, instantiateTypeSetting );";
                 C << nl << "objPtr = derivedPtr;";
                 C << eb;
             }
             if ( !derives.empty() ) {
                 C << nl << "else";
                 C << sb;
-                C << nl << "assert( false && \"unknown derived class for " << base << "\" );";  
+                // no slicing!
+                C << nl << "assert( !\"unknown derived class for " << base << "\" );";  
+                // allow slicing
+//                 C << nl << "bool testTypeSetting = false;";
+//                 C << nl << "bool instantiateTypeSetting = true;";
+//                 C << nl << libNamespace_<<"::fromLogStream( objPtr, is, testTypeSetting, isSlicingSetting );";
                 C << eb;
             }
         C << eb;

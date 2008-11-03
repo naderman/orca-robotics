@@ -218,7 +218,8 @@ int main( int argc, char **argv )
         cout << "ok" << endl<<endl;
     }
     // the super tough one, generic pointer from orca, derived object from satellite project.
-    // THIS DOES NOT WORK
+    // THIS DOES NOT WORK (asserts, but maybe should throw?)
+    // (there're actually 2 subcases here, see stringtest.cpp)
 //     {
 //         orca::SinglePolarFeature2dPtr in = new test::MyClass4;
 //         orca::SinglePolarFeature2dPtr out;
