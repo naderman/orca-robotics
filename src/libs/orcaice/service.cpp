@@ -119,7 +119,9 @@ Service::start( const ::std::string        & name,
     }
 
     // debug
-//     cout<<args.size()<<" args :"<<orcaice::toString( args )<<endl;
+//     cout<<"Service received "<<args.size()<<" args :";
+//     for ( size_t i=0; i<args.size(); ++i ) cout<<args[i]<<endl;
+//     cout<<endl;
 
     // print version information on the first line
     orcaice::detail::printAllVersions( *component_ );

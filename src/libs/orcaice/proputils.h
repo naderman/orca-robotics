@@ -64,16 +64,16 @@ std::string getApplicationConfigFilename( const Ice::StringSeq & args );
 /*!
  *  Platform-independent function to find Orca component configuration file.
  *
- *  1. Returns the file name specified in Orca.Config configuration parameter.
+ *  1. Returns the file name specified in Orca.Config configuration parameter. E.g.
  *          IceBox.Service.MyService=MyService:create --Orca.Config=local.cfg
  *              returns "local.cfg"
  *
- *  2. Returns the file name specified in Ice.Config configuration parameter.
+ *  2. Returns the file name specified in Ice.Config configuration parameter. E.g.
  *          IceBox.Service.MyService=MyService:create --Ice.Config=local.cfg
  *              returns "local.cfg"
  *
- *  Throws gbxutilacfr::Exception if the argument list is empty. Returns an empty string if 
- *  the argument is non-empty but no suitable properties were found.
+ *  Returns an empty string if the argument list is empty or
+ *  the argument contains no suitable properties.
  */
 std::string getServiceConfigFilename( const Ice::StringSeq & args );
 

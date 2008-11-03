@@ -137,7 +137,7 @@ std::string
 getServiceConfigFilename( const Ice::StringSeq & args )
 {
     if ( args.empty() ) {
-        throw gbxutilacfr::Exception( ERROR_INFO, "Invalid command line options, cannot determine config file name" );
+        return string();
     }
 
     // first look for Orca.Config parameter (specified by us manually)
@@ -155,7 +155,7 @@ getServiceConfigFilename( const Ice::StringSeq & args )
     }
 
     // we are here if: there're multiple arguments but none of them are Ice.Config
-    return std::string( "" );
+    return string();
 }
 
 // note: the standard tracer already exists, if we pass communicator& into here, we could use it here.

@@ -50,7 +50,7 @@ extern "C"
 
 void TestComponent::start()
 {
-    cout<<"testing Service() ... ok";
+    cout<<"testing Service() ... ok"<<endl;
     
     // NOTE: cannot call communicator()->destroy() from here
     // because they'll be caught by Ice::Application and show up as failed ctest.

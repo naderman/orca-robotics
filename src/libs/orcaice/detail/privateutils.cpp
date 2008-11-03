@@ -390,12 +390,17 @@ void addPropertiesFromServiceConfigFile( Ice::PropertiesPtr   &properties,
                                          const Ice::StringSeq &commandLineArgs,
                                          const std::string    &componentTag )
 {
+    if ( commandLineArgs.empty() ) {
+        initTracerInfo( componentTag+": Empty command line options, cannot determine component config file." );
+        return;
+    }
+
     std::string servFilename;
     try
     {
         servFilename = orcaice::getServiceConfigFilename( commandLineArgs );
         if ( servFilename.empty() ) {
-            initTracerInfo( componentTag+": "+warnMissingProperty("component properties file","Orca.Ice") );
+            initTracerInfo( componentTag+": Component config file is not specified." );
         }
         else {
             orcaice::detail::setComponentPropertiesFromFile( properties, servFilename );

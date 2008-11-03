@@ -234,15 +234,14 @@ main(int argc, char * argv[])
     }
 
     cout<<"testing getServiceConfigFilename() with empty input ... ";
-    try {
-        args.clear();
-        filename = orcaice::getServiceConfigFilename( args );
-        cout<<"failed"<<endl<<"expected to catch an exception."<<endl;
+    expect = "";
+    args.clear();
+    filename = orcaice::getServiceConfigFilename( args );
+    if ( filename != expect ) {
+        cout<<"failed"<<endl<<"expected an empty string."<<endl;
         return EXIT_FAILURE;
     }
-    catch ( const gbxutilacfr::Exception & ) {
-        cout<<"ok"<<endl;
-    }
+    cout<<"ok"<<endl;
 
     return EXIT_SUCCESS;
 }
