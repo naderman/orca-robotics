@@ -312,17 +312,17 @@ Gen::ToStringVisitor::visitClassDefStart(const ClassDefPtr& p)
     ClassList bases = p->bases();
 
     H << "\n// Only the first 3 input parameters are for public use.";    
-    H << "\nstd::string  toString( const " << scope.substr(2)<<name << "Ptr& obj, int recurse=1000, int expand=-1, int indent=0, bool fromDerived=false );";
+    H << "\nstd::string  toString( const " << scope.substr(2)<<name << "Ptr& obj, int recurse=1000, int expand=-1, int indent=0, bool testType=true );";
 
     C << "\n\nstd::string ";
-    C << nl << "toString( const " << scoped << "Ptr& objPtr, int recurse, int expand, int indent, bool fromDerived )";
+    C << nl << "toString( const " << scoped << "Ptr& objPtr, int recurse, int expand, int indent, bool testType )";
     C << sb;
     C << nl << "if ( objPtr == 0 )";
     C << sb;
     C << nl << "throw gbxutilacfr::Exception( ERROR_INFO, \"(while stringifying class " << scoped << ") cannot stringify a null pointer\" );";
     C << eb;
 
-    C << nl << "if ( !fromDerived )";
+    C << nl << "if ( testType )";
     C << sb;
     C << nl << "string mostDerivedType = objPtr->ice_id();";
     C << nl << "if ( mostDerivedType.empty() )";
@@ -354,7 +354,8 @@ Gen::ToStringVisitor::visitClassDefStart(const ClassDefPtr& p)
         while(q != bases.end())
         {
             C << nl << fixKwd((*q)->scoped()) << "Ptr base" << count << "Ptr = objPtr;";
-            C << nl << "s += \'\\n\' + ind + \"base \" + toString( base" << count << "Ptr, recurse, expand, indent+2, true );";
+            C << nl << "bool testTypeInBases = false;";
+            C << nl << "s += \'\\n\' + ind + \"base \" + toString( base" << count << "Ptr, recurse, expand, indent+2, testTypeInBases );";
             ++q;
             ++count;
         }
@@ -569,17 +570,17 @@ Gen::ToLogVisitor::visitClassDefStart(const ClassDefPtr& p)
     ClassList bases = p->bases();
 
     H << "\n// Only the first 2 input parameters are for public use.";    
-    H << "\nvoid toLogStream( const " << scope.substr(2)<<name << "Ptr& obj, std::ostream& os, bool fromDerived=false );";
+    H << "\nvoid toLogStream( const " << scope.substr(2)<<name << "Ptr& obj, std::ostream& os, bool testType=true );";
 
     C << "\n\nvoid";
-    C << nl << "toLogStream( const " << scoped << "Ptr& objPtr, std::ostream& os, bool fromDerived )";
+    C << nl << "toLogStream( const " << scoped << "Ptr& objPtr, std::ostream& os, bool testType )";
     C << sb;
     C << nl << "if ( objPtr == 0 )";
     C << sb;
     C << nl << "throw gbxutilacfr::Exception( ERROR_INFO, \"(while logging class " << scoped << ") cannot log a null pointer\" );";
     C << eb;
 
-    C << nl << "if ( !fromDerived )";
+    C << nl << "if ( testType )";
     C << sb;
     C << nl << "string mostDerivedType = objPtr->ice_id();";
     C << nl << "if ( mostDerivedType.empty() )";
@@ -607,7 +608,8 @@ Gen::ToLogVisitor::visitClassDefStart(const ClassDefPtr& p)
         while(q != bases.end())
         {
             C << nl << fixKwd((*q)->scoped()) << "Ptr base" << count << "Ptr = objPtr;";
-            C << nl << "toLogStream( base" << count << "Ptr, os, true );";
+            C << nl << "bool testTypeInBases = false;";
+            C << nl << "toLogStream( base" << count << "Ptr, os, testTypeInBases );";
             ++q;
             ++count;
         }
@@ -797,13 +799,13 @@ Gen::FromLogVisitor::visitClassDefStart(const ClassDefPtr& p)
     string scoped = fixKwd(p->scoped());
     ClassList bases = p->bases();
     
-    H << "\nvoid fromLogStream( " << scope.substr(2)<<name << "Ptr& obj, std::istream& is, bool fromDerived=false, bool fromBase=false );";
+    H << "\nvoid fromLogStream( " << scope.substr(2)<<name << "Ptr& obj, std::istream& is, bool testType=true, bool fromBase=false );";
 
     C << "\n\nvoid";
-    C << nl << "fromLogStream( " << scoped << "Ptr& objPtr, std::istream& is, bool fromDerived, bool fromBase )";
+    C << nl << "fromLogStream( " << scoped << "Ptr& objPtr, std::istream& is, bool testType, bool fromBase )";
     C << sb;
 
-    C << nl << "if ( !fromDerived )";
+    C << nl << "if ( testType )";
     C << sb;
     C << nl << "bool iAmTheOne = fromBase;";
     C << nl << "string mostDerivedType;";
@@ -844,7 +846,8 @@ Gen::FromLogVisitor::visitClassDefStart(const ClassDefPtr& p)
         while(q != bases.end())
         {
             C << nl << fixKwd((*q)->scoped()) << "Ptr base" << count << "Ptr = objPtr;";
-            C << nl << "fromLogStream( base" << count << "Ptr, is, true );";
+            C << nl << "bool testTypeInBases = false;";
+            C << nl << "fromLogStream( base" << count << "Ptr, is, testTypeInBases );";
             ++q;
             ++count;
         }
@@ -1046,8 +1049,24 @@ else {
 }
         C << sb;
             C << nl << "// " << derives.size() << " derivatives";
+
             if ( derives.empty() ) {
-                C << nl << "assert( false && \"should not get here\" );";
+
+if ( outputType_ == OutputString ) {
+                C << nl << "string s;";
+                C << nl << "for ( int i=0; i<indent; ++i ) s += ' ';";
+                C << nl << "s += \"[warning: no access to definition of derived class \" + derivedType + \", slicing to base] \";";
+                C << nl << "bool testTypeInSliced = false;";
+                C << nl << "s += "<<libNamespace_<<"::toString( objPtr, recurse, expand, indent, testTypeInSliced );";
+                C << nl << "return s;";
+}
+else if ( outputType_ == OutputLog ) {
+                // for logs it's unsafe to ignore this
+                C << nl << "assert( false && \"unknown derived class for " << base << "\" );";  
+}
+else
+    assert( !"unknown OutputType" );
+
             }
     
             for ( size_t i=0; i<derives.size(); ++i ) {
@@ -1072,7 +1091,22 @@ else
             if ( !derives.empty() ) {
                 C << nl << "else";
                 C << sb;
+
+if ( outputType_ == OutputString ) {
+                C << nl << "string s;";
+                C << nl << "for ( int i=0; i<indent; ++i ) s += ' ';";
+                C << nl << "s += \"[warning: no access to definition of derived class \" + derivedType + \", slicing to base] \";";
+                C << nl << "bool testTypeInSliced = false;";
+                C << nl << "s += "<<libNamespace_<<"::toString( objPtr, recurse, expand, indent, testTypeInSliced );";
+                C << nl << "return s;";
+}
+else if ( outputType_ == OutputLog ) {
+                // for logs it's unsafe to ignore this
                 C << nl << "assert( false && \"unknown derived class for " << base << "\" );";  
+}
+else
+    assert( !"unknown OutputType" );
+
                 C << eb;
             }
         C << eb;

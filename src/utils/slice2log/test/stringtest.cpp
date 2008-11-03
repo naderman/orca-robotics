@@ -130,31 +130,32 @@ int main( int argc, char **argv )
         cout<<ifacestring::toString( in )<<endl;
     }
     // the super tough one, generic pointer from orca, derived object from satellite project.
-    // THIS DOES NOT WORK
-//     {
-//         orca::SinglePolarFeature2dPtr in = new test::MyClass4;
-//         orca::SinglePolarFeature2dPtr out;
-//         in->type = 99;
-//         in->pFalsePositive=.05;
-//         in->pTruePositive=.95;
-//         test::MyClass4Ptr dIn = test::MyClass4Ptr::dynamicCast( in );
-//         dIn->mInt = 3;
-//         stringstream ss; 
-//         ifacelog::toLogStream( in, ss );
-//         cout << "SinglePolarFeature2dPtr\n'" << ss.str() << "' (" << ss.str().size() << ")" << endl;
-//         ifacelog::fromLogStream( out, ss );
-//         if ( !out ) {
-//             cout<<"failed! resultant Ptr is null"<<endl;
-//             return EXIT_FAILURE;
-//         }
-//         if ( in->type!=out->type ) {
-//             stringstream ss; 
-//             ifacelog::toLogStream( out, ss );
-//             cout<<"failed! out: '"<<ss.str()<<"'"<<endl;
-//             return EXIT_FAILURE;
-//         }
-//         cout << "ok" << endl<<endl;
-//     }
+    // subcase: the base class has no derivatives in its file
+    {
+        orca::RangeScanner2dDataPtr in = new test::MyClass5;
+        in->timeStamp.seconds=11;
+        in->timeStamp.useconds=12;
+        in->minRange=0.1;
+        in->maxRange=0.2;
+        in->fieldOfView=0.3;
+        in->startAngle=0.4;
+        test::MyClass5Ptr dIn = test::MyClass5Ptr::dynamicCast( in );
+        dIn->mInt = 3;
+        cout<<endl<<"TOP THRU BASE POINTER FROM ANOTHER FILE (no derivatives)"<<endl;
+        cout<<ifacestring::toString( in )<<endl;
+    }
+    // the super tough one, generic pointer from orca, derived object from satellite project.
+    // subcase: the base class has some derivatives in its file, but not this one obviously.
+    {
+        orca::SinglePolarFeature2dPtr in = new test::MyClass4;
+        in->type = 99;
+        in->pFalsePositive=.05;
+        in->pTruePositive=.95;
+        test::MyClass4Ptr dIn = test::MyClass4Ptr::dynamicCast( in );
+        dIn->mInt = 3;
+        cout<<endl<<"TOP THRU BASE POINTER FROM ANOTHER FILE (some derivatives)"<<endl;
+        cout<<ifacestring::toString( in )<<endl;
+    }
     }
     catch ( const std::exception& e ) {
         cout<<endl<<"caught exception : "<<e.what()<<endl;

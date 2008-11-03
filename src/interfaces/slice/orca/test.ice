@@ -12,8 +12,11 @@
 #define ORCA_TEST_ICE
 
 // example of including another orca Slice file with classes
+// they are slightly different: polarfeature2d has derived types in the same file with
+// the base, and rangescanner2d does not.
 #include <orca/polarfeature2d.ice>
-// should it be this:
+#include <orca/rangescanner2d.ice>
+// should it be this? 
 // #include <orcaiface/polarfeature2d.ice>
 
 // example of including an Ice Slice file
@@ -72,6 +75,11 @@ class MyClass3 extends MyClass1
 };
 
 class MyClass4 extends orca::SinglePolarFeature2d
+{
+    int mInt;
+};
+
+class MyClass5 extends orca::RangeScanner2dData
 {
     int mInt;
 };
