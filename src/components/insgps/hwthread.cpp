@@ -207,6 +207,7 @@ OrcaGpsEvent::OrcaGpsEvent(const hydrointerfaces::InsGps::GpsData &hydroGps)
     data.satellites = hydroGps.sat;
     data.observationCountOnL1 = hydroGps.obsL1;
     data.observationCountOnL2 = hydroGps.obsL2;
+data.positionType = orca::GpsPositionTypeAutonomous; // FIXME
     data.geoidalSeparation = data.altitude - hydroGps.altAMSL;
     data.timeStamp.seconds = hydroGps.time.tv_sec;
     data.timeStamp.useconds = hydroGps.time.tv_usec;
