@@ -77,7 +77,7 @@ private:
 
     orcaice::Context                  context_;
 
-    orca::DriveBicycleConsumerPrx     consumerPrx_;
+    orca::DriveBicycleConsumerPrx     publisherPrx_;
 
     // Hang onto this so we can remove from the adapter and control when things get deleted
     Ice::ObjectPtr          ptr_;

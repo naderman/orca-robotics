@@ -53,7 +53,7 @@ private:
 
     gbxiceutilacfr::Store<orca::FeatureMap2dData> dataStore_;
 
-    orca::FeatureMap2dConsumerPrx    consumerPrx_;
+    orca::FeatureMap2dConsumerPrx    publisherPrx_;
     IceStorm::TopicPrx       topicPrx_;
 
     // Hang onto this so we can remove from the adapter and control when things get deleted

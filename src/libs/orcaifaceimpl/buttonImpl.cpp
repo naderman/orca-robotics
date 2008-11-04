@@ -12,7 +12,7 @@
 #include <orcaice/orcaice.h>
 
 #include "buttonImpl.h"
-#include "util.h"
+ 
 
 using namespace std;
 
@@ -56,7 +56,7 @@ ButtonImpl::ButtonImpl(
 
 ButtonImpl::~ButtonImpl()
 {
-    tryRemoveInterface( context_, interfaceName_ );
+    orcaice::tryRemoveInterface( context_, interfaceName_ );
 }
 
 void

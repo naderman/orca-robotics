@@ -29,7 +29,7 @@ public:
 private:
         
     int loadGetInterfaces( orcacm::OperationData& data );
-    int loadGetProperties( orcacm::OperationData& data );
+//     int loadGetProperties( orcacm::OperationData& data );
 
 };
 

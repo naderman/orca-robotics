@@ -35,8 +35,8 @@ protected slots:
     // Reimplement function from QTreeView
     virtual void rowsInserted ( const QModelIndex & parent, int start, int end );
     
-private slots:
-    void home_getProperties();
+// private slots:
+//     void home_getProperties();
     
 };
 

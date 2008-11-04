@@ -53,7 +53,7 @@ private:
 
     gbxiceutilacfr::Store<orca::Particle2dData> dataStore_;
 
-    orca::Particle2dConsumerPrx    consumerPrx_;
+    orca::Particle2dConsumerPrx    publisherPrx_;
     IceStorm::TopicPrx       topicPrx_;
 
     // Hang onto this so we can remove from the adapter and control when things get deleted

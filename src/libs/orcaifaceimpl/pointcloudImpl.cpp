@@ -12,7 +12,7 @@
 
 #include <orcaice/orcaice.h>
 #include "pointcloudImpl.h"
-#include "util.h"
+ 
 
 using namespace std;
 
@@ -58,7 +58,7 @@ PointCloudImpl::PointCloudImpl( //const orca::PointCloudDescription &descr,
                                 const orcaice::Context         &context )
     : //descr_(descr),
       interfaceName_(getInterfaceNameFromTag(context,interfaceTag)),
-      topicName_(getTopicNameFromInterfaceName(context,interfaceName_)),
+      topicName_(orcaice::getTopicNameFromInterfaceName(context,interfaceName_)),
       context_(context)
 {
 }
@@ -68,14 +68,14 @@ PointCloudImpl::PointCloudImpl( //const orca::PointCloudDescription &descr,
                                 const std::string              &interfaceName )
     : //descr_(descr),
       interfaceName_(interfaceName),
-      topicName_(getTopicNameFromInterfaceName(context,interfaceName)),
+      topicName_(orcaice::getTopicNameFromInterfaceName(context,interfaceName)),
       context_(context)
 {
 }
 
 PointCloudImpl::~PointCloudImpl()
 {
-    tryRemoveInterface( context_, interfaceName_ );
+    orcaice::tryRemoveInterface( context_, interfaceName_ );
 }
 
 void
@@ -83,7 +83,7 @@ PointCloudImpl::initInterface()
 {
     // Find IceStorm Topic to which we'll publish
     topicPrx_ = orcaice::connectToTopicWithString<orca::PointCloudConsumerPrx>
-        ( context_, consumerPrx_, topicName_ );
+        ( context_, publisherPrx_, topicName_ );
 
     // Register with the adapter
     // We don't have to clean up the memory we're allocating here, because
@@ -96,7 +96,7 @@ void
 PointCloudImpl::initInterface( gbxiceutilacfr::Thread* thread, const std::string& subsysName, int retryInterval )
 {
     topicPrx_ = orcaice::connectToTopicWithString<orca::PointCloudConsumerPrx>
-        ( context_, consumerPrx_, topicName_, thread, subsysName, retryInterval );
+        ( context_, publisherPrx_, topicName_, thread, subsysName, retryInterval );
 
     ptr_ = new PointCloudI( *this );
     orcaice::createInterfaceWithString( context_, ptr_, interfaceName_, thread, subsysName, retryInterval );
@@ -164,9 +164,9 @@ PointCloudImpl::localSetAndSend( const orca::PointCloudData& data )
     dataStore_.set( data );
 
     // Try to push to IceStorm.
-    tryPushToIceStormWithReconnect<orca::PointCloudConsumerPrx,orca::PointCloudData>
+    orcaice::tryPushToIceStormWithReconnect<orca::PointCloudConsumerPrx,orca::PointCloudData>
         ( context_,
-          consumerPrx_,
+          publisherPrx_,
           data,
           topicPrx_,
           interfaceName_,

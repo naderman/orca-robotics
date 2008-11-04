@@ -66,7 +66,7 @@ private:
     gbxiceutilacfr::Store<orca::Odometry2dData> dataStore_;
 
     // IceStorm proxies
-    orca::Odometry2dConsumerPrx    consumerPrx_;
+    orca::Odometry2dConsumerPrx    publisherPrx_;
     IceStorm::TopicPrx             topicPrx_;
 
     // Hang onto this so we can remove from the adapter and control when things get deleted

@@ -66,7 +66,7 @@ private:
 
     gbxiceutilacfr::Store<orca::Localise3dData> dataStore_;
 
-    orca::Localise3dConsumerPrx    consumerPrx_;
+    orca::Localise3dConsumerPrx    publisherPrx_;
     IceStorm::TopicPrx             topicPrx_;
 
     // Hang onto this so we can remove from the adapter and control when things get deleted

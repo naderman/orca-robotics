@@ -2,7 +2,6 @@
 #include <iostream>
 #include <orcaice/orcaice.h>
 #include <orcaobj/orcaobj.h>
-#include <orcaifaceimpl/util.h>
 
 using namespace std;
 
@@ -71,7 +70,7 @@ ProgressMonitor::~ProgressMonitor()
     if ( !consumerPrx_ )
         return;
 
-    orcaifaceimpl::tryRemoveInterfaceWithIdentity( context_, consumerPrx_->ice_getIdentity() );
+    orcaice::tryRemoveInterfaceWithIdentity( context_, consumerPrx_->ice_getIdentity() );
 }
 
 void 

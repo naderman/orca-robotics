@@ -10,7 +10,7 @@
 #include "pixmapImpl.h"
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include "util.h"
+ 
 
 using namespace std;
 using namespace orca;
@@ -50,7 +50,7 @@ private:
 PixMapImpl::PixMapImpl( const std::string      &interfaceTag,
                         const orcaice::Context &context ) 
     : interfaceName_(getInterfaceNameFromTag(context,interfaceTag)),
-      topicName_(getTopicNameFromInterfaceName(context,interfaceName_)),
+      topicName_(orcaice::getTopicNameFromInterfaceName(context,interfaceName_)),
       context_(context)      
 {
 }
@@ -58,14 +58,14 @@ PixMapImpl::PixMapImpl( const std::string      &interfaceTag,
 PixMapImpl::PixMapImpl( const orcaice::Context &context,
                         const std::string      &interfaceName )
     : interfaceName_(interfaceName),
-      topicName_(getTopicNameFromInterfaceName(context,interfaceName)),
+      topicName_(orcaice::getTopicNameFromInterfaceName(context,interfaceName)),
       context_(context)      
 {
 }
 
 PixMapImpl::~PixMapImpl()
 {
-    tryRemoveInterface( context_, interfaceName_ );
+    orcaice::tryRemoveInterface( context_, interfaceName_ );
 }
 
 void
@@ -73,7 +73,7 @@ PixMapImpl::initInterface()
 {
     // Find IceStorm Topic to which we'll publish
     topicPrx_ = orcaice::connectToTopicWithString<orca::PixMapConsumerPrx>
-        ( context_, consumerPrx_, topicName_ );
+        ( context_, publisherPrx_, topicName_ );
 
     // Register with the adapter
     // We don't have to clean up the memory we're allocating here, because
@@ -86,7 +86,7 @@ void
 PixMapImpl::initInterface( gbxiceutilacfr::Thread* thread, const std::string& subsysName, int retryInterval )
 {
     topicPrx_ = orcaice::connectToTopicWithString<orca::PixMapConsumerPrx>
-        ( context_, consumerPrx_, topicName_, thread, subsysName, retryInterval );
+        ( context_, publisherPrx_, topicName_, thread, subsysName, retryInterval );
 
     ptr_ = new PixMapI( *this );
     orcaice::createInterfaceWithString( context_, ptr_, interfaceName_, thread, subsysName, retryInterval );
@@ -142,9 +142,9 @@ PixMapImpl::localSetAndSend( const ::orca::PixMapData &data )
     dataStore_.set( data );
     
     // Try to push to IceStorm.
-    tryPushToIceStormWithReconnect<PixMapConsumerPrx,orca::PixMapData>
+    orcaice::tryPushToIceStormWithReconnect<PixMapConsumerPrx,orca::PixMapData>
         ( context_,
-          consumerPrx_,
+          publisherPrx_,
           data,
           topicPrx_,
           interfaceName_,

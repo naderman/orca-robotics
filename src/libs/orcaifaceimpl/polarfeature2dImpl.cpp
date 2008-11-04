@@ -10,7 +10,7 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include <orcaifaceimpl/util.h>
+// #include <orcaifaceimpl/util.h>
 #include "polarfeature2dImpl.h"
 
 using namespace std;
@@ -58,7 +58,7 @@ PolarFeature2dImpl::PolarFeature2dImpl( const orca::PolarFeature2dDescription&  
                                         const orcaice::Context                 &context )
     : descr_(descr),
       interfaceName_(getInterfaceNameFromTag(context,interfaceTag)),
-      topicName_(getTopicNameFromInterfaceName(context,interfaceName_)),
+      topicName_(orcaice::getTopicNameFromInterfaceName(context,interfaceName_)),
       context_(context)
 {
 }
@@ -68,14 +68,14 @@ PolarFeature2dImpl::PolarFeature2dImpl( const orca::PolarFeature2dDescription&  
                                         const std::string                      &interfaceName )
     : descr_(descr),
       interfaceName_(interfaceName),
-      topicName_(getTopicNameFromInterfaceName(context,interfaceName)),
+      topicName_(orcaice::getTopicNameFromInterfaceName(context,interfaceName)),
       context_(context)
 {
 }
 
 PolarFeature2dImpl::~PolarFeature2dImpl()
 {
-    tryRemoveInterface( context_, interfaceName_ );
+    orcaice::tryRemoveInterface( context_, interfaceName_ );
 }
 
 void
@@ -83,7 +83,7 @@ PolarFeature2dImpl::initInterface()
 {
     // Find IceStorm Topic to which we'll publish
     topicPrx_ = orcaice::connectToTopicWithString<orca::PolarFeature2dConsumerPrx>
-        ( context_, consumerPrx_, topicName_ );
+        ( context_, publisherPrx_, topicName_ );
 
     // Register with the adapter
     // We don't have to clean up the memory we're allocating here, because
@@ -95,7 +95,7 @@ PolarFeature2dImpl::initInterface()
 void 
 PolarFeature2dImpl::initInterface( gbxiceutilacfr::Thread* thread, const std::string& subsysName, int retryInterval )
 {
-    topicPrx_ = orcaice::connectToTopicWithString( context_, consumerPrx_, topicName_, thread, subsysName, retryInterval );
+    topicPrx_ = orcaice::connectToTopicWithString( context_, publisherPrx_, topicName_, thread, subsysName, retryInterval );
 
     ptr_ = new PolarFeature2dI( *this );
     orcaice::createInterfaceWithString( context_, ptr_, interfaceName_, thread, subsysName, retryInterval );
@@ -180,8 +180,8 @@ PolarFeature2dImpl::localSetAndSend( const ::orca::PolarFeature2dData &data )
     dataStore_.set( data );
 
     // Try to push to IceStorm
-    tryPushToIceStormWithReconnect<PolarFeature2dConsumerPrx,PolarFeature2dData>( context_,
-                                                                                  consumerPrx_,
+    orcaice::tryPushToIceStormWithReconnect<PolarFeature2dConsumerPrx,PolarFeature2dData>( context_,
+                                                                                  publisherPrx_,
                                                                                   data,
                                                                                   topicPrx_,
                                                                                   interfaceName_,

@@ -11,7 +11,7 @@
 #include "drivebicycleImpl.h"
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include "util.h"
+ 
 
 using namespace std;
 
@@ -58,7 +58,7 @@ DriveBicycleImpl::DriveBicycleImpl(
             const orcaice::Context         &context )
     : description_(descr),
       interfaceName_(getInterfaceNameFromTag(context,interfaceTag)),
-      topicName_(getTopicNameFromInterfaceName(context,interfaceName_)),
+      topicName_(orcaice::getTopicNameFromInterfaceName(context,interfaceName_)),
       context_(context)
 {
 }
@@ -69,14 +69,14 @@ DriveBicycleImpl::DriveBicycleImpl(
             const std::string              &interfaceName )
     : description_(descr),
       interfaceName_(interfaceName),
-      topicName_(getTopicNameFromInterfaceName(context,interfaceName)),
+      topicName_(orcaice::getTopicNameFromInterfaceName(context,interfaceName)),
       context_(context)
 {
 }
 
 DriveBicycleImpl::~DriveBicycleImpl()
 {
-    tryRemoveInterface( context_, interfaceName_ );
+    orcaice::tryRemoveInterface( context_, interfaceName_ );
 }
 
 void
@@ -84,7 +84,7 @@ DriveBicycleImpl::initInterface()
 {
     // Find IceStorm Topic to which we'll publish
     topicPrx_ = orcaice::connectToTopicWithString<orca::DriveBicycleConsumerPrx>
-        ( context_, consumerPrx_, topicName_ );
+        ( context_, publisherPrx_, topicName_ );
 
     // Register with the adapter
     // We don't have to clean up the memory we're allocating here, because
@@ -97,7 +97,7 @@ void
 DriveBicycleImpl::initInterface( gbxiceutilacfr::Thread* thread, const std::string& subsysName, int retryInterval )
 {
     topicPrx_ = orcaice::connectToTopicWithString<orca::DriveBicycleConsumerPrx>
-        ( context_, consumerPrx_, topicName_, thread, subsysName, retryInterval );
+        ( context_, publisherPrx_, topicName_, thread, subsysName, retryInterval );
 
     ptr_ = new DriveBicycleI( *this );
     orcaice::createInterfaceWithString( context_, ptr_, interfaceName_, thread, subsysName, retryInterval );
@@ -167,9 +167,9 @@ DriveBicycleImpl::localSetAndSend( const orca::DriveBicycleData &data )
     dataPipe_.set( data );
     
     // Try to push to IceStorm.
-    tryPushToIceStormWithReconnect<orca::DriveBicycleConsumerPrx,orca::DriveBicycleData>
+    orcaice::tryPushToIceStormWithReconnect<orca::DriveBicycleConsumerPrx,orca::DriveBicycleData>
         ( context_,
-          consumerPrx_,
+          publisherPrx_,
           data,
           topicPrx_,
           interfaceName_,

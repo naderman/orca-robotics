@@ -6,11 +6,13 @@ DefaultComponentTag=AppTest
 
 # Rarely-used component config settings
 # this one implicit, leaving programatic default
-#ExternalConfig.Orca.Component.EnableTracer.Default=1
+#ExternalConfig.Orca.Component.Override.EnableTracer.Default=1
+
 # this one is explicit and the same as default
-ExternalConfig.Orca.Component.EnableStatus.Default=1
+ExternalConfig.Orca.Component.Override.EnableStatus.Default=1
+
 # this one is explicit and the opposite of default
-ExternalConfig.Orca.Component.EnableHome.Default=0
+ExternalConfig.Orca.Component.Override.EnableHome.Default=0
 
 # Set custom tracer settings so we can test them
 ExternalConfig.Orca.Tracer.Filename.Default=orca_component_trace.txt

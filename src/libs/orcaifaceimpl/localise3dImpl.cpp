@@ -11,7 +11,7 @@
 #include <iostream>
 #include <orcaice/orcaice.h>
 #include "localise3dImpl.h"
-#include "util.h"
+ 
 
 using namespace std;
 
@@ -56,7 +56,7 @@ Localise3dImpl::Localise3dImpl( const orca::VehicleGeometryDescriptionPtr &geome
                                 const orcaice::Context &context )
     : geometry_(geometry),
       interfaceName_(getInterfaceNameFromTag(context,interfaceTag)),
-      topicName_(getTopicNameFromInterfaceName(context,interfaceName_)),
+      topicName_(orcaice::getTopicNameFromInterfaceName(context,interfaceName_)),
       context_(context)
 {    
 }
@@ -66,14 +66,14 @@ Localise3dImpl::Localise3dImpl( const orca::VehicleGeometryDescriptionPtr &geome
                                 const std::string &interfaceName )                                
     : geometry_(geometry),
       interfaceName_(interfaceName),
-      topicName_(getTopicNameFromInterfaceName(context,interfaceName)),
+      topicName_(orcaice::getTopicNameFromInterfaceName(context,interfaceName)),
       context_(context)
 {    
 }
 
 Localise3dImpl::~Localise3dImpl()
 {
-    tryRemoveInterface( context_, interfaceName_ );
+    orcaice::tryRemoveInterface( context_, interfaceName_ );
 }
 
 void
@@ -81,7 +81,7 @@ Localise3dImpl::initInterface()
 {
     // Find IceStorm Topic to which we'll publish
     topicPrx_ = orcaice::connectToTopicWithString<orca::Localise3dConsumerPrx>
-        ( context_, consumerPrx_, topicName_ );
+        ( context_, publisherPrx_, topicName_ );
 
     // Register with the adapter
     // We don't have to clean up the memory we're allocating here, because
@@ -94,7 +94,7 @@ void
 Localise3dImpl::initInterface( gbxiceutilacfr::Thread* thread, const std::string& subsysName, int retryInterval )
 {
     topicPrx_ = orcaice::connectToTopicWithString<orca::Localise3dConsumerPrx>
-        ( context_, consumerPrx_, topicName_, thread, subsysName, retryInterval );
+        ( context_, publisherPrx_, topicName_, thread, subsysName, retryInterval );
 
     ptr_ = new Localise3dI( *this );
     orcaice::createInterfaceWithString( context_, ptr_, interfaceName_, thread, subsysName, retryInterval );
@@ -162,9 +162,9 @@ Localise3dImpl::localSetAndSend( const orca::Localise3dData &data )
     dataStore_.set( data );
     
     // Try to push to IceStorm.
-    tryPushToIceStormWithReconnect<orca::Localise3dConsumerPrx,orca::Localise3dData>
+    orcaice::tryPushToIceStormWithReconnect<orca::Localise3dConsumerPrx,orca::Localise3dData>
         ( context_,
-          consumerPrx_,
+          publisherPrx_,
           data,
           topicPrx_,
           interfaceName_,

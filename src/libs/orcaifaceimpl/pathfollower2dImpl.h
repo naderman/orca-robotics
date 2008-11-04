@@ -73,7 +73,7 @@ private:
 
     gbxiceutilacfr::Store<orca::PathFollower2dData> dataStore_;
 
-    orca::PathFollower2dConsumerPrx    consumerPrx_;
+    orca::PathFollower2dConsumerPrx    publisherPrx_;
     IceStorm::TopicPrx       topicPrx_;
 
     // Hang onto this so we can remove from the adapter and control when things get deleted

@@ -15,16 +15,12 @@
 
 #include <orcaice/orcaice.h>
 
-// is this dodgy?
-#include "../detail/homeI.h"
-
 using namespace std;
 
 class TestComponent : public orcaice::Component
 {
 public:
     TestComponent() : orcaice::Component( "ServiceTest" ) {};
-    virtual ~TestComponent() {};
 
     // component interface
     virtual void start();

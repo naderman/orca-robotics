@@ -20,45 +20,39 @@ using namespace std;
 class TestComponent : public orcaice::Component
 {
 public:
-    TestComponent();
-    virtual ~TestComponent();
+    TestComponent() : orcaice::Component( "AppTest" ) {};
 
     // component interface
     virtual void start();
-    virtual void stop();
+    virtual void stop() {};
 };
 
-
-TestComponent::TestComponent()
-    : orcaice::Component( "AppTest" )
-{
-}
-
-TestComponent::~TestComponent()
-{
-}
-
-void TestComponent::start()
+void 
+TestComponent::start()
 {
     cout<<"testing component interface settings ... ";
     {
+        Ice::PropertiesPtr props = context().properties();
         // ON implicitly
         bool enabled;
-        enabled = interfaceFlag() & orcaice::TracerInterface;
+//         enabled = interfaceFlag() & orcaice::TracerInterface;
+        enabled = props->getPropertyAsInt( "Orca.Component.EnableTracer" );
         if ( enabled != true ) {
-            cout<<"failed"<<endl<<"expected Tracer to be enabled, flag="<<interfaceFlag()<<endl;
+            cout<<"failed"<<endl<<"expected Tracer to be enabled"<<endl;
             exit(EXIT_FAILURE);
         }
         // ON explicitly
-        enabled = interfaceFlag() & orcaice::StatusInterface;
+//         enabled = interfaceFlag() & orcaice::StatusInterface;
+        enabled = props->getPropertyAsInt( "Orca.Component.EnableStatus" );
         if ( enabled != true ) {
-            cout<<"failed"<<endl<<"expected Status to be enabled, flag="<<interfaceFlag()<<endl;
+            cout<<"failed"<<endl<<"expected Status to be enabled"<<endl;
             exit(EXIT_FAILURE);
         }
         // OFF explicitly
-        enabled = interfaceFlag() & orcaice::HomeInterface;
+//         enabled = interfaceFlag() & orcaice::HomeInterface;
+        enabled = props->getPropertyAsInt( "Orca.Component.EnableHome" );
         if ( enabled != false ) {
-            cout<<"failed"<<endl<<"expected Home to be disabled, flag="<<interfaceFlag()<<endl;
+            cout<<"failed"<<endl<<"expected Home to be disabled"<<endl;
             exit(EXIT_FAILURE);
         }
     }
@@ -109,11 +103,6 @@ void TestComponent::start()
     // NOTE: cannot call communicator()->destroy() from here
     // because they'll be caught by Ice::Application and show up as failed ctest.
     exit(EXIT_SUCCESS);
-}
-
-void TestComponent::stop()
-{
-    // nothing to do
 }
 
 //

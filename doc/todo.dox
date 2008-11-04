@@ -96,6 +96,10 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - CameraInterface
   - data types derive from ones found in the Image interface
 
+- Home
+  - removed getProperties() because the same functionality is now available through the Proprerties facet of the
+    standard Admin interface. (alexm)
+
 @par Updated components
 
 - all components
@@ -119,6 +123,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
   - Application has a new property Orca.Application.CallbackOnInterrupt with default 1. This is an advanced setting.
     Default is good for most situations. Setting it to 0 will result in communicator shutdown on interrupt. (alexm)
   - Application: streamlined property handling process. (alexm)
+  - Component: removed a rarely used interfaceFlag() function. Functionality replaced with setting properties: Orca.Component.EnableXXX,
+    where XXX are the names of standard interfaces (Home, Status, Tracer).
   - new functions for catching exceptions in a consise and standardised manner from inside components. (alexm)
   - status-related classes are updated for new SubsystemStatus representation. (alexm)
   - new class Subsystem which encodes a simple state machine Idle->Initialising->Working->Finalising->Shutdown (with an extra

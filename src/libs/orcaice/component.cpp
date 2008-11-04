@@ -13,13 +13,9 @@
 #include <orca/common.h>
 #include <orca/properties.h>
 #include <orcaice/orcaice.h>
-#include <hydroiceutil/localstatus.h>
 #include <hydroiceutil/localtracer.h>
 #include <hydroiceutil/localhistory.h>
 #include "component.h"
-#include "detail/localhome.h"
-#include "detail/homeI.h"
-#include "detail/statusI.h"
 #include "detail/tracerI.h"
 #include "detail/privateutils.h"
 #include "detail/componentthread.h"
@@ -72,37 +68,31 @@ Component::init( const orca::FQComponentName& name,
     // Tracer is created first so that it can be used as soon as possible.
     //
     context_.tracer_ = initTracer();
-    context_.status_ = initStatus();
+    
+    {
+        StatusImpl* dummy = new StatusImpl( context_ );
+        status_ = dummy;
+        context_.status_ = (gbxutilacfr::Status*)dummy;
+    }
+    {
+        HomeImpl* dummy = new HomeImpl( context_ );
+        home_ = dummy;
+        context_.home_ = (orcaice::Home*)dummy;
+    }
+
+    initStatus();
     getNetworkProperties();
-    context_.home_   = initHome();
+    initHome();
     context_.history_= initHistory();
-    componentThread_ = new ComponentThread( homePrx_, *(context_.status_), interfaceFlag_, context_ );
+
+    componentThread_ = new ComponentThread( *(context_.status_), context_ );
     try {
         componentThread_->start();
     }
-    catch ( const std::exception &e )
-    {
-        std::stringstream ss; ss << "orcaice::Component::start(): caught exception: " << e.what();
-        context_.tracer().error( ss.str() );
-        throw;
-    }
-    catch ( const std::string &e )
-    {
-        std::stringstream ss; ss << "orcaice::Component::start(): caught std::string: " << e;
-        context_.tracer().error( ss.str() );
-        throw;
-    }
-    catch ( const char* &e )
-    {
-        std::stringstream ss; ss << "orcaice::Component::start(): caught char*: " << e;
-        context_.tracer().error( ss.str() );
-        throw;
-    }
     catch ( ... )
     {
-        std::stringstream ss; ss << "orcaice::Component::start(): caught unknown exception.";
-        context_.tracer().error( ss.str() );
-        throw;
+        orcaice::catchExceptions( context_.tracer(), "starting component utility thread" );
+        context_.shutdown();
     }
 };
 
@@ -120,14 +110,12 @@ Component::finalise()
 gbxutilacfr::Tracer*
 Component::initTracer()
 {
-    // We use programmatic configration as default. Config file settings will always overwrite.
+    // We use programmatic configration as default.
     bool enableInterface = interfaceFlag_ & TracerInterface;
-    enableInterface = context_.properties()->getPropertyAsIntWithDefault( "Orca.Component.EnableTracer", enableInterface );
-    // in case the settings have changed, update the flag (it may be used by someone in the future)
-    if ( enableInterface )
-        interfaceFlag_ = ComponentInterfaceFlag( interfaceFlag_ | TracerInterface );
-    else
-        interfaceFlag_ = ComponentInterfaceFlag( interfaceFlag_ & ~TracerInterface );
+    // Apply configurable override
+    enableInterface = context_.properties()->getPropertyAsIntWithDefault( "Orca.Component.Override.EnableTracer", enableInterface );
+    // now set final settings in properties for others to see.
+    context_.properties()->setProperty( "Orca.Component.EnableTracer", (enableInterface ? "1" : "0") );
 
     if ( !enableInterface ) 
     {
@@ -172,84 +160,47 @@ Component::initTracer()
     return trac;
 }
 
-gbxutilacfr::Status*
+void
 Component::initStatus()
 {
-    // We use programmatic configration as default. Config file settings will always overwrite.
+    // We use programmatic configration as default.
     bool enableInterface = interfaceFlag_ & StatusInterface;
-    enableInterface = context_.properties()->getPropertyAsIntWithDefault( "Orca.Component.EnableStatus", enableInterface );
-    // in case the settings have changed, update the flag (it may be used by someone in the future)
+    // Apply configurable override
+    enableInterface = context_.properties()->getPropertyAsIntWithDefault( "Orca.Component.Override.EnableStatus", enableInterface );
+    // now set final settings in properties for others to see.
+    context_.properties()->setProperty( "Orca.Component.EnableStatus", (enableInterface ? "1" : "0") );
+
     if ( enableInterface )
         interfaceFlag_ = ComponentInterfaceFlag( interfaceFlag_ | StatusInterface );
     else
         interfaceFlag_ = ComponentInterfaceFlag( interfaceFlag_ & ~StatusInterface );
 
-    if ( !enableInterface ) 
-    {
-        orcaice::initTracerInfo( context_.tag()+": Initialized local status handler");
-        return new hydroiceutil::LocalStatus( 
-            context_.tracer(),
-            hydroutil::Properties( context_.properties()->getPropertiesForPrefix("Orca.Status."),"Orca.Status.") );
-    }
+    if ( enableInterface )
+        status_->initInterface( context_ );
 
-    // create remote status object and keep a smart pointer to it
-    orcaice::detail::StatusI* pobj = new orcaice::detail::StatusI( context_ );
-    statusObj_ = pobj;
-    // add this object to the adapter and name it 'status'
-    try
-    {
-        context_.adapter()->add( statusObj_, context_.communicator()->stringToIdentity("status") );
-    }
-    catch( const Ice::ObjectAdapterDeactivatedException &e )
-    {
-        std::stringstream ss;
-        ss << "orcaice::Component: Failed to add status because the adapter is deactivated: " << e;
-        context_.tracer().warning( ss.str() );
-        throw orcaice::ComponentDeactivatingException( ERROR_INFO, ss.str() );
-    }
-
-    gbxutilacfr::Status* stat = (gbxutilacfr::Status*)pobj;
     orcaice::initTracerInfo( context_.tag()+": Initialized status handler");
-    return stat;
 }
 
-Home*
+void
 Component::initHome()
 {
-    // We use programmatic configration as default. Config file settings will always overwrite.
+    // We use programmatic configration as default.
     bool enableInterface = interfaceFlag_ & HomeInterface;
-    enableInterface = context_.properties()->getPropertyAsIntWithDefault( "Orca.Component.EnableHome", enableInterface );
+    // Apply configurable override
+    enableInterface = context_.properties()->getPropertyAsIntWithDefault( "Orca.Component.Override.EnableHome", enableInterface );
+    // now set final settings in properties for others to see.
+    context_.properties()->setProperty( "Orca.Component.EnableHome", (enableInterface ? "1" : "0") );
+
     // in case the settings have changed, update the flag (it may be used by someone in the future)
     if ( enableInterface )
         interfaceFlag_ = ComponentInterfaceFlag( interfaceFlag_ | HomeInterface );
     else
         interfaceFlag_ = ComponentInterfaceFlag( interfaceFlag_ & ~HomeInterface );
 
-    if ( !enableInterface ) {
-        // local object only
-        return new orcaice::detail::LocalHome;
-    }
-    
-    // Create the home interface
-    orcaice::HomeI* hobj = new orcaice::HomeI( interfaceFlag_, context_ );
-
-    // add the home interface to our adapter
-    Ice::ObjectPtr homeObj = hobj;
-    std::string homeIdentity = toHomeIdentity( context_.name() );
-    try
-    {
-        homePrx_ = context_.adapter()->add( homeObj, context_.communicator()->stringToIdentity(homeIdentity) );
-    }
-    catch( const Ice::ObjectAdapterDeactivatedException &e )
-    {
-        std::stringstream ss;
-        ss << "orcaice::Component: Failed to add home because the adapter is deactivated: " << e;
-        context_.tracer().warning( ss.str() );
-        throw orcaice::ComponentDeactivatingException( ERROR_INFO, ss.str() );
-    }
+    if ( enableInterface )
+        home_->initInterface( context_ );
 
     orcaice::initTracerInfo( context_.tag()+": Initialized Home interface");
-    return (Home*)hobj;
 }
 
 hydroutil::History*

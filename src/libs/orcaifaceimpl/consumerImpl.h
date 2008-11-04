@@ -16,7 +16,7 @@
 #include <orcaice/icestormutils.h>
 #include <gbxsickacfr/gbxiceutilacfr/store.h>
 #include <gbxsickacfr/gbxiceutilacfr/thread.h>
-#include <orcaifaceimpl/util.h>
+// #include <orcaifaceimpl/util.h>
 // #include <iostream>
 
 namespace orcaifaceimpl
@@ -171,7 +171,7 @@ public:
         if ( !consumerPrx_ )
             return;
 
-        tryRemoveInterfaceWithIdentity( context_, consumerPrx_->ice_getIdentity() );
+        orcaice::tryRemoveInterfaceWithIdentity( context_, consumerPrx_->ice_getIdentity() );
     }
 
     //! Access the proxy to the internal consumer interface implementation.

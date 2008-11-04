@@ -53,7 +53,7 @@ private:
 
     gbxiceutilacfr::Store<orca::WifiData> dataStore_;
 
-    orca::WifiConsumerPrx    consumerPrx_;
+    orca::WifiConsumerPrx    publisherPrx_;
     IceStorm::TopicPrx       topicPrx_;
 
     // Hang onto this so we can remove from the adapter and control when things get deleted

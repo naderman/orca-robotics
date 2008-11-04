@@ -14,18 +14,31 @@
 #include <orcaice/component.h>
 
 #include <orcaice/orcaice.h>
-
-// is this dodgy?
-#include "../detail/homeI.h"
+#include <orca/home.h>
 
 using namespace std;
+
+class HomeI : public orca::Home
+{
+public:
+//     HomeI() : impl_(impl) {}
+//     virtual ~HomeI() {}
+
+    // remote interface
+    virtual orca::HomeData getInterfaces(const ::Ice::Current& )
+        { return orca::HomeData(); }
+
+    virtual int getTimeUp(const ::Ice::Current& )
+        { return 33; }
+
+//     virtual orca::StringStringDict getProperties(const ::Ice::Current& );
+};
 
 class TestComponent : public orcaice::Component
 {
 public:
     // don't create standard interfaces, because we'll use Home as a dummy iface.
     TestComponent() : orcaice::Component( "ConnectTest", orcaice::NoStandardInterfaces ) {};
-    virtual ~TestComponent() {};
 
     // component interface
     virtual void start();
@@ -67,7 +80,7 @@ TestComponent::start()
     }
     cout<<"ok"<<endl;
 
-    Ice::ObjectPtr homeObj = new orcaice::HomeI( interfaceFlag(), context() );
+    Ice::ObjectPtr homeObj = new HomeI();
     
     cout<<"testing isInterfaceReachable() with non-existant interface ... ";
     {

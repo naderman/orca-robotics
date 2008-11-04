@@ -66,7 +66,7 @@ private:
     gbxiceutilacfr::Store<orca::GpsData> dataStore_;
 
     // IceStorm proxies
-    orca::GpsConsumerPrx    consumerPrx_;
+    orca::GpsConsumerPrx    publisherPrx_;
     IceStorm::TopicPrx             topicPrx_;
 
     // Hang onto this so we can remove from the adapter and control when things get deleted

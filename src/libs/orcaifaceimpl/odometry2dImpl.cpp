@@ -12,7 +12,7 @@
 
 #include <orcaice/orcaice.h>
 #include "odometry2dImpl.h"
-#include "util.h"
+ 
 
 using namespace std;
 
@@ -57,7 +57,7 @@ Odometry2dImpl::Odometry2dImpl( const orca::VehicleDescription& descr,
                                 const orcaice::Context& context )
     : descr_(descr),
       interfaceName_(getInterfaceNameFromTag(context,interfaceTag)),
-      topicName_(getTopicNameFromInterfaceName(context,interfaceName_)),
+      topicName_(orcaice::getTopicNameFromInterfaceName(context,interfaceName_)),
       context_(context)
 {
 }
@@ -67,14 +67,14 @@ Odometry2dImpl::Odometry2dImpl( const orca::VehicleDescription& descr,
                                 const std::string& interfaceName )
     : descr_(descr),
       interfaceName_(interfaceName),
-      topicName_(getTopicNameFromInterfaceName(context,interfaceName)),
+      topicName_(orcaice::getTopicNameFromInterfaceName(context,interfaceName)),
       context_(context)
 {
 }
 
 Odometry2dImpl::~Odometry2dImpl()
 {
-    tryRemoveInterface( context_, interfaceName_ );
+    orcaice::tryRemoveInterface( context_, interfaceName_ );
 }
 
 void
@@ -82,7 +82,7 @@ Odometry2dImpl::initInterface()
 {
     // Find IceStorm Topic to which we'll publish
     topicPrx_ = orcaice::connectToTopicWithString<orca::Odometry2dConsumerPrx>
-        ( context_, consumerPrx_, topicName_ );
+        ( context_, publisherPrx_, topicName_ );
 
     // Register with the adapter
     // We don't have to clean up the memory we're allocating here, because
@@ -95,7 +95,7 @@ void
 Odometry2dImpl::initInterface( gbxiceutilacfr::Thread* thread, const std::string& subsysName, int retryInterval )
 {
     topicPrx_ = orcaice::connectToTopicWithString<orca::Odometry2dConsumerPrx>
-        ( context_, consumerPrx_, topicName_, thread, subsysName, retryInterval );
+        ( context_, publisherPrx_, topicName_, thread, subsysName, retryInterval );
 
     ptr_ = new Odometry2dI( *this );
     orcaice::createInterfaceWithString( context_, ptr_, interfaceName_, thread, subsysName, retryInterval );
@@ -163,9 +163,9 @@ Odometry2dImpl::localSetAndSend( const orca::Odometry2dData& data )
     dataStore_.set( data );
 
     // Try to push to IceStorm.
-    tryPushToIceStormWithReconnect<orca::Odometry2dConsumerPrx,orca::Odometry2dData>
+    orcaice::tryPushToIceStormWithReconnect<orca::Odometry2dConsumerPrx,orca::Odometry2dData>
         ( context_,
-        consumerPrx_,
+        publisherPrx_,
         data,
         topicPrx_,
         interfaceName_,

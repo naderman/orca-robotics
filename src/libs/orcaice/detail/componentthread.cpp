@@ -1,51 +1,60 @@
+/*
+ * Orca-Robotics Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2008 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This copy of Orca is licensed to you under the terms described in
+ * the LICENSE file included in this distribution.
+ *
+ */
+
 #include "componentthread.h"
 #include <orcaice/exceptions.h>
 #include <orcaice/catchutils.h>
+#include <orcaice/stringutils.h>
 #include <iostream>
 #include <IceGrid/Registry.h>  // used to register Home interface as a well-known object
 
 using namespace std;
 using namespace orcaice;
 
-ComponentThread::ComponentThread( const Ice::ObjectPrx   &homePrx,
-                                  gbxutilacfr::Status    &status,
-                                  ComponentInterfaceFlag  interfaceFlag,
-                                  const orcaice::Context &context ) :
+ComponentThread::ComponentThread( gbxutilacfr::Status& status, const orcaice::Context& context ) :
     SafeThread(context.tracer()),
-    registeredHome_(false),
-    homePrx_(homePrx),
     status_(status),
-    interfaceFlag_(interfaceFlag),
     context_(context)
 {
 }
 
 void
 ComponentThread::walk()
-{
-    bool hasStatusInterface = (interfaceFlag_ & StatusInterface);
-    bool hasHomeInterface   = (interfaceFlag_ & HomeInterface);
+{    
+    Ice::PropertiesPtr props = context_.properties();
+    bool hasStatusInterface = props->getPropertyAsInt( "Orca.Component.EnableStatus" );
+    bool hasHomeInterface = props->getPropertyAsInt( "Orca.Component.EnableHome" );
+    
+    cout<<"DEBUG: hasStatusInterface="<<hasStatusInterface<<" hasHomeInterface="<<hasHomeInterface<<endl;
+
+    bool registeredHome = false;
 
     const int sleepIntervalMs = 1000;
 
     try {
         while ( !isStopping() )
         {
-            bool needToRegisterHome = hasHomeInterface && !registeredHome_;
+            bool needToRegisterHome = hasHomeInterface && !registeredHome;
+
             if ( !needToRegisterHome && !hasStatusInterface )
             {
-                // Nothing left for us to do!
-                stringstream ss;
-                ss << "orcaice::ComponentThread: Nothing left to do, so quitting. hasStatusInterface: " << hasStatusInterface;
-                context_.tracer().debug( ss.str() );
+                context_.tracer().info( "ComponentThread: Nothing left to do, so quitting" );
                 return;
             }
 
-            if ( !registeredHome_ && (interfaceFlag_ & HomeInterface) )
+            if ( !registeredHome && hasHomeInterface )
             {
-                registeredHome_ = tryRegisterHome();
+                registeredHome = tryRegisterHome();
             }
-            if ( interfaceFlag_ & StatusInterface )
+
+            if ( hasStatusInterface )
             {
                 status_.process();
             }
@@ -59,13 +68,17 @@ ComponentThread::walk()
     }
 }
 
+//
+// PROVIDED INTERFACE: Home
+// Make Home a well-known object, by adding it to the registry
+//
 bool
 ComponentThread::tryRegisterHome()
 {
-    //
-    // PROVIDED INTERFACE: Home
-    // Make Home a well-known object, by adding it to the registry
-    //
+    std::string homeIdentityString = toHomeIdentity( context_.name() );
+    Ice::Identity homeIdentity = context_.communicator()->stringToIdentity(homeIdentityString);
+    Ice::ObjectPrx homePrx = context_.adapter()->createProxy( homeIdentity );
+    context_.tracer().info( string("Registering Home wiht identity ")+homeIdentityString );
 
     std::string instanceName = context_.properties()->getPropertyWithDefault( "IceGrid.InstanceName", "IceGrid" );
     Ice::ObjectPrx base = context_.communicator()->stringToProxy( instanceName+"/Registry" );
@@ -80,10 +93,10 @@ ComponentThread::tryRegisterHome()
         // use the adminSession to add our Home interface
         IceGrid::AdminPrx admin = adminSession->getAdmin();
         try {
-            admin->addObjectWithType( homePrx_, "::orca::Home" );
+            admin->addObjectWithType( homePrx, "::orca::Home" );
         }
         catch ( const IceGrid::ObjectExistsException& ) {
-            admin->updateObject( homePrx_ );
+            admin->updateObject( homePrx );
         }
         // we don't need the session anymore
         // (we can just leave it there and it would be destroyed eventually without being kept alive, but it's
@@ -108,6 +121,7 @@ ComponentThread::tryRegisterHome()
             ss << "Failed to register Home interface: "<<e<<".";
             context_.tracer().warning( ss.str() );
             context_.tracer().info( "You may enforce registration by setting Orca.RequireRegistry=1." );
+            // TODO: this is misleading! we haven't registered.
             return true;
         }
     }

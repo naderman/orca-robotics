@@ -65,7 +65,7 @@ private:
     orca::ImuDescription     descr_;
     gbxiceutilacfr::Store<orca::ImuData> dataStore_;
 
-    orca::ImuConsumerPrx    consumerPrx_;
+    orca::ImuConsumerPrx    publisherPrx_;
     IceStorm::TopicPrx             topicPrx_;
 
     // Hang onto this so we can remove from the adapter and control when things get deleted

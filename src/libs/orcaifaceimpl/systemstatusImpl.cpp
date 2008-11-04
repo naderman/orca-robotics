@@ -10,7 +10,7 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include <orcaifaceimpl/util.h>
+// #include <orcaifaceimpl/util.h>
 #include <orcaifacestring/systemstatus.h>
 #include "systemstatusImpl.h"
 
@@ -52,7 +52,7 @@ class SystemStatusI : public virtual orca::SystemStatus
 SystemStatusImpl::SystemStatusImpl( const std::string             &interfaceTag,
                                               const orcaice::Context        &context )
     : interfaceName_(getInterfaceNameFromTag(context,interfaceTag)),
-                     topicName_(getTopicNameFromInterfaceName(context,interfaceName_)),
+                     topicName_(orcaice::getTopicNameFromInterfaceName(context,interfaceName_)),
                                 context_(context)
 {
 }
@@ -60,14 +60,14 @@ SystemStatusImpl::SystemStatusImpl( const std::string             &interfaceTag,
 SystemStatusImpl::SystemStatusImpl( const orcaice::Context        &context,
                                               const std::string             &interfaceName )
     : interfaceName_(interfaceName),
-      topicName_(getTopicNameFromInterfaceName(context,interfaceName_)),
+      topicName_(orcaice::getTopicNameFromInterfaceName(context,interfaceName_)),
       context_(context)
 {
 }
 
 SystemStatusImpl::~SystemStatusImpl()
 {
-    tryRemoveInterface( context_, interfaceName_ );
+    orcaice::tryRemoveInterface( context_, interfaceName_ );
 }
 
 void
@@ -75,7 +75,7 @@ SystemStatusImpl::initInterface()
 {
     // Find IceStorm Topic to which we'll publish
     topicPrx_ = orcaice::connectToTopicWithString<orca::SystemStatusConsumerPrx>
-            ( context_, consumerPrx_, topicName_ );
+            ( context_, publisherPrx_, topicName_ );
 
     // Register with the adapter.
     // We don't have to clean up the memory we're allocating here, because
@@ -90,7 +90,7 @@ SystemStatusImpl::initInterface( gbxiceutilacfr::Thread* thread,
                                       int retryInterval )
 {
     topicPrx_ = orcaice::connectToTopicWithString<orca::SystemStatusConsumerPrx>
-            ( context_, consumerPrx_, topicName_, thread, subsysName, retryInterval );
+            ( context_, publisherPrx_, topicName_, thread, subsysName, retryInterval );
 
     ptr_ = new SystemStatusI( *this );
     orcaice::createInterfaceWithString( context_, ptr_, interfaceName_, thread, subsysName, retryInterval );
@@ -169,9 +169,9 @@ SystemStatusImpl::localSetAndSend( const ::orca::SystemStatusData &data )
     dataStore_.set( data );
 
     // Try to push to IceStorm
-    tryPushToIceStormWithReconnect<SystemStatusConsumerPrx,SystemStatusData>( 
+    orcaice::tryPushToIceStormWithReconnect<SystemStatusConsumerPrx,SystemStatusData>( 
             context_,
-            consumerPrx_,
+            publisherPrx_,
             data,
             topicPrx_,
             interfaceName_,

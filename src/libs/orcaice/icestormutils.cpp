@@ -19,17 +19,17 @@ using namespace std;
 namespace orcaice {
 
 IceStorm::TopicPrx 
-connectToIceStormTopicPrx( const Context & context,
-                                        const std::string   & topicName,
-                                        bool                createIfMissing )
+connectToIceStormTopicPrx( const Context& context,
+                            const std::string  & topicName,
+                            bool                createIfMissing )
 {
     return connectToIceStormTopicPrx( context.communicator(), topicName, createIfMissing );
 }
 
 
 IceStorm::TopicPrx
-connectToIceStormTopicPrx( const Ice::CommunicatorPtr & communicator,
-                           const std::string          & topicName,
+connectToIceStormTopicPrx( const Ice::CommunicatorPtr& communicator,
+                           const std::string         & topicName,
                            bool                       createIfMissing )
 {
     // find IceStorm, there's a default value for this prop set in setDefaultOrcaProperties()
@@ -42,9 +42,9 @@ connectToIceStormTopicPrx( const Ice::CommunicatorPtr & communicator,
 
 // tracer already created
 IceStorm::TopicPrx
-connectToIceStormTopicPrxWithManager( const Ice::CommunicatorPtr & communicator,
-                                      const std::string          & topicName,
-                                      const std::string          & topicManagerString,
+connectToIceStormTopicPrxWithManager( const Ice::CommunicatorPtr& communicator,
+                                      const std::string         & topicName,
+                                      const std::string         & topicManagerString,
                                       bool                       createIfMissing )
 {
     Ice::ObjectPrx base = communicator->stringToProxy( topicManagerString );
@@ -83,8 +83,7 @@ connectToIceStormTopicPrxWithManager( const Ice::CommunicatorPtr & communicator,
 // this version of the function is called before the standard tracer is created,
 // so we use tracing functions.
 Ice::ObjectPrx 
-connectToIceStormTopicPublisherPrx( const Ice::CommunicatorPtr & communicator,
-                                                   const std::string          & topicName )
+connectToIceStormTopicPublisherPrx( const Ice::CommunicatorPtr& communicator, const std::string& topicName )
 {
     // Retrieve the topic by name, if does not exist: create
     IceStorm::TopicPrx topic = connectToIceStormTopicPrx( communicator, topicName, true );
@@ -94,7 +93,7 @@ connectToIceStormTopicPublisherPrx( const Ice::CommunicatorPtr & communicator,
 }
 
 Ice::ObjectPrx 
-connectToIceStormTopicPublisherPrx( const IceStorm::TopicPrx & topic )
+connectToIceStormTopicPublisherPrx( const IceStorm::TopicPrx& topic )
 {
     // Get the topic's publisher object
     // @todo should we verify that the publisher is an object of the right type? need template.
@@ -106,6 +105,57 @@ connectToIceStormTopicPublisherPrx( const IceStorm::TopicPrx & topic )
     }
 
     return obj;
+}
+
+void
+tryRemoveInterface( orcaice::Context &context, const std::string &interfaceName )
+{
+    if ( !context.communicator() ) {
+        // the communicator is already destroyed.
+        return;
+    }
+
+    const Ice::Identity id = context.communicator()->stringToIdentity( interfaceName );
+    tryRemoveInterfaceWithIdentity( context, id );
+}
+
+void 
+tryRemoveInterfaceWithIdentity( orcaice::Context  &context, const Ice::Identity &interfaceId )
+{
+    if ( !context.communicator() ) {
+        // the communicator is already destroyed.
+        return;
+    }
+
+    try {
+        context.adapter()->remove( interfaceId );
+        stringstream ss;
+        ss << "Removed Ice::ObjectPtr with identity "<<context.communicator()->identityToString(interfaceId)<<" from adapter.";
+        context.tracer().debug( ss.str() );
+    }
+    catch ( Ice::ObjectAdapterDeactivatedException& )
+    {
+        // the communicator is already shut down.
+    }
+    catch ( std::exception &e )
+    {
+        stringstream ss;
+        ss << "(while removing Ice::ObjectPtr with identity "<<context.communicator()->identityToString(interfaceId)<<" from adapter): " << e.what();
+        context.tracer().warning( ss.str() );
+    }
+}
+
+std::string 
+getInterfaceNameFromTag( const orcaice::Context &context, const std::string &interfaceTag )
+{
+    orca::FQInterfaceName fqIName = orcaice::getProvidedInterface( context, interfaceTag );
+    return fqIName.iface;
+}
+    
+std::string 
+getTopicNameFromInterfaceName( const orcaice::Context &context, const std::string &interfaceName )
+{
+    return orcaice::toString( orcaice::getProvidedTopicWithString( context, interfaceName ) );
 }
 
 } // namespace

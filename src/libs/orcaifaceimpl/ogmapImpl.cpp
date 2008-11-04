@@ -10,7 +10,7 @@
 #include "ogmapImpl.h"
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include "util.h"
+ 
 
 using namespace std;
 
@@ -49,7 +49,7 @@ private:
 OgMapImpl::OgMapImpl( const std::string      &interfaceTag,
                       const orcaice::Context &context ) 
     : interfaceName_(getInterfaceNameFromTag(context,interfaceTag)),
-      topicName_(getTopicNameFromInterfaceName(context,interfaceName_)),
+      topicName_(orcaice::getTopicNameFromInterfaceName(context,interfaceName_)),
       context_(context)      
 {
 }
@@ -57,14 +57,14 @@ OgMapImpl::OgMapImpl( const std::string      &interfaceTag,
 OgMapImpl::OgMapImpl( const orcaice::Context &context,
                       const std::string      &interfaceName )                      
     : interfaceName_(interfaceName),
-      topicName_(getTopicNameFromInterfaceName(context,interfaceName)),
+      topicName_(orcaice::getTopicNameFromInterfaceName(context,interfaceName)),
       context_(context)      
 {
 }
 
 OgMapImpl::~OgMapImpl()
 {
-    tryRemoveInterface( context_, interfaceName_ );
+    orcaice::tryRemoveInterface( context_, interfaceName_ );
 }
 
 void
@@ -74,7 +74,7 @@ OgMapImpl::initInterface()
 
     // Find IceStorm Topic to which we'll publish
     topicPrx_ = orcaice::connectToTopicWithString<orca::OgMapConsumerPrx>
-        ( context_, consumerPrx_, topicName_ );
+        ( context_, publisherPrx_, topicName_ );
 
     // Register with the adapter
     // We don't have to clean up the memory we're allocating here, because
@@ -89,7 +89,7 @@ OgMapImpl::initInterface( gbxiceutilacfr::Thread* thread, const std::string& sub
     context_.tracer().debug( "OgMapImpl::initInterface(thread)", 5 );
 
     topicPrx_ = orcaice::connectToTopicWithString<orca::OgMapConsumerPrx>
-        ( context_, consumerPrx_, topicName_, thread, subsysName, retryInterval );
+        ( context_, publisherPrx_, topicName_, thread, subsysName, retryInterval );
 
     ptr_ = new OgMapI( *this );
     orcaice::createInterfaceWithString( context_, ptr_, interfaceName_, thread, subsysName, retryInterval );
@@ -145,9 +145,9 @@ OgMapImpl::localSetAndSend( const ::orca::OgMapData &data )
     dataStore_.set( data );
     
     // Try to push to IceStorm.
-    tryPushToIceStormWithReconnect<orca::OgMapConsumerPrx,orca::OgMapData>
+    orcaice::tryPushToIceStormWithReconnect<orca::OgMapConsumerPrx,orca::OgMapData>
         ( context_,
-          consumerPrx_,
+          publisherPrx_,
           data,
           topicPrx_,
           interfaceName_,

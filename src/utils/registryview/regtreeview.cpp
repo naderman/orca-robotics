@@ -59,9 +59,11 @@ RegTreeView::contextMenuEvent( QContextMenuEvent* e )
     // only react the interface we know how to display
     QString ifaceId = currentIndex().sibling(currentIndex().row(),1).data( Qt::DisplayRole ).toString();
 //     QString ifaceId = model()->data( currentIndex().sibling(currentIndex().row(),1),  Qt::DisplayRole ).toString();
-    if ( ifaceId == "::orca::Home" ) {
-        menu.addAction("getProperties()", this, SLOT(home_getProperties()) );
-    }
+
+    // this method is no longer in the interface
+//     if ( ifaceId == "::orca::Home" ) {
+//         menu.addAction("getProperties()", this, SLOT(home_getProperties()) );
+//     }
 
     menu.exec( e->globalPos() );
 }
@@ -79,27 +81,29 @@ RegTreeView::mouseDoubleClickEvent( QMouseEvent* e )
     // only react the interface we know how to display
     QString ifaceId = currentIndex().sibling(currentIndex().row(),1).data( Qt::DisplayRole ).toString();
 //     QString ifaceId = model()->data( currentIndex().sibling(currentIndex().row(),1), Qt::DisplayRole ).toString();
-    if ( ifaceId == "::orca::Home" ) {
-        home_getProperties();
-    }
+
+    // this method is no longer in the interface
+//     if ( ifaceId == "::orca::Home" ) {
+//         home_getProperties();
+//     }
 }
 
-void
-RegTreeView::home_getProperties()
-{
-    // only react interfaces
-    QString nodeType = currentIndex().data( orcaqcm::OcmModel::TypeRole ).toString();
-//     QString nodeType = model()->data( currentIndex(), orcaqcm::OcmModel::TypeRole ).toString();
-    if ( nodeType != "Interface" ) {
-        return;
-    }
-
-    QModelIndex iface = currentIndex().sibling(currentIndex().row(),0);
-    QModelIndex comp = iface.parent();
-    QModelIndex platf = comp.parent();
-    
-    QString proxy = model()->data(iface).toString() + "@"
-                    + model()->data(platf).toString() + "/"
-                    + model()->data(comp).toString();
-    emit propertiesRequested( proxy );
-}
+// void
+// RegTreeView::home_getProperties()
+// {
+//     // only react interfaces
+//     QString nodeType = currentIndex().data( orcaqcm::OcmModel::TypeRole ).toString();
+// //     QString nodeType = model()->data( currentIndex(), orcaqcm::OcmModel::TypeRole ).toString();
+//     if ( nodeType != "Interface" ) {
+//         return;
+//     }
+// 
+//     QModelIndex iface = currentIndex().sibling(currentIndex().row(),0);
+//     QModelIndex comp = iface.parent();
+//     QModelIndex platf = comp.parent();
+//     
+//     QString proxy = model()->data(iface).toString() + "@"
+//                     + model()->data(platf).toString() + "/"
+//                     + model()->data(comp).toString();
+//     emit propertiesRequested( proxy );
+// }

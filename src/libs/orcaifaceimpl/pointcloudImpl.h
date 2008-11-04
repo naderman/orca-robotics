@@ -65,7 +65,7 @@ private:
     //orca::PointCloudDescription     descr_;
     gbxiceutilacfr::Store<orca::PointCloudData> dataStore_;
 
-    orca::PointCloudConsumerPrx    consumerPrx_;
+    orca::PointCloudConsumerPrx    publisherPrx_;
     IceStorm::TopicPrx             topicPrx_;
 
     // Hang onto this so we can remove from the adapter and control when things get deleted

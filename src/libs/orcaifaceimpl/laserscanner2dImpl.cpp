@@ -10,7 +10,7 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include <orcaifaceimpl/util.h>
+// #include <orcaifaceimpl/util.h>
 #include "laserscanner2dImpl.h"
 
 using namespace std;
@@ -56,7 +56,7 @@ LaserScanner2dImpl::LaserScanner2dImpl( const orca::RangeScanner2dDescription &d
                                         const orcaice::Context                &context )
     : descr_(descr),
       interfaceName_(getInterfaceNameFromTag(context,interfaceTag)),
-      topicName_(getTopicNameFromInterfaceName(context,interfaceName_)),
+      topicName_(orcaice::getTopicNameFromInterfaceName(context,interfaceName_)),
       context_(context)
 {
 }
@@ -66,21 +66,21 @@ LaserScanner2dImpl::LaserScanner2dImpl( const orca::RangeScanner2dDescription &d
                                         const std::string                     &interfaceName )
     : descr_(descr),
       interfaceName_(interfaceName),
-      topicName_(getTopicNameFromInterfaceName(context,interfaceName)),
+      topicName_(orcaice::getTopicNameFromInterfaceName(context,interfaceName)),
       context_(context)
 {
 }
 
 LaserScanner2dImpl::~LaserScanner2dImpl()
 {
-    tryRemoveInterface( context_, interfaceName_ );
+    orcaice::tryRemoveInterface( context_, interfaceName_ );
 }
 
 void
 LaserScanner2dImpl::initInterface()
 {
     // Find IceStorm Topic to which we'll publish
-    topicPrx_ = orcaice::connectToTopicWithString( context_, consumerPrx_, topicName_ );
+    topicPrx_ = orcaice::connectToTopicWithString( context_, publisherPrx_, topicName_ );
 
     // Register with the adapter.
     // We don't have to clean up the memory we're allocating here, because
@@ -92,7 +92,7 @@ LaserScanner2dImpl::initInterface()
 void 
 LaserScanner2dImpl::initInterface( gbxiceutilacfr::Thread* thread, const std::string& subsysName, int retryInterval )
 {
-    topicPrx_ = orcaice::connectToTopicWithString( context_, consumerPrx_, topicName_, thread, subsysName, retryInterval );
+    topicPrx_ = orcaice::connectToTopicWithString( context_, publisherPrx_, topicName_, thread, subsysName, retryInterval );
 
     ptr_ = new LaserScanner2dI( *this );
     orcaice::createInterfaceWithString( context_, ptr_, interfaceName_, thread, subsysName, retryInterval );
@@ -177,8 +177,8 @@ LaserScanner2dImpl::localSetAndSend( const ::orca::LaserScanner2dDataPtr &data )
     dataStore_.set( data );
 
     // Try to push to IceStorm
-    tryPushToIceStormWithReconnect<RangeScanner2dConsumerPrx,LaserScanner2dDataPtr>( context_,
-                                                                                     consumerPrx_,
+    orcaice::tryPushToIceStormWithReconnect<RangeScanner2dConsumerPrx,LaserScanner2dDataPtr>( context_,
+                                                                                     publisherPrx_,
                                                                                      data,
                                                                                      topicPrx_,
                                                                                      interfaceName_,

@@ -78,7 +78,7 @@ private:
 
     gbxiceutilacfr::Store<orca::Localise2dData> dataStore_;
 
-    orca::Localise2dConsumerPrx    consumerPrx_;
+    orca::Localise2dConsumerPrx    publisherPrx_;
     IceStorm::TopicPrx             topicPrx_;
     TopicPolicy policy_;
 

@@ -65,7 +65,7 @@ private:
     orca::VehicleDescription     descr_;
     gbxiceutilacfr::Store<orca::Odometry3dData> dataStore_;
 
-    orca::Odometry3dConsumerPrx    consumerPrx_;
+    orca::Odometry3dConsumerPrx    publisherPrx_;
     IceStorm::TopicPrx             topicPrx_;
 
     // Hang onto this so we can remove from the adapter and control when things get deleted

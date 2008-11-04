@@ -49,9 +49,9 @@ interface Home
     //! Returns the number of seconds since the start of the component.
     idempotent int getTimeUp();
     
-    //! Returns all of this component's properties.
-    //! (Our properties are defined the same way as Ice::PropertyDict.)
-    idempotent StringStringDict getProperties();
+    // Returns all of this component's properties.
+    // (Our properties are defined the same way as Ice::PropertyDict.)
+//     idempotent StringStringDict getProperties();
 };
 
 /*!

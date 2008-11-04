@@ -68,7 +68,7 @@ private:
 
     gbxiceutilacfr::Store<orca::EStopData> dataStore_;
 
-    orca::EStopConsumerPrx    consumerPrx_;
+    orca::EStopConsumerPrx    publisherPrx_;
     IceStorm::TopicPrx       topicPrx_;
 
     // Hang onto this so we can remove from the adapter and control when things get deleted

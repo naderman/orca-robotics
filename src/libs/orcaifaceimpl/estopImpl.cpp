@@ -1,6 +1,6 @@
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include "util.h"
+ 
 #include "estopImpl.h"
 
 using namespace std;
@@ -54,7 +54,7 @@ EStopImpl::EStopImpl( EStopNonStandardImpl    &eStopNonStandardImpl,
                       const std::string       &interfaceTag, 
                       const orcaice::Context  &context  )
     : interfaceName_(getInterfaceNameFromTag(context,interfaceTag)),
-      topicName_(getTopicNameFromInterfaceName(context,interfaceName_)),
+      topicName_(orcaice::getTopicNameFromInterfaceName(context,interfaceName_)),
       eStopNonStandardImpl_(eStopNonStandardImpl),
       context_(context)
 {
@@ -64,7 +64,7 @@ EStopImpl::EStopImpl( EStopNonStandardImpl    &eStopNonStandardImpl,
                       const orcaice::Context  &context,
                       const std::string       &interfaceName )
     : interfaceName_(interfaceName),
-      topicName_(getTopicNameFromInterfaceName(context,interfaceName)),
+      topicName_(orcaice::getTopicNameFromInterfaceName(context,interfaceName)),
       eStopNonStandardImpl_(eStopNonStandardImpl),
       context_(context)
 {
@@ -72,7 +72,7 @@ EStopImpl::EStopImpl( EStopNonStandardImpl    &eStopNonStandardImpl,
 
 EStopImpl::~EStopImpl()
 {
-    tryRemoveInterface( context_, interfaceName_ );
+    orcaice::tryRemoveInterface( context_, interfaceName_ );
 }
 
 void
@@ -80,7 +80,7 @@ EStopImpl::initInterface()
 {
     // Find IceStorm Topic to which we'll publish
     topicPrx_ = orcaice::connectToTopicWithString<orca::EStopConsumerPrx>
-        ( context_, consumerPrx_, topicName_ );
+        ( context_, publisherPrx_, topicName_ );
 
     // Register with the adapter
     // We don't have to clean up the memory we're allocating here, because
@@ -92,7 +92,7 @@ EStopImpl::initInterface()
 void 
 EStopImpl::initInterface( gbxiceutilacfr::Thread* thread, const std::string& subsysName, int retryInterval )
 {
-    topicPrx_ = orcaice::connectToTopicWithString( context_, consumerPrx_, topicName_, thread, subsysName, retryInterval );
+    topicPrx_ = orcaice::connectToTopicWithString( context_, publisherPrx_, topicName_, thread, subsysName, retryInterval );
 
     ptr_ = new EStopI( *this, eStopNonStandardImpl_ );
     orcaice::createInterfaceWithString( context_, ptr_, interfaceName_, thread, subsysName, retryInterval );
@@ -148,9 +148,9 @@ EStopImpl::localSetAndSend( const orca::EStopData& data )
     dataStore_.set( data );
     
     // Try to push to IceStorm.
-    tryPushToIceStormWithReconnect<orca::EStopConsumerPrx,orca::EStopData>
+    orcaice::tryPushToIceStormWithReconnect<orca::EStopConsumerPrx,orca::EStopData>
         ( context_,
-          consumerPrx_,
+          publisherPrx_,
           data,
           topicPrx_,
           interfaceName_,

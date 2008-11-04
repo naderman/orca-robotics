@@ -12,7 +12,7 @@
 
 #include <orcaice/orcaice.h>
 #include "powerImpl.h"
-#include "util.h"
+ 
 
 using namespace std;
 
@@ -53,7 +53,7 @@ private:
 PowerImpl::PowerImpl( const std::string& interfaceTag,
                       const orcaice::Context& context )
     : interfaceName_(getInterfaceNameFromTag(context,interfaceTag)),
-      topicName_(getTopicNameFromInterfaceName(context,interfaceName_)),
+      topicName_(orcaice::getTopicNameFromInterfaceName(context,interfaceName_)),
       context_(context)
 {
 }
@@ -61,14 +61,14 @@ PowerImpl::PowerImpl( const std::string& interfaceTag,
 PowerImpl::PowerImpl( const orcaice::Context& context,
                       const std::string& interfaceName )                      
     : interfaceName_(interfaceName),
-      topicName_(getTopicNameFromInterfaceName(context,interfaceName)),
+      topicName_(orcaice::getTopicNameFromInterfaceName(context,interfaceName)),
       context_(context)
 {
 }
 
 PowerImpl::~PowerImpl()
 {
-    tryRemoveInterface( context_, interfaceName_ );
+    orcaice::tryRemoveInterface( context_, interfaceName_ );
 }
 
 void
@@ -76,7 +76,7 @@ PowerImpl::initInterface()
 {
     // Find IceStorm Topic to which we'll publish
     topicPrx_ = orcaice::connectToTopicWithString<orca::PowerConsumerPrx>
-        ( context_, consumerPrx_, topicName_ );
+        ( context_, publisherPrx_, topicName_ );
 
     // Register with the adapter
     // We don't have to clean up the memory we're allocating here, because
@@ -89,7 +89,7 @@ void
 PowerImpl::initInterface( gbxiceutilacfr::Thread* thread, const std::string& subsysName, int retryInterval )
 {
     topicPrx_ = orcaice::connectToTopicWithString<orca::PowerConsumerPrx>
-        ( context_, consumerPrx_, topicName_, thread, subsysName, retryInterval );
+        ( context_, publisherPrx_, topicName_, thread, subsysName, retryInterval );
 
     ptr_ = new PowerI( *this );
     orcaice::createInterfaceWithString( context_, ptr_, interfaceName_, thread, subsysName, retryInterval );
@@ -151,9 +151,9 @@ PowerImpl::localSetAndSend( const orca::PowerData& data )
     dataStore_.set( data );
 
     // Try to push to IceStorm.
-    tryPushToIceStormWithReconnect<orca::PowerConsumerPrx,orca::PowerData>
+    orcaice::tryPushToIceStormWithReconnect<orca::PowerConsumerPrx,orca::PowerData>
         ( context_,
-        consumerPrx_,
+        publisherPrx_,
         data,
         topicPrx_,
         interfaceName_,

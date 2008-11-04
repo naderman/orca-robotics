@@ -163,6 +163,14 @@ setFactoryProperties( Ice::PropertiesPtr& properties, const std::string& compTag
     tempProperties->setProperty( "Orca.Application.CallbackOnInterrupt",  "1" );
 
     // Component properties
+    // these 3 are special in that they are also explicitly set by the Component programmatically
+//     tempProperties->setProperty( "Orca.Component.EnableTracer",  "1" );
+//     tempProperties->setProperty( "Orca.Component.EnableStatus",  "1" );
+//     tempProperties->setProperty( "Orca.Component.EnableHome",  "1" );
+    // there're also configurable overrides
+//     tempProperties->setProperty( "Orca.Component.Override.EnableTracer",  "1" );
+//     tempProperties->setProperty( "Orca.Component.Override.EnableStatus",  "1" );
+//     tempProperties->setProperty( "Orca.Component.Override.EnableHome",  "1" );
 
     // all tracer tempProperties have default values
     tempProperties->setProperty( "Orca.Tracer.RequireIceStorm",    "0" );

@@ -14,14 +14,13 @@
 #include <gbxsickacfr/gbxiceutilacfr/safethread.h>
 #include <gbxutilacfr/status.h>
 #include <orcaice/context.h>
-#include <orcaice/component.h>
 
 namespace orcaice {
 
 //
-// This thread is started by the component, and used to:
-// - repeatedly try to register the Home interface, if the first attempt failed.
-// - check on component Status.
+// This thread is started by the component, and is used:
+// - to repeatedly try to register the Home interface, if the first attempt failed.
+// - to check on component Status.
 //
 // @author Alex Brooks
 //
@@ -30,23 +29,16 @@ class ComponentThread : public gbxiceutilacfr::SafeThread
 
 public: 
 
-    ComponentThread( const Ice::ObjectPrx   &homePrx,
-                     gbxutilacfr::Status    &status,
-                     ComponentInterfaceFlag  interfaceFlag,
-                     const orcaice::Context &context );
-
-    virtual void walk();
+    ComponentThread( gbxutilacfr::Status& status, const orcaice::Context& context );
 
 private: 
+
+    virtual void walk();
 
     // Returns: true = success
     bool tryRegisterHome();
 
-    bool registeredHome_;
-
-    Ice::ObjectPrx          homePrx_;
     gbxutilacfr::Status    &status_;
-    ComponentInterfaceFlag  interfaceFlag_;
     orcaice::Context        context_;
 };
 

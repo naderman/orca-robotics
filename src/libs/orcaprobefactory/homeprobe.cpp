@@ -27,7 +27,7 @@ HomeProbe::HomeProbe( const orca::FQInterfaceName& name, orcaprobe::AbstractDisp
     id_ = "::orca::Home";
     
     addOperation( "getInterfaces", "nonmutating HomeData getInterfaces()" );
-    addOperation( "getProperties", "nonmutating ComponentProperties getProperties()" );
+//     addOperation( "getProperties", "nonmutating ComponentProperties getProperties()" );
 }
 
 int 
@@ -37,8 +37,8 @@ HomeProbe::loadOperationEvent( const int index, orcacm::OperationData& data )
     {
     case orcaprobe::UserIndex :
         return loadGetInterfaces( data );
-    case orcaprobe::UserIndex+1 :
-        return loadGetProperties( data );
+//     case orcaprobe::UserIndex+1 :
+//         return loadGetProperties( data );
     }
     return 1;
 }
@@ -51,10 +51,10 @@ HomeProbe::loadGetInterfaces( orcacm::OperationData& data )
     return 0;
 }
 
-int 
-HomeProbe::loadGetProperties( orcacm::OperationData& data )
-{
-    orca::HomePrx derivedPrx = orca::HomePrx::checkedCast(prx_);
-    orcaprobe::reportResult( data, "data", ifacestring::toString( derivedPrx->getProperties() ) );
-    return 0;
-}
+// int 
+// HomeProbe::loadGetProperties( orcacm::OperationData& data )
+// {
+//     orca::HomePrx derivedPrx = orca::HomePrx::checkedCast(prx_);
+//     orcaprobe::reportResult( data, "data", ifacestring::toString( derivedPrx->getProperties() ) );
+//     return 0;
+// }

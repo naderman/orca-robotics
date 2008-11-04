@@ -12,7 +12,7 @@
 #include <orcaice/orcaice.h>
 
 #include "velocitycontrol2dImpl.h"
-#include "util.h"
+ 
 
 using namespace std;
 
@@ -48,7 +48,7 @@ VelocityControl2dImpl::VelocityControl2dImpl(
             const orcaice::Context &context )
     : description_(descr),
       interfaceName_(getInterfaceNameFromTag(context,interfaceTag)),
-      topicName_(getTopicNameFromInterfaceName(context,interfaceName_)),
+      topicName_(orcaice::getTopicNameFromInterfaceName(context,interfaceName_)),
       context_(context)
 {
 }
@@ -59,14 +59,14 @@ VelocityControl2dImpl::VelocityControl2dImpl(
             const std::string &interfaceName )
     : description_(descr),
       interfaceName_(interfaceName),
-      topicName_(getTopicNameFromInterfaceName(context,interfaceName)),
+      topicName_(orcaice::getTopicNameFromInterfaceName(context,interfaceName)),
       context_(context)
 {
 }
 
 VelocityControl2dImpl::~VelocityControl2dImpl()
 {
-    tryRemoveInterface( context_, interfaceName_ );
+    orcaice::tryRemoveInterface( context_, interfaceName_ );
 }
 
 void

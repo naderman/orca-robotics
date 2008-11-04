@@ -11,7 +11,7 @@
 #include <iostream>
 #include <orcaice/orcaice.h>
 #include "localise2dImpl.h"
-#include "util.h"
+ 
 
 using namespace std;
 
@@ -57,7 +57,7 @@ Localise2dImpl::Localise2dImpl( const orca::VehicleGeometryDescriptionPtr &geome
     : geometry_(geometry),
       policy_(policy),
       interfaceName_(getInterfaceNameFromTag(context,interfaceTag)),
-      topicName_(getTopicNameFromInterfaceName(context,interfaceName_)),
+      topicName_(orcaice::getTopicNameFromInterfaceName(context,interfaceName_)),
       context_(context)
 {
     assert( geometry_ != 0 );
@@ -70,7 +70,7 @@ Localise2dImpl::Localise2dImpl( const orca::VehicleGeometryDescriptionPtr &geome
     : geometry_(geometry),
       policy_(policy),
       interfaceName_(interfaceName),
-      topicName_(getTopicNameFromInterfaceName(context,interfaceName)),
+      topicName_(orcaice::getTopicNameFromInterfaceName(context,interfaceName)),
       context_(context)
 {
     assert( geometry_ != 0 );
@@ -78,7 +78,7 @@ Localise2dImpl::Localise2dImpl( const orca::VehicleGeometryDescriptionPtr &geome
 
 Localise2dImpl::~Localise2dImpl()
 {
-    tryRemoveInterface( context_, interfaceName_ );
+    orcaice::tryRemoveInterface( context_, interfaceName_ );
 
     if ( policy_ == DestroyTopic ) {
     //     tryDestroyTopic( topicPrx_ );
@@ -105,7 +105,7 @@ Localise2dImpl::initInterface()
 {
     // Find IceStorm Topic to which we'll publish
     topicPrx_ = orcaice::connectToTopicWithString<orca::Localise2dConsumerPrx>
-        ( context_, consumerPrx_, topicName_ );
+        ( context_, publisherPrx_, topicName_ );
 
     // Register with the adapter
     // We don't have to clean up the memory we're allocating here, because
@@ -118,7 +118,7 @@ void
 Localise2dImpl::initInterface( gbxiceutilacfr::Thread* thread, const std::string& subsysName, int retryInterval )
 {
     topicPrx_ = orcaice::connectToTopicWithString<orca::Localise2dConsumerPrx>
-        ( context_, consumerPrx_, topicName_, thread, subsysName, retryInterval );
+        ( context_, publisherPrx_, topicName_, thread, subsysName, retryInterval );
 
     ptr_ = new Localise2dI( *this );
     orcaice::createInterfaceWithString( context_, ptr_, interfaceName_, thread, subsysName, retryInterval );
@@ -186,9 +186,9 @@ Localise2dImpl::localSetAndSend( const orca::Localise2dData &data )
     dataStore_.set( data );
     
     // Try to push to IceStorm.
-    tryPushToIceStormWithReconnect<orca::Localise2dConsumerPrx,orca::Localise2dData>
+    orcaice::tryPushToIceStormWithReconnect<orca::Localise2dConsumerPrx,orca::Localise2dData>
         ( context_,
-          consumerPrx_,
+          publisherPrx_,
           data,
           topicPrx_,
           interfaceName_,

@@ -65,7 +65,7 @@ private:
     // The topic to which we'll publish
     IceStorm::TopicPrx             topicPrx_;
     // The interface to which we'll publish
-    orca::PixMapConsumerPrx         consumerPrx_;
+    orca::PixMapConsumerPrx         publisherPrx_;
 
     // Hang onto this so we can remove from the adapter and control when things get deleted
     Ice::ObjectPtr          ptr_;
