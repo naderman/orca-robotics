@@ -13,8 +13,6 @@
 #include <orcaobj/orcaobj.h>
 
 #include "mainthread.h"
-#include <orcaifaceimpl/localise2dImpl.h>
-#include <orcaifaceimpl/bufferedconsumers.h>
 
 using namespace std;
 using namespace faithlocaliser;
@@ -44,36 +42,40 @@ namespace {
 }
 
 MainThread::MainThread( const orcaice::Context &context ) : 
-    SubsystemThread( context.tracer(), context.status(), "MainThread" ),
+    orcaice::Subsystem( context, "MainThread" ),
     context_(context)
 {
 }
 
-void
-MainThread::walk()
+void 
+MainThread::initialise()
 {
-    subStatus().initialising();
     subStatus().setMaxHeartbeatInterval( 10.0 );
-
+    
     Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag()+".Config.";
     stdDevPosition_ = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"StdDevPosition", 0.05 );
     stdDevHeading_ = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"StdDevHeading", 1.0 );
-    minInterPublishPeriodSec_ = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"MinInterPublishPeriodSec", 1.0 );
+    minInterPublishPeriodSec_ = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"MinInterPublishPeriodSec", 1.0 ); 
+    
+    initNetworkInterface();
+}
 
+void
+MainThread::initNetworkInterface()
+{
     //
     // ENABLE NETWORK CONNECTIONS
     //
     // multi-try function
     orcaice::activate( context_, this, subsysName() );
-
+    
     //
     // EXTERNAL REQUIRED INTERFACES
     //           
-    orcaifaceimpl::BufferedOdometry2dConsumerImplPtr odometry2dConsumer =
-        new orcaifaceimpl::BufferedOdometry2dConsumerImpl( 10, gbxiceutilacfr::BufferTypeCircular,context_);
+    odometry2dConsumer_ = new orcaifaceimpl::BufferedOdometry2dConsumerImpl( 10, gbxiceutilacfr::BufferTypeCircular,context_);
     // multi-try function
-    odometry2dConsumer->subscribeWithTag( "Odometry2d", this, subsysName() );
+    odometry2dConsumer_->subscribeWithTag( "Odometry2d", this, subsysName() );
 
     //
     // Get vehicleDescription
@@ -81,9 +83,7 @@ MainThread::walk()
     orca::Odometry2dPrx odometryPrx;
     // multi-try function
     orcaice::connectToInterfaceWithTag<orca::Odometry2dPrx>( context_, odometryPrx, "Odometry2d", this );
- 
-    subStatus().working();
-
+    
     orca::VehicleDescription vehicleDescription;
     while ( !isStopping() )
     {
@@ -100,21 +100,25 @@ MainThread::walk()
     // 
     // EXTERNAL PROVIDED INTERFACE
     //
-    orcaifaceimpl::Localise2dImplPtr localiseInterface =
-        new orcaifaceimpl::Localise2dImpl( vehicleDescription.geometry, "Localise2d", context_);
+    localiseInterface_ = new orcaifaceimpl::Localise2dImpl( vehicleDescription.geometry, "Localise2d", context_);
     // multi-try function
-    localiseInterface->initInterface( this, subsysName() );
+    localiseInterface_->initInterface( this, subsysName() );
+}
 
+
+void
+MainThread::work()
+{
+ 
     // temp variables
     orca::Localise2dData localiseData;
     orca::Odometry2dData odomData;
     const double varPosition = stdDevPosition_*stdDevPosition_;
     const double varHeading = (stdDevHeading_*M_PI/180.0)*(stdDevHeading_*M_PI/180.0);
-    
-    subStatus().ok( "Initialized" );
+
     const int timeoutMs = 1000;
     subStatus().setMaxHeartbeatInterval( 2*timeoutMs );
-
+    
     //
     // MAIN LOOP
     //
@@ -128,7 +132,7 @@ MainThread::walk()
         try
         {
             subStatus().heartbeat();
-            if ( odometry2dConsumer->buffer().getAndPopNext( odomData, timeoutMs ) != 0 ) {
+            if ( odometry2dConsumer_->buffer().getAndPopNext( odomData, timeoutMs ) != 0 ) {
                 continue;
             }
     
@@ -138,7 +142,7 @@ MainThread::walk()
     
             odometryToLocalise( odomData, localiseData, varPosition, varHeading );
             context_.tracer().debug( orcaobj::toString(localiseData), 5 );        
-            localiseInterface->localSetAndSend( localiseData );
+            localiseInterface_->localSetAndSend( localiseData );
             tLastPublish = orcaice::getNow();
         }
         catch ( ... ) 

@@ -11,29 +11,37 @@
 #ifndef MAIN_THREAD_H
 #define MAIN_THREAD_H
 
-#include <orcaice/subsystemthread.h>
+#include <orcaice/subsystem.h>
 #include <orcaice/context.h>
+#include <orcaifaceimpl/bufferedconsumers.h>
+#include <orcaifaceimpl/localise2dImpl.h>
 
 namespace faithlocaliser
 {
 
-class MainThread : public orcaice::SubsystemThread
+class MainThread : public orcaice::Subsystem
 {
 
 public:
 
     MainThread( const orcaice::Context &context );
 
-    // from SubsystemThread
-    virtual void walk();
-
 private:
+    
+    // from Subsystem
+    virtual void initialise();
+    virtual void work();
+    virtual void finalise() {};
+    
     double stdDevPosition_;
     double stdDevHeading_;
-
     double minInterPublishPeriodSec_;
-
+    
     orcaice::Context context_;
+    orcaifaceimpl::BufferedOdometry2dConsumerImplPtr odometry2dConsumer_;
+    orcaifaceimpl::Localise2dImplPtr localiseInterface_;
+    
+    void initNetworkInterface();
 };
 
 } // namespace
