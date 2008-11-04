@@ -21,7 +21,7 @@ namespace
 {
 
 void 
-convert( const hydroiceutil::NameStatusMap &internal, orca::SubsystemsStatus &network )
+convert( const hydroiceutil::NameStatusMap &internal, orca::SubsystemStatusDict &network )
 {
     hydroiceutil::NameStatusMap::const_iterator it;
     

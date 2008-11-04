@@ -71,7 +71,7 @@ struct SubsystemStatus
 };
 
 //! Status for all subsystems of this component
-dictionary<string,SubsystemStatus> SubsystemsStatus;
+dictionary<string,SubsystemStatus> SubsystemStatusDict;
 
 /*!
     @brief Component status data.
@@ -88,7 +88,7 @@ struct StatusData
     int timeUp;
 
     //! Status of component subsystems
-    SubsystemsStatus subsystems;
+    SubsystemStatusDict subsystems;
 };
 
 

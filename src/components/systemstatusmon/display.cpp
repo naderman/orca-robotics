@@ -96,7 +96,7 @@ void extractStateAndHealth( const orca::ComponentStatusData &compData,
         return;
     }
     
-    const orca::SubsystemsStatus &subSysSt = compData.data.subsystems;
+    const orca::SubsystemStatusDict &subSysSt = compData.data.subsystems;
     
     if (subSysSt.size()==0)
         throw gbxutilacfr::Exception(  ERROR_INFO, "SubsystemStatus field is empty" );
@@ -171,7 +171,7 @@ std::string humanErrorMsgString( const orca::SystemStatusData &ssData )
             const orca::StatusData &statusData = components[i].data;
             string platComp = orcaobj::toString(statusData.name);
             
-            const orca::SubsystemsStatus &subSysSt = statusData.subsystems;
+            const orca::SubsystemStatusDict &subSysSt = statusData.subsystems;
             map<string,orca::SubsystemStatus>::const_iterator itSs;
             
             // per subsystem
