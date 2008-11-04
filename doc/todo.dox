@@ -82,6 +82,10 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
   - reads from SystemStatus and displays in different formats
 
 @par New utilities
+
+- slice2util (alexm)
+  - generates toString() as well as logging functions. More code generation will be added in the future.
+
 @par New libraries
 @par Updated interfaces
 
@@ -113,7 +117,6 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
   - fixed rare bug which lead to assertion failure when the component is stopped shortly after starting (alexm)
 
 @par Updated utilities
-
 @par Updated libraries
 
 - libOrcaIce
@@ -129,12 +132,16 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
   - status-related classes are updated for new SubsystemStatus representation. (alexm)
   - new class Subsystem which encodes a simple state machine Idle->Initialising->Working->Finalising->Shutdown (with an extra
     transition Initialising->Finalising) (alexm)
+  - major overhaul of standard interface implementations: Status, Tracer, and Home. The old implementations were clunky and succeptible
+    to rare but real distributed deadlock conditions. No changes to public interfaces. (alexm)
 
 - libOrcaLogFactory
   - added logging to ascii for PolarFeature2d (tobi)
   - added matlab scripts to read ascii files for PolarFeature2d and LaserScanner2d (tobi)
 
 @par Removed
+
+- slice2string and slice2log are combined into one new utility: slice2util
 
 
 @section orca_doc_history_2120 Changes in Release 2.12.0
