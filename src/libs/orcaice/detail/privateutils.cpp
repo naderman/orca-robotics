@@ -172,6 +172,9 @@ setFactoryProperties( Ice::PropertiesPtr& properties, const std::string& compTag
 //     tempProperties->setProperty( "Orca.Component.Override.EnableStatus",  "1" );
 //     tempProperties->setProperty( "Orca.Component.Override.EnableHome",  "1" );
 
+    // Status properties
+    tempProperties->setProperty( "Orca.Status.RequireIceStorm",    "0" );
+
     // all tracer tempProperties have default values
     tempProperties->setProperty( "Orca.Tracer.RequireIceStorm",    "0" );
     tempProperties->setProperty( "Orca.Tracer.Filename",           "orca_component_trace.txt" );
