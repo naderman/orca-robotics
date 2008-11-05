@@ -35,7 +35,6 @@ public:
     OdometryBasedDriver( const orca::GpsDescription     &gpsDescr, 
                          const orca::VehicleDescription &vehicleDescr,
                          const orcaice::Context         &context );
-    ~OdometryBasedDriver();
 
     // Converts the GPS info into localise2d format.
     // Returns 'false' if the conversion can't be done (eg because GPS doesn't have a fix).

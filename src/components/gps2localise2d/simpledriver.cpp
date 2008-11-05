@@ -118,21 +118,24 @@ SimpleDriver::compute( const orca::GpsData  &gpsData,
                                                      gpsData.timeStamp );
     if (ret!=0) return false;
 
-    hydronavutil::Pose poseInGpsCS( easting, 
-                                    northing, 
-                                    M_PI/2.0 - gpsData.heading );
+    hydronavutil::Pose poseInMapGridCS( easting, 
+                                        northing, 
+                                        M_PI/2.0 - gpsData.heading );
 
-    // Get the pose of the antenna in global coordinates
-    hydronavutil::Pose antennaPoseInGlobalCS;
-    hydronavutil::subtractInitialOffset( poseInGpsCS,
+    // Get the pose of the antenna in gps2localise2d coordinates
+    hydronavutil::Pose antennaPoseInGps2LCS;
+    hydronavutil::subtractInitialOffset( poseInMapGridCS,
                                          offset_,
-                                         antennaPoseInGlobalCS );
+                                         antennaPoseInGps2LCS );
+
+    cout<<"TRACE(simpledriver.cpp): poseInMapGridCS: " << poseInMapGridCS << endl;
+    cout<<"TRACE(simpledriver.cpp): antennaPoseInGps2LCS: " << antennaPoseInGps2LCS << endl;
 
     // Get the pose of the platform (relative to the antenna)
-    hydronavutil::Pose platformPoseInGlobalCS;
-    hydronavutil::addPoseOffset( antennaPoseInGlobalCS,
+    hydronavutil::Pose platformPoseInGps2LCS;
+    hydronavutil::addPoseOffset( antennaPoseInGps2LCS,
                                  antennaTransform_,
-                                 platformPoseInGlobalCS,
+                                 platformPoseInGps2LCS,
                                  true );
 
     // Set uncertainties
@@ -145,9 +148,9 @@ SimpleDriver::compute( const orca::GpsData  &gpsData,
     localiseData.timeStamp = gpsData.timeStamp;
     localiseData.hypotheses.resize(1);
 
-    localiseData.hypotheses[0].mean.p.x = platformPoseInGlobalCS.x();
-    localiseData.hypotheses[0].mean.p.y = platformPoseInGlobalCS.y();
-    localiseData.hypotheses[0].mean.o   = platformPoseInGlobalCS.theta();
+    localiseData.hypotheses[0].mean.p.x = platformPoseInGps2LCS.x();
+    localiseData.hypotheses[0].mean.p.y = platformPoseInGps2LCS.y();
+    localiseData.hypotheses[0].mean.o   = platformPoseInGps2LCS.theta();
 
     localiseData.hypotheses[0].cov.xx = linearVariance;
     localiseData.hypotheses[0].cov.yy = linearVariance;

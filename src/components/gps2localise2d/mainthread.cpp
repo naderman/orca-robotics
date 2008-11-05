@@ -46,6 +46,7 @@ MainThread::initDriver()
 
         context_.tracer().debug( "loading 'simple' driver",3);
         driver_ = new SimpleDriver( gpsDescr_, vehicleDescr_, context_ );
+        context_.tracer().debug( "driver loaded OK.",3);
     }
     else if ( driverName == "odometrybased" )
     {
@@ -53,6 +54,7 @@ MainThread::initDriver()
 
         context_.tracer().debug( "loading 'odometrybased' driver",3);
         driver_ = new OdometryBasedDriver( gpsDescr_, vehicleDescr_, context_ );
+        context_.tracer().debug( "driver loaded OK.",3);
     }
     else
     {
@@ -130,7 +132,34 @@ MainThread::initNetworkInterface()
                 vehicleDescr_ = odoPrx->getDescription();
                 stringstream ss;
                 ss << "Got vehicle description: " << orcaobj::toString( vehicleDescr_ );
-                context_.tracer().info( ss.str() );
+                context_.tracer().debug( ss.str() );
+
+                if ( vehicleDescr_.geometry == 0 )
+                {
+                    subStatus().warning( "Got NULL vehicle geometry -- making something up!" );
+                    orca::VehicleGeometryCylindricalDescriptionPtr geom = new orca::VehicleGeometryCylindricalDescription;
+                    geom->type = orca::VehicleGeometryCylindrical;
+                    geom->radius = 0.7;
+                    geom->height = 1.0;
+                    geom->platformToGeometryTransform = orcaobj::zeroFrame3d();
+                    vehicleDescr_.geometry = geom;
+                    sleep(1);
+                }
+                if ( vehicleDescr_.control == 0 )
+                {
+                    subStatus().warning( "Got NULL vehicle control -- making something up!" );
+                    orca::VehicleControlVelocityDifferentialDescriptionPtr ctrl = new orca::VehicleControlVelocityDifferentialDescription;
+                    ctrl->type = orca::VehicleControlVelocityDifferential;
+                    ctrl->maxForwardSpeed = 1.0;
+                    ctrl->maxReverseSpeed = 1.0;
+                    ctrl->maxTurnrate = 90*M_PI/180.0;
+                    ctrl->maxLateralAcceleration = 1.0;
+                    ctrl->maxForwardAcceleration = 1.0;
+                    ctrl->maxReverseAcceleration = 1.0;
+                    ctrl->maxRotationalAcceleration = 90.0*M_PI/180.0;
+                    vehicleDescr_.control = ctrl;
+                    sleep(1);
+                }
 
                 localiseInterface_ = new orcaifaceimpl::Localise2dImpl( vehicleDescr_.geometry, "Localise2d", context_ );
                 break;

@@ -31,10 +31,55 @@
 @par Operation
 
 Converts GPS data into Localise2d.  
-It does this by:
-  - converting from lat/lon to a map-grid representation (currently assumes MGA), then
-  - subtracting the offset between the map-grid origin and the coordinate system (this offset must be configured manually), then
-  - subtracting the offset from the GPS antenna to the platform's centre (this is read from the GPS component).
+
+There are two problems here:
+ -# You tend to get really big numbers that are hard to handle.
+ -# We don't necessarily know where the global coordinate system is rooted, so we
+    can't line up with it.
+
+This is solved using the 'Offset' parameter, which specifies the
+coordinates of Gps2Localise2d's origin in the MapGrid coordinates.
+Gps2Localise2d will report all position estimates as an offset from
+that origin.
+
+To get sane numbers, use the following procedure:
+  -# set the Offset parameter to [0,0,0];
+  -# hook gps2localise2d up to the real GPS unit; and
+  -# copy the x-y values from the Localise2d object that gps2localise2d reports into the 'Offset' parameter, and restart gps2localise2d.
+gps2localise2d should now report Localise2d readings somewhere near the origin.
+
+In more detail, gps2localise2d does the following to compute a pose:
+  -# converts from lat/lon to a map-grid representation (currently assumes MGA);
+  -# subtracts the Offset to produce a the pose of the GPS antenna in Gps2Localise2d's coordinate system;
+  -# subtracts the antennaOffset to produce the vehicle pose.
+
+#It does this by:
+#  - converting from lat/lon to a map-grid representation (currently assumes MGA), then
+#  - subtracting the offset between the map-grid origin and the coordinate system (this offset must be configured manually), then
+#  - subtracting the offset from the GPS antenna to the platform's centre (this is read from the GPS component).
+
+The relationships between:
+ - the MapGrid origin,
+ - the antenna pose in MapGrid coordinate system,
+ - the origin used by Gps2Localise2d (set by Offset), and
+ - the Localise2d data reported by Gps2Localise2d
+are illustrated below:
+@verbatim
+                               antenna
+                         ------->0
+                     |  / Loc2d  ^
+                     | /        /
+             Offset  |/        /       
+                 --->+-----   /           
+                /  Gps2L_CS  /
+            |  /            /
+            | /            /poseInMapGridCS
+            |/            /
+ MapGrid_CS +----        /
+             \          /
+              ----------
+@endverbatim
+
 
 @par Configuration
 
@@ -44,7 +89,8 @@ It does this by:
     - default: simple
 
 - @c Gps2Localise2d.Config.Offset (Frame2d) [m, deg]
-    - Position of the magrid origin in the global CS.
+    - Pose of Gps2Localise2d's origin in the MapGrid coordinate system.
+    - See above for tips on setting this.
     - Format: x y z roll pitch yaw (space separated)
     - Default: 0.0 0.0 0.0
     

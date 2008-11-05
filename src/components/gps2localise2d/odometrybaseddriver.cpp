@@ -39,10 +39,6 @@ OdometryBasedDriver::OdometryBasedDriver( const orca::GpsDescription     &gpsDes
     rotFactor_         = 180*M_PI/180.0;
 }
 
-OdometryBasedDriver::~OdometryBasedDriver()
-{
-}
-
 bool
 OdometryBasedDriver::setup()
 {
