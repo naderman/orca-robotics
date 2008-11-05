@@ -178,11 +178,6 @@ StatusImpl::StatusImpl( const orcaice::Context& context ) :
     topicName_( orcaice::toString( orcaice::toStatusTopic( context.name() ) ) ),
     context_(context)
 {
-    // get properties for our component
-//     Ice::PropertiesPtr props = context_.properties();
-    // are we required to connect to status topic? (there's always default value for this property)
-//     isStatusTopicRequired_ = props->getPropertyAsInt( "Orca.Tracer.RequireIceStorm" );
-
     // fill the store
     orca::StatusData data;
     orcaice::setToNow( data.timeStamp );
@@ -202,9 +197,35 @@ StatusImpl::initInterface( const orcaice::Context& context )
     // need recopy context, because at construction time not all services were registered.
     context_ = context;
 
+    Ice::PropertiesPtr props = context_.properties();
+    // are we required to connect to status topic? (there's always default value for this property)
+    bool isStatusTopicRequired = props->getPropertyAsInt( "Orca.Status.RequireIceStorm" );
+
     // Find IceStorm Topic to which we'll publish
-    topicPrx_ = orcaice::connectToTopicWithString<orca::StatusConsumerPrx>
-        ( context_, publisherPrx_, topicName_ );
+    try
+    {
+        topicPrx_ = orcaice::connectToTopicWithString<orca::StatusConsumerPrx>
+            ( context_, publisherPrx_, topicName_ );
+    }
+    // we only catch the exception which would be thrown if IceStorm is not there.
+    catch ( const orcaice::NetworkException& e )
+    {
+        if ( isStatusTopicRequired )
+        {
+            std::string s = "Failed to connect to an IceStorm status topic '"+
+                topicName_+"'\n" +
+                "\tYou may allow to proceed by setting Orca.Status.RequireIceStorm=0.";
+            initTracerError( s );
+            context_.shutdown();
+        }
+        else
+        {
+            std::string s = "Failed to connect to an IceStorm status topic\n";
+            s += "\tAll status messages will be local.\n";
+            s += "\tYou may enforce connection by setting Orca.Status.RequireIceStorm=1.";
+            initTracerWarning( s );
+        }
+    }
 
     // Register with the adapter
     // We don't have to clean up the memory we're allocating here, because
@@ -216,6 +237,9 @@ StatusImpl::initInterface( const orcaice::Context& context )
 void 
 StatusImpl::publishEvent( const hydroiceutil::NameStatusMap& subsystems )
 {
+    if ( !publisherPrx_ )
+        return;
+
     orca::StatusData data;
     orcaice::setToNow( data.timeStamp );
 //     convert( subsystems, data.subsystems );
