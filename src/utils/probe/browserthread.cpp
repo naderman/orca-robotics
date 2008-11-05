@@ -221,6 +221,7 @@ BrowserThread::showComponent()
     display_.setFocus( orcaprobe::AbstractDisplay::ComponentFocus );
 }
 
+// NOTE: no remote operations in here!
 void 
 BrowserThread::loadInterface()
 {   
