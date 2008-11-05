@@ -78,7 +78,7 @@ ComponentThread::tryRegisterHome()
     std::string homeIdentityString = toHomeIdentity( context_.name() );
     Ice::Identity homeIdentity = context_.communicator()->stringToIdentity(homeIdentityString);
     Ice::ObjectPrx homePrx = context_.adapter()->createProxy( homeIdentity );
-    context_.tracer().info( string("Registering Home wiht identity ")+homeIdentityString );
+    context_.tracer().info( string("Registering Home with identity ")+homeIdentityString );
 
     std::string instanceName = context_.properties()->getPropertyWithDefault( "IceGrid.InstanceName", "IceGrid" );
     Ice::ObjectPrx base = context_.communicator()->stringToProxy( instanceName+"/Registry" );
