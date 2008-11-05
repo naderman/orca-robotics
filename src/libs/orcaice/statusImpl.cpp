@@ -94,13 +94,17 @@ convert( const hydroiceutil::NameStatusMap &internal,
          const orca::FQComponentName       &name, 
          orca::ComponentStatus             &compStat )
 {
+    // initialisation, will be overwritten
+    compStat.state = orca::CompInactive;
+    compStat.health = orca::CompOk;
+    compStat.timeUp = 0;
+    
+    // conversions: name and subsystems
     compStat.name = name;
     convert( internal, compStat.subsystems );
     
+    // if no subsystems exist, we're done
     if (compStat.subsystems.size()==0) return;
-    
-    // The timeUp is updated directly in different places
-    // Is there a cleaner way?
     
     //
     // State and Health conversions
