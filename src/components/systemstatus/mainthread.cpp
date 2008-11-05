@@ -18,10 +18,29 @@ using namespace std;
 
 namespace systemstatus {
     
+void convert( const StatusDetails           &from,
+              orca::ObservedComponentStatus &to )
+{
+    cout << " =========== convert: TODO: implement me ========= " << endl;
+    
+//     to.subsystems = from.data.compStatus.subsystems;
+//     to.timeUp
+//             to.state
+//             to.health
+//             to.name
+//                     from.isDataStale;
+//                     from.dataAvailable;
+    
+}
+    
+//
 // converts from internal to Slice-defined representation
+//
 void convert( const multimap<string,StatusDetails> &from, 
               orca::SystemStatusData               &to )
 {    
+    orcaice::setToNow( to.timeStamp );
+    
     multimap<string,StatusDetails>::const_iterator it;
     pair<multimap<string,StatusDetails>::const_iterator,multimap<string,StatusDetails>::const_iterator> ret;
     
@@ -45,21 +64,19 @@ void convert( const multimap<string,StatusDetails> &from,
     // go through all unique platforms and create a map indexed by platform name
     for ( unsigned int i=0; i<uniquePlatformNames.size(); i++ )
     {
-        vector<orca::ComponentStatusData> componentsPerPlatform;
+        vector<orca::ObservedComponentStatus> componentsPerPlatform;
         
         // obtain all records of a given platform name
         ret = from.equal_range( uniquePlatformNames[i] );
-        
-        // create a vector of ComponentStatusData
+
+        // create a vector of ObservedComponentStatus
         for (it=ret.first; it!=ret.second; ++it)
         {
-            orca::ComponentStatusData compStatData;
-            compStatData.isDataStale = (*it).second.isDataStale;
-            compStatData.data = (*it).second.data;
-            componentsPerPlatform.push_back( compStatData );
+            orca::ObservedComponentStatus obsCompStat;
+            convert( (*it).second, obsCompStat );
         }
         
-        to[uniquePlatformNames[i]] = componentsPerPlatform;
+        to.systemStatus[uniquePlatformNames[i]] = componentsPerPlatform;
     }
 }
     

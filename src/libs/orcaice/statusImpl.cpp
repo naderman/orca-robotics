@@ -23,7 +23,8 @@ namespace
 {
 
 void 
-convert( const hydroiceutil::NameStatusMap &internal, orca::SubsystemStatusDict &network )
+convert( const hydroiceutil::NameStatusMap &internal, 
+         orca::SubsystemStatusDict         &network )
 {
     hydroiceutil::NameStatusMap::const_iterator it;
     
@@ -66,6 +67,77 @@ convert( const hydroiceutil::NameStatusMap &internal, orca::SubsystemStatusDict 
         network[it->first].sinceHeartbeat = 
             (Ice::Float)(it->second.heartbeatTimer.elapsedSec() / it->second.maxHeartbeatInterval);
     }
+}
+
+orca::ComponentState 
+subStateToCompState ( const orca::SubsystemState &subsystemState)
+{
+    switch (subsystemState)
+    {
+        case orca::SubsystemIdle: 
+            return orca::CompInactive;
+        case orca::SubsystemInitialising: 
+            return orca::CompInitialising;
+        case orca::SubsystemWorking: 
+            return orca::CompActive;
+        case orca::SubsystemFinalising: 
+            return orca::CompFinalising;
+        case orca::SubsystemShutdown: 
+            return orca::CompFinalising;        
+    } 
+    return orca::CompInactive;  
+}
+                      
+
+void 
+convert( const hydroiceutil::NameStatusMap &internal,
+         const orca::FQComponentName       &name, 
+         orca::ComponentStatus             &compStat )
+{
+    compStat.name = name;
+    convert( internal, compStat.subsystems );
+    
+    if (compStat.subsystems.size()==0) return;
+    
+    // The timeUp is updated directly in different places
+    // Is there a cleaner way?
+    
+    //
+    // State and Health conversions
+    // 
+    // policy here: take the "worst" health of the subsystem and its corresponding state
+    //
+    const orca::SubsystemStatusDict &subSysSt = compStat.subsystems;
+    map<string,orca::SubsystemStatus>::const_iterator itWorstHealth;
+    orca::SubsystemHealth worstHealth = orca::SubsystemOk;           
+    
+    for (map<string,orca::SubsystemStatus>::const_iterator it=subSysSt.begin(); it!=subSysSt.end(); ++it)
+    {
+        // the >= guarantees that itWorstHealth is set at least once
+        if (it->second.health >= worstHealth ) {
+            worstHealth = it->second.health;
+            itWorstHealth = it;
+        }
+    }
+    
+    compStat.state = subStateToCompState(itWorstHealth->second.state);
+         
+    switch (worstHealth)
+    {
+        case orca::SubsystemOk:
+            compStat.health = orca::CompOk;
+            return;
+        case orca::SubsystemWarning:
+            compStat.health = orca::CompWarning;
+            return;
+        case orca::SubsystemFault:
+            compStat.health = orca::CompFault;
+            return;
+        case orca::SubsystemStalled:
+            compStat.health = orca::CompStalled;
+            return;
+    }       
+    
 }
 
 } // namespace
@@ -114,7 +186,6 @@ StatusImpl::StatusImpl( const orcaice::Context& context ) :
     // fill the store
     orca::StatusData data;
     orcaice::setToNow( data.timeStamp );
-    data.timeUp = 0;
     dataStore_.set( data );
 
     initTracerInfo( "Status created" );
@@ -147,8 +218,9 @@ StatusImpl::publishEvent( const hydroiceutil::NameStatusMap& subsystems )
 {
     orca::StatusData data;
     orcaice::setToNow( data.timeStamp );
-    convert( subsystems, data.subsystems );
-    data.timeUp = (Ice::Int)upTimer_.elapsedSec();
+//     convert( subsystems, data.subsystems );
+    convert( subsystems, context_.name(), data.compStatus );
+    data.compStatus.timeUp = (Ice::Int)upTimer_.elapsedSec();
 
     dataStore_.set( data );
 
@@ -178,7 +250,7 @@ StatusImpl::internalGetData() const
     dataStore_.get( data );
 
     // Just update the timeUp
-    data.timeUp = (Ice::Int)upTimer_.elapsedSec();
+    data.compStatus.timeUp = (Ice::Int)upTimer_.elapsedSec();
 
     return data;
 }
@@ -215,7 +287,7 @@ StatusImpl::internalSubscribe(const ::orca::StatusConsumerPrx& subscriber)
     dataStore_.get( data );
 
     // Just update the timeUp
-    data.timeUp = (Ice::Int)upTimer_.elapsedSec();
+    data.compStatus.timeUp = (Ice::Int)upTimer_.elapsedSec();
 
     try
     {

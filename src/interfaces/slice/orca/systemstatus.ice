@@ -22,19 +22,69 @@ module orca
     @{
 */
 
-//! StatusData for a single component
-//! Interface provider decides whether it considers the data to be stale
-struct ComponentStatusData
-{
-    bool isDataStale;
-    StatusData data;
+//! Possible component states including observed states
+enum ObservedComponentState
+{    
+    //! Component has been created but has not setup its interfaces yet
+    ObsCompInactive,
+    //! Observed state: can the component be connected to?
+    ObsCompConnecting,
+    //! Component is preparing to work, e.g. initialising its resources, etc.
+    ObsCompInitialising,
+    //! Component is fully initialised and is performing its work.
+    ObsCompActive,
+    //! Component is preparing to shutdown, e.g. releasing its resources, etc.
+    ObsCompFinalising,
+    //! Observed state: can the component still be "reached"?
+    ObsCompDisconnecting
 };
 
-sequence<ComponentStatusData> ComponentStatusDataSeq;
+//! Possible component health values
+enum ObservedComponentHealth
+{
+    //! All of the component's subsystems are OK
+    ObsCompOk,
+    //! At least one of the component's subsystems has encountered an abnormal but non-fault condition
+    ObsCompWarning,
+    //!  At least one of the component's subsystems has encountered a fault
+    ObsCompFault,
+    //!  At least one of the component's subsystems has not been heard from for an abnormally long time
+    ObsCompStalled,
+    //! Component has not been heard from for an abnormally long time
+    //! Can only be observed from "outside"
+    ObsCompStale
+};
 
-//! Hold the StatusData of an entire system
-//! The dictionary contains a sequence of ComponentStatusData indexed by the platform name
-dictionary<string,ComponentStatusDataSeq> SystemStatusData;
+//! StatusData for a single component
+struct ObservedComponentStatus
+{
+    //! The fully-qualified name of the component.
+    FQComponentName name;
+    //! Number of seconds since this component was activated.
+    int timeUp;
+    //! Observed state of the component, see above
+    ObservedComponentState state;
+    //! Observed health of the component, see above
+    ObservedComponentHealth health;
+    //! Status of all component subsystems 
+    SubsystemStatusDict subsystems;
+};
+
+//! A sequence of ComponentStatus
+sequence<ObservedComponentStatus> ObservedComponentStatusSeq;
+
+//! Hold the observed component status of an entire system
+//! The dictionary contains a sequence of ObservedComponentStatus indexed by the platform name
+dictionary<string,ObservedComponentStatusSeq> SystemStatusDict;
+
+//! The data corresponding to the SystemStatus interface
+struct SystemStatusData
+{
+    //! Time when status data was recorded
+    Time timeStamp;
+    
+    SystemStatusDict systemStatus;
+};
 
 /*!
     Data consumer interface.

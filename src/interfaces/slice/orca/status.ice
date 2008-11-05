@@ -52,6 +52,32 @@ enum SubsystemHealth
     SubsystemStalled
 };
 
+//! Possible component states
+enum ComponentState
+{    
+    //! Component has been created but has not setup its interfaces yet
+    CompInactive,
+    //! Component is preparing to work, e.g. initialising its resources, etc.
+    CompInitialising,
+    //! Component is fully initialised and is performing its work.
+    CompActive,
+    //! Component is preparing to shutdown, e.g. releasing its resources, etc.
+    CompFinalising
+};
+
+//! Possible component health values
+enum ComponentHealth
+{
+    //! All of the component's subsystems are OK
+    CompOk,
+    //! At least one of the component's subsystems has encountered an abnormal but non-fault condition
+    CompWarning,
+    //!  At least one of the component's subsystems has encountered a fault
+    CompFault,
+    //!  At least one of the component's subsystems has not been heard from for an abnormally long time
+    CompStalled
+};
+
 //! Status for a single subsystem of a component.
 struct SubsystemStatus
 {
@@ -70,25 +96,36 @@ struct SubsystemStatus
     float sinceHeartbeat;
 };
 
-//! Status for all subsystems of this component
+
+//! Status for all subsystems of a component
 dictionary<string,SubsystemStatus> SubsystemStatusDict;
 
+//! Status of a single component
+struct ComponentStatus
+{
+    //! The fully-qualified name of the component.
+    FQComponentName name;
+    //! Number of seconds since this component was activated.
+    int timeUp;
+    //! Current state of the component, see above
+    ComponentState state;
+    //! Current health of the component, see above
+    ComponentHealth health;
+    //! Status of all component subsystems 
+    SubsystemStatusDict subsystems;
+};
+
+
 /*!
-    @brief Component status data.
+    @brief Component status data
 */
 struct StatusData
 {
-    //! Time when status was recorded
+    //! Time when status data was recorded
     Time timeStamp;
-
-    //! The fully-qualified name of the component.
-    FQComponentName name;
-
-    //! Number of seconds since this component was activated.
-    int timeUp;
-
-    //! Status of component subsystems
-    SubsystemStatusDict subsystems;
+    
+    //! The status of the component
+    ComponentStatus compStatus;
 };
 
 
@@ -102,7 +139,7 @@ interface StatusConsumer
 };
 
 /*!
-    @brief Access to a robot's status subsystem
+    @brief Access to a component's status
  */
 interface Status
 {
