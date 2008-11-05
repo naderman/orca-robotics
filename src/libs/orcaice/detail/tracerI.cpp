@@ -73,6 +73,13 @@ TracerI::setupAndConnectNetworkSenders()
                                 orcaice::toString(fqTName),
                                 isTracerTopicRequired );
 
+    // alexm: don't try the rest if the first one failed
+    bool isIceStormReachable = ( componentTraceSender_ != 0 );
+    if ( !isIceStormReachable ) {
+        initTracerInfo( "Tracer: failed to connect to the first topic, skipping the rest" );
+        return;
+    }
+
     std::string infoTopic = std::string("*/info@")+fqTName.platform+std::string("/*");
     trySetupNetworkTraceSender( platformInfoSender_,
                                 infoTopic,
