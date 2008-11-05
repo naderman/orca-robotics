@@ -4,6 +4,7 @@
 #include <orcalog/orcalog.h>
 #include <orcaobj/stringutils.h>
 #include <orcaifacelog/orcaifacelog.h>  // catch-all for auto-generated (ascii) to/fromStream functions
+#include <orcaifacestring/vehicledescription.h>
 #include "logstringutils.h"
 
 using namespace std;
@@ -117,6 +118,10 @@ namespace {
             ss <<  "can't handle format: " << format;
             throw orcalog::FormatNotSupportedException( ERROR_INFO, ss.str() );
         }
+        stringstream ss;
+        ss << "TODO: re-enable printout of orca::VehicleDescription" << endl;
+//        ss << "Read orca::VehicleDescription: " << ifacestring::toString(obj);
+        context.tracer().info( ss.str() );
     }
 
     void
