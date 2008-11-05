@@ -78,7 +78,7 @@ std::string stateToString( const orca::ObservedComponentState &state )
         case orca::ObsCompInitialising:
             return "- ";
         case orca::ObsCompActive:
-            return " ";
+            return "  ";
         case orca::ObsCompFinalising:
             return "v ";
         case orca::ObsCompDisconnecting:
@@ -118,55 +118,6 @@ void extractStateAndHealth( const orca::ObservedComponentStatus &compData,
     }
 }
 
-// void extractStateAndHealth( const orca::ComponentStatusData &compData,
-//                             hydroctext::Style               &healthStyle,
-//                             string                          &stateIcon )
-// {
-//     if (compData.isDataStale) {
-//         healthStyle = hydroctext::Style( hydroctext::Reverse, hydroctext::White );
-//         stateIcon = hydroctext::emph( "  ", hydroctext::Style( hydroctext::Reverse, hydroctext::White ) );
-//         return;
-//     }
-//     
-//     const orca::SubsystemStatusDict &subSysSt = compData.data.subsystems;
-//     
-//     if (subSysSt.size()==0)
-//         throw gbxutilacfr::Exception(  ERROR_INFO, "SubsystemStatus field is empty" );
-//     
-//     map<string,orca::SubsystemStatus>::const_iterator itWorstHealth;
-// 
-//     orca::SubsystemHealth worstHealth = orca::SubsystemOk;           
-//     for (map<string,orca::SubsystemStatus>::const_iterator it=subSysSt.begin(); it!=subSysSt.end(); ++it)
-//     {
-//         // the >= guarantees that itWorstHealth is set at least once
-//         if (it->second.health >= worstHealth ) {
-//             worstHealth = it->second.health;
-//             itWorstHealth = it;
-//         }
-//     }
-//     
-//     switch (worstHealth)
-//     {
-//         case orca::SubsystemOk:
-//             healthStyle = hydroctext::Style( hydroctext::Reverse, hydroctext::Green );
-//             stateIcon = hydroctext::emph( stateToString(itWorstHealth->second.state), hydroctext::Style( hydroctext::Reverse, hydroctext::Green ) );
-//             return;
-//         case orca::SubsystemWarning:  
-//             healthStyle = hydroctext::Style( hydroctext::Reverse, hydroctext::Yellow );
-//             stateIcon = hydroctext::emph( stateToString(itWorstHealth->second.state), hydroctext::Style( hydroctext::Reverse, hydroctext::Yellow ) );
-//             return;
-//         case orca::SubsystemFault:  
-//             healthStyle = hydroctext::Style( hydroctext::Reverse, hydroctext::Red );
-//             stateIcon = hydroctext::emph( stateToString(itWorstHealth->second.state), hydroctext::Style( hydroctext::Reverse, hydroctext::Red ) );
-//             return;
-//         case orca::SubsystemStalled:  
-//             healthStyle = hydroctext::Style( hydroctext::Reverse, hydroctext::Black );
-//             stateIcon = hydroctext::emph( stateToString(itWorstHealth->second.state), hydroctext::Style( hydroctext::Reverse, hydroctext::Black ) );
-//             return;
-//         default:
-//             assert( false && "unknown health type" );
-//     }
-// }
 
 std::string toShortString( const orca::ObservedComponentStatus& compData, int stateWidth )
 {   
@@ -299,7 +250,7 @@ ColourTextDisplay::display( const orca::SystemStatusData &data )
         cout << endl;
     }
     
-    // print the human-readable text, TODO: make configurable? or interactive?
+    // print the human-readable text
     cout << endl;
     cout << humanErrorMsgString( data );
     

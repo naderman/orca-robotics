@@ -28,7 +28,7 @@ class Display
 {
     public:
         virtual ~Display() {};
-        virtual void refresh()=0;
+        virtual void refresh() = 0;
 };
     
 //

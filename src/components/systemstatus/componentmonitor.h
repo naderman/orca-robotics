@@ -14,6 +14,7 @@
 #include <iostream>
 #include <hydroiceutil/jobqueue.h>
 
+#include <orca/systemstatus.h>
 #include "statusconsumerImpl.h"
 
 using namespace std;
@@ -35,8 +36,8 @@ class ComponentMonitor
                           const orcaice::Context    &context );
         ~ComponentMonitor();
         
-        void getComponentStatus( std::string   &platformName, 
-                                 StatusDetails &componentStatus );
+        void getComponentStatus( std::string                   &platformName,
+                                 orca::ObservedComponentStatus &obsCompStat );
         
     private:
         hydroiceutil::JobQueuePtr jobQueue_;

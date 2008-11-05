@@ -75,20 +75,72 @@ ComponentMonitor::ComponentMonitor( hydroiceutil::JobQueuePtr  jobQueue,
 ComponentMonitor::~ComponentMonitor()
 {
 }
-    
+
 void 
-ComponentMonitor::getComponentStatus( string        &platformName, 
-                                      StatusDetails &componentStatus )
+ComponentMonitor::getComponentStatus( string                        &platformName,
+                                      orca::ObservedComponentStatus &obsCompStat )
 {
-    platformName =  platformName_;
+    platformName = platformName_;
     
-    bool shouldResubscribe = statusConsumer_->getStatus( componentStatus );
+    StatusDetails statDetails;
+    bool shouldResubscribe = statusConsumer_->getStatus( statDetails );
     
     if (shouldResubscribe) 
     {
         hydroiceutil::JobPtr job = new SubscribeJob( context_, statusConsumer_ );
         jobQueue_->add( job );
     }
+    
+    //TODO: fix this: if no data is available, we are in a Connecting state I guess?
+    if (!statDetails.dataAvailable)
+        return;
+    
+    obsCompStat.name = statDetails.data.compStatus.name;
+    obsCompStat.timeUp = statDetails.data.compStatus.timeUp;
+    obsCompStat.subsystems = statDetails.data.compStatus.subsystems;
+    
+    //
+    // Health
+    //
+    if (statDetails.isDataStale) 
+    {
+        obsCompStat.health = orca::ObsCompStale;
+    } 
+    else 
+    {        
+        switch( statDetails.data.compStatus.health )
+        {
+            case orca::CompOk: 
+                obsCompStat.health = orca::ObsCompOk; break;
+            case orca::CompWarning: 
+                obsCompStat.health = orca::ObsCompWarning; break;
+            case orca::CompFault: 
+                obsCompStat.health = orca::ObsCompFault; break;
+            case orca::CompStalled: 
+                obsCompStat.health = orca::ObsCompStalled; break;
+            default:
+                assert( false && "Unknown component health" );
+        }
+    }
+    
+    //
+    // State: TODO: add Connecting/Disconnecting states
+    //
+    switch( statDetails.data.compStatus.state )
+    {
+        case orca::CompInactive:
+            obsCompStat.state = orca::ObsCompInactive; break;
+        case orca::CompInitialising:
+            obsCompStat.state = orca::ObsCompInitialising; break;
+        case orca::CompActive:
+            obsCompStat.state = orca::ObsCompActive; break;
+        case orca::CompFinalising:
+            obsCompStat.state = orca::ObsCompFinalising; break;
+        default:
+            assert( false && "Unknown component state" );
+            
+    }
+    
 }
 
 }

@@ -46,12 +46,11 @@ enum ObservedComponentHealth
     ObsCompOk,
     //! At least one of the component's subsystems has encountered an abnormal but non-fault condition
     ObsCompWarning,
-    //!  At least one of the component's subsystems has encountered a fault
+    //! At least one of the component's subsystems has encountered a fault
     ObsCompFault,
-    //!  At least one of the component's subsystems has not been heard from for an abnormally long time
+    //! At least one of the component's subsystems has not been heard from for an abnormally long time
     ObsCompStalled,
-    //! Component has not been heard from for an abnormally long time
-    //! Can only be observed from "outside"
+    //! Component has not been heard from for an abnormally long time. Can only be observed from outside the component.
     ObsCompStale
 };
 
@@ -82,7 +81,7 @@ struct SystemStatusData
 {
     //! Time when status data was recorded
     Time timeStamp;
-    
+    //! The status of system composed of components
     SystemStatusDict systemStatus;
 };
 

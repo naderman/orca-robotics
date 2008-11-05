@@ -18,31 +18,16 @@ using namespace std;
 
 namespace systemstatus {
     
-void convert( const StatusDetails           &from,
-              orca::ObservedComponentStatus &to )
-{
-    cout << " =========== convert: TODO: implement me ========= " << endl;
-    
-//     to.subsystems = from.data.compStatus.subsystems;
-//     to.timeUp
-//             to.state
-//             to.health
-//             to.name
-//                     from.isDataStale;
-//                     from.dataAvailable;
-    
-}
-    
 //
-// converts from internal to Slice-defined representation
+// converts from internal multimap to Slice-defined representation
 //
-void convert( const multimap<string,StatusDetails> &from, 
-              orca::SystemStatusData               &to )
+void convert( const multimap<string,orca::ObservedComponentStatus> &from, 
+              orca::SystemStatusData                               &to )
 {    
     orcaice::setToNow( to.timeStamp );
     
-    multimap<string,StatusDetails>::const_iterator it;
-    pair<multimap<string,StatusDetails>::const_iterator,multimap<string,StatusDetails>::const_iterator> ret;
+    multimap<string,orca::ObservedComponentStatus>::const_iterator it;
+    pair<multimap<string,orca::ObservedComponentStatus>::const_iterator,multimap<string,orca::ObservedComponentStatus>::const_iterator> ret;
     
     // assemble a vector of *unique* platform names
     vector<string> uniquePlatformNames;
@@ -72,8 +57,7 @@ void convert( const multimap<string,StatusDetails> &from,
         // create a vector of ObservedComponentStatus
         for (it=ret.first; it!=ret.second; ++it)
         {
-            orca::ObservedComponentStatus obsCompStat;
-            convert( (*it).second, obsCompStat );
+            componentsPerPlatform.push_back( (*it).second );
         }
         
         to.systemStatus[uniquePlatformNames[i]] = componentsPerPlatform;
@@ -153,29 +137,26 @@ MainThread::walk()
     //
     // Main loop
     //
-    // slice-defined systemstatus
-    orca::SystemStatusData data;
     
-    // statusDetails referenced by platformName
-    multimap<string,StatusDetails> systemStatusDetails;
+    orca::SystemStatusData data;
+    multimap<string,orca::ObservedComponentStatus> obsCompStateMultiMap;
     
     while ( !isStopping() )
     {
         context_.tracer().info( "MainThread: waiting..." );
         
         // get status data from all monitors
-        systemStatusDetails.clear();
+        obsCompStateMultiMap.clear();
         for (unsigned int i=0; i<monitors_.size(); i++)
         {
-            StatusDetails details;
+            orca::ObservedComponentStatus obsCompStat;
             string platformName;
-            monitors_[i].getComponentStatus( platformName, details );
-            if (details.dataAvailable) 
-                systemStatusDetails.insert(pair<string,StatusDetails>(platformName,details));
+            monitors_[i].getComponentStatus( platformName, obsCompStat );
+            obsCompStateMultiMap.insert(pair<string,orca::ObservedComponentStatus>(platformName,obsCompStat));
         }
         
         // convert and tell the world
-        convert( systemStatusDetails, data );
+        convert( obsCompStateMultiMap, data );
         systemStatusIface_->localSetAndSend( data );
                 
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));

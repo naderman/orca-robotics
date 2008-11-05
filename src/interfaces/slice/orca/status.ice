@@ -83,13 +83,10 @@ struct SubsystemStatus
 {
     //! Current state in the subsystem's state machine. I.e. what is the subsystem doing?
     SubsystemState state;
-
     //! Subsystem's health. I.e. how is the subsystem doing?
     SubsystemHealth health;
-
     //! Human-readable status description
     string message;
-
     //! Ratio of time since last heartbeat to maximum expected time between heartbeats.
     //! For example, sinceHeartbeat=0.5 means that half of normally expected interval between heartbeats
     //! has elapsed.
@@ -123,7 +120,6 @@ struct StatusData
 {
     //! Time when status data was recorded
     Time timeStamp;
-    
     //! The status of the component
     ComponentStatus compStatus;
 };
