@@ -428,7 +428,7 @@ Gen::ToStringVisitor::visitEnum(const EnumPtr& p)
 
     C << eb;
     C << nl << "ostringstream ss;";
-    C << nl << "ss << \"Unknown case in enumerator " << scope.substr(2)<<name << ": \"<< ((int)obj);";
+    C << nl << "ss << __func__ << \"(): Unknown case in enumerator " << scope.substr(2)<<name << ": \"<< ((int)obj);";
     C << nl << "throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );";
 
     C << eb;
