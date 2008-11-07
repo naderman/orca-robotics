@@ -51,6 +51,7 @@ public:
     //! successful or a NULL pointer if it fails.
     virtual InterfaceProbe* create( const std::string           & id, 
                                     const orca::FQInterfaceName & name, 
+                                    const Ice::ObjectPrx        & adminPrx,
                                     AbstractDisplay             & display, 
                                     const orcaice::Context      & context ) = 0;
 protected:

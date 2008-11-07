@@ -31,8 +31,8 @@ class InterfaceProbe : public IceUtil::Shared
 
 public:
     //! Constructor
-    InterfaceProbe( const orca::FQInterfaceName & name, AbstractDisplay & display,
-                                const orcaice::Context & context );
+    InterfaceProbe( const orca::FQInterfaceName & name, const Ice::ObjectPrx& adminPrx, 
+                AbstractDisplay & display, const orcaice::Context & context );
         
     virtual ~InterfaceProbe();
 

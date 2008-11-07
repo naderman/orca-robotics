@@ -409,30 +409,26 @@ displayLocalTrace( "TermNcursesUser: exited main loop" );
 void 
 TermNcursesUser::displayTrace( const orca::TracerData& obj )
 {
-//     gbxutilacfr::Tracer::TraceType type = gbxutilacfr::Tracer::toTraceType( obj.category );
+//     gbxutilacfr::TraceType type = gbxutilacfr::toTraceType( obj.category );
     ColorType color = DefaultColor;
 
-    switch ( gbxutilacfr::Tracer::toTraceType( obj.category ) )
+    switch ( obj.type )
     {
-    case gbxutilacfr::Tracer::InfoTrace :
+    case orca::InfoTrace :
         color = DefaultColor;
 //         wattron( mainwin_, COLOR_PAIR(DefaultColor) );
         break;
-    case gbxutilacfr::Tracer::WarningTrace :
+    case orca::WarningTrace :
         color = WarningColor;
 //         wattron( mainwin_, COLOR_PAIR(WarningColor)|A_BOLD );
         break;
-    case gbxutilacfr::Tracer::ErrorTrace :
+    case orca::ErrorTrace :
         color = ErrorColor;
 //         wattron( mainwin_, COLOR_PAIR(ErrorColor)|A_BOLD );
         break;
-    case gbxutilacfr::Tracer::DebugTrace :
+    case orca::DebugTrace :
         color = DebugColor;
 //         wattron( mainwin_, COLOR_PAIR(DebugColor)|A_BOLD );
-        break;
-    default :
-        color = OtherColor;
-//         wattron( mainwin_, COLOR_PAIR(OtherColor)|A_BOLD );
         break;
     }
 

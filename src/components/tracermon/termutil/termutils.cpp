@@ -9,6 +9,7 @@
  */
 
 #include <orcaobj/orcaobj.h>
+#include <orcaifacestring/tracer.h>
 
 #include "termutils.h"
 
@@ -24,7 +25,7 @@ tracermon::toString( const orca::TracerData& obj )
     s += orcaobj::toString( obj.name );
     // todo: would be nice to show level here, e.g. debug3:
     // but seems like an overkill to deal with osstreams
-    s += " " + obj.category + ": ";
+    s += " " + ifacestring::toString(obj.type) + ": ";
     s += obj.message + " ]";
 
     // replace line breaks with spaces

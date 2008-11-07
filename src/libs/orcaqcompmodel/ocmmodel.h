@@ -109,7 +109,7 @@ public:
             
     //! Set info for a component node.
     void setComponent( const QString& registry, const QString& platform,
-                       const QString& component, const QString& compAddress, bool connected, int timeUp );
+                       const QString& component, const QString& compAddress, bool connected );
 
     //! Set info for a interface node.
     void setInterface( const QString& registry, const QString& platform, const QString& component,
@@ -150,16 +150,16 @@ public:
             { setPlatformPrivate( registry, regAddress, platform ); };
             
     void setComponent( const QString& registry, const QString& regAddress, const QString& platform,
-                        const QString& component, const QString& compAddress, bool connected, int timeUp )
-            { setComponentPrivate( registry, regAddress, platform, component, compAddress, connected, timeUp ); };
+                        const QString& component, const QString& compAddress, bool connected )
+            { setComponentPrivate( registry, regAddress, platform, component, compAddress, connected ); };
 
     void setInterface( const QString& registry, const QString& regAddress,
                        const QString& platform, const QString& component,
                        const QString& interface, const bool isProvided,
                        const QString& compAddress, const QString& ids,
-                       bool connected, int timeUp )
+                       bool connected )
             { setInterfacePrivate( registry, regAddress, platform, component, interface,
-                    isProvided, compAddress, ids, connected, timeUp ); };
+                    isProvided, compAddress, ids, connected ); };
 
 public slots:
     //! Delete all data from the model
@@ -254,7 +254,7 @@ private:
     {
     public:
         ComponentNode( const QString &n, PlatformNode* p, 
-            const QString &a="", bool connected=true, int t=0 );
+            const QString &a="", bool connected=true );
         // to be used in list search, name is sufficient
         bool operator==( const ComponentNode& other ) const
         {
@@ -265,8 +265,8 @@ private:
         QList<InterfaceNode> interfaces;
         QString address;
         bool isEnabled;
-        int daysUp;
-        QTime timeUp;
+//         int daysUp;
+//         QTime timeUp;
         virtual NodeType type() { return ComponentType; };
     };
     
@@ -317,12 +317,12 @@ private:
     
     QModelIndex setComponentPrivate( const QString& registry, const QString& regAddress,
                                 const QString& platform, const QString& component,
-                                const QString& compAddress, bool connected, int timeUp );
+                                const QString& compAddress, bool connected );
 
     QModelIndex setInterfacePrivate( const QString& registry, const QString& regAddress,
                                 const QString& platform, const QString& component, const QString& interface,
                                 const bool isProvided, const QString& compAddress, const QString& ids,
-                                bool connected, int timeUp );
+                                bool connected );
 
 };
 

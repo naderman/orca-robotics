@@ -69,9 +69,6 @@ MainThread::walk()
         
         cout<<orcaice::toString( compData.name )<<endl;
 
-        IceUtil::Time t = IceUtil::Time::seconds(compData.timeUp);
-        cout<<"    time up: "<<t.toDuration()<<endl;
-
         // now look at each interface
         for ( unsigned int j=0; j<compData.provides.size(); ++j ) {
             cout<<" -o "<<compData.provides[j].name<<endl;

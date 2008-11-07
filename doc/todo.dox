@@ -103,6 +103,11 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - Home
   - removed getProperties() because the same functionality is now available through the Proprerties facet of the
     standard Admin interface. (alexm)
+  - removed getTimeUp() and timeUp from HomeData because Status provides this information. (alexm)
+
+- Tracer
+  - TracerData: string 'category' changed to an enum with common trace types. Initially we thought we would need flexibility
+    in trace type definitions, we don't see any need for this now.
 
 @par Updated components
 

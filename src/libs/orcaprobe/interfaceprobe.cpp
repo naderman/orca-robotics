@@ -19,8 +19,8 @@
 using namespace std;
 using namespace orcaprobe;
 
-InterfaceProbe::InterfaceProbe( const orca::FQInterfaceName & name, AbstractDisplay & display,
-                            const orcaice::Context & context )
+InterfaceProbe::InterfaceProbe( const orca::FQInterfaceName & name, const Ice::ObjectPrx& adminPrx,
+                AbstractDisplay & display, const orcaice::Context & context )
     : name_(name),
       display_(display),
       ctx_(context)
@@ -34,7 +34,15 @@ InterfaceProbe::InterfaceProbe( const orca::FQInterfaceName & name, AbstractDisp
     addOperation( "ice_ping", "void ice_ping()" );
 
     // the generic proxy is created just once and then reused
-    prx_ = ctx_.communicator()->stringToProxy( orcaice::toString( name_ ) );
+    // Standard interfaces are treated differently
+    if ( name.iface == "home" )
+        prx_ = adminPrx->ice_facet( "Home" );
+    else if ( name.iface == "status" )
+        prx_ = adminPrx->ice_facet( "Status" );
+    else if ( name.iface == "tracer" )
+        prx_ = adminPrx->ice_facet( "Tracer" );
+    else
+        prx_ = ctx_.communicator()->stringToProxy( orcaice::toString( name_ ) );
 };
 
 InterfaceProbe::~InterfaceProbe() 

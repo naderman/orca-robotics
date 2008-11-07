@@ -25,6 +25,18 @@ module orca
     The Tracer routes different types of information to different destinations.
 */
 
+//! Types of traced information
+enum TraceType {
+    //! Information
+    InfoTrace,
+    //! Warning
+    WarningTrace,
+    //! Error
+    ErrorTrace,
+    //! Debug statement
+    DebugTrace
+};
+
 /*!
     @brief Component status data.
 */
@@ -36,8 +48,8 @@ struct TracerData
     //! The fully-qualified name of the interface.
     FQComponentName name;
 
-    //! Message category, e.g. warning, error, etc.
-    string category;
+    //! Trace type.
+    TraceType type;
 
     //! Verbosity level, 1 being the lowest
     int verbosity;

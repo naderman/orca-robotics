@@ -33,9 +33,6 @@ struct HomeData
 
     //! The Home interface itself is also included in this list of provided interfaces.
     ComponentData comp;
-
-    //! Number of seconds since the start of the component.
-    int timeUp;
 };
 
 /*!
@@ -43,15 +40,8 @@ struct HomeData
 */
 interface Home
 {
-    //! Returns a list the component's interfaces.
-    idempotent HomeData getInterfaces();
-
-    //! Returns the number of seconds since the start of the component.
-    idempotent int getTimeUp();
-    
-    // Returns all of this component's properties.
-    // (Our properties are defined the same way as Ice::PropertyDict.)
-//     idempotent StringStringDict getProperties();
+    //! Returns component data.
+    idempotent HomeData getData();
 };
 
 /*!

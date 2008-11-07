@@ -57,7 +57,7 @@ StatusConsumerImpl::dataEvent( const orca::StatusData& data )
     hasValidData_ = true;
     lastDataReceivedTime_ = IceUtil::Time::now();
     
-    if ( context_.tracer().verbosity( gbxutilacfr::Tracer::DebugTrace, gbxutilacfr::Tracer::ToAny ) > 5 )
+    if ( context_.tracer().verbosity( gbxutilacfr::DebugTrace, gbxutilacfr::ToAny ) > 5 )
     {
         stringstream ss;
         ss << "StatusData just arrived: " << endl << ifacestring::toString( data );

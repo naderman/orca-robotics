@@ -321,12 +321,14 @@ TermIostreamDisplay::printPlatformData( const orcacm::RegistryHierarchicalData2&
     stringstream ssHeader;
     ssHeader << "Platform : "<<data.platform.name;
     
+    orca::FQComponentName compName;
     stringstream ssOptions;
     // we must use the index of the option so that the handler understands us
     for ( unsigned int i=0; i<data.homes.size(); ++i ) 
     {
         // first filter on name
-        std::string adapt = data.homes[i].proxy->ice_getAdapterId();
+        compName = orcaice::toComponentName( data.homes[i].proxy );
+
 //         if ( !adapt.compare( 0,filter_.size(), filter_ ) ) 
 //         {
             // now filter on reachability
@@ -336,7 +338,7 @@ TermIostreamDisplay::printPlatformData( const orcacm::RegistryHierarchicalData2&
             else {
                 ssOptions << "\t";
             }
-            ssOptions << adapt << endl;
+            ssOptions << orcaice::toString(compName) << endl;
 //         }
     }
 

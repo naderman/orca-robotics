@@ -62,12 +62,12 @@ OcmIconProvider::icon(IconType type) const
 }
 
 
-OcmModel::ComponentNode::ComponentNode( const QString &n, PlatformNode* p, const QString &a, bool connected, int tsec )
+OcmModel::ComponentNode::ComponentNode( const QString &n, PlatformNode* p, const QString &a, bool connected )
     : name(n), platform(p), address(a), isEnabled(connected) 
 {
-    daysUp = (int)floor( (double)tsec / (24.0*60.0*60.0) );
-    QTime t;
-    timeUp = t.addSecs( tsec - daysUp*24*60*60 );
+//     daysUp = (int)floor( (double)tsec / (24.0*60.0*60.0) );
+//     QTime t;
+//     timeUp = t.addSecs( tsec - daysUp*24*60*60 );
 }
 
 ///////////////////////////
@@ -93,8 +93,7 @@ OcmModel::customEvent( QEvent* e )
                 QString::fromStdString( he->data_.name.platform ),
                 QString::fromStdString( he->data_.name.component ),
                 "",
-                false,
-                he->data_.timeUp );
+                false );
     }
     else {
         // component is reachable
@@ -112,8 +111,7 @@ OcmModel::customEvent( QEvent* e )
                 isProvided,
                 QString::fromStdString( he->data_.address ),
                 QString::fromStdString( he->data_.provides[j].id ),
-                he->data_.provides[j].isReachable,
-                he->data_.timeUp );
+                he->data_.provides[j].isReachable );
         }
         // required interfaces
         for ( unsigned int j=0; j<he->data_.requires.size(); ++j ) {
@@ -127,8 +125,7 @@ OcmModel::customEvent( QEvent* e )
                 isProvided,
                 QString::fromStdString( he->data_.address ),
                 QString::fromStdString( he->data_.requires[j].id ),
-                he->data_.requires[j].isReachable,
-                he->data_.timeUp );
+                he->data_.requires[j].isReachable);
         }
     }
 
@@ -436,7 +433,7 @@ OcmModel::data(const QModelIndex &idx, int role) const
                 }
                 */
             case 1 :
-                return "up:"+QString::number(N->daysUp) + ":" + N->timeUp.toString( "HH:mm:ss" ) + ", addr:"+N->address;
+//                 return "up:"+QString::number(N->daysUp) + ":" + N->timeUp.toString( "HH:mm:ss" ) + ", addr:"+N->address;
             case 2 :
             case 3 :
                 return QVariant();
@@ -883,7 +880,7 @@ OcmModel::componentIndex( const QString& registry, const QString& platform,
 
 void
 OcmModel::setComponent( const QString& registry, const QString& platform, 
-            const QString& component, const QString& compAddress, bool connected, int timeUp )
+            const QString& component, const QString& compAddress, bool connected )
 {
 //     cout<<"adding reg="<<registry.toStdString()<<" ptf="<<platform.toStdString()
 //         <<" cmp="<<component.toStdString()<<" caddr="<<compAddress.toStdString()
@@ -895,9 +892,9 @@ OcmModel::setComponent( const QString& registry, const QString& platform,
     if ( ind.isValid() ) {
         ComponentNode* node = static_cast<ComponentNode*>(ind.internalPointer());
         node->isEnabled = connected;
-        node->daysUp = (int)floor( (double)timeUp / (24.0*60.0*60.0) );
-        QTime t;
-        node->timeUp = t.addSecs( timeUp - node->daysUp*24*60*60 );
+//         node->daysUp = (int)floor( (double)timeUp / (24.0*60.0*60.0) );
+//         QTime t;
+//         node->timeUp = t.addSecs( timeUp - node->daysUp*24*60*60 );
         emit dataChanged( ind,ind );
     }
 }
@@ -1082,7 +1079,7 @@ OcmModel::setPlatformPrivate( const QString& registry, const QString& regAddress
 QModelIndex
 OcmModel::setComponentPrivate( const QString& registry, const QString& regAddress,
                     const QString& platform, const QString& component,
-                    const QString& compAddress, bool connected, int timeUp )
+                    const QString& compAddress, bool connected )
 {
 //     cout<<"adding reg="<<registry.toStdString()<<" raddr="<<regAddress.toStdString()
 //         <<" ptf="<<platform.toStdString()<<" cmp="<<component.toStdString()
@@ -1092,7 +1089,7 @@ OcmModel::setComponentPrivate( const QString& registry, const QString& regAddres
     PlatformNode* p = static_cast<PlatformNode*>(pindex.internalPointer());
     
     // find our component or make a new one
-    ComponentNode cn( component, p, compAddress, connected, timeUp );
+    ComponentNode cn( component, p, compAddress, connected );
     int ci = p->components.indexOf( cn );
     if ( ci==-1 ) {
         ci = p->components.size();
@@ -1109,9 +1106,9 @@ OcmModel::setComponentPrivate( const QString& registry, const QString& regAddres
         // don't create new one, just update attributes
         //cout<<"using component node "<<ci<<" at platform "<<pi<<endl;
         p->components[ci].isEnabled = connected;
-        p->components[ci].daysUp = (int)floor( (double)timeUp / (24.0*60.0*60.0) );
-        QTime t;
-        p->components[ci].timeUp = t.addSecs( timeUp - p->components[ci].daysUp*24*60*60 );
+//         p->components[ci].daysUp = (int)floor( (double)timeUp / (24.0*60.0*60.0) );
+//         QTime t;
+//         p->components[ci].timeUp = t.addSecs( timeUp - p->components[ci].daysUp*24*60*60 );
         
         emit dataChanged(index( ci,0,pindex ), index( ci,columnCount(QModelIndex()),pindex ));
     }
@@ -1122,10 +1119,10 @@ QModelIndex
 OcmModel::setInterfacePrivate( const QString& registry, const QString& regAddress,
                                 const QString& platform, const QString& component, const QString& interface,
                                 const bool isProvided, const QString& address,
-                                const QString& ids, bool connected, int timeUp )
+                                const QString& ids, bool connected )
 {
     // this will find our platform and component or make new ones
-    QModelIndex cindex = setComponentPrivate( registry, regAddress, platform, component, address, true, timeUp );
+    QModelIndex cindex = setComponentPrivate( registry, regAddress, platform, component, address, true );
     ComponentNode* c = static_cast<ComponentNode*>(cindex.internalPointer());    
     
     // find our interface or make a new one

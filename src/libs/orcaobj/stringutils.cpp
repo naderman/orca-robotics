@@ -19,6 +19,7 @@
 #include <orcaifacestring/gps.h>
 #include <orcaifacestring/image.h>
 #include <orcaifacestring/pathplanner2d.h>
+#include <orcaifacestring/tracer.h>
 #include <orcaifacestring/vehicledescription.h>
 #include <orcaifacestring/wifi.h>
 
@@ -894,32 +895,6 @@ toString( const orca::VelocityControl2dData& obj )
 }
 
 std::string 
-toString( const orca::HomeData& obj )
-{
-    std::ostringstream s;
-    s << toString(obj.timeStamp) << " HomeData"<<endl;
-
-    IceUtil::Time t = IceUtil::Time::seconds(obj.timeUp);
-    s << "time up="<<t.toDuration()<<endl;
-
-    s << "provides={";
-    for ( unsigned int i=0; i<obj.comp.provides.size(); ++i ) {
-        if ( i>0) { s<<":"; }
-        s << obj.comp.provides[i].name;
-    }
-    s << "}"<<endl;
-
-    s << "requires={";
-    for ( unsigned int i=0; i<obj.comp.requires.size(); ++i ) {
-        if ( i>0) { s<<":"; }
-        s << toString( obj.comp.requires[i].name );
-    }
-    s << "}" << endl;
-
-    return s.str();
-}
-
-std::string 
 toString( const orca::ImuData& obj )
 {
     std::ostringstream s;
@@ -1035,7 +1010,7 @@ toString( const orca::TracerData& obj )
     s = "[ ";
     s += toString( obj.timeStamp ) + " ";
     s += toString( obj.name );
-    s += " " + obj.category + ": ";
+    s += " " + ifacestring::toString(obj.type) + ": ";
     s += obj.message + " ]";
 
     // replace line breaks with spaces

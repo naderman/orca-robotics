@@ -158,8 +158,6 @@ std::string toString( const orca::GpsDescription& );
 //! Converts to string
 std::string toString( const orca::GpsData&  );
 //! Converts to string
-std::string toString( const orca::HomeData& );
-//! Converts to string
 std::string toString( const orca::ImuDescription& );
 //! Converts to string
 std::string toString( const orca::ImageDataPtr& );

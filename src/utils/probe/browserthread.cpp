@@ -184,7 +184,8 @@ BrowserThread::loadPlatform()
 //     cout<<"loading platform data for "<<registryData_.platforms[pick_].name<<endl;
     lastPlatformPick_ = pick_;
     
-    platformData_ = orcacm::home2hierarch2( registryHomeData_, registryData_.platforms[pick_] );
+    bool tryToPing = true;
+    platformData_ = orcacm::home2hierarch2( registryHomeData_, registryData_.platforms[pick_], tryToPing );
 
     display_.setPlatformData( platformData_ );
 }
@@ -244,14 +245,14 @@ BrowserThread::loadInterface()
         // if this interface is not supported, skip this factory
         if ( factories_[i]->isSupported( interfaceData_.id ) ) {
             // special case: the interface is actually created every time, using smart pointer to avoid mem leaks
-            ifaceProbe_ = factories_[i]->create( interfaceData_.id, interfaceData_.name, display_, context_ );
+            ifaceProbe_ = factories_[i]->create( interfaceData_.id, interfaceData_.name, componentData_.adminPrx, display_, context_ );
         }
 
     }
 
     // if specific probe was not found in the factories, load generic probe
     if ( ifaceProbe_==0 ) {
-        ifaceProbe_ = new orcaprobe::InterfaceProbe( interfaceData_.name, display_, context_ );
+        ifaceProbe_ = new orcaprobe::InterfaceProbe( interfaceData_.name, componentData_.adminPrx, display_, context_ );
     }
     
     // local call
