@@ -99,8 +99,8 @@ cout<<"@@@@@@@@@@@@@@@@@@@@@ REINABLE ME @@@@@@@@@@@@@@@@@@"<<endl;
     cout<<"ok"<<endl;
 
     // uncomment to manually probe Status interface
-    activate();
-    IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2000));
+//    activate();
+//    IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2000));
 
     // NOTE: cannot call communicator()->destroy() from here
     // because they'll be caught by Ice::Application and show up as failed ctest.
