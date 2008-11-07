@@ -27,7 +27,7 @@ ComponentThread::ComponentThread( const orcaice::Context& context ) :
 void
 ComponentThread::walk()
 {    
-    context_.status().compInitialising();
+    context_.status().infrastructureInitialising();
 
     Ice::PropertiesPtr props = context_.properties();
     bool hasStatusInterface = props->getPropertyAsInt( "Orca.Component.EnableStatus" );
@@ -39,7 +39,7 @@ ComponentThread::walk()
 
     const int sleepIntervalMs = 1000;
 
-    context_.status().compWorking();
+    context_.status().infrastructureWorking();
 
     try {
         while ( !isStopping() )
@@ -70,7 +70,7 @@ ComponentThread::walk()
         orcaice::catchExceptions( context_.tracer(), "running component utility thread" );
     }
 
-    context_.status().compFinalising();
+    context_.status().infrastructureFinalising();
 }
 
 //
