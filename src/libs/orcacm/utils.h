@@ -70,6 +70,16 @@ ProvidesHeader
 getProvidesHeader( const orcaice::Context& context, const orca::FQInterfaceName& fqName );
 
 /*!
+ *  This a special version of the function above, suitable for interfaces which are actually
+ *  facets of ADmin interface. We now have 3 such standard interfaces: Tracer, Status, Home.
+ *  Tries to connect to the specified interface and, if successful, gets its ID.
+ *  If connection fails for some reason, the Object ID is set to "unknown".
+ */
+ProvidesHeader
+getStandardProvidesHeader( const Ice::ObjectPrx& homePrx, const orca::FQInterfaceName& fqName );
+
+
+/*!
  *  Tries to connect to the specified interface and, if successful, gets its ID.
  *  If connection fails for some reason, the Object ID is set to "unknown".
  */

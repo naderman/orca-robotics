@@ -106,6 +106,7 @@ getComponentData( const orcaice::Context& context, const std::string& adapterId 
     return getComponentData( context, orcaice::toComponentName( adapterId ) );
 }
 
+// this is the old-old way: Home was just home@platform/component
 ComponentData
 getComponentData( const orcaice::Context& context, const orca::FQComponentName& component )
 {
@@ -119,13 +120,8 @@ getComponentData( const orcaice::Context& context, const orca::FQComponentName& 
         Ice::ObjectPrx ohome = context.communicator()->stringToProxy( "home@"+orcaice::toString(data.name) );
         orca::HomePrx home = orca::HomePrx::checkedCast(ohome);
 
-        homeData = home->getInterfaces();
+        homeData = home->getData();
         data.isReachable = true;
-
-        // copy time since activation
-        data.timeUp = homeData.timeUp;
-        // debug
-//         cout<<"time up :"<<data.timeUp<<"s"<<endl;
 
         // we must've connected, otherwise we'd have an exception
         try
@@ -142,7 +138,6 @@ getComponentData( const orcaice::Context& context, const orca::FQComponentName& 
     catch( const Ice::Exception& )
     {
         data.isReachable = false;
-        data.timeUp = 0;
         return data;
     }
     
@@ -170,7 +165,8 @@ ComponentData
 getComponentHomeData( const orcaice::Context& context, const Ice::ObjectPrx& ohome )
 {
     ComponentData data;
-    data.name = orcaice::toComponentName( ohome->ice_getAdapterId() );
+    data.adminPrx = ohome;
+    data.name = orcaice::toComponentName( ohome );
 
     orca::HomeData homeData;
 
@@ -178,15 +174,10 @@ getComponentHomeData( const orcaice::Context& context, const Ice::ObjectPrx& oho
     {
         orca::HomePrx home = orca::HomePrx::checkedCast(ohome);
 
-        homeData = home->getInterfaces();
+        homeData = home->getData();
         // debug
 //         cout<<orcaice::toString(homeData)<<endl;
         data.isReachable = true;
-
-        // copy time since activation
-        data.timeUp = homeData.timeUp;
-        // debug
-//         cout<<"time up :"<<data.timeUp<<"s"<<endl;
 
         // we must've connected, otherwise we'd have an exception
         try
@@ -203,7 +194,6 @@ getComponentHomeData( const orcaice::Context& context, const Ice::ObjectPrx& oho
     catch( const Ice::Exception& )
     {
         data.isReachable = false;
-        data.timeUp = 0;
         return data;
     }
 
@@ -216,7 +206,19 @@ getComponentHomeData( const orcaice::Context& context, const Ice::ObjectPrx& oho
         fqName.platform = data.name.platform;
         fqName.component = data.name.component;
         fqName.iface = homeData.comp.provides[j].name;
-        pface = getProvidesHeader( context, fqName );
+
+        // remote call!
+        if ( homeData.comp.provides[j].id  == "::orca::Tracer" ||    
+             homeData.comp.provides[j].id  == "::orca::Status" || 
+             homeData.comp.provides[j].id  == "::orca::Home" )  
+        {
+            pface = getStandardProvidesHeader( ohome, fqName );
+        }
+        else
+        {
+            pface = getProvidesHeader( context, fqName );
+        }
+
         data.provides.push_back( pface );
     }
 
@@ -230,6 +232,46 @@ getComponentHomeData( const orcaice::Context& context, const Ice::ObjectPrx& oho
     }
 
     return data;
+}
+
+ProvidesHeader
+getStandardProvidesHeader( const Ice::ObjectPrx& homePrx, const orca::FQInterfaceName& fqName )
+{
+cout<<"DEBUG: getStandardProvidesHeader() fqName.iface="<< fqName.iface << endl;
+    ProvidesHeader header;
+    header.name = fqName.iface;
+    
+    Ice::ObjectPrx obj;
+
+    if ( fqName.iface == "home" )
+        obj = homePrx->ice_facet( "Home" );
+    else if ( fqName.iface == "status" )
+        obj = homePrx->ice_facet( "Status" );
+    else if ( fqName.iface == "tracer" )
+        obj = homePrx->ice_facet( "Tracer" );
+   
+    //cout<<"looking up proxy "<<obj<<endl;
+    try
+    {
+        header.id = obj->ice_id();
+        header.isReachable = true;
+    }
+    catch( const Ice::ObjectNotExistException& )
+    {
+        //cout<<e<<endl;
+        //cout << "failed to reach "<< header.name << endl;
+        header.id = "Ice::ObjectNotExistException";
+        header.isReachable = false;
+    }
+    catch( const Ice::Exception& e )
+    {
+        cout<<e<<endl;
+        cout << "failed to lookup ID for "<< header.name << endl;
+        header.id = "unknown";
+        // does this make sense?
+        header.isReachable = true;
+    }
+    return header;
 }
 
 ProvidesHeader
@@ -290,15 +332,14 @@ home2hierarch1( const RegistryHomeData& registryHomeData )
     hierData.address = registryHomeData.address;
     hierData.isReachable = registryHomeData.isReachable;
 
-    std::string adapt;
     orca::FQComponentName compName;
     PlatformHeader platformHeader;
     bool isDuplicate;
     for ( unsigned int i=0; i<registryHomeData.homes.size(); ++i ) {
         isDuplicate = false;
+
         // local call
-        adapt = registryHomeData.homes[i].proxy->ice_getAdapterId();
-        compName = orcaice::toComponentName( adapt );
+        compName = orcaice::toComponentName( registryHomeData.homes[i].proxy );
         
         // eliminate duplicates
         for ( unsigned int j=0; j<hierData.platforms.size(); ++j ) {
@@ -331,9 +372,9 @@ home2hierarch2( const RegistryHomeData& registryHomeData, const PlatformHeader& 
     orca::FQComponentName compName;
 
     for ( unsigned int i=0; i<registryHomeData.homes.size(); ++i ) {
+
         // local call
-        adapt = registryHomeData.homes[i].proxy->ice_getAdapterId();
-        compName = orcaice::toComponentName( adapt );
+        compName = orcaice::toComponentName( registryHomeData.homes[i].proxy );
         
         // select home headers on the given platform
         if ( compName.platform == platform.name ) {
@@ -341,7 +382,7 @@ home2hierarch2( const RegistryHomeData& registryHomeData, const PlatformHeader& 
             HomeHeader homeHeader = registryHomeData.homes[i];
             // first, we are optimistic
             homeHeader.isReachable = true;
-            // ping each component's Home interface, if requested
+            // ping this component's Home interface, if requested
             if ( tryToPing ) {
                 try {
                     homeHeader.proxy->ice_ping();

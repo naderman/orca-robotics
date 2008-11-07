@@ -113,14 +113,14 @@ struct ComponentData
     std::string locatorString;
     //! Address of the endpoint on which the Admin object was reached.
     std::string adminAddress;
+    //! Admin proxy
+    Ice::ObjectPrx adminPrx;
     //! Component name
     orca::FQComponentName name;
     //! Is the component reachable?
     bool isReachable;
     //! Address of the endpoint on which the component was reached.
     std::string address;
-    //! Time since activation [seconds].
-    int timeUp;
     //! A listing of provided interfaces
     std::vector<ProvidesHeader> provides;
     //! A listing of required interfaces
@@ -186,7 +186,7 @@ struct RegistryHierarchicalData1
     std::vector<PlatformHeader> platforms;
 };
 
-//! Registry data which lists platforms
+//! Registry data which lists components on one platform
 struct RegistryHierarchicalData2
 {
     //! Stringified proxy for the Locator object
