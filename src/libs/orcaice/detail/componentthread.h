@@ -12,7 +12,6 @@
 #define ORCAICE_COMPONENT_THREAD_H
 
 #include <gbxsickacfr/gbxiceutilacfr/safethread.h>
-#include <gbxutilacfr/status.h>
 #include <orcaice/context.h>
 
 namespace orcaice {
@@ -29,7 +28,7 @@ class ComponentThread : public gbxiceutilacfr::SafeThread
 
 public: 
 
-    ComponentThread( gbxutilacfr::Status& status, const orcaice::Context& context );
+    ComponentThread( const orcaice::Context& context );
 
 private: 
 
@@ -38,7 +37,6 @@ private:
     // Returns: true = success
     bool tryRegisterHome();
 
-    gbxutilacfr::Status    &status_;
     orcaice::Context        context_;
 };
 

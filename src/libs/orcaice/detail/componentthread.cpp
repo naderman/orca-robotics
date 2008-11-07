@@ -18,9 +18,8 @@
 using namespace std;
 using namespace orcaice;
 
-ComponentThread::ComponentThread( gbxutilacfr::Status& status, const orcaice::Context& context ) :
+ComponentThread::ComponentThread( const orcaice::Context& context ) :
     SafeThread(context.tracer()),
-    status_(status),
     context_(context)
 {
 }
@@ -28,6 +27,8 @@ ComponentThread::ComponentThread( gbxutilacfr::Status& status, const orcaice::Co
 void
 ComponentThread::walk()
 {    
+    context_.status().compInitialising();
+
     Ice::PropertiesPtr props = context_.properties();
     bool hasStatusInterface = props->getPropertyAsInt( "Orca.Component.EnableStatus" );
     bool hasHomeInterface = props->getPropertyAsInt( "Orca.Component.EnableHome" );
@@ -37,6 +38,8 @@ ComponentThread::walk()
     bool registeredHome = false;
 
     const int sleepIntervalMs = 1000;
+
+    context_.status().compWorking();
 
     try {
         while ( !isStopping() )
@@ -56,7 +59,7 @@ ComponentThread::walk()
 
             if ( hasStatusInterface )
             {
-                status_.process();
+                context_.status().process();
             }
 
             IceUtil::ThreadControl::sleep(IceUtil::Time::milliSeconds(sleepIntervalMs));
@@ -66,6 +69,8 @@ ComponentThread::walk()
     {
         orcaice::catchExceptions( context_.tracer(), "running component utility thread" );
     }
+
+    context_.status().compFinalising();
 }
 
 //
@@ -77,8 +82,23 @@ ComponentThread::tryRegisterHome()
 {
     std::string homeIdentityString = toHomeIdentity( context_.name() );
     Ice::Identity homeIdentity = context_.communicator()->stringToIdentity(homeIdentityString);
-    Ice::ObjectPrx homePrx = context_.adapter()->createProxy( homeIdentity );
-    context_.tracer().info( string("Registering Home with identity ")+homeIdentityString );
+
+    // previous method: adding Home to the component adapter
+//     Ice::ObjectPrx homePrx = context_.adapter()->createProxy( homeIdentity );
+
+    // EXPERIMENTAL! adding Home as a facet to the Admin interface.
+    Ice::ObjectPrx adminPrx = context_.communicator()->getAdmin();
+    assert( adminPrx && "Null admin proxy when registering home" );
+    cout<<"DEBUG: admin proxy: "<<adminPrx->ice_toString()<<endl;
+
+    // change generic proxy to the Home facet.
+    Ice::ObjectPrx homePrx = adminPrx->ice_facet( "Home" );
+
+    // apparently cannot change just the registered name. it changes the proxy, which is wrong.
+//     homePrx = homePrx->ice_identity( homeIdentity );
+//     cout<<"DEBUG: home proxy: "<<homePrx->ice_toString()<<endl;
+
+//     context_.tracer().info( string("Registering Home with identity ")+homeIdentityString );
 
     std::string instanceName = context_.properties()->getPropertyWithDefault( "IceGrid.InstanceName", "IceGrid" );
     Ice::ObjectPrx base = context_.communicator()->stringToProxy( instanceName+"/Registry" );
@@ -90,7 +110,9 @@ ComponentThread::tryRegisterHome()
         std::string password = "componentthread-no-access-control";
         IceGrid::AdminSessionPrx adminSession = registry->createAdminSession( username, password );
 
+        //
         // use the adminSession to add our Home interface
+        //
         IceGrid::AdminPrx admin = adminSession->getAdmin();
         try {
             admin->addObjectWithType( homePrx, "::orca::Home" );
@@ -98,6 +120,8 @@ ComponentThread::tryRegisterHome()
         catch ( const IceGrid::ObjectExistsException& ) {
             admin->updateObject( homePrx );
         }
+        context_.tracer().info( string("Registered Home as: ")+homePrx->ice_toString() );
+
         // we don't need the session anymore
         // (we can just leave it there and it would be destroyed eventually without being kept alive, but it's
         // more transparent if we destroy it ourselves)
@@ -109,7 +133,7 @@ ComponentThread::tryRegisterHome()
     }
     catch ( Ice::Exception& e ) 
     {
-        bool requireRegistry = context_.properties()->getPropertyAsInt( "Orca.RequireRegistry" );
+        bool requireRegistry = context_.properties()->getPropertyAsInt( "Orca.Component.RequireRegistry" );
         if ( requireRegistry ) {
             std::stringstream ss;
             ss << "Failed to register Home interface: "<<e<<".  Check IceGrid Registry.  You may allow things to continue without registration by setting Orca.RequireRegistry=0.";

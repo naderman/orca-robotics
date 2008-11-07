@@ -73,7 +73,7 @@ namespace detail
      *   - Combines platform and component names into adapter ID property.
      */
 //     orca::FQComponentName 
-    void parseComponentProperties( const Ice::PropertiesPtr& properties, const std::string& compTag );
+    void postProcessComponentProperties( const Ice::PropertiesPtr& properties, const std::string& compTag );
 
     // Prints out all component properties. Tag is used only for tracing.
     void printComponentProperties( const Ice::PropertiesPtr& properties, const std::string& compTag );

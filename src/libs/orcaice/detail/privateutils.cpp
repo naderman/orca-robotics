@@ -29,19 +29,19 @@ namespace detail
 //  1 if the property already existed in the target set and it was left untouched
 // -1 if the property was not set in the source set, the target was left untouched
 int
-transferProperty( const Ice::PropertiesPtr& fromProperties, 
-                  Ice::PropertiesPtr&       toProperties,
+transferProperty( const Ice::PropertiesPtr& fromProps, 
+                  Ice::PropertiesPtr&       toProps,
                   const string&             fromKey,
                   const string&             toKey,
                   bool                      force )
 {
-    string fromValue = fromProperties->getProperty( fromKey );
+    string fromValue = fromProps->getProperty( fromKey );
     bool existFromValue = !fromValue.empty();
     if ( !existFromValue ) {
         // the property is not set in the source set, leave the target one untouched
         return -1;
     }
-    return transferProperty( toProperties,
+    return transferProperty( toProps,
                              fromKey,
                              fromValue,
                              toKey,
@@ -53,7 +53,7 @@ transferProperty( const Ice::PropertiesPtr& fromProperties,
 //  0 if it was transferred successfully
 //  1 if the property already existed in the target set and it was left untouched
 int
-transferProperty( Ice::PropertiesPtr&       toProperties,
+transferProperty( Ice::PropertiesPtr&       toProps,
                   const string&             fromKey,
                   const string&             fromValue,
                   const string&             toKey,
@@ -62,7 +62,7 @@ transferProperty( Ice::PropertiesPtr&       toProperties,
     // not forcing the transfer
     if ( !force ) {
         // check that the target does not have the property already set
-        string toValue = toProperties->getProperty( toKey );
+        string toValue = toProps->getProperty( toKey );
         bool existToValue = !toValue.empty();
         if ( existToValue ) {
             // there's something already in the target properties, don't touch it.
@@ -73,15 +73,15 @@ transferProperty( Ice::PropertiesPtr&       toProperties,
     }
 
     // transerring the value
-    toProperties->setProperty( toKey, fromValue );
+    toProps->setProperty( toKey, fromValue );
     return 0;
 }
 
 // Internal helper function.
 // behaves like transferProperty. if key is missing, sets the toValue to defaultValue.
 void
-transferPropertyWithDefault( const Ice::PropertiesPtr& fromProperties, 
-                             Ice::PropertiesPtr&       toProperties,
+transferPropertyWithDefault( const Ice::PropertiesPtr& fromProps, 
+                             Ice::PropertiesPtr&       toProps,
                              const string&             fromKey,
                              const string&             toKey,
                              const string&             defaultValue,
@@ -90,113 +90,111 @@ transferPropertyWithDefault( const Ice::PropertiesPtr& fromProperties,
     if ( !force ) {
         // if we asked not to force the transfer,
         // check that the target does not have the property already set
-        string toValue = toProperties->getProperty( toKey );
+        string toValue = toProps->getProperty( toKey );
         if ( !toValue.empty() ) {
             // there's something already in the target properties, don't touch it.
             return;
         }
     }
 
-    string fromValue = fromProperties->getPropertyWithDefault( fromKey, defaultValue );
-    toProperties->setProperty( toKey, fromValue );
+    string fromValue = fromProps->getPropertyWithDefault( fromKey, defaultValue );
+    toProps->setProperty( toKey, fromValue );
 }
 
 // Internal helper function.
 void
-setPropertyDefault( Ice::PropertiesPtr& toProperties, const string& key, const string& defaultValue, bool force )
+setPropertyDefault( Ice::PropertiesPtr& toProps, const string& key, const string& defaultValue, bool force )
 {
     if ( !force ) {
         // if we asked not to force the transfer,
         // check that the target does not have the property already set
-        string toValue = toProperties->getProperty( key );
+        string toValue = toProps->getProperty( key );
         if ( !toValue.empty() ) {
             // there's something already in the target properties, don't touch it.
             return;
         }
     }
     // target properties don't have this property set, set to default
-    toProperties->setProperty( key, defaultValue );
+    toProps->setProperty( key, defaultValue );
 }    
 
 void
-setFactoryProperties( Ice::PropertiesPtr& properties, const std::string& compTag )
+setFactoryProperties( Ice::PropertiesPtr& props, const std::string& compTag )
 {
     // Instantiate a separate property set
-    Ice::PropertiesPtr tempProperties = Ice::createProperties();
+    Ice::PropertiesPtr tempProps = Ice::createProperties();
 
     // modify Ice defaults
     // Ice default is 1 and it always prints out warning because we attach our own 
     // config parameters (e.g. Platform, Component, Config.XXX) to the tag of the
     // Object Adapter.
-    tempProperties->setProperty( "Ice.Warn.UnknownProperties",    "0" );
-//     tempProperties->setProperty( "Ice.Trace.Network",          "0" );
-//     tempProperties->setProperty( "Ice.Trace.Protocol",         "0" );
-//     tempProperties->setProperty( "Ice.Warn.Connections",       "0" );
-//     tempProperties->setProperty( "Ice.PrintAdapterReady",      "1" );
-//     tempProperties->setProperty( "Ice.Logger.Timestamp",       "1" );
+    tempProps->setProperty( "Ice.Warn.UnknownProperties",    "0" );
+//     tempProps->setProperty( "Ice.Trace.Network",          "0" );
+//     tempProps->setProperty( "Ice.Trace.Protocol",         "0" );
+//     tempProps->setProperty( "Ice.Warn.Connections",       "0" );
+//     tempProps->setProperty( "Ice.PrintAdapterReady",      "1" );
+//     tempProps->setProperty( "Ice.Logger.Timestamp",       "1" );
 
     // the default assumes that there's an IceStorm server running on our host at
     // the specified port. This default can be over-written by specifying
     // --IceStorm.TopicManager.Proxy property.
-    tempProperties->setProperty( "IceStorm.TopicManager.Proxy", "IceStorm/TopicManager:default -p 10000" );
+    tempProps->setProperty( "IceStorm.TopicManager.Proxy", "IceStorm/TopicManager:default -p 10000" );
 
     // adapter properties: these two are required for everything to work but
     // they are not present in the default config files. You can override these 
     // in the config files.
     orca::FQComponentName fqCName;
     // we've already made sure that component and platform are filled in
-    fqCName.platform = properties->getProperty(compTag+".Platform");
-    fqCName.component = properties->getProperty(compTag+".Component");
-    tempProperties->setProperty( compTag+".AdapterId", orcaice::toString(fqCName) );
-    tempProperties->setProperty( compTag+".Endpoints", "tcp -t 5000" );
+    fqCName.platform = props->getProperty(compTag+".Platform");
+    fqCName.component = props->getProperty(compTag+".Component");
+    tempProps->setProperty( compTag+".AdapterId", orcaice::toString(fqCName) );
+    tempProps->setProperty( compTag+".Endpoints", "tcp -t 5000" );
 
     // orca properties
-    tempProperties->setProperty( "Orca.PrintProperties",       "0" );
-    tempProperties->setProperty( "Orca.PrintComponentStarted", "0" );
-    tempProperties->setProperty( "Orca.RequireRegistry",       "1" );
-    tempProperties->setProperty( "Orca.Warn.DefaultProperty",  "1" );
-    tempProperties->setProperty( "Orca.Warn.FactoryProperty",  "0" );
+    tempProps->setProperty( "Orca.Warn.DefaultProperty",  "1" );
+    tempProps->setProperty( "Orca.Warn.FactoryProperty",  "0" );
     
     // Application properties
     // This is advance property. Default value should be good for most cases.
     // The alternative is to request ShutdownOnInterrupt.
-    tempProperties->setProperty( "Orca.Application.CallbackOnInterrupt",  "1" );
+    tempProps->setProperty( "Orca.Application.CallbackOnInterrupt",  "1" );
 
     // Component properties
-    // these 3 are special in that they are also explicitly set by the Component programmatically
-//     tempProperties->setProperty( "Orca.Component.EnableTracer",  "1" );
-//     tempProperties->setProperty( "Orca.Component.EnableStatus",  "1" );
-//     tempProperties->setProperty( "Orca.Component.EnableHome",  "1" );
-    // there're also configurable overrides
-//     tempProperties->setProperty( "Orca.Component.Override.EnableTracer",  "1" );
-//     tempProperties->setProperty( "Orca.Component.Override.EnableStatus",  "1" );
-//     tempProperties->setProperty( "Orca.Component.Override.EnableHome",  "1" );
+    tempProps->setProperty( "Orca.Component.RequireRegistry",  "1" );
+    tempProps->setProperty( "Orca.Component.EnableProperties", "1" );
+    tempProps->setProperty( "Orca.Component.EnableProcess",    "0" );
+    // these 3 are special: the defaults are set by the programmer in the source code
+//     tempProps->setProperty( "Orca.Component.EnableTracer",  "1" );
+//     tempProps->setProperty( "Orca.Component.EnableStatus",  "1" );
+//     tempProps->setProperty( "Orca.Component.EnableHome",    "1" );
+    tempProps->setProperty( "Orca.Component.PrintProperties",  "0" );
+    tempProps->setProperty( "Orca.Component.PrintStarted",     "0" );
 
     // Status properties
-    tempProperties->setProperty( "Orca.Status.RequireIceStorm",    "0" );
+    tempProps->setProperty( "Orca.Status.RequireIceStorm",    "0" );
 
-    // all tracer tempProperties have default values
-    tempProperties->setProperty( "Orca.Tracer.RequireIceStorm",    "0" );
-    tempProperties->setProperty( "Orca.Tracer.Filename",           "orca_component_trace.txt" );
+    // all tracer tempProps have default values
+    tempProps->setProperty( "Orca.Tracer.RequireIceStorm",    "0" );
+    tempProps->setProperty( "Orca.Tracer.Filename",           "orca_component_trace.txt" );
     // format
-    tempProperties->setProperty( "Orca.Tracer.Timestamp",          "1" );
+    tempProps->setProperty( "Orca.Tracer.Timestamp",          "1" );
     // destinations
-    tempProperties->setProperty( "Orca.Tracer.InfoToDisplay",      "1" );
-    tempProperties->setProperty( "Orca.Tracer.InfoToNetwork",      "0" );
-    tempProperties->setProperty( "Orca.Tracer.InfoToFile",         "0" );
-    tempProperties->setProperty( "Orca.Tracer.WarningToDisplay",   "1" );
-    tempProperties->setProperty( "Orca.Tracer.WarningToNetwork",   "0" );
-    tempProperties->setProperty( "Orca.Tracer.WarningToFile",      "0" );
-    tempProperties->setProperty( "Orca.Tracer.ErrorToDisplay",     "10" );
-    tempProperties->setProperty( "Orca.Tracer.ErrorToNetwork",     "0" );
-    tempProperties->setProperty( "Orca.Tracer.ErrorToFile",        "0" );
-    tempProperties->setProperty( "Orca.Tracer.DebugToDisplay",     "0" );
-    tempProperties->setProperty( "Orca.Tracer.DebugToNetwork",     "0" );
-    tempProperties->setProperty( "Orca.Tracer.DebugToFile",        "0" );
+    tempProps->setProperty( "Orca.Tracer.InfoToDisplay",      "1" );
+    tempProps->setProperty( "Orca.Tracer.InfoToNetwork",      "0" );
+    tempProps->setProperty( "Orca.Tracer.InfoToFile",         "0" );
+    tempProps->setProperty( "Orca.Tracer.WarningToDisplay",   "1" );
+    tempProps->setProperty( "Orca.Tracer.WarningToNetwork",   "0" );
+    tempProps->setProperty( "Orca.Tracer.WarningToFile",      "0" );
+    tempProps->setProperty( "Orca.Tracer.ErrorToDisplay",     "10" );
+    tempProps->setProperty( "Orca.Tracer.ErrorToNetwork",     "0" );
+    tempProps->setProperty( "Orca.Tracer.ErrorToFile",        "0" );
+    tempProps->setProperty( "Orca.Tracer.DebugToDisplay",     "0" );
+    tempProps->setProperty( "Orca.Tracer.DebugToNetwork",     "0" );
+    tempProps->setProperty( "Orca.Tracer.DebugToFile",        "0" );
     // filtering
     // these are not currently used.
-//     tempProperties->setProperty( "Orca.Tracer.IgnoreRepeatedWarnings","0" );
-//     tempProperties->setProperty( "Orca.Tracer.IgnoreRepeatedErrors",  "0" );
+//     tempProps->setProperty( "Orca.Tracer.IgnoreRepeatedWarnings","0" );
+//     tempProps->setProperty( "Orca.Tracer.IgnoreRepeatedErrors",  "0" );
 
     // we are transfering prop's from lower to higher priority, this means that
     // if a property is already defined in the target property set, it is used and not the one from the source.
@@ -204,12 +202,12 @@ setFactoryProperties( Ice::PropertiesPtr& properties, const std::string& compTag
 
     // this property is self-referncial, as a special case look it up with default.
     // it will also appear in the component property set.
-    bool warnFactoryProp = (bool)properties->getPropertyAsIntWithDefault(
+    bool warnFactoryProp = (bool)props->getPropertyAsIntWithDefault(
         "Orca.Warn.FactoryProperty", 0);
 
-    std::map<string,string> props = tempProperties->getPropertiesForPrefix("");
-    for ( std::map<string,string>::iterator it=props.begin(); it!=props.end(); ++it ) {
-        bool ret = transferProperty( tempProperties, properties, it->first, it->first, forceTransfer );
+    std::map<string,string> propMap = tempProps->getPropertiesForPrefix("");
+    for ( std::map<string,string>::iterator it=propMap.begin(); it!=propMap.end(); ++it ) {
+        bool ret = transferProperty( tempProps, props, it->first, it->first, forceTransfer );
         if ( warnFactoryProp && ret==0 ) {
             initTracerInfo( "Set property to factory default value: "+it->first+"="+it->second );
         }
@@ -217,14 +215,14 @@ setFactoryProperties( Ice::PropertiesPtr& properties, const std::string& compTag
 }
 
 void
-setGlobalProperties( Ice::PropertiesPtr& properties, const std::string& filename )
+setGlobalProperties( Ice::PropertiesPtr& props, const std::string& filename )
 {    
     // Instantiate a separate property set
-    Ice::PropertiesPtr tempProperties = Ice::createProperties();
+    Ice::PropertiesPtr tempProps = Ice::createProperties();
 
     try 
     {
-        tempProperties->load( filename );
+        tempProps->load( filename );
     }
     catch ( Ice::SyscallException& e ) 
     {
@@ -237,21 +235,21 @@ setGlobalProperties( Ice::PropertiesPtr& properties, const std::string& filename
     // if a property is already defined in the target property set, it is used and not the one from the source.
     bool forceTransfer = false;
 
-    std::map<string,string> props = tempProperties->getPropertiesForPrefix("");
-    for ( std::map<string,string>::iterator it=props.begin(); it!=props.end(); ++it ) {
-        transferProperty( tempProperties, properties, it->first, it->first, forceTransfer );
+    std::map<string,string> propMap = tempProps->getPropertiesForPrefix("");
+    for ( std::map<string,string>::iterator it=propMap.begin(); it!=propMap.end(); ++it ) {
+        transferProperty( tempProps, props, it->first, it->first, forceTransfer );
     }
 }
 
 void
-setComponentPropertiesFromFile( Ice::PropertiesPtr& properties, const std::string& filename )
+setComponentPropertiesFromFile( Ice::PropertiesPtr& props, const std::string& filename )
 {    
     // Instantiate a separate property set
-    Ice::PropertiesPtr tempProperties = Ice::createProperties();
+    Ice::PropertiesPtr tempProps = Ice::createProperties();
 
     try 
     {
-        tempProperties->load( filename );
+        tempProps->load( filename );
     }
     catch ( Ice::SyscallException& e ) 
     {
@@ -261,53 +259,51 @@ setComponentPropertiesFromFile( Ice::PropertiesPtr& properties, const std::strin
 
     // debug
 //     initTracerInfo("loaded component properties from file:");
-//     orcaice::printComponentProperties( tempProperties, "Debug" );
+//     orcaice::printComponentProperties( tempProps, "Debug" );
 
     // we are transfering prop's from lower to higher priority, this means that
     // if a property is already defined in the target property set, it is used and not the one from the source.
     bool forceTransfer = false;
 
-    std::map<string,string> props = tempProperties->getPropertiesForPrefix("");
-    for ( std::map<string,string>::iterator it=props.begin(); it!=props.end(); ++it ) {
-        transferProperty( tempProperties, properties, it->first, it->first, forceTransfer );
+    std::map<string,string> propMap = tempProps->getPropertiesForPrefix("");
+    for ( std::map<string,string>::iterator it=propMap.begin(); it!=propMap.end(); ++it ) {
+        transferProperty( tempProps, props, it->first, it->first, forceTransfer );
     }
 
     // extra funky stuff, this is needed for Services
     // still not forcing it
 //     forceTransfer = false;
     // some properties may be duplicated under other keys
-//     transferProperty( properties, properties, "Ice.Default.Locator", compTag + ".Locator", forceTransfer );
+//     transferProperty( props, props, "Ice.Default.Locator", compTag + ".Locator", forceTransfer );
 }
 
-// orca::FQComponentName
 void
-parseComponentProperties( const Ice::PropertiesPtr& properties, const std::string& compTag )
+postProcessComponentProperties( const Ice::PropertiesPtr& props, const std::string& compTag )
 {
-//     Ice::PropertiesPtr properties = communicator->getProperties();
+    // all defaults have already been set!
 
-    // default was already set
-    bool warnFactoryProp = (bool)properties->getPropertyAsInt("Orca.Warn.FactoryProperty");
+    bool warnFactoryProp = (bool)props->getPropertyAsInt("Orca.Warn.FactoryProperty");
 
     orca::FQComponentName fqCName;
-
     string adapter;
+
     // first, check for concise syntax: "platform/component"
     // NOTE: this feature is undocumented.
     // alexm: I think this we don't documentit to simplify explanation of config files,
     // but we need this for running components through IceGrid (I think).
-    if ( !orcaice::getProperty( properties, compTag+".AdapterId", adapter ) ) 
+    if ( !orcaice::getProperty( props, compTag+".AdapterId", adapter ) ) 
     {
         // When AdapterId is specified, it overwrites platform and component properties.
         fqCName = orcaice::toComponentName( adapter );
-        properties->setProperty( compTag+".Platform", fqCName.platform );
-        properties->setProperty( compTag+".Component", fqCName.component );
+        props->setProperty( compTag+".Platform", fqCName.platform );
+        props->setProperty( compTag+".Component", fqCName.component );
     }
     else 
     { 
         // When AdapterId is NOT specified, we read individual properties and set the AdapterId
-        properties->getProperty( compTag+".Platform" );
-        properties->getProperty( compTag+".Component" );
-        properties->setProperty( compTag+".AdapterId", orcaice::toString(fqCName) );
+        props->getProperty( compTag+".Platform" );
+        props->getProperty( compTag+".Component" );
+        props->setProperty( compTag+".AdapterId", orcaice::toString(fqCName) );
     }
 
     // check that we have platform name, if missing set it to 'local'
@@ -317,8 +313,8 @@ parseComponentProperties( const Ice::PropertiesPtr& properties, const std::strin
         fqCName.platform = "local";
         if ( warnFactoryProp )
             initTracerInfo( "Set property to factory default value: "+compTag+".Platform="+fqCName.platform );
-        properties->setProperty( compTag+".Platform", fqCName.platform );
-        properties->setProperty( compTag+".AdapterId", orcaice::toString(fqCName) );
+        props->setProperty( compTag+".Platform", fqCName.platform );
+        props->setProperty( compTag+".AdapterId", orcaice::toString(fqCName) );
     }
 
     // check that we have component name, if missing set it to 'ComponentTag' converted to lower case.
@@ -328,8 +324,8 @@ parseComponentProperties( const Ice::PropertiesPtr& properties, const std::strin
         fqCName.component = hydroutil::toLowerCase( compTag );
         if ( warnFactoryProp )
             initTracerInfo( "Set property to factory default value: "+compTag+".Component="+fqCName.component );
-        properties->setProperty( compTag+".Component", fqCName.component );
-        properties->setProperty( compTag+".AdapterId", orcaice::toString(fqCName) );
+        props->setProperty( compTag+".Component", fqCName.component );
+        props->setProperty( compTag+".AdapterId", orcaice::toString(fqCName) );
     }
 
     // special case: replace 'local' platform with actual hostname
@@ -337,20 +333,40 @@ parseComponentProperties( const Ice::PropertiesPtr& properties, const std::strin
     {
         fqCName.platform = hydroutil::getHostname();
         // update properties
-        properties->setProperty( compTag+".Platform", fqCName.platform );
-        properties->setProperty( compTag+".AdapterId", orcaice::toString(fqCName) );
+        props->setProperty( compTag+".Platform", fqCName.platform );
+        props->setProperty( compTag+".AdapterId", orcaice::toString(fqCName) );
         if ( warnFactoryProp ) {
             initTracerInfo( "Replaced 'local' with hostname: "+compTag+".Platform="+fqCName.platform );
             initTracerInfo( "Replaced 'local' with hostname: "+compTag+".AdapterId="+orcaice::toString(fqCName) );
         }
     }
-//     return fqCName;
+
+    // 
+    // Admin interface
+    //
+    // the component will decide later whether to enable the interface or not.
+    props->setProperty( "Ice.Admin.Endpoints", "tcp" );
+    string adminInstanceName = fqCName.platform + "." + fqCName.component;
+    props->setProperty( "Ice.Admin.InstanceName", adminInstanceName );
+    // I don't think we need the delay actually. All settings are set before the communicator is created.
+//     props->setProperty( "Ice.Admin.DelayCreation", "1" );
+
+    string facetsToLoad;
+    // Ice standard facets: use configs to decide which ones we want Ice to load
+    if ( props->getPropertyAsInt( "Orca.Component.EnableProperties" ) )
+        facetsToLoad += "Properties";
+    if ( props->getPropertyAsInt( "Orca.Component.EnableProcess" ) )
+        facetsToLoad += " Process";
+    // Orca custom facets: we add all of them to the list of allowed facets and compoent will later start the ones it wants
+    // (if we don't white-list them here, Ice will not make them visible)
+    facetsToLoad += " Home Tracer Status";
+    props->setProperty( "Ice.Admin.Facets", facetsToLoad );
 }
 
 void
-printComponentProperties( const Ice::PropertiesPtr& properties, const std::string& compTag )
+printComponentProperties( const Ice::PropertiesPtr& props, const std::string& compTag )
 {
-    Ice::StringSeq propSeq = properties->getCommandLineOptions();
+    Ice::StringSeq propSeq = props->getCommandLineOptions();
 
     std::ostringstream os;
     os << propSeq.size();
@@ -376,7 +392,7 @@ printAllVersions( const Component& component )
     initTracerInfo( ss.str() );
 }
 
-void addPropertiesFromApplicationConfigFile( Ice::PropertiesPtr   &properties,
+void addPropertiesFromApplicationConfigFile( Ice::PropertiesPtr   &props,
                                              const Ice::StringSeq &commandLineArgs,
                                              const std::string    &componentTag )
 {
@@ -388,7 +404,7 @@ void addPropertiesFromApplicationConfigFile( Ice::PropertiesPtr   &properties,
             initTracerInfo( componentTag+": "+warnMissingProperty("component properties file","Orca.Config") );
         }
         else {
-            orcaice::detail::setComponentPropertiesFromFile( properties, compFilename );
+            orcaice::detail::setComponentPropertiesFromFile( props, compFilename );
             initTracerInfo( componentTag+": Loaded component properties from '"+compFilename+"'" );
         }
     }
@@ -398,7 +414,7 @@ void addPropertiesFromApplicationConfigFile( Ice::PropertiesPtr   &properties,
     }    
 }
 
-void addPropertiesFromServiceConfigFile( Ice::PropertiesPtr   &properties,
+void addPropertiesFromServiceConfigFile( Ice::PropertiesPtr   &props,
                                          const Ice::StringSeq &commandLineArgs,
                                          const std::string    &componentTag )
 {
@@ -415,7 +431,7 @@ void addPropertiesFromServiceConfigFile( Ice::PropertiesPtr   &properties,
             initTracerInfo( componentTag+": Component config file is not specified." );
         }
         else {
-            orcaice::detail::setComponentPropertiesFromFile( properties, servFilename );
+            orcaice::detail::setComponentPropertiesFromFile( props, servFilename );
             initTracerInfo( componentTag+": Loaded component properties from '"+servFilename+"'" );
         }
     }
@@ -425,14 +441,14 @@ void addPropertiesFromServiceConfigFile( Ice::PropertiesPtr   &properties,
     }
 }
 
-void addPropertiesFromGlobalConfigFile( Ice::PropertiesPtr   &properties,
+void addPropertiesFromGlobalConfigFile( Ice::PropertiesPtr   &props,
                                         const std::string    &componentTag )
 {
     std::string globFilename;
     try
     {
-        globFilename = orcaice::detail::getGlobalConfigFilename( properties );
-        orcaice::detail::setGlobalProperties( properties, globFilename );
+        globFilename = orcaice::detail::getGlobalConfigFilename( props );
+        orcaice::detail::setGlobalProperties( props, globFilename );
         initTracerInfo( componentTag+": Loaded global properties from '"+globFilename+"'" );
     }
     catch ( const gbxutilacfr::Exception &e )
