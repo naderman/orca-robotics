@@ -78,7 +78,7 @@ void setProperties( Ice::PropertiesPtr         &properties,
     }
 
     // Level 0. sort out platform and component names, apply defaults, set adapter names.
-    orcaice::detail::parseComponentProperties( properties, componentTag );
+    orcaice::detail::postProcessComponentProperties( properties, componentTag );
 
     if ( applyFactoryAndGlobals ) 
     {
@@ -153,7 +153,7 @@ Service::start( const ::std::string        & name,
 
     // print all prop's now, after some stuff was added, e.g. Tag.AdapterId
     // note: is it possible that some of the prop's got stripped off by Ice::Application::main()? I don't think so.
-    if ( props->getPropertyAsInt( "Orca.PrintProperties" ) ) {
+    if ( props->getPropertyAsInt( "Orca.Component.PrintProperties" ) ) {
         orcaice::detail::printComponentProperties( props, component_->context().tag() );
     }
 
@@ -179,7 +179,7 @@ Service::start( const ::std::string        & name,
     try
     {
         component_->start();
-        if ( communicator->getProperties()->getPropertyAsInt( "Orca.PrintComponentStarted" ) ) {
+        if ( communicator->getProperties()->getPropertyAsInt( "Orca.Component.PrintStarted" ) ) {
             initTracerInfo( component_->context().tag()+": Component started" );
         }
     }

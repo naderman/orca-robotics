@@ -53,7 +53,7 @@ void setProperties( Ice::PropertiesPtr   &properties,
     initTracerInfo( componentTag+": Loaded factory default properties" );
 
     // Level 0. sort out platform and component names, apply defaults, set adapter names.
-    orcaice::detail::parseComponentProperties( properties, componentTag );
+    orcaice::detail::postProcessComponentProperties( properties, componentTag );
 }
 
 }
@@ -126,7 +126,7 @@ Application::run( int argc, char* argv[] )
 
     // print all prop's now, after some stuff was added, e.g. Tag.AdapterId
     // note: is it possible that some of the prop's got stripped off by Ice::Application::main()? I don't think so.
-    if ( props->getPropertyAsInt( "Orca.PrintProperties" ) ) {
+    if ( props->getPropertyAsInt( "Orca.Component.PrintProperties" ) ) {
         orcaice::detail::printComponentProperties( props, component_.context().tag() );
     }
 
@@ -156,7 +156,7 @@ Application::run( int argc, char* argv[] )
         // for the components which hug the thread, eg. Qt-based, this will be printed at shutdown
         // this is optional because after the comp is started we can't assume that dumping to cout 
         // will produce the desired result (e.g. if ncurses are used)
-        if ( props->getPropertyAsInt( "Orca.PrintComponentStarted" ) ) {
+        if ( props->getPropertyAsInt( "Orca.Component.PrintStarted" ) ) {
             initTracerInfo( component_.context().tag()+": Component started" );
         }
     }

@@ -32,13 +32,14 @@ public:
     StatusImpl( const orcaice::Context& context );
     ~StatusImpl();
 
-    void initInterface( const orcaice::Context& context );
+    void updateContext( const orcaice::Context& context ) { context_ = context; };
+    void initInterface();
 //     void initInterface( gbxiceutilacfr::Thread* thread, const std::string& subsysName="", int retryInterval=2 );
 
 private:
 
     // from LocalStatus
-    virtual void publishEvent( const hydroiceutil::NameStatusMap& subsystems );
+    virtual void publishEvent( const hydroiceutil::LocalComponentStatus& componentStatus );
 
     // remote call implementations, mimic (but do not inherit) the orca interface
     ::orca::StatusData internalGetData() const;
@@ -61,8 +62,6 @@ private:
     const std::string              interfaceName_;
     const std::string              topicName_;
     orcaice::Context               context_;
-
-//     bool isStatusTopicRequired_;
 };
 
 typedef IceUtil::Handle<StatusImpl> StatusImplPtr;

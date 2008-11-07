@@ -6,13 +6,15 @@ DefaultComponentTag=AppTest
 
 # Rarely-used component config settings
 # this one implicit, leaving programatic default
-#ExternalConfig.Orca.Component.Override.EnableTracer.Default=1
+# ExternalConfig.Orca.Component.EnableHome.Default=1
 
 # this one is explicit and the same as default
-ExternalConfig.Orca.Component.Override.EnableStatus.Default=1
+ExternalConfig.Orca.Component.EnableStatus.Default=1
 
 # this one is explicit and the opposite of default
-ExternalConfig.Orca.Component.Override.EnableHome.Default=0
+ExternalConfig.Orca.Component.EnableTracer.Default=1
+
+ExternalConfig.Orca.Component.PrintProperties.Default=1
 
 # Set custom tracer settings so we can test them
 ExternalConfig.Orca.Tracer.Filename.Default=orca_component_trace.txt
@@ -36,5 +38,5 @@ ExternalConfig.Orca.Tracer.Timestamp.Default=1
 
 
 # Ensure timeouts
-ExternalConfig.Ice.Override.ConnectTimeout.Default=1000
-ExternalConfig.Ice.Override.Timeout.Default=200
+ExternalConfig.Ice.ConnectTimeout.Default=1000
+ExternalConfig.Ice.Timeout.Default=200

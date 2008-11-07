@@ -21,17 +21,9 @@ using namespace std;
 class HomeI : public orca::Home
 {
 public:
-//     HomeI() : impl_(impl) {}
-//     virtual ~HomeI() {}
-
     // remote interface
-    virtual orca::HomeData getInterfaces(const ::Ice::Current& )
+    virtual orca::HomeData getData(const ::Ice::Current& )
         { return orca::HomeData(); }
-
-    virtual int getTimeUp(const ::Ice::Current& )
-        { return 33; }
-
-//     virtual orca::StringStringDict getProperties(const ::Ice::Current& );
 };
 
 class TestComponent : public orcaice::Component

@@ -219,18 +219,17 @@ namespace detail {
     tryReconnectToIceStorm( orcaice::Context   &context,
                             ConsumerPrxType    &consumerPrx,
                             IceStorm::TopicPrx &topicPrx,
-                            const std::string  &interfaceName,
                             const std::string  &topicName )
     {
         try {
             std::stringstream ss;
-            ss << interfaceName << ": Re-connecting to IceStorm...";
+            ss << "Re-connecting to IceStorm topic "<<topicName<<" ...";
             context.tracer().info( ss.str() );
             topicPrx = orcaice::connectToTopicWithString<ConsumerPrxType>
                 ( context, consumerPrx, topicName );
 
             ss.str("");
-            ss << interfaceName << ": Re-connected to IceStorm.";
+            ss << "Re-connected to IceStorm topic "<<topicName<<" ...";
             context.tracer().info( ss.str() );
 
             return true;
@@ -239,7 +238,7 @@ namespace detail {
         {
             // ignore it
             std::stringstream ss;
-            ss << interfaceName << ": Re-connection to IceStorm failed.";
+            ss << "Re-connection to IceStorm topic "<<topicName<<" failed.";
             context.tracer().info( ss.str() );
             return false;
         }
@@ -264,7 +263,6 @@ void tryPushToIceStormWithReconnect( orcaice::Context   &context,
                                 ConsumerPrxType    &consumerPrx,
                                 const DataType     &data,
                                 IceStorm::TopicPrx &topicPrx,
-                                const std::string  &interfaceName,
                                 const std::string  &topicName )
 {
     // check that communicator still exists
@@ -284,14 +282,14 @@ void tryPushToIceStormWithReconnect( orcaice::Context   &context,
         // This could happen if IceStorm dies.
         // If we're running in an IceBox and the IceBox is shutting down, 
         // this is expected (our co-located IceStorm is obviously going down).
-        std::stringstream ss; ss << interfaceName << ": Failed push to IceStorm: " << e;
+        std::stringstream ss;
+        ss << "Push of data to topic "<<topicName<<" failed: " << e.what();
         context.tracer().warning( ss.str() );
 
         // If IceStorm just re-started for some reason though, we want to try to re-connect
         bool reconnected = detail::tryReconnectToIceStorm( context,
                                                             consumerPrx,
                                                             topicPrx,
-                                                            interfaceName,
                                                             topicName );
         if ( reconnected )
         {
@@ -302,7 +300,7 @@ void tryPushToIceStormWithReconnect( orcaice::Context   &context,
             catch ( Ice::Exception &e )
             {
                 std::stringstream ss;
-                ss << interfaceName << ": Re-push of data failed: " << e;
+                ss << "Re-push of data to topic "<<topicName<<" failed: " << e.what();
                 context.tracer().info( ss.str() );
             }
         }

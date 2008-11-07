@@ -17,7 +17,7 @@
 
 #include <orcaice/homeImpl.h>
 #include <orcaice/statusImpl.h>
-// #include <orcaice/tracerImpl.h>
+#include <orcaice/tracerImpl.h>
 
 namespace orcaice
 {
@@ -108,12 +108,11 @@ public:
 /*! 
 Takes the text tag with which to identify it in the config files. The @e flag
 specifies what standard interfaces to initialize. It is also possible to configure
-standard interfaces with configuration parameters. Use Override configuration 
-parameters to change the behavior specified in the source.
+standard interfaces with the following configuration parameters.
 @verbatim
-Orca.Component.Override.EnableTracer
-Orca.Component.Override.EnableStatus
-Orca.Component.Override.EnableHome
+Orca.Component.EnableTracer
+Orca.Component.EnableStatus
+Orca.Component.EnableHome
 @endverbatim
 
 Inside this contructor the component context is not initialized yet and cannot be used.
@@ -168,9 +167,6 @@ protected:
     //! @endverbatim
     const Context& context() const { return context_; };
 
-    // Describes which standard interfaces this component will provide.
-//     ComponentInterfaceFlag interfaceFlag() const { return interfaceFlag_; };
-
 private:
 
     // One of the container classes (Application or Service) will
@@ -189,29 +185,21 @@ private:
     void setTag( const std::string& t ) { context_.tag_ = t; };
 
     // initialize component services
-    gbxutilacfr::Tracer* initTracer();
-    void initStatus();
-    void initHome();
     hydroutil::History* initHistory();
     void getNetworkProperties();
 
-    // Component's context
-    Context context_;
-
-    // Save init flags
+    // Save init flags (for the period between the constructor and init())
     ComponentInterfaceFlag interfaceFlag_;
 
-    // keep the smart pointer so it's not destroyed with the adapter
-    // (I think we only need to do it with tracer)
-    Ice::ObjectPtr tracerObj_;
-//     Ice::ObjectPtr statusObj_;
-    // alexm: why is this one different?
-//     Ice::ObjectPrx homePrx_;
-    StatusImplPtr status_;
     HomeImplPtr home_;
+    StatusImplPtr status_;
+    TracerImplPtr tracer_;
 
     // This thread allows us to do house-keeping stuff and manage Status.
     gbxiceutilacfr::ThreadPtr componentThread_;
+
+    // Component's context
+    Context context_;
 };
 
 } // end namespace

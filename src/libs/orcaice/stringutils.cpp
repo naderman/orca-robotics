@@ -28,23 +28,6 @@ toString( const orca::FQComponentName& name )
     return name.platform + "/" + name.component;
 }
 
-std::string 
-toString( const orca::FQInterfaceName& name )
-{
-    return name.iface + "@" + name.platform + "/" + name.component;
-}
-
-std::string 
-toString( const orca::FQTopicName& name )
-{
-    return name.iface + "/" + name.topic + "@" + name.platform + "/" + name.component;
-}
-
-std::string toString( const orca::FQExecutableName& name )
-{
-    return name.executable + "@" + name.host ;
-}
-
 orca::FQComponentName 
 toComponentName( const std::string& s )
 {
@@ -63,6 +46,40 @@ toComponentName( const std::string& s )
 
     //cout<<"debug: "<<toString(fqCName)<<endl;
     return fqCName;
+}
+
+std::string 
+toIdentityCategory( const orca::FQComponentName& name )
+{
+    return name.platform + "." + name.component;
+}
+
+orca::FQComponentName 
+toComponentName( const Ice::Identity& id )
+{
+    orca::FQComponentName fqCName;
+
+    string s = id.category;
+
+    int posDot = s.find( '.', 0 );
+    //cout<<"/ found :"<<posSlash<<endl;
+
+    if ( posDot<0 ) { 
+        // delimeter not found: return null structure
+    }
+    else {
+        fqCName.platform = s.substr( 0, posDot );
+        fqCName.component = s.substr( posDot+1, s.npos );
+    }
+
+    //cout<<"debug: "<<toString(fqCName)<<endl;
+    return fqCName;
+}
+
+std::string 
+toString( const orca::FQInterfaceName& name )
+{
+    return name.iface + "@" + name.platform + "/" + name.component;
 }
 
 orca::FQInterfaceName 
@@ -89,9 +106,33 @@ toInterfaceName( const std::string& s )
 }
 
 std::string 
+toString( const orca::FQTopicName& name )
+{
+    return name.iface + "/" + name.topic + "@" + name.platform + "/" + name.component;
+}
+
+std::string toString( const orca::FQExecutableName& name )
+{
+    return name.executable + "@" + name.host ;
+}
+
+std::string 
 toHomeIdentity( const orca::FQComponentName & fqCName )
 {
     return "orca." + fqCName.platform + "." + fqCName.component + "/Home";
+}
+
+orca::FQComponentName 
+toComponentName( const Ice::ObjectPrx& homePrx )
+{
+// THE OLD WAY: a Home was on the component's adapter
+//     string adapt = registryHomeData.homes[i].proxy->ice_getAdapterId();
+//     return orcaice::toComponentName( adapt );
+
+// THE NEW WAY: a Home is a facet on the Admin interface
+    Ice::Identity ident = homePrx->ice_getIdentity();
+    cout<<"DEBUG: ident="<<ident.category<<"/"<<ident.name<<endl;
+    return orcaice::toComponentName( ident );
 }
 
 orca::FQTopicName 

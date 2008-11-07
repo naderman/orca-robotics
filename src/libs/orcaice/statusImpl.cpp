@@ -23,8 +23,7 @@ namespace
 {
 
 void 
-convert( const hydroiceutil::NameStatusMap &internal, 
-         orca::SubsystemStatusDict         &network )
+convert( const hydroiceutil::NameStatusMap& internal, orca::SubsystemStatusDict& network )
 {
     hydroiceutil::NameStatusMap::const_iterator it;
     
@@ -90,28 +89,31 @@ subStateToCompState ( const orca::SubsystemState &subsystemState)
                       
 
 void 
-convert( const hydroiceutil::NameStatusMap &internal,
+convert( const hydroiceutil::LocalComponentStatus        &internal,
          const orca::FQComponentName       &name, 
-         orca::ComponentStatus             &compStat )
+         orca::ComponentStatus             &network )
 {
     // initialisation, will be overwritten
-    compStat.state = orca::CompInactive;
-    compStat.health = orca::CompOk;
-    compStat.timeUp = 0;
+    network.state = orca::CompInactive;
+    network.health = orca::CompOk;
+    network.timeUp = 0;
     
     // conversions: name and subsystems
-    compStat.name = name;
-    convert( internal, compStat.subsystems );
+    network.name = name;
+    convert( internal.subsystems, network.subsystems );
     
+    // TODO: look at the state of the infrastructure
+
     // if no subsystems exist, we're done
-    if (compStat.subsystems.size()==0) return;
+    if (network.subsystems.size()==0) 
+        return;
     
     //
     // State and Health conversions
     // 
     // policy here: take the "worst" health of the subsystem and its corresponding state
     //
-    const orca::SubsystemStatusDict &subSysSt = compStat.subsystems;
+    const orca::SubsystemStatusDict &subSysSt = network.subsystems;
     map<string,orca::SubsystemStatus>::const_iterator itWorstHealth;
     orca::SubsystemHealth worstHealth = orca::SubsystemOk;           
     
@@ -124,21 +126,21 @@ convert( const hydroiceutil::NameStatusMap &internal,
         }
     }
     
-    compStat.state = subStateToCompState(itWorstHealth->second.state);
+    network.state = subStateToCompState(itWorstHealth->second.state);
          
     switch (worstHealth)
     {
         case orca::SubsystemOk:
-            compStat.health = orca::CompOk;
+            network.health = orca::CompOk;
             return;
         case orca::SubsystemWarning:
-            compStat.health = orca::CompWarning;
+            network.health = orca::CompWarning;
             return;
         case orca::SubsystemFault:
-            compStat.health = orca::CompFault;
+            network.health = orca::CompFault;
             return;
         case orca::SubsystemStalled:
-            compStat.health = orca::CompStalled;
+            network.health = orca::CompStalled;
             return;
     }       
     
@@ -196,11 +198,8 @@ StatusImpl::~StatusImpl()
 }
 
 void
-StatusImpl::initInterface( const orcaice::Context& context )
+StatusImpl::initInterface()
 {
-    // need recopy context, because at construction time not all services were registered.
-    context_ = context;
-
     Ice::PropertiesPtr props = context_.properties();
     // are we required to connect to status topic? (there's always default value for this property)
     bool isStatusTopicRequired = props->getPropertyAsInt( "Orca.Status.RequireIceStorm" );
@@ -231,15 +230,33 @@ StatusImpl::initInterface( const orcaice::Context& context )
         }
     }
 
-    // Register with the adapter
-    // We don't have to clean up the memory we're allocating here, because
-    // we're holding it in a smart pointer which will clean up when it's done.
     ptr_ = new StatusI( *this );
-    orcaice::createInterfaceWithString( context_, ptr_, interfaceName_ );
+
+    // previous method: adding Home to the component adapter
+//     orcaice::createInterfaceWithString( context_, ptr_, interfaceName_ );
+
+    // EXPERIMENTAL! adding as a facet to the Admin interface.
+    try
+    {
+        context_.communicator()->addAdminFacet( ptr_, "Status" );
+    }
+    catch ( const std::exception& e )
+    {
+        stringstream ss;
+        ss << "(while installng Status object) : "<<e.what();
+        context_.tracer().error( ss.str() );
+        context_.shutdown();
+    }
+
+    // manually to home registry
+    orca::ProvidedInterface iface;
+    iface.name = interfaceName_;
+    iface.id   = "::orca::Status";
+    context_.home().addProvidedInterface( iface );
 }
 
 void 
-StatusImpl::publishEvent( const hydroiceutil::NameStatusMap& subsystems )
+StatusImpl::publishEvent( const hydroiceutil::LocalComponentStatus& componentStatus )
 {
     if ( !publisherPrx_ )
         return;
@@ -247,7 +264,7 @@ StatusImpl::publishEvent( const hydroiceutil::NameStatusMap& subsystems )
     orca::StatusData data;
     orcaice::setToNow( data.timeStamp );
 //     convert( subsystems, data.subsystems );
-    convert( subsystems, context_.name(), data.compStatus );
+    convert( componentStatus, context_.name(), data.compStatus );
     data.compStatus.timeUp = (Ice::Int)upTimer_.elapsedSec();
 
     dataStore_.set( data );
@@ -258,7 +275,6 @@ StatusImpl::publishEvent( const hydroiceutil::NameStatusMap& subsystems )
         publisherPrx_,
         data,
         topicPrx_,
-        interfaceName_,
         topicName_ );
 }
 
