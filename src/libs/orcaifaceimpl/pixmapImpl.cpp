@@ -147,7 +147,6 @@ PixMapImpl::localSetAndSend( const ::orca::PixMapData &data )
           publisherPrx_,
           data,
           topicPrx_,
-          interfaceName_,
           topicName_ );
 }
 

@@ -172,7 +172,7 @@ PolarFeature2dImpl::localSet( const ::orca::PolarFeature2dData &data )
 void
 PolarFeature2dImpl::localSetAndSend( const ::orca::PolarFeature2dData &data )
 {
-    if ( context_.tracer().verbosity( gbxutilacfr::Tracer::DebugTrace, gbxutilacfr::Tracer::ToAny ) >= 5 )
+    if ( context_.tracer().verbosity( gbxutilacfr::DebugTrace, gbxutilacfr::ToAny ) >= 5 )
     {
         context_.tracer().debug( "Sending data", 5 );
     }
@@ -184,7 +184,6 @@ PolarFeature2dImpl::localSetAndSend( const ::orca::PolarFeature2dData &data )
                                                                                   publisherPrx_,
                                                                                   data,
                                                                                   topicPrx_,
-                                                                                  interfaceName_,
                                                                                   topicName_ );
 }
 

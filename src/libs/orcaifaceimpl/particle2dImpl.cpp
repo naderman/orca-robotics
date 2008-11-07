@@ -137,7 +137,6 @@ Particle2dImpl::localSetAndSend( const orca::Particle2dData& data )
           publisherPrx_,
           data,
           topicPrx_,
-          interfaceName_,
           topicName_ );
 }
 

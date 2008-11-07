@@ -150,7 +150,6 @@ OgMapImpl::localSetAndSend( const ::orca::OgMapData &data )
           publisherPrx_,
           data,
           topicPrx_,
-          interfaceName_,
           topicName_ );
 }
 

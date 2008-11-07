@@ -172,7 +172,6 @@ DriveBicycleImpl::localSetAndSend( const orca::DriveBicycleData &data )
           publisherPrx_,
           data,
           topicPrx_,
-          interfaceName_,
           topicName_ );
 }
 

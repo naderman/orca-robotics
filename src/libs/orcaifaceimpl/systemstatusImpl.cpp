@@ -160,7 +160,7 @@ SystemStatusImpl::localSet( const ::orca::SystemStatusData &data )
 void
 SystemStatusImpl::localSetAndSend( const ::orca::SystemStatusData &data )
 {
-    if ( context_.tracer().verbosity( gbxutilacfr::Tracer::DebugTrace, gbxutilacfr::Tracer::ToAny ) >= 5 )
+    if ( context_.tracer().verbosity( gbxutilacfr::DebugTrace, gbxutilacfr::ToAny ) >= 5 )
     {
         stringstream ss;
         ss << "Sending following data: " << ifacestring::toString( data );
@@ -174,7 +174,6 @@ SystemStatusImpl::localSetAndSend( const ::orca::SystemStatusData &data )
             publisherPrx_,
             data,
             topicPrx_,
-            interfaceName_,
             topicName_ );
 }
 

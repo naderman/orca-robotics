@@ -191,7 +191,6 @@ Localise2dImpl::localSetAndSend( const orca::Localise2dData &data )
           publisherPrx_,
           data,
           topicPrx_,
-          interfaceName_,
           topicName_ );
 }
 

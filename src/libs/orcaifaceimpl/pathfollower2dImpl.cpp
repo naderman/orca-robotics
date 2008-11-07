@@ -157,7 +157,6 @@ PathFollower2dImpl::localSetAndSend( const orca::PathFollower2dData& data )
           publisherPrx_,
           data,
           topicPrx_,
-          interfaceName_,
           topicName_ );
 }
 
@@ -184,7 +183,6 @@ PathFollower2dImpl::localSetWaypointIndex( int index )
         bool reconnected = orcaice::detail::tryReconnectToIceStorm( context_,
                                                            publisherPrx_,
                                                            topicPrx_,
-                                                           interfaceName_,
                                                            topicName_ );
         if ( reconnected )
         {
@@ -224,7 +222,6 @@ PathFollower2dImpl::localSetActivationTime( orca::Time absoluteTime, double rela
         bool reconnected = orcaice::detail::tryReconnectToIceStorm( context_,
                                                            publisherPrx_,
                                                            topicPrx_,
-                                                           interfaceName_,
                                                            topicName_ );
         if ( reconnected )
         {
@@ -264,7 +261,6 @@ PathFollower2dImpl::localSetEnabledState( bool enabledState )
         bool reconnected = orcaice::detail::tryReconnectToIceStorm( context_,
                                                            publisherPrx_,
                                                            topicPrx_,
-                                                           interfaceName_,
                                                            topicName_ );
         if ( reconnected )
         {

@@ -169,7 +169,6 @@ PointCloudImpl::localSetAndSend( const orca::PointCloudData& data )
           publisherPrx_,
           data,
           topicPrx_,
-          interfaceName_,
           topicName_ );
 }
 

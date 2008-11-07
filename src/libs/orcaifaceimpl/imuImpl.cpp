@@ -169,7 +169,6 @@ ImuImpl::localSetAndSend( const orca::ImuData& data )
           publisherPrx_,
           data,
           topicPrx_,
-          interfaceName_,
           topicName_ );
 }
 

@@ -169,7 +169,7 @@ LaserScanner2dImpl::localSet( const ::orca::LaserScanner2dDataPtr &data )
 void
 LaserScanner2dImpl::localSetAndSend( const ::orca::LaserScanner2dDataPtr &data )
 {
-    if ( context_.tracer().verbosity( gbxutilacfr::Tracer::DebugTrace, gbxutilacfr::Tracer::ToAny ) >= 5 )
+    if ( context_.tracer().verbosity( gbxutilacfr::DebugTrace, gbxutilacfr::ToAny ) >= 5 )
     {
         context_.tracer().debug( "Sending data", 5 );
     }
@@ -181,7 +181,6 @@ LaserScanner2dImpl::localSetAndSend( const ::orca::LaserScanner2dDataPtr &data )
                                                                                      publisherPrx_,
                                                                                      data,
                                                                                      topicPrx_,
-                                                                                     interfaceName_,
                                                                                      topicName_ );
 }
 

@@ -169,7 +169,6 @@ InsImpl::localSetAndSend( const orca::InsData& data )
           publisherPrx_,
           data,
           topicPrx_,
-          interfaceName_,
           topicName_ );
 }
 

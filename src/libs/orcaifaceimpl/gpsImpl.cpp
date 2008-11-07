@@ -168,7 +168,6 @@ GpsImpl::localSetAndSend( const orca::GpsData& data )
         publisherPrx_,
         data,
         topicPrx_,
-        interfaceName_,
           topicName_ );
 }
 

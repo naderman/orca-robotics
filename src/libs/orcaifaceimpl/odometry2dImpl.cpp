@@ -168,7 +168,6 @@ Odometry2dImpl::localSetAndSend( const orca::Odometry2dData& data )
         publisherPrx_,
         data,
         topicPrx_,
-        interfaceName_,
           topicName_ );
 }
 

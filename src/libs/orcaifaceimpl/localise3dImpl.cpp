@@ -167,7 +167,6 @@ Localise3dImpl::localSetAndSend( const orca::Localise3dData &data )
           publisherPrx_,
           data,
           topicPrx_,
-          interfaceName_,
           topicName_ );
 }
 

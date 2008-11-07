@@ -153,7 +153,6 @@ EStopImpl::localSetAndSend( const orca::EStopData& data )
           publisherPrx_,
           data,
           topicPrx_,
-          interfaceName_,
           topicName_ );
 }
 

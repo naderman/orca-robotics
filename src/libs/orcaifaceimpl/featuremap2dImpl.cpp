@@ -137,7 +137,6 @@ FeatureMap2dImpl::localSetAndSend( const orca::FeatureMap2dData& data )
           publisherPrx_,
           data,
           topicPrx_,
-          interfaceName_,
           topicName_ );
 }
 

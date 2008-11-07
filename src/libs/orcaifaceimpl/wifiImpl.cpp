@@ -137,7 +137,6 @@ WifiImpl::localSetAndSend( const orca::WifiData& data )
           publisherPrx_,
           data,
           topicPrx_,
-          interfaceName_,
           topicName_ );
 }
 

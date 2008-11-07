@@ -137,7 +137,6 @@ QGraphics2dImpl::localSetAndSend( const orca::QGraphics2dData& data )
           publisherPrx_,
           data,
           topicPrx_,
-          interfaceName_,
           topicName_ );
 }
 

@@ -156,7 +156,6 @@ PowerImpl::localSetAndSend( const orca::PowerData& data )
         publisherPrx_,
         data,
         topicPrx_,
-        interfaceName_,
           topicName_ );
 }
 

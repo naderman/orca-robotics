@@ -169,7 +169,7 @@ CameraImpl::localSet( const ::orca::CameraDataPtr &data )
 void
 CameraImpl::localSetAndSend( const ::orca::CameraDataPtr &data )
 {
-    if ( context_.tracer().verbosity( gbxutilacfr::Tracer::DebugTrace, gbxutilacfr::Tracer::ToAny ) >= 5 )
+    if ( context_.tracer().verbosity( gbxutilacfr::DebugTrace, gbxutilacfr::ToAny ) >= 5 )
     {
         context_.tracer().debug( "Sending data", 5 );
     }
@@ -181,7 +181,6 @@ CameraImpl::localSetAndSend( const ::orca::CameraDataPtr &data )
                                                                                      publisherPrx_,
                                                                                      data,
                                                                                      topicPrx_,
-                                                                                     interfaceName_,
                                                                                      topicName_ );
 }
 

@@ -165,7 +165,6 @@ ImageImpl::localSetAndSend( const orca::ImageDataPtr& data )
           publisherPrx_,
           data,
           topicPrx_,
-          interfaceName_,
           topicName_ );
 }
 
