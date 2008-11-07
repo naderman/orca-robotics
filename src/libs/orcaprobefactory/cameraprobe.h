@@ -23,7 +23,7 @@ class CameraProbe : public orcaprobe::InterfaceProbe
 
 public:
 
-    CameraProbe( const orca::FQInterfaceName& name, orcaprobe::AbstractDisplay& display,
+    CameraProbe( const orca::FQInterfaceName& name, const Ice::ObjectPrx& adminPrx, orcaprobe::AbstractDisplay& display,
                                 const orcaice::Context& context );
     ~CameraProbe();
 

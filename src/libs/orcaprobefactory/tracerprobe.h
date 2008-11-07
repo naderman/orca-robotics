@@ -22,7 +22,7 @@ class TracerProbe : public orca::TracerConsumer, public orcaprobe::InterfaceProb
 
 public:
 
-    TracerProbe( const orca::FQInterfaceName& name, orcaprobe::AbstractDisplay& display,
+    TracerProbe( const orca::FQInterfaceName& name, const Ice::ObjectPrx& adminPrx, orcaprobe::AbstractDisplay& display,
                                 const orcaice::Context& context );
 
     virtual int loadOperationEvent( const int index, orcacm::OperationData& data );

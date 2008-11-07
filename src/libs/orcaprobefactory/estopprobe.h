@@ -23,7 +23,7 @@ class EStopProbe : public orcaprobe::InterfaceProbe
 
 public:
 
-    EStopProbe( const orca::FQInterfaceName & name, orcaprobe::AbstractDisplay & display,
+    EStopProbe( const orca::FQInterfaceName& name, const Ice::ObjectPrx& adminPrx, orcaprobe::AbstractDisplay& display,
                                 const orcaice::Context & context );
     ~EStopProbe();
 

@@ -19,10 +19,9 @@
 using namespace std;
 using namespace orcaprobefactory;
 
-PathFollower2dProbe::PathFollower2dProbe( const orca::FQInterfaceName & name,
-                                          orcaprobe::AbstractDisplay & display,
-                                          const orcaice::Context & context )
-    : InterfaceProbe(name,display,context)
+PathFollower2dProbe::PathFollower2dProbe( const orca::FQInterfaceName& name, const Ice::ObjectPrx& adminPrx, orcaprobe::AbstractDisplay& display,
+                                const orcaice::Context& context )
+    : InterfaceProbe(name,adminPrx,display,context)
 {
     id_ = "::orca::PathFollower2d";
     

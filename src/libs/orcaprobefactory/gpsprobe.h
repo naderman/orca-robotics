@@ -23,7 +23,7 @@ class GpsProbe : public orcaprobe::InterfaceProbe
 
 public:
 
-    GpsProbe( const orca::FQInterfaceName& name, orcaprobe::AbstractDisplay& display,
+    GpsProbe( const orca::FQInterfaceName& name, const Ice::ObjectPrx& adminPrx, orcaprobe::AbstractDisplay& display,
                                 const orcaice::Context& context );
     ~GpsProbe();
 

@@ -9,7 +9,6 @@
  */
 
 #include <iostream>
-#include <iomanip>    // for setw()
 #include <orcaice/orcaice.h>
 #include <orcacm/orcacm.h>
 #include <orcaifacestring/home.h>
@@ -20,14 +19,13 @@
 using namespace std;
 using namespace orcaprobefactory;
 
-HomeProbe::HomeProbe( const orca::FQInterfaceName& name, orcaprobe::AbstractDisplay& display,
+HomeProbe::HomeProbe( const orca::FQInterfaceName& name, const Ice::ObjectPrx& adminPrx, orcaprobe::AbstractDisplay& display,
                                 const orcaice::Context& context )
-    : InterfaceProbe(name,display,context)
+    : InterfaceProbe(name,adminPrx,display,context)
 {
     id_ = "::orca::Home";
     
-    addOperation( "getInterfaces", "nonmutating HomeData getInterfaces()" );
-//     addOperation( "getProperties", "nonmutating ComponentProperties getProperties()" );
+    addOperation( "getData", "nonmutating HomeData getData()" );
 }
 
 int 
@@ -36,25 +34,15 @@ HomeProbe::loadOperationEvent( const int index, orcacm::OperationData& data )
     switch ( index )
     {
     case orcaprobe::UserIndex :
-        return loadGetInterfaces( data );
-//     case orcaprobe::UserIndex+1 :
-//         return loadGetProperties( data );
+        return loadGetData( data );
     }
     return 1;
 }
 
 int 
-HomeProbe::loadGetInterfaces( orcacm::OperationData& data )
+HomeProbe::loadGetData( orcacm::OperationData& data )
 {
     orca::HomePrx derivedPrx = orca::HomePrx::checkedCast(prx_);
-    orcaprobe::reportResult( data, "data", ifacestring::toString( derivedPrx->getInterfaces() ) );
+    orcaprobe::reportResult( data, "data", ifacestring::toString( derivedPrx->getData() ) );
     return 0;
 }
-
-// int 
-// HomeProbe::loadGetProperties( orcacm::OperationData& data )
-// {
-//     orca::HomePrx derivedPrx = orca::HomePrx::checkedCast(prx_);
-//     orcaprobe::reportResult( data, "data", ifacestring::toString( derivedPrx->getProperties() ) );
-//     return 0;
-// }

@@ -23,7 +23,7 @@ class DriveBicycleProbe : public orcaprobe::InterfaceProbe
 
 public:
 
-    DriveBicycleProbe( const orca::FQInterfaceName& name, orcaprobe::AbstractDisplay& display,
+    DriveBicycleProbe( const orca::FQInterfaceName& name, const Ice::ObjectPrx& adminPrx, orcaprobe::AbstractDisplay& display,
                                 const orcaice::Context& context );
     ~DriveBicycleProbe();
 

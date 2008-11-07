@@ -20,9 +20,9 @@
 using namespace std;
 using namespace orcaprobefactory;
 
-StatusProbe::StatusProbe( const orca::FQInterfaceName& name, orcaprobe::AbstractDisplay& display,
+StatusProbe::StatusProbe( const orca::FQInterfaceName& name, const Ice::ObjectPrx& adminPrx, orcaprobe::AbstractDisplay& display,
                                 const orcaice::Context& context ) :
-    InterfaceProbe(name,display,context)
+    InterfaceProbe(name,adminPrx,display,context)
 //     orcaifaceimpl::SimpleConsumerImpl<orca::StatusPrx,orca::StatusConsumer,orca::StatusConsumerPrx,orca::StatusData>(context)
 {
     id_ = "::orca::Status";

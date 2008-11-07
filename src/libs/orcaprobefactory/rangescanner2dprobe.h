@@ -23,7 +23,7 @@ class RangeScanner2dProbe : public orcaprobe::InterfaceProbe
 
 public:
 
-    RangeScanner2dProbe( const orca::FQInterfaceName& name, orcaprobe::AbstractDisplay& display,
+    RangeScanner2dProbe( const orca::FQInterfaceName& name, const Ice::ObjectPrx& adminPrx, orcaprobe::AbstractDisplay& display,
                                 const orcaice::Context& context );
     ~RangeScanner2dProbe();
 

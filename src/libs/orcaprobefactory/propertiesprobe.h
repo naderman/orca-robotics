@@ -23,7 +23,7 @@ class PropertiesProbe : public orcaprobe::InterfaceProbe
 
 public:
 
-    PropertiesProbe( const orca::FQInterfaceName & name, orcaprobe::AbstractDisplay & display,
+    PropertiesProbe( const orca::FQInterfaceName& name, const Ice::ObjectPrx& adminPrx, orcaprobe::AbstractDisplay& display,
                                 const orcaice::Context & context );
     ~PropertiesProbe();
 

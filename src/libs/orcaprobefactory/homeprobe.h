@@ -21,16 +21,14 @@ class HomeProbe : public orcaprobe::InterfaceProbe
 
 public:
 
-    HomeProbe( const orca::FQInterfaceName& name, orcaprobe::AbstractDisplay& display,
+    HomeProbe( const orca::FQInterfaceName& name, const Ice::ObjectPrx& adminPrx, orcaprobe::AbstractDisplay& display,
                                 const orcaice::Context& context );
 
     virtual int loadOperationEvent( const int index, orcacm::OperationData& data );
     
 private:
         
-    int loadGetInterfaces( orcacm::OperationData& data );
-//     int loadGetProperties( orcacm::OperationData& data );
-
+    int loadGetData( orcacm::OperationData& data );
 };
 
 } // namespace

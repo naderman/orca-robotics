@@ -68,79 +68,80 @@ OrcaProbeFactory::OrcaProbeFactory()
 orcaprobe::InterfaceProbe* 
 OrcaProbeFactory::create( const std::string           & interfaceType, 
                           const orca::FQInterfaceName & name, 
-                          orcaprobe::AbstractDisplay    & display, 
+                          const Ice::ObjectPrx        & adminPrx,
+                          orcaprobe::AbstractDisplay  & display, 
                           const orcaice::Context      & context )
 {
     orcaprobe::InterfaceProbe* probe = 0;
 
     if ( interfaceType == "::orca::Camera" ) {
-        probe = new CameraProbe( name, display, context );
+        probe = new CameraProbe( name, adminPrx, display, context );
     }
     else if ( interfaceType == "::orca::Cpu" ) {
-        probe = new CpuProbe( name, display, context );
+        probe = new CpuProbe( name, adminPrx, display, context );
     }
     else if ( interfaceType == "::orca::DriveBicycle" ) {
-    probe = new DriveBicycleProbe( name, display, context );
+    probe = new DriveBicycleProbe( name, adminPrx, display, context );
     }
     else if ( interfaceType == "::orca::EStop" ) {
-        probe = new EStopProbe( name, display, context );
+        probe = new EStopProbe( name, adminPrx, display, context );
     }
     else if ( interfaceType == "::orca::Gps" ) {
-        probe = new GpsProbe( name, display, context );
+        probe = new GpsProbe( name, adminPrx, display, context );
     }
     else if ( interfaceType == "::orca::Home" ) {
-        probe = new HomeProbe( name, display, context );
+        probe = new HomeProbe( name, adminPrx, display, context );
     }
     else if ( interfaceType == "::orca::Image" ) {
-        probe = new ImageProbe( name, display, context );
+        probe = new ImageProbe( name, adminPrx, display, context );
     }
     else if ( interfaceType == "::orca::RangeScanner2d" ) {
-        probe = new RangeScanner2dProbe( name, display, context );
+        probe = new RangeScanner2dProbe( name, adminPrx, display, context );
     }
     else if ( interfaceType == "::orca::LaserScanner2d" ) {
-        probe = new LaserScanner2dProbe( name, display, context );
+        probe = new LaserScanner2dProbe( name, adminPrx, display, context );
     }
     else if ( interfaceType == "::orca::Wifi" ) {
-        probe = new WifiProbe( name, display, context );
+        probe = new WifiProbe( name, adminPrx, display, context );
     }
     else if ( interfaceType == "::orca::Properties" ) {
-        probe = new PropertiesProbe( name, display, context );
+        probe = new PropertiesProbe( name, adminPrx, display, context );
     }
     else if ( interfaceType == "::orca::Button" ) {
-        probe = new ButtonProbe( name, display, context );
+        probe = new ButtonProbe( name, adminPrx, display, context );
     }
     else if ( interfaceType == "::orca::Localise2d" ) {
-        probe = new Localise2dProbe( name, display, context );
+        probe = new Localise2dProbe( name, adminPrx, display, context );
     }
     else if ( interfaceType == "::orca::Localise3d" ) {
-        probe = new Localise3dProbe( name, display, context );
+        probe = new Localise3dProbe( name, adminPrx, display, context );
     }
     else if ( interfaceType == "::orca::Odometry2d" ) {
-        probe = new Odometry2dProbe( name, display, context );
+        probe = new Odometry2dProbe( name, adminPrx, display, context );
     }
     else if ( interfaceType == "::orca::Odometry3d" ) {
-        probe = new Odometry3dProbe( name, display, context );
+        probe = new Odometry3dProbe( name, adminPrx, display, context );
     }
     else if ( interfaceType == "::orca::VelocityControl2d" ) {
-        probe = new VelocityControl2dProbe( name, display, context );
+        probe = new VelocityControl2dProbe( name, adminPrx, display, context );
     }
     else if ( interfaceType == "::orca::Pinger" ) {
-        probe = new PingerProbe( name, display, context );
+        probe = new PingerProbe( name, adminPrx, display, context );
     }
     else if ( interfaceType == "::orca::Power" ) {
-        probe = new PowerProbe( name, display, context );
+        probe = new PowerProbe( name, adminPrx, display, context );
     }
     else if ( interfaceType == "::orca::OgMap" ) {
-        probe = new OgMapProbe( name, display, context );
+        probe = new OgMapProbe( name, adminPrx, display, context );
     }
     else if ( interfaceType == "::orca::PathFollower2d" ) {
-        probe = new PathFollower2dProbe( name, display, context );
+        probe = new PathFollower2dProbe( name, adminPrx, display, context );
     }
     else if ( interfaceType == "::orca::Status" ) {
-        probe = new StatusProbe( name, display, context );
+        probe = new StatusProbe( name, adminPrx, display, context );
     }
     else if ( interfaceType == "::orca::Tracer" ) {
-        probe = new TracerProbe( name, display, context );
+        probe = new TracerProbe( name, adminPrx, display, context );
     }
 
     return probe;

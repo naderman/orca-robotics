@@ -23,7 +23,7 @@ class Localise2dProbe : public orcaprobe::InterfaceProbe
 
 public:
 
-    Localise2dProbe( const orca::FQInterfaceName& name, orcaprobe::AbstractDisplay& display,
+    Localise2dProbe( const orca::FQInterfaceName& name, const Ice::ObjectPrx& adminPrx, orcaprobe::AbstractDisplay& display,
                                 const orcaice::Context& context );
     ~Localise2dProbe();
 

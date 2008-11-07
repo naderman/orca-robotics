@@ -23,7 +23,7 @@ class ImageProbe : public orcaprobe::InterfaceProbe
 
 public:
 
-    ImageProbe( const orca::FQInterfaceName& name, orcaprobe::AbstractDisplay& display,
+    ImageProbe( const orca::FQInterfaceName& name, const Ice::ObjectPrx& adminPrx, orcaprobe::AbstractDisplay& display,
                                 const orcaice::Context& context );
     ~ImageProbe();
 

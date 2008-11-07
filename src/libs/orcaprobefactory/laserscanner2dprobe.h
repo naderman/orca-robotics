@@ -23,7 +23,7 @@ class LaserScanner2dProbe : public orcaprobe::InterfaceProbe
 
 public:
 
-    LaserScanner2dProbe( const orca::FQInterfaceName& name, orcaprobe::AbstractDisplay& display,
+    LaserScanner2dProbe( const orca::FQInterfaceName& name, const Ice::ObjectPrx& adminPrx, orcaprobe::AbstractDisplay& display,
                                 const orcaice::Context& context );
     ~LaserScanner2dProbe();
 

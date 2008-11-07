@@ -23,7 +23,7 @@ class Odometry3dProbe :public orcaprobe::InterfaceProbe
 
 public:
 
-    Odometry3dProbe( const orca::FQInterfaceName& name, orcaprobe::AbstractDisplay& display,
+    Odometry3dProbe( const orca::FQInterfaceName& name, const Ice::ObjectPrx& adminPrx, orcaprobe::AbstractDisplay& display,
                                 const orcaice::Context& context );
     ~Odometry3dProbe();
 

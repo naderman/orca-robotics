@@ -24,7 +24,7 @@ class StatusProbe : public orcaprobe::InterfaceProbe
 
 public:
 
-    StatusProbe( const orca::FQInterfaceName& name, orcaprobe::AbstractDisplay& display,
+    StatusProbe( const orca::FQInterfaceName& name, const Ice::ObjectPrx& adminPrx, orcaprobe::AbstractDisplay& display,
                                 const orcaice::Context& context );
     ~StatusProbe();
 

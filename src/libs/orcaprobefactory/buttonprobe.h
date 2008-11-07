@@ -22,7 +22,7 @@ class ButtonProbe : public orcaprobe::InterfaceProbe
 
 public:
 
-    ButtonProbe( const orca::FQInterfaceName& name, orcaprobe::AbstractDisplay& display,
+    ButtonProbe( const orca::FQInterfaceName& name, const Ice::ObjectPrx& adminPrx, orcaprobe::AbstractDisplay& display,
                const orcaice::Context& context );
 
     virtual int loadOperationEvent( const int index, orcacm::OperationData& data );

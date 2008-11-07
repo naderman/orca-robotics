@@ -23,7 +23,7 @@ class WifiProbe : public orcaprobe::InterfaceProbe
 
 public:
 
-    WifiProbe( const orca::FQInterfaceName& name, orcaprobe::AbstractDisplay& display,
+    WifiProbe( const orca::FQInterfaceName& name, const Ice::ObjectPrx& adminPrx, orcaprobe::AbstractDisplay& display,
                const orcaice::Context& context );
     ~WifiProbe();
 

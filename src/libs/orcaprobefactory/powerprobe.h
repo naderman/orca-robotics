@@ -23,7 +23,7 @@ class PowerProbe : public orcaprobe::InterfaceProbe
 
 public:
 
-    PowerProbe( const orca::FQInterfaceName & name, orcaprobe::AbstractDisplay & display,
+    PowerProbe( const orca::FQInterfaceName& name, const Ice::ObjectPrx& adminPrx, orcaprobe::AbstractDisplay& display,
                                 const orcaice::Context & context );
     ~PowerProbe();
 
