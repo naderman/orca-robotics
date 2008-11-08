@@ -80,6 +80,7 @@ facet name is important!):
 - ::orca::Home
 - ::orca::Status
 - ::orca::Tracer
+
 If an unsupported facet is requested, gbxutilacfr::Exception is thrown.
 
 In the event of a failed connection, adds an interpretive message and re-throws a NetworkException.
