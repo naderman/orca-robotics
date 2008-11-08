@@ -13,6 +13,7 @@
 
 #include <memory>
 #include <orcaice/subsystem.h>
+#include <orcaice/context.h>
 #include <hydrodll/dynamicload.h>
 // remote interface
 #include <orcaifaceimpl/gpsImpl.h>
@@ -52,6 +53,8 @@ private:
 
     // options
     bool publishWithoutFix_;
+
+    orcaice::Context context_;
 };
 
 } // namespace

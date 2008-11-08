@@ -52,7 +52,8 @@ void convert( const hydrointerfaces::Gps::Data& hydro, orca::GpsData& orca )
 ////////////////////////////
 
 MainSubsystem::MainSubsystem( const orcaice::Context& context ) :
-    Subsystem( context )
+    orcaice::Subsystem( context.tracer(), context.status(), "MainSubsystem" ),
+    context_(context)
 {
 }
 

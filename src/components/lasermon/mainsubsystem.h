@@ -12,6 +12,7 @@
 #define MAIN_SUBSYSTEM_H
 
 #include <orcaice/subsystem.h>
+#include <orcaice/context.h>
 #include <orcaifaceimpl/printingconsumers.h>
 
 namespace lasermon
@@ -29,6 +30,8 @@ private:
 //     virtual void finalise();
 
     orcaifaceimpl::PrintingRangeScanner2dConsumerImplPtr consumer_;
+
+    orcaice::Context context_;
 };
 
 } // namespace

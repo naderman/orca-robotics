@@ -37,11 +37,12 @@ private:
     double stdDevHeading_;
     double minInterPublishPeriodSec_;
     
-    orcaice::Context context_;
     orcaifaceimpl::BufferedOdometry2dConsumerImplPtr odometry2dConsumer_;
     orcaifaceimpl::Localise2dImplPtr localiseInterface_;
     
     void initNetworkInterface();
+
+    orcaice::Context context_;
 };
 
 } // namespace

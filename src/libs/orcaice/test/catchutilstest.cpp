@@ -14,9 +14,9 @@
 #include <orcaice/component.h>
 #include <orcaice/subsystem.h>
 #include <orcaice/catchutils.h>
+#include <orcaice/context.h>
 
 #include <gbxutilacfr/gbxutilacfr.h>
-// #include <orcaice/orcaice.h>
 
 using namespace std;
 
@@ -39,11 +39,13 @@ private:
     virtual void work();
     virtual void finalise();
     Config config_;
+    orcaice::Context context_;
 };
 
 TestSubsystem::TestSubsystem( Config config, const orcaice::Context &context ) :
-    Subsystem( context ),
-    config_( config )
+    orcaice::Subsystem( context.tracer(), context.status() ),
+    config_( config ),
+    context_(context)
 {
 }
 

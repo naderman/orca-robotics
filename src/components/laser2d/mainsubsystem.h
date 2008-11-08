@@ -13,6 +13,7 @@
 
 #include <memory>
 #include <orcaice/subsystem.h>
+#include <orcaice/context.h>
 #include <hydrodll/dynamicload.h>
 // remote interface
 #include <orcaifaceimpl/laserscanner2dImpl.h>
@@ -57,6 +58,8 @@ private:
     std::auto_ptr<hydrodll::DynamicallyLoadedLibrary> driverLib_;
     // Generic driver for the hardware
     std::auto_ptr<hydrointerfaces::LaserScanner2d> driver_;
+
+    orcaice::Context context_;
 };
 
 } // namespace

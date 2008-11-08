@@ -13,8 +13,7 @@
 #include <orcaice/application.h>
 #include <orcaice/component.h>
 #include <orcaice/subsystem.h>
-
-// #include <orcaice/orcaice.h>
+#include <orcaice/context.h>
 
 using namespace std;
 
@@ -37,11 +36,13 @@ private:
     virtual void work();
     virtual void finalise();
     Config config_;
+    orcaice::Context context_;
 };
 
 TestSubsystem::TestSubsystem( Config config, const orcaice::Context &context ) :
-    Subsystem( context ),
-    config_( config )
+    orcaice::Subsystem( context.tracer(), context.status() ),
+    config_( config ),
+    context_(context)
 {
     if ( config_ & ThrowSubsysConstructor )
         throw "throwing from subsystem constructor";

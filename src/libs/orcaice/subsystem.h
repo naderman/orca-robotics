@@ -12,7 +12,6 @@
 #define ORCAICE_SUBSYSTEM_H
 
 #include <orcaice/subsystemthread.h>
-#include <orcaice/context.h>
 
 namespace orcaice {
 
@@ -27,7 +26,7 @@ class Subsystem : public orcaice::SubsystemThread
 {
 public: 
     //! Constructor.
-    Subsystem( const orcaice::Context &context, const std::string& subsysName="MainSubsystem" );
+    Subsystem( gbxutilacfr::Tracer& tracer, gbxutilacfr::Status& status, const std::string& subsysName="SubsystemThread" );
     virtual ~Subsystem() {};
 
 protected:
@@ -45,9 +44,6 @@ protected:
     //! Action performed when in Finalising state.
     //! Default imlementation does nothing.
     virtual void finalise() {};
-
-    //! Component context.
-    orcaice::Context context_;
 
 private:
     // from SubsystemThread

@@ -12,9 +12,8 @@
 
 using namespace orcaice;
 
-Subsystem::Subsystem( const orcaice::Context &context, const std::string& subsysName ) : 
-    SubsystemThread( context.tracer(), context.status(), subsysName ),
-    context_(context)
+Subsystem::Subsystem( gbxutilacfr::Tracer& tracer, gbxutilacfr::Status& status, const std::string& subsysName ) : 
+    SubsystemThread( tracer, status, subsysName )
 {
 }
 

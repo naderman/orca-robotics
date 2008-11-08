@@ -18,7 +18,8 @@ using namespace std;
 using namespace laser2d;
 
 MainSubsystem::MainSubsystem( const orcaice::Context &context ) :
-    orcaice::Subsystem( context, "MainSubsystem" )
+    orcaice::Subsystem( context.tracer(), context.status(), "MainSubsystem" ),
+    context_(context)
 {
 }
 

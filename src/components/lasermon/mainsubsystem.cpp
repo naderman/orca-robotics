@@ -19,7 +19,8 @@ using namespace std;
 using namespace lasermon;
 
 MainSubsystem::MainSubsystem( const orcaice::Context &context ) : 
-    Subsystem( context, "MainSubsystem" )
+    orcaice::Subsystem( context.tracer(), context.status(), "MainSubsystem" ),
+    context_(context)
 {
 }
 
