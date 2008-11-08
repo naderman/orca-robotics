@@ -247,7 +247,6 @@ BrowserThread::loadInterface()
             // special case: the interface is actually created every time, using smart pointer to avoid mem leaks
             ifaceProbe_ = factories_[i]->create( interfaceData_.id, interfaceData_.name, componentData_.adminPrx, display_, context_ );
         }
-
     }
 
     // if specific probe was not found in the factories, load generic probe

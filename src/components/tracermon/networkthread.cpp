@@ -83,7 +83,7 @@ NetworkThread::walk()
         {
 //             tracerPrx_->setVerbosity( errorVerb, warnVerb, infoVerb, debugVerb );
 //             user_->newVerbosityLevel( errorVerb, warnVerb, infoVerb, debugVerb );
-            tracerPrx_->subscribeForComponentMessages( callbackPrx );
+            tracerPrx_->subscribe( callbackPrx );
             break;
         }
         catch ( const orca::SubscriptionFailedException& e )
@@ -164,10 +164,3 @@ NetworkThread::setRemoteVerbosity( int error, int warn, int info, int debug )
         }
     }
 }
-
-// void 
-// NetworkThread::setData(const orca::TracerData& data, const Ice::Current&)
-// {
-//     cout<<"NetworkThread::setData "<<endl;
-//     user_->newTraceMessage( data );
-// }

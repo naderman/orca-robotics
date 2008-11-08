@@ -34,84 +34,84 @@ namespace orcaifaceimpl
 //
 
 //! Typedef for a common interface type. There's also a corresponding Ptr.
-typedef NotifyingConsumerImpl<orca::RangeScanner2dPrx,
+typedef NotifyingConsumerImpl<orca::RangeScanner2d, orca::RangeScanner2dPrx,
                         orca::RangeScanner2dConsumer,
                         orca::RangeScanner2dConsumerPrx,
                         orca::RangeScanner2dDataPtr>       NotifyingRangeScanner2dConsumerImpl;
 typedef IceUtil::Handle<NotifyingRangeScanner2dConsumerImpl> NotifyingRangeScanner2dConsumerImplPtr;
 
 //! Typedef for a common interface type. There's also a corresponding Ptr.
-typedef NotifyingConsumerImpl<orca::Localise2dPrx,
+typedef NotifyingConsumerImpl<orca::Localise2d, orca::Localise2dPrx,
                         orca::Localise2dConsumer,
                         orca::Localise2dConsumerPrx,
                         orca::Localise2dData>              NotifyingLocalise2dConsumerImpl;
 typedef IceUtil::Handle<NotifyingLocalise2dConsumerImpl>     NotifyingLocalise2dConsumerImplPtr;
 
 //! Typedef for a common interface type. There's also a corresponding Ptr.
-typedef NotifyingConsumerImpl<orca::Localise3dPrx,
+typedef NotifyingConsumerImpl<orca::Localise3d, orca::Localise3dPrx,
                         orca::Localise3dConsumer,
                         orca::Localise3dConsumerPrx,
                         orca::Localise3dData>              NotifyingLocalise3dConsumerImpl;
 typedef IceUtil::Handle<NotifyingLocalise3dConsumerImpl>     NotifyingLocalise3dConsumerImplPtr;
 
 //! Typedef for a common interface type. There's also a corresponding Ptr.
-typedef NotifyingConsumerImpl<orca::Odometry2dPrx,
+typedef NotifyingConsumerImpl<orca::Odometry2d, orca::Odometry2dPrx,
                         orca::Odometry2dConsumer,
                         orca::Odometry2dConsumerPrx,
                         orca::Odometry2dData>              NotifyingOdometry2dConsumerImpl;
 typedef IceUtil::Handle<NotifyingOdometry2dConsumerImpl>     NotifyingOdometry2dConsumerImplPtr;
 
 //! Typedef for a common interface type. There's also a corresponding Ptr.
-typedef NotifyingConsumerImpl<orca::Odometry3dPrx,
+typedef NotifyingConsumerImpl<orca::Odometry3d, orca::Odometry3dPrx,
                         orca::Odometry3dConsumer,
                         orca::Odometry3dConsumerPrx,
                         orca::Odometry3dData>              NotifyingOdometry3dConsumerImpl;
 typedef IceUtil::Handle<NotifyingOdometry3dConsumerImpl>     NotifyingOdometry3dConsumerImplPtr;
 
 //! Typedef for a common interface type. There's also a corresponding Ptr.
-typedef NotifyingConsumerImpl<orca::DriveBicyclePrx,
+typedef NotifyingConsumerImpl<orca::DriveBicycle, orca::DriveBicyclePrx,
                         orca::DriveBicycleConsumer,
                         orca::DriveBicycleConsumerPrx,
                         orca::DriveBicycleData>            NotifyingDriveBicycleConsumerImpl;
 typedef IceUtil::Handle<NotifyingDriveBicycleConsumerImpl>   NotifyingDriveBicycleConsumerImplPtr;
 
 //! Typedef for a common interface type. There's also a corresponding Ptr.
-typedef NotifyingConsumerImpl<orca::OgMapPrx,
+typedef NotifyingConsumerImpl<orca::OgMap, orca::OgMapPrx,
                         orca::OgMapConsumer,
                         orca::OgMapConsumerPrx,
                         orca::OgMapData>                   NotifyingOgMapConsumerImpl;
 typedef IceUtil::Handle<NotifyingOgMapConsumerImpl>          NotifyingOgMapConsumerImplPtr;
 
 //! Typedef for a common interface type. There's also a corresponding Ptr.
-typedef NotifyingConsumerImpl<orca::GpsPrx,
+typedef NotifyingConsumerImpl<orca::Gps, orca::GpsPrx,
                         orca::GpsConsumer,
                         orca::GpsConsumerPrx,
                         orca::GpsData>                     NotifyingGpsConsumerImpl;
 typedef IceUtil::Handle<NotifyingGpsConsumerImpl>            NotifyingGpsConsumerImplPtr;
 
 //! Typedef for a common interface type. There's also a corresponding Ptr.
-typedef NotifyingConsumerImpl<orca::PolarFeature2dPrx,
+typedef NotifyingConsumerImpl<orca::PolarFeature2d, orca::PolarFeature2dPrx,
                         orca::PolarFeature2dConsumer,
                         orca::PolarFeature2dConsumerPrx,
                         orca::PolarFeature2dData>              NotifyingPolarFeature2dConsumerImpl;
 typedef IceUtil::Handle<NotifyingPolarFeature2dConsumerImpl>   NotifyingPolarFeature2dConsumerImplPtr;
 
 //! Typedef for a common interface type. There's also a corresponding Ptr.
-typedef NotifyingConsumerImpl<orca::PropertiesPrx,
+typedef NotifyingConsumerImpl<orca::Properties, orca::PropertiesPrx,
                         orca::PropertiesConsumer,
                         orca::PropertiesConsumerPrx,
                         orca::PropertiesData>              NotifyingPropertiesConsumerImpl;
 typedef IceUtil::Handle<NotifyingPropertiesConsumerImpl>   NotifyingPropertiesConsumerImplPtr;
 
 //! Typedef for a common interface type. There's also a corresponding Ptr.
-typedef NotifyingConsumerImpl<orca::InsPrx,
+typedef NotifyingConsumerImpl<orca::Ins, orca::InsPrx,
                         orca::InsConsumer,
                         orca::InsConsumerPrx,
                         orca::InsData>                     NotifyingInsConsumerImpl;
 typedef IceUtil::Handle<NotifyingInsConsumerImpl>            NotifyingInsConsumerImplPtr;
 
 //! Typedef for a common interface type. There's also a corresponding Ptr.
-typedef NotifyingConsumerImpl<orca::PointCloudPrx,
+typedef NotifyingConsumerImpl<orca::PointCloud, orca::PointCloudPrx,
                         orca::PointCloudConsumer,
                         orca::PointCloudConsumerPrx,
                         orca::PointCloudData>                     NotifyingPointCloudConsumerImpl;

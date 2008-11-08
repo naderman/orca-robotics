@@ -35,9 +35,6 @@ public:
     // from Network
     virtual void setVerbosityLevel( int error, int warn, int info, int debug );
 
-    // from consumer
-//     virtual void setData(const orca::TracerData& data, const Ice::Current&);
-
 private:
 
     User* user_;

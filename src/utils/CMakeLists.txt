@@ -20,7 +20,7 @@ ADD_SUBDIRECTORY( registryview )
 ADD_SUBDIRECTORY( replier )
 ADD_SUBDIRECTORY( slice2log )
 ADD_SUBDIRECTORY( snapshotlogger )
-ADD_SUBDIRECTORY( systemtracermon )
+# ADD_SUBDIRECTORY( systemtracermon )
 
 # putting it after all subdir's because of cmake weirdness:
 # when placed above, only one subdir license appears 

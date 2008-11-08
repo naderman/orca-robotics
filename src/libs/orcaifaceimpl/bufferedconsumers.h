@@ -34,94 +34,81 @@ namespace orcaifaceimpl
 //
 
 //! Typedef for a common interface type. There's also a corresponding Ptr.
-typedef BufferedConsumerImpl<orca::RangeScanner2dPrx,
-                        orca::RangeScanner2dConsumer,
-                        orca::RangeScanner2dConsumerPrx,
+typedef BufferedConsumerImpl<orca::RangeScanner2d, orca::RangeScanner2dPrx,
+                        orca::RangeScanner2dConsumer, orca::RangeScanner2dConsumerPrx,
                         orca::RangeScanner2dDataPtr>       BufferedRangeScanner2dConsumerImpl;
 typedef IceUtil::Handle<BufferedRangeScanner2dConsumerImpl> BufferedRangeScanner2dConsumerImplPtr;
 
 //! Typedef for a common interface type. There's also a corresponding Ptr.
-typedef BufferedConsumerImpl<orca::Localise2dPrx,
-                        orca::Localise2dConsumer,
-                        orca::Localise2dConsumerPrx,
+typedef BufferedConsumerImpl<orca::Localise2d, orca::Localise2dPrx,
+                        orca::Localise2dConsumer, orca::Localise2dConsumerPrx,
                         orca::Localise2dData>              BufferedLocalise2dConsumerImpl;
 typedef IceUtil::Handle<BufferedLocalise2dConsumerImpl>    BufferedLocalise2dConsumerImplPtr;
 
 //! Typedef for a common interface type. There's also a corresponding Ptr.
-typedef BufferedConsumerImpl<orca::Localise3dPrx,
-                        orca::Localise3dConsumer,
-                        orca::Localise3dConsumerPrx,
+typedef BufferedConsumerImpl<orca::Localise3d, orca::Localise3dPrx,
+                        orca::Localise3dConsumer, orca::Localise3dConsumerPrx,
                         orca::Localise3dData>              BufferedLocalise3dConsumerImpl;
 typedef IceUtil::Handle<BufferedLocalise3dConsumerImpl>    BufferedLocalise3dConsumerImplPtr;
 
 //! Typedef for a common interface type. There's also a corresponding Ptr.
-typedef BufferedConsumerImpl<orca::Odometry2dPrx,
-                        orca::Odometry2dConsumer,
-                        orca::Odometry2dConsumerPrx,
+typedef BufferedConsumerImpl<orca::Odometry2d, orca::Odometry2dPrx,
+                        orca::Odometry2dConsumer, orca::Odometry2dConsumerPrx,
                         orca::Odometry2dData>              BufferedOdometry2dConsumerImpl;
 typedef IceUtil::Handle<BufferedOdometry2dConsumerImpl>    BufferedOdometry2dConsumerImplPtr;
 
 //! Typedef for a common interface type. There's also a corresponding Ptr.
-typedef BufferedConsumerImpl<orca::Odometry3dPrx,
-                        orca::Odometry3dConsumer,
-                        orca::Odometry3dConsumerPrx,
+typedef BufferedConsumerImpl<orca::Odometry3d, orca::Odometry3dPrx,
+                        orca::Odometry3dConsumer, orca::Odometry3dConsumerPrx,
                         orca::Odometry3dData>              BufferedOdometry3dConsumerImpl;
 typedef IceUtil::Handle<BufferedOdometry3dConsumerImpl>    BufferedOdometry3dConsumerImplPtr;
 
 //! Typedef for a common interface type. There's also a corresponding Ptr.
-typedef BufferedConsumerImpl<orca::DriveBicyclePrx,
-                        orca::DriveBicycleConsumer,
-                        orca::DriveBicycleConsumerPrx,
+typedef BufferedConsumerImpl<orca::DriveBicycle, orca::DriveBicyclePrx,
+                        orca::DriveBicycleConsumer, orca::DriveBicycleConsumerPrx,
                         orca::DriveBicycleData>            BufferedDriveBicycleConsumerImpl;
 typedef IceUtil::Handle<BufferedDriveBicycleConsumerImpl>  BufferedDriveBicycleConsumerImplPtr;
 
 //! Typedef for a common interface type. There's also a corresponding Ptr.
-typedef BufferedConsumerImpl<orca::OgMapPrx,
-                        orca::OgMapConsumer,
-                        orca::OgMapConsumerPrx,
+typedef BufferedConsumerImpl<orca::OgMap, orca::OgMapPrx,
+                        orca::OgMapConsumer, orca::OgMapConsumerPrx,
                         orca::OgMapData>                   BufferedOgMapConsumerImpl;
 typedef IceUtil::Handle<BufferedOgMapConsumerImpl>         BufferedOgMapConsumerImplPtr;
 
 //! Typedef for a common interface type. There's also a corresponding Ptr.
-typedef BufferedConsumerImpl<orca::GpsPrx,
-                        orca::GpsConsumer,
-                        orca::GpsConsumerPrx,
+typedef BufferedConsumerImpl<orca::Gps, orca::GpsPrx,
+                        orca::GpsConsumer, orca::GpsConsumerPrx,
                         orca::GpsData>                     BufferedGpsConsumerImpl;
 typedef IceUtil::Handle<BufferedGpsConsumerImpl>           BufferedGpsConsumerImplPtr;
 
 //! Typedef for a common interface type. There's also a corresponding Ptr.
-typedef BufferedConsumerImpl<orca::ImagePrx,
-                        orca::ImageConsumer,
-                        orca::ImageConsumerPrx,
+typedef BufferedConsumerImpl<orca::Image, orca::ImagePrx,
+                        orca::ImageConsumer, orca::ImageConsumerPrx,
                         orca::ImageDataPtr>                  BufferedImageConsumerImpl;
 typedef IceUtil::Handle<BufferedImageConsumerImpl>        BufferedImageConsumerImplPtr;
 
 
 //! Typedef for a common interface type. There's also a corresponding Ptr.
-typedef BufferedConsumerImpl<orca::CameraPrx,
-                        orca::ImageConsumer,
-                        orca::ImageConsumerPrx,
+typedef BufferedConsumerImpl<orca::Camera, orca::CameraPrx,
+                        orca::ImageConsumer, orca::ImageConsumerPrx,
                         orca::ImageDataPtr>                  BufferedCameraConsumerImpl;
 typedef IceUtil::Handle<BufferedCameraConsumerImpl>        BufferedCameraConsumerImplPtr;
 
 //! Typedef for a common interface type. There's also a corresponding Ptr.
-typedef BufferedConsumerImpl<orca::InsPrx,
-                        orca::InsConsumer,
-                        orca::InsConsumerPrx,
+typedef BufferedConsumerImpl<orca::Ins, orca::InsPrx,
+                        orca::InsConsumer, orca::InsConsumerPrx,
                         orca::InsData>                     BufferedInsConsumerImpl;
 typedef IceUtil::Handle<BufferedInsConsumerImpl>           BufferedInsConsumerImplPtr;
 
 //! Typedef for a common interface type. There's also a corresponding Ptr.
-typedef BufferedConsumerImpl<orca::PointCloudPrx,
-                        orca::PointCloudConsumer,
-                        orca::PointCloudConsumerPrx,
+typedef BufferedConsumerImpl<orca::PointCloud, orca::PointCloudPrx,
+                        orca::PointCloudConsumer, orca::PointCloudConsumerPrx,
                         orca::PointCloudData>                     BufferedPointCloudConsumerImpl;
                         typedef IceUtil::Handle<BufferedPointCloudConsumerImpl>           BufferedPointCloudConsumerImplPtr;
 
 //! Typedef for a common interface type. There's also a corresponding Ptr.
-typedef BufferedConsumerImpl<orca::SystemStatusPrx,
-                        orca::SystemStatusConsumer,
-                        orca::SystemStatusConsumerPrx,
+typedef BufferedConsumerImpl<orca::SystemStatus, orca::SystemStatusPrx,
+                        orca::SystemStatusConsumer, orca::SystemStatusConsumerPrx,
                         orca::SystemStatusData>           BufferedSystemStatusConsumerImpl;
 typedef IceUtil::Handle<BufferedSystemStatusConsumerImpl> BufferedSystemStatusConsumerImplPtr;
 

@@ -34,86 +34,74 @@ namespace orcaifaceimpl
 //
 
 //! Typedef for a common interface type. There's also a corresponding Ptr.
-typedef StoringConsumerImpl<orca::RangeScanner2dPrx,
-                        orca::RangeScanner2dConsumer,
-                        orca::RangeScanner2dConsumerPrx,
+typedef StoringConsumerImpl<orca::RangeScanner2d, orca::RangeScanner2dPrx,
+                        orca::RangeScanner2dConsumer, orca::RangeScanner2dConsumerPrx,
                         orca::RangeScanner2dDataPtr>       StoringRangeScanner2dConsumerImpl;
 typedef IceUtil::Handle<StoringRangeScanner2dConsumerImpl> StoringRangeScanner2dConsumerImplPtr;
 
 //! Typedef for a common interface type. There's also a corresponding Ptr.
-typedef StoringConsumerImpl<orca::Localise2dPrx,
-                        orca::Localise2dConsumer,
-                        orca::Localise2dConsumerPrx,
+typedef StoringConsumerImpl<orca::Localise2d, orca::Localise2dPrx,
+                        orca::Localise2dConsumer, orca::Localise2dConsumerPrx,
                         orca::Localise2dData>              StoringLocalise2dConsumerImpl;
 typedef IceUtil::Handle<StoringLocalise2dConsumerImpl>     StoringLocalise2dConsumerImplPtr;
 
 //! Typedef for a common interface type. There's also a corresponding Ptr.
-typedef StoringConsumerImpl<orca::Localise3dPrx,
-                        orca::Localise3dConsumer,
-                        orca::Localise3dConsumerPrx,
+typedef StoringConsumerImpl<orca::Localise3d, orca::Localise3dPrx,
+                        orca::Localise3dConsumer, orca::Localise3dConsumerPrx,
                         orca::Localise3dData>              StoringLocalise3dConsumerImpl;
 typedef IceUtil::Handle<StoringLocalise3dConsumerImpl>     StoringLocalise3dConsumerImplPtr;
 
 //! Typedef for a common interface type. There's also a corresponding Ptr.
-typedef StoringConsumerImpl<orca::Odometry2dPrx,
-                        orca::Odometry2dConsumer,
-                        orca::Odometry2dConsumerPrx,
+typedef StoringConsumerImpl<orca::Odometry2d, orca::Odometry2dPrx,
+                        orca::Odometry2dConsumer, orca::Odometry2dConsumerPrx,
                         orca::Odometry2dData>              StoringOdometry2dConsumerImpl;
 typedef IceUtil::Handle<StoringOdometry2dConsumerImpl>     StoringOdometry2dConsumerImplPtr;
 
 //! Typedef for a common interface type. There's also a corresponding Ptr.
-typedef StoringConsumerImpl<orca::Odometry3dPrx,
-                        orca::Odometry3dConsumer,
-                        orca::Odometry3dConsumerPrx,
+typedef StoringConsumerImpl<orca::Odometry3d, orca::Odometry3dPrx,
+                        orca::Odometry3dConsumer, orca::Odometry3dConsumerPrx,
                         orca::Odometry3dData>              StoringOdometry3dConsumerImpl;
 typedef IceUtil::Handle<StoringOdometry3dConsumerImpl>     StoringOdometry3dConsumerImplPtr;
 
 //! Typedef for a common interface type. There's also a corresponding Ptr.
-typedef StoringConsumerImpl<orca::DriveBicyclePrx,
-                        orca::DriveBicycleConsumer,
-                        orca::DriveBicycleConsumerPrx,
+typedef StoringConsumerImpl<orca::DriveBicycle, orca::DriveBicyclePrx,
+                        orca::DriveBicycleConsumer, orca::DriveBicycleConsumerPrx,
                         orca::DriveBicycleData>            StoringDriveBicycleConsumerImpl;
 typedef IceUtil::Handle<StoringDriveBicycleConsumerImpl>   StoringDriveBicycleConsumerImplPtr;
 
 //! Typedef for a common interface type. There's also a corresponding Ptr.
-typedef StoringConsumerImpl<orca::OgMapPrx,
-                        orca::OgMapConsumer,
-                        orca::OgMapConsumerPrx,
+typedef StoringConsumerImpl<orca::OgMap, orca::OgMapPrx,
+                        orca::OgMapConsumer, orca::OgMapConsumerPrx,
                         orca::OgMapData>                   StoringOgMapConsumerImpl;
 typedef IceUtil::Handle<StoringOgMapConsumerImpl>          StoringOgMapConsumerImplPtr;
 
 //! Typedef for a common interface type. There's also a corresponding Ptr.
-typedef StoringConsumerImpl<orca::GpsPrx,
-                        orca::GpsConsumer,
-                        orca::GpsConsumerPrx,
+typedef StoringConsumerImpl<orca::Gps, orca::GpsPrx,
+                        orca::GpsConsumer, orca::GpsConsumerPrx,
                         orca::GpsData>                     StoringGpsConsumerImpl;
 typedef IceUtil::Handle<StoringGpsConsumerImpl>            StoringGpsConsumerImplPtr;
 
 //! Typedef for a common interface type. There's also a corresponding Ptr.
-typedef StoringConsumerImpl<orca::PathPlanner2dPrx,
-                        orca::PathPlanner2dConsumer,
-                        orca::PathPlanner2dConsumerPrx,
+typedef StoringConsumerImpl<orca::PathPlanner2d, orca::PathPlanner2dPrx,
+                        orca::PathPlanner2dConsumer, orca::PathPlanner2dConsumerPrx,
                         orca::PathPlanner2dData>           StoringPathPlanner2dConsumerImpl;
 typedef IceUtil::Handle<StoringPathPlanner2dConsumerImpl>  StoringPathPlanner2dConsumerImplPtr;
 
 //! Typedef for a common interface type. There's also a corresponding Ptr.
-typedef StoringConsumerImpl<orca::PropertiesPrx,
-                        orca::PropertiesConsumer,
-                        orca::PropertiesConsumerPrx,
+typedef StoringConsumerImpl<orca::Properties, orca::PropertiesPrx,
+                        orca::PropertiesConsumer, orca::PropertiesConsumerPrx,
                         orca::PropertiesData>           StoringPropertiesConsumerImpl;
 typedef IceUtil::Handle<StoringPropertiesConsumerImpl>  StoringPropertiesConsumerImplPtr;
 
 //! Typedef for a common interface type. There's also a corresponding Ptr.
-typedef StoringConsumerImpl<orca::InsPrx,
-                        orca::InsConsumer,
-                        orca::InsConsumerPrx,
+typedef StoringConsumerImpl<orca::Ins, orca::InsPrx,
+                        orca::InsConsumer, orca::InsConsumerPrx,
                         orca::InsData>                     StoringInsConsumerImpl;
 typedef IceUtil::Handle<StoringInsConsumerImpl>            StoringInsConsumerImplPtr;
 
 //! Typedef for a common interface type. There's also a corresponding Ptr.
-typedef StoringConsumerImpl<orca::PointCloudPrx,
-                        orca::PointCloudConsumer,
-                        orca::PointCloudConsumerPrx,
+typedef StoringConsumerImpl<orca::PointCloud, orca::PointCloudPrx,
+                        orca::PointCloudConsumer, orca::PointCloudConsumerPrx,
                         orca::PointCloudData>                     StoringPointCloudConsumerImpl;
 typedef IceUtil::Handle<StoringPointCloudConsumerImpl>            StoringPointCloudConsumerImplPtr;
 

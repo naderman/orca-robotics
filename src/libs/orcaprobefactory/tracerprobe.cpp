@@ -104,13 +104,10 @@ TracerProbe::loadSetVerbosity( orcacm::OperationData& data )
 int 
 TracerProbe::loadSubscribe( orcacm::OperationData& data )
 {
-    Ice::ObjectPtr consumer = this;
-    orca::TracerConsumerPrx callbackPrx = 
-            orcaice::createConsumerInterface<orca::TracerConsumerPrx>( ctx_, consumer );
     try
     {
         orca::TracerPrx derivedPrx = orca::TracerPrx::checkedCast(prx_);
-        derivedPrx->subscribeForComponentMessages( callbackPrx );
+        derivedPrx->subscribe( callbackPrx_ );
         orcaprobe::reportSubscribed( data );
 
         // save the op data structure so we can use it when the data arrives
@@ -131,7 +128,7 @@ TracerProbe::loadUnsubscribe( orcacm::OperationData& data )
     try
     {
         orca::TracerPrx derivedPrx = orca::TracerPrx::checkedCast(prx_);
-        derivedPrx->unsubscribeForComponentMessages( callbackPrx_ );
+        derivedPrx->unsubscribe( callbackPrx_ );
         orcaprobe::reportUnsubscribed( data );
     }
     catch( const Ice::Exception& e )

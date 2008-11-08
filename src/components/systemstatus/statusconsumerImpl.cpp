@@ -17,7 +17,7 @@ using namespace std;
 namespace systemstatus {
 
 StatusConsumerImpl::StatusConsumerImpl( const Config& config, const orcaice::Context& context ) :
-    orcaifaceimpl::ConsumerImpl<orca::StatusPrx,orca::StatusConsumer,orca::StatusConsumerPrx,orca::StatusData>(context),
+    orcaifaceimpl::ConsumerImpl<orca::Status,orca::StatusPrx,orca::StatusConsumer,orca::StatusConsumerPrx,orca::StatusData>(context),
     hasValidData_(false),
     isDestructing_(false),
     config_(config)

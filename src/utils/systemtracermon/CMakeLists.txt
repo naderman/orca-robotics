@@ -3,7 +3,7 @@ SET( COMP_NAMESPACE sysmon )
 SET( APP_CTRLC_HANDLER 0 )
 
 SET( build TRUE )
-GBX_REQUIRE_OPTION( build EXE ${APP_NAME} ON )
+GBX_REQUIRE_OPTION( build EXE ${APP_NAME} OFF )
 
 SET( dep_libs OrcaObjects )
 GBX_REQUIRE_TARGETS( build EXE ${APP_NAME} ${dep_libs} )

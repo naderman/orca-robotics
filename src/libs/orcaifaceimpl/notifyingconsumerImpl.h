@@ -20,9 +20,9 @@ namespace orcaifaceimpl {
 //! Implements a consumer interface whose set method is 'SetData'.
 //! Users must register a callback which is notified on arrival of data.
 //!
-template<class ProviderPrxType, class ConsumerType, class ConsumerPrxType, class ObjectType>
+template<class ProviderType, class ProviderPrxType, class ConsumerType, class ConsumerPrxType, class ObjectType>
 class NotifyingConsumerImpl
-    : public ConsumerImpl<ProviderPrxType,ConsumerType,ConsumerPrxType,ObjectType>,
+    : public ConsumerImpl<ProviderType,ProviderPrxType,ConsumerType,ConsumerPrxType,ObjectType>,
       public gbxiceutilacfr::Notify<ObjectType>
 {
 
@@ -30,7 +30,7 @@ public:
 
     //! Constructor.
     NotifyingConsumerImpl( const orcaice::Context &context )
-        : ConsumerImpl<ProviderPrxType,ConsumerType,ConsumerPrxType,ObjectType>(context) {}
+        : ConsumerImpl<ProviderType,ProviderPrxType,ConsumerType,ConsumerPrxType,ObjectType>(context) {}
 
     ~NotifyingConsumerImpl()
         {

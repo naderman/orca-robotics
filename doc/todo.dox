@@ -108,6 +108,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - Tracer
   - TracerData: string 'category' changed to an enum with common trace types. Initially we thought we would need flexibility
     in trace type definitions, we don't see any need for this now.
+  - Removed unused methods for (un)subscribing for platform summaries. This functionality is now in Status.
 
 @par Updated components
 

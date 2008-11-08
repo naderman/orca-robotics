@@ -120,21 +120,21 @@ connectToInterfaceWithString( const Context                             &context
     catch ( const Ice::ConnectionRefusedException& e )
     {
         std::stringstream ss;
-        ss << "(while connecting to Admin interface '" << resolvedProxyString << "') cannot reach the adaptor: "<<e.what();
+        ss << "(while connecting to interface '" << resolvedProxyString << "') cannot reach the adaptor: "<<e.what();
         orcaice::initTracerWarning( context, ss.str(), 2 );
         throw orcaice::NetworkException( ERROR_INFO, ss.str() );
     }
     catch ( const Ice::ObjectNotExistException& e )
     {
         std::stringstream ss;
-        ss << "(while connecting to Admin interface '" << resolvedProxyString << "') reached the adaptor but not the interface: "<<e.what();
+        ss << "(while connecting to interface '" << resolvedProxyString << "') reached the adaptor but not the interface: "<<e.what();
         orcaice::initTracerWarning( context, ss.str(), 2 );
         throw orcaice::NetworkException( ERROR_INFO, ss.str() );
     }
     catch ( const std::exception& e )
     {
         std::stringstream ss;
-        ss << "(while connecting to Admin interface '" << resolvedProxyString << "') something unexpected: "<<e.what();
+        ss << "(while connecting to interface '" << resolvedProxyString << "') something unexpected: "<<e.what();
         orcaice::initTracerWarning( context, ss.str(), 2 );
         throw orcaice::NetworkException( ERROR_INFO, ss.str() );
     }

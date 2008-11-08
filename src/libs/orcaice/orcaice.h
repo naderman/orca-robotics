@@ -9,7 +9,7 @@
  */
 
 /*
- *  Convenience header: an easy way to include all of orceice header files
+ *  Convenience header: an easy way to include all of orcaice header files
  */
 
 #ifndef ORCAICE_ORCAICE_H

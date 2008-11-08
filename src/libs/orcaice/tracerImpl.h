@@ -15,7 +15,6 @@
 #include <gbxsickacfr/gbxiceutilacfr/store.h>
 
 #include <orca/tracer.h>
-#include <IceStorm/IceStorm.h>
 #include <orcaice/topichandler.h>
 
 // class gbxiceutilacfr::Thread;
@@ -44,9 +43,9 @@ private:
     ::orca::TracerVerbosityConfig internalGetVerbosity();
     void internalSetVerbosity( const ::orca::TracerVerbosityConfig& config );
 
-    void initTopicHandlers();
+    void initTopicHandler();
     void icestormConnectFailed( const std::string &topicName, bool isTracerTopicRequired );
-    // tracer service is special: it can be selfreferencial, i.e. errors during initialization
+    // tracer service is special: it can be self-referencial, i.e. errors during initialization
     // will produce traces which will lead to more errors.
     // With this thread-safe flag, traces will not be published to the network until full initialization.
     gbxiceutilacfr::Store<bool> isInitialized_;
@@ -54,18 +53,10 @@ private:
     typedef TopicHandler<orca::TracerConsumerPrx,orca::TracerData> TracerTopicHandler;
 
     // Responsible for sending messages to the component's tracer topic.
-    // (this is the standard topic, just like with any other interface)
-    TracerTopicHandler* componentTopicHandler_;
+    TracerTopicHandler* topicHandler_;
 
-    // Responsible for sending messages to the platform's info/warning/error topics
-    TracerTopicHandler* platformInfoTopicHandler_;
-    TracerTopicHandler* platformWarningTopicHandler_;
-    TracerTopicHandler* platformErrorTopicHandler_;
-
-    void tryInitTopicHandler( TracerTopicHandler *&topicHandler, std::string topic, bool isTracerTopicRequired );
-
-    void internalSubscribe( TracerTopicHandler *&sender, const ::orca::TracerConsumerPrx &subscriber );
-    void internalUnsubscribe( TracerTopicHandler* sender, const ::orca::TracerConsumerPrx &subscriber );
+    void internalSubscribe( const ::orca::TracerConsumerPrx &subscriber );
+    void internalUnsubscribe( const ::orca::TracerConsumerPrx &subscriber );
 
     // Hang onto this so we can remove from the adapter and control when things get deleted
     Ice::ObjectPtr ptr_;

@@ -14,10 +14,9 @@
 #include <orcaice/context.h>
 #include <orcaice/multiconnectutils.h>
 #include <orcaice/icestormutils.h>
+#include <orcaice/icegridutils.h>
 #include <gbxsickacfr/gbxiceutilacfr/store.h>
 #include <gbxsickacfr/gbxiceutilacfr/thread.h>
-// #include <orcaifaceimpl/util.h>
-// #include <iostream>
 
 namespace orcaifaceimpl
 {
@@ -136,11 +135,21 @@ Oct 25 03:26:49 tango /usr/bin/icebox[2474]: Topic: status/ast@tango/localnav: u
 Oct 25 03:26:49 tango /usr/bin/icebox[2474]: Subscriber: 0x81182e0 07394FBF-586C-4128-AA28-1727B9DA2E19: subscriber errored out: OutgoingAsync.cpp:305: Ice::ObjectNotExistException: object does not exist: identity: `07394FBF-586C-4128-AA28-1727B9DA2E19' facet:  operation: setData retry: 0/0
 @endverbatim
 */
-template<class ProviderPrxType, class ConsumerType, class ConsumerPrxType, class ObjectType>
+template<class ProviderType, class ProviderPrxType, class ConsumerType, class ConsumerPrxType, class ObjectType>
 class ConsumerImpl : public ConsumerSubscriber, 
                      public AbstractConsumer<ObjectType>,
                      public IceUtil::Shared
 {
+
+protected:
+    // these are protected so that it's possible to re-implement initConsumer()
+
+    //! Proxy to the internal consumer interface implementation
+    ConsumerPrxType consumerPrx_;
+
+    //! Hang onto this so we can remove from the adapter and control when things get deleted
+    Ice::ObjectPtr consumerPtr_;
+
 public:
     //! Constructor creates consumer interface object. Does not contain any remote calls.
     ConsumerImpl( const orcaice::Context &context ) :
@@ -192,7 +201,19 @@ public:
     virtual void subscribeWithString( const std::string& proxyString )
     {
         ProviderPrxType providerPrx;
-        orcaice::connectToInterfaceWithString( context_, providerPrx, proxyString );
+
+        std::string staticId = ConsumerType::ice_staticId();
+        // Home does not have a consumer
+        if ( staticId == "::orca::StatusConsumer" || staticId == "::orca::TracerConsumer" ) {
+            orca::FQInterfaceName fqIfaceName = orcaice::toInterfaceName( proxyString );
+            orca::FQComponentName fqCompName;
+            fqCompName.platform = fqIfaceName.platform;
+            fqCompName.component = fqIfaceName.component;
+            orcaice::connectToAdminInterface<ProviderType,ProviderPrxType>( context_, providerPrx, fqCompName );
+        }
+        else {
+            orcaice::connectToInterfaceWithString( context_, providerPrx, proxyString );
+        }
 
         providerPrx->subscribe( consumerPrx_ );
         std::stringstream ss;
@@ -205,7 +226,19 @@ public:
     virtual void unsubscribeWithString( const std::string& proxyString )
     {
         ProviderPrxType providerPrx;
-        orcaice::connectToInterfaceWithString( context_, providerPrx, proxyString );
+
+        std::string staticId = ConsumerType::ice_staticId();
+        // Home does not have a consumer
+        if ( staticId == "::orca::StatusConsumer" || staticId == "::orca::TracerConsumer" ) {
+            orca::FQInterfaceName fqIfaceName = orcaice::toInterfaceName( proxyString );
+            orca::FQComponentName fqCompName;
+            fqCompName.platform = fqIfaceName.platform;
+            fqCompName.component = fqIfaceName.component;
+            orcaice::connectToAdminInterface<ProviderType,ProviderPrxType>( context_, providerPrx, fqCompName );
+        }
+        else {
+            orcaice::connectToInterfaceWithString( context_, providerPrx, proxyString );
+        }
 
         providerPrx->unsubscribe( consumerPrx_ );
         std::stringstream ss;
@@ -274,15 +307,6 @@ public:
 
         return false;
     }
-
-protected:
-    // these are protected so that it's possible to re-implement initConsumer()
-
-    //! Proxy to the internal consumer interface implementation
-    ConsumerPrxType consumerPrx_;
-
-    //! Hang onto this so we can remove from the adapter and control when things get deleted
-    Ice::ObjectPtr consumerPtr_;
 };
 
 } // namespace

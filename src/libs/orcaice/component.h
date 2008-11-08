@@ -13,7 +13,7 @@
 
 #include <orcaice/context.h>
 #include <hydroutil/uncopyable.h>
-#include <gbxsickacfr/gbxiceutilacfr/safethread.h>
+#include <gbxsickacfr/gbxiceutilacfr/thread.h>
 
 #include <orcaice/homeImpl.h>
 #include <orcaice/statusImpl.h>
@@ -43,7 +43,7 @@ enum ComponentInterfaceFlag {
     //! Tracer interface only.
     TracerInterface         = 0x100,
     //! All standard interfaces.
-    AllStandardInterfaces   = NoStandardInterfaces | HomeInterface | StatusInterface | TracerInterface
+    AllStandardInterfaces   = HomeInterface | StatusInterface | TracerInterface
 };
 
 //!

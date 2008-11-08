@@ -27,16 +27,16 @@ namespace orcaifaceimpl
  *  to implement and it's called setData() and toString() function is implemented
  *  for the data type.
  */
-template<class ProviderPrxType, class ConsumerType, class ConsumerPrxType, class ObjectType>
+template<class ProviderType, class ProviderPrxType, class ConsumerType, class ConsumerPrxType, class ObjectType>
 class PrintingConsumerImpl : 
-        public ConsumerImpl<ProviderPrxType,ConsumerType,ConsumerPrxType,ObjectType>
+        public ConsumerImpl<ProviderType,ProviderPrxType,ConsumerType,ConsumerPrxType,ObjectType>
 {
-using ConsumerImpl<ProviderPrxType,ConsumerType,ConsumerPrxType,ObjectType>::context_;
+using ConsumerImpl<ProviderType,ProviderPrxType,ConsumerType,ConsumerPrxType,ObjectType>::context_;
 public:
     //! Constructor. The optinal parameter @c recurse specifies the level of detail printed
     //! out to @c cout when new data arrives.
     PrintingConsumerImpl( const orcaice::Context &context, int recurse=1000, int expand=-1 ) :
-        ConsumerImpl<ProviderPrxType,ConsumerType,ConsumerPrxType,ObjectType>(context), 
+        ConsumerImpl<ProviderType,ProviderPrxType,ConsumerType,ConsumerPrxType,ObjectType>(context), 
         recurse_(recurse),
         expand_(expand) {}
 
