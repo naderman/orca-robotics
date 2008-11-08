@@ -42,8 +42,12 @@ class ComponentMonitor
     private:
         hydroiceutil::JobQueuePtr jobQueue_;
         std::string platformName_;
+        std::string componentName_;
         orcaice::Context context_;
         StatusConsumerImplPtr statusConsumer_;
+        
+        bool haveStatusInterface();
+        
 };
 
 

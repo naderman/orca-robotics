@@ -111,7 +111,7 @@ void extractStateAndHealth( const orca::ObservedComponentStatus &compData,
             return;
         case orca::ObsCompStale:  
             healthStyle = hydroctext::Style( hydroctext::Reverse, hydroctext::White );
-            stateIcon = hydroctext::emph( stateToString(compData.state), hydroctext::Style( hydroctext::Reverse, hydroctext::Black ) );
+            stateIcon = hydroctext::emph( stateToString(compData.state), hydroctext::Style( hydroctext::Reverse, hydroctext::White ) );
             return;
         default:
             assert( false && "unknown health type" );

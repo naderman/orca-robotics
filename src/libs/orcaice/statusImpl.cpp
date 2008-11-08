@@ -17,139 +17,6 @@ using namespace std;
 namespace orcaice
 {
 
-//////////////////////////////////////////////////////////////
-
-namespace
-{
-
-void 
-convert( const hydroiceutil::NameStatusMap& internal, orca::SubsystemStatusDict& network )
-{
-    hydroiceutil::NameStatusMap::const_iterator it;
-    
-    for ( it=internal.begin(); it!=internal.end(); ++it ) 
-    {
-        switch ( it->second.state ) 
-        {
-        case gbxutilacfr::SubsystemIdle :
-            network[it->first].state = orca::SubsystemIdle;
-            break;
-        case gbxutilacfr::SubsystemInitialising :
-            network[it->first].state = orca::SubsystemInitialising;
-            break;
-        case gbxutilacfr::SubsystemWorking :
-            network[it->first].state = orca::SubsystemWorking;
-            break;
-        case gbxutilacfr::SubsystemFinalising :
-            network[it->first].state = orca::SubsystemFinalising;
-            break;
-        case gbxutilacfr::SubsystemShutdown :
-            network[it->first].state = orca::SubsystemShutdown;
-            break;
-        }
-        switch ( it->second.health ) 
-        {
-        case gbxutilacfr::SubsystemOk :
-            network[it->first].health = orca::SubsystemOk;
-            break;
-        case gbxutilacfr::SubsystemWarning :
-            network[it->first].health = orca::SubsystemWarning;
-            break;
-        case gbxutilacfr::SubsystemFault :
-            network[it->first].health = orca::SubsystemFault;
-            break;
-        case gbxutilacfr::SubsystemStalled :
-            network[it->first].health = orca::SubsystemStalled;
-            break;
-        }
-        network[it->first].message = it->second.message;
-        network[it->first].sinceHeartbeat = 
-            (Ice::Float)(it->second.heartbeatTimer.elapsedSec() / it->second.maxHeartbeatInterval);
-    }
-}
-
-orca::ComponentState 
-subStateToCompState ( const orca::SubsystemState &subsystemState)
-{
-    switch (subsystemState)
-    {
-        case orca::SubsystemIdle: 
-            return orca::CompInactive;
-        case orca::SubsystemInitialising: 
-            return orca::CompInitialising;
-        case orca::SubsystemWorking: 
-            return orca::CompActive;
-        case orca::SubsystemFinalising: 
-            return orca::CompFinalising;
-        case orca::SubsystemShutdown: 
-            return orca::CompFinalising;        
-    } 
-    return orca::CompInactive;  
-}
-                      
-
-void 
-convert( const hydroiceutil::LocalComponentStatus        &internal,
-         const orca::FQComponentName       &name, 
-         orca::ComponentStatus             &network )
-{
-    // initialisation, will be overwritten
-    network.state = orca::CompInactive;
-    network.health = orca::CompOk;
-    network.timeUp = 0;
-    
-    // conversions: name and subsystems
-    network.name = name;
-    convert( internal.subsystems, network.subsystems );
-    
-    // TODO: look at the state of the infrastructure
-
-    // if no subsystems exist, we're done
-    if (network.subsystems.size()==0) 
-        return;
-    
-    //
-    // State and Health conversions
-    // 
-    // policy here: take the "worst" health of the subsystem and its corresponding state
-    //
-    const orca::SubsystemStatusDict &subSysSt = network.subsystems;
-    map<string,orca::SubsystemStatus>::const_iterator itWorstHealth;
-    orca::SubsystemHealth worstHealth = orca::SubsystemOk;           
-    
-    for (map<string,orca::SubsystemStatus>::const_iterator it=subSysSt.begin(); it!=subSysSt.end(); ++it)
-    {
-        // the >= guarantees that itWorstHealth is set at least once
-        if (it->second.health >= worstHealth ) {
-            worstHealth = it->second.health;
-            itWorstHealth = it;
-        }
-    }
-    
-    network.state = subStateToCompState(itWorstHealth->second.state);
-         
-    switch (worstHealth)
-    {
-        case orca::SubsystemOk:
-            network.health = orca::CompOk;
-            return;
-        case orca::SubsystemWarning:
-            network.health = orca::CompWarning;
-            return;
-        case orca::SubsystemFault:
-            network.health = orca::CompFault;
-            return;
-        case orca::SubsystemStalled:
-            network.health = orca::CompStalled;
-            return;
-    }       
-    
-}
-
-} // namespace
-
-//////////////////////////////////////////////////////////////
-
 class StatusI : public orca::Status
 {
 public:
@@ -263,8 +130,7 @@ StatusImpl::publishEvent( const hydroiceutil::LocalComponentStatus& componentSta
 
     orca::StatusData data;
     orcaice::setToNow( data.timeStamp );
-//     convert( subsystems, data.subsystems );
-    convert( componentStatus, context_.name(), data.compStatus );
+    aggregator_.convert( componentStatus, context_.name(), data.compStatus );
     data.compStatus.timeUp = (Ice::Int)upTimer_.elapsedSec();
 
     dataStore_.set( data );

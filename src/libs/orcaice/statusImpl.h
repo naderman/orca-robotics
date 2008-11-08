@@ -19,6 +19,8 @@
 #include <IceStorm/IceStorm.h>
 #include <orcaice/context.h>
 
+#include "componentstatusaggregator.h"
+
 // class gbxiceutilacfr::Thread;
 
 namespace orcaice
@@ -62,6 +64,10 @@ private:
     const std::string              interfaceName_;
     const std::string              topicName_;
     orcaice::Context               context_;
+    
+    ComponentStatusAggregator aggregator_;
+
+//     bool isStatusTopicRequired_;
 };
 
 typedef IceUtil::Handle<StatusImpl> StatusImplPtr;

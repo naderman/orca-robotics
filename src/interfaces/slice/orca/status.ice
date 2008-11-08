@@ -104,6 +104,8 @@ struct ComponentStatus
     FQComponentName name;
     //! Number of seconds since this component was activated.
     int timeUp;
+    //! How often can you expect to receive a ComponentStatus msg?
+    double publishIntervalSec;
     //! Current state of the component, see above
     ComponentState state;
     //! Current health of the component, see above

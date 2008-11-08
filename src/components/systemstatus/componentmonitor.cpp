@@ -54,6 +54,7 @@ ComponentMonitor::ComponentMonitor( hydroiceutil::JobQueuePtr  jobQueue,
                                     const orcaice::Context    &context )
     : jobQueue_(jobQueue),
       platformName_(platformName),
+      componentName_(componentName),
       context_(context)
 {
     Ice::PropertiesPtr prop = context_.properties();
@@ -91,10 +92,17 @@ ComponentMonitor::getComponentStatus( string                        &platformNam
         jobQueue_->add( job );
     }
     
-    //TODO: fix this: if no data is available, we are in a Connecting state I guess?
     if (!statDetails.dataAvailable)
+    {
+        obsCompStat.name.platform = platformName_;
+        obsCompStat.name.component = componentName_; 
+        obsCompStat.timeUp = 0;
+        obsCompStat.state = orca::ObsCompConnecting; 
+        obsCompStat.health = orca::ObsCompOk;
         return;
+    }
     
+    // we have some data, just copy across
     obsCompStat.name = statDetails.data.compStatus.name;
     obsCompStat.timeUp = statDetails.data.compStatus.timeUp;
     obsCompStat.subsystems = statDetails.data.compStatus.subsystems;
@@ -124,7 +132,7 @@ ComponentMonitor::getComponentStatus( string                        &platformNam
     }
     
     //
-    // State: TODO: add Connecting/Disconnecting states
+    // State: TODO: add Disconnecting state
     //
     switch( statDetails.data.compStatus.state )
     {
@@ -135,12 +143,31 @@ ComponentMonitor::getComponentStatus( string                        &platformNam
         case orca::CompActive:
             obsCompStat.state = orca::ObsCompActive; break;
         case orca::CompFinalising:
-            obsCompStat.state = orca::ObsCompFinalising; break;
+            if ( !haveStatusInterface() )
+                obsCompStat.state = orca::ObsCompDisconnecting;
+            else
+                obsCompStat.state = orca::ObsCompFinalising; 
+            break;
         default:
             assert( false && "Unknown component state" );
             
     }
     
+}
+
+bool 
+ComponentMonitor::haveStatusInterface()
+{
+    string proxy = "status@" + platformName_ + "/" + componentName_;
+    Ice::ObjectPrx base = context_.communicator()->stringToProxy( proxy );
+    try {
+        base->ice_ping();
+        return true;
+    } 
+    catch ( ... )
+    {
+        return false;
+    }
 }
 
 }
