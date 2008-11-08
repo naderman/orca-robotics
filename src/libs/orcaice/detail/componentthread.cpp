@@ -11,7 +11,7 @@
 #include "componentthread.h"
 #include <orcaice/exceptions.h>
 #include <orcaice/catchutils.h>
-#include <orcaice/stringutils.h>
+#include <orcaice/icegridutils.h>
 #include <iostream>
 #include <IceGrid/Registry.h>  // used to register Home interface as a well-known object
 
@@ -80,8 +80,8 @@ ComponentThread::walk()
 bool
 ComponentThread::tryRegisterHome()
 {
-    std::string homeIdentityString = toHomeIdentity( context_.name() );
-    Ice::Identity homeIdentity = context_.communicator()->stringToIdentity(homeIdentityString);
+//     std::string homeIdentityString = toHomeIdentity( context_.name() );
+//     Ice::Identity homeIdentity = context_.communicator()->stringToIdentity(homeIdentityString);
 
     // previous method: adding Home to the component adapter
 //     Ice::ObjectPrx homePrx = context_.adapter()->createProxy( homeIdentity );

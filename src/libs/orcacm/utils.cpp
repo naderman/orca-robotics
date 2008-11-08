@@ -12,6 +12,7 @@
 #include <IceGrid/Admin.h>
 #include <IceGrid/Query.h>
 #include <orcaice/orcaice.h>
+#include <orcaice/icegridutils.h>
 #include <orcacm/parseutils.h>
 #include <orca/home.h>
 
@@ -26,19 +27,27 @@ bool
 pingObject( const orcaice::Context& context, const std::string& objectId )
 {
     try {
-        Ice::ObjectPrx obj = context.communicator()->stringToProxy( objectId );
-        
-        obj->ice_ping();
-
-        //cout<<endl<<"Ping successful."<<endl;
-        //cout<<"Proxy\t\t[ "<<base->ice_toString()<<" ]"<<endl;
-
+        Ice::ObjectPrx objPrx = context.communicator()->stringToProxy( objectId );
+        objPrx->ice_ping();
     }
     catch( const Ice::Exception& )
     {
         return false;
     }
-    
+    return true;
+}
+
+bool
+pingAdminObject( const orcaice::Context& context, const std::string& adminId, const std::string& facetName )
+{
+    try {
+        Ice::ObjectPrx objPrx = context.communicator()->stringToProxy( adminId )->ice_facet( facetName );
+        objPrx->ice_ping();
+    }
+    catch( const Ice::Exception& )
+    {
+        return false;
+    }
     return true;
 }
 
@@ -49,8 +58,7 @@ getRegistryHomeData( const orcaice::Context& context, const std::string& locator
 
     data.locatorString = locatorString;
     
-    Ice::ObjectPrx queryPrx = context.communicator()->stringToProxy(
-            orcacm::stringToIceGridInstanceName(locatorString)+"/Query");
+    IceGrid::QueryPrx queryPrx = orcaice::getDefaultQuery( context );
     
     Ice::ObjectProxySeq list;
     try {

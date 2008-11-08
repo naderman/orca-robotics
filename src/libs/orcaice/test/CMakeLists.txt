@@ -113,6 +113,10 @@ GBX_ADD_TEST( OrcaIceConnectUtilsTest connecttest )
 ORCA_GENERATE_CONFIG_FILE( connecttest.def connecttest 0 )
 ENDIF( NOT GBX_OS_QNX )
 
+ADD_EXECUTABLE( icegridtest icegridtest.cpp )
+GBX_ADD_TEST( OrcaIceIceGridUtilsTest icegridtest )
+ORCA_GENERATE_CONFIG_FILE( icegridtest.def icegridtest 0 )
+
 ADD_EXECUTABLE( subsystemtest subsystemtest.cpp )
 GBX_ADD_TEST( OrcaIceSubsystemTest subsystemtest )
 

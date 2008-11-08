@@ -54,6 +54,10 @@ StatusImpl::StatusImpl( const orcaice::Context& context ) :
     // fill the store
     orca::StatusData data;
     orcaice::setToNow( data.timeStamp );
+    data.compStatus.name = context_.name();
+    data.compStatus.timeUp = 0;
+    data.compStatus.state = orca::CompInactive;
+    data.compStatus.health = orca::CompOk;
     dataStore_.set( data );
 
     initTracerInfo( "Status created" );

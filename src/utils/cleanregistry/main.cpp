@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
+#include <orcaice/icegridutils.h>
 #include <orcacm/orcacm.h>
 #include <IceGrid/Registry.h>
 
@@ -94,6 +95,8 @@ Component::purgeObjects( const IceGrid::AdminPrx& admin )
 void
 Component::purgeAdapters( const IceGrid::AdminPrx& admin )
 {
+    Ice::CommunicatorPtr ic = context().communicator();
+
     //
     // get adapter adaptList
     //
@@ -101,7 +104,7 @@ Component::purgeAdapters( const IceGrid::AdminPrx& admin )
     cout<<"retrieved list of "<<adaptList.size()<<" adapters"<<endl;
 
     orca::FQComponentName compName;
-    std::string homeIdentity;
+    Ice::Identity adminIdentity;
 
     int aliveCount = 0;
     int deadCount = 0;
@@ -109,10 +112,10 @@ Component::purgeAdapters( const IceGrid::AdminPrx& admin )
     for ( unsigned int i=0; i<adaptList.size(); ++i ) 
     {
         compName = orcaice::toComponentName( adaptList[i] );
-        homeIdentity = orcaice::toHomeIdentity( compName );
+        adminIdentity = orcaice::toAdminIdentity( compName );
         
         // ping each component's Home interface
-        if ( orcacm::pingObject( context(), homeIdentity ) ) {
+        if ( orcacm::pingAdminObject( context(), ic->identityToString(adminIdentity), "Home" ) ) {
             ++aliveCount;
         }
         // make sure it's an Orca component, it's platform compName should be non-empty
@@ -155,8 +158,6 @@ Component::start()
 
     Ice::ObjectPrx base = context().communicator()->stringToProxy( instanceName + "/Registry" );
 
-//     Ice::ObjectPrx adminProxy = context().communicator()->stringToProxy(
-//             orcacm::stringToIceGridInstanceName(locatorString)+"/Admin");
     IceGrid::AdminPrx adminProxy;
 
     try
@@ -179,8 +180,6 @@ Component::start()
         // nothing else to do
         context().communicator()->shutdown();
     }
-    
-//    IceGrid::AdminPrx admin = IceGrid::AdminPrx::checkedCast( adminProxy );
     
     //
     // Well-known objects

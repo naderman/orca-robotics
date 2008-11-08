@@ -38,18 +38,6 @@ std::string toString( const orca::FQComponentName& );
 //! Does not handle the case of multiple delimeters.
 orca::FQComponentName toComponentName( const std::string& s );
 
-//! Converts fully qualified component name to identity category.
-//! e.i. platform.component
-//! @see toComponentName
-std::string toIdentityCategory( const orca::FQComponentName& );
-
-//! Parses category of the identity to extract a fully qualified component name.
-//! This is the inverse of toIdentityCategory();
-//! Expects an input string in the form of @c platform.component
-//! A null structure is returned if no delimeter is present.
-//! Does not handle the case of multiple delimeters.
-orca::FQComponentName toComponentName( const Ice::Identity& id );
-
 //! Converts fully qualified interface name to a string.
 //! e.i. interface\@platform/component
 //! @see toInterfaceName
@@ -69,12 +57,6 @@ std::string toString( const orca::FQTopicName& );
 //! i.e. executable@host
 std::string toString( const orca::FQExecutableName & name );
 
-//! Based on the component name, returns the default identity of Home interface.
-std::string toHomeIdentity( const orca::FQComponentName & fqCName );
-
-//! Parses home proxy to a fully qualified name of the component to whome it belongs.
-orca::FQComponentName toComponentName( const Ice::ObjectPrx& homePrx );
-
 //! Based on the component name, returns the default topic name for Status interface.
 orca::FQTopicName toStatusTopic( const orca::FQComponentName & fqCName );
 
@@ -85,7 +67,7 @@ orca::FQTopicName toTracerTopic( const orca::FQComponentName & fqCName );
 
 
 /*!
- *  @name Stringify Dat-Time Objects
+ *  @name Stringify Date-Time Objects
  */
 //@{
 //! For durations less than 24hrs returns string HH:MM:SS.sss.

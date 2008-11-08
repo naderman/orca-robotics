@@ -172,6 +172,24 @@ getRequiredTags( const Context& context, const std::string& pattern )
     return tags;
 }
 
+orca::FQComponentName
+resolveLocalPlatform( const Context& context, const orca::FQComponentName& fqname )
+{
+    if ( !fqname.platform.empty() && !fqname.component.empty() ) 
+    {
+        if ( fqname.platform=="local" ) 
+        {
+            orca::FQComponentName resolvedFqname;
+            resolvedFqname.platform = hydroutil::getHostname();
+            resolvedFqname.component = fqname.component;
+            initTracerInfo( context, "resolved platform 'local' to hostname in component name '"+orcaice::toString( resolvedFqname )+"'", 2 );
+            return resolvedFqname;
+        }
+    }
+    // no changes were made
+    return fqname;
+}
+
 std::string 
 resolveLocalPlatform( const Context& context, const std::string& proxy )
 {

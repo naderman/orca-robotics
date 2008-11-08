@@ -11,6 +11,7 @@
 #include <iostream>
 #include <iomanip>    // for setw()
 #include <orcaice/orcaice.h>
+#include <orcaice/icegridutils.h>
 
 #include "termiostreamdisplay.h"
 #include "../termdisplayevents.h"

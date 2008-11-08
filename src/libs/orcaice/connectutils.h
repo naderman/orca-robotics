@@ -28,12 +28,6 @@ namespace orcaice
 //@{
 
 /*!
-Tries to ping the default Locator and, based on success or the exceptions
-it catches, determines if the registry is reachable.
- */
-bool isRegistryReachable( const Context& context );
-
-/*!
 Tries to reach the remote interface specified with proxyString by calling
 ice_ping() function. Returns TRUE if the ping was successful and FALSE if not.
 Writes diagnostic information into @c diagnostic string.
@@ -88,12 +82,14 @@ The proxy can be direct or indirect. For indirect proxies with platform name set
 hostname is used as the platform name.
 
 Throws TypeMismatchException if fails to connect to the remote interface or if
-it is of the wrong type. Throws NetworkException if the interface is otherwise unreachable.
+it is of the wrong type.
+
+In the event of a failed connection, adds an interpretive message and re-throws a NetworkException.
 
 Example: to connect to interface of type MyInterface, use
 @verbatim
 MyInterfacePrx myInterfacePrx;
-orcaice::connectToInterfaceWithString( context(), myInterfacePrx, "iface@platform/component" );
+orcaice::connectToInterfaceWithString( context_, myInterfacePrx, "iface@platform/component" );
 @endverbatim
  */
 template<class InterfaceType>
@@ -102,7 +98,6 @@ connectToInterfaceWithString( const Context                             &context
                               ::IceInternal::ProxyHandle<InterfaceType> &proxy,
                               const std::string                         &proxyString)
 {
-
     // for indirect proxies only: if platform is set to 'local', replace it by hostname
     std::string resolvedProxyString = resolveLocalPlatform( context, proxyString );
 
@@ -122,17 +117,29 @@ connectToInterfaceWithString( const Context                             &context
             throw orcaice::TypeMismatchException( ERROR_INFO, errString );
         }
     }
-    // typically we get ConnectionRefusedException, but it may be ObjectNotExistException
-    catch ( Ice::LocalException &e )
+    catch ( const Ice::ConnectionRefusedException& e )
     {
-        // Give some feedback as to why shit isn't working
         std::stringstream ss;
-        ss << "Failed to connect to '" << resolvedProxyString << "': "<<e;
-        initTracerWarning( context, ss.str(), 2 );
+        ss << "(while connecting to Admin interface '" << resolvedProxyString << "') cannot reach the adaptor: "<<e.what();
+        orcaice::initTracerWarning( context, ss.str(), 2 );
+        throw orcaice::NetworkException( ERROR_INFO, ss.str() );
+    }
+    catch ( const Ice::ObjectNotExistException& e )
+    {
+        std::stringstream ss;
+        ss << "(while connecting to Admin interface '" << resolvedProxyString << "') reached the adaptor but not the interface: "<<e.what();
+        orcaice::initTracerWarning( context, ss.str(), 2 );
+        throw orcaice::NetworkException( ERROR_INFO, ss.str() );
+    }
+    catch ( const std::exception& e )
+    {
+        std::stringstream ss;
+        ss << "(while connecting to Admin interface '" << resolvedProxyString << "') something unexpected: "<<e.what();
+        orcaice::initTracerWarning( context, ss.str(), 2 );
         throw orcaice::NetworkException( ERROR_INFO, ss.str() );
     }
 
-    //! @todo Record who we connected to as a required interface so that Home can report this.
+    // @todo Record who we connected to as a required interface so that Home can report this.
 }
 
 /*!
@@ -141,14 +148,14 @@ comes from the configuration file and the @p interfaceTag.
 
 @verbatim
 MyInterfacePrx myInterfacePrx;
-orcaice::connectToInterfaceWithTag<MyInterfacePrx>( context(), myInterfacePrx, "MyInterface" );
+orcaice::connectToInterfaceWithTag( context_, myInterfacePrx, "MyInterface" );
 @endverbatim
 Throws ConfigFileException if the interface name cannot be read for some reason.
  */
-template<class ProxyType>
+template<class InterfaceType>
 void
 connectToInterfaceWithTag( const Context       & context,
-                           ProxyType           & proxy,
+                           InterfaceType       & proxy,
                            const std::string   & interfaceTag )
 {
     // this may throw ConfigFileException, we don't catch it, let the user catch it at the component level

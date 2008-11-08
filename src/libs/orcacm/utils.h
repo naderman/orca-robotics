@@ -27,6 +27,10 @@ namespace orcacm
 bool
 pingObject( const orcaice::Context& context, const std::string& objectId );
 
+//! Specialized for interfaces deployed through the component's Admin interface. Returns TRUE if successful.
+bool 
+pingAdminObject( const orcaice::Context& context, const std::string& adminId, const std::string& facetName );
+
 /*!
  *  Connects to IceGrid/Query interface of the specified registry and gets the
  *  list of objects of type ::orca::Home. If connection fails for some reason,

@@ -75,11 +75,14 @@ laserTags = orcaice::getRequiredTags( context_, "Laser" );
 The default empty string pattern will match all required interfaces.
 */
 std::vector<std::string> getRequiredTags( const Context & context, const std::string& pattern="" );
-    
-/*!
-For indirect proxies with platform name set to @e local, returns a new proxy string with @c local
-replaced with the current hostname.
-*/
+   
+//! For fully-qualified component names with platform name set to @e local, returns a new component 
+//! name string with @c local replaced with the current hostname.
+//! No changes are made if either the platform or the component names are empty.
+orca::FQComponentName resolveLocalPlatform( const Context& context, const orca::FQComponentName& fqname );
+
+//! For indirect proxies with platform name set to @e local, returns a new proxy string with @c local
+//! replaced with the current hostname.
 std::string resolveLocalPlatform( const Context& context, const std::string& proxy );
 
 //! Parses properties to build static component information.

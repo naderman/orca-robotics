@@ -234,7 +234,26 @@ TestComponent::start()
     }
     cout<<"ok"<<endl;
 
-    cout<<"testing resolveLocalPlatform() ... ";
+    cout<<"testing resolveLocalPlatform() with fqname ... ";
+    try {
+        orca::FQComponentName in, out, expect;
+        in.platform = "local";
+        in.component = "random";
+        out = orcaice::resolveLocalPlatform( context(), in );
+        expect.platform = hydroutil::getHostname();
+        expect.component = in.component;
+        if ( out != expect ) {
+            cout<<"failed"<<endl<<"expected: "<<orcaice::toString(expect)<<"; got :"<<orcaice::toString(out)<<endl;
+            exit(EXIT_FAILURE);
+        }
+    }
+    catch ( ... ) {
+        cout<<"failed, caught something"<<endl;
+        exit(EXIT_FAILURE);
+    }
+    cout<<"ok"<<endl;
+
+    cout<<"testing resolveLocalPlatform() with string ... ";
     try {
         std::string strPrx = orcaice::resolveLocalPlatform( context(), "r0@local/random" );
         std::string expect = "r0@"+hydroutil::getHostname()+"/random";

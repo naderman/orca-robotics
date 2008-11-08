@@ -42,6 +42,7 @@ HomeImpl::HomeImpl( const orcaice::Context& context ) :
 {
     // fill the store
     orca::HomeData data;
+    data.comp.name = context_.name();
     dataStore_.set( data );
 }
 

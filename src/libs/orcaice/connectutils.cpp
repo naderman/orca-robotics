@@ -92,32 +92,6 @@ getInterfaceIdWithTag( const Context& context, const std::string& interfaceTag )
     return getInterfaceIdWithString( context, proxyString );
 }
 
-bool
-isRegistryReachable( const Context& context )
-{
-    assert( context.communicator() );
-
-    try 
-    {
-        Ice::LocatorPrx locator = context.communicator()->getDefaultLocator();
-
-        // debug
-        context.tracer().debug( "pinging "+context.communicator()->proxyToString( locator ),5 );
-        
-        // ping the registry
-        locator->ice_ping();
-
-        return true;
-    }
-    catch( const std::exception &e )
-    {
-        std::stringstream ss;
-        ss << "orcaice::isRegistryReachable(): caught exception: " << e.what();
-        context.tracer().debug( ss.str() ,5 );
-    }
-    return false;
-}
-
 bool 
 isInterfaceReachable( const Context& context, const std::string& proxyString,  
                            std::string& diagnostic )

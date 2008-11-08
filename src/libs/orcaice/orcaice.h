@@ -22,13 +22,9 @@
 // orcaice headers
 #include <orcaice/exceptions.h>
 #include <orcaice/subsystemthread.h>
-#include <orcaice/ptrbuffer.h>
-#include <orcaice/ptrstore.h>
-#include <orcaice/ptrnotify.h>
 
 #include <orcaice/configutils.h>
 #include <orcaice/proputils.h>
-#include <orcaice/printutils.h>
 #include <orcaice/stringutils.h>
 #include <orcaice/timeutils.h>
 #include <orcaice/catchutils.h>
@@ -37,6 +33,19 @@
 #include <orcaice/multiconnectutils.h>
 #include <orcaice/icestormutils.h>
 #include <orcaice/multiicestormutils.h>
-#include <orcaice/activator.h>
+
+// this header contains specialized tools, not everyone needs them.
+// #include <orcaice/icegridutils.h>
+
+// mostly used internally during initialization
+// #include <orcaice/printutils.h>
+
+// these are rarely used or should be removed entirely
+// #include <orcaice/ptrbuffer.h>
+// #include <orcaice/ptrstore.h>
+// #include <orcaice/ptrnotify.h>
+
+// rarely used
+// #include <orcaice/activator.h>
 
 #endif
