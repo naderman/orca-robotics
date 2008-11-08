@@ -94,6 +94,66 @@ TestComponent::start()
     // sleep a bit to allow Home registration
     IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
 
+    cout<<"testing isAdminInterfaceReachable() with Home and platform=local ... ";
+    {
+        orca::HomePrx objectPrx;
+        orca::FQComponentName fqName;
+        fqName.platform = "local";
+        fqName.component = "icegridtest";
+        string diagnostic;
+        if ( !orcaice::isAdminInterfaceReachable( context(), fqName, "Home", diagnostic ) ) {
+            cout<<"Failed to ping Home: "<<diagnostic<<endl;
+            exit(EXIT_FAILURE);
+        }
+    }
+    cout<<"ok"<<endl;
+
+    cout<<"testing isAdminInterfaceReachable() with Status ... ";
+    {
+        orca::StatusPrx objectPrx;
+        string diagnostic;
+        if ( !orcaice::isAdminInterfaceReachable( context(), context().name(), "Status", diagnostic ) ) {
+            cout<<"Failed to ping Status: "<<diagnostic<<endl;
+            exit(EXIT_FAILURE);
+        }
+    }
+    cout<<"ok"<<endl;
+
+    cout<<"testing isAdminInterfaceReachable() with Tracer ... ";
+    {
+        orca::TracerPrx objectPrx;
+        string diagnostic;
+        if ( !orcaice::isAdminInterfaceReachable( context(), context().name(), "Tracer", diagnostic ) ) {
+            cout<<"Failed to ping Tracer: "<<diagnostic<<endl;
+            exit(EXIT_FAILURE);
+        }
+    }
+    cout<<"ok"<<endl;
+
+    cout<<"testing isAdminInterfaceReachable() with Process ... ";
+    {
+        Ice::ProcessPrx objectPrx;
+        string diagnostic;
+        // Process should be ON
+        if ( !orcaice::isAdminInterfaceReachable( context(), context().name(), "Process", diagnostic ) ) {
+            cout<<"Failed to ping Process: "<<diagnostic<<endl;
+            exit(EXIT_FAILURE);
+        }
+    }
+    cout<<"ok"<<endl;
+
+    cout<<"testing isAdminInterfaceReachable() with Properties ... ";
+    {
+        Ice::PropertiesAdminPrx objectPrx;
+        string diagnostic;
+        // Properties should be OFF
+        if ( orcaice::isAdminInterfaceReachable( context(), context().name(), "Properties", diagnostic ) ) {
+            cout<<"Failed to ping Properties: "<<diagnostic<<endl;
+            exit(EXIT_FAILURE);
+        }
+    }
+    cout<<"ok"<<endl;
+
     cout<<"testing connectToAdminInterface() with Home and platform=local ... ";
     {
         orca::HomePrx objectPrx;

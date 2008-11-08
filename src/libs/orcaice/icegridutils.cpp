@@ -167,4 +167,62 @@ getAllComponentAdmins( const orcaice::Context& context )
     return list;
 }
 
+
+bool 
+isAdminInterfaceReachable( const Context& context, const orca::FQComponentName& fqname, const std::string& facetName,
+                           std::string& diagnostic )
+{
+    orca::FQComponentName resolvedFqname = orcaice::resolveLocalPlatform( context, fqname );
+    
+// std::cout<<"DEBUG: "<<__func__<<"(): will look for Admin interface of ="<<orcaice::toString(resolvedFqname)<<std::endl;
+
+    //
+    // This is the generic proxy to the Admin object. Cannot be used as such because it does not have a default facet.
+    //
+    Ice::ObjectPrx objectPrx = orcaice::getComponentAdmin( context, resolvedFqname );
+    if ( !objectPrx )
+        throw gbxutilacfr::Exception( ERROR_INFO, "Registry returned null admin proxy." );
+// std::cout<<"DEBUG: "<<__func__<<"(): got admin proxy ="<<objectPrx->ice_toString()<<std::endl;
+
+    //
+    // Change proxy to the user-supplied facet name.
+    //
+    objectPrx = objectPrx->ice_facet( facetName );
+
+    // try to ping
+    try {
+        objectPrx->ice_ping();
+    }
+    catch ( const Ice::ConnectionRefusedException& e )
+    {
+        std::stringstream ss;
+        ss << "(while pinging Admin interface with facet '" << facetName << "') cannot reach the adaptor: "<<e.what();
+        diagnostic = ss.str();
+        return false;
+    }
+    catch ( const Ice::ObjectNotExistException& e )
+    {
+        std::stringstream ss;
+        ss << "(while pinging Admin interface with facet '" << facetName << "') reached the adaptor but not the interface: "<<e.what();
+        diagnostic = ss.str();
+        return false;
+    }
+    catch ( const Ice::FacetNotExistException& e )
+    {
+        std::stringstream ss;
+        ss << "(while pinging Admin interface with facet '" << facetName << "') reached the adaptor and the interface but not the facet: "<<e.what();
+        diagnostic = ss.str();
+        return false;
+    }
+    catch ( const std::exception& e )
+    {
+        std::stringstream ss;
+        ss << "(while pinging Admin interface with facet '" << facetName << "') something unexpected: "<<e.what();
+        diagnostic = ss.str();
+        return false;
+    }
+
+    return true;
+}
+
 } // namespace

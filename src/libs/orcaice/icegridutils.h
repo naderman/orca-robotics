@@ -55,6 +55,22 @@ Ice::ObjectPrx getComponentAdmin( const orcaice::Context& context, const orca::F
 Ice::ObjectProxySeq getAllComponentAdmins( const orcaice::Context& context );
 
 /*!
+Tries to ice_ping() the remote Admin interface specified with a fully-qualified component name and 
+the interface facet name. Returns TRUE if the ping was successful and FALSE if not.
+Writes diagnostic information into @c diagnostic string.
+ 
+Before making any connections, the fully-qualified component name is checked and platform 'local' is replaced 
+with current hostname.
+
+Catches all exceptions. Does not throw.  
+  
+Implementation note: this function does not need to be templated because
+ice_ping() is implemented by all Ice objects regardless of type.
+ */
+bool isAdminInterfaceReachable( const Context& context, const orca::FQComponentName& fqname, const std::string& facetName,
+                           std::string& diagnostic );
+
+/*!
 Special connect function to be used with interfaces hosted as facets of component's Admin interface.
 
 The following admin interfaces are currently supported with corresponding facet names (capitalization in 
@@ -122,6 +138,9 @@ void connectToAdminInterface( const Context& context, InterfaceProxyType& interf
     // This is the generic proxy to the Admin object. Cannot be used as such because it does not have a default facet.
     //
     Ice::ObjectPrx objectPrx = orcaice::getComponentAdmin( context, resolvedFqname );
+
+    if ( !objectPrx )
+        throw gbxutilacfr::Exception( ERROR_INFO, "Registry returned null admin proxy." );
 
 // std::cout<<"DEBUG: "<<__func__<<"(): got admin proxy ="<<objectPrx->ice_toString()<<std::endl;
 
