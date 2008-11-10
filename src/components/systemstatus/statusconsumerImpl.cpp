@@ -57,6 +57,10 @@ StatusConsumerImpl::dataEvent( const orca::StatusData& data )
     hasValidData_ = true;
     lastDataReceivedTime_ = IceUtil::Time::now();
     
+    // set the timeouts
+    config_.resubscribeTimeout = (int)floor(1.2*data.compStatus.publishIntervalSec);
+    config_.staleTimeout = (int)floor(1.5*data.compStatus.publishIntervalSec); 
+    
     if ( context_.tracer().verbosity( gbxutilacfr::DebugTrace, gbxutilacfr::ToAny ) > 5 )
     {
         stringstream ss;

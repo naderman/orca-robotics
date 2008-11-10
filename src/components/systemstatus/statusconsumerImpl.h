@@ -43,15 +43,13 @@ public:
     struct Config
     {
         Config( const std::string& platform, 
-                const std::string& comp, 
-                int resubTimeout = 45, 
-                int resubInterval = 5, 
-                int staleTime = 60 ) : 
+                const std::string& comp,  
+                int resubInterval = 5 ) : 
             platformName(platform),
             componentName(comp),
-            resubscribeTimeout(resubTimeout),
+            resubscribeTimeout(45),
             resubscribeInterval(resubInterval),
-            staleTimeout(staleTime) {}
+            staleTimeout(60) {}
         std::string platformName;
         std::string componentName;
         // If we don't hear for longer than this timeout [sec], caller should try to resubscribe.

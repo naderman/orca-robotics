@@ -11,8 +11,5 @@ Requires.Status1.DefaultProxy=status@local/robot2d
 
 Config.JobQueueThreadPoolSize.Default=10
 Config.JobQueueSizeWarning.Default=2
-Config.ResubscribeTimeout.Default=45
 Config.ResubscribeInterval.Default=5
-Config.StaleTimeout.Default=60
-
 

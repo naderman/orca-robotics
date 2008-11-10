@@ -59,13 +59,9 @@ ComponentMonitor::ComponentMonitor( hydroiceutil::JobQueuePtr  jobQueue,
 {
     Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag()+".Config.";
-    int resubscribeTimeout = orcaice::getPropertyAsIntWithDefault( prop, prefix+"ResubscribeTimeout", 45 );
     int resubscribeInterval = orcaice::getPropertyAsIntWithDefault( prop, prefix+"ResubscribeInterval", 5 );
-    int staleTimeout = orcaice::getPropertyAsIntWithDefault( prop, prefix+"StaleTimeout", 60 );
     
-    StatusConsumerImpl::Config config( platformName, componentName, 
-                                       resubscribeTimeout, resubscribeInterval, staleTimeout ) ;
-    
+    StatusConsumerImpl::Config config( platformName, componentName, resubscribeInterval ) ;
     statusConsumer_ = new StatusConsumerImpl( config, context_ );
     
     // try to subscribe
