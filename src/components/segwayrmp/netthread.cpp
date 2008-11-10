@@ -107,6 +107,7 @@ convert( const hydrointerfaces::SegwayRmp::Data& internal, orca::PowerData& netw
 
     // set up data structure for 2 batteries
     network.batteries.resize(2);
+
     network.batteries[0].name = "main";
     network.batteries[0].voltage = internal.mainvolt;
     network.batteries[0].percent = cuBatteryPercentRemaining( internal.mainvolt );
