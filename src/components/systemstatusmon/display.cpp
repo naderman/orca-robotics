@@ -87,10 +87,28 @@ std::string stateToString( const orca::ObservedComponentState &state )
             assert( false && "unknown state type" );
     }
 }
+
 void extractStateAndHealth( const orca::ObservedComponentStatus &compData,
                             hydroctext::Style                   &healthStyle,
                             string                              &stateIcon )
-{    
+{   
+    // handle a few special cases first
+    switch (compData.state)
+    {
+        case orca::ObsCompInactive:
+        case orca::ObsCompConnecting:
+        case orca::ObsCompDisconnecting:
+            stateIcon = hydroctext::emph( stateToString(compData.state), hydroctext::Style( hydroctext::Reverse, hydroctext::White ) );
+            healthStyle = hydroctext::Style( hydroctext::Reverse, hydroctext::White );
+            return;
+        case orca::ObsCompInitialising:
+        case orca::ObsCompActive:
+        case orca::ObsCompFinalising:
+            break;
+        default:
+            assert( false && "unknown state type" );
+    }
+    
     switch (compData.health)
     {
         case orca::ObsCompOk:
@@ -117,7 +135,6 @@ void extractStateAndHealth( const orca::ObservedComponentStatus &compData,
             assert( false && "unknown health type" );
     }
 }
-
 
 std::string toShortString( const orca::ObservedComponentStatus& compData, int stateWidth )
 {   
