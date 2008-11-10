@@ -148,7 +148,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 @par Removed
 
 - slice2string and slice2log are combined into one new utility: slice2util
-
+- systemtracermon: used to display aggregated traces from platforms. This functionality is now in Status interface and the new SystemStatus component.
 
 @section orca_doc_history_2120 Changes in Release 2.12.0
 
