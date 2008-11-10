@@ -105,6 +105,7 @@ ComponentMonitor::getComponentStatus( string                        &platformNam
     // we have some data, just copy across
     obsCompStat.name = statDetails.data.compStatus.name;
     obsCompStat.timeUp = statDetails.data.compStatus.timeUp;
+    obsCompStat.publishIntervalSec = statDetails.data.compStatus.publishIntervalSec;
     obsCompStat.subsystems = statDetails.data.compStatus.subsystems;
     
     //

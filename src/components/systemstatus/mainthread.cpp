@@ -25,6 +25,8 @@ void convert( const multimap<string,orca::ObservedComponentStatus> &from,
               orca::SystemStatusData                               &to )
 {    
     orcaice::setToNow( to.timeStamp );
+    //TODO: make configurable/change online
+    to.publishIntervalSec = 10.0;
     
     multimap<string,orca::ObservedComponentStatus>::const_iterator it;
     pair<multimap<string,orca::ObservedComponentStatus>::const_iterator,multimap<string,orca::ObservedComponentStatus>::const_iterator> ret;

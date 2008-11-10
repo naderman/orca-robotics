@@ -174,19 +174,33 @@ std::string humanErrorMsgString( const orca::SystemStatusData &ssData )
 
 ColourTextDisplay::ColourTextDisplay( const orcaice::Context     &context,
                                       gbxiceutilacfr::SafeThread *thread)
-    : context_(context)
+    : context_(context),
+      publishIntervalSec_(10.0)
 {
     consumer_ = new orcaifaceimpl::BufferedSystemStatusConsumerImpl( -1, gbxiceutilacfr::BufferTypeCircular, context );
     consumer_->subscribeWithTag( "SystemStatus", thread );
+    timeSinceHeardTimer_.restart();
 }
 
 void 
 ColourTextDisplay::refresh()
 {
-    if (consumer_->buffer().isEmpty()) {
+    if (consumer_->buffer().isEmpty()) 
+    {
         context_.tracer().debug( "ColourTextDisplay:refresh(): systemstatus buffer is empty", 5 );
+        
+        if ( timeSinceHeardTimer_.elapsedSec() > publishIntervalSec_ )
+        {
+            stringstream ss;
+            ss << "Haven't received SystemStatusData for " << timeSinceHeardTimer_.elapsedSec() << " seconds. SystemStatus may be dead.";
+            cout << hydroctext::emph( ss.str(), hydroctext::Style( hydroctext::Reverse, hydroctext::Red ) ) << endl << endl;
+            //TODO: verify by pinging the interface?
+        }
         return;
     }
+    
+    // start the timer
+    timeSinceHeardTimer_.restart();
         
     orca::SystemStatusData data;
     consumer_->buffer().getAndPop( data );
@@ -206,6 +220,9 @@ ColourTextDisplay::refresh()
 void
 ColourTextDisplay::display( const orca::SystemStatusData &data )
 {   
+       
+    publishIntervalSec_ = data.publishIntervalSec;
+    
     map<string,vector<orca::ObservedComponentStatus> >::const_iterator it;
     
     const string sep = " |";

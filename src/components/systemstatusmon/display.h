@@ -11,6 +11,7 @@
 #ifndef DISPLAY_H
 #define DISPLAY_H
 
+#include <gbxsickacfr/gbxiceutilacfr/timer.h>
 #include <gbxsickacfr/gbxiceutilacfr/safethread.h>
 #include <orcaifaceimpl/printingconsumers.h>
 #include <orcaifaceimpl/bufferedconsumers.h>
@@ -60,7 +61,10 @@ class ColourTextDisplay : public Display
         
     private:
         orcaice::Context context_;
+        gbxiceutilacfr::Timer timeSinceHeardTimer_;
         orcaifaceimpl::BufferedSystemStatusConsumerImplPtr consumer_;
+        double publishIntervalSec_;
+                
         void display( const orca::SystemStatusData &data );
 };
 

@@ -61,6 +61,8 @@ struct ObservedComponentStatus
     FQComponentName name;
     //! Number of seconds since this component was activated.
     int timeUp;
+    //! How often can you expect to receive an ObservedComponentStatus msg?
+    double publishIntervalSec;
     //! Observed state of the component, see above
     ObservedComponentState state;
     //! Observed health of the component, see above
@@ -79,8 +81,10 @@ dictionary<string,ObservedComponentStatusSeq> SystemStatusDict;
 //! The data corresponding to the SystemStatus interface
 struct SystemStatusData
 {
-    //! Time when status data was recorded
+    //! Time when SystemStatusData was recorded
     Time timeStamp;
+    //! How often can you expect to receive a SystemStatusData msg?
+    double publishIntervalSec;
     //! The status of system composed of components
     SystemStatusDict systemStatus;
 };

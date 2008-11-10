@@ -63,85 +63,7 @@ convert( const hydroiceutil::NameStatusMap &from, orca::SubsystemStatusDict &to 
         to[it->first].sinceHeartbeat = 
                 (Ice::Float)(it->second.heartbeatTimer.elapsedSec() / it->second.maxHeartbeatInterval);
     }
-}
-
-orca::ComponentState 
-subStateToCompState ( const orca::SubsystemState &subsystemState)
-{
-    switch (subsystemState)
-    {
-        case orca::SubsystemIdle: 
-            return orca::CompInactive;
-        case orca::SubsystemInitialising: 
-            return orca::CompInitialising;
-        case orca::SubsystemWorking: 
-            return orca::CompActive;
-        case orca::SubsystemFinalising: 
-            return orca::CompFinalising;
-        case orca::SubsystemShutdown: 
-            return orca::CompFinalising;   
-        default: {
-            cout<<"########## SubsystemState="<<subsystemState<<endl;
-            assert( false && "Unknown SubsystemState" );     
-        }
-    } 
-}
-
-orca::ComponentHealth
-subHealthToCompHealth( const orca::SubsystemHealth &subsystemHealth )
-{
-    switch (subsystemHealth)
-    {
-        case orca::SubsystemOk:
-            return orca::CompOk;
-        case orca::SubsystemWarning: 
-            return orca::CompWarning;
-        case orca::SubsystemFault:
-            return orca::CompFault;
-        case orca::SubsystemStalled:
-            return orca::CompStalled;
-        default: {
-            cout<<"########## SubsystemHealth="<<subsystemHealth<<endl;
-            assert( false && "Unknown SubsystemHealth");
-        }
-    }
-}   
-    
-void convertWorstHealth( const hydroiceutil::LocalComponentStatus &from, 
-                         const orca::FQComponentName              &name, 
-                         orca::ComponentStatus                    &to )
-{
-    // initialisation, will be overwritten
-    to.state = orca::CompInactive;
-    to.health = orca::CompOk;
-    to.timeUp = 0;
-    
-    // conversions: name and subsystems
-    to.name = name;
-    convert( from.subsystems, to.subsystems );
-    
-    // if no subsystems exist, we're done
-    if (to.subsystems.size()==0) return;
-    
-    //
-    // ComponentState and ComponentHealth conversions
-    //
-    const orca::SubsystemStatusDict &subSysSt = to.subsystems;
-    map<string,orca::SubsystemStatus>::const_iterator itWorstHealth;
-    orca::SubsystemHealth worstHealth = orca::SubsystemOk;           
-    
-    for (map<string,orca::SubsystemStatus>::const_iterator it=subSysSt.begin(); it!=subSysSt.end(); ++it)
-    {
-        // the >= guarantees that itWorstHealth is set at least once
-        if (it->second.health >= worstHealth ) {
-            worstHealth = it->second.health;
-            itWorstHealth = it;
-        }
-    }
-    
-    to.health = subHealthToCompHealth( worstHealth );
-    to.state = subStateToCompState(itWorstHealth->second.state);    
-}
+}  
 
 orca::ComponentState subStateToCompState( const gbxutilacfr::SubsystemState &subsystemState )
 {    
@@ -157,10 +79,8 @@ orca::ComponentState subStateToCompState( const gbxutilacfr::SubsystemState &sub
             return orca::CompFinalising;
         case gbxutilacfr::SubsystemShutdown: 
             return orca::CompFinalising;   
-        default: {
-            cout<<"########## SubsystemState="<<subsystemState<<endl;
+        default:
             assert( false && "Unknown SubsystemState" );    
-        }
     } 
 }
 
@@ -182,6 +102,46 @@ subHealthToCompHealth( const gbxutilacfr::SubsystemHealth &subsystemHealth )
     }
 }  
 
+void convertWorstHealth( const hydroiceutil::LocalComponentStatus &from, 
+                         const orca::FQComponentName              &name, 
+                         orca::ComponentStatus                    &to )
+{
+    // initialisation, will be overwritten
+    to.state = orca::CompInactive;
+    to.health = orca::CompOk;
+    to.timeUp = 0;
+    
+    // conversions: name and subsystems
+    to.name = name;
+    to.publishIntervalSec = from.publishIntervalSec;
+    
+    // if no subsystems exist, the state is the infrastructure state, health is ok, and we return
+    if (from.subsystems.size()==0) {
+        to.state = subStateToCompState( from.infrastructure );
+        to.health = orca::CompOk;
+        return;
+    }
+    
+    // convert subsystems
+    convert( from.subsystems, to.subsystems );
+    
+    //
+    // ComponentState and ComponentHealth conversions
+    //
+    gbxutilacfr::SubsystemHealth worstHealth = gbxutilacfr::SubsystemOk;    
+    hydroiceutil::NameStatusMap::const_iterator itWorstHealth;
+    
+    for ( hydroiceutil::NameStatusMap::const_iterator it=from.subsystems.begin(); it!=from.subsystems.end(); ++it ) 
+    {
+        // ">=" guarantees that itWorstHealth is set at least once
+        if (it->second.health >= worstHealth )
+            worstHealth = it->second.health;
+            itWorstHealth = it;
+    }
+    to.health = subHealthToCompHealth( worstHealth );
+    to.state = subStateToCompState( itWorstHealth->second.state );
+}
+
 orca::ComponentState extractCompState( const hydroiceutil::LocalComponentStatus &from )
 {    
     bool anybodyIdle = false;
@@ -198,25 +158,22 @@ orca::ComponentState extractCompState( const hydroiceutil::LocalComponentStatus 
         {
             case gbxutilacfr::SubsystemIdle:
                 anybodyIdle = true;
-//                 cout << "========== IDLE ======== " << endl;
                 break;
             case gbxutilacfr::SubsystemInitialising:
                 anybodyInitialising = true;
-//                 cout << "========== INIT ======== " << endl;
                 break;
             case gbxutilacfr::SubsystemWorking:
-//                 cout << "========== WORKING ======== " << endl;
                 // do nothing
                 break;
             case gbxutilacfr::SubsystemFinalising:
                 if (it->second.type != gbxutilacfr::SubsystemEarlyExit) {
                     anybodyFinalising = true;
-//                     cout << "========== FINAL ======== " << endl;
                 }
                 break;
             case gbxutilacfr::SubsystemShutdown:
-                anybodyShutdown = true;
-//                 cout << "========== SHUT ======== " << endl;
+                if (it->second.type != gbxutilacfr::SubsystemEarlyExit) {
+                    anybodyShutdown = true;
+                }
                 break;
         }
         if (anybodyIdle || anybodyInitialising || anybodyFinalising || anybodyShutdown ) {
@@ -251,7 +208,7 @@ void convertStateBased( const hydroiceutil::LocalComponentStatus &from,
     // initialisation
     to.timeUp = 0;
     
-    // conversions: name and subsystems
+    // convert name and publishInterval
     to.name = name;
     to.publishIntervalSec = from.publishIntervalSec;
     
@@ -259,7 +216,6 @@ void convertStateBased( const hydroiceutil::LocalComponentStatus &from,
     if (from.subsystems.size()==0) {
         to.state = subStateToCompState( from.infrastructure );
         to.health = orca::CompOk;
-//         cout << "============== No subsystems. Will use infrastructure state " << to.health << endl;
         return;
     }
     
@@ -282,7 +238,6 @@ void convertStateBased( const hydroiceutil::LocalComponentStatus &from,
     
     for ( it=from.subsystems.begin(); it!=from.subsystems.end(); ++it ) 
     {
-        // ">=" guarantees that worstHealth is set at least once
         if (it->second.health >= worstHealth )
             worstHealth = it->second.health;
     }
