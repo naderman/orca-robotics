@@ -42,6 +42,17 @@ orca::FQInterfaceName toInterface( const orca::FQComponentName& fqCName, const s
     return fqIName;
 }
 
+orca::FQTopicName 
+toTopic( const orca::FQInterfaceName& fqIName, const std::string& subtopic )
+{
+    orca::FQTopicName fqTName;
+    fqTName.platform = fqIName.platform;
+    fqTName.component = fqIName.component;
+    fqTName.iface = fqIName.iface;
+    fqTName.topic = subtopic;
+    return fqTName;
+}
+
 orca::FQTopicName
 toTopic( const orca::FQComponentName& fqCName, const std::string &iface, const std::string& subtopic )
 {

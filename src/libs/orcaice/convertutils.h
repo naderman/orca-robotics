@@ -32,6 +32,10 @@ orca::FQInterfaceName toInterface( const orca::FQComponentName& fqIName, const s
 
 //! Returns the fully-qualified topic name.
 //! No checks are performed.
+orca::FQTopicName toTopic( const orca::FQInterfaceName& fqIName, const std::string& subtopic="*" );
+
+//! Returns the fully-qualified topic name.
+//! No checks are performed.
 orca::FQTopicName toTopic( const orca::FQComponentName& fqCName, const std::string &iface, const std::string& subtopic="*" );
 
 /*! 
