@@ -9,6 +9,7 @@
  */
 
 #include <orcaice/orcaice.h>
+#include <orcaice/icegridutils.h>
 #include "homeImpl.h"
 #include <iostream>
 
@@ -48,7 +49,7 @@ HomeImpl::HomeImpl( const orcaice::Context& context ) :
 
 HomeImpl::~HomeImpl()
 {
-    tryRemoveInterface( context_, interfaceName_ );
+//     orcaice::tryRemoveAdminInterface( context_, "Home" );
 }
 
 void
@@ -60,23 +61,7 @@ HomeImpl::initInterface()
 //     orcaice::createInterfaceWithString( context_, ptr_, interfaceName_ );
 
     // EXPERIMENTAL! adding as a facet to the Admin interface.
-    try
-    {
-        context_.communicator()->addAdminFacet( ptr_, "Home" );
-    }
-    catch ( const std::exception& e )
-    {
-        stringstream ss;
-        ss << "(while installng Home object) : "<<e.what();
-        context_.tracer().error( ss.str() );
-        context_.shutdown();
-    }
-
-    // manually to home registry
-    orca::ProvidedInterface iface;
-    iface.name = interfaceName_;
-    iface.id   = "::orca::Home";
-    context_.home().addProvidedInterface( iface );
+    orcaice::createAdminInterface( context_, ptr_, context_.name() );
 }
 
 orca::HomeData

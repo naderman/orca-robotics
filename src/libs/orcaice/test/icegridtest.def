@@ -5,5 +5,7 @@ ExternalConfig.Orca.Component.EnableProcess.Default=1
 # overriding default
 ExternalConfig.Orca.Component.EnableProperties.Default=0
 
+ExternalConfig.Orca.Component.PrintProperties.Default=1
+
 # Ensure timeouts
 ExternalConfig.Ice.Override.ConnectTimeout.Default=150

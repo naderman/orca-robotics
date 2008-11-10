@@ -1,0 +1,9 @@
+DefaultComponentTag=IceTest
+DefaultComponentEndpoints=tcp -t 5000 -p 15000
+
+# Provided Interfaces
+Provides.P1.Type=PT1
+Provides.P1.DefaultName=p1
+
+# Ensure timeouts
+ExternalConfig.Ice.Override.ConnectTimeout.Default=150

@@ -51,8 +51,8 @@ class SystemStatusI : public virtual orca::SystemStatus
 
 SystemStatusImpl::SystemStatusImpl( const std::string             &interfaceTag,
                                               const orcaice::Context        &context )
-    : interfaceName_(getInterfaceNameFromTag(context,interfaceTag)),
-                     topicName_(orcaice::getTopicNameFromInterfaceName(context,interfaceName_)),
+    : interfaceName_(orcaice::getProvidedInterface(context,interfaceTag).iface),
+                     topicName_(orcaice::toTopicAsString(context.name(),interfaceName_)),
                                 context_(context)
 {
 }
@@ -60,7 +60,7 @@ SystemStatusImpl::SystemStatusImpl( const std::string             &interfaceTag,
 SystemStatusImpl::SystemStatusImpl( const orcaice::Context        &context,
                                               const std::string             &interfaceName )
     : interfaceName_(interfaceName),
-      topicName_(orcaice::getTopicNameFromInterfaceName(context,interfaceName_)),
+      topicName_(orcaice::toTopicAsString(context.name(),interfaceName_)),
       context_(context)
 {
 }

@@ -56,8 +56,8 @@ Localise2dImpl::Localise2dImpl( const orca::VehicleGeometryDescriptionPtr &geome
                                 TopicPolicy policy )
     : geometry_(geometry),
       policy_(policy),
-      interfaceName_(getInterfaceNameFromTag(context,interfaceTag)),
-      topicName_(orcaice::getTopicNameFromInterfaceName(context,interfaceName_)),
+      interfaceName_(orcaice::getProvidedInterface(context,interfaceTag).iface),
+      topicName_(orcaice::toTopicAsString(context.name(),interfaceName_)),
       context_(context)
 {
     assert( geometry_ != 0 );
@@ -70,7 +70,7 @@ Localise2dImpl::Localise2dImpl( const orca::VehicleGeometryDescriptionPtr &geome
     : geometry_(geometry),
       policy_(policy),
       interfaceName_(interfaceName),
-      topicName_(orcaice::getTopicNameFromInterfaceName(context,interfaceName)),
+      topicName_(orcaice::toTopicAsString(context.name(),interfaceName_)),
       context_(context)
 {
     assert( geometry_ != 0 );

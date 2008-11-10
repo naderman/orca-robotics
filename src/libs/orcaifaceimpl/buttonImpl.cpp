@@ -41,7 +41,7 @@ private:
 ButtonImpl::ButtonImpl( 
             const std::string &interfaceTag,
             const orcaice::Context &context )
-    : interfaceName_(getInterfaceNameFromTag(context,interfaceTag)),
+    : interfaceName_(orcaice::getProvidedInterface(context,interfaceTag).iface),
       context_(context)
 {
 }

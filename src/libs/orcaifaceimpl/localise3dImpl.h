@@ -72,8 +72,8 @@ private:
     // Hang onto this so we can remove from the adapter and control when things get deleted
     Ice::ObjectPtr          ptr_;
 
-    const std::string              interfaceName_;
-    const std::string              topicName_;
+    const std::string interfaceName_;
+    const std::string topicName_;
     orcaice::Context               context_;
 };
 typedef IceUtil::Handle<Localise3dImpl> Localise3dImplPtr;

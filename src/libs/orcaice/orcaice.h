@@ -25,10 +25,12 @@
 
 #include <orcaice/configutils.h>
 #include <orcaice/proputils.h>
+#include <orcaice/convertutils.h>
 #include <orcaice/stringutils.h>
 #include <orcaice/timeutils.h>
 #include <orcaice/catchutils.h>
 
+#include <orcaice/iceutils.h>
 #include <orcaice/connectutils.h>
 #include <orcaice/multiconnectutils.h>
 #include <orcaice/icestormutils.h>

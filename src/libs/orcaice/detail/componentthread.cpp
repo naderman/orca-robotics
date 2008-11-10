@@ -92,7 +92,9 @@ ComponentThread::tryRegisterHome()
     cout<<"DEBUG: admin proxy: "<<adminPrx->ice_toString()<<endl;
 
     // change generic proxy to the Home facet.
-    Ice::ObjectPrx homePrx = adminPrx->ice_facet( "Home" );
+    // (strictly speaking, this is not necessary: we can always change the facet later. but it makes a bit clearer
+    // if the facet is listed in the Registry).
+    Ice::ObjectPrx homePrx = adminPrx->ice_facet( orcaice::toAdminFacet( context_.name(), "::orca::Home" ) );
 
     // apparently cannot change just the registered name. it changes the proxy, which is wrong.
 //     homePrx = homePrx->ice_identity( homeIdentity );

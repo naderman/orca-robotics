@@ -16,7 +16,7 @@
 #include <orcaice/context.h>
 #include <orcaice/exceptions.h>
 #include <orcaice/configutils.h>
-#include <hydroutil/sysutils.h>
+// #include <hydroutil/sysutils.h>
 #include <orcaice/printutils.h>
 #include <orcaice/stringutils.h>
 
@@ -37,40 +37,16 @@ Catches all exceptions. Does not throw.
 Implementation note: this function does not need to be templated because
 ice_ping() is implemented by all Ice objects regardless of type.
  */
-bool isInterfaceReachable( const Context& context,
-                           const std::string& proxyString,  
-                           std::string& diagnostic );
+bool isInterfaceReachable( const Context& context, const std::string& proxyString, std::string& diagnostic );
 
-/*!
-Adds the @p object to the component adapter and gives it the @p name.
-Note that @p name is just the interface name, not its fully-qualified name.
-(In Ice terms this will become the object identity.)
+//! Tries to connect the interface described in the config file and gets its ID (Slice object type).
+//! Throws NetworkException if the interface is unreachable.
+std::string getInterfaceIdWithString( const Context& context, const std::string& proxyString );
 
-Throws gbxutilacfr::Exception if fails to register the new object.
-
-@verbatim
-Ice::ObjectPtr obj = new MyObjectI;
-orcaice::createInterfaceWithString( context(), obj, "coolname" );
-@endverbatim
- */
-void createInterfaceWithString( const Context       & context,
-                                Ice::ObjectPtr      & object,
-                                const std::string   & name );
-                            
-/*!
-Convenience function, behaves like @ref createInterfaceWithString but the proxy information
-is looked up in the @p context properties based on the @p interfaceTag.
-
-Throws ConfigFileException if the interface name cannot be read from the config file for some reason.
-
-@verbatim
-Ice::ObjectPtr obj = new MyObjectI;
-orcaice::createInterfaceWithTag( context(), obj, "InterfaceTag" );
-@endverbatim
- */
-void createInterfaceWithTag( const Context      & context,
-                            Ice::ObjectPtr      & object,
-                            const std::string   & interfaceTag );
+//! Tries to connect the interface described in the config file and gets its ID (Slice object type).
+//! Throws NetworkException if the interface is unreachable.
+//! Throws ConfigFileException if there's a problem with reading from the config file.
+std::string getInterfaceIdWithTag( const Context& context, const std::string& interfaceTag );
 
 //
 //  Implementation Note:
@@ -164,15 +140,6 @@ connectToInterfaceWithTag( const Context       & context,
     // now that we have the stingified proxy, use the function above.
     connectToInterfaceWithString( context, proxy, proxyString );
 }
-
-//! Tries to connect the interface described in the config file and gets its ID (Slice object type).
-//! Throws NetworkException if the interface is unreachable.
-std::string getInterfaceIdWithString( const Context& context, const std::string& proxyString );
-
-//! Tries to connect the interface described in the config file and gets its ID (Slice object type).
-//! Throws NetworkException if the interface is unreachable.
-//! Throws ConfigFileException if there's a problem with reading from the config file.
-std::string getInterfaceIdWithTag( const Context& context, const std::string& interfaceTag );
 
 //@}
 

@@ -50,9 +50,36 @@ orca::FQComponentName toComponentName( const Ice::Identity& adminId );
 //! Parses home proxy to a fully qualified name of the component to whome it belongs.
 orca::FQComponentName toComponentName( const Ice::ObjectPrx& homePrx );
 
-Ice::ObjectPrx getComponentAdmin( const orcaice::Context& context, const orca::FQComponentName& component );
+/*!
+Contacts the default Locator interface of the Registry and looks up component admin proxy.
 
+Before creating the interface, the fully-qualified component name is checked and platform 'local' is replaced 
+with current hostname.
+*/
+Ice::ObjectPrx getComponentAdmin( const orcaice::Context& context, const orca::FQComponentName& fqName );
+
+/*!
+Contacts the default Query interface of the Registry and looks up all registered admin proxies.
+*/
 Ice::ObjectProxySeq getAllComponentAdmins( const orcaice::Context& context );
+
+/*!
+Orca convention for naming admin interface facets. The reason for encoding the platform and component name in
+the facet name: to allow sharing of Communicator inside the IceBox by multiple components (all of them will try
+to add their admin facets to the same Communicator).
+
+The following admin interfaces are currently supported
+- ::Ice::Process
+- ::Ice::PropertiesAdmin
+- ::orca::Home
+- ::orca::Status
+- ::orca::Tracer
+
+The fully-qualified component name is checked and platform 'local' is replaced with current hostname.
+
+Throws bxutilacfr::Exception when called with unsupported object type.
+*/
+std::string toAdminFacet( const orca::FQComponentName& fqName, const std::string& interfaceType );
 
 /*!
 Tries to ice_ping() the remote Admin interface specified with a fully-qualified component name and 
@@ -62,31 +89,42 @@ Writes diagnostic information into @c diagnostic string.
 Before making any connections, the fully-qualified component name is checked and platform 'local' is replaced 
 with current hostname.
 
-Catches all exceptions. Does not throw.  
-  
-Implementation note: this function does not need to be templated because
-ice_ping() is implemented by all Ice objects regardless of type.
+Not all objects can be added to the admin interface, see toAdminFacet() for the list of supported interfaces.
+
+Catches all exceptions. Does not throw.
  */
-bool isAdminInterfaceReachable( const Context& context, const orca::FQComponentName& fqname, const std::string& facetName,
+bool isAdminInterfaceReachable( const Context& context, const orca::FQComponentName& fqName, const std::string& interfaceType,
                            std::string& diagnostic );
+
+/*!
+Adds the @p object as a facet to the component's Admin interface.
+
+Not all objects can be added to the admin interface, see toAdminFacet() for the list of supported interfaces.
+
+Before creating the interface, the fully-qualified component name is checked and platform 'local' is replaced 
+with current hostname.
+
+This funciton may throw Ice::AlreadyRegisteredException. We don't catch it internally
+because this is a specialized function which only used in internal code.
+
+If successful, registers the interface with Home under the name which is the same as the Admin facet.
+
+@verbatim
+Ice::ObjectPtr obj = new MyObjectI;
+orcaice::createAdminInterface( context_, obj, context_.name() );
+@endverbatim
+ */
+void createAdminInterface( const Context& context, Ice::ObjectPtr& object, const orca::FQComponentName& fqname );
 
 /*!
 Special connect function to be used with interfaces hosted as facets of component's Admin interface.
 
-The following admin interfaces are currently supported with corresponding facet names (capitalization in 
-facet name is important!):
-- ::Ice::Process
-- ::Ice::PropertiesAdminPrx
-- ::orca::Home
-- ::orca::Status
-- ::orca::Tracer
-
-If an unsupported facet is requested, gbxutilacfr::Exception is thrown.
-
-In the event of a failed connection, adds an interpretive message and re-throws a NetworkException.
+Not all objects can be added to the admin interface, see toAdminFacet() for the list of supported interfaces.
 
 Before making any connections, the fully-qualified component name is checked and platform 'local' is replaced 
 with current hostname.
+
+In the event of a failed connection, adds an interpretive message and re-throws a NetworkException.
 
 Example 1. Connect to your own Status.
 @verbatim
@@ -110,30 +148,14 @@ orcaice::connectToAdminInterface<Ice::Process,Ice::ProcessPrx>( context_, proces
 template<class InterfaceType, class InterfaceProxyType>
 void connectToAdminInterface( const Context& context, InterfaceProxyType& interfacePrx, const orca::FQComponentName& fqname )
 {   
-//     if ( facet != "Process" && facet != "Properties" && facet != "Home" && facet != "Status" && facet != "Tracer" )
-//         throw gbxutilacfr::Exception( ERROR_INFO, std::string("Unsupported Admin facet: ")+facet );
-
-    std::string interfaceType = InterfaceType::ice_staticId();
-    std::string facetName;
-
-    if ( interfaceType == "::Ice::Process" )
-        facetName = "Process";
-    else if ( interfaceType == "::Ice::PropertiesAdmin" )
-        facetName = "Properties";
-    else if ( interfaceType == "::orca::Home" )
-        facetName = "Home";
-    else if ( interfaceType == "::orca::Status" )
-        facetName = "Status";
-    else if ( interfaceType == "::orca::Tracer" )
-        facetName = "Tracer";
-    else
-        throw gbxutilacfr::Exception( ERROR_INFO, std::string("Orca does not support Admin interface type: ")+interfaceType );
-        
-// std::cout<<"DEBUG: "<<__func__<<"(): will connect to facet="<<facetName<<std::endl;
-
     orca::FQComponentName resolvedFqname = orcaice::resolveLocalPlatform( context, fqname );
     
 // std::cout<<"DEBUG: "<<__func__<<"(): will look for Admin interface of ="<<orcaice::toString(resolvedFqname)<<std::endl;
+
+    const std::string interfaceType = InterfaceType::ice_staticId();
+    const std::string facetName = orcaice::toAdminFacet( resolvedFqname, interfaceType );
+        
+// std::cout<<"DEBUG: "<<__func__<<"(): will connect to facet="<<facetName<<std::endl;
 
     //
     // This is the generic proxy to the Admin object. Cannot be used as such because it does not have a default facet.

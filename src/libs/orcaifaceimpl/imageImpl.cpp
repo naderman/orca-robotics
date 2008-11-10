@@ -54,8 +54,8 @@ ImageImpl::ImageImpl( const orca::ImageDescriptionPtr& descr,
                       const std::string& interfaceTag,
                       const orcaice::Context& context )
     : descr_(descr),
-      interfaceName_(getInterfaceNameFromTag(context,interfaceTag)),
-      topicName_(orcaice::getTopicNameFromInterfaceName(context,interfaceName_)),
+      interfaceName_(orcaice::getProvidedInterface(context,interfaceTag).iface),
+      topicName_(orcaice::toTopicAsString(context.name(),interfaceName_)),
       context_(context)
 {
 }
@@ -65,7 +65,7 @@ ImageImpl::ImageImpl( const orca::ImageDescriptionPtr& descr,
                       const std::string& interfaceName )
     : descr_(descr),
       interfaceName_(interfaceName),
-      topicName_(orcaice::getTopicNameFromInterfaceName(context,interfaceName)),
+      topicName_(orcaice::toTopicAsString(context.name(),interfaceName_)),
       context_(context)
 {
 }

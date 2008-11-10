@@ -17,6 +17,7 @@
 #include <orcaice/printutils.h>
 #include <orcaice/exceptions.h>
 #include <orcaice/stringutils.h>
+#include <orcaice/convertutils.h>
 
 #include "detail/privateutils.h"
 
@@ -44,8 +45,6 @@ void filter_start( std::vector<std::string>& s, const std::string& pattern )
     }
 }
 
-}
-
 // NOTE: utility function, not part of public interface
 std::string
 getProvidedName( const Context& context, const std::string &ifaceTag )
@@ -68,7 +67,7 @@ getProvidedName( const Context& context, const std::string &ifaceTag )
 // NOTE: utility function, not part of public interface
 // example: prefix="Something.Something."
 std::vector<std::string>
-getFieldsForPrefix( const Context& context, const std::string & prefix )
+getFieldsForPrefix( const Context& context, const std::string& prefix )
 {
     int prefixLength = prefix.size();
     
@@ -88,6 +87,10 @@ getFieldsForPrefix( const Context& context, const std::string & prefix )
     return fields;
 }
 
+}
+
+//////////////////////////////////////////////////////
+
 orca::FQInterfaceName
 getProvidedInterface( const Context& context, const std::string &ifaceTag )
 {
@@ -104,20 +107,7 @@ getProvidedInterface( const Context& context, const std::string &ifaceTag )
 }
 
 orca::FQTopicName
-getProvidedTopicWithString( const Context& context, const std::string &ifaceName, const std::string & subtopic )
-{
-    orca::FQTopicName fqTName;
-    fqTName.platform = context.name().platform;
-    fqTName.component = context.name().component;
-    fqTName.iface = ifaceName;
-    fqTName.topic = subtopic;
-
-    initTracerInfo( context, "will publish to topic '"+orcaice::toString(fqTName)+"'",2 );
-    return fqTName;
-}
-
-orca::FQTopicName
-getProvidedTopicWithTag( const Context& context, const std::string &ifaceTag, const std::string & subtopic )
+getProvidedTopicWithTag( const Context& context, const std::string &ifaceTag, const std::string& subtopic )
 {
     if ( ifaceTag.empty() ) {
         throw orcaice::ConfigFileException(ERROR_INFO, "Empty interface tag");
@@ -125,7 +115,7 @@ getProvidedTopicWithTag( const Context& context, const std::string &ifaceTag, co
 
     string ifaceName = getProvidedName( context, ifaceTag );
 
-    return getProvidedTopicWithString( context, ifaceName, subtopic );
+    return orcaice::toTopic( context.name(), ifaceName, subtopic );
 }
 
 std::string
@@ -170,6 +160,23 @@ getRequiredTags( const Context& context, const std::string& pattern )
         filter_start( tags, pattern );
 
     return tags;
+}
+
+orca::FQComponentName
+resolveLocalPlatform( const orca::FQComponentName& fqname )
+{
+    if ( !fqname.platform.empty() && !fqname.component.empty() ) 
+    {
+        if ( fqname.platform=="local" ) 
+        {
+            orca::FQComponentName resolvedFqname;
+            resolvedFqname.platform = hydroutil::getHostname();
+            resolvedFqname.component = fqname.component;
+            return resolvedFqname;
+        }
+    }
+    // no changes were made
+    return fqname;
 }
 
 orca::FQComponentName
@@ -231,13 +238,13 @@ getComponentData( const Context& context )
 //     provided.id = "::orca::Home";
 //     compData.provides.push_back( provided );
 // 
-//     if ( interfaceFlag_ & TracerInterface ) {
+//     if ( interfaceFlag_& TracerInterface ) {
 //         provided.name = "tracer";
 //         provided.id = "::orca::Tracer";
 //         compData.provides.push_back( provided );
 //     }
 // 
-//     if ( interfaceFlag_ & StatusInterface ) {
+//     if ( interfaceFlag_& StatusInterface ) {
 //         provided.name = "status";
 //         provided.id = "::orca::Status";
 //         compData.provides.push_back( provided );

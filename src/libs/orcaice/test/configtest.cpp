@@ -73,15 +73,6 @@ TestComponent::start()
     }
     cout<<"ok"<<endl;
 
-    cout<<"testing getProvidedTopicWithString() ... ";
-    orca::FQTopicName fqTopic = orcaice::getProvidedTopicWithString( context(), "cool", "secret" );
-    std::string strTopic = orcaice::toString( fqTopic );
-    if ( strTopic != "cool/secret@"+hydroutil::getHostname()+"/configtest" ) {
-        cout<<"failed"<<endl<<"got :"<<strTopic<<endl;
-        exit(EXIT_FAILURE);
-    }
-    cout<<"ok"<<endl;
-
     cout<<"testing getProvidedTopicWithTag() with existing tag ... ";
     try {
         orca::FQTopicName fqTopic = orcaice::getProvidedTopicWithTag( context(), "P1" );

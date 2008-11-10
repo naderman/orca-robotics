@@ -9,6 +9,7 @@
  */
 
 #include <orcaice/orcaice.h>
+#include <orcaice/icegridutils.h>
 // #include <orcaifacestring/status.h>
 #include "statusImpl.h"
 #include "componentstatusaggregator.h"
@@ -72,7 +73,7 @@ StatusImpl::~StatusImpl()
 {
     if ( topicHandler_ )  delete topicHandler_;
 
-    tryRemoveInterface( context_, interfaceName_ );
+//     orcaice::tryRemoveAdminInterface( context_, "Status" );
 }
 
 void
@@ -87,24 +88,7 @@ StatusImpl::initInterface()
 //     orcaice::createInterfaceWithString( context_, ptr_, interfaceName_ );
 
     // EXPERIMENTAL! adding as a facet to the Admin interface.
-    // (this will be wrapped up)
-    try
-    {
-        context_.communicator()->addAdminFacet( ptr_, "Status" );
-    }
-    catch ( const std::exception& e )
-    {
-        stringstream ss;
-        ss << "(while installng Status object) : "<<e.what();
-        context_.tracer().error( ss.str() );
-        context_.shutdown();
-    }
-
-    // manually to home registry
-    orca::ProvidedInterface iface;
-    iface.name = interfaceName_;
-    iface.id   = "::orca::Status";
-    context_.home().addProvidedInterface( iface );
+    orcaice::createAdminInterface( context_, ptr_, context_.name() );
 }
 
 void

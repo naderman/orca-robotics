@@ -55,8 +55,8 @@ Localise3dImpl::Localise3dImpl( const orca::VehicleGeometryDescriptionPtr &geome
                                 const std::string &interfaceTag,
                                 const orcaice::Context &context )
     : geometry_(geometry),
-      interfaceName_(getInterfaceNameFromTag(context,interfaceTag)),
-      topicName_(orcaice::getTopicNameFromInterfaceName(context,interfaceName_)),
+      interfaceName_(orcaice::getProvidedInterface(context,interfaceTag).iface),
+      topicName_(orcaice::toTopicAsString(context.name(),interfaceName_)),
       context_(context)
 {    
 }
@@ -66,7 +66,7 @@ Localise3dImpl::Localise3dImpl( const orca::VehicleGeometryDescriptionPtr &geome
                                 const std::string &interfaceName )                                
     : geometry_(geometry),
       interfaceName_(interfaceName),
-      topicName_(orcaice::getTopicNameFromInterfaceName(context,interfaceName)),
+      topicName_(orcaice::toTopicAsString(context.name(),interfaceName_)),
       context_(context)
 {    
 }

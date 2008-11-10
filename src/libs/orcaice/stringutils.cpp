@@ -88,33 +88,6 @@ std::string toString( const orca::FQExecutableName& name )
     return name.executable + "@" + name.host ;
 }
 
-orca::FQTopicName 
-toStatusTopic( const orca::FQComponentName& fqCName )
-{
-    orca::FQTopicName fqTName;
-        
-    fqTName.platform  = fqCName.platform;
-    fqTName.component = fqCName.component;
-    fqTName.iface     = "status";
-    fqTName.topic     = "*";
-
-    return fqTName;
-}
-
-orca::FQTopicName 
-toTracerTopic( const orca::FQComponentName& fqCName )
-{
-    orca::FQTopicName fqTName;
-        
-    fqTName.platform  = fqCName.platform;
-    fqTName.component = fqCName.component;
-    fqTName.iface     = "tracer";
-    fqTName.topic     = "*";
-
-    return fqTName;
-}
-
-
 // adapted from IceUtil::Time::toDuration()
 // the only difference is in NOT printing 'd' after the number of days
 // this is to make it easier to parse back

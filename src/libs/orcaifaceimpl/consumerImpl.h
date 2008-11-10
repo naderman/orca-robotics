@@ -13,6 +13,7 @@
 
 #include <orcaice/context.h>
 #include <orcaice/multiconnectutils.h>
+#include <orcaice/iceutils.h>
 #include <orcaice/icestormutils.h>
 #include <orcaice/icegridutils.h>
 #include <gbxsickacfr/gbxiceutilacfr/store.h>

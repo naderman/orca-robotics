@@ -40,8 +40,8 @@ private:
 
 QGraphics2dImpl::QGraphics2dImpl( const std::string       &interfaceTag, 
                                   const orcaice::Context  &context  )
-    : interfaceName_(getInterfaceNameFromTag(context,interfaceTag)),
-      topicName_(orcaice::getTopicNameFromInterfaceName(context,interfaceName_)),
+    : interfaceName_(orcaice::getProvidedInterface(context,interfaceTag).iface),
+      topicName_(orcaice::toTopicAsString(context.name(),interfaceName_)),
       context_(context)
 {
 }
@@ -49,7 +49,7 @@ QGraphics2dImpl::QGraphics2dImpl( const std::string       &interfaceTag,
 QGraphics2dImpl::QGraphics2dImpl( const orcaice::Context  &context,
                                   const std::string       &interfaceName )
     : interfaceName_(interfaceName),
-      topicName_(orcaice::getTopicNameFromInterfaceName(context,interfaceName)),
+      topicName_(orcaice::toTopicAsString(context.name(),interfaceName_)),
       context_(context)
 {
 }

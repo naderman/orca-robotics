@@ -80,7 +80,7 @@ getProvidesHeader( const orcaice::Context& context, const orca::FQInterfaceName&
  *  If connection fails for some reason, the Object ID is set to "unknown".
  */
 ProvidesHeader
-getStandardProvidesHeader( const Ice::ObjectPrx& homePrx, const orca::FQInterfaceName& fqName );
+getAdminProvidesHeader( const Ice::ObjectPrx& homePrx, const orca::FQInterfaceName& fqName );
 
 
 /*!

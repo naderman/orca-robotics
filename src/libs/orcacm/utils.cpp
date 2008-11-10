@@ -220,7 +220,7 @@ getComponentHomeData( const orcaice::Context& context, const Ice::ObjectPrx& oho
              homeData.comp.provides[j].id  == "::orca::Status" || 
              homeData.comp.provides[j].id  == "::orca::Home" )  
         {
-            pface = getStandardProvidesHeader( ohome, fqName );
+            pface = getAdminProvidesHeader( ohome, fqName );
         }
         else
         {
@@ -243,20 +243,15 @@ getComponentHomeData( const orcaice::Context& context, const Ice::ObjectPrx& oho
 }
 
 ProvidesHeader
-getStandardProvidesHeader( const Ice::ObjectPrx& homePrx, const orca::FQInterfaceName& fqName )
+getAdminProvidesHeader( const Ice::ObjectPrx& homePrx, const orca::FQInterfaceName& fqName )
 {
-cout<<"DEBUG: getStandardProvidesHeader() fqName.iface="<< fqName.iface << endl;
+// cout<<"DEBUG: getAdminProvidesHeader() fqName.iface="<< fqName.iface << endl;
     ProvidesHeader header;
     header.name = fqName.iface;
     
-    Ice::ObjectPrx obj;
-
-    if ( fqName.iface == "home" )
-        obj = homePrx->ice_facet( "Home" );
-    else if ( fqName.iface == "status" )
-        obj = homePrx->ice_facet( "Status" );
-    else if ( fqName.iface == "tracer" )
-        obj = homePrx->ice_facet( "Tracer" );
+    // orcaice::createAdminInterface() registers interfaces with Home under the same name as the
+    // Admin facet.
+    Ice::ObjectPrx obj = homePrx->ice_facet( fqName.iface );
    
     //cout<<"looking up proxy "<<obj<<endl;
     try

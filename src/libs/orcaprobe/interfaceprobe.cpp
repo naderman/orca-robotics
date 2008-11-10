@@ -12,6 +12,7 @@
 #include <iostream>
 #include <sstream>
 #include <orcaice/orcaice.h>
+#include <orcaice/icegridutils.h>
 #include <orcacm/orcacm.h>
 
 #include "interfaceprobe.h"
@@ -19,9 +20,9 @@
 using namespace std;
 using namespace orcaprobe;
 
-InterfaceProbe::InterfaceProbe( const orca::FQInterfaceName & name, const Ice::ObjectPrx& adminPrx,
+InterfaceProbe::InterfaceProbe( const orca::FQInterfaceName& fqIName, const Ice::ObjectPrx& adminPrx,
                 AbstractDisplay & display, const orcaice::Context & context )
-    : name_(name),
+    : name_(fqIName),
       display_(display),
       ctx_(context)
 {
@@ -35,14 +36,17 @@ InterfaceProbe::InterfaceProbe( const orca::FQInterfaceName & name, const Ice::O
 
     // the generic proxy is created just once and then reused
     // Standard interfaces are treated differently
-    if ( name.iface == "home" )
-        prx_ = adminPrx->ice_facet( "Home" );
-    else if ( name.iface == "status" )
-        prx_ = adminPrx->ice_facet( "Status" );
-    else if ( name.iface == "tracer" )
-        prx_ = adminPrx->ice_facet( "Tracer" );
+    const orca::FQComponentName fqCName = orcaice::toComponent( name_ );
+    if ( name_.iface == orcaice::toAdminFacet(fqCName,"::orca::Home") ||
+         name_.iface == orcaice::toAdminFacet(fqCName,"::orca::Status") ||
+         name_.iface == orcaice::toAdminFacet(fqCName,"::orca::Tracer") )
+    {
+        prx_ = adminPrx->ice_facet( name_.iface );
+    }
     else
+    {
         prx_ = ctx_.communicator()->stringToProxy( orcaice::toString( name_ ) );
+    }
 };
 
 InterfaceProbe::~InterfaceProbe() 

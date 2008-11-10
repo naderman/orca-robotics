@@ -69,6 +69,41 @@ TestComponent::start()
     }
     cout<<"ok"<<endl;
     
+    cout<<"testing toAdminFacet() ... ";
+    {
+        orca::FQComponentName comp;
+        comp.platform = "papa";
+        comp.component = "charlie";
+        if ( orcaice::toAdminFacet( comp, "::Ice::Process" ) != "Process" ) {
+            cout<<"failed"<<endl<<"for Process got :"<<orcaice::toAdminFacet( comp, "::Ice::Process" )<<endl;
+            exit(EXIT_FAILURE);
+        }
+        if ( orcaice::toAdminFacet( comp, "::Ice::PropertiesAdmin" ) != "Properties" ) {
+            cout<<"failed"<<endl<<"for PropertiesAdmin got :"<<orcaice::toAdminFacet( comp, "::Ice::PropertiesAdmin" )<<endl;
+            exit(EXIT_FAILURE);
+        }
+        if ( orcaice::toAdminFacet( comp, "::orca::Home" ) != "papa.charlie.Home" ) {
+            cout<<"failed"<<endl<<"for Home got :"<<orcaice::toAdminFacet( comp, "::orca::Home" )<<endl;
+            exit(EXIT_FAILURE);
+        }
+        if ( orcaice::toAdminFacet( comp, "::orca::Status" ) != "papa.charlie.Status" ) {
+            cout<<"failed"<<endl<<"for Status got :"<<orcaice::toAdminFacet( comp, "::orca::Status" )<<endl;
+            exit(EXIT_FAILURE);
+        }
+        if ( orcaice::toAdminFacet( comp, "::orca::Tracer" ) != "papa.charlie.Tracer" ) {
+            cout<<"failed"<<endl<<"for Tracer got :"<<orcaice::toAdminFacet( comp, "::orca::Tracer" )<<endl;
+            exit(EXIT_FAILURE);
+        }
+        try {
+            orcaice::toAdminFacet( comp, "::orca::Something" );
+            cout<<"failed"<<endl<<"should've thrown."<<endl;
+            exit(EXIT_FAILURE);
+        }
+        catch ( const std::exception& )
+        {}
+    }
+    cout<<"ok"<<endl;
+
 
     // NETWORKED FUNCTIONS
 
@@ -104,7 +139,7 @@ TestComponent::start()
         fqName.platform = "local";
         fqName.component = "icegridtest";
         string diagnostic;
-        if ( !orcaice::isAdminInterfaceReachable( context(), fqName, "Home", diagnostic ) ) {
+        if ( !orcaice::isAdminInterfaceReachable( context(), fqName, "::orca::Home", diagnostic ) ) {
             cout<<"Failed to ping Home: "<<diagnostic<<endl;
             exit(EXIT_FAILURE);
         }
@@ -115,7 +150,7 @@ TestComponent::start()
     {
         orca::StatusPrx objectPrx;
         string diagnostic;
-        if ( !orcaice::isAdminInterfaceReachable( context(), context().name(), "Status", diagnostic ) ) {
+        if ( !orcaice::isAdminInterfaceReachable( context(), context().name(), "::orca::Status", diagnostic ) ) {
             cout<<"Failed to ping Status: "<<diagnostic<<endl;
             exit(EXIT_FAILURE);
         }
@@ -126,7 +161,7 @@ TestComponent::start()
     {
         orca::TracerPrx objectPrx;
         string diagnostic;
-        if ( !orcaice::isAdminInterfaceReachable( context(), context().name(), "Tracer", diagnostic ) ) {
+        if ( !orcaice::isAdminInterfaceReachable( context(), context().name(), "::orca::Tracer", diagnostic ) ) {
             cout<<"Failed to ping Tracer: "<<diagnostic<<endl;
             exit(EXIT_FAILURE);
         }
@@ -138,7 +173,7 @@ TestComponent::start()
         Ice::ProcessPrx objectPrx;
         string diagnostic;
         // Process should be ON
-        if ( !orcaice::isAdminInterfaceReachable( context(), context().name(), "Process", diagnostic ) ) {
+        if ( !orcaice::isAdminInterfaceReachable( context(), context().name(), "::Ice::Process", diagnostic ) ) {
             cout<<"Failed to ping Process: "<<diagnostic<<endl;
             exit(EXIT_FAILURE);
         }
@@ -150,8 +185,8 @@ TestComponent::start()
         Ice::PropertiesAdminPrx objectPrx;
         string diagnostic;
         // Properties should be OFF
-        if ( orcaice::isAdminInterfaceReachable( context(), context().name(), "Properties", diagnostic ) ) {
-            cout<<"Failed to ping Properties: "<<diagnostic<<endl;
+        if ( orcaice::isAdminInterfaceReachable( context(), context().name(), "::Ice::PropertiesAdmin", diagnostic ) ) {
+            cout<<"Should not be able to ping Properties: "<<diagnostic<<endl;
             exit(EXIT_FAILURE);
         }
     }

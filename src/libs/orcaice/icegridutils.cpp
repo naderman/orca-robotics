@@ -131,14 +131,16 @@ toComponentName( const Ice::ObjectPrx& homePrx )
 }
 
 Ice::ObjectPrx
-getComponentAdmin( const orcaice::Context& context, const orca::FQComponentName& component )
+getComponentAdmin( const orcaice::Context& context, const orca::FQComponentName& fqName )
 {    
+    orca::FQComponentName resolvedFqname = orcaice::resolveLocalPlatform( context, fqName );
+
     Ice::CommunicatorPtr ic = context.communicator();
     assert( ic );
 
     Ice::LocatorPrx locatorPrx = ic->getDefaultLocator();
     
-    Ice::Identity adminId = toAdminIdentity( component );
+    Ice::Identity adminId = toAdminIdentity( resolvedFqname );
     Ice::ObjectPrx adminPrx;
 
     try {
@@ -167,22 +169,51 @@ getAllComponentAdmins( const orcaice::Context& context )
     return list;
 }
 
+std::string
+toAdminFacet( const orca::FQComponentName& fqName, const std::string& interfaceType )
+{   
+    orca::FQComponentName resolvedFqname = orcaice::resolveLocalPlatform( fqName );
+
+    string facetName;
+
+    if ( interfaceType == "::Ice::Process" )
+        facetName = "Process";
+    else if ( interfaceType == "::Ice::PropertiesAdmin" )
+        facetName = "Properties";
+    else if ( interfaceType == "::orca::Home" )
+        facetName = resolvedFqname.platform + "." + resolvedFqname.component + ".Home";
+    else if ( interfaceType == "::orca::Status" )
+        facetName = resolvedFqname.platform + "." + resolvedFqname.component + ".Status";
+    else if ( interfaceType == "::orca::Tracer" )
+        facetName = resolvedFqname.platform + "." + resolvedFqname.component + ".Tracer";
+    else
+        throw gbxutilacfr::Exception( ERROR_INFO, std::string("Orca does not support Admin interface type: ")+interfaceType );
+
+    return facetName;
+}
 
 bool 
-isAdminInterfaceReachable( const Context& context, const orca::FQComponentName& fqname, const std::string& facetName,
+isAdminInterfaceReachable( const Context& context, const orca::FQComponentName& fqName, const std::string& interfaceType,
                            std::string& diagnostic )
 {
-    orca::FQComponentName resolvedFqname = orcaice::resolveLocalPlatform( context, fqname );
-    
-// std::cout<<"DEBUG: "<<__func__<<"(): will look for Admin interface of ="<<orcaice::toString(resolvedFqname)<<std::endl;
+    std::string facetName;
+    try {
+        facetName = orcaice::toAdminFacet( fqName, interfaceType );
+    }
+    catch ( const std::exception& e ) {
+        std::stringstream ss;
+        ss << "(while pinging Admin interface of type '" << interfaceType << "'): "<<e.what();
+        diagnostic = ss.str();
+        return false;
+    }
 
     //
     // This is the generic proxy to the Admin object. Cannot be used as such because it does not have a default facet.
     //
-    Ice::ObjectPrx objectPrx = orcaice::getComponentAdmin( context, resolvedFqname );
+    Ice::ObjectPrx objectPrx = orcaice::getComponentAdmin( context, fqName );
     if ( !objectPrx )
         throw gbxutilacfr::Exception( ERROR_INFO, "Registry returned null admin proxy." );
-// std::cout<<"DEBUG: "<<__func__<<"(): got admin proxy ="<<objectPrx->ice_toString()<<std::endl;
+std::cout<<"DEBUG: "<<__func__<<"(): got admin proxy ="<<objectPrx->ice_toString()<<std::endl;
 
     //
     // Change proxy to the user-supplied facet name.
@@ -223,6 +254,37 @@ isAdminInterfaceReachable( const Context& context, const orca::FQComponentName& 
     }
 
     return true;
+}
+
+void 
+createAdminInterface( const Context& context, Ice::ObjectPtr& object, const orca::FQComponentName& fqName )
+{
+    if ( object==0 )
+        throw gbxutilacfr::Exception( ERROR_INFO, "Cannot add a null object to the admin interface" );
+
+    const std::string interfaceType = object->ice_id();
+    const std::string facetName = orcaice::toAdminFacet( fqName, interfaceType );
+
+//     try
+//     {
+        context.communicator()->addAdminFacet( object, facetName );
+        context.tracer().info( string("Added admin facet ")+facetName );
+//     }
+//     catch ( const Ice::AlreadyRegisteredException& e )
+//     {
+//         stringstream ss;
+//         ss << "(while installng "<<facetName<<" facet) : "<<e.what();
+//         context_.tracer().error( ss.str() );
+//         context_.shutdown();
+//         
+//     }
+
+    // manually to home registry
+    orca::ProvidedInterface iface;
+    iface.name = facetName;
+    // this is a local call
+    iface.id   = interfaceType;
+    context.home().addProvidedInterface( iface );
 }
 
 } // namespace

@@ -13,8 +13,9 @@
 #include "privateutils.h"
 #include "propfileutils.h"
 
-#include "../orcaice.h"
-#include "../component.h"
+#include <orcaice/component.h>
+#include <orcaice/orcaice.h>
+#include <orcaice/icegridutils.h>
 
 using namespace std;
 
@@ -352,6 +353,8 @@ postProcessComponentProperties( const Ice::PropertiesPtr& props, const std::stri
 //     props->setProperty( "Ice.Admin.DelayCreation", "1" );
 
     string facetsToLoad;
+    // We need to deal with this clunky filtering because that's the only way to control which standard
+    // Admin facets will be loaded.
     // Ice standard facets: use configs to decide which ones we want Ice to load
     if ( props->getPropertyAsInt( "Orca.Component.EnableProperties" ) )
         facetsToLoad += "Properties";
@@ -359,7 +362,9 @@ postProcessComponentProperties( const Ice::PropertiesPtr& props, const std::stri
         facetsToLoad += " Process";
     // Orca custom facets: we add all of them to the list of allowed facets and compoent will later start the ones it wants
     // (if we don't white-list them here, Ice will not make them visible)
-    facetsToLoad += " Home Tracer Status";
+    facetsToLoad += " " + orcaice::toAdminFacet( fqCName, "::orca::Home" );
+    facetsToLoad += " " + orcaice::toAdminFacet( fqCName, "::orca::Status" );
+    facetsToLoad += " " + orcaice::toAdminFacet( fqCName, "::orca::Tracer" );
     props->setProperty( "Ice.Admin.Facets", facetsToLoad );
 }
 

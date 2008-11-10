@@ -28,17 +28,12 @@ namespace orcaice
 //! name of the provided interface corresponding to interfaceTag.
 //!
 //! Throws ConfigFileException if the interface name cannot be read for some reason.
-orca::FQInterfaceName getProvidedInterface( const Context &, const std::string &interfaceTag );
-
-//! Reads platform and component names from the context, and the interface name and 
-//! returns the fully-qualified topic name, and the optional subtopic name.
-//! We don't check if the interfaceName is empty.
-orca::FQTopicName getProvidedTopicWithString( const Context &, const std::string &interfaceName, const std::string & subtopic="*" );
+orca::FQInterfaceName getProvidedInterface( const Context&, const std::string &interfaceTag );
 
 //! Convenience function which behaves like getProvidedTopicWithString() but the interface
 //! name is looked up in the config file using the interfaceTag.
 //! Throws ConfigFileException if the interface name cannot be read for some reason.
-orca::FQTopicName getProvidedTopicWithTag( const Context &, const std::string &interfaceTag, const std::string & subtopic="*" );
+orca::FQTopicName getProvidedTopicWithTag( const Context&, const std::string &interfaceTag, const std::string& subtopic="*" );
 
 //! Reads properties contained in the context and returns the stringified proxy to the 
 //! required interface corresponding to the interface tag. 
@@ -46,13 +41,13 @@ orca::FQTopicName getProvidedTopicWithTag( const Context &, const std::string &i
 //! The proxy can be direct or indirect.
 //! 
 //! Throws ConfigFileException if the interface name cannot be read for some reason.
-std::string getRequiredInterfaceAsString( const Context &, const std::string &interfaceTag );
+std::string getRequiredInterfaceAsString( const Context&, const std::string &interfaceTag );
 
 //! For components with variable number of interfaces it may be useful to get a listing
 //! of all provided interfaces described in the configuration file.
 //!
 //! See getRequiredTags() for the usage of @c pattern.
-std::vector<std::string> getProvidedTags( const Context & context, const std::string& pattern="" );
+std::vector<std::string> getProvidedTags( const Context& context, const std::string& pattern="" );
 
 /*! 
 For components with variable number of interfaces it may be useful to get a listing
@@ -74,11 +69,14 @@ laserTags = orcaice::getRequiredTags( context_, "Laser" );
 @endverbatim
 The default empty string pattern will match all required interfaces.
 */
-std::vector<std::string> getRequiredTags( const Context & context, const std::string& pattern="" );
-   
+std::vector<std::string> getRequiredTags( const Context& context, const std::string& pattern="" );
+
 //! For fully-qualified component names with platform name set to @e local, returns a new component 
 //! name string with @c local replaced with the current hostname.
 //! No changes are made if either the platform or the component names are empty.
+orca::FQComponentName resolveLocalPlatform( const orca::FQComponentName& fqname );
+   
+//! Same as above with the addition of information traced to the tracer of context.
 orca::FQComponentName resolveLocalPlatform( const Context& context, const orca::FQComponentName& fqname );
 
 //! For indirect proxies with platform name set to @e local, returns a new proxy string with @c local
@@ -87,7 +85,7 @@ std::string resolveLocalPlatform( const Context& context, const std::string& pro
 
 //! Parses properties to build static component information.
 //! Interfaces which are not in the config file will not appear here, e.g. Home, Tracer, Status.
-orca::ComponentData getComponentData( const Context & context );
+orca::ComponentData getComponentData( const Context& context );
 
 //@}
 } // namespace

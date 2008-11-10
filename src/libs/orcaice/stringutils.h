@@ -57,12 +57,6 @@ std::string toString( const orca::FQTopicName& );
 //! i.e. executable@host
 std::string toString( const orca::FQExecutableName & name );
 
-//! Based on the component name, returns the default topic name for Status interface.
-orca::FQTopicName toStatusTopic( const orca::FQComponentName & fqCName );
-
-//! Based on the component name, returns the default topic name for Tracer interface.
-orca::FQTopicName toTracerTopic( const orca::FQComponentName & fqCName );
-
 //@}
 
 

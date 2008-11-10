@@ -9,6 +9,7 @@
  */
 
 #include <orcaice/orcaice.h>
+#include <orcaice/icegridutils.h>
 
 #include "tracerImpl.h"
 
@@ -96,7 +97,7 @@ TracerImpl::~TracerImpl()
 {
     if ( topicHandler_ )  delete topicHandler_;
 
-    tryRemoveInterface( context_, interfaceName_ );
+//     orcaice::tryRemoveAdminInterface( context_, "Tracer" );
 }
 
 void
@@ -113,24 +114,7 @@ TracerImpl::initInterface()
 //     orcaice::createInterfaceWithString( context_, ptr_, interfaceName_ );
 
     // EXPERIMENTAL! adding as a facet to the Admin interface.
-    // (this will be wrapped up)
-    try
-    {
-        context_.communicator()->addAdminFacet( ptr_, "Tracer" );
-    }
-    catch ( const std::exception& e )
-    {
-        stringstream ss;
-        ss << "(while installng Tracer object) : "<<e.what();
-        context_.tracer().error( ss.str() );
-        context_.shutdown();
-    }
-
-    // manually to home registry
-    orca::ProvidedInterface iface;
-    iface.name = interfaceName_;
-    iface.id   = "::orca::Tracer";
-    context_.home().addProvidedInterface( iface );
+    orcaice::createAdminInterface( context_, ptr_, context_.name() );
 }
 
 void

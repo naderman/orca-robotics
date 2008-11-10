@@ -307,19 +307,6 @@ void tryPushToIceStormWithReconnect( orcaice::Context   &context,
     }
 }
 
-//! Remove the interface from the adapter if possible.
-//! If something goes wrong, fails silently.
-void tryRemoveInterface( orcaice::Context  &context, const std::string &interfaceName );
-
-void tryRemoveInterfaceWithIdentity( orcaice::Context  &context, const Ice::Identity &interfaceId );
-
-//! Convenience function for tag->name conversion
-//! (may throw ConfigFileException)
-std::string getInterfaceNameFromTag( const orcaice::Context &context, const std::string      &interfaceTag );
-    
-//! Convenience function for interfaceName->topicName conversion
-std::string getTopicNameFromInterfaceName( const orcaice::Context &context, const std::string      &interfaceTag );
-
 //@}
 
 } // namespace
