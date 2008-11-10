@@ -16,6 +16,8 @@
 #include <orcaice/context.h>
 #include <orcaice/icestormutils.h>
 
+namespace gbxiceutilacfr { class Thread; }
+
 namespace orcaice {
 
 //
@@ -91,6 +93,23 @@ public:
         {
             topicPrx_ = orcaice::connectToTopicWithString<ConsumerProxyType>
                 ( context_, publisherPrx_, topicName_ );
+        }
+        // we only catch the exception which would be thrown if IceStorm is not there.
+        catch ( const orcaice::NetworkException& e )
+        {
+            return false;
+        }
+        return true;
+    }
+
+    bool connectToTopic( gbxiceutilacfr::Thread* thread, const std::string& subsysName, int retryInterval )
+    {
+        context_.tracer().debug( std::string("TopicHandler: connecting to topic ")+topicName_, 2 );
+        // Find IceStorm Topic to which we'll publish
+        try
+        {
+            topicPrx_ = orcaice::connectToTopicWithString<ConsumerProxyType>
+                ( context_, publisherPrx_, topicName_, thread, subsysName, retryInterval );
         }
         // we only catch the exception which would be thrown if IceStorm is not there.
         catch ( const orcaice::NetworkException& e )

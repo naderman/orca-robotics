@@ -11,12 +11,11 @@
 #ifndef ORCA_POWER_IMPL_H
 #define ORCA_POWER_IMPL_H
 
+#include <memory>
 #include <orca/power.h>
-#include <IceStorm/IceStorm.h>
-
-// utilities
 #include <gbxsickacfr/gbxiceutilacfr/store.h>
 #include <orcaice/context.h>
+#include <orcaice/topichandler.h>
 
 namespace gbxiceutilacfr { class Thread; }
 
@@ -31,11 +30,9 @@ friend class PowerI;
 
 public:
     //! constructor using interfaceTag (may throw ConfigFileException)
-    PowerImpl( const std::string& interfaceTag, 
-               const orcaice::Context& context );
+    PowerImpl( const std::string& interfaceTag, const orcaice::Context& context );
     //! constructor using interfaceName
-    PowerImpl( const orcaice::Context& context,
-               const std::string& interfaceName );
+    PowerImpl( const orcaice::Context& context, const std::string& interfaceName );
     ~PowerImpl();
 
     // local interface:
@@ -54,6 +51,8 @@ public:
     void localSetAndSend( const orca::PowerData& data );
 
 private:
+    void init();
+
     // remote call implementations, mimic (but do not inherit) the orca interface
     ::orca::PowerData internalGetData() const;
     void internalSubscribe(const ::orca::PowerConsumerPrx&);
@@ -61,15 +60,12 @@ private:
 
     gbxiceutilacfr::Store<orca::PowerData> dataStore_;
 
-    orca::PowerConsumerPrx    publisherPrx_;
-    IceStorm::TopicPrx             topicPrx_;
+    typedef orcaice::TopicHandler<orca::PowerConsumerPrx,orca::PowerData> PowerTopicHandler;
+    std::auto_ptr<PowerTopicHandler> topicHandler_;
 
-    // Hang onto this so we can remove from the adapter and control when things get deleted
-    Ice::ObjectPtr          ptr_;
-
+    Ice::ObjectPtr ptr_;
     const std::string interfaceName_;
-    const std::string topicName_;
-    orcaice::Context               context_;
+    orcaice::Context context_;
 };
 
 typedef IceUtil::Handle<PowerImpl> PowerImplPtr;

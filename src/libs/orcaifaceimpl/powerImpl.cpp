@@ -32,16 +32,11 @@ public:
     virtual ~PowerI() {}
 
     // remote interface
-
     virtual ::orca::PowerData getData(const ::Ice::Current& )
         { return impl_.internalGetData(); }
-
-    virtual void subscribe(const ::orca::PowerConsumerPrx& consumer,
-                           const ::Ice::Current& = ::Ice::Current())
+    virtual void subscribe(const ::orca::PowerConsumerPrx& consumer, const ::Ice::Current& = ::Ice::Current())
         { impl_.internalSubscribe( consumer ); }
-
-    virtual void unsubscribe(const ::orca::PowerConsumerPrx& consumer,
-                             const ::Ice::Current& = ::Ice::Current())
+    virtual void unsubscribe(const ::orca::PowerConsumerPrx& consumer, const ::Ice::Current& = ::Ice::Current())
         { impl_.internalUnsubscribe( consumer ); }
 
 private:
@@ -50,20 +45,18 @@ private:
 
 //////////////////////////////////////////////////////////////////////
 
-PowerImpl::PowerImpl( const std::string& interfaceTag,
-                      const orcaice::Context& context )
-    : interfaceName_(orcaice::getProvidedInterface(context,interfaceTag).iface),
-      topicName_(orcaice::toTopicAsString(context.name(),interfaceName_)),
-      context_(context)
+PowerImpl::PowerImpl( const std::string& interfaceTag, const orcaice::Context& context ) :
+    interfaceName_(orcaice::getProvidedInterface(context,interfaceTag).iface),
+    context_(context)
 {
+    init();
 }
 
-PowerImpl::PowerImpl( const orcaice::Context& context,
-                      const std::string& interfaceName )                      
-    : interfaceName_(interfaceName),
-      topicName_(orcaice::toTopicAsString(context.name(),interfaceName_)),
-      context_(context)
+PowerImpl::PowerImpl( const orcaice::Context& context, const std::string& interfaceName ) : 
+    interfaceName_(interfaceName),
+    context_(context)
 {
+    init();
 }
 
 PowerImpl::~PowerImpl()
@@ -72,38 +65,34 @@ PowerImpl::~PowerImpl()
 }
 
 void
+PowerImpl::init()
+{
+    topicHandler_.reset( new PowerTopicHandler( orcaice::toTopicAsString(context_.name(),interfaceName_), context_ ) );
+
+    ptr_ = new PowerI( *this );
+}
+
+void
 PowerImpl::initInterface()
 {
-    // Find IceStorm Topic to which we'll publish
-    topicPrx_ = orcaice::connectToTopicWithString<orca::PowerConsumerPrx>
-        ( context_, publisherPrx_, topicName_ );
-
-    // Register with the adapter
-    // We don't have to clean up the memory we're allocating here, because
-    // we're holding it in a smart pointer which will clean up when it's done.
-    ptr_ = new PowerI( *this );
     orcaice::createInterfaceWithString( context_, ptr_, interfaceName_ );
+
+    topicHandler_->connectToTopic();
 }
 
 void 
 PowerImpl::initInterface( gbxiceutilacfr::Thread* thread, const std::string& subsysName, int retryInterval )
 {
-    topicPrx_ = orcaice::connectToTopicWithString<orca::PowerConsumerPrx>
-        ( context_, publisherPrx_, topicName_, thread, subsysName, retryInterval );
-
-    ptr_ = new PowerI( *this );
     orcaice::createInterfaceWithString( context_, ptr_, interfaceName_, thread, subsysName, retryInterval );
+
+    topicHandler_->connectToTopic( thread, subsysName, retryInterval );
 }
 
 ::orca::PowerData 
 PowerImpl::internalGetData() const
 {
-//     context_.tracer().debug( "PowerImpl::internalGetData()", 5 );
-
-    if ( dataStore_.isEmpty() )
-    {
-        std::stringstream ss;
-        ss << "No data available! (interface="<<interfaceName_<<")";
+    if ( dataStore_.isEmpty() ) {
+        std::stringstream ss; ss << "No data available! (interface="<<interfaceName_<<")";
         throw orca::DataNotExistException( ss.str() );
     }
 
@@ -115,28 +104,13 @@ PowerImpl::internalGetData() const
 void 
 PowerImpl::internalSubscribe(const ::orca::PowerConsumerPrx& subscriber)
 {
-    context_.tracer().debug( "PowerImpl::internalSubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
-    try {
-        topicPrx_->subscribeAndGetPublisher( IceStorm::QoS(), subscriber->ice_twoway() );
-    }
-    catch ( const IceStorm::AlreadySubscribed & e ) {
-        std::stringstream ss;
-        ss <<"Request for subscribe but this proxy has already been subscribed, so I do nothing: "<< e;
-        context_.tracer().debug( ss.str(), 2 );
-    }
-    catch ( const Ice::Exception & e ) {
-        std::stringstream ss;
-        ss <<"PowerImpl::internalSubscribe: failed to subscribe: "<< e << endl;
-        context_.tracer().warning( ss.str() );
-        throw orca::SubscriptionFailedException( ss.str() );
-    }
+    topicHandler_->subscribe( subscriber );
 }
 
 void 
 PowerImpl::internalUnsubscribe(const ::orca::PowerConsumerPrx& subscriber)
 {
-    context_.tracer().debug( "PowerImpl::internalUnsubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
-    topicPrx_->unsubscribe( subscriber );
+    topicHandler_->unsubscribe( subscriber );
 }
 
 void
@@ -150,13 +124,7 @@ PowerImpl::localSetAndSend( const orca::PowerData& data )
 {
     dataStore_.set( data );
 
-    // Try to push to IceStorm.
-    orcaice::tryPushToIceStormWithReconnect<orca::PowerConsumerPrx,orca::PowerData>
-        ( context_,
-        publisherPrx_,
-        data,
-        topicPrx_,
-          topicName_ );
+    topicHandler_->publish( data );
 }
 
 } // namespace
