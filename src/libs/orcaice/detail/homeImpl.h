@@ -21,6 +21,8 @@
 
 namespace orcaice
 {
+namespace detail
+{
 
 class HomeImpl : public virtual orcaice::Home, public IceUtil::Shared
 {
@@ -56,6 +58,7 @@ private:
 
 typedef IceUtil::Handle<HomeImpl> HomeImplPtr;
 
+} // namespace
 } // namespace
 
 #endif

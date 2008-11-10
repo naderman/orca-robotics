@@ -8,17 +8,19 @@
  *
  */
  
-// #include <IceStorm/IceStorm.h> // used in initTracer()
 #include <string>
 #include <orca/common.h>
 #include <orca/properties.h>
 #include <orcaice/orcaice.h>
 #include <hydroiceutil/localhistory.h>
+
 #include "component.h"
 #include "detail/privateutils.h"
 #include "detail/componentthread.h"
 #include "detail/privateutils.h"
-#include <orcaobj/stringutils.h>
+#include "detail/homeImpl.h"
+#include "detail/statusImpl.h"
+#include "detail/tracerImpl.h"
 
 // debug only
 #include <iostream>
@@ -50,6 +52,14 @@ Component::Component( const std::string& tag, ComponentInterfaceFlag interfaceFl
     interfaceFlag_(interfaceFlag_)
 {
     context_.tag_ = tag;
+}
+
+//
+// IMPORTANT! This destructor must be here (in the .cpp file)
+// Otherwise, the destructors of the forward-declared types will not be called.
+//
+Component::~Component() 
+{
 }
 
 void
@@ -91,21 +101,18 @@ Component::init( const orca::FQComponentName& name,
     //
     {
         // must be created first. does not rely on other services but needs the component name.
-        TracerImpl* dummy = new TracerImpl( context_ );
-        tracer_ = dummy;
-        context_.tracer_ = (gbxutilacfr::Tracer*)dummy;
+        tracer_.reset( new detail::TracerImpl( context_ ) );
+        context_.tracer_ = (gbxutilacfr::Tracer*)tracer_.get();
     }
     {
         // must created after tracer. needs tracer and component name.
-        StatusImpl* dummy = new StatusImpl( context_ );
-        status_ = dummy;
-        context_.status_ = (gbxutilacfr::Status*)dummy;
+        status_.reset( new detail::StatusImpl( context_ ) );
+        context_.status_ = (gbxutilacfr::Status*)status_.get();
     }
     {
         // can be created last needs component name.
-        HomeImpl* dummy = new HomeImpl( context_ );
-        home_ = dummy;
-        context_.home_ = (orcaice::Home*)dummy;
+        home_.reset( new detail::HomeImpl( context_ ) );
+        context_.home_ = (orcaice::Home*)home_.get();
     }
 
     // now all services are in the context, update it.

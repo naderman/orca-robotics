@@ -15,6 +15,7 @@
 using namespace std;
 
 namespace orcaice {
+namespace detail {
 
 namespace {
     
@@ -79,8 +80,10 @@ subStateToCompState ( const orca::SubsystemState &subsystemState)
             return orca::CompFinalising;
         case orca::SubsystemShutdown: 
             return orca::CompFinalising;   
-        default:
+        default: {
+            cout<<"########## SubsystemState="<<subsystemState<<endl;
             assert( false && "Unknown SubsystemState" );     
+        }
     } 
 }
 
@@ -97,8 +100,10 @@ subHealthToCompHealth( const orca::SubsystemHealth &subsystemHealth )
             return orca::CompFault;
         case orca::SubsystemStalled:
             return orca::CompStalled;
-        default:
+        default: {
+            cout<<"########## SubsystemHealth="<<subsystemHealth<<endl;
             assert( false && "Unknown SubsystemHealth");
+        }
     }
 }   
     
@@ -152,8 +157,10 @@ orca::ComponentState subStateToCompState( const gbxutilacfr::SubsystemState &sub
             return orca::CompFinalising;
         case gbxutilacfr::SubsystemShutdown: 
             return orca::CompFinalising;   
-        default:
-            assert( false && "Unknown SubsystemState" );     
+        default: {
+            cout<<"########## SubsystemState="<<subsystemState<<endl;
+            assert( false && "Unknown SubsystemState" );    
+        }
     } 
 }
 
@@ -310,4 +317,4 @@ ComponentStatusAggregator::convert( const hydroiceutil::LocalComponentStatus &fr
 }
 
 }
-
+}

@@ -21,6 +21,8 @@
 
 namespace orcaice
 {
+namespace detail
+{
 
 class TracerImpl : public hydroiceutil::LocalTracer, public IceUtil::Shared
 {
@@ -43,30 +45,27 @@ private:
     ::orca::TracerVerbosityConfig internalGetVerbosity();
     void internalSetVerbosity( const ::orca::TracerVerbosityConfig& config );
 
-    void initTopicHandler();
-    void icestormConnectFailed( const std::string &topicName, bool isTracerTopicRequired );
     // tracer service is special: it can be self-referencial, i.e. errors during initialization
     // will produce traces which will lead to more errors.
     // With this thread-safe flag, traces will not be published to the network until full initialization.
     gbxiceutilacfr::Store<bool> isInitialized_;
 
     typedef TopicHandler<orca::TracerConsumerPrx,orca::TracerData> TracerTopicHandler;
-
-    // Responsible for sending messages to the component's tracer topic.
     TracerTopicHandler* topicHandler_;
+    void initTopicHandler();
 
-    void internalSubscribe( const ::orca::TracerConsumerPrx &subscriber );
-    void internalUnsubscribe( const ::orca::TracerConsumerPrx &subscriber );
+    void internalSubscribe( const ::orca::TracerConsumerPrx& );
+    void internalUnsubscribe( const ::orca::TracerConsumerPrx& );
 
     // Hang onto this so we can remove from the adapter and control when things get deleted
     Ice::ObjectPtr ptr_;
-
     const std::string  interfaceName_;
     orcaice::Context context_;
 };
 
 typedef IceUtil::Handle<TracerImpl> TracerImplPtr;
 
+} // namespace
 } // namespace
 
 #endif

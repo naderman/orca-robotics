@@ -15,6 +15,9 @@
 
 #include <orcaice/orcaice.h>
 #include <orcaice/icegridutils.h>
+#include <orca/home.h>
+#include <orca/status.h>
+#include <orca/tracer.h>
 #include <orca/power.h>
 
 using namespace std;

@@ -14,8 +14,8 @@
 
 using namespace std;
 
-namespace orcaice
-{
+namespace orcaice {
+namespace detail {
 
 //////////////////////////////////////////////////////////////
 
@@ -124,4 +124,5 @@ HomeImpl::removeRequiredInterface( const std::string& name )
     assert( !"removeRequiredInterface() is not implemented" );
 }
 
+}
 }

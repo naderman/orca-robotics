@@ -22,6 +22,8 @@ MainSubsystem::MainSubsystem( const orcaice::Context &context ) :
     orcaice::Subsystem( context.tracer(), context.status(), "MainSubsystem" ),
     context_(context)
 {
+    // this subsystem will initialise and exit, but the component will continue running.
+    subStatus().setSubsystemType( gbxutilacfr::SubsystemEarlyExit );
 }
 
 void

@@ -39,35 +39,8 @@ private:
 
     orcaice::Context context_;
 
-public: 
-
-    TopicHandler( const std::string &topicName, const orcaice::Context &context ) :
-        topicName_(topicName),
-        context_(context)
-    {
-    }
-
-    // Returns TRUE on success, FALSE otherwise.
-    // Catches only the exceptions expected in the case when IceStorm is not unavailable.
-    bool connectToTopic()
-    {
-        context_.tracer().debug( std::string("TopicHandler: connecting to topic ")+topicName_, 2 );
-        // Find IceStorm Topic to which we'll publish
-        try
-        {
-            topicPrx_ = orcaice::connectToTopicWithString<ConsumerProxyType>
-                ( context_, publisherPrx_, topicName_ );
-        }
-        // we only catch the exception which would be thrown if IceStorm is not there.
-        catch ( const orcaice::NetworkException& e )
-        {
-            return false;
-        }
-        return true;
-    }
-
-    // sub/unsub subscribers to the topic we're publishing to
-    void subscribe( const ConsumerProxyType& subscriber ) //, const DataType& initData )
+    // utility function: subscribes and returns individual publisher
+    ConsumerProxyType internalSubscribe( const ConsumerProxyType& subscriber )
     {    
         if ( !topicPrx_ )
             throw orca::SubscriptionFailedException( "Not connected to topic yet" );
@@ -92,22 +65,66 @@ public:
             // throws exception back to the subscriber
             throw orca::SubscriptionFailedException( ss.str() );
         }
+        return individualPublisher;
+    }
+
+public: 
+
+    TopicHandler( const std::string &topicName, const orcaice::Context &context ) :
+        topicName_(topicName),
+        context_(context)
+    {
+    }
+
+    IceStorm::TopicPrx topic()
+    {
+        return topicPrx_;
+    }
+
+    // Returns TRUE on success, FALSE otherwise.
+    // Catches only the exceptions expected in the case when IceStorm is not unavailable.
+    bool connectToTopic()
+    {
+        context_.tracer().debug( std::string("TopicHandler: connecting to topic ")+topicName_, 2 );
+        // Find IceStorm Topic to which we'll publish
+        try
+        {
+            topicPrx_ = orcaice::connectToTopicWithString<ConsumerProxyType>
+                ( context_, publisherPrx_, topicName_ );
+        }
+        // we only catch the exception which would be thrown if IceStorm is not there.
+        catch ( const orcaice::NetworkException& e )
+        {
+            return false;
+        }
+        return true;
+    }
+
+    // sub subscribers to the topic we're publishing to
+    void subscribe( const ConsumerProxyType& subscriber )
+    {
+        internalSubscribe( subscriber );
+    }
+
+    void subscribe( const ConsumerProxyType& subscriber, const DataType& initData )
+    {    
+        ConsumerProxyType individualPublisher = internalSubscribe( subscriber );
     
         // send all the information we have to the new subscriber (and to no one else)
-//         try
-//         {
-//             // this talks to IceStorm
-//             individualPublisher->setData( initData );   
-//         }
-//         catch ( const Ice::Exception&  e ) {
-//             std::stringstream ss;
-//             ss <<"TopicHandler::subscribe: failed to send information to the new subscriber: "<< e.what() << endl;
-//             context_.tracer().warning( ss.str() );
-//             // throws exception back to the subscriber
-//             throw orca::OrcaException( ss.str() );
-//         }
-//         cout<<"TopicHandler::subscribe(): sent status info to new subscriber: "<<individualPublisher->ice_toString()<<endl;
-
+        try
+        {
+            // this talks to IceStorm who will forward this data to this subscriber only.
+            individualPublisher->setData( initData );   
+        }
+        catch ( const Ice::Exception&  e ) {
+            std::stringstream ss;
+            ss <<"TopicHandler::subscribe: failed to send information to the new subscriber: "<< e.what();
+            // show this warning locally
+            context_.tracer().warning( ss.str() );
+            // throws exception back to the subscriber
+            throw orca::OrcaException( ss.str() );
+        }
+        context_.tracer().info( std::string("TopicHandler::subscribe(): sent status info to new subscriber: ")+individualPublisher->ice_toString() );
     }
 
     void unsubscribe( const ConsumerProxyType& subscriber )

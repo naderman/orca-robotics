@@ -11,10 +11,13 @@
 #include <orcaice/orcaice.h>
 // #include <orcaifacestring/status.h>
 #include "statusImpl.h"
+#include "componentstatusaggregator.h"
 
 using namespace std;
 
 namespace orcaice
+{
+namespace detail
 {
 
 class StatusI : public orca::Status
@@ -47,10 +50,12 @@ StatusImpl::StatusImpl( const orcaice::Context& context ) :
     hydroiceutil::LocalStatus( 
             context.tracer(),
             hydroutil::Properties( context.properties()->getPropertiesForPrefix("Orca.Status."),"Orca.Status.") ),
+    topicHandler_(0),
     interfaceName_("status"),
-    topicName_( orcaice::toString( orcaice::toStatusTopic( context.name() ) ) ),
     context_(context)
 {
+    aggregator_.reset( new ComponentStatusAggregator );
+
     // fill the store
     orca::StatusData data;
     orcaice::setToNow( data.timeStamp );
@@ -65,41 +70,16 @@ StatusImpl::StatusImpl( const orcaice::Context& context ) :
 
 StatusImpl::~StatusImpl()
 {
+    if ( topicHandler_ )  delete topicHandler_;
+
     tryRemoveInterface( context_, interfaceName_ );
 }
 
 void
 StatusImpl::initInterface()
 {
-    Ice::PropertiesPtr props = context_.properties();
-    // are we required to connect to status topic? (there's always default value for this property)
-    bool isStatusTopicRequired = props->getPropertyAsInt( "Orca.Status.RequireIceStorm" );
-
-    // Find IceStorm Topic to which we'll publish
-    try
-    {
-        topicPrx_ = orcaice::connectToTopicWithString<orca::StatusConsumerPrx>
-            ( context_, publisherPrx_, topicName_ );
-    }
-    // we only catch the exception which would be thrown if IceStorm is not there.
-    catch ( const orcaice::NetworkException& e )
-    {
-        if ( isStatusTopicRequired )
-        {
-            std::string s = "Failed to connect to an IceStorm status topic '"+
-                topicName_+"'\n" +
-                "\tYou may allow to proceed by setting Orca.Status.RequireIceStorm=0.";
-            initTracerError( s );
-            context_.shutdown();
-        }
-        else
-        {
-            std::string s = "Failed to connect to an IceStorm status topic\n";
-            s += "\tAll status messages will be local.\n";
-            s += "\tYou may enforce connection by setting Orca.Status.RequireIceStorm=1.";
-            initTracerWarning( s );
-        }
-    }
+// cout<<"DEBUG: "<<__func__<<"()"<<endl;
+    initTopicHandler();
 
     ptr_ = new StatusI( *this );
 
@@ -107,6 +87,7 @@ StatusImpl::initInterface()
 //     orcaice::createInterfaceWithString( context_, ptr_, interfaceName_ );
 
     // EXPERIMENTAL! adding as a facet to the Admin interface.
+    // (this will be wrapped up)
     try
     {
         context_.communicator()->addAdminFacet( ptr_, "Status" );
@@ -126,26 +107,62 @@ StatusImpl::initInterface()
     context_.home().addProvidedInterface( iface );
 }
 
+void
+StatusImpl::initTopicHandler()
+{
+// cout<<"DEBUG: "<<__func__<<"()"<<endl;
+    if ( topicHandler_ ) {
+        delete topicHandler_; 
+        topicHandler_ = 0;
+    }
+
+    // are we required to connect to status topic? (there's always default value for this property)
+    bool isTopicRequired = context_.properties()->getPropertyAsInt( "Orca.Status.RequireIceStorm" );
+
+    // fqTName is something like "tracer/*@platformName/componentName"
+    orca::FQTopicName fqTName = orcaice::toStatusTopic( context_.name() );
+
+    topicHandler_ = new StatusTopicHandler( orcaice::toString(fqTName), context_ );
+    if ( !topicHandler_->connectToTopic() )
+    {
+        if ( isTopicRequired ) 
+        {
+            std::string s = " Failed to connect to an IceStorm status topic '"+
+                orcaice::toString(fqTName)+"'\n" +
+                "\tYou may allow to proceed by setting Orca.Status.RequireIceStorm=0.";
+            initTracerError( s );
+            // this should kill the app
+            context_.shutdown();
+        }
+        else 
+        {
+            std::string s = " Failed to connect to an IceStorm status topic\n";
+            s += "\tAll trace messages will be local.\n";
+            s += "\tYou may enforce connection by setting Orca.Status.RequireIceStorm=1.";
+            initTracerWarning( s );
+            // move on
+        }
+
+        delete topicHandler_; 
+        topicHandler_ = 0;
+    }
+}
+
 void 
 StatusImpl::publishEvent( const hydroiceutil::LocalComponentStatus& componentStatus )
 {
-    if ( !publisherPrx_ )
-        return;
-
     orca::StatusData data;
     orcaice::setToNow( data.timeStamp );
-    aggregator_.convert( componentStatus, context_.name(), data.compStatus );
+    aggregator_->convert( componentStatus, context_.name(), data.compStatus );
     data.compStatus.timeUp = (Ice::Int)upTimer_.elapsedSec();
 
     dataStore_.set( data );
 
-    // Try to push to IceStorm.
-    orcaice::tryPushToIceStormWithReconnect<orca::StatusConsumerPrx,orca::StatusData> ( 
-        context_,
-        publisherPrx_,
-        data,
-        topicPrx_,
-        topicName_ );
+    if( topicHandler_ != 0 )
+    {
+// cout<<"DEBUG: topicHandler_="<<(int)topicHandler_<<endl;
+        topicHandler_->publish( data );
+    }
 }
 
 ::orca::StatusData 
@@ -172,67 +189,35 @@ StatusImpl::internalGetData() const
 void 
 StatusImpl::internalSubscribe(const ::orca::StatusConsumerPrx& subscriber)
 {
-    if ( !topicPrx_ )
-        throw orca::SubscriptionFailedException( "Not connected to topic yet" );
-
-    context_.tracer().debug( "StatusImpl::internalSubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
-    // see Ice Manual sec.45.6 "Publishing to a specific subscriber"
-    orca::StatusConsumerPrx individualPublisher;
-    try {
-        // this talks to IceStorm
-        Ice::ObjectPrx pub = topicPrx_->subscribeAndGetPublisher( IceStorm::QoS(), subscriber->ice_twoway());
-        individualPublisher = orca::StatusConsumerPrx::uncheckedCast(pub);
+// cout<<"DEBUG: "<<__func__<<"()"<<endl;
+    if ( !topicHandler_ ) 
+    {
+        initTopicHandler();
+        if ( !topicHandler_ )
+        {
+            throw orca::SubscriptionFailedException("Component does not have a topic to publish its traces.");
+        }
     }
-    catch ( const IceStorm::AlreadySubscribed& e ) {
-        std::stringstream ss;
-        ss <<"Request for subscribe but this proxy has already been subscribed, so I do nothing: "<< e.what();
-        context_.tracer().debug( ss.str(), 2 );
-    }
-    catch ( const Ice::Exception& e ) {
-        std::stringstream ss;
-        ss <<"StatusImpl::internalSubscribe: failed to subscribe: "<< e.what() << endl;
-        context_.tracer().warning( ss.str() );
-        // throws exception back to the subscriber
-        throw orca::SubscriptionFailedException( ss.str() );
-    }
-
+    
     // send all the information we have to the new subscriber (and to no one else)
     orca::StatusData data;
     dataStore_.get( data );
 
-    // Just update the timeUp
-    data.compStatus.timeUp = (Ice::Int)upTimer_.elapsedSec();
-
-    try
-    {
-        // this talks to IceStorm
-        individualPublisher->setData( data );   
-    }
-    catch ( const Ice::Exception&  e ) {
-        std::stringstream ss;
-        ss <<"StatusImpl::subscribe: failed to send information to the new subscriber: "<< e.what() << endl;
-        context_.tracer().warning( ss.str() );
-        // throws exception back to the subscriber
-        throw orca::OrcaException( ss.str() );
-    }
-    cout<<"StatusImpl::subscribe(): sent status info to new subscriber: "<<individualPublisher->ice_toString()<<endl;
-//     cout<<ifacestring::toString( statusData_ )<<endl;
+    topicHandler_->subscribe( subscriber, data );
 }
 
 void 
 StatusImpl::internalUnsubscribe(const ::orca::StatusConsumerPrx& subscriber)
 {
-    if ( !topicPrx_ )
-        return;
-
-    context_.tracer().debug( "StatusImpl::internalUnsubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
-    topicPrx_->unsubscribe( subscriber );
+    if ( topicHandler_ )
+        topicHandler_->unsubscribe( subscriber );
 }
 
 IceStorm::TopicPrx 
 StatusImpl::internalTopic()
 {
-    return topicPrx_;
+    return topicHandler_->topic();
 }
 
+}
 }

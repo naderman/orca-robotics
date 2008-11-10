@@ -16,6 +16,8 @@
 
 namespace orcaice
 {
+namespace detail
+{
     
 enum AggregatorPolicy
 {
@@ -48,6 +50,7 @@ private:
     
 };
 
+}
 }
 
 #endif

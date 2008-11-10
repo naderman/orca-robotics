@@ -11,20 +11,23 @@
 #ifndef ORCAICE_STATUS_IMPL_H
 #define ORCAICE_STATUS_IMPL_H
 
+#include <memory>
 #include <hydroiceutil/localstatus.h>
 #include <gbxsickacfr/gbxiceutilacfr/store.h>
 #include <gbxsickacfr/gbxiceutilacfr/timer.h>
 
 #include <orca/status.h>
-#include <IceStorm/IceStorm.h>
+#include <orcaice/topichandler.h>
 #include <orcaice/context.h>
-
-#include "componentstatusaggregator.h"
 
 // class gbxiceutilacfr::Thread;
 
 namespace orcaice
 {
+namespace detail
+{
+
+class ComponentStatusAggregator;
 
 class StatusImpl : public hydroiceutil::LocalStatus, public IceUtil::Shared
 {
@@ -54,24 +57,21 @@ private:
     // todo: make a special read-only class.
     gbxiceutilacfr::Timer upTimer_;
 
-    // todo: do we need to protect these as well?
-    orca::StatusConsumerPrx    publisherPrx_;
-    IceStorm::TopicPrx             topicPrx_;
+    std::auto_ptr<ComponentStatusAggregator> aggregator_;
+
+    typedef TopicHandler<orca::StatusConsumerPrx,orca::StatusData> StatusTopicHandler;
+    StatusTopicHandler* topicHandler_;
+    void initTopicHandler();
 
     // Hang onto this so we can remove from the adapter and control when things get deleted
     Ice::ObjectPtr          ptr_;
-
-    const std::string              interfaceName_;
-    const std::string              topicName_;
-    orcaice::Context               context_;
-    
-    ComponentStatusAggregator aggregator_;
-
-//     bool isStatusTopicRequired_;
+    const std::string       interfaceName_;
+    orcaice::Context        context_;
 };
 
 typedef IceUtil::Handle<StatusImpl> StatusImplPtr;
 
+} // namespace
 } // namespace
 
 #endif

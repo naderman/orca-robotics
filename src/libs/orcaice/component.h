@@ -11,18 +11,20 @@
 #ifndef ORCAICE_COMPONENT_H
 #define ORCAICE_COMPONENT_H
 
+#include <memory>
 #include <orcaice/context.h>
 #include <hydroutil/uncopyable.h>
 #include <gbxsickacfr/gbxiceutilacfr/thread.h>
 
-#include <orcaice/homeImpl.h>
-#include <orcaice/statusImpl.h>
-#include <orcaice/tracerImpl.h>
-
 namespace orcaice
 {
 
-class Status;
+namespace detail
+{
+    class HomeImpl;
+    class StatusImpl;
+    class TracerImpl;
+}
 
 /*! 
 This enum type is used to describe which standard interfaces the component
@@ -118,7 +120,7 @@ Orca.Component.EnableHome
 Inside this contructor the component context is not initialized yet and cannot be used.
 */
     Component( const std::string& tag, ComponentInterfaceFlag flag=AllStandardInterfaces );
-    virtual ~Component() {};
+    virtual ~Component();
 
     //! This function is called by the component's container (Application or Service).
     //! It should return immediately, possibly after launching a thread. GUI components
@@ -191,9 +193,9 @@ private:
     // Save init flags (for the period between the constructor and init())
     ComponentInterfaceFlag interfaceFlag_;
 
-    HomeImplPtr home_;
-    StatusImplPtr status_;
-    TracerImplPtr tracer_;
+    std::auto_ptr<detail::HomeImpl> home_;
+    std::auto_ptr<detail::StatusImpl> status_;
+    std::auto_ptr<detail::TracerImpl> tracer_;
 
     // This thread allows us to do house-keeping stuff and manage Status.
     gbxiceutilacfr::ThreadPtr componentThread_;

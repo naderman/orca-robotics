@@ -15,6 +15,7 @@
 using namespace std;
 
 namespace orcaice {
+namespace detail {
 
 //////////////////////////////////////////////////////////////
 
@@ -139,12 +140,9 @@ TracerImpl::initTopicHandler()
         delete topicHandler_; 
         topicHandler_ = 0;
     }
-        
-    // get properties for our component
-    Ice::PropertiesPtr props = context_.properties();
 
     // are we required to connect to status topic? (there's always default value for this property)
-    bool isTracerTopicRequired = props->getPropertyAsInt( "Orca.Tracer.RequireIceStorm" );
+    bool isTopicRequired = context_.properties()->getPropertyAsInt( "Orca.Tracer.RequireIceStorm" );
 
     // fqTName is something like "tracer/*@platformName/componentName"
     orca::FQTopicName fqTName = orcaice::toTracerTopic( context_.name() );
@@ -152,7 +150,29 @@ TracerImpl::initTopicHandler()
     topicHandler_ = new TracerTopicHandler( orcaice::toString(fqTName), context_ );
     if ( !topicHandler_->connectToTopic() )
     {
-        icestormConnectFailed( orcaice::toString(fqTName), isTracerTopicRequired );
+        if ( isTopicRequired ) 
+        {
+            std::string s = prefix_+": Failed to connect to an IceStorm tracer topic '"+
+                orcaice::toString(fqTName)+"'\n" +
+                "\tYou may allow to proceed by setting Orca.Tracer.RequireIceStorm=0.";
+            initTracerError( s );
+            // this should kill the app
+            exit(1);
+        }
+        else 
+        {
+            std::string s = prefix_+": Failed to connect to an IceStorm tracer topic\n";
+            s += "\tAll trace messages will be local.\n";
+            s += "\tYou may enforce connection by setting Orca.Tracer.RequireIceStorm=1.";
+            initTracerWarning( s );
+    
+            // turn off all outputs toNetwork
+            for ( int i=0; i<gbxutilacfr::NumberOfTraceTypes; ++i ) {
+                config_.verbosity[i][gbxutilacfr::ToNetwork] = 0;
+            }
+            // move on
+        }
+
         delete topicHandler_; 
         topicHandler_ = 0;
     }
@@ -260,37 +280,11 @@ TracerImpl::toNetwork( gbxutilacfr::TraceType traceType, const std::string& mess
     data.verbosity = level;
     data.message = message;
 
-    if( topicHandler_ != 0 );
+    if( topicHandler_ != 0 )
     {
         topicHandler_->publish( data );
     }
 }
 
-void
-TracerImpl::icestormConnectFailed( const std::string &topicName, bool isTracerTopicRequired )
-{
-    if ( isTracerTopicRequired ) 
-    {
-        std::string s = prefix_+": Failed to connect to an IceStorm tracer topic '"+
-            topicName+"'\n" +
-            "\tYou may allow to proceed by setting Orca.Tracer.RequireIceStorm=0.";
-        initTracerError( s );
-        // this should kill the app
-        exit(1);
-    }
-    else 
-    {
-        std::string s = prefix_+": Failed to connect to an IceStorm status topic\n";
-        s += "\tAll trace messages will be local.\n";
-        s += "\tYou may enforce connection by setting Orca.Tracer.RequireIceStorm=1.";
-        initTracerWarning( s );
-
-        // turn off all outputs toNetwork
-        for ( int i=0; i<gbxutilacfr::NumberOfTraceTypes; ++i ) {
-            config_.verbosity[i][gbxutilacfr::ToNetwork] = 0;
-        }
-        // move on
-    }
 }
-
 }
