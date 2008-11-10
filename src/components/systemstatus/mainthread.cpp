@@ -9,14 +9,37 @@
  */
 
 #include <iostream>
+#include <gbxutilacfr/tokenise.h>
 #include <hydroiceutil/jobqueue.h>
 #include <orcaice/orcaice.h>
+#include <orcaobj/proputils.h>
+
 
 #include "mainthread.h"
 
 using namespace std;
 
 namespace systemstatus {
+    
+namespace {
+        
+//
+// extracts a PlatformComponentPair from a string "platform/component"
+//
+PlatformComponentPair extractPlatComp( const string &input )
+{
+    vector<string> tokens = gbxutilacfr::tokenise( input.c_str(), "/");
+    if (tokens.size()!=2)
+    {
+        stringstream ss;
+        ss << "extractPlatForm: unexpected <platform/component> string: " << input;
+        throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
+    }
+    PlatformComponentPair pair;
+    pair.platformName=tokens[0];
+    pair.componentName=tokens[1];
+    return pair;
+}
     
 //
 // converts from internal multimap to Slice-defined representation
@@ -65,6 +88,8 @@ void convert( const multimap<string,orca::ObservedComponentStatus> &from,
         to.systemStatus[uniquePlatformNames[i]] = componentsPerPlatform;
     }
 }
+
+} // end of namespace
     
 
 MainThread::MainThread( const orcaice::Context & context ) :
@@ -74,25 +99,23 @@ MainThread::MainThread( const orcaice::Context & context ) :
 }
 
 vector<PlatformComponentPair>
-MainThread::getComponentPlatformPairs()
+MainThread::getPlatformComponentPairs()
 {   
+    vector<string> componentList;
+    Ice::PropertiesPtr props = context_.properties();
+    std::string prefix = context_.tag()+".Config.";
+    
+    int ret = orcaobj::getPropertyAsStringSeq( context_.properties(), context_.tag()+".Config.ComponentList", componentList, ' ' );
+    if (ret!=0)
+        throw gbxutilacfr::Exception( ERROR_INFO, "Problem reading ComponentList from config file" );
+    
     vector<PlatformComponentPair> pairs;
-    
-    // get all tags starting with "Status"
-    vector<std::string> requiredTags = orcaice::getRequiredTags( context_, "Status" );
-    
-    for (unsigned int i=0; i<requiredTags.size(); i++)
+    for (unsigned int i=0; i<componentList.size(); i++)
     {
-        string proxyString = orcaice::getRequiredInterfaceAsString( context_, requiredTags[i] );
-        string resolvedProxyString = orcaice::resolveLocalPlatform( context_, proxyString );
-        orca::FQInterfaceName name = orcaice::toInterfaceName( resolvedProxyString );
-        
-        PlatformComponentPair pair;
-        pair.platformName = name.platform;
-        pair.componentName = name.component;
-        pairs.push_back(pair);
-//         cout << requiredTags[i] << ": " << resolvedProxyString << ": " << name.platform << ": " << name.component << endl;
+        PlatformComponentPair pair = extractPlatComp( componentList[i] );
+        pairs.push_back( pair );
     }
+    
     return pairs;
 }
 
@@ -111,7 +134,7 @@ MainThread::createMonitors()
     
     jobQueue_ = new hydroiceutil::JobQueue( context_.tracer(), config );
     
-    vector<PlatformComponentPair> pairs = getComponentPlatformPairs();
+    vector<PlatformComponentPair> pairs = getPlatformComponentPairs();
     for ( unsigned int i=0; i<pairs.size(); i++)
     {
         ComponentMonitor mon( jobQueue_, pairs[i].platformName, pairs[i].componentName, context_ );

@@ -29,10 +29,12 @@ Connects to any number of Status interfaces and aggregates their information. Cl
 
 @par Requires
 
-- @ref orca_interface_status
-
-
 @par Configuration
+
+- @c SystemStatus.Config.ComponentList (string sequence)
+    - A list of components to observe: they are specified as "platform/component" pairs
+    - The list is space separated
+    - Default: alpha/laser2d alpha/lasermon
 
 - @c SystemStatus.Config.JobQueueThreadPoolSize (int)
     - Thread pool size for making connections to status interfaces

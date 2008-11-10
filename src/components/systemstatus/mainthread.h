@@ -41,7 +41,7 @@ private:
     std::vector<ComponentMonitor> monitors_;    
     orcaifaceimpl::SystemStatusImplPtr systemStatusIface_;
     
-    std::vector<PlatformComponentPair> getComponentPlatformPairs();
+    std::vector<PlatformComponentPair> getPlatformComponentPairs();
     void createMonitors();
 
 };
