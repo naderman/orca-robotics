@@ -176,8 +176,8 @@ MainThread::walk()
         {
             orca::ObservedComponentStatus obsCompStat;
             string platformName;
-            monitors_[i].getComponentStatus( platformName, obsCompStat );
-            obsCompStateMultiMap.insert(pair<string,orca::ObservedComponentStatus>(platformName,obsCompStat));
+            monitors_[i].getComponentStatus( obsCompStat );
+            obsCompStateMultiMap.insert(pair<string,orca::ObservedComponentStatus>(obsCompStat.name.platform,obsCompStat));
         }
         
         // convert and tell the world

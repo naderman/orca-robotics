@@ -36,17 +36,26 @@ class ComponentMonitor
                           const orcaice::Context    &context );
         ~ComponentMonitor();
         
-        void getComponentStatus( std::string                   &platformName,
-                                 orca::ObservedComponentStatus &obsCompStat );
+        // Get the current component status
+        void getComponentStatus( orca::ObservedComponentStatus &obsCompStat );
         
     private:
+        orca::ObservedComponentState currentState_;
         hydroiceutil::JobQueuePtr jobQueue_;
         std::string platformName_;
         std::string componentName_;
         orcaice::Context context_;
         StatusConsumerImplPtr statusConsumer_;
         
-        bool haveStatusInterface();
+        // set the component state based on what we observe locally
+        void setObservedState( orca::ObservedComponentStatus &obsCompStat );
+        
+        // set the component state based on information reported by the Status interface
+        void setReportedState( const StatusDetails           &statDetails,
+                               orca::ObservedComponentStatus &obsCompStat );
+        
+        void addSubscribeJob();
+        
         bool isHomeInterfaceReachable();
         
 };
