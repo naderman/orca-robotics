@@ -147,7 +147,7 @@ std::string toBoldString( const string &input )
     return hydroctext::emph(input, hydroctext::Style( hydroctext::Bold ) );
 }
 
-std::string humanErrorMsgString( const orca::SystemStatusData &ssData )
+std::string humanMsgString( const orca::SystemStatusData &ssData )
 {
     stringstream ss;
     
@@ -166,7 +166,7 @@ std::string humanErrorMsgString( const orca::SystemStatusData &ssData )
             // per subsystem
             for ( itSs=subSysSt.begin(); itSs!=subSysSt.end(); ++itSs )
             {
-                if (itSs->second.health!=orca::SubsystemOk)
+                if (itSs->second.message!="")
                     ss << toBoldString(platComp + ", " + itSs->first + ": ") << endl
                         << itSs->second.message << endl << endl;
             }
@@ -277,7 +277,7 @@ ColourTextDisplay::display( const orca::SystemStatusData &data )
     
     // print the human-readable text
     cout << endl;
-    cout << humanErrorMsgString( data );
+    cout << humanMsgString( data );
     
     // space between consecutive records
     cout << endl << endl;

@@ -106,6 +106,7 @@ ComponentMonitor::setObservedState( orca::ObservedComponentStatus &obsCompStat )
     obsCompStat.name.platform = platformName_;
     obsCompStat.name.component = componentName_; 
     obsCompStat.timeUp = 0;
+    obsCompStat.publishIntervalSec = 10.0;
     obsCompStat.state = currentState_; 
     obsCompStat.health = orca::ObsCompOk;
 }

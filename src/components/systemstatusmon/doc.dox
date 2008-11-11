@@ -47,21 +47,22 @@ SimpleText
 
 ColourText
     - SystemStatusData is shown as a table: rows are platforms in the system, columns show all components per platform
-    - Each cell displays the state and health of a component. Since each component may have several subsystems, the displayed health and state refer to the subsystem with the "worst" SubsystemHealth.  
-    - In addition, a human-readable message is displayed if the SubsystemHealth is anything other than "Ok"
+    - Each cell displays the observed state and health of a component.
+    - In addition, a human-readable message is displayed.
     - The key to interpret the display:
-        - Colors: 
-            - green: health_ok
-            - yellow: health_warning
-            - red: health_fault
-            - black: health_stalled
-            - grey: data_stale
-        - Icons: 
-            - @c '-': state_idle
-            - @c '^': state_initialising
-            - @c '_': state_working
-            - @c 'v': state_finalising
-            - @c 'x': state_shutdown
+        - Health (expressed by colour):
+            - green: ok
+            - yellow: warning
+            - red: fault
+            - black: stalled
+            - grey: stale
+        - State (expressed by symbols): 
+            - @c '!': inactive
+            - @c '^': connecting
+            - @c '-': initialising
+            - @c ' ': active
+            - @c 'v': finalising
+         - An exception to the rule above is that the display is always gray when state==inactive or state==finalising.
 
 @par Authors
 

@@ -68,7 +68,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 - SystemStatus (tobi)
    - provides the status of a whole system consisting of a bunch of components
-   - see StatusMon below which implements the interface
+   - see SystemStatus component below which implements the interface
 
 @par New components
 
@@ -76,7 +76,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
   - qt4 opengl driven image stream viewer
 
 - SystemStatus (tobi)
-  - provides a system-level overview of status
+  - provides a system-level overview of components' status, adds observed states and health
         
 - SystemStatusMon (tobi)
   - reads from SystemStatus and displays in different formats
@@ -88,6 +88,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @par New libraries
 @par Updated interfaces
+
+- Status
+  - added component-level states/health (tobi)
 
 - all existing interfaces
   - removed cpp:const directive from idempotent methods. This was a leftover from the old days with 'nonmutating'
@@ -121,6 +124,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 - Gps2Localise2d
   - fixed rare bug which lead to assertion failure when the component is stopped shortly after starting (alexm)
+  
+- FaithLocaliser
+  - converted to new Subsystem implementations (tobi)
 
 @par Updated utilities
 @par Updated libraries

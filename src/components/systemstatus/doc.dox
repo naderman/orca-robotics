@@ -17,7 +17,7 @@
 @defgroup orca_component_systemstatus SystemStatus
 @brief Connects to any number of Status interfaces and aggregates their information
 
-Connects to any number of Status interfaces and aggregates their information. Clients can display the information in different formats.
+Aggregates Status information from any number of components. It also adds *observed* states and health information which can only be obtained by an outside observer and not reported by the component itself.
 
 @see @ref orca_component_systemstatusmon
 
@@ -33,7 +33,7 @@ Connects to any number of Status interfaces and aggregates their information. Cl
 
 - @c SystemStatus.Config.ComponentList (string sequence)
     - A list of components to observe: they are specified as "platform/component" pairs
-    - The list is space separated
+    - The list is space-separated
     - Default: alpha/laser2d alpha/lasermon
 
 - @c SystemStatus.Config.JobQueueThreadPoolSize (int)
