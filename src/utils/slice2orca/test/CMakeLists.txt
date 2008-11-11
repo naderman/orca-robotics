@@ -2,7 +2,7 @@
 # that we care about.
 SET( proj_slice_src_dir ${PROJECT_SOURCE_DIR}/src/interfaces/slice )
 
-SET( output "string" )
+SET( output "util" )
 GBX_ADD_TEST( Slice2Orca_RunTestString 
     ${CMAKE_CURRENT_BINARY_DIR}/../slice2orca
         --${output}

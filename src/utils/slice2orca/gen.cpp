@@ -1332,6 +1332,8 @@ else if ( outputType_ == OutputFromLog ) {
                 C << nl << "bool testTypeSetting = false;";
                 C << nl << "bool instantiateTypeSetting = true;";
                 C << nl << libNamespace_<<"::fromLogStream( derivedPtr, is, testTypeSetting, instantiateTypeSetting );";
+                // critical: need to reassign the derivied to the base 
+                C << nl << "objPtr = derivedPtr;";
 }
 else
                 assert( !"unknown OutputType" );
@@ -1350,9 +1352,17 @@ if ( outputType_ == OutputString ) {
                 C << nl << "s += "<<libNamespace_<<"::toString( objPtr, recurse, expand, indent, testTypeInSliced );";
                 C << nl << "return s;";
 }
-else if ( outputType_ == OutputInit || outputType_ == OutputToLog || outputType_ == OutputFromLog ) {
+else if ( outputType_ == OutputInit || outputType_ == OutputToLog ) {
                 // it's unsafe to ignore this
                 C << nl << "assert( !\"unknown derived class for " << base << "\" );";  
+}
+else if ( outputType_ == OutputFromLog ) {
+                // no slicing!
+                C << nl << "assert( !\"unknown derived class for " << base << "\" );";   
+                // allow slicing
+//                 C << nl << "bool testTypeSetting = false;";
+//                 C << nl << "bool instantiateTypeSetting = true;";
+//                 C << nl << libNamespace_<<"::fromLogStream( objPtr, is, testTypeSetting, instantiateTypeSetting );";
 }
 else
     assert( !"unknown OutputType" );
