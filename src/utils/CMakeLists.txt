@@ -18,7 +18,7 @@ ADD_SUBDIRECTORY( probe )
 ADD_SUBDIRECTORY( registrylist )
 ADD_SUBDIRECTORY( registryview )
 ADD_SUBDIRECTORY( replier )
-ADD_SUBDIRECTORY( slice2log )
+ADD_SUBDIRECTORY( slice2orca )
 ADD_SUBDIRECTORY( snapshotlogger )
 
 # putting it after all subdir's because of cmake weirdness:

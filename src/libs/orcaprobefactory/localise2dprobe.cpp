@@ -12,7 +12,7 @@
 #include <orcaice/orcaice.h>
 #include <orcacm/orcacm.h>
 #include <orcaprobe/orcaprobe.h>
-#include <orcaifacestring/localise2d.h>
+#include <orcaifaceutil/localise2d.h>
 
 #include "localise2dprobe.h"
 
@@ -58,7 +58,7 @@ int
 Localise2dProbe::loadGetData( orcacm::OperationData& data )
 {
     orca::Localise2dPrx derivedPrx = orca::Localise2dPrx::checkedCast(prx_);
-    orcaprobe::reportResult( data, "data", ifacestring::toString( derivedPrx->getData() ) );
+    orcaprobe::reportResult( data, "data", ifaceutil::toString( derivedPrx->getData() ) );
     return 0;
 }
 
@@ -66,7 +66,7 @@ int
 Localise2dProbe::loadGetVehicleGeometry( orcacm::OperationData& data )
 {
     orca::Localise2dPrx derivedPrx = orca::Localise2dPrx::checkedCast(prx_);
-    orcaprobe::reportResult( data, "data", ifacestring::toString( derivedPrx->getVehicleGeometry() ) );
+    orcaprobe::reportResult( data, "data", ifaceutil::toString( derivedPrx->getVehicleGeometry() ) );
     return 0;
 }
 

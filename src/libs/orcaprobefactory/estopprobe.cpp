@@ -12,7 +12,7 @@
 #include <orcaice/orcaice.h>
 #include <orcacm/orcacm.h>
 #include <orcaprobe/orcaprobe.h>
-#include <orcaifacestring/estop.h>
+#include <orcaifaceutil/estop.h>
 
 #include "estopprobe.h"
 
@@ -56,7 +56,7 @@ int
 EStopProbe::loadGetData( orcacm::OperationData & data )
 {
     orca::EStopPrx derivedPrx = orca::EStopPrx::checkedCast(prx_);
-    orcaprobe::reportResult( data, "data", ifacestring::toString( derivedPrx->getData() ) );
+    orcaprobe::reportResult( data, "data", ifaceutil::toString( derivedPrx->getData() ) );
     return 0;
 }
 

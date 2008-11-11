@@ -11,7 +11,7 @@
 #include <iostream>
 #include <orcaice/orcaice.h>
 #include <orcacm/orcacm.h>
-#include <orcaifacestring/home.h>
+#include <orcaifaceutil/home.h>
 
 #include "homeprobe.h"
 #include <orcaprobe/orcaprobe.h>
@@ -43,6 +43,6 @@ int
 HomeProbe::loadGetData( orcacm::OperationData& data )
 {
     orca::HomePrx derivedPrx = orca::HomePrx::checkedCast(prx_);
-    orcaprobe::reportResult( data, "data", ifacestring::toString( derivedPrx->getData() ) );
+    orcaprobe::reportResult( data, "data", ifaceutil::toString( derivedPrx->getData() ) );
     return 0;
 }

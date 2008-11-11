@@ -9,7 +9,7 @@
  */
  
 #include <orcaice/orcaice.h>
-#include <orcaifacestring/pathplanner2d.h>
+#include <orcaifaceutil/pathplanner2d.h>
 #include <orcaobj/orcaobj.h>
 #include <orcaogmap/orcaogmap.h>
 #include "pathfollower2dI.h"
@@ -290,7 +290,7 @@ MainThread::planPath( const hydronavutil::Pose &pose,
     {
         stringstream ss;
         ss << "MainThread: PathPlanner could not compute.  Gave result " 
-           << ifacestring::toString( computedPath.result )<<": "<<computedPath.resultDescription;
+           << ifaceutil::toString( computedPath.result )<<": "<<computedPath.resultDescription;
         const bool isTemporary = true;
         throw( GoalPlanException( ss.str(), isTemporary ) );
     }

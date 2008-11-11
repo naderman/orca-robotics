@@ -18,7 +18,7 @@
 #include <osg/ShapeDrawable>
 #include <osg/Geometry>
 #include <osg/Point>
-#include <orcaifacestring/bros1.h>
+#include <orcaifaceutil/bros1.h>
 
 #include "pointcloudpainter.h"
 

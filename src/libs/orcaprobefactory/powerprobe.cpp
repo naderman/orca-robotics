@@ -12,7 +12,7 @@
 #include <orcaice/orcaice.h>
 #include <orcacm/orcacm.h>
 #include <orcaprobe/orcaprobe.h>
-#include <orcaifacestring/power.h>
+#include <orcaifaceutil/power.h>
 
 #include "powerprobe.h"
 
@@ -55,7 +55,7 @@ int
 PowerProbe::loadGetData( orcacm::OperationData& data )
 {
     orca::PowerPrx derivedPrx = orca::PowerPrx::checkedCast(prx_);
-    orcaprobe::reportResult( data, "data", ifacestring::toString( derivedPrx->getData() ) );
+    orcaprobe::reportResult( data, "data", ifaceutil::toString( derivedPrx->getData() ) );
     return 0;
 }
 

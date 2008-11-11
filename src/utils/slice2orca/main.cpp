@@ -25,10 +25,9 @@ usage(const char* n)
         "--module                 The nominal module name of this project.\n"
         "                         e.g. Orca project : '--module orca'\n"
         "                              Empty project: '--module empty'\n"
-        "Output (at least one of the following):\n"
-        "--string                 Generate to-string conversion functions.\n"
+        "Output (one of the following):\n"
+        "--util                   Generate utility functions, e.g. toString(), zeroAndClear().\n"
         "--log                    Generate ASCII log/replay functions.\n"
-        "--init                   Generate initialization functions.\n"
     // alexm: standard options
         "Options:\n"
         "-h, --help               Show this message.\n"
@@ -79,9 +78,8 @@ main(int argc, char* argv[])
     opts.addOpt("", "case-sensitive");
     // alexm: our custom options
     opts.addOpt("", "module", IceUtilInternal::Options::NeedArg);
-    opts.addOpt("", "string");
+    opts.addOpt("", "util");
     opts.addOpt("", "log");
-    opts.addOpt("", "init");
 
     vector<string> args;
     try
@@ -159,15 +157,20 @@ main(int argc, char* argv[])
 
     string module = opts.optArg("module");
 
-    bool genString = opts.isSet("string");
+    bool genUtil = opts.isSet("util");
 
     bool genLog = opts.isSet("log");
 
-    bool genInit = opts.isSet("init");
-
-    if ( !genString && !genLog && !genInit ) 
+    if ( !genUtil && !genLog ) 
     {    
         cerr << argv[0] << ": no output type specified" << endl;
+        usage(argv[0]);
+        return EXIT_FAILURE;
+    }
+
+    if ( genUtil && genLog ) 
+    {    
+        cerr << argv[0] << ": more than one output type specified" << endl;
         usage(argv[0]);
         return EXIT_FAILURE;
     }
@@ -211,7 +214,7 @@ main(int argc, char* argv[])
         {
             slice2log::Gen gen(argv[0], icecpp.getBaseName(), headerExtension, sourceExtension, extraHeaders, include,
                     includePaths, dllExport, output, impl, checksum, stream, ice,
-                    module, genString, genLog, genInit );
+                    module, genUtil, genLog );
             if(!gen)
             {
                 u->destroy();

@@ -10,7 +10,7 @@
 
 #include <iostream>
 #include <orca/laserscanner2d.h>
-#include <orcaifacestring/laserscanner2d.h>
+#include <orcaifaceutil/laserscanner2d.h>
 #include <orcaice/orcaice.h>
 
 #include "mainsubsystem.h"
@@ -49,7 +49,7 @@ MainSubsystem::initialise()
     context_.tracer().info( "Trying to get laser description" );
     try
     {
-        std::string descr = ifacestring::toString( laserPrx->getDescription() );
+        std::string descr = ifaceutil::toString( laserPrx->getDescription() );
         context_.tracer().info( "Got laser description:\n"+descr );
     }
     catch ( const Ice::Exception & e ) 
@@ -77,7 +77,7 @@ MainSubsystem::initialise()
             orca::LaserScanner2dDataPtr laserDataPtr = orca::LaserScanner2dDataPtr::dynamicCast( rangeDataPtr );
             if ( laserDataPtr ) {
                 context_.tracer().info( "got experimental laser scan" );
-                context_.tracer().print( ifacestring::toString( laserDataPtr ) );
+                context_.tracer().print( ifaceutil::toString( laserDataPtr ) );
             }
             else {
                 context_.tracer().error( "got range scan but failed to convert it to laser scan" );

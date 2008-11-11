@@ -16,12 +16,12 @@
 #include <gbxutilacfr/mathdefs.h>
 #include <orcaice/timeutils.h>
 
-#include <orcaifacestring/gps.h>
-#include <orcaifacestring/image.h>
-#include <orcaifacestring/pathplanner2d.h>
-#include <orcaifacestring/tracer.h>
-#include <orcaifacestring/vehicledescription.h>
-#include <orcaifacestring/wifi.h>
+#include <orcaifaceutil/gps.h>
+#include <orcaifaceutil/image.h>
+#include <orcaifaceutil/pathplanner2d.h>
+#include <orcaifaceutil/tracer.h>
+#include <orcaifaceutil/vehicledescription.h>
+#include <orcaifaceutil/wifi.h>
 
 // trying to solve a problem in win, round() is not found
 #ifdef WIN32
@@ -636,7 +636,7 @@ toString( const orca::GpsData&  obj )
         << obj.satellites << ","
         << obj.observationCountOnL1 << ","
         << obj.observationCountOnL2 << ","
-        << ifacestring::toString(obj.positionType) << ","
+        << ifaceutil::toString(obj.positionType) << ","
         << obj.geoidalSeparation << ")";
 
     return s.str();
@@ -723,7 +723,7 @@ toString( const orca::VehicleControlDescriptionPtr& obj )
 
     std::ostringstream s;
     s << "VehicleControlDescription: "
-      << "type=" << ifacestring::toString( obj->type );
+      << "type=" << ifaceutil::toString( obj->type );
 
     if ( obj->ice_isA( "::orca::VehicleControlVelocityDifferentialDescription" ) )
     {
@@ -767,7 +767,7 @@ toString( const orca::VehicleGeometryDescriptionPtr& obj )
 
     std::ostringstream s;
     s << "VehicleGeometryDescription: "
-      << "type=" << ifacestring::toString( obj->type );
+      << "type=" << ifaceutil::toString( obj->type );
 
     if ( obj->ice_isA( "::orca::VehicleGeometryCylindricalDescription" ) )
     {
@@ -1010,7 +1010,7 @@ toString( const orca::TracerData& obj )
     s = "[ ";
     s += toString( obj.timeStamp ) + " ";
     s += toString( obj.name );
-    s += " " + ifacestring::toString(obj.type) + ": ";
+    s += " " + ifaceutil::toString(obj.type) + ": ";
     s += obj.message + " ]";
 
     // replace line breaks with spaces
@@ -1196,11 +1196,11 @@ toString( const orca::WifiData &obj )
           << ", numInvalidMisc: " << iface.numInvalidMisc
           << ", numMissedBeacons: " << iface.numMissedBeacons << "\n";
           
-        s << "mode: " << ifacestring::toString(iface.mode) 
+        s << "mode: " << ifaceutil::toString(iface.mode) 
           << ", bitrate: " << iface.bitrate 
           << ", accessPoint: " << iface.accessPoint 
           << ", throughPut: " << iface.throughPut 
-          << ", linkQualityType: " << ifacestring::toString(iface.linkType) << "\n";
+          << ", linkQualityType: " << ifaceutil::toString(iface.linkType) << "\n";
         
         s << "maxLinkQuality: " << iface.maxLinkQuality 
           << ", maxSignalLevel: " << iface.maxSignalLevel 
@@ -1342,7 +1342,7 @@ toVerboseString( const orca::PathPlanner2dData& obj )
 
     s << obj.timeStamp.seconds << "s:" << obj.timeStamp.useconds << "us"
       << " PathPlanner2dDataPtr [" << obj.path.size() << " waypoints. "
-      << "Result code: " << ifacestring::toString(obj.result) << " ]:" << endl;
+      << "Result code: " << ifaceutil::toString(obj.result) << " ]:" << endl;
     s << "Result description: " << obj.resultDescription << endl;
     for ( unsigned int i=0; i < obj.path.size(); i++ )
     {

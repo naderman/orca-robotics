@@ -10,7 +10,7 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include <orcaifacestring/status.h>
+#include <orcaifaceutil/status.h>
 #include "statusconsumerImpl.h"
 
 using namespace std;
@@ -64,7 +64,7 @@ StatusConsumerImpl::dataEvent( const orca::StatusData& data )
     if ( context_.tracer().verbosity( gbxutilacfr::DebugTrace, gbxutilacfr::ToAny ) > 5 )
     {
         stringstream ss;
-        ss << "StatusData just arrived: " << endl << ifacestring::toString( data );
+        ss << "StatusData just arrived: " << endl << ifaceutil::toString( data );
         context_.tracer().debug( ss.str(), 6 );
     }
     

@@ -53,7 +53,7 @@ Gen::Gen(const string& name, const string& base, const string& headerExtension,
                 const vector<string>& includePaths, const string& dllExport, const string& dir,
                 bool imp, bool checksum, bool stream, bool ice,
         // custom options
-        const std::string& module, bool genString, bool log, bool init) :
+        const std::string& module, bool util, bool log) :
     _base(base),
     _headerExtension(headerExtension),
     _sourceExtension(sourceExtension),
@@ -66,9 +66,8 @@ Gen::Gen(const string& name, const string& base, const string& headerExtension,
     _stream(stream),
     _ice(ice),
     _module(module),
-    _string(genString),
-    _log(log),
-    _init(init)
+    _util(util),
+    _log(log)
 {
     for(vector<string>::iterator p = _includePaths.begin(); p != _includePaths.end(); ++p)
     {
@@ -152,9 +151,9 @@ Gen::generate(const UnitPtr& p)
     writeExtraHeaders(C);
 
     string base_namespace;
-    if ( _string )
+    if ( _util )
     {
-        base_namespace = "ifacestring";
+        base_namespace = "ifaceutil";
     }
     else if ( _log )
     {
@@ -164,7 +163,7 @@ Gen::generate(const UnitPtr& p)
     string lib_namespace = base_namespace;
     string lib_dir = _module + base_namespace;
 
-    if ( _string )
+    if ( _util )
     {
         H << "\n#include <string>";
     }
@@ -233,26 +232,39 @@ Gen::generate(const UnitPtr& p)
     C << "\nnamespace " << lib_namespace;
     C << "\n{";
 
-    if ( _string )
+    if ( _util )
     {
-        HandleVisitor handleVisitor(H, C, _dllExport, _stream, OutputString);
-        handleVisitor.libNamespace_ = lib_namespace;
-        p->visit(&handleVisitor, false);
+        HandleVisitor stringDowncastVisitor(H, C, _dllExport, _stream, OutputString);
+        stringDowncastVisitor.libNamespace_ = lib_namespace;
+        p->visit(&stringDowncastVisitor, false);
 
         ToStringVisitor toStringVisitor(H, C, _dllExport, _stream);
         p->visit(&toStringVisitor, false);
+
+        H << "\n";
+
+        HandleVisitor initDowncastVisitor(H, C, _dllExport, _stream, OutputInit);
+        initDowncastVisitor.libNamespace_ = lib_namespace;
+        p->visit(&initDowncastVisitor, false);
+
+        ToInitVisitor toInitVisitor(H, C, _dllExport, _stream);
+        p->visit(&toInitVisitor, false);
     }
     if ( _log )
     {
-        HandleVisitor handleVisitor(H, C, _dllExport, _stream, OutputLog);
-        handleVisitor.libNamespace_ = lib_namespace;
-        p->visit(&handleVisitor, false);
+        HandleVisitor toLogDowncastVisitor(H, C, _dllExport, _stream, OutputToLog);
+        toLogDowncastVisitor.libNamespace_ = lib_namespace;
+        p->visit(&toLogDowncastVisitor, false);
     
         ToLogVisitor toLogVisitor(H, C, _dllExport, _stream);
         p->visit(&toLogVisitor, false);
     
         H << "\n";
     
+        HandleVisitor fromLogDowncastVisitor(H, C, _dllExport, _stream, OutputFromLog);
+        fromLogDowncastVisitor.libNamespace_ = lib_namespace;
+        p->visit(&fromLogDowncastVisitor, false);
+
         FromLogVisitor fromLogVisitor(H, C, _dllExport, _stream);
         p->visit(&fromLogVisitor, false);
     }
@@ -332,7 +344,7 @@ Gen::ToStringVisitor::visitClassDefStart(const ClassDefPtr& p)
     C << sb;
     C << nl << "if ( objPtr == 0 )";
     C << sb;
-    C << nl << "throw gbxutilacfr::Exception( ERROR_INFO, \"(while stringifying class " << scoped << ") cannot stringify a null pointer\" );";
+    C << nl << "throw gbxutilacfr::Exception( ERROR_INFO, \"(while stringifying class " << scoped << ") cannot process a null pointer\" );";
     C << eb;
 
     C << nl << "if ( testType )";
@@ -548,6 +560,217 @@ Gen::ToStringVisitor::emitUpcall(const ExceptionPtr& base, const string& call, b
     C << nl << "#endif";
     C.restoreIndent();
 }
+
+///////////////////////////////
+
+
+Gen::ToInitVisitor::ToInitVisitor(Output& h, Output& c, const string& dllExport, bool stream) :
+    H(h), C(c), _dllExport(dllExport), _stream(stream), _doneStaticSymbol(false), _useWstring(false)
+{
+}
+
+bool
+Gen::ToInitVisitor::visitModuleStart(const ModulePtr& p)
+{
+//     cout<<"DEBUG: Gen::visitModuleStart()"<<endl;
+//     _useWstring = setUseWstring(p, _useWstringHist, _useWstring);
+//     H << sp << nl << "namespace " << name << nl << '{';
+    return true;
+}
+
+void
+Gen::ToInitVisitor::visitModuleEnd(const ModulePtr& p)
+{
+//     H << sp << nl << '}';
+//     _useWstring = resetUseWstring(_useWstringHist);
+}
+
+bool
+Gen::ToInitVisitor::visitClassDefStart(const ClassDefPtr& p)
+{
+//     cout<<"DEBUG: Gen::visitClassDefStart()"<<endl;
+    if ( p->declaration()->isInterface() )
+        return false;
+
+    string name = fixKwd(p->name());
+    string scope = fixKwd(p->scope());
+    string scoped = fixKwd(p->scoped());
+    ClassList bases = p->bases();
+
+    H << "\n// Only the first input parameter is for public use.";    
+    H << "\nvoid zeroAndClear( const " << scope.substr(2)<<name << "Ptr& obj, bool testType=true );";
+
+    C << "\n\nvoid ";
+    C << nl << "zeroAndClear( const " << scoped << "Ptr& objPtr, bool testType )";
+    C << sb;
+    C << nl << "if ( objPtr == 0 )";
+    C << sb;
+    C << nl << "throw gbxutilacfr::Exception( ERROR_INFO, \"(while initting class " << scoped << ") cannot process a null pointer\" );";
+    C << eb;
+
+    C << nl << "if ( testType )";
+    C << sb;
+    C << nl << "string mostDerivedType = objPtr->ice_id();";
+    C << nl << "if ( mostDerivedType.empty() )";
+    C << sb;
+    C << nl << "throw gbxutilacfr::Exception( ERROR_INFO, \"(while initting class " << scoped << ") got empty type ID\" );";
+    C << eb;
+    C << nl << "if ( mostDerivedType == \"" << scoped << "\" )";
+    C << sb;
+    C << nl << "// we are the most derived class, stringify our type";
+//     C << nl << "cout << \"DEBUG: stringifying \" << mostDerivedType << endl;";
+    C << eb;
+    C << nl << "else";
+    C << sb;
+    C << nl << "// redirect to most derived class, and wait for him to come down to the bases";
+    C << nl << "return to_downCast( mostDerivedType, objPtr );";
+    C << eb;
+    C << eb;
+
+    ClassList::const_iterator q = bases.begin();
+    if(!bases.empty()) {
+        int count = 0;
+        while(q != bases.end())
+        {
+            C << nl << fixKwd((*q)->scoped()) << "Ptr base" << count << "Ptr = objPtr;";
+            C << nl << "bool testTypeSetting = false;";
+            C << nl << "zeroAndClear( base" << count << "Ptr, testTypeSetting );";
+            ++q;
+            ++count;
+        }
+    }
+
+    if ( !p->dataMembers().empty() ) {
+        C << nl;
+        C << nl << scoped << "& obj = *objPtr;";
+    }
+    return true;
+}
+
+void
+Gen::ToInitVisitor::visitClassDefEnd(const ClassDefPtr& p)
+{
+    C << eb;
+}
+
+bool
+Gen::ToInitVisitor::visitExceptionStart(const ExceptionPtr& p)
+{
+    return false;
+}
+
+void
+Gen::ToInitVisitor::visitExceptionEnd(const ExceptionPtr& p)
+{
+}
+
+void
+Gen::ToInitVisitor::visitEnum(const EnumPtr& p)
+{
+    string name = fixKwd(p->name());
+    string scope = fixKwd(p->scope());
+    EnumeratorList enumerators = p->getEnumerators();
+
+    H << nl << "void zeroAndClear( " << scope.substr(2)<<name << "& obj );";
+
+    C << nl;
+    C << nl << "void";
+    C << nl << "zeroAndClear( " << scope.substr(2)<<name << "& obj )";
+    C << sb;
+
+    EnumeratorList::const_iterator en = enumerators.begin();
+    assert( en!=enumerators.end() && "empty enumerator list" );
+
+    C << nl << "obj = " << scope.substr(2) << fixKwd((*en)->name()) << ";";
+    C << eb;
+}
+
+bool
+Gen::ToInitVisitor::visitStructStart(const StructPtr& p)
+{
+//     cout<<"DEBUG: Gen::visitStructStart()"<<endl;
+    string name = fixKwd(p->name());
+    string scope = fixKwd(p->scope());
+    
+    H << "\nvoid zeroAndClear( " << scope.substr(2)<<name << "& obj );";
+
+    C << "\n\nvoid";
+    C << nl << "zeroAndClear( " << scope.substr(2)<<name << "& obj )";
+    C << sb;
+    return true;
+}
+
+void
+Gen::ToInitVisitor::visitStructEnd(const StructPtr& p)
+{       
+    C << eb;
+}
+
+void
+Gen::ToInitVisitor::visitDataMember(const DataMemberPtr& p)
+{
+//     cout<<"DEBUG: Gen::visitDataMember()"<<endl;
+    string name = fixKwd(p->name());
+
+    C << nl << "zeroAndClear( obj." + name + " );";
+}
+
+void
+Gen::ToInitVisitor::visitSequence(const SequencePtr& p)
+{    
+//     cout<<"DEBUG: Gen::visitSequence()"<<endl;
+    string name = fixKwd(p->name());
+    string scope = fixKwd(p->scope());
+
+    H << nl << "void zeroAndClear( " << scope.substr(2)<<name << "& obj );";
+
+    C << "\n\nvoid";
+    C << nl << "zeroAndClear( " << scope.substr(2)<<name << "& obj )";
+    C << sb;
+    C << nl << "obj.clear();";
+    C << eb;
+}
+
+void
+Gen::ToInitVisitor::visitDictionary(const DictionaryPtr& p)
+{
+//     cout<<"DEBUG: Gen::visitDictionary()"<<endl;
+    string name = fixKwd(p->name());
+    string scope = fixKwd(p->scope());
+
+    H << nl << "void zeroAndClear( " << scope.substr(2)<<name << "& obj );";
+
+    C << nl;
+    C << nl << "void";
+    C << nl << "zeroAndClear( " << scope.substr(2)<<name << "& obj )";
+    C << sb;
+    C << nl << "obj.clear();";
+    C << eb;
+}
+
+void
+Gen::ToInitVisitor::visitConst(const ConstPtr& p)
+{
+}
+
+void
+Gen::ToInitVisitor::emitUpcall(const ExceptionPtr& base, const string& call, bool isLocal)
+{
+    C.zeroIndent();
+    C << nl << "#if defined(_MSC_VER) && (_MSC_VER < 1300) // VC++ 6 compiler bug"; // COMPILERBUG
+    C.restoreIndent();
+    C << nl << (base ? fixKwd(base->name()) : string(isLocal ? "LocalException" : "UserException")) << call;
+    C.zeroIndent();
+    C << nl << "#else";
+    C.restoreIndent();
+    C << nl << (base ? fixKwd(base->scoped()) : string(isLocal ? "::Ice::LocalException" : "::Ice::UserException")) 
+      << call;
+    C.zeroIndent();
+    C << nl << "#endif";
+    C.restoreIndent();
+}
+
+///////////////////////////////
 
 Gen::ToLogVisitor::ToLogVisitor(Output& h, Output& c, const string& dllExport, bool stream) :
     H(h), C(c), _dllExport(dllExport), _stream(stream), _doneStaticSymbol(false), _useWstring(false)
@@ -1015,7 +1238,7 @@ Gen::FromLogVisitor::emitUpcall(const ExceptionPtr& base, const string& call, bo
     C.restoreIndent();
 }
 
-//////////
+////////////////////////////////////////
 
 Gen::HandleVisitor::HandleVisitor(Output& h, Output& c, const string& dllExport, bool stream, OutputType outputType) :
     H(h), C(c), _dllExport(dllExport), _stream(stream),
@@ -1043,16 +1266,23 @@ Gen::HandleVisitor::visitModuleEnd(const ModulePtr& p)
         const string& base = it->first;
         const vector<string>& derives = it->second;
 
-        // TO
         C << nl;
 
 if ( outputType_ == OutputString ) {
         C << nl << "std::string";
         C << nl << toFunctionName << "( const string& derivedType, const " << base << "Ptr& objPtr, int recurse, int expand, int indent )";
 }
-else if ( outputType_ == OutputLog ) {
+else if ( outputType_ == OutputInit ) {
+        C << nl << "void";
+        C << nl << toFunctionName << "( const string& derivedType, const " << base << "Ptr& objPtr )";
+}
+else if ( outputType_ == OutputToLog ) {
         C << nl << "void";
         C << nl << toFunctionName << "( const string& derivedType, const " << base << "Ptr& objPtr, std::ostream& os )";
+}
+else if ( outputType_ == OutputFromLog ) {
+        C << nl << "void";
+        C << nl << fromFunctionName << "( const string& derivedType, " << base << "Ptr& objPtr, std::istream& is )";
 }
 else {
         assert( !"unknown OutputType" );
@@ -1070,8 +1300,8 @@ if ( outputType_ == OutputString ) {
                 C << nl << "s += "<<libNamespace_<<"::toString( objPtr, recurse, expand, indent, testTypeInSliced );";
                 C << nl << "return s;";
 }
-else if ( outputType_ == OutputLog ) {
-                // for logs it's unsafe to ignore this
+else if ( outputType_ == OutputInit || outputType_ == OutputToLog || outputType_ == OutputFromLog ) {
+                // it's unsafe to ignore this
                 C << nl << "assert( !\"unknown derived class for " << base << "\" );";  
 }
 else
@@ -1089,10 +1319,20 @@ else
                 C << sb;
                 C << nl << derives[i] << "Ptr derivedPtr = " << derives[i] << "Ptr::dynamicCast( objPtr );";
 
-if ( outputType_ == OutputString )
+if ( outputType_ == OutputString ) {
                 C << nl << "return "<<libNamespace_<<"::toString( derivedPtr, recurse, expand, indent );";
-else if ( outputType_ == OutputLog )
+}
+else if ( outputType_ == OutputInit ) {
+                C << nl << libNamespace_<<"::zeroAndClear( derivedPtr );";
+}
+else if ( outputType_ == OutputToLog ) {
                 C << nl << libNamespace_<<"::toLogStream( derivedPtr, os );";
+}
+else if ( outputType_ == OutputFromLog ) {
+                C << nl << "bool testTypeSetting = false;";
+                C << nl << "bool instantiateTypeSetting = true;";
+                C << nl << libNamespace_<<"::fromLogStream( derivedPtr, is, testTypeSetting, instantiateTypeSetting );";
+}
 else
                 assert( !"unknown OutputType" );
 
@@ -1110,8 +1350,8 @@ if ( outputType_ == OutputString ) {
                 C << nl << "s += "<<libNamespace_<<"::toString( objPtr, recurse, expand, indent, testTypeInSliced );";
                 C << nl << "return s;";
 }
-else if ( outputType_ == OutputLog ) {
-                // for logs it's unsafe to ignore this
+else if ( outputType_ == OutputInit || outputType_ == OutputToLog || outputType_ == OutputFromLog ) {
+                // it's unsafe to ignore this
                 C << nl << "assert( !\"unknown derived class for " << base << "\" );";  
 }
 else
@@ -1122,45 +1362,45 @@ else
         C << eb;
 
         // FROM
-if ( outputType_ == OutputLog )
-{
-        C << nl;
-        C << nl << "void";
-        C << nl << fromFunctionName << "( const string& derivedType, " << base << "Ptr& objPtr, std::istream& is )";
-        C << sb;
-            C << nl << "// " << derives.size() << " derivatives";
-            if ( derives.empty() ) {
-                C << nl << "assert( !\"should not get here\" );";
-            }
-    
-            for ( size_t i=0; i<derives.size(); ++i ) {
-                C << nl;
-                if ( i==0 )
-                    C << "if ";
-                else
-                    C << "else if ";
-                C << "( derivedType == \"" << derives[i] << "\" )";
-                C << sb;
-                C << nl << derives[i] << "Ptr derivedPtr = " << derives[i] << "Ptr::dynamicCast( objPtr );";
-                C << nl << "bool testTypeSetting = false;";
-                C << nl << "bool instantiateTypeSetting = true;";
-                C << nl << libNamespace_<<"::fromLogStream( derivedPtr, is, testTypeSetting, instantiateTypeSetting );";
-                C << nl << "objPtr = derivedPtr;";
-                C << eb;
-            }
-            if ( !derives.empty() ) {
-                C << nl << "else";
-                C << sb;
-                // no slicing!
-                C << nl << "assert( !\"unknown derived class for " << base << "\" );";  
-                // allow slicing
+// if ( outputType_ == OutputLog )
+// {
+//         C << nl;
+//         C << nl << "void";
+//         C << nl << fromFunctionName << "( const string& derivedType, " << base << "Ptr& objPtr, std::istream& is )";
+//         C << sb;
+//             C << nl << "// " << derives.size() << " derivatives";
+//             if ( derives.empty() ) {
+//                 C << nl << "assert( !\"should not get here\" );";
+//             }
+//     
+//             for ( size_t i=0; i<derives.size(); ++i ) {
+//                 C << nl;
+//                 if ( i==0 )
+//                     C << "if ";
+//                 else
+//                     C << "else if ";
+//                 C << "( derivedType == \"" << derives[i] << "\" )";
+//                 C << sb;
+//                 C << nl << derives[i] << "Ptr derivedPtr = " << derives[i] << "Ptr::dynamicCast( objPtr );";
 //                 C << nl << "bool testTypeSetting = false;";
 //                 C << nl << "bool instantiateTypeSetting = true;";
-//                 C << nl << libNamespace_<<"::fromLogStream( objPtr, is, testTypeSetting, isSlicingSetting );";
-                C << eb;
-            }
-        C << eb;
-} // end of OutputLog-only if
+//                 C << nl << libNamespace_<<"::fromLogStream( derivedPtr, is, testTypeSetting, instantiateTypeSetting );";
+//                 C << nl << "objPtr = derivedPtr;";
+//                 C << eb;
+//             }
+//             if ( !derives.empty() ) {
+//                 C << nl << "else";
+//                 C << sb;
+//                 // no slicing!
+//                 C << nl << "assert( !\"unknown derived class for " << base << "\" );";  
+//                 // allow slicing
+// //                 C << nl << "bool testTypeSetting = false;";
+// //                 C << nl << "bool instantiateTypeSetting = true;";
+// //                 C << nl << libNamespace_<<"::fromLogStream( objPtr, is, testTypeSetting, isSlicingSetting );";
+//                 C << eb;
+//             }
+//         C << eb;
+// } // end of OutputLog-only if
     }
 
     C << sp;
@@ -1170,24 +1410,47 @@ if ( outputType_ == OutputLog )
 void
 Gen::HandleVisitor::visitClassDecl(const ClassDeclPtr& p)
 {
-if ( outputType_ == OutputLog )
-{
-    string name = p->name();
-    string scoped = fixKwd(p->scoped());
-
-    if(!p->isLocal() && p->isInterface())
+    if ( outputType_ == OutputInit )
     {
-        C << nl << "void toLogStream( const " << scoped << "Prx& prx, std::ostream& os )";
-        C << sb;
-        C << nl << "// this data is not logged.";
-        C << eb;
-
-        C << nl << "void fromLogStream( " << scoped << "Prx& prx, std::istream& is )";
-        C << sb;
-        C << nl << "// this data is not logged.";
-        C << eb;
+        string name = p->name();
+        string scoped = fixKwd(p->scoped());
+    
+        if(!p->isLocal())
+        {
+            C << nl << "void zeroAndClear( " << scoped << "Prx& prx )";
+            C << sb;
+            C << nl << "prx = 0;";
+            C << eb;
+    
+    //         H << nl << "typedef ::IceInternal::ProxyHandle< ::IceProxy" << scoped << "> " << name << "Prx;";
+        }
     }
-} // end of OutputLog-only if
+    else if ( outputType_ == OutputToLog )
+    {
+        string name = p->name();
+        string scoped = fixKwd(p->scoped());
+    
+        if(!p->isLocal() && p->isInterface())
+        {
+            C << nl << "void toLogStream( const " << scoped << "Prx& prx, std::ostream& os )";
+            C << sb;
+            C << nl << "// this data is not logged.";
+            C << eb;
+        }
+    }
+    else if ( outputType_ == OutputFromLog )
+    {
+        string name = p->name();
+        string scoped = fixKwd(p->scoped());
+    
+        if(!p->isLocal() && p->isInterface())
+        {
+            C << nl << "void fromLogStream( " << scoped << "Prx& prx, std::istream& is )";
+            C << sb;
+            C << nl << "// this data is not logged.";
+            C << eb;
+        }
+    } 
 }
 
 bool

@@ -3,15 +3,15 @@
  * Do not modify or commit to source repository.
  */
 
-#ifndef IFACESTRING_UTIL_H
-#define IFACESTRING_UTIL_H
+#ifndef IFACEUTIL_UTIL_H
+#define IFACEUTIL_UTIL_H
 
 #include <string>
 #include <sstream>
 #include <Ice/Ice.h>
 
-// namespace ${slice_module}ifacestring
-namespace ifacestring
+// namespace ${slice_module}ifaceutil
+namespace ifaceutil
 {
 
 std::string toString( bool x, int recurse=1000, int expand=-1, int indent=0 );
@@ -87,6 +87,38 @@ std::string dictToString( const std::map<K,V>& x, int recurse=1000, int expand=-
     }
     return s;
 }
+
+/////////////////////////////////
+
+void zeroAndClear( bool& x ); // { x = false; }
+
+// void zeroAndClear( int8_t& x ) { x = 0; }
+void zeroAndClear( Ice::Byte& x ); // { x = 0; }
+
+// void zeroAndClear( int16_t& x ) { x = 0; }
+void zeroAndClear( Ice::Short& x ); // { x = 0; }
+
+// void zeroAndClear( int32_t& x ) { x = 0; }
+void zeroAndClear( Ice::Int& x ); // { x = 0; }
+
+// void zeroAndClear( int64_t& x ) { x = 0; }
+void zeroAndClear( Ice::Long& x ); // { x = 0; }
+
+void zeroAndClear( float& x ); // { x = 0.0; }
+
+void zeroAndClear( double& x ); // { x = 0.0; }
+
+void zeroAndClear( std::string& x ); // { x.clear(); }
+
+void zeroAndClear( Ice::ObjectPrx& x ); // { x = 0; }
+
+// use only with std::vector's
+// template<class T>
+// void seqZeroAndClear( T& x ) { x.clear(); }
+
+// use only with std::map's
+// template<class T>
+// void dictZeroAndClear( T& x ) { x.clear(); }
 
 }
 

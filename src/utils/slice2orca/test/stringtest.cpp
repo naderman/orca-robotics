@@ -8,7 +8,7 @@
  *
  */
  
-#include <orcaifacestring/test.h>
+#include <orcaifaceutil/test.h>
 #include <iostream>
 using namespace std;
 
@@ -18,7 +18,7 @@ int main( int argc, char **argv )
     {
         test::MyEnum in;
         in = test::Low;
-        cout<<ifacestring::toString( in )<<endl;
+        cout<<ifaceutil::toString( in )<<endl;
     }
     {
         test::MyStruct0 in;
@@ -31,9 +31,9 @@ int main( int argc, char **argv )
         in.mDouble = 6.;
         in.mString = "a sample";
         cout<<endl<<"RECURSE=FULL"<<endl;
-        cout<<ifacestring::toString( in )<<endl;
+        cout<<ifaceutil::toString( in )<<endl;
         cout<<endl<<"RECURSE=0"<<endl;
-        cout<<ifacestring::toString( in, 0 )<<endl;
+        cout<<ifaceutil::toString( in, 0 )<<endl;
     }
     {
         test::MyStruct0Seq in;
@@ -49,11 +49,11 @@ int main( int argc, char **argv )
         in.push_back( elem );
         in.push_back( elem );
         cout<<endl<<"EXPAND=FULL"<<endl;
-        cout<<ifacestring::toString( in )<<endl;
+        cout<<ifaceutil::toString( in )<<endl;
         cout<<endl<<"EXPAND=0"<<endl;
-        cout<<ifacestring::toString( in, 999, 0 )<<endl;
+        cout<<ifaceutil::toString( in, 999, 0 )<<endl;
         cout<<endl<<"EXPAND=1"<<endl;
-        cout<<ifacestring::toString( in, 999, 1 )<<endl;
+        cout<<ifaceutil::toString( in, 999, 1 )<<endl;
     }
     {
         test::MyStruct0Dict in;
@@ -69,18 +69,18 @@ int main( int argc, char **argv )
         in["one"] = elem;
         in["two"] = elem;
         cout<<endl<<"EXPAND=FULL"<<endl;
-        cout<<ifacestring::toString( in )<<endl;
+        cout<<ifaceutil::toString( in )<<endl;
         cout<<endl<<"EXPAND=0"<<endl;
-        cout<<ifacestring::toString( in, 999, 0 )<<endl;
+        cout<<ifaceutil::toString( in, 999, 0 )<<endl;
         cout<<endl<<"EXPAND=1"<<endl;
-        cout<<ifacestring::toString( in, 999, 1 )<<endl;
+        cout<<ifaceutil::toString( in, 999, 1 )<<endl;
     }
     // null class
     cout<<"printing null class pointer...";
     {
         test::MyClass0Ptr in;
         try {
-            cout<<ifacestring::toString( in )<<endl;
+            cout<<ifaceutil::toString( in )<<endl;
         }
         catch (...) {}
     }
@@ -90,7 +90,7 @@ int main( int argc, char **argv )
         test::MyClass0Ptr in = new test::MyClass0;
         in->mBool = 0;
         cout<<endl<<"BASE"<<endl;
-        cout<<ifacestring::toString( in )<<endl;
+        cout<<ifaceutil::toString( in )<<endl;
     }
     // mid-derived class
     {
@@ -98,7 +98,7 @@ int main( int argc, char **argv )
         in->mBool = 0;
         in->mInt = 3;
         cout<<endl<<"MID"<<endl;
-        cout<<ifacestring::toString( in )<<endl;
+        cout<<ifaceutil::toString( in )<<endl;
     }
     // top-derived class
     {
@@ -107,7 +107,7 @@ int main( int argc, char **argv )
         in->mInt = 3;
         in->mDouble = 6.;
         cout<<endl<<"TOP"<<endl;
-        cout<<ifacestring::toString( in )<<endl;
+        cout<<ifaceutil::toString( in )<<endl;
     }
     // the tough one, generic pointer, derived object.
     {
@@ -117,7 +117,7 @@ int main( int argc, char **argv )
         test::MyClass3Ptr dIn = test::MyClass3Ptr::dynamicCast( in );
         dIn->mDouble = 6.;
         cout<<endl<<"TOP THRU MID POINTER"<<endl;
-        cout<<ifacestring::toString( in )<<endl;
+        cout<<ifaceutil::toString( in )<<endl;
     }
     // class derived from another file/module (potentially from another distro)
     {
@@ -127,7 +127,7 @@ int main( int argc, char **argv )
         in->pTruePositive=.95;
         in->mInt = 3;
         cout<<endl<<"TOP FROM ANOTHER FILE"<<endl;
-        cout<<ifacestring::toString( in )<<endl;
+        cout<<ifaceutil::toString( in )<<endl;
     }
     // the super tough one, generic pointer from orca, derived object from satellite project.
     // subcase: the base class has no derivatives in its file
@@ -142,7 +142,7 @@ int main( int argc, char **argv )
         test::MyClass5Ptr dIn = test::MyClass5Ptr::dynamicCast( in );
         dIn->mInt = 3;
         cout<<endl<<"TOP THRU BASE POINTER FROM ANOTHER FILE (no derivatives)"<<endl;
-        cout<<ifacestring::toString( in )<<endl;
+        cout<<ifaceutil::toString( in )<<endl;
     }
     // the super tough one, generic pointer from orca, derived object from satellite project.
     // subcase: the base class has some derivatives in its file, but not this one obviously.
@@ -154,7 +154,7 @@ int main( int argc, char **argv )
         test::MyClass4Ptr dIn = test::MyClass4Ptr::dynamicCast( in );
         dIn->mInt = 3;
         cout<<endl<<"TOP THRU BASE POINTER FROM ANOTHER FILE (some derivatives)"<<endl;
-        cout<<ifacestring::toString( in )<<endl;
+        cout<<ifaceutil::toString( in )<<endl;
     }
     }
     catch ( const std::exception& e ) {

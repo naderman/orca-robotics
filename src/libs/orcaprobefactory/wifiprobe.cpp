@@ -12,7 +12,7 @@
 #include <orcaice/orcaice.h>
 #include <orcacm/orcacm.h>
 #include <orcaprobe/orcaprobe.h>
-#include <orcaifacestring/wifi.h>
+#include <orcaifaceutil/wifi.h>
 
 #include "wifiprobe.h"
 
@@ -55,7 +55,7 @@ int
 WifiProbe::loadGetData( orcacm::OperationData& data )
 {
     orca::WifiPrx derivedPrx = orca::WifiPrx::checkedCast(prx_);
-    orcaprobe::reportResult( data, "data", ifacestring::toString( derivedPrx->getData() ) );
+    orcaprobe::reportResult( data, "data", ifaceutil::toString( derivedPrx->getData() ) );
     return 0;
 }
 

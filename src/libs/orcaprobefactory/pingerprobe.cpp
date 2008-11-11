@@ -11,7 +11,7 @@
 #include <iostream>
 #include <orcaice/orcaice.h>
 #include <orcacm/orcacm.h>
-#include <orcaifacestring/pinger.h>
+#include <orcaifaceutil/pinger.h>
 
 #include "pingerprobe.h"
 #include <orcaprobe/orcaprobe.h>

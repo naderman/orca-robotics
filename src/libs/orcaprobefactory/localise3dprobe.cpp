@@ -12,7 +12,7 @@
 #include <orcaice/orcaice.h>
 #include <orcacm/orcacm.h>
 #include <orcaprobe/orcaprobe.h>
-#include <orcaifacestring/localise3d.h>
+#include <orcaifaceutil/localise3d.h>
 
 #include "localise3dprobe.h"
 
@@ -58,7 +58,7 @@ int
 Localise3dProbe::loadGetData( orcacm::OperationData& data )
 {
     orca::Localise3dPrx derivedPrx = orca::Localise3dPrx::checkedCast(prx_);
-    orcaprobe::reportResult( data, "data", ifacestring::toString( derivedPrx->getData() ) );
+    orcaprobe::reportResult( data, "data", ifaceutil::toString( derivedPrx->getData() ) );
     return 0;
 }
 

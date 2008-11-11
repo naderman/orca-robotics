@@ -11,7 +11,7 @@
 #include <iostream>
 #include <orcaice/orcaice.h>
 // #include <orcaifaceimpl/util.h>
-#include <orcaifacestring/systemstatus.h>
+#include <orcaifaceutil/systemstatus.h>
 #include "systemstatusImpl.h"
 
 using namespace std;
@@ -163,7 +163,7 @@ SystemStatusImpl::localSetAndSend( const ::orca::SystemStatusData &data )
     if ( context_.tracer().verbosity( gbxutilacfr::DebugTrace, gbxutilacfr::ToAny ) >= 5 )
     {
         stringstream ss;
-        ss << "Sending following data: " << ifacestring::toString( data );
+        ss << "Sending following data: " << ifaceutil::toString( data );
         context_.tracer().debug( ss.str(), 5 );
     }
     dataStore_.set( data );

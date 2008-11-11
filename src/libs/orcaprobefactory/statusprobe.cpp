@@ -12,7 +12,7 @@
 #include <orcaice/orcaice.h>
 #include <orcacm/orcacm.h>
 #include <orcaprobe/orcaprobe.h>
-#include <orcaifacestring/status.h>
+#include <orcaifaceutil/status.h>
 #include <orcaifaceimpl/printingconsumers.h>
 
 #include "statusprobe.h"
@@ -74,7 +74,7 @@ int
 StatusProbe::loadGetData( orcacm::OperationData& data )
 {
     orca::StatusPrx derivedPrx = orca::StatusPrx::checkedCast(prx_);
-    orcaprobe::reportResult( data, "data", ifacestring::toString( derivedPrx->getData() ) );
+    orcaprobe::reportResult( data, "data", ifaceutil::toString( derivedPrx->getData() ) );
     return 0;
 }
 

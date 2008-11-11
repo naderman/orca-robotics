@@ -12,7 +12,7 @@ GBX_REQUIRE_TARGETS( build LIB ${LIB_NAME} ${dep_libs} )
 IF( build )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
-    INCLUDE( ${ORCA_CMAKE_DIR}/UseLibProjectIfaceString.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseLibProjectIfaceUtil.cmake )
     
     FILE( GLOB srcs *.cpp )
     

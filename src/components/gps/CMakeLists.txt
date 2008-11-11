@@ -7,7 +7,7 @@ GBX_REQUIRE_VAR( build EXE ${APP_NAME} GBX_OS_LINUX "only Linux OS is supported"
 SET( ext_libs HydroDll HydroInterfaces )
 GBX_REQUIRE_INSTALLS( build EXE ${APP_NAME} ${ext_libs} )
 
-SET( int_libs OrcaIfaceImpl OrcaIfaceString OrcaObjects )
+SET( int_libs OrcaIfaceImpl OrcaIfaceUtil OrcaObjects )
 GBX_REQUIRE_TARGETS( build EXE ${APP_NAME} ${int_libs} )
 
 IF( build )

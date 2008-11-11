@@ -12,7 +12,7 @@
 #include <orcaice/orcaice.h>
 #include <orcacm/orcacm.h>
 #include <orcaprobe/orcaprobe.h>
-#include <orcaifacestring/properties.h>
+#include <orcaifaceutil/properties.h>
 
 #include "propertiesprobe.h"
 
@@ -58,7 +58,7 @@ int
 PropertiesProbe::loadGetData( orcacm::OperationData& data )
 {
     orca::PropertiesPrx derivedPrx = orca::PropertiesPrx::checkedCast(prx_);
-    orcaprobe::reportResult( data, "data", ifacestring::toString( derivedPrx->getData() ) );
+    orcaprobe::reportResult( data, "data", ifaceutil::toString( derivedPrx->getData() ) );
     return 0;
 }
 

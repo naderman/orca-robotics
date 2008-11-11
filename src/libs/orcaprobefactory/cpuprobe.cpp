@@ -11,7 +11,7 @@
 #include <iostream>
 #include <orcaice/orcaice.h>
 #include <orcacm/orcacm.h>
-#include <orcaifacestring/cpu.h>
+#include <orcaifaceutil/cpu.h>
 
 #include "cpuprobe.h"
 #include <orcaprobe/orcaprobe.h>
@@ -46,7 +46,7 @@ int
 CpuProbe::loadGetInfo( orcacm::OperationData& data )
 {
     orca::CpuPrx derivedPrx = orca::CpuPrx::checkedCast(prx_);
-    orcaprobe::reportResult( data, "data", ifacestring::toString( derivedPrx->getInfo() ) );
+    orcaprobe::reportResult( data, "data", ifaceutil::toString( derivedPrx->getInfo() ) );
     return 0;
 }
 
@@ -54,6 +54,6 @@ int
 CpuProbe::loadGetData( orcacm::OperationData& data )
 {
     orca::CpuPrx derivedPrx = orca::CpuPrx::checkedCast(prx_);
-    orcaprobe::reportResult( data, "data", ifacestring::toString( derivedPrx->getData() ) );
+    orcaprobe::reportResult( data, "data", ifaceutil::toString( derivedPrx->getData() ) );
     return 0;
 }

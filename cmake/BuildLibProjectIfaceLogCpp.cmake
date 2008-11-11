@@ -49,7 +49,7 @@ IF( build )
     
     IF( ORCA_MOTHERSHIP )
         # only Orca depends on the target, satellite projects use installed version
-        ADD_DEPENDENCIES( ${lib_name} slice2log )
+        ADD_DEPENDENCIES( ${lib_name} slice2orca )
     
         # only Orca installs generated headers
         FOREACH( slice_generated_header ${slice_generated_headers} )

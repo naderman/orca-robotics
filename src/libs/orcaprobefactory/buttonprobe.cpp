@@ -12,7 +12,7 @@
 #include <orcaice/orcaice.h>
 #include <orcaobj/orcaobj.h>
 #include <orcaprobe/orcaprobe.h>
-#include <orcaifacestring/button.h>
+#include <orcaifaceutil/button.h>
 
 #include "buttonprobe.h"
 

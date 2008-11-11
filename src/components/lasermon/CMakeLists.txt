@@ -3,7 +3,7 @@ ORCA_SET_COMPONENT_NAME( LaserMon )
 SET( build TRUE )
 GBX_REQUIRE_OPTION( build EXE ${APP_NAME} ON )
 
-SET( int_libs OrcaIfaceImpl OrcaIfaceString )
+SET( int_libs OrcaIfaceImpl OrcaIfaceUtil )
 GBX_REQUIRE_TARGETS( build EXE ${APP_NAME} ${int_libs} )
 
 IF( build )

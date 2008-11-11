@@ -10,7 +10,7 @@
  
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include <orcaifacestring/gps.h>
+#include <orcaifaceutil/gps.h>
 #include <orcaobj/orcaobj.h>    // setInit() only
 
 #include "mainsubsystem.h"
@@ -95,7 +95,7 @@ MainSubsystem::work()
 
             if ( orcaData.positionType != orca::GpsPositionTypeNotAvailable || publishWithoutFix_ ) 
             {
-                context_.tracer().debug( ifacestring::toString( orcaData ), 5 );
+                context_.tracer().debug( ifaceutil::toString( orcaData ), 5 );
                 gpsInterface_->localSetAndSend( orcaData );
             }
             else

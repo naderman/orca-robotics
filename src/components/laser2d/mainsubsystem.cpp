@@ -10,7 +10,7 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include <orcaifacestring/laserscanner2d.h>
+#include <orcaifaceutil/laserscanner2d.h>
 #include <orcaobj/orcaobj.h> // for setInit()
 #include "mainsubsystem.h"
 
@@ -61,7 +61,7 @@ MainSubsystem::work()
             }
 
             stringstream ss;
-            ss << "MainSubsystem: Read laser data: " << ifacestring::toString(orcaLaserData_);
+            ss << "MainSubsystem: Read laser data: " << ifaceutil::toString(orcaLaserData_);
             context_.tracer().debug( ss.str(), 5 );
         }
         catch ( ... ) 

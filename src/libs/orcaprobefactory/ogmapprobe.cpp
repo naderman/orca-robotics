@@ -12,7 +12,7 @@
 #include <orcaice/orcaice.h>
 #include <orcacm/orcacm.h>
 #include <orcaprobe/orcaprobe.h>
-#include <orcaifacestring/ogmap.h>
+#include <orcaifaceutil/ogmap.h>
 
 #include "ogmapprobe.h"
 
@@ -55,7 +55,7 @@ int
 OgMapProbe::loadGetData( orcacm::OperationData& data )
 {
     orca::OgMapPrx derivedPrx = orca::OgMapPrx::checkedCast(prx_);
-    orcaprobe::reportResult( data, "data", ifacestring::toString( derivedPrx->getData() ) );
+    orcaprobe::reportResult( data, "data", ifaceutil::toString( derivedPrx->getData() ) );
     return 0;
 }
 

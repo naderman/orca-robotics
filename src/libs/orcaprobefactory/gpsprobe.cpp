@@ -12,7 +12,7 @@
 #include <orcaice/orcaice.h>
 #include <orcacm/orcacm.h>
 #include <orcaprobe/orcaprobe.h>
-#include <orcaifacestring/gps.h>
+#include <orcaifaceutil/gps.h>
 
 #include "gpsprobe.h"
 
@@ -58,7 +58,7 @@ int
 GpsProbe::loadGetData( orcacm::OperationData& data )
 {
     orca::GpsPrx derivedPrx = orca::GpsPrx::checkedCast(prx_);
-    orcaprobe::reportResult( data, "data", ifacestring::toString( derivedPrx->getData() ) );
+    orcaprobe::reportResult( data, "data", ifaceutil::toString( derivedPrx->getData() ) );
     return 0;
 }
 
@@ -66,7 +66,7 @@ int
 GpsProbe::loadGetDescription( orcacm::OperationData& data )
 {
     orca::GpsPrx derivedPrx = orca::GpsPrx::checkedCast(prx_);
-    orcaprobe::reportResult( data, "data", ifacestring::toString( derivedPrx->getDescription() ) );
+    orcaprobe::reportResult( data, "data", ifaceutil::toString( derivedPrx->getDescription() ) );
     return 0;
 }
 

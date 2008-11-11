@@ -9,8 +9,8 @@
 
 using namespace std;
 
-// namespace ${slice_module}ifacestring
-namespace ifacestring
+// namespace ${slice_module}ifaceutil
+namespace ifaceutil
 {
 
 string toString( bool x, int recurse, int expand, int indent )
@@ -67,5 +67,38 @@ string toString( const string& x, int recurse, int expand, int indent )
     // should we limit the size, depending on 'expand' ???
     return x;
 }
+
+//////////////////////////////////
+
+void zeroAndClear( bool& x ) 
+{ x = false; }
+
+// void zeroAndClear( int8_t& x ) { x = 0; }
+void zeroAndClear( Ice::Byte& x ) 
+{ x = 0; }
+
+// void zeroAndClear( int16_t& x ) { x = 0; }
+void zeroAndClear( Ice::Short& x ) 
+{ x = 0; }
+
+// void zeroAndClear( int32_t& x ) { x = 0; }
+void zeroAndClear( Ice::Int& x ) 
+{ x = 0; }
+
+// void zeroAndClear( int64_t& x ) { x = 0; }
+void zeroAndClear( Ice::Long& x ) 
+{ x = 0; }
+
+void zeroAndClear( float& x ) 
+{ x = 0.0; }
+
+void zeroAndClear( double& x ) 
+{ x = 0.0; }
+
+void zeroAndClear( std::string& x ) 
+{ x.clear(); }
+
+void zeroAndClear( Ice::ObjectPrx& x ) 
+{ x = 0; }
 
 }

@@ -9,7 +9,6 @@
  */
 
 #include <iostream>
-#include <orcaifacestring/status.h>
 #include "componentstatusaggregator.h"
 
 using namespace std;

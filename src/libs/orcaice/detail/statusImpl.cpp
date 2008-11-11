@@ -10,7 +10,7 @@
 
 #include <orcaice/orcaice.h>
 #include <orcaice/icegridutils.h>
-// #include <orcaifacestring/status.h>
+// #include <orcaifaceutil/status.h>
 #include "statusImpl.h"
 #include "componentstatusaggregator.h"
 

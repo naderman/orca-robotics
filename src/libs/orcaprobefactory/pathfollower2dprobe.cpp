@@ -12,7 +12,7 @@
 #include <orcaice/orcaice.h>
 #include <orcacm/orcacm.h>
 #include <orcaprobe/orcaprobe.h>
-#include <orcaifacestring/pathfollower2d.h>
+#include <orcaifaceutil/pathfollower2d.h>
 
 #include "pathfollower2dprobe.h"
 
@@ -49,7 +49,7 @@ int
 PathFollower2dProbe::loadGetData( orcacm::OperationData & data )
 {
     orca::PathFollower2dPrx derivedPrx = orca::PathFollower2dPrx::checkedCast(prx_);
-    orcaprobe::reportResult( data, "data", ifacestring::toString( derivedPrx->getData() ) );
+    orcaprobe::reportResult( data, "data", ifaceutil::toString( derivedPrx->getData() ) );
     return 0;
 }
 
@@ -82,12 +82,12 @@ PathFollower2dProbe::setData(const orca::PathFollower2dData &pfData, const Ice::
 
     orcacm::ResultHeader res;
     res.name = "data";
-    res.text = ifacestring::toString(pfData);
+    res.text = ifaceutil::toString(pfData);
     data.results.push_back( res );
 
     display_.setOperationData( data );
 
-    std::cout << "PathFollower2dProbe: setData(): " << ifacestring::toString(pfData) << std::endl;
+    std::cout << "PathFollower2dProbe: setData(): " << ifaceutil::toString(pfData) << std::endl;
 };
 
 void 
@@ -116,13 +116,13 @@ PathFollower2dProbe::setActivationTime(const orca::Time &absoluteTime, double re
 
     orcacm::ResultHeader res;
     res.name = "activationTime";
-    stringstream ss; ss << "relative: " << relativeTime << ", absolute: " << ifacestring::toString(absoluteTime);
+    stringstream ss; ss << "relative: " << relativeTime << ", absolute: " << ifaceutil::toString(absoluteTime);
     res.text = ss.str();
     data.results.push_back( res );
 
     display_.setOperationData( data );
 
-    std::cout << "PathFollower2dProbe: setActivationTime(): rel: " << relativeTime << "s, abs: " << ifacestring::toString( absoluteTime ) << std::endl;
+    std::cout << "PathFollower2dProbe: setActivationTime(): rel: " << relativeTime << "s, abs: " << ifaceutil::toString( absoluteTime ) << std::endl;
 }
 void 
 PathFollower2dProbe::setEnabledState(bool enabledState, const Ice::Current&)

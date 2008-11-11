@@ -11,7 +11,7 @@
 #include <iostream>
 #include <orcaice/orcaice.h>
 #include <orcaobj/orcaobj.h>
-#include <orcaifacestring/image.h>
+#include <orcaifaceutil/image.h>
 
 #include "mainthread.h"
 

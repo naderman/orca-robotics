@@ -3,4 +3,4 @@
 #    Orca project      : see [ORCA-SOURCE]/cmake
 #    Satellite project : see [ORCA-INSTALL]/cmake
 
-INCLUDE( ${ORCA_CMAKE_DIR}/BuildLibProjectIfaceInitCpp.cmake )
+INCLUDE( ${ORCA_CMAKE_DIR}/BuildLibProjectIfaceUtilCpp.cmake )

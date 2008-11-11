@@ -14,7 +14,7 @@ IF( build )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseBasicRules.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
     INCLUDE( ${ORCA_CMAKE_DIR}/UseLibProjectInterfaces.cmake )
-    INCLUDE( ${ORCA_CMAKE_DIR}/UseLibProjectIfaceString.cmake )
+    INCLUDE( ${ORCA_CMAKE_DIR}/UseLibProjectIfaceUtil.cmake )
     
     FILE( GLOB hdrs *.h )
     FILE( GLOB srcs *.cpp )

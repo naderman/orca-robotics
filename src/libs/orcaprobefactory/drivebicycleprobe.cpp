@@ -12,7 +12,7 @@
 #include <orcaice/orcaice.h>
 #include <orcacm/orcacm.h>
 #include <orcaprobe/orcaprobe.h>
-#include <orcaifacestring/drivebicycle.h>
+#include <orcaifaceutil/drivebicycle.h>
 
 #include "drivebicycleprobe.h"
 
@@ -61,7 +61,7 @@ int
 DriveBicycleProbe::loadGetData( orcacm::OperationData& data )
 {
     orca::DriveBicyclePrx derivedPrx = orca::DriveBicyclePrx::checkedCast(prx_);
-    orcaprobe::reportResult( data, "data", ifacestring::toString( derivedPrx->getData() ) );
+    orcaprobe::reportResult( data, "data", ifaceutil::toString( derivedPrx->getData() ) );
     return 0;
 }
 
@@ -69,7 +69,7 @@ int
 DriveBicycleProbe::loadGetDescription( orcacm::OperationData& data )
 {
     orca::DriveBicyclePrx derivedPrx = orca::DriveBicyclePrx::checkedCast(prx_);
-    orcaprobe::reportResult( data, "data", ifacestring::toString( derivedPrx->getDescription() ) );
+    orcaprobe::reportResult( data, "data", ifaceutil::toString( derivedPrx->getDescription() ) );
     return 0;
 }
 

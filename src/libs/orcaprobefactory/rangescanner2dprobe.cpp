@@ -12,7 +12,7 @@
 #include <orcaice/orcaice.h>
 #include <orcacm/orcacm.h>
 #include <orcaprobe/orcaprobe.h>
-#include <orcaifacestring/rangescanner2d.h>
+#include <orcaifaceutil/rangescanner2d.h>
 
 #include "rangescanner2dprobe.h"
 
@@ -58,7 +58,7 @@ int
 RangeScanner2dProbe::loadGetData( orcacm::OperationData& data )
 {
     orca::RangeScanner2dPrx derivedPrx = orca::RangeScanner2dPrx::checkedCast(prx_);
-    orcaprobe::reportResult( data, "data", ifacestring::toString( derivedPrx->getData() ) );
+    orcaprobe::reportResult( data, "data", ifaceutil::toString( derivedPrx->getData() ) );
     return 0;
 }
 
@@ -66,7 +66,7 @@ int
 RangeScanner2dProbe::loadGetDescription( orcacm::OperationData& data )
 {
     orca::RangeScanner2dPrx derivedPrx = orca::RangeScanner2dPrx::checkedCast(prx_);
-    orcaprobe::reportResult( data, "data", ifacestring::toString( derivedPrx->getDescription() ) );
+    orcaprobe::reportResult( data, "data", ifaceutil::toString( derivedPrx->getDescription() ) );
     return 0;
 }
 

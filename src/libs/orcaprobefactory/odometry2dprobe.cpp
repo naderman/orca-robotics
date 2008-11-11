@@ -12,7 +12,7 @@
 #include <orcaice/orcaice.h>
 #include <orcacm/orcacm.h>
 #include <orcaprobe/orcaprobe.h>
-#include <orcaifacestring/odometry2d.h>
+#include <orcaifaceutil/odometry2d.h>
 
 #include "odometry2dprobe.h"
 
@@ -58,7 +58,7 @@ int
 Odometry2dProbe::loadGetData( orcacm::OperationData& data )
 {
     orca::Odometry2dPrx derivedPrx = orca::Odometry2dPrx::checkedCast(prx_);
-    orcaprobe::reportResult( data, "data", ifacestring::toString( derivedPrx->getData() ) );
+    orcaprobe::reportResult( data, "data", ifaceutil::toString( derivedPrx->getData() ) );
     return 0;
 }
 
@@ -66,7 +66,7 @@ int
 Odometry2dProbe::loadGetDescription( orcacm::OperationData& data )
 {
     orca::Odometry2dPrx derivedPrx = orca::Odometry2dPrx::checkedCast(prx_);
-    orcaprobe::reportResult( data, "data", ifacestring::toString( derivedPrx->getDescription() ) );
+    orcaprobe::reportResult( data, "data", ifaceutil::toString( derivedPrx->getDescription() ) );
     return 0;
 }
 

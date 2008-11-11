@@ -19,7 +19,7 @@
 #include <orcaqgui3d/glutil.h>
 #include <osg/ShapeDrawable>
 #include <orcaqgui3d/osgutil.h>
-#include <orcaifacestring/localise2d.h>
+#include <orcaifaceutil/localise2d.h>
 
 using namespace std;
 
@@ -38,7 +38,7 @@ Localise2dPainter::setCubicDescr( double length,
                                   double height,
                                   const orca::Frame3d &platformToGeometryTransform )
 {
-    cout<<"TRACE(localise2dpainter.cpp): platformToGeometryTransform: " << ifacestring::toString(platformToGeometryTransform) << endl;
+    cout<<"TRACE(localise2dpainter.cpp): platformToGeometryTransform: " << ifaceutil::toString(platformToGeometryTransform) << endl;
 
     assert( fabs(platformToGeometryTransform.o.r) < 1e-9 &&
             fabs(platformToGeometryTransform.o.p) < 1e-9 &&
@@ -64,7 +64,7 @@ Localise2dPainter::setCylindricalDescr( double radius,
                                         double height,
                                         const orca::Frame3d &platformToGeometryTransform )
 {
-    cout<<"TRACE(localise2dpainter.cpp): platformToGeometryTransform: " << ifacestring::toString(platformToGeometryTransform) << endl;
+    cout<<"TRACE(localise2dpainter.cpp): platformToGeometryTransform: " << ifaceutil::toString(platformToGeometryTransform) << endl;
 
     assert( fabs(platformToGeometryTransform.o.r) < 1e-9 &&
             fabs(platformToGeometryTransform.o.p) < 1e-9 &&

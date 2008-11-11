@@ -39,7 +39,6 @@ public:
         // custom options
         const std::string& module,
         bool,
-        bool,
         bool);
     ~Gen();
 
@@ -70,9 +69,8 @@ private:
     bool _ice;
     // custom options
     std::string _module;
-    bool _string;
+    bool _util;
     bool _log;
-    bool _init;
 
     class GlobalIncludeVisitor : private ::IceUtil::noncopyable, public Slice::ParserVisitor
     {
@@ -94,6 +92,40 @@ private:
     public:
 
         ToStringVisitor(::IceUtilInternal::Output&, ::IceUtilInternal::Output&, const std::string&, bool);
+
+        virtual bool visitModuleStart(const Slice::ModulePtr&);
+        virtual void visitModuleEnd(const Slice::ModulePtr&);
+        virtual bool visitClassDefStart(const Slice::ClassDefPtr&);
+        virtual void visitClassDefEnd(const Slice::ClassDefPtr&);
+        virtual bool visitExceptionStart(const Slice::ExceptionPtr&);
+        virtual void visitExceptionEnd(const Slice::ExceptionPtr&);
+        virtual bool visitStructStart(const Slice::StructPtr&);
+        virtual void visitStructEnd(const Slice::StructPtr&);
+        virtual void visitSequence(const Slice::SequencePtr&);
+        virtual void visitDictionary(const Slice::DictionaryPtr&);
+        virtual void visitEnum(const Slice::EnumPtr&);
+        virtual void visitConst(const Slice::ConstPtr&);
+        virtual void visitDataMember(const Slice::DataMemberPtr&);
+
+    private:
+
+        void emitUpcall(const Slice::ExceptionPtr&, const std::string&, bool = false);
+
+        ::IceUtilInternal::Output& H;
+        ::IceUtilInternal::Output& C;
+
+        std::string _dllExport;
+        bool _stream;
+        bool _doneStaticSymbol;
+        bool _useWstring;
+        std::list<bool> _useWstringHist;
+    };
+
+    class ToInitVisitor : private ::IceUtil::noncopyable, public Slice::ParserVisitor
+    {
+    public:
+
+        ToInitVisitor(::IceUtilInternal::Output&, ::IceUtilInternal::Output&, const std::string&, bool);
 
         virtual bool visitModuleStart(const Slice::ModulePtr&);
         virtual void visitModuleEnd(const Slice::ModulePtr&);
@@ -194,7 +226,9 @@ private:
     enum OutputType
     {
         OutputString,
-        OutputLog
+        OutputInit,
+        OutputToLog,
+        OutputFromLog
     };
 
     class HandleVisitor : private ::IceUtil::noncopyable, public Slice::ParserVisitor

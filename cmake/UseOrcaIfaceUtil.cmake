@@ -3,4 +3,4 @@
 #
 
 INCLUDE( ${ORCA_CMAKE_DIR}/UseOrca.cmake )
-LINK_LIBRARIES( OrcaIfaceString )
+LINK_LIBRARIES( OrcaIfaceUtil )

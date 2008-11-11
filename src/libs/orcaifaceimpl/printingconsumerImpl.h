@@ -12,7 +12,7 @@
 #define ORCAIFACEIMPL_PRINTING_CONSUMER_IMPL_H
 
 #include <orcaifaceimpl/consumerImpl.h>
-#include <orcaifacestring/orcaifacestring.h>
+#include <orcaifaceutil/orcaifaceutil.h>
 
 namespace orcaifaceimpl
 {
@@ -44,7 +44,7 @@ public:
     virtual void dataEvent( const ObjectType& data ) 
     {
         std::cout << "PrintingConsumerImpl::dataEvent() start" << std::endl;
-        context_.tracer().info( ifacestring::toString(data,recurse_,expand_) ); 
+        context_.tracer().info( ifaceutil::toString(data,recurse_,expand_) ); 
     }
 private:
     int recurse_;

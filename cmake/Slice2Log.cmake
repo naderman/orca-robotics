@@ -37,7 +37,7 @@ MACRO( ORCA_GENERATE_SLICE2LOG_RULES generated_cpp_list generated_header_list )
     SET( slice_cpp_suffixes        .cpp )
     SET( slice_header_suffixes     .h  )
     SET( slice_suffixes            ${slice_cpp_suffixes} ${slice_header_suffixes} )
-    SET( generator_command         ${ORCA_SLICE2LOG_COMMAND} )
+    SET( generator_command         ${ORCA_SLICE2ORCA_COMMAND} )
     
     SET( proj_slice_src_dir        ${PROJECT_SOURCE_DIR}/src/interfaces/slice )
     SET( proj_slice_bin_dir        ${PROJECT_BINARY_DIR}/src/interfaces/slice )
