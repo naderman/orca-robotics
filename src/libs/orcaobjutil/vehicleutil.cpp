@@ -11,7 +11,8 @@
 #include "vehicleutil.h"
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include <orcaobj/orcaobj.h>
+#include <orcaifaceutil/vehicledescription.h>
+#include <orcaobj/orcaobj.h> // for getPropertyAs...()
 
 using namespace std;
 

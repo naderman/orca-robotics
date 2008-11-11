@@ -5,7 +5,7 @@ GBX_ADD_LICENSE( LGPL )
 SET( build TRUE )
 GBX_REQUIRE_OPTION( build LIB ${LIB_NAME} ON )
 
-SET( int_libs OrcaObjects )
+SET( int_libs OrcaIfaceUtil OrcaObjects )
 GBX_REQUIRE_TARGETS( build LIB ${LIB_NAME} ${int_libs} )
 
 IF( build )

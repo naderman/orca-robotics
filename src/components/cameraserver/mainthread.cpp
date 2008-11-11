@@ -11,7 +11,7 @@
 #include <iostream>
 #include <orcaice/orcaice.h>
 #include <orcaobj/orcaobj.h>
-#include <orcaifaceutil/image.h>
+#include <orcaifaceutil/camera.h>
 
 #include "mainthread.h"
 
@@ -40,14 +40,14 @@ MainThread::initNetworkInterface()
     orcaCameraDescr_->format = config_.format;
 
     // offset from the robot coordinate system
-    orcaobj::setInit( orcaCameraDescr_->offset );
+    ifaceutil::zeroAndClear( orcaCameraDescr_->offset );
     orcaCameraDescr_->offset = orcaobj::getPropertyAsFrame3dWithDefault( prop, prefix + "Offset", orcaCameraDescr_->offset );
 
     // read size
-    orcaobj::setInit( orcaCameraDescr_->sensorSize );
+    ifaceutil::zeroAndClear( orcaCameraDescr_->sensorSize );
     orcaCameraDescr_->sensorSize = orcaobj::getPropertyAsSize2dWithDefault( prop, prefix + "SensorSize", orcaCameraDescr_->sensorSize );
 
-    orcaobj::setInit( orcaCameraDescr_->caseSize );
+    ifaceutil::zeroAndClear( orcaCameraDescr_->caseSize );
     orcaCameraDescr_->caseSize = orcaobj::getPropertyAsSize3dWithDefault( prop, prefix + "CaseSize", orcaCameraDescr_->caseSize );
 
     // focal length

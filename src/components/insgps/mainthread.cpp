@@ -10,7 +10,9 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include <orcaobj/orcaobj.h>
+#include <orcaifaceutil/ins.h>
+#include <orcaifaceutil/gps.h>
+#include <orcaobj/orcaobj.h> // for getPropertyAs...()
 #include "hwthread.h"
 #include "mainthread.h"
 
@@ -49,10 +51,10 @@ MainThread::initNetworkInterface()
     imuDescr.timeStamp = orcaice::getNow();
 
     // transfer internal sensor configs
-    orcaobj::setInit(insDescr.offset);
-    orcaobj::setInit(gpsDescr.antennaOffset);
-    orcaobj::setInit(imuDescr.offset);
-    orcaobj::setInit(imuDescr.size);
+    ifaceutil::zeroAndClear(insDescr.offset);
+    ifaceutil::zeroAndClear(gpsDescr.antennaOffset);
+    ifaceutil::zeroAndClear(imuDescr.offset);
+    ifaceutil::zeroAndClear(imuDescr.size);
 
     insDescr.offset = orcaobj::getPropertyAsFrame3dWithDefault( prop, prefix+"Ins.Offset", insDescr.offset );
     gpsDescr.antennaOffset = orcaobj::getPropertyAsFrame3dWithDefault( prop, prefix+"Gps.AntennaOffset", gpsDescr.antennaOffset );

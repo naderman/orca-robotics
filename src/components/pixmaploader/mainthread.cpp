@@ -10,7 +10,7 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include <orcaobj/orcaobj.h>
+#include <orcaifaceutil/pixmap.h>
 #include <hydromapload/pixmaploadutil.h>
 
 #include "mainthread.h"
@@ -97,7 +97,7 @@ MainThread::walk()
     if ( driverName == "fake" )
     {
         cout<<"TRACE(component.cpp): Instantiating fake driver." << endl;
-        orcaobj::setSane( theMap );
+        ifaceutil::zeroAndClear( theMap );
     }
     else if ( driverName == "file" )
     {
@@ -118,7 +118,7 @@ MainThread::walk()
         throw gbxutilacfr::Exception( ERROR_INFO, "Unknown driver type: "+driverName );
     }
 
-    cout<<"TRACE(component.cpp): Loaded map: " << orcaobj::toString(theMap) << endl;
+    cout<<"TRACE(component.cpp): Loaded map: " << ifaceutil::toString(theMap,999,0) << endl;
     
     //
     // EXTERNAL PROVIDED INTERFACES

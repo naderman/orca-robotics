@@ -10,7 +10,7 @@
 
 #include "pathconvert.h"
 #include <orcaice/orcaice.h>
-#include <orcaobj/orcaobj.h>
+#include <orcaifaceutil/pathplanner2d.h>
 #include <sstream>
 
 using namespace std;
@@ -80,7 +80,7 @@ convertAndAppend( const hydroogmap::OgMap           &ogMap,
 {
     double worldX, worldY;
     orca::Waypoint2d wp;
-    orcaobj::setInit( wp );
+    ifaceutil::zeroAndClear( wp );
 
     for( unsigned int i=0; i<input.size(); i++ )
     {
@@ -107,7 +107,7 @@ convertAndAppend( const hydroogmap::OgMap              &ogMap,
     
     double worldX, worldY;
     orca::Waypoint2d wp;
-    orcaobj::setInit( wp );
+    ifaceutil::zeroAndClear( wp );
 
     for( unsigned int i=0; i<input.size(); i++ )
     {

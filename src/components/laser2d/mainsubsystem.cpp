@@ -11,7 +11,7 @@
 #include <iostream>
 #include <orcaice/orcaice.h>
 #include <orcaifaceutil/laserscanner2d.h>
-#include <orcaobj/orcaobj.h> // for setInit()
+#include <orcaobj/orcaobj.h> // for getPropertyAs...()
 #include "mainsubsystem.h"
 
 using namespace std;
@@ -145,7 +145,7 @@ MainSubsystem::initNetworkInterface()
     descr.numberOfSamples = config_.numberOfSamples;
 
     // offset from the robot coordinate system
-    orcaobj::setInit( descr.offset );
+    ifaceutil::zeroAndClear( descr.offset );
     descr.offset = orcaobj::getPropertyAsFrame3dWithDefault( prop, prefix+"Offset", descr.offset );
 
     // consider the special case of the sensor mounted level (pitch=0) but upside-down (roll=180)
@@ -165,16 +165,14 @@ MainSubsystem::initNetworkInterface()
     }
 
     // size info should really be stored in the driver
-    orcaobj::setInit( descr.size );
+    ifaceutil::zeroAndClear( descr.size );
     descr.size = orcaobj::getPropertyAsSize3dWithDefault( prop, prefix+"Size", descr.size );
 
     //
     // EXTERNAL PROVIDED INTERFACE
     //
 
-    laserInterface_ = new orcaifaceimpl::LaserScanner2dImpl( descr,
-                                                              "LaserScanner2d",
-                                                              context_ );
+    laserInterface_ = new orcaifaceimpl::LaserScanner2dImpl( descr, "LaserScanner2d", context_ );
     // init
     laserInterface_->initInterface( this, subsysName() );
 }

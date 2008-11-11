@@ -8,7 +8,7 @@ GBX_REQUIRE_VAR( build EXE ${APP_NAME} not_os_win "Windows OS is not  supported"
 SET( dep_libs OrcaLog )
 GBX_REQUIRE_TARGETS( build EXE ${APP_NAME} ${dep_libs} )
 
-SET( dep_libs ${dep_libs} HydroDll HydroNavUtil OrcaObjects )
+SET( dep_libs ${dep_libs} HydroDll HydroNavUtil OrcaIfaceUtil OrcaObjects )
 GBX_REQUIRE_VAR( build EXE ${APP_NAME} HYDRODLL_INSTALLED "libHydroDll not installed" )
 GBX_REQUIRE_VAR( build EXE ${APP_NAME} HYDRONAVUTIL_INSTALLED "libHydroNavUtil not installed" )
 

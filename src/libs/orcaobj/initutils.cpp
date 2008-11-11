@@ -114,17 +114,7 @@ setInit( orca::Time& obj )
     obj.useconds = 0;
 }
 
-void 
-setInit( orca::Waypoint2d & wp )
-{
-    setInit(wp.target);
-    wp.distanceTolerance = 0.0;
-    wp.headingTolerance = 0.0;
-    setInit(wp.timeTarget);
-    wp.maxApproachSpeed = 0.0;
-    wp.maxApproachTurnrate = 0.0;
-}
-
+// alexm: sparing it for now because it has a non-zero entry.
 void 
 setInit( orca::WifiInterface &w )
 {
@@ -148,6 +138,22 @@ setInit( orca::WifiInterface &w )
     w.maxSignalLevel = 0;
     w.maxNoiseLevel = 0;
 }
+
+// OBSOLETE
+
+/*
+
+void 
+setInit( orca::Waypoint2d & wp )
+{
+    setInit(wp.target);
+    wp.distanceTolerance = 0.0;
+    wp.headingTolerance = 0.0;
+    setInit(wp.timeTarget);
+    wp.maxApproachSpeed = 0.0;
+    wp.maxApproachTurnrate = 0.0;
+}
+
 
 void setInit( orca::BatteryData& obj )
 {
@@ -464,5 +470,6 @@ setSane( orca::CameraData& obj, int width, int height )
     // assume RGB/BGR mode
     obj.data.resize( width*height*3, char(88) );
 }
+*/
     
 } // namespace

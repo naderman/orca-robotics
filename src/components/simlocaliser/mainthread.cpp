@@ -11,6 +11,7 @@
 #include <iostream>
 #include <orcaice/orcaice.h>
 #include <orcaobj/orcaobj.h>
+#include <orcaifaceutil/localise2d.h>
 #include <orcaifaceimpl/localise2dImpl.h>
 
 #include "mainthread.h"
@@ -39,7 +40,7 @@ MainThread::MainThread( const orcaice::Context & context ) :
     {      
         std::string driverPrefix = prefix + "Static.";
         orca::Frame2d pose;
-        orcaobj::setInit(pose);
+        ifaceutil::zeroAndClear(pose);
         pose = orcaobj::getPropertyAsFrame2dWithDefault( context_.properties(),
                 driverPrefix+"Pose", pose );
                 
@@ -80,8 +81,8 @@ MainThread::walk()
         
     orca::VehicleGeometryCuboidDescriptionPtr geom = new orca::VehicleGeometryCuboidDescription;
     geom->type = orca::VehicleGeometryCuboid;
-    orcaobj::setSane( geom->size );
-    orcaobj::setSane( geom->platformToGeometryTransform );
+    ifaceutil::zeroAndClear( geom->size );
+    ifaceutil::zeroAndClear( geom->platformToGeometryTransform );
     
     orcaifaceimpl::Localise2dImplPtr iface;
     iface = new orcaifaceimpl::Localise2dImpl( geom, "Localise2d", context_ );

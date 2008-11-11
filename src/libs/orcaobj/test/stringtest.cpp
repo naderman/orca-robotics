@@ -9,6 +9,7 @@
  */
 
 #include <orcaobj/orcaobj.h>
+#include <orcaifaceutil/orcaifaceutil.h>
 #include <gbxutilacfr/mathdefs.h>
 #include <iostream>
 
@@ -57,7 +58,7 @@ int main(int argc, char * argv[])
     cout<<"testing toCartesianPoint2d() and the inverse toString() ... ";
     {
         orca::CartesianPoint2d in, out;
-        orcaobj::setSane( in );
+        ifaceutil::zeroAndClear( in );
         std::string s = orcaobj::toString( in );
         int ret = orcaobj::toCartesianPoint2d( s, out );
         if ( ret || !NEAR(in.x,out.x,1E-6) || !NEAR(in.y,out.y,1E-6) ) {
@@ -73,7 +74,7 @@ int main(int argc, char * argv[])
     cout<<"testing toCartesianPoint() and the inverse toString() ... ";
     {
         orca::CartesianPoint in, out;
-        orcaobj::setSane( in );
+        ifaceutil::zeroAndClear( in );
         std::string s = orcaobj::toString( in );
         int ret = orcaobj::toCartesianPoint( s, out );
         if ( ret || !NEAR(in.x,out.x,1E-6) || !NEAR(in.y,out.y,1E-6) || !NEAR(in.z,out.z,1E-6) ) {
@@ -89,7 +90,7 @@ int main(int argc, char * argv[])
     cout<<"testing toFrame2d() and the inverse toString() ... ";
     {
         orca::Frame2d in, out;
-        orcaobj::setSane( in );
+        ifaceutil::zeroAndClear( in );
         std::string s = orcaobj::toString( in );
         int ret = orcaobj::toFrame2d( s, out );
         // angled must be compared approximately
@@ -106,7 +107,7 @@ int main(int argc, char * argv[])
     cout<<"testing toFrame3d() and the inverse toString() ... ";
     {
         orca::Frame3d in, out;
-        orcaobj::setSane( in );
+        ifaceutil::zeroAndClear( in );
         std::string s = orcaobj::toString( in );
         int ret = orcaobj::toFrame3d( s, out );
         // angled must be compared approximately
@@ -124,7 +125,7 @@ int main(int argc, char * argv[])
     cout<<"testing toSize2d() and the inverse toString() ... ";
     {
         orca::Size2d in, out;
-        orcaobj::setSane( in );
+        ifaceutil::zeroAndClear( in );
         std::string s = orcaobj::toString( in );
         int ret = orcaobj::toSize2d( s, out );
         if ( ret || !NEAR(in.l,out.l,1E-6) || !NEAR(in.w,out.w,1E-6) ) {
@@ -140,7 +141,7 @@ int main(int argc, char * argv[])
     cout<<"testing toSize3d() and the inverse toString() ... ";
     {
         orca::Size3d in, out;
-        orcaobj::setSane( in );
+        ifaceutil::zeroAndClear( in );
         std::string s = orcaobj::toString( in );
         int ret = orcaobj::toSize3d( s, out );
         if ( ret || !NEAR(in.l,out.l,1E-6) || !NEAR(in.w,out.w,1E-6) || !NEAR(in.h,out.h,1E-6) ) {

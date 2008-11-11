@@ -8,7 +8,7 @@ GBX_REQUIRE_VAR( build LIB ${LIB_NAME} GBX_OS_LINUX "only Linux OS is supported"
 SET( ext_libs HydroPathPlan )
 GBX_REQUIRE_INSTALLS( build LIB ${LIB_NAME} ${ext_libs} )
 
-SET( int_libs OrcaObjects )
+SET( int_libs OrcaIfaceUtil )
 GBX_REQUIRE_TARGETS( build LIB ${LIB_NAME} ${int_libs} )
 
 IF( build )

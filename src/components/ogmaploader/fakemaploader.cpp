@@ -7,7 +7,8 @@
  * the LICENSE file included in this distribution.
  *
  */
-#include <orcaobj/orcaobj.h>
+
+#include <orcaifaceutil/ogmap.h>
 
 #include "fakemaploader.h"
 
@@ -17,7 +18,7 @@ namespace ogmaploader {
 
 void fakeLoadMap( orca::OgMapData& theMap )
 {
-    orcaobj::setSane( theMap );
+    ifaceutil::zeroAndClear( theMap );
 }
 
 }

@@ -39,14 +39,21 @@ void setInit( orca::CartesianPoint&, double x=0.0, double y=0.0, double z=0.0 );
 void setInit( orca::Covariance2d&, double pxx=0.0, double pxy=0.0, double pyy=0.0, double pxt=0.0, double pyt=0.0, double ptt=0.0 );
 //! Sets all fields to zero.
 void setInit( orca::Time& );
-//! Sets all fields to zero
-void setInit( orca::Waypoint2d& );
+// alexm: sparing it for now because it has a non-zero entry.
 //! Sets all fields to zero
 void setInit( orca::WifiInterface &w );
+
+// OBSOLETE
+
+/*
+//! Sets all fields to zero
+void setInit( orca::Waypoint2d& );
 //! Sets all fields to zero and stalled to FALSE.
 void setInit( orca::Odometry2dData& );
 //! Sets all fields to negative numbers
 void setInit( orca::BatteryData& );
+*/
+/*
 //! Set to randomized but sane values.
 void setSane( orca::CartesianPoint2d& );
 //! Set to randomized but sane values.
@@ -98,6 +105,8 @@ void setSane( orca::PixMapData&, int width=640, int height=480 );
 void setSane( orca::PowerData&, int count=2 );
 //! Set to randomized but sane values.
 void setSane( orca::VelocityControl2dData& );
+*/
+
 //@}
 
 //@}

@@ -10,7 +10,7 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include <orcaobj/orcaobj.h>
+#include <orcaifaceutil/ogmap.h>
 
 #include "mainthread.h"
 #include "fakemaploader.h"
@@ -52,7 +52,7 @@ MainThread::walk()
     {
         try {
             loadMapFromFile( context_,theMap );
-            cout<<"TRACE(component.cpp): Loaded map: " << orcaobj::toString(theMap) << endl;
+            cout<<"TRACE(component.cpp): Loaded map: " << ifaceutil::toString(theMap,999,0) << endl;
         }
         catch ( const gbxutilacfr::Exception& e )
         {   

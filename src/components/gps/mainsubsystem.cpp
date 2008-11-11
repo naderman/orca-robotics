@@ -11,7 +11,7 @@
 #include <iostream>
 #include <orcaice/orcaice.h>
 #include <orcaifaceutil/gps.h>
-#include <orcaobj/orcaobj.h>    // setInit() only
+#include <orcaobj/orcaobj.h>    // getPropertyAsFrame3dWithDefault
 
 #include "mainsubsystem.h"
 
@@ -130,11 +130,11 @@ MainSubsystem::initNetworkInterface()
     //
     descr_.timeStamp = orcaice::getNow();
 
-    orcaobj::setInit( descr_.antennaOffset );
+    ifaceutil::zeroAndClear( descr_.antennaOffset );
     descr_.antennaOffset = orcaobj::getPropertyAsFrame3dWithDefault( prop, prefix+"AntennaOffset", descr_.antennaOffset );
 
     stringstream ss;
-    ss << "Loaded sensor description: " << orcaobj::toString( descr_ );
+    ss << "Loaded sensor description: " << ifaceutil::toString( descr_ );
     context_.tracer().debug( ss.str(), 2 );
 
     // create servant for direct connections
