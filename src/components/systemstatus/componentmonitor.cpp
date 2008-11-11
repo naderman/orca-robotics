@@ -73,6 +73,28 @@ ComponentMonitor::~ComponentMonitor()
 {
 }
 
+bool
+ComponentMonitor::isHomeInterfaceReachable()
+{
+    orca::FQComponentName fqName;
+    fqName.platform = platformName_;
+    fqName.component = componentName_;
+    
+    string interfaceType = "::orca::Home";
+    string diagnostic = "";
+   
+    bool isReachable = orcaice::isAdminInterfaceReachable( context_, fqName, interfaceType, diagnostic );
+    
+    if (!isReachable)
+    {
+        stringstream ss;
+        ss << "Home interface of " << orcaice::toString( fqName ) << " is not reachable. Diagnostics: " << diagnostic;
+        context_.tracer().warning( ss.str() );
+    }
+    
+    return isReachable;
+}
+
 void 
 ComponentMonitor::getComponentStatus( string                        &platformName,
                                       orca::ObservedComponentStatus &obsCompStat )
@@ -129,42 +151,24 @@ ComponentMonitor::getComponentStatus( string                        &platformNam
     }
     
     //
-    // State: TODO: add Disconnecting state
+    // State
     //
     switch( statDetails.data.compStatus.state )
     {
-        case orca::CompInactive:
-            obsCompStat.state = orca::ObsCompInactive; break;
+//         case orca::CompInactive:
+//             obsCompStat.state = orca::ObsCompInactive; break;
         case orca::CompInitialising:
             obsCompStat.state = orca::ObsCompInitialising; break;
         case orca::CompActive:
             obsCompStat.state = orca::ObsCompActive; break;
         case orca::CompFinalising:
-            if ( !haveStatusInterface() )
-                obsCompStat.state = orca::ObsCompDisconnecting;
-            else
-                obsCompStat.state = orca::ObsCompFinalising; 
+            obsCompStat.state = orca::ObsCompFinalising; 
             break;
         default:
             assert( false && "Unknown component state" );
             
     }
     
-}
-
-bool 
-ComponentMonitor::haveStatusInterface()
-{
-    string proxy = "status@" + platformName_ + "/" + componentName_;
-    Ice::ObjectPrx base = context_.communicator()->stringToProxy( proxy );
-    try {
-        base->ice_ping();
-        return true;
-    } 
-    catch ( ... )
-    {
-        return false;
-    }
 }
 
 }

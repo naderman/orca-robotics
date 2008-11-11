@@ -55,11 +55,9 @@ enum SubsystemHealth
 //! Possible component states
 enum ComponentState
 {    
-    //! Component has been created but has not setup its interfaces yet
-    CompInactive,
     //! Component is preparing to work, e.g. initialising its resources, etc.
     CompInitialising,
-    //! Component is fully initialised and is performing its work.
+    //! Component is fully initialised and is performing its work
     CompActive,
     //! Component is preparing to shutdown, e.g. releasing its resources, etc.
     CompFinalising

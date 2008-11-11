@@ -70,7 +70,7 @@ orca::ComponentState subStateToCompState( const gbxutilacfr::SubsystemState &sub
     switch (subsystemState)
     {
         case gbxutilacfr::SubsystemIdle: 
-            return orca::CompInactive;
+            return orca::CompInitialising;
         case gbxutilacfr::SubsystemInitialising: 
             return orca::CompInitialising;
         case gbxutilacfr::SubsystemWorking: 
@@ -107,7 +107,7 @@ void convertWorstHealth( const hydroiceutil::LocalComponentStatus &from,
                          orca::ComponentStatus                    &to )
 {
     // initialisation, will be overwritten
-    to.state = orca::CompInactive;
+    to.state = orca::CompInitialising;
     to.health = orca::CompOk;
     to.timeUp = 0;
     
@@ -188,7 +188,7 @@ orca::ComponentState extractCompState( const hydroiceutil::LocalComponentStatus 
         return orca::CompActive;
     } else {
         if (anybodyIdle)
-            state = orca::CompInactive;
+            state = orca::CompInitialising;
         if (anybodyInitialising)
             state = orca::CompInitialising;
         if (anybodyFinalising)

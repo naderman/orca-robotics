@@ -25,18 +25,16 @@ module orca
 //! Possible component states including observed states
 enum ObservedComponentState
 {    
-    //! Component has been created but has not setup its interfaces yet
+    //! Observed state: component's Home interface cannot be reached
     ObsCompInactive,
-    //! Observed state: can the component be connected to?
+    //! Observed state: in the process of connecting to component's Status interface
     ObsCompConnecting,
-    //! Component is preparing to work, e.g. initialising its resources, etc.
+    //! Reported state: component is preparing to work, e.g. initialising its resources, etc.
     ObsCompInitialising,
-    //! Component is fully initialised and is performing its work.
+    //! Reported state: component is fully initialised and is performing its work
     ObsCompActive,
-    //! Component is preparing to shutdown, e.g. releasing its resources, etc.
-    ObsCompFinalising,
-    //! Observed state: can the component still be "reached"?
-    ObsCompDisconnecting
+    //! Reported state: component is preparing to shutdown, e.g. releasing its resources, etc.
+    ObsCompFinalising
 };
 
 //! Possible component health values

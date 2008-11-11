@@ -47,6 +47,7 @@ class ComponentMonitor
         StatusConsumerImplPtr statusConsumer_;
         
         bool haveStatusInterface();
+        bool isHomeInterfaceReachable();
         
 };
 
