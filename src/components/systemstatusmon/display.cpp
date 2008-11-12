@@ -16,7 +16,6 @@
 using namespace std;
 using namespace systemstatusmon;      
 
-// local non-member functions
 namespace 
 {  
 
@@ -180,8 +179,8 @@ std::string humanMsgString( const orca::SystemStatusData &ssData )
    
 ////////////////////////////////////// 
 
-ColourTextDisplay::ColourTextDisplay( const orcaice::Context     &context,
-                                      gbxiceutilacfr::SafeThread *thread)
+ColourTextDisplay::ColourTextDisplay( const orcaice::Context   &context,
+                                      orcaice::SubsystemThread *thread )
     : context_(context),
       publishIntervalSec_(10.0)
 {
@@ -202,7 +201,6 @@ ColourTextDisplay::refresh()
             stringstream ss;
             ss << "Haven't received SystemStatusData for " << timeSinceHeardTimer_.elapsedSec() << " seconds. SystemStatus may be dead.";
             cout << hydroctext::emph( ss.str(), hydroctext::Style( hydroctext::Reverse, hydroctext::Red ) ) << endl << endl;
-            //TODO: verify by pinging the interface?
         }
         return;
     }

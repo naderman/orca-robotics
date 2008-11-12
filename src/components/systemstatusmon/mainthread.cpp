@@ -19,7 +19,7 @@ using namespace std;
 namespace systemstatusmon {
 
 MainThread::MainThread( const orcaice::Context &context ) : 
-    SafeThread( context.tracer() ),
+    orcaice::SubsystemThread( context.tracer(), context.status(), "MainThread" ),
     context_(context)
 {
 }
@@ -27,6 +27,8 @@ MainThread::MainThread( const orcaice::Context &context ) :
 void
 MainThread::walk()
 {
+    subStatus().initialising();
+    
     //
     // ENABLE NETWORK CONNECTIONS
     //
@@ -50,7 +52,13 @@ MainThread::walk()
         throw gbxutilacfr::Exception( ERROR_INFO, "Unknown display type: " + displayType );
     }
     
-    while (!isStopping())
+    //
+    // Main loop
+    //
+    
+    subStatus().working();
+    
+    while ( !isStopping() )
     {
         display_->refresh();
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));

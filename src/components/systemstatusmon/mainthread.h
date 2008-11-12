@@ -11,7 +11,7 @@
 #ifndef MAIN_THREAD_H
 #define MAIN_THREAD_H
 
-#include <gbxsickacfr/gbxiceutilacfr/safethread.h>
+#include <orcaice/subsystemthread.h>
 #include <orcaice/context.h>
 
 namespace systemstatusmon
@@ -19,17 +19,18 @@ namespace systemstatusmon
     
 class Display;
 
-class MainThread : public gbxiceutilacfr::SafeThread
+class MainThread : public orcaice::SubsystemThread
 {
 
 public:
 
     MainThread( const orcaice::Context &context );
 
+private:
+    
     // from SubsystemThread
     virtual void walk();
-
-private:
+    
     orcaice::Context context_;
     Display *display_;
 };

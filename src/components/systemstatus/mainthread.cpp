@@ -45,11 +45,11 @@ PlatformComponentPair extractPlatComp( const string &input )
 // converts from internal multimap to Slice-defined representation
 //
 void convert( const multimap<string,orca::ObservedComponentStatus> &from, 
-              orca::SystemStatusData                               &to )
+              orca::SystemStatusData                               &to,
+              int                                                   sleepTimeSec )
 {    
     orcaice::setToNow( to.timeStamp );
-    //TODO: make configurable/change online
-    to.publishIntervalSec = 10.0;
+    to.publishIntervalSec = sleepTimeSec*5;
     
     multimap<string,orca::ObservedComponentStatus>::const_iterator it;
     pair<multimap<string,orca::ObservedComponentStatus>::const_iterator,multimap<string,orca::ObservedComponentStatus>::const_iterator> ret;
@@ -165,6 +165,7 @@ MainThread::walk()
     
     orca::SystemStatusData data;
     multimap<string,orca::ObservedComponentStatus> obsCompStateMultiMap;
+    const int sleepTimeSec = 2;
     
     while ( !isStopping() )
     {
@@ -181,10 +182,10 @@ MainThread::walk()
         }
         
         // convert and tell the world
-        convert( obsCompStateMultiMap, data );
+        convert( obsCompStateMultiMap, data, sleepTimeSec );
         systemStatusIface_->localSetAndSend( data );
                 
-        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
+        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(sleepTimeSec));
         
     } // end of main loop
 }
