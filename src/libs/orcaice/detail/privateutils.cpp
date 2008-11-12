@@ -346,7 +346,7 @@ postProcessComponentProperties( const Ice::PropertiesPtr& props, const std::stri
     // Admin interface
     //
     // the component will decide later whether to enable the interface or not.
-    props->setProperty( "Ice.Admin.Endpoints", "tcp" );
+    props->setProperty( "Ice.Admin.Endpoints", "tcp -t 5000" );
     string adminInstanceName = fqCName.platform + "." + fqCName.component;
     props->setProperty( "Ice.Admin.InstanceName", adminInstanceName );
     // I don't think we need the delay actually. All settings are set before the communicator is created.
