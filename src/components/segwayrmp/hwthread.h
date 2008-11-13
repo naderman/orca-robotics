@@ -21,6 +21,7 @@
 #include <orcarobotdriverutil/statemachine.h>
 #include <gbxsickacfr/gbxiceutilacfr/timer.h>
 #include "estop.h"
+#include "setpoint.h"
 
 namespace segwayrmp {
 
@@ -41,6 +42,8 @@ public:
         double maxForwardSpeed;
         double maxReverseSpeed;
         double maxTurnrate;
+        double maxForwardAcceleration;
+        double maxReverseAcceleration;
         double maxLateralAcceleration;
     };
 
@@ -80,7 +83,8 @@ private:
     bool isMotionEnabled_;
     bool driveInReverse_;
 
-    std::auto_ptr<EStop> eStop_;
+    std::auto_ptr<EStop>    eStop_;
+    std::auto_ptr<SetPoint> speedSetPoint_;
 
     // Looks for late writes (which will cause timeouts in the segway)
     gbxiceutilacfr::Timer writeTimer_;

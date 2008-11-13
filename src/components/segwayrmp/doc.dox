@@ -108,9 +108,9 @@ Parameters describing the vehicle (see orca::VehicleDescription for details)
       - See @ref orca_interface_vehicleDescription
     - Default: 4.9050
   - @c SegwayRmp.Config.VehicleDescription.Control.VelocityDifferential.MaxForwardAcceleration (m/s/s)
-    - Default: 1.0
+    - Default: 9.0
   - @c SegwayRmp.Config.VehicleDescription.Control.VelocityDifferential.MaxReverseAcceleration (m/s/s)
-    - Default: 1.0
+    - Default: 9.0
   - @c SegwayRmp.Config.VehicleDescription.Control.VelocityDifferential.MaxRotationalAcceleration (deg/s/s)
     - Default: 45.0
   - @c SegwayRmp.Config.VehicleDescription.Geometry.Type (string)

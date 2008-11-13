@@ -109,6 +109,10 @@ HwThread::HwThread( Config& config, const orcaice::Context &context )
                                   config.maxReverseSpeed,
                                   config.maxTurnrate, 
                                   config.maxLateralAcceleration );
+
+    // Initialise the bit that controls the speed set point.
+    speedSetPoint_.reset( new SetPoint( config.maxForwardAcceleration,
+                                        config.maxReverseAcceleration ) );
 }
 
 void
@@ -241,22 +245,37 @@ HwThread::walk()
         //
         // Write pending commands to the hardware
         //
-        if ( !stateMachine_.isFault() && commandStore_.isNewData() )
+        bool needToWriteCommand = false;
+        speedSetPoint_->evaluateDt();
+        if ( !stateMachine_.isFault() )
         {
-            commandStore_.get( command );
-
-            if ( driveInReverse_ ) reverseDirection( command );
-
-            try {
-                writeCommand( command );
-
-                stringstream ss;
-                ss << "HwThread: wrote command: " << command.toString();
-                context_.tracer().debug( ss.str(), 2 );
+            if ( commandStore_.isNewData() )
+            {
+                commandStore_.get( command );
+                speedSetPoint_->set( command.vx );
+                needToWriteCommand = true;
             }
-            catch ( ... ) {
-                string problem = orcaice::catchExceptionsWithStatus( "writing to hardware", subStatus() );
-                stateMachine_.setFault( problem ); 
+            
+            bool setPointReached;
+            command.vx = speedSetPoint_->currentCmdSpeed( setPointReached );
+            if ( !setPointReached )
+                needToWriteCommand = true;
+
+            if ( needToWriteCommand )
+            {
+                if ( driveInReverse_ ) reverseDirection( command );
+
+                try {
+                    writeCommand( command );
+
+                    stringstream ss;
+                    ss << "HwThread: wrote command: " << command.toString();
+                    context_.tracer().debug( ss.str(), 2 );
+                }
+                catch ( ... ) {
+                    string problem = orcaice::catchExceptionsWithStatus( "writing to hardware", subStatus() );
+                    stateMachine_.setFault( problem ); 
+                }
             }
         }
 
