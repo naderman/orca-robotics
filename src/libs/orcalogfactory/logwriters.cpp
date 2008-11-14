@@ -168,6 +168,30 @@ namespace {
     void logToFile( std::ofstream       *file, 
                     const std::string   &format,
                     orcaice::Context     context,
+                    const orca::ImageDescriptionPtr &obj )
+    {
+        if ( format=="ice" )
+        {
+            orcalog::IceWriteHelper helper( context.communicator() );
+            ice_writeImageDescription( helper.stream_, obj );
+            helper.write( file );  
+        }
+        else if ( format=="asciigenerated" )
+        {
+            ifacelog::toLogStream( obj, *file);
+        }
+        else
+        {
+            stringstream ss;
+            ss << "can't handle format: " << format;
+            throw orcalog::FormatNotSupportedException( ERROR_INFO, ss.str() );
+        }
+    }
+
+
+    void logToFile( std::ofstream       *file, 
+                    const std::string   &format,
+                    orcaice::Context     context,
                     const orca::CpuData &obj )
     {        
         if ( format == "ice" )
@@ -489,6 +513,54 @@ namespace {
         }
     }
 
+    void logToFile( std::ofstream                              *file, 
+                    const std::string                          &format,
+                    orcaice::Context                            context,
+                    const orca::ImageDataPtr                   &obj )
+    {        
+
+        if ( format == "ice" )
+        {
+            orcalog::IceWriteHelper helper( context.communicator() );
+            ice_writeImageData( helper.stream_, obj );
+            helper.write( file );
+        }
+        else if ( format=="asciigenerated" )
+        {
+            ifacelog::toLogStream( obj, *file);
+        }
+        else
+        {
+            stringstream ss;
+            ss << "can't handle format: " << format;
+            throw orcalog::FormatNotSupportedException( ERROR_INFO, ss.str() );
+        }
+    }
+
+
+    void logToFile( std::ofstream                              *file, 
+                    const std::string                          &format,
+                    orcaice::Context                            context,
+                    const orca::CameraDataPtr                  &obj )
+    {
+        if ( format == "ice" )
+        {
+            orcalog::IceWriteHelper helper( context.communicator() );
+            ice_writeCameraData( helper.stream_, obj );
+            helper.write( file );
+        }
+        else if ( format=="asciigenerated" )
+        {
+            ifacelog::toLogStream( obj, *file);
+        }
+        else
+        {
+            stringstream ss;
+            ss << "can't handle format: " << format;
+            throw orcalog::FormatNotSupportedException( ERROR_INFO, ss.str() );
+        }
+    }
+
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -764,6 +836,62 @@ GpsLogWriter::write( const orca::GpsDescription &descr )
                orcalog::LogWriter::logWriterInfo().context,
                descr );
 }
+
+//////////////////////////////////////////////////////////////////////
+
+void
+ImageLogWriter::checkFormat( const std::string &format )
+{
+    checkFormatIceOnly( format );
+}
+void 
+ImageLogWriter::write( const orca::ImageDataPtr &obj, const orca::Time &arrivalTime  )
+{
+    writeReferenceToMasterFile(arrivalTime);
+    logToFile( file_,
+               orcalog::LogWriter::logWriterInfo().format,
+               orcalog::LogWriter::logWriterInfo().context,
+               obj );
+}
+void 
+ImageLogWriter::write( const orca::ImageDescriptionPtr &descr )
+{
+    if ( orcalog::LogWriter::numItemsLogged() > 0 )
+        throw orcalog::Exception( ERROR_INFO, "Tried to write description after logging started" );
+    logToFile( file_,
+               orcalog::LogWriter::logWriterInfo().format,
+               orcalog::LogWriter::logWriterInfo().context,
+               descr );
+}
+
+//////////////////////////////////////////////////////////////////////
+
+void
+CameraLogWriter::checkFormat( const std::string &format )
+{
+    checkFormatIceOnly( format );
+}
+void 
+CameraLogWriter::write( const orca::CameraDataPtr &obj, const orca::Time &arrivalTime  )
+{
+    writeReferenceToMasterFile(arrivalTime);
+    logToFile( file_,
+               orcalog::LogWriter::logWriterInfo().format,
+               orcalog::LogWriter::logWriterInfo().context,
+               obj );
+}
+
+void 
+CameraLogWriter::write( const orca::ImageDescriptionPtr &descr )
+{
+    if ( orcalog::LogWriter::numItemsLogged() > 0 )
+        throw orcalog::Exception( ERROR_INFO, "Tried to write description after logging started" );
+    logToFile( file_,
+               orcalog::LogWriter::logWriterInfo().format,
+               orcalog::LogWriter::logWriterInfo().context,
+               descr );
+}
+
 
 }
 

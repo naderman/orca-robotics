@@ -248,6 +248,66 @@ namespace orcalogfactory {
             }
     };
 
+    //////////////////////////////////////////////////////////////////////
+
+    class ImageAutoLogger : public GenericAutoLogger<orca::ImageDataPtr,
+                                                            orca::ImageConsumer,
+                                                            orca::ImageConsumerPrx,
+                                                            orca::ImagePrx,
+                                                            ImageLogWriter>
+    {
+    private:
+        void setup( orca::ImagePrx &objectPrx, ImageLogWriter &logWriter )
+            {
+                logWriter.write( objectPrx->getDescription() );
+            }
+    };
+
+    //////////////////////////////////////////////////////////////////////
+
+    class CameraAutoLogger : public orca::ImageConsumer, public orcalog::AutoLogger
+    {
+    public:
+        virtual ~CameraAutoLogger() {}
+
+        virtual void setData(const orca::ImageDataPtr& data, const Ice::Current&)
+            { 
+                // we assume that the data is really CameraDataPtr but it has to be cast
+                // @todo: what if it's not the right type?
+                orca::CameraDataPtr cameraData = orca::CameraDataPtr::dynamicCast( data );
+                logWriter_->write(cameraData,orcaice::getNow());
+            }
+
+        virtual void init( const orcalog::LogWriterInfo &logWriterInfo, 
+                           orcalog::MasterFileWriter    &masterFileWriter )
+            {
+                logWriter_.reset( new CameraLogWriter );
+                logWriter_->checkFormat( logWriterInfo.format );
+                logWriter_->init( logWriterInfo, masterFileWriter );
+            }
+
+        virtual void startLogging()
+            {
+                orca::CameraPrx objectPrx;
+                orcaice::connectToInterfaceWithTag( logWriter_->logWriterInfo().context,
+                                                    objectPrx,
+                                                    logWriter_->logWriterInfo().interfaceTag );
+
+              //can't get the camera description?
+//                orca::CameraDescriptionPtr descr = objectPrx->getDescription();
+                orca::ImageDescriptionPtr descr = objectPrx->getDescription();
+                logWriter_->write( descr );
+    
+                Ice::ObjectPtr consumer = this;
+                orca::ImageConsumerPrx callbackPrx = 
+                    orcaice::createConsumerInterface<orca::ImageConsumerPrx>( logWriter_->logWriterInfo().context,consumer );
+
+                objectPrx->subscribe( callbackPrx );
+            }
+    private:
+        std::auto_ptr<CameraLogWriter> logWriter_;
+    };
+
 }
 
 #endif

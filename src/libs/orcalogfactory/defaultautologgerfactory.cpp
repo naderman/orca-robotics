@@ -29,6 +29,8 @@ DefaultAutoLoggerFactory::DefaultAutoLoggerFactory()
     addSupportedType("Power");
     addSupportedType("Wifi");
     addSupportedType("Gps");
+    addSupportedType("Camera");
+    addSupportedType("Image");
 }
 
 orcalog::AutoLogger* 
@@ -82,6 +84,14 @@ DefaultAutoLoggerFactory::create( const std::string &interfaceType )
     else if (interfaceType == "Gps")
     {
         logger.reset( new GpsAutoLogger );
+    }
+    else if (interfaceType == "Camera")
+    {
+        logger.reset( new CameraAutoLogger );
+    }
+    else if (interfaceType == "Image")
+    {
+        logger.reset( new ImageAutoLogger );
     }
     else
     {

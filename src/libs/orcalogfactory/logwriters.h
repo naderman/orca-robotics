@@ -14,6 +14,8 @@
 #include <orca/power.h>
 #include <orca/wifi.h>
 #include <orca/gps.h>
+#include <orca/camera.h>
+#include <orca/image.h>
 
 namespace orcalogfactory {
 
@@ -139,6 +141,25 @@ public:
 
 //////////////////////////////////////////////////////////////////////
 
+class ImageLogWriter : public orcalog::LogWriter
+{
+public:
+    void checkFormat( const std::string &format );
+    void write( const orca::ImageDataPtr &obj, const orca::Time &arrivalTime  );
+    void write( const orca::ImageDescriptionPtr &descr );
+};
+
+//////////////////////////////////////////////////////////////////////
+
+class CameraLogWriter : public orcalog::LogWriter
+{
+public:
+    void checkFormat( const std::string &format );
+    void write( const orca::CameraDataPtr &obj, const orca::Time &arrivalTime  );
+    void write( const orca::ImageDescriptionPtr &descr );
+};
+
+//////////////////////////////////////////////////////////////////////
 
 
 }
