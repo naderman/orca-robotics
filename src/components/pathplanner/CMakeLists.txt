@@ -4,10 +4,10 @@ SET( build TRUE )
 GBX_REQUIRE_OPTION( build EXE ${APP_NAME} ON )
 GBX_REQUIRE_VAR( build EXE ${APP_NAME} GBX_OS_LINUX "only Linux OS is supported" )
 
-SET( ext_libs HydroOgMap HydroPathPlan )
+SET( ext_libs HydroOgMap HydroDll )
 GBX_REQUIRE_INSTALLS( build EXE ${APP_NAME} ${ext_libs} )
 
-SET( int_libs OrcaOgMap OrcaObjects )
+SET( int_libs OrcaOgMap OrcaObjects OrcaIfaceImpl )
 GBX_REQUIRE_TARGETS( build EXE ${APP_NAME} ${int_libs} )
 
 IF( build )

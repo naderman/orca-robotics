@@ -14,6 +14,7 @@
 #include <orcaice/subsystemthread.h>
 #include <orcaice/context.h>
 #include <gbxsickacfr/gbxiceutilacfr/buffer.h>
+#include <hydrodll/dynamicload.h>
 
 #include <hydropathplan/hydropathplan.h>
 #include <memory>
@@ -34,8 +35,20 @@ private:
 
     virtual void walk();
 
-    // inerface to the algorithm and its driver
-    std::auto_ptr<hydropathplan::IPathPlanner2d> pathPlanner_;
+    void initNetwork();
+    void initDriver();
+    
+    // The library that contains the driver factory (must be declared first so it's destructed last!!!)
+    std::auto_ptr<hydrodll::DynamicallyLoadedLibrary> driverLib_;
+    // Generic hydro driver
+    std::auto_ptr<hydrointerfaces::PathPlanner2d> hydroDriver_;
+
+    // Configuration for the hydro driver
+    std::auto_ptr<hydrointerfaces::PathPlanner2d::Config> hydroDriverConfig_;
+    // Storage for the graphics publisher
+    std::auto_ptr<hydrointerfaces::PathPlanner2d::QGraphics2dPublisher> graphicsPublisher_;
+
+    // wraps the hydro driver
     std::auto_ptr<Driver>                        driver_;
 
     // we have to keep the ogmap as member variable,
@@ -44,9 +57,6 @@ private:
 
     PathPlanner2dI* pathPlannerI_;
     gbxiceutilacfr::Buffer<orca::PathPlanner2dTask> pathPlannerTaskBuffer_;
-    
-    void initNetwork();
-    void initDriver();
     
     orcaice::Context context_;
     

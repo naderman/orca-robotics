@@ -185,7 +185,7 @@ MainSubsystem::initHardwareDriver()
 
     // Dynamically load the library and find the factory
     std::string driverLibName = 
-        orcaice::getPropertyWithDefault( prop, prefix+"DriverLib", "libOrcaLaser2dSickCarmen.so" );
+        orcaice::getPropertyWithDefault( prop, prefix+"DriverLib", "libHydroLaserScanner2dSickGbx.so" );
     context_.tracer().debug( "MainSubsystem: Loading driver library "+driverLibName, 4 );
     // The factory which creates the driver
     std::auto_ptr<hydrointerfaces::LaserScanner2dFactory> driverFactory;

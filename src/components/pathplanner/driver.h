@@ -12,8 +12,8 @@
 
 #include <orcaice/orcaice.h>
 #include <orca/pathplanner2d.h>
-#include <hydroogmap/hydroogmap.h>
 #include <hydropathplan/hydropathplan.h>
+#include <hydrointerfaces/pathplanner2d.h>
 #include <vector>
 
 namespace pathplanner {
@@ -26,36 +26,28 @@ class Driver
 
 public: 
 
-    Driver( hydropathplan::IPathPlanner2d &pathPlanner,
-            const hydroogmap::OgMap       &ogMap,
-            double                        robotDiameterMetres,
-            double                        traversabilityThreshhold,
-            double                        intermediateMinDistTolerance,
-            // bool                          jiggleWaypointsOntoClearCells,
-            const orcaice::Context       &context );
+    Driver( hydrointerfaces::PathPlanner2d &hydroDriver,
+//             double                   robotDiameterMetres,
+//             double                   traversabilityThreshhold,
+            double                   intermediateWaypointMinDistTolerance,
+            const orcaice::Context  &context );
     
     void computePath( const orca::PathPlanner2dTask &task,
                       orca::Path2d                  &path );
 
 private: 
 
-    hydropathplan::Cell2DVector computePathSegment( double startX,
-                                                    double startY,
-                                                    double endX,
-                                                    double endY );
+    std::vector<hydrointerfaces::PathPlanner2d::Point>
+    computePathSegment( double startX,
+                        double startY,
+                        double endX,
+                        double endY );
 
-    // void jiggleOntoClearCells( orca::Path2d &path );
-
-    hydropathplan::IPathPlanner2d  &pathPlanner_;
-    const hydroogmap::OgMap        &ogMap_;
-//    hydroogmap::OgMap               grownOgMap_;
+    hydrointerfaces::PathPlanner2d &hydroDriver_;
     
-    double traversabilityThreshhold_;
-    double intermediateMinDistTolerance_; 
+//     double traversabilityThreshhold_;
+    double intermediateWaypointMinDistTolerance_; 
     
-//    orca::Path2d jiggledPath_;
-    
-//    bool jiggleWaypointsOntoClearCells_;
     const orcaice::Context context_;
 };
 

@@ -15,14 +15,10 @@
 #include <hydroutil/hydroutil.h>
 #include "mainthread.h"
 #include "pathplanner2dI.h"
-#include "pathplannerfactory.h"
-
 #include <orcaogmap/orcaogmap.h>
-
-#ifdef QT4_FOUND
-    #include "skeletongraphicsI.h"
+#if QT4_FOUND
+#include "qgraphicspublisher.h"
 #endif
-
 
 using namespace std;
 
@@ -63,6 +59,9 @@ MainThread::initNetwork()
     }
     // convert into internal representation
     orcaogmap::convert(ogMapSlice,ogMap_);
+
+    // Store in the conifg structure
+    hydroDriverConfig_.reset( new hydrointerfaces::PathPlanner2d::Config(ogMap_) );
     
     //
     // PROVIDED INTERFACES
@@ -85,39 +84,86 @@ MainThread::initDriver()
     Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag() + ".Config.";
 
-    double traversabilityThreshhold = 
-        orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"TraversabilityThreshhold", 0.3 );
-    double robotDiameterMetres = 
-        orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"RobotDiameterMetres", 0.8 );
+    // Dynamically load the library and find the factory
+    std::string driverLibName = 
+        orcaice::getPropertyWithDefault( prop, prefix+"DriverLib", "libHydroPathPlanner2dAcfr.so" );
+    context_.tracer().debug( "MainSubsystem: Loading driver library "+driverLibName, 4 );
+    // The factory which creates the driver
+    std::auto_ptr<hydrointerfaces::PathPlanner2dFactory> driverFactory;
+
+    try {
+        driverLib_.reset( new hydrodll::DynamicallyLoadedLibrary(driverLibName) );
+        driverFactory.reset( 
+            hydrodll::dynamicallyLoadClass<hydrointerfaces::PathPlanner2dFactory,DriverFactoryMakerFunc>
+            ( *driverLib_, "createDriverFactory" ) );
+    }
+    catch (hydrodll::DynamicLoadException &e)
+    {
+        // unrecoverable error
+        context_.shutdown(); 
+        throw;
+    }
+
+#if QT4_FOUND
+    //
+    // Create the graphics publisher
+    //
+    graphicsPublisher_.reset( new QGraphicsPublisher( context_, "graphics" ) );
+    hydroDriverConfig_->graphicsPublisher = graphicsPublisher_.get();
+#endif
 
     //
-    // Initialise the path-planning algorithm
+    // create the hydro driver
     //
-    PathPlannerFactory pathPlannerFactory( context_ );
     try {
-        pathPlanner_.reset( pathPlannerFactory.getPathPlanner( ogMap_,
-                                                               traversabilityThreshhold,
-                                                               robotDiameterMetres,
-                                                               context_.toHydroContext( context_.tag()+".Config." ) ) );
+        context_.tracer().info( "Creating hydro driver..." );
+        assert( hydroDriverConfig_.get() );
+        hydroDriver_.reset(0);
+        hydroDriver_.reset( driverFactory->createDriver( *hydroDriverConfig_, context_.toHydroContext() ) );
     }
     catch ( ... ) {
         orcaice::catchExceptionsWithStatusAndSleep( "initialising algorithm driver", subStatus() );
 
         // this is a fatal error!
         context_.shutdown();
-    }
+    }    
 
     //
-    // And the Driver to manage it
+    // Create our local driver: a wrapper for the hydro driver
     //
-    double intermediateMinDistTolerance = 
+    double intermediateWaypointMinDistTolerance = 
             orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"IntermediateWaypointMinDistanceTolerance", 1.5 );
-    driver_.reset( new Driver( *pathPlanner_,
-                               ogMap_,
-                               traversabilityThreshhold,
-                               robotDiameterMetres,
-                               intermediateMinDistTolerance,
+    driver_.reset( new Driver( *hydroDriver_,
+                               intermediateWaypointMinDistTolerance,
                                context_ ) );
+
+//     //
+//     // Initialise the path-planning algorithm
+//     //
+//     try {
+//         pathPlanner_.reset( pathPlannerFactory.getPathPlanner( ogMap_,
+//                                                                traversabilityThreshhold,
+//                                                                robotDiameterMetres,
+//                                                                context_.toHydroContext( context_.tag()+".Config." ) ) );
+//     }
+//     catch ( ... ) {
+//         orcaice::catchExceptionsWithStatusAndSleep( "initialising algorithm driver", subStatus() );
+
+//         // this is a fatal error!
+//         context_.shutdown();
+//     }
+
+//     //
+//     // And the Driver to manage it
+//     //
+//     double intermediateMinDistTolerance = 
+//             orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"IntermediateWaypointMinDistanceTolerance", 1.5 );
+//     driver_.reset( new Driver( *pathPlanner_,
+//                                ogMap_,
+//                                traversabilityThreshhold,
+//                                robotDiameterMetres,
+//                                intermediateMinDistTolerance,
+//                                context_ ) );
 
     context_.tracer().debug("driver instantiated",5);
 }
@@ -201,7 +247,7 @@ MainThread::walk()
                 pathData.result = orca::PathOk;
                 pathData.resultDescription = "All good";
             }
-            catch ( hydropathplan::PathStartNotValidException &e )
+            catch ( hydrointerfaces::PathPlanner2d::PathStartNotValidException &e )
             {
                 std::stringstream ss;
                 ss << "Couldn't compute path: " << orcaobj::toVerboseString(task) << endl << "Problem was: " << e.what();
@@ -209,7 +255,7 @@ MainThread::walk()
                 pathData.resultDescription = ss.str();
                 pathData.result = orca::PathStartNotValid;
             }
-            catch ( hydropathplan::PathDestinationNotValidException &e )
+            catch ( hydrointerfaces::PathPlanner2d::PathDestinationNotValidException &e )
             {
                 std::stringstream ss;
                 ss << "Couldn't compute path: " << orcaobj::toVerboseString(task) << endl << "Problem was: " << e.what();
@@ -217,7 +263,7 @@ MainThread::walk()
                 pathData.resultDescription = ss.str();
                 pathData.result = orca::PathDestinationNotValid;
             }
-            catch ( hydropathplan::PathDestinationUnreachableException &e )
+            catch ( hydrointerfaces::PathPlanner2d::PathDestinationUnreachableException &e )
             {
                 std::stringstream ss;
                 ss << "Couldn't compute path: " << orcaobj::toVerboseString(task) << endl << "Problem was: " << e.what();
@@ -225,7 +271,7 @@ MainThread::walk()
                 pathData.resultDescription = ss.str();
                 pathData.result = orca::PathDestinationUnreachable;
             }
-            catch ( hydropathplan::Exception &e )
+            catch ( hydrointerfaces::PathPlanner2d::Exception &e )
             {
                 std::stringstream ss;
                 ss << "Couldn't compute path: " << orcaobj::toVerboseString(task) << endl << "Problem was: " << e.what();

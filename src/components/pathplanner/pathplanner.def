@@ -12,20 +12,23 @@ Requires.OgMap.Type=OgMap
 Requires.OgMap.DefaultProxy=ogmap@local/ogmaploader
 
 # Config Parameters
-Config.Algorithm.Comment=Options are { 'simplenav', 'skeletonnav', 'sparseskeletonnav', 'astar' }
-Config.Algorithm.Default=sparseskeletonnav
+Config.DriverLib.Default=libHydroPathPlanner2dAcfr.so
 
-Config.TraversabilityThreshhold.Default=0.3
-Config.RobotDiameterMetres.Default=0.8
-Config.DoPathOptimization.Default=1
-Config.JiggleWaypointsOntoClearCells.Default=1
+Config.Acfr.Algorithm.Comment=Options are { 'simplenav', 'skeletonnav', 'sparseskeletonnav', 'astar' }
+Config.Acfr.Algorithm.Default=sparseskeletonnav
+
+Config.Acfr.TraversabilityThreshhold.Default=0.3
+Config.Acfr.RobotDiameterMetres.Default=0.8
+Config.Acfr.DoPathOptimization.Default=1
+Config.Acfr.JiggleWaypointsOntoClearCells.Default=1
+
+Config.Acfr.Skeleton.Cost.DistanceThreshold.Default=0.3
+Config.Acfr.Skeleton.Cost.CostMultiplier.Default=10.0
+Config.Acfr.Skeleton.SparseSkelAddExtraNodes.Default=1
+Config.Acfr.Skeleton.SparseSkelExtraNodeResolution.Default=5.0
+Config.Acfr.Skeleton.ProvideGraphics.Default=1
+
 Config.IntermediateWaypointMinDistanceTolerance.Default=1.5
-
-Config.Skeleton.Cost.DistanceThreshold.Default=0.3
-Config.Skeleton.Cost.CostMultiplier.Default=10.0
-Config.Skeleton.SparseSkelAddExtraNodes.Default=1
-Config.Skeleton.SparseSkelExtraNodeResolution.Default=5.0
-Config.Skeleton.ProvideGraphics.Default=1
 
 # Ice default message size too small for displaying debugging graphics on large maps
 ExternalConfig.Ice.MessageSizeMax.Default=3000
