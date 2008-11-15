@@ -119,6 +119,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
   - all components which subscribe to remote interfaces now attempt to unsubscribe before stopping. (alexm)
   - all components catch exeptions in a consise and standardised manner using new orcaice:: functions. (alexm)
 
+- pathplanner
+  - Shoveled a lot of ugly code out into hydro.  Now makes use of a hydro driver, loaded dynamically. (alexb)
+
 - Laser2d, LaserMon
   - converted to new Subsystem implementation. (alexm)
 
