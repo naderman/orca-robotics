@@ -13,7 +13,7 @@
 #include <memory>
 #include <orcaice/subsystemthread.h>
 #include <orcaice/context.h>
-#include <orcaifaceimpl/propertiesImpl.h>
+#include <orcaifaceimpl/properties.h>
 #include "propertydb.h"
 
 namespace propserver {

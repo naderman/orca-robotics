@@ -11,12 +11,12 @@
 #define MAINTHREAD_H
 
 #include <orca/velocitycontrol2d.h>
-#include <orca/localise2d.h>
-#include <orca/rangescanner2d.h>
+#include <orcaifaceimpl/rangescanner2d.h>
+#include <orcaifaceimpl/localise2d.h>
+#include <orcaifaceimpl/odometry2d.h>
 #include <orcaice/context.h>
 #include <orcaice/subsystemthread.h>
 #include <gbxsickacfr/gbxiceutilacfr/store.h>
-#include <orcaifaceimpl/storingconsumers.h>
 #include "speedlimiter.h"
 #include "pathmaintainer.h"
 #include "clock.h"

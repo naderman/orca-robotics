@@ -1,25 +1,23 @@
 #ifndef ORCA_PATHFOLLOWER2D_IMPL_H
 #define ORCA_PATHFOLLOWER2D_IMPL_H
 
-// include defnition of Ice runtime
-#include <Ice/Ice.h>
-#include <IceStorm/IceStorm.h>
-
-// include provided interfaces
+#include <memory>
 #include <orca/pathfollower2d.h>
-
-// utilities
 #include <gbxsickacfr/gbxiceutilacfr/store.h>
 #include <orcaice/context.h>
+#include <orcaice/topichandler.h>
 
 namespace gbxiceutilacfr { class Thread; }
 
 namespace orcaifaceimpl
 {
 
-class PathFollowerCallback {
+//!
+//! @brief PathFollower2dImpl needs a pointer to a callback object implementing these.
+//!
+class AbstractPathFollowerCallback {
 public:
-    virtual ~PathFollowerCallback() {}
+    virtual ~AbstractPathFollowerCallback() {}
 
     virtual void setData( const orca::PathFollower2dData &path, bool activateImmediately )=0;
     virtual void activateNow()=0;
@@ -39,11 +37,11 @@ friend class PathFollower2dI;
 
 public:
     //! Constructor using interfaceTag (may throw ConfigFileException)
-    PathFollower2dImpl( PathFollowerCallback    &callback,
+    PathFollower2dImpl( AbstractPathFollowerCallback    &callback,
                         const std::string       &interfaceTag, 
                         const orcaice::Context  &context );
     //! constructor using interfaceName
-    PathFollower2dImpl( PathFollowerCallback    &callback,
+    PathFollower2dImpl( AbstractPathFollowerCallback    &callback,
                         const orcaice::Context  &context,
                         const std::string       &interfaceName );
     ~PathFollower2dImpl();
@@ -66,25 +64,22 @@ public:
     void localSetEnabledState( bool enabledState );
 
 private:
+    void init();
+
     // remote call implementations, mimic (but do not inherit) the orca interface
     ::orca::PathFollower2dData internalGetData() const;
-    void internalSubscribe(const ::orca::PathFollower2dConsumerPrx&);
-    void internalUnsubscribe(const ::orca::PathFollower2dConsumerPrx& );
+    IceStorm::TopicPrx internalSubscribe(const orca::PathFollower2dConsumerPrx& subscriber);
 
     gbxiceutilacfr::Store<orca::PathFollower2dData> dataStore_;
 
-    orca::PathFollower2dConsumerPrx    publisherPrx_;
-    IceStorm::TopicPrx       topicPrx_;
+    typedef orcaice::TopicHandler<orca::PathFollower2dConsumerPrx,orca::PathFollower2dData> PathFollower2dTopicHandler;
+    std::auto_ptr<PathFollower2dTopicHandler> topicHandler_;
 
-    // Hang onto this so we can remove from the adapter and control when things get deleted
-    Ice::ObjectPtr          ptr_;
+    AbstractPathFollowerCallback &callback_;
 
-    const std::string        interfaceName_;
-    const std::string        topicName_;
-
-    PathFollowerCallback &callback_;
-
-    orcaice::Context         context_;
+    Ice::ObjectPtr ptr_;
+    const std::string interfaceName_;
+    orcaice::Context context_;
 };
 typedef IceUtil::Handle<PathFollower2dImpl> PathFollower2dImplPtr;
 

@@ -17,7 +17,7 @@
 #include <hydrodll/dynamicload.h>
 
 // remote interface
-#include <orcaifaceimpl/cameraImpl.h>
+#include <orcaifaceimpl/camera.h>
 
 namespace cameraserver {
 

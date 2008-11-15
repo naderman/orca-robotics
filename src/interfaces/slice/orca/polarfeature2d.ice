@@ -11,9 +11,9 @@
 #ifndef ORCA2_POLARFEATURE_INTERFACE_ICE
 #define ORCA2_POLARFEATURE_INTERFACE_ICE
 
-#include <orca/datetime.ice>
+#include <orca/common.ice>
 #include <orca/bros1.ice>
-#include <orca/exceptions.ice>
+#include <IceStorm/IceStorm.ice>
 
 module orca
 {
@@ -156,34 +156,23 @@ interface PolarFeature2dConsumer
 //! Interface to features in a polar coordinate system.
 interface PolarFeature2d
 {
+    //! Returns device description.
+    idempotent PolarFeature2dDescription getDescription();
+
     //! Returns the latest data.
     //! @note In Orca1 this would be called ClientPull_Supplier interface.
     idempotent PolarFeature2dData getData()
             throws DataNotExistException;
 
-    //! Returns device description.
-    idempotent PolarFeature2dDescription getDescription();
-
-    /*!
-     * Mimics IceStorm's subscribe() but without QoS, for now. The
-     * implementation may choose to implement the data push internally
-     * or use IceStorm. This choice is transparent to the subscriber.
-     *
-     * @param subscriber The subscriber's proxy.
-     *
-     * @see unsubscribe
-     */
-    void subscribe( PolarFeature2dConsumer *subscriber )
-            throws SubscriptionFailedException;
-    
-    /*!
-     * Unsubscribe the given @p subscriber.
-     *
-     * @param subscriber The proxy of an existing subscriber.
-     *
-     * @see subscribe
-     */
-    idempotent void unsubscribe( PolarFeature2dConsumer *subscriber );
+    //! Tries to subscribe the specified subscriber for data updates.
+    //! If successfuly, returns a proxy to the IceStorm topic which can be later used by the 
+    //! client to unsubscribe itself. For reference, the Slice definition of the Topic
+    //! interface for unsubscribing:
+    //! @verbatim
+    //! idempotent void unsubscribe(Object* subscriber);
+    //! @endverbatim
+    IceStorm::Topic* subscribe( PolarFeature2dConsumer* subscriber )
+        throws SubscriptionFailedException;
 };
 
 //!  //@}

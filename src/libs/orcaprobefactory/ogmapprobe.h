@@ -12,8 +12,7 @@
 #define ORCA_ORCAPROBEFACTORY_OGMAP_INTERFACE_PROBE_H
 
 #include <orcaprobe/interfaceprobe.h>
-#include <orca/ogmap.h>
-#include <orcaifaceimpl/printingconsumers.h>
+#include <orcaifaceimpl/ogmap.h>
 
 namespace orcaprobefactory
 {
@@ -25,7 +24,6 @@ public:
 
     OgMapProbe( const orca::FQInterfaceName& name, const Ice::ObjectPrx& adminPrx, orcaprobe::AbstractDisplay& display,
                                 const orcaice::Context& context );
-    ~OgMapProbe();
 
     virtual int loadOperationEvent( const int index, orcacm::OperationData & data );
 

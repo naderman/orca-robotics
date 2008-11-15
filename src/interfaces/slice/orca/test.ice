@@ -11,6 +11,8 @@
 #ifndef ORCA_TEST_ICE
 #define ORCA_TEST_ICE
 
+#include <orca/containers.ice>
+
 // example of including another orca Slice file with classes
 // they are slightly different: polarfeature2d has derived types in the same file with
 // the base, and rangescanner2d does not.
@@ -66,6 +68,8 @@ class MyClass2 extends MyClass0
 struct MyStruct1
 {   
     MyStruct0 mStruct;
+    orca::FloatSeq mOrcaSeq;
+    MyStruct0Seq mSeq;
     MyClass0 mClass;
 };
 

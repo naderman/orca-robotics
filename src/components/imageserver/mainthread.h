@@ -17,7 +17,7 @@
 #include <hydrodll/dynamicload.h>
 
 // remote interface
-#include <orcaifaceimpl/imageImpl.h>
+#include <orcaifaceimpl/image.h>
 
 namespace imageserver {
 

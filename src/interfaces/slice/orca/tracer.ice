@@ -13,6 +13,7 @@
 
 #include <orca/common.ice>
 #include <orca/ocm.ice>
+#include <IceStorm/IceStorm.ice>
 
 module orca
 {
@@ -101,22 +102,15 @@ interface Tracer
     //! Set verbosity level for traces transmitted over the network.
     idempotent void setVerbosity( TracerVerbosityConfig verbosity );
 
-    /*!
-     * Mimics IceStorm's subscribe() but without QoS, for now. The
-     * implementation may choose to implement the data push internally
-     * or use IceStorm. This choice is transparent to the subscriber.
-     *
-     * @see unsubscribe
-     */
-    void subscribe( TracerConsumer* subscriber )
+    //! Tries to subscribe the specified subscriber for data updates.
+    //! If successfuly, returns a proxy to the IceStorm topic which can be later used by the 
+    //! client to unsubscribe itself. For reference, the Slice definition of the Topic
+    //! interface for unsubscribing:
+    //! @verbatim
+    //! idempotent void unsubscribe(Object* subscriber);
+    //! @endverbatim
+    IceStorm::Topic* subscribe( TracerConsumer* subscriber )
         throws SubscriptionFailedException;
-    
-    /*!
-     * Unsubscribe an existing subscriber from component messages
-     *
-     * @see subscribe
-     */
-    idempotent void unsubscribe( TracerConsumer* subscriber );
 };
 
 

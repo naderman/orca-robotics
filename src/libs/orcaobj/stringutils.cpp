@@ -546,16 +546,6 @@ toString( const orca::CameraDescriptionPtr& obj )
 }
 
 std::string 
-toString( const orca::CpuInfo& obj )
-{
-    std::ostringstream s;
-    //s << toString(obj.timeStamp)
-    s  << " CpuInfo: info = " << obj.info <<endl;
-
-    return s.str();
-}
-
-std::string 
 toString( const orca::CpuData& obj )
 {
     std::ostringstream s;
@@ -591,15 +581,6 @@ toString( const orca::DriveBicycleData& obj )
 }
 
 std::string 
-toString( const orca::EStopData& obj )
-{
-    std::ostringstream s;
-    s << toString(obj.timeStamp);
-    s << " isEStopActivated: "<< obj.isEStopActivated; 
-    return s.str();
-}
-
-std::string 
 toString( const orca::GpsDescription& obj )
 {
     std::ostringstream s;
@@ -611,34 +592,6 @@ toString( const orca::GpsDescription& obj )
         << "antennaOffset.orientation.roll   " << RAD2DEG(obj.antennaOffset.o.r) << "deg\n"
         << "antennaOffset.orientation.pitch  " << RAD2DEG(obj.antennaOffset.o.p) << "deg\n"
         << "antennaOffset.orientation.yaw    " << RAD2DEG(obj.antennaOffset.o.y) << "deg\n";
-    return s.str();
-}
-
-std::string 
-toString( const orca::GpsData&  obj )
-{
-    std::ostringstream s;
-    s   << toString(obj.timeStamp) <<"\n"
-        << " UTC: " << toString(obj.utcTime) << "\n"
-        << " Gps (latitude,longitude,altitude) : ("
-        << obj.latitude << ","
-        << obj.longitude << ","
-        << obj.altitude << ")" << "\n"
-        << " Gps (horizontalPositionError,verticalPositionError) : ("
-        << std::setprecision(6)
-        << obj.horizontalPositionError<< ","
-        << obj.verticalPositionError << "\n"
-        << " Gps (heading,speed,climbrate) : ("
-        << obj.heading << ","
-        << obj.speed << ","
-        << obj.climbRate << ")" << "\n"
-        << " Gps (satellites,l1,l2,positionType,geoidalSeparation) : ("
-        << obj.satellites << ","
-        << obj.observationCountOnL1 << ","
-        << obj.observationCountOnL2 << ","
-        << ifaceutil::toString(obj.positionType) << ","
-        << obj.geoidalSeparation << ")";
-
     return s.str();
 }
 

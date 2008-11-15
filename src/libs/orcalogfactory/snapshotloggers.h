@@ -256,7 +256,7 @@ namespace orcalogfactory {
                 orcaice::connectToInterfaceWithTag( logWriter.logWriterInfo().context,
                                                     objectPrx,
                                                     logWriter.logWriterInfo().interfaceTag );
-                logWriter.write( objectPrx->getVehicleGeometry() );
+                logWriter.write( objectPrx->getDescription() );
             }
     };
 
@@ -276,7 +276,7 @@ namespace orcalogfactory {
                 orcaice::connectToInterfaceWithTag( logWriter.logWriterInfo().context,
                                                     objectPrx,
                                                     logWriter.logWriterInfo().interfaceTag );
-                logWriter.write( objectPrx->getVehicleGeometry() );
+                logWriter.write( objectPrx->getDescription() );
             }
     };
 

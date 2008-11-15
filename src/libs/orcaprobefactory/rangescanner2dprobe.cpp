@@ -12,7 +12,6 @@
 #include <orcaice/orcaice.h>
 #include <orcacm/orcacm.h>
 #include <orcaprobe/orcaprobe.h>
-#include <orcaifaceutil/rangescanner2d.h>
 
 #include "rangescanner2dprobe.h"
 
@@ -31,10 +30,6 @@ RangeScanner2dProbe::RangeScanner2dProbe( const orca::FQInterfaceName& name, con
     addOperation( "unsubscribe",    "idempotent void unsubscribe( RangeScanner2dConsumer *subscriber )" );
 
     consumer_ = new orcaifaceimpl::PrintingRangeScanner2dConsumerImpl( context,1000,1 );
-}
-    
-RangeScanner2dProbe::~RangeScanner2dProbe()
-{
 }
 
 int 
@@ -81,7 +76,7 @@ RangeScanner2dProbe::loadSubscribe( orcacm::OperationData& data )
 int 
 RangeScanner2dProbe::loadUnsubscribe( orcacm::OperationData& data )
 {
-    consumer_->unsubscribeWithString( orcaice::toString(name_) );
+    consumer_->unsubscribe();
     orcaprobe::reportUnsubscribed( data );
     return 0;
 }

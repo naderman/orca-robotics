@@ -1,15 +1,15 @@
 #ifndef LOCALNAV_PATHFOLLOWERINTERFACE_H
 #define LOCALNAV_PATHFOLLOWERINTERFACE_H
 
-#include <orcaifaceimpl/pathfollower2dImpl.h>
+#include <orcaifaceimpl/pathfollower2d.h>
 #include "clock.h"
 
 namespace localnav {
 
-//!
-//! @author Alex Brooks
-//!
-class PathFollowerInterface : public orcaifaceimpl::PathFollowerCallback
+//
+// @author Alex Brooks
+//
+class PathFollowerInterface : public orcaifaceimpl::AbstractPathFollowerCallback
 {
 
 public: 
@@ -18,7 +18,7 @@ public:
                            const std::string &interfaceTag,
                            const orcaice::Context &context );
 
-    void initInterface() { pathFollower2dImpl_->initInterface(); }
+    void initInterface();
 
     // Allow localnav's internals to increment the waypoint index
     void updateWaypointIndex( int index );
@@ -29,13 +29,13 @@ public:
                           orca::Time               &pathStartTime );
 
     // From orcaifaceimpl::PathFollowerCallback
-    void setData( const orca::PathFollower2dData &pathData, bool activateImmediately );
-    void activateNow();
-    int  getWaypointIndex() const;
-    bool getAbsoluteActivationTime( orca::Time &activationTime ) const;
-    bool getRelativeActivationTime( double &secondsSinceActivation ) const;
-    void setEnabled( bool enabled );
-    bool enabled() const;
+    virtual void setData( const orca::PathFollower2dData &pathData, bool activateImmediately );
+    virtual void activateNow();
+    virtual int  getWaypointIndex() const;
+    virtual bool getAbsoluteActivationTime( orca::Time &activationTime ) const;
+    virtual bool getRelativeActivationTime( double &secondsSinceActivation ) const;
+    virtual void setEnabled( bool enabled );
+    virtual bool enabled() const;
 
 private: 
 

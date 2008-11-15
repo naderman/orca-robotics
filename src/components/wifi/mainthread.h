@@ -12,7 +12,7 @@
 #define ORCA_WIFI_MAINTHREAD_H
 
 #include <orcaice/subsystemthread.h>
-#include <orcaifaceimpl/wifiImpl.h>
+#include <orcaifaceimpl/wifi.h>
 
 namespace wifi
 {

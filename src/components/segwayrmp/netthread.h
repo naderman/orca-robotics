@@ -14,11 +14,11 @@
 #include <orcaice/subsystemthread.h>
 #include <orcaice/context.h>
 
-#include <orcaifaceimpl/odometry2dImpl.h>
-#include <orcaifaceimpl/odometry3dImpl.h>
-#include <orcaifaceimpl/powerImpl.h>
-#include <orcaifaceimpl/velocitycontrol2dImpl.h>
-#include <orcaifaceimpl/estopImpl.h>
+#include <orcaifaceimpl/odometry2d.h>
+#include <orcaifaceimpl/odometry3d.h>
+#include <orcaifaceimpl/power.h>
+#include <orcaifaceimpl/velocitycontrol2d.h>
+#include <orcaifaceimpl/estop.h>
 #include "hwthread.h"
 
 namespace segwayrmp

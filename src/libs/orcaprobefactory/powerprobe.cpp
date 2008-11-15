@@ -12,7 +12,6 @@
 #include <orcaice/orcaice.h>
 #include <orcacm/orcacm.h>
 #include <orcaprobe/orcaprobe.h>
-#include <orcaifaceutil/power.h>
 
 #include "powerprobe.h"
 
@@ -31,11 +30,7 @@ PowerProbe::PowerProbe( const orca::FQInterfaceName& name, const Ice::ObjectPrx&
 
     consumer_ = new orcaifaceimpl::PrintingPowerConsumerImpl( context,1000,1 );
 }
-    
-PowerProbe::~PowerProbe()
-{
-}
-    
+
 int 
 PowerProbe::loadOperationEvent( const int index, orcacm::OperationData & data )
 {
@@ -70,7 +65,7 @@ PowerProbe::loadSubscribe( orcacm::OperationData& data )
 int 
 PowerProbe::loadUnsubscribe( orcacm::OperationData& data )
 {
-    consumer_->unsubscribeWithString( orcaice::toString(name_) );
+    consumer_->unsubscribe();
     orcaprobe::reportUnsubscribed( data );
     return 0;
 }

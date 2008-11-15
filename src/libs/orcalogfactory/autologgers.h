@@ -160,7 +160,7 @@ namespace orcalogfactory {
     private:
         void setup( orca::Localise2dPrx &objectPrx, Localise2dLogWriter &logWriter )
             {
-                logWriter.write( objectPrx->getVehicleGeometry() );
+                logWriter.write( objectPrx->getDescription() );
             }
     };
 
@@ -175,7 +175,7 @@ namespace orcalogfactory {
     private:
         void setup( orca::Localise3dPrx &objectPrx, Localise3dLogWriter &logWriter )
             {
-                logWriter.write( objectPrx->getVehicleGeometry() );
+                logWriter.write( objectPrx->getDescription() );
             }
     };
 

@@ -15,6 +15,7 @@
 #include <orca/bros1.ice>
 #include <orca/stochastic.ice>
 #include <orca/vehicledescription.ice>
+#include <IceStorm/IceStorm.ice>
 
 module orca
 {
@@ -63,34 +64,22 @@ interface Localise2dConsumer
 */
 interface Localise2d
 {
+    //! Get the geometry of the localised vehicle
+    idempotent VehicleGeometryDescription getDescription();
+
     //! Returns the latest data.
     idempotent Localise2dData getData()
             throws DataNotExistException;
     
-    //! Get the geometry of the localised vehicle
-    idempotent VehicleGeometryDescription getVehicleGeometry();
-
-    /*!
-     * Mimics IceStorm's subscribe(). @p subscriber is typically a direct proxy to the consumer object.
-     * The implementation may choose to implement the push directly or use IceStorm.
-     * This choice is transparent to the subscriber. The case when the @p subscriber is already subscribed
-     * is quietly ignored.
-     *
-     * @see unsubscribe
-     */
-    void subscribe( Localise2dConsumer* subscriber )
+    //! Tries to subscribe the specified subscriber for data updates.
+    //! If successfuly, returns a proxy to the IceStorm topic which can be later used by the 
+    //! client to unsubscribe itself. For reference, the Slice definition of the Topic
+    //! interface for unsubscribing:
+    //! @verbatim
+    //! idempotent void unsubscribe(Object* subscriber);
+    //! @endverbatim
+    IceStorm::Topic* subscribe( Localise2dConsumer* subscriber )
         throws SubscriptionFailedException;
-
-    // for reference, this is what IceStorm's subscribe function looks like.
-    //void subscribe(QoS theQoS, Object* subscriber);
-
-    /*!
-     * Unsubscribe an existing @p subscriber. The case when the @p subscriber is not subscribed
-     * is quietly ignored.
-     *
-     * @see subscribe
-     */
-    idempotent void unsubscribe( Localise2dConsumer* subscriber );
 };
 
 

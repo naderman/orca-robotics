@@ -24,6 +24,10 @@ namespace goalplanner {
 
 //
 // Implements the PathFollower interface: Handles all our remote calls.
+// NOTE: cannot easily reuse orcaifaceimpl::PathFollower2dImpl because of a custom implementation
+// of subscribe()
+//
+// TODO: convert to a modern Impl style.
 //
 class PathFollower2dI : public orca::PathFollower2d
 {
@@ -32,8 +36,6 @@ public:
                      gbxiceutilacfr::Store<bool> &activationPipe,
                      orca::PathFollower2dPrx localNavPrx,
                      const orcaice::Context &context );
-
-    // remote calls:
 
     // Get the current path
     virtual ::orca::PathFollower2dData getData(const ::Ice::Current& = ::Ice::Current());
@@ -53,13 +55,8 @@ public:
     virtual void setEnabled( bool enabled, const ::Ice::Current& = ::Ice::Current() );
     virtual bool enabled(const ::Ice::Current& = ::Ice::Current());
 
-    // Subscribe people
-    virtual void subscribe(const ::orca::PathFollower2dConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
-
-    // Unsubscribe people
-    virtual void unsubscribe(const ::orca::PathFollower2dConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
-
-
+    // NOTE: unusual implemenation!
+    virtual IceStorm::TopicPrx subscribe(const ::orca::PathFollower2dConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
 
 private:
 

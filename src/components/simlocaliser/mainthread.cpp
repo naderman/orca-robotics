@@ -12,7 +12,7 @@
 #include <orcaice/orcaice.h>
 #include <orcaobj/orcaobj.h>
 #include <orcaifaceutil/localise2d.h>
-#include <orcaifaceimpl/localise2dImpl.h>
+#include <orcaifaceimpl/localise2d.h>
 
 #include "mainthread.h"
 #include "staticdriver.h"

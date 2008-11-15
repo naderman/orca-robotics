@@ -12,7 +12,6 @@
 #include <orcaice/orcaice.h>
 #include <orcacm/orcacm.h>
 #include <orcaprobe/orcaprobe.h>
-#include <orcaifaceutil/localise3d.h>
 
 #include "localise3dprobe.h"
 
@@ -31,10 +30,6 @@ Localise3dProbe::Localise3dProbe( const orca::FQInterfaceName& name, const Ice::
     addOperation( "unsubscribe" );
 
     consumer_ = new orcaifaceimpl::PrintingLocalise3dConsumerImpl( context,1000,1 );
-}
-    
-Localise3dProbe::~Localise3dProbe()
-{
 }
 
 int 
@@ -80,7 +75,7 @@ Localise3dProbe::loadSubscribe( orcacm::OperationData& data )
 int 
 Localise3dProbe::loadUnsubscribe( orcacm::OperationData& data )
 {    
-    consumer_->unsubscribeWithString( orcaice::toString(name_) );
+    consumer_->unsubscribe();
     orcaprobe::reportUnsubscribed( data );
     return 0;
 }

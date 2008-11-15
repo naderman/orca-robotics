@@ -12,8 +12,6 @@
 #define ORCA_ORCAIFACEIMPL_VELOCITYCONTROL2D_IMPL_H
 
 #include <orca/velocitycontrol2d.h>
-#include <IceStorm/IceStorm.h>
-
 #include <gbxsickacfr/gbxiceutilacfr/store.h>
 #include <gbxsickacfr/gbxiceutilacfr/notify.h>
 #include <orcaice/context.h>
@@ -49,6 +47,7 @@ public:
     void initInterface( gbxiceutilacfr::Thread* thread, const std::string& subsysName="", int retryInterval=2 );
 
 private:
+    void init();
 
     // remote call implementations, mimic (but do not inherit) the orca interface
     orca::VehicleDescription internalGetDescription() const
@@ -56,14 +55,10 @@ private:
     void internalSetCommand( const ::orca::VelocityControl2dData& );
 
     const orca::VehicleDescription    description_;
-    const std::string                 interfaceName_;
-    const std::string                 topicName_;
-    IceStorm::TopicPrx                topicPrx_;
 
-    orcaice::Context                  context_;
-
-    // Hang onto this so we can remove from the adapter and control when things get deleted
-    Ice::ObjectPtr          ptr_;
+    Ice::ObjectPtr ptr_;
+    const std::string interfaceName_;
+    orcaice::Context context_;
 };
 typedef IceUtil::Handle<VelocityControl2dImpl> VelocityControl2dImplPtr;
 

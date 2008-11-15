@@ -13,6 +13,7 @@
 
 #include <orca/common.ice>
 #include <orca/vehicledescription.ice>
+#include <IceStorm/IceStorm.ice>
 
 module orca
 {
@@ -86,25 +87,15 @@ interface DriveBicycle
     idempotent void setCommand( DriveBicycleCommand data )
             throws HardwareFailedException;    
 
-    /*!
-     * Mimics IceStorm's subscribe(). @p subscriber is typically a direct proxy to the consumer object.
-     * The implementation may choose to implement the push directly or use IceStorm.
-     * This choice is transparent to the subscriber. The case when the @p subscriber is already subscribed
-     * is quietly ignored.
-     *
-     * @see unsubscribe
-     */
-    void subscribe( DriveBicycleConsumer* subscriber )
-            throws SubscriptionFailedException;
-
-    /*!
-     * Unsubscribe an existing @p subscriber. The case when the @p subscriber is not subscribed
-     * is quietly ignored.
-     *
-     * @see subscribe
-     */
-    idempotent void unsubscribe( DriveBicycleConsumer* subscriber );
-
+    //! Tries to subscribe the specified subscriber for data updates.
+    //! If successfuly, returns a proxy to the IceStorm topic which can be later used by the 
+    //! client to unsubscribe itself. For reference, the Slice definition of the Topic
+    //! interface for unsubscribing:
+    //! @verbatim
+    //! idempotent void unsubscribe(Object* subscriber);
+    //! @endverbatim
+    IceStorm::Topic* subscribe( DriveBicycleConsumer* subscriber )
+        throws SubscriptionFailedException;
 };
 
 //! @}

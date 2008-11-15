@@ -25,6 +25,12 @@ PathFollowerInterface::PathFollowerInterface( const Clock &clock,
 }
 
 void
+PathFollowerInterface::initInterface()
+{ 
+    pathFollower2dImpl_->initInterface(); 
+}
+
+void
 PathFollowerInterface::setData( const orca::PathFollower2dData &pathData, bool activateImmediately )
 {
     stringstream ss;

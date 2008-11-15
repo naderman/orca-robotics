@@ -12,7 +12,6 @@
 #include <orcaice/orcaice.h>
 #include <orcacm/orcacm.h>
 #include <orcaprobe/orcaprobe.h>
-#include <orcaifaceutil/tracer.h>
 
 #include "tracerprobe.h"
 
@@ -30,8 +29,7 @@ TracerProbe::TracerProbe( const orca::FQInterfaceName& name, const Ice::ObjectPr
     addOperation( "subscribe",      "void subscribe( StatusConsumer *subscriber )" );
     addOperation( "unsubscribe",    "idempotent void unsubscribe( StatusConsumer *subscriber )" );
 
-    Ice::ObjectPtr consumer = this;
-    callbackPrx_ = orcaice::createConsumerInterface<orca::TracerConsumerPrx>( ctx_, consumer );
+    consumer_ = new orcaifaceimpl::PrintingTracerConsumerImpl( context,1000,1 );
 }
     
 int 
@@ -104,47 +102,16 @@ TracerProbe::loadSetVerbosity( orcacm::OperationData& data )
 int 
 TracerProbe::loadSubscribe( orcacm::OperationData& data )
 {
-    try
-    {
-        orca::TracerPrx derivedPrx = orca::TracerPrx::checkedCast(prx_);
-        derivedPrx->subscribe( callbackPrx_ );
-        orcaprobe::reportSubscribed( data );
-
-        // save the op data structure so we can use it when the data arrives
-        subscribeOperationData_ = data;
-    }
-    catch( const Ice::Exception& e )
-    {
-        stringstream ss;
-        ss<<e<<endl;
-        orcaprobe::reportException( data, ss.str() );
-    }
+    consumer_->subscribeWithString( orcaice::toString(name_) );
+    orcaprobe::reportSubscribed( data, consumer_->consumerPrx()->ice_toString() );
     return 0;
 }
 
 int 
 TracerProbe::loadUnsubscribe( orcacm::OperationData& data )
 {
-    try
-    {
-        orca::TracerPrx derivedPrx = orca::TracerPrx::checkedCast(prx_);
-        derivedPrx->unsubscribe( callbackPrx_ );
-        orcaprobe::reportUnsubscribed( data );
-    }
-    catch( const Ice::Exception& e )
-    {
-        stringstream ss;
-        ss<<e<<endl;
-        orcaprobe::reportException( data, ss.str() );
-    }
+    consumer_->unsubscribe();
+    orcaprobe::reportUnsubscribed( data );
     return 0;
 }
 
-void 
-TracerProbe::setData(const orca::TracerData& result, const Ice::Current&)
-{
-//     std::cout << ifaceutil::toString(result) << std::endl;
-    subscribeOperationData_.results.clear();
-    orcaprobe::reportResult( subscribeOperationData_, "data", ifaceutil::toString(result) );
-    display_.setOperationData( subscribeOperationData_ );
-}

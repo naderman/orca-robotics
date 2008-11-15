@@ -12,7 +12,6 @@
 #include <orcaice/orcaice.h>
 #include <orcacm/orcacm.h>
 #include <orcaprobe/orcaprobe.h>
-#include <orcaifaceutil/odometry3d.h>
 
 #include "odometry3dprobe.h"
 
@@ -31,10 +30,6 @@ Odometry3dProbe::Odometry3dProbe( const orca::FQInterfaceName& name, const Ice::
     addOperation( "unsubscribe" );
 
     consumer_ = new orcaifaceimpl::PrintingOdometry3dConsumerImpl( context,1000,1 );
-}
-    
-Odometry3dProbe::~Odometry3dProbe()
-{
 }
 
 int 
@@ -81,7 +76,7 @@ Odometry3dProbe::loadSubscribe( orcacm::OperationData& data )
 int 
 Odometry3dProbe::loadUnsubscribe( orcacm::OperationData& data )
 {
-    consumer_->unsubscribeWithString( orcaice::toString(name_) );
+    consumer_->unsubscribe();
     orcaprobe::reportUnsubscribed( data );
     return 0;
 }

@@ -13,6 +13,7 @@
 
 #include <orca/common.ice>
 #include <orca/bros1.ice>
+#include <IceStorm/IceStorm.ice>
 
 module orca
 {
@@ -120,6 +121,7 @@ struct GpsData
  */
 interface GpsConsumer
 {
+    //! Transmits the data to the consumer.
     void setData( GpsData obj );
 };
 
@@ -128,36 +130,22 @@ interface GpsConsumer
 */
 interface Gps
 {
+    //! Return the gps description
+    idempotent GpsDescription getDescription();
+
     //! Returns the latest data
     idempotent GpsData getData()
             throws HardwareFailedException;
 
-    //! Return the gps description
-    idempotent GpsDescription getDescription();
-
-    /*!
-     * Mimics IceStorm's subscribe() but without QoS, for now. The
-     * implementation may choose to implement the data push internally
-     * or use IceStorm. This choice is transparent to the subscriber.
-     *
-     * @param subscriber The subscriber's proxy.
-     *
-     * @see unsubscribe
-     */
-    void subscribe( GpsConsumer* subscriber )
-            throws SubscriptionFailedException;
-
-    // for reference, this is what IceStorm's subscribe function looks like.
-    //void subscribe(QoS theQoS, Object* subscriber);
-
-    /*!
-     * Unsubscribe the given [subscriber].
-     *
-     * @param subscriber The proxy of an existing subscriber.
-     *
-     * @see subscribe
-     */
-    idempotent void unsubscribe( GpsConsumer* subscriber );
+    //! Tries to subscribe the specified subscriber for data updates.
+    //! If successfuly, returns a proxy to the IceStorm topic which can be later used by the 
+    //! client to unsubscribe itself. For reference, the Slice definition of the Topic
+    //! interface for unsubscribing:
+    //! @verbatim
+    //! idempotent void unsubscribe(Object* subscriber);
+    //! @endverbatim
+    IceStorm::Topic* subscribe( GpsConsumer* subscriber )
+        throws SubscriptionFailedException;
 };
 
 //!  //@}

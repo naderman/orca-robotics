@@ -12,7 +12,7 @@
 #define MAIN_THREAD_H
 
 #include <orcaice/subsystemthread.h>
-#include <orcaifaceimpl/ogmapImpl.h>
+#include <orcaifaceimpl/ogmap.h>
 #include <orcaice/context.h>
 
 namespace ogmaploader

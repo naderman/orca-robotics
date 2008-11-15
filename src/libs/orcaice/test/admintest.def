@@ -1,0 +1,32 @@
+DefaultComponentTag=Test
+
+# Provided Interfaces
+
+# Required Interfaces
+
+ExternalConfig.Orca.Component.PrintProperties.Default=1
+
+# Set custom tracer settings so we can test them
+ExternalConfig.Orca.Tracer.Filename.Default=orca_component_trace.txt
+ExternalConfig.Orca.Tracer.InfoToDisplay.Default=1
+ExternalConfig.Orca.Tracer.InfoToNetwork.Default=2
+ExternalConfig.Orca.Tracer.InfoToLog.Default=3
+ExternalConfig.Orca.Tracer.InfoToFile.Default=4
+ExternalConfig.Orca.Tracer.WarningToDisplay.Default=5
+ExternalConfig.Orca.Tracer.WarningToNetwork.Default=6
+ExternalConfig.Orca.Tracer.WarningToLog.Default=7
+ExternalConfig.Orca.Tracer.WarningToFile.Default=8
+ExternalConfig.Orca.Tracer.ErrorToDisplay.Default=9
+ExternalConfig.Orca.Tracer.ErrorToNetwork.Default=10
+ExternalConfig.Orca.Tracer.ErrorToLog.Default=11
+ExternalConfig.Orca.Tracer.ErrorToFile.Default=12
+ExternalConfig.Orca.Tracer.DebugToDisplay.Default=13
+ExternalConfig.Orca.Tracer.DebugToNetwork.Default=14
+ExternalConfig.Orca.Tracer.DebugToLog.Default=15
+ExternalConfig.Orca.Tracer.DebugToFile.Default=16
+ExternalConfig.Orca.Tracer.Timestamp.Default=1
+
+
+# Ensure timeouts
+ExternalConfig.Ice.ConnectTimeout.Default=1000
+ExternalConfig.Ice.Timeout.Default=200

@@ -16,58 +16,49 @@ class EStopI : virtual public ::orca::EStop
 {
 public:
 
-    EStopI( EStopImpl            &impl,
-            EStopNonStandardImpl &nonStandardImpl )
+    EStopI( EStopImpl             &impl,
+            AbstractEStopCallback &callback )
         : impl_(impl),
-          nonStandardImpl_(nonStandardImpl) {}
-
-    // remote functions
-
+          callback_(callback) {}
     virtual ::orca::EStopData getData(const Ice::Current&)
         { return impl_.internalGetData(); }
-
-    virtual void subscribe(const ::orca::EStopConsumerPrx& consumer,
-                           const Ice::Current&)
-        { impl_.internalSubscribe( consumer ); }
-
-    virtual void unsubscribe(const ::orca::EStopConsumerPrx& consumer,
-                             const Ice::Current&)
-        { impl_.internalUnsubscribe( consumer ); }
+    virtual IceStorm::TopicPrx subscribe(const orca::EStopConsumerPrx& subscriber, const ::Ice::Current& = ::Ice::Current())
+        { return impl_.internalSubscribe(subscriber); }
 
     virtual void activateEStop( const Ice::Current& )
-        { nonStandardImpl_.activateEStop(); }
+        { callback_.activateEStop(); }
     virtual void keepAlive( const Ice::Current& )
-        { nonStandardImpl_.keepAlive(); }
+        { callback_.keepAlive(); }
     virtual double getRequiredKeepAlivePeriodSec( const Ice::Current& )
-        { return nonStandardImpl_.getRequiredKeepAlivePeriodSec(); }
+        { return callback_.getRequiredKeepAlivePeriodSec(); }
     virtual void setToOperatingMode( const Ice::Current& )
-        { nonStandardImpl_.setToOperatingMode(); }
+        { callback_.setToOperatingMode(); }
 
 private:
     EStopImpl            &impl_;
-    EStopNonStandardImpl &nonStandardImpl_;
+    AbstractEStopCallback &callback_;
 };
 
 //////////////////////////////////////////////////////////////////////
 
-EStopImpl::EStopImpl( EStopNonStandardImpl    &eStopNonStandardImpl,
+EStopImpl::EStopImpl( AbstractEStopCallback  &callback,
                       const std::string       &interfaceTag, 
-                      const orcaice::Context  &context  )
-    : interfaceName_(orcaice::getProvidedInterface(context,interfaceTag).iface),
-      topicName_(orcaice::toTopicAsString(context.name(),interfaceName_)),
-      eStopNonStandardImpl_(eStopNonStandardImpl),
-      context_(context)
+                      const orcaice::Context  &context  ) : 
+    callback_(callback),
+    interfaceName_(orcaice::getProvidedInterface(context,interfaceTag).iface),
+    context_(context)
 {
+    init();
 }
 
-EStopImpl::EStopImpl( EStopNonStandardImpl    &eStopNonStandardImpl,
+EStopImpl::EStopImpl( AbstractEStopCallback  &callback,
                       const orcaice::Context  &context,
-                      const std::string       &interfaceName )
-    : interfaceName_(interfaceName),
-      topicName_(orcaice::toTopicAsString(context.name(),interfaceName_)),
-      eStopNonStandardImpl_(eStopNonStandardImpl),
-      context_(context)
+                      const std::string       &interfaceName ) : 
+    callback_(callback),
+    interfaceName_(interfaceName),
+    context_(context)
 {
+    init();
 }
 
 EStopImpl::~EStopImpl()
@@ -76,26 +67,27 @@ EStopImpl::~EStopImpl()
 }
 
 void
+EStopImpl::init()
+{
+    ptr_ = new EStopI( *this, callback_ );
+
+    topicHandler_.reset( new EStopTopicHandler( orcaice::toTopicAsString(context_.name(),interfaceName_), context_ ) );
+}
+
+void
 EStopImpl::initInterface()
 {
-    // Find IceStorm Topic to which we'll publish
-    topicPrx_ = orcaice::connectToTopicWithString<orca::EStopConsumerPrx>
-        ( context_, publisherPrx_, topicName_ );
-
-    // Register with the adapter
-    // We don't have to clean up the memory we're allocating here, because
-    // we're holding it in a smart pointer which will clean up when it's done.
-    ptr_ = new EStopI( *this, eStopNonStandardImpl_ );
     orcaice::createInterfaceWithString( context_, ptr_, interfaceName_ );
+
+    topicHandler_->connectToTopic();
 }
 
 void 
 EStopImpl::initInterface( gbxiceutilacfr::Thread* thread, const std::string& subsysName, int retryInterval )
 {
-    topicPrx_ = orcaice::connectToTopicWithString( context_, publisherPrx_, topicName_, thread, subsysName, retryInterval );
-
-    ptr_ = new EStopI( *this, eStopNonStandardImpl_ );
     orcaice::createInterfaceWithString( context_, ptr_, interfaceName_, thread, subsysName, retryInterval );
+
+    topicHandler_->connectToTopic( thread, subsysName, retryInterval );
 }
 
 ::orca::EStopData
@@ -115,31 +107,26 @@ EStopImpl::internalGetData() const
     return data;
 }
 
-void
-EStopImpl::internalSubscribe(const ::orca::EStopConsumerPrx& subscriber)
-{   
-    context_.tracer().debug( "EStopImpl::internalSubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
-    try {
-        topicPrx_->subscribeAndGetPublisher( IceStorm::QoS(), subscriber->ice_twoway() );
-    }
-    catch ( const IceStorm::AlreadySubscribed & e ) {
-        std::stringstream ss;
-        ss <<"Request for subscribe but this proxy has already been subscribed, so I do nothing: "<< e;
-        context_.tracer().debug( ss.str(), 2 );
-    }
-    catch ( const Ice::Exception & e ) {
-        std::stringstream ss;
-        ss <<"EStopImpl::internalSubscribe: failed to subscribe: "<< e << endl;
-        context_.tracer().warning( ss.str() );
-        throw orca::SubscriptionFailedException( ss.str() );
-    }
-}
-
-void
-EStopImpl::internalUnsubscribe(const ::orca::EStopConsumerPrx& subscriber)
+IceStorm::TopicPrx 
+EStopImpl::internalSubscribe(const orca::EStopConsumerPrx& subscriber)
 {
-    context_.tracer().debug( "EStopImpl::internalUnsubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
-    topicPrx_->unsubscribe( subscriber );
+    if ( !topicHandler_.get() ) 
+    {
+        throw orca::SubscriptionFailedException("Component does not have a topic to publish its traces.");
+    }
+    
+    // if we have data, send all the information we have to the new subscriber (and to no one else)
+    if ( dataStore_.isEmpty() )
+    {
+        return topicHandler_->subscribe( subscriber );
+    }
+    else
+    {
+        orca::EStopData data;
+        dataStore_.get( data );
+    
+        return topicHandler_->subscribe( subscriber, data );
+    }
 }
 
 void
@@ -147,13 +134,7 @@ EStopImpl::localSetAndSend( const orca::EStopData& data )
 {
     dataStore_.set( data );
     
-    // Try to push to IceStorm.
-    orcaice::tryPushToIceStormWithReconnect<orca::EStopConsumerPrx,orca::EStopData>
-        ( context_,
-          publisherPrx_,
-          data,
-          topicPrx_,
-          topicName_ );
+    topicHandler_->publish( data );
 }
 
 }

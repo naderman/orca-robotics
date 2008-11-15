@@ -13,7 +13,7 @@
 
 #include <orcaice/subsystemthread.h>
 #include <orcaice/context.h>
-#include <orcaifaceimpl/systemstatusImpl.h>
+#include <orcaifaceimpl/systemstatus.h>
 #include "componentmonitor.h"
 
 namespace systemstatus

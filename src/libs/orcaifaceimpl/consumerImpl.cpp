@@ -27,16 +27,6 @@ ConsumerSubscriber::subscribeWithTag( const std::string& interfaceTag )
     subscribeWithString( proxyString );
 }
 
-void 
-ConsumerSubscriber::unsubscribeWithTag( const std::string& interfaceTag )
-{
-    // this may throw ConfigFileException, we don't catch it, let the user catch it at the component level
-    std::string proxyString = orcaice::getRequiredInterfaceAsString( context_, interfaceTag );
-
-    // now that we have the stingified proxy, use the function above.
-    unsubscribeWithString( proxyString );
-}
-
 bool 
 ConsumerSubscriber::subscribeWithTag( const std::string& interfaceTag, 
                         gbxiceutilacfr::Thread*  thread, const std::string& subsysName, 

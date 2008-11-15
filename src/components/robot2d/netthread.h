@@ -15,8 +15,8 @@
 #include <orcaice/context.h>
 #include <gbxsickacfr/gbxiceutilacfr/notify.h>
 
-#include <orcaifaceimpl/odometry2dImpl.h>
-#include <orcaifaceimpl/velocitycontrol2dImpl.h>
+#include <orcaifaceimpl/odometry2d.h>
+#include <orcaifaceimpl/velocitycontrol2d.h>
 #include "hwthread.h"
 
 namespace robot2d

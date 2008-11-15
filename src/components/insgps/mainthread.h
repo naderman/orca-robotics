@@ -14,9 +14,9 @@
 #include <orcaice/subsystemthread.h>
 #include <orcaice/context.h>
 // remote interfaces
-#include <orcaifaceimpl/insImpl.h>
-#include <orcaifaceimpl/gpsImpl.h>
-#include <orcaifaceimpl/imuImpl.h>
+#include <orcaifaceimpl/ins.h>
+#include <orcaifaceimpl/gps.h>
+#include <orcaifaceimpl/imu.h>
 
 namespace insgps {
 

@@ -165,7 +165,7 @@ Localise3dElement::tryToGetGeometry()
     
     try 
     {
-        geom = listener_.proxy()->getVehicleGeometry();
+        geom = listener_.proxy()->getDescription();
         haveGeometry_=true;
     }
     catch ( std::exception &e)

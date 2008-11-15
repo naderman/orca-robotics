@@ -16,7 +16,7 @@
 
 #include <orca/ogfusion.h>
 #include <hydroogmap/hydroogmap.h>
-#include <orcaifaceimpl/ogmapImpl.h>
+#include <orcaifaceimpl/ogmap.h>
 
 namespace ognode
 {

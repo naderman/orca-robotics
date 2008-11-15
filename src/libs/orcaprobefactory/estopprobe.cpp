@@ -12,7 +12,6 @@
 #include <orcaice/orcaice.h>
 #include <orcacm/orcacm.h>
 #include <orcaprobe/orcaprobe.h>
-#include <orcaifaceutil/estop.h>
 
 #include "estopprobe.h"
 
@@ -30,10 +29,6 @@ EStopProbe::EStopProbe( const orca::FQInterfaceName& name, const Ice::ObjectPrx&
     addOperation( "unsubscribe" );
 
     consumer_ = new orcaifaceimpl::PrintingEStopConsumerImpl( context,1000,1 );
-}
-    
-EStopProbe::~EStopProbe()
-{
 }
 
 int 
@@ -71,7 +66,7 @@ EStopProbe::loadSubscribe( orcacm::OperationData & data )
 int 
 EStopProbe::loadUnsubscribe( orcacm::OperationData & data )
 {
-    consumer_->unsubscribeWithString( orcaice::toString(name_) );
+    consumer_->unsubscribe();
     orcaprobe::reportUnsubscribed( data );
     return 0;
 }

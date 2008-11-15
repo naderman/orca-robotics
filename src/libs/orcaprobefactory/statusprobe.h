@@ -12,9 +12,7 @@
 #define ORCA_ORCAPROBEFACTORY_STATUS_INTERFACE_PROBE_H
 
 #include <orcaprobe/interfaceprobe.h>
-#include <orca/status.h>
-#include <orcaifaceimpl/printingconsumers.h>
-// #include <orcaifaceimpl/consumermanager.h>
+#include <orcaifaceimpl/status.h>
 
 namespace orcaprobefactory
 {
@@ -26,7 +24,6 @@ public:
 
     StatusProbe( const orca::FQInterfaceName& name, const Ice::ObjectPrx& adminPrx, orcaprobe::AbstractDisplay& display,
                                 const orcaice::Context& context );
-    ~StatusProbe();
 
     virtual int loadOperationEvent( const int index, orcacm::OperationData& data );
     
@@ -37,7 +34,6 @@ private:
     int loadUnsubscribe( orcacm::OperationData& data );
 
     orcaifaceimpl::PrintingStatusConsumerImplPtr consumer_;
-//     orcaifaceimpl::ConsumerManager consumerManager_;
 };
 
 } // namespace

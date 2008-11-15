@@ -14,9 +14,7 @@
 
 #include <orcaice/subsystemthread.h>
 #include <orcaice/context.h>
-#include <orcaifaceimpl/imageImpl.h>
-#include <orcaifaceimpl/bufferedconsumers.h>
-
+#include <orcaifaceimpl/image.h>
 #include <orca/image.h>
 
 namespace orcaimageview

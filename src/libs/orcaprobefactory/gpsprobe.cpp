@@ -12,7 +12,6 @@
 #include <orcaice/orcaice.h>
 #include <orcacm/orcacm.h>
 #include <orcaprobe/orcaprobe.h>
-#include <orcaifaceutil/gps.h>
 
 #include "gpsprobe.h"
 
@@ -31,10 +30,6 @@ GpsProbe::GpsProbe( const orca::FQInterfaceName& name, const Ice::ObjectPrx& adm
     addOperation( "unsubscribe",    "idempotent void unsubscribe( GpsConsumer *subscriber )" );
 
     consumer_ = new orcaifaceimpl::PrintingGpsConsumerImpl( context,1000,1 );
-}
-    
-GpsProbe::~GpsProbe()
-{
 }
 
 int 
@@ -81,7 +76,7 @@ GpsProbe::loadSubscribe( orcacm::OperationData& data )
 int 
 GpsProbe::loadUnsubscribe( orcacm::OperationData& data )
 {
-    consumer_->unsubscribeWithString( orcaice::toString(name_) );
+    consumer_->unsubscribe();
     orcaprobe::reportUnsubscribed( data );
     return 0;
 }

@@ -1,4 +1,4 @@
-DefaultComponentTag=AppTest
+DefaultComponentTag=Test
 
 # Provided Interfaces
 
@@ -12,7 +12,7 @@ DefaultComponentTag=AppTest
 ExternalConfig.Orca.Component.EnableStatus.Default=1
 
 # this one is explicit and the opposite of default
-ExternalConfig.Orca.Component.EnableTracer.Default=1
+ExternalConfig.Orca.Component.EnableTracer.Default=0
 
 ExternalConfig.Orca.Component.PrintProperties.Default=1
 

@@ -1,16 +1,12 @@
 #ifndef ORCA_ESTOP_IMPL_H
 #define ORCA_ESTOP_IMPL_H
 
-// include defnition of Ice runtime
-#include <Ice/Ice.h>
-#include <IceStorm/IceStorm.h>
-
-// include provided interfaces
+#include <memory>
 #include <orca/estop.h>
-
-// utilities
 #include <gbxsickacfr/gbxiceutilacfr/store.h>
+#include <gbxsickacfr/gbxiceutilacfr/notify.h>
 #include <orcaice/context.h>
+#include <orcaice/topichandler.h>
 
 namespace gbxiceutilacfr { class Thread; }
 
@@ -18,11 +14,11 @@ namespace orcaifaceimpl
 {
 
 //!
-//! @brief EStopImpl needs a pointer to a class implementing these.
+//! @brief EStopImpl needs a pointer to a callback object implementing these.
 //!
-class EStopNonStandardImpl {
+class AbstractEStopCallback {
 public:
-    virtual ~EStopNonStandardImpl() {}
+    virtual ~AbstractEStopCallback() {}
 
     virtual void activateEStop()=0;
     virtual void keepAlive()=0;
@@ -39,11 +35,11 @@ friend class EStopI;
 
 public:
     //! Constructor using interfaceTag (may throw ConfigFileException)
-    EStopImpl( EStopNonStandardImpl   &eStopNonStandardImpl,
+    EStopImpl( AbstractEStopCallback  &callback,
                const std::string      &interfaceTag, 
                const orcaice::Context &context );
     //! constructor using interfaceName
-    EStopImpl( EStopNonStandardImpl   &eStopNonStandardImpl,
+    EStopImpl( AbstractEStopCallback  &callback,
                const orcaice::Context &context,
                const std::string      &interfaceName );
     ~EStopImpl();
@@ -61,25 +57,22 @@ public:
     void localSetAndSend( const orca::EStopData &data );
 
 private:
+    void init();
+
     // remote call implementations, mimic (but do not inherit) the orca interface
     ::orca::EStopData internalGetData() const;
-    void internalSubscribe(const ::orca::EStopConsumerPrx&);
-    void internalUnsubscribe(const ::orca::EStopConsumerPrx& );
+    IceStorm::TopicPrx internalSubscribe(const orca::EStopConsumerPrx& subscriber);
 
     gbxiceutilacfr::Store<orca::EStopData> dataStore_;
 
-    orca::EStopConsumerPrx    publisherPrx_;
-    IceStorm::TopicPrx       topicPrx_;
+    AbstractEStopCallback& callback_;
 
-    // Hang onto this so we can remove from the adapter and control when things get deleted
-    Ice::ObjectPtr          ptr_;
-
-    const std::string        interfaceName_;
-    const std::string        topicName_;
-
-    EStopNonStandardImpl &eStopNonStandardImpl_;
+    typedef orcaice::TopicHandler<orca::EStopConsumerPrx,orca::EStopData> EStopTopicHandler;
+    std::auto_ptr<EStopTopicHandler> topicHandler_;
     
-    orcaice::Context         context_;
+    Ice::ObjectPtr ptr_;
+    const std::string interfaceName_;
+    orcaice::Context context_;
 };
 typedef IceUtil::Handle<EStopImpl> EStopImplPtr;
 

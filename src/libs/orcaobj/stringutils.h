@@ -144,19 +144,13 @@ std::string toString( const orca::CameraDataPtr& );
 //! Converts to string
 std::string toString( const orca::CameraDescriptionPtr& );
 //! Converts to string
-std::string toString( const orca::CpuInfo& );
-//! Converts to string
 std::string toString( const orca::CpuData& );
 //! Converts to string
 std::string toString( const orca::DriveBicycleCommand& );
 //! Converts to string
 std::string toString( const orca::DriveBicycleData& );
 //! Converts to string
-std::string toString( const orca::EStopData& );
-//! Converts to string
 std::string toString( const orca::GpsDescription& );
-//! Converts to string
-std::string toString( const orca::GpsData&  );
 //! Converts to string
 std::string toString( const orca::ImuDescription& );
 //! Converts to string

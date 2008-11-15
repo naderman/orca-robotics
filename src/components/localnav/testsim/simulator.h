@@ -5,7 +5,7 @@
 #include <orca/pathfollower2d.h>
 #include <orcasim2d/orcasim2d.h>
 #include <memory>
-#include <orcaifaceimpl/ogmapImpl.h>
+#include <orcaifaceimpl/ogmap.h>
 
 namespace localnav {
 

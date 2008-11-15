@@ -14,9 +14,8 @@
 #include <orcaice/subsystemthread.h>
 #include <orcaice/context.h>
 
-#include <orca/gps.h>
-#include <orcaifaceimpl/localise2dImpl.h>
-#include <orcaifaceimpl/storingconsumers.h>
+#include <orcaifaceimpl/localise2d.h>
+#include <orcaifaceimpl/gps.h>
 
 namespace gps2localise2d
 {
@@ -28,12 +27,11 @@ class MainThread : public orcaice::SubsystemThread
 public:
 
     MainThread( const orcaice::Context &context );
-
     ~MainThread();
 
-    virtual void walk();
-
 private:
+
+    virtual void walk();
 
     void subscribeToGps();
     void getGpsDescription();

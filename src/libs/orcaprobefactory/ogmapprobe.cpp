@@ -12,7 +12,6 @@
 #include <orcaice/orcaice.h>
 #include <orcacm/orcacm.h>
 #include <orcaprobe/orcaprobe.h>
-#include <orcaifaceutil/ogmap.h>
 
 #include "ogmapprobe.h"
 
@@ -30,10 +29,6 @@ OgMapProbe::OgMapProbe( const orca::FQInterfaceName& name, const Ice::ObjectPrx&
     addOperation( "unsubscribe" );
 
     consumer_ = new orcaifaceimpl::PrintingOgMapConsumerImpl( context,1000,1 );
-}
-
-OgMapProbe::~OgMapProbe()
-{
 }
 
 int 
@@ -70,7 +65,7 @@ OgMapProbe::loadSubscribe( orcacm::OperationData& data )
 int 
 OgMapProbe::loadUnsubscribe( orcacm::OperationData& data )
 {
-    consumer_->unsubscribeWithString( orcaice::toString(name_) );
+    consumer_->unsubscribe();
     orcaprobe::reportUnsubscribed( data );
     return 0;
 }

@@ -12,7 +12,7 @@
 #define MAIN_THREAD_H
 
 #include <orcaice/subsystemthread.h>
-#include <orcaifaceimpl/pixmapImpl.h>
+#include <orcaifaceimpl/pixmap.h>
 #include <orcaice/context.h>
 
 namespace pixmaploader

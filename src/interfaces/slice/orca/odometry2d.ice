@@ -14,6 +14,7 @@
 #include <orca/common.ice>
 #include <orca/bros1.ice>
 #include <orca/vehicledescription.ice>
+#include <IceStorm/IceStorm.ice>
 
 module orca
 {
@@ -52,33 +53,24 @@ interface Odometry2dConsumer
 */
 interface Odometry2d
 {
+    //! Returns description         
+    idempotent VehicleDescription getDescription();
+
     //! Returns the latest data.
     //! May raise DataNotExistException if the requested information is not available.
     //! May raise HardwareFailedException if there is some problem with hardware.
     idempotent Odometry2dData getData()
-            throws DataNotExistException, HardwareFailedException;
-    
-    //! Returns description         
-    idempotent VehicleDescription getDescription();
+            throws DataNotExistException, HardwareFailedException;    
 
-    /*!
-     * Mimics IceStorm's subscribe(). @p subscriber is typically a direct proxy to the consumer object.
-     * The implementation may choose to implement the push directly or use IceStorm.
-     * This choice is transparent to the subscriber. The case when the @p subscriber is already subscribed
-     * is quietly ignored.
-     *
-     * @see unsubscribe
-     */
-    void subscribe( Odometry2dConsumer* subscriber )
-            throws SubscriptionFailedException;
-
-    /*!
-     * Unsubscribe an existing @p subscriber. The case when the @p subscriber is not subscribed
-     * is quietly ignored.
-     *
-     * @see subscribe
-     */
-    idempotent void unsubscribe( Odometry2dConsumer* subscriber );
+    //! Tries to subscribe the specified subscriber for data updates.
+    //! If successfuly, returns a proxy to the IceStorm topic which can be later used by the 
+    //! client to unsubscribe itself. For reference, the Slice definition of the Topic
+    //! interface for unsubscribing:
+    //! @verbatim
+    //! idempotent void unsubscribe(Object* subscriber);
+    //! @endverbatim
+    IceStorm::Topic* subscribe( Odometry2dConsumer* subscriber )
+        throws SubscriptionFailedException;
 };
 
 

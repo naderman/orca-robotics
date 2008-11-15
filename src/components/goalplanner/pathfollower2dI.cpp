@@ -131,18 +131,11 @@ PathFollower2dI::enabled(const ::Ice::Current&)
     return false;
 }
 
-void
+IceStorm::TopicPrx
 PathFollower2dI::subscribe( const ::orca::PathFollower2dConsumerPrx& subscriber, const ::Ice::Current& )
 {
     cout<<"TRACE(pathfollower2dI.cpp): subscribe()"<<endl;
     return localNavPrx_->subscribe( subscriber );
-}
-
-void
-PathFollower2dI::unsubscribe( const ::orca::PathFollower2dConsumerPrx& subscriber, const ::Ice::Current& )
-{
-    cout<<"TRACE(pathfollower2dI.cpp): unsubscribe()"<<endl;    
-    return localNavPrx_->unsubscribe( subscriber );
 }
 
 }

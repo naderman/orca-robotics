@@ -37,13 +37,11 @@ public:
     //! Does not catch any exceptions.
     virtual void subscribeWithString( const std::string& proxyString )=0;
 
-    //! Tries to connect to remote interface with stringified proxy @c proxyString.
-    //! If succesful, tries to unsubscribe the internal consumer interface.
-    //! Does not catch any exceptions.
-    virtual void unsubscribeWithString( const std::string& proxyString )=0;
+    //! Same as subscribeWithString() but the interface is looked up using the config file and tag interfaceTag.
+    void subscribeWithTag( const std::string& interfaceTag );
 
-    //! When currently subscribed, tries to connect to remote interface with internally stored stringified proxy.
-    //! Otherwise, same as above. When not currently subscribed, quietly returns.
+    //! When previously subscribed, tries to connect to the internally-stored topic proxy and unsubscribes.
+    //! When not currently subscribed, quietly returns.
     virtual void unsubscribe()=0;
 
     //! Tries to connect to remote interface with stringified proxy @c proxyString.
@@ -57,12 +55,6 @@ public:
                           gbxiceutilacfr::Thread*  thread, const std::string& subsysName="", 
                           int retryInterval=2, int retryNumber=-1 )=0;
 
-    //! Same as subscribeWithString() but the interface is looked up using the config file and tag interfaceTag.
-    void subscribeWithTag( const std::string& interfaceTag );
-
-    //! Same as unsubscribeWithString() but the interface is looked up using the config file and tag interfaceTag.
-    void unsubscribeWithTag( const std::string& interfaceTag );
-
     //! Same as the threaded version of subscribeWithString() but the interface is looked up 
     //! using the config file and tag interfaceTag.
     //! 
@@ -70,13 +62,13 @@ public:
     bool subscribeWithTag( const std::string& interfaceTag, 
                           gbxiceutilacfr::Thread*  thread, const std::string& subsysName="", 
                           int retryInterval=2, int retryNumber=-1 );
-
 protected:
 
-    //! Store the proxy of the interface after we subscribed to it. This lets us unsubscribe before destroying.
-    //! This store is empty initially, contains the proxy string after the subscription and is emptied again after
-    //! unsubscription. 
-    gbxiceutilacfr::Store<std::string> proxyString_;
+    // This could be used for re-subscribing.
+//     gbxiceutilacfr::Store<std::string> proxyString_;
+
+    //! EXPERIMENTAL!
+    gbxiceutilacfr::Store<IceStorm::TopicPrx> topic_;
 
     //! Component context.
     orcaice::Context context_;
@@ -216,47 +208,26 @@ public:
             orcaice::connectToInterfaceWithString( context_, providerPrx, proxyString );
         }
 
-        providerPrx->subscribe( consumerPrx_ );
+        IceStorm::TopicPrx topicPrx = providerPrx->subscribe( consumerPrx_ );
+        topic_.set( topicPrx );
+
         std::stringstream ss;
         ss << "Subscribed to " << proxyString;
         context_.tracer().debug( ss.str() );
-
-        proxyString_.set( proxyString );
-    }
-
-    virtual void unsubscribeWithString( const std::string& proxyString )
-    {
-        ProviderPrxType providerPrx;
-
-        std::string staticId = ConsumerType::ice_staticId();
-        // Home does not have a consumer
-        if ( staticId == "::orca::StatusConsumer" || staticId == "::orca::TracerConsumer" ) {
-            orca::FQInterfaceName fqIfaceName = orcaice::toInterfaceName( proxyString );
-            orca::FQComponentName fqCompName;
-            fqCompName.platform = fqIfaceName.platform;
-            fqCompName.component = fqIfaceName.component;
-            orcaice::connectToAdminInterface<ProviderType,ProviderPrxType>( context_, providerPrx, fqCompName );
-        }
-        else {
-            orcaice::connectToInterfaceWithString( context_, providerPrx, proxyString );
-        }
-
-        providerPrx->unsubscribe( consumerPrx_ );
-        std::stringstream ss;
-        ss << "Unsubscribed from " << proxyString;
-        context_.tracer().debug( ss.str() );
-
-        proxyString_.purge();
     }
 
     virtual void unsubscribe()
     {
-        if ( proxyString_.isEmpty() )
-            return;
+        if ( !topic_.isEmpty() )
+        {
+            IceStorm::TopicPrx topicPrx;
+            topic_.get( topicPrx );
 
-        std::string proxyString;
-        proxyString_.get( proxyString );
-        unsubscribeWithString( proxyString );
+            topicPrx->unsubscribe( consumerPrx_ );
+            std::stringstream ss;
+            ss << "Unsubscribed from " << topicPrx->ice_toString();
+            context_.tracer().debug( ss.str() );
+        }
     }
 
     virtual bool subscribeWithString( const std::string& proxyString, 
@@ -277,8 +248,9 @@ public:
         while ( !thread->isStopping() && ( retryNumber<0 || count<retryNumber) )
         {
             try {
-                providerPrx->subscribe( consumerPrx_ );
-                proxyString_.set( proxyString );
+                IceStorm::TopicPrx topicPrx = providerPrx->subscribe( consumerPrx_ );
+                topic_.set( topicPrx );
+
                 std::stringstream ss;
                 ss << "Subscribed to " << proxyString;
                 context_.tracer().debug( ss.str() );

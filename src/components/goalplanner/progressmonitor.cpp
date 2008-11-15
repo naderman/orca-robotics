@@ -104,7 +104,9 @@ ProgressMonitor::subscribeWithString( const std::string& proxyString,
     while ( !thread->isStopping() && ( retryNumber<0 || count<retryNumber) )
     {
         try {
-            providerPrx->subscribe( consumerPrx_ );
+            IceStorm::TopicPrx topicPrx = providerPrx->subscribe( consumerPrx_ );
+            topic_.set( topicPrx );
+
             std::stringstream ss;
             ss << "Subscribed to " << proxyString;
             context_.tracer().debug( ss.str() );
@@ -131,33 +133,21 @@ ProgressMonitor::subscribeWithString( const std::string& proxyString,
         if ( !subsysName.empty() )
             context_.status().heartbeat( subsysName );
     }
-
-    proxyString_.set( proxyString );
-}
-
-void 
-ProgressMonitor::unsubscribeWithString( const std::string& proxyString )
-{
-    orca::PathFollower2dPrx providerPrx;
-    orcaice::connectToInterfaceWithString( context_, providerPrx, proxyString );
-
-    providerPrx->unsubscribe( consumerPrx_ );
-    std::stringstream ss;
-    ss << "Unsubscribed from " << proxyString;
-    context_.tracer().debug( ss.str() );
-
-    proxyString_.purge();
 }
 
 void 
 ProgressMonitor::unsubscribe()
 {
-    if ( proxyString_.isEmpty() )
-        return;
+    if ( !topic_.isEmpty() )
+    {
+        IceStorm::TopicPrx topicPrx;
+        topic_.get( topicPrx );
 
-    std::string proxyString;
-    proxyString_.get( proxyString );
-    unsubscribeWithString( proxyString );
+        topicPrx->unsubscribe( consumerPrx_ );
+        std::stringstream ss;
+        ss << "Unsubscribed from " << topicPrx->ice_toString();
+        context_.tracer().debug( ss.str() );
+    }
 }
 
 void 

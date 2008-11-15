@@ -35,7 +35,6 @@ public:
     void subscribeWithString( const std::string& proxyString, 
                           gbxiceutilacfr::Thread*  thread, const std::string& subsysName="", 
                           int retryInterval=2, int retryNumber=-1 );
-    void unsubscribeWithString( const std::string& proxyString );
     void unsubscribe();
 
     //
@@ -71,10 +70,8 @@ private:
     // Hang onto this so we can remove from the adapter and control when things get deleted
     Ice::ObjectPtr consumerPtr_;
 
-    // Store the proxy of the interface after we subscribed to it. This lets us unsubscribe before destroying.
-    // This store is empty initially, contains the proxy string after the subscription and is emptied again after
-    // unsubscription. 
-    gbxiceutilacfr::Store<std::string> proxyString_;
+    // Store the proxy of the interface after we subscribed to it. 
+    gbxiceutilacfr::Store<IceStorm::TopicPrx> topic_;
 
     // Component context.
     orcaice::Context context_;

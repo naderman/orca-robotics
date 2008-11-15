@@ -15,9 +15,10 @@
 #include <orcaice/context.h>
 #include <orcalog/orcalog.h>
 #include <hydrodll/dll.h>
+#include <gbxsickacfr/gbxiceutilacfr/store.h>
 #include <string>
 #include <memory>
-#include <orcaifaceimpl/buttonImpl.h>
+#include <orcaifaceimpl/button.h>
 
 namespace snapshotlogger
 {

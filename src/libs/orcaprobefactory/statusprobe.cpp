@@ -12,8 +12,6 @@
 #include <orcaice/orcaice.h>
 #include <orcacm/orcacm.h>
 #include <orcaprobe/orcaprobe.h>
-#include <orcaifaceutil/status.h>
-#include <orcaifaceimpl/printingconsumers.h>
 
 #include "statusprobe.h"
 
@@ -33,10 +31,6 @@ StatusProbe::StatusProbe( const orca::FQInterfaceName& name, const Ice::ObjectPr
 
     consumer_ = new orcaifaceimpl::PrintingStatusConsumerImpl( context,1000,1 );
 //     consumerManager_.setConsumer( new PrintingSimpleStatusConsumerImpl( context,1000,1 ) );
-}
-
-StatusProbe::~StatusProbe()
-{
 }
     
 int 
@@ -90,7 +84,7 @@ StatusProbe::loadSubscribe( orcacm::OperationData& data )
 int 
 StatusProbe::loadUnsubscribe( orcacm::OperationData& data )
 {
-    consumer_->unsubscribeWithString( orcaice::toString(name_) );
+    consumer_->unsubscribe();
 //     consumerManager_.consumer()->unsubscribeWithString( orcaice::toString(name_) );
     orcaprobe::reportUnsubscribed( data );
     return 0;

@@ -12,8 +12,7 @@
 #define ORCA_ORCAPROBEFACTORY_DRIVEBICYCLE_INTERFACE_PROBE_H
 
 #include <orcaprobe/interfaceprobe.h>
-#include <orca/drivebicycle.h>
-#include <orcaifaceimpl/printingconsumers.h>
+#include <orcaifaceimpl/drivebicycle.h>
 
 namespace orcaprobefactory
 {
@@ -25,7 +24,6 @@ public:
 
     DriveBicycleProbe( const orca::FQInterfaceName& name, const Ice::ObjectPrx& adminPrx, orcaprobe::AbstractDisplay& display,
                                 const orcaice::Context& context );
-    ~DriveBicycleProbe();
 
     virtual int loadOperationEvent( const int index, orcacm::OperationData& data );
 

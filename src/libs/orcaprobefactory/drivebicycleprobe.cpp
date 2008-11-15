@@ -12,7 +12,6 @@
 #include <orcaice/orcaice.h>
 #include <orcacm/orcacm.h>
 #include <orcaprobe/orcaprobe.h>
-#include <orcaifaceutil/drivebicycle.h>
 
 #include "drivebicycleprobe.h"
 
@@ -32,10 +31,6 @@ DriveBicycleProbe::DriveBicycleProbe( const orca::FQInterfaceName& name, const I
     addOperation( "setData" );
 
     consumer_ = new orcaifaceimpl::PrintingDriveBicycleConsumerImpl( context,1000,1 );
-}
-    
-DriveBicycleProbe::~DriveBicycleProbe()
-{
 }
 
 int 
@@ -84,7 +79,7 @@ DriveBicycleProbe::loadSubscribe( orcacm::OperationData& data )
 int 
 DriveBicycleProbe::loadUnsubscribe( orcacm::OperationData& data )
 {
-    consumer_->unsubscribeWithString( orcaice::toString(name_) );
+    consumer_->unsubscribe();
     orcaprobe::reportUnsubscribed( data );
     return 0;
 }

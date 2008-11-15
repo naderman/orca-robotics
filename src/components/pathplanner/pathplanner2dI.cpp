@@ -78,7 +78,7 @@ PathPlanner2dI::localSetData( const PathPlanner2dData& data )
     }
 }
 
-void 
+IceStorm::TopicPrx 
 PathPlanner2dI::subscribe(const PathPlanner2dConsumerPrx &subscriber, const ::Ice::Current&)
 {
 //     cout<<"TRACE(pathplanner2dI.cpp): subscribe()"<<endl;
@@ -96,11 +96,6 @@ PathPlanner2dI::subscribe(const PathPlanner2dConsumerPrx &subscriber, const ::Ic
         context_.tracer().warning( ss.str() );
         throw orca::SubscriptionFailedException( ss.str() );
     }
-}
 
-void 
-PathPlanner2dI::unsubscribe(const PathPlanner2dConsumerPrx &subscriber, const ::Ice::Current&)
-{
-//     cout<<"TRACE(pathplanner2dI.cpp): unsubscribe()"<<endl;
-    topicPrx_->unsubscribe( subscriber );
+    return topicPrx_;
 }

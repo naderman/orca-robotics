@@ -10,9 +10,7 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
-
 #include "velocitycontrol2dImpl.h"
- 
 
 using namespace std;
 
@@ -28,14 +26,10 @@ class VelocityControl2dI : public orca::VelocityControl2d
 public:
     VelocityControl2dI( VelocityControl2dImpl &impl )
         : impl_(impl) {}
-
     virtual orca::VehicleDescription getDescription( const Ice::Current& )
         { return impl_.internalGetDescription(); }
-
-    virtual void setCommand(const ::orca::VelocityControl2dData& command, 
-                            const ::Ice::Current& current )
+    virtual void setCommand(const ::orca::VelocityControl2dData& command, const ::Ice::Current& current )
         {  impl_.internalSetCommand( command ); }
-
 private:
     VelocityControl2dImpl &impl_;
 };
@@ -48,9 +42,9 @@ VelocityControl2dImpl::VelocityControl2dImpl(
             const orcaice::Context &context )
     : description_(descr),
       interfaceName_(orcaice::getProvidedInterface(context,interfaceTag).iface),
-      topicName_(orcaice::toTopicAsString(context.name(),interfaceName_)),
       context_(context)
 {
+    init();
 }
 
 VelocityControl2dImpl::VelocityControl2dImpl( 
@@ -59,9 +53,9 @@ VelocityControl2dImpl::VelocityControl2dImpl(
             const std::string &interfaceName )
     : description_(descr),
       interfaceName_(interfaceName),
-      topicName_(orcaice::toTopicAsString(context.name(),interfaceName_)),
       context_(context)
 {
+    init();
 }
 
 VelocityControl2dImpl::~VelocityControl2dImpl()
@@ -70,19 +64,20 @@ VelocityControl2dImpl::~VelocityControl2dImpl()
 }
 
 void
+VelocityControl2dImpl::init()
+{
+    ptr_ = new VelocityControl2dI( *this );
+}
+
+void
 VelocityControl2dImpl::initInterface()
 {
-    // Register with the adapter
-    // We don't have to clean up the memory we're allocating here, because
-    // we're holding it in a smart pointer which will clean up when it's done.
-    ptr_ = new VelocityControl2dI( *this );
     orcaice::createInterfaceWithString( context_, ptr_, interfaceName_ );
 }
 
 void 
 VelocityControl2dImpl::initInterface( gbxiceutilacfr::Thread* thread, const std::string& subsysName, int retryInterval )
 {
-    ptr_ = new VelocityControl2dI( *this );
     orcaice::createInterfaceWithString( context_, ptr_, interfaceName_, thread, subsysName, retryInterval );
 }
 

@@ -12,7 +12,6 @@
 #include <orcaice/orcaice.h>
 #include <orcacm/orcacm.h>
 #include <orcaprobe/orcaprobe.h>
-#include <orcaifaceutil/localise2d.h>
 
 #include "localise2dprobe.h"
 
@@ -26,17 +25,13 @@ Localise2dProbe::Localise2dProbe( const orca::FQInterfaceName& name, const Ice::
     id_ = "::orca::Localise2d";
     
     addOperation( "getData" );
-    addOperation( "getVehicleGeometry" );
+    addOperation( "getDescription" );
     addOperation( "subscribe" );
     addOperation( "unsubscribe" );
 
     consumer_ = new orcaifaceimpl::PrintingLocalise2dConsumerImpl( context,1000,1 );
 }
     
-Localise2dProbe::~Localise2dProbe()
-{
-}
-
 int 
 Localise2dProbe::loadOperationEvent( const int index, orcacm::OperationData& data )
 {
@@ -66,7 +61,7 @@ int
 Localise2dProbe::loadGetVehicleGeometry( orcacm::OperationData& data )
 {
     orca::Localise2dPrx derivedPrx = orca::Localise2dPrx::checkedCast(prx_);
-    orcaprobe::reportResult( data, "data", ifaceutil::toString( derivedPrx->getVehicleGeometry() ) );
+    orcaprobe::reportResult( data, "data", ifaceutil::toString( derivedPrx->getDescription() ) );
     return 0;
 }
 
@@ -81,7 +76,7 @@ Localise2dProbe::loadSubscribe( orcacm::OperationData& data )
 int 
 Localise2dProbe::loadUnsubscribe( orcacm::OperationData& data )
 {    
-    consumer_->unsubscribeWithString( orcaice::toString(name_) );
+    consumer_->unsubscribe();
     orcaprobe::reportUnsubscribed( data );
     return 0;
 }

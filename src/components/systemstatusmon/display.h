@@ -12,9 +12,8 @@
 #define DISPLAY_H
 
 #include <gbxsickacfr/gbxiceutilacfr/timer.h>
-#include <orcaice/subsystemthread.h>
-#include <orcaifaceimpl/printingconsumers.h>
-#include <orcaifaceimpl/bufferedconsumers.h>
+#include <gbxsickacfr/gbxiceutilacfr/thread.h>
+#include <orcaifaceimpl/systemstatus.h>
 #include <orcaice/context.h>
 
 namespace systemstatusmon
@@ -27,9 +26,9 @@ namespace systemstatusmon
 // 
 class Display
 {
-    public:
-        virtual ~Display() {};
-        virtual void refresh() = 0;
+public:
+    virtual ~Display() {};
+    virtual void refresh() = 0;
 };
     
 //
@@ -37,17 +36,17 @@ class Display
 // 
 class SimpleDisplay : public Display
 {
-    public:
-        SimpleDisplay( const orcaice::Context   &context, 
-                       orcaice::SubsystemThread *thread )
-        {
-            consumer_ = new orcaifaceimpl::PrintingSystemStatusConsumerImpl( context );
-            consumer_->subscribeWithTag( "SystemStatus", thread );
-        }
-        void refresh() {};
-        
-    private:
-        orcaifaceimpl::PrintingSystemStatusConsumerImplPtr consumer_;
+public:
+    SimpleDisplay( const orcaice::Context   &context, 
+                    gbxiceutilacfr::Thread *thread )
+    {
+        consumer_ = new orcaifaceimpl::PrintingSystemStatusConsumerImpl( context );
+        consumer_->subscribeWithTag( "SystemStatus", thread );
+    }
+    void refresh() {};
+    
+private:
+    orcaifaceimpl::PrintingSystemStatusConsumerImplPtr consumer_;
 };    
 
 //
@@ -55,19 +54,19 @@ class SimpleDisplay : public Display
 //
 class ColourTextDisplay : public Display
 {
-    public:
-        ColourTextDisplay( const orcaice::Context   &context, 
-                           orcaice::SubsystemThread *thread );
-        void refresh();
-        
-    private:
-        
-        orcaice::Context context_;
-        gbxiceutilacfr::Timer timeSinceHeardTimer_;
-        orcaifaceimpl::BufferedSystemStatusConsumerImplPtr consumer_;
-        double publishIntervalSec_;
-                
-        void display( const orca::SystemStatusData &data );
+public:
+    ColourTextDisplay( const orcaice::Context   &context, 
+                        gbxiceutilacfr::Thread *thread );
+    void refresh();
+    
+private:
+    
+    orcaice::Context context_;
+    gbxiceutilacfr::Timer timeSinceHeardTimer_;
+    orcaifaceimpl::BufferedSystemStatusConsumerImplPtr consumer_;
+    double publishIntervalSec_;
+            
+    void display( const orca::SystemStatusData &data );
 };
 
 }

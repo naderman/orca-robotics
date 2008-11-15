@@ -180,7 +180,7 @@ std::string humanMsgString( const orca::SystemStatusData &ssData )
 ////////////////////////////////////// 
 
 ColourTextDisplay::ColourTextDisplay( const orcaice::Context   &context,
-                                      orcaice::SubsystemThread *thread )
+                                      gbxiceutilacfr::Thread *thread )
     : context_(context),
       publishIntervalSec_(10.0)
 {

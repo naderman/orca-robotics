@@ -2,7 +2,7 @@
 #define ORCASIM2D_RANGESCANPUBLISHER_H
 
 #include <hydrosim2d/irangescanpublisher.h>
-#include <orcaifaceimpl/rangescanner2dImpl.h>
+#include <orcaifaceimpl/rangescanner2d.h>
 
 namespace orcasim2d {
 

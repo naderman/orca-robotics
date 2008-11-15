@@ -17,20 +17,13 @@ class PathFollower2dI : virtual public ::orca::PathFollower2d
 public:
 
     PathFollower2dI( PathFollower2dImpl   &impl,
-                     PathFollowerCallback &callback )
+                     AbstractPathFollowerCallback &callback )
         : impl_(impl),
           callback_(callback) {}
-
-    // remote functions
-
     virtual ::orca::PathFollower2dData getData(const Ice::Current&)
         { return impl_.internalGetData(); }
-    virtual void subscribe(const ::orca::PathFollower2dConsumerPrx& consumer,
-                           const Ice::Current&)
-        { impl_.internalSubscribe( consumer ); }
-    virtual void unsubscribe(const ::orca::PathFollower2dConsumerPrx& consumer,
-                 const Ice::Current&)
-        { impl_.internalUnsubscribe( consumer ); }
+    virtual IceStorm::TopicPrx subscribe(const orca::PathFollower2dConsumerPrx& subscriber, const ::Ice::Current& = ::Ice::Current())
+        { return impl_.internalSubscribe(subscriber); }
 
     virtual void setData( const orca::PathFollower2dData &path, bool activateImmediately, const Ice::Current& )
         { callback_.setData(path,activateImmediately); }
@@ -49,29 +42,29 @@ public:
 
 private:
     PathFollower2dImpl   &impl_;
-    PathFollowerCallback &callback_;
+    AbstractPathFollowerCallback &callback_;
 };
 
 //////////////////////////////////////////////////////////////////////
 
-PathFollower2dImpl::PathFollower2dImpl( PathFollowerCallback    &callback,
+PathFollower2dImpl::PathFollower2dImpl( AbstractPathFollowerCallback    &callback,
                                         const std::string       &interfaceTag, 
-                                        const orcaice::Context  &context  )
-    : interfaceName_(orcaice::getProvidedInterface(context,interfaceTag).iface),
-      topicName_(orcaice::toTopicAsString(context.name(),interfaceName_)),
-      callback_(callback),
-      context_(context)
+                                        const orcaice::Context  &context  ) :
+    callback_(callback),
+    interfaceName_(orcaice::getProvidedInterface(context,interfaceTag).iface),
+    context_(context)
 {
+    init();
 }
 
-PathFollower2dImpl::PathFollower2dImpl( PathFollowerCallback    &callback,
+PathFollower2dImpl::PathFollower2dImpl( AbstractPathFollowerCallback    &callback,
                                         const orcaice::Context  &context,
-                                        const std::string       &interfaceName )
-    : interfaceName_(interfaceName),
-      topicName_(orcaice::toTopicAsString(context.name(),interfaceName_)),
-      callback_(callback),
-      context_(context)
+                                        const std::string       &interfaceName ) :
+    callback_(callback),
+    interfaceName_(interfaceName),
+    context_(context)
 {
+    init();
 }
 
 PathFollower2dImpl::~PathFollower2dImpl()
@@ -80,26 +73,27 @@ PathFollower2dImpl::~PathFollower2dImpl()
 }
 
 void
+PathFollower2dImpl::init()
+{
+    topicHandler_.reset( new PathFollower2dTopicHandler( orcaice::toTopicAsString(context_.name(),interfaceName_), context_ ) );
+
+    ptr_ = new PathFollower2dI( *this, callback_ );
+}
+
+void
 PathFollower2dImpl::initInterface()
 {
-    // Find IceStorm Topic to which we'll publish
-    topicPrx_ = orcaice::connectToTopicWithString<orca::PathFollower2dConsumerPrx>
-        ( context_, publisherPrx_, topicName_ );
-
-    // Register with the adapter
-    // We don't have to clean up the memory we're allocating here, because
-    // we're holding it in a smart pointer which will clean up when it's done.
-    ptr_ = new PathFollower2dI( *this, callback_ );
     orcaice::createInterfaceWithString( context_, ptr_, interfaceName_ );
+
+    topicHandler_->connectToTopic();
 }
 
 void 
 PathFollower2dImpl::initInterface( gbxiceutilacfr::Thread* thread, const std::string& subsysName, int retryInterval )
 {
-    topicPrx_ = orcaice::connectToTopicWithString( context_, publisherPrx_, topicName_, thread, subsysName, retryInterval );
-
-    ptr_ = new PathFollower2dI( *this, callback_ );
     orcaice::createInterfaceWithString( context_, ptr_, interfaceName_, thread, subsysName, retryInterval );
+
+    topicHandler_->connectToTopic( thread, subsysName, retryInterval );
 }
 
 ::orca::PathFollower2dData
@@ -119,31 +113,27 @@ PathFollower2dImpl::internalGetData() const
     return data;
 }
 
-void
-PathFollower2dImpl::internalSubscribe(const ::orca::PathFollower2dConsumerPrx& subscriber)
-{   
-    context_.tracer().debug( "PathFollower2dImpl::internalSubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
-    try {
-        topicPrx_->subscribeAndGetPublisher( IceStorm::QoS(), subscriber->ice_twoway() );
-    }
-    catch ( const IceStorm::AlreadySubscribed & e ) {
-        std::stringstream ss;
-        ss <<"Request for subscribe but this proxy has already been subscribed, so I do nothing: "<< e;
-        context_.tracer().debug( ss.str(), 2 );
-    }
-    catch ( const Ice::Exception & e ) {
-        std::stringstream ss;
-        ss <<"PathFollower2dImpl::internalSubscribe: failed to subscribe: "<< e << endl;
-        context_.tracer().warning( ss.str() );
-        throw orca::SubscriptionFailedException( ss.str() );
-    }
-}
 
-void
-PathFollower2dImpl::internalUnsubscribe(const ::orca::PathFollower2dConsumerPrx& subscriber)
+IceStorm::TopicPrx 
+PathFollower2dImpl::internalSubscribe(const orca::PathFollower2dConsumerPrx& subscriber)
 {
-    context_.tracer().debug( "PathFollower2dImpl::internalUnsubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
-    topicPrx_->unsubscribe( subscriber );
+    if ( !topicHandler_.get() ) 
+    {
+        throw orca::SubscriptionFailedException("Component does not have a topic to publish its traces.");
+    }
+    
+    // if we have data, send all the information we have to the new subscriber (and to no one else)
+    if ( dataStore_.isEmpty() )
+    {
+        return topicHandler_->subscribe( subscriber );
+    }
+    else
+    {
+        orca::PathFollower2dData data;
+        dataStore_.get( data );
+    
+        return topicHandler_->subscribe( subscriber, data );
+    }
 }
 
 void
@@ -151,13 +141,7 @@ PathFollower2dImpl::localSetAndSend( const orca::PathFollower2dData& data )
 {
     dataStore_.set( data );
     
-    // Try to push to IceStorm.
-    orcaice::tryPushToIceStormWithReconnect<orca::PathFollower2dConsumerPrx,orca::PathFollower2dData>
-        ( context_,
-          publisherPrx_,
-          data,
-          topicPrx_,
-          topicName_ );
+    topicHandler_->publish( data );
 }
 
 void 
@@ -169,7 +153,7 @@ PathFollower2dImpl::localSetWaypointIndex( int index )
     }
 
     try {
-        publisherPrx_->setWaypointIndex(index);
+        topicHandler_->publisherPrx()->setWaypointIndex(index);
     }
     catch ( Ice::CommunicatorDestroyedException & )
     {
@@ -180,15 +164,12 @@ PathFollower2dImpl::localSetWaypointIndex( int index )
         std::stringstream ss; ss << interfaceName_ << "::" << __func__ << ": Failed push to IceStorm: " << e;
         context_.tracer().warning( ss.str() );
 
-        bool reconnected = orcaice::detail::tryReconnectToIceStorm( context_,
-                                                           publisherPrx_,
-                                                           topicPrx_,
-                                                           topicName_ );
+        bool reconnected = topicHandler_->connectToTopic();
         if ( reconnected )
         {
             try {
                 // try again to push that bit of info
-                publisherPrx_->setWaypointIndex(index);
+                topicHandler_->publisherPrx()->setWaypointIndex(index);
             }
             catch ( Ice::Exception &e )
             {
@@ -208,7 +189,7 @@ PathFollower2dImpl::localSetActivationTime( orca::Time absoluteTime, double rela
     }
 
     try {
-        publisherPrx_->setActivationTime(absoluteTime,relativeTime);
+        topicHandler_->publisherPrx()->setActivationTime(absoluteTime,relativeTime);
     }
     catch ( Ice::CommunicatorDestroyedException & )
     {
@@ -219,15 +200,12 @@ PathFollower2dImpl::localSetActivationTime( orca::Time absoluteTime, double rela
         std::stringstream ss; ss << interfaceName_ << "::" << __func__ << ": Failed push to IceStorm: " << e;
         context_.tracer().warning( ss.str() );
 
-        bool reconnected = orcaice::detail::tryReconnectToIceStorm( context_,
-                                                           publisherPrx_,
-                                                           topicPrx_,
-                                                           topicName_ );
+        bool reconnected = topicHandler_->connectToTopic();
         if ( reconnected )
         {
             try {
                 // try again to push that bit of info
-                publisherPrx_->setActivationTime(absoluteTime,relativeTime);
+                topicHandler_->publisherPrx()->setActivationTime(absoluteTime,relativeTime);
             }
             catch ( Ice::Exception &e )
             {
@@ -247,7 +225,7 @@ PathFollower2dImpl::localSetEnabledState( bool enabledState )
     }
 
     try {
-        publisherPrx_->setEnabledState(enabledState);
+        topicHandler_->publisherPrx()->setEnabledState(enabledState);
     }
     catch ( Ice::CommunicatorDestroyedException & )
     {
@@ -258,15 +236,12 @@ PathFollower2dImpl::localSetEnabledState( bool enabledState )
         std::stringstream ss; ss << interfaceName_ << "::" << __func__ << ": Failed push to IceStorm: " << e;
         context_.tracer().warning( ss.str() );
 
-        bool reconnected = orcaice::detail::tryReconnectToIceStorm( context_,
-                                                           publisherPrx_,
-                                                           topicPrx_,
-                                                           topicName_ );
+        bool reconnected = topicHandler_->connectToTopic();
         if ( reconnected )
         {
             try {
                 // try again to push that bit of info
-                publisherPrx_->setEnabledState(enabledState);
+                topicHandler_->publisherPrx()->setEnabledState(enabledState);
             }
             catch ( Ice::Exception &e )
             {

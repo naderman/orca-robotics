@@ -38,7 +38,7 @@ Localise2dElement::tryToGetGeometry()
     }
     try 
     {
-        geom = listener_.proxy()->getVehicleGeometry();
+        geom = listener_.proxy()->getDescription();
         if ( geom == 0 )
         {
             throw gbxutilacfr::Exception( ERROR_INFO, "Localise2dElement::tryToGetGeometry(): got NULL vehicle geometry from remote interface!" );

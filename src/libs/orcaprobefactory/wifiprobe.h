@@ -12,8 +12,7 @@
 #define ORCA_ORCAPROBEFACTORY_WIFI_INTERFACE_PROBE_H
 
 #include <orcaprobe/interfaceprobe.h>
-#include <orca/wifi.h>
-#include <orcaifaceimpl/printingconsumers.h>
+#include <orcaifaceimpl/wifi.h>
 
 namespace orcaprobefactory
 {
@@ -25,7 +24,6 @@ public:
 
     WifiProbe( const orca::FQInterfaceName& name, const Ice::ObjectPrx& adminPrx, orcaprobe::AbstractDisplay& display,
                const orcaice::Context& context );
-    ~WifiProbe();
 
     virtual int loadOperationEvent( const int index, orcacm::OperationData& data );
     

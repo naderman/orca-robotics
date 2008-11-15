@@ -16,12 +16,12 @@
 #include <gbxsickacfr/gbxiceutilacfr/store.h>
 #include <hydronavutil/pose.h> 
 #include <orca/localise2d.h>
-#include <orca/pathplanner2d.h>
 #include <orca/pathfollower2d.h>
+#include <orcaifaceimpl/pathplanner2d.h>
+
 #include <hydroogmap/hydroogmap.h>
 #include "progressmonitor.h"
 #include <memory>
-#include <orcaifaceimpl/storingconsumers.h>
 #include <gbxsickacfr/gbxiceutilacfr/timer.h>
 
 namespace goalplanner

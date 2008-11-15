@@ -12,8 +12,7 @@
 #define ORCA_ORCAPROBEFACTORY_LOCALISE2D_INTERFACE_PROBE_H
 
 #include <orcaprobe/interfaceprobe.h>
-#include <orca/localise2d.h>
-#include <orcaifaceimpl/printingconsumers.h>
+#include <orcaifaceimpl/localise2d.h>
 
 namespace orcaprobefactory
 {
@@ -25,7 +24,6 @@ public:
 
     Localise2dProbe( const orca::FQInterfaceName& name, const Ice::ObjectPrx& adminPrx, orcaprobe::AbstractDisplay& display,
                                 const orcaice::Context& context );
-    ~Localise2dProbe();
 
     virtual int loadOperationEvent( const int index, orcacm::OperationData& data );
 

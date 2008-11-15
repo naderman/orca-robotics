@@ -57,6 +57,9 @@ exception DataNotExistException extends OrcaException {};
 //! Indicates a problem with robot hardware, e.g. sensors and actuators.
 exception HardwareFailedException extends OrcaException {};
 
+//! Raised when the server is unable to return a topic for subscription.
+exception NoTopicException extends OrcaException {};
+
 //! Raised when the server fails to subscribe client for periodic updates.
 exception SubscriptionFailedException extends OrcaException {};
 

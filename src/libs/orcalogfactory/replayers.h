@@ -4,15 +4,15 @@
 #include <orcalog/orcalog.h>
 #include <orcalogfactory/logreaders.h>
 
-#include <orcaifaceimpl/drivebicycleImpl.h>
-#include <orcaifaceimpl/gpsImpl.h>
-#include <orcaifaceimpl/laserscanner2dImpl.h>
-#include <orcaifaceimpl/localise2dImpl.h>
-#include <orcaifaceimpl/localise3dImpl.h>
-#include <orcaifaceimpl/odometry2dImpl.h>
-#include <orcaifaceimpl/odometry3dImpl.h>
-#include <orcaifaceimpl/powerImpl.h>
-#include <orcaifaceimpl/wifiImpl.h>
+#include <orcaifaceimpl/drivebicycle.h>
+#include <orcaifaceimpl/gps.h>
+#include <orcaifaceimpl/laserscanner2d.h>
+#include <orcaifaceimpl/localise2d.h>
+#include <orcaifaceimpl/localise3d.h>
+#include <orcaifaceimpl/odometry2d.h>
+#include <orcaifaceimpl/odometry3d.h>
+#include <orcaifaceimpl/power.h>
+#include <orcaifaceimpl/wifi.h>
 
 namespace orcalogfactory {
 

@@ -16,7 +16,7 @@
 #include <orcaice/context.h>
 #include <hydrodll/dynamicload.h>
 // remote interface
-#include <orcaifaceimpl/laserscanner2dImpl.h>
+#include <orcaifaceimpl/laserscanner2d.h>
 // hardware interface
 #include <hydrointerfaces/laserscanner2d.h>
 

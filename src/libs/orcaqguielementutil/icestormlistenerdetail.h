@@ -27,15 +27,16 @@ class DefaultSubscriptionMaker
 {
 public:
     DefaultSubscriptionMaker( ProxyType proxy, ConsumerPrxType callbackPrx )
-        { proxy->subscribe( callbackPrx ); }
+        { topic_ = proxy->subscribe( callbackPrx ); }
+    IceStorm::TopicPrx topic_;
 };
 
-template< class ProxyType, class ConsumerPrxType >
+template< class ConsumerPrxType >
 class DefaultUnSubscriptionMaker 
 {
 public:
-    DefaultUnSubscriptionMaker( ProxyType proxy, ConsumerPrxType callbackPrx )
-        { proxy->unsubscribe( callbackPrx ); }
+    DefaultUnSubscriptionMaker( const IceStorm::TopicPrx& topic, const ConsumerPrxType& consumerPrx )
+        { topic->unsubscribe( consumerPrx ); }
 };
 
 //
@@ -47,23 +48,21 @@ template< class ProxyType,
             class ConsumerType,
             class ConsumerPrxType,
             class SubscriptionMakerType >
-void
+IceStorm::TopicPrx
 subscribeListener( orcaice::Context      &context,
                     const std::string     &proxyString,
                     ConsumerType          *consumer,
                     ConsumerPrxType       &callbackPrx,
                     ProxyType             &proxy);
 
-template< class ProxyType,
-            class ConsumerType,
+template< class ConsumerType,
             class ConsumerPrxType,
             class UnSubscriptionMakerType >
 void
 unSubscribeListener( orcaice::Context      &context,
-                        const std::string     &proxyString,
+                        const IceStorm::TopicPrx& topic,
                         ConsumerType          *consumer,
-                        ConsumerPrxType       &callbackPrx,
-                        ProxyType             &proxy);
+                        ConsumerPrxType       &callbackPrx);
 
 //
 // ================ Implementation =====================
@@ -73,7 +72,7 @@ template< class ProxyType,
             class ConsumerType,
             class ConsumerPrxType,
             class SubscriptionMakerType >
-void
+IceStorm::TopicPrx
 subscribeListener( orcaice::Context      &context,
                    const std::string     &proxyString,
                    ConsumerType          *consumer,
@@ -86,6 +85,7 @@ subscribeListener( orcaice::Context      &context,
 
         // Ask the remote object to subscribe us to the topic.
         SubscriptionMakerType s( proxy, callbackPrx );
+        return s.topic_;
     }
     // Ignore all exceptions, and try again next time.
     catch ( Ice::ConnectionRefusedException &e ) {
@@ -101,23 +101,18 @@ subscribeListener( orcaice::Context      &context,
         throw;
     }
 }
-template< class ProxyType,
-            class ConsumerType,
-            class ConsumerPrxType,
-            class UnSubscriptionMakerType >
+template< class ConsumerType,
+          class ConsumerPrxType,
+          class UnSubscriptionMakerType >
 void
 unSubscribeListener( orcaice::Context      &context,
-                        const std::string     &proxyString,
+                        const IceStorm::TopicPrx& topic,
                         ConsumerType          *consumer,
-                        ConsumerPrxType       &callbackPrx,
-                        ProxyType             &proxy)
+                        ConsumerPrxType       &callbackPrx )
 {
     try {
-        // Connect to remote object
-        orcaice::connectToInterfaceWithString( context, proxy, proxyString );
-
         // Ask the remote object to unsubscribe us from the topic.
-        UnSubscriptionMakerType s( proxy, callbackPrx );
+        UnSubscriptionMakerType s( topic, callbackPrx );
     }
     // Ignore all exceptions, and try again next time.
     catch ( Ice::ConnectionRefusedException &e ) {

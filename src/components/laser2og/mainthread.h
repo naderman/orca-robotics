@@ -14,10 +14,9 @@
 #include <orcaice/subsystemthread.h>
 #include <orcaice/context.h>
 
-#include <orca/rangescanner2d.h>
-#include <orca/localise2d.h>
 #include <orca/ogfusion.h>
-#include <orcaifaceimpl/bufferedconsumers.h>
+#include <orca/localise2d.h>
+#include <orcaifaceimpl/rangescanner2d.h>
 #include "laser2og.h"
 
 namespace laser2og

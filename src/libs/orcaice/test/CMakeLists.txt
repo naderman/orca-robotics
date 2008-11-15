@@ -21,6 +21,11 @@ GBX_ADD_TEST( OrcaIce_TimeTest timetest )
 ADD_EXECUTABLE( privateutilstest privateutilstest.cpp )
 GBX_ADD_TEST( OrcaIce_PrivateUtilsTest privateutilstest )
 
+# admin interfaces test
+ADD_EXECUTABLE( admintest admintest.cpp )
+GBX_ADD_TEST( OrcaIce_AdminTest admintest )
+ORCA_GENERATE_CONFIG_FILE( admintest.def admintest 0 )
+
 # basic app test
 ADD_EXECUTABLE( apptest apptest.cpp )
 GBX_ADD_TEST( OrcaIce_AppTest apptest )

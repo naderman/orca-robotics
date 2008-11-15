@@ -13,7 +13,7 @@
 
 #include <orcaice/subsystem.h>
 #include <orcaice/context.h>
-#include <orcaifaceimpl/printingconsumers.h>
+#include <orcaifaceimpl/rangescanner2d.h>
 
 namespace lasermon
 {

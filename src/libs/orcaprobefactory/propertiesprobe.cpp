@@ -12,7 +12,6 @@
 #include <orcaice/orcaice.h>
 #include <orcacm/orcacm.h>
 #include <orcaprobe/orcaprobe.h>
-#include <orcaifaceutil/properties.h>
 
 #include "propertiesprobe.h"
 
@@ -32,11 +31,7 @@ PropertiesProbe::PropertiesProbe( const orca::FQInterfaceName& name, const Ice::
     
     consumer_ = new orcaifaceimpl::PrintingPropertiesConsumerImpl( context,1000,1 );
 }
-    
-PropertiesProbe::~PropertiesProbe()
-{
-}
-
+  
 int 
 PropertiesProbe::loadOperationEvent( const int index, orcacm::OperationData & data )
 {
@@ -119,7 +114,7 @@ PropertiesProbe::loadSubscribe( orcacm::OperationData& data )
 int 
 PropertiesProbe::loadUnsubscribe( orcacm::OperationData& data )
 {
-    consumer_->unsubscribeWithString( orcaice::toString(name_) );
+    consumer_->unsubscribe();
     orcaprobe::reportUnsubscribed( data );
     return 0;
 }

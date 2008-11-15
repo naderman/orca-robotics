@@ -12,6 +12,7 @@
 #define ORCA2_CPU_ICE
 
 #include <orca/common.ice>
+#include <IceStorm/IceStorm.ice>
 
 module orca
 {
@@ -40,7 +41,7 @@ node `Alpha'
 }
 @endverbatim
 */
-struct CpuInfo
+struct CpuDescription
 {
     //! Time when info was compiled.
     Time timeStamp;
@@ -78,35 +79,21 @@ interface CpuConsumer
 interface Cpu
 {
     //! Get general CPU information.
-    idempotent CpuInfo getInfo();
+    idempotent CpuDescription getDescription();
 
     //! Get current CPU state. Raises DataNotExistException if data is not available.
     idempotent CpuData getData()
         throws DataNotExistException;
 
-    /*!
-     * Mimics IceStorm's subscribe() but without QoS, for now. The
-     * implementation may choose to implement the data push internally
-     * or use IceStorm. This choice is transparent to the subscriber.
-     *
-     * @param subscriber The subscriber's proxy.
-     *
-     * @see unsubscribe
-     */
-    void subscribe( CpuConsumer* subscriber )
-            throws ConfigurationNotExistException;
-
-    // for reference, this is what IceStorm's subscribe function looks like.
-    //void subscribe(QoS theQoS, Object* subscriber);
-
-    /*!
-     * Unsubscribe the given [subscriber].
-     *
-     * @param subscriber The proxy of an existing subscriber.
-     *
-     * @see subscribe
-     */
-    idempotent void unsubscribe( CpuConsumer* subscriber );
+    //! Tries to subscribe the specified subscriber for data updates.
+    //! If successfuly, returns a proxy to the IceStorm topic which can be later used by the 
+    //! client to unsubscribe itself. For reference, the Slice definition of the Topic
+    //! interface for unsubscribing:
+    //! @verbatim
+    //! idempotent void unsubscribe(Object* subscriber);
+    //! @endverbatim
+    IceStorm::Topic* subscribe( CpuConsumer* subscriber )
+        throws SubscriptionFailedException;
 };
 
 /*! @} */

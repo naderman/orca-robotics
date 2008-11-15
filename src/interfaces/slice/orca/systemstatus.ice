@@ -104,27 +104,16 @@ interface SystemStatus
     //! Returns the status of all components of a system
     idempotent SystemStatusData getData()
         throws DataNotExistException;
-    
-    /*!
-     * Mimics IceStorm's subscribe() but without QoS, for now. The
-     * implementation may choose to implement the data push internally
-     * or use IceStorm. This choice is transparent to the subscriber.
-     *
-     * @param subscriber The subscriber's proxy.
-     *
-     * @see unsubscribe
-     */
-    void subscribe( SystemStatusConsumer* subscriber )
+
+    //! Tries to subscribe the specified subscriber for data updates.
+    //! If successfuly, returns a proxy to the IceStorm topic which can be later used by the 
+    //! client to unsubscribe itself. For reference, the Slice definition of the Topic
+    //! interface for unsubscribing:
+    //! @verbatim
+    //! idempotent void unsubscribe(Object* subscriber);
+    //! @endverbatim
+    IceStorm::Topic* subscribe( SystemStatusConsumer* subscriber )
         throws SubscriptionFailedException;
-    
-    /*!
-     * Unsubscribe the given [subscriber].
-     *
-     * @param subscriber The proxy of an existing subscriber.
-     *
-     * @see subscribe
-     */
-    idempotent void unsubscribe( SystemStatusConsumer* subscriber );
 };
 
 

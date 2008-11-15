@@ -12,8 +12,7 @@
 #define ORCA_ORCAPROBEFACTORY_CAMERA_INTERFACE_PROBE_H
 
 #include <orcaprobe/interfaceprobe.h>
-#include <orca/camera.h>
-#include <orcaifaceimpl/printingconsumers.h>
+#include <orcaifaceimpl/camera.h>
 
 namespace orcaprobefactory
 {
@@ -25,7 +24,6 @@ public:
 
     CameraProbe( const orca::FQInterfaceName& name, const Ice::ObjectPrx& adminPrx, orcaprobe::AbstractDisplay& display,
                                 const orcaice::Context& context );
-    ~CameraProbe();
 
     virtual int loadOperationEvent( const int index, orcacm::OperationData& data );
     

@@ -12,7 +12,6 @@
 #include <orcaice/orcaice.h>
 #include <orcacm/orcacm.h>
 #include <orcaprobe/orcaprobe.h>
-#include <orcaifaceutil/wifi.h>
 
 #include "wifiprobe.h"
 
@@ -30,10 +29,6 @@ WifiProbe::WifiProbe( const orca::FQInterfaceName& name, const Ice::ObjectPrx& a
     addOperation( "unsubscribe",    "idempotent void unsubscribe( WifiConsumer *subscriber )" );
 
     consumer_ = new orcaifaceimpl::PrintingWifiConsumerImpl( context,1000,1 );
-}
-    
-WifiProbe::~WifiProbe()
-{
 }
     
 int 
@@ -70,7 +65,7 @@ WifiProbe::loadSubscribe( orcacm::OperationData& data )
 int 
 WifiProbe::loadUnsubscribe( orcacm::OperationData& data )
 {
-    consumer_->unsubscribeWithString( orcaice::toString(name_) );
+    consumer_->unsubscribe();
     orcaprobe::reportUnsubscribed( data );
     return 0;
 }

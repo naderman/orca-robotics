@@ -11,10 +11,9 @@
 #ifndef ORCA2_FEATUREMAP2D_INTERFACE_ICE
 #define ORCA2_FEATUREMAP2D_INTERFACE_ICE
 
-#include <orca/datetime.ice>
-#include <orca/bros1.ice>
-#include <orca/exceptions.ice>
+#include <orca/common.ice>
 #include <orca/localise2d.ice>
+#include <IceStorm/IceStorm.ice>
 
 module orca
 {
@@ -143,25 +142,16 @@ interface FeatureMap2d
 {
     //! Returns the latest data.
     idempotent FeatureMap2dData getData();
-    
-    /*!
-     * Mimics IceStorm's subscribe(). @p subscriber is typically a direct proxy to the consumer object.
-     * The implementation may choose to implement the push directly or use IceStorm.
-     * This choice is transparent to the subscriber. The case when the @p subscriber is already subscribed
-     * is quietly ignored.
-     *
-     * @see unsubscribe
-     */
-    void subscribe( FeatureMap2dConsumer *subscriber )
-            throws SubscriptionFailedException;
 
-    /*!
-     * Unsubscribe an existing @p subscriber. The case when the @p subscriber is not subscribed
-     * is quietly ignored.
-     *
-     * @see subscribe
-     */
-    idempotent void unsubscribe( FeatureMap2dConsumer *subscriber );
+    //! Tries to subscribe the specified subscriber for data updates.
+    //! If successfuly, returns a proxy to the IceStorm topic which can be later used by the 
+    //! client to unsubscribe itself. For reference, the Slice definition of the Topic
+    //! interface for unsubscribing:
+    //! @verbatim
+    //! idempotent void unsubscribe(Object* subscriber);
+    //! @endverbatim
+    IceStorm::Topic* subscribe( FeatureMap2dConsumer* subscriber )
+        throws SubscriptionFailedException;
 };
 
 //!  //@}

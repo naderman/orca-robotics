@@ -11,7 +11,7 @@
 // orca includes
 #include <orcaice/orcaice.h>
 #include <orca/odometry2d.h>
-#include <orcaifaceimpl/odometry2dImpl.h>
+#include <orcaifaceimpl/odometry2d.h>
 
 // player includes
 #include <libplayerc++/playerc++.h>

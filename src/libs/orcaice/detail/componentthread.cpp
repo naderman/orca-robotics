@@ -33,7 +33,7 @@ ComponentThread::walk()
     bool hasStatusInterface = props->getPropertyAsInt( "Orca.Component.EnableStatus" );
     bool hasHomeInterface = props->getPropertyAsInt( "Orca.Component.EnableHome" );
     
-    cout<<"DEBUG: hasStatusInterface="<<hasStatusInterface<<" hasHomeInterface="<<hasHomeInterface<<endl;
+//     cout<<"DEBUG: hasStatusInterface="<<hasStatusInterface<<" hasHomeInterface="<<hasHomeInterface<<endl;
 
     bool registeredHome = false;
 

@@ -210,8 +210,6 @@ connectToTopicWithString( const Context     & context,
 
 namespace detail {
 
-    // alexm: not sure why this one is in detail when it's in the header file anyway.
-
     // Catches all exceptions.
     // Returns: true if re-connected OK.
     template<class ConsumerPrxType>
@@ -260,7 +258,7 @@ this function to be templated).
 */
 template<class ConsumerPrxType, class DataType>
 void tryPushToIceStormWithReconnect( orcaice::Context   &context,
-                                ConsumerPrxType    &consumerPrx,
+                                ConsumerPrxType    &publisherPrx,
                                 const DataType     &data,
                                 IceStorm::TopicPrx &topicPrx,
                                 const std::string  &topicName )
@@ -271,7 +269,7 @@ void tryPushToIceStormWithReconnect( orcaice::Context   &context,
     }
 
     try {
-        consumerPrx->setData( data );
+        publisherPrx->setData( data );
     }
     catch ( Ice::CommunicatorDestroyedException & )
     {
@@ -288,14 +286,14 @@ void tryPushToIceStormWithReconnect( orcaice::Context   &context,
 
         // If IceStorm just re-started for some reason though, we want to try to re-connect
         bool reconnected = detail::tryReconnectToIceStorm( context,
-                                                            consumerPrx,
+                                                            publisherPrx,
                                                             topicPrx,
                                                             topicName );
         if ( reconnected )
         {
             try {
                 // try again to push that bit of info
-                consumerPrx->setData( data );
+                publisherPrx->setData( data );
             }
             catch ( Ice::Exception &e )
             {

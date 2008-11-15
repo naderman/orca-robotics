@@ -13,9 +13,9 @@
 
 #include <orcaice/subsystemthread.h>
 #include <orcaice/context.h>
-#include <orcaifaceimpl/bufferedconsumers.h>
-#include <orcaifaceimpl/storingconsumers.h>
 #include <orca/velocitycontrol2d.h>
+#include <orcaifaceimpl/rangescanner2d.h>
+#include <orcaifaceimpl/odometry2d.h>
 
 #include "algodriver.h"
 
@@ -30,10 +30,10 @@ public:
     MainThread( const orcaice::Context& context );
     virtual ~MainThread();
 
+private:
+
     // from SubsystemThread
     virtual void walk();
-
-private:
 
     // utilities    
     void initNetwork();

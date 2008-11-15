@@ -48,9 +48,7 @@ private:
 
     // remote call implementations, mimic (but do not inherit) the orca interface
     ::orca::StatusData internalGetData() const;
-    void internalSubscribe(const ::orca::StatusConsumerPrx&);
-    void internalUnsubscribe(const ::orca::StatusConsumerPrx&);
-    IceStorm::TopicPrx internalTopic();
+    IceStorm::TopicPrx  internalSubscribe(const ::orca::StatusConsumerPrx&);
 
     gbxiceutilacfr::Store<orca::StatusData> dataStore_;
     // we don't need to protect it if we only read from it.
@@ -60,7 +58,7 @@ private:
     std::auto_ptr<ComponentStatusAggregator> aggregator_;
 
     typedef TopicHandler<orca::StatusConsumerPrx,orca::StatusData> StatusTopicHandler;
-    StatusTopicHandler* topicHandler_;
+    std::auto_ptr<StatusTopicHandler> topicHandler_;
     void initTopicHandler();
 
     // Hang onto this so we can remove from the adapter and control when things get deleted

@@ -12,8 +12,7 @@
 #define ORCA_ORCAPROBEFACTORY_GPS_INTERFACE_PROBE_H
 
 #include <orcaprobe/interfaceprobe.h>
-#include <orca/gps.h>
-#include <orcaifaceimpl/printingconsumers.h>
+#include <orcaifaceimpl/gps.h>
 
 namespace orcaprobefactory
 {
@@ -25,7 +24,6 @@ public:
 
     GpsProbe( const orca::FQInterfaceName& name, const Ice::ObjectPrx& adminPrx, orcaprobe::AbstractDisplay& display,
                                 const orcaice::Context& context );
-    ~GpsProbe();
 
     virtual int loadOperationEvent( const int index, orcacm::OperationData& data );
     

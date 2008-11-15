@@ -12,9 +12,6 @@
 #define ORCA_ORCAIFACEIMPL_BUTTON_IMPL_H
 
 #include <orca/button.h>
-#include <IceStorm/IceStorm.h>
-
-#include <gbxsickacfr/gbxiceutilacfr/store.h>
 #include <gbxsickacfr/gbxiceutilacfr/notify.h>
 #include <orcaice/context.h>
 
@@ -51,12 +48,9 @@ private:
     // remote call implementations, mimic (but do not inherit) the orca interface
     void internalPress();
 
-    const std::string                 interfaceName_;
-
-    orcaice::Context                  context_;
-
-    // Hang onto this so we can remove from the adapter and control when things get deleted
-    Ice::ObjectPtr          ptr_;
+    Ice::ObjectPtr ptr_;
+    const std::string interfaceName_;
+    orcaice::Context context_;
 };
 typedef IceUtil::Handle<ButtonImpl> ButtonImplPtr;
 

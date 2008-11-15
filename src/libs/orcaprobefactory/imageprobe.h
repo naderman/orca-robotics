@@ -12,8 +12,7 @@
 #define ORCA_ORCAPROBEFACTORY_IMAGE_INTERFACE_PROBE_H
 
 #include <orcaprobe/interfaceprobe.h>
-#include <orca/image.h>
-#include <orcaifaceimpl/printingconsumers.h>
+#include <orcaifaceimpl/image.h>
 
 namespace orcaprobefactory
 {
@@ -25,7 +24,6 @@ public:
 
     ImageProbe( const orca::FQInterfaceName& name, const Ice::ObjectPrx& adminPrx, orcaprobe::AbstractDisplay& display,
                                 const orcaice::Context& context );
-    ~ImageProbe();
 
     virtual int loadOperationEvent( const int index, orcacm::OperationData& data );
     

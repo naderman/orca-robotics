@@ -3,7 +3,7 @@
 
 #ifdef QT4_FOUND
 #include <hydrointerfaces/pathplanner2d.h>
-#include <orcaifaceimpl/qgraphics2dImpl.h>
+#include <orcaifaceimpl/qgraphics2d.h>
 #include <QPicture>
 
 namespace pathplanner {

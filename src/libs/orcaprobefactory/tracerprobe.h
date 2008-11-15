@@ -12,12 +12,12 @@
 #define ORCA_ORCAPROBEFACTORY_TRACER_INTERFACE_PROBE_H
 
 #include <orcaprobe/interfaceprobe.h>
-#include <orca/tracer.h>
+#include <orcaifaceimpl/tracer.h>
 
 namespace orcaprobefactory
 {
 
-class TracerProbe : public orca::TracerConsumer, public orcaprobe::InterfaceProbe
+class TracerProbe : public orcaprobe::InterfaceProbe
 {
 
 public:
@@ -26,9 +26,6 @@ public:
                                 const orcaice::Context& context );
 
     virtual int loadOperationEvent( const int index, orcacm::OperationData& data );
-
-    // from consumer
-    virtual void setData(const orca::TracerData& data, const Ice::Current&);
     
 private:
 
@@ -37,8 +34,7 @@ private:
     int loadSubscribe( orcacm::OperationData& data );
     int loadUnsubscribe( orcacm::OperationData& data );
 
-    orca::TracerConsumerPrx callbackPrx_;
-    orcacm::OperationData subscribeOperationData_;
+    orcaifaceimpl::PrintingTracerConsumerImplPtr consumer_;
 };
 
 } // namespace

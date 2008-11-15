@@ -3,7 +3,7 @@
 
 #include <hydrosim2d/iposepublisher.h>
 #include <orcanavutil/orcanavutil.h>
-#include <orcaifaceimpl/localise2dImpl.h>
+#include <orcaifaceimpl/localise2d.h>
 
 namespace orcasim2d {
 

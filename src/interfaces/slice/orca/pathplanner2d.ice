@@ -13,6 +13,7 @@
 
 #include <orca/bros1.ice>
 #include <orca/pathfollower2d.ice>
+#include <IceStorm/IceStorm.ice>
 
 module orca
 {
@@ -95,30 +96,15 @@ interface PathPlanner2d
     //! Returns the most-recently-computed computed path
     idempotent PathPlanner2dData getData();
 
-    /*!
-     *
-     * Mimics IceStorm's subscribe().  The implementation may choose to
-     * implement the push directly or use IceStorm.  This choice is transparent to the subscriber.
-     *
-     * @param subscriber The subscriber's proxy.
-     *
-     * @see unsubscribe
-     *
-     */
-    void subscribe( PathPlanner2dConsumer *subscriber )
-            throws SubscriptionFailedException;
-
-    /**
-     *
-     * Unsubscribe the given [subscriber].
-     *
-     * @param subscriber The proxy of an existing subscriber.
-     *
-     * @see subscribe
-     *
-    **/
-    idempotent void unsubscribe( PathPlanner2dConsumer *subscriber );
-
+    //! Tries to subscribe the specified subscriber for data updates.
+    //! If successfuly, returns a proxy to the IceStorm topic which can be later used by the 
+    //! client to unsubscribe itself. For reference, the Slice definition of the Topic
+    //! interface for unsubscribing:
+    //! @verbatim
+    //! idempotent void unsubscribe(Object* subscriber);
+    //! @endverbatim
+    IceStorm::Topic* subscribe( PathPlanner2dConsumer* subscriber )
+        throws SubscriptionFailedException;
 };
 
 //! @}

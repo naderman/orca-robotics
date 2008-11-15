@@ -12,8 +12,7 @@
 #define ORCA_ORCAPROBEFACTORY_POWER_INTERFACE_PROBE_H
 
 #include <orcaprobe/interfaceprobe.h>
-#include <orca/power.h>
-#include <orcaifaceimpl/printingconsumers.h>
+#include <orcaifaceimpl/power.h>
 
 namespace orcaprobefactory
 {
@@ -25,7 +24,6 @@ public:
 
     PowerProbe( const orca::FQInterfaceName& name, const Ice::ObjectPrx& adminPrx, orcaprobe::AbstractDisplay& display,
                                 const orcaice::Context & context );
-    ~PowerProbe();
 
     virtual int loadOperationEvent( const int index, orcacm::OperationData & data );
 

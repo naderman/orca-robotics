@@ -11,12 +11,12 @@
 #ifndef ORCA_PROPERTIES_IMPL_H
 #define ORCA_PROPERTIES_IMPL_H
 
+#include <memory>
+#include <memory>
 #include <orca/properties.h>
-#include <IceStorm/IceStorm.h>
-
-// utilities
 #include <gbxsickacfr/gbxiceutilacfr/store.h>
 #include <orcaice/context.h>
+#include <orcaice/topichandler.h>
 
 namespace gbxiceutilacfr { class Thread; }
 
@@ -58,24 +58,22 @@ public:
         { return remotelySetDataStore_; }
 
 private:
+    void init();
+
     // remote call implementations, mimic (but do not inherit) the orca interface
     ::orca::PropertiesData internalGetData() const;
     void internalSetData( const ::orca::PropertiesData &data );
-    void internalSubscribe(const ::orca::PropertiesConsumerPrx&);
-    void internalUnsubscribe(const ::orca::PropertiesConsumerPrx&);
+    IceStorm::TopicPrx internalSubscribe(const orca::PropertiesConsumerPrx& subscriber);
 
     gbxiceutilacfr::Store<orca::PropertiesData> dataStore_;
     gbxiceutilacfr::Store<orca::PropertiesData> remotelySetDataStore_;
 
-    orca::PropertiesConsumerPrx    publisherPrx_;
-    IceStorm::TopicPrx             topicPrx_;
+    typedef orcaice::TopicHandler<orca::PropertiesConsumerPrx,orca::PropertiesData> PropertiesTopicHandler;
+    std::auto_ptr<PropertiesTopicHandler> topicHandler_;
 
-    // Hang onto this so we can remove from the adapter and control when things get deleted
-    Ice::ObjectPtr          ptr_;
-
+    Ice::ObjectPtr ptr_;
     const std::string interfaceName_;
-    const std::string topicName_;
-    orcaice::Context               context_;
+    orcaice::Context context_;
 };
 
 typedef IceUtil::Handle<PropertiesImpl> PropertiesImplPtr;

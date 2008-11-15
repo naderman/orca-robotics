@@ -16,7 +16,7 @@
 #include <orcaice/context.h>
 #include <hydrodll/dynamicload.h>
 // remote interface
-#include <orcaifaceimpl/gpsImpl.h>
+#include <orcaifaceimpl/gps.h>
 // hardware interface
 #include <hydrointerfaces/gps.h>
 

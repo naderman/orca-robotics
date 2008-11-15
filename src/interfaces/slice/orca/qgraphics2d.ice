@@ -14,6 +14,7 @@
 #include <orca/common.ice>
 #include <orca/bros1.ice>
 #include <orca/stochastic.ice>
+#include <IceStorm/IceStorm.ice>
 
 module orca
 {
@@ -114,29 +115,16 @@ interface QGraphics2d
    //! Returns the latest data.
    idempotent QGraphics2dData getData()
             throws DataNotExistException;
-   /*!
-    * Mimics IceStorm's subscribe() but without QoS, for now. The
-    * implementation may choose to implement the data push internally
-    * or use IceStorm. This choice is transparent to the subscriber.
-    *
-    * @param subscriber The subscriber's proxy.
-    *
-    * @see unsubscribe
-    */
-   void subscribe( QGraphics2dConsumer* subscriber )
+
+    //! Tries to subscribe the specified subscriber for data updates.
+    //! If successfuly, returns a proxy to the IceStorm topic which can be later used by the 
+    //! client to unsubscribe itself. For reference, the Slice definition of the Topic
+    //! interface for unsubscribing:
+    //! @verbatim
+    //! idempotent void unsubscribe(Object* subscriber);
+    //! @endverbatim
+    IceStorm::Topic* subscribe( QGraphics2dConsumer* subscriber )
         throws SubscriptionFailedException;
-
-    // for reference, this is what IceStorm's subscribe function looks like.
-    //void subscribe(QoS theQoS, Object* subscriber);
-
-    /*!
-     * Unsubscribe the given @p subscriber.
-     *
-     * @param subscriber The proxy of an existing subscriber.
-     *
-     * @see subscribe
-     */
-    idempotent void unsubscribe( QGraphics2dConsumer* subscriber );
 };
 
 

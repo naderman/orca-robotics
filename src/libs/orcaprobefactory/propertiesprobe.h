@@ -12,8 +12,7 @@
 #define ORCA_ORCAPROBEFACTORY_PROPERTIES_INTERFACE_PROBE_H
 
 #include <orcaprobe/interfaceprobe.h>
-#include <orca/properties.h>
-#include <orcaifaceimpl/printingconsumers.h>
+#include <orcaifaceimpl/properties.h>
 
 namespace orcaprobefactory
 {
@@ -25,7 +24,6 @@ public:
 
     PropertiesProbe( const orca::FQInterfaceName& name, const Ice::ObjectPrx& adminPrx, orcaprobe::AbstractDisplay& display,
                                 const orcaice::Context & context );
-    ~PropertiesProbe();
 
     virtual int loadOperationEvent( const int index, orcacm::OperationData & data );
 

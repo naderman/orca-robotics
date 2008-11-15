@@ -16,8 +16,8 @@
 #include <orcaice/context.h>
 #include <hydrointerfaces/laserfeatureextractor.h>
 #include <orca/laserscanner2d.h>
-#include <orcaifaceimpl/polarfeature2dImpl.h>
-#include <orcaifaceimpl/storingconsumers.h>
+#include <orcaifaceimpl/polarfeature2d.h>
+#include <orcaifaceimpl/rangescanner2d.h>
 #include <hydrodll/dynamicload.h>
 
 namespace laserfeatures

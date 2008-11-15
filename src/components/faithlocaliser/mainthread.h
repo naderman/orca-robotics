@@ -13,8 +13,8 @@
 
 #include <orcaice/subsystem.h>
 #include <orcaice/context.h>
-#include <orcaifaceimpl/bufferedconsumers.h>
-#include <orcaifaceimpl/localise2dImpl.h>
+#include <orcaifaceimpl/localise2d.h>
+#include <orcaifaceimpl/odometry2d.h>
 
 namespace faithlocaliser
 {

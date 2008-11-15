@@ -25,7 +25,7 @@ CpuProbe::CpuProbe( const orca::FQInterfaceName& name, const Ice::ObjectPrx& adm
 {
     id_ = "::orca::Cpu";
     
-    addOperation( "getInfo" );
+    addOperation( "getDescription" );
     addOperation( "getData" );
 }
 
@@ -46,7 +46,7 @@ int
 CpuProbe::loadGetInfo( orcacm::OperationData& data )
 {
     orca::CpuPrx derivedPrx = orca::CpuPrx::checkedCast(prx_);
-    orcaprobe::reportResult( data, "data", ifaceutil::toString( derivedPrx->getInfo() ) );
+    orcaprobe::reportResult( data, "data", ifaceutil::toString( derivedPrx->getDescription() ) );
     return 0;
 }
 

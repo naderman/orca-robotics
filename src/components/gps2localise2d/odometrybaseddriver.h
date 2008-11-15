@@ -13,7 +13,7 @@
 #include "driver.h"
 #include <orcaice/context.h>
 #include "simpledriver.h"
-#include <orcaifaceimpl/storingconsumers.h>
+#include <orcaifaceimpl/odometry2d.h>
 #include <hydronavutil/offset.h>
 #include <hydronavutil/odometrydifferentiator.h>
 

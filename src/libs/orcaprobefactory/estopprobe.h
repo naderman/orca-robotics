@@ -12,8 +12,7 @@
 #define ORCA_PROBEFACTORY_ESTOP_INTERFACE_PROBE_H
 
 #include <orcaprobe/interfaceprobe.h>
-#include <orca/estop.h>
-#include <orcaifaceimpl/printingconsumers.h>
+#include <orcaifaceimpl/estop.h>
 
 namespace orcaprobefactory
 {
@@ -25,7 +24,6 @@ public:
 
     EStopProbe( const orca::FQInterfaceName& name, const Ice::ObjectPrx& adminPrx, orcaprobe::AbstractDisplay& display,
                                 const orcaice::Context & context );
-    ~EStopProbe();
 
     virtual int loadOperationEvent( const int index, orcacm::OperationData & data );
 

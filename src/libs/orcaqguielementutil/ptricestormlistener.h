@@ -40,7 +40,7 @@ template< class DataType,
           class ConsumerType,
           class ConsumerPrxType,
           class SubscriptionMakerType=detail::DefaultSubscriptionMaker<ProxyType,ConsumerPrxType>,
-          class UnSubscriptionMakerType=detail::DefaultUnSubscriptionMaker<ProxyType,ConsumerPrxType> >
+          class UnSubscriptionMakerType=detail::DefaultUnSubscriptionMaker<ConsumerPrxType> >
 class PtrIceStormListener
 {
 
@@ -78,7 +78,7 @@ public:
             callbackPrx_ = orcaice::createConsumerInterface<ConsumerPrxType>( context_,
                                                                               objPtr );
 
-            detail::subscribeListener<ProxyType,
+            topicPrx_ = detail::subscribeListener<ProxyType,
                 ConsumerType,
                 ConsumerPrxType,
                 SubscriptionMakerType>( context_, proxyString_, consumer_, callbackPrx_, proxy_ );
@@ -101,6 +101,7 @@ private:
 
     orcaice::Context  context_;
     std::string       proxyString_;
+    IceStorm::TopicPrx topicPrx_;
 
     void registerWithAdapter()
         {
@@ -117,10 +118,9 @@ private:
             if ( isSubscribed_ )
             {
                 try {
-                    detail::unSubscribeListener<ProxyType,
-                        ConsumerType,
+                    detail::unSubscribeListener<ConsumerType,
                         ConsumerPrxType,
-                        UnSubscriptionMakerType>( context_, proxyString_, consumer_, callbackPrx_, proxy_ );
+                        UnSubscriptionMakerType>( context_, topicPrx_, consumer_, callbackPrx_ );
 
                     // remove consumer from the list of active servants
                     context_.adapter()->remove( callbackPrx_->ice_getIdentity() );

@@ -83,6 +83,12 @@ public:
         return topicPrx_;
     }
 
+    //! Access the proxy to the internal consumer interface implementation.
+    ConsumerProxyType publisherPrx() const 
+    { 
+        return publisherPrx_; 
+    }
+
     // Returns TRUE on success, FALSE otherwise.
     // Catches only the exceptions expected in the case when IceStorm is not unavailable.
     bool connectToTopic()
@@ -120,12 +126,13 @@ public:
     }
 
     // sub subscribers to the topic we're publishing to
-    void subscribe( const ConsumerProxyType& subscriber )
+    IceStorm::TopicPrx  subscribe( const ConsumerProxyType& subscriber )
     {
         internalSubscribe( subscriber );
+        return topicPrx_;
     }
 
-    void subscribe( const ConsumerProxyType& subscriber, const DataType& initData )
+    IceStorm::TopicPrx  subscribe( const ConsumerProxyType& subscriber, const DataType& initData )
     {    
         ConsumerProxyType individualPublisher = internalSubscribe( subscriber );
     
@@ -144,6 +151,8 @@ public:
             throw orca::OrcaException( ss.str() );
         }
         context_.tracer().info( std::string("TopicHandler::subscribe(): sent status info to new subscriber: ")+individualPublisher->ice_toString() );
+
+        return topicPrx_;
     }
 
     void unsubscribe( const ConsumerProxyType& subscriber )

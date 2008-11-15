@@ -26,48 +26,35 @@ namespace orcaifaceimpl {
 class PropertiesI : public orca::Properties
 {
 public:
-
     PropertiesI( PropertiesImpl &impl )
         : impl_(impl) {}
     virtual ~PropertiesI() {}
-
-    // remote interface
-
     virtual ::orca::PropertiesData getData(const ::Ice::Current& )
         { return impl_.internalGetData(); }
-
     virtual void setData( const ::orca::PropertiesData &data, const ::Ice::Current& )
         { impl_.internalSetData( data ); }
-
-    virtual void subscribe(const ::orca::PropertiesConsumerPrx& consumer,
-                           const ::Ice::Current& = ::Ice::Current())
-        { impl_.internalSubscribe( consumer ); }
-
-    virtual void unsubscribe(const ::orca::PropertiesConsumerPrx& consumer,
-                             const ::Ice::Current& = ::Ice::Current())
-        { impl_.internalUnsubscribe( consumer ); }
-
+    virtual IceStorm::TopicPrx subscribe(const orca::PropertiesConsumerPrx& subscriber, const ::Ice::Current& = ::Ice::Current())
+        { return impl_.internalSubscribe(subscriber); }
 private:
     PropertiesImpl &impl_;
 };
 
 //////////////////////////////////////////////////////////////////////
 
-PropertiesImpl::PropertiesImpl( const std::string& interfaceTag,
-                                const orcaice::Context& context )
-    : interfaceName_(orcaice::getProvidedInterface(context,interfaceTag).iface),
-      topicName_(orcaice::toTopicAsString(context.name(),interfaceName_)),
-      context_(context)
+PropertiesImpl::PropertiesImpl( const std::string& interfaceTag, const orcaice::Context& context ) :
+    interfaceName_(orcaice::getProvidedInterface(context,interfaceTag).iface),
+    context_(context)
 {
+    init();
 }
 
-PropertiesImpl::PropertiesImpl( const orcaice::Context& context,
-                                const std::string& interfaceName )                      
-    : interfaceName_(interfaceName),
-      topicName_(orcaice::toTopicAsString(context.name(),interfaceName_)),
-      context_(context)
+PropertiesImpl::PropertiesImpl( const orcaice::Context& context, const std::string& interfaceName ) : 
+    interfaceName_(interfaceName),
+    context_(context)
 {
+    init();
 }
+
 
 PropertiesImpl::~PropertiesImpl()
 {
@@ -75,27 +62,27 @@ PropertiesImpl::~PropertiesImpl()
 }
 
 void
+PropertiesImpl::init()
+{
+    ptr_ = new PropertiesI( *this );
+
+    topicHandler_.reset( new PropertiesTopicHandler( orcaice::toTopicAsString(context_.name(),interfaceName_), context_ ) );
+}
+
+void
 PropertiesImpl::initInterface()
 {
-    // Find IceStorm Topic to which we'll publish
-    topicPrx_ = orcaice::connectToTopicWithString<orca::PropertiesConsumerPrx>
-        ( context_, publisherPrx_, topicName_ );
-
-    // Register with the adapter
-    // We don't have to clean up the memory we're allocating here, because
-    // we're holding it in a smart pointer which will clean up when it's done.
-    ptr_ = new PropertiesI( *this );
     orcaice::createInterfaceWithString( context_, ptr_, interfaceName_ );
+
+    topicHandler_->connectToTopic();
 }
 
 void 
 PropertiesImpl::initInterface( gbxiceutilacfr::Thread* thread, const std::string& subsysName, int retryInterval )
 {
-    topicPrx_ = orcaice::connectToTopicWithString<orca::PropertiesConsumerPrx>
-        ( context_, publisherPrx_, topicName_, thread, subsysName, retryInterval );
-
-    ptr_ = new PropertiesI( *this );
     orcaice::createInterfaceWithString( context_, ptr_, interfaceName_, thread, subsysName, retryInterval );
+
+    topicHandler_->connectToTopic( thread, subsysName, retryInterval );
 }
 
 ::orca::PropertiesData 
@@ -123,31 +110,26 @@ PropertiesImpl::internalSetData( const ::orca::PropertiesData &data )
     remotelySetDataStore_.set( data );
 }
 
-void 
-PropertiesImpl::internalSubscribe(const ::orca::PropertiesConsumerPrx& subscriber)
+IceStorm::TopicPrx 
+PropertiesImpl::internalSubscribe(const orca::PropertiesConsumerPrx& subscriber)
 {
-    context_.tracer().debug( "PropertiesImpl::internalSubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
-    try {
-        topicPrx_->subscribeAndGetPublisher( IceStorm::QoS(), subscriber->ice_twoway() );
+    if ( !topicHandler_.get() ) 
+    {
+        throw orca::SubscriptionFailedException("Component does not have a topic to publish its traces.");
     }
-    catch ( const IceStorm::AlreadySubscribed & e ) {
-        std::stringstream ss;
-        ss <<"Request for subscribe but this proxy has already been subscribed, so I do nothing: "<< e;
-        context_.tracer().debug( ss.str(), 2 );
+    
+    // if we have data, send all the information we have to the new subscriber (and to no one else)
+    if ( dataStore_.isEmpty() )
+    {
+        return topicHandler_->subscribe( subscriber );
     }
-    catch ( const Ice::Exception & e ) {
-        std::stringstream ss;
-        ss <<"PropertiesImpl::internalSubscribe: failed to subscribe: "<< e << endl;
-        context_.tracer().warning( ss.str() );
-        throw orca::SubscriptionFailedException( ss.str() );
+    else
+    {
+        orca::PropertiesData data;
+        dataStore_.get( data );
+    
+        return topicHandler_->subscribe( subscriber, data );
     }
-}
-
-void 
-PropertiesImpl::internalUnsubscribe(const ::orca::PropertiesConsumerPrx& subscriber)
-{
-    context_.tracer().debug( "PropertiesImpl::internalUnsubscribe(): subscriber='"+subscriber->ice_toString()+"'", 4 );
-    topicPrx_->unsubscribe( subscriber );
 }
 
 void
@@ -161,13 +143,7 @@ PropertiesImpl::localSetAndSend( const orca::PropertiesData& data )
 {
     dataStore_.set( data );
 
-    // Try to push to IceStorm.
-    orcaice::tryPushToIceStormWithReconnect<orca::PropertiesConsumerPrx,orca::PropertiesData>
-        ( context_,
-          publisherPrx_,
-          data,
-          topicPrx_,
-          topicName_ );
+    topicHandler_->publish( data );
 }
 
 } // namespace

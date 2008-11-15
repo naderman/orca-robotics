@@ -12,7 +12,6 @@
 #include <orcaice/orcaice.h>
 #include <orcacm/orcacm.h>
 #include <orcaprobe/orcaprobe.h>
-#include <orcaifaceutil/image.h>
 
 #include "imageprobe.h"
 
@@ -31,10 +30,6 @@ ImageProbe::ImageProbe( const orca::FQInterfaceName& name, const Ice::ObjectPrx&
     addOperation( "unsubscribe" );
 
     consumer_ = new orcaifaceimpl::PrintingImageConsumerImpl( context,1000,1 );
-}
-    
-ImageProbe::~ImageProbe()
-{
 }
 
 int 
@@ -81,7 +76,7 @@ ImageProbe::loadSubscribe( orcacm::OperationData& data )
 int 
 ImageProbe::loadUnsubscribe( orcacm::OperationData& data )
 {    
-    consumer_->unsubscribeWithString( orcaice::toString(name_) );
+    consumer_->unsubscribe();
     orcaprobe::reportUnsubscribed( data );
     return 0;
 }

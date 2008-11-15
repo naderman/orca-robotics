@@ -24,23 +24,13 @@ namespace detail
 class StatusI : public orca::Status
 {
 public:
-
     StatusI( StatusImpl &impl )
         : impl_(impl) {}
     virtual ~StatusI() {}
-
-    // remote interface
     virtual ::orca::StatusData getData(const ::Ice::Current& )
         { return impl_.internalGetData(); }
-    virtual void subscribe(const ::orca::StatusConsumerPrx& consumer,
-                           const ::Ice::Current& = ::Ice::Current())
-        { impl_.internalSubscribe( consumer ); }
-    virtual void unsubscribe(const ::orca::StatusConsumerPrx& consumer,
-                             const ::Ice::Current& = ::Ice::Current())
-        { impl_.internalUnsubscribe( consumer ); }
-    virtual IceStorm::TopicPrx topic(const ::Ice::Current& = ::Ice::Current())
-        { return impl_.internalTopic(); }
-
+    virtual IceStorm::TopicPrx subscribe(const ::orca::StatusConsumerPrx& consumer, const ::Ice::Current& = ::Ice::Current())
+        { return impl_.internalSubscribe( consumer ); }
 private:
     StatusImpl &impl_;
 };
@@ -51,13 +41,12 @@ StatusImpl::StatusImpl( const orcaice::Context& context ) :
     hydroiceutil::LocalStatus( 
             context.tracer(),
             hydroutil::Properties( context.properties()->getPropertiesForPrefix("Orca.Status."),"Orca.Status.") ),
-    topicHandler_(0),
     interfaceName_("status"),
     context_(context)
 {
     aggregator_.reset( new ComponentStatusAggregator );
 
-    // fill the store
+    // fill the store on startup
     orca::StatusData data;
     orcaice::setToNow( data.timeStamp );
     data.compStatus.name = context_.name();
@@ -66,23 +55,22 @@ StatusImpl::StatusImpl( const orcaice::Context& context ) :
     data.compStatus.health = orca::CompOk;
     dataStore_.set( data );
 
-    initTracerInfo( "Status created" );
+    // create the object
+    ptr_ = new StatusI( *this );
+
+    initTracerInfo( context_, "Status created" );
 }
 
 StatusImpl::~StatusImpl()
 {
-    if ( topicHandler_ )  delete topicHandler_;
-
 //     orcaice::tryRemoveAdminInterface( context_, "Status" );
 }
 
 void
 StatusImpl::initInterface()
 {
-// cout<<"DEBUG: "<<__func__<<"()"<<endl;
+    // the ONLY place where the topic handler is inited ( InitPolicyManual )
     initTopicHandler();
-
-    ptr_ = new StatusI( *this );
 
     // previous method: adding Home to the component adapter
 //     orcaice::createInterfaceWithString( context_, ptr_, interfaceName_ );
@@ -94,41 +82,35 @@ StatusImpl::initInterface()
 void
 StatusImpl::initTopicHandler()
 {
-// cout<<"DEBUG: "<<__func__<<"()"<<endl;
-    if ( topicHandler_ ) {
-        delete topicHandler_; 
-        topicHandler_ = 0;
-    }
-
     // are we required to connect to status topic? (there's always default value for this property)
     bool isTopicRequired = context_.properties()->getPropertyAsInt( "Orca.Status.RequireIceStorm" );
 
     // fqTName is something like "tracer/*@platformName/componentName"
     orca::FQTopicName fqTName = orcaice::toStatusTopic( context_.name() );
 
-    topicHandler_ = new StatusTopicHandler( orcaice::toString(fqTName), context_ );
+    topicHandler_.reset( new StatusTopicHandler( orcaice::toString(fqTName), context_ ) );
     if ( !topicHandler_->connectToTopic() )
     {
         if ( isTopicRequired ) 
         {
-            std::string s = " Failed to connect to an IceStorm status topic '"+
-                orcaice::toString(fqTName)+"'\n" +
-                "\tYou may allow to proceed by setting Orca.Status.RequireIceStorm=0.";
-            initTracerError( s );
+            std::string s = " Failed to connect to an IceStorm status topic '" + orcaice::toString(fqTName)+"'\n";
+            s += "\tYou may allow to proceed by setting Orca.Status.RequireIceStorm=0.";
+            initTracerError( context_, s );
             // this should kill the app
             context_.shutdown();
         }
         else 
         {
-            std::string s = " Failed to connect to an IceStorm status topic\n";
-            s += "\tAll trace messages will be local.\n";
+            std::string s = " Failed to connect to an IceStorm status topic '" + orcaice::toString(fqTName)+"'\n";
+            s += "\tAll status messages will be local.\n";
             s += "\tYou may enforce connection by setting Orca.Status.RequireIceStorm=1.";
-            initTracerWarning( s );
+            initTracerWarning( context_, s );
             // move on
         }
 
-        delete topicHandler_; 
-        topicHandler_ = 0;
+        // reset the pointer back to zero.
+        // this is how we'll know not to use it.
+        topicHandler_.reset( 0 );
     }
 }
 
@@ -142,9 +124,8 @@ StatusImpl::publishEvent( const hydroiceutil::LocalComponentStatus& componentSta
 
     dataStore_.set( data );
 
-    if( topicHandler_ != 0 )
+    if( topicHandler_.get() )
     {
-// cout<<"DEBUG: topicHandler_="<<(int)topicHandler_<<endl;
         topicHandler_->publish( data );
     }
 }
@@ -152,8 +133,6 @@ StatusImpl::publishEvent( const hydroiceutil::LocalComponentStatus& componentSta
 ::orca::StatusData 
 StatusImpl::internalGetData() const
 {
-//     context_.tracer().debug( "StatusImpl::internalGetData()", 5 );
-
     if ( dataStore_.isEmpty() )
     {
         std::stringstream ss;
@@ -170,37 +149,21 @@ StatusImpl::internalGetData() const
     return data;
 }
 
-void 
+IceStorm::TopicPrx 
 StatusImpl::internalSubscribe(const ::orca::StatusConsumerPrx& subscriber)
 {
 // cout<<"DEBUG: "<<__func__<<"()"<<endl;
-    if ( !topicHandler_ ) 
+    if( topicHandler_.get() )
     {
-        initTopicHandler();
-        if ( !topicHandler_ )
-        {
-            throw orca::SubscriptionFailedException("Component does not have a topic to publish its traces.");
-        }
+        throw orca::SubscriptionFailedException("Component does not have a topic to publish its traces.");
     }
     
     // send all the information we have to the new subscriber (and to no one else)
+    // (we always have some data)
     orca::StatusData data;
     dataStore_.get( data );
 
-    topicHandler_->subscribe( subscriber, data );
-}
-
-void 
-StatusImpl::internalUnsubscribe(const ::orca::StatusConsumerPrx& subscriber)
-{
-    if ( topicHandler_ )
-        topicHandler_->unsubscribe( subscriber );
-}
-
-IceStorm::TopicPrx 
-StatusImpl::internalTopic()
-{
-    return topicHandler_->topic();
+    return topicHandler_->subscribe( subscriber, data );
 }
 
 }

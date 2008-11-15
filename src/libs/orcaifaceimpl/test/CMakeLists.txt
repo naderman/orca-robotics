@@ -1,9 +1,10 @@
-INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
+LINK_LIBRARIES( OrcaIfaceImpl )
 
-ADD_EXECUTABLE( ifacetest ifacetest.cpp )
-TARGET_LINK_LIBRARIES( ifacetest OrcaIfaceImpl )
-GBX_ADD_TEST( OrcaIfaceImplTest ifacetest )
+# ADD_EXECUTABLE( ifacetest ifacetest.cpp )
+# GBX_ADD_TEST( OrcaIfaceImpl_Test ifacetest )
 
 ADD_EXECUTABLE( consumerimpltest consumerimpltest.cpp )
-TARGET_LINK_LIBRARIES( consumerimpltest OrcaIfaceImpl )
-GBX_ADD_TEST( OrcaIfaceImplConsumerTest consumerimpltest )
+GBX_ADD_TEST( OrcaIfaceImpl_ConsumerTest consumerimpltest )
+
+ADD_EXECUTABLE( providerimpltest providerimpltest.cpp )
+GBX_ADD_TEST( OrcaIfaceImpl_ProviderTest providerimpltest )

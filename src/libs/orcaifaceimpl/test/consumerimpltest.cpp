@@ -2,7 +2,7 @@
 #include <orcaice/component.h>
 #include <orcaice/application.h>
 #include <orcaice/orcaice.h>
-#include <orcaifaceimpl/storingconsumers.h>
+#include <orcaifaceimpl/gps.h>
 
 using namespace std;
 

@@ -12,8 +12,7 @@
 #define ORCA_ORCAPROBEFACTORY_RANGESCANNER2D_INTERFACE_PROBE_H
 
 #include <orcaprobe/interfaceprobe.h>
-#include <orca/rangescanner2d.h>
-#include <orcaifaceimpl/printingconsumers.h>
+#include <orcaifaceimpl/rangescanner2d.h>
 
 namespace orcaprobefactory
 {
@@ -25,7 +24,6 @@ public:
 
     RangeScanner2dProbe( const orca::FQInterfaceName& name, const Ice::ObjectPrx& adminPrx, orcaprobe::AbstractDisplay& display,
                                 const orcaice::Context& context );
-    ~RangeScanner2dProbe();
 
     virtual int loadOperationEvent( const int index, orcacm::OperationData& data );
     

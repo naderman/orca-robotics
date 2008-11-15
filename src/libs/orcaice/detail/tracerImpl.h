@@ -11,6 +11,7 @@
 #ifndef ORCAICE_TRACER_IMPL_H
 #define ORCAICE_TRACER_IMPL_H
 
+#include <memory>
 #include <hydroiceutil/localtracer.h>
 #include <gbxsickacfr/gbxiceutilacfr/store.h>
 
@@ -44,6 +45,7 @@ private:
     // remote call implementations, mimic (but do not inherit) the orca interface
     ::orca::TracerVerbosityConfig internalGetVerbosity();
     void internalSetVerbosity( const ::orca::TracerVerbosityConfig& config );
+    IceStorm::TopicPrx  internalSubscribe(const ::orca::TracerConsumerPrx&);
 
     // tracer service is special: it can be self-referencial, i.e. errors during initialization
     // will produce traces which will lead to more errors.
@@ -51,11 +53,8 @@ private:
     gbxiceutilacfr::Store<bool> isInitialized_;
 
     typedef TopicHandler<orca::TracerConsumerPrx,orca::TracerData> TracerTopicHandler;
-    TracerTopicHandler* topicHandler_;
+    std::auto_ptr<TracerTopicHandler> topicHandler_;
     void initTopicHandler();
-
-    void internalSubscribe( const ::orca::TracerConsumerPrx& );
-    void internalUnsubscribe( const ::orca::TracerConsumerPrx& );
 
     // Hang onto this so we can remove from the adapter and control when things get deleted
     Ice::ObjectPtr ptr_;

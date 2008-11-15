@@ -12,7 +12,46 @@
 #include <orcaice/orcaice.h>
 
 #include "mainthread.h"
-#include <orcaifaceimpl/printingconsumers.h>
+// #include <orcaifaceimpl/button.h>
+#include <orcaifaceimpl/camera.h>
+// #include <orcaifaceimpl/cpu.h>
+// #include <orcaifaceimpl/drivebicycle.h>
+// TODO: currently missing
+// #include <orcaifaceimpl/drivedifferential.h>
+#include <orcaifaceimpl/estop.h>
+#include <orcaifaceimpl/featuremap2d.h>
+#include <orcaifaceimpl/gps.h>
+// Home is an admin interface which does not publish, HomeImpl lives in libOrcaIce
+#include <orcaifaceimpl/image.h>
+#include <orcaifaceimpl/imu.h>
+#include <orcaifaceimpl/ins.h>
+#include <orcaifaceimpl/laserscanner2d.h>
+#include <orcaifaceimpl/localise2d.h>
+#include <orcaifaceimpl/localise3d.h>
+#include <orcaifaceimpl/multicamera.h>
+#include <orcaifaceimpl/odometry2d.h>
+#include <orcaifaceimpl/odometry3d.h>
+// TODO: currently missing
+// #include <orcaifaceimpl/ogfusion.h>
+#include <orcaifaceimpl/ogmap.h>
+#include <orcaifaceimpl/particle2d.h>
+#include <orcaifaceimpl/pathfollower2d.h>
+// TODO: currently missing
+// #include <orcaifaceimpl/pathplanner2d.h>
+#include <orcaifaceimpl/pixmap.h>
+#include <orcaifaceimpl/pointcloud.h>
+#include <orcaifaceimpl/polarfeature2d.h>
+#include <orcaifaceimpl/power.h>
+#include <orcaifaceimpl/properties.h>
+#include <orcaifaceimpl/qgraphics2d.h>
+#include <orcaifaceimpl/rangescanner2d.h>
+// Status is an admin interface, there is a StatusImpl implimentation here but another one lives in libOrcaIce
+#include <orcaifaceimpl/status.h>
+#include <orcaifaceimpl/systemstatus.h>
+// Tracer is an admin interface, there is no TracerImpl implimentation here, it lives in libOrcaIce
+#include <orcaifaceimpl/tracer.h>
+// #include <orcaifaceimpl/velocitycontrol2d.h>
+#include <orcaifaceimpl/wifi.h>
 
 using namespace std;
 using namespace orcamon;
@@ -71,10 +110,10 @@ MainThread::walk()
     {
         consumerSubscriber = new orcaifaceimpl::PrintingRangeScanner2dConsumerImpl(context_);
     }
-//     else if ( objId=="::orca::Imu" )
-//     {
-//         consumerSubscriber = new orcaifaceimpl::PrintingImuConsumerImpl(context_);
-//     }
+    else if ( objId=="::orca::Imu" )
+    {
+        consumerSubscriber = new orcaifaceimpl::PrintingImuConsumerImpl(context_);
+    }
     else if ( objId=="::orca::Localise2d" )
     {
         consumerSubscriber = new orcaifaceimpl::PrintingLocalise2dConsumerImpl(context_);
@@ -87,10 +126,10 @@ MainThread::walk()
     {
         consumerSubscriber = new orcaifaceimpl::PrintingOgMapConsumerImpl(context_);
     }
-//     else if ( objId=="::orca::FeatureMap2d" )
-//     {
-//         consumerSubscriber = new orcaifaceimpl::PrintingFeatureMap2dConsumerImpl(context_);
-//     }
+    else if ( objId=="::orca::FeatureMap2d" )
+    {
+        consumerSubscriber = new orcaifaceimpl::PrintingFeatureMap2dConsumerImpl(context_);
+    }
     else if ( objId=="::orca::Odometry2d" )
     {
         consumerSubscriber = new orcaifaceimpl::PrintingOdometry2dConsumerImpl(context_);
@@ -99,22 +138,14 @@ MainThread::walk()
     {
         consumerSubscriber = new orcaifaceimpl::PrintingOdometry3dConsumerImpl(context_);
     }
-//     else if ( objId=="::orca::Status" )
-//     {
-//         consumerSubscriber = new orcaifaceimpl::PrintingStatusConsumerImpl(context_);
-//     }
+    else if ( objId=="::orca::Status" )
+    {
+        consumerSubscriber = new orcaifaceimpl::PrintingStatusConsumerImpl(context_);
+    }
     else if ( objId=="::orca::Gps" )
     {
         consumerSubscriber = new orcaifaceimpl::PrintingGpsConsumerImpl(context_);
     }
-//     else if ( objId=="::orca::GpsMapGrid" )
-//     {
-//         consumerSubscriber = new orcaifaceimpl::PrintingGpsMapGridConsumerImpl(context_);
-//     }
-//     else if ( objId=="::orca::GpsTime" )
-//     {
-//         consumerSubscriber = new orcaifaceimpl::PrintingGpsTimeConsumerImpl(context_);
-//     }
     else
     {
         context_.tracer().error( "Unsupported interface type: "+objId+". Quitting..." );

@@ -12,7 +12,7 @@
 #define MAIN_THREAD_H
 
 #include <orcaice/subsystemthread.h>
-#include <orcaifaceimpl/featuremap2dImpl.h>
+#include <orcaifaceimpl/featuremap2d.h>
 #include <orcaice/context.h>
 
 namespace featuremaploader

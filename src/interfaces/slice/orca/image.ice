@@ -12,6 +12,7 @@
 #define ORCA2_IMAGE_INTERFACE_ICE
 
 #include <orca/common.ice>
+#include <IceStorm/IceStorm.ice>
 
 module orca
 {
@@ -63,31 +64,22 @@ interface ImageConsumer
 //! Interface to the image provider.
 interface Image
 {
-    //! Returns the latest data.
-    idempotent ImageData getData()
-        throws DataNotExistException, HardwareFailedException;
-            
     //! Returns the image source description.
     idempotent ImageDescription getDescription();
 
-    /*!
-     * Mimics IceStorm's subscribe(). @p subscriber is typically a direct proxy to the consumer object.
-     * The implementation may choose to implement the push directly or use IceStorm.
-     * This choice is transparent to the subscriber. The case when the @p subscriber is already subscribed
-     * is quietly ignored.
-     *
-     * @see unsubscribe
-     */
-    void subscribe( ImageConsumer* subscriber )
-            throws SubscriptionFailedException;
+    //! Returns the latest data.
+    idempotent ImageData getData()
+        throws DataNotExistException, HardwareFailedException;            
 
-    /*!
-     * Unsubscribe an existing @p subscriber. The case when the @p subscriber is not subscribed
-     * is quietly ignored.
-     *
-     * @see subscribe
-     */
-    idempotent void unsubscribe( ImageConsumer* subscriber );
+    //! Tries to subscribe the specified subscriber for data updates.
+    //! If successfuly, returns a proxy to the IceStorm topic which can be later used by the 
+    //! client to unsubscribe itself. For reference, the Slice definition of the Topic
+    //! interface for unsubscribing:
+    //! @verbatim
+    //! idempotent void unsubscribe(Object* subscriber);
+    //! @endverbatim
+    IceStorm::Topic* subscribe( ImageConsumer* subscriber )
+        throws SubscriptionFailedException;
 };
 
 

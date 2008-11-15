@@ -56,24 +56,15 @@ convert( const gbxutilacfr::TraceType& internal, orca::TraceType& network )
 class TracerI : public orca::Tracer
 {
 public:
-
     TracerI( TracerImpl &impl )
         : impl_(impl) {}
     virtual ~TracerI() {}
-
-    // remote interface
     virtual ::orca::TracerVerbosityConfig getVerbosity(const ::Ice::Current&)
-        { return impl_.internalGetVerbosity(); };
-
+        { return impl_.internalGetVerbosity(); }
     virtual void setVerbosity(const ::orca::TracerVerbosityConfig& cfg, const ::Ice::Current&)
-        { impl_.internalSetVerbosity(cfg); };
-
-    // subscribe/unsubscribe functions.
-    virtual void subscribe(const ::orca::TracerConsumerPrx &subscriber, const ::Ice::Current&)
-        { impl_.internalSubscribe( subscriber ); }
-    virtual void unsubscribe(const ::orca::TracerConsumerPrx &subscriber, const ::Ice::Current&)
-        { impl_.internalUnsubscribe( subscriber ); }
-
+        { impl_.internalSetVerbosity(cfg); }
+    virtual IceStorm::TopicPrx subscribe(const ::orca::TracerConsumerPrx& consumer, const ::Ice::Current& = ::Ice::Current())
+        { return impl_.internalSubscribe( consumer ); }
 private:
     TracerImpl &impl_;
 };
@@ -84,31 +75,30 @@ TracerImpl::TracerImpl( const orcaice::Context& context ) :
     LocalTracer( hydroutil::Properties( 
                     context.properties()->getPropertiesForPrefix("Orca.Tracer."),"Orca.Tracer."),
                  orcaice::toString(context.name()) ),
-    topicHandler_(0),
     interfaceName_("tracer"),
     context_(context)
 {
     isInitialized_.set( false );
+
+    // create the object
+    ptr_ = new TracerI( *this );
 
     initTracerInfo( "Tracer created" );
 }
 
 TracerImpl::~TracerImpl()
 {
-    if ( topicHandler_ )  delete topicHandler_;
-
 //     orcaice::tryRemoveAdminInterface( context_, "Tracer" );
 }
 
 void
 TracerImpl::initInterface()
 {
+    // the ONLY place where the topic handler is inited ( InitPolicyManual )
     // decide if we need IceStorm topics
     if ( config_.verbosity[gbxutilacfr::AnyTrace][gbxutilacfr::ToNetwork] ) {
         initTopicHandler();
     }
-
-    ptr_ = new TracerI( *this );
 
     // previous method: adding Home to the component adapter
 //     orcaice::createInterfaceWithString( context_, ptr_, interfaceName_ );
@@ -120,18 +110,13 @@ TracerImpl::initInterface()
 void
 TracerImpl::initTopicHandler()
 {
-    if ( topicHandler_ ) {
-        delete topicHandler_; 
-        topicHandler_ = 0;
-    }
-
     // are we required to connect to status topic? (there's always default value for this property)
     bool isTopicRequired = context_.properties()->getPropertyAsInt( "Orca.Tracer.RequireIceStorm" );
 
     // fqTName is something like "tracer/*@platformName/componentName"
     orca::FQTopicName fqTName = orcaice::toTracerTopic( context_.name() );
 
-    topicHandler_ = new TracerTopicHandler( orcaice::toString(fqTName), context_ );
+    topicHandler_.reset( new TracerTopicHandler( orcaice::toString(fqTName), context_ ) );
     if ( !topicHandler_->connectToTopic() )
     {
         if ( isTopicRequired ) 
@@ -139,7 +124,7 @@ TracerImpl::initTopicHandler()
             std::string s = prefix_+": Failed to connect to an IceStorm tracer topic '"+
                 orcaice::toString(fqTName)+"'\n" +
                 "\tYou may allow to proceed by setting Orca.Tracer.RequireIceStorm=0.";
-            initTracerError( s );
+            initTracerError( context_, s );
             // this should kill the app
             exit(1);
         }
@@ -148,7 +133,7 @@ TracerImpl::initTopicHandler()
             std::string s = prefix_+": Failed to connect to an IceStorm tracer topic\n";
             s += "\tAll trace messages will be local.\n";
             s += "\tYou may enforce connection by setting Orca.Tracer.RequireIceStorm=1.";
-            initTracerWarning( s );
+            initTracerWarning( context_, s );
     
             // turn off all outputs toNetwork
             for ( int i=0; i<gbxutilacfr::NumberOfTraceTypes; ++i ) {
@@ -157,8 +142,9 @@ TracerImpl::initTopicHandler()
             // move on
         }
 
-        delete topicHandler_; 
-        topicHandler_ = 0;
+        // reset the pointer back to zero.
+        // this is how we'll know not to use it.
+        topicHandler_.reset( 0 );
     }
     
     isInitialized_.set( true );
@@ -225,26 +211,16 @@ TracerImpl::internalSetVerbosity( const ::orca::TracerVerbosityConfig& config )
     // NOT calling toNetwork() !!!
 }
 
-void
-TracerImpl::internalSubscribe( const ::orca::TracerConsumerPrx& subscriber )
+IceStorm::TopicPrx 
+TracerImpl::internalSubscribe(const ::orca::TracerConsumerPrx& subscriber)
 {
-    if ( !topicHandler_ ) 
+// cout<<"DEBUG: "<<__func__<<"()"<<endl;
+    if( topicHandler_.get() )
     {
-        initTopicHandler();
-        if ( !topicHandler_ )
-        {
-            throw orca::SubscriptionFailedException("Component does not have a topic to publish its traces.");
-        }
+        throw orca::SubscriptionFailedException("Component does not have a topic to publish its traces.");
     }
-    
-    topicHandler_->subscribe( subscriber );
-}
-
-void
-TracerImpl::internalUnsubscribe( const ::orca::TracerConsumerPrx& subscriber )
-{
-    if ( topicHandler_ )
-        topicHandler_->unsubscribe( subscriber );
+   
+    return topicHandler_->subscribe( subscriber );
 }
 
 void
@@ -264,7 +240,7 @@ TracerImpl::toNetwork( gbxutilacfr::TraceType traceType, const std::string& mess
     data.verbosity = level;
     data.message = message;
 
-    if( topicHandler_ != 0 )
+    if( topicHandler_.get() )
     {
         topicHandler_->publish( data );
     }

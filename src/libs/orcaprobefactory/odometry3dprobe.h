@@ -12,8 +12,7 @@
 #define ORCA_ORCAPROBEFACTORY_ODOMETRY3D_INTERFACE_PROBE_H
 
 #include <orcaprobe/interfaceprobe.h>
-#include <orca/odometry3d.h>
-#include <orcaifaceimpl/printingconsumers.h>
+#include <orcaifaceimpl/odometry3d.h>
 
 namespace orcaprobefactory
 {
@@ -25,7 +24,6 @@ public:
 
     Odometry3dProbe( const orca::FQInterfaceName& name, const Ice::ObjectPrx& adminPrx, orcaprobe::AbstractDisplay& display,
                                 const orcaice::Context& context );
-    ~Odometry3dProbe();
 
     virtual int loadOperationEvent( const int index, orcacm::OperationData& data );
 

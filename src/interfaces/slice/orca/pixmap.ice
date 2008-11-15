@@ -13,6 +13,7 @@
 
 #include <orca/common.ice>
 #include <orca/bros1.ice>
+#include <IceStorm/IceStorm.ice>
 
 module orca
 {
@@ -90,24 +91,15 @@ interface PixMap
     idempotent PixMapData getData()
             throws DataNotExistException;
 
-    /*!
-     * Mimics IceStorm's subscribe(). @p subscriber is typically a direct proxy to the consumer object.
-     * The implementation may choose to implement the push directly or use IceStorm.
-     * This choice is transparent to the subscriber. The case when the @p subscriber is already subscribed
-     * is quietly ignored.
-     *
-     * @see unsubscribe
-     */
-    void subscribe( PixMapConsumer *subscriber )
-            throws SubscriptionFailedException;
-    
-    /*!
-     * Unsubscribe an existing @p subscriber. The case when the @p subscriber is not subscribed
-     * is quietly ignored.
-     *
-     * @see subscribe
-     */
-    idempotent void unsubscribe( PixMapConsumer *subscriber );
+    //! Tries to subscribe the specified subscriber for data updates.
+    //! If successfuly, returns a proxy to the IceStorm topic which can be later used by the 
+    //! client to unsubscribe itself. For reference, the Slice definition of the Topic
+    //! interface for unsubscribing:
+    //! @verbatim
+    //! idempotent void unsubscribe(Object* subscriber);
+    //! @endverbatim
+    IceStorm::Topic* subscribe( PixMapConsumer* subscriber )
+        throws SubscriptionFailedException;
 }; 
 
 }; // module

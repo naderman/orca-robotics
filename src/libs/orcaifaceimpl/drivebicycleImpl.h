@@ -11,12 +11,12 @@
 #ifndef ORCA_ORCAIFACEIMPL_DRIVEBICYCLE_IMPL_H
 #define ORCA_ORCAIFACEIMPL_DRIVEBICYCLE_IMPL_H
 
+#include <memory>
 #include <orca/drivebicycle.h>
-#include <IceStorm/IceStorm.h>
-
 #include <gbxsickacfr/gbxiceutilacfr/store.h>
 #include <gbxsickacfr/gbxiceutilacfr/notify.h>
 #include <orcaice/context.h>
+#include <orcaice/topichandler.h>
 
 namespace gbxiceutilacfr { class Thread; }
 
@@ -26,7 +26,7 @@ namespace orcaifaceimpl {
 //! Implements the DriveBicycle interface: Handles remote calls.
 //!
 class DriveBicycleImpl : public IceUtil::Shared,
-                          public gbxiceutilacfr::Notify<orca::DriveBicycleCommand>
+                         public gbxiceutilacfr::Notify<orca::DriveBicycleCommand>
 {
 friend class DriveBicycleI;
 
@@ -58,29 +58,24 @@ public:
     void localSetAndSend( const orca::DriveBicycleData &data );
 
 private:
+    void init();
 
     // remote call implementations, mimic (but do not inherit) the orca interface
     ::orca::DriveBicycleData internalGetData() const;
-    void internalSubscribe(const ::orca::DriveBicycleConsumerPrx& );
-    void internalUnsubscribe(const ::orca::DriveBicycleConsumerPrx& );
+    IceStorm::TopicPrx internalSubscribe(const orca::DriveBicycleConsumerPrx& subscriber);
     orca::VehicleDescription internalGetDescription() const
         { return description_; }
     void internalSetCommand( const ::orca::DriveBicycleCommand& );
 
     const orca::VehicleDescription    description_;
-    const std::string                 interfaceName_;
-    const std::string                 topicName_;
-    IceStorm::TopicPrx                topicPrx_;
+    gbxiceutilacfr::Store<orca::DriveBicycleData> dataStore_;
 
-    // outgoing data
-    gbxiceutilacfr::Store<orca::DriveBicycleData> dataPipe_;
+    typedef orcaice::TopicHandler<orca::DriveBicycleConsumerPrx,orca::DriveBicycleData> DriveBicycleTopicHandler;
+    std::auto_ptr<DriveBicycleTopicHandler> topicHandler_;
 
-    orcaice::Context                  context_;
-
-    orca::DriveBicycleConsumerPrx     publisherPrx_;
-
-    // Hang onto this so we can remove from the adapter and control when things get deleted
-    Ice::ObjectPtr          ptr_;
+    Ice::ObjectPtr ptr_;
+    const std::string interfaceName_;
+    orcaice::Context context_;
 };
 typedef IceUtil::Handle<DriveBicycleImpl> DriveBicycleImplPtr;
 
