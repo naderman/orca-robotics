@@ -89,18 +89,19 @@ void TestComponent::start()
     // Fake a few instances of arrival of data
     //
     int i0=0, index0=0;
-    masterFileWriter.notifyOfLogfileAddition( i0, index0, orcaice::getNow() );
-    IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
-    masterFileWriter.notifyOfLogfileAddition( 0, 11, orcaice::getNow() );
-    IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
-    masterFileWriter.notifyOfLogfileAddition( 0, 22, orcaice::getNow() );
-    IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
-    masterFileWriter.notifyOfLogfileAddition( 0, 33, orcaice::getNow() );
-    IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
+    orca::Time timeStamp = orcaice::getNow();
+    masterFileWriter.notifyOfLogfileAddition( i0, index0, timeStamp );
+    timeStamp.seconds++;
+    masterFileWriter.notifyOfLogfileAddition( 0, 11, timeStamp );
+    timeStamp.seconds++;
+    masterFileWriter.notifyOfLogfileAddition( 0, 22, timeStamp );
+    timeStamp.seconds++;
+    masterFileWriter.notifyOfLogfileAddition( 0, 33, timeStamp );
+    timeStamp.seconds++;
     int id1=1, index1=0;
-    masterFileWriter.notifyOfLogfileAddition( id1, index1, orcaice::getNow() );
-    IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
-    masterFileWriter.notifyOfLogfileAddition( 1, 11, orcaice::getNow() );
+    masterFileWriter.notifyOfLogfileAddition( id1, index1, timeStamp );
+    timeStamp.seconds++;
+    masterFileWriter.notifyOfLogfileAddition( 1, 11, timeStamp );
     cout<<"ok"<<endl;
 
     cout<<"testing replaying ... ";
