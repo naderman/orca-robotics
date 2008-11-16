@@ -70,7 +70,7 @@ HwThread::HwThread( Config& config, const orcaice::Context &context )
     if ( isEStopEnabled )
     {
         double keepAlivePeriodSec = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"EStop.KeepAlivePeriodSec", 3 );
-        localEstop_.reset( new LocalEstop( keepAlivePeriodSec, context) );
+        estopInterface_.reset( new EStopInterface( keepAlivePeriodSec, context) );
     }
 
     // Dynamically load the library and find the factory
@@ -138,7 +138,7 @@ HwThread::enableDriver()
 void
 HwThread::writeCommand( hydrointerfaces::SegwayRmp::Command &command )
 {
-    if ( localEstop_.get() && localEstop_->isEStopTriggered() )
+    if ( estopInterface_.get() && estopInterface_->isEStopTriggered() )
     {
         command.vx = 0;
         command.w  = 0;
@@ -175,7 +175,7 @@ void
 HwThread::walk()
 {
     // This call catches its own exceptions
-    if ( localEstop_.get() ) localEstop_->initInterface( this );
+    if ( estopInterface_.get() ) estopInterface_->initInterface( this );
 
     stringstream exceptionSS;
     std::string reason;
@@ -282,7 +282,7 @@ HwThread::walk()
         // Tell the 'status' engine what our local state machine knows.
         if ( !stateMachine_.isFault(reason) && !stateMachine_.isWarning(reason) )
         {
-            if ( localEstop_.get() && localEstop_->isEStopTriggered() )
+            if ( estopInterface_.get() && estopInterface_->isEStopTriggered() )
             {
                 subStatus().warning( "Software E-Stop triggered" );
             }

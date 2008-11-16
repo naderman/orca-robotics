@@ -1,5 +1,5 @@
-#ifndef SEGWAYRMP_LOCAL_ESTOP_CALLBACK_H
-#define SEGWAYRMP_LOCAL_ESTOP_CALLBACK_H
+#ifndef SEGWAYRMP_ESTOP_INTERFACE_H
+#define SEGWAYRMP_ESTOP_INTERFACE_H
 
 #include <IceUtil/Mutex.h>
 #include <orcaifaceimpl/estop.h>
@@ -8,20 +8,23 @@
 namespace segwayrmp {
 
 //
-// @brief Establishes an orca::LocalEstop interface, and works out when 
+// @brief Establishes an orca::EStopInterface interface, and works out when 
 //        the e-stop needs to be activated.
 //
-// Note: we begin in the LocalEstop-triggered state: ie we're not moving unless
+// Implementation: completes the generic EStopImpl by providing local functionality
+// of AbstractEStopCallback.
+//
+// Note: we begin in the EStopInterface-triggered state: ie we're not moving unless
 //       someone explicitly says it's OK.
 //
 // @author Alex Brooks
 //
-class LocalEstop : public orcaifaceimpl::AbstractEStopCallback
+class EStopInterface : public orcaifaceimpl::AbstractEStopCallback
 {
 
 public: 
 
-    LocalEstop( double keepAlivePeriodSec, const orcaice::Context &context );
+    EStopInterface( double keepAlivePeriodSec, const orcaice::Context &context );
 
     // Sets up the Ice interface
     void initInterface( gbxiceutilacfr::Thread* thread );

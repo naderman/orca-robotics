@@ -20,7 +20,7 @@
 #include <gbxsickacfr/gbxiceutilacfr/store.h>
 #include <orcarobotdriverutil/statemachine.h>
 #include <gbxsickacfr/gbxiceutilacfr/timer.h>
-#include "localestop.h"
+#include "estopinterface.h"
 #include "setpoint.h"
 
 namespace segwayrmp {
@@ -83,7 +83,7 @@ private:
     bool isMotionEnabled_;
     bool driveInReverse_;
 
-    std::auto_ptr<LocalEstop> localEstop_;
+    std::auto_ptr<EStopInterface> estopInterface_;
     std::auto_ptr<SetPoint> speedSetPoint_;
 
     // Looks for late writes (which will cause timeouts in the segway)

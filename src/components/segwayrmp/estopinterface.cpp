@@ -1,40 +1,40 @@
-#include "localestop.h"
+#include "estopinterface.h"
 #include <iostream>
 
 using namespace std;
 
 namespace segwayrmp {
 
-LocalEstop::LocalEstop( double                  keepAlivePeriodSec,
+EStopInterface::EStopInterface( double                  keepAlivePeriodSec,
               const orcaice::Context &context )
     : isEStopTriggered_(true),
       keepAlivePeriodSec_(keepAlivePeriodSec),
-      eStopImpl_( new orcaifaceimpl::EStopImpl( *this, "LocalEstop", context ) ),
+      eStopImpl_( new orcaifaceimpl::EStopImpl( *this, "EStop", context ) ),
       context_(context)
 {
 }
 
 void
-LocalEstop::initInterface( gbxiceutilacfr::Thread* thread )
+EStopInterface::initInterface( gbxiceutilacfr::Thread* thread )
 {
     eStopImpl_->initInterface( thread );
 }
 
 bool
-LocalEstop::isEStopTriggered()
+EStopInterface::isEStopTriggered()
 {
     IceUtil::Mutex::Lock lock(mutex_);
     if ( !isEStopTriggered_ && 
          keepAliveTimer_.elapsedSec() > keepAlivePeriodSec_ )
     {
-        context_.tracer().info( "LocalEstop: keep-alive timed out!" );
+        context_.tracer().info( "EStopInterface: keep-alive timed out!" );
         isEStopTriggered_ = true;
     }
     return isEStopTriggered_;
 }
 
 void
-LocalEstop::activateEStop()
+EStopInterface::activateEStop()
 {
     IceUtil::Mutex::Lock lock(mutex_);
     isEStopTriggered_ = true;
@@ -47,7 +47,7 @@ LocalEstop::activateEStop()
     // isEStopTriggered() is called.
 }
 void
-LocalEstop::keepAlive()
+EStopInterface::keepAlive()
 {
     IceUtil::Mutex::Lock lock(mutex_);
     if ( isEStopTriggered_ )
@@ -59,13 +59,13 @@ LocalEstop::keepAlive()
     keepAliveTimer_.restart();
 }
 double
-LocalEstop::getRequiredKeepAlivePeriodSec()
+EStopInterface::getRequiredKeepAlivePeriodSec()
 {
     IceUtil::Mutex::Lock lock(mutex_);
     return keepAlivePeriodSec_;
 }
 void
-LocalEstop::setToOperatingMode()
+EStopInterface::setToOperatingMode()
 {
     IceUtil::Mutex::Lock lock(mutex_);
     if ( isEStopTriggered_ )
