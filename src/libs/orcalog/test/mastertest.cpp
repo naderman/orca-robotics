@@ -91,16 +91,16 @@ void TestComponent::start()
     int i0=0, index0=0;
     masterFileWriter.notifyOfLogfileAddition( i0, index0, orcaice::getNow() );
     IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
-    masterFileWriter.notifyOfLogfileAddition( 0, 1, orcaice::getNow() );
+    masterFileWriter.notifyOfLogfileAddition( 0, 11, orcaice::getNow() );
     IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
-    masterFileWriter.notifyOfLogfileAddition( 0, 1, orcaice::getNow() );
+    masterFileWriter.notifyOfLogfileAddition( 0, 22, orcaice::getNow() );
     IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
-    masterFileWriter.notifyOfLogfileAddition( 0, 1, orcaice::getNow() );
+    masterFileWriter.notifyOfLogfileAddition( 0, 33, orcaice::getNow() );
     IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
     int id1=1, index1=0;
     masterFileWriter.notifyOfLogfileAddition( id1, index1, orcaice::getNow() );
     IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
-    masterFileWriter.notifyOfLogfileAddition( 1, 1, orcaice::getNow() );
+    masterFileWriter.notifyOfLogfileAddition( 1, 11, orcaice::getNow() );
     cout<<"ok"<<endl;
 
     cout<<"testing replaying ... ";

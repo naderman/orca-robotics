@@ -1,6 +1,7 @@
 #include <iostream>
 #include <orcapotrace/orcapotrace.h>
 #include <hydromapload/hydromapload.h>
+#include <stdlib.h>
 
 using namespace std;
 
