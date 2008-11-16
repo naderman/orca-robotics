@@ -152,8 +152,7 @@ StatusImpl::internalGetData() const
 IceStorm::TopicPrx 
 StatusImpl::internalSubscribe(const ::orca::StatusConsumerPrx& subscriber)
 {
-// cout<<"DEBUG: "<<__func__<<"()"<<endl;
-    if( topicHandler_.get() )
+    if( !topicHandler_.get() )
     {
         throw orca::SubscriptionFailedException("Component does not have a topic to publish its traces.");
     }

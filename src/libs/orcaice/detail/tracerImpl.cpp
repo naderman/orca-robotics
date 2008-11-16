@@ -214,8 +214,7 @@ TracerImpl::internalSetVerbosity( const ::orca::TracerVerbosityConfig& config )
 IceStorm::TopicPrx 
 TracerImpl::internalSubscribe(const ::orca::TracerConsumerPrx& subscriber)
 {
-// cout<<"DEBUG: "<<__func__<<"()"<<endl;
-    if( topicHandler_.get() )
+    if( !topicHandler_.get() )
     {
         throw orca::SubscriptionFailedException("Component does not have a topic to publish its traces.");
     }
