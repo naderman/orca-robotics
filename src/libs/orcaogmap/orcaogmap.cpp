@@ -33,7 +33,7 @@ convert( const hydroogmap::OgMap &input, orca::OgMapData &output, orca::OgMapTyp
     output.numCellsX = input.numCellsX();
     output.numCellsY = input.numCellsY();
     output.data.resize( output.numCellsX*output.numCellsY );
-    memcpy( &(output.data[0]), input.data(), output.data.size() );
+    memcpy( &(output.data[0]), &input.data()[0], output.data.size() );
 
     output.offset.p.x = input.offset().p.x;
     output.offset.p.y = input.offset().p.y;
