@@ -20,6 +20,7 @@
 #include <orcaifaceimpl/pathplanner2d.h>
 
 #include <hydroogmap/hydroogmap.h>
+#include <hydroogmap/oglostracer.h>
 #include "progressmonitor.h"
 #include <memory>
 #include <gbxsickacfr/gbxiceutilacfr/timer.h>
