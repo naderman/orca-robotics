@@ -293,9 +293,7 @@ namespace orcalogfactory {
                                                     objectPrx,
                                                     logWriter_->logWriterInfo().interfaceTag );
 
-              //can't get the camera description?
-//                orca::CameraDescriptionPtr descr = objectPrx->getDescription();
-                orca::ImageDescriptionPtr descr = objectPrx->getDescription();
+                orca::CameraDescriptionPtr descr = orca::CameraDescriptionPtr::dynamicCast( objectPrx->getDescription());;
                 logWriter_->write( descr );
     
                 Ice::ObjectPtr consumer = this;

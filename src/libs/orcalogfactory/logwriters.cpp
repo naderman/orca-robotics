@@ -188,6 +188,29 @@ namespace {
         }
     }
 
+    void logToFile( std::ofstream       *file, 
+                    const std::string   &format,
+                    orcaice::Context     context,
+                    const orca::CameraDescriptionPtr &obj )
+    {
+        if ( format=="ice" )
+        {
+            orcalog::IceWriteHelper helper( context.communicator() );
+            ice_writeCameraDescription( helper.stream_, obj );
+            helper.write( file );  
+        }
+        else if ( format=="asciigenerated" )
+        {
+            ifacelog::toLogStream( obj, *file);
+        }
+        else
+        {
+            stringstream ss;
+            ss << "can't handle format: " << format;
+            throw orcalog::FormatNotSupportedException( ERROR_INFO, ss.str() );
+        }
+    }
+
 
     void logToFile( std::ofstream       *file, 
                     const std::string   &format,
@@ -882,7 +905,7 @@ CameraLogWriter::write( const orca::CameraDataPtr &obj, const orca::Time &arriva
 }
 
 void 
-CameraLogWriter::write( const orca::ImageDescriptionPtr &descr )
+CameraLogWriter::write( const orca::CameraDescriptionPtr &descr )
 {
     if ( orcalog::LogWriter::numItemsLogged() > 0 )
         throw orcalog::Exception( ERROR_INFO, "Tried to write description after logging started" );
