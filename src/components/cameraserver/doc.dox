@@ -17,7 +17,7 @@
 @ingroup orca_qnx
 @ingroup orca_win
 @defgroup orca_component_cameraserver CameraServer
-@brief A hardware abstraction component for scanning laser range-finders
+@brief A hardware abstraction component for Camera's
 
 @par Provides
 
@@ -41,7 +41,7 @@ This component dynamically loads an implementation of a Hydro hardware interface
 
 - @c CameraServer.Config.DriverLib (string)
     - Name of shared library containing the hardware driver
-    - Valid values are at least: { 'libHydroImageFake.so', 'libHydoImageCvCamera.so' }
+    - Valid values are at least: { 'libHydroImageFake.so', 'libHydroImageFile.so', 'libHydroImageDC1394.so' }
     - Default: "libHydroImageFake.so"
 
 CameraServer Settings
@@ -81,7 +81,7 @@ ImageWidth and ImageHeight are sanity checked and an exception is thrown if they
 Individual cameras have different options, different formats, and sometimes even their own unusual requirements. It was therefore thought by the author of this interface that it would be more beneficial to have the very basic framework and interface for sending data defined with maximum flexibility in mind given to driver writters. The cvcamera, image, and fake drivers should suffice for most robotics needs in all other cases.
 
 In order for the logger and viewer to properly show your custom image format (should you have one) you need to write a conversion plugin if one doesn't exist already.
-It should convert to either BGR8 for color logging/viewing or GRAY8 for grayscale logging and viewing.
+It should convert to a common variation of RGBA such as BGR8, BGRA8, RGBA8, RGB8 for color logging/viewing or GRAY8 for grayscale logging and viewing.
 
 @par Authors
 
