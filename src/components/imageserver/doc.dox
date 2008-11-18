@@ -33,7 +33,7 @@
 
 @par Drivers
 
-This component dynamically loads an implementation of a Hydro hardware interface hydrointerfaces::LaserScanner2d. You can also load your own implementation as long as the shared library is in the path. See Hydro documentation for the list of available drivers.
+This component dynamically loads an implementation of a Hydro hardware interface hydrointerfaces::Image. You can also load your own implementation as long as the shared library is in the path. See Hydro documentation for the list of available drivers.
 
 - @ref hydro_drivers_image
 
@@ -49,7 +49,6 @@ Laser Settings
     - Valid Values: ImageWidth>0
 - @c Image.Config.ImageHeight (int) [pixels]
     - Valid Values: ImageHeight>0
-    - Example: a laser mounted upside down with now translation: "0.0 0.0 0.0  180.0 0.0 0.0"
 
 @see Individual drivers may have additional configuration parameters which are specified as ImageServer.Config.XXX. See driver documentation.
 
@@ -57,7 +56,7 @@ An example configuration file is installed into [ORCA-INSTALL-DIR]/share/orca/cf
 
 @section Notes
 
-Only the fake driver will build for Windows.
+This component uses the same driver interface that the CameraServer uses, in fact, any driver will work for both. If you need the extra description information that the camera server gives then please use that instead. The viewer and logger will work with either.
 
 @par Authors
 
