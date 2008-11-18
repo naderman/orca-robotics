@@ -7,6 +7,7 @@ MESSAGE( STATUS "== UTILITIES ==" )
 
 ADD_SUBDIRECTORY( cleanregistry )
 ADD_SUBDIRECTORY( deftools )
+ADD_SUBDIRECTORY( def2uml )
 ADD_SUBDIRECTORY( iceping )
 ADD_SUBDIRECTORY( logplayer )
 ADD_SUBDIRECTORY( logrecorder )

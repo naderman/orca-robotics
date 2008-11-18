@@ -21,7 +21,6 @@ Connects to a SystemStatus interface and displays its information in different f
 
 @see @ref orca_component_systemstatus
 
-
 @par Provides
 
 - @ref orca_interface_home
@@ -30,6 +29,7 @@ Connects to a SystemStatus interface and displays its information in different f
 
 - @ref orca_interface_systemstatus
 
+@image html systemstatusmon.png
 
 @par Configuration
 

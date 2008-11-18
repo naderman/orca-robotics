@@ -29,6 +29,10 @@ Aggregates Status information from any number of components. It also adds *obser
 
 @par Requires
 
+- none
+
+@image html systemstatus.png
+
 @par Configuration
 
 - @c SystemStatus.Config.ComponentList (string sequence)

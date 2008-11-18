@@ -8,7 +8,11 @@
  *
  */
 
-/*!
+//
+// disabled the documentation because we are not building this utility anymore
+//
+
+/*
 @ingroup orca_utils
 @ingroup orca_linux
 @defgroup orca_util_invertdef InvertDef

@@ -1,10 +1,11 @@
-SET( MODULE_NAME def_tools )
+SET( module_name def_tools )
 
 SET( build TRUE )
-GBX_REQUIRE_OPTION( build EXE ${MODULE_NAME} ON )
+GBX_REQUIRE_OPTION( build EXE ${module_name} ON )
 
 IF( build )
 
+    # needs defintions from orca/ocm.ice
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
     
     LINK_LIBRARIES( OrcaDef )
@@ -13,19 +14,13 @@ IF( build )
     
     GBX_ADD_EXECUTABLE( def2xml def2xml.cpp )
     
-    GBX_ADD_EXECUTABLE( def2xmltemplate def2xmltemplate.cpp )
+    # it's not currently used.
+    # generation of XML template is now rolled into def2xml as an option.
+#     GBX_ADD_EXECUTABLE( def2xmltemplate def2xmltemplate.cpp )
     
-    GBX_ADD_EXECUTABLE( def2definverted def2definverted.cpp )
+    # it's not currently used.
+    # it was intended for the Wall utility which could provide
+    # a perfect compliment for any component's required interfaces.
+#     GBX_ADD_EXECUTABLE( def2definverted def2definverted.cpp )
 
 ENDIF( build )
-
-# SET( not_os_win NOT GBX_OS_WIN )
-# GBX_REQUIRE_VAR( build EXE ${MODULE_NAME} not_os_win "Windows OS is not supported" )
-# GBX_REQUIRE_VAR( build EXE ${MODULE_NAME} QT4_FOUND "Qt4 not found" )
-# 
-# IF( build )
-#     INCLUDE_DIRECTORIES( ${QT_INCLUDES} )    
-#     ADD_DEFINITIONS( ${QT_DEFINITIONS} )
-#     GBX_ADD_EXECUTABLE( def2uml def2uml.cpp )
-#     TARGET_LINK_LIBRARIES( def2uml OrcaQUml ${QT_QTGUI_LIBRARY} ${QT_QTCORE_LIBRARY} )
-# ENDIF( build )

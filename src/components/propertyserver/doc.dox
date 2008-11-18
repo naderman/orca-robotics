@@ -30,6 +30,8 @@ see @ref orca_doc_configfiles.
 
 - none
 
+@image html propertyserver.png
+
 @par Empty Properties
 
 Properties are a set of key-value pairs.  Ice Properties cannot differentiate between:

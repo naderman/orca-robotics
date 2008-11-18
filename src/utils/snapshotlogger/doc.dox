@@ -13,7 +13,7 @@
 @ingroup orca_services
 @ingroup orca_cpp
 @ingroup orca_linux
-@defgroup orca_component_snapshotlogger Snapshotlogger
+@defgroup orca_component_snapshotlogger SnapshotLogger
 
 @brief Logs data and configurations from interfaces when triggered
 
@@ -22,6 +22,8 @@
 - @ref orca_interface_home
 - @ref orca_interface_status
 - @ref orca_interface_tracer
+
+@image html snapshotlogger.png
 
 @par Operation
 

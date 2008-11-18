@@ -28,6 +28,8 @@
 
 - @ref orca_interface_gps [Gps2Localise2d.Requires.Gps]
 
+@image html gps2localise2d.png
+
 @par Operation
 
 Converts GPS data into Localise2d.  
