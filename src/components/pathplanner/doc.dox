@@ -24,7 +24,7 @@ The pathplanner acts like a service receiving tasks from third parties and retur
 @par Provides
 
 - @ref orca_interface_home
-- @ref orca_interface_qgraphics2d [PathPlanner.Provides.SkeletonGraphics] (@ref orca_pathplanner_skeletonnav and @ref orca_pathplanner_sparseskeletonnav algorithms only)
+- @ref orca_interface_qgraphics2d [PathPlanner.Provides.Graphics] (@ref orca_pathplanner_skeletonnav and @ref orca_pathplanner_sparseskeletonnav algorithms only)
 - @ref orca_interface_pathplanner2d [PathPlanner.Provides.PathPlanner2d]
 - @ref orca_interface_status
 
