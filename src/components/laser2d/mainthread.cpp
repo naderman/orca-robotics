@@ -12,19 +12,19 @@
 #include <orcaice/orcaice.h>
 #include <orcaifaceutil/laserscanner2d.h>
 #include <orcaobj/orcaobj.h> // for getPropertyAs...()
-#include "mainsubsystem.h"
+#include "mainthread.h"
 
 using namespace std;
 using namespace laser2d;
 
-MainSubsystem::MainSubsystem( const orcaice::Context &context ) :
-    orcaice::Subsystem( context.tracer(), context.status(), "MainSubsystem" ),
+MainThread::MainThread( const orcaice::Context &context ) :
+    orcaice::Subsystem( context.tracer(), context.status(), "MainThread" ),
     context_(context)
 {
 }
 
 void
-MainSubsystem::initialise()
+MainThread::initialise()
 {
     subStatus().setMaxHeartbeatInterval( 20.0 );
 
@@ -39,7 +39,7 @@ MainSubsystem::initialise()
 }
 
 void
-MainSubsystem::work() 
+MainThread::work() 
 {
     subStatus().setMaxHeartbeatInterval( 1.0 );
 
@@ -61,7 +61,7 @@ MainSubsystem::work()
             }
 
             stringstream ss;
-            ss << "MainSubsystem: Read laser data: " << ifaceutil::toString(orcaLaserData_);
+            ss << "MainThread: Read laser data: " << ifaceutil::toString(orcaLaserData_);
             context_.tracer().debug( ss.str(), 5 );
         }
         catch ( ... ) 
@@ -78,7 +78,7 @@ MainSubsystem::work()
 }
 
 void
-MainSubsystem::finalise() 
+MainThread::finalise() 
 {
     // Laser hardware will be shut down in the driver's destructor.
 }
@@ -86,7 +86,7 @@ MainSubsystem::finalise()
 ////////////////////
 
 void
-MainSubsystem::initSettings()
+MainThread::initSettings()
 {
     //
     // Read settings
@@ -123,7 +123,7 @@ MainSubsystem::initSettings()
 }
 
 void
-MainSubsystem::initNetworkInterface()
+MainThread::initNetworkInterface()
 {
     // activate component's communication
     activate( context_, this, subsysName() );
@@ -178,7 +178,7 @@ MainSubsystem::initNetworkInterface()
 }
 
 void
-MainSubsystem::initHardwareDriver()
+MainThread::initHardwareDriver()
 {
     Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag() + ".Config.";
@@ -186,7 +186,7 @@ MainSubsystem::initHardwareDriver()
     // Dynamically load the library and find the factory
     std::string driverLibName = 
         orcaice::getPropertyWithDefault( prop, prefix+"DriverLib", "libHydroLaserScanner2dSickGbx.so" );
-    context_.tracer().debug( "MainSubsystem: Loading driver library "+driverLibName, 4 );
+    context_.tracer().debug( "MainThread: Loading driver library "+driverLibName, 4 );
     // The factory which creates the driver
     std::auto_ptr<hydrointerfaces::LaserScanner2dFactory> driverFactory;
 
@@ -219,7 +219,7 @@ MainSubsystem::initHardwareDriver()
 }
 
 void
-MainSubsystem::readData()
+MainThread::readData()
 {
     //
     // Read from the laser driver

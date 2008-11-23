@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef MAIN_SUBSYSTEM_H
-#define MAIN_SUBSYSTEM_H
+#ifndef MAIN_THREAD_H
+#define MAIN_THREAD_H
 
 #include <memory>
 #include <orcaice/subsystem.h>
@@ -22,10 +22,10 @@
 
 namespace laser2d {
 
-class MainSubsystem : public orcaice::Subsystem
+class MainThread : public orcaice::Subsystem
 {
 public:
-    MainSubsystem( const orcaice::Context &context );
+    MainThread( const orcaice::Context &context );
 
 private:
     // from Subsystem

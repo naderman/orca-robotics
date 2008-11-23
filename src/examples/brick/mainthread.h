@@ -22,10 +22,10 @@ class MainThread: public orcaice::SubsystemThread
 public:
     MainThread( const orcaice::Context& context );
 
+private:
     // from SubsystemThread
     virtual void walk();
 
-private:
     orcaice::Context context_;
 };
 

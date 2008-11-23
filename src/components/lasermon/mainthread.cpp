@@ -13,13 +13,13 @@
 #include <orcaifaceutil/laserscanner2d.h>
 #include <orcaice/orcaice.h>
 
-#include "mainsubsystem.h"
+#include "mainthread.h"
 
 using namespace std;
 using namespace lasermon;
 
-MainSubsystem::MainSubsystem( const orcaice::Context &context ) : 
-    orcaice::Subsystem( context.tracer(), context.status(), "MainSubsystem" ),
+MainThread::MainThread( const orcaice::Context &context ) : 
+    orcaice::Subsystem( context.tracer(), context.status(), "MainThread" ),
     context_(context)
 {
     // this subsystem will initialise and exit, but the component will continue running.
@@ -27,7 +27,7 @@ MainSubsystem::MainSubsystem( const orcaice::Context &context ) :
 }
 
 void
-MainSubsystem::initialise()
+MainThread::initialise()
 {
     subStatus().setMaxHeartbeatInterval( 10.0 );
 

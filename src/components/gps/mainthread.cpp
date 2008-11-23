@@ -13,7 +13,7 @@
 #include <orcaifaceutil/gps.h>
 #include <orcaobj/orcaobj.h>    // getPropertyAsFrame3dWithDefault
 
-#include "mainsubsystem.h"
+#include "mainthread.h"
 
 using namespace std;
 using namespace gps;
@@ -51,14 +51,14 @@ void convert( const hydrointerfaces::Gps::Data& hydro, orca::GpsData& orca )
 
 ////////////////////////////
 
-MainSubsystem::MainSubsystem( const orcaice::Context& context ) :
-    orcaice::Subsystem( context.tracer(), context.status(), "MainSubsystem" ),
+MainThread::MainThread( const orcaice::Context& context ) :
+    orcaice::Subsystem( context.tracer(), context.status(), "MainThread" ),
     context_(context)
 {
 }
 
 void
-MainSubsystem::initialise()
+MainThread::initialise()
 {
     subStatus().setMaxHeartbeatInterval( 60.0 );  
 
@@ -75,7 +75,7 @@ MainSubsystem::initialise()
 }
 
 void
-MainSubsystem::work() 
+MainThread::work() 
 {
     // temp data object
     hydrointerfaces::Gps::Data hydroData;
@@ -120,7 +120,7 @@ MainSubsystem::work()
 }
 
 void
-MainSubsystem::initNetworkInterface()
+MainThread::initNetworkInterface()
 {
     Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag() + ".Config.";
@@ -145,7 +145,7 @@ MainSubsystem::initNetworkInterface()
 }
 
 void
-MainSubsystem::initHardwareDriver()
+MainThread::initHardwareDriver()
 {
     subStatus().setMaxHeartbeatInterval( 30.0 );
 
@@ -155,7 +155,7 @@ MainSubsystem::initHardwareDriver()
     // Dynamically load the library and find the factory
     std::string driverLibName = 
         orcaice::getPropertyWithDefault( prop, prefix+"DriverLib", "libHydroGpsGarmin.so" );
-    context_.tracer().debug( "MainSubsystem: Loading driver library "+driverLibName, 4 );
+    context_.tracer().debug( "MainThread: Loading driver library "+driverLibName, 4 );
     // The factory which creates the driver
     std::auto_ptr<hydrointerfaces::GpsFactory> driverFactory;
     try {

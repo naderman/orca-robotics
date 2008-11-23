@@ -42,7 +42,7 @@ namespace {
 }
 
 MainThread::MainThread( const orcaice::Context &context ) : 
-    orcaice::Subsystem( context.tracer(), context.status(), "MainSubsystem" ),
+    orcaice::Subsystem( context.tracer(), context.status(), "MainThread" ),
     context_(context)
 {
 }

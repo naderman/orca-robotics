@@ -87,7 +87,7 @@ MainThread::initDriver()
     // Dynamically load the library and find the factory
     std::string driverLibName = 
         orcaice::getPropertyWithDefault( prop, prefix+"DriverLib", "libHydroPathPlanner2dAcfr.so" );
-    context_.tracer().debug( "MainSubsystem: Loading driver library "+driverLibName, 4 );
+    context_.tracer().debug( "MainThread: Loading driver library "+driverLibName, 4 );
     // The factory which creates the driver
     std::auto_ptr<hydrointerfaces::PathPlanner2dFactory> driverFactory;
 
