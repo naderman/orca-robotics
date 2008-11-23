@@ -278,7 +278,6 @@ public:
     }
 
 private:
-    void getInitialAppearance();
     QGraphics2dPainter painter_;
 };
 

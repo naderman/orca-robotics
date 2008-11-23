@@ -59,14 +59,17 @@ namespace {
                  const hydrointerfaces::PathPlanner2d::Point &p )
     { return dist( p, f ); }
 
-    // Converts a path (defined by at least two waypoints)
-    // into a set of Orca waypoints.
-    // The first cell represents 'start' and the last represents 'goal'.
+    double dist( const hydrointerfaces::PathPlanner2d::Point &p1,
+                 const hydrointerfaces::PathPlanner2d::Point &p2 )
+    { return hypot( p1.y-p2.y, p1.x-p2.x ); }
+
+    // Converts a path (defined by at least two waypoints) into a set of Orca waypoints.
+    // Non-position parameters are taken from startParams, intermediateParams, and goalParams.
     std::vector<orca::Waypoint2d>
-    convert( const orca::Waypoint2d &start,
-             const orca::Waypoint2d &goal,
-             const vector<hydrointerfaces::PathPlanner2d::Point> &pathPoints,
-             double intermediateWaypointMinDistTolerance )
+    convert( const orca::Waypoint2d &startParams,
+             const orca::Waypoint2d &goalParams,
+             const orca::Waypoint2d &intermediateParams,
+             const vector<hydrointerfaces::PathPlanner2d::Point> &pathPoints )
     {
         assert( pathPoints.size() > 1 );
 
@@ -75,25 +78,18 @@ namespace {
         double totalLength=0;
         for ( size_t i=1; i < pathPoints.size(); i++ )
         {
-            double thisLength;
-            if ( i==1 )
-                thisLength = dist( start.target, pathPoints[i] );
-            else if ( i == pathPoints.size()-1 )
-                thisLength = dist( pathPoints[i-1], goal.target );
-            else
-                thisLength = straightLineDist( pathPoints[i-1], pathPoints[i] );
-
+            double thisLength = dist( pathPoints[i], pathPoints[i-1] );
             legLengths.push_back( thisLength );
             totalLength += thisLength;
         }
 
-        double totalTime = orcaice::timeDiffAsDouble(goal.timeTarget, start.timeTarget);
+        double totalTime = orcaice::timeDiffAsDouble(goalParams.timeTarget, startParams.timeTarget);
         if ( totalTime < 0 )
         {
             stringstream ss;
             ss << "Time of goal was _before_ time of start!" << endl
-               << "  startWp.timeTarget: " << orcaobj::toString(start.timeTarget) << endl
-               << "  goalWp.timeTarget:  " << orcaobj::toString(goal.timeTarget);
+               << "  startWp.timeTarget: " << orcaobj::toString(startParams.timeTarget) << endl
+               << "  goalWp.timeTarget:  " << orcaobj::toString(goalParams.timeTarget);
             throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
         }
 
@@ -101,46 +97,42 @@ namespace {
         orca::Path2d orcaPath;
         for ( size_t i=0; i < pathPoints.size(); i++ )
         {
-            // For the start and goal, add the real thing
-            if ( i==0 ) { orcaPath.push_back( start ); continue; }
-            if ( i==pathPoints.size()-1 ) { orcaPath.push_back( goal ); continue; }
-
-            // Intermediate points
             orca::Waypoint2d wp;
+
+            // Set the non-position parameters
+            if ( i==0 )                        wp = startParams;
+            else if ( i==pathPoints.size()-1 ) wp = goalParams;
+            else                               wp = intermediateParams;
+
             wp.target.p.x = pathPoints[i].x;
             wp.target.p.y = pathPoints[i].y;
-            wp.target.o   = 0;
-            wp.headingTolerance = 2*M_PI;
 
-            wp.distanceTolerance = intermediateWaypointMinDistTolerance;
-            wp.maxApproachSpeed = goal.maxApproachSpeed;
-            wp.maxApproachTurnrate = goal.maxApproachTurnrate;
-            if ( totalTime == 0 )
+            if ( i != 0 && i != pathPoints.size()-1 )
             {
-                wp.timeTarget = goal.timeTarget;
-            }
-            else
-            {
-                const double fractionOfTotalLength = legLengths[i-1]/totalLength;
-                const double timeThisLeg = fractionOfTotalLength*totalTime;
-                wp.timeTarget = orcaPath.back().timeTarget;
-                orcaice::add( wp.timeTarget, timeThisLeg );
+                // Set the time
+                if ( totalTime == 0 )
+                {
+                    wp.timeTarget = goalParams.timeTarget;
+                }
+                else
+                {
+                    const double fractionOfTotalLength = legLengths[i-1]/totalLength;
+                    const double timeThisLeg = fractionOfTotalLength*totalTime;
+                    wp.timeTarget = orcaPath.back().timeTarget;
+                    orcaice::add( wp.timeTarget, timeThisLeg );
+                }
             }
             orcaPath.push_back( wp );
         }
-
         return orcaPath;
     }
 }
 
 Driver::Driver( hydrointerfaces::PathPlanner2d &hydroDriver,
-//                 double                         robotDiameterMetres,
-//                 double                         traversabilityThreshhold,
-                double                         intermediateWaypointMinDistTolerance,
+                double                          intermediateWaypointDistTolerance,
                 const orcaice::Context         &context)
     : hydroDriver_(hydroDriver),
-//       traversabilityThreshhold_(traversabilityThreshhold),
-      intermediateWaypointMinDistTolerance_(intermediateWaypointMinDistTolerance),
+      intermediateWaypointDistTolerance_(intermediateWaypointDistTolerance),
       context_(context)      
 {
 }
@@ -172,6 +164,8 @@ void
 Driver::computePath( const orca::PathPlanner2dTask &task,
                      orca::Path2d                  &path )
 {
+    path.clear();
+
     if ( task.coarsePath.size() == 0 )
     {
         stringstream ss;
@@ -181,15 +175,15 @@ Driver::computePath( const orca::PathPlanner2dTask &task,
 
     const orca::Path2d *coarsePath = &(task.coarsePath);
 
-    // Add the first waypoint un-touched
-    path.push_back( (*coarsePath)[0] );
-
     // for each segment in the coarse path
     for (unsigned int i=1; i<coarsePath->size(); i++)
     {
         const orca::Waypoint2d &startWp = (*coarsePath)[i-1];
         const orca::Waypoint2d &goalWp = (*coarsePath)[i];
 
+        //
+        // Compute the path segment
+        //
         hydroutil::CpuStopwatch stopWatch(true);
         vector<hydrointerfaces::PathPlanner2d::Point> pathSegment = computePathSegment( startWp.target.p.x, 
                                                                                         startWp.target.p.y,
@@ -199,14 +193,28 @@ Driver::computePath( const orca::PathPlanner2dTask &task,
         ss << "Driver: Computing path segment took " << stopWatch.elapsedSeconds() << "s";
         context_.tracer().debug(ss.str(),1);
 
-        // Add the segment to pathData
+        //
+        // Convert to orca-style
+        //
+
+        // Specify the non-position parameters of intermediate waypoints
+        orca::Waypoint2d intermediateWpParams = goalWp;
+        intermediateWpParams.target.o = 0;
+        intermediateWpParams.headingTolerance = 2*M_PI;
+        intermediateWpParams.distanceTolerance = intermediateWaypointDistTolerance_;
+            
         std::vector<orca::Waypoint2d> finePathSegment = convert( startWp, 
                                                                  goalWp,
-                                                                 pathSegment,
-                                                                 intermediateWaypointMinDistTolerance_ );
+                                                                 intermediateWpParams,
+                                                                 pathSegment );
 
-        // Add to the path but ignore the first wp (it was the last wp of the previous segment)
-        path.insert( path.end(), finePathSegment.begin()+1, finePathSegment.end() );
+        std::vector<orca::Waypoint2d>::iterator firstWpIt = finePathSegment.begin();
+        if ( path.size() != 0 )
+        {
+            // Ignore the first wp, it was the last wp of the previous segment
+            firstWpIt++;
+        }
+        path.insert( path.end(), firstWpIt, finePathSegment.end() );
     }
 }
 

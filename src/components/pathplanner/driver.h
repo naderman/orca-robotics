@@ -27,10 +27,8 @@ class Driver
 public: 
 
     Driver( hydrointerfaces::PathPlanner2d &hydroDriver,
-//             double                   robotDiameterMetres,
-//             double                   traversabilityThreshhold,
-            double                   intermediateWaypointMinDistTolerance,
-            const orcaice::Context  &context );
+            double                          intermediateWaypointDistTolerance,
+            const orcaice::Context         &context );
     
     void computePath( const orca::PathPlanner2dTask &task,
                       orca::Path2d                  &path );
@@ -45,8 +43,7 @@ private:
 
     hydrointerfaces::PathPlanner2d &hydroDriver_;
     
-//     double traversabilityThreshhold_;
-    double intermediateWaypointMinDistTolerance_; 
+    double intermediateWaypointDistTolerance_; 
     
     const orcaice::Context context_;
 };

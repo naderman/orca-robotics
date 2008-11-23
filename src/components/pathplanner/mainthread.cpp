@@ -131,10 +131,10 @@ MainThread::initDriver()
     //
     // Create our local driver: a wrapper for the hydro driver
     //
-    double intermediateWaypointMinDistTolerance = 
-            orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"IntermediateWaypointMinDistanceTolerance", 1.5 );
+    double intermediateWaypointDistTolerance = 
+            orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"IntermediateWaypointDistanceTolerance", 1.5 );
     driver_.reset( new Driver( *hydroDriver_,
-                               intermediateWaypointMinDistTolerance,
+                               intermediateWaypointDistTolerance,
                                context_ ) );
 
 //     //
@@ -156,13 +156,13 @@ MainThread::initDriver()
 //     //
 //     // And the Driver to manage it
 //     //
-//     double intermediateMinDistTolerance = 
-//             orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"IntermediateWaypointMinDistanceTolerance", 1.5 );
+//     double intermediateDistTolerance = 
+//             orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"IntermediateWaypointDistanceTolerance", 1.5 );
 //     driver_.reset( new Driver( *pathPlanner_,
 //                                ogMap_,
 //                                traversabilityThreshhold,
 //                                robotDiameterMetres,
-//                                intermediateMinDistTolerance,
+//                                intermediateDistTolerance,
 //                                context_ ) );
 
     context_.tracer().debug("driver instantiated",5);

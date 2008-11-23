@@ -28,7 +28,7 @@ Config.Acfr.Skeleton.SparseSkelAddExtraNodes.Default=1
 Config.Acfr.Skeleton.SparseSkelExtraNodeResolution.Default=5.0
 Config.Acfr.Skeleton.ProvideGraphics.Default=1
 
-Config.IntermediateWaypointMinDistanceTolerance.Default=1.5
+Config.IntermediateWaypointDistanceTolerance.Default=1.5
 
 # Ice default message size too small for displaying debugging graphics on large maps
 ExternalConfig.Ice.MessageSizeMax.Default=3000
