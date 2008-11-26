@@ -1,5 +1,6 @@
 #include "viewer.h"
 #include "qtviewer.h"
+#include "opencvviewer.h"
 
 using namespace imageview;
 
@@ -7,7 +8,7 @@ using namespace imageview;
 Viewer* Viewer::factory(const std::string& type) throw(Viewer::BadViewerCreation) 
 {
   if(type == "QtViewer")     return new QtViewer;
-  // if(type == "OpenCVViewer") return new OpenCVViewer;
+  if(type == "OpenCVViewer") return new OpenCVViewer;
   throw BadViewerCreation(type);
 }
  
