@@ -98,6 +98,13 @@ void fromLogString( std::stringstream &, orca::VehicleGeometryDescriptionPtr& );
 //! Converts vehicle description to text which is easy to parse
 std::string toLogString( const orca::VehicleDescription& );
 void fromLogString( std::stringstream &, orca::VehicleDescription& );
+
+std::string toLogString( const orca::CameraDescriptionPtr& );
+void fromLogString( std::stringstream &, orca::CameraDescription& );
+
+std::string toLogString( const orca::CameraDataPtr& );
+void fromLogString( std::stringstream &, orca::CameraData& );
+
 //}
 
 

@@ -273,7 +273,6 @@ namespace orcalogfactory {
         virtual void setData(const orca::ImageDataPtr& data, const Ice::Current&)
             { 
                 // we assume that the data is really CameraDataPtr but it has to be cast
-                // @todo: what if it's not the right type?
                 orca::CameraDataPtr cameraData = orca::CameraDataPtr::dynamicCast( data );
                 logWriter_->write(cameraData,orcaice::getNow());
             }

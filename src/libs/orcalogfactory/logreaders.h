@@ -13,12 +13,28 @@
 #include <orca/wifi.h>
 #include <orca/gps.h>
 
+#include "camerareader.h"
+
 namespace orcalogfactory {
 
 //
 // A collection of classes capable of reading sub-logfiles for specific
 // interface types.
 //
+
+class CameraLogReader : public orcalog::LogReader
+{
+public:
+    CameraLogReader( const orcalog::LogReaderInfo &logReaderInfo );
+    void read( orca::CameraDataPtr &obj );
+    void read( orca::CameraDescriptionPtr &obj );
+    void read() { orca::CameraDataPtr obj=new orca::CameraData; read(obj); }
+    void openLogFile();
+private:
+// alen - member class for camera log readingso we can handle jpegs
+    CameraReader cameraReader;
+
+};
 
 //////////////////////////////////////////////////////////////////////
 

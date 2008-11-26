@@ -14,8 +14,10 @@
 #include <orca/power.h>
 #include <orca/wifi.h>
 #include <orca/gps.h>
+
 #include <orca/camera.h>
 #include <orca/image.h>
+#include "camerawriter.h"
 
 namespace orcalogfactory {
 
@@ -157,6 +159,11 @@ public:
     void checkFormat( const std::string &format );
     void write( const orca::CameraDataPtr &obj, const orca::Time &arrivalTime  );
     void write( const orca::CameraDescriptionPtr &descr );
+    void createLogFile( const std::string &filename, const std::string &format );
+private:
+// alen - member class for camera logging so we can handle jpegs
+    CameraWriter cameraWriter;
+
 };
 
 //////////////////////////////////////////////////////////////////////

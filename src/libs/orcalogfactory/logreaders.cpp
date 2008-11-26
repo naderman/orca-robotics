@@ -449,6 +449,63 @@ namespace {
 
 //////////////////////////////////////////////////////////////////////
 
+CameraLogReader::CameraLogReader( const orcalog::LogReaderInfo &logReaderInfo )
+    : orcalog::LogReader( logReaderInfo )
+{
+    vector<string> okFormats;
+    okFormats.push_back("ice");
+    okFormats.push_back("jpeg");
+    checkFormats( logReaderInfo, okFormats );
+}
+void
+CameraLogReader::read( orca::CameraDataPtr &obj )
+{
+    cameraReader.readFromFile( file_, 
+                  orcalog::LogReader::logReaderInfo().format,
+                  orcalog::LogReader::logReaderInfo().context,
+                  obj );
+    orcalog::LogReader::advanceLogIndex();
+}
+void
+CameraLogReader::read( orca::CameraDescriptionPtr &obj )
+{
+    assert( orcalog::LogReader::logIndex() == -1 );
+    cameraReader.readFromFile( file_, 
+                  orcalog::LogReader::logReaderInfo().format,
+                  orcalog::LogReader::logReaderInfo().context,
+                  obj );
+    orcalog::LogReader::zeroLogIndex();
+}
+
+//
+//alen - had to overwrite this method from logwriter.h to include jpegs
+//
+void
+CameraLogReader::openLogFile()
+{
+    logReaderInfo_.context.tracer().debug( "Opening log file "+logReaderInfo_.filename,2 );
+
+    if ( file_ ) {
+        std::string s = "Log file already exists.";
+        throw orcalog::FileException( ERROR_INFO, s );
+    }
+
+    //
+    // open log file, may throw and it will kill us
+    //
+    if ( logReaderInfo_.format == "ice" ) {
+        file_ = orcalog::openBinaryFileForReading( logReaderInfo_.filename );
+    }
+    else if ( logReaderInfo_.format == "jpeg" ) {
+        file_ = orcalog::openAsciiFileForReading( logReaderInfo_.filename );
+    }
+    else {
+        assert( false && "base class can only handle 'ice' and 'ascii' and 'asciigenerated' formats" );
+    }
+}
+
+//////////////////////////////////////////////////////////////////////
+
 DriveBicycleLogReader::DriveBicycleLogReader( const orcalog::LogReaderInfo &logReaderInfo )
     : orcalog::LogReader( logReaderInfo )
 {

@@ -19,7 +19,7 @@ using namespace orcalogfactory;
 
 DefaultReplayerFactory::DefaultReplayerFactory()
 {
-//    addSupportedType("Camera");
+    addSupportedType("Camera");
     addSupportedType("DriveBicycle");
     addSupportedType("LaserScanner2d");
     addSupportedType("Localise2d");
@@ -36,11 +36,10 @@ DefaultReplayerFactory::create( const orcalog::LogReaderInfo &logReaderInfo )
 {
     logReaderInfo.context.tracer().debug( "Creating replayer: file="+logReaderInfo.filename+" type="+logReaderInfo.interfaceType+" fmt="+logReaderInfo.format, 5);
 
-// camera logging is broken. all of image stuff requires a major overhaul
-//     if ( logReaderInfo.interfaceType == "Camera" )
-//     {
-//         return new CameraReplayer( logReaderInfo );
-//     }
+    if ( logReaderInfo.interfaceType == "Camera" )
+    {
+         return new CameraReplayer( logReaderInfo );
+    }
     if ( logReaderInfo.interfaceType == "DriveBicycle" )
     {
         return new DriveBicycleReplayer( logReaderInfo );

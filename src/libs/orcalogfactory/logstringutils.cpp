@@ -1068,5 +1068,70 @@ fromLogString( stringstream &s, orca::VehicleDescription& obj )
     fromLogString(s,obj.geometry);
 }
 
+std::string 
+toLogString( const orca::CameraDescriptionPtr& obj )
+{
+    stringstream s;
+    s << obj->width << " "
+      << obj->height << " "
+      << obj->format << " "
+      << obj->frameRate << " "
+      << toLogString(obj->offset) << " "
+      << toLogString(obj->caseSize) << " "
+      << obj->focalLength.x << " "
+      << obj->focalLength.y << " "
+      << obj->principlePoint.x << " "
+      << obj->principlePoint.y << " "
+      << obj->k1 << " "
+      << obj->k2 << " "
+      << obj->p1 << " "
+      << obj->p2;
+
+    return s.str();
+}
+
+void
+fromLogString( std::stringstream &s, orca::CameraDescription& obj )
+{
+    fromLogString(s,obj.width);
+    fromLogString(s,obj.height);
+    s >> obj.format; 
+    fromLogString(s,obj.frameRate);
+    fromLogString(s,obj.offset);
+    fromLogString(s,obj.caseSize);
+    fromLogString(s,obj.focalLength.x);
+    fromLogString(s,obj.focalLength.y);
+    fromLogString(s,obj.principlePoint.x);
+    fromLogString(s,obj.principlePoint.y);
+    fromLogString(s,obj.k1);
+    fromLogString(s,obj.k2);
+    fromLogString(s,obj.p1);
+    fromLogString(s,obj.p2);
+}
+
+
+std::string
+toLogString( const orca::CameraDataPtr& obj )
+{
+    stringstream s;
+    s << toLogString(obj->timeStamp);
+    s << obj->description->width;
+    s << obj->description->height;
+    s << obj->description->format;
+    return s.str();
+}
+
+void
+fromLogString ( std::stringstream &s, orca::CameraData& obj )
+{
+    fromLogString(s,obj.timeStamp );
+    
+    orca::ImageDescription* ptr = new orca::ImageDescription;
+    obj.description  = ptr;
+
+    fromLogString(s,ptr->width);
+    fromLogString(s,ptr->height);
+    s >> ptr->format; 
+}
 
 }

@@ -4,6 +4,7 @@
 #include <orcalog/orcalog.h>
 #include <orcalogfactory/logreaders.h>
 
+#include <orcaifaceimpl/camera.h>
 #include <orcaifaceimpl/drivebicycle.h>
 #include <orcaifaceimpl/gps.h>
 #include <orcaifaceimpl/laserscanner2d.h>
@@ -110,6 +111,14 @@ public:
 
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
+
+typedef GenericReplayer< orcaifaceimpl::CameraImpl,
+                         CameraLogReader,
+                         orca::CameraDataPtr,
+                         DescriptionIfaceImplSetup<CameraLogReader,
+                                                   orcaifaceimpl::CameraImpl,
+                                                   orca::CameraDescriptionPtr> >       CameraReplayer;
+
 //////////////////////////////////////////////////////////////////////
 
 typedef GenericReplayer< orcaifaceimpl::DriveBicycleImpl,
