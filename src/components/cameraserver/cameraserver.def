@@ -12,8 +12,12 @@ Config.DriverLib.Default=libHydroImageFake.so
 
 Config.Offset.Comment=x[m] y[m] z[m] roll[deg] pitch[deg] yaw[deg]
 Config.Offset.Default=0.0 0.0 0.0  0.0 0.0 0.0
-Config.FocalLength.Comment=focal length of lense [mm]
-Config.FocalLength.Default=0
+Config.FocalLength.Comment=focal length of lense x[mm] y[mm]
+Config.FocalLength.Default=0.0 0.0
+Config.PrinciplePoint.Comment=principle point of lense x[pixels] y[pixels]
+Config.PrinciplePoint.Default=0.0 0.0
+Config.DistortionParameters.Comment=distotrion parameters of lense k1[mm] k2[mm] p1[mm] p2[mm]
+Config.DistortionParameters.Default=0.0 0.0 0.0 0.0
 Config.SensorSize.Comment=width[cm] height[cm]
 Config.SensorSize.Default=0.846 0.846
 Config.ImageWidth.Comment=Image Width [pixels]
@@ -22,4 +26,8 @@ Config.ImageHeight.Comment=Image Height [pixels]
 Config.ImageHeight.Default=240
 Config.ImageFormat.Comment=Valid values are at least: {'BGR8', 'GRAY8'}
 Config.ImageFormat.Default=BGR8
+
+Config.DC1394.IsoMode.Comment=Valid values are at least: {'1394A', '1394B'}
+Config.DC1394.IsoMode.Default=1394A
+
 
