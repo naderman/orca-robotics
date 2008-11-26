@@ -51,7 +51,7 @@ CameraReader::readFromFile( std::ifstream                   *file,
 #ifndef OPENCV_FOUND
         context.tracer().info( "Images can only be replayed in 'jpeg' format if you have OpenCV." );
         context.tracer().info( "Please have a look at the documentation for installing OpenCV." );
-        throw orcalog::FormatNotSupportedException( ERROR_INFO, interfaceType_+"Logger: 'jpeg' format not supported because OpenCV is not installed." );
+        throw orcalog::FormatNotSupportedException( ERROR_INFO, "Logger: 'jpeg' format not supported because OpenCV is not installed." );
 #endif
         obj = new orca::CameraDescription;
 
