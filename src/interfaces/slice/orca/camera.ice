@@ -33,18 +33,29 @@ class CameraDescription extends ImageDescription
     //! Frame rate [frames/seconds]
     double frameRate; 
 
-    //! Focal Length of Lens [mm]
-    double focalLength;
-
     //! Offset of the sensor with respect to the robot, 
     //! in the robot local coordinate system.
     Frame3d offset; 
 
-    //! Dimensions of the sensor
-    Size2d  sensorSize;
-
     //! Dimensions of the case
     Size3d caseSize;
+
+    //! Instrinsic Parameters
+    //! refer to OpenCV manual for rationale
+
+    //! Focal Length
+    Vector2d   focalLength;
+    //! Principle Point
+    Vector2d    principlePoint;
+    //! Radial Distortion Coefficient 1
+    double  k1;
+    //! Radial Distortion Coefficient 2
+    double  k2;
+    //! Tangential Distortion Coefficient 1
+    double  p1;
+    //! Tangential Distortion Coefficient 2
+    double  p2;
+
 }; 
 
 //!

@@ -44,14 +44,44 @@ MainThread::initNetworkInterface()
     orcaCameraDescr_->offset = orcaobj::getPropertyAsFrame3dWithDefault( prop, prefix + "Offset", orcaCameraDescr_->offset );
 
     // read size
-    ifaceutil::zeroAndClear( orcaCameraDescr_->sensorSize );
-    orcaCameraDescr_->sensorSize = orcaobj::getPropertyAsSize2dWithDefault( prop, prefix + "SensorSize", orcaCameraDescr_->sensorSize );
-
     ifaceutil::zeroAndClear( orcaCameraDescr_->caseSize );
     orcaCameraDescr_->caseSize = orcaobj::getPropertyAsSize3dWithDefault( prop, prefix + "CaseSize", orcaCameraDescr_->caseSize );
 
-    // focal length
-    orcaCameraDescr_->focalLength = orcaice::getPropertyAsDoubleWithDefault( prop, prefix + "FocalLength", 0.0 );
+    // frame rate
+    orcaCameraDescr_->frameRate = orcaice::getPropertyAsDoubleWithDefault( prop, prefix + "FrameRate", 0.0 );
+
+    //
+    // Intrinsic Parameters
+    //
+
+    // Focal Length
+    std::vector<double> defaultFocalLength;
+    defaultFocalLength.push_back(0.0);
+    defaultFocalLength.push_back(0.0);
+    defaultFocalLength = orcaice::getPropertyAsDoubleVectorWithDefault( prop, prefix+"FocalLength", defaultFocalLength );
+    orcaCameraDescr_->focalLength.x =defaultFocalLength[0];
+    orcaCameraDescr_->focalLength.y =defaultFocalLength[1];
+
+    // Principle Point
+    std::vector<double> defaultPrinciplePoint;
+    defaultPrinciplePoint.push_back(0.0);
+    defaultPrinciplePoint.push_back(0.0);
+    defaultPrinciplePoint = orcaice::getPropertyAsDoubleVectorWithDefault( prop, prefix+"PrinciplePoint", defaultPrinciplePoint );
+    orcaCameraDescr_->principlePoint.x =defaultPrinciplePoint[0];
+    orcaCameraDescr_->principlePoint.y =defaultPrinciplePoint[1];
+
+
+    // Distortion Parameters
+    std::vector<double> defaultDistortionParameters;
+    defaultDistortionParameters.push_back(0.0);
+    defaultDistortionParameters.push_back(0.0);
+    defaultDistortionParameters.push_back(0.0);
+    defaultDistortionParameters.push_back(0.0);
+    defaultDistortionParameters = orcaice::getPropertyAsDoubleVectorWithDefault( prop, prefix+"DistortionParameters", defaultDistortionParameters );
+    orcaCameraDescr_->k1 =defaultDistortionParameters[0];
+    orcaCameraDescr_->k2 =defaultDistortionParameters[1];
+    orcaCameraDescr_->p1 =defaultDistortionParameters[0];
+    orcaCameraDescr_->p2 =defaultDistortionParameters[1];
 
     //add descr to vector
     std::cout << orcaobj::toString(orcaCameraDescr_) << std::endl;
