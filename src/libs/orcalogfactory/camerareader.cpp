@@ -24,16 +24,8 @@
 using namespace std;
 using namespace orcalogfactory;
 
-//int CameraReader::_counter = 0;
-
 CameraReader::CameraReader()
 {
-/*
-    stringstream ss;
-    ss << "camera" << _counter;
-    interfaceName_ = ss.str();
-    _counter++;
-*/
 }
 
 CameraReader::~CameraReader()
@@ -57,8 +49,8 @@ CameraReader::readFromFile( std::ifstream                   *file,
     {
 
 #ifndef OPENCV_FOUND
-        context_.tracer().info( "Images can only be replayed in 'jpeg' format if you have OpenCV." );
-        context_.tracer().info( "Please have a look at the documentation for installing OpenCV." );
+        context.tracer().info( "Images can only be replayed in 'jpeg' format if you have OpenCV." );
+        context.tracer().info( "Please have a look at the documentation for installing OpenCV." );
         throw orcalog::FormatNotSupportedException( ERROR_INFO, interfaceType_+"Logger: 'jpeg' format not supported because OpenCV is not installed." );
 #endif
         obj = new orca::CameraDescription;
@@ -94,9 +86,9 @@ CameraReader::readFromFile( std::ifstream     *file,
         {
 
 #ifndef OPENCV_FOUND
-            context_.tracer().info( "Images can only be replayed in 'jpeg' format if you have OpenCV." );
-            context_.tracer().info( "Please have a look at the documentation for installing OpenCV." );
-            throw orcalog::FormatNotSupportedException( ERROR_INFO, interfaceType_+"Logger: 'jpeg' format not supported because OpenCV is not installed." );
+            context.tracer().info( "Images can only be replayed in 'jpeg' format if you have OpenCV." );
+            context.tracer().info( "Please have a look at the documentation for installing OpenCV." );
+            throw orcalog::FormatNotSupportedException( ERROR_INFO, "Logger: 'jpeg' format not supported because OpenCV is not installed." );
 #endif
             obj = new orca::CameraData;
             std::string line;
