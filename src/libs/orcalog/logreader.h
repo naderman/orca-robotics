@@ -72,9 +72,10 @@ protected:
     //! Used for fast-forwarding through a file.
     virtual void read()=0;
 
-private:
-
+    //alen - Needed to move this into protected, otherwise openLogFile could not be overwritten
     LogReaderInfo logReaderInfo_;
+
+private:
 
     // An index into the log: we're currently pointing at the start of the logIndex_'th object.
     int logIndex_;
