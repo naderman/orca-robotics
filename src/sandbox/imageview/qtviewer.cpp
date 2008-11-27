@@ -1,12 +1,10 @@
 #include "qtviewer.h" 
 
-#include <orcaifaceutil/datetime.h>
-
 using namespace imageview;
 
-QtViewer::QtViewer()
-{
-}
+// QtViewer::QtViewer()
+// {
+// }
 
 QtViewer::~QtViewer()
 {
@@ -26,7 +24,7 @@ void QtViewer::initialise()
 
 void QtViewer::display( orca::ImageDataPtr image )
 {
-        // copy image into queue for the Qt Application\
+        // copy image into queue for the Qt Application
         // std::cout << "pushing image to app" << std::endl;
         qtViewerApp_->push(image);
 

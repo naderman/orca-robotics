@@ -21,7 +21,6 @@ using namespace imageview;
 
 MainSubsystem::MainSubsystem( const orcaice::Context &context ) :
     orcaice::Subsystem( context.tracer(), context.status(), "MainSubsystem" ),
-    // imageQueue_( 1, gbxiceutilacfr::BufferTypeCircular ),
     context_(context)
 {
 }
@@ -77,8 +76,7 @@ MainSubsystem::work()
 void
 MainSubsystem::finalise() 
 {
-    // Viewer will be shut down in the particular viewer's destructor.
-    // delete viewer_;
+    delete viewer_;
     context_.communicator()->shutdown();
 
 }
@@ -153,9 +151,9 @@ MainSubsystem::createViewer()
     try 
     {
         // create the actual viewer
-        viewer_ = Viewer::factory( viewerType );
+        viewer_ = Viewer::factory( viewerType, context_ );
         
-        // initialise parameters for viewer and pass in the pointer to the image data
+        // initialise parameters for viewer
         viewer_->initialise();
     }
     catch (Viewer::BadViewerCreation &e)
@@ -180,7 +178,7 @@ void MainSubsystem::getImage()
     if(!ret)
     {
         context_.tracer().debug("Successfuly fetched Image",6);
-        context_.tracer().debug("Adding Image to Queue",6);
+        // context_.tracer().debug("Adding Image to Queue",6);
         
         // send the image to a local buffer which the Viewer can access
         // at its leisure

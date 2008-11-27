@@ -4,16 +4,14 @@
 
 using namespace imageview;
 
-OpenCVViewer::OpenCVViewer()
-{
-}
+// OpenCVViewer::OpenCVViewer()
+// {
+// }
 
 OpenCVViewer::~OpenCVViewer()
 {
     cvDestroyWindow( name_ );
     cvReleaseImage( &cvImage_ );
-    // delete imageQueue_;
-    // delete qtViewerApp_;
 }
 
 void OpenCVViewer::initialise()
@@ -47,26 +45,33 @@ void OpenCVViewer::initialise()
     int depth = 8;
     // cvImage_ = cvCreateImage( cvSize( descr_.imageWidth, descr_.imageHeight ),  8, nChannels );
     cvImage_ = cvCreateImage( cvSize( imageWidth, imageHeight ),  depth, nChannels );
-    cvWaitKey(100);
-    
-     name_ = "ImageViewer";
-     cvNamedWindow( name_, 1 );
-    cvResizeWindow( name_, imageWidth, imageHeight);
-    cvWaitKey(100);
-     
-     // cvResizeWindow( name_, imageWidth, imageHeight );
-    
     // dodgy opencv needs this so it has time to resize
-    // cvWaitKey(100);
+    cvWaitKey(100);
+    
+    name_ = "ImageViewer";
+    cvNamedWindow( name_ );
     // context_.tracer()->debug("opencv window created",5);
 }
 
 void OpenCVViewer::display( orca::ImageDataPtr image )
 {
-    memcpy( cvImage_->imageData, &(image->data[0]), image->data.size() );
+
+    // check the user hasn't closed the window
+    if( cvGetWindowHandle( name_ ) != 0 )
+    {
+        // copy the image data into the IplImage variable from the orca image variable
+        memcpy( cvImage_->imageData, &(image->data[0]), image->data.size() );
+        
+        // display the image in an opencv window
+        cvShowImage( name_, cvImage_ );
     
-    cvShowImage( name_, cvImage_ );
+        // Without this, the window doesn't display propery... what the hell?
+        cvWaitKey(5);
+    }
+    else
+    {
+        // no window to display in so shutdown the component
+        context_.shutdown();
+    }
     
-    // why do we need this?
-    cvWaitKey(5);
 }

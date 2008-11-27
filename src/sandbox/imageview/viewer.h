@@ -14,6 +14,7 @@
 // #include <gbxsickacfr/gbxiceutilacfr/buffer.h>
 // #include <orcaice/ptrbuffer.h>
 #include <orca/image.h>
+#include <orcaice/context.h>
 #include <stdexcept>
 
 namespace imageview {
@@ -28,22 +29,27 @@ class QtViewer;
 class Viewer
 {
 public:
-    Viewer()//  : 
-        // imageQueue_( 1, gbxiceutilacfr::BufferTypeCircular )
+    Viewer( const orcaice::Context& context ) :
+        context_(context)
     {
-    };
-    virtual ~Viewer() {}
+    }
+    virtual ~Viewer() 
+    {
+        // context_.shutdown();
+    }
   
     // exceptions
     class BadViewerCreation : public std::logic_error 
     {
     public:
-        BadViewerCreation(std::string type)
-            : std::logic_error("Cannot create Viewer of type " + type) {}
+        BadViewerCreation(std::string type) : 
+            std::logic_error("Cannot create Viewer of type " + type)
+        {
+        }
     };
 
     //! Factory for viewers
-    static Viewer* factory(const std::string& type) throw(BadViewerCreation);
+    static Viewer* factory( const std::string& type, const orcaice::Context& context );
 
     //! setup the viewer. 
     //! input argument = local image buffer where all the images are copied into
@@ -57,6 +63,10 @@ protected:
     
     // the actual image we want to display
     // orca::ImageDataPtr image_;
+    
+    orcaice::Context context_;
+
+    
 };
 
 
