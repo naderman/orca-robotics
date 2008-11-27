@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCA2_MULTICAMERA_INTERFACE_ICE
-#define ORCA2_MULTICAMERA_INTERFACE_ICE
+#ifndef ORCA2_CAMERACOLLECTION_INTERFACE_ICE
+#define ORCA2_CAMERACOLLECTION_INTERFACE_ICE
 
 #include <orca/common.ice>
 #include <orca/bros1.ice>
@@ -19,7 +19,7 @@ module orca
 {
 /*!
     @ingroup orca_interfaces
-    @defgroup orca_interface_multicamera MultiCamera
+    @defgroup orca_interface_cameracollection CameraCollection
     @brief Multiple Camera System.
 
 Atomic remote access to images captured by multiple cameras.  The classes inherit those found in camera.ice.
@@ -31,7 +31,7 @@ Atomic remote access to images captured by multiple cameras.  The classes inheri
 sequence<CameraDescription> CameraDescriptionSeq;
 
 //! MultiCamera configuration object
-class MultiCameraDescription extends CameraDescription 
+class CameraCollectionDescription extends CameraDescription 
 {
     CameraDescriptionSeq extraDescriptions;
 }; 
@@ -42,14 +42,14 @@ sequence<CameraData> CameraDataSeq;
 //!
 //! Camera data structure: essentially an image
 //!
-class MultiCameraData extends CameraData
+class CameraCollectionData extends CameraData
 {
     CameraDataSeq extraData;
 };
 
 
 //! Interface to the camera
-interface MultiCamera extends Camera
+interface CameraCollection extends Camera
 {
 };
 
