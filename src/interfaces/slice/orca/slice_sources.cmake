@@ -20,6 +20,7 @@ SET( ORCA_SLICE_SOURCE_FILES
 #interfaces
     button.ice
     camera.ice
+    cameracollection.ice
     cpu.ice
     drivebicycle.ice
     drivedifferential.ice
@@ -32,7 +33,6 @@ SET( ORCA_SLICE_SOURCE_FILES
     imu.ice
     localise2d.ice
     localise3d.ice
-    multicamera.ice
     odometry2d.ice
     odometry3d.ice
     ogfusion.ice
