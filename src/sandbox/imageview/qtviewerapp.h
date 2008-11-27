@@ -16,13 +16,15 @@
 
 #include <gbxsickacfr/gbxiceutilacfr/thread.h>
 #include <gbxutilacfr/tracer.h>
+#include <orcaice/context.h>
 
 namespace imageview{
 
+//! don't delete this guy as it is a smart thread and will destroy itself.
 class QtViewerApp : public gbxiceutilacfr::Thread
 {
 public:
-    QtViewerApp();
+    QtViewerApp( const orcaice::Context &context );
     ~QtViewerApp();
 
     // from Thread
@@ -34,8 +36,7 @@ private:
     //! local endless queue for storing images received from communication buffers.
     ImageQueue* imageQueue_;
     
-    ViewWidget* viewer_;
-    
+    orcaice::Context context_;
 };
 
 } // namespace

@@ -4,9 +4,10 @@
 
 using namespace imageview;
 
-// OpenCVViewer::OpenCVViewer()
-// {
-// }
+OpenCVViewer::OpenCVViewer( const orcaice::Context& context ) :
+    Viewer( context )
+{
+}
 
 OpenCVViewer::~OpenCVViewer()
 {
@@ -71,7 +72,7 @@ void OpenCVViewer::display( orca::ImageDataPtr image )
     else
     {
         // no window to display in so shutdown the component
-        context_.shutdown();
+        context_.communicator()->shutdown();
     }
     
 }

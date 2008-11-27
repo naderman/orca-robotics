@@ -2,24 +2,26 @@
 
 using namespace imageview;
 
-// QtViewer::QtViewer()
-// {
-// }
+QtViewer::QtViewer( const orcaice::Context& context ) :
+    Viewer(context)
+{
+}
 
 QtViewer::~QtViewer()
 {
-    // delete imageQueue_;
-    delete qtViewerApp_;
 }
 
 void QtViewer::initialise()
 {
     // start the Qt application in a separate thread
-    qtViewerApp_ = new QtViewerApp();
+    qtViewerApp_ = new QtViewerApp( context_ );
     qtViewerApp_->start();
+        // shutdown the component if the application window is closed
+    // context_.communicator()->shutdown();
+
 //     
 //     // normally ctrl-c handler does this, now we have to because UserThread keeps the thread
-//     context().communicator()->shutdown();
+//    context_.communicator()->shutdown();
 }
 
 void QtViewer::display( orca::ImageDataPtr image )

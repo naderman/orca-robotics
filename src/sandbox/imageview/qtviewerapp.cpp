@@ -8,14 +8,14 @@
 
 using namespace imageview;
 
-QtViewerApp::QtViewerApp() :
-    imageQueue_(new ImageQueue(1))
+QtViewerApp::QtViewerApp( const orcaice::Context &context ) :
+    imageQueue_(new ImageQueue(1)),
+    context_(context)
 {
 }
 
 QtViewerApp::~QtViewerApp()
 {
-    delete viewer_;
 }
 
 void 
@@ -30,30 +30,33 @@ QtViewerApp::run()
     window->setWindowTitle("Orca Image Viewer");
 
     // create and show viewer and some information in labels
-    viewer_ = new ViewWidget(imageQueue_);
+    ViewWidget* viewer = new ViewWidget(imageQueue_);
 
-    QLabel * fpsLabel = new QLabel("FPS: ");
-    QLabel * fpsDisplay = new QLabel;
-    QHBoxLayout *hbox1 = new QHBoxLayout;
+    QLabel* fpsLabel = new QLabel("FPS: ");
+    QLabel* fpsDisplay = new QLabel;
+    QHBoxLayout* hbox1 = new QHBoxLayout;
     hbox1->addWidget(fpsLabel);
     hbox1->addWidget(fpsDisplay);
     QWidget* labels = new QWidget;
     labels->setLayout(hbox1);
     labels->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
 
-    QVBoxLayout *vbox = new QVBoxLayout;
-    vbox->addWidget(viewer_);
+    QVBoxLayout* vbox = new QVBoxLayout;
+    vbox->addWidget(viewer);
     vbox->addWidget(labels);
 
     window->setLayout(vbox);
     window->show();
 
     // connect signal from timer to slot of widget to update
-    QObject::connect(imageQueue_, SIGNAL(imagePushed()), viewer_, SLOT(updateGL()));
-    QObject::connect(viewer_, SIGNAL(fpsChanged(double)), fpsDisplay, SLOT(setNum(double)));
+    QObject::connect(imageQueue_, SIGNAL(imagePushed()), viewer, SLOT(updateGL()));
+    QObject::connect(viewer, SIGNAL(fpsChanged(double)), fpsDisplay, SLOT(setNum(double)));
     
     // start QApplication event loop
     app.exec();
+    
+    // context_.communicator()->shutdown();
+    
 }
 
 void

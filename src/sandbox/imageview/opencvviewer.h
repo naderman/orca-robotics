@@ -14,22 +14,13 @@ private:
     //! Private constructor so cannot be called directly other
     //! than by base class Viewer as it is a friend.
     //! This ensures that the QtViewer is created by the Viewer factory
-    OpenCVViewer( const orcaice::Context& context ) :
-        Viewer( context )
-    {
-    }
+    OpenCVViewer( const orcaice::Context& context );
     friend class Viewer;
-
-    //! local endless queue for storing images received from communication buffers.
-    // ImageQueue* imageQueue_;
-    // QtViewerApp* qtViewerApp_;
 
     IplImage* cvImage_;
     // IplImage* cvImageTmp_;
     // IplImage* bayerImage_;
     const char* name_;
-
-    // orca::ImageData image_;
 
 public:
     ~OpenCVViewer();

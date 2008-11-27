@@ -11,17 +11,11 @@
 #ifndef IMAGEVIEW_VIEWER_H
 #define IMAGEVIEW_VIEWER_H
 
-// #include <gbxsickacfr/gbxiceutilacfr/buffer.h>
-// #include <orcaice/ptrbuffer.h>
 #include <orca/image.h>
 #include <orcaice/context.h>
 #include <stdexcept>
 
 namespace imageview {
-
-// forward declarations
-class QtViewer;
-// class ImageQueue;
 
 //! Actual base class for viewers
 //! This class doesn't impose any interface other than creation of the actual
@@ -29,13 +23,9 @@ class QtViewer;
 class Viewer
 {
 public:
-    Viewer( const orcaice::Context& context ) :
-        context_(context)
-    {
-    }
+    Viewer( const orcaice::Context& context );
     virtual ~Viewer() 
     {
-        // context_.shutdown();
     }
   
     // exceptions
@@ -58,11 +48,6 @@ public:
     virtual void display( orca::ImageDataPtr image )=0;
     
 protected:
-    // pointer to local buffer holding images
-    // gbxiceutilacfr::Buffer<orca::ImageDataPtr> imageQueue_;
-    
-    // the actual image we want to display
-    // orca::ImageDataPtr image_;
     
     orcaice::Context context_;
 

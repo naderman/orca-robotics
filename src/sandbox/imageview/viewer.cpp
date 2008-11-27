@@ -4,6 +4,11 @@
 
 using namespace imageview;
 
+Viewer::Viewer( const orcaice::Context& context ) :
+    context_(context)
+{
+}
+
 //! Add new viewer types here.
 Viewer* Viewer::factory( const std::string& type, const orcaice::Context& context )
 {
