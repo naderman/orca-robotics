@@ -14,6 +14,7 @@
 #include "mainthread.h"
 // #include <orcaifaceimpl/button.h>
 #include <orcaifaceimpl/camera.h>
+#include <orcaifaceimpl/cameracollection.h>
 // #include <orcaifaceimpl/cpu.h>
 // #include <orcaifaceimpl/drivebicycle.h>
 // TODO: currently missing
@@ -28,7 +29,6 @@
 #include <orcaifaceimpl/laserscanner2d.h>
 #include <orcaifaceimpl/localise2d.h>
 #include <orcaifaceimpl/localise3d.h>
-#include <orcaifaceimpl/multicamera.h>
 #include <orcaifaceimpl/odometry2d.h>
 #include <orcaifaceimpl/odometry3d.h>
 // TODO: currently missing

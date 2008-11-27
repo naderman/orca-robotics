@@ -160,9 +160,9 @@ std::string toString( const orca::ImageDescriptionPtr& );
 //! Converts to string
 std::string toString( const orca::ImuData& );
 //! Converts to string
-std::string toString( const orca::MultiCameraDescription& );
+std::string toString( const orca::CameraCollectionDescription& );
 //! Converts to string
-std::string toString( const orca::MultiCameraData& );
+std::string toString( const orca::CameraCollectionData& );
 //! Converts to string
 std::string toString( const orca::Odometry2dData& );
 //! Converts to string
