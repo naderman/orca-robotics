@@ -19,6 +19,7 @@
 // hardware interface
 #include <hydrointerfaces/image.h>
 
+
 namespace orcaimagecommon {
 
 //

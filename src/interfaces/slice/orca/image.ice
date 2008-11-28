@@ -36,6 +36,9 @@ class ImageDescription
     //! %Image height [pixels]
     int height;
 
+    //! %Image size [bytes]
+    int size;
+
     //! %Image format string
     string format;
 }; 

@@ -26,7 +26,7 @@ namespace cameracollectionserver {
 //
 // @brief the main executing loop of this camera component.
 //
-class MainThread
+class MainThread : public orcaice::SubsystemThread
 {
 
 public:
@@ -37,13 +37,17 @@ public:
     virtual void walk();
 
 private:
+    // Setup Hardware
+    void initHardwareInterface();
+
     // Loops until established
     void initNetworkInterface();
+
 
     void readData();
 
     // The Network Image Interface object
-    orcaifaceimpl::MultiCameraImplPtr interface_;
+    orcaifaceimpl::CameraCollectionImplPtr interface_;
 
     // The Network Image Interface Data Structure
     orca::CameraCollectionDataPtr orcaData_;

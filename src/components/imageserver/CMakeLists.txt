@@ -3,10 +3,10 @@ ORCA_SET_COMPONENT_NAME( ImageServer )
 SET( build TRUE )
 GBX_REQUIRE_OPTION( build EXE ${APP_NAME} ON )
 
-SET( ext_libs HydroDll HydroInterfaces )
+SET( ext_libs HydroDll HydroInterfaces HydroImage )
 GBX_REQUIRE_INSTALLS( build EXE ${APP_NAME} ${ext_libs} )
 
-SET( int_libs OrcaIfaceImpl OrcaObjects OrcaImageCommon )
+SET( int_libs OrcaIfaceImpl OrcaObjects OrcaImage OrcaImageCommon )
 GBX_REQUIRE_TARGETS( build EXE ${APP_NAME} ${int_libs} )
 
 IF( build)
