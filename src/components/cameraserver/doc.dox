@@ -50,9 +50,15 @@ CameraServer Settings
     - Format: x y z roll pitch yaw (space separated)
     - Example: a camera mounted upside down with now translation: "0.0 0.0 0.0  180.0 0.0 0.0"
     - Default: 0.0 0.0 0.0  0.0 0.0 0.0
-- @c CameraServer.Config.FocalLength (double) [mm]
-    - Focal length of attached lense. Useful to other components.
-    - Default: 0
+- @c CameraServer.Config.FocalLength (double) [pixel]
+    - Focal lengths of attached lense for X,Y axis in pixels. Useful to other components.
+    - Default: 0.0 0.0
+- @c CameraServer.Config.PrinciplePoint (double) [pixel]
+    - The exact images centre on X,Y axis in pixels. Useful to other components.
+    - Default: 0.0 0.0
+- @c CameraServer.Config.DistortionParameters (double) [pixel]
+    - A series of four distortion parameter coefficients k1, k2 are radial distortion and p1, p2 are tangential distortion coefficients. Useful to other components.
+    - Default: 0.0 0.0 0.0 0.0
 - @c CameraServer.Config.SensorSize (Size2d) [cm,cm]
     - Physical dimensions of the CCD or CMOS sensor.
     - Format: width height (space separated)
@@ -82,6 +88,8 @@ Individual cameras have different options, different formats, and sometimes even
 
 In order for the logger and viewer to properly show your custom image format (should you have one) you need to write a conversion plugin if one doesn't exist already.
 It should convert to a common variation of RGBA such as BGR8, BGRA8, RGBA8, RGB8 for color logging/viewing or GRAY8 for grayscale logging and viewing.
+
+The camera intrinsic parameters are assumed to use so-called pinhole camera model. As such the camera is modelled with a x,y focal lengths the x,y principle point and 4 distortion parameters (k1, k2 are radial distortion coefficients, p1, p2 are tangential distortion coefficients). These coefficients are explained in detail in the OpenCV reference guide for camera camlibration and Matlab Camera Calibration Toolbox.
 
 @par Authors
 
