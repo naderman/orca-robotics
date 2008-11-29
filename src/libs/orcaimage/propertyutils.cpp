@@ -132,6 +132,10 @@ namespace orcaimage
             getCameraProperties( context, prefixSS.str(), description->extraDescriptions[i-1] );
         }
 
+        std::stringstream debugSS;
+        debugSS << "extraDescriptions size: " << description->extraDescriptions.size() << std::endl;
+        std::string debug = debugSS.str();
+        context.tracer().debug( debug );
     }
 
 }

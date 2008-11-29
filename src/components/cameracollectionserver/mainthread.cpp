@@ -34,6 +34,12 @@ MainThread::readSettings()
 {
     std::string prefix = context_.tag() + ".Config.";
     orcaimage::getCameraCollectionProperties( context_, prefix, descr_ ); 
+    config_.resize(descr_->extraDescriptions.size() + 1);
+    hydroData_.resize(descr_->extraDescriptions.size() + 1);
+    config_[0].width = descr_->width;
+    config_[0].height = descr_->height;
+    config_[0].size = descr_->size;
+    config_[0].format = descr_->format;
 }
 
 void
@@ -145,11 +151,19 @@ MainThread::walk()
     // Set up the image objects
     orcaData_ = new orca::CameraCollectionData();
     //resize data vectors
-    orcaData_->data.resize( config_[0].size );
+    orcaData_->data.resize( descr_->size );
     //copy descriptions
     orcaData_->description = descr_;
     //point the pointers in hydroData_ at orcaData_
     hydroData_[0].data = &(orcaData_->data[0]);
+
+
+    for( unsigned int i = 1; i < descr_->extraDescriptions.size()+1; ++i)
+    {
+        orcaData_->extraData.push_back( new orca::CameraData() );
+        orcaData_->extraData[i]->description = descr_->extraDescriptions[i];
+        hydroData_[i].data = &(orcaData_->extraData[i]->data[0]);
+    }
 
     // These functions catch their exceptions.
     activate( context_, this, subsysName() );
