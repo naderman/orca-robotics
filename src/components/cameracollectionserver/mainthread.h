@@ -43,8 +43,14 @@ private:
     // Loops until established
     void initNetworkInterface();
 
-
+    // Read Data from the Driver
     void readData();
+
+    // Read Settings from Config file
+    void readSettings();
+
+    // Context
+    orcaice::Context context_;
 
     // The Network Image Interface object
     orcaifaceimpl::CameraCollectionImplPtr interface_;

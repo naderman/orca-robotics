@@ -144,6 +144,10 @@ std::string toString( const orca::CameraDataPtr& );
 //! Converts to string
 std::string toString( const orca::CameraDescriptionPtr& );
 //! Converts to string
+std::string toString( const orca::CameraCollectionDescriptionPtr& );
+//! Converts to string
+std::string toString( const orca::CameraCollectionDataPtr& );
+//! Converts to string
 std::string toString( const orca::CpuData& );
 //! Converts to string
 std::string toString( const orca::DriveBicycleCommand& );
@@ -159,10 +163,6 @@ std::string toString( const orca::ImageDataPtr& );
 std::string toString( const orca::ImageDescriptionPtr& );
 //! Converts to string
 std::string toString( const orca::ImuData& );
-//! Converts to string
-std::string toString( const orca::CameraCollectionDescription& );
-//! Converts to string
-std::string toString( const orca::CameraCollectionData& );
 //! Converts to string
 std::string toString( const orca::Odometry2dData& );
 //! Converts to string
