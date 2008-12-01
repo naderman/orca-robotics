@@ -1,8 +1,0 @@
-DefaultComponentTag=OrcaImageView
-
-# Required Interfaces
-Requires.Image.Type=::orca::Image
-Requires.Image.DefaultProxy=image@local/imageserver
-
-# Component Configuration
-Config.SleepIntervalMs.Default=1000
