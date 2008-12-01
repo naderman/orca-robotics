@@ -43,6 +43,9 @@ CHECK_INCLUDE_FILE( GL/glut.h GLUT_FOUND )
 # Check for lib3ds
 CHECK_INCLUDE_FILE( lib3ds/node.h LIB3DS_FOUND )
 
+# Check for OpenCV
+INCLUDE (${ORCA_CMAKE_DIR}/FindOpenCV.cmake)
+
 # Check for OpenSceneGraph
 CHECK_INCLUDE_FILE_CXX( osg/Node OPENSCENEGRAPH_FOUND )
 
