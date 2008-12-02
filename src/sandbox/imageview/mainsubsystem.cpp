@@ -20,7 +20,7 @@ using namespace std;
 using namespace imageview;
 
 MainSubsystem::MainSubsystem( const orcaice::Context &context ) :
-    orcaice::Subsystem( context.tracer(), context.status(), "MainSubsystem" ),
+    orcaice::SubsystemThread( context.tracer(), context.status(), "MainSubsystem" ),
     context_(context)
 {
 }

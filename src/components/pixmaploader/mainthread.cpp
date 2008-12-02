@@ -77,9 +77,8 @@ MainThread::MainThread( const orcaice::Context& context ) :
 }
 
 void
-MainThread::walk()
+MainThread::initialise()
 {
-    subStatus().initialising();
     subStatus().setMaxHeartbeatInterval( 10.0 );
 
     //
@@ -133,8 +132,4 @@ MainThread::walk()
     //
     // multi-try function
     orcaice::activate( context_, this, subsysName() );
-
-    // init subsystem is done and is about to terminate
-    subStatus().working();
-    subStatus().setMaxHeartbeatInterval( -1 );
 }

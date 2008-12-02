@@ -20,15 +20,20 @@ MainThread::MainThread( const orcaice::Context& context ) :
     SubsystemThread( context.tracer(), context.status(), "MainThread" ),
     context_(context)
 {
+}
+
+void 
+MainThread::initialise()
+{
     subStatus().setMaxHeartbeatInterval( 20.0 );
+
+    // multi-try function
+    orcaice::activate( context_, this, subsysName() );
 }
 
 void
-MainThread::walk()
+MainThread::work()
 {
-    // multi-try function
-    orcaice::activate( context_, this, subsysName() );
-
     //
     // Read configuration settings
     //
@@ -37,11 +42,6 @@ MainThread::walk()
     int sleepIntervalMs = orcaice::getPropertyAsIntWithDefault( context_.properties(),
             prefix+"SleepIntervalMs", 1000 );
 
-    subStatus().ok( "Initialized" );
-
-    //
-    // Main loop
-    //   
     subStatus().setMaxHeartbeatInterval( sleepIntervalMs * 3.0/1000.0 );
 
     while( !isStopping() )

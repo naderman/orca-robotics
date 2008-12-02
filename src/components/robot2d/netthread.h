@@ -33,15 +33,14 @@ public:
     NetThread( HwThread                      &HwThread,
                 const orca::VehicleDescription &descr,
                 const orcaice::Context         &context );
-    virtual ~NetThread();
-
-    // from SubsystemThread
-    virtual void walk();
 
     // from NotifyHandler
     virtual void handleData(const orca::VelocityControl2dData& obj);
 
 private:
+    // from SubsystemThread
+    virtual void initialise();
+    virtual void work();
 
     void limit( hydrointerfaces::Robot2d::Command &cmd );
 

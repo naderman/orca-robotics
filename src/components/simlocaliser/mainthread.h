@@ -13,6 +13,7 @@
 
 #include <orcaice/subsystemthread.h>
 #include <orcaice/context.h>
+#include <orcaifaceimpl/localise2d.h>
 
 namespace simlocaliser
 {
@@ -25,10 +26,13 @@ class MainThread : public orcaice::SubsystemThread
 public:
     MainThread( const orcaice::Context& context );
 
-    // from orcaice::SubsystemThread
-    virtual void walk();
-
 private:
+    // from SubsystemThread
+    virtual void initialise();
+    virtual void work();
+
+    orcaifaceimpl::Localise2dImplPtr localise2dImpl_;
+
     // generic interface to the hardware
     Driver* driver_;
     

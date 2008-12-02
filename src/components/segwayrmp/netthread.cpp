@@ -193,45 +193,8 @@ NetThread::NetThread( HwThread                      &hwThread,
     maxLateralAcceleration_ = controlDescr->maxLateralAcceleration;
 }
 
-// This is a direct callback from the VelocityControl2dImpl object.
-// It's executed in Ice thread.
 void 
-NetThread::handleData(const orca::VelocityControl2dData& incomingCommand)
-{
-    hydrointerfaces::SegwayRmp::Command internalCommand;
-    convert( incomingCommand, internalCommand );
-
-    if ( !commandPossible( internalCommand.vx,
-                           internalCommand.w,
-                           maxForwardSpeed_,
-                           maxReverseSpeed_,
-                           maxTurnrate_,
-                           maxLateralAcceleration_ ) )
-    {
-        hydrointerfaces::SegwayRmp::Command originalCommand = internalCommand;
-        limit( internalCommand.vx,
-               internalCommand.w,
-               maxForwardSpeed_,
-               maxReverseSpeed_,
-               maxTurnrate_,
-               maxLateralAcceleration_ );
-
-        stringstream ss;
-        ss << "Requested command ("<<originalCommand.toString()<<") can not be achieved.  " << endl
-           << "  maxForwardSpeed        : " << maxForwardSpeed_ << endl
-           << "  maxReverseSpeed        : " << maxReverseSpeed_ << endl
-           << "  maxTurnrate            : " << maxTurnrate_*180.0/M_PI << "deg/s" << endl
-           << "  maxLateralAcceleration : " << maxLateralAcceleration_ << endl
-           << "    --> limiting command to: " << internalCommand.toString();
-        subStatus().warning( ss.str() );
-    }
-
-    hwThread_.setCommand( internalCommand );
-}
-
-
-void
-NetThread::walk()
+NetThread::initialise()
 {
     // this is a multi-try function to activate component's server capabilities
     activate( context_, this, subsysName() );
@@ -252,6 +215,12 @@ NetThread::walk()
     velocityControl2dI_->initInterface( this, subsysName() );
     // register ourselves as data handlers (it will call the handleData() callback).
     velocityControl2dI_->setNotifyHandler( this );
+}
+
+void
+NetThread::work()
+{
+    std::string prefix = context_.tag() + ".Config.";
 
     // temp objects in network format
     orca::Odometry2dData odometry2dData;
@@ -269,11 +238,9 @@ NetThread::walk()
     double powerPublishInterval = orcaice::getPropertyAsDoubleWithDefault( 
         context_.properties(), prefix+"PowerPublishInterval", 20.0 );
 
-    subStatus().working();
     const int odometryReadTimeout = 500; // [ms]
     subStatus().setMaxHeartbeatInterval( 2.0*(odometryReadTimeout/1000.0) );
     
-
 
     //
     // Main loop
@@ -329,4 +296,42 @@ NetThread::walk()
         // subsystem heartbeat
         subStatus().ok();
     } // main loop
+}
+
+/////////////////////////
+
+// This is a direct callback from the VelocityControl2dImpl object.
+// It's executed in Ice thread.
+void 
+NetThread::handleData(const orca::VelocityControl2dData& incomingCommand)
+{
+    hydrointerfaces::SegwayRmp::Command internalCommand;
+    convert( incomingCommand, internalCommand );
+
+    if ( !commandPossible( internalCommand.vx,
+                           internalCommand.w,
+                           maxForwardSpeed_,
+                           maxReverseSpeed_,
+                           maxTurnrate_,
+                           maxLateralAcceleration_ ) )
+    {
+        hydrointerfaces::SegwayRmp::Command originalCommand = internalCommand;
+        limit( internalCommand.vx,
+               internalCommand.w,
+               maxForwardSpeed_,
+               maxReverseSpeed_,
+               maxTurnrate_,
+               maxLateralAcceleration_ );
+
+        stringstream ss;
+        ss << "Requested command ("<<originalCommand.toString()<<") can not be achieved.  " << endl
+           << "  maxForwardSpeed        : " << maxForwardSpeed_ << endl
+           << "  maxReverseSpeed        : " << maxReverseSpeed_ << endl
+           << "  maxTurnrate            : " << maxTurnrate_*180.0/M_PI << "deg/s" << endl
+           << "  maxLateralAcceleration : " << maxLateralAcceleration_ << endl
+           << "    --> limiting command to: " << internalCommand.toString();
+        subStatus().warning( ss.str() );
+    }
+
+    hwThread_.setCommand( internalCommand );
 }

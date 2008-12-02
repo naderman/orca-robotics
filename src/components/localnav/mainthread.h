@@ -44,9 +44,11 @@ public:
 
     MainThread( const orcaice::Context &context );
 
-    virtual void walk();
-
 private: 
+
+    // from SubsystemThread
+    virtual void initialise();
+    virtual void work();
 
     void getVehicleDescription();
     void getRangeScannerDescription();

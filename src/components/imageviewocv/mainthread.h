@@ -15,19 +15,19 @@
 
 #include <gbxsickacfr/gbxiceutilacfr/buffer.h>
 #include <memory>
-#include <orcaice/subsystem.h>
+#include <orcaice/subsystemthread.h>
 #include <orcaice/context.h>
 #include <orcaifaceimpl/image.h>
 
 namespace imageviewocv {
 
-class MainThread : public orcaice::Subsystem
+class MainThread : public orcaice::SubsystemThread
 {
 public:
     MainThread( const orcaice::Context &context );
 
 private:
-    // from Subsystem
+    // from SubsystemThread
     virtual void initialise();
     virtual void work();
     virtual void finalise();

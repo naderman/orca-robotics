@@ -23,7 +23,7 @@ namespace tracermon
 {
 
 TermIostreamUser::TermIostreamUser( const orcaice::Context & context ) :
-    SubsystemThread( context.tracer(), context.status(), "UserThread" ), // alexm: is this the right name?
+    SafeThread( context.tracer() ),
     events_(new hydroiceutil::EventQueue),
     context_(context)
 {

@@ -62,8 +62,8 @@ public:
 
 private: 
 
-    // Inherited from SubsystemThread
-    virtual void walk();
+    // from SubsystemThread
+    virtual void work();
 
     // Keeps trying until success or isStopping()
     void enableDriver();

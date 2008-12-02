@@ -116,63 +116,7 @@ HwThread::HwThread( Config& config, const orcaice::Context &context )
 }
 
 void
-HwThread::enableDriver()
-{
-    while ( !isStopping() ) 
-    {
-        stringstream exceptionSS;
-        try {
-            context_.tracer().info("HwThread: (Re-)Enabling driver...");
-            driver_->enable();
-            context_.tracer().info( "HwThread: Enable succeeded." );
-            return;
-        }
-        catch ( ... ) {
-            string problem = orcaice::catchExceptionsWithStatusAndSleep( "initialising", subStatus(), gbxutilacfr::SubsystemFault, 2000 );
-
-            stateMachine_.setFault( problem );
-        }
-    }
-}
-
-void
-HwThread::writeCommand( hydrointerfaces::SegwayRmp::Command &command )
-{
-    if ( estopInterface_.get() && estopInterface_->isEStopTriggered() )
-    {
-        command.vx = 0;
-        command.w  = 0;
-    }
-    driver_->write( command );
-}
-
-void
-HwThread::checkStatus()
-{
-    std::string status;
-    bool isWarn, isFault;
-    driver_->getStatus( status, isWarn, isFault );
-    std::stringstream ss;
-    ss << "Saw state change: " << status;
-    if ( isFault )
-    {
-        stateMachine_.setFault( ss.str() );
-        context_.tracer().error( ss.str() );
-    }
-    else if ( isWarn )
-    {
-        stateMachine_.setWarning( ss.str() );
-        context_.tracer().warning( ss.str() );
-    }
-    else
-    {
-        stateMachine_.setOK();
-        context_.tracer().info( ss.str() );
-    }
-}
-
-void
-HwThread::walk()
+HwThread::work()
 {
     // This call catches its own exceptions
     if ( estopInterface_.get() ) estopInterface_->initInterface( this );
@@ -293,6 +237,64 @@ HwThread::walk()
         }
 
     } // while
+}
+
+////////////////////////////
+
+void
+HwThread::enableDriver()
+{
+    while ( !isStopping() ) 
+    {
+        stringstream exceptionSS;
+        try {
+            context_.tracer().info("HwThread: (Re-)Enabling driver...");
+            driver_->enable();
+            context_.tracer().info( "HwThread: Enable succeeded." );
+            return;
+        }
+        catch ( ... ) {
+            string problem = orcaice::catchExceptionsWithStatusAndSleep( "initialising", subStatus(), gbxutilacfr::SubsystemFault, 2000 );
+
+            stateMachine_.setFault( problem );
+        }
+    }
+}
+
+void
+HwThread::writeCommand( hydrointerfaces::SegwayRmp::Command &command )
+{
+    if ( estopInterface_.get() && estopInterface_->isEStopTriggered() )
+    {
+        command.vx = 0;
+        command.w  = 0;
+    }
+    driver_->write( command );
+}
+
+void
+HwThread::checkStatus()
+{
+    std::string status;
+    bool isWarn, isFault;
+    driver_->getStatus( status, isWarn, isFault );
+    std::stringstream ss;
+    ss << "Saw state change: " << status;
+    if ( isFault )
+    {
+        stateMachine_.setFault( ss.str() );
+        context_.tracer().error( ss.str() );
+    }
+    else if ( isWarn )
+    {
+        stateMachine_.setWarning( ss.str() );
+        context_.tracer().warning( ss.str() );
+    }
+    else
+    {
+        stateMachine_.setOK();
+        context_.tracer().info( ss.str() );
+    }
 }
 
 void

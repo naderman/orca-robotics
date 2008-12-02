@@ -12,7 +12,6 @@
 #include <orcaice/orcaice.h>
 #include <orcaobj/orcaobj.h>
 #include <orcaifaceutil/localise2d.h>
-#include <orcaifaceimpl/localise2d.h>
 
 #include "mainthread.h"
 #include "staticdriver.h"
@@ -70,11 +69,9 @@ MainThread::MainThread( const orcaice::Context & context ) :
     context_.tracer().debug("driver instantiated",5);
 }
 
-void
-MainThread::walk()
+void 
+MainThread::initialise()
 {
-    subStatus().initialising();
-
     //
     // EXTERNAL PROVIDED INTERFACE
     //
@@ -84,9 +81,8 @@ MainThread::walk()
     ifaceutil::zeroAndClear( geom->size );
     ifaceutil::zeroAndClear( geom->platformToGeometryTransform );
     
-    orcaifaceimpl::Localise2dImplPtr iface;
-    iface = new orcaifaceimpl::Localise2dImpl( geom, "Localise2d", context_ );
-    iface->initInterface( this );
+    localise2dImpl_ = new orcaifaceimpl::Localise2dImpl( geom, "Localise2d", context_ );
+    localise2dImpl_->initInterface( this );
 
     //
     // ENABLE NETWORK CONNECTIONS
@@ -103,9 +99,11 @@ MainThread::walk()
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
     }
     context_.tracer().info("driver enabled");
+}
 
-    subStatus().working();
-
+void
+MainThread::work()
+{
     int readStatus;
          
     // This is the main loop
@@ -123,7 +121,7 @@ MainThread::walk()
         
             if ( readStatus==0 ) 
             {
-                iface->localSetAndSend( localiseData );
+                localise2dImpl_->localSetAndSend( localiseData );
             } 
             else 
             {

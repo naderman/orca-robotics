@@ -30,15 +30,14 @@ class ImageComponentThread : public orcaice::SubsystemThread
 public:
     ImageComponentThread( const orcaice::Context &context );
 
-    // from SubsystemThread
-    virtual void walk() {};
-
-
 protected:
+    // alexm: is not functional by iteself: does not implement any of the
+    // functions from SubsystemThread
+
     // Tries repeatedly to instantiate the driver
     void initHardwareDriver();
 
-    //! Read settings from a config file
+    // Read settings from a config file
     void readSettings();
 
     orcaice::Context context_;

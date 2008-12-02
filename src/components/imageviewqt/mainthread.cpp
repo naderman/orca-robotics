@@ -20,15 +20,20 @@ MainThread::MainThread( ImageQueue* imageQueue, const orcaice::Context& context 
 , imageQueue_(imageQueue)
 , context_(context)
 {
+}
+
+void 
+MainThread::initialise()
+{
     subStatus().setMaxHeartbeatInterval( 20.0 );
+
+    // multi-try function
+    orcaice::activate( context_, this, subsysName() );
 }
 
 void
-MainThread::walk()
+MainThread::work()
 {
-    // multi-try function
-    orcaice::activate( context_, this, subsysName() );
-
     // data structures
     orca::ImageDataPtr imageData;
 
@@ -36,7 +41,6 @@ MainThread::walk()
     std::string prefix = context_.tag() + ".Config.";
     
     int sleepIntervalMs = orcaice::getPropertyAsIntWithDefault( context_.properties(), prefix+"SleepIntervalMs", 100 );
-    subStatus().ok( "Initialized" );
 
     // SUBSCRIBE
     orcaifaceimpl::BufferedImageConsumerImplPtr imageInterface = new orcaifaceimpl::BufferedImageConsumerImpl( 1, gbxiceutilacfr::BufferTypeCircular, context_ );

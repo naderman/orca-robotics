@@ -19,7 +19,7 @@ using namespace std;
 using namespace imageviewocv;
 
 MainThread::MainThread( const orcaice::Context &context ) :
-    orcaice::Subsystem( context.tracer(), context.status(), "MainThread" ),
+    orcaice::SubsystemThread( context.tracer(), context.status(), "MainThread" ),
     viewer_(context),
     context_(context)
 {

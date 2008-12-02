@@ -24,52 +24,23 @@ MainThread::MainThread( const orcaice::Context &context ) :
 {
 }
 
-void
-MainThread::initPropertiesDb()
+void 
+MainThread::initialise()
 {
-    // Only insert properties with this prefix (which gets stripped)
-    std::string prefix = context_.tag()+".Config.";
-    map<string,string> props = context_.properties()->getPropertiesForPrefix(prefix);
-
-    map<string,string> strippedProps;
-    for ( map<string,string>::const_iterator it=props.begin(); it!=props.end(); ++it ) 
-    {
-        strippedProps.insert( make_pair(it->first.substr(prefix.size()),it->second) );
-    }
-
-    stringstream ss;
-    ss << "MainThread: Properties loaded from file: " << toString(strippedProps);
-    context_.tracer().debug( ss.str() );
-
-    propertyDb_.addProperties( strippedProps );
-}
-
-void
-MainThread::initNetworkInterface()
-{
-    // set the interface up with the contents of the property database
-    orca::PropertiesData pData;
-    pData.properties = propertyDb_.properties();
-    propertiesInterface_->localSet( pData );
-    propertiesInterface_->initInterface( this, subsysName() );
-    propertiesInterface_->localSetAndSend( pData );
-}
-
-void
-MainThread::walk()
-{
-    subStatus().initialising();
     subStatus().setMaxHeartbeatInterval( 20.0 );
 
-    orca::PropertiesData incomingProperties;
 
     // These functions catch their exceptions.
     activate( context_, this, subsysName() );
 
     initPropertiesDb();
     initNetworkInterface();
+}
 
-    subStatus().working();
+void
+MainThread::work()
+{
+    orca::PropertiesData incomingProperties;
 
     while ( !isStopping() )
     {
@@ -103,6 +74,39 @@ MainThread::walk()
             orcaice::catchMainLoopExceptions( subStatus() );
         }
     } // end of while
+}
+
+/////////////////////////
+
+void
+MainThread::initPropertiesDb()
+{
+    // Only insert properties with this prefix (which gets stripped)
+    std::string prefix = context_.tag()+".Config.";
+    map<string,string> props = context_.properties()->getPropertiesForPrefix(prefix);
+
+    map<string,string> strippedProps;
+    for ( map<string,string>::const_iterator it=props.begin(); it!=props.end(); ++it ) 
+    {
+        strippedProps.insert( make_pair(it->first.substr(prefix.size()),it->second) );
+    }
+
+    stringstream ss;
+    ss << "MainThread: Properties loaded from file: " << toString(strippedProps);
+    context_.tracer().debug( ss.str() );
+
+    propertyDb_.addProperties( strippedProps );
+}
+
+void
+MainThread::initNetworkInterface()
+{
+    // set the interface up with the contents of the property database
+    orca::PropertiesData pData;
+    pData.properties = propertyDb_.properties();
+    propertiesInterface_->localSet( pData );
+    propertiesInterface_->initInterface( this, subsysName() );
+    propertiesInterface_->localSetAndSend( pData );
 }
 
 }

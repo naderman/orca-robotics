@@ -16,7 +16,7 @@ ContinuousController::ContinuousController( ReplayConductor        &replayConduc
 }
 
 void
-ContinuousController::walk()
+ContinuousController::work()
 {
     if ( !autoStart_ )
     {

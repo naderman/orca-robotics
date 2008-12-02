@@ -18,9 +18,9 @@ public:
                           bool             autoStart,
                           const orcaice::Context &context );
 
-    void walk();
-
 private: 
+
+    virtual void work();
 
     ReplayConductor &replayConductor_;
     bool             autoStart_;

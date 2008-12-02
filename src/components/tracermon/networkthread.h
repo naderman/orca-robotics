@@ -29,13 +29,12 @@ public:
                     const orcaice::Context & context );
     virtual ~NetworkThread();
 
-    // from SafeThread
-    virtual void walk();
-    
     // from Network
     virtual void setVerbosityLevel( int error, int warn, int info, int debug );
 
 private:
+    // from SafeThread
+    virtual void walk();
 
     User* user_;
     hydroiceutil::EventQueuePtr events_;

@@ -18,7 +18,7 @@ using namespace std;
 using namespace laser2d;
 
 MainThread::MainThread( const orcaice::Context &context ) :
-    orcaice::Subsystem( context.tracer(), context.status(), "MainThread" ),
+    orcaice::SubsystemThread( context.tracer(), context.status(), "MainThread" ),
     context_(context)
 {
 }

@@ -11,7 +11,7 @@
 #ifndef TERM_IOSTREAM_USER_H
 #define TERM_IOSTREAM_USER_H
 
-#include <orcaice/subsystemthread.h>
+#include <gbxsickacfr/gbxiceutilacfr/safethread.h>
 #include <orcaice/context.h>
 #include <hydroiceutil/eventqueue.h>
 #include "../user.h"
@@ -20,15 +20,12 @@
 namespace tracermon
 {
 
-class TermIostreamUser : public orcaice::SubsystemThread, public User
+class TermIostreamUser : public gbxiceutilacfr::SafeThread, public User
 {
 public:
 
     TermIostreamUser( const orcaice::Context & context );
     virtual ~TermIostreamUser();
-
-    // from Thread
-    virtual void walk();
 
     // from User
     virtual void enable( Network* network );
@@ -47,6 +44,8 @@ public:
     virtual void newLocalTrace( const std::string& msg );
     
 private:
+    // from Thread
+    virtual void walk();
 
     Network* network_;
     hydroiceutil::EventQueuePtr events_;

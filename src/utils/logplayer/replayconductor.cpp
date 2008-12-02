@@ -33,6 +33,75 @@ ReplayConductor::ReplayConductor( orcalog::MasterFileReader       &masterFileRea
 }
 
 void
+ReplayConductor::work()
+{
+    int id, index;
+    int seconds, useconds;
+    IceUtil::Time nextLogTime;
+    IceUtil::Time realTimeTillNextItem;
+
+    // should this be a configurable parameter? can't think why it would be useful.
+    IceUtil::Time replayTimeTolerance = IceUtil::Time::microSeconds(10);
+
+    while( !isStopping() )
+    {
+        handleEvents();
+
+        // Check if we're playing
+        if ( !isPlaying() )
+        {
+            // Slow the loop down a bit...            
+            usleep( (int)(0.1 * 1e6) );
+            continue;
+        }
+
+        //
+        // If we get to here we're playing.
+        //
+
+        // read a line and act appropriately
+        if ( masterFileReader_.getData( seconds, useconds, id, index ) ) 
+        {
+            // end of file 
+            context_.tracer().info( "ReplayConductor: End of File." );
+            pausePlaying();
+            continue;
+        }
+        nextLogTime = orcalog::iceUtilTime( seconds, useconds );
+        
+        if ( id > (int)replayers_.size() ) {
+            stringstream ss;
+            ss << "ReplayConductor: Reference to subfile number " << id << ", when only " << replayers_.size() << " exist.";
+            context_.tracer().error( ss.str() );
+            exit(1);
+        }
+
+        do
+        {
+            // Work out how long till we should send
+            realTimeTillNextItem = clock_.realTimeTillNextItem( nextLogTime );
+
+            if ( realTimeTillNextItem > replayTimeTolerance )
+            {
+                if ( realTimeTillNextItem > orcalog::iceUtilTime(1,0) )
+                {
+                    context_.tracer().warning( "ReplayConductor: long time between replays, could screw with interactivity." );
+                }
+                IceUtil::ThreadControl::sleep(realTimeTillNextItem);
+            }
+                
+        } while ( !isStopping() && realTimeTillNextItem > replayTimeTolerance  );
+
+        //
+        // Now send it out
+        //
+        // cout<<"TRACE(replayconductor.cpp): replayData("<<index<<", t="<<toString(nextLogTime)<<")" << endl;
+        replayData( id, index );
+
+    } // end of main loop
+}
+
+void
 ReplayConductor::addEvent( const Event &e )
 {
     eventQueue_.push( e );
@@ -362,75 +431,6 @@ ReplayConductor::replayData( int id, int index )
         ss<<"ReplayConductor: Caught unknown exception from replayer '"<<replayers_[id]->toString();
         context_.tracer().error( ss.str() );
     }
-}
-
-void
-ReplayConductor::walk()
-{
-    int id, index;
-    int seconds, useconds;
-    IceUtil::Time nextLogTime;
-    IceUtil::Time realTimeTillNextItem;
-
-    // should this be a configurable parameter? can't think why it would be useful.
-    IceUtil::Time replayTimeTolerance = IceUtil::Time::microSeconds(10);
-
-    while( !isStopping() )
-    {
-        handleEvents();
-
-        // Check if we're playing
-        if ( !isPlaying() )
-        {
-            // Slow the loop down a bit...            
-            usleep( (int)(0.1 * 1e6) );
-            continue;
-        }
-
-        //
-        // If we get to here we're playing.
-        //
-
-        // read a line and act appropriately
-        if ( masterFileReader_.getData( seconds, useconds, id, index ) ) 
-        {
-            // end of file 
-            context_.tracer().info( "ReplayConductor: End of File." );
-            pausePlaying();
-            continue;
-        }
-        nextLogTime = orcalog::iceUtilTime( seconds, useconds );
-        
-        if ( id > (int)replayers_.size() ) {
-            stringstream ss;
-            ss << "ReplayConductor: Reference to subfile number " << id << ", when only " << replayers_.size() << " exist.";
-            context_.tracer().error( ss.str() );
-            exit(1);
-        }
-
-        do
-        {
-            // Work out how long till we should send
-            realTimeTillNextItem = clock_.realTimeTillNextItem( nextLogTime );
-
-            if ( realTimeTillNextItem > replayTimeTolerance )
-            {
-                if ( realTimeTillNextItem > orcalog::iceUtilTime(1,0) )
-                {
-                    context_.tracer().warning( "ReplayConductor: long time between replays, could screw with interactivity." );
-                }
-                IceUtil::ThreadControl::sleep(realTimeTillNextItem);
-            }
-                
-        } while ( !isStopping() && realTimeTillNextItem > replayTimeTolerance  );
-
-        //
-        // Now send it out
-        //
-        // cout<<"TRACE(replayconductor.cpp): replayData("<<index<<", t="<<toString(nextLogTime)<<")" << endl;
-        replayData( id, index );
-
-    } // end of main loop
 }
 
 std::string 

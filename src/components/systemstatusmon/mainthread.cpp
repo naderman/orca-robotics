@@ -24,11 +24,9 @@ MainThread::MainThread( const orcaice::Context &context ) :
 {
 }
 
-void
-MainThread::walk()
-{
-    subStatus().initialising();
-    
+void 
+MainThread::initialise()
+{    
     //
     // ENABLE NETWORK CONNECTIONS
     //
@@ -51,12 +49,11 @@ MainThread::walk()
     {
         throw gbxutilacfr::Exception( ERROR_INFO, "Unknown display type: " + displayType );
     }
-    
-    //
-    // Main loop
-    //
-    
-    subStatus().working();
+}
+
+void
+MainThread::work()
+{
     
     while ( !isStopping() )
     {

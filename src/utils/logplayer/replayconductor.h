@@ -62,9 +62,6 @@ public:
     // Rewind to the start of the log and don't start playing again yet.
     void rewindToStartAndStop();
 
-    // This is the main thread function.
-    void walk();
-
     // gets the time of the item we're about to play.
     // returns 'cursorValid' (is invalid at end of log)
     bool getCursorTime( int &sec, int &usec );
@@ -73,6 +70,9 @@ public:
         { sec = firstItemSec_; usec = firstItemUsec_; }
 
 private:
+
+    // This is the main thread function.
+    virtual void work();
 
     ////////////////////////////////////////
 

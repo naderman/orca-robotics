@@ -29,7 +29,8 @@ public:
 private:
     
     // from SubsystemThread
-    virtual void walk();
+    virtual void initialise();
+    virtual void work();
     
     orcaice::Context context_;
     Display *display_;

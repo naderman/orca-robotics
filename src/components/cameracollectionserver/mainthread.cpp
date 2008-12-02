@@ -25,9 +25,106 @@ MainThread::MainThread( const orcaice::Context &context )
 , descr_(new orca::CameraCollectionDescription())
 , config_()
 {
+}
+
+void 
+MainThread::initialise()
+{
     subStatus().setMaxHeartbeatInterval( 20.0 );
     readSettings();
+
+    context_.tracer().info( "Setting up Data Pointers" );
+    
+    // Set up the image objects
+    orcaData_ = new orca::CameraCollectionData();
+    //resize data vectors
+    orcaData_->data.resize( descr_->size );
+    //copy descriptions
+    orcaData_->description = descr_;
+    //point the pointers in hydroData_ at orcaData_
+    hydroData_[0].data = &(orcaData_->data[0]);
+
+
+    for( unsigned int i = 1; i < descr_->extraDescriptions.size()+1; ++i)
+    {
+        orcaData_->extraData.push_back( new orca::CameraData() );
+        orcaData_->extraData[i]->description = descr_->extraDescriptions[i];
+        hydroData_[i].data = &(orcaData_->extraData[i]->data[0]);
+    }
+
+    // These functions catch their exceptions.
+    activate( context_, this, subsysName() );
+    context_.tracer().info( "Setting up Network Interface" );
+    initNetworkInterface();
+    context_.tracer().info( "Setting up Hardware Interface" );
+    initHardwareInterface();
 }
+
+void
+MainThread::work()
+{
+    while ( !isStopping() )
+    {
+        stringstream exceptionSS;
+        try 
+        {
+            // this blocks until new data arrives
+            readData();
+            
+            interface_->localSetAndSend( orcaData_ );
+            if ( hydroData_[0].haveWarnings )
+            {
+                subStatus().warning( hydroData_[0].warnings );
+            }
+            else
+            {
+                subStatus().ok();
+            }
+
+            stringstream ss;
+            ss << "MainThread: Read camera data: " << orcaobj::toString(orcaData_);
+            context_.tracer().debug( ss.str(), 5 );
+
+            continue;
+
+        } // end of try
+        catch ( Ice::CommunicatorDestroyedException & ) {
+            // This is OK: it means that the communicator shut down (eg via Ctrl-C)
+            // somewhere in mainLoop. Eventually, component will tell us to stop.
+        }
+        catch ( const Ice::Exception &e ) {
+            exceptionSS << "ERROR(mainthread.cpp): Caught unexpected exception: " << e;
+        }
+        catch ( const std::exception &e ) {
+            exceptionSS << "ERROR(mainthread.cpp): Caught unexpected exception: " << e.what();
+        }
+        catch ( const std::string &e ) {
+            exceptionSS << "ERROR(mainthread.cpp): Caught unexpected string: " << e;
+        }
+        catch ( const char *e ) {
+            exceptionSS << "ERROR(mainthread.cpp): Caught unexpected char *: " << e;
+        }
+        catch ( ... ) {
+            exceptionSS << "ERROR(mainthread.cpp): Caught unexpected unknown exception.";
+        }
+
+        if ( !exceptionSS.str().empty() ) {
+            context_.tracer().error( exceptionSS.str() );
+            subStatus().fault( exceptionSS.str() );     
+            // Slow things down in case of persistent error
+            sleep(1);
+        }
+
+        // If we got to here there's a problem.
+        // Re-initialise the driver.
+        initHardwareInterface();
+
+    } // end of while
+
+    // Camera hardware will be shut down in the driver's destructor.
+}
+
+////////////////////
 
 void
 MainThread::readSettings()
@@ -140,102 +237,4 @@ MainThread::readData()
 
     orcaData_->timeStamp.seconds  = hydroData_[0].timeStampSec;
     orcaData_->timeStamp.useconds = hydroData_[0].timeStampUsec;
-}
-
-void
-MainThread::walk()
-{
-    subStatus().initialising();
-    context_.tracer().info( "Setting up Data Pointers" );
-    
-    // Set up the image objects
-    orcaData_ = new orca::CameraCollectionData();
-    //resize data vectors
-    orcaData_->data.resize( descr_->size );
-    //copy descriptions
-    orcaData_->description = descr_;
-    //point the pointers in hydroData_ at orcaData_
-    hydroData_[0].data = &(orcaData_->data[0]);
-
-
-    for( unsigned int i = 1; i < descr_->extraDescriptions.size()+1; ++i)
-    {
-        orcaData_->extraData.push_back( new orca::CameraData() );
-        orcaData_->extraData[i]->description = descr_->extraDescriptions[i];
-        hydroData_[i].data = &(orcaData_->extraData[i]->data[0]);
-    }
-
-    // These functions catch their exceptions.
-    activate( context_, this, subsysName() );
-    context_.tracer().info( "Setting up Network Interface" );
-    initNetworkInterface();
-    context_.tracer().info( "Setting up Hardware Interface" );
-    initHardwareInterface();
-
-    context_.tracer().info( "Running..." );
-    subStatus().working();    
-
-    //
-    // IMPORTANT: Have to keep this loop rolling, because the '!isStopping()' call checks for requests to shut down.
-    //            So we have to avoid getting stuck anywhere within this main loop.
-    //
-    while ( !isStopping() )
-    {
-        stringstream exceptionSS;
-        try 
-        {
-            // this blocks until new data arrives
-            readData();
-            
-            interface_->localSetAndSend( orcaData_ );
-            if ( hydroData_[0].haveWarnings )
-            {
-                subStatus().warning( hydroData_[0].warnings );
-            }
-            else
-            {
-                subStatus().ok();
-            }
-
-            stringstream ss;
-            ss << "MainThread: Read camera data: " << orcaobj::toString(orcaData_);
-            context_.tracer().debug( ss.str(), 5 );
-
-            continue;
-
-        } // end of try
-        catch ( Ice::CommunicatorDestroyedException & ) {
-            // This is OK: it means that the communicator shut down (eg via Ctrl-C)
-            // somewhere in mainLoop. Eventually, component will tell us to stop.
-        }
-        catch ( const Ice::Exception &e ) {
-            exceptionSS << "ERROR(mainthread.cpp): Caught unexpected exception: " << e;
-        }
-        catch ( const std::exception &e ) {
-            exceptionSS << "ERROR(mainthread.cpp): Caught unexpected exception: " << e.what();
-        }
-        catch ( const std::string &e ) {
-            exceptionSS << "ERROR(mainthread.cpp): Caught unexpected string: " << e;
-        }
-        catch ( const char *e ) {
-            exceptionSS << "ERROR(mainthread.cpp): Caught unexpected char *: " << e;
-        }
-        catch ( ... ) {
-            exceptionSS << "ERROR(mainthread.cpp): Caught unexpected unknown exception.";
-        }
-
-        if ( !exceptionSS.str().empty() ) {
-            context_.tracer().error( exceptionSS.str() );
-            subStatus().fault( exceptionSS.str() );     
-            // Slow things down in case of persistent error
-            sleep(1);
-        }
-
-        // If we got to here there's a problem.
-        // Re-initialise the driver.
-        initHardwareInterface();
-
-    } // end of while
-
-    // Camera hardware will be shut down in the driver's destructor.
 }

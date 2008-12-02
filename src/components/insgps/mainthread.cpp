@@ -35,55 +35,21 @@ MainThread::~MainThread()
     return;
 }
 
-void
-MainThread::initNetworkInterface()
+void 
+MainThread::initialise()
 {
-    Ice::PropertiesPtr prop = context_.properties();
-    std::string prefix = context_.tag() + ".Config.";
-
-    // SENSOR DESCRIPTION
-    orca::InsDescription insDescr;
-    orca::GpsDescription gpsDescr;
-    orca::ImuDescription imuDescr;
-
-    insDescr.timeStamp = orcaice::getNow();
-    gpsDescr.timeStamp = orcaice::getNow();
-    imuDescr.timeStamp = orcaice::getNow();
-
-    // transfer internal sensor configs
-    ifaceutil::zeroAndClear(insDescr.offset);
-    ifaceutil::zeroAndClear(gpsDescr.antennaOffset);
-    ifaceutil::zeroAndClear(imuDescr.offset);
-    ifaceutil::zeroAndClear(imuDescr.size);
-
-    insDescr.offset = orcaobj::getPropertyAsFrame3dWithDefault( prop, prefix+"Ins.Offset", insDescr.offset );
-    gpsDescr.antennaOffset = orcaobj::getPropertyAsFrame3dWithDefault( prop, prefix+"Gps.AntennaOffset", gpsDescr.antennaOffset );
-    imuDescr.offset = orcaobj::getPropertyAsFrame3dWithDefault( prop, prefix+"Imu.Offset", imuDescr.offset );
-    imuDescr.size = orcaobj::getPropertyAsSize3dWithDefault( prop, prefix+"Imu.Size", imuDescr.size );
-
-    // EXTERNAL PROVIDED INTERFACES
-    insInterface_ = new orcaifaceimpl::InsImpl( insDescr, "Ins", context_ );
-    gpsInterface_ = new orcaifaceimpl::GpsImpl( gpsDescr, "Gps", context_ );
-    imuInterface_ = new orcaifaceimpl::ImuImpl( imuDescr, "Imu", context_ );
-
-    insInterface_->initInterface( this, subsysName() );
-    gpsInterface_->initInterface( this, subsysName() );
-    imuInterface_->initInterface( this, subsysName() );
-}
-
-void
-MainThread::walk()
-{
-    subStatus().initialising();
     subStatus().setMaxHeartbeatInterval( 20.0 );
 
     // These functions catch their exceptions.
     activate( context_, this, subsysName() );
     initNetworkInterface();
+
     hwThread_->start();
+}
 
-    subStatus().working();
-
+void
+MainThread::work()
+{
     while(!isStopping())
     {
         try
@@ -119,3 +85,40 @@ MainThread::walk()
     } // end of while
 }
 
+///////////////////////////
+
+void
+MainThread::initNetworkInterface()
+{
+    Ice::PropertiesPtr prop = context_.properties();
+    std::string prefix = context_.tag() + ".Config.";
+
+    // SENSOR DESCRIPTION
+    orca::InsDescription insDescr;
+    orca::GpsDescription gpsDescr;
+    orca::ImuDescription imuDescr;
+
+    insDescr.timeStamp = orcaice::getNow();
+    gpsDescr.timeStamp = orcaice::getNow();
+    imuDescr.timeStamp = orcaice::getNow();
+
+    // transfer internal sensor configs
+    ifaceutil::zeroAndClear(insDescr.offset);
+    ifaceutil::zeroAndClear(gpsDescr.antennaOffset);
+    ifaceutil::zeroAndClear(imuDescr.offset);
+    ifaceutil::zeroAndClear(imuDescr.size);
+
+    insDescr.offset = orcaobj::getPropertyAsFrame3dWithDefault( prop, prefix+"Ins.Offset", insDescr.offset );
+    gpsDescr.antennaOffset = orcaobj::getPropertyAsFrame3dWithDefault( prop, prefix+"Gps.AntennaOffset", gpsDescr.antennaOffset );
+    imuDescr.offset = orcaobj::getPropertyAsFrame3dWithDefault( prop, prefix+"Imu.Offset", imuDescr.offset );
+    imuDescr.size = orcaobj::getPropertyAsSize3dWithDefault( prop, prefix+"Imu.Size", imuDescr.size );
+
+    // EXTERNAL PROVIDED INTERFACES
+    insInterface_ = new orcaifaceimpl::InsImpl( insDescr, "Ins", context_ );
+    gpsInterface_ = new orcaifaceimpl::GpsImpl( gpsDescr, "Gps", context_ );
+    imuInterface_ = new orcaifaceimpl::ImuImpl( imuDescr, "Imu", context_ );
+
+    insInterface_->initInterface( this, subsysName() );
+    gpsInterface_->initInterface( this, subsysName() );
+    imuInterface_->initInterface( this, subsysName() );
+}

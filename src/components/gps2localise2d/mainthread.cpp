@@ -33,6 +33,88 @@ MainThread::~MainThread()
 }
 
 void 
+MainThread::initialise()
+{
+    subStatus().setMaxHeartbeatInterval( 10.0 );
+    
+    // create a callback object to recieve data
+    gpsConsumer_ = new orcaifaceimpl::StoringGpsConsumerImpl( context_ );
+
+    activate( context_, this, subsysName() );
+
+    subscribeToGps();
+    initNetworkInterface();
+    initDriver();
+}
+
+void 
+MainThread::work()
+{
+    subStatus().setMaxHeartbeatInterval( 3.0 );
+
+    orca::GpsData        gpsData;
+    orca::Localise2dData localiseData;
+
+    // wake up every now and then to check if we are supposed to stop
+    const int timeoutMs = 1000;
+    // reconnect if we timeout this many times
+    const int reconnectFailTimes = 10;
+    int numTimeouts = 0;
+
+    // Loop forever till we get shut down.
+    while ( !isStopping() )
+    {
+        try
+        {                
+            //
+            // block on arrival of data
+            //
+            int ret = gpsConsumer_->store().getNext ( gpsData, timeoutMs );
+            subStatus().heartbeat();
+
+            if ( ret != 0 ) {
+                if ( numTimeouts++ > reconnectFailTimes )
+                {
+                    stringstream ss;
+                    ss << "Timed out (" << timeoutMs << "ms) waiting for data.  Reconnecting.";
+                    context_.tracer().warning( ss.str() );
+                    subStatus().warning( ss.str() );
+                    subscribeToGps();
+                }
+                continue;
+            }
+            numTimeouts = 0;
+
+            //
+            // execute algorithm to compute localisation
+            //
+            bool canCompute = driver_->compute( gpsData, localiseData );
+
+            if ( !canCompute )
+            {
+                subStatus().ok();
+                context_.tracer().debug( "MainThread: can't compute localiseData" );
+                continue;
+            }
+
+            // copy the timestamp
+            localiseData.timeStamp = gpsData.timeStamp;
+
+            localiseInterface_->localSetAndSend( localiseData );
+
+            subStatus().ok();
+
+        } // try
+        catch ( ... ) 
+        {
+            orcaice::catchMainLoopExceptions( subStatus() );
+        }
+    } // while
+}
+
+///////////////////////////
+
+void 
 MainThread::initDriver()
 {
     std::string prefix = context_.tag() + ".Config.";
@@ -189,82 +271,4 @@ MainThread::antennaOffsetOK( const orca::Frame3d &offset )
     }
 
     return offsetOk;
-}
-
-void 
-MainThread::walk()
-{
-    subStatus().initialising();
-    subStatus().setMaxHeartbeatInterval( 10.0 );
-    
-    // create a callback object to recieve data
-    gpsConsumer_ = new orcaifaceimpl::StoringGpsConsumerImpl( context_ );
-
-    activate( context_, this, subsysName() );
-
-    subscribeToGps();
-    initNetworkInterface();
-    initDriver();
-
-    orca::GpsData        gpsData;
-    orca::Localise2dData localiseData;
-
-    // wake up every now and then to check if we are supposed to stop
-    const int timeoutMs = 1000;
-    // reconnect if we timeout this many times
-    const int reconnectFailTimes = 10;
-    int numTimeouts = 0;
-
-    subStatus().working();
-    subStatus().setMaxHeartbeatInterval( 3.0 );
-
-    // Loop forever till we get shut down.
-    while ( !isStopping() )
-    {
-        try
-        {                
-            //
-            // block on arrival of data
-            //
-            int ret = gpsConsumer_->store().getNext ( gpsData, timeoutMs );
-            subStatus().heartbeat();
-
-            if ( ret != 0 ) {
-                if ( numTimeouts++ > reconnectFailTimes )
-                {
-                    stringstream ss;
-                    ss << "Timed out (" << timeoutMs << "ms) waiting for data.  Reconnecting.";
-                    context_.tracer().warning( ss.str() );
-                    subStatus().warning( ss.str() );
-                    subscribeToGps();
-                }
-                continue;
-            }
-            numTimeouts = 0;
-
-            //
-            // execute algorithm to compute localisation
-            //
-            bool canCompute = driver_->compute( gpsData, localiseData );
-
-            if ( !canCompute )
-            {
-                subStatus().ok();
-                context_.tracer().debug( "MainThread: can't compute localiseData" );
-                continue;
-            }
-
-            // copy the timestamp
-            localiseData.timeStamp = gpsData.timeStamp;
-
-            localiseInterface_->localSetAndSend( localiseData );
-
-            subStatus().ok();
-
-        } // try
-        catch ( ... ) 
-        {
-            orcaice::catchMainLoopExceptions( subStatus() );
-        }
-    } // while
 }

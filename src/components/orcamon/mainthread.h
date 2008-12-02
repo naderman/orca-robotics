@@ -11,23 +11,24 @@
 #ifndef MAIN_THREAD_H
 #define MAIN_THREAD_H
 
-#include <gbxsickacfr/gbxiceutilacfr/safethread.h>
+#include <orcaice/subsystemthread.h>
 #include <orcaice/context.h>
 
 namespace orcamon
 {
 
-class MainThread : public gbxiceutilacfr::SafeThread
+class MainThread : public orcaice::SubsystemThread
 {
 
 public:
 
     MainThread( const orcaice::Context &context );
 
-    // from SubsystemThread
-    virtual void walk();
-
 private:
+    // from SubsystemThread
+    virtual void initialise();
+    virtual void work();
+
     orcaice::Context context_;
 };
 

@@ -1,8 +1,5 @@
 INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
-ADD_EXECUTABLE( subsystemthreadtest subsystemthreadtest.cpp )
-GBX_ADD_TEST( OrcaIce_SubsystemThreadTest subsystemthreadtest )
-
 ADD_EXECUTABLE( ptrbuffertest ptrbuffertest.cpp )
 GBX_ADD_TEST( OrcaIce_PtrBufferTest ptrbuffertest )
 
@@ -129,8 +126,11 @@ ADD_EXECUTABLE( icegridtest icegridtest.cpp )
 GBX_ADD_TEST( OrcaIce_IceGridUtilsTest icegridtest )
 ORCA_GENERATE_CONFIG_FILE( icegridtest.def icegridtest 0 )
 
-ADD_EXECUTABLE( subsystemtest subsystemtest.cpp )
-GBX_ADD_TEST( OrcaIce_SubsystemTest subsystemtest )
+ADD_EXECUTABLE( substatusthreadtest substatusthreadtest.cpp )
+GBX_ADD_TEST( OrcaIce_SubstatusThreadTest substatusthreadtest )
+
+ADD_EXECUTABLE( subsystemthreadtest subsystemthreadtest.cpp )
+GBX_ADD_TEST( OrcaIce_SubsystemThreadTest subsystemthreadtest )
 
 ADD_EXECUTABLE( catchutilstest catchutilstest.cpp )
 GBX_ADD_TEST( OrcaIce_CatchUtilsTest catchutilstest )

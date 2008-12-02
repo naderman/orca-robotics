@@ -33,9 +33,6 @@ public:
 
     HwThread( const orcaice::Context &context );
 
-    // from SubsystemThread
-    virtual void walk();
-
     // local interface, used by NetThread
 
     void setCommand( const hydrointerfaces::Robot2d::Command &command );
@@ -47,6 +44,8 @@ public:
         }
 
 private: 
+    // from SubsystemThread
+    virtual void work();
 
     // Keeps trying until success or isStopping()
     void enableDriver();

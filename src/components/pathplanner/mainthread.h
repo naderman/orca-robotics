@@ -33,7 +33,9 @@ public:
 
 private:
 
-    virtual void walk();
+    // from SubsystemThread
+    virtual void initialise();
+    virtual void work();
 
     void initNetwork();
     void initDriver();

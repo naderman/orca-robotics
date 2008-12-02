@@ -11,7 +11,7 @@
 #ifndef MAIN_THREAD_H
 #define MAIN_THREAD_H
 
-#include <orcaice/subsystem.h>
+#include <orcaice/subsystemthread.h>
 #include <orcaice/context.h>
 #include <orcaifaceimpl/localise2d.h>
 #include <orcaifaceimpl/odometry2d.h>
@@ -19,7 +19,7 @@
 namespace faithlocaliser
 {
 
-class MainThread : public orcaice::Subsystem
+class MainThread : public orcaice::SubsystemThread
 {
 
 public:
@@ -28,10 +28,9 @@ public:
 
 private:
     
-    // from Subsystem
+    // from SubsystemThread
     virtual void initialise();
     virtual void work();
-    virtual void finalise() {};
     
     double stdDevPosition_;
     double stdDevHeading_;

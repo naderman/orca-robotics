@@ -70,9 +70,74 @@ NetThread::NetThread( HwThread                      &HwThread,
     maxTurnrate_ = controlDescr->maxTurnrate;
 }
 
-NetThread::~NetThread()
+void 
+NetThread::initialise()
 {
+    // multi-try function
+    context_.tracer().debug( "NetThread: activating..." );
+    orcaice::activate( context_, this );
+    
+    // Initialise external interfaces, multi-try init functions
+    odometry2dI_ = new orcaifaceimpl::Odometry2dImpl( descr_, "Odometry2d", context_ );
+    odometry2dI_->initInterface( this );
+
+    velocityControl2dI_ = new orcaifaceimpl::VelocityControl2dImpl( descr_, "VelocityControl2d", context_ );
+    velocityControl2dI_->initInterface( this );
+    velocityControl2dI_->setNotifyHandler( this );
 }
+
+void
+NetThread::work()
+{
+    // temp objects in internal format
+    hydrointerfaces::Robot2d::Data data;
+
+    // temp objects in network format
+    orca::Odometry2dData odometry2dData;
+
+    std::string prefix = context_.tag() + ".Config.";
+
+    gbxiceutilacfr::Timer publishTimer;
+    double publishInterval = orcaice::getPropertyAsDoubleWithDefault( 
+        context_.properties(), prefix+"Odometry2dPublishInterval", 0 );
+
+    const int odometryReadTimeout = 500; // [ms]
+    subStatus().setMaxHeartbeatInterval( 2.0*(odometryReadTimeout/1000.0) );
+
+    //
+    // Main loop
+    //
+    while( !isStopping() )
+    {
+        // context_.tracer().debug( "NetThread: loop spinning ",9);
+
+        // block on the most frequent data source: odometry
+        if ( HwThread_.getData( data, odometryReadTimeout ) ) {
+            context_.tracer().debug( "Net loop timed out", 5);
+            // Don't flag this as an error -- it may happen during normal initialisation.
+            subStatus().ok( "Net loop timed out" );
+            continue;
+        }
+
+        // Odometry2d
+        // convert internal to network format
+        convert( data, odometry2dData );
+        // check that we were not told to terminate while we were sleeping
+        // otherwise, we'll get segfault (there's probably a way to prevent this inside the library)
+        if ( !isStopping() && publishTimer.elapsed().toSecondsDouble()>=publishInterval ) {
+            odometry2dI_->localSetAndSend( odometry2dData );
+            publishTimer.restart();
+        } 
+        else {
+            odometry2dI_->localSet( odometry2dData );
+        }
+
+        // subsystem heartbeat
+        subStatus().ok();
+    } // main loop
+}
+
+///////////////////
 
 void
 NetThread::limit( hydrointerfaces::Robot2d::Command &cmd )
@@ -121,72 +186,6 @@ NetThread::handleData(const orca::VelocityControl2dData& command)
         context_.tracer().error( "NetThread::handleData(): Caught unexpected unknown exception." );
         throw;
     }
-}
-
-void
-NetThread::walk()
-{
-    subStatus().initialising();
-
-    // multi-try function
-    context_.tracer().debug( "NetThread: activating..." );
-    orcaice::activate( context_, this );
-    
-    std::string prefix = context_.tag() + ".Config.";
-    
-    // Initialise external interfaces, multi-try init functions
-    odometry2dI_ = new orcaifaceimpl::Odometry2dImpl( descr_, "Odometry2d", context_ );
-    odometry2dI_->initInterface( this );
-
-    velocityControl2dI_ = new orcaifaceimpl::VelocityControl2dImpl( descr_, "VelocityControl2d", context_ );
-    velocityControl2dI_->initInterface( this );
-    velocityControl2dI_->setNotifyHandler( this );
-
-    // temp objects in internal format
-    hydrointerfaces::Robot2d::Data data;
-
-    // temp objects in network format
-    orca::Odometry2dData odometry2dData;
-
-    gbxiceutilacfr::Timer publishTimer;
-    double publishInterval = orcaice::getPropertyAsDoubleWithDefault( 
-        context_.properties(), prefix+"Odometry2dPublishInterval", 0 );
-
-    subStatus().working();
-    const int odometryReadTimeout = 500; // [ms]
-    subStatus().setMaxHeartbeatInterval( 2.0*(odometryReadTimeout/1000.0) );
-
-    //
-    // Main loop
-    //
-    while( !isStopping() )
-    {
-        // context_.tracer().debug( "NetThread: loop spinning ",9);
-
-        // block on the most frequent data source: odometry
-        if ( HwThread_.getData( data, odometryReadTimeout ) ) {
-            context_.tracer().debug( "Net loop timed out", 5);
-            // Don't flag this as an error -- it may happen during normal initialisation.
-            subStatus().ok( "Net loop timed out" );
-            continue;
-        }
-
-        // Odometry2d
-        // convert internal to network format
-        convert( data, odometry2dData );
-        // check that we were not told to terminate while we were sleeping
-        // otherwise, we'll get segfault (there's probably a way to prevent this inside the library)
-        if ( !isStopping() && publishTimer.elapsed().toSecondsDouble()>=publishInterval ) {
-            odometry2dI_->localSetAndSend( odometry2dData );
-            publishTimer.restart();
-        } 
-        else {
-            odometry2dI_->localSet( odometry2dData );
-        }
-
-        // subsystem heartbeat
-        subStatus().ok();
-    } // main loop
 }
 
 }

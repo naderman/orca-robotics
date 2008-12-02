@@ -26,9 +26,12 @@ class MainThread : public orcaice::SubsystemThread
 public:
     MainThread( const orcaice::Context& context);
 
-    virtual void walk();
 private:
 
+    // from SubsystemThread
+    virtual void initialise();
+    virtual void work();
+    
     void init();
     void setUpInternalMapFromPriorMap( const std::string &priorMapProxyString );
     void setUpInternalMapFromProperties();

@@ -15,7 +15,7 @@
 
 #include <gbxsickacfr/gbxiceutilacfr/buffer.h>
 #include <memory>
-#include <orcaice/subsystem.h>
+#include <orcaice/subsystemthread.h>
 #include <orcaice/context.h>
 #include <orcaifaceimpl/image.h>
 // #include <orca/image.h>
@@ -24,13 +24,13 @@
 
 namespace imageview {
 
-class MainSubsystem : public orcaice::Subsystem
+class MainSubsystem : public orcaice::SubsystemThread
 {
 public:
     MainSubsystem( const orcaice::Context &context );
 
 private:
-    // from Subsystem
+    // from SubsystemThread
     virtual void initialise();
     virtual void work();
     virtual void finalise();

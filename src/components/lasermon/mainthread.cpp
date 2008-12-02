@@ -19,7 +19,7 @@ using namespace std;
 using namespace lasermon;
 
 MainThread::MainThread( const orcaice::Context &context ) : 
-    orcaice::Subsystem( context.tracer(), context.status(), "MainThread" ),
+    orcaice::SubsystemThread( context.tracer(), context.status(), "MainThread" ),
     context_(context)
 {
     // this subsystem will initialise and exit, but the component will continue running.

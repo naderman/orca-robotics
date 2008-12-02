@@ -38,7 +38,6 @@ MainThread::MainThread( const orcaice::Context& context ) :
     SubsystemThread( context.tracer(), context.status(), "MainThread" ),
     context_(context)
 {
-    subStatus().setMaxHeartbeatInterval( 20.0 );
 }
 
 MainThread::~MainThread()
@@ -55,9 +54,12 @@ MainThread::~MainThread()
     }
 }
 
-void
-MainThread::walk()
+// work() is non-standard, try to extract init section
+void 
+MainThread::initialise()
 {
+    subStatus().setMaxHeartbeatInterval( 20.0 );
+
     // config file parameters
     Ice::PropertiesPtr props = context_.properties();
     std::string prefix = context_.tag() + ".Config.";
@@ -151,12 +153,9 @@ MainThread::walk()
         context_.tracer().warning("No loggers were created. Quitting.");
         context_.communicator()->shutdown();
     }
-
-    
-    // init subsystem is done and is about to terminate
-    subStatus().ok( "Initialized." );
-    subStatus().setMaxHeartbeatInterval( -1 );
 }
+
+////////////////////////////
 
 void
 MainThread::loadPluginLibraries( const std::string & factoryLibNames )

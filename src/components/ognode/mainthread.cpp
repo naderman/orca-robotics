@@ -69,6 +69,67 @@ MainThread::MainThread( const orcaice::Context &context ) :
 {
 }
 
+void 
+MainThread::initialise()
+{
+    init();
+}
+
+void
+MainThread::work()
+{
+    orca::OgFusionData data;
+    orca::OgMapData map;
+    gbxiceutilacfr::Timer pushTimer;
+
+    while ( !isStopping() )
+    {
+        try
+        {
+            int ret=ogFusionDataBuffer_.getAndPopNext(data,1000);
+
+            if(ret!=0) 
+            {
+                context_.tracer().info("no ogfusion data available: waiting ...");
+                continue;
+            } 
+
+            if ( data.observation.size() == 0 )
+            {
+                context_.tracer().info("Received empty observation!");
+                continue;
+            }
+
+            // cout << "MainThread: got an object with " << data.observation.size() << " cells\n";
+
+            for(unsigned int i=0;i<data.observation.size();i++)
+            {
+                add( data.observation[i], internalMap_ );
+                // ogfusion::add(localMap_,data.observation[i]);
+            }
+            
+            if ( pushTimer.elapsedSec() > maxPushPeriodSec_ )
+            {
+                orca::OgMapData orcaOgMap;
+                convert( internalMap_, orcaOgMap );
+                orcaOgMap.timeStamp = data.timeStamp;
+
+                // cout<<"TRACE(handler.cpp): orcaOgMap: " << orcaobj::toString(orcaOgMap) << endl;
+
+                ogMapImpl_->localSetAndSend( orcaOgMap );
+                pushTimer.restart();
+            }
+
+        } // try
+        catch ( ... ) 
+        {
+            orcaice::catchMainLoopExceptions( subStatus() );
+        }
+    } // end of main loop
+}
+
+//////////////////////////
+
 void
 MainThread::setUpInternalMapFromProperties()
 {
@@ -186,65 +247,6 @@ MainThread::init()
             orcaice::catchExceptionsWithStatusAndSleep( "initialising", subStatus() );
         }
     }
-}
-
-void
-MainThread::walk()
-{
-    subStatus().initialising();
-
-    init();
-    
-    subStatus().working();
-
-    orca::OgFusionData data;
-    orca::OgMapData map;
-    gbxiceutilacfr::Timer pushTimer;
-
-    while ( !isStopping() )
-    {
-        try
-        {
-            int ret=ogFusionDataBuffer_.getAndPopNext(data,1000);
-
-            if(ret!=0) 
-            {
-                context_.tracer().info("no ogfusion data available: waiting ...");
-                continue;
-            } 
-
-            if ( data.observation.size() == 0 )
-            {
-                context_.tracer().info("Received empty observation!");
-                continue;
-            }
-
-            // cout << "MainThread: got an object with " << data.observation.size() << " cells\n";
-
-            for(unsigned int i=0;i<data.observation.size();i++)
-            {
-                add( data.observation[i], internalMap_ );
-                // ogfusion::add(localMap_,data.observation[i]);
-            }
-            
-            if ( pushTimer.elapsedSec() > maxPushPeriodSec_ )
-            {
-                orca::OgMapData orcaOgMap;
-                convert( internalMap_, orcaOgMap );
-                orcaOgMap.timeStamp = data.timeStamp;
-
-                // cout<<"TRACE(handler.cpp): orcaOgMap: " << orcaobj::toString(orcaOgMap) << endl;
-
-                ogMapImpl_->localSetAndSend( orcaOgMap );
-                pushTimer.restart();
-            }
-
-        } // try
-        catch ( ... ) 
-        {
-            orcaice::catchMainLoopExceptions( subStatus() );
-        }
-    } // end of main loop
 }
 
 }

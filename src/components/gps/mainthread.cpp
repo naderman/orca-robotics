@@ -52,7 +52,7 @@ void convert( const hydrointerfaces::Gps::Data& hydro, orca::GpsData& orca )
 ////////////////////////////
 
 MainThread::MainThread( const orcaice::Context& context ) :
-    orcaice::Subsystem( context.tracer(), context.status(), "MainThread" ),
+    orcaice::SubsystemThread( context.tracer(), context.status(), "MainThread" ),
     context_(context)
 {
 }
@@ -118,6 +118,8 @@ MainThread::work()
         }
     } // end of while
 }
+
+////////////////////////////
 
 void
 MainThread::initNetworkInterface()

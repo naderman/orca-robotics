@@ -36,7 +36,8 @@ public:
 private:
 
     // from SubsystemThread
-    virtual void walk();
+    virtual void initialise();
+    virtual void work();
 
     // from NotifyHandler
     // this call originates in orcaifaceimpl::VelocityControl2dImpl

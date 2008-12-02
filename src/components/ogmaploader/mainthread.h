@@ -25,10 +25,11 @@ public:
 
     MainThread( const orcaice::Context &context );
 
-    // from SubsystemThread
-    virtual void walk();
-
 private:
+    // from SubsystemThread
+    virtual void initialise();
+    // this subsystem does not work!
+
     orcaifaceimpl::OgMapImplPtr ogMapImpl_;
     orcaice::Context context_;
 };

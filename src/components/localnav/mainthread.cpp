@@ -135,6 +135,176 @@ MainThread::MainThread( const orcaice::Context &context )
     }
 }
 
+// TODO: all of the stuff in the constructor should move into here.
+// but it's too non-standard to do it easily.
+void 
+MainThread::initialise()
+{
+    //
+    // ENABLE NETWORK CONNECTIONS
+    //
+    // This function catches its exceptions
+    activate( context_, this, subsysName() );
+    setup();
+}
+
+void
+MainThread::work()
+{
+    subStatus().setMaxHeartbeatInterval( 2.0 );
+
+    orcalocalnav::IDriver::Inputs inputs;
+    inputs.stalled = false;
+    inputs.obsRanges.resize( scannerDescr_.numberOfSamples );
+
+    bool prevIsEnabled = pathFollowerInterface_->enabled();
+
+    // a simple class which summarizes motion information
+    Stats stats;
+    std::stringstream historySS;
+
+    while ( !isStopping() )
+    {
+        try 
+        {
+            getInputs( inputs.currentVelocity,
+                       inputs.localisePose,
+                       inputs.poseTime,
+                       inputs.isLocalisationUncertain,
+                       inputs.obsRanges,
+                       inputs.obsTime );
+
+            // Tell everyone what time it is, boyeee
+            clock_->setTime( inputs.obsTime );
+
+            // Time how long this takes us
+            // hydroutil::RealTimeStopwatch timer;
+            hydroutil::CpuStopwatch timer;
+
+            // pathMaintainer knows about the whole path in global coords and where
+            // we are in that path. So get the next set of current goals in local 
+            // coord system for the pathplanner.
+            // Also return a flag indicating if we have an active goal
+            
+            bool wpIncremented = false;
+            bool haveGoal = pathMaintainer_->getActiveGoals( inputs.goals,
+                                                             driver_->waypointHorizon(),
+                                                             inputs.localisePose,
+                                                             wpIncremented );
+
+            if ( haveGoal )
+            {
+                if ( wpIncremented )
+                {
+                    speedLimiter_->setIntendedSpeedThisLeg( inputs.goals[0] );
+                }
+
+                // If we do have an active goal, limit the max speed for the current goal
+                // and get the pathplanner to work out the next set of actions
+                speedLimiter_->constrainMaxSpeeds( inputs.goals[0], inputs.currentVelocity );
+            }     
+            
+            // The actual driver which determines the path and commands to send to the vehicle.
+            // The odometry is required for the velocity, which isn't contained
+            // in Localise2d.
+            hydronavutil::Velocity velocityCmd;
+            try {
+                velocityCmd = driver_->getCommand( inputs );
+            }
+            catch ( std::exception &e )
+            {
+                stringstream ss;
+                ss << "(while getting command from driver with inputs: " << orcalocalnav::toString(inputs) << ") failed: " << e.what();
+                throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
+            }
+            
+
+            if ( algorithmEvaluator_.get() )
+                timer.stop();
+            
+            // For big debug levels, give feedback through tracer.
+            {
+                std::stringstream ss;
+                ss << "MainThread: Setting command: " << velocityCmd;
+                context_.tracer().debug( ss.str(), 5 );
+            }
+
+            // send zero stop-command as soon we "take our hands of the wheel"
+            // (otherwise the platform will execute the last command for a while)
+            // Note that we call enabled() only once in order to avoid possibility of state
+            // change between our calls.
+            bool isEnabled = pathFollowerInterface_->enabled();
+            bool isJustDisabled = ( prevIsEnabled && !isEnabled );
+            if ( isJustDisabled ) {
+                hydronavutil::Velocity zeroVelocityCmd( 0.0, 0.0 );
+                sendCommandToPlatform( zeroVelocityCmd );
+            }
+            prevIsEnabled = isEnabled;
+
+            // keep track of our approximate motion for history
+            stats.addData( inputs.poseTime.seconds, inputs.poseTime.useconds, 
+                           inputs.localisePose, inputs.currentVelocity, 
+                           isEnabled );
+            historySS.str(" ");
+            historySS << stats.distance()<<" "<<stats.timeInMotion()<<" "<<stats.maxSpeed();
+            // keep history up to date, ready to be dumped to file when the component stops
+            context_.history().setWithFinishSequence( historySS.str() );
+
+            // Only send the command if we're enabled.
+            if ( isEnabled ) {
+                sendCommandToPlatform( velocityCmd );
+            }
+            else {
+                context_.tracer().debug( "Doing nothing because disabled" );
+                subStatus().ok();
+                continue;
+            }
+
+            std::stringstream timerSS;
+            timerSS << "MainThread: time to make and send decision: " << timer.elapsedSeconds()*1000.0 << "ms";
+            context_.tracer().debug( timerSS.str(), 3 );
+
+            if ( testMode_ && algorithmEvaluator_.get() )
+            {
+                algorithmEvaluator_->evaluate( timer.elapsedSeconds(), *testSimulator_ );
+            }
+
+            if ( testMode_ )
+            {
+                bool pathCompleted, pathFailed;
+                testSimulator_->checkProgress( pathCompleted, pathFailed );
+                if ( pathCompleted )
+                {
+                    cout<<"TRACE(mainthread.cpp): test PASSED" << endl;
+                    context_.communicator()->shutdown();
+                    break;
+                }
+                if ( pathFailed )
+                {
+                    cout << "ERROR(mainthread.cpp): test FAILED" << endl;
+                    exit(1);
+                }
+            }
+
+            checkWithOutsideWorld();
+
+            if ( inputs.isLocalisationUncertain )
+                subStatus().warning( "Localisation is uncertain, but everything else is OK." );
+            else
+                subStatus().ok();
+        } // try
+        catch ( ... ) 
+        {
+            // before doing anything else, stop the vehicle!
+            stopVehicle();
+
+            orcaice::catchMainLoopExceptions( subStatus() );
+        }
+    }
+}
+
+///////////////////
+
 void
 MainThread::ensureProxiesNotEmpty()
 {
@@ -380,169 +550,6 @@ MainThread::checkWithOutsideWorld()
 
     // (2): world<-localnav: Have we modified our wp index?
     pathMaintainer_->checkForWpIndexChange();
-}
-
-void
-MainThread::walk()
-{
-    //
-    // ENABLE NETWORK CONNECTIONS
-    //
-    // This function catches its exceptions
-    activate( context_, this, subsysName() );
-    setup();
-
-    subStatus().working();
-    subStatus().setMaxHeartbeatInterval( 2.0 );
-
-    orcalocalnav::IDriver::Inputs inputs;
-    inputs.stalled = false;
-    inputs.obsRanges.resize( scannerDescr_.numberOfSamples );
-
-    bool prevIsEnabled = pathFollowerInterface_->enabled();
-
-    // a simple class which summarizes motion information
-    Stats stats;
-    std::stringstream historySS;
-
-    while ( !isStopping() )
-    {
-        try 
-        {
-            getInputs( inputs.currentVelocity,
-                       inputs.localisePose,
-                       inputs.poseTime,
-                       inputs.isLocalisationUncertain,
-                       inputs.obsRanges,
-                       inputs.obsTime );
-
-            // Tell everyone what time it is, boyeee
-            clock_->setTime( inputs.obsTime );
-
-            // Time how long this takes us
-            // hydroutil::RealTimeStopwatch timer;
-            hydroutil::CpuStopwatch timer;
-
-            // pathMaintainer knows about the whole path in global coords and where
-            // we are in that path. So get the next set of current goals in local 
-            // coord system for the pathplanner.
-            // Also return a flag indicating if we have an active goal
-			
-            bool wpIncremented = false;
-            bool haveGoal = pathMaintainer_->getActiveGoals( inputs.goals,
-                                                             driver_->waypointHorizon(),
-                                                             inputs.localisePose,
-                                                             wpIncremented );
-
-            if ( haveGoal )
-            {
-                if ( wpIncremented )
-                {
-                    speedLimiter_->setIntendedSpeedThisLeg( inputs.goals[0] );
-                }
-
-                // If we do have an active goal, limit the max speed for the current goal
-                // and get the pathplanner to work out the next set of actions
-                speedLimiter_->constrainMaxSpeeds( inputs.goals[0], inputs.currentVelocity );
-            }     
-            
-            // The actual driver which determines the path and commands to send to the vehicle.
-            // The odometry is required for the velocity, which isn't contained
-            // in Localise2d.
-            hydronavutil::Velocity velocityCmd;
-            try {
-                velocityCmd = driver_->getCommand( inputs );
-            }
-            catch ( std::exception &e )
-            {
-                stringstream ss;
-                ss << "(while getting command from driver with inputs: " << orcalocalnav::toString(inputs) << ") failed: " << e.what();
-                throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
-            }
-            
-
-            if ( algorithmEvaluator_.get() )
-                timer.stop();
-            
-            // For big debug levels, give feedback through tracer.
-            {
-                std::stringstream ss;
-                ss << "MainThread: Setting command: " << velocityCmd;
-                context_.tracer().debug( ss.str(), 5 );
-            }
-
-            // send zero stop-command as soon we "take our hands of the wheel"
-            // (otherwise the platform will execute the last command for a while)
-            // Note that we call enabled() only once in order to avoid possibility of state
-            // change between our calls.
-            bool isEnabled = pathFollowerInterface_->enabled();
-            bool isJustDisabled = ( prevIsEnabled && !isEnabled );
-            if ( isJustDisabled ) {
-                hydronavutil::Velocity zeroVelocityCmd( 0.0, 0.0 );
-                sendCommandToPlatform( zeroVelocityCmd );
-            }
-            prevIsEnabled = isEnabled;
-
-            // keep track of our approximate motion for history
-            stats.addData( inputs.poseTime.seconds, inputs.poseTime.useconds, 
-                           inputs.localisePose, inputs.currentVelocity, 
-                           isEnabled );
-            historySS.str(" ");
-            historySS << stats.distance()<<" "<<stats.timeInMotion()<<" "<<stats.maxSpeed();
-            // keep history up to date, ready to be dumped to file when the component stops
-            context_.history().setWithFinishSequence( historySS.str() );
-
-            // Only send the command if we're enabled.
-            if ( isEnabled ) {
-                sendCommandToPlatform( velocityCmd );
-            }
-            else {
-                context_.tracer().debug( "Doing nothing because disabled" );
-                subStatus().ok();
-                continue;
-            }
-
-            std::stringstream timerSS;
-            timerSS << "MainThread: time to make and send decision: " << timer.elapsedSeconds()*1000.0 << "ms";
-            context_.tracer().debug( timerSS.str(), 3 );
-
-            if ( testMode_ && algorithmEvaluator_.get() )
-            {
-                algorithmEvaluator_->evaluate( timer.elapsedSeconds(), *testSimulator_ );
-            }
-
-            if ( testMode_ )
-            {
-                bool pathCompleted, pathFailed;
-                testSimulator_->checkProgress( pathCompleted, pathFailed );
-                if ( pathCompleted )
-                {
-                    cout<<"TRACE(mainthread.cpp): test PASSED" << endl;
-                    context_.communicator()->shutdown();
-                    break;
-                }
-                if ( pathFailed )
-                {
-                    cout << "ERROR(mainthread.cpp): test FAILED" << endl;
-                    exit(1);
-                }
-            }
-
-            checkWithOutsideWorld();
-
-            if ( inputs.isLocalisationUncertain )
-                subStatus().warning( "Localisation is uncertain, but everything else is OK." );
-            else
-                subStatus().ok();
-        } // try
-        catch ( ... ) 
-        {
-            // before doing anything else, stop the vehicle!
-            stopVehicle();
-
-            orcaice::catchMainLoopExceptions( subStatus() );
-        }
-    }
 }
 
 }

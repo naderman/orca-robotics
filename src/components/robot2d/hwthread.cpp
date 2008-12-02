@@ -65,30 +65,8 @@ HwThread::HwThread( const orcaice::Context &context ) :
 }
 
 void
-HwThread::enableDriver()
+HwThread::work()
 {
-    while ( !isStopping() ) 
-    {
-        stringstream exceptionSS;
-        try {
-            context_.tracer().info("HwThread: (Re-)Enabling driver...");
-            driver_->enable();
-            context_.tracer().info( "HwThread: Enable succeeded." );
-            return;
-        }
-        catch ( ... ) {
-            string problem = orcaice::catchExceptionsWithStatusAndSleep( "enabling hardware driver", subStatus(), gbxutilacfr::SubsystemFault, 2000 );
-
-            stateMachine_.setFault( problem );
-        }
-    }
-}
-
-void
-HwThread::walk()
-{
-    subStatus().working();
-
     stringstream exceptionSS;
     std::string reason;
 
@@ -191,6 +169,28 @@ HwThread::walk()
         }
 
     } // while
+}
+
+//////////////////////////
+
+void
+HwThread::enableDriver()
+{
+    while ( !isStopping() ) 
+    {
+        stringstream exceptionSS;
+        try {
+            context_.tracer().info("HwThread: (Re-)Enabling driver...");
+            driver_->enable();
+            context_.tracer().info( "HwThread: Enable succeeded." );
+            return;
+        }
+        catch ( ... ) {
+            string problem = orcaice::catchExceptionsWithStatusAndSleep( "enabling hardware driver", subStatus(), gbxutilacfr::SubsystemFault, 2000 );
+
+            stateMachine_.setFault( problem );
+        }
+    }
 }
 
 void

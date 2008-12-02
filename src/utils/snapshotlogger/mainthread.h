@@ -30,15 +30,15 @@ public:
     MainThread( const orcaice::Context& context );
     ~MainThread();
 
-    // from SubsystemThread
-    virtual void walk();
-
     // from gbxiceutilacfr::NotifyHandler -- called on re-init request
     // (the value of the bool is meaningless)
     virtual void handleData( const bool &request )
         { requestStore_.set( request ); }
 
 private:
+    // from SubsystemThread
+    virtual void initialise();
+    virtual void work();
 
     void initLoggers();
     void initInterface();

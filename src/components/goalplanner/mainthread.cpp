@@ -117,6 +117,161 @@ MainThread::MainThread( const orcaice::Context & context )
 {
 }
 
+void 
+MainThread::initialise()
+{
+    subStatus().setMaxHeartbeatInterval( 10.0 );
+
+    Ice::PropertiesPtr prop = context_.properties();
+    std::string prefix = context_.tag()+".Config.";
+    pathPlanTimeout_ = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"PathPlanTimeout", 10.0 );
+    velocityToFirstWaypoint_ = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"VelocityToFirstWaypoint", 1.0 );
+    checkForStaleLocaliseData_ = orcaice::getPropertyAsIntWithDefault( prop, prefix+"CheckForStaleLocaliseData", 1 );
+    enableReplan_ = orcaice::getPropertyAsIntWithDefault( prop, prefix+"EnableReplan", 0 );
+    requiredReplanRequestTime_ = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"RequiredReplanRequestTime", 2.0 );
+
+    initNetwork();
+}
+
+void 
+MainThread::work()
+{
+    subStatus().setMaxHeartbeatInterval( 3.0 );
+
+    orca::PathFollower2dData incomingPath;
+    bool requestIsOutstanding = false;
+
+    // main loop
+    while ( !isStopping() )
+    {
+        try
+        {
+            // If we have an outstanding request, service it now
+            // (but check to see if we should over-write with a new one)
+            // Otherwise, wait for a new request.
+            if ( requestIsOutstanding )
+            {
+                if ( !incomingPathStore_.isEmpty() )
+                {
+                    // Overwrite the unserviced request with the new one.
+                    incomingPathStore_.get( incomingPath );
+                }
+            }
+            else
+            {
+                //
+                // This will wait until the new path arrives
+                //
+                context_.tracer().info("Waiting for a goal path");
+                bool gotNewPath = waitForNewPath( incomingPath );
+                if ( gotNewPath )
+                {
+                    cout<<"TRACE(mainthread.cpp): Got a new path." << endl;
+                    requestIsOutstanding = true;
+                }
+                else
+                {
+                    // waitForNewPath will only exit without a new path if we're stopping.
+                    assert( isStopping() );
+                    break;
+                }
+            }
+
+            stringstream ssPath;
+            ssPath << "MainThread: Received path request: " << endl << orcaobj::toVerboseString(incomingPath);
+            context_.tracer().debug( ssPath.str() );
+
+            string sketchReason;
+            if ( orcaobj::isPathSketchy( incomingPath.path, sketchReason ) )
+            {
+                stringstream ss;
+                ss << "Sketchy path: " << orcaobj::toVerboseString(incomingPath) << endl << "  " << sketchReason;
+                subStatus().warning( ss.str() );
+            }
+
+            // special case 'stop': we received an empty path
+            if (incomingPath.path.size()==0) 
+            {
+                cout<<"TRACE(mainthread.cpp): Received an empty path; stopping robot." << endl;
+                stopRobot();
+                subStatus().ok();
+                requestIsOutstanding = false;
+                continue;
+            }
+
+            // get robot pose
+            bool isLocalisationUncertain;
+            const hydronavutil::Pose pose = getPose(isLocalisationUncertain);
+//             if ( isLocalisationUncertain )
+//             {
+//                 stringstream ss;
+//                 ss << "MainThread: Localisation is too uncertain.";
+//                 const bool isTemporary = true;
+//                 throw GoalPlanException( ss.str(), isTemporary );
+//             }
+            
+            // Adjust timing: work out how long it takes to the first waypoint based on straight-line distance 
+            // and configured velocityToFirstWaypoint_. Take the max of first wp time and the computed time.
+            addTimeToReachFirstWp( pose, incomingPath );
+
+            orca::PathPlanner2dData  plannedPath = planPath( pose, incomingPath );
+            orca::PathFollower2dData pathToSend = convertToPathFollowerData( plannedPath );
+
+            // Work out whether we're supposed to activate immediately
+            bool activateImmediately;
+            activationStore_.get( activateImmediately );
+            stringstream ss; ss << "MainThread: activateImmediately is " << activateImmediately;
+            context_.tracer().debug(ss.str());
+
+            // Send it off!
+            cout<<"TRACE(mainthread.cpp): Sending path." << endl;
+            sendPath( pathToSend, activateImmediately );
+
+            if ( isLocalisationUncertain )
+            {
+                subStatus().ok( "Generated path, but not certain about localisation.  Sent path, but will try again soon." );
+                // Slow the loop down a little before trying again.
+                sleep(1);
+            }
+            else
+            {
+                requestIsOutstanding = false;
+                subStatus().ok();
+            }
+
+        } // try
+        catch ( const GoalPlanException &e )
+        {
+            stringstream ss;
+            if ( e.isTemporary() )
+            {
+                ss << "MainThread:: Caught GoalPlanException: " << e.what() << ".  I reckon I can recover from this.";
+                context_.tracer().warning( ss.str() );
+                subStatus().warning( ss.str() );
+
+                // Slow the loop down a little before trying again.
+                IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
+            }
+            else
+            {
+                ss << "MainThread:: Caught GoalPlanException: " << e.what() << ".  Looks unrecoverable, I'm giving up.";
+                context_.tracer().error( ss.str() );
+                subStatus().fault( ss.str() );
+                requestIsOutstanding = false;
+            }
+        }
+        catch ( ... ) 
+        {
+            orcaice::catchMainLoopExceptions( subStatus() );
+
+            requestIsOutstanding = false;
+        }
+            
+    } // end of big while loop
+}
+
+//////////////////////////////
+
 void
 MainThread::initNetwork()
 {
@@ -606,157 +761,6 @@ MainThread::waitForNewPath( orca::PathFollower2dData &newPathData )
         }   
     }
     return false;
-}
-
-void 
-MainThread::walk()
-{
-    subStatus().initialising();
-    subStatus().setMaxHeartbeatInterval( 10.0 );
-
-    Ice::PropertiesPtr prop = context_.properties();
-    std::string prefix = context_.tag()+".Config.";
-    pathPlanTimeout_ = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"PathPlanTimeout", 10.0 );
-    velocityToFirstWaypoint_ = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"VelocityToFirstWaypoint", 1.0 );
-    checkForStaleLocaliseData_ = orcaice::getPropertyAsIntWithDefault( prop, prefix+"CheckForStaleLocaliseData", 1 );
-    enableReplan_ = orcaice::getPropertyAsIntWithDefault( prop, prefix+"EnableReplan", 0 );
-    requiredReplanRequestTime_ = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"RequiredReplanRequestTime", 2.0 );
-
-    initNetwork();
-
-    orca::PathFollower2dData incomingPath;
-    bool requestIsOutstanding = false;
-
-    subStatus().working();
-    subStatus().setMaxHeartbeatInterval( 3.0 );
-
-    // main loop
-    while ( !isStopping() )
-    {
-        try
-        {
-            // If we have an outstanding request, service it now
-            // (but check to see if we should over-write with a new one)
-            // Otherwise, wait for a new request.
-            if ( requestIsOutstanding )
-            {
-                if ( !incomingPathStore_.isEmpty() )
-                {
-                    // Overwrite the unserviced request with the new one.
-                    incomingPathStore_.get( incomingPath );
-                }
-            }
-            else
-            {
-                //
-                // This will wait until the new path arrives
-                //
-                context_.tracer().info("Waiting for a goal path");
-                bool gotNewPath = waitForNewPath( incomingPath );
-                if ( gotNewPath )
-                {
-                    cout<<"TRACE(mainthread.cpp): Got a new path." << endl;
-                    requestIsOutstanding = true;
-                }
-                else
-                {
-                    // waitForNewPath will only exit without a new path if we're stopping.
-                    assert( isStopping() );
-                    break;
-                }
-            }
-
-            stringstream ssPath;
-            ssPath << "MainThread: Received path request: " << endl << orcaobj::toVerboseString(incomingPath);
-            context_.tracer().debug( ssPath.str() );
-
-            string sketchReason;
-            if ( orcaobj::isPathSketchy( incomingPath.path, sketchReason ) )
-            {
-                stringstream ss;
-                ss << "Sketchy path: " << orcaobj::toVerboseString(incomingPath) << endl << "  " << sketchReason;
-                subStatus().warning( ss.str() );
-            }
-
-            // special case 'stop': we received an empty path
-            if (incomingPath.path.size()==0) 
-            {
-                cout<<"TRACE(mainthread.cpp): Received an empty path; stopping robot." << endl;
-                stopRobot();
-                subStatus().ok();
-                requestIsOutstanding = false;
-                continue;
-            }
-
-            // get robot pose
-            bool isLocalisationUncertain;
-            const hydronavutil::Pose pose = getPose(isLocalisationUncertain);
-//             if ( isLocalisationUncertain )
-//             {
-//                 stringstream ss;
-//                 ss << "MainThread: Localisation is too uncertain.";
-//                 const bool isTemporary = true;
-//                 throw GoalPlanException( ss.str(), isTemporary );
-//             }
-            
-            // Adjust timing: work out how long it takes to the first waypoint based on straight-line distance 
-            // and configured velocityToFirstWaypoint_. Take the max of first wp time and the computed time.
-            addTimeToReachFirstWp( pose, incomingPath );
-
-            orca::PathPlanner2dData  plannedPath = planPath( pose, incomingPath );
-            orca::PathFollower2dData pathToSend = convertToPathFollowerData( plannedPath );
-
-            // Work out whether we're supposed to activate immediately
-            bool activateImmediately;
-            activationStore_.get( activateImmediately );
-            stringstream ss; ss << "MainThread: activateImmediately is " << activateImmediately;
-            context_.tracer().debug(ss.str());
-
-            // Send it off!
-            cout<<"TRACE(mainthread.cpp): Sending path." << endl;
-            sendPath( pathToSend, activateImmediately );
-
-            if ( isLocalisationUncertain )
-            {
-                subStatus().ok( "Generated path, but not certain about localisation.  Sent path, but will try again soon." );
-                // Slow the loop down a little before trying again.
-                sleep(1);
-            }
-            else
-            {
-                requestIsOutstanding = false;
-                subStatus().ok();
-            }
-
-        } // try
-        catch ( const GoalPlanException &e )
-        {
-            stringstream ss;
-            if ( e.isTemporary() )
-            {
-                ss << "MainThread:: Caught GoalPlanException: " << e.what() << ".  I reckon I can recover from this.";
-                context_.tracer().warning( ss.str() );
-                subStatus().warning( ss.str() );
-
-                // Slow the loop down a little before trying again.
-                IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
-            }
-            else
-            {
-                ss << "MainThread:: Caught GoalPlanException: " << e.what() << ".  Looks unrecoverable, I'm giving up.";
-                context_.tracer().error( ss.str() );
-                subStatus().fault( ss.str() );
-                requestIsOutstanding = false;
-            }
-        }
-        catch ( ... ) 
-        {
-            orcaice::catchMainLoopExceptions( subStatus() );
-
-            requestIsOutstanding = false;
-        }
-            
-    } // end of big while loop
 }
 
 }

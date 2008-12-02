@@ -98,6 +98,52 @@ MainThread::MainThread( const orcaice::Context & context ) :
 {
 }
 
+void 
+MainThread::initialise()
+{
+    // multi-try
+    orcaice::activate( context_, this, subsysName() );
+     
+    // provided interface
+    systemStatusIface_ = new orcaifaceimpl::SystemStatusImpl( "SystemStatus", context_ );
+    systemStatusIface_->initInterface( this );
+
+    // create the monitors
+    createMonitors();
+}
+
+void
+MainThread::work()
+{     
+    orca::SystemStatusData data;
+    multimap<string,orca::ObservedComponentStatus> obsCompStateMultiMap;
+    const int sleepTimeSec = 2;
+    
+    while ( !isStopping() )
+    {
+        context_.tracer().info( "MainThread: waiting..." );
+        
+        // get status data from all monitors
+        obsCompStateMultiMap.clear();
+        for (unsigned int i=0; i<monitors_.size(); i++)
+        {
+            orca::ObservedComponentStatus obsCompStat;
+            string platformName;
+            monitors_[i].getComponentStatus( obsCompStat );
+            obsCompStateMultiMap.insert(pair<string,orca::ObservedComponentStatus>(obsCompStat.name.platform,obsCompStat));
+        }
+        
+        // convert and tell the world
+        convert( obsCompStateMultiMap, data, sleepTimeSec );
+        systemStatusIface_->localSetAndSend( data );
+                
+        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(sleepTimeSec));
+        
+    } // end of main loop
+}
+
+////////////////////////////////
+
 vector<PlatformComponentPair>
 MainThread::getPlatformComponentPairs()
 {   
@@ -140,54 +186,6 @@ MainThread::createMonitors()
         ComponentMonitor mon( jobQueue_, pairs[i].platformName, pairs[i].componentName, context_ );
         monitors_.push_back(mon);
     }
-}
-
-void
-MainThread::walk()
-{    
-    subStatus().initialising();
-
-    // multi-try
-    orcaice::activate( context_, this, subsysName() );
-     
-    // provided interface
-    systemStatusIface_ = new orcaifaceimpl::SystemStatusImpl( "SystemStatus", context_ );
-    systemStatusIface_->initInterface( this );
-
-    // create the monitors
-    createMonitors();
-    
-    subStatus().working();
-
-    //
-    // Main loop
-    //
-    
-    orca::SystemStatusData data;
-    multimap<string,orca::ObservedComponentStatus> obsCompStateMultiMap;
-    const int sleepTimeSec = 2;
-    
-    while ( !isStopping() )
-    {
-        context_.tracer().info( "MainThread: waiting..." );
-        
-        // get status data from all monitors
-        obsCompStateMultiMap.clear();
-        for (unsigned int i=0; i<monitors_.size(); i++)
-        {
-            orca::ObservedComponentStatus obsCompStat;
-            string platformName;
-            monitors_[i].getComponentStatus( obsCompStat );
-            obsCompStateMultiMap.insert(pair<string,orca::ObservedComponentStatus>(obsCompStat.name.platform,obsCompStat));
-        }
-        
-        // convert and tell the world
-        convert( obsCompStateMultiMap, data, sleepTimeSec );
-        systemStatusIface_->localSetAndSend( data );
-                
-        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(sleepTimeSec));
-        
-    } // end of main loop
 }
 
 }

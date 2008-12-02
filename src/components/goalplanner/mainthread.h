@@ -37,11 +37,12 @@ public:
 
     MainThread( const orcaice::Context& context );
 
-    // from SubsystemThread
-    virtual void walk();
-
 private:
     
+    // from SubsystemThread
+    virtual void initialise();
+    virtual void work();
+
     void stopRobot();
     void initNetwork();
 

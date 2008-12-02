@@ -38,6 +38,70 @@ MainThread::~MainThread()
     delete driver_;
 }
 
+void 
+MainThread::initialise()
+{
+    // multi-try function, will continue trying until successful or ctrl-c
+    orcaice::activate( context_, this );
+
+    initNetwork();
+    initDriver();
+
+    assert( driver_ );
+    assert( laser_ );
+    assert( odometry_ );
+    assert( commandPrx_ );
+}
+
+void 
+MainThread::work()
+{
+    // temp objects
+    orca::RangeScanner2dDataPtr laserData;
+    orca::Odometry2dData odometryData;
+    orca::VelocityControl2dData commandData;
+    
+    const int laserTimeoutMs = 1000;
+
+    while ( !isStopping() )
+    {
+        //
+        // Wait for next laser data
+        //
+        if ( laser_->buffer().getAndPopNext( laserData, laserTimeoutMs ) ) {
+            // timeout without a laser scan. 
+            // this is a sign of a problem. a real component would have to deal with this
+            stringstream ss; ss<<"No new laser scan after "<<laserTimeoutMs<<"ms";
+            context_.tracer().warning( ss.str() );
+            continue;
+        }
+
+        //
+        // Get the latest odometry data, do not wait for the next one
+        // NOTE: we already made sure there's some data in Store, see initNetwork()
+        //
+        odometry_->store().get( odometryData );
+        // NOTE: the odometry data is not aligned with the laser scan
+        // in a real application, we would probably need to align them somehow (e.g. interpolate)
+
+        //
+        // Compute motion command
+        //
+        driver_->computeCommand( laserData, odometryData, commandData );
+
+        context_.tracer().debug( ifaceutil::toString(commandData), 5 );
+
+        //
+        // send motion command to the robot
+        //
+        commandPrx_->setCommand( commandData );
+
+        subStatus().heartbeat();
+    }
+}
+
+////////////////////
+
 void
 MainThread::initNetwork()
 {
@@ -102,65 +166,4 @@ MainThread::initDriver()
     }
 
     context_.tracer().debug("driver instantiated",5);
-}
-
-void 
-MainThread::walk()
-{
-    // multi-try function, will continue trying until successful or ctrl-c
-    orcaice::activate( context_, this );
-
-    initNetwork();
-    initDriver();
-
-    assert( driver_ );
-    assert( laser_ );
-    assert( odometry_ );
-    assert( commandPrx_ );
-
-    // we are fully initialized
-    subStatus().ok();
-
-    // temp objects
-    orca::RangeScanner2dDataPtr laserData;
-    orca::Odometry2dData odometryData;
-    orca::VelocityControl2dData commandData;
-    
-    const int laserTimeoutMs = 1000;
-
-    while ( !isStopping() )
-    {
-        //
-        // Wait for next laser data
-        //
-        if ( laser_->buffer().getAndPopNext( laserData, laserTimeoutMs ) ) {
-            // timeout without a laser scan. 
-            // this is a sign of a problem. a real component would have to deal with this
-            stringstream ss; ss<<"No new laser scan after "<<laserTimeoutMs<<"ms";
-            context_.tracer().warning( ss.str() );
-            continue;
-        }
-
-        //
-        // Get the latest odometry data, do not wait for the next one
-        // NOTE: we already made sure there's some data in Store, see initNetwork()
-        //
-        odometry_->store().get( odometryData );
-        // NOTE: the odometry data is not aligned with the laser scan
-        // in a real application, we would probably need to align them somehow (e.g. interpolate)
-
-        //
-        // Compute motion command
-        //
-        driver_->computeCommand( laserData, odometryData, commandData );
-
-        context_.tracer().debug( ifaceutil::toString(commandData), 5 );
-
-        //
-        // send motion command to the robot
-        //
-        commandPrx_->setCommand( commandData );
-
-        subStatus().heartbeat();
-    }
 }

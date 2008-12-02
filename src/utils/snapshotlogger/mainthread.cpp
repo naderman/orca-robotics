@@ -56,6 +56,46 @@ MainThread::~MainThread()
     }
 }
 
+void 
+MainThread::initialise()
+{
+    // multi-try activation function
+    orcaice::activate( context_, this, subsysName() );
+
+    initLoggers();
+    initInterface();
+}
+
+void
+MainThread::work()
+{
+    subStatus().setMaxHeartbeatInterval( 5.0 );
+
+    while ( !isStopping() )
+    {
+        try {
+            bool dummy;
+            const int TIMEOUT_MS = 1000;
+            int ret = requestStore_.getNext( dummy, TIMEOUT_MS );
+            if ( ret == 0 )
+            {
+                takeSnapshot();
+            
+                // Clear any requests that might have arrived while we were taking the snapshot
+                if ( !requestStore_.isEmpty() )
+                    requestStore_.get( dummy );
+            }
+            subStatus().ok();
+        }
+        catch ( ... ) 
+        {
+            orcaice::catchMainLoopExceptions( subStatus() );
+        }
+    }
+}
+
+///////////////////
+
 void
 MainThread::initLoggers()
 {
@@ -286,42 +326,6 @@ MainThread::takeSnapshot()
     if ( !exceptionSS.str().empty() )
     {
         throw gbxutilacfr::Exception( ERROR_INFO, exceptionSS.str() );
-    }
-}
-
-void
-MainThread::walk()
-{
-    // multi-try activation function
-    orcaice::activate( context_, this, subsysName() );
-
-    initLoggers();
-    initInterface();
-
-    // init subsystem is done
-    subStatus().ok( "" );
-    subStatus().setMaxHeartbeatInterval( 5.0 );
-
-    while ( !isStopping() )
-    {
-        try {
-            bool dummy;
-            const int TIMEOUT_MS = 1000;
-            int ret = requestStore_.getNext( dummy, TIMEOUT_MS );
-            if ( ret == 0 )
-            {
-                takeSnapshot();
-            
-                // Clear any requests that might have arrived while we were taking the snapshot
-                if ( !requestStore_.isEmpty() )
-                    requestStore_.get( dummy );
-            }
-            subStatus().ok();
-        }
-        catch ( ... ) 
-        {
-            orcaice::catchMainLoopExceptions( subStatus() );
-        }
     }
 }
 

@@ -11,66 +11,69 @@
 #ifndef ORCAICE_SUBSYSTEM_THREAD_H
 #define ORCAICE_SUBSYSTEM_THREAD_H
 
-#include <gbxsickacfr/gbxiceutilacfr/thread.h>
-#include <gbxutilacfr/substatus.h>
-#include <gbxutilacfr/status.h>
-#include <gbxutilacfr/tracer.h>
+#include <orcaice/substatusthread.h>
 
 namespace orcaice {
 
 /*!
-@brief A version of the Thread class which catches all possible exceptions and integrates some Status operations.
+@brief A class implementing the common subsystem state machine.
 
-If an exception is caught when the thread is not stopping, a status fault is issued.
-Then the thread will wait for someone to call stop().
+The state machine is defined by gbxutilacfr::Status.
+  
+Re-implementation all three functions is optional.
 
-To use this class, simply implement the pure virtual walk() function.
 @verbatim
-void MyThread::walk()
+void MyThread::initialise()
 {
-    // initialize
+    while ( !isStopping() )
+    {
+        // initialise
+    }
+}
 
+void MyThread::work()
+{
     // main loop
     while ( !isStopping() )
     {
         // do something
     }
-
-    // clean up
 }
 @endverbatim
 
+@endverbatim
  */
-class SubsystemThread : public gbxiceutilacfr::Thread
+class SubsystemThread : public orcaice::SubstatusThread
 {
-public:
-    //! Supply an optional Tracer and Status. The optional @c subsysName is used in reporting status changes
-    //! as the subsystem name.
+public: 
+    //! Constructor.
     SubsystemThread( gbxutilacfr::Tracer& tracer, gbxutilacfr::Status& status, const std::string& subsysName="SubsystemThread" );
+    virtual ~SubsystemThread() {};
 
-    // from IceUtil::Thread
-    //! This implementation calls walk(), catches all possible exceptions, prints out 
-    //! errors and waits for someone to call stop().
-    virtual void run();
+protected:
+    // implementation note: FSM actions need to be protected so that the derived class
+    // can call them without re-implementing.
 
-    //! Access to subsystem status.
-    gbxutilacfr::SubStatus& subStatus() { return subStatus_; };
+    //! Action performed when in Intialising state.
+    //! Default imlementation does nothing.
+    virtual void initialise() {};
+    
+    //! Action performed when in Working state.
+    //! Default imlementation does nothing.
+    virtual void work() {};
 
-    //! Returns subsystem name assigned to this thread.
-    std::string subsysName() const { return subStatus_.name(); };
+    //! Action performed when in Finalising state.
+    //! Default imlementation does nothing.
+    virtual void finalise() {};
 
 private:
+    // from SubstatusThread
+    virtual void walk();
 
-    //! Implement this function in the derived class and put here all the stuff which your
-    //! thread needs to do.
-    virtual void walk()=0;
-
-    gbxutilacfr::Tracer& tracer_;
-    gbxutilacfr::SubStatus subStatus_;
 };
 //! A smart pointer to the SubsystemThread class.
-typedef IceUtil::Handle<SubsystemThread> SubsystemThreadPtr;
+typedef IceUtil::Handle<SubsystemThread> SubsystemPtr;
 
-} // end namespace
+}
 
 #endif

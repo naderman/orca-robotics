@@ -11,20 +11,20 @@
 #ifndef MAIN_THREAD_H
 #define MAIN_THREAD_H
 
-#include <orcaice/subsystem.h>
+#include <orcaice/subsystemthread.h>
 #include <orcaice/context.h>
 #include <orcaifaceimpl/rangescanner2d.h>
 
 namespace lasermon
 {
 
-class MainThread : public orcaice::Subsystem
+class MainThread : public orcaice::SubsystemThread
 {
 public:
     MainThread( const orcaice::Context &context );
 
 private:
-    // from Subsystem
+    // from SubsystemThread
     virtual void initialise();
 //     virtual void work();
 //     virtual void finalise();

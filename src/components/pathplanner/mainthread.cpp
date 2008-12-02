@@ -31,6 +31,163 @@ MainThread::MainThread( const orcaice::Context & context )
 {
 }
 
+void 
+MainThread::initialise()
+{
+    subStatus().setMaxHeartbeatInterval( 30.0 );
+    
+    activate( context_, this, subsysName() );
+
+    initNetwork();
+
+    // Initialising the driver may require a long time to process the map.
+    // (this may still lead to a timeout if somebody is waiting for a status update.
+    // ideally, map processing should be done in a separate thread.)
+    subStatus().setMaxHeartbeatInterval( -1 );
+
+    initDriver();
+    assert( driver_.get() );
+}
+
+void 
+MainThread::work()
+{
+    subStatus().setMaxHeartbeatInterval( 5 );
+
+    orca::PathPlanner2dTask task; 
+    orca::PathPlanner2dData pathData;   
+
+    while ( !isStopping() )
+    {
+        try
+        {
+            
+            //
+            //  ======== waiting for a task (blocking) =======
+            //
+            context_.tracer().info("waiting for a new task");
+            bool haveTask=false;
+            
+            while ( !isStopping() )
+            {
+                int timeoutMs = 1000;
+                int ret=0;
+                try {
+                    pathPlannerTaskBuffer_.getAndPop( task );
+                }
+                catch ( const gbxutilacfr::Exception & e ) {
+                    ret = pathPlannerTaskBuffer_.getAndPopNext( task, timeoutMs );
+                }
+                if ( ret==0 ) {
+                    haveTask = true;
+                    context_.tracer().info("task arrived");  
+                    
+                    std::string sketchReason;
+                    if ( orcaobj::isPathSketchy( task.coarsePath, sketchReason ) )
+                    {
+                        stringstream ss;
+                        ss << "Incoming task is sketchy: " << orcaobj::toVerboseString(task)
+                           << endl << sketchReason;
+                        subStatus().warning( ss.str() );
+                    }
+
+                    break;
+                }
+                subStatus().ok();
+            }
+            
+            // the only way of getting out of the above loop without a task
+            // is if the user pressed Ctrl+C, ie we have to quit
+            if (!haveTask) break;
+            
+            //
+            // ===== tell driver to compute the path ========
+            //
+            
+            try 
+            {
+                context_.tracer().info("telling driver to compute the path now");
+                pathData.timeStamp = task.timeStamp;
+                driver_->computePath( task, pathData.path );
+                pathData.result = orca::PathOk;
+                pathData.resultDescription = "All good";
+            }
+            catch ( hydrointerfaces::PathPlanner2d::PathStartNotValidException &e )
+            {
+                std::stringstream ss;
+                ss << "Couldn't compute path: " << orcaobj::toVerboseString(task) << endl << "Problem was: " << e.what();
+                context_.tracer().error( ss.str() );
+                pathData.resultDescription = ss.str();
+                pathData.result = orca::PathStartNotValid;
+            }
+            catch ( hydrointerfaces::PathPlanner2d::PathDestinationNotValidException &e )
+            {
+                std::stringstream ss;
+                ss << "Couldn't compute path: " << orcaobj::toVerboseString(task) << endl << "Problem was: " << e.what();
+                context_.tracer().error( ss.str() );
+                pathData.resultDescription = ss.str();
+                pathData.result = orca::PathDestinationNotValid;
+            }
+            catch ( hydrointerfaces::PathPlanner2d::PathDestinationUnreachableException &e )
+            {
+                std::stringstream ss;
+                ss << "Couldn't compute path: " << orcaobj::toVerboseString(task) << endl << "Problem was: " << e.what();
+                context_.tracer().error( ss.str() );
+                pathData.resultDescription = ss.str();
+                pathData.result = orca::PathDestinationUnreachable;
+            }
+            catch ( hydrointerfaces::PathPlanner2d::Exception &e )
+            {
+                std::stringstream ss;
+                ss << "Couldn't compute path: " << orcaobj::toVerboseString(task) << endl << "Problem was: " << e.what();
+                context_.tracer().error( ss.str() );
+                pathData.resultDescription = ss.str();
+                pathData.result = orca::PathOtherError;
+            }
+
+            //
+            // ======= send result (including error code) ===============
+            //
+            context_.tracer().info("MainThread: sending off the resulting path");
+            context_.tracer().debug(orcaobj::toVerboseString(pathData));
+    
+            // There are three methods to let other components know about the computed path:
+            // 1. using the proxy
+            if (task.prx!=0)
+            {
+                task.prx->setData( pathData );
+            }
+            else
+            {
+                context_.tracer().warning( "MainThread: task.prx was zero!" );
+            }
+            // 2. and 3.: use getData or icestorm
+            pathPlannerI_->localSetData( pathData );
+    
+            // resize the pathData: future tasks might not compute a path successfully and we would resend the old path
+            pathData.path.resize( 0 );
+    
+            int numTasksWaiting = pathPlannerTaskBuffer_.size();
+            if ( numTasksWaiting > 1 )
+            {
+                stringstream ss;
+                ss << "MainThread: Tasks are piling up: there are " << numTasksWaiting << " in the queue.";
+                subStatus().warning( ss.str() );
+            }
+            else
+            {
+                subStatus().ok();
+            }
+        } // try
+        catch ( ... ) 
+        {
+            orcaice::catchMainLoopExceptions( subStatus() );
+        }
+    } // end of while
+}
+
+/////////////
+
 void
 MainThread::initNetwork()
 {
@@ -166,159 +323,6 @@ MainThread::initDriver()
 //                                context_ ) );
 
     context_.tracer().debug("driver instantiated",5);
-}
-
-void 
-MainThread::walk()
-{
-    subStatus().initialising();
-    subStatus().setMaxHeartbeatInterval( 30.0 );
-    
-    activate( context_, this, subsysName() );
-
-    initNetwork();
-
-    subStatus().ok();
-    // Initialising the driver may require a long time to process the map.
-    // (this may still lead to a timeout if somebody is waiting for a status update.
-    // ideally, map processing should be done in a separate thread.)
-    subStatus().setMaxHeartbeatInterval( -1 );
-
-    initDriver();
-    assert( driver_.get() );
-
-    orca::PathPlanner2dTask task; 
-    orca::PathPlanner2dData pathData;   
-
-    subStatus().working();
-    subStatus().setMaxHeartbeatInterval( 5 );
-    while ( !isStopping() )
-    {
-        try
-        {
-            
-            //
-            //  ======== waiting for a task (blocking) =======
-            //
-            context_.tracer().info("waiting for a new task");
-            bool haveTask=false;
-            
-            while ( !isStopping() )
-            {
-                int timeoutMs = 1000;
-                int ret=0;
-                try {
-                    pathPlannerTaskBuffer_.getAndPop( task );
-                }
-                catch ( const gbxutilacfr::Exception & e ) {
-                    ret = pathPlannerTaskBuffer_.getAndPopNext( task, timeoutMs );
-                }
-                if ( ret==0 ) {
-                    haveTask = true;
-                    context_.tracer().info("task arrived");  
-                    
-                    std::string sketchReason;
-                    if ( orcaobj::isPathSketchy( task.coarsePath, sketchReason ) )
-                    {
-                        stringstream ss;
-                        ss << "Incoming task is sketchy: " << orcaobj::toVerboseString(task)
-                           << endl << sketchReason;
-                        subStatus().warning( ss.str() );
-                    }
-
-                    break;
-                }
-                subStatus().ok();
-            }
-            
-            // the only way of getting out of the above loop without a task
-            // is if the user pressed Ctrl+C, ie we have to quit
-            if (!haveTask) break;
-            
-            //
-            // ===== tell driver to compute the path ========
-            //
-            
-            try 
-            {
-                context_.tracer().info("telling driver to compute the path now");
-                pathData.timeStamp = task.timeStamp;
-                driver_->computePath( task, pathData.path );
-                pathData.result = orca::PathOk;
-                pathData.resultDescription = "All good";
-            }
-            catch ( hydrointerfaces::PathPlanner2d::PathStartNotValidException &e )
-            {
-                std::stringstream ss;
-                ss << "Couldn't compute path: " << orcaobj::toVerboseString(task) << endl << "Problem was: " << e.what();
-                context_.tracer().error( ss.str() );
-                pathData.resultDescription = ss.str();
-                pathData.result = orca::PathStartNotValid;
-            }
-            catch ( hydrointerfaces::PathPlanner2d::PathDestinationNotValidException &e )
-            {
-                std::stringstream ss;
-                ss << "Couldn't compute path: " << orcaobj::toVerboseString(task) << endl << "Problem was: " << e.what();
-                context_.tracer().error( ss.str() );
-                pathData.resultDescription = ss.str();
-                pathData.result = orca::PathDestinationNotValid;
-            }
-            catch ( hydrointerfaces::PathPlanner2d::PathDestinationUnreachableException &e )
-            {
-                std::stringstream ss;
-                ss << "Couldn't compute path: " << orcaobj::toVerboseString(task) << endl << "Problem was: " << e.what();
-                context_.tracer().error( ss.str() );
-                pathData.resultDescription = ss.str();
-                pathData.result = orca::PathDestinationUnreachable;
-            }
-            catch ( hydrointerfaces::PathPlanner2d::Exception &e )
-            {
-                std::stringstream ss;
-                ss << "Couldn't compute path: " << orcaobj::toVerboseString(task) << endl << "Problem was: " << e.what();
-                context_.tracer().error( ss.str() );
-                pathData.resultDescription = ss.str();
-                pathData.result = orca::PathOtherError;
-            }
-
-            //
-            // ======= send result (including error code) ===============
-            //
-            context_.tracer().info("MainThread: sending off the resulting path");
-            context_.tracer().debug(orcaobj::toVerboseString(pathData));
-    
-            // There are three methods to let other components know about the computed path:
-            // 1. using the proxy
-            if (task.prx!=0)
-            {
-                task.prx->setData( pathData );
-            }
-            else
-            {
-                context_.tracer().warning( "MainThread: task.prx was zero!" );
-            }
-            // 2. and 3.: use getData or icestorm
-            pathPlannerI_->localSetData( pathData );
-    
-            // resize the pathData: future tasks might not compute a path successfully and we would resend the old path
-            pathData.path.resize( 0 );
-    
-            int numTasksWaiting = pathPlannerTaskBuffer_.size();
-            if ( numTasksWaiting > 1 )
-            {
-                stringstream ss;
-                ss << "MainThread: Tasks are piling up: there are " << numTasksWaiting << " in the queue.";
-                subStatus().warning( ss.str() );
-            }
-            else
-            {
-                subStatus().ok();
-            }
-        } // try
-        catch ( ... ) 
-        {
-            orcaice::catchMainLoopExceptions( subStatus() );
-        }
-    } // end of while
 }
 
 }

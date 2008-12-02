@@ -26,9 +26,11 @@ class MainThread : public orcaice::SubsystemThread
 public:
     MainThread( ImageQueue* imageQueue, const orcaice::Context& context );
 
-    virtual void walk();
-
 private:
+    // from SubsystemThread
+    virtual void initialise();
+    virtual void work();
+
     void init();
 
     //circular buffered consumer for recieving data

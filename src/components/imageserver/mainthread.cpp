@@ -22,6 +22,69 @@ MainThread::MainThread( const orcaice::Context &context )
 {
 }
 
+void 
+MainThread::initialise()
+{
+    context_.tracer().info( "Setting up Data Pointers" );
+    
+       // These functions catch their exceptions.
+    activate( context_, this, subsysName() );
+    
+    context_.tracer().info( "Setting up Hardware Interface" );
+    initHardwareDriver();
+    context_.tracer().info( "Setting up Network Interface" );
+    initNetworkInterface();
+    
+    // Set up the image objects
+    orcaImageData_ = new orca::ImageData;
+    orcaImageData_->data.resize( config_.size );
+    orcaImageData_->description = orcaImageDescr_;
+
+    // Point the pointers in hydroImageData_ at orcaImageData_
+    hydroImageData_.data      = &(orcaImageData_->data[0]);
+}
+
+void
+MainThread::work()
+{
+    while ( !isStopping() )
+    {
+        stringstream exceptionSS;
+        try 
+        {
+            // this blocks until new data arrives
+            readData();
+            
+            imageInterface_->localSetAndSend( orcaImageData_ );
+            if ( hydroImageData_.haveWarnings )
+            {
+                subStatus().warning( hydroImageData_.warnings );
+            }
+            else
+            {
+                subStatus().ok();
+            }
+
+            stringstream ss;
+            ss << "MainThread: Read image data: " << orcaobj::toString(orcaImageData_);
+            context_.tracer().debug( ss.str(), 5 );
+        } // end of try
+        catch ( ... ) 
+        {
+            orcaice::catchMainLoopExceptions( subStatus() );
+
+            // Re-initialise the driver, unless we are stopping
+            if ( !isStopping() ) {
+                initHardwareDriver();
+            }
+        }
+    } // end of while
+
+    // Image hardware will be shut down in the driver's destructor.
+}
+
+////////////////////////////
+
 void
 MainThread::initNetworkInterface()
 {
@@ -62,69 +125,4 @@ MainThread::readData()
 
     orcaImageData_->timeStamp.seconds  = hydroImageData_.timeStampSec;
     orcaImageData_->timeStamp.useconds = hydroImageData_.timeStampUsec;
-}
-
-void
-MainThread::walk()
-{
-    subStatus().initialising();
-    context_.tracer().info( "Setting up Data Pointers" );
-    
-       // These functions catch their exceptions.
-    activate( context_, this, subsysName() );
-    
-    context_.tracer().info( "Setting up Hardware Interface" );
-    initHardwareDriver();
-    context_.tracer().info( "Setting up Network Interface" );
-    initNetworkInterface();
-    
-    // Set up the image objects
-    orcaImageData_ = new orca::ImageData;
-    orcaImageData_->data.resize( config_.size );
-    orcaImageData_->description = orcaImageDescr_;
-
-    // Point the pointers in hydroImageData_ at orcaImageData_
-    hydroImageData_.data      = &(orcaImageData_->data[0]);
-
-    subStatus().working();
-    context_.tracer().info( "Running..." );
-    
-    //
-    // IMPORTANT: Have to keep this loop rolling, because the '!isStopping()' call checks for requests to shut down.
-    //            So we have to avoid getting stuck anywhere within this main loop.
-    //
-    while ( !isStopping() )
-    {
-        stringstream exceptionSS;
-        try 
-        {
-            // this blocks until new data arrives
-            readData();
-            
-            imageInterface_->localSetAndSend( orcaImageData_ );
-            if ( hydroImageData_.haveWarnings )
-            {
-                subStatus().warning( hydroImageData_.warnings );
-            }
-            else
-            {
-                subStatus().ok();
-            }
-
-            stringstream ss;
-            ss << "MainThread: Read image data: " << orcaobj::toString(orcaImageData_);
-            context_.tracer().debug( ss.str(), 5 );
-        } // end of try
-        catch ( ... ) 
-        {
-            orcaice::catchMainLoopExceptions( subStatus() );
-
-            // Re-initialise the driver, unless we are stopping
-            if ( !isStopping() ) {
-                initHardwareDriver();
-            }
-        }
-    } // end of while
-
-    // Image hardware will be shut down in the driver's destructor.
 }

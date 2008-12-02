@@ -57,20 +57,24 @@ using namespace std;
 using namespace orcamon;
 
 MainThread::MainThread( const orcaice::Context &context ) : 
-    SafeThread( context.tracer() ),
+    orcaice::SubsystemThread( context.tracer(), context.status(), "MainThread" ),
     context_(context)
 {
 }
 
-void
-MainThread::walk()
+void 
+MainThread::initialise()
 {
     //
     // ENABLE NETWORK CONNECTIONS
     //
     // multi-try function
     orcaice::activate( context_, this );
+}
 
+void
+MainThread::work()
+{
     //
     // REQUIRED INTERFACE: Generic
     //

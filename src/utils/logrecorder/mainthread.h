@@ -34,10 +34,10 @@ public:
     MainThread( const orcaice::Context& context );
     ~MainThread();
 
-    // from SubsystemThread
-    virtual void walk();
-
 private:
+    // from SubsystemThread
+    virtual void initialise();
+    // this subsystem does not work!
 
     void loadPluginLibraries( const std::string &factoryLibNames );
     // throws exceptions if it can't create the logger

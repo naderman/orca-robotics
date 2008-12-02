@@ -42,7 +42,7 @@ namespace {
 }
 
 MainThread::MainThread( const orcaice::Context &context ) : 
-    orcaice::Subsystem( context.tracer(), context.status(), "MainThread" ),
+    orcaice::SubsystemThread( context.tracer(), context.status(), "MainThread" ),
     context_(context)
 {
 }
@@ -60,51 +60,6 @@ MainThread::initialise()
     
     initNetworkInterface();
 }
-
-void
-MainThread::initNetworkInterface()
-{
-    //
-    // ENABLE NETWORK CONNECTIONS
-    //
-    // multi-try function
-    orcaice::activate( context_, this, subsysName() );
-    
-    //
-    // EXTERNAL REQUIRED INTERFACES
-    //           
-    odometry2dConsumer_ = new orcaifaceimpl::BufferedOdometry2dConsumerImpl( 10, gbxiceutilacfr::BufferTypeCircular,context_);
-    // multi-try function
-    odometry2dConsumer_->subscribeWithTag( "Odometry2d", this, subsysName() );
-
-    //
-    // Get vehicleDescription
-    //
-    orca::Odometry2dPrx odometryPrx;
-    // multi-try function
-    orcaice::connectToInterfaceWithTag<orca::Odometry2dPrx>( context_, odometryPrx, "Odometry2d", this );
-    
-    orca::VehicleDescription vehicleDescription;
-    while ( !isStopping() )
-    {
-        try
-        {
-            vehicleDescription = odometryPrx->getDescription();
-            break;
-        }
-        catch ( ... ) {
-            orcaice::catchExceptionsWithStatusAndSleep( "getting vehicle description", subStatus(), gbxutilacfr::SubsystemFault, 3000 );
-        }   
-    }
-    
-    // 
-    // EXTERNAL PROVIDED INTERFACE
-    //
-    localiseInterface_ = new orcaifaceimpl::Localise2dImpl( vehicleDescription.geometry, "Localise2d", context_);
-    // multi-try function
-    localiseInterface_->initInterface( this, subsysName() );
-}
-
 
 void
 MainThread::work()
@@ -150,4 +105,50 @@ MainThread::work()
             orcaice::catchMainLoopExceptions( subStatus() );
         }
     }
+}
+
+/////////////////////////////////
+
+void
+MainThread::initNetworkInterface()
+{
+    //
+    // ENABLE NETWORK CONNECTIONS
+    //
+    // multi-try function
+    orcaice::activate( context_, this, subsysName() );
+    
+    //
+    // EXTERNAL REQUIRED INTERFACES
+    //           
+    odometry2dConsumer_ = new orcaifaceimpl::BufferedOdometry2dConsumerImpl( 10, gbxiceutilacfr::BufferTypeCircular,context_);
+    // multi-try function
+    odometry2dConsumer_->subscribeWithTag( "Odometry2d", this, subsysName() );
+
+    //
+    // Get vehicleDescription
+    //
+    orca::Odometry2dPrx odometryPrx;
+    // multi-try function
+    orcaice::connectToInterfaceWithTag<orca::Odometry2dPrx>( context_, odometryPrx, "Odometry2d", this );
+    
+    orca::VehicleDescription vehicleDescription;
+    while ( !isStopping() )
+    {
+        try
+        {
+            vehicleDescription = odometryPrx->getDescription();
+            break;
+        }
+        catch ( ... ) {
+            orcaice::catchExceptionsWithStatusAndSleep( "getting vehicle description", subStatus(), gbxutilacfr::SubsystemFault, 3000 );
+        }   
+    }
+    
+    // 
+    // EXTERNAL PROVIDED INTERFACE
+    //
+    localiseInterface_ = new orcaifaceimpl::Localise2dImpl( vehicleDescription.geometry, "Localise2d", context_);
+    // multi-try function
+    localiseInterface_->initInterface( this, subsysName() );
 }

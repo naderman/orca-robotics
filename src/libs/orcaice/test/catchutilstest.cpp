@@ -12,7 +12,7 @@
 
 #include <orcaice/application.h>
 #include <orcaice/component.h>
-#include <orcaice/subsystem.h>
+#include <orcaice/subsystemthread.h>
 #include <orcaice/catchutils.h>
 #include <orcaice/context.h>
 
@@ -29,10 +29,10 @@ enum Config
     ExitFromFinalise        = 0x10000
 };
 
-class TestSubsystem : public orcaice::Subsystem
+class TestThread : public orcaice::SubsystemThread
 {
 public: 
-    TestSubsystem( Config config, const orcaice::Context &context );
+    TestThread( Config config, const orcaice::Context &context );
 
 private:
     virtual void initialise();
@@ -42,17 +42,17 @@ private:
     orcaice::Context context_;
 };
 
-TestSubsystem::TestSubsystem( Config config, const orcaice::Context &context ) :
-    orcaice::Subsystem( context.tracer(), context.status() ),
+TestThread::TestThread( Config config, const orcaice::Context &context ) :
+    orcaice::SubsystemThread( context.tracer(), context.status() ),
     config_( config ),
     context_(context)
 {
 }
 
 void 
-TestSubsystem::initialise() 
+TestThread::initialise() 
 {
-    context_.tracer().info( "TestSubsystem::initialise()" );
+    context_.tracer().info( "TestThread::initialise()" );
     try
     {
         throw string("Error in initialise()");
@@ -64,9 +64,9 @@ TestSubsystem::initialise()
 }
 
 void 
-TestSubsystem::work() 
+TestThread::work() 
 {
-    context_.tracer().info( "TestSubsystem::work()" );
+    context_.tracer().info( "TestThread::work()" );
     try
     {
         try
@@ -87,9 +87,9 @@ TestSubsystem::work()
 }
 
 void 
-TestSubsystem::finalise() 
+TestThread::finalise() 
 {
-    context_.tracer().info( "TestSubsystem::finalise()" );
+    context_.tracer().info( "TestThread::finalise()" );
 
     try {
         throw gbxutilacfr::Exception( ERROR_INFO, "Error in finalise()" );
@@ -131,7 +131,7 @@ TestComponent::TestComponent( Config config ) :
 void 
 TestComponent::start()
 {
-    mainSubsys_ = new TestSubsystem( config_, context() );
+    mainSubsys_ = new TestThread( config_, context() );
     mainSubsys_->start();
 }
 

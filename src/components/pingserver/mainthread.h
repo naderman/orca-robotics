@@ -25,10 +25,11 @@ public:
 
     MainThread( const orcaice::Context &context );
 
-    // from SubsystemThread
-    virtual void walk();
-
 private:
+    // from SubsystemThread
+    virtual void initialise();
+    // this subsystem does not work!
+
     PingerIPtr pingerInterface_;
     orcaice::Context context_;
 };
