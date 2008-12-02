@@ -55,10 +55,27 @@ CameraWriter::initJpegLogWriter(const orca::CameraDescriptionPtr &descr)
     // setup opencv image
     // alen HACK current assumptions:
     // depth of 8, no utility available to obtain depth
-    // number of channels 3, no utility available to obtain number of channels
+    // no utility available to obtain number of channels
+    // number of channels 3 for RGB8 and BGR8,
+    // number of channels 1 for MONO8 and RAW8
+    // otherwise throw an exemption
 #ifdef OPENCV_FOUND
-    cvImage_  = cvCreateImage( cvSize( descr->width, descr->height ),  8, 3 );
-    imageSize_=descr->width*descr->height*3;
+    int numOfChannels;
+    if ( (descr->format == "RGB8") || (descr->format == "BGR8")){
+        numOfChannels=3;
+    }
+    else if ( (descr->format == "RAW8") || (descr->format == "MONO8")){
+        numOfChannels=3;
+    }
+    else{
+        stringstream ss;
+        ss << "Camera LogWriter 'jpeg' " << descr->format ;
+        ss << " Only BGR8/RGB8/RAW8/MONO8 logging supported." ;
+        throw orcalog::FormatNotSupportedException( ERROR_INFO, ss.str() );
+    }
+
+    cvImage_  = cvCreateImage( cvSize( descr->width, descr->height ),  8, numOfChannels );
+    imageSize_=descr->width*descr->height*numOfChannels;
 #endif
 }
 
@@ -146,12 +163,12 @@ CameraWriter::writeCameraDataAsJpeg( const orca::CameraDataPtr& data, const std:
     // and make sure the image is BGR format before compression
     //(if the image is colour) which is the default for opencv
 
-    if (data->description->format != "BGR8"){
+    //if (data->description->format != "BGR8"){
     //    orcaimage::cvtToBgr( cvImage_, cvImage_, data );
-        stringstream ss;
-        ss << "Camera LogWriter 'jpeg' " << data->description->format << " Only BGR8 logging supported.";
-        throw orcalog::FormatNotSupportedException( ERROR_INFO, ss.str() );
-    }
+    //    stringstream ss;
+    //    ss << "Camera LogWriter 'jpeg' " << data->description->format << " Only BGR8 logging supported.";
+    //    throw orcalog::FormatNotSupportedException( ERROR_INFO, ss.str() );
+    //}
 
     memcpy( cvImage_->imageData, &(data->data[0]), imageSize_ );
 
