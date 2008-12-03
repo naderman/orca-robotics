@@ -30,7 +30,7 @@
 
 A simple example that connects to an image server (such as ImageServer or CameraServer) and displays the images in a GTK window created by OpenCV
 
-Images are displayed as soon as they arrive.
+Images are displayed as soon as they arrive. Before display, colour images are converted to BGR for display in an OpenCV window. Greyscale images are not modified.
 
 - @ref orca_component_imageserver
 - @ref orca_component_cameraserver

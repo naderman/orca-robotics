@@ -38,6 +38,17 @@ cvtToRgb( IplImage* dest, const orca::ImageDataPtr& src )
 void 
 cvtToBgr( IplImage* dest, const orca::ImageDataPtr& src )
 {
+    //TODO:  is this dodgy?
+    // tmp is pointing to dest.
+    // tmp->imageData is then redirected to point to the orca image data
+    // so now tmp->imageData is different to dest->imageData but everything
+    // else is the same.
+    // dest is then changed according to the colour conversion which will
+    // change tmp's other parameters. Does this matter once the conversion
+    // has started?
+    IplImage* tmp = dest;
+    tmp->imageData = (char*)(&src->data[0]);
+     
     if( src->description->format == "BGR8" )
     {
         memcpy( dest->imageData, &(src->data[0]), src->data.size() );
@@ -47,100 +58,53 @@ cvtToBgr( IplImage* dest, const orca::ImageDataPtr& src )
 //                        (unsigned char *) (dest->imageData), 
 //                        src.imageWidth*src.imageHeight );
 //             break;
-//         case orca::ImageFormatModeRgb:
-//             rgb2bgr( (unsigned char *) (&src.image[0]),
-//                       (unsigned char *) (dest->imageData), 
-//                       src.imageWidth*src.imageHeight );
-//             break;
-//         // check if the image is bayer encoded
-//         case orca::ImageFormatBayerBg:
-//         case orca::ImageFormatBayerGb:
-//         case orca::ImageFormatBayerRg:
-//         case orca::ImageFormatBayerGr:
-//         #ifdef OPENCV_FOUND
-//              // copy the data from the camera object into the opencv structure
-//             memcpy( bayerSrc->imageData, &src.image[0], src.image.size() );
-//             
-//             // decode and convert to colour using opencv functions
-//             switch( src.format )
-//             {
-//                 case orca::ImageFormatBayerBg:
-//                     cvCvtColor( bayerSrc, dest, CV_BayerBG2BGR );
-//                     break;              
-//                 case orca::ImageFormatBayerGb:
-//                     cvCvtColor( bayerSrc, dest, CV_BayerGB2BGR );
-//                     break;              
-//                 case orca::ImageFormatBayerRg:
-//                     cvCvtColor( bayerSrc, dest, CV_BayerRG2BGR );
-//                     break;
-//                 case orca::ImageFormatBayerGr:
-//                     cvCvtColor( bayerSrc, dest, CV_BayerGR2BGR );
-//                     break;
-//                 default:
-//                     break;
-//             }
-//             break;
-//         #endif
+    }
+    else if( src->description->format == "RGB8" )
+    {
+//         rgb2bgr( (unsigned char *) (&src->data[0]),
+//                 (unsigned char *) (dest->imageData), 
+//                 src->description->width*src->description->height );
 
-//         case orca::ImageFormatModeGray:
-//                 // do nothing      
-//                 memcpy( dest->imageData, &src.image[0], src.image.size() );
-//                 break;            
-//         
-//         case orca::ImageFormatModeNfi:
-//                 cout << "WARNING(colourconversions.cpp): Assuming image mode " 
-//                         << orcaimage::formatName( src.format ) << " is in BGR format." << endl;
-//                 memcpy( dest->imageData, &src.image[0], src.image.size() );
-//                 break;
-        }
-        else
-        {
-            cout << "ERROR(colourconversions.cpp): Don't know how to convert from image mode " 
-                    << src->description->format << "." << endl;
-            exit(1);
-        }
+        cvCvtColor( tmp, dest, CV_RGB2BGR );
+    }
+    else if( src->description->format == "BGRA8" )
+    {
+        cvCvtColor( tmp, dest, CV_BGRA2BGR );
+    }
+    else if( src->description->format == "RGBA8" )
+    {
+        cvCvtColor( tmp, dest, CV_BGRA2BGR );
+    }
+    else if( src->description->format == "BayerRG8" )
+    {
+        cvCvtColor( tmp, dest, CV_BayerRG2BGR );
+    }
+    else if( src->description->format == "BayerGR8" )
+    {
+        cvCvtColor( tmp, dest, CV_BayerGR2BGR );
+    }
+    else if( src->description->format == "BayerGB8" )
+    {
+        cvCvtColor( tmp, dest, CV_BayerGB2BGR );
+    }
+    else if( src->description->format == "BayerBG8" )
+    {
+        cvCvtColor( tmp, dest, CV_BayerBG2BGR );
+    }
+    else if( src->description->format == "GRAY8" )
+    {
+        // do nothing
+        memcpy( dest->imageData, &(src->data[0]), src->data.size() );
+    }
+    else
+    {
+        cout << "ERROR(colourconversions.cpp): Don't know how to convert from image mode " 
+                << src->description->format << "." << endl;
+        //TODO: throw an exception
+        exit(1);
+    }
 }
 
-// void 
-// cvtToBgr( IplImage* dest, IplImage* bayerSrc, const orca::ImageDataPtr& src )
-// {
-//     switch( src->format )
-//     {
-//         case orca::ImageFormatModeBgr:
-//             memcpy( dest->imageData, &src->data[0], src->data.size() );
-//             break;
-// 
-//         case orca::ImageFormatModeYuv422:
-//             // function comes from coriander
-//             uyvy2bgr( (unsigned char *) (&src->data[0]),
-//                        (unsigned char *) (dest->imageData), 
-//                        src->width*src->height );
-//             break;
-// 
-//         case orca::ImageFormatModeRgb:
-//             rgb2bgr( (unsigned char *) (&src->data[0]),
-//                       (unsigned char *) (dest->imageData), 
-//                       src->width*src->height );
-//             break;
-// 
-//         case orca::ImageFormatModeGray:
-//             // do nothing      
-//             memcpy( dest->imageData, &src->data[0], src->data.size() );
-//             break;            
-//         
-//         case orca::ImageFormatModeNfi:
-//             cout << "WARNING(colourconversions.cpp): Assuming image mode " 
-//                     << orcaimage::formatName( src->format ) << " is in BGR format." << endl;
-//             memcpy( dest->imageData, &src->data[0], src->data.size() );
-//             break;
-// 
-//         default:
-//             cout << "ERROR(colourconversions.cpp): Don't know how to convert from image mode " 
-//                     << orcaimage::formatName( src->format ) << "." << endl;
-//             std::stringstream ss;
-//             ss << "OrcaImage: unknown image format: " << src->format<<endl;
-//             throw( ss.str() );
-//     }
 
 } // namespace
 

@@ -50,6 +50,8 @@ void Viewer::display( orca::ImageDataPtr image )
     if( cvGetWindowHandle( name_ ) != 0 )
     {
         
+        // convert the image format to BGR for viewing in an opencv window. Copy the image data
+        // into an opencv IplImage structure
         cvtToBgr( cvImage_, image );
         
         // copy the image data into the IplImage variable from the orca image variable
