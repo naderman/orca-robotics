@@ -1,12 +1,12 @@
 ORCA_SET_COMPONENT_NAME( ImageViewOcv )
 
-SET( build FALSE )
+SET( build TRUE )
 GBX_REQUIRE_OPTION( build EXE ${APP_NAME} ON )
 
 #
 # External libs
 #
-SET( ext_libs HydroDll )
+SET( ext_libs HydroDll HydroImage)
 GBX_REQUIRE_INSTALLS( build EXE ${APP_NAME} ${ext_libs} )
 
 # make sure OpencCV has been installed

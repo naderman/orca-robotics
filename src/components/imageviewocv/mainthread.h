@@ -46,7 +46,7 @@ private:
     // copies image to local queue which the Viewer can access.
     void getImage();
     
-    Viewer viewer_;
+    // Viewer* viewer_;
 
     orcaifaceimpl::BufferedImageConsumerImplPtr imageInterface_;
     

@@ -20,7 +20,6 @@ using namespace imageviewocv;
 
 MainThread::MainThread( const orcaice::Context &context ) :
     orcaice::SubsystemThread( context.tracer(), context.status(), "MainThread" ),
-    viewer_(context),
     context_(context)
 {
 }
@@ -43,6 +42,17 @@ MainThread::work()
 {
     subStatus().setMaxHeartbeatInterval( 1.0 );
 
+    // get 1 image
+    // and check it's description for the particular image configuration
+    getImage();
+    
+    //set up the viewer according to the configuration
+    Viewer viewer = Viewer( imageData_->description->width,
+                            imageData_->description->height,
+                            // imageData_->description.size,
+                            imageData_->description->format,
+                            context_ );
+
     while ( !isStopping() )
     {
         try 
@@ -52,7 +62,7 @@ MainThread::work()
             getImage();
             
             // pass the image to the viewer
-            viewer_.display( imageData_ );
+            viewer.display( imageData_ );
             
             //pushing too fast will cause the gui to not respond, sleep to prevent that
             // TODO: dodgy hack... needs to be fixed
@@ -94,61 +104,10 @@ MainThread::initSettings()
     Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag() + ".Config.";
     
-    int sleepIntervalMs = orcaice::getPropertyAsIntWithDefault( prop, prefix+"SleepIntervalMs", 100 );
+    // int sleepIntervalMs = orcaice::getPropertyAsIntWithDefault( prop, prefix+"SleepIntervalMs", 100 );
     subStatus().ok( "Initialized" );
 
-    // viewer_ 
-    // viewer_->initialise();
-
-//TODO: add this in. We should be checking configuration of the Viewer here.
-//     if ( !config_.validate() ) {
-//         context_.tracer().error( "Failed to validate laser configuration. "+config_.toString() );
-//         // this will kill this component
-//         throw gbxutilacfr::Exception( ERROR_INFO, "Failed to validate laser configuration" );
-//     }
-
-
-//     // Set up the laser-scan objects
-//     orcaLaserData_ = new orca::LaserScanner2dData;
-//     orcaLaserData_->minRange     = config_.minRange;
-//     orcaLaserData_->maxRange     = config_.maxRange;
-//     orcaLaserData_->fieldOfView  = config_.fieldOfView;
-//     orcaLaserData_->startAngle   = config_.startAngle;
-//     orcaLaserData_->ranges.resize( config_.numberOfSamples );
-//     orcaLaserData_->intensities.resize( config_.numberOfSamples );
-// 
-//     // Point the pointers in hydroLaserData_ at orcaLaserData_
-//     hydroLaserData_.ranges      = &(orcaLaserData_->ranges[0]);
-//     hydroLaserData_.intensities = &(orcaLaserData_->intensities[0]);
 }
-
-// void
-// MainThread::initViewer()
-// {
-//     Ice::PropertiesPtr prop = context_.properties();
-//     std::string prefix = context_.tag() + ".Config.";
-// 
-//     // The plugin viewer we want to use
-//     std::string viewerType = 
-//         orcaice::getPropertyWithDefault( prop, prefix+"ViewerType", "QtViewer" );
-//     context_.tracer().debug( "MainThread: Loading "+viewerType, 4 );
-    
-//     try 
-//     {
-//         // create the actual viewer
-//         viewer_ = Viewer::factory( viewerType, context_ );
-//         
-//         // initialise parameters for viewer
-//         viewer_->initialise();
-//     }
-//     catch (Viewer::BadViewerCreation &e)
-//     {
-//         // unrecoverable error
-//         context_.shutdown(); 
-//         throw;
-//     }
-// }
-
 
 void
 MainThread::initNetworkInterface()
@@ -203,3 +162,4 @@ void MainThread::getImage()
     //     context_.tracer().debug( ss.str(), 5 );
 
 }
+
