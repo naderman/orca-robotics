@@ -30,7 +30,20 @@
 
 A simple example that connects to an image server (such as ImageServer or CameraServer) and displays the images in a GTK window created by OpenCV
 
-Images are displayed as soon as they arrive. Before display, colour images are converted to BGR for display in an OpenCV window. Greyscale images are not modified.
+Images are displayed as soon as they arrive. Colour images are converted to BGR for display in an OpenCV window. Greyscale images are not modified.
+
+This viewer supports all image formats that imageserver supports. This includes
+- RGB8
+- BGR8
+- RGBA8
+- BGRA8
+- BayerBG8
+- BayerGB8
+- BayerRG8
+- BayerGR8
+- GRAY8
+
+Other formats can be added if requested.
 
 - @ref orca_component_imageserver
 - @ref orca_component_cameraserver
