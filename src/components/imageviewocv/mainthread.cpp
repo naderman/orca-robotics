@@ -1,7 +1,8 @@
 /*
  * Orca-Robotics Project: Components for robotics 
  *               http://orca-robotics.sf.net/
- * Copyright (c) 2004-2008 Alex Brooks, Alexei Makarenko, Tobias Kaupp, Ben Upcroft
+ * Copyright (c) 2004-2008 Alex Brooks, Alexei Makarenko, Tobias Kaupp, Ben Upcroft,
+ *                         Tom Burdick
  *
  * This copy of Orca is licensed to you under the terms described in
  * the LICENSE file included in this distribution.
@@ -29,8 +30,6 @@ MainThread::initialise()
 {
     initSettings();
     
-//     initViewer();
-    
     if ( isStopping() )
         return;
 
@@ -49,7 +48,6 @@ MainThread::work()
     //set up the viewer according to the configuration
     Viewer viewer = Viewer( imageData_->description->width,
                             imageData_->description->height,
-                            // imageData_->description.size,
                             imageData_->description->format,
                             context_ );
 
@@ -86,7 +84,6 @@ MainThread::work()
 void
 MainThread::finalise() 
 {
-    // delete viewer_;
     context_.communicator()->shutdown();
 
 }
@@ -143,11 +140,7 @@ void MainThread::getImage()
     {
         context_.tracer().debug("Successfuly fetched Image",6);
         // context_.tracer().debug("Adding Image to Queue",6);
-        
-        // send the image to a local buffer which the Viewer can access
-        // at its leisure
-        // imageQueue_.push( imageData_ );
-        
+                
         subStatus().ok();
     }
     else

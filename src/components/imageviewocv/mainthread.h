@@ -35,19 +35,12 @@ private:
     // initialise the parameters for the Viewer
     void initSettings();
 
-//     Instantiate the viewer
-    // void createViewer();
-    
-//     void initViewer();
-
     // Loops until established
     void initNetworkInterface();
 
-    // copies image to local queue which the Viewer can access.
+    // copies image to local member variable
     void getImage();
     
-    // Viewer* viewer_;
-
     orcaifaceimpl::BufferedImageConsumerImplPtr imageInterface_;
     
     // data structure

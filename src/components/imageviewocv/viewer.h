@@ -11,8 +11,6 @@
 #ifndef IMAGEVIEW_OCV_VIEWER_H
 #define IMAGEVIEW_OCV_VIEWER_H
 
-// #include "viewer.h"
-
 #include <orcaice/context.h>
 #include <orca/image.h>
 
@@ -21,9 +19,6 @@
 #include <cv.h>
 
 #include <string>
-
-// forward declaration
-// class ImageFormat;
 
 namespace imageviewocv {
 
@@ -47,9 +42,6 @@ private:
     // handle to the opencv window
     const char* name_;
     
-    // The particular image format that is being received
-    // ImageFormat imageFormat_;
-
     orcaice::Context context_;
 };
 
