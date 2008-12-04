@@ -62,11 +62,11 @@ private:
     // The Network Image Interface Description Structure
     orca::CameraCollectionDescriptionPtr descr_;
     
-        // The Driver Interface Config Structure
+    // The Driver Interface Config Structure
     hydrointerfaces::ImageCollection::Config config_;
 
     // The Driver Interface Data Structure
-    hydrointerfaces::ImageCollection::Data      hydroData_;
+    hydrointerfaces::ImageCollection::Data hydroData_;
 
     // The library that contains the driver factory (must be declared first so it's destructed last!!!)
     std::auto_ptr<hydrodll::DynamicallyLoadedLibrary> driverLib_;

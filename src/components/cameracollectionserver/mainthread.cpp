@@ -44,7 +44,6 @@ MainThread::initialise()
     //point the pointers in hydroData_ at orcaData_
     hydroData_[0].data = &(orcaData_->data[0]);
 
-
     for( unsigned int i = 1; i < descr_->extraDescriptions.size()+1; ++i)
     {
         orcaData_->extraData.push_back( new orca::CameraData() );
@@ -133,10 +132,13 @@ MainThread::readSettings()
     orcaimage::getCameraCollectionProperties( context_, prefix, descr_ ); 
     config_.resize(descr_->extraDescriptions.size() + 1);
     hydroData_.resize(descr_->extraDescriptions.size() + 1);
-    config_[0].width = descr_->width;
-    config_[0].height = descr_->height;
-    config_[0].size = descr_->size;
-    config_[0].format = descr_->format;
+
+    // copy the read in settings to the hydroimage config structures
+    orcaimage::copy( config_[0], descr_);
+    for( hydrointerfaces::ImageCollection::Config::size_type i = 1; i < config_.size(); ++i )
+    {
+        orcaimage::copy( config_[i], descr_->extraDescriptions[i-1] );
+    }
 }
 
 void
@@ -202,7 +204,12 @@ MainThread::initHardwareInterface()
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));        
     }
 
-    //copy from config to description the possible changes made
+    //copy from config to description for the possible changes made
+    orcaimage::copy( descr_, config_[0] );
+    for( hydrointerfaces::ImageCollection::Config::size_type i = 1; i < config_.size(); ++i )
+    {
+        orcaimage::copy( descr_->extraDescriptions[i-1], config_[i] );
+    }
 
     subStatus().setMaxHeartbeatInterval( 1.0 );
 
@@ -217,7 +224,6 @@ MainThread::initNetworkInterface()
     //
     // EXTERNAL PROVIDED INTERFACE
     //
-
     interface_ = new orcaifaceimpl::CameraCollectionImpl( descr_
                                                     , "CameraCollection"
                                                     , context_ );

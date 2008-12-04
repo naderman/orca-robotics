@@ -138,4 +138,38 @@ namespace orcaimage
         context.tracer().debug( debug );
     }
 
+    /**
+     * @brief copy orca::ImageDescriptionPtr to hydroimage::Config
+     * Copies all values from the ImageDescription structure to 
+     * the hydroimage::Config structure
+     *
+     * @param hydro image config structure
+     * @param orca image description structure
+     */
+    void 
+    copy( hydroimage::Config& config, const orca::ImageDescriptionPtr description )
+    {
+        config.width = description->width;
+        config.height = description->height;
+        config.size = description->size;
+        config.format = description->format;
+    }
+
+    /**
+     * @brief copy hydroimage::Config to orca::ImageDescriptionPtr
+     * Copies all values from hydroimage::Config the structure to 
+     * the orca::ImageDescription structure
+     *
+     * @param orca image description structure
+     * @param hydro image config structure
+     */
+    void
+    copy( orca::ImageDescriptionPtr description, const hydroimage::Config& config)
+    {
+        description->width = config.width;
+        description->height = config.height;
+        description->size = config.size;
+        description->format = config.format;
+    }
+
 }
