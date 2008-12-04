@@ -23,8 +23,7 @@ Viewer::Viewer( const int width,
     context_(context)
 {
     // class to search for image format properties
-    ImageFormat tmp;
-    ImageFormat imageFormat = tmp.find( format );
+    ImageFormat imageFormat = ImageFormat::find( format );
     
     // opencv gear here
     int depth = imageFormat.getBitsPerPixel()/imageFormat.getNumberOfChannels();
