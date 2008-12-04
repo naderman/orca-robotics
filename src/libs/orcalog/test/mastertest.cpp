@@ -15,6 +15,7 @@
 
 #include <orcaice/orcaice.h>
 #include <orcalog/orcalog.h>
+#include <memory>
 
 using namespace std;
 
@@ -58,7 +59,8 @@ void TestComponent::start()
     // create master file
     //
     string masterFilename = "testmaster.txt";
-    orcalog::MasterFileWriter masterFileWriter( masterFilename.c_str(), context() );
+    std::auto_ptr<orcalog::MasterFileWriter> masterFileWriter( 
+        new orcalog::MasterFileWriter( masterFilename.c_str(), context() ) );
 
     //
     // fake properties
@@ -76,33 +78,42 @@ void TestComponent::start()
     info.format        = "format0";
     info.filename      = "file0";
     TestAutoLogger t1;
-    t1.init( info, masterFileWriter );
+    t1.init( info, *masterFileWriter );
     info.interfaceType = "type1";
     info.interfaceTag  = "Tag1";
     info.comment       = "comment1";
     info.format        = "format1";
     info.filename      = "file1";
     TestAutoLogger t2;
-    t2.init( info, masterFileWriter );
+    t2.init( info, *masterFileWriter );
 
     //
     // Fake a few instances of arrival of data
     //
     int i0=0, index0=0;
     orca::Time timeStamp = orcaice::getNow();
-    masterFileWriter.notifyOfLogfileAddition( i0, index0, timeStamp );
+    masterFileWriter->notifyOfLogfileAddition( i0, index0, timeStamp );
     timeStamp.seconds++;
-    masterFileWriter.notifyOfLogfileAddition( 0, 11, timeStamp );
+    masterFileWriter->notifyOfLogfileAddition( 0, 11, timeStamp );
     timeStamp.seconds++;
-    masterFileWriter.notifyOfLogfileAddition( 0, 22, timeStamp );
+    masterFileWriter->notifyOfLogfileAddition( 0, 22, timeStamp );
     timeStamp.seconds++;
-    masterFileWriter.notifyOfLogfileAddition( 0, 33, timeStamp );
+    masterFileWriter->notifyOfLogfileAddition( 0, 33, timeStamp );
     timeStamp.seconds++;
     int id1=1, index1=0;
-    masterFileWriter.notifyOfLogfileAddition( id1, index1, timeStamp );
+    masterFileWriter->notifyOfLogfileAddition( id1, index1, timeStamp );
     timeStamp.seconds++;
-    masterFileWriter.notifyOfLogfileAddition( 1, 11, timeStamp );
+    masterFileWriter->notifyOfLogfileAddition( 1, 11, timeStamp );
     cout<<"ok"<<endl;
+
+    const int writerLoggerCount = masterFileWriter->loggerCount();
+
+    // Finished writing: destroy the masterFileWriter to make sure the file has been written to disk.
+    masterFileWriter.reset(0);
+
+    //
+    // Check the log-file that we just wrote
+    //
 
     cout<<"testing replaying ... ";
     orcalog::MasterFileReader *masterFileReader = new orcalog::MasterFileReader( masterFilename, context() );
@@ -114,8 +125,8 @@ void TestComponent::start()
     std::vector<bool> enableds;
     // this may throw and it will kill us
     masterFileReader->getLogs( filenames, interfaceTypes, formats, enableds );
-    if ( filenames.size() != (unsigned int)masterFileWriter.loggerCount() ) {
-        cout<<"failed"<<endl<<"log count expected="<<masterFileWriter.loggerCount()<<" got="<<filenames.size()<<endl;
+    if ( filenames.size() != (unsigned int)writerLoggerCount ) {
+        cout<<"failed"<<endl<<"log count expected="<<writerLoggerCount<<" got="<<filenames.size()<<endl;
         exit(EXIT_FAILURE);
     }
     cout<<"ok"<<endl;
