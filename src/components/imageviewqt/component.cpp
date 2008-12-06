@@ -63,8 +63,8 @@ Component::start()
     window->setLayout(vbox);
     window->show();
 
-    // connect signal from timer to slot of widget to update
-    QObject::connect(imageQueue_, SIGNAL(imagePushed()), viewer, SLOT(updateGL()));
+    // connect signal from queue to slot of widget to update
+    QObject::connect(imageQueue_, SIGNAL(imagePushed()), viewer, SLOT(update()));
     QObject::connect(viewer, SIGNAL(fpsChanged(double)), fpsDisplay, SLOT(setNum(double)));
 
     // start network thread
