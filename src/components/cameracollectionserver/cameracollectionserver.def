@@ -1,33 +1,29 @@
-DefaultComponentTag=CameraServer
+DefaultComponentTag=CameraCollectionServer
 
 # Provided Interfaces
-Provides.Camera.Type=::orca::Camera
-Provides.Camera.DefaultName=camera
+Provides.CameraCollection.Type=::orca::CameraCollection
+Provides.CameraCollection.DefaultName=cameracollection
 
 # Required Interfaces
 
 # Config Parameters
-Config.DriverLib.Comment=Valid values are at least: { 'libHydroImageCvCamera.so', 'libHydroImageFile.so', 'libHydroImageFake.so' }
-Config.DriverLib.Default=libHydroImageFake.so
+Config.DriverLib.Comment=Valid values are at least: { 'libHydroImageCollectionFake.so' }
+Config.DriverLib.Default=libHydroImageCollectionFake.so
 
-Config.Offset.Comment=x[m] y[m] z[m] roll[deg] pitch[deg] yaw[deg]
-Config.Offset.Default=0.0 0.0 0.0  0.0 0.0 0.0
-Config.FocalLength.Comment=focal length of lense x[mm] y[mm]
-Config.FocalLength.Default=0.0 0.0
-Config.PrinciplePoint.Comment=principle point of lense x[pixels] y[pixels]
-Config.PrinciplePoint.Default=0.0 0.0
-Config.DistortionParameters.Comment=distotrion parameters of lense k1[mm] k2[mm] p1[mm] p2[mm]
-Config.DistortionParameters.Default=0.0 0.0 0.0 0.0
-Config.SensorSize.Comment=width[cm] height[cm]
-Config.SensorSize.Default=0.846 0.846
-Config.ImageWidth.Comment=Image Width [pixels]
-Config.ImageWidth.Default=320
-Config.ImageHeight.Comment=Image Height [pixels]
-Config.ImageHeight.Default=240
-Config.ImageFormat.Comment=Valid values are at least: {'BGR8', 'GRAY8'}
-Config.ImageFormat.Default=BGR8
-
-Config.DC1394.IsoMode.Comment=Valid values are at least: {'1394A', '1394B'}
-Config.DC1394.IsoMode.Default=1394A
-
+Config.0.Offset.Comment=x[m] y[m] z[m] roll[deg] pitch[deg] yaw[deg]
+Config.0.Offset.Default=0.0 0.0 0.0  0.0 0.0 0.0
+Config.0.FocalLength.Comment=focal length of lense x[mm] y[mm]
+Config.0.FocalLength.Default=0.0 0.0
+Config.0.PrinciplePoint.Comment=principle point of lense x[pixels] y[pixels]
+Config.0.PrinciplePoint.Default=0.0 0.0
+Config.0.DistortionParameters.Comment=distotrion parameters of lense k1[mm] k2[mm] p1[mm] p2[mm]
+Config.0.DistortionParameters.Default=0.0 0.0 0.0 0.0
+Config.0.SensorSize.Comment=width[cm] height[cm]
+Config.0.SensorSize.Default=0.846 0.846
+Config.0.ImageWidth.Comment=Image Width [pixels]
+Config.0.ImageWidth.Default=320
+Config.0.ImageHeight.Comment=Image Height [pixels]
+Config.0.ImageHeight.Default=240
+Config.0.ImageFormat.Comment=Valid values are at least: {'BGR8', 'GRAY8'}
+Config.0.ImageFormat.Default=BGR8
 
