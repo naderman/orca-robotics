@@ -28,15 +28,22 @@ ViewWidget::ViewWidget(ImageQueue* imageQueue, QWidget* parent)
 
 ViewWidget::~ViewWidget()
 {
-    if(textureInitialized_)
-    {
-        glDeleteTextures( 1, &texture_);
-    }   
 }   
 
 void
 ViewWidget::initializeGL()
 {
+    GLenum err = glewInit();
+    if( GLEW_OK != err )
+    {
+        throw gbxutilacfr::Exception(ERROR_INFO, "GlEW failed to initialize");
+    }
+
+    if( !GLEW_VERSION_2_0 )
+    {
+        throw gbxutilacfr::Exception(ERROR_INFO, "OpenGL version too old, need 2.0");
+    }
+
     // drawing options
     glClearColor(0.0, 0.0, 0.0, 0.0);
     glShadeModel(GL_FLAT);
@@ -74,24 +81,25 @@ ViewWidget::paintGL()
     updateTexture();
 
     glActiveTexture(GL_TEXTURE0_ARB);
-    glBindTexture(GL_TEXTURE_RECTANGLE_ARB, texture_);
+    texture_->pushBind();
 
     glBegin(GL_QUADS);
     
-    glTexCoord2f( 0.0, textureHeight_ );
+    glTexCoord2f( TEXCOORD_BL(texture_) );
     glVertex2f( 0.0, 0.0 );
     
-    glTexCoord2f( 0.0, 0.0 );
-    glVertex2f( 0.0, height() );
+    glTexCoord2f( TEXCOORD_BR(texture_) );
+    glVertex2f( height(), 0.0 );
     
-    glTexCoord2f( textureWidth_, 0.0 );
+    glTexCoord2f( TEXCOORD_TR(texture_) );
     glVertex2f( width(), height() );
     
-    glTexCoord2f( textureWidth_, textureHeight_ );
-    glVertex2f( width(), 0.0 );
+    glTexCoord2f( TEXCOORD_TL(texture_) );
+    glVertex2f( 0.0, height() );
     
     glEnd();
-    
+    texture_->popBind();
+
     glFlush();
 
 }
@@ -140,36 +148,10 @@ ViewWidget::zoom(double zoom)
 void
 ViewWidget::initializeTexture(uint32_t width, uint32_t height, std::string format)
 {
-    // if the texture already exists delete it since something has changed
-    if(textureInitialized_)
-    {
-        glDeleteTextures( 1, &texture_);
-    }
-
-    glGenTextures(1, &texture_);
-    glBindTexture(GL_TEXTURE_RECTANGLE_ARB, texture_);
-    
-    //set filters appropriately
-    glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_WRAP_S, GL_CLAMP);
-    glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_WRAP_T, GL_CLAMP);
-    
-    //set texenv to replace instead of the default modulate
-    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-
-    //allocate graphics memory 
-    //(texture_type, mipmaplevel, internal format, 
-    // texSize, texSize, format, ..., no data now)
-    glTexImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, GL_RGBA8, 
-                 width, height, 0, formatFromString(format), GL_UNSIGNED_BYTE, 0);
+    texture_ = new hydroglu::GLTexture("Image Stream", width, height, GL_TEXTURE_RECTANGLE_ARB, formatFromString(format), false);
 
     //set texture state vars
     textureInitialized_ = true;
-    textureWidth_ = width;
-    textureHeight_ = height;
-    textureFormat_ = formatFromString(format);
-
 }
 
 void
@@ -184,17 +166,17 @@ ViewWidget::updateTexture()
     orca::ImageDescriptionPtr descr = image->description;
 
     if( !textureInitialized_ 
-        || textureWidth_ != static_cast<uint32_t>(descr->width)
-        || textureHeight_ != static_cast<uint32_t>(descr->height)
-        || textureFormat_ != formatFromString(descr->format)
+        || texture_->width() != static_cast<uint32_t>(descr->width)
+        || texture_->height() != static_cast<uint32_t>(descr->height)
+        || texture_->format() != formatFromString(descr->format)
       )
     {
         initializeTexture(descr->width, descr->height, descr->format);
     }
 
     // update the texture with the latest buffer
-    glTexSubImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, 0, 0, textureWidth_, textureHeight_,
-                    textureFormat_, GL_UNSIGNED_BYTE, &(image->data[0]));
+
+    texture_->upload( &(image->data[0]), image->data.size(), formatFromString(descr->format) );
 
     int timediff = timer_.restart();
     double thisfps = 1000.0/(double)(timediff);

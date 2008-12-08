@@ -13,8 +13,9 @@ GBX_REQUIRE_VAR( build EXE ${APP_NAME} not_os_win "Windows OS is not  supported"
 SET( dep_libs OrcaIfaceImpl )
 GBX_REQUIRE_TARGETS( build EXE ${APP_NAME} ${dep_libs} )
 
-SET( dep_libs ${dep_libs} HydroDll )
+SET( dep_libs ${dep_libs} HydroDll HydroGlu )
 GBX_REQUIRE_VAR( build EXE ${APP_NAME} HYDRODLL_INSTALLED "libHydroDll not installed" )
+GBX_REQUIRE_VAR( build EXE ${APP_NAME} HYDROGLU_INSTALLED "libHydroGlu not installed" )
 GBX_REQUIRE_VAR( build EXE ${APP_NAME} QT4_FOUND "Qt4 not found" )
 GBX_REQUIRE_VAR( build EXE ${APP_NAME} OPENGL_GLU_FOUND "glu not found" )
 

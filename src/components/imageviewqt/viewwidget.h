@@ -11,8 +11,11 @@
 #ifndef ORCA_IMAGEVIEW_QT_VIEWWIDGET_H
 #define ORCA_IMAGEVIEW_QT_VIEWWIDGET_H
 
+#include <hydroglu/gltexture.h>
+
 #include <QTime>
 #include <QGLWidget>
+
 
 #include <orca/image.h>
 #include <orcaice/ptrbuffer.h>
@@ -70,10 +73,7 @@ private:
     ImageQueue* imageQueue_;
    
     // the texture state
-    GLuint texture_;
-    uint32_t textureWidth_;
-    uint32_t textureHeight_;
-    GLuint textureFormat_;
+    hydroglu::GLTexturePtr texture_;
     bool textureInitialized_;
     QRectF textureVertices_;
     QRectF viewVertices_;
