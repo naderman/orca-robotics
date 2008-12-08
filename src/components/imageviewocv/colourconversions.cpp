@@ -12,94 +12,72 @@
 #include "colourconversions.h"
 #include "conversions.h"
 
-// #include <orcaimage/imageutils.h>
-
 using namespace std;
 
 namespace imageviewocv{
  
 void 
-cvtToRgb( IplImage* dest, const orca::ImageDataPtr& src )
+cvtToRgb( const IplImage* src, IplImage* dest, const std::string format )
 {
-    if ( src->description->format == "RGB8" )
+    if ( format == "RGB8" )
     {
-        memcpy( dest->imageData, &src->data[0], src->description->size );
-        // case orca::ImageFormatModeYuv422:
-        // case orca::ImageFormatModeBgr:
+        // do nothing
+        dest->imageData = src->imageData;
+        // memcpy( dest->imageData, &src->data[0], src->description->size );
     }
     else
     {
-        cout<<"ERROR(colourconversions.cpp): Don't know how to convert from image mode " 
-                << src->description->format << "." << endl;
+        cout<<"ERROR(colourconversions.cpp): Don't know how to convert iamge format into RGB8." << endl;
         exit(1);
+
     }
 }
 
 void 
-cvtToBgr( IplImage* dest, const orca::ImageDataPtr& src )
+cvtToBgr( const IplImage* src, IplImage* dest, const std::string format )
 {
-    //TODO:  is this dodgy?
-    // tmp is pointing to dest.
-    // tmp->imageData is then redirected to point to the orca image data
-    // so now tmp->imageData is different to dest->imageData but everything
-    // else is the same.
-    // dest is then changed according to the colour conversion which will
-    // change tmp's other parameters. Does this matter once the conversion
-    // has started?
-    IplImage* tmp = dest;
-    tmp->imageData = (char*)(&src->data[0]);
-     
-    if( src->description->format == "BGR8" )
-    {
-        memcpy( dest->imageData, &(src->data[0]), src->data.size() );
-//         case orca::ImageFormatModeYuv422:
-//         // function comes from coriander
-//             uyvy2bgr( (unsigned char *) (&src.image[0]),
-//                        (unsigned char *) (dest->imageData), 
-//                        src.imageWidth*src.imageHeight );
-//             break;
-    }
-    else if( src->description->format == "RGB8" )
-    {
-//         rgb2bgr( (unsigned char *) (&src->data[0]),
-//                 (unsigned char *) (dest->imageData), 
-//                 src->description->width*src->description->height );
-
-        cvCvtColor( tmp, dest, CV_RGB2BGR );
-    }
-    else if( src->description->format == "BGRA8" )
-    {
-        cvCvtColor( tmp, dest, CV_BGRA2BGR );
-    }
-    else if( src->description->format == "RGBA8" )
-    {
-        cvCvtColor( tmp, dest, CV_BGRA2BGR );
-    }
-    else if( src->description->format == "BayerRG8" )
-    {
-        cvCvtColor( tmp, dest, CV_BayerRG2BGR );
-    }
-    else if( src->description->format == "BayerGR8" )
-    {
-        cvCvtColor( tmp, dest, CV_BayerGR2BGR );
-    }
-    else if( src->description->format == "BayerGB8" )
-    {
-        cvCvtColor( tmp, dest, CV_BayerGB2BGR );
-    }
-    else if( src->description->format == "BayerBG8" )
-    {
-        cvCvtColor( tmp, dest, CV_BayerBG2BGR );
-    }
-    else if( src->description->format == "GRAY8" )
+    if( format == "BGR8" )
     {
         // do nothing
-        memcpy( dest->imageData, &(src->data[0]), src->data.size() );
+        dest->imageData = src->imageData;
+    }
+    else if( format == "RGB8" )
+    {
+        cvCvtColor( src, dest, CV_RGB2BGR );
+    }
+    else if( format == "BGRA8" )
+    {
+        cvCvtColor( src, dest, CV_BGRA2BGR );
+    }
+    else if( format == "RGBA8" )
+    {
+        cvCvtColor( src, dest, CV_BGRA2BGR );
+    }
+    else if( format == "BayerRG8" )
+    {
+        cvCvtColor( src, dest, CV_BayerRG2BGR );
+    }
+    else if( format == "BayerGR8" )
+    {
+        cvCvtColor( src, dest, CV_BayerGR2BGR );
+    }
+    else if( format == "BayerGB8" )
+    {
+        cvCvtColor( src, dest, CV_BayerGB2BGR );
+    }
+    else if( format == "BayerBG8" )
+    {
+        cvCvtColor( src, dest, CV_BayerBG2BGR );
+    }
+    else if( format == "GRAY8" )
+    {
+        // do nothing
+        // memcpy( dest->imageData, &(src->data[0]), src->data.size() );
+        dest->imageData = src->imageData;
     }
     else
     {
-        cout << "ERROR(colourconversions.cpp): Don't know how to convert from image mode " 
-                << src->description->format << "." << endl;
+        cout << "ERROR(colourconversions.cpp): Don't know how to convert image format into BGR8." << endl;
         //TODO: throw an exception
         exit(1);
     }
@@ -107,6 +85,4 @@ cvtToBgr( IplImage* dest, const orca::ImageDataPtr& src )
 
 
 } // namespace
-
-// #endif
 

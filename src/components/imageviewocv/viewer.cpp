@@ -25,9 +25,16 @@ Viewer::Viewer( const int width,
     // class to search for image format properties
     ImageFormat imageFormat = ImageFormat::find( format );
     
-    // opencv gear here
+    // set up opencv storage for the source image
     int depth = imageFormat.getBitsPerPixel()/imageFormat.getNumberOfChannels();
-    cvImage_ = cvCreateImage( cvSize( width, height ),  depth, imageFormat.getNumberOfChannels() );
+    cvSrcImage_ = cvCreateImage( cvSize( width, height ),  depth, imageFormat.getNumberOfChannels() );
+    
+    // set up opencv storage for the display image
+    std::string displayFormat = "BGR8";
+    ImageFormat imageDisplayFormat = ImageFormat::find( displayFormat );
+    depth = imageDisplayFormat.getBitsPerPixel()/imageDisplayFormat.getNumberOfChannels();
+    cvDisplayImage_ = cvCreateImage( cvSize( width, height ),  depth, imageDisplayFormat.getNumberOfChannels() );
+
     // dodgy opencv needs this so it has time to resize
     cvWaitKey(100);
     
@@ -39,25 +46,27 @@ Viewer::Viewer( const int width,
 Viewer::~Viewer()
 {
     cvDestroyWindow( name_ );
-    cvReleaseImage( &cvImage_ );
+    cvReleaseImage( &cvSrcImage_ );
+    cvReleaseImage( &cvDisplayImage_ );
 }
 
-void Viewer::display( orca::ImageDataPtr image )
+void Viewer::display( orca::ImageDataPtr& image )
 {
 
     // check the user hasn't closed the window
     if( cvGetWindowHandle( name_ ) != 0 )
     {
         
-        // convert the image format to BGR for viewing in an opencv window. Copy the image data
-        // into an opencv IplImage structure
-        cvtToBgr( cvImage_, image );
-        
-        // copy the image data into the IplImage variable from the orca image variable
+        // Point the opencv image data structure to the orca image data
+        // Don't want to memcpy to reduce the total copies that occur
         // memcpy( cvImage_->imageData, &(image->data[0]), image->data.size() );
+        cvSrcImage_->imageData = (char*)(&image->data[0]);
+        
+        // Convert the image format to BGR8 for viewing in an opencv window.
+        cvtToBgr( cvSrcImage_, cvDisplayImage_, image->description->format );
         
         // display the image in an opencv window
-        cvShowImage( name_, cvImage_ );
+        cvShowImage( name_, cvSrcImage_ );
     
         // Without this, the window doesn't display propery... what the hell?
         cvWaitKey(5);

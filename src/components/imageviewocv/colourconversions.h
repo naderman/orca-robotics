@@ -19,14 +19,10 @@
 namespace imageviewocv{
 
 //! This function has not been tested very well
-void cvtToRgb( IplImage* dest, const orca::ImageDataPtr& src );
+void cvtToRgb( const IplImage* src, IplImage* dest, const std::string format );
 
 //! Often use this function for converting to bgr image format used in opencv
-void cvtToBgr( IplImage* dest, const orca::ImageDataPtr& src );
-
-//! Same as above but the image comes from the Image interface.
-//! Throws a std::string if the format unknown.
-// void cvtToBgr( IplImage* dest, IplImage* bayerSrc, const orca::ImageDataPtr& src );
+void cvtToBgr( const IplImage* src, IplImage* dest, const std::string format );
     
 } // namespace
     

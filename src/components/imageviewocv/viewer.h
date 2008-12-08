@@ -31,13 +31,18 @@ public:
             const orcaice::Context& context );
     ~Viewer();
     
-    void display( orca::ImageDataPtr image );
+    // function that actually displays the image in a window
+    void display( orca::ImageDataPtr& image );
 
 private:
-    
-    IplImage* cvImage_;
-    // IplImage* cvImageTmp_;
-    // IplImage* bayerImage_;
+    //
+    // opencv structures
+    //
+    // image structure that stores the image in BGR8 format
+    // for display
+    IplImage* cvDisplayImage_;
+    // image structure that stores the original image format
+    IplImage* cvSrcImage_;
     
     // handle to the opencv window
     const char* name_;
