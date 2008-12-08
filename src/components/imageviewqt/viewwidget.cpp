@@ -28,6 +28,7 @@ ViewWidget::ViewWidget(ImageQueue* imageQueue, QWidget* parent)
 
 ViewWidget::~ViewWidget()
 {
+    delete texture_;
 }   
 
 void
@@ -80,21 +81,26 @@ ViewWidget::paintGL()
 
     updateTexture();
 
+    if(!textureInitialized_)
+    {
+        return;
+    }
+
     glActiveTexture(GL_TEXTURE0_ARB);
     texture_->pushBind();
 
     glBegin(GL_QUADS);
     
-    glTexCoord2f( TEXCOORD_BL(texture_) );
+    glTexCoord2f( TEXCOORD_TL(texture_) );
     glVertex2f( 0.0, 0.0 );
     
-    glTexCoord2f( TEXCOORD_BR(texture_) );
-    glVertex2f( height(), 0.0 );
-    
     glTexCoord2f( TEXCOORD_TR(texture_) );
+    glVertex2f( width(), 0.0 );
+    
+    glTexCoord2f( TEXCOORD_BR(texture_) );
     glVertex2f( width(), height() );
     
-    glTexCoord2f( TEXCOORD_TL(texture_) );
+    glTexCoord2f( TEXCOORD_BL(texture_) );
     glVertex2f( 0.0, height() );
     
     glEnd();
@@ -148,6 +154,11 @@ ViewWidget::zoom(double zoom)
 void
 ViewWidget::initializeTexture(uint32_t width, uint32_t height, std::string format)
 {
+    if(texture_)
+    {
+        delete texture_;
+    }
+
     texture_ = new hydroglu::GLTexture("Image Stream", width, height, GL_TEXTURE_RECTANGLE_ARB, formatFromString(format), false);
 
     //set texture state vars

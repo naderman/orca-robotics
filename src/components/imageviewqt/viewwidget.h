@@ -73,7 +73,7 @@ private:
     ImageQueue* imageQueue_;
    
     // the texture state
-    hydroglu::GLTexturePtr texture_;
+    hydroglu::GLTexture* texture_;
     bool textureInitialized_;
     QRectF textureVertices_;
     QRectF viewVertices_;
