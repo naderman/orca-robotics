@@ -12,6 +12,7 @@
 #include <orcaice/orcaice.h>
 #include <orcaobj/orcaobj.h>
 #include <orcaifaceutil/camera.h>
+#include <orcaimage/propertyutils.h>
 
 #include "mainthread.h"
 
@@ -19,30 +20,34 @@ using namespace std;
 using namespace cameraserver;
 
 MainThread::MainThread( const orcaice::Context &context ) 
-: orcaimagecommon::ImageComponentThread( context )
-, orcaCameraDescr_(new orca::CameraDescription())
+: orcaice::SubsystemThread( context.tracer(), context.status(), "MainThread" )
+, context_(context)
+, descr_(new orca::CameraDescription())
+, config_()
 {
 }
 
 void 
 MainThread::initialise()
 {
-    context_.tracer().info( "Setting up Data Pointers" );
-    
-    // Set up the image objects
-    orcaCameraData_ = new orca::CameraData();
-    orcaCameraData_->data.resize( config_.size );
-    orcaCameraData_->description = orcaCameraDescr_;
-
-    // Point the pointers in hydroImageData_ at orcaCameraData_
-    hydroImageData_.data = &(orcaCameraData_->data[0]);
+    subStatus().setMaxHeartbeatInterval( 20.0 );
+    readSettings();
 
     // These functions catch their exceptions.
     activate( context_, this, subsysName() );
+    context_.tracer().info( "Setting up Hardware Interface" );
+    initHardwareInterface();
     context_.tracer().info( "Setting up Network Interface" );
     initNetworkInterface();
-    context_.tracer().info( "Setting up Hardware Interface" );
-    initHardwareDriver();
+
+    context_.tracer().info( "Setting up Data Pointers" );
+    // Set up the image objects
+    orcaData_ = new orca::CameraData();
+    orcaData_->data.resize( config_.size );
+    orcaData_->description = descr_;
+
+    // Point the pointers in hydroData_ at orcaData_
+    hydroData_.data = &(orcaData_->data[0]);
 }
 
 void
@@ -56,10 +61,10 @@ MainThread::work()
             // this blocks until new data arrives
             readData();
             
-            cameraInterface_->localSetAndSend( orcaCameraData_ );
-            if ( hydroImageData_.haveWarnings )
+            interface_->localSetAndSend( orcaData_ );
+            if ( hydroData_.haveWarnings )
             {
-                subStatus().warning( hydroImageData_.warnings );
+                subStatus().warning( hydroData_.warnings );
             }
             else
             {
@@ -67,7 +72,7 @@ MainThread::work()
             }
 
             stringstream ss;
-            ss << "MainThread: Read camera data: " << orcaobj::toString(orcaCameraData_);
+            ss << "MainThread: Read camera data: " << orcaobj::toString(orcaData_);
             context_.tracer().debug( ss.str(), 5 );
 
             continue;
@@ -102,7 +107,7 @@ MainThread::work()
 
         // If we got to here there's a problem.
         // Re-initialise the driver.
-        initHardwareDriver();
+        initHardwareInterface();
 
     } // end of while
 
@@ -112,76 +117,96 @@ MainThread::work()
 ////////////////////
 
 void
-MainThread::initNetworkInterface()
+MainThread::readSettings()
 {
+    std::string prefix = context_.tag() + ".Config.";
+    orcaimage::getCameraProperties( context_, prefix, descr_ ); 
+    
+    // copy the read in settings to the hydroimage config structures
+    orcaimage::copy( config_, descr_);
+}
+
+void
+MainThread::initHardwareInterface()
+{
+    subStatus().setMaxHeartbeatInterval( 20.0 );
+
+    //copy from description to config
+
     Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag() + ".Config.";
 
-    //
-    // SENSOR DESCRIPTION
-    //
+    // Dynamically load the library and find the factory
+    std::string driverLibName = 
+        orcaice::getPropertyWithDefault( prop, prefix+"DriverLib", "libHydroImageFake.so" );
+    context_.tracer().info( "MainThread: Loading driver library "+driverLibName  );
 
-    //transfer internal sensor configs
-    orcaCameraDescr_->width = config_.width;
-    orcaCameraDescr_->height = config_.height;
-    orcaCameraDescr_->format = config_.format;
+    // The factory which creates the driver
+    std::auto_ptr<hydrointerfaces::ImageFactory> driverFactory;
+    try {
+        driverLib_.reset( new hydrodll::DynamicallyLoadedLibrary(driverLibName) );
+        driverFactory.reset( 
+            hydrodll::dynamicallyLoadClass<hydrointerfaces::ImageFactory,DriverFactoryMakerFunc>
+            ( *driverLib_, "createDriverFactory" ) );
+    }
+    catch (hydrodll::DynamicLoadException &e)
+    {
+        // unrecoverable error
+        context_.shutdown(); 
+        throw;
+    }
 
-    // offset from the robot coordinate system
-    ifaceutil::zeroAndClear( orcaCameraDescr_->offset );
-    orcaCameraDescr_->offset = orcaobj::getPropertyAsFrame3dWithDefault( prop, prefix + "Offset", orcaCameraDescr_->offset );
+    // create the driver
+    while ( !isStopping() )
+    {
+        std::stringstream exceptionSS;
+        try {
+            context_.tracer().info( "HwThread: Creating driver..." );
+            driver_.reset(0);
+            driver_.reset( driverFactory->createDriver( config_, context_.toHydroContext() ) );
+            break;
+        }
+        catch ( IceUtil::Exception &e ) {
+            exceptionSS << "MainThread: Caught exception while creating driver: " << e;
+        }
+        catch ( std::exception &e ) {
+            exceptionSS << "MainThread: Caught exception while initialising driver: " << e.what();
+        }
+        catch ( char *e ) {
+            exceptionSS << "MainThread: Caught exception while initialising driver: " << e;
+        }
+        catch ( std::string &e ) {
+            exceptionSS << "MainThread: Caught exception while initialising driver: " << e;
+        }
+        catch ( ... ) {
+            exceptionSS << "MainThread: Caught unknown exception while initialising driver";
+        }
 
-    // read size
-    ifaceutil::zeroAndClear( orcaCameraDescr_->caseSize );
-    orcaCameraDescr_->caseSize = orcaobj::getPropertyAsSize3dWithDefault( prop, prefix + "CaseSize", orcaCameraDescr_->caseSize );
+        // we get here only after an exception was caught
+        context_.tracer().error( exceptionSS.str() );
+        subStatus().fault( exceptionSS.str() );          
 
-    // frame rate
-    orcaCameraDescr_->frameRate = orcaice::getPropertyAsDoubleWithDefault( prop, prefix + "FrameRate", 0.0 );
+        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));        
+    }
 
-    //
-    // Intrinsic Parameters
-    //
+    //copy from config to description for the possible changes made
+    orcaimage::copy( descr_, config_ );
 
-    // Focal Length
-    std::vector<double> defaultFocalLength;
-    defaultFocalLength.push_back(0.0);
-    defaultFocalLength.push_back(0.0);
-    defaultFocalLength = orcaice::getPropertyAsDoubleVectorWithDefault( prop, prefix+"FocalLength", defaultFocalLength );
-    orcaCameraDescr_->focalLength.x =defaultFocalLength[0];
-    orcaCameraDescr_->focalLength.y =defaultFocalLength[1];
+    subStatus().setMaxHeartbeatInterval( 1.0 );
 
-    // Principle Point
-    std::vector<double> defaultPrinciplePoint;
-    defaultPrinciplePoint.push_back(0.0);
-    defaultPrinciplePoint.push_back(0.0);
-    defaultPrinciplePoint = orcaice::getPropertyAsDoubleVectorWithDefault( prop, prefix+"PrinciplePoint", defaultPrinciplePoint );
-    orcaCameraDescr_->principlePoint.x =defaultPrinciplePoint[0];
-    orcaCameraDescr_->principlePoint.y =defaultPrinciplePoint[1];
+}
 
+void
+MainThread::initNetworkInterface()
+{
+    // print out description
+    std::cout << orcaobj::toString(descr_) << std::endl;
 
-    // Distortion Parameters
-    std::vector<double> defaultDistortionParameters;
-    defaultDistortionParameters.push_back(0.0);
-    defaultDistortionParameters.push_back(0.0);
-    defaultDistortionParameters.push_back(0.0);
-    defaultDistortionParameters.push_back(0.0);
-    defaultDistortionParameters = orcaice::getPropertyAsDoubleVectorWithDefault( prop, prefix+"DistortionParameters", defaultDistortionParameters );
-    orcaCameraDescr_->k1 =defaultDistortionParameters[0];
-    orcaCameraDescr_->k2 =defaultDistortionParameters[1];
-    orcaCameraDescr_->p1 =defaultDistortionParameters[0];
-    orcaCameraDescr_->p2 =defaultDistortionParameters[1];
-
-    //add descr to vector
-    std::cout << orcaobj::toString(orcaCameraDescr_) << std::endl;
-
-    //
-    // EXTERNAL PROVIDED INTERFACE
-    //
-
-    cameraInterface_ = new orcaifaceimpl::CameraImpl( orcaCameraDescr_
+    interface_ = new orcaifaceimpl::CameraImpl( descr_
                                                     , "Camera"
                                                     , context_ );
     // init
-    cameraInterface_->initInterface( this, subsysName() );
+    interface_->initInterface( this, subsysName() );
 }
 
 void
@@ -190,10 +215,10 @@ MainThread::readData()
     //
     // Read from the image driver
     //
-    hydroImageData_.haveWarnings = false;
+    hydroData_.haveWarnings = false;
 
-    driver_->read( hydroImageData_ );
+    driver_->read( hydroData_ );
 
-    orcaCameraData_->timeStamp.seconds  = hydroImageData_.timeStampSec;
-    orcaCameraData_->timeStamp.useconds = hydroImageData_.timeStampUsec;
+    orcaData_->timeStamp.seconds  = hydroData_.timeStampSec;
+    orcaData_->timeStamp.useconds = hydroData_.timeStampUsec;
 }

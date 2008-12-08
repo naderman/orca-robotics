@@ -24,7 +24,7 @@ namespace cameraserver {
 //
 // @brief the main executing loop of this camera component.
 //
-class MainThread : public orcaimagecommon::ImageComponentThread
+class MainThread : public orcaice::SubsystemThread
 {
 
 public:
@@ -37,19 +37,41 @@ private:
     virtual void initialise();
     virtual void work();
 
+    // Setup Hardware
+    void initHardwareInterface();
+
     // Loops until established
     void initNetworkInterface();
 
+    // Read Data from the Driver
     void readData();
 
+    // Read Settings from Config File
+    void readSettings();
+
+    // Context
+    orcaice::Context context_;
+
     // The Network Image Interface object
-    orcaifaceimpl::CameraImplPtr cameraInterface_;
+    orcaifaceimpl::CameraImplPtr interface_;
 
     // The Network Image Interface Data Structure
-    orca::CameraDataPtr orcaCameraData_;
+    orca::CameraDataPtr orcaData_;
 
     // The Network Image Interface Description Structure
-    orca::CameraDescriptionPtr orcaCameraDescr_;
+    orca::CameraDescriptionPtr descr_;
+    
+    // The Driver Interface Config Structure
+    hydrointerfaces::Image::Config config_;
+
+    // The Driver Interface Data Structure
+    hydrointerfaces::Image::Data hydroData_;
+
+    // The library that contains the driver factory (must be declared first so it's destructed last!!!)
+    std::auto_ptr<hydrodll::DynamicallyLoadedLibrary> driverLib_;
+    
+    // Generic driver for the hardware
+    std::auto_ptr<hydrointerfaces::Image> driver_;
 
 };
 

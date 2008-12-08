@@ -123,13 +123,13 @@ namespace orcaimage
         getCameraProperties( context, firstprefixSS.str(), description );
 
         description->extraDescriptions.clear();
-        description->extraDescriptions.resize(numberOfCameras - 1);
 
-        for( unsigned int i = 1; i < numberOfCameras; ++i )
+        for( unsigned int i = 0; i < numberOfCameras-1; ++i )
         {
             std::stringstream prefixSS;
             prefixSS << prefix <<  i << ".";
-            getCameraProperties( context, prefixSS.str(), description->extraDescriptions[i-1] );
+            description->extraDescriptions.push_back(new orca::CameraDescription());
+            getCameraProperties( context, prefixSS.str(), description->extraDescriptions[i] );
         }
 
         std::stringstream debugSS;

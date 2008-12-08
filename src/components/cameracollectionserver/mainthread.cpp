@@ -33,8 +33,14 @@ MainThread::initialise()
     subStatus().setMaxHeartbeatInterval( 20.0 );
     readSettings();
 
+    // These functions catch their exceptions.
+    activate( context_, this, subsysName() );
+    context_.tracer().info( "Setting up Hardware Interface" );
+    initHardwareInterface();
+    context_.tracer().info( "Setting up Network Interface" );
+    initNetworkInterface();
+
     context_.tracer().info( "Setting up Data Pointers" );
-    
     // Set up the image objects
     orcaData_ = new orca::CameraCollectionData();
     //resize data vectors
@@ -44,19 +50,14 @@ MainThread::initialise()
     //point the pointers in hydroData_ at orcaData_
     hydroData_[0].data = &(orcaData_->data[0]);
 
-    for( unsigned int i = 1; i < descr_->extraDescriptions.size()+1; ++i)
+    for( unsigned int i = 0; i < descr_->extraDescriptions.size(); ++i)
     {
         orcaData_->extraData.push_back( new orca::CameraData() );
+        orcaData_->extraData[i]->data.resize( descr_->extraDescriptions[i]->size );
         orcaData_->extraData[i]->description = descr_->extraDescriptions[i];
-        hydroData_[i].data = &(orcaData_->extraData[i]->data[0]);
+        hydroData_[i+1].data = &(orcaData_->extraData[i]->data[0]);
     }
 
-    // These functions catch their exceptions.
-    activate( context_, this, subsysName() );
-    context_.tracer().info( "Setting up Network Interface" );
-    initNetworkInterface();
-    context_.tracer().info( "Setting up Hardware Interface" );
-    initHardwareInterface();
 }
 
 void
@@ -129,15 +130,17 @@ void
 MainThread::readSettings()
 {
     std::string prefix = context_.tag() + ".Config.";
+    
     orcaimage::getCameraCollectionProperties( context_, prefix, descr_ ); 
+
     config_.resize(descr_->extraDescriptions.size() + 1);
     hydroData_.resize(descr_->extraDescriptions.size() + 1);
 
     // copy the read in settings to the hydroimage config structures
     orcaimage::copy( config_[0], descr_);
-    for( hydrointerfaces::ImageCollection::Config::size_type i = 1; i < config_.size(); ++i )
+    for( hydrointerfaces::ImageCollection::Config::size_type i = 0; i < config_.size()-1; ++i )
     {
-        orcaimage::copy( config_[i], descr_->extraDescriptions[i-1] );
+        orcaimage::copy( config_[i+1], descr_->extraDescriptions[i] );
     }
 }
 
@@ -221,9 +224,6 @@ MainThread::initNetworkInterface()
     //print out description
     context_.tracer().info( orcaobj::toString(descr_) );
 
-    //
-    // EXTERNAL PROVIDED INTERFACE
-    //
     interface_ = new orcaifaceimpl::CameraCollectionImpl( descr_
                                                     , "CameraCollection"
                                                     , context_ );
