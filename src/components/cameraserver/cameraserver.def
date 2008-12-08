@@ -24,7 +24,7 @@ Config.ImageWidth.Comment=Image Width [pixels]
 Config.ImageWidth.Default=320
 Config.ImageHeight.Comment=Image Height [pixels]
 Config.ImageHeight.Default=240
-Config.ImageFormat.Comment=Valid values are at least: {'BGR8', 'GRAY8'}
+Config.ImageFormat.Comment=Valid values are at least: {'BGR8', "RGB8", 'GRAY8', "BayerRG8", "BayerGR8", "BayerGB8", "BayerBG8"}
 Config.ImageFormat.Default=BGR8
 
 Config.DC1394.IsoMode.Comment=Valid values are at least: {'1394A', '1394B'}
