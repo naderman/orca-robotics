@@ -45,6 +45,9 @@ This component dynamically loads an implementation of a Hydro hardware interface
     - Default: "libHydroImageFake.so"
 
 CameraCollectionServer Settings
+- @c CameraCollectionServer.Config.NumberOfCameras (int)
+    - The number of cameras simultaneously grabbing image frames
+    - Default: 1
 - @c CameraCollectionServer.N.Config.Offset (Frame3d) [m, deg]
     - Position of the camera sensor plane with respect to the robot's local coordinate system.
     - Format: x y z roll pitch yaw (space separated)
@@ -82,6 +85,9 @@ Individual cameras have different options, different formats, and sometimes even
 
 In order for the logger and viewer to properly show your custom image format (should you have one) you need to write a conversion plugin if one doesn't exist already.
 It should convert to a common variation of RGBA such as BGR8, BGRA8, RGBA8, RGB8 for color logging/viewing or GRAY8 for grayscale logging and viewing.
+
+@section Troubleshooting
+1. First check the ImageServer @ref orca_component_imageserver_troubleshooting guide.
 
 @par Authors
 
