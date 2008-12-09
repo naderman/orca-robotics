@@ -21,7 +21,7 @@
 #include <string>
 
 namespace imageviewocv {
-
+//! @brief Class for viewing images using OpenCV. This class sets up the OpenCV structures for storing image formats and displaying them.
 class Viewer
 {
 public:
@@ -31,22 +31,33 @@ public:
             const orcaice::Context& context );
     ~Viewer();
     
-    // function that actually displays the image in a window
+    //! function that actually displays the image in a window
     void display( orca::ImageDataPtr& image );
 
 private:
-    //
-    // opencv structures
-    //
-    // image structure that stores the image in BGR8 format
-    // for display
+    //!
+    //! opencv structures
+    //!
+    //! image structure that stores the image in BGR8 format
+    //! for display
     IplImage* cvDisplayImage_;
     // image structure that stores the original image format
     IplImage* cvSrcImage_;
     
-    // handle to the opencv window
+    //! handle to the opencv window
     const char* name_;
     
+    // display the frame rate of the received images
+    void displayFrameRate();
+    //! time variables for calculating number of frames per second 
+    orca::Time oldFrameTime_;
+    orca::Time currentFrameTime_;
+    double diff_;
+    double fps_;
+    //! variable for displaying fps
+    CvFont font_;
+
+        
     orcaice::Context context_;
 };
 

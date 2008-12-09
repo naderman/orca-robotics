@@ -12,6 +12,8 @@
 #include "colourconversions.h"
 
 #include <hydroimage/formats.h>
+// for calculating fps
+#include <orcaice/timeutils.h>
 
 using namespace imageviewocv;
 using namespace hydroimage;
@@ -41,6 +43,14 @@ Viewer::Viewer( const int width,
     name_ = "ImageViewer";
     cvNamedWindow( name_ );
     // context_.tracer()->debug("opencv window created",5);
+    
+    // start the timer for calculating the number of frames per second
+    // the images are being displayed at
+    orcaice::setToNow( oldFrameTime_ );
+    
+    // initialise font for displaying fps
+    cvInitFont(&font_, CV_FONT_HERSHEY_SIMPLEX, 0.5, 0.5, 0.0, 1, CV_AA);
+        
 }
 
 Viewer::~Viewer()
@@ -65,8 +75,10 @@ void Viewer::display( orca::ImageDataPtr& image )
         // Convert the image format to BGR8 for viewing in an opencv window.
         cvtToBgr( cvSrcImage_, cvDisplayImage_, image->description->format );
         
+        displayFrameRate();
+        
         // display the image in an opencv window
-        cvShowImage( name_, cvSrcImage_ );
+        cvShowImage( name_, cvDisplayImage_ );
     
         // Without this, the window doesn't display propery... what the hell?
         cvWaitKey(5);
@@ -76,5 +88,19 @@ void Viewer::display( orca::ImageDataPtr& image )
         // no window to display in so shutdown the component
         context_.communicator()->shutdown();
     }
-    
 }
+    
+void
+Viewer::displayFrameRate()
+{
+        // Display the frame rate
+        orcaice::setToNow( currentFrameTime_ );
+        diff_  = orcaice::timeDiffAsDouble( currentFrameTime_, oldFrameTime_ );
+        oldFrameTime_ = currentFrameTime_;
+        fps_ = 1.0/diff_;
+        
+        std::stringstream fpsString_;
+        fpsString_ << "fps = " << fps_;
+        cvPutText(cvDisplayImage_, fpsString_.str().c_str(), cvPoint(20,20), &font_, CV_RGB(255,255,255)); 
+}
+    
