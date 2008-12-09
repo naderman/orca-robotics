@@ -58,6 +58,20 @@ An example configuration file is installed into [ORCA-INSTALL-DIR]/share/orca/cf
 
 This component uses the same driver interface that the CameraServer uses, in fact, any driver will work for both. If you need the extra description information that the camera server gives then please use that instead. The viewer and logger will work with either.
 
+@section orca_component_imageserver_troubleshooting Troubleshooting
+
+-# Ice is throwing the following exception
+@verbatim
+Ice::MemoryLimitException: protocol error: memory limit exceeded
+@endverbatim
+Ice has a default maximum object size that can be communicated between components of 1024 bytes. If the images from the camera exceed this limit you must add in the following extra configuration line to @b both the @c imageserver.cfg and @c icebox_icestorm.cfg files:
+@verbatim
+...
+Ice.MessageSizeMax=3000
+@endverbatim
+Remember to add this line to all configuration files that will be communicating images. So if you're logging or replaying a log you will have to add this line to @c logrecorder.cfg and @c logplayer.cfg as well.
+
+
 @par Authors
 
 Alex Brooks, Tom Burdick, Tobias Kaupp, Alex Makarenko
