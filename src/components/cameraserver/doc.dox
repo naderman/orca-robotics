@@ -91,6 +91,9 @@ It should convert to a common variation of RGBA such as BGR8, BGRA8, RGBA8, RGB8
 
 The camera intrinsic parameters are assumed to use so-called pinhole camera model. As such the camera is modelled with a x,y focal lengths the x,y principle point and 4 distortion parameters (k1, k2 are radial distortion coefficients, p1, p2 are tangential distortion coefficients). These coefficients are explained in detail in the OpenCV reference guide for camera camlibration and Matlab Camera Calibration Toolbox.
 
+@section Troubleshooting
+1. First check the ImageServer @ref orca_component_imageserver_troubleshooting guide.
+
 @par Authors
 
 Alex Brooks, Tom Burdick, Tobias Kaupp, Alex Makarenko
