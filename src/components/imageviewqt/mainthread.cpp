@@ -11,6 +11,7 @@
 #include "mainthread.h"
 #include "imagequeue.h"
 
+#include <orcaobj/orcaobj.h>
 #include <orcaice/orcaice.h>
 
 using namespace imageviewqt;
@@ -58,7 +59,13 @@ MainThread::work()
         context_.tracer().debug("Fetching Image");
 
         int ret = imageInterface->buffer().getAndPopNext( imageData, timeoutMs );
-            
+        
+        std::stringstream ss;
+        ss << "Buffer Size: " << imageData->data.size();
+        context_.tracer().debug( ss.str() );
+
+        context_.tracer().debug( orcaobj::toString(imageData->description) );
+
         if(!ret)
         {
             context_.tracer().debug("Successfuly fetched Image");

@@ -32,18 +32,26 @@ MainThread::initialise()
 {
     subStatus().setMaxHeartbeatInterval( 20.0 );
     readSettings();
+    // print out description
+    context_.tracer().debug( orcaobj::toString(descr_) );
+
 
     // These functions catch their exceptions.
     activate( context_, this, subsysName() );
     context_.tracer().info( "Setting up Hardware Interface" );
     initHardwareInterface();
+    
+    // print out description
+    context_.tracer().debug( orcaobj::toString(descr_) );
+
     context_.tracer().info( "Setting up Network Interface" );
     initNetworkInterface();
+
 
     context_.tracer().info( "Setting up Data Pointers" );
     // Set up the image objects
     orcaData_ = new orca::CameraData();
-    orcaData_->data.resize( config_.size );
+    orcaData_->data.resize( descr_->size );
     orcaData_->description = descr_;
 
     // Point the pointers in hydroData_ at orcaData_
@@ -199,10 +207,7 @@ MainThread::initHardwareInterface()
 void
 MainThread::initNetworkInterface()
 {
-    // print out description
-    std::cout << orcaobj::toString(descr_) << std::endl;
-
-    interface_ = new orcaifaceimpl::CameraImpl( descr_
+        interface_ = new orcaifaceimpl::CameraImpl( descr_
                                                     , "Camera"
                                                     , context_ );
     // init
