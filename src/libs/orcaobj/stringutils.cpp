@@ -549,12 +549,10 @@ std::string
 toString( const orca::CameraCollectionDataPtr& obj )
 {
     std::ostringstream s;
-    s << toString(obj->timeStamp)
-      << " CameraData 0 : ["<<obj->data.size()<<" bytes]\n";
-
-    for( unsigned int i = 0; i < obj->extraData.size(); ++i )
+    
+    for( unsigned int i = 0; i < obj->data.size(); ++i )
     {
-        s << " CameraData " << i+1 << " : ["<<obj->data.size()<<" bytes]\n";
+        s << " CameraData " << i+1 << " : ["<<obj->data[i]->data.size()<<" bytes]\n";
     }
 
     return s.str();
@@ -564,31 +562,19 @@ std::string
 toString( const orca::CameraCollectionDescriptionPtr& obj )
 {
     std::ostringstream s;
-    s << "Camera 0:" << endl;
-    s << "\tImage height              " << obj->height << "pix" << endl;
-    s << "\tImage width               " << obj->width << "pix" << endl;
-    s << "\tFrame rate                " << obj->frameRate << "fps" << endl;
-    s << "\tFormat                    " << obj->format << endl;
-    s << "\toffset.point.x            " << obj->offset.p.x << "m" << endl;
-    s << "\toffset.point.y            " << obj->offset.p.y << "m" << endl;
-    s << "\toffset.point.z            " << obj->offset.p.z << "m" << endl;
-    s << "\toffset.orientation.roll   " << RAD2DEG(obj->offset.o.r) << "deg" << endl;
-    s << "\toffset.orientation.pitch  " << RAD2DEG(obj->offset.o.p) << "deg" << endl;
-    s << "\toffset.orientation.yaw    " << RAD2DEG(obj->offset.o.y) << "deg" << endl;
-
-    for( unsigned int i = 0; i < obj->extraDescriptions.size(); ++i )
+    for( unsigned int i = 0; i < obj->descriptions.size(); ++i )
     {
-        s << "Camera " << i+1 << " :" << endl;
-        s << "\tImage height              " << obj->extraDescriptions[i]->height << "pix" << endl;
-        s << "\tImage width               " << obj->extraDescriptions[i]->width << "pix" << endl;
-        s << "\tFrame rate                " << obj->extraDescriptions[i]->frameRate << "fps" << endl;
-        s << "\tFormat                    " << obj->extraDescriptions[i]->format << endl;
-        s << "\toffset.point.x            " << obj->extraDescriptions[i]->offset.p.x << "m" << endl;
-        s << "\toffset.point.y            " << obj->extraDescriptions[i]->offset.p.y << "m" << endl;
-        s << "\toffset.point.z            " << obj->extraDescriptions[i]->offset.p.z << "m" << endl;
-        s << "\toffset.orientation.roll   " << RAD2DEG(obj->extraDescriptions[i]->offset.o.r) << "deg" << endl;
-        s << "\toffset.orientation.pitch  " << RAD2DEG(obj->extraDescriptions[i]->offset.o.p) << "deg" << endl;
-        s << "\toffset.orientation.yaw    " << RAD2DEG(obj->extraDescriptions[i]->offset.o.y) << "deg" << endl;
+        s << "Camera " << i << " :" << endl;
+        s << "\tImage height              " << obj->descriptions[i]->height << "pix" << endl;
+        s << "\tImage width               " << obj->descriptions[i]->width << "pix" << endl;
+        s << "\tFrame rate                " << obj->descriptions[i]->frameRate << "fps" << endl;
+        s << "\tFormat                    " << obj->descriptions[i]->format << endl;
+        s << "\toffset.point.x            " << obj->descriptions[i]->offset.p.x << "m" << endl;
+        s << "\toffset.point.y            " << obj->descriptions[i]->offset.p.y << "m" << endl;
+        s << "\toffset.point.z            " << obj->descriptions[i]->offset.p.z << "m" << endl;
+        s << "\toffset.orientation.roll   " << RAD2DEG(obj->descriptions[i]->offset.o.r) << "deg" << endl;
+        s << "\toffset.orientation.pitch  " << RAD2DEG(obj->descriptions[i]->offset.o.p) << "deg" << endl;
+        s << "\toffset.orientation.yaw    " << RAD2DEG(obj->descriptions[i]->offset.o.y) << "deg" << endl;
     }
 
     return s.str();

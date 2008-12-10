@@ -22,29 +22,28 @@
 namespace orcaifaceimpl {
 
 typedef ProviderWithDescriptionImpl<orca::CameraCollection, orca::CameraCollectionPrx,
-                    orca::ImageConsumer, orca::ImageConsumerPrx,
-                    orca::ImageDataPtr, orca::ImageDescriptionPtr>CameraCollectionImpl;
+                    orca::CameraCollectionConsumer, orca::CameraCollectionConsumerPrx,
+                    orca::CameraCollectionDataPtr, orca::CameraCollectionDescriptionPtr> CameraCollectionImpl;
 typedef IceUtil::Handle<CameraCollectionImpl> CameraCollectionImplPtr;
 
 typedef StoringConsumerImpl<orca::CameraCollection, orca::CameraCollectionPrx,
-                    orca::ImageConsumer, orca::ImageConsumerPrx,
-                    orca::ImageDataPtr> StoringCameraCollectionConsumerImpl;
+                    orca::CameraCollectionConsumer, orca::CameraCollectionConsumerPrx,
+                    orca::CameraCollectionDataPtr> StoringCameraCollectionConsumerImpl;
 typedef IceUtil::Handle<StoringCameraCollectionConsumerImpl> StoringCameraCollectionConsumerImplPtr;
 
 typedef BufferedConsumerImpl<orca::CameraCollection, orca::CameraCollectionPrx,
-                        orca::ImageConsumer, orca::ImageConsumerPrx,
-                        orca::ImageDataPtr> BufferedCameraCollectionConsumerImpl;
+                    orca::CameraCollectionConsumer, orca::CameraCollectionConsumerPrx,
+                    orca::CameraCollectionDataPtr> BufferedCameraCollectionConsumerImpl;
 typedef IceUtil::Handle<BufferedCameraCollectionConsumerImpl> BufferedCameraCollectionConsumerImplPtr;
 
 typedef NotifyingConsumerImpl<orca::CameraCollection, orca::CameraCollectionPrx,
-                        orca::ImageConsumer,
-                        orca::ImageConsumerPrx,
-                        orca::ImageDataPtr> NotifyingCameraCollectionConsumerImpl;
+                    orca::CameraCollectionConsumer, orca::CameraCollectionConsumerPrx,
+                    orca::CameraCollectionDataPtr> NotifyingCameraCollectionConsumerImpl;
 typedef IceUtil::Handle<NotifyingCameraCollectionConsumerImpl> NotifyingCameraCollectionConsumerImplPtr;
 
 typedef PrintingConsumerImpl<orca::CameraCollection, orca::CameraCollectionPrx,
-                        orca::ImageConsumer, orca::ImageConsumerPrx,
-                        orca::ImageDataPtr> PrintingCameraCollectionConsumerImpl;
+                    orca::CameraCollectionConsumer, orca::CameraCollectionConsumerPrx,
+                    orca::CameraCollectionDataPtr> PrintingCameraCollectionConsumerImpl;
 typedef IceUtil::Handle<PrintingCameraCollectionConsumerImpl> PrintingCameraCollectionConsumerImplPtr;
 
 }

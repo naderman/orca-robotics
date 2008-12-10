@@ -117,23 +117,16 @@ namespace orcaimage
         
         unsigned int numberOfCameras = (unsigned int)orcaice::getPropertyAsIntWithDefault( prop, prefix + "NumberOfCameras", 1);
 
-        std::stringstream firstprefixSS;
-        firstprefixSS << prefix << "0.";
-
-        getCameraProperties( context, firstprefixSS.str(), description );
-
-        description->extraDescriptions.clear();
-
-        for( unsigned int i = 0; i < numberOfCameras-1; ++i )
+        for( unsigned int i = 0; i < numberOfCameras; ++i )
         {
             std::stringstream prefixSS;
             prefixSS << prefix <<  i << ".";
-            description->extraDescriptions.push_back(new orca::CameraDescription());
-            getCameraProperties( context, prefixSS.str(), description->extraDescriptions[i] );
+            description->descriptions.push_back(new orca::CameraDescription());
+            getCameraProperties( context, prefixSS.str(), description->descriptions[i] );
         }
 
         std::stringstream debugSS;
-        debugSS << "extraDescriptions size: " << description->extraDescriptions.size() << std::endl;
+        debugSS << "descriptions size: " << description->descriptions.size() << std::endl;
         std::string debug = debugSS.str();
         context.tracer().debug( debug );
     }

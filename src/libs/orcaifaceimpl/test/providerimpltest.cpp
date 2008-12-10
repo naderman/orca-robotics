@@ -131,7 +131,7 @@ TestComponent::start()
     }
     {
         orcaifaceimpl::CameraCollectionImplPtr ptr = new orcaifaceimpl::CameraCollectionImpl( new orca::CameraCollectionDescription, context(), "crap" );
-        ptr->localSet( new orca::ImageData );
+        ptr->localSet( new orca::CameraCollectionData );
     }
     {
         orcaifaceimpl::Odometry2dImplPtr ptr = new orcaifaceimpl::Odometry2dImpl( orca::VehicleDescription(), context(), "crap" );
