@@ -1,0 +1,80 @@
+/*
+ * Orca Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2008 Alex Brooks, Ben Upcroft
+ *
+ * This copy of Orca is licensed to you under the terms described in the
+ * ORCA_LICENSE file included in this distribution.
+ *
+ */
+
+/*!
+@ingroup orca_components
+@ingroup orca_apps
+@ingroup orca_cpp
+@ingroup orca_linux
+@defgroup orca_component_cameracollectionviewocv CameraCollectionViewOcv
+@brief A multi-camera viewer (that uses OpenCV) for displaying images from a component like cameracollectionserver. 
+
+@par Provides
+
+- @ref orca_interface_home
+
+@par Requires
+
+- @ref orca_interface_cameracollection [ImageViewOcv.Requires.Image]
+
+@image html imageview.png
+
+@par Operation
+
+A simple example that connects to an multi image server (such as CameraCollectionServer) and displays the images in a GTK window created by OpenCV. For instance, if we were trying to view images from a stereo pair, the viewer will place 2 frames side-by-side and display the two camera images simultaneously.
+
+Images are displayed as soon as they arrive. Colour images (including Bayer encoded images) are converted to BGR for display in an OpenCV window. Greyscale images are not modified.
+
+This viewer supports all image formats that imageserver supports. This includes
+- RGB8
+- BGR8
+- RGBA8
+- BGRA8
+- BayerBG8
+- BayerGB8
+- BayerRG8
+- BayerGR8
+- GRAY8
+
+Other formats can be added if requested.
+
+- @ref orca_component_cameracollectionserver
+
+@par Configuration
+
+<!-- Nothing yet to configure
+- @c ImageViewOcv.Config.Blah (string)
+    - Name of shared library containing the hardware driver
+    - Valid values are at least: { 'libHydroLaserScanner2dSickAcfr.so', 'libHydroLaserScanner2dSickCarmen.so', 'libHydroLaserScanner2dPlayerClient.so', 'libHydroLaserScanner2dFake.so' }
+    - Default: "libHydroLaserScanner2dSickCarmen.so"
+-->
+
+An example configuration file is installed into [ORCA-INSTALL-DIR]/share/orca/cfg/ directory.
+
+@par Dependencies
+
+Requires <a href="http://pr.willowgarage.com/wiki/OpenCV" target="_blank">OpenCV library</a>. Latest tested version 1.1pre1. 
+<!-- For our installation instructions, see @ref orca_component_imageserver_monoopencv. -->
+
+<!-- This component uses libOpenCV to display images. Before compiling libOpenCV, make sure GTK++ is installed. In Debian, install this package:
+@verbatim
+# apt-get install libgtk2.0-dev
+@endverbatim -->
+
+@section Notes
+
+The only external dependencies for this component are OpenCV so this should build in Windows but has not been tested.
+
+For more control over the GUI toolkit than OpenCV gives you, see the cameracollectionviewqt viewer which uses Qt.
+
+@par Authors
+
+Ben Upcroft
+*/
