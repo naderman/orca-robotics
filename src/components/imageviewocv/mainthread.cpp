@@ -148,7 +148,6 @@ void MainThread::getImage()
         subStatus().warning( "Image was not successfully copied to local buffer" );
     }
 
-
     // TODO: add string description for images
     //     stringstream ss;
     //     ss << "MainThread: Read image data: " << ifaceutil::toString(imageData_);
