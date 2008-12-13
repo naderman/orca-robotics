@@ -11,6 +11,8 @@
 #include <iostream>
 #include <orcaice/orcaice.h>
 #include <orcaobj/orcaobj.h>
+#include <orcaimage/propertyutils.h>
+
 #include "mainthread.h"
 
 using namespace std;
@@ -204,9 +206,9 @@ MainThread::initHardwareInterface()
 void
 MainThread::initNetworkInterface()
 {
-        interface_ = new orcaifaceimpl::ImageImpl( descr_
-                                                    , "Image"
-                                                    , context_ );
+    interface_ = new orcaifaceimpl::ImageImpl( descr_
+            , "Image"
+            , context_ );
     // init
     interface_->initInterface( this, subsysName() );
 }

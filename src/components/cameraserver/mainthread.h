@@ -15,6 +15,9 @@
 #include <orcaice/context.h>
 #include <hydrodll/dynamicload.h>
 
+// plugin interface
+#include <hydrointerfaces/image.h>
+
 // remote interface
 #include <orcaifaceimpl/camera.h>
 

@@ -71,10 +71,19 @@ Ice.MessageSizeMax=3000
 @endverbatim
 Remember to add this line to all configuration files that will be communicating images. So if you're logging or replaying a log you will have to add this line to @c logrecorder.cfg and @c logplayer.cfg as well.
 
+-# IceBox memory usage is constantly increasing
+This is caused by IceStorm not being able to deliver data fast enough to the subscribers. Causes include slow connections, slow algorithms, or possibly a dead subscriber.
+The partial solution to this problem is to tell icebox to be more aggressive at deleting data that it can't deliver fast enough sooner and check more frequently to do so.
+In the icebox_icestorm.cfg file,
+@verbatim
+# A timeout for sending data to subscribers
+IceStorm.Send.Timeout=1000
+IceStorm.Discard.Interval=1
+@endverbatim
 
 @par Authors
 
-Alex Brooks, Tom Burdick, Tobias Kaupp, Alex Makarenko
+Alex Brooks, Tom Burdick, Tobias Kaupp, Alex Makarenko, Ben Upcroft
 
 */
 
