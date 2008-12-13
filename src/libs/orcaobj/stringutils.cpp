@@ -550,9 +550,9 @@ toString( const orca::CameraCollectionDataPtr& obj )
 {
     std::ostringstream s;
     
-    for( unsigned int i = 0; i < obj->data.size(); ++i )
+    for( unsigned int i = 0; i < obj->cameraDataVector.size(); ++i )
     {
-        s << " CameraData " << i+1 << " : ["<<obj->data[i]->data.size()<<" bytes]\n";
+        s << " CameraData " << i+1 << " : ["<<obj->cameraDataVector[i]->data.size()<<" bytes]\n";
     }
 
     return s.str();

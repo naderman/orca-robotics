@@ -47,10 +47,10 @@ MainThread::initialise()
 
     for( unsigned int i = 0; i < descr_->descriptions.size(); ++i)
     {
-        orcaData_->data.push_back( new orca::CameraData() );
-        orcaData_->data[i]->data.resize( descr_->descriptions[i]->size );
-        orcaData_->data[i]->description = descr_->descriptions[i];
-        hydroData_[i].data = &(orcaData_->data[i]->data[0]);
+        orcaData_->cameraDataVector.push_back( new orca::CameraData() );
+        orcaData_->cameraDataVector[i]->data.resize( descr_->descriptions[i]->size );
+        orcaData_->cameraDataVector[i]->description = descr_->descriptions[i];
+        hydroData_[i].data = &(orcaData_->cameraDataVector[i]->data[0]);
     }
 
 }
@@ -237,7 +237,7 @@ MainThread::readData()
     //copy timestamps
     for( hydrointerfaces::ImageCollection::Data::size_type i = 0; i < hydroData_.size(); ++i )
     {
-        orcaData_->data[i]->timeStamp.seconds  = hydroData_[i].timeStampSec;
-        orcaData_->data[i]->timeStamp.useconds = hydroData_[i].timeStampUsec;
+        orcaData_->cameraDataVector[i]->timeStamp.seconds  = hydroData_[i].timeStampSec;
+        orcaData_->cameraDataVector[i]->timeStamp.useconds = hydroData_[i].timeStampUsec;
     }
 }

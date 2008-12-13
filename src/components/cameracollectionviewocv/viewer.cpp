@@ -24,9 +24,9 @@ Viewer::Viewer( const orca::CameraCollectionDataPtr& cameraCollectionData,
 {
 
     // Assume each camera is identical and the image formats are identical
-    std::string format = cameraCollectionData->data.at(0)->description->format;
-    int width = cameraCollectionData->data.at(0)->description->width;
-    int height = cameraCollectionData->data.at(0)->description->height;
+    std::string format = cameraCollectionData->cameraDataVector.at(0)->description->format;
+    int width = cameraCollectionData->cameraDataVector.at(0)->description->width;
+    int height = cameraCollectionData->cameraDataVector.at(0)->description->height;
     
     // class to search for image format properties
     ImageFormat imageFormat = ImageFormat::find( format );
@@ -72,10 +72,10 @@ void Viewer::display( orca::CameraCollectionDataPtr& images )
         // Point the opencv image data structure to the orca image data
         // Don't want to memcpy to reduce the total copies that occur
         // memcpy( cvImage_->imageData, &(image->data[0]), image->data.size() );
-        cvSrcImage_->imageData = (char*)(&images->data.at(0)->data[0]);
+        cvSrcImage_->imageData = (char*)(&images->cameraDataVector.at(0)->data[0]);
             
         // Convert the image format to BGR8 for viewing in an opencv window.
-        cvtToBgr( cvSrcImage_, cvDisplayImage_, images->data.at(0)->description->format );
+        cvtToBgr( cvSrcImage_, cvDisplayImage_, images->cameraDataVector.at(0)->description->format );
             
         displayFrameRate();
             

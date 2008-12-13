@@ -44,7 +44,7 @@ sequence<CameraData> CameraDataSeq;
 //!
 class CameraCollectionData 
 {
-    CameraDataSeq data;
+    CameraDataSeq cameraDataVector;
 };
 
 //! Interface to the image consumer.
