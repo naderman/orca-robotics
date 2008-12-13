@@ -13,7 +13,6 @@
 #include <memory>
 #include <orcaice/subsystemthread.h>
 #include <orcaice/context.h>
-#include <orcaimagecommon/imagecomponentthread.h>
 #include <hydrodll/dynamicload.h>
 
 // remote interface
