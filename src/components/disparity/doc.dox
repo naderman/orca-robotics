@@ -1,0 +1,44 @@
+/*
+ * Orca Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2008 Tom Burdick
+ *
+ * This copy of Orca is licensed to you under the terms described in the
+ * ORCA_LICENSE file included in this distribution.
+ *
+ */
+
+/*!
+@ingroup orca_components
+@ingroup orca_apps
+@ingroup orca_cpp
+@ingroup orca_linux
+@defgroup orca_component_disparity Disparity 
+@brief A stereo camera correlation component. Takes in data from two cameras and produces a disparity map (best shift match).
+
+@par Provides
+
+- @ref orca_interface_home
+
+@par Requires
+
+- @ref orca_interface_cameracollection [Disparity.Requires.CameraCollection]
+
+@image html disparity.png
+
+@par Operation
+
+- @ref orca_component_cameracollectionserver
+
+@par Configuration
+
+An example configuration file is installed into [ORCA-INSTALL-DIR]/share/orca/cfg/ directory.
+
+@par Dependencies
+
+@section Notes
+
+@par Authors
+
+Tom Burdick
+*/

@@ -1,0 +1,18 @@
+DefaultComponentTag=Disparity
+
+# Required Interfaces
+Requires.CameraCollection.Type=::orca::CameraCollection
+Requires.CameraCollection.DefaultProxy=cameracollection@local/cameracollectionserver
+
+# Provided Interfaces
+Provides.Image.Type=::orca::Image
+Provides.Image.DefaultName=disparity
+
+# Component Configuration
+Config.SleepIntervalMs.Default=1000
+Config.DriverLib.Comment=Valid values are at least: { 'libHydroDisparityFile.so', 'libHydroDisparitySimple.so', 'libHydroDisparitySimpleGL.so', 'libHydroDisparityBP.so', 'libHydroDisparityGLBP.so'}
+Config.DriverLib.Default=libHydroDisparityFile.so
+Config.ImageWidth.Default=640
+Config.ImageHeight.Default=480
+Config.ImageFormat.Default=GRAY8
+
