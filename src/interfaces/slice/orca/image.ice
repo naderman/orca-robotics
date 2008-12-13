@@ -45,7 +45,7 @@ class ImageDescription
 
 //! A single image.
 class ImageData
-{
+{ 
     //! TimeStamp of Data
     Time timeStamp;   
 
