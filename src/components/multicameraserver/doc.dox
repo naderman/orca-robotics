@@ -1,0 +1,97 @@
+/*
+ * Orca-Robotics Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2008 Tom Burdick, Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This copy of Orca is licensed to you under the terms described in
+ * the LICENSE file included in this distribution.
+ *
+ */
+
+/*!
+@ingroup orca_components
+@ingroup orca_apps
+@ingroup orca_services
+@ingroup orca_cpp
+@ingroup orca_linux
+@ingroup orca_qnx
+@ingroup orca_win
+@defgroup orca_component_cameracollectionserver CameraCollectionServer
+@brief A hardware abstraction component for a Collection of Cameras
+
+@par Provides
+
+- @ref orca_interface_home
+- @ref orca_interface_cameracollection [CameraCollectionServer.Provides.CameraCollection]
+- @ref orca_interface_status
+
+@par Requires
+
+- none
+
+@image html cameracollectionserver.png
+
+@par Drivers
+
+This component dynamically loads an implementation of a Hydro hardware interface hydrointerfaces::ImageCollection. You can also load your own implementation as long as the shared library is in the path. See Hydro documentation for the list of available drivers.
+
+- @ref hydro_drivers_imagecollection
+
+@par Configuration
+
+- @c CameraCollectionServer.Config.DriverLib (string)
+    - Name of shared library containing the hardware driver
+    - Valid values are at least: { 'libHydroImageCollectionFake.so', 'libHydroImageCollectionFile.so', 'libHydroImageBumblebee.so' }
+    - Default: "libHydroImageFake.so"
+
+CameraCollectionServer Settings
+- @c CameraCollectionServer.Config.NumberOfCameras (int)
+    - The number of cameras simultaneously grabbing image frames
+    - Default: 1
+- @c CameraCollectionServer.N.Config.Offset (Frame3d) [m, deg]
+    - Position of the camera sensor plane with respect to the robot's local coordinate system.
+    - Format: x y z roll pitch yaw (space separated)
+    - Example: a camera mounted upside down with now translation: "0.0 0.0 0.0  180.0 0.0 0.0"
+    - Default: 0.0 0.0 0.0  0.0 0.0 0.0
+- @c CameraCollectionServer.N.Config.FocalLength (double) [mm]
+    - Focal length of attached lense. Useful to other components.
+    - Default: 0
+- @c CameraCollectionServer.N.Config.SensorSize (Size2d) [cm,cm]
+    - Physical dimensions of the CCD or CMOS sensor.
+    - Format: width height (space separated)
+    - Default: 0.846 0.846 (1/3" 1/3", a typical sensor size)
+- @c CameraCollectionServer.N.Config.ImageWidth (int) [pixels]
+    - Width of desired image in pixels
+    - Default: 320
+- @c CameraCollectionServer.N.Config.ImageHeight (int) [pixels]
+    - Height of desired image in pixels
+    - Default: 240
+- @c CameraCollectionServer.N.Config.ImageFormat (string)
+    - The format of the image that the camera produces. This is what is sent over the wire.
+    - The viewer and logger support any format so long as there is a conversion plugin for your format to 'BGR8' or 'GRAY8'
+    - Valid Values: {'BGR8', 'GRAY8' Any other format you choose!}
+    - Default: 'BGR8'
+@see Individual drivers may have additional configuration parameters which are specified as Camera.Config.XXX. See driver documentation.
+
+An example configuration file is installed into [ORCA-INSTALL-DIR]/share/orca/cfg/ directory.
+
+@section Notes
+
+ImageFormat is a string. This means that you can easily send your data in whatever format you choose. It is assumed the default opencv driver is good enough in most cases and in special cases a custom driver can be written.
+
+ImageWidth and ImageHeight are sanity checked and an exception is thrown if they do not match the default capture values OpenCV gets with the cvcamera driver.
+
+Individual cameras have different options, different formats, and sometimes even their own unusual requirements. It was therefore thought by the author of this interface that it would be more beneficial to have the very basic framework and interface for sending data defined with maximum flexibility in mind given to driver writters. The cvcamera, image, and fake drivers should suffice for most robotics needs in all other cases.
+
+In order for the logger and viewer to properly show your custom image format (should you have one) you need to write a conversion plugin if one doesn't exist already.
+It should convert to a common variation of RGBA such as BGR8, BGRA8, RGBA8, RGB8 for color logging/viewing or GRAY8 for grayscale logging and viewing.
+
+@section Troubleshooting
+1. First check the ImageServer @ref orca_component_imageserver_troubleshooting guide.
+
+@par Authors
+
+Alex Brooks, Tom Burdick, Tobias Kaupp, Alex Makarenko
+
+*/
+

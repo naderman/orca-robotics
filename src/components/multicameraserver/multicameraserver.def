@@ -1,0 +1,32 @@
+DefaultComponentTag=MultiCameraServer
+
+# Provided Interfaces
+Provides.MultiCamera.Type=::orca::MultiCamera
+Provides.MultiCamera.DefaultName=multicamera
+
+# Required Interfaces
+
+# Config Parameters
+Config.DriverLib.Comment=Valid values are at least: { 'libHydroMultiImageFake.so' }
+Config.DriverLib.Default=libHydroMultiImageFake.so
+
+Config.NumberOfCameras.Comment=The number of cameras simultaneously grabbing image frames
+Config.NumberOfCameras.Default=1
+
+Config.0.Offset.Comment=x[m] y[m] z[m] roll[deg] pitch[deg] yaw[deg]
+Config.0.Offset.Default=0.0 0.0 0.0  0.0 0.0 0.0
+Config.0.FocalLength.Comment=focal length of lense x[mm] y[mm]
+Config.0.FocalLength.Default=0.0 0.0
+Config.0.PrinciplePoint.Comment=principle point of lense x[pixels] y[pixels]
+Config.0.PrinciplePoint.Default=0.0 0.0
+Config.0.DistortionParameters.Comment=distortion parameters of lense k1[mm] k2[mm] p1[mm] p2[mm]
+Config.0.DistortionParameters.Default=0.0 0.0 0.0 0.0
+Config.0.SensorSize.Comment=width[cm] height[cm]
+Config.0.SensorSize.Default=0.846 0.846
+Config.0.ImageWidth.Comment=Image Width [pixels]
+Config.0.ImageWidth.Default=320
+Config.0.ImageHeight.Comment=Image Height [pixels]
+Config.0.ImageHeight.Default=240
+Config.0.ImageFormat.Comment=Valid values are at least: {'BGR8', 'GRAY8'}
+Config.0.ImageFormat.Default=BGR8
+
