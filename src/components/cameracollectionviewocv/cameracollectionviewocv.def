@@ -1,8 +1,0 @@
-DefaultComponentTag=CameraCollectionViewOcv
-
-# Required Interfaces
-Requires.CameraCollection.Type=::orca::CameraCollection
-Requires.CameraCollection.DefaultProxy=cameracollection@local/cameracollectionserver
-
-# Component Configuration
-Config.SleepIntervalMs.Default=1000
