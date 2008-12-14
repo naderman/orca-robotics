@@ -546,7 +546,7 @@ toString( const orca::CameraDescriptionPtr& obj )
 }
 
 std::string 
-toString( const orca::CameraCollectionDataPtr& obj )
+toString( const orca::MultiCameraDataPtr& obj )
 {
     std::ostringstream s;
     
@@ -559,7 +559,7 @@ toString( const orca::CameraCollectionDataPtr& obj )
 }
 
 std::string 
-toString( const orca::CameraCollectionDescriptionPtr& obj )
+toString( const orca::MultiCameraDescriptionPtr& obj )
 {
     std::ostringstream s;
     for( unsigned int i = 0; i < obj->descriptions.size(); ++i )

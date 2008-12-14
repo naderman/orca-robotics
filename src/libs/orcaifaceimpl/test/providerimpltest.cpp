@@ -5,7 +5,7 @@
 
 #include <orcaifaceimpl/button.h>
 #include <orcaifaceimpl/camera.h>
-#include <orcaifaceimpl/cameracollection.h>
+#include <orcaifaceimpl/multicamera.h>
 #include <orcaifaceimpl/cpu.h>
 #include <orcaifaceimpl/drivebicycle.h>
 // TODO: currently missing
@@ -130,8 +130,8 @@ TestComponent::start()
         ptr->localSet( orca::Localise3dData() );
     }
     {
-        orcaifaceimpl::CameraCollectionImplPtr ptr = new orcaifaceimpl::CameraCollectionImpl( new orca::CameraCollectionDescription, context(), "crap" );
-        ptr->localSet( new orca::CameraCollectionData );
+        orcaifaceimpl::MultiCameraImplPtr ptr = new orcaifaceimpl::MultiCameraImpl( new orca::MultiCameraDescription, context(), "crap" );
+        ptr->localSet( new orca::MultiCameraData );
     }
     {
         orcaifaceimpl::Odometry2dImplPtr ptr = new orcaifaceimpl::Odometry2dImpl( orca::VehicleDescription(), context(), "crap" );

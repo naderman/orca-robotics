@@ -16,7 +16,7 @@
 #include <orcaice/context.h>
 #include <orca/image.h>
 #include <orca/camera.h>
-#include <orca/cameracollection.h>
+#include <orca/multicamera.h>
 
 namespace orcaimage
 {
@@ -24,8 +24,8 @@ namespace orcaimage
     void getImageProperties(const orcaice::Context& context, const std::string& prefix, orca::ImageDescriptionPtr description);
     //! grab all properties from a config file related to the CameraDescription structure
     void getCameraProperties(const orcaice::Context& context, const std::string& prefix, orca::CameraDescriptionPtr description);
-    //! grab all properties from a config file related to the CameraCollectionDescription structure
-    void getCameraCollectionProperties(const orcaice::Context& context, const std::string& prefix, orca::CameraCollectionDescriptionPtr description);
+    //! grab all properties from a config file related to the MultiCameraDescription structure
+    void getMultiCameraProperties(const orcaice::Context& context, const std::string& prefix, orca::MultiCameraDescriptionPtr description);
 
     //! copy from a ImageDescription to a hydro image Config structure
     void copy( hydroimage::Config& config, const orca::ImageDescriptionPtr description);

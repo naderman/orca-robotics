@@ -16,20 +16,20 @@
 @ingroup orca_linux
 @ingroup orca_qnx
 @ingroup orca_win
-@defgroup orca_component_cameracollectionserver CameraCollectionServer
+@defgroup orca_component_multicameraserver MultiCameraServer
 @brief A hardware abstraction component for a Collection of Cameras
 
 @par Provides
 
 - @ref orca_interface_home
-- @ref orca_interface_cameracollection [CameraCollectionServer.Provides.CameraCollection]
+- @ref orca_interface_multicamera [MultiCameraServer.Provides.MultiCamera]
 - @ref orca_interface_status
 
 @par Requires
 
 - none
 
-@image html cameracollectionserver.png
+@image html multicameraserver.png
 
 @par Drivers
 
@@ -39,34 +39,34 @@ This component dynamically loads an implementation of a Hydro hardware interface
 
 @par Configuration
 
-- @c CameraCollectionServer.Config.DriverLib (string)
+- @c MultiCameraServer.Config.DriverLib (string)
     - Name of shared library containing the hardware driver
     - Valid values are at least: { 'libHydroImageCollectionFake.so', 'libHydroImageCollectionFile.so', 'libHydroImageBumblebee.so' }
     - Default: "libHydroImageFake.so"
 
-CameraCollectionServer Settings
-- @c CameraCollectionServer.Config.NumberOfCameras (int)
+MultiCameraServer Settings
+- @c MultiCameraServer.Config.NumberOfCameras (int)
     - The number of cameras simultaneously grabbing image frames
     - Default: 1
-- @c CameraCollectionServer.N.Config.Offset (Frame3d) [m, deg]
+- @c MultiCameraServer.N.Config.Offset (Frame3d) [m, deg]
     - Position of the camera sensor plane with respect to the robot's local coordinate system.
     - Format: x y z roll pitch yaw (space separated)
     - Example: a camera mounted upside down with now translation: "0.0 0.0 0.0  180.0 0.0 0.0"
     - Default: 0.0 0.0 0.0  0.0 0.0 0.0
-- @c CameraCollectionServer.N.Config.FocalLength (double) [mm]
+- @c MultiCameraServer.N.Config.FocalLength (double) [mm]
     - Focal length of attached lense. Useful to other components.
     - Default: 0
-- @c CameraCollectionServer.N.Config.SensorSize (Size2d) [cm,cm]
+- @c MultiCameraServer.N.Config.SensorSize (Size2d) [cm,cm]
     - Physical dimensions of the CCD or CMOS sensor.
     - Format: width height (space separated)
     - Default: 0.846 0.846 (1/3" 1/3", a typical sensor size)
-- @c CameraCollectionServer.N.Config.ImageWidth (int) [pixels]
+- @c MultiCameraServer.N.Config.ImageWidth (int) [pixels]
     - Width of desired image in pixels
     - Default: 320
-- @c CameraCollectionServer.N.Config.ImageHeight (int) [pixels]
+- @c MultiCameraServer.N.Config.ImageHeight (int) [pixels]
     - Height of desired image in pixels
     - Default: 240
-- @c CameraCollectionServer.N.Config.ImageFormat (string)
+- @c MultiCameraServer.N.Config.ImageFormat (string)
     - The format of the image that the camera produces. This is what is sent over the wire.
     - The viewer and logger support any format so long as there is a conversion plugin for your format to 'BGR8' or 'GRAY8'
     - Valid Values: {'BGR8', 'GRAY8' Any other format you choose!}

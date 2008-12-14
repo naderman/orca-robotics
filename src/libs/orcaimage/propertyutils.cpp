@@ -100,16 +100,16 @@ namespace orcaimage
     }
 
     /**
-     * Read in the orca::CameraCollectionDescription properties from a config file using the prefix given
+     * Read in the orca::MultiCameraDescription properties from a config file using the prefix given
      * 
      * @param orca context
      * @param config prefix
      * @param image description structure
      */
     void
-    getCameraCollectionProperties( const orcaice::Context& context
+    getMultiCameraProperties( const orcaice::Context& context
         , const std::string& prefix
-        , orca::CameraCollectionDescriptionPtr description
+        , orca::MultiCameraDescriptionPtr description
         )
     {
 

@@ -13,8 +13,8 @@
 @ingroup orca_apps
 @ingroup orca_cpp
 @ingroup orca_linux
-@defgroup orca_component_cameracollectionviewocv CameraCollectionViewOcv
-@brief A multi-camera viewer (that uses OpenCV) for displaying images from a component like cameracollectionserver. 
+@defgroup orca_component_multicameraviewocv MultiCameraViewOcv
+@brief A multi-camera viewer (that uses OpenCV) for displaying images from a component like multicameraserver. 
 
 @par Provides
 
@@ -22,13 +22,13 @@
 
 @par Requires
 
-- @ref orca_interface_cameracollection [ImageViewOcv.Requires.Image]
+- @ref orca_interface_multicamera [ImageViewOcv.Requires.Image]
 
 @image html imageview.png
 
 @par Operation
 
-A simple example that connects to an multi image server (such as CameraCollectionServer) and displays the images in a GTK window created by OpenCV. For instance, if we were trying to view images from a stereo pair, the viewer will place 2 frames side-by-side and display the two camera images simultaneously.
+A simple example that connects to an multi image server (such as MultiCameraServer) and displays the images in a GTK window created by OpenCV. For instance, if we were trying to view images from a stereo pair, the viewer will place 2 frames side-by-side and display the two camera images simultaneously.
 
 Images are displayed as soon as they arrive. Colour images (including Bayer encoded images) are converted to BGR for display in an OpenCV window. Greyscale images are not modified.
 
@@ -45,7 +45,7 @@ This viewer supports all image formats that imageserver supports. This includes
 
 Other formats can be added if requested.
 
-- @ref orca_component_cameracollectionserver
+- @ref orca_component_multicameraserver
 
 @par Configuration
 
@@ -72,7 +72,7 @@ Requires <a href="http://pr.willowgarage.com/wiki/OpenCV" target="_blank">OpenCV
 
 The only external dependencies for this component are OpenCV so this should build in Windows but has not been tested.
 
-For more control over the GUI toolkit than OpenCV gives you, see the cameracollectionviewqt viewer which uses Qt.
+For more control over the GUI toolkit than OpenCV gives you, see the multicameraviewqt viewer which uses Qt.
 
 @par Authors
 

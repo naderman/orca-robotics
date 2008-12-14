@@ -144,9 +144,9 @@ std::string toString( const orca::CameraDataPtr& );
 //! Converts to string
 std::string toString( const orca::CameraDescriptionPtr& );
 //! Converts to string
-std::string toString( const orca::CameraCollectionDescriptionPtr& );
+std::string toString( const orca::MultiCameraDescriptionPtr& );
 //! Converts to string
-std::string toString( const orca::CameraCollectionDataPtr& );
+std::string toString( const orca::MultiCameraDataPtr& );
 //! Converts to string
 std::string toString( const orca::CpuData& );
 //! Converts to string
