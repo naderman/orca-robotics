@@ -20,7 +20,7 @@ SET( ORCA_SLICE_SOURCE_FILES
 #interfaces
     button.ice
     camera.ice
-    cameracollection.ice
+    multicamera.ice
     cpu.ice
     drivebicycle.ice
     drivedifferential.ice
