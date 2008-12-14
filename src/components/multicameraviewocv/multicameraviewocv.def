@@ -1,0 +1,8 @@
+DefaultComponentTag=MultiCameraViewOcv
+
+# Required Interfaces
+Requires.MultiCamera.Type=::orca::MultiCamera
+Requires.MultiCamera.DefaultProxy=multicamera@local/multicameraserver
+
+# Component Configuration
+Config.SleepIntervalMs.Default=1000
