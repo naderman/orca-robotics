@@ -7,7 +7,7 @@ Provides.LaserScanner2d.DefaultName=laserscanner2d
 # Required Interfaces
 
 # Config Parameters
-Config.DriverLib.Comment=Valid values are at least: { 'libHydroLaserScanner2dSickGbx.so', 'libHydroLaserScanner2dSickCarmen.so', 'libHydroLaserScanner2dPlayerClient.so', 'libHydroLaserScanner2dFake.so' }
+Config.DriverLib.Comment=Valid values are at least: { 'libHydroLaserScanner2dSickGbx.so', 'libHydroLaserScanner2dSickCarmen.so', 'libHydroLaserScanner2dHokuyoAist.so', 'libHydroLaserScanner2dPlayerClient.so', 'libHydroLaserScanner2dFake.so' }
 Config.DriverLib.Default=libHydroLaserScanner2dSickGbx.so
 
 Config.MinRange.Default=0.0
@@ -44,3 +44,8 @@ Config.PlayerClient.Port.Default=6665
 Config.PlayerClient.Device.Default=0
 Config.PlayerClient.Driver.Comment=Valid values: { "sicklms200", "stage", "gazebo", "urglaser" }
 Config.PlayerClient.Driver.Default=sicklms200
+
+Config.HokuyoAist.Device.Default=/dev/ttyACM0
+Config.HokuyoAist.Baudrate.Comment=Valid Values: { 19200, 38400, 115200 }
+Config.HokuyoAist.Baudrate.Default=19200
+Config.HokuyoAist.HighSensitivity.Default=0
