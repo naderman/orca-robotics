@@ -187,7 +187,7 @@ ViewWidget::updateTexture()
 
     // update the texture with the latest buffer
 
-    texture_->upload( &(image->data[0]), image->data.size(), formatFromString(descr->format) );
+    texture_->upload( &(image->data[0]), image->pixelData.size(), formatFromString(descr->format) );
 
     int timediff = timer_.restart();
     double thisfps = 1000.0/(double)(timediff);

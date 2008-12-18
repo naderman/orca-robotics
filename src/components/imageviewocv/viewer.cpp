@@ -70,7 +70,7 @@ void Viewer::display( orca::ImageDataPtr& image )
         // Point the opencv image data structure to the orca image data
         // Don't want to memcpy to reduce the total copies that occur
         // memcpy( cvImage_->imageData, &(image->data[0]), image->data.size() );
-        cvSrcImage_->imageData = (char*)(&image->data[0]);
+        cvSrcImage_->imageData = (char*)(&image->pixelData[0]);
         
         // Convert the image format to BGR8 for viewing in an opencv window.
         cvtToBgr( cvSrcImage_, cvDisplayImage_, image->description->format );

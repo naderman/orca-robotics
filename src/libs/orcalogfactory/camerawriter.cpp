@@ -170,7 +170,7 @@ CameraWriter::writeCameraDataAsJpeg( const orca::CameraDataPtr& data, const std:
     //    throw orcalog::FormatNotSupportedException( ERROR_INFO, ss.str() );
     //}
 
-    memcpy( cvImage_->imageData, &(data->data[0]), imageSize_ );
+    memcpy( cvImage_->imageData, &(data->pixelData[0]), imageSize_ );
 
     cvSaveImage( filename.c_str(), cvImage_ );
 #endif

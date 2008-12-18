@@ -61,7 +61,7 @@ MainThread::work()
         int ret = imageInterface->buffer().getAndPopNext( imageData, timeoutMs );
         
         std::stringstream ss;
-        ss << "Buffer Size: " << imageData->data.size();
+        ss << "Buffer Size: " << imageData->pixelData.size();
         context_.tracer().debug( ss.str() );
 
         context_.tracer().debug( orcaobj::toString(imageData->description) );

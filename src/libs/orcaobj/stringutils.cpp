@@ -523,7 +523,7 @@ toString( const orca::CameraDataPtr& obj )
 {
     std::ostringstream s;
     s << toString(obj->timeStamp)
-      << " CameraData: ["<<obj->data.size()<<" bytes]\n";
+      << " CameraData: ["<<obj->pixelData.size()<<" bytes]\n";
     return s.str();
 }
 
@@ -552,7 +552,7 @@ toString( const orca::MultiCameraDataPtr& obj )
     
     for( unsigned int i = 0; i < obj->cameraDataVector.size(); ++i )
     {
-        s << " CameraData " << i+1 << " : ["<<obj->cameraDataVector[i]->data.size()<<" bytes]\n";
+        s << " CameraData " << i+1 << " : ["<<obj->cameraDataVector[i]->pixelData.size()<<" bytes]\n";
     }
 
     return s.str();
@@ -636,7 +636,7 @@ toString( const orca::ImageDataPtr& obj )
 {
     std::ostringstream s;
     s << toString(obj->timeStamp)
-      << " ImageData: ["<<obj->data.size()<<" bytes]\n";
+      << " ImageData: ["<<obj->pixelData.size()<<" bytes]\n";
     return s.str();
 }
 

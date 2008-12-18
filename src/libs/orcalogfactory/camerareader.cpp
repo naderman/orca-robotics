@@ -126,10 +126,10 @@ CameraReader::loadJpegData( const std::string &filename,
         
         // resize object buffer to fit image
         int imageSize = (int)ceil( nChannels * obj.description->height * obj.description->width );
-        obj.data.resize( imageSize );
+        obj.pixelData.resize( imageSize );
         
         // load image from opencv struct to orca object
-        memcpy( &obj.data[0], cvImage->imageData, obj.data.size() );
+        memcpy( &obj.pixelData[0], cvImage->imageData, obj.pixelData.size() );
 
         cvReleaseImage( &cvImage );
     }
