@@ -57,7 +57,19 @@ private:
     //! variable for displaying fps
     CvFont font_;
 
+    //! OpenCV pads byte arrays for machine efficiency (see IplImage::widthstep). 
+    //! Orca does not.
+    //! If image width is a multiple of 4, then padding does not occur and
+    //! the opencv image data is identical to orca image data.
+    //! If not, we have to do an inefficient copy line be line from orca data
+    //! to opencv data.
+    //! This variable flags if opencv has padded the array not.
+    bool isPadded_;
         
+    //! Number of bytes in one row of the orca image data structure 
+    //! i.e. the width in number of bytes 
+    int32_t orcaByteWidth_;
+    
     orcaice::Context context_;
 };
 

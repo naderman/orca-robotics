@@ -24,18 +24,31 @@ Viewer::Viewer( const int width,
                 const orcaice::Context& context ) :
     context_(context)
 {
+    isPadded_ = false;
+    
     // class to search for image format properties
-    ImageFormat imageFormat = ImageFormat::find( format );
+    ImageFormat imageSrcFormat = ImageFormat::find( format );
+    int numChannels = imageSrcFormat.getNumberOfChannels();
+    int depth = imageSrcFormat.getBitsPerPixel()/numChannels;
     
     // set up opencv storage for the source image
-    int depth = imageFormat.getBitsPerPixel()/imageFormat.getNumberOfChannels();
-    cvSrcImage_ = cvCreateImage( cvSize( width, height ),  depth, imageFormat.getNumberOfChannels() );
+    cvSrcImage_ = cvCreateImage( cvSize( width, height ),  depth, numChannels );
+    
+    // check if opencv has padded the byte array so that the width is a multiple of 4 bytes
+    orcaByteWidth_ = width*numChannels;
+    if ( orcaByteWidth_ != cvSrcImage_->widthStep )
+    {
+        isPadded_ = true;
+    }
     
     // set up opencv storage for the display image
     std::string displayFormat = "BGR8";
     ImageFormat imageDisplayFormat = ImageFormat::find( displayFormat );
-    depth = imageDisplayFormat.getBitsPerPixel()/imageDisplayFormat.getNumberOfChannels();
-    cvDisplayImage_ = cvCreateImage( cvSize( width, height ),  depth, imageDisplayFormat.getNumberOfChannels() );
+    
+    numChannels = imageDisplayFormat.getNumberOfChannels();
+    depth = imageDisplayFormat.getBitsPerPixel()/numChannels;
+    
+    cvDisplayImage_ = cvCreateImage( cvSize( width, height ),  depth, numChannels );
 
     // dodgy opencv needs this so it has time to resize
     cvWaitKey(100);
@@ -66,11 +79,26 @@ void Viewer::display( orca::ImageDataPtr& image )
     // check the user hasn't closed the window
     if( cvGetWindowHandle( name_ ) != 0 )
     {
-        
-        // Point the opencv image data structure to the orca image data
-        // Don't want to memcpy to reduce the total copies that occur
-        // memcpy( cvImage_->imageData, &(image->data[0]), image->data.size() );
-        cvSrcImage_->imageData = (char*)(&image->pixelData[0]);
+        // check if the opencv image data structure is padded
+        if ( !isPadded_ )
+        {
+            // if the opencv structure isn't padded, the image data structures in orca
+            // are exactly the same and we just point the opencv image data to
+            // the orca image data.
+            cvSrcImage_->imageData = (char*)(&image->pixelData[0]);
+        }
+        else
+        {
+            // if the opencv image data structure is padded, we have to
+            // copy the data line by line into a new area of memory
+            // Note that this is less efficient than if the data is not padded
+            for(uint32_t j = 0; j < static_cast<uint32_t>( image->description->height ); ++j)
+            {
+                char* destLine = cvSrcImage_->imageData + j*cvSrcImage_->widthStep;
+                unsigned char* srcLine = (&image->pixelData[0]) + j*orcaByteWidth_;
+                memcpy(destLine, srcLine, orcaByteWidth_);
+            }
+        }
         
         // Convert the image format to BGR8 for viewing in an opencv window.
         cvtToBgr( cvSrcImage_, cvDisplayImage_, image->description->format );
