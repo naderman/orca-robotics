@@ -59,7 +59,8 @@ class CameraDescription extends ImageDescription
 }; 
 
 //!
-//! Camera data structure: essentially an image
+//! Camera data structure is an image
+//! Don't need to redefine here as it is defined in the ImageData class
 //!
 // class CameraData extends ImageData
 // {
