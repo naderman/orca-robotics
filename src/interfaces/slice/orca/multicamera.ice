@@ -42,7 +42,7 @@ sequence<ImageData> CameraDataSeq;
 //!
 //! MultiCamera data structure: essentially a MultImage
 //!
-class MultiImageData 
+class MultiCameraData 
 {
     CameraDataSeq cameraDataVector;
 };
