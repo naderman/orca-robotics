@@ -58,7 +58,7 @@ private:
     orcaifaceimpl::CameraImplPtr interface_;
 
     // The Network Image Interface Data Structure
-    orca::CameraDataPtr orcaData_;
+    orca::ImageDataPtr orcaData_;
 
     // The Network Image Interface Description Structure
     orca::CameraDescriptionPtr descr_;

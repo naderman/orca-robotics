@@ -35,10 +35,10 @@ public:
     void readFromFile(  std::ifstream     *file, 
                         const std::string &format,
                         orcaice::Context   context,
-                        orca::CameraDataPtr   &obj );
+                        orca::ImageDataPtr   &obj );
 
     void loadJpegData( const std::string &format,
-                       orca::CameraData   &obj );
+                       orca::ImageData   &obj );
 
     
     // from Orca object

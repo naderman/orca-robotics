@@ -36,13 +36,13 @@ class MultiCameraDescription
     CameraDescriptionSeq descriptions;
 }; 
 
-//! A sequence of Camera Data objects
-sequence<CameraData> CameraDataSeq;
+//! A sequence of ImageData objects
+sequence<ImageData> CameraDataSeq;
 
 //!
-//! Camera Collection data structure: essentially an image
+//! MultiCamera data structure: essentially a MultImage
 //!
-class MultiCameraData 
+class MultiImageData 
 {
     CameraDataSeq cameraDataVector;
 };

@@ -50,7 +50,7 @@ MainThread::initialise()
 
     context_.tracer().info( "Setting up Data Pointers" );
     // Set up the image objects
-    orcaData_ = new orca::CameraData();
+    orcaData_ = new orca::ImageData();
     orcaData_->pixelData.resize( descr_->size );
     orcaData_->description = descr_;
 

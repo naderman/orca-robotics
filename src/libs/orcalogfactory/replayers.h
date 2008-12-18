@@ -114,7 +114,7 @@ public:
 
 typedef GenericReplayer< orcaifaceimpl::CameraImpl,
                          CameraLogReader,
-                         orca::CameraDataPtr,
+                         orca::ImageDataPtr,
                          DescriptionIfaceImplSetup<CameraLogReader,
                                                    orcaifaceimpl::CameraImpl,
                                                    orca::CameraDescriptionPtr> >       CameraReplayer;

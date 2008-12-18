@@ -1111,7 +1111,7 @@ fromLogString( std::stringstream &s, orca::CameraDescription& obj )
 
 
 std::string
-toLogString( const orca::CameraDataPtr& obj )
+toLogString( const orca::ImageDataPtr& obj )
 {
     stringstream s;
     s << toLogString(obj->timeStamp);
@@ -1122,7 +1122,7 @@ toLogString( const orca::CameraDataPtr& obj )
 }
 
 void
-fromLogString ( std::stringstream &s, orca::CameraData& obj )
+fromLogString ( std::stringstream &s, orca::ImageData& obj )
 {
     fromLogString(s,obj.timeStamp );
     

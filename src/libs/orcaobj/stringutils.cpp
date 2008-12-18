@@ -519,11 +519,11 @@ toString( const orca::Date& obj )
 }
 
 std::string 
-toString( const orca::CameraDataPtr& obj )
+toString( const orca::ImageDataPtr& obj )
 {
     std::ostringstream s;
     s << toString(obj->timeStamp)
-      << " CameraData: ["<<obj->pixelData.size()<<" bytes]\n";
+      << " ImageData: ["<<obj->pixelData.size()<<" bytes]\n";
     return s.str();
 }
 
@@ -628,15 +628,6 @@ toString( const orca::GpsDescription& obj )
         << "antennaOffset.orientation.roll   " << RAD2DEG(obj.antennaOffset.o.r) << "deg\n"
         << "antennaOffset.orientation.pitch  " << RAD2DEG(obj.antennaOffset.o.p) << "deg\n"
         << "antennaOffset.orientation.yaw    " << RAD2DEG(obj.antennaOffset.o.y) << "deg\n";
-    return s.str();
-}
-
-std::string 
-toString( const orca::ImageDataPtr& obj )
-{
-    std::ostringstream s;
-    s << toString(obj->timeStamp)
-      << " ImageData: ["<<obj->pixelData.size()<<" bytes]\n";
     return s.str();
 }
 

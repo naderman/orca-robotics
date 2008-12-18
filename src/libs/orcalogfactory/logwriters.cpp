@@ -864,7 +864,7 @@ CameraLogWriter::write( const orca::CameraDescriptionPtr &descr )
 }
 
 void 
-CameraLogWriter::write( const orca::CameraDataPtr &obj, const orca::Time &arrivalTime  )
+CameraLogWriter::write( const orca::ImageDataPtr &obj, const orca::Time &arrivalTime  )
 {
     writeReferenceToMasterFile(arrivalTime);
 

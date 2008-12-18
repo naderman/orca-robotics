@@ -47,7 +47,7 @@ MainThread::initialise()
 
     for( unsigned int i = 0; i < descr_->descriptions.size(); ++i)
     {
-        orcaData_->cameraDataVector.push_back( new orca::CameraData() );
+        orcaData_->cameraDataVector.push_back( new orca::ImageData() );
         orcaData_->cameraDataVector[i]->pixelData.resize( descr_->descriptions[i]->size );
         orcaData_->cameraDataVector[i]->description = descr_->descriptions[i];
         hydroData_[i].pixelData = &(orcaData_->cameraDataVector[i]->pixelData[0]);

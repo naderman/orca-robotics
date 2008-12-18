@@ -157,7 +157,7 @@ class CameraLogWriter : public orcalog::LogWriter
 {
 public:
     void checkFormat( const std::string &format );
-    void write( const orca::CameraDataPtr &obj, const orca::Time &arrivalTime  );
+    void write( const orca::ImageDataPtr &obj, const orca::Time &arrivalTime  );
     void write( const orca::CameraDescriptionPtr &descr );
     void createLogFile( const std::string &filename, const std::string &format );
 private:

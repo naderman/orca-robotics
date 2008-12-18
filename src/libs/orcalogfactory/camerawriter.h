@@ -38,7 +38,7 @@ public:
     void logToFile( std::ofstream *file, const std::string &format, orcaice::Context context, const orca::CameraDescriptionPtr &obj);
 
     //log data
-    void logToFile( std::ofstream *file, const std::string &format, orcaice::Context context, const orca::CameraDataPtr &obj);
+    void logToFile( std::ofstream *file, const std::string &format, orcaice::Context context, const orca::ImageDataPtr &obj);
     
 private:
 
@@ -48,7 +48,7 @@ private:
     #endif
 
     //Write JPEG's    
-    void writeCameraDataAsJpeg( const orca::CameraDataPtr& data, const std::string & filename );
+    void writeCameraDataAsJpeg( const orca::ImageDataPtr& data, const std::string & filename );
 
     //Count the succesive images logged
     int dataCounter_;

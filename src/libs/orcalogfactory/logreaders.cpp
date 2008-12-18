@@ -458,7 +458,7 @@ CameraLogReader::CameraLogReader( const orcalog::LogReaderInfo &logReaderInfo )
     checkFormats( logReaderInfo, okFormats );
 }
 void
-CameraLogReader::read( orca::CameraDataPtr &obj )
+CameraLogReader::read( orca::ImageDataPtr &obj )
 {
     cameraReader.readFromFile( file_, 
                   orcalog::LogReader::logReaderInfo().format,

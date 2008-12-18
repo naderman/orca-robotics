@@ -122,12 +122,12 @@ CameraWriter::logToFile( std::ofstream *file, const std::string &format, orcaice
 }
 
 void 
-CameraWriter::logToFile( std::ofstream *file, const std::string &format, orcaice::Context context, const orca::CameraDataPtr &obj)
+CameraWriter::logToFile( std::ofstream *file, const std::string &format, orcaice::Context context, const orca::ImageDataPtr &obj)
 {
 
         if ( format == "ice" ){
             orcalog::IceWriteHelper helper( context.communicator() );
-            ice_writeCameraData( helper.stream_, obj );
+            ice_writeImageData( helper.stream_, obj );
             helper.write( file );
         }
         else if ( format=="jpeg" ){
@@ -156,7 +156,7 @@ CameraWriter::logToFile( std::ofstream *file, const std::string &format, orcaice
 
 // Write image to file after compressing to jpeg format using opencv
 void 
-CameraWriter::writeCameraDataAsJpeg( const orca::CameraDataPtr& data, const std::string & filename )
+CameraWriter::writeCameraDataAsJpeg( const orca::ImageDataPtr& data, const std::string & filename )
 {
 #ifdef OPENCV_FOUND
     // copy image in orca object into opencv struct

@@ -74,12 +74,12 @@ void
 CameraReader::readFromFile( std::ifstream     *file, 
                               const std::string &format,
                               orcaice::Context   context,
-                              orca::CameraDataPtr   &obj )
+                              orca::ImageDataPtr   &obj )
 {        
     if ( format=="ice" )
     {
         orcalog::IceReadHelper helper( context.communicator(), file );
-        ice_readCameraData( helper.stream_, obj );
+        ice_readImageData( helper.stream_, obj );
         helper.read();
     }
       else if ( format=="jpeg" )
@@ -90,7 +90,7 @@ CameraReader::readFromFile( std::ifstream     *file,
             context.tracer().info( "Please have a look at the documentation for installing OpenCV." );
             throw orcalog::FormatNotSupportedException( ERROR_INFO, "Logger: 'jpeg' format not supported because OpenCV is not installed." );
 #endif
-            obj = new orca::CameraData;
+            obj = new orca::ImageData;
             std::string line;
             std::getline( *file, line );
 
@@ -112,7 +112,7 @@ CameraReader::readFromFile( std::ifstream     *file,
 
 void 
 CameraReader::loadJpegData( const std::string &filename,
-                            orca::CameraData   &obj )
+                            orca::ImageData   &obj )
 {
     
     #ifdef OPENCV_FOUND

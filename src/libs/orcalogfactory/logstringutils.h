@@ -102,8 +102,8 @@ void fromLogString( std::stringstream &, orca::VehicleDescription& );
 std::string toLogString( const orca::CameraDescriptionPtr& );
 void fromLogString( std::stringstream &, orca::CameraDescription& );
 
-std::string toLogString( const orca::CameraDataPtr& );
-void fromLogString( std::stringstream &, orca::CameraData& );
+std::string toLogString( const orca::ImageDataPtr& );
+void fromLogString( std::stringstream &, orca::ImageData& );
 
 //}
 

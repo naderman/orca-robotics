@@ -61,9 +61,9 @@ class CameraDescription extends ImageDescription
 //!
 //! Camera data structure: essentially an image
 //!
-class CameraData extends ImageData
-{
-};
+// class CameraData extends ImageData
+// {
+// };
 
 //! Interface to the camera provider.
 interface Camera extends Image
