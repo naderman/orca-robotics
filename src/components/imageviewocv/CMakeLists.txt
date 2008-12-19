@@ -11,7 +11,7 @@ GBX_REQUIRE_INSTALLS( build EXE ${APP_NAME} ${ext_libs} )
 
 # make sure OpencCV has been installed
 GBX_REQUIRE_VAR( build EXE ${APP_NAME} OPENCV_FOUND "OpenCv not found" )
-INCLUDE_DIRECTORIES( ${OPENCV_INCLUDE_DIRS} )
+INCLUDE (${ORCA_CMAKE_DIR}/UseOpenCV.cmake)
 SET( ext_libs ${ext_libs} ${OPENCV_LIBS} )
 
 #
