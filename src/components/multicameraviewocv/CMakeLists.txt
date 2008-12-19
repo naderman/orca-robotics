@@ -6,7 +6,7 @@ GBX_REQUIRE_OPTION( build EXE ${APP_NAME} ON )
 #
 # External libs
 #
-SET( ext_libs HydroDll HydroImage)
+SET( ext_libs HydroDll HydroImage HydroImageOcvUtil)
 GBX_REQUIRE_INSTALLS( build EXE ${APP_NAME} ${ext_libs} )
 
 # make sure OpencCV has been installed

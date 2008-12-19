@@ -9,14 +9,15 @@
  */
 
 #include "viewer.h" 
-#include "colourconversions.h"
 
 #include <hydroimage/formats.h>
+#include <hydroimageocvutil/colourconversions.h>
 // for calculating fps
 #include <orcaice/timeutils.h>
 
 using namespace multicameraviewocv;
 using namespace hydroimage;
+using namespace hydroimageocvutil;
 
 Viewer::Viewer( const orca::MultiCameraDataPtr& multiCameraData,
                 const orcaice::Context& context ) :
