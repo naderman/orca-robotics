@@ -40,9 +40,6 @@ private:
     // initialise the parameters for the Viewer
     void readSettings();
 
-    // process data and read it back
-    void processData();
-
     // Setup algorithm plugin
     void initPluginInterface();
 
@@ -53,10 +50,16 @@ private:
     orcaice::Context context_;
     
     // incoming consumer object
-    orcaifaceimpl::BufferedCameraCollectionConsumerImplPtr cameraCollectionInterface_;
+    orcaifaceimpl::BufferedMultiCameraConsumerImplPtr incomingInterface_;
     
     // incoming data structure
-    orca::CameraCollectionDataPtr incomingData_;
+    orca::MultiCameraDataPtr incomingData_;
+
+    // incoming description structure
+    orca::MultiCameraDescriptionPtr incomingDescr_;
+
+    // incoming proxy object 
+    orca::MultiCameraPrx incomingPrx_;
 
     // The Network Image Interface object
     orcaifaceimpl::ImageImplPtr outgoingInterface_;
@@ -77,7 +80,7 @@ private:
     std::auto_ptr<hydrodll::DynamicallyLoadedLibrary> driverLib_;
     
     // Generic driver for the hardware
-    std::auto_ptr<hydrointerfaces::Disparity> driver_;
+    std::auto_ptr<hydrointerfaces::Disparity> pluginInterface_;
 
 };
 
