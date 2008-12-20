@@ -4,6 +4,9 @@ GBX_ADD_LICENSE( LGPL )
 SET( build TRUE )
 GBX_REQUIRE_OPTION( build LIB ${LIB_NAME} ON )
 
+SET( int_libs OrcaNavUtil )
+GBX_REQUIRE_TARGETS( build LIB ${LIB_NAME} ${int_libs} )
+
 SET( ext_libs HydroSim2d )
 GBX_REQUIRE_INSTALLS( build LIB ${LIB_NAME} ${ext_libs} )
 
