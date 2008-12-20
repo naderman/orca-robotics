@@ -68,9 +68,7 @@ MainThread::readSettings()
     // read in settings from a config file
     Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag() + ".Config.";
-
-    
-
+   
     //connect with a proxy and fetch the incoming description object
     orcaice::connectToInterfaceWithTag<orca::MultiCameraPrx>( context_
             , incomingPrx_
@@ -82,6 +80,86 @@ MainThread::readSettings()
     incomingDescr_ = incomingPrx_->getDescription();
 
     context_.tracer().info( orcaobj::toString( incomingDescr_ ) );
+
+    pluginConfig_.width  = incomingDescr_->width;
+    pluginConfig_.height = incomingDescr_->height;
+    pluginConfig_.size   = incomingDescr_->width * incomingDescr_->height;
+    pluginConfig_.format = "GRAY8"
+    pluginConfig_.shifts = orcaice::getPropertyAsIntWithDefault( prop, prefix+"Shifts", 16 ); 
+    pluginConfig_.offset = orcaice::getPropertyAsIntWithDefault( prop, prefix+"Offset", 0 );
+    
+}
+
+void 
+MainThread::initPluginInterface()
+{
+    subStatus().setMaxHeartbeatInterval( 20.0 );
+
+    //copy from description to config
+
+    Ice::PropertiesPtr prop = context_.properties();
+    std::string prefix = context_.tag() + ".Config.";
+
+    // Dynamically load the library and find the factory
+    std::string driverLibName = 
+        orcaice::getPropertyWithDefault( prop, prefix+"DriverLib", "libHydroDisparitySimple.so" );
+    context_.tracer().info( "MainThread: Loading driver library "+driverLibName  );
+
+    // The factory which creates the driver
+    std::auto_ptr<hydrointerfaces::DisparityFactory> driverFactory;
+    try {
+        driverLib_.reset( new hydrodll::DynamicallyLoadedLibrary(driverLibName) );
+        driverFactory.reset( 
+            hydrodll::dynamicallyLoadClass<hydrointerfaces::DisparityFactory,DriverFactoryMakerFunc>
+            ( *driverLib_, "createDriverFactory" ) );
+    }
+    catch (hydrodll::DynamicLoadException &e)
+    {
+        // unrecoverable error
+        context_.shutdown(); 
+        throw;
+    }
+
+    // create the driver
+    while ( !isStopping() )
+    {
+        std::stringstream exceptionSS;
+        try {
+            context_.tracer().info( "HwThread: Creating driver..." );
+            driver_.reset(0);
+            driver_.reset( driverFactory->createDriver( config_, context_.toHydroContext() ) );
+            break;
+        }
+        catch ( IceUtil::Exception &e ) {
+            exceptionSS << "MainThread: Caught exception while creating driver: " << e;
+        }
+        catch ( std::exception &e ) {
+            exceptionSS << "MainThread: Caught exception while initialising driver: " << e.what();
+        }
+        catch ( char *e ) {
+            exceptionSS << "MainThread: Caught exception while initialising driver: " << e;
+        }
+        catch ( std::string &e ) {
+            exceptionSS << "MainThread: Caught exception while initialising driver: " << e;
+        }
+        catch ( ... ) {
+            exceptionSS << "MainThread: Caught unknown exception while initialising driver";
+        }
+
+        // we get here only after an exception was caught
+        context_.tracer().error( exceptionSS.str() );
+        subStatus().fault( exceptionSS.str() );          
+
+        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));        
+    }
+
+    // copy the config structure to the outgoing description structure
+    outgoingDescr_->width = pluginConfig_.width;
+    outgoingDescr_->height = pluginConfig_.height;
+    outgoingDescr_->format = pluginConfig_.format;
+    outgoingDescr_->size = pluginConfig_.size;
+
+    subStatus().setMaxHeartbeatInterval( 1.0 );
 
 }
 
@@ -104,15 +182,11 @@ MainThread::initNetworkInterface()
     // outgoing network interface
     outgoingInterface_ = new orcaifaceimpl::ImageImpl( outgoingDescr_
         , "Disparity"
-        , context_ );
+        , context_ 
+        );
 
-    outgoingInterface_->initInterface(this, subsysName() );
+    outgoingInterface_->initInterface( this, subsysName() );
 
-}
-
-void 
-MainThread::initPluginInterface()
-{
 }
 
 
