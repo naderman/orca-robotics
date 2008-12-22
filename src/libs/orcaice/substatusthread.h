@@ -69,7 +69,7 @@ private:
     gbxutilacfr::SubStatus subStatus_;
 };
 //! A smart pointer to the SubstatusThread class.
-typedef IceUtil::Handle<SubstatusThread> SubsystemThreadPtr;
+typedef IceUtil::Handle<SubstatusThread> SubstatusThreadPtr;
 
 } // end namespace
 

@@ -72,7 +72,7 @@ private:
 
 };
 //! A smart pointer to the SubsystemThread class.
-typedef IceUtil::Handle<SubsystemThread> SubsystemPtr;
+typedef IceUtil::Handle<SubsystemThread> SubsystemThreadPtr;
 
 }
 
