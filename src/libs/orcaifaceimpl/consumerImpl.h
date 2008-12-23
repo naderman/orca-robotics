@@ -256,6 +256,13 @@ public:
                 context_.tracer().debug( ss.str() );
                 return true;
             }
+            catch ( const orca::OrcaException &e )
+            {
+                std::stringstream ss;
+                ss << "Failed to subscribe: " << e.what << std::endl
+                   <<"Will retry in "<<retryInterval<<"s.";
+                context_.tracer().warning( ss.str() );                
+            }
             catch ( const std::exception &e )
             {
                 std::stringstream ss;
