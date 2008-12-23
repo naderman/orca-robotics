@@ -40,8 +40,11 @@ PolarFeature2dPainter::clear()
 void 
 PolarFeature2dPainter::setData( const orca::PolarFeature2dData &data )
 {
-    assert( isOffsetSet_ );
-
+    if ( !isOffsetSet_ )
+    {
+        stringstream ss; ss << "PolarFeature2dPainter::"<<__func__<<"(): sensor offset not set.";
+        throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
+    }
     featureData_ = data;
 
     //
