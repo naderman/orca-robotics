@@ -110,7 +110,7 @@ void Viewer::display( orca::MultiCameraDataPtr& images )
             }
             
             // set the region of interest so that each individual image is next to the previous one
-            cvSetImageROI( cvMultiDisplayImage_, cvRect(i*cvSrcImage_->width,0,i*cvSrcImage_->width + cvSrcImage_->width, cvSrcImage_->height) );
+            cvSetImageROI( cvMultiDisplayImage_, cvRect(i*cvSrcImage_->width,0,cvSrcImage_->width, cvSrcImage_->height) );
             
             // Convert the image format to BGR8 for viewing in an opencv window.
             //TODO: change this convert function in hydro so that the format is converted to an openCV format
