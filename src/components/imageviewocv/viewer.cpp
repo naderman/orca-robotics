@@ -35,7 +35,7 @@ Viewer::Viewer( const int width,
     // set up opencv storage for the source image
     cvSrcImage_ = cvCreateImage( cvSize( width, height ),  depth, numChannels );
     
-    // check if opencv has padded the byte array so that the width is a multiple of 4 bytes
+    // check if opencv has padded the byte array so that the width is a multiple of 4 or 8 bytes
     orcaByteWidth_ = width*numChannels;
     if ( orcaByteWidth_ != cvSrcImage_->widthStep )
     {
