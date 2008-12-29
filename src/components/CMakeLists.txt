@@ -4,6 +4,7 @@ MESSAGE( STATUS "== COMPONENTS ==" )
 
 # when adding new directories, please maintain alphabetical order
 ADD_SUBDIRECTORY( cameraserver )
+ADD_SUBDIRECTORY( disparity )
 ADD_SUBDIRECTORY( faithlocaliser )
 ADD_SUBDIRECTORY( featuremaploader )
 ADD_SUBDIRECTORY( goalplanner )

@@ -1,18 +1,18 @@
 ORCA_SET_COMPONENT_NAME( Disparity )
 
-SET( build TRUE )
+SET( build FALSE )
 GBX_REQUIRE_OPTION( build EXE ${APP_NAME} ON )
 
 #
 # External libs
 #
-SET( ext_libs HydroDll HydroImage)
+SET( ext_libs HydroDll HydroInterfaces HydroImage)
 GBX_REQUIRE_INSTALLS( build EXE ${APP_NAME} ${ext_libs} )
 
 #
 # Internal libs
 #
-SET( int_libs OrcaIfaceImpl )
+SET( int_libs OrcaIfaceImpl OrcaObjects )
 GBX_REQUIRE_TARGETS( build EXE ${APP_NAME} ${int_libs} )
 
 IF( build)

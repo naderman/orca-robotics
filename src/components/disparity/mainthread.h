@@ -21,8 +21,8 @@
 #include <hydrointerfaces/disparity.h>
 
 // network interfaces
-#include <orcaifaceimpl/cameracollection.h>
 #include <orcaifaceimpl/image.h>
+#include <orcaifaceimpl/multicamera.h>
 
 namespace disparity {
 
@@ -74,10 +74,12 @@ private:
     hydrointerfaces::Disparity::Config pluginConfig_;
 
     // The Driver Interface Data Structure
-    hydrointerfaces::Disparity::Data pluginData_;
+    hydrointerfaces::Disparity::Data pluginLeftData_;
+    hydrointerfaces::Disparity::Data pluginRightData_;
+    hydrointerfaces::Disparity::Data pluginOutputData_;
 
     // The library that contains the driver factory (must be declared first so it's destructed last!!!)
-    std::auto_ptr<hydrodll::DynamicallyLoadedLibrary> driverLib_;
+    std::auto_ptr<hydrodll::DynamicallyLoadedLibrary> pluginLib_;
     
     // Generic driver for the hardware
     std::auto_ptr<hydrointerfaces::Disparity> pluginInterface_;

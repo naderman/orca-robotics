@@ -18,33 +18,41 @@
 using namespace std;
 using namespace disparity;
 
-MainThread::MainThread( const orcaice::Context &context ) :
-    orcaice::SubsystemThread( context.tracer(), context.status(), "MainThread" ),
-    context_(context)
+MainThread::MainThread( const orcaice::Context &context )
+    : orcaice::SubsystemThread( context.tracer(), context.status(), "MainThread" )
+    , context_(context)
+    , outgoingData_(new orca::ImageData())
+    , outgoingDescr_(new orca::ImageDescription())
 {
 }
 
 void
 MainThread::initialise()
 {
+
     readSettings();
 
     initPluginInterface();
 
     initNetworkInterface();
+
+    //setup data structures
+    outgoingData_->pixelData.resize(outgoingDescr_->size);
+    pluginOutputData_.pixelData = &(outgoingData_->pixelData[0]);
 }
 
 void
 MainThread::work() 
 {
-    subStatus().setHeartbeatInterval( 1.0 );
+    subStatus().setMaxHeartbeatInterval( 1.0 );
 
     while( !isStopping() )
     {
         try
         {
             //read data in
-            
+
+            //set the pointers of left and right image data            
             //process it
 
             //push processed data out
@@ -81,10 +89,10 @@ MainThread::readSettings()
 
     context_.tracer().info( orcaobj::toString( incomingDescr_ ) );
 
-    pluginConfig_.width  = incomingDescr_->width;
-    pluginConfig_.height = incomingDescr_->height;
-    pluginConfig_.size   = incomingDescr_->width * incomingDescr_->height;
-    pluginConfig_.format = "GRAY8"
+    pluginConfig_.width  = incomingDescr_->descriptions[0]->width;
+    pluginConfig_.height = incomingDescr_->descriptions[0]->height;
+    pluginConfig_.size   = incomingDescr_->descriptions[0]->width * incomingDescr_->descriptions[0]->height;
+    pluginConfig_.format = "GRAY8";
     pluginConfig_.shifts = orcaice::getPropertyAsIntWithDefault( prop, prefix+"Shifts", 16 ); 
     pluginConfig_.offset = orcaice::getPropertyAsIntWithDefault( prop, prefix+"Offset", 0 );
     
@@ -101,17 +109,17 @@ MainThread::initPluginInterface()
     std::string prefix = context_.tag() + ".Config.";
 
     // Dynamically load the library and find the factory
-    std::string driverLibName = 
+    std::string pluginLibName = 
         orcaice::getPropertyWithDefault( prop, prefix+"DriverLib", "libHydroDisparitySimple.so" );
-    context_.tracer().info( "MainThread: Loading driver library "+driverLibName  );
+    context_.tracer().info( "MainThread: Loading driver library "+pluginLibName  );
 
     // The factory which creates the driver
-    std::auto_ptr<hydrointerfaces::DisparityFactory> driverFactory;
+    std::auto_ptr<hydrointerfaces::DisparityFactory> pluginFactory;
     try {
-        driverLib_.reset( new hydrodll::DynamicallyLoadedLibrary(driverLibName) );
-        driverFactory.reset( 
+        pluginLib_.reset( new hydrodll::DynamicallyLoadedLibrary(pluginLibName) );
+        pluginFactory.reset( 
             hydrodll::dynamicallyLoadClass<hydrointerfaces::DisparityFactory,DriverFactoryMakerFunc>
-            ( *driverLib_, "createDriverFactory" ) );
+            ( *pluginLib_, "createDriverFactory" ) );
     }
     catch (hydrodll::DynamicLoadException &e)
     {
@@ -126,8 +134,8 @@ MainThread::initPluginInterface()
         std::stringstream exceptionSS;
         try {
             context_.tracer().info( "HwThread: Creating driver..." );
-            driver_.reset(0);
-            driver_.reset( driverFactory->createDriver( config_, context_.toHydroContext() ) );
+            pluginInterface_.reset(0);
+            pluginInterface_.reset( pluginFactory->createDriver( pluginConfig_, context_.toHydroContext() ) );
             break;
         }
         catch ( IceUtil::Exception &e ) {
@@ -166,7 +174,7 @@ MainThread::initPluginInterface()
 void
 MainThread::initNetworkInterface()
 {
-    active( context_, this, subsysName() );
+    activate( context_, this, subsysName() );
 
     // incoming network interface
     incomingInterface_ = new orcaifaceimpl::BufferedMultiCameraConsumerImpl( 1
@@ -181,7 +189,7 @@ MainThread::initNetworkInterface()
 
     // outgoing network interface
     outgoingInterface_ = new orcaifaceimpl::ImageImpl( outgoingDescr_
-        , "Disparity"
+        , "Image"
         , context_ 
         );
 
