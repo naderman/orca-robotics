@@ -15,19 +15,14 @@
 #include <orca/exceptions.h>
 #include <orcaice/context.h>
 #include <orcaice/icestormutils.h>
+#include <orcaice/multiicestormutils.h>
 
 namespace gbxiceutilacfr { class Thread; }
 
 namespace orcaice {
 
-//
-// Knows how to send trace messages to an IceStorm topic.
-//
-// Note that this does _not_ inherit from gbxutilacfr::Tracer, it's simply
-// a convenience class for use by gbxutilacfr::Tracer classes.
-//
-// @author Alex Brooks
-//
+// this is a utility class which wraps up the functionality
+// of interacting with IceStorm Topic.
 template<class ConsumerProxyType, class DataType>
 class TopicHandler
 {
