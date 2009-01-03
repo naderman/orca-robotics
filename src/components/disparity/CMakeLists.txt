@@ -1,6 +1,6 @@
 ORCA_SET_COMPONENT_NAME( Disparity )
 
-SET( build FALSE )
+SET( build TRUE )
 GBX_REQUIRE_OPTION( build EXE ${APP_NAME} ON )
 
 #
