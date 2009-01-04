@@ -1,4 +1,5 @@
 ORCA_SET_COMPONENT_NAME( Disparity )
+SET( APP_CTRLC_HANDLER 0 )
 
 SET( build TRUE )
 GBX_REQUIRE_OPTION( build EXE ${APP_NAME} ON )
@@ -23,15 +24,9 @@ IF( build)
     SET( dep_libs ${ext_libs} ${int_libs} )
 
     # build stand-alone component  
-    ORCA_WRAP_MAINTHREAD_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${COMP_NAME} ${srcs} )
+    ORCA_WRAP_COMPONENT_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${srcs} )
     TARGET_LINK_LIBRARIES( ${APP_NAME} ${dep_libs} )
     
-     # build IceBox service
-     IF( ORCA_BUILD_SERVICES )
-         ORCA_WRAP_MAINTHREAD_INTO_SERVICE( ${SERVICE_NAME} ${COMP_NAMESPACE} ${COMP_NAME} ${srcs} )
-         TARGET_LINK_LIBRARIES( ${SERVICE_NAME} ${dep_libs} )    
-     ENDIF( ORCA_BUILD_SERVICES )
-
     ORCA_GENERATE_CONFIG_FILE( ${APP_NAME}.def )
 
 ENDIF( build )

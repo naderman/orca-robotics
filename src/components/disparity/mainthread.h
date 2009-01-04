@@ -31,11 +31,18 @@ class MainThread : public orcaice::SubsystemThread
 public:
     MainThread( const orcaice::Context &context );
 
+    bool hasPluginEventLoop() const;
+    void executePluginEventLoop();
+
 private:
+
     // from SubsystemThread
     virtual void initialise();
     virtual void work();
     virtual void finalise();
+
+    // initialize before running the thread, since this is a requirement 
+    void init();
 
     // initialise the parameters for the Viewer
     void readSettings();

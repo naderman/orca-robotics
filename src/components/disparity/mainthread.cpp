@@ -15,8 +15,8 @@
 #include <orcaice/orcaice.h>
 #include <orcaobj/orcaobj.h> // for getPropertyAs...()
 
-using namespace std;
-using namespace disparity;
+namespace disparity
+{
 
 MainThread::MainThread( const orcaice::Context &context )
     : orcaice::SubsystemThread( context.tracer(), context.status(), "MainThread" )
@@ -24,29 +24,11 @@ MainThread::MainThread( const orcaice::Context &context )
     , outgoingData_(0)
     , outgoingDescr_(new orca::ImageDescription())
 {
+    init();
 }
-
-void
+void 
 MainThread::initialise()
 {
-
-    readSettings();
-
-    initPluginInterface();
-
-    initNetworkInterface();
-
-    initDataStructures();
-}
-
-void
-MainThread::initDataStructures()
-{
-    outgoingData_ = new orca::ImageData();
-
-    //setup data structures
-    outgoingData_->pixelData.resize(outgoingDescr_->size);
-    pluginOutputData_.pixelData = &(outgoingData_->pixelData[0]);
 }
 
 void
@@ -74,14 +56,14 @@ MainThread::work()
                 }
 
                 // check descriptions, otherwise update our copy and re-init the data structures
-                if(  incomingData_->cameraDataVector[0]->description != incomingDescr_->descriptions[0] 
+/*               if(  incomingData_->cameraDataVector[0]->description != incomingDescr_->descriptions[0] 
                   || incomingData_->cameraDataVector[1]->description != incomingDescr_->descriptions[1] )
                 {
                     incomingDescr_->descriptions[0] = orca::CameraDescriptionPtr::dynamicCast(incomingData_->cameraDataVector[0]->description);
                     incomingDescr_->descriptions[1] = orca::CameraDescriptionPtr::dynamicCast(incomingData_->cameraDataVector[1]->description);
                     initDataStructures();
                 }
-
+*/
                 //set the pointers of left and right image data            
                 pluginLeftData_.pixelData = &(incomingData_->cameraDataVector[0]->pixelData[0]);
                 pluginRightData_.pixelData = &(incomingData_->cameraDataVector[1]->pixelData[0]);
@@ -113,6 +95,31 @@ MainThread::finalise()
 
 ////////////////////
 
+bool
+MainThread::hasPluginEventLoop() const
+{
+    return pluginInterface_->hasEventLoop();
+}
+
+void
+MainThread::executePluginEventLoop()
+{
+    pluginInterface_->executeEventLoop();
+}
+
+void
+MainThread::init()
+{
+
+    readSettings();
+
+    initPluginInterface();
+
+    initNetworkInterface();
+
+    initDataStructures();
+}
+
 void
 MainThread::readSettings()
 {
@@ -135,7 +142,7 @@ MainThread::readSettings()
     pluginConfig_.width  = incomingDescr_->descriptions[0]->width;
     pluginConfig_.height = incomingDescr_->descriptions[0]->height;
     pluginConfig_.size   = incomingDescr_->descriptions[0]->width * incomingDescr_->descriptions[0]->height;
-    pluginConfig_.format = "GRAY8";
+    pluginConfig_.format = incomingDescr_->descriptions[0]->format;
     pluginConfig_.shifts = orcaice::getPropertyAsIntWithDefault( prop, prefix+"Shifts", 16 ); 
     pluginConfig_.offset = orcaice::getPropertyAsIntWithDefault( prop, prefix+"Offset", 0 );
     
@@ -207,8 +214,8 @@ MainThread::initPluginInterface()
     // copy the config structure to the outgoing description structure
     outgoingDescr_->width = pluginConfig_.width;
     outgoingDescr_->height = pluginConfig_.height;
-    outgoingDescr_->format = pluginConfig_.format;
-    outgoingDescr_->size = pluginConfig_.size;
+    outgoingDescr_->format = "GRAY8";
+    outgoingDescr_->size = pluginConfig_.width*pluginConfig_.height;
 
     subStatus().setMaxHeartbeatInterval( 1.0 );
 
@@ -240,4 +247,17 @@ MainThread::initNetworkInterface()
 
 }
 
+void
+MainThread::initDataStructures()
+{
+    outgoingData_ = new orca::ImageData();
+    outgoingData_->description = outgoingDescr_;
+
+    //setup data structures
+    outgoingData_->pixelData.resize(outgoingDescr_->size);
+    pluginOutputData_.pixelData = &(outgoingData_->pixelData[0]);
+
+}
+
+} // namespace
 
