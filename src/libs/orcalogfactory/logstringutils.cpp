@@ -170,41 +170,6 @@ namespace {
 //////////////////////////////////////////////////////////////////////
 }
 
-// std::string 
-// toLogString( const orca::Waypoint2d& obj )
-// {
-//     std::ostringstream s;
-//     s << obj.target.p.x << " " << obj.target.p.y << " " << obj.target.o << " " 
-//       << toLogString(obj.timeTarget) << " " 
-//       << obj.distanceTolerance << " " 
-//       << obj.headingTolerance << " "
-//       << obj.maxApproachSpeed << " "
-//       << obj.maxApproachTurnrate
-//       << endl;
-//     return s.str();
-// }
-
-// void fromLogString( std::stringstream& stream, orca::Waypoint2d& obj )
-// {
-//     fromLogString( stream, obj.target );
-//     fromLogString( stream, obj.timeTarget );
-//     fromLogString( stream, obj.distanceTolerance );
-//     fromLogString( stream, obj.headingTolerance );
-//     fromLogString( stream, obj.maxApproachSpeed );
-//     fromLogString( stream, obj.maxApproachTurnrate );
-// }
-
-// std::string 
-// toLogString( const orca::Path2d& obj )
-// {
-//     std::ostringstream s;
-//     for (unsigned int i=0; i<obj.size(); i++)
-//     {
-//         s << toLogString( obj[i] ); 
-//     }
-//     return s.str();
-// }
-
 std::string 
 toLogString( const orca::CpuData& obj )
 {

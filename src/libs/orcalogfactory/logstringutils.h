@@ -29,7 +29,6 @@
 #include <orca/status.h>
 #include <orca/polarfeature2d.h>
 #include <orca/featuremap2d.h>
-// #include <orca/pathfollower2d.h>
 #include <orca/pathplanner2d.h>
 #include <orca/wifi.h>
 
@@ -40,12 +39,6 @@ namespace orcalogfactory
  */
 //@{
 
-//! Prints out waypoint2d to text which is easy to parse
-// std::string toLogString( const orca::Waypoint2d& );
-//! Parses from ASCII log
-// void fromLogString( std::stringstream&, orca::Waypoint2d& );
-//! Prints out Path2d to text which is easy to parse
-// std::string toLogString( const orca::Path2d& );
 //! Prints out cpu data to text which is easy to parse
 std::string toLogString( const orca::CpuData& );
 
