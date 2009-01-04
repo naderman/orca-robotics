@@ -155,6 +155,12 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
   - major overhaul of standard interface implementations: Status, Tracer, and Home. The old implementations were clunky and succeptible
     to rare but real distributed deadlock conditions. No changes to public interfaces. (alexm)
 
+- libOrcaQGui2dFactory
+  - removed dependency on orcalogfactory (tobi)
+  
+- libOrcaObjectUtil
+  - moved waypoint/path ASCII logging functions from logfactory to here (tobi)
+
 - libOrcaLogFactory
   - added logging to ascii for PolarFeature2d (tobi)
   - added matlab scripts to read ascii files for PolarFeature2d and LaserScanner2d (tobi)

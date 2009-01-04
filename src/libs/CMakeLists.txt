@@ -6,6 +6,7 @@ MESSAGE( STATUS "== LIBRARIES ==" )
 # an alphabetical order for the independent libs.
 
 ADD_SUBDIRECTORY( orcaobj )
+ADD_SUBDIRECTORY( orcaobjutil )
 ADD_SUBDIRECTORY( orcaice )
 ADD_SUBDIRECTORY( orcaifaceimpl )
 
@@ -20,7 +21,6 @@ ADD_SUBDIRECTORY( orcalocalnav )
 ADD_SUBDIRECTORY( orcalog )
 ADD_SUBDIRECTORY( orcalogfactory )
 ADD_SUBDIRECTORY( orcanavutil )
-ADD_SUBDIRECTORY( orcaobjutil )
 ADD_SUBDIRECTORY( orcaogmap )
 ADD_SUBDIRECTORY( orcaogfusion )
 ADD_SUBDIRECTORY( orcapathplan )

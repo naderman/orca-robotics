@@ -21,6 +21,7 @@
 #include <orcaobj/orcaobj.h>
 
 #include <orcalog/exceptions.h>
+#include <orcaobjutil/pathfileutil.h>
 #include "logstringutils.h"
 
 // this is a copy from orcaice/mathdefs.h
@@ -169,40 +170,40 @@ namespace {
 //////////////////////////////////////////////////////////////////////
 }
 
-std::string 
-toLogString( const orca::Waypoint2d& obj )
-{
-    std::ostringstream s;
-    s << obj.target.p.x << " " << obj.target.p.y << " " << obj.target.o << " " 
-      << toLogString(obj.timeTarget) << " " 
-      << obj.distanceTolerance << " " 
-      << obj.headingTolerance << " "
-      << obj.maxApproachSpeed << " "
-      << obj.maxApproachTurnrate
-      << endl;
-    return s.str();
-}
+// std::string 
+// toLogString( const orca::Waypoint2d& obj )
+// {
+//     std::ostringstream s;
+//     s << obj.target.p.x << " " << obj.target.p.y << " " << obj.target.o << " " 
+//       << toLogString(obj.timeTarget) << " " 
+//       << obj.distanceTolerance << " " 
+//       << obj.headingTolerance << " "
+//       << obj.maxApproachSpeed << " "
+//       << obj.maxApproachTurnrate
+//       << endl;
+//     return s.str();
+// }
 
-void fromLogString( std::stringstream& stream, orca::Waypoint2d& obj )
-{
-    fromLogString( stream, obj.target );
-    fromLogString( stream, obj.timeTarget );
-    fromLogString( stream, obj.distanceTolerance );
-    fromLogString( stream, obj.headingTolerance );
-    fromLogString( stream, obj.maxApproachSpeed );
-    fromLogString( stream, obj.maxApproachTurnrate );
-}
+// void fromLogString( std::stringstream& stream, orca::Waypoint2d& obj )
+// {
+//     fromLogString( stream, obj.target );
+//     fromLogString( stream, obj.timeTarget );
+//     fromLogString( stream, obj.distanceTolerance );
+//     fromLogString( stream, obj.headingTolerance );
+//     fromLogString( stream, obj.maxApproachSpeed );
+//     fromLogString( stream, obj.maxApproachTurnrate );
+// }
 
-std::string 
-toLogString( const orca::Path2d& obj )
-{
-    std::ostringstream s;
-    for (unsigned int i=0; i<obj.size(); i++)
-    {
-        s << toLogString( obj[i] ); 
-    }
-    return s.str();
-}
+// std::string 
+// toLogString( const orca::Path2d& obj )
+// {
+//     std::ostringstream s;
+//     for (unsigned int i=0; i<obj.size(); i++)
+//     {
+//         s << toLogString( obj[i] ); 
+//     }
+//     return s.str();
+// }
 
 std::string 
 toLogString( const orca::CpuData& obj )
@@ -802,7 +803,7 @@ toLogString( const orca::PathPlanner2dTask& obj )
     
     for ( unsigned int i=0; i < obj.coarsePath.size(); i++ )
     {
-        s << toLogString(obj.coarsePath[i]) << " ";
+        s << pathfileutil::toLogString(obj.coarsePath[i]) << " ";
     }
 
     return s.str();
@@ -821,7 +822,7 @@ toLogString( const orca::PathPlanner2dData& obj )
     // second line: path
     for ( unsigned int i=0; i < obj.path.size(); i++ )
     {
-        s << toLogString(obj.path[i]) << " ";
+        s << pathfileutil::toLogString(obj.path[i]) << " ";
     }
 
     return s.str();
@@ -835,8 +836,8 @@ toLogString( const orca::Time& obj )
     s << obj.seconds << " " << obj.useconds;
     return s.str();
 }
-void 
-        
+
+void         
 fromLogString( std::stringstream& stream, orca::Time& obj )
 {
     stream >> obj.seconds >> obj.useconds;

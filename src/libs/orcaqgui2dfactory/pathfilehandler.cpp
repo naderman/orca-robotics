@@ -11,7 +11,7 @@
 #include <sstream>
 #include <QFile>
 #include <QTextStream>
-#include <orcalogfactory/logstringutils.h>
+#include <orcaobjutil/pathfileutil.h>
 #include <hydroqguielementutil/ihumanmanager.h>
 #include <orcaqgui2dfactory/pathconversionutil.h>
 
@@ -56,7 +56,7 @@ PathFileHandler::savePath( const QString                &filename,
     
     // write to a file
     QTextStream out(&file);
-    out << QString(orcalogfactory::toLogString( orcaPath ).c_str());
+    out << QString(pathfileutil::toLogString( orcaPath ).c_str());
     file.close();
     humanManager_.showStatusInformation( "Path successfully saved to " + filename );
 }
@@ -79,7 +79,7 @@ PathFileHandler::loadPath( const QString          &filename,
     while (!in.atEnd()) 
     {
         stringstream ss( in.readLine().toStdString() );
-        orcalogfactory::fromLogString( ss, wp );
+        pathfileutil::fromLogString( ss, wp );
         orcaPath.push_back(wp);
     }
     file.close();
