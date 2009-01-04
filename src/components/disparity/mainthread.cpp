@@ -21,7 +21,7 @@ using namespace disparity;
 MainThread::MainThread( const orcaice::Context &context )
     : orcaice::SubsystemThread( context.tracer(), context.status(), "MainThread" )
     , context_(context)
-    , outgoingData_(new orca::ImageData())
+    , outgoingData_(0)
     , outgoingDescr_(new orca::ImageDescription())
 {
 }
@@ -36,6 +36,14 @@ MainThread::initialise()
 
     initNetworkInterface();
 
+    initDataStructures();
+}
+
+void
+MainThread::initDataStructures()
+{
+    outgoingData_ = new orca::ImageData();
+
     //setup data structures
     outgoingData_->pixelData.resize(outgoingDescr_->size);
     pluginOutputData_.pixelData = &(outgoingData_->pixelData[0]);
@@ -44,6 +52,8 @@ MainThread::initialise()
 void
 MainThread::work() 
 {
+    const int timeoutMs = 500;
+    
     subStatus().setMaxHeartbeatInterval( 1.0 );
 
     while( !isStopping() )
@@ -51,11 +61,44 @@ MainThread::work()
         try
         {
             //read data in
+            int ret = incomingInterface_->buffer().getAndPopNext( incomingData_, timeoutMs );
 
-            //set the pointers of left and right image data            
-            //process it
+            if( !ret )
+            {
+                context_.tracer().debug("Successfuly fetched Images", 6);
+               
+                // ensure we recieved 2 images
+                if( incomingData_->cameraDataVector.size() != 2 )
+                {
+                    throw gbxutilacfr::Exception( ERROR_INFO, "Recieved incorrect number of images, disparity expects 2 images, no more no less" );
+                }
 
-            //push processed data out
+                // check descriptions, otherwise update our copy and re-init the data structures
+                if(  incomingData_->cameraDataVector[0]->description != incomingDescr_->descriptions[0] 
+                  || incomingData_->cameraDataVector[1]->description != incomingDescr_->descriptions[1] )
+                {
+                    incomingDescr_->descriptions[0] = orca::CameraDescriptionPtr::dynamicCast(incomingData_->cameraDataVector[0]->description);
+                    incomingDescr_->descriptions[1] = orca::CameraDescriptionPtr::dynamicCast(incomingData_->cameraDataVector[1]->description);
+                    initDataStructures();
+                }
+
+                //set the pointers of left and right image data            
+                pluginLeftData_.pixelData = &(incomingData_->cameraDataVector[0]->pixelData[0]);
+                pluginRightData_.pixelData = &(incomingData_->cameraDataVector[1]->pixelData[0]);
+
+                //process it
+                pluginInterface_->process( pluginLeftData_, pluginRightData_, pluginOutputData_ );
+                
+                //push processed data out
+                outgoingInterface_->localSetAndSend( outgoingData_ );
+
+                //state is good, so say so
+                subStatus().ok();
+            }
+            else
+            {
+                subStatus().warning( "Images were not successfully copied to local buffer" );
+            }
         }
         catch( ... )
         {

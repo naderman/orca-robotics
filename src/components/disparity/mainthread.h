@@ -46,6 +46,9 @@ private:
     // Loops until established
     void initNetworkInterface();
 
+    // Setup data structures based on the incomingDescr_
+    void initDataStructures();
+
     // context
     orcaice::Context context_;
     
