@@ -50,11 +50,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
    - The ray-trace stuff in here is currently cut-n-pasted from hydroogmap...
 
 - image stuff:
-   - create an multiimageserver and multicameraserver (both with commonality in a simple base class)
    - update the viewer to allow viewer to modify slightly for common 
      needs... rotation, zoom, mirroring of the display and showing statistics
      on image frequency and delay between the capture the the display of it.
-   - extend the viewer to show one of many image streams from a multiimage
 
 @section orca_doc_history_head Changes in SVN since Last Release
 
@@ -72,8 +70,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @par New components
 
-- OrcaImageView (tom)
-  - qt4 opengl driven image stream viewer
+- Disparity (tom)
+  - stereo image correlation component
 
 - SystemStatus (tobi)
   - provides a system-level overview of components' status, adds observed states and health
@@ -85,6 +83,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 - slice2util (alexm)
   - generates toString() as well as logging functions. More code generation will be added in the future.
+
+- listcameras (tom)
+  - list all firewire cameras and their associated information using libdc1394 v2
 
 @par New libraries
 @par Updated interfaces
@@ -107,6 +108,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 - Camera
   - data types derive from ones found in the Image interface
+
+- MultiCamera
+  - Composed as a set of CameraData objects
 
 - Home
   - removed getProperties() because the same functionality is now available through the Proprerties facet of the
