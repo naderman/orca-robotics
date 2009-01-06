@@ -76,12 +76,17 @@ Viewer::~Viewer()
 
 void Viewer::display( orca::ImageDataPtr& image )
 {
-
     // check the user hasn't closed the window
     if( cvGetWindowHandle( name_ ) != 0 )
     {
+        // check if the image has been resized
+        if( cvSrcImage_->width != image->description->width && cvSrcImage_->height != image->description->height )
+        {
+            resize( image );
+        }
+        
         // check if the opencv image data structure is padded
-        if ( !isPadded_ )
+        if( !isPadded_ )
         {
             // if the opencv structure isn't padded, the image data structures in orca
             // are exactly the same and we just point the opencv image data to
@@ -122,14 +127,43 @@ void Viewer::display( orca::ImageDataPtr& image )
 void
 Viewer::displayFrameRate()
 {
-        // Display the frame rate
-        orcaice::setToNow( currentFrameTime_ );
-        diff_  = orcaice::timeDiffAsDouble( currentFrameTime_, oldFrameTime_ );
-        oldFrameTime_ = currentFrameTime_;
-        fps_ = 1.0/diff_;
-        
-        std::stringstream fpsString_;
-        fpsString_ << "fps = " << fps_;
-        cvPutText(cvDisplayImage_, fpsString_.str().c_str(), cvPoint(20,20), &font_, CV_RGB(255,255,255)); 
+    // Display the frame rate
+    orcaice::setToNow( currentFrameTime_ );
+    diff_  = orcaice::timeDiffAsDouble( currentFrameTime_, oldFrameTime_ );
+    oldFrameTime_ = currentFrameTime_;
+    fps_ = 1.0/diff_;
+    
+    std::stringstream fpsString_;
+    fpsString_ << "fps = " << fps_;
+    cvPutText(cvDisplayImage_, fpsString_.str().c_str(), cvPoint(20,20), &font_, CV_RGB(255,255,255)); 
 }
     
+void
+Viewer::resize( orca::ImageDataPtr& image )
+{
+    int srcDepth = cvSrcImage_->depth;
+    int srcNumChannels = cvSrcImage_->nChannels;
+    int displayDepth = cvDisplayImage_->depth;
+    int displayNumChannels = cvDisplayImage_->nChannels;
+    cvReleaseImage( &cvSrcImage_ );
+    cvReleaseImage( &cvDisplayImage_ );
+    
+    cvSrcImage_ = cvCreateImage( cvSize( image->description->width, image->description->height ), 
+                                        srcDepth, 
+                                        srcNumChannels );
+
+    cvDisplayImage_ = cvCreateImage( cvSize( image->description->width, image->description->height ), 
+                                        displayDepth, 
+                                        displayNumChannels );
+    
+    // check if there's padding with the new image size
+    orcaByteWidth_ = image->description->width*cvSrcImage_->nChannels;
+    if ( orcaByteWidth_ != cvSrcImage_->widthStep )
+    {
+        isPadded_ = true;
+    }
+    
+    // dodgy opencv needs this so it has time to resize
+    cvWaitKey(100);
+        
+}

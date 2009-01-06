@@ -47,8 +47,12 @@ private:
     //! handle to the opencv window
     const char* name_;
     
-    // display the frame rate of the received images
+    //! display the frame rate of the received images
     void displayFrameRate();
+    
+    //! resize IplImages to the same size as the orca image
+    void resize( orca::ImageDataPtr& image );
+    
     //! time variables for calculating number of frames per second 
     orca::Time oldFrameTime_;
     orca::Time currentFrameTime_;

@@ -86,6 +86,12 @@ void Viewer::display( orca::MultiCameraDataPtr& images )
     // check the user hasn't closed the window
     if( cvGetWindowHandle( name_ ) != 0 )
     {
+        // check if the received images have been resized
+        if( cvSrcImage_->width != images->cameraDataVector.at(0)->description->width && cvSrcImage_->height != images->cameraDataVector.at(0)->description->height )
+        {
+            resize( images );
+        }
+
         for( unsigned int i=0; i<images->cameraDataVector.size(); ++i )
         {
             // check if the opencv image data structure is padded
@@ -153,3 +159,37 @@ Viewer::displayFrameRate()
         cvPutText(cvMultiDisplayImage_, fpsString_.str().c_str(), cvPoint(20,20), &font_, CV_RGB(255,255,255)); 
 }
     
+void
+Viewer::resize( orca::MultiCameraDataPtr& images )
+{
+    int srcDepth = cvSrcImage_->depth;
+    int srcNumChannels = cvSrcImage_->nChannels;
+    int displayDepth = cvMultiDisplayImage_->depth;
+    int displayNumChannels = cvMultiDisplayImage_->nChannels;
+    cvReleaseImage( &cvSrcImage_ );
+    cvReleaseImage( &cvMultiDisplayImage_ );
+    
+    int width = images->cameraDataVector.at(0)->description->width;
+    int height = images->cameraDataVector.at(0)->description->height;
+    cvSrcImage_ = cvCreateImage( cvSize( width, height ), 
+                                        srcDepth, 
+                                        srcNumChannels );
+
+    // The width of all the camera frames side-by-side
+    int totalWidth = cvSrcImage_->width * images->cameraDataVector.size();
+    
+    cvMultiDisplayImage_ = cvCreateImage( cvSize( totalWidth, height ), 
+                                        displayDepth, 
+                                        displayNumChannels );
+    
+    // check if there's padding with the new image size
+    orcaByteWidth_ = width*srcNumChannels;
+    if ( orcaByteWidth_ != cvSrcImage_->widthStep )
+    {
+        isPadded_ = true;
+    }
+    
+    // dodgy opencv needs this so it has time to resize
+    cvWaitKey(100);
+        
+}
