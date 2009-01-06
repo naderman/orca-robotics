@@ -74,6 +74,9 @@ MainThread::work()
 
             // Re-create the viewer, unless we are stopping
             if ( !isStopping() ) {
+                // TODO: make opencv window handle exception safe so we can create
+                // another viewer here. At the moment, if an exception is thrown, 
+                // the viewer will not self destruct. 
                 // createViewer();
             }
         }

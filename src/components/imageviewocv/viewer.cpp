@@ -141,13 +141,16 @@ Viewer::displayFrameRate()
 void
 Viewer::resize( orca::ImageDataPtr& image )
 {
+    // record required parameters for setting up the resized IplImage
     int srcDepth = cvSrcImage_->depth;
     int srcNumChannels = cvSrcImage_->nChannels;
     int displayDepth = cvDisplayImage_->depth;
     int displayNumChannels = cvDisplayImage_->nChannels;
+    // clean up the old IplImages
     cvReleaseImage( &cvSrcImage_ );
     cvReleaseImage( &cvDisplayImage_ );
     
+    // create the resized IplImages
     cvSrcImage_ = cvCreateImage( cvSize( image->description->width, image->description->height ), 
                                         srcDepth, 
                                         srcNumChannels );

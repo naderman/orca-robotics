@@ -162,13 +162,16 @@ Viewer::displayFrameRate()
 void
 Viewer::resize( orca::MultiCameraDataPtr& images )
 {
+    // record required parameters for setting up the resized IplImage
     int srcDepth = cvSrcImage_->depth;
     int srcNumChannels = cvSrcImage_->nChannels;
     int displayDepth = cvMultiDisplayImage_->depth;
     int displayNumChannels = cvMultiDisplayImage_->nChannels;
+    // clean up the old IplImages
     cvReleaseImage( &cvSrcImage_ );
     cvReleaseImage( &cvMultiDisplayImage_ );
     
+    // create the resized IplImages
     int width = images->cameraDataVector.at(0)->description->width;
     int height = images->cameraDataVector.at(0)->description->height;
     cvSrcImage_ = cvCreateImage( cvSize( width, height ), 
@@ -177,7 +180,6 @@ Viewer::resize( orca::MultiCameraDataPtr& images )
 
     // The width of all the camera frames side-by-side
     int totalWidth = cvSrcImage_->width * images->cameraDataVector.size();
-    
     cvMultiDisplayImage_ = cvCreateImage( cvSize( totalWidth, height ), 
                                         displayDepth, 
                                         displayNumChannels );
