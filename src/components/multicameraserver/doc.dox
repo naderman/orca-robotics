@@ -33,16 +33,16 @@
 
 @par Drivers
 
-This component dynamically loads an implementation of a Hydro hardware interface hydrointerfaces::ImageCollection. You can also load your own implementation as long as the shared library is in the path. See Hydro documentation for the list of available drivers.
+This component dynamically loads an implementation of a Hydro hardware interface hydrointerfaces::MultiImage. You can also load your own implementation as long as the shared library is in the path. See Hydro documentation for the list of available drivers.
 
-- @ref hydro_drivers_imagecollection
+- @ref hydro_drivers_multiimage
 
 @par Configuration
 
 - @c MultiCameraServer.Config.DriverLib (string)
     - Name of shared library containing the hardware driver
-    - Valid values are at least: { 'libHydroImageCollectionFake.so', 'libHydroImageCollectionFile.so', 'libHydroImageBumblebee.so' }
-    - Default: "libHydroImageFake.so"
+    - Valid values are at least: { 'libHydroMultiImageFake.so', 'libHydroMultiImageFile.so', 'libHydroMultiImageCvCamera.so' }
+    - Default: "libHydroMultiImageFake.so"
 
 MultiCameraServer Settings
 - @c MultiCameraServer.Config.NumberOfCameras (int)
