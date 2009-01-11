@@ -21,6 +21,7 @@ using namespace laserfeatures;
 
 namespace {
 
+    // conversion between Orca and Hydro datatypes
     orca::SinglePolarFeature2dPtr convert( const hydrofeatureobs::FeatureObs &hydroFeature )
     {
         orca::SinglePolarFeature2dPtr orcaFeature;
