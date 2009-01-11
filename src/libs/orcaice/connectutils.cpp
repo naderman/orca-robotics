@@ -21,7 +21,10 @@ namespace orcaice {
 std::string 
 getInterfaceIdWithString( const Context& context, const std::string& proxyString )
 {
-    Ice::ObjectPrx prx = context.communicator()->stringToProxy(proxyString);
+    // for indirect proxies only: if platform is set to 'local', replace it by hostname
+    std::string resolvedProxyString = resolveLocalPlatform( context, proxyString );
+
+    Ice::ObjectPrx prx = context.communicator()->stringToProxy( resolvedProxyString );
 
     // check with the server that the one we found is of the right type
     // the check operation is remote and may fail (see sec.6.11.2)

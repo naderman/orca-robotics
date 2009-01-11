@@ -158,6 +158,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     transition Initialising->Finalising) (alexm)
   - major overhaul of standard interface implementations: Status, Tracer, and Home. The old implementations were clunky and succeptible
     to rare but real distributed deadlock conditions. No changes to public interfaces. (alexm)
+  - fixed bug in getInterfaceIdWithString() which prevented teleop from connecting to components on other hosts (alexm)
 
 - libOrcaQGui2dFactory
   - removed dependency on orcalogfactory (tobi)
