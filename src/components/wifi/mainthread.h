@@ -27,8 +27,9 @@ public:
     MainThread( const orcaice::Context & context );
 
 private:
-
-    virtual void walk();
+    // from SubsystemThread
+    virtual void initialise();
+    virtual void work();
 
     orcaice::Context context_;
     orcaifaceimpl::WifiImplPtr wifiInterface_;

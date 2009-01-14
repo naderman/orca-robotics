@@ -32,14 +32,15 @@ class HwThread : public orcaice::SubsystemThread
 public:
     HwThread( const orcaice::Context &context);
 
-    // from SubsystemThread
-    virtual void walk();
-
     // used to shove data from the hardware side to the network side
     // event queue, so we can put through different data types
     hydroiceutil::EventQueuePtr dataPipe_;
 
 private:
+    // from SubsystemThread
+    virtual void initialise();
+    virtual void work();
+
     // Tries repeatedly to instantiate the driver
     void initHardwareDriver();
 

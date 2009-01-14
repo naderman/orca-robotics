@@ -23,53 +23,8 @@ HwThread::HwThread( const orcaice::Context &context) :
 }
 
 void
-HwThread::initHardwareDriver()
+HwThread::initialise()
 {
-    subStatus().setMaxHeartbeatInterval( 20.0 );
-
-    Ice::PropertiesPtr prop = context_.properties();
-    std::string prefix = context_.tag() + ".Config.";
-
-    // Dynamically load the library and find the factory
-    std::string driverLibName = 
-        orcaice::getPropertyWithDefault( prop, prefix+"DriverLib", "libOrcaInsGpsFake.so" );
-    context_.tracer().debug( "HwThread: Loading driver library "+driverLibName, 4 );
-    // The factory which creates the driver
-    std::auto_ptr<hydrointerfaces::InsGpsFactory> driverFactory;
-    try {
-        driverLib_.reset( new hydrodll::DynamicallyLoadedLibrary(driverLibName) );
-        driverFactory.reset( 
-            hydrodll::dynamicallyLoadClass<hydrointerfaces::InsGpsFactory,DriverFactoryMakerFunc>
-            ( *driverLib_, "createDriverFactory" ) );
-    }
-    catch(hydrodll::DynamicLoadException &e){
-        // unrecoverable error
-        context_.tracer().error( e.what() );
-        context_.shutdown();
-        throw;
-    }
-
-    // create the driver
-    while(!isStopping()){
-        std::stringstream exceptionSS;
-        try {
-            context_.tracer().info( "HwThread: Creating driver..." );
-            driver_.reset( 0 ); // if this is a reset, we have to destroy the old driver first
-            driver_.reset( driverFactory->createDriver( config_, context_.toHydroContext() ) );
-            break;
-        }
-        catch ( ... ) {
-            orcaice::catchExceptionsWithStatusAndSleep( "initialising hardware driver", subStatus() );
-        }
-    }
-
-    subStatus().setMaxHeartbeatInterval( 1.0 );
-}
-
-void
-HwThread::walk()
-{
-    subStatus().initialising();
     subStatus().setMaxHeartbeatInterval( 20.0 );
 
     // Read settings
@@ -83,9 +38,11 @@ HwThread::walk()
     }
 
     initHardwareDriver();
+}
 
-    subStatus().working();
-
+void
+HwThread::work()
+{
     while(!isStopping()){
         stringstream exceptionSS;
         try{
@@ -173,6 +130,52 @@ HwThread::walk()
     } // end of while
 
     // insgps hardware will be shut down in the driver_ 's destructor.
+}
+
+////////////////////
+
+void
+HwThread::initHardwareDriver()
+{
+    subStatus().setMaxHeartbeatInterval( 20.0 );
+
+    Ice::PropertiesPtr prop = context_.properties();
+    std::string prefix = context_.tag() + ".Config.";
+
+    // Dynamically load the library and find the factory
+    std::string driverLibName = 
+        orcaice::getPropertyWithDefault( prop, prefix+"DriverLib", "libOrcaInsGpsFake.so" );
+    context_.tracer().debug( "HwThread: Loading driver library "+driverLibName, 4 );
+    // The factory which creates the driver
+    std::auto_ptr<hydrointerfaces::InsGpsFactory> driverFactory;
+    try {
+        driverLib_.reset( new hydrodll::DynamicallyLoadedLibrary(driverLibName) );
+        driverFactory.reset( 
+            hydrodll::dynamicallyLoadClass<hydrointerfaces::InsGpsFactory,DriverFactoryMakerFunc>
+            ( *driverLib_, "createDriverFactory" ) );
+    }
+    catch(hydrodll::DynamicLoadException &e){
+        // unrecoverable error
+        context_.tracer().error( e.what() );
+        context_.shutdown();
+        throw;
+    }
+
+    // create the driver
+    while(!isStopping()){
+        std::stringstream exceptionSS;
+        try {
+            context_.tracer().info( "HwThread: Creating driver..." );
+            driver_.reset( 0 ); // if this is a reset, we have to destroy the old driver first
+            driver_.reset( driverFactory->createDriver( config_, context_.toHydroContext() ) );
+            break;
+        }
+        catch ( ... ) {
+            orcaice::catchExceptionsWithStatusAndSleep( "initialising hardware driver", subStatus() );
+        }
+    }
+
+    subStatus().setMaxHeartbeatInterval( 1.0 );
 }
 
 OrcaInsEvent::OrcaInsEvent(const hydrointerfaces::InsGps::InsData &hydroIns)

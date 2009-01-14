@@ -91,6 +91,94 @@ MainThread::MainThread( const orcaice::Context &context ) :
 }
 
 void 
+MainThread::initialise()
+{
+    subStatus().setMaxHeartbeatInterval( 10.0 );
+
+    // These functions catch their exceptions.
+    activate( context_, this, subsysName() );
+
+    connectToLaser();
+    getLaserDescription();
+    initDriver();
+    initPolarFeatureInterface();
+}
+
+void 
+MainThread::work()
+{
+    subStatus().setMaxHeartbeatInterval( 3.0 );
+
+    // Temporaries for use in loop
+    orca::PolarFeature2dData    featureData;
+    orca::LaserScanner2dDataPtr laserData;
+    orca::RangeScanner2dDataPtr rangeData;
+    std::vector<hydrofeatureobs::FeatureObs*> hydroFeatures;
+
+    // Loop forever till we get shut down.
+    while ( !isStopping() )
+    {
+        // this try makes this component robust to exceptions
+        try
+        {                
+            //
+            // block on arrival of laser data
+            //
+            const int timeoutMs = 1000;
+            int ret = laserConsumer_->store().getNext( rangeData, timeoutMs );
+            if ( ret != 0 ) {
+                if ( isStopping() || context_.isDeactivating() ) {
+                    throw orcaice::ComponentDeactivatingException( ERROR_INFO, "Failed to get inputs because the component is deactivating" );
+                }
+                // alexm: not calling it a fault
+//                 stringstream ss;
+//                 ss << "Timed out (" << timeoutMs << "ms) waiting for laser data.  Reconnecting.";
+//                 subStatus().fault( ss.str() );
+                connectToLaser();
+                continue;
+            }
+
+            // Assume that what we're really getting is laser data
+            laserData = orca::LaserScanner2dDataPtr::dynamicCast( rangeData );
+            
+            if ( (int)(laserData->ranges.size()) != laserDescr_.numberOfSamples )
+            {
+                stringstream ss;
+                ss << "Got laser scan: expected " << laserDescr_.numberOfSamples
+                    << " returns, got " << laserData->ranges.size();
+                subStatus().warning( ss.str() );
+                continue;
+            }
+
+            //
+            // execute algorithm to compute features
+            //
+            hydroFeatures = driver_->extractFeatures( laserData->ranges, laserData->intensities );
+
+            // Convert format
+            featureData.features.clear();
+            for ( size_t i=0; i < hydroFeatures.size(); i++ )
+            {
+                featureData.features.push_back( convert( *hydroFeatures[i] ) );
+                delete hydroFeatures[i];
+            }
+
+            // features have the same time stamp as the raw scan
+            featureData.timeStamp = laserData->timeStamp;
+
+            // Tell the world
+            featureInterface_->localSetAndSend( featureData );
+
+            subStatus().ok();
+        } // try
+        catch ( ... ) 
+        {
+            orcaice::catchMainLoopExceptions( subStatus() );
+        }
+    } // while
+}
+
+void 
 MainThread::initDriver()
 {
     subStatus().setMaxHeartbeatInterval( 10.0 );
@@ -190,90 +278,4 @@ MainThread::initPolarFeatureInterface()
 
     // init
     featureInterface_->initInterface( this, subsysName() );
-}
-
-void 
-MainThread::walk()
-{
-    subStatus().initialising();
-    subStatus().setMaxHeartbeatInterval( 10.0 );
-
-    // These functions catch their exceptions.
-    activate( context_, this, subsysName() );
-
-    connectToLaser();
-    getLaserDescription();
-    initDriver();
-    initPolarFeatureInterface();
-
-    // Temporaries for use in loop
-    orca::PolarFeature2dData    featureData;
-    orca::LaserScanner2dDataPtr laserData;
-    orca::RangeScanner2dDataPtr rangeData;
-    std::vector<hydrofeatureobs::FeatureObs*> hydroFeatures;
-
-    subStatus().working();
-    subStatus().setMaxHeartbeatInterval( 3.0 );
-
-    // Loop forever till we get shut down.
-    while ( !isStopping() )
-    {
-        // this try makes this component robust to exceptions
-        try
-        {                
-            //
-            // block on arrival of laser data
-            //
-            const int timeoutMs = 1000;
-            int ret = laserConsumer_->store().getNext( rangeData, timeoutMs );
-            if ( ret != 0 ) {
-                if ( isStopping() || context_.isDeactivating() ) {
-                    throw orcaice::ComponentDeactivatingException( ERROR_INFO, "Failed to get inputs because the component is deactivating" );
-                }
-                // alexm: not calling it a fault
-//                 stringstream ss;
-//                 ss << "Timed out (" << timeoutMs << "ms) waiting for laser data.  Reconnecting.";
-//                 subStatus().fault( ss.str() );
-                connectToLaser();
-                continue;
-            }
-
-            // Assume that what we're really getting is laser data
-            laserData = orca::LaserScanner2dDataPtr::dynamicCast( rangeData );
-            
-            if ( (int)(laserData->ranges.size()) != laserDescr_.numberOfSamples )
-            {
-                stringstream ss;
-                ss << "Got laser scan: expected " << laserDescr_.numberOfSamples
-                    << " returns, got " << laserData->ranges.size();
-                subStatus().warning( ss.str() );
-                continue;
-            }
-
-            //
-            // execute algorithm to compute features
-            //
-            hydroFeatures = driver_->extractFeatures( laserData->ranges, laserData->intensities );
-
-            // Convert format
-            featureData.features.clear();
-            for ( size_t i=0; i < hydroFeatures.size(); i++ )
-            {
-                featureData.features.push_back( convert( *hydroFeatures[i] ) );
-                delete hydroFeatures[i];
-            }
-
-            // features have the same time stamp as the raw scan
-            featureData.timeStamp = laserData->timeStamp;
-
-            // Tell the world
-            featureInterface_->localSetAndSend( featureData );
-
-            subStatus().ok();
-        } // try
-        catch ( ... ) 
-        {
-            orcaice::catchMainLoopExceptions( subStatus() );
-        }
-    } // while
 }

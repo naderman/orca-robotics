@@ -86,6 +86,83 @@ MainThread::MainThread( const orcaice::Context &context ) :
 }
 
 void
+MainThread::initialise()
+{
+    subStatus().setMaxHeartbeatInterval( 10.0 );
+
+    //
+    // ENABLE NETWORK CONNECTIONS
+    //
+    // multi-try function
+    orcaice::activate( context_, this, subsysName() );
+
+    init();
+}
+
+void
+MainThread::work()
+{
+    const int timeoutMs = 1000;
+    subStatus().setMaxHeartbeatInterval( 2*timeoutMs );
+
+    orca::RangeScanner2dDataPtr rangeScan;
+    orca::Localise2dData localiseData;
+
+    //
+    // Main loop
+    //
+    while ( !isStopping() )
+    {
+        try
+        {
+            subStatus().heartbeat();
+            if ( rangeScannerConsumer_->buffer().getAndPopNext( rangeScan, timeoutMs ) != 0 ) {
+                context_.tracer().info("no range scan available: waiting ...");
+                continue;
+            }
+                
+            try
+            {
+                // This is a remote call! Should probably subscribe and use interpolating buffer
+                localiseData = localise2dPrx_->getData();
+            }
+            catch( orca::DataNotExistException e )
+            {
+                std::stringstream ss;
+                ss << "could not fetch pose because of: " << e.what;
+                context_.tracer().warning( ss.str() );
+                continue;
+            }
+    
+            // TODO: could be more accurate by interpolating here...
+            // TODO: add laser offset
+            hydronavutil::Pose pose;
+            bool isPoseClear = calcPose( localiseData,
+                                         pose,
+                                         laser2Og_->positionStdDevMax(),
+                                         laser2Og_->headingStdDevMax() );
+            
+            if ( isPoseClear )
+            {
+                orca::OgFusionData obs;
+                obs.observation = laser2Og_->process(pose,*rangeScan);
+                obs.timeStamp   = rangeScan->timeStamp;
+            
+                //send out OgFusionData
+                ogFusionPrx_->setData(obs);
+            }
+            
+        }   // end of try
+        catch ( ... ) 
+        {
+            orcaice::catchMainLoopExceptions( subStatus() );
+        }
+    } // end of main loop
+}
+
+///////////////////
+
+void
 MainThread::init()
 {
     Ice::PropertiesPtr prop = context_.properties();
@@ -148,77 +225,4 @@ MainThread::init()
     // Algorithm
     //    
     laser2Og_.reset( new Laser2Og(mapConfig,sensorConfig) );
-}
-
-void
-MainThread::walk()
-{
-    subStatus().initialising();
-    subStatus().setMaxHeartbeatInterval( 10.0 );
-
-    //
-    // ENABLE NETWORK CONNECTIONS
-    //
-    // multi-try function
-    orcaice::activate( context_, this, subsysName() );
-
-    init();
-
-	orca::RangeScanner2dDataPtr rangeScan;
-	orca::Localise2dData localiseData;
-
-    subStatus().working();
-    const int timeoutMs = 1000;
-    subStatus().setMaxHeartbeatInterval( 2*timeoutMs );
-
-    //
-    // Main loop
-    //
-    while ( !isStopping() )
-	{
-        try
-        {
-            subStatus().heartbeat();
-            if ( rangeScannerConsumer_->buffer().getAndPopNext( rangeScan, timeoutMs ) != 0 ) {
-                context_.tracer().info("no range scan available: waiting ...");
-                continue;
-            }
-                
-            try
-            {
-                // This is a remote call! Should probably subscribe and use interpolating buffer
-                localiseData = localise2dPrx_->getData();
-            }
-            catch( orca::DataNotExistException e )
-            {
-                std::stringstream ss;
-                ss << "could not fetch pose because of: " << e.what;
-                context_.tracer().warning( ss.str() );
-                continue;
-            }
-    
-            // TODO: could be more accurate by interpolating here...
-            // TODO: add laser offset
-            hydronavutil::Pose pose;
-            bool isPoseClear = calcPose( localiseData,
-                                         pose,
-                                         laser2Og_->positionStdDevMax(),
-                                         laser2Og_->headingStdDevMax() );
-            
-            if ( isPoseClear )
-            {
-                orca::OgFusionData obs;
-                obs.observation = laser2Og_->process(pose,*rangeScan);
-                obs.timeStamp   = rangeScan->timeStamp;
-            
-                //send out OgFusionData
-                ogFusionPrx_->setData(obs);
-            }
-            
-        }   // end of try
-        catch ( ... ) 
-        {
-            orcaice::catchMainLoopExceptions( subStatus() );
-        }
-    } // end of main loop
 }

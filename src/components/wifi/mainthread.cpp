@@ -29,6 +29,51 @@ MainThread::MainThread( const orcaice::Context& context ) :
 }
 
 void 
+MainThread::initialise()
+{   
+    subStatus().setMaxHeartbeatInterval( 10.0 );
+
+    // These functions catch their exceptions.
+    activate( context_, this, subsysName() );
+
+    initNetworkInterface();
+    initHardwareDriver();
+}
+
+void 
+MainThread::work()
+{   
+    subStatus().setMaxHeartbeatInterval( 3.0 );
+
+    while ( !isStopping() )
+    {
+        // this try makes this component robust to exceptions
+        try
+        {
+            orca::WifiData data;
+            driver_->read( data );
+            
+            context_.tracer().debug("Got new wifi data from driver. Sending it out now.", 3);
+            context_.tracer().debug(orcaobj::toString( data ), 5);
+                    
+            wifiInterface_->localSetAndSend( data );
+            
+            checkWifiSignal( data );
+            
+            IceUtil::ThreadControl::sleep(IceUtil::Time::milliSeconds(500));            
+        }
+        catch ( ... ) 
+        {
+            orcaice::catchMainLoopExceptions( subStatus() );
+        }
+            
+    } // end of big while loop
+    
+}
+
+///////////////
+
+void 
 MainThread::initNetworkInterface()
 {
     wifiInterface_ = new orcaifaceimpl::WifiImpl( "Wifi", context_ );
@@ -96,46 +141,5 @@ MainThread::checkWifiSignal( orca::WifiData &data )
             subStatus().ok();
         }
     }
-    
-}
-
-void 
-MainThread::walk()
-{   
-    subStatus().initialising();
-    subStatus().setMaxHeartbeatInterval( 10.0 );
-
-    // These functions catch their exceptions.
-    activate( context_, this, subsysName() );
-
-    initNetworkInterface();
-    initHardwareDriver();
-
-    subStatus().working();
-    subStatus().setMaxHeartbeatInterval( 3.0 );
-
-    while ( !isStopping() )
-    {
-        // this try makes this component robust to exceptions
-        try
-        {
-            orca::WifiData data;
-            driver_->read( data );
-            
-            context_.tracer().debug("Got new wifi data from driver. Sending it out now.", 3);
-            context_.tracer().debug(orcaobj::toString( data ), 5);
-                    
-            wifiInterface_->localSetAndSend( data );
-            
-            checkWifiSignal( data );
-            
-            IceUtil::ThreadControl::sleep(IceUtil::Time::milliSeconds(500));            
-        }
-        catch ( ... ) 
-        {
-            orcaice::catchMainLoopExceptions( subStatus() );
-        }
-            
-    } // end of big while loop
     
 }
