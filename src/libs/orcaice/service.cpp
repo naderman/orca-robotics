@@ -170,7 +170,7 @@ Service::start( const ::std::string        & name,
 
     bool isApp = false;
     component_->init( fqCompName, isApp, adapter_ );
-    initTracerInfo( component_->context().tag()+": Service initialized" );
+    initTracerInfo( component_->context().tag()+": Service initialized." );
 
     //
     // Start the component, catching all exceptions
@@ -180,7 +180,7 @@ Service::start( const ::std::string        & name,
     {
         component_->start();
         if ( communicator->getProperties()->getPropertyAsInt( "Orca.Component.PrintStarted" ) ) {
-            initTracerInfo( component_->context().tag()+": Component started" );
+            initTracerInfo( component_->context().tag()+": Component started." );
         }
     }
     catch ( const std::exception &e ) {
@@ -212,14 +212,14 @@ Service::stop()
         initTracerInfo( component_->context().tag()+": Stopping component..." );
         component_->stop();
         component_->finalise();
-        initTracerInfo( component_->context().tag()+": Component stopped" );
+        initTracerInfo( component_->context().tag()+": Component stopped." );
     }
 
     // Apparently, communicator is not shutdown at this point so nobody told our
     // adapter to deactivate. (This is different from stand-alone application).
     adapter_->deactivate();
     adapter_->waitForDeactivate();
-    initTracerInfo( component_->context().tag()+": Adapter deactivated" );
+    initTracerInfo( component_->context().tag()+": Adapter deactivated." );
 
     initTracerInfo( component_->context().tag()+": Service stopped." );
 }

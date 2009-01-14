@@ -82,8 +82,6 @@ TracerImpl::TracerImpl( const orcaice::Context& context ) :
 
     // create the object
     ptr_ = new TracerI( *this );
-
-    initTracerInfo( "Tracer created" );
 }
 
 TracerImpl::~TracerImpl()

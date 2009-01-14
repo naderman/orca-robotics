@@ -133,10 +133,10 @@ private:
     // need this pointer to call activate()
     Component*             component_; 
 
-    // these could be auto_ptr's
+    // Context does not take responsibility for these objects, i.e. does not destroy them
     orcaice::Home*         home_;
-    gbxutilacfr::Tracer*     tracer_;
-    gbxutilacfr::Status*     status_;
+    gbxutilacfr::Tracer*   tracer_;
+    gbxutilacfr::Status*   status_;
     hydroutil::History*    history_;
 };
 

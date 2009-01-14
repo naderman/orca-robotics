@@ -132,7 +132,7 @@ Application::run( int argc, char* argv[] )
 
     // create the one-and-only component adapter
     adapter_ = communicator()->createObjectAdapter(component_.context().tag());
-    initTracerInfo( component_.context().tag()+": Created object adapter" );
+    initTracerInfo( component_.context().tag()+": Created object adapter." );
 
     //
     // Give the component all the stuff it needs to initialize
@@ -144,7 +144,7 @@ Application::run( int argc, char* argv[] )
 
     bool isApp = true;
     component_.init( fqCompName, isApp, adapter_ );
-    initTracerInfo( component_.context().tag()+": Application initialized" );
+    initTracerInfo( component_.context().tag()+": Application initialized." );
 
     //
     // Start the component, catching all exceptions
@@ -157,7 +157,7 @@ Application::run( int argc, char* argv[] )
         // this is optional because after the comp is started we can't assume that dumping to cout 
         // will produce the desired result (e.g. if ncurses are used)
         if ( props->getPropertyAsInt( "Orca.Component.PrintStarted" ) ) {
-            initTracerInfo( component_.context().tag()+": Component started" );
+            initTracerInfo( component_.context().tag()+": Component started." );
         }
     }
     catch ( const std::exception &e ) {
@@ -187,7 +187,7 @@ Application::run( int argc, char* argv[] )
     stopComponent();
 
     adapter_->waitForDeactivate();
-    initTracerInfo( component_.context().tag()+": Adapter deactivated" );
+    initTracerInfo( component_.context().tag()+": Adapter deactivated." );
 
 //     initTracerInfo( component_.context().tag()+": Application done." );
     initTracerInfo( component_.context().tag()+": Orca out." );
@@ -206,11 +206,11 @@ Application::stopComponent()
 
     // first tell component to shutdown
 //     initTracerInfo( component_.context().tag()+": Received interrupt signal. Stopping component" );
-    initTracerInfo( component_.context().tag()+": Stopping component" );
+    initTracerInfo( component_.context().tag()+": Stopping component..." );
     component_.stop();
-//     initTracerInfo( component_.context().tag()+": Finalising component" );
+//     initTracerInfo( component_.context().tag()+": Finalising component..." );
     component_.finalise();
-    initTracerInfo( component_.context().tag()+": Component stopped" );
+    initTracerInfo( component_.context().tag()+": Component stopped." );
     isComponentStopped_ = true;
 }
 

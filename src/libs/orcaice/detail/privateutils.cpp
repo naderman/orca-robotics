@@ -16,6 +16,7 @@
 #include <orcaice/component.h>
 #include <orcaice/orcaice.h>
 #include <orcaice/icegridutils.h>
+#include <orca/properties.h>
 
 using namespace std;
 
@@ -31,7 +32,7 @@ namespace detail
 // -1 if the property was not set in the source set, the target was left untouched
 int
 transferProperty( const Ice::PropertiesPtr& fromProps, 
-                  Ice::PropertiesPtr&       toProps,
+                  const Ice::PropertiesPtr& toProps,
                   const string&             fromKey,
                   const string&             toKey,
                   bool                      force )
@@ -54,7 +55,7 @@ transferProperty( const Ice::PropertiesPtr& fromProps,
 //  0 if it was transferred successfully
 //  1 if the property already existed in the target set and it was left untouched
 int
-transferProperty( Ice::PropertiesPtr&       toProps,
+transferProperty( const Ice::PropertiesPtr& toProps,
                   const string&             fromKey,
                   const string&             fromValue,
                   const string&             toKey,
@@ -82,7 +83,7 @@ transferProperty( Ice::PropertiesPtr&       toProps,
 // behaves like transferProperty. if key is missing, sets the toValue to defaultValue.
 void
 transferPropertyWithDefault( const Ice::PropertiesPtr& fromProps, 
-                             Ice::PropertiesPtr&       toProps,
+                             const Ice::PropertiesPtr& toProps,
                              const string&             fromKey,
                              const string&             toKey,
                              const string&             defaultValue,
@@ -276,6 +277,83 @@ setComponentPropertiesFromFile( Ice::PropertiesPtr& props, const std::string& fi
 //     forceTransfer = false;
     // some properties may be duplicated under other keys
 //     transferProperty( props, props, "Ice.Default.Locator", compTag + ".Locator", forceTransfer );
+}
+
+// alexm: copied over from orcaobj/stringutils.h in order to cut dependency
+std::string toString( const orca::PropertiesData &obj )
+{
+    std::ostringstream s;
+    s << " PropertiesData ["<<obj.properties.size() << " elements]:"<<endl;
+    for ( map<string,string>::const_iterator it = obj.properties.begin();
+          it != obj.properties.end();
+          it++ )
+    {
+        s << "  " << it->first << "=" << it->second << endl;
+    }
+    return s.str();
+}
+
+void
+setComponentPropertiesFromServer( const Context& context )
+{
+    // If _anything_ goes wrong, throws Exception
+    try {
+        // Connect to the remote properties server
+        std::string propertyServerProxyString = orcaice::getPropertyWithDefault( context.properties(), 
+                                                                                 "Orca.PropertyServerProxyString",
+                                                                                 "" );
+        if ( propertyServerProxyString.empty() )
+            return;
+
+        // Get the properties from the remote properties server
+        orca::PropertiesPrx propertyPrx;
+        orcaice::connectToInterfaceWithString( context, propertyPrx, propertyServerProxyString );
+        orca::PropertiesData propData = propertyPrx->getData();
+        const std::map<std::string,std::string> &netProps = propData.properties;
+
+        stringstream ssProps;
+        ssProps << "setComponentPropertiesFromServer(): got network properties: " << toString(propData);
+        context.tracer().debug( ssProps.str(), 3 );
+
+        // Copy them into our properties, without over-writing anything that's already set
+        bool forceTransfer = false;
+
+        for ( std::map<string,string>::const_iterator it=netProps.begin(); it!=netProps.end(); ++it ) 
+        {
+            const string &fromKey   = it->first;
+            const string &fromValue = it->second;
+            const string &toKey     = it->first;
+            int ret = transferProperty( context.properties(), fromKey, fromValue, toKey, forceTransfer );
+            stringstream ss;
+            if ( ret == 0 )
+            {
+                ss << "setComponentPropertiesFromServer(): transferred property '"
+                   <<it->first<<"' -> '"<<it->second<<"'";
+            }
+            else
+            {
+                ss << "setComponentPropertiesFromServer(): retreived network property '"
+                   <<it->first<<"' but did not over-write existing value";
+            }
+            context.tracer().debug( ss.str() );
+        }
+    }
+    catch ( const std::exception &e ) {
+        std::stringstream ss; ss << "(while getting network config properties) caught exception: " << e.what();
+        throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
+    }
+    catch ( const std::string &e ) {
+        std::stringstream ss; ss << "(while getting network config properties) caught std::string: " << e;
+        throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
+    }
+    catch ( const char* &e ) {
+        std::stringstream ss; ss << "(while getting network config properties) caught char*: " << e;
+        throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
+    }
+    catch ( ... ) {
+        std::stringstream ss; ss << "(while getting network config properties) caught unknown exception.";
+        throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
+    }
 }
 
 void

@@ -57,8 +57,6 @@ StatusImpl::StatusImpl( const orcaice::Context& context ) :
 
     // create the object
     ptr_ = new StatusI( *this );
-
-    initTracerInfo( context_, "Status created" );
 }
 
 StatusImpl::~StatusImpl()

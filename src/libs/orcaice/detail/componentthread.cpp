@@ -86,10 +86,10 @@ ComponentThread::tryRegisterHome()
     // previous method: adding Home to the component adapter
 //     Ice::ObjectPrx homePrx = context_.adapter()->createProxy( homeIdentity );
 
-    // EXPERIMENTAL! adding Home as a facet to the Admin interface.
+    // new method: adding Home as a facet to the Admin interface.
     Ice::ObjectPrx adminPrx = context_.communicator()->getAdmin();
     assert( adminPrx && "Null admin proxy when registering home" );
-    cout<<"DEBUG: admin proxy: "<<adminPrx->ice_toString()<<endl;
+//     cout<<"DEBUG: admin proxy: "<<adminPrx->ice_toString()<<endl;
 
     // change generic proxy to the Home facet.
     // (strictly speaking, this is not necessary: we can always change the facet later. but it makes a bit clearer

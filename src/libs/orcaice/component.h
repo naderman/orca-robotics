@@ -186,9 +186,8 @@ private:
     // what the actual tag is.
     void setTag( const std::string& t ) { context_.tag_ = t; };
 
-    // initialize component services
-    hydroutil::History* initHistory();
-    void getNetworkProperties();
+    // connect to central server to get network properties
+//     void getNetworkProperties();
 
     // Save init flags (for the period between the constructor and init())
     ComponentInterfaceFlag interfaceFlag_;
@@ -196,6 +195,7 @@ private:
     std::auto_ptr<detail::HomeImpl> home_;
     std::auto_ptr<detail::StatusImpl> status_;
     std::auto_ptr<detail::TracerImpl> tracer_;
+    std::auto_ptr<hydroutil::History> history_;
 
     // This thread allows us to do house-keeping stuff and manage Status.
     gbxiceutilacfr::ThreadPtr componentThread_;

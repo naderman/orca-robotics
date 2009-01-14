@@ -17,6 +17,7 @@
 
 #include <orca/common.h>
 #include <orca/ocm.h>
+#include <orcaice/context.h>
 
 //  This file contains only internal functions used inside libOrcaIce
 //  Don't make Doxygen tags so these functions are not included in the public documentation.
@@ -34,7 +35,7 @@ namespace detail
     // -1 if the property was not set in the source set, the target was left untouched
     int 
     transferProperty( const Ice::PropertiesPtr &fromProperties, 
-                      Ice::PropertiesPtr       &toProperties,
+                      const Ice::PropertiesPtr &toProperties,
                       const std::string        &fromKey,
                       const std::string        &toKey,
                       bool                      force );
@@ -44,7 +45,7 @@ namespace detail
     //  0 if it was transferred successfully
     //  1 if the property already existed in the target set and it was left untouched
     int
-    transferProperty( Ice::PropertiesPtr& toProperties,
+    transferProperty( const Ice::PropertiesPtr& toProperties,
                       const std::string&  fromKey,
                       const std::string&  fromValue,
                       const std::string&  toKey,
@@ -53,7 +54,7 @@ namespace detail
     // Internal helper function.
     // behaves like transferProperty. if key is missing, sets the toValue to defaultValue.
     void transferPropertyWithDefault( const Ice::PropertiesPtr &fromProperties,
-                                      Ice::PropertiesPtr       &toProperties,
+                                      const Ice::PropertiesPtr &toProperties,
                                       const std::string        &fromKey,
                                       const std::string        &toKey,
                                       const std::string        &defaultValue,
@@ -66,6 +67,10 @@ namespace detail
 
     // throws gbxutilacfr::Exception if can't load the file
     void setComponentPropertiesFromFile( Ice::PropertiesPtr& properties, const std::string& filename );
+
+    // Appends network properties to those currently held by Context.
+    // throws gbxutilacfr::Exception if anything goes wrong (in particular, failes to connect to the property server)
+    void setComponentPropertiesFromServer( const Context& context );
 
     /*
      *   - Sets defaults for component and platform name properties.

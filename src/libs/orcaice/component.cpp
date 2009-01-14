@@ -10,7 +10,7 @@
  
 #include <string>
 #include <orca/common.h>
-#include <orca/properties.h>
+// #include <orca/properties.h>
 #include <orcaice/orcaice.h>
 #include <hydroiceutil/localhistory.h>
 
@@ -28,23 +28,23 @@ using namespace std;
 
 namespace orcaice {
 
-namespace {
-
-// alexm: copied over from orcaobj/stringutils.h in order to cut dependency
-std::string toString( const orca::PropertiesData &obj )
-{
-    std::ostringstream s;
-    s << " PropertiesData ["<<obj.properties.size() << " elements]:"<<endl;
-    for ( map<string,string>::const_iterator it = obj.properties.begin();
-          it != obj.properties.end();
-          it++ )
-    {
-        s << "  " << it->first << "=" << it->second << endl;
-    }
-    return s.str();
-}
-
-}
+// namespace {
+// 
+// // alexm: copied over from orcaobj/stringutils.h in order to cut dependency
+// std::string toString( const orca::PropertiesData &obj )
+// {
+//     std::ostringstream s;
+//     s << " PropertiesData ["<<obj.properties.size() << " elements]:"<<endl;
+//     for ( map<string,string>::const_iterator it = obj.properties.begin();
+//           it != obj.properties.end();
+//           it++ )
+//     {
+//         s << "  " << it->first << "=" << it->second << endl;
+//     }
+//     return s.str();
+// }
+// 
+// }
 
 //////////////////////////////
 
@@ -99,21 +99,20 @@ Component::init( const orca::FQComponentName& name,
     // Must be careful about the order in which they are created.
     // After all of them are created, we'll have to give them the updated context.
     //
-    {
-        // must be created first. does not rely on other services but needs the component name.
-        tracer_.reset( new detail::TracerImpl( context_ ) );
-        context_.tracer_ = (gbxutilacfr::Tracer*)tracer_.get();
-    }
-    {
-        // must created after tracer. needs tracer and component name.
-        status_.reset( new detail::StatusImpl( context_ ) );
-        context_.status_ = (gbxutilacfr::Status*)status_.get();
-    }
-    {
-        // can be created last needs component name.
-        home_.reset( new detail::HomeImpl( context_ ) );
-        context_.home_ = (orcaice::Home*)home_.get();
-    }
+    // must be created first. does not rely on other services but needs the component name.
+    tracer_.reset( new detail::TracerImpl( context_ ) );
+    context_.tracer_ = (gbxutilacfr::Tracer*)tracer_.get();
+    initTracerInfo( context_.tag() + ": Component service Tracer created." );
+
+    // must created after tracer. needs tracer and component name.
+    status_.reset( new detail::StatusImpl( context_ ) );
+    context_.status_ = (gbxutilacfr::Status*)status_.get();
+    initTracerInfo( context_.tag() + ": Component service Status created." );
+
+    // can be created last needs component name.
+    home_.reset( new detail::HomeImpl( context_ ) );
+    context_.home_ = (orcaice::Home*)home_.get();
+    initTracerInfo( context_.tag() + ": Component service Home created." );
 
     // now all services are in the context, update it.
     tracer_->updateContext( context_ );
@@ -124,19 +123,39 @@ Component::init( const orca::FQComponentName& name,
     // Initialize Tracer first so that it can be used as soon as possible.
     // (services need the context the 2nd time because now it's fully populated -- with them)
     //
-    if ( props->getPropertyAsInt( "Orca.Component.EnableTracer" ) )
+    if ( props->getPropertyAsInt( "Orca.Component.EnableTracer" ) ) {
         tracer_->initInterface();
+        initTracerInfo( context_.tag() + ": Tracer interface initialized." );
+    }
 
-    if ( props->getPropertyAsInt( "Orca.Component.EnableStatus" ) )
+    if ( props->getPropertyAsInt( "Orca.Component.EnableStatus" ) ) {
         status_->initInterface();
+        initTracerInfo( context_.tag() + ": Status interface initialized." );
+    }
         
-    if ( props->getPropertyAsInt( "Orca.Component.EnableHome" ) )
+    if ( props->getPropertyAsInt( "Orca.Component.EnableHome" ) ) {
         home_->initInterface();
+        initTracerInfo( context_.tag() + ": Home interface initialized." );
+    }
 
-    getNetworkProperties();
+    //
+    // Get config properties from a central server
+    //
+    detail::setComponentPropertiesFromServer( context_ );
+//     getNetworkProperties();
 
-    context_.history_= initHistory();
+    // the last component service History, create after all properties were received
+    hydroutil::Properties historyProps( context_.properties()->getPropertiesForPrefix("Orca.History."),"Orca.History.");
+    // If DefaultFilename is not specified, add one based on our tag name (i.e. component name)
+    if ( !historyProps.isDefined( "DefaultFilename" ) )
+        historyProps.setProperty( "DefaultFilename", hydroutil::toLowerCase( context_.tag()+"-history.txt" ) );
+    history_.reset( new hydroiceutil::LocalHistory( historyProps ) );
+    context_.history_ = history_.get();
+    initTracerInfo( context_.tag() + ": Component service History created." );
 
+    //
+    // create infrastructure thead
+    //
     componentThread_ = new ComponentThread( context_ );
     try {
         componentThread_->start();
@@ -146,6 +165,7 @@ Component::init( const orca::FQComponentName& name,
         orcaice::catchExceptions( context_.tracer(), "starting component utility thread" );
         context_.shutdown();
     }
+    initTracerInfo( context_.tag() + ": Component infrastructure thread created." );
 };
 
 void
@@ -159,141 +179,77 @@ Component::finalise()
     }
 }
 
-// gbxutilacfr::Tracer*
-// Component::initTracer()
+// void
+// Component::getNetworkProperties()
 // {
-//     bool enableInterface = context_.properties()->getPropertyAsInt( "Orca.Component.EnableTracer" );
+//     // If _anything_ goes wrong, print an error message and throw exception
+//     try {
+//         // Connect to the remote properties server
+//         std::string propertyServerProxyString = orcaice::getPropertyWithDefault( context_.properties(), 
+//                                                                                  "Orca.PropertyServerProxyString",
+//                                                                                  "" );
+//         if ( propertyServerProxyString.empty() )
+//             return;
 // 
-//     if ( !enableInterface ) 
-//     {
-//         orcaice::initTracerInfo( context_.tag()+": Initialized local trace handler.");
-//         return new hydroiceutil::LocalTracer( 
-//                 hydroutil::Properties( context_.properties()->getPropertiesForPrefix("Orca.Tracer.")),
-//                 orcaice::toString(context_.name()) );
-//     }
-//         
-//     // this is a bit tricky. we need
-//     // 1. a smart pointer which derives from Object (or ObjectPtr itself) to add to adapter
-//     // 2. a smart pointer which derives from Tracer to save in context
-//     // Ideally we'd have something like StatusTracerPtr which does derive from both.
-//     // but the smart pointer stuff is then included twice and reference counters get confused.
-//     // So first we use the pointer to gbxutilacfr::StatusTracerI, then change to Ice::ObjectPtr and Tracer*.
-//     orcaice::detail::TracerI* pobj = new orcaice::detail::TracerI( context_ );
-//     Ice::ObjectPtr obj = pobj;
-//     //TracerPtr trac = pobj;
-//     // have to revert to using plain pointers. Otherwise, we get segfault on shutdown when
-//     // trac tries to delete the object which already doesn't exist. Something wrong with ref counters.
-//     gbxutilacfr::Tracer* trac = (gbxutilacfr::Tracer*)pobj;
-//     
-//     //
-//     // add this object to the adapter and name it 'tracer'
-//     // 
-//     try
-//     {
-//         context_.adapter()->add( obj, context_.communicator()->stringToIdentity("tracer") );
-//     }
-//     catch( const Ice::ObjectAdapterDeactivatedException &e )
-//     {
-//         std::stringstream ss;
-//         ss << "orcaice::Component: Failed to add tracer because the adapter is deactivated: " << e;
-//         context_.tracer().warning( ss.str() );
-//         throw orcaice::ComponentDeactivatingException( ERROR_INFO, ss.str() );
-//     }
+//         // Get the properties from the remote properties server
+//         orca::PropertiesPrx propertyPrx;
+//         orcaice::connectToInterfaceWithString( context(), propertyPrx, propertyServerProxyString );
+//         orca::PropertiesData propData = propertyPrx->getData();
+//         const std::map<std::string,std::string> &netProps = propData.properties;
 // 
-//     // a bit of a hack: keep this smart pointer so it's not destroyed with the adapter
-//     tracerObj_ = obj;
-//     
-//     orcaice::initTracerInfo( context_.tag()+": Initialized trace handler.");
-//     return trac;
+//         stringstream ssProps;
+//         ssProps << "Component::getNetworkProperties(): got network properties: " << toString(propData);
+//         context_.tracer().debug( ssProps.str(), 3 );
+// 
+//         // Copy them into our properties, without over-writing anything that's already set
+//         for ( std::map<string,string>::const_iterator it=netProps.begin(); it!=netProps.end(); ++it ) 
+//         {
+//             const bool forceTransfer = false;
+//             const string &fromKey   = it->first;
+//             const string &fromValue = it->second;
+//             const string &toKey     = it->first;
+// //            detail::transferProperty( context_.properties(), fromKey, fromValue, toKey, forceTransfer );
+//             Ice::PropertiesPtr prop = context_.properties();
+//             int ret = detail::transferProperty( prop, fromKey, fromValue, toKey, forceTransfer );
+//             stringstream ss;
+//             if ( ret == 0 )
+//             {
+//                 ss << "orcaice::Component::getNetworkProperties(): transferred proeprty '"
+//                    <<it->first<<"' -> '"<<it->second<<"'";
+//             }
+//             else
+//             {
+//                 ss << "orcaice::Component::getNetworkProperties(): retreived network property '"
+//                    <<it->first<<"' but did not over-write existing value";
+//             }
+//             context_.tracer().debug( ss.str() );
+//         }
+//     }
+//     catch ( const std::exception &e )
+//     {
+//         std::stringstream ss; ss << "(while getting network config properties) caught exception: " << e.what();
+//         context_.tracer().error( ss.str() );
+//         throw;
+//     }
+//     catch ( const std::string &e )
+//     {
+//         std::stringstream ss; ss << "(while getting network config properties) caught std::string: " << e;
+//         context_.tracer().error( ss.str() );
+//         throw;
+//     }
+//     catch ( const char* &e )
+//     {
+//         std::stringstream ss; ss << "(while getting network config properties) caught char*: " << e;
+//         context_.tracer().error( ss.str() );
+//         throw;
+//     }
+//     catch ( ... )
+//     {
+//         std::stringstream ss; ss << "(while getting network config properties) caught unknown exception.";
+//         context_.tracer().error( ss.str() );
+//         throw;
+//     }
 // }
-
-hydroutil::History*
-Component::initHistory()
-{
-    hydroutil::Properties props( context_.properties()->getPropertiesForPrefix("Orca.History."),"Orca.History.");
-
-    // If DefaultFilename is not specified, add one based on our tag name (i.e. component name)
-    if ( !props.isDefined( "DefaultFilename" ) )
-        props.setProperty( "DefaultFilename", hydroutil::toLowerCase( context_.tag()+"-history.txt" ) );
-
-    hydroutil::History* history = new hydroiceutil::LocalHistory( props );
-
-    orcaice::initTracerInfo( context_.tag()+": Initialized local history handler");
-
-    return history;
-}
-
-void
-Component::getNetworkProperties()
-{
-    // If _anything_ goes wrong, print an error message and throw exception
-    try {
-        // Connect to the remote properties server
-        std::string propertyServerProxyString = orcaice::getPropertyWithDefault( context_.properties(), 
-                                                                                 "Orca.PropertyServerProxyString",
-                                                                                 "" );
-        if ( propertyServerProxyString.empty() )
-            return;
-
-        // Get the properties from the remote properties server
-        orca::PropertiesPrx propertyPrx;
-        orcaice::connectToInterfaceWithString( context(), propertyPrx, propertyServerProxyString );
-        orca::PropertiesData propData = propertyPrx->getData();
-        const std::map<std::string,std::string> &netProps = propData.properties;
-
-        stringstream ssProps;
-        ssProps << "Component::getNetworkProperties(): got network properties: " << toString(propData);
-        context_.tracer().debug( ssProps.str(), 3 );
-
-        // Copy them into our properties, without over-writing anything that's already set
-        for ( std::map<string,string>::const_iterator it=netProps.begin(); it!=netProps.end(); ++it ) 
-        {
-            const bool forceTransfer = false;
-            const string &fromKey   = it->first;
-            const string &fromValue = it->second;
-            const string &toKey     = it->first;
-//            detail::transferProperty( context_.properties(), fromKey, fromValue, toKey, forceTransfer );
-            Ice::PropertiesPtr prop = context_.properties();
-            int ret = detail::transferProperty( prop, fromKey, fromValue, toKey, forceTransfer );
-            stringstream ss;
-            if ( ret == 0 )
-            {
-                ss << "orcaice::Component::getNetworkProperties(): transferred proeprty '"
-                   <<it->first<<"' -> '"<<it->second<<"'";
-            }
-            else
-            {
-                ss << "orcaice::Component::getNetworkProperties(): retreived network property '"
-                   <<it->first<<"' but did not over-write existing value";
-            }
-            context_.tracer().debug( ss.str() );
-        }
-    }
-    catch ( const std::exception &e )
-    {
-        std::stringstream ss; ss << "orcaice::Component::getNetworkProperties(): caught exception: " << e.what();
-        context_.tracer().error( ss.str() );
-        throw;
-    }
-    catch ( const std::string &e )
-    {
-        std::stringstream ss; ss << "orcaice::Component::getNetworkProperties(): caught std::string: " << e;
-        context_.tracer().error( ss.str() );
-        throw;
-    }
-    catch ( const char* &e )
-    {
-        std::stringstream ss; ss << "orcaice::Component::getNetworkProperties(): caught char*: " << e;
-        context_.tracer().error( ss.str() );
-        throw;
-    }
-    catch ( ... )
-    {
-        std::stringstream ss; ss << "orcaice::Component::getNetworkProperties(): caught unknown exception.";
-        context_.tracer().error( ss.str() );
-        throw;
-    }
-}
 
 void 
 Component::activate()
