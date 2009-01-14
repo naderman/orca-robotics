@@ -40,7 +40,6 @@ connectToTopicWithString( const Context     & context,
                           gbxiceutilacfr::Thread*  thread, const std::string& subsysName="", 
                           int retryInterval=2, int retryNumber=-1 )
 {
-    context.tracer().debug( "orcaice::connectToTopicWithString(thread) topic="+topicName, 10 );
     IceStorm::TopicPrx topicPrx;
 
     int count = 0;
@@ -55,7 +54,8 @@ connectToTopicWithString( const Context     & context,
             ss << "Failed to connect to topic with string "<<topicName<<". "
                 <<"Will retry in "<<retryInterval<<"s."
                 << e.what();
-            context.tracer().warning( ss.str() );
+            bool localOnly = true;
+            context.tracer().warning( ss.str(), 1, localOnly );
         }
         ++count;
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(retryInterval));
@@ -86,7 +86,6 @@ connectToTopicWithTag( const Context      & context,
                        gbxiceutilacfr::Thread*  thread, const std::string& subsysName="", 
                        int retryInterval=2, int retryNumber=-1 )
 {
-    context.tracer().debug( "orcaice::connectToTopicWithTag(thread) tag="+interfaceTag, 10 );
     IceStorm::TopicPrx topicPrx;
 
     int count = 0;
@@ -101,7 +100,8 @@ connectToTopicWithTag( const Context      & context,
             ss << "Failed to connect to topic with tag "<<interfaceTag<<". "
                 <<"Will retry in "<<retryInterval<<"s."
                 << e.what();
-            context.tracer().warning( ss.str() );
+            bool localOnly = true;
+            context.tracer().warning( ss.str(), 1, localOnly );
         }
         ++count;
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(retryInterval));

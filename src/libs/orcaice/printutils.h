@@ -27,9 +27,9 @@ namespace orcaice
     void initTracerError( const std::string & message );
 
     // Will try to use the Tracer, will print to screen if fails
-    void initTracerInfo( const orcaice::Context & context, const std::string & message, const int level=1 );
-    void initTracerWarning( const orcaice::Context & context, const std::string & message, const int level=1 );
-    void initTracerError( const orcaice::Context & context, const std::string & message, const int level=1 );
+    void initTracerInfo( const orcaice::Context & context, const std::string & message, const int level=1, bool localOnly=false );
+    void initTracerWarning( const orcaice::Context & context, const std::string & message, const int level=1, bool localOnly=false );
+    void initTracerError( const orcaice::Context & context, const std::string & message, const int level=1, bool localOnly=false );
 
 } // namespace
 

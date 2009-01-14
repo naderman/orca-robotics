@@ -68,7 +68,8 @@ createConsumerInterface( const Context  & context,
     {
         std::stringstream ss;
         ss << "orcaice::Component: Failed to create consumer interface because the adapter is destroyed : " << e;
-        context.tracer().warning( ss.str() );
+        bool localOnly = true;
+        context.tracer().warning( ss.str(), 1, localOnly );
         throw orcaice::ComponentDeactivatingException( ERROR_INFO, ss.str() );
     }
 }
@@ -183,22 +184,25 @@ connectToTopicWithString( const Context     & context,
     {
         // Give some feedback as to why this isn't working
         std::stringstream ss; ss<<"Error while connecting to IceStorm topic publisher '"<<topicName<<"': "<<e;
-        initTracerError( context, ss.str(), 2 );
-        initTracerInfo( context, "hint: Is IceStorm running?", 10 );
+        bool localOnly = true;
+        initTracerError( context, ss.str(), 2, localOnly );
+        initTracerInfo( context, "hint: Is IceStorm running?", 10, localOnly );
         throw orcaice::NetworkException( ERROR_INFO, ss.str() );
     }
     catch( const Ice::LocalException &e )
     {
         std::stringstream ss;
         ss<<"Error while connecting to IceStorm topic publisher '"<<topicName<<"': "<<e;
-        initTracerError( context, ss.str(), 2 );
+        bool localOnly = true;
+        initTracerError( context, ss.str(), 2, localOnly );
         throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
     }
     catch ( Ice::Exception &e )
     {
         // Give some feedback as to why this isn't working
         std::stringstream ss; ss<<"Error while connecting to IceStorm topic publisher '"<<topicName<<"': "<<e;
-        initTracerError( context, ss.str(), 2 );
+        bool localOnly = true;
+        initTracerError( context, ss.str(), 2, localOnly );
         throw orcaice::NetworkException( ERROR_INFO, ss.str() );
     }
 
@@ -219,24 +223,24 @@ namespace detail {
                             const std::string  &topicName )
     {
         try {
-            std::stringstream ss;
-            ss << "Re-connecting to IceStorm topic "<<topicName<<" ...";
-            context.tracer().info( ss.str() );
+            std::string msg = "Re-connecting to IceStorm topic "+topicName+" ...";
+            bool localOnly = true;
+            context.tracer().info( msg, 1, localOnly );
+
             topicPrx = orcaice::connectToTopicWithString<ConsumerPrxType>
                 ( context, consumerPrx, topicName );
 
-            ss.str("");
-            ss << "Re-connected to IceStorm topic "<<topicName<<" ...";
-            context.tracer().info( ss.str() );
+            msg = "Re-connected to IceStorm topic "+topicName;
+            context.tracer().info( msg );
 
             return true;
         }
         catch ( ... )
         {
             // ignore it
-            std::stringstream ss;
-            ss << "Re-connection to IceStorm topic "<<topicName<<" failed.";
-            context.tracer().info( ss.str() );
+            std::string msg = "Re-connection to IceStorm topic "+topicName+" failed.";
+            bool localOnly = true;
+            context.tracer().info( msg, 1, localOnly );
             return false;
         }
     }
@@ -281,7 +285,8 @@ void tryPushToIceStormWithReconnect( orcaice::Context   &context,
         // this is expected (our co-located IceStorm is obviously going down).
         std::stringstream ss;
         ss << "Push of data to topic "<<topicName<<" failed: " << e.what();
-        context.tracer().warning( ss.str() );
+        bool localOnly = true;
+        context.tracer().warning( ss.str(), 1, localOnly  );
 
         // If IceStorm just re-started for some reason though, we want to try to re-connect
         bool reconnected = detail::tryReconnectToIceStorm( context,
@@ -291,14 +296,15 @@ void tryPushToIceStormWithReconnect( orcaice::Context   &context,
         if ( reconnected )
         {
             try {
-                // try again to push that bit of info
+                // try again to push that last bit of info
                 publisherPrx->setData( data );
             }
             catch ( Ice::Exception &e )
             {
                 std::stringstream ss;
                 ss << "Re-push of data to topic "<<topicName<<" failed: " << e.what();
-                context.tracer().info( ss.str() );
+                bool localOnly = true;
+                context.tracer().warning( ss.str(), 1, localOnly  );
             }
         }
     }

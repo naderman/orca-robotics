@@ -35,70 +35,37 @@ void initTracerError( const std::string & message )
 }
 
 
-void initTracerInfo( const orcaice::Context & context, const std::string & message, const int level )
+void initTracerInfo( const orcaice::Context & context, const std::string & message, const int level, bool localOnly )
 {
     if ( &context.tracer() )  {
-        context.tracer().info( message, level );
+        context.tracer().info( message, level, localOnly );
     }
     else {
-        // it's ok, the tracer is not initialized yet
+        // the tracer is not initialized yet
         cout<<"orca: "<<message<<endl;
-    }
-/*
-    try
-    {
-        context.tracer().info( message, level );
-    }
-    catch ( const IceUtil::NullHandleException & e )
-    {
-        // it's ok, the tracer is not initialized yet
-        cout<<"orca: "<<message<<endl;
-    }
-*/    
+    }  
 }
 
-void initTracerWarning( const orcaice::Context & context, const std::string & message, const int level )
+void initTracerWarning( const orcaice::Context & context, const std::string & message, const int level, bool localOnly )
 {
     if ( &context.tracer() )  {
-        context.tracer().warning( message, level );
+        context.tracer().warning( message, level, localOnly );
     }
     else {
-        // it's ok, the tracer is not initialized yet
+        // the tracer is not initialized yet
         cout<<"warning: "<<message<<endl;
     }
-/*    
-    try
-    {
-        context.tracer().warning( message, level );
-    }
-    catch ( const IceUtil::NullHandleException & e )
-    {
-        // it's ok, the tracer is not initialized yet
-        cout<<"warning: "<<message<<endl;
-    }
-*/
 }
 
-void initTracerError( const orcaice::Context & context, const std::string & message, const int level )
+void initTracerError( const orcaice::Context & context, const std::string & message, const int level, bool localOnly )
 {
     if ( &context.tracer() )  {
-        context.tracer().error( message, level );
+        context.tracer().error( message, level, localOnly );
     }
     else {
-        // it's ok, the tracer is not initialized yet
+        // the tracer is not initialized yet
         cout<<"orca: error: "<<message<<endl;
     }
-/*
-    try
-    {
-        context.tracer().error( message, level );
-    }
-    catch ( const IceUtil::NullHandleException & e )
-    {
-        // it's ok, the tracer is not initialized yet
-        cout<<"orca: error: "<<message<<endl;
-    }
-*/
 }
 
 } // namespace
