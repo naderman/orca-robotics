@@ -37,6 +37,7 @@ private:
     orcaice::Context context_;
 
     // utility function: subscribes and returns individual publisher
+    // (the pointer may be empty if the subscriber is already subscribed)
     ConsumerProxyType internalSubscribe( const ConsumerProxyType& subscriber )
     {    
         if ( !topicPrx_ )
@@ -54,6 +55,7 @@ private:
             std::stringstream ss;
             ss <<"Request for subscribe but this proxy has already been subscribed, so I do nothing: "<< e.what();
             context_.tracer().debug( ss.str(), 2 );
+            // will return an empty poiinter!
         }
         catch ( const Ice::Exception& e ) {
             std::stringstream ss;
@@ -62,6 +64,7 @@ private:
             // throws exception back to the subscriber
             throw orca::SubscriptionFailedException( ss.str() );
         }
+        // this pointer may be empty
         return individualPublisher;
     }
 
@@ -131,21 +134,29 @@ public:
     {    
         ConsumerProxyType individualPublisher = internalSubscribe( subscriber );
     
-        // send all the information we have to the new subscriber (and to no one else)
-        try
+        // the individualPublisher may be NULL.
+        // this normally happens when the subscriber is already subscribed.
+        // one example when this happens routinely: when logplayer is paused the subscriber
+        // freaks out and tries to resubscribe but, as far as logplayer is concerned, it is
+        // already subscribed.
+        if ( individualPublisher ) 
         {
-            // this talks to IceStorm who will forward this data to this subscriber only.
-            individualPublisher->setData( initData );   
+            // send all the information we have to the new subscriber (and to no one else)
+            try
+            {
+                // this talks to IceStorm who will forward this data to this subscriber only.
+                individualPublisher->setData( initData );   
+            }
+            catch ( const Ice::Exception&  e ) {
+                std::stringstream ss;
+                ss <<"TopicHandler::subscribe: failed to send information to the new subscriber: "<< e.what();
+                // show this warning locally
+                context_.tracer().warning( ss.str() );
+                // throws exception back to the subscriber
+                throw orca::OrcaException( ss.str() );
+            }
+            context_.tracer().info( std::string("TopicHandler::subscribe(): sent status info to new subscriber: ")+individualPublisher->ice_toString() );
         }
-        catch ( const Ice::Exception&  e ) {
-            std::stringstream ss;
-            ss <<"TopicHandler::subscribe: failed to send information to the new subscriber: "<< e.what();
-            // show this warning locally
-            context_.tracer().warning( ss.str() );
-            // throws exception back to the subscriber
-            throw orca::OrcaException( ss.str() );
-        }
-        context_.tracer().info( std::string("TopicHandler::subscribe(): sent status info to new subscriber: ")+individualPublisher->ice_toString() );
 
         return topicPrx_;
     }

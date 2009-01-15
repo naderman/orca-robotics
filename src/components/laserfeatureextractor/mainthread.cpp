@@ -131,9 +131,10 @@ MainThread::work()
                     throw orcaice::ComponentDeactivatingException( ERROR_INFO, "Failed to get inputs because the component is deactivating" );
                 }
                 // alexm: not calling it a fault
-//                 stringstream ss;
-//                 ss << "Timed out (" << timeoutMs << "ms) waiting for laser data.  Reconnecting.";
+                stringstream ss;
+                ss << "Timed out (" << timeoutMs << "ms) waiting for laser data.  Reconnecting.";
 //                 subStatus().fault( ss.str() );
+                subStatus().warning( ss.str() );
                 connectToLaser();
                 continue;
             }

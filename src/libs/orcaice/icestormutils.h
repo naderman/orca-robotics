@@ -218,19 +218,15 @@ namespace detail {
     template<class ConsumerPrxType>
     bool
     tryReconnectToIceStorm( orcaice::Context   &context,
-                            ConsumerPrxType    &consumerPrx,
+                            ConsumerPrxType    &publisherPrx,
                             IceStorm::TopicPrx &topicPrx,
                             const std::string  &topicName )
     {
         try {
-            std::string msg = "Re-connecting to IceStorm topic "+topicName+" ...";
-            bool localOnly = true;
-            context.tracer().info( msg, 1, localOnly );
-
             topicPrx = orcaice::connectToTopicWithString<ConsumerPrxType>
-                ( context, consumerPrx, topicName );
+                ( context, publisherPrx, topicName );
 
-            msg = "Re-connected to IceStorm topic "+topicName;
+            std::string msg = "Re-connected to IceStorm topic "+topicName;
             context.tracer().info( msg );
 
             return true;
@@ -271,6 +267,17 @@ void tryPushToIceStormWithReconnect( orcaice::Context   &context,
         return;
     }
 
+    // check that we are connected to the publisher
+    if ( !publisherPrx ) {
+        bool reconnected = detail::tryReconnectToIceStorm( 
+                                context, publisherPrx, topicPrx, topicName );
+        bool localOnly = true;
+        if ( reconnected )
+            context.tracer().info( "(while pushing data to IceStorm) connected to publisher.", 1, localOnly  );
+        else
+            context.tracer().info( "(while pushing data to IceStorm) failed to connect to publisher.", 1, localOnly  );
+    }
+
     try {
         publisherPrx->setData( data );
     }
@@ -284,15 +291,13 @@ void tryPushToIceStormWithReconnect( orcaice::Context   &context,
         // If we're running in an IceBox and the IceBox is shutting down, 
         // this is expected (our co-located IceStorm is obviously going down).
         std::stringstream ss;
-        ss << "Push of data to topic "<<topicName<<" failed: " << e.what();
+        ss << "(while pushing data to topic "<<topicName<<") 1st attempt failed: " << e.what();
         bool localOnly = true;
         context.tracer().warning( ss.str(), 1, localOnly  );
 
         // If IceStorm just re-started for some reason though, we want to try to re-connect
-        bool reconnected = detail::tryReconnectToIceStorm( context,
-                                                            publisherPrx,
-                                                            topicPrx,
-                                                            topicName );
+        bool reconnected = detail::tryReconnectToIceStorm( 
+                                context, publisherPrx, topicPrx, topicName );
         if ( reconnected )
         {
             try {
@@ -302,7 +307,7 @@ void tryPushToIceStormWithReconnect( orcaice::Context   &context,
             catch ( Ice::Exception &e )
             {
                 std::stringstream ss;
-                ss << "Re-push of data to topic "<<topicName<<" failed: " << e.what();
+                ss << "(while pushing data to topic "<<topicName<<") 2nd attempt failed: " << e.what();
                 bool localOnly = true;
                 context.tracer().warning( ss.str(), 1, localOnly  );
             }
