@@ -179,6 +179,9 @@ MainThread::work()
     } // while
 }
 
+// NOTE: this function is documented more than usual.
+// Use it as a reference for understanding/writing components which
+// load Hydro drivers.
 void 
 MainThread::initDriver()
 {
@@ -187,14 +190,39 @@ MainThread::initDriver()
     Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag() + ".Config.";
 
+    //
     // Dynamically load the library and find the factory
+    //
+
+    // This just gets the name (or possibly the path) of the shared library
+    // (*.so) which will be loaded.
     std::string driverLibName = 
         orcaice::getPropertyWithDefault( prop, prefix+"DriverLib", "libHydroLaserFeatureExtractorCombined.so" );
     context_.tracer().debug( "MainThread: Loading driver library "+driverLibName, 4 );
+
     // The factory which creates the driver
+    // The auto-pointer to the "factory" which is just a class which has a
+    // a function createDriver() -- we'll use it a bit later.
+    // See http://en.wikipedia.org/wiki/Auto_ptr
     std::auto_ptr<hydrointerfaces::LaserFeatureExtractorFactory> driverFactory;
     try {
+        //
+        // this reset() function is a standard function of the auto-pointer.
+        // If we were using a normal "dumb" pointer like this:
+        //    hydrointerfaces::LaserFeatureExtractorFactory* driverFactory;
+        // the reset() function is equivalent to assignment of the dumb pointer:
+        //    driverFactory=new hydrodll::DynamicallyLoadedLibrary(driverLibName);
+        //
         driverLib_.reset( new hydrodll::DynamicallyLoadedLibrary(driverLibName) );
+
+        //
+        // now comes some magic...
+        // The templated function hydrodll::dynamicallyLoadClass() goes inside
+        // the code contained in the shared library driverLib_ and creates an
+        // instance of class returned by the C function createDriverFactory()
+        // This function is defined at the bottom of                
+        //   [HYDRO]/src/hydrodrivers/laserfeatureextractor/driver.h
+        //
         driverFactory.reset( 
             hydrodll::dynamicallyLoadClass<hydrointerfaces::LaserFeatureExtractorFactory,DriverFactoryMakerFunc>
             ( *driverLib_, "createDriverFactory" ) );
@@ -211,7 +239,16 @@ MainThread::initDriver()
     {
         try {
             context_.tracer().info( "MainThread: Creating driver..." );
+
+            //
+            // Because we are in a while loop, we can come here already with 
+            // a created driver. We reset the auto pointer to 0, so that the 
+            // previously created driver is destructed.
+            // (I think this resetting to zero is unnecessary, the following line should have
+            // the same effect.)
+            //
             driver_.reset(0);
+            // Create the driver calling the special function of the "factory".
             driver_.reset( driverFactory->createDriver( laserDescr_.maxRange,
                                                         laserDescr_.startAngle,
                                                         orcaobj::calcAngleIncrement( laserDescr_.fieldOfView, 
@@ -220,6 +257,10 @@ MainThread::initDriver()
             break;
         }
         catch ( ... ) {
+            //
+            // use the special orca wrapping function which catches all exceptions, 
+            // sleeps for 1 sec (default), and goes on to try again.
+            //
             orcaice::catchExceptionsWithStatusAndSleep( "initialising algorithm driver", subStatus() );
         }
     }
