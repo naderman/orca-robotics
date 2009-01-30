@@ -41,44 +41,11 @@ public:
                        orca::ImageData   &obj );
 
     
-    // from Orca object
-
-/*
-    virtual ::orca::CameraData getData(const ::Ice::Current& ) const;
-
-    virtual void subscribe(const ::orca::CameraConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
-
-    virtual void unsubscribe(const ::orca::CameraConsumerPrx&, const ::Ice::Current& = ::Ice::Current());
-
-    virtual void replayData( int index, bool isTest=false );
-*/
-
 private:
 
     #ifdef OPENCV_FOUND
         IplImage* cvImage_;
     #endif
-
-/*
-    
-    orca::CameraData data_;
-    
-    // binary file protocol specifics
-    void loadDataIce( int index );
-    void loadDataJpeg( int index );
-
-    // special case: custom function to replace ice_readCameraData
-    void orca_readCameraData( Ice::InputStreamPtr iceInputStreamPtr , int index);
-
-    // use opencv to convert to jpg
-
-    // this is a counter of instaces of this type, used for registered interface name
-    static int _counter;
-
-    // from Replayer
-    virtual void openLogFile();
-
-    */
 
 };
 

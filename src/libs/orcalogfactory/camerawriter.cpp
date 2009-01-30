@@ -65,7 +65,7 @@ CameraWriter::initJpegLogWriter(const orca::CameraDescriptionPtr &descr)
         numOfChannels=3;
     }
     else if ( (descr->format == "RAW8") || (descr->format == "MONO8")){
-        numOfChannels=3;
+        numOfChannels=1;
     }
     else{
         stringstream ss;
