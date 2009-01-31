@@ -44,6 +44,7 @@ Config.PlayerClient.Port.Default=6665
 Config.PlayerClient.Device.Default=0
 Config.PlayerClient.Driver.Comment=Valid values: { "sicklms200", "stage", "gazebo", "urglaser" }
 Config.PlayerClient.Driver.Default=sicklms200
+Config.PlayerClient.UsePlayerTimestamp.Default=0
 
 Config.HokuyoAist.Device.Default=/dev/ttyACM0
 Config.HokuyoAist.Baudrate.Comment=Valid Values: { 19200, 38400, 115200 }

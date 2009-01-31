@@ -99,27 +99,8 @@ Parameters describing vehicle (see orca::VehicleDescription for details)
   
 An example configuration file is installed into [ORCA-INSTALL-DIR]/share/orca/cfg/ directory.
 
-@par Dependancies
-
-None for the component. See driver sections below for individual driver dependencies.
-
-@section orca_robot2d_playerclient Player Client driver
-
-This driver wraps up a Player client which connects to Player's Position2d interface. As such it can be used as a quick-and-easy way to interact with virtually all robotic platforms supported by Player. Naturally, both real hardware and Stage simulator are supported. It requires a running Player server. The driver gets data from that server and converts it into Orca format.
-
-@par Dependancies
-
-Requires that Player/Stage v.>=2.0 are installed and running. As Player itself, this driver is Linux only. See our notes on installing Player in platform-dependent installation page, e.g. @ref orca_doc_installdebian_player.
-
-@par Extra configuration
-
-- @c Robot2d.Config.PlayerClient.Host (string)
-    - The host that Player (or Stage) is running on
-    - Default: "localhost"
-- @c Robot2d.Config.PlayerClient.Port (int)
-    - The port that PLayer (or Stage) is running on
-    - Constraints: >0
-    - Default: 6665
+    
+@see Individual drivers may have additional configuration parameters which are specified as Robot2d.Config.XXX. See driver documentation.
 
 @section internal Internal Structure
 

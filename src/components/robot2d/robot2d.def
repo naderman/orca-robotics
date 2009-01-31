@@ -35,3 +35,4 @@ Config.EnableMotion.Default=1
 # PlayerClient driver only
 Config.PlayerClient.Host.Default=localhost
 Config.PlayerClient.Port.Default=6665
+Config.PlayerClient.UsePlayerTimestamp.Default=0
