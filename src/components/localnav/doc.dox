@@ -42,6 +42,10 @@
     - Which local nav algorithm to use
     - Valid values: { "vfhdriver" }
     - Default: "vfhdriver"
+    
+- @c LocalNav.Config.TimestampsCheckEnabled (int)
+    - Whether to enable checking the difference between odometry, laser, and localiser timestamps
+    - Default: 1
 
 @section localnav_localnav Local Nav
 

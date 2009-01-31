@@ -57,6 +57,7 @@ MainThread::MainThread( const orcaice::Context &context )
     prefix += ".Config.";
 
     testMode_ = orcaice::getPropertyAsIntWithDefault( prop, prefix+"TestInSimulationMode", 0 );
+    timestampsCheckEnabled_ = orcaice::getPropertyAsIntWithDefault( prop, prefix+"TimestampsCheckEnabled", 1 );
 
     // Create our provided interface
     pathFollowerInterface_.reset( new PathFollowerInterface( *clock_, "PathFollower2d", context_ ) );
@@ -517,17 +518,20 @@ MainThread::getInputs( hydronavutil::Velocity &velocity,
         locConsumer_->store().get( orcaLocaliseData_ );
         odomConsumer_->store().get( orcaOdomData_ );
 
-        // Check timestamps are in sync
-        const double TS_PROXIMITY_THRESHOLD = 1.0; // seconds
-        if ( areTimestampsDodgy( orcaRangeData_, orcaLocaliseData_, orcaOdomData_, TS_PROXIMITY_THRESHOLD ) )
+        if (timestampsCheckEnabled_)
         {
-            stringstream ss;
-            ss << "Timestamps are more than "<<TS_PROXIMITY_THRESHOLD<<"sec apart: " << endl
-               << "\t rangeData:    " << orcaobj::toString(orcaRangeData_->timeStamp) << endl
-               << "\t localiseData: " << orcaobj::toString(orcaLocaliseData_.timeStamp) << endl
-               << "\t odomData:     " << orcaobj::toString(orcaOdomData_.timeStamp) << endl
-               << "Maybe something is wrong: Stopping.";
-            throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
+            // Check timestamps are in sync
+            const double TS_PROXIMITY_THRESHOLD = 1.0; // seconds
+            if ( areTimestampsDodgy( orcaRangeData_, orcaLocaliseData_, orcaOdomData_, TS_PROXIMITY_THRESHOLD ) )
+            {
+                stringstream ss;
+                ss << "Timestamps are more than "<<TS_PROXIMITY_THRESHOLD<<"sec apart: " << endl
+                << "\t rangeData:    " << orcaobj::toString(orcaRangeData_->timeStamp) << endl
+                << "\t localiseData: " << orcaobj::toString(orcaLocaliseData_.timeStamp) << endl
+                << "\t odomData:     " << orcaobj::toString(orcaOdomData_.timeStamp) << endl
+                << "Maybe something is wrong: Stopping.";
+                throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
+            }
         }
 
         //

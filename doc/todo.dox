@@ -124,6 +124,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @par Updated components
 
+- LocalNav
+  - checking timestamps discrepancies is optional now (tobi)
+
 - all components
   - all components which subscribe to remote interfaces now attempt to unsubscribe before stopping. (alexm)
   - all components catch exeptions in a consise and standardised manner using new orcaice:: functions. (alexm)

@@ -115,6 +115,7 @@ private:
     std::auto_ptr<AlgorithmEvaluator> algorithmEvaluator_;
 
     orcaice::Context context_;
+    bool timestampsCheckEnabled_;
 };
 
 }
