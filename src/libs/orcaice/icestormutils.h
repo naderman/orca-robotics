@@ -214,9 +214,12 @@ connectToTopicWithString( const Context     & context,
 namespace detail {
 
     // Catches all exceptions.
-    // Returns: true if re-connected OK.
+    // Returns: 
+    // 0  : if re-connected
+    // 1  : if failed to re-connect
+    // -1 : if got CommunicatorDestroyedException
     template<class ConsumerPrxType>
-    bool
+    int
     tryReconnectToIceStorm( orcaice::Context   &context,
                             ConsumerPrxType    &publisherPrx,
                             IceStorm::TopicPrx &topicPrx,
@@ -229,15 +232,18 @@ namespace detail {
             std::string msg = "Re-connected to IceStorm topic "+topicName;
             context.tracer().info( msg );
 
-            return true;
+            return 0;
+        }
+        catch ( const Ice::CommunicatorDestroyedException& )
+        {
+            return -1;
         }
         catch ( ... )
         {
-            // ignore it
             std::string msg = "Re-connection to IceStorm topic "+topicName+" failed.";
             bool localOnly = true;
             context.tracer().info( msg, 1, localOnly );
-            return false;
+            return 1;
         }
     }
 
@@ -269,13 +275,21 @@ void tryPushToIceStormWithReconnect( orcaice::Context   &context,
 
     // check that we are connected to the publisher
     if ( !publisherPrx ) {
-        bool reconnected = detail::tryReconnectToIceStorm( 
+        int reconnected = detail::tryReconnectToIceStorm( 
                                 context, publisherPrx, topicPrx, topicName );
         bool localOnly = true;
-        if ( reconnected )
+        if ( reconnected==0 ) {
             context.tracer().info( "(while pushing data to IceStorm) connected to publisher.", 1, localOnly  );
-        else
+        }
+        else if ( reconnected>0 ) {
             context.tracer().info( "(while pushing data to IceStorm) failed to connect to publisher.", 1, localOnly  );
+            return;
+        }
+        else {
+            // CommunicatorDestroyedException
+            // If we see this, we're obviously shutting down.  Don't bitch about anything.
+            return;
+        }
     }
 
     try {
@@ -296,9 +310,9 @@ void tryPushToIceStormWithReconnect( orcaice::Context   &context,
         context.tracer().warning( ss.str(), 1, localOnly  );
 
         // If IceStorm just re-started for some reason though, we want to try to re-connect
-        bool reconnected = detail::tryReconnectToIceStorm( 
+        int reconnected = detail::tryReconnectToIceStorm( 
                                 context, publisherPrx, topicPrx, topicName );
-        if ( reconnected )
+        if ( reconnected==0 )
         {
             try {
                 // try again to push that last bit of info
