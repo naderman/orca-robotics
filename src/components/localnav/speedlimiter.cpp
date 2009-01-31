@@ -125,7 +125,7 @@ SpeedLimiter::constrainMaxSpeeds( orcalocalnav::Goal &goal,
     // How many seconds off would we be if we just travelled at the intended speed?
     double timeRemainingAtIntendedSpeed = computeTimeToGoal( goal, intendedSpeedThisLeg_ );
 
-    cout<<"TRACE(speedlimiter.cpp): Time remaining: @intendedSpeed="<<timeRemainingAtIntendedSpeed<<", @target="<<goal.timeRemaining << endl;
+    //cout<<"TRACE(speedlimiter.cpp): Time remaining: @intendedSpeed="<<timeRemainingAtIntendedSpeed<<", @target="<<goal.timeRemaining << endl;
 
     // Don't do anything unless we're a fair way off schedule
     double diff = fabs( timeRemainingAtIntendedSpeed - goal.timeRemaining );
@@ -153,7 +153,7 @@ SpeedLimiter::constrainMaxSpeeds( orcalocalnav::Goal &goal,
 
     goal.maxSpeed = MIN( requiredSpeed, goal.maxSpeed );
 
-    cout<<"TRACE(speedlimiter.cpp): Scaled by "<<scaleFactor<<" to "<<goal.maxSpeed<<"m/s" << endl;
+    //cout<<"TRACE(speedlimiter.cpp): Scaled by "<<scaleFactor<<" to "<<goal.maxSpeed<<"m/s" << endl;
 
 //     double requiredTimeAtMaxSpeed = requiredTimeToGoalAtMaxSpeed( goal );
 

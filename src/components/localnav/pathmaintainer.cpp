@@ -156,7 +156,7 @@ PathMaintainer::getActiveGoals( std::vector<orcalocalnav::Goal> &goals,
                                 bool                            &wpIncremented )
 {
     goals.resize(0);
-    if ( wpIndex_ == -1 ) return false;
+    if ( wpIndex_ < 0 ) return false;
 
     // Time now relative to start time
     double timeNow = orcaice::timeDiffAsDouble( clock_.time(), pathStartTime_ );
@@ -164,18 +164,37 @@ PathMaintainer::getActiveGoals( std::vector<orcalocalnav::Goal> &goals,
     // Peel off waypoints if they're reached
     wpIncremented=justReceivedNewPath_;
     justReceivedNewPath_ = false;
-    while ( waypointReached( path_.path[wpIndex_], pose, timeNow ) )
+    while ( true )
     {
-        incrementWpIndex();
-        wpIncremented=true;
+        assert( wpIndex_ >= 0 && wpIndex_ < (int)(path_.path.size()) );
+        if ( waypointReached( path_.path[wpIndex_], pose, timeNow ) )
+        {
+            // Reach a waypoint, peel it off the list
+            incrementWpIndex();
+            wpIncremented=true;
+
+            if ( wpIndex_ < 0 )
+            {
+                // We've reached the last waypoint
+                cout<<"TRACE(pathmaintainer.cpp): Reached the last waypoint." << endl;
+                return false;
+            }
+        }
+        else
+        {
+            // Haven't yet reached this waypoint.
+            break;
+        }
     }
 
     int wpI=0;
+    assert( wpIndex_ >= 0 );
     for ( unsigned int pI=wpIndex_;
           pI < path_.path.size() && wpI < maxNumWaypoints;
           pI++, wpI++ )
     {
         orcalocalnav::Goal goal;
+        assert( pI >= 0 && pI < path_.path.size() );
         convert( path_.path[pI], goal, pose, secSinceActivation() );
         goals.push_back( goal );
     }
