@@ -28,6 +28,17 @@ ADD_EXECUTABLE( apptest apptest.cpp )
 GBX_ADD_TEST( OrcaIce_AppTest apptest )
 ORCA_GENERATE_CONFIG_FILE( apptest.def apptest 0 )
 
+# testing platform and component name substitutions
+ADD_EXECUTABLE( comptest comptest.cpp )
+# explicit platform & comp spec
+GBX_ADD_TEST( OrcaIce_ExplicitPlatf_ExplicitCompTest comptest --Test.Platform=horseshit --Test.Component=comptest --Test.Config.ExpPlatfName=horseshit --Test.Config.ExpCompName=comptest --Orca.Component.PrintProperties=1 )
+# local platform spec
+GBX_ADD_TEST( OrcaIce_LocalPlatf_EmptyCompTest comptest --Test.Platform=local --Test.Config.ExpCompName=test --Orca.Component.PrintProperties=1 )
+# empty platorm spec
+GBX_ADD_TEST( OrcaIce_EmptyPlatf_EmptyCompTest comptest --Test.Config.ExpCompName=test --Orca.Component.PrintProperties=1 )
+# specifying AdapterId
+GBX_ADD_TEST( OrcaIce_AdapterIdTest comptest --Test.AdapterId=horseshit/comptest --Test.Platform=local --Test.Config.ExpPlatfName=horseshit --Test.Config.ExpCompName=comptest --Orca.Component.PrintProperties=1 )
+
 # advanced app tests
 ADD_EXECUTABLE( appproptest appproptest.cpp )
 # The standard CFG_INTDIR does not seem to get resolved here, do it manually

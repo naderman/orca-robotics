@@ -7,12 +7,9 @@
  * the LICENSE file included in this distribution.
  *
  */
-
 #include <iostream>
-
 #include <orcaice/application.h>
 #include <orcaice/component.h>
-
 #include <orcaice/orcaice.h>
 
 using namespace std;
@@ -30,39 +27,41 @@ public:
 void 
 TestComponent::start()
 {
-    cout<<"testing component interface settings ... ";
-    {
-        Ice::PropertiesPtr props = context().properties();
-        // ON implicitly
-        bool enabled;
-        enabled = props->getPropertyAsInt( "Orca.Component.EnableHome" );
-        if ( enabled != true ) {
-            cout<<"failed"<<endl<<"expected Home to be enabled"<<endl;
+    cout<<"=========== TESTS =========="<<endl;
+    string prefix = context().tag() + ".Config.";
+    string comp = context().properties()->getProperty( prefix+"ExpCompName" );
+    string platf = context().properties()->getProperty( prefix+"ExpPlatfName" ); 
+
+    if ( !platf.empty() ) {
+        cout<<"testing explicit platform name...";
+        if ( context().name().platform != platf ) {
+            cout<<"failed: wrong platform name="<<context().name().platform<<" expect="<<platf<<endl;
             exit(EXIT_FAILURE);
         }
-        // ON explicitly
-        enabled = props->getPropertyAsInt( "Orca.Component.EnableStatus" );
-        if ( enabled != true ) {
-            cout<<"failed"<<endl<<"expected Status to be enabled"<<endl;
+        cout<<"ok"<<endl;
+    }
+    else {
+        cout<<"testing implicit or local platform name...";
+        if ( context().name().platform == "local" ) {
+            cout<<"failed: wrong platform name="<<context().name().platform<<" expect [hostame]"<<endl;
             exit(EXIT_FAILURE);
         }
-        // OFF explicitly
-        enabled = props->getPropertyAsInt( "Orca.Component.EnableTracer" );
-        if ( enabled != false ) {
-            cout<<"failed"<<endl<<"expected Tracer to be disabled"<<endl;
-            exit(EXIT_FAILURE);
-        }
+        cout<<"ok"<<endl;
+    }
+
+    cout<<"testing component name...";
+    if ( context().name().component != comp ) {
+        cout<<"failed: wrong component name="<<context().name().component<<" expect="<<comp<<endl;
+        exit(EXIT_FAILURE);
     }
     cout<<"ok"<<endl;
 
+    cout<<"=========== TESTS =========="<<endl;
     // NOTE: cannot call communicator()->destroy() from here
     // because they'll be caught by Ice::Application and show up as failed ctest.
     exit(EXIT_SUCCESS);
 }
 
-//
-// Build the component into a stand-alone application
-//
 int main(int argc, char * argv[])
 {
     TestComponent component;

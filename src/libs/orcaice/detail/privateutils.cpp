@@ -142,14 +142,10 @@ setFactoryProperties( Ice::PropertiesPtr& props, const std::string& compTag )
     // --IceStorm.TopicManager.Proxy property.
     tempProps->setProperty( "IceStorm.TopicManager.Proxy", "IceStorm/TopicManager:default -p 10000" );
 
-    // adapter properties: these two are required for everything to work but
+    // adapter properties: AdapterId and Endpoints are required for everything to work but
     // they are not present in the default config files. You can override these 
     // in the config files.
-    orca::FQComponentName fqCName;
-    // we've already made sure that component and platform are filled in
-    fqCName.platform = props->getProperty(compTag+".Platform");
-    fqCName.component = props->getProperty(compTag+".Component");
-    tempProps->setProperty( compTag+".AdapterId", orcaice::toString(fqCName) );
+    // Note: we no longer set AdapterId here. See postProcessComponentProperties().
     tempProps->setProperty( compTag+".Endpoints", "tcp -t 5000" );
 
     // orca properties
@@ -368,8 +364,8 @@ postProcessComponentProperties( const Ice::PropertiesPtr& props, const std::stri
 
     // first, check for concise syntax: "platform/component"
     // NOTE: this feature is undocumented.
-    // alexm: I think this we don't documentit to simplify explanation of config files,
-    // but we need this for running components through IceGrid (I think).
+    // alexm: I think this we don't document it to simplify explanation of config files,
+    // but we need this for running components through IceGrid.
     if ( !orcaice::getProperty( props, compTag+".AdapterId", adapter ) ) 
     {
         // When AdapterId is specified, it overwrites platform and component properties.
@@ -380,8 +376,9 @@ postProcessComponentProperties( const Ice::PropertiesPtr& props, const std::stri
     else 
     { 
         // When AdapterId is NOT specified, we read individual properties and set the AdapterId
-        props->getProperty( compTag+".Platform" );
-        props->getProperty( compTag+".Component" );
+        // (at this point, these properties may be empty)
+        fqCName.platform = props->getProperty( compTag+".Platform" );
+        fqCName.component = props->getProperty( compTag+".Component" );
         props->setProperty( compTag+".AdapterId", orcaice::toString(fqCName) );
     }
 
@@ -415,8 +412,8 @@ postProcessComponentProperties( const Ice::PropertiesPtr& props, const std::stri
         props->setProperty( compTag+".Platform", fqCName.platform );
         props->setProperty( compTag+".AdapterId", orcaice::toString(fqCName) );
         if ( warnFactoryProp ) {
-            initTracerInfo( "Replaced 'local' with hostname: "+compTag+".Platform="+fqCName.platform );
-            initTracerInfo( "Replaced 'local' with hostname: "+compTag+".AdapterId="+orcaice::toString(fqCName) );
+            initTracerInfo( "Replaced 'local' with hostname in platform name : "+compTag+".Platform="+fqCName.platform );
+            initTracerInfo( "Replaced 'local' with hostname in adapter ID : "+compTag+".AdapterId="+orcaice::toString(fqCName) );
         }
     }
 
