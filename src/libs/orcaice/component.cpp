@@ -265,37 +265,58 @@ Component::activate()
     catch ( Ice::DNSException& e )
     {
         std::stringstream ss;
-        ss << "orcaice::Component: Error while activating Component: "<<e<<".  Check network.";
-        context_.tracer().warning( ss.str() );
+        ss << "(while activating orcaice::Component) \n"<<e<<"\nCheck network.";
+//         context_.tracer().warning( ss.str() );
         throw orcaice::NetworkException( ERROR_INFO, ss.str() );
     }
     catch ( Ice::ConnectionRefusedException& e )
     {
-        bool requireRegistry = context_.properties()->getPropertyAsInt( "Orca.RequireRegistry" );
+        bool requireRegistry = context_.properties()->getPropertyAsInt( "Orca.Component.RequireRegistry" );
         if ( requireRegistry ) {
             std::stringstream ss; 
-            ss<<"orcaice::Component: Error while activating Component: "<<e<<". Check IceGrid Registry.";
-            context_.tracer().error( ss.str() );
-            context_.tracer().info( "orcaice::Component: You may allow to continue by setting Orca.RequireRegistry=0." );
+            ss<<"(while activating orcaice::Component) failed: \n"<<e<<"\nCheck IceGrid Registry.";
+//             context_.tracer().error( ss.str() );
+            ss<<"\nYou may allow to continue by setting Orca.Component.RequireRegistry=0.";
             throw orcaice::NetworkException( ERROR_INFO, ss.str() );
         }
         else {
-            std::stringstream ss; ss<<"orcaice::Component: Failed to register Component("<<e<<"), only direct connections will be possible.";
+            std::stringstream ss; 
+            ss<<"(while activating orcaice::Component) failed:\n"<<e;
             context_.tracer().warning( ss.str() );
-            context_.tracer().info( "orcaice::Component: You may enforce registration by setting Orca.RequireRegistry=1." );
+            context_.tracer().info( "Continuing, but only direct outgoing connections will be possible." );
+            context_.tracer().info( "You may enforce registration by setting Orca.Component.RequireRegistry=1." );
+        }
+    }
+    catch ( Ice::ConnectFailedException& e )
+    {
+        bool requireRegistry = context_.properties()->getPropertyAsInt( "Orca.Component.RequireRegistry" );
+        if ( requireRegistry ) {
+            std::stringstream ss; 
+            ss<<"(while activating orcaice::Component) failed: \n"<<e<<"\nCheck IceGrid Registry.";
+//             context_.tracer().error( ss.str() );
+            ss<<"\nYou may allow to continue by setting Orca.Component.RequireRegistry=0.";
+            throw orcaice::NetworkException( ERROR_INFO, ss.str() );
+        }
+        else {
+            std::stringstream ss; 
+            ss<<"(while activating orcaice::Component) failed:\n"<<e;
+            context_.tracer().warning( ss.str() );
+            context_.tracer().info( "Continuing, but only direct outgoing connections will be possible." );
+            context_.tracer().info( "You may enforce registration by setting Orca.Component.RequireRegistry=1." );
         }
     }
     catch( const Ice::ObjectAdapterDeactivatedException &e )
     {
         std::stringstream ss;
-        ss << "orcaice::Component: Failed to activate component because it's deactivating: " << e;
-        context_.tracer().warning( ss.str() );
+        ss << "(while activating orcaice::Component) failed: component is deactivating: " << e;
+//         context_.tracer().warning( ss.str() );
         throw orcaice::ComponentDeactivatingException( ERROR_INFO, ss.str() );
     }
     catch( const Ice::Exception& e )
     {
-        std::stringstream ss; ss<<"orcaice::Component: Failed to activate component: "<<e<<".  Check IceGrid Registry.";
-        context_.tracer().warning( ss.str() );
+        std::stringstream ss; 
+        ss<<"orcaice::Component: Failed to activate component: "<<e<<"\nCheck IceGrid Registry.";
+//         context_.tracer().warning( ss.str() );
         throw orcaice::NetworkException( ERROR_INFO, ss.str() );
     }
 }

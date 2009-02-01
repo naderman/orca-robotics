@@ -44,6 +44,7 @@ std::string getGlobalConfigFilename( const Ice::PropertiesPtr &props );
  *              returns "local.cfg"
  *  3. If Orca.Config is not defined (or empty), and there is only one command line argument
  *     it is assumed to be the path to the config file.
+ *     ... unless it starts with a '-', i.e. looks like an option
  *          $ mycomponent local.cfg
  *              returns "local.cfg"
  *  4. File ./mycomponent.cfg when the component mycomponent is executed with 

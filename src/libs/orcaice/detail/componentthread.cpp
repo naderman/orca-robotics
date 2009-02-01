@@ -138,7 +138,7 @@ ComponentThread::tryRegisterHome()
         bool requireRegistry = context_.properties()->getPropertyAsInt( "Orca.Component.RequireRegistry" );
         if ( requireRegistry ) {
             std::stringstream ss;
-            ss << "Failed to register Home interface: "<<e<<".  Check IceGrid Registry.  You may allow things to continue without registration by setting Orca.RequireRegistry=0.";
+            ss << "Failed to register Home interface: "<<e<<".  Check IceGrid Registry.  You may allow things to continue without registration by setting Orca.Component.RequireRegistry=0.";
             context_.tracer().error( ss.str() );
             return false;
         }
@@ -146,7 +146,7 @@ ComponentThread::tryRegisterHome()
             std::stringstream ss;
             ss << "Failed to register Home interface: "<<e<<".";
             context_.tracer().warning( ss.str() );
-            context_.tracer().info( "You may enforce registration by setting Orca.RequireRegistry=1." );
+            context_.tracer().info( "You may enforce registration by setting Orca.Component.RequireRegistry=1." );
             // TODO: this is misleading! we haven't registered.
             return true;
         }

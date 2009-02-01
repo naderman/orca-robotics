@@ -155,7 +155,7 @@ protected:
     //! It also tries to register the adapter with the IceGrid Registry. 
     //! If the registry is unreachable, the adapter is not fully activated.
     //!
-    //! An Orca configuration property Orca.RequireRegistry determines what happens if the Registry
+    //! An Orca configuration property Orca.Component.RequireRegistry determines what happens if the Registry
     //! is not available. If RequireRegistry=1 (default) and the registry is unreachable,
     //! an orcaice::NetworkException is thrown. In this case it is safe to call activate again later, 
     //! hoping that the regisry will become reachable. If RequireRegistry=0 no exception is thrown.
