@@ -87,6 +87,8 @@ MainThread::MainThread( const orcaice::Context &context )
             orcaice::getPropertyAsIntWithDefault( prop, tprefix+"BatchMode", 1 );
         cfg.numIterationsBatch = 
             orcaice::getPropertyAsIntWithDefault( prop, tprefix+"NumIterationsBatch", 0 );
+        cfg.numIterationsLimit = 
+            orcaice::getPropertyAsIntWithDefault( prop, tprefix+"NumIterationsLimit", 9999 );            
 
         int numObstacles = 
             orcaice::getPropertyAsIntWithDefault( prop, tprefix+"NumObstacles", 25 );

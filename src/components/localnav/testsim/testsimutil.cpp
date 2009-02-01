@@ -284,6 +284,7 @@ hydroogmap::OgMap setupMap( double worldSize,
 void checkProgress( const orca::PathFollower2dData     &path, 
                     const hydrosim2d::VehicleSimulator &vehicleSim,
                     int                                 iterationNum,
+                    int                                 iterationLimit,
                     int                                &wpI,
                     bool                               &pathCompleted,
                     bool                               &pathFailed )
@@ -314,6 +315,7 @@ void checkProgress( const orca::PathFollower2dData     &path,
             wpI++;
             if ( wpI == (int)(path.path.size()) )
             {
+                cout<<"TRACE(testsimutil.cpp): pathCompleted in " << iterationNum << " iterations." << endl;
                 pathCompleted = true;
                 break;
             }
@@ -331,8 +333,10 @@ void checkProgress( const orca::PathFollower2dData     &path,
         exit(1);
     }
 
-    const int MAX_NUM_ITERATIONS = path.path.size()*3000;
-    if ( iterationNum >= MAX_NUM_ITERATIONS )
+    int maxNumIterations = path.path.size()*3000;
+    if ( iterationLimit < maxNumIterations )
+        maxNumIterations = iterationLimit;
+    if ( iterationNum >= maxNumIterations )
     {
         cout << "ERROR(simulator.cpp): Failed: didn't reach the goal in " <<  iterationNum << " iterations." << endl;
         pathFailed = true;

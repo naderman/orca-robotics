@@ -130,18 +130,19 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - all components
   - all components which subscribe to remote interfaces now attempt to unsubscribe before stopping. (alexm)
   - all components catch exeptions in a consise and standardised manner using new orcaice:: functions. (alexm)
+  - converted to new Subsystem implementation. (alexm)
 
 - pathplanner
   - Shoveled a lot of ugly code out into hydro.  Now makes use of a hydro driver, loaded dynamically. (alexb)
-
-- Laser2d, LaserMon
-  - converted to new Subsystem implementation. (alexm)
 
 - Gps2Localise2d
   - fixed rare bug which lead to assertion failure when the component is stopped shortly after starting (alexm)
   
 - FaithLocaliser
   - converted to new Subsystem implementations (tobi)
+
+- SegwayRMP
+  - Now respects (ac/de)celeration limits.
 
 @par Updated utilities
 @par Updated libraries

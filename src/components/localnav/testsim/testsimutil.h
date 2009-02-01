@@ -21,6 +21,7 @@ namespace localnav {
     void checkProgress( const orca::PathFollower2dData     &path, 
                         const hydrosim2d::VehicleSimulator &vehicleSim,
                         int                                 iterationNum,
+                        int                                 iterationLimit,
                         int                                &wpI,
                         bool                               &pathCompleted,
                         bool                               &pathFailed );

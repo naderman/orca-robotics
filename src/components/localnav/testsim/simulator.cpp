@@ -178,6 +178,7 @@ Simulator::checkProgress( bool &pathCompleted, bool &pathFailed )
     localnav::checkProgress( testPath_,
                              *vehicleSimulator_,
                              iterationNum_,
+                             config_.numIterationsLimit,
                              wpI_,
                              pathCompleted,
                              pathFailed );
@@ -205,6 +206,7 @@ std::string toString( const Simulator::Config &c )
     ss << "useRoom                      : " << c.useRoom << endl;
     ss << "batchMode                    : " << c.batchMode << endl;
     ss << "numIterationsBatch           : " << c.numIterationsBatch << endl;
+    ss << "numIterationsLimit           : " << c.numIterationsLimit << endl;
     return ss.str();
 }
 

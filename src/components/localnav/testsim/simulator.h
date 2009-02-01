@@ -25,6 +25,7 @@ public:
         bool   useRoom;
         bool   batchMode;
         int    numIterationsBatch;
+        int    numIterationsLimit;
     };
 
     Simulator( const orcaice::Context         &context,
