@@ -15,6 +15,7 @@
 #include <orcaice/context.h>
 
 namespace orcaice {
+namespace detail {
 
 //
 // This thread is started by the component, and is used:
@@ -40,6 +41,7 @@ private:
     orcaice::Context        context_;
 };
 
+}
 }
 
 #endif

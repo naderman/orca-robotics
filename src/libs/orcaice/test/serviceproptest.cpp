@@ -9,10 +9,8 @@
  */
 
 #include <iostream>
-
 #include <orcaice/service.h>
 #include <orcaice/component.h>
-
 #include <orcaice/orcaice.h>
 
 using namespace std;
@@ -20,11 +18,8 @@ using namespace std;
 class TestComponent : public orcaice::Component
 {
 public:
-    TestComponent() : orcaice::Component( "ServiceTest" ) {};
-
-    // component interface
+    TestComponent() : orcaice::Component( "ServiceTest", orcaice::NoStandardInterfaces ) {};
     virtual void start();
-    virtual void stop() {};
 };
 
 class TestService : public orcaice::Service
@@ -47,19 +42,23 @@ extern "C"
 void TestComponent::start()
 {
     cout<<"testing properties in Service ... ";
+
     int got = context().properties()->getPropertyAsInt( "Orca.Tracer.ErrorToFile" );
-    int expect = context().properties()->getPropertyAsInt( context().tag()+".Expect" );
+
+    string prefix = context().tag()+".Config.";
+    int expect = context().properties()->getPropertyAsInt( prefix+"Expect" );
+
     if ( got != expect ) {
         cout<<"failed"<<endl<<"expect="<<expect<<"; got="<<got<<endl;
         exit(EXIT_FAILURE);
     }
     cout<<"ok"<<endl;
     
-    if ( context().properties()->getPropertyAsInt( context().tag()+".Config.Quit" ) )
+    if ( context().properties()->getPropertyAsInt( prefix+"Quit" ) )
     {
         cout<<"quitting..."<<endl;
-        // NOTE: cannot call communicator()->destroy() from here
-        // because they'll be caught by Ice::Application and show up as failed ctest.
+//         bool forceServiceShutdown = true;
+//         context().shutdown( forceServiceShutdown );
         exit(EXIT_SUCCESS);
     }
 }

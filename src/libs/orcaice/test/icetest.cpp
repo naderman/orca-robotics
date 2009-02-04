@@ -32,10 +32,7 @@ class TestComponent : public orcaice::Component
 public:
     // don't create standard interfaces, because we'll use Home as a dummy iface.
     TestComponent() : orcaice::Component( "IceTest", orcaice::NoStandardInterfaces ) {};
-
-    // component interface
     virtual void start();
-    virtual void stop() {};
 };
 
 void 
@@ -142,7 +139,7 @@ TestComponent::start()
     // generate indirect proxy appropriate for this host
     orca::FQInterfaceName homelessFqName;
     homelessFqName.platform = hydroutil::getHostname();
-    homelessFqName.component = "connecttest";
+    homelessFqName.component = context().name().component;
     homelessFqName.iface = "homeless";
     try {
         orcaice::connectToInterfaceWithString( context(), homePrx, orcaice::toString( homelessFqName ) );
@@ -153,14 +150,9 @@ TestComponent::start()
     }
     cout<<"ok"<<endl;
 
-    // NOTE: cannot call communicator()->destroy() from here
-    // because they'll be caught by Ice::Application and show up as failed ctest.
-    exit(EXIT_SUCCESS);
+    context().shutdown();
 }
 
-//
-// Build the component into a stand-alone application
-//
 int 
 main(int argc, char * argv[])
 {

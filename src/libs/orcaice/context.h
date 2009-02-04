@@ -98,9 +98,11 @@ public:
     //! is already destroyed).
     bool isDeactivating();
 
-    //! Triggers component shutdown. Do not call this from inside functions
-    //! implementing Ice remote calls.
-    void shutdown();
+    //! Triggers component shutdown.
+    //!
+    //! Do not call this from inside functions implementing Ice remote calls. (alexm: this restriction
+    //! may be outdated since we now call Communicator::shutdown() instead of destroy().)
+    void shutdown() const;
 
     // WARNING to internal developers:
     // Do not call these functions before the context is fully initialized, i.e.
@@ -121,17 +123,13 @@ private:
     // this function should only be called by Component (it can because it's a friend)
     void init( const orca::FQComponentName& name,
                const bool isApp,
-               const Ice::ObjectAdapterPtr& adapter,
-               orcaice::Component* comp  );
+               const Ice::ObjectAdapterPtr& adapter );
 
     std::string            tag_;
     orca::FQComponentName  name_;
     bool                   isApplication_;
     Ice::CommunicatorPtr   communicator_;
     Ice::ObjectAdapterPtr  adapter_;
-
-    // need this pointer to call activate()
-    Component*             component_; 
 
     // Context does not take responsibility for these objects, i.e. does not destroy them
     orcaice::Home*         home_;

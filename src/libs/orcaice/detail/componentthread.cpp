@@ -12,11 +12,14 @@
 #include <orcaice/exceptions.h>
 #include <orcaice/catchutils.h>
 #include <orcaice/icegridutils.h>
+#include "privateutils.h"
 #include <iostream>
 #include <IceGrid/Registry.h>  // used to register Home interface as a well-known object
 
 using namespace std;
-using namespace orcaice;
+
+namespace orcaice {
+namespace detail {
 
 ComponentThread::ComponentThread( const orcaice::Context& context ) :
     SafeThread(context.tracer()),
@@ -48,7 +51,7 @@ ComponentThread::walk()
 
             if ( !needToRegisterHome && !hasStatusInterface )
             {
-                context_.tracer().info( "ComponentThread: Nothing left to do, so quitting" );
+                context_.tracer().info( "ComponentThread: Nothing left to do, quitting" );
                 return;
             }
 
@@ -80,58 +83,8 @@ ComponentThread::walk()
 bool
 ComponentThread::tryRegisterHome()
 {
-//     std::string homeIdentityString = toHomeIdentity( context_.name() );
-//     Ice::Identity homeIdentity = context_.communicator()->stringToIdentity(homeIdentityString);
-
-    // previous method: adding Home to the component adapter
-//     Ice::ObjectPrx homePrx = context_.adapter()->createProxy( homeIdentity );
-
-    // new method: adding Home as a facet to the Admin interface.
-    Ice::ObjectPrx adminPrx = context_.communicator()->getAdmin();
-    assert( adminPrx && "Null admin proxy when registering home" );
-//     cout<<"DEBUG: admin proxy: "<<adminPrx->ice_toString()<<endl;
-
-    // change generic proxy to the Home facet.
-    // (strictly speaking, this is not necessary: we can always change the facet later. but it makes a bit clearer
-    // if the facet is listed in the Registry).
-    Ice::ObjectPrx homePrx = adminPrx->ice_facet( orcaice::toAdminFacet( context_.name(), "::orca::Home" ) );
-
-    // apparently cannot change just the registered name. it changes the proxy, which is wrong.
-//     homePrx = homePrx->ice_identity( homeIdentity );
-//     cout<<"DEBUG: home proxy: "<<homePrx->ice_toString()<<endl;
-
-//     context_.tracer().info( string("Registering Home with identity ")+homeIdentityString );
-
-    std::string instanceName = context_.properties()->getPropertyWithDefault( "IceGrid.InstanceName", "IceGrid" );
-    Ice::ObjectPrx base = context_.communicator()->stringToProxy( instanceName+"/Registry" );
     try {
-        // Open an admin session with the registry
-        IceGrid::RegistryPrx registry = IceGrid::RegistryPrx::checkedCast(base);
-        // This assumes no access control
-        std::string username = "componentthread-no-access-control";
-        std::string password = "componentthread-no-access-control";
-        IceGrid::AdminSessionPrx adminSession = registry->createAdminSession( username, password );
-
-        //
-        // use the adminSession to add our Home interface
-        //
-        IceGrid::AdminPrx admin = adminSession->getAdmin();
-        try {
-            admin->addObjectWithType( homePrx, "::orca::Home" );
-        }
-        catch ( const IceGrid::ObjectExistsException& ) {
-            admin->updateObject( homePrx );
-        }
-        context_.tracer().info( string("Registered Home as: ")+homePrx->ice_toString() );
-
-        // we don't need the session anymore
-        // (we can just leave it there and it would be destroyed eventually without being kept alive, but it's
-        // more transparent if we destroy it ourselves)
-        adminSession->destroy();
-    }
-    catch ( Ice::CommunicatorDestroyedException& ) 
-    {
-        // Ignore -- we're shutting down.
+        detail::registerHomeInterface( context_ );
     }
     catch ( Ice::Exception& e ) 
     {
@@ -147,9 +100,12 @@ ComponentThread::tryRegisterHome()
             ss << "Failed to register Home interface: "<<e<<".";
             context_.tracer().warning( ss.str() );
             context_.tracer().info( "You may enforce registration by setting Orca.Component.RequireRegistry=1." );
-            // TODO: this is misleading! we haven't registered.
+            // TODO: returning TRUE is misleading! we haven't registered.
             return true;
         }
     }
     return true;
+}
+
+}
 }

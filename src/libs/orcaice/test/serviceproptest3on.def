@@ -9,7 +9,7 @@ Config.Quit.Default=1
 
 # External configuration options
 ExternalConfig.Orca.Tracer.ErrorToFile.Default=300
-ExternalConfig.Orca.RequireRegistry.Default=0
+ExternalConfig.Orca.Component.RequireRegistry.Default=0
 
 # Ensure timeouts
 ExternalConfig.Ice.Override.ConnectTimeout.Default=150

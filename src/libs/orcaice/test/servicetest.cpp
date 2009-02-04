@@ -9,10 +9,8 @@
  */
 
 #include <iostream>
-
 #include <orcaice/service.h>
 #include <orcaice/component.h>
-
 #include <orcaice/orcaice.h>
 
 using namespace std;
@@ -20,13 +18,28 @@ using namespace std;
 class TestComponent : public orcaice::Component
 {
 public:
-    TestComponent() : orcaice::Component( "ServiceTest" ) {};
-    virtual ~TestComponent() {};
-
-    // component interface
+    TestComponent() : orcaice::Component( "ServiceTest", orcaice::NoStandardInterfaces ) {};
     virtual void start();
     virtual void stop();
 };
+
+void TestComponent::start()
+{
+    cout<<"testing Service() ... ok"<<endl;
+    
+    // no use! the IceBox will not quit anyway.
+//     bool forceServiceShutdown = true;
+//     context().shutdown( forceServiceShutdown );
+// 
+//     cout<<"communicator isShutdown="<<(int)context().communicator()->isShutdown()<<endl;
+
+    exit(EXIT_SUCCESS);
+}
+
+void TestComponent::stop()
+{
+    // nothing to do
+}
 
 class TestService : public orcaice::Service
 {
@@ -42,23 +55,8 @@ extern "C"
     //
     // Factory function
     //
-    IceBox::Service* create( Ice::CommunicatorPtr communicator )
+    IceBox::Service* create( Ice::CommunicatorPtr )
     {
         return new TestService;
     }
 }
-
-void TestComponent::start()
-{
-    cout<<"testing Service() ... ok"<<endl;
-    
-    // NOTE: cannot call communicator()->destroy() from here
-    // because they'll be caught by Ice::Application and show up as failed ctest.
-    exit(EXIT_SUCCESS);
-}
-
-void TestComponent::stop()
-{
-    // nothing to do
-}
-

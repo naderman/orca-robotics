@@ -17,6 +17,7 @@
 #include <orcaice/orcaice.h>
 #include <orcaice/icegridutils.h>
 #include <orca/properties.h>
+#include <IceGrid/Registry.h>  // used to register Home interface as a well-known object
 
 using namespace std;
 
@@ -537,6 +538,62 @@ void addPropertiesFromGlobalConfigFile( Ice::PropertiesPtr   &props,
     }
 }
 
+void registerHomeInterface( const Context& context )
+{
+//     std::string homeIdentityString = toHomeIdentity( context.name() );
+//     Ice::Identity homeIdentity = context.communicator()->stringToIdentity(homeIdentityString);
+
+    // previous method: adding Home to the component adapter
+//     Ice::ObjectPrx homePrx = context.adapter()->createProxy( homeIdentity );
+
+    // new method: adding Home as a facet to the Admin interface.
+    Ice::ObjectPrx adminPrx = context.communicator()->getAdmin();
+    assert( adminPrx && "Null admin proxy when registering home" );
+//     cout<<"DEBUG: admin proxy: "<<adminPrx->ice_toString()<<endl;
+
+    // change generic proxy to the Home facet.
+    // (strictly speaking, this is not necessary: we can always change the facet later. but it makes a bit clearer
+    // if the facet is listed in the Registry).
+    Ice::ObjectPrx homePrx = adminPrx->ice_facet( orcaice::toAdminFacet( context.name(), "::orca::Home" ) );
+
+    // apparently cannot change just the registered name. it changes the proxy, which is wrong.
+//     homePrx = homePrx->ice_identity( homeIdentity );
+//     cout<<"DEBUG: home proxy: "<<homePrx->ice_toString()<<endl;
+
+//     context.tracer().info( string("Registering Home with identity ")+homeIdentityString );
+
+    std::string instanceName = context.properties()->getPropertyWithDefault( "IceGrid.InstanceName", "IceGrid" );
+    Ice::ObjectPrx base = context.communicator()->stringToProxy( instanceName+"/Registry" );
+    try {
+        // Open an admin session with the registry
+        IceGrid::RegistryPrx registry = IceGrid::RegistryPrx::checkedCast(base);
+        // This assumes no access control
+        std::string username = "componentthread-no-access-control";
+        std::string password = "componentthread-no-access-control";
+        IceGrid::AdminSessionPrx adminSession = registry->createAdminSession( username, password );
+
+        //
+        // use the adminSession to add our Home interface
+        //
+        IceGrid::AdminPrx admin = adminSession->getAdmin();
+        try {
+            admin->addObjectWithType( homePrx, "::orca::Home" );
+        }
+        catch ( const IceGrid::ObjectExistsException& ) {
+            admin->updateObject( homePrx );
+        }
+        context.tracer().info( string("Registered Home as: ")+homePrx->ice_toString() );
+
+        // we don't need the session anymore
+        // (we can just leave it there and it would be destroyed eventually without being kept alive, but it's
+        // more transparent if we destroy it ourselves)
+        adminSession->destroy();
+    }
+    catch ( Ice::CommunicatorDestroyedException& ) 
+    {
+        context.tracer().info( "(while registering Home interface) communicator destroyed, ignoring." );
+    }
+}
 
 } // namespace
 } // namespace

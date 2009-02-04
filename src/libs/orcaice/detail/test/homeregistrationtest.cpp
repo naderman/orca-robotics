@@ -9,8 +9,11 @@
  */
 
 #include <iostream>
+
 #include <orcaice/application.h>
 #include <orcaice/component.h>
+#include "../privateutils.h"
+
 #include <orcaice/orcaice.h>
 
 using namespace std;
@@ -20,19 +23,26 @@ class TestComponent : public orcaice::Component
 public:
     TestComponent() : orcaice::Component( "Test", orcaice::NoStandardInterfaces ) {};
     virtual void start();
-    virtual void stop();
 };
 
 void 
 TestComponent::start()
 {
+    cout<<"testing registerHomeInterface() ... ";
+    try {
+        orcaice::detail::registerHomeInterface( context() );
+    }
+    catch ( const Ice::Exception& e ) {
+        cout<<"failed: "<<e.what()<<endl;
+        exit(EXIT_FAILURE);
+    }
+    catch ( const std::exception& e ) {
+        cout<<"failed: "<<e.what()<<endl;
+        exit(EXIT_FAILURE);
+    }
+    cout<<"ok"<<endl;
+    
     context().shutdown();
-}
-
-void 
-TestComponent::stop()
-{
-    // nothing to do;
 }
 
 int main(int argc, char * argv[])

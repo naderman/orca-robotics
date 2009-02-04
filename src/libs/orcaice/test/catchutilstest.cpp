@@ -110,8 +110,6 @@ class TestComponent : public orcaice::Component
 {
 public:
     TestComponent( Config config );
-
-    // component interface
     virtual void start();
     virtual void stop();
 

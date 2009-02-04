@@ -10,7 +10,6 @@
  
 #include <string>
 #include <orca/common.h>
-// #include <orca/properties.h>
 #include <orcaice/orcaice.h>
 #include <hydroiceutil/localhistory.h>
 
@@ -27,26 +26,6 @@
 using namespace std;
 
 namespace orcaice {
-
-// namespace {
-// 
-// // alexm: copied over from orcaobj/stringutils.h in order to cut dependency
-// std::string toString( const orca::PropertiesData &obj )
-// {
-//     std::ostringstream s;
-//     s << " PropertiesData ["<<obj.properties.size() << " elements]:"<<endl;
-//     for ( map<string,string>::const_iterator it = obj.properties.begin();
-//           it != obj.properties.end();
-//           it++ )
-//     {
-//         s << "  " << it->first << "=" << it->second << endl;
-//     }
-//     return s.str();
-// }
-// 
-// }
-
-//////////////////////////////
 
 Component::Component( const std::string& tag, ComponentInterfaceFlag interfaceFlag_ ) :
     interfaceFlag_(interfaceFlag_)
@@ -69,7 +48,7 @@ Component::init( const orca::FQComponentName& name,
 {
     // set context with component info
     // this is the only storage of this info
-    context_.init( name, isApp, adapter, this );
+    context_.init( name, isApp, adapter ); //, this );
 
     Ice::PropertiesPtr props = context_.properties();
 
@@ -142,7 +121,6 @@ Component::init( const orca::FQComponentName& name,
     // Get config properties from a central server
     //
     detail::setComponentPropertiesFromServer( context_ );
-//     getNetworkProperties();
 
     // the last component service History, create after all properties were received
     hydroutil::Properties historyProps( context_.properties()->getPropertiesForPrefix("Orca.History."),"Orca.History.");
@@ -156,7 +134,7 @@ Component::init( const orca::FQComponentName& name,
     //
     // create infrastructure thead
     //
-    componentThread_ = new ComponentThread( context_ );
+    componentThread_ = new detail::ComponentThread( context_ );
     try {
         componentThread_->start();
     }
@@ -176,148 +154,6 @@ Component::finalise()
         context_.tracer().debug( "orcaice::Component: stopping ComponentThread....", 2 );
         gbxiceutilacfr::stopAndJoin( componentThread_ );
         context_.tracer().debug( "orcaice::Component: ComponentThread stopped.", 2 );
-    }
-}
-
-// void
-// Component::getNetworkProperties()
-// {
-//     // If _anything_ goes wrong, print an error message and throw exception
-//     try {
-//         // Connect to the remote properties server
-//         std::string propertyServerProxyString = orcaice::getPropertyWithDefault( context_.properties(), 
-//                                                                                  "Orca.PropertyServerProxyString",
-//                                                                                  "" );
-//         if ( propertyServerProxyString.empty() )
-//             return;
-// 
-//         // Get the properties from the remote properties server
-//         orca::PropertiesPrx propertyPrx;
-//         orcaice::connectToInterfaceWithString( context(), propertyPrx, propertyServerProxyString );
-//         orca::PropertiesData propData = propertyPrx->getData();
-//         const std::map<std::string,std::string> &netProps = propData.properties;
-// 
-//         stringstream ssProps;
-//         ssProps << "Component::getNetworkProperties(): got network properties: " << toString(propData);
-//         context_.tracer().debug( ssProps.str(), 3 );
-// 
-//         // Copy them into our properties, without over-writing anything that's already set
-//         for ( std::map<string,string>::const_iterator it=netProps.begin(); it!=netProps.end(); ++it ) 
-//         {
-//             const bool forceTransfer = false;
-//             const string &fromKey   = it->first;
-//             const string &fromValue = it->second;
-//             const string &toKey     = it->first;
-// //            detail::transferProperty( context_.properties(), fromKey, fromValue, toKey, forceTransfer );
-//             Ice::PropertiesPtr prop = context_.properties();
-//             int ret = detail::transferProperty( prop, fromKey, fromValue, toKey, forceTransfer );
-//             stringstream ss;
-//             if ( ret == 0 )
-//             {
-//                 ss << "orcaice::Component::getNetworkProperties(): transferred proeprty '"
-//                    <<it->first<<"' -> '"<<it->second<<"'";
-//             }
-//             else
-//             {
-//                 ss << "orcaice::Component::getNetworkProperties(): retreived network property '"
-//                    <<it->first<<"' but did not over-write existing value";
-//             }
-//             context_.tracer().debug( ss.str() );
-//         }
-//     }
-//     catch ( const std::exception &e )
-//     {
-//         std::stringstream ss; ss << "(while getting network config properties) caught exception: " << e.what();
-//         context_.tracer().error( ss.str() );
-//         throw;
-//     }
-//     catch ( const std::string &e )
-//     {
-//         std::stringstream ss; ss << "(while getting network config properties) caught std::string: " << e;
-//         context_.tracer().error( ss.str() );
-//         throw;
-//     }
-//     catch ( const char* &e )
-//     {
-//         std::stringstream ss; ss << "(while getting network config properties) caught char*: " << e;
-//         context_.tracer().error( ss.str() );
-//         throw;
-//     }
-//     catch ( ... )
-//     {
-//         std::stringstream ss; ss << "(while getting network config properties) caught unknown exception.";
-//         context_.tracer().error( ss.str() );
-//         throw;
-//     }
-// }
-
-void 
-Component::activate()
-{
-    try
-    {
-        // This next line is to work around an Ice3.2 bug.
-        // See: http://www.zeroc.com/forums/help-center/3266-icegrid-activationtimedout.html#post14380
-        context_.communicator()->setDefaultLocator(Ice::LocatorPrx::uncheckedCast(context_.communicator()->getDefaultLocator()->ice_collocationOptimized(false)));
-        context_.adapter()->activate();
-        context_.tracer().debug( "Adapter activated", 2 );
-    }
-    catch ( Ice::DNSException& e )
-    {
-        std::stringstream ss;
-        ss << "(while activating orcaice::Component) \n"<<e<<"\nCheck network.";
-//         context_.tracer().warning( ss.str() );
-        throw orcaice::NetworkException( ERROR_INFO, ss.str() );
-    }
-    catch ( Ice::ConnectionRefusedException& e )
-    {
-        bool requireRegistry = context_.properties()->getPropertyAsInt( "Orca.Component.RequireRegistry" );
-        if ( requireRegistry ) {
-            std::stringstream ss; 
-            ss<<"(while activating orcaice::Component) failed: \n"<<e<<"\nCheck IceGrid Registry.";
-//             context_.tracer().error( ss.str() );
-            ss<<"\nYou may allow to continue by setting Orca.Component.RequireRegistry=0.";
-            throw orcaice::NetworkException( ERROR_INFO, ss.str() );
-        }
-        else {
-            std::stringstream ss; 
-            ss<<"(while activating orcaice::Component) failed:\n"<<e;
-            context_.tracer().warning( ss.str() );
-            context_.tracer().info( "Continuing, but only direct outgoing connections will be possible." );
-            context_.tracer().info( "You may enforce registration by setting Orca.Component.RequireRegistry=1." );
-        }
-    }
-    catch ( Ice::ConnectFailedException& e )
-    {
-        bool requireRegistry = context_.properties()->getPropertyAsInt( "Orca.Component.RequireRegistry" );
-        if ( requireRegistry ) {
-            std::stringstream ss; 
-            ss<<"(while activating orcaice::Component) failed: \n"<<e<<"\nCheck IceGrid Registry.";
-//             context_.tracer().error( ss.str() );
-            ss<<"\nYou may allow to continue by setting Orca.Component.RequireRegistry=0.";
-            throw orcaice::NetworkException( ERROR_INFO, ss.str() );
-        }
-        else {
-            std::stringstream ss; 
-            ss<<"(while activating orcaice::Component) failed:\n"<<e;
-            context_.tracer().warning( ss.str() );
-            context_.tracer().info( "Continuing, but only direct outgoing connections will be possible." );
-            context_.tracer().info( "You may enforce registration by setting Orca.Component.RequireRegistry=1." );
-        }
-    }
-    catch( const Ice::ObjectAdapterDeactivatedException &e )
-    {
-        std::stringstream ss;
-        ss << "(while activating orcaice::Component) failed: component is deactivating: " << e;
-//         context_.tracer().warning( ss.str() );
-        throw orcaice::ComponentDeactivatingException( ERROR_INFO, ss.str() );
-    }
-    catch( const Ice::Exception& e )
-    {
-        std::stringstream ss; 
-        ss<<"orcaice::Component: Failed to activate component: "<<e<<"\nCheck IceGrid Registry.";
-//         context_.tracer().warning( ss.str() );
-        throw orcaice::NetworkException( ERROR_INFO, ss.str() );
     }
 }
 

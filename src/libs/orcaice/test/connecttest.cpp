@@ -9,10 +9,8 @@
  */
 
 #include <iostream>
-
 #include <orcaice/application.h>
 #include <orcaice/component.h>
-
 #include <orcaice/orcaice.h>
 #include <orcaice/icegridutils.h>
 #include <orca/home.h>
@@ -32,10 +30,7 @@ class TestComponent : public orcaice::Component
 public:
     // don't create standard interfaces, because we'll use Home as a dummy iface.
     TestComponent() : orcaice::Component( "ConnectTest", orcaice::NoStandardInterfaces ) {};
-
-    // component interface
     virtual void start();
-    virtual void stop() {};
 };
 
 void 
@@ -284,14 +279,9 @@ TestComponent::start()
 //     }
 //     cout<<"ok"<<endl;
 
-    // NOTE: cannot call communicator()->destroy() from here
-    // because they'll be caught by Ice::Application and show up as failed ctest.
-    exit(EXIT_SUCCESS);
+    context().shutdown();
 }
 
-//
-// Build the component into a stand-alone application
-//
 int 
 main(int argc, char * argv[])
 {

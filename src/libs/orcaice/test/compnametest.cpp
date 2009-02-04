@@ -17,11 +17,8 @@ using namespace std;
 class TestComponent : public orcaice::Component
 {
 public:
-    TestComponent() : orcaice::Component( "Test" ) {};
-
-    // component interface
+    TestComponent() : orcaice::Component( "Test", orcaice::AllStandardInterfaces ) {};
     virtual void start();
-    virtual void stop() {};
 };
 
 void 
@@ -57,9 +54,7 @@ TestComponent::start()
     cout<<"ok"<<endl;
 
     cout<<"=========== TESTS =========="<<endl;
-    // NOTE: cannot call communicator()->destroy() from here
-    // because they'll be caught by Ice::Application and show up as failed ctest.
-    exit(EXIT_SUCCESS);
+    context().shutdown();
 }
 
 int main(int argc, char * argv[])

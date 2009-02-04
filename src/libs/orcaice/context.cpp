@@ -9,13 +9,12 @@
  */
 
 #include "context.h"
-#include "component.h"
 #include <gbxutilacfr/exceptions.h>
+#include <orcaice/exceptions.h>
 
 namespace orcaice {
 
 Context::Context() :
-    component_(0),
     home_(0),
     tracer_(0),
     status_(0),
@@ -26,13 +25,11 @@ Context::Context() :
 void 
 Context::init( const orca::FQComponentName &name,
                const bool                   isApp,
-               const Ice::ObjectAdapterPtr &adapter,
-               orcaice::Component          *comp )
+               const Ice::ObjectAdapterPtr &adapter )
 {
     name_ = name;
     isApplication_ = isApp;
     adapter_ = adapter;
-    component_ = comp;
 
     communicator_ = adapter_->getCommunicator();
 };
@@ -40,24 +37,86 @@ Context::init( const orca::FQComponentName &name,
 void
 Context::activate()
 {
-    if ( !component_ )
-        throw gbxutilacfr::Exception( ERROR_INFO, "Trying to activate component before context initializition." );
+    try
+    {
+        // This next line was to work around an Ice3.2 bug.
+        // See: http://www.zeroc.com/forums/help-center/3266-icegrid-activationtimedout.html#post14380
+        communicator_->setDefaultLocator(Ice::LocatorPrx::uncheckedCast(communicator_->getDefaultLocator()->ice_collocationOptimized(false)));
 
-    component_->activate();
+        adapter_->activate();
+        tracer_->debug( "Adapter activated", 2 );
+    }
+    catch ( Ice::DNSException& e )
+    {
+        std::stringstream ss;
+        ss << "(while activating orcaice::Component) \n"<<e<<"\nCheck network.";
+//         tracer_->warning( ss.str() );
+        throw orcaice::NetworkException( ERROR_INFO, ss.str() );
+    }
+    catch ( Ice::ConnectionRefusedException& e )
+    {
+        bool requireRegistry = properties()->getPropertyAsInt( "Orca.Component.RequireRegistry" );
+        if ( requireRegistry ) {
+            std::stringstream ss; 
+            ss<<"(while activating orcaice::Component) failed: \n"<<e<<"\nCheck IceGrid Registry.";
+//             tracer_->error( ss.str() );
+            ss<<"\nYou may allow to continue by setting Orca.Component.RequireRegistry=0.";
+            throw orcaice::NetworkException( ERROR_INFO, ss.str() );
+        }
+        else {
+            std::stringstream ss; 
+            ss<<"(while activating orcaice::Component) failed:\n"<<e;
+            tracer_->warning( ss.str() );
+            tracer_->info( "Continuing, but only direct outgoing connections will be possible." );
+            tracer_->info( "You may enforce registration by setting Orca.Component.RequireRegistry=1." );
+        }
+    }
+    catch ( Ice::ConnectFailedException& e )
+    {
+        bool requireRegistry = properties()->getPropertyAsInt( "Orca.Component.RequireRegistry" );
+        if ( requireRegistry ) {
+            std::stringstream ss; 
+            ss<<"(while activating orcaice::Component) failed: \n"<<e<<"\nCheck IceGrid Registry.";
+//             tracer_->error( ss.str() );
+            ss<<"\nYou may allow to continue by setting Orca.Component.RequireRegistry=0.";
+            throw orcaice::NetworkException( ERROR_INFO, ss.str() );
+        }
+        else {
+            std::stringstream ss; 
+            ss<<"(while activating orcaice::Component) failed:\n"<<e;
+            tracer_->warning( ss.str() );
+            tracer_->info( "Continuing, but only direct outgoing connections will be possible." );
+            tracer_->info( "You may enforce registration by setting Orca.Component.RequireRegistry=1." );
+        }
+    }
+    catch( const Ice::ObjectAdapterDeactivatedException& e )
+    {
+        std::stringstream ss;
+        ss << "(while activating orcaice::Component) failed: component is deactivating: " << e;
+//         tracer_->warning( ss.str() );
+        throw orcaice::ComponentDeactivatingException( ERROR_INFO, ss.str() );
+    }
+    catch( const Ice::Exception& e )
+    {
+        std::stringstream ss; 
+        ss<<"orcaice::Component: Failed to activate component: "<<e<<"\nCheck IceGrid Registry.";
+//         tracer_->warning( ss.str() );
+        throw orcaice::NetworkException( ERROR_INFO, ss.str() );
+    }
 }
 
 void
-Context::shutdown()
+Context::shutdown() const
 {
     if ( !communicator_ )
         throw gbxutilacfr::Exception( ERROR_INFO, "Trying to shutdown component before context initializition." );
 
     if ( isApplication() ) {
         tracer().info( "Triggering component shutdown ...");
-        communicator()->destroy();
+        communicator()->shutdown();
     }
     else {
-        tracer().info( "NOT triggering component shutdown because running as a service ...");
+        tracer().info( "NOT triggering component shutdown because the component is running as an IceBox service ...");
     }
 }
 

@@ -1,5 +1,5 @@
 DefaultComponentTag=IceTest
-DefaultComponentEndpoints=tcp -t 5000 -p 15000
+DefaultComponentEndpoints=tcp -p 15000 -t 5000
 
 # Provided Interfaces
 Provides.P1.Type=PT1

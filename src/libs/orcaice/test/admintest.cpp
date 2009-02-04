@@ -9,10 +9,8 @@
  */
 
 #include <iostream>
-
 #include <orcaice/application.h>
 #include <orcaice/component.h>
-
 #include <orcaice/orcaice.h>
 
 using namespace std;
@@ -21,10 +19,7 @@ class TestComponent : public orcaice::Component
 {
 public:
     TestComponent() : orcaice::Component( "Test", orcaice::AllStandardInterfaces ) {};
-
-    // component interface
     virtual void start();
-    virtual void stop() {};
 };
 
 void 
@@ -74,14 +69,9 @@ TestComponent::start()
 //    activate();
 //    IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2000));
 
-    // NOTE: cannot call communicator()->destroy() from here
-    // because they'll be caught by Ice::Application and show up as failed ctest.
-    exit(EXIT_SUCCESS);
+    context().shutdown();
 }
 
-//
-// Build the component into a stand-alone application
-//
 int main(int argc, char * argv[])
 {
     TestComponent component;

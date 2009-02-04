@@ -103,8 +103,6 @@ class Component : public hydroutil::Uncopyable
 // these are declared friends so they can call init(), tag(), finalise()
 friend class Application;
 friend class Service;
-// this one needs to call activate().
-friend class Context;
 
 public:
 /*! 
@@ -130,7 +128,8 @@ Inside this contructor the component context is not initialized yet and cannot b
 
     //! This function is called by the component's container (Application or Service)
     //! when the component is ordered to stop execution.
-    virtual void stop()=0;
+    //! Default implementation does nothing.
+    virtual void stop() {};
 
     //! This function is called by Application when the executable is called with @c --help
     //! command line option.
@@ -159,7 +158,7 @@ protected:
     //! is not available. If RequireRegistry=1 (default) and the registry is unreachable,
     //! an orcaice::NetworkException is thrown. In this case it is safe to call activate again later, 
     //! hoping that the regisry will become reachable. If RequireRegistry=0 no exception is thrown.
-    void activate();
+    void activate() { context_.activate(); };
 
     //! Component's "context", which contains component's naming and networking information.
     //! It can be used directly or passed to threads and classes. For example:
@@ -185,9 +184,6 @@ private:
     // Only Service should need to use this when the IceBox tells it
     // what the actual tag is.
     void setTag( const std::string& t ) { context_.tag_ = t; };
-
-    // connect to central server to get network properties
-//     void getNetworkProperties();
 
     // Save init flags (for the period between the constructor and init())
     ComponentInterfaceFlag interfaceFlag_;

@@ -27,81 +27,85 @@ namespace orcaice
 class Component;
 namespace detail
 {
+// Transfer a property from one property set to another
+// returns:
+//  0 if it was transferred successfully
+//  1 if the property already existed in the target set and it was left untouched
+// -1 if the property was not set in the source set, the target was left untouched
+int 
+transferProperty( const Ice::PropertiesPtr &fromProperties, 
+                    const Ice::PropertiesPtr &toProperties,
+                    const std::string        &fromKey,
+                    const std::string        &toKey,
+                    bool                      force );
 
-    // Transfer a property from one property set to another
-    // returns:
-    //  0 if it was transferred successfully
-    //  1 if the property already existed in the target set and it was left untouched
-    // -1 if the property was not set in the source set, the target was left untouched
-    int 
-    transferProperty( const Ice::PropertiesPtr &fromProperties, 
-                      const Ice::PropertiesPtr &toProperties,
-                      const std::string        &fromKey,
-                      const std::string        &toKey,
-                      bool                      force );
+// Transfer a property from one property set to another
+// returns:
+//  0 if it was transferred successfully
+//  1 if the property already existed in the target set and it was left untouched
+int
+transferProperty( const Ice::PropertiesPtr& toProperties,
+                    const std::string&  fromKey,
+                    const std::string&  fromValue,
+                    const std::string&  toKey,
+                    bool                force );
 
-    // Transfer a property from one property set to another
-    // returns:
-    //  0 if it was transferred successfully
-    //  1 if the property already existed in the target set and it was left untouched
-    int
-    transferProperty( const Ice::PropertiesPtr& toProperties,
-                      const std::string&  fromKey,
-                      const std::string&  fromValue,
-                      const std::string&  toKey,
-                      bool                force );
+// Internal helper function.
+// behaves like transferProperty. if key is missing, sets the toValue to defaultValue.
+void transferPropertyWithDefault( const Ice::PropertiesPtr &fromProperties,
+                                    const Ice::PropertiesPtr &toProperties,
+                                    const std::string        &fromKey,
+                                    const std::string        &toKey,
+                                    const std::string        &defaultValue,
+                                    bool                      force );
 
-    // Internal helper function.
-    // behaves like transferProperty. if key is missing, sets the toValue to defaultValue.
-    void transferPropertyWithDefault( const Ice::PropertiesPtr &fromProperties,
-                                      const Ice::PropertiesPtr &toProperties,
-                                      const std::string        &fromKey,
-                                      const std::string        &toKey,
-                                      const std::string        &defaultValue,
-                                      bool                      force );
+void setFactoryProperties( Ice::PropertiesPtr&properties, const std::string& compTag );
 
-    void setFactoryProperties( Ice::PropertiesPtr&properties, const std::string& compTag );
+// throws gbxutilacfr::Exception if can't load the file
+void setGlobalProperties( Ice::PropertiesPtr& properties, const std::string& filename );
 
-    // throws gbxutilacfr::Exception if can't load the file
-    void setGlobalProperties( Ice::PropertiesPtr& properties, const std::string& filename );
+// throws gbxutilacfr::Exception if can't load the file
+void setComponentPropertiesFromFile( Ice::PropertiesPtr& properties, const std::string& filename );
 
-    // throws gbxutilacfr::Exception if can't load the file
-    void setComponentPropertiesFromFile( Ice::PropertiesPtr& properties, const std::string& filename );
+// Appends network properties to those currently held by Context.
+// throws gbxutilacfr::Exception if anything goes wrong (in particular, failes to connect to the property server)
+void setComponentPropertiesFromServer( const Context& context );
 
-    // Appends network properties to those currently held by Context.
-    // throws gbxutilacfr::Exception if anything goes wrong (in particular, failes to connect to the property server)
-    void setComponentPropertiesFromServer( const Context& context );
-
-    /*
-     *   - Sets defaults for component and platform name properties.
-     *   - Replaces special platform 'local' with host name.
-     *   - Combines platform and component names into adapter ID property.
-     */
+/*
+    *   - Sets defaults for component and platform name properties.
+    *   - Replaces special platform 'local' with host name.
+    *   - Combines platform and component names into adapter ID property.
+    */
 //     orca::FQComponentName 
-    void postProcessComponentProperties( const Ice::PropertiesPtr& properties, const std::string& compTag );
+void postProcessComponentProperties( const Ice::PropertiesPtr& properties, const std::string& compTag );
 
-    // Prints out all component properties. Tag is used only for tracing.
-    void printComponentProperties( const Ice::PropertiesPtr& properties, const std::string& compTag );
+// Prints out all component properties. Tag is used only for tracing.
+void printComponentProperties( const Ice::PropertiesPtr& properties, const std::string& compTag );
 
-    // Prints Ice, Orca, and (if not empty) Project version.
-    // Project version is obatained from the component, this allows for non-orca projects
-    void printAllVersions( const Component& component );
+// Prints Ice, Orca, and (if not empty) Project version.
+// Project version is obatained from the component, this allows for non-orca projects
+void printAllVersions( const Component& component );
 
-    // Use for 'Application's:
-    // adds to the set of properties by reading from the component's config file
-    void addPropertiesFromApplicationConfigFile( Ice::PropertiesPtr   &properties,
-                                                 const Ice::StringSeq &commandLineArgs,
-                                                 const std::string    &compTag );
+// Use for 'Application's:
+// adds to the set of properties by reading from the component's config file
+void addPropertiesFromApplicationConfigFile( Ice::PropertiesPtr   &properties,
+                                                const Ice::StringSeq &commandLineArgs,
+                                                const std::string    &compTag );
 
-    // Use for 'Service's:
-    // adds to the set of properties by reading from the component's config file
-    void addPropertiesFromServiceConfigFile( Ice::PropertiesPtr   &properties,
-                                             const Ice::StringSeq &commandLineArgs,
-                                             const std::string    &compTag );
-
-    // adds to the set of properties by reading from the global config file
-    void addPropertiesFromGlobalConfigFile( Ice::PropertiesPtr   &properties,
+// Use for 'Service's:
+// adds to the set of properties by reading from the component's config file
+void addPropertiesFromServiceConfigFile( Ice::PropertiesPtr   &properties,
+                                            const Ice::StringSeq &commandLineArgs,
                                             const std::string    &compTag );
+
+// adds to the set of properties by reading from the global config file
+void addPropertiesFromGlobalConfigFile( Ice::PropertiesPtr   &properties,
+                                        const std::string    &compTag );
+
+// Make Home a well-known object, by adding it to the registry
+// Catches and ignores CommunicatorDestroyedException.
+// Throws various Ice exceptions on failure.
+void registerHomeInterface( const Context& context );
 
 } // namespace
 } // namespace
