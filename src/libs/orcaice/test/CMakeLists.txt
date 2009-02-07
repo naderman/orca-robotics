@@ -44,9 +44,11 @@ GBX_ADD_TEST( OrcaIce_CompName_ExplC_NullP compnametest --TestTag.Component=spec
 GBX_ADD_TEST( OrcaIce_CompName_NullC_NullP compnametest --TestTag.Config.ExpCompName=testtag --Orca.Component.PrintProperties=1 )
 
 # specifying AdapterId (with null platform and component)
-GBX_ADD_TEST( OrcaIce_CompName_AdapterId_NullPC compnametest --TestTag.AdapterId=horseshit/special --TestTag.Config.ExpPlatfName=horseshit --TestTag.Config.ExpCompName=special --Orca.Component.PrintProperties=1 )
+GBX_ADD_TEST( OrcaIce_CompName_AdId_NullPC compnametest --TestTag.AdapterId=horseshit/special --TestTag.Config.ExpPlatfName=horseshit --TestTag.Config.ExpCompName=special --Orca.Component.PrintProperties=1 )
 # specifying AdapterId (with explicit platform & comp spec)  : expect AdapterId to overwrite platf&comp
-GBX_ADD_TEST( OrcaIce_CompName_AdapterId_ExplPC compnametest --TestTag.AdapterId=horseshit/special --TestTag.Platform=crap --TestTag.Component=crap --TestTag.Config.ExpPlatfName=horseshit --TestTag.Config.ExpCompName=special --Orca.Component.PrintProperties=1 )
+GBX_ADD_TEST( OrcaIce_CompName_AdId_ExplPC compnametest --TestTag.AdapterId=horseshit/special --TestTag.Platform=crap --TestTag.Component=crap --TestTag.Config.ExpPlatfName=horseshit --TestTag.Config.ExpCompName=special --Orca.Component.PrintProperties=1 )
+# specifying AdapterId (with local platform & explicit comp spec)  : expect AdapterId to overwrite platf&comp (this is the IceGrid case)
+GBX_ADD_TEST( OrcaIce_CompName_AdId_LocalP_ExplC compnametest --TestTag.AdapterId=horseshit/localnav --TestTag.Platform=local --TestTag.Component=crap --TestTag.Config.ExpPlatfName=horseshit --TestTag.Config.ExpCompName=localnav --Orca.Component.PrintProperties=1 --Orca.Warn.FactoryProperty=1 --Orca.Component.PrintContext=1)
 
 # advanced app tests
 ADD_EXECUTABLE( appproptest appproptest.cpp )

@@ -158,7 +158,7 @@ Context::toString() const
     ss<<"tag="<<tag();
     ss<<"\nplatform="<<name().platform;
     ss<<"\ncomponent="<<name().component;
-    ss<<"\nis application="<<(int)isApplication();
+    ss<<"\nisApplication="<<(int)isApplication();
     ss<<"\ncommunicator="<<(int)(communicator()!=0);
     ss<<"\nadapter="<<(int)(adapter()!=0);
     ss<<"\nproperties=("<<properties()->getCommandLineOptions().size()<<")";

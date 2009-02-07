@@ -370,6 +370,7 @@ postProcessComponentProperties( const Ice::PropertiesPtr& props, const std::stri
     // but we need this for running components through IceGrid.
     if ( !orcaice::getProperty( props, compTag+".AdapterId", adapter ) ) 
     {
+cout<<"DEBUG: adapterId is specified"<<endl;
         // When AdapterId is specified, it overwrites platform and component properties.
         fqCName = orcaice::toComponentName( adapter );
         props->setProperty( compTag+".Platform", fqCName.platform );
@@ -377,6 +378,7 @@ postProcessComponentProperties( const Ice::PropertiesPtr& props, const std::stri
     }
     else 
     { 
+cout<<"DEBUG: adapterId is NOT specified"<<endl;
         // When AdapterId is NOT specified, we read individual properties and set the AdapterId
         // (at this point, these properties may be empty)
         fqCName.platform = props->getProperty( compTag+".Platform" );
@@ -384,7 +386,7 @@ postProcessComponentProperties( const Ice::PropertiesPtr& props, const std::stri
         props->setProperty( compTag+".AdapterId", orcaice::toString(fqCName) );
     }
 
-    // check that we have platform name, if missing set it to 'local'
+    // check that we have platform name, if it's missing set it to 'local'
     // this may easily happen if the component is executed without a config file.
     if ( fqCName.platform.empty() ) 
     {
@@ -417,6 +419,9 @@ postProcessComponentProperties( const Ice::PropertiesPtr& props, const std::stri
             initTracerInfo( "Replaced 'local' with hostname in platform name : "+compTag+".Platform="+fqCName.platform );
             initTracerInfo( "Replaced 'local' with hostname in adapter ID : "+compTag+".AdapterId="+orcaice::toString(fqCName) );
         }
+    }
+    else {
+cout<<"DEBUG: NOT replacing local platform"<<endl;
     }
 
     // 
