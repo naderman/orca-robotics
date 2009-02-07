@@ -167,6 +167,7 @@ setFactoryProperties( Ice::PropertiesPtr& props, const std::string& compTag )
 //     tempProps->setProperty( "Orca.Component.EnableStatus",  "1" );
 //     tempProps->setProperty( "Orca.Component.EnableHome",    "1" );
     tempProps->setProperty( "Orca.Component.PrintProperties",  "0" );
+    tempProps->setProperty( "Orca.Component.PrintContext",     "0" );
     tempProps->setProperty( "Orca.Component.PrintStarted",     "0" );
 
     // Status properties
@@ -445,6 +446,15 @@ postProcessComponentProperties( const Ice::PropertiesPtr& props, const std::stri
 }
 
 void
+printComponentContext( const orcaice::Context& context )
+{
+    initTracerInfo( context.tag()+": Contents of the component's context" );
+    cout<< "========================"<<endl;
+    cout<<context.toString()<<endl;
+    cout<< "========================"<<endl;
+}
+
+void
 printComponentProperties( const Ice::PropertiesPtr& props, const std::string& compTag )
 {
     Ice::StringSeq propSeq = props->getCommandLineOptions();
@@ -453,12 +463,12 @@ printComponentProperties( const Ice::PropertiesPtr& props, const std::string& co
     os << propSeq.size();
 
     initTracerInfo( compTag+": All component properties ("+os.str()+")" );
-    initTracerInfo( "========================" );
+    cout<< "========================"<<endl;
 
     for ( unsigned int i=0; i<propSeq.size(); ++i ) {
-        initTracerInfo( propSeq[i] );
+        cout<<propSeq[i]<<endl;
     }
-    initTracerInfo( "========================" );
+    cout<< "========================"<<endl;
 }
 
 void

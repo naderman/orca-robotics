@@ -118,6 +118,9 @@ public:
     //! @c prefixToStrip = tag()+".Config."
     hydroutil::Context toHydroContext() const;
 
+    //! Returns debugging string describing all contents.
+    std::string toString() const;
+
 private:
 
     // this function should only be called by Component (it can because it's a friend)

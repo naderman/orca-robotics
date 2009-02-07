@@ -22,7 +22,7 @@ ORCA_GENERATE_CONFIG_FILE( admintest.def admintest 0 )
 
 # basic app test, no standard interface, no adapter activation
 ADD_EXECUTABLE( apptest apptest.cpp )
-GBX_ADD_TEST( OrcaIce_App apptest )
+GBX_ADD_TEST( OrcaIce_App apptest  --Orca.Component.PrintProperties=1 --Orca.Component.PrintContext=1 )
 
 # test std component interfaces
 ADD_EXECUTABLE( compstdifacetest compstdifacetest.cpp )
@@ -31,14 +31,22 @@ ORCA_GENERATE_CONFIG_FILE( compstdifacetest.def compstdifacetest 0 )
 
 # testing platform and component name substitutions
 ADD_EXECUTABLE( compnametest compnametest.cpp )
-# explicit platform & comp spec
-GBX_ADD_TEST( OrcaIce_CompName_ExplP_ExplC compnametest --Test.Platform=horseshit --Test.Component=comptest --Test.Config.ExpPlatfName=horseshit --Test.Config.ExpCompName=comptest --Orca.Component.PrintProperties=1 )
-# local platform spec
-GBX_ADD_TEST( OrcaIce_CompName_LocP_NullC compnametest --Test.Platform=local --Test.Config.ExpCompName=test --Orca.Component.PrintProperties=1 )
-# empty platorm spec
-GBX_ADD_TEST( OrcaIce_CompName_NullP_NullC compnametest --Test.Config.ExpCompName=test --Orca.Component.PrintProperties=1 )
-# specifying AdapterId
-GBX_ADD_TEST( OrcaIce_CompName_AdapterId compnametest --Test.AdapterId=horseshit/comptest --Test.Platform=local --Test.Config.ExpPlatfName=horseshit --Test.Config.ExpCompName=comptest --Orca.Component.PrintProperties=1 )
+# explicit platform (with null component)
+GBX_ADD_TEST( OrcaIce_CompName_ExplP_NullC compnametest --TestTag.Platform=horseshit --TestTag.Config.ExpPlatfName=horseshit --Orca.Component.PrintProperties=1 )
+# local platform spec (with null component)
+GBX_ADD_TEST( OrcaIce_CompName_LocP_NullC compnametest --TestTag.Platform=local --Orca.Component.PrintProperties=1 )
+# null platorm spec (with null component)
+GBX_ADD_TEST( OrcaIce_CompName_NullP_NullC compnametest --Orca.Component.PrintProperties=1 )
+
+# explicit component (with null platform)
+GBX_ADD_TEST( OrcaIce_CompName_ExplC_NullP compnametest --TestTag.Component=special --TestTag.Config.ExpCompName=special --Orca.Component.PrintProperties=1 )
+# null component (with null platform)
+GBX_ADD_TEST( OrcaIce_CompName_NullC_NullP compnametest --TestTag.Config.ExpCompName=testtag --Orca.Component.PrintProperties=1 )
+
+# specifying AdapterId (with null platform and component)
+GBX_ADD_TEST( OrcaIce_CompName_AdapterId_NullPC compnametest --TestTag.AdapterId=horseshit/special --TestTag.Config.ExpPlatfName=horseshit --TestTag.Config.ExpCompName=special --Orca.Component.PrintProperties=1 )
+# specifying AdapterId (with explicit platform & comp spec)  : expect AdapterId to overwrite platf&comp
+GBX_ADD_TEST( OrcaIce_CompName_AdapterId_ExplPC compnametest --TestTag.AdapterId=horseshit/special --TestTag.Platform=crap --TestTag.Component=crap --TestTag.Config.ExpPlatfName=horseshit --TestTag.Config.ExpCompName=special --Orca.Component.PrintProperties=1 )
 
 # advanced app tests
 ADD_EXECUTABLE( appproptest appproptest.cpp )

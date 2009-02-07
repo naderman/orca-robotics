@@ -151,4 +151,19 @@ Context::toHydroContext( const std::string &prefixToStrip ) const
                                status() );
 }
 
+std::string 
+Context::toString() const
+{
+    std::stringstream ss;
+    ss<<"tag="<<tag();
+    ss<<"\nplatform="<<name().platform;
+    ss<<"\ncomponent="<<name().component;
+    ss<<"\nis application="<<(int)isApplication();
+    ss<<"\ncommunicator="<<(int)(communicator()!=0);
+    ss<<"\nadapter="<<(int)(adapter()!=0);
+    ss<<"\nproperties=("<<properties()->getCommandLineOptions().size()<<")";
+
+    return ss.str();
+}   
+
 } // namespace

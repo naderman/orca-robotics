@@ -173,6 +173,13 @@ Service::start( const ::std::string        & name,
     initTracerInfo( component_->context().tag()+": Service initialized." );
 
     //
+    // Cannot change anything in Component::context_ after this step.
+    //
+    if ( props->getPropertyAsInt( "Orca.Component.PrintContext" ) ) {
+        orcaice::detail::printComponentContext( component_->context() );
+    }
+
+    //
     // Start the component, catching all exceptions
     //
     stringstream exceptionSS;

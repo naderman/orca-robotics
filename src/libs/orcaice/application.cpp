@@ -136,7 +136,6 @@ Application::run( int argc, char* argv[] )
 
     //
     // Give the component all the stuff it needs to initialize
-    // Cannot change anything in Component::context_ after this step.
     //
     orca::FQComponentName fqCompName;
     fqCompName.platform = props->getProperty( component_.context().tag()+".Platform" );
@@ -145,6 +144,13 @@ Application::run( int argc, char* argv[] )
     bool isApp = true;
     component_.init( fqCompName, isApp, adapter_ );
     initTracerInfo( component_.context().tag()+": Application initialized." );
+
+    //
+    // Cannot change anything in Component::context_ after this step.
+    //
+    if ( props->getPropertyAsInt( "Orca.Component.PrintContext" ) ) {
+        orcaice::detail::printComponentContext( component_.context() );
+    }
 
     //
     // Start the component, catching all exceptions

@@ -17,7 +17,7 @@ using namespace std;
 class TestComponent : public orcaice::Component
 {
 public:
-    TestComponent() : orcaice::Component( "Test", orcaice::AllStandardInterfaces ) {};
+    TestComponent() : orcaice::Component( "TestTag", orcaice::NoStandardInterfaces ) {};
     virtual void start();
 };
 
@@ -29,6 +29,9 @@ TestComponent::start()
     string comp = context().properties()->getProperty( prefix+"ExpCompName" );
     string platf = context().properties()->getProperty( prefix+"ExpPlatfName" ); 
 
+    // always check platform name.
+    // if it specified, that the expected value matches what we have.
+    // if it is NOT specified, check that substitution happened and we get something which is not 'local'
     if ( !platf.empty() ) {
         cout<<"testing explicit platform name...";
         if ( context().name().platform != platf ) {
@@ -46,12 +49,18 @@ TestComponent::start()
         cout<<"ok"<<endl;
     }
 
-    cout<<"testing component name...";
-    if ( context().name().component != comp ) {
-        cout<<"failed: wrong component name="<<context().name().component<<" expect="<<comp<<endl;
-        exit(EXIT_FAILURE);
+    // test component name only if the value specified (and is non-empty)
+    if ( !comp.empty() ) {
+        cout<<"testing component name...";
+        if ( context().name().component != comp ) {
+            cout<<"failed: wrong component name="<<context().name().component<<" expect="<<comp<<endl;
+            exit(EXIT_FAILURE);
+        }
+        cout<<"ok"<<endl;
     }
-    cout<<"ok"<<endl;
+    else {
+        cout<<"NOT testing component name"<<endl;
+    }
 
     cout<<"=========== TESTS =========="<<endl;
     context().shutdown();

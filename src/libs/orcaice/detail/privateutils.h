@@ -72,12 +72,19 @@ void setComponentPropertiesFromFile( Ice::PropertiesPtr& properties, const std::
 void setComponentPropertiesFromServer( const Context& context );
 
 /*
-    *   - Sets defaults for component and platform name properties.
-    *   - Replaces special platform 'local' with host name.
-    *   - Combines platform and component names into adapter ID property.
-    */
+TODO: document this
+- Sets defaults for component and platform name properties.
+    - Converts adapter ID property (if specified) to platform and component names.
+    - Replaces empty platform name with 'local'
+    - Replaces special platform 'local' with host name.
+    - Replaces empty component name with component tag converted to low case
+    - Combines platform and component names into adapter ID property.
+*/
 //     orca::FQComponentName 
 void postProcessComponentProperties( const Ice::PropertiesPtr& properties, const std::string& compTag );
+
+// Prints out contents of component's context
+void printComponentContext( const orcaice::Context& context );
 
 // Prints out all component properties. Tag is used only for tracing.
 void printComponentProperties( const Ice::PropertiesPtr& properties, const std::string& compTag );
