@@ -68,7 +68,7 @@ protected:
 
 private:
     // from SubstatusThread
-    virtual void walk();
+    void walk();
 
 };
 //! A smart pointer to the SubsystemThread class.
