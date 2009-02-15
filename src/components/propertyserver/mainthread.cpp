@@ -29,9 +29,11 @@ MainThread::initialise()
 {
     subStatus().setMaxHeartbeatInterval( 20.0 );
 
-
     // These functions catch their exceptions.
     activate( context_, this, subsysName() );
+    // check for stop signal after retuning from multi-try
+    if ( isStopping() )
+        return;
 
     initPropertiesDb();
     initNetworkInterface();

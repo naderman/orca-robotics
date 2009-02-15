@@ -32,8 +32,6 @@ private:
     // from SubsystemThread
     virtual void initialise();
     virtual void work();
-
-    void init();
     
     // for our requests for current location
     orca::Localise2dPrx localise2dPrx_;

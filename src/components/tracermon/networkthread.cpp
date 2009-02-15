@@ -55,10 +55,16 @@ NetworkThread::walk()
 
     // multi-try
     orcaice::activate( context_, this ); 
+    // check for stop signal after retuning from multi-try
+    if ( isStopping() )
+        return;
 
     // REQUIRED : Tracer
     // multi-try
     orcaice::connectToInterfaceWithTag<orca::TracerPrx >( context_, tracerPrx_, "Tracer", this );
+    // check for stop signal after retuning from multi-try
+    if ( isStopping() )
+        return;
 
     //
     // this loop until it succeeds

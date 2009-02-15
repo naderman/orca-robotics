@@ -42,6 +42,10 @@ MainThread::initialise()
 
     // These functions catch their exceptions.
     activate( context_, this, subsysName() );
+    // check for stop signal after retuning from multi-try
+    if ( isStopping() )
+        return;
+
     initNetworkInterface();
 
     hwThread_->start();

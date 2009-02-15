@@ -37,8 +37,13 @@ MainThread::initialise()
     subStatus().setMaxHeartbeatInterval( 30.0 );
     
     activate( context_, this, subsysName() );
+    // check for stop signal after retuning from multi-try
+    if ( isStopping() )
+        return;
 
     initNetwork();
+    if ( isStopping() )
+        return;
 
     // Initialising the driver may require a long time to process the map.
     // (this may still lead to a timeout if somebody is waiting for a status update.
@@ -194,12 +199,15 @@ MainThread::initNetwork()
     //
     // REQUIRED INTERFACE: OgMap
     //
-    subStatus().initialising("Connecting to OgMap" );
+    subStatus().ok("Connecting to OgMap" );
     orca::OgMapPrx ogMapPrx;    
     orcaice::connectToInterfaceWithTag<orca::OgMapPrx>( context_, ogMapPrx, "OgMap", this, subsysName() );
+    // check for stop signal after retuning from multi-try
+    if ( isStopping() )
+        return;
 
     // get the og map once
-    subStatus().initialising("Getting Og Map" );
+    subStatus().ok("Getting Og Map" );
     orca::OgMapData ogMapSlice;
     try
     {
@@ -225,7 +233,7 @@ MainThread::initNetwork()
     //
 
     // PathPlanner2d
-    subStatus().initialising("Creating PathPlanner2d Interface" );
+    subStatus().ok("Creating PathPlanner2d Interface" );
     pathPlannerI_ = new PathPlanner2dI( pathPlannerTaskBuffer_, context_ );
     Ice::ObjectPtr pathPlannerObj = pathPlannerI_;
     
@@ -236,7 +244,7 @@ MainThread::initNetwork()
 void
 MainThread::initDriver()
 {
-    subStatus().initialising("Initialising Driver" );
+    subStatus().ok("Initialising Driver" );
 
     Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag() + ".Config.";

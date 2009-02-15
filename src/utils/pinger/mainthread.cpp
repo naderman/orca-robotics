@@ -24,14 +24,13 @@ MainThread::MainThread( const orcaice::Context& context ) :
 {
 }
 
-MainThread::~MainThread()
-{
-}
-
 void
 MainThread::walk()
 {
     orcaice::activate( context_, this );
+    // check for stop signal after retuning from multi-try
+    if ( isStopping() )
+        return;
 
     //
     // REQUIRED : Replier
@@ -39,6 +38,9 @@ MainThread::walk()
     orca::util::LatencyReplierPrx replierPrx;
     orcaice::connectToInterfaceWithTag<orca::util::LatencyReplierPrx>
         ( context_, replierPrx, "Replier", this );
+    // check for stop signal after retuning from multi-try
+    if ( isStopping() )
+        return;
 
     //
     // Ping settings

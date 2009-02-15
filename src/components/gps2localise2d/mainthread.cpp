@@ -41,6 +41,9 @@ MainThread::initialise()
     gpsConsumer_ = new orcaifaceimpl::StoringGpsConsumerImpl( context_ );
 
     activate( context_, this, subsysName() );
+    // check for stop signal after retuning from multi-try
+    if ( isStopping() )
+        return;
 
     subscribeToGps();
     initNetworkInterface();

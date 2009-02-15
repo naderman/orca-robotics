@@ -61,6 +61,9 @@ MainThread::initialise()
 {
     // multi-try activation function
     orcaice::activate( context_, this, subsysName() );
+    // check for stop signal after retuning from multi-try
+    if ( isStopping() )
+        return;
 
     initLoggers();
     initInterface();

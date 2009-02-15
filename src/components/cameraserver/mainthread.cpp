@@ -38,6 +38,10 @@ MainThread::initialise()
 
     // These functions catch their exceptions.
     activate( context_, this, subsysName() );
+    // check for stop signal after retuning from multi-try
+    if ( isStopping() )
+        return;
+
     context_.tracer().info( "Setting up Hardware Interface" );
     initHardwareInterface();
     

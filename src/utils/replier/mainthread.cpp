@@ -28,6 +28,9 @@ void
 MainThread::walk()
 {
     orcaice::activate( context_, this );
+    // check for stop signal after retuning from multi-try
+    if ( isStopping() )
+        return;
 
     // create a provided interface
     // create servant for direct connections and tell adapter about it

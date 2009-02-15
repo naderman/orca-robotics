@@ -69,6 +69,9 @@ MainThread::initialise()
 
     // These functions catch their exceptions.
     orcaice::activate( context_, this, subsysName() );
+    // check for stop signal after retuning from multi-try
+    if ( isStopping() )
+        return;
 
     initNetworkInterface();
     initHardwareDriver();

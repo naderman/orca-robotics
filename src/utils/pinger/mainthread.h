@@ -8,8 +8,8 @@
  *
  */
  
-#ifndef MAINTHREAD_H
-#define MAINTHREAD_H
+#ifndef MAIN_THREAD_H
+#define MAIN_THREAD_H
 
 #include <gbxsickacfr/gbxiceutilacfr/safethread.h>
 #include <orcaice/context.h>
@@ -21,14 +21,11 @@ class MainThread: public gbxiceutilacfr::SafeThread
 {    	
 public:
     MainThread( const orcaice::Context& context );
-    ~MainThread();
-
-    virtual void walk();
 
 private:
+    virtual void walk();
 
     orcaice::Context context_;
-
 };
 
 } // namespace

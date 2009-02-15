@@ -148,6 +148,10 @@ MainThread::initialise()
     //
     // This function catches its exceptions
     activate( context_, this, subsysName() );
+    // check for stop signal after retuning from multi-try
+    if ( isStopping() )
+        return;
+
     setup();
 }
 
@@ -399,6 +403,9 @@ MainThread::setup()
     {
         context_.tracer().debug( "Connecting to VelocityControl2d" );
         orcaice::connectToInterfaceWithTag( context_, velControl2dPrx_, "VelocityControl2d", this, subsysName() );
+        // check for stop signal after retuning from multi-try
+        if ( isStopping() )
+            return;
 
         context_.tracer().debug( "Subscribing to Odometry2d" );
         odomConsumer_ = new orcaifaceimpl::StoringOdometry2dConsumerImpl(context_);

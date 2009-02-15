@@ -184,7 +184,9 @@ MainThread::initialise()
     // multi-try activation function
     //
     orcaice::activate( context_, this, subsysName() );
-
+    // check for stop signal after retuning from multi-try
+    if ( isStopping() )
+        return;
 
     // Start the thread to replay the logs
     replayConductor_->start();

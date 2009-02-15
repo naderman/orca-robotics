@@ -112,6 +112,9 @@ MainThread::initNetworkInterface()
 {
     // activate component's communication
     activate( context_, this, subsysName() );
+    // check for stop signal after retuning from multi-try
+    if ( isStopping() )
+        return;
     
     //
     // EXTERNAL REQUIRED INTERFACE

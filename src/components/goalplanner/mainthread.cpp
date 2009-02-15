@@ -280,6 +280,9 @@ MainThread::initNetwork()
     //
     // multi-try function
     orcaice::activate( context_, this, subsysName() );
+    // check for stop signal after retuning from multi-try
+    if ( isStopping() )
+        return;
 
     //
     // REQUIRED INTERFACES: Localise2d, Pathfollower, Pathplanner
@@ -291,6 +294,9 @@ MainThread::initNetwork()
                                         "Localise2d",
                                         this,
                                         subsysName() );
+    // check for stop signal after retuning from multi-try
+    if ( isStopping() )
+        return;
 
 //     subStatus().initialising( "Connecting to PathFollower2d" );
     orcaice::connectToInterfaceWithTag( context_,
@@ -298,6 +304,9 @@ MainThread::initNetwork()
                                         "PathFollower2d",
                                         this,
                                         subsysName() );
+    // check for stop signal after retuning from multi-try
+    if ( isStopping() )
+        return;
 
 //     subStatus().initialising( "Subscribing for PathFollower2d updates" );
     progressMonitor_ = new ProgressMonitor( context_ );
@@ -312,6 +321,9 @@ MainThread::initNetwork()
                                         "PathPlanner2d",
                                         this,
                                         subsysName() );
+    // check for stop signal after retuning from multi-try
+    if ( isStopping() )
+        return;
 
 //     subStatus().initialising( "Connecting to OgMap" );
     orca::OgMapPrx ogMapPrx_;
@@ -320,6 +332,9 @@ MainThread::initNetwork()
                                         "OgMap",
                                         this,
                                         subsysName() );
+    // check for stop signal after retuning from multi-try
+    if ( isStopping() )
+        return;
     orca::OgMapData orcaOgMap = ogMapPrx_->getData();
     orcaogmap::convert( orcaOgMap, ogMap_ );
 

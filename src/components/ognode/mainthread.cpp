@@ -240,6 +240,9 @@ MainThread::init()
 
             // Enable network connections
             context_.activate();
+            // check for stop signal after retuning from multi-try
+            if ( isStopping() )
+                return;
 
             return;
         }

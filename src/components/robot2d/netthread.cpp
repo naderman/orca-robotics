@@ -76,6 +76,9 @@ NetThread::initialise()
     // multi-try function
     context_.tracer().debug( "NetThread: activating..." );
     orcaice::activate( context_, this );
+    // check for stop signal after retuning from multi-try
+    if ( isStopping() )
+        return;
     
     // Initialise external interfaces, multi-try init functions
     odometry2dI_ = new orcaifaceimpl::Odometry2dImpl( descr_, "Odometry2d", context_ );

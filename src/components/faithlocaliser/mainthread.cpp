@@ -117,6 +117,9 @@ MainThread::initNetworkInterface()
     //
     // multi-try function
     orcaice::activate( context_, this, subsysName() );
+    // check for stop signal after retuning from multi-try
+    if ( isStopping() )
+        return;
     
     //
     // EXTERNAL REQUIRED INTERFACES
@@ -131,6 +134,9 @@ MainThread::initNetworkInterface()
     orca::Odometry2dPrx odometryPrx;
     // multi-try function
     orcaice::connectToInterfaceWithTag<orca::Odometry2dPrx>( context_, odometryPrx, "Odometry2d", this );
+    // check for stop signal after retuning from multi-try
+    if ( isStopping() )
+        return;
     
     orca::VehicleDescription vehicleDescription;
     while ( !isStopping() )

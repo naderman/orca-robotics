@@ -198,6 +198,9 @@ NetThread::initialise()
 {
     // this is a multi-try function to activate component's server capabilities
     activate( context_, this, subsysName() );
+    // check for stop signal after retuning from multi-try
+    if ( isStopping() )
+        return;
     
     std::string prefix = context_.tag() + ".Config.";
 

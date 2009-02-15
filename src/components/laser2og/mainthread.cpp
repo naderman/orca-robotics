@@ -95,8 +95,79 @@ MainThread::initialise()
     //
     // multi-try function
     orcaice::activate( context_, this, subsysName() );
+    // check for stop signal after retuning from multi-try
+    if ( isStopping() )
+        return;
 
-    init();
+    Ice::PropertiesPtr prop = context_.properties();
+    std::string prefix = context_.tag() + ".Config.";
+
+    // configure the sensor model
+    OgLaserModelConfig sensorConfig;
+
+    sensorConfig.size = orcaice::getPropertyAsIntWithDefault( prop, prefix+"Sensor.Size", 101 );
+    sensorConfig.occupMax = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Sensor.OccupMax", 0.575 );
+    sensorConfig.emptyMax = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Sensor.EmptyMax", 0.425);
+    sensorConfig.rangeStDev = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Sensor.RangeStDev", 0.1);
+    sensorConfig.rangeStDevMax = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Sensor.RangeStDevMax", 3.0);
+    sensorConfig.posStDevMax = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Sensor.PosStDevMax", 5.0);
+    sensorConfig.hedStDevMax = DEG2RAD( orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Sensor.HedStDevMax", 3.0) );
+
+    //
+    // REQUIRED INTERFACES: Laser, Localise2d, OgFusion
+    //
+    orcaice::connectToInterfaceWithTag<orca::RangeScanner2dPrx>( context_, rangeScannerPrx_, "Observations", this, subsysName() );
+    // check for stop signal after retuning from multi-try
+    if ( isStopping() )
+        return;
+
+    orcaice::connectToInterfaceWithTag<orca::Localise2dPrx>( context_, localise2dPrx_, "Localisation", this, subsysName() );
+    // check for stop signal after retuning from multi-try
+    if ( isStopping() )
+        return;
+
+    orcaice::connectToInterfaceWithTag<orca::OgFusionPrx>( context_, ogFusionPrx_, "OgFusion", this, subsysName() );
+    // check for stop signal after retuning from multi-try
+    if ( isStopping() )
+        return;
+    
+    // Get the configuration
+    orca::RangeScanner2dDescription descr = rangeScannerPrx_->getDescription();
+    cout << orcaobj::toString(descr) << endl;
+
+    sensorConfig.rangeMax = descr.maxRange;
+    sensorConfig.angleIncrement = descr.fieldOfView/(descr.numberOfSamples+1);
+
+    orca::OgFusionConfig ogFusionConfig = ogFusionPrx_->getConfig();
+
+    ogfusion::MapConfig mapConfig;
+
+    // read map info from config
+    mapConfig.mapSizeX = ogFusionConfig.numCellsX;
+    mapConfig.mapSizeY = ogFusionConfig.numCellsY;
+    mapConfig.mapResX = ogFusionConfig.metresPerCellX;
+    mapConfig.mapResY = ogFusionConfig.metresPerCellY;
+    mapConfig.mapOriginX = ogFusionConfig.offset.p.x;
+    mapConfig.mapOriginY = ogFusionConfig.offset.p.y;
+    mapConfig.mapOrientation = ogFusionConfig.offset.o;
+
+    if (ogFusionConfig.offset.o != 0.0) {
+        // unrecoverable error
+        context_.shutdown(); 
+        throw gbxutilacfr::Exception( ERROR_INFO, "Laser2Og currently only support axis aligned OgMaps" );
+    }
+
+    //
+    // Subscribe for observation data
+    //
+    // create a callback object to recieve scans
+    rangeScannerConsumer_ = new orcaifaceimpl::BufferedRangeScanner2dConsumerImpl( -1, gbxiceutilacfr::BufferTypeCircular, context_ );
+    rangeScannerConsumer_->subscribeWithTag( "Observations", this, subsysName() );
+
+    //
+    // Algorithm
+    //    
+    laser2Og_.reset( new Laser2Og(mapConfig,sensorConfig) );
 }
 
 void
@@ -158,71 +229,4 @@ MainThread::work()
             orcaice::catchMainLoopExceptions( subStatus() );
         }
     } // end of main loop
-}
-
-///////////////////
-
-void
-MainThread::init()
-{
-    Ice::PropertiesPtr prop = context_.properties();
-    std::string prefix = context_.tag() + ".Config.";
-
-    // configure the sensor model
-    OgLaserModelConfig sensorConfig;
-
-    sensorConfig.size = orcaice::getPropertyAsIntWithDefault( prop, prefix+"Sensor.Size", 101 );
-    sensorConfig.occupMax = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Sensor.OccupMax", 0.575 );
-    sensorConfig.emptyMax = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Sensor.EmptyMax", 0.425);
-    sensorConfig.rangeStDev = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Sensor.RangeStDev", 0.1);
-    sensorConfig.rangeStDevMax = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Sensor.RangeStDevMax", 3.0);
-    sensorConfig.posStDevMax = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Sensor.PosStDevMax", 5.0);
-    sensorConfig.hedStDevMax = DEG2RAD( orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Sensor.HedStDevMax", 3.0) );
-
-    //
-    // REQUIRED INTERFACES: Laser, Localise2d, OgFusion
-    //
-    orcaice::connectToInterfaceWithTag<orca::RangeScanner2dPrx>( context_, rangeScannerPrx_, "Observations", this, subsysName() );
-
-    orcaice::connectToInterfaceWithTag<orca::Localise2dPrx>( context_, localise2dPrx_, "Localisation", this, subsysName() );
-
-    orcaice::connectToInterfaceWithTag<orca::OgFusionPrx>( context_, ogFusionPrx_, "OgFusion", this, subsysName() );
-    
-    // Get the configuration
-    orca::RangeScanner2dDescription descr = rangeScannerPrx_->getDescription();
-    cout << orcaobj::toString(descr) << endl;
-
-    sensorConfig.rangeMax = descr.maxRange;
-    sensorConfig.angleIncrement = descr.fieldOfView/(descr.numberOfSamples+1);
-
-    orca::OgFusionConfig ogFusionConfig = ogFusionPrx_->getConfig();
-
-    ogfusion::MapConfig mapConfig;
-
-    // read map info from config
-    mapConfig.mapSizeX = ogFusionConfig.numCellsX;
-    mapConfig.mapSizeY = ogFusionConfig.numCellsY;
-    mapConfig.mapResX = ogFusionConfig.metresPerCellX;
-    mapConfig.mapResY = ogFusionConfig.metresPerCellY;
-    mapConfig.mapOriginX = ogFusionConfig.offset.p.x;
-    mapConfig.mapOriginY = ogFusionConfig.offset.p.y;
-    mapConfig.mapOrientation = ogFusionConfig.offset.o;
-
-    if (ogFusionConfig.offset.o != 0.0) {
-        // unrecoverable error
-        context_.shutdown(); 
-        throw gbxutilacfr::Exception( ERROR_INFO, "Laser2Og currently only support axis aligned OgMaps" );
-    }
-
-    //
-    // Subscribe for observation data
-    //
-    // create a callback object to recieve scans
-    rangeScannerConsumer_ = new orcaifaceimpl::BufferedRangeScanner2dConsumerImpl( -1, gbxiceutilacfr::BufferTypeCircular, context_ );
-    rangeScannerConsumer_->subscribeWithTag( "Observations", this, subsysName() );
-
-    //
-    // Algorithm
-    //    
-    laser2Og_.reset( new Laser2Og(mapConfig,sensorConfig) );
 }

@@ -89,6 +89,9 @@ MainThread::initialise()
     //
     // this may throw, but may as well quit right then
     orcaice::activate( context_, this, subsysName() );
+    // check for stop signal after retuning from multi-try
+    if ( isStopping() )
+        return;
 
     //
     // Enable driver

@@ -34,8 +34,13 @@ MainThread::initialise()
     //
     // ENABLE NETWORK CONNECTIONS
     //
-    // multi-try function
+    // we don't have any servers, but we need to activate the adapter in order to
+    // receive subscription updates.
+    // (multi-try)
     orcaice::activate( context_, this, subsysName() );
+    // check for stop signal after retuning from multi-try
+    if ( isStopping() )
+        return;
 
     //
     // REQUIRED INTERFACE: Laser
@@ -44,7 +49,10 @@ MainThread::initialise()
     // Connect directly to the interface (multi-try)
     orcaice::connectToInterfaceWithTag<orca::LaserScanner2dPrx>( 
         context_, laserPrx, "LaserScanner2d", this, subsysName() );
-    
+    // check for stop signal after retuning from multi-try
+    if ( isStopping() )
+        return;
+
     // Try to get laser description once, continue if fail
     context_.tracer().info( "Trying to get laser description" );
     try
@@ -55,14 +63,14 @@ MainThread::initialise()
     catch ( const Ice::Exception & e ) 
     {
         std::stringstream ss;
-        ss << "Failed to get laser description. Will continue anyway."<<e;
+        ss << "Failed to get laser description. Will continue anyway."<<e.what();
         context_.tracer().warning( ss.str() );
     }
 
     // Get laser data once
     int count = 5;
     context_.tracer().info( "Trying to get one scan as a test" );
-    while ( count-- )
+    while ( !isStopping() && count-- )
     {
         try
         {
@@ -99,6 +107,9 @@ MainThread::initialise()
             context_.tracer().warning( ss.str() );
         }
     }
+    // check for stop signal after retuning from multi-try
+    if ( isStopping() )
+        return;
     
     // subscribe for data updates (multi-try)
     consumer_ = new orcaifaceimpl::PrintingRangeScanner2dConsumerImpl( context_, 1000, 1 );
