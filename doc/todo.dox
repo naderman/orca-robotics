@@ -131,6 +131,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
   - all components which subscribe to remote interfaces now attempt to unsubscribe before stopping. (alexm)
   - all components catch exeptions in a consise and standardised manner using new orcaice:: functions. (alexm)
   - converted to new Subsystem implementation. (alexm)
+  - all components quit cleaner when stopped during unsuccessful initialization (alexm)
 
 - pathplanner
   - Shoveled a lot of ugly code out into hydro.  Now makes use of a hydro driver, loaded dynamically. (alexb)
@@ -145,6 +146,10 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
   - Now respects (ac/de)celeration limits.
 
 @par Updated utilities
+
+- Probe
+  - Added an option to trace progress when pinging components on a particular platform. (alexm)
+
 @par Updated libraries
 
 - libOrcaIce
