@@ -94,7 +94,8 @@ RegistryHierarchicalData1
 home2hierarch1( const RegistryHomeData& registryHomeData );
 
 RegistryHierarchicalData2
-home2hierarch2( const RegistryHomeData& registryHomeData, const PlatformHeader& platform, bool tryToPing=true );
+home2hierarch2( const RegistryHomeData& registryHomeData, const PlatformHeader& platform, 
+                bool tryToPing=true, int tracePing=0 );
 
 //@}
 } // namespace

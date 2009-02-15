@@ -84,6 +84,7 @@ getRegistryHomeData( const orcaice::Context& context, const std::string& locator
 
     // add more information
     HomeHeader home;
+cout<<endl;
     for ( unsigned int i=0; i<list.size(); ++i ) 
     {
         home.proxy = list[i];
@@ -92,6 +93,7 @@ getRegistryHomeData( const orcaice::Context& context, const std::string& locator
         
         // ping each component's Home interface, if requested
         if ( tryToPing ) {
+cout<<".";
             try {
                 home.proxy->ice_ping();
             }
@@ -99,11 +101,13 @@ getRegistryHomeData( const orcaice::Context& context, const std::string& locator
             {
                 home.isReachable = false;
             }
+cout<<"|";
             home.address = "not implemented";
         }
         
         data.homes.push_back( home );
     }
+cout<<endl;
 
     return data;
 }
@@ -362,7 +366,8 @@ home2hierarch1( const RegistryHomeData& registryHomeData )
 }
 
 RegistryHierarchicalData2
-home2hierarch2( const RegistryHomeData& registryHomeData, const PlatformHeader& platform, bool tryToPing )
+home2hierarch2( const RegistryHomeData& registryHomeData, const PlatformHeader& platform, 
+                bool tryToPing, int tracePing )
 {
     RegistryHierarchicalData2 hierData;
 
@@ -374,6 +379,8 @@ home2hierarch2( const RegistryHomeData& registryHomeData, const PlatformHeader& 
     std::string adapt;
     orca::FQComponentName compName;
 
+    if ( tracePing )
+        cout<<endl;
     for ( unsigned int i=0; i<registryHomeData.homes.size(); ++i ) {
 
         // local call
@@ -387,19 +394,48 @@ home2hierarch2( const RegistryHomeData& registryHomeData, const PlatformHeader& 
             homeHeader.isReachable = true;
             // ping this component's Home interface, if requested
             if ( tryToPing ) {
+
+                switch ( tracePing ) 
+                {
+                case 1 :
+                    cout<<"."<<flush;
+                    break;
+                case 2 :
+                    cout<<"pinging "<<homeHeader.proxy->ice_toString()<<flush;
+                    break;
+                default :
+                    break;
+                }
+
                 try {
+
                     homeHeader.proxy->ice_ping();
                 }
                 catch( const Ice::Exception& )
                 {
                     homeHeader.isReachable = false;
                 }
+
+                switch ( tracePing ) 
+                {
+                case 1 :
+                    cout<<"|";
+                    break;
+                case 2 :
+                    cout<<endl;
+                    break;
+                default :
+                    break;
+                }
+
                 homeHeader.address = "not implemented";
             }
             // store it
             hierData.homes.push_back( homeHeader );
         }
     }
+    if ( tracePing )
+        cout<<endl;
     cout<<"DEBUG: filtered "<<registryHomeData.homes.size()<<" homes into "<<hierData.homes.size()<<" on platform "<<hierData.platform.name<<endl;
  
     return hierData;
