@@ -101,7 +101,7 @@ BrowserThread::walk()
             break;
         }
         case Top : {
-            //cout<<"up event"<<endl;
+            //cout<<"top event"<<endl;
             top();
             break;
         }
@@ -185,7 +185,9 @@ BrowserThread::loadPlatform()
     lastPlatformPick_ = pick_;
     
     bool tryToPing = true;
-    platformData_ = orcacm::home2hierarch2( registryHomeData_, registryData_.platforms[pick_], tryToPing );
+    int tracePing = orcaice::getPropertyAsIntWithDefault( context_.properties(), context_.tag()+".Config.TracePing", 0 );
+
+    platformData_ = orcacm::home2hierarch2( registryHomeData_, registryData_.platforms[pick_], tryToPing, tracePing );
 
     display_.setPlatformData( platformData_ );
 }

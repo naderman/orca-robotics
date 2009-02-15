@@ -54,6 +54,10 @@ This utility loads plug-in libraries containing a @e probe per interface. Custom
 
 @par Configuration
 
+@note Probe is a tool which is frequently run without a dedicated .cfg file. It is convenient to place configuration
+parameters into the global config, i.g. @c .orcarc. This lets you customize Probe's behavior without messing around
+with a dedicated config file.
+
 - @c Probe.Config.Driver (string)
     - Type of display driver
     - Valid values: { 'term-iostream', 'gui-qt' }
@@ -64,6 +68,14 @@ This utility loads plug-in libraries containing a @e probe per interface. Custom
     - This list is ordered.  Putting a custom library earlier in the list means that it will be used to instantiate interface probes before later factories.
     - Example: 'libMyProbeFactory.so libOrcaProbeFactory.so'. If MyProbeFactory implements the LaserScanner2d probe it will be used in place of the standard one. 
     - Default: 'libOrcaProbeFactory.so'
+
+- @c Probe.Config.TracePing (int)
+    - Tracing level for pinging home interfaces. This option is currently used only by the @c term-iostream driver.
+    - Valid values:
+        - 0 : none
+        - 1 : a dot per ping is printed to cout
+        - >1 : proxy information for each home interface being pinged is printed to cout
+    - Default: 0
 
 An example configuration file is installed into [ORCA-INSTALL-DIR]/share/orca/cfg/ directory.
 
