@@ -13,26 +13,26 @@
 #include <orcacm/orcacm.h>
 #include <orcaprobe/orcaprobe.h>
 
-#include "statusprobe.h"
+#include "systemstatusprobe.h"
 
 using namespace std;
 using namespace orcaprobefactory;
 
-StatusProbe::StatusProbe( const orca::FQInterfaceName& name, const Ice::ObjectPrx& adminPrx, orcaprobe::AbstractDisplay& display,
+SystemStatusProbe::SystemStatusProbe( const orca::FQInterfaceName& name, const Ice::ObjectPrx& adminPrx, orcaprobe::AbstractDisplay& display,
                                 const orcaice::Context& context ) :
     InterfaceProbe(name,adminPrx,display,context)
 {
-    id_ = "::orca::Status";
+    id_ = "::orca::SystemStatus";
 
     addOperation( "getData",        "StatusData getData()" );
-    addOperation( "subscribe",      "void subscribe( StatusConsumer *subscriber )" );
-    addOperation( "unsubscribe",    "idempotent void unsubscribe( StatusConsumer *subscriber )" );
+    addOperation( "subscribe",      "void subscribe( SystemStatusConsumer *subscriber )" );
+    addOperation( "unsubscribe",    "idempotent void unsubscribe( SystemStatusConsumer *subscriber )" );
 
-    consumer_ = new orcaifaceimpl::PrintingStatusConsumerImpl( context,1000,1 );
+    consumer_ = new orcaifaceimpl::PrintingSystemStatusConsumerImpl( context,1000,1 );
 }
     
 int 
-StatusProbe::loadOperationEvent( const int index, orcacm::OperationData& data )
+SystemStatusProbe::loadOperationEvent( const int index, orcacm::OperationData& data )
 {    
     try
     {
@@ -47,12 +47,6 @@ StatusProbe::loadOperationEvent( const int index, orcacm::OperationData& data )
         }
         return 1;
     }
-    catch( const Ice::Exception& e )
-    {
-        stringstream ss;
-        ss<<e<<endl;
-        orcaprobe::reportException( data, ss.str() );
-    }
     catch( const std::exception& e )
     {
         stringstream ss;
@@ -63,15 +57,15 @@ StatusProbe::loadOperationEvent( const int index, orcacm::OperationData& data )
 }
 
 int 
-StatusProbe::loadGetData( orcacm::OperationData& data )
+SystemStatusProbe::loadGetData( orcacm::OperationData& data )
 {
-    orca::StatusPrx derivedPrx = orca::StatusPrx::checkedCast(prx_);
+    orca::SystemStatusPrx derivedPrx = orca::SystemStatusPrx::checkedCast(prx_);
     orcaprobe::reportResult( data, "data", ifaceutil::toString( derivedPrx->getData() ) );
     return 0;
 }
 
 int 
-StatusProbe::loadSubscribe( orcacm::OperationData& data )
+SystemStatusProbe::loadSubscribe( orcacm::OperationData& data )
 {
     consumer_->subscribeWithString( orcaice::toString(name_) );
     orcaprobe::reportSubscribed( data, consumer_->consumerPrx()->ice_toString() );
@@ -79,7 +73,7 @@ StatusProbe::loadSubscribe( orcacm::OperationData& data )
 }
 
 int 
-StatusProbe::loadUnsubscribe( orcacm::OperationData& data )
+SystemStatusProbe::loadUnsubscribe( orcacm::OperationData& data )
 {
     consumer_->unsubscribe();
     orcaprobe::reportUnsubscribed( data );

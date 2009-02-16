@@ -30,6 +30,7 @@
 #include "pingerprobe.h"
 #include "powerprobe.h"
 #include "statusprobe.h"
+#include "systemstatusprobe.h"
 #include "tracerprobe.h"
 #include "wifiprobe.h"
 #include "propertiesprobe.h"
@@ -62,6 +63,7 @@ OrcaProbeFactory::OrcaProbeFactory()
     addSupportedType("::orca::OgMap");
     addSupportedType("::orca::PathFollower2d");
     addSupportedType("::orca::Status");
+    addSupportedType("::orca::SystemStatus");
     addSupportedType("::orca::Tracer");
 }
 
@@ -139,6 +141,9 @@ OrcaProbeFactory::create( const std::string           & interfaceType,
     }
     else if ( interfaceType == "::orca::Status" ) {
         probe = new StatusProbe( name, adminPrx, display, context );
+    }
+    else if ( interfaceType == "::orca::SystemStatus" ) {
+        probe = new SystemStatusProbe( name, adminPrx, display, context );
     }
     else if ( interfaceType == "::orca::Tracer" ) {
         probe = new TracerProbe( name, adminPrx, display, context );
