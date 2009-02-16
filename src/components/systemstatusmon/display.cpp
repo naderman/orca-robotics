@@ -254,7 +254,6 @@ ColourTextDisplay::display( const orca::SystemStatusData &data )
     
     for (unsigned int compCounter=0; compCounter<maxComp; compCounter++)
     {
-
         // row label
         if (compCounter==0)
             cout << hydroctext::toFixedWidth( toBoldString("COMPONENTS"), compNameWidth ) << sep;
@@ -265,10 +264,10 @@ ColourTextDisplay::display( const orca::SystemStatusData &data )
         for ( it=data.systemStatus.begin(); it!=data.systemStatus.end(); ++it )
         {
             const vector<orca::ObservedComponentStatus> &components = it->second;
-            if ( compCounter >= components.size() )
-                continue;
-            
-            cout << toShortString(components[compCounter],compStateWidth) << sep;
+            if ( compCounter < components.size() )
+                cout << toShortString(components[compCounter],compStateWidth) << sep;
+            else
+                cout << hydroctext::toFixedWidth( " ", compStateWidth ) << sep;
         }
         cout << endl;
     }
