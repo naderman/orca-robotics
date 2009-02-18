@@ -19,7 +19,7 @@ public:
     AlgorithmEvaluator( const std::string &saveFile )
         : numIterations_(0),
           cumDecisionTime_(0),
-          cumObstacleCost_(0),
+          cumDistanceToNearestObstacle_(0),
           saveFile_(saveFile)
         {}
     ~AlgorithmEvaluator();
@@ -31,7 +31,7 @@ private:
 
     int    numIterations_;
     double cumDecisionTime_;
-    double cumObstacleCost_;
+    double cumDistanceToNearestObstacle_;
     const std::string saveFile_;
 
     std::list<hydronavutil::Pose> poseHistory_;

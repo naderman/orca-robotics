@@ -47,6 +47,8 @@ class Localise2dPainter
 
     void toggleDisplayHistory()  { isDisplayHistory_ = !isDisplayHistory_; }
     void toggleMultiHypothesis() { isDisplayMultiHypothesis_ = !isDisplayMultiHypothesis_; }
+    void setMaxNumHistoryPoints( int maxNumPoints ) { history_.setMaxNumPoints( maxNumPoints ); }
+    int currentMaxNumHistoryPoints() const { return history_.currentMaxNumPoints(); }
 
   private:
 

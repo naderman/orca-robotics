@@ -42,6 +42,9 @@ namespace {
         }        
     }
 
+    //
+    // Returns the distance from the centre of the robot to the nearest obstacle.
+    //
     double distanceToNearestObstacle( const hydroogmap::OgMap &ogMap,
                                       const hydronavutil::Pose &pose )
     {
@@ -83,36 +86,35 @@ namespace {
         return dist;
     }
 
-    double obstacleCost( const Simulator &simulator )
-    {
-        const double speedFor1MClearance = 3.0;
-        const double linearSpeed = simulator.velocity().lin();
-        const double robotRadius = simulator.vehicleSimulator().config().robotRadius;
-        const double distToNearestObstacle = distanceToNearestObstacle( simulator.ogMap(),
-                                                                            simulator.vehicleSimulator().pose() );
+//     double obstacleCost( const Simulator &simulator )
+//     {
+//         const double speedFor1MClearance = 3.0;
+//         const double linearSpeed = simulator.velocity().lin();
+//         const double robotRadius = simulator.vehicleSimulator().config().robotRadius;
+//         const double distToNearestObstacle = distanceToNearestObstacle( simulator.ogMap(),
+//                                                                             simulator.vehicleSimulator().pose() );
 
-        return obstacleCost( distToNearestObstacle,
-                             linearSpeed,
-                             speedFor1MClearance,
-                             robotRadius );
-    }
-
+//         return obstacleCost( distToNearestObstacle,
+//                              linearSpeed,
+//                              speedFor1MClearance,
+//                              robotRadius );
+//     }
 }
 
 AlgorithmEvaluator::~AlgorithmEvaluator()
 {
     cout<<"TRACE(algorithmevaluator.cpp): DESTRUCTOR" << endl;
-    const double avgObstacleCost       = cumObstacleCost_ / (double)numIterations_;
+    const double avgObstacleDist       = cumDistanceToNearestObstacle_ / (double)numIterations_;
     const double avgTimeToMakeDecision = cumDecisionTime_ / (double)numIterations_;
 
     cout << "  avgTimeToMakeDecision: " << avgTimeToMakeDecision*1000.0 << "ms" << endl;
-    cout << "  avgObstacleCost:       " << avgObstacleCost << endl;
+    cout << "  avgObstacleDist:       " << avgObstacleDist << endl;
     cout << "  numIterations:         " << numIterations_ << endl;
 
     FILE *f = fopen( saveFile_.c_str(), "w" );
     assert( f != NULL );
     {
-        fprintf( f, "%d %f %f\n", numIterations_, avgTimeToMakeDecision, avgObstacleCost );
+        fprintf( f, "%d %f %f\n", numIterations_, avgTimeToMakeDecision, avgObstacleDist );
     }
     fclose(f);
 }
@@ -122,12 +124,10 @@ AlgorithmEvaluator::evaluate( double timeToMakeDecision,
                               const Simulator &simulator )
 {
     numIterations_++;
-    const double obsCost = obstacleCost( simulator );
-    cumObstacleCost_ += obsCost;
-    cumDecisionTime_ += timeToMakeDecision;
-
-//     cout<<"TRACE(algorithmevaluator.cpp): timeToMakeDecision: " << timeToMakeDecision*1000.0 << "ms" << endl;
-//     cout<<"TRACE(algorithmevaluator.cpp): obsCost: " << obsCost << endl;
+    const double distToObstacle = distanceToNearestObstacle( simulator.ogMap(),
+                                                             simulator.vehicleSimulator().pose() );
+    cumDistanceToNearestObstacle_ += distToObstacle;
+    cumDecisionTime_              += timeToMakeDecision;
 
     if ( (int)poseHistory_.size() == POSE_HISTORY_SIZE )
         poseHistory_.erase( poseHistory_.begin() );

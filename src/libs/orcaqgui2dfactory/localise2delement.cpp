@@ -10,6 +10,7 @@
 
 #include <hydroqgui/exceptions.h>
 #include "localise2delement.h"
+#include <QInputDialog>
 
 using namespace std;
 
@@ -119,7 +120,7 @@ QStringList
 Localise2dElement::contextMenu()
 {
     QStringList s;
-    s<<"Toggle History"<<"Toggle Multi-Hypothesis";
+    s<<"Toggle History"<<"Set Max Num History Points"<<"Toggle Multi-Hypothesis";
     return s;
 }
 
@@ -134,6 +135,22 @@ Localise2dElement::execute( int action )
             break;
         }
         case 1 :
+        {
+            bool ok=false;
+            int maxNumHistoryPoints = QInputDialog::getInteger( 
+                NULL,
+                "SetMaxNumHistoryPoints",
+                "Enter max num history points",
+                painter_.currentMaxNumHistoryPoints(),
+                0,
+                2147483647, // default from Qt docs
+                1,
+                &ok );
+            if ( ok )
+                painter_.setMaxNumHistoryPoints( maxNumHistoryPoints );
+            break;
+        }
+        case 2 :
         {
             painter_.toggleMultiHypothesis();
             break;
