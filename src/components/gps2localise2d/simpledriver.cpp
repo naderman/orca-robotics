@@ -20,19 +20,6 @@ using namespace std;
 
 namespace gps2localise2d {
 
-//namespace {
-//     void transform( orca::Frame2d &p, const orca::Frame2d &f )
-//     {
-//         hydronavutil::transformPoint2d( p.p.x,
-//                                         p.p.y,
-//                                         f.p.x,
-//                                         f.p.y,
-//                                         f.o );
-//         p.o += f.o;
-//         hydronavutil::normaliseAngle( p.o );
-//     }
-//}
-
 SimpleDriver::SimpleDriver( const orca::GpsDescription     &gpsDescr, 
                             const orca::VehicleDescription &vehicleDescr,
                             const orcaice::Context         &context )

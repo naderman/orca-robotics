@@ -93,12 +93,12 @@ OdometryBasedDriver::compute( const orca::GpsData  &gpsData,
         return false;
     }
 
-    // Expand position uncertainty: the GPS unit is calculating it
-    // based on the locations of satellites, but it's not taking into
-    // account things like the proximity of metal structures.
-    // This dodgy hack might help.
-    localiseData.hypotheses[0].cov.xx *= 2.0;
-    localiseData.hypotheses[0].cov.yy *= 2.0;
+//     // Expand position uncertainty: the GPS unit is calculating it
+//     // based on the locations of satellites, but it's not taking into
+//     // account things like the proximity of metal structures.
+//     // This dodgy hack might help.
+//     localiseData.hypotheses[0].cov.xx *= 2.0;
+//     localiseData.hypotheses[0].cov.yy *= 2.0;
 
     if ( odomConsumer_->store().isEmpty() )
     {
