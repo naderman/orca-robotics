@@ -159,7 +159,7 @@ TestComponent::start()
         ptr->localSet( orca::PixMapData() );
     }
     {
-        orcaifaceimpl::PointCloudImplPtr ptr = new orcaifaceimpl::PointCloudImpl( context(), "crap" );
+        orcaifaceimpl::PointCloudImplPtr ptr = new orcaifaceimpl::PointCloudImpl( orca::PointCloudDescription(), context(), "crap" );
         ptr->localSet( orca::PointCloudData() );
     }
     {

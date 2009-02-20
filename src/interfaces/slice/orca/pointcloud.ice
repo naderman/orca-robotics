@@ -8,14 +8,15 @@
  *
  */
 
-#ifndef ORCA2_POINT_CLOUD_INTERFACE_ICE
-#define ORCA2_POINT_CLOUD_INTERFACE_ICE
+#ifndef ORCA2_POINTCLOUD_INTERFACE_ICE
+#define ORCA2_POINTCLOUD_INTERFACE_ICE
 
 #include <orca/common.ice>
 #include <orca/bros1.ice>
 #include <IceStorm/IceStorm.ice>
 
-module orca {
+module orca 
+{
 /*!
     @ingroup orca_interfaces
     @defgroup orca_interface_pointcloud PointCloud
@@ -25,6 +26,17 @@ The PointCloud interface gives access to clouds of 3d points.
 
     @{
 */
+
+//! Device description
+struct PointCloudDescription
+{
+    //! Time when description was generated.
+    Time timeStamp;
+
+    //! Offset of the centre of the sensor with respect to the robot, 
+    //! in the robot local coordinate system.
+    Frame3d offset;
+};
 
 //! A sequence of points
 sequence<CartesianPoint> CartesianPointSequence;
@@ -45,7 +57,7 @@ struct PointCloudData
 interface PointCloudConsumer 
 {
     //! Transmits the data to the consumer.
-  void setData( PointCloudData data );   
+  void setData( PointCloudData obj );   
 };
 
 /*!
@@ -53,6 +65,10 @@ interface PointCloudConsumer
 */
 interface PointCloud
 {
+
+    //! Returns device description.
+    idempotent PointCloudDescription getDescription();
+
     //! Returns the latest data.
     //! May raise DataNotExistException if the requested information is not available.
     idempotent PointCloudData getData()

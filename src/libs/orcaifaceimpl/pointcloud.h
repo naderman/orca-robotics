@@ -11,7 +11,7 @@
 #ifndef ORCAIFACEIMPL_POINTCLOUD_H
 #define ORCAIFACEIMPL_POINTCLOUD_H
 
-#include <orcaifaceimpl/providerImpl.h>
+#include <orcaifaceimpl/providerWithDescriptionImpl.h>
 #include <orcaifaceimpl/storingconsumerImpl.h>
 #include <orcaifaceimpl/bufferedconsumerImpl.h>
 #include <orcaifaceimpl/notifyingconsumerImpl.h>
@@ -21,9 +21,9 @@
 
 namespace orcaifaceimpl {
 
-typedef ProviderImpl<orca::PointCloud, orca::PointCloudPrx,
+typedef ProviderWithDescriptionImpl<orca::PointCloud, orca::PointCloudPrx,
                     orca::PointCloudConsumer, orca::PointCloudConsumerPrx,
-                    orca::PointCloudData> PointCloudImpl;
+                    orca::PointCloudData, orca::PointCloudDescription> PointCloudImpl;
 typedef IceUtil::Handle<PointCloudImpl> PointCloudImplPtr;
 
 typedef StoringConsumerImpl<orca::PointCloud, orca::PointCloudPrx,
