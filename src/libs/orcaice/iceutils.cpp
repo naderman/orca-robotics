@@ -78,9 +78,9 @@ createInterfaceWithString( const Context       & context,
         }
         catch ( const std::exception& e ) {
             std::stringstream ss;
-            ss << "Failed to create interface with string "<<name<<". Check Registry. "
-                <<"Will retry in "<<retryInterval<<"s.\n"
-                << e.what();
+            ss << "Failed to create interface with string "<<name<<":\n"
+               << e.what() << endl
+               <<"Will retry in "<<retryInterval<<"s.\n";
             context.tracer().warning( ss.str() );
         }
         catch ( ... ) {
@@ -113,9 +113,9 @@ createInterfaceWithTag( const Context       & context,
         }
         catch ( const std::exception& e ) {
             std::stringstream ss;
-            ss << "Failed to create interface with tag "<<interfaceTag<<". Check Registry. "
-                <<"Will retry in "<<retryInterval<<"s.\n"
-                << e.what();
+            ss << "Failed to create interface with tag "<<interfaceTag<<":\n"
+               << e.what() << endl
+               <<"Will retry in "<<retryInterval<<"s.";
             context.tracer().warning( ss.str() );
         }
         catch ( ... ) {
@@ -154,9 +154,9 @@ activate( Context& context,
         }
         catch ( const std::exception& e ) {
             std::stringstream ss;
-            ss << "Failed to activate component. Check Registry and IceStorm. "
-                <<"Will retry in "<<retryInterval<<"s.\n"
-                <<e.what();
+            ss << "Failed to activate component:\n"
+               <<e.what()<<endl
+               <<"Will retry in "<<retryInterval<<"s.\n";
             context.tracer().warning( ss.str() );
         }
         catch ( ... ) {
