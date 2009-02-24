@@ -149,6 +149,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 - Probe
   - Added an option to trace progress when pinging components on a particular platform. (alexm)
+  - Operations can now be added but flagged as unsupported. (alexm)
 
 @par Updated libraries
 

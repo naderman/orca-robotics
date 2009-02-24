@@ -55,13 +55,20 @@ InterfaceProbe::~InterfaceProbe()
 }
 
 void 
-InterfaceProbe::addOperation( const std::string & name, const std::string & signature )
+InterfaceProbe::addOperation( const std::string& name, bool isSupported, const std::string& signature )
 {
     orcacm::OperationHeader op;
    
     op.name = name;
     op.signature = signature;
+    op.isSupported = isSupported;
     operations_.push_back( op );
+}
+
+void 
+InterfaceProbe::addOperation( const std::string & name, const std::string & signature, bool isSupported )
+{
+    addOperation( name, isSupported, signature );
 }
 
 int 

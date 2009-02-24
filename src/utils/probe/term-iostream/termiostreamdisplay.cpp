@@ -332,7 +332,7 @@ TermIostreamDisplay::printPlatformData( const orcacm::RegistryHierarchicalData2&
 
 //         if ( !adapt.compare( 0,filter_.size(), filter_ ) ) 
 //         {
-            // now filter on reachability
+            // print number only for the reachable
             if ( data.homes[i].isReachable ) {
                 ssOptions << setw(2)<<i<<"\t";
             }
@@ -442,7 +442,14 @@ TermIostreamDisplay::printInterfaceData( const orcacm::InterfaceData& data )
     stringstream ssOptions;
     for ( unsigned int i=0; i<data.operations.size(); ++i ) {
         //if ( comps[i].isReachable ) {
-            ssOptions<<setw(2)<<i<<"\t"<<data.operations[i].name<<endl;
+            // print number only for the supported 
+            if ( data.operations[i].isSupported ) {
+                ssOptions << setw(2)<<i<<"\t";
+            }
+            else {
+                ssOptions << "\t";
+            }
+            ssOptions<<data.operations[i].name<<endl;
         //}
     }
 

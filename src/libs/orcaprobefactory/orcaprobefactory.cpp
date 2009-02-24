@@ -148,6 +148,8 @@ OrcaProbeFactory::create( const std::string           & interfaceType,
     else if ( interfaceType == "::orca::Tracer" ) {
         probe = new TracerProbe( name, adminPrx, display, context );
     }
+    // not making sure that we can create this type of probe.
+    // some other library can do that.
 
     return probe;
 }

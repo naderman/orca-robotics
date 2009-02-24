@@ -31,8 +31,8 @@ class InterfaceProbe : public IceUtil::Shared
 
 public:
     //! Constructor
-    InterfaceProbe( const orca::FQInterfaceName & name, const Ice::ObjectPrx& adminPrx, 
-                AbstractDisplay & display, const orcaice::Context & context );
+    InterfaceProbe( const orca::FQInterfaceName& name, const Ice::ObjectPrx& adminPrx, 
+                AbstractDisplay& display, const orcaice::Context& context );
         
     virtual ~InterfaceProbe();
 
@@ -43,7 +43,7 @@ public:
     //! @p operations(). Note that the first several operations are generic to all
     //! interfaces.
     //! Returns 0 on success good, 1 on error.
-    int loadOperation( const int index, orcacm::OperationData & data );
+    int loadOperation( const int index, orcacm::OperationData& data );
 
 protected:
 
@@ -56,7 +56,7 @@ protected:
     //! keep a direct link to display so if get some data asynchronously from browser
     //! (e.g. through subscription) we can display it. it's safe because all of display's
     //! public API is thread-safe.
-    AbstractDisplay & display_;
+    AbstractDisplay& display_;
 
     //! Component communication context with pointers to Communicator, Tracer, etc.
     orcaice::Context ctx_;
@@ -65,20 +65,24 @@ protected:
     Ice::ObjectPrx prx_;
 
     //! Adds @p name and @p signature of an interface operation to the listing
-    //! which will be later returned by @p operations().
-    void addOperation( const std::string & name, const std::string & signature="" );
+    //! which will be later returned by @p operations(). The operation may or may not be supported
+    //! by the interface probe.
+    void addOperation( const std::string& name, bool isSupported, const std::string& signature="" );
+
+    //! Convenience function which assumes that the operation is supported.
+    void addOperation( const std::string& name, const std::string& signature="", bool isSupported=true );
 
     //! Implement this function in the derived probe class.
-    virtual int loadOperationEvent( const int index, orcacm::OperationData & data );
+    virtual int loadOperationEvent( const int index, orcacm::OperationData& data );
 
     //! fills out the header information, does not touch the 'result' field
-    void fillOperationData( const int index, orcacm::OperationData & data );
+    void fillOperationData( const int index, orcacm::OperationData& data );
 
 private:
     std::vector<orcacm::OperationHeader> operations_;
 
     // Pings the remote interface.
-    int loadIcePing( orcacm::OperationData & data );
+    int loadIcePing( orcacm::OperationData& data );
 
 };
 //! Ice smart pointer to EventLoop

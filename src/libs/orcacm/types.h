@@ -36,6 +36,8 @@ struct OperationHeader
     std::string name;
     //! Operation signature, e.g. "double getData(int)"
     std::string signature;
+    //! Is operation supported?
+    bool isSupported;
 };
 
 //! Operation data
@@ -89,7 +91,7 @@ struct InterfaceData
     orca::FQInterfaceName name;
     //! Object ID of the interface
     std::string id;
-    //! A listing of supported operations
+    //! A listing of operations (some of these may not be supported)
     std::vector<OperationHeader> operations;
 };
 
