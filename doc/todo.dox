@@ -32,16 +32,19 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 @section orca_doc_todo_todo To-Do List
 
 - Documentation
-    - An end-to-end tutorial: create new slice interface, write server, write client. (alex m)
-    - Update the 'coordinate systems' image.
+  - An end-to-end tutorial: create new slice interface, write server, write client. (alex m)
+  - Update the 'coordinate systems' image.
 
 - libOrcaIce
-    - Should components quit when there's no registry and Orca.RequireRegistry=1?
-      Right now they seem to hang. Look into component thread. (alexm)
-    - What happens when the component assumes a config file name but it's not there?
-      e.g. $ teleop (without teleop.cfg). This should be allowed for utilities like
-      probe but components with required interfaces should say something 
-      intelligent (alexm).
+  - Add a true default timeout config. The existing Ice.Override.Timeout is a blunt tool. 
+    Should we make libOrcaIce internally add a configurable finite timeout when dealing proxies without 
+    a timeout? (alexm) 
+  - Should components quit when there's no registry and Orca.RequireRegistry=1?
+    Right now they seem to hang. Look into component thread. (alexm)
+  - What happens when the component assumes a config file name but it's not there?
+    e.g. $ teleop (without teleop.cfg). This should be allowed for utilities like
+    probe but components with required interfaces should say something 
+    intelligent (alexm).
 
 - RegistryView
     - fix stale display of components (alexm)
@@ -53,6 +56,18 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
    - update the viewer to allow viewer to modify slightly for common 
      needs... rotation, zoom, mirroring of the display and showing statistics
      on image frequency and delay between the capture the the display of it.
+
+- libOrcaIfaceUtil
+  - check how does Slice byte print out? (alexm)
+
+- Probe
+  - probes the wrong interface. DataHub has 3 standard and 2 nonstandard interfaces. selecting 3 (the first unsupported interface) 
+    for some reason still talks to Home (the last supported iface) (alexm)
+  - use JobQueue to parallelize the pinging (alexm)
+
+- IcePing
+  - add a mechanism to ping admin interfaces (alexm)
+
 
 @section orca_doc_history_head Changes in SVN since Last Release
 
