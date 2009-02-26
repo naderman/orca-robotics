@@ -56,7 +56,7 @@ Our main goal is the continuing progress in robotic research and the robotic ind
 - Get set up: @ref orca_doc_getting
 - Start running components: @ref orca_doc_quickstart
 - Read an overview of Ice middleware: Ch. 2 of the Ice Manual <strong><a href="http://www.zeroc.com/download.html#doc" target="_blank" style="text-decoration:none">[download]</a></strong>
-- See a list of all available Orca components: @ref orca_doc_swmap
+- See a list of all available Orca software: @ref orca_doc_swmap
 - Start coding: @ref orca_doc_start_code (read this if you want to evaluate Orca)
 - Browse through examples:  @ref orca_examples "Orca Component Examples"
 - Become an expert: @ref orca_doc_devguide
