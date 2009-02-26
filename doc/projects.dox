@@ -16,20 +16,88 @@ If you use Orca, please let us know so we can add you to this list.
 
 @section orca_doc_projects_orca2 Present Projects
 
-- <a href="http://marathon-robotics.com" target="_blank">Marathon Robotics</a> sells robotic target systems. Distributed multi-robot architecture is based on Orca.
+<table border="0" cellspacing="2" cellpadding="5">
 
-- <a href="http://www.iward.eu" target="_blank">IWARD</a> is a robot swarm project fundend by the European Union.
+<tr><td width="170" rowspan="1" colspan="1" align="left" valign="top">
+@image html project_marathon_150.jpg
+</td>
+<td rowspan="1" colspan="1" align="left" valign="top">
+<a href="http://marathon-robotics.com" target="_blank">Marathon Robotics</a> designs and builds robotic target systems. Distributed multi-robot architecture is based on Orca.
+</td></tr>
 
-- UNSW (Sydney, Australia) <a href="http://www.cas.edu.au/content.php/300.html?projectid=13" target="_blank">Robocup Rescue team</a>
+<tr><td width="170" rowspan="1" colspan="1" align="left" valign="top">
+@image html project_chi_edt_150.jpg
+</td>
+<td rowspan="1" colspan="1" align="left" valign="top">
+<a href="http://www.chicagoedt.org" target="_blank">Chicago Engineering Design Team (EDT)</a> is an engineering and robotics organization made up of UIC engineering students.
+</td></tr>
+
+<tr><td width="170" rowspan="1" colspan="1" align="left" valign="top">
+@image html project_iward_150.jpg
+</td>
+<td rowspan="1" colspan="1" align="left" valign="top">
+<a href="http://www.iward.eu" target="_blank">IWARD</a> is a robot swarm project fundend by the European Union.
+</td></tr>
+
+<tr><td width="170" rowspan="1" colspan="1" align="left" valign="top">
+@image html project_c3uv_150.jpg
+</td>
+<td rowspan="1" colspan="1" align="left" valign="top">
+The <a href="http://calccit.org/c3uv/" target="_blank">Center for Collaborative Control of Unmanned Vehicles (C3UV)</a> at the University of California, Berkeley is transitioning its multi-UAV architecture to Orca. Uses Orca for UAV-to-UAV and UAV-to-ground communications.
+</td></tr>
+
+<tr><td width="170" rowspan="1" colspan="1" align="left" valign="top">
+.</td>
+<td rowspan="1" colspan="1" align="left" valign="top">
+Master's thesis on robotic sensor calibration at the University of Sydney (Sydney, Australia). Uses Orca for data logging and playback.
+</td></tr>
+
+<tr><td width="170" rowspan="1" colspan="1" align="left" valign="top">
+</td>
+<td rowspan="1" colspan="1" align="left" valign="top">
+UNSW (Sydney, Australia) <a href="http://www.cas.edu.au/content.php/300.html?projectid=13" target="_blank">Robocup Rescue team</a>
+</td></tr>
+
+</table>
 
 @section orca_doc_projects_orca2_past Past Projects
 
-- Joint <a href="http://www.acfr.usyd.edu.au/research/projects/others/darpa.shtml" target="_blank">Berkeley/Sydney team</a> competed in the 2007 Darpa Urban Grand Challenge.
+<table border="0" cellspacing="2" cellpadding="5">
 
-- ACFR (Sydney, Australia) <a href="http://www.cas.edu.au/content.php/300.html?projectid=34" target="_blank">human-robot communication framework</a> for cooperative perception.
+<tr><td width="170" rowspan="1" colspan="1" align="left" valign="top">
+@image html project_syd_berk_dgc_150.jpg
+</td>
+<td rowspan="1" colspan="1" align="left" valign="top">
+Joint <a href="http://www.acfr.usyd.edu.au/research/projects/others/darpa.shtml" target="_blank">Berkeley/Sydney team</a> competed in the 2007 Darpa Urban Grand Challenge. The entire multi-host architecture was based on Orca. 
+</td></tr>
 
-@section orca_doc_projects_orca1 Orca-1
+<tr><td width="170" rowspan="1" colspan="1" align="left" valign="top">
+@image html project_acfr_hri_150.jpg
+</td>
+<td rowspan="1" colspan="1" align="left" valign="top">
+PhD thesis <a href="http://www.cas.edu.au/content.php/292.html?publicationid=445&displaypage=1" target="_blank">Probabilistic Human-Robot Information Fusion</a> at the University of Sydney (Sydney, Australia). Used Orca for user studies with simulated robotic hardware as well as experimental validations. 
+</td></tr>
 
-- ACFR (Sydney, Australia) industry-funded <a href="http://www.cas.edu.au/content.php/300.html?projectid=2" target="_blank">ANSER II project</a> which demonstrated Decentralised Data Fusion from a ground vehicle, an unmanned air vehicle (UAV), and two human operators.
+<tr><td width="170" rowspan="1" colspan="1" align="left" valign="top">
+@image html project_acfr_pomdp_150.jpg
+</td>
+<td rowspan="1" colspan="1" align="left" valign="top">
+PhD thesis <a href="http://www.cas.edu.au/content.php/292.html?publicationid=387&displaypage=1" target="_blank">Parametric POMDPs for planning in continuous state spaces</a> at the University of Sydney (Sydney, Australia). Used Orca for all simulation and experimental validation.
+</td></tr>
+
+</table>
+
+@section orca_doc_projects_orca1 Old Projects with Orca-1
+
+<table border="0" cellspacing="2" cellpadding="5">
+
+<tr><td width="170" rowspan="1" colspan="1" align="left" valign="top">
+@image html project_anser_150.jpg
+</td>
+<td rowspan="1" colspan="1" align="left" valign="top">
+Industry-funded <a href="http://www.cas.edu.au/content.php/300.html?projectid=2" target="_blank">ANSER II project</a> at ACFR (Sydney, Australia). The project demonstrated Decentralised Data Fusion between a ground vehicle, an unmanned air vehicle (UAV), and two human operators. Used Orca-1 with custom UDP-based protocol for all fusion-related communication.
+</td></tr>
+
+</table>
 
 */
