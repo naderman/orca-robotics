@@ -12,7 +12,7 @@
 
 @page orca_doc_quickstart Quick-Start Guide
 
-@note Reviewed for release 2.10.0.
+@note Reviewed for release 2.13.0.
 
 This page describes how to get a quick demonstration up and running with your new Orca install. Before you begin, make sure that you've installed Orca (see @ref orca_doc_getting ).
 
@@ -104,6 +104,50 @@ You should see the scans scroll by on the screen. Congratulations, your first tw
 To stop components, type @c Ctrl-C.
 
 If something does not work, check out the FAQ on <a href="http://wiki2.cas.edu.au/orca/index.php/" target="_blank">Orca Wiki</a>.
+
+@section orca_doc_quickstart_network Connecting Two Components across the Network
+
+Leave the server running. Note the hostname of the computer on which it's running. On Linux, you can find out what it is by typing
+@verbatim
+$ hostname
+@endverbatim
+In this example we assume that the server's hostname is @c alpha. You need to replace @c alpha with the actual name of your computer.
+
+Now you need another computer connected to the first one through a network. Orca needs to be installed here as well. Make sure you can ping the first host. On Linux, do this quick test and you should something like this:
+@verbatim
+$ ping alpha
+PING alpha.xxx.xxx.xx (xxx.xx.xxx.xxx) 56(84) bytes of data.
+64 bytes from alpha.xxx.xxx.xx (xxx.xx.xxx.xxx): icmp_seq=1 ttl=64 time=2.19 ms
+64 bytes from alpha.xxx.xxx.xx (xxx.xx.xxx.xxx): icmp_seq=2 ttl=64 time=0.378 ms
+64 bytes from alpha.xxx.xxx.xx (xxx.xx.xxx.xxx): icmp_seq=3 ttl=64 time=0.609 ms
+@endverbatim
+
+Now we'll get the client connect to the server. Create a sys/quickstart directory and copy a @c lasermon.cfg file as before. Modify the following line, by replacing 'local' platform name with 'alpha'.
+
+@verbatim
+LaserMon.Requires.LaserScanner2d.Proxy=laserscanner2d@alpha/laser2d
+@endverbatim
+
+If you are having problems with remote connectiosn and you are using Ubuntu, check out <a href="http://wiki2.cas.edu.au/orca/index.php/Orca:faq:general:cant_connect_ubuntu" target="_blank">this FAQ entry on firewalls.</a>
+
+@section orca_doc_quickstart_exercises Optional Exercises
+
+If you bored, try the following:
+
+1. Give you server a custom platform name. 
+
+In the file @c laser2d.cfg replace 'local' with 'elvis'
+@verbatim
+Laser2d.Platform=elvis
+@endverbatim
+Now the server will register itself with @c elvis/laser2d instead of using the default which is the hostname. (In the unlikely event that your host is actually called @c elvis, you'll see no difference.)
+
+Now you have to repoint the client to the new name, regardless whether the client is running on the same host or not (the trick of using @c local will no longer work).
+@verbatim
+LaserMon.Requires.LaserScanner2d.Proxy=laserscanner2d@elvis/laser2d
+@endverbatim
+
+Why would you want to explicitly name the platform? There are a couple of potential reasons. Your big robot may have multiple hosts and you want all components to use the same platform name. This could be convenient when you move components from one host to another. Or when you want to connect from the outside, you don't usually care on which internal host the component is running. Another situation is when you want to simulate a distributed system on a single host, you may need to be able to assign different platform names to the components.
 
 @section orca_doc_quickstart_next What's Next
 

@@ -77,11 +77,14 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
   - Made searching for Ice and IceUtil more robust.
   - Simplified the task of switching to static libraries in Windows. GBX_ADD_LIBRARY is now called with DEFAULT flag which resolves to the new GBX_DEFAULT_LIB_TYPE variable.
 
+- Documentation
+  - Updated the Quick-start Guide by adding a sorely missing bit on how to connect components over the network.
+
 @par New interfaces
 
 - SystemStatus (tobi)
    - provides the status of a whole system consisting of a bunch of components
-   - see SystemStatus component below which implements the interface
+   - see the new SystemStatus component below which implements the interface
 
 @par New components
 
