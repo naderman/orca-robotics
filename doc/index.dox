@@ -34,6 +34,9 @@
 // without this gap between two doxygen definition, the last group does not get 
 // populated properly for some reason.
 
+// put this back when the continuous docco build is re-enabled
+//A web page is also <strong><a href="http://orca-robotics.sourceforge.net/head/" //style="text-decoration:none">generated every 30 min</a></strong> from the latest SVN version.
+
 /*!
 @mainpage Orca: Components for Robotics
 
@@ -54,7 +57,7 @@ Our main goal is the continuing progress in robotic research and the robotic ind
 - Browse through examples:  @ref orca_examples "Orca Component Examples"
 - Become an expert: @ref orca_doc_devguide
 
-Note: The documentation on this web page matches the latest release. A web page is also <strong><a href="http://orca-robotics.sourceforge.net/head/" style="text-decoration:none">generated every 30 min</a></strong> from the latest SVN version.
+Note: The documentation on this web page matches the latest release (not the latest code in SVN HEAD).
 
 @section orca_doc_index_news News
 

@@ -12,7 +12,7 @@
 
 @page orca_doc_overview Orca Overview
 
-@note Reviewed for release 2.7.0.
+@note Reviewed for release 2.13.0.
 
 @par Goals and Requirements
 
@@ -52,7 +52,7 @@ We can think of several scenarios which lead to different usage patterns:
 @par OS support
 
 - full Linux support
-- interfaces and most of source code compile in QNX.
+- interfaces and most of source code used to compile in QNX; it would not be hard to make it work again.
 - interfaces, core libraries and utilities, and some components compile in Windows XP.
 - experimental builds in MacOS-X
 
@@ -63,7 +63,7 @@ The basic tools we use are cross-platform, so in principle Orca can be deployed 
 - all components which are currently in the repository are written in C++
 - there are examples in Java, Python, and PHP.
 
-Slice interfaces can be compiled to C++, Java, Python, PHP, C\#, Visual Basic, and Ruby. All of these can be used to implement or use Orca interfaces.
+Slice interfaces can be compiled to C++, Java, Python, PHP, C\#, Visual Basic, Ruby, and Objective C. All of these can be used to implement or use Orca interfaces.
 
 @par Repository
 

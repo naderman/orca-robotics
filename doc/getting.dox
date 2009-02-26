@@ -40,9 +40,9 @@ $ svn co https://orca-robotics.svn.sf.net/svnroot/orca-robotics/orca/trunk orca
 
 Detailed instructions are available for these platforms/distributions (each page indicates for which version these instructions were updated, out-of-date instructions may not be very useful):
     - @ref orca_doc_installdebian "Debian Linux" (also tested with Ubuntu/Kubuntu)
-    - @ref orca_doc_installfedora "Fedora Linux"
-    - @ref orca_doc_installqnx "QNX Neutrino"
-    - @ref orca_doc_installwinxp "Windows XP"
+    - @ref orca_doc_installfedora "Fedora Linux" (may be out of date)
+    - @ref orca_doc_installqnx "QNX Neutrino" (is out of date)
+    - @ref orca_doc_installwinxp "Windows XP" (may be out of date)
     - Send feedback on building under other configurations.
 
 The instructions below are quite general, follow them if your platform/distribution combination is not described above:
