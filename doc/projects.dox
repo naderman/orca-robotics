@@ -22,21 +22,42 @@ If you use Orca, please let us know so we can add you to this list.
 @image html project_marathon_150.jpg
 </td>
 <td rowspan="1" colspan="1" align="left" valign="top">
-<a href="http://marathon-robotics.com" target="_blank">Marathon Robotics</a> designs and builds robotic target systems. Distributed multi-robot architecture is based on Orca.
+<a href="http://marathon-robotics.com" target="_blank">Marathon Robotics</a> designs and builds robotic target systems. The distributed multi-robot architecture is based entirely on Orca. Located in Sydney, Australia.
+</td></tr>
+
+<tr><td width="170" rowspan="1" colspan="1" align="left" valign="top">
+@image html project_uts_150.jpg
+</td>
+<td rowspan="1" colspan="1" align="left" valign="top">
+Several projects related <a href="http://ims.uts.edu.au/projects.html#Automotive_Systems:" target="_blank">Automotive Systems</a> at the University of Technology Sydney (Australia).
 </td></tr>
 
 <tr><td width="170" rowspan="1" colspan="1" align="left" valign="top">
 @image html project_chi_edt_150.jpg
 </td>
 <td rowspan="1" colspan="1" align="left" valign="top">
-<a href="http://www.chicagoedt.org" target="_blank">Chicago Engineering Design Team (EDT)</a> is an engineering and robotics organization made up of UIC engineering students.
+<a href="http://www.chicagoedt.org" target="_blank">Chicago Engineering Design Team (EDT)</a> is an engineering and robotics organization made up of UIC engineering students. The team participates in everything from robotics competitions, to organizing engineering events for high schools.
+</td></tr>
+
+<tr><td width="170" rowspan="1" colspan="1" align="left" valign="top">
+@image html project_generic_150.png
+</td>
+<td rowspan="1" colspan="1" align="left" valign="top">
+University of Florida (USA).
+</td></tr>
+
+<tr><td width="170" rowspan="1" colspan="1" align="left" valign="top">
+@image html project_generic_150.png
+</td>
+<td rowspan="1" colspan="1" align="left" valign="top">
+Research projects at Fatronik (Spain).
 </td></tr>
 
 <tr><td width="170" rowspan="1" colspan="1" align="left" valign="top">
 @image html project_iward_150.jpg
 </td>
 <td rowspan="1" colspan="1" align="left" valign="top">
-<a href="http://www.iward.eu" target="_blank">IWARD</a> is a robot swarm project fundend by the European Union.
+<a href="http://www.iward.eu" target="_blank">IWARD</a> is a robot swarm project funded by the European Union.
 </td></tr>
 
 <tr><td width="170" rowspan="1" colspan="1" align="left" valign="top">
@@ -47,15 +68,24 @@ The <a href="http://calccit.org/c3uv/" target="_blank">Center for Collaborative 
 </td></tr>
 
 <tr><td width="170" rowspan="1" colspan="1" align="left" valign="top">
-.</td>
+@image html project_generic_150.png
+</td>
 <td rowspan="1" colspan="1" align="left" valign="top">
-Master's thesis on robotic sensor calibration at the University of Sydney (Sydney, Australia). Uses Orca for data logging and playback.
+Master's thesis on robotic sensor calibration at the University of Sydney (Australia). Uses Orca for data logging, playback, and visualization.
 </td></tr>
 
 <tr><td width="170" rowspan="1" colspan="1" align="left" valign="top">
+@image html project_generic_150.png
 </td>
 <td rowspan="1" colspan="1" align="left" valign="top">
-UNSW (Sydney, Australia) <a href="http://www.cas.edu.au/content.php/300.html?projectid=13" target="_blank">Robocup Rescue team</a>
+<a href="http://www.cas.edu.au/content.php/300.html?projectid=13" target="_blank">Robocup Rescue team</a> at the University of New South Wales (Sydney, Australia).
+</td></tr>
+
+<tr><td width="170" rowspan="1" colspan="1" align="left" valign="top">
+@image html project_generic_150.png
+</td>
+<td rowspan="1" colspan="1" align="left" valign="top">
+Student UAV project at the University of Queensland (Brisbane, Australia).
 </td></tr>
 
 </table>
@@ -75,14 +105,14 @@ Joint <a href="http://www.acfr.usyd.edu.au/research/projects/others/darpa.shtml"
 @image html project_acfr_hri_150.jpg
 </td>
 <td rowspan="1" colspan="1" align="left" valign="top">
-PhD thesis <a href="http://www.cas.edu.au/content.php/292.html?publicationid=445&displaypage=1" target="_blank">Probabilistic Human-Robot Information Fusion</a> at the University of Sydney (Sydney, Australia). Used Orca for user studies with simulated robotic hardware as well as experimental validations. 
+PhD thesis <a href="http://www.cas.edu.au/content.php/292.html?publicationid=445&displaypage=1" target="_blank">Probabilistic Human-Robot Information Fusion</a> at the University of Sydney (Australia). Used Orca for user studies with simulated robotic hardware as well as experimental validations. 
 </td></tr>
 
 <tr><td width="170" rowspan="1" colspan="1" align="left" valign="top">
 @image html project_acfr_pomdp_150.jpg
 </td>
 <td rowspan="1" colspan="1" align="left" valign="top">
-PhD thesis <a href="http://www.cas.edu.au/content.php/292.html?publicationid=387&displaypage=1" target="_blank">Parametric POMDPs for planning in continuous state spaces</a> at the University of Sydney (Sydney, Australia). Used Orca for all simulation and experimental validation.
+PhD thesis <a href="http://www.cas.edu.au/content.php/292.html?publicationid=387&displaypage=1" target="_blank">Parametric POMDPs for planning in continuous state spaces</a> at the University of Sydney (Australia). Used Orca for all simulation and experimental validation.
 </td></tr>
 
 </table>
