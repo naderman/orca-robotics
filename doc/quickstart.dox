@@ -130,11 +130,11 @@ LaserMon.Requires.LaserScanner2d.Proxy=laserscanner2d@alpha/laser2d
 
 If you are having problems with remote connectiosn and you are using Ubuntu, check out <a href="http://wiki2.cas.edu.au/orca/index.php/Orca:faq:general:cant_connect_ubuntu" target="_blank">this FAQ entry on firewalls.</a>
 
-@section orca_doc_quickstart_exercises Optional Exercises
+@section orca_doc_quickstart_exercises Exercise for the User
 
-If you bored, try the following:
+If you bored, you can try the following:
 
-1. Give you server a custom platform name. 
+Give you server a custom platform name. 
 
 In the file @c laser2d.cfg replace 'local' with 'elvis'
 @verbatim

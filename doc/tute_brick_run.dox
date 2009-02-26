@@ -12,7 +12,7 @@
 
 @page orca_doc_tutebrickrun Running a super-simple component
 
-@note Reviewed for release 2.10.0.
+@note Currently out of date! Last reviewed for release 2.10.0.
 
 In the @ref orca_doc_tutebrickwrite "previous tutorial" we described how to write a basic Orca component. Now we show how to run it.
 

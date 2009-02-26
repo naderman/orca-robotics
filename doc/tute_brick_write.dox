@@ -12,7 +12,7 @@
 
 @page orca_doc_tutebrickwrite Writing a super-simple component
 
-@note Reviewed for release 2.10.0.
+@note Reviewed for release 2.13.0.
 
 This page describes the basic structure of a typical Orca component. We use @ref orca_component_brick component as an example. When you are done, go to the next tutorial: @ref orca_doc_tutebrickrun
 
@@ -186,10 +186,11 @@ class MainThread: public gbxiceutilacfr::SubsystemThread
 public:
     MainThread( const orcaice::Context& context );
 
+private:    
     // from SubsystemThread
-    virtual void walk();
+    virtual void initialise();
+    virtual void work();
 
-private:
     orcaice::Context context_;
 };
 
@@ -224,9 +225,11 @@ public:
 The context described above is passed down to our thread by the component.
 
 @verbatim
-    virtual void walk();
+    virtual void initialise();
+    virtual void work();
+
 @endverbatim
-We implement the pure virtual function @c walk() defined in hydroutil::SubsystemThread. Function @c walk is the entry point of the thread, the thread execution happens in it. (The equivalent function in the more general hydroutil::Thread is called @c run(), i.e. walking is safer than running. :)
+We implement the virtual functions @c initialise() and @c work() defined in hydroutil::SubsystemThread. These two functions correspond to two states in the Subsystem state machine: @c Initializing and @c Working.
 
 @verbatim
 private:
@@ -250,15 +253,20 @@ MainThread::MainThread( const orcaice::Context& context ) :
     SubsystemThread( context.tracer(), context.status(), "MainThread" ),
     context_(context)
 {
+}
+
+void 
+MainThread::initialise()
+{
     subStatus().setMaxHeartbeatInterval( 20.0 );
+
+    // multi-try function
+    orcaice::activate( context_, this, subsysName() );
 }
 
 void
-MainThread::walk()
+MainThread::work()
 {
-    // multi-try function
-    orcaice::activate( context_, this, subsysName() );
-
     //
     // Read configuration settings
     //
@@ -267,11 +275,6 @@ MainThread::walk()
     int sleepIntervalMs = orcaice::getPropertyAsIntWithDefault( context_.properties(),
             prefix+"SleepIntervalMs", 1000 );
 
-    subStatus().ok( "Initialized" );
-
-    //
-    // Main loop
-    //   
     subStatus().setMaxHeartbeatInterval( sleepIntervalMs * 3.0/1000.0 );
 
     while( !isStopping() )
@@ -297,6 +300,17 @@ MainThread::MainThread( const orcaice::Context& context ) :
 A copy of the context is stored for future use. Note that the constructor is executed in the calling thread, in this case in the thread which created the component. We initialize SubsystemThread with the tracer and status objects contained in the context. We also name the subsystem corresponding to this thread. This name will be used for all status reporting.
 
 @verbatim
+void
+MainThread::initialise()
+{
+@endverbatim
+This is the entry point of the thread. Now we are running in our own thread. We get here after Thread::start() is called by the component.
+
+Executing code in a separate thread usually means that we are responsible for catching all possible exceptions. We don't do it here because hydroutil::SubsystemThread does it for us.
+
+While this function is running, the Subsystem is in @c Initialising state.
+
+@verbatim
     subStatus().setMaxHeartbeatInterval( 20.0 );
 @endverbatim
 The Status facility implements the heartbeat pattern. In this line we make a promise to Status that we will update status information at least as often as every 20 seconds. This promise will allow Status to raise an alarm if there's no update from this subsystem (thread) for longer than the specified interval.
@@ -308,15 +322,6 @@ Note that this line is equivalento to calling.
 The simplified syntax is provided by SubsystemThread.
 
 @verbatim
-void
-MainThread::walk()
-{
-@endverbatim
-This is the entry point of the thread. Now we are running in our own thread. We get here after Thread::start() is called by the component.
-
-Executing code in a separate thread usually means that we are responsible for catching all possible exceptions. We don't do it here because hydroutil::SubsystemThread does it for us.
-
-@verbatim
     orcaice::activate( context_, this, subsysName() );
 @endverbatim
 We call a @ref orca_library_orcaice function to intialize the server capability of the component. (Technically, we are initializing the Ice::ObjectAdapter). 
@@ -324,6 +329,16 @@ We call a @ref orca_library_orcaice function to intialize the server capability 
 The component does not perform this step automatically and leave it up to the designer because this is an important step and you may want to choose when to do it. For example you may want to setup all your required interfaces (i.e. clients) first and then enable the provided interfaces.
 
 This operation may fail for various reasons. Common ones are: the network cable is unplugged, the Registry is unreachable. This standard function will try to activate indefinitely after sleeping for a few seconds. But we want to be able to get out of this infinite loop (e.g. with a Ctrl-C). For this reason, we supply this function with a pointer to a Thread (i.e. @c this = the pointer to this thread) so it can find out that it's time to stop. By the way, this is also the reason why orcaice::activate() should be called from a thread and not from Component::start().
+
+@verbatim
+}
+
+void
+MainThread::work()
+{
+@endverbatim
+
+We finished initializing and are now working, i.e. the Subsystem is in @c Working state. The state machine has transitioned automatically on return of @c initialise() function.
 
 @verbatim
     std::string prefix = context_.tag() + ".Config.";
@@ -337,11 +352,6 @@ This component has a single configuration parameter specifying the sleep interva
 We use a helper function from @ref orca_library_orcaice which returns an integer with default. The value is looked up in the property set available from the component context using the key "Brick.Config.SleepIntervalMs". If this property is absent in the config file, the default value of 1000ms = 1s is used.
 
 Note that we should probably do more checks on the specified value, e.g. make sure that it is not negative.
-
-@verbatim
-    subStatus().ok( "Initialized" );
-@endverbatim
-When the SubsystemThread is created it automatically enters @e Initializing state. Now that initialization is complete we inform Status, the status is now @e Ok with a diagnostic string "Initialized". The other 2 possible status states are @e Warning and @e Fault.
 
 @verbatim
     subStatus().setMaxHeartbeatInterval( sleepIntervalMs * 3.0/1000.0 );
@@ -362,7 +372,7 @@ We use the tracer to let the user know what's going on. The hydroutil::Tracer de
 @verbatim
         subStatus().heartbeat();
 @endverbatim
-At every iteration of the loop, we call the heartbeat() function of the status object letting it know that this subsystem is not stuck.
+At every iteration of the loop, we call the @c heartbeat() function of the status object letting it know that this Subsystem is not stuck. If we promiss the status monitor to call it periodically by calling @c setMaxHeartbeatInterval() but then fail to call @c heartbeat(), the monitor will conclude that this Subsystem has stalled. This Subsystem status information can be monitored remotely using @c Status interface.
 
 @verbatim
         // here we can do something useful
