@@ -36,6 +36,10 @@
 
 // put this back when the continuous docco build is re-enabled
 //A web page is also <strong><a href="http://orca-robotics.sourceforge.net/head/" //style="text-decoration:none">generated every 30 min</a></strong> from the latest SVN version.
+//
+// this used to be on top of history
+//- Current. See what's in <strong><a //href="http://orca-robotics.sourceforge.net/head/orca/orca_doc_todo.html#orca_doc_history_head"
+//style="text-decoration:none">the pipeline</a></strong>.
 
 /*!
 @mainpage Orca: Components for Robotics
@@ -61,8 +65,7 @@ Note: The documentation on this web page matches the latest release (not the lat
 
 @section orca_doc_index_news News
 
-- Current. See what's in <strong><a href="http://orca-robotics.sourceforge.net/head/orca/orca_doc_todo.html#orca_doc_history_head"
-style="text-decoration:none">the pipeline</a></strong>.
+- 01-Mar-09 Version 2.13.0  Our meatiest release to date. Lots of changes under the hood. New components related to images and cameras. Substantial contributions by new developers. Check out an updated @ref orca_doc_projects_orca2 "list of current users of Orca". Big thanks to all. See @ref orca_doc_history_2130 "Release Notes" for details.
 - 11-Oct-08 Version 2.12.0  Numerous improvements and bug fixes targeting long-term operation. Plus a complete re-write of OrcaView3d. See @ref orca_doc_history_2120 "Release Notes" for details.
 - 23-Jun-08 Version 2.11.0. Improvements in long-term stability of libraries and components. Updated for CMake 2.6.0 and Ice 3.3.0. See @ref orca_doc_history_2110 "Release Notes" for details.
 - 24-Apr-08 Version 2.10.0. Integration with GearBox. See @ref orca_doc_history_2100 "Release Notes" for details. 
