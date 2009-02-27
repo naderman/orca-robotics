@@ -78,13 +78,6 @@ Master's thesis on robotic sensor calibration at the University of Sydney (Austr
 @image html project_generic_150.png
 </td>
 <td rowspan="1" colspan="1" align="left" valign="top">
-<a href="http://www.cas.edu.au/content.php/300.html?projectid=13" target="_blank">Robocup Rescue team</a> at the University of New South Wales (Sydney, Australia).
-</td></tr>
-
-<tr><td width="170" rowspan="1" colspan="1" align="left" valign="top">
-@image html project_generic_150.png
-</td>
-<td rowspan="1" colspan="1" align="left" valign="top">
 Student UAV project at the University of Queensland (Brisbane, Australia).
 </td></tr>
 
@@ -113,6 +106,13 @@ PhD thesis <a href="http://www.cas.edu.au/content.php/292.html?publicationid=445
 </td>
 <td rowspan="1" colspan="1" align="left" valign="top">
 PhD thesis <a href="http://www.cas.edu.au/content.php/292.html?publicationid=387&displaypage=1" target="_blank">Parametric POMDPs for planning in continuous state spaces</a> at the University of Sydney (Australia). Used Orca for all simulation and experimental validation.
+</td></tr>
+
+<tr><td width="170" rowspan="1" colspan="1" align="left" valign="top">
+@image html project_unsw_roborescue_150.jpg
+</td>
+<td rowspan="1" colspan="1" align="left" valign="top">
+<a href="http://www.cas.edu.au/content.php/300.html?projectid=13" target="_blank">Robocup Rescue team</a> at the University of New South Wales (Sydney, Australia). Used Orca for flexible data transfer.
 </td></tr>
 
 </table>
