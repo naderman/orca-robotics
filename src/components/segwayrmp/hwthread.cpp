@@ -224,16 +224,29 @@ HwThread::work()
         }
 
         // Tell the 'status' engine what our local state machine knows.
-        if ( !stateMachine_.isFault(reason) && !stateMachine_.isWarning(reason) )
+        stringstream ssWarn, ssFault;
+        if ( estopInterface_.get() && estopInterface_->isEStopTriggered() )
         {
-            if ( estopInterface_.get() && estopInterface_->isEStopTriggered() )
-            {
-                subStatus().warning( "Software E-Stop triggered" );
-            }
-            else
-            {
-                subStatus().ok();
-            }
+            ssWarn << "Software E-Stop triggered";
+        }
+        if ( stateMachine_.isFault(reason) )
+        {
+            ssFault << reason;
+        }
+        if ( stateMachine_.isWarning(reason) )
+        {
+            ssWarn << reason;
+        }
+
+        if ( !ssFault.str().empty() )
+        {
+            if ( !ssWarn.str().empty() )
+                ssFault << ", " << ssWarn;
+            subStatus().fault( ssFault.str() );
+        }
+        else if ( !ssWarn.str().empty() )
+        {
+            subStatus().warning( ssWarn.str() );
         }
 
     } // while
