@@ -58,7 +58,7 @@ IF( build )
       # AlexB: The /lib/ld-linux stuff is a bit of magic to make Linux
       # find the vfh library so it can be dynamically loaded.
       #
-      GBX_ADD_TEST( LocalNavVfhTest ${LD_LINUX}
+      GBX_ADD_TEST( LocalNav_VfhTest ${LD_LINUX}
         --library-path ${CMAKE_CURRENT_BINARY_DIR}/../../libs/orcavfh:$ENV{LD_LIBRARY_PATH} ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME}
         --Orca.Config=${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME}.cfg
         --LocalNav.Config.TestInSimulationMode=1

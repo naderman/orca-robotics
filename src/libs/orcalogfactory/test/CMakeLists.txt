@@ -14,7 +14,7 @@ LINK_LIBRARIES( OrcaLog OrcaLogFactory )
 #ORCA_GENERATE_CONFIG_FILE( logreplaytest.def logreplaytest 0 )
 
 ADD_EXECUTABLE( defaultautofactoryinstantiate defaultautofactoryinstantiate.cpp )
-GBX_ADD_TEST( DefaultAutoFactoryInstantiate defaultautofactoryinstantiate )
+GBX_ADD_TEST( OrcaLogFactory_AutoFactoryInstantiate defaultautofactoryinstantiate )
 
 ADD_EXECUTABLE( defaultsnapshotfactoryinstantiate defaultsnapshotfactoryinstantiate.cpp )
-GBX_ADD_TEST( DefaultSnapshotFactoryInstantiate defaultsnapshotfactoryinstantiate )
+GBX_ADD_TEST( OrcaLogFactory_SnapshotFactoryInstantiate defaultsnapshotfactoryinstantiate )

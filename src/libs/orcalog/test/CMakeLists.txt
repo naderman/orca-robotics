@@ -3,7 +3,7 @@ INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 LINK_LIBRARIES( OrcaLog )
 
 ADD_EXECUTABLE( logtest logtest.cpp )
-GBX_ADD_TEST( LibOrcaLogTest logtest )
+GBX_ADD_TEST( OrcaLog_Test logtest )
 
 ADD_EXECUTABLE( mastertest mastertest.cpp )
-GBX_ADD_TEST( LogReplayMasterTest mastertest "no-config-file-needed" )
+GBX_ADD_TEST( OrcaLog_LogReplayMaster mastertest "no-config-file-needed" )

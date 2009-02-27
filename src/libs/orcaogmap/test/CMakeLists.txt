@@ -13,6 +13,6 @@ IF( build_test )
     ADD_EXECUTABLE( testconvert testconvert.cpp )
     TARGET_LINK_LIBRARIES( testconvert OrcaOgMap HydroMapLoad )
 
-    GBX_ADD_TEST( OrcaOgMapConversion testconvert ${CMAKE_CURRENT_SOURCE_DIR}/testmap.png )
+    GBX_ADD_TEST( OrcaOgMap_Conversion testconvert ${CMAKE_CURRENT_SOURCE_DIR}/testmap.png )
 
 ENDIF( build_test )
