@@ -56,6 +56,10 @@ int getPropertyAsIntVector( const Ice::PropertiesPtr &, const ::std::string& key
 //! Throws a gbxutilacfr::Exception if the key is found but the value cannot be converted to the desired type.
 int getPropertyAsDoubleVector( const Ice::PropertiesPtr &, const ::std::string& key, std::vector<double> &value );
 
+//! Parses the value into a sequence of strings using the given delimiter
+//! Returns: 0 = property found (and set in value), non-zero = property not found or parsing failed.
+int getPropertyAsStringSeq( const Ice::PropertiesPtr &, const ::std::string& key, Ice::StringSeq &value, char delim=':' );
+
 //! Returns the default value if key is not found.
 //! Throws a gbxutilacfr::Exception if the key is found but the value cannot be converted to the desired type.
 Ice::Double getPropertyAsDoubleWithDefault( const Ice::PropertiesPtr &, const ::std::string& key, const Ice::Double defaultValue );

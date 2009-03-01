@@ -154,7 +154,7 @@ setFactoryProperties( Ice::PropertiesPtr& props, const std::string& compTag )
     tempProps->setProperty( "Orca.Warn.FactoryProperty",  "0" );
     
     // Application properties
-    // This is advance property. Default value should be good for most cases.
+    // This is an advanced property. Default value should be good for most cases.
     // The alternative is to request ShutdownOnInterrupt.
     tempProps->setProperty( "Orca.Application.CallbackOnInterrupt",  "1" );
 

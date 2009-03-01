@@ -3,16 +3,19 @@ Ice.Default.Locator=IceGrid/Locator: default -p 12000
 #Ice.Default.Locator=IceGrid/Locator: default: default -h host.xxx.xxx.xxx -p 12000
 
 # Orca config
-Orca.PrintProperties=0
-Orca.PrintComponentStarted=0
-Orca.RequireRegisty=1
+Orca.Component.RequireRegisty=0
+Orca.Component.PrintProperties=0
+Orca.Component.PrintContext=0
+Orca.Component.PrintStarted=0
+
+Orca.Status.RequireIceStorm=0
+Orca.Tracer.RequireIceStorm=0
 
 # Orca warnings
 Orca.Warn.DefaultProperty=1
 Orca.Warn.FactoryProperty=0
 
 # Orca Tracer config
-Orca.Tracer.RequireIceStorm=0
 Orca.Tracer.Filename=orca_component_trace.txt
 Orca.Tracer.InfoToDisplay=1
 Orca.Tracer.InfoToNetwork=0

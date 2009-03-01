@@ -19,14 +19,18 @@ Used by all components, API is fairly stable.
 
 This library aims at simplifying Orca component development. It provides several helper classes to use and derive from and several functions to use. In doing so we make unavoidable assumptions about how Ice is going to be used in Orca components. If your component cannot live with these constraints you can always go back to using Ice directly (it's not much more work).
 
-For a full list of functions and classes see see the complete documentation for the @ref orcaice "orcaice namespace".
-
 Header file:
 @verbatim
 #include <orcaice/orcaice.h>
 @endverbatim
 
-    @section orca_library_orcaice_classes Class Usage
+Contents:
+- @ref orcaice "Full list of functions and classes"
+- @ref orca_library_orcaice_classes
+- @ref orca_library_orcaice_functions
+- @ref orca_library_orcaice_config
+
+    @section orca_library_orcaice_classes Class usage
 
 Here's what our stand-alone component looks like. In this figure and the one below, white color stands for standard Ice objects which we don't modify, e.g. the Communicator -- the Ice run-time object. Gray color stands for the objects which come with libOrcaIce and used unmodified by component developers. Cream color stands for component-specific code, written by component developers.
 
@@ -38,7 +42,7 @@ Here's what an IceBox service looks like. The main idea is to have the guts of t
 
 Note that 'Component1' code is identical in both cases -- that's a big time saver!
 
-    @section orca_library_orcaice_functions Function Usage
+    @section orca_library_orcaice_functions Function usage
 
 The functions described here are very high-level. They are intended as one-line wrappers which work in typical situations. If your usage does not fit the pattern, no worries: just look how they are implemented, copy the code into your program and modify it as needed.
 
@@ -79,7 +83,7 @@ orcaice::connectToInterface<orca::YourObjectPrx>( context(), yourObjectPrx, "MyC
 There's no corresponding function in libOrcaIce because, normally, you call the subscribe() operation on an interface which publishes the data so you don't actually talk to the IceStorm server directly.
 
 
-@section orca_library_orcaice_config Configuration
+@section orca_library_orcaice_config Complete list of configuration properties
 
 The following properties are assigned defaults unless they are configured explicitely:
 
@@ -92,19 +96,60 @@ The following properties are assigned defaults unless they are configured explic
 - @c [ComponentTag].Endpoints (string)
     - Default: "tcp -t 5000"
 
-Behavior of libOrcaIce functions and classes can be influenced by setting several configuration parameters.
+Component and Application properties.
+
+- @c Orca.Component.RequireRegistry (bool)
+    - When component activates it tries to register its adapter with the Registry. If it cannot connect (e.g. Registy is not running) it gets an exception. When indirect binding (using names) is used this makes a component with provided interfaces useless because nobody can connect to it. In this case requiring registry makes sense and the component should exit at this point. There are cases however when you may want to ignore this and continue with the startup.
+    - Default: 1
+
+- @c Orca.Component.EnableProperties (bool)
+    - Enables Ice-standard Properties interface which allows remote read access to all component properties.
+    - Default: 1
+
+- @c Orca.Component.EnableProcess (bool)
+    - Enables Ice-standard Process interface which allows remote shutdown of the component.
+    - Default: 0
 
 - @c Orca.PrintProperties (bool)
     - Print out all properties passed to the component? Includes hardwired defaults, global settings, properties from the component configuration file, and command line options.
     - Default: 0
 
-- @c Orca.PrintComponentStarted (bool)
+- @c Orca.Component.PrintProperties (bool)
+    - If this property is set to 1, all properties are printed during the startup procedure. Useful for debugging.
+    - Default: 0
+
+- @c Orca.Component.PrintContext (bool)
+    - If this property is set to 1, all Context settings are printed during the startup procedure. Useful for debugging.
+    - Default: 0
+
+- @c Orca.Component.PrintStarted (bool)
     - If this property is set to 1, a statement is printed to standard output when component initialization is complete.
     - Default: 0
 
-- @c Orca.RequireRegistry (bool)
-    - When component activates it tries to register its adapter with the Registry. If it cannot connect (e.g. Registy is not running) it gets an exception. When indirect binding (using names) is used this makes a component with provided interfaces useless because nobody can connect to it. In this case requiring registry makes sense and the component should exit at this point. There are cases however when you may want to ignore this and continue with the startup.
+- @c Orca.Application.CallbackOnInterrupt (bool)
+    - This is an advanced property. Default value should be good for most cases.
+      The alternative is to request ShutdownOnInterrupt.
     - Default: 1
+
+Properties for individual standard interfaces.
+
+- @c Orca.Status.RequireIceStorm (bool)
+    - If this property is set to 1, the component will quit if its Status interface cannot connect to IceStorm.
+    - Default: 0
+
+- @c Orca.Tracer.RequireIceStorm (bool)
+    - If this property is set to 1, the component will quit if its Tracer interface cannot connect to IceStorm.
+    - Default: 0
+
+- @c Orca.Tracer.Filename (string)
+    - The name of the file to which the Tracer will write the traces enabled by *ToFile properties.
+    - Default: "orca_component_trace.txt"
+
+- @c Orca.Tracer.Timestamp (bool)
+    - When enabled, prepends human-readable time stamp to all traces.
+    - Default: 1
+
+Tracing and warnings.
 
 - @c Orca.Warn.DefaultProperty (bool)
     - If this property is set to 1, a warning is printed every time a default property is used when calling *WithDefault() functions. e.g. orcaice::getPropertyAsIntWithDefault().
@@ -113,9 +158,6 @@ Behavior of libOrcaIce functions and classes can be influenced by setting severa
 - @c Orca.Warn.FactoryProperty (bool)
     - If this property is set to 1, a warning is printed when a factory default is used. This applies only during component initialization.
     - Default: 0
-
-
-@see orcaice::Tracer configuration.
 
 A sample configuration file which sets all parameters to sensible defaults is shown here.
 
