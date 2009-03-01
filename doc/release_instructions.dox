@@ -24,7 +24,7 @@
   -# Modify the project versions in the top-level CMakeLists.txt files.
   -# Modify the 'news' sections in the 'index.dox' files.
   -# Remove old contents of src/retired directory from SVN.
-  -# Update LICENSE information by running cmake with BUILD_LICENSE=ON and BUILD_SANDBOX=ON.
+  -# Update LICENSE information by running cmake -DORCA_BUILD_LICENSE=ON -DORCA_BUILD_SANDBOX=ON.
   -# Shunt everything down in 'todo.dox'.
   -# Delete any temporary files created by an editor.
   -# Check in those changes.
