@@ -47,17 +47,10 @@ University of Florida (USA).
 </td></tr>
 
 <tr><td width="170" rowspan="1" colspan="1" align="left" valign="top">
-@image html project_generic_150.png
-</td>
-<td rowspan="1" colspan="1" align="left" valign="top">
-Research projects at Fatronik (Spain).
-</td></tr>
-
-<tr><td width="170" rowspan="1" colspan="1" align="left" valign="top">
 @image html project_iward_150.jpg
 </td>
 <td rowspan="1" colspan="1" align="left" valign="top">
-<a href="http://www.iward.eu" target="_blank">IWARD</a> is a robot swarm project funded by the European Union.
+<a href="http://www.iward.eu" target="_blank">IWARD</a> is a robot swarm project funded by the European Union. FATRONIK (Spain) is building a communication infrastructure based on Orca.
 </td></tr>
 
 <tr><td width="170" rowspan="1" colspan="1" align="left" valign="top">
