@@ -77,6 +77,10 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 @par New utilities
 @par New libraries
 @par Updated interfaces
+
+- Status
+  - new classes to support the taks of keeping history of status changes. (alexm)
+
 @par Updated components
 @par Updated utilities
 @par Updated libraries
