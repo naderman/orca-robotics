@@ -17,6 +17,7 @@
 // by practically everything in Orca.
 #include <Ice/Communicator.h>
 #include <Ice/ObjectAdapter.h>
+#include <Ice/Properties.h>
 #include <Ice/LocalException.h>
 
 #include <orca/ocm.h>
