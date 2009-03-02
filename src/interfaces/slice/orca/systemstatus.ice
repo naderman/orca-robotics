@@ -48,11 +48,12 @@ enum ObservedComponentHealth
     ObsCompFault,
     //! At least one of the component's subsystems has not been heard from for an abnormally long time
     ObsCompStalled,
-    //! Component has not been heard from for an abnormally long time. Can only be observed from outside the component.
+    //! Component has not been heard from for an abnormally long time. This health value can only 
+    //! be diagnosed from outside the component.
     ObsCompStale
 };
 
-//! StatusData for a single component
+//! Observed component status for a single component.
 struct ObservedComponentStatus
 {
     //! The fully-qualified name of the component.
