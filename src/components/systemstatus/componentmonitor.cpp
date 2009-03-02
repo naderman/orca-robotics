@@ -51,49 +51,40 @@ class SubscribeJob : public hydroiceutil::Job
 
 } // end of namespace
 
+/////////////////////////////////////////////
 
-ComponentMonitor::ComponentMonitor( hydroiceutil::JobQueuePtr  jobQueue,
-                                    const std::string         &platformName,
-                                    const std::string         &componentName,
+ComponentMonitor::ComponentMonitor( const orca::FQComponentName& compName,
+                                    hydroiceutil::JobQueuePtr  jobQueue,
                                     const orcaice::Context    &context )
     : currentState_(orca::ObsCompInactive),
+      compName_(compName),
       jobQueue_(jobQueue),
-      platformName_(platformName),
-      componentName_(componentName),
       context_(context)
 {
     Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag()+".Config.";
     int resubscribeInterval = orcaice::getPropertyAsIntWithDefault( prop, prefix+"ResubscribeInterval", 5 );
     
-    StatusConsumerImpl::Config config( platformName, componentName, resubscribeInterval ) ;
+    StatusConsumerImpl::Config config( compName_.platform, compName_.component, resubscribeInterval ) ;
     statusConsumer_ = new StatusConsumerImpl( config, context_ );
     
-    // try to subscribe
+    // create a job which will subscribe us
     hydroiceutil::JobPtr job = new SubscribeJob( context_, statusConsumer_ );
     jobQueue_->add( job );   
 }
 
-ComponentMonitor::~ComponentMonitor()
-{
-}
-
 bool
 ComponentMonitor::isHomeInterfaceReachable()
-{
-    orca::FQComponentName fqName;
-    fqName.platform = platformName_;
-    fqName.component = componentName_;
-    
+{    
     string interfaceType = "::orca::Home";
     string diagnostic = "";
    
-    bool isReachable = orcaice::isAdminInterfaceReachable( context_, fqName, interfaceType, diagnostic );
+    bool isReachable = orcaice::isAdminInterfaceReachable( context_, compName_, interfaceType, diagnostic );
     
     if (!isReachable)
     {
         stringstream ss;
-        ss << "Home interface of " << orcaice::toString( fqName ) << " is not reachable. Diagnostics: " << diagnostic;
+        ss << "Home interface of " << orcaice::toString( compName_ ) << " is not reachable. Diagnostics: " << diagnostic;
         context_.tracer().warning( ss.str() );
     }
     
@@ -103,8 +94,7 @@ ComponentMonitor::isHomeInterfaceReachable()
 void
 ComponentMonitor::setObservedState( orca::ObservedComponentStatus &obsCompStat )
 {
-    obsCompStat.name.platform = platformName_;
-    obsCompStat.name.component = componentName_; 
+    obsCompStat.name = compName_;
     obsCompStat.timeUp = 0;
     obsCompStat.publishIntervalSec = 10.0;
     obsCompStat.state = currentState_; 
@@ -168,7 +158,6 @@ ComponentMonitor::addSubscribeJob()
     hydroiceutil::JobPtr job = new SubscribeJob( context_, statusConsumer_ );
     jobQueue_->add( job );
 }
-
 
 void 
 ComponentMonitor::getComponentStatus( orca::ObservedComponentStatus &obsCompStat )

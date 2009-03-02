@@ -9,11 +9,7 @@
  */
 
 #include <iostream>
-#include <gbxutilacfr/tokenise.h>
-#include <hydroiceutil/jobqueue.h>
 #include <orcaice/orcaice.h>
-#include <orcaobj/proputils.h>
-
 
 #include "mainthread.h"
 
@@ -22,23 +18,33 @@ using namespace std;
 namespace systemstatus {
     
 namespace {
-        
-//
-// extracts a PlatformComponentPair from a string "platform/component"
-//
-PlatformComponentPair extractPlatComp( const string &input )
-{
-    vector<string> tokens = gbxutilacfr::tokenise( input.c_str(), "/");
-    if (tokens.size()!=2)
+    
+// one way to define the system: by specifying all components upfront in the config file
+vector<orca::FQComponentName> getSystemComponentsFromConfig( const orcaice::Context& context )
+{   
+    Ice::PropertiesPtr props = context.properties();
+    std::string prefix = context.tag()+".Config.";
+    
+    vector<string> componentList;
+    char delimiter = ' ';
+    int ret = orcaice::getPropertyAsStringVector( props, prefix+"ComponentList", componentList, delimiter );
+    if (ret!=0)
+        throw gbxutilacfr::Exception( ERROR_INFO, "Problem reading ComponentList from config file" );
+    
+    vector<orca::FQComponentName> fqCompNames;
+    for ( unsigned int i=0; i<componentList.size(); ++i )
     {
-        stringstream ss;
-        ss << "extractPlatForm: unexpected <platform/component> string: " << input;
-        throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
+        orca::FQComponentName fqCompName = orcaice::toComponentName( componentList[i] );
+        if ( fqCompName.platform.empty() && fqCompName.component.empty() ) {
+            stringstream ss;
+            ss << "Failed to parse component name " << i << " : '" << componentList[i] << "'";
+            throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
+        }
+
+        fqCompNames.push_back( fqCompName );
     }
-    PlatformComponentPair pair;
-    pair.platformName=tokens[0];
-    pair.componentName=tokens[1];
-    return pair;
+    
+    return fqCompNames;
 }
     
 //
@@ -111,8 +117,28 @@ MainThread::initialise()
     systemStatusIface_ = new orcaifaceimpl::SystemStatusImpl( "SystemStatus", context_ );
     systemStatusIface_->initInterface( this );
 
-    // create the monitors
-    createMonitors();
+    Ice::PropertiesPtr props = context_.properties();
+    std::string prefix = context_.tag()+".Config.";
+    
+    // init the job queue
+    hydroiceutil::JobQueue::Config config;
+    config.threadPoolSize = orcaice::getPropertyAsIntWithDefault( props, prefix+"JobQueueThreadPoolSize", 10 );
+    config.queueSizeWarn = orcaice::getPropertyAsIntWithDefault( props, prefix+"JobQueueSizeWarning", 2 );
+    config.traceAddEvents = false;
+    config.traceStartEvents = false;
+    config.traceDoneEvents = false;
+    
+    jobQueue_ = new hydroiceutil::JobQueue( context_.tracer(), config );
+    
+    // create component monitors
+    vector<orca::FQComponentName> fqCompNames; 
+
+    fqCompNames = getSystemComponentsFromConfig( context_ );
+    for ( unsigned int i=0; i<fqCompNames.size(); ++i )
+    {
+        ComponentMonitor mon( fqCompNames[i], jobQueue_, context_ );
+        monitors_.push_back(mon);
+    }
 }
 
 void
@@ -143,52 +169,6 @@ MainThread::work()
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(sleepTimeSec));
         
     } // end of main loop
-}
-
-////////////////////////////////
-
-vector<PlatformComponentPair>
-MainThread::getPlatformComponentPairs()
-{   
-    vector<string> componentList;
-    Ice::PropertiesPtr props = context_.properties();
-    std::string prefix = context_.tag()+".Config.";
-    
-    int ret = orcaobj::getPropertyAsStringSeq( context_.properties(), context_.tag()+".Config.ComponentList", componentList, ' ' );
-    if (ret!=0)
-        throw gbxutilacfr::Exception( ERROR_INFO, "Problem reading ComponentList from config file" );
-    
-    vector<PlatformComponentPair> pairs;
-    for (unsigned int i=0; i<componentList.size(); i++)
-    {
-        PlatformComponentPair pair = extractPlatComp( componentList[i] );
-        pairs.push_back( pair );
-    }
-    
-    return pairs;
-}
-
-void 
-MainThread::createMonitors()
-{
-    Ice::PropertiesPtr props = context_.properties();
-    std::string prefix = context_.tag()+".Config.";
-    
-    hydroiceutil::JobQueue::Config config;
-    config.threadPoolSize = orcaice::getPropertyAsIntWithDefault( props, prefix+"JobQueueThreadPoolSize", 10 );
-    config.queueSizeWarn = orcaice::getPropertyAsIntWithDefault( props, prefix+"JobQueueSizeWarning", 2 );
-    config.traceAddEvents = false;
-    config.traceStartEvents = false;
-    config.traceDoneEvents = false;
-    
-    jobQueue_ = new hydroiceutil::JobQueue( context_.tracer(), config );
-    
-    vector<PlatformComponentPair> pairs = getPlatformComponentPairs();
-    for ( unsigned int i=0; i<pairs.size(); i++)
-    {
-        ComponentMonitor mon( jobQueue_, pairs[i].platformName, pairs[i].componentName, context_ );
-        monitors_.push_back(mon);
-    }
 }
 
 }

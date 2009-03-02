@@ -19,12 +19,6 @@
 namespace systemstatus
 {
     
-struct PlatformComponentPair
-{
-    std::string platformName;
-    std::string componentName;
-};
-    
 class MainThread : public orcaice::SubsystemThread
 {
 public:
@@ -37,14 +31,12 @@ private:
     virtual void initialise();
     virtual void work();
 
-    hydroiceutil::JobQueuePtr jobQueue_;
-    orcaice::Context context_;
-    std::vector<ComponentMonitor> monitors_;    
     orcaifaceimpl::SystemStatusImplPtr systemStatusIface_;
-    
-    std::vector<PlatformComponentPair> getPlatformComponentPairs();
-    void createMonitors();
 
+    std::vector<ComponentMonitor> monitors_; 
+    hydroiceutil::JobQueuePtr jobQueue_;   
+
+    orcaice::Context context_;
 };
 
 } // namespace

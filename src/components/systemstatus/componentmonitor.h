@@ -30,20 +30,17 @@ namespace systemstatus {
 class ComponentMonitor
 {
     public:
-        ComponentMonitor( hydroiceutil::JobQueuePtr  jobQueue,
-                          const std::string         &platformName,
-                          const std::string         &componentName,
+        ComponentMonitor( const orca::FQComponentName& compName,
+                          hydroiceutil::JobQueuePtr  jobQueue,
                           const orcaice::Context    &context );
-        ~ComponentMonitor();
         
         // Get the current component status
         void getComponentStatus( orca::ObservedComponentStatus &obsCompStat );
         
     private:
         orca::ObservedComponentState currentState_;
+        orca::FQComponentName compName_;
         hydroiceutil::JobQueuePtr jobQueue_;
-        std::string platformName_;
-        std::string componentName_;
         orcaice::Context context_;
         StatusConsumerImplPtr statusConsumer_;
         
@@ -57,9 +54,7 @@ class ComponentMonitor
         void addSubscribeJob();
         
         bool isHomeInterfaceReachable();
-        
 };
-
 
 }
 
