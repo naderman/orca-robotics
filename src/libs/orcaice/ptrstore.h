@@ -12,7 +12,7 @@
 #define ORCAICE_ICE_PTR_STORE_H
 
 #include <gbxsickacfr/gbxiceutilacfr/store.h>
-#include <Ice/Ice.h>
+#include <Ice/Object.h>
 
 namespace orcaice
 {

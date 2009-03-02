@@ -135,7 +135,7 @@ readScreenDumpParams( const orcaice::Context                 &context,
     screenDumpParams.sidePad = orcaice::getPropertyAsIntWithDefault( prop, prefix+"ScreenCapture.SidePad", 2 );
     screenDumpParams.bottomPad = orcaice::getPropertyAsIntWithDefault( prop, prefix+"ScreenCapture.BottomPad", 2 );
     Ice::StringSeq strIn; strIn.push_back("/tmp"); Ice::StringSeq strOut;
-    strOut = orcaobj::getPropertyAsStringSeqWithDefault( prop, prefix+"General.DumpPath", strIn );
+    strOut = orcaice::getPropertyAsStringVectorWithDefault( prop, prefix+"General.DumpPath", strIn );
     screenDumpParams.dumpPath = strOut[0];
     screenDumpParams.captureTimerInterval = orcaice::getPropertyAsIntWithDefault( prop, prefix+"ScreenCapture.CaptureTimerInterval", 1000 );
 }

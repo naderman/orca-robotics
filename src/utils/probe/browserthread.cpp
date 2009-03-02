@@ -9,6 +9,7 @@
  */
 
 #include <iostream>
+#include <Ice/Ice.h>
 #include <orcaice/orcaice.h>
 #include <orcacm/orcacm.h>
 #include <orcaprobe/orcaprobe.h>

@@ -9,11 +9,11 @@
  */
 
 #include <iostream>
+#include <Ice/Ice.h> // for Ice::createProperties()
 
 #include <orcaice/proputils.h>
 #include <orcaice/detail/privateutils.h>
 #include <gbxutilacfr/mathdefs.h>
-// #include <orcaobj/stringutils.h>
 
 using namespace std;
 

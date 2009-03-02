@@ -10,9 +10,9 @@
 
 #include <iostream>
 
+#include <Ice/Ice.h> // for createProperties()
 #include <orcaice/proputils.h>
 #include <gbxutilacfr/mathdefs.h>
-// #include <orcaobj/stringutils.h>
 
 using namespace std;
 
@@ -32,7 +32,7 @@ int main(int argc, char * argv[])
     props->setProperty( "Int.Alpha", "two" );
     props->setProperty( "Int.Crap", "256 trailing crap" );
     props->setProperty( "Int.Comment", "256 # don't read this" );
-    props->setProperty( "StringSequence", "test:exam:check" );
+    props->setProperty( "StringVector", "test:exam:check" );
     props->setProperty( "IntVector.Good", "1 2 3" );
     props->setProperty( "IntVector.Alpha", "1 two 3" );
     props->setProperty( "DoubleVector.Good", "1.0 2.0 3.0" );
@@ -251,6 +251,36 @@ int main(int argc, char * argv[])
             cout<<"failed"<<endl<<"\tnon-existing key with default DoubleVector: ret="<<retDoubleVector.at(0)<<endl;
             return EXIT_FAILURE;
         }
+    }
+    cout<<"ok"<<endl;
+
+    cout<<"testing getPropertyAsStringVector() ... ";
+    vector<string> retStringSeq;
+    ret = orcaice::getPropertyAsStringVector( props, "StringVector", retStringSeq );
+    if ( ret!=0 || retStringSeq.size()!=3 || retStringSeq[0]!="test" ) {
+        cout<<"failed"<<endl<<"\texisting key with string seq: ret="<<ret<<"; size="<<retStringSeq.size()<<endl;
+        return EXIT_FAILURE;
+    }
+    ret = orcaice::getPropertyAsStringVector( props, "NotExist", retStringSeq );
+    if ( ret==0 ) {
+        cout<<"failed"<<endl<<"\tnon-existing key with string seq: ret="<<ret<<endl;
+        return EXIT_FAILURE;
+    }
+    cout<<"ok"<<endl;
+
+    cout<<"testing getPropertyAsStringVectorWithDefault() ... ";
+    vector<string> defaultSeq;
+    defaultSeq.push_back("standard");
+    defaultSeq.push_back("normal");
+    retStringSeq = orcaice::getPropertyAsStringVectorWithDefault( props, "StringVector", defaultSeq );
+    if ( retStringSeq.size()!=3 || retStringSeq[2]!="check" ) {
+        cout<<"failed"<<endl<<"\texisting key with default string seq: ret="<<retStringSeq.size()<<endl;
+        return EXIT_FAILURE;
+    }
+    retStringSeq = orcaice::getPropertyAsStringVectorWithDefault( props, "NotExist", defaultSeq );
+    if ( retStringSeq.size()!=defaultSeq.size() || retStringSeq[1]!="normal" ) {
+        cout<<"failed"<<endl<<"\tnon-existing key with default string seq: ret="<<retStringSeq.size()<<endl;
+        return EXIT_FAILURE;
     }
     cout<<"ok"<<endl;
 

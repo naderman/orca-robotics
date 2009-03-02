@@ -9,6 +9,7 @@
  */
 
 #include <iostream>
+#include <Ice/Ice.h>
 #include <IceGrid/Admin.h>
 #include <IceGrid/Query.h>
 #include <orcaice/orcaice.h>

@@ -13,7 +13,6 @@
 #ifndef ORCAICE_ICESTORM_UTILITIES_H
 #define ORCAICE_ICESTORM_UTILITIES_H
 
-#include <Ice/Ice.h>
 #include <IceStorm/IceStorm.h>
 
 #include <orcaice/context.h>

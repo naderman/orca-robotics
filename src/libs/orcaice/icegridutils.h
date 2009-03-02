@@ -11,7 +11,6 @@
 #ifndef ORCAICE_ICEGRID_UTILITIES_H
 #define ORCAICE_ICEGRID_UTILITIES_H
 
-#include <Ice/Ice.h>
 #include <IceGrid/Query.h>
 
 #include <orcaice/context.h>

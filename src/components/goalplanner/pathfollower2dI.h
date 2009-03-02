@@ -11,9 +11,7 @@
 #ifndef ORCA_PATH_FOLLOWER_2D_I_H
 #define ORCA_PATH_FOLLOWER_2D_I_H
 
-// include defnition of Ice runtime
-#include <Ice/Ice.h>
-#include <IceStorm/IceStorm.h>
+// #include <IceStorm/IceStorm.h>
 #include <gbxsickacfr/gbxiceutilacfr/store.h>
 #include <orcaice/context.h>
 

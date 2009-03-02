@@ -11,6 +11,7 @@
 #include <fstream>
 #include <QPainter>
 
+#include <Ice/Ice.h>
 #include <hydroqgui/hydroqgui.h>
 #include <orcaice/orcaice.h>
 #include <orcaobj/orcaobj.h>

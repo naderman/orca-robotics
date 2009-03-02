@@ -11,6 +11,7 @@
 #include <orcaice/orcaice.h>
 #include <fstream>
 
+#include <Ice/Ice.h>
 #include <hydromapload/hydromapload.h>
 
 using namespace std;

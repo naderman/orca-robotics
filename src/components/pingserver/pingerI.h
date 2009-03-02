@@ -10,9 +10,6 @@
 #ifndef __pingerI_h__
 #define __pingerI_h__
 
-// include defnition of Ice runtime
-#include <Ice/Ice.h>
-
 // include provided interfaces
 #include <orca/pinger.h>
 #include <orcaice/context.h>

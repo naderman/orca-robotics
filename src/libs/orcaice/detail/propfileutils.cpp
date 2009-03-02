@@ -63,7 +63,7 @@ std::string getGlobalConfigFilename( const Ice::PropertiesPtr &props )
 }
 
 std::string 
-getApplicationConfigFilename( const Ice::StringSeq & args )
+getApplicationConfigFilename( const std::vector<std::string> & args )
 {
     if ( args.empty() ) {
         return std::string( "" );
@@ -128,7 +128,7 @@ getApplicationConfigFilename( const Ice::StringSeq & args )
 }
 
 std::string 
-getServiceConfigFilename( const Ice::StringSeq & args )
+getServiceConfigFilename( const std::vector<std::string> & args )
 {
     if ( args.empty() ) {
         return string();

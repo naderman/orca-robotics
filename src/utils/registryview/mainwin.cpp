@@ -14,6 +14,7 @@
 
 #include <QtGui>
 
+#include <Ice/Ice.h>
 #include <orcaqcompmodel/orcaqcm.h>
 #include <orcaqt/orcaqt.h>
 

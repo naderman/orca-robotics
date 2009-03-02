@@ -12,7 +12,7 @@
 #define ORCAICE_ICE_PTR_BUFFER_H
 
 #include <gbxsickacfr/gbxiceutilacfr/buffer.h>
-#include <Ice/Ice.h>
+#include <Ice/Object.h>
 
 namespace orcaice
 {

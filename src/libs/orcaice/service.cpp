@@ -8,6 +8,8 @@
  *
  */
 
+#include <Ice/Ice.h>
+
 #include <orcaice/service.h>
 #include <orcaice/component.h>
 

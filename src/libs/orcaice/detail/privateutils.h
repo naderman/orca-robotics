@@ -11,8 +11,6 @@
 #ifndef ORCAICE_PRIVATE_UTILITIES_H
 #define ORCAICE_PRIVATE_UTILITIES_H
 
-// include defnition of Ice runtime
-#include <Ice/Ice.h>
 #include <string>
 
 #include <orca/common.h>
@@ -96,13 +94,13 @@ void printAllVersions( const Component& component );
 // Use for 'Application's:
 // adds to the set of properties by reading from the component's config file
 void addPropertiesFromApplicationConfigFile( Ice::PropertiesPtr   &properties,
-                                                const Ice::StringSeq &commandLineArgs,
+                                                const std::vector<std::string> &commandLineArgs,
                                                 const std::string    &compTag );
 
 // Use for 'Service's:
 // adds to the set of properties by reading from the component's config file
 void addPropertiesFromServiceConfigFile( Ice::PropertiesPtr   &properties,
-                                            const Ice::StringSeq &commandLineArgs,
+                                            const std::vector<std::string> &commandLineArgs,
                                             const std::string    &compTag );
 
 // adds to the set of properties by reading from the global config file

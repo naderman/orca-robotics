@@ -17,37 +17,11 @@
 #include <gbxutilacfr/mathdefs.h>           // for DEG2RAD_RATIO
 
 #include "proputils.h"
-// #include "configutils.h"
-// #include "exceptions.h"
-// #include "printutils.h"       // initTracerInfo()
 
 using namespace std;
 
 namespace orcaobj
 {
-
-int
-getPropertyAsStringSeq( const Ice::PropertiesPtr & prop, const ::std::string& key, Ice::StringSeq & value, char delim )
-{
-    std::string stringVal;
-    if ( orcaice::getProperty( prop, key, stringVal ) ) {
-        return -1;
-    }
-    else {
-        value = hydroutil::toStringSeq( stringVal, delim );
-        return 0;
-    }
-}
-
-Ice::StringSeq
-getPropertyAsStringSeqWithDefault( const Ice::PropertiesPtr & prop, const ::std::string& key, const Ice::StringSeq & defaultValue, char delim )
-{
-    std::string stringVal;
-    if ( orcaice::getProperty( prop, key, stringVal ) )
-        return defaultValue;
-    else
-        return hydroutil::toStringSeq( stringVal, delim );
-}
 
 int
 getPropertyAsFrame2d( const Ice::PropertiesPtr & prop, const ::std::string& key, orca::Frame2d & value )

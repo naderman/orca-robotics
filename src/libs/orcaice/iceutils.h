@@ -11,7 +11,8 @@
 #ifndef ORCAICE_ICE_UTILITIES_H
 #define ORCAICE_ICE_UTILITIES_H
 
-#include <Ice/Ice.h>
+#include <Ice/Object.h>
+#include <Ice/Identity.h>
 
 #include <orcaice/context.h>
 #include <gbxsickacfr/gbxiceutilacfr/thread.h>

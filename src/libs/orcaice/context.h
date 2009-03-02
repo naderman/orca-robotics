@@ -11,7 +11,13 @@
 #ifndef ORCAICE_COMPONENT_CONTEXT_H
 #define ORCAICE_COMPONENT_CONTEXT_H
 
-#include <Ice/Ice.h>
+// We carefully select the minimum subset of Ice include file we commonly need.
+// It would be easier to just include <Ice/Ice.h> at the expense of more includes
+// and slower compilation. We are trying to be careful because this file is included
+// by practically everything in Orca.
+#include <Ice/Communicator.h>
+#include <Ice/ObjectAdapter.h>
+#include <Ice/LocalException.h>
 
 #include <orca/ocm.h>
 #include <orcaice/home.h>

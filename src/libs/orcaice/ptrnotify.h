@@ -13,8 +13,7 @@
 
 #include <gbxsickacfr/gbxiceutilacfr/notify.h>
 
-#include <Ice/Ice.h>
-#include <IceUtil/IceUtil.h>
+#include <Ice/Object.h>
 
 namespace orcaice
 {

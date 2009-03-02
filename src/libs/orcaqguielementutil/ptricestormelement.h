@@ -12,7 +12,6 @@
 #define ORCAGUI_PTR_ICESTORM_ELEMENT_H
 
 #include <assert.h>
-#include <Ice/Ice.h>
 #include <IceStorm/IceStorm.h>
 #include <orcaqguielementutil/ptricestormlistener.h>
 #include <hydroqgui/hydroqgui.h>

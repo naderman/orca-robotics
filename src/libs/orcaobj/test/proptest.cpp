@@ -29,7 +29,6 @@ int main(int argc, char * argv[])
     props->setProperty( "Double.Alpha", "nine" );
     props->setProperty( "Int.Good", "256" );
     props->setProperty( "Int.Alpha", "two" );
-    props->setProperty( "StringSequence", "test:exam:check" );
     props->setProperty( "Frame2d.Good", "1.0 2.0 180.0" );
     props->setProperty( "Frame2d.Short", "1.0 2.0" );
     props->setProperty( "Frame2d.Alpha", "1.0 2.0 three" );
@@ -45,37 +44,6 @@ int main(int argc, char * argv[])
     props->setProperty( "DoubleVector.Good", "1.0 2.0 3.0" );
     props->setProperty( "DoubleVector.Alpha", "1.0 two 3.0" );
     int ret;
-
-
-    cout<<"testing getPropertyAsStringSeq() ... ";
-    Ice::StringSeq retStringSeq;
-    ret = orcaobj::getPropertyAsStringSeq( props, "StringSequence", retStringSeq );
-    if ( ret!=0 || retStringSeq.size()!=3 || retStringSeq[0]!="test" ) {
-        cout<<"failed"<<endl<<"\texisting key with string seq: ret="<<ret<<"; size="<<retStringSeq.size()<<endl;
-        return EXIT_FAILURE;
-    }
-    ret = orcaobj::getPropertyAsStringSeq( props, "NotExist", retStringSeq );
-    if ( ret==0 ) {
-        cout<<"failed"<<endl<<"\tnon-existing key with string seq: ret="<<ret<<endl;
-        return EXIT_FAILURE;
-    }
-    cout<<"ok"<<endl;
-
-    cout<<"testing getPropertyAsStringSeqWithDefault() ... ";
-    Ice::StringSeq defaultSeq;
-    defaultSeq.push_back("standard");
-    defaultSeq.push_back("normal");
-    retStringSeq = orcaobj::getPropertyAsStringSeqWithDefault( props, "StringSequence", defaultSeq );
-    if ( retStringSeq.size()!=3 || retStringSeq[2]!="check" ) {
-        cout<<"failed"<<endl<<"\texisting key with default string seq: ret="<<retStringSeq.size()<<endl;
-        return EXIT_FAILURE;
-    }
-    retStringSeq = orcaobj::getPropertyAsStringSeqWithDefault( props, "NotExist", defaultSeq );
-    if ( retStringSeq.size()!=defaultSeq.size() || retStringSeq[1]!="normal" ) {
-        cout<<"failed"<<endl<<"\tnon-existing key with default string seq: ret="<<retStringSeq.size()<<endl;
-        return EXIT_FAILURE;
-    }
-    cout<<"ok"<<endl;
 
     cout<<"testing getPropertyAsFrame2d() ... ";
     orca::Frame2d frame2d;

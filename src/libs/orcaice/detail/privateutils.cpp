@@ -9,6 +9,7 @@
  */
 
 #include <iostream>
+#include <Ice/Ice.h>
 
 #include "privateutils.h"
 #include "propfileutils.h"
@@ -489,7 +490,7 @@ printAllVersions( const Component& component )
 }
 
 void addPropertiesFromApplicationConfigFile( Ice::PropertiesPtr   &props,
-                                             const Ice::StringSeq &commandLineArgs,
+                                             const std::vector<std::string> &commandLineArgs,
                                              const std::string    &componentTag )
 {
     std::string compFilename;
@@ -511,7 +512,7 @@ void addPropertiesFromApplicationConfigFile( Ice::PropertiesPtr   &props,
 }
 
 void addPropertiesFromServiceConfigFile( Ice::PropertiesPtr   &props,
-                                         const Ice::StringSeq &commandLineArgs,
+                                         const std::vector<std::string> &commandLineArgs,
                                          const std::string    &componentTag )
 {
     if ( commandLineArgs.empty() ) {

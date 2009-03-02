@@ -26,7 +26,7 @@ namespace orcaice
 
 // note: the standard tracer already exists, if we pass communicator& into here, we could use it here.
 int
-getProperty( const Ice::PropertiesPtr &prop, const ::std::string& key, std::string &value )
+getProperty( const Ice::PropertiesPtr &prop, const string& key, std::string &value )
 {
     value = prop->getProperty( key );
     if ( value == "" )
@@ -42,7 +42,7 @@ getProperty( const Ice::PropertiesPtr &prop, const ::std::string& key, std::stri
 }
 
 std::string
-getPropertyWithDefault( const Ice::PropertiesPtr &prop, const ::std::string& key, const std::string &defaultValue )
+getPropertyWithDefault( const Ice::PropertiesPtr &prop, const string& key, const std::string &defaultValue )
 {
     std::string value;
     if ( getProperty( prop, key, value ) )
@@ -58,7 +58,7 @@ getPropertyWithDefault( const Ice::PropertiesPtr &prop, const ::std::string& key
 }
 
 int
-getPropertyAsDouble( const Ice::PropertiesPtr & prop, const ::std::string& key, Ice::Double &value )
+getPropertyAsDouble( const Ice::PropertiesPtr& prop, const string& key, double &value )
 {
     std::string stringVal;
     if ( getProperty( prop, key, stringVal ) )
@@ -87,8 +87,8 @@ getPropertyAsDouble( const Ice::PropertiesPtr & prop, const ::std::string& key, 
     return 0;
 }
 
-Ice::Double
-getPropertyAsDoubleWithDefault( const Ice::PropertiesPtr & prop, const ::std::string& key, Ice::Double defaultValue )
+double
+getPropertyAsDoubleWithDefault( const Ice::PropertiesPtr& prop, const string& key, double defaultValue )
 {
     std::stringstream ssDef;
     ssDef << defaultValue;
@@ -96,11 +96,11 @@ getPropertyAsDoubleWithDefault( const Ice::PropertiesPtr & prop, const ::std::st
     std::string stringVal = getPropertyWithDefault( prop, key, ssDef.str() );
 
     // here it's ok to use atof because we guaranteed to start with a double
-    return (Ice::Double)atof( stringVal.c_str() );
+    return (double)atof( stringVal.c_str() );
 }
 
 int
-getPropertyAsInt( const Ice::PropertiesPtr & prop, const ::std::string& key, int &value )
+getPropertyAsInt( const Ice::PropertiesPtr& prop, const string& key, int &value )
 {
     std::string stringVal;
     if ( getProperty( prop, key, stringVal ) )
@@ -130,7 +130,7 @@ getPropertyAsInt( const Ice::PropertiesPtr & prop, const ::std::string& key, int
 }
 
 int
-getPropertyAsIntWithDefault( const Ice::PropertiesPtr & prop, const ::std::string& key, int defaultValue )
+getPropertyAsIntWithDefault( const Ice::PropertiesPtr& prop, const string& key, int defaultValue )
 {
     std::stringstream ssDef;
     ssDef << defaultValue;
@@ -142,7 +142,7 @@ getPropertyAsIntWithDefault( const Ice::PropertiesPtr & prop, const ::std::strin
 }
 
 int
-getPropertyAsIntVector( const Ice::PropertiesPtr & prop, const ::std::string& key, std::vector<int> & value )
+getPropertyAsIntVector( const Ice::PropertiesPtr& prop, const string& key, std::vector<int>& value )
 {
     std::string stringVal;
     if ( getProperty( prop, key, stringVal ) )
@@ -155,7 +155,7 @@ getPropertyAsIntVector( const Ice::PropertiesPtr & prop, const ::std::string& ke
 }
 
 std::vector<int>
-getPropertyAsIntVectorWithDefault( const Ice::PropertiesPtr & prop, const ::std::string& key, const std::vector<int>& defaultValue )
+getPropertyAsIntVectorWithDefault( const Ice::PropertiesPtr& prop, const string& key, const std::vector<int>& defaultValue )
 {
     std::vector<int> value;
     if ( getPropertyAsIntVector( prop, key, value ) )
@@ -177,7 +177,7 @@ getPropertyAsIntVectorWithDefault( const Ice::PropertiesPtr & prop, const ::std:
 }
 
 int
-getPropertyAsDoubleVector( const Ice::PropertiesPtr & prop, const ::std::string& key, std::vector<double> & value )
+getPropertyAsDoubleVector( const Ice::PropertiesPtr& prop, const string& key, std::vector<double>& value )
 {
     std::string stringVal;
     if ( getProperty( prop, key, stringVal ) )
@@ -190,7 +190,7 @@ getPropertyAsDoubleVector( const Ice::PropertiesPtr & prop, const ::std::string&
 }
 
 std::vector<double>
-getPropertyAsDoubleVectorWithDefault( const Ice::PropertiesPtr & prop, const ::std::string& key, const std::vector<double>& defaultValue )
+getPropertyAsDoubleVectorWithDefault( const Ice::PropertiesPtr& prop, const string& key, const std::vector<double>& defaultValue )
 {
     std::vector<double> value;
     if ( getPropertyAsDoubleVector( prop, key, value ) )
@@ -210,27 +210,49 @@ getPropertyAsDoubleVectorWithDefault( const Ice::PropertiesPtr & prop, const ::s
     }
 }
 
+int
+getPropertyAsStringVector( const Ice::PropertiesPtr& prop, const string& key, vector<string>& value, char delim )
+{
+    std::string stringVal;
+    if ( orcaice::getProperty( prop, key, stringVal ) ) {
+        return -1;
+    }
+    else {
+        value = hydroutil::toStringSeq( stringVal, delim );
+        return 0;
+    }
+}
+
+vector<string>
+getPropertyAsStringVectorWithDefault( const Ice::PropertiesPtr& prop, const string& key, const vector<string>& defaultValue, char delim )
+{
+    std::string stringVal;
+    if ( orcaice::getProperty( prop, key, stringVal ) )
+        return defaultValue;
+    else
+        return hydroutil::toStringSeq( stringVal, delim );
+}
 
 std::string 
-warnMissingProperty( const std::string & prop )
+warnMissingProperty( const std::string& prop )
 {
     return "Property '" + prop + "' is not set.";
 }
 
 std::string 
-warnMissingPropertyWithDefault( const std::string & prop, const std::string & defaultValue )
+warnMissingPropertyWithDefault( const std::string& prop, const std::string& defaultValue )
 {
     return warnMissingProperty(prop) + " Using default value '" + defaultValue + "'.";
 }
 
 std::string 
-warnMissingProperty( const std::string & info, const std::string & prop )
+warnMissingProperty( const std::string& info, const std::string& prop )
 {
     return "Missing " + info + " because property '" + prop + "' is not set.";
 }
 
 std::string 
-warnMissingPropertyWithDefault( const std::string & info, const std::string & prop, const std::string & defaultValue )
+warnMissingPropertyWithDefault( const std::string& info, const std::string& prop, const std::string& defaultValue )
 {
     return warnMissingProperty(info,prop) + " Using default value '" + defaultValue + "'.";
 }

@@ -9,7 +9,6 @@
  */
 
 #include <QString>
-#include <orcaobj/orcaobj.h>
 #include "pathconversionutil.h"
 
 namespace orcaqgui2d {
@@ -69,7 +68,7 @@ hydroqguipath::WaypointSettings readWaypointSettings( const Ice::PropertiesPtr &
     std::string prefix = tag + ".Config.Waypoints.";
 
     Ice::StringSeq strIn; strIn.push_back("Velocity"); Ice::StringSeq strOut;
-    strOut = orcaobj::getPropertyAsStringSeqWithDefault( props, prefix+"SpacingProperty", strIn );
+    strOut = orcaice::getPropertyAsStringVectorWithDefault( props, prefix+"SpacingProperty", strIn );
     std::string spacingProperty = strOut[0];
     float spacingValue = orcaice::getPropertyAsDoubleWithDefault( props, prefix+"SpacingValue", 1.0 );
     float distanceTolerance = orcaice::getPropertyAsDoubleWithDefault( props, prefix+"DistanceTolerance", 1.0 );
@@ -98,7 +97,7 @@ QString readDumpPath( const Ice::PropertiesPtr &props,
                       const std::string        &tag )
 {
     Ice::StringSeq strIn; strIn.push_back("/tmp"); Ice::StringSeq strOut;
-    strOut = orcaobj::getPropertyAsStringSeqWithDefault( props, tag+".Config.General.DumpPath", strIn );
+    strOut = orcaice::getPropertyAsStringVectorWithDefault( props, tag+".Config.General.DumpPath", strIn );
     return QString(strOut[0].c_str());
 }
 

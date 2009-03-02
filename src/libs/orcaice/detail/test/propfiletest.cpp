@@ -10,9 +10,9 @@
 
 #include <iostream>
 #include <stdlib.h> // for getenv(), etc.
+#include <Ice/Ice.h> // for Ice::createProperties()
 
 #include "../propfileutils.h"
-// #include <orcaice/exceptions.h>
 
 using namespace std;
 

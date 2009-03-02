@@ -11,7 +11,7 @@
 #ifndef ORCAOBJUTIL_VEHICLE_DESCR_UTILS_H
 #define ORCAOBJUTIL_VEHICLE_DESCR_UTILS_H
 
-#include <Ice/Ice.h>
+#include <Ice/Properties.h>
 #include <orca/vehicledescription.h>
 #include <string>
 

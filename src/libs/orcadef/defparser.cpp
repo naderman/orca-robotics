@@ -9,6 +9,7 @@
  */
 
 #include <iostream>
+#include <Ice/Ice.h>
   
 #include <orcaice/proputils.h>
 #include <hydroutil/stringutils.h>

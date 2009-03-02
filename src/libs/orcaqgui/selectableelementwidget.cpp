@@ -12,6 +12,7 @@
 #include <iostream>
 #include <cmath>        // for floor()
 #include <QtGui>
+#include <Ice/Ice.h>
 #include <orcaice/orcaice.h>
 #include <orcacm/orcacm.h>
 #include <orcaqt/orcaqt.h>

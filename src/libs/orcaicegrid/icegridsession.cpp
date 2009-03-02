@@ -9,6 +9,8 @@
  */
 
 #include <sstream>
+#include <Ice/Ice.h>
+
 #include "icegridsession.h"
 #include <orcaice/orcaice.h>
 

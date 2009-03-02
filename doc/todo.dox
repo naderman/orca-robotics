@@ -72,6 +72,11 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 @section orca_doc_history_head Changes in SVN since Last Release
 
 @par Project wide
+
+- Dependency cleanup
+  - Removed all instances of including <Ice/Ice.h> from library headers to reduce build time. The subset of Ice headers
+    required by standard libs and components is included by <orcaice/context.h> (alexm)
+
 @par New interfaces
 @par New components
 @par New utilities
@@ -82,7 +87,12 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
   - new classes to support the taks of keeping history of status changes. (alexm)
 
 @par Updated components
+
+- SystemStatus
+ - simplified code by using standard orca functions to parse FQ component names (alexm)
+
 @par Updated utilities
+
 @par Updated libraries
 @par Removed
 

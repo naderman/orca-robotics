@@ -11,6 +11,7 @@
 #ifndef ORCA_ORCALOG_MASTER_FILE_READER_H
 #define ORCA_ORCALOG_MASTER_FILE_READER_H
 
+#include <memory>
 #include <IceUtil/Mutex.h>
 #include <orcaice/context.h>
 

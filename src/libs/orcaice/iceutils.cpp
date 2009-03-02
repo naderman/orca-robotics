@@ -9,6 +9,7 @@
  */
 
 #include <iostream>
+#include <Ice/Ice.h>
 
 #include "iceutils.h"
 #include "configutils.h"

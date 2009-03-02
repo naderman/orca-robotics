@@ -14,7 +14,6 @@
 
 #include <vector>
 #include <string>
-#include <Ice/Ice.h>
 #include <orca/common.h>
 #include <orca/ocm.h>
 

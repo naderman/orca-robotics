@@ -12,7 +12,7 @@
 #define ORCAICE_PROPERTY_FILE_UTILITIES_H
 
 #include <string>
-#include <Ice/Ice.h>
+#include <Ice/Properties.h>
 
 namespace orcaice
 {
@@ -55,7 +55,7 @@ std::string getGlobalConfigFilename( const Ice::PropertiesPtr &props );
  *  
  *  Returns an empty string if everything else fails.
  */
-std::string getApplicationConfigFilename( const Ice::StringSeq & args );
+std::string getApplicationConfigFilename( const std::vector<std::string> & args );
 
 /*
  *  Platform-independent function to find Orca component configuration file.
@@ -71,7 +71,7 @@ std::string getApplicationConfigFilename( const Ice::StringSeq & args );
  *  Returns an empty string if the argument list is empty or
  *  the argument contains no suitable properties.
  */
-std::string getServiceConfigFilename( const Ice::StringSeq & args );
+std::string getServiceConfigFilename( const std::vector<std::string> & args );
 
 } // namespace
 } // namespace

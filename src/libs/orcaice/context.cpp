@@ -9,6 +9,7 @@
  */
 
 #include "context.h"
+#include <Ice/Ice.h>
 #include <gbxutilacfr/exceptions.h>
 #include <orcaice/exceptions.h>
 

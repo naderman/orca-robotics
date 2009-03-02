@@ -11,12 +11,9 @@
 #ifndef ORCAICE_CONNECT_UTILITIES_H
 #define ORCAICE_CONNECT_UTILITIES_H
 
-#include <Ice/Ice.h>
-
 #include <orcaice/context.h>
 #include <orcaice/exceptions.h>
 #include <orcaice/configutils.h>
-// #include <hydroutil/sysutils.h>
 #include <orcaice/printutils.h>
 #include <orcaice/stringutils.h>
 

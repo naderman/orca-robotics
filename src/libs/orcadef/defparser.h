@@ -10,7 +10,7 @@
 #ifndef ORCADEF_DEF_PARSER_H
 #define ORCADEF_DEF_PARSER_H
 
-#include <Ice/Ice.h>
+#include <Ice/Properties.h>
 #include <string>
 #include <orcadef/componentdefinition.h>
 
@@ -89,7 +89,7 @@ private:
     // Constants
     //////////////
 
-    Ice::StringSeq validConfigTypes_;
+    std::vector<std::string> validConfigTypes_;
 
     int verbose_;
 };
