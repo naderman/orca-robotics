@@ -24,7 +24,7 @@ module orca
     @{
 */
 
-//! Possible subsystem states
+//! Possible subsystem states.
 enum SubsystemState
 {    
     //! Subsystem has been created but has not started initialisation process.
@@ -39,7 +39,7 @@ enum SubsystemState
     SubsystemShutdown
 };
 
-//! Possible subsystem status values
+//! Possible values of subsystem health.
 enum SubsystemHealth
 {
     //! Subsystem is OK
@@ -52,7 +52,7 @@ enum SubsystemHealth
     SubsystemStalled
 };
 
-//! Possible component states
+//! Possible component states.
 enum ComponentState
 {    
     //! Component is preparing to work, e.g. initialising its resources, etc.
@@ -63,7 +63,7 @@ enum ComponentState
     CompFinalising
 };
 
-//! Possible component health values
+//! Possible values of component health.
 enum ComponentHealth
 {
     //! All of the component's subsystems are OK
@@ -79,9 +79,9 @@ enum ComponentHealth
 //! Status for a single subsystem of a component.
 struct SubsystemStatus
 {
-    //! Current state in the subsystem's state machine. I.e. what is the subsystem doing?
+    //! State in the subsystem's state machine, i.e. what is the subsystem doing?
     SubsystemState state;
-    //! Subsystem's health. I.e. how is the subsystem doing?
+    //! Subsystem's health, i.e. how is the subsystem doing?
     SubsystemHealth health;
     //! Human-readable status description
     string message;
@@ -91,11 +91,26 @@ struct SubsystemStatus
     float sinceHeartbeat;
 };
 
-
-//! Status for all subsystems of a component
+//! Status for all subsystems of a component.
 dictionary<string,SubsystemStatus> SubsystemStatusDict;
 
-//! Status of a single component
+//! Status of a single component.
+struct ComponentStatusEpisode
+{
+    //! Time when the episode was recorded
+    orca::Time timeStamp;
+    //! Component state
+    ComponentState state;
+    //! Component health
+    ComponentHealth health;
+    //! Status of all component subsystems 
+    SubsystemStatusDict subsystems;
+};
+
+//! A sequence of component status episodes.
+sequence<ComponentStatusEpisode> ComponentStatusEpisodeSeq;
+
+//! Status of a single component.
 struct ComponentStatus
 {
     //! The fully-qualified name of the component.
@@ -104,9 +119,9 @@ struct ComponentStatus
     int timeUp;
     //! How often can you expect to receive a ComponentStatus msg?
     double publishIntervalSec;
-    //! Current state of the component, see above
+    //! Component state
     ComponentState state;
-    //! Current health of the component, see above
+    //! Component health
     ComponentHealth health;
     //! Status of all component subsystems 
     SubsystemStatusDict subsystems;
