@@ -248,6 +248,10 @@ HwThread::work()
         {
             subStatus().warning( ssWarn.str() );
         }
+        else
+        {
+            subStatus().ok();
+        }
 
     } // while
 }
