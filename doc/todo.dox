@@ -36,7 +36,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
   - Update the 'coordinate systems' image.
 
 - libOrcaIce
-  - Add a true default timeout config. The existing Ice.Override.Timeout is a blunt tool. 
+  - feature: Add a true default timeout config. The existing Ice.Override.Timeout is a blunt tool. 
     Should we make libOrcaIce internally add a configurable finite timeout when dealing proxies without 
     a timeout? (alexm) 
   - Should components quit when there's no registry and Orca.RequireRegistry=1?
@@ -47,7 +47,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     intelligent (alexm).
 
 - RegistryView
-    - fix stale display of components (alexm)
+    - bug: fix stale display of components (alexm)
 
 - laser2og:
    - The ray-trace stuff in here is currently cut-n-pasted from hydroogmap...
@@ -58,15 +58,20 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
      on image frequency and delay between the capture the the display of it.
 
 - libOrcaIfaceUtil
-  - check how does Slice byte print out? (alexm)
+  - bug: check how does Slice byte print out? (alexm)
 
 - Probe
-  - probes the wrong interface. DataHub has 3 standard and 2 nonstandard interfaces. selecting 3 (the first unsupported interface) 
+  - bug: probes the wrong interface. DataHub has 3 standard and 2 nonstandard interfaces. selecting 3 (the first unsupported interface) 
     for some reason still talks to Home (the last supported iface) (alexm)
   - use JobQueue to parallelize the pinging (alexm)
 
 - IcePing
-  - add a mechanism to ping admin interfaces (alexm)
+  - feature: add a mechanism to ping admin interfaces (alexm)
+  - do general cleanup
+
+- all components
+  - should activate themselves before they do anything which may fail if they want their status to be visible from the outside.
+    check that there are no issues with this. (alexm)
 
 
 @section orca_doc_history_head Changes in SVN since Last Release
