@@ -45,14 +45,16 @@ MainThread::initialise()
     std::string driverName = orcaice::getPropertyWithDefault( prop, prefix+"Driver", "fake" );
     if ( driverName == "fake" )
     {
-        cout<<"TRACE(maploadercomponent.cpp): Instantiating fake driver" << endl;
+        cout<<"TRACE(maploadermainthread.cpp): Instantiating fake driver" << endl;
         fakeLoadMap( theMap );
     }
     else if ( driverName == "file" )
     {
         try {
-            loadMapFromFile( context_,theMap );
-            cout<<"TRACE(component.cpp): Loaded map: " << ifaceutil::toString(theMap,999,0) << endl;
+            loadMapFromFile( context_, theMap );
+            const int recurse=999;
+            const int expand=0;
+            cout<<"TRACE(mainthread.cpp): Loaded map: " << ifaceutil::toString(theMap,recurse,expand) << endl;
         }
         catch ( const gbxutilacfr::Exception& e )
         {   
