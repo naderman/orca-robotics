@@ -93,6 +93,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 
 @par Updated utilities
 
+- PureIce example: bugfix patch from Alberto Liu
+
 @par Updated libraries
 @par Removed
 
