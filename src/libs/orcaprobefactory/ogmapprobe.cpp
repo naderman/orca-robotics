@@ -50,7 +50,9 @@ int
 OgMapProbe::loadGetData( orcacm::OperationData& data )
 {
     orca::OgMapPrx derivedPrx = orca::OgMapPrx::checkedCast(prx_);
-    orcaprobe::reportResult( data, "data", ifaceutil::toString( derivedPrx->getData() ) );
+    const int recurse=999;
+    const int expand=0;    
+    orcaprobe::reportResult( data, "data", ifaceutil::toString( derivedPrx->getData(), recurse, expand ) );
     return 0;
 }
 
