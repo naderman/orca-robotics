@@ -55,14 +55,6 @@ public:
     virtual void stop() {};
 };
 
-class EStopCallback : public orcaifaceimpl::AbstractEStopCallback {
-public:
-    virtual void activateEStop() {};
-    virtual void keepAlive() {};
-    virtual double getRequiredKeepAlivePeriodSec() { return .5; };
-    virtual void setToOperatingMode() {};
-};
-
 class PathFollowerCallback : public orcaifaceimpl::AbstractPathFollowerCallback {
 public:
     virtual void setData( const orca::PathFollower2dData &path, bool activateImmediately ) {};
@@ -93,9 +85,8 @@ TestComponent::start()
         ptr->localSet( orca::DriveBicycleData() );
     }
     {
-        EStopCallback cb;
-        orcaifaceimpl::EStopImplPtr ptr = new orcaifaceimpl::EStopImpl( cb, context(), "crap" );
-//         ptr->localSet( orca::EStopData() );
+        orcaifaceimpl::EStopImplPtr ptr = new orcaifaceimpl::EStopImpl( orca::EStopDescription(), context(), "crap" );
+        ptr->localSet( orca::EStopData() );
     }
     {
         orcaifaceimpl::FeatureMap2dImplPtr ptr = new orcaifaceimpl::FeatureMap2dImpl( context(), "crap" );

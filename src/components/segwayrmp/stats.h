@@ -29,6 +29,7 @@ public:
 
     // The raw data stream may be reset during the life time of Stats object.
     // This happens for example when the hardware driver is reinitialized.
+    // We need to know, or the robot will appear to have teleported.
     // The stats collected so far will not be lost.
     void resetRawData();
 

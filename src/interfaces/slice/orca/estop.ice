@@ -29,6 +29,18 @@ This interface allows either/both modes of operation.
 
 */
 
+struct EStopDescription
+{
+    //! Time when description was generated.
+    Time timeStamp;
+
+    //! If you don't hear from me for this long, you should stop.
+    double keepAlivePeriodSec;
+
+    //! Human-readable information describing the source of the e-stop.
+    string info;
+};
+
 //! Data sent to consumers who are interested in the server's state.
 //! Updates are sent whenever the isEStopActivated state changes.
 struct EStopData
@@ -37,6 +49,8 @@ struct EStopData
     Time timeStamp;
     //! true if the vehicle is in the emergency-stopp{ed|ing} mode.
     bool isEStopActivated;
+    //! Human-readable information, only filled out if the e-stop is activated
+    string info;
 };
 
 interface EStopConsumer
@@ -51,29 +65,10 @@ exception EStopAlreadyTriggeredException extends OrcaException {};
 //! Interface to e-stop.
 interface EStop
 {
-    //! Hit the stop button!
-    idempotent void activateEStop();
+    //! Returns device description
+    idempotent EStopDescription getDescription();
 
-    //! Keep the thing alive: reset the keep-alive timer to zero.
-    //! If the e-stop has been already triggered, keep-alives make no
-    //! sense, so an EStopAlreadyTriggeredException is thrown.
-    idempotent void keepAlive()
-        throws EStopAlreadyTriggeredException;
-
-    //! Returns the required keep-alive period, in seconds.
-    //! If a keep-alive is not heard for longer than this, the e-stop
-    //! will automatically be activated.
-    //! A negative value indicates that keep-alives are not required: the
-    //! e-stop can only be activated using 'activateEStop()'.
-    idempotent double getRequiredKeepAlivePeriodSec();
-
-    //! If the e-stop was activated, sets the vehicle back to the
-    //! operating mode (ie un-sets the e-stop so the vehicle can move again),
-    //! and resets the keep-alive timer to zero.
-    //! If the vehicle was already in the operating mode, does nothing.
-    idempotent void setToOperatingMode();
-
-    //! Returns the latest data. Raises DataNotExistException if data is not available.
+    //! Returns the latest data.
     idempotent EStopData getData()
         throws DataNotExistException;
 

@@ -7,25 +7,25 @@
  * the LICENSE file included in this distribution.
  *
  */
-#ifndef SEGWAYRMP_SETPOINT_H
-#define SEGWAYRMP_SETPOINT_H
+#ifndef SEGWAYRMP_SPEEDSETPOINT_H
+#define SEGWAYRMP_SPEEDSETPOINT_H
 
 #include <gbxsickacfr/gbxiceutilacfr/timer.h>
 
-namespace segwayrmp {
+namespace segwayrmpdriverthread {
 
 //
-// @brief Represents a speed set-point, for managin acceleration limits
+// @brief Represents a speed set-point, for managing acceleration limits
 //
 // @author Alex Brooks
 //
-class SetPoint
+class SpeedSetPoint
 {
 
 public: 
 
-    SetPoint( double maxForwardAcceleration, 
-              double maxReverseAcceleration );
+    SpeedSetPoint( double maxForwardAcceleration, 
+                   double maxReverseAcceleration );
 
     // This needs to be called every time around the driving loop,
     // So we know the call frequency.
@@ -47,6 +47,8 @@ private:
     double maxReverseAcceleration_;
 
     double setPoint_;
+    // Store the prev one just for a safety check.
+    double prevSetPoint_;
     double currentCmdSpeed_;
 
     gbxiceutilacfr::Timer timer_;

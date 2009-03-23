@@ -11,7 +11,7 @@
 #ifndef ORCAIFACEIMPL_ESTOP_H
 #define ORCAIFACEIMPL_ESTOP_H
 
-#include <orcaifaceimpl/estopImpl.h>
+#include <orcaifaceimpl/providerWithDescriptionImpl.h>
 #include <orcaifaceimpl/storingconsumerImpl.h>
 #include <orcaifaceimpl/bufferedconsumerImpl.h>
 #include <orcaifaceimpl/notifyingconsumerImpl.h>
@@ -20,6 +20,11 @@
 #include <orca/estop.h>
 
 namespace orcaifaceimpl {
+
+typedef ProviderWithDescriptionImpl<orca::EStop, orca::EStopPrx,
+                    orca::EStopConsumer, orca::EStopConsumerPrx,
+                    orca::EStopData, orca::EStopDescription> EStopImpl;
+typedef IceUtil::Handle<EStopImpl> EStopImplPtr;
 
 typedef StoringConsumerImpl<orca::EStop, orca::EStopPrx,
                     orca::EStopConsumer, orca::EStopConsumerPrx,

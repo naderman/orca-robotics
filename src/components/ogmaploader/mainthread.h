@@ -28,7 +28,7 @@ public:
 private:
     // from SubsystemThread
     virtual void initialise();
-    // this subsystem does not work!
+    // this subsystem does not do any work after initialisation!
 
     orcaifaceimpl::OgMapImplPtr ogMapImpl_;
     orcaice::Context context_;
