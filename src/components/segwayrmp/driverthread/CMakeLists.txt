@@ -10,10 +10,6 @@ IF( build )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
     
-#    INCLUDE_DIRECTORIES( 
-#        ${PROJECT_SOURCE_DIR}/src/libs
-#    )
-    
     FILE( GLOB srcs *.cpp )
     SET( dep_libs ${int_libs} ${ext_libs} )
 

@@ -32,7 +32,6 @@ SpeedSetPoint::SpeedSetPoint( double maxForwardAcceleration,
       maxForwardAcceleration_(fabs(maxForwardAcceleration)),
       maxReverseAcceleration_(fabs(maxReverseAcceleration)),
       setPoint_(0.0),
-      prevSetPoint_(0.0),
       currentCmdSpeed_(0.0)
 {
 }
@@ -55,13 +54,15 @@ SpeedSetPoint::evaluateDt()
 void
 SpeedSetPoint::set( double speed )
 {
-    prevSetPoint_ = setPoint_;
     setPoint_ = speed;
 }
 
 double
 SpeedSetPoint::currentCmdSpeed( bool &setPointReached )
 {
+    assert( dt_ > 0.0 );
+    double cmdSpeedPrior = currentCmdSpeed_;
+
     const double diff = setPoint_ - currentCmdSpeed_;
     const bool speedIncreasing = (diff > 0);
 
@@ -97,7 +98,7 @@ SpeedSetPoint::currentCmdSpeed( bool &setPointReached )
     // Hard-coded safety check...
     assert( fabs(currentCmdSpeed_) < 3.6 );
     // Another safety check...
-    assert( isBetween( currentCmdSpeed_, setPoint_, prevSetPoint_ ) );
+    assert( isBetween( currentCmdSpeed_, cmdSpeedPrior, setPoint_ ) );
 
     return currentCmdSpeed_;
 }

@@ -59,9 +59,9 @@ DriverThread::enableHardware()
     {
         stringstream exceptionSS;
         try {
-            tracer_.info("HwThread: (Re-)Enabling driverthread...");
+            tracer_.info("DriverThread: (Re-)Enabling driverthread...");
             segwayRmp_.enable();
-            tracer_.info( "HwThread: Enable succeeded." );
+            tracer_.info( "DriverThread: Enable succeeded." );
             stateMachine_.setOK();
             callback_.hardwareInitialised();
             return;
@@ -72,6 +72,7 @@ DriverThread::enableHardware()
             stateMachine_.setFault( problem );
         }
     }
+    cout<<"TRACE(driverthread.cpp): dropping out of enableHardware.  isStopping(): " << isStopping() << endl;
 }
 
 void
@@ -79,7 +80,7 @@ DriverThread::operateHardware()
 {
     // temp data structures.
     hydrointerfaces::SegwayRmp::Data data;
-    hydrointerfaces::SegwayRmp::Command command;
+    hydrointerfaces::SegwayRmp::Command command(0,0);
 
     // monitor the speed set-point, don't allow it to change faster than the acceleration limits
     // (initialises to zero speed)
@@ -95,6 +96,8 @@ DriverThread::operateHardware()
     //
     while ( !isStopping() )
     {
+        speedSetPoint.evaluateDt();
+
         if ( stateMachine_.isFault() )
         {
             // Can't operate in a fault condition.
@@ -148,22 +151,18 @@ DriverThread::operateHardware()
 
         // Are we still trying to hit our set-point?
         bool setPointReached = true;
-        if ( !gotNewCommand )
-        {
-            command.vx = speedSetPoint.currentCmdSpeed( setPointReached );
-        }
+        command.vx = speedSetPoint.currentCmdSpeed( setPointReached );
 
         // Finally, write if we're supposed to
         if ( gotNewCommand || !setPointReached )
         {
             if ( config_.driveInReverse ) reverseDirection( command );
-
             try {
-                writeToHardware( command );
-
                 stringstream ss;
-                ss << "HwThread::"<<__func__<<"(): wrote command: " << command.toString();
+                ss << "DriverThread::"<<__func__<<"(): writing command: " << command.toString();
                 tracer_.debug( ss.str(), 2 );
+
+                writeToHardware( command );
             }
             catch ( ... ) {
                 string problem = orcaice::catchExceptionsWithStatus( "writing to hardware", subStatus() );

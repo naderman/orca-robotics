@@ -47,8 +47,6 @@ private:
     double maxReverseAcceleration_;
 
     double setPoint_;
-    // Store the prev one just for a safety check.
-    double prevSetPoint_;
     double currentCmdSpeed_;
 
     gbxiceutilacfr::Timer timer_;

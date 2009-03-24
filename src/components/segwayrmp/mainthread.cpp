@@ -79,6 +79,12 @@ MainThread::MainThread( const orcaice::Context &context )
 {
 }
 
+MainThread::~MainThread()
+{
+    gbxiceutilacfr::stopAndJoin( segwayRmpDriverThread_ );
+    gbxiceutilacfr::stopAndJoin( publisherThread_ );
+}
+
 void
 MainThread::initialise()
 {
@@ -132,7 +138,7 @@ MainThread::initialise()
     //
     segwayrmpdriverthread::DriverThread::Config cfg;
     cfg.driveInReverse = (bool)orcaice::getPropertyAsIntWithDefault( prop, prefix+"DriveInReverse", 0 );
-    cfg.isMotionEnabled = (bool)orcaice::getPropertyAsIntWithDefault( prop, prefix+"IsMotionEnabled", 0 );
+    cfg.isMotionEnabled = (bool)orcaice::getPropertyAsIntWithDefault( prop, prefix+"EnableMotion", 0 );
     cfg.maxForwardAcceleration = controlDescr->maxForwardAcceleration;
     cfg.maxReverseAcceleration = controlDescr->maxReverseAcceleration;
     segwayRmpDriverThread_ = new segwayrmpdriverthread::DriverThread( cfg,
@@ -309,8 +315,8 @@ MainThread::receiveData( const hydrointerfaces::SegwayRmp::Data &data )
 void
 MainThread::finalise()
 {
-    gbxiceutilacfr::stopAndJoin( segwayRmpDriverThread_ );
-    gbxiceutilacfr::stopAndJoin( publisherThread_ );
+//    gbxiceutilacfr::stopAndJoin( segwayRmpDriverThread_ );
+//    gbxiceutilacfr::stopAndJoin( publisherThread_ );
 }
 
 }

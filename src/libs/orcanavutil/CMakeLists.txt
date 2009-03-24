@@ -5,7 +5,7 @@ SET( build TRUE )
 GBX_REQUIRE_OPTION( build LIB ${LIB_NAME} ON )
 
 SET( dep_libs HydroNavUtil OrcaObjects )
-GBX_REQUIRE_VAR( build LIB ${LIB_NAME} HYDRONAVUTIL_INSTALLED "libHydroNavUtil not installed" )
+GBX_REQUIRE_INSTALLS( build LIB ${LIB_NAME} ${dep_libs} )
 
 IF( build )
 
