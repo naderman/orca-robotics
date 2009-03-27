@@ -40,6 +40,7 @@ DefaultFactory::DefaultFactory()
     addSupportedType("Localise2d");
     addSupportedType("Localise3d");
     addSupportedType("MultiOgMaps");
+    addSupportedType("RangerArray");
     addSupportedType("Odometry2d");
     addSupportedType("OgMap");
     addSupportedType("PathFollower2d");
@@ -117,6 +118,9 @@ DefaultFactory::create( const QString                &elementType,
         }
         else if ( elementType == "MultiOgMaps" ) {
             elem = new orcaqgui2d::OgMapsCombinedElement( context_, elementDetails );
+        }
+        else if ( elementType == "RangerArray" ) {
+            elem = new orcaqgui2d::RangerArrayElement( context_, elementDetails[0].toStdString() );
         }
         else if ( elementType == "Localise2d" ) {
             elem = new orcaqgui2d::Localise2dElement( context_, elementDetails[0].toStdString(), &humanManager );

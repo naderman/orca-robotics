@@ -83,7 +83,13 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     required by standard libs and components is included by <orcaice/context.h> (alexm)
 
 @par New interfaces
+
+ - RangerArray (Mikel Astiz)
+
 @par New components
+
+ - RangerArray (Mikel Astiz)
+
 @par New utilities
 @par New libraries
 @par Updated interfaces
@@ -101,6 +107,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 - PureIce example: bugfix patch from Alberto Liu
 
 @par Updated libraries
+
+- Gui support for RangerArray (Mikel Astiz)
+
 @par Removed
 
 @section orca_doc_history_2130 Changes in Release 2.13.0

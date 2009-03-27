@@ -108,6 +108,30 @@ RangeScanner2dElement::contextMenu()
     return s;
 }
 
+
+void
+RangerArrayElement::getRangerArrayInfo()
+{
+    // Subscribe directly to get geometry etc
+    orca::RangerArrayPrx rangerArrayPrx;
+
+    // Don't bother catching exceptions: they'll get caught higher up.
+
+    orcaice::connectToInterfaceWithString( context_, rangerArrayPrx, listener_.interfaceName() );
+    
+    orca::RangerArrayDescription descr;
+    descr = rangerArrayPrx->getDescription();
+    painter_.setDescription( descr );
+}
+
+QStringList
+RangerArrayElement::contextMenu()
+{
+    QStringList s;
+    s<<"Toggle Scan"<<"Toggle Points"<<"Toggle Filling Polygon"<<"Toggle Transparency";
+    return s;
+}
+
 void
 Localise3dElement::update()
 {

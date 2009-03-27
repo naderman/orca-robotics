@@ -21,6 +21,7 @@
 #include <orcaqgui2dfactory/connectutils.h>
 
 // Include various painter types
+#include <orcaqgui2dfactory/rangerarraypainter.h>
 #include <orcaqgui2dfactory/laserscanner2dpainter.h>
 #include <orcaqgui2dfactory/localise3dpainter.h>
 #include <orcaqgui2dfactory/odometry2dpainter.h>
@@ -147,6 +148,43 @@ private:
     
 };
 
+
+////////////////////////////////////////////////////////////////////////////////
+class RangerArrayElement
+    : public orcaqguielementutil::PtrIceStormElement2d<RangerArrayPainter,
+                             orca::RangerArrayData,
+                             orca::RangerArrayDataPtr,
+                             orca::RangerArrayPrx,
+                             orca::RangerArrayConsumer,
+                             orca::RangerArrayConsumerPrx>
+{           
+public:
+    RangerArrayElement( const orcaice::Context  &context,
+                  const std::string       &proxyString,
+                  int                      timeoutMs=30000,
+                  QColor                   outlineColor=QColor( 102,153,102, 255 ),
+                  float                    outlineThickness=-1,
+                  float                    brightReturnWidth=0.2 )
+        : orcaqguielementutil::PtrIceStormElement2d<RangerArrayPainter,
+                          orca::RangerArrayData,
+                          orca::RangerArrayDataPtr,
+                          orca::RangerArrayPrx,
+                          orca::RangerArrayConsumer,
+                          orca::RangerArrayConsumerPrx>(context, proxyString, painter_, timeoutMs ),
+          painter_( outlineColor, outlineThickness, brightReturnWidth )
+        {};
+
+    virtual bool isInGlobalCS() { return false; }
+    virtual void actionOnConnection() { getRangerArrayInfo(); }
+    virtual QStringList contextMenu();
+    virtual void execute( int action ) { painter_.execute( action ); };
+    virtual void setFocus( bool inFocus ) { painter_.setFocus( inFocus ); };
+
+private:
+    void getRangerArrayInfo();
+    RangerArrayPainter painter_;
+    
+};
 
 ////////////////////////////////////////////////////////////////////////////////
 class Localise3dElement
