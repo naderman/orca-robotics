@@ -140,7 +140,7 @@ void MainThread::getImage()
     context_.tracer().debug("Fetching Image",6);
 
     // get the image from the communication buffer
-    int ret = imageInterface_->buffer().getAndPopNext( imageData_, timeoutMs );
+    int ret = imageInterface_->buffer().getAndPopWithTimeout( imageData_, timeoutMs );
    
     if(!ret)
     {

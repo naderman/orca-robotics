@@ -187,7 +187,7 @@ MainThread::work()
         try
         {
             subStatus().heartbeat();
-            if ( rangeScannerConsumer_->buffer().getAndPopNext( rangeScan, timeoutMs ) != 0 ) {
+            if ( rangeScannerConsumer_->buffer().getAndPopWithTimeout( rangeScan, timeoutMs ) != 0 ) {
                 context_.tracer().info("no range scan available: waiting ...");
                 continue;
             }

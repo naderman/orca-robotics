@@ -86,7 +86,7 @@ MainThread::work()
     {
         try
         {
-            int ret=ogFusionDataBuffer_.getAndPopNext(data,1000);
+            int ret=ogFusionDataBuffer_.getAndPopWithTimeout(data,1000);
 
             if(ret!=0) 
             {

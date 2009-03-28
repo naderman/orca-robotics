@@ -25,7 +25,7 @@ EStopMonitor::isEStopTriggered( std::string &reason )
         return true;
     }
 
-    if ( keepAliveTimer_.elapsedSec() > description_.keepAlivePeriodSec )
+    if ( keepAliveTimer_.elapsedSec() > description_.keepAlivePeriodSec*1.5 )
     {
         stringstream reasonSS;
         reasonSS << "keep-alive timed out on "<<description_.info<<" (last heard from it "<<keepAliveTimer_.elapsedSec()<<"sec ago";

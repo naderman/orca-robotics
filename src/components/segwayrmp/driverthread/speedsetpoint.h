@@ -35,10 +35,11 @@ public:
     void set( double speed );
 
     // Returns: the speed we should send to the robot right now.
-    // Sets setPointReached to true if future calls (in the absence of a new set() call) will
-    //   return the same currentSpeed.
-    double currentCmdSpeed( bool &setPointReached );
-
+    // Sets setPointAlreadyReached to true if we're already at the set point
+    //   (i.e. in the absence of a new set() call, we're
+    //     returning the same currentSpeed as last time).
+    double currentCmdSpeed( bool &setPointAlreadyReached );
+    
 private: 
 
     double dt_;

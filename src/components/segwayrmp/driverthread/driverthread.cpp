@@ -44,11 +44,18 @@ DriverThread::work()
 {
     while ( !isStopping() )
     {
-        subStatus().setMaxHeartbeatInterval( 5.0 );    
-        enableHardware();
+        try {
+            subStatus().setMaxHeartbeatInterval( 5.0 );    
+            enableHardware();
 
-        subStatus().setMaxHeartbeatInterval( 1.0 );
-        operateHardware();
+            subStatus().setMaxHeartbeatInterval( 1.0 );
+            operateHardware();
+        }
+        catch ( ... ) {
+            string problem = orcaice::catchExceptionsWithStatusAndSleep( "work loop", subStatus(), gbxutilacfr::SubsystemFault, 1000 );
+
+            stateMachine_.setFault( problem );
+        }
     }    
 }
 
@@ -87,9 +94,14 @@ DriverThread::operateHardware()
     SpeedSetPoint speedSetPoint( config_.maxForwardAcceleration,
                                  config_.maxReverseAcceleration );
 
+    // initialise stall sensor
+    StallSensor stallSensor( config_.stallSensorConfig );
+    StallSensor::StallType stallType;
+
     // clear any pending commands
-    if ( commandStore_.isNewData() )
-        commandStore_.get( command );
+    commandStore_.set( command );
+
+    gbxiceutilacfr::Timer newCommandTimer;
 
     //
     // The big loop (we exit immediately on detecting a fault)
@@ -111,6 +123,9 @@ DriverThread::operateHardware()
         try {
             segwayRmp_.read( data );
             if ( config_.driveInReverse ) reverseDirection( data );
+            stallType = stallSensor.isStalled(data);
+            if ( stallType != StallSensor::NoStall )
+                reportStall(data,stallType);
 
             // Let the higher-ups know
             callback_.receiveData( data );
@@ -119,15 +134,18 @@ DriverThread::operateHardware()
             if ( data.hasFaults )
             {
                 stateMachine_.setFault( data.warnFaultReason );
+                subStatus().fault( data.warnFaultReason );
                 break;
             }
             else if ( data.hasWarnings )
             {
                 stateMachine_.setWarning( data.warnFaultReason );
+                subStatus().warning( data.warnFaultReason );
             }
             else
             {
                 stateMachine_.setOK();
+                subStatus().ok();
             }
         }
         catch ( ... ) {
@@ -147,27 +165,43 @@ DriverThread::operateHardware()
             gotNewCommand = true;
             commandStore_.get( command );
             speedSetPoint.set( command.vx );
+            newCommandTimer.restart();
         }
 
         // Are we still trying to hit our set-point?
-        bool setPointReached = true;
-        command.vx = speedSetPoint.currentCmdSpeed( setPointReached );
+        bool setPointAlreadyReached = false;
+        command.vx = speedSetPoint.currentCmdSpeed( setPointAlreadyReached );
 
-        // Finally, write if we're supposed to
-        if ( gotNewCommand || !setPointReached )
+        // Write if we're supposed to
+        if ( gotNewCommand || !setPointAlreadyReached )
         {
             if ( config_.driveInReverse ) reverseDirection( command );
             try {
-                stringstream ss;
-                ss << "DriverThread::"<<__func__<<"(): writing command: " << command.toString();
-                tracer_.debug( ss.str(), 2 );
+                // Probably better not to have this (mutex-locking)
+                // statement in the middle of this very tight loop...
+                //
+                //stringstream ss;
+                //ss << "DriverThread::"<<__func__<<"(): writing command: " << command.toString();
+                //tracer_.debug( ss.str(), 2 );
 
-                writeToHardware( command );
+                segwayRmp_.write( command );
             }
             catch ( ... ) {
                 string problem = orcaice::catchExceptionsWithStatus( "writing to hardware", subStatus() );
                 stateMachine_.setFault( problem ); 
                 break;
+            }
+        }
+
+        // Check for timeouts in receiving commands
+        if ( newCommandTimer.elapsedSec() > 0.2 )
+        {
+            if ( command.vx != 0 || command.w != 0 )
+            {
+                tracer_.info( "newCommandTimer timed out, resetting desired speed to zero" );
+                command = hydrointerfaces::SegwayRmp::Command(0,0);
+                commandStore_.set(command);
+                newCommandTimer.restart();
             }
         }
     }
@@ -176,13 +210,9 @@ DriverThread::operateHardware()
     if ( stateMachine_.isFault(faultReason) )
     {
         subStatus().fault( faultReason );
+        // pause in case of persistent fault
+        sleep(1);
     }
-}
-
-void
-DriverThread::writeToHardware( const hydrointerfaces::SegwayRmp::Command &command )
-{
-    segwayRmp_.write( command );
 }
 
 void
@@ -193,6 +223,15 @@ DriverThread::setDesiredSpeed( const hydrointerfaces::SegwayRmp::Command &comman
         throw gbxutilacfr::Exception( ERROR_INFO, "Motion disabled in configuration" );
     }
     commandStore_.set( command ); 
+}
+
+void
+DriverThread::reportStall( const hydrointerfaces::SegwayRmp::Data &data,
+                           const StallSensor::StallType           &stallType )
+{
+    stringstream ss;
+    ss << "Stall condition: " << stallType << ", data: " << data.toString();
+    subStatus().warning( ss.str() );
 }
 
 }

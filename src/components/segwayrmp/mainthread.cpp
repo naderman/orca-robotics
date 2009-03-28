@@ -141,6 +141,11 @@ MainThread::initialise()
     cfg.isMotionEnabled = (bool)orcaice::getPropertyAsIntWithDefault( prop, prefix+"EnableMotion", 0 );
     cfg.maxForwardAcceleration = controlDescr->maxForwardAcceleration;
     cfg.maxReverseAcceleration = controlDescr->maxReverseAcceleration;
+    std::string stallPrefix = prefix+"StallSensor.";
+    cfg.stallSensorConfig.torqueThreshold = orcaice::getPropertyAsDoubleWithDefault( prop, stallPrefix+"TorqueThreshold", 3.0 );
+    cfg.stallSensorConfig.speedThreshold = orcaice::getPropertyAsDoubleWithDefault( prop, stallPrefix+"speedThreshold", 0.5 );
+    cfg.stallSensorConfig.timeThreshold = orcaice::getPropertyAsDoubleWithDefault( prop, stallPrefix+"TimeThreshold", 0.5 );
+    
     segwayRmpDriverThread_ = new segwayrmpdriverthread::DriverThread( cfg,
                                                                       *hydroDriver_,
                                                                       context_.tracer(),
@@ -296,7 +301,7 @@ MainThread::handleData( const orca::EStopData &incomingEStopData )
     if ( incomingEStopData.isEStopActivated )
     {
         segwayRmpDriverThread_->setDesiredSpeed( hydrointerfaces::SegwayRmp::Command(0,0) );
-        context_.tracer().info( "e-stop triggered, stopping robot: "+incomingEStopData.info );
+        context_.tracer().debug( "received e-stop data with e-stop triggered, disallowing motion: "+incomingEStopData.info );
     }
 }
 
@@ -309,14 +314,13 @@ MainThread::hardwareInitialised()
 void
 MainThread::receiveData( const hydrointerfaces::SegwayRmp::Data &data )
 {
+    //cout<<"TRACE(mainthread.cpp): data: " << data.toString() << endl;
     publisherThread_->publish( data );
 }
 
 void
 MainThread::finalise()
 {
-//    gbxiceutilacfr::stopAndJoin( segwayRmpDriverThread_ );
-//    gbxiceutilacfr::stopAndJoin( publisherThread_ );
 }
 
 }

@@ -4,6 +4,7 @@
 #include <orcaice/subsystemthread.h>
 #include <hydrointerfaces/segwayrmp.h>
 #include <orcarobotdriverutil/statemachine.h>
+#include <driverthread/stallsensor.h>
 
 namespace segwayrmpdriverthread {
 
@@ -36,6 +37,9 @@ public:
         // These acceleration limits are enforced by the driverthread.
         double maxForwardAcceleration;
         double maxReverseAcceleration;
+
+        // For detection of stalls
+        StallSensor::Config stallSensorConfig;
     };
 
     ////////////////////////////////////////
@@ -67,7 +71,8 @@ private:
 
     void enableHardware();
     void operateHardware();
-    void writeToHardware( const hydrointerfaces::SegwayRmp::Command &command );
+    void reportStall( const hydrointerfaces::SegwayRmp::Data &data,
+                      const StallSensor::StallType           &stallType );
 
     // Stores incoming commands that need to be written to the hardware
     gbxiceutilacfr::Store<hydrointerfaces::SegwayRmp::Command> commandStore_;

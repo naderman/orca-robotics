@@ -9,6 +9,7 @@ GBX_REQUIRE_TARGETS( build LIB ${LIB_NAME} ${int_libs} )
 IF( build )
 
     INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
+    INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR}/.. )
     
     FILE( GLOB srcs *.cpp )
     SET( dep_libs ${int_libs} ${ext_libs} )

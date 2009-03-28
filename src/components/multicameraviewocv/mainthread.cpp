@@ -138,7 +138,7 @@ void MainThread::getImages()
     context_.tracer().debug("Fetching Images",6);
 
     // get the image from the communication buffer
-    int ret = multiCameraInterface_->buffer().getAndPopNext( multiCameraData_, timeoutMs );
+    int ret = multiCameraInterface_->buffer().getAndPopWithTimeout( multiCameraData_, timeoutMs );
    
     if(!ret)
     {

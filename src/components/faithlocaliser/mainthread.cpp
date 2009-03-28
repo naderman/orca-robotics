@@ -87,7 +87,7 @@ MainThread::work()
         try
         {
             subStatus().heartbeat();
-            if ( odometry2dConsumer_->buffer().getAndPopNext( odomData, timeoutMs ) != 0 ) {
+            if ( odometry2dConsumer_->buffer().getAndPopWithTimeout( odomData, timeoutMs ) != 0 ) {
                 continue;
             }
     

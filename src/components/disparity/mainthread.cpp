@@ -43,7 +43,7 @@ MainThread::work()
         try
         {
             //read data in
-            int ret = incomingInterface_->buffer().getAndPopNext( incomingData_, timeoutMs );
+            int ret = incomingInterface_->buffer().getAndPopWithTimeout( incomingData_, timeoutMs );
 
             if( !ret )
             {

@@ -76,13 +76,7 @@ MainThread::work()
             while ( !isStopping() )
             {
                 int timeoutMs = 1000;
-                int ret=0;
-                try {
-                    pathPlannerTaskBuffer_.getAndPop( task );
-                }
-                catch ( const gbxutilacfr::Exception & e ) {
-                    ret = pathPlannerTaskBuffer_.getAndPopNext( task, timeoutMs );
-                }
+                int ret = pathPlannerTaskBuffer_.getAndPopWithTimeout( task, timeoutMs );
                 if ( ret==0 ) {
                     haveTask = true;
                     context_.tracer().info("task arrived");  

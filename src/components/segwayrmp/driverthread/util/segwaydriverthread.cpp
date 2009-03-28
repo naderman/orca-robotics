@@ -38,6 +38,9 @@ int main( int argc, char **argv )
     config.isMotionEnabled = false;
     config.maxForwardAcceleration = 1.0;
     config.maxReverseAcceleration = 1.0;
+    config.stallSensorConfig.torqueThreshold = 3.0;
+    config.stallSensorConfig.speedThreshold  = 0.5;
+    config.stallSensorConfig.timeThreshold   = 0.5;
 
     hydroutil::Properties props;
     props.setProperty( "Acfr.AllowMoveInBalanceMode", "0" );

@@ -1,6 +1,7 @@
 #include "speedsetpoint.h"
 #include <iostream>
 #include <cmath>
+#include <gbxutilacfr/exceptions.h>
 
 using namespace std;
 
@@ -42,11 +43,13 @@ SpeedSetPoint::evaluateDt()
     dt_ = timer_.elapsedSec();
     if ( dt_ > 0.5 )
     {
-        cout<<"TRACE(setpoint.cpp): Huh? Why is dt_ so large?? (dt_="<<dt_<<"s)" << endl;
+        stringstream ss;
+        ss << "Huh? Why is dt_ so large?? (dt_="<<dt_<<"s)";
+        throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
     }
-    else if ( dt_ < 0.001 )
+    else if ( dt_ > 0.015 || dt_ < 0.001 )
     {
-        cout<<"TRACE(setpoint.cpp): Huh? Why is dt_ so small?? (dt_="<<dt_<<"s)" << endl;
+        cout<<"TRACE(speedsetpoint.cpp): Outlier dt: " << dt_ << endl;
     }
     timer_.restart();
 }
@@ -58,13 +61,21 @@ SpeedSetPoint::set( double speed )
 }
 
 double
-SpeedSetPoint::currentCmdSpeed( bool &setPointReached )
+SpeedSetPoint::currentCmdSpeed( bool &setPointAlreadyReached )
 {
     assert( dt_ > 0.0 );
     double cmdSpeedPrior = currentCmdSpeed_;
 
     const double diff = setPoint_ - currentCmdSpeed_;
     const bool speedIncreasing = (diff > 0);
+
+    // cout<<"TRACE(speedsetpoint.cpp): setPoint_: " << setPoint_ << ", currentCmdSpeed_: " << currentCmdSpeed_ << ", diff: " << diff << endl;
+
+    if ( fabs(diff) < 1e-9 )
+    {
+        setPointAlreadyReached = true;
+        return currentCmdSpeed_;
+    }
 
     double maxDeltaSpeed; // This is a positive quantity.
     if ( speedIncreasing )
@@ -76,8 +87,8 @@ SpeedSetPoint::currentCmdSpeed( bool &setPointReached )
         maxDeltaSpeed = maxReverseAcceleration_ * dt_;
     }
 
-    setPointReached = ( fabs(diff) < maxDeltaSpeed );
-    if ( setPointReached )
+    bool willReachSetPoint = ( fabs(diff) < maxDeltaSpeed );
+    if ( willReachSetPoint )
     {
         currentCmdSpeed_ = setPoint_;
     }

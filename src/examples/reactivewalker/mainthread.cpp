@@ -68,7 +68,7 @@ MainThread::work()
         //
         // Wait for next laser data
         //
-        if ( laser_->buffer().getAndPopNext( laserData, laserTimeoutMs ) ) {
+        if ( laser_->buffer().getAndPopWithTimeout( laserData, laserTimeoutMs ) ) {
             // timeout without a laser scan. 
             // this is a sign of a problem. a real component would have to deal with this
             stringstream ss; ss<<"No new laser scan after "<<laserTimeoutMs<<"ms";
