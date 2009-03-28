@@ -1,0 +1,22 @@
+DefaultComponentTag=RangerArray
+
+# Provided Interfaces
+Provides.RangerArray.Type=::orca::RangerArray
+Provides.RangerArray.DefaultName=rangerarray
+
+# Required Interfaces
+
+# Config Parameters
+Config.DriverLib.Comment=Valid values are at least: { 'libHydroRangerArrayPlayerSonarClient.so', 'libHydroRangerArrayFake.so' }
+Config.DriverLib.Default=libHydroRangerArrayFake.so
+
+Config.MinRange.Default=0.0
+Config.MaxRange.Default=5.0
+Config.NumberOfSamples.Default=5
+
+Config.Fake.SleepInterval.Default=100
+
+Config.PlayerSonarClient.Host.Default=localhost
+Config.PlayerSonarClient.Port.Default=6665
+Config.PlayerSonarClient.Device.Default=0
+

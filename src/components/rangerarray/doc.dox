@@ -1,0 +1,74 @@
+/*
+ * Orca-Robotics Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2008 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This copy of Orca is licensed to you under the terms described in
+ * the LICENSE file included in this distribution.
+ *
+ */
+
+/*!
+@ingroup orca_components
+@ingroup orca_apps
+@ingroup orca_services
+@ingroup orca_cpp
+@ingroup orca_linux
+@ingroup orca_qnx
+@ingroup orca_win
+@defgroup orca_component_rangerarray RangerArray
+@brief A hardware abstraction component for multi-origin arrays of range-finders
+
+@par Provides
+
+- @ref orca_interface_home
+- @ref orca_interface_rangerarray [RangerArray.Provides.RangerArray]
+- @ref orca_interface_status
+
+@par Requires
+
+- none
+
+@image html rangerarray.png
+
+@par Drivers
+
+This component dynamically loads an implementation of a Hydro hardware interface hydrointerfaces::RangerArray. You can also load your own implementation as long as the shared library is in the path. See Hydro documentation for the list of available drivers.
+
+- @ref hydro_drivers_rangerarray
+
+@par Operation
+
+This component encapsulates a multi-origin array of range-finding sensors. It can run either as a stand-alone component or an IceBox Service.
+
+@par Configuration
+
+- @c RangerArray.Config.MinRange (double) [m]
+    - Valid Values: MinRange>=0.0
+    - Default: 0.0
+- @c RangerArray.Config.MaxRange (double) [m]
+    - Valid Values: MaxRange>0.0
+    - Default: 5.0
+- @c RangerArray.Config.NumberOfSamples (int)
+    - Number of range samples in a single scan.
+    - Valid Values: NumberOfSamples>0
+    - Default: 5
+
+
+@see Individual drivers may have additional configuration parameters which are specified as RangerArray.Config.XXX. See driver documentation.
+
+An example configuration file is installed into [ORCA-INSTALL-DIR]/share/orca/cfg/ directory.
+
+@section internal Internal Structure
+    
+
+@section Notes
+
+Only the fake driver will build for Windows.
+
+@par Authors
+
+Alex Brooks, Tobias Kaupp and Alex Makarenko, Mikel Astiz
+
+*/
+
