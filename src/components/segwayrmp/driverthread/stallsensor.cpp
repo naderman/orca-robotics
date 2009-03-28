@@ -53,6 +53,7 @@ StallSensor::isStalled( const hydrointerfaces::SegwayRmp::Data &data )
             }
         }
     }
+    return NoStall;
 }
 
 std::string toString( StallSensor::StallType t )
