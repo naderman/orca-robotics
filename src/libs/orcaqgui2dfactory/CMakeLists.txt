@@ -1,31 +1,28 @@
 ORCA_SET_LIBRARY_NAME( OrcaQGui2dFactory )
 GBX_ADD_LICENSE( GPL )
 
-SET( build TRUE )
+set( build TRUE )
 GBX_REQUIRE_OPTION( build LIB ${LIB_NAME} ON )
-SET( not_os_win NOT GBX_OS_WIN )
+set( not_os_win NOT GBX_OS_WIN )
 GBX_REQUIRE_VAR( build LIB ${LIB_NAME} not_os_win "Windows OS is not  supported" )
 GBX_REQUIRE_VAR( build LIB ${LIB_NAME} QT4_FOUND "Qt4 not found" )
 
-SET( ext_libs ${dep_libs} HydroNavUtil HydroQGui HydroQGuiPath HydroQGuiElementUtil HydroOgMap )
-GBX_REQUIRE_INSTALLS( build LIB ${LIB_NAME} ${ext_libs} )
+set( dep_libs HydroNavUtil HydroQGui HydroQGuiPath HydroQGuiElementUtil HydroOgMap 
+              OrcaObjects OrcaObjectUtil OrcaQGuiElementUtil OrcaOgMap )
+GBX_REQUIRE_LIBS( build LIB ${LIB_NAME} ${dep_libs} )
 
-SET( int_libs OrcaObjects OrcaObjectUtil OrcaQGuiElementUtil OrcaOgMap )
-GBX_REQUIRE_TARGETS( build LIB ${LIB_NAME} ${int_libs} )
-
-IF( build )
+if( build )
     
-    INCLUDE( ${HYDRO_CMAKE_DIR}/UseHydro.cmake )
-    INCLUDE( ${HYDRO_CMAKE_DIR}/UseQt.cmake )
-    INCLUDE( ${ORCA_CMAKE_DIR}/UseBasicRules.cmake )
-    INCLUDE( ${ORCA_CMAKE_DIR}/UseIceBasics.cmake )
-    INCLUDE( ${ORCA_CMAKE_DIR}/UseLibProjectInterfaces.cmake )
+    include( ${HYDRO_CMAKE_DIR}/UseHydro.cmake )
+    include( ${HYDRO_CMAKE_DIR}/UseQt.cmake )
+    include( ${ORCA_CMAKE_DIR}/UseBasicRules.cmake )
+    include( ${ORCA_CMAKE_DIR}/UseIceBasics.cmake )
+    include( ${ORCA_CMAKE_DIR}/UseLibProjectInterfaces.cmake )
     
-    FILE( GLOB hdrs *.h )
-    FILE( GLOB human_srcs *.cpp )
-    SET( dep_libs ${ext_libs} ${int_libs} )
+    file( GLOB hdrs *.h )
+    file( GLOB human_srcs *.cpp )
     
-    SET( moc_hdrs
+    set( moc_hdrs
         pathfolloweruserinteraction.h
         pathplanneruserinteraction.h
     )
@@ -34,14 +31,14 @@ IF( build )
     
     GBX_ADD_LIBRARY( ${LIB_NAME} DEFAULT ${human_srcs} ${moc_srcs} )
     
-    LINK_DIRECTORIES( ${PROJECT_SOURCE_DIR}/src/libs/qorcacm )
+    link_directories( ${PROJECT_SOURCE_DIR}/src/libs/qorcacm )
     TARGET_LINK_LIBRARIES ( ${LIB_NAME} ${dep_libs} )
 
     GBX_ADD_HEADERS( ${LIB_INSTALL} ${hdrs} )
     GBX_ADD_SHARED_FILES( ${LIB_INSTALL} ogHazardLookupTable.png )
 
-    IF( ORCA_BUILD_TESTS )
-        ADD_SUBDIRECTORY( test )
-    ENDIF( ORCA_BUILD_TESTS )
+    if( ORCA_BUILD_TESTS )
+        add_subdirectory( test )
+    endif( ORCA_BUILD_TESTS )
     
-ENDIF( build )
+endif( build )

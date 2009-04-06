@@ -5,24 +5,24 @@
 # Author: Alex Makarenko, based on slice2cpp_rules.cmake
 #
 
-SET( SLICE2JAVA_COMMAND        ${ICE_HOME}/bin/slice2java${EXE_EXTENSION} )
+set( SLICE2JAVA_COMMAND        ${ICE_HOME}/bin/slice2java${EXE_EXTENSION} )
 
-SET( SLICE_SOURCE_DIR          ${PROJECT_SOURCE_DIR}/src/interfaces/slice )
-SET( SLICE_BINARY_DIR          ${PROJECT_BINARY_DIR}/src/interfaces/slice )
-SET( SLICE2JAVA_BINARY_DIR     ${PROJECT_BINARY_DIR}/src/interfaces/java )
+set( SLICE_SOURCE_DIR          ${PROJECT_SOURCE_DIR}/src/interfaces/slice )
+set( SLICE_BINARY_DIR          ${PROJECT_BINARY_DIR}/src/interfaces/slice )
+set( SLICE2JAVA_BINARY_DIR     ${PROJECT_BINARY_DIR}/src/interfaces/java )
 
 # Install sub-directory will be the same as the current sub-directory
 # which is typically the same as the name of the namespace, e.g. 'orca'
-GET_FILENAME_COMPONENT( INTERFACE_NAMESPACE ${CMAKE_CURRENT_SOURCE_DIR} NAME )
+get_filename_component( INTERFACE_NAMESPACE ${CMAKE_CURRENT_SOURCE_DIR} NAME )
 
 # note: satelite projects need to include slice files from orca installation
 # note: compared to slice2cpp, slice2java automatically places generated files into 'namespace dir,
 #       e.g. 'orca'. So the output dir is just 'java' not 'java/<namespace>'
-IF( DEFINED ORCA_HOME )
-    SET( SLICE_ARGS -I${SLICE_SOURCE_DIR} -I${ICE_HOME}/slice -I${ORCA_HOME}/slice --stream --output-dir ${SLICE2JAVA_BINARY_DIR} )
-ELSE ( DEFINED ORCA_HOME )
-    SET( SLICE_ARGS -I${SLICE_SOURCE_DIR} -I${ICE_HOME}/slice --stream --output-dir ${SLICE2JAVA_BINARY_DIR} )
-ENDIF( DEFINED ORCA_HOME )
+if( DEFINED ORCA_HOME )
+    set( SLICE_ARGS -I${SLICE_SOURCE_DIR} -I${ICE_HOME}/slice -I${ORCA_HOME}/slice --stream --output-dir ${SLICE2JAVA_BINARY_DIR} )
+else( DEFINED ORCA_HOME )
+    set( SLICE_ARGS -I${SLICE_SOURCE_DIR} -I${ICE_HOME}/slice --stream --output-dir ${SLICE2JAVA_BINARY_DIR} )
+endif( DEFINED ORCA_HOME )
 
 
 #
@@ -38,14 +38,14 @@ ENDIF( DEFINED ORCA_HOME )
 #  - Each .cpp and .h file depends on all the .ice files.
 #  - Each .cpp file depends on all .h files associated with all the previously-listed slice sources.
 #
-MACRO( GENERATE_SLICE2JAVA_RULES GENERATED_CPP_LIST GENERATED_HEADER_LIST )
+macro( GENERATE_SLICE2JAVA_RULES GENERATED_CPP_LIST GENERATED_HEADER_LIST )
 
     #
     # Add the command to generate file.xxx from file.ice
     # Note: when the 'output' is needed, the 'command' will be called with the 'args'
     #
-    MESSAGE( STATUS "DEBUG: Adding rule for generating ${OUTPUT_BASENAME} from ${SLICE_SOURCE_BASENAME}" )
-    ADD_CUSTOM_COMMAND(
+    message( STATUS "DEBUG: Adding rule for generating ${OUTPUT_BASENAME} from ${SLICE_SOURCE_BASENAME}" )
+    add_custom_command(
         OUTPUT  ${CMAKE_CURRENT_BINARY_DIR}/output.fake
         COMMAND ${SLICE2JAVA_COMMAND} 
         ARGS    "*.ice ${SLICE_ARGS}"
@@ -53,8 +53,8 @@ MACRO( GENERATE_SLICE2JAVA_RULES GENERATED_CPP_LIST GENERATED_HEADER_LIST )
         COMMENT "-- Generating .java files from all Slice sources"
     )
 
-  #MESSAGE( STATUS "DEBUG: GENERATED_CPP_LIST: ${${GENERATED_CPP_LIST}}")
-  MESSAGE( STATUS "Will generate java files from ${SLICE_SOURCE_COUNTER} Slice definitions using this command:" )
-  MESSAGE( STATUS "${SLICE2JAVA_COMMAND} <source.ice> ${SLICE_ARGS}" )
+  #message( STATUS "DEBUG: GENERATED_CPP_LIST: ${${GENERATED_CPP_LIST}}")
+  message( STATUS "Will generate java files from ${SLICE_SOURCE_COUNTER} Slice definitions using this command:" )
+  message( STATUS "${SLICE2JAVA_COMMAND} <source.ice> ${SLICE_ARGS}" )
 
-ENDMACRO( GENERATE_SLICE2JAVA_RULES GENERATED_CPP_LIST GENERATED_HEADER_LIST )
+endmacro( GENERATE_SLICE2JAVA_RULES GENERATED_CPP_LIST GENERATED_HEADER_LIST )

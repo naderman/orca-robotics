@@ -3,19 +3,19 @@
 # (and therefore all standard components use)
 #
 
-INCLUDE( ${ORCA_CMAKE_DIR}/UseZeroC.cmake )
-INCLUDE( ${ORCA_CMAKE_DIR}/UseIce.cmake )
+include( ${ORCA_CMAKE_DIR}/UseZeroC.cmake )
+include( ${ORCA_CMAKE_DIR}/UseIce.cmake )
 
-IF( NOT ORCA_OS_WIN )
+if( NOT ORCA_OS_WIN )
 
-    LINK_LIBRARIES( IceStorm IceBox IceGrid Glacier2 )
+    link_libraries( IceStorm IceBox IceGrid Glacier2 )
 
-ELSE ( NOT ORCA_OS_WIN )
+else( NOT ORCA_OS_WIN )
 
     # windows... have to link to different libs depending on build type
-    LINK_LIBRARIES( optimized IceStorm  debug IceStormd 
+    link_libraries( optimized IceStorm  debug IceStormd 
                     optimized IceBox    debug IceBoxd
                     optimized IceGrid   debug IceGridd
                     optimized Glacier2   debug Glacier2d )
 
-ENDIF( NOT ORCA_OS_WIN )
+endif( NOT ORCA_OS_WIN )

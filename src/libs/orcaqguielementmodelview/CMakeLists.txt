@@ -1,29 +1,24 @@
 ORCA_SET_LIBRARY_NAME( OrcaQGuiElementModelView )
 GBX_ADD_LICENSE( GPL )
 
-SET( build TRUE )
+set( build TRUE )
 GBX_REQUIRE_OPTION( build LIB ${LIB_NAME} ON )
-SET( not_os_win NOT GBX_OS_WIN )
+set( not_os_win NOT GBX_OS_WIN )
 GBX_REQUIRE_VAR( build LIB ${LIB_NAME} not_os_win "Windows OS is not  supported" )
 GBX_REQUIRE_VAR( build LIB ${LIB_NAME} QT4_FOUND "Qt4 not found" )
 
-SET( ext_libs HydroQGui HydroQGuiElementUtil)
-GBX_REQUIRE_VAR( build LIB ${LIB_NAME} HYDROQGUI_INSTALLED "libHydroQGui not installed" )
-GBX_REQUIRE_VAR( build LIB ${LIB_NAME} HYDROQGUIELEMENTUTIL_INSTALLED "HydroQGuiElementUtil not installed" )
+set( dep_libs HydroQGui HydroQGuiElementUtil OrcaQt OrcaQCompModel )
+GBX_REQUIRE_LIBS( build LIB ${LIB_NAME} ${dep_libs} )
 
-SET( int_libs OrcaQt OrcaQCompModel )
-GBX_REQUIRE_TARGETS( build LIB ${LIB_NAME} ${int_libs} )
+if( build )
 
-
-IF( build )
-
-    INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
-    INCLUDE( ${HYDRO_CMAKE_DIR}/UseQt.cmake )
+    include( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
+    include( ${HYDRO_CMAKE_DIR}/UseQt.cmake )
     
-    FILE( GLOB hdrs *.h )
-    FILE( GLOB human_srcs *.cpp )
+    file( GLOB hdrs *.h )
+    file( GLOB human_srcs *.cpp )
     
-    SET( moc_hdrs
+    set( moc_hdrs
         guielementmodel.h
         guielementview.h
         regselectview.h
@@ -33,9 +28,8 @@ IF( build )
     
     GBX_ADD_LIBRARY( ${LIB_NAME} DEFAULT ${human_srcs} ${moc_srcs} )
     
-    SET( dep_libs ${ext_libs} ${int_libs} )
     TARGET_LINK_LIBRARIES ( ${LIB_NAME} ${dep_libs} )
     
     GBX_ADD_HEADERS( ${LIB_INSTALL} ${hdrs} )
 
-ENDIF( build )
+endif( build )

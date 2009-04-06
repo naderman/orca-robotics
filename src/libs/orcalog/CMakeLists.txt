@@ -1,24 +1,24 @@
 ORCA_SET_LIBRARY_NAME( OrcaLog )
 GBX_ADD_LICENSE( LGPL )
 
-SET( build TRUE )
+set( build TRUE )
 GBX_REQUIRE_OPTION( build LIB ${LIB_NAME} ON )
-SET( not_os_win NOT GBX_OS_WIN )
+set( not_os_win NOT GBX_OS_WIN )
 GBX_REQUIRE_VAR( build LIB ${LIB_NAME} not_os_win "Windows OS is not  supported" )
 
-IF( build )
+if( build )
 
-    INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
+    include( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
-    FILE( GLOB hdrs *.h )
-    FILE( GLOB srcs *.cpp )
+    file( GLOB hdrs *.h )
+    file( GLOB srcs *.cpp )
     
     GBX_ADD_LIBRARY( ${LIB_NAME} DEFAULT ${srcs} )
 
     GBX_ADD_HEADERS( ${LIB_INSTALL} ${hdrs} )
     
-    IF( ORCA_BUILD_TESTS )
-        ADD_SUBDIRECTORY( test )
-    ENDIF( ORCA_BUILD_TESTS )
+    if( ORCA_BUILD_TESTS )
+        add_subdirectory( test )
+    endif( ORCA_BUILD_TESTS )
 
-ENDIF( build )
+endif( build )

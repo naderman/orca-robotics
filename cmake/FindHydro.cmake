@@ -1,26 +1,25 @@
 # Locate Hydro installation
 
 # This module defines
-# HYDRO_HOME where to find include, lib, bin, etc.
 # HYDRO_FOUND, If set to 0, don't try to use Hydro libraries, scripts, etc.
 
 # start with 'not found'
-SET( HYDRO_FOUND 0 CACHE BOOL "Do we have Hydro?" )
+set( HYDRO_FOUND 0 CACHE BOOL "Do we have Hydro?" )
 
 # this will work in Orca which has the same version as Hydro
-IF( ORCA_MOTHERSHIP )
-    SET( HYDRO_SEARCH_DIR_ORCA_ONLY /opt/hydro-${PROJECT_VERSION} )
-ENDIF( ORCA_MOTHERSHIP )
+if( ORCA_MOTHERSHIP )
+    set( hydro_search_dir_orca_only /opt/hydro-${PROJECT_VERSION} )
+endif( ORCA_MOTHERSHIP )
 
-FIND_PATH( HYDRO_HOME hydro_manifest.cmake
-    # Test user-specified installation point (first look in the dir specified
-    # with command line CMake variable, then with environment variable)
+find_path( HYDRO_HOME hydro_manifest.cmake
+    # check cmake variable: i.e. specified on the command line
     ${HYDRO_HOME}
+    # check environment variable
     $ENV{HYDRO_HOME}
-    # Test common installation points
+    # check common installation points
     /usr/local
     /opt/hydro
-    ${HYDRO_SEARCH_DIR_ORCA_ONLY}
+    ${hydro_search_dir_orca_only}
     /opt/hydro-2.15.0+
     /opt/hydro-2.15.0
     /opt/hydro-2.14.0+
@@ -42,9 +41,8 @@ FIND_PATH( HYDRO_HOME hydro_manifest.cmake
     C:/hydro
     C:/hydro-${PROJECT_VERSION}
 )
-# MESSAGE( STATUS "DEBUG: manifest.cmake is apparently found in : ${HYDRO_HOME}" )
 
-# NOTE: if HYDRO_HOME is set to *-NOTFOUND it will evaluate to FALSE
-IF( HYDRO_HOME )
-    SET( HYDRO_FOUND 1 CACHE BOOL "Do we have Hydro?" FORCE )
-ENDIF( HYDRO_HOME )
+if( HYDRO_HOME )    
+#     message( STATUS "DEBUG: we found an installed version of hydro at: ${HYDRO_HOME}" )
+    set( HYDRO_FOUND 1 CACHE BOOL "Do we have Hydro?" FORCE )   
+endif( HYDRO_HOME ) 

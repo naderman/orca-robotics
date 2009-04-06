@@ -1,30 +1,30 @@
 ORCA_SET_LIBRARY_NAME( OrcaObjects )
-SET( LIB_INSTALL orcaobj )
+set( LIB_INSTALL orcaobj )
 GBX_ADD_LICENSE( LGPL )
 
-SET( build TRUE )
+set( build TRUE )
 # This is one of fundamental libs. It is not optional (but maybe it should change)
 
 # these 2 lines just check prereq's, but linking is specified in the macros below.
-SET( ext_libs GbxUtilAcfr GbxIceUtilAcfr HydroIceUtil )
-GBX_REQUIRE_INSTALLS( build LIB ${LIB_NAME} ${ext_libs} )
+set( dep_libs GbxUtilAcfr GbxIceUtilAcfr HydroIceUtil )
+GBX_REQUIRE_LIBS( build LIB ${LIB_NAME} ${dep_libs} )
 
-IF( build )
+if( build )
 
-    INCLUDE( ${ORCA_CMAKE_DIR}/UseBasicRules.cmake )
-    INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
-    INCLUDE( ${ORCA_CMAKE_DIR}/UseLibProjectInterfaces.cmake )
-    INCLUDE( ${ORCA_CMAKE_DIR}/UseLibProjectIfaceUtil.cmake )
+    include( ${ORCA_CMAKE_DIR}/UseBasicRules.cmake )
+    include( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
+    include( ${ORCA_CMAKE_DIR}/UseLibProjectInterfaces.cmake )
+    include( ${ORCA_CMAKE_DIR}/UseLibProjectIfaceUtil.cmake )
     
-    FILE( GLOB hdrs *.h )
-    FILE( GLOB srcs *.cpp )
+    file( GLOB hdrs *.h )
+    file( GLOB srcs *.cpp )
     
     GBX_ADD_LIBRARY( ${LIB_NAME} DEFAULT ${srcs} )
     
     GBX_ADD_HEADERS( ${LIB_INSTALL} ${hdrs} )
     
-    IF( ORCA_BUILD_TESTS )
-        ADD_SUBDIRECTORY( test )
-    ENDIF( ORCA_BUILD_TESTS )
+    if( ORCA_BUILD_TESTS )
+        add_subdirectory( test )
+    endif( ORCA_BUILD_TESTS )
 
-ENDIF( build )
+endif( build )

@@ -1,1 +1,1 @@
-ADD_SUBDIRECTORY( sync )
+add_subdirectory( sync )

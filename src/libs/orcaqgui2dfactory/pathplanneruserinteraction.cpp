@@ -22,6 +22,7 @@ namespace orcaqgui2d {
 PathPlannerUserInteraction::PathPlannerUserInteraction( PathPlanner2dElement                    *ppElement,
                                                         const std::string                       &proxyString,
                                                         hydroqguielementutil::IHumanManager     &humanManager,
+                                 hydroqguielementutil::ShortcutKeyManager                       &shortcutKeyManager,
                                                         hydroqguielementutil::MouseEventManager &mouseEventManager,
                                                         PathPainter                             &painter,
                                                         const orcaice::Context                  &context )
@@ -29,6 +30,7 @@ PathPlannerUserInteraction::PathPlannerUserInteraction( PathPlanner2dElement    
       proxyString_( proxyString ),
       humanManager_(humanManager),
       mouseEventManager_(mouseEventManager),
+      shortcutKeyManager_(shortcutKeyManager),
       painter_(painter),
       context_(context),
       ifacePathFileName_("/tmp"),
@@ -36,7 +38,10 @@ PathPlannerUserInteraction::PathPlannerUserInteraction( PathPlanner2dElement    
       gotMode_(false)
 {
     wpSettings_ = readWaypointSettings( context_.properties(), context_.tag() );
-    buttons_.reset( new hydroqguipath::PathplannerButtons( this, humanManager, proxyString ) );
+    buttons_.reset( new hydroqguipath::PathplannerButtons( this,
+                                                           humanManager,
+                                                           shortcutKeyManager_,
+                                                           proxyString ) );
     ifacePathFileHandler_.reset( new PathFileHandler( humanManager ) );
 }
 
@@ -46,7 +51,10 @@ PathPlannerUserInteraction::setFocus( bool inFocus )
 {
     if (inFocus) {
         if (buttons_.get()==0) {
-            buttons_.reset( new hydroqguipath::PathplannerButtons( this, humanManager_, proxyString_ ) );
+            buttons_.reset( new hydroqguipath::PathplannerButtons( this,
+                                                                   humanManager_,
+                                                                   shortcutKeyManager_,
+                                                                   proxyString_ ) );
         }
     } else {
         buttons_.reset(0);

@@ -3,10 +3,10 @@
 # This module defines
 # BOOST_UBLAS_FOUND, If false, don't try to use liblapack.
 
-CHECK_INCLUDE_FILE_CXX( boost/numeric/ublas/matrix.hpp BOOST_UBLAS_FOUND )
+check_include_file_cxx( boost/numeric/ublas/matrix.hpp BOOST_UBLAS_FOUND )
 
-IF( BOOST_UBLAS_FOUND )
-    MESSAGE( STATUS "Looking for Boost ublas - found")
-ELSE ( BOOST_UBLAS_FOUND )
-    MESSAGE( STATUS "Looking for Boost ublas - not found")
-ENDIF( BOOST_UBLAS_FOUND )
+if( BOOST_UBLAS_FOUND )
+    message( STATUS "Looking for Boost ublas - found")
+else( BOOST_UBLAS_FOUND )
+    message( STATUS "Looking for Boost ublas - not found")
+endif( BOOST_UBLAS_FOUND )

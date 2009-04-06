@@ -20,3 +20,4 @@ Config.Garmin.Device.Default=/dev/ttyS2
 
 Config.Fake.Latitudes.Default=-35 -35.5;
 Config.Fake.Longitudes.Default=150 -149.5;
+Config.Fake.NeverSeeSatellites.Default=0

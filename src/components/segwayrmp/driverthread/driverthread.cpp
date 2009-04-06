@@ -66,7 +66,6 @@ DriverThread::enableHardware()
     {
         stringstream exceptionSS;
         try {
-            tracer_.info("DriverThread: (Re-)Enabling driverthread...");
             segwayRmp_.enable();
             tracer_.info( "DriverThread: Enable succeeded." );
             stateMachine_.setOK();

@@ -5,7 +5,7 @@
 
 # Look for the header file installed by atlas package
 # doesn't work for some reason
-# CHECK_INCLUDE_FILE_CXX( clapack.h LIBLAPACK_FOUND )
+# check_include_file_cxx( clapack.h LIBLAPACK_FOUND )
 
 #
 # We seem to require both lapack _and_ blas, so only set LIBLAPACK_FOUND
@@ -15,13 +15,13 @@
 FIND_LIBRARY( LIBLAPACK_FOUND NAMES lapack PATHS /usr/lib /usr/local/lib )
 FIND_LIBRARY( BLAS_FOUND      NAMES blas   PATHS /usr/lib /usr/local/lib )
 
-IF( LIBLAPACK_FOUND )
-  IF( BLAS_FOUND )
-    MESSAGE( STATUS "Looking for liblapack - found")
-  ELSE ( BLAS_FOUND )
-    MESSAGE( STATUS "Looking for liblapack - found but blas is missing...")
-    SET( LIBLAPACK_FOUND FALSE )
-  ENDIF( BLAS_FOUND )
-ELSE ( LIBLAPACK_FOUND )
-  MESSAGE( STATUS "Looking for liblapack - not found")
-ENDIF( LIBLAPACK_FOUND )
+if( LIBLAPACK_FOUND )
+  if( BLAS_FOUND )
+    message( STATUS "Looking for liblapack - found")
+  else( BLAS_FOUND )
+    message( STATUS "Looking for liblapack - found but blas is missing...")
+    set( LIBLAPACK_FOUND FALSE )
+  endif( BLAS_FOUND )
+else( LIBLAPACK_FOUND )
+  message( STATUS "Looking for liblapack - not found")
+endif( LIBLAPACK_FOUND )

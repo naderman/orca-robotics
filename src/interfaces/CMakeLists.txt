@@ -2,9 +2,9 @@
 
 GBX_ADD_LICENSE( LGPL )
 
-MESSAGE( STATUS "== INTERFACES ==" )
+message( STATUS "== INTERFACES ==" )
 
-ADD_SUBDIRECTORY( cpp )
-ADD_SUBDIRECTORY( java )
-ADD_SUBDIRECTORY( python )
-ADD_SUBDIRECTORY( slice )
+add_subdirectory( cpp )
+add_subdirectory( java )
+add_subdirectory( python )
+add_subdirectory( slice )

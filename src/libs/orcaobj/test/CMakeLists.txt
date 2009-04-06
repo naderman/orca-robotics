@@ -1,7 +1,7 @@
-INCLUDE( ${ORCA_CMAKE_DIR}/UseBasicRules.cmake )
-INCLUDE( ${ORCA_CMAKE_DIR}/UseIceBasics.cmake )
+include( ${ORCA_CMAKE_DIR}/UseBasicRules.cmake )
+include( ${ORCA_CMAKE_DIR}/UseIceBasics.cmake )
 
-LINK_LIBRARIES( OrcaObjects )
+link_libraries( OrcaObjects )
 
-ADD_EXECUTABLE( stringtest stringtest.cpp )
-GBX_ADD_TEST( OrcaObjects_StringTest stringtest )
+add_executable( objstringtest stringtest.cpp )
+GBX_ADD_TEST( OrcaObjects_StringTest objstringtest )

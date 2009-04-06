@@ -8,7 +8,7 @@
 # these have to be entered manually in proper order: such that the depended-on
 # files are listed first.
 #
-SET( ORCA_SLICE_SOURCE_FILES
+set( ORCA_SLICE_SOURCE_FILES
 # definitions
     datetime.ice
     exceptions.ice

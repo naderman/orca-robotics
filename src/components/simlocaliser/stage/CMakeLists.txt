@@ -1,10 +1,10 @@
-INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
+include( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
 
-FILE( GLOB srcs *.cpp )
+file( GLOB srcs *.cpp )
 
-# MESSAGE( "fucking variables " ${PLAYER_INCLUDE_DIRS} )
-INCLUDE_DIRECTORIES( ${PLAYER_INCLUDE_DIRS} )
-LINK_DIRECTORIES( ${PLAYER_LINK_DIRS} )
-ADD_DEFINITIONS( ${PLAYER_DEFINITIONS} )
+# message( "fucking variables " ${PLAYER_INCLUDE_DIRS} )
+include_directories( ${PLAYER_INCLUDE_DIRS} )
+link_directories( ${PLAYER_LINK_DIRS} )
+add_definitions( ${PLAYER_DEFINITIONS} )
 
 GBX_ADD_LIBRARY( OrcaSimLocaliserStage DEFAULT ${srcs} )

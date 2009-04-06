@@ -1,21 +1,21 @@
 # Test that Hydro has everything we need and works.
 #
-# This module assumes that Hydro is already found and HYDRO_HOME is defined
+# This module assumes that Hydro is already found.
 #
 # Also assumes that hydro manifest is already loaded.
 #
 # Defines the following variables:
 # HYDRO_WORKS : 1 if test passed, 0 otherwise.
 
-# INCLUDE( ${CMAKE_ROOT}/Modules/CheckIncludeFileCXX.cmake )
+# include( ${CMAKE_ROOT}/Modules/CheckIncludeFileCXX.cmake )
 
-IF( NOT DEFINED HYDRO_HOME )
-    MESSAGE( STATUS "Testing Hydro - CANNOT test because HYDRO_HOME is not defined." )
-    SET( HYDRO_WORKS 0 )
-ENDIF( NOT DEFINED HYDRO_HOME )
+if( NOT HYDRO_FOUND )
+    message( STATUS "Testing Hydro - CANNOT test because hydro was not found." )
+    set( HYDRO_WORKS 0 )
+endif( NOT HYDRO_FOUND )
 
-IF( HYDROUTIL_INSTALLED AND HYDROICEUTIL_INSTALLED )
-    SET( HYDRO_WORKS 1 )
-ELSE ( HYDROUTIL_INSTALLED AND HYDROICEUTIL_INSTALLED )
-    SET( HYDRO_WORKS 0 )
-ENDIF( HYDROUTIL_INSTALLED AND HYDROICEUTIL_INSTALLED )
+if( HYDROUTIL_INSTALLED AND HYDROICEUTIL_INSTALLED )
+    set( HYDRO_WORKS 1 )
+else( HYDROUTIL_INSTALLED AND HYDROICEUTIL_INSTALLED )
+    set( HYDRO_WORKS 0 )
+endif( HYDROUTIL_INSTALLED AND HYDROICEUTIL_INSTALLED )

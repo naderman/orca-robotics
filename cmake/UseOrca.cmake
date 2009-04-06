@@ -1,5 +1,5 @@
 # This script is indended to be used from satelite projects
-INCLUDE( ${HYDRO_CMAKE_DIR}/UseHydro.cmake )
+include( ${HYDRO_CMAKE_DIR}/UseHydro.cmake )
 
-INCLUDE_DIRECTORIES( ${ORCA_HOME}/include/orca )
-LINK_DIRECTORIES( ${ORCA_HOME}/lib/orca )
+include_directories( ${ORCA_INCLUDE_DIR} )
+link_directories( ${ORCA_LINK_DIR} )

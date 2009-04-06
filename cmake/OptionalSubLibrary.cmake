@@ -7,45 +7,46 @@
 # using a macro standardizes the trace statements.
 #
 # USAGE: ORCA_OPTIONAL_SUB_LIBRARY( 
-#                   DESCRIPTION 
-#                   SUBDIRECTORY 
-#                   OUTPUT_LIBRARY 
-#                   LINK_LIBS
-#                   OK_TO_BUILD 
-#                   DEFINITION_TAG
+#                   description 
+#                   subdir 
+#                   output_library 
+#                   link_libs
+#                   ok_to_build 
+#                   definition_tag
 #                   lib1 lib2 ... libn )
 #
 # Where:
-#  - DESCRIPTION:       Descriptive message
-#  - SUBDIRECTORY:      Where the code lives
-#  - OUTPUT_LIBRARY:    The optional sub-library
-#  - LINK_LIBS:         Extra libraries one needs to link against
-#  - OK_TO_BUILD:       The name of the variable that holds whether this sub-library be build
-#  - DEFINITION_TAG:    String tag used for both: the compiler flag -Dxxx and the CMake variable.
+#  - description:       Descriptive message
+#  - subdir:            Where the code lives
+#  - output_library:    The optional sub-library
+#  - link_libs:         Extra libraries one needs to link against
+#  - ok_to_build:       The name of the variable that holds whether this sub-library be build
+#  - definition_tag:    String tag used for both: the compiler flag -Dxxx and the CMake variable.
 #                       Both indicate the library can be built.
 #  - lib1 ... libn:     The extra libraries that need to be linked against the component
 #
-MACRO( ORCA_OPTIONAL_SUB_LIBRARY DESCRIPTION SUBDIRECTORY OUTPUT_LIBRARY LINK_LIBS OK_TO_BUILD DEFINITION_TAG )
+macro( ORCA_OPTIONAL_SUB_LIBRARY description subdir output_library link_libs ok_to_build definition_tag )
 
-  IF( ${${OK_TO_BUILD}} )
-    MESSAGE( STATUS "    ${DESCRIPTION} - can be built")
-    ADD_SUBDIRECTORY( ${SUBDIRECTORY} )
+  if( ${${ok_to_build}} )
+    message( STATUS "    ${description} - can be built")
+    add_subdirectory( ${subdir} )
     
     # The top level executable will be linked to this optional libraries...
-    SET( SUB_LINK_LIBRARIES ${OUTPUT_LIBRARY} )
+    set( sub_link_libraries ${output_library} )
     # ... and all the libraries it depends on.
-    FOREACH( ARG ${ARGN} )
-        SET( SUB_LINK_LIBRARIES ${SUB_LINK_LIBRARIES} ${ARG} )
-    ENDFOREACH( ARG ${ARGN} )
-    SET( ${LINK_LIBS}  ${SUB_LINK_LIBRARIES} )
+    foreach( ARG ${ARGN} )
+        set( sub_link_libraries ${sub_link_libraries} ${ARG} )
+    endforeach( ARG ${ARGN} )
+    set( ${link_libs}  ${sub_link_libraries} )
     
-    LINK_DIRECTORIES( ${CMAKE_CURRENT_BINARY_DIR}/${SUBDIRECTORY} )
-    ADD_DEFINITIONS( -D${DEFINITION_TAG} )
-    SET(${DEFINITION_TAG} TRUE)
-#    ADD_LIBRARY( ${OUTPUT_LIBRARY} )
-  ELSE(  ${${OK_TO_BUILD}} )
-    MESSAGE( STATUS "    ${DESCRIPTION} - CANNOT be built")
-    SET(${DEFINITION_TAG} FALSE)
-  ENDIF( ${${OK_TO_BUILD}} )
+    link_directories( ${CMAKE_CURRENT_BINARY_DIR}/${subdir} )
+    add_definitions( -D${definition_tag} )
+    set(${definition_tag} TRUE)
+#    add_library( ${output_library} )
+  else(  ${${ok_to_build}} )
+    message( STATUS "    ${description} - CANNOT be built")
+    set(${definition_tag} FALSE)
+  endif( ${${ok_to_build}} )
 
-ENDMACRO( ORCA_OPTIONAL_SUB_LIBRARY DESCRIPTION DIRECTORY LIBNAME )
+endmacro( ORCA_OPTIONAL_SUB_LIBRARY description subdir output_library link_libs ok_to_build definition_tag )
+

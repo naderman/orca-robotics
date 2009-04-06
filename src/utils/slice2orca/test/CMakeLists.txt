@@ -1,15 +1,15 @@
 # simply run the utility with a special file which includes every possible Slice construct
 # that we care about.
-SET( proj_slice_src_dir ${PROJECT_SOURCE_DIR}/src/interfaces/slice )
+set( proj_slice_src_dir ${PROJECT_SOURCE_DIR}/src/interfaces/slice )
 
-SET( output "util" )
+set( output "util" )
 GBX_ADD_TEST( Slice2Orca_RunTestString 
     ${CMAKE_CURRENT_BINARY_DIR}/../slice2orca
         --${output}
         -I${proj_slice_src_dir} -I${ICE_SLICE_DIR}
         ${proj_slice_src_dir}/orca/test.ice  )
 
-SET( output "log" )
+set( output "log" )
 GBX_ADD_TEST( Slice2Orca_RunTestLog 
     ${CMAKE_CURRENT_BINARY_DIR}/../slice2orca 
         --${output}
@@ -19,16 +19,16 @@ GBX_ADD_TEST( Slice2Orca_RunTestLog
 #
 # Use the generated files
 #
-INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
+include( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
-ADD_EXECUTABLE( slice2orcastringtest stringtest.cpp )
-TARGET_LINK_LIBRARIES( slice2orcastringtest OrcaIfaceUtil )
+add_executable( slice2orcastringtest stringtest.cpp )
+target_link_libraries( slice2orcastringtest OrcaIfaceUtil )
 GBX_ADD_TEST( Slice2Util_StringTest slice2orcastringtest )
 
-ADD_EXECUTABLE( slice2orcazerotest zeroandcleartest.cpp )
-TARGET_LINK_LIBRARIES( slice2orcazerotest OrcaIfaceUtil )
+add_executable( slice2orcazerotest zeroandcleartest.cpp )
+target_link_libraries( slice2orcazerotest OrcaIfaceUtil )
 GBX_ADD_TEST( Slice2Util_ZeroAndClearTest slice2orcazerotest )
 
-ADD_EXECUTABLE( slice2orcalogtest logtest.cpp )
-TARGET_LINK_LIBRARIES( slice2orcalogtest OrcaIfaceLog )
+add_executable( slice2orcalogtest logtest.cpp )
+target_link_libraries( slice2orcalogtest OrcaIfaceLog )
 GBX_ADD_TEST( Slice2Util_LogTest slice2orcalogtest )

@@ -1,32 +1,29 @@
 ORCA_SET_COMPONENT_NAME( SnapshotLogger )
 
-SET( BUILD TRUE )
-GBX_REQUIRE_OPTION( BUILD EXE ${APP_NAME} ON )
-SET( NOT_OS_WIN NOT OS_WIN )
-GBX_REQUIRE_VAR( BUILD EXE ${APP_NAME} NOT_OS_WIN "Windows OS is not  supported" )
+set( build TRUE )
+GBX_REQUIRE_OPTION( build EXE ${APP_NAME} ON )
+set( NOT_OS_WIN NOT OS_WIN )
+GBX_REQUIRE_VAR( build EXE ${APP_NAME} NOT_OS_WIN "Windows OS is not  supported" )
 
-SET( DEP_LIBS OrcaLog OrcaIfaceImpl )
-GBX_REQUIRE_TARGETS( BUILD EXE ${APP_NAME} ${DEP_LIBS} )
+set( dep_libs HydroDll OrcaLog OrcaIfaceImpl )
+GBX_REQUIRE_LIBS( build EXE ${APP_NAME} ${dep_libs} )
 
-SET( DEP_LIBS ${DEP_LIBS} HydroDll )
-GBX_REQUIRE_VAR( BUILD EXE ${APP_NAME} HYDRODLL_INSTALLED "libHydroDll not installed" )
+if( build )
 
-IF( BUILD )
+    include( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
-    INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
-
-    FILE( GLOB COMP_SRCS *.cpp )
+    file( GLOB COMP_SRCS *.cpp )
     
     # build stand-alone component  
     ORCA_WRAP_MAINTHREAD_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${COMP_NAME} ${COMP_SRCS} )
-    TARGET_LINK_LIBRARIES( ${APP_NAME} ${DEP_LIBS} )
+    target_link_libraries( ${APP_NAME} ${dep_libs} )
     
     # build IceBox service
-    IF( BUILD_SERVICES )
+    if( BUILD_SERVICES )
         ORCA_WRAP_MAINTHREAD_INTO_SERVICE( ${SERVICE_NAME} ${COMP_NAMESPACE} ${COMP_NAME} ${COMP_SRCS} )
-        TARGET_LINK_LIBRARIES( ${SERVICE_NAME} ${DEP_LIBS} )    
-    ENDIF( BUILD_SERVICES )
+        target_link_libraries( ${SERVICE_NAME} ${dep_libs} )    
+    endif( BUILD_SERVICES )
 
     ORCA_GENERATE_CONFIG_FILE( ${APP_NAME}.def )
 
-ENDIF( BUILD )
+endif( build )

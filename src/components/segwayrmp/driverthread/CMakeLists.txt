@@ -1,22 +1,21 @@
 ORCA_SET_LIBRARY_NAME( SegwayRmpDriverThread )
 
-SET( build TRUE )
+set( build TRUE )
 GBX_REQUIRE_OPTION( build LIB ${LIB_NAME} ON )
 
-SET( int_libs  OrcaRobotDriverUtil )
-GBX_REQUIRE_TARGETS( build LIB ${LIB_NAME} ${int_libs} )
+set( dep_libs  OrcaRobotDriverUtil )
+GBX_REQUIRE_LIBS( build LIB ${LIB_NAME} ${dep_libs} )
 
-IF( build )
+if( build )
 
-    INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
-    INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR}/.. )
+    include( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
+    include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/.. )
     
-    FILE( GLOB srcs *.cpp )
-    SET( dep_libs ${int_libs} ${ext_libs} )
+    file( GLOB srcs *.cpp )
 
     GBX_ADD_LIBRARY( ${LIB_NAME} DEFAULT ${srcs} )
-    TARGET_LINK_LIBRARIES( ${LIB_NAME} ${dep_libs} )
+    target_link_libraries( ${LIB_NAME} ${dep_libs} )
 
-    ADD_SUBDIRECTORY( util )
+    add_subdirectory( util )
 
-ENDIF( build )
+endif( build )

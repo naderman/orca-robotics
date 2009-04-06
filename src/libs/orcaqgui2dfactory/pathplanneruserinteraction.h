@@ -45,12 +45,13 @@ class PathPlannerUserInteraction  : public QObject,
     Q_OBJECT
 
 public:
-    PathPlannerUserInteraction( PathPlanner2dElement                    *ppElement,
-                                const std::string                       &proxyString,
-                                hydroqguielementutil::IHumanManager     &humanManager,
-                                hydroqguielementutil::MouseEventManager &mouseEventManager,
-                                PathPainter                             &painter,
-                                const orcaice::Context                  &context );
+    PathPlannerUserInteraction( PathPlanner2dElement                     *ppElement,
+                                const std::string                        &proxyString,
+                                hydroqguielementutil::IHumanManager      &humanManager,
+                                hydroqguielementutil::ShortcutKeyManager &shortcutKeyManager,
+                                hydroqguielementutil::MouseEventManager  &mouseEventManager,
+                                PathPainter                              &painter,
+                                const orcaice::Context                   &context );
 
     void noLongerMouseEventReceiver();
     void paint( QPainter *p );
@@ -83,6 +84,7 @@ private:
     std::string proxyString_;
     hydroqguielementutil::IHumanManager &humanManager_;
     hydroqguielementutil::MouseEventManager &mouseEventManager_;
+    hydroqguielementutil::ShortcutKeyManager &shortcutKeyManager_;
     PathPainter &painter_;
     orcaice::Context context_;
     hydroqguipath::WaypointSettings wpSettings_;

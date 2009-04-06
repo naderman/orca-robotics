@@ -1,4 +1,4 @@
-MESSAGE( STATUS "== PROJECT-SPECIFIC SETUP ==" )
+message( STATUS "== PROJECT-SPECIFIC SETUP ==" )
 #
 # Add project-specific setup
 #
@@ -7,7 +7,7 @@ MESSAGE( STATUS "== PROJECT-SPECIFIC SETUP ==" )
 # Variable is needed by the install script as this will most likely be run from
 # Root and not have the compelete environment. For some reason I do not understand
 # The 'SET - CACHED' variables are not available in the install scripts (djlm)
-# INSTALL (CODE "SET(SYSTEM_ORCA_SOURCE ${PROJECT_SOURCE_DIR})")
-# INSTALL (CODE "SET(SYSTEM_HYDRO_INSTALL ${HYDRO_HOME})")
-# INSTALL (SCRIPT ${PROJECT_SOURCE_DIR}/cmake/internal/labelInstall.cmake)
+# install(CODE "set(SYSTEM_ORCA_SOURCE ${PROJECT_SOURCE_DIR})")
+# install(CODE "set(SYSTEM_HYDRO_INSTALL ${HYDRO_HOME})")
+# install(SCRIPT ${PROJECT_SOURCE_DIR}/cmake/internal/labelInstall.cmake)
 

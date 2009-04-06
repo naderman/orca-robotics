@@ -1,12 +1,12 @@
-INCLUDE_DIRECTORIES( 
+include_directories( 
     ${PROJECT_SOURCE_DIR}/src/libs
 )
 
 #
 # Platform-specific compiler and linker flags
 #
-IF( NOT ORCA_OS_WIN )
-    ADD_DEFINITIONS( "-Wall" )
-ELSE ( NOT ORCA_OS_WIN )
-    ADD_DEFINITIONS( "-Wall -D_CRT_SECURE_NO_DEPRECATE" )
-ENDIF( NOT ORCA_OS_WIN )
+if( NOT ORCA_OS_WIN )
+    add_definitions( "-Wall" )
+else( NOT ORCA_OS_WIN )
+    add_definitions( "-Wall -D_CRT_SECURE_NO_DEPRECATE" )
+endif( NOT ORCA_OS_WIN )

@@ -1,40 +1,36 @@
 ORCA_SET_COMPONENT_NAME( PathPlanner )
 
-SET( build TRUE )
+set( build TRUE )
 GBX_REQUIRE_OPTION( build EXE ${APP_NAME} ON )
 GBX_REQUIRE_VAR( build EXE ${APP_NAME} GBX_OS_LINUX "only Linux OS is supported" )
 
-SET( ext_libs HydroOgMap HydroDll )
-GBX_REQUIRE_INSTALLS( build EXE ${APP_NAME} ${ext_libs} )
+set( dep_libs HydroOgMap HydroDll OrcaOgMap OrcaObjects OrcaIfaceImpl )
+GBX_REQUIRE_LIBS( build EXE ${APP_NAME} ${dep_libs} )
 
-SET( int_libs OrcaOgMap OrcaObjects OrcaIfaceImpl )
-GBX_REQUIRE_TARGETS( build EXE ${APP_NAME} ${int_libs} )
+if( build )
 
-IF( build )
+    include( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
-    INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
+    file( GLOB srcs *.cpp )
 
-    FILE( GLOB srcs *.cpp )
-    SET( dep_libs ${ext_libs} ${int_libs} )
-
-    IF( QT4_FOUND )
-        INCLUDE( ${HYDRO_CMAKE_DIR}/UseQt.cmake )
-        ADD_DEFINITIONS( -DQT4_FOUND )
-    ELSE( QT4_FOUND )
-        LIST( REMOVE_ITEM srcs "${CMAKE_CURRENT_SOURCE_DIR}/skeletongraphicsI.cpp" )
-        MESSAGE( STATUS "     Qt4 not found: skeletongraphics will not be built" )
-    ENDIF( QT4_FOUND )
+    if( QT4_FOUND )
+        include( ${HYDRO_CMAKE_DIR}/UseQt.cmake )
+        add_definitions( -DQT4_FOUND )
+    else( QT4_FOUND )
+        list( REMOVE_ITEM srcs "${CMAKE_CURRENT_SOURCE_DIR}/skeletongraphicsI.cpp" )
+        message( STATUS "     Qt4 not found: skeletongraphics will not be built" )
+    endif( QT4_FOUND )
     
     # build stand-alone component  
     ORCA_WRAP_MAINTHREAD_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${COMP_NAME} ${srcs} )
-    TARGET_LINK_LIBRARIES( ${APP_NAME} ${dep_libs} )
+    target_link_libraries( ${APP_NAME} ${dep_libs} )
     
     # build IceBox service
-    IF( ORCA_BUILD_SERVICES )
+    if( ORCA_BUILD_SERVICES )
         ORCA_WRAP_MAINTHREAD_INTO_SERVICE( ${SERVICE_NAME} ${COMP_NAMESPACE} ${COMP_NAME} ${srcs} )
-        TARGET_LINK_LIBRARIES( ${SERVICE_NAME} ${dep_libs} )    
-    ENDIF( ORCA_BUILD_SERVICES )
+        target_link_libraries( ${SERVICE_NAME} ${dep_libs} )    
+    endif( ORCA_BUILD_SERVICES )
 
     ORCA_GENERATE_CONFIG_FILE( ${APP_NAME}.def )
 
-ENDIF( build )
+endif( build )

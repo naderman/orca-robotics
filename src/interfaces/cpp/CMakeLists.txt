@@ -1,3 +1,3 @@
-ADD_SUBDIRECTORY( orca )
-ADD_SUBDIRECTORY( orcaifacelog )
-ADD_SUBDIRECTORY( orcaifaceutil )
+add_subdirectory( orca )
+add_subdirectory( orcaifacelog )
+add_subdirectory( orcaifaceutil )

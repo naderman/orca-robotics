@@ -20,9 +20,9 @@
 # to be more robust we can look for all of those things individually.
 
 # start with 'not found'
-SET( ICE_FOUND 0 CACHE BOOL "Do we have Ice?" )
+set( ICE_FOUND 0 CACHE BOOL "Do we have Ice?" )
 
-FIND_PATH( ICE_HOME_INCLUDE_ICE Ice.h
+find_path( ICE_HOME_INCLUDE_ICE Ice.h
   # rational for this search order:
   #    source install w/env.var -> source install
   #    package -> package
@@ -50,51 +50,51 @@ FIND_PATH( ICE_HOME_INCLUDE_ICE Ice.h
   C:/Ice-3.3.0-VC80/include/Ice
   C:/Ice-3.3.0/include/Ice
   )
-# MESSAGE( STATUS "DEBUG: Ice.h is apparently found in : ${ICE_HOME_INCLUDE_ICE}" )
+# message( STATUS "DEBUG: Ice.h is apparently found in : ${ICE_HOME_INCLUDE_ICE}" )
 
 # NOTE: if ICE_HOME_INCLUDE_ICE is set to *-NOTFOUND it will evaluate to FALSE
-IF( ICE_HOME_INCLUDE_ICE )
+if( ICE_HOME_INCLUDE_ICE )
 
-    SET( ICE_FOUND 1 CACHE BOOL "Do we have Ice?" FORCE )
+    set( ICE_FOUND 1 CACHE BOOL "Do we have Ice?" FORCE )
 
     # strip 'file' twice to get rid off 'include/Ice'
-#     MESSAGE( STATUS "DEBUG: ICE_HOME_INCLUDE_ICE=" ${ICE_HOME_INCLUDE_ICE} )
-    GET_FILENAME_COMPONENT( ICE_HOME_INCLUDE ${ICE_HOME_INCLUDE_ICE} PATH )
-    #MESSAGE( STATUS "DEBUG: ICE_HOME_INCLUDE=" ${ICE_HOME_INCLUDE} )
-    GET_FILENAME_COMPONENT( ICE_HOME ${ICE_HOME_INCLUDE} PATH CACHE )
+#     message( STATUS "DEBUG: ICE_HOME_INCLUDE_ICE=" ${ICE_HOME_INCLUDE_ICE} )
+    get_filename_component( ICE_HOME_INCLUDE ${ICE_HOME_INCLUDE_ICE} PATH )
+    #message( STATUS "DEBUG: ICE_HOME_INCLUDE=" ${ICE_HOME_INCLUDE} )
+    get_filename_component( ICE_HOME ${ICE_HOME_INCLUDE} PATH CACHE )
 
-    MESSAGE( STATUS "Setting ICE_HOME to ${ICE_HOME}" )
+    message( STATUS "Setting ICE_HOME to ${ICE_HOME}" )
 
     # include and lib dirs are easy
-    SET( ICE_INCLUDE_DIR ${ICE_HOME}/include )
-    SET( ICE_LIBRARY_DIR ${ICE_HOME}/lib )
+    set( ICE_INCLUDE_DIR ${ICE_HOME}/include )
+    set( ICE_LIBRARY_DIR ${ICE_HOME}/lib )
     
     # debian package splits off slice files into a different place
-    IF( ICE_HOME MATCHES /usr )
-        SET( ICE_SLICE_DIR /usr/share/slice )
-#         MESSAGE( STATUS "This is a Debian Ice installation. Slice files are in ${ice_slice_dir}" )
-    ELSE ( ICE_HOME MATCHES /usr )
-        SET( ICE_SLICE_DIR ${ICE_HOME}/slice )
-#         MESSAGE( STATUS "This is NOT a Debian Ice installation. Slice files are in ${ice_slice_dir}" )
-    ENDIF( ICE_HOME MATCHES /usr )
+    if( ICE_HOME MATCHES /usr )
+        set( ICE_SLICE_DIR /usr/share/slice )
+#         message( STATUS "This is a Debian Ice installation. Slice files are in ${ice_slice_dir}" )
+    else( ICE_HOME MATCHES /usr )
+        set( ICE_SLICE_DIR ${ICE_HOME}/slice )
+#         message( STATUS "This is NOT a Debian Ice installation. Slice files are in ${ice_slice_dir}" )
+    endif( ICE_HOME MATCHES /usr )
 
     # some libs only care about IceUtil, we tell them to find IceUtil in the same place as Ice.
-    SET( ICEUTIL_HOME ${ICE_HOME} )
-    MESSAGE( STATUS "Setting ICEUTIL_HOME to ${ICEUTIL_HOME}" )
+    set( ICEUTIL_HOME ${ICE_HOME} )
+    message( STATUS "Setting ICEUTIL_HOME to ${ICEUTIL_HOME}" )
 
-ENDIF( ICE_HOME_INCLUDE_ICE )
+endif( ICE_HOME_INCLUDE_ICE )
 
 #
 # Ice for Java
 #
 
 # start with 'not found'
-SET( ICEJ_FOUND 0 CACHE BOOL "Do we have Ice for Java?" )
+set( ICEJ_FOUND 0 CACHE BOOL "Do we have Ice for Java?" )
 
 # don't bother if Ice for C++ was not found
-IF( ICE_FOUND )
+if( ICE_FOUND )
 
-    FIND_PATH( ICEJ_HOME Ice.jar
+    find_path( ICEJ_HOME Ice.jar
     # installation selected by user
     $ENV{ICEJ_HOME}
     # debian package installs Ice here
@@ -103,11 +103,11 @@ IF( ICE_FOUND )
     ${ICE_HOME}/lib
     )
     
-    IF( ICEJ_HOME )
+    if( ICEJ_HOME )
     
-        SET( ICEJ_FOUND 1 CACHE BOOL "Do we have Ice?" FORCE )
-        MESSAGE( STATUS "Setting ICEJ_HOME to ${ICEJ_HOME}" )
+        set( ICEJ_FOUND 1 CACHE BOOL "Do we have Ice?" FORCE )
+        message( STATUS "Setting ICEJ_HOME to ${ICEJ_HOME}" )
     
-    ENDIF( ICEJ_HOME )
+    endif( ICEJ_HOME )
 
-ENDIF( ICE_FOUND )
+endif( ICE_FOUND )

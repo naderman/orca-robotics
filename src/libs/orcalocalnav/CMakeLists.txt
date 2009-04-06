@@ -1,31 +1,28 @@
 ORCA_SET_LIBRARY_NAME( OrcaLocalNav )
 GBX_ADD_LICENSE( LGPL )
 
-SET( build TRUE )
+set( build TRUE )
 GBX_REQUIRE_OPTION( build LIB ${LIB_NAME} ON )
 GBX_REQUIRE_VAR( build LIB ${LIB_NAME} GBX_OS_LINUX "only Linux OS is supported" )
 
-SET( int_libs OrcaObjects )
-GBX_REQUIRE_TARGETS( build LIB ${LIB_NAME} ${int_libs} )
+set( dep_libs OrcaObjects HydroNavUtil )
+GBX_REQUIRE_LIBS( build LIB ${LIB_NAME} ${dep_libs} )
 
-SET( ext_libs ${dep_libs} HydroNavUtil )
-GBX_REQUIRE_INSTALLS( build LIB ${LIB_NAME} ${ext_libs} )
+if( build )
 
-IF( build )
+    include( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
-    INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
-
-     INCLUDE_DIRECTORIES(
+     include_directories(
        ${PROJECT_SOURCE_DIR}/src/libs/orcalocalnav
        ${PROJECT_SOURCE_DIR}/src/components/localnav
        )
 
-    FILE( GLOB hdrs *.h )
-    FILE( GLOB srcs *.cpp )
+    file( GLOB hdrs *.h )
+    file( GLOB srcs *.cpp )
 
     GBX_ADD_LIBRARY( ${LIB_NAME}  DEFAULT ${srcs} )
-    TARGET_LINK_LIBRARIES( ${LIB_NAME} ${dep_libs} )
+    target_link_libraries( ${LIB_NAME} ${dep_libs} )
 
     GBX_ADD_HEADERS( ${LIB_INSTALL} ${hdrs} )
     
-ENDIF( build )
+endif( build )

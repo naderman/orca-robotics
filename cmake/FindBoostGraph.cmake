@@ -3,10 +3,10 @@
 # This module defines
 # BOOST_GRAPH_FOUND, If false, don't try to use Boost Graph Library
 
-CHECK_INCLUDE_FILE_CXX( boost/graph/adjacency_list.hpp BOOST_GRAPH_FOUND )
+check_include_file_cxx( boost/graph/adjacency_list.hpp BOOST_GRAPH_FOUND )
 
-IF( BOOST_GRAPH_FOUND )
-    MESSAGE( STATUS "Looking for Boost Graph - found")
-ELSE ( BOOST_GRAPH_FOUND )
-    MESSAGE( STATUS "Looking for Boost Graph - not found")
-ENDIF( BOOST_GRAPH_FOUND )
+if( BOOST_GRAPH_FOUND )
+    message( STATUS "Looking for Boost Graph - found")
+else( BOOST_GRAPH_FOUND )
+    message( STATUS "Looking for Boost Graph - not found")
+endif( BOOST_GRAPH_FOUND )

@@ -12,9 +12,9 @@ CMAKE_MINIMUM_REQUIRED( VERSION 2.4 FATAL_ERROR )
 PROJECT( orca )
 
 # project version string
-SET( GBX_PROJECT_VERSION        2.13.0+       CACHE STRING "Version of Orca distribution" )
+set( GBX_PROJECT_VERSION 2.13.0+ )
 
 #
 # The rest is done by a script
 #
-INCLUDE( cmake/internal/bootstrap.cmake )
+include( cmake/internal/bootstrap.cmake )

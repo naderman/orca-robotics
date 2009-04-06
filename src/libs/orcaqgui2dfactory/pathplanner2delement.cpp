@@ -42,10 +42,11 @@ PathPlannerTaskAnswerConsumer::setData(const ::orca::PathPlanner2dData& data, co
     msgStore_.set(msg); 
 }
 
-PathPlanner2dElement::PathPlanner2dElement( const orcaice::Context       &context,
-                                            const std::string            &proxyString,
-                                            hydroqguielementutil::IHumanManager     &humanManager,
-                                            hydroqguielementutil::MouseEventManager &mouseEventManager )
+PathPlanner2dElement::PathPlanner2dElement( const orcaice::Context                   &context,
+                                            const std::string                        &proxyString,
+                                            hydroqguielementutil::IHumanManager      &humanManager,
+                                            hydroqguielementutil::MouseEventManager  &mouseEventManager,
+                                            hydroqguielementutil::ShortcutKeyManager &shortcutKeyManager )
     : orcaqguielementutil::IceStormElement2d<PathPainter,
                         orca::PathPlanner2dData,
                         orca::PathPlanner2dPrx,
@@ -59,6 +60,7 @@ PathPlanner2dElement::PathPlanner2dElement( const orcaice::Context       &contex
       pathHI_( this,
                proxyString,
                humanManager,
+               shortcutKeyManager,
                mouseEventManager,
                painter_,
                context_ )

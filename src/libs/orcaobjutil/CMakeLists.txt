@@ -1,25 +1,24 @@
 ORCA_SET_LIBRARY_NAME( OrcaObjectUtil )
-SET( LIB_INSTALL orcaobjutil )
+set( LIB_INSTALL orcaobjutil )
 GBX_ADD_LICENSE( LGPL )
 
-SET( build TRUE )
+set( build TRUE )
 GBX_REQUIRE_OPTION( build LIB ${LIB_NAME} ON )
 
-SET( int_libs OrcaIfaceUtil OrcaObjects )
-GBX_REQUIRE_TARGETS( build LIB ${LIB_NAME} ${int_libs} )
+set( dep_libs OrcaIfaceUtil OrcaObjects )
+GBX_REQUIRE_LIBS( build LIB ${LIB_NAME} ${dep_libs} )
 
-IF( build )
+if( build )
 
-    INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
+    include( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
     
-    FILE( GLOB hdrs *.h )
-    FILE( GLOB srcs *.cpp )
-    SET( dep_libs ${int_libs} )
+    file( GLOB hdrs *.h )
+    file( GLOB srcs *.cpp )
     
     GBX_ADD_LIBRARY( ${LIB_NAME} DEFAULT ${srcs} )
 
-    TARGET_LINK_LIBRARIES( ${LIB_NAME} ${dep_libs} )
+    target_link_libraries( ${LIB_NAME} ${dep_libs} )
     
     GBX_ADD_HEADERS( ${LIB_INSTALL} ${hdrs} )
 
-ENDIF( build )
+endif( build )

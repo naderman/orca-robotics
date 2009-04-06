@@ -141,7 +141,7 @@ DefaultFactory::create( const QString                &elementType,
             elem = new orcaqgui2d::PathFollower2dElement( context_, elementDetails[0].toStdString(), humanManager, mouseEventManager, shortcutKeyManager, guiElementSet );
         }
         else if ( elementType == "PathPlanner2d" ) {
-            elem = new orcaqgui2d::PathPlanner2dElement( context_, elementDetails[0].toStdString(), humanManager, mouseEventManager );
+            elem = new orcaqgui2d::PathPlanner2dElement( context_, elementDetails[0].toStdString(), humanManager, mouseEventManager, shortcutKeyManager );
         }
         else if ( elementType == "PixMap" ) {
             elem = new orcaqgui2d::PixMapElement( context_, elementDetails[0].toStdString(), &humanManager );

@@ -1,13 +1,17 @@
 # Locate Orca home
-
+#
 # This module defines
 # ORCA_HOME where to find include, lib, bin, etc.
 # ORCA_FOUND, If set to 0, don't try to use Orca.
 
-# start with 'not found'
-SET( ORCA_FOUND 0 CACHE BOOL "Do we have Orca?" )
+message( STATUS "DEBUG: looking for Orca." )
 
-FIND_PATH( ORCA_HOME orca_manifest.cmake
+# start with 'not found'
+set( ORCA_FOUND 0 CACHE BOOL "Do we have Orca?" )
+
+find_path( ORCA_HOME orca_manifest.cmake
+    # Test user-specified installation point (first look in the dir specified
+    # with command line CMake variable, then with environment variable)
     ${ORCA_HOME}
     $ENV{ORCA_HOME}
     # Test common installation points
@@ -41,9 +45,10 @@ FIND_PATH( ORCA_HOME orca_manifest.cmake
     C:/orca 
 )
 
-MESSAGE( STATUS "DEBUG: orca_manifest.cmake is apparently found in : ${ORCA_HOME}" )
+message( STATUS "DEBUG: orca_manifest.cmake is apparently found in : ${ORCA_HOME}" )
 
 # NOTE: if ORCA_HOME_INCLUDE_ORCA is set to *-NOTFOUND it will evaluate to FALSE
-IF( ORCA_HOME )
-    SET( ORCA_FOUND 1 CACHE BOOL "Do we have Orca?" FORCE )
-ENDIF( ORCA_HOME )
+if( ORCA_HOME )
+    set( ORCA_FOUND 1 CACHE BOOL "Do we have Orca?" FORCE )
+endif( ORCA_HOME )
+    

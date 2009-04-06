@@ -1,14 +1,14 @@
-SET( module_name def_tools )
+set( module_name def_tools )
 
-SET( build TRUE )
+set( build TRUE )
 GBX_REQUIRE_OPTION( build EXE ${module_name} ON )
 
-IF( build )
+if( build )
 
     # needs defintions from orca/ocm.ice
-    INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
+    include( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
     
-    LINK_LIBRARIES( OrcaDef )
+    link_libraries( OrcaDef )
     
     GBX_ADD_EXECUTABLE( def2cfg def2cfg.cpp )
     
@@ -23,4 +23,4 @@ IF( build )
     # a perfect compliment for any component's required interfaces.
 #     GBX_ADD_EXECUTABLE( def2definverted def2definverted.cpp )
 
-ENDIF( build )
+endif( build )

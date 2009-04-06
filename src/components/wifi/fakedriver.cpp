@@ -23,6 +23,13 @@ void FakeDriver::read( orca::WifiData &data )
     
     orca::WifiInterface w;
     orcaobj::setInit(w);
+
+    // Set some sane values
+    w.interfaceName = "fake";
+    w.linkQuality   = 60;
+    w.signalLevel = -75;
+    w.noiseLevel  = -125;
+
     data.interfaces.push_back( w );
 }
 

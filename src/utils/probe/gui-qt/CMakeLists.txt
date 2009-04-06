@@ -1,15 +1,14 @@
 GBX_ADD_LICENSE( GPL )
 
-INCLUDE( ${HYDRO_CMAKE_DIR}/UseQt.cmake )
+include( ${HYDRO_CMAKE_DIR}/UseQt.cmake )
 
-# Glob all source files
-FILE( GLOB human_srcs *.cpp )
+file( GLOB human_srcs *.cpp )
 
-INCLUDE_DIRECTORIES(
+include_directories(
     ${PROJECT_SOURCE_DIR}/src/libs
 )
 
-SET( moc_hdrs
+set( moc_hdrs
     guiqtdisplay.h
     mainwin.h
     probeview.h

@@ -48,7 +48,7 @@ Detailed instructions are available for these platforms/distributions (each page
 The instructions below are quite general, follow them if your platform/distribution combination is not described above:
 
     -# Download and install <a href="http://www.cmake.org/">CMake: Cross-Platform Make</a> which is used to build the orca distribution.
-	- Minimum version required 2.4-patch 4 (latest tested: 2.6-patch 0).
+	- Minimum version required 2.4-patch 4 (latest tested: 2.6-patch 3).
         - Full instructions are available from the <a href="http://www.cmake.org/HTML/Download.html">download page</a>.
     -# Download and install Ice libraries.
         - Minimum version required 3.3.0 (latest tested: 3.3.0)

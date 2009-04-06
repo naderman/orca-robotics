@@ -27,7 +27,7 @@ namespace orcaqgui {
 //! Provides the framework in which all other widgets sit.
 //! It also handles screen capture.
 //!
-//! Call 'setCentralWidget()' to set the central widget.
+//! Call '(QMainWindow::)setCentralWidget()' to set the central widget.
 //!
 class MainWindow : public QMainWindow, 
                    public hydroqguielementutil::IHumanManager

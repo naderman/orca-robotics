@@ -1,29 +1,29 @@
 ORCA_SET_LIBRARY_NAME( OrcaPotrace )
 GBX_ADD_LICENSE( GPL )
 
-SET( build TRUE )
+set( build TRUE )
 GBX_REQUIRE_OPTION( build LIB ${LIB_NAME} ON )
 
-SET( dep_libs HydroOgMap )
-GBX_REQUIRE_VAR( build LIB ${LIB_NAME} HYDROOGMAP_INSTALLED "libHydroOgMap not installed" )
+set( dep_libs HydroOgMap )
+GBX_REQUIRE_LIBS( build LIB ${LIB_NAME} ${dep_libs} )
 
-GBX_REQUIRE_VAR( build EXE ${LIB_NAME} POTRACE_FOUND "Potrace not found" )
-SET( ext_libs potrace )
+GBX_REQUIRE_VAR( build LIB ${LIB_NAME} POTRACE_FOUND "Potrace not found" )
+set( dep_libs ${dep_libs} potrace )
 
-IF( build )
+if( build )
 
-    INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
+    include( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
-    FILE( GLOB hdrs *.h )
-    FILE( GLOB srcs *.cpp )
+    file( GLOB hdrs *.h )
+    file( GLOB srcs *.cpp )
 
     GBX_ADD_LIBRARY( ${LIB_NAME} DEFAULT ${srcs} )
-    TARGET_LINK_LIBRARIES( ${LIB_NAME} ${dep_libs} ${ext_libs} )
+    target_link_libraries( ${LIB_NAME} ${dep_libs} )
 
     GBX_ADD_HEADERS( ${LIB_INSTALL} ${hdrs} )
 
-    IF( ORCA_BUILD_TESTS )
-        ADD_SUBDIRECTORY( test )
-    ENDIF( ORCA_BUILD_TESTS )
+    if( ORCA_BUILD_TESTS )
+        add_subdirectory( test )
+    endif( ORCA_BUILD_TESTS )
 
-ENDIF (build )
+endif(build )

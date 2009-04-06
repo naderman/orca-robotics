@@ -1,10 +1,10 @@
-INCLUDE_DIRECTORIES(
+include_directories(
   ${PROJECT_SOURCE_DIR}/src/components/localnav
 )
 
-INCLUDE( ${HYDRO_CMAKE_DIR}/UseHydro.cmake )
+include( ${HYDRO_CMAKE_DIR}/UseHydro.cmake )
 
-FILE( GLOB srcs *.cpp )
+file( GLOB srcs *.cpp )
 GBX_ADD_LIBRARY( OrcaLocalNavTestSim DEFAULT ${srcs} )
-TARGET_LINK_LIBRARIES( OrcaLocalNavTestSim OrcaObjectUtil OrcaIfaceImpl 
+target_link_libraries( OrcaLocalNavTestSim OrcaObjectUtil OrcaIfaceImpl 
         OrcaOgMap OrcaPathPlan HydroGeom2d )

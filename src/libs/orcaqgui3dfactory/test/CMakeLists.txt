@@ -1,6 +1,6 @@
-INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
+include( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
-LINK_LIBRARIES( OrcaQGui3dFactory ${dep_libs} )
+link_libraries( OrcaQGui3dFactory ${dep_libs} )
 
-ADD_EXECUTABLE( default3dfactoryinstantiate defaultfactoryinstantiate.cpp )
+add_executable( default3dfactoryinstantiate defaultfactoryinstantiate.cpp )
 GBX_ADD_TEST( OrcaQGui3dDefaultFactoryInstantiate default3dfactoryinstantiate )

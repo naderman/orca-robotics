@@ -1,36 +1,36 @@
-INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
+include( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
-ADD_EXECUTABLE( ptrbuffertest ptrbuffertest.cpp )
+add_executable( ptrbuffertest ptrbuffertest.cpp )
 GBX_ADD_TEST( OrcaIce_PtrBuffer ptrbuffertest )
 
-ADD_EXECUTABLE( ptrstoretest ptrstoretest.cpp )
+add_executable( ptrstoretest ptrstoretest.cpp )
 GBX_ADD_TEST( OrcaIce_PtrStore ptrstoretest )
 
-ADD_EXECUTABLE( ptrnotifytest ptrnotifytest.cpp )
+add_executable( ptrnotifytest ptrnotifytest.cpp )
 GBX_ADD_TEST( OrcaIce_PtrNotify ptrnotifytest )
 
-ADD_EXECUTABLE( proptest proptest.cpp )
+add_executable( proptest proptest.cpp )
 GBX_ADD_TEST( OrcaIce_PropUtils proptest )
 
-ADD_EXECUTABLE( timetest timetest.cpp )
+add_executable( timetest timetest.cpp )
 GBX_ADD_TEST( OrcaIce_Time timetest )
 
 # admin interfaces test
-ADD_EXECUTABLE( admintest admintest.cpp )
+add_executable( admintest admintest.cpp )
 GBX_ADD_TEST( OrcaIce_Admin admintest )
 ORCA_GENERATE_CONFIG_FILE( admintest.def admintest 0 )
 
 # basic app test, no standard interface, no adapter activation
-ADD_EXECUTABLE( apptest apptest.cpp )
+add_executable( apptest apptest.cpp )
 GBX_ADD_TEST( OrcaIce_App apptest  --Orca.Component.PrintProperties=1 --Orca.Component.PrintContext=1 )
 
 # test std component interfaces
-ADD_EXECUTABLE( compstdifacetest compstdifacetest.cpp )
+add_executable( compstdifacetest compstdifacetest.cpp )
 GBX_ADD_TEST( OrcaIce_CompStdIface compstdifacetest )
 ORCA_GENERATE_CONFIG_FILE( compstdifacetest.def compstdifacetest 0 )
 
 # testing platform and component name substitutions
-ADD_EXECUTABLE( compnametest compnametest.cpp )
+add_executable( compnametest compnametest.cpp )
 # explicit platform (with null component)
 GBX_ADD_TEST( OrcaIce_CompName_ExplP_NullC compnametest --TestTag.Platform=horseshit --TestTag.Config.ExpPlatfName=horseshit --Orca.Component.PrintProperties=1 )
 # local platform spec (with null component)
@@ -51,14 +51,14 @@ GBX_ADD_TEST( OrcaIce_CompName_AdId_ExplPC compnametest --TestTag.AdapterId=hors
 GBX_ADD_TEST( OrcaIce_CompName_AdId_LocalP_ExplC compnametest --TestTag.AdapterId=horseshit/localnav --TestTag.Platform=local --TestTag.Component=crap --TestTag.Config.ExpPlatfName=horseshit --TestTag.Config.ExpCompName=localnav --Orca.Component.PrintProperties=1 --Orca.Warn.FactoryProperty=1 --Orca.Component.PrintContext=1)
 
 # advanced app tests
-ADD_EXECUTABLE( appproptest appproptest.cpp )
+add_executable( appproptest appproptest.cpp )
 # The standard CFG_INTDIR does not seem to get resolved here, do it manually
-IF( GBX_OS_WIN )
+if( GBX_OS_WIN )
     # VCC defaults to Debug
-    SET( MANUAL_CFG_INTDIR "debug" )
-ELSE( GBX_OS_WIN )
-    SET( MANUAL_CFG_INTDIR "." )
-ENDIF( GBX_OS_WIN )
+    set( MANUAL_CFG_INTDIR "debug" )
+else( GBX_OS_WIN )
+    set( MANUAL_CFG_INTDIR "." )
+endif( GBX_OS_WIN )
 # settings: FACT=0, GLOBAL=200, LOCAL=300, ARGS=400
 # test1000 = factory YES, global NO, local NO, args NO --> expect=FACT, which is 0
 # NOTE: the CTEST variable is escaped here so it's ignored by CMake and is put into the C script which then
@@ -82,16 +82,16 @@ ORCA_GENERATE_CONFIG_FILE( appproptestoff.def appproptest 0 )
 
 # can't do this in win 'cause: 1) need shared libs for services, 2) need to copy files
 
-IF( NOT GBX_OS_WIN )
+if( NOT GBX_OS_WIN )
 
 # basic service test
 # Do NOT use DEFAULT setting here!
-ADD_LIBRARY( ServiceTest SHARED servicetest )
+add_library( ServiceTest SHARED servicetest )
 GBX_ADD_TEST( OrcaIce_Service ${ICE_HOME}/bin/icebox --Ice.Config=${CMAKE_CURRENT_SOURCE_DIR}/iceboxbasic.cfg )
 
 # advanced service tests
 # Do NOT use DEFAULT setting here!
-ADD_LIBRARY( ServicePropTest SHARED serviceproptest )
+add_library( ServicePropTest SHARED serviceproptest )
 # settings: FACT=0, GLOBAL=200, LOCAL=300, ARGS=400
 # test1000 = factory YES, global NO, local NO, args NO --> expect=FACT=0
 
@@ -99,12 +99,12 @@ ADD_LIBRARY( ServicePropTest SHARED serviceproptest )
 # of the global file on command line (command line args for individual services are hardwired 
 # into the icebox.cfg file)
 # alexm: this stopped working for some reason
-# ADD_CUSTOM_COMMAND( TARGET ServiceProp POST_BUILD COMMAND ${CMAKE_COMMAND} 
+# add_custom_command( TARGET ServiceProp POST_BUILD COMMAND ${CMAKE_COMMAND} 
 #                     ARGS -E copy ${CMAKE_CURRENT_SOURCE_DIR}/globalon.cfg ${CMAKE_CURRENT_BINARY_DIR}/. )
-# ADD_CUSTOM_COMMAND( TARGET ServiceProp POST_BUILD COMMAND ${CMAKE_COMMAND} 
+# add_custom_command( TARGET ServiceProp POST_BUILD COMMAND ${CMAKE_COMMAND} 
 #                     ARGS -E copy ${CMAKE_CURRENT_SOURCE_DIR}/globaloff.cfg ${CMAKE_CURRENT_BINARY_DIR}/. )
-CONFIGURE_FILE( ${CMAKE_CURRENT_SOURCE_DIR}/globalon.cfg ${CMAKE_CURRENT_BINARY_DIR}/globalon.cfg COPYONLY )
-CONFIGURE_FILE( ${CMAKE_CURRENT_SOURCE_DIR}/globaloff.cfg ${CMAKE_CURRENT_BINARY_DIR}/globaloff.cfg COPYONLY )
+configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/globalon.cfg ${CMAKE_CURRENT_BINARY_DIR}/globalon.cfg COPYONLY )
+configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/globaloff.cfg ${CMAKE_CURRENT_BINARY_DIR}/globaloff.cfg COPYONLY )
 
 ORCA_GENERATE_CONFIG_FILE( serviceproptest2on.def ServicePropTest 0 )
 ORCA_GENERATE_CONFIG_FILE( serviceproptest2off.def ServicePropTest 0 )
@@ -122,37 +122,37 @@ GBX_ADD_TEST( OrcaIce_ServiceProp1100 ${ICE_HOME}/bin/icebox --Ice.Config=${CMAK
 GBX_ADD_TEST( OrcaIce_ServiceProp1101 ${ICE_HOME}/bin/icebox --Ice.Config=${CMAKE_CURRENT_SOURCE_DIR}/icebox1101.cfg )
 GBX_ADD_TEST( OrcaIce_ServiceProp1110 ${ICE_HOME}/bin/icebox --Ice.Config=${CMAKE_CURRENT_SOURCE_DIR}/icebox1110.cfg )
 GBX_ADD_TEST( OrcaIce_ServiceProp1111 ${ICE_HOME}/bin/icebox --Ice.Config=${CMAKE_CURRENT_SOURCE_DIR}/icebox1111.cfg )
-ENDIF( NOT GBX_OS_WIN )
+endif( NOT GBX_OS_WIN )
 
-ADD_EXECUTABLE( configtest configtest.cpp )
+add_executable( configtest configtest.cpp )
 GBX_ADD_TEST( OrcaIce_ConfigUtils configtest )
 ORCA_GENERATE_CONFIG_FILE( configtest.def configtest 0 )
 
-ADD_EXECUTABLE( converttest converttest.cpp )
+add_executable( converttest converttest.cpp )
 GBX_ADD_TEST( OrcaIce_ConvertUtils converttest )
 
-ADD_EXECUTABLE( icetest icetest.cpp )
+add_executable( icetest icetest.cpp )
 GBX_ADD_TEST( OrcaIce_IceUtils icetest )
 ORCA_GENERATE_CONFIG_FILE( icetest.def icetest 0 )
 
 # alexm: 
 # This test relies on establishing direct connections which is currently broken
 # not sure why it works in linux actually.
-IF( NOT GBX_OS_QNX )
-ADD_EXECUTABLE( connecttest connecttest.cpp )
+if( NOT GBX_OS_QNX )
+add_executable( connecttest connecttest.cpp )
 GBX_ADD_TEST( OrcaIce_ConnectUtils connecttest )
 ORCA_GENERATE_CONFIG_FILE( connecttest.def connecttest 0 )
-ENDIF( NOT GBX_OS_QNX )
+endif( NOT GBX_OS_QNX )
 
-ADD_EXECUTABLE( icegridtest icegridtest.cpp )
+add_executable( icegridtest icegridtest.cpp )
 GBX_ADD_TEST( OrcaIce_IceGridUtils icegridtest )
 ORCA_GENERATE_CONFIG_FILE( icegridtest.def icegridtest 0 )
 
-ADD_EXECUTABLE( substatusthreadtest substatusthreadtest.cpp )
+add_executable( substatusthreadtest substatusthreadtest.cpp )
 GBX_ADD_TEST( OrcaIce_SubstatusThread substatusthreadtest )
 
-ADD_EXECUTABLE( subsystemthreadtest subsystemthreadtest.cpp )
+add_executable( subsystemthreadtest subsystemthreadtest.cpp )
 GBX_ADD_TEST( OrcaIce_SubsystemThread subsystemthreadtest )
 
-ADD_EXECUTABLE( catchutilstest catchutilstest.cpp )
+add_executable( catchutilstest catchutilstest.cpp )
 GBX_ADD_TEST( OrcaIce_CatchUtils catchutilstest )

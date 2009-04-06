@@ -1,24 +1,24 @@
 ORCA_SET_COMPONENT_NAME( RegistryView )
-SET( APP_CTRLC_HANDLER 0 )
+set( APP_CTRLC_HANDLER 0 )
 GBX_ADD_LICENSE( GPL )
 
-SET( build TRUE )
+set( build TRUE )
 GBX_REQUIRE_OPTION( build EXE ${APP_NAME} ON )
-SET( not_os_win NOT GBX_OS_WIN )
+set( not_os_win NOT GBX_OS_WIN )
 GBX_REQUIRE_VAR( build EXE ${APP_NAME} not_os_win "Windows OS is not  supported" )
 GBX_REQUIRE_VAR( build EXE ${APP_NAME} QT4_FOUND "Qt4 not found" )
 
-SET( dep_libs OrcaQt OrcaQCompModel )
-GBX_REQUIRE_TARGETS( build EXE ${APP_NAME} ${dep_libs} )
+set( dep_libs OrcaQt OrcaQCompModel )
+GBX_REQUIRE_LIBS( build EXE ${APP_NAME} ${dep_libs} )
 
-IF( build )
+if( build )
 
-    INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
-    INCLUDE( ${HYDRO_CMAKE_DIR}/UseQt.cmake )
+    include( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
+    include( ${HYDRO_CMAKE_DIR}/UseQt.cmake )
 
-    FILE( GLOB human_srcs *.cpp )
+    file( GLOB human_srcs *.cpp )
 
-    SET( moc_hdrs
+    set( moc_hdrs
         mainwin.h
         regtreeview.h
         propertywidget.h
@@ -27,8 +27,8 @@ IF( build )
 
     # build stand-alone component  
     ORCA_WRAP_COMPONENT_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${human_srcs} ${moc_srcs} )
-    TARGET_LINK_LIBRARIES( ${APP_NAME} ${dep_libs} )
+    target_link_libraries( ${APP_NAME} ${dep_libs} )
 
     ORCA_GENERATE_CONFIG_FILE( ${APP_NAME}.def )
 
-ENDIF( build )
+endif( build )

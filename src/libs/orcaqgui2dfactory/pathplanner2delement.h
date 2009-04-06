@@ -49,10 +49,11 @@ class PathPlanner2dElement : public orcaqguielementutil::IceStormElement2d<PathP
 
 public: 
 
-    PathPlanner2dElement( const orcaice::Context       &context,
-                          const std::string            &proxyString,
-                          hydroqguielementutil::IHumanManager     &humanManager,
-                          hydroqguielementutil::MouseEventManager &mouseEventManager );
+    PathPlanner2dElement( const orcaice::Context                   &context,
+                          const std::string                        &proxyString,
+                          hydroqguielementutil::IHumanManager      &humanManager,
+                          hydroqguielementutil::MouseEventManager  &mouseEventManager,
+                          hydroqguielementutil::ShortcutKeyManager &shortcutKeyManager );
     ~PathPlanner2dElement();
 
     void update();

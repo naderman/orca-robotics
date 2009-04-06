@@ -24,7 +24,7 @@ These are detailed instructions for installing Orca on Debian Linux. They are kn
 
 @section orca_doc_installdebian_cmake CMake
 
-Minimum version required 2.4-patch 4 (latest tested: 2.6-patch 2).
+Minimum version required 2.4-patch 4 (latest tested: 2.6-patch 3).
 
 @verbatim
 # apt-get install cmake

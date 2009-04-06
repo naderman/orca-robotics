@@ -1,2 +1,2 @@
-INCLUDE_DIRECTORIES( ${PROJECT_BINARY_DIR}/src/interfaces/cpp )
-LINK_LIBRARIES( ${PROJECT_NAME_CAP}Interfaces )
+include_directories( ${PROJECT_BINARY_DIR}/src/interfaces/cpp )
+link_libraries( ${PROJECT_NAME_CAP}Interfaces )

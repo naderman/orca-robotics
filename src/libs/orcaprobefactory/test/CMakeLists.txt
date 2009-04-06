@@ -1,6 +1,6 @@
-INCLUDE( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
+include( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
-LINK_LIBRARIES( OrcaProbeFactory )
+link_libraries( OrcaProbeFactory )
 
-ADD_EXECUTABLE( factoryinstantiate factoryinstantiate.cpp )
+add_executable( factoryinstantiate factoryinstantiate.cpp )
 GBX_ADD_TEST( OrcaProbeFactory_Instantiate factoryinstantiate )

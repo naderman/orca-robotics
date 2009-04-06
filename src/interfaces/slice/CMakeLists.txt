@@ -1,1 +1,1 @@
-ADD_SUBDIRECTORY( orca )
+add_subdirectory( orca )

@@ -1,10 +1,10 @@
-INCLUDE( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
+include( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
 
-# INCLUDE_DIRECTORIES(
+# include_directories(
 #     ${PROJECT_SOURCE_DIR}/src/components/tracermon/termutil
 #     )
 
-FILE( GLOB srcs *.cpp ../termutil/*.cpp )
+file( GLOB srcs *.cpp ../termutil/*.cpp )
 
 GBX_ADD_LIBRARY( OrcaTracerMonTermNcurses DEFAULT ${srcs} )
-TARGET_LINK_LIBRARIES( OrcaTracerMonTermNcurses ncurses form )
+target_link_libraries( OrcaTracerMonTermNcurses ncurses form )

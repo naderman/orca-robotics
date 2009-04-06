@@ -77,10 +77,15 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 @section orca_doc_history_head Changes in SVN since Last Release
 
 @par Project wide
-
+- Build system
+  - Added a hook in the CMake setup to allow building Orca as part of a bigger "super-project". Default behavior is not modified. (tobie,alexm)
+  - Using new CMake macro GBX_REQUIRE_LIBS which simplifies enforcing dependencies, both in-project and installed ones. (alexm)
+  - Changed format style of CMake files. Standard functions are low-case. Custom macros are upper case. "Local" variables are low-case. "Global"
+    and cache variables are upper-case. (alexm)
+  
 - Dependency cleanup
-  - Removed all instances of including <Ice/Ice.h> from library headers to reduce build time. The subset of Ice headers
-    required by standard libs and components is included by <orcaice/context.h> (alexm)
+    - Removed all instances of including <Ice/Ice.h> from library headers to reduce build time. The subset of Ice headers
+      required by standard libs and components is included by <orcaice/context.h> (alexm)
 
 @par New interfaces
 
