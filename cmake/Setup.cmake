@@ -8,10 +8,14 @@ message( STATUS "Setting project version to ${GBX_PROJECT_VERSION}" )
 # Set CMake policies
 # For help on policy CMPxxxx: $ cmake --help-policy CMPxxxx
 # 
-if(COMMAND cmake_policy)
-    cmake_policy( SET CMP0003 OLD )
-    cmake_policy( SET CMP0011 NEW )
-endif(COMMAND cmake_policy)
+if( COMMAND cmake_policy )
+    if( POLICY CMP0003 )
+        cmake_policy( SET CMP0003 OLD )
+    endif( POLICY CMP0003 )
+    if( POLICY CMP0011 )
+        cmake_policy( SET CMP0011 NEW )
+    endif( POLICY CMP0011 )
+endif( COMMAND cmake_policy )
 
 #
 # We often use different variants of the project name.
