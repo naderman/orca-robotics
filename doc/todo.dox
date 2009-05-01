@@ -87,7 +87,8 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 @par Project wide
 - Build system
   - Added a hook in the CMake setup to allow building Orca as part of a bigger "super-project". Default behavior is not modified. (tobie,alexm)
-  - Using new CMake macro GBX_REQUIRE_LIBS which simplifies enforcing dependencies, both in-project and installed ones. (alexm)
+  - Using new CMake macro GBX_REQUIRE_LIBS which simplifies enforcing dependencies, both in-project and installed ones. The older macros
+    GBX_REQUIRE_INSTALLS and GBX_REQUIRE_TARGETS have been removed. (alexm)
   - Changed format style of CMake files. Standard functions are low-case. Custom macros are upper case. "Local" variables are low-case. "Global"
     and cache variables are upper-case. (alexm)
   - Autogeneration of component files: added COMP_INTERFACE_FLAG option to control which standard interfaces are created.
@@ -177,6 +178,7 @@ $ svn add cmake/internal/Setup.cmake
     - subStatus().warning() --> health().warning()
     - subStatus().fault() --> health().fault()
     - subStatus().setMaxHeartbeatInterval() --> setMaxHeartbeatInterval()
+    - subStatus().setSubsystemType() --> setSubsystemType()
   - all multi-try functions: redefined in terms of the new light interface class gbxutilacfr::Stoppable. No change in satellite
     code are requried. (alexm)
 
