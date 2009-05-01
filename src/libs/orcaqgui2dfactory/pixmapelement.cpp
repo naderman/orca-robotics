@@ -11,7 +11,8 @@
 #include "pixmapelement.h"
 #include <iostream>
 #include <QFileDialog>
-#include <hydroqgui/hydroqgui.h>
+#include <hydroqgui/exceptions.h>
+#include <hydroqguielementutil/ihumanmanager.h>
 
 using namespace std;
 

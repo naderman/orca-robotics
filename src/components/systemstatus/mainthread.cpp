@@ -46,54 +46,6 @@ vector<orca::FQComponentName> getSystemComponentsFromConfig( const orcaice::Cont
     
     return fqCompNames;
 }
-    
-//
-// converts from internal multimap to Slice-defined representation
-//
-void convert( const multimap<string,orca::ObservedComponentStatus> &from, 
-              orca::SystemStatusData                               &to,
-              int                                                   sleepTimeSec )
-{    
-    orcaice::setToNow( to.timeStamp );
-    to.publishIntervalSec = sleepTimeSec*5;
-    
-    multimap<string,orca::ObservedComponentStatus>::const_iterator it;
-    pair<multimap<string,orca::ObservedComponentStatus>::const_iterator,multimap<string,orca::ObservedComponentStatus>::const_iterator> ret;
-    
-    // assemble a vector of *unique* platform names
-    vector<string> uniquePlatformNames;
-    for (it=from.begin(); it!=from.end(); ++it)
-    {
-        const string &platform = it->first;
-        bool isNew = true;
-        for (unsigned int i=0; i<uniquePlatformNames.size(); i++ )
-        {
-            if (uniquePlatformNames[i]==platform) {
-                isNew = false;
-                break;
-            }
-        }
-        if (isNew) 
-            uniquePlatformNames.push_back( platform );
-    }
-    
-    // go through all unique platforms and create a map indexed by platform name
-    for ( unsigned int i=0; i<uniquePlatformNames.size(); i++ )
-    {
-        vector<orca::ObservedComponentStatus> componentsPerPlatform;
-        
-        // obtain all records of a given platform name
-        ret = from.equal_range( uniquePlatformNames[i] );
-
-        // create a vector of ObservedComponentStatus
-        for (it=ret.first; it!=ret.second; ++it)
-        {
-            componentsPerPlatform.push_back( (*it).second );
-        }
-        
-        to.systemStatus[uniquePlatformNames[i]] = componentsPerPlatform;
-    }
-}
 
 } // end of namespace
     
@@ -144,26 +96,38 @@ MainThread::initialise()
 void
 MainThread::work()
 {     
-    orca::SystemStatusData data;
-    multimap<string,orca::ObservedComponentStatus> obsCompStateMultiMap;
     const int sleepTimeSec = 2;
-    
+
+//     multimap<string,orca::ObservedComponentStatus> obsCompStateMultiMap;
+
+    orca::SystemStatusData data;
+    data.publishIntervalSec = sleepTimeSec*5;
+
+    orca::EstimatedComponentStatus estCompStatus;
+
+    // NOTE: we don't try to pre-populate the data structure. this way
+    // we can later implement a dynamic status tracker based on some kind of
+    // component discovery.    
+
+    // This thread polls all monitors periodically.
+    // This polling period determines the responsiveness of stale-detection
+    // and the action to resubscribe.
+    // 
+    // data transfer is inefficient: the entire system state is transmitted every time step.
+    // could optimize by transmitting only the status which has changed.
     while ( !isStopping() )
-    {
-        context_.tracer().info( "MainThread: waiting..." );
-        
+    {        
+        orcaice::setToNow( data.timeStamp );
+        data.systemStatus.clear();
+
         // get status data from all monitors
-        obsCompStateMultiMap.clear();
-        for (unsigned int i=0; i<monitors_.size(); i++)
-        {
-            orca::ObservedComponentStatus obsCompStat;
-            string platformName;
-            monitors_[i].getComponentStatus( obsCompStat );
-            obsCompStateMultiMap.insert(pair<string,orca::ObservedComponentStatus>(obsCompStat.name.platform,obsCompStat));
-        }
-        
-        // convert and tell the world
-        convert( obsCompStateMultiMap, data, sleepTimeSec );
+        for ( unsigned int i=0; i<monitors_.size(); ++i ) 
+        { 
+            estCompStatus = monitors_[i].getComponentStatus();
+    
+            data.systemStatus[ estCompStatus.name.platform ].push_back( estCompStatus );
+        }        
+        // gave it the interface implementation
         systemStatusIface_->localSetAndSend( data );
                 
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(sleepTimeSec));

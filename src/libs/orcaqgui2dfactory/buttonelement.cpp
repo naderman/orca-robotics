@@ -2,7 +2,8 @@
 #include <iostream>
 #include <orcaice/orcaice.h>
 #include <orcaobj/orcaobj.h>
-#include <hydroqgui/hydroqgui.h>
+#include <hydroqguielementutil/ihumanmanager.h>
+#include <hydroqgui/exceptions.h>
 
 using namespace std;
 

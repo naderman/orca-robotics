@@ -8,39 +8,128 @@
  *
  */
 
+#include <iostream>
+#include <sstream>
+
 #include "subsystemthread.h"
+#include "exceptions.h"
+#include <Ice/Ice.h>
+
+using namespace orcaice;
+using namespace std;
 
 using namespace orcaice;
 
-SubsystemThread::SubsystemThread( gbxutilacfr::Tracer& tracer, gbxutilacfr::Status& status, const std::string& subsysName ) : 
-    SubstatusThread( tracer, status, subsysName )
+SubsystemThread::SubsystemThread( gbxutilacfr::Tracer& tracer, 
+                                  gbxutilacfr::Status& status, 
+                                  const std::string& subsysName,
+                                  double maxHeartbeatIntervalSec ) : 
+    tracer_(tracer),
+    status_(status),
+    health_( status, subsysName ) 
 {
+    status_.addSubsystem( health_.name(), maxHeartbeatIntervalSec );
+}
+
+SubsystemThread::~SubsystemThread()
+{
+    status_.removeSubsystem( health_.name() );
 }
 
 void 
-SubsystemThread::walk()
+SubsystemThread::setMaxHeartbeatInterval( double interval ) 
+{ 
+    status_.setMaxHeartbeatInterval( health_.name(), interval ); 
+}
+
+void 
+SubsystemThread::setSubsystemType( gbxutilacfr::SubsystemType type ) 
+{ 
+    status_.setSubsystemType( health_.name(), type ); 
+}
+
+std::string 
+SubsystemThread::subsysName() const 
+{ 
+    return health_.name(); 
+}
+
+void 
+SubsystemThread::run()
+{
+    stringstream ss;
+    try
+    {
+        protectedRun();
+    }
+    catch ( const Ice::CommunicatorDestroyedException & )
+    {
+        // This is OK: it means that the communicator shut down (eg via Ctrl-C)
+    }
+    catch ( const orcaice::ComponentDeactivatingException& )
+    {
+        // This is OK: it means the component was told to shutdown
+    }
+    catch ( const IceUtil::Exception &e )
+    {
+        ss << "SubstatusThread::run() "<<subsysName()<<": Caught unexpected exception: " << e;
+    }
+    catch ( const std::exception &e )
+    {
+        ss << "SubstatusThread::run() "<<subsysName()<<": Caught unexpected exception: " << e.what();
+    }
+    catch ( const std::string &e )
+    {
+        ss << "SubstatusThread::run() "<<subsysName()<<": Caught unexpected string: " << e;
+    }
+    catch ( const char *e )
+    {
+        ss << "SubstatusThread::run() "<<subsysName()<<": Caught unexpected char *: " << e;
+    }
+    catch ( ... )
+    {
+        ss << "SubstatusThread::run() "<<subsysName()<<": Caught unexpected unknown exception.";
+    }
+
+    // report status fault if there was an exception and we are not stopping
+    if ( !ss.str().empty() ) {
+        if ( !isStopping() )
+            health_.fault( ss.str() );
+        else
+            tracer_.warning( subsysName()+": (while stopping subsystem thread): "+ss.str() );
+    }
+    else {
+        tracer_.info( subsysName()+": dropping out from run() " );
+    }
+
+    // wait for somebody to realize that we are quitting and tell us to stop.
+    waitForStop();
+}
+
+void 
+SubsystemThread::protectedRun()
 {
     // init: Idle --> Initialising
-    subStatus().initialising();
+    status_.initialising( health_.name() );
     initialise();
     
     if ( !isStopping() )
     {
         // finished: Initialising --> Working
-        subStatus().working();
+        status_.working( health_.name() );
         work();
 
         // finished: Working --> Finalising
-        subStatus().finalising();
+        status_.finalising( health_.name() );
         finalise();
     }
     else 
     {
         // finished: Initialising --> Finalising
-        subStatus().finalising();
+        status_.finalising( health_.name() );
         finalise();
     }
 
     // finished: Finalising --> Shutdown
-    subStatus().status().setSubsystemStatus( subStatus().name(), gbxutilacfr::SubsystemShutdown, gbxutilacfr::SubsystemOk );
+    status_.setSubsystemStatus( health_.name(), gbxutilacfr::SubsystemShutdown, gbxutilacfr::SubsystemOk );
 }

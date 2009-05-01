@@ -12,8 +12,8 @@ if( ${CMAKE_C_COMPILER} MATCHES gcc )
         set( GCC_VERSION_OK 1 )
     endif( GCC_VERSION MATCHES ".*4\\.[0-9]\\.[0-9]")
 
-    ASSERT ( GCC_VERSION_OK
-      "Checking gcc version - failed. Orca2 requires gcc v. 4.x"
+    ORCA_ASSERT( GCC_VERSION_OK
+      "Checking gcc version - failed. Orca requires gcc v. 4.x"
       "Checking gcc version - ok"
       1 )
     

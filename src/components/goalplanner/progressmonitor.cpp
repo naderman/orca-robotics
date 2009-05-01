@@ -75,19 +75,19 @@ ProgressMonitor::~ProgressMonitor()
 
 void 
 ProgressMonitor::subscribeWithTag( const std::string& interfaceTag, 
-                        gbxiceutilacfr::Thread*  thread, const std::string& subsysName, 
+                        gbxutilacfr::Stoppable* activity, const std::string& subsysName, 
                         int retryInterval, int retryNumber )
 {
     // this may throw ConfigFileException, we don't catch it, let the user catch it at the component level
     std::string proxyString = orcaice::getRequiredInterfaceAsString( context_, interfaceTag );
 
     // now that we have the stingified proxy, use the function above.
-    subscribeWithString( proxyString, thread, subsysName, retryInterval, retryNumber );
+    subscribeWithString( proxyString, activity, subsysName, retryInterval, retryNumber );
 }
 
 void 
 ProgressMonitor::subscribeWithString( const std::string& proxyString, 
-                        gbxiceutilacfr::Thread*  thread, const std::string& subsysName, 
+                        gbxutilacfr::Stoppable* activity, const std::string& subsysName, 
                         int retryInterval, int retryNumber )
 {
     orca::PathFollower2dPrx providerPrx;
@@ -95,13 +95,13 @@ ProgressMonitor::subscribeWithString( const std::string& proxyString,
     orcaice::connectToInterfaceWithString( context_,
                                             providerPrx,
                                             proxyString,
-                                            thread,
+                                            activity,
                                             subsysName,
                                             retryInterval,
                                             retryNumber );
 
     int count = 0;
-    while ( !thread->isStopping() && ( retryNumber<0 || count<retryNumber) )
+    while ( !activity->isStopping() && ( retryNumber<0 || count<retryNumber) )
     {
         try {
             IceStorm::TopicPrx topicPrx = providerPrx->subscribe( consumerPrx_ );

@@ -3,7 +3,7 @@
  *               http://orca-robotics.sf.net/
  * Copyright (c) 2004-2009 Alex Brooks, Alexei Makarenko, Tobias Kaupp
  *
- * This copy of Orca is licensed to you under the terms described in
+ * This copy of Orca is licensed net you under the terms described in
  * the LICENSE file included in this distribution.
  *
  */
@@ -19,52 +19,58 @@ namespace detail {
 namespace {
     
 void 
-convert( const hydroiceutil::NameStatusMap &from, orca::SubsystemStatusDict &to )
+convert( const hydroiceutil::LocalSubsystemStatusMap& local, orca::SubsystemStatusDict& net )
 {
-    hydroiceutil::NameStatusMap::const_iterator it;
+    hydroiceutil::LocalSubsystemStatusMap::const_iterator it;
     
-    for ( it=from.begin(); it!=from.end(); ++it ) 
+    for ( it=local.begin(); it!=local.end(); ++it ) 
     {
-        switch ( it->second.state ) 
+        const hydroiceutil::LocalSubsystemStatus& locStatus = it->second;
+
+        orca::SubsystemStatus& netStatus = net[it->first];
+
+        switch ( locStatus.state ) 
         {
             case gbxutilacfr::SubsystemIdle :
-                to[it->first].state = orca::SubsystemIdle;
+                netStatus.state = orca::SubsystemIdle;
                 break;
             case gbxutilacfr::SubsystemInitialising :
-                to[it->first].state = orca::SubsystemInitialising;
+                netStatus.state = orca::SubsystemInitialising;
                 break;
             case gbxutilacfr::SubsystemWorking :
-                to[it->first].state = orca::SubsystemWorking;
+                netStatus.state = orca::SubsystemWorking;
                 break;
             case gbxutilacfr::SubsystemFinalising :
-                to[it->first].state = orca::SubsystemFinalising;
+                netStatus.state = orca::SubsystemFinalising;
                 break;
             case gbxutilacfr::SubsystemShutdown :
-                to[it->first].state = orca::SubsystemShutdown;
+                netStatus.state = orca::SubsystemShutdown;
                 break;
         }
-        switch ( it->second.health ) 
+
+        switch ( locStatus.health ) 
         {
             case gbxutilacfr::SubsystemOk :
-                to[it->first].health = orca::SubsystemOk;
+                netStatus.health = orca::SubsystemOk;
                 break;
             case gbxutilacfr::SubsystemWarning :
-                to[it->first].health = orca::SubsystemWarning;
+                netStatus.health = orca::SubsystemWarning;
                 break;
             case gbxutilacfr::SubsystemFault :
-                to[it->first].health = orca::SubsystemFault;
-                break;
-            case gbxutilacfr::SubsystemStalled :
-                to[it->first].health = orca::SubsystemStalled;
+                netStatus.health = orca::SubsystemFault;
                 break;
         }
-        to[it->first].message = it->second.message;
-        to[it->first].sinceHeartbeat = 
-                (Ice::Float)(it->second.heartbeatTimer.elapsedSec() / it->second.maxHeartbeatInterval);
+
+        netStatus.message = locStatus.message;
+
+        netStatus.isStalled = locStatus.isStalled;
+
+        netStatus.sinceHeartbeat = 
+            (Ice::Float)(locStatus.heartbeatTimer.elapsedSec() / locStatus.maxHeartbeatInterval);
     }
 }  
 
-orca::ComponentState subStateToCompState( const gbxutilacfr::SubsystemState &subsystemState )
+orca::ComponentState toComponentState( const gbxutilacfr::SubsystemState &subsystemState )
 {    
     switch (subsystemState)
     {
@@ -73,18 +79,17 @@ orca::ComponentState subStateToCompState( const gbxutilacfr::SubsystemState &sub
         case gbxutilacfr::SubsystemInitialising: 
             return orca::CompInitialising;
         case gbxutilacfr::SubsystemWorking: 
-            return orca::CompActive;
+            return orca::CompWorking;
         case gbxutilacfr::SubsystemFinalising: 
             return orca::CompFinalising;
         case gbxutilacfr::SubsystemShutdown: 
             return orca::CompFinalising;   
         default:
-            assert( false && "Unknown SubsystemState" );    
+            assert( !"Unknown subsystem state" );    
     } 
 }
 
-orca::ComponentHealth
-subHealthToCompHealth( const gbxutilacfr::SubsystemHealth &subsystemHealth )
+orca::ComponentHealth toComponentHealth( const gbxutilacfr::SubsystemHealth &subsystemHealth )
 {
     switch (subsystemHealth)
     {
@@ -94,54 +99,56 @@ subHealthToCompHealth( const gbxutilacfr::SubsystemHealth &subsystemHealth )
             return orca::CompWarning;
         case gbxutilacfr::SubsystemFault:
             return orca::CompFault;
-        case gbxutilacfr::SubsystemStalled:
-            return orca::CompStalled;
         default:
-            assert( false && "Unknown SubsystemHealth");
+            assert( !"Unknown subsystem health");
     }
 }  
 
-void convertWorstHealth( const hydroiceutil::LocalComponentStatus &from, 
+/*
+alexm: disabled because it's not currently used
+
+void convertWorstHealth( const hydroiceutil::LocalComponentStatus &local, 
                          const orca::FQComponentName              &name, 
-                         orca::ComponentStatus                    &to )
+                         orca::ComponentStatus                    &net )
 {
     // initialisation, will be overwritten
-    to.state = orca::CompInitialising;
-    to.health = orca::CompOk;
-    to.timeUp = 0;
+    net.state = orca::CompInitialising;
+    net.health = orca::CompOk;
+    net.timeUp = 0;
     
     // conversions: name and subsystems
-    to.name = name;
-    to.publishIntervalSec = from.publishIntervalSec;
+    net.name = name;
+    net.publishIntervalSec = local.publishIntervalSec;
     
     // if no subsystems exist, the state is the infrastructure state, health is ok, and we return
-    if (from.subsystems.size()==0) {
-        to.state = subStateToCompState( from.infrastructure );
-        to.health = orca::CompOk;
+    if (local.subsystems.size()==0) {
+        net.state = toComponentState( local.infrastructure );
+        net.health = orca::CompOk;
         return;
     }
     
     // convert subsystems
-    convert( from.subsystems, to.subsystems );
+    convert( local.subsystems, net.subsystems );
     
     //
     // ComponentState and ComponentHealth conversions
     //
     gbxutilacfr::SubsystemHealth worstHealth = gbxutilacfr::SubsystemOk;    
-    hydroiceutil::NameStatusMap::const_iterator itWorstHealth;
+    hydroiceutil::LocalSubsystemStatusMap::const_iterator itWorstHealth;
     
-    for ( hydroiceutil::NameStatusMap::const_iterator it=from.subsystems.begin(); it!=from.subsystems.end(); ++it ) 
+    for ( hydroiceutil::LocalSubsystemStatusMap::const_iterator it=local.subsystems.begin(); it!=local.subsystems.end(); ++it ) 
     {
         // ">=" guarantees that itWorstHealth is set at least once
         if (it->second.health >= worstHealth )
             worstHealth = it->second.health;
             itWorstHealth = it;
     }
-    to.health = subHealthToCompHealth( worstHealth );
-    to.state = subStateToCompState( itWorstHealth->second.state );
+    net.health = toComponentHealth( worstHealth );
+    net.state = toComponentState( itWorstHealth->second.state );
 }
+*/
 
-orca::ComponentState extractCompState( const hydroiceutil::LocalComponentStatus &from )
+orca::ComponentState toComponentState( const hydroiceutil::LocalComponentStatus &local )
 {    
     bool anybodyIdle = false;
     bool anybodyInitialising = false;
@@ -149,11 +156,12 @@ orca::ComponentState extractCompState( const hydroiceutil::LocalComponentStatus 
     bool anybodyShutdown = false;
     bool everybodyWorking = true;
     
-    hydroiceutil::NameStatusMap::const_iterator it;
+    hydroiceutil::LocalSubsystemStatusMap::const_iterator it;
     
-    for ( it=from.subsystems.begin(); it!=from.subsystems.end(); ++it ) 
+    for ( it=local.subsystems.begin(); it!=local.subsystems.end(); ++it ) 
     {
-        switch ( it->second.state ) 
+        const hydroiceutil::LocalSubsystemStatus& status = it->second;
+        switch ( status.state ) 
         {
             case gbxutilacfr::SubsystemIdle:
                 anybodyIdle = true;
@@ -175,17 +183,18 @@ orca::ComponentState extractCompState( const hydroiceutil::LocalComponentStatus 
                 }
                 break;
         }
-        if (anybodyIdle || anybodyInitialising || anybodyFinalising || anybodyShutdown ) {
-            everybodyWorking = false;
-            break;
-        }
     }
+
+    if ( anybodyIdle || anybodyInitialising || anybodyFinalising || anybodyShutdown )
+        everybodyWorking = false;
     
     orca::ComponentState state;
     
     if ( everybodyWorking ) {
-        return orca::CompActive;
-    } else {
+        state = orca::CompWorking;
+    } 
+    else {
+        // alexm: does this produce the desired result?
         if (anybodyIdle)
             state = orca::CompInitialising;
         if (anybodyInitialising)
@@ -195,74 +204,94 @@ orca::ComponentState extractCompState( const hydroiceutil::LocalComponentStatus 
         if (anybodyShutdown)
             state = orca::CompFinalising;
     }
-    
+
     return state;
-    
 }
 
-void convertStateBased( const hydroiceutil::LocalComponentStatus &from, 
+bool toComponentStall( const hydroiceutil::LocalComponentStatus &local )
+{    
+    hydroiceutil::LocalSubsystemStatusMap::const_iterator it;    
+    for ( it=local.subsystems.begin(); it!=local.subsystems.end(); ++it ) 
+    {
+        if ( it->second.isStalled )
+            return true;
+    }
+    return false;
+}
+
+void convertStateBased( const hydroiceutil::LocalComponentStatus &local, 
                         const orca::FQComponentName              &name, 
-                        orca::ComponentStatus                    &to )
+                        orca::ComponentStatus                    &net )
 {
     // initialisation
-    to.timeUp = 0;
+    net.timeUp = 0;
     
     // convert name and publishInterval
-    to.name = name;
-    to.publishIntervalSec = from.publishIntervalSec;
+    net.name = name;
+    net.publishIntervalSec = local.publishIntervalSec;
     
-    // if no subsystems exist, the state is the infrastructure state, health is ok, and we return
-    if (from.subsystems.size()==0) {
-        to.state = subStateToCompState( from.infrastructure );
-        to.health = orca::CompOk;
+    // if no subsystems exist, the state is the infrastructure state, health is ok, no stall
+    // and we return
+    if (local.subsystems.size()==0) {
+        net.state = toComponentState( local.infrastructure );
+        net.health = orca::CompOk;
+        net.isStalled = false;
         return;
     }
     
     // convert subsystems
-    convert( from.subsystems, to.subsystems );
+    convert( local.subsystems, net.subsystems );
     
     //
     // ComponentState
     //
-    if (from.infrastructure != gbxutilacfr::SubsystemWorking)
-        to.state = subStateToCompState( from.infrastructure );
+    // Infrastructure has priority
+    if ( local.infrastructure != gbxutilacfr::SubsystemWorking )
+        net.state = toComponentState( local.infrastructure );
     else
-        to.state = extractCompState( from );
+        net.state = toComponentState( local );
     
     //
     // ComponentHealth (independent of ComponentState)
     //
-    gbxutilacfr::SubsystemHealth worstHealth = gbxutilacfr::SubsystemOk;    
-    hydroiceutil::NameStatusMap::const_iterator it;
-    
-    for ( it=from.subsystems.begin(); it!=from.subsystems.end(); ++it ) 
+    gbxutilacfr::SubsystemHealth worstHealth = gbxutilacfr::SubsystemOk;  
+  
+    hydroiceutil::LocalSubsystemStatusMap::const_iterator it;
+    for ( it=local.subsystems.begin(); it!=local.subsystems.end(); ++it ) 
     {
-        if (it->second.health >= worstHealth )
-            worstHealth = it->second.health;
+        const hydroiceutil::LocalSubsystemStatus& status = it->second;
+        if ( status.health >= worstHealth )
+            worstHealth = status.health;
     }
-    to.health = subHealthToCompHealth( worstHealth );
+    net.health = toComponentHealth( worstHealth );
+
+    //
+    // Component Stall
+    //
+    net.isStalled = toComponentStall( local );
 }
 
-    
 } // end of namespace
     
+/////////////////////////////////////////
+
 ComponentStatusAggregator::ComponentStatusAggregator( AggregatorPolicy policy ) :
-        policy_(policy)
+    policy_(policy)
 {
 }
 
 void 
-ComponentStatusAggregator::convert( const hydroiceutil::LocalComponentStatus &from,
+ComponentStatusAggregator::convert( const hydroiceutil::LocalComponentStatus &local,
                                     const orca::FQComponentName              &name, 
-                                    orca::ComponentStatus                    &to )
+                                    orca::ComponentStatus                    &net )
 {
     switch (policy_)
     {
-        case AggregatorPolicyWorstHealth:
-            convertWorstHealth( from, name, to );
-            break;
+//         case AggregatorPolicyWorstHealth:
+//             convertWorstHealth( local, name, net );
+//             break;
         case AggregatorPolicyStateBased:
-            convertStateBased( from, name, to );
+            convertStateBased( local, name, net );
             break;
         default:
             assert( false && "unkown policy" );    

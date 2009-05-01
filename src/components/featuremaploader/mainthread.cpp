@@ -49,7 +49,7 @@ MainThread::MainThread( const orcaice::Context &context ) :
 void
 MainThread::initialise()
 {
-    subStatus().setMaxHeartbeatInterval( 10.0 );
+    setMaxHeartbeatInterval( 10.0 );
 
     //
     // INITIAL CONFIGURATION

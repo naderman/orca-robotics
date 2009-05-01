@@ -33,26 +33,23 @@ MainThread::walk()
 
     orcacm::RegistryHomeData regData;
 
-    //
-    // Main loop
-    //   
+    // try getting home data a few times  
     while(!isStopping())
     {
         //cout<<"default locator (refresh) :"<<context_.communicator()->getDefaultLocator()->ice_toString()<<endl;
     
-        // don't try to ping adapters here, we'll have to do it anyway below, when we get their full information
-        bool pingAdapters = false;
-        regData = orcacm::getRegistryHomeData( 
-                            context_,
-                            context_.communicator()->getDefaultLocator()->ice_toString(), 
-                            pingAdapters );
+        // 
+        // Remote call!
+        // this just returns a list of homes, without pinging
+        regData = orcacm::getRegistryHomeData( context_,
+                            context_.communicator()->getDefaultLocator()->ice_toString() );
     
         if ( regData.isReachable ) {
             break;
         }
 
         context_.tracer().warning( "Registry unreachable. Will try again in 2 seconds" );
-        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
+        gbxiceutilacfr::checkedSleep( this, 2000 );
     }
 
     std::ostringstream os;
@@ -61,21 +58,30 @@ MainThread::walk()
 
     orcacm::ComponentData compData;
     
-    for ( unsigned int i=0; i<regData.homes.size(); ++i ) {
+    for ( unsigned int i=0; i<regData.homes.size(); ++i ) 
+    {
+        // 
+        // Remote call!
         // get full component data based on the component header information
-//         compData = orcacm::getComponentData( context_, regData.adapters[i].name );
         compData = orcacm::getComponentHomeData( context_, regData.homes[i].proxy );
         compData.locatorString = regData.locatorString;
         compData.adminAddress = regData.address;
         
         cout<<orcaice::toString( compData.name )<<endl;
 
-        // now look at each interface
-        for ( unsigned int j=0; j<compData.provides.size(); ++j ) {
-            cout<<" -o "<<compData.provides[j].name<<endl;
+        if ( compData.isReachable )
+        {
+            // look at each interface
+            for ( unsigned int j=0; j<compData.provides.size(); ++j ) {
+                cout<<" -o "<<compData.provides[j].name<<endl;
+            }
+            for ( unsigned int j=0; j<compData.requires.size(); ++j ) {
+                cout<<" -c "<<orcaice::toString( compData.requires[j].name )<<endl;
+            }
         }
-        for ( unsigned int j=0; j<compData.requires.size(); ++j ) {
-            cout<<" -c "<<orcaice::toString( compData.requires[j].name )<<endl;
+        else
+        {
+            cout<<" x unreachable"<<endl;
         }
     }
 

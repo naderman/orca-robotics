@@ -11,6 +11,7 @@
 #include <string>
 #include <orca/common.h>
 #include <orcaice/orcaice.h>
+#include <hydroutil/hydroutil.h>
 #include <hydroiceutil/localhistory.h>
 
 #include "component.h"

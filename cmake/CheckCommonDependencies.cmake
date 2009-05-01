@@ -1,6 +1,6 @@
 ###########################################################
 #                                                         #
-# Look for dependencies required by individual components #
+# Look for dependencies required by several components    #
 #                                                         #
 ###########################################################
 
@@ -13,8 +13,8 @@ include( ${CMAKE_ROOT}/Modules/CheckIncludeFileCXX.cmake )
 include(${ORCA_CMAKE_DIR}/FindPkgConfig.cmake)
 
 # Check for Qt
-include(${CMAKE_ROOT}/Modules/FindQt4.cmake)
-# we do NOT want 4.0.x
+find_package( Qt4 )
+# we do NOT want 4.1.x
 if( QTVERSION MATCHES "4.1.*")
     set( QT4_FOUND FALSE )
 endif( QTVERSION MATCHES "4.1.*")
@@ -60,11 +60,11 @@ include(${CMAKE_ROOT}/Modules/FindJava.cmake)
 if( JAVA_RUNTIME )
     set( JAVA_FOUND 1 )
 endif( JAVA_RUNTIME )
-ASSERT( JAVA_FOUND "Looking for Java - not found" "Looking for Java - found" )
+ORCA_ASSERT( JAVA_FOUND "Looking for Java - not found" "Looking for Java - found" )
 
 # Check for Python interpreter installation
 include(${CMAKE_ROOT}/Modules/FindPythonInterp.cmake)
-ASSERT( PYTHONINTERP_FOUND "Looking for the Python interpreter - not found" "Looking for the Python interpreter - found" )
+ORCA_ASSERT( PYTHONINTERP_FOUND "Looking for the Python interpreter - not found" "Looking for the Python interpreter - found" )
 
 # Look for firewire headers (for firewire cameras)
 check_include_file_cxx( libdc1394/dc1394_control.h 1394_FOUND )

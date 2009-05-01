@@ -14,10 +14,10 @@
 #include <orcaobj/orcaobj.h>
 #include <orcaice/orcaice.h>
 
-#include <hydroqgui/hydroqgui.h>
 #include <orcaqgui3d/iknowsplatformposition.h>
 #include <orcaqgui3d/icestormelement3d.h>
 #include <orcaqgui3dfactory/localise2dpainter.h>
+#include <hydroqguielementutil/ihumanmanager.h>
 
 namespace orcaqgui3d
 {

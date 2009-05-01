@@ -11,7 +11,7 @@
 #include <orcaice/orcaice.h>
 #include <orcaobj/orcaobj.h>
 #include <hydroqguipath/wptolerancesdialog.h>
-
+#include <hydroqguielementutil/ihumanmanager.h>
 #include "pathplanner2delement.h"
 
 using namespace std;

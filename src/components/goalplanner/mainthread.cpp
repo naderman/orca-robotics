@@ -120,7 +120,7 @@ MainThread::MainThread( const orcaice::Context & context )
 void 
 MainThread::initialise()
 {
-    subStatus().setMaxHeartbeatInterval( 10.0 );
+    setMaxHeartbeatInterval( 10.0 );
 
     Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag()+".Config.";
@@ -136,7 +136,7 @@ MainThread::initialise()
 void 
 MainThread::work()
 {
-    subStatus().setMaxHeartbeatInterval( 3.0 );
+    setMaxHeartbeatInterval( 3.0 );
 
     orca::PathFollower2dData incomingPath;
     bool requestIsOutstanding = false;
@@ -186,7 +186,7 @@ MainThread::work()
             {
                 stringstream ss;
                 ss << "Sketchy path: " << orcaobj::toVerboseString(incomingPath) << endl << "  " << sketchReason;
-                subStatus().warning( ss.str() );
+                health().warning( ss.str() );
             }
 
             // special case 'stop': we received an empty path
@@ -194,7 +194,7 @@ MainThread::work()
             {
                 cout<<"TRACE(mainthread.cpp): Received an empty path; stopping robot." << endl;
                 stopRobot();
-                subStatus().ok();
+                health().ok();
                 requestIsOutstanding = false;
                 continue;
             }
@@ -229,14 +229,14 @@ MainThread::work()
 
             if ( isLocalisationUncertain )
             {
-                subStatus().ok( "Generated path, but not certain about localisation.  Sent path, but will try again soon." );
+                health().ok( "Generated path, but not certain about localisation.  Sent path, but will try again soon." );
                 // Slow the loop down a little before trying again.
                 sleep(1);
             }
             else
             {
                 requestIsOutstanding = false;
-                subStatus().ok();
+                health().ok();
             }
 
         } // try
@@ -247,7 +247,7 @@ MainThread::work()
             {
                 ss << "MainThread:: Caught GoalPlanException: " << e.what() << ".  I reckon I can recover from this.";
                 context_.tracer().warning( ss.str() );
-                subStatus().warning( ss.str() );
+                health().warning( ss.str() );
 
                 // Slow the loop down a little before trying again.
                 IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));
@@ -256,13 +256,13 @@ MainThread::work()
             {
                 ss << "MainThread:: Caught GoalPlanException: " << e.what() << ".  Looks unrecoverable, I'm giving up.";
                 context_.tracer().error( ss.str() );
-                subStatus().fault( ss.str() );
+                health().fault( ss.str() );
                 requestIsOutstanding = false;
             }
         }
         catch ( ... ) 
         {
-            orcaice::catchMainLoopExceptions( subStatus() );
+            orcaice::catchMainLoopExceptions( health() );
 
             requestIsOutstanding = false;
         }
@@ -288,7 +288,7 @@ MainThread::initNetwork()
     // REQUIRED INTERFACES: Localise2d, Pathfollower, Pathplanner
     //
 
-//     subStatus().initialising( "Connecting to Localise2d" );
+//     context_.status().initialising( subsysName(), "Connecting to Localise2d" );
     orcaice::connectToInterfaceWithTag( context_,
                                         localise2dPrx_,
                                         "Localise2d",
@@ -298,7 +298,7 @@ MainThread::initNetwork()
     if ( isStopping() )
         return;
 
-//     subStatus().initialising( "Connecting to PathFollower2d" );
+//     context_.status().initialising( subsysName(), "Connecting to PathFollower2d" );
     orcaice::connectToInterfaceWithTag( context_,
                                         localNavPrx_,
                                         "PathFollower2d",
@@ -308,14 +308,14 @@ MainThread::initNetwork()
     if ( isStopping() )
         return;
 
-//     subStatus().initialising( "Subscribing for PathFollower2d updates" );
+//     context_.status().initialising( subsysName(), "Subscribing for PathFollower2d updates" );
     progressMonitor_ = new ProgressMonitor( context_ );
     progressMonitor_->subscribeWithTag( "PathFollower2d", this, subsysName() );
 //     progressMonitorPtr_ = progressMonitor_;
 //     progressMonitorPrx_ = orcaice::createConsumerInterface<orca::PathFollower2dConsumerPrx>( context_, progressMonitorPtr_ );
 //     localNavPrx_->subscribe( progressMonitor_ );
 
-//     subStatus().initialising( "Connecting to PathPlanner2d" );
+//     context_.status().initialising( subsysName(), "Connecting to PathPlanner2d" );
     orcaice::connectToInterfaceWithTag( context_,
                                         pathplanner2dPrx_,
                                         "PathPlanner2d",
@@ -325,7 +325,7 @@ MainThread::initNetwork()
     if ( isStopping() )
         return;
 
-//     subStatus().initialising( "Connecting to OgMap" );
+//     context_.status().initialising( subsysName(), "Connecting to OgMap" );
     orca::OgMapPrx ogMapPrx_;
     orcaice::connectToInterfaceWithTag( context_,
                                         ogMapPrx_,
@@ -744,7 +744,7 @@ MainThread::waitForNewPath( orca::PathFollower2dData &newPathData )
                                     stringstream ss;
                                     ss << "MainThread: need to replan, but localisation is too uncertain!";
                                     context_.tracer().warning( ss.str() );
-                                    subStatus().warning( ss.str() );
+                                    health().warning( ss.str() );
                                     continue;
                                 }
                                 else
@@ -768,11 +768,11 @@ MainThread::waitForNewPath( orca::PathFollower2dData &newPathData )
                 }
 
                 // Let the world know we're alive.
-                subStatus().ok();
+                health().ok();
             }
         }
         catch ( ... ) {
-            orcaice::catchExceptionsWithStatusAndSleep( "waiting for new path", subStatus() );
+            orcaice::catchExceptionsWithStatusAndSleep( "waiting for new path", health() );
         }   
     }
     return false;

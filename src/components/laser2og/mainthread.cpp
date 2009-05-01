@@ -88,7 +88,7 @@ MainThread::MainThread( const orcaice::Context &context ) :
 void
 MainThread::initialise()
 {
-    subStatus().setMaxHeartbeatInterval( 10.0 );
+    setMaxHeartbeatInterval( 10.0 );
 
     //
     // ENABLE NETWORK CONNECTIONS
@@ -174,7 +174,7 @@ void
 MainThread::work()
 {
     const int timeoutMs = 1000;
-    subStatus().setMaxHeartbeatInterval( 2*timeoutMs );
+    setMaxHeartbeatInterval( 2*timeoutMs );
 
     orca::RangeScanner2dDataPtr rangeScan;
     orca::Localise2dData localiseData;
@@ -186,7 +186,7 @@ MainThread::work()
     {
         try
         {
-            subStatus().heartbeat();
+            health().heartbeat();
             if ( rangeScannerConsumer_->buffer().getAndPopWithTimeout( rangeScan, timeoutMs ) != 0 ) {
                 context_.tracer().info("no range scan available: waiting ...");
                 continue;
@@ -226,7 +226,7 @@ MainThread::work()
         }   // end of try
         catch ( ... ) 
         {
-            orcaice::catchMainLoopExceptions( subStatus() );
+            orcaice::catchMainLoopExceptions( health() );
         }
     } // end of main loop
 }

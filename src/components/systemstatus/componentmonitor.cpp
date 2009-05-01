@@ -18,15 +18,29 @@ namespace {
 class SubscribeJob : public hydroiceutil::Job 
 {
     public:  
-        SubscribeJob( const orcaice::Context &context, 
-                      StatusConsumerImplPtr   statusConsumer ) :
-            context_(context),
-            statusConsumer_(statusConsumer)
+        SubscribeJob( const orca::FQComponentName& compName,
+                      StatusConsumerImplPtr statusConsumer,
+                      const orcaice::Context& context ) :
+            compName_(compName),
+            statusConsumer_(statusConsumer),
+            context_(context)
         {};
               
         virtual void execute()
-        {
+        {        
             context_.tracer().debug("Executing a SubscribeJob", 2);
+
+            string interfaceType = "::orca::Status";
+            string diagnostic = "";
+            
+            if ( !orcaice::isAdminInterfaceReachable( context_, compName_, interfaceType, diagnostic ) )
+            {
+                stringstream ss;
+                ss << "Status interface of " << orcaice::toString( compName_ ) << " is not reachable. Diagnostics: " << diagnostic;
+                context_.tracer().warning( ss.str() );
+                return;
+            }
+
             try 
             {
                 statusConsumer_->subscribe();
@@ -45,8 +59,9 @@ class SubscribeJob : public hydroiceutil::Job
         };
             
     private:
-        orcaice::Context       context_;
+        orca::FQComponentName compName_;
         StatusConsumerImplPtr  statusConsumer_;
+        orcaice::Context       context_;
 };
 
 } // end of namespace
@@ -55,140 +70,33 @@ class SubscribeJob : public hydroiceutil::Job
 
 ComponentMonitor::ComponentMonitor( const orca::FQComponentName& compName,
                                     hydroiceutil::JobQueuePtr  jobQueue,
-                                    const orcaice::Context    &context )
-    : currentState_(orca::ObsCompInactive),
-      compName_(compName),
-      jobQueue_(jobQueue),
-      context_(context)
+                                    const orcaice::Context    &context ) :
+    compName_(compName),
+    jobQueue_(jobQueue),
+    context_(context)
 {
     Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag()+".Config.";
-    int resubscribeInterval = orcaice::getPropertyAsIntWithDefault( prop, prefix+"ResubscribeInterval", 5 );
     
-    StatusConsumerImpl::Config config( compName_.platform, compName_.component, resubscribeInterval ) ;
-    statusConsumer_ = new StatusConsumerImpl( config, context_ );
-    
-    // create a job which will subscribe us
-    hydroiceutil::JobPtr job = new SubscribeJob( context_, statusConsumer_ );
-    jobQueue_->add( job );   
+    StatusConsumerImpl::Config config;
+    config.resubscribeIntervalReporting = orcaice::getPropertyAsIntWithDefault( prop, prefix+"ResubscribeInterval", 5 );
+    config.staleTimeout = orcaice::getPropertyAsIntWithDefault( prop, prefix+"StaleTimeout", 40 );
+    config.giveUpTimeout = orcaice::getPropertyAsIntWithDefault( prop, prefix+"GiveUpTimeout", 70 );
+
+    statusConsumer_ = new StatusConsumerImpl( compName_, config, context_ );
+
+    jobQueue_->add( new SubscribeJob( compName_, statusConsumer_, context_ ) );
 }
 
-bool
-ComponentMonitor::isHomeInterfaceReachable()
-{    
-    string interfaceType = "::orca::Home";
-    string diagnostic = "";
-   
-    bool isReachable = orcaice::isAdminInterfaceReachable( context_, compName_, interfaceType, diagnostic );
-    
-    if (!isReachable)
-    {
-        stringstream ss;
-        ss << "Home interface of " << orcaice::toString( compName_ ) << " is not reachable. Diagnostics: " << diagnostic;
-        context_.tracer().warning( ss.str() );
-    }
-    
-    return isReachable;
-}
-
-void
-ComponentMonitor::setObservedState( orca::ObservedComponentStatus &obsCompStat )
-{
-    obsCompStat.name = compName_;
-    obsCompStat.timeUp = 0;
-    obsCompStat.publishIntervalSec = 10.0;
-    obsCompStat.state = currentState_; 
-    obsCompStat.health = orca::ObsCompOk;
-}
-
-void
-ComponentMonitor::setReportedState( const StatusDetails &statDetails,
-                                    orca::ObservedComponentStatus &obsCompStat )
-{
-    obsCompStat.name = statDetails.data.compStatus.name;
-    obsCompStat.timeUp = statDetails.data.compStatus.timeUp;
-    obsCompStat.publishIntervalSec = statDetails.data.compStatus.publishIntervalSec;
-    obsCompStat.subsystems = statDetails.data.compStatus.subsystems;
-    
-    //
-    // Health
-    //
-    if (statDetails.isDataStale) 
-    {
-        obsCompStat.health = orca::ObsCompStale;
-    } 
-    else 
-    {        
-        switch( statDetails.data.compStatus.health )
-        {
-            case orca::CompOk: 
-                obsCompStat.health = orca::ObsCompOk; break;
-            case orca::CompWarning: 
-                obsCompStat.health = orca::ObsCompWarning; break;
-            case orca::CompFault: 
-                obsCompStat.health = orca::ObsCompFault; break;
-            case orca::CompStalled: 
-                obsCompStat.health = orca::ObsCompStalled; break;
-            default:
-                assert( false && "Unknown component health" );
-        }
-    }
-    
-    //
-    // State
-    //
-    switch( statDetails.data.compStatus.state )
-    {
-        case orca::CompInitialising:
-            obsCompStat.state = orca::ObsCompInitialising; break;
-        case orca::CompActive:
-            obsCompStat.state = orca::ObsCompActive; break;
-        case orca::CompFinalising:
-            obsCompStat.state = orca::ObsCompFinalising; break;
-        default:
-            assert( false && "Unknown component state" );
-    }
-    
-    currentState_ = obsCompStat.state;
-}
-
-void
-ComponentMonitor::addSubscribeJob()
-{
-    hydroiceutil::JobPtr job = new SubscribeJob( context_, statusConsumer_ );
-    jobQueue_->add( job );
-}
-
-void 
-ComponentMonitor::getComponentStatus( orca::ObservedComponentStatus &obsCompStat )
+orca::EstimatedComponentStatus
+ComponentMonitor::getComponentStatus()
 {   
+    statusConsumer_->checkStatus();
+
+    if ( statusConsumer_->isResubscribeRequested() ) 
+        jobQueue_->add( new SubscribeJob(  compName_, statusConsumer_, context_ ) );
     
-    if (currentState_ == orca::ObsCompInactive)
-    {
-        if ( isHomeInterfaceReachable() )
-        {
-            addSubscribeJob();
-            currentState_ = orca::ObsCompConnecting;
-        }
-        setObservedState( obsCompStat );
-        return;
-    }
-    
-    // currentState_ > ObsCompInactive: try to get status from interface
-    StatusDetails statDetails;
-    bool shouldResubscribe = statusConsumer_->getStatus( statDetails );
-    if (shouldResubscribe) 
-        addSubscribeJob();
-    
-    // if no data has ever been available, we're not connected yet
-    if (!statDetails.dataAvailable)
-    {
-        setObservedState( obsCompStat );
-        return;
-    }
-    
-    // we only get here if we have some reported data from the Status interface
-    setReportedState( statDetails, obsCompStat );
+    return statusConsumer_->estimatedStatus();
 }
 
 }

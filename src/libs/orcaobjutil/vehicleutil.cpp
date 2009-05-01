@@ -13,6 +13,7 @@
 #include <orcaice/orcaice.h>
 #include <orcaifaceutil/vehicledescription.h>
 #include <orcaobj/orcaobj.h> // for getPropertyAs...()
+#include <gbxutilacfr/mathdefs.h>
 
 using namespace std;
 

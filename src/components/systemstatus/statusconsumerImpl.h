@@ -11,90 +11,43 @@
 #ifndef STATUS_CONSUMER_IMPL_H
 #define STATUS_CONSUMER_IMPL_H
 
-#include <orcaice/context.h>
-#include <orcaifaceimpl/consumerImpl.h>
-#include <orca/status.h>
-#include <IceUtil/Mutex.h>
-#include <string>
+#include <orcasystemstatusutil/statusconsumerImpl.h>
+#include <gbxsickacfr/gbxiceutilacfr/store.h>
 
 namespace systemstatus {
 
-struct StatusDetails {
-    
-    // Have we ever received any status data?
-    bool dataAvailable;
-
-    // Does we consider status to have failed sending frequently enough?
-    bool isDataStale;
-
-    // The actual statusData object (only filled in if dataAvailable)
-    orca::StatusData data;
-    
-};
-
-//
-// Listens to component's Status interface
-//
-class StatusConsumerImpl : 
-        public orcaifaceimpl::ConsumerImpl<orca::Status,orca::StatusPrx,orca::StatusConsumer,orca::StatusConsumerPrx,orca::StatusData>
+class StatusConsumerImpl : public orcasystemstatusutil::StatusConsumerImpl
 {
 public: 
 
-    struct Config
-    {
-        Config( const std::string& platform, 
-                const std::string& comp,  
-                int resubInterval = 5 ) : 
-            platformName(platform),
-            componentName(comp),
-            resubscribeTimeout(45),
-            resubscribeInterval(resubInterval),
-            staleTimeout(60) {}
-        std::string platformName;
-        std::string componentName;
-        // If we don't hear for longer than this timeout [sec], caller should try to resubscribe.
-        int resubscribeTimeout;
-        // Don't try to resubscribe more frequently than this interval [sec]
-        int resubscribeInterval;
-        // If we don't hear for longer than this timeout [sec], data is considered stale.
-        int staleTimeout;
-    };
+    // Platform and component names are different from the ones in the context!
+    StatusConsumerImpl( const orca::FQComponentName& fqCompName, 
+                        const Config& config, 
+                        const orcaice::Context& context );
 
-    // Connects, subscribes for updates, and pulls data.
-    // Throws exceptions if _anything_ goes wrong.
-    //
-    StatusConsumerImpl( const Config& config, const orcaice::Context& context );
-    
-    // Thread-safe (has to be because this object can be destroyed at any time)
-    ~StatusConsumerImpl();
+    // thread-safe access to the latest available estimated component status
+    orca::EstimatedComponentStatus estimatedStatus() const;
 
-    // from orcaifaceimpl::ConsumerImpl
-    virtual void dataEvent( const orca::StatusData& data );
+    // thread-safe acess to the state which remember if resubscribe has been requested.
+    // Default behavior of this function is to turn the state off if it's on. I.e. a repeat
+    // call will return FALSE (assuming that another request has not been filed).
+    bool isResubscribeRequested( bool turnOffIfOn=true );
 
-    // Thread-safe. Makes a remote call, you may consider using a Job to call this fct.
-    void subscribe();
+protected:
 
-    // Non-blocking, thread-safe, local call.
-    // Returns true if the caller should resubscribe.
-    bool getStatus( StatusDetails &details );
+    // generated events
+    virtual void estimateChangedEvent( const orca::EstimatedComponentStatus& );
+    virtual void resubscribeRequestedEvent( const orca::EstimatedComponentStatus& status );
 
-private: 
-    
-    IceUtil::Mutex  statusMutex_;
-    orca::StatusData statusData_;
+private:
 
-    bool hasValidData_;
+    gbxiceutilacfr::Store<orca::EstimatedComponentStatus> estCompStatus_;
 
-    IceUtil::Time    lastDataReceivedTime_;
-    IceUtil::Time    lastResubscribeTime_;
+    // there's a small change of missing a repeat request to resubscribe (see
+    // comments in the code). it's not important in this case.
+    gbxiceutilacfr::Store<bool> resubscribeRequest_;
 
-    // this state is needed because the base class destructor needs access to protected structures
-    // but can't lock our mutex.
-    bool isDestructing_;
-
-    Config config_;
 };
-
 typedef IceUtil::Handle<StatusConsumerImpl> StatusConsumerImplPtr;
 
 }

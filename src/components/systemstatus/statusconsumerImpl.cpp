@@ -8,106 +8,65 @@
  *
  */
 
-#include <iostream>
-#include <orcaice/orcaice.h>
-#include <orcaifaceutil/status.h>
 #include "statusconsumerImpl.h"
 
 using namespace std;
 namespace systemstatus {
 
-StatusConsumerImpl::StatusConsumerImpl( const Config& config, const orcaice::Context& context ) :
-    orcaifaceimpl::ConsumerImpl<orca::Status,orca::StatusPrx,orca::StatusConsumer,orca::StatusConsumerPrx,orca::StatusData>(context),
-    hasValidData_(false),
-    isDestructing_(false),
-    config_(config)
+StatusConsumerImpl::StatusConsumerImpl( const orca::FQComponentName& fqCompName, 
+                        const Config& config, 
+                        const orcaice::Context& context ) :
+    orcasystemstatusutil::StatusConsumerImpl( fqCompName, config, context )
 {
-    IceUtil::Mutex::Lock lock(statusMutex_);
-    lastDataReceivedTime_ = IceUtil::Time::now();
+    // initialize the store, so that we have something to return right away
+
+    // it's a bit cheating, we initialize to the same default value as the base class.
+    // we cannot call the event function from the default constructor, because the derived
+    // will not be initialized yet.
+    orca::EstimatedComponentStatus status;
+    status.name = fqCompName;
+    status.estimatedState = orca::EstCompInactive;
+    status.reportedStatus.clear();
+    estCompStatus_.set( status );
+
+    resubscribeRequest_.set( false );
 }
 
-StatusConsumerImpl::~StatusConsumerImpl()
+orca::EstimatedComponentStatus 
+StatusConsumerImpl::estimatedStatus() const
 {
-    IceUtil::Mutex::Lock lock(statusMutex_);
-    isDestructing_ = true;
+    orca::EstimatedComponentStatus status;
+    estCompStatus_.get( status );
+    return status;
+}
+
+bool 
+StatusConsumerImpl::isResubscribeRequested( bool turnOffIfOn )
+{
+    bool isResubRequested;
+    resubscribeRequest_.get( isResubRequested );
+
+    // here we can miss a repeat request
+    // due to non-atomic get and set.
+    // it doesn't matter, we are going to subscribe anyway.
+    if ( isResubRequested && turnOffIfOn )
+        resubscribeRequest_.set( false );
+    
+    return isResubRequested;
 }
 
 void
-StatusConsumerImpl::subscribe()
+StatusConsumerImpl::estimateChangedEvent( const orca::EstimatedComponentStatus& status )
 {
-    if ( isDestructing_ ) {
-        return;
-    }
-    
-    IceUtil::Mutex::Lock lock(statusMutex_);
-    lastResubscribeTime_  = IceUtil::Time::now();
-
-    std::string proxyStr = string("status@")+config_.platformName+"/"+config_.componentName;
-    // this may throw
-    subscribeWithString( proxyStr );
+    context_.tracer().debug( orcaice::toString(status.name) + " : status estimated changed." );
+    estCompStatus_.set( status );
 }
-
 
 void
-StatusConsumerImpl::dataEvent( const orca::StatusData& data ) 
+StatusConsumerImpl::resubscribeRequestedEvent( const orca::EstimatedComponentStatus& status )
 {
-    IceUtil::Mutex::Lock lock(statusMutex_);
-
-    statusData_ = data;
-    hasValidData_ = true;
-    lastDataReceivedTime_ = IceUtil::Time::now();
-    
-    // set the timeouts
-    config_.resubscribeTimeout = (int)floor(1.2*data.compStatus.publishIntervalSec);
-    config_.staleTimeout = (int)floor(1.5*data.compStatus.publishIntervalSec); 
-    
-    if ( context_.tracer().verbosity( gbxutilacfr::DebugTrace, gbxutilacfr::ToAny ) > 5 )
-    {
-        stringstream ss;
-        ss << "StatusData just arrived: " << endl << ifaceutil::toString( data );
-        context_.tracer().debug( ss.str(), 6 );
-    }
-    
-}
-
-bool
-StatusConsumerImpl::getStatus( StatusDetails &details )
-{
-    IceUtil::Mutex::Lock lock(statusMutex_);
-
-    details.isDataStale = false;
-    details.dataAvailable = hasValidData_;
-    details.data = statusData_;
-    
-    // if we've never received any data, tell the caller to subscribe us
-    if (!hasValidData_) return true;
-
-    // the return value
-    bool shouldResubscribe=false;
-    
-    IceUtil::Time timeSinceLastUpdate = IceUtil::Time::now() - lastDataReceivedTime_;
-    int secSinceHeard = timeSinceLastUpdate.toSeconds();
-
-    if ( secSinceHeard > config_.resubscribeTimeout )
-    {
-        IceUtil::Time timeSinceLastResubscribe = IceUtil::Time::now() - lastResubscribeTime_;
-        if ( timeSinceLastResubscribe.toSeconds() > config_.resubscribeInterval )
-        {
-            stringstream ss;
-            ss << "StatusConsumerImp(" << config_.platformName << "/"<< config_.componentName << "): Haven't heard from Status for "<< timeSinceLastUpdate << " Caller should try to resubscribe!";
-            context_.tracer().warning( ss.str() );
-            
-            shouldResubscribe=true;
-        }
-
-        if ( secSinceHeard > config_.staleTimeout )
-        {
-            details.isDataStale = true;
-        }
-    }
-    
-    return shouldResubscribe;
-
+    context_.tracer().debug( orcaice::toString(status.name) + " : resubscription requested." );
+    resubscribeRequest_.set( true );
 }
 
 } // namespace

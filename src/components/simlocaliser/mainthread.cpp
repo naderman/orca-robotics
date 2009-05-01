@@ -134,7 +134,7 @@ MainThread::work()
         } // try            
         catch ( ... ) 
         {
-            orcaice::catchMainLoopExceptions( subStatus() );
+            orcaice::catchMainLoopExceptions( health() );
         }
     }
 

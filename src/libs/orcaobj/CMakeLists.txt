@@ -6,7 +6,7 @@ set( build TRUE )
 # This is one of fundamental libs. It is not optional (but maybe it should change)
 
 # these 2 lines just check prereq's, but linking is specified in the macros below.
-set( dep_libs GbxUtilAcfr GbxIceUtilAcfr HydroIceUtil )
+set( dep_libs GbxUtilAcfr GbxIceUtilAcfr HydroIceUtil OrcaIfaceUtil )
 GBX_REQUIRE_LIBS( build LIB ${LIB_NAME} ${dep_libs} )
 
 if( build )

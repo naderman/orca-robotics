@@ -46,8 +46,8 @@ MainThread::MainThread( const orcaice::Context &context )
     : orcaice::SubsystemThread( context.tracer(), context.status(), "MainThread" ),
       context_(context)
 {
-    subStatus().initialising();
-    subStatus().setMaxHeartbeatInterval( 10.0 );
+    context_.status().initialising( subsysName() );
+    setMaxHeartbeatInterval( 10.0 );
     
     orca::Time t; t.seconds=0; t.useconds=0;
     clock_.reset( new Clock( t ) );
@@ -158,7 +158,7 @@ MainThread::initialise()
 void
 MainThread::work()
 {
-    subStatus().setMaxHeartbeatInterval( 2.0 );
+    setMaxHeartbeatInterval( 2.0 );
 
     orcalocalnav::IDriver::Inputs inputs;
     inputs.stalled = false;
@@ -174,6 +174,8 @@ MainThread::work()
     {
         try 
         {
+            checkWithOutsideWorld();
+
             getInputs( inputs.currentVelocity,
                        inputs.localisePose,
                        inputs.poseTime,
@@ -263,7 +265,7 @@ MainThread::work()
             }
             else {
                 context_.tracer().debug( "Doing nothing because disabled" );
-                subStatus().ok();
+                health().ok();
                 continue;
             }
 
@@ -293,19 +295,24 @@ MainThread::work()
                 }
             }
 
-            checkWithOutsideWorld();
-
             if ( inputs.isLocalisationUncertain )
-                subStatus().warning( "Localisation is uncertain, but everything else is OK." );
+                health().warning( "Localisation is uncertain, but everything else is OK." );
             else
-                subStatus().ok();
+                health().ok();
         } // try
+        catch ( orca::EStopTriggeredException &e )
+        {
+            // This shouldn't generate a fault
+            stringstream ss;
+            ss << "MainThread::"<<__func__<<"(): "<<e<<": "<<e.what;
+            health().warning( ss.str() );
+        }
         catch ( ... ) 
         {
             // before doing anything else, stop the vehicle!
             stopVehicle();
 
-            orcaice::catchMainLoopExceptions( subStatus() );
+            orcaice::catchMainLoopExceptions( health() );
         }
     }
 }
@@ -333,7 +340,7 @@ MainThread::ensureProxiesNotEmpty()
             stringstream ss;
             ss << "Still waiting for intial data to arrive.  gotObs="<<gotObs<<", gotLoc="<<gotLoc<<", gotOdom="<<gotOdom;
             context_.tracer().warning( ss.str() );
-            subStatus().initialising( ss.str() );
+            context_.status().initialising( subsysName(), ss.str() );
             sleep(1);
         }
     }
@@ -350,11 +357,11 @@ MainThread::initPathFollowerInterface()
         }
         catch ( ... ) {
             if ( testMode_ ) {
-                orcaice::catchExceptionsWithStatus( "initialising PathFollower interface", subStatus(), gbxutilacfr::SubsystemWarning );
+                orcaice::catchExceptionsWithStatus( "initialising PathFollower interface", health(), gbxutilacfr::SubsystemWarning );
                 return;
             }
             else {
-                orcaice::catchExceptionsWithStatusAndSleep( "initialising PathFollower interface", subStatus(), gbxutilacfr::SubsystemFault, 2000 );
+                orcaice::catchExceptionsWithStatusAndSleep( "initialising PathFollower interface", health(), gbxutilacfr::SubsystemFault, 2000 );
             }
         }
     }
@@ -371,7 +378,7 @@ MainThread::getVehicleDescription()
             break;
         }
         catch ( ... ) {
-            orcaice::catchExceptionsWithStatusAndSleep( "getting vehicle description", subStatus() );
+            orcaice::catchExceptionsWithStatusAndSleep( "getting vehicle description", health() );
         }
     }
 }
@@ -391,7 +398,7 @@ MainThread::getRangeScannerDescription()
             break;
         }
         catch ( ... ) {
-            orcaice::catchExceptionsWithStatusAndSleep( "getting range scanner description", subStatus() );
+            orcaice::catchExceptionsWithStatusAndSleep( "getting range scanner description", health() );
         }
     }
 }
@@ -476,7 +483,7 @@ MainThread::stopVehicle()
             // This is OK: it means that the communicator shut down (eg via Ctrl-C)
         }
         catch ( ... ) {
-            orcaice::catchExceptionsWithStatusAndSleep( "getting vehicle description", subStatus(), gbxutilacfr::SubsystemFault, 500 );
+            orcaice::catchExceptionsWithStatusAndSleep( "getting vehicle description", health(), gbxutilacfr::SubsystemFault, 500 );
         }
     }
 }
@@ -489,7 +496,9 @@ MainThread::sendCommandToPlatform( const hydronavutil::Velocity &cmd )
         testSimulator_->act( cmd );
     }
     else
+    {
         velControl2dPrx_->setCommand( orcanavutil::convert(cmd) );
+    }
 }
 
 void
@@ -541,6 +550,12 @@ MainThread::getInputs( hydronavutil::Velocity &velocity,
                 << "Maybe something is wrong: Stopping.";
                 throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
             }
+        }
+        else
+        {
+            // Enforce equality of timestamps
+            orcaLocaliseData_.timeStamp = orcaRangeData_->timeStamp;
+            orcaOdomData_.timeStamp     = orcaRangeData_->timeStamp;
         }
 
         //

@@ -14,6 +14,7 @@
 #include <orcaice/orcaice.h>
 #include <orcaice/icegridutils.h>
 #include <orca/home.h>
+#include <hydroutil/hydroutil.h>
 
 using namespace std;
 

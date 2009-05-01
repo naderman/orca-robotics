@@ -13,6 +13,7 @@
 #include <iomanip>
 #include <orcaice/timeutils.h>
 #include "gpsheuristics.h"
+#include <cmath>
 
 using namespace std;
 
@@ -131,7 +132,7 @@ GpsHeuristics::checkSpeedAndPosition( const double     &northing,
     double speedComputed = distanceTravelled/timeDiff;
             
     // check for speed consistency
-    double speedDiff = abs(speedComputed - speedReported);
+    double speedDiff = fabs(speedComputed - speedReported);
     if ( (speedDiff > speedDiffFactor_ * speedReported) && (speedReported!=0.0) )
     {
         stringstream ss;

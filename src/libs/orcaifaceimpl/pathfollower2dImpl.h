@@ -7,7 +7,7 @@
 #include <orcaice/context.h>
 #include <orcaice/topichandler.h>
 
-namespace gbxiceutilacfr { class Thread; }
+namespace gbxutilacfr { class Stoppable; }
 
 namespace orcaifaceimpl
 {
@@ -51,8 +51,8 @@ public:
     void initInterface();
 
     //! Sets up interface and connects to IceStorm. Catches all exceptions and retries
-    //! until sucessful. At every iteration, checks if the thread was stopped.
-    void initInterface( gbxiceutilacfr::Thread* thread, const std::string& subsysName="", int retryInterval=2 );
+    //! until sucessful. At every iteration, checks if the activity (e.g. thread) was stopped.
+    void initInterface( gbxutilacfr::Stoppable* activity, const std::string& subsysName="", int retryInterval=2 );
 
     //! A local call which sets the data reported by the interface, 
     //! and sends it through IceStorm

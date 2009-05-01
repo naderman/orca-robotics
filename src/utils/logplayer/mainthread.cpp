@@ -1,7 +1,7 @@
 /*
  * Orca-Robotics Project: Components for robotics 
  *               http://orca-robotics.sf.net/
- * Copyright (c) 2007 Alexei Makarenko
+ * Copyright (c) 2007 Alexei Makarenko, Alex Brooks
  *
  * This copy of Orca is licensed to you under the terms described in
  * the LICENSE file included in this distribution.
@@ -13,7 +13,7 @@
 #include <orcaobj/orcaobj.h>
 #include <orcalog/orcalog.h>
 #include <hydrodll/dynamicload.h>
-
+#include <hydroutil/hydroutil.h>
 #include "mainthread.h"
 #include "replayconductor.h"
 #include "continuouscontroller.h"
@@ -71,7 +71,7 @@ MainThread::~MainThread()
 void
 MainThread::initialise()
 {
-    subStatus().setMaxHeartbeatInterval( 20.0 );
+    setMaxHeartbeatInterval( 20.0 );
 
     // config file parameters
     Ice::PropertiesPtr props = context_.properties();

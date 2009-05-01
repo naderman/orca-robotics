@@ -26,19 +26,9 @@ Header file:
 
 @section orca_library_orcaifaceimpl_usage Usage
 
-The function initInterface() may throw orcaice::Exceptions. When calling from within a thread, you should set up a loop:
-@verbatim
-while ( isActive() ) {
-    try {
-        obj->initInterface();
-    }
-    catch ( const Ice::Exception& e ) {
-        // give feedback
-        context_.tracer()->warning( "Failed to setup interface: " << e << ". Check Registry and IceStorm. Will try again in 2 secs...");
-        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
-    }
-}
-@endverbatim
+The function initInterface() may throw orcaice::Exceptions. 
+
+When calling from within a thread, you can call a multi-try version of the function.
 
 @par Responsible Developer
 Alex Brooks

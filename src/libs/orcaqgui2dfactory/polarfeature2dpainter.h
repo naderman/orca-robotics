@@ -13,7 +13,6 @@
 
 #include <orca/polarfeature2d.h>
 #include <hydroqguielementutil/definitions2d.h>
-#include <hydroqgui/hydroqgui.h>
 
 class QPainter;
 

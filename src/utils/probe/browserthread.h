@@ -15,7 +15,7 @@
 #include <hydroiceutil/eventqueue.h>
 #include <orcaice/context.h>
 #include <orcacm/types.h>
-
+#include <gbxsickacfr/gbxiceutilacfr/safethread.h>
 #include "browserfsm.h"
 #include <orcaprobe/ibrowser.h>
 
@@ -44,7 +44,7 @@ public:
 
 private:
 
-    // from Thread
+    // from SafeThread
     virtual void walk();
 
     // from BrowserFsm

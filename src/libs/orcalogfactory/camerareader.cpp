@@ -12,7 +12,7 @@
 #include <orcalog/orcalog.h>
 
 #include <orcaobj/stringutils.h>
-#include <orcaifacelog/orcaifacelog.h>  // catch-all for auto-generated (ascii) to/fromStream functions
+#include <orcaifacelog/camera.h>  // for auto-generated (ascii) to/fromStream functions
 #include "logstringutils.h"
 
 #include "camerareader.h"

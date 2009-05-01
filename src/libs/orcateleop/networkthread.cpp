@@ -10,7 +10,7 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
-
+#include <cmath>
 #include "networkthread.h"
 #include "display.h"
 #include "events.h"

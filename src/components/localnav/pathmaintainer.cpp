@@ -106,9 +106,18 @@ PathMaintainer::checkForNewPath()
         }
         wpIndexChanged_ = true;
 
-        std::stringstream ss;
-        ss << "PathMaintainer: new path: " << orcaobj::toVerboseString( path_ );
-        context_.tracer().debug( ss.str(), 2 );
+        if ( gotNewPath )
+        {
+            std::stringstream ss;
+            ss << "PathMaintainer: new path: " << orcaobj::toVerboseString( path_ );
+            context_.tracer().debug( ss.str(), 1 );
+        }
+        else if ( gotActivation )
+        {
+            std::stringstream ss;
+            ss << "PathMaintainer: got activation signal.";
+            context_.tracer().debug( ss.str(), 1 );
+        }
     }
 }
 

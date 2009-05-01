@@ -41,7 +41,7 @@ MainSubsystem::initialise()
 void
 MainSubsystem::work() 
 {
-    subStatus().setMaxHeartbeatInterval( 1.0 );
+    setMaxHeartbeatInterval( 1.0 );
 
     while ( !isStopping() )
     {
@@ -62,7 +62,7 @@ MainSubsystem::work()
         }
         catch ( ... ) 
         {
-            orcaice::catchMainLoopExceptions( subStatus() );
+            orcaice::catchMainLoopExceptions( health() );
 
             // Re-create the viewer, unless we are stopping
             if ( !isStopping() ) {
@@ -86,7 +86,7 @@ MainSubsystem::finalise()
 void
 MainSubsystem::initSettings()
 {
-    subStatus().setMaxHeartbeatInterval( 20.0 );
+    setMaxHeartbeatInterval( 20.0 );
 
     //
     // Read settings
@@ -95,7 +95,7 @@ MainSubsystem::initSettings()
     std::string prefix = context_.tag() + ".Config.";
     
     int sleepIntervalMs = orcaice::getPropertyAsIntWithDefault( prop, prefix+"SleepIntervalMs", 100 );
-    subStatus().ok( "Initialized" );
+    health().ok( "Initialized" );
 
 //TODO: add this in. We should be checking configuration of the Viewer here.
 //     if ( !config_.validate() ) {
@@ -184,11 +184,11 @@ void MainSubsystem::getImage()
         // at its leisure
         // imageQueue_.push( imageData_ );
         
-        subStatus().ok();
+        health().ok();
     }
     else
     {
-        subStatus().warning( "Image was not successfully copied to local buffer" );
+        health().warning( "Image was not successfully copied to local buffer" );
     }
 
 

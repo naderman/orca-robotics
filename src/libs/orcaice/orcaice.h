@@ -15,10 +15,6 @@
 #ifndef ORCAICE_ORCAICE_H
 #define ORCAICE_ORCAICE_H
 
-// dependencies
-#include <hydroiceutil/hydroiceutil.h>
-#include <hydroutil/hydroutil.h>
-
 // orcaice headers
 #include <orcaice/exceptions.h>
 #include <orcaice/subsystemthread.h>
@@ -31,6 +27,7 @@
 #include <orcaice/catchutils.h>
 
 #include <orcaice/iceutils.h>
+#include <orcaice/multiiceutils.h>
 #include <orcaice/connectutils.h>
 #include <orcaice/multiconnectutils.h>
 #include <orcaice/icestormutils.h>

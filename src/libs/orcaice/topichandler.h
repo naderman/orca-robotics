@@ -103,23 +103,29 @@ public:
         {
             return false;
         }
+
+        // fix the order of endpoints
+//         topicPrx_ = topicPrx_->ice_endpointSelection( Ice::Ordered );
         return true;
     }
 
-    bool connectToTopic( gbxiceutilacfr::Thread* thread, const std::string& subsysName, int retryInterval )
+    bool connectToTopic( gbxutilacfr::Stoppable* activity, const std::string& subsysName, int retryInterval )
     {
         context_.tracer().debug( std::string("TopicHandler: connecting to topic ")+topicName_, 2 );
         // Find IceStorm Topic to which we'll publish
         try
         {
             topicPrx_ = orcaice::connectToTopicWithString<ConsumerProxyType>
-                ( context_, publisherPrx_, topicName_, thread, subsysName, retryInterval );
+                ( context_, publisherPrx_, topicName_, activity, subsysName, retryInterval );
         }
         // we only catch the exception which would be thrown if IceStorm is not there.
         catch ( const orcaice::NetworkException& e )
         {
             return false;
         }
+
+        // fix the order of endpoints
+//         topicPrx_ = topicPrx_->ice_endpointSelection( Ice::Ordered );
         return true;
     }
 

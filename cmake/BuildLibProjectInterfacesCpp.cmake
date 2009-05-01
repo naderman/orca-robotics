@@ -1,5 +1,5 @@
-set( lib_name ${PROJECT_NAME_CAP}Interfaces )
-set( lib_namespace ${PROJECT_NAME_LOWER} )
+set( lib_name ${GBX_PROJECT_NAME_CAP}Interfaces )
+set( lib_namespace ${GBX_PROJECT_NAME_LOWER} )
 GBX_ADD_LICENSE( LGPL )
 
 set( build TRUE )
@@ -14,7 +14,7 @@ if( build )
     #
     # All Slice source files are defined in one place (loads ORCA_SLICE_SOURCE_FILES)
     #
-    include( ${PROJECT_SOURCE_DIR}/src/interfaces/slice/${PROJECT_NAME_LOWER}/slice_sources.cmake )
+    include( ${PROJECT_SOURCE_DIR}/src/interfaces/slice/${GBX_PROJECT_NAME_LOWER}/slice_sources.cmake )
     
     #
     # Work out the list of generated files from the list of slice sources
@@ -32,7 +32,7 @@ if( build )
     endif( NOT ORCA_MOTHERSHIP )
     
     # IceStorm is not included in UseIce.cmake
-    set( dep_libs ${int_libs} ${ext_libs} IceStorm )
+    set( dep_libs IceStorm )
 
     GBX_ADD_LIBRARY( ${lib_name} DEFAULT ${slice_generated_sources} )
     target_link_libraries( ${lib_name} ${dep_libs} )

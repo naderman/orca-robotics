@@ -14,7 +14,7 @@
 #include <orcaobj/orcaobj.h>
 #include <orcaice/orcaice.h>
 #include <gbxutilacfr/mathdefs.h>
-#include <hydroqgui/hydroqgui.h>
+#include <hydroqgui/exceptions.h>
 #include "localise2dpainter.h"
 
 using namespace std;
@@ -85,19 +85,20 @@ Localise2dPainter::paintHypothesis( QPainter* p, const orca::Pose2dHypothesis &h
             color = currentColor_;
         }
 
-        // Need to get the world matrix before we rotate
-        QMatrix m2win = p->worldMatrix();
-        const float minLength = 15.0/m2win.m11();
-        const float lineThickness = 2.0/m2win.m11();
-        assert( minLength > 0 && !isinf(minLength) );
-        assert( lineThickness > 0 && !isinf(lineThickness) );
+        double pixelsPerMetre = hydroqguielementutil::worldMatrixScale( p );
+        const float minLengthInPixels = 15.0;
+        const float minLengthInMetres = minLengthInPixels/pixelsPerMetre;
+        const float lineThicknessInPixels = 2.0;
+        const float lineThicknessInMetres = lineThicknessInPixels/pixelsPerMetre;
+        assert( minLengthInMetres > 0 && !isinf(minLengthInMetres) );
+        assert( lineThicknessInMetres > 0 && !isinf(lineThicknessInMetres) );
         
         // Rotate to draw the platform correctly
         {
             hydroqguielementutil::ScopedSaver rotateSaver(p);
             p->rotate( RAD2DEG( mean.o ) + originRot_ );
 
-            p->setPen( QPen( Qt::black, lineThickness) );
+            p->setPen( QPen( Qt::black, lineThicknessInMetres) );
             p->setBrush( color );
 
             if (platformType_ == PlatformTypeCylindrical)
@@ -105,21 +106,21 @@ Localise2dPainter::paintHypothesis( QPainter* p, const orca::Pose2dHypothesis &h
                 if ( isInFocus_ )
                 {
                     p->save();
-                    p->setPen( QPen( Qt::black, lineThickness*1.2 ) );
+                    p->setPen( QPen( Qt::black, lineThicknessInMetres*1.2 ) );
                     p->setBrush( hydroqguielementutil::getTransparentVersion( Qt::white, weight ) );
-                    hydroqguielementutil::paintCylindricalPlatformPose( p, radius_*1.2, weight, minLength*1.2  );
+                    hydroqguielementutil::paintCylindricalPlatformPose( p, radius_*1.2, weight, minLengthInMetres*1.2  );
                     p->restore();
-                    p->setPen( QPen( Qt::black, lineThickness*1.2) );
+                    p->setPen( QPen( Qt::black, lineThicknessInMetres*1.2) );
                 }
-                hydroqguielementutil::paintCylindricalPlatformPose( p, radius_, weight, minLength  );
+                hydroqguielementutil::paintCylindricalPlatformPose( p, radius_, weight, minLengthInMetres  );
             }
             else
             {
-                hydroqguielementutil::paintCubicPlatformPose( p, length_, width_, weight, minLength );
+                hydroqguielementutil::paintCubicPlatformPose( p, length_, width_, weight, minLengthInMetres );
             }
 
             p->setPen( color );
-            hydroqguielementutil::paintUncertaintyWedge( p, cov.tt, minLength*3.0 );
+            hydroqguielementutil::paintUncertaintyWedge( p, cov.tt, minLengthInMetres*3.0 );
         }
         p->setPen( color );
         hydroqguielementutil::paintCovarianceEllipse( p, cov.xx, cov.xy, cov.yy );

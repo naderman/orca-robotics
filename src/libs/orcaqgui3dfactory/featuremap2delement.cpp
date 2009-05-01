@@ -1,7 +1,7 @@
 #include "featuremap2delement.h"
 #include <iostream>
-#include <hydroqgui/hydroqgui.h>
 #include <QFileDialog>
+#include <hydroqgui/exceptions.h>
 
 using namespace std;
 

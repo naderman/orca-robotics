@@ -93,7 +93,7 @@ MainThread::MainThread( const orcaice::Context &context ) :
 void 
 MainThread::initialise()
 {
-    subStatus().setMaxHeartbeatInterval( 10.0 );
+    setMaxHeartbeatInterval( 10.0 );
 
     // These functions catch their exceptions.
     activate( context_, this, subsysName() );
@@ -110,7 +110,7 @@ MainThread::initialise()
 void 
 MainThread::work()
 {
-    subStatus().setMaxHeartbeatInterval( 3.0 );
+    setMaxHeartbeatInterval( 3.0 );
 
     // Temporaries for use in loop
     orca::PolarFeature2dData    featureData;
@@ -136,8 +136,8 @@ MainThread::work()
                 // alexm: not calling it a fault
                 stringstream ss;
                 ss << "Timed out (" << timeoutMs << "ms) waiting for laser data.  Reconnecting.";
-//                 subStatus().fault( ss.str() );
-                subStatus().warning( ss.str() );
+//                 health().fault( ss.str() );
+                health().warning( ss.str() );
                 connectToLaser();
                 continue;
             }
@@ -150,7 +150,7 @@ MainThread::work()
                 stringstream ss;
                 ss << "Got laser scan: expected " << laserDescr_.numberOfSamples
                     << " returns, got " << laserData->ranges.size();
-                subStatus().warning( ss.str() );
+                health().warning( ss.str() );
                 continue;
             }
 
@@ -173,11 +173,11 @@ MainThread::work()
             // Tell the world
             featureInterface_->localSetAndSend( featureData );
 
-            subStatus().ok();
+            health().ok();
         } // try
         catch ( ... ) 
         {
-            orcaice::catchMainLoopExceptions( subStatus() );
+            orcaice::catchMainLoopExceptions( health() );
         }
     } // while
 }
@@ -188,7 +188,7 @@ MainThread::work()
 void 
 MainThread::initDriver()
 {
-    subStatus().setMaxHeartbeatInterval( 10.0 );
+    setMaxHeartbeatInterval( 10.0 );
 
     Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag() + ".Config.";
@@ -264,11 +264,11 @@ MainThread::initDriver()
             // use the special orca wrapping function which catches all exceptions, 
             // sleeps for 1 sec (default), and goes on to try again.
             //
-            orcaice::catchExceptionsWithStatusAndSleep( "initialising algorithm driver", subStatus() );
+            orcaice::catchExceptionsWithStatusAndSleep( "initialising algorithm driver", health() );
         }
     }
 
-    subStatus().setMaxHeartbeatInterval( 1.0 );
+    setMaxHeartbeatInterval( 1.0 );
 }
 
 void 
@@ -281,7 +281,7 @@ MainThread::connectToLaser()
             break;
         }
         catch ( ... ) {
-            orcaice::catchExceptionsWithStatusAndSleep( "connecting to laser", subStatus() );
+            orcaice::catchExceptionsWithStatusAndSleep( "connecting to laser", health() );
         }       
     }
 }
@@ -305,7 +305,7 @@ MainThread::getLaserDescription()
             break;
         }
         catch ( ... ) {
-            orcaice::catchExceptionsWithStatusAndSleep( "getting laser description", subStatus() );
+            orcaice::catchExceptionsWithStatusAndSleep( "getting laser description", health() );
         }
     }
 }

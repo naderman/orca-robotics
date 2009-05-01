@@ -14,7 +14,7 @@
 @ingroup orca_apps
 @ingroup orca_cpp
 @ingroup orca_linux
-@defgroup orca_component_cleanregistry CleanRegistry
+@defgroup orca_component_registryclean RegistryClean
 @brief A utility to remove unreachable components from the IceGrid Registry.
 
 
@@ -30,7 +30,7 @@ The IceGrid registry maintains a database of registered components (actually it'
 
 One possible solution is to periodically stop the registry and delete the contents of its database directory. One has to make sure though that no components are running at the time because they will not be accessible after the database purge.
 
-Another approach is to determine which of the registered components are not currently running and remove them from the registry list by using the IceGrid/Admin interface. This is what CleanRegistry does by executing the following steps:
+Another approach is to determine which of the registered components are not currently running and remove them from the registry list by using the IceGrid/Admin interface. This is what RegistryClean does by executing the following steps:
 
 -# get a list of all registered adapters from the IceGrid Registry
 -# ping the Home interface on each adapter (component)
@@ -46,7 +46,7 @@ The registy may contain adapter ID's of which don't belong to Orca components. T
 You can run this utility manualy or as a periodic job from @c cron. The following @c crontab line runs the utility daily at 6 am.
 
 @verbatim
-0 6     * * *   /opt/orca-2.0.0rc3+/bin/cleanregistry /opt/orca-2.0.0rc3+/cfg/cleanregistry.cfg
+0 6     * * *   /opt/orca-2.0.0rc3+/bin/registryclean /opt/orca-2.0.0rc3+/cfg/registryclean.cfg
 @endverbatim
 
 The Admin interface of the IceGrid registry is disabled by default. To enable it, include the following line in the registry configuration file. On a publically accessible network there is of course a security risk which you must consider.

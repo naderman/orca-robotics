@@ -55,6 +55,8 @@ public:
                                  const PathPainter                              &painter,
                                  const orcaice::Context                         &context,
                                  const hydroqguipath::PathInputFactory          *inputFactory );
+    
+    ~PathFollowerUserInteraction();
 
     void noLongerMouseEventReceiver();
     void paint( QPainter *p );
@@ -74,9 +76,17 @@ public:
         {pathInput_->processDoubleClickEvent(e);}
     
 
+    void saveUserPath( const hydroqguipath::GuiPath &guiPath,
+                         int numLoops,
+                         float timeOffset );
+    
+    void loadUserPath(hydroqguipath::GuiPath &guiPath);
+    void loadPreviousUserPath(hydroqguipath::GuiPath &guiPath);
+    
+    
 public slots:
-    void savePathAs();
     void savePath();
+    void savePathAs();
     void waypointSettingsDialog();
     void waypointModeSelected();
     void send();
@@ -101,19 +111,20 @@ private:
     hydroqguipath::WaypointSettings wpSettings_;
 
     // saving the path which the pathfollower *interface* holds
-    // (as opposed to the path the user enters in green)
     QString ifacePathFileName_;
     bool haveIfacePathFileName_;
     std::auto_ptr<PathFileHandler> ifacePathFileHandler_;
+    
+    // saving the path which the user enters (green waypoints)
+    QString userPathFileName_;
+    bool haveUserPathFileName_;
+    std::auto_ptr<PathFileHandler> userPathFileHandler_;
     
     // handles all user path input through clicking, tables, etc.
     std::auto_ptr<hydroqguipath::IPathInput> pathInput_;
     
     // automatic saving of paths on send
     int numAutoPathDumps_;
-    
-    // remember the filename of the green user path
-    QString loadPreviousPathFilename_;
     
     // sets up and destroys buttons and associated actions
     std::auto_ptr<hydroqguipath::PathfollowerButtons> buttons_;

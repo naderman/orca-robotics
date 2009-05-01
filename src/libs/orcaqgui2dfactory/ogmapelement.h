@@ -13,8 +13,6 @@
 
 #include <orcaqgui2dfactory/ogmappainter.h>
 #include <orcaqguielementutil/icestormelement2d.h>
-#include <hydroqgui/hydroqgui.h>
-#include <orcaqgui2dfactory/connectutils.h>
 
 namespace orcaqgui2d {
 
@@ -32,13 +30,6 @@ public:
                   hydroqguielementutil::IHumanManager* humanManager );
 
     virtual bool isInGlobalCS() { return true; }
-    virtual void actionOnConnection() 
-    { 
-        std::cout << "Paint initial data begin" << std::endl;
-        paintInitialData<orca::OgMapPrx, OgMapPainter>
-            ( context_, listener_.interfaceName(), painter_ );
-        std::cout << "Paint initial data finished" << std::endl;
-    }
     virtual QStringList contextMenu();
     virtual void execute( int action );
 

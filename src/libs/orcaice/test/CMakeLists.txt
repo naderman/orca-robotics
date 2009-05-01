@@ -148,9 +148,6 @@ add_executable( icegridtest icegridtest.cpp )
 GBX_ADD_TEST( OrcaIce_IceGridUtils icegridtest )
 ORCA_GENERATE_CONFIG_FILE( icegridtest.def icegridtest 0 )
 
-add_executable( substatusthreadtest substatusthreadtest.cpp )
-GBX_ADD_TEST( OrcaIce_SubstatusThread substatusthreadtest )
-
 add_executable( subsystemthreadtest subsystemthreadtest.cpp )
 GBX_ADD_TEST( OrcaIce_SubsystemThread subsystemthreadtest )
 

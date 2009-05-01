@@ -13,6 +13,7 @@
 #include <orcaifaceimpl/estop.h>
 #include <orcaifaceimpl/featuremap2d.h>
 #include <orcaifaceimpl/gps.h>
+#include <orcaifaceimpl/binaryswitch.h>
 // Home is an admin interface which does not publish, HomeImpl lives in libOrcaIce
 #include <orcaifaceimpl/image.h>
 #include <orcaifaceimpl/imu.h>
@@ -66,6 +67,11 @@ public:
     virtual bool enabled() const { return true; };
 };
 
+class BinarySwitchCallback : public orcaifaceimpl::AbstractBinarySwitchCallback {
+public:
+    virtual void setData( const orca::BinarySwitchData &data ) {};
+};
+
 void
 TestComponent::start()
 {
@@ -95,6 +101,11 @@ TestComponent::start()
     {
         orcaifaceimpl::GpsImplPtr ptr = new orcaifaceimpl::GpsImpl( orca::GpsDescription(), context(), "crap" );
         ptr->localSet( orca::GpsData() );
+    }
+    {
+        BinarySwitchCallback cb;
+        orcaifaceimpl::BinarySwitchImplPtr ptr = new orcaifaceimpl::BinarySwitchImpl( cb, context(), "crap" );
+        ptr->localSet( orca::BinarySwitchData() );
     }
     {
         orcaifaceimpl::ImageImplPtr ptr = new orcaifaceimpl::ImageImpl( new orca::ImageDescription, context(), "crap" );

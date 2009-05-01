@@ -9,7 +9,7 @@
  */
 
 #include <fstream>
-#include <hydroutil/hydroutil.h>
+#include <gbxutilacfr/exceptions.h>
 
 #include "logreader.h"
 #include "exceptions.h"

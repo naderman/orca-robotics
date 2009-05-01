@@ -46,15 +46,17 @@ public:
     virtual void processMoveEvent( QMouseEvent* e) {};
     virtual void updateWpSettings( hydroqguipath::WaypointSettings* wpSettings );
         
-    virtual void savePath( const QString &filename );
-    virtual void loadPath( const QString &filename );
+    virtual void savePath();
+    virtual void loadPath();
     virtual void loadPreviousPath();
     virtual void sendPath();
     virtual void cancelPath();
     
     virtual void setWaypointFocus( int waypointId );
+    virtual void getPath( hydroqguipath::GuiPath &guiPath, int &numLoops, float &timeOffset ) const {};
     
     orca::PathPlanner2dTask getTask() const;
+    
             
 private:
         
@@ -63,7 +65,6 @@ private:
     std::auto_ptr<hydroqguipath::PathDesignScreen> pathDesignScreen_;
     std::auto_ptr<hydroqguipath::PathDesignTableWidget> pathDesignTableWidget_;
     std::auto_ptr<hydroqguipath::GuiPath> guiPath_;
-    std::auto_ptr<PathFileHandler> pathFileHandler_;
 
 };
 

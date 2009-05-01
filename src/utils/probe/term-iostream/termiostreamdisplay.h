@@ -14,7 +14,7 @@
 #include <vector>
 #include <gbxsickacfr/gbxiceutilacfr/buffer.h>
 #include <gbxsickacfr/gbxiceutilacfr/store.h>
-
+#include <hydroiceutil/eventqueue.h>
 #include <orcaprobe/factory.h>
 
 #include <orcaprobe/abstractdisplay.h>

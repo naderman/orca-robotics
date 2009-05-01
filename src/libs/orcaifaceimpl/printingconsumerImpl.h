@@ -12,7 +12,53 @@
 #define ORCAIFACEIMPL_PRINTING_CONSUMER_IMPL_H
 
 #include <orcaifaceimpl/consumerImpl.h>
-#include <orcaifaceutil/orcaifaceutil.h>
+
+// alexm: I haven't checked which ones are actually used.
+#include <orcaifaceutil/datetime.h>
+#include <orcaifaceutil/exceptions.h>
+#include <orcaifaceutil/containers.h>
+#include <orcaifaceutil/common.h>
+#include <orcaifaceutil/ocm.h>
+#include <orcaifaceutil/bros1.h>
+#include <orcaifaceutil/stochastic.h>
+#include <orcaifaceutil/button.h>
+#include <orcaifaceutil/camera.h>
+#include <orcaifaceutil/cpu.h>
+#include <orcaifaceutil/drivebicycle.h>
+#include <orcaifaceutil/drivedifferential.h>
+#include <orcaifaceutil/estop.h>
+#include <orcaifaceutil/featuremap2d.h>
+#include <orcaifaceutil/gps.h>
+#include <orcaifaceutil/home.h>
+#include <orcaifaceutil/image.h>
+#include <orcaifaceutil/ins.h>
+#include <orcaifaceutil/imu.h>
+#include <orcaifaceutil/localise2d.h>
+#include <orcaifaceutil/localise3d.h>
+#include <orcaifaceutil/multicamera.h>
+#include <orcaifaceutil/rangerarray.h>
+#include <orcaifaceutil/odometry2d.h>
+#include <orcaifaceutil/odometry3d.h>
+#include <orcaifaceutil/ogfusion.h>
+#include <orcaifaceutil/ogmap.h>
+#include <orcaifaceutil/particle2d.h>
+#include <orcaifaceutil/pathfollower2d.h>
+#include <orcaifaceutil/pathplanner2d.h>
+#include <orcaifaceutil/pinger.h>
+#include <orcaifaceutil/pixmap.h>
+#include <orcaifaceutil/pointcloud.h>
+#include <orcaifaceutil/polarfeature2d.h>
+#include <orcaifaceutil/power.h>
+#include <orcaifaceutil/properties.h>
+#include <orcaifaceutil/qgraphics2d.h>
+#include <orcaifaceutil/rangescanner2d.h>
+#include <orcaifaceutil/laserscanner2d.h>
+#include <orcaifaceutil/status.h>
+#include <orcaifaceutil/systemstatus.h>
+#include <orcaifaceutil/tracer.h>
+#include <orcaifaceutil/vehicledescription.h>
+#include <orcaifaceutil/velocitycontrol2d.h>
+#include <orcaifaceutil/wifi.h>
 
 namespace orcaifaceimpl
 {

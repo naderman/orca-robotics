@@ -13,7 +13,6 @@ PathPlannerInput::PathPlannerInput( PathPlannerUserInteraction          &pathPla
     
     pathDesignScreen_.reset( new hydroqguipath::PathDesignScreen( *guiPath_.get(), wpSettings, humanManager ) );
     pathDesignTableWidget_.reset( new hydroqguipath::PathDesignTableWidget( this, *guiPath_.get() ) );
-    pathFileHandler_.reset( new PathFileHandler( humanManager ) );
 }
 
 void 
@@ -64,7 +63,7 @@ PathPlannerInput::getTask() const
 }
 
 void 
-PathPlannerInput::savePath( const QString &filename )
+PathPlannerInput::savePath()
 {
     int numLoops = pathDesignTableWidget_->numberOfLoops();
     
@@ -72,20 +71,20 @@ PathPlannerInput::savePath( const QString &filename )
     if (numLoops > 1)
         timeOffset = guiPath_->back().timeTarget + pathDesignScreen_->secondsToCompleteLoop();
   
-    pathFileHandler_->savePath( filename, *guiPath_.get(), numLoops, timeOffset );  
+    pathPlannerUI_.saveUserPath( *guiPath_.get(), numLoops, timeOffset );  
 }
 
 void
-PathPlannerInput::loadPath( const QString &filename ) 
+PathPlannerInput::loadPath() 
 {  
-    pathFileHandler_->loadPath( filename, *guiPath_.get() );
+    pathPlannerUI_.loadUserPath( *guiPath_.get() );
     pathDesignTableWidget_->refreshTable(); 
 }
 
 void 
 PathPlannerInput::loadPreviousPath()
 {
-    pathFileHandler_->loadPreviousPath( *guiPath_.get() );
+    pathPlannerUI_.loadPreviousUserPath( *guiPath_.get() );
     pathDesignTableWidget_->refreshTable(); 
 }
 

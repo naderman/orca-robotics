@@ -8,4 +8,6 @@ Config.ComponentList.Default=alpha/laser2d alpha/lasermon
 Config.JobQueueThreadPoolSize.Default=10
 Config.JobQueueSizeWarning.Default=2
 Config.ResubscribeInterval.Default=5
+Config.StaleTimeout.Default=40
+Config.GiveUpTimeout.Default=70
 

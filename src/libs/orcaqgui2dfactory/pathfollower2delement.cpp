@@ -14,6 +14,7 @@
 #include <orcaobj/stringutils.h>
 #include <hydroqguielementutil/ihumanmanager.h>
 
+#include "pathconversionutil.h"
 #include "pathfollower2delement.h"
 
 using namespace std;
@@ -41,7 +42,7 @@ void PathUpdateConsumer::setActivationTime( const orca::Time& absoluteTime, doub
 
 void PathUpdateConsumer::setEnabledState( bool enabledState, const ::Ice::Current& )
 {
-//     cout << "PathUpdateConsumer: enable state changed. Not used, we rely on getData calls." << endl;
+//     cout << "PathUpdateConsumer: enable state changed. Not used, we rely on subscription." << endl;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -75,7 +76,7 @@ PathFollower2dElement::PathFollower2dElement( const orcaice::Context &context,
     
     pathUpdateConsumer_ = new PathUpdateConsumer;
 
-    doInitialSetup();
+    connectToInterface();
 }
 
 void
@@ -125,12 +126,12 @@ PathFollower2dElement::update()
     if ( !isConnected_ )
     {
         if (firstTime_) {
-            doInitialSetup();
+            connectToInterface();
             timer_.restart();
             firstTime_ = false;
         }
         if (timer_.elapsedSec() > 5.0) {
-            doInitialSetup();
+            connectToInterface();
             timer_.restart();
         }
     }
@@ -188,10 +189,10 @@ PathFollower2dElement::setUseTransparency( bool useTransparency )
     currentTransparency_ = useTransparency;
 }
 
-int
+void
 PathFollower2dElement::connectToInterface()
 {
-    if (isConnected_) return 0;
+    if (isConnected_) return;
     
     humanManager_.showStatusInformation( "PathFollowerElement is trying to connect");
     
@@ -204,64 +205,25 @@ PathFollower2dElement::connectToInterface()
         // subscribe
         callbackPrx_ = orcaice::createConsumerInterface<orca::PathFollower2dConsumerPrx>( context_, pathFollowerObj );
         pathFollower2dPrx_->subscribe(callbackPrx_);
+        humanManager_.showStatusInformation( "Connected to pathfollower interface successfully.");
+        isConnected_ = true;
     }
     catch ( const IceUtil::Exception &e )
     {
         stringstream ss;
         ss << "PathFollower2dElement:: Problem connecting to pathfollower interface: " << e;
         humanManager_.showStatusWarning( ss.str().c_str() );
-        return -1;
     }
     catch ( const std::exception &e )
     {
         stringstream ss;
         ss << "PathFollower2dElement:: Problem connecting to pathfollower interface: " << e.what();
         humanManager_.showStatusWarning( ss.str().c_str() );
-        return -1;
     }
     catch ( ... )
     {
         humanManager_.showStatusWarning( "PathFollower2dElement: Unknown problem connecting to pathfollower interface.");
-        return -1;
     }
-    humanManager_.showStatusInformation( "Connected to pathfollower interface successfully.");
-    
-    isConnected_ = true;
-    return 0;
-}
-
-void
-PathFollower2dElement::getInitialData()
-{
-    try
-    {        
-        // get initial path and set pipe
-        orca::PathFollower2dData data = pathFollower2dPrx_->getData();
-        pathUpdateConsumer_->pathPipe_.set( data );
-                
-        // get initial waypoint in focus and set pipe
-        int wpIndex = pathFollower2dPrx_->getWaypointIndex();
-        pathUpdateConsumer_->indexPipe_.set( wpIndex );
-    }
-    catch ( std::exception &e )
-    {
-        stringstream ss;
-        ss << "PathFollower2dElement::"<<__func__<<": "<< e.what() << endl;
-        // humanManager_.showStatusWarning( ss.str().c_str() );
-        cout << ss.str().c_str();
-    }
-    catch ( ... )
-    {
-        // humanManager_.showStatusWarning( "PathFollower2d: Problem getting initial data.");
-        cout << "PathFollower2dElement: Unknown exception in " << __func__ << endl;
-    }
-}
-
-void
-PathFollower2dElement::doInitialSetup()
-{
-    if ( connectToInterface()==0 )
-        getInitialData();
 }
 
 QStringList
@@ -453,37 +415,35 @@ PathFollower2dElement::sendPath( const hydroqguipath::IPathInput *pathInput,
     try
     {
         // it's possible that we were desubscribed before, let's resubscribe to make sure
+        // this is useful to get instant feedback in the form of a displayed path coming back from localnav
         // if we are already subscribed, the server will just do nothing
         pathFollower2dPrx_->subscribe(callbackPrx_);
         
         orca::PathFollower2dData data;
-        bool isOk = pathInput->getPath( data );
-
-
-        if (isOk) 
+        hydroqguipath::GuiPath guiPath;
+        int numLoops = 0;
+        float timeOffset = 0.0;
+        pathInput->getPath( guiPath, numLoops, timeOffset );
+        
+        if ( guiPath.size()>0 )
         {
+            guiPathToOrcaPath( guiPath, data.path, numLoops, timeOffset );
             cout<<"TRACE(pathfollower2delement.cpp): setData() with data: " << orcaobj::toVerboseString(data) << endl;
             pathFollower2dPrx_->setData( data, activateImmediately );
-        } else {
+            if (!activateImmediately) 
+                humanManager_.showStatusInformation( "Path needs to be activated by pressing the Go button." );
+        } 
+        else 
+        {
             humanManager_.showStatusWarning( "No path to send!" );
-            return;
-        }
-        if (!activateImmediately) 
-            humanManager_.showStatusInformation( "Path needs to be activated by pressing the Go button." );
+        }        
     }
-    catch ( const orca::OrcaException &e )
+    catch ( const std::exception &e )
     {
         stringstream ss;
-        ss << e.what;
+        ss << "Error while trying to send pathfollowing data: " << e.what();
         humanManager_.showDialogError( ss.str().c_str() );
     }
-    catch ( const Ice::Exception &e )
-    {
-        stringstream ss;
-        ss << "While trying to set pathfollowing data: " << endl << e;
-        humanManager_.showStatusError(  ss.str().c_str() );
-    }
-    
 }
 
 void 

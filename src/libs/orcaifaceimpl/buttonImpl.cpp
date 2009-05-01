@@ -70,10 +70,10 @@ ButtonImpl::initInterface()
 }
 
 void 
-ButtonImpl::initInterface( gbxiceutilacfr::Thread* thread, const std::string& subsysName, int retryInterval )
+ButtonImpl::initInterface( gbxutilacfr::Stoppable* activity, const std::string& subsysName, int retryInterval )
 {
     ptr_ = new ButtonI( *this );
-    orcaice::createInterfaceWithString( context_, ptr_, interfaceName_, thread, subsysName, retryInterval );
+    orcaice::createInterfaceWithString( context_, ptr_, interfaceName_, activity, subsysName, retryInterval );
 }
 
 void

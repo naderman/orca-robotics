@@ -11,7 +11,7 @@
 #ifndef ORCAQGUI2D_IGUIELEMENTFACTORY_H
 #define ORCAQGUI2D_IGUIELEMENTFACTORY_H
 
-#include <hydroqgui/hydroqgui.h>
+#include <hydroqgui/iguielementfactory.h>
 #include <orcaice/context.h>
 
 namespace orcaqgui {

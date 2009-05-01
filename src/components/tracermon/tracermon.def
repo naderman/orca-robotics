@@ -1,10 +1,8 @@
 DefaultComponentTag=TracerMon
 
-# interfaces
-Requires.Tracer.Type=Tracer
-Requires.Tracer.DefaultProxy=tracer@local/laser2d
-
 # configuration
+Config.TargetPlatform.Default=local
+Config.TargetComponent.Default=laser2d
 Config.Driver.Comment=valid Drivers are { 'term-iostream', 'term-ncurses' }
 Config.Driver.Default=term-iostream
 Config.InfoVerbosity.Default=10

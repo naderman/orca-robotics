@@ -23,13 +23,13 @@ MainThread::MainThread( const orcaice::Context &context ) :
     context_(context)
 {
     // this subsystem will initialise and exit, but the component will continue running.
-    subStatus().setSubsystemType( gbxutilacfr::SubsystemEarlyExit );
+    setSubsystemType( gbxutilacfr::SubsystemEarlyExit );
 }
 
 void
 MainThread::initialise()
 {
-    subStatus().setMaxHeartbeatInterval( 10.0 );
+    setMaxHeartbeatInterval( 10.0 );
 
     //
     // ENABLE NETWORK CONNECTIONS
@@ -116,5 +116,5 @@ MainThread::initialise()
     consumer_->subscribeWithTag( "LaserScanner2d", this, subsysName() );
     
     // we won't be updating heartbeat after this
-    subStatus().setMaxHeartbeatInterval( -1 );
+    setMaxHeartbeatInterval( -1 );
 }

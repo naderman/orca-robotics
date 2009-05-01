@@ -12,7 +12,7 @@
 #ifndef ORCAQGUI_PLATFORMFOCUSCOMBO_H
 #define ORCAQGUI_PLATFORMFOCUSCOMBO_H
 
-#include <hydroqgui/hydroqgui.h>
+#include <hydroqgui/platformfocusmanager.h>
 #include <QComboBox>
 
 namespace orcaqgui {

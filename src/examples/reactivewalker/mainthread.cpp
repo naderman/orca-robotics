@@ -26,7 +26,7 @@ MainThread::MainThread( const orcaice::Context& context ) :
     driver_(0),
     context_(context)
 {
-    subStatus().setMaxHeartbeatInterval( 20.0 );
+    setMaxHeartbeatInterval( 20.0 );
 
     laser_ = new orcaifaceimpl::BufferedRangeScanner2dConsumerImpl(
                     10, gbxiceutilacfr::BufferTypeCircular, context );
@@ -96,7 +96,7 @@ MainThread::work()
         //
         commandPrx_->setCommand( commandData );
 
-        subStatus().heartbeat();
+        health().heartbeat();
     }
 }
 

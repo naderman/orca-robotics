@@ -9,7 +9,7 @@
  */
 
 #include <orcaice/orcaice.h>
-
+#include <gbxutilacfr/mathdefs.h>
 #include "termdisplaythread.h"
 #include "iostreamdisplaydriver.h"
 #include "events.h"

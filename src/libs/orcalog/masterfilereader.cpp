@@ -13,7 +13,7 @@
 #include <sstream>
 #include <orcaice/orcaice.h>
 #include <orcalog/exceptions.h>
-
+#include <hydroutil/hydroutil.h>
 #include "masterfilereader.h"
 #include "detail/filebreadcrumbs.h"
 #include "utils.h"

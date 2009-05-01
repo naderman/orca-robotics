@@ -25,4 +25,3 @@ Config.EnableReplan.Default=0
 Config.RequiredReplanRequestTime.Comment=Replan if it has been continuously required for this long.
 Config.RequiredReplanRequestTime.Default=3.0
 
-

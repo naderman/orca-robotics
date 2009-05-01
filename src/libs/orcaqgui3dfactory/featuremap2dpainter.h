@@ -14,12 +14,15 @@
 #include <qcolor.h>
 #include <orca/featuremap2d.h>
 #include <hydroqguielementutil/definitions2d.h>
-#include <hydroqgui/hydroqgui.h>
 #include <osg/Group>
 #include <osg/Geode>
 
 // forward declarations
 class QPainter;
+
+namespace hydroqguielementutil {
+    class IHumanManager;
+}
 
 namespace orcaqgui3d {
     

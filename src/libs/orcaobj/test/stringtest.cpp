@@ -9,7 +9,8 @@
  */
 
 #include <orcaobj/orcaobj.h>
-#include <orcaifaceutil/orcaifaceutil.h>
+#include <orcaifaceutil/ocm.h>
+#include <orcaifaceutil/bros1.h>
 #include <gbxutilacfr/mathdefs.h>
 #include <iostream>
 

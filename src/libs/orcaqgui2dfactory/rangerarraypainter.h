@@ -15,7 +15,6 @@
 #include <QPolygonF>
 #include <orca/rangerarray.h>
 #include <hydroqguielementutil/definitions2d.h>
-#include <hydroqgui/hydroqgui.h>
 
 class QPainter;
 

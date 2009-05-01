@@ -5,7 +5,10 @@
 #include <orca/button.h>
 #include <string>
 #include <orcaice/context.h>
-#include <hydroqgui/hydroqgui.h>
+
+namespace hydroqguielementutil {
+    class IHumanManager;
+}
 
 namespace orcaqgui2d {
 

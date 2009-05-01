@@ -12,6 +12,7 @@
 #include <orcaice/orcaice.h>
 #include <orcaifaceutil/pathplanner2d.h>
 #include <sstream>
+#include <gbxutilacfr/mathdefs.h>
 
 using namespace std;
 

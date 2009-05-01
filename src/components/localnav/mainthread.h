@@ -66,11 +66,11 @@ private:
     void checkWithOutsideWorld();
 
     void getInputs( hydronavutil::Velocity &velocity,
-                       hydronavutil::Pose     &localisePose,
-                       orca::Time             &poseTime,
-                       bool                   &isLocalisationUncertain,
-                       std::vector<float>     &obsRanges,
-                       orca::Time             &obsTime );
+                    hydronavutil::Pose     &localisePose,
+                    orca::Time             &poseTime,
+                    bool                   &isLocalisationUncertain,
+                    std::vector<float>     &obsRanges,
+                    orca::Time             &obsTime );
 
     void stopVehicle();
 

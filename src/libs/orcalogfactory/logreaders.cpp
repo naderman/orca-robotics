@@ -3,9 +3,55 @@
 #include <fstream>
 #include <orcalog/orcalog.h>
 #include <orcaobj/stringutils.h>
-#include <orcaifacelog/orcaifacelog.h>  // catch-all for auto-generated (ascii) to/fromStream functions
 #include <orcaifaceutil/vehicledescription.h>
 #include "logstringutils.h"
+
+// alexm: I haven't checked which ones are actually used.
+#include <orcaifacelog/datetime.h>
+#include <orcaifacelog/exceptions.h>
+#include <orcaifacelog/containers.h>
+#include <orcaifacelog/common.h>
+#include <orcaifacelog/ocm.h>
+#include <orcaifacelog/bros1.h>
+#include <orcaifacelog/stochastic.h>
+#include <orcaifacelog/button.h>
+#include <orcaifacelog/camera.h>
+#include <orcaifacelog/cpu.h>
+#include <orcaifacelog/drivebicycle.h>
+#include <orcaifacelog/drivedifferential.h>
+#include <orcaifacelog/estop.h>
+#include <orcaifacelog/featuremap2d.h>
+#include <orcaifacelog/gps.h>
+#include <orcaifacelog/home.h>
+#include <orcaifacelog/image.h>
+#include <orcaifacelog/ins.h>
+#include <orcaifacelog/imu.h>
+#include <orcaifacelog/localise2d.h>
+#include <orcaifacelog/localise3d.h>
+#include <orcaifacelog/multicamera.h>
+#include <orcaifacelog/rangerarray.h>
+#include <orcaifacelog/odometry2d.h>
+#include <orcaifacelog/odometry3d.h>
+#include <orcaifacelog/ogfusion.h>
+#include <orcaifacelog/ogmap.h>
+#include <orcaifacelog/particle2d.h>
+#include <orcaifacelog/pathfollower2d.h>
+#include <orcaifacelog/pathplanner2d.h>
+#include <orcaifacelog/pinger.h>
+#include <orcaifacelog/pixmap.h>
+#include <orcaifacelog/pointcloud.h>
+#include <orcaifacelog/polarfeature2d.h>
+#include <orcaifacelog/power.h>
+#include <orcaifacelog/properties.h>
+#include <orcaifacelog/qgraphics2d.h>
+#include <orcaifacelog/rangescanner2d.h>
+#include <orcaifacelog/laserscanner2d.h>
+#include <orcaifacelog/status.h>
+#include <orcaifacelog/systemstatus.h>
+#include <orcaifacelog/tracer.h>
+#include <orcaifacelog/vehicledescription.h>
+#include <orcaifacelog/velocitycontrol2d.h>
+#include <orcaifacelog/wifi.h>
 
 using namespace std;
 

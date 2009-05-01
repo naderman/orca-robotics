@@ -34,7 +34,7 @@ public:
 
     void updateContext( const orcaice::Context& context ) { context_ = context; };
     void initInterface();
-//     void initInterface( gbxiceutilacfr::Thread* thread, const std::string& subsysName="", int retryInterval=2 );
+//     void initInterface( gbxutilacfr::Stoppable* activity, const std::string& subsysName="", int retryInterval=2 );
 
     // orcaice::Home interface
     virtual void addProvidedInterface( const orca::ProvidedInterface& iface );

@@ -84,11 +84,11 @@ DriveBicycleImpl::initInterface()
 }
 
 void 
-DriveBicycleImpl::initInterface( gbxiceutilacfr::Thread* thread, const std::string& subsysName, int retryInterval )
+DriveBicycleImpl::initInterface( gbxutilacfr::Stoppable* activity, const std::string& subsysName, int retryInterval )
 {
-    orcaice::createInterfaceWithString( context_, ptr_, interfaceName_, thread, subsysName, retryInterval );
+    orcaice::createInterfaceWithString( context_, ptr_, interfaceName_, activity, subsysName, retryInterval );
 
-    topicHandler_->connectToTopic( thread, subsysName, retryInterval );
+    topicHandler_->connectToTopic( activity, subsysName, retryInterval );
 }
 
 ::orca::DriveBicycleData 

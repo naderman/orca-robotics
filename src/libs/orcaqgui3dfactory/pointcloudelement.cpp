@@ -10,7 +10,7 @@
 
 #include <iostream>
 #include <orca/pointcloud.h>
-
+#include <hydroqgui/exceptions.h>
 #include "pointcloudelement.h"
 
 using namespace std;

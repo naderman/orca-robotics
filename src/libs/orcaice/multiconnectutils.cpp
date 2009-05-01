@@ -20,12 +20,14 @@ namespace orcaice {
 
 std::string 
 getInterfaceIdWithString( const Context& context, const std::string& proxyString,
-                            gbxiceutilacfr::Thread*  thread, const std::string& subsysName, 
-                            int retryInterval, int retryNumber )
+                            gbxutilacfr::Stoppable* activity, const std::string& subsysName, 
+                            int retryIntervalSec, int retryNumber )
 {
+    assert( activity && "Null activity pointer" );
+
     std::string ifaceId;
     int count = 0;
-    while ( !thread->isStopping() && ( retryNumber<0 || count<retryNumber) )
+    while ( !activity->isStopping() && ( retryNumber<0 || count<retryNumber) )
     {
         try {
             ifaceId = getInterfaceIdWithString( context, proxyString );
@@ -34,12 +36,12 @@ getInterfaceIdWithString( const Context& context, const std::string& proxyString
         catch ( const std::exception& e ) {
             std::stringstream ss;
             ss << "Failed to get interface ID with string="<<proxyString<<". Check Registry. "
-                <<"Will retry in "<<retryInterval<<"s.\n"
+                <<"Will retry in "<<retryIntervalSec<<"s.\n"
                 << e.what();
             context.tracer().warning( ss.str() );
         }
         ++count;
-        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(retryInterval));
+        gbxiceutilacfr::checkedSleep( activity, retryIntervalSec*1000 );
         if ( !subsysName.empty() ) {
             context.status().heartbeat( subsysName );
         }
@@ -49,12 +51,14 @@ getInterfaceIdWithString( const Context& context, const std::string& proxyString
 
 std::string 
 getInterfaceIdWithTag( const Context& context, const std::string& interfaceTag,
-                            gbxiceutilacfr::Thread*  thread, const std::string& subsysName, 
-                            int retryInterval, int retryNumber )
+                            gbxutilacfr::Stoppable* activity, const std::string& subsysName, 
+                            int retryIntervalSec, int retryNumber )
 {
+    assert( activity && "Null activity pointer" );
+
     std::string ifaceId;
     int count = 0;
-    while ( !thread->isStopping() && ( retryNumber<0 || count<retryNumber) )
+    while ( !activity->isStopping() && ( retryNumber<0 || count<retryNumber) )
     {
         try {
             ifaceId = getInterfaceIdWithTag( context, interfaceTag );
@@ -63,12 +67,12 @@ getInterfaceIdWithTag( const Context& context, const std::string& interfaceTag,
         catch ( const std::exception& e ) {
             std::stringstream ss;
             ss << "Failed to get interface ID with tag="<<interfaceTag<<". Check Registry. "
-                <<"Will retry in "<<retryInterval<<"s.\n"
+                <<"Will retry in "<<retryIntervalSec<<"s.\n"
                 << e.what();
             context.tracer().warning( ss.str() );
         }
         ++count;
-        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(retryInterval));
+        gbxiceutilacfr::checkedSleep( activity, retryIntervalSec*1000 );
         if ( !subsysName.empty() ) {
             context.status().heartbeat( subsysName );
         }

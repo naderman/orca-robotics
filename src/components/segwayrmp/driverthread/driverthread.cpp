@@ -45,14 +45,14 @@ DriverThread::work()
     while ( !isStopping() )
     {
         try {
-            subStatus().setMaxHeartbeatInterval( 5.0 );    
+            setMaxHeartbeatInterval( 5.0 );    
             enableHardware();
 
-            subStatus().setMaxHeartbeatInterval( 1.0 );
+            setMaxHeartbeatInterval( 1.0 );
             operateHardware();
         }
         catch ( ... ) {
-            string problem = orcaice::catchExceptionsWithStatusAndSleep( "work loop", subStatus(), gbxutilacfr::SubsystemFault, 1000 );
+            string problem = orcaice::catchExceptionsWithStatusAndSleep( "work loop", health(), gbxutilacfr::SubsystemFault, 1000 );
 
             stateMachine_.setFault( problem );
         }
@@ -73,7 +73,7 @@ DriverThread::enableHardware()
             return;
         }
         catch ( ... ) {
-            string problem = orcaice::catchExceptionsWithStatusAndSleep( "enabling", subStatus(), gbxutilacfr::SubsystemFault, 2000 );
+            string problem = orcaice::catchExceptionsWithStatusAndSleep( "enabling", health(), gbxutilacfr::SubsystemFault, 2000 );
 
             stateMachine_.setFault( problem );
         }
@@ -133,22 +133,22 @@ DriverThread::operateHardware()
             if ( data.hasFaults )
             {
                 stateMachine_.setFault( data.warnFaultReason );
-                subStatus().fault( data.warnFaultReason );
+                health().fault( data.warnFaultReason );
                 break;
             }
             else if ( data.hasWarnings )
             {
                 stateMachine_.setWarning( data.warnFaultReason );
-                subStatus().warning( data.warnFaultReason );
+                health().warning( data.warnFaultReason );
             }
             else
             {
                 stateMachine_.setOK();
-                subStatus().ok();
+                health().ok();
             }
         }
         catch ( ... ) {
-            string problem = orcaice::catchExceptionsWithStatus( "reading from hardware", subStatus() );
+            string problem = orcaice::catchExceptionsWithStatus( "reading from hardware", health() );
             stateMachine_.setFault( problem ); 
             break;
         }
@@ -186,7 +186,7 @@ DriverThread::operateHardware()
                 segwayRmp_.write( command );
             }
             catch ( ... ) {
-                string problem = orcaice::catchExceptionsWithStatus( "writing to hardware", subStatus() );
+                string problem = orcaice::catchExceptionsWithStatus( "writing to hardware", health() );
                 stateMachine_.setFault( problem ); 
                 break;
             }
@@ -208,7 +208,7 @@ DriverThread::operateHardware()
     std::string faultReason;
     if ( stateMachine_.isFault(faultReason) )
     {
-        subStatus().fault( faultReason );
+        health().fault( faultReason );
         // pause in case of persistent fault
         sleep(1);
     }
@@ -230,7 +230,7 @@ DriverThread::reportStall( const hydrointerfaces::SegwayRmp::Data &data,
 {
     stringstream ss;
     ss << "Stall condition: " << stallType << ", data: " << data.toString();
-    subStatus().warning( ss.str() );
+    health().warning( ss.str() );
 }
 
 }

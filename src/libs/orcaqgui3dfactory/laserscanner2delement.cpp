@@ -10,7 +10,7 @@
 
 #include <iostream>
 #include <orca/laserscanner2d.h>
-
+#include <hydroqgui/exceptions.h>
 #include "laserscanner2delement.h"
 
 using namespace std;

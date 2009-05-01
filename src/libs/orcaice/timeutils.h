@@ -30,6 +30,11 @@ IceUtil::Time toIceTime( const orca::Time & t );
 //! Converts from Ice standard time format to orca::Time.
 orca::Time toOrcaTime( const IceUtil::Time & t );
 
+//! Matches IceUtil::Time::toDateTime function:
+//! converts to human-readable date/time string.
+inline std::string toDateTime( const orca::Time &t )
+{ return toIceTime(t).toDateTime(); }
+
 //! Converts from number of seconds to orca::Time.
 //! Time can be negative, in which case both seconds and
 //! microseconds are returned as negatives,

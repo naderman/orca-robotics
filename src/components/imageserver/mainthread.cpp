@@ -29,7 +29,7 @@ MainThread::MainThread( const orcaice::Context &context )
 void 
 MainThread::initialise()
 {
-    subStatus().setMaxHeartbeatInterval( 20.0 );
+    setMaxHeartbeatInterval( 20.0 );
     readSettings();
     // print out description
     context_.tracer().debug( orcaobj::toString(descr_) );
@@ -74,11 +74,11 @@ MainThread::work()
             interface_->localSetAndSend( orcaData_ );
             if ( hydroData_.haveWarnings )
             {
-                subStatus().warning( hydroData_.warnings );
+                health().warning( hydroData_.warnings );
             }
             else
             {
-                subStatus().ok();
+                health().ok();
             }
 
             stringstream ss;
@@ -90,7 +90,7 @@ MainThread::work()
         } // end of try
         catch ( ... ) 
         {
-            orcaice::catchMainLoopExceptions( subStatus() );
+            orcaice::catchMainLoopExceptions( health() );
 
             // Re-initialise the driver, unless we are stopping
             if ( !isStopping() ) {
@@ -118,7 +118,7 @@ MainThread::readSettings()
 void
 MainThread::initHardwareInterface()
 {
-    subStatus().setMaxHeartbeatInterval( 20.0 );
+    setMaxHeartbeatInterval( 20.0 );
 
     //copy from description to config
 
@@ -155,14 +155,14 @@ MainThread::initHardwareInterface()
             break;
         }
         catch ( ... ) {
-            orcaice::catchExceptionsWithStatusAndSleep( "initialising hardware driver", subStatus() );
+            orcaice::catchExceptionsWithStatusAndSleep( "initialising hardware driver", health() );
         }       
     }
 
     //copy from config to description for the possible changes made
     orcaimage::copy( descr_, config_ );
 
-    subStatus().setMaxHeartbeatInterval( 1.0 );
+    setMaxHeartbeatInterval( 1.0 );
 
 }
 

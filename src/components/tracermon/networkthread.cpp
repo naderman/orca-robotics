@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
+#include <orcaice/icegridutils.h>
 
 #include "networkthread.h"
 #include "events.h"
@@ -48,6 +49,15 @@ NetworkThread::walk()
     // configs
     std::string prefix = context_.tag() + ".Config.";
     Ice::PropertiesPtr props = context_.properties();
+
+    orca::FQComponentName fqName;
+    fqName.platform = orcaice::getPropertyWithDefault( props, prefix+"TargetPlatform", "local" );
+    // this property is required
+    if ( orcaice::getProperty( props, prefix+"TargetComponent", fqName.component ) ) {
+        orcaice::warnMissingProperty( prefix+"TargetComponent" );
+        context_.shutdown();
+    }
+
     int infoVerb = orcaice::getPropertyAsIntWithDefault( props, prefix+"InfoVerbosity", 10 );
     int warnVerb = orcaice::getPropertyAsIntWithDefault( props, prefix+"WarningVerbosity", 10 );
     int errorVerb = orcaice::getPropertyAsIntWithDefault( props, prefix+"ErrorVerbosity", 10 );
@@ -59,12 +69,22 @@ NetworkThread::walk()
     if ( isStopping() )
         return;
 
-    // REQUIRED : Tracer
+    try {
+        orcaice::connectToAdminInterface<orca::Tracer,orca::TracerPrx>( context_, tracerPrx_, fqName );
+    }
+    catch( const std::exception& e ) {
+        stringstream ss;
+        ss << "(while connecting to tracer interface) caught exception: " << e.what() << endl
+           << "Quitting";
+        context_.tracer().error( ss.str() );
+        context_.shutdown();
+    }
+    
     // multi-try
-    orcaice::connectToInterfaceWithTag<orca::TracerPrx >( context_, tracerPrx_, "Tracer", this );
+//     orcaice::connectToInterfaceWithTag<orca::TracerPrx >( context_, tracerPrx_, "Tracer", this );
     // check for stop signal after retuning from multi-try
-    if ( isStopping() )
-        return;
+//     if ( isStopping() )
+//         return;
 
     //
     // this loop until it succeeds

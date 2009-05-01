@@ -17,6 +17,7 @@
 #include <orcaice/component.h>
 #include <orcaice/orcaice.h>
 #include <orcaice/icegridutils.h>
+#include <hydroutil/hydroutil.h>
 #include <orca/properties.h>
 #include <IceGrid/Registry.h>  // used to register Home interface as a well-known object
 
@@ -371,7 +372,6 @@ postProcessComponentProperties( const Ice::PropertiesPtr& props, const std::stri
     // but we need this for running components through IceGrid.
     if ( !orcaice::getProperty( props, compTag+".AdapterId", adapter ) ) 
     {
-cout<<"DEBUG: adapterId is specified"<<endl;
         // When AdapterId is specified, it overwrites platform and component properties.
         fqCName = orcaice::toComponentName( adapter );
         props->setProperty( compTag+".Platform", fqCName.platform );
@@ -379,7 +379,6 @@ cout<<"DEBUG: adapterId is specified"<<endl;
     }
     else 
     { 
-cout<<"DEBUG: adapterId is NOT specified"<<endl;
         // When AdapterId is NOT specified, we read individual properties and set the AdapterId
         // (at this point, these properties may be empty)
         fqCName.platform = props->getProperty( compTag+".Platform" );
@@ -422,7 +421,7 @@ cout<<"DEBUG: adapterId is NOT specified"<<endl;
         }
     }
     else {
-cout<<"DEBUG: NOT replacing local platform"<<endl;
+//         cout<<"DEBUG: NOT replacing local platform"<<endl;
     }
 
     // 

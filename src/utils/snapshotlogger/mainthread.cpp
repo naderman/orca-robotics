@@ -12,7 +12,7 @@
 #include <orcaice/orcaice.h>
 #include <orcalog/orcalog.h>
 #include <hydrodll/dynamicload.h>
-
+#include <hydroutil/hydroutil.h>
 #include "mainthread.h"
 
 using namespace std;
@@ -39,7 +39,7 @@ MainThread::MainThread( const orcaice::Context& context ) :
     SubsystemThread( context.tracer(), context.status(), "MainThread" ),
     context_(context)
 {
-    subStatus().setMaxHeartbeatInterval( 20.0 );
+    setMaxHeartbeatInterval( 20.0 );
 }
 
 MainThread::~MainThread()
@@ -72,7 +72,7 @@ MainThread::initialise()
 void
 MainThread::work()
 {
-    subStatus().setMaxHeartbeatInterval( 5.0 );
+    setMaxHeartbeatInterval( 5.0 );
 
     while ( !isStopping() )
     {
@@ -88,11 +88,11 @@ MainThread::work()
                 if ( !requestStore_.isEmpty() )
                     requestStore_.get( dummy );
             }
-            subStatus().ok();
+            health().ok();
         }
         catch ( ... ) 
         {
-            orcaice::catchMainLoopExceptions( subStatus() );
+            orcaice::catchMainLoopExceptions( health() );
         }
     }
 }
@@ -187,7 +187,7 @@ MainThread::initInterface()
             break;
         }
         catch ( ... ) {
-            orcaice::catchExceptionsWithStatusAndSleep( "initialising Button interface", subStatus() );
+            orcaice::catchExceptionsWithStatusAndSleep( "initialising Button interface", health() );
         }
     }
 }

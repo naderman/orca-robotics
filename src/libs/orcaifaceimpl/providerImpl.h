@@ -12,14 +12,15 @@
 #define ORCA_PROVIDER_IMPL_H
 
 #include <memory>
-#include <gbxsickacfr/gbxiceutilacfr/store.h>
 #include <orcaice/context.h>
 #include <orcaice/topichandler.h>
 #include <orcaice/configutils.h>
 #include <orcaice/convertutils.h>
 #include <orcaice/iceutils.h>
+#include <orcaice/multiiceutils.h>
+#include <IceUtil/Mutex.h>
 
-namespace gbxiceutilacfr { class Thread; }
+namespace gbxutilacfr { class Stoppable; }
 
 namespace orcaifaceimpl {
 
@@ -70,27 +71,48 @@ public:
     }
 
     //! Sets up interface and connects to IceStorm. Catches all exceptions and retries
-    //! until sucessful. At every iteration, checks if the thread was stopped.
-    void initInterface( gbxiceutilacfr::Thread* thread, const std::string& subsysName="", int retryInterval=2 )
+    //! until sucessful. At every iteration, checks if the activity was stopped.
+    void initInterface( gbxutilacfr::Stoppable* activity, const std::string& subsysName="", int retryInterval=2 )
     {
-        orcaice::createInterfaceWithString( context_, ptr_, interfaceName_, thread, subsysName, retryInterval );
+        orcaice::createInterfaceWithString( context_, ptr_, interfaceName_, activity, subsysName, retryInterval );
     
-        topicHandler_->connectToTopic( thread, subsysName, retryInterval );
+        topicHandler_->connectToTopic( activity, subsysName, retryInterval );
     }
 
     //! A local call which sets the data reported by the interface
     void localSet( const DataType& data )
     {
-        dataStore_.set( data );
+        IceUtil::Mutex::Lock lock(mutex_);
+        data_ = data;
+        isDataSet_ = true;
     }
 
     //! A local call which sets the data reported by the interface, 
     //! and sends it through IceStorm
     void localSetAndSend( const DataType& data )
     {
-        dataStore_.set( data );
-    
+        {
+            IceUtil::Mutex::Lock lock(mutex_);
+            data_ = data;
+            isDataSet_ = true;
+        }
         topicHandler_->publish( data );
+    }
+
+    //! A local call which sets the data reported by the interface, 
+    //! and sends a different thing through IceStorm.
+    //! This is useful if e.g. you want to push an update to a
+    //! structure, but have the full structure available to subscribers.
+    void localSetAndSend( const DataType& dataToSet, const DataType& dataToSend )
+    {
+        // By sending first, we avoid the possibility that a client
+        // gets our data on subscription then gets pushed the update.
+        topicHandler_->publish( dataToSend );
+        {
+            IceUtil::Mutex::Lock lock(mutex_);
+            data_ = dataToSet;
+            isDataSet_ = true;
+        }
     }
 
 private:    
@@ -112,7 +134,10 @@ private:
     //////////////////////////////////////////////////////////////////////
 
     // Holds the current data
-    gbxiceutilacfr::Store<DataType> dataStore_;
+    DataType data_;
+    bool isDataSet_;
+    // Protects the data_
+    IceUtil::Mutex mutex_;
 
     typedef orcaice::TopicHandler<ConsumerPrxType,DataType> TopicHandlerType;
     std::auto_ptr<TopicHandlerType> topicHandler_;
@@ -133,16 +158,14 @@ private:
     {
         context_.tracer().debug( "ProviderImpl::internalGetData()", 5 );
     
-        if ( dataStore_.isEmpty() )
+        IceUtil::Mutex::Lock lock(mutex_);
+        if ( !isDataSet_ )
         {
             std::stringstream ss;
             ss << "No data available! (interface="<<interfaceName_<<")";
             throw orca::DataNotExistException( ss.str() );
         }
-    
-        DataType data;
-        dataStore_.get( data );
-        return data;
+        return data_;
     }
 
     IceStorm::TopicPrx internalSubscribe(const ConsumerPrxType& subscriber)
@@ -151,18 +174,27 @@ private:
         {
             throw orca::SubscriptionFailedException("Component does not have a topic to publish its traces.");
         }
-        
+
+        // Grab the data in a crit section
+        DataType data;
+        bool gotData = false;
+        {        
+            IceUtil::Mutex::Lock lock(mutex_);
+            if ( isDataSet_ )
+            {
+                data = data_;
+                gotData = true;
+            }
+        }
+
         // if we have data, send all the information we have to the new subscriber (and to no one else)
-        if ( dataStore_.isEmpty() )
+        if ( gotData )
         {
-            return topicHandler_->subscribe( subscriber );
+            return topicHandler_->subscribe( subscriber, data );
         }
         else
         {
-            DataType data;
-            dataStore_.get( data );
-        
-            return topicHandler_->subscribe( subscriber, data );
+            return topicHandler_->subscribe( subscriber );
         }
     }
 };

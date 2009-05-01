@@ -45,6 +45,9 @@ public:
     //! Returns 0 on success good, 1 on error.
     int loadOperation( const int index, orcacm::OperationData& data );
 
+    //! Stringified representation of the probe. Useful for debuging.
+    std::string toString() const;
+
 protected:
 
     //! Fully-qualified name of the interface.

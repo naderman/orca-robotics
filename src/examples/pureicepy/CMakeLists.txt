@@ -2,7 +2,7 @@ option( build_PURE_ICEPYTHON "Try to build PureIcePython Python Example" ON )
 
 if( NOT GBX_OS_WIN AND build_PURE_ICEPYTHON )
 
-    PROJECT( pureicepython )
+    project( pureicepython )
 
     # TEMP HACKS
     set( PROJECT_INTERFACE_PY ${orca_BINARY_DIR}/src/interfaces/python/orca.py )

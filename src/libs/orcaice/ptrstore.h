@@ -23,7 +23,8 @@ namespace orcaice
  *  @note Works only with smart pointers to classes auto-generated from Slice 
  *  definitions.
  *
- *  @note Replaces the deprecated PtrProxy class.
+ *  @note It is safe to use the normal Store with Ice::ObjectPrx. 
+ *
  *  @see PtrBuffer, PtrNotify
  */
 template<class Type>

@@ -102,6 +102,21 @@ Component and Application properties.
     - When component activates it tries to register its adapter with the Registry. If it cannot connect (e.g. Registy is not running) it gets an exception. When indirect binding (using names) is used this makes a component with provided interfaces useless because nobody can connect to it. In this case requiring registry makes sense and the component should exit at this point. There are cases however when you may want to ignore this and continue with the startup.
     - Default: 1
 
+- @c Orca.Component.EnableTracer (bool)
+    - Enables Orca-standard Tracer interface which allows remote access to component's execution traces.
+      This property overrides the default set in code.
+    - Default: component-specific, set in code.
+
+- @c Orca.Component.EnableStatus (bool)
+    - Enables Orca-standard Status interface which allows remote access to component's status information.
+      This property overrides the default set in code.
+    - Default: component-specific, set in code.
+
+- @c Orca.Component.EnableHome (bool)
+    - Enables Orca-standard Home interface which allows remote access to component's interface information.
+      This property overrides the default set in code.
+    - Default: component-specific, set in code.
+
 - @c Orca.Component.EnableProperties (bool)
     - Enables Ice-standard Properties interface which allows remote read access to all component properties.
     - Default: 1

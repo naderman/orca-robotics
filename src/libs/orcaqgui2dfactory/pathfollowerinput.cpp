@@ -1,3 +1,4 @@
+#include <QFileDialog>
 #include <orcaqgui2dfactory/pathfolloweruserinteraction.h>
 #include <orcaqgui2dfactory/pathconversionutil.h>
 #include "pathfollowerinput.h"
@@ -6,14 +7,18 @@ namespace orcaqgui2d {
 
 PathFollowerInput::PathFollowerInput ( hydroqguipath::IPathUserInteraction *pathUI,
                                        hydroqguipath::WaypointSettings           *wpSettings,
-                                       hydroqguielementutil::IHumanManager       &humanManager,
-                                       const QString                             &lastSavedPathFile )
+                                       hydroqguielementutil::IHumanManager       &humanManager )
     : pathUI_(pathUI)
+      
 {
     guiPath_.reset( new hydroqguipath::GuiPath() );
     pathDesignScreen_.reset( new hydroqguipath::PathDesignScreen( *guiPath_.get(), wpSettings, humanManager ) );
     pathDesignTableWidget_.reset( new hydroqguipath::PathDesignTableWidget( this, *guiPath_.get() ) );
-    pathFileHandler_.reset( new PathFileHandler( humanManager, lastSavedPathFile ) );
+}
+
+PathFollowerInput::~PathFollowerInput()
+{
+    std::cout << "PathFollowerInput: destructing itself" << std::endl;
 }
 
 void 
@@ -55,21 +60,24 @@ PathFollowerInput::setWaypointFocus( int waypointId )
     pathDesignScreen_->setWaypointFocus( waypointId );
 }
 
-bool
-PathFollowerInput::getPath( orca::PathFollower2dData &pathData ) const
-{    
-    int size = pathDesignTableWidget_->numberOfLoops() * guiPath_->size();
-    //cout << "DEBUG(pathinput.cpp): getPath: size of waypoints is " << size << endl;
-    if (size==0) return false;
+void 
+PathFollowerInput::getPath( hydroqguipath::GuiPath &guiPath, 
+                            int &numLoops, 
+                            float &timeOffset ) const
+{
+    guiPath = *guiPath_.get();
     
-    const float timeOffset = guiPath_->back().timeTarget + pathDesignScreen_->secondsToCompleteLoop();
-    guiPathToOrcaPath( *guiPath_.get(), pathData.path, pathDesignTableWidget_->numberOfLoops(), timeOffset );
+    numLoops = pathDesignTableWidget_->numberOfLoops();
     
-    return true;
+    if (numLoops > 1)
+        timeOffset = guiPath_->back().timeTarget + pathDesignScreen_->secondsToCompleteLoop();
+    else
+        timeOffset=0.0;
 }
 
-void 
-PathFollowerInput::savePath( const QString &filename )
+
+void
+PathFollowerInput::savePath()
 {
     int numLoops = pathDesignTableWidget_->numberOfLoops();
     
@@ -77,20 +85,21 @@ PathFollowerInput::savePath( const QString &filename )
     if (numLoops > 1)
         timeOffset = guiPath_->back().timeTarget + pathDesignScreen_->secondsToCompleteLoop();
   
-    pathFileHandler_->savePath( filename, *guiPath_.get(), numLoops, timeOffset );  
+    pathUI_->saveUserPath( *guiPath_.get(), numLoops, timeOffset );
 }
 
+
 void
-PathFollowerInput::loadPath( const QString &filename ) 
+PathFollowerInput::loadPath() 
 {  
-    pathFileHandler_->loadPath( filename, *guiPath_.get() );
+    pathUI_->loadUserPath( *guiPath_.get() );
     pathDesignTableWidget_->refreshTable(); 
 }
 
 void 
 PathFollowerInput::loadPreviousPath()
 {
-    pathFileHandler_->loadPreviousPath( *guiPath_.get() );
+    pathUI_->loadPreviousUserPath( *guiPath_.get() );
     pathDesignTableWidget_->refreshTable(); 
 }
 

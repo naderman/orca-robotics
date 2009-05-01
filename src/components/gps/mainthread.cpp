@@ -60,7 +60,7 @@ MainThread::MainThread( const orcaice::Context& context ) :
 void
 MainThread::initialise()
 {
-    subStatus().setMaxHeartbeatInterval( 60.0 );  
+    setMaxHeartbeatInterval( 60.0 );  
 
     Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag() + ".Config.";
@@ -91,7 +91,7 @@ MainThread::work()
         {
             // this blocks until new data arrives
             driver_->read( hydroData );
-            subStatus().heartbeat();
+            health().heartbeat();
             
             // convert hydro->orca
             convert( hydroData, orcaData );
@@ -105,14 +105,14 @@ MainThread::work()
             {
                 context_.tracer().debug( "No GPS fix. Not publishing data", 6 );
             }
-            subStatus().ok();
+            health().ok();
 
             continue;
 
         } // end of try
         catch ( ... ) 
         {
-            orcaice::catchMainLoopExceptions( subStatus() );
+            orcaice::catchMainLoopExceptions( health() );
 
             // Re-initialise the driver, unless we are stopping
             if ( !isStopping() ) {
@@ -152,7 +152,7 @@ MainThread::initNetworkInterface()
 void
 MainThread::initHardwareDriver()
 {
-    subStatus().setMaxHeartbeatInterval( 30.0 );
+    setMaxHeartbeatInterval( 30.0 );
 
     Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag() + ".Config.";
@@ -187,9 +187,9 @@ MainThread::initHardwareDriver()
             break;
         }
         catch ( ... ) {
-            orcaice::catchExceptionsWithStatusAndSleep( "initialising hardware driver", subStatus() );
+            orcaice::catchExceptionsWithStatusAndSleep( "initialising hardware driver", health() );
         }       
     }
 
-    subStatus().setMaxHeartbeatInterval( 10.0 );
+    setMaxHeartbeatInterval( 10.0 );
 }

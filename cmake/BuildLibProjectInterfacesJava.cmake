@@ -2,7 +2,7 @@ if( JAVA_FOUND AND ORCA_BUILD_JAVA )
 
 message( STATUS "Planning to build Java interfaces." )
 
-PROJECT( java_interfaces Java )
+project( java_interfaces Java )
 # set( CMAKE_VERBOSE_MAKEFILE 1 )
 
 # TEMP HACKS

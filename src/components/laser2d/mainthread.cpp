@@ -12,6 +12,7 @@
 #include <orcaice/orcaice.h>
 #include <orcaifaceutil/laserscanner2d.h>
 #include <orcaobj/orcaobj.h> // for getPropertyAs...()
+#include <gbxutilacfr/mathdefs.h>
 #include "mainthread.h"
 
 using namespace std;
@@ -26,7 +27,7 @@ MainThread::MainThread( const orcaice::Context &context ) :
 void
 MainThread::initialise()
 {
-    subStatus().setMaxHeartbeatInterval( 20.0 );
+    setMaxHeartbeatInterval( 20.0 );
 
     initSettings();
 
@@ -41,7 +42,7 @@ MainThread::initialise()
 void
 MainThread::work() 
 {
-    subStatus().setMaxHeartbeatInterval( 1.0 );
+    setMaxHeartbeatInterval( 1.0 );
 
     while ( !isStopping() )
     {
@@ -53,11 +54,11 @@ MainThread::work()
             laserInterface_->localSetAndSend( orcaLaserData_ );
             if ( hydroLaserData_.haveWarnings )
             {
-                subStatus().warning( hydroLaserData_.warnings );
+                health().warning( hydroLaserData_.warnings );
             }
             else
             {
-                subStatus().ok();
+                health().ok();
             }
 
             stringstream ss;
@@ -66,7 +67,7 @@ MainThread::work()
         }
         catch ( ... ) 
         {
-            orcaice::catchMainLoopExceptions( subStatus() );
+            orcaice::catchMainLoopExceptions( health() );
 
             // Re-initialise the driver, unless we are stopping
             if ( !isStopping() ) {
@@ -216,7 +217,7 @@ MainThread::initHardwareDriver()
             break;
         }
         catch ( ... ) {
-            orcaice::catchExceptionsWithStatusAndSleep( "initialising hardware driver", subStatus() );
+            orcaice::catchExceptionsWithStatusAndSleep( "initialising hardware driver", health() );
         }   
     }
 }

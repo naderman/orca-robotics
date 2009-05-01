@@ -14,7 +14,6 @@
 #include <assert.h>
 #include <IceStorm/IceStorm.h>
 #include <orcaqguielementutil/icestormlistener.h>
-#include <hydroqgui/hydroqgui.h>
 #include <hydroqguielementutil/guielement2d.h>
 
 namespace orcaqguielementutil {
@@ -48,7 +47,7 @@ public:
     virtual ~IceStormElement() {}
 
     //! Can do special stuff on connection by inheriting and overloading this
-    virtual void actionOnConnection()=0;
+    virtual void actionOnConnection() {}
 
     //! Here we pop data from the consumer buffer, and give it to the painter.
     void updateFromBuffer();

@@ -98,14 +98,11 @@ public:
     PathPainter &pathPainter() { return painter_; }
 
 private: 
-    
-    void doInitialSetup();
 
     PathPainter painter_;
 
-    int connectToInterface();
+    void connectToInterface();
     bool isConnected_;
-    void getInitialData();
 
     PathUpdateConsumer *pathUpdateConsumer_;
     orca::PathFollower2dConsumerPrx callbackPrx_;

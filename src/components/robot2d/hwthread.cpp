@@ -22,7 +22,7 @@ HwThread::HwThread( const orcaice::Context &context ) :
     SubsystemThread( context.tracer(), context.status(), "HwThread" ),
     context_(context)
 {
-    subStatus().setMaxHeartbeatInterval( 10.0 );
+    setMaxHeartbeatInterval( 10.0 );
 
     //
     // Read settings
@@ -81,12 +81,12 @@ HwThread::work()
         if ( stateMachine_.isFault( reason ) )
         {
             // Try to (re-)enable
-            subStatus().setMaxHeartbeatInterval( 5.0 );    
+            setMaxHeartbeatInterval( 5.0 );    
             enableDriver();
 
             // we enabled, so presume we're OK.
             stateMachine_.setOK();
-            subStatus().setMaxHeartbeatInterval( 2.0 );
+            setMaxHeartbeatInterval( 2.0 );
 
             // but make sure we're not shutting down.
             if ( isStopping() )
@@ -129,7 +129,7 @@ HwThread::work()
             }
         }
         catch ( ... ) {
-            string problem = orcaice::catchExceptionsWithStatus( "reading from hardware", subStatus() );
+            string problem = orcaice::catchExceptionsWithStatus( "reading from hardware", health() );
             stateMachine_.setFault( problem ); 
         }
 
@@ -149,7 +149,7 @@ HwThread::work()
                 context_.tracer().debug( ss.str() );
             }
             catch ( ... ) {
-                string problem = orcaice::catchExceptionsWithStatus( "writing to hardware", subStatus() );
+                string problem = orcaice::catchExceptionsWithStatus( "writing to hardware", health() );
                 stateMachine_.setFault( problem ); 
             }
         }
@@ -157,15 +157,15 @@ HwThread::work()
         // Tell the 'status' engine what our local state machine knows.
         if ( stateMachine_.isFault(reason) )
         {
-            subStatus().fault( reason );
+            health().fault( reason );
         }
         else if ( stateMachine_.isWarning(reason) )
         {
-            subStatus().warning( reason );
+            health().warning( reason );
         }
         else
         {
-            subStatus().ok();
+            health().ok();
         }
 
     } // while
@@ -186,7 +186,7 @@ HwThread::enableDriver()
             return;
         }
         catch ( ... ) {
-            string problem = orcaice::catchExceptionsWithStatusAndSleep( "enabling hardware driver", subStatus(), gbxutilacfr::SubsystemFault, 2000 );
+            string problem = orcaice::catchExceptionsWithStatusAndSleep( "enabling hardware driver", health(), gbxutilacfr::SubsystemFault, 2000 );
 
             stateMachine_.setFault( problem );
         }

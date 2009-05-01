@@ -11,7 +11,7 @@
 #include <orcaice/application.h>
 #include <orcaice/component.h>
 #include <orcaice/orcaice.h>
-
+#include <hydroutil/hydroutil.h>
 #include "detail/privateutils.h"
 
 using namespace std;

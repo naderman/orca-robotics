@@ -15,6 +15,7 @@
 #include <hydroqguipath/pathutils.h>
 #include <hydroqguielementutil/definitions2d.h>
 #include <orca/pathplanner2d.h>
+#include <gbxsickacfr/gbxiceutilacfr/timer.h>
 
 // forward declarations
 class QPainter;

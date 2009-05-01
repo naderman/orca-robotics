@@ -17,7 +17,9 @@
 #include <orcaice/icestormutils.h>
 #include <orcaice/icegridutils.h>
 #include <gbxsickacfr/gbxiceutilacfr/store.h>
-#include <gbxsickacfr/gbxiceutilacfr/thread.h>
+// we only need the definition of Stoppable and checkedSleep() function.
+// (we don't need the actual Thread class).
+#include <gbxsickacfr/gbxiceutilacfr/threadutils.h>
 
 namespace orcaifaceimpl
 {
@@ -45,29 +47,36 @@ public:
     virtual void unsubscribe()=0;
 
     //! Tries to connect to remote interface with stringified proxy @c proxyString.
-    //! Will try to connect @c retryNumber number of times (-1 means infinite), waiting for @c retryInterval [s] after
+    //! Will try to connect @c retryNumber number of times (-1 means infinite), waiting for @c retryIntervalSec [s] after
     //! each attempt.
     //! If succesful, tries to subscribe for data using the internal consumer interface.
     //! Catches appropriate exceptions. DOCUMENT!
     //! 
     //! Returns TRUE if subscribed succesfully, FALSE otherwise.
     virtual bool subscribeWithString( const std::string& proxyString,  
-                          gbxiceutilacfr::Thread*  thread, const std::string& subsysName="", 
-                          int retryInterval=2, int retryNumber=-1 )=0;
+                          gbxutilacfr::Stoppable* activity, const std::string& subsysName="", 
+                          int retryIntervalSec=2, int retryNumber=-1 )=0;
 
     //! Same as the threaded version of subscribeWithString() but the interface is looked up 
     //! using the config file and tag interfaceTag.
     //! 
     //! Returns TRUE if subscribed succesfully, FALSE otherwise.
     bool subscribeWithTag( const std::string& interfaceTag, 
-                          gbxiceutilacfr::Thread*  thread, const std::string& subsysName="", 
-                          int retryInterval=2, int retryNumber=-1 );
+                          gbxutilacfr::Stoppable* activity, const std::string& subsysName="", 
+                          int retryIntervalSec=2, int retryNumber=-1 );
+
+    //! Returns TRUE is we have ever been successfully subscribed.
+    bool hasBeenSubscribed()
+        { return !topic_.isEmpty(); }
+
 protected:
 
     // This could be used for re-subscribing.
 //     gbxiceutilacfr::Store<std::string> proxyString_;
 
-    //! EXPERIMENTAL!
+    //
+    // Can connect to Admin interfaces to subscribe their consumers (Status and Tracer)
+    //
     gbxiceutilacfr::Store<IceStorm::TopicPrx> topic_;
 
     //! Component context.
@@ -118,13 +127,8 @@ This consumer subscribes for data updates in the constructor and unsubscribes in
 destructor. There's still a small chance that IceStorm will report an error when data delivery and
 unsubscription are closely spaced, e.g. ('ast' in 'status/ast' means asterisk, replaced to avoid compiler warning):
 @verbatim
-<<<<<<< .mine
-Oct 25 03:26:47 tango /usr/bin/icebox[2474]: Topic: status\*@tango/localnav: subscribeAndGetPublisher: 07394FBF-586C-4128-AA28-1727B9DA2E19 QoS:  subscriptions: []
-Oct 25 03:26:49 tango /usr/bin/icebox[2474]: Topic: status\*@tango/localnav: unsubscribe: 07394FBF-586C-4128-AA28-1727B9DA2E19[07394FBF-586C-4128-AA28-1727B9DA2E19]
-=======
 Oct 25 03:26:47 tango /usr/bin/icebox[2474]: Topic: status/ast@tango/localnav: subscribeAndGetPublisher: 07394FBF-586C-4128-AA28-1727B9DA2E19 QoS:  subscriptions: []
 Oct 25 03:26:49 tango /usr/bin/icebox[2474]: Topic: status/ast@tango/localnav: unsubscribe: 07394FBF-586C-4128-AA28-1727B9DA2E19[07394FBF-586C-4128-AA28-1727B9DA2E19]
->>>>>>> .r5129
 Oct 25 03:26:49 tango /usr/bin/icebox[2474]: Subscriber: 0x81182e0 07394FBF-586C-4128-AA28-1727B9DA2E19: subscriber errored out: OutgoingAsync.cpp:305: Ice::ObjectNotExistException: object does not exist: identity: `07394FBF-586C-4128-AA28-1727B9DA2E19' facet:  operation: setData retry: 0/0
 @endverbatim
 */
@@ -182,6 +186,9 @@ public:
     // This is tricky! Can't leave it pure virtual because we unsubscribe and detsroy
     // in ConsumerImpl destructor. By that time, the derived class (e.g. StoringConsumer)
     // is already destroyed and we'll get "pure virtual method called".
+    //
+    // It's tempting to try to make this function private and declare the class which
+    // calls it a friend. But this is complicated with templates.
     //! This function is called when new data arrives to the consumer.
     //! Default implementation does nothing. 
     //! Re-implement this callback in the derived class. 
@@ -191,6 +198,9 @@ public:
 
     // no doxytags, these functions are already documented above.
 
+    //
+    // Can connect to Admin interfaces to subscribe their consumers (Status and Tracer)
+    //
     virtual void subscribeWithString( const std::string& proxyString )
     {
         ProviderPrxType providerPrx;
@@ -212,7 +222,7 @@ public:
         topic_.set( topicPrx );
 
         std::stringstream ss;
-        ss << "Subscribed to " << proxyString;
+        ss << "Subscribed to topic=" << topicPrx->ice_toString() << " consumer=" << proxyString;
         context_.tracer().debug( ss.str() );
     }
 
@@ -231,21 +241,21 @@ public:
     }
 
     virtual bool subscribeWithString( const std::string& proxyString, 
-                          gbxiceutilacfr::Thread*  thread, const std::string& subsysName="", 
-                          int retryInterval=2, int retryNumber=-1 )
+                          gbxutilacfr::Stoppable* activity, const std::string& subsysName="", 
+                          int retryIntervalSec=2, int retryNumber=-1 )
     {
         ProviderPrxType providerPrx;
         // multi-try
         orcaice::connectToInterfaceWithString( context_,
                                                providerPrx,
                                                proxyString,
-                                               thread,
+                                               activity,
                                                subsysName,
-                                               retryInterval,
+                                               retryIntervalSec,
                                                retryNumber );
 
         int count = 0;
-        while ( !thread->isStopping() && ( retryNumber<0 || count<retryNumber) )
+        while ( !activity->isStopping() && ( retryNumber<0 || count<retryNumber) )
         {
             try {
                 IceStorm::TopicPrx topicPrx = providerPrx->subscribe( consumerPrx_ );
@@ -260,27 +270,27 @@ public:
             {
                 std::stringstream ss;
                 ss << "Failed to subscribe: " << e.what << std::endl
-                   <<"Will retry in "<<retryInterval<<"s.";
+                   <<"Will retry in "<<retryIntervalSec<<"s.";
                 context_.tracer().warning( ss.str() );                
             }
             catch ( const std::exception &e )
             {
                 std::stringstream ss;
                 ss << "Failed to subscribe: " << e.what() << std::endl
-                   <<"Will retry in "<<retryInterval<<"s.";
+                   <<"Will retry in "<<retryIntervalSec<<"s.";
                 context_.tracer().warning( ss.str() );
             }
             catch ( ... )
             {
                 std::stringstream ss;
                 ss << "Failed to subscribe for unknown reason. "
-                   <<"Will retry in "<<retryInterval<<"s.";
+                   <<"Will retry in "<<retryIntervalSec<<"s.";
                 context_.tracer().warning( ss.str() );
             }
             ++count;
             if ( !subsysName.empty() )
                 context_.status().heartbeat( subsysName );
-            IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(retryInterval));
+            gbxiceutilacfr::checkedSleep( activity, retryIntervalSec*1000 );
             if ( !subsysName.empty() )
                 context_.status().heartbeat( subsysName );
         }

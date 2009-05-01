@@ -2,19 +2,24 @@
 # Official dependency number 0: CMake.
 # Obviously, we must have it if we are here but test version.
 #
-CMAKE_MINIMUM_REQUIRED( VERSION 2.4 FATAL_ERROR )
+CMAKE_MINIMUM_REQUIRED( VERSION 2.6 FATAL_ERROR )
 
 #
 # Enter some information about the project
 # This is the only configurable part of the build system
 #
 # project name
-PROJECT( orca )
+project( orca )
 
-# project version string
-set( GBX_PROJECT_VERSION 2.13.0+ )
+# project version
+set( GBX_PROJECT_VERSION_MAJOR "2" )
+set( GBX_PROJECT_VERSION_MINOR "13" )
+set( GBX_PROJECT_VERSION_PATCH "+" )
+
+set( GBX_PROJECT_VERSION 
+    ${GBX_PROJECT_VERSION_MAJOR}.${GBX_PROJECT_VERSION_MINOR}.${GBX_PROJECT_VERSION_PATCH} )
 
 #
 # The rest is done by a script
 #
-include( cmake/internal/bootstrap.cmake )
+include( cmake/internal/Setup.cmake )

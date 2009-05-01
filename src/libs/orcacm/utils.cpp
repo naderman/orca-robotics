@@ -53,7 +53,7 @@ pingAdminObject( const orcaice::Context& context, const std::string& adminId, co
 }
 
 RegistryHomeData
-getRegistryHomeData( const orcaice::Context& context, const std::string& locatorString, bool tryToPing )
+getRegistryHomeData( const orcaice::Context& context, const std::string& locatorString )
 {
     RegistryHomeData data;
 
@@ -65,18 +65,19 @@ getRegistryHomeData( const orcaice::Context& context, const std::string& locator
     try {
         queryPrx->ice_ping();
         data.address = orcacm::connectionToRemoteAddress( queryPrx->ice_getConnection()->toString() );
+        context.tracer().debug( "(while retrieving home data) registry ping successful: "+data.address );
+
         data.isReachable = true;
-
-        std::ostringstream os;
-        os<<"Registry ping successful: "<<data.address;
-        context.tracer().debug( os.str() );
-
         IceGrid::QueryPrx query = IceGrid::QueryPrx::checkedCast( queryPrx );
 
         //
         // get list of homes
         //
         list = query->findAllObjectsByType( "::orca::Home" );
+
+        std::ostringstream os;
+        os<<"(while retrieving home data) found "<<list.size()<<" homes";
+        context.tracer().debug( os.str() );
     } 
     catch ( const Ice::Exception& ) {
         data.isReachable = false;
@@ -85,32 +86,46 @@ getRegistryHomeData( const orcaice::Context& context, const std::string& locator
 
     // add more information
     HomeHeader home;
-cout<<endl;
     for ( unsigned int i=0; i<list.size(); ++i ) 
     {
         home.proxy = list[i];
         // assume it's reachable
         home.isReachable = true;
         
-        // ping each component's Home interface, if requested
-        if ( tryToPing ) {
-cout<<".";
-            try {
-                home.proxy->ice_ping();
-            }
-            catch( const Ice::Exception& )
-            {
-                home.isReachable = false;
-            }
-cout<<"|";
-            home.address = "not implemented";
-        }
-        
         data.homes.push_back( home );
     }
-cout<<endl;
 
     return data;
+}
+
+void pingHomeObjects( RegistryHomeData& data, const orcaice::Context& context, 
+                 gbxutilacfr::Stoppable* activity )
+{
+//     context.tracer().debug( "Pinging  );
+    HomeHeader home;
+    cout<<endl;
+    for ( unsigned int i=0; i<5 && i<data.homes.size(); ++i ) 
+    {
+        // indicate that we started pinging the next home
+        cout<<"."<<flush;
+
+        // assume it's reachable
+        data.homes[i].isReachable = true;
+        
+        try {
+            data.homes[i].proxy->ice_ping();
+        }
+        catch( const Ice::Exception& )
+        {
+            data.homes[i].isReachable = false;
+        }
+
+        data.homes[i].address = "not implemented";
+
+        // indicate that we finished pinging this home
+        cout<<"|"<<flush;
+    }
+cout<<endl;
 }
 
 ComponentData

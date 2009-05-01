@@ -34,7 +34,7 @@ MainThread::MainThread( const orcaice::Context & context )
 void 
 MainThread::initialise()
 {
-    subStatus().setMaxHeartbeatInterval( 30.0 );
+    setMaxHeartbeatInterval( 30.0 );
     
     activate( context_, this, subsysName() );
     // check for stop signal after retuning from multi-try
@@ -48,7 +48,7 @@ MainThread::initialise()
     // Initialising the driver may require a long time to process the map.
     // (this may still lead to a timeout if somebody is waiting for a status update.
     // ideally, map processing should be done in a separate thread.)
-    subStatus().setMaxHeartbeatInterval( -1 );
+    setMaxHeartbeatInterval( -1 );
 
     initDriver();
     assert( driver_.get() );
@@ -57,7 +57,7 @@ MainThread::initialise()
 void 
 MainThread::work()
 {
-    subStatus().setMaxHeartbeatInterval( 5 );
+    setMaxHeartbeatInterval( 5 );
 
     orca::PathPlanner2dTask task; 
     orca::PathPlanner2dData pathData;   
@@ -87,12 +87,12 @@ MainThread::work()
                         stringstream ss;
                         ss << "Incoming task is sketchy: " << orcaobj::toVerboseString(task)
                            << endl << sketchReason;
-                        subStatus().warning( ss.str() );
+                        health().warning( ss.str() );
                     }
 
                     break;
                 }
-                subStatus().ok();
+                health().ok();
             }
             
             // the only way of getting out of the above loop without a task
@@ -171,16 +171,16 @@ MainThread::work()
             {
                 stringstream ss;
                 ss << "MainThread: Tasks are piling up: there are " << numTasksWaiting << " in the queue.";
-                subStatus().warning( ss.str() );
+                health().warning( ss.str() );
             }
             else
             {
-                subStatus().ok();
+                health().ok();
             }
         } // try
         catch ( ... ) 
         {
-            orcaice::catchMainLoopExceptions( subStatus() );
+            orcaice::catchMainLoopExceptions( health() );
         }
     } // end of while
 }
@@ -193,7 +193,7 @@ MainThread::initNetwork()
     //
     // REQUIRED INTERFACE: OgMap
     //
-    subStatus().ok("Connecting to OgMap" );
+    health().ok("Connecting to OgMap" );
     orca::OgMapPrx ogMapPrx;    
     orcaice::connectToInterfaceWithTag<orca::OgMapPrx>( context_, ogMapPrx, "OgMap", this, subsysName() );
     // check for stop signal after retuning from multi-try
@@ -201,7 +201,7 @@ MainThread::initNetwork()
         return;
 
     // get the og map once
-    subStatus().ok("Getting Og Map" );
+    health().ok("Getting Og Map" );
     orca::OgMapData ogMapSlice;
     try
     {
@@ -227,7 +227,7 @@ MainThread::initNetwork()
     //
 
     // PathPlanner2d
-    subStatus().ok("Creating PathPlanner2d Interface" );
+    health().ok("Creating PathPlanner2d Interface" );
     pathPlannerI_ = new PathPlanner2dI( pathPlannerTaskBuffer_, context_ );
     Ice::ObjectPtr pathPlannerObj = pathPlannerI_;
     
@@ -238,7 +238,7 @@ MainThread::initNetwork()
 void
 MainThread::initDriver()
 {
-    subStatus().ok("Initialising Driver" );
+    health().ok("Initialising Driver" );
 
     Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag() + ".Config.";
@@ -281,7 +281,7 @@ MainThread::initDriver()
         hydroDriver_.reset( driverFactory->createDriver( *hydroDriverConfig_, context_.toHydroContext() ) );
     }
     catch ( ... ) {
-        orcaice::catchExceptionsWithStatusAndSleep( "initialising algorithm driver", subStatus() );
+        orcaice::catchExceptionsWithStatusAndSleep( "initialising algorithm driver", health() );
 
         // this is a fatal error!
         context_.shutdown();
@@ -306,7 +306,7 @@ MainThread::initDriver()
 //                                                                context_.toHydroContext( context_.tag()+".Config." ) ) );
 //     }
 //     catch ( ... ) {
-//         orcaice::catchExceptionsWithStatusAndSleep( "initialising algorithm driver", subStatus() );
+//         orcaice::catchExceptionsWithStatusAndSleep( "initialising algorithm driver", health() );
 
 //         // this is a fatal error!
 //         context_.shutdown();

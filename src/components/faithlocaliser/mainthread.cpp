@@ -11,7 +11,7 @@
 #include <iostream>
 #include <orcaice/orcaice.h>
 #include <orcaobj/orcaobj.h>
-
+#include <cmath>
 #include "mainthread.h"
 
 using namespace std;
@@ -50,7 +50,7 @@ MainThread::MainThread( const orcaice::Context &context ) :
 void 
 MainThread::initialise()
 {
-    subStatus().setMaxHeartbeatInterval( 10.0 );
+    setMaxHeartbeatInterval( 10.0 );
     
     Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag()+".Config.";
@@ -72,7 +72,7 @@ MainThread::work()
     const double varHeading = (stdDevHeading_*M_PI/180.0)*(stdDevHeading_*M_PI/180.0);
 
     const int timeoutMs = 1000;
-    subStatus().setMaxHeartbeatInterval( 2*timeoutMs );
+    setMaxHeartbeatInterval( 2*timeoutMs );
     
     //
     // MAIN LOOP
@@ -86,7 +86,7 @@ MainThread::work()
         // this try makes this component robust to exceptions
         try
         {
-            subStatus().heartbeat();
+            health().heartbeat();
             if ( odometry2dConsumer_->buffer().getAndPopWithTimeout( odomData, timeoutMs ) != 0 ) {
                 continue;
             }
@@ -102,7 +102,7 @@ MainThread::work()
         }
         catch ( ... ) 
         {
-            orcaice::catchMainLoopExceptions( subStatus() );
+            orcaice::catchMainLoopExceptions( health() );
         }
     }
 }
@@ -147,7 +147,7 @@ MainThread::initNetworkInterface()
             break;
         }
         catch ( ... ) {
-            orcaice::catchExceptionsWithStatusAndSleep( "getting vehicle description", subStatus(), gbxutilacfr::SubsystemFault, 3000 );
+            orcaice::catchExceptionsWithStatusAndSleep( "getting vehicle description", health(), gbxutilacfr::SubsystemFault, 3000 );
         }   
     }
     

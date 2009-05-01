@@ -162,7 +162,8 @@ void connectToAdminInterface( const Context& context, InterfaceProxyType& interf
     Ice::ObjectPrx objectPrx = orcaice::getComponentAdmin( context, resolvedFqname );
 
     if ( !objectPrx )
-        throw gbxutilacfr::Exception( ERROR_INFO, "Registry returned null admin proxy." );
+        throw gbxutilacfr::Exception( ERROR_INFO, 
+            "Registry returned null admin proxy for component "+resolvedFqname.platform+"/"+resolvedFqname.component );
 
 // std::cout<<"DEBUG: "<<__func__<<"(): got admin proxy ="<<objectPrx->ice_toString()<<std::endl;
 

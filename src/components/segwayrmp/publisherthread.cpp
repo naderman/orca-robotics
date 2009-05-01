@@ -88,7 +88,7 @@ namespace {
 void
 PublisherThread::work()
 {
-    subStatus().setMaxHeartbeatInterval( 10 );
+    setMaxHeartbeatInterval( 10 );
 
     // temp object in hydro format
     hydrointerfaces::SegwayRmp::Data data;
@@ -106,7 +106,7 @@ PublisherThread::work()
     {
         if ( dataStore_.getNext( data, 1000 ) )
         {
-            subStatus().ok( "Net loop timed out" );
+            health().ok( "Net loop timed out" );
             continue;
         }
 
@@ -143,7 +143,7 @@ PublisherThread::work()
         }
 
         // subsystem heartbeat
-        subStatus().ok();
+        health().ok();
     }
 }
 

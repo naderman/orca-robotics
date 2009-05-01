@@ -12,7 +12,9 @@
 #define ORCAICE_MULTI_ICESTORM_UTILITIES_H
 
 #include <orcaice/icestormutils.h>
-#include <gbxsickacfr/gbxiceutilacfr/thread.h>
+// we only need the definition of Stoppable and checkedSleep() function.
+// (we don't need the actual Thread class).
+#include <gbxsickacfr/gbxiceutilacfr/threadutils.h>
 
 namespace orcaice
 {
@@ -23,12 +25,14 @@ namespace orcaice
 
 /*!
 Convenience function. Tries to connect to the specified topic by calling connectToTopicWithString() 
-until successful, the number of retries is exceeded (default -1, i.e. infinite), or the @c thread is stopped 
+until successful, the number of retries is exceeded (default -1, i.e. infinite), or the @c activity is stopped.
+Threads are a commonly used activity which implement Stoppable interface.
+ 
 If unsuccesful for any reason, an empty topic proxy is returned. Nothing is done if retryNumber=0.  
 If a non-empty subsystem name is supplied, 
 sends a Status heartbeat after every attempt (@see gbxutilacfr::Status).
 
-We catch all orcaice::NetworkException, sleep for @c retryInterval [s] and try again.
+We catch all orcaice::NetworkException, sleep for @c retryIntervalSec [s] and try again.
 
 All other exceptions are not likely to be resolved over time so we don't catch them.
  */
@@ -37,13 +41,15 @@ IceStorm::TopicPrx
 connectToTopicWithString( const Context     & context,
                           ConsumerProxyType & publisher,
                           const std::string & topicName,
-                          gbxiceutilacfr::Thread*  thread, const std::string& subsysName="", 
-                          int retryInterval=2, int retryNumber=-1 )
+                          gbxutilacfr::Stoppable* activity, const std::string& subsysName="", 
+                          int retryIntervalSec=2, int retryNumber=-1 )
 {
+    assert( activity && "Null activity pointer" );
+
     IceStorm::TopicPrx topicPrx;
 
     int count = 0;
-    while ( !thread->isStopping() && ( retryNumber<0 || count<retryNumber) )
+    while ( !activity->isStopping() && ( retryNumber<0 || count<retryNumber) )
     {
         try {
             topicPrx = connectToTopicWithString<ConsumerProxyType>( context, publisher, topicName );
@@ -52,13 +58,13 @@ connectToTopicWithString( const Context     & context,
         catch ( const orcaice::NetworkException& e )  {
             std::stringstream ss;
             ss << "Failed to connect to topic with string "<<topicName<<". "
-                <<"Will retry in "<<retryInterval<<"s."
+                <<"Will retry in "<<retryIntervalSec<<"s."
                 << e.what();
             bool localOnly = true;
             context.tracer().warning( ss.str(), 1, localOnly );
         }
         ++count;
-        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(retryInterval));
+        gbxiceutilacfr::checkedSleep( activity, retryIntervalSec*1000 );
         if ( !subsysName.empty() ) {
             context.status().heartbeat( subsysName );
         }
@@ -68,12 +74,14 @@ connectToTopicWithString( const Context     & context,
 
 /*!
 Convenience function. Tries to connect to the specified topic by calling connectToTopicWithTag() 
-until successful, the number of retries is exceeded (default -1, i.e. infinite), or the @c thread 
-is stopped. If unsuccesful for any reason, an empty topic proxy is returned.
+until successful, the number of retries is exceeded (default -1, i.e. infinite), or the @c activity is stopped.
+Threads are a commonly used activity which implement Stoppable interface. 
+
+If unsuccesful for any reason, an empty topic proxy is returned.
 Nothing is done if retryNumber=0.  If a non-empty subsystem name is supplied, 
 sends a Status heartbeat after every attempt (@see gbxutilacfr::Status).
 
-We catch all orcaice::NetworkException, sleep for @c retryInterval [s] and try again.
+We catch all orcaice::NetworkException, sleep for @c retryIntervalSec [s] and try again.
 
 All other exceptions are not likely to be resolved over time so we don't catch them.
  */
@@ -83,13 +91,15 @@ connectToTopicWithTag( const Context      & context,
                        ConsumerProxyType  & publisher,
                        const std::string  & interfaceTag,
                        const std::string  & subtopic,
-                       gbxiceutilacfr::Thread*  thread, const std::string& subsysName="", 
-                       int retryInterval=2, int retryNumber=-1 )
+                       gbxutilacfr::Stoppable* activity, const std::string& subsysName="", 
+                       int retryIntervalSec=2, int retryNumber=-1 )
 {
+    assert( activity && "Null activity pointer" );
+
     IceStorm::TopicPrx topicPrx;
 
     int count = 0;
-    while ( !thread->isStopping() && ( retryNumber<0 || count<retryNumber) )
+    while ( !activity->isStopping() && ( retryNumber<0 || count<retryNumber) )
     {
         try {
             topicPrx = connectToTopicWithTag<ConsumerProxyType>( context, publisher, interfaceTag, subtopic );
@@ -98,13 +108,13 @@ connectToTopicWithTag( const Context      & context,
         catch ( const orcaice::NetworkException& e ) {
             std::stringstream ss;
             ss << "Failed to connect to topic with tag "<<interfaceTag<<". "
-                <<"Will retry in "<<retryInterval<<"s."
+                <<"Will retry in "<<retryIntervalSec<<"s."
                 << e.what();
             bool localOnly = true;
             context.tracer().warning( ss.str(), 1, localOnly );
         }
         ++count;
-        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(retryInterval));
+        gbxiceutilacfr::checkedSleep( activity, retryIntervalSec*1000 );
         if ( !subsysName.empty() ) {
             context.status().heartbeat( subsysName );
         }

@@ -14,7 +14,6 @@
 #include <vector>
 #include <orcaqguielementutil/icestormlistener.h>
 #include <hydroqguielementutil/guielement2d.h>
-#include <orcaqgui2dfactory/connectutils.h>
 #include <orcaqgui2dfactory/ogmapscombinedpainter.h>
 
 namespace orcaqgui2d {
@@ -38,7 +37,6 @@ public:
         { return painter_->paintThisLayer(z); }
     
     virtual bool isInGlobalCS() { return true; }
-    virtual void actionOnConnection();
     virtual QStringList contextMenu();
     virtual void execute( int action );
 

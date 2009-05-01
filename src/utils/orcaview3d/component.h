@@ -14,7 +14,7 @@
 #include <string>
 #include <orcaice/component.h>
 #include <hydrodll/dynamicload.h>
-#include <hydroqgui/hydroqgui.h>
+#include <hydroqgui/iguielementfactory.h>
 
 namespace orcaview3d {
     

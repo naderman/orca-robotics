@@ -16,6 +16,8 @@
 #include <hydroqguielementutil/paintutils.h>
 #include "polarfeature2dpainter.h"
 #include <orcaqguielementutil/featurecolours.h>
+#include <hydroqgui/exceptions.h>
+#include <gbxutilacfr/mathdefs.h>
 
 using namespace std;
 

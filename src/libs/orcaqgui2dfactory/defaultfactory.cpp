@@ -9,8 +9,7 @@
  */
  
 #include <iostream>
-#include <hydroqgui/hydroqgui.h>
-
+#include <hydroqgui/exceptions.h>
 #include <orcaqgui2dfactory/buttonelement.h>
 #include <orcaqgui2dfactory/gridelement.h>
 #include <orcaqgui2dfactory/simpleguielements.h>

@@ -96,9 +96,9 @@ TestThread::finalise()
     }
     catch ( ... ) {
 //         orcaice::catchExceptions( context_.tracer(), "finalising" );
-//         orcaice::catchExceptionsWithStatus( "finalising", subStatus() );
-        orcaice::catchExceptionsWithStatus( "finalising", subStatus(), gbxutilacfr::SubsystemWarning );
-//         orcaice::catchExceptionsWithStatusAndSleep( "finalising", subStatus(), gbxutilacfr::SubsystemWarning );
+//         orcaice::catchExceptionsWithStatus( "finalising", health() );
+        orcaice::catchExceptionsWithStatus( "finalising", health(), gbxutilacfr::SubsystemWarning );
+//         orcaice::catchExceptionsWithStatusAndSleep( "finalising", health(), gbxutilacfr::SubsystemWarning );
     }
 
     context_.shutdown();

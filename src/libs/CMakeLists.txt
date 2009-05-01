@@ -3,7 +3,7 @@
 message( STATUS "== LIBRARIES ==" )
 
 # when adding new directories, please maintain order of inter-dependencies
-# an alphabetical order for the independent libs.
+# and alphabetical order for the independent libs.
 
 add_subdirectory( orcaobj )
 add_subdirectory( orcaobjutil )
@@ -39,5 +39,6 @@ add_subdirectory( orcaqgui3dfactory )
 add_subdirectory( orcaquml )
 add_subdirectory( orcarobotdriverutil )
 add_subdirectory( orcasim2d )
+add_subdirectory( orcasystemstatusutil )
 add_subdirectory( orcateleop )
 add_subdirectory( orcavfh )

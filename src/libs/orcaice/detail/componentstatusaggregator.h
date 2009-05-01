@@ -23,13 +23,16 @@ enum AggregatorPolicy
 {
 
     // The subsystem with the "worst" health and its corresponding state define the component state and health
-    AggregatorPolicyWorstHealth,
+    // alexm: disabled because it's not currently used.
+//     AggregatorPolicyWorstHealth,
     
     // Component health and state are chosen independently: health is the worst health in the system.
-    // State: if any subsystem is idle/initialising -> component state is set to initialising
-    //        if all subsystems are ok -> component state is ok
-    //        if any subsystem is finalising/shutdown and they are *not* of type SubsystemEarlyExit -> component is set to finalising/shutdown
-    //        if a subsystem is finalising/shutdown and is of type SubsystemEarlyExit, its state is ignored
+    // State: 
+    //  if any subsystem is Idle/Initialising -> component state is set to CompInitialising
+    //  if all subsystems are Working -> component state is CompWorking
+    //  if any subsystem is Finalising/Shutdown and 
+    //     none of those are *not* of type SubsystemEarlyExit -> component is set to CompFinalising
+    //     else, -> the state of those subsystems are ignored
     AggregatorPolicyStateBased
 };
 

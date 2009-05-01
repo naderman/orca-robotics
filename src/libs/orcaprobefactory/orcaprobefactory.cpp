@@ -35,6 +35,7 @@
 #include "wifiprobe.h"
 #include "propertiesprobe.h"
 #include "buttonprobe.h"
+#include "binaryswitchprobe.h"
 
 using namespace orcaprobefactory;
 
@@ -52,6 +53,7 @@ OrcaProbeFactory::OrcaProbeFactory()
     addSupportedType("::orca::Wifi");
     addSupportedType("::orca::Properties");
     addSupportedType("::orca::Button");
+    addSupportedType("::orca::BinarySwitch");
     addSupportedType("::orca::Localise2d");
     addSupportedType("::orca::Localise3d");
 //     addSupportedType("::orca::PolarFeature2d");
@@ -111,6 +113,9 @@ OrcaProbeFactory::create( const std::string           & interfaceType,
     }
     else if ( interfaceType == "::orca::Button" ) {
         probe = new ButtonProbe( name, adminPrx, display, context );
+    }
+    else if ( interfaceType == "::orca::BinarySwitch" ) {
+        probe = new BinarySwitchProbe( name, adminPrx, display, context );
     }
     else if ( interfaceType == "::orca::Localise2d" ) {
         probe = new Localise2dProbe( name, adminPrx, display, context );

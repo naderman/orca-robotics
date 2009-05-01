@@ -1,4 +1,5 @@
 ORCA_SET_COMPONENT_NAME( LogPlayer )
+set( COMP_INTERFACE_FLAG "orcaice::NoStandardInterfaces" )
 
 set( build TRUE )
 GBX_REQUIRE_OPTION( build EXE ${APP_NAME} ON )

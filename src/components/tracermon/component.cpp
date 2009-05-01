@@ -23,7 +23,7 @@ using namespace std;
 using namespace tracermon;
 
 Component::Component()
-    : orcaice::Component( "TracerMon", orcaice::HomeInterface )
+    : orcaice::Component( "TracerMon", orcaice::NoStandardInterfaces )
 {
 }
 

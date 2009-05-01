@@ -10,8 +10,8 @@
 #include <iostream>
 #include <QFileDialog>
 #include <orcaogmap/orcaogmap.h>
-#include <hydroqgui/hydroqgui.h>
 #include "ogmapscombinedelement.h"
+#include <hydroqgui/exceptions.h>
 
 using namespace std;
 
@@ -62,7 +62,7 @@ bool OgMapsCombinedElement::needToUpdate()
         { 
             if ( listeners_[i]->connect() == 0 )
             {
-                actionOnConnection();
+                //actionOnConnection();
                 isConnected_ = true;
             }
             else
@@ -96,47 +96,6 @@ void OgMapsCombinedElement::update()
     
     // transfer data into painter
     painter_->setData( data0, data1 );
-}
-
-
-void OgMapsCombinedElement::actionOnConnection()
-{
-    assert(listeners_.size()>0);
-    try 
-    {
-        orca::OgMapPrx prx;
-        cout<< "TRACE(actionOnConnection.cpp): connect to interface " << listeners_[0]->interfaceName() << endl;
-        orcaice::connectToInterfaceWithString( context_, prx, listeners_[0]->interfaceName() );
-        orca::OgMapData data0 = prx->getData();
-        
-        cout<< "TRACE(actionOnConnection.cpp): connect to interface " << listeners_[1]->interfaceName() << endl;
-        orcaice::connectToInterfaceWithString( context_, prx, listeners_[1]->interfaceName() );
-        orca::OgMapData data1 = prx->getData(); 
-        
-        painter_->setData( data0, data1 );
-        
-//         // for more than two ogMaps:            
-//         for (unsigned int i=0; i<listeners_.size(); i++)
-//         {
-//             OgMapPrx prx;
-//             cout<< "TRACE(actionOnConnection.cpp): connect to interface " << listeners_[i]->interfaceName() << endl;
-//             orcaice::connectToInterfaceWithString( context_, prx, listeners_[i]->interfaceName() );
-//         }
-//         cout << "painter_->setData" << endl;
-//         painter_.setData( totalMap_ );
-    }
-    catch ( Ice::ConnectionRefusedException &e )
-    {
-        std::cout<<"TRACE(actionOnConnection.cpp): Caught exception: " << e << std::endl;
-    }
-    catch ( std::exception &e )
-    {
-        std::cout<<"TRACE(actionOnConnection.cpp): Caught some std exception: " << e.what() << std::endl;
-    }
-    catch ( ... )
-    {
-        std::cout<<"TRACE(actionOnConnection.cpp): Caught some other exception" << std::endl;
-    }
 }
 
 QStringList

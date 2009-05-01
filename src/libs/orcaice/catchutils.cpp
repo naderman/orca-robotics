@@ -11,8 +11,9 @@
 #include <Ice/Ice.h>
 #include "catchutils.h"
 #include "exceptions.h"
+#include <orca/exceptions.h>
 
-#include <iostream>
+// #include <iostream>
 #include <sstream>
 using namespace std;
 
@@ -37,6 +38,10 @@ std::string catchExceptions( gbxutilacfr::Tracer& tracer, const std::string& act
     catch ( const orcaice::ComponentDeactivatingException & e ) {
         // this is OK.
         return string();
+    }
+    catch ( const orca::OrcaException &e )
+    {
+        exceptionSS << "caught unexpected exception: " << e << ": " << e.what;
     }
     catch ( const std::exception &e ) {
         exceptionSS << "caught unexpected exception: " << e.what();
@@ -73,7 +78,8 @@ std::string catchExceptionsWithSleep( gbxutilacfr::Tracer& tracer, const std::st
 }
 
 std::string catchExceptionsWithStatus( const std::string& activity, 
-            gbxutilacfr::SubStatus& subStatus, gbxutilacfr::SubsystemHealth newHealth )
+            gbxutilacfr::SubHealth& subHealth, 
+            gbxutilacfr::SubsystemHealth newHealth )
 {
     stringstream exceptionSS;
 
@@ -94,9 +100,12 @@ std::string catchExceptionsWithStatus( const std::string& activity,
         // this is OK.
         return string();
     }
+    catch ( const orca::OrcaException &e )
+    {
+        exceptionSS << "caught unexpected exception: " << e << ": " << e.what;
+    }
     catch ( const std::exception &e ) {
         exceptionSS << "caught unexpected exception: " << e.what();
-cout<<exceptionSS.str()<<endl;
     }
     catch ( const std::string &e ) {
         exceptionSS << "caught unexpected string: " << e;
@@ -111,26 +120,27 @@ cout<<exceptionSS.str()<<endl;
     switch ( newHealth )
     {
     case gbxutilacfr::SubsystemFault :
-        subStatus.fault( fullActivity + exceptionSS.str() );
+        subHealth.fault( fullActivity + exceptionSS.str() );
         break;
     case gbxutilacfr::SubsystemWarning :
-        subStatus.warning( fullActivity + exceptionSS.str() );
+        subHealth.warning( fullActivity + exceptionSS.str() );
         break;
     case gbxutilacfr::SubsystemOk :
-        subStatus.ok( fullActivity + exceptionSS.str() );
+        subHealth.ok( fullActivity + exceptionSS.str() );
         break;
-    case gbxutilacfr::SubsystemStalled :
-        assert( false && "Stalled health should not be reported from within the subsystem" );
+    default :
+        assert( !"Unknown subsystem health type" );
     }
 
     return ( fullActivity + exceptionSS.str() );
 }
 
 std::string catchExceptionsWithStatusAndSleep( const std::string& activity, 
-            gbxutilacfr::SubStatus& subStatus, gbxutilacfr::SubsystemHealth newHealth, 
+            gbxutilacfr::SubHealth& subHealth, 
+            gbxutilacfr::SubsystemHealth newHealth, 
             int sleepIntervalMSec )
 {    
-    string problem = catchExceptionsWithStatus( activity, subStatus, newHealth );
+    string problem = catchExceptionsWithStatus( activity, subHealth, newHealth );
 
     // Slow things down in case of persistent error
     if ( sleepIntervalMSec>0 ) {
@@ -143,9 +153,9 @@ std::string catchExceptionsWithStatusAndSleep( const std::string& activity,
     return problem;
 }
 
-void catchMainLoopExceptions( gbxutilacfr::SubStatus& subStatus )
+void catchMainLoopExceptions( gbxutilacfr::SubHealth& subHealth )
 {
-    catchExceptionsWithStatusAndSleep( string("running in main loop"), subStatus, gbxutilacfr::SubsystemFault );
+    catchExceptionsWithStatusAndSleep( string("running in main loop"), subHealth, gbxutilacfr::SubsystemFault );
 }
 
 } // namespace

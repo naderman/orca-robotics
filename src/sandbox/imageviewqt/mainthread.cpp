@@ -26,7 +26,7 @@ MainThread::MainThread( ImageQueue* imageQueue, const orcaice::Context& context 
 void 
 MainThread::initialise()
 {
-    subStatus().setMaxHeartbeatInterval( 20.0 );
+    setMaxHeartbeatInterval( 20.0 );
 
     // multi-try function
     orcaice::activate( context_, this, subsysName() );
@@ -53,7 +53,7 @@ MainThread::work()
     const int timeoutMs = 500;
 
     // LOOP
-    subStatus().setMaxHeartbeatInterval( sleepIntervalMs * 3.0/1000.0 );
+    setMaxHeartbeatInterval( sleepIntervalMs * 3.0/1000.0 );
     while( !isStopping() )
     {
         context_.tracer().debug("Fetching Image");

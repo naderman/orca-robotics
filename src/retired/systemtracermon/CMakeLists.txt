@@ -6,7 +6,7 @@ set( build TRUE )
 GBX_REQUIRE_OPTION( build EXE ${APP_NAME} OFF )
 
 set( dep_libs OrcaObjects )
-GBX_REQUIRE_TARGETS( build EXE ${APP_NAME} ${dep_libs} )
+GBX_REQUIRE_LIBS( build EXE ${APP_NAME} ${dep_libs} )
 
 if( build )
 

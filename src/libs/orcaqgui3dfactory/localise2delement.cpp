@@ -10,7 +10,6 @@
 
 #include <hydroqgui/exceptions.h>
 #include "localise2delement.h"
-#include <orcaqgui2dfactory/connectutils.h>
 
 using namespace std;
 
@@ -22,9 +21,6 @@ Localise2dElement::actionOnConnection()
     if (!isConnected_) return;
 
     tryToGetGeometry();
-    
-    orcaqgui2d::paintInitialData<orca::Localise2dPrx, Localise2dPainter>
-        ( context_, listener_.interfaceName(), painter_ );
 }
 
 void 

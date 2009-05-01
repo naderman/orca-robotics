@@ -1,4 +1,5 @@
 ORCA_SET_COMPONENT_NAME( Pinger )
+set( COMP_INTERFACE_FLAG "orcaice::NoStandardInterfaces" )
 
 set( build TRUE )
 # This utility is disabled because the C++ header for the interface is compiled by hand.

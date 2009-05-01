@@ -35,7 +35,7 @@ MainThread::~MainThread()
 void 
 MainThread::initialise()
 {
-    subStatus().setMaxHeartbeatInterval( 10.0 );
+    setMaxHeartbeatInterval( 10.0 );
     
     // create a callback object to recieve data
     gpsConsumer_ = new orcaifaceimpl::StoringGpsConsumerImpl( context_ );
@@ -53,7 +53,7 @@ MainThread::initialise()
 void 
 MainThread::work()
 {
-    subStatus().setMaxHeartbeatInterval( 3.0 );
+    setMaxHeartbeatInterval( 3.0 );
 
     orca::GpsData        gpsData;
     orca::Localise2dData localiseData;
@@ -73,7 +73,7 @@ MainThread::work()
             // block on arrival of data
             //
             int ret = gpsConsumer_->store().getNext ( gpsData, timeoutMs );
-            subStatus().heartbeat();
+            health().heartbeat();
 
             if ( ret != 0 ) {
                 if ( numTimeouts++ > reconnectFailTimes )
@@ -81,7 +81,7 @@ MainThread::work()
                     stringstream ss;
                     ss << "Timed out (" << timeoutMs << "ms) waiting for data.  Reconnecting.";
                     context_.tracer().warning( ss.str() );
-                    subStatus().warning( ss.str() );
+                    health().warning( ss.str() );
                     subscribeToGps();
                 }
                 continue;
@@ -95,7 +95,7 @@ MainThread::work()
 
             if ( !canCompute )
             {
-                subStatus().ok();
+                health().ok();
                 context_.tracer().debug( "MainThread: can't compute localiseData" );
                 continue;
             }
@@ -105,12 +105,12 @@ MainThread::work()
 
             localiseInterface_->localSetAndSend( localiseData );
 
-            subStatus().ok();
+            health().ok();
 
         } // try
         catch ( ... ) 
         {
-            orcaice::catchMainLoopExceptions( subStatus() );
+            orcaice::catchMainLoopExceptions( health() );
         }
     } // while
 }
@@ -178,7 +178,7 @@ MainThread::getGpsDescription()
                 return;
         }
         catch ( ... ) {
-            orcaice::catchExceptionsWithStatusAndSleep( "getting Gps description", subStatus(), gbxutilacfr::SubsystemFault, 2000 );
+            orcaice::catchExceptionsWithStatusAndSleep( "getting Gps description", health(), gbxutilacfr::SubsystemFault, 2000 );
         }
     }
 }
@@ -221,7 +221,7 @@ MainThread::initNetworkInterface()
 
                 if ( vehicleDescr_.geometry == 0 )
                 {
-                    subStatus().warning( "Got NULL vehicle geometry -- making something up!" );
+                    health().warning( "Got NULL vehicle geometry -- making something up!" );
                     orca::VehicleGeometryCylindricalDescriptionPtr geom = new orca::VehicleGeometryCylindricalDescription;
                     geom->type = orca::VehicleGeometryCylindrical;
                     geom->radius = 0.7;
@@ -232,7 +232,7 @@ MainThread::initNetworkInterface()
                 }
                 if ( vehicleDescr_.control == 0 )
                 {
-                    subStatus().warning( "Got NULL vehicle control -- making something up!" );
+                    health().warning( "Got NULL vehicle control -- making something up!" );
                     orca::VehicleControlVelocityDifferentialDescriptionPtr ctrl = new orca::VehicleControlVelocityDifferentialDescription;
                     ctrl->type = orca::VehicleControlVelocityDifferential;
                     ctrl->maxForwardSpeed = 1.0;
@@ -250,7 +250,7 @@ MainThread::initNetworkInterface()
                 break;
             }
             catch ( ... ) {
-                orcaice::catchExceptionsWithStatusAndSleep( "getting vehicle description", subStatus(), gbxutilacfr::SubsystemFault, 2000 );
+                orcaice::catchExceptionsWithStatusAndSleep( "getting vehicle description", health(), gbxutilacfr::SubsystemFault, 2000 );
             }
         }
     }

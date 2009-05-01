@@ -11,6 +11,7 @@
 #include <iostream>
 #include <orcaice/orcaice.h>
 #include <orcaobj/frameutils.h>
+#include <cmath>
 
 using namespace std;
 

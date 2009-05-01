@@ -12,7 +12,9 @@
 #define ORCAICE_MULTI_CONNECT_UTILITIES_H
 
 #include <orcaice/connectutils.h>
-#include <gbxsickacfr/gbxiceutilacfr/thread.h>
+// we only need the definition of Stoppable and checkedSleep() function.
+// (we don't need the actual Thread class).
+#include <gbxsickacfr/gbxiceutilacfr/threadutils.h>
 
 namespace orcaice
 {
@@ -23,11 +25,13 @@ namespace orcaice
 
 /*!
 Convenience function. Tries to connect to the specified remote interface until successful,
-the number of retries is exceeded (default -1, i.e. infinite), or the @c thread is stopped.
+the number of retries is exceeded (default -1, i.e. infinite), or the @c activity is stopped.
+Threads are a commonly used activity which implement Stoppable interface.
+
 Nothing is done if retryNumber=0.  If a non-empty subsystem name is supplied, 
 sends a Status heartbeat after every attempt (@see gbxutilacfr::Status).
 
-We catch orcaice::NetworkException, sleep for @c retryInterval [s] and try again.
+We catch orcaice::NetworkException, sleep for @c retryIntervalSec [s] and try again.
 
 We do NOT catch a possible orcaice::TypeMismatchException because this condition is unlikely to
 change.
@@ -37,7 +41,7 @@ Example:
 MyInterfacePrx myInterfacePrx;
 try {
     orcaice::connectToInterfaceWithString<MyInterfacePrx>( 
-        context_, myInterfacePrx, "iface@platform/component", (gbxiceutilacfr::Thread*)this );
+        context_, myInterfacePrx, "iface@platform/component", (gbxutilacfr::Stoppable*)this );
 }
 catch ( const orcaice::TypeMismatchException& e ) {
     // what do we do?
@@ -49,12 +53,14 @@ void
 connectToInterfaceWithString( const Context     & context,
                               ProxyType         & proxy,
                               const std::string & proxyString,
-                              gbxiceutilacfr::Thread*  thread, const std::string& subsysName="", 
-                              int retryInterval=2, int retryNumber=-1 )
-{    
-    context.tracer().debug( "orcaice::connectToInterfaceWithString(thread) proxy="+proxyString, 10 );
+                              gbxutilacfr::Stoppable* activity, const std::string& subsysName="", 
+                              int retryIntervalSec=2, int retryNumber=-1 )
+{        
+    assert( activity && "Null activity pointer" );
+
+    context.tracer().debug( "orcaice::connectToInterfaceWithString(activity) proxy="+proxyString, 10 );
     int count = 0;
-    while ( !thread->isStopping() && ( retryNumber<0 || count<retryNumber) )
+    while ( !activity->isStopping() && ( retryNumber<0 || count<retryNumber) )
     {
         try {
             connectToInterfaceWithString( context, proxy, proxyString );
@@ -63,12 +69,12 @@ connectToInterfaceWithString( const Context     & context,
         catch ( const orcaice::NetworkException& e ) {
             std::stringstream ss;
             ss << "Failed to connect to interface with string "<<proxyString<<". "
-                <<"Will retry in "<<retryInterval<<"s."
+                <<"Will retry in "<<retryIntervalSec<<"s."
                 << e.what();
             context.tracer().warning( ss.str() );
         }
         ++count;
-        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(retryInterval));
+        gbxiceutilacfr::checkedSleep( activity, retryIntervalSec*1000 );
         if ( !subsysName.empty() ) {
             context.status().heartbeat( subsysName );
         }
@@ -77,11 +83,13 @@ connectToInterfaceWithString( const Context     & context,
 
 /*!
 Convenience function. Tries to connect to the specified remote interface until successful,
-the number of retries is exceeded (default -1, i.e. infinite), or the @c thread is stopped. 
+the number of retries is exceeded (default -1, i.e. infinite), or the @c activity is stopped.
+Threads are a commonly used activity which implement Stoppable interface.
+ 
 Nothing is done if retryNumber=0.  If a non-empty subsystem name is supplied, 
 sends a Status heartbeat after every attempt (@see gbxutilacfr::Status).
 
-We catch orcaice::NetworkException, sleep for @c retryInterval [s] and try again.
+We catch orcaice::NetworkException, sleep for @c retryIntervalSec [s] and try again.
 
 We do NOT catch a possible orcaice::TypeMismatchException because this condition is unlikely to
 change.
@@ -93,7 +101,7 @@ Example:
 MyInterfacePrx myInterfacePrx;
 try {
     orcaice::connectToInterfaceWithTag<MyInterfacePrx>( 
-        context_, myInterfacePrx, "MyInterface", (gbxiceutilacfr::Thread*)this );
+        context_, myInterfacePrx, "MyInterface", (gbxutilacfr::Stoppable*)this );
 }
 catch ( const orcaice::TypeMismatchException& e ) {
     // what do we do?
@@ -108,13 +116,15 @@ void
 connectToInterfaceWithTag( const Context     & context,
                            ProxyType         & proxy,
                            const std::string & interfaceTag,
-                           gbxiceutilacfr::Thread*  thread, const std::string& subsysName="", 
-                           int retryInterval=2, int retryNumber=-1 )
+                           gbxutilacfr::Stoppable* activity, const std::string& subsysName="", 
+                           int retryIntervalSec=2, int retryNumber=-1 )
 {    
-    context.tracer().debug( "orcaice::connectToInterfaceWithTag(thread) tag="+interfaceTag, 10 );
+    assert( activity && "Null activity pointer" );
+
+    context.tracer().debug( "orcaice::connectToInterfaceWithTag(activity) tag="+interfaceTag, 10 );
 
     int count = 0;
-    while ( !thread->isStopping() && ( retryNumber<0 || count<retryNumber) )
+    while ( !activity->isStopping() && ( retryNumber<0 || count<retryNumber) )
     {
         try {
             connectToInterfaceWithTag<ProxyType>( context, proxy, interfaceTag );
@@ -123,12 +133,12 @@ connectToInterfaceWithTag( const Context     & context,
         catch ( const orcaice::NetworkException& e ) {
             std::stringstream ss;
             ss << "Failed to connect to interface with tag "<<interfaceTag<<". "
-                <<"Will retry in "<<retryInterval<<"s."
+                <<"Will retry in "<<retryIntervalSec<<"s."
                 << e.what();
             context.tracer().warning( ss.str() );
         }
         ++count;
-        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(retryInterval));
+        gbxiceutilacfr::checkedSleep( activity, retryIntervalSec*1000 );
         if ( !subsysName.empty() ) {
             context.status().heartbeat( subsysName );
         }
@@ -137,31 +147,35 @@ connectToInterfaceWithTag( const Context     & context,
 
 /*!
 Convenience function. Tries to connect to the specified interface by calling getInterfaceIdWithString() 
-until successful, the number of retries is exceeded (default -1, i.e. infinite), or the @c thread 
-is stopped. If unsuccesful for any reason, an empty string is returned. Nothing is done if retryNumber=0.  
+until successful, the number of retries is exceeded (default -1, i.e. infinite), or the @c activity is stopped.
+Threads are a commonly used activity which implement Stoppable interface. 
+
+If unsuccesful for any reason, an empty string is returned. Nothing is done if retryNumber=0.  
 If a non-empty subsystem name is supplied, 
 sends a Status heartbeat after every attempt (@see gbxutilacfr::Status).
 
-We catch all orcaice::NetworkException, sleep for @c retryInterval [s] and try again.
+We catch all orcaice::NetworkException, sleep for @c retryIntervalSec [s] and try again.
 */
 std::string getInterfaceIdWithString( const Context& context, const std::string& proxyString,
-                            gbxiceutilacfr::Thread*  thread, const std::string& subsysName="", 
-                            int retryInterval=2, int retryNumber=-1 );
+                            gbxutilacfr::Stoppable* activity, const std::string& subsysName="", 
+                            int retryIntervalSec=2, int retryNumber=-1 );
 
 /*!
 Convenience function. Tries to connect to the specified interface by calling getInterfaceIdWithString() 
-until successful, the number of retries is exceeded (default -1, i.e. infinite), or the @c thread 
-is stopped. If unsuccesful for any reason, an empty string is returned. Nothing is done if retryNumber=0.  
+until successful, the number of retries is exceeded (default -1, i.e. infinite), or the @c activity is stopped.
+Threads are a commonly used activity which implement Stoppable interface. 
+
+If unsuccesful for any reason, an empty string is returned. Nothing is done if retryNumber=0.  
 If a non-empty subsystem name is supplied, 
 sends a Status heartbeat after every attempt (@see gbxutilacfr::Status).
 
-We catch all orcaice::NetworkException, sleep for @c retryInterval [s] and try again.
+We catch all orcaice::NetworkException, sleep for @c retryIntervalSec [s] and try again.
 
 All other exceptions are not likely to be resolved over time so we don't catch them.
 */
 std::string getInterfaceIdWithTag( const Context& context, const std::string& interfaceTag,
-                            gbxiceutilacfr::Thread*  thread, const std::string& subsysName="", 
-                            int retryInterval=2, int retryNumber=-1 );
+                            gbxutilacfr::Stoppable* activity, const std::string& subsysName="", 
+                            int retryIntervalSec=2, int retryNumber=-1 );
 
 //@}
 

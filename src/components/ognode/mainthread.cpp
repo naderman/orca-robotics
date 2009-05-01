@@ -14,6 +14,7 @@
 #include "ogfusionI.h"
 #include "mainthread.h"
 #include <gbxsickacfr/gbxiceutilacfr/timer.h>
+#include <gbxutilacfr/mathdefs.h>
 
 using namespace std;
 
@@ -123,7 +124,7 @@ MainThread::work()
         } // try
         catch ( ... ) 
         {
-            orcaice::catchMainLoopExceptions( subStatus() );
+            orcaice::catchMainLoopExceptions( health() );
         }
     } // end of main loop
 }
@@ -247,7 +248,7 @@ MainThread::init()
             return;
         }
         catch ( ... ) {
-            orcaice::catchExceptionsWithStatusAndSleep( "initialising", subStatus() );
+            orcaice::catchExceptionsWithStatusAndSleep( "initialising", health() );
         }
     }
 }

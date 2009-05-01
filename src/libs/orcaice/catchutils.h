@@ -11,7 +11,7 @@
 #ifndef ORCAICE_CATCHUTILS_H
 #define ORCAICE_CATCHUTILS_H
 
-#include <gbxutilacfr/substatus.h>
+#include <gbxutilacfr/subhealth.h>
 #include <gbxutilacfr/tracer.h>
 
 namespace orcaice
@@ -63,11 +63,13 @@ while ( !isStopping() )
 } 
 @endverbatim
 */
-std::string catchExceptionsWithSleep( gbxutilacfr::Tracer& tracer, const std::string& activity, int sleepIntervalMSec=1000 );
+std::string catchExceptionsWithSleep( gbxutilacfr::Tracer& tracer, 
+            const std::string& activity, 
+            int sleepIntervalMSec=1000 );
 
 /*! 
-Same as catchExceptions() but also changes subsystem's health to newHealth. All status health types are allowed accept 
-SubsystemStalled (a subsystem can not decide for itself that it's stalled). Default new health is gbxutilacfr::SubsystemFault.
+Same as catchExceptions() but also changes subsystem's health to newHealth. All status health types are allowed.
+Default new health is gbxutilacfr::SubsystemFault.
 
 Example:
 @verbatim
@@ -80,13 +82,14 @@ while ( !isStopping() )
     catch ( ... ) 
     {
         // will issue a status Warning instead of the default Fault.
-        orcaice::catchExceptionsWithSleep( "initializing hardware driver", subStatus(), gbxutilacfr::SubsystemWarning );
+        orcaice::catchExceptionsWithSleep( "initializing hardware driver", health(), gbxutilacfr::SubsystemWarning );
     } 
 } 
 @endverbatim
 */
 std::string catchExceptionsWithStatus( const std::string& activity, 
-            gbxutilacfr::SubStatus& subStatus, gbxutilacfr::SubsystemHealth newHealth=gbxutilacfr::SubsystemFault );
+            gbxutilacfr::SubHealth& subHealth, 
+            gbxutilacfr::SubsystemHealth newHealth=gbxutilacfr::SubsystemFault );
 
 /*!
 Same as catchExceptionsWithStatus() but also sleeps for specified number of milliseconds before returning.
@@ -105,22 +108,23 @@ while ( !isStopping() )
     }
     catch ( ... ) 
     {
-        orcaice::catchExceptionsWithStatusAndSleep( "initializing hardware driver", subStatus() );
+        orcaice::catchExceptionsWithStatusAndSleep( "initializing hardware driver", health() );
     }
 }
 @endverbatim
 */
 std::string catchExceptionsWithStatusAndSleep( const std::string& activity, 
-            gbxutilacfr::SubStatus& subStatus, gbxutilacfr::SubsystemHealth newHealth=gbxutilacfr::SubsystemFault, 
+            gbxutilacfr::SubHealth& subHealth, 
+            gbxutilacfr::SubsystemHealth newHealth=gbxutilacfr::SubsystemFault, 
             int sleepIntervalMSec=1000 );
 
 /*!
 Convenience function which is equivalent to
 @verbatim
-catchExceptionsWithStatusAndSleep( "running in main loop", subStatus(), gbxutilacfr::SubsystemFault );
+catchExceptionsWithStatusAndSleep( "running in main loop", health(), gbxutilacfr::SubsystemFault );
 @endverbatim
 */
-void catchMainLoopExceptions( gbxutilacfr::SubStatus& subStatus );
+void catchMainLoopExceptions( gbxutilacfr::SubHealth& subHealth );
 
 } // namespace
 

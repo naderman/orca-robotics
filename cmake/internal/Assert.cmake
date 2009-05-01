@@ -1,7 +1,7 @@
 #
-# ASSERT( TEST COMMENT_FAIL [COMMENT_PASS=''] [IS_FATAL=FALSE] )
+# ORCA_ASSERT( TEST COMMENT_FAIL [COMMENT_PASS=''] [IS_FATAL=FALSE] )
 #
-macro( ASSERT TEST COMMENT_FAIL )
+macro( ORCA_ASSERT TEST COMMENT_FAIL )
 #     message( STATUS "DEBUG: number of inputs : ${ARGC}" )
 #     foreach( argi ${ARGV} )
 #         message( STATUS "DEBUG: input i : ${argi}" )
@@ -33,4 +33,4 @@ macro( ASSERT TEST COMMENT_FAIL )
 
     endif( ${TEST} )
 
-endmacro( ASSERT )
+endmacro( ORCA_ASSERT )

@@ -27,7 +27,7 @@ MainThread::MainThread( const orcaice::Context &context ) :
 void 
 MainThread::initialise()
 {
-    subStatus().setMaxHeartbeatInterval( 20.0 );
+    setMaxHeartbeatInterval( 20.0 );
 
     // These functions catch their exceptions.
     activate( context_, this, subsysName() );
@@ -67,13 +67,13 @@ MainThread::work()
                 propertiesInterface_->localSetAndSend( propData );
             }
 
-            subStatus().ok();
+            health().ok();
             continue;
 
         } // end of try
         catch ( ... ) 
         {
-            orcaice::catchMainLoopExceptions( subStatus() );
+            orcaice::catchMainLoopExceptions( health() );
         }
     } // end of while
 }

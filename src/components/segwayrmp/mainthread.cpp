@@ -13,6 +13,7 @@
 #include "mainthread.h"
 #include <orcaobj/orcaobj.h>
 #include <orcaobjutil/vehicleutil.h>
+#include <gbxutilacfr/mathdefs.h>
 
 using namespace std;
 
@@ -76,7 +77,11 @@ namespace {
 MainThread::MainThread( const orcaice::Context &context ) 
     : SubsystemThread( context.tracer(), context.status(), "MainThread" ),
       context_(context)
-{
+{    
+    // this subsystem is designed to terminate early (before the component itself)
+    // we have to let Status know so it can use this info in summarizing the component's
+    // state.
+    setSubsystemType( gbxutilacfr::SubsystemEarlyExit );
 }
 
 MainThread::~MainThread()
@@ -88,7 +93,7 @@ MainThread::~MainThread()
 void
 MainThread::initialise()
 {
-    subStatus().setMaxHeartbeatInterval( 10.0 );
+    setMaxHeartbeatInterval( 10.0 );
 
     //
     // INITIAL CONFIGURATION
@@ -199,7 +204,7 @@ MainThread::initialise()
                 orca::EStopPrx eStopPrx;
                 orcaice::connectToInterfaceWithTag( context_, eStopPrx, "EStop" );
                 orca::EStopDescription descr = eStopPrx->getDescription();
-                eStopMonitor_.reset( new EStopMonitor(descr) );
+                eStopMonitor_.reset( new orcarobotdriverutil::EStopMonitor(descr) );
 
                 eStopConsumerI_ = new orcaifaceimpl::NotifyingEStopConsumerImpl(context_);
                 eStopConsumerI_->setNotifyHandler( this );
@@ -208,7 +213,7 @@ MainThread::initialise()
                 break;
             }
             catch ( ... ) {
-                orcaice::catchExceptionsWithStatusAndSleep( "connecting to e-stop", subStatus() );
+                orcaice::catchExceptionsWithStatusAndSleep( "connecting to e-stop", health() );
             }
         }
     }
@@ -274,7 +279,7 @@ MainThread::handleData( const orca::VelocityControl2dData &incomingCommand )
         ss << "Requested command ("<<originalCommand.toString()<<") can not be achieved.  " << endl
            << "Capabilities: " << capabilities_.toString() << endl
            << "    --> limiting command to: " << internalCommand.toString();
-        subStatus().warning( ss.str() );
+        health().warning( ss.str() );
     }
 
     if ( internalCommand.vx != 0.0 || internalCommand.w != 0.0 )
@@ -283,7 +288,7 @@ MainThread::handleData( const orca::VelocityControl2dData &incomingCommand )
         if ( eStopMonitor_.get() && eStopMonitor_->isEStopTriggered(reason) )
         {
             segwayRmpDriverThread_->setDesiredSpeed( hydrointerfaces::SegwayRmp::Command(0,0) );
-            throw orca::HardwareFailedException( "Cannot move, e-stop is triggered: "+reason );
+            throw orca::EStopTriggeredException( reason );
         }
     }
 

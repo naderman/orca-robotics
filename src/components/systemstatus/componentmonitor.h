@@ -11,7 +11,6 @@
 #ifndef COMPONENT_MONITOR
 #define COMPONENT_MONITOR
 
-#include <iostream>
 #include <hydroiceutil/jobqueue.h>
 
 #include <orca/systemstatus.h>
@@ -35,25 +34,14 @@ class ComponentMonitor
                           const orcaice::Context    &context );
         
         // Get the current component status
-        void getComponentStatus( orca::ObservedComponentStatus &obsCompStat );
+        orca::EstimatedComponentStatus getComponentStatus();
         
     private:
-        orca::ObservedComponentState currentState_;
+        StatusConsumerImplPtr statusConsumer_;
+
         orca::FQComponentName compName_;
         hydroiceutil::JobQueuePtr jobQueue_;
         orcaice::Context context_;
-        StatusConsumerImplPtr statusConsumer_;
-        
-        // set the component state based on what we observe locally
-        void setObservedState( orca::ObservedComponentStatus &obsCompStat );
-        
-        // set the component state based on information reported by the Status interface
-        void setReportedState( const StatusDetails           &statDetails,
-                               orca::ObservedComponentStatus &obsCompStat );
-        
-        void addSubscribeJob();
-        
-        bool isHomeInterfaceReachable();
 };
 
 }

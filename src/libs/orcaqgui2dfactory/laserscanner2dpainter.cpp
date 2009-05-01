@@ -17,8 +17,9 @@
 
 #include <orcaice/orcaice.h>
 #include <orcaobj/orcaobj.h>
-
+#include <gbxutilacfr/mathdefs.h>
 #include "laserscanner2dpainter.h"
+#include <hydroqgui/exceptions.h>
 
 using namespace std;
 using namespace orcaqgui2d;

@@ -52,6 +52,8 @@ public:
                                 hydroqguielementutil::MouseEventManager  &mouseEventManager,
                                 PathPainter                              &painter,
                                 const orcaice::Context                   &context );
+    
+    ~PathPlannerUserInteraction();
 
     void noLongerMouseEventReceiver();
     void paint( QPainter *p );
@@ -69,6 +71,13 @@ public:
     
     void mouseDoubleClickEvent(QMouseEvent *e) 
         {pathInput_->processDoubleClickEvent(e);}
+    
+    void saveUserPath( const hydroqguipath::GuiPath &guiPath,
+                       int numLoops,
+                       float timeOffset );
+    
+    void loadUserPath(hydroqguipath::GuiPath &guiPath);
+    void loadPreviousUserPath(hydroqguipath::GuiPath &guiPath);
 
 public slots:
     void savePathAs();
@@ -90,10 +99,14 @@ private:
     hydroqguipath::WaypointSettings wpSettings_;
 
     // saving the path which the pathplanner *interface* holds
-    // (as opposed to the path the user enters in green)
     QString ifacePathFileName_;
     bool haveIfacePathFileName_;
     std::auto_ptr<PathFileHandler> ifacePathFileHandler_;
+    
+    // saving the path which the user enters (green waypoints)
+    QString userPathFileName_;
+    bool haveUserPathFileName_;
+    std::auto_ptr<PathFileHandler> userPathFileHandler_;
 
     // handles all user input through clicking, tables, etc.
     std::auto_ptr<PathPlannerInput> pathInput_;

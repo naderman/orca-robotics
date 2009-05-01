@@ -2,7 +2,7 @@ include_directories(
   ${PROJECT_SOURCE_DIR}/src/components/localnav
 )
 
-include( ${HYDRO_CMAKE_DIR}/UseHydro.cmake )
+include( ${HYDRO_USE_FILE} )
 
 file( GLOB srcs *.cpp )
 GBX_ADD_LIBRARY( OrcaLocalNavTestSim DEFAULT ${srcs} )

@@ -77,6 +77,8 @@ BrowserThread::chooseDeactivate()
 void 
 BrowserThread::walk()
 {
+    context_.tracer().debug( "Start receiving browser events" );
+
     hydroiceutil::EventPtr event;
     int timeoutMs = 500;
     
@@ -148,10 +150,8 @@ BrowserThread::loadRegistry()
     // remote call!
     //
     display_.showNetworkActivity( true );
-    bool tryToPing = false;
     registryHomeData_ = orcacm::getRegistryHomeData( context_, 
-            context_.communicator()->getDefaultLocator()->ice_toString(),
-            tryToPing );
+            context_.communicator()->getDefaultLocator()->ice_toString() );
     display_.showNetworkActivity( false );
 
     registryData_ = orcacm::home2hierarch1( registryHomeData_ );
@@ -283,7 +283,9 @@ BrowserThread::loadOperation()
     try
     {
         if ( ifaceProbe_->loadOperation( pick_, operationData_ ) ) {
-            events_->add( Fault );
+            cout<<ifaceProbe_->toString()<<" failed to load operation "<<pick_<<endl;
+            cout<<"Shutting down..."<<endl;
+            exit(1);
         }
     }   
     catch( const std::exception& e )

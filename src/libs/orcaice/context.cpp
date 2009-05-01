@@ -38,6 +38,7 @@ Context::init( const orca::FQComponentName &name,
 void
 Context::activate()
 {
+    tracer_->debug( "Activating adapter...", 6 );
     try
     {
         // This next line was to work around an Ice3.2 bug.

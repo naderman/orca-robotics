@@ -9,7 +9,7 @@
 # Appends the new_bit to the original.
 # If the original is not set, it will be set to the new_bit.
 #
-macro( APPEND original new_bit )
+macro( ORCA_APPEND original new_bit )
 
   IF    ( NOT ${original} )
     set( ${original} ${new_bit} )
@@ -17,7 +17,7 @@ macro( APPEND original new_bit )
     set( ${original} ${${original}} ${new_bit} )
   endif( NOT ${original} )
 
-endmacro( APPEND original new_bit )
+endmacro( ORCA_APPEND original new_bit )
 
 #
 # Generate rules for SLICE->C++ files generation, for each
@@ -42,8 +42,8 @@ macro( ORCA_GENERATE_SLICE2LOG_RULES generated_cpp_list generated_header_list )
     set( proj_slice_src_dir        ${PROJECT_SOURCE_DIR}/src/interfaces/slice )
     set( proj_slice_bin_dir        ${PROJECT_BINARY_DIR}/src/interfaces/slice )
 
-    set( slice_module              ${PROJECT_NAME_LOWER} )
-    set( lib_namespace             ${PROJECT_NAME_LOWER}ifacelog )
+    set( slice_module              ${GBX_PROJECT_NAME_LOWER} )
+    set( lib_namespace             ${GBX_PROJECT_NAME_LOWER}ifacelog )
     set( proj_cpp_bin_dir          ${PROJECT_BINARY_DIR}/src/interfaces/cpp )
     
     # this auto-generated file will include all individual header files
@@ -63,7 +63,7 @@ macro( ORCA_GENERATE_SLICE2LOG_RULES generated_cpp_list generated_header_list )
     # First pass: Loop through the SLICE sources we were given, add the full path for dependencies
     #
     foreach( slice_source_basename ${ARGN} )
-        APPEND( all_slice_depends "${proj_slice_src_dir}/${slice_module}/${slice_source_basename}" )
+        ORCA_APPEND( all_slice_depends "${proj_slice_src_dir}/${slice_module}/${slice_source_basename}" )
     endforeach( slice_source_basename ${ARGN} )
     
     #
@@ -100,18 +100,18 @@ macro( ORCA_GENERATE_SLICE2LOG_RULES generated_cpp_list generated_header_list )
             if( ${suffix} STREQUAL ".cpp" )
                 set( all_depends ${all_depends} ${headers_so_far} ${bodies_so_far} )
                 string( REGEX REPLACE "\\.cpp" ".h" associated_header "${output_fullname}" )
-                APPEND( headers_so_far ${associated_header} )
-                APPEND( bodies_so_far  ${output_fullname} )
+                ORCA_APPEND( headers_so_far ${associated_header} )
+                ORCA_APPEND( bodies_so_far  ${output_fullname} )
             endif( ${suffix} STREQUAL ".cpp" )
         
             #
             # Add this output to the list of generated files
             #
             if( ${suffix} STREQUAL ".cpp" )
-                APPEND( ${generated_cpp_list} ${output_basename} )
+                ORCA_APPEND( ${generated_cpp_list} ${output_basename} )
                 set( generated_file_type "source" )
             else( ${suffix} STREQUAL ".cpp" )
-                APPEND( ${generated_header_list} ${output_basename} )
+                ORCA_APPEND( ${generated_header_list} ${output_basename} )
                 set( generated_file_type "header" )
             endif( ${suffix} STREQUAL ".cpp" )
         
@@ -134,14 +134,15 @@ macro( ORCA_GENERATE_SLICE2LOG_RULES generated_cpp_list generated_header_list )
     
     endforeach( slice_source_basename )
     
+# alexm: disabling creation of this global header because it was leading to unnecessary re-builds.
     #
     # global header file
     #     
-    include( ${ORCA_CMAKE_DIR}/WriteGlobalHeaderFile.cmake )
-    WRITE_GLOBAL_HEADER_file( ${global_header_path} ${lib_namespace} "${lib_namespace}_${lib_namespace}_H"  
-            ${${generated_header_list}}  )
-
-    APPEND( ${generated_header_list} ${global_header_file} )
+#     include( ${ORCA_CMAKE_DIR}/WriteGlobalHeaderFile.cmake )
+#     ORCA_WRITE_GLOBAL_HEADER_file( ${global_header_path} ${lib_namespace} "${lib_namespace}_${lib_namespace}_H"  
+#             ${${generated_header_list}}  )
+# 
+#     ORCA_APPEND( ${generated_header_list} ${global_header_file} )
 
     message( STATUS "Will generate cpp header and source files from ${slice_source_counter} Slice definitions using this command:" )
     message( STATUS "${generator_command} <source.ice> ${slice_args}" )

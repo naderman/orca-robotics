@@ -12,7 +12,7 @@
 #include <orcaice/orcaice.h>
 #include <orcalog/orcalog.h>
 #include <hydrodll/dynamicload.h>
-
+#include <hydroutil/hydroutil.h>
 #include "mainthread.h"
 
 using namespace std;
@@ -58,7 +58,7 @@ MainThread::~MainThread()
 void 
 MainThread::initialise()
 {
-    subStatus().setMaxHeartbeatInterval( 20.0 );
+    setMaxHeartbeatInterval( 20.0 );
 
     // config file parameters
     Ice::PropertiesPtr props = context_.properties();

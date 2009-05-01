@@ -32,12 +32,8 @@ GetComponentsJob::execute()
 {
     //cout<<"default locator (refresh) :"<<context_.communicator()->getDefaultLocator()->ice_toString()<<endl;
 
-    // don't try to ping adapters here, we'll have to do it anyway below, when we get their full information
-    bool pingAdapters = false;
-
     // this function talks to the Registry
-//     orcacm::RegistryFlatData regData = orcacm::getRegistryData( context_, locatorString_, pingAdapters );
-    orcacm::RegistryHomeData regData = orcacm::getRegistryHomeData( context_, locatorString_, pingAdapters );
+    orcacm::RegistryHomeData regData = orcacm::getRegistryHomeData( context_, locatorString_ );
 
     if ( !regData.isReachable ) {
         cerr<<"registry unreachable"<<endl;

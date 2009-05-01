@@ -14,6 +14,7 @@
 #include <orcaqgui2dfactory/pathplanner2delement.h>
 #include <orcaqgui2dfactory/pathconversionutil.h>
 #include "pathplanneruserinteraction.h"
+#include <hydroqguielementutil/mouseeventmanager.h>
 
 using namespace std;
 
@@ -35,6 +36,8 @@ PathPlannerUserInteraction::PathPlannerUserInteraction( PathPlanner2dElement    
       context_(context),
       ifacePathFileName_("/tmp"),
       haveIfacePathFileName_(false),
+      userPathFileName_("/tmp"),
+      haveUserPathFileName_(false),
       gotMode_(false)
 {
     wpSettings_ = readWaypointSettings( context_.properties(), context_.tag() );
@@ -43,6 +46,15 @@ PathPlannerUserInteraction::PathPlannerUserInteraction( PathPlanner2dElement    
                                                            shortcutKeyManager_,
                                                            proxyString ) );
     ifacePathFileHandler_.reset( new PathFileHandler( humanManager ) );
+    userPathFileHandler_.reset( new PathFileHandler( humanManager ) );
+}
+
+
+PathPlannerUserInteraction::~PathPlannerUserInteraction()
+{
+    std::cout << "PathPlannerUserInteraction: Destructor" << std::endl;
+    if ( gotMode_ && ppElement_!=0 )
+        mouseEventManager_.relinquishMouseEventReceiver( ppElement_ );
 }
 
 
@@ -132,19 +144,22 @@ PathPlannerUserInteraction::send()
 void 
 PathPlannerUserInteraction::cancel()
 {
-    if ( gotMode_ )
-    {
-        mouseEventManager_.relinquishMouseEventReceiver( ppElement_ );
-        noLongerMouseEventReceiver();
-    }
+    cout<<"TRACE(PathPlannerUserInteraction): cancel()" << endl;
+    noLongerMouseEventReceiver();
 }
 void
 PathPlannerUserInteraction::noLongerMouseEventReceiver()
 {
-    assert( pathInput_.get() );
+    cout << "TRACE(PathPlannerUserInteraction): noLongerMouseEventReceiver()" << endl;
     pathInput_.reset(0);
     buttons_->setWpButton( false );
-    gotMode_ = false;
+    
+    if ( gotMode_ )
+    {
+        cout << "TRACE(PathFollowerUserInteraction): relinquishMouseEventReceiver" << endl;
+        mouseEventManager_.relinquishMouseEventReceiver( ppElement_ );
+        gotMode_ = false;
+    }
 }
 
 void 
@@ -174,6 +189,36 @@ PathPlannerUserInteraction::savePath()
     {
         ifacePathFileHandler_->savePath( ifacePathFileName_, painter_.currentPath() );
     }
+}
+
+void
+PathPlannerUserInteraction::saveUserPath(const hydroqguipath::GuiPath &guiPath, int numLoops, float timeOffset)
+{
+    QString fileName = QFileDialog::getSaveFileName( 0, "Choose a filename to save under", userPathFileName_, "*.txt");
+    
+    if (!fileName.isEmpty())
+    {
+        userPathFileHandler_->savePath( fileName, guiPath, numLoops, timeOffset );
+        userPathFileName_ = fileName;
+        haveUserPathFileName_ = true;
+    }
+}
+
+void 
+PathPlannerUserInteraction::loadUserPath(hydroqguipath::GuiPath &guiPath)
+{
+    QString fileName = QFileDialog::getOpenFileName( 0, "Choose a path file to open", userPathFileName_, "*.txt");     
+    
+    if (!fileName.isEmpty())
+    {
+        userPathFileHandler_->loadPath( fileName, guiPath );
+    }    
+}
+
+void 
+PathPlannerUserInteraction::loadPreviousUserPath( hydroqguipath::GuiPath &guiPath )
+{
+    userPathFileHandler_->loadPreviousPath( guiPath );
 }
     
 }

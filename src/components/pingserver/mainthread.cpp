@@ -26,7 +26,7 @@ MainThread::MainThread( const orcaice::Context &context ) :
 void
 MainThread::initialise()
 {
-    subStatus().setMaxHeartbeatInterval( 10.0 );
+    setMaxHeartbeatInterval( 10.0 );
 
     //
     // Allow core dumps even if we're setuid root.
@@ -41,7 +41,7 @@ MainThread::initialise()
     {
         stringstream ss;
         ss << "Failed to activate Pinger: " << e.what();
-        subStatus().fault( ss.str() );
+        health().fault( ss.str() );
         context_.shutdown();
     }
     // should implement a multitry version

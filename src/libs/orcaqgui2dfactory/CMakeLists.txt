@@ -13,7 +13,7 @@ GBX_REQUIRE_LIBS( build LIB ${LIB_NAME} ${dep_libs} )
 
 if( build )
     
-    include( ${HYDRO_CMAKE_DIR}/UseHydro.cmake )
+    include( ${HYDRO_USE_FILE} )
     include( ${HYDRO_CMAKE_DIR}/UseQt.cmake )
     include( ${ORCA_CMAKE_DIR}/UseBasicRules.cmake )
     include( ${ORCA_CMAKE_DIR}/UseIceBasics.cmake )

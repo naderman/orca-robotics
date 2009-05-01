@@ -2,9 +2,11 @@
 #define FEATUREMAP2DELEMENT_H
 
 #include <orcaqguielementutil/icestormelement2d.h>
-#include <hydroqgui/hydroqgui.h>
 #include <orcaqgui2dfactory/featuremap2dpainter.h>
-#include <orcaqgui2dfactory/connectutils.h>
+
+namespace hydroqguielementutil {
+    class IHumanManager;
+};
 
 namespace orcaqgui2d
 {
@@ -27,11 +29,6 @@ public:
                          hydroqguielementutil::IHumanManager *humanManager );
 
     virtual bool isInGlobalCS() { return true; }
-    virtual void actionOnConnection() 
-    {
-        paintInitialData<orca::FeatureMap2dPrx, FeatureMap2dPainter>
-            ( context_, listener_.interfaceName(), painter_ );
-    }
     virtual QStringList contextMenu();
     virtual void execute( int action );
     virtual void setUseTransparency( bool useTransparency ) { painter_.setUseTransparency( useTransparency ); };

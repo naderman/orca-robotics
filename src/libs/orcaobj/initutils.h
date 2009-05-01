@@ -11,7 +11,51 @@
 #ifndef ORCAOBJ_INIT_UTILS_H
 #define ORCAOBJ_INIT_UTILS_H
 
-#include <orca/orca.h>
+#include <orca/datetime.h>
+// #include <orca/exceptions.h>
+// #include <orca/containers.h>
+// #include <orca/common.h>
+// #include <orca/ocm.h>
+#include <orca/bros1.h>
+#include <orca/stochastic.h>
+// #include <orca/button.h>
+// #include <orca/camera.h>
+// #include <orca/cpu.h>
+// #include <orca/drivebicycle.h>
+// #include <orca/drivedifferential.h>
+// #include <orca/estop.h>
+// #include <orca/featuremap2d.h>
+// #include <orca/gps.h>
+// #include <orca/home.h>
+// #include <orca/image.h>
+// #include <orca/ins.h>
+// #include <orca/imu.h>
+// #include <orca/localise2d.h>
+// #include <orca/localise3d.h>
+// #include <orca/multicamera.h>
+// #include <orca/rangerarray.h>
+// #include <orca/odometry2d.h>
+// #include <orca/odometry3d.h>
+// #include <orca/ogfusion.h>
+// #include <orca/ogmap.h>
+// #include <orca/particle2d.h>
+// #include <orca/pathfollower2d.h>
+// #include <orca/pathplanner2d.h>
+// #include <orca/pinger.h>
+// #include <orca/pixmap.h>
+// #include <orca/pointcloud.h>
+// #include <orca/polarfeature2d.h>
+// #include <orca/power.h>
+// #include <orca/properties.h>
+// #include <orca/qgraphics2d.h>
+// #include <orca/rangescanner2d.h>
+// #include <orca/laserscanner2d.h>
+// #include <orca/status.h>
+// #include <orca/systemstatus.h>
+// #include <orca/tracer.h>
+// #include <orca/vehicledescription.h>
+// #include <orca/velocitycontrol2d.h>
+#include <orca/wifi.h>
 
 namespace orcaobj
 {

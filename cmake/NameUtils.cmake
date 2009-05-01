@@ -6,6 +6,10 @@
 # - SERVICE_NAME    service library name (defaults to the component name prepended with 
 #                   project name and appended with "Service")
 # - COMP_NAMESPACE  component namespace (defaults to the component name converted to lower case)
+# - COMP_INTERFACE_FLAG
+#                   which standard interfaces the autognerated component will initialize.
+#                   This variable must contain one of the values of orcaice::ComponentInterfaceFlag.
+#                   Default value assigned by this CMake macro is orcaice::AllStandardInterfaces.
 #
 # Also sets APP_CTRLC_HANDLER=1 (instructs application to install Ctrl-C Handler)
 #
@@ -22,10 +26,13 @@ macro( ORCA_SET_COMPONENT_NAME c_name )
     string( TOLOWER ${COMP_NAME} APP_NAME )
 
     # service lib name
-    set( SERVICE_NAME ${PROJECT_NAME_CAP}${COMP_NAME}Service )
+    set( SERVICE_NAME ${GBX_PROJECT_NAME_CAP}${COMP_NAME}Service )
 
     # component namespace name
     set( COMP_NAMESPACE ${APP_NAME} )
+
+    # which standard interfaces the component will provide.
+    set( COMP_INTERFACE_FLAG "orcaice::AllStandardInterfaces" )
 
     set( APP_CTRLC_HANDLER 1 )
 

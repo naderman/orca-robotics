@@ -15,8 +15,9 @@
 #include <QPixmap>
 #include <QMatrix>
 
-#include <hydroqgui/hydroqgui.h>
-#include <hydroqguielementutil/hydroqguielementutil.h>
+namespace hydroqguielementutil {
+    class IHumanManager;
+};
 
 namespace orcaqgui2d
 {

@@ -4,18 +4,20 @@
 
 using namespace std;
 
-namespace segwayrmp {
+namespace orcarobotdriverutil {
 
 EStopMonitor::EStopMonitor( const orca::EStopDescription &description )
     : description_(description)
 {
+    //cout<<"TRACE(estopmonitor.cpp): Initialised estop monitor for " << description.info << endl;
+
     state_.timeStamp        = orcaice::getNow();
     state_.isEStopActivated = true;
     state_.info             = "e-stop un-initialised";
 }
 
 bool
-EStopMonitor::isEStopTriggered( std::string &reason )
+EStopMonitor::isEStopTriggered( std::string &reason ) const
 {
     IceUtil::Mutex::Lock lock(mutex_);
 
@@ -28,7 +30,7 @@ EStopMonitor::isEStopTriggered( std::string &reason )
     if ( keepAliveTimer_.elapsedSec() > description_.keepAlivePeriodSec*1.5 )
     {
         stringstream reasonSS;
-        reasonSS << "keep-alive timed out on "<<description_.info<<" (last heard from it "<<keepAliveTimer_.elapsedSec()<<"sec ago";
+        reasonSS << "keep-alive timed out on "<<description_.info<<" (haven't heard from it for "<<keepAliveTimer_.elapsedSec()<<"sec ago)";
         reason = reasonSS.str();
         return true;
     }

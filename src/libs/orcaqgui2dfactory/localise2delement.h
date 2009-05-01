@@ -16,10 +16,9 @@
 #include <orcaobj/orcaobj.h>
 #include <orcaice/orcaice.h>
 
-#include <hydroqgui/hydroqgui.h>
 #include <hydroqguielementutil/iknowsplatformposition2d.h>
 #include <orcaqguielementutil/icestormelement2d.h>
-#include <orcaqgui2dfactory/connectutils.h>
+#include <hydroqguielementutil/ihumanmanager.h>
 #include <orcaqgui2dfactory/localise2dpainter.h>
 
 namespace orcaqgui2d

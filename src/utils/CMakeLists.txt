@@ -5,7 +5,6 @@ message( STATUS "== UTILITIES ==" )
 # when adding new directories, please maintain alphabetical order 
 # unless there are inter-dependencies.
 
-add_subdirectory( cleanregistry )
 add_subdirectory( deftools )
 add_subdirectory( def2uml )
 add_subdirectory( iceping )
@@ -15,6 +14,7 @@ add_subdirectory( orcaview2d )
 add_subdirectory( orcaview3d )
 add_subdirectory( pinger )
 add_subdirectory( probe )
+add_subdirectory( registryclean )
 add_subdirectory( registrylist )
 add_subdirectory( registryview )
 add_subdirectory( replier )

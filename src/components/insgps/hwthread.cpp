@@ -25,7 +25,7 @@ HwThread::HwThread( const orcaice::Context &context) :
 void
 HwThread::initialise()
 {
-    subStatus().setMaxHeartbeatInterval( 20.0 );
+    setMaxHeartbeatInterval( 20.0 );
 
     // Read settings
     Ice::PropertiesPtr prop = context_.properties();
@@ -55,7 +55,7 @@ HwThread::work()
                 generic = driver_->read();
             }
             catch ( ... ) {
-                orcaice::catchExceptionsWithStatusAndSleep( "getting vehicle description", subStatus() );
+                orcaice::catchExceptionsWithStatusAndSleep( "getting vehicle description", health() );
 
                 // didn't get anything
                 continue;
@@ -98,16 +98,16 @@ HwThread::work()
             // report status info
             switch(generic->statusMessageType){
                 case hif::InsGps::Ok:
-                    subStatus().ok( generic.get()->statusMessage );
+                    health().ok( generic.get()->statusMessage );
                     break;
                 case hif::InsGps::Warning:
-                    subStatus().warning( generic.get()->statusMessage );
+                    health().warning( generic.get()->statusMessage );
                     break;
                 case hif::InsGps::Fault:
-                    subStatus().fault( generic.get()->statusMessage );
+                    health().fault( generic.get()->statusMessage );
                     break;
                 case hif::InsGps::NoMsg:
-                    subStatus().heartbeat();
+                    health().heartbeat();
                     break;
                 default:
                     //shouldn't happen
@@ -120,7 +120,7 @@ HwThread::work()
         } // end of try
         catch ( ... ) 
         {
-            orcaice::catchMainLoopExceptions( subStatus() );
+            orcaice::catchMainLoopExceptions( health() );
 
             // Re-initialise the driver, unless we are stopping
             if ( !isStopping() ) {
@@ -137,7 +137,7 @@ HwThread::work()
 void
 HwThread::initHardwareDriver()
 {
-    subStatus().setMaxHeartbeatInterval( 20.0 );
+    setMaxHeartbeatInterval( 20.0 );
 
     Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag() + ".Config.";
@@ -171,11 +171,11 @@ HwThread::initHardwareDriver()
             break;
         }
         catch ( ... ) {
-            orcaice::catchExceptionsWithStatusAndSleep( "initialising hardware driver", subStatus() );
+            orcaice::catchExceptionsWithStatusAndSleep( "initialising hardware driver", health() );
         }
     }
 
-    subStatus().setMaxHeartbeatInterval( 1.0 );
+    setMaxHeartbeatInterval( 1.0 );
 }
 
 OrcaInsEvent::OrcaInsEvent(const hydrointerfaces::InsGps::InsData &hydroIns)

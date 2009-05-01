@@ -15,7 +15,7 @@
 #include <orcaprobe/orcaprobe.h>
 #include <hydrodll/dynamicload.h>
 #include "component.h"
-
+#include <hydroutil/hydroutil.h>
 #include "browserthread.h"
 
 #include "term-iostream/termiostreamdisplay.h"
@@ -127,7 +127,7 @@ Component::start()
     if ( driverName == "gui-qt" ) 
     {
 #ifdef HAVE_GUI_QT_DRIVER        
-        context().tracer().info( "Loading GUI Qt driver");
+        context().tracer().info( "Loading GUI Qt driver.");
         display = new GuiQtDisplay( supportedInterfaces );
 #else
         throw gbxutilacfr::Exception( ERROR_INFO, "Can't instantiate driver type 'gui-qt' because it was not compiled." );
@@ -135,7 +135,7 @@ Component::start()
     }
     else if ( driverName == "term-iostream" ) 
     {
-        context().tracer().info( "Loading terminal iostream driver");
+        context().tracer().info( "Loading terminal iostream driver.");
         display = new TermIostreamDisplay( supportedInterfaces );
     }
     else {
@@ -143,12 +143,14 @@ Component::start()
         context().tracer().error( errorStr);
         throw gbxutilacfr::HardwareException( ERROR_INFO, errorStr );
     }
+    context().tracer().debug( "Loaded probe driver.");
 
     BrowserThread browserThread( *display, factories_, context() );
     browser = &browserThread;
     browserThread.start();
 
     // for Qt driver, this will not return
+    context().tracer().debug( "Enabling probe driver.");
     display->enable( browser );
 
     // normally the application does this, 

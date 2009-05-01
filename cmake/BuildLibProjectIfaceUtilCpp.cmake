@@ -1,13 +1,13 @@
-set( lib_name ${PROJECT_NAME_CAP}IfaceUtil )
-set( lib_namespace ${PROJECT_NAME_LOWER}ifaceutil )
+set( lib_name ${GBX_PROJECT_NAME_CAP}IfaceUtil )
+set( lib_namespace ${GBX_PROJECT_NAME_LOWER}ifaceutil )
 GBX_ADD_LICENSE( LGPL )
 
 set( build TRUE )
 GBX_REQUIRE_OPTION( build LIB ${lib_name} ON )
 
 # using Exception
-set( ext_libs GbxUtilAcfr )
-GBX_REQUIRE_INSTALLS( build LIB ${lib_name} ${ext_libs} )
+set( dep_libs GbxUtilAcfr )
+GBX_REQUIRE_LIBS( build LIB ${lib_name} ${dep_libs} )
 
 if( build )
     #
@@ -18,7 +18,7 @@ if( build )
     #
     # All Slice source files are defined in one place (loads ORCA_SLICE_SOURCE_FILES)
     #
-    include( ${PROJECT_SOURCE_DIR}/src/interfaces/slice/${PROJECT_NAME_LOWER}/slice_sources.cmake )
+    include( ${PROJECT_SOURCE_DIR}/src/interfaces/slice/${GBX_PROJECT_NAME_LOWER}/slice_sources.cmake )
     
     #
     # Work out the list of generated files from the list of slice sources
@@ -38,10 +38,8 @@ if( build )
     set( util_h_file ${CMAKE_CURRENT_BINARY_DIR}/util.h )
     set( util_cpp_file ${CMAKE_CURRENT_BINARY_DIR}/util.cpp )
 
-    configure_file( ${ORCA_CMAKE_DIR}/ifaceutilutil.h.template ${util_h_file} )
-    configure_file( ${ORCA_CMAKE_DIR}/ifaceutilutil.cpp.template ${util_cpp_file} )
-
-    set( dep_libs ${int_libs} ${ext_libs} )
+    configure_file( ${ORCA_CMAKE_DIR}/ifaceutilutil.h.in ${util_h_file} )
+    configure_file( ${ORCA_CMAKE_DIR}/ifaceutilutil.cpp.in ${util_cpp_file} )
     
     GBX_ADD_LIBRARY( ${lib_name} DEFAULT ${slice_generated_sources} ${util_cpp_file} )
     target_link_libraries( ${lib_name} ${dep_libs} )

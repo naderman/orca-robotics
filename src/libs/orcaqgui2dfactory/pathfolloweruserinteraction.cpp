@@ -41,9 +41,10 @@ PathFollowerUserInteraction::PathFollowerUserInteraction( PathFollower2dElement 
       context_(context),
       inputFactory_(inputFactory),
       ifacePathFileName_("/tmp"),
-      haveIfacePathFileName_(false),    
+      haveIfacePathFileName_(false),
+      userPathFileName_("/tmp"),
+      haveUserPathFileName_(false),    
       numAutoPathDumps_(0),
-      loadPreviousPathFilename_(""),
       gotMode_(false)
 {
     wpSettings_ = readWaypointSettings( context.properties(), context.tag() );
@@ -51,8 +52,16 @@ PathFollowerUserInteraction::PathFollowerUserInteraction( PathFollower2dElement 
                                                             humanManager, 
                                                             shortcutKeyManager, 
                                                             proxyString,
-                                                            !readActivateImmediately(context.properties(), context.tag())) );
+                                                                    !readActivateImmediately(context.properties(), context.tag())) );
     ifacePathFileHandler_.reset( new PathFileHandler( humanManager ) );
+    userPathFileHandler_.reset( new PathFileHandler( humanManager ) );
+}
+
+PathFollowerUserInteraction::~PathFollowerUserInteraction()
+{
+    std::cout << "PathFollowerUserInteraction: Destructor" << std::endl;
+    if ( gotMode_ && pfElement_!=0 )
+        mouseEventManager_.relinquishMouseEventReceiver( pfElement_ );
 }
 
 void 
@@ -122,7 +131,7 @@ PathFollowerUserInteraction::waypointModeSelected()
         return;
     }
     
-    pathInput_ = inputFactory_->createPathInput( this, &wpSettings_, humanManager_, loadPreviousPathFilename_ );
+    pathInput_ = inputFactory_->createPathInput( this, &wpSettings_, humanManager_);
     
     pathInput_->setUseTransparency( useTransparency_ );
     buttons_->setWpButton( true );
@@ -150,9 +159,12 @@ PathFollowerUserInteraction::send()
     // save path to file automatically
     char buffer [5];
     sprintf(buffer,"%05d",numAutoPathDumps_++);
-    QString filename = readDumpPath(context_.properties(), context_.tag()) + "/pathdump" + QString(buffer) + ".txt";
-    pathInput_->savePath( filename );
-    loadPreviousPathFilename_ = filename;
+    QString fileName = readDumpPath(context_.properties(), context_.tag()) + "/pathdump" + QString(buffer) + ".txt";
+    hydroqguipath::GuiPath guiPath;
+    int numLoops = 0;
+    float timeOffset = 0.0;
+    pathInput_->getPath( guiPath, numLoops, timeOffset );
+    userPathFileHandler_->savePath( fileName, guiPath, numLoops, timeOffset );
     
     pfElement_->sendPath( pathInput_.get(), readActivateImmediately(context_.properties(), context_.tag()) );
     
@@ -163,11 +175,7 @@ void
 PathFollowerUserInteraction::cancel()
 {
     cout<<"TRACE(PathFollowerUserInteraction): cancel()" << endl;
-    if ( gotMode_ )
-    {
-        mouseEventManager_.relinquishMouseEventReceiver( pfElement_ );
-        noLongerMouseEventReceiver();
-    }
+    noLongerMouseEventReceiver();
 }
 
 void 
@@ -225,7 +233,13 @@ PathFollowerUserInteraction::noLongerMouseEventReceiver()
     cout << "TRACE(PathFollowerUserInteraction): noLongerMouseEventReceiver()" << endl;
     pathInput_.reset(0);
     buttons_->setWpButton( false );
-    gotMode_ = false;
+    
+    if ( gotMode_ )
+    {
+        cout << "TRACE(PathFollowerUserInteraction): relinquishMouseEventReceiver" << endl;
+        mouseEventManager_.relinquishMouseEventReceiver( pfElement_ );
+        gotMode_ = false;
+    }
 }
 
 void 
@@ -256,6 +270,36 @@ PathFollowerUserInteraction::savePath()
     {
         ifacePathFileHandler_->savePath( ifacePathFileName_, painter_.currentPath() );
     }
+}
+
+void
+PathFollowerUserInteraction::saveUserPath(const hydroqguipath::GuiPath &guiPath, int numLoops, float timeOffset)
+{
+    QString fileName = QFileDialog::getSaveFileName( 0, "Choose a filename to save under", userPathFileName_, "*.txt");
+    
+    if (!fileName.isEmpty())
+    {
+        userPathFileHandler_->savePath( fileName, guiPath, numLoops, timeOffset );
+        userPathFileName_ = fileName;
+        haveUserPathFileName_ = true;
+    }
+}
+
+void 
+PathFollowerUserInteraction::loadUserPath(hydroqguipath::GuiPath &guiPath)
+{
+    QString fileName = QFileDialog::getOpenFileName( 0, "Choose a path file to open", userPathFileName_, "*.txt");     
+    
+    if (!fileName.isEmpty())
+    {
+        userPathFileHandler_->loadPath( fileName, guiPath );
+    }    
+}
+
+void 
+PathFollowerUserInteraction::loadPreviousUserPath( hydroqguipath::GuiPath &guiPath )
+{
+    userPathFileHandler_->loadPreviousPath( guiPath );
 }
 
 }

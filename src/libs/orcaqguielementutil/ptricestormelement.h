@@ -14,7 +14,6 @@
 #include <assert.h>
 #include <IceStorm/IceStorm.h>
 #include <orcaqguielementutil/ptricestormlistener.h>
-#include <hydroqgui/hydroqgui.h>
 #include <hydroqguielementutil/guielement2d.h>
 
 // forward declarations

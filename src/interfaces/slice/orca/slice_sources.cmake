@@ -18,6 +18,7 @@ set( ORCA_SLICE_SOURCE_FILES
     bros1.ice
     stochastic.ice
 #interfaces
+    binaryswitch.ice
     button.ice
     camera.ice
     cpu.ice

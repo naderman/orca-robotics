@@ -16,9 +16,7 @@
 
 #include <orcaqguielementutil/ptricestormelement2d.h>
 #include <orcaqguielementutil/icestormelement2d.h>
-#include <hydroqgui/hydroqgui.h>
 #include <hydroqguielementutil/iknowsplatformposition2d.h>
-#include <orcaqgui2dfactory/connectutils.h>
 
 // Include various painter types
 #include <orcaqgui2dfactory/rangerarraypainter.h>
@@ -58,9 +56,7 @@ public:
     virtual bool isInGlobalCS() { return false; }
     virtual void actionOnConnection() 
     { 
-        getExtractorInfo();
-        paintInitialData<orca::PolarFeature2dPrx, PolarFeature2dPainter>
-            ( context_, listener_.interfaceName(), painter_ ); 
+        getDescription();
     }
 
     virtual QStringList contextMenu() { return painter_.contextMenu(); }
@@ -68,7 +64,7 @@ public:
 
 private:
 
-    void getExtractorInfo();
+    void getDescription();
     PolarFeature2dPainter painter_;
 };
 
@@ -274,11 +270,6 @@ public:
         {};
 
     virtual bool isInGlobalCS() { return true; }
-    virtual void actionOnConnection()
-    {
-        paintInitialData<orca::Particle2dPrx, Particle2dPainter>
-            ( context_, listener_.interfaceName(), painter_ );
-    }
     virtual void setColor( QColor color ) { painter_.setColor(color); }
     virtual void setUseTransparency( bool useTransparency ) { painter_.setUseTransparency( useTransparency ); };
 
@@ -309,11 +300,6 @@ public:
     };
 
     virtual bool isInGlobalCS() { return painter_.isInGlobalCS(); }
-    virtual void actionOnConnection() 
-    { 
-        paintInitialData<orca::QGraphics2dPrx,QGraphics2dPainter>
-            ( context_, listener_.interfaceName(), painter_ );
-    }
 
 private:
     QGraphics2dPainter painter_;
@@ -339,11 +325,6 @@ public:
         {};
 
     virtual bool isInGlobalCS() { return false; }
-    virtual void actionOnConnection()
-    {
-        paintInitialData<orca::Odometry2dPrx, Odometry2dPainter>
-            ( context_, listener_.interfaceName(), painter_ );
-    }
     virtual void setColor( QColor color ) { painter_.setColor(color); }
     virtual void setUseTransparency( bool useTransparency ) { painter_.setUseTransparency( useTransparency ); };
 

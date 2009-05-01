@@ -10,6 +10,7 @@
 
 #include <orcaobj/miscutils.h>
 #include "simpleguielements.h"
+#include <hydroqgui/exceptions.h>
 
 using namespace std;
 using namespace orcaqgui2d;
@@ -43,7 +44,7 @@ LaserScanner2dElement::getLaserInfo()
 }
 
 void
-PolarFeature2dElement::getExtractorInfo()
+PolarFeature2dElement::getDescription()
 {
     // Subscribe directly to get geometry etc
     orca::PolarFeature2dPrx prx;
@@ -177,9 +178,6 @@ Localise3dElement::actionOnConnection()
     if (!isConnected_) return;
     
     tryToGetGeometry();
-    
-    paintInitialData<orca::Localise3dPrx, Localise3dPainter>
-        ( context_, listener_.interfaceName(), painter_ );
 }
 
 void 

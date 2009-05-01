@@ -18,7 +18,7 @@
 
 #include "qgraphics2dpainter.h"
 #include <hydroqguielementutil/definitions2d.h>
-#include <hydroqgui/hydroqgui.h>
+#include <hydroqgui/exceptions.h>
 
 using namespace std;
 using namespace orcaqgui2d;

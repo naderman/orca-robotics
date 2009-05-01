@@ -29,13 +29,13 @@ ConsumerSubscriber::subscribeWithTag( const std::string& interfaceTag )
 
 bool 
 ConsumerSubscriber::subscribeWithTag( const std::string& interfaceTag, 
-                        gbxiceutilacfr::Thread*  thread, const std::string& subsysName, 
+                        gbxutilacfr::Stoppable* activity, const std::string& subsysName, 
                         int retryInterval, int retryNumber )
 {
     // this may throw ConfigFileException, we don't catch it, let the user catch it at the component level
     std::string proxyString = orcaice::getRequiredInterfaceAsString( context_, interfaceTag );
 
     // now that we have the stingified proxy, use the function above.
-    return subscribeWithString( proxyString, thread, subsysName, retryInterval, retryNumber );
+    return subscribeWithString( proxyString, activity, subsysName, retryInterval, retryNumber );
 }
 

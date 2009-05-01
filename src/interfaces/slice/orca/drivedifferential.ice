@@ -66,7 +66,7 @@ interface DriveDifferential
 
     //! Set velocity command
     idempotent void setCommand( DriveDifferentialData data )
-            throws HardwareFailedException;    
+            throws HardwareFailedException, EStopTriggeredException;
 };
 
 //! @}

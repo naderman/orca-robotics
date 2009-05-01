@@ -1,9 +1,10 @@
 ORCA_SET_COMPONENT_NAME( SystemStatusMon )
+set( COMP_INTERFACE_FLAG "orcaice::NoStandardInterfaces" )
 
 set( build TRUE )
 GBX_REQUIRE_OPTION( build EXE ${APP_NAME} ON )
 
-set( dep_libs HydroColourText GbxUtilAcfr OrcaIfaceImpl OrcaIfaceUtil OrcaObjects ) 
+set( dep_libs HydroColourText GbxUtilAcfr OrcaIfaceImpl OrcaIfaceUtil OrcaSystemStatusUtil ) 
 GBX_REQUIRE_LIBS( build EXE ${APP_NAME} ${dep_libs} )
 
 if( build )

@@ -36,7 +36,7 @@ MainThread::work()
 {
     const int timeoutMs = 500;
     
-    subStatus().setMaxHeartbeatInterval( 1.0 );
+    setMaxHeartbeatInterval( 1.0 );
 
     while( !isStopping() )
     {
@@ -75,11 +75,11 @@ MainThread::work()
                 outgoingInterface_->localSetAndSend( outgoingData_ );
 
                 //state is good, so say so
-                subStatus().ok();
+                health().ok();
             }
             else
             {
-                subStatus().warning( "Images were not successfully copied to local buffer" );
+                health().warning( "Images were not successfully copied to local buffer" );
             }
         }
         catch( ... )
@@ -151,7 +151,7 @@ MainThread::readSettings()
 void 
 MainThread::initPluginInterface()
 {
-    subStatus().setMaxHeartbeatInterval( 20.0 );
+    setMaxHeartbeatInterval( 20.0 );
 
     //copy from description to config
 
@@ -206,7 +206,7 @@ MainThread::initPluginInterface()
 
         // we get here only after an exception was caught
         context_.tracer().error( exceptionSS.str() );
-        subStatus().fault( exceptionSS.str() );          
+        health().fault( exceptionSS.str() );          
 
         IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(1));        
     }
@@ -217,7 +217,7 @@ MainThread::initPluginInterface()
     outgoingDescr_->format = "GRAY8";
     outgoingDescr_->size = pluginConfig_.width*pluginConfig_.height;
 
-    subStatus().setMaxHeartbeatInterval( 1.0 );
+    setMaxHeartbeatInterval( 1.0 );
 
 }
 

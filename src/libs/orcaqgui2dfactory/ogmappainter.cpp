@@ -12,11 +12,11 @@
 #include <QPainter>
 
 #include <Ice/Ice.h>
-#include <hydroqgui/hydroqgui.h>
 #include <orcaice/orcaice.h>
 #include <orcaobj/orcaobj.h>
 #include "ogmappainter.h"
-
+#include <hydroqgui/exceptions.h>
+#include <hydroqguielementutil/ihumanmanager.h>
 using namespace std;
 
 namespace orcaqgui2d {

@@ -31,7 +31,7 @@ MainThread::MainThread( const orcaice::Context& context ) :
 void 
 MainThread::initialise()
 {   
-    subStatus().setMaxHeartbeatInterval( 10.0 );
+    setMaxHeartbeatInterval( 10.0 );
 
     // These functions catch their exceptions.
     activate( context_, this, subsysName() );
@@ -46,7 +46,7 @@ MainThread::initialise()
 void 
 MainThread::work()
 {   
-    subStatus().setMaxHeartbeatInterval( 3.0 );
+    setMaxHeartbeatInterval( 3.0 );
 
     while ( !isStopping() )
     {
@@ -67,7 +67,7 @@ MainThread::work()
         }
         catch ( ... ) 
         {
-            orcaice::catchMainLoopExceptions( subStatus() );
+            orcaice::catchMainLoopExceptions( health() );
         }
             
     } // end of big while loop
@@ -127,7 +127,7 @@ MainThread::checkWifiSignal( orca::WifiData &data )
         if ( iface.linkType != orca::LinkQualityTypeDbm )
         {
             // we can't judge how good the signal is in relative mode, so just say ok
-            subStatus().ok();
+            health().ok();
             continue;
         }
         
@@ -136,12 +136,12 @@ MainThread::checkWifiSignal( orca::WifiData &data )
         {
             stringstream ss;
             ss << "Wifi signal strength of interface " << iface.interfaceName << " is below " << snrWarningThreshhold_ << " dBm";
-            subStatus().warning( ss.str() );
+            health().warning( ss.str() );
             context_.tracer().warning( ss.str() );
         }
         else
         {
-            subStatus().ok();
+            health().ok();
         }
     }
     

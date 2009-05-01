@@ -15,6 +15,7 @@
 #include <orcaice/orcaice.h>
 #include <orcalog/exceptions.h>
 #include "masterfilewriter.h"
+#include <hydroutil/hydroutil.h>
 #include "utils.h"
 
 using namespace std;

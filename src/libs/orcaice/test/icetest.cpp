@@ -12,7 +12,7 @@
 
 #include <orcaice/application.h>
 #include <orcaice/component.h>
-
+#include <hydroutil/hydroutil.h>
 #include <orcaice/orcaice.h>
 #include <orcaice/icegridutils.h>
 #include <orca/home.h>

@@ -12,7 +12,7 @@
 #include <assert.h>
 #include <IceUtil/Thread.h>     // for sleep()
 #include <orcaice/orcaice.h>
-
+#include <cmath>
 #include "staticdriver.h"
 
 using namespace std;

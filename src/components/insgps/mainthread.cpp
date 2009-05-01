@@ -38,7 +38,7 @@ MainThread::~MainThread()
 void 
 MainThread::initialise()
 {
-    subStatus().setMaxHeartbeatInterval( 20.0 );
+    setMaxHeartbeatInterval( 20.0 );
 
     // These functions catch their exceptions.
     activate( context_, this, subsysName() );
@@ -77,13 +77,13 @@ MainThread::work()
                         break;
                 }
             }else{
-                subStatus().warning( "timed out read on hwThread" );
+                health().warning( "timed out read on hwThread" );
             }
             continue;
         } // end of try
         catch ( ... ) 
         {
-            orcaice::catchMainLoopExceptions( subStatus() );
+            orcaice::catchMainLoopExceptions( health() );
         }
 
     } // end of while

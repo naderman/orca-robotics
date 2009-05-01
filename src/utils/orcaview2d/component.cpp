@@ -21,6 +21,8 @@
 #include <hydroqgui/platformcsfinder.h>
 #include <orcaqgui/iguielementfactory.h>
 #include "component.h"
+#include <hydroutil/hydroutil.h>
+#include <hydroqgui/stringtorandomcolormap.h>
         
 using namespace std;
 

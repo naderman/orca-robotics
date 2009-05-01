@@ -39,7 +39,7 @@ MainThread::initialise()
 void
 MainThread::work() 
 {
-    subStatus().setMaxHeartbeatInterval( 1.0 );
+    setMaxHeartbeatInterval( 1.0 );
 
     // get 1 image
     // and check it's description for the particular image configuration
@@ -70,7 +70,7 @@ MainThread::work()
         }
         catch ( ... ) 
         {
-            orcaice::catchMainLoopExceptions( subStatus() );
+            orcaice::catchMainLoopExceptions( health() );
 
             // Re-create the viewer, unless we are stopping
             if ( !isStopping() ) {
@@ -96,7 +96,7 @@ MainThread::finalise()
 void
 MainThread::initSettings()
 {
-    subStatus().setMaxHeartbeatInterval( 20.0 );
+    setMaxHeartbeatInterval( 20.0 );
 
     //
     // Read settings
@@ -105,7 +105,7 @@ MainThread::initSettings()
     std::string prefix = context_.tag() + ".Config.";
     
     // int sleepIntervalMs = orcaice::getPropertyAsIntWithDefault( prop, prefix+"SleepIntervalMs", 100 );
-    subStatus().ok( "Initialized" );
+    health().ok( "Initialized" );
 
 }
 
@@ -147,11 +147,11 @@ void MainThread::getImage()
         context_.tracer().debug("Successfuly fetched Image",6);
         // context_.tracer().debug("Adding Image to Queue",6);
                 
-        subStatus().ok();
+        health().ok();
     }
     else
     {
-        subStatus().warning( "Image was not successfully copied to local buffer" );
+        health().warning( "Image was not successfully copied to local buffer" );
     }
 
     // TODO: add string description for images

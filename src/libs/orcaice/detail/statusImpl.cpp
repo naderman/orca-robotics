@@ -10,9 +10,10 @@
 
 #include <orcaice/orcaice.h>
 #include <orcaice/icegridutils.h>
-// #include <orcaifaceutil/status.h>
 #include "statusImpl.h"
 #include "componentstatusaggregator.h"
+// debug only! comment out when finished.
+// #include <orcaifaceutil/status.h>
 
 using namespace std;
 
@@ -121,6 +122,10 @@ StatusImpl::publishEvent( const hydroiceutil::LocalComponentStatus& componentSta
     data.compStatus.timeUp = (Ice::Int)upTimer_.elapsedSec();
 
     dataStore_.set( data );
+
+//     if ( data.compStatus.isStalled )
+//         context_.tracer().debug( "(while publishing status) component is stalled. status:\n"+ifaceutil::toString(data.compStatus) );
+//     context_.tracer().debug( "publishing status:\n"+ifaceutil::toString(data.compStatus) );
 
     if( topicHandler_.get() )
     {

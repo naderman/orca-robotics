@@ -10,8 +10,9 @@
 
 #include <cmath>
 #include <QPainter>
-
+#include <assert.h>
 #include "pixmappainter.h"
+#include <hydroqguielementutil/ihumanmanager.h>
 
 using namespace std;
 

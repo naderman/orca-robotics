@@ -13,7 +13,7 @@ if( build )
     include( ${ORCA_CMAKE_DIR}/UseBasicRules.cmake )
     include( ${ORCA_CMAKE_DIR}/UseIce.cmake )
     include( ${ORCA_CMAKE_DIR}/UseLibProjectInterfaces.cmake )
-    include( ${HYDRO_CMAKE_DIR}/UseHydro.cmake )
+    include( ${HYDRO_USE_FILE} )
 
     file( GLOB hdrs *.h )
     file( GLOB srcs *.cpp )

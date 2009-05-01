@@ -47,10 +47,31 @@ enum SubsystemHealth
     //! Subsystem has encountered an abnormal but non-fault condition
     SubsystemWarning,
     //! Subsystem has encountered a fault
-    SubsystemFault,
-    //! Subsystem has not been heard from for an abnormally long time
-    SubsystemStalled
+    SubsystemFault
 };
+
+//! Status for a single subsystem of a component.
+struct SubsystemStatus
+{
+    //! State in the subsystem's state machine, i.e. what is the subsystem doing?
+    SubsystemState state;
+    //! Subsystem's health, i.e. how is the subsystem doing?
+    SubsystemHealth health;
+    //! Human-readable status description
+    string message;
+    //! Subsystem has not been heard from for an abnormally long time.
+    bool isStalled;
+    //! OBSOLETE?
+    //! Ratio of time since last heartbeat to maximum expected time between heartbeats.
+    //! For example, sinceHeartbeat=0.5 means that half of normally expected interval between heartbeats
+    //! has elapsed.
+    //! Can be negative when maxHeartbeatInterval is negative (indicating that this subsystem is 
+    //! not going to send heartbeats at regular periods).
+    float sinceHeartbeat;
+};
+
+//! Status for all subsystems of a component indexed by subsystem name.
+dictionary<string,SubsystemStatus> SubsystemStatusDict;
 
 //! Possible component states.
 enum ComponentState
@@ -58,7 +79,7 @@ enum ComponentState
     //! Component is preparing to work, e.g. initialising its resources, etc.
     CompInitialising,
     //! Component is fully initialised and is performing its work
-    CompActive,
+    CompWorking,
     //! Component is preparing to shutdown, e.g. releasing its resources, etc.
     CompFinalising
 };
@@ -71,44 +92,8 @@ enum ComponentHealth
     //! At least one of the component's subsystems has encountered an abnormal but non-fault condition
     CompWarning,
     //!  At least one of the component's subsystems has encountered a fault
-    CompFault,
-    //!  At least one of the component's subsystems has not been heard from for an abnormally long time
-    CompStalled
+    CompFault
 };
-
-//! Status for a single subsystem of a component.
-struct SubsystemStatus
-{
-    //! State in the subsystem's state machine, i.e. what is the subsystem doing?
-    SubsystemState state;
-    //! Subsystem's health, i.e. how is the subsystem doing?
-    SubsystemHealth health;
-    //! Human-readable status description
-    string message;
-    //! Ratio of time since last heartbeat to maximum expected time between heartbeats.
-    //! For example, sinceHeartbeat=0.5 means that half of normally expected interval between heartbeats
-    //! has elapsed.
-    float sinceHeartbeat;
-};
-
-//! Status for all subsystems of a component.
-dictionary<string,SubsystemStatus> SubsystemStatusDict;
-
-//! Status of a single component.
-struct ComponentStatusEpisode
-{
-    //! Time when the episode was recorded
-    orca::Time timeStamp;
-    //! Component state
-    ComponentState state;
-    //! Component health
-    ComponentHealth health;
-    //! Status of all component subsystems 
-    SubsystemStatusDict subsystems;
-};
-
-//! A sequence of component status episodes.
-sequence<ComponentStatusEpisode> ComponentStatusEpisodeSeq;
 
 //! Status of a single component.
 struct ComponentStatus
@@ -117,16 +102,40 @@ struct ComponentStatus
     FQComponentName name;
     //! Number of seconds since this component was activated.
     int timeUp;
-    //! How often can you expect to receive a ComponentStatus msg?
-    double publishIntervalSec;
+    //! The maximum interval between status updates sent out to a status monitor.
+    int publishIntervalSec;
     //! Component state
     ComponentState state;
     //! Component health
     ComponentHealth health;
-    //! Status of all component subsystems 
+    //! Is component stalled?
+    bool isStalled;
+    //! Status of all component's subsystems 
     SubsystemStatusDict subsystems;
 };
 
+//! A sequence of component status.
+sequence<ComponentStatus> ComponentStatusSeq;
+
+//! A snapshot of component's status.
+//! Compared to ComponentStatus, this data structure is more suitable for archiving into a 
+//! status history.
+struct ComponentStatusEpisode
+{
+    //! Time when the episode was recorded
+    orca::Time timeStamp;
+    //! Component state
+    ComponentState state;
+    //! Component health
+    ComponentHealth health;
+    //! Is component stalled?
+    bool isStalled;
+    //! Status of all component's subsystems 
+    SubsystemStatusDict subsystems;
+};
+
+//! A sequence of component status episodes.
+sequence<ComponentStatusEpisode> ComponentStatusEpisodeSeq;
 
 /*!
     @brief Component status data
@@ -138,7 +147,6 @@ struct StatusData
     //! The status of the component
     ComponentStatus compStatus;
 };
-
 
 /*!
     Data consumer interface.

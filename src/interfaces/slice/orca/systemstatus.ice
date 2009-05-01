@@ -22,60 +22,87 @@ module orca
     @{
 */
 
-//! Possible component states including observed states
-enum ObservedComponentState
+/*!
+The states of a component as seen by a remote monitor.
+
+Inactive --> Reporting <--> Stale
+    ^           ^_|           |
+    |_________________________|
+
+The following represents the same state machine in the format of State Machine Compiler (see smc.sf.net) : 
+@verbatim
+Inactive
+{
+    received
+    Reporting
+    {}
+}
+
+Reporting
+{
+    timedOut
+    Stale
+    {}
+
+    received
+    nil
+    {}
+}
+
+Stale
+{
+    received
+    Reporting
+    {}
+
+    gaveUp
+    Inactive
+    {}
+}
+@endverbatim   
+*/
+enum EstimatedComponentState
 {    
-    //! Observed state: component's Home interface cannot be reached
-    ObsCompInactive,
-    //! Observed state: in the process of connecting to component's Status interface
-    ObsCompConnecting,
-    //! Reported state: component is preparing to work, e.g. initialising its resources, etc.
-    ObsCompInitialising,
-    //! Reported state: component is fully initialised and is performing its work
-    ObsCompActive,
-    //! Reported state: component is preparing to shutdown, e.g. releasing its resources, etc.
-    ObsCompFinalising
+    //! The component is inactive. This can happen for two reasons which we cannot distinguish:
+    //! - the component is deactivated, i.e. does not actually execute, or
+    //! - it is activated but is unreachable from the location of the monitor.
+    EstCompInactive,
+    //! The monitor is connected to the component's Status interface and is receiving regular
+    //! status updates.
+    EstCompReporting,
+    //! The monitor is connected to the component's Status interface but has stopped receiving 
+    //! regular updates. Typically, the monitor will try to re-establish a connection to the
+    //! monitored component.
+    EstCompStale
 };
 
-//! Possible component health values
-enum ObservedComponentHealth
+//! Remotely estimated status of a component.
+struct EstimatedComponentStatus
 {
-    //! All of the component's subsystems are OK
-    ObsCompOk,
-    //! At least one of the component's subsystems has encountered an abnormal but non-fault condition
-    ObsCompWarning,
-    //! At least one of the component's subsystems has encountered a fault
-    ObsCompFault,
-    //! At least one of the component's subsystems has not been heard from for an abnormally long time
-    ObsCompStalled,
-    //! Component has not been heard from for an abnormally long time. This health value can only 
-    //! be diagnosed from outside the component.
-    ObsCompStale
-};
-
-//! Observed component status for a single component.
-struct ObservedComponentStatus
-{
-    //! The fully-qualified name of the component.
+    //! Fully-qualified name of the component.
     FQComponentName name;
-    //! Number of seconds since this component was activated.
-    int timeUp;
-    //! How often can you expect to receive an ObservedComponentStatus msg?
-    double publishIntervalSec;
-    //! Observed state of the component, see above
-    ObservedComponentState state;
-    //! Observed health of the component, see above
-    ObservedComponentHealth health;
-    //! Status of all component subsystems 
-    SubsystemStatusDict subsystems;
+
+    //! The estimate of the remote component's state performed by the monitor.
+    EstimatedComponentState estimatedState;
+
+    //! The contents of the reported status depend on the current estimated state:
+    //! - EstCompInactive
+    //!     - not defined
+    //! - EstCompReporting
+    //!     - the latest reported status
+    //! - EstCompStale
+    //!     - the last reported status before status updates stopped arriving.
+    ComponentStatusSeq reportedStatus;
 };
 
-//! A sequence of ComponentStatus
-sequence<ObservedComponentStatus> ObservedComponentStatusSeq;
+//! A sequence of EstimatedComponentStatus
+sequence<EstimatedComponentStatus> EstimatedComponentStatusSeq;
 
-//! Hold the observed component status of an entire system
-//! The dictionary contains a sequence of ObservedComponentStatus indexed by the platform name
-dictionary<string,ObservedComponentStatusSeq> SystemStatusDict;
+//! Holds the estimated component status of an entire system.
+//! The dictionary contains a sequence of EstimatedComponentStatus indexed by the platform name,
+//! i.e. each platform may have several components.
+dictionary<string,EstimatedComponentStatusSeq> SystemStatusDict;
+
 
 //! The data corresponding to the SystemStatus interface
 struct SystemStatusData
@@ -116,8 +143,6 @@ interface SystemStatus
     IceStorm::Topic* subscribe( SystemStatusConsumer* subscriber )
         throws SubscriptionFailedException;
 };
-
-
 
 /*!
     @}

@@ -15,8 +15,13 @@
 #include <QStringList>
 #include <QColor>
 
-#include <hydroqguielementutil/hydroqguielementutil.h>
-#include <hydroqgui/hydroqgui.h>
+#include <hydroqgui/iguielementfactory.h>
+#include <hydroqgui/platformfocusmanager.h>
+#include <hydroqgui/platformfocusmanager.h>
+#include <hydroqgui/coordinateframemanager.h>
+#include <hydroqgui/platformfocusmanager.h>
+#include <hydroqgui/guielementset.h>
+#include <hydroqgui/istringtocolormap.h>
 
 namespace orcaqgemv
 {

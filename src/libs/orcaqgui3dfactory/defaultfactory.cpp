@@ -9,7 +9,7 @@
  */
  
 #include <iostream>
-#include <hydroqgui/hydroqgui.h>
+#include <hydroqgui/exceptions.h>
 
 #include <orcaqgui3dfactory/gridelement.h>
 #include <orcaqgui3dfactory/laserscanner2delement.h>

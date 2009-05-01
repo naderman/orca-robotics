@@ -117,7 +117,7 @@ private:
 
     // If the path planner takes more than this amount of time, assume something's wrong.
     double pathPlanTimeout_;
-    
+
     // Velocity to get to the first waypoint
     double velocityToFirstWaypoint_;
     orcaice::Context context_;

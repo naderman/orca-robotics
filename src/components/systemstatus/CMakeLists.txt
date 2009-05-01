@@ -6,7 +6,7 @@ GBX_REQUIRE_OPTION( build EXE ${APP_NAME} ON )
 set( not_os_win NOT GBX_OS_WIN )
 GBX_REQUIRE_VAR( build EXE ${APP_NAME} not_os_win "Windows OS is not supported" )
 
-set( dep_libs OrcaIfaceImpl OrcaIfaceUtil )
+set( dep_libs OrcaIfaceImpl OrcaIfaceUtil OrcaSystemStatusUtil )
 GBX_REQUIRE_LIBS( build EXE ${APP_NAME} ${dep_libs} )
 
 if( build )

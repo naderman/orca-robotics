@@ -6,7 +6,7 @@
 #include <orcaice/context.h>
 #include <gbxsickacfr/gbxiceutilacfr/store.h>
 
-namespace gbxiceutilacfr { class Thread; }
+namespace gbxutilacfr { class Stoppable; }
 
 namespace goalplanner {
 
@@ -30,10 +30,10 @@ public:
 
     // copied from orcaiface::ConsumerImpl
     void subscribeWithTag( const std::string& interfaceTag, 
-                          gbxiceutilacfr::Thread*  thread, const std::string& subsysName="", 
+                          gbxutilacfr::Stoppable* activity, const std::string& subsysName="", 
                           int retryInterval=2, int retryNumber=-1 );
     void subscribeWithString( const std::string& proxyString, 
-                          gbxiceutilacfr::Thread*  thread, const std::string& subsysName="", 
+                          gbxutilacfr::Stoppable* activity, const std::string& subsysName="", 
                           int retryInterval=2, int retryNumber=-1 );
     void unsubscribe();
 

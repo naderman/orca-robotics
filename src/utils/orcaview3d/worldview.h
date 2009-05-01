@@ -15,12 +15,16 @@
 #include <QFileDialog>
 #include <QString>
 #include <QtOpenGL>
-#include <hydroqgui/hydroqgui.h>
 #include <orcaqgui3d/platformcsfinder.h>
 #include "viewhandler.h"
 #include <osgUtil/SceneView>
 #include <osg/Group>
 #include <osg/LightSource>
+#include <hydroqguielementutil/mouseeventmanager.h>
+#include <hydroqgui/guielementset.h>
+#include <hydroqgui/coordinateframemanager.h>
+#include <hydroqguielementutil/ihumanmanager.h>
+#include <hydroqgui/platformfocusmanager.h>
 
 namespace orcaview3d 
 {

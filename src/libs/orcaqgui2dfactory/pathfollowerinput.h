@@ -32,11 +32,10 @@ class PathFollowerInput : public hydroqguipath::IPathInput
             
     public:
         PathFollowerInput( hydroqguipath::IPathUserInteraction  *pathUI,
-                           hydroqguipath::WaypointSettings            *wpSettings,
-                           hydroqguielementutil::IHumanManager        &humanManager,
-                           const QString                              &lastSavedPathFile );
+                           hydroqguipath::WaypointSettings      *wpSettings,
+                           hydroqguielementutil::IHumanManager  &humanManager );
         
-        virtual ~PathFollowerInput() {};  
+        virtual ~PathFollowerInput();  
   
         virtual void paint( QPainter *painter );
         virtual void setUseTransparency( bool useTransparency );
@@ -48,24 +47,23 @@ class PathFollowerInput : public hydroqguipath::IPathInput
         
         virtual void updateWpSettings( hydroqguipath::WaypointSettings* wpSettings );
         
-        virtual void savePath( const QString &filename );
-        virtual void loadPath( const QString &filename );
+        virtual void savePath();
+        virtual void loadPath();
         virtual void loadPreviousPath();
         
         virtual void sendPath();
         virtual void cancelPath();
         
         virtual void setWaypointFocus( int waypointId );
-
-        virtual bool getPath( orca::PathFollower2dData &pathData ) const;    
+        
+        virtual void getPath( hydroqguipath::GuiPath &guiPath, int &numLoops, float &timeOffset ) const;
         
     private:
-               
+        
         hydroqguipath::IPathUserInteraction *pathUI_;
         std::auto_ptr<hydroqguipath::PathDesignScreen> pathDesignScreen_;
         std::auto_ptr<hydroqguipath::PathDesignTableWidget> pathDesignTableWidget_;
         std::auto_ptr<hydroqguipath::GuiPath> guiPath_;
-        std::auto_ptr<PathFileHandler> pathFileHandler_;
        
 };
 
@@ -79,11 +77,10 @@ public:
     virtual std::auto_ptr<hydroqguipath::IPathInput> 
         createPathInput( hydroqguipath::IPathUserInteraction  *pathUI,
                          hydroqguipath::WaypointSettings      *wpSettings,
-                         hydroqguielementutil::IHumanManager  &humanManager,
-                         const QString                        &lastSavedPathFile ) const
+                         hydroqguielementutil::IHumanManager  &humanManager ) const
         {
             std::auto_ptr<hydroqguipath::IPathInput> input;
-            input.reset( new PathFollowerInput( pathUI, wpSettings, humanManager, lastSavedPathFile ) );
+            input.reset( new PathFollowerInput( pathUI, wpSettings, humanManager ) );
             return input;     
         }
 

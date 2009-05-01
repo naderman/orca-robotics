@@ -13,6 +13,7 @@
 
 #include "guielementmodel.h"
 #include "guielementview.h"
+#include <hydroqgui/exceptions.h>
 
 using namespace std;
 
@@ -286,6 +287,7 @@ GuiElementModel::createGuiElement( const QString &elementType,
     }
     
     // set properties of guielement
+    assert( platform != "" );
     element->setPlatform( platform );
     QString details = "";
     for (int i=0; i<elementDetails.size(); i++)

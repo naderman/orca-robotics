@@ -2,7 +2,7 @@ option( build_PURE_ICEJ "Try to build PureIceJ Java Example" ON )
 
 if( NOT GBX_OS_WIN AND build_PURE_ICEJ )
 
-    PROJECT( pureicej Java )
+    project( pureicej Java )
 
     # TEMP HACKS
     set( PROJECT_INTERFACE_JAR ${orca_BINARY_DIR}/src/interfaces/java/orca.jar )

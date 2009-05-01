@@ -213,8 +213,9 @@ isAdminInterfaceReachable( const Context& context, const orca::FQComponentName& 
     //
     Ice::ObjectPrx objectPrx = orcaice::getComponentAdmin( context, fqName );
     if ( !objectPrx )
-        throw gbxutilacfr::Exception( ERROR_INFO, "Registry returned null admin proxy." );
-std::cout<<"DEBUG: "<<__func__<<"(): got admin proxy ="<<objectPrx->ice_toString()<<std::endl;
+        throw gbxutilacfr::Exception( ERROR_INFO, 
+            "Registry returned null admin proxy for component "+fqName.platform+"/"+fqName.component );
+// std::cout<<"DEBUG: "<<__func__<<"(): got admin proxy ="<<objectPrx->ice_toString()<<std::endl;
 
     //
     // Change proxy to the user-supplied facet name.

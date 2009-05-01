@@ -11,7 +11,7 @@
 #include "ogmapelement.h"
 #include <iostream>
 #include <QFileDialog>
-#include <hydroqgui/hydroqgui.h>
+#include <hydroqgui/exceptions.h>
 
 using namespace std;
 

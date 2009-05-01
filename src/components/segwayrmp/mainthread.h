@@ -20,7 +20,7 @@
 #include "driverthread/driverthread.h"
 #include <hydrodll/dynamicload.h>
 #include "publisherthread.h"
-#include "estopmonitor.h"
+#include <orcarobotdriverutil/estopmonitor.h>
 
 namespace segwayrmp
 {
@@ -64,7 +64,7 @@ private:
     // required interfaces
     orcaifaceimpl::NotifyingEStopConsumerImplPtr eStopConsumerI_;
 
-    std::auto_ptr<EStopMonitor> eStopMonitor_;
+    std::auto_ptr<orcarobotdriverutil::EStopMonitor> eStopMonitor_;
 
     hydrointerfaces::SegwayRmp::Capabilities capabilities_;
 

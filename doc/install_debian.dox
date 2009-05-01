@@ -27,12 +27,14 @@ These are detailed instructions for installing Orca on Debian Linux. They are kn
 Minimum version required 2.4-patch 4 (latest tested: 2.6-patch 3).
 
 @verbatim
-# apt-get install cmake
+# apt-get install cmake cmake-curses-gui
 @endverbatim
+
+@note You may also choose to install a GUI version of ccmake (package name = cmake-qt-gui ).
 
 @section orca_doc_installdebian_ice Ice
 
-Minimum version required 3.3.0 (latest tested: 3.3.0).
+Minimum version required 3.3.0 (latest tested: 3.3.1).
 
 @note These instructions install Ice using a Debian package. In some cases you may still want to build Ice from source, see @ref orca_doc_installdebian_opt_icefromsource for Debian-specific instructions.
 

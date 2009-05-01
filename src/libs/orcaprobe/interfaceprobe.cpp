@@ -54,6 +54,14 @@ InterfaceProbe::~InterfaceProbe()
     cout<<"InterfaceProbe::~InterfaceProbe()"<<endl;
 }
 
+string
+InterfaceProbe::toString() const
+{
+    stringstream ss;
+    ss << "Probe type="<<id_<<" instance="<<orcaice::toString(name_);
+    return ss.str();
+}
+
 void 
 InterfaceProbe::addOperation( const std::string& name, bool isSupported, const std::string& signature )
 {

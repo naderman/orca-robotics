@@ -8,9 +8,8 @@
  *
  */
  
-#include <gbxutilacfr/tokenise.h>
 #include <hydrocolourtext/colourtext.h>
-#include <orcaobj/stringutils.h>
+#include <orcasystemstatusutil/orcasystemstatusutil.h>
 #include "display.h"
 
 using namespace std;
@@ -28,115 +27,76 @@ std::string toHorizontalLine( int platformCount, int nameWidth, int stateWidth )
     return ss.str();
 }
 
-vector<string> extractPlatComp( const string &input )
+hydroctext::Style toStyle( const orca::ComponentHealth& health )
 {
-    vector<string> tokens = gbxutilacfr::tokenise( input.c_str(), "/");
-    if (tokens.size()!=2)
+    switch( health )
     {
-        stringstream ss;
-        ss << "extractPlatForm: unexpected <platform/component> string: " << input;
-        throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
-    }
-    return tokens;
-}
-
-string extractPlatform( const string &input )
-{
-    vector<string> tokens = extractPlatComp( input );
-    return tokens[0];
-}
-
-string extractComponent( const string &input )
-{
-    vector<string> tokens = extractPlatComp( input );
-    return tokens[1];
-}
-
-unsigned int extractMaxNumComponents( const orca::SystemStatusData &data )
-{
-    unsigned int maxNum=0;
-    map<string,vector<orca::ObservedComponentStatus> >::const_iterator it;
-    
-    for ( it=data.systemStatus.begin(); it!=data.systemStatus.end(); ++it )
-    {
-        if ( (it->second.size()) > maxNum )
-            maxNum = it->second.size();
-    }
-    
-    return maxNum;
-}
-    
-std::string stateToString( const orca::ObservedComponentState &state )
-{
-    switch (state)
-    {
-        case orca::ObsCompInactive: 
-            return "! ";
-        case orca::ObsCompConnecting:
-            return "^ ";
-        case orca::ObsCompInitialising:
-            return "- ";
-        case orca::ObsCompActive:
-            return "  ";
-        case orca::ObsCompFinalising:
-            return "v ";
+        case orca::CompOk:
+            return hydroctext::Style( hydroctext::Reverse, hydroctext::Green );
+        case orca::CompWarning:  
+            return hydroctext::Style( hydroctext::Reverse, hydroctext::Yellow );
+        case orca::CompFault:  
+            return hydroctext::Style( hydroctext::Reverse, hydroctext::Red );
         default:
-            assert( false && "unknown state type" );
+            assert( !"Unknown component health." );
     }
 }
 
-void extractStateAndHealth( const orca::ObservedComponentStatus &compData,
-                            hydroctext::Style                   &healthStyle,
-                            string                              &stateIcon )
-{   
-    //
-    // handle two special cases first
-    //
-    if ( (compData.state == orca::ObsCompInactive) || (compData.state == orca::ObsCompFinalising) )
+hydroctext::Style toStyle( const orca::ComponentHealth& health, bool isStalled )
+{
+    if ( isStalled )
+        return hydroctext::Style( hydroctext::Reverse, hydroctext::Black );
+    else
+        return toStyle( health );
+}
+
+void toStyle( const orca::EstimatedComponentStatus& estStatus, hydroctext::Style& compStyle, 
+            string& compIcon, string& estCompIcon )
+{
+    switch( estStatus.estimatedState )
     {
-        stateIcon = hydroctext::emph( stateToString(compData.state), hydroctext::Style( hydroctext::Reverse, hydroctext::White ) );
-        healthStyle = hydroctext::Style( hydroctext::Reverse, hydroctext::White );
-        return;
-    }
-    
-    switch (compData.health)
-    {
-        case orca::ObsCompOk:
-            healthStyle = hydroctext::Style( hydroctext::Reverse, hydroctext::Green );
-            stateIcon = hydroctext::emph( stateToString(compData.state), hydroctext::Style( hydroctext::Reverse, hydroctext::Green ) );
-            return;
-        case orca::ObsCompWarning:  
-            healthStyle = hydroctext::Style( hydroctext::Reverse, hydroctext::Yellow );
-            stateIcon = hydroctext::emph( stateToString(compData.state), hydroctext::Style( hydroctext::Reverse, hydroctext::Yellow ) );
-            return;
-        case orca::ObsCompFault:  
-            healthStyle = hydroctext::Style( hydroctext::Reverse, hydroctext::Red );
-            stateIcon = hydroctext::emph( stateToString(compData.state), hydroctext::Style( hydroctext::Reverse, hydroctext::Red ) );
-            return;
-        case orca::ObsCompStalled:  
-            healthStyle = hydroctext::Style( hydroctext::Reverse, hydroctext::Black );
-            stateIcon = hydroctext::emph( stateToString(compData.state), hydroctext::Style( hydroctext::Reverse, hydroctext::Black ) );
-            return;
-        case orca::ObsCompStale:  
-            healthStyle = hydroctext::Style( hydroctext::Reverse, hydroctext::White );
-            stateIcon = hydroctext::emph( stateToString(compData.state), hydroctext::Style( hydroctext::Reverse, hydroctext::White ) );
-            return;
-        default:
-            assert( false && "unknown health type" );
+        case orca::EstCompInactive :
+        {
+            compIcon = " ";
+            compStyle = hydroctext::Style( hydroctext::Reverse, hydroctext::White );
+            estCompIcon = hydroctext::emph(" ", compStyle ); 
+            break;
+        }
+        case orca::EstCompReporting :
+        {
+            if ( estStatus.reportedStatus.empty() )
+                throw gbxutilacfr::Exception( ERROR_INFO, "Empty reported status in EstCompReporting state." );
+            compIcon = orcasystemstatusutil::toIcon( estStatus.reportedStatus[0].state );
+            compStyle = toStyle( estStatus.reportedStatus[0].health, estStatus.reportedStatus[0].isStalled );
+            estCompIcon = hydroctext::emph(" ", compStyle ); 
+            break;
+        }
+        case orca::EstCompStale :
+        {
+            if ( estStatus.reportedStatus.empty() )
+                throw gbxutilacfr::Exception( ERROR_INFO, "Empty reported status in EstCompStale state." );
+            compIcon = orcasystemstatusutil::toIcon( estStatus.reportedStatus[0].state );
+            compStyle = toStyle( estStatus.reportedStatus[0].health, estStatus.reportedStatus[0].isStalled );
+            estCompIcon = hydroctext::emph("!", hydroctext::Style( hydroctext::Reverse, hydroctext::Black ) ); 
+            break;
+        }
+        default :
+            assert( !"Unknown estimated component state." );
     }
 }
 
-std::string toShortString( const orca::ObservedComponentStatus& compData, int stateWidth )
+std::string toShortString( const orca::EstimatedComponentStatus& estStatus, int stateWidth )
 {   
-    hydroctext::Style healthStyle;
-    string stateIcon;
-    extractStateAndHealth( compData, healthStyle, stateIcon );
+    hydroctext::Style compStyle;
+    string compIcon = "?";
+    string estCompIcon = "?";
+    toStyle( estStatus, compStyle, compIcon, estCompIcon );
     
     stringstream ss;
     int stateUsedWidth = 2;
-    string compPlat = orcaobj::toString(compData.name);
-    ss << stateIcon
-            << hydroctext::emph(hydroctext::toFixedWidth(extractComponent(compPlat),stateWidth-stateUsedWidth), healthStyle );
+    string compItem = compIcon + " " + estStatus.name.component;
+    ss << estCompIcon
+       << hydroctext::emph(hydroctext::toFixedWidth(compItem,stateWidth-stateUsedWidth), compStyle );
     
     return ss.str();
 }
@@ -150,25 +110,31 @@ std::string humanMsgString( const orca::SystemStatusData &ssData )
 {
     stringstream ss;
     
-    map<string,vector<orca::ObservedComponentStatus> >::const_iterator itCs;
+    orca::SystemStatusDict::const_iterator itCs;
     for ( itCs=ssData.systemStatus.begin(); itCs!=ssData.systemStatus.end(); ++itCs )
     {
-        const vector<orca::ObservedComponentStatus> &components = itCs->second;
+        const orca::EstimatedComponentStatusSeq &components = itCs->second;
         
         // per component
         for (unsigned int i=0; i<components.size(); i++)
         {
-            string platComp = orcaobj::toString(components[i].name);   
-            const orca::SubsystemStatusDict &subSysSt = components[i].subsystems;
-            map<string,orca::SubsystemStatus>::const_iterator itSs;
-            
-            // per subsystem
-            for ( itSs=subSysSt.begin(); itSs!=subSysSt.end(); ++itSs )
+            string platComp = orcaice::toString(components[i].name);
+            if ( !components[i].reportedStatus.empty() )
             {
-                if (itSs->second.message!="")
-                    ss << toBoldString(platComp + ", " + itSs->first + ": ") << endl
-                        << itSs->second.message << endl << endl;
+                const orca::SubsystemStatusDict &subSysSt = components[i].reportedStatus[0].subsystems;
+                orca::SubsystemStatusDict::const_iterator itSs;
+                
+                // per subsystem
+                for ( itSs=subSysSt.begin(); itSs!=subSysSt.end(); ++itSs )
+                {
+                    if ( !itSs->second.message.empty() )
+                        ss << toBoldString(platComp + ", " + itSs->first + ": ") << endl
+                            << itSs->second.message << endl << endl;
+                }
             }
+            else {
+                // TODO: ???
+            }   
         }
     }
     
@@ -229,7 +195,7 @@ ColourTextDisplay::display( const orca::SystemStatusData &data )
        
     publishIntervalSec_ = data.publishIntervalSec;
     
-    map<string,vector<orca::ObservedComponentStatus> >::const_iterator it;
+    orca::SystemStatusDict::const_iterator it;
     
     const string sep = " |";
     const int compNameWidth = 20;
@@ -250,12 +216,12 @@ ColourTextDisplay::display( const orca::SystemStatusData &data )
     cout << toHorizontalLine(data.systemStatus.size(),compNameWidth,compStateWidth) << endl;
     
     // find maximum number of components per platform -> number of rows
-    unsigned int maxComp = extractMaxNumComponents( data );
+    int maxPlatformSize = orcasystemstatusutil::maxPlatformSize( data );
     
-    for (unsigned int compCounter=0; compCounter<maxComp; compCounter++)
+    for ( int compCounter=0; compCounter<maxPlatformSize; ++compCounter )
     {
         // row label
-        if (compCounter==0)
+        if ( compCounter==0 )
             cout << hydroctext::toFixedWidth( toBoldString("COMPONENTS"), compNameWidth ) << sep;
         else
             cout << hydroctext::toFixedWidth( " ", compNameWidth ) << sep;
@@ -263,8 +229,8 @@ ColourTextDisplay::display( const orca::SystemStatusData &data )
         // per platform (column)
         for ( it=data.systemStatus.begin(); it!=data.systemStatus.end(); ++it )
         {
-            const vector<orca::ObservedComponentStatus> &components = it->second;
-            if ( compCounter < components.size() )
+            const orca::EstimatedComponentStatusSeq &components = it->second;
+            if ( compCounter < (int)components.size() )
                 cout << toShortString(components[compCounter],compStateWidth) << sep;
             else
                 cout << hydroctext::toFixedWidth( " ", compStateWidth ) << sep;

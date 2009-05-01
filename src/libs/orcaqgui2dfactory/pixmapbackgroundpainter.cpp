@@ -12,7 +12,8 @@
 #include <QPainter>
 #include <orcaice/orcaice.h>
 #include <orcaobj/orcaobj.h>
-#include <hydroqgui/hydroqgui.h>
+#include <hydroqgui/exceptions.h>
+#include <hydroqguielementutil/ihumanmanager.h>
 
 #include "pixmapbackgroundpainter.h"
 

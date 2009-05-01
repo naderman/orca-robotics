@@ -11,6 +11,7 @@
 #include <sstream>
 #include "icegridmanager.h"
 #include <orcaice/orcaice.h>
+#include <gbxsickacfr/gbxiceutilacfr/timer.h>
 
 using namespace std;
 

@@ -80,8 +80,9 @@ interface DriveBicycle
     //! Returns the latest data.
     //! May raise DataNotExistException if the requested information is not available.
     //! May raise HardwareFailedException if there is some problem with hardware.
+    //! May raise EStopTriggeredException if an e-stop is active.
     idempotent DriveBicycleData getData()
-            throws DataNotExistException, HardwareFailedException;
+            throws DataNotExistException, HardwareFailedException, EStopTriggeredException;
     
     //! Set velocity command
     idempotent void setCommand( DriveBicycleCommand data )

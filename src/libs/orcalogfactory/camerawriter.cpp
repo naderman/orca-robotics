@@ -14,7 +14,7 @@
 
 #include <orcaice/orcaice.h>
 #include <orcalog/orcalog.h>
-#include <orcaifacelog/orcaifacelog.h>
+#include <orcaifacelog/camera.h>
 #include "camerawriter.h"
 
 #include <orcaobj/stringutils.h>
