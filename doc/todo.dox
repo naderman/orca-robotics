@@ -92,7 +92,22 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     and cache variables are upper-case. (alexm)
   - Autogeneration of component files: added COMP_INTERFACE_FLAG option to control which standard interfaces are created.
   - Renamed *.template files used by autogenerators to more standard *.in
-  
+  - There was a minor readjustment of CMake files in the satellite projects.
+    Reason: simplify updates in the future by separating bootstrap files which change as Orca evolves and project-specific files which do not 
+    need to be updated. In your satellite project, make the following changes. First update Orca.
+@verbatim
+$ cd <your-project>
+$ mkdir cmake/project
+$ svn add cmake/project/
+$ svn rm cmake/internal/bootstrap.cmake
+$ svn rm cmake/internal/FindOrca.cmake
+$ svn cp cmake/internal/project_setup.cmake cmake/project/ProjectSetup.cmake
+$ svn cp cmake/internal/project_rules.cmake cmake/project/ProjectComponentRules.cmake
+$ cp <orca>/cmake/internal/*.cmake internal/.
+$ rm orca-*
+$ svn add cmake/internal/Setup.cmake  
+@endverbatim
+
 - Dependency cleanup
   - Removed all instances of including <Ice/Ice.h> from library headers to reduce build time. The subset of Ice headers
     required by standard libs and components is included by <orcaice/context.h> (alexm)
