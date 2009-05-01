@@ -102,11 +102,12 @@ $ mkdir cmake/project
 $ svn add cmake/project/
 $ svn rm cmake/internal/bootstrap.cmake
 $ svn rm cmake/internal/FindOrca.cmake
-$ svn cp cmake/internal/project_setup.cmake cmake/project/ProjectSetup.cmake
-$ svn cp cmake/internal/project_rules.cmake cmake/project/ProjectComponentRules.cmake
-$ cp <orca>/cmake/internal/*.cmake internal/.
-$ rm orca-*
-$ svn add cmake/internal/Setup.cmake  
+$ svn mv cmake/internal/project_setup.cmake cmake/project/ProjectSetup.cmake
+$ svn mv cmake/internal/project_rules.cmake cmake/project/ProjectComponentRules.cmake
+$ cp <orca>/cmake/internal/*.cmake cmake/internal/.
+$ rm cmake/internal/orca-*
+$ svn add cmake/internal/Setup.cmake
+$ cp <orca>/CMakeLists.txt . # edit project name and version
 @endverbatim
 
 - Dependency cleanup
