@@ -92,7 +92,7 @@ DriveBicycleImpl::initInterface( gbxutilacfr::Stoppable* activity, const std::st
 }
 
 ::orca::DriveBicycleData 
-DriveBicycleImpl::internalGetData() const
+DriveBicycleImpl::internalGetData()
 {
     context_.tracer().debug( "DriveBicycleImpl::internalGetData()", 5 );
 

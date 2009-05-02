@@ -47,7 +47,7 @@ private:
     virtual void publishEvent( const hydroiceutil::LocalComponentStatus& componentStatus );
 
     // remote call implementations, mimic (but do not inherit) the orca interface
-    ::orca::StatusData internalGetData() const;
+    ::orca::StatusData internalGetData();
     IceStorm::TopicPrx  internalSubscribe(const ::orca::StatusConsumerPrx&);
 
     gbxiceutilacfr::Store<orca::StatusData> dataStore_;

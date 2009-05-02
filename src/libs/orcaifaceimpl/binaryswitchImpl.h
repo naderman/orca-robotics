@@ -62,7 +62,7 @@ private:
     void init();
 
     // remote call implementations, mimic (but do not inherit) the orca interface
-    ::orca::BinarySwitchData internalGetData() const;
+    ::orca::BinarySwitchData internalGetData();
     IceStorm::TopicPrx internalSubscribe(const orca::BinarySwitchConsumerPrx& subscriber);
 
     gbxiceutilacfr::Store<orca::BinarySwitchData> dataStore_;

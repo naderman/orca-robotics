@@ -69,7 +69,7 @@ LocalPathFollower::activateNow()
 }
 
 int
-LocalPathFollower::getWaypointIndex() const
+LocalPathFollower::getWaypointIndex()
 {
     int ret;
     wpIndexStore_.get( ret );
@@ -77,7 +77,7 @@ LocalPathFollower::getWaypointIndex() const
 }
 
 bool
-LocalPathFollower::getAbsoluteActivationTime( orca::Time &activationTime ) const
+LocalPathFollower::getAbsoluteActivationTime( orca::Time &activationTime )
 {
     int wpIndex;
     wpIndexStore_.get( wpIndex );
@@ -91,7 +91,7 @@ LocalPathFollower::getAbsoluteActivationTime( orca::Time &activationTime ) const
 }
 
 bool
-LocalPathFollower::getRelativeActivationTime( double &secondsSinceActivation ) const
+LocalPathFollower::getRelativeActivationTime( double &secondsSinceActivation )
 {
     int wpIndex;
     wpIndexStore_.get( wpIndex );
@@ -115,7 +115,7 @@ LocalPathFollower::setEnabled( bool enabled )
 }
 
 bool
-LocalPathFollower::enabled() const
+LocalPathFollower::enabled()
 {
     bool enabled;
     enabledStore_.get( enabled );

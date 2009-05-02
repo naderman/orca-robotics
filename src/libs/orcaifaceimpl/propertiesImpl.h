@@ -60,7 +60,7 @@ private:
     void init();
 
     // remote call implementations, mimic (but do not inherit) the orca interface
-    ::orca::PropertiesData internalGetData() const;
+    ::orca::PropertiesData internalGetData();
     void internalSetData( const ::orca::PropertiesData &data );
     IceStorm::TopicPrx internalSubscribe(const orca::PropertiesConsumerPrx& subscriber);
 

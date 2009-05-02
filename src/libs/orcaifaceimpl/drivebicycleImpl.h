@@ -61,7 +61,7 @@ private:
     void init();
 
     // remote call implementations, mimic (but do not inherit) the orca interface
-    ::orca::DriveBicycleData internalGetData() const;
+    ::orca::DriveBicycleData internalGetData();
     IceStorm::TopicPrx internalSubscribe(const orca::DriveBicycleConsumerPrx& subscriber);
     orca::VehicleDescription internalGetDescription() const
         { return description_; }

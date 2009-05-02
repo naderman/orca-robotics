@@ -75,7 +75,7 @@ PathFollowerInterface::activateNow()
 }
 
 int
-PathFollowerInterface::getWaypointIndex() const
+PathFollowerInterface::getWaypointIndex()
 {
     int ret;
     wpIndexStore_.get( ret );
@@ -83,7 +83,7 @@ PathFollowerInterface::getWaypointIndex() const
 }
 
 bool
-PathFollowerInterface::getAbsoluteActivationTime( orca::Time &activationTime ) const
+PathFollowerInterface::getAbsoluteActivationTime( orca::Time &activationTime )
 {
     int wpIndex;
     wpIndexStore_.get( wpIndex );
@@ -97,7 +97,7 @@ PathFollowerInterface::getAbsoluteActivationTime( orca::Time &activationTime ) c
 }
 
 bool
-PathFollowerInterface::getRelativeActivationTime( double &secondsSinceActivation ) const
+PathFollowerInterface::getRelativeActivationTime( double &secondsSinceActivation )
 {
     int wpIndex;
     wpIndexStore_.get( wpIndex );
@@ -121,7 +121,7 @@ PathFollowerInterface::setEnabled( bool enabled )
 }
 
 bool
-PathFollowerInterface::enabled() const
+PathFollowerInterface::enabled()
 {
     bool enabled;
     enabledStore_.get( enabled );

@@ -31,11 +31,11 @@ public:
     // From orcaifaceimpl::PathFollowerCallback
     void setData( const orca::PathFollower2dData &pathData, bool activateImmediately );
     void activateNow();
-    int  getWaypointIndex() const;
-    bool getAbsoluteActivationTime( orca::Time &activationTime ) const;
-    bool getRelativeActivationTime( double &secondsSinceActivation ) const;
+    int  getWaypointIndex();
+    bool getAbsoluteActivationTime( orca::Time &activationTime );
+    bool getRelativeActivationTime( double &secondsSinceActivation );
     void setEnabled( bool enabled );
-    bool enabled() const;
+    bool enabled();
 
 private: 
 

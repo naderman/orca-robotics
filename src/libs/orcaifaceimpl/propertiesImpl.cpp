@@ -86,7 +86,7 @@ PropertiesImpl::initInterface( gbxutilacfr::Stoppable* activity, const std::stri
 }
 
 ::orca::PropertiesData 
-PropertiesImpl::internalGetData() const
+PropertiesImpl::internalGetData()
 {
     context_.tracer().debug( "PropertiesImpl::internalGetData()", 5 );
 

@@ -134,7 +134,7 @@ StatusImpl::publishEvent( const hydroiceutil::LocalComponentStatus& componentSta
 }
 
 ::orca::StatusData 
-StatusImpl::internalGetData() const
+StatusImpl::internalGetData()
 {
     if ( dataStore_.isEmpty() )
     {

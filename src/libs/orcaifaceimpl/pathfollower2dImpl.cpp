@@ -97,7 +97,7 @@ PathFollower2dImpl::initInterface( gbxutilacfr::Stoppable* activity, const std::
 }
 
 ::orca::PathFollower2dData
-PathFollower2dImpl::internalGetData() const
+PathFollower2dImpl::internalGetData()
 {
     context_.tracer().debug( "PathFollower2dImpl::internalGetData()", 5 );
 

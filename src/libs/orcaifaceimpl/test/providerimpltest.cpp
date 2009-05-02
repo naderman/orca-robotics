@@ -60,11 +60,11 @@ class PathFollowerCallback : public orcaifaceimpl::AbstractPathFollowerCallback 
 public:
     virtual void setData( const orca::PathFollower2dData &path, bool activateImmediately ) {};
     virtual void activateNow() {};
-    virtual int  getWaypointIndex() const { return 0; };
-    virtual bool getAbsoluteActivationTime( orca::Time &activationTime ) const { return true; };
-    virtual bool getRelativeActivationTime( double &secondsSinceActivation ) const { return true; };
+    virtual int  getWaypointIndex() { return 0; };
+    virtual bool getAbsoluteActivationTime( orca::Time &activationTime ) { return true; };
+    virtual bool getRelativeActivationTime( double &secondsSinceActivation ) { return true; };
     virtual void setEnabled( bool enabled ) {};
-    virtual bool enabled() const { return true; };
+    virtual bool enabled() { return true; };
 };
 
 class BinarySwitchCallback : public orcaifaceimpl::AbstractBinarySwitchCallback {

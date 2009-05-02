@@ -85,7 +85,7 @@ BinarySwitchImpl::initInterface( gbxutilacfr::Stoppable* activity, const std::st
 }
 
 ::orca::BinarySwitchData
-BinarySwitchImpl::internalGetData() const
+BinarySwitchImpl::internalGetData()
 {
     context_.tracer().debug( "BinarySwitchImpl::internalGetData()", 5 );
 

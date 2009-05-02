@@ -33,7 +33,7 @@ StatusConsumerImpl::StatusConsumerImpl( const orca::FQComponentName& fqCompName,
 }
 
 orca::EstimatedComponentStatus 
-StatusConsumerImpl::estimatedStatus() const
+StatusConsumerImpl::estimatedStatus()
 {
     orca::EstimatedComponentStatus status;
     estCompStatus_.get( status );

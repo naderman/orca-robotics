@@ -21,11 +21,11 @@ public:
 
     virtual void setData( const orca::PathFollower2dData &path, bool activateImmediately )=0;
     virtual void activateNow()=0;
-    virtual int  getWaypointIndex() const=0;
-    virtual bool getAbsoluteActivationTime( orca::Time &activationTime ) const=0;
-    virtual bool getRelativeActivationTime( double &secondsSinceActivation ) const=0;
+    virtual int  getWaypointIndex()=0;
+    virtual bool getAbsoluteActivationTime( orca::Time &activationTime )=0;
+    virtual bool getRelativeActivationTime( double &secondsSinceActivation )=0;
     virtual void setEnabled( bool enabled )=0;
-    virtual bool enabled() const=0;
+    virtual bool enabled()=0;
 };
 
 //!
@@ -67,7 +67,7 @@ private:
     void init();
 
     // remote call implementations, mimic (but do not inherit) the orca interface
-    ::orca::PathFollower2dData internalGetData() const;
+    ::orca::PathFollower2dData internalGetData();
     IceStorm::TopicPrx internalSubscribe(const orca::PathFollower2dConsumerPrx& subscriber);
 
     gbxiceutilacfr::Store<orca::PathFollower2dData> dataStore_;

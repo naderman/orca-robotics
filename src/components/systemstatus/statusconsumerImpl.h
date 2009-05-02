@@ -26,7 +26,7 @@ public:
                         const orcaice::Context& context );
 
     // thread-safe access to the latest available estimated component status
-    orca::EstimatedComponentStatus estimatedStatus() const;
+    orca::EstimatedComponentStatus estimatedStatus();
 
     // thread-safe acess to the state which remember if resubscribe has been requested.
     // Default behavior of this function is to turn the state off if it's on. I.e. a repeat
