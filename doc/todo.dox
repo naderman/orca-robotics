@@ -167,6 +167,9 @@ $ cp <orca>/CMakeLists.txt . # edit project name and version
 
 - libOrcaView2dFactory
   - support for RangerArray (Mikel Astiz)
+  - pathfollower and pathplannerelement: changed the way paths are saved from user input (tobi)
+  - fixed rare segfaults related to mouse events and shortcut keys for pathfollower/pathplanner elements (tobi)
+  - improved pathfollowerinput according to changes in hydroqguipath::ipathinput (tobi)
 
 - libOrcaIce
   - SubsystemThread does not derive from SubstatusThread, does not expose walk() function to prevent un-intended use (alexm)
