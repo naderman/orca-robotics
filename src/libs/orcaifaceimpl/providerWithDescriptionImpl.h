@@ -46,6 +46,7 @@ public:
     //! modified after this class is created.
     ProviderWithDescriptionImpl( const DescriptionType& descr, const std::string& interfaceTag, const orcaice::Context& context ) :
         descr_(descr),
+        isDataSet_(false),
         interfaceName_(orcaice::getProvidedInterface(context,interfaceTag).iface),
         context_(context)
     {
@@ -55,6 +56,7 @@ public:
     //! Constructor using interfaceName
     ProviderWithDescriptionImpl( const DescriptionType& descr, const orcaice::Context& context, const std::string& interfaceName ) :
         descr_(descr),
+        isDataSet_(false),
         interfaceName_(interfaceName),
         context_(context)
     {

@@ -42,6 +42,7 @@ friend class ProviderTypeI;
 public:
     //! Constructor using interfaceTag (may throw ConfigFileException)
     ProviderImpl( const std::string& interfaceTag, const orcaice::Context& context ) :
+        isDataSet_(false),
         interfaceName_(orcaice::getProvidedInterface(context,interfaceTag).iface),
         context_(context)
     {
@@ -50,6 +51,7 @@ public:
 
     //! constructor using interfaceName
     ProviderImpl( const orcaice::Context& context, const std::string& interfaceName ) :
+        isDataSet_(false),
         interfaceName_(interfaceName),
         context_(context)
     {
