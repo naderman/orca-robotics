@@ -42,8 +42,8 @@ else( ORCA_MOTHERSHIP )
         include( ${o_found_dir}/${o_config_file} )
 
     else( DEFINED IS_SUPER_PROJECT )
-        
-        find_package( orca REQUIRED PATHS
+
+        set( orca_search_path
             # Test user-specified installation point (first look in the dir specified
             # with command line CMake variable, then with environment variable)
             ${ORCA_HOME}
@@ -53,6 +53,11 @@ else( ORCA_MOTHERSHIP )
             /opt/orca
             "C:/Program Files/orca/Include"
             C:/orca )
+        message( STATUS "Searching for Orca in: ${orca_search_path}" )
+                 
+        find_package( orca REQUIRED 
+            PATHS ${orca_search_path}
+            NO_DEFAULT_PATH )
 
         ORCA_ASSERT( ORCA_FOUND 
                 "Looking for Orca - not found." 

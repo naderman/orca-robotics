@@ -32,16 +32,20 @@ if( DEFINED IS_SUPER_PROJECT )
 
 else( DEFINED IS_SUPER_PROJECT )
 
-    find_package( hydro REQUIRED PATHS
+    set( hydro_search_path
         # check cmake variable: i.e. specified on the command line
-        ${HYDRO_HOME}/lib
+        ${HYDRO_HOME}
         # check environment variable
-        $ENV{HYDRO_HOME}/lib
+        $ENV{HYDRO_HOME}
         # check common installation points
-        /usr/local/lib
-        /opt/hydro/lib
-        ${hydro_search_dir_orca_only}
-        C:/hydro/lib )
+        /usr/local
+        /opt/hydro
+        C:/hydro )
+    message( STATUS "Searching for Hydro in: ${hydro_search_path}" )
+
+    find_package( hydro REQUIRED 
+        PATHS ${hydro_search_path}
+        NO_DEFAULT_PATH )
 
     ORCA_ASSERT( HYDRO_FOUND 
             "Looking for Hydro - not found." 
@@ -76,15 +80,24 @@ if( DEFINED IS_SUPER_PROJECT )
 
 else( DEFINED IS_SUPER_PROJECT )
 
-    find_package( gearbox REQUIRED PATHS
+    set( gearbox_search_path 
         # Test user-specified installation point (first look in the dir specified
         # with command line CMake variable, then with environment variable)
-        ${GEARBOX_HOME}/lib
-        $ENV{GEARBOX_HOME}/lib
+        ${GEARBOX_HOME}
+        $ENV{GEARBOX_HOME}
         # Test standard installation points
-        /usr/local/lib
-        /opt/gearbox/lib
-        C:/gearbox/lib )
+        /usr/local
+        /opt/gearbox
+        C:/gearbox )
+    message( STATUS "Searching for Gearbox in: ${gearbox_search_path}" )
+
+    # don't let cmake be too clever and search in standard places
+    # before getting to manually specified PATHS.
+    # otherwise we cannot manually point it to a particular installation
+    # if the standard one also exists.
+    find_package( gearbox REQUIRED 
+        PATHS ${gearbox_search_path}
+        NO_DEFAULT_PATH )
 
     ORCA_ASSERT( GEARBOX_FOUND 
             "Looking for Gearbox - not found." 
