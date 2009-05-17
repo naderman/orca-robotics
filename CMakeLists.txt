@@ -2,7 +2,7 @@
 # Official dependency number 0: CMake.
 # Obviously, we must have it if we are here but test version.
 #
-cmake_minimum_required( VERSION 2.6 FATAL_ERROR )
+cmake_minimum_required( VERSION 2.6.3 FATAL_ERROR )
 
 #
 # Enter some information about the project
