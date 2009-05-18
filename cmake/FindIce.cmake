@@ -69,14 +69,28 @@ if( ICE_HOME_INCLUDE_ICE )
     set( ICE_INCLUDE_DIR ${ICE_HOME}/include )
     set( ICE_LIBRARY_DIR ${ICE_HOME}/lib )
     
-    # debian package splits off slice files into a different place
-    if( ICE_HOME MATCHES /usr )
-        set( ICE_SLICE_DIR /usr/share/slice )
-#         message( STATUS "This is a Debian Ice installation. Slice files are in ${ice_slice_dir}" )
-    else( ICE_HOME MATCHES /usr )
-        set( ICE_SLICE_DIR ${ICE_HOME}/slice )
-#         message( STATUS "This is NOT a Debian Ice installation. Slice files are in ${ice_slice_dir}" )
-    endif( ICE_HOME MATCHES /usr )
+    # Slice files are often installed elsewhere
+    find_path( ICE_SLICE_ICE Communicator.ice
+        # installation selected by user
+        ${ICE_SLICE_DIR}/Ice
+        $ENV{ICE_SLICE_DIR}/Ice
+        # standard Ice installation puts here
+        ${ICE_HOME}/slice/Ice
+        # debian package installs it here
+        /usr/share/slice/Ice
+        # slackware package installs it here
+        /usr/share/Ice/slice/Ice
+    )
+
+    # NOTE: if ICE_SLICE_ICE is set to *-NOTFOUND it will evaluate to FALSE
+    if( NOT ICE_SLICE_ICE )
+        message( FATAL_ERROR "Ice was found but Slice file installation was not. Check Ice installation or specify ICE_SLICE_DIR manually." )
+    endif()
+
+    # strip 'file' once to get rid off 'Ice'
+#     message( STATUS "DEBUG: ICE_SLICE_ICE=" ${ICE_SLICE_ICE} )
+    get_filename_component( ICE_SLICE_DIR ${ICE_SLICE_ICE} PATH )
+    message( STATUS "Slice files were found in ${ICE_SLICE_DIR}" )
 
     # some libs only care about IceUtil, we tell them to find IceUtil in the same place as Ice.
     set( ICEUTIL_HOME ${ICE_HOME} )
