@@ -10,13 +10,13 @@
 
 /*!
 
-@page orca_doc_installqnx Installing Orca on QNX Neutrino
+@page orca_doc_install_qnx Installing Orca on QNX Neutrino
 
 @note Reviewed for release 2.4.0.
 
 These are detailed instructions for installing Orca on QNX Neutrino Real Time OS. They are known to work with OS version 6.3 SP3. See @ref orca_doc_getting for general guidelines.
 
-@section orca_doc_installqnx_os OS and Utilities
+@section orca_doc_install_qnx_os OS and Utilities
 
 QNX standard installation includes a minimum set of UNIX utilities. If you are going to be doing some develepment in QNX it helps if you add some basics. Get the the 3rd party package CD, run the Installer (click on Launch in low-left corner) and install the following:
 - GNU bash
@@ -49,7 +49,7 @@ export QNX_HOST=/usr/qnx630/host/qnx6/x86
 export QNX_TARGET=/usr/qnx630/target/qnx6
 @endverbatim
 
-@section orca_doc_installqnx_cmake CMake
+@section orca_doc_install_qnx_cmake CMake
 
 Minimum version required 2.4-patch 2 (latest tested: 2.4-patch 6).
 
@@ -61,7 +61,7 @@ $ make
 # make install
 @endverbatim
 
-@section orca_doc_installqnx_ice Ice
+@section orca_doc_install_qnx_ice Ice
 
 Minimum version required 3.2.0 (latest tested: 3.2.0).
 
@@ -152,7 +152,7 @@ export PATH=$ICE_HOME/bin:$PATH
 export LD_LIBRARY_PATH=$ICE_HOME/lib:$LD_LIBRARY_PATH
 @endverbatim
 
-@section orca_doc_installqnx_orca Orca
+@section orca_doc_install_qnx_orca Orca
 
 Build and install Orca2 distribution.
     - Download the latest release of <a href="http://sourceforge.net/project/showfiles.php?group_id=111647">orca2</a> and un-tar the archive.

@@ -10,19 +10,19 @@
 
 /*!
 
-@page orca_doc_installdebian Installing Orca on Debian Linux
+@page orca_doc_install_debian Installing Orca on Debian Linux
 
-@note Reviewed for release 2.13.0.
+@note Reviewed for release 9.06.
 
 These are detailed instructions for installing Orca on Debian Linux. They are known to work for a system using Debian \b Testing distribution. They are also applicable to Ubuntu/Kubuntu 8.10 (Intrepid). See @ref orca_doc_getting for general guidelines.
 
-@section orca_doc_installdebian_buildessential Build Essential
+@section orca_doc_install_debian_buildessential Build Essential
 
 @verbatim
 # apt-get install build-essential
 @endverbatim
 
-@section orca_doc_installdebian_cmake CMake
+@section orca_doc_install_debian_cmake CMake
 
 Minimum version required 2.6-patch 3 (latest tested: 2.6-patch 4).
 
@@ -32,17 +32,17 @@ Minimum version required 2.6-patch 3 (latest tested: 2.6-patch 4).
 
 @note You may also choose to install a GUI version of ccmake (package name = cmake-qt-gui ).
 
-@section orca_doc_installdebian_ice Ice
+@section orca_doc_install_debian_ice Ice
 
 Minimum version required 3.3.0 (latest tested: 3.3.1).
 
-@note These instructions install Ice using a Debian package. In some cases you may still want to build Ice from source, see @ref orca_doc_installdebian_opt_icefromsource for Debian-specific instructions.
+@note These instructions install Ice using a Debian package. In some cases you may still want to build Ice from source, see @ref orca_doc_install_debian_opt_icefromsource for Debian-specific instructions.
 
 @verbatim
 # apt-get install libzeroc-ice-dev ice-translators ice-slice icestorm icegrid icebox icepatch2
 @endverbatim
 
-@section orca_doc_installdebian_gearbox GearBox
+@section orca_doc_install_debian_gearbox GearBox
 
 Minimum version required 9.02
     - Download @ref orca_doc_getting_download "GearBox source" archive and un-tar it.
@@ -56,7 +56,7 @@ $ make
 # make install
 @endverbatim
 
-@section orca_doc_installdebian_hydro Hydro
+@section orca_doc_install_debian_hydro Hydro
 
 Build and install Hydro distribution.
     - Download @ref orca_doc_getting_download "Hydro source" archive and un-tar it.
@@ -70,7 +70,7 @@ $ make
 # make install
 @endverbatim
 
-@section orca_doc_installdebian_orca Orca
+@section orca_doc_install_debian_orca Orca
 
 Build and install Orca distribution.
     - Download @ref orca_doc_getting_download "Orca source" archive and un-tar it.
@@ -91,7 +91,7 @@ $ laser2d --version
 $ orca: Versions: Ice=3.2.1  Orca=2.9.0+
 @endverbatim
 
-@section orca_doc_installdebian_custom Customizing installation
+@section orca_doc_install_debian_custom Customizing installation
 
 Installation process can be customized with a few variables which can be supplied on the command-line, e.g.
 @verbatim
@@ -122,6 +122,6 @@ alias cmake='cmake -DGEARBOX_INSTALL=$DIR -DGEARBOX_HOME=$DIR -DHYDRO_INSTALL=$D
 export PATH=$DIR/bin:$PATH
 @endverbatim
 
-@see You may also want to check out notes on @ref orca_doc_installdebian_opt.
+@see You may also want to check out notes on @ref orca_doc_install_debian_opt.
 
 */

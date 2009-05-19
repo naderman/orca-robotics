@@ -12,7 +12,7 @@
 
 @page orca_doc_getting Download and Install Orca
 
-@note Reviewed for release 2.13.0.
+@note Reviewed for release 9.06
 
 @section depend Overview of dependencies
 
@@ -39,12 +39,14 @@ $ svn co https://orca-robotics.svn.sf.net/svnroot/orca-robotics/orca/trunk orca
 @section orca_doc_getting_install Installation instructions
 
 Detailed instructions are available for these platforms/distributions (each page indicates for which version these instructions were updated, out-of-date instructions may not be very useful):
-    - @ref orca_doc_installdebian "Debian Linux" (also tested with Ubuntu/Kubuntu)
-    - @ref orca_doc_installfedora "Fedora Linux" (may be out of date)
-    - @ref orca_doc_installqnx "QNX Neutrino" (is out of date)
-    - @ref orca_doc_installwinxp "Windows XP" (may be out of date)
-    - Send feedback on building under other configurations.
-
+- @ref orca_doc_install_debian "Debian Linux", also tested with Ubuntu/Kubuntu (last reviewed for 9.06)
+- @ref orca_doc_install_slackware "Slackware Linux" (last reviewed for 9.06)
+- @ref orca_doc_install_fedora "Fedora Linux" (last reviewed for 2.0.0)
+- @ref orca_doc_install_qnx "QNX Neutrino" (last reviewed for 2.4.0)
+- @ref orca_doc_install_winxp "Windows XP" (last reviewed for 2.3.0)
+- MacOS, Solaris: reports of successful builds in the past.
+- Send feedback on building under other configurations.
+ 
 The instructions below are quite general, follow them if your platform/distribution combination is not described above:
 
     -# Download and install <a href="http://www.cmake.org/">CMake: Cross-Platform Make</a> which is used to build the orca distribution.
@@ -57,7 +59,7 @@ The instructions below are quite general, follow them if your platform/distribut
         - <a href="http://playerstage.sourceforge.net/" target="_blank">Player/Stage</a>, is required for some hardware support and for use of the Stage simulator (you probably want this).
             - For version requirements see individual component documentation.
         - <a href="http://www.trolltech.com/" target="_blank">Qt</a> is a cross-platform framework for building GUI's. Some components are GUI-only and some have optional GUI drivers.
-            - Minimum version required 4.3.0 (latest tested: 4.4.0)
+            - Minimum version required 4.3.0 (latest tested: 4.5.1)
     -# Build and install GearBox distribution.
         - Minimum version required 9.02
         - Un-tar the archive, configure using CMake, compile and install

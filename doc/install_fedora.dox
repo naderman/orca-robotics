@@ -10,7 +10,7 @@
 
 /*!
 
-@page orca_doc_installfedora Installing Orca on Fedora Core Linux
+@page orca_doc_install_fedora Installing Orca on Fedora Core Linux
 
 @note Updated for 2.0.0-rc2 distribution.
 
@@ -18,7 +18,7 @@ These are some instructions for installing Orca 2 on Fedora Core. They
 are known to work with Fedora Core 4; later systems may be slightly
 different. See @ref orca_doc_getting for general guidelines.
 
-@section orca_doc_installfedora_assumptions Assumptions
+@section orca_doc_install_fedora_assumptions Assumptions
 
 It is assumed that you know what an RPM is, what GCC is, and also what CMake is.
 
@@ -45,7 +45,7 @@ little bit of thought, these rules can be adapted to a single non-root user (bas
 adjusting the path). In the following we use "su" but those whose systems support it and
 have set it up should consider using the safer "sudo".
 
-@section orca_doc_installfedora_cmake Installing CMake
+@section orca_doc_install_fedora_cmake Installing CMake
 
 CMake can be downloaded from  <a href="http://www.cmake.org/HTML/Download.html">Kitware</a>.
 
@@ -64,7 +64,7 @@ The easiest way to unpack it and install it as root is to untar the file:
 
 You could also choose another directory instead of /usr/local
 
-@section orca_doc_installfedora_ice Downloading Ice
+@section orca_doc_install_fedora_ice Downloading Ice
 
 Minimum version required 3.1.0 (latest tested: 3.2.0).
 
@@ -90,7 +90,7 @@ doing:
 % make test
 @endverbatim
 
-@section orca_doc_installfedora_qt4 Optional - Compiling Qt 4
+@section orca_doc_install_fedora_qt4 Optional - Compiling Qt 4
 
 There are no standard packages for it at the time of writing. However, some of the ORCA 2
 tools (such as gorca and orcaguilocal) use Qt 4. Therefore you must compile it yourself from
@@ -108,7 +108,7 @@ then to install:
 
 
 
-@section orca_doc_installfedora_paths1 Setting up paths and libpaths
+@section orca_doc_install_fedora_paths1 Setting up paths and libpaths
 
 To use these newly installed pieces of software to build Orca 2 minor
 modifications must also be made to .bash_profile to add the paths to these
@@ -135,7 +135,7 @@ clean" installation, or at least do
 
 in the shell you will be compiling Orca 2 in. 
 
-@section orca_doc_installfedora_getorca Getting Orca 2
+@section orca_doc_install_fedora_getorca Getting Orca 2
 
 @ref orca_doc_getting has general guidelines for downloading Orca
 2. Follow the instructions there to download the source as a tar file
@@ -153,7 +153,7 @@ detected).
 % make install
 @endverbatim
 
-@section orca_doc_installfedora_paths2 Adding Orca to your path
+@section orca_doc_install_fedora_paths2 Adding Orca to your path
 
 Again, minor modifications need to be made to your ~/.bash_profile file. The new section
 should look like this:
@@ -167,7 +167,7 @@ export LD_LIBRARY_PATH=${ICE_HOME}/lib:${QT_HOME}/lib:${ORCA_HOME}/lib:/usr/loca
 @endverbatim
 
 
-@section orca_doc_installfedora_test Testing
+@section orca_doc_install_fedora_test Testing
 
 You can now follow @ref orca_doc_quickstart to check that your
 installlation works correctly. 
