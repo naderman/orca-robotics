@@ -15,14 +15,14 @@
 @ingroup orca_cpp
 @ingroup orca_linux
 @ingroup orca_qnx
-@defgroup orca_component_robot2d Robot2d
-@brief Controls a 2-D mobile robot.
+@defgroup orca_component_bicycle Bicycle
+@brief Controls a bicycle with both steering and drive in the front wheel.
 
 @par Provides
 
 - @ref orca_interface_home
-- @ref orca_interface_odometry2d [Robot2d.Provides.Odometry2d]
-- @ref orca_interface_velocitycontrol2d [Robot2d.Provides.VelocityControl2d]
+- @ref orca_interface_odometry2d [Bicycle.Provides.Odometry2d]
+- @ref orca_interface_drivebicycle [Bicycle.Provides.DriveBicycle]
 - @ref orca_interface_status
 - @ref orca_interface_tracer
 
@@ -30,28 +30,29 @@
 
 - none
 
-@image html robot2d.png
+@image html bicycle.png
 
 @par Drivers
 
-- @b playerclient @ref orca_robot2d_playerclient
-- @b fake Useful for testing or if you don't have hardware or a simulator.
+This component loads an implementation of a hardware interface of type hydrointerfaces::Bicycle, and makes it accesible through two Orca interfaces: DriveBicycle and Odometry2d. You can also load your own implementation as long as the shared library is in the path. See Hydro documentation for the list of available drivers.
+
+- @ref hydro_drivers_bicycle
 
 @par Configuration
 
 General Parameters:
 
-  - @c Robot2d.Config.Driver (string)
+  - @c Bicycle.Config.Driver (string)
     - Type of hardware driver
-    - Valid values: { 'playerclient', 'fake' }
-    - Default: 'playerclient'
+    - Valid values: { 'libHydroBicyclePlayerClient.so' }
+    - Default: 'libHydroBicyclePlayerClient.so'
     
-  - @c Robot2d.Config.EnableMotion (bool)
+  - @c Bicycle.Config.EnableMotion (bool)
     - Allow motion commands or not. Convinient for testing when you want to make sure that
       the platform will not move.
     - Default: 1
     
-  - @c Robot2d.Config.Odometry2dPublishInterval (double) [s]
+  - @c Bicycle.Config.Odometry2dPublishInterval (double) [s]
     - How often to send position information to the IceStorm server
     - Valid values:
         - t<0 : send every new data point
@@ -60,38 +61,42 @@ General Parameters:
 
 Parameters describing vehicle (see orca::VehicleDescription for details)
 
-  - @c Robot2d.Config.VehicleDescription.Control.Type (string)
-    - valid values: 'VelocityDifferential'
-    - Default: 'VelocityDifferential'
-
-  - @c Robot2d.Config.VehicleDescription.Control.VelocityDifferential.MaxForwardSpeed (m/s)
+  - @c Bicycle.Config.VehicleDescription.Control.Type (string)
+    - valid values: 'VelocityBicycle'
+    - Default: 'VelocityBicycle'
+  - @c Bicycle.Config.VehicleDescription.Control.VelocityBicycle.Wheelbase (m)
     - Default: 1.0
-  - @c Robot2d.Config.VehicleDescription.Control.VelocityDifferential.MaxReverseSpeed (m/s)
+  - @c Bicycle.Config.VehicleDescription.Control.VelocityBicycle.MaxForwardSpeed (m/s)
+    - Default: 1.0
+  - @c Bicycle.Config.VehicleDescription.Control.VelocityBicycle.MaxReverseSpeed (m/s)
     - valid values: must be same as forward speed.
     - Default: 1.0
-  - @c Robot2d.Config.VehicleDescription.Control.VelocityDifferential.MaxTurnrate (deg/s)
-    - Absolute max turnrate (assumed max turnrate at 0m/s)
-    - Default: 60.0
-  - @c Robot2d.Config.VehicleDescription.Control.VelocityDifferential.MaxLateralAcceleration (m/s/s)
-    - Max centripital acceleration during a turn (limits max turnrate at speed).
-      - See @ref orca_interface_vehicleDescription
-    - Default: 3.57
-  - @c Robot2d.Config.VehicleDescription.Control.VelocityDifferential.MaxForwardAcceleration (m/s/s)
+  - @c Bicycle.Config.VehicleDescription.Control.VelocityBicycle.MaxSteerAngle (deg)
+    - Maximum steer angle (assumed max angle at 0m/s)
+    - Default: 90.0
+  - @c Bicycle.Config.VehicleDescription.Control.VelocityBicycle.MaxSteerAngleAtMaxSpeed (deg)
+    - Maximum steer angle at maximum speed
+    - Default: 90.0
+  - @c Bicycle.Config.VehicleDescription.Control.VelocityBicycle.MaxForwardAcceleration (m/s/s)
     - Default: 1.0
-  - @c Robot2d.Config.VehicleDescription.Control.VelocityDifferential.MaxReverseAcceleration (m/s/s)
+  - @c Bicycle.Config.VehicleDescription.Control.VelocityBicycle.MaxReverseAcceleration (m/s/s)
     - Default: 1.0
-  - @c Robot2d.Config.VehicleDescription.Control.VelocityDifferential.MaxRotationalAcceleration (deg/s/s)
-    - Default: 45.0
-  - @c Robot2d.Config.VehicleDescription.Geometry.Type (string)
-    - valid values: 'Cylindrical'
-    - Default: 'Cylindrical'
-  - @c Robot2d.Config.VehicleDescription.Geometry.Cylindrical.Radius (m)
-    - Radius of the vehicle's bounding cylinder
-    - Default: 0.25
-  - @c Robot2d.Config.VehicleDescription.Geometry.Cylindrical.Height (m)
+  - @c Bicycle.Config.VehicleDescription.Control.VelocityBicycle.MaxSteerAngleAngleRate (deg/s)
+    - Default: 90.0
+  - @c Bicycle.Config.VehicleDescription.Geometry.Type (string)
+    - valid values: { 'Cylindrical', 'Cuboid' }
+    - Default: 'Cuboid'
+  - @c Bicycle.Config.VehicleDescription.Geometry.Cuboid.Size (Size3d)
+    - Size of the vehicle's bounding cuboid
+    - Default: 1.0 1.0 1.0
+  - @c Bicycle.Config.VehicleDescription.Geometry.Cuboid.PlatformToGeometryTransform (Frame3d) [m, deg]
+    - Position of the cuboid centre with respect to the vehicle's local coord system.
+    - Format: x y z roll pitch yaw (space separated)
+    - Default: 0.0 0.0 0.0  0.0 0.0 0.0
+  - @c Bicycle.Config.VehicleDescription.Geometry.Cylindrical.Height (m)
     - Height of the vehicle's bounding cylinder
     - Default: 1.0
-  - @c Robot2d.Config.VehicleDescription.Geometry.Cylindrical.PlatformToGeometryTransform (Frame3d) [m, deg]
+  - @c Bicycle.Config.VehicleDescription.Geometry.Cylindrical.PlatformToGeometryTransform (Frame3d) [m, deg]
     - Position of the cylinder centre with respect to the vehicle's local coord system.
       (cylinder extends in +/- z direction from here)
     - Format: x y z roll pitch yaw (space separated)
@@ -100,17 +105,11 @@ Parameters describing vehicle (see orca::VehicleDescription for details)
 An example configuration file is installed into [ORCA-INSTALL-DIR]/share/orca/cfg/ directory.
 
     
-@see Individual drivers may have additional configuration parameters which are specified as Robot2d.Config.XXX. See driver documentation.
-
-@section internal Internal Structure
-
-@image html segwayrmp_whitebox.png
-
-The implementation of Platform2d interface can raise orca::DataNotExistException but does NOT raise orca::HardwareFailedException.
+@see Individual drivers may have additional configuration parameters which are specified as Bicycle.Config.XXX. See driver documentation.
 
 @par Authors
 
-Alex Makarenko.
+Alex Makarenko, Mikel Astiz
 
 */
 

@@ -24,7 +24,8 @@ Config.VehicleDescription.Control.VelocityBicycle.MaxSteerAngleAtMaxSpeed.Defaul
 Config.VehicleDescription.Control.VelocityBicycle.MaxForwardAcceleration.Default=1.0
 Config.VehicleDescription.Control.VelocityBicycle.MaxReverseAcceleration.Default=1.0
 Config.VehicleDescription.Control.VelocityBicycle.MaxSteerAngleRate.Default=90.0
-Config.VehicleDescription.Geometry.Type.Default=Cylindrical
+Config.VehicleDescription.Geometry.Type.Default=Cuboid
+Config.VehicleDescription.Geometry.Cuboid.Size.Default=1.0 1.0 1.0
 Config.VehicleDescription.Geometry.Cylindrical.Radius.Default=0.25
 Config.VehicleDescription.Geometry.Cylindrical.Height.Default=1.0
 Config.VehicleDescription.Geometry.Cylindrical.PlatformToGeometryTransform.Default=0.0 0.0 0.0  0.0 0.0 0.0
