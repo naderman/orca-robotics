@@ -34,7 +34,6 @@ RangerArrayPainter::RangerArrayPainter( QColor outlineColor,
       outlineThickness_(outlineThickness)
 {
     fillColor_ = QColor(204,204,255,127);
-    outlineColor_ = basisColor_ = Qt::blue;
 }
 
 void

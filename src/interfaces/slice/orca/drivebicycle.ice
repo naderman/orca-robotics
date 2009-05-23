@@ -34,7 +34,7 @@ struct DriveBicycleCommand
     //! This is the command currently executed by the vehicle.
     double steerAngle;
 
-    //! Reference value for the forward speed of the driven wheel [m/s].
+    //! Reference value for the forward speed of the steered wheel [m/s].
     //! The value is negative when the vehicle is to move backwards.
     double speed;
 };
@@ -49,14 +49,14 @@ struct DriveBicycleData
     //! This is the command currently executed by the vehicle.
     double referenceSteerAngle;
 
-    //! Reference value for the forward speed of the driven wheel [m/s].
+    //! Reference value for the forward speed of the steered wheel [m/s].
     //! The value is negative when the vehicle is to move backwards.
     double referenceSpeed;
 
     //! Current angle of the steered wheel [rad]
     double currentSteerAngle;
 
-    //! Current forward speed of the driven wheel [m/s]. 
+    //! Current forward speed of the steered wheel [m/s]. 
     //! The value is negative when the vehicle moves backwards.
     double currentSpeed;
 };

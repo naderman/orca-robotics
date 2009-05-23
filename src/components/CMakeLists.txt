@@ -3,6 +3,7 @@
 message( STATUS "== COMPONENTS ==" )
 
 # when adding new directories, please maintain alphabetical order
+add_subdirectory( bicycle )
 add_subdirectory( cameraserver )
 add_subdirectory( disparity )
 add_subdirectory( faithlocaliser )

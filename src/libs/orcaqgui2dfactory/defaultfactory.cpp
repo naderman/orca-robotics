@@ -41,6 +41,7 @@ DefaultFactory::DefaultFactory()
     addSupportedType("MultiOgMaps");
     addSupportedType("RangerArray");
     addSupportedType("Odometry2d");
+    addSupportedType("DriveBicycle");
     addSupportedType("OgMap");
     addSupportedType("PathFollower2d");
     addSupportedType("PathPlanner2d");
@@ -129,6 +130,9 @@ DefaultFactory::create( const QString                &elementType,
         }
         else if ( elementType == "Odometry2d" ) {
             elem = new orcaqgui2d::Odometry2dElement( context_, elementDetails[0].toStdString() );
+        }
+        else if ( elementType == "DriveBicycle" ) {
+            elem = new orcaqgui2d::DriveBicycleElement( context_, elementDetails[0].toStdString() );
         }
         else if ( elementType == "OgMap" ) {
             elem = new orcaqgui2d::OgMapElement( context_, elementDetails[0].toStdString(), &humanManager );

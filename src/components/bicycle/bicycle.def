@@ -1,0 +1,44 @@
+DefaultComponentTag=Bicycle
+
+# Provided Interfaces
+Provides.Odometry2d.Type=Odometry2d
+Provides.Odometry2d.DefaultName=odometry2d
+
+Provides.DriveBicycle.Type=DriveBicycle
+Provides.DriveBicycle.DefaultName=drivebicycle
+
+# Required Interfaces
+
+# Config Parameters
+
+# Common to all drivers
+Config.DriverLib.Comment=Options are { 'libHydroBicyclePlayerClient.so' }
+Config.DriverLib.Default=libHydroBicyclePlayerClient.so
+
+Config.VehicleDescription.Control.Type.Default=VelocityBicycle
+COnfig.VehicleDescription.Control.VelocityBicycle.Wheelbase=1.0
+Config.VehicleDescription.Control.VelocityBicycle.MaxForwardSpeed.Default=1.0
+Config.VehicleDescription.Control.VelocityBicycle.MaxReverseSpeed.Default=1.0
+Config.VehicleDescription.Control.VelocityBicycle.MaxSteerAngle.Default=90.0
+Config.VehicleDescription.Control.VelocityBicycle.MaxSteerAngleAtMaxSpeed.Default=90.0
+Config.VehicleDescription.Control.VelocityBicycle.MaxForwardAcceleration.Default=1.0
+Config.VehicleDescription.Control.VelocityBicycle.MaxReverseAcceleration.Default=1.0
+Config.VehicleDescription.Control.VelocityBicycle.MaxSteerAngleRate.Default=90.0
+Config.VehicleDescription.Geometry.Type.Default=Cylindrical
+Config.VehicleDescription.Geometry.Cylindrical.Radius.Default=0.25
+Config.VehicleDescription.Geometry.Cylindrical.Height.Default=1.0
+Config.VehicleDescription.Geometry.Cylindrical.PlatformToGeometryTransform.Default=0.0 0.0 0.0  0.0 0.0 0.0
+
+Config.Odometry2dPublishInterval.Default=0.1
+Config.StatusPublishInterval.Default=60.0
+Config.EnableMotion.Default=1
+
+# PlayerClient driver only
+Config.PlayerClient.Host.Default=localhost
+Config.PlayerClient.Port.Default=6665
+Config.PlayerClient.UsePlayerTimestamp.Default=0
+Config.PlayerClient.Position2dIndex.Default=0
+Config.PlayerClient.Position1dIndex.Comment=Set to 'none' if no Position1D is available to obtain current steer angle. In that case, immediate steer response will be considered.
+Config.PlayerClient.Position1dIndex.Default=none
+Config.PlayerClient.SimulatedMaxSteerAngleRage.Comment=If set to a non-zero value, commands will be sent with a simulated MaxSteerAngleRate (useful in Stage, for example)
+Config.PlayerClient.SimulatedMaxSteerAngleRate.Default=0

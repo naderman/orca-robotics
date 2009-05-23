@@ -43,6 +43,7 @@ readVehicleControlVelocityBicycleDescription( Ice::PropertiesPtr prop,
 {
     std::string cprefix = prefix + "Control.VelocityBicycle.";
     c.type = orca::VehicleControlVelocityBicycle;
+    c.wheelbase = orcaice::getPropertyAsDoubleWithDefault( prop, cprefix+"Wheelbase", 1.0 );
     c.maxForwardSpeed = orcaice::getPropertyAsDoubleWithDefault( prop, cprefix+"MaxForwardSpeed", 1.0 );
     c.maxReverseSpeed = orcaice::getPropertyAsDoubleWithDefault( prop, cprefix+"MaxReverseSpeed", 1.0 );
     c.maxSteerAngle   = DEG2RAD(orcaice::getPropertyAsDoubleWithDefault( prop, cprefix+"MaxSteerAngle", 45.0 ));
@@ -144,6 +145,11 @@ void
 checkVehicleControlVelocityBicycleDescription( 
     const orca::VehicleControlVelocityBicycleDescription &d )
 {
+    if ( d.wheelbase <= 0.0 )
+    {
+        throw orcaice::ConfigFileException( ERROR_INFO, "Non-positive wheelbase found in orca::VehicleControlVelocityBicycleDescription" );
+    }
+
     if ( d.maxForwardSpeed < 0.0 ||
          d.maxReverseSpeed < 0.0 ||
          d.maxSteerAngle < 0.0 ||

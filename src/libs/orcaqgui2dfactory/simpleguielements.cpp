@@ -255,5 +255,30 @@ Localise3dElement::execute( int action )
     }
 }
 
+void
+DriveBicycleElement::getDriveBicycleInfo()
+{
+    // Subscribe directly to get the description
+    orca::DriveBicyclePrx bicyclePrx;
+
+    // Don't bother catching exceptions: they'll get caught higher up.
+
+    orcaice::connectToInterfaceWithString( context_, bicyclePrx, listener_.interfaceName() );
+    
+    orca::VehicleDescription descr;
+    descr = bicyclePrx->getDescription();
+    orca::VehicleControlVelocityBicycleDescriptionPtr controlDescr =
+	orca::VehicleControlVelocityBicycleDescriptionPtr::dynamicCast(
+            descr.control );
+    painter_.setDescription( controlDescr );
+}
+
+QStringList
+DriveBicycleElement::contextMenu()
+{
+    QStringList s;
+    s<<"Toggle Steer Limits"<<"Toggle Current Steer Angle"<<"Toggle Reference Steer Angle";
+    return s;
+}
 
 }

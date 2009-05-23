@@ -726,12 +726,13 @@ toString( const orca::VehicleControlDescriptionPtr& obj )
         if ( v )
         {        
             s << endl << "VehicleControlVelocityBicycleDescription: " << endl
+	    << "     wheelbase:                 " << v->wheelbase << "m" << endl
             << "     maxForwardSpeed:           " << v->maxForwardSpeed                    << "m/s"   << endl
             << "     maxReverseSpeed:           " << v->maxReverseSpeed                    << "m/s"   << endl
             << "     maxSteerAngle:             " << RAD2DEG(v->maxSteerAngle)             << "deg" << endl
             << "     maxSteerAngleAtMaxSpeed:   " << RAD2DEG(v->maxSteerAngleAtMaxSpeed)   << "deg" << endl
-            << "     maxForwardAcceleration:    " << v->maxForwardAcceleration             << "m/s"   << endl
-            << "     maxReverseAcceleration:    " << v->maxReverseAcceleration             << "m/s"   << endl
+            << "     maxForwardAcceleration:    " << v->maxForwardAcceleration             << "m/s/s"   << endl
+            << "     maxReverseAcceleration:    " << v->maxReverseAcceleration             << "m/s/s"   << endl
             << "     maxSteerAngleRate:         " << RAD2DEG(v->maxSteerAngleRate)         << "deg/s";
         }
     }

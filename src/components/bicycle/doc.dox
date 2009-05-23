@@ -1,0 +1,116 @@
+/*
+ * Orca-Robotics Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2009 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This copy of Orca is licensed to you under the terms described in
+ * the LICENSE file included in this distribution.
+ *
+ */
+
+/*!
+@ingroup orca_components
+@ingroup orca_apps
+@ingroup orca_services
+@ingroup orca_cpp
+@ingroup orca_linux
+@ingroup orca_qnx
+@defgroup orca_component_robot2d Robot2d
+@brief Controls a 2-D mobile robot.
+
+@par Provides
+
+- @ref orca_interface_home
+- @ref orca_interface_odometry2d [Robot2d.Provides.Odometry2d]
+- @ref orca_interface_velocitycontrol2d [Robot2d.Provides.VelocityControl2d]
+- @ref orca_interface_status
+- @ref orca_interface_tracer
+
+@par Requires
+
+- none
+
+@image html robot2d.png
+
+@par Drivers
+
+- @b playerclient @ref orca_robot2d_playerclient
+- @b fake Useful for testing or if you don't have hardware or a simulator.
+
+@par Configuration
+
+General Parameters:
+
+  - @c Robot2d.Config.Driver (string)
+    - Type of hardware driver
+    - Valid values: { 'playerclient', 'fake' }
+    - Default: 'playerclient'
+    
+  - @c Robot2d.Config.EnableMotion (bool)
+    - Allow motion commands or not. Convinient for testing when you want to make sure that
+      the platform will not move.
+    - Default: 1
+    
+  - @c Robot2d.Config.Odometry2dPublishInterval (double) [s]
+    - How often to send position information to the IceStorm server
+    - Valid values:
+        - t<0 : send every new data point
+        - t>0 : send approximately every t seconds
+    - Default: 0.1 (10Hz)
+
+Parameters describing vehicle (see orca::VehicleDescription for details)
+
+  - @c Robot2d.Config.VehicleDescription.Control.Type (string)
+    - valid values: 'VelocityDifferential'
+    - Default: 'VelocityDifferential'
+
+  - @c Robot2d.Config.VehicleDescription.Control.VelocityDifferential.MaxForwardSpeed (m/s)
+    - Default: 1.0
+  - @c Robot2d.Config.VehicleDescription.Control.VelocityDifferential.MaxReverseSpeed (m/s)
+    - valid values: must be same as forward speed.
+    - Default: 1.0
+  - @c Robot2d.Config.VehicleDescription.Control.VelocityDifferential.MaxTurnrate (deg/s)
+    - Absolute max turnrate (assumed max turnrate at 0m/s)
+    - Default: 60.0
+  - @c Robot2d.Config.VehicleDescription.Control.VelocityDifferential.MaxLateralAcceleration (m/s/s)
+    - Max centripital acceleration during a turn (limits max turnrate at speed).
+      - See @ref orca_interface_vehicleDescription
+    - Default: 3.57
+  - @c Robot2d.Config.VehicleDescription.Control.VelocityDifferential.MaxForwardAcceleration (m/s/s)
+    - Default: 1.0
+  - @c Robot2d.Config.VehicleDescription.Control.VelocityDifferential.MaxReverseAcceleration (m/s/s)
+    - Default: 1.0
+  - @c Robot2d.Config.VehicleDescription.Control.VelocityDifferential.MaxRotationalAcceleration (deg/s/s)
+    - Default: 45.0
+  - @c Robot2d.Config.VehicleDescription.Geometry.Type (string)
+    - valid values: 'Cylindrical'
+    - Default: 'Cylindrical'
+  - @c Robot2d.Config.VehicleDescription.Geometry.Cylindrical.Radius (m)
+    - Radius of the vehicle's bounding cylinder
+    - Default: 0.25
+  - @c Robot2d.Config.VehicleDescription.Geometry.Cylindrical.Height (m)
+    - Height of the vehicle's bounding cylinder
+    - Default: 1.0
+  - @c Robot2d.Config.VehicleDescription.Geometry.Cylindrical.PlatformToGeometryTransform (Frame3d) [m, deg]
+    - Position of the cylinder centre with respect to the vehicle's local coord system.
+      (cylinder extends in +/- z direction from here)
+    - Format: x y z roll pitch yaw (space separated)
+    - Default: 0.0 0.0 0.0  0.0 0.0 0.0
+  
+An example configuration file is installed into [ORCA-INSTALL-DIR]/share/orca/cfg/ directory.
+
+    
+@see Individual drivers may have additional configuration parameters which are specified as Robot2d.Config.XXX. See driver documentation.
+
+@section internal Internal Structure
+
+@image html segwayrmp_whitebox.png
+
+The implementation of Platform2d interface can raise orca::DataNotExistException but does NOT raise orca::HardwareFailedException.
+
+@par Authors
+
+Alex Makarenko.
+
+*/
+

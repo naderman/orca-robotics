@@ -29,9 +29,9 @@ class RangerArrayPainter
   
   public:
     // -1 means 'default'
-    RangerArrayPainter( QColor outlineColor=QColor( 102,153,102, 255 ),
-                            float  outlineThickness=-1,
-                            float  brightReturnWidth=0.2 );
+    RangerArrayPainter( QColor outlineColor=Qt::blue,
+			float  outlineThickness=-1,
+			float  brightReturnWidth=0.2 );
 
     void setDescription( orca::RangerArrayDescription &description );
     void setData( const orca::RangerArrayDataPtr &scan );

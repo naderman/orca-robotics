@@ -84,6 +84,9 @@ class VehicleControlVelocityDifferentialDescription extends VehicleControlDescri
 //! Static description of a Velocity-controlled Bicycle-Drive vehicle.
 class VehicleControlVelocityBicycleDescription extends VehicleControlDescription
 {
+    //! Distance between the front and rear axles [m]
+    double wheelbase;
+
     //! Maximum in-plane forward speed [m/s]
     double maxForwardSpeed;
     //! Maximum in-plane reverse speed [m/s]

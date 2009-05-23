@@ -26,6 +26,7 @@
 #include <orcaqgui2dfactory/particle2dpainter.h>
 #include <orcaqgui2dfactory/polarfeature2dpainter.h>
 #include <orcaqgui2dfactory/qgraphics2dpainter.h>
+#include <orcaqgui2dfactory/drivebicyclepainter.h>
 
 //
 // A list of simple gui elements that listen to one icestorm topic, for one object type.
@@ -158,7 +159,7 @@ public:
     RangerArrayElement( const orcaice::Context  &context,
                   const std::string       &proxyString,
                   int                      timeoutMs=30000,
-                  QColor                   outlineColor=QColor( 102,153,102, 255 ),
+                  QColor                   outlineColor=Qt::blue,
                   float                    outlineThickness=-1,
                   float                    brightReturnWidth=0.2 )
         : orcaqguielementutil::PtrIceStormElement2d<RangerArrayPainter,
@@ -330,6 +331,36 @@ public:
 
 private:
     Odometry2dPainter painter_;
+};
+
+////////////////////////////////////////////////////////////////////////////////
+class DriveBicycleElement
+    : public orcaqguielementutil::IceStormElement2d<DriveBicyclePainter,
+                             orca::DriveBicycleData,
+                             orca::DriveBicyclePrx,
+                             orca::DriveBicycleConsumer,
+                             orca::DriveBicycleConsumerPrx>
+{
+public:
+    DriveBicycleElement( const orcaice::Context  &context,
+			 const std::string       &proxyString,
+			 int                      timeoutMs=60000 )
+        : orcaqguielementutil::IceStormElement2d<DriveBicyclePainter,
+                            orca::DriveBicycleData,
+                            orca::DriveBicyclePrx,
+	                    orca::DriveBicycleConsumer,
+                            orca::DriveBicycleConsumerPrx>(context, proxyString, painter_, timeoutMs )
+        {};
+
+    virtual bool isInGlobalCS() { return false; }
+    virtual void actionOnConnection() { getDriveBicycleInfo(); }
+    virtual QStringList contextMenu();
+    virtual void execute( int action ) { painter_.execute( action ); };
+    virtual void setFocus( bool inFocus ) { painter_.setFocus( inFocus ); };
+
+private:
+    void getDriveBicycleInfo();
+    DriveBicyclePainter painter_;
 };
 
 } // namespace
