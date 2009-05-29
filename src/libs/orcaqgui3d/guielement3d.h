@@ -11,7 +11,7 @@
 #ifndef ORCAGUI3D_GUIELEMENT3D_H
 #define ORCAGUI3D_GUIELEMENT3D_H
 
-#include <hydroqguielementutil/iguielement.h>
+#include <hydroqguielementutil/guielement.h>
 #include <orcaqgui3d/coordinateframe.h>
 #include <osg/Node>
 
@@ -20,12 +20,13 @@ namespace orcaqgui3d {
 //!
 //! @author Alex Brooks
 //!
-class GuiElement3d : public hydroqguielementutil::IGuiElement 
+class GuiElement3d : public hydroqguielementutil::GuiElement 
 {
 
 public: 
 
-    GuiElement3d()
+    GuiElement3d( const hydroqguielementutil::GuiElementInfo &guiElementInfo )
+        : hydroqguielementutil::GuiElement( guiElementInfo )
         {}
 
     virtual ~GuiElement3d() {}

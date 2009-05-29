@@ -154,6 +154,7 @@ public:
     {
         consumerPtr_ = new ConsumerTypeI<ConsumerType,ObjectType>( *this );
         // this function does not throw, because it never talks to the Registry
+        // we do NOT currently convert to a one-way proxy, but maybe we should for efficiency.
         consumerPrx_ = orcaice::createConsumerInterface<ConsumerPrxType>(context_,consumerPtr_);
     }
 

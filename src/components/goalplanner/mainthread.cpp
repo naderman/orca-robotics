@@ -10,7 +10,9 @@
  
 #include <orcaice/orcaice.h>
 #include <orcaifaceutil/pathplanner2d.h>
-#include <orcaobj/orcaobj.h>
+#include <orcaobj/localise2d.h>
+#include <orcaobj/pathfollower2d.h>
+#include <orcaobj/pathplanner2d.h>
 #include <orcaogmap/orcaogmap.h>
 #include "pathfollower2dI.h"
 
@@ -275,15 +277,6 @@ MainThread::work()
 void
 MainThread::initNetwork()
 {
-    //
-    // ENABLE NETWORK CONNECTIONS
-    //
-    // multi-try function
-    orcaice::activate( context_, this, subsysName() );
-    // check for stop signal after retuning from multi-try
-    if ( isStopping() )
-        return;
-
     //
     // REQUIRED INTERFACES: Localise2d, Pathfollower, Pathplanner
     //

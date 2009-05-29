@@ -10,6 +10,7 @@
 
 #include <orcaice/orcaice.h>
 #include <orcaice/icegridutils.h>
+#include <orcaice/convertutils.h>
 
 #include "tracerImpl.h"
 
@@ -115,7 +116,8 @@ TracerImpl::initTopicHandler()
     orca::FQTopicName fqTName = orcaice::toTracerTopic( context_.name() );
 
     topicHandler_.reset( new TracerTopicHandler( orcaice::toString(fqTName), context_ ) );
-    if ( !topicHandler_->connectToTopic() )
+    bool localReportingOnly = true;
+    if ( !topicHandler_->connectToTopic( localReportingOnly ) )
     {
         if ( isTopicRequired ) 
         {

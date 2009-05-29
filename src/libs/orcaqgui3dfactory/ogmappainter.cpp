@@ -13,7 +13,6 @@
 #include <osg/TexEnv>
 #include <osg/Geometry>
 #include <orcaice/orcaice.h>
-#include <orcaobj/orcaobj.h>
 #include <orcaogmap/orcaogmap.h>
 #include <orcaqgui3d/osgutil.h>
 #include "ogmappainter.h"

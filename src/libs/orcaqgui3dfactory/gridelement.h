@@ -29,8 +29,9 @@ class GridElement : public GuiElement3d
 {
 public:
 
-    GridElement( double wireGridSpacing=2,
-                 double groundPlaneSquareSpacing=1 );
+    GridElement( const hydroqguielementutil::GuiElementInfo &guiElementInfo,
+                 double                                      wireGridSpacing          = 2,
+                 double                                      groundPlaneSquareSpacing = 1 );
 
     virtual bool isInGlobalCS() { return true; }
     

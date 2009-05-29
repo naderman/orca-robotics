@@ -12,20 +12,18 @@
 #define ORCAGUI_ICESTORM_ELEMENT_H
 
 #include <assert.h>
-#include <IceStorm/IceStorm.h>
 #include <orcaqguielementutil/icestormlistener.h>
-#include <hydroqguielementutil/guielement2d.h>
 
 namespace orcaqguielementutil {
 
 /*!
   @brief Base class for gui elements that receive data from IceStorm.
 
-  Connects to an interface, passes info to painter
+  Connects to an interface
 
-  @author Alex Brooks
+  @author Alex Brooks, Tobias Kaupp
 */
-template<class PainterType, class DataType, class ProxyType, class ConsumerType, class ConsumerPrxType>
+template<class DataType, class ProxyType, class ConsumerType, class ConsumerPrxType>
 class IceStormElement
 {
   
@@ -33,30 +31,32 @@ public:
 
     //! timeoutMs is how long we wait before assuming a problem and trying to reconnect.
     //! (timoutMs = -1 means we never timeout)
-    IceStormElement( const orcaice::Context  &context,
-                     const std::string       &proxyString,
-                     PainterType             &painter,
-                     const double            timeoutMs )
+    IceStormElement( const orcaice::Context                     &context,
+                     const std::string                          &proxyString,
+                     const double                                timeoutMs,
+                     const double                                tryConnectIntervalSec = 2.5 )
         : context_(context),
           listener_(context,proxyString),
-          painter_(painter),
+          tryConnectTimer_(IceUtil::Time::seconds(999)),
+          tryConnectIntervalSec_(tryConnectIntervalSec),
           timeoutMs_(timeoutMs),
-          isConnected_(false)
+          isConnected_(false),
+          shouldClearPainter_(false)
     {};
 
     virtual ~IceStormElement() {}
 
     //! Can do special stuff on connection by inheriting and overloading this
-    virtual void actionOnConnection() {}
-
-    //! Here we pop data from the consumer buffer, and give it to the painter.
-    void updateFromBuffer();
+    virtual void actionOnConnection() {};
 
 protected:
 
-    orcaice::Context              context_;
+    //! Here we pop data from the consumer store
+    bool updateFromStore();
+
+    orcaice::Context context_;
     
-    DataType                       data_;
+    DataType data_;
     
     bool needToUpdate();
     
@@ -66,19 +66,25 @@ protected:
                                           ConsumerType,
                                           ConsumerPrxType> listener_;
 
-    //! Object to handle painting to our data to screen
-    PainterType                     &painter_;
+    //! Controls the frequency with which we try to connect
+    gbxiceutilacfr::Timer tryConnectTimer_;
+    double tryConnectIntervalSec_;
     
-    double                           timeoutMs_;
-    bool                             isConnected_;
+    double timeoutMs_;
+    bool isConnected_;
+    bool shouldClearPainter_;
 };
 
-template<class PainterType, class DataType, class ProxyType, class ConsumerType, class ConsumerPrxType>
+template<class DataType, class ProxyType, class ConsumerType, class ConsumerPrxType>
 bool 
-IceStormElement<PainterType,DataType,ProxyType,ConsumerType,ConsumerPrxType>::needToUpdate()
+IceStormElement<DataType,ProxyType,ConsumerType,ConsumerPrxType>::needToUpdate()
 {
     if ( !isConnected_ )
     {
+        if ( tryConnectTimer_.elapsedSec() < tryConnectIntervalSec_ )
+            return false;
+        tryConnectTimer_.restart();
+
         if ( listener_.connect() == 0 )
         {
             isConnected_ = true;
@@ -88,20 +94,20 @@ IceStormElement<PainterType,DataType,ProxyType,ConsumerType,ConsumerPrxType>::ne
         return false;
     }
 
-    if ( !listener_.buffer().isEmpty() )
+    if ( listener_.store().isNewData() )
     {
         // An object has arrived in our buffer.  We need to update.
         return true;
     }
 
-    // The buffer is empty.  How long since we last received something?
+    // The store has nothing new.  How long since we last received something?
     if ( timeoutMs_ != -1 && listener_.msSinceReceipt() >= timeoutMs_ )
     {
         std::cout<<"TRACE(icestormelement.h): Haven't received anything from " 
                  << listener_.interfaceName() << " for " << listener_.msSinceReceipt() << "ms" << std::endl;
         std::cout<<"TRACE(icestormelement.h): Timing out..." << std::endl;
 
-        painter_.clear();
+        shouldClearPainter_ = true;
         listener_.resetTimer();
         if ( listener_.connect() == 0 )
             actionOnConnection();
@@ -111,21 +117,19 @@ IceStormElement<PainterType,DataType,ProxyType,ConsumerType,ConsumerPrxType>::ne
     return false;
 }
 
-template<class PainterType, class DataType, class ProxyType, class ConsumerType, class ConsumerPrxType>
-void 
-IceStormElement<PainterType,DataType,ProxyType,ConsumerType,ConsumerPrxType>::updateFromBuffer()
+template<class DataType, class ProxyType, class ConsumerType, class ConsumerPrxType>
+bool 
+IceStormElement<DataType,ProxyType,ConsumerType,ConsumerPrxType>::updateFromStore()
 {
-    if ( !needToUpdate() ) {
-        return;
-    }
+    if ( !needToUpdate() )
+        return false;
     
-    assert( !listener_.buffer().isEmpty() );
+    assert( listener_.store().isNewData() );
 
     // get data from the buffer
-    listener_.buffer().getAndPop( data_ );
-
-    // transfer data into painter
-    painter_.setData( data_ );
+    listener_.store().get( data_ );
+    
+    return true;
 }
 
 } // namespace

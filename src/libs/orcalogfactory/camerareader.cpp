@@ -11,7 +11,6 @@
 #include <orcaice/orcaice.h>
 #include <orcalog/orcalog.h>
 
-#include <orcaobj/stringutils.h>
 #include <orcaifacelog/camera.h>  // for auto-generated (ascii) to/fromStream functions
 #include "logstringutils.h"
 

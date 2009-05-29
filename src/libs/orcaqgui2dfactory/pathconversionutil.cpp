@@ -10,6 +10,7 @@
 
 #include <QString>
 #include "pathconversionutil.h"
+#include <orcaice/orcaice.h>
 
 namespace orcaqgui2d {
         

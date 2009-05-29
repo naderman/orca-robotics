@@ -14,7 +14,7 @@
 #include <QTextStream>
 
 #include <orcaice/orcaice.h>
-#include <orcaobj/orcaobj.h>
+#include <orcaobj/featuremap2d.h>
 #include <orcaqguielementutil/featurecolours.h>
 #include <hydroqguielementutil/paintutils.h>
 #include <hydroqguielementutil/ihumanmanager.h>
@@ -395,14 +395,14 @@ int FeatureMap2dPainter::saveMap( const QString fileName, hydroqguielementutil::
     FILE *f = fopen( fileName.toStdString().c_str(), "w" );
     if (!f)
     {
-        humanManager->showDialogMsg(hydroqguielementutil::IHumanManager::Error, "Cannot create file " + fileName );
+        humanManager->showDialogError( "Cannot create file " + fileName );
         cout << "ERROR(featuremap2dpainter.cpp): cannot create file" <<endl;
         return -1;
     } 
     else 
     {
         orcaobj::saveToFile( data_, f );
-        humanManager->showStatusMsg(hydroqguielementutil::IHumanManager::Information, "Saving feature map to " + fileName );
+        humanManager->showStatusInformation( "Saving feature map to " + fileName );
         fclose( f );
     }
     return 0;

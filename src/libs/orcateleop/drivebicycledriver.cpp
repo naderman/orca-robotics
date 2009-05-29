@@ -83,7 +83,7 @@ DriveBicycleDriver::repeatCommand()
         command_.steerAngle = 0.0;
         stringstream ss; ss << "DriveBicycleDriver::repeatCommand(): " << e;
         context_.tracer().warning( ss.str() );
-        display_->failedToSendCommand();
+        display_->failedToSendCommand( ss.str() );
     }
 }
 
@@ -147,6 +147,6 @@ DriveBicycleDriver::sendCommand()
         command_.steerAngle = 0.0;
         stringstream ss; ss << "DriveBicycleDriver: " << e;
         context_.tracer().warning( ss.str() );
-        display_->failedToSendCommand();
+        display_->failedToSendCommand( ss.str() );
     }
 }

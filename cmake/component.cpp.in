@@ -10,7 +10,7 @@
 using namespace ${COMP_NAMESPACE};
 
 Component::Component()
-    : orcaice::Component( "${COMP_NAME}", ${COMP_INTERFACE_FLAG} )
+    : orcaice::Component( "${COMP_NAME}", ${COMP_INTERFACE_FLAG}, ${COMP_ADAPTER_POLICY} )
 {
 }
 

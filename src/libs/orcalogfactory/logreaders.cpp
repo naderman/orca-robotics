@@ -2,7 +2,6 @@
 #include <iostream>
 #include <fstream>
 #include <orcalog/orcalog.h>
-#include <orcaobj/stringutils.h>
 #include <orcaifaceutil/vehicledescription.h>
 #include "logstringutils.h"
 

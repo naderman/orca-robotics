@@ -21,7 +21,6 @@
 
 #include <orcaice/configutils.h>
 #include <orcaice/proputils.h>
-#include <orcaice/convertutils.h>
 #include <orcaice/stringutils.h>
 #include <orcaice/timeutils.h>
 #include <orcaice/catchutils.h>
@@ -38,6 +37,7 @@
 
 // mostly used internally during initialization
 // #include <orcaice/printutils.h>
+// #include <orcaice/convertutils.h>
 
 // these are rarely used or should be removed entirely
 // #include <orcaice/ptrbuffer.h>

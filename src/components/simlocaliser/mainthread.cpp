@@ -10,7 +10,7 @@
  
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include <orcaobj/orcaobj.h>
+#include <orcaobj/bros1.h>
 #include <orcaifaceutil/localise2d.h>
 
 #include "mainthread.h"
@@ -73,6 +73,16 @@ void
 MainThread::initialise()
 {
     //
+    // Enable driver
+    //
+    while ( !isStopping() && driver_->enable() ) 
+    {
+        context_.tracer().warning("failed to enable the driver; will try again in 2 seconds.");
+        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
+    }
+    context_.tracer().info("driver enabled");
+
+    //
     // EXTERNAL PROVIDED INTERFACE
     //
         
@@ -83,25 +93,6 @@ MainThread::initialise()
     
     localise2dImpl_ = new orcaifaceimpl::Localise2dImpl( geom, "Localise2d", context_ );
     localise2dImpl_->initInterface( this );
-
-    //
-    // ENABLE NETWORK CONNECTIONS
-    //
-    // this may throw, but may as well quit right then
-    orcaice::activate( context_, this, subsysName() );
-    // check for stop signal after retuning from multi-try
-    if ( isStopping() )
-        return;
-
-    //
-    // Enable driver
-    //
-    while ( !isStopping() && driver_->enable() ) 
-    {
-        context_.tracer().warning("failed to enable the driver; will try again in 2 seconds.");
-        IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(2));
-    }
-    context_.tracer().info("driver enabled");
 }
 
 void

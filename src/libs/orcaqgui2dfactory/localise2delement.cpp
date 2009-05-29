@@ -9,6 +9,7 @@
  */
 
 #include <hydroqgui/exceptions.h>
+#include <orcaobj/localise2d.h>
 #include "localise2delement.h"
 #include <QInputDialog>
 
@@ -31,7 +32,7 @@ Localise2dElement::tryToGetGeometry()
     
     if ( listener_.proxy()==0 )
     {
-        humanManager_->showStatusMsg(hydroqguielementutil::IHumanManager::Error,"Localise2dElement::tryToGetGeometry(): listener_.proxy()==0"  );
+        humanManager_->showStatusError("Localise2dElement::tryToGetGeometry(): listener_.proxy()==0");
     }
     try 
     {
@@ -44,12 +45,12 @@ Localise2dElement::tryToGetGeometry()
     }
     catch ( std::exception &e)
     {
-        humanManager_->showStatusMsg( hydroqguielementutil::IHumanManager::Error,"Localise2dElement::tryToGetGeometry(): Exception when trying to get geometry: " + QString(e.what()) );
+        humanManager_->showStatusError( "Localise2dElement::tryToGetGeometry(): Exception when trying to get geometry: " + QString(e.what()) );
     }
     
     if (!haveGeometry_) 
     {
-        humanManager_->showStatusMsg(hydroqguielementutil::IHumanManager::Warning,"Localise2dElement::tryToGetGeometry(): couldn't get geometry.  Assuming point vehicle." );
+        humanManager_->showStatusWarning( "Localise2dElement::tryToGetGeometry(): couldn't get geometry.  Assuming point vehicle." );
         const double length = 1e-3, width = 1e-3;
         painter_.setTypeAndGeometry(PlatformTypeCubic, length, width );
         painter_.setOrigin( 0.0, 0.0, 0.0 );
@@ -70,7 +71,7 @@ Localise2dElement::tryToGetGeometry()
     }
     else
     {
-        humanManager_->showStatusMsg(hydroqguielementutil::IHumanManager::Warning, "Localise2dElement::Unknown platform type. Will paint a rectangle");
+        humanManager_->showStatusWarning("Localise2dElement::Unknown platform type. Will paint a rectangle");
         orca::VehicleGeometryCuboidDescriptionPtr cubGeom = orca::VehicleGeometryCuboidDescriptionPtr::dynamicCast( geom );
         painter_.setTypeAndGeometry( PlatformTypeCubic, cubGeom->size.l, cubGeom->size.w );
         painter_.setOrigin( cubGeom->platformToGeometryTransform.p.x, cubGeom->platformToGeometryTransform.p.y, cubGeom->platformToGeometryTransform.o.y );
@@ -86,17 +87,17 @@ Localise2dElement::update()
 //         tryToGetGeometry();
 //     }
     
-    // standard update as in IceStormElement2d
-    if ( !orcaqguielementutil::IceStormElement2d<Localise2dPainter,
+    // standard update as in IceStormGuiElement2d
+    if ( !orcaqguielementutil::IceStormGuiElement2d<Localise2dPainter,
             orca::Localise2dData,
             orca::Localise2dPrx,
             orca::Localise2dConsumer,
             orca::Localise2dConsumerPrx>::needToUpdate() )
         return;
 
-    assert( !listener_.buffer().isEmpty() );
+    assert( !listener_.store().isEmpty() );
     
-    listener_.buffer().getAndPop( data_ );
+    listener_.store().get( data_ );
     painter_.setData( data_ );
 
     // custom update, but first error-check.

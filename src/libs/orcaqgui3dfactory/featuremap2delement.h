@@ -20,9 +20,10 @@ class FeatureMap2dElement
 
 public: 
 
-    FeatureMap2dElement( const orcaice::Context  &context,
-                         const std::string       &proxyString,
-                         hydroqguielementutil::IHumanManager *humanManager );
+    FeatureMap2dElement( const hydroqguielementutil::GuiElementInfo &guiElementInfo,
+                         const orcaice::Context                     &context,
+                         const std::string                          &proxyString,
+                         hydroqguielementutil::IHumanManager        *humanManager );
 
     virtual bool isInGlobalCS() { return true; }
     virtual QStringList contextMenu();

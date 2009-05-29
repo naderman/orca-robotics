@@ -11,7 +11,7 @@
 #include <fstream>
 #include <QPainter>
 #include <orcaice/orcaice.h>
-#include <orcaobj/orcaobj.h>
+#include <orcaobj/pixmap.h>
 #include <hydroqgui/exceptions.h>
 #include <hydroqguielementutil/ihumanmanager.h>
 

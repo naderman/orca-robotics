@@ -97,7 +97,7 @@ VelocityControl2dDriver::repeatCommand()
         command_.motion.w = 0.0;
         stringstream ss; ss << "VelocityControl2dDriver::repeatCommand(): " << e.what;
         context_.tracer().warning( ss.str() );
-        display_->failedToSendCommand();
+        display_->failedToSendCommand( ss.str() );
     }
     catch ( const Ice::Exception& e )
     {
@@ -106,7 +106,7 @@ VelocityControl2dDriver::repeatCommand()
         command_.motion.w = 0.0;
         stringstream ss; ss << "VelocityControl2dDriver::repeatCommand(): " << e;
         context_.tracer().warning( ss.str() );
-        display_->failedToSendCommand();
+        display_->failedToSendCommand( ss.str() );
     }
 }
 
@@ -170,7 +170,7 @@ VelocityControl2dDriver::sendCommand()
         command_.motion.w = 0.0;
         stringstream ss; ss << "VelocityControl2dDriver:processNewCommandIncrement: " << e.what;
         context_.tracer().warning( ss.str() );
-        display_->failedToSendCommand();
+        display_->failedToSendCommand( ss.str() );
     }
     catch ( const Ice::Exception& e )
     {
@@ -179,6 +179,6 @@ VelocityControl2dDriver::sendCommand()
         command_.motion.w = 0.0;
         stringstream ss; ss << "VelocityControl2dDriver:processNewCommandIncrement: " << e;
         context_.tracer().warning( ss.str() );
-        display_->failedToSendCommand();
+        display_->failedToSendCommand( ss.str() );
     }
 }

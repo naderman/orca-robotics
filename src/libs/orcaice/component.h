@@ -35,7 +35,8 @@ Flags can be combined. For example to initialize Home and Status but not Tracer.
 orcaice::ComponentInterfaceFlag flag = orcaice::HomeInterface | orcaice::StatusInterface;
 @endverbatim
 */
-enum ComponentInterfaceFlag {
+enum ComponentInterfaceFlag 
+{
     //! No standard interfaces
     NoStandardInterfaces    = 0x000,
     //! Home interface only.
@@ -46,6 +47,18 @@ enum ComponentInterfaceFlag {
     TracerInterface         = 0x100,
     //! All standard interfaces.
     AllStandardInterfaces   = HomeInterface | StatusInterface | TracerInterface
+};
+
+/*! 
+This enum type is used to describe the policy of activating the component's adapter.
+*/
+enum ComponentAdapterActivationPolicy
+{
+    //! Component adapter will be activated in the code of the component derived from orcaice::Component.
+    AdapterManualActivation=0,
+    //! Component adapter will be activated by the internal infrastructure thead launched automatically
+    //! by orcaice::Component.
+    AdapterAutoActivation
 };
 
 //!
@@ -117,7 +130,9 @@ Orca.Component.EnableHome
 
 Inside this contructor the component context is not initialized yet and cannot be used.
 */
-    Component( const std::string& tag, ComponentInterfaceFlag flag=AllStandardInterfaces );
+    Component( const std::string& tag, 
+               ComponentInterfaceFlag flag=AllStandardInterfaces,
+               ComponentAdapterActivationPolicy adapterPolicy=AdapterAutoActivation );
     virtual ~Component();
 
     //! This function is called by the component's container (Application or Service).
@@ -187,6 +202,7 @@ private:
 
     // Save init flags (for the period between the constructor and init())
     ComponentInterfaceFlag interfaceFlag_;
+    ComponentAdapterActivationPolicy adapterPolicy_;
 
     std::auto_ptr<detail::HomeImpl> home_;
     std::auto_ptr<detail::StatusImpl> status_;

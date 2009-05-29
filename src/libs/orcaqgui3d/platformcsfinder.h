@@ -11,7 +11,7 @@
 #ifndef ORCAGUI3D_PLATFORMCSFINDER_H
 #define ORCAGUI3D_PLATFORMCSFINDER_H
 
-#include <hydroqguielementutil/iguielement.h>
+#include <hydroqguielementutil/guielement.h>
 #include <QString>
 #include <QList>
 
@@ -34,7 +34,7 @@ public:
     PlatformCSFinder() {};
 
     // returns false if it doesn't know.
-    bool findPlatformCS( const QList<hydroqguielementutil::IGuiElement*> &elements,
+    bool findPlatformCS( const QList<hydroqguielementutil::GuiElement*> &elements,
                          const QString                                   &platform,
                          float                                           &x,
                          float                                           &y,

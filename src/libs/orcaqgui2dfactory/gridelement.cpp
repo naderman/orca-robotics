@@ -19,11 +19,12 @@ using namespace std;
 
 namespace orcaqgui2d {
 
-GridElement::GridElement() :
-        step_( 1.0 ),   // [m]
-        isDisplayGrid_(true),
-        isDisplayOrigin_(true),
-        isDisplayLabels_(true)
+GridElement::GridElement( const hydroqguielementutil::GuiElementInfo &guiElementInfo ) :
+    GuiElement2d(guiElementInfo),
+    step_( 1.0 ),   // [m]
+    isDisplayGrid_(true),
+    isDisplayOrigin_(true),
+    isDisplayLabels_(true)
 {
 }
 

@@ -58,17 +58,7 @@ MainThread::MainThread( const orcaice::Context & context ) :
 
 void 
 MainThread::initialise()
-{
-    // multi-try
-    orcaice::activate( context_, this, subsysName() );
-    // check for stop signal after retuning from multi-try
-    if ( isStopping() )
-        return;
-     
-    // provided interface
-    systemStatusIface_ = new orcaifaceimpl::SystemStatusImpl( "SystemStatus", context_ );
-    systemStatusIface_->initInterface( this );
-
+{    
     Ice::PropertiesPtr props = context_.properties();
     std::string prefix = context_.tag()+".Config.";
     
@@ -91,6 +81,10 @@ MainThread::initialise()
         ComponentMonitor mon( fqCompNames[i], jobQueue_, context_ );
         monitors_.push_back(mon);
     }
+
+    // provided interface
+    systemStatusIface_ = new orcaifaceimpl::SystemStatusImpl( "SystemStatus", context_ );
+    systemStatusIface_->initInterface( this );
 }
 
 void

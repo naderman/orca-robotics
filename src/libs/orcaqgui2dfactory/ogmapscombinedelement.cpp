@@ -17,13 +17,15 @@ using namespace std;
 
 namespace orcaqgui2d {
 
-OgMapsCombinedElement::OgMapsCombinedElement( const orcaice::Context  &context,
-                                              const QStringList       &proxyStrList)
-    : context_(context),
+OgMapsCombinedElement::OgMapsCombinedElement( const hydroqguielementutil::GuiElementInfo &guiElementInfo,
+                                              const orcaice::Context  &context,
+                                              const QString           &description)
+    : hydroqguielementutil::GuiElement2d(guiElementInfo),
+      context_(context),
       isConnected_(false)
-{
-    
-    assert(proxyStrList.size()==2 && "Only 2 OgMaps supported at this point");
+{   
+    QStringList proxyStrList = description.split(":");
+    assert( proxyStrList.size() == 2 && "Only 2 OgMaps supported at this point" );
     
     cout << "TRACE(ogmapscombinedelement.cpp): Constructor" << endl;
     for (int i=0; i<proxyStrList.size(); i++)
@@ -49,9 +51,9 @@ bool OgMapsCombinedElement::needToUpdate()
 {
     for (unsigned int i=0; i<listeners_.size(); i++)
     {
-        if ( !listeners_[i]->buffer().isEmpty() )
+        if ( !listeners_[i]->store().isEmpty() )
         {
-            // An object has arrived in one of the buffers.  We need to update.
+            // An object has arrived in one of the stores.  We need to update.
             return true;
         }
     }
@@ -82,16 +84,16 @@ void OgMapsCombinedElement::update()
     }
     
     orca::OgMapData data0;
-    listeners_[0]->buffer().getAndPop( data0 );
+    listeners_[0]->store().get( data0 );
     orca::OgMapData data1;
-    listeners_[1]->buffer().getAndPop( data1 );
+    listeners_[1]->store().get( data1 );
     
 //     // for more than two ogMaps:
 //     OgMapData data;
 //     for (unsigned int i=0; i<listeners_.size(); i++)
 //     {
-//         // get data from the buffer
-//         listeners_[i]->buffer().getAndPop( data );
+//         // get data from the store
+//         listeners_[i]->store().get( data );
 //     }
     
     // transfer data into painter

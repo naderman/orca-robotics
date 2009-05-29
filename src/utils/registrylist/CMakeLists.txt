@@ -13,7 +13,7 @@ if( build )
 
     file( GLOB srcs *.cpp )
     
-    ORCA_WRAP_MAINTHREAD_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${COMP_NAME} ${srcs} )
+    ORCA_WRAP_MAINTHREAD_INTO_APP( ${srcs} )
         
     if( NOT GBX_OS_WIN )
         set( dep_libs ${dep_libs} OrcaCompModel )

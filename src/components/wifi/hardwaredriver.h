@@ -11,7 +11,7 @@
 #ifndef ORCA_HARDWARE_DRIVER_H
 #define ORCA_HARDWARE_DRIVER_H
 
-#include <orcaice/orcaice.h>
+#include <orcaice/context.h>
 #include <hydrowifi/wifiutil.h>
 
 #include "wifidriver.h"

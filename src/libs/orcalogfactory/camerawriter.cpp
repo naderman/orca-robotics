@@ -17,9 +17,6 @@
 #include <orcaifacelog/camera.h>
 #include "camerawriter.h"
 
-#include <orcaobj/stringutils.h>
-
-
 #ifdef OPENCV_FOUND
 	#include <highgui.h>
 #endif

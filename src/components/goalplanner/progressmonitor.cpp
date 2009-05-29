@@ -1,7 +1,8 @@
 #include "progressmonitor.h"
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include <orcaobj/orcaobj.h>
+#include <orcaobj/pathfollower2d.h>
+#include <orcaobj/pathplanner2d.h>
 
 using namespace std;
 

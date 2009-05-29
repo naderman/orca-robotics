@@ -28,8 +28,10 @@ Convenience function. Tries to setup the specified interface until is successful
 the number of retries is exceeded (default -1, i.e. infinite), or the @c activity is stopped.
 Threads are a commonly used activity which implement Stoppable interface.
 
-Nothing is done if retryNumber=0. If a non-empty subsystem name is supplied, 
-sends a Status heartbeat after every attempt (@see gbxutilacfr::Status).
+Nothing is done if retryNumber=0.
+
+Status warnings are set between retries if subsystem name is specified (@see gbxutilacfr::Status), 
+otherwise warnings are simply traced.
 
 We catch gbxutilacfr::Exception, sleep for @c retryIntervalSec [s] and try again.
 
@@ -50,8 +52,10 @@ Convenience function. Tries to setup the specified interface until successful,
 the number of retries is exceeded (default -1, i.e. infinite), or the @c activity is stopped.
 Threads are a commonly used activity which implement Stoppable interface.
 
-Nothing is done if retryNumber=0.  If a non-empty subsystem name is supplied, 
-sends a Status heartbeat after every attempt (@see gbxutilacfr::Status).
+Nothing is done if retryNumber=0.  
+
+Status warnings are set between retries if subsystem name is specified (@see gbxutilacfr::Status), 
+otherwise warnings are simply traced.
 
 We catch gbxutilacfr::Exception, sleep for @c retryIntervalSec [s] and try again.
 Gives up after @c retryNumber of attempts (-1 stands for infinite number of retries).
@@ -82,7 +86,10 @@ Tries to activate the adapter (by calling Context::activate(). If fails, sleeps 
 Threads are a commonly used activity which implement Stoppable interface. 
 
 Nothing is done if retryNumber=0.
-If a non-empty subsystem name is supplied, sends a Status heartbeat after every attempt (@see gbxutilacfr::Status).
+
+If a non-empty subsystem name is supplied, sends a Status heartbeat after every 
+attempt (@see gbxutilacfr::Status). Status warnings are NOT issued because the Status
+interface is not accessible until the adapter is activated.
 
 If a non-empty subsystem name is supplied, sends a Status heartbeat at every iteration 
 (@see gbxutilacfr::Status).

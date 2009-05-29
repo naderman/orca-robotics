@@ -1,5 +1,5 @@
 /*
- * Orca-Robotics Project: Components for robotics 
+ * Orca-Robotics Project: Components for robotics
  *               http://orca-robotics.sf.net/
  * Copyright (c) 2004-2009 Alex Brooks, Alexei Makarenko, Tobias Kaupp
  *
@@ -116,7 +116,7 @@ Application::run( int argc, char* argv[] )
 
     // what to do when a signal is received (e.g. Ctrl-C)
     if ( props->getPropertyAsInt("Orca.Application.CallbackOnInterrupt") ) {
-        // normally, we want to get a change to shut down our component before 
+        // normally, we want to get a change to shut down our component before
         //shutting down the communicator
         callbackOnInterrupt();
     }
@@ -131,7 +131,18 @@ Application::run( int argc, char* argv[] )
     }
 
     // create the one-and-only component adapter
-    adapter_ = communicator()->createObjectAdapter(component_.context().tag());
+    try
+    {
+	  adapter_ = communicator()->createObjectAdapter(component_.context().tag());
+	}
+	catch( const Ice::InitializationException& e )
+	{
+		stringstream ss;
+		ss << "(while creating component adapter) : " << e.what();
+        initTracerError( ss.str() );
+        initTracerInfo( "Application quitting. Orca out." );
+        return 1;
+	}
     initTracerInfo( component_.context().tag()+": Created object adapter." );
 
     //
@@ -160,7 +171,7 @@ Application::run( int argc, char* argv[] )
     {
         component_.start();
         // for the components which hug the thread, eg. Qt-based, this will be printed at shutdown
-        // this is optional because after the comp is started we can't assume that dumping to cout 
+        // this is optional because after the comp is started we can't assume that dumping to cout
         // will produce the desired result (e.g. if ncurses are used)
         if ( props->getPropertyAsInt( "Orca.Component.PrintStarted" ) ) {
             initTracerInfo( component_.context().tag()+": Component started." );
@@ -206,7 +217,7 @@ void
 Application::stopComponent()
 {
     IceUtil::Mutex::Lock lock(mutex_);
-    
+
     if ( isComponentStopped_ )
         return;
 
@@ -220,7 +231,7 @@ Application::stopComponent()
     isComponentStopped_ = true;
 }
 
-void 
+void
 Application::interruptCallback( int signal )
 {
     stopComponent();
@@ -232,7 +243,7 @@ Application::interruptCallback( int signal )
     {
         assert(communicator() != 0);
         // we just shutdown the communicator, Ice::Application will destroy it later.
-        // 
+        //
         communicator()->shutdown();
     }
     catch(const std::exception& ex) {

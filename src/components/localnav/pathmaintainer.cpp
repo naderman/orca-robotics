@@ -9,7 +9,7 @@
  */
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include <orcaobj/orcaobj.h>
+#include <orcaobj/pathfollower2d.h>
 #include <hydronavutil/hydronavutil.h>
 #include "pathfollowerinterface.h"
 #include "pathmaintainer.h"

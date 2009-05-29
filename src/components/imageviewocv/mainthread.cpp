@@ -14,7 +14,6 @@
 #include <iostream>
 #include <memory>
 #include <orcaice/orcaice.h>
-#include <orcaobj/orcaobj.h> // for getPropertyAs...()
 
 using namespace std;
 using namespace imageviewocv;
@@ -112,12 +111,6 @@ MainThread::initSettings()
 void
 MainThread::initNetworkInterface()
 {
-    // activate component's communication
-    activate( context_, this, subsysName() );
-    // check for stop signal after retuning from multi-try
-    if ( isStopping() )
-        return;
-    
     //
     // EXTERNAL REQUIRED INTERFACE
     //

@@ -25,7 +25,7 @@ namespace orcaqgui2d {
 class PathFollowerInput;
     
 ////////////////////////////////////////////////////////////////////////////////
-// The consumer object. We need this here because PathFollower2dElement cannot inherit from IceStormElement2d.
+// The consumer object. We need this here because PathFollower2dElement cannot inherit from IceStormGuiElement2d.
 // Reason is that PathFollower2dConsumer has several non-standard purely virtual member functions.
 class PathUpdateConsumer : public orca::PathFollower2dConsumer
 {
@@ -43,7 +43,7 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
 
-// We need to inherit from GuiElement2d, not from IceStormElement2d. 
+// We need to inherit from GuiElement2d, not from IceStormGuiElement2d. 
 // Reason is that PathFollower2dConsumer has a non-standard purely virtual 
 // member function setWaypointIndex. 
 // Disadvantage is that we have to subscribe ourselves.
@@ -52,12 +52,13 @@ class PathFollower2dElement : public hydroqguielementutil::GuiElement2d
 
 public: 
 
-    PathFollower2dElement( const orcaice::Context & context,
-                           const std::string &proxyString,
-                           hydroqguielementutil::IHumanManager &humanManager,
-                           hydroqguielementutil::MouseEventManager &mouseEventManager,
-                           hydroqguielementutil::ShortcutKeyManager &shortcutKeyManager,
-                           const hydroqgui::GuiElementSet &guiElementSet );
+    PathFollower2dElement( const hydroqguielementutil::GuiElementInfo &guiElementInfo,
+                           const orcaice::Context                     &context,
+                           const std::string                          &proxyString,
+                           hydroqguielementutil::IHumanManager        &humanManager,
+                           hydroqguielementutil::MouseEventManager    &mouseEventManager,
+                           hydroqguielementutil::ShortcutKeyManager   &shortcutKeyManager,
+                           const hydroqgui::GuiElementSet             &guiElementSet );
 
     // inherited from guielement
     void update();
@@ -81,8 +82,6 @@ public:
     // sets an inputFactory different from the default one
     void setInputFactory ( std::auto_ptr<hydroqguipath::PathInputFactory> inputFactory );
     
-    // Tries to enable or disable the remote interface. Returns true if successful
-    bool tryEnableRemoteInterface( bool enable );
     void go();
     void stop();
     void sendPath( const hydroqguipath::IPathInput *pathInput, 

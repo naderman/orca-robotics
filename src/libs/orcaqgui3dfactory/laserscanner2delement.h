@@ -11,7 +11,7 @@
 #ifndef ORCAGUI3D_LASERSCANNER2D_ELEMENT_H
 #define ORCAGUI3D_LASERSCANNER2D_ELEMENT_H
 
-#include <orcaqgui3d/ptricestormelement3d.h>
+#include <orcaqgui3d/icestormelement3d.h>
 #include <orcaqgui3dfactory/laserscanner2dpainter.h>
 
 namespace orcaqgui3d {
@@ -22,24 +22,23 @@ namespace orcaqgui3d {
 //! @author Alex Brooks
 //!
 class LaserScanner2dElement
-    : public PtrIceStormElement3d<LaserScanner2dPainter,
-                                  orca::RangeScanner2dData,
-                                  orca::RangeScanner2dDataPtr,
-                                  orca::LaserScanner2dPrx,
-                                  orca::RangeScanner2dConsumer,
-                                  orca::RangeScanner2dConsumerPrx>
-{           
-public:
-    LaserScanner2dElement( const orcaice::Context  &context,
-                           const std::string       &proxyString,
-                           int                      timeoutMs=5000,
-                           QColor                   outlineColor=QColor( 102,102,153, 255 ) )
-        : PtrIceStormElement3d<LaserScanner2dPainter,
-                               orca::RangeScanner2dData,
+    : public IceStormElement3d<LaserScanner2dPainter,
                                orca::RangeScanner2dDataPtr,
                                orca::LaserScanner2dPrx,
                                orca::RangeScanner2dConsumer,
-                               orca::RangeScanner2dConsumerPrx>(context, proxyString, painter_, timeoutMs ),
+                               orca::RangeScanner2dConsumerPrx>
+{           
+public:
+    LaserScanner2dElement( const hydroqguielementutil::GuiElementInfo &guiElementInfo,
+                           const orcaice::Context                     &context,
+                           const std::string                          &proxyString,
+                           int                                         timeoutMs    = 5000,
+                           QColor                                      outlineColor = QColor( 102,102,153, 255 ) )
+        : IceStormElement3d<LaserScanner2dPainter,
+                               orca::RangeScanner2dDataPtr,
+                               orca::LaserScanner2dPrx,
+                               orca::RangeScanner2dConsumer,
+                               orca::RangeScanner2dConsumerPrx>( guiElementInfo, context, proxyString, painter_, timeoutMs ),
           painter_( outlineColor )
         {};
 

@@ -21,6 +21,7 @@
 #include <orcaqgui2dfactory/ogmapscombinedelement.h>
 #include <orcaqgui2dfactory/pixmapelement.h>
 #include <orcaqgui2dfactory/wifielement.h>
+#include <orcaqgui2dfactory/velocitycontrol2delement.h>
 
 #include "defaultfactory.h"
 
@@ -49,6 +50,7 @@ DefaultFactory::DefaultFactory()
     addSupportedType("PixMap");
     addSupportedType("PolarFeature2d");
     addSupportedType("QGraphics2d");
+    addSupportedType("VelocityControl2d");
     addSupportedType("Wifi");
 }
 
@@ -78,92 +80,81 @@ DefaultFactory::lookupElementType( const QStringList &ids, QString &elementType 
     return true;
 }
         
-hydroqguielementutil::IGuiElement* 
-DefaultFactory::create( const QString                &elementType,
-                        const QStringList            &elementDetails,
-                        QColor                        suggestedColor,
-                        hydroqguielementutil::IHumanManager     &humanManager,
-                        hydroqguielementutil::MouseEventManager &mouseEventManager,
-                        hydroqguielementutil::ShortcutKeyManager &shortcutKeyManager,
-                        const hydroqgui::GuiElementSet &guiElementSet ) const
+hydroqguielementutil::GuiElement* 
+DefaultFactory::create( const hydroqguielementutil::GuiElementInfo &guiElementInfo,
+                        hydroqguielementutil::IHumanManager        &humanManager,
+                        hydroqguielementutil::MouseEventManager    &mouseEventManager,
+                        hydroqguielementutil::ShortcutKeyManager   &shortcutKeyManager,
+                        const hydroqgui::GuiElementSet             &guiElementSet,
+                        QSplitter                                  *spaceBottomRight ) const
 {
     assert( isContextSet_ );
-    hydroqguielementutil::IGuiElement *elem = NULL;
+    hydroqguielementutil::GuiElement *elem = NULL;
     
     try
     {
-        stringstream ss;
-        ss<<"DefaultFactory::create(): creating "<<elementType.toStdString()<<" element";
-        if ( elementDetails.size() > 0 )
-        {
-            ss << " with details:";
-            for ( int i=0; i < elementDetails.size(); i++ )
-            {
-                ss << " " << elementDetails[i].toStdString();
-            }
+        cout << "DefaultFactory::create(): creating "<< guiElementInfo.type.toStdString() << " element with id:" << guiElementInfo.uniqueId.toStdString() << endl;
+        
+        if ( guiElementInfo.type == "Button" ) {
+            elem = new orcaqgui2d::ButtonElement( guiElementInfo, context_, guiElementInfo.uniqueId.toStdString(), humanManager );
         }
-        cout << ss.str() << endl;
-
-        if ( elementType == "Button" ) {
-            elem = new orcaqgui2d::ButtonElement( context_, elementDetails[0].toStdString(), humanManager );
+        else if ( guiElementInfo.type == "Grid" ) {
+            elem = new orcaqgui2d::GridElement( guiElementInfo);
         }
-        else if ( elementType == "Grid" ) {
-            elem = new orcaqgui2d::GridElement();
+        else if ( guiElementInfo.type == "LaserScanner2d" ) {
+            elem = new orcaqgui2d::LaserScanner2dElement( guiElementInfo, context_, guiElementInfo.uniqueId.toStdString() );
+        }        
+        else if ( guiElementInfo.type == "RangeScanner2d" ) {
+            elem = new orcaqgui2d::RangeScanner2dElement( guiElementInfo, context_, guiElementInfo.uniqueId.toStdString() );
         }
-        else if ( elementType == "LaserScanner2d" ) {
-            elem = new orcaqgui2d::LaserScanner2dElement( context_, elementDetails[0].toStdString() );
+        else if ( guiElementInfo.type == "MultiOgMaps" ) {
+            elem = new orcaqgui2d::OgMapsCombinedElement( guiElementInfo, context_, guiElementInfo.uniqueId );
         }
-        else if ( elementType == "RangeScanner2d" ) {
-            elem = new orcaqgui2d::RangeScanner2dElement( context_, elementDetails[0].toStdString() );
+        else if ( guiElementInfo.type == "RangerArray" ) {
+            elem = new orcaqgui2d::RangerArrayElement( guiElementInfo, context_, guiElementInfo.uniqueId.toStdString() );
         }
-        else if ( elementType == "MultiOgMaps" ) {
-            elem = new orcaqgui2d::OgMapsCombinedElement( context_, elementDetails );
+        else if ( guiElementInfo.type == "Localise2d" ) {
+            elem = new orcaqgui2d::Localise2dElement( guiElementInfo, context_, guiElementInfo.uniqueId.toStdString(), &humanManager );
         }
-        else if ( elementType == "RangerArray" ) {
-            elem = new orcaqgui2d::RangerArrayElement( context_, elementDetails[0].toStdString() );
+        else if ( guiElementInfo.type == "Localise3d" ) {
+            elem = new orcaqgui2d::Localise3dElement( guiElementInfo, context_, guiElementInfo.uniqueId.toStdString() );
         }
-        else if ( elementType == "Localise2d" ) {
-            elem = new orcaqgui2d::Localise2dElement( context_, elementDetails[0].toStdString(), &humanManager );
+        else if ( guiElementInfo.type == "Odometry2d" ) {
+            elem = new orcaqgui2d::Odometry2dElement( guiElementInfo, context_, guiElementInfo.uniqueId.toStdString() );
         }
-        else if ( elementType == "Localise3d" ) {
-            elem = new orcaqgui2d::Localise3dElement( context_, elementDetails[0].toStdString() );
+        else if ( guiElementInfo.type == "OgMap" ) {
+            elem = new orcaqgui2d::OgMapElement( guiElementInfo, context_, guiElementInfo.uniqueId.toStdString(), &humanManager );
         }
-        else if ( elementType == "Odometry2d" ) {
-            elem = new orcaqgui2d::Odometry2dElement( context_, elementDetails[0].toStdString() );
+        else if ( guiElementInfo.type == "PolarFeature2d" ) {
+            elem = new orcaqgui2d::PolarFeature2dElement( guiElementInfo, context_, guiElementInfo.uniqueId.toStdString() );
         }
-        else if ( elementType == "DriveBicycle" ) {
-            elem = new orcaqgui2d::DriveBicycleElement( context_, elementDetails[0].toStdString() );
+        else if ( guiElementInfo.type == "PathFollower2d" ) {
+            elem = new orcaqgui2d::PathFollower2dElement( guiElementInfo, context_, guiElementInfo.uniqueId.toStdString(), humanManager, mouseEventManager, shortcutKeyManager, guiElementSet );
         }
-        else if ( elementType == "OgMap" ) {
-            elem = new orcaqgui2d::OgMapElement( context_, elementDetails[0].toStdString(), &humanManager );
+        else if ( guiElementInfo.type == "PathPlanner2d" ) {
+            elem = new orcaqgui2d::PathPlanner2dElement( guiElementInfo, context_, guiElementInfo.uniqueId.toStdString(), humanManager, mouseEventManager, shortcutKeyManager );
         }
-        else if ( elementType == "PolarFeature2d" ) {
-            elem = new orcaqgui2d::PolarFeature2dElement( context_, elementDetails[0].toStdString() );
+        else if ( guiElementInfo.type == "PixMap" ) {
+            elem = new orcaqgui2d::PixMapElement( guiElementInfo, context_, guiElementInfo.uniqueId.toStdString(), &humanManager );
         }
-        else if ( elementType == "PathFollower2d" ) {
-            elem = new orcaqgui2d::PathFollower2dElement( context_, elementDetails[0].toStdString(), humanManager, mouseEventManager, shortcutKeyManager, guiElementSet );
+        else if ( guiElementInfo.type == "FeatureMap2d" ) {
+            elem = new orcaqgui2d::FeatureMap2dElement( guiElementInfo, context_, guiElementInfo.uniqueId.toStdString(), &humanManager );
         }
-        else if ( elementType == "PathPlanner2d" ) {
-            elem = new orcaqgui2d::PathPlanner2dElement( context_, elementDetails[0].toStdString(), humanManager, mouseEventManager, shortcutKeyManager );
+        else if ( guiElementInfo.type == "Particle2d" ) {
+            elem = new orcaqgui2d::Particle2dElement( guiElementInfo, context_, guiElementInfo.uniqueId.toStdString() );
         }
-        else if ( elementType == "PixMap" ) {
-            elem = new orcaqgui2d::PixMapElement( context_, elementDetails[0].toStdString(), &humanManager );
+        else if ( guiElementInfo.type == "QGraphics2d" ) {
+            elem = new orcaqgui2d::QGraphics2dElement( guiElementInfo, context_, guiElementInfo.uniqueId.toStdString() );
         }
-        else if ( elementType == "FeatureMap2d" ) {
-            elem = new orcaqgui2d::FeatureMap2dElement( context_, elementDetails[0].toStdString(), &humanManager );
+        else if ( guiElementInfo.type == "Wifi" ) {
+            elem = new orcaqgui2d::WifiElement( guiElementInfo, context_, guiElementInfo.uniqueId.toStdString(), spaceBottomRight );
         }
-        else if ( elementType == "Particle2d" ) {
-            elem = new orcaqgui2d::Particle2dElement( context_, elementDetails[0].toStdString() );
-        }
-        else if ( elementType == "QGraphics2d" ) {
-            elem = new orcaqgui2d::QGraphics2dElement( context_, elementDetails[0].toStdString() );
-        }
-        else if ( elementType == "Wifi" ) {
-            elem = new orcaqgui2d::WifiElement( context_, elementDetails[0].toStdString() );
+        else if ( guiElementInfo.type == "VelocityControl2d" ) {
+            elem = new orcaqgui2d::VelocityControl2dElement( guiElementInfo, context_, guiElementInfo.uniqueId.toStdString(), humanManager, shortcutKeyManager, spaceBottomRight );
         }
         else
         {
-            cout << "DefaultFactory::create(): Don't know how to handle elementType '" << elementType.toStdString() << "'" << endl;
+            cout << "DefaultFactory::create(): Don't know how to handle guiElementInfo.type '" << guiElementInfo.type.toStdString() << "'" << endl;
         }
     
     } 
@@ -173,9 +164,6 @@ DefaultFactory::create( const QString                &elementType,
         delete elem;
         elem=NULL;
     }
-
-    if ( elem != NULL )
-        elem->setColor( suggestedColor );
     return elem;
 }
 

@@ -64,20 +64,21 @@ connectToInterfaceWithString( const Context     & context,
     {
         try {
             connectToInterfaceWithString( context, proxy, proxyString );
+            if ( !subsysName.empty() )
+                context.status().ok( subsysName );
             break;
         }
         catch ( const orcaice::NetworkException& e ) {
             std::stringstream ss;
-            ss << "Failed to connect to interface with string "<<proxyString<<". "
-                <<"Will retry in "<<retryIntervalSec<<"s."
-                << e.what();
-            context.tracer().warning( ss.str() );
+            ss << "Failed to connect to interface with string "<<proxyString<<" : "<< e.what()
+               << "\nWill retry in "<<retryIntervalSec<<"s.";
+            if ( !subsysName.empty() )
+                context.status().warning( subsysName, ss.str() );
+            else
+                context.tracer().warning( ss.str() );
         }
         ++count;
         gbxiceutilacfr::checkedSleep( activity, retryIntervalSec*1000 );
-        if ( !subsysName.empty() ) {
-            context.status().heartbeat( subsysName );
-        }
     }
 }
 
@@ -128,20 +129,21 @@ connectToInterfaceWithTag( const Context     & context,
     {
         try {
             connectToInterfaceWithTag<ProxyType>( context, proxy, interfaceTag );
+            if ( !subsysName.empty() )
+                context.status().ok( subsysName );
             break;
         }
         catch ( const orcaice::NetworkException& e ) {
             std::stringstream ss;
-            ss << "Failed to connect to interface with tag "<<interfaceTag<<". "
-                <<"Will retry in "<<retryIntervalSec<<"s."
-                << e.what();
-            context.tracer().warning( ss.str() );
+            ss << "Failed to connect to interface with tag "<<interfaceTag<<": "<<e.what()
+               << "\nWill retry in "<<retryIntervalSec<<"s.";
+            if ( !subsysName.empty() )
+                context.status().warning( subsysName, ss.str() );
+            else
+                context.tracer().warning( ss.str() );
         }
         ++count;
         gbxiceutilacfr::checkedSleep( activity, retryIntervalSec*1000 );
-        if ( !subsysName.empty() ) {
-            context.status().heartbeat( subsysName );
-        }
     }
 }
 

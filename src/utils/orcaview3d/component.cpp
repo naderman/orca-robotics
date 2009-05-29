@@ -11,7 +11,6 @@
 #include <QApplication>
  
 #include <orcaice/orcaice.h>
-#include <orcaobj/orcaobj.h>
 #include <hydrodll/dynamicload.h>
 #include <hydroiceutil/jobqueue.h>
 #include <orcaqgui/mainwin.h>
@@ -31,103 +30,17 @@ namespace orcaview3d {
 
 namespace {
 
-    static const char *DEFAULT_FACTORY_LIB_NAME="libOrcaQGui3dFactory.so";
+static const char *DEFAULT_FACTORY_LIB_NAME="libOrcaQGui3dFactory.so";
 
-    hydroqgui::IGuiElementFactory* loadFactory( hydrodll::DynamicallyLoadedLibrary &lib )
-    {
-        hydroqgui::IGuiElementFactory *f = 
-            hydrodll::dynamicallyLoadClass<hydroqgui::IGuiElementFactory,FactoryMakerFunc>
-            (lib, "createFactory");
-        return f;
-    }
-
+hydroqgui::IGuiElementFactory* loadFactory( hydrodll::DynamicallyLoadedLibrary &lib )
+{
+    hydroqgui::IGuiElementFactory *f = 
+        hydrodll::dynamicallyLoadClass<hydroqgui::IGuiElementFactory,FactoryMakerFunc>
+        (lib, "createFactory");
+    return f;
 }
 
-//////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////
-
-Component::Component()
-    : orcaice::Component( "OrcaView3d", orcaice::NoStandardInterfaces )
-{
-}
-
-Component::~Component()
-{
-    assert( libraries_.size() == factories_.size() );
-    for ( unsigned int i=0; i < libraries_.size(); i++ ){
-        delete factories_[i];
-        delete libraries_[i];
-    }
-}       
-
-std::vector<std::string>
-Component::loadPluginLibraries( const std::string& factoryLibNames )
-{
-    // Parse space-separated list of lib names
-    vector<string> libNames = hydroutil::toStringSeq( factoryLibNames, ' ' );
-    
-    // this will be a listing of unique supported interfaces
-    std::vector<std::string> supportedInterfaces;
-    std::vector<std::string> ifaces;
-
-    for ( unsigned int i=0; i < libNames.size(); i++ )
-    {
-        stringstream ss;
-        ss << "Loading factory library: " << libNames[i];
-        context().tracer().info( ss.str() );
-        
-        try {
-            hydrodll::DynamicallyLoadedLibrary *lib = new hydrodll::DynamicallyLoadedLibrary(libNames[i]);
-            hydroqgui::IGuiElementFactory *f = loadFactory( *lib );
-            libraries_.push_back(lib);
-            factories_.push_back(f);
-
-            ifaces = f->supportedElementTypesAsStdString();
-            for ( unsigned int j=0; j<ifaces.size(); ++j ) {
-                supportedInterfaces.push_back( ifaces[j] );
-            }    
-        }
-        catch (hydrodll::DynamicLoadException &e)
-        {
-            cout << "ERROR(orcaview3d:component.cpp): " << e.what() << endl;
-            throw;
-        }
-    }
-
-    for ( size_t i=0; i < factories_.size(); i++ )
-    {
-        cout<<"TRACE(orcaview3d:component.cpp): Setting context for "<<i<<"'th factory" << endl;
-
-        orcaqgui::IGuiElementFactory *orcaFactory = 
-                dynamic_cast<orcaqgui::IGuiElementFactory*>(factories_[i]);
-        if ( orcaFactory != NULL )
-        {
-            cout<<"TRACE(orcaview3d:component.cpp): setContext()" << endl;
-            orcaFactory->setContext( context() );
-        }
-        else
-        {
-            stringstream ss;
-            ss << "Factory is not an orca factory!  (couldn't cast to orcaqgui::IGuiElementFactory*)";
-            throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
-        }
-    }
-
-    if ( factories_.empty() ) {
-        std::string err = "No gui element factories were loaded.";
-        context().tracer().error( err );
-        throw err;
-    }
-
-    // eliminate duplicates from the listing of supported interfaces
-    std::sort( supportedInterfaces.begin(), supportedInterfaces.end() );
-    std::unique( supportedInterfaces.begin(), supportedInterfaces.end() );
-
-    return supportedInterfaces;
-}
-
-void
-readScreenDumpParams( const orcaice::Context                 &context,
+void readScreenDumpParams( const orcaice::Context &context,
                       orcaqgui::MainWindow::ScreenDumpParams &screenDumpParams )
 {
     Ice::PropertiesPtr prop = context.properties();
@@ -142,18 +55,32 @@ readScreenDumpParams( const orcaice::Context                 &context,
     screenDumpParams.captureTimerInterval = orcaice::getPropertyAsIntWithDefault( prop, prefix+"ScreenCapture.CaptureTimerInterval", 1000 );
 }
 
+}
+
+//////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+
+// we don't want any standard interface: this is an interactive component
+// we want the adapter to be started automatically: we need it for subscriptions
+Component::Component()
+    : orcaice::Component( "OrcaView3d", orcaice::NoStandardInterfaces )
+{
+}
+
+Component::~Component()
+{
+    assert( libraries_.size() == factories_.size() );
+    for ( unsigned int i=0; i < libraries_.size(); i++ ){
+        delete factories_[i];
+        delete libraries_[i];
+    }
+}       
+
 void 
 Component::start()
 {
     Ice::PropertiesPtr props = context().properties();
     std::string prefix = context().tag() + ".Config.";
-    
-    //
-    // enable network connections
-    //
-    // Home interface only
-    // this may throw, but may as well quit right then
-    activate();
     
     //
     // Start job queue
@@ -259,6 +186,74 @@ Component::start()
 void Component::stop()
 {
     context().tracer().debug("stopping component",5);
+}
+
+///////////////////////////////
+
+std::vector<std::string>
+Component::loadPluginLibraries( const std::string& factoryLibNames )
+{
+    // Parse space-separated list of lib names
+    vector<string> libNames = hydroutil::toStringSeq( factoryLibNames, ' ' );
+    
+    // this will be a listing of unique supported interfaces
+    std::vector<std::string> supportedInterfaces;
+    std::vector<std::string> ifaces;
+
+    for ( unsigned int i=0; i < libNames.size(); i++ )
+    {
+        stringstream ss;
+        ss << "Loading factory library: " << libNames[i];
+        context().tracer().info( ss.str() );
+        
+        try {
+            hydrodll::DynamicallyLoadedLibrary *lib = new hydrodll::DynamicallyLoadedLibrary(libNames[i]);
+            hydroqgui::IGuiElementFactory *f = loadFactory( *lib );
+            libraries_.push_back(lib);
+            factories_.push_back(f);
+
+            ifaces = f->supportedElementTypesAsStdString();
+            for ( unsigned int j=0; j<ifaces.size(); ++j ) {
+                supportedInterfaces.push_back( ifaces[j] );
+            }    
+        }
+        catch (hydrodll::DynamicLoadException &e)
+        {
+            cout << "ERROR(orcaview3d:component.cpp): " << e.what() << endl;
+            throw;
+        }
+    }
+
+    for ( size_t i=0; i < factories_.size(); i++ )
+    {
+        cout<<"TRACE(orcaview3d:component.cpp): Setting context for "<<i<<"'th factory" << endl;
+
+        orcaqgui::IGuiElementFactory *orcaFactory = 
+                dynamic_cast<orcaqgui::IGuiElementFactory*>(factories_[i]);
+        if ( orcaFactory != NULL )
+        {
+            cout<<"TRACE(orcaview3d:component.cpp): setContext()" << endl;
+            orcaFactory->setContext( context() );
+        }
+        else
+        {
+            stringstream ss;
+            ss << "Factory is not an orca factory!  (couldn't cast to orcaqgui::IGuiElementFactory*)";
+            throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
+        }
+    }
+
+    if ( factories_.empty() ) {
+        std::string err = "No gui element factories were loaded.";
+        context().tracer().error( err );
+        throw err;
+    }
+
+    // eliminate duplicates from the listing of supported interfaces
+    std::sort( supportedInterfaces.begin(), supportedInterfaces.end() );
+    std::unique( supportedInterfaces.begin(), supportedInterfaces.end() );
+
+    return supportedInterfaces;
 }
 
 }

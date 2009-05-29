@@ -9,11 +9,9 @@
  */
 
 #include <iostream>
-#include <hydroutil/sysutils.h>
-
+#include <hydroqgui/exceptions.h>
 #include "guielementmodel.h"
 #include "guielementview.h"
-#include <hydroqgui/exceptions.h>
 
 using namespace std;
 
@@ -27,6 +25,7 @@ GuiElementModel::GuiElementModel(   const std::vector<hydroqgui::IGuiElementFact
                                     hydroqgui::PlatformFocusManager                   &platformFocusManager,
                                     hydroqgui::GuiElementSet                          &guiElementSet,
                                     hydroqgui::IStringToColorMap                      &platformColorMap,
+                                    QSplitter                                         *spaceBottomRight,
                                     QObject                                           *parent )
     : QAbstractTableModel(parent),
       PlatformFocusChangeReceiver(platformFocusManager),
@@ -38,12 +37,10 @@ GuiElementModel::GuiElementModel(   const std::vector<hydroqgui::IGuiElementFact
       coordinateFrameManager_(coordinateFrameManager),
       platformFocusManager_(platformFocusManager),
       platformColorMap_(platformColorMap),
-      view_(0)
+      view_(0),
+      spaceBottomRight_(spaceBottomRight)
 {    
-    headers_ << "Type" << "Details";
-//     coordinateFramePlatform_ = "global";
-//     ignoreCoordinateFrameRotation_ = false;
-//    platformInFocus_ = "global";
+    headers_ << "Type" << "Unique ID";
 }
 
 int GuiElementModel::rowCount(const QModelIndex &parent) const
@@ -80,12 +77,12 @@ GuiElementModel::data(const QModelIndex &idx, int role) const
             return fqIName;
         }
         case 1 :
-            return elements()[idx.row()]->details();
+            return elements()[idx.row()]->uniqueId();
         }
     }  
     else if ( role == InterfaceIdRole ) {
         // for all columns
-        return elements()[idx.row()]->details();
+        return elements()[idx.row()]->uniqueId();
     }  
     else if ( role == ContextMenuRole ) {
         // for all columns
@@ -146,27 +143,30 @@ GuiElementModel::removeRows( int row, int count, const QModelIndex & parent )
 }
 
 bool
-GuiElementModel::instantiateFromFactories( hydroqguielementutil::IGuiElement* &element,
-                                           const QString                      &elementType,
-                                           const QColor                       &platformColor,
-                                           const QStringList                  &elementDetails )
+GuiElementModel::instantiateFromFactories( hydroqguielementutil::GuiElement*         &element,
+                                           const hydroqguielementutil::GuiElementInfo &guiElementInfo )
 {
     for ( unsigned int i=0; i < factories_.size(); i++ )
     {
         // if this interface is not supported, skip this factory
-        if ( !factories_[i]->isSupported( elementType ) )
+        if ( !factories_[i]->isSupported( guiElementInfo.type ) )
             continue;
         
         // if we get here the interface is supported
         try 
         {
-            element = factories_[i]->create( elementType, elementDetails, platformColor, humanManager_, mouseEventManager_, shortcutKeyManager_, guiElementSet_ );
+            element = factories_[i]->create( guiElementInfo,
+                                             humanManager_,
+                                             mouseEventManager_,
+                                             shortcutKeyManager_,
+                                             guiElementSet_,
+                                             spaceBottomRight_ );
         } 
         catch (gbxutilacfr::Exception &e)
         {
             stringstream ss;
-            ss << "GuiElementModel: Problem when trying to create element of type " << elementType.toStdString() <<": " << e.what() << std::endl;
-            humanManager_.showStatusMsg(hydroqguielementutil::IHumanManager::Error,ss.str().c_str());
+            ss << "GuiElementModel: Problem when trying to create element of type " << guiElementInfo.type.toStdString() <<": " << e.what() << std::endl;
+            humanManager_.showStatusError(ss.str().c_str());
         }
         return true; 
     }
@@ -174,47 +174,55 @@ GuiElementModel::instantiateFromFactories( hydroqguielementutil::IGuiElement* &e
 }
 
 bool
-GuiElementModel::doesElementExist( const QStringList& elementDetails, int numElements )
-{
-    //cout << "proxyStrList.join " << proxyStrList.join(" ").toStdString() << endl;
-    
+GuiElementModel::doesElementExist( const QString &uniqueId )
+{  
     for ( int i=0; i<elements().size(); i++)
     {
-        cout << "element name: " << elements()[i]->details().toStdString() << endl;
-        if ( elements()[i]->details() == elementDetails.join(" ") + " " ) return true;
+        //cout << "doesElementExist: element name: " << elements()[i]->uniqueId().toStdString() << endl;
+        if ( elements()[i]->uniqueId() == uniqueId ) 
+            return true;
     }
     
     return false;     
 }
 
 void 
-GuiElementModel::createGuiElementFromSelection( const QList<QStringList> & interfacesInfo )
+GuiElementModel::createGuiElementFromSelection( const QList<QStringList> &interfacesInfo )
 {    
-    // get interface data out of stringlist
+    QString platformName;
     QStringList ids;
-    QStringList elementDetails;
+    QString elementDescription;
+    
     for (int i=0; i<interfacesInfo.size(); i++)
     {
+        if (i>0) 
+            elementDescription.append(":");
+        
         QStringList info = interfacesInfo[i]; 
         ids << info[4];
-        //cout << "ids: " << info[3].toStdString() << endl;
-        elementDetails << info[3]+"@"+info[1]+"/"+info[2];
-        //cout << "proxylist: " << (info[3]+"@"+info[1]+"/"+info[2]).toStdString() << endl;
+        //cout << "createGuiElementFromSelection: ids: " << info[3].toStdString() << endl;
+        elementDescription.append(info[3]+"@"+info[1]+"/"+info[2]);
+        //cout << "createGuiElementFromSelection: proxylist: " << (info[3]+"@"+info[1]+"/"+info[2]).toStdString() << endl;
+        
+        // if several interfaces are selected, the platform name is determined by the last one (arbitrary)
+        platformName = info[1];
     }
     
-    //TOBI: this needs to be fixed for config files
-    bool haveThisElement = doesElementExist( elementDetails, interfacesInfo.size() );
+    // uniqueId is the same as the description
+    QString uniqueId( elementDescription );
+    
+    // check whether we already have this element
+    bool haveThisElement = doesElementExist( uniqueId );
     if (haveThisElement) {
-        humanManager_.showStatusMsg(hydroqguielementutil::IHumanManager::Warning,"Interface " + elementDetails.join(" ") + " exists already. Not connecting again!");
+        humanManager_.showStatusWarning("Element with description " + elementDescription + " exists already. Not connecting again!");
         return;
     }
     
     QString elementType = lookupTypeFromFactories( ids );
-    if (elementType!="") {
-        createGuiElement( elementType, elementDetails );
-    } else {
-        humanManager_.showStatusMsg(hydroqguielementutil::IHumanManager::Warning,"Looking up element type from factory resulted in nothing");
-    }
+    if (elementType!="") 
+        createGuiElement( elementType, elementDescription, platformName, uniqueId );
+    else 
+        humanManager_.showStatusWarning("Looking up element type from factory resulted in nothing");
 }
 
 QString 
@@ -229,89 +237,55 @@ GuiElementModel::lookupTypeFromFactories( QStringList &ids )
     return elementType;
 }
 
-void 
-GuiElementModel::determinePlatform( QStringList &elementDetails,
-                                    QString     &platform )
+hydroqguielementutil::GuiElement* 
+GuiElementModel::createGuiElement( const QString &elementType,
+                                   const QString &elementDescription,
+                                   const QString &platformName,
+                                   const QString &uniqueId )       
 {
-    QStringList platformStrList;
-    for (int i=0; i<elementDetails.size(); i++)
-    {
-        QString str = elementDetails[i]; 
-        str = str.section('@',1,1);
-        str = str.section('/',0,0);
-        // replace local with our host name
-        if (str=="local") {
-            str = QString(hydroutil::getHostname().c_str());
-            elementDetails[i].replace("@local", "@"+str);
-        }
-        platformStrList << str;
-    }
-    platform = platformStrList[0];
-    
-    // if we have several interfaces and they disagree on the platform,
-    // we set it to global
-    for (int i=1; i<platformStrList.size(); i++)
-    {   
-        if (platformStrList[i] != platform)
-            platform="global";
-    }
-    
-    // tell everybody we got a new platform
-    if ( !doesPlatformExist( platform ) )
-    {
-        emit ( newPlatform(platform) );
-    }
-}
-    
-hydroqguielementutil::IGuiElement*
-GuiElementModel::createGuiElement( const QString &elementType, 
-                                   QStringList   &elementDetails )
-{    
-    QString platform;
-    determinePlatform( elementDetails, platform );
-    QColor platformColor = platformColorMap_.getColor( platform );
-    
     // instantiate element
-    hydroqguielementutil::IGuiElement* element = NULL;
-    bool isSupported = instantiateFromFactories( element, elementType, platformColor, elementDetails );
+    hydroqguielementutil::GuiElement* element = NULL;
+    hydroqguielementutil::GuiElementInfo guiElementInfo( platformName.toStdString().c_str(),
+                                                         uniqueId.toStdString().c_str(),
+                                                         elementType.toStdString().c_str() );
+    bool isSupported = instantiateFromFactories( element, guiElementInfo );
+
     if (!isSupported || element==NULL)
     {
         if (!isSupported) 
             humanManager_.showStatusWarning( "Element type " + elementType + " is not supported by any factory.");
         else if (element==NULL) 
-            humanManager_.showStatusWarning( "Element " + elementDetails.join(" ") + " is supported but the factory returned NULL pointer.");
+            humanManager_.showStatusWarning( "Element with description " + elementDescription + " is supported but the factory returned NULL pointer.");
         delete element;
-        if (!doesPlatformExist( platform ) ) 
-            emit platformNeedsRemoval(platform);
         return NULL;   
     }
     
-    // set properties of guielement
-    assert( platform != "" );
-    element->setPlatform( platform );
-    QString details = "";
-    for (int i=0; i<elementDetails.size(); i++)
-    {
-        details = details + elementDetails[i] + " ";
-    }
-    element->setDetails( details );
-    element->setName(elementType);
-    
-    //
+    // if we get here, we have an element.
+    addGuiElement( element );
+    return element;
+}
+
+void
+GuiElementModel::addGuiElement( hydroqguielementutil::GuiElement *element )
+{
+    // check whether we have a new platform
+    if ( !doesPlatformExist( element->platform() ) )
+        emit( newPlatform(element->platform()) );
+
+    // platform color
+    element->setColor( platformColorMap_.getColor( element->platform() ) );
+        
     // We need to tell the new element whether it's in focus or not
-    //
-    const bool isInFocus =  ( platformFocusManager_.platformInFocus() == platform ||
+    const bool isInFocus =  ( platformFocusManager_.platformInFocus() == element->platform() ||
                               platformFocusManager_.platformInFocus() == "global" );
     element->setFocus( isInFocus );
         
     int ii = elements().indexOf( element );
-    if ( ii==-1 ) {    
+    if ( ii==-1 ) 
+    {    
         ii = elements().size();
-        //cout<<"TRACE(guielementmodel.cpp): creating element "<<ii<<endl;
 
-        //
         // stick new node into the list
-        //
         beginInsertRows( QModelIndex(), ii,ii );
         guiElementSet_.addGuiElement( element );
         endInsertRows();
@@ -319,17 +293,15 @@ GuiElementModel::createGuiElement( const QString &elementType,
         // hide if not in focus
         if ( view_ && !isInFocus )
             view_->hideRow( ii );
-        
     }
+    
     // resize the columns so we can read the text
     if ( view_ )
         view_->resizeColumnsToContents();
-
-    return element;
 }
 
 void
-GuiElementModel::removeAndDeleteGuiElement( hydroqguielementutil::IGuiElement *guiElement )
+GuiElementModel::removeAndDeleteGuiElement( hydroqguielementutil::GuiElement *guiElement )
 {
     int row=-1;
     for ( int i=0; i < elements().size(); i++ )
@@ -350,7 +322,7 @@ GuiElementModel::removeAndDeleteGuiElement( hydroqguielementutil::IGuiElement *g
 }
 
 bool
-GuiElementModel::doesPlatformExist( QString &platformName )
+GuiElementModel::doesPlatformExist( const QString &platformName )
 {
     for ( int i=0; i<elements().size(); ++i )
     {
@@ -427,32 +399,21 @@ GuiElementModel::updateGuiElements()
     {
         if ( elements()[i] ) {
             std::stringstream ss;
-            try {
+            try 
+            {
                 elements()[i]->update();
             }
             catch ( std::exception &e )
             {
                 ss<<"GuiElementModel: during update of "
-                <<elements()[i]->details().toStdString()<<": " << e.what() << std::endl;
-                humanManager_.showStatusMsg(hydroqguielementutil::IHumanManager::Warning,ss.str().c_str());
-            }
-            catch ( std::string &e )
-            {
-                ss<<"GuiElementModel: during update of "
-                   <<elements()[i]->details().toStdString()<<": " << e << std::endl;
-                humanManager_.showStatusMsg(hydroqguielementutil::IHumanManager::Warning,ss.str().c_str());
-            }
-            catch ( char *e )
-            {
-                ss<<"GuiElementModel: during update of "
-                   <<elements()[i]->details().toStdString()<<": " << e << std::endl;
-                humanManager_.showStatusMsg(hydroqguielementutil::IHumanManager::Warning,ss.str().c_str());
+                <<elements()[i]->uniqueId().toStdString()<<": " << e.what() << std::endl;
+                humanManager_.showStatusWarning(ss.str().c_str());
             }
             catch ( ... )
             {
-                ss<<"GuiElementModel: Caught unknown exception during update of "
-                   <<elements()[i]->details().toStdString()<<": " << std::endl;
-                humanManager_.showStatusMsg(hydroqguielementutil::IHumanManager::Warning,ss.str().c_str());
+                ss<<"WorldView: Caught unknown exception during update of "
+                        <<elements()[i]->uniqueId().toStdString()<<": " << std::endl;
+                humanManager_.showStatusWarning(ss.str().c_str());
             }
         }
     }

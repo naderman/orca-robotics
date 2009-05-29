@@ -10,7 +10,7 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include <orcaobj/orcaobj.h>
+#include <orcaobj/pathfollower2d.h>
 #include "pathfollower2dI.h"
 
 using namespace std;

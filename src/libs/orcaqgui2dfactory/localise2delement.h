@@ -13,11 +13,10 @@
 
 #include <QPointF>
 
-#include <orcaobj/orcaobj.h>
-#include <orcaice/orcaice.h>
+#include <orcaice/context.h>
 
 #include <hydroqguielementutil/iknowsplatformposition2d.h>
-#include <orcaqguielementutil/icestormelement2d.h>
+#include <orcaqguielementutil/icestormguielement2d.h>
 #include <hydroqguielementutil/ihumanmanager.h>
 #include <orcaqgui2dfactory/localise2dpainter.h>
 
@@ -25,7 +24,7 @@ namespace orcaqgui2d
 {
 
 class Localise2dElement
-    : public orcaqguielementutil::IceStormElement2d<Localise2dPainter,
+    : public orcaqguielementutil::IceStormGuiElement2d<Localise2dPainter,
                              orca::Localise2dData,
                              orca::Localise2dPrx,
                              orca::Localise2dConsumer,
@@ -33,16 +32,17 @@ class Localise2dElement
       public hydroqguielementutil::IKnowsPlatformPosition2d
 {
 public:
-    Localise2dElement( const orcaice::Context  &context,
+    Localise2dElement( const hydroqguielementutil::GuiElementInfo &guiElementInfo,
+                       const orcaice::Context  &context,
                        const std::string       &proxyString,
                        hydroqguielementutil::IHumanManager *humanManager,
                        bool                     beginDisplayHistory=false,
                        int                      timeoutMs=30000 )
-        : orcaqguielementutil::IceStormElement2d<Localise2dPainter,
+        : orcaqguielementutil::IceStormGuiElement2d<Localise2dPainter,
                             orca::Localise2dData,
                             orca::Localise2dPrx,
                             orca::Localise2dConsumer,
-                            orca::Localise2dConsumerPrx>(context, proxyString, painter_, timeoutMs ),
+                            orca::Localise2dConsumerPrx>(guiElementInfo, context, proxyString, painter_, timeoutMs ),
           humanManager_(humanManager),
           painter_( beginDisplayHistory ),
           x_(0),

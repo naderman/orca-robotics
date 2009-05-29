@@ -29,14 +29,13 @@ public:
             { context_ = context; isContextSet_ = true; }
 
     // returns a NULL pointer if something goes wrong
-    virtual hydroqguielementutil::IGuiElement* create( 
-        const QString                            &elementType,
-        const QStringList                        &elementDetails,
-        QColor                                    suggestedColor,
-        hydroqguielementutil::IHumanManager      &humanManager,
-        hydroqguielementutil::MouseEventManager  &mouseEventManager,
-        hydroqguielementutil::ShortcutKeyManager &shortcutKeyManager,
-        const hydroqgui::GuiElementSet           &guiElementSet ) const;
+    virtual hydroqguielementutil::GuiElement* create( 
+        const hydroqguielementutil::GuiElementInfo &guiElementInfo,
+        hydroqguielementutil::IHumanManager        &humanManager,
+        hydroqguielementutil::MouseEventManager    &mouseEventManager,
+        hydroqguielementutil::ShortcutKeyManager   &shortcutKeyManager,
+        const hydroqgui::GuiElementSet             &guiElementSet,
+        QSplitter                                  *spaceBottomRight = 0  ) const;
 
         bool lookupElementType( const QStringList &ids, QString &elementType ) const;
     

@@ -26,7 +26,6 @@ public:
 
 private:
     // from SubsystemThread
-    virtual void initialise();
     virtual void work();
 
     orcaice::Context context_;

@@ -27,11 +27,6 @@ NetworkThread::NetworkThread( User* user, const orcaice::Context & context ) :
 {
 }
 
-NetworkThread::~NetworkThread()
-{
-    user_->newLocalTrace( "NetworkThread distructor" );
-}
-
 void 
 NetworkThread::setVerbosityLevel( int error, int warn, int info, int debug )
 {
@@ -62,12 +57,6 @@ NetworkThread::walk()
     int warnVerb = orcaice::getPropertyAsIntWithDefault( props, prefix+"WarningVerbosity", 10 );
     int errorVerb = orcaice::getPropertyAsIntWithDefault( props, prefix+"ErrorVerbosity", 10 );
     int debugVerb = orcaice::getPropertyAsIntWithDefault( props, prefix+"DebugVerbosity", 10 );
-
-    // multi-try
-    orcaice::activate( context_, this ); 
-    // check for stop signal after retuning from multi-try
-    if ( isStopping() )
-        return;
 
     try {
         orcaice::connectToAdminInterface<orca::Tracer,orca::TracerPrx>( context_, tracerPrx_, fqName );
@@ -189,4 +178,7 @@ NetworkThread::setRemoteVerbosity( int error, int warn, int info, int debug )
             IceUtil::ThreadControl::sleep(IceUtil::Time::seconds(3));
         }
     }
+
+    ss.clear(); ss<<"verbosity set OK.";
+    user_->newLocalTrace( ss.str() );
 }

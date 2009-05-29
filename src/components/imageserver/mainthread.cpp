@@ -10,7 +10,7 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include <orcaobj/orcaobj.h>
+#include <orcaobj/image.h>
 #include <orcaimage/propertyutils.h>
 
 #include "mainthread.h"
@@ -33,13 +33,6 @@ MainThread::initialise()
     readSettings();
     // print out description
     context_.tracer().debug( orcaobj::toString(descr_) );
-
-
-    // These functions catch their exceptions.
-    activate( context_, this, subsysName() );
-    // check for stop signal after retuning from multi-try
-    if ( isStopping() )
-        return;
 
     context_.tracer().info( "Setting up Hardware Interface" );
     initHardwareInterface();

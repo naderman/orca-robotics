@@ -12,21 +12,53 @@
 #include "configfileelements.h"
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include <orcaobj/orcaobj.h>
 #include <hydroutil/stringutils.h> 
+#include <hydroutil/sysutils.h>
 
 using namespace std;
 
-namespace orcaqgui {
+namespace orcaqgui 
+{
+    
+    namespace
+    {
+        QString extractPlatformName( const QString &elementDescription )
+        {
+            QString platformName;
+        
+            platformName = elementDescription.section('@',1,1);
+            platformName = platformName.section('/',0,0);
+        
+            // replace local with our host name
+            if (platformName == "local")
+                platformName = QString(hydroutil::getHostname().c_str());
 
-    hydroqguielementutil::IGuiElement*
+            return platformName;
+        }
+        
+        QString extractUniqueId( const QString &elementDescription )
+        {
+            // replace local with the resolved platform name 
+            
+            QString platformName = extractPlatformName(elementDescription);
+            QString ifaceName = elementDescription.section('@',0,0);         
+            QString componentName = elementDescription.section('/',1,1);
+            
+            QString uniqueId = ifaceName + '@' + platformName + '/' + componentName;
+            
+            return uniqueId;
+        }
+    }
+
+    hydroqguielementutil::GuiElement*
     loadGrid( orcaqgemv::GuiElementModel &guiElementModel )
     {
         const QString elementType("Grid");
-        QStringList elementDetails;
-        elementDetails.push_back("local@global/local");
+        const QString elementDescription("Global Map Grid");
+        const QString platformName("global");
+        const QString uniqueId("Global Map Grid");
 
-        return guiElementModel.createGuiElement( elementType, elementDetails );
+        return guiElementModel.createGuiElement( elementType, elementDescription, platformName, uniqueId );
     }
     
     
@@ -38,9 +70,9 @@ namespace orcaqgui {
         const string typePrefix = context.tag() + ".Config.Element.Type";
         std::map<string,string> typeMap = context.properties()->getPropertiesForPrefix(typePrefix);
         
-        // create a map of details
-        const string detailsPrefix = context.tag() + ".Config.Element.Detail";
-        std::map<string,string> detailMap = context.properties()->getPropertiesForPrefix(detailsPrefix);
+        // create a map of descriptions
+        const string descriptionPrefix = context.tag() + ".Config.Element.Description";
+        std::map<string,string> descriptionMap = context.properties()->getPropertiesForPrefix(descriptionPrefix);
         
         // debug output
         for ( map<string,string>::iterator it=typeMap.begin(); it!=typeMap.end(); ++it )
@@ -60,40 +92,29 @@ namespace orcaqgui {
             stringstream ss; ss << "Extracted key is: " << key;
             context.tracer().debug( ss.str(), 5 );
             
-            // find the corresponding entry in the detailMap
-            map<string,string>::iterator detailMapIt = detailMap.find( context.tag() + ".Config.Element.Detail" + key );
-            if ( detailMapIt==detailMap.end() ) 
+            // find the corresponding entry in the descriptionMap
+            map<string,string>::iterator descriptionMapIt = descriptionMap.find( context.tag() + ".Config.Element.Description" + key );
+            if ( descriptionMapIt==descriptionMap.end() ) 
             {
-                ss.str(""); ss << "'Detail' entry with key " << key << " expected. Check your config file!";
+                ss.str(""); ss << "'Description' entry with key " << key << " expected. Check your config file!";
                 context.tracer().warning( ss.str() );
                 continue;
             }
             
             // found an entry
-            ss.str(""); ss << "Found Detail entry: " << detailMapIt->second;
+            ss.str(""); ss << "Found Description entry: " << descriptionMapIt->second;
             context.tracer().debug( ss.str(), 5 );
             
-            // some elements may have multiple interfaces: split details into separate strings
-            const char delim = ':';
-            Ice::StringSeq seq = hydroutil::toStringSeq( detailMapIt->second, delim );
+            //
+            // assemble all pieces to create the GUI element
+            //
+            QString elementDescription( descriptionMapIt->second.c_str() );
+            QString uniqueId = extractUniqueId( elementDescription );
+            QString platformName = extractPlatformName( elementDescription );
             
-            QStringList elementDetails;
-            for ( unsigned int k=0; k<seq.size(); k++ ) {
-                elementDetails.push_back(QString(seq[k].c_str()));
-            }
-            
-            // debug output
-            for ( int i=0; i<elementDetails.size(); i++ )
-            {
-                stringstream ss; ss << "Detail of interface " << i << ": " << elementDetails[i].toStdString();
-                context.tracer().debug( ss.str(), 5 );
-            }
-            
-            // finally: create the GuiElement
-            guiElementModel.createGuiElement( elementType, elementDetails );
+            guiElementModel.createGuiElement( elementType, elementDescription, platformName, uniqueId );
         }
 
     }
-  
 }
 

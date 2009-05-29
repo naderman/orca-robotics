@@ -42,7 +42,8 @@ connectToTopicWithString( const Context     & context,
                           ConsumerProxyType & publisher,
                           const std::string & topicName,
                           gbxutilacfr::Stoppable* activity, const std::string& subsysName="", 
-                          int retryIntervalSec=2, int retryNumber=-1 )
+                          int retryIntervalSec=2, int retryNumber=-1,
+                          bool localReportingOnly=false )
 {
     assert( activity && "Null activity pointer" );
 
@@ -60,8 +61,8 @@ connectToTopicWithString( const Context     & context,
             ss << "Failed to connect to topic with string "<<topicName<<". "
                 <<"Will retry in "<<retryIntervalSec<<"s."
                 << e.what();
-            bool localOnly = true;
-            context.tracer().warning( ss.str(), 1, localOnly );
+            // not issuing status warnings because we would need to add localReportingOnly option
+            context.tracer().warning( ss.str(), 1, localReportingOnly );
         }
         ++count;
         gbxiceutilacfr::checkedSleep( activity, retryIntervalSec*1000 );
@@ -78,7 +79,9 @@ until successful, the number of retries is exceeded (default -1, i.e. infinite),
 Threads are a commonly used activity which implement Stoppable interface. 
 
 If unsuccesful for any reason, an empty topic proxy is returned.
-Nothing is done if retryNumber=0.  If a non-empty subsystem name is supplied, 
+Nothing is done if retryNumber=0.  
+
+If a non-empty subsystem name is supplied, 
 sends a Status heartbeat after every attempt (@see gbxutilacfr::Status).
 
 We catch all orcaice::NetworkException, sleep for @c retryIntervalSec [s] and try again.
@@ -92,7 +95,8 @@ connectToTopicWithTag( const Context      & context,
                        const std::string  & interfaceTag,
                        const std::string  & subtopic,
                        gbxutilacfr::Stoppable* activity, const std::string& subsysName="", 
-                       int retryIntervalSec=2, int retryNumber=-1 )
+                       int retryIntervalSec=2, int retryNumber=-1,
+                       bool localReportingOnly=false )
 {
     assert( activity && "Null activity pointer" );
 
@@ -110,8 +114,8 @@ connectToTopicWithTag( const Context      & context,
             ss << "Failed to connect to topic with tag "<<interfaceTag<<". "
                 <<"Will retry in "<<retryIntervalSec<<"s."
                 << e.what();
-            bool localOnly = true;
-            context.tracer().warning( ss.str(), 1, localOnly );
+            // not issuing status warnings because we would need to add localReportingOnly option
+            context.tracer().warning( ss.str(), 1, localReportingOnly );
         }
         ++count;
         gbxiceutilacfr::checkedSleep( activity, retryIntervalSec*1000 );

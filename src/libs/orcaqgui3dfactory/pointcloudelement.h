@@ -11,7 +11,6 @@
 #ifndef ORCAGUI3D_POINT_CLOUD_ELEMENT_H
 #define ORCAGUI3D_POINT_CLOUD_ELEMENT_H
 
-//#include <orcaqgui3d/ptricestormelement3d.h>
 #include <orcaqgui3d/icestormelement3d.h>
 #include <orcaqgui3dfactory/pointcloudpainter.h>
 
@@ -30,15 +29,16 @@ class PointCloudElement
                                   orca::PointCloudConsumerPrx>
 {           
 public:
-    PointCloudElement( const orcaice::Context  &context,
-                           const std::string       &proxyString,
-                           int                      timeoutMs=5000,
-                           QColor                   outlineColor=QColor( 102,102,153, 255 ) )
+    PointCloudElement( const hydroqguielementutil::GuiElementInfo &guiElementInfo,
+                       const orcaice::Context                     &context,
+                       const std::string                          &proxyString,
+                       int                                         timeoutMs    = 5000,
+                       QColor                                      outlineColor = QColor( 102,102,153, 255 ) )
         : IceStormElement3d<PointCloudPainter,
                                orca::PointCloudData,
                                orca::PointCloudPrx,
                                orca::PointCloudConsumer,
-                               orca::PointCloudConsumerPrx>(context, proxyString, painter_, timeoutMs ),
+                               orca::PointCloudConsumerPrx>( guiElementInfo, context, proxyString, painter_, timeoutMs ),
           painter_( outlineColor )
         {};
     virtual ~PointCloudElement(){};

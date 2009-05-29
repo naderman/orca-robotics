@@ -99,6 +99,9 @@ public:
     //! Actiates server functionality of the component. This function is useful when component activation
     //! (technically Ice::ObjectAdapter activation) must be delayed until after something is 
     //! initialized in the child thread.
+    //!
+    //! It is safe to call this function multiple times (activating an active adapter has no effect, sees
+    //! Ice Manual sec. 32.4.5 Adapter States).
     void activate();
 
     //! Returns TRUE if the component is in the process of deactivating itself (the communicator

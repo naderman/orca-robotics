@@ -21,13 +21,11 @@
 namespace tracermon
 {
 
-class NetworkThread : public gbxiceutilacfr::SafeThread, public Network //, virtual public orca::TracerConsumer
+class NetworkThread : public gbxiceutilacfr::SafeThread, public Network
 {
 public:
 
-    NetworkThread( User* user,
-                    const orcaice::Context & context );
-    virtual ~NetworkThread();
+    NetworkThread( User* user, const orcaice::Context & context );
 
     // from Network
     virtual void setVerbosityLevel( int error, int warn, int info, int debug );

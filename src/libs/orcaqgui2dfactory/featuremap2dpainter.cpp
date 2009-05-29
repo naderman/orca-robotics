@@ -14,7 +14,7 @@
 #include <QTextStream>
 #include <gbxutilacfr/mathdefs.h>
 #include <orcaice/orcaice.h>
-#include <orcaobj/orcaobj.h>
+#include <orcaobj/featuremap2d.h>
 #include <orcaqguielementutil/featurecolours.h>
 #include <hydroqguielementutil/paintutils.h>
 #include <hydroqguielementutil/ihumanmanager.h>
@@ -287,7 +287,7 @@ int FeatureMap2dPainter::saveMap( const QString fileName, hydroqguielementutil::
     else 
     {
         orcaobj::saveToFile( data_, f );
-        humanManager->showStatusMsg(hydroqguielementutil::IHumanManager::Information, "Saving feature map to " + fileName );
+        humanManager->showStatusInformation( "Saving feature map to " + fileName );
         fclose( f );
     }
     return 0;

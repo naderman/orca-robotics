@@ -32,7 +32,6 @@ private:
     virtual void initialise();
     virtual void work();
     
-    void init();
     void setUpInternalMapFromPriorMap( const std::string &priorMapProxyString );
     void setUpInternalMapFromProperties();
 

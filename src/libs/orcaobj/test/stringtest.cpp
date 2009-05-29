@@ -8,7 +8,9 @@
  *
  */
 
-#include <orcaobj/orcaobj.h>
+#include <orcaobj/ocm.h>
+#include <orcaobj/datetime.h>
+#include <orcaobj/bros1.h>
 #include <orcaifaceutil/ocm.h>
 #include <orcaifaceutil/bros1.h>
 #include <gbxutilacfr/mathdefs.h>

@@ -53,6 +53,7 @@ public:
                               hydroqgui::PlatformFocusManager                   &platformFocusManager,
                               hydroqgui::GuiElementSet                          &guiElementSet,
                               hydroqgui::IStringToColorMap                      &platformColorMap,
+                              QSplitter                                         *spaceBottomRight = 0,
                               QObject                                           *parent = 0);
 
     //
@@ -79,13 +80,18 @@ public:
 
     // Obtains indices of selected adapters from the view
     void selectedAdaptersInView( std::vector<int> &indices );
-    
-    // Creating and removing elements
 
-    // Returns the created element, or NULL is none was created.
-    hydroqguielementutil::IGuiElement* createGuiElement( const QString &elementType,
-                                                         QStringList &elementDetails );
-    void removeAndDeleteGuiElement( hydroqguielementutil::IGuiElement *guiElement );
+    // Creates the element from the factories.
+    // Returns the created element, or NULL is none was created
+    hydroqguielementutil::GuiElement* createGuiElement( const QString &elementType,
+                                                         const QString &elementDescription,
+                                                         const QString &platformName,
+                                                         const QString &uniqueId );
+
+    // Adds an element which has been created externally.
+    void addGuiElement( hydroqguielementutil::GuiElement *element );
+    
+    void removeAndDeleteGuiElement( hydroqguielementutil::GuiElement *guiElement );
 
     // Inherited from PlatformFocusChangeReceiver
     void platformFocusChanged( const QString &newPlatformName );
@@ -108,19 +114,14 @@ public slots:
     void createGuiElementFromSelection( const QList<QStringList> & );
 
 private:
-
-    // returns true if supported by a factory otherwise false
-    bool instantiateFromFactories( hydroqguielementutil::IGuiElement* &element, 
-                                   const QString &elementType, 
-                                   const QColor &platformColor, 
-                                   const QStringList &elementDetails );
     
-    void determinePlatform( QStringList &elementDetails,
-                            QString     &platform );
+    // returns true if supported by a factory otherwise false
+    bool instantiateFromFactories( hydroqguielementutil::GuiElement*         &element,
+                                   const hydroqguielementutil::GuiElementInfo &guiElementInfo );
 
     hydroqgui::GuiElementSet &guiElementSet_;
 
-    const QList<hydroqguielementutil::IGuiElement*> &elements() const { return guiElementSet_.elements(); }
+    const QList<hydroqguielementutil::GuiElement*> &elements() const { return guiElementSet_.elements(); }
     
     const std::vector<hydroqgui::IGuiElementFactory*> factories_;
     QStringList headers_;
@@ -129,14 +130,17 @@ private:
     hydroqguielementutil::ShortcutKeyManager &shortcutKeyManager_;
     hydroqgui::CoordinateFrameManager &coordinateFrameManager_;
     hydroqgui::PlatformFocusManager &platformFocusManager_;
-    bool doesPlatformExist( QString &platformName );
-    bool doesElementExist( const QStringList& elementDetails, int numElements );
+    
+    bool doesPlatformExist( const QString &platformName );
+    bool doesElementExist( const QString& uniqueId );
     
     hydroqgui::IStringToColorMap &platformColorMap_;
     
     GuiElementView* view_;
     
     QString lookupTypeFromFactories( QStringList &ids );
+    
+    QSplitter *spaceBottomRight_;
 };
 
 

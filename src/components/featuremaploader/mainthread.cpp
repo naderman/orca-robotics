@@ -10,7 +10,7 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include <orcaobj/orcaobj.h>
+#include <orcaobj/featuremap2d.h>
 
 #include "mainthread.h"
 
@@ -44,6 +44,8 @@ MainThread::MainThread( const orcaice::Context &context ) :
     SubsystemThread( context.tracer(), context.status(), "MainThread" ),
     context_(context)
 {
+    // this subsystem will initialise and exit, but the component will continue running.
+    setSubsystemType( gbxutilacfr::SubsystemEarlyExit );
 }
 
 void
@@ -102,10 +104,4 @@ MainThread::initialise()
     featureMap2dImpl_ = new orcaifaceimpl::FeatureMap2dImpl( "FeatureMap2d", context_ );
     featureMap2dImpl_->initInterface( this, subsysName() );
     featureMap2dImpl_->localSetAndSend( theMap );
-
-    //
-    // ENABLE NETWORK CONNECTIONS
-    //
-    // multi-try function
-    orcaice::activate( context_, this, subsysName() );
 }

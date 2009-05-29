@@ -44,7 +44,7 @@ usage(const char* n)
         "--output-dir DIR         Create files in the directory DIR.\n"
 //         "--dll-export SYMBOL      Use SYMBOL for DLL exports.\n"
 //         "--impl                   Generate sample implementations.\n"
-//         "--depend                 Generate Makefile dependencies.\n"
+        "--depend                 Generate Makefile dependencies.\n"
         "-d, --debug              Print debug messages.\n"
 //         "--ice                    Permit `Ice' prefix (for building Ice source code only)\n"
 //         "--checksum               Generate checksums for Slice definitions.\n"
@@ -141,7 +141,7 @@ main(int argc, char* argv[])
 
     bool impl = opts.isSet("impl");
 
-//     bool depend = opts.isSet("depend");
+    bool depend = opts.isSet("depend");
 
     bool debug = opts.isSet("debug");
 
@@ -161,7 +161,7 @@ main(int argc, char* argv[])
 
     bool genLog = opts.isSet("log");
 
-    if ( !genUtil && !genLog ) 
+    if ( !depend && !genUtil && !genLog ) 
     {    
         cerr << argv[0] << ": no output type specified" << endl;
         usage(argv[0]);
@@ -188,42 +188,49 @@ main(int argc, char* argv[])
 
     for(i = args.begin(); i != args.end(); ++i)
     {
-
-        Preprocessor icecpp(argv[0], *i, cppArgs);
-        FILE* cppHandle = icecpp.preprocess(false);
-
-        if(cppHandle == 0)
+        if(depend)
         {
-            return EXIT_FAILURE;
-        }
-
-        UnitPtr u = Unit::createUnit(false, false, ice, caseSensitive);
-        int parseStatus = u->parse(*i, cppHandle, debug);
-    
-        if(!icecpp.close())
-        {
-            u->destroy();
-            return EXIT_FAILURE;
-        }
-
-        if(parseStatus == EXIT_FAILURE)
-        {
-            status = EXIT_FAILURE;
+            Preprocessor icecpp(argv[0], *i, cppArgs);
+            icecpp.printMakefileDependencies(Preprocessor::CPlusPlus, includePaths);
         }
         else
         {
-            slice2log::Gen gen(argv[0], icecpp.getBaseName(), headerExtension, sourceExtension, extraHeaders, include,
-                    includePaths, dllExport, output, impl, checksum, stream, ice,
-                    module, genUtil, genLog );
-            if(!gen)
+            Preprocessor icecpp(argv[0], *i, cppArgs);
+            FILE* cppHandle = icecpp.preprocess(false);
+    
+            if(cppHandle == 0)
+            {
+                return EXIT_FAILURE;
+            }
+    
+            UnitPtr u = Unit::createUnit(false, false, ice, caseSensitive);
+            int parseStatus = u->parse(*i, cppHandle, debug);
+        
+            if(!icecpp.close())
             {
                 u->destroy();
                 return EXIT_FAILURE;
             }
-            gen.generate(u);
+    
+            if(parseStatus == EXIT_FAILURE)
+            {
+                status = EXIT_FAILURE;
+            }
+            else
+            {
+                slice2orca::Gen gen(argv[0], icecpp.getBaseName(), headerExtension, sourceExtension, extraHeaders, include,
+                        includePaths, dllExport, output, impl, checksum, stream, ice,
+                        module, genUtil, genLog );
+                if(!gen)
+                {
+                    u->destroy();
+                    return EXIT_FAILURE;
+                }
+                gen.generate(u);
+            }
+    
+            u->destroy();
         }
-
-        u->destroy();
     }
 
     return status;

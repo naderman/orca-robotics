@@ -32,17 +32,6 @@ MainThread::initialise()
     setMaxHeartbeatInterval( 10.0 );
 
     //
-    // ENABLE NETWORK CONNECTIONS
-    //
-    // we don't have any servers, but we need to activate the adapter in order to
-    // receive subscription updates.
-    // (multi-try)
-    orcaice::activate( context_, this, subsysName() );
-    // check for stop signal after retuning from multi-try
-    if ( isStopping() )
-        return;
-
-    //
     // REQUIRED INTERFACE: Laser
     //
     orca::LaserScanner2dPrx laserPrx;

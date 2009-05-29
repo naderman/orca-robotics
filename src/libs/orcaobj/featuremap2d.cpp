@@ -1,7 +1,7 @@
 /*
  * Orca-Robotics Project: Components for robotics 
  *               http://orca-robotics.sf.net/
- * Copyright (c) 2004-2009 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ * Copyright (c) 2004-2009 Alex Brooks, Alexei Makarenko, Tobias Kaupp, Ben Upcroft
  *
  * This copy of Orca is licensed to you under the terms described in
  * the LICENSE file included in this distribution.
@@ -10,108 +10,15 @@
 
 #include <iostream>
 #include <sstream>
-#include <IceUtil/Time.h>
-
-#include <orcaobj/stringutils.h>
-
-#include <gbxutilacfr/exceptions.h>
-#include <gbxutilacfr/mathdefs.h>
-#include "miscutils.h"
 #include <fstream>
-
-// alexm: not sure why this was ever here!
-// if we have to put it back in, add this line to CMakeLists.txt
-// # INCLUDE_DIRECTORIES( ${PROJECT_BINARY_DIR} # for config.h )
-// #include <config.h>      
-
-// Random doubles and integers
-#define RDOUBLE (rand()*M_PI)
-#define RINT    (rand())
-#define RCHAR   ((char)rand())
+#include <cmath>
+#include <gbxutilacfr/exceptions.h>
+#include "featuremap2d.h"
 
 using namespace std;
 
 namespace orcaobj
 {
-
-void 
-normalise( orca::Localise2dData& obj )
-{
-    float weightSum = 0.0;
-    for ( unsigned int i=0; i < obj.hypotheses.size(); i++ )
-    {
-        weightSum += obj.hypotheses[i].weight;
-    }
-    assert( weightSum > 0.0 );
-
-    for ( unsigned int i=0; i < obj.hypotheses.size(); i++ )
-    {
-        obj.hypotheses[i].weight /= weightSum;
-    }
-}
-
-const orca::Pose2dHypothesis &
-mlHypothesis( const orca::Localise2dData& obj )
-{
-    float maxWeight = -1;
-    int   mlI       = -1;
-    for ( unsigned int i=0; i < obj.hypotheses.size(); i++ )
-    {
-        if ( obj.hypotheses[i].weight > maxWeight )
-        {
-            maxWeight = obj.hypotheses[i].weight;
-            mlI = i;
-        }
-    }
-#ifndef NDEBUG
-    if ( mlI < 0 )
-    {
-        std::stringstream ss;
-        ss << "Dodgy Localise2dDataPtr: " << orcaobj::toString(obj);
-        throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
-    }
-#endif
-    return obj.hypotheses[mlI];
-}
-
-const orca::Pose3dHypothesis &
-mlHypothesis( const orca::Localise3dData& obj )
-{
-    float maxWeight = -1;
-    int   mlI       = -1;
-    for ( unsigned int i=0; i < obj.hypotheses.size(); i++ )
-    {
-        if ( obj.hypotheses[i].weight > maxWeight )
-        {
-            maxWeight = obj.hypotheses[i].weight;
-            mlI = i;
-        }
-    }
-#ifndef NDEBUG
-    if ( mlI < 0 )
-    {
-        std::stringstream ss;
-        ss << "Dodgy Localise3dDataPtr: " << orcaobj::toString(obj);
-        throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
-    }
-#endif
-    return obj.hypotheses[mlI];
-}
-
-bool localisationIsUncertain( const orca::Localise2dData &localiseData,
-                              double linearThreshold )
-{
-    // Some dodgy heuristics
-    if ( localiseData.hypotheses.size() > 2 )
-        return true;
-
-    const orca::Pose2dHypothesis h = orcaobj::mlHypothesis( localiseData );
-    if ( h.cov.xx > linearThreshold ||
-         h.cov.yy > linearThreshold )
-        return true;
-
-    return false;
-}
 
 namespace {
 
@@ -142,11 +49,62 @@ namespace {
 // Could check for this, but it's not strictly-speaking an error...
 //                 && f.alpha <= M_PI && f.alpha >= -M_PI );
     }
-
 }
 
-void 
-saveToFile( const orca::FeatureMap2dData& fmap, FILE *f )
+////////////////////////////////
+
+std::string toString( const orca::FeatureMap2dData &obj )
+{
+    std::ostringstream s;
+
+    s << " FeatureMap2d ["<<obj.features.size()<<" elements]: "<<endl;
+
+    for (unsigned int i=0; i < obj.features.size(); i++)
+    {
+        assert( obj.features[i] != 0 );
+
+        const orca::Feature2dPtr &f = obj.features[i];
+        s << "  " << i << ": " << toString(*f) << endl;
+    }    
+    s << endl;
+    
+    return s.str();
+}
+
+std::string toString( const orca::Feature2d &f )
+{
+    std::ostringstream s;
+
+    //
+    // I'm not convinced that this is the best way of doing things...
+    //
+    s << "[t"<<f.type<<",p"<<f.pExists<<"]";
+
+    if ( f.ice_isA( "::orca::CartesianPointFeature2d" ) )
+    {
+        const orca::CartesianPointFeature2d& r = dynamic_cast<const orca::CartesianPointFeature2d&>(f);
+        s << "("<<r.p.x<<","<<r.p.y<<") ("<<r.c.xx<<","<<r.c.xy<<","<<r.c.yy<<")";
+    }
+    else if ( f.ice_isA( "::orca::CartesianPoseFeature2d" ) )
+    {
+        const orca::CartesianPoseFeature2d& r = dynamic_cast<const orca::CartesianPoseFeature2d&>(f);
+        s << "("<<r.p.p.x<<","<<r.p.p.y<<","<<r.p.o*180.0/M_PI<<") ("<<r.c.xx<<","<<r.c.xy<<","<<r.c.yy<<")";
+    }
+    else if ( f.ice_isA( "::orca::CartesianLineFeature2d" ) )
+    {
+        const orca::CartesianLineFeature2d& r = dynamic_cast<const orca::CartesianLineFeature2d&>(f);
+        s << "(r="<<r.rho<<",a="<<r.alpha*180.0/M_PI<<"deg) ("<<r.c.xx<<","<<r.c.xy<<","<<r.c.yy<<")" << " ("<<r.start.x<<","<<r.start.y<<")->("<<r.end.x<<","<<r.end.y<<")";
+    }
+    else
+    {
+        // Don't really know how to display info about this feature.
+        assert( false );
+    }
+    
+    return s.str();
+}
+
+void saveToFile( const orca::FeatureMap2dData& fmap, FILE *f )
 {
     for ( unsigned int i=0; i < fmap.features.size(); i++ )
     {
@@ -211,8 +169,7 @@ saveToFile( const orca::FeatureMap2dData& fmap, FILE *f )
     }
 }
 
-void 
-loadFromFile( const std::string &filename, orca::FeatureMap2dData &fmap )
+void loadFromFile( const std::string &filename, orca::FeatureMap2dData &fmap )
 {
     std::ifstream f;
     f.open( filename.c_str(), ifstream::in );
@@ -371,114 +328,6 @@ loadFromFile( const std::string &filename, orca::FeatureMap2dData &fmap )
         line++;
     }
     f.close();
-}
-
-bool isSane( const orca::PathFollower2dData& pathData, std::string& reason )
-{
-    std::stringstream ss;
-    bool sane=true;
-    for ( unsigned int i=0; i < pathData.path.size(); i++ )
-    {
-        const orca::Waypoint2d &wp = pathData.path[i];
-
-        if ( wp.distanceTolerance < 0.0 )
-        {
-            ss << "Waypoint " << i << ": bad distance tolerance: " 
-               << wp.distanceTolerance << "m" << endl;
-            sane = false;
-        }
-        if ( wp.headingTolerance < 0.0 )
-        {
-            ss << "Waypoint " << i << ": bad heading tolerance: " 
-               << wp.headingTolerance*180.0/M_PI << "deg" << endl;
-            sane = false;
-        }
-        if ( wp.maxApproachSpeed < 0.0 )
-        {
-            ss << "Waypoint " << i << ": bad maxApproachSpeed: " 
-               << wp.maxApproachSpeed << "m/s" << endl;
-            sane = false;
-        }
-        if ( wp.maxApproachTurnrate < 0.0 )
-        {
-            ss << "Waypoint " << i << ": bad maxApproachTurnrate: " 
-               << wp.maxApproachTurnrate*180.0/M_PI << "deg/s" << endl;
-            sane = false;
-        }
-
-    }
-    reason = ss.str();
-    return sane;
-}
-
-////////////////////////////////////////////////////////////
-
-// Utility function for toVerboseString:
-// display a map cell:
-char 
-displayOgmapCell(unsigned char cell)
-{
-    if( (int)cell < 96 )
-    {
-        return ' ';
-    }
-    else if( (int)cell > 160 )
-    {
-        return '#';
-    }
-    //else
-    return '-';
-}
-
-bool
-isPathSketchy( const orca::Path2d& path, std::string &sketchyReason )
-{
-    std::stringstream ss;
-    bool normal=true;
-    const float epsLinear     = 1e-3;
-    const float epsRotational = 1.0*M_PI/180.0;
-    for ( unsigned int i=0; i < path.size(); i++ )
-    {
-        const orca::Waypoint2d &wp = path[i];
-
-        if ( wp.distanceTolerance < epsLinear )
-        {
-            ss << "Waypoint " << i << ": possibly sketchy distance tolerance: " 
-               << wp.distanceTolerance << "m" << endl;
-            normal = false;
-        }
-        if ( wp.headingTolerance < epsRotational )
-        {
-            ss << "Waypoint " << i << ": possibly sketchy heading tolerance: " 
-               << wp.headingTolerance*180.0/M_PI << "deg" << endl;
-            normal = false;
-        }
-        if ( wp.maxApproachSpeed < epsLinear )
-        {
-            ss << "Waypoint " << i << ": possibly sketchy maxApproachSpeed: " 
-               << wp.maxApproachSpeed << "m/s" << endl;
-            normal = false;
-        }
-        if ( wp.maxApproachTurnrate < epsRotational )
-        {
-            ss << "Waypoint " << i << ": possibly sketchy maxApproachTurnrate: " 
-               << wp.maxApproachTurnrate*180.0/M_PI << "deg/s" << endl;
-            normal = false;
-        }
-        if ( wp.timeTarget.seconds < 0 || wp.timeTarget.useconds < 0 )
-        {
-            ss << "Waypoint " << i << ": funky timeTarget: "
-               << wp.timeTarget.seconds << ":" << wp.timeTarget.useconds << endl;
-            normal = false;
-        }
-    }
-    if ( !normal )
-    {
-        sketchyReason = ss.str();
-        return true;
-    }
-    else
-        return false;
 }
 
 } // namespace

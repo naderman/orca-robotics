@@ -83,9 +83,11 @@ namespace {
 
 }
 
-GridElement::GridElement( double wireGridSpacing,
-                          double groundPlaneSquareSpacing )
-    : wireGridSpacing_(wireGridSpacing),
+GridElement::GridElement( const hydroqguielementutil::GuiElementInfo &guiElementInfo,
+                          double                                      wireGridSpacing,
+                          double                                      groundPlaneSquareSpacing )
+    : GuiElement3d(guiElementInfo),
+      wireGridSpacing_(wireGridSpacing),
       groundPlaneSquareSpacing_(groundPlaneSquareSpacing)
 {
     root_ = new osg::Group();

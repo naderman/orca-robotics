@@ -74,6 +74,8 @@ MainThread::MainThread( const orcaice::Context& context ) :
     SubsystemThread( context.tracer(), context.status(), "MainThread" ),
     context_(context)
 {
+    // this subsystem will initialise and exit, but the component will continue running.
+    setSubsystemType( gbxutilacfr::SubsystemEarlyExit );
 }
 
 void
@@ -126,10 +128,4 @@ MainThread::initialise()
     pixMapImpl_ = new orcaifaceimpl::PixMapImpl( "PixMap", context_ );
     pixMapImpl_->initInterface( this, subsysName() );
     pixMapImpl_->localSetAndSend( theMap );
-
-    //
-    // ENABLE NETWORK CONNECTIONS
-    //
-    // multi-try function
-    orcaice::activate( context_, this, subsysName() );
 }

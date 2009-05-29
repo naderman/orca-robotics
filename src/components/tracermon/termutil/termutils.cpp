@@ -8,7 +8,8 @@
  *
  */
 
-#include <orcaobj/orcaobj.h>
+#include <orcaobj/datetime.h>
+#include <orcaobj/ocm.h>
 #include <orcaifaceutil/tracer.h>
 
 #include "termutils.h"

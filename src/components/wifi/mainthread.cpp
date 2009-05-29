@@ -12,7 +12,7 @@
 #include <vector>
 #include <hydrowifi/wifiutil.h>
 #include <orcaice/orcaice.h>
-#include <orcaobj/orcaobj.h>
+#include <orcaobj/wifi.h>
 #include "mainthread.h"
 #include "hardwaredriver.h"
 #include "fakedriver.h"
@@ -33,14 +33,8 @@ MainThread::initialise()
 {   
     setMaxHeartbeatInterval( 10.0 );
 
-    // These functions catch their exceptions.
-    activate( context_, this, subsysName() );
-    // check for stop signal after retuning from multi-try
-    if ( isStopping() )
-        return;
-
-    initNetworkInterface();
     initHardwareDriver();
+    initNetworkInterface();
 }
 
 void 

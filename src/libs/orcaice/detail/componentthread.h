@@ -13,6 +13,7 @@
 
 #include <gbxsickacfr/gbxiceutilacfr/safethread.h>
 #include <orcaice/context.h>
+#include <orcaice/component.h> // for ComponentAdapterActivationPolicy
 
 namespace orcaice {
 namespace detail {
@@ -29,7 +30,8 @@ class ComponentThread : public gbxiceutilacfr::SafeThread
 
 public: 
 
-    ComponentThread( const orcaice::Context& context );
+    ComponentThread( ComponentAdapterActivationPolicy adapterPolicy,
+                     const orcaice::Context& context );
 
 private: 
 
@@ -38,7 +40,8 @@ private:
     // Returns: true = success
     bool tryRegisterHome();
 
-    orcaice::Context        context_;
+    ComponentAdapterActivationPolicy adapterPolicy_;
+    orcaice::Context context_;
 };
 
 }

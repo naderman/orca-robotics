@@ -12,7 +12,7 @@
 #include <orcaice/orcaice.h>
 #include <orcaifaceutil/ins.h>
 #include <orcaifaceutil/gps.h>
-#include <orcaobj/orcaobj.h> // for getPropertyAs...()
+#include <orcaobj/bros1.h> // for getPropertyAs...()
 #include "hwthread.h"
 #include "mainthread.h"
 
@@ -39,12 +39,6 @@ void
 MainThread::initialise()
 {
     setMaxHeartbeatInterval( 20.0 );
-
-    // These functions catch their exceptions.
-    activate( context_, this, subsysName() );
-    // check for stop signal after retuning from multi-try
-    if ( isStopping() )
-        return;
 
     initNetworkInterface();
 

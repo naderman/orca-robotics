@@ -10,7 +10,7 @@
 
 #include <orcaice/orcaice.h>
 #include <orcaifaceutil/datetime.h>
-#include <orcaobj/orcaobj.h>
+#include <orcaobj/datetime.h>
 #include <orcalog/orcalog.h>
 #include <hydrodll/dynamicload.h>
 #include <hydroutil/hydroutil.h>
@@ -178,15 +178,6 @@ MainThread::initialise()
         context_.shutdown();
         throw gbxutilacfr::Exception( ERROR_INFO, "Unknown ReplayController: "+replayController );
     }
-
-    //
-    // now we can safely activate
-    // multi-try activation function
-    //
-    orcaice::activate( context_, this, subsysName() );
-    // check for stop signal after retuning from multi-try
-    if ( isStopping() )
-        return;
 
     // Start the thread to replay the logs
     replayConductor_->start();

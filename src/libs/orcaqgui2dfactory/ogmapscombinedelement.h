@@ -25,8 +25,9 @@ class OgMapsCombinedElement : public hydroqguielementutil::GuiElement2d
 {
 
 public:
-    OgMapsCombinedElement( const orcaice::Context  &context,
-                           const QStringList       &proxyStrList);
+    OgMapsCombinedElement( const hydroqguielementutil::GuiElementInfo &guiElementInfo,
+                           const orcaice::Context                     &context,
+                           const QString                              &description );
 
     // inherited from guielement
     void update();

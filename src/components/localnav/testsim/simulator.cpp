@@ -1,7 +1,7 @@
 #include "simulator.h"
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include <orcaobj/orcaobj.h>
+#include <orcaobj/bros1.h>
 #include <orcaobjutil/vehicleutil.h>
 #include <hydropathplan/hydropathplan.h>
 #include <hydrogeom2d/geom2d.h>
@@ -157,6 +157,12 @@ Simulator::act( const hydronavutil::Velocity &cmd )
         cout<<"TRACE(simulator.cpp): pose: " << vehicleSimulator_->pose() << endl;
         cout<<"TRACE(simulator.cpp): ============= hit return for iteration " << iterationNum_ << " ============" << endl;
         getchar();
+    }
+    else
+    {
+//        cout<<"TRACE(simulator.cpp): PAUSING..." << endl;
+//        usleep(50000);
+//        usleep(500000);
     }
 
     try {

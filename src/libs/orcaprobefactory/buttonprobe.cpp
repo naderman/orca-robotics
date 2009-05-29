@@ -10,7 +10,6 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include <orcaobj/orcaobj.h>
 #include <orcaprobe/orcaprobe.h>
 #include <orcaifaceutil/button.h>
 

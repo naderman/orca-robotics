@@ -143,7 +143,7 @@ setFactoryProperties( Ice::PropertiesPtr& props, const std::string& compTag )
     // the default assumes that there's an IceStorm server running on our host at
     // the specified port. This default can be over-written by specifying
     // --IceStorm.TopicManager.Proxy property.
-    tempProps->setProperty( "IceStorm.TopicManager.Proxy", "IceStorm/TopicManager:default -p 10000" );
+    tempProps->setProperty( "IceStorm.TopicManager.Proxy", "IceStorm/TopicManager:default -t 8000 -p 10000" );
 
     // adapter properties: AdapterId and Endpoints are required for everything to work but
     // they are not present in the default config files. You can override these 

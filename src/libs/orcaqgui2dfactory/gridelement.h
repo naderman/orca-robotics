@@ -25,7 +25,7 @@ class GridElement : public hydroqguielementutil::GuiElement2d
 {
 public:
 
-	GridElement();
+	GridElement( const hydroqguielementutil::GuiElementInfo &guiElementInfo );
 	
     virtual bool isInGlobalCS() { return true; }
     

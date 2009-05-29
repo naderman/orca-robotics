@@ -16,7 +16,7 @@ if( build )
     file( GLOB srcs *.cpp )
     set( dep_libs ${dep_libs} IceGrid )  
     
-    ORCA_WRAP_MAINTHREAD_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${COMP_NAME} ${srcs} )
+    ORCA_WRAP_MAINTHREAD_INTO_APP( ${srcs} )
     target_link_libraries( ${APP_NAME} ${dep_libs} )
     
     ORCA_GENERATE_CONFIG_FILE( ${APP_NAME}.def )

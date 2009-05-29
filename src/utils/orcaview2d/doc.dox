@@ -34,7 +34,7 @@ Orcaview consists of three parts: the registry view (upper left), the element vi
 The registry view displays all currently existing "adapters" (interface@host/platform) in the Orca world by connecting to the central Icegrid registry. Pressing @c F5 triggers a request to the registry to update the view.
 
 @par Element view
-This table lists the GuiElements which are currently setup in the GUI. Each GuiElement has a "type" (e.g. LaserScanner2d) and "details" (e.g. laserscanner2d@hemp/laser2d). A GuiElement typically hooks up to a single required interface but there are other options: no interfaces (e.g. the GridElement), multiple required interfaces (e.g. OgMapsCombinedElement), and provided interfaces (no example in Orca at the moment).
+This table lists the GuiElements which are currently setup in the GUI. Each GuiElement has a "type" (e.g. LaserScanner2d) and "uniqueId" (e.g. laserscanner2d@hemp/laser2d). A GuiElement typically hooks up to a single required interface but there are other options: no interfaces (e.g. the GridElement), multiple required interfaces (e.g. OgMapsCombinedElement), and provided interfaces (no example in Orca at the moment).
 
 Two mechanisms exist to add GuiElements:
 
@@ -105,41 +105,41 @@ Here's a screenshot of the GUI connected to a few interfaces belonging to two pl
 
 @par Elements and their interfaces
 
-GuiElements typically connect to a single required interface but can also have none or several. To be able to configure them, they have "type" and "details" configuration options. When the GUI starts up, it will setup the elements which handle the network-related stuff like connecting to interfaces.
+GuiElements typically connect to a single required interface but can also have none or several. To be able to configure them, they have "Type" and "Description" configuration options. When the GUI starts up, it will setup the elements which handle the network-related stuff like connecting to interfaces.
 
-- @c OrcaView.Config.Element.TypeX (string)
+- @c OrcaView2d.Config.Element.TypeX (string)
      - GuiElement type
      - X is an arbitrary string, e.g. a number
      - Supported types are: LaserScanner2d, Localise2d, Particle2d, PolarFeature2d, PathFollower2d, PathPlanner2d, PixMap, FeatureMap2d, OgMap, Wifi, MultiOgMaps
      
-- @c OrcaView.Config.Element.DetailsX (string)
-    - Network connection details
+- @c OrcaView2d.Config.Element.DescriptionX (string)
+    - Free-form string which describes the element, it contains information the element may need to do something useful 
     - X is an arbitrary string, e.g. a number. Corresponds to 'TypeX' (see above).
-    - Details are dependent on the Type:
-        - no interfaces (permanent elements such as background images): Detail entry is not required
-        - one required interface (e.g. LaserScanner2d): interface@platform/component
-        - several required interfaces (e.g. MultiOgMaps): 
+    - Descriptions are dependent on the Type:
+        - Types with no network connections (e.g. a Grid or background image): Description is arbitrary and optional
+        - Types with a single required interface (e.g. LaserScanner2d): interface@platform/component
+        - Types with several required interfaces (e.g. MultiOgMaps): 
           interface1@platform1/component1:interface2@platform2/component2: ... :interfaceN@platformN/componentN
           Note that you need a colon as a delimiter.
 
 @par General Settings
 
-- @c OrcaView.Config.General.FactoryLibNames (string)
+- @c OrcaView2d.Config.General.FactoryLibNames (string)
      - names of plugin factory libraries
      - default: libOrcaQGui2dFactory.so
 
-- @c OrcaView.Config.General.DisplayRefreshTime (int) [ms]
+- @c OrcaView2d.Config.General.DisplayRefreshTime (int) [ms]
      - refresh time of the display
      - default: 200
      
-- @c OrcaView.Config.General.DumpPath (string)
+- @c OrcaView2d.Config.General.DumpPath (string)
     - directory to dump files
     - currently used for two purposes: 
         (1) screen dumps (filename @c orcaviewdumpXXXXX.png)
         (2) paths sent to pathfollower2d interface (filename @c pathdumpXXXXX.png)
     - default: "/tmp"
     
-- @c OrcaView.Config.General.Offset (Frame2d) [m,m,deg]
+- @c OrcaView2d.Config.General.Offset (Frame2d) [m,m,deg]
     - offset of the GUI's origin wrt the (arbitrarily defined) global coordinate system
     - format: x y orientation (space separated)
     - default: 0.0 0.0 0.0
@@ -148,53 +148,81 @@ GuiElements typically connect to a single required interface but can also have n
 
 These are the default: waypoint settings that can be changed in the menu later. Choose Options->Waypoint Settings.
 
-- @c OrcaView.Config.Waypoints.DistanceTolerance (double) [m]
+- @c OrcaView2d.Config.Waypoints.DistanceTolerance (double) [m]
      - distance tolerance from waypoint before it has been set as reached
      - default: 1.0
 
-- @c OrcaView.Config.Waypoints.HeadingTolerance (integer) [deg]
+- @c OrcaView2d.Config.Waypoints.HeadingTolerance (integer) [deg]
      - heading tolerance from waypoint before it has been set as reached
      - default: 45
      
-- @c OrcaView.Config.Waypoints.MaxApproachSpeed (double) [m/s]
+- @c OrcaView2d.Config.Waypoints.MaxApproachSpeed (double) [m/s]
     - maximum approach speed to waypoint
     - default: 2e6
     
-- @c OrcaView.Config.Waypoints.MaxApproachTurnRate (int) [deg/s]
+- @c OrcaView2d.Config.Waypoints.MaxApproachTurnRate (int) [deg/s]
     - maximum approach turn rate to waypoint
     - default: 2000000
     
-- @c OrcaView.Config.Waypoints.SpacingProperty (string)
+- @c OrcaView2d.Config.Waypoints.SpacingProperty (string)
     - property that determines the time deltas of subsequent waypoints
     - Valid values: {'Time','Velocity'}, corresponding values are specified using @c SpacingValue (see below)
     - Time: time deltas are specified directly in sec; Velocity: time deltas are calculated based on a straight-line distance given the velocity
     - default: Velocity
     
-- @c OrcaView.Config.Waypoints.SpacingValue (double) [s] or [m/s]
+- @c OrcaView2d.Config.Waypoints.SpacingValue (double) [s] or [m/s]
     - value is interpreted according to the setting of @c SpacingProperty (see above)
     - default: 1.0
 
+@par Teleoperation parameters
+
+These are configuration parameters for the VelocityControl2d element.
+
+- @c OrcaView2d.Config.VelocityControl2d.SpeedIncrement (double) [m/s]
+    - How much the speed will change for each key-press.
+    - Default: 0.05
+    
+- @c OrcaView2d.Config.VelocityControl2d.TurnRateIncrement (double) [deg/s]
+    - How much the turnrate will change for each key-press.
+    - Default: 2.0
+
+- @c OrcaView2d.Config.VelocityControl2d.MaxSpeed (double) [m/s]
+    - The maximum absolute linear speed which the component will send out
+    - Default: 1.0
+
+- @c OrcaView2d.Config.VelocityControl2d.MaxTurnRate (double) [deg/s]
+    - The maximum absolute rotational speed which the component will send out
+    - Default: 40.0
+    
+- @c OrcaView2d.Config.VelocityControl2d.RepeatInterval (float) [s]
+    - Time interval before a repeat command is sent in the absence of a new command.
+    - Default: 0.1
+    - Valid values:
+        - t<0: Only new commands are sent
+        - t=0: Commands are sent as frequently as possible (terribly inefficient)
+        - t>0: Commands are sent when new ones are entered, or resent after t seconds (useful if "keep alive" heartbeat is needed).
+
 @par Screencapture settings
     
-- @c OrcaView.Config.ScreenCapture.TopPad (int)
+- @c OrcaView2d.Config.ScreenCapture.TopPad (int)
     - for screen dumps: number of pixels included in the dumps from the widget top (to get window decoration) 
     - default: 25
 
-- @c OrcaView.Config.ScreenCapture.SidePad (int)
+- @c OrcaView2d.Config.ScreenCapture.SidePad (int)
     - for screen dumps: number of pixels included in the dumps from the widget side (to get window decoration) 
     - default: 2
     
-- @c OrcaView.Config.ScreenCapture.BottomPad (int)
+- @c OrcaView2d.Config.ScreenCapture.BottomPad (int)
     - for screen dumps: number of pixels included in the dumps from the widget bottom (to get window decoration) 
     - default: 2
 
-- @c OrcaView.Config.ScreenCapture.CaptureTimerInterval (int) [ms]
+- @c OrcaView2d.Config.ScreenCapture.CaptureTimerInterval (int) [ms]
     - time interval between screen dumps
     - default: 1000
     
 @par Specific Gui element configuration
 
-- @c OrcaView.Config.PathFollower2d.ActivatePathImmediately (int)
+- @c OrcaView2d.Config.PathFollower2d.ActivatePathImmediately (int)
     - activate path immediately after sending (1) or wait until go button is pressed (0)
     - default: 1
     

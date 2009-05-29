@@ -15,7 +15,7 @@
 #include <orca/pathplanner2d.h>
 
 #include <gbxsickacfr/gbxiceutilacfr/store.h>
-#include <orcaqguielementutil/icestormelement2d.h>
+#include <orcaqguielementutil/icestormguielement2d.h>
 
 #include <orcaqgui2dfactory/pathpainter.h>
 #include <orcaqgui2dfactory/pathplanneruserinteraction.h>
@@ -23,7 +23,7 @@
 namespace orcaqgui2d {
 
 // There's two consumer objects: the first one for icestorm (pathplanner pushes out whatever it computed) which is part
-// of the base class IceStormElement2d.
+// of the base class IceStormGuiElement2d.
 // The second one here is for answers to tasks which were set by the GUI.
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -40,7 +40,7 @@ class PathPlannerTaskAnswerConsumer : public orca::PathPlanner2dConsumer
 //
 // @author Tobias Kaupp
 //
-class PathPlanner2dElement : public orcaqguielementutil::IceStormElement2d<PathPainter,
+class PathPlanner2dElement : public orcaqguielementutil::IceStormGuiElement2d<PathPainter,
                              orca::PathPlanner2dData,
                              orca::PathPlanner2dPrx,
                              orca::PathPlanner2dConsumer,
@@ -49,11 +49,12 @@ class PathPlanner2dElement : public orcaqguielementutil::IceStormElement2d<PathP
 
 public: 
 
-    PathPlanner2dElement( const orcaice::Context                   &context,
-                          const std::string                        &proxyString,
-                          hydroqguielementutil::IHumanManager      &humanManager,
-                          hydroqguielementutil::MouseEventManager  &mouseEventManager,
-                          hydroqguielementutil::ShortcutKeyManager &shortcutKeyManager );
+    PathPlanner2dElement( const hydroqguielementutil::GuiElementInfo &guiElementInfo,
+                          const orcaice::Context                     &context,
+                          const std::string                          &proxyString,
+                          hydroqguielementutil::IHumanManager        &humanManager,
+                          hydroqguielementutil::MouseEventManager    &mouseEventManager,
+                          hydroqguielementutil::ShortcutKeyManager   &shortcutKeyManager );
     ~PathPlanner2dElement();
 
     void update();

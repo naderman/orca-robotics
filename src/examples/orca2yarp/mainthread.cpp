@@ -38,9 +38,6 @@ MainThread::walk()
     std::string yarpPortName = orcaice::getPropertyWithDefault( 
             context_.properties(), prefix+"Yarp.PortName", "/sender" );
 
-    // activate component, this may throw an exception
-    context_.activate();
-
     // connect to required interface Odometry2d
     // this is a remote call which can fail in many ways, catch exceptions
     orca::Odometry2dPrx odometry2dPrx;

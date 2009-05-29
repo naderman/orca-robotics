@@ -18,7 +18,6 @@
 #endif
 
 #include <orcaice/orcaice.h>
-#include <orcaobj/orcaobj.h>
 
 #include <orcalog/exceptions.h>
 #include <orcaobjutil/pathfileutil.h>

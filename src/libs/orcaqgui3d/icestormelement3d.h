@@ -19,8 +19,7 @@ namespace orcaqgui3d {
     template<class PainterType, class DataType, class ProxyType, class ConsumerType, class ConsumerPrxType>
     class
     IceStormElement3d : public GuiElement3d,
-                        public orcaqguielementutil::IceStormElement<PainterType,
-                                                                    DataType,
+                        public orcaqguielementutil::IceStormElement<DataType,
                                                                     ProxyType,
                                                                     ConsumerType,
                                                                     ConsumerPrxType>
@@ -29,26 +28,47 @@ namespace orcaqgui3d {
 
         //! timeoutMs is how long we wait before assuming a problem and trying to reconnect.
         //! (timoutMs = -1 means we never timeout)
-        IceStormElement3d( const orcaice::Context  &context,
-                           const std::string       &proxyString,
-                           PainterType             &painter,
-                           const double            timeoutMs=5000.0 )
-            : orcaqguielementutil::IceStormElement<PainterType,
-                                                   DataType,
+        IceStormElement3d( const hydroqguielementutil::GuiElementInfo &guiElementInfo,
+                           const orcaice::Context                     &context,
+                           const std::string                          &proxyString,
+                           PainterType                                &painter,
+                           const double                                timeoutMs = 5000.0 )
+            : GuiElement3d(guiElementInfo),
+              orcaqguielementutil::IceStormElement<DataType,
                                                    ProxyType,
                                                    ConsumerType,
                                                    ConsumerPrxType>(
-                context,proxyString,painter,timeoutMs)
+              context,proxyString,timeoutMs),
+              painter_(painter)
             {}
 
         // From GuiElement3d
-        void update()
-            { orcaqguielementutil::IceStormElement<PainterType,
-                  DataType,
-                  ProxyType,
-                  ConsumerType,
-                  ConsumerPrxType>::updateFromBuffer(); }
-    };
+        void update();
+        
+    protected:
+        
+        //! Object to handle painting to our data to screen
+        PainterType                     &painter_;
+};
+    
+template<class PainterType, class DataType, class ProxyType, class ConsumerType, class ConsumerPrxType>
+void IceStormElement3d<PainterType,DataType,ProxyType,ConsumerType,ConsumerPrxType>::update()
+{ 
+    if (orcaqguielementutil::IceStormElement<DataType,ProxyType,ConsumerType,ConsumerPrxType>::shouldClearPainter_)
+    {
+        painter_.clear();
+        orcaqguielementutil::IceStormElement<DataType,ProxyType,ConsumerType,ConsumerPrxType>::shouldClearPainter_ = false;
+    }
+    
+    if (orcaqguielementutil::IceStormElement<DataType,
+                                             ProxyType,
+                                             ConsumerType,
+                                             ConsumerPrxType>::updateFromStore() )
+    {               
+        // transfer data into painter
+        painter_.setData( orcaqguielementutil::IceStormElement<DataType,ProxyType,ConsumerType,ConsumerPrxType>::data_ );
+    }
+}
 
 }
 

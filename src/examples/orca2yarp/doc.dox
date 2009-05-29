@@ -76,7 +76,7 @@ Edit the @c robot2d.cfg file by changing the driver name to @e fake and appendin
 @verbatim
 Robot2d.Config.Driver=fake
 ...
-IceStorm.TopicManager.Proxy=IceStorm/TopicManager:default -p 20000
+IceStorm.TopicManager.Proxy=IceStorm/TopicManager:default -t 8000 -p 20000
 @endverbatim
 
 Start the Robot2d component.

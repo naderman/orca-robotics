@@ -25,9 +25,10 @@ class OgMapElement
 {
 
 public:
-    OgMapElement( const orcaice::Context  &context,
-                  const std::string       &proxyString,
-                  hydroqguielementutil::IHumanManager* humanManager );
+    OgMapElement( const hydroqguielementutil::GuiElementInfo &guiElementInfo,
+                  const orcaice::Context                     &context,
+                  const std::string                          &proxyString,
+                  hydroqguielementutil::IHumanManager*        humanManager );
 
     virtual bool isInGlobalCS() { return true; }
     virtual QStringList contextMenu();

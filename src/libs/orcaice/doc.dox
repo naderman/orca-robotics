@@ -88,7 +88,7 @@ There's no corresponding function in libOrcaIce because, normally, you call the 
 The following properties are assigned defaults unless they are configured explicitely:
 
 - @c IceStorm.TopicManager.Proxy (string)
-    - Default: "IceStorm/TopicManager:default -p 10000"
+    - Default: "IceStorm/TopicManager:default -t 8000 -p 10000"
 
 - @c [ComponentTag].AdapterId (string)
     - Default: "[platform name]/[component name]"

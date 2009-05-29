@@ -17,14 +17,15 @@ using namespace std;
 
 namespace orcaqgui2d {
 
-OgMapElement::OgMapElement( const orcaice::Context  &context,
+OgMapElement::OgMapElement( const hydroqguielementutil::GuiElementInfo &guiElementInfo,
+                            const orcaice::Context  &context,
                             const std::string       &proxyString,
                             hydroqguielementutil::IHumanManager* humanManager )
-    : orcaqguielementutil::IceStormElement2d<OgMapPainter,
+    : orcaqguielementutil::IceStormGuiElement2d<OgMapPainter,
                       orca::OgMapData,
                       orca::OgMapPrx,
                       orca::OgMapConsumer,
-                      orca::OgMapConsumerPrx>(context, proxyString, painter_, -1 ),
+                      orca::OgMapConsumerPrx>(guiElementInfo, context, proxyString, painter_, -1 ),
       humanManager_(humanManager),
       mapFileName_("/home"),
       mapFileNameSet_(false)

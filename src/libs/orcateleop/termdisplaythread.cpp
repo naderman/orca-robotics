@@ -62,9 +62,9 @@ TermDisplayThread::sentRepeatCommand()
 }
 
 void 
-TermDisplayThread::failedToSendCommand()
+TermDisplayThread::failedToSendCommand( const string &errorMsg )
 {
-    cout<<"x"<<flush;
+    cout<<"x "<< errorMsg << flush;
 }
 
 // read commands from the keyboard. Launced in a separate thread.

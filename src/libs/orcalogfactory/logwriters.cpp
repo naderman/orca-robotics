@@ -2,7 +2,6 @@
 #include <iostream>
 #include <fstream>
 #include <orcalog/orcalog.h>
-#include <orcaobj/stringutils.h>
 #include "logstringutils.h"
 
 // alexm: I haven't checked which ones are actually used.

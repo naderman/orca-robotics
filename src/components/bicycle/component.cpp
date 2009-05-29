@@ -10,7 +10,6 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include <orcaobj/orcaobj.h>
 #include <orcaobjutil/vehicleutil.h>
 
 #include "component.h"
@@ -40,7 +39,7 @@ Component::start()
     orcaobjutil::readVehicleDescription( context().properties(), prefix, descr );
     stringstream ss;
     ss<<"TRACE(component.cpp): Read vehicle description from configuration: " 
-        << endl << orcaobj::toString(descr) << endl;
+        << endl << ifaceutil::toString(descr) << endl;
     context().tracer().info( ss.str() );
 
     //

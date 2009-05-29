@@ -31,20 +31,22 @@ getInterfaceIdWithString( const Context& context, const std::string& proxyString
     {
         try {
             ifaceId = getInterfaceIdWithString( context, proxyString );
+            if ( !subsysName.empty() )
+                context.status().ok( subsysName );
             break;
         }
         catch ( const std::exception& e ) {
             std::stringstream ss;
-            ss << "Failed to get interface ID with string="<<proxyString<<". Check Registry. "
-                <<"Will retry in "<<retryIntervalSec<<"s.\n"
-                << e.what();
-            context.tracer().warning( ss.str() );
+
+            ss << "Failed to get interface ID with string="<<proxyString<<" : "<< e.what()<<endl
+               << "Check Registry. Will retry in "<<retryIntervalSec<<"s.";
+            if ( !subsysName.empty() )
+                context.status().warning( subsysName, ss.str() );
+            else
+                context.tracer().warning( ss.str() );
         }
         ++count;
         gbxiceutilacfr::checkedSleep( activity, retryIntervalSec*1000 );
-        if ( !subsysName.empty() ) {
-            context.status().heartbeat( subsysName );
-        }
     }
     return ifaceId;
 }
@@ -62,20 +64,21 @@ getInterfaceIdWithTag( const Context& context, const std::string& interfaceTag,
     {
         try {
             ifaceId = getInterfaceIdWithTag( context, interfaceTag );
+            if ( !subsysName.empty() )
+                context.status().ok( subsysName );
             break;
         }
         catch ( const std::exception& e ) {
             std::stringstream ss;
-            ss << "Failed to get interface ID with tag="<<interfaceTag<<". Check Registry. "
-                <<"Will retry in "<<retryIntervalSec<<"s.\n"
-                << e.what();
-            context.tracer().warning( ss.str() );
+            ss << "Failed to get interface ID with tag="<<interfaceTag<<" : "<< e.what()<<endl
+               << "Check Registry. Will retry in "<<retryIntervalSec<<"s.";
+            if ( !subsysName.empty() )
+                context.status().warning( subsysName, ss.str() );
+            else
+                context.tracer().warning( ss.str() );
         }
         ++count;
         gbxiceutilacfr::checkedSleep( activity, retryIntervalSec*1000 );
-        if ( !subsysName.empty() ) {
-            context.status().heartbeat( subsysName );
-        }
     }
     return ifaceId;
 }

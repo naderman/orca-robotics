@@ -62,16 +62,6 @@ MainThread::MainThread( const orcaice::Context &context ) :
 {
 }
 
-void 
-MainThread::initialise()
-{
-    //
-    // ENABLE NETWORK CONNECTIONS
-    //
-    // multi-try function
-    orcaice::activate( context_, this );
-}
-
 void
 MainThread::work()
 {

@@ -10,15 +10,111 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include <orcaobj/orcaobj.h>
 #include <orca/odometry2d.h>
 #include "simpledriver.h"
 #include "odometrybaseddriver.h"
 #include "mainthread.h"
+#include <orcaifaceutil/gps.h>
+#include <orcaobj/bros1.h>
 
 using namespace std;
 using namespace gps2localise2d;
 
+namespace {
+
+    // This component is 2D-centric: can only handle certain orientations.
+    // Throw exceptions if it's otherwise.
+    void
+    checkAntennaOffsetOK( const orca::Frame3d &offset )
+    {
+        if ( offset.o.r != 0.0 || offset.o.p != 0.0 || offset.o.y != 0.0 )
+        {
+            stringstream ss;
+            ss << "Can't handle non-zero roll/pitch/yaw in antenna offset. Offset: " << ifaceutil::toString(offset);
+            throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
+        }
+    }
+
+    orca::VehicleDescription
+    getVehicleDescr( orcaice::Context       &context,
+                     gbxutilacfr::Stoppable &activity,
+                     gbxutilacfr::SubHealth &subHealth )
+    {   
+        std::string prefix = context.tag() + ".Config.";
+        bool requireOdometry = orcaice::getPropertyAsIntWithDefault( context.properties(), prefix+"RequireOdometry", 1);
+
+        orca::VehicleDescription vehicleDescr;
+    
+        if (!requireOdometry)
+        {
+            context.tracer().debug("Odometry interface is not required: VehicleDescription is set to unknown", 3);
+            orca::VehicleGeometryDescriptionPtr geometry = new orca::VehicleGeometryDescription;
+            geometry->type = orca::VehicleGeometryOther;
+            vehicleDescr.geometry = geometry; 
+        }
+        else
+        {
+            //
+            // connect to odometry to get vehicle description
+            //
+        
+            // not using a single-line multi-try function here, because in addition to connecting to the interface
+            // we need to get the vehicle description.
+            orca::Odometry2dPrx odoPrx;
+        
+            while ( !activity.isStopping() )
+            {
+                try
+                {
+                    context.tracer().debug( "Connecting to Odometry2d...", 3 );
+                    orcaice::connectToInterfaceWithTag<orca::Odometry2dPrx>( context, odoPrx, "Odometry2d" );
+                    context.tracer().debug("connected to a 'Odometry2d' interface", 4 );
+                    context.tracer().debug( "Getting vehicle description...", 2 );
+                    vehicleDescr = odoPrx->getDescription();
+                    stringstream ss;
+                    ss << "Got vehicle description: " << ifaceutil::toString( vehicleDescr );
+                    context.tracer().debug( ss.str() );
+
+                    if ( vehicleDescr.geometry == 0 )
+                    {
+                        subHealth.warning( "Got NULL vehicle geometry -- making something up!" );
+                        orca::VehicleGeometryCylindricalDescriptionPtr geom = new orca::VehicleGeometryCylindricalDescription;
+                        geom->type = orca::VehicleGeometryCylindrical;
+                        geom->radius = 0.7;
+                        geom->height = 1.0;
+                        geom->platformToGeometryTransform = orcaobj::zeroFrame3d();
+                        vehicleDescr.geometry = geom;
+                        sleep(1);
+                    }
+                    if ( vehicleDescr.control == 0 )
+                    {
+                        subHealth.warning( "Got NULL vehicle control -- making something up!" );
+                        orca::VehicleControlVelocityDifferentialDescriptionPtr ctrl = new orca::VehicleControlVelocityDifferentialDescription;
+                        ctrl->type = orca::VehicleControlVelocityDifferential;
+                        ctrl->maxForwardSpeed = 1.0;
+                        ctrl->maxReverseSpeed = 1.0;
+                        ctrl->maxTurnrate = 90*M_PI/180.0;
+                        ctrl->maxLateralAcceleration = 1.0;
+                        ctrl->maxForwardAcceleration = 1.0;
+                        ctrl->maxReverseAcceleration = 1.0;
+                        ctrl->maxRotationalAcceleration = 90.0*M_PI/180.0;
+                        vehicleDescr.control = ctrl;
+                        sleep(1);
+                    }
+
+                    break;
+                }
+                catch ( ... ) {
+                    orcaice::catchExceptionsWithStatusAndSleep( "getting vehicle description", subHealth, gbxutilacfr::SubsystemFault, 2000 );
+                }
+            }
+        }
+        return vehicleDescr;
+    }
+
+}
+
+//////////////////////////////////////////////////////////////////////
 
 MainThread::MainThread( const orcaice::Context &context ) :
     orcaice::SubsystemThread( context.tracer(), context.status(), "MainThread" ),
@@ -36,18 +132,19 @@ void
 MainThread::initialise()
 {
     setMaxHeartbeatInterval( 10.0 );
-    
+
     // create a callback object to recieve data
     gpsConsumer_ = new orcaifaceimpl::StoringGpsConsumerImpl( context_ );
 
-    activate( context_, this, subsysName() );
-    // check for stop signal after retuning from multi-try
-    if ( isStopping() )
-        return;
-
     subscribeToGps();
-    initNetworkInterface();
-    initDriver();
+    orca::VehicleDescription vehicleDescr = getVehicleDescr( context_, *this, health() );
+    initDriver( vehicleDescr );
+    
+    //
+    // Initialize Provided Interface
+    //
+    localiseInterface_ = new orcaifaceimpl::Localise2dImpl( vehicleDescr.geometry, "Localise2d", context_ );
+    localiseInterface_->initInterface( this, subsysName() );    
 }
 
 void 
@@ -118,7 +215,7 @@ MainThread::work()
 ///////////////////////////
 
 void 
-MainThread::initDriver()
+MainThread::initDriver( orca::VehicleDescription vehicleDescr )
 {
     std::string prefix = context_.tag() + ".Config.";
     Ice::PropertiesPtr prop = context_.properties();
@@ -127,18 +224,18 @@ MainThread::initDriver()
     
     if ( driverName == "simple" )
     {
-        getGpsDescription();
+        orca::GpsDescription gpsDescr = getGpsDescription();
 
         context_.tracer().debug( "loading 'simple' driver",3);
-        driver_ = new SimpleDriver( gpsDescr_, vehicleDescr_, context_ );
+        driver_ = new SimpleDriver( gpsDescr, vehicleDescr, context_ );
         context_.tracer().debug( "driver loaded OK.",3);
     }
     else if ( driverName == "odometrybased" )
     {
-        getGpsDescription();
+        orca::GpsDescription gpsDescr = getGpsDescription();
 
         context_.tracer().debug( "loading 'odometrybased' driver",3);
-        driver_ = new OdometryBasedDriver( gpsDescr_, vehicleDescr_, context_ );
+        driver_ = new OdometryBasedDriver( gpsDescr, vehicleDescr, context_ );
         context_.tracer().debug( "driver loaded OK.",3);
     }
     else
@@ -158,120 +255,30 @@ MainThread::subscribeToGps()
     context_.tracer().info( "Connected and subscribed to gps." );
 }
 
-void 
+orca::GpsDescription
 MainThread::getGpsDescription()
 {
+    orca::GpsDescription gpsDescr;
+
     while ( !isStopping() )
     {
-        orca::GpsPrx gpsPrx;
         try
         {    
+            orca::GpsPrx gpsPrx;
             orcaice::connectToInterfaceWithTag<orca::GpsPrx>( context_, gpsPrx, "Gps" );
 
             context_.tracer().debug( "Getting gps description...", 2 );
-            gpsDescr_ = gpsPrx->getDescription();
+            gpsDescr = gpsPrx->getDescription();
             stringstream ss;
-            ss << "Got gps description: " << orcaobj::toString( gpsDescr_ );
+            ss << "Got gps description: " << ifaceutil::toString( gpsDescr );
             context_.tracer().info( ss.str() );
-            antennaOffset_ = gpsDescr_.antennaOffset;
-            if ( antennaOffsetOK( antennaOffset_ ) )
-                return;
+
+            checkAntennaOffsetOK( gpsDescr.antennaOffset );
+            break;
         }
         catch ( ... ) {
             orcaice::catchExceptionsWithStatusAndSleep( "getting Gps description", health(), gbxutilacfr::SubsystemFault, 2000 );
         }
     }
-}
-
-void
-MainThread::initNetworkInterface()
-{   
-    std::string prefix = context_.tag() + ".Config.";
-    bool requireOdometry = orcaice::getPropertyAsIntWithDefault( context_.properties(), prefix+"RequireOdometry", 1);
-    
-    if (!requireOdometry)
-    {
-        context_.tracer().debug("Odometry interface is not required: VehicleDescription is set to unknown", 3);
-        orca::VehicleGeometryDescriptionPtr geometry = new orca::VehicleGeometryDescription;
-        geometry->type = orca::VehicleGeometryOther;
-        vehicleDescr_.geometry = geometry; 
-    }
-    else
-    {
-        //
-        // connect to odometry to get vehicle description
-        //
-        
-        // not using a single-line multi-try function here, because in addition to connecting to the interface
-        // we need to get the vehicle description.
-        orca::Odometry2dPrx odoPrx;
-        
-        while ( !isStopping() )
-        {
-            try
-            {
-                context_.tracer().debug( "Connecting to Odometry2d...", 3 );
-                orcaice::connectToInterfaceWithTag<orca::Odometry2dPrx>( context_, odoPrx, "Odometry2d" );
-                context_.tracer().debug("connected to a 'Odometry2d' interface", 4 );
-                context_.tracer().debug( "Getting vehicle description...", 2 );
-                vehicleDescr_ = odoPrx->getDescription();
-                stringstream ss;
-                ss << "Got vehicle description: " << orcaobj::toString( vehicleDescr_ );
-                context_.tracer().debug( ss.str() );
-
-                if ( vehicleDescr_.geometry == 0 )
-                {
-                    health().warning( "Got NULL vehicle geometry -- making something up!" );
-                    orca::VehicleGeometryCylindricalDescriptionPtr geom = new orca::VehicleGeometryCylindricalDescription;
-                    geom->type = orca::VehicleGeometryCylindrical;
-                    geom->radius = 0.7;
-                    geom->height = 1.0;
-                    geom->platformToGeometryTransform = orcaobj::zeroFrame3d();
-                    vehicleDescr_.geometry = geom;
-                    sleep(1);
-                }
-                if ( vehicleDescr_.control == 0 )
-                {
-                    health().warning( "Got NULL vehicle control -- making something up!" );
-                    orca::VehicleControlVelocityDifferentialDescriptionPtr ctrl = new orca::VehicleControlVelocityDifferentialDescription;
-                    ctrl->type = orca::VehicleControlVelocityDifferential;
-                    ctrl->maxForwardSpeed = 1.0;
-                    ctrl->maxReverseSpeed = 1.0;
-                    ctrl->maxTurnrate = 90*M_PI/180.0;
-                    ctrl->maxLateralAcceleration = 1.0;
-                    ctrl->maxForwardAcceleration = 1.0;
-                    ctrl->maxReverseAcceleration = 1.0;
-                    ctrl->maxRotationalAcceleration = 90.0*M_PI/180.0;
-                    vehicleDescr_.control = ctrl;
-                    sleep(1);
-                }
-
-                localiseInterface_ = new orcaifaceimpl::Localise2dImpl( vehicleDescr_.geometry, "Localise2d", context_ );
-                break;
-            }
-            catch ( ... ) {
-                orcaice::catchExceptionsWithStatusAndSleep( "getting vehicle description", health(), gbxutilacfr::SubsystemFault, 2000 );
-            }
-        }
-    }
-    
-    //
-    // Initialize Provided Interface
-    //
-    localiseInterface_->initInterface( this, subsysName() );
-}
-
-bool
-MainThread::antennaOffsetOK( const orca::Frame3d &offset )
-{
-    bool offsetOk = true;
-    if ( offset.o.r != 0.0 || offset.o.p != 0.0 || offset.o.y != 0.0 )
-    {
-        stringstream ss;
-        ss << "Can't handle non-zero roll/pitch/yaw in antenna offset. Offset: " << orcaobj::toString(offset);
-        context_.tracer().error( ss.str() );
-        offsetOk = false;
-    }
-
-    return offsetOk;
+    return gpsDescr;
 }

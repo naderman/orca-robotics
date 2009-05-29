@@ -27,8 +27,7 @@ MainThread::initialise()
 {
     setMaxHeartbeatInterval( 20.0 );
 
-    // multi-try function
-    orcaice::activate( context_, this, subsysName() );
+    // do some initialization here, e.g. create a hardware driver.
 }
 
 void

@@ -13,6 +13,7 @@
 #include <QColor>
 #include <hydroqguielementutil/definitions2d.h>
 #include <hydroqguielementutil/paintutils.h>
+#include <orca/localise2d.h>
 
 // forward declarations
 class QPainter;

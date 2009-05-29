@@ -12,7 +12,6 @@
 #include <orcaice/orcaice.h>
 #include <orcaifaceutil/rangerarray.h>
 #include <orcabros1/convertutils.h>
-#include <orcaobj/orcaobj.h> // for getPropertyAs...()
 #include <orca/bros1.h>
 #include "mainthread.h"
 
@@ -165,9 +164,6 @@ MainThread::initHardwareDriver()
 void
 MainThread::initNetworkInterface()
 {
-    // activate component's communication
-    activate( context_, this, subsysName() );
-
     //
     // EXTERNAL PROVIDED INTERFACE
     //

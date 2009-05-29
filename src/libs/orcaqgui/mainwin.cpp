@@ -61,7 +61,7 @@ MainWindow::MainWindow(
     screenCaptureTimer_->setInterval( screenDumpParams_.captureTimerInterval );
     connect( screenCaptureTimer_,SIGNAL(timeout()), this,SLOT(grabWindow()) );
 
-    // alexm: what's this?
+    // The toolbar that's handed out to others on "toolBar()"
     toolBar_ = addToolBar("Stuff");
 
     // the status bar is created the first time we call it. for consistent look we should call here.

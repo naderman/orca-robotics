@@ -12,12 +12,12 @@
 #define PIXMAPELEMENT_H
 
 #include <orcaqgui2dfactory/pixmapbackgroundpainter.h>
-#include <orcaqguielementutil/icestormelement2d.h>
+#include <orcaqguielementutil/icestormguielement2d.h>
 
 namespace orcaqgui2d {
 
 class PixMapElement
-    : public orcaqguielementutil::IceStormElement2d<PixMapBackgroundPainter,
+    : public orcaqguielementutil::IceStormGuiElement2d<PixMapBackgroundPainter,
                                              orca::PixMapData,
                                              orca::PixMapPrx,
                                              orca::PixMapConsumer,
@@ -25,9 +25,10 @@ class PixMapElement
 {
 
 public:
-    PixMapElement( const orcaice::Context  &context,
-                  const std::string       &proxyString,
-                  hydroqguielementutil::IHumanManager* humanManager );
+    PixMapElement( const hydroqguielementutil::GuiElementInfo &guiElementInfo,
+                   const orcaice::Context                     &context,
+                   const std::string                          &proxyString,
+                   hydroqguielementutil::IHumanManager*        humanManager );
 
     virtual bool isInGlobalCS() { return true; }
     virtual QStringList contextMenu();

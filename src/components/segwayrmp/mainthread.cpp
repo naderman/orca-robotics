@@ -11,7 +11,7 @@
 #include <iostream>
 #include <orcaice/orcaice.h>
 #include "mainthread.h"
-#include <orcaobj/orcaobj.h>
+#include <orcaobj/vehicledescription.h>
 #include <orcaobjutil/vehicleutil.h>
 #include <gbxutilacfr/mathdefs.h>
 
@@ -222,12 +222,6 @@ MainThread::initialise()
     // Finally, start the driver thread rolling
     //
     segwayRmpDriverThread_->start();
-
-    //
-    // ENABLE NETWORK CONNECTIONS
-    //
-    // multi-try function
-    orcaice::activate( context_, this, subsysName() );
 }
 
 void

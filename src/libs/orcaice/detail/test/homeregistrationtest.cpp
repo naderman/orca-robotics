@@ -21,7 +21,9 @@ using namespace std;
 class TestComponent : public orcaice::Component
 {
 public:
-    TestComponent() : orcaice::Component( "Test", orcaice::NoStandardInterfaces ) {};
+    TestComponent() : 
+        orcaice::Component( "Test", orcaice::NoStandardInterfaces, orcaice::AdapterManualActivation ) 
+    {};
     virtual void start();
 };
 

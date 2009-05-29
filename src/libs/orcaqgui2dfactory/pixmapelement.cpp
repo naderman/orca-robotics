@@ -18,14 +18,15 @@ using namespace std;
 
 namespace orcaqgui2d {
 
-PixMapElement::PixMapElement( const orcaice::Context  &context,
-                            const std::string       &proxyString,
-                            hydroqguielementutil::IHumanManager* humanManager )
-    : orcaqguielementutil::IceStormElement2d<PixMapBackgroundPainter,
+PixMapElement::PixMapElement( const hydroqguielementutil::GuiElementInfo &guiElementInfo,
+                              const orcaice::Context                     &context,
+                              const std::string                          &proxyString,
+                              hydroqguielementutil::IHumanManager*        humanManager )
+    : orcaqguielementutil::IceStormGuiElement2d<PixMapBackgroundPainter,
                       orca::PixMapData,
                       orca::PixMapPrx,
                       orca::PixMapConsumer,
-                      orca::PixMapConsumerPrx>(context, proxyString, painter_, -1 ),
+                      orca::PixMapConsumerPrx>(guiElementInfo, context, proxyString, painter_, -1 ),
       humanManager_(humanManager),
       mapFileName_("/home"),
       mapFileNameSet_(false)

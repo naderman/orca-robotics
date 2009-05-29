@@ -34,7 +34,10 @@ globally unique name is supplied. This function is useful for creating
 'consumer' objects, i.e. you subscribe for information to be pushed into
 them by specifying the direct proxy to them.
 
-This is a local operation which does not throw any exceptions.
+This is a local operation. It normally does not throw any exceptions. 
+The only case when an exception, orcaice::ComponentDeactivatingException, is thrown is 
+when the adapter is deactivated. This does not happen right after a component is created because
+the initial state of an adapter is Holding.
 
 @verbatim
 Ice::ObjectPtr consumer = new Odometry2dConsumerI;
@@ -102,17 +105,87 @@ IceStorm::TopicPrx connectToIceStormTopicPrxWithManager( const Ice::Communicator
                                     bool createIfMissing=false );
 
 /*
- * Publisher is used from the provider end. It is the consumer of information.
- * So you can push data into it.
+Publisher is the IceStorm's consumer of information.
+So the publisher component (the provider of data) can push data into it.
+Remote calls!
+Connects to the topic and returns the topic's publisher.
  */
 Ice::ObjectPrx connectToIceStormTopicPublisherPrx( const Ice::CommunicatorPtr & communicator,
                                     const std::string & topicName );
 
 /*
- * Behaves like the one above.
+Local calls only.
  */
-Ice::ObjectPrx connectToIceStormTopicPublisherPrx( const IceStorm::TopicPrx & topic );
+Ice::ObjectPrx getIceStormTopicPublisherPrx( const IceStorm::TopicPrx & topic );
 
+/*!
+This function is used by potential publishers of information. It returns
+a proxy to the IceStorm topic and sets proxy to the topic's @p publisher.
+The publisher is used to distribute information to consumers and the
+topic is used to subscribe/unsubscribe data consumers.
+
+The address of IceStorm server is looked up in the @c IceStorm.TopicManager.Proxy property.
+
+Raises NetworkException if the server cannot be reached or Exception if there is any other
+problem.
+
+Set localReportingOnly to true when calling this function from classes which deal with
+error reporting, such as Tracer and Status. Otherwise, potential connection problems will
+lead to infinite multiplication of fault messages.
+ */
+template<class ConsumerProxyType>
+IceStorm::TopicPrx
+connectToTopicWithString( const Context     & context,
+                          ConsumerProxyType & publisher,
+                          const std::string & topicName,
+                          bool localReportingOnly=false )
+{
+    IceStorm::TopicPrx topicPrx;
+
+    try {
+        const bool createIfMissing = true;
+        //
+        // set the proxy to the topic
+        //
+        topicPrx = connectToIceStormTopicPrx( context.communicator(), topicName, createIfMissing );
+
+        Ice::ObjectPrx obj = getIceStormTopicPublisherPrx( topicPrx );
+        //
+        // set the proxy to the publisher
+        //
+        publisher = ConsumerProxyType::uncheckedCast(obj);
+    }
+    //catch ( const gbxutilacfr::Exception & e ) {
+        // we'll catch it here if the topic manager does not exist
+    //}
+    catch ( Ice::ConnectionRefusedException &e )
+    {
+        // Give some feedback as to why this isn't working
+        std::stringstream ss; ss<<"Error while connecting to IceStorm topic publisher '"<<topicName<<"': "<<e;
+        // not using status because we would need to add localReportingOnly option
+        initTracerError( context, ss.str(), 2, localReportingOnly );
+        initTracerInfo( context, "hint: Is IceStorm running?", 10, localReportingOnly );
+        throw orcaice::NetworkException( ERROR_INFO, ss.str() );
+    }
+    catch( const Ice::LocalException &e )
+    {
+        std::stringstream ss;
+        ss<<"Error while connecting to IceStorm topic publisher '"<<topicName<<"': "<<e;
+        // not using status because we would need to add localReportingOnly option
+        initTracerError( context, ss.str(), 2, localReportingOnly );
+        throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
+    }
+    catch ( Ice::Exception &e )
+    {
+        // Give some feedback as to why this isn't working
+        std::stringstream ss; ss<<"Error while connecting to IceStorm topic publisher '"<<topicName<<"': "<<e;
+        // not using status because we would need to add localReportingOnly option
+        initTracerError( context, ss.str(), 2, localReportingOnly );
+        throw orcaice::NetworkException( ERROR_INFO, ss.str() );
+    }
+
+    return topicPrx;
+}
 
 /*!
 Convenience function, behaves like @ref connectToTopicWithString but the proxy information
@@ -127,7 +200,8 @@ IceStorm::TopicPrx
 connectToTopicWithTag( const Context           & context,
                        ConsumerProxyType       & publisher,
                        const std::string       & interfaceTag,
-                       const std::string       & subtopic="*" )
+                       const std::string       & subtopic="*",
+                       bool localReportingOnly=false )
 {
     context.tracer().debug( "orcaice::connectToTopicWithTag() tag="+interfaceTag, 10 );
 
@@ -136,76 +210,7 @@ connectToTopicWithTag( const Context           & context,
     std::string topicName = orcaice::toString(
                     orcaice::getProvidedTopicWithTag( context, interfaceTag, subtopic ) );
 
-    // do the conversion to string by hand, to cut dependency on libOrcaObj
-    // see <orcaobj/stringutils.cpp>
-//     orca::FQTopicName name = orcaice::getProvidedTopicWithTag( context, interfaceTag, subtopic );
-//     std::string topicName =  name.iface + "/" + name.topic + "@" + name.platform + "/" + name.component;
-
-    return connectToTopicWithString( context, publisher, topicName );
-}
-
-/*!
-This function is used by potential publishers of information. It returns
-a proxy to the IceStorm topic and sets proxy to the topic's @p publisher.
-The publisher is used to distribute information to consumers and the
-topic is used to subscribe/unsubscribe data consumers.
-
-The address of IceStorm server is looked up in the @c IceStorm.TopicManager.Proxy property.
-
-Raises NetworkException if the server cannot be reached or Exception if there is any other
-problem.
- */
-template<class ConsumerProxyType>
-IceStorm::TopicPrx
-connectToTopicWithString( const Context     & context,
-                          ConsumerProxyType & publisher,
-                          const std::string & topicName )
-{
-    IceStorm::TopicPrx topicPrx;
-
-    try {
-        const bool createIfMissing = true;
-        //
-        // set the proxy to the topic
-        //
-        topicPrx = connectToIceStormTopicPrx( context.communicator(), topicName, createIfMissing );
-
-        Ice::ObjectPrx obj = connectToIceStormTopicPublisherPrx( topicPrx );
-        //
-        // set the proxy to the publisher
-        //
-        publisher = ConsumerProxyType::uncheckedCast(obj);
-    }
-    //catch ( const gbxutilacfr::Exception & e ) {
-        // we'll catch it here if the topic manager does not exist
-    //}
-    catch ( Ice::ConnectionRefusedException &e )
-    {
-        // Give some feedback as to why this isn't working
-        std::stringstream ss; ss<<"Error while connecting to IceStorm topic publisher '"<<topicName<<"': "<<e;
-        bool localOnly = true;
-        initTracerError( context, ss.str(), 2, localOnly );
-        initTracerInfo( context, "hint: Is IceStorm running?", 10, localOnly );
-        throw orcaice::NetworkException( ERROR_INFO, ss.str() );
-    }
-    catch( const Ice::LocalException &e )
-    {
-        std::stringstream ss;
-        ss<<"Error while connecting to IceStorm topic publisher '"<<topicName<<"': "<<e;
-        bool localOnly = true;
-        initTracerError( context, ss.str(), 2, localOnly );
-        throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
-    }
-    catch ( Ice::Exception &e )
-    {
-        // Give some feedback as to why this isn't working
-        std::stringstream ss; ss<<"Error while connecting to IceStorm topic publisher '"<<topicName<<"': "<<e;
-        bool localOnly = true;
-        initTracerError( context, ss.str(), 2, localOnly );
-        throw orcaice::NetworkException( ERROR_INFO, ss.str() );
-    }
-
-    return topicPrx;
+    return connectToTopicWithString( context, publisher, topicName, localReportingOnly );
 }
 
 /////////////////////////
@@ -237,11 +242,20 @@ namespace detail {
         {
             return -1;
         }
+        catch ( const Ice::Exception& e )
+        {
+            std::stringstream ss;
+            ss << "Re-connection to IceStorm topic " << topicName << " failed:\n"
+               << e.what();
+            bool localOnly = true;
+            context.tracer().warning( ss.str(), 1, localOnly );
+            return 1;
+        }
         catch ( ... )
         {
             std::string msg = "Re-connection to IceStorm topic "+topicName+" failed.";
             bool localOnly = true;
-            context.tracer().info( msg, 1, localOnly );
+            context.tracer().warning( msg, 1, localOnly );
             return 1;
         }
     }

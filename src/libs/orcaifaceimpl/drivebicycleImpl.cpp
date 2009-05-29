@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
+#include <orcaice/convertutils.h>
 #include "drivebicycleImpl.h"
  
 using namespace std;

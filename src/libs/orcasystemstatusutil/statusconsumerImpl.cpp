@@ -11,6 +11,7 @@
 #include "statusconsumerImpl.h"
 #include <iostream>
 #include <orcaice/orcaice.h>
+#include <orcaice/convertutils.h>
 #include <orcaifaceutil/systemstatus.h>
 
 using namespace std;

@@ -36,7 +36,7 @@ usage()
     cout << "  -s storm\n\tPings the IceStorm as described in configuration files."<<endl;
     cout << "    \tSpecifically, pings the TopicManager interface."<<endl;
     cout << "    \tThe endpoint can be specified with --IceStorm.TopicManager.Proxy parameter."<<endl;
-    cout << "    \tDefault is --IceStorm.TopicManager.Proxy=IceStorm/TopicManager:default -p 10000"<<endl;
+    cout << "    \tDefault is --IceStorm.TopicManager.Proxy=IceStorm/TopicManager:default -t 8000 -p 10000"<<endl;
     cout << "  -c count\n\tPing count times. Default is 3."<<endl;
     cout << "  -f file\n\tUse file as Ice.Config parameter. Default is ~/.orcarc"<<endl;
     cout << "  --help help\n\tPrints this."<<endl;
@@ -153,7 +153,7 @@ App::run( int argc, char* argv[] )
         //      2. substitute the default endpoint
         // we use option 2.
         if ( icestormProxy.empty() ) {
-            icestormProxy = "IceStorm/TopicManager:default -p 10000";
+            icestormProxy = "IceStorm/TopicManager:default -t 8000 -p 10000";
         }
         proxy = icestormProxy;
     }

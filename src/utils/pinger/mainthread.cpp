@@ -27,11 +27,6 @@ MainThread::MainThread( const orcaice::Context& context ) :
 void
 MainThread::walk()
 {
-    orcaice::activate( context_, this );
-    // check for stop signal after retuning from multi-try
-    if ( isStopping() )
-        return;
-
     //
     // REQUIRED : Replier
     //

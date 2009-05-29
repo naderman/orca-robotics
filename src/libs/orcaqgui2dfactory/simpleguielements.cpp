@@ -8,9 +8,9 @@
  *
  */
 
-#include <orcaobj/miscutils.h>
 #include "simpleguielements.h"
 #include <hydroqgui/exceptions.h>
+#include <orcaobj/localise3d.h>
 
 using namespace std;
 using namespace orcaqgui2d;
@@ -139,17 +139,17 @@ Localise3dElement::update()
     if (!haveGeometry_)
         tryToGetGeometry();
     
-    // standard update as in IceStormElement2d
-    if ( !orcaqguielementutil::IceStormElement2d<Localise3dPainter,
+    // standard update as in IceStormGuiElement2d
+    if ( !orcaqguielementutil::IceStormGuiElement2d<Localise3dPainter,
             orca::Localise3dData,
             orca::Localise3dPrx,
             orca::Localise3dConsumer,
             orca::Localise3dConsumerPrx>::needToUpdate() )
         return;
 
-    assert( !listener_.buffer().isEmpty() );
+    assert( !listener_.store().isEmpty() );
     
-    listener_.buffer().getAndPop( data_ );
+    listener_.store().get( data_ );
     
     // first error-check.
     if ( data_.hypotheses.size() == 0 )
@@ -192,7 +192,7 @@ Localise3dElement::tryToGetGeometry()
     }
     catch ( std::exception &e)
     {
-//         humanManager_->showStatusMsg(hydroqguielementutil::IHumanManager::Error,"Exception when trying to get geometry: " + QString(e.what()) );
+//         humanManager_->showStatusError( "Exception when trying to get geometry: " + QString(e.what()) );
         cout << "Exception when trying to get geometry: " << e.what();
     }
     
@@ -216,7 +216,7 @@ Localise3dElement::tryToGetGeometry()
     }
     else
     {
-//         humanManager_->showStatusMsg(hydroqguielementutil::IHumanManager::Warning, "Unknown platform type. Will paint a rectangle");
+//         humanManager_->showStatusWarning("Unknown platform type. Will paint a rectangle");
         orca::VehicleGeometryCuboidDescriptionPtr cubGeom = orca::VehicleGeometryCuboidDescriptionPtr::dynamicCast( geom );
         painter_.setTypeAndGeometry( PlatformTypeCubic, cubGeom->size.l, cubGeom->size.w );
         painter_.setOrigin( cubGeom->platformToGeometryTransform.p.x, cubGeom->platformToGeometryTransform.p.y, cubGeom->platformToGeometryTransform.o.y );

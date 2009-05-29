@@ -1,5 +1,5 @@
 ORCA_SET_LIBRARY_NAME( OrcaQUml )
-GBX_ADD_LICENSE( GPL )
+GBX_ADD_LICENSE( LGPL )
 
 set( build TRUE )
 GBX_REQUIRE_OPTION( build LIB ${LIB_NAME} ON )
@@ -18,7 +18,7 @@ if( build )
     file( GLOB human_srcs *.cpp )
 
     GBX_ADD_LIBRARY( ${LIB_NAME} DEFAULT ${human_srcs} )
-    
+
     TARGET_LINK_LIBRARIES ( ${LIB_NAME} ${dep_libs} )
 
 endif( build )

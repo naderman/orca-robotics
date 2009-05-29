@@ -211,42 +211,24 @@ WorldView::updateAllGuiElements()
 {
     for ( int i=0; i<guiElementSet_.elements().size(); ++i )
     {
-        ::hydroqguielementutil::IGuiElement *element = guiElementSet_.elements()[i];
+        ::hydroqguielementutil::GuiElement *element = guiElementSet_.elements()[i];
 
         if ( element ) {
             std::stringstream ss;
             try {
                 element->update();
             }
-            catch ( IceUtil::Exception &e )
-            {
-                ss<<"WorldView: during update of "
-                <<element->details().toStdString()<<": " << e << std::endl;
-                humanManager_.showStatusMsg(::hydroqguielementutil::IHumanManager::Warning,ss.str().c_str());
-            }
             catch ( std::exception &e )
             {
                 ss<<"WorldView: during update of "
-                <<element->details().toStdString()<<": " << e.what() << std::endl;
-                humanManager_.showStatusMsg(::hydroqguielementutil::IHumanManager::Warning,ss.str().c_str());
-            }
-            catch ( std::string &e )
-            {
-                ss<<"WorldView: during update of "
-                   <<element->details().toStdString()<<": " << e << std::endl;
-                humanManager_.showStatusMsg(::hydroqguielementutil::IHumanManager::Warning,ss.str().c_str());
-            }
-            catch ( char *e )
-            {
-                ss<<"WorldView: during update of "
-                   <<element->details().toStdString()<<": " << e << std::endl;
-                humanManager_.showStatusMsg(::hydroqguielementutil::IHumanManager::Warning,ss.str().c_str());
+                <<element->uniqueId().toStdString()<<": " << e.what() << std::endl;
+                humanManager_.showStatusWarning( ss.str().c_str() );
             }
             catch ( ... )
             {
                 ss<<"WorldView: Caught unknown exception during update of "
-                   <<element->details().toStdString()<<": " << std::endl;
-                humanManager_.showStatusMsg(::hydroqguielementutil::IHumanManager::Warning,ss.str().c_str());
+                <<element->uniqueId().toStdString()<<": " << std::endl;
+                humanManager_.showStatusWarning( ss.str().c_str() );
             }
         }
     }
@@ -255,7 +237,7 @@ WorldView::updateAllGuiElements()
 void
 WorldView::attachAllGuiElements( bool isCoordinateFramePlatformLocalised, osg::Group *root )
 {
-    const QList< ::hydroqguielementutil::IGuiElement*> &elements = guiElementSet_.elements();
+    const QList< ::hydroqguielementutil::GuiElement*> &elements = guiElementSet_.elements();
 
     for ( int i=0; i<elements.size(); ++i )
     {
@@ -305,35 +287,17 @@ WorldView::attachAllGuiElements( bool isCoordinateFramePlatformLocalised, osg::G
                 }
             }
         }
-        catch ( IceUtil::Exception &e )
-        {
-            ss<<"WorldView: during "<<__func__<<" of "
-              <<elements[i]->details().toStdString()<<": " << e << std::endl;
-            humanManager_.showStatusMsg(::hydroqguielementutil::IHumanManager::Warning,ss.str().c_str());
-        }
         catch ( std::exception &e )
         {
             ss<<"WorldView: during "<<__func__<<" of "
-              <<elements[i]->details().toStdString()<<": " << e.what() << std::endl;
-            humanManager_.showStatusMsg(::hydroqguielementutil::IHumanManager::Warning,ss.str().c_str());
-        }
-        catch ( std::string &e )
-        {
-            ss<<"WorldView: during "<<__func__<<" of "
-              <<elements[i]->details().toStdString()<<": " << e << std::endl;
-            humanManager_.showStatusMsg(::hydroqguielementutil::IHumanManager::Warning,ss.str().c_str());
-        }
-        catch ( char *e )
-        {
-            ss<<"WorldView: during "<<__func__<<" of "
-              <<elements[i]->details().toStdString()<<": " << e << std::endl;
-            humanManager_.showStatusMsg(::hydroqguielementutil::IHumanManager::Warning,ss.str().c_str());
+              <<elements[i]->uniqueId().toStdString()<<": " << e.what() << std::endl;
+            humanManager_.showStatusWarning( ss.str().c_str() );
         }
         catch ( ... )
         {
             ss<<"WorldView: during "<<__func__<<" of "
-              <<elements[i]->details().toStdString()<<": unknown exception." << std::endl;
-            humanManager_.showStatusMsg(::hydroqguielementutil::IHumanManager::Warning,ss.str().c_str());
+              <<elements[i]->uniqueId().toStdString()<<": unknown exception." << std::endl;
+            humanManager_.showStatusWarning( ss.str().c_str() );
         }
     }
 }

@@ -11,7 +11,7 @@
 #include <iostream>
 #include <orcaice/orcaice.h>
 #include <orcaifaceutil/laserscanner2d.h>
-#include <orcaobj/orcaobj.h> // for getPropertyAs...()
+#include <orcaobj/bros1.h> // for getPropertyAs...()
 #include <gbxutilacfr/mathdefs.h>
 #include "mainthread.h"
 
@@ -32,7 +32,6 @@ MainThread::initialise()
     initSettings();
 
     initHardwareDriver();
-
     if ( isStopping() )
         return;
 
@@ -126,12 +125,6 @@ MainThread::initSettings()
 void
 MainThread::initNetworkInterface()
 {
-    // activate component's communication
-    activate( context_, this, subsysName() );
-    // check for stop signal after retuning from multi-try
-    if ( isStopping() )
-        return;
-
     Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag() + ".Config.";
 

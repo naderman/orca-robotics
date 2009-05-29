@@ -26,8 +26,10 @@ public:
     virtual void stop();
 
 private:
-    gbxiceutilacfr::ThreadPtr netThread_;
+    // NOTE: fragile design, the order of member declaration is very important.
+    // usrThread_ is created first so that it's destructed last.
     gbxiceutilacfr::ThreadPtr usrThread_;
+    gbxiceutilacfr::ThreadPtr netThread_;
 };
 
 } // namespace

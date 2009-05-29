@@ -12,7 +12,7 @@
 #include <iostream>
 #include <orca/vehicledescription.h>
 #include <orcaice/orcaice.h>
-#include <orcaobj/orcaobj.h>
+#include <orcaobj/bros1.h>
 #include <hydrogpsutil/latlon2mga.h>
 #include <orcanavutil/orcanavutil.h>
 

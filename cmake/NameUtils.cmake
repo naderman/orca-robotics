@@ -7,13 +7,17 @@
 #                   project name and appended with "Service")
 # - COMP_NAMESPACE  component namespace (defaults to the component name converted to lower case)
 # - COMP_INTERFACE_FLAG
-#                   which standard interfaces the autognerated component will initialize.
+#                   Which standard interfaces the autognerated component will initialize.
 #                   This variable must contain one of the values of orcaice::ComponentInterfaceFlag.
 #                   Default value assigned by this CMake macro is orcaice::AllStandardInterfaces.
+# - COMP_ADAPTER_POLICY
+#                   How will the component's adapter be activated: automatically or manually.
+#                   This variable must contain one of the values of orcaice::ComponentAdapterActivationPolicy.
+#                   Default value assigned by this CMake macro is orcaice::AdapterAutoActivation.
 #
 # Also sets APP_CTRLC_HANDLER=1 (instructs application to install Ctrl-C Handler)
 #
-# For custom values, call this function first and then override some or all of the variables manually.
+# For custom values, call this function first and then override some of the variables manually.
 # For example:
 #       ORCA_SET_COMPONENT_NAME( MyComponent )
 #       set( COMP_NAMESPACE mycomp )
@@ -34,6 +38,9 @@ macro( ORCA_SET_COMPONENT_NAME c_name )
     # which standard interfaces the component will provide.
     set( COMP_INTERFACE_FLAG "orcaice::AllStandardInterfaces" )
 
+    # How will the component's adapter be activated
+    set( COMP_ADAPTER_POLICY "orcaice::AdapterAutoActivation" )
+
     set( APP_CTRLC_HANDLER 1 )
 
 endmacro( ORCA_SET_COMPONENT_NAME c_name )
@@ -46,7 +53,7 @@ endmacro( ORCA_SET_COMPONENT_NAME c_name )
 # - LIB_NAMESPACE   library namespace (defaults to the library name converted to lower case).
 # - LIB_INSTALL     the name of the subdirectory where header files are installed
 #                   (defaults to the library name converted to lower case).
-# For custom values, call this function first and then override some or all of the variables manually.
+# For custom values, call this function first and then override some of the variables manually.
 # For example:
 #       ORCA_SET_LIBRARY_NAME( MyLibrary )
 #       set( LIB_NAMESPACE mylib )
@@ -58,7 +65,7 @@ macro( ORCA_SET_LIBRARY_NAME l_name )
     # library namespace name
     string( TOLOWER ${LIB_NAME} LIB_NAMESPACE )
 
-    # component namespace name
+    # library install subdirectory
     string( TOLOWER ${LIB_NAME} LIB_INSTALL )
 
 endmacro( ORCA_SET_LIBRARY_NAME l_name )

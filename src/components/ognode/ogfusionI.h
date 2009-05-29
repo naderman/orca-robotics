@@ -15,8 +15,7 @@
 // include provided interfaces
 #include <orca/ogfusion.h>
 
-// for context()
-#include <orcaice/orcaice.h>
+#include <orcaice/context.h>
 
 // utilities
 #include <gbxsickacfr/gbxiceutilacfr/buffer.h>

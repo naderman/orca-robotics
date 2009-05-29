@@ -10,7 +10,7 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include <orcaobj/orcaobj.h>
+#include <orcaifaceutil/properties.h>
 #include "mainthread.h"
 
 using namespace std;
@@ -28,12 +28,6 @@ void
 MainThread::initialise()
 {
     setMaxHeartbeatInterval( 20.0 );
-
-    // These functions catch their exceptions.
-    activate( context_, this, subsysName() );
-    // check for stop signal after retuning from multi-try
-    if ( isStopping() )
-        return;
 
     initPropertiesDb();
     initNetworkInterface();
@@ -55,7 +49,7 @@ MainThread::work()
             if ( ret == 0 )
             {
                 stringstream ss;
-                ss << "Received new properties: " << orcaobj::toString( incomingProperties );
+                ss << "Received new properties: " << ifaceutil::toString( incomingProperties );
                 context_.tracer().info( ss.str() );
 
                 // Set our local database.

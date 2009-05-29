@@ -26,28 +26,21 @@ MainThread::MainThread( const orcaice::Context& context ) :
     driver_(0),
     context_(context)
 {
-    setMaxHeartbeatInterval( 20.0 );
-
-    laser_ = new orcaifaceimpl::BufferedRangeScanner2dConsumerImpl(
-                    10, gbxiceutilacfr::BufferTypeCircular, context );
-    odometry_ = new orcaifaceimpl::StoringOdometry2dConsumerImpl( context );
-}
-
-MainThread::~MainThread()
-{
-    delete driver_;
 }
 
 void 
 MainThread::initialise()
 {
-    // multi-try function, will continue trying until successful or ctrl-c
-    orcaice::activate( context_, this );
+    setMaxHeartbeatInterval( 20.0 );
+
+    laser_ = new orcaifaceimpl::BufferedRangeScanner2dConsumerImpl(
+                    10, gbxiceutilacfr::BufferTypeCircular, context_ );
+    odometry_ = new orcaifaceimpl::StoringOdometry2dConsumerImpl( context_ );
 
     initNetwork();
     initDriver();
 
-    assert( driver_ );
+    assert( driver_.get() );
     assert( laser_ );
     assert( odometry_ );
     assert( commandPrx_ );
@@ -56,13 +49,14 @@ MainThread::initialise()
 void 
 MainThread::work()
 {
+    const int laserTimeoutMs = 1000;
+    setMaxHeartbeatInterval( 5*laserTimeoutMs/1000 );
+
     // temp objects
     orca::RangeScanner2dDataPtr laserData;
     orca::Odometry2dData odometryData;
     orca::VelocityControl2dData commandData;
     
-    const int laserTimeoutMs = 1000;
-
     while ( !isStopping() )
     {
         //
@@ -151,12 +145,12 @@ MainThread::initDriver()
     if ( driverName == "random" )
     {
         context_.tracer().debug( "loading Random driver",3);
-        driver_ = new RandomDriver;
+        driver_.reset( new RandomDriver );
     }
     else if ( driverName == "fake" )
     {
         context_.tracer().debug( "loading Fake driver",3);
-        driver_ = new FakeDriver;
+        driver_.reset( new FakeDriver );
     }
     else {
         string errorStr = "Unknown driver type. Cannot talk to hardware.";

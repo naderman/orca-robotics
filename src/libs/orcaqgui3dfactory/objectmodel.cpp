@@ -1,7 +1,7 @@
 #include "objectmodel.h"
 #include <iostream>
 #include <sstream>
-#include <GL/glut.h>
+//#include <GL/glut.h>
 #include <cmath>
 
 using namespace std;

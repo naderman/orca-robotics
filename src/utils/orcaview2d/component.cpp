@@ -9,6 +9,7 @@
  */
  
 #include <QApplication>
+#include <QVBoxLayout>
  
 #include <orcaice/orcaice.h>
 #include <hydrodll/dynamicload.h>
@@ -30,21 +31,38 @@ namespace orcaview2d {
 
 namespace {
 
-    static const char *DEFAULT_FACTORY_LIB_NAME="libOrcaQGui2dFactory.so";
+static const char *DEFAULT_FACTORY_LIB_NAME="libOrcaQGui2dFactory.so";
 
-    hydroqgui::IGuiElementFactory* loadFactory( hydrodll::DynamicallyLoadedLibrary &lib )
-    {
-        hydroqgui::IGuiElementFactory *f = 
-            hydrodll::dynamicallyLoadClass<hydroqgui::IGuiElementFactory,FactoryMakerFunc>
-            (lib, "createFactory");
-        return f;
-    }
+hydroqgui::IGuiElementFactory* loadFactory( hydrodll::DynamicallyLoadedLibrary &lib )
+{
+    hydroqgui::IGuiElementFactory *f = 
+        hydrodll::dynamicallyLoadClass<hydroqgui::IGuiElementFactory,FactoryMakerFunc>
+        (lib, "createFactory");
+    return f;
+}
+
+void readScreenDumpParams( const orcaice::Context &context,
+                    orcaqgui::MainWindow::ScreenDumpParams &screenDumpParams )
+{
+    Ice::PropertiesPtr prop = context.properties();
+    std::string prefix = context.tag() + ".Config.";
+
+    screenDumpParams.topPad = orcaice::getPropertyAsIntWithDefault( prop, prefix+"ScreenCapture.TopPad", 25 );
+    screenDumpParams.sidePad = orcaice::getPropertyAsIntWithDefault( prop, prefix+"ScreenCapture.SidePad", 2 );
+    screenDumpParams.bottomPad = orcaice::getPropertyAsIntWithDefault( prop, prefix+"ScreenCapture.BottomPad", 2 );
+    Ice::StringSeq strIn; strIn.push_back("/tmp"); Ice::StringSeq strOut;
+    strOut = orcaice::getPropertyAsStringVectorWithDefault( prop, prefix+"General.DumpPath", strIn );
+    screenDumpParams.dumpPath = strOut[0];
+    screenDumpParams.captureTimerInterval = orcaice::getPropertyAsIntWithDefault( prop, prefix+"ScreenCapture.CaptureTimerInterval", 1000 );
+}
 
 }
 
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 
+// we don't want any standard interface: this is an interactive component
+// we want the adapter to be started automatically: we need it for subscriptions
 Component::Component()
     : orcaice::Component( "OrcaView2d", orcaice::NoStandardInterfaces )
 {
@@ -58,6 +76,128 @@ Component::~Component()
         delete libraries_[i];
     }
 }       
+
+void 
+Component::start()
+{
+    Ice::PropertiesPtr props = context().properties();
+    std::string prefix = context().tag() + ".Config.";
+    
+    //
+    // Start job queue
+    //
+    hydroiceutil::JobQueue::Config jconfig;
+    jconfig.threadPoolSize = orcaice::getPropertyAsIntWithDefault( props, prefix+"JobQueueThreadPoolSize", 1 );
+    jconfig.queueSizeWarn = orcaice::getPropertyAsIntWithDefault( props, prefix+"JobQueueSizeWarning", -1 );
+    jconfig.traceAddEvents = false;
+    jconfig.traceDoneEvents = false;
+    
+    hydroiceutil::JobQueue jobQueue( context().tracer(), jconfig ) ;
+    
+    // Set up QT stuff
+    char **v = 0;
+    int c = 0;
+    QApplication qapp(c,v);
+
+    orcaqgui::MainWindow::ScreenDumpParams screenDumpParams;
+    readScreenDumpParams( context(), screenDumpParams );
+    
+    int displayRefreshTime = orcaice::getPropertyAsIntWithDefault( props, prefix+"General.DisplayRefreshTime", 200 );
+
+    string libNames = orcaice::getPropertyWithDefault( props, prefix+"General.FactoryLibNames", DEFAULT_FACTORY_LIB_NAME );
+    // returns a listing of unique supported interfaces, for display drivers to know what's supported
+    std::vector<std::string> supportedInterfaces = loadPluginLibraries( libNames );
+
+    // Manages platform(s) in focus
+    hydroqgui::PlatformFocusManager platformFocusManager;
+
+    // main window for display
+    orcaqgui::MainWindow mainWin( "OrcaView2d",
+                                  screenDumpParams,
+                                  supportedInterfaces );
+
+    // Color scheme
+    hydroqgui::StringToRandomColorMap platformColorScheme;
+
+    // Handles coordination of mouse events between GuiElements
+    hydroqguielementutil::MouseEventManager mouseEventManager;
+
+    // Manages the coordinate frome for display
+    hydroqgui::CoordinateFrameManager coordinateFrameManager;
+
+    // Manages use of shortcut keys between Gui Elements
+    hydroqguielementutil::ShortcutKeyManager shortcutKeyManager( &mainWin );
+
+    // Stores the set of Gui Elements
+    hydroqgui::GuiElementSet guiElementSet;
+    
+    // Setup a vertical splitter for the right-hand side
+    // It will be passed to the GuiElements, so they can add widgets to the bottom right
+    QSplitter *rightHandSide = new QSplitter( Qt::Vertical );
+
+    // Qt model for handling elements and their display in each of the widgets
+    orcaqgemv::GuiElementModel guiElementModel( factories_,
+                                                mainWin,
+                                                mouseEventManager,
+                                                shortcutKeyManager,
+                                                coordinateFrameManager,
+                                                platformFocusManager,
+                                                guiElementSet,
+                                                platformColorScheme,
+                                                rightHandSide );
+
+    // Can work out the coordinate system of a platform
+    hydroqgui::PlatformCSFinder platformCSFinder;
+
+    // widget for viewing the actual world
+    hydroqgui::WorldView *worldView = new hydroqgui::WorldView( platformCSFinder,
+                                                                mouseEventManager,
+                                                                guiElementSet,
+                                                                coordinateFrameManager,
+                                                                mainWin,
+                                                                platformFocusManager,
+                                                                displayRefreshTime );
+    
+    // add the worldview to the right hand side
+    rightHandSide->addWidget( worldView );
+    
+    // Gui-Element-selecting widget
+    orcaqgui::SelectableElementWidget *selectableElementWidget = 
+            new orcaqgui::SelectableElementWidget(  platformFocusManager, 
+                                                    jobQueue, 
+                                                    context(), 
+                                                   &guiElementModel, 
+                                                    mainWin );
+    
+    // Central GUI widget, from left to right
+    QSplitter *centralWidget = new QSplitter( Qt::Horizontal );
+    centralWidget->addWidget( selectableElementWidget );
+    centralWidget->addWidget( rightHandSide );
+    mainWin.setCentralWidget( centralWidget );
+    
+    // Grid is a special element which is always loaded
+    orcaqgui::loadGrid( guiElementModel );
+
+    // Load all elements specified in the config file
+    orcaqgui::loadElementsFromConfigFile( guiElementModel, context() );
+
+    mainWin.show();
+
+    // note: this does not return!
+    qapp.exec();
+
+    // normally ctrl-c handler does this, now we have to because UserThread keeps the thread
+    context().communicator()->shutdown();
+
+    // the rest is handled by the application/service
+}
+
+void Component::stop()
+{
+    context().tracer().debug("stopping component",5);
+}
+
+////////////////////////
 
 std::vector<std::string>
 Component::loadPluginLibraries( const std::string& factoryLibNames )
@@ -123,141 +263,6 @@ Component::loadPluginLibraries( const std::string& factoryLibNames )
     std::unique( supportedInterfaces.begin(), supportedInterfaces.end() );
 
     return supportedInterfaces;
-}
-
-void
-readScreenDumpParams( const orcaice::Context                 &context,
-                      orcaqgui::MainWindow::ScreenDumpParams &screenDumpParams )
-{
-    Ice::PropertiesPtr prop = context.properties();
-    std::string prefix = context.tag() + ".Config.";
-
-    screenDumpParams.topPad = orcaice::getPropertyAsIntWithDefault( prop, prefix+"ScreenCapture.TopPad", 25 );
-    screenDumpParams.sidePad = orcaice::getPropertyAsIntWithDefault( prop, prefix+"ScreenCapture.SidePad", 2 );
-    screenDumpParams.bottomPad = orcaice::getPropertyAsIntWithDefault( prop, prefix+"ScreenCapture.BottomPad", 2 );
-    Ice::StringSeq strIn; strIn.push_back("/tmp"); Ice::StringSeq strOut;
-    strOut = orcaice::getPropertyAsStringVectorWithDefault( prop, prefix+"General.DumpPath", strIn );
-    screenDumpParams.dumpPath = strOut[0];
-    screenDumpParams.captureTimerInterval = orcaice::getPropertyAsIntWithDefault( prop, prefix+"ScreenCapture.CaptureTimerInterval", 1000 );
-}
-
-void 
-Component::start()
-{
-    Ice::PropertiesPtr props = context().properties();
-    std::string prefix = context().tag() + ".Config.";
-    
-    //
-    // enable network connections
-    //
-    // Home interface only
-    // this may throw, but may as well quit right then
-    activate();
-    
-    //
-    // Start job queue
-    //
-    hydroiceutil::JobQueue::Config jconfig;
-    jconfig.threadPoolSize = orcaice::getPropertyAsIntWithDefault( props, prefix+"JobQueueThreadPoolSize", 1 );
-    jconfig.queueSizeWarn = orcaice::getPropertyAsIntWithDefault( props, prefix+"JobQueueSizeWarning", -1 );
-    jconfig.traceAddEvents = false;
-    jconfig.traceDoneEvents = false;
-    
-    hydroiceutil::JobQueue jobQueue( context().tracer(), jconfig ) ;
-    
-    // Set up QT stuff
-    char **v = 0;
-    int c = 0;
-    QApplication qapp(c,v);
-
-    orcaqgui::MainWindow::ScreenDumpParams screenDumpParams;
-    readScreenDumpParams( context(), screenDumpParams );
-    
-    int displayRefreshTime = orcaice::getPropertyAsIntWithDefault( props, prefix+"General.DisplayRefreshTime", 200 );
-
-    string libNames = orcaice::getPropertyWithDefault( props, prefix+"General.FactoryLibNames", DEFAULT_FACTORY_LIB_NAME );
-    // returns a listing of unique supported interfaces, for display drivers to know what's supported
-    std::vector<std::string> supportedInterfaces = loadPluginLibraries( libNames );
-
-    // Manages platform(s) in focus
-    hydroqgui::PlatformFocusManager platformFocusManager;
-
-    // main window for display
-    orcaqgui::MainWindow mainWin( "OrcaView2d",
-                                  screenDumpParams,
-                                  supportedInterfaces );
-
-    // Color scheme
-    hydroqgui::StringToRandomColorMap platformColorScheme;
-
-    // Handles coordination of mouse events between GuiElements
-    hydroqguielementutil::MouseEventManager mouseEventManager;
-
-    // Manages the coordinate frome for display
-    hydroqgui::CoordinateFrameManager coordinateFrameManager;
-
-    // Manages use of shortcut keys between Gui Elements
-    hydroqguielementutil::ShortcutKeyManager shortcutKeyManager( &mainWin );
-
-    // Stores the set of Gui Elements
-    hydroqgui::GuiElementSet guiElementSet;
-
-    // Qt model for handling elements and their display in each of the widgets
-    orcaqgemv::GuiElementModel guiElementModel( factories_,
-                                                mainWin,
-                                                mouseEventManager,
-                                                shortcutKeyManager,
-                                                coordinateFrameManager,
-                                                platformFocusManager,
-                                                guiElementSet,
-                                                platformColorScheme );
-
-    // Can work out the coordinate system of a platform
-    hydroqgui::PlatformCSFinder platformCSFinder;
-
-    // widget for viewing the actual world
-    hydroqgui::WorldView *worldView = new hydroqgui::WorldView( platformCSFinder,
-                                                                mouseEventManager,
-                                                                guiElementSet,
-                                                                coordinateFrameManager,
-                                                                mainWin,
-                                                                platformFocusManager,
-                                                                displayRefreshTime );
-    
-    // Gui-Element-selecting widget
-    orcaqgui::SelectableElementWidget *selectableElementWidget = 
-            new orcaqgui::SelectableElementWidget(  platformFocusManager, 
-                                                    jobQueue, 
-                                                    context(), 
-                                                   &guiElementModel, 
-                                                    mainWin );
-    
-    // Central GUI widget
-    QSplitter *centralWidget = new QSplitter( Qt::Horizontal );
-    centralWidget->addWidget( selectableElementWidget );
-    centralWidget->addWidget( worldView );
-    mainWin.setCentralWidget( centralWidget );
-    
-    // Grid is a special element which is always loaded
-    orcaqgui::loadGrid( guiElementModel );
-
-    // Load all elements specified in the config file
-    orcaqgui::loadElementsFromConfigFile( guiElementModel, context() );
-
-    mainWin.show();
-
-    // note: this does not return!
-    qapp.exec();
-
-    // normally ctrl-c handler does this, now we have to because UserThread keeps the thread
-    context().communicator()->shutdown();
-
-    // the rest is handled by the application/service
-}
-
-void Component::stop()
-{
-    context().tracer().debug("stopping component",5);
 }
 
 }

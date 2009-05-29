@@ -7,14 +7,15 @@ using namespace std;
 
 namespace orcaqgui3d {
 
-FeatureMap2dElement::FeatureMap2dElement( const orcaice::Context  &context,
-                                          const std::string       &proxyString,
-                                          hydroqguielementutil::IHumanManager *humanManager )
+FeatureMap2dElement::FeatureMap2dElement( const hydroqguielementutil::GuiElementInfo &guiElementInfo,
+                                          const orcaice::Context                     &context,
+                                          const std::string                          &proxyString,
+                                          hydroqguielementutil::IHumanManager        *humanManager )
     : orcaqgui3d::IceStormElement3d<FeatureMap2dPainter,
                       orca::FeatureMap2dData,
                       orca::FeatureMap2dPrx,
                       orca::FeatureMap2dConsumer,
-                      orca::FeatureMap2dConsumerPrx>(context, proxyString, painter_, -1 ),
+                      orca::FeatureMap2dConsumerPrx>(guiElementInfo, context, proxyString, painter_, -1 ),
       humanManager_(humanManager),
       featureMapFileName_("/home"),
       featureMapFileNameSet_(false)

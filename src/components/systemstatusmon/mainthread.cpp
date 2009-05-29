@@ -27,15 +27,6 @@ MainThread::MainThread( const orcaice::Context &context ) :
 void 
 MainThread::initialise()
 {    
-    //
-    // ENABLE NETWORK CONNECTIONS
-    //
-    // multi-try function
-    orcaice::activate( context_, this );
-    // check for stop signal after retuning from multi-try
-    if ( isStopping() )
-        return;
-    
     Ice::PropertiesPtr props = context_.properties();
     std::string prefix = context_.tag()+".Config.";
     string displayType = orcaice::getPropertyWithDefault( props, prefix+"DisplayType", "colourtext" );

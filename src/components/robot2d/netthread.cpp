@@ -12,7 +12,7 @@
 #include <sstream>
 #include <gbxsickacfr/gbxiceutilacfr/timer.h>
 #include <orcaice/orcaice.h>
-#include <orcaobj/orcaobj.h>
+#include <orcaobj/velocitycontrol2d.h>
 #include "netthread.h"
 
 using namespace std;
@@ -56,7 +56,6 @@ NetThread::NetThread( HwThread                      &HwThread,
     descr_(descr),
     context_(context)
 {
-    setMaxHeartbeatInterval( 10.0 );
 
     // Get vehicle limits
     orca::VehicleControlVelocityDifferentialDescription *controlDescr =
@@ -73,13 +72,8 @@ NetThread::NetThread( HwThread                      &HwThread,
 void 
 NetThread::initialise()
 {
-    // multi-try function
-    context_.tracer().debug( "NetThread: activating..." );
-    orcaice::activate( context_, this );
-    // check for stop signal after retuning from multi-try
-    if ( isStopping() )
-        return;
-    
+    setMaxHeartbeatInterval( 10.0 );
+
     // Initialise external interfaces, multi-try init functions
     odometry2dI_ = new orcaifaceimpl::Odometry2dImpl( descr_, "Odometry2d", context_ );
     odometry2dI_->initInterface( this );

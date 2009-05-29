@@ -10,7 +10,7 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include <orcaobj/orcaobj.h>
+#include <orcaobj/multicamera.h>
 #include <orcaifaceutil/camera.h>
 #include <orcaimage/propertyutils.h>
 
@@ -32,12 +32,6 @@ MainThread::initialise()
 {
     setMaxHeartbeatInterval( 20.0 );
     readSettings();
-
-    // These functions catch their exceptions.
-    activate( context_, this, subsysName() );
-    // check for stop signal after retuning from multi-try
-    if ( isStopping() )
-        return;
 
     context_.tracer().info( "Setting up Hardware Interface" );
     initHardwareInterface();

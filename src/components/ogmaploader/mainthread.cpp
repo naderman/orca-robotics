@@ -23,12 +23,13 @@ MainThread::MainThread( const orcaice::Context &context ) :
     SubsystemThread( context.tracer(), context.status(), "MainThread" ),
     context_(context)
 {
+    // this subsystem will initialise and exit, but the component will continue running.
+    setSubsystemType( gbxutilacfr::SubsystemEarlyExit );
 }
 
 void
 MainThread::initialise()
 {
-    context_.status().initialising( subsysName() );
     setMaxHeartbeatInterval( 10.0 );
 
     //
@@ -76,10 +77,4 @@ MainThread::initialise()
     ogMapImpl_ = new orcaifaceimpl::OgMapImpl( "OgMap", context_ );
     ogMapImpl_->initInterface( this, subsysName() );
     ogMapImpl_->localSetAndSend( theMap );
-
-    //
-    // ENABLE NETWORK CONNECTIONS
-    //
-    // multi-try function
-    orcaice::activate( context_, this, subsysName() );
 }

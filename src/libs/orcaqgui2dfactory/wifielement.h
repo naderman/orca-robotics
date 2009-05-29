@@ -13,12 +13,12 @@
 
 #include <QVector>
 #include <orca/wifi.h>
-#include <orcaqguielementutil/icestormelement2d.h>
-#include <orcaqgui2dfactory/wifipainter.h>
+#include <orcaqguielementutil/icestormguielement.h>
 
 class QProgressBar;
 class QLCDNumber;
 class QLabel;
+class QSplitter;
 
 namespace orcaqgui2d {
 
@@ -52,27 +52,28 @@ class WifiWidget : public QWidget
 
 };
 
+/////////////////////////////////////////////////////////
+
 class WifiElement
-    : public orcaqguielementutil::IceStormElement2d<WifiPainter,
-                             orca::WifiData,
-                             orca::WifiPrx,
-                             orca::WifiConsumer,
-                             orca::WifiConsumerPrx>
+    : public orcaqguielementutil::IceStormGuiElement<orca::WifiData,
+                                                     orca::WifiPrx,
+                                                     orca::WifiConsumer,
+                                                     orca::WifiConsumerPrx>
 {
 public:
-    WifiElement( const orcaice::Context  &context,
-                 const std::string       &proxyString,
-                 int                      timeoutMs=30000 );
+    WifiElement( const hydroqguielementutil::GuiElementInfo &guiElementInfo,
+                 const orcaice::Context                     &context,
+                 const std::string                          &proxyString,
+                 QSplitter                                  *spaceBottomRight,
+                 int                                         timeoutMs = 30000 );
     ~WifiElement();
 
-    virtual bool isInGlobalCS() { return true; };
     virtual void update();
-    virtual void actionOnConnection() {};
 
 private:
-    WifiPainter painter_;
     WifiWidget *wifiWidget_;
     std::string proxyString_;
+    QSplitter *spaceBottomRight_;
 };
 
 }

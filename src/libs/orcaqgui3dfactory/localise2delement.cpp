@@ -9,6 +9,8 @@
  */
 
 #include <hydroqgui/exceptions.h>
+#include <orcaobj/bros1.h>
+#include <orcaobj/localise2d.h>
 #include "localise2delement.h"
 
 using namespace std;
@@ -30,7 +32,7 @@ Localise2dElement::tryToGetGeometry()
     
     if ( listener_.proxy()==0 )
     {
-        humanManager_->showStatusMsg(hydroqguielementutil::IHumanManager::Error,"Localise2dElement::tryToGetGeometry(): listener_.proxy()==0"  );
+        humanManager_->showStatusError( "Localise2dElement::tryToGetGeometry(): listener_.proxy()==0" );
     }
     try 
     {
@@ -43,7 +45,7 @@ Localise2dElement::tryToGetGeometry()
     }
     catch ( std::exception &e)
     {
-        humanManager_->showStatusMsg( hydroqguielementutil::IHumanManager::Error,"Localise2dElement::tryToGetGeometry(): Exception when trying to get geometry: " + QString(e.what()) );
+        humanManager_->showStatusError( "Localise2dElement::tryToGetGeometry(): Exception when trying to get geometry: " + QString(e.what()) );
     }
     
     if (haveGeometry_ && geom->type==orca::VehicleGeometryCuboid)
@@ -63,7 +65,7 @@ Localise2dElement::tryToGetGeometry()
     }
     else
     {
-        humanManager_->showStatusMsg(hydroqguielementutil::IHumanManager::Warning, "Localise2dElement: unknown geometry!");
+        humanManager_->showStatusWarning("Localise2dElement: unknown geometry!");
         const double length = 1e-3;
         const double width = 1e-3;
         const double height = 1e-3;
@@ -82,9 +84,9 @@ Localise2dElement::update()
             orca::Localise2dConsumerPrx>::needToUpdate() )
         return;
 
-    assert( !listener_.buffer().isEmpty() );
+    assert( !listener_.store().isEmpty() );
     
-    listener_.buffer().getAndPop( data_ );
+    listener_.store().get( data_ );
     painter_.setData( data_ );
 
     // custom update, but first error-check.

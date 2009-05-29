@@ -10,7 +10,6 @@
 #include <iostream>
 #include <cmath>
 #include <orcaice/orcaice.h>
-#include <orcaobj/orcaobj.h>
 #include <gbxutilacfr/mathdefs.h>
 
 #include "vfhdriver.h"

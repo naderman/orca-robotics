@@ -1,8 +1,8 @@
 #include "localpathfollower.h"
 #include <iostream>
 #include <cmath>
-#include <orcaobj/orcaobj.h>
 #include <orcaice/orcaice.h>
+#include <orcaobj/pathfollower2d.h>
 
 using namespace std;
 

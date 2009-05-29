@@ -13,6 +13,7 @@
 #include <sstream>
 #include <orcaice/orcaice.h>
 #include <orcaice/icegridutils.h>
+#include <orcaice/convertutils.h>
 #include <orcacm/orcacm.h>
 
 #include "interfaceprobe.h"

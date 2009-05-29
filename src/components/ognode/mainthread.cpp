@@ -70,10 +70,61 @@ MainThread::MainThread( const orcaice::Context &context ) :
 {
 }
 
-void 
+void
 MainThread::initialise()
 {
-    init();
+    while ( !isStopping() )
+    {
+        try {
+
+            if ( !ogMapImpl_ )
+            {
+                std::string priorMapProxyString = 
+                    orcaice::getPropertyWithDefault( context_.properties(),
+                                                     context_.tag()+".Config.PriorMapProxyString",
+                                                     "none" );
+                if ( priorMapProxyString == "none" )
+                {
+                    context_.tracer().info( "Reading map info from properties" );
+                    setUpInternalMapFromProperties();
+                }
+                else
+                {
+                    context_.tracer().info( "Retreiving prior map from remote interface" );
+                    setUpInternalMapFromPriorMap( priorMapProxyString );
+                }
+
+                // set up ogmap interface
+                ogMapImpl_ = new orcaifaceimpl::OgMapImpl( "OgMap", context_ );
+                ogMapImpl_->initInterface( this );
+                orca::OgMapData initialOrcaMap;
+                convert( internalMap_, initialOrcaMap );
+                ogMapImpl_->localSetAndSend( initialOrcaMap );
+            }
+
+            if ( ogMapImpl_ && !ogFusionObjPtr_ )
+            {
+                // duplicate map config for orca::OgFusion Interface
+                orca::OgFusionConfig ogFusionConfig;
+                ogFusionConfig.offset.p.x     = internalMap_.offset().p.x;
+                ogFusionConfig.offset.p.y     = internalMap_.offset().p.y;
+                ogFusionConfig.offset.o       = internalMap_.offset().o;
+                ogFusionConfig.numCellsX      = internalMap_.numCellsX();
+                ogFusionConfig.numCellsY      = internalMap_.numCellsY();
+                ogFusionConfig.metresPerCellX = internalMap_.metresPerCellX();
+                ogFusionConfig.metresPerCellY = internalMap_.metresPerCellY();
+
+                // set up ogfusion interface
+                ogFusionObjPtr_ = new OgFusionI( ogFusionConfig, ogFusionDataBuffer_ );
+                orcaice::createInterfaceWithTag(context_, ogFusionObjPtr_, "OgFusion" );
+            }
+
+            return;
+        }
+        catch ( ... ) {
+            orcaice::catchExceptionsWithStatusAndSleep( "initialising", health() );
+        }
+    }
 }
 
 void
@@ -187,69 +238,6 @@ MainThread::setUpInternalMapFromPriorMap( const std::string &priorMapProxyString
     {
         internalMap_.data()[i] = (double)priorMap.data[i]/(double)hydroogmap::CELL_OCCUPIED;
         CLIP_TO_LIMITS( ogfusion::ogLimitLowD, internalMap_.data()[i], ogfusion::ogLimitHighD );
-    }
-}
-
-void
-MainThread::init()
-{
-    while ( !isStopping() )
-    {
-        try {
-
-            if ( !ogMapImpl_ )
-            {
-                std::string priorMapProxyString = 
-                    orcaice::getPropertyWithDefault( context_.properties(),
-                                                     context_.tag()+".Config.PriorMapProxyString",
-                                                     "none" );
-                if ( priorMapProxyString == "none" )
-                {
-                    context_.tracer().info( "Reading map info from properties" );
-                    setUpInternalMapFromProperties();
-                }
-                else
-                {
-                    context_.tracer().info( "Retreiving prior map from remote interface" );
-                    setUpInternalMapFromPriorMap( priorMapProxyString );
-                }
-
-                // set up ogmap interface
-                ogMapImpl_ = new orcaifaceimpl::OgMapImpl( "OgMap", context_ );
-                ogMapImpl_->initInterface( this );
-                orca::OgMapData initialOrcaMap;
-                convert( internalMap_, initialOrcaMap );
-                ogMapImpl_->localSetAndSend( initialOrcaMap );
-            }
-
-            if ( ogMapImpl_ && !ogFusionObjPtr_ )
-            {
-                // duplicate map config for orca::OgFusion Interface
-                orca::OgFusionConfig ogFusionConfig;
-                ogFusionConfig.offset.p.x     = internalMap_.offset().p.x;
-                ogFusionConfig.offset.p.y     = internalMap_.offset().p.y;
-                ogFusionConfig.offset.o       = internalMap_.offset().o;
-                ogFusionConfig.numCellsX      = internalMap_.numCellsX();
-                ogFusionConfig.numCellsY      = internalMap_.numCellsY();
-                ogFusionConfig.metresPerCellX = internalMap_.metresPerCellX();
-                ogFusionConfig.metresPerCellY = internalMap_.metresPerCellY();
-
-                // set up ogfusion interface
-                ogFusionObjPtr_ = new OgFusionI( ogFusionConfig, ogFusionDataBuffer_ );
-                orcaice::createInterfaceWithTag(context_, ogFusionObjPtr_, "OgFusion" );
-            }
-
-            // Enable network connections
-            context_.activate();
-            // check for stop signal after retuning from multi-try
-            if ( isStopping() )
-                return;
-
-            return;
-        }
-        catch ( ... ) {
-            orcaice::catchExceptionsWithStatusAndSleep( "initialising", health() );
-        }
     }
 }
 

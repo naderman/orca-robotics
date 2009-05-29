@@ -1,5 +1,5 @@
 ORCA_SET_LIBRARY_NAME( OrcaQCompModel )
-GBX_ADD_LICENSE( GPL )
+GBX_ADD_LICENSE( LGPL )
 
 set( build TRUE )
 GBX_REQUIRE_OPTION( build LIB ${LIB_NAME} ON )
@@ -27,11 +27,11 @@ if( build )
     )
 
     QT4_WRAP_CPP( moc_srcs ${moc_hdrs} )
-    
+
     GBX_ADD_LIBRARY( ${LIB_NAME} DEFAULT ${human_srcs} ${moc_srcs} )
-    
+
     TARGET_LINK_LIBRARIES ( ${LIB_NAME} ${dep_libs} )
-    
+
     GBX_ADD_HEADERS( ${LIB_INSTALL} ${hdrs} )
 
 endif( build )

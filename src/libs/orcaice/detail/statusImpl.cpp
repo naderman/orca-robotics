@@ -10,6 +10,7 @@
 
 #include <orcaice/orcaice.h>
 #include <orcaice/icegridutils.h>
+#include <orcaice/convertutils.h>
 #include "statusImpl.h"
 #include "componentstatusaggregator.h"
 // debug only! comment out when finished.
@@ -88,7 +89,8 @@ StatusImpl::initTopicHandler()
     orca::FQTopicName fqTName = orcaice::toStatusTopic( context_.name() );
 
     topicHandler_.reset( new StatusTopicHandler( orcaice::toString(fqTName), context_ ) );
-    if ( !topicHandler_->connectToTopic() )
+    bool localReportingOnly = true;
+    if ( !topicHandler_->connectToTopic( localReportingOnly ) )
     {
         if ( isTopicRequired ) 
         {

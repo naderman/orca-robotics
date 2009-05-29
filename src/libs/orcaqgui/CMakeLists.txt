@@ -1,5 +1,5 @@
 ORCA_SET_LIBRARY_NAME( OrcaQGui )
-GBX_ADD_LICENSE( GPL )
+GBX_ADD_LICENSE( LGPL )
 
 set( build TRUE )
 GBX_REQUIRE_OPTION( build LIB ${LIB_NAME} ON )
@@ -15,10 +15,10 @@ if( build )
     include( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
     include( ${ORCA_CMAKE_DIR}/UseBasicRules.cmake )
     include( ${HYDRO_CMAKE_DIR}/UseQt.cmake )
-    
+
     file( GLOB hdrs *.h )
     file( GLOB human_srcs *.cpp )
-    
+
     set( moc_hdrs
         mainwin.h
         selectableelementwidget.h
@@ -28,7 +28,7 @@ if( build )
 
     GBX_ADD_LIBRARY( ${LIB_NAME} DEFAULT ${human_srcs} ${moc_srcs} )
     TARGET_LINK_LIBRARIES ( ${LIB_NAME} ${dep_libs} )
-    
+
     GBX_ADD_HEADERS( ${LIB_INSTALL} ${hdrs} )
 
 endif( build )

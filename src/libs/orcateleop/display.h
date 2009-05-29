@@ -11,6 +11,8 @@
 #ifndef  DISPLAY_INTERFACE_H
 #define  DISPLAY_INTERFACE_H
 
+#include <string>
+
 namespace orcateleop
 {
 
@@ -29,7 +31,7 @@ public:
 
     virtual void sentRepeatCommand() = 0;
 
-    virtual void failedToSendCommand() = 0;
+    virtual void failedToSendCommand( const std::string &errorMsg ) = 0;
 };
 
 } // namespace

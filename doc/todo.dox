@@ -35,12 +35,6 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
   - An end-to-end tutorial: create new slice interface, write server, write client. (alex m)
   - Update the 'coordinate systems' image.
 
-- Build system
-  - add cmake configuration variable so that autogen/component.cpp selects which standard interfaces to create. 
-  - use 'slice2cpp --depend' option to generate proper inter-dependencies between .ice files. this will get rid
-    off the unnecessary re-generation of cpp files and solve the current (rare) problem: .ice files in a satelite
-    project do not regenerate when Orca .ice files are changed. (alexm)
-
 - libOrcaIce
   - feature: Add a true default timeout config. The existing Ice.Override.Timeout is a blunt tool. 
     Should we make libOrcaIce internally add a configurable finite timeout when dealing proxies without 
@@ -91,8 +85,9 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
     GBX_REQUIRE_INSTALLS and GBX_REQUIRE_TARGETS have been removed. (alexm)
   - Changed format style of CMake files. Standard functions are low-case. Custom macros are upper case. "Local" variables are low-case. "Global"
     and cache variables are upper-case. (alexm)
-  - Autogeneration of component files: added COMP_INTERFACE_FLAG option to control which standard interfaces are created.
-  - Renamed *.template files used by autogenerators to more standard *.in
+  - When compiling Slice files to C++: using 'slice2cpp --depend' option to generate proper inter-dependencies between .ice files. 
+    This eliminates unnecessary re-generation of cpp files and solves a rare problem: .ice files in a satelite
+    project did not automatically regenerate when Orca .ice files were changed. (alexm)
   - There was a minor readjustment of CMake files in the satellite projects.
     Reason: simplify updates in the future by separating bootstrap files which change as Orca evolves and project-specific files which do not 
     need to be updated. In your satellite project, make the following changes. First update Orca.
@@ -110,13 +105,46 @@ $ svn add cmake/internal/Setup.cmake
 $ cp <orca>/CMakeLists.txt . # edit project name and version
 @endverbatim
 
+- Autogeneration of component files
+  - Renamed *.template files used by autogenerators to more standard *.in
+  - added COMP_INTERFACE_FLAG option to control which standard interfaces are created.
+  - added COMP_ADAPTER_POLICY option to control component's adapter activation: automatically vs manually.
+  - Simplified CMake wrapping macros. Instead of pretending to pass some parameters we now expect them to be
+    defined by the CMakeLists.txt of the component. Despite simplified syntax, robustness is improved 
+    because macros now check that the required parameters are actually defined and throw a fatal error if not.
+    The following project-wide search-and-replace operation to be performed in satellite projects:
+@verbatim
+replace this:
+ORCA_WRAP_MAINTHREAD_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${COMP_NAME} ${srcs} )
+by this:
+ORCA_WRAP_MAINTHREAD_INTO_APP( ${srcs} )
+
+replace this:
+ORCA_WRAP_MAINTHREAD_INTO_SERVICE( ${SERVICE_NAME} ${COMP_NAMESPACE} ${COMP_NAME} ${srcs} )
+by this:
+ORCA_WRAP_MAINTHREAD_INTO_SERVICE( ${srcs} )
+
+replace this:
+ORCA_WRAP_COMPONENT_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${srcs} )
+by this:
+ORCA_WRAP_COMPONENT_INTO_APP( ${srcs} )
+
+replace this:
+ORCA_WRAP_COMPONENT_INTO_SERVICE( ${SERVICE_NAME} ${COMP_NAMESPACE} ${srcs} )
+by this:
+ORCA_WRAP_COMPONENT_INTO_SERVICE( ${srcs} )
+@endverbatim
+
 - Dependency cleanup
-  - Removed all instances of including <Ice/Ice.h> from library headers to reduce build time. The subset of Ice headers
-    required by standard libs and components is included by <orcaice/context.h> (alexm)
+  - Removed all instances of including \<Ice/Ice.h> from library headers to reduce build time. The subset of Ice headers
+    required by standard libs and components is included by \<orcaice/context.h> (alexm)
   - Not generating and not using 'global' includes: orca/orca.h, orcaifaceutil/orcaifaceutil.h, orcaifacelog/orcaifacelog.h because
     they were leading to unnecessary rebuilds which is difficult to fix. Legitimate uses of these headers are replaced by a long list
     of includes, one per interface. At the same time, removed many instances of wrong usage where only a small subset of interfaces
     was required. (alexb, alexm)
+  - Trimmed what is included by \<orcaice/orcaice.h> to minimize the number of includes needed by typical component code.
+    Non-typical code may need to add the following:
+    - #include \<orcaice/convertutils.h>
 
 @par New interfaces
 
@@ -153,28 +181,45 @@ $ cp <orca>/CMakeLists.txt . # edit project name and version
 
 @par Updated utilities
 
-- PureIce example: bugfix patch from Alberto Liu
+- PureIce example
+  - bugfix patch from Alberto Liu
 
 - RegistryClean
   - renamed from CleanRegistry.
   - user feedback is more responsive when pinging home objects.
 
+- RegistryList
+  - the pinging process can be interrupted by Ctrl-C
+
 - Probe
   - Browser now checks return code of loadOperationEvent() and quits with debugging info when an interface probe fails
     to load an operation.
 
+- SliceToOrca
+  - Added --depend option to generate dependency information.
+  
+- OrcaView2d
+  - Got rid of "detail", API to create GuiElements is simplified (tobi)
+  - Guielements can now add widgets to the bottom right of the worldview (tobi)
+
+
 @par Updated libraries
+
+- libOrcaQGuiElementUtil
+  - added icestormguielement class which does not get the painter as a template argument (tobi)
+  - restructured and renamed icestormguielement2d (tobi)
 
 - libOrcaView2dFactory
   - support for RangerArray (Mikel Astiz)
   - pathfollower and pathplannerelement: changed the way paths are saved from user input (tobi)
   - fixed rare segfaults related to mouse events and shortcut keys for pathfollower/pathplanner elements (tobi)
   - improved pathfollowerinput according to changes in hydroqguipath::ipathinput (tobi)
+  - added a velocitycontrol2d element to teleoperate a robot (tobi)
 
 - libOrcaIce
-  - SubsystemThread does not derive from SubstatusThread, does not expose walk() function to prevent un-intended use (alexm)
-  - SubstatusThread is no longer use and was removed.
-  - SubsystemThread uses a new light-weight SubHealth class to provide access to health functions of status only. The function
+  - SubsystemThread class: does not derive from SubstatusThread, does not expose walk() function to prevent un-intended use (alexm)
+  - SubstatusThread class: is no longer use and was removed.
+  - SubsystemThread class: uses a new light-weight SubHealth class to provide access to health functions of status only. The function
     related to the state machine, initialise(), work(), finalise(), are handled by the internal implementation of the subsystem
     state machine and are not exposed. For non-standard usage, they are still available through context_.status(). Changes 
     for satelite projects (in all threads derived from SubsystemThread):
@@ -185,10 +230,30 @@ $ cp <orca>/CMakeLists.txt . # edit project name and version
     - subStatus().setSubsystemType() --> setSubsystemType()
   - all multi-try functions: redefined in terms of the new light interface class gbxutilacfr::Stoppable. No change in satellite
     code are requried. (alexm)
+  - all multi-try functions report status warnings where in the past only tracer warnings were generated. (alexm)
+  - IceStorm-related functions: better feedback on exceptions. 
+  - Component class: the default proxy to IceStorm/TopicManager now has an 8 sec timeout (used to be infinite before).
+  - Component class: added a configuration option for automatically activating the component's adapter from 
+    the internal thread. All satellite projects should remove manual activation from their code, i.e. calls
+    to Component::activate(), Context::activate(), and orcaice::activate() function. If these calls are not 
+    removed, the components will still work but they would be redundant and confusing. If you want to keep
+    manual activation, supply orcaice::Component with the following 3rd initialization parameter: 
+    orcaice::AdapterManualActivation.
 
 - libOrcaIfaceImpl
   - all multi-try functions: redefined in terms of the new light interface class gbxutilacfr::Stoppable. Similar changes in
     satelite projects are recommended but are not required. (alexm)
+
+- libOrcaObjects
+  - broke up header files into those corresponding to individual interfaces. Changes required: instead of including orcaobj.h,
+    stringutils.h, etc., include a file corresponding to the interface file you are using, e.g.
+@verbatim
+#include <orcaobj/rangescanner2d.h>
+@endverbatim
+  - moved all frame-related functions from frameutils.h to the following file:
+@verbatim
+#include <orcaobj/bros1.h>
+@endverbatim
 
 @par Removed
 

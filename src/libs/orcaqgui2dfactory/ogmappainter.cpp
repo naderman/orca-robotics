@@ -13,7 +13,7 @@
 
 #include <Ice/Ice.h>
 #include <orcaice/orcaice.h>
-#include <orcaobj/orcaobj.h>
+#include <orcaobj/ogmap.h>
 #include "ogmappainter.h"
 #include <hydroqgui/exceptions.h>
 #include <hydroqguielementutil/ihumanmanager.h>
@@ -149,7 +149,7 @@ OgMapPainter::saveMap( const orcaice::Context   &context,
         dataFile->close();
         delete dataFile;
         cout << "INFO(ogmappainter.cpp): Successfully saved map to file " << fileName.toStdString() << endl;
-        humanManager->showStatusMsg(hydroqguielementutil::IHumanManager::Information, "Successfully saved ogMap to file: " + fileName);
+        humanManager->showStatusInformation("Successfully saved ogMap to file: " + fileName);
     }
     
     return 0;

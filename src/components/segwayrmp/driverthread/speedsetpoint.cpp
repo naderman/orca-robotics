@@ -41,7 +41,7 @@ void
 SpeedSetPoint::evaluateDt()
 {
     dt_ = timer_.elapsedSec();
-    if ( dt_ > 0.5 )
+    if ( dt_ > 1.0 )
     {
         stringstream ss;
         ss << "Huh? Why is dt_ so large?? (dt_="<<dt_<<"s)";
@@ -49,7 +49,7 @@ SpeedSetPoint::evaluateDt()
     }
     else if ( dt_ > 0.015 || dt_ < 0.001 )
     {
-        cout<<"TRACE(speedsetpoint.cpp): Outlier dt: " << dt_ << endl;
+        cout<<"TRACE(speedsetpoint.cpp): "<< IceUtil::Time::now().toDateTime() <<": Outlier dt: " << dt_ << endl;
     }
     timer_.restart();
 }
@@ -63,7 +63,13 @@ SpeedSetPoint::set( double speed )
 double
 SpeedSetPoint::currentCmdSpeed( bool &setPointAlreadyReached )
 {
-    assert( dt_ > 0.0 );
+    // dt_ can actually be negative, e.g. if ntp steps the clock backwards...
+    if ( dt_ <= 0.0 )
+    {
+        cout<<"TRACE(speedsetpoint.cpp): warning: found negative dt_: " << dt_ << ".  Setting dt_ to 0.01." << endl;
+        dt_ = 0.01;
+    }
+
     double cmdSpeedPrior = currentCmdSpeed_;
 
     const double diff = setPoint_ - currentCmdSpeed_;

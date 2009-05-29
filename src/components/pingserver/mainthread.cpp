@@ -21,6 +21,8 @@ MainThread::MainThread( const orcaice::Context &context ) :
     SubsystemThread( context.tracer(), context.status(), "MainThread" ),
     context_(context)
 {
+    // this subsystem will initialise and exit, but the component will continue running.
+    setSubsystemType( gbxutilacfr::SubsystemEarlyExit );
 }
 
 void
@@ -47,10 +49,4 @@ MainThread::initialise()
     // should implement a multitry version
 //     pingerInterface_->initInterface( this, subsysName() );
     pingerInterface_->initInterface();
-
-    //
-    // ENABLE NETWORK CONNECTIONS
-    //
-    // multi-try function
-    orcaice::activate( context_, this, subsysName() );
 }

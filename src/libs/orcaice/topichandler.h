@@ -89,14 +89,18 @@ public:
 
     // Returns TRUE on success, FALSE otherwise.
     // Catches only the exceptions expected in the case when IceStorm is not unavailable.
-    bool connectToTopic()
+    //
+    // Set localReportingOnly to true when calling this function from classes which deal with
+    // error reporting, such as Tracer and Status. Otherwise, potential connection problems will
+    // lead to infinite multiplication of fault messages.
+    bool connectToTopic( bool localReportingOnly=false )
     {
         context_.tracer().debug( std::string("TopicHandler: connecting to topic ")+topicName_, 2 );
         // Find IceStorm Topic to which we'll publish
         try
         {
             topicPrx_ = orcaice::connectToTopicWithString<ConsumerProxyType>
-                ( context_, publisherPrx_, topicName_ );
+                ( context_, publisherPrx_, topicName_, localReportingOnly );
         }
         // we only catch the exception which would be thrown if IceStorm is not there.
         catch ( const orcaice::NetworkException& e )
@@ -109,14 +113,15 @@ public:
         return true;
     }
 
-    bool connectToTopic( gbxutilacfr::Stoppable* activity, const std::string& subsysName, int retryInterval )
+    bool connectToTopic( gbxutilacfr::Stoppable* activity, const std::string& subsysName, int retryInterval,
+                         bool localReportingOnly=false )
     {
         context_.tracer().debug( std::string("TopicHandler: connecting to topic ")+topicName_, 2 );
         // Find IceStorm Topic to which we'll publish
         try
         {
             topicPrx_ = orcaice::connectToTopicWithString<ConsumerProxyType>
-                ( context_, publisherPrx_, topicName_, activity, subsysName, retryInterval );
+                ( context_, publisherPrx_, topicName_, activity, subsysName, retryInterval, -1, localReportingOnly );
         }
         // we only catch the exception which would be thrown if IceStorm is not there.
         catch ( const orcaice::NetworkException& e )

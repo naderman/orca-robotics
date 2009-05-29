@@ -11,13 +11,10 @@
 #ifndef ORCAGUI_ICESTORM_LISTENER_H
 #define ORCAGUI_ICESTORM_LISTENER_H
 
-#include <iostream>
 #include <assert.h>
-#include <IceStorm/IceStorm.h>
 
 #include <orcaice/icestormutils.h>
 #include <orcaice/context.h>
-#include <gbxsickacfr/gbxiceutilacfr/timer.h>
 
 #include <orcaqguielementutil/icestormlistenerdetail.h>
 
@@ -49,7 +46,7 @@ public:
           isSubscribed_(false)
         {
             // Register with the adapter
-            consumer_ = new detail::BufferedTimedConsumerI<ConsumerType,DataType>;
+            consumer_ = new detail::StoredTimedConsumerI<ConsumerType,DataType>;
             registerWithAdapter();
         }
 
@@ -59,7 +56,7 @@ public:
             // do not delete consumer_, it's deleted when the smart pointers fall out of scope.
         }
 
-    gbxiceutilacfr::Buffer<DataType> &buffer() { return consumer_->buffer_; }
+    gbxiceutilacfr::Store<DataType> &store() { return consumer_->store_; }
 
     // Returns zero on success
     int connect()
@@ -94,8 +91,7 @@ public:
 
 private:
 
-    DataType                                               data_;
-    detail::BufferedTimedConsumerI<ConsumerType,DataType> *consumer_;
+    detail::StoredTimedConsumerI<ConsumerType,DataType> *consumer_;
 
     orcaice::Context  context_;
     std::string       proxyString_;

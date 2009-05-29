@@ -196,7 +196,7 @@ void
 PathFollowerUserInteraction::allGo()
 {
     cout<<"TRACE(PathFollowerUserInteraction): allGo()" << endl;
-    const QList<hydroqguielementutil::IGuiElement*> elements = guiElementSet_.elements();
+    const QList<hydroqguielementutil::GuiElement*> elements = guiElementSet_.elements();
     for ( int i=0; i < elements.size(); i++ )
     {
         PathFollower2dElement *typedElem = dynamic_cast<PathFollower2dElement *>(elements[i]);
@@ -210,7 +210,7 @@ void
 PathFollowerUserInteraction::allStop()
 {
     cout<<"TRACE(PathFollowerUserInteraction): allStop()" << endl;
-    const QList<hydroqguielementutil::IGuiElement*> elements = guiElementSet_.elements();
+    const QList<hydroqguielementutil::GuiElement*> elements = guiElementSet_.elements();
     for ( int i=0; i < elements.size(); i++ )
     {
         PathFollower2dElement *typedElem = dynamic_cast<PathFollower2dElement *>(elements[i]);

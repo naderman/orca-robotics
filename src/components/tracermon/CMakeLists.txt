@@ -52,7 +52,7 @@ endif( GBX_OS_LINUX )
     file( GLOB srcs *.cpp )
     set( dep_libs ${dep_libs} ${TERM_IOSTREAM_LIBS} ${TERM_NCURSES_LIBS} )
 
-    ORCA_WRAP_COMPONENT_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${srcs} )
+    ORCA_WRAP_COMPONENT_INTO_APP( ${srcs} )
     target_link_libraries( ${APP_NAME} ${dep_libs} )
 
     ORCA_GENERATE_CONFIG_FILE( ${APP_NAME}.def )

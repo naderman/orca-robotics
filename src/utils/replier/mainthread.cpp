@@ -27,11 +27,6 @@ MainThread::MainThread( const orcaice::Context& context ) :
 void
 MainThread::walk()
 {
-    orcaice::activate( context_, this );
-    // check for stop signal after retuning from multi-try
-    if ( isStopping() )
-        return;
-
     // create a provided interface
     // create servant for direct connections and tell adapter about it
     // don't need to store it as a member variable, adapter will keep it alive

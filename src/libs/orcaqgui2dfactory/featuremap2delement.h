@@ -1,7 +1,7 @@
 #ifndef FEATUREMAP2DELEMENT_H
 #define FEATUREMAP2DELEMENT_H
 
-#include <orcaqguielementutil/icestormelement2d.h>
+#include <orcaqguielementutil/icestormguielement2d.h>
 #include <orcaqgui2dfactory/featuremap2dpainter.h>
 
 namespace hydroqguielementutil {
@@ -15,7 +15,7 @@ namespace orcaqgui2d
 //! @author Alex Brooks
 //!
 class FeatureMap2dElement
-    : public orcaqguielementutil::IceStormElement2d<FeatureMap2dPainter,
+    : public orcaqguielementutil::IceStormGuiElement2d<FeatureMap2dPainter,
                              orca::FeatureMap2dData,
                              orca::FeatureMap2dPrx,
                              orca::FeatureMap2dConsumer,
@@ -24,7 +24,8 @@ class FeatureMap2dElement
 
 public: 
 
-    FeatureMap2dElement( const orcaice::Context  &context,
+    FeatureMap2dElement( const hydroqguielementutil::GuiElementInfo &guiElementInfo,
+                         const orcaice::Context  &context,
                          const std::string       &proxyString,
                          hydroqguielementutil::IHumanManager *humanManager );
 

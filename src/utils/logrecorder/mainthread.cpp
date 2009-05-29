@@ -84,14 +84,6 @@ MainThread::initialise()
         context_.shutdown();
         throw;
     }
-    
-
-    // multi-try activation function
-    orcaice::activate( context_, this, subsysName() );
-    // check for stop signal after retuning from multi-try
-    if ( isStopping() )
-        return;
-
 
     // Get a list of required tags
     //

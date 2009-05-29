@@ -43,7 +43,7 @@ public:
 
     virtual void sentRepeatCommand();
 
-    virtual void failedToSendCommand();
+    virtual void failedToSendCommand( const std::string &errorMsg );
     
 private:
 

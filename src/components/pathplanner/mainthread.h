@@ -37,7 +37,8 @@ private:
     virtual void initialise();
     virtual void work();
 
-    void initNetwork();
+    void initRequiredInterfaces();
+    void initProvidedInterfaces();
     void initDriver();
     
     // The library that contains the driver factory (must be declared first so it's destructed last!!!)

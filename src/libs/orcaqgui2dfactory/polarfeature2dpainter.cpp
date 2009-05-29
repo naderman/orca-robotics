@@ -12,7 +12,7 @@
 #include <QPainter>
 #include <QString>
 #include <orcaice/orcaice.h>
-#include <orcaobj/orcaobj.h>
+#include <orcaobj/bros1.h>
 #include <hydroqguielementutil/paintutils.h>
 #include "polarfeature2dpainter.h"
 #include <orcaqguielementutil/featurecolours.h>

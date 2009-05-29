@@ -124,6 +124,21 @@ namespace {
         return ( x < -ogMap.worldSizeX()/2.0+ROOM_SPACE &&
                  y > ogMap.worldSizeY()/2.0-ROOM_SPACE );
     }
+
+    bool isNearObstacle( const orca::Frame2d     &p,
+                         const hydroogmap::OgMap &ogMap )
+    {
+        double prox = 0.3;
+        for ( double x = p.p.x-prox; x <= p.p.x+1.05*prox; x+=prox/2.0 )
+        {
+            for ( double y = p.p.y-prox; y <= p.p.y+1.05*prox; y+=prox/2.0 )
+            {
+                if ( !ogMap.coordsWithinMap( x, y ) ) return true;
+                if ( !hydroogmap::isTraversable( ogMap.worldCell(x,y) ) ) return true;
+            }
+        }
+        return false;
+    }
 }
 
 orca::PathFollower2dData
@@ -171,6 +186,12 @@ getTestPath( const hydroogmap::OgMap &ogMap,
             // Don't put a random wp here.
             i--;
             continue;
+        }
+        else if ( isNearObstacle( wp.target, ogMap ) )
+        {
+            // Don't put a random wp here.
+            i--;
+            continue;            
         }
 
         if ( stressTiming )

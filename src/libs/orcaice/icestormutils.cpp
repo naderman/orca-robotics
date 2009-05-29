@@ -90,17 +90,17 @@ connectToIceStormTopicPublisherPrx( const Ice::CommunicatorPtr& communicator, co
     IceStorm::TopicPrx topic = connectToIceStormTopicPrx( communicator, topicName, true );
 
     // now that we have the topic itself, get its publisher object
-    return connectToIceStormTopicPublisherPrx( topic );
+    return getIceStormTopicPublisherPrx( topic );
 }
 
 Ice::ObjectPrx 
-connectToIceStormTopicPublisherPrx( const IceStorm::TopicPrx& topic )
+getIceStormTopicPublisherPrx( const IceStorm::TopicPrx& topic )
 {
     // Get the topic's publisher object
     // @todo should we verify that the publisher is an object of the right type? need template.
     Ice::ObjectPrx obj = topic->getPublisher();
     
-    // create a oneway proxy (for efficiency reasons).
+    // create a oneway proxy if we are using UDP (for efficiency reasons).
     if(!obj->ice_isDatagram()) {
         obj = obj->ice_oneway();
     }

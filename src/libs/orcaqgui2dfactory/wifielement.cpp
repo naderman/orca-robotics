@@ -11,6 +11,7 @@
 #include <iostream>
 #include <QVector>
 #include <QLabel>
+#include <QSplitter>
 #include <QProgressBar> 
 #include <QLCDNumber>
 #include <QVBoxLayout>
@@ -162,22 +163,26 @@ void WifiWidget::setupDisplay()
     setLayout(globalLayout);
 }
 
-WifiElement::WifiElement( const orcaice::Context  &context,
+/////////////////////////////////////////////////////////
+
+WifiElement::WifiElement( const hydroqguielementutil::GuiElementInfo &guiElementInfo,
+                          const orcaice::Context  &context,
                           const std::string       &proxyString,
-                          int                      timeoutMs)
-    : orcaqguielementutil::IceStormElement2d<WifiPainter,
-                      orca::WifiData,
-                      orca::WifiPrx,
-                      orca::WifiConsumer,
-                      orca::WifiConsumerPrx>(context, proxyString, painter_, timeoutMs ),
+                          QSplitter               *spaceBottomRight,
+                          int                      timeoutMs )
+    : orcaqguielementutil::IceStormGuiElement<orca::WifiData,
+                                              orca::WifiPrx,
+                                              orca::WifiConsumer,
+                                              orca::WifiConsumerPrx>( guiElementInfo, context, proxyString, timeoutMs ),
         wifiWidget_(0),
-        proxyString_(proxyString)
+        proxyString_(proxyString),
+        spaceBottomRight_(spaceBottomRight)
+                
 {
 }
 
 WifiElement::~WifiElement()
 {
-    //cout << "================ DESTRUCTOR == " << endl;
     if (wifiWidget_!=0) delete wifiWidget_;
 }
 
@@ -185,25 +190,18 @@ WifiElement::~WifiElement()
 void
 WifiElement::update()
 {
-    if ( !needToUpdate() ) {
-        return;
-    }
-    
-    assert( !listener_.buffer().isEmpty() );
-
-    orca::WifiData data;
-    
-    // get data from the buffer
-    listener_.buffer().getAndPop( data );
-    
-    //cout << orcaobj::toString(data) << endl;
-    
-    if (wifiWidget_==0) {
-        wifiWidget_ = new WifiWidget( data.interfaces.size(), proxyString_ );
-    }
-    wifiWidget_->refresh( data );
-    if (wifiWidget_->isHidden()) {
-        wifiWidget_->show();
+    if ( updateFromStore() ) 
+    {
+        if (wifiWidget_==0) 
+        {
+            wifiWidget_ = new WifiWidget( data_.interfaces.size(), proxyString_ );
+            if (spaceBottomRight_!=0)
+                spaceBottomRight_->addWidget( wifiWidget_ );
+        }
+        wifiWidget_->refresh( data_ );
+        if (wifiWidget_->isHidden()) {
+            wifiWidget_->show();
+        }
     }
 }
 

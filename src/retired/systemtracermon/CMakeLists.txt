@@ -15,7 +15,7 @@ if( build )
     file( GLOB srcs *.cpp )
 
     # build stand-alone component  
-    ORCA_WRAP_COMPONENT_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${srcs} )
+    ORCA_WRAP_COMPONENT_INTO_APP( ${srcs} )
     target_link_libraries( ${APP_NAME} ${dep_libs} )
 
     ORCA_GENERATE_CONFIG_FILE( ${APP_NAME}.def )

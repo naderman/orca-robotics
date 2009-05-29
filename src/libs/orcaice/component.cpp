@@ -28,8 +28,10 @@ using namespace std;
 
 namespace orcaice {
 
-Component::Component( const std::string& tag, ComponentInterfaceFlag interfaceFlag_ ) :
-    interfaceFlag_(interfaceFlag_)
+Component::Component( const std::string& tag, ComponentInterfaceFlag interfaceFlag,
+               ComponentAdapterActivationPolicy adapterPolicy ) :
+    interfaceFlag_(interfaceFlag),
+    adapterPolicy_(adapterPolicy)
 {
     context_.tag_ = tag;
 }
@@ -135,7 +137,7 @@ Component::init( const orca::FQComponentName& name,
     //
     // create infrastructure thead
     //
-    componentThread_ = new detail::ComponentThread( context_ );
+    componentThread_ = new detail::ComponentThread( adapterPolicy_, context_ );
     try {
         componentThread_->start();
     }

@@ -12,7 +12,6 @@
 
 #include <orca/rangescanner2d.h>
 #include <orcaice/ptrnotify.h>
-// #include <orcaobj/orcaobj.h>
 #include <gbxutilacfr/mathdefs.h>
 
 // Random doubles and integers

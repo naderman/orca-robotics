@@ -11,7 +11,7 @@
 #include <cmath>
 
 #include <QPainter>
-#include <orcaobj/orcaobj.h>
+#include <orcaobj/localise2d.h>
 #include <orcaice/orcaice.h>
 #include <gbxutilacfr/mathdefs.h>
 #include <hydroqgui/exceptions.h>

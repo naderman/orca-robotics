@@ -11,7 +11,9 @@
 #include <iostream>
 #include <assert.h>
 #include <orcaice/orcaice.h>
-#include <orcaobj/orcaobj.h>
+#include <orcaobj/ogmap.h>
+#include <orcaobj/pathfollower2d.h>
+#include <orcaobj/pathplanner2d.h>
 #include <hydroutil/hydroutil.h>
 #include "mainthread.h"
 #include "pathplanner2dI.h"
@@ -35,13 +37,8 @@ void
 MainThread::initialise()
 {
     setMaxHeartbeatInterval( 30.0 );
-    
-    activate( context_, this, subsysName() );
-    // check for stop signal after retuning from multi-try
-    if ( isStopping() )
-        return;
 
-    initNetwork();
+    initRequiredInterfaces();
     if ( isStopping() )
         return;
 
@@ -52,6 +49,8 @@ MainThread::initialise()
 
     initDriver();
     assert( driver_.get() );
+
+    initProvidedInterfaces();
 }
 
 void 
@@ -188,7 +187,7 @@ MainThread::work()
 /////////////
 
 void
-MainThread::initNetwork()
+MainThread::initRequiredInterfaces()
 {
     //
     // REQUIRED INTERFACE: OgMap
@@ -221,11 +220,11 @@ MainThread::initNetwork()
 
     // Store in the conifg structure
     hydroDriverConfig_.reset( new hydrointerfaces::PathPlanner2d::Config(ogMap_) );
-    
-    //
-    // PROVIDED INTERFACES
-    //
+}
 
+void
+MainThread::initProvidedInterfaces()
+{
     // PathPlanner2d
     health().ok("Creating PathPlanner2d Interface" );
     pathPlannerI_ = new PathPlanner2dI( pathPlannerTaskBuffer_, context_ );

@@ -1,5 +1,3 @@
-GBX_ADD_LICENSE( GPL )
-
 include( ${HYDRO_CMAKE_DIR}/UseQt.cmake )
 
 file( GLOB human_srcs *.cpp )

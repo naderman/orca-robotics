@@ -44,9 +44,6 @@ MainThread::walk()
     int playerPort = orcaice::getPropertyAsIntWithDefault( 
             context_.properties(), prefix+"Player.Port", 6665 );
 
-    // activate component, this may throw an exception
-    context_.activate();
-
     // setup provided interface Odometry2d (use generic vehicle description)
     orca::VehicleDescription descr;
     orcaifaceimpl::Odometry2dImplPtr odometry2dI = 

@@ -17,7 +17,7 @@ using namespace std;
 namespace orcaqgui3d {
 
 bool 
-PlatformCSFinder::findPlatformCS( const QList<hydroqguielementutil::IGuiElement*> &elements,
+PlatformCSFinder::findPlatformCS( const QList<hydroqguielementutil::GuiElement*> &elements,
                                   const QString                                   &platform,
                                   float                                           &x,
                                   float                                           &y,

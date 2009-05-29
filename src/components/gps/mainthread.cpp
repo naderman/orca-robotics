@@ -11,7 +11,7 @@
 #include <iostream>
 #include <orcaice/orcaice.h>
 #include <orcaifaceutil/gps.h>
-#include <orcaobj/orcaobj.h>    // getPropertyAsFrame3dWithDefault
+#include <orcaobj/bros1.h>    // getPropertyAsFrame3dWithDefault
 
 #include "mainthread.h"
 
@@ -67,14 +67,8 @@ MainThread::initialise()
 
     publishWithoutFix_ = orcaice::getPropertyAsIntWithDefault( prop, prefix+"ReportIfNoFix", 1 );
 
-    // These functions catch their exceptions.
-    orcaice::activate( context_, this, subsysName() );
-    // check for stop signal after retuning from multi-try
-    if ( isStopping() )
-        return;
-
-    initNetworkInterface();
     initHardwareDriver();
+    initNetworkInterface();
 }
 
 void

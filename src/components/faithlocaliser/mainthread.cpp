@@ -10,7 +10,7 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include <orcaobj/orcaobj.h>
+#include <orcaobj/localise2d.h>
 #include <cmath>
 #include "mainthread.h"
 
@@ -51,7 +51,7 @@ void
 MainThread::initialise()
 {
     setMaxHeartbeatInterval( 10.0 );
-    
+
     Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag()+".Config.";
     stdDevPosition_ = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"StdDevPosition", 0.05 );
@@ -112,15 +112,6 @@ MainThread::work()
 void
 MainThread::initNetworkInterface()
 {
-    //
-    // ENABLE NETWORK CONNECTIONS
-    //
-    // multi-try function
-    orcaice::activate( context_, this, subsysName() );
-    // check for stop signal after retuning from multi-try
-    if ( isStopping() )
-        return;
-    
     //
     // EXTERNAL REQUIRED INTERFACES
     //           

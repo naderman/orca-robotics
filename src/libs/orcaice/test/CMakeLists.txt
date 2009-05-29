@@ -139,10 +139,13 @@ ORCA_GENERATE_CONFIG_FILE( icetest.def icetest 0 )
 # This test relies on establishing direct connections which is currently broken
 # not sure why it works in linux actually.
 if( NOT GBX_OS_QNX )
-add_executable( connecttest connecttest.cpp )
-GBX_ADD_TEST( OrcaIce_ConnectUtils connecttest )
-ORCA_GENERATE_CONFIG_FILE( connecttest.def connecttest 0 )
+    add_executable( connecttest connecttest.cpp )
+    GBX_ADD_TEST( OrcaIce_ConnectUtils connecttest )
+    ORCA_GENERATE_CONFIG_FILE( connecttest.def connecttest 0 )
 endif( NOT GBX_OS_QNX )
+
+add_executable( icestormtest icestormtest.cpp )
+GBX_ADD_TEST( OrcaIce_IceStormUtils icestormtest )
 
 add_executable( icegridtest icegridtest.cpp )
 GBX_ADD_TEST( OrcaIce_IceGridUtils icegridtest )

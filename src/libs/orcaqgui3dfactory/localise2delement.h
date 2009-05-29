@@ -11,8 +11,7 @@
 #ifndef ORCAGUI_LOCALISE2D_GUI_ELEMENT_H
 #define ORCAGUI_LOCALISE2D_GUI_ELEMENT_H
 
-#include <orcaobj/orcaobj.h>
-#include <orcaice/orcaice.h>
+#include <orcaice/context.h>
 
 #include <orcaqgui3d/iknowsplatformposition.h>
 #include <orcaqgui3d/icestormelement3d.h>
@@ -31,16 +30,17 @@ class Localise2dElement
       public orcaqgui3d::IKnowsPlatformPosition
 {
 public:
-    Localise2dElement( const orcaice::Context  &context,
-                       const std::string       &proxyString,
-                       hydroqguielementutil::IHumanManager *humanManager,
-                       bool                     beginDisplayHistory=false,
-                       int                      timeoutMs=30000 )
+    Localise2dElement( const hydroqguielementutil::GuiElementInfo &guiElementInfo,
+                       const orcaice::Context                     &context,
+                       const std::string                          &proxyString,
+                       hydroqguielementutil::IHumanManager        *humanManager,
+                       bool                                        beginDisplayHistory = false,
+                       int                                         timeoutMs = 30000 )
         : orcaqgui3d::IceStormElement3d<Localise2dPainter,
                             orca::Localise2dData,
                             orca::Localise2dPrx,
                             orca::Localise2dConsumer,
-                            orca::Localise2dConsumerPrx>(context, proxyString, painter_, timeoutMs ),
+                            orca::Localise2dConsumerPrx>( guiElementInfo, context, proxyString, painter_, timeoutMs ),
           humanManager_(humanManager),
           painter_( beginDisplayHistory ),
           x_(0),

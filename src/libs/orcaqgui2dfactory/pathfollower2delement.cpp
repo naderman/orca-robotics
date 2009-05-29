@@ -11,7 +11,7 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include <orcaobj/stringutils.h>
+#include <orcaobj/pathfollower2d.h>
 #include <hydroqguielementutil/ihumanmanager.h>
 
 #include "pathconversionutil.h"
@@ -47,13 +47,15 @@ void PathUpdateConsumer::setEnabledState( bool enabledState, const ::Ice::Curren
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-PathFollower2dElement::PathFollower2dElement( const orcaice::Context &context,
-                                              const std::string &proxyString,
-                                              hydroqguielementutil::IHumanManager &humanManager,
-                                              hydroqguielementutil::MouseEventManager &mouseEventManager,
-                                              hydroqguielementutil::ShortcutKeyManager &shortcutKeyManager,
-                                              const hydroqgui::GuiElementSet &guiElementSet )
-    : isConnected_(false),
+PathFollower2dElement::PathFollower2dElement( const hydroqguielementutil::GuiElementInfo &guiElementInfo,
+                                              const orcaice::Context                     &context,
+                                              const std::string                          &proxyString,
+                                              hydroqguielementutil::IHumanManager        &humanManager,
+                                              hydroqguielementutil::MouseEventManager    &mouseEventManager,
+                                              hydroqguielementutil::ShortcutKeyManager   &shortcutKeyManager,
+                                              const hydroqgui::GuiElementSet             &guiElementSet )
+    : GuiElement2d(guiElementInfo),
+      isConnected_(false),
       proxyString_(proxyString),
       context_(context),
       humanManager_(humanManager),
@@ -196,7 +198,7 @@ PathFollower2dElement::connectToInterface()
     
     humanManager_.showStatusInformation( "PathFollowerElement is trying to connect");
     
-    // Here's what IceStormElement2d usually does for you if the GuiElement inherits from IceStormElement (see comments in .h file for more information)
+    // Here's what IceStormGuiElement2d usually does for you if the GuiElement inherits from IceStormElement (see comments in .h file for more information)
     try 
     {
         orcaice::connectToInterfaceWithString( context_, pathFollower2dPrx_, proxyString_ );
@@ -207,12 +209,6 @@ PathFollower2dElement::connectToInterface()
         pathFollower2dPrx_->subscribe(callbackPrx_);
         humanManager_.showStatusInformation( "Connected to pathfollower interface successfully.");
         isConnected_ = true;
-    }
-    catch ( const IceUtil::Exception &e )
-    {
-        stringstream ss;
-        ss << "PathFollower2dElement:: Problem connecting to pathfollower interface: " << e;
-        humanManager_.showStatusWarning( ss.str().c_str() );
     }
     catch ( const std::exception &e )
     {
@@ -270,23 +266,6 @@ PathFollower2dElement::contextMenu()
     s << "Save path as..."
       << "Save path";
     return s;
-}
-
-bool
-PathFollower2dElement::tryEnableRemoteInterface( bool enable )
-{
-    try 
-    {
-        pathFollower2dPrx_->setEnabled( enable );
-    }
-    catch ( std::exception &e )
-    {
-        stringstream ss;
-        ss << "Error when switching remote interface to " << enable << ". Reason: " << e.what() << endl;
-        humanManager_.showStatusError( QString(ss.str().c_str()) );  
-        return false;
-    }
-    return true;
 }
 
 void 
@@ -352,14 +331,9 @@ PathFollower2dElement::toggleEnabled()
         pathFollower2dPrx_->setEnabled( !pathFollower2dPrx_->enabled() );
         isFollowerEnabled( isEnabled );
     }
-    catch ( const orca::OrcaException &e ) {
+    catch ( const std::exception &e ) {
         stringstream ss;
-        ss << "While trying to toggle enabled status: " << e.what;
-        humanManager_.showStatusError(  ss.str().c_str() );
-    }
-    catch ( const Ice::Exception &e ) {
-        stringstream ss;
-        ss << "While trying to toggle enabled status: " << endl << e;
+        ss << "While trying to toggle enabled status: " << e.what();
         humanManager_.showStatusError(  ss.str().c_str() );
     }
 
@@ -375,16 +349,21 @@ PathFollower2dElement::toggleEnabled()
 void 
 PathFollower2dElement::go()
 {
+    if (!pathFollower2dPrx_) {
+        humanManager_.showStatusError("Proxy to pathfollower2d interface is not intitialized");
+        return;
+    }
+    
     cout<<"TRACE(PathFollower2dElement): go()" << endl;
     humanManager_.showStatusInformation("Received GO signal");
     try
     {
         pathFollower2dPrx_->activateNow();
     }
-    catch ( const Ice::Exception &e )
+    catch ( const std::exception &e )
     {
         stringstream ss;
-        ss << "While trying to activate pathfollower: " << endl << e;
+        ss << "While trying to activate pathfollower: " << endl << e.what();
         humanManager_.showStatusError( QString(ss.str().c_str()) );
     }
 }
@@ -392,6 +371,11 @@ PathFollower2dElement::go()
 void 
 PathFollower2dElement::stop()
 {
+    if (!pathFollower2dPrx_) {
+        humanManager_.showStatusError("Proxy to pathfollower2d interface is not intitialized");
+        return;
+    }
+        
     cout<<"TRACE(PathFollower2dElement): stop()" << endl;
     humanManager_.showStatusInformation("Received STOP signal");
     orca::PathFollower2dData dummyPath;
@@ -400,11 +384,11 @@ PathFollower2dElement::stop()
     {
         pathFollower2dPrx_->setData( dummyPath, activateNow );
     }
-    catch ( const Ice::Exception &e )
+    catch ( const std::exception &e )
     {
         stringstream ss;
-        ss << "While trying to set (empty) pathfollower data: " << endl << e;
-        humanManager_.showDialogError( QString(ss.str().c_str()) );
+        ss << "While trying to send empty path: " << endl << e.what();
+        humanManager_.showStatusError( QString(ss.str().c_str()) );
     }
 }
 
@@ -412,6 +396,11 @@ void
 PathFollower2dElement::sendPath( const hydroqguipath::IPathInput *pathInput, 
                                  bool                             activateImmediately )
 {
+    if (!pathFollower2dPrx_) {
+        humanManager_.showStatusError("Proxy to pathfollower2d interface is not intitialized");
+        return;
+    }
+    
     try
     {
         // it's possible that we were desubscribed before, let's resubscribe to make sure
@@ -442,7 +431,7 @@ PathFollower2dElement::sendPath( const hydroqguipath::IPathInput *pathInput,
     {
         stringstream ss;
         ss << "Error while trying to send pathfollowing data: " << e.what();
-        humanManager_.showDialogError( ss.str().c_str() );
+        humanManager_.showStatusError( ss.str().c_str() );
     }
 }
 

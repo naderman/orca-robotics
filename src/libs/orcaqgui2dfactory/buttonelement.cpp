@@ -1,7 +1,6 @@
 #include "buttonelement.h"
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include <orcaobj/orcaobj.h>
 #include <hydroqguielementutil/ihumanmanager.h>
 #include <hydroqgui/exceptions.h>
 
@@ -9,10 +8,12 @@ using namespace std;
 
 namespace orcaqgui2d {
 
-ButtonElement::ButtonElement( const orcaice::Context   &context,
-                              const std::string        &proxyString,
-                              hydroqguielementutil::IHumanManager &humanManager )
-    : context_(context),
+ButtonElement::ButtonElement( const hydroqguielementutil::GuiElementInfo &guiElementInfo,
+                              const orcaice::Context                     &context,
+                              const std::string                          &proxyString,
+                              hydroqguielementutil::IHumanManager        &humanManager )
+    : hydroqguielementutil::GuiElement(guiElementInfo),
+      context_(context),
       proxyString_(proxyString),
       humanManager_(humanManager),
       isConnected_(false)

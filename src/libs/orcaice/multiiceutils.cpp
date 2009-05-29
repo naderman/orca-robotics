@@ -34,26 +34,30 @@ void createInterfaceWithString( const Context& context,
     {
         try {
             createInterfaceWithString( context, object, name );
+            if ( !subsysName.empty() )
+                context.status().ok( subsysName );
             break;
         }
         catch ( const std::exception& e ) {
             std::stringstream ss;
-            ss << "Failed to create interface with string "<<name<<":\n"
-               << e.what() << endl
+            ss << "Failed to create interface with string "<<name<<": " << e.what() << endl
                <<"Will retry in "<<retryIntervalSec<<"s.\n";
-            context.tracer().warning( ss.str() );
+            if ( !subsysName.empty() )
+                context.status().warning( subsysName, ss.str() );
+            else
+                context.tracer().warning( ss.str() );
         }
         catch ( ... ) {
             std::stringstream ss;
-            ss << "Caught something while creating interface with string "<<name<<". "
+            ss << "Caught something while creating interface with string "<<name<<". " << endl
                 <<"Will retry in "<<retryIntervalSec<<"s.\n";
-            context.tracer().warning( ss.str() );
+            if ( !subsysName.empty() )
+                context.status().warning( subsysName, ss.str() );
+            else
+                context.tracer().warning( ss.str() );
         }
         ++count;
         gbxiceutilacfr::checkedSleep( activity, retryIntervalSec*1000 );
-        if ( !subsysName.empty() ) {
-            context.status().heartbeat( subsysName );
-        }
     }
 }
 
@@ -70,26 +74,30 @@ void createInterfaceWithTag( const Context& context,
     {
         try {
             createInterfaceWithTag( context, object, interfaceTag );
+            if ( !subsysName.empty() )
+                context.status().ok( subsysName );
             break;
         }
         catch ( const std::exception& e ) {
             std::stringstream ss;
-            ss << "Failed to create interface with tag "<<interfaceTag<<":\n"
-               << e.what() << endl
+            ss << "Failed to create interface with tag "<<interfaceTag<<" : " << e.what() << endl
                <<"Will retry in "<<retryIntervalSec<<"s.";
-            context.tracer().warning( ss.str() );
+            if ( !subsysName.empty() )
+                context.status().warning( subsysName, ss.str() );
+            else
+                context.tracer().warning( ss.str() );
         }
         catch ( ... ) {
             std::stringstream ss;
-            ss << "Caught something while creating interface with tag "<<interfaceTag<<". "
+            ss << "Caught something while creating interface with tag "<<interfaceTag<<". "<<endl
                 <<"Will retry in "<<retryIntervalSec<<"s.\n";
-            context.tracer().warning( ss.str() );
+            if ( !subsysName.empty() )
+                context.status().warning( subsysName, ss.str() );
+            else
+                context.tracer().warning( ss.str() );
         }
         ++count;
         gbxiceutilacfr::checkedSleep( activity, retryIntervalSec*1000 );
-        if ( !subsysName.empty() ) {
-            context.status().heartbeat( subsysName );
-        }
     }
 }
 
@@ -113,22 +121,20 @@ void activate( Context& context,
         }
         catch ( const std::exception& e ) {
             std::stringstream ss;
-            ss << "Failed to activate component:\n"
-               <<e.what()<<endl
+            ss << "Failed to activate component : "<<e.what()<<endl
                <<"Will retry in "<<retryIntervalSec<<"s.\n";
             context.tracer().warning( ss.str() );
         }
         catch ( ... ) {
             std::stringstream ss;
-            ss << "Caught something while activating. "
+            ss << "Caught something while activating. " << endl
                 <<"Will retry in "<<retryIntervalSec<<"s.\n";
             context.tracer().warning( ss.str() );
         }
         ++count;
         gbxiceutilacfr::checkedSleep( activity, retryIntervalSec*1000 );
-        if ( !subsysName.empty() ) {
+        if ( !subsysName.empty() )
             context.status().heartbeat( subsysName );
-        }
     }
 }
 

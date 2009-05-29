@@ -8,14 +8,15 @@
  *
  */
  
-#ifndef ALGORITHM_HANDLER_H
-#define ALGORITHM_HANDLER_H
+#ifndef MAIN_THREAD_H
+#define MAIN_THREAD_H
 
 #include <orcaice/subsystemthread.h>
 #include <orcaice/context.h>
 #include <orca/velocitycontrol2d.h>
 #include <orcaifaceimpl/rangescanner2d.h>
 #include <orcaifaceimpl/odometry2d.h>
+#include <memory>
 
 #include "algodriver.h"
 
@@ -28,7 +29,6 @@ class MainThread : public orcaice::SubsystemThread
 public: 
 
     MainThread( const orcaice::Context& context );
-    virtual ~MainThread();
 
 private:
 
@@ -41,7 +41,7 @@ private:
     void initDriver();
 
     // generic inerface to the algorithm
-    AlgoDriver* driver_;
+    std::auto_ptr<AlgoDriver> driver_;
 
     // local access to remote interfaces
     orcaifaceimpl::BufferedRangeScanner2dConsumerImplPtr laser_;

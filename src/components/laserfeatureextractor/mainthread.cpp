@@ -11,7 +11,7 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include <orcaobj/orcaobj.h>
+#include <orcaobj/rangescanner2d.h>
 #include <hydrofeatureobs/hydrofeatureobs.h>
 
 #include "mainthread.h"
@@ -95,12 +95,6 @@ MainThread::initialise()
 {
     setMaxHeartbeatInterval( 10.0 );
 
-    // These functions catch their exceptions.
-    activate( context_, this, subsysName() );
-    // check for stop signal after retuning from multi-try
-    if ( isStopping() )
-        return;
-
     connectToLaser();
     getLaserDescription();
     initDriver();
@@ -157,7 +151,15 @@ MainThread::work()
             //
             // execute algorithm to compute features
             //
-            hydroFeatures = driver_->extractFeatures( laserData->ranges, laserData->intensities );
+            try {
+                hydroFeatures = driver_->extractFeatures( laserData->ranges, laserData->intensities );
+            }
+            catch ( std::exception &e )
+            {
+                stringstream ss;
+                ss << "Exception while extracting features: " << e.what();
+                throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
+            }
 
             // Convert format
             featureData.features.clear();

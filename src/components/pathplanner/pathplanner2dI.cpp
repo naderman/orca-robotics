@@ -11,7 +11,7 @@
 #include <iostream>
 
 #include <orcaice/orcaice.h>
-#include <orcaobj/orcaobj.h>
+#include <orcaobj/pathplanner2d.h>
 
 #include "pathplanner2dI.h"
 

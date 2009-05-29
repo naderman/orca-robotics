@@ -1,5 +1,5 @@
 ORCA_SET_COMPONENT_NAME( Def2Uml )
-GBX_ADD_LICENSE( GPL )
+GBX_ADD_LICENSE( LGPL )
 
 set( build TRUE )
 GBX_REQUIRE_OPTION( build EXE ${APP_NAME} ON )
@@ -15,7 +15,7 @@ if( build )
     # needs defintions from orca/ocm.ice
     include( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
     include( ${HYDRO_CMAKE_DIR}/UseQt.cmake )
-    
+
     file( GLOB srcs *.cpp )
 
     GBX_ADD_EXECUTABLE( ${APP_NAME} ${srcs} )

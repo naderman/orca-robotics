@@ -11,8 +11,9 @@
 #ifndef ORCAGUI_ICESTORM_LISTENER_DETAIL_H
 #define ORCAGUI_ICESTORM_LISTENER_DETAIL_H
 
-#include <orcaice/ptrbuffer.h>
 #include <orcaice/connectutils.h>
+#include <gbxsickacfr/gbxiceutilacfr/store.h>
+#include <gbxsickacfr/gbxiceutilacfr/timer.h>
 
 namespace orcaqguielementutil
 {
@@ -139,25 +140,24 @@ unSubscribeListener( orcaice::Context      &context,
  *
  */
 template<class ConsumerType, class ObjectType>
-class BufferedTimedConsumerI : public ConsumerType
+class StoredTimedConsumerI : public ConsumerType
 {
 public:
 
-    BufferedTimedConsumerI( int depth=1,
-                            gbxiceutilacfr::BufferType bufferType = gbxiceutilacfr::BufferTypeCircular )
-        : buffer_( depth, bufferType ) {};
+    StoredTimedConsumerI()
+        : store_() {};
 
     void setData( const ObjectType& data, const Ice::Current& )
         {
-            buffer_.push( data );
+            store_.set( data );
             handleData( data );
         }
 
     double msSinceReceipt() { return timer_.elapsedMs(); }
     void resetTimer() { return timer_.restart(); }
 
-    // buffer_ is public so that guielements can access it directly
-    gbxiceutilacfr::Buffer<ObjectType> buffer_;
+    // store_ is public so that guielements can access it directly
+    gbxiceutilacfr::Store<ObjectType> store_;
 
 protected:
 
@@ -168,43 +168,6 @@ protected:
 
     gbxiceutilacfr::Timer timer_;
 };
-/*
- *  @brief A convenience class for consumers with setData() operation.
- *
- *  Relies on the fact that the Consumer objects has only one operation
- *  to implement and it's called setData().
- *
- */
-template<class ConsumerType, class ObjectType>
-class PtrBufferedTimedConsumerI : public ConsumerType
-{
-public:
-
-    PtrBufferedTimedConsumerI( int depth=1, gbxiceutilacfr::BufferType bufferType = gbxiceutilacfr::BufferTypeCircular )
-        : buffer_( depth, bufferType ) {};
-
-    void setData( const ObjectType& data, const Ice::Current& )
-        {
-            buffer_.push( data );
-            handleData( data );
-        }
-
-    double msSinceReceipt() { return timer_.elapsedMs(); }
-    void resetTimer() { return timer_.restart(); }
-
-    // buffer_ is public so that guielements can access it directly
-    orcaice::PtrBuffer<ObjectType> buffer_;
-
-protected:
-
-    void handleData( const ObjectType & obj )
-        {
-            timer_.restart();
-        }
-
-    gbxiceutilacfr::Timer timer_;
-};
-
 
 } // namespace
 } // namespace

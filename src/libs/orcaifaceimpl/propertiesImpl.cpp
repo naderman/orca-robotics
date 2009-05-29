@@ -11,6 +11,7 @@
 #include <iostream>
 
 #include <orcaice/orcaice.h>
+#include <orcaice/convertutils.h>
 #include "propertiesImpl.h"
  
 

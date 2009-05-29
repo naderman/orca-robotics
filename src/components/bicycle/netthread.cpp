@@ -13,7 +13,6 @@
 #include <math.h>
 #include <gbxsickacfr/gbxiceutilacfr/timer.h>
 #include <orcaice/orcaice.h>
-#include <orcaobj/orcaobj.h>
 #include "netthread.h"
 
 using namespace std;
@@ -204,7 +203,7 @@ void
 NetThread::handleData(const orca::DriveBicycleCommand& command)
 {
     stringstream ss;
-    ss << "NetThread::handleData: " << orcaobj::toString(command);
+    ss << "NetThread::handleData: " << ifaceutil::toString(command);
     context_.tracer().debug( ss.str() );
 
     try {

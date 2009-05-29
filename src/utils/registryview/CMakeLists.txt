@@ -1,6 +1,6 @@
 ORCA_SET_COMPONENT_NAME( RegistryView )
 set( APP_CTRLC_HANDLER 0 )
-GBX_ADD_LICENSE( GPL )
+GBX_ADD_LICENSE( LGPL )
 
 set( build TRUE )
 GBX_REQUIRE_OPTION( build EXE ${APP_NAME} ON )
@@ -25,8 +25,8 @@ if( build )
     )
     QT4_WRAP_CPP( moc_srcs ${moc_hdrs} )
 
-    # build stand-alone component  
-    ORCA_WRAP_COMPONENT_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${human_srcs} ${moc_srcs} )
+    # build stand-alone component
+    ORCA_WRAP_COMPONENT_INTO_APP( ${human_srcs} ${moc_srcs} )
     target_link_libraries( ${APP_NAME} ${dep_libs} )
 
     ORCA_GENERATE_CONFIG_FILE( ${APP_NAME}.def )

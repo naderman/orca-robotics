@@ -10,7 +10,10 @@
 #include <iostream>
 #include <cmath>
 #include <orcaice/orcaice.h>
-#include <orcaobj/orcaobj.h>
+#include <orcaobj/datetime.h>
+#include <orcaobj/rangescanner2d.h>
+#include <orcaobj/localise2d.h>
+#include <orcaobj/vehicledescription.h>
 #include <hydroutil/realtimestopwatch.h>
 #include <hydroutil/cpustopwatch.h>
 #include <orcanavutil/orcanavutil.h>
@@ -46,7 +49,11 @@ MainThread::MainThread( const orcaice::Context &context )
     : orcaice::SubsystemThread( context.tracer(), context.status(), "MainThread" ),
       context_(context)
 {
-    context_.status().initialising( subsysName() );
+}
+
+void 
+MainThread::initialise()
+{
     setMaxHeartbeatInterval( 10.0 );
     
     orca::Time t; t.seconds=0; t.useconds=0;
@@ -136,22 +143,12 @@ MainThread::MainThread( const orcaice::Context &context )
         context_.tracer().error( e.what() );
         throw;
     }
-}
 
-// TODO: all of the stuff in the constructor should move into here.
-// but it's too non-standard to do it easily.
-void 
-MainThread::initialise()
-{
-    //
-    // ENABLE NETWORK CONNECTIONS
-    //
-    // This function catches its exceptions
-    activate( context_, this, subsysName() );
-    // check for stop signal after retuning from multi-try
-    if ( isStopping() )
-        return;
+    health().ok();
 
+    //
+    // establish connections
+    //
     setup();
 }
 
@@ -448,7 +445,7 @@ MainThread::setup()
 
     stringstream descrStream;
     descrStream << "Working with the following vehicle: " << orcaobj::toString(vehicleDescr_) << endl;
-    descrStream << "And the following range scanner: " << orcaobj::toString(scannerDescr_) << endl;
+    descrStream << "Working with the following range scanner: " << orcaobj::toString(scannerDescr_) << endl;
     context_.tracer().info( descrStream.str() );
 
     pathMaintainer_.reset( new PathMaintainer( *pathFollowerInterface_, *clock_, context_ ) );

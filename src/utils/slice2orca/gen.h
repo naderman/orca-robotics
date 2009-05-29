@@ -16,7 +16,7 @@
 #include <map>
 #include <vector>
 
-namespace slice2log
+namespace slice2orca
 {
 
 class Gen : private ::IceUtil::noncopyable

@@ -80,7 +80,7 @@ A sample IceBox configuration file for running latency tests is shown below.
 
 # Components need to know where to find IceStorm
 # Separately, we tell IceStorm where to listen (see end of this file)
-IceStorm.TopicManager.Proxy=IceStorm/TopicManager:default -p 10000
+IceStorm.TopicManager.Proxy=IceStorm/TopicManager:default -t 8000 -p 10000
 
 Ice.Warn.Connections=1
 Ice.Trace.Network=0

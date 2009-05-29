@@ -61,6 +61,12 @@ MainThread::walk()
     for ( unsigned int i=0; i<regData.homes.size(); ++i ) 
     {
         // 
+        // When the user hits Ctrl-C, we just want to quit
+        //
+        if ( isStopping() )
+            return;
+
+        // 
         // Remote call!
         // get full component data based on the component header information
         compData = orcacm::getComponentHomeData( context_, regData.homes[i].proxy );

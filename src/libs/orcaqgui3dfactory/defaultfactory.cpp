@@ -42,15 +42,6 @@ DefaultFactory::lookupElementType( const QStringList &ids, QString &elementType 
     {
         elementType = ids[0].section(':',4,4);
     }
-    // One element with two interfaces
-    // Please extend as required
-    else if (ids.size()==2)
-    {
-        if (ids[0]=="::orca::OgMap" && ids[1]=="::orca::OgMap")
-            elementType="MultiOgMaps";
-        else
-            return false;
-    }
     else
     {
         return false;    
@@ -59,53 +50,42 @@ DefaultFactory::lookupElementType( const QStringList &ids, QString &elementType 
     return true;
 }
 
-hydroqguielementutil::IGuiElement*
-DefaultFactory::create( const QString                            &elementType,
-                        const QStringList                        &elementDetails,
-                        QColor                                    suggestedColor,
-                        hydroqguielementutil::IHumanManager      &humanManager,
-                        hydroqguielementutil::MouseEventManager  &mouseEventManager,
-                        hydroqguielementutil::ShortcutKeyManager &shortcutKeyManager,
-                        const hydroqgui::GuiElementSet           &guiElementSet ) const
+hydroqguielementutil::GuiElement*
+DefaultFactory::create( const hydroqguielementutil::GuiElementInfo &guiElementInfo,
+                        hydroqguielementutil::IHumanManager        &humanManager,
+                        hydroqguielementutil::MouseEventManager    &mouseEventManager,
+                        hydroqguielementutil::ShortcutKeyManager   &shortcutKeyManager,
+                        const hydroqgui::GuiElementSet             &guiElementSet,
+                        QSplitter                                  *spaceBottomRight ) const
 {
     assert( isContextSet_ );
-    hydroqguielementutil::IGuiElement *elem = NULL;
+    hydroqguielementutil::GuiElement *elem = NULL;
 
     try
     {
-        stringstream ss;
-        ss<<"DefaultFactory::create(): creating "<<elementType.toStdString()<<" element";
-        if ( elementDetails.size() > 0 )
-        {
-            ss << " with details:";
-            for ( int i=0; i < elementDetails.size(); i++ )
-            {
-                ss << " " << elementDetails[i].toStdString();
-            }
-        }
-        cout << ss.str() << endl;
+        cout << "DefaultFactory::create(): creating "<< guiElementInfo.type.toStdString() << " element with id:" << guiElementInfo.uniqueId.toStdString() << endl;
 
-        if ( elementType == "Grid" ) {
-            elem = new orcaqgui3d::GridElement();
+        if ( guiElementInfo.type == "Grid" ) {
+            elem = new orcaqgui3d::GridElement( guiElementInfo );
         }
-        else if ( elementType == "LaserScanner2d" ) {
-            elem = new orcaqgui3d::LaserScanner2dElement( context_, elementDetails[0].toStdString() );
+        else if ( guiElementInfo.type == "LaserScanner2d" ) {
+            elem = new orcaqgui3d::LaserScanner2dElement( guiElementInfo, context_, guiElementInfo.uniqueId.toStdString() );
         }
-        else if ( elementType == "Localise2d" ) {
-            elem = new orcaqgui3d::Localise2dElement( context_, elementDetails[0].toStdString(), &humanManager );
+        else if ( guiElementInfo.type == "Localise2d" ) {
+            elem = new orcaqgui3d::Localise2dElement( guiElementInfo, context_, guiElementInfo.uniqueId.toStdString(), &humanManager );
         }
-        else if ( elementType == "FeatureMap2d" ) {
-            elem = new orcaqgui3d::FeatureMap2dElement( context_, elementDetails[0].toStdString(), &humanManager );
+        else if ( guiElementInfo.type == "FeatureMap2d" ) {
+            elem = new orcaqgui3d::FeatureMap2dElement( guiElementInfo, context_, guiElementInfo.uniqueId.toStdString(), &humanManager );
         }
-        else if ( elementType == "OgMap" ) {
-            elem = new orcaqgui3d::OgMapElement( context_, elementDetails[0].toStdString(), &humanManager );
+        else if ( guiElementInfo.type == "OgMap" ) {
+            elem = new orcaqgui3d::OgMapElement( guiElementInfo, context_, guiElementInfo.uniqueId.toStdString(), &humanManager );
         }
-        else if ( elementType == "PointCloud" ) {
-            elem = new orcaqgui3d::PointCloudElement( context_, elementDetails[0].toStdString() );
+        else if ( guiElementInfo.type == "PointCloud" ) {
+            elem = new orcaqgui3d::PointCloudElement( guiElementInfo, context_, guiElementInfo.uniqueId.toStdString() );
         }
         else
         {
-            cout << "DefaultFactory::create(): Don't know how to handle elementType '" << elementType.toStdString() << "'" << endl;
+            cout << "DefaultFactory::create(): Don't know how to handle guiElementInfo.type '" << guiElementInfo.type.toStdString() << "'" << endl;
         }
     
     } 
@@ -115,9 +95,6 @@ DefaultFactory::create( const QString                            &elementType,
         delete elem;
         elem=NULL;
     }
-
-    if ( elem != NULL )
-        elem->setColor( suggestedColor );
     return elem;
 }
 

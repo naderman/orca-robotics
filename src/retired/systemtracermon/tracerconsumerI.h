@@ -13,7 +13,7 @@
 
 #include <iostream>
 #include <orca/tracer.h>
-#include <orcaobj/orcaobj.h>
+#include <orcaobj/tracer.h>
 
 namespace sysmon {
 

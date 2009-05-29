@@ -9,7 +9,7 @@
  */
  
 #include <orcaice/orcaice.h>
-#include <orcaobj/initutils.h>
+#include <orcaobj/wifi.h>
 #include "hardwaredriver.h"
 
 using namespace std;

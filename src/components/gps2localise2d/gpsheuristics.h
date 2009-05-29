@@ -13,7 +13,7 @@
 #define GPS_HEURISTICS_H
 
 #include <orca/gps.h>
-#include <orcaice/orcaice.h>
+#include <orcaice/context.h>
 
 namespace gps2localise2d {
 

@@ -12,6 +12,7 @@
 #include <orcaice/exceptions.h>
 #include <orcaice/catchutils.h>
 #include <orcaice/icegridutils.h>
+#include <orcaice/multiiceutils.h> // for activate()
 #include "privateutils.h"
 #include <iostream>
 #include <IceGrid/Registry.h>  // used to register Home interface as a well-known object
@@ -21,8 +22,10 @@ using namespace std;
 namespace orcaice {
 namespace detail {
 
-ComponentThread::ComponentThread( const orcaice::Context& context ) :
+ComponentThread::ComponentThread( ComponentAdapterActivationPolicy adapterPolicy,
+                                  const orcaice::Context& context ) :
     SafeThread(context.tracer()),
+    adapterPolicy_(adapterPolicy),
     context_(context)
 {
 }
@@ -44,6 +47,15 @@ ComponentThread::walk()
 
     context_.status().infrastructureWorking();
 
+    //
+    // activate component's adapter
+    //
+    if ( adapterPolicy_ == AdapterAutoActivation ) {
+        // not supplying subsystem name because we are in a special Infrastructure subsystem.
+        activate( context_, this );
+        context_.tracer().info( "Component infrastructure: adapter activated." );
+    }
+
     try {
         while ( !isStopping() )
         {
@@ -51,7 +63,7 @@ ComponentThread::walk()
 
             if ( !needToRegisterHome && !hasStatusInterface )
             {
-                context_.tracer().info( "ComponentThread: Nothing left to do, quitting" );
+                context_.tracer().info( "Component infrastructure: nothing left to do, quitting" );
                 return;
             }
 

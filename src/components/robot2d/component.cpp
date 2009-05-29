@@ -10,7 +10,7 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
-#include <orcaobj/orcaobj.h>
+#include <orcaobj/vehicledescription.h>
 #include <orcaobjutil/vehicleutil.h>
 
 #include "component.h"

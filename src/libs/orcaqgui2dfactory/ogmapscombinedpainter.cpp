@@ -10,7 +10,6 @@
 
 #include <QPainter>
 #include <orcaice/orcaice.h>
-#include <orcaobj/orcaobj.h>
 
 #include "ogmapscombinedpainter.h"
 

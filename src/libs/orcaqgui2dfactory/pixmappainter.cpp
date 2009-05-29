@@ -212,7 +212,7 @@ PixmapPainter::saveMap( const QString &fileName,
         humanManager->showDialogError( "Problems saving pixmap to file " + fileName );
         return -1;
     }
-    humanManager->showStatusMsg(hydroqguielementutil::IHumanManager::Information, "Successfully saved pixmap to file: " + fileName);
+    humanManager->showStatusInformation("Successfully saved pixmap to file: " + fileName);
     
     return 0;
 }

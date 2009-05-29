@@ -10,7 +10,7 @@
 #ifndef ORCA_PATHPLANNER_DRIVER_H
 #define ORCA_PATHPLANNER_DRIVER_H
 
-#include <orcaice/orcaice.h>
+#include <orcaice/context.h>
 #include <orca/pathplanner2d.h>
 #include <hydropathplan/hydropathplan.h>
 #include <hydrointerfaces/pathplanner2d.h>

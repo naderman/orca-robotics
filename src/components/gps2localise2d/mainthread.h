@@ -36,23 +36,14 @@ private:
     virtual void work();
 
     void subscribeToGps();
-    void getGpsDescription();
-    void initNetworkInterface();
-    void initDriver();
+    orca::GpsDescription getGpsDescription();
+    void initDriver( orca::VehicleDescription vehicleDescr );
     
-    // This component is 2D-centric: can only handle certain orientations.
-    bool antennaOffsetOK( const orca::Frame3d &antennaOffset );
-
     // generic algorithm
     Driver* driver_;
     
     // Our external interface
     orcaifaceimpl::Localise2dImplPtr localiseInterface_;
-    
-    orca::GpsPrx gpsPrx_;
-    orca::Frame3d antennaOffset_;
-    orca::GpsDescription gpsDescr_;
-    orca::VehicleDescription vehicleDescr_;
 
     // Consumers
     orcaifaceimpl::StoringGpsConsumerImplPtr gpsConsumer_;

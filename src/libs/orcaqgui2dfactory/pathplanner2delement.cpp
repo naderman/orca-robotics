@@ -9,7 +9,7 @@
  */
 
 #include <orcaice/orcaice.h>
-#include <orcaobj/orcaobj.h>
+#include <orcaobj/pathplanner2d.h>
 #include <hydroqguipath/wptolerancesdialog.h>
 #include <hydroqguielementutil/ihumanmanager.h>
 #include "pathplanner2delement.h"
@@ -42,16 +42,17 @@ PathPlannerTaskAnswerConsumer::setData(const ::orca::PathPlanner2dData& data, co
     msgStore_.set(msg); 
 }
 
-PathPlanner2dElement::PathPlanner2dElement( const orcaice::Context                   &context,
-                                            const std::string                        &proxyString,
-                                            hydroqguielementutil::IHumanManager      &humanManager,
-                                            hydroqguielementutil::MouseEventManager  &mouseEventManager,
-                                            hydroqguielementutil::ShortcutKeyManager &shortcutKeyManager )
-    : orcaqguielementutil::IceStormElement2d<PathPainter,
+PathPlanner2dElement::PathPlanner2dElement( const hydroqguielementutil::GuiElementInfo &guiElementInfo,
+                                            const orcaice::Context                     &context,
+                                            const std::string                          &proxyString,
+                                            hydroqguielementutil::IHumanManager        &humanManager,
+                                            hydroqguielementutil::MouseEventManager    &mouseEventManager,
+                                            hydroqguielementutil::ShortcutKeyManager   &shortcutKeyManager )
+    : orcaqguielementutil::IceStormGuiElement2d<PathPainter,
                         orca::PathPlanner2dData,
                         orca::PathPlanner2dPrx,
                         orca::PathPlanner2dConsumer,
-                        orca::PathPlanner2dConsumerPrx>( context, proxyString, painter_, -1 ),
+                        orca::PathPlanner2dConsumerPrx>( guiElementInfo, context, proxyString, painter_, -1 ),
       context_(context),
       proxyString_(proxyString),
       humanManager_(humanManager),
@@ -84,7 +85,7 @@ PathPlanner2dElement::update()
         return;
     }
     
-    listener_.buffer().getAndPop( data_ );
+    listener_.store().get( data_ );
     painter_.setData( data_ );
     
     if ( pathTaskAnswerConsumer_->msgStore_.isNewData() )

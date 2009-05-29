@@ -56,12 +56,12 @@ IF( build)
     FILE( GLOB srcs *.cpp )
     
     # build stand-alone component  
-    ORCA_WRAP_MAINTHREAD_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${COMP_NAME} ${srcs} )
+    ORCA_WRAP_MAINTHREAD_INTO_APP( ${srcs} )
 #     TARGET_LINK_LIBRARIES( ${APP_NAME} ${dep_libs} )
     
     # build IceBox service
     IF( ORCA_BUILD_SERVICES )
-        ORCA_WRAP_MAINTHREAD_INTO_SERVICE( ${SERVICE_NAME} ${COMP_NAMESPACE} ${COMP_NAME} ${srcs} )
+        ORCA_WRAP_MAINTHREAD_INTO_SERVICE( ${srcs} )
 #         TARGET_LINK_LIBRARIES( ${SERVICE_NAME} ${dep_libs} )    
     ENDIF( ORCA_BUILD_SERVICES )
 
@@ -86,7 +86,8 @@ Sets component name and 3 other related CMake variables which we'll use later in
 - SERVICE_NAME -- service library name (defaults to the component name prepended with 
 project name and appended with "Service")
 - COMP_NAMESPACE -- component namespace (defaults to the component name converted to lower case)
-- COMP_INTERFACE_FLAG -- which standard interfaces the autognerated component will initialize.
+- COMP_INTERFACE_FLAG -- which standard interfaces the autognerated component will initialize?
+- COMP_ADAPTER_POLICY -- how will the component's adapter be activated: automatically or manually?
 This variable must contain one of the values of orcaice::ComponentInterfaceFlag.
 Default value assigned by this CMake macro is orcaice::AllStandardInterfaces.
 
@@ -139,7 +140,7 @@ SET( srcs mainthread.cpp )
 @endverbatim
 
 @verbatim
-    ORCA_WRAP_MAINTHREAD_INTO_APP( ${APP_NAME} ${APP_CTRLC_HANDLER} ${COMP_NAMESPACE} ${COMP_NAME} ${srcs} )
+    ORCA_WRAP_MAINTHREAD_INTO_APP( ${srcs} )
 @endverbatim
 This macro wraps an Orca component around a single thread and places that component into an Orca application. It expects to find 
 - files named mainthread.h/cpp 
@@ -155,7 +156,7 @@ This would be uncommented in case we had dependencies.
 
 @verbatim
     IF( ORCA_BUILD_SERVICES )
-        ORCA_WRAP_MAINTHREAD_INTO_SERVICE( ${SERVICE_NAME} ${COMP_NAMESPACE} ${COMP_NAME} ${srcs} )
+        ORCA_WRAP_MAINTHREAD_INTO_SERVICE( ${srcs} )
 #         TARGET_LINK_LIBRARIES( ${SERVICE_NAME} ${dep_libs} )    
     ENDIF( ORCA_BUILD_SERVICES )
 @endverbatim
@@ -262,10 +263,9 @@ MainThread::MainThread( const orcaice::Context& context ) :
 void 
 MainThread::initialise()
 {
-    subStatus().setMaxHeartbeatInterval( 20.0 );
+    setMaxHeartbeatInterval( 20.0 );
 
-    // multi-try function
-    orcaice::activate( context_, this, subsysName() );
+    // do some initialization here, e.g. create a hardware driver.
 }
 
 void
@@ -279,12 +279,12 @@ MainThread::work()
     int sleepIntervalMs = orcaice::getPropertyAsIntWithDefault( context_.properties(),
             prefix+"SleepIntervalMs", 1000 );
 
-    subStatus().setMaxHeartbeatInterval( sleepIntervalMs * 3.0/1000.0 );
+    setMaxHeartbeatInterval( sleepIntervalMs * 3.0/1000.0 );
 
     while( !isStopping() )
     {
         context_.tracer().debug( "Running main loop", 5 );
-        subStatus().heartbeat();
+        health().heartbeat();
 
         // here we can do something useful
 
@@ -315,7 +315,7 @@ Executing code in a separate thread usually means that we are responsible for ca
 While this function is running, the Subsystem is in @c Initialising state.
 
 @verbatim
-    subStatus().setMaxHeartbeatInterval( 20.0 );
+    setMaxHeartbeatInterval( 20.0 );
 @endverbatim
 The Status facility implements the heartbeat pattern. In this line we make a promise to Status that we will update status information at least as often as every 20 seconds. This promise will allow Status to raise an alarm if there's no update from this subsystem (thread) for longer than the specified interval.
 
@@ -325,14 +325,8 @@ Note that this line is equivalento to calling.
 @endverbatim
 The simplified syntax is provided by SubsystemThread.
 
-@verbatim
-    orcaice::activate( context_, this, subsysName() );
-@endverbatim
-We call a @ref orca_library_orcaice function to intialize the server capability of the component. (Technically, we are initializing the Ice::ObjectAdapter). 
-
-The component does not perform this step automatically and leave it up to the designer because this is an important step and you may want to choose when to do it. For example you may want to setup all your required interfaces (i.e. clients) first and then enable the provided interfaces.
-
-This operation may fail for various reasons. Common ones are: the network cable is unplugged, the Registry is unreachable. This standard function will try to activate indefinitely after sleeping for a few seconds. But we want to be able to get out of this infinite loop (e.g. with a Ctrl-C). For this reason, we supply this function with a pointer to a Thread (i.e. @c this = the pointer to this thread) so it can find out that it's time to stop. By the way, this is also the reason why orcaice::activate() should be called from a thread and not from Component::start().
+This example doesn't actually have anything to initialize. Normally we would create and initialize 
+hardware and algorithm drivers here.
 
 @verbatim
 }
@@ -358,7 +352,7 @@ We use a helper function from @ref orca_library_orcaice which returns an integer
 Note that we should probably do more checks on the specified value, e.g. make sure that it is not negative.
 
 @verbatim
-    subStatus().setMaxHeartbeatInterval( sleepIntervalMs * 3.0/1000.0 );
+    setMaxHeartbeatInterval( sleepIntervalMs * 3.0/1000.0 );
 @endverbatim
 Initialization is complete and thread behavior becomes more predictable, we can now promise to update Status more frequently.
 
@@ -374,7 +368,7 @@ We are entering the main loop. It will execute until the thread is told to stop.
 We use the tracer to let the user know what's going on. The hydroutil::Tracer defines several types of trace messages: info, warning, error, and debug. Each one can be forwarded to any number of destinations: display, network, log, or file. The default configuration is shown in the documentation. E.g. the default debug-to-display setting is 0, therefore this debug statement of level 5 will not be shown on the screen. In the next tutorial we will show how to change this setting.
 
 @verbatim
-        subStatus().heartbeat();
+        health().heartbeat();
 @endverbatim
 At every iteration of the loop, we call the @c heartbeat() function of the status object letting it know that this Subsystem is not stuck. If we promiss the status monitor to call it periodically by calling @c setMaxHeartbeatInterval() but then fail to call @c heartbeat(), the monitor will conclude that this Subsystem has stalled. This Subsystem status information can be monitored remotely using @c Status interface.
 

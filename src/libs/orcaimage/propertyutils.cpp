@@ -12,7 +12,8 @@
 #include <sstream>
 
 #include <orcaice/orcaice.h>
-#include <orcaobj/orcaobj.h>
+#include <orcaobj/camera.h>
+#include <orcaobj/bros1.h>
 #include <orcaifaceutil/camera.h>
 
 #include "propertyutils.h"

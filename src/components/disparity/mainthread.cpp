@@ -13,7 +13,8 @@
 #include <iostream>
 #include <memory>
 #include <orcaice/orcaice.h>
-#include <orcaobj/orcaobj.h> // for getPropertyAs...()
+#include <orcaobj/image.h>
+#include <orcaobj/multicamera.h>
 
 namespace disparity
 {
@@ -224,11 +225,6 @@ MainThread::initPluginInterface()
 void
 MainThread::initNetworkInterface()
 {
-    activate( context_, this, subsysName() );
-    // check for stop signal after retuning from multi-try
-    if ( isStopping() )
-        return;
-
     // incoming network interface
     incomingInterface_ = new orcaifaceimpl::BufferedMultiCameraConsumerImpl( 1
             , gbxiceutilacfr::BufferTypeCircular
