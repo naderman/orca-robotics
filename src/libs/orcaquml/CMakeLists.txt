@@ -17,7 +17,7 @@ if( build )
 
     file( GLOB human_srcs *.cpp )
 
-    GBX_ADD_LIBRARY( ${LIB_NAME} DEFAULT ${human_srcs} )
+    GBX_ADD_LIBRARY( ${LIB_NAME} DEFAULT ${LIB_VERSION} ${human_srcs} )
 
     TARGET_LINK_LIBRARIES ( ${LIB_NAME} ${dep_libs} )
 

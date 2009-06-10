@@ -16,8 +16,9 @@ if( build )
     include( ${HYDRO_CMAKE_DIR}/UsePlayer.cmake )
     
     file( GLOB hdrs *.h )
+    file( GLOB srcs *.cpp )
 
-    GBX_ADD_LIBRARY( OrcaPlayer DEFAULT convertutils.cpp )
+    GBX_ADD_LIBRARY( ${LIB_NAME} DEFAULT ${LIB_VERSION} ${srcs} )
 
     GBX_ADD_HEADERS( ${LIB_INSTALL} ${hdrs} )
 

@@ -1,13 +1,14 @@
-set( lib_name ${GBX_PROJECT_NAME_CAP}IfaceLog )
-set( lib_namespace ${GBX_PROJECT_NAME_LOWER}ifacelog )
+set( _lib_name ${GBX_PROJECT_NAME_CAP}IfaceLog )
+set( _lib_namespace ${GBX_PROJECT_NAME_LOWER}ifacelog )
+set( _lib_version ${GBX_PROJECT_VERSION} )
 GBX_ADD_LICENSE( LGPL )
 
 set( build TRUE )
-GBX_REQUIRE_OPTION( build LIB ${lib_name} ON )
+GBX_REQUIRE_OPTION( build LIB ${_lib_name} ON )
 
 # using Exception
-set( dep_libs GbxUtilAcfr )
-GBX_REQUIRE_LIBS( build LIB ${lib_name} ${dep_libs} )
+set( _dep_libs GbxUtilAcfr )
+GBX_REQUIRE_LIBS( build LIB ${_lib_name} ${_dep_libs} )
 
 if( build )
     #
@@ -23,7 +24,7 @@ if( build )
     #
     # Work out the list of generated files from the list of slice sources
     #
-    ORCA_GENERATE_SLICE2LOG_RULES( slice_generated_sources slice_generated_headers ${ORCA_SLICE_SOURCE_FILES} )
+    ORCA_GENERATE_SLICE2LOG_RULES( _gen_sources _gen_headers ${ORCA_SLICE_SOURCE_FILES} )
     
     include( ${ORCA_CMAKE_DIR}/UseBasicRules.cmake )
     include( ${GEARBOX_CMAKE_DIR}/UseGearbox.cmake )
@@ -44,30 +45,30 @@ if( build )
     endif ( NOT EXISTS ${util_h_file} OR NOT EXISTS ${util_cpp_file} )
 
     # IceStorm is not included in UseIce.cmake
-    set( dep_libs ${dep_libs} IceStorm )
+    set( _dep_libs ${_dep_libs} IceStorm )
     
-    GBX_ADD_LIBRARY( ${lib_name} DEFAULT ${slice_generated_sources} ${util_cpp_file} )
-    target_link_libraries( ${lib_name} ${dep_libs} )    
+    GBX_ADD_LIBRARY( ${_lib_name} DEFAULT ${_lib_version} ${_gen_sources} ${util_cpp_file} )
+    target_link_libraries( ${_lib_name} ${_dep_libs} )    
 
     # add dependency on the generator executable when compiling Orca (satellite projects use installed version)
     # OR
     # when everything is built from one super-project.
     if( ORCA_MOTHERSHIP OR IS_SUPER_PROJECT )
-        add_dependencies( ${lib_name} slice2orca )
+        add_dependencies( ${_lib_name} slice2orca )
     endif( ORCA_MOTHERSHIP OR IS_SUPER_PROJECT )
 
     # for satellite projects inside a super-project, need to wait until the Orca library is build
     if( NOT ORCA_MOTHERSHIP AND IS_SUPER_PROJECT )
-        add_dependencies( ${lib_name} OrcaIfaceLog )
+        add_dependencies( ${_lib_name} OrcaIfaceLog )
     endif( NOT ORCA_MOTHERSHIP AND IS_SUPER_PROJECT )
 
     if( ORCA_MOTHERSHIP )
         # only Orca installs generated headers
-        foreach( slice_generated_header ${slice_generated_headers} )
-            set( slice_generated_headers_full ${slice_generated_headers_full} ${CMAKE_CURRENT_BINARY_DIR}/${slice_generated_header} )
-        endforeach( slice_generated_header )
+        foreach( _gen_header ${_gen_headers} )
+            set( slice_generated_headers_full ${slice_generated_headers_full} ${CMAKE_CURRENT_BINARY_DIR}/${_gen_header} )
+        endforeach( _gen_header )
         
-        GBX_ADD_HEADERS( ${lib_namespace} ${slice_generated_headers_full} ${util_h_file} )
+        GBX_ADD_HEADERS( ${_lib_namespace} ${slice_generated_headers_full} ${util_h_file} )
 
         if( ORCA_BUILD_TESTS )
             add_subdirectory( test )

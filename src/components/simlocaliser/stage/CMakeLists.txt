@@ -7,4 +7,5 @@ include_directories( ${PLAYER_INCLUDE_DIRS} )
 link_directories( ${PLAYER_LINK_DIRS} )
 add_definitions( ${PLAYER_DEFINITIONS} )
 
-GBX_ADD_LIBRARY( OrcaSimLocaliserStage DEFAULT ${srcs} )
+set( lib_version ${GBX_PROJECT_VERSION} )
+GBX_ADD_LIBRARY( OrcaSimLocaliserStage DEFAULT ${lib_version} ${srcs} )

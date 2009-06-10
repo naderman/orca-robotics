@@ -20,7 +20,7 @@ if( build )
     file( GLOB hdrs *.h )
     file( GLOB srcs *.cpp detail/*.cpp )
     
-    GBX_ADD_LIBRARY( ${LIB_NAME} DEFAULT ${srcs} )
+    GBX_ADD_LIBRARY( ${LIB_NAME} DEFAULT ${LIB_VERSION} ${srcs} )
     
     target_link_libraries( ${LIB_NAME} ${dep_libs} )
     

@@ -16,7 +16,7 @@ if( build )
     file( GLOB srcs *.cpp )
     set( dep_libs ${ext_libs} ${int_libs} ${other_libs} )
     
-    GBX_ADD_LIBRARY( ${LIB_NAME} SHARED ${srcs} )
+    GBX_ADD_LIBRARY( ${LIB_NAME} DEFAULT ${LIB_VERSION} ${srcs} )
     
     target_link_libraries( ${LIB_NAME} ${dep_libs} )
 

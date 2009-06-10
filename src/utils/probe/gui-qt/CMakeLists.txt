@@ -15,4 +15,5 @@ set( moc_hdrs
 
 QT4_WRAP_CPP( moc_srcs ${moc_hdrs} )
 
-GBX_ADD_LIBRARY( OrcaProbeGuiQt DEFAULT ${human_srcs} ${moc_srcs} )
+set( lib_version ${GBX_PROJECT_VERSION} )
+GBX_ADD_LIBRARY( OrcaProbeGuiQt DEFAULT ${lib_version} ${human_srcs} ${moc_srcs} )

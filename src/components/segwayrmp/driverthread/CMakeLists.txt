@@ -13,7 +13,7 @@ if( build )
     
     file( GLOB srcs *.cpp )
 
-    GBX_ADD_LIBRARY( ${LIB_NAME} DEFAULT ${srcs} )
+    GBX_ADD_LIBRARY( ${LIB_NAME} DEFAULT ${LIB_VERSION} ${srcs} )
     target_link_libraries( ${LIB_NAME} ${dep_libs} )
 
     add_subdirectory( util )

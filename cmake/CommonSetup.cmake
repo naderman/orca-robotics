@@ -166,7 +166,7 @@ set( ICE_INCLUDE_DIR ${ICE_HOME}/include )
 #
 include( ${GEARBOX_CMAKE_DIR}/TargetUtils.cmake )
 include( ${GEARBOX_CMAKE_DIR}/DependencyUtils.cmake )
-include( ${ORCA_CMAKE_DIR}/NameUtils.cmake )
+include( ${HYDRO_CMAKE_DIR}/NameUtils.cmake )
 
 #
 # Defaults for big source code switches 
