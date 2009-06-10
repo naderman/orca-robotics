@@ -62,6 +62,9 @@ macro( ORCA_SET_LIBRARY_NAME l_name )
         
     set( LIB_NAME ${l_name} )
 
+    # library install subdirectory
+    set( LIB_VERSION ${GBX_PROJECT_VERSION} )
+
     # library namespace name
     string( TOLOWER ${LIB_NAME} LIB_NAMESPACE )
 
