@@ -56,7 +56,7 @@ struct BatteryData
 /*!
     Data for all batteries on a robot.
 */
-sequence<BatteryData> BatteriesData;
+sequence<BatteryData> BatteryDataSeq;
 
 /*!
     @brief Information about the power subsystem of a robot.
@@ -66,7 +66,7 @@ struct PowerData
     //! Time when data was measured.
     Time timeStamp;
     //! Battery information
-    BatteriesData batteries;
+    BatteryDataSeq batteries;
 };
 
 /*!
@@ -96,7 +96,7 @@ interface Power
     //! idempotent void unsubscribe(Object* subscriber);
     //! @endverbatim
     IceStorm::Topic* subscribe( PowerConsumer* subscriber )
-        throws SubscriptionFailedException;
+        throws SubscriptionFailedException, SubscriptionPushFailedException;
 };
 
 

@@ -21,29 +21,23 @@
 
 namespace orcaifaceimpl {
 
-typedef ProviderWithDescriptionImpl<orca::Imu, orca::ImuPrx,
-                    orca::ImuConsumer, orca::ImuConsumerPrx,
+typedef ProviderWithDescriptionImpl<orca::Imu, orca::ImuConsumer,
                     orca::ImuData, orca::ImuDescription> ImuImpl;
 typedef IceUtil::Handle<ImuImpl> ImuImplPtr;
 
-typedef StoringConsumerImpl<orca::Imu, orca::ImuPrx,
-                    orca::ImuConsumer, orca::ImuConsumerPrx,
+typedef StoringConsumerImpl<orca::Imu, orca::ImuConsumer,
                     orca::ImuData> StoringImuConsumerImpl;
 typedef IceUtil::Handle<StoringImuConsumerImpl> StoringImuConsumerImplPtr;
 
-typedef BufferedConsumerImpl<orca::Imu, orca::ImuPrx,
-                        orca::ImuConsumer, orca::ImuConsumerPrx,
+typedef BufferedConsumerImpl<orca::Imu, orca::ImuConsumer,
                         orca::ImuData> BufferedImuConsumerImpl;
 typedef IceUtil::Handle<BufferedImuConsumerImpl> BufferedImuConsumerImplPtr;
 
-typedef NotifyingConsumerImpl<orca::Imu, orca::ImuPrx,
-                        orca::ImuConsumer,
-                        orca::ImuConsumerPrx,
+typedef NotifyingConsumerImpl<orca::Imu, orca::ImuConsumer,
                         orca::ImuData> NotifyingImuConsumerImpl;
 typedef IceUtil::Handle<NotifyingImuConsumerImpl> NotifyingImuConsumerImplPtr;
 
-typedef PrintingConsumerImpl<orca::Imu, orca::ImuPrx,
-                        orca::ImuConsumer, orca::ImuConsumerPrx,
+typedef PrintingConsumerImpl<orca::Imu, orca::ImuConsumer,
                         orca::ImuData> PrintingImuConsumerImpl;
 typedef IceUtil::Handle<PrintingImuConsumerImpl> PrintingImuConsumerImplPtr;
 

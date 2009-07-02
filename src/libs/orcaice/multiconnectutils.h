@@ -58,7 +58,7 @@ connectToInterfaceWithString( const Context     & context,
 {        
     assert( activity && "Null activity pointer" );
 
-    context.tracer().debug( "orcaice::connectToInterfaceWithString(activity) proxy="+proxyString, 10 );
+    context.tracer().debug( subsysName, "orcaice::connectToInterfaceWithString(activity) proxy="+proxyString, 10 );
     int count = 0;
     while ( !activity->isStopping() && ( retryNumber<0 || count<retryNumber) )
     {
@@ -75,7 +75,7 @@ connectToInterfaceWithString( const Context     & context,
             if ( !subsysName.empty() )
                 context.status().warning( subsysName, ss.str() );
             else
-                context.tracer().warning( ss.str() );
+                context.tracer().warning( subsysName, ss.str() );
         }
         ++count;
         gbxiceutilacfr::checkedSleep( activity, retryIntervalSec*1000 );
@@ -122,7 +122,7 @@ connectToInterfaceWithTag( const Context     & context,
 {    
     assert( activity && "Null activity pointer" );
 
-    context.tracer().debug( "orcaice::connectToInterfaceWithTag(activity) tag="+interfaceTag, 10 );
+    context.tracer().debug( subsysName, "orcaice::connectToInterfaceWithTag(activity) tag="+interfaceTag, 10 );
 
     int count = 0;
     while ( !activity->isStopping() && ( retryNumber<0 || count<retryNumber) )
@@ -140,7 +140,7 @@ connectToInterfaceWithTag( const Context     & context,
             if ( !subsysName.empty() )
                 context.status().warning( subsysName, ss.str() );
             else
-                context.tracer().warning( ss.str() );
+                context.tracer().warning( subsysName, ss.str() );
         }
         ++count;
         gbxiceutilacfr::checkedSleep( activity, retryIntervalSec*1000 );
@@ -178,6 +178,40 @@ All other exceptions are not likely to be resolved over time so we don't catch t
 std::string getInterfaceIdWithTag( const Context& context, const std::string& interfaceTag,
                             gbxutilacfr::Stoppable* activity, const std::string& subsysName="", 
                             int retryIntervalSec=2, int retryNumber=-1 );
+
+template<class InterfacePrxType, typename DescriptionType>
+void
+getDescriptionWithTag( const Context          &context,
+                       const std::string      &interfaceTag,
+                       DescriptionType        &description,
+                       gbxutilacfr::Stoppable *activity,
+                       const std::string      &subsysName       = "", 
+                       int                     retryIntervalSec = 2, 
+                       int                     retryNumber      = -1 )
+{
+    int count = 0;
+    while ( !activity->isStopping() && ( retryNumber<0 || count<retryNumber) )
+    {
+        try {
+            description = orcaice::getDescriptionWithTag<InterfacePrxType,DescriptionType>( context, interfaceTag );
+            if ( !subsysName.empty() )
+                context.status().ok( subsysName );
+            break;
+        }
+        catch ( const orcaice::NetworkException& e ) {
+            std::stringstream ss;
+            ss << "Failed to connect to interface with tag "<<interfaceTag<<" : "<< e.what()
+               << "\nWill retry in "<<retryIntervalSec<<"s.";
+            if ( !subsysName.empty() )
+                context.status().warning( subsysName, ss.str() );
+            else
+                context.tracer().warning( subsysName, ss.str() );
+        }
+        ++count;
+        gbxiceutilacfr::checkedSleep( activity, retryIntervalSec*1000 );
+    }
+}
+
 
 //@}
 

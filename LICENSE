@@ -41,7 +41,7 @@ src/libs/orcaquml                                           LGPL
 src/libs/orcarobotdriverutil                                LGPL
 src/libs/orcasim2d                                          LGPL
 src/libs/orcasystemstatusutil                               LGPL
-src/libs/orcavfh                                            LGPL
+src/libs/orcavfh                                            GPL
 src/utils/def2uml                                           LGPL
 src/utils/orcaview2d                                        LGPL
 src/utils/orcaview3d                                        LGPL

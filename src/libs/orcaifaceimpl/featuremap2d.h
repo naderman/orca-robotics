@@ -21,29 +21,24 @@
 
 namespace orcaifaceimpl {
 
-typedef ProviderImpl<orca::FeatureMap2d, orca::FeatureMap2dPrx,
-                    orca::FeatureMap2dConsumer, orca::FeatureMap2dConsumerPrx,
+typedef ProviderImpl<orca::FeatureMap2d, orca::FeatureMap2dConsumer,
                     orca::FeatureMap2dData> FeatureMap2dImpl;
 typedef IceUtil::Handle<FeatureMap2dImpl> FeatureMap2dImplPtr;
 
-typedef StoringConsumerImpl<orca::FeatureMap2d, orca::FeatureMap2dPrx,
-                    orca::FeatureMap2dConsumer, orca::FeatureMap2dConsumerPrx,
+typedef StoringConsumerImpl<orca::FeatureMap2d, orca::FeatureMap2dConsumer,
                     orca::FeatureMap2dData> StoringFeatureMap2dConsumerImpl;
 typedef IceUtil::Handle<StoringFeatureMap2dConsumerImpl> StoringFeatureMap2dConsumerImplPtr;
 
-typedef BufferedConsumerImpl<orca::FeatureMap2d, orca::FeatureMap2dPrx,
-                        orca::FeatureMap2dConsumer, orca::FeatureMap2dConsumerPrx,
+typedef BufferedConsumerImpl<orca::FeatureMap2d, orca::FeatureMap2dConsumer,
                         orca::FeatureMap2dData> BufferedFeatureMap2dConsumerImpl;
 typedef IceUtil::Handle<BufferedFeatureMap2dConsumerImpl> BufferedFeatureMap2dConsumerImplPtr;
 
-typedef NotifyingConsumerImpl<orca::FeatureMap2d, orca::FeatureMap2dPrx,
+typedef NotifyingConsumerImpl<orca::FeatureMap2d,
                         orca::FeatureMap2dConsumer,
-                        orca::FeatureMap2dConsumerPrx,
                         orca::FeatureMap2dData> NotifyingFeatureMap2dConsumerImpl;
 typedef IceUtil::Handle<NotifyingFeatureMap2dConsumerImpl> NotifyingFeatureMap2dConsumerImplPtr;
 
-typedef PrintingConsumerImpl<orca::FeatureMap2d, orca::FeatureMap2dPrx,
-                        orca::FeatureMap2dConsumer, orca::FeatureMap2dConsumerPrx,
+typedef PrintingConsumerImpl<orca::FeatureMap2d, orca::FeatureMap2dConsumer,
                         orca::FeatureMap2dData> PrintingFeatureMap2dConsumerImpl;
 typedef IceUtil::Handle<PrintingFeatureMap2dConsumerImpl> PrintingFeatureMap2dConsumerImplPtr;
 

@@ -20,11 +20,23 @@
 using namespace std;
 using namespace wifi;
 
+std::string enumToString( orca::DiscreteSignalLevel level )
+{
+    switch (level)
+    {
+        case orca::SignalLevelUnknown: return "UNKNOWN";
+        case orca::SignalLevelVeryLow: return "VERY LOW";
+        case orca::SignalLevelLow: return "LOW";
+        case orca::SignalLevelGood: return "GOOD";
+        case orca::SignalLevelVeryGood: return "VERY GOOD";
+        case orca::SignalLevelExcellent: return "EXCELLENT";
+        default: assert( false && "Unknown signal level");
+    }
+}
 
 MainThread::MainThread( const orcaice::Context& context ) :
     orcaice::SubsystemThread( context.tracer(), context.status(), "MainThread" ),
-    context_(context),
-    snrWarningThreshhold_(0)
+    context_(context)
 {
 }
 
@@ -40,7 +52,9 @@ MainThread::initialise()
 void 
 MainThread::work()
 {   
-    setMaxHeartbeatInterval( 3.0 );
+    // operation of this component is timed by sleep
+    const int sleepIntervalMs = 500;
+    setMaxHeartbeatInterval( sleepIntervalMs/1e3 );
 
     while ( !isStopping() )
     {
@@ -57,7 +71,7 @@ MainThread::work()
             
             checkWifiSignal( data );
             
-            IceUtil::ThreadControl::sleep(IceUtil::Time::milliSeconds(500));            
+            IceUtil::ThreadControl::sleep( IceUtil::Time::milliSeconds(sleepIntervalMs) );            
         }
         catch ( ... ) 
         {
@@ -85,9 +99,6 @@ MainThread::initHardwareDriver()
     //
     Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag() + ".Config.";
-    
-    // get warning threshhold first
-    snrWarningThreshhold_ = orcaice::getPropertyAsIntWithDefault( prop, prefix+"SnrWarningThreshhold",10);
     
     string driverName = orcaice::getPropertyWithDefault( prop, prefix+"Driver", "hardware" );
     context_.tracer().debug( std::string("loading ")+driverName+" driver",3);
@@ -125,11 +136,11 @@ MainThread::checkWifiSignal( orca::WifiData &data )
             continue;
         }
         
-        // if we are below the threshhold, spit out a warning
-        if ( (iface.signalLevel-iface.noiseLevel) < snrWarningThreshhold_ ) 
+        if ( iface.discreteLevel == orca::SignalLevelVeryLow ||
+             iface.discreteLevel == orca::SignalLevelLow )
         {
             stringstream ss;
-            ss << "Wifi signal strength of interface " << iface.interfaceName << " is below " << snrWarningThreshhold_ << " dBm";
+            ss << "Wifi signal strength of interface " << iface.interfaceName << " is " << enumToString( iface.discreteLevel);
             health().warning( ss.str() );
             context_.tracer().warning( ss.str() );
         }

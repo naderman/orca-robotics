@@ -93,7 +93,7 @@ DefaultFactory::create( const hydroqguielementutil::GuiElementInfo &guiElementIn
     
     try
     {
-        cout << "DefaultFactory::create(): creating "<< guiElementInfo.type.toStdString() << " element with id:" << guiElementInfo.uniqueId.toStdString() << endl;
+//         cout << "DefaultFactory::create(): creating "<< guiElementInfo.type.toStdString() << " element with id:" << guiElementInfo.uniqueId.toStdString() << endl;
         
         if ( guiElementInfo.type == "Button" ) {
             elem = new orcaqgui2d::ButtonElement( guiElementInfo, context_, guiElementInfo.uniqueId.toStdString(), humanManager );

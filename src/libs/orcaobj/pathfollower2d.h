@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef ORCAOBJ_PATH_FOLLOWER_H
-#define ORCAOBJ_PATH_FOLLOWER_H
+#ifndef ORCAOBJ_PATHFOLLOWER2D_H
+#define ORCAOBJ_PATHFOLLOWER2D_H
 
 #include <orca/pathfollower2d.h>
 
@@ -17,11 +17,18 @@ namespace orcaobj
 {
 
 //!
-//! If there's something wrong with the pathData objects, returns false
+//! If there's something wrong with the path object, returns false
 //! and fills out the 'reason' field.
 //! If it's OK, returns true.
 //!
-bool isSane( const orca::PathFollower2dData& pathData, std::string& reason );
+bool isSane( const orca::Path2d& path, std::string& reason );
+
+//!
+//! If there's something wrong with the data structure, returns false
+//! and fills out the 'reason' field.
+//! If it's OK, returns true.
+//!
+bool isSane( const orca::PathFollower2dData& data, std::string& reason );
 
 bool isPathSketchy( const orca::Path2d& path, std::string &sketchyReason );
 

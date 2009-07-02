@@ -93,7 +93,7 @@ interface Cpu
     //! idempotent void unsubscribe(Object* subscriber);
     //! @endverbatim
     IceStorm::Topic* subscribe( CpuConsumer* subscriber )
-        throws SubscriptionFailedException;
+        throws SubscriptionFailedException, SubscriptionPushFailedException;
 };
 
 /*! @} */

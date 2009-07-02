@@ -275,6 +275,10 @@ MainThread::handleData( const orca::VelocityControl2dData &incomingCommand )
            << "    --> limiting command to: " << internalCommand.toString();
         health().warning( ss.str() );
     }
+    else
+    {
+        health().ok();
+    }
 
     if ( internalCommand.vx != 0.0 || internalCommand.w != 0.0 )
     {

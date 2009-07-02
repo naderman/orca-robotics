@@ -98,11 +98,8 @@ struct OgMapData
     //! The number of cells along the y axis
     int numCellsY;
 
-    //! The size of each cell, in the x dimension
-    float metresPerCellX;
-
-    //! The size of each cell, in the y dimension
-    float metresPerCellY;
+    //! The size of each cell, in the x and y dimensions
+    float metresPerCell;
 
     //! The occupancy values.  To give a definite mid-point the last level (255) is not used:
     //!   i.e. 0 = unoccupied, 254 = occupied and 127 = unknown. 
@@ -139,7 +136,7 @@ interface OgMap
     //! idempotent void unsubscribe(Object* subscriber);
     //! @endverbatim
     IceStorm::Topic* subscribe( OgMapConsumer* subscriber )
-        throws SubscriptionFailedException;
+        throws SubscriptionFailedException, SubscriptionPushFailedException;
 }; 
 
 module ogmapvalues

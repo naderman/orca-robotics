@@ -104,7 +104,7 @@ interface PathPlanner2d
     //! idempotent void unsubscribe(Object* subscriber);
     //! @endverbatim
     IceStorm::Topic* subscribe( PathPlanner2dConsumer* subscriber )
-        throws SubscriptionFailedException;
+        throws SubscriptionFailedException, SubscriptionPushFailedException;
 };
 
 //! @}

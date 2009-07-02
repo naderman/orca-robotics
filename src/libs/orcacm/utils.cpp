@@ -104,7 +104,7 @@ void pingHomeObjects( RegistryHomeData& data, const orcaice::Context& context,
 //     context.tracer().debug( "Pinging  );
     HomeHeader home;
     cout<<endl;
-    for ( unsigned int i=0; i<5 && i<data.homes.size(); ++i ) 
+    for ( unsigned int i=0; i<data.homes.size(); ++i ) 
     {
         // indicate that we started pinging the next home
         cout<<"."<<flush;

@@ -10,9 +10,10 @@
 #include "maploader.h"
 #include <orcaice/orcaice.h>
 #include <fstream>
-
+#include <gbxutilacfr/exceptions.h>
 #include <Ice/Ice.h>
 #include <hydromapload/hydromapload.h>
+#include <gbxutilacfr/mathdefs.h>
 
 using namespace std;
 using namespace orca;
@@ -76,7 +77,7 @@ loadMapFromFile( const orcaice::Context & context, orca::OgMapData& map )
         {
             stringstream ss;
             ss << "ERROR(maploader.cpp): something went wrong while loading " << filename;
-            throw ss.str();
+            throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
         }
     }
     else
@@ -94,8 +95,15 @@ loadMapFromFile( const orcaice::Context & context, orca::OgMapData& map )
         // since we know that map size in pixels, we can calculate the cell size
         float worldSizeX = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Size.X", 20.0 );
         float worldSizeY = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Size.Y", 20.0 );
-        map.metresPerCellX = worldSizeX / (float)map.numCellsX;
-        map.metresPerCellY = worldSizeY / (float)map.numCellsY;
+        float metresPerCellX = worldSizeX / (float)map.numCellsX;
+        float metresPerCellY = worldSizeY / (float)map.numCellsY;
+        if ( !NEAR(metresPerCellX, metresPerCellY, 1e-5) )
+        {
+            stringstream ss;
+            ss << "Can only deal with square cells.  metresPerCellX: " << metresPerCellX << ", metresPerCellY: " << metresPerCellY;
+            throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
+        }
+        map.metresPerCell = metresPerCellX;
 
         // Make up a timestamp
         map.timeStamp.seconds  = 0;

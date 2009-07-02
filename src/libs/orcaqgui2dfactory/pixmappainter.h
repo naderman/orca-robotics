@@ -26,7 +26,7 @@ namespace orcaqgui2d
 struct PixmapData
 {
     // Each pixel is a cell of size cellSize in [m]
-    QSizeF cellSize;
+    double cellSize;
     
     // Pixmap size in number of cells
     QSize mapSizePix;

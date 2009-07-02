@@ -136,8 +136,7 @@ MainThread::initialise()
     // read map info from config
     mapConfig.mapSizeX = ogFusionConfig.numCellsX;
     mapConfig.mapSizeY = ogFusionConfig.numCellsY;
-    mapConfig.mapResX = ogFusionConfig.metresPerCellX;
-    mapConfig.mapResY = ogFusionConfig.metresPerCellY;
+    mapConfig.mapRes = ogFusionConfig.metresPerCell;
     mapConfig.mapOriginX = ogFusionConfig.offset.p.x;
     mapConfig.mapOriginY = ogFusionConfig.offset.p.y;
     mapConfig.mapOrientation = ogFusionConfig.offset.o;
@@ -165,7 +164,7 @@ void
 MainThread::work()
 {
     const int timeoutMs = 1000;
-    setMaxHeartbeatInterval( 2*timeoutMs );
+    setMaxHeartbeatInterval( timeoutMs/1e3 );
 
     orca::RangeScanner2dDataPtr rangeScan;
     orca::Localise2dData localiseData;

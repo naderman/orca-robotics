@@ -23,7 +23,7 @@ string toString( bool x, int recurse, int expand, int indent )
 string toString( Ice::Byte x, int recurse, int expand, int indent )
 {
     stringstream ss;
-    ss << x;
+    ss << ((int)x);
     return ss.str();
 }
 

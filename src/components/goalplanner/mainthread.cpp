@@ -46,6 +46,8 @@ namespace {
         bool isTemporary_;
     };
 
+    ///////////////////////////////////////////////////
+
     // Computes waypoint to start from
     // This is for the pathplanner's purposes, not the pathfollower.
     // So we don't care too much about tolerances and speeds.
@@ -60,12 +62,43 @@ namespace {
         // add bogus tolerances and speeds
         wp.distanceTolerance = (Ice::Float)0.1;
         wp.headingTolerance  = (Ice::Float)(M_PI/2.0);
-        wp.timeTarget.seconds  = 0;
-        wp.timeTarget.useconds = 0;
+        wp.timeTarget        = 0.0;
         wp.maxApproachSpeed    = 2000;
         wp.maxApproachTurnrate = (float)DEG2RAD(2000); 
 
         return wp;
+    }
+
+    // Adjust timing: work out how long it takes to the first waypoint based on straight-line distance 
+    // and configured velocityToFirstWaypoint_. Take the max of first wp time and the computed time.
+    // Add this time to all waypoints.
+    void addTimeToReachFirstWp( const hydronavutil::Pose &pose, 
+                                double velocityToFirstWaypoint,
+                                orca::PathFollower2dData &incomingPath )
+    {  
+        // compute time to reach 1st wp based on straight-line distance: timeDist
+        assert( incomingPath.path.size()>0 );
+        orca::Waypoint2d &firstWp = incomingPath.path[0];
+        double dX = pose.x()-firstWp.target.p.x;
+        double dY = pose.y()-firstWp.target.p.y;
+        double dist = sqrt( dX*dX + dY*dY );
+        double timeDist = dist/velocityToFirstWaypoint;
+        
+        // time to reach 1st waypoint according to incoming path: timeIn
+        double timeIn = firstWp.timeTarget;
+        
+        // compute difference between the two
+        double timeOffset =  timeDist - timeIn;
+        
+        // nothing to change if timeIn is bigger than timeDist
+        if (timeOffset<0.0) return; 
+        
+        // otherwise: add the offset to all waypoints in the path
+        for (unsigned int i=0; i<incomingPath.path.size(); i++)
+        {
+            orca::Waypoint2d &wp = incomingPath.path[i];
+            wp.timeTarget = wp.timeTarget + timeOffset;
+        }
     }
 
     hydronavutil::Pose mlPose( const orca::Localise2dData &localiseData )
@@ -101,6 +134,19 @@ namespace {
         return orcaice::timeDiffAsDouble( orcaice::getNow(), ts );
     }
 
+    // check whether the localise data is stale, if yes throws an exception
+    void checkForStaleness( orca::Localise2dData &data )
+    {
+        const double AGE_FOR_STALE = 3; // seconds
+        if ( ageOf( data.timeStamp ) > AGE_FOR_STALE )
+        {
+            stringstream ss;
+            ss << "MainThread: LocaliseData is stale: age is " << ageOf( data.timeStamp ) << " sec";
+            bool isTemporary = true;
+            throw GoalPlanException( ss.str(), isTemporary );
+        }
+    }
+
     double distance( const hydronavutil::Pose &pose, const orca::Waypoint2d &wp )
     {
         return hypot( pose.y()-wp.target.p.y, pose.x()-wp.target.p.x );
@@ -109,7 +155,35 @@ namespace {
     {
         return hypot( wp1.target.p.y-wp2.target.p.y, wp1.target.p.x-wp2.target.p.x );
     }
+
+    orca::PathFollower2dData
+    toPathFollowerData( const orca::PathPlanner2dData &pathPlan )
+    {
+        orca::PathFollower2dData outgoingPath;
+        outgoingPath.timeStamp = pathPlan.timeStamp;
+        outgoingPath.path = pathPlan.path;
+        // get rid of first waypoint, it's the robot's location which is not needed
+        vector<orca::Waypoint2d>::iterator it = outgoingPath.path.begin();
+        outgoingPath.path.erase(it);
+
+        return outgoingPath;
+    }
+
+    void
+    modifyNextWaypointTolerance( orca::Waypoint2d         &wp,
+                                 const hydronavutil::Pose &pose )
+    {
+        double distToWpCentre = hypot( wp.target.p.y - pose.y(),
+                                       wp.target.p.x - pose.x() );
+        if ( distToWpCentre < 2*wp.distanceTolerance )
+        {
+            const double MIN_DISTANCE_TOLERANCE = 0.3;
+            wp.distanceTolerance = MAX( MIN_DISTANCE_TOLERANCE, distToWpCentre/2.0 );
+        }
+    }
 }
+
+///////////////////////////////////
 
 MainThread::MainThread( const orcaice::Context & context )
     : orcaice::SubsystemThread( context.tracer(), context.status(), "MainThread" ),
@@ -138,7 +212,8 @@ MainThread::initialise()
 void 
 MainThread::work()
 {
-    setMaxHeartbeatInterval( 3.0 );
+    const int timeoutMs = 1000;
+    setMaxHeartbeatInterval( timeoutMs/1e3 );
 
     orca::PathFollower2dData incomingPath;
     bool requestIsOutstanding = false;
@@ -214,10 +289,10 @@ MainThread::work()
             
             // Adjust timing: work out how long it takes to the first waypoint based on straight-line distance 
             // and configured velocityToFirstWaypoint_. Take the max of first wp time and the computed time.
-            addTimeToReachFirstWp( pose, incomingPath );
+            addTimeToReachFirstWp( pose, velocityToFirstWaypoint_, incomingPath );
 
             orca::PathPlanner2dData  plannedPath = planPath( pose, incomingPath );
-            orca::PathFollower2dData pathToSend = convertToPathFollowerData( plannedPath );
+            orca::PathFollower2dData pathToSend = toPathFollowerData( plannedPath );
 
             // Work out whether we're supposed to activate immediately
             bool activateImmediately;
@@ -372,39 +447,12 @@ MainThread::stopRobot()
     }
 }
 
-void
-MainThread::addTimeToReachFirstWp( const hydronavutil::Pose &pose,
-                                 orca::PathFollower2dData &incomingPath )
-{  
-    // compute time to reach 1st wp based on straight-line distance: timeDist
-    assert( incomingPath.path.size()>0 );
-    orca::Waypoint2d &firstWp = incomingPath.path[0];
-    double dX = pose.x()-firstWp.target.p.x;
-    double dY = pose.y()-firstWp.target.p.y;
-    double dist = sqrt( dX*dX + dY*dY );
-    double timeDist = dist/velocityToFirstWaypoint_;
-    
-    // time to reach 1st waypoint according to incoming path: timeIn
-    double timeIn = orcaice::timeAsDouble( firstWp.timeTarget );
-    
-    // compute difference between the two
-    double timeOffset =  timeDist - timeIn;
-    
-    // nothing to change if timeIn is bigger than timeDist
-    if (timeOffset<0.0) return; 
-    
-    // otherwise: add the offset to all waypoints in the path
-    for (unsigned int i=0; i<incomingPath.path.size(); i++)
-    {
-        orca::Waypoint2d &wp = incomingPath.path[i];
-        wp.timeTarget = orcaice::toOrcaTime( orcaice::timeAsDouble(wp.timeTarget) + timeOffset );
-    }
-}
-
 orca::PathPlanner2dData
 MainThread::planPath( const hydronavutil::Pose &pose, 
                     const orca::PathFollower2dData &coarsePath )
 {
+    const int timeoutMs = 1000;
+
     // put together a task for the pathplanner
     // add the position of the robot as the first waypoint in the path
     orca::Waypoint2d firstWp = computeFirstWaypointForPathPlanning(pose);
@@ -433,7 +481,7 @@ MainThread::planPath( const hydronavutil::Pose &pose,
     int secWaited=0;
     while ( !isStopping() )
     {
-        int ret = computedPathConsumer_->store().getNext( computedPath, 1000 );
+        int ret = computedPathConsumer_->store().getNext( computedPath, timeoutMs );
         if ( ret == 0 )
             break;
         else
@@ -462,19 +510,6 @@ MainThread::planPath( const hydronavutil::Pose &pose,
     return computedPath;
 }
 
-orca::PathFollower2dData
-MainThread::convertToPathFollowerData( const orca::PathPlanner2dData &pathPlan )
-{
-    orca::PathFollower2dData outgoingPath;
-    outgoingPath.timeStamp = pathPlan.timeStamp;
-    outgoingPath.path = pathPlan.path;
-    // get rid of first waypoint, it's the robot's location which is not needed
-    vector<orca::Waypoint2d>::iterator it = outgoingPath.path.begin();
-    outgoingPath.path.erase(it);
-
-    return outgoingPath;
-}
-
 void
 MainThread::sendPath( const orca::PathFollower2dData &pathToSend, bool activateImmediately )
 {
@@ -490,19 +525,6 @@ MainThread::sendPath( const orca::PathFollower2dData &pathToSend, bool activateI
         ss << "MainThread:: Problem calling setData() on pathfollower2d proxy: " << e;
         const bool isTemporary = false;
         throw( GoalPlanException( ss.str(), isTemporary ) );
-    }
-}
-
-void 
-MainThread::checkForStaleness( orca::Localise2dData &data )
-{
-    const double AGE_FOR_STALE = 3; // seconds
-    if ( ageOf( data.timeStamp ) > AGE_FOR_STALE )
-    {
-        stringstream ss;
-        ss << "MainThread: LocaliseData is stale: age is " << ageOf( data.timeStamp ) << " sec";
-        bool isTemporary = true;
-        throw GoalPlanException( ss.str(), isTemporary );
     }
 }
 
@@ -567,15 +589,19 @@ MainThread::replan( const hydronavutil::Pose &currentPose, const orca::Waypoint2
     coarsePathToCurrentWp.timeStamp = orcaice::getNow();
     coarsePathToCurrentWp.path.push_back( currentWp );
     orca::PathPlanner2dData pathPlanToCurrentWp = planPath( currentPose, coarsePathToCurrentWp );
-    orca::PathFollower2dData pathToCurrentWp = convertToPathFollowerData( pathPlanToCurrentWp );
+    orca::PathFollower2dData pathToCurrentWp = toPathFollowerData( pathPlanToCurrentWp );
 
     // Now we need to construct a new path: the path to the current WP, followed
-    // by the remainder fo the original path
+    // by the remainder of the original path
     
     // TODO: maybe the PathFollower2d interface should have functions to modify the path?
     //       Otherwise things like the 'activation time' will change now...
     //       Also, for a big path there might be a lot of copying of the old path...
     orca::PathFollower2dData newPath = pathToCurrentWp;
+
+    // Ensure the tolerance of the next waypoint (i.e. the one we'll be hunting right now) makes sense.
+    assert( newPath.path.size() > 0 );
+    modifyNextWaypointTolerance( newPath.path[0], currentPose );
 
     // Delete the last element of newPath: it's the current waypoint, which we'll get from the oldPath.
     newPath.path.resize( newPath.path.size()-1 );
@@ -615,23 +641,23 @@ MainThread::replan( const hydronavutil::Pose &currentPose, const orca::Waypoint2
     //
     // Shift all the times in the oldPath back because localNav is about to start a new path.
     //
-    double secSinceActivation;
-    bool ok = localNavPrx_->getRelativeActivationTime( secSinceActivation );
-    if ( !ok )
+    orca::PathFollower2dState pathFollowerState = localNavPrx_->getState();
+    if ( !pathFollowerState.pathActivation == orca::FollowingPath )
     {
-        throw GoalPlanException( "MainThread::replan(): localNavPrx_->getRelativeActivationTime returned false!", false );
+        throw GoalPlanException( "MainThread::replan(): localNavPrx_->getState says we're not following a path!", false );
     }
+    const double secSinceActivation = pathFollowerState.secondsSinceActivation;
     for ( size_t i = currentWpIndex; i < oldPath.path.size(); i++ )
     {
         orca::Waypoint2d &wp = oldPath.path[i];
-        if ( orcaice::timeAsDouble(wp.timeTarget) > secSinceActivation )
+        if ( wp.timeTarget > secSinceActivation )
         {
-            wp.timeTarget = orcaice::toOrcaTime( orcaice::timeAsDouble(wp.timeTarget) - secSinceActivation );
+            wp.timeTarget = wp.timeTarget - secSinceActivation;
         }
         else
         {
             // We're running late: aim to be there 'now'
-            wp.timeTarget = orcaice::toOrcaTime( 0 );
+            wp.timeTarget = 0.0;
         }
     }
 
@@ -650,14 +676,14 @@ MainThread::replan( const hydronavutil::Pose &currentPose, const orca::Waypoint2
     double totalDistance = cumDistances.back() + distance( newPath.path.back(), oldPath.path[currentWpIndex] );
 
     // Total time to allot
-    double totalTime = orcaice::timeAsDouble( oldPath.path[currentWpIndex].timeTarget );
+    double totalTime = oldPath.path[currentWpIndex].timeTarget;
     assert( totalTime >= 0.0 );
 
     // Spread this time out in proportion to distance
     for ( size_t i=0; i < newPath.path.size(); i++ )
     {
         double time = (cumDistances[i]/totalDistance) * totalTime;
-        newPath.path[i].timeTarget = orcaice::toOrcaTime( time );
+        newPath.path[i].timeTarget = time;
     }
     
     //
@@ -683,13 +709,15 @@ MainThread::replan( const hydronavutil::Pose &currentPose, const orca::Waypoint2
 
 bool
 MainThread::waitForNewPath( orca::PathFollower2dData &newPathData )
-{
+{    
+    const int timeoutMs = 1000;
+
     while ( !isStopping() )
     {
         try {
 
             // Block briefly, waiting for a new path
-            int ret = incomingPathStore_.getNext( newPathData, 1000 );
+            int ret = incomingPathStore_.getNext( newPathData, timeoutMs );
             if ( ret==0 )
             {
                 // Got a new request.

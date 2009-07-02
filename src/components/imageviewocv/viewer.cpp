@@ -8,6 +8,7 @@
  *
  */
 
+#include <stdint.h>
 #include "viewer.h" 
 #include <hydroimage/formats.h>
 #include <hydroimageocvutil/colourconversions.h>

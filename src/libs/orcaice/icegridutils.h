@@ -88,6 +88,7 @@ Writes diagnostic information into @c diagnostic string.
 Before making any connections, the fully-qualified component name is checked and platform 'local' is replaced 
 with current hostname.
 
+The interface type must be specified fully, including the module name, e.g. "::orca::Home".
 Not all objects can be added to the admin interface, see toAdminFacet() for the list of supported interfaces.
 
 Catches all exceptions. Does not throw.

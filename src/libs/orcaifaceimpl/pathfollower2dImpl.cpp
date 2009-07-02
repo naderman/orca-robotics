@@ -30,16 +30,10 @@ public:
         { callback_.setData(path,activateImmediately); }
     virtual void activateNow(const Ice::Current&)
         { callback_.activateNow(); }
-    virtual int  getWaypointIndex(const Ice::Current&)
-        { return callback_.getWaypointIndex(); }
-    virtual bool getAbsoluteActivationTime( orca::Time &activationTime, const Ice::Current& )
-        { return callback_.getAbsoluteActivationTime(activationTime); }
-    virtual bool getRelativeActivationTime( double &secondsSinceActivation, const Ice::Current& )
-        { return callback_.getRelativeActivationTime(secondsSinceActivation); }
     virtual void setEnabled( bool enabled, const Ice::Current& )
         { callback_.setEnabled(enabled); }
-    virtual bool enabled(const Ice::Current&)
-        { return callback_.enabled(); }
+    virtual orca::PathFollower2dState getState(const Ice::Current&)
+        { return callback_.getState(); }
 
 private:
     PathFollower2dImpl   &impl_;
@@ -146,7 +140,7 @@ PathFollower2dImpl::localSetAndSend( const orca::PathFollower2dData& data )
 }
 
 void 
-PathFollower2dImpl::localSetWaypointIndex( int index )
+PathFollower2dImpl::localSetState( const orca::PathFollower2dState &state )
 {
     // check that communicator still exists
     if ( !context_.communicator() ) {
@@ -154,7 +148,7 @@ PathFollower2dImpl::localSetWaypointIndex( int index )
     }
 
     try {
-        topicHandler_->publisherPrx()->setWaypointIndex(index);
+        topicHandler_->publisherPrx()->setState(state);
     }
     catch ( Ice::CommunicatorDestroyedException & )
     {
@@ -170,84 +164,12 @@ PathFollower2dImpl::localSetWaypointIndex( int index )
         {
             try {
                 // try again to push that bit of info
-                topicHandler_->publisherPrx()->setWaypointIndex(index);
+                topicHandler_->publisherPrx()->setState(state);
             }
             catch ( Ice::Exception &e )
             {
                 std::stringstream ss;
-                ss << interfaceName_ << ": Re-push of data failed: " << e;
-                context_.tracer().info( ss.str() );
-            }
-        }
-    }
-}
-void 
-PathFollower2dImpl::localSetActivationTime( orca::Time absoluteTime, double relativeTime )
-{
-    // check that communicator still exists
-    if ( !context_.communicator() ) {
-        return;
-    }
-
-    try {
-        topicHandler_->publisherPrx()->setActivationTime(absoluteTime,relativeTime);
-    }
-    catch ( Ice::CommunicatorDestroyedException & )
-    {
-        // If we see this, we're obviously shutting down.  Don't bitch about anything.
-    }
-    catch ( Ice::Exception &e )
-    {
-        std::stringstream ss; ss << interfaceName_ << "::" << __func__ << ": Failed push to IceStorm: " << e;
-        context_.tracer().warning( ss.str() );
-
-        bool reconnected = topicHandler_->connectToTopic();
-        if ( reconnected )
-        {
-            try {
-                // try again to push that bit of info
-                topicHandler_->publisherPrx()->setActivationTime(absoluteTime,relativeTime);
-            }
-            catch ( Ice::Exception &e )
-            {
-                std::stringstream ss;
-                ss << interfaceName_ << ": Re-push of data failed: " << e;
-                context_.tracer().info( ss.str() );
-            }
-        }
-    }
-}
-void 
-PathFollower2dImpl::localSetEnabledState( bool enabledState )
-{
-    // check that communicator still exists
-    if ( !context_.communicator() ) {
-        return;
-    }
-
-    try {
-        topicHandler_->publisherPrx()->setEnabledState(enabledState);
-    }
-    catch ( Ice::CommunicatorDestroyedException & )
-    {
-        // If we see this, we're obviously shutting down.  Don't bitch about anything.
-    }
-    catch ( Ice::Exception &e )
-    {
-        std::stringstream ss; ss << interfaceName_ << "::" << __func__ << ": Failed push to IceStorm: " << e;
-        context_.tracer().warning( ss.str() );
-
-        bool reconnected = topicHandler_->connectToTopic();
-        if ( reconnected )
-        {
-            try {
-                // try again to push that bit of info
-                topicHandler_->publisherPrx()->setEnabledState(enabledState);
-            }
-            catch ( Ice::Exception &e )
-            {
-                std::stringstream ss;
-                ss << interfaceName_ << ": Re-push of data failed: " << e;
+                ss << interfaceName_ << ": Re-push of state failed: " << e;
                 context_.tracer().info( ss.str() );
             }
         }

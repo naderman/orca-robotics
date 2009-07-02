@@ -47,7 +47,7 @@ SpeedSetPoint::evaluateDt()
         ss << "Huh? Why is dt_ so large?? (dt_="<<dt_<<"s)";
         throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
     }
-    else if ( dt_ > 0.015 || dt_ < 0.001 )
+    else if ( dt_ > 0.025 || dt_ < 0.001 )
     {
         cout<<"TRACE(speedsetpoint.cpp): "<< IceUtil::Time::now().toDateTime() <<": Outlier dt: " << dt_ << endl;
     }
@@ -113,7 +113,12 @@ SpeedSetPoint::currentCmdSpeed( bool &setPointAlreadyReached )
     }
 
     // Hard-coded safety check...
-    assert( fabs(currentCmdSpeed_) < 3.6 );
+    if ( currentCmdSpeed_ > 4.0 )
+    {
+        stringstream ss;
+        ss << "Attempted to command infeasibly-large speed: " << currentCmdSpeed_ << "m/s";
+        throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
+    }
     // Another safety check...
     assert( isBetween( currentCmdSpeed_, cmdSpeedPrior, setPoint_ ) );
 

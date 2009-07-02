@@ -49,6 +49,19 @@ int main(int argc, char * argv[])
     props->setProperty( "Size3d.Alpha", "1.0 2.0 three" );
     int ret;
 
+    cout<<"testing isPropertyNull() ... ";
+    {
+        if ( !orcaice::isPropertyNotNull( props, "String" ) ) {
+            cout<<"failed, existing key not found"<<endl;
+            return EXIT_FAILURE;
+        }
+        if ( orcaice::isPropertyNotNull( props, "NotExist" ) ) {
+            cout<<"failed, non-existing key found"<<endl;
+            return EXIT_FAILURE;
+        }
+    }
+    cout<<"ok"<<endl;
+
     cout<<"testing getProperty() ... ";
     {
         std::string s;

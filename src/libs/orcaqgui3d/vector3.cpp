@@ -145,7 +145,7 @@ double vectorAngle(const Vector3 &v, const Vector3 &w)
     //for acos, the value has to be between -1.0 and 1.0, but due to numerical imprecisions it sometimes comes outside this range
     if(cosineOfAngle > 1.0) cosineOfAngle = 1.0;
     if(cosineOfAngle < -1.0) cosineOfAngle = -1.0;
-    return -acos(cosineOfAngle);
+    return acos(cosineOfAngle);
 }
 
 //Rotate vector v around arbitrary() ax()is for angle radians

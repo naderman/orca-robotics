@@ -3,6 +3,7 @@
 #include <orcaice/orcaice.h>
 #include <orcaobj/pathfollower2d.h>
 #include <orcaobj/pathplanner2d.h>
+#include <orcaifaceutil/pathfollower2d.h>
 
 using namespace std;
 
@@ -24,14 +25,10 @@ public:
     // remote interface
 
 
-    virtual void setWaypointIndex( int index, const ::Ice::Current& )
-        { return impl_.internalSetWaypointIndex( index ); }
-    virtual void setActivationTime( const orca::Time &absoluteTime, double relativeTime, const ::Ice::Current& )
-        { return impl_.internalSetActivationTime( absoluteTime, relativeTime ); }
+    virtual void setState( const orca::PathFollower2dState &state, const ::Ice::Current& )
+        { return impl_.internalSetState( state ); }
     virtual void setData( const orca::PathFollower2dData &data, const ::Ice::Current& )
         { return impl_.internalSetData( data ); }
-    virtual void setEnabledState( bool enabledState, const ::Ice::Current& )
-        { return impl_.internalSetEnabledState( enabledState ); }
 
 private:
     ProgressMonitor &impl_;
@@ -41,10 +38,11 @@ private:
 
 ProgressMonitor::ProgressMonitor( const orcaice::Context& context ) :
     gotData_(false),
-    isEnabled_(true),
-    wpIndex_(-1),
     context_(context)
 {
+    state_.waypointIndex  = 0;
+    state_.pathActivation = orca::NoPathLoaded;
+
     consumerPtr_ = new PathFollower2dConsumerI( *this );
     // this function does not throw, because it never talks to the Registry
     consumerPrx_ = orcaice::createConsumerInterface<orca::PathFollower2dConsumerPrx>
@@ -152,50 +150,36 @@ ProgressMonitor::unsubscribe()
 }
 
 void 
-ProgressMonitor::internalSetWaypointIndex( int index )
+ProgressMonitor::internalSetState( const orca::PathFollower2dState &state )
 {
     IceUtil::Mutex::Lock lock(mutex_);
-    wpIndex_ = index;
-}
-
-void 
-ProgressMonitor::internalSetActivationTime( const orca::Time &absoluteTime,
-                                    double relativeTime )
-{
-    // IceUtil::Mutex::Lock lock(mutex_);
-    // Nothing to do here.
+    state_ = state;
 }
 
 void 
 ProgressMonitor::internalSetData( const orca::PathFollower2dData &data )
 {
     IceUtil::Mutex::Lock lock(mutex_);
-    pathData_ = data;
     gotData_ = true;
-}
-
-void 
-ProgressMonitor::internalSetEnabledState( bool enabledState )
-{
-    IceUtil::Mutex::Lock lock(mutex_);
-    isEnabled_ = enabledState;
+    pathData_ = data;
 }
 
 bool
 ProgressMonitor::followingPath() const
 {
-    if ( !gotData_ ) return false;
-    if ( !isEnabled_ ) return false;
-    if ( wpIndex_ == -1 ) return false;
-    if ( pathData_.path.size() == 0 ) return false;
-    if ( wpIndex_ < 0 || wpIndex_ >= (int)(pathData_.path.size()) )
+    bool isFollowingPath = ( gotData_ &&
+                             state_.isEnabled && 
+                             state_.pathActivation == orca::FollowingPath );
+    if ( isFollowingPath )
     {
-        stringstream ss;
-        ss << "Bad wpIndex_: " << wpIndex_ << " for path: " << orcaobj::toString(pathData_);
-        throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
-    }    
-
-    return true;
+        if ( state_.waypointIndex < 0 || state_.waypointIndex >= (int)(pathData_.path.size()) )
+        {
+            stringstream ss;
+            ss << "Bad state_: " << ifaceutil::toString(state_) << " for path: " << orcaobj::toString(pathData_);
+            throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
+        }    
+    }
+    return isFollowingPath;
 }
 
 bool
@@ -204,7 +188,7 @@ ProgressMonitor::getCurrentWp( orca::Waypoint2d &currentWp )
     IceUtil::Mutex::Lock lock(mutex_);
     if ( !followingPath() ) return false;
 
-    currentWp = pathData_.path[wpIndex_];
+    currentWp = pathData_.path[state_.waypointIndex];
     return true;
 }
 
@@ -215,7 +199,7 @@ ProgressMonitor::getCurrentPath( orca::PathFollower2dData &pathData, int &wpInde
     if ( !followingPath() ) return false;
 
     pathData = pathData_;
-    wpIndex = wpIndex_;
+    wpIndex = state_.waypointIndex;
     return true;
 }
 

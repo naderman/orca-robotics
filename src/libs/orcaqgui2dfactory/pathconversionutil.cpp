@@ -35,7 +35,7 @@ void guiPathToOrcaPath( const hydroqguipath::GuiPath &in,
             out[counter].target.o = heading;
             out[counter].distanceTolerance = in[i].distanceTolerance;
             out[counter].headingTolerance = DEG2RAD((float)in[i].headingTolerance/hydroqguipath::QT_ANGLE_MULTIPLIER);      
-            out[counter].timeTarget = orcaice::toOrcaTime( in[i].timeTarget + k*timeOffset );
+            out[counter].timeTarget = in[i].timeTarget + k*timeOffset;
             out[counter].maxApproachSpeed = in[i].maxSpeed;
             out[counter].maxApproachTurnrate = DEG2RAD((float)in[i].maxTurnrate);
         
@@ -56,7 +56,7 @@ void orcaPathToGuiPath( const orca::Path2d     &in,
         out[i].heading = (int)floor(RAD2DEG(in[i].target.o))*hydroqguipath::QT_ANGLE_MULTIPLIER;
         out[i].distanceTolerance = in[i].distanceTolerance;
         out[i].headingTolerance = (int)floor(RAD2DEG(in[i].headingTolerance))*hydroqguipath::QT_ANGLE_MULTIPLIER;   
-        out[i].timeTarget = orcaice::timeAsDouble(in[i].timeTarget);
+        out[i].timeTarget = in[i].timeTarget;
         out[i].maxSpeed = in[i].maxApproachSpeed;
         out[i].maxTurnrate = (int)floor(RAD2DEG(in[i].maxApproachTurnrate));
     }

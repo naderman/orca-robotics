@@ -29,6 +29,8 @@ namespace orcaicegrid
 //! Implementations of all methods inhereted from AbstractIceGridManager
 //! throw gbxutilacfr::Exception when something goes wrong.
 //!
+//! All operations may throw SessionNotConnectedException.
+//!
 //! @author Alex Brooks
 //!
 class IceGridManager : public AbstractIceGridManager, public IceGridSession

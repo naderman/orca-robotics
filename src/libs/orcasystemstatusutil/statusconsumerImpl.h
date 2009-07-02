@@ -60,7 +60,7 @@ Stale
 @endverbatim
 */
 class StatusConsumerImpl : 
-    public orcaifaceimpl::ConsumerImpl<orca::Status,orca::StatusPrx,orca::StatusConsumer,orca::StatusConsumerPrx,orca::StatusData>
+    public orcaifaceimpl::ConsumerImpl<orca::Status,orca::StatusConsumer,orca::StatusData>
 {
 public: 
 

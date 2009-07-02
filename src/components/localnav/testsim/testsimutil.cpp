@@ -22,8 +22,7 @@ namespace {
         wp.target.p.x   = 0;
         wp.target.p.y   = 0;
         wp.target.o     = M_PI;
-        wp.timeTarget.seconds  = t;
-        wp.timeTarget.useconds = 0;
+        wp.timeTarget   = t;
         d.path.push_back( wp );
 
         if ( stressTiming )
@@ -31,8 +30,7 @@ namespace {
         wp.target.p.x   = 0;
         wp.target.p.y   = 0;
         wp.target.o     = -M_PI/2;
-        wp.timeTarget.seconds  = t;
-        wp.timeTarget.useconds = 0;
+        wp.timeTarget   = t;
         d.path.push_back( wp );
 
         if ( stressTiming )
@@ -40,8 +38,7 @@ namespace {
         wp.target.p.x   = 0;
         wp.target.p.y   = 0;
         wp.target.o     = M_PI/2;
-        wp.timeTarget.seconds  = t;
-        wp.timeTarget.useconds = 0;
+        wp.timeTarget   = t;
         d.path.push_back( wp );
 
         if ( stressTiming )
@@ -49,8 +46,7 @@ namespace {
         wp.target.p.x   = 0;
         wp.target.p.y   = 0;
         wp.target.o     = M_PI/2;
-        wp.timeTarget.seconds  = t;
-        wp.timeTarget.useconds = 0;
+        wp.timeTarget   = t;
         d.path.push_back( wp );        
     }
 
@@ -65,8 +61,7 @@ namespace {
         wp.target.p.x   = 10;
         wp.target.p.y   = 10;
         wp.target.o     = M_PI;
-        wp.timeTarget.seconds  = t;
-        wp.timeTarget.useconds = 0;
+        wp.timeTarget   = t;
         d.path.push_back( wp );
 
         if ( stressTiming )
@@ -74,27 +69,27 @@ namespace {
         wp.target.p.x   = 10;
         wp.target.p.y   = 0;
         wp.target.o     = M_PI;
-        wp.timeTarget.seconds  = t;
-        wp.timeTarget.useconds = 0;
+        wp.timeTarget   = t;
         d.path.push_back( wp );
 
         // Try to get thru door
         if ( stressTiming )
             t+=3;
         wp.target.p.x   = -14;
-        wp.target.p.y   = 10;
+//        wp.target.p.y   = 10;
+        wp.target.p.y   = 9;
         wp.target.o     = M_PI/2.0;
-        wp.timeTarget.seconds  = t;
-        wp.timeTarget.useconds = 0;
+        wp.timeTarget   = t;
         d.path.push_back( wp );
 
         if ( stressTiming )
             t+=3;
-        wp.target.p.x   = -14;
+//        wp.target.p.x   = -14;
+        wp.target.p.x   = -14.5;
+//        wp.target.p.x   = -15;
         wp.target.p.y   = 14;
         wp.target.o     = M_PI/2.0;
-        wp.timeTarget.seconds  = t;
-        wp.timeTarget.useconds = 0;
+        wp.timeTarget   = t;
         d.path.push_back( wp );
         
         // Then back out.
@@ -103,8 +98,7 @@ namespace {
         wp.target.p.x   = -14;
         wp.target.p.y   = 14;
         wp.target.o     = -M_PI/2.0;
-        wp.timeTarget.seconds  = t;
-        wp.timeTarget.useconds = 0;
+        wp.timeTarget   = t;
         d.path.push_back( wp );
 
         if ( stressTiming )
@@ -112,8 +106,7 @@ namespace {
         wp.target.p.x   = -14;
         wp.target.p.y   = 10;
         wp.target.o     = -M_PI/2.0;
-        wp.timeTarget.seconds  = t;
-        wp.timeTarget.useconds = 0;
+        wp.timeTarget   = t;
         d.path.push_back( wp );        
     }
 
@@ -155,8 +148,10 @@ getTestPath( const hydroogmap::OgMap &ogMap,
     int t=0;
 
     // These settings will be held constant unless otherwise specified.
-    wp.distanceTolerance = 1.5;
-    wp.headingTolerance  = M_PI/8.0;
+//    wp.distanceTolerance = 1.5;
+    wp.distanceTolerance = 0.8;
+//    wp.headingTolerance  = M_PI/8.0;
+    wp.headingTolerance  = 2.0*M_PI;
     wp.maxApproachSpeed    = 3.0;
     wp.maxApproachTurnrate = 90*M_PI/180.0;
 
@@ -196,8 +191,7 @@ getTestPath( const hydroogmap::OgMap &ogMap,
 
         if ( stressTiming )
             t += (int) hydroutil::randNum(3,10);
-        wp.timeTarget.seconds  = t;
-        wp.timeTarget.useconds = 0;
+        wp.timeTarget = t;
         wp.maxApproachSpeed = hydroutil::randNum( 1.0, 5.0 );
         wp.maxApproachTurnrate = hydroutil::randNum( 45*M_PI/180.0, 180*M_PI/180.0 );
         d.path.push_back( wp );
@@ -214,8 +208,10 @@ namespace {
     placeRoom( hydroogmap::OgMap &ogMap )
     {
         double centreX = -14, centreY = 14;
-        double widthX = 4, widthY = 4;
-        double doorWidth = 1.0;
+//        double widthX = 4, widthY = 4;
+        double widthX = 2, widthY = 4;
+//        double doorWidth = 1.0;
+        double doorWidth = 0.8;
 
         // the corners in grid-coords
         int blX, blY;
@@ -268,8 +264,7 @@ hydroogmap::OgMap setupMap( double worldSize,
     ogMap.offset().p.y = -worldSize/2.0;
     ogMap.offset().o   = 0.0;
     
-    ogMap.setMetresPerCellX( cellSize );
-    ogMap.setMetresPerCellY( cellSize );
+    ogMap.setMetresPerCell( cellSize );
     ogMap.reallocate( (int)(worldSize/cellSize), (int)(worldSize/cellSize) );
 
     ogMap.fill( 0 );

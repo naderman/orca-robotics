@@ -53,6 +53,23 @@ main( int argc, char **argv )
             return EXIT_FAILURE;
         }
     }
+    // test with 2 objects with a line break between them
+    {
+        orca::Time in, out;
+        in.seconds = 233232;
+        in.useconds = 35343;
+        stringstream ss; toLogStream( in, ss );
+        ss<<endl;
+        toLogStream( in, ss );
+        cout << "Time\n" << ss.str() << endl << endl;
+        fromLogStream( out, ss );
+        fromLogStream( out, ss );
+        if ( in != out ) {
+            stringstream ss; toLogStream( out, ss );
+            cout<<"failed! out: '"<<ss.str()<<"'"<<endl;
+            return EXIT_FAILURE;
+        }
+    }
     {
         orca::StringSeq in, out;
         in.push_back( "one" );

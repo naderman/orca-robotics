@@ -84,6 +84,7 @@ MainThread::purgeObjects( const IceGrid::AdminPrx& adminPrx )
 
     //
     // Remote call to Registry
+    //
     context_.tracer().info( "Getting information about Home objects from the Registry." );
     orcacm::RegistryHomeData regData;
     regData = orcacm::getRegistryHomeData( context_, locatorString );
@@ -101,6 +102,7 @@ MainThread::purgeObjects( const IceGrid::AdminPrx& adminPrx )
     //
     // Remote calls to individual home objects
     // TODO: use thread pool!
+    //
     orcacm::pingHomeObjects( regData, context_, this );
 
     int aliveCount = 0;
@@ -112,15 +114,13 @@ MainThread::purgeObjects( const IceGrid::AdminPrx& adminPrx )
     {    
         // ping each component's Home interface
         if ( regData.homes[i].isReachable ) {
+            context_.tracer().debug( "Reached Home object '"+regData.homes[i].proxy->ice_toString()+"'" );
             ++aliveCount;
         }
-        // make sure it's an Orca component, it's platform compName should be non-empty
         else {
             try
             {
-                stringstream ss;
-                ss<<"about to remove Home object with ID '"<<regData.homes[i].proxy->ice_toString()<<"'";
-                context_.tracer().info( ss.str() );
+                context_.tracer().info( "Removing Home object '"+regData.homes[i].proxy->ice_toString()+"'" );
                 adminPrx->removeObject( regData.homes[i].proxy->ice_getIdentity() );
                 ++deadCount;
             }

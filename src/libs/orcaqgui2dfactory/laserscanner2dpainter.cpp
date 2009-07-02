@@ -77,8 +77,9 @@ LaserScanner2dPainter::setOffset( orca::Frame3d &offset )
     if ( offset.p.z != 0.0 )
     {
         stringstream ss;
-        ss << "LaserScanner2dPainter::setOffset(): Cannot properly deal with non-zero z.  Offset: " << orcaobj::toString(offset);
-        throw hydroqgui::Exception( ERROR_INFO, ss.str() );
+        ss << "LaserScanner2dPainter::setOffset(): Cannot properly deal with non-zero z, ignoring.  Offset: " << orcaobj::toString(offset);
+        cout << ss.str();
+        // throw hydroqgui::Exception( ERROR_INFO, ss.str() );
     }
 }
 
@@ -245,7 +246,7 @@ LaserScanner2dPainter::execute( int action )
     case 1 :
         // toggle points
         isDisplayPoints_ = !isDisplayPoints_;
-        cout<<"TRACE(laserscanner2dpainter.cpp): isDisplayPoints_ set to " << isDisplayPoints_ << endl;
+//         cout<<"TRACE(laserscanner2dpainter.cpp): isDisplayPoints_ set to " << isDisplayPoints_ << endl;
         break;
     case 2 :
         // toggle walls

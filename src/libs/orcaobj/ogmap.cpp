@@ -41,7 +41,7 @@ std::string toString( const orca::OgMapData& obj )
       << " OgMap: \n"
       << "offset:        [" << obj.offset.p.x << ", " << obj.offset.p.y << ", " << obj.offset.o*180.0/M_PI << "]\n"
       << "numCells:      [" << obj.numCellsX << ", " << obj.numCellsY << "]\n"
-      << "metresPerCell: [" << obj.metresPerCellX << ", " << obj.metresPerCellY << "]\n";
+      << "metresPerCell: [" << obj.metresPerCell << "]\n";
 
     return s.str();
 }

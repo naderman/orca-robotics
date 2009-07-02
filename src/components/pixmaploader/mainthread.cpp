@@ -14,6 +14,7 @@
 #include <hydromapload/pixmaploadutil.h>
 #include <cmath>
 #include "mainthread.h"
+#include <gbxutilacfr/mathdefs.h>
 
 using namespace std;
 using namespace pixmaploader;
@@ -57,8 +58,15 @@ loadMapFromFile( orca::PixMapData &map, const orcaice::Context& context )
     // since we know that map size in pixels, we can calculate the cell size
     float worldSizeX = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Size.X", 20.0 );
     float worldSizeY = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"Size.Y", 20.0 );
-    map.metresPerCellX = worldSizeX / (float)map.numCellsX;
-    map.metresPerCellY = worldSizeY / (float)map.numCellsY;
+    float metresPerCellX = worldSizeX / (float)map.numCellsX;
+    float metresPerCellY = worldSizeY / (float)map.numCellsY;
+    if ( !NEAR(metresPerCellX, metresPerCellY, 1e-5) )
+    {
+        stringstream ss;
+        ss << "Can only handle square cells.  Found metresPerCellX" << metresPerCellX << ", metresPerCellY: " << metresPerCellY;
+        throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
+    }
+    map.metresPerCell = metresPerCellX;
 
     // Make up a timestamp
     map.timeStamp.seconds  = 0;

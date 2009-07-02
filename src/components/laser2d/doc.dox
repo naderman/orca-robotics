@@ -76,7 +76,7 @@ Geometry
     - Default: 0.0 0.0 0.0  0.0 0.0 0.0
 
 - @c Laser2d.Config.AllowRollCompensation (bool)
-    - If TRUE and the roll in laser offset is exactly 180.0 degrees (with no pitch), then the scan is flipped left-to-right internally and the reported roll angle is 0.0 degrees. If FALSE, the scan and the offset are left unmodified.
+    - If TRUE and the roll in laser offset is exactly 180.0 degrees, then the scan is flipped left-to-right internally and the reported roll angle is 0.0 degrees. If FALSE, the scan and the offset are left unmodified.
     - Default: 1
     - Example: The laser is mounted horizontally and upside-down. You want Laser2d to take care of it and not to worry about rotations on the client side. Set the roll angle in @c Offset to 180.0 and set @c AllowRollCompensation=1. As a result, the laser will appear to be mounted normally (top-side-up) to all clients.
 

@@ -156,7 +156,7 @@ RangerArrayPainter::execute( int action )
     case 1 :
         // toggle points
         isDisplayPoints_ = !isDisplayPoints_;
-        cout<<"TRACE(rangerarraypainter.cpp): isDisplayPoints_ set to " << isDisplayPoints_ << endl;
+//         cout<<"TRACE(rangerarraypainter.cpp): isDisplayPoints_ set to " << isDisplayPoints_ << endl;
         break;
     case 2 :
         // toggle filling

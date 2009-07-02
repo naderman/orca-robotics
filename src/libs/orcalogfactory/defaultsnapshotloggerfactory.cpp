@@ -32,56 +32,56 @@ DefaultSnapshotLoggerFactory::DefaultSnapshotLoggerFactory()
 }
 
 orcalog::SnapshotLogger* 
-DefaultSnapshotLoggerFactory::create( const std::string &interfaceType )
+DefaultSnapshotLoggerFactory::create( const std::string &interfaceType, const orcaice::Context& context )
 {
     std::auto_ptr<orcalog::SnapshotLogger> logger;
     if (interfaceType == "Cpu")
     {
-        logger.reset( new CpuSnapshotLogger );
+        logger.reset( new CpuSnapshotLogger( context ) );
     }
     else if (interfaceType == "DriveBicycle")
     {
-        logger.reset( new DriveBicycleSnapshotLogger );
+        logger.reset( new DriveBicycleSnapshotLogger( context ) );
     }
     else if (interfaceType == "Imu")
     {
-        logger.reset( new ImuSnapshotLogger );
+        logger.reset( new ImuSnapshotLogger( context ) );
     }
     else if (interfaceType == "LaserScanner2d")
     {
-        logger.reset( new LaserScanner2dSnapshotLogger );
+        logger.reset( new LaserScanner2dSnapshotLogger( context ) );
     }
     else if (interfaceType == "Localise2d")
     {
-        logger.reset( new Localise2dSnapshotLogger );
+        logger.reset( new Localise2dSnapshotLogger( context ) );
     }
     else if (interfaceType == "Localise3d")
     {
-        logger.reset( new Localise3dSnapshotLogger );
+        logger.reset( new Localise3dSnapshotLogger( context ) );
     }
     else if (interfaceType == "Odometry2d")
     {
-        logger.reset( new Odometry2dSnapshotLogger );
+        logger.reset( new Odometry2dSnapshotLogger( context ) );
     }
     else if (interfaceType == "Odometry3d")
     {
-        logger.reset( new Odometry3dSnapshotLogger );
+        logger.reset( new Odometry3dSnapshotLogger( context ) );
     }
     else if (interfaceType == "PolarFeature2d")
     {
-        logger.reset( new PolarFeature2dSnapshotLogger );
+        logger.reset( new PolarFeature2dSnapshotLogger( context ) );
     }
     else if (interfaceType == "Power")
     {
-        logger.reset( new PowerSnapshotLogger );
+        logger.reset( new PowerSnapshotLogger( context ) );
     }
     else if (interfaceType == "Wifi")
     {
-        logger.reset( new WifiSnapshotLogger );
+        logger.reset( new WifiSnapshotLogger( context ) );
     }
     else if (interfaceType == "Gps")
     {
-        logger.reset( new GpsSnapshotLogger );
+        logger.reset( new GpsSnapshotLogger( context ) );
     }
     else
     {

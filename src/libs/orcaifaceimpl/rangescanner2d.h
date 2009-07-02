@@ -21,29 +21,23 @@
 
 namespace orcaifaceimpl {
 
-typedef ProviderWithDescriptionImpl<orca::RangeScanner2d, orca::RangeScanner2dPrx,
-                    orca::RangeScanner2dConsumer, orca::RangeScanner2dConsumerPrx,
+typedef ProviderWithDescriptionImpl<orca::RangeScanner2d, orca::RangeScanner2dConsumer,
                     orca::RangeScanner2dDataPtr, orca::RangeScanner2dDescription> RangeScanner2dImpl;
 typedef IceUtil::Handle<RangeScanner2dImpl> RangeScanner2dImplPtr;
 
-typedef StoringConsumerImpl<orca::RangeScanner2d, orca::RangeScanner2dPrx,
-                    orca::RangeScanner2dConsumer, orca::RangeScanner2dConsumerPrx,
+typedef StoringConsumerImpl<orca::RangeScanner2d, orca::RangeScanner2dConsumer,
                     orca::RangeScanner2dDataPtr> StoringRangeScanner2dConsumerImpl;
 typedef IceUtil::Handle<StoringRangeScanner2dConsumerImpl> StoringRangeScanner2dConsumerImplPtr;
 
-typedef BufferedConsumerImpl<orca::RangeScanner2d, orca::RangeScanner2dPrx,
-                        orca::RangeScanner2dConsumer, orca::RangeScanner2dConsumerPrx,
+typedef BufferedConsumerImpl<orca::RangeScanner2d, orca::RangeScanner2dConsumer,
                         orca::RangeScanner2dDataPtr> BufferedRangeScanner2dConsumerImpl;
 typedef IceUtil::Handle<BufferedRangeScanner2dConsumerImpl> BufferedRangeScanner2dConsumerImplPtr;
 
-typedef NotifyingConsumerImpl<orca::RangeScanner2d, orca::RangeScanner2dPrx,
-                        orca::RangeScanner2dConsumer,
-                        orca::RangeScanner2dConsumerPrx,
+typedef NotifyingConsumerImpl<orca::RangeScanner2d, orca::RangeScanner2dConsumer,
                         orca::RangeScanner2dDataPtr> NotifyingRangeScanner2dConsumerImpl;
 typedef IceUtil::Handle<NotifyingRangeScanner2dConsumerImpl> NotifyingRangeScanner2dConsumerImplPtr;
 
-typedef PrintingConsumerImpl<orca::RangeScanner2d, orca::RangeScanner2dPrx,
-                        orca::RangeScanner2dConsumer, orca::RangeScanner2dConsumerPrx,
+typedef PrintingConsumerImpl<orca::RangeScanner2d, orca::RangeScanner2dConsumer,
                         orca::RangeScanner2dDataPtr> PrintingRangeScanner2dConsumerImpl;
 typedef IceUtil::Handle<PrintingRangeScanner2dConsumerImpl> PrintingRangeScanner2dConsumerImplPtr;
 

@@ -18,6 +18,10 @@ namespace orcasystemstatusutil {
 //! Returns TRUE if status if component health is not OK or if the component is stalled.
 bool isStatusAlert( const orca::ComponentStatusEpisode& episode );
 
+//! Returns TRUE if current episode is different from the previous one
+bool isStatusNovel( const orca::ComponentStatusEpisode& previous, 
+                    const orca::ComponentStatusEpisode& current );
+
 //! Returns maximum number of components among the platforms of the system.
 int maxPlatformSize( const orca::SystemStatusData& );
 

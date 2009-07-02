@@ -1,0 +1,48 @@
+/*
+ * Orca-Robotics Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2009 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This copy of Orca is licensed to you under the terms described in
+ * the LICENSE file included in this distribution.
+ *
+ */
+
+/*!
+
+@ingroup orca_components
+@ingroup orca_apps
+@ingroup orca_services
+@ingroup orca_cpp
+@ingroup orca_linux
+@ingroup orca_qnx
+@defgroup orca_component_faithlocaliser3d FaithLocaliser3d
+@brief A simple component that produces localisation info from 3D odometry
+
+
+@par Provides
+
+- @ref orca_interface_home
+- @ref orca_interface_localise3d [FaithLocaliser.Provides.Localise3d]
+
+@par Requires
+
+- @ref orca_interface_odometry3d [FaithLocaliser.Requires.Odometry3d]
+
+@image html faithlocaliser3d.png
+
+@par Operation
+
+This component takes odometry information and produces localisation information.
+No filtering is performed: instead, the component trusts that the odometry is perfect,
+and that it is reported in the global coordinate system.
+For real robots, both of these assumptions will be incorrect.
+
+@par Configuration
+An example configuration file is installed into [ORCA-INSTALL-DIR]/share/orca/cfg/ directory.
+
+@par Authors
+Alex Brooks
+
+*/
+

@@ -66,6 +66,9 @@ exception NoTopicException extends OrcaException {};
 //! Raised when the server fails to subscribe client for periodic updates.
 exception SubscriptionFailedException extends OrcaException {};
 
+//! Raised when the server fails to push initial data to a new subscriber.
+exception SubscriptionPushFailedException extends OrcaException {};
+
 //! Raised when the component is too busy to process requests.
 exception BusyException extends OrcaException {};
 

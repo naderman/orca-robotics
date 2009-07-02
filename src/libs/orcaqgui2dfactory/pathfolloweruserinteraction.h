@@ -33,7 +33,7 @@ namespace hydroqguielementutil {
 namespace orcaqgui2d {
 
 class PathFollower2dElement;    
-class PathPainter;
+class PathFollowerPainter;
     
 //!
 //! Handles all user interaction with the PathFollower
@@ -52,9 +52,10 @@ public:
                                  hydroqguielementutil::MouseEventManager        &mouseEventManager,
                                  hydroqguielementutil::ShortcutKeyManager       &shortcutKeyManager,
                                  const hydroqgui::GuiElementSet                 &guiElementSet,
-                                 const PathPainter                              &painter,
+                                 const PathFollowerPainter                      &painter,
                                  const orcaice::Context                         &context,
-                                 const hydroqguipath::PathInputFactory          *inputFactory );
+                                 const hydroqguipath::PathInputFactory          *inputFactory,
+                                 bool                                           enableToolbarButtons = true );
     
     ~PathFollowerUserInteraction();
 
@@ -63,18 +64,13 @@ public:
     void setFocus( bool inFocus );
     void setUseTransparency( bool useTransparency ); 
 
-    void mousePressEvent(QMouseEvent *e) 
-        {pathInput_->processPressEvent(e);}
+    void mousePressEvent(QMouseEvent *e);
     
-    void mouseMoveEvent(QMouseEvent *e) 
-        {pathInput_->processMoveEvent(e);}
+    void mouseMoveEvent(QMouseEvent *e);
     
-    void mouseReleaseEvent(QMouseEvent *e) 
-        {pathInput_->processReleaseEvent(e);}
+    void mouseReleaseEvent(QMouseEvent *e);
     
-    void mouseDoubleClickEvent(QMouseEvent *e) 
-        {pathInput_->processDoubleClickEvent(e);}
-    
+    void mouseDoubleClickEvent(QMouseEvent *e);
 
     void saveUserPath( const hydroqguipath::GuiPath &guiPath,
                          int numLoops,
@@ -88,7 +84,8 @@ public slots:
     void savePath();
     void savePathAs();
     void waypointSettingsDialog();
-    void waypointModeSelected();
+    void waypointModeToggled(bool);
+
     void send();
     void cancel();
     void allGo();
@@ -105,7 +102,7 @@ private:
     hydroqguielementutil::MouseEventManager &mouseEventManager_;
     hydroqguielementutil::ShortcutKeyManager &shortcutKeyManager_;
     const hydroqgui::GuiElementSet &guiElementSet_;
-    const PathPainter &painter_;
+    const PathFollowerPainter &painter_;
     orcaice::Context context_;
     const hydroqguipath::PathInputFactory *inputFactory_;
     hydroqguipath::WaypointSettings wpSettings_;
@@ -129,10 +126,12 @@ private:
     // sets up and destroys buttons and associated actions
     std::auto_ptr<hydroqguipath::PathfollowerButtons> buttons_;
 
-    // Do we own the global mode?
-    bool gotMode_;
+    // Do we own the mouse events?
+    bool ownMouseEvents_;
     
     bool useTransparency_;
+
+    bool enableToolbarButtons_;
     
 };
 

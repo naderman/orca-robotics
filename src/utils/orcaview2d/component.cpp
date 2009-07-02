@@ -150,13 +150,18 @@ Component::start()
     hydroqgui::PlatformCSFinder platformCSFinder;
 
     // widget for viewing the actual world
+    hydroqgui::WorldView::Config config;
+    config.initWithTransparency = true;
+    config.initWithAntiAliasing = true;
+    config.initialWorldWidth = 20.0;
     hydroqgui::WorldView *worldView = new hydroqgui::WorldView( platformCSFinder,
                                                                 mouseEventManager,
                                                                 guiElementSet,
                                                                 coordinateFrameManager,
                                                                 mainWin,
                                                                 platformFocusManager,
-                                                                displayRefreshTime );
+                                                                displayRefreshTime,
+                                                                config );
     
     // add the worldview to the right hand side
     rightHandSide->addWidget( worldView );

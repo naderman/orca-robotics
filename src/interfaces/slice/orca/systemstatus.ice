@@ -141,7 +141,7 @@ interface SystemStatus
     //! idempotent void unsubscribe(Object* subscriber);
     //! @endverbatim
     IceStorm::Topic* subscribe( SystemStatusConsumer* subscriber )
-        throws SubscriptionFailedException;
+        throws SubscriptionFailedException, SubscriptionPushFailedException;
 };
 
 /*!

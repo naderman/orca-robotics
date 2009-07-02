@@ -42,9 +42,16 @@ MainThread::MainThread( const orcaice::Context& context ) :
 
 MainThread::~MainThread()
 {
-    // important: do not delete loggers because most of them derive from 
-    // Ice smart pointers and self-destruct. Deleting them here will result
-    // in seg fault.
+    // IMPORTANT: delete loggers before the libraries, segfault will result otherwise!
+    cout<<"DEBUG: deleting "<<autoLoggers_.size()<<" auto loggers..."<<endl;
+    for ( unsigned int i=0; i < autoLoggers_.size(); i++ )
+    {
+        cout<<"DEBUG: deleting auto logger "<<i<<endl;
+        delete autoLoggers_[i];
+    }
+
+    cout<<"DEBUG: deleting master file writer"<<endl;
+    delete masterFileWriter_;
 
     assert( libraries_.size() == logFactories_.size() );
     for ( unsigned int i=0; i < libraries_.size(); i++ )
@@ -54,7 +61,6 @@ MainThread::~MainThread()
     }
 }
 
-// work() is non-standard, try to extract init section
 void 
 MainThread::initialise()
 {
@@ -78,7 +84,8 @@ MainThread::initialise()
 
     // create master file
     try {
-        masterFileWriter_.reset( new orcalog::MasterFileWriter( masterFilename.c_str(), context_ ) );
+//         masterFileWriter_.reset( new orcalog::MasterFileWriter( masterFilename.c_str(), context_ ) );
+        masterFileWriter_ = new orcalog::MasterFileWriter( masterFilename.c_str(), context_ );
     }
     catch ( ... ) {
         context_.shutdown();
@@ -123,7 +130,7 @@ MainThread::initialise()
         // Create logger
         // this will throw on error, not catching it so it will kill us.
         //
-        orcalog::AutoLogger *logger = createLogger( interfaceType );
+        orcalog::AutoLogger *logger = createLogger( interfaceType, context_ );
 
         try {
             logger->init( logWriterInfo, *masterFileWriter_ );
@@ -184,7 +191,7 @@ MainThread::loadPluginLibraries( const std::string & factoryLibNames )
 }
 
 orcalog::AutoLogger*
-MainThread::createLogger( const std::string &interfaceType )
+MainThread::createLogger( const std::string &interfaceType, const orcaice::Context& context )
 {
     for ( unsigned int i=0; i < logFactories_.size(); ++i )
     {
@@ -193,7 +200,7 @@ MainThread::createLogger( const std::string &interfaceType )
             continue;
         }
 
-        orcalog::AutoLogger* logger = logFactories_[i]->create( interfaceType );
+        orcalog::AutoLogger* logger = logFactories_[i]->create( interfaceType, context );
 
         if ( logger ) { 
             return logger;

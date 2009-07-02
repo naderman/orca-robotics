@@ -21,29 +21,23 @@
 
 namespace orcaifaceimpl {
 
-typedef ProviderWithDescriptionImpl<orca::Image, orca::ImagePrx,
-                    orca::ImageConsumer, orca::ImageConsumerPrx,
+typedef ProviderWithDescriptionImpl<orca::Image, orca::ImageConsumer,
                     orca::ImageDataPtr, orca::ImageDescriptionPtr> ImageImpl;
 typedef IceUtil::Handle<ImageImpl> ImageImplPtr;
 
-typedef StoringConsumerImpl<orca::Image, orca::ImagePrx,
-                    orca::ImageConsumer, orca::ImageConsumerPrx,
+typedef StoringConsumerImpl<orca::Image, orca::ImageConsumer,
                     orca::ImageDataPtr> StoringImageConsumerImpl;
 typedef IceUtil::Handle<StoringImageConsumerImpl> StoringImageConsumerImplPtr;
 
-typedef BufferedConsumerImpl<orca::Image, orca::ImagePrx,
-                        orca::ImageConsumer, orca::ImageConsumerPrx,
+typedef BufferedConsumerImpl<orca::Image, orca::ImageConsumer,
                         orca::ImageDataPtr> BufferedImageConsumerImpl;
 typedef IceUtil::Handle<BufferedImageConsumerImpl> BufferedImageConsumerImplPtr;
 
-typedef NotifyingConsumerImpl<orca::Image, orca::ImagePrx,
-                        orca::ImageConsumer,
-                        orca::ImageConsumerPrx,
+typedef NotifyingConsumerImpl<orca::Image, orca::ImageConsumer,
                         orca::ImageDataPtr> NotifyingImageConsumerImpl;
 typedef IceUtil::Handle<NotifyingImageConsumerImpl> NotifyingImageConsumerImplPtr;
 
-typedef PrintingConsumerImpl<orca::Image, orca::ImagePrx,
-                        orca::ImageConsumer, orca::ImageConsumerPrx,
+typedef PrintingConsumerImpl<orca::Image, orca::ImageConsumer,
                         orca::ImageDataPtr> PrintingImageConsumerImpl;
 typedef IceUtil::Handle<PrintingImageConsumerImpl> PrintingImageConsumerImplPtr;
 

@@ -30,6 +30,17 @@ namespace orcaice
 // So everything goes through Ice's 'getProperty' instead, which returns an empty string on 'not found'.
 //
 
+//! Return TRUE if the property is defined and contains a non-null value.
+//! Note that Ice properties do not distinguish between undefined and null properties. I.e. an empty
+//! string is returned in both cases:
+//! - the property is not defined
+//! - the property is defined but set to any empty string.
+bool isPropertyNotNull( const Ice::PropertiesPtr &, const ::std::string& key );
+
+//! Checks if the property @c key is not null. Throws gbxutilacfr::Exception if the 
+//! property is null.
+void ensurePropertyNotNull( const Ice::PropertiesPtr &, const std::string& key );
+
 //! Returns: 0 = property found (and its value is not empty), non-zero = property not found (or is defined but left empty).
 //! Note that the Ice PropertiesI::load() method has a line size limitation of 1024 characters 
 //! but quietly fails so there is no way of knowing if you have exceeded this limitation
@@ -77,19 +88,24 @@ getPropertyAsIntVectorWithDefault( const Ice::PropertiesPtr &, const std::string
 //! Throws a gbxutilacfr::Exception if the key is found but the value cannot be converted to the desired type.
 int getPropertyAsDoubleVector( const Ice::PropertiesPtr &, const std::string& key, std::vector<double> &value );
 //! Returns the default value if key is not found.
-//! Throws a gbxutilacfr::Exception if the key is found but the value cannot be converted to the desired type.
+//! Throws a gbxutilacfr::Exception if the key is found but the value cannot be converted to 
+//! the desired type.
 std::vector<double> 
 getPropertyAsDoubleVectorWithDefault( const Ice::PropertiesPtr &, const std::string& key, const std::vector<double> &defaultValue );
 
-//! Returns standardized text which warns that a configuration property is not set.
-std::string warnMissingProperty( const std::string & prop );
-//! Returns standardized text which warns that a configuration property is not set.
+//! Returns standardized text which warns that a configuration property is not defined or is null.
+//! If @c fatal is TRUE, the message adds that "operation cannot continue".
+std::string warnMissingProperty( const std::string & key, bool fatal=false );
+//! Returns standardized text which warns that a configuration property is not defined or is null.
 //! Also informs that the specified default value is used instead.
-std::string warnMissingPropertyWithDefault( const std::string & prop, const std::string & defaultValue );
+std::string warnMissingPropertyWithDefault( const std::string & key, const std::string & defaultValue );
 
-//! Returns standardized text which warns that certain info is missing because a configuration property is not set
-std::string warnMissingProperty( const std::string & info, const std::string & prop );
-//! Returns standardized text which warns that a property is missing because a configuration property is not set. 
+//! Returns standardized text which warns that certain information is missing because a 
+//! configuration property is not defined or is null.
+//! If @c fatal is TRUE, the message adds that "operation cannot continue".
+std::string warnMissingProperty( const std::string & info, const std::string & prop, bool fatal=false );
+//! Returns standardized text which warns that certain information is missing because a 
+//! configuration property is not defined or is null. 
 //! Also informs that the specified default value is used instead.
 std::string warnMissingPropertyWithDefault( const std::string & info, const std::string & prop, const std::string & defaultValue );
 

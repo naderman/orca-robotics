@@ -30,6 +30,9 @@ if( build )
     include( ${GEARBOX_CMAKE_DIR}/UseGearbox.cmake )
     include( ${ORCA_CMAKE_DIR}/UseIce.cmake )
     include( ${ORCA_CMAKE_DIR}/UseLibProjectInterfaces.cmake )
+
+    # this library may also use custom functions stored in the source dir.
+    include_directories( ${PROJECT_SOURCE_DIR}/src/interfaces/cpp )    
     
     if( NOT ORCA_MOTHERSHIP )
         include( ${ORCA_CMAKE_DIR}/UseOrca.cmake )
@@ -41,8 +44,11 @@ if( build )
 
     configure_file( ${ORCA_CMAKE_DIR}/ifaceutilutil.h.in ${util_h_file} )
     configure_file( ${ORCA_CMAKE_DIR}/ifaceutilutil.cpp.in ${util_cpp_file} )
+
+    file( GLOB human_hdrs *.h )
+    file( GLOB human_srcs *.cpp )
     
-    GBX_ADD_LIBRARY( ${_lib_name} DEFAULT ${_lib_version} ${_gen_sources} ${util_cpp_file} )
+    GBX_ADD_LIBRARY( ${_lib_name} DEFAULT ${_lib_version} ${_gen_sources} ${util_cpp_file} ${human_srcs} )
     target_link_libraries( ${_lib_name} ${_dep_libs} )
     
     # add dependency on the generator executable when compiling Orca (satellite projects use installed version)
@@ -63,7 +69,7 @@ if( build )
             set( _gen_headers_full ${_gen_headers_full} ${CMAKE_CURRENT_BINARY_DIR}/${_gen_header} )
         endforeach( _gen_header )
         
-        GBX_ADD_HEADERS( ${_lib_namespace} ${_gen_headers_full} ${util_h_file} )
+        GBX_ADD_HEADERS( ${_lib_namespace} ${_gen_headers_full} ${util_h_file} ${human_hdrs} )
 
         if( ORCA_BUILD_TESTS )
             add_subdirectory( test )

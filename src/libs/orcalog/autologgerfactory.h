@@ -14,6 +14,7 @@
 #include <orcalog/factory.h>
 #include <orcalog/autologger.h>
 #include <orcalog/logwriterinfo.h>
+#include <orcaice/context.h>
 
 namespace orcalog
 {
@@ -26,7 +27,7 @@ public:
 
     //! Creates an AutoLogger with the details specified. Returns a pointer to it if
     //! successful or a NULL pointer if it fails.
-    virtual AutoLogger* create( const std::string &interfaceType )=0;
+    virtual AutoLogger* create( const std::string &interfaceType, const orcaice::Context& context )=0;
 };
 
 } // namespace

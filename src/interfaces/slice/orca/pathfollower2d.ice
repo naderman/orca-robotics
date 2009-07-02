@@ -39,9 +39,9 @@ struct Waypoint2d {
     //! How closely the follower has to match the target orientation
     float   headingTolerance;
 
-    //! The time at which the follower should reach the waypoint, as
+    //! The time at which the follower should reach the waypoint (in seconds), as
     //! an offset from the time the path was activated.
-    Time    timeTarget;
+    double timeTarget;
 
     //! Max speed at which the follower can approach this waypoint
     float   maxApproachSpeed;
@@ -65,34 +65,51 @@ struct PathFollower2dData
     Path2d              path;
 };
 
+//! An enum to describe whether or not we have an active path
+enum PathActivationEnum {
+    FinishedPath,
+    NoPathLoaded,
+    PathLoadedButNotActivated,
+    FollowingPath
+};
+
+struct PathFollower2dState
+{
+    //! Tells whether or not we're following a path
+    PathActivationEnum pathActivation;
+
+    //! A disabled PathFollower2d has it's "hands off the wheel"
+    bool isEnabled;
+
+    //! Only meaningful if pathActivation is 'FollowingPath'.
+    //! Used to inform of progress without transmitting the entire path.
+    //!   Given that the follower is loaded up with a list of n waypoints,
+    //!   the follower will call 'setWaypointIndex' with the index
+    //!   of the waypoint it is _actively_ seeking.
+    //!   - waypoint indices are in the range [0,n-1]
+    //!   - Suppose the follower has been loaded with a path but is inactive.  
+    //!     On activation, the waypointIndex will become '0'.
+    int waypointIndex;
+    //! Only meaningful if pathActivation is 'FollowingPath'.
+    //! The number of seconds we've been following the path for.
+    double secondsSinceActivation;
+};
+
 /*!
     @brief Consumer of path updates
 */
 interface PathFollower2dConsumer
 {
-    //! Used by the follower to broadcast changes without transmitting the entire path.
-    //!   Given that the follower is loaded up with a list of n waypoints,
-    //!   the follower will call 'setWaypointIndex' with the index
-    //!   of the waypoint it is _actively_ seeking.
-    //!   - Normal waypoint indices are in the range [0,n-1]
-    //!   - The special index '-1' means 'I just completed my path and became inactive'.
-    //!   - Suppose the follower has been loaded with a path but is inactive.  
-    //!     On activation, it will call 'setWaypointIndex(0)'.
-    idempotent void setWaypointIndex( int index );
-    
-    //! Once the follower starts following a path it notifies consumers of the activation time. 
-    //! It provides:
-    //! - the absolute time (useful if clocks of provider and consumers are synchronized).
-    //! - the relative time (how many seconds ago the follower started following).
-    idempotent void setActivationTime( Time absoluteTime, double relativeTime );
-
     //! When the follower is loaded with a new path, it transmits that path to
     //! all subscribers.
     idempotent void setData( PathFollower2dData data );
     
-    //! When the follower's enabled-state changes, it tells all subscribers about it
-    idempotent void setEnabledState( bool enabledState );
+    //! used by the PathFollower2d to broadcast its state to interested subscribers
+    idempotent void setState( PathFollower2dState state );
 };
+
+//! Raised when we're activated but no path is loaded
+exception PathNotLoadedException extends OrcaException {};
 
 /*!
     @brief The Path Follower
@@ -126,39 +143,17 @@ interface PathFollower2d
     idempotent void setData( PathFollower2dData path, bool activateImmediately )
         throws MalformedParametersException, OrcaException;
 
+    //! Reads the pathFollower2d's state
+    idempotent PathFollower2dState getState();
+
     //! Start following the previously-loaded path.
-    //! alexm: what happens when none is loaded? Silently ignored?
-    idempotent void activateNow();
-
-    //! Returns the index of the waypoint which is currently pursued:
-    //!   - '-1'    : none (inactive)
-    //!   - [0,n-1] : an index into the list of n waypoints.
-    idempotent int getWaypointIndex();
-
-    //! If the PathFollower is active (alexm: what does that mean? has path?)
-    //!   - returns TRUE and
-    //!   - sets the absolute time when the follower started following the current path
-    //! If the PathFollower is inactive:
-    //!   - returns FALSE and
-    //!   - does not set the activation time
-    idempotent bool getAbsoluteActivationTime( out Time activationTime );
-    
-    //! If the PathFollower is active:
-    //!   - returns true and
-    //!     sets secondsSinceActivation to the number of seconds since
-    //!     the follower started following the current path
-    //! If the PathFollower is inactive:
-    //!   - returns false and
-    //!     does not set secondsSinceActivation
-    idempotent bool getRelativeActivationTime( out double secondsSinceActivation );
+    idempotent void activateNow()
+        throws orca::PathNotLoadedException;
 
     //! Disabling the PathFollower stops it from sending any commands to the 
     //! robot.  It says, "Take your hands off the wheel!".  No commands can
     //! be send until it is re-enabled.
     idempotent void setEnabled( bool enabled );
-
-    //! Get the enabled/disabled state.
-    idempotent bool enabled();
 
     //! Tries to subscribe the specified subscriber for data updates.
     //! If successfuly, returns a proxy to the IceStorm topic which can be later used by the 
@@ -168,7 +163,7 @@ interface PathFollower2d
     //! idempotent void unsubscribe(Object* subscriber);
     //! @endverbatim
     IceStorm::Topic* subscribe( PathFollower2dConsumer* subscriber )
-        throws SubscriptionFailedException;
+        throws SubscriptionFailedException, SubscriptionPushFailedException;
 };
 
 /*! @} */

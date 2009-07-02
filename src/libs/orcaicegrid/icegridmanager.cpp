@@ -124,7 +124,7 @@ IceGridManager::performOp( Operation &op, int timeoutMs )
     try {
         stringstream debugSS;
         debugSS<<"IceGridManager: performing "<<op.toString()<<" with timeout="<<timeoutMs<<"ms";
-        tracer->debug( debugSS.str(),5 );
+        tracer->debug( debugSS.str(),7 );
 //         context_.tracer().debug( debugSS.str(),5 );
 
         // notice the use of the local copy of the Admin proxy

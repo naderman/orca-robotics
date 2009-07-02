@@ -35,9 +35,13 @@ and an associated consumer with
 - void setData( DataType );
 
 */
-template<class ProviderType, class ProviderPrxType, class ConsumerType, class ConsumerPrxType, class DataType, class DescriptionType>
+// template<class ProviderType, class ProviderPrxType, class ConsumerType, class ConsumerPrxType, class DataType, class DescriptionType>
+template<class ProviderType, class ConsumerType, class DataType, class DescriptionType>
 class ProviderWithDescriptionImpl : public IceUtil::Shared
 {
+typedef typename ProviderType::ProxyType ProviderPrxType;
+typedef typename ConsumerType::ProxyType ConsumerPrxType;
+
 friend class ProviderTypeI;
 
 public:
@@ -184,7 +188,7 @@ private:
         return data_;
     }
 
-    IceStorm::TopicPrx internalSubscribe(const ConsumerPrxType& subscriber)
+    IceStorm::TopicPrx internalSubscribe( const ConsumerPrxType& subscriber )
     {
         if ( !topicHandler_.get() ) 
         {
@@ -203,14 +207,18 @@ private:
             }
         }
 
+        // EXPERIMENTAL!
+        IceStorm::QoS qos;
+        qos["reliability"] = "ordered";
+
         // if we have data, send all the information we have to the new subscriber (and to no one else)
         if ( gotData )
         {
-            return topicHandler_->subscribe( subscriber, data );
+            return topicHandler_->subscribe( subscriber, data, qos );
         }
         else
         {
-            return topicHandler_->subscribe( subscriber );
+            return topicHandler_->subscribe( subscriber, qos );
         }
     }
 };

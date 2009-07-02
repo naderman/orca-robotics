@@ -99,7 +99,7 @@ std::string toStringIntialisingOnly( const orca::SubsystemStatusDict& s, int ind
     return ss.str();
 }
 
-std::string toStringAlertOnly( const orca::SubsystemStatusDict& s, int indent )
+std::string toStringImportantOnly( const orca::SubsystemStatusDict& s, int indent )
 {
     string ind;
     for ( int i=0; i < indent; ++i ) ind += " ";
@@ -107,7 +107,9 @@ std::string toStringAlertOnly( const orca::SubsystemStatusDict& s, int indent )
     stringstream ss;
     bool wroteOneItem = false;
     for ( orca::SubsystemStatusDict::const_iterator it=s.begin(); it!=s.end(); ++it ) {
-        if ( it->second.health == orca::SubsystemOk && !it->second.isStalled )
+        if ( it->second.health == orca::SubsystemOk && 
+             it->second.message.empty() && 
+             !it->second.isStalled )
             continue;
 
         if ( wroteOneItem ) ss << endl;
@@ -134,10 +136,7 @@ std::string toStringAlertOnly( const orca::SubsystemStatusDict& s, int indent )
 
 std::string toStringImportantOnly( const orca::ComponentStatus& s, int indent )
 {    
-    if ( s.health != orca::CompOk || s.isStalled )
-        return toStringAlertOnly( s.subsystems, indent );
-    else
-        return string();
+    return toStringImportantOnly( s.subsystems, indent );
 }
 
 std::string toStringImportantOnly( const orca::EstimatedComponentStatus& s, int indent )
@@ -170,16 +169,17 @@ std::string toStringImportantOnly( const orca::EstimatedComponentStatus& s, int 
         case orca::EstCompReporting :
         {
             assert( !s.reportedStatus.empty() && "Empty reported status in EstCompReporting state." );
-//             ss << ifaceutil::toString( s );
             ss << toStringImportantOnly( s.reportedStatus[0], indent+2 );
             break;
         }
         case orca::EstCompStale :
         {
             assert( !s.reportedStatus.empty() && "Empty reported status in EstCompReporting state." );
-            ss << "Component status is STALE. Last received status: "
-//                << ifaceutil::toString( s );
-               << toStringImportantOnly( s.reportedStatus[0], indent+2 );
+            ss << "Component status is STALE. Last received status: ";
+            string lastStatus = toStringImportantOnly( s.reportedStatus[0] );
+            if ( lastStatus.empty() )
+                lastStatus = "all systems normal";
+            ss << lastStatus;
             break;
         }
         default :

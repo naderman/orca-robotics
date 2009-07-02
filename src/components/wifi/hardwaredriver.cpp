@@ -16,6 +16,32 @@ using namespace std;
 
 namespace wifi
 {
+
+orca::DiscreteSignalLevel
+getSignalLevel( int signalToNoiseRatio )
+{
+
+    if (signalToNoiseRatio==0)
+        return orca::SignalLevelUnknown;
+
+    // mimics Windows-style signal level
+    // see http://www.osuweb.net/wireless/faqs.html#whydoesmysignalstrengthsaylow
+    vector<int> signalThreshholds;
+    signalThreshholds.push_back(10);
+    signalThreshholds.push_back(15);
+    signalThreshholds.push_back(20);
+    signalThreshholds.push_back(25);
+    
+    if (signalToNoiseRatio<signalThreshholds[0])
+        return orca::SignalLevelVeryLow;
+    else if (signalToNoiseRatio<signalThreshholds[1])
+        return orca::SignalLevelLow;
+    else if (signalToNoiseRatio<signalThreshholds[2])
+        return orca::SignalLevelGood;
+    else if (signalToNoiseRatio<signalThreshholds[3])
+        return orca::SignalLevelVeryGood;
+    else return orca::SignalLevelExcellent;
+}
     
 orca::LinkQualityType toOrcaLinkType( const wifiutil::LinkQualityType &lq )
 {
@@ -105,6 +131,7 @@ void fillIn( const vector<wifiutil::ProcData> &procData,
         w.numRetries = procData[i].numRetries;
         w.numInvalidMisc = procData[i].numInvalidMisc;
         w.numMissedBeacons = procData[i].numMissedBeacons;
+        w.discreteLevel = getSignalLevel( w.signalLevel - w.noiseLevel );
           
         data.interfaces[i] = w;
     }
@@ -135,6 +162,7 @@ void fillIn( const vector<wifiutil::IoctlData> &ioctlData,
         w.maxLinkQuality = ioctlData[i].maxLinkQuality;
         w.maxSignalLevel = ioctlData[i].maxSignalLevel;
         w.maxNoiseLevel = ioctlData[i].maxNoiseLevel;
+        w.discreteLevel = getSignalLevel( w.signalLevel - w.noiseLevel );
           
         data.interfaces[i] = w;
     }

@@ -16,20 +16,20 @@ if( build )
     include( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
     include( ${HYDRO_CMAKE_DIR}/UseQt.cmake )
 
+    set( dep_libs ${dep_libs} osg osgUtil )
+
     file( GLOB hdrs *.h )
-    file( GLOB human_srcs *.cpp )
+    file( GLOB srcs *.cpp )
 
-#     set( moc_hdrs
-#       #worldview.h
-#     )
-
-#     QT4_WRAP_CPP( moc_srcs ${moc_hdrs} )
-
-    GBX_ADD_LIBRARY( ${LIB_NAME} DEFAULT ${LIB_VERSION} ${human_srcs} ${moc_srcs} )
+    GBX_ADD_LIBRARY( ${LIB_NAME} DEFAULT ${LIB_VERSION} ${srcs} )
 
     link_directories( ${PROJECT_SOURCE_DIR}/src/libs/qorcacm )
     TARGET_LINK_LIBRARIES ( ${LIB_NAME} ${dep_libs} ${QT_QTOPENGL_LIBRARY} )
 
     GBX_ADD_HEADERS( ${LIB_INSTALL} ${hdrs} )
+
+    if( ORCA_BUILD_TESTS )
+      add_subdirectory( test )
+    endif( ORCA_BUILD_TESTS )
 
 endif( build )

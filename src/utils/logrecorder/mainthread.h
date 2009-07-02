@@ -16,7 +16,7 @@
 
 #include <hydrodll/dll.h>
 #include <string>
-#include <memory>
+// #include <memory>
 
 namespace orcalog
 {
@@ -37,17 +37,18 @@ public:
 private:
     // from SubsystemThread
     virtual void initialise();
-    // this subsystem does not work!
+    // this subsystem does not do any work!
 
     void loadPluginLibraries( const std::string &factoryLibNames );
     // throws exceptions if it can't create the logger
-    orcalog::AutoLogger *createLogger( const std::string  &interfaceType );
+    orcalog::AutoLogger *createLogger( const std::string  &interfaceType, const orcaice::Context& context );
 
     std::vector<orcalog::AutoLoggerFactory*>         logFactories_;
     std::vector<hydrodll::DynamicallyLoadedLibrary*> libraries_;
 
     // The guy that writes the master file
-    std::auto_ptr<orcalog::MasterFileWriter> masterFileWriter_;
+//     std::auto_ptr<orcalog::MasterFileWriter> masterFileWriter_;
+    orcalog::MasterFileWriter* masterFileWriter_;
     // The guys that write the data files
     std::vector<orcalog::AutoLogger*> autoLoggers_;
 

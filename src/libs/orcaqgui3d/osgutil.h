@@ -16,6 +16,9 @@ getPositionAttitudeTransform( double x,
                               double pitch,
                               double yaw );
 
+osg::Matrixd toMatrixd( const CoordinateFrame &cf );
+CoordinateFrame toCoordinateFrame( const osg::Matrixd &m );
+
 // Force the Node and its children to be wireframe, overrides parents state
 void
 setWireFrameMode( osg::Node *srcNode );
@@ -31,7 +34,13 @@ drawEllipse( float radiusX,
              float z=0,
              int numPts=25 );
 
-//! draws a cylinder oriented in the +z direction
+//! Two lines in a 'vee' enamating out from a point to a radius, at height z
+osg::ref_ptr<osg::Geometry>
+drawVee( float radius,
+         const osg::Vec4 &color,
+         float z );
+
+//! draws a cylinder oriented in the +/- z direction (centred "here")
 osg::ref_ptr<osg::Geode>
 drawCylinder( float height,
               float radius,

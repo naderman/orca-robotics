@@ -21,29 +21,23 @@
 
 namespace orcaifaceimpl {
 
-typedef ProviderWithDescriptionImpl<orca::Gps, orca::GpsPrx,
-                    orca::GpsConsumer, orca::GpsConsumerPrx,
+typedef ProviderWithDescriptionImpl<orca::Gps, orca::GpsConsumer,
                     orca::GpsData, orca::GpsDescription> GpsImpl;
 typedef IceUtil::Handle<GpsImpl> GpsImplPtr;
 
-typedef StoringConsumerImpl<orca::Gps, orca::GpsPrx,
-                    orca::GpsConsumer, orca::GpsConsumerPrx,
+typedef StoringConsumerImpl<orca::Gps, orca::GpsConsumer,
                     orca::GpsData> StoringGpsConsumerImpl;
 typedef IceUtil::Handle<StoringGpsConsumerImpl> StoringGpsConsumerImplPtr;
 
-typedef BufferedConsumerImpl<orca::Gps, orca::GpsPrx,
-                        orca::GpsConsumer, orca::GpsConsumerPrx,
+typedef BufferedConsumerImpl<orca::Gps, orca::GpsConsumer,
                         orca::GpsData> BufferedGpsConsumerImpl;
 typedef IceUtil::Handle<BufferedGpsConsumerImpl> BufferedGpsConsumerImplPtr;
 
-typedef NotifyingConsumerImpl<orca::Gps, orca::GpsPrx,
-                        orca::GpsConsumer,
-                        orca::GpsConsumerPrx,
+typedef NotifyingConsumerImpl<orca::Gps, orca::GpsConsumer,
                         orca::GpsData> NotifyingGpsConsumerImpl;
 typedef IceUtil::Handle<NotifyingGpsConsumerImpl> NotifyingGpsConsumerImplPtr;
 
-typedef PrintingConsumerImpl<orca::Gps, orca::GpsPrx,
-                        orca::GpsConsumer, orca::GpsConsumerPrx,
+typedef PrintingConsumerImpl<orca::Gps, orca::GpsConsumer,
                         orca::GpsData> PrintingGpsConsumerImpl;
 typedef IceUtil::Handle<PrintingGpsConsumerImpl> PrintingGpsConsumerImplPtr;
 

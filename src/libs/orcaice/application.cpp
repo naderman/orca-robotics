@@ -206,7 +206,6 @@ Application::run( int argc, char* argv[] )
     adapter_->waitForDeactivate();
     initTracerInfo( component_.context().tag()+": Adapter deactivated." );
 
-//     initTracerInfo( component_.context().tag()+": Application done." );
     initTracerInfo( component_.context().tag()+": Orca out." );
 
     // communicator will be destroyed by Ice::Application
@@ -222,7 +221,6 @@ Application::stopComponent()
         return;
 
     // first tell component to shutdown
-//     initTracerInfo( component_.context().tag()+": Received interrupt signal. Stopping component" );
     initTracerInfo( component_.context().tag()+": Stopping component..." );
     component_.stop();
 //     initTracerInfo( component_.context().tag()+": Finalising component..." );
@@ -231,12 +229,15 @@ Application::stopComponent()
     isComponentStopped_ = true;
 }
 
+// this function is only called if we choose to do callbackOnInterrupt()
 void
 Application::interruptCallback( int signal )
 {
+    initTracerInfo( component_.context().tag()+": Received interrupt signal." );
     stopComponent();
 
     // now we can just destroy the communicator
+    initTracerInfo( component_.context().tag()+": Shutting down communicator." );
     // (being extra careful here, copy exception handling from Ice::Application::destroyOnInterruptCallback() )
     stringstream exceptionSS;
     try

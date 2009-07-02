@@ -12,7 +12,7 @@ Requires.Odometry2d.DefaultProxy=odometry2d@local/robot2d
 # configuration
 Config.StdDevPosition.Comment=Std deviation in position (Metres)
 Config.StdDevPosition.Default=0.05
-Config.StdDevHeading.Comment=Std deviation in Heading (Degrees)
-Config.StdDevHeading.Default=1.0
+Config.StdDevOrientation.Comment=Std deviation in Orientation (Degrees)
+Config.StdDevOrientation.Default=1.0
 Config.MinInterPublishPeriodSec.Comment=Don't publish faster than this
 Config.MinInterPublishPeriodSec.Default=1.0

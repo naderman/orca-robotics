@@ -21,29 +21,23 @@
 
 namespace orcaifaceimpl {
 
-typedef ProviderImpl<orca::OgMap, orca::OgMapPrx,
-                    orca::OgMapConsumer, orca::OgMapConsumerPrx,
+typedef ProviderImpl<orca::OgMap, orca::OgMapConsumer,
                     orca::OgMapData> OgMapImpl;
 typedef IceUtil::Handle<OgMapImpl> OgMapImplPtr;
 
-typedef StoringConsumerImpl<orca::OgMap, orca::OgMapPrx,
-                    orca::OgMapConsumer, orca::OgMapConsumerPrx,
+typedef StoringConsumerImpl<orca::OgMap, orca::OgMapConsumer,
                     orca::OgMapData> StoringOgMapConsumerImpl;
 typedef IceUtil::Handle<StoringOgMapConsumerImpl> StoringOgMapConsumerImplPtr;
 
-typedef BufferedConsumerImpl<orca::OgMap, orca::OgMapPrx,
-                        orca::OgMapConsumer, orca::OgMapConsumerPrx,
+typedef BufferedConsumerImpl<orca::OgMap, orca::OgMapConsumer,
                         orca::OgMapData> BufferedOgMapConsumerImpl;
 typedef IceUtil::Handle<BufferedOgMapConsumerImpl> BufferedOgMapConsumerImplPtr;
 
-typedef NotifyingConsumerImpl<orca::OgMap, orca::OgMapPrx,
-                        orca::OgMapConsumer,
-                        orca::OgMapConsumerPrx,
+typedef NotifyingConsumerImpl<orca::OgMap, orca::OgMapConsumer,
                         orca::OgMapData> NotifyingOgMapConsumerImpl;
 typedef IceUtil::Handle<NotifyingOgMapConsumerImpl> NotifyingOgMapConsumerImplPtr;
 
-typedef PrintingConsumerImpl<orca::OgMap, orca::OgMapPrx,
-                        orca::OgMapConsumer, orca::OgMapConsumerPrx,
+typedef PrintingConsumerImpl<orca::OgMap, orca::OgMapConsumer,
                         orca::OgMapData> PrintingOgMapConsumerImpl;
 typedef IceUtil::Handle<PrintingOgMapConsumerImpl> PrintingOgMapConsumerImplPtr;
 

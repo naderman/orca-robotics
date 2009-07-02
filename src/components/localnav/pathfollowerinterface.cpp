@@ -16,18 +16,24 @@ PathFollowerInterface::PathFollowerInterface( const Clock &clock,
     : pathFollower2dImpl_(new orcaifaceimpl::PathFollower2dImpl(*this,interfaceTag,context)),
       clock_(clock),
       context_(context)
-{    
-    // We're inactive on initialization
-    wpIndexStore_.set( -1 );
-
-    // But enabled
-    enabledStore_.set( true );
+{
+    // We're inactive but enabled on initialization
+    pathFollower2dState_.pathActivation = orca::NoPathLoaded;
+    pathFollower2dState_.isEnabled      = true;
 }
 
 void
 PathFollowerInterface::initInterface()
 { 
     pathFollower2dImpl_->initInterface(); 
+}
+
+void
+PathFollowerInterface::initInterface( gbxutilacfr::Stoppable* activity,
+                                      const std::string&      subsysName,
+                                      int                     retryInterval )
+{
+    pathFollower2dImpl_->initInterface( activity, subsysName, retryInterval );
 }
 
 void
@@ -55,113 +61,140 @@ PathFollowerInterface::setData( const orca::PathFollower2dData &pathData, bool a
         context_.tracer().warning( ss.str() );
     }
 
-    pendingPathRequestStore_.set( pathData );
-    if ( activateImmediately )
-        activateNow();
-}
-
-double
-PathFollowerInterface::timeSinceActivate( const orca::Time &activationTime )
-{
-    double timeSince = orcaice::timeDiffAsDouble( clock_.time(), activationTime );
-    return timeSince;
+    newlyArrivedRequestStore_.addPathRequest( pathData, activateImmediately );
 }
 
 void
 PathFollowerInterface::activateNow()
 {
-    orca::Time now = clock_.time();
-    pendingActivationRequestStore_.set( now );
+    newlyArrivedRequestStore_.addActivationRequest();
 }
 
-int
-PathFollowerInterface::getWaypointIndex()
+orca::PathFollower2dState
+PathFollowerInterface::getState()
 {
-    int ret;
-    wpIndexStore_.get( ret );
-    return ret;
-}
-
-bool
-PathFollowerInterface::getAbsoluteActivationTime( orca::Time &activationTime )
-{
-    int wpIndex;
-    wpIndexStore_.get( wpIndex );
-    if ( wpIndex != -1 )
+    IceUtil::Mutex::Lock lock( mutex_ );
+    if ( pathFollower2dState_.pathActivation == orca::FollowingPath )
     {
-        activationTimeStore_.get( activationTime );
-        return true;
+        pathFollower2dState_.secondsSinceActivation = orcaice::timeDiffAsDouble( clock_.time(),
+                                                                                 activationTime_ );
     }
-    else
-        return false;
-}
-
-bool
-PathFollowerInterface::getRelativeActivationTime( double &secondsSinceActivation )
-{
-    int wpIndex;
-    wpIndexStore_.get( wpIndex );
-    if ( wpIndex != -1 )
-    {
-        orca::Time timeActivated;
-        activationTimeStore_.get( timeActivated );
-        secondsSinceActivation = orcaice::timeDiffAsDouble( clock_.time(), timeActivated );
-        return true;
-    }
-    else
-        return false;
+    return pathFollower2dState_;
 }
 
 void
 PathFollowerInterface::setEnabled( bool enabled )
 {
-    enabledStore_.set( enabled );
-    // let the consumers know that the enabled state changed
-    pathFollower2dImpl_->localSetEnabledState( enabled );
+    orca::PathFollower2dState tempState;
+    {
+        IceUtil::Mutex::Lock lock( mutex_ );
+        pathFollower2dState_.isEnabled = enabled;
+        tempState = pathFollower2dState_;
+    }
+
+    // let the consumers know that the enabled state changed (outside crit section)
+    pathFollower2dImpl_->localSetState( tempState );
 }
 
 bool
 PathFollowerInterface::enabled()
 {
-    bool enabled;
-    enabledStore_.get( enabled );
-    return enabled;
+    IceUtil::Mutex::Lock lock( mutex_ );
+    return pathFollower2dState_.isEnabled;
 }
 
 void 
-PathFollowerInterface::updateWaypointIndex( int index )
+PathFollowerInterface::updateActivationStateAndWaypointIndex( orca::PathActivationEnum activationState,
+                                                              int waypointIndex )
 {
-    wpIndexStore_.set( index );
-    pathFollower2dImpl_->localSetWaypointIndex( index );
+    orca::PathFollower2dState tempState;
+    {
+        IceUtil::Mutex::Lock lock( mutex_ );
+        pathFollower2dState_.waypointIndex      = waypointIndex;
+        pathFollower2dState_.pathActivation     = activationState;
+        pathFollower2dState_.secondsSinceActivation = orcaice::timeDiffAsDouble( clock_.time(),
+                                                                                 activationTime_ );
+        tempState = pathFollower2dState_;
+    }
+    // Let the world know (outside crit section)
+    pathFollower2dImpl_->localSetState( tempState );
 }
 
 void
 PathFollowerInterface::serviceRequests( bool                     &gotNewPath,
+                                        bool                     &gotPathActivation,
                                         orca::PathFollower2dData &pathData,
-                                        bool                     &gotActivation,
                                         orca::Time               &pathStartTime )
 {
-    gotNewPath    = false;
-    gotActivation = false;
-
-    if ( pendingPathRequestStore_.isNewData() )
+    bool newPathArrived, activationArrived;
+    newlyArrivedRequestStore_.get( newPathArrived, activationArrived, pathData );
+    if ( newPathArrived )
     {
+        pathFollower2dImpl_->localSetAndSend( pathData );        
         gotNewPath = true;
-        pendingPathRequestStore_.get( pathData );
-
-        pathFollower2dImpl_->localSetAndSend( pathData );
     }
-    if ( pendingActivationRequestStore_.isNewData() )
+    if ( activationArrived )
     {
-        gotActivation = true;
-        pendingActivationRequestStore_.get( pathStartTime );
-
-        activationTimeStore_.set( pathStartTime );
-        wpIndexStore_.set( 0 );
-        pathFollower2dImpl_->localSetWaypointIndex(0);
-        pathFollower2dImpl_->localSetActivationTime( pathStartTime, timeSinceActivate(pathStartTime) );
+        orca::PathFollower2dState tempState;
+        {
+            IceUtil::Mutex::Lock lock( mutex_ );
+            activationTime_ = clock_.time();
+            pathFollower2dState_.pathActivation         = orca::FollowingPath;
+            pathFollower2dState_.waypointIndex          = 0;
+            pathFollower2dState_.secondsSinceActivation = 0.0;
+            tempState = pathFollower2dState_;
+        }
+        gotPathActivation = true;
+        pathStartTime = activationTime_;
+        pathFollower2dImpl_->localSetState( tempState );
     }
 }
+
+//////////////////////////////////////////////////////////////////////
+
+void
+PathFollowerInterface::NewlyArrivedRequestStore::addPathRequest( const orca::PathFollower2dData &pathData,
+                                                                 bool activateImmediately )
+{
+    IceUtil::Mutex::Lock lock( mutex_ );
+    pendingPathRequest_.reset( new orca::PathFollower2dData(pathData) );
+    haveNewPath_ = true;
+    havePendingActivationRequest_ = activateImmediately;
+}
+
+void
+PathFollowerInterface::NewlyArrivedRequestStore::addActivationRequest()
+{
+    IceUtil::Mutex::Lock lock( mutex_ );
+    if ( !pendingPathRequest_.get() )
+    {
+        throw orca::PathNotLoadedException( "No path is loaded, activation is meaningless." );
+    }
+    havePendingActivationRequest_ = true;
+}
+
+void
+PathFollowerInterface::NewlyArrivedRequestStore::get( bool &newPathArrived,
+                                                      bool &activationArrived,
+                                                      orca::PathFollower2dData &pathData )
+{
+    IceUtil::Mutex::Lock lock( mutex_ );
+    if ( haveNewPath_ || havePendingActivationRequest_ )
+    {
+        assert( pendingPathRequest_.get() );
+        pathData = *pendingPathRequest_;
+    }
+    newPathArrived    = haveNewPath_;
+    activationArrived = havePendingActivationRequest_;
+
+    if ( havePendingActivationRequest_ )
+    {
+        pendingPathRequest_.reset(0);
+    }
+    haveNewPath_                  = false;
+    havePendingActivationRequest_ = false;
+}
+
 
 }
 

@@ -37,17 +37,21 @@ None.
 - @c Wifi.Config.Driver (string)
     - Type of driver
     - Valid values: { 'hardware', 'fake' }
-    - Default: 'hardware'- 
-
-- @c Wifi.Config.SnrWarningThreshhold (int in dBm)
-    - If Signal-to-Noise Ratio (SNR) falls below this threshhold, a warning is issued through status and tracer
-    - Default: 10
+    - Default: 'hardware'
 
 An example configuration file is installed into [ORCA-INSTALL-DIR]/share/orca/cfg/ directory.
 
 @section signal_strength Signal strength
 
-The reported values for signal, noise, and link quality are totally hardware and driver-dependent. Here's a loose list of what we know about certain drivers:
+The hardware driver above uses the following thresholds for the signal-to-noise ratio to determine a discrete signal level (see (see http://www.osuweb.net/wireless/faqs.html#whydoesmysignalstrengthsaylow)
+
+- very low: < 10db
+- low: 10db < x < 15db
+- good: 15db < x < 20db
+- very good: 20db < x < 25db
+- excellent: > 25db
+
+In general, the reported values for signal, noise, and link quality are totally hardware and driver-dependent. Here's a loose list of what we know about certain drivers:
 
 @par MadWifi (see http://madwifi.org/wiki/UserDocs/RSSI)
 
@@ -58,7 +62,6 @@ The reported values for signal, noise, and link quality are totally hardware and
   - 10: weak signal
   - 20: decent signal
   - 40+: very strong signal
-
 
 @section authors Authors
 

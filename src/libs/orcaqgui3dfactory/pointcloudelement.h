@@ -17,7 +17,7 @@
 namespace orcaqgui3d {
 
 //!
-//! @brief a 3d laser element
+//! @brief a 3d element
 //!
 //! @author Alex Brooks
 //!
@@ -32,14 +32,12 @@ public:
     PointCloudElement( const hydroqguielementutil::GuiElementInfo &guiElementInfo,
                        const orcaice::Context                     &context,
                        const std::string                          &proxyString,
-                       int                                         timeoutMs    = 5000,
-                       QColor                                      outlineColor = QColor( 102,102,153, 255 ) )
+                       int                                         timeoutMs    = 5000 )
         : IceStormElement3d<PointCloudPainter,
                                orca::PointCloudData,
                                orca::PointCloudPrx,
                                orca::PointCloudConsumer,
-                               orca::PointCloudConsumerPrx>( guiElementInfo, context, proxyString, painter_, timeoutMs ),
-          painter_( outlineColor )
+                               orca::PointCloudConsumerPrx>( guiElementInfo, context, proxyString, painter_, timeoutMs )
         {};
     virtual ~PointCloudElement(){};
 
@@ -47,13 +45,12 @@ public:
     virtual void actionOnConnection() { }
     virtual QStringList contextMenu();
     virtual void execute( int action );
-    virtual void setColor( QColor color ) { painter_.setColor(color); }
-    virtual void setFocus( bool inFocus ) { painter_.setFocus( inFocus ); };
+//     virtual void setColor( QColor color ) { painter_.setColor(color); }
+//     virtual void setFocus( bool inFocus ) { painter_.setFocus( inFocus ); };
 
     virtual osg::Node *osgNode() const { return painter_.osgNode(); }
 
 private:
-    void getLaserInfo();
     PointCloudPainter painter_;
     
 };

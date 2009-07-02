@@ -8,6 +8,8 @@ namespace segwayrmp {
 
 namespace {
 
+    const double RMP_3D_HEIGHT = 0.35;
+
     void 
     convert( const hydrointerfaces::SegwayRmp::Data& internal, orca::Odometry2dData& network )
     {
@@ -31,7 +33,7 @@ namespace {
 
         network.pose.p.x = internal.x;
         network.pose.p.y = internal.y;
-        network.pose.p.z = 0.0;
+        network.pose.p.z = RMP_3D_HEIGHT;
 
         network.pose.o.r = internal.roll;
         network.pose.o.p = internal.pitch;
@@ -68,17 +70,17 @@ namespace {
         // set up data structure for 2 batteries
         network.batteries.resize(2);
 
-        network.batteries[0].name = "main";
-        network.batteries[0].voltage = internal.mainvolt;
-        network.batteries[0].percent = cuBatteryPercentRemaining( internal.mainvolt );
+        network.batteries[0].name              = "main";
+        network.batteries[0].voltage           = internal.mainvolt;
+        network.batteries[0].percent           = cuBatteryPercentRemaining( internal.mainvolt );
         network.batteries[0].isBatteryCharging = orca::ChargingUnknown;
-        network.batteries[0].secRemaining      = 0;
+        network.batteries[0].secRemaining      = -1;
 
-        network.batteries[1].name = "ui";
-        network.batteries[1].voltage = internal.uivolt;
-        network.batteries[1].percent = 100;
+        network.batteries[1].name              = "ui";
+        network.batteries[1].voltage           = internal.uivolt;
+        network.batteries[1].percent           = 100;
         network.batteries[1].isBatteryCharging = orca::ChargingUnknown;
-        network.batteries[1].secRemaining = 1e6;
+        network.batteries[1].secRemaining      = -1;
     }
 
 }
@@ -150,9 +152,11 @@ PublisherThread::work()
 void
 PublisherThread::finalise()
 {
-    stringstream historySS;
-    historySS << stats_.distance()<<" "<<stats_.timeInMotion()<<" "<<stats_.maxSpeed();
-    history_.setWithFinishSequence( historySS.str() );    
+    if ( stats_.isValid() ) {
+        stringstream historySS;
+        historySS << stats_.distance()<<" "<<stats_.timeInMotion()<<" "<<stats_.maxSpeed();
+        history_.setWithFinishSequence( historySS.str() );
+    }
 }
 
 }

@@ -62,7 +62,7 @@ connectToTopicWithString( const Context     & context,
                 <<"Will retry in "<<retryIntervalSec<<"s."
                 << e.what();
             // not issuing status warnings because we would need to add localReportingOnly option
-            context.tracer().warning( ss.str(), 1, localReportingOnly );
+            context.tracer().warning( subsysName, ss.str(), 1, localReportingOnly );
         }
         ++count;
         gbxiceutilacfr::checkedSleep( activity, retryIntervalSec*1000 );
@@ -115,7 +115,7 @@ connectToTopicWithTag( const Context      & context,
                 <<"Will retry in "<<retryIntervalSec<<"s."
                 << e.what();
             // not issuing status warnings because we would need to add localReportingOnly option
-            context.tracer().warning( ss.str(), 1, localReportingOnly );
+            context.tracer().warning( subsysName, ss.str(), 1, localReportingOnly );
         }
         ++count;
         gbxiceutilacfr::checkedSleep( activity, retryIntervalSec*1000 );

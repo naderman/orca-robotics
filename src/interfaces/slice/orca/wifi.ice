@@ -35,6 +35,23 @@ enum LinkQualityType
     LinkQualityTypeRelative
 };
 
+//! A 'Windows-style' signal level
+enum DiscreteSignalLevel
+{
+    //! signal level is unknown
+    SignalLevelUnknown,
+    //! signal level is very low
+    SignalLevelVeryLow,
+    //! signal level is low
+    SignalLevelLow,
+    //! signal level is good
+    SignalLevelGood,
+    //! signal level is very good
+    SignalLevelVeryGood,
+    //! signal level is excellent
+    SignalLevelExcellent
+};
+
 //! Operation modes
 enum OperationMode
 {
@@ -98,6 +115,8 @@ struct WifiInterface
     int throughPut;
     //! How to interpret the link quality (see above)
     LinkQualityType linkType;
+    //! Discrete signal level indicator
+    DiscreteSignalLevel discreteLevel;
     //! Maximum link quality
     int maxLinkQuality;
     //! Maximum signal level

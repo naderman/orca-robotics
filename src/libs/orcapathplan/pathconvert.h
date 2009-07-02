@@ -23,7 +23,7 @@ namespace orcapathplan {
     {
         float      distanceTolerance;
         float      headingTolerance;
-        orca::Time timeTarget;
+        double     timeTarget;
         float      maxApproachSpeed;
         float      maxApproachTurnrate;
     };

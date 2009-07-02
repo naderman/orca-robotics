@@ -115,6 +115,7 @@ namespace {
         else if ( format=="asciigenerated" )
         {
             ifacelog::toLogStream( obj, *file);
+            (*file) << endl;
         }
         else if ( format == "ascii" )
         {
@@ -143,6 +144,7 @@ namespace {
         else if ( format=="asciigenerated" )
         {
             ifacelog::toLogStream( obj, *file);
+            (*file) << endl;
         }
         else if ( format == "ascii" )
         {
@@ -170,6 +172,7 @@ namespace {
         else if ( format=="asciigenerated" )
         {
             ifacelog::toLogStream( obj, *file);
+            (*file) << endl;
         }
         else if ( format == "ascii" )
         {
@@ -197,6 +200,7 @@ namespace {
         else if ( format=="asciigenerated" )
         {
             ifacelog::toLogStream( obj, *file);
+            (*file) << endl;
         }
         else if ( format=="ascii" )
         {
@@ -224,6 +228,7 @@ namespace {
         else if ( format=="asciigenerated" )
         {
             ifacelog::toLogStream( obj, *file);
+            (*file) << endl;
         }
         else
         {
@@ -247,6 +252,7 @@ namespace {
         else if ( format=="asciigenerated" )
         {
             ifacelog::toLogStream( obj, *file);
+            (*file) << endl;
         }
         else if ( format == "ascii" )
         {
@@ -274,6 +280,7 @@ namespace {
         else if ( format=="asciigenerated" )
         {
             ifacelog::toLogStream( obj, *file);
+            (*file) << endl;
         }
         else if ( format == "ascii" )
         {
@@ -301,6 +308,7 @@ namespace {
         else if ( format=="asciigenerated" )
         {
             ifacelog::toLogStream( obj, *file);
+            (*file) << endl;
         }
         else if ( format == "ascii" )
         {
@@ -328,6 +336,7 @@ namespace {
         else if ( format=="asciigenerated" )
         {
             ifacelog::toLogStream( obj, *file);
+            (*file) << endl;
         }
         else if ( format == "ascii" )
         {
@@ -355,6 +364,7 @@ namespace {
         else if ( format=="asciigenerated" )
         {
             ifacelog::toLogStream( obj, *file);
+            (*file) << endl;
         }
         else if ( format == "ascii" )
         {
@@ -382,6 +392,7 @@ namespace {
         else if ( format=="asciigenerated" )
         {
             ifacelog::toLogStream( obj, *file);
+            (*file) << endl;
         }
         else if ( format == "ascii" )
         {
@@ -409,6 +420,7 @@ namespace {
         else if ( format=="asciigenerated" )
         {
             ifacelog::toLogStream( obj, *file);
+            (*file) << endl;
         }
         else if ( format == "ascii" )
         {
@@ -436,6 +448,7 @@ namespace {
         else if ( format=="asciigenerated" )
         {
             ifacelog::toLogStream( obj, *file);
+            (*file) << endl;
         }
         else if ( format == "ascii" )
         {
@@ -463,6 +476,7 @@ namespace {
         else if ( format=="asciigenerated" )
         {
             ifacelog::toLogStream( obj, *file);
+            (*file) << endl;
         }
         else if ( format == "ascii" )
         {
@@ -490,6 +504,7 @@ namespace {
         else if ( format=="asciigenerated" )
         {
             ifacelog::toLogStream( obj, *file);
+            (*file) << endl;
         }
         else if ( format == "ascii" )
         {
@@ -517,6 +532,7 @@ namespace {
         else if ( format=="asciigenerated" )
         {
             ifacelog::toLogStream( obj, *file);
+            (*file) << endl;
         }
         else if ( format == "ascii" )
         {
@@ -544,6 +560,7 @@ namespace {
         else if ( format=="asciigenerated" )
         {
             ifacelog::toLogStream( obj, *file);
+            (*file) << endl;
         }
         else if ( format == "ascii" )
         {
@@ -572,6 +589,7 @@ namespace {
         else if ( format=="asciigenerated" )
         {
             ifacelog::toLogStream( obj, *file);
+            (*file) << endl;
         }
         else
         {

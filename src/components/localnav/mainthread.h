@@ -53,7 +53,6 @@ private:
     void getVehicleDescription();
     void getRangeScannerDescription();
     void setup();
-    void initPathFollowerInterface();
 
     void sendCommandToPlatform( const hydronavutil::Velocity &cmd );
 

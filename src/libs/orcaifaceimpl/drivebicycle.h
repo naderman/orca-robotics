@@ -21,24 +21,19 @@
 
 namespace orcaifaceimpl {
 
-typedef StoringConsumerImpl<orca::DriveBicycle, orca::DriveBicyclePrx,
-                    orca::DriveBicycleConsumer, orca::DriveBicycleConsumerPrx,
+typedef StoringConsumerImpl<orca::DriveBicycle, orca::DriveBicycleConsumer,
                     orca::DriveBicycleData> StoringDriveBicycleConsumerImpl;
 typedef IceUtil::Handle<StoringDriveBicycleConsumerImpl> StoringDriveBicycleConsumerImplPtr;
 
-typedef BufferedConsumerImpl<orca::DriveBicycle, orca::DriveBicyclePrx,
-                        orca::DriveBicycleConsumer, orca::DriveBicycleConsumerPrx,
+typedef BufferedConsumerImpl<orca::DriveBicycle, orca::DriveBicycleConsumer,
                         orca::DriveBicycleData> BufferedDriveBicycleConsumerImpl;
 typedef IceUtil::Handle<BufferedDriveBicycleConsumerImpl> BufferedDriveBicycleConsumerImplPtr;
 
-typedef NotifyingConsumerImpl<orca::DriveBicycle, orca::DriveBicyclePrx,
-                        orca::DriveBicycleConsumer,
-                        orca::DriveBicycleConsumerPrx,
+typedef NotifyingConsumerImpl<orca::DriveBicycle, orca::DriveBicycleConsumer,
                         orca::DriveBicycleData> NotifyingDriveBicycleConsumerImpl;
 typedef IceUtil::Handle<NotifyingDriveBicycleConsumerImpl> NotifyingDriveBicycleConsumerImplPtr;
 
-typedef PrintingConsumerImpl<orca::DriveBicycle, orca::DriveBicyclePrx,
-                        orca::DriveBicycleConsumer, orca::DriveBicycleConsumerPrx,
+typedef PrintingConsumerImpl<orca::DriveBicycle, orca::DriveBicycleConsumer,
                         orca::DriveBicycleData> PrintingDriveBicycleConsumerImpl;
 typedef IceUtil::Handle<PrintingDriveBicycleConsumerImpl> PrintingDriveBicycleConsumerImplPtr;
 

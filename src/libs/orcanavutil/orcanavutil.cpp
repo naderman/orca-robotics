@@ -179,5 +179,18 @@ namespace orcanavutil {
         orcaCmd.motion.w   = cmd.rot();
         return orcaCmd;
     }
+
+    orca::Covariance2d diagonalCovariance( double linearCov, double rotationalCov )
+    {
+        orca::Covariance2d cov;
+        cov.xx = linearCov;
+        cov.xy = 0.0;
+        cov.xt = 0.0;
+        cov.yy = linearCov;
+        cov.yt = 0.0;
+        cov.tt = rotationalCov;
+
+        return cov;
+    }
 }
 

@@ -11,7 +11,7 @@
 #ifndef ORCAIFACEIMPL_ESTOP_H
 #define ORCAIFACEIMPL_ESTOP_H
 
-#include <orcaifaceimpl/providerWithDescriptionImpl.h>
+#include <orcaifaceimpl/estopImpl.h>
 #include <orcaifaceimpl/storingconsumerImpl.h>
 #include <orcaifaceimpl/bufferedconsumerImpl.h>
 #include <orcaifaceimpl/notifyingconsumerImpl.h>
@@ -21,29 +21,19 @@
 
 namespace orcaifaceimpl {
 
-typedef ProviderWithDescriptionImpl<orca::EStop, orca::EStopPrx,
-                    orca::EStopConsumer, orca::EStopConsumerPrx,
-                    orca::EStopData, orca::EStopDescription> EStopImpl;
-typedef IceUtil::Handle<EStopImpl> EStopImplPtr;
-
-typedef StoringConsumerImpl<orca::EStop, orca::EStopPrx,
-                    orca::EStopConsumer, orca::EStopConsumerPrx,
+typedef StoringConsumerImpl<orca::EStop, orca::EStopConsumer,
                     orca::EStopData> StoringEStopConsumerImpl;
 typedef IceUtil::Handle<StoringEStopConsumerImpl> StoringEStopConsumerImplPtr;
 
-typedef BufferedConsumerImpl<orca::EStop, orca::EStopPrx,
-                        orca::EStopConsumer, orca::EStopConsumerPrx,
+typedef BufferedConsumerImpl<orca::EStop, orca::EStopConsumer,
                         orca::EStopData> BufferedEStopConsumerImpl;
 typedef IceUtil::Handle<BufferedEStopConsumerImpl> BufferedEStopConsumerImplPtr;
 
-typedef NotifyingConsumerImpl<orca::EStop, orca::EStopPrx,
-                        orca::EStopConsumer,
-                        orca::EStopConsumerPrx,
+typedef NotifyingConsumerImpl<orca::EStop, orca::EStopConsumer,
                         orca::EStopData> NotifyingEStopConsumerImpl;
 typedef IceUtil::Handle<NotifyingEStopConsumerImpl> NotifyingEStopConsumerImplPtr;
 
-typedef PrintingConsumerImpl<orca::EStop, orca::EStopPrx,
-                        orca::EStopConsumer, orca::EStopConsumerPrx,
+typedef PrintingConsumerImpl<orca::EStop, orca::EStopConsumer,
                         orca::EStopData> PrintingEStopConsumerImpl;
 typedef IceUtil::Handle<PrintingEStopConsumerImpl> PrintingEStopConsumerImplPtr;
 

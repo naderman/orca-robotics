@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <orcaice/orcaice.h>
+#include <orcaobj/datetime.h>
 #include <orcaobj/pathfollower2d.h>
 #include "pathfollower2dI.h"
 
@@ -44,7 +45,7 @@ PathFollower2dI::setData( const ::orca::PathFollower2dData& data, bool activateI
 
     // Sanity check
     std::string insanityReason;
-    if ( !orcaobj::isSane( data, insanityReason ) )
+    if ( !orcaobj::isSane( data,insanityReason ) )
     {
         stringstream ss;
         ss << "Path not valid.  Path was: " << orcaobj::toVerboseString(data) << endl;
@@ -61,74 +62,20 @@ PathFollower2dI::setData( const ::orca::PathFollower2dData& data, bool activateI
 void
 PathFollower2dI::activateNow( const ::Ice::Current& )
 {
-    cout << "TRACE(pathfollower2dI.cpp):activateNow: passing on to localnav." << endl;
-    try {
-        activationPipe_.set( true );
-        localNavPrx_->activateNow(); 
-    } catch ( const Ice::Exception & e ) {
-        cout << "Error: Exception when calling activateNow on localnav: " << e << endl;
-    }
-}
-
-int
-PathFollower2dI::getWaypointIndex( const ::Ice::Current&)
-{
-//     cout << "TRACE(pathfollower2dI.cpp): getWaypointIndex: passing request on to localnav" << endl;
-    try {
-        return localNavPrx_->getWaypointIndex(); 
-    } catch ( const Ice::Exception & e ) {
-        cout << "Error: Exception when calling activateNow on localnav: " << e << endl;
-    }
-    return -1;
-}
-
-bool
-PathFollower2dI::getAbsoluteActivationTime(::orca::Time &activationTime, const Ice::Current&)
-{
-//     cout << "TRACE(pathfollower2dI.cpp): getAbsoluteActivationTime: passing request on to localnav" << endl;
-    try {
-        bool ret = localNavPrx_->getAbsoluteActivationTime( activationTime );
-        return ret;
-    } catch ( const Ice::Exception & e ) {
-        cout << "Error: Exception when calling activateNow on localnav: " << e << endl;
-    }
-    return false;
-}
-    
-bool 
-PathFollower2dI::getRelativeActivationTime(double &secondsSinceActivation, const Ice::Current&)
-{
-//     cout << "TRACE(pathfollower2dI.cpp): getRelativeActivationTime: passing request on to localnav" << endl;
-    try {
-        bool ret =  localNavPrx_->getRelativeActivationTime( secondsSinceActivation );
-        return ret;
-    } catch ( const Ice::Exception & e ) {
-        cout << "Error: Exception when calling activateNow on localnav: " << e << endl;
-    }
-    return false;
+    activationPipe_.set( true );
+    localNavPrx_->activateNow(); 
 }
 
 void 
 PathFollower2dI::setEnabled( bool enabled, const ::Ice::Current& )
 {
-//     cout << "TRACE(pathfollower2dI.cpp):setEnabled: passing request on to localnav" << endl;
-    try {
-        localNavPrx_->setEnabled(enabled); 
-    } catch ( const Ice::Exception & e ) {
-        cout << "Error: Exception when calling activateNow on localnav: " << e << endl;
-    }
+    localNavPrx_->setEnabled(enabled); 
 }
 
-bool 
-PathFollower2dI::enabled(const ::Ice::Current&)
+orca::PathFollower2dState
+PathFollower2dI::getState(const ::Ice::Current&)
 {
-//     cout << "TRACE(pathfollower2dI.cpp):enabled: passing request on to localnav" << endl;
-    try {
-        return localNavPrx_->enabled();
-    } catch ( const Ice::Exception & e ) {
-        cout << "Error: Exception when calling activateNow on localnav: " << e << endl;
-    }
-    return false;
+    return localNavPrx_->getState();
 }
 
 IceStorm::TopicPrx

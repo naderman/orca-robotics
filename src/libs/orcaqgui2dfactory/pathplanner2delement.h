@@ -17,7 +17,7 @@
 #include <gbxsickacfr/gbxiceutilacfr/store.h>
 #include <orcaqguielementutil/icestormguielement2d.h>
 
-#include <orcaqgui2dfactory/pathpainter.h>
+#include <orcaqgui2dfactory/pathplannerpainter.h>
 #include <orcaqgui2dfactory/pathplanneruserinteraction.h>
 
 namespace orcaqgui2d {
@@ -40,7 +40,7 @@ class PathPlannerTaskAnswerConsumer : public orca::PathPlanner2dConsumer
 //
 // @author Tobias Kaupp
 //
-class PathPlanner2dElement : public orcaqguielementutil::IceStormGuiElement2d<PathPainter,
+class PathPlanner2dElement : public orcaqguielementutil::IceStormGuiElement2d<PathPlannerPainter,
                              orca::PathPlanner2dData,
                              orca::PathPlanner2dPrx,
                              orca::PathPlanner2dConsumer,
@@ -79,7 +79,7 @@ public:
 
 private: 
 
-    PathPainter painter_;
+    PathPlannerPainter painter_;
     
     // Task answer
     PathPlannerTaskAnswerConsumer *pathTaskAnswerConsumer_;
@@ -91,9 +91,6 @@ private:
     orcaice::Context context_;
     std::string proxyString_;
     hydroqguielementutil::IHumanManager &humanManager_;
-
-    bool displayWaypoints_;
-    bool currentTransparency_;
         
     // Handles user interaction
     PathPlannerUserInteraction pathHI_;

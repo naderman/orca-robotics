@@ -36,10 +36,6 @@ public:
                     const Clock               &clock,
                     const orcaice::Context    &context );
 
-    //
-    // Functions for the LocalNavManager
-    //
-
     // Gets a list of up to maxNumGoals goals, the first
     // of which being the one currently sought, given that the robot
     // is at 'pose'.
@@ -52,14 +48,14 @@ public:
                          const hydronavutil::Pose &pose,
                          bool &wpIncremented );
 
-    //
-    // Functions called by MainLoop, to trigger comms with outside world
-    //
-
-    void checkForNewPath();
-    void checkForWpIndexChange();
+    void checkWithOutsideWorld();
 
 private: 
+
+    // (1): world->localnav: Have we received a new path?
+    void checkForNewPath();
+    // (2): world<-localnav: Have we modified our wp index?
+    void publishStateChanges();
 
     bool waypointReached( const orca::Waypoint2d &wp,
                           const hydronavutil::Pose &pose,
@@ -72,15 +68,18 @@ private:
     // Keep a local copy of the path, so we don't have to mess with buffers every 
     // time the nav manager wants to look at it.
     orca::PathFollower2dData path_;
-    
+
+    // Our state
+    orca::PathActivationEnum activationState_;
+
     // The index of the next waypoint being seeked.
     int wpIndex_;
 
-    // If the index changes, we need to tell the world.
-    bool wpIndexChanged_;
+    // If something changes, we need to tell the world.
+    bool stateOrWpIndexChanged_;
 
     // Used to handle corner-case of 'wpIncremented' on first call to getActiveGoals after new path.
-    bool justReceivedNewPath_;
+    bool justStartedNewPath_;
 
     // The timing of the entire path is relative to this
     orca::Time pathStartTime_;

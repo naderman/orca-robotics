@@ -28,9 +28,10 @@ PathFollowerUserInteraction::PathFollowerUserInteraction( PathFollower2dElement 
                                                           hydroqguielementutil::MouseEventManager       &mouseEventManager,
                                                           hydroqguielementutil::ShortcutKeyManager      &shortcutKeyManager,
                                                           const hydroqgui::GuiElementSet                &guiElementSet,
-                                                          const PathPainter                             &painter,
+                                                          const PathFollowerPainter                     &painter,
                                                           const orcaice::Context                        &context,
-                                                          const hydroqguipath::PathInputFactory         *inputFactory )
+                                                          const hydroqguipath::PathInputFactory         *inputFactory,
+                                                          bool                                           enableToolbarButtons )
     : pfElement_(pfElement),
       proxyString_( proxyString ),
       humanManager_(humanManager),
@@ -45,28 +46,34 @@ PathFollowerUserInteraction::PathFollowerUserInteraction( PathFollower2dElement 
       userPathFileName_("/tmp"),
       haveUserPathFileName_(false),    
       numAutoPathDumps_(0),
-      gotMode_(false)
+      ownMouseEvents_(false),
+      enableToolbarButtons_(enableToolbarButtons)
 {
     wpSettings_ = readWaypointSettings( context.properties(), context.tag() );
-    buttons_.reset( new hydroqguipath::PathfollowerButtons( this, 
-                                                            humanManager, 
-                                                            shortcutKeyManager, 
-                                                            proxyString,
-                                                                    !readActivateImmediately(context.properties(), context.tag())) );
+
+    if (enableToolbarButtons_)
+    {
+        buttons_.reset( new hydroqguipath::PathfollowerButtons( this,
+                                                                humanManager,
+                                                                shortcutKeyManager,
+                                                                proxyString,
+                                                                !readActivateImmediately(context.properties(), context.tag())) );
+    }
     ifacePathFileHandler_.reset( new PathFileHandler( humanManager ) );
     userPathFileHandler_.reset( new PathFileHandler( humanManager ) );
 }
 
 PathFollowerUserInteraction::~PathFollowerUserInteraction()
 {
-    std::cout << "PathFollowerUserInteraction: Destructor" << std::endl;
-    if ( gotMode_ && pfElement_!=0 )
+    if ( ownMouseEvents_ && pfElement_!=0 )
         mouseEventManager_.relinquishMouseEventReceiver( pfElement_ );
 }
 
 void 
 PathFollowerUserInteraction::setFocus( bool inFocus )
 {
+    if (!enableToolbarButtons_) return;
+
     if ( inFocus )
     {
         if ( !buttons_.get() ) 
@@ -119,24 +126,72 @@ void PathFollowerUserInteraction::waypointSettingsDialog()
         pathInput_->updateWpSettings( &wpSettings_ );
 }
 
-void 
-PathFollowerUserInteraction::waypointModeSelected()
+void
+PathFollowerUserInteraction::waypointModeToggled(bool checked)
 {
-    if ( gotMode_ ) return;
-    gotMode_ = mouseEventManager_.requestBecomeMouseEventReceiver( pfElement_ );
     
-    if ( !gotMode_ )
+    if (checked)    // user wants to get into waypoint mode
     {
-        humanManager_.showDialogWarning( "Couldn't take over the mode for PathFollower waypoints!" );
-        return;
+        ownMouseEvents_ = mouseEventManager_.requestBecomeMouseEventReceiver( pfElement_ );
+
+        if ( !ownMouseEvents_ )
+        {
+            humanManager_.showStatusWarning( "Couldn't take over the mouse for PathFollower waypoints!" );
+            // uncheck the button for user feedback
+            if ( buttons_.get()!=0 )
+                buttons_->setWpButton( false );
+            return;
+        }
+
+        // if we don't have a pathInput yet, instantiate one
+        if (!pathInput_.get())
+        {
+            pathInput_ = inputFactory_->createPathInput( this, &wpSettings_, humanManager_);
+            pathInput_->setUseTransparency( useTransparency_ );
+        }
+
     }
-    
-    pathInput_ = inputFactory_->createPathInput( this, &wpSettings_, humanManager_);
-    
-    pathInput_->setUseTransparency( useTransparency_ );
-    buttons_->setWpButton( true );
+    else    // user turned off waypoint mode
+    {
+        if (ownMouseEvents_)
+        {
+            // let others get the mouse events, e.g. for zooming and paning
+            mouseEventManager_.relinquishMouseEventReceiver( pfElement_ );
+            ownMouseEvents_ = false;
+        }
+
+    }
 }
 
+void
+PathFollowerUserInteraction::mousePressEvent(QMouseEvent *e)
+{
+    if ( pathInput_.get() )
+        pathInput_->processPressEvent(e);
+}
+
+void
+PathFollowerUserInteraction::mouseMoveEvent(QMouseEvent *e)
+{
+    if ( pathInput_.get() )
+        pathInput_->processMoveEvent(e);
+}
+
+void
+PathFollowerUserInteraction::mouseReleaseEvent(QMouseEvent *e)
+{
+    if ( pathInput_.get() )
+        pathInput_->processReleaseEvent(e);
+}
+
+void
+PathFollowerUserInteraction::mouseDoubleClickEvent(QMouseEvent *e)
+{
+    if ( pathInput_.get() )
+        pathInput_->processDoubleClickEvent(e);
+}
+  
+    
 void
 PathFollowerUserInteraction::setUseTransparency( bool useTransparency )
 { 
@@ -148,8 +203,6 @@ PathFollowerUserInteraction::setUseTransparency( bool useTransparency )
 void 
 PathFollowerUserInteraction::send()
 {
-    cout<<"TRACE(PathFollowerUserInteraction): send()" << endl;
-    
     if ( !pathInput_.get() ) 
     {
         humanManager_.showDialogWarning( "Not in path input mode!" );
@@ -174,28 +227,24 @@ PathFollowerUserInteraction::send()
 void 
 PathFollowerUserInteraction::cancel()
 {
-    cout<<"TRACE(PathFollowerUserInteraction): cancel()" << endl;
     noLongerMouseEventReceiver();
 }
 
 void 
 PathFollowerUserInteraction::go()
 {
-    cout<<"TRACE(PathFollowerUserInteraction): go()" << endl;
     pfElement_->go();
 }
 
 void 
 PathFollowerUserInteraction::stop()
 {
-    cout<<"TRACE(PathFollowerUserInteraction): stop()" << endl;
     pfElement_->stop();
 }
 
 void 
 PathFollowerUserInteraction::allGo()
 {
-    cout<<"TRACE(PathFollowerUserInteraction): allGo()" << endl;
     const QList<hydroqguielementutil::GuiElement*> elements = guiElementSet_.elements();
     for ( int i=0; i < elements.size(); i++ )
     {
@@ -209,7 +258,6 @@ PathFollowerUserInteraction::allGo()
 void 
 PathFollowerUserInteraction::allStop()
 {
-    cout<<"TRACE(PathFollowerUserInteraction): allStop()" << endl;
     const QList<hydroqguielementutil::GuiElement*> elements = guiElementSet_.elements();
     for ( int i=0; i < elements.size(); i++ )
     {
@@ -230,15 +278,14 @@ PathFollowerUserInteraction::toggleEnabled()
 void
 PathFollowerUserInteraction::noLongerMouseEventReceiver()
 {
-    cout << "TRACE(PathFollowerUserInteraction): noLongerMouseEventReceiver()" << endl;
     pathInput_.reset(0);
-    buttons_->setWpButton( false );
+    if ( buttons_.get()!=0 )
+        buttons_->setWpButton( false );
     
-    if ( gotMode_ )
+    if ( ownMouseEvents_ )
     {
-        cout << "TRACE(PathFollowerUserInteraction): relinquishMouseEventReceiver" << endl;
         mouseEventManager_.relinquishMouseEventReceiver( pfElement_ );
-        gotMode_ = false;
+        ownMouseEvents_ = false;
     }
 }
 
@@ -262,14 +309,10 @@ PathFollowerUserInteraction::savePathAs()
 void 
 PathFollowerUserInteraction::savePath()
 {
-    if (!haveIfacePathFileName_)
-    {   
+    if (!haveIfacePathFileName_) 
         savePathAs();
-    }
     else
-    {
         ifacePathFileHandler_->savePath( ifacePathFileName_, painter_.currentPath() );
-    }
 }
 
 void
@@ -291,9 +334,7 @@ PathFollowerUserInteraction::loadUserPath(hydroqguipath::GuiPath &guiPath)
     QString fileName = QFileDialog::getOpenFileName( 0, "Choose a path file to open", userPathFileName_, "*.txt");     
     
     if (!fileName.isEmpty())
-    {
-        userPathFileHandler_->loadPath( fileName, guiPath );
-    }    
+        userPathFileHandler_->loadPath( fileName, guiPath );  
 }
 
 void 

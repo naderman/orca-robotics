@@ -5,11 +5,41 @@
 #include <osg/BlendFunc>
 #include <osg/ShapeDrawable>
 #include <osg/Geode>
+#include <sstream>
 
 using namespace std;
 
 namespace orcaqgui3d {
 
+namespace {
+
+    inline osg::Vec3d toVec3d( const Vector3 &v )
+    { return osg::Vec3d( v.x(), v.y(), v.z() ); }
+
+    std::string toString( const osg::Matrixd &m )
+    {
+        stringstream ss;
+        ss<<endl;
+        for ( int i=0; i < 4; i++ )
+        {
+            for ( int j=0; j < 4; j++ )
+            {
+                ss << m(i,j) << " ";
+            }
+            if ( i != 3 )
+                ss << endl;
+        }
+        return ss.str();
+    }
+
+    std::string toString( const osg::Quat &q )
+    {
+        stringstream ss;
+        ss << "Quat: ["<<q.x()<<", "<<q.y()<<", "<<q.z()<<", "<<q.w()<<"]";
+        return ss.str();
+    }
+}
+        
 osg::ref_ptr<osg::PositionAttitudeTransform>
 getPositionAttitudeTransform( double x,
                               double y,
@@ -18,17 +48,17 @@ getPositionAttitudeTransform( double x,
                               double pitch,
                               double yaw )
 {
-    osg::ref_ptr<osg::PositionAttitudeTransform> pos = new osg::PositionAttitudeTransform;
+    // cout<<"TRACE(osgutil.cpp): " << __func__ << ": r="<<roll*180.0/M_PI<<"deg, p="<<pitch*180.0/M_PI<<"deg, y="<<yaw*180.0/M_PI<<"deg" << endl;
 
-    pos->setPosition( osg::Vec3(x,y,z) );
-
-    // Not sure this order is right...
     osg::Quat rot = 
         osg::Quat( roll,  osg::Vec3(1,0,0) ) * 
         osg::Quat( pitch, osg::Vec3(0,1,0) ) * 
         osg::Quat( yaw,   osg::Vec3(0,0,1) );
 
+    osg::ref_ptr<osg::PositionAttitudeTransform> pos = new osg::PositionAttitudeTransform;
     pos->setAttitude( rot );
+    pos->setPosition( osg::Vec3(x,y,z) );
+
     return pos;
 }
 
@@ -84,6 +114,36 @@ drawEllipse( float radiusX,
 
     osg::ref_ptr<osg::DrawElementsUInt> prim = 
         new osg::DrawElementsUInt(osg::PrimitiveSet::LINE_LOOP);
+    geometry->addPrimitiveSet( prim.get() );
+    for ( uint i=0; i < vertices->size(); i++ )
+        prim->push_back( i );
+
+    osg::ref_ptr<osg::Vec4Array> colors = new osg::Vec4Array;
+    colors->push_back( color );
+    geometry->setColorArray(colors.get());
+    geometry->setColorBinding(osg::Geometry::BIND_PER_PRIMITIVE_SET);
+
+    return geometry;
+}
+
+osg::ref_ptr<osg::Geometry>
+drawVee( float radius,
+         const osg::Vec4 &color,
+         float z )
+{
+    osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry;
+    osg::ref_ptr<osg::Vec3Array> vertices = new osg::Vec3Array;
+    geometry->setVertexArray( vertices.get() );
+    
+    float angle = 45*M_PI/180.0;
+
+    vertices->push_back( osg::Vec3( 0, 0, z ) );
+    vertices->push_back( osg::Vec3( radius*cos(-angle), radius*sin(-angle), z ) );
+    vertices->push_back( osg::Vec3( 0, 0, z ) );
+    vertices->push_back( osg::Vec3( radius*cos(angle),  radius*sin(angle),  z ) );
+
+    osg::ref_ptr<osg::DrawElementsUInt> prim = 
+        new osg::DrawElementsUInt(osg::PrimitiveSet::LINES);
     geometry->addPrimitiveSet( prim.get() );
     for ( uint i=0; i < vertices->size(); i++ )
         prim->push_back( i );

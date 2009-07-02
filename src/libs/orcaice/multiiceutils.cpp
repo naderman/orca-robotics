@@ -45,7 +45,7 @@ void createInterfaceWithString( const Context& context,
             if ( !subsysName.empty() )
                 context.status().warning( subsysName, ss.str() );
             else
-                context.tracer().warning( ss.str() );
+                context.tracer().warning( subsysName, ss.str() );
         }
         catch ( ... ) {
             std::stringstream ss;
@@ -54,7 +54,7 @@ void createInterfaceWithString( const Context& context,
             if ( !subsysName.empty() )
                 context.status().warning( subsysName, ss.str() );
             else
-                context.tracer().warning( ss.str() );
+                context.tracer().warning( subsysName, ss.str() );
         }
         ++count;
         gbxiceutilacfr::checkedSleep( activity, retryIntervalSec*1000 );
@@ -85,7 +85,7 @@ void createInterfaceWithTag( const Context& context,
             if ( !subsysName.empty() )
                 context.status().warning( subsysName, ss.str() );
             else
-                context.tracer().warning( ss.str() );
+                context.tracer().warning( subsysName, ss.str() );
         }
         catch ( ... ) {
             std::stringstream ss;
@@ -94,7 +94,7 @@ void createInterfaceWithTag( const Context& context,
             if ( !subsysName.empty() )
                 context.status().warning( subsysName, ss.str() );
             else
-                context.tracer().warning( ss.str() );
+                context.tracer().warning( subsysName, ss.str() );
         }
         ++count;
         gbxiceutilacfr::checkedSleep( activity, retryIntervalSec*1000 );
@@ -123,13 +123,13 @@ void activate( Context& context,
             std::stringstream ss;
             ss << "Failed to activate component : "<<e.what()<<endl
                <<"Will retry in "<<retryIntervalSec<<"s.\n";
-            context.tracer().warning( ss.str() );
+            context.tracer().warning( subsysName, ss.str() );
         }
         catch ( ... ) {
             std::stringstream ss;
             ss << "Caught something while activating. " << endl
                 <<"Will retry in "<<retryIntervalSec<<"s.\n";
-            context.tracer().warning( ss.str() );
+            context.tracer().warning( subsysName, ss.str() );
         }
         ++count;
         gbxiceutilacfr::checkedSleep( activity, retryIntervalSec*1000 );

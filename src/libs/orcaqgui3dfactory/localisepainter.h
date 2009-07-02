@@ -7,11 +7,12 @@
  * the LICENSE file included in this distribution.
  *
  */
-#ifndef ORCAGUI3D_LOCALISE2D_PAINTER_H
-#define ORCAGUI3D_LOCALISE2D_PAINTER_H
+#ifndef ORCAGUI3D_LOCALISE_PAINTER_H
+#define ORCAGUI3D_LOCALISE_PAINTER_H
 
 #include <QColor>
 #include <orca/localise2d.h>
+#include <orca/localise3d.h>
 #include <hydroqguielementutil/paintutils.h>
 #include <osg/Group>
 #include <osg/Geode>
@@ -23,12 +24,13 @@ class QPainter;
 namespace orcaqgui3d
 {
     
-class Localise2dPainter
+class LocalisePainter
 {
   public:
-    Localise2dPainter( bool beginDisplayHistory );
+    LocalisePainter( bool beginDisplayHistory );
 
     void setData( const orca::Localise2dData& data );
+    void setData( const orca::Localise3dData& data );
     void setCubicDescr( double length,
                         double width,
                         double height,
@@ -51,7 +53,7 @@ class Localise2dPainter
     void drawCuboidPlatform();
     void drawCylindricalPlatform();
 
-    void paintHypothesis( const orca::Pose2dHypothesis &hypothesis );
+    void paintHypothesis( const orca::Pose3dHypothesis &hypothesis );
 
     QColor basicColor_;
     QColor currentColor_;
@@ -59,8 +61,10 @@ class Localise2dPainter
     bool useTransparency_;
     bool isDisplayMultiHypothesis_;
 
-    osg::ref_ptr<osg::PositionAttitudeTransform> platformNode_;
-
+    // This is where the platform is located
+    osg::ref_ptr<osg::Group> platformNode_;
+    // The platform geometry may not be centred on the platform
+    osg::ref_ptr<osg::PositionAttitudeTransform> platformGeometryNode_;
     osg::ref_ptr<osg::Group> root_;
 };
 

@@ -37,7 +37,6 @@ getInterfaceIdWithString( const Context& context, const std::string& proxyString
         // Give some feedback as to why shit isn't working
         std::stringstream ss;
         ss << "Failed to lookup ID of '" << proxyString << "': "<<e;
-        initTracerWarning( context, ss.str(), 2 );
         throw orcaice::NetworkException( ERROR_INFO, ss.str() );
     }
 }

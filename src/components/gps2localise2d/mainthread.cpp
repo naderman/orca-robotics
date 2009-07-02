@@ -150,8 +150,6 @@ MainThread::initialise()
 void 
 MainThread::work()
 {
-    setMaxHeartbeatInterval( 3.0 );
-
     orca::GpsData        gpsData;
     orca::Localise2dData localiseData;
 
@@ -160,6 +158,8 @@ MainThread::work()
     // reconnect if we timeout this many times
     const int reconnectFailTimes = 10;
     int numTimeouts = 0;
+
+    setMaxHeartbeatInterval( timeoutMs/1e3 );
 
     // Loop forever till we get shut down.
     while ( !isStopping() )
@@ -259,26 +259,7 @@ orca::GpsDescription
 MainThread::getGpsDescription()
 {
     orca::GpsDescription gpsDescr;
-
-    while ( !isStopping() )
-    {
-        try
-        {    
-            orca::GpsPrx gpsPrx;
-            orcaice::connectToInterfaceWithTag<orca::GpsPrx>( context_, gpsPrx, "Gps" );
-
-            context_.tracer().debug( "Getting gps description...", 2 );
-            gpsDescr = gpsPrx->getDescription();
-            stringstream ss;
-            ss << "Got gps description: " << ifaceutil::toString( gpsDescr );
-            context_.tracer().info( ss.str() );
-
-            checkAntennaOffsetOK( gpsDescr.antennaOffset );
-            break;
-        }
-        catch ( ... ) {
-            orcaice::catchExceptionsWithStatusAndSleep( "getting Gps description", health(), gbxutilacfr::SubsystemFault, 2000 );
-        }
-    }
+    orcaice::getDescriptionWithTag<orca::GpsPrx,orca::GpsDescription>
+        ( context_, "Gps", gpsDescr, this, subsysName() );
     return gpsDescr;
 }

@@ -86,7 +86,6 @@ connectToInterfaceWithString( const Context                             &context
                 "' is of wrong type."+
                 "  Tried to connect proxy of type "+InterfaceType::ice_staticId()+
                 " to remote interface of type "+base->ice_id();
-            initTracerWarning( context, errString, 2 );
             throw orcaice::TypeMismatchException( ERROR_INFO, errString );
         }
     }
@@ -94,21 +93,18 @@ connectToInterfaceWithString( const Context                             &context
     {
         std::stringstream ss;
         ss << "(while connecting to interface '" << resolvedProxyString << "') cannot reach the adaptor: "<<e.what();
-        orcaice::initTracerWarning( context, ss.str(), 2 );
         throw orcaice::NetworkException( ERROR_INFO, ss.str() );
     }
     catch ( const Ice::ObjectNotExistException& e )
     {
         std::stringstream ss;
         ss << "(while connecting to interface '" << resolvedProxyString << "') reached the adaptor but not the interface: "<<e.what();
-        orcaice::initTracerWarning( context, ss.str(), 2 );
         throw orcaice::NetworkException( ERROR_INFO, ss.str() );
     }
     catch ( const std::exception& e )
     {
         std::stringstream ss;
         ss << "(while connecting to interface '" << resolvedProxyString << "') something unexpected: "<<e.what();
-        orcaice::initTracerWarning( context, ss.str(), 2 );
         throw orcaice::NetworkException( ERROR_INFO, ss.str() );
     }
 
@@ -136,6 +132,20 @@ connectToInterfaceWithTag( const Context       & context,
 
     // now that we have the stingified proxy, use the function above.
     connectToInterfaceWithString( context, proxy, proxyString );
+}
+
+//!
+//! Connects to the interface and gets the description.
+//! Relies on standard naming: "getDescription()".
+//!
+template<class InterfacePrxType,typename DescriptionType>
+DescriptionType
+getDescriptionWithTag( const Context     &context,
+                       const std::string &interfaceTag )
+{
+    InterfacePrxType interfacePrx;
+    connectToInterfaceWithTag( context, interfacePrx, interfaceTag );
+    return interfacePrx->getDescription();
 }
 
 //@}

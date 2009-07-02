@@ -34,64 +34,64 @@ DefaultAutoLoggerFactory::DefaultAutoLoggerFactory()
 }
 
 orcalog::AutoLogger* 
-DefaultAutoLoggerFactory::create( const std::string &interfaceType )
+DefaultAutoLoggerFactory::create( const std::string &interfaceType, const orcaice::Context& context )
 {
     std::auto_ptr<orcalog::AutoLogger> logger;
     if (interfaceType == "Cpu")
     {
-        logger.reset( new CpuAutoLogger );
+        logger.reset( new CpuAutoLogger( context ) );
     }
     else if (interfaceType == "DriveBicycle")
     {
-        logger.reset( new DriveBicycleAutoLogger );
+        logger.reset( new DriveBicycleAutoLogger( context ) );
     }
     else if (interfaceType == "Imu")
     {
-        logger.reset( new ImuAutoLogger );
+        logger.reset( new ImuAutoLogger( context ) );
     }
     else if (interfaceType == "LaserScanner2d")
     {
-        logger.reset( new LaserScanner2dAutoLogger );
+        logger.reset( new LaserScanner2dAutoLogger( context ) );
     }
     else if (interfaceType == "Localise2d")
     {
-        logger.reset( new Localise2dAutoLogger );
+        logger.reset( new Localise2dAutoLogger( context ) );
     }
     else if (interfaceType == "Localise3d")
     {
-        logger.reset( new Localise3dAutoLogger );
+        logger.reset( new Localise3dAutoLogger( context ) );
     }
     else if (interfaceType == "Odometry2d")
     {
-        logger.reset( new Odometry2dAutoLogger );
+        logger.reset( new Odometry2dAutoLogger( context ) );
     }
     else if (interfaceType == "Odometry3d")
     {
-        logger.reset( new Odometry3dAutoLogger );
+        logger.reset( new Odometry3dAutoLogger( context ) );
     }
     else if (interfaceType == "PolarFeature2d")
     {
-        logger.reset( new PolarFeature2dAutoLogger );
+        logger.reset( new PolarFeature2dAutoLogger( context ) );
     }
     else if (interfaceType == "Power")
     {
-        logger.reset( new PowerAutoLogger );
+        logger.reset( new PowerAutoLogger( context ) );
     }
     else if (interfaceType == "Wifi")
     {
-        logger.reset( new WifiAutoLogger );
+        logger.reset( new WifiAutoLogger( context ) );
     }
     else if (interfaceType == "Gps")
     {
-        logger.reset( new GpsAutoLogger );
+        logger.reset( new GpsAutoLogger( context ) );
     }
     else if (interfaceType == "Camera")
     {
-        logger.reset( new CameraAutoLogger );
+        logger.reset( new CameraAutoLogger( context ) );
     }
     else if (interfaceType == "Image")
     {
-        logger.reset( new ImageAutoLogger );
+        logger.reset( new ImageAutoLogger( context ) );
     }
     else
     {

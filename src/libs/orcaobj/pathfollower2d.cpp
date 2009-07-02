@@ -20,13 +20,13 @@ using namespace std;
 namespace orcaobj
 {
 
-bool isSane( const orca::PathFollower2dData& pathData, std::string& reason )
+bool isSane( const orca::Path2d& path, std::string& reason )
 {
     std::stringstream ss;
     bool sane=true;
-    for ( unsigned int i=0; i < pathData.path.size(); i++ )
+    for ( unsigned int i=0; i < path.size(); i++ )
     {
-        const orca::Waypoint2d &wp = pathData.path[i];
+        const orca::Waypoint2d &wp = path[i];
 
         if ( wp.distanceTolerance < 0.0 )
         {
@@ -58,6 +58,25 @@ bool isSane( const orca::PathFollower2dData& pathData, std::string& reason )
     return sane;
 }
 
+bool isSane( const orca::PathFollower2dData& data, std::string& reason )
+{
+    bool sane = true;
+    if ( !orcaobj::isSane( data.path,reason ) ) {
+        sane = false;
+    }
+    std::string partialReason;
+    if ( !orcaobj::isSane( data.timeStamp, partialReason ) ) 
+    {
+        // AlexB: not calling this !sane, but it is bad.
+        cout<<"TRACE(pathfollower2d.cpp): WARNING: Bad timestamp: " << partialReason << endl;
+
+//         sane = false;
+//         if ( !reason.empty() )
+//             reason += "\n";
+//         reason += partialReason;
+    }
+    return sane;
+}
 
 bool
 isPathSketchy( const orca::Path2d& path, std::string &sketchyReason )
@@ -69,13 +88,14 @@ isPathSketchy( const orca::Path2d& path, std::string &sketchyReason )
     for ( unsigned int i=0; i < path.size(); i++ )
     {
         const orca::Waypoint2d &wp = path[i];
-
-        if ( wp.distanceTolerance < epsLinear )
-        {
-            ss << "Waypoint " << i << ": possibly sketchy distance tolerance: " 
-               << wp.distanceTolerance << "m" << endl;
-            normal = false;
-        }
+        
+        // Don't complain about this: we might get it for rotation-only waypoints.
+        // if ( wp.distanceTolerance < epsLinear )
+        // {
+        //     ss << "Waypoint " << i << ": possibly sketchy distance tolerance: " 
+        //        << wp.distanceTolerance << "m" << endl;
+        //     normal = false;
+        // }
         if ( wp.headingTolerance < epsRotational )
         {
             ss << "Waypoint " << i << ": possibly sketchy heading tolerance: " 
@@ -94,10 +114,9 @@ isPathSketchy( const orca::Path2d& path, std::string &sketchyReason )
                << wp.maxApproachTurnrate*180.0/M_PI << "deg/s" << endl;
             normal = false;
         }
-        if ( wp.timeTarget.seconds < 0 || wp.timeTarget.useconds < 0 )
+        if ( wp.timeTarget < 0 )
         {
-            ss << "Waypoint " << i << ": funky timeTarget: "
-               << wp.timeTarget.seconds << ":" << wp.timeTarget.useconds << endl;
+            ss << "Waypoint " << i << ": funky timeTarget: " << wp.timeTarget << endl;
             normal = false;
         }
     }
@@ -124,7 +143,7 @@ std::string toString( const orca::Waypoint2d &obj )
     std::ostringstream s;
     s << "target=" << toString(obj.target) 
       << ", tolerances=[" << obj.distanceTolerance << "," << obj.headingTolerance*180.0/M_PI << "deg]"
-      << ", timeTarget=[" << obj.timeTarget.seconds << ":" << obj.timeTarget.useconds << "]"
+      << ", timeTarget=[" << obj.timeTarget << "sec]"
       << ", maxApproach=[" << obj.maxApproachSpeed << "m/s," << obj.maxApproachTurnrate*180.0/M_PI << "deg/s]";
     return s.str();
 }

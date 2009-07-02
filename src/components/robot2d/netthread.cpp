@@ -99,7 +99,7 @@ NetThread::work()
         context_.properties(), prefix+"Odometry2dPublishInterval", 0 );
 
     const int odometryReadTimeout = 500; // [ms]
-    setMaxHeartbeatInterval( 2.0*(odometryReadTimeout/1000.0) );
+    setMaxHeartbeatInterval( odometryReadTimeout/1e3 );
 
     //
     // Main loop

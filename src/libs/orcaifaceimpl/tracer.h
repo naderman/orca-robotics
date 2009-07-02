@@ -23,24 +23,19 @@ namespace orcaifaceimpl {
 // NOTE: TracerImpl is only used in libOrcaIce, that's where lives.
 //       (Tracer interface does not fit into any of the templates)
 
-typedef StoringConsumerImpl<orca::Tracer, orca::TracerPrx,
-                    orca::TracerConsumer, orca::TracerConsumerPrx,
+typedef StoringConsumerImpl<orca::Tracer, orca::TracerConsumer,
                     orca::TracerData> StoringTracerConsumerImpl;
 typedef IceUtil::Handle<StoringTracerConsumerImpl> StoringTracerConsumerImplPtr;
 
-typedef BufferedConsumerImpl<orca::Tracer, orca::TracerPrx,
-                        orca::TracerConsumer, orca::TracerConsumerPrx,
+typedef BufferedConsumerImpl<orca::Tracer, orca::TracerConsumer,
                         orca::TracerData> BufferedTracerConsumerImpl;
 typedef IceUtil::Handle<BufferedTracerConsumerImpl> BufferedTracerConsumerImplPtr;
 
-typedef NotifyingConsumerImpl<orca::Tracer, orca::TracerPrx,
-                        orca::TracerConsumer,
-                        orca::TracerConsumerPrx,
+typedef NotifyingConsumerImpl<orca::Tracer, orca::TracerConsumer,
                         orca::TracerData> NotifyingTracerConsumerImpl;
 typedef IceUtil::Handle<NotifyingTracerConsumerImpl> NotifyingTracerConsumerImplPtr;
 
-typedef PrintingConsumerImpl<orca::Tracer, orca::TracerPrx,
-                        orca::TracerConsumer, orca::TracerConsumerPrx,
+typedef PrintingConsumerImpl<orca::Tracer, orca::TracerConsumer,
                         orca::TracerData> PrintingTracerConsumerImpl;
 typedef IceUtil::Handle<PrintingTracerConsumerImpl> PrintingTracerConsumerImplPtr;
 

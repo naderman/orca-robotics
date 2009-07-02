@@ -50,8 +50,6 @@ OgMapsCombinedPainter::setData( const orca::OgMapData& data0, const orca::OgMapD
     assert( data0.offset == data1.offset );
     assert( data0.numCellsX == data1.numCellsX );
     assert( data0.numCellsY == data1.numCellsY );
-    assert( data0.metresPerCellX == data1.metresPerCellX );
-    assert( data0.metresPerCellY == data1.metresPerCellY );
     assert( (data0.mapType==orca::OgMapOccupancy || data0.mapType==orca::OgMapHazard)
              && (data1.mapType==orca::OgMapOccupancy  || data1.mapType==orca::OgMapHazard) );
     
@@ -75,7 +73,7 @@ OgMapsCombinedPainter::setData( const orca::OgMapData& data0, const orca::OgMapD
     // if both maps are of type occMap then it doesn't matter which one is occMap/hazMap    
     
     PixmapData pixmapData;
-    pixmapData.cellSize = QSizeF(occMap->metresPerCellX,occMap->metresPerCellY);
+    pixmapData.cellSize = occMap->metresPerCell;
     pixmapData.mapSizePix = QSize(occMap->numCellsX,occMap->numCellsY);
     pixmapData.offset = QPointF(occMap->offset.p.x,occMap->offset.p.y);
     

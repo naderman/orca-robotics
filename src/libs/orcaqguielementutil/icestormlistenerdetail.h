@@ -85,12 +85,19 @@ subscribeListener( orcaice::Context      &context,
         orcaice::connectToInterfaceWithString( context, proxy, proxyString );
 
         // Ask the remote object to subscribe us to the topic.
-        SubscriptionMakerType s( proxy, callbackPrx );
-        return s.topic_;
+        try {
+            SubscriptionMakerType s( proxy, callbackPrx );
+            return s.topic_;
+        }
+        catch ( ... )
+        {
+            std::cout<<"TRACE(icestormlistenerdetail.h): Subscribe failed." << std::endl;
+            throw;
+        }
     }
     // Ignore all exceptions, and try again next time.
-    catch ( Ice::ConnectionRefusedException &e ) {
-        std::cout<<"TRACE(subscribeListener): Caught exception: " << e << std::endl;
+    catch ( orca::OrcaException &e ) {
+        std::cout<<"TRACE(subscribeListener): Caught orca exception: " << e << ": " << e.what << std::endl;
         throw;
     }
     catch ( std::exception &e ) {
@@ -115,17 +122,12 @@ unSubscribeListener( orcaice::Context      &context,
         // Ask the remote object to unsubscribe us from the topic.
         UnSubscriptionMakerType s( topic, callbackPrx );
     }
-    // Ignore all exceptions, and try again next time.
-    catch ( Ice::ConnectionRefusedException &e ) {
-        std::cout<<"TRACE(unSubscribeListener): Caught exception: " << e << std::endl;
-        throw;
-    }
     catch ( std::exception &e ) {
-        std::cout<<"TRACE(unSubscribeListener): Caught std exception: " << e.what() << std::endl;
+        // std::cout<<"TRACE(unSubscribeListener): Caught std exception: " << e.what() << std::endl;
         throw;
     }
     catch ( ... ) {
-        std::cout<<"TRACE(unSubscribeListener): Caught unknown exception." << std::endl;
+        // std::cout<<"TRACE(unSubscribeListener): Caught unknown exception." << std::endl;
         throw;
     }
 }

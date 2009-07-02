@@ -1,0 +1,18 @@
+DefaultComponentTag=FaithLocaliser3d
+
+# Provided Interfaces
+Provides.Localise3d.Type=Localise3d
+Provides.Localise3d.DefaultName=localise3d
+
+# Required Interfaces
+
+Requires.Odometry3d.Type=Odometry3d
+Requires.Odometry3d.DefaultProxy=odometry3d0@local/logplayer
+
+# configuration
+Config.StdDevPosition.Comment=Std deviation in position (Metres)
+Config.StdDevPosition.Default=0.05
+Config.StdDevOrientation.Comment=Std deviation in Orientation (Degrees)
+Config.StdDevOrientation.Default=1.0
+Config.MinInterPublishPeriodSec.Comment=Don't publish faster than this
+Config.MinInterPublishPeriodSec.Default=0.05

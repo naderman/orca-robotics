@@ -63,10 +63,8 @@ struct PixMapData
     int numCellsX;
     //! The number of cells along the y axis
     int numCellsY;
-    //! The size of each cell, in the x dimension
-    float metresPerCellX;
-    //! The size of each cell, in the y dimension
-    float metresPerCellY;
+    //! The size of each cell, in both dimensions
+    float metresPerCell;
 
     //! The rgb pixel values
     Pixels rgbPixels; 
@@ -99,7 +97,7 @@ interface PixMap
     //! idempotent void unsubscribe(Object* subscriber);
     //! @endverbatim
     IceStorm::Topic* subscribe( PixMapConsumer* subscriber )
-        throws SubscriptionFailedException;
+        throws SubscriptionFailedException, SubscriptionPushFailedException;
 }; 
 
 }; // module

@@ -21,29 +21,23 @@
 
 namespace orcaifaceimpl {
 
-typedef ProviderWithDescriptionImpl<orca::RangerArray, orca::RangerArrayPrx,
-                    orca::RangerArrayConsumer, orca::RangerArrayConsumerPrx,
+typedef ProviderWithDescriptionImpl<orca::RangerArray, orca::RangerArrayConsumer,
                     orca::RangerArrayDataPtr, orca::RangerArrayDescription> RangerArrayImpl;
 typedef IceUtil::Handle<RangerArrayImpl> RangerArrayImplPtr;
 
-typedef StoringConsumerImpl<orca::RangerArray, orca::RangerArrayPrx,
-                    orca::RangerArrayConsumer, orca::RangerArrayConsumerPrx,
+typedef StoringConsumerImpl<orca::RangerArray, orca::RangerArrayConsumer,
                     orca::RangerArrayDataPtr> StoringRangerArrayConsumerImpl;
 typedef IceUtil::Handle<StoringRangerArrayConsumerImpl> StoringRangerArrayConsumerImplPtr;
 
-typedef BufferedConsumerImpl<orca::RangerArray, orca::RangerArrayPrx,
-                        orca::RangerArrayConsumer, orca::RangerArrayConsumerPrx,
+typedef BufferedConsumerImpl<orca::RangerArray, orca::RangerArrayConsumer,
                         orca::RangerArrayDataPtr> BufferedRangerArrayConsumerImpl;
 typedef IceUtil::Handle<BufferedRangerArrayConsumerImpl> BufferedRangerArrayConsumerImplPtr;
 
-typedef NotifyingConsumerImpl<orca::RangerArray, orca::RangerArrayPrx,
-                        orca::RangerArrayConsumer,
-                        orca::RangerArrayConsumerPrx,
+typedef NotifyingConsumerImpl<orca::RangerArray, orca::RangerArrayConsumer,
                         orca::RangerArrayDataPtr> NotifyingRangerArrayConsumerImpl;
 typedef IceUtil::Handle<NotifyingRangerArrayConsumerImpl> NotifyingRangerArrayConsumerImplPtr;
 
-typedef PrintingConsumerImpl<orca::RangerArray, orca::RangerArrayPrx,
-                        orca::RangerArrayConsumer, orca::RangerArrayConsumerPrx,
+typedef PrintingConsumerImpl<orca::RangerArray, orca::RangerArrayConsumer,
                         orca::RangerArrayDataPtr> PrintingRangerArrayConsumerImpl;
 typedef IceUtil::Handle<PrintingRangerArrayConsumerImpl> PrintingRangerArrayConsumerImplPtr;
 

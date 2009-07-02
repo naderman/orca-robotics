@@ -45,8 +45,7 @@ private:
     OgSensorModel* sensorModel_;
 
     // map config
-    double mapResX_;
-    double mapResY_;
+    double mapRes_;
     int mapSizeX_;
     int mapSizeY_;
     double mapOriginX_;

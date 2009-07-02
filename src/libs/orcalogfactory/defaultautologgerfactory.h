@@ -23,7 +23,7 @@ class DefaultAutoLoggerFactory: public orcalog::AutoLoggerFactory
 public:
     DefaultAutoLoggerFactory();
     
-    virtual orcalog::AutoLogger* create( const std::string &interfaceType );
+    virtual orcalog::AutoLogger* create( const std::string &interfaceType, const orcaice::Context& context );
 };
 
 } // namespace

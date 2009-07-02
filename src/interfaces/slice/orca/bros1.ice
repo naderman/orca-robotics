@@ -64,7 +64,7 @@ struct PolarPoint2d
     //! Range-coordinate [m]
     double r;
     //! Bearing-coordinate [rad]
-    double o;
+    ["slice2orca:string:degrees"] double o;
 };
 //! 2D velocity in polar coordinate system.
 struct PolarVelocity2d
@@ -72,7 +72,7 @@ struct PolarVelocity2d
     //! Range-coordinate [m/s]
     double r;
     //! Bearing-coordinate [rad/s]
-    double o;
+    ["slice2orca:string:degrees"] double o;
 };
 //! 2D acceleration in polar coordinate system.
 struct PolarAcceleration2d
@@ -80,7 +80,7 @@ struct PolarAcceleration2d
     //! Range-coordinate [m/s^2]
     double r;
     //! Bearing-coordinate [rad/s^2]
-    double o;
+    ["slice2orca:string:degrees"] double o;
 };
 //! 2D vector.
 struct Vector2d
@@ -96,7 +96,7 @@ struct Frame2d
     //! Point of origin
     CartesianPoint2d p;
     //! Orientation angle [rad]
-    double            o;
+    ["slice2orca:string:degrees"] double o;
 };
 //! Planar velocity.
 struct Twist2d
@@ -104,7 +104,7 @@ struct Twist2d
     //! Linear velocity
     CartesianVelocity2d v;
     //! Angular velocity [rad/s]
-    double w;
+    ["slice2orca:string:degrees"] double w;
 };
 //! Vector representing a linear force
 struct Force2d
@@ -186,21 +186,21 @@ struct CartesianAcceleration
 struct AngularVelocity
 {
     //! Angular velocity around the x-axis [rad/s]
-    double x;
+    ["slice2orca:string:degrees"] double x;
     //! Angular velocity around the y-axis [rad/s]
-    double y;
+    ["slice2orca:string:degrees"] double y;
     //! Angular velocity around the z-axis [rad/s]
-    double z;
+    ["slice2orca:string:degrees"] double z;
 };
 //! 3D angular acceleration.
 struct AngularAcceleration
 {
     //! Angular acceleration around the x-axis [rad/s]
-    double x;
+    ["slice2orca:string:degrees"] double x;
     //! Angular acceleration around the y-axis [rad/s]
-    double y;
+    ["slice2orca:string:degrees"] double y;
     //! Angular acceleration around the z-axis [rad/s]
-    double z;
+    ["slice2orca:string:degrees"] double z;
 };
 //! Vector representing a linear force
 struct Force
@@ -242,11 +242,11 @@ struct Wrench
 struct OrientationE
 {
     //! Roll angle [rad]
-    double r;
+    ["slice2orca:string:degrees"] double r;
     //! Pitch angle [rad]
-    double p;
+    ["slice2orca:string:degrees"] double p;
     //! Yaw angle [rad]
-    double y;
+    ["slice2orca:string:degrees"] double y;
 };
 //! Spatial position
 struct Frame3d

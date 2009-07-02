@@ -36,9 +36,13 @@ public:
     // Add new piece of data to stats
     void addData( const hydrointerfaces::SegwayRmp::Data& data );
 
+    // currently, there's a natural initalization of all historical data
+    // even in the absence of incoming data.
+    bool isValid() { return true; }
+
     // total distance travelled [m]
     double distance() const { return distance_; };
-    // total time while in motion [m/s]
+    // total time while in motion [s]
     double timeInMotion() const { return timeInMotion_; };
     // maximum (forward) speed [m/s]
     double maxSpeed() const { return maxSpeed_; };

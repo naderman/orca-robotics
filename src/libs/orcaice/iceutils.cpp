@@ -86,7 +86,7 @@ tryRemoveInterfaceWithIdentity( orcaice::Context& context, const Ice::Identity& 
         context.adapter()->remove( interfaceId );
         stringstream ss;
         ss << "Removed Ice::ObjectPtr with identity "<<context.communicator()->identityToString(interfaceId)<<" from adapter.";
-        context.tracer().debug( ss.str() );
+        context.tracer().debug( ss.str(),6 );
     }
     catch ( Ice::ObjectAdapterDeactivatedException& )
     {

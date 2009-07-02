@@ -155,7 +155,7 @@ MainThread::initialise()
 void
 MainThread::work()
 {
-    setMaxHeartbeatInterval( 2.0 );
+    setMaxHeartbeatInterval( 1.0 );
 
     orcalocalnav::IDriver::Inputs inputs;
     inputs.stalled = false;
@@ -202,6 +202,7 @@ MainThread::work()
             {
                 if ( wpIncremented )
                 {
+                    assert( inputs.goals.size() > 0 );
                     speedLimiter_->setIntendedSpeedThisLeg( inputs.goals[0] );
                 }
 
@@ -282,7 +283,7 @@ MainThread::work()
                 if ( pathCompleted )
                 {
                     cout<<"TRACE(mainthread.cpp): test PASSED" << endl;
-                    context_.communicator()->shutdown();
+                    context_.shutdown();
                     break;
                 }
                 if ( pathFailed )
@@ -301,7 +302,8 @@ MainThread::work()
         {
             // This shouldn't generate a fault
             stringstream ss;
-            ss << "MainThread::"<<__func__<<"(): "<<e<<": "<<e.what;
+            // Make this possibly-frequent warning a bit more human-readable than the others
+            ss << "Emergency stop: " << e.what;
             health().warning( ss.str() );
         }
         catch ( ... ) 
@@ -337,29 +339,8 @@ MainThread::ensureProxiesNotEmpty()
             stringstream ss;
             ss << "Still waiting for intial data to arrive.  gotObs="<<gotObs<<", gotLoc="<<gotLoc<<", gotOdom="<<gotOdom;
             context_.tracer().warning( ss.str() );
-            context_.status().initialising( subsysName(), ss.str() );
+            health().heartbeat();
             sleep(1);
-        }
-    }
-}
-
-void
-MainThread::initPathFollowerInterface()
-{
-    while ( !isStopping() )
-    {
-        try {
-            pathFollowerInterface_->initInterface();
-            return;
-        }
-        catch ( ... ) {
-            if ( testMode_ ) {
-                orcaice::catchExceptionsWithStatus( "initialising PathFollower interface", health(), gbxutilacfr::SubsystemWarning );
-                return;
-            }
-            else {
-                orcaice::catchExceptionsWithStatusAndSleep( "initialising PathFollower interface", health(), gbxutilacfr::SubsystemFault, 2000 );
-            }
         }
     }
 }
@@ -383,21 +364,8 @@ MainThread::getVehicleDescription()
 void
 MainThread::getRangeScannerDescription()
 {
-    orca::RangeScanner2dPrx prx;
-    
-    while ( !isStopping() )
-    {
-        try
-        {
-            context_.tracer().debug( "Getting range scanner description...", 2 );
-            orcaice::connectToInterfaceWithTag( context_, prx, "Observations" );
-            scannerDescr_ = prx->getDescription();
-            break;
-        }
-        catch ( ... ) {
-            orcaice::catchExceptionsWithStatusAndSleep( "getting range scanner description", health() );
-        }
-    }
+    orcaice::getDescriptionWithTag<orca::RangeScanner2dPrx,orca::RangeScanner2dDescription>
+        ( context_, "Observations", scannerDescr_, this, subsysName() );
 }
 
 void
@@ -459,7 +427,7 @@ MainThread::setup()
     //
     // Enable our external interface
     //
-    initPathFollowerInterface();
+    pathFollowerInterface_->initInterface( this, subsysName() );
 }
 
 void
@@ -570,11 +538,7 @@ MainThread::getInputs( hydronavutil::Velocity &velocity,
 void
 MainThread::checkWithOutsideWorld()
 {
-    // (1): world->localnav: Have we received a new path?
-    pathMaintainer_->checkForNewPath();
-
-    // (2): world<-localnav: Have we modified our wp index?
-    pathMaintainer_->checkForWpIndexChange();
+    pathMaintainer_->checkWithOutsideWorld();
 }
 
 }

@@ -21,29 +21,23 @@
 
 namespace orcaifaceimpl {
 
-typedef ProviderWithDescriptionImpl<orca::Localise2d, orca::Localise2dPrx,
-                    orca::Localise2dConsumer, orca::Localise2dConsumerPrx,
+typedef ProviderWithDescriptionImpl<orca::Localise2d, orca::Localise2dConsumer,
                     orca::Localise2dData, orca::VehicleGeometryDescriptionPtr> Localise2dImpl;
 typedef IceUtil::Handle<Localise2dImpl> Localise2dImplPtr;
 
-typedef StoringConsumerImpl<orca::Localise2d, orca::Localise2dPrx,
-                    orca::Localise2dConsumer, orca::Localise2dConsumerPrx,
+typedef StoringConsumerImpl<orca::Localise2d, orca::Localise2dConsumer,
                     orca::Localise2dData> StoringLocalise2dConsumerImpl;
 typedef IceUtil::Handle<StoringLocalise2dConsumerImpl> StoringLocalise2dConsumerImplPtr;
 
-typedef BufferedConsumerImpl<orca::Localise2d, orca::Localise2dPrx,
-                        orca::Localise2dConsumer, orca::Localise2dConsumerPrx,
+typedef BufferedConsumerImpl<orca::Localise2d, orca::Localise2dConsumer,
                         orca::Localise2dData> BufferedLocalise2dConsumerImpl;
 typedef IceUtil::Handle<BufferedLocalise2dConsumerImpl> BufferedLocalise2dConsumerImplPtr;
 
-typedef NotifyingConsumerImpl<orca::Localise2d, orca::Localise2dPrx,
-                        orca::Localise2dConsumer,
-                        orca::Localise2dConsumerPrx,
+typedef NotifyingConsumerImpl<orca::Localise2d, orca::Localise2dConsumer,
                         orca::Localise2dData> NotifyingLocalise2dConsumerImpl;
 typedef IceUtil::Handle<NotifyingLocalise2dConsumerImpl> NotifyingLocalise2dConsumerImplPtr;
 
-typedef PrintingConsumerImpl<orca::Localise2d, orca::Localise2dPrx,
-                        orca::Localise2dConsumer, orca::Localise2dConsumerPrx,
+typedef PrintingConsumerImpl<orca::Localise2d, orca::Localise2dConsumer,
                         orca::Localise2dData> PrintingLocalise2dConsumerImpl;
 typedef IceUtil::Handle<PrintingLocalise2dConsumerImpl> PrintingLocalise2dConsumerImplPtr;
 

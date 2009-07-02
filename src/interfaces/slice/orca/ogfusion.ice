@@ -46,10 +46,8 @@ struct OgFusionConfig
     int numCellsX;
     //! The number of cells along the y axis
     int numCellsY;
-    //! The size of each cell, in the x dimension
-    float metresPerCellX;
-    //! The size of each cell, in the y dimension
-    float metresPerCellY;
+    //! The size of each cell, in both dimensions
+    float metresPerCell;
 };
 
 //! A basic structure for individual likelihoods per cell

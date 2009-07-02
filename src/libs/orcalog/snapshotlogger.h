@@ -18,7 +18,7 @@ namespace orcalog
 {
 
 //! An SnapshotLogger keeps a buffer of data it has received, and 
-//! logs the lot on command.
+//! logs the lot (i.e. the entire history) on command.
 class SnapshotLogger {
 public:
     virtual ~SnapshotLogger() {}
@@ -26,7 +26,7 @@ public:
     // format is any string.  timeWindowSec is the length of history
     // that will be logged in a snapshot.
     virtual void init( const std::string &format, double timeWindowSec )=0;
-    virtual void subscribe( orcaice::Context &context, const std::string &interfaceTag )=0;
+    virtual void subscribe( const std::string &interfaceTag )=0;
 
     // Call these before and after taking the snapshot
     virtual void prepareForSnapshot( const LogWriterInfo &logWriterInfo,

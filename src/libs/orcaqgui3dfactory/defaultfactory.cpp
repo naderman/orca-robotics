@@ -13,7 +13,9 @@
 
 #include <orcaqgui3dfactory/gridelement.h>
 #include <orcaqgui3dfactory/laserscanner2delement.h>
+#include <orcaqgui3dfactory/rangescanner2delement.h>
 #include <orcaqgui3dfactory/localise2delement.h>
+#include <orcaqgui3dfactory/localise3delement.h>
 #include <orcaqgui3dfactory/featuremap2delement.h>
 #include <orcaqgui3dfactory/ogmapelement.h>
 #include <orcaqgui3dfactory/pointcloudelement.h>
@@ -28,7 +30,9 @@ DefaultFactory::DefaultFactory()
 {
     addSupportedType("Grid");
     addSupportedType("LaserScanner2d");
+    addSupportedType("RangeScanner2d");
     addSupportedType("Localise2d");
+    addSupportedType("Localise3d");
     addSupportedType("FeatureMap2d");
     addSupportedType("OgMap");
     addSupportedType("PointCloud");
@@ -71,11 +75,17 @@ DefaultFactory::create( const hydroqguielementutil::GuiElementInfo &guiElementIn
         else if ( guiElementInfo.type == "LaserScanner2d" ) {
             elem = new orcaqgui3d::LaserScanner2dElement( guiElementInfo, context_, guiElementInfo.uniqueId.toStdString() );
         }
+        else if ( guiElementInfo.type == "RangeScanner2d" ) {
+            elem = new orcaqgui3d::RangeScanner2dElement( guiElementInfo, context_, guiElementInfo.uniqueId.toStdString() );
+        }
         else if ( guiElementInfo.type == "Localise2d" ) {
             elem = new orcaqgui3d::Localise2dElement( guiElementInfo, context_, guiElementInfo.uniqueId.toStdString(), &humanManager );
         }
         else if ( guiElementInfo.type == "FeatureMap2d" ) {
             elem = new orcaqgui3d::FeatureMap2dElement( guiElementInfo, context_, guiElementInfo.uniqueId.toStdString(), &humanManager );
+        }
+        else if ( guiElementInfo.type == "Localise3d" ) {
+            elem = new orcaqgui3d::Localise3dElement( guiElementInfo, context_, guiElementInfo.uniqueId.toStdString(), &humanManager );
         }
         else if ( guiElementInfo.type == "OgMap" ) {
             elem = new orcaqgui3d::OgMapElement( guiElementInfo, context_, guiElementInfo.uniqueId.toStdString(), &humanManager );

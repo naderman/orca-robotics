@@ -21,29 +21,23 @@
 
 namespace orcaifaceimpl {
 
-typedef ProviderImpl<orca::SystemStatus, orca::SystemStatusPrx,
-                    orca::SystemStatusConsumer, orca::SystemStatusConsumerPrx,
+typedef ProviderImpl<orca::SystemStatus, orca::SystemStatusConsumer,
                     orca::SystemStatusData> SystemStatusImpl;
 typedef IceUtil::Handle<SystemStatusImpl> SystemStatusImplPtr;
 
-typedef StoringConsumerImpl<orca::SystemStatus, orca::SystemStatusPrx,
-                    orca::SystemStatusConsumer, orca::SystemStatusConsumerPrx,
+typedef StoringConsumerImpl<orca::SystemStatus, orca::SystemStatusConsumer,
                     orca::SystemStatusData> StoringSystemStatusConsumerImpl;
 typedef IceUtil::Handle<StoringSystemStatusConsumerImpl> StoringSystemStatusConsumerImplPtr;
 
-typedef BufferedConsumerImpl<orca::SystemStatus, orca::SystemStatusPrx,
-                        orca::SystemStatusConsumer, orca::SystemStatusConsumerPrx,
+typedef BufferedConsumerImpl<orca::SystemStatus, orca::SystemStatusConsumer,
                         orca::SystemStatusData> BufferedSystemStatusConsumerImpl;
 typedef IceUtil::Handle<BufferedSystemStatusConsumerImpl> BufferedSystemStatusConsumerImplPtr;
 
-typedef NotifyingConsumerImpl<orca::SystemStatus, orca::SystemStatusPrx,
-                        orca::SystemStatusConsumer,
-                        orca::SystemStatusConsumerPrx,
+typedef NotifyingConsumerImpl<orca::SystemStatus, orca::SystemStatusConsumer,
                         orca::SystemStatusData> NotifyingSystemStatusConsumerImpl;
 typedef IceUtil::Handle<NotifyingSystemStatusConsumerImpl> NotifyingSystemStatusConsumerImplPtr;
 
-typedef PrintingConsumerImpl<orca::SystemStatus, orca::SystemStatusPrx,
-                        orca::SystemStatusConsumer, orca::SystemStatusConsumerPrx,
+typedef PrintingConsumerImpl<orca::SystemStatus, orca::SystemStatusConsumer,
                         orca::SystemStatusData> PrintingSystemStatusConsumerImpl;
 typedef IceUtil::Handle<PrintingSystemStatusConsumerImpl> PrintingSystemStatusConsumerImplPtr;
 

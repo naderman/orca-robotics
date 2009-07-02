@@ -39,6 +39,7 @@ int main( int argc, char **argv )
         in.mLong = 4;
         in.mFloat = 5.;
         in.mDouble = 6.;
+        in.mDoubleDeg = 3.14;
         in.mString = "a sample";
         stringstream ss; 
         ifacelog::toLogStream( in, ss );

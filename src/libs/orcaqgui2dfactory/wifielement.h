@@ -47,8 +47,9 @@ class WifiWidget : public QWidget
         
         void setupDisplay();
         unsigned int numInterfaces_;
-        QVector<int> signalThreshholds_;
-        QString getSignalLabel( int snr );
+//         QVector<int> signalThreshholds_;
+//         QString getSignalLabel( int snr );
+        QString getSignalLabel( orca::DiscreteSignalLevel level );
 
 };
 

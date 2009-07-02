@@ -23,7 +23,7 @@ class DefaultSnapshotLoggerFactory: public orcalog::SnapshotLoggerFactory
 public:
     DefaultSnapshotLoggerFactory();
     
-    virtual orcalog::SnapshotLogger* create( const std::string &interfaceType );
+    virtual orcalog::SnapshotLogger* create( const std::string &interfaceType, const orcaice::Context& context );
 };
 
 } // namespace

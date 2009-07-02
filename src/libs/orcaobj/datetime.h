@@ -42,6 +42,11 @@ int getPropertyAsTimeDuration( const Ice::PropertiesPtr &, const ::std::string& 
 //! Returns the default value if key is not found or cannot be converted to a Time.
 orca::Time getPropertyAsTimeDurationWithDefault( const Ice::PropertiesPtr &, const ::std::string& key, const orca::Time &d );
 
+//! Checks that both seconds and microseconds are non-negative.
+//! Note that calling this function is not always appropriate because 
+//! negative values are allowed when Time signifies duration and not the absolute time.
+bool isSane( const orca::Time& obj, std::string& reason );
+
 } // namespace
 
 #endif

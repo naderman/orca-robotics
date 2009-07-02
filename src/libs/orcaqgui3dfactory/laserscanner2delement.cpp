@@ -30,7 +30,7 @@ LaserScanner2dElement::getLaserInfo()
     orca::RangeScanner2dDescription descr;
     descr = laserPrx->getDescription();
 
-    painter_.setDescr( descr.offset, descr.size );
+    painter_.setDescr( descr.offset, descr.size, descr.minRange, descr.maxRange );
 }
 
 QStringList

@@ -22,15 +22,15 @@ class PathFollower2dProbe : public orca::PathFollower2dConsumer, public orcaprob
 
 public:
 
-    PathFollower2dProbe( const orca::FQInterfaceName& name, const Ice::ObjectPrx& adminPrx, orcaprobe::AbstractDisplay& display,
-                                const orcaice::Context& context );
+    PathFollower2dProbe( const orca::FQInterfaceName& name, 
+                         const Ice::ObjectPrx&        adminPrx, 
+                         orcaprobe::AbstractDisplay&  display,
+                         const orcaice::Context&      context );
 
     virtual int loadOperationEvent( const int index, orcacm::OperationData & data );
     
     virtual void setData(const orca::PathFollower2dData & data, const Ice::Current&);
-    virtual void setWaypointIndex( int index, const Ice::Current&);
-    virtual void setActivationTime(const orca::Time &absoluteTime, double relativeTime, const Ice::Current&);
-    virtual void setEnabledState(bool enabledState, const Ice::Current&);
+    virtual void setState( const orca::PathFollower2dState &state, const Ice::Current&);
 
 private:
 

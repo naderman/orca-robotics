@@ -92,12 +92,12 @@ MainThread::work()
 
             if ( orcaData.positionType != orca::GpsPositionTypeNotAvailable || publishWithoutFix_ ) 
             {
-                context_.tracer().debug( ifaceutil::toString( orcaData ), 5 );
+                context_.tracer().debug( ifaceutil::toString( orcaData ), 6 );
                 gpsInterface_->localSetAndSend( orcaData );
             }
             else
             {
-                context_.tracer().debug( "No GPS fix. Not publishing data", 6 );
+                context_.tracer().debug( "No GPS fix. Not publishing data", 7 );
             }
             health().ok();
 

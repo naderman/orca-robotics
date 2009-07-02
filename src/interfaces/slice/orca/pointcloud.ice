@@ -35,6 +35,7 @@ struct PointCloudDescription
 
     //! Offset of the centre of the sensor with respect to the robot, 
     //! in the robot local coordinate system.
+    //! AlexB: TODO: Does this make sense?  Should we be working in the sensor's CS?
     Frame3d offset;
 };
 
@@ -47,7 +48,7 @@ struct PointCloudData
     //! Time when data was measured.
     Time timeStamp;
 
-    //! The point cloud: a set of points, all in platform-centred coordinate system.
+    //! The point cloud: a set of points, all in the sensor's coordinate system.
     CartesianPointSequence points;
 };
 
@@ -82,7 +83,7 @@ interface PointCloud
     //! idempotent void unsubscribe(Object* subscriber);
     //! @endverbatim
     IceStorm::Topic* subscribe( PointCloudConsumer* subscriber )
-        throws SubscriptionFailedException;
+        throws SubscriptionFailedException, SubscriptionPushFailedException;
 };
 
 /*! @} */

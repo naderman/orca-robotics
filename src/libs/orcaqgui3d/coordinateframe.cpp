@@ -72,14 +72,14 @@ CoordinateFrame::roll() const
   // the normals are gotten with cross products
   // the vectorAngle function uses acos and dot product
   double roll = vectorAngle(cross(Vector3(0, 0, 1), fwd_), cross(up_, fwd_));
-  if(left_.y() < 0) roll = -roll;
+  if(left_.z() < 0) roll = -roll;
   return roll;
 }
 
 double
 CoordinateFrame::pitch() const
 {
-    return( atan2(fwd_.z(),fwd_.x()) );
+    return( -atan2(fwd_.z(),hypot(fwd_.x(),fwd_.y())) );
 }
 
 double
@@ -91,12 +91,12 @@ CoordinateFrame::yaw() const
 void 
 CoordinateFrame::increaseRoll( double angle )
 {
-    rotate(fwd_, angle);    
+    rotate(fwd_, -angle);    
 }
 void 
 CoordinateFrame::increasePitch( double angle )
 {
-    rotate(left_, angle);
+    rotate(left_, -angle);
 }
 void 
 CoordinateFrame::increaseYawSpace( double angle )
@@ -155,6 +155,16 @@ std::string toString( const CoordinateFrame &c )
     ss<<"left: " << toString(c.left()) << endl;
     ss<<"up:   " << toString(c.up()) << endl;
     ss<<"pos:  " << toString(c.pos());
+    return ss.str();
+}
+
+std::string toEulerString( const CoordinateFrame &c )
+{
+    stringstream ss;
+    ss<<"pos:  " << toString(c.pos())
+      <<", r="<<c.roll()*180.0/M_PI<<"deg"
+      <<", p="<<c.pitch()*180.0/M_PI<<"deg"
+      <<", y="<<c.yaw()*180.0/M_PI<<"deg";
     return ss.str();
 }
 

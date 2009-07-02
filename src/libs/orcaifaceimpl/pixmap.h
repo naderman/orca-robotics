@@ -21,29 +21,23 @@
 
 namespace orcaifaceimpl {
 
-typedef ProviderImpl<orca::PixMap, orca::PixMapPrx,
-                    orca::PixMapConsumer, orca::PixMapConsumerPrx,
+typedef ProviderImpl<orca::PixMap, orca::PixMapConsumer,
                     orca::PixMapData> PixMapImpl;
 typedef IceUtil::Handle<PixMapImpl> PixMapImplPtr;
 
-typedef StoringConsumerImpl<orca::PixMap, orca::PixMapPrx,
-                    orca::PixMapConsumer, orca::PixMapConsumerPrx,
+typedef StoringConsumerImpl<orca::PixMap, orca::PixMapConsumer,
                     orca::PixMapData> StoringPixMapConsumerImpl;
 typedef IceUtil::Handle<StoringPixMapConsumerImpl> StoringPixMapConsumerImplPtr;
 
-typedef BufferedConsumerImpl<orca::PixMap, orca::PixMapPrx,
-                        orca::PixMapConsumer, orca::PixMapConsumerPrx,
+typedef BufferedConsumerImpl<orca::PixMap, orca::PixMapConsumer,
                         orca::PixMapData> BufferedPixMapConsumerImpl;
 typedef IceUtil::Handle<BufferedPixMapConsumerImpl> BufferedPixMapConsumerImplPtr;
 
-typedef NotifyingConsumerImpl<orca::PixMap, orca::PixMapPrx,
-                        orca::PixMapConsumer,
-                        orca::PixMapConsumerPrx,
+typedef NotifyingConsumerImpl<orca::PixMap, orca::PixMapConsumer,
                         orca::PixMapData> NotifyingPixMapConsumerImpl;
 typedef IceUtil::Handle<NotifyingPixMapConsumerImpl> NotifyingPixMapConsumerImplPtr;
 
-typedef PrintingConsumerImpl<orca::PixMap, orca::PixMapPrx,
-                        orca::PixMapConsumer, orca::PixMapConsumerPrx,
+typedef PrintingConsumerImpl<orca::PixMap, orca::PixMapConsumer,
                         orca::PixMapData> PrintingPixMapConsumerImpl;
 typedef IceUtil::Handle<PrintingPixMapConsumerImpl> PrintingPixMapConsumerImplPtr;
 

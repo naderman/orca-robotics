@@ -152,6 +152,23 @@ Properties for individual standard interfaces.
     - If this property is set to 1, the component will quit if its Status interface cannot connect to IceStorm.
     - Default: 0
 
+- @c Orca.Status.PublishPeriod (int)
+    - Maximum interval between updates sent by the Status interface.
+    - Units: seconds
+    - Default: 30
+
+- @c Orca.Status.StallTolerance.Multiplicative (double)
+    - Multiplicative tolerance factor applied by Status to the maximum heartbeat interval of each subsystem
+      in deciding when to declare a subsystem stalled.
+    - Units: none
+    - Default: 1.5
+
+- @c Orca.Status.StallTolerance.Additive (double)
+    - Additive tolerance factor added by Status to the maximum heartbeat interval of each subsystem
+      in deciding when to declare a subsystem stalled.
+    - Units: seconds
+    - Default: 0.1
+
 - @c Orca.Tracer.RequireIceStorm (bool)
     - If this property is set to 1, the component will quit if its Tracer interface cannot connect to IceStorm.
     - Default: 0

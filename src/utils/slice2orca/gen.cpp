@@ -129,6 +129,7 @@ Gen::~Gen()
     H << "\n\n#endif";
     H << '\n';
 
+    // this one matches the lib namespace
     C << '\n';
     C << "\n}";
     C << '\n';
@@ -226,8 +227,20 @@ Gen::generate(const UnitPtr& p)
     C << "\n#include <" << lib_dir << "/" << _base << ".h>";
     C << "\n#include <gbxutilacfr/exceptions.h>";
     C << "\n#include \"util.h\"";
+    C << "\n#include <cmath>";
+    C << "\n";
+
+    if ( _util )
+    {
+        ToMetaDataVisitor toMetaDataVisitor(H, C);
+        toMetaDataVisitor.libDir_ = lib_dir;
+        toMetaDataVisitor.baseFilename_ = _base;
+        p->visit(&toMetaDataVisitor, false);
+    }
+
     C << "\n";
     C << "\nusing namespace std;";
+//     C << "\nusing namespace " << lib_namespace << ";";
     C << "\n";
     C << "\nnamespace " << lib_namespace;
     C << "\n{";
@@ -239,6 +252,9 @@ Gen::generate(const UnitPtr& p)
         p->visit(&stringDowncastVisitor, false);
 
         ToStringVisitor toStringVisitor(H, C, _dllExport, _stream);
+        toStringVisitor.libNamespace_ = lib_namespace;
+        toStringVisitor.libDir_ = lib_dir;
+        toStringVisitor.baseFilename_ = _base;
         p->visit(&toStringVisitor, false);
 
         H << "\n";
@@ -248,6 +264,7 @@ Gen::generate(const UnitPtr& p)
         p->visit(&initDowncastVisitor, false);
 
         ToInitVisitor toInitVisitor(H, C, _dllExport, _stream);
+        toInitVisitor.libNamespace_ = lib_namespace;
         p->visit(&toInitVisitor, false);
     }
     if ( _log )
@@ -257,6 +274,7 @@ Gen::generate(const UnitPtr& p)
         p->visit(&toLogDowncastVisitor, false);
     
         ToLogVisitor toLogVisitor(H, C, _dllExport, _stream);
+        toLogVisitor.libNamespace_ = lib_namespace;
         p->visit(&toLogVisitor, false);
     
         H << "\n";
@@ -266,6 +284,7 @@ Gen::generate(const UnitPtr& p)
         p->visit(&fromLogDowncastVisitor, false);
 
         FromLogVisitor fromLogVisitor(H, C, _dllExport, _stream);
+        fromLogVisitor.libNamespace_ = lib_namespace;
         p->visit(&fromLogVisitor, false);
     }
 }
@@ -302,6 +321,27 @@ Gen::writeExtraHeaders(IceUtilInternal::Output& out)
     }
 }
 
+////////////////////////////////////
+
+Gen::ToMetaDataVisitor::ToMetaDataVisitor(Output& h, Output& c) :
+    H(h), C(c)
+{
+}
+
+bool
+Gen::ToMetaDataVisitor::visitStructStart(const StructPtr& p)
+{
+    StringList metaData = p->getMetaData();
+    bool isCustom = ( find(metaData.begin(), metaData.end(), "slice2orca:string:custom") != metaData.end() );
+
+    if ( isCustom )
+    {
+        C << "\n#include <" << libDir_ << "/custom" << baseFilename_ << ".h>";
+    }
+    return true;
+}
+
+////////////////////////////////////
 
 Gen::ToStringVisitor::ToStringVisitor(Output& h, Output& c, const string& dllExport, bool stream) :
     H(h), C(c), _dllExport(dllExport), _stream(stream), _doneStaticSymbol(false), _useWstring(false)
@@ -455,21 +495,38 @@ Gen::ToStringVisitor::visitStructStart(const StructPtr& p)
     
     H << "\nstd::string toString( const " << scope.substr(2)<<name << "& obj, int recurse=1000, int expand=-1, int indent=0 );";
 
+    StringList metaData = p->getMetaData();
+    bool isCustom = ( find(metaData.begin(), metaData.end(), "slice2orca:string:custom") != metaData.end() );
+
     C << "\n\nstring";
     C << nl << "toString( const " << scope.substr(2)<<name << "& obj, int recurse, int expand, int indent )";
     C << sb;
-    C << nl << "string ind;";
-    C << nl << "for ( int i=0; i<indent; ++i ) ind += ' ';";
-    C << nl << "string s = \"struct " << scope.substr(2)<<name << "\";";
-    C << nl << "if ( recurse>0 )";
-    C << sb;
+    if ( isCustom )
+    {
+        C << nl << "string s = toCustomString( obj, recurse, expand, indent );";
+    }
+    else
+    {
+        C << nl << "string ind;";
+        C << nl << "for ( int i=0; i<indent; ++i ) ind += ' ';";
+        C << nl << "string s = \"struct " << scope.substr(2)<<name << "\";";
+        C << nl << "if ( recurse>0 )";
+        C << sb;
+    }
     return true;
 }
 
 void
 Gen::ToStringVisitor::visitStructEnd(const StructPtr& p)
 {       
-    C << eb;
+    StringList metaData = p->getMetaData();
+    bool isCustom = ( find(metaData.begin(), metaData.end(), "slice2orca:string:custom") != metaData.end() );
+
+    if ( !isCustom )
+    {
+        C << eb;
+    }
+
     C << nl << "return s;";
     C << eb;
 }
@@ -477,10 +534,33 @@ Gen::ToStringVisitor::visitStructEnd(const StructPtr& p)
 void
 Gen::ToStringVisitor::visitDataMember(const DataMemberPtr& p)
 {
+    // if the parent is custom, do not process this member
+    StructPtr st = StructPtr::dynamicCast( p->container() );
+    if ( st )
+    {
+        StringList parentMetaData = st->getMetaData();
+        if ( find(parentMetaData.begin(), parentMetaData.end(), "slice2orca:string:custom") != parentMetaData.end() )
+            return;
+    }
+    // TODO: what about other containers?
+
 //     cout<<"DEBUG: Gen::visitDataMember()"<<endl;
     string name = fixKwd(p->name());
 
-    C << nl << "s += \'\\n\' + ind + \"" + name + " = \" + toString( obj." + name + ", recurse-1, expand, indent+2 );";
+    string value;
+
+    StringList metaData = p->getMetaData();
+    if(find(metaData.begin(), metaData.end(), "slice2orca:string:degrees") != metaData.end())
+    {
+        // TODO: check that this is the righ type (int, float, double)
+        value = "180 / M_PI * obj." + name ;
+    }
+    else
+    {
+        value = "obj." + name;
+    }
+
+    C << nl << "s += \'\\n\' + ind + \"" + name + " = \" + toString( " + value + ", recurse-1, expand, indent+2 );";
 }
 
 void
@@ -1297,7 +1377,7 @@ if ( outputType_ == OutputString ) {
                 C << nl << "for ( int i=0; i<indent; ++i ) s += ' ';";
                 C << nl << "s += \"[warning: no access to definition of derived class \" + derivedType + \", slicing to base] \";";
                 C << nl << "bool testTypeInSliced = false;";
-                C << nl << "s += "<<libNamespace_<<"::toString( objPtr, recurse, expand, indent, testTypeInSliced );";
+                C << nl << "s += " << "toString( objPtr, recurse, expand, indent, testTypeInSliced );";
                 C << nl << "return s;";
 }
 else if ( outputType_ == OutputInit || outputType_ == OutputToLog || outputType_ == OutputFromLog ) {
@@ -1394,7 +1474,7 @@ else
 //                 C << nl << derives[i] << "Ptr derivedPtr = " << derives[i] << "Ptr::dynamicCast( objPtr );";
 //                 C << nl << "bool testTypeSetting = false;";
 //                 C << nl << "bool instantiateTypeSetting = true;";
-//                 C << nl << libNamespace_<<"::fromLogStream( derivedPtr, is, testTypeSetting, instantiateTypeSetting );";
+//                 C << nl << "fromLogStream( derivedPtr, is, testTypeSetting, instantiateTypeSetting );";
 //                 C << nl << "objPtr = derivedPtr;";
 //                 C << eb;
 //             }
@@ -1406,7 +1486,7 @@ else
 //                 // allow slicing
 // //                 C << nl << "bool testTypeSetting = false;";
 // //                 C << nl << "bool instantiateTypeSetting = true;";
-// //                 C << nl << libNamespace_<<"::fromLogStream( objPtr, is, testTypeSetting, isSlicingSetting );";
+// //                 C << nl << "fromLogStream( objPtr, is, testTypeSetting, isSlicingSetting );";
 //                 C << eb;
 //             }
 //         C << eb;

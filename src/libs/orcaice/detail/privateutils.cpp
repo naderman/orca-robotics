@@ -174,6 +174,9 @@ setFactoryProperties( Ice::PropertiesPtr& props, const std::string& compTag )
 
     // Status properties
     tempProps->setProperty( "Orca.Status.RequireIceStorm",    "0" );
+    tempProps->setProperty( "Orca.Status.PublishPeriod",      "30" );
+    tempProps->setProperty( "Orca.Status.StallTolerance.Multiplicative","1.5" );
+    tempProps->setProperty( "Orca.Status.StallTolerance.Additive",  "0.1" );
 
     // all tracer tempProps have default values
     tempProps->setProperty( "Orca.Tracer.RequireIceStorm",    "0" );

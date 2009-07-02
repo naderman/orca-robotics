@@ -14,8 +14,7 @@ Provides.OgFusion.DefaultInterface=ogfusion
 
 Config.Map.SizeXMetres.Default=50.0
 Config.Map.SizeYMetres.Default=50.0
-Config.Map.ResX.Default=0.5
-Config.Map.ResY.Default=0.5
+Config.Map.Resolution.Default=0.5
 Config.Map.OriginX.Default=-25.0
 Config.Map.OriginY.Default=-25.0
 Config.Map.Orientation.Default=0

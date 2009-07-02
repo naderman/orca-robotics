@@ -21,29 +21,23 @@
 
 namespace orcaifaceimpl {
 
-typedef ProviderImpl<orca::Power, orca::PowerPrx,
-                    orca::PowerConsumer, orca::PowerConsumerPrx,
+typedef ProviderImpl<orca::Power, orca::PowerConsumer,
                     orca::PowerData> PowerImpl;
 typedef IceUtil::Handle<PowerImpl> PowerImplPtr;
 
-typedef StoringConsumerImpl<orca::Power, orca::PowerPrx,
-                    orca::PowerConsumer, orca::PowerConsumerPrx,
+typedef StoringConsumerImpl<orca::Power, orca::PowerConsumer,
                     orca::PowerData> StoringPowerConsumerImpl;
 typedef IceUtil::Handle<StoringPowerConsumerImpl> StoringPowerConsumerImplPtr;
 
-typedef BufferedConsumerImpl<orca::Power, orca::PowerPrx,
-                        orca::PowerConsumer, orca::PowerConsumerPrx,
+typedef BufferedConsumerImpl<orca::Power, orca::PowerConsumer,
                         orca::PowerData> BufferedPowerConsumerImpl;
 typedef IceUtil::Handle<BufferedPowerConsumerImpl> BufferedPowerConsumerImplPtr;
 
-typedef NotifyingConsumerImpl<orca::Power, orca::PowerPrx,
-                        orca::PowerConsumer,
-                        orca::PowerConsumerPrx,
+typedef NotifyingConsumerImpl<orca::Power, orca::PowerConsumer,
                         orca::PowerData> NotifyingPowerConsumerImpl;
 typedef IceUtil::Handle<NotifyingPowerConsumerImpl> NotifyingPowerConsumerImplPtr;
 
-typedef PrintingConsumerImpl<orca::Power, orca::PowerPrx,
-                        orca::PowerConsumer, orca::PowerConsumerPrx,
+typedef PrintingConsumerImpl<orca::Power, orca::PowerConsumer,
                         orca::PowerData> PrintingPowerConsumerImpl;
 typedef IceUtil::Handle<PrintingPowerConsumerImpl> PrintingPowerConsumerImplPtr;
 

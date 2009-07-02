@@ -21,11 +21,8 @@ public:
 
     virtual void setData( const orca::PathFollower2dData &path, bool activateImmediately )=0;
     virtual void activateNow()=0;
-    virtual int  getWaypointIndex()=0;
-    virtual bool getAbsoluteActivationTime( orca::Time &activationTime )=0;
-    virtual bool getRelativeActivationTime( double &secondsSinceActivation )=0;
     virtual void setEnabled( bool enabled )=0;
-    virtual bool enabled()=0;
+    virtual orca::PathFollower2dState getState()=0;
 };
 
 //!
@@ -59,9 +56,7 @@ public:
     void localSetAndSend( const orca::PathFollower2dData &data );
 
     // Local calls to the Impl which get translated into remote calls on subscribers
-    void localSetWaypointIndex( int index );
-    void localSetActivationTime( orca::Time absoluteTime, double relativeTime );
-    void localSetEnabledState( bool enabledState );
+    void localSetState( const orca::PathFollower2dState &state );
 
 private:
     void init();

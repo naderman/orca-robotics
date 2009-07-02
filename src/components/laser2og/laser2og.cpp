@@ -28,19 +28,17 @@ using namespace laser2og;
 
 namespace {
 
-    hydroogmap::CartesianPoint2d 
+    hydroogmap::WorldCoords
     cell2point( const hydropathplan::Cell2D &c, const double originX, const double originY,
-                const double resX, const double resY )
+                const double res )
     {
-        double tmpResY = (resY > 0 ?  resY : resX);
-        hydroogmap::CartesianPoint2d p;
-        p.x=( c.x() * resX + originX );
-        p.y=( c.y() * tmpResY + originY );
+        hydroogmap::WorldCoords p( ( c.x() * res + originX ),
+                                   ( c.y() * res + originY ) );
         return  p;
     }
 
     double 
-    euclideanDistance( const hydroogmap::CartesianPoint2d p1, const hydroogmap::CartesianPoint2d p2 )
+    euclideanDistance( const hydroogmap::WorldCoords p1, const hydroogmap::WorldCoords p2 )
     {
         return hypot(p1.x-p2.x, p1.y-p2.y );
     }
@@ -59,8 +57,7 @@ Laser2Og::Laser2Og(ogfusion::MapConfig& mapConfig, OgLaserModelConfig& sensorCon
 {    
     mapSizeX_=mapConfig.mapSizeX;
     mapSizeY_=mapConfig.mapSizeY;
-    mapResX_=mapConfig.mapResX;
-    mapResY_=mapConfig.mapResY;
+    mapRes_=mapConfig.mapRes;
     mapOriginX_=mapConfig.mapOriginX;
     mapOriginY_=mapConfig.mapOriginY;
 
@@ -100,7 +97,7 @@ Laser2Og::process( const hydronavutil::Pose &sensorPose, const orca::RangeScanne
         
         // find (x,y) coordinates of laser return in global
 	    // NOTE!!! : arbitrary 25% overshoot on range.
-        hydroogmap::CartesianPoint2d returnPoint;
+        hydroogmap::WorldCoords returnPoint;
         double rayBearing = sensorPose.theta() + laserScanBearing(scan, i );
         returnPoint.x = sensorPose.x() +
             RAY_EXTENSION*rangeEff*cos( rayBearing );
@@ -109,10 +106,10 @@ Laser2Og::process( const hydronavutil::Pose &sensorPose, const orca::RangeScanne
             RAY_EXTENSION*rangeEff*sin( rayBearing );
         
         // find cells crossed by the vehicle-to-return_point ray
-        hydroogmap::CartesianPoint2d sensorPosePoint;
+        hydroogmap::WorldCoords sensorPosePoint;
         sensorPosePoint.x = sensorPose.x();
         sensorPosePoint.y = sensorPose.y();
-        std::vector<hydropathplan::Cell2D> ray = rayTrace( sensorPosePoint, returnPoint, mapOriginX_, mapOriginY_, mapResX_, mapResY_ );
+        std::vector<hydropathplan::Cell2D> ray = rayTrace( sensorPosePoint, returnPoint, mapOriginX_, mapOriginY_, mapRes_ );
 
         //cout<<"Laser2Og::process: traced a ray with "<<ray.size()<<" cells. "<<
         //    "from ("<<sensorPosePoint.x<<","<<sensorPosePoint.y<<") to ("<<returnPoint.x<<","<<returnPoint.y<<")"<<endl;
@@ -140,8 +137,7 @@ Laser2Og::process( const hydronavutil::Pose &sensorPose, const orca::RangeScanne
                                              cell2point(currentCell,
                                                         mapOriginX_,
                                                         mapOriginY_,
-                                                        mapResX_,
-                                                        mapResY_) );
+                                                        mapRes_) );
             
             // =========== LIKELIHOOD ====================
             const double posSD=0, headSD=0;

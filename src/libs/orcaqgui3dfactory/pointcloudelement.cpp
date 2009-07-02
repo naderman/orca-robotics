@@ -17,22 +17,6 @@ using namespace std;
 
 namespace orcaqgui3d {
 
-void
-PointCloudElement::getLaserInfo()
-{
-    // Subscribe directly to get geometry etc
-    //orca::PointCloudPrx pointCloudPrx;
-
-    // Don't bother catching exceptions: they'll get caught higher up.
-
-    //orcaice::connectToInterfaceWithString( context_, pointCloudPrx, listener_.interfaceName() );
-    
-    //orca::RangeScanner2dDescription descr;
-    //descr = pointCloudPrx->getDescription();
-
-    //painter_.setDescr( descr.offset, descr.size );
-}
-
 QStringList
 PointCloudElement::contextMenu()
 {

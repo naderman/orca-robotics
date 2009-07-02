@@ -128,7 +128,7 @@ WorldView::resizeGL(int w, int h)
 
     if ( isOrthographicProjection_ )
     {
-        // sets an enginerring-type projection
+        // sets an engineering-type projection
         //  (left,right,bottom,top,near,far)
         sceneView_->setProjectionMatrixAsOrtho( -leftRightBase*w/(viewHandler_.zoomFactor()),
                                                   leftRightBase*w/(viewHandler_.zoomFactor()),

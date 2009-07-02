@@ -35,15 +35,16 @@ public:
         painter_(painter)
     {}
 
+    // From GuiElement
+    virtual void update();
+
+    // from GuiElement2d
     //! Derived classes may override this if they have to paint other stuff than just interface data (e.g. user input)
     virtual void paint( QPainter *p, int z )
         { painter_.paint( p, z ); }
 
-    bool paintThisLayer( int z ) const
+    virtual bool paintThisLayer( int z ) const
         { return painter_.paintThisLayer( z ); }
-
-    // From GuiElement2d
-    void update();
         
 protected:
     

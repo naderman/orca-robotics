@@ -25,7 +25,7 @@ PathPlannerUserInteraction::PathPlannerUserInteraction( PathPlanner2dElement    
                                                         hydroqguielementutil::IHumanManager     &humanManager,
                                  hydroqguielementutil::ShortcutKeyManager                       &shortcutKeyManager,
                                                         hydroqguielementutil::MouseEventManager &mouseEventManager,
-                                                        PathPainter                             &painter,
+                                                        PathPlannerPainter                      &painter,
                                                         const orcaice::Context                  &context )
     : ppElement_(ppElement),
       proxyString_( proxyString ),
@@ -144,19 +144,19 @@ PathPlannerUserInteraction::send()
 void 
 PathPlannerUserInteraction::cancel()
 {
-    cout<<"TRACE(PathPlannerUserInteraction): cancel()" << endl;
+//     cout<<"TRACE(PathPlannerUserInteraction): cancel()" << endl;
     noLongerMouseEventReceiver();
 }
 void
 PathPlannerUserInteraction::noLongerMouseEventReceiver()
 {
-    cout << "TRACE(PathPlannerUserInteraction): noLongerMouseEventReceiver()" << endl;
+//     cout << "TRACE(PathPlannerUserInteraction): noLongerMouseEventReceiver()" << endl;
     pathInput_.reset(0);
     buttons_->setWpButton( false );
     
     if ( gotMode_ )
     {
-        cout << "TRACE(PathFollowerUserInteraction): relinquishMouseEventReceiver" << endl;
+//         cout << "TRACE(PathFollowerUserInteraction): relinquishMouseEventReceiver" << endl;
         mouseEventManager_.relinquishMouseEventReceiver( ppElement_ );
         gotMode_ = false;
     }

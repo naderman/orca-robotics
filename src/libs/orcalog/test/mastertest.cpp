@@ -244,8 +244,8 @@ void TestComponent::start()
     // NOTE: cannot call communicator()->destroy() from here
     // because they'll be caught by Ice::Application and show up as failed ctest.
     cout<<"All tests PASSED"<<endl;
-    exit(EXIT_SUCCESS);
-    cout<<"end of start() (shouldn't get here)"<<endl;
+
+    context().shutdown();
 }
 
 void TestComponent::stop()

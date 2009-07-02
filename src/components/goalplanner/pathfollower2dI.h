@@ -41,17 +41,11 @@ public:
     // Set a path
     virtual void setData(const ::orca::PathFollower2dData& data, bool activateImmediately, const ::Ice::Current& = ::Ice::Current());
 
+    virtual orca::PathFollower2dState getState(const ::Ice::Current& = ::Ice::Current());
+    
     virtual void activateNow(const ::Ice::Current& = ::Ice::Current());
-    
-    virtual int  getWaypointIndex(const ::Ice::Current& = ::Ice::Current());
-    
-    virtual bool getAbsoluteActivationTime(orca::Time &activationTime, const Ice::Current&);
-    
-    virtual bool getRelativeActivationTime(double &secondsSinceActivation, const Ice::Current&);
-            
 
     virtual void setEnabled( bool enabled, const ::Ice::Current& = ::Ice::Current() );
-    virtual bool enabled(const ::Ice::Current& = ::Ice::Current());
 
     // NOTE: unusual implemenation!
     virtual IceStorm::TopicPrx subscribe(const ::orca::PathFollower2dConsumerPrx&, const ::Ice::Current& = ::Ice::Current());

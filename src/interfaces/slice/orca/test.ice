@@ -44,12 +44,21 @@ struct MyStruct0
     long mLong;
     float mFloat;
     double mDouble;
+    ["orca:deg"] double mDoubleDeg;
     string mString;
 };
 
 sequence<MyStruct0> MyStruct0Seq;
 dictionary<string,MyStruct0> MyStruct0Dict;
 
+// special class to test meta data
+class MyClass9
+{
+    double mDouble;
+    ["slice2orca:string:degrees"] double mDoubleDeg;
+};
+
+// the rest of the classes test inheritance
 class MyClass0
 {
     bool mBool;

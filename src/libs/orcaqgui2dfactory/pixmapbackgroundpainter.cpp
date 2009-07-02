@@ -52,7 +52,7 @@ PixMapBackgroundPainter::setData( const orca::PixMapData& data )
     
     // assemble information to give to pixmapPainter
     PixmapData pixmapData;
-    pixmapData.cellSize = QSizeF(data.metresPerCellX,data.metresPerCellY);
+    pixmapData.cellSize = data.metresPerCell;
     pixmapData.mapSizePix = QSize(data.numCellsX,data.numCellsY);
     pixmapData.offset = QPointF(data.offset.p.x,data.offset.p.y);
     

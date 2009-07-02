@@ -15,14 +15,14 @@
 
 #include <orcaqgui3d/iknowsplatformposition.h>
 #include <orcaqgui3d/icestormelement3d.h>
-#include <orcaqgui3dfactory/localise2dpainter.h>
+#include <orcaqgui3dfactory/localisepainter.h>
 #include <hydroqguielementutil/ihumanmanager.h>
 
 namespace orcaqgui3d
 {
 
 class Localise2dElement
-    : public orcaqgui3d::IceStormElement3d<Localise2dPainter,
+    : public orcaqgui3d::IceStormElement3d<LocalisePainter,
                              orca::Localise2dData,
                              orca::Localise2dPrx,
                              orca::Localise2dConsumer,
@@ -36,7 +36,7 @@ public:
                        hydroqguielementutil::IHumanManager        *humanManager,
                        bool                                        beginDisplayHistory = false,
                        int                                         timeoutMs = 30000 )
-        : orcaqgui3d::IceStormElement3d<Localise2dPainter,
+        : orcaqgui3d::IceStormElement3d<LocalisePainter,
                             orca::Localise2dData,
                             orca::Localise2dPrx,
                             orca::Localise2dConsumer,
@@ -79,7 +79,7 @@ public:
 private:
 
     hydroqguielementutil::IHumanManager *humanManager_;
-    Localise2dPainter painter_;
+    LocalisePainter painter_;
 
     // We're visualising a 2D thing -- don't know z/roll/pitch
     double x_;

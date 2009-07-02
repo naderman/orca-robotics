@@ -21,29 +21,23 @@
 
 namespace orcaifaceimpl {
 
-typedef ProviderWithDescriptionImpl<orca::PolarFeature2d, orca::PolarFeature2dPrx,
-                    orca::PolarFeature2dConsumer, orca::PolarFeature2dConsumerPrx,
+typedef ProviderWithDescriptionImpl<orca::PolarFeature2d, orca::PolarFeature2dConsumer,
                     orca::PolarFeature2dData, orca::PolarFeature2dDescription> PolarFeature2dImpl;
 typedef IceUtil::Handle<PolarFeature2dImpl> PolarFeature2dImplPtr;
 
-typedef StoringConsumerImpl<orca::PolarFeature2d, orca::PolarFeature2dPrx,
-                    orca::PolarFeature2dConsumer, orca::PolarFeature2dConsumerPrx,
+typedef StoringConsumerImpl<orca::PolarFeature2d, orca::PolarFeature2dConsumer,
                     orca::PolarFeature2dData> StoringPolarFeature2dConsumerImpl;
 typedef IceUtil::Handle<StoringPolarFeature2dConsumerImpl> StoringPolarFeature2dConsumerImplPtr;
 
-typedef BufferedConsumerImpl<orca::PolarFeature2d, orca::PolarFeature2dPrx,
-                        orca::PolarFeature2dConsumer, orca::PolarFeature2dConsumerPrx,
+typedef BufferedConsumerImpl<orca::PolarFeature2d, orca::PolarFeature2dConsumer,
                         orca::PolarFeature2dData> BufferedPolarFeature2dConsumerImpl;
 typedef IceUtil::Handle<BufferedPolarFeature2dConsumerImpl> BufferedPolarFeature2dConsumerImplPtr;
 
-typedef NotifyingConsumerImpl<orca::PolarFeature2d, orca::PolarFeature2dPrx,
-                        orca::PolarFeature2dConsumer,
-                        orca::PolarFeature2dConsumerPrx,
+typedef NotifyingConsumerImpl<orca::PolarFeature2d, orca::PolarFeature2dConsumer,
                         orca::PolarFeature2dData> NotifyingPolarFeature2dConsumerImpl;
 typedef IceUtil::Handle<NotifyingPolarFeature2dConsumerImpl> NotifyingPolarFeature2dConsumerImplPtr;
 
-typedef PrintingConsumerImpl<orca::PolarFeature2d, orca::PolarFeature2dPrx,
-                        orca::PolarFeature2dConsumer, orca::PolarFeature2dConsumerPrx,
+typedef PrintingConsumerImpl<orca::PolarFeature2d, orca::PolarFeature2dConsumer,
                         orca::PolarFeature2dData> PrintingPolarFeature2dConsumerImpl;
 typedef IceUtil::Handle<PrintingPolarFeature2dConsumerImpl> PrintingPolarFeature2dConsumerImplPtr;
 

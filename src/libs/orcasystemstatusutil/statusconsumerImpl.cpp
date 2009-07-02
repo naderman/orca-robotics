@@ -20,7 +20,7 @@ namespace orcasystemstatusutil {
 StatusConsumerImpl::StatusConsumerImpl( const orca::FQComponentName& fqCompName, 
                         const Config& config, 
                         const orcaice::Context& context ) :
-    orcaifaceimpl::ConsumerImpl<orca::Status,orca::StatusPrx,orca::StatusConsumer,orca::StatusConsumerPrx,orca::StatusData>(context),
+    orcaifaceimpl::ConsumerImpl<orca::Status,orca::StatusConsumer,orca::StatusData>(context),
     config_(config)
 {
     estCompStatus_.name = fqCompName;

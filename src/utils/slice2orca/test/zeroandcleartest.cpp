@@ -36,6 +36,7 @@ int main( int argc, char **argv )
         out.mLong = 0;
         out.mFloat = 0.;
         out.mDouble = 0.;
+        out.mDoubleDeg = 0.;
         if ( in != out ) {
             cout<<"failed! out: "<<ifaceutil::toString(in)<<endl;
             return EXIT_FAILURE;

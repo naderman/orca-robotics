@@ -31,8 +31,11 @@ std::string toString( const orca::ComponentHealth& health, bool isStalled );
 //! in Initialising state.
 std::string toStringIntialisingOnly( const orca::SubsystemStatusDict& subsystems, int indent=0 );
 
-
+//! Returns stringified warnings, errors, stalls, and information messages.
+std::string toStringImportantOnly( const orca::SubsystemStatusDict& s, int indent=0 );
+//! Returns stringified warnings, errors, stalls, and information messages.
 std::string toStringImportantOnly( const orca::ComponentStatus& s, int indent=0 );
+//! Returns stringified stales, warnings, errors, stalls, and information messages.
 std::string toStringImportantOnly( const orca::EstimatedComponentStatus& s, int indent=0 );
 
 }

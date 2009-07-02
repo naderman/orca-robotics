@@ -71,8 +71,6 @@ private:
 
     void enableHardware();
     void operateHardware();
-    void reportStall( const hydrointerfaces::SegwayRmp::Data &data,
-                      const StallSensor::StallType           &stallType );
 
     // Stores incoming commands that need to be written to the hardware
     gbxiceutilacfr::Store<hydrointerfaces::SegwayRmp::Command> commandStore_;

@@ -56,7 +56,7 @@ MainThread::initialise()
 void 
 MainThread::work()
 {
-    setMaxHeartbeatInterval( 5 );
+    setMaxHeartbeatInterval( 5.0 );
 
     orca::PathPlanner2dTask task; 
     orca::PathPlanner2dData pathData;   

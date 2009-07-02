@@ -17,7 +17,7 @@
 namespace orcaqgui3d {
 
 //!
-//! @brief a 3d laser element
+//! @brief a 3d element
 //!
 //! @author Alex Brooks
 //!

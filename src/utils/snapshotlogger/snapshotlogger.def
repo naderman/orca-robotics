@@ -9,6 +9,8 @@ Requires.LaserScanner2d0.Type=LaserScanner2d
 Requires.LaserScanner2d0.DefaultProxy=laserscanner2d@local/laser2d
 
 # Config Parameters
+# The time into the past that gets logged (nothing in the future is logged)
+Config.TimeWindowSec.Default=30.0
 Config.FilenameTimestamp.Default=1
 Config.FactoryLibNames.Default=libOrcaLogFactory.so
 

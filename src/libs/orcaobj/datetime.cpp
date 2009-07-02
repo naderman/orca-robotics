@@ -190,4 +190,20 @@ orca::Time getPropertyAsTimeDurationWithDefault( const Ice::PropertiesPtr & prop
         return value;
 }
 
+bool isSane( const orca::Time& obj, std::string& reason )
+{
+    std::stringstream ss;
+    bool sane=true;
+    if ( obj.seconds < 0 ) {
+        ss << "Negative seconds: " << obj.seconds<<"s"<<endl;
+        sane = false;
+    }
+    if ( obj.useconds < 0 ) {
+        ss << "Negative micro seconds: " << obj.useconds<<"us"<<endl;
+        sane = false;
+    }
+    reason = ss.str();
+    return sane;
+}
+
 } // namespace

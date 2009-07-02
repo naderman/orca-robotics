@@ -124,6 +124,8 @@ struct ComponentStatusEpisode
 {
     //! Time when the episode was recorded
     orca::Time timeStamp;
+    //! Number of seconds since this component was activated.
+    int timeUp;
     //! Component state
     ComponentState state;
     //! Component health
@@ -132,6 +134,9 @@ struct ComponentStatusEpisode
     bool isStalled;
     //! Status of all component's subsystems 
     SubsystemStatusDict subsystems;
+
+    //! How many times identical status was repeated
+    int repeatCount;
 };
 
 //! A sequence of component status episodes.
@@ -174,7 +179,7 @@ interface Status
     //! idempotent void unsubscribe(Object* subscriber);
     //! @endverbatim
     IceStorm::Topic* subscribe( StatusConsumer* subscriber )
-        throws SubscriptionFailedException;
+        throws SubscriptionFailedException, SubscriptionPushFailedException;
 };
 
 /*!

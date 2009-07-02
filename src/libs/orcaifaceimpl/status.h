@@ -21,29 +21,23 @@
 
 namespace orcaifaceimpl {
 
-typedef ProviderImpl<orca::Status, orca::StatusPrx,
-                    orca::StatusConsumer, orca::StatusConsumerPrx,
+typedef ProviderImpl<orca::Status, orca::StatusConsumer,
                     orca::StatusData> StatusImpl;
 typedef IceUtil::Handle<StatusImpl> StatusImplPtr;
 
-typedef StoringConsumerImpl<orca::Status, orca::StatusPrx,
-                    orca::StatusConsumer, orca::StatusConsumerPrx,
+typedef StoringConsumerImpl<orca::Status, orca::StatusConsumer,
                     orca::StatusData> StoringStatusConsumerImpl;
 typedef IceUtil::Handle<StoringStatusConsumerImpl> StoringStatusConsumerImplPtr;
 
-typedef BufferedConsumerImpl<orca::Status, orca::StatusPrx,
-                        orca::StatusConsumer, orca::StatusConsumerPrx,
+typedef BufferedConsumerImpl<orca::Status, orca::StatusConsumer,
                         orca::StatusData> BufferedStatusConsumerImpl;
 typedef IceUtil::Handle<BufferedStatusConsumerImpl> BufferedStatusConsumerImplPtr;
 
-typedef NotifyingConsumerImpl<orca::Status, orca::StatusPrx,
-                        orca::StatusConsumer,
-                        orca::StatusConsumerPrx,
+typedef NotifyingConsumerImpl<orca::Status, orca::StatusConsumer,
                         orca::StatusData> NotifyingStatusConsumerImpl;
 typedef IceUtil::Handle<NotifyingStatusConsumerImpl> NotifyingStatusConsumerImplPtr;
 
-typedef PrintingConsumerImpl<orca::Status, orca::StatusPrx,
-                        orca::StatusConsumer, orca::StatusConsumerPrx,
+typedef PrintingConsumerImpl<orca::Status, orca::StatusConsumer,
                         orca::StatusData> PrintingStatusConsumerImpl;
 typedef IceUtil::Handle<PrintingStatusConsumerImpl> PrintingStatusConsumerImplPtr;
 

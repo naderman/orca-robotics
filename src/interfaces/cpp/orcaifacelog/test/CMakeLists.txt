@@ -10,4 +10,4 @@ GBX_ADD_TEST( OrcaIfaceLog_Test ifacelogtest )
 # message( STATUS "******* ifacelogtest _debug='${_debug}'" )
 
 # debug
-export( TARGETS ifacelogtest FILE ${PROJECT_BINARY_DIR}/debug.cmake )
+# export( TARGETS ifacelogtest FILE ${PROJECT_BINARY_DIR}/debug.cmake )

@@ -126,7 +126,7 @@ PixmapPainter::updateWorldMatrix( const QMatrix & m )
 
     // and scale it by cell size in [m]
     // this matrix is [pix-2-pix]
-    map2win_.scale( data_.cellSize.width(), data_.cellSize.height() );
+    map2win_.scale( data_.cellSize, data_.cellSize );
     M = map2win_;
     //cout<<"scaled: " << M.m11()<<","<<M.m12()<<","<<M.m21()<<","<<M.m22()<<", "<<M.dx()<<","<<M.dy()<<endl;
     return true;

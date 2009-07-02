@@ -21,29 +21,23 @@
 
 namespace orcaifaceimpl {
 
-typedef ProviderWithDescriptionImpl<orca::PointCloud, orca::PointCloudPrx,
-                    orca::PointCloudConsumer, orca::PointCloudConsumerPrx,
+typedef ProviderWithDescriptionImpl<orca::PointCloud, orca::PointCloudConsumer,
                     orca::PointCloudData, orca::PointCloudDescription> PointCloudImpl;
 typedef IceUtil::Handle<PointCloudImpl> PointCloudImplPtr;
 
-typedef StoringConsumerImpl<orca::PointCloud, orca::PointCloudPrx,
-                    orca::PointCloudConsumer, orca::PointCloudConsumerPrx,
+typedef StoringConsumerImpl<orca::PointCloud, orca::PointCloudConsumer,
                     orca::PointCloudData> StoringPointCloudConsumerImpl;
 typedef IceUtil::Handle<StoringPointCloudConsumerImpl> StoringPointCloudConsumerImplPtr;
 
-typedef BufferedConsumerImpl<orca::PointCloud, orca::PointCloudPrx,
-                        orca::PointCloudConsumer, orca::PointCloudConsumerPrx,
+typedef BufferedConsumerImpl<orca::PointCloud, orca::PointCloudConsumer,
                         orca::PointCloudData> BufferedPointCloudConsumerImpl;
 typedef IceUtil::Handle<BufferedPointCloudConsumerImpl> BufferedPointCloudConsumerImplPtr;
 
-typedef NotifyingConsumerImpl<orca::PointCloud, orca::PointCloudPrx,
-                        orca::PointCloudConsumer,
-                        orca::PointCloudConsumerPrx,
+typedef NotifyingConsumerImpl<orca::PointCloud, orca::PointCloudConsumer,
                         orca::PointCloudData> NotifyingPointCloudConsumerImpl;
 typedef IceUtil::Handle<NotifyingPointCloudConsumerImpl> NotifyingPointCloudConsumerImplPtr;
 
-typedef PrintingConsumerImpl<orca::PointCloud, orca::PointCloudPrx,
-                        orca::PointCloudConsumer, orca::PointCloudConsumerPrx,
+typedef PrintingConsumerImpl<orca::PointCloud, orca::PointCloudConsumer,
                         orca::PointCloudData> PrintingPointCloudConsumerImpl;
 typedef IceUtil::Handle<PrintingPointCloudConsumerImpl> PrintingPointCloudConsumerImplPtr;
 

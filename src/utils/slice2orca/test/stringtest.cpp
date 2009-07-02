@@ -21,6 +21,7 @@ int main( int argc, char **argv )
         cout<<ifaceutil::toString( in )<<endl;
     }
     {
+        cout<<"testing structure...";
         test::MyStruct0 in;
         in.mBool = 0;
         in.mByte = 1;
@@ -29,6 +30,7 @@ int main( int argc, char **argv )
         in.mLong = 4;
         in.mFloat = 5.;
         in.mDouble = 6.;
+        in.mDoubleDeg = 3.14;
         in.mString = "a sample";
         cout<<endl<<"RECURSE=FULL"<<endl;
         cout<<ifaceutil::toString( in )<<endl;
@@ -75,8 +77,18 @@ int main( int argc, char **argv )
         cout<<endl<<"EXPAND=1"<<endl;
         cout<<ifaceutil::toString( in, 999, 1 )<<endl;
     }
+    {
+        cout<<"testing classes...";
+        test::MyClass9Ptr in = new test::MyClass9;
+        in->mDouble = 6.;
+        in->mDoubleDeg = 3.14;
+        cout<<endl<<"RECURSE=FULL"<<endl;
+        cout<<ifaceutil::toString( in )<<endl;
+        cout<<endl<<"RECURSE=0"<<endl;
+        cout<<ifaceutil::toString( in, 0 )<<endl;
+    }
     // null class
-    cout<<"printing null class pointer...";
+    cout<<endl<<"printing null class pointer...";
     {
         test::MyClass0Ptr in;
         try {

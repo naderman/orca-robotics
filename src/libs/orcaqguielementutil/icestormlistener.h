@@ -62,7 +62,7 @@ public:
     int connect()
     {
         // clean up first
-        if ( shutdown() != 0 ) return -1;
+        shutdown();
 
         // then resubscribe
         try {
@@ -104,8 +104,7 @@ private:
             callbackPrx_ = ConsumerPrxType::uncheckedCast( prx );
         }
 
-    // 0=success
-    int shutdown()
+    void shutdown()
         {
             // std::cout<<"TRACE(icestormlistener.h): start of shutdown(): isSubscribed_: " << isSubscribed_ << std::endl;
             // unsubscribe
@@ -115,17 +114,15 @@ private:
                     detail::unSubscribeListener<ConsumerType,
                         ConsumerPrxType,
                         UnSubscriptionMakerType>( context_, topicPrx_, consumer_, callbackPrx_ );
+                } catch ( ... ) {}
 
+                try {
                     // remove consumer from the list of active servants
                     context_.adapter()->remove( callbackPrx_->ice_getIdentity() );
+                } catch ( ... ) {}
 
-                    isSubscribed_ = false;
-                    // std::cout<<"TRACE(icestormlistener.h): unsubscription successful." << std::endl;
-                } catch ( ... ) {
-                    return -1;
-                }
+                isSubscribed_ = false;
             }
-            return 0;
         }
 
     // Proxy to remote object

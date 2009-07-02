@@ -21,28 +21,23 @@
 
 namespace orcaifaceimpl {
 
-typedef ProviderWithDescriptionImpl<orca::MultiCamera, orca::MultiCameraPrx,
-                    orca::MultiCameraConsumer, orca::MultiCameraConsumerPrx,
+typedef ProviderWithDescriptionImpl<orca::MultiCamera, orca::MultiCameraConsumer,
                     orca::MultiCameraDataPtr, orca::MultiCameraDescriptionPtr> MultiCameraImpl;
 typedef IceUtil::Handle<MultiCameraImpl> MultiCameraImplPtr;
 
-typedef StoringConsumerImpl<orca::MultiCamera, orca::MultiCameraPrx,
-                    orca::MultiCameraConsumer, orca::MultiCameraConsumerPrx,
+typedef StoringConsumerImpl<orca::MultiCamera, orca::MultiCameraConsumer,
                     orca::MultiCameraDataPtr> StoringMultiCameraConsumerImpl;
 typedef IceUtil::Handle<StoringMultiCameraConsumerImpl> StoringMultiCameraConsumerImplPtr;
 
-typedef BufferedConsumerImpl<orca::MultiCamera, orca::MultiCameraPrx,
-                    orca::MultiCameraConsumer, orca::MultiCameraConsumerPrx,
+typedef BufferedConsumerImpl<orca::MultiCamera, orca::MultiCameraConsumer,
                     orca::MultiCameraDataPtr> BufferedMultiCameraConsumerImpl;
 typedef IceUtil::Handle<BufferedMultiCameraConsumerImpl> BufferedMultiCameraConsumerImplPtr;
 
-typedef NotifyingConsumerImpl<orca::MultiCamera, orca::MultiCameraPrx,
-                    orca::MultiCameraConsumer, orca::MultiCameraConsumerPrx,
+typedef NotifyingConsumerImpl<orca::MultiCamera, orca::MultiCameraConsumer,
                     orca::MultiCameraDataPtr> NotifyingMultiCameraConsumerImpl;
 typedef IceUtil::Handle<NotifyingMultiCameraConsumerImpl> NotifyingMultiCameraConsumerImplPtr;
 
-typedef PrintingConsumerImpl<orca::MultiCamera, orca::MultiCameraPrx,
-                    orca::MultiCameraConsumer, orca::MultiCameraConsumerPrx,
+typedef PrintingConsumerImpl<orca::MultiCamera, orca::MultiCameraConsumer,
                     orca::MultiCameraDataPtr> PrintingMultiCameraConsumerImpl;
 typedef IceUtil::Handle<PrintingMultiCameraConsumerImpl> PrintingMultiCameraConsumerImplPtr;
 

@@ -25,6 +25,8 @@ EStopProbe::EStopProbe( const orca::FQInterfaceName& name, const Ice::ObjectPrx&
     id_ = "::orca::EStop";
     
     addOperation( "getData" );
+    addOperation( "setEnabled" );
+    addOperation( "setDisabled" );
     addOperation( "subscribe" );
     addOperation( "unsubscribe" );
 
@@ -36,15 +38,18 @@ EStopProbe::loadOperationEvent( const int index, orcacm::OperationData & data )
 {
     switch ( index )
     {
-    case orcaprobe::UserIndex :
+    case orcaprobe::UserIndex+0 :
         return loadGetData( data );
     case orcaprobe::UserIndex+1 :
-        return loadSubscribe( data );
+        return loadSetEnabled( data );
     case orcaprobe::UserIndex+2 :
+        return loadSetDisabled( data );
+    case orcaprobe::UserIndex+3 :
+        return loadSubscribe( data );
+    case orcaprobe::UserIndex+4 :
         return loadUnsubscribe( data );
     }
     return 1;
-
 }
 
 int 
@@ -52,6 +57,22 @@ EStopProbe::loadGetData( orcacm::OperationData & data )
 {
     orca::EStopPrx derivedPrx = orca::EStopPrx::checkedCast(prx_);
     orcaprobe::reportResult( data, "data", ifaceutil::toString( derivedPrx->getData() ) );
+    return 0;
+}
+
+int 
+EStopProbe::loadSetEnabled( orcacm::OperationData & data )
+{
+    orca::EStopPrx derivedPrx = orca::EStopPrx::checkedCast(prx_);
+    derivedPrx->setEnabled( true );
+    return 0;
+}
+
+int 
+EStopProbe::loadSetDisabled( orcacm::OperationData & data )
+{
+    orca::EStopPrx derivedPrx = orca::EStopPrx::checkedCast(prx_);
+    derivedPrx->setEnabled( false );
     return 0;
 }
 

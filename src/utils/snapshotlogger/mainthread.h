@@ -30,7 +30,7 @@ public:
     MainThread( const orcaice::Context& context );
     ~MainThread();
 
-    // from gbxiceutilacfr::NotifyHandler -- called on re-init request
+    // from gbxiceutilacfr::NotifyHandler -- called on button-press
     // (the value of the bool is meaningless)
     virtual void handleData( const bool &request )
         { requestStore_.set( request ); }

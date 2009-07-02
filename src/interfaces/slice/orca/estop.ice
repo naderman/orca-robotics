@@ -49,6 +49,9 @@ struct EStopData
     Time timeStamp;
     //! true if the vehicle is in the emergency-stopp{ed|ing} mode.
     bool isEStopActivated;
+    //! Set to false if the e-stop is disabled (e.g. manual override to ignore the e-stop)
+    //! A disabled e-stop never sets isEStopActivated.
+    bool isEStopEnabled;
     //! Human-readable information, only filled out if the e-stop is activated
     string info;
 };
@@ -58,9 +61,6 @@ interface EStopConsumer
     //! Sends data to the consumer.
     void setData( EStopData data );
 };
-
-//! Raised when a keep-alive is sent to an estop-disabled platform
-exception EStopAlreadyTriggeredException extends OrcaException {};
 
 //! Interface to e-stop.
 interface EStop
@@ -72,6 +72,10 @@ interface EStop
     idempotent EStopData getData()
         throws DataNotExistException;
 
+    //! Allows disabling of the e-stop (e.g. manual override to ignore an e-stop).
+    //! A disabled e-stop will never activate.
+    void setEnabled( bool enabled );
+
     //! Tries to subscribe the specified subscriber for data updates.
     //! If successfuly, returns a proxy to the IceStorm topic which can be later used by the 
     //! client to unsubscribe itself. For reference, the Slice definition of the Topic
@@ -80,7 +84,7 @@ interface EStop
     //! idempotent void unsubscribe(Object* subscriber);
     //! @endverbatim
     IceStorm::Topic* subscribe( EStopConsumer* subscriber )
-        throws SubscriptionFailedException;
+        throws SubscriptionFailedException, SubscriptionPushFailedException;
 };
 
 /*! @} */

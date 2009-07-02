@@ -32,7 +32,7 @@ namespace hydroqguielementutil {
 namespace orcaqgui2d {
 
 class PathPlanner2dElement;
-class PathPainter;
+class PathPlannerPainter;
 
 //!
 //! Handles all user interaction with the PathPlanner
@@ -50,7 +50,7 @@ public:
                                 hydroqguielementutil::IHumanManager      &humanManager,
                                 hydroqguielementutil::ShortcutKeyManager &shortcutKeyManager,
                                 hydroqguielementutil::MouseEventManager  &mouseEventManager,
-                                PathPainter                              &painter,
+                                PathPlannerPainter                       &painter,
                                 const orcaice::Context                   &context );
     
     ~PathPlannerUserInteraction();
@@ -94,7 +94,7 @@ private:
     hydroqguielementutil::IHumanManager &humanManager_;
     hydroqguielementutil::MouseEventManager &mouseEventManager_;
     hydroqguielementutil::ShortcutKeyManager &shortcutKeyManager_;
-    PathPainter &painter_;
+    PathPlannerPainter &painter_;
     orcaice::Context context_;
     hydroqguipath::WaypointSettings wpSettings_;
 

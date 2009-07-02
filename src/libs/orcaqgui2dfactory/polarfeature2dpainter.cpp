@@ -114,7 +114,7 @@ PolarFeature2dPainter::setOffset( orca::Frame3d &offset )
     if ( offset.p.z != 0.0 )
     {
         stringstream ss;
-        ss << "PolarFeature2dPainter::setOffset(): Cannot properly deal with non-zero z.  Offset: " << orcaobj::toString(offset);
+        ss << "PolarFeature2dPainter::setOffset(): Cannot properly deal with non-zero z, ignoring.  Offset: " << orcaobj::toString(offset);
         cout << "Warning: polarfeature2dpainter: " << ss.str() << endl;
     }
 
@@ -122,8 +122,9 @@ PolarFeature2dPainter::setOffset( orca::Frame3d &offset )
     if ( offsetPitch_ != 0.0 )
     {
         stringstream ss;
-        ss << "PolarFeature2dPainter::setOffset(): Cannot properly deal with non-zero pitch.  Offset: " << orcaobj::toString(offset);
-        throw hydroqgui::Exception( ERROR_INFO, ss.str() );        
+        ss << "PolarFeature2dPainter::setOffset(): Cannot properly deal with non-zero pitch, ignoring.  Offset: " << orcaobj::toString(offset);
+        cout << "Warning: polarfeature2dpainter: " << ss.str() << endl;
+        // throw hydroqgui::Exception( ERROR_INFO, ss.str() );        
     }
 
     isOffsetSet_ = true;

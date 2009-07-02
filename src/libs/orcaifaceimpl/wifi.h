@@ -21,29 +21,23 @@
 
 namespace orcaifaceimpl {
 
-typedef ProviderImpl<orca::Wifi, orca::WifiPrx,
-                    orca::WifiConsumer, orca::WifiConsumerPrx,
+typedef ProviderImpl<orca::Wifi, orca::WifiConsumer,
                     orca::WifiData> WifiImpl;
 typedef IceUtil::Handle<WifiImpl> WifiImplPtr;
 
-typedef StoringConsumerImpl<orca::Wifi, orca::WifiPrx,
-                    orca::WifiConsumer, orca::WifiConsumerPrx,
+typedef StoringConsumerImpl<orca::Wifi, orca::WifiConsumer,
                     orca::WifiData> StoringWifiConsumerImpl;
 typedef IceUtil::Handle<StoringWifiConsumerImpl> StoringWifiConsumerImplPtr;
 
-typedef BufferedConsumerImpl<orca::Wifi, orca::WifiPrx,
-                        orca::WifiConsumer, orca::WifiConsumerPrx,
+typedef BufferedConsumerImpl<orca::Wifi, orca::WifiConsumer,
                         orca::WifiData> BufferedWifiConsumerImpl;
 typedef IceUtil::Handle<BufferedWifiConsumerImpl> BufferedWifiConsumerImplPtr;
 
-typedef NotifyingConsumerImpl<orca::Wifi, orca::WifiPrx,
-                        orca::WifiConsumer,
-                        orca::WifiConsumerPrx,
+typedef NotifyingConsumerImpl<orca::Wifi, orca::WifiConsumer,
                         orca::WifiData> NotifyingWifiConsumerImpl;
 typedef IceUtil::Handle<NotifyingWifiConsumerImpl> NotifyingWifiConsumerImplPtr;
 
-typedef PrintingConsumerImpl<orca::Wifi, orca::WifiPrx,
-                        orca::WifiConsumer, orca::WifiConsumerPrx,
+typedef PrintingConsumerImpl<orca::Wifi, orca::WifiConsumer,
                         orca::WifiData> PrintingWifiConsumerImpl;
 typedef IceUtil::Handle<PrintingWifiConsumerImpl> PrintingWifiConsumerImplPtr;
 

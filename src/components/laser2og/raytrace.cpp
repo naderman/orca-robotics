@@ -23,11 +23,10 @@ using namespace std;
 namespace {
 
 hydropathplan::Cell2D 
-point2cell( const hydroogmap::CartesianPoint2d & pt, const double & originX, const double & originY,
-            const double & resX, const double & resY )
+point2cell( const hydroogmap::WorldCoords & pt, const double & originX, const double & originY,
+            const double & res )
 {
-    double tmpResY = (resY > 0 ?  resY : resX); 
-    return hydropathplan::Cell2D( (int)floor( ( pt.x-originX ) / resX + 0.5 ) , (int)floor( ( pt.y-originY ) / tmpResY + 0.5 ) );
+    return hydropathplan::Cell2D( (int)floor( ( pt.x-originX ) / res + 0.5 ) , (int)floor( ( pt.y-originY ) / res + 0.5 ) );
 }
 
 }
@@ -238,12 +237,12 @@ laser2og::rayTrace(const hydropathplan::Cell2D & c0,
 
 
 std::vector<Cell2D>
-laser2og::rayTrace( const hydroogmap::CartesianPoint2d & p1, const hydroogmap::CartesianPoint2d & p2,
+laser2og::rayTrace( const hydroogmap::WorldCoords & p1, const hydroogmap::WorldCoords & p2,
                               const double originX, const double originY,
-                              const double mapResX, const double mapResY ) 
+                              const double mapRes ) 
 {
-    Cell2D c1 = point2cell(p1, originX, originY, mapResX, mapResY);
-    Cell2D c2 = point2cell(p2, originX, originY, mapResX, mapResY);
+    Cell2D c1 = point2cell(p1, originX, originY, mapRes);
+    Cell2D c2 = point2cell(p2, originX, originY, mapRes);
     
     return rayTrace(c1,c2);
 }

@@ -123,8 +123,9 @@ A generic consumer: instantiates and looks after a consumerI, i.e. adds it to/re
 
 Derived classes need to implement the dataEvent() callback function which is called when the new data arrives.
 
-This consumer subscribes for data updates in the constructor and unsubscribes in the
-destructor. There's still a small chance that IceStorm will report an error when data delivery and
+This consumer itself. In the constructor it adds itself to the adapter and subscribes for data updates.
+In the destructor it removes itself from the adapter and unsubscribes from future data updates. 
+There's still a small chance that IceStorm will report an error when data delivery and
 unsubscription are closely spaced, e.g. ('ast' in 'status/ast' means asterisk, replaced to avoid compiler warning):
 @verbatim
 Oct 25 03:26:47 tango /usr/bin/icebox[2474]: Topic: status/ast@tango/localnav: subscribeAndGetPublisher: 07394FBF-586C-4128-AA28-1727B9DA2E19 QoS:  subscriptions: []
@@ -132,11 +133,14 @@ Oct 25 03:26:49 tango /usr/bin/icebox[2474]: Topic: status/ast@tango/localnav: u
 Oct 25 03:26:49 tango /usr/bin/icebox[2474]: Subscriber: 0x81182e0 07394FBF-586C-4128-AA28-1727B9DA2E19: subscriber errored out: OutgoingAsync.cpp:305: Ice::ObjectNotExistException: object does not exist: identity: `07394FBF-586C-4128-AA28-1727B9DA2E19' facet:  operation: setData retry: 0/0
 @endverbatim
 */
-template<class ProviderType, class ProviderPrxType, class ConsumerType, class ConsumerPrxType, class ObjectType>
+// template<class ProviderType, class ProviderPrxType, class ConsumerType, class ConsumerPrxType, class ObjectType>
+template<class ProviderType, class ConsumerType, class ObjectType>
 class ConsumerImpl : public ConsumerSubscriber, 
                      public AbstractConsumer<ObjectType>,
                      public IceUtil::Shared
 {
+typedef typename ProviderType::ProxyType ProviderPrxType;
+typedef typename ConsumerType::ProxyType ConsumerPrxType;
 
 protected:
     // these are protected so that it's possible to re-implement initConsumer()
@@ -174,7 +178,7 @@ public:
             context_.tracer().warning( "failed to unsubscribe in destructor." );
         }
 
-        // now destroy our consumer object
+        // now, remove our consumer object from Adapter
         if ( !consumerPrx_ )
             return;
 
@@ -183,6 +187,9 @@ public:
 
     //! Access the proxy to the internal consumer interface implementation.
     ConsumerPrxType consumerPrx() const { return consumerPrx_; }
+
+    //! Access to the context.
+    orcaice::Context& context() { return context_; };
 
     // This is tricky! Can't leave it pure virtual because we unsubscribe and detsroy
     // in ConsumerImpl destructor. By that time, the derived class (e.g. StoringConsumer)
@@ -224,7 +231,7 @@ public:
 
         std::stringstream ss;
         ss << "Subscribed to topic=" << topicPrx->ice_toString() << " consumer=" << proxyString;
-        context_.tracer().debug( ss.str() );
+        context_.tracer().debug( ss.str(),6 );
     }
 
     virtual void unsubscribe()
@@ -237,7 +244,7 @@ public:
             topicPrx->unsubscribe( consumerPrx_ );
             std::stringstream ss;
             ss << "Unsubscribed from " << topicPrx->ice_toString();
-            context_.tracer().debug( ss.str() );
+            context_.tracer().debug( ss.str(),6 );
         }
     }
 
@@ -264,7 +271,7 @@ public:
 
                 std::stringstream ss;
                 ss << "Subscribed to " << proxyString;
-                context_.tracer().debug( ss.str() );
+                context_.tracer().debug( ss.str(),6 );
                 return true;
             }
             catch ( const orca::OrcaException &e )

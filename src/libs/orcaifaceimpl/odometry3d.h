@@ -21,29 +21,23 @@
 
 namespace orcaifaceimpl {
 
-typedef ProviderWithDescriptionImpl<orca::Odometry3d, orca::Odometry3dPrx,
-                    orca::Odometry3dConsumer, orca::Odometry3dConsumerPrx,
+typedef ProviderWithDescriptionImpl<orca::Odometry3d, orca::Odometry3dConsumer,
                     orca::Odometry3dData, orca::VehicleDescription> Odometry3dImpl;
 typedef IceUtil::Handle<Odometry3dImpl> Odometry3dImplPtr;
 
-typedef StoringConsumerImpl<orca::Odometry3d, orca::Odometry3dPrx,
-                    orca::Odometry3dConsumer, orca::Odometry3dConsumerPrx,
+typedef StoringConsumerImpl<orca::Odometry3d, orca::Odometry3dConsumer,
                     orca::Odometry3dData> StoringOdometry3dConsumerImpl;
 typedef IceUtil::Handle<StoringOdometry3dConsumerImpl> StoringOdometry3dConsumerImplPtr;
 
-typedef BufferedConsumerImpl<orca::Odometry3d, orca::Odometry3dPrx,
-                        orca::Odometry3dConsumer, orca::Odometry3dConsumerPrx,
+typedef BufferedConsumerImpl<orca::Odometry3d, orca::Odometry3dConsumer,
                         orca::Odometry3dData> BufferedOdometry3dConsumerImpl;
 typedef IceUtil::Handle<BufferedOdometry3dConsumerImpl> BufferedOdometry3dConsumerImplPtr;
 
-typedef NotifyingConsumerImpl<orca::Odometry3d, orca::Odometry3dPrx,
-                        orca::Odometry3dConsumer,
-                        orca::Odometry3dConsumerPrx,
+typedef NotifyingConsumerImpl<orca::Odometry3d, orca::Odometry3dConsumer,
                         orca::Odometry3dData> NotifyingOdometry3dConsumerImpl;
 typedef IceUtil::Handle<NotifyingOdometry3dConsumerImpl> NotifyingOdometry3dConsumerImplPtr;
 
-typedef PrintingConsumerImpl<orca::Odometry3d, orca::Odometry3dPrx,
-                        orca::Odometry3dConsumer, orca::Odometry3dConsumerPrx,
+typedef PrintingConsumerImpl<orca::Odometry3d, orca::Odometry3dConsumer,
                         orca::Odometry3dData> PrintingOdometry3dConsumerImpl;
 typedef IceUtil::Handle<PrintingOdometry3dConsumerImpl> PrintingOdometry3dConsumerImplPtr;
 

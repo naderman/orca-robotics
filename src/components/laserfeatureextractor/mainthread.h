@@ -34,8 +34,6 @@ private:
     virtual void initialise();
     virtual void work();
 
-    void connectToLaser();
-    void getLaserDescription();
     void initDriver();
     void initPolarFeatureInterface();
 

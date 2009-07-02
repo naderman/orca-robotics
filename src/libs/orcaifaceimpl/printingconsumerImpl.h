@@ -13,6 +13,7 @@
 
 #include <orcaifaceimpl/consumerImpl.h>
 
+// all of these are here to define toString()
 // alexm: I haven't checked which ones are actually used.
 #include <orcaifaceutil/datetime.h>
 #include <orcaifaceutil/exceptions.h>
@@ -73,16 +74,20 @@ namespace orcaifaceimpl
  *  to implement and it's called setData() and toString() function is implemented
  *  for the data type.
  */
-template<class ProviderType, class ProviderPrxType, class ConsumerType, class ConsumerPrxType, class ObjectType>
+// template<class ProviderType, class ProviderPrxType, class ConsumerType, class ConsumerPrxType, class ObjectType>
+template<class ProviderType, class ConsumerType, class ObjectType>
 class PrintingConsumerImpl : 
-        public ConsumerImpl<ProviderType,ProviderPrxType,ConsumerType,ConsumerPrxType,ObjectType>
+        public ConsumerImpl<ProviderType,ConsumerType,ObjectType>
+//         public ConsumerImpl<ProviderType,ProviderPrxType,ConsumerType,ConsumerPrxType,ObjectType>
 {
-using ConsumerImpl<ProviderType,ProviderPrxType,ConsumerType,ConsumerPrxType,ObjectType>::context_;
+// using ConsumerImpl<ProviderType,ProviderPrxType,ConsumerType,ConsumerPrxType,ObjectType>::context_;
+using ConsumerImpl<ProviderType,ConsumerType,ObjectType>::context_;
 public:
     //! Constructor. The optinal parameter @c recurse specifies the level of detail printed
     //! out to @c cout when new data arrives.
     PrintingConsumerImpl( const orcaice::Context &context, int recurse=1000, int expand=-1 ) :
-        ConsumerImpl<ProviderType,ProviderPrxType,ConsumerType,ConsumerPrxType,ObjectType>(context), 
+        ConsumerImpl<ProviderType,ConsumerType,ObjectType>(context), 
+//         ConsumerImpl<ProviderType,ProviderPrxType,ConsumerType,ConsumerPrxType,ObjectType>(context), 
         recurse_(recurse),
         expand_(expand) {}
 

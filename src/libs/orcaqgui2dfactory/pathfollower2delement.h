@@ -17,7 +17,7 @@
 #include <gbxsickacfr/gbxiceutilacfr/timer.h>
 
 #include <hydroqguielementutil/guielement2d.h>
-#include <orcaqgui2dfactory/pathpainter.h>
+#include <orcaqgui2dfactory/pathfollowerpainter.h>
 #include <orcaqgui2dfactory/pathfolloweruserinteraction.h>
 
 namespace orcaqgui2d {
@@ -32,20 +32,17 @@ class PathUpdateConsumer : public orca::PathFollower2dConsumer
 public:
     
     void setData( const orca::PathFollower2dData& newPath, const ::Ice::Current& );
-    void setWaypointIndex( int index, const ::Ice::Current& );
-    void setActivationTime( const orca::Time& absoluteTime, double relativeTime, const ::Ice::Current& );
-    void setEnabledState( bool enabledState, const ::Ice::Current& );
+    void setState( const orca::PathFollower2dState& newState, const ::Ice::Current& );
 
     gbxiceutilacfr::Store<orca::PathFollower2dData> pathPipe_;
-    gbxiceutilacfr::Store<int> indexPipe_;
-    gbxiceutilacfr::Store<double> relativeTimePipe_;
+    gbxiceutilacfr::Store<orca::PathFollower2dState> statePipe_;
 };
 ////////////////////////////////////////////////////////////////////////////////
 
 
 // We need to inherit from GuiElement2d, not from IceStormGuiElement2d. 
 // Reason is that PathFollower2dConsumer has a non-standard purely virtual 
-// member function setWaypointIndex. 
+// member function setState. 
 // Disadvantage is that we have to subscribe ourselves.
 class PathFollower2dElement : public hydroqguielementutil::GuiElement2d
 {
@@ -94,11 +91,18 @@ public:
     // pathUI_ will call this
     void toggleEnabled();
 
-    PathPainter &pathPainter() { return painter_; }
+    PathFollowerPainter &pathPainter() { return painter_; }
+
+    // Toolbar buttons can be enabled and disabled.
+    // By default they are enabled.
+    void enableToolbarButtons( bool enable );
+    
+    // returns the PathUserInteraction object to hook up actions to it via signal-slot
+    QObject* pathUi();
 
 private: 
 
-    PathPainter painter_;
+    PathFollowerPainter painter_;
 
     void connectToInterface();
     bool isConnected_;
@@ -120,12 +124,6 @@ private:
     bool firstTime_;
     gbxiceutilacfr::Timer timer_;
     
-    // toggle states
-    bool displayWaypoints_;
-    bool displayPastWaypoints_;
-    bool displayFutureWaypoints_;
-    bool displayOlympicMarker_;
-    bool currentTransparency_;
     bool isInFocus_;
 
     bool isRemoteInterfaceSick_;
@@ -135,6 +133,8 @@ private:
     
     // returns 0 if remote call works otherwise -1
     int isFollowerEnabled( bool &isEnabled );
+
+    bool enableToolbarButtons_;
     
 };
 

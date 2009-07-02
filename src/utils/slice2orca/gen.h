@@ -87,6 +87,24 @@ private:
         bool _finished;
     };
 
+    class ToMetaDataVisitor : private ::IceUtil::noncopyable, public Slice::ParserVisitor
+    {
+    public:
+
+        ToMetaDataVisitor(::IceUtilInternal::Output&, ::IceUtilInternal::Output&);
+
+//         virtual bool visitClassDefStart(const Slice::ClassDefPtr&);
+        virtual bool visitStructStart(const Slice::StructPtr&);
+
+        // custom parameters
+        std::string libDir_;
+        std::string baseFilename_;
+    private:
+
+        ::IceUtilInternal::Output& H;
+        ::IceUtilInternal::Output& C;
+    };
+
     class ToStringVisitor : private ::IceUtil::noncopyable, public Slice::ParserVisitor
     {
     public:
@@ -107,6 +125,10 @@ private:
         virtual void visitConst(const Slice::ConstPtr&);
         virtual void visitDataMember(const Slice::DataMemberPtr&);
 
+        // custom parameter
+        std::string libNamespace_;
+        std::string libDir_;
+        std::string baseFilename_;
     private:
 
         void emitUpcall(const Slice::ExceptionPtr&, const std::string&, bool = false);
@@ -141,6 +163,8 @@ private:
         virtual void visitConst(const Slice::ConstPtr&);
         virtual void visitDataMember(const Slice::DataMemberPtr&);
 
+        // alexm: the namespace of the generated library
+        std::string libNamespace_;
     private:
 
         void emitUpcall(const Slice::ExceptionPtr&, const std::string&, bool = false);
@@ -175,6 +199,8 @@ private:
         virtual void visitConst(const Slice::ConstPtr&);
         virtual void visitDataMember(const Slice::DataMemberPtr&);
 
+        // alexm: the namespace of the generated library
+        std::string libNamespace_;
     private:
 
         void emitUpcall(const Slice::ExceptionPtr&, const std::string&, bool = false);
@@ -209,6 +235,8 @@ private:
         virtual void visitConst(const Slice::ConstPtr&);
         virtual void visitDataMember(const Slice::DataMemberPtr&);
 
+        // alexm: the namespace of the generated library
+        std::string libNamespace_;
     private:
 
         void emitUpcall(const Slice::ExceptionPtr&, const std::string&, bool = false);
@@ -235,7 +263,7 @@ private:
     {
     public:
 
-        HandleVisitor(::IceUtilInternal::Output&, ::IceUtilInternal::Output&, const std::string&, bool, OutputType);
+        HandleVisitor(::IceUtilInternal::Output&, ::IceUtilInternal::Output&, const std::string&, bool, OutputType );
 
         virtual bool visitModuleStart(const Slice::ModulePtr&);
         virtual void visitModuleEnd(const Slice::ModulePtr&);

@@ -77,7 +77,7 @@ void
 Localise2dElement::update()
 {
     // standard update as in IceStormElement3d
-    if ( !orcaqgui3d::IceStormElement3d<Localise2dPainter,
+    if ( !orcaqgui3d::IceStormElement3d<LocalisePainter,
             orca::Localise2dData,
             orca::Localise2dPrx,
             orca::Localise2dConsumer,

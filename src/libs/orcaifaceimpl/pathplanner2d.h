@@ -22,24 +22,19 @@
 
 namespace orcaifaceimpl {
 
-typedef StoringConsumerImpl<orca::PathPlanner2d, orca::PathPlanner2dPrx,
-                    orca::PathPlanner2dConsumer, orca::PathPlanner2dConsumerPrx,
+typedef StoringConsumerImpl<orca::PathPlanner2d, orca::PathPlanner2dConsumer,
                     orca::PathPlanner2dData> StoringPathPlanner2dConsumerImpl;
 typedef IceUtil::Handle<StoringPathPlanner2dConsumerImpl> StoringPathPlanner2dConsumerImplPtr;
 
-typedef BufferedConsumerImpl<orca::PathPlanner2d, orca::PathPlanner2dPrx,
-                        orca::PathPlanner2dConsumer, orca::PathPlanner2dConsumerPrx,
+typedef BufferedConsumerImpl<orca::PathPlanner2d, orca::PathPlanner2dConsumer,
                         orca::PathPlanner2dData> BufferedPathPlanner2dConsumerImpl;
 typedef IceUtil::Handle<BufferedPathPlanner2dConsumerImpl> BufferedPathPlanner2dConsumerImplPtr;
 
-typedef NotifyingConsumerImpl<orca::PathPlanner2d, orca::PathPlanner2dPrx,
-                        orca::PathPlanner2dConsumer,
-                        orca::PathPlanner2dConsumerPrx,
+typedef NotifyingConsumerImpl<orca::PathPlanner2d, orca::PathPlanner2dConsumer,
                         orca::PathPlanner2dData> NotifyingPathPlanner2dConsumerImpl;
 typedef IceUtil::Handle<NotifyingPathPlanner2dConsumerImpl> NotifyingPathPlanner2dConsumerImplPtr;
 
-typedef PrintingConsumerImpl<orca::PathPlanner2d, orca::PathPlanner2dPrx,
-                        orca::PathPlanner2dConsumer, orca::PathPlanner2dConsumerPrx,
+typedef PrintingConsumerImpl<orca::PathPlanner2d, orca::PathPlanner2dConsumer,
                         orca::PathPlanner2dData> PrintingPathPlanner2dConsumerImpl;
 typedef IceUtil::Handle<PrintingPathPlanner2dConsumerImpl> PrintingPathPlanner2dConsumerImplPtr;
 

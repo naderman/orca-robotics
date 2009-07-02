@@ -19,8 +19,10 @@
 using namespace std;
 using namespace orcaprobefactory;
 
-PathFollower2dProbe::PathFollower2dProbe( const orca::FQInterfaceName& name, const Ice::ObjectPrx& adminPrx, orcaprobe::AbstractDisplay& display,
-                                const orcaice::Context& context )
+PathFollower2dProbe::PathFollower2dProbe( const orca::FQInterfaceName& name, 
+                                          const Ice::ObjectPrx&        adminPrx, 
+                                          orcaprobe::AbstractDisplay&  display,
+                                          const orcaice::Context&      context )
     : InterfaceProbe(name,adminPrx,display,context)
 {
     id_ = "::orca::PathFollower2d";
@@ -91,53 +93,19 @@ PathFollower2dProbe::setData(const orca::PathFollower2dData &pfData, const Ice::
 };
 
 void 
-PathFollower2dProbe::setWaypointIndex( int index, const Ice::Current&)
+PathFollower2dProbe::setState( const orca::PathFollower2dState &state, const Ice::Current&)
 {
     orcacm::OperationData data;
     // this is the result for operation "subscribe" which has user index=2;
     fillOperationData( orcaprobe::UserIndex+2, data );
 
     orcacm::ResultHeader res;
-    res.name = "waypointIndex";
-    stringstream ss; ss << index;
+    res.name = "state";
+    stringstream ss; ss << ifaceutil::toString(state);
     res.text = ss.str();
     data.results.push_back( res );
 
     display_.setOperationData( data );
 
-    std::cout << "PathFollower2dProbe: setWaypointIndex(): " << index << std::endl;
-}
-void 
-PathFollower2dProbe::setActivationTime(const orca::Time &absoluteTime, double relativeTime, const Ice::Current&)
-{
-    orcacm::OperationData data;
-    // this is the result for operation "subscribe" which has user index=2;
-    fillOperationData( orcaprobe::UserIndex+2, data );
-
-    orcacm::ResultHeader res;
-    res.name = "activationTime";
-    stringstream ss; ss << "relative: " << relativeTime << ", absolute: " << ifaceutil::toString(absoluteTime);
-    res.text = ss.str();
-    data.results.push_back( res );
-
-    display_.setOperationData( data );
-
-    std::cout << "PathFollower2dProbe: setActivationTime(): rel: " << relativeTime << "s, abs: " << ifaceutil::toString( absoluteTime ) << std::endl;
-}
-void 
-PathFollower2dProbe::setEnabledState(bool enabledState, const Ice::Current&)
-{
-    orcacm::OperationData data;
-    // this is the result for operation "subscribe" which has user index=2;
-    fillOperationData( orcaprobe::UserIndex+2, data );
-
-    orcacm::ResultHeader res;
-    res.name = "enabledState";
-    stringstream ss; ss << enabledState;
-    res.text = ss.str();
-    data.results.push_back( res );
-
-    display_.setOperationData( data );
-
-    std::cout << "PathFollower2dProbe: setEnabledState(): " << enabledState << std::endl;
+    std::cout << "PathFollower2dProbe: "<<__func__<<"(): " << ifaceutil::toString(state) << std::endl;
 }

@@ -13,75 +13,15 @@
 #include <orcaice/orcaice.h>
 #include <orcaobj/rangescanner2d.h>
 #include <hydrofeatureobs/hydrofeatureobs.h>
+#include <orcafeatureobs/orcafeatureobs.h>
 
 #include "mainthread.h"
 
 using namespace std;
 using namespace laserfeatures;
 
-namespace {
-
-    // conversion between Orca and Hydro datatypes
-    orca::SinglePolarFeature2dPtr convert( const hydrofeatureobs::FeatureObs &hydroFeature )
-    {
-        orca::SinglePolarFeature2dPtr orcaFeature;
-
-        {
-            const hydrofeatureobs::PointFeatureObs *f =
-                dynamic_cast<const hydrofeatureobs::PointFeatureObs*>(&hydroFeature);
-            if ( f != NULL )
-            {
-                orca::PointPolarFeature2d *orcaF = new orca::PointPolarFeature2d;
-                orcaFeature = orcaF;
-                orcaF->p.r       = f->range();
-                orcaF->p.o       = f->bearing();
-                orcaF->rangeSd   = f->rangeSd();
-                orcaF->bearingSd = f->bearingSd();
-            }
-        }
-        {
-            const hydrofeatureobs::PoseFeatureObs *f =
-                dynamic_cast<const hydrofeatureobs::PoseFeatureObs*>(&hydroFeature);
-            if ( f != NULL )
-            {
-                orca::PosePolarFeature2d *orcaF = new orca::PosePolarFeature2d;
-                orcaFeature = orcaF;
-                orcaF->p.r           = f->range();
-                orcaF->p.o           = f->bearing();
-                orcaF->orientation   = f->orientation();
-                orcaF->rangeSd       = f->rangeSd();
-                orcaF->bearingSd     = f->bearingSd();
-                orcaF->orientationSd = f->orientationSd();
-            }
-        }
-        {
-            const hydrofeatureobs::LineFeatureObs *f =
-                dynamic_cast<const hydrofeatureobs::LineFeatureObs*>(&hydroFeature);
-            if ( f != NULL )
-            {
-                orca::LinePolarFeature2d *orcaF = new orca::LinePolarFeature2d;
-                orcaFeature = orcaF;
-                orcaF->start.r      = f->rangeStart();
-                orcaF->start.o      = f->bearingStart();
-                orcaF->end.r        = f->rangeEnd();
-                orcaF->end.o        = f->bearingEnd();
-                orcaF->startSighted = f->startSighted();
-                orcaF->endSighted   = f->endSighted();
-                orcaF->rhoSd        = f->rhoSd();
-                orcaF->alphaSd      = f->alphaSd();
-            }
-        }
-        
-        orcaFeature->type           = hydroFeature.featureType();
-        orcaFeature->pFalsePositive = hydroFeature.pFalsePositive();
-        orcaFeature->pTruePositive  = hydroFeature.pTruePositive();
-
-        return orcaFeature;
-    }
-
-}
-
-////////////////////////////////////////////////////////////////////////////////
+const double MAX_HEARTBEAT_INITIALIZIING_DRIVER = 10.0;
+const double MAX_HEARTBEAT_WORKING_DRIVER = 1.0;
 
 MainThread::MainThread( const orcaice::Context &context ) :
     SubsystemThread( context.tracer(), context.status(), "MainThread" ),
@@ -93,10 +33,11 @@ MainThread::MainThread( const orcaice::Context &context ) :
 void 
 MainThread::initialise()
 {
-    setMaxHeartbeatInterval( 10.0 );
+    setMaxHeartbeatInterval( MAX_HEARTBEAT_INITIALIZIING_DRIVER );
 
-    connectToLaser();
-    getLaserDescription();
+    laserConsumer_->subscribeWithTag( "Laser", this, subsysName() );
+    orcaice::getDescriptionWithTag<orca::LaserScanner2dPrx,orca::RangeScanner2dDescription>
+        ( context_, "Laser", laserDescr_, this, subsysName() );
     initDriver();
     initPolarFeatureInterface();
 }
@@ -104,7 +45,7 @@ MainThread::initialise()
 void 
 MainThread::work()
 {
-    setMaxHeartbeatInterval( 3.0 );
+    setMaxHeartbeatInterval( MAX_HEARTBEAT_WORKING_DRIVER );
 
     // Temporaries for use in loop
     orca::PolarFeature2dData    featureData;
@@ -132,7 +73,9 @@ MainThread::work()
                 ss << "Timed out (" << timeoutMs << "ms) waiting for laser data.  Reconnecting.";
 //                 health().fault( ss.str() );
                 health().warning( ss.str() );
-                connectToLaser();
+                // TODO: on a busy system data is sometimes delayed, usually there's no need to resubscribe.
+                // we should profile delay distribution and possibly wait longer for resubscription.
+                laserConsumer_->subscribeWithTag( "Laser", this, subsysName() );
                 continue;
             }
 
@@ -165,7 +108,7 @@ MainThread::work()
             featureData.features.clear();
             for ( size_t i=0; i < hydroFeatures.size(); i++ )
             {
-                featureData.features.push_back( convert( *hydroFeatures[i] ) );
+                featureData.features.push_back( orcafeatureobs::convert( *hydroFeatures[i] ) );
                 delete hydroFeatures[i];
             }
 
@@ -190,7 +133,7 @@ MainThread::work()
 void 
 MainThread::initDriver()
 {
-    setMaxHeartbeatInterval( 10.0 );
+    setMaxHeartbeatInterval( MAX_HEARTBEAT_INITIALIZIING_DRIVER );
 
     Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag() + ".Config.";
@@ -270,46 +213,7 @@ MainThread::initDriver()
         }
     }
 
-    setMaxHeartbeatInterval( 1.0 );
-}
-
-void 
-MainThread::connectToLaser()
-{
-    while ( !isStopping() )
-    {
-        try {
-            laserConsumer_->subscribeWithTag( "Laser", this, subsysName() );
-            break;
-        }
-        catch ( ... ) {
-            orcaice::catchExceptionsWithStatusAndSleep( "connecting to laser", health() );
-        }       
-    }
-}
-
-void 
-MainThread::getLaserDescription()
-{
-    // Laser proxy
-    orca::LaserScanner2dPrx laserPrx;
-    
-    while ( !isStopping() )
-    {
-        try
-        {
-            context_.tracer().debug( "Getting laser description...", 2 );
-            orcaice::connectToInterfaceWithTag( context_, laserPrx, "Laser" );
-            laserDescr_ = laserPrx->getDescription();
-            stringstream ss;
-            ss << "Got laser description: " << orcaobj::toString( laserDescr_ );
-            context_.tracer().info( ss.str() );
-            break;
-        }
-        catch ( ... ) {
-            orcaice::catchExceptionsWithStatusAndSleep( "getting laser description", health() );
-        }
-    }
+    setMaxHeartbeatInterval( MAX_HEARTBEAT_WORKING_DRIVER );
 }
 
 void

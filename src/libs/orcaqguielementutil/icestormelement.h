@@ -56,6 +56,8 @@ protected:
 
     orcaice::Context context_;
     
+    // alexm: this is a copy of the data in Store of the listener_
+    // this duplicates data storage requirements
     DataType data_;
     
     bool needToUpdate();

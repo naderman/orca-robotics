@@ -38,7 +38,8 @@ private:
 
     // utility function: subscribes and returns individual publisher
     // (the pointer may be empty if the subscriber is already subscribed)
-    ConsumerProxyType internalSubscribe( const ConsumerProxyType& subscriber )
+    ConsumerProxyType internalSubscribe( const ConsumerProxyType& subscriber, 
+                                         const IceStorm::QoS& qos )
     {    
         if ( !topicPrx_ )
             throw orca::SubscriptionFailedException( "Not connected to topic yet" );
@@ -48,7 +49,7 @@ private:
         ConsumerProxyType individualPublisher;
         try {
             // this talks to IceStorm
-            Ice::ObjectPrx pub = topicPrx_->subscribeAndGetPublisher( IceStorm::QoS(), subscriber->ice_twoway());
+            Ice::ObjectPrx pub = topicPrx_->subscribeAndGetPublisher( qos, subscriber->ice_twoway());
             individualPublisher = ConsumerProxyType::uncheckedCast(pub);
         }
         catch ( const IceStorm::AlreadySubscribed& e ) {
@@ -116,7 +117,7 @@ public:
     bool connectToTopic( gbxutilacfr::Stoppable* activity, const std::string& subsysName, int retryInterval,
                          bool localReportingOnly=false )
     {
-        context_.tracer().debug( std::string("TopicHandler: connecting to topic ")+topicName_, 2 );
+        context_.tracer().debug( subsysName, std::string("TopicHandler: connecting to topic ")+topicName_, 2 );
         // Find IceStorm Topic to which we'll publish
         try
         {
@@ -135,15 +136,18 @@ public:
     }
 
     // sub subscribers to the topic we're publishing to
-    IceStorm::TopicPrx  subscribe( const ConsumerProxyType& subscriber )
+    IceStorm::TopicPrx subscribe( const ConsumerProxyType& subscriber, 
+                                  const IceStorm::QoS& qos=IceStorm::QoS() )
     {
-        internalSubscribe( subscriber );
+        internalSubscribe( subscriber, qos );
         return topicPrx_;
     }
 
-    IceStorm::TopicPrx  subscribe( const ConsumerProxyType& subscriber, const DataType& initData )
+    IceStorm::TopicPrx subscribe( const ConsumerProxyType& subscriber, 
+                                   const DataType& initData, 
+                                   const IceStorm::QoS& qos=IceStorm::QoS() )
     {    
-        ConsumerProxyType individualPublisher = internalSubscribe( subscriber );
+        ConsumerProxyType individualPublisher = internalSubscribe( subscriber, qos );
     
         // the individualPublisher may be NULL.
         // this normally happens when the subscriber is already subscribed.
@@ -164,7 +168,7 @@ public:
                 // show this warning locally
                 context_.tracer().warning( ss.str() );
                 // throws exception back to the subscriber
-                throw orca::OrcaException( ss.str() );
+                throw orca::SubscriptionPushFailedException( ss.str() );
             }
             context_.tracer().info( std::string("TopicHandler::subscribe(): sent status info to new subscriber: ")+individualPublisher->ice_toString() );
         }

@@ -21,7 +21,7 @@ namespace orcapathplan {
 std::string toString( const WaypointParameter &wp )
 {
     stringstream ss;
-    ss << "[dTol="<<wp.distanceTolerance<<", headTol="<<wp.headingTolerance*180.0/M_PI<<"deg, time="<<wp.timeTarget.seconds<<":"<<wp.timeTarget.useconds<<", maxAppSpeed="<<wp.maxApproachSpeed<<"m/s, maxAppTurn="<<wp.maxApproachTurnrate*180.0/M_PI<<"deg/s]";
+    ss << "[dTol="<<wp.distanceTolerance<<", headTol="<<wp.headingTolerance*180.0/M_PI<<"deg, time="<<wp.timeTarget<<"sec, maxAppSpeed="<<wp.maxApproachSpeed<<"m/s, maxAppTurn="<<wp.maxApproachTurnrate*180.0/M_PI<<"deg/s]";
     return ss.str();
 }
 
@@ -79,18 +79,17 @@ convertAndAppend( const hydroogmap::OgMap           &ogMap,
                   orca::PathPlanner2dData           &output,
                   double                             firstHeading)
 {
-    double worldX, worldY;
     orca::Waypoint2d wp;
     ifaceutil::zeroAndClear( wp );
 
     for( unsigned int i=0; i<input.size(); i++ )
     {
-        ogMap.getWorldCoords( input[i].x(), input[i].y(), worldX, worldY );
+        hydroogmap::WorldCoords worldCoords = ogMap.worldCoords( input[i].x(), input[i].y() );
         
-        if ( ( i==0 ) && ( isDoubleWaypoint(output,worldX,worldY)) ) continue;
+        if ( ( i==0 ) && ( isDoubleWaypoint(output,worldCoords.x,worldCoords.y)) ) continue;
         
-        wp.target.p.x = worldX;
-        wp.target.p.y = worldY;
+        wp.target.p.x = worldCoords.x;
+        wp.target.p.y = worldCoords.y;
         output.path.push_back( wp );
     }
     
@@ -105,20 +104,17 @@ convertAndAppend( const hydroogmap::OgMap              &ogMap,
                   orca::PathPlanner2dData              &output,
                   double                                firstHeading)
 {
-    
-    double worldX, worldY;
     orca::Waypoint2d wp;
     ifaceutil::zeroAndClear( wp );
 
     for( unsigned int i=0; i<input.size(); i++ )
     {
+        hydroogmap::WorldCoords worldCoords = ogMap.worldCoords( input[i].x(), input[i].y() );
         
-        ogMap.getWorldCoords( input[i].x(), input[i].y(), worldX, worldY );
+        if ( ( i==0 ) && ( isDoubleWaypoint(output,worldCoords.x,worldCoords.y)) ) continue;
         
-        if ( ( i==0 ) && ( isDoubleWaypoint(output,worldX,worldY)) ) continue;
-        
-        wp.target.p.x = worldX;
-        wp.target.p.y = worldY;
+        wp.target.p.x = worldCoords.x;
+        wp.target.p.y = worldCoords.y;
         setWpParameters( wpPara[i], wp );
         output.path.push_back( wp );
     }

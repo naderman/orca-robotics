@@ -21,29 +21,23 @@
 
 namespace orcaifaceimpl {
 
-typedef ProviderWithDescriptionImpl<orca::Cpu, orca::CpuPrx,
-                    orca::CpuConsumer, orca::CpuConsumerPrx,
+typedef ProviderWithDescriptionImpl<orca::Cpu, orca::CpuConsumer,
                     orca::CpuData, orca::CpuDescription> CpuImpl;
 typedef IceUtil::Handle<CpuImpl> CpuImplPtr;
 
-typedef StoringConsumerImpl<orca::Cpu, orca::CpuPrx,
-                    orca::CpuConsumer, orca::CpuConsumerPrx,
+typedef StoringConsumerImpl<orca::Cpu, orca::CpuConsumer,
                     orca::CpuData> StoringCpuConsumerImpl;
 typedef IceUtil::Handle<StoringCpuConsumerImpl> StoringCpuConsumerImplPtr;
 
-typedef BufferedConsumerImpl<orca::Cpu, orca::CpuPrx,
-                        orca::CpuConsumer, orca::CpuConsumerPrx,
+typedef BufferedConsumerImpl<orca::Cpu, orca::CpuConsumer,
                         orca::CpuData> BufferedCpuConsumerImpl;
 typedef IceUtil::Handle<BufferedCpuConsumerImpl> BufferedCpuConsumerImplPtr;
 
-typedef NotifyingConsumerImpl<orca::Cpu, orca::CpuPrx,
-                        orca::CpuConsumer,
-                        orca::CpuConsumerPrx,
+typedef NotifyingConsumerImpl<orca::Cpu, orca::CpuConsumer,
                         orca::CpuData> NotifyingCpuConsumerImpl;
 typedef IceUtil::Handle<NotifyingCpuConsumerImpl> NotifyingCpuConsumerImplPtr;
 
-typedef PrintingConsumerImpl<orca::Cpu, orca::CpuPrx,
-                        orca::CpuConsumer, orca::CpuConsumerPrx,
+typedef PrintingConsumerImpl<orca::Cpu, orca::CpuConsumer,
                         orca::CpuData> PrintingCpuConsumerImpl;
 typedef IceUtil::Handle<PrintingCpuConsumerImpl> PrintingCpuConsumerImplPtr;
 

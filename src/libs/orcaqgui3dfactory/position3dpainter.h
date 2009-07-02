@@ -20,7 +20,7 @@ namespace orcaqgui3d
 {
 
 /*!
-  @brief LaserPainter paints laser scans
+  @brief Paints orca gear of the same name
 */
 class Position3dPainter
 {

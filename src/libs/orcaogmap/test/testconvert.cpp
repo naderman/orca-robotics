@@ -34,7 +34,6 @@ int main( int argc, char **argv )
                            0.0,
                            0.0,
                            0.0,
-                           0.1,
                            0.1 );
     cout << "Loaded map with number of cells (" << internalMap.numCellsX() << "," << internalMap.numCellsY() << ")" << endl;
     

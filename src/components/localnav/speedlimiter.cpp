@@ -133,8 +133,8 @@ SpeedLimiter::constrainMaxSpeeds( orcalocalnav::Goal &goal,
     if ( diff < TIME_TOLERANCE )
     {
         // Keep going at the intended speed.
-        goal.maxSpeed = intendedSpeedThisLeg_;
-        cout<<"  --> within tolerance, going at intended speed("<<intendedSpeedThisLeg_<<"m/s) (dt from target="<<(timeRemainingAtIntendedSpeed-goal.timeRemaining)<<"s)" << endl;
+        goal.maxSpeed = MIN( intendedSpeedThisLeg_, goal.maxSpeed );
+        cout<<"  --> within tolerance, going at intended speed("<<intendedSpeedThisLeg_<<"m/s, maxSpeed="<<goal.maxSpeed<<"m/s) (dt from target="<<(timeRemainingAtIntendedSpeed-goal.timeRemaining)<<"s)" << endl;
         return;
     }
 
@@ -146,6 +146,8 @@ SpeedLimiter::constrainMaxSpeeds( orcalocalnav::Goal &goal,
         scaleFactor = timeRemainingAtIntendedSpeed / goal.timeRemaining;
         
     double requiredSpeed = intendedSpeedThisLeg_ * scaleFactor;
+
+//     cout<<"TRACE(speedlimiter.cpp): intendedSpeedThisLeg_: " << intendedSpeedThisLeg_ << ", scaleFactor: " << scaleFactor << ", requiredSpeed: " << requiredSpeed << endl;
 
     // Ensure some minimum speed if not at goal
     const double MIN_SPEED_NOT_AT_GOAL = AT_GOAL_SPEED_THRESHOLD*0.5;

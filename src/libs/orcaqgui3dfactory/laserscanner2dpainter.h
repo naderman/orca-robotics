@@ -31,7 +31,9 @@ class LaserScanner2dPainter
     LaserScanner2dPainter( QColor outlineColor=QColor( 102,102,153, 255 ) );
 
     void setDescr( const orca::Frame3d &offset,
-                   const orca::Size3d  &size );
+                   const orca::Size3d  &size,
+                   double minRange,
+                   double maxRange );
 
     void setData( const orca::RangeScanner2dDataPtr &scan );
 
@@ -53,11 +55,13 @@ class LaserScanner2dPainter
 
     bool isDisplayScan_;
     bool isDisplayPoints_;
+    double minRange_;
+    double maxRange_;
 
     QColor outlineColor_;
     QColor basisColor_;
 
-    osg::ref_ptr<osg::PositionAttitudeTransform> xformNode_;
+    osg::ref_ptr<osg::PositionAttitudeTransform> platformToSensorXformNode_;
     osg::ref_ptr<osg::Geode>                     scanNode_;
 
     osg::ref_ptr<osg::Group> root_;

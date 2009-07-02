@@ -21,24 +21,19 @@
 
 namespace orcaifaceimpl {
 
-typedef StoringConsumerImpl<orca::Properties, orca::PropertiesPrx,
-                    orca::PropertiesConsumer, orca::PropertiesConsumerPrx,
+typedef StoringConsumerImpl<orca::Properties, orca::PropertiesConsumer,
                     orca::PropertiesData> StoringPropertiesConsumerImpl;
 typedef IceUtil::Handle<StoringPropertiesConsumerImpl> StoringPropertiesConsumerImplPtr;
 
-typedef BufferedConsumerImpl<orca::Properties, orca::PropertiesPrx,
-                        orca::PropertiesConsumer, orca::PropertiesConsumerPrx,
+typedef BufferedConsumerImpl<orca::Properties, orca::PropertiesConsumer,
                         orca::PropertiesData> BufferedPropertiesConsumerImpl;
 typedef IceUtil::Handle<BufferedPropertiesConsumerImpl> BufferedPropertiesConsumerImplPtr;
 
-typedef NotifyingConsumerImpl<orca::Properties, orca::PropertiesPrx,
-                        orca::PropertiesConsumer,
-                        orca::PropertiesConsumerPrx,
+typedef NotifyingConsumerImpl<orca::Properties, orca::PropertiesConsumer,
                         orca::PropertiesData> NotifyingPropertiesConsumerImpl;
 typedef IceUtil::Handle<NotifyingPropertiesConsumerImpl> NotifyingPropertiesConsumerImplPtr;
 
-typedef PrintingConsumerImpl<orca::Properties, orca::PropertiesPrx,
-                        orca::PropertiesConsumer, orca::PropertiesConsumerPrx,
+typedef PrintingConsumerImpl<orca::Properties, orca::PropertiesConsumer,
                         orca::PropertiesData> PrintingPropertiesConsumerImpl;
 typedef IceUtil::Handle<PrintingPropertiesConsumerImpl> PrintingPropertiesConsumerImplPtr;
 

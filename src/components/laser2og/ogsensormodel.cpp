@@ -8,6 +8,7 @@
  *
  */
 
+#include <stdio.h>
 #include <iostream>
 #include <gbxutilacfr/mathdefs.h>
 

@@ -17,35 +17,35 @@
 #include <QVBoxLayout>
 
 #include <gbxutilacfr/mathdefs.h>
-
+#include <orca/wifi.h>
 #include "wifielement.h"
 
 using namespace std;
 using namespace orcaqgui2d;
 
-// mimics Windows-style signal level
+// maximum signal-to-noise-ratio
+// everything above 25 is considered "excellent"
 // see http://www.osuweb.net/wireless/faqs.html#whydoesmysignalstrengthsaylow
-QString 
-WifiWidget::getSignalLabel( int snr )
+const int MAXIMUM_SNR = 28;
+
+QString
+WifiWidget::getSignalLabel( orca::DiscreteSignalLevel level )
 {
-    assert(signalThreshholds_.size()==4);
-    
-    if (snr<signalThreshholds_[0]) return "very low";
-    else if (snr<signalThreshholds_[1]) return "low";
-    else if (snr<signalThreshholds_[2]) return "good";   
-    else if (snr<signalThreshholds_[3]) return "very good";
-    else return "excellent";
+    switch (level)
+    {
+        case orca::SignalLevelUnknown: return "UNKNOWN";
+        case orca::SignalLevelVeryLow: return "VERY LOW";
+        case orca::SignalLevelLow: return "LOW";
+        case orca::SignalLevelGood: return "GOOD";
+        case orca::SignalLevelVeryGood: return "VERY GOOD";
+        case orca::SignalLevelExcellent: return "EXCELLENT";
+        default: assert( false && "Unknown signal level");
+    }
 }
 
 WifiWidget::WifiWidget( unsigned int numInterfaces, std::string proxyString )
     : numInterfaces_(numInterfaces)
-{
-    // threshholds to determine signal levels
-    signalThreshholds_.push_back(10);
-    signalThreshholds_.push_back(15);
-    signalThreshholds_.push_back(20);
-    signalThreshholds_.push_back(25);
-    
+{    
     setupDisplay();
     setWindowTitle( QString(proxyString.c_str()) );
 }
@@ -70,9 +70,8 @@ WifiWidget::refresh( orca::WifiData &data )
             lcdsMaxNoise_[i]->display("DB");
             progressBars_[i]->setFormat("%p%");
             int snr = wifiInt.signalLevel-wifiInt.noiseLevel;
-            QString label = getSignalLabel( snr );
-            progressBars_[i]->setValue( MIN(snr,signalThreshholds_.last()) );
-            overallSigLabels_[i]->setText( label );
+            progressBars_[i]->setValue( MIN(snr,MAXIMUM_SNR) );
+            overallSigLabels_[i]->setText( getSignalLabel( wifiInt.discreteLevel ) );
         } else {
             lcdsMaxSignal_[i]->display(wifiInt.maxSignalLevel);
             lcdsMaxNoise_[i]->display(wifiInt.maxNoiseLevel);
@@ -150,7 +149,7 @@ void WifiWidget::setupDisplay()
         
         QProgressBar *overall = new QProgressBar;
         overall->setMinimum(0);
-        overall->setMaximum(signalThreshholds_.last());
+        overall->setMaximum(MAXIMUM_SNR);
         progressBars_.push_back(overall);
         QLabel *progressLabel = new QLabel("Overall signal level: ");
         QLabel *overallSigLabel = new QLabel;

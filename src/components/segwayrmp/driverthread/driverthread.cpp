@@ -35,6 +35,15 @@ namespace {
         cmd.vx = -cmd.vx;
     }
 
+    std::string
+    stallString( const hydrointerfaces::SegwayRmp::Data &data,
+                 const StallSensor::StallType           &stallType )
+    {
+        stringstream ss;
+        ss << "Stall condition: " << stallType << ", data: " << data.toString();
+        return ss.str();
+    }
+
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -122,18 +131,26 @@ DriverThread::operateHardware()
         try {
             segwayRmp_.read( data );
             if ( config_.driveInReverse ) reverseDirection( data );
-            stallType = stallSensor.isStalled(data);
-            if ( stallType != StallSensor::NoStall )
-                reportStall(data,stallType);
 
             // Let the higher-ups know
             callback_.receiveData( data );
 
             // Check for warnings/faults
-            if ( data.hasFaults )
+            stallType = stallSensor.isStalled(data);
+            if ( data.hasFaults || 
+                 (stallType != StallSensor::NoStall) )
             {
-                stateMachine_.setFault( data.warnFaultReason );
-                health().fault( data.warnFaultReason );
+                stringstream ssFault;
+                if ( data.hasFaults )
+                {
+                    ssFault << data.warnFaultReason << "\n";
+                }
+                if ( stallType != StallSensor::NoStall )
+                {
+                    ssFault << stallString( data, stallType );
+                }
+                stateMachine_.setFault( ssFault.str() );
+                health().fault( ssFault.str() );
                 break;
             }
             else if ( data.hasWarnings )
@@ -222,15 +239,6 @@ DriverThread::setDesiredSpeed( const hydrointerfaces::SegwayRmp::Command &comman
         throw gbxutilacfr::Exception( ERROR_INFO, "Motion disabled in configuration" );
     }
     commandStore_.set( command ); 
-}
-
-void
-DriverThread::reportStall( const hydrointerfaces::SegwayRmp::Data &data,
-                           const StallSensor::StallType           &stallType )
-{
-    stringstream ss;
-    ss << "Stall condition: " << stallType << ", data: " << data.toString();
-    health().warning( ss.str() );
 }
 
 }

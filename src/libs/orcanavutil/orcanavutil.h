@@ -45,7 +45,8 @@ namespace orcanavutil {
     orca::Frame2d convert( const hydronavutil::Pose &pose );
     //! Sets transverse component to zero.
     orca::VelocityControl2dData convert( const hydronavutil::Velocity &cmd );
-
+    //! Returns a covariance matrix of the form: diag([linearCov, linearCov, rotationalCov])
+    orca::Covariance2d diagonalCovariance( double linearCov, double rotationalCov );
 }
 
 #endif

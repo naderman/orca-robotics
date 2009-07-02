@@ -28,9 +28,7 @@ namespace {
         loData.timeStamp = odData.timeStamp;
         loData.hypotheses.resize(1);
         loData.hypotheses[0].weight = 1.0;
-        loData.hypotheses[0].mean.p.x = odData.pose.p.x;
-        loData.hypotheses[0].mean.p.y = odData.pose.p.y;
-        loData.hypotheses[0].mean.o   = odData.pose.o;
+        loData.hypotheses[0].mean   = odData.pose;
         loData.hypotheses[0].cov.xx   = varPosition;
         loData.hypotheses[0].cov.yy   = varPosition;
         loData.hypotheses[0].cov.tt   = varHeading;
@@ -51,11 +49,11 @@ void
 MainThread::initialise()
 {
     setMaxHeartbeatInterval( 10.0 );
-
+    
     Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag()+".Config.";
     stdDevPosition_ = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"StdDevPosition", 0.05 );
-    stdDevHeading_ = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"StdDevHeading", 1.0 );
+    stdDevOrientation_ = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"StdDevOrientation", 1.0 );
     minInterPublishPeriodSec_ = orcaice::getPropertyAsDoubleWithDefault( prop, prefix+"MinInterPublishPeriodSec", 1.0 ); 
     
     initNetworkInterface();
@@ -69,10 +67,10 @@ MainThread::work()
     orca::Localise2dData localiseData;
     orca::Odometry2dData odomData;
     const double varPosition = stdDevPosition_*stdDevPosition_;
-    const double varHeading = (stdDevHeading_*M_PI/180.0)*(stdDevHeading_*M_PI/180.0);
+    const double varHeading = (stdDevOrientation_*M_PI/180.0)*(stdDevOrientation_*M_PI/180.0);
 
     const int timeoutMs = 1000;
-    setMaxHeartbeatInterval( 2*timeoutMs );
+    setMaxHeartbeatInterval( timeoutMs/1e3 );
     
     //
     // MAIN LOOP
@@ -87,7 +85,7 @@ MainThread::work()
         try
         {
             health().heartbeat();
-            if ( odometry2dConsumer_->buffer().getAndPopWithTimeout( odomData, timeoutMs ) != 0 ) {
+            if ( odometry2dConsumer_->store().getNext( odomData, timeoutMs ) != 0 ) {
                 continue;
             }
     
@@ -115,32 +113,16 @@ MainThread::initNetworkInterface()
     //
     // EXTERNAL REQUIRED INTERFACES
     //           
-    odometry2dConsumer_ = new orcaifaceimpl::BufferedOdometry2dConsumerImpl( 10, gbxiceutilacfr::BufferTypeCircular,context_);
+    odometry2dConsumer_ = new orcaifaceimpl::StoringOdometry2dConsumerImpl(context_);
     // multi-try function
     odometry2dConsumer_->subscribeWithTag( "Odometry2d", this, subsysName() );
 
     //
     // Get vehicleDescription
     //
-    orca::Odometry2dPrx odometryPrx;
-    // multi-try function
-    orcaice::connectToInterfaceWithTag<orca::Odometry2dPrx>( context_, odometryPrx, "Odometry2d", this );
-    // check for stop signal after retuning from multi-try
-    if ( isStopping() )
-        return;
-    
     orca::VehicleDescription vehicleDescription;
-    while ( !isStopping() )
-    {
-        try
-        {
-            vehicleDescription = odometryPrx->getDescription();
-            break;
-        }
-        catch ( ... ) {
-            orcaice::catchExceptionsWithStatusAndSleep( "getting vehicle description", health(), gbxutilacfr::SubsystemFault, 3000 );
-        }   
-    }
+    orcaice::getDescriptionWithTag<orca::Odometry2dPrx,orca::VehicleDescription>
+        ( context_, "Odometry2d", vehicleDescription, this, subsysName() );
     
     // 
     // EXTERNAL PROVIDED INTERFACE

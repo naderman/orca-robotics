@@ -21,29 +21,23 @@
 
 namespace orcaifaceimpl {
 
-typedef ProviderWithDescriptionImpl<orca::Ins, orca::InsPrx,
-                    orca::InsConsumer, orca::InsConsumerPrx,
+typedef ProviderWithDescriptionImpl<orca::Ins, orca::InsConsumer,
                     orca::InsData, orca::InsDescription> InsImpl;
 typedef IceUtil::Handle<InsImpl> InsImplPtr;
 
-typedef StoringConsumerImpl<orca::Ins, orca::InsPrx,
-                    orca::InsConsumer, orca::InsConsumerPrx,
+typedef StoringConsumerImpl<orca::Ins, orca::InsConsumer,
                     orca::InsData> StoringInsConsumerImpl;
 typedef IceUtil::Handle<StoringInsConsumerImpl> StoringInsConsumerImplPtr;
 
-typedef BufferedConsumerImpl<orca::Ins, orca::InsPrx,
-                        orca::InsConsumer, orca::InsConsumerPrx,
+typedef BufferedConsumerImpl<orca::Ins, orca::InsConsumer,
                         orca::InsData> BufferedInsConsumerImpl;
 typedef IceUtil::Handle<BufferedInsConsumerImpl> BufferedInsConsumerImplPtr;
 
-typedef NotifyingConsumerImpl<orca::Ins, orca::InsPrx,
-                        orca::InsConsumer,
-                        orca::InsConsumerPrx,
+typedef NotifyingConsumerImpl<orca::Ins, orca::InsConsumer,
                         orca::InsData> NotifyingInsConsumerImpl;
 typedef IceUtil::Handle<NotifyingInsConsumerImpl> NotifyingInsConsumerImplPtr;
 
-typedef PrintingConsumerImpl<orca::Ins, orca::InsPrx,
-                        orca::InsConsumer, orca::InsConsumerPrx,
+typedef PrintingConsumerImpl<orca::Ins, orca::InsConsumer,
                         orca::InsData> PrintingInsConsumerImpl;
 typedef IceUtil::Handle<PrintingInsConsumerImpl> PrintingInsConsumerImplPtr;
 

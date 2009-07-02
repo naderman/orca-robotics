@@ -82,6 +82,17 @@ MainWindow::quit()
 void
 MainWindow::showDialogMsg( MessageType type, const QString &message )
 {
+    const int maxMsgLen = 1000;
+    if ( message.length() > maxMsgLen )
+    {
+        cout<<"TRACE(mainwin.cpp): Truncating dialog message, full message is: " << endl
+            << message.toStdString() << endl;
+        QString truncatedMsg = "\n  [... truncated ...]";
+        QString shortMessage = message;
+        shortMessage.resize( maxMsgLen-truncatedMsg.length() );
+        return showDialogMsg( type, shortMessage+truncatedMsg );
+    }
+
     if (type==Information)
     {
         QMessageBox::information(this, "INFO", message, QMessageBox::Ok);

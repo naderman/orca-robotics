@@ -17,7 +17,7 @@ module orca
 /*!
     @brief Unix absolute time
 */
-struct Time
+["slice2orca:string:custom"]  struct Time
 {
     //! Number of seconds
     int seconds;

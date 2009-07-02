@@ -28,21 +28,9 @@ PathUpdateConsumer::setData( const orca::PathFollower2dData& newPath, const ::Ic
 }
 
 void
-PathUpdateConsumer::setWaypointIndex( int index, const ::Ice::Current& )
+PathUpdateConsumer::setState( const orca::PathFollower2dState& newState, const ::Ice::Current& )
 {
-//     cout << "PathUpdateConsumer::Received a new index, it's " << index << endl;
-    indexPipe_.set( index );
-}
-
-void PathUpdateConsumer::setActivationTime( const orca::Time& absoluteTime, double relativeTime, const ::Ice::Current& )
-{
-//     cout << "PathUpdateConsumer::Received a new activation time! " << endl;
-    relativeTimePipe_.set( relativeTime );
-}
-
-void PathUpdateConsumer::setEnabledState( bool enabledState, const ::Ice::Current& )
-{
-//     cout << "PathUpdateConsumer: enable state changed. Not used, we rely on subscription." << endl;
+    statePipe_.set( newState );
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -63,18 +51,15 @@ PathFollower2dElement::PathFollower2dElement( const hydroqguielementutil::GuiEle
       shortcutKeyManager_(shortcutKeyManager),
       guiElementSet_(guiElementSet),
       firstTime_(true),
-      displayWaypoints_(true),
-      displayPastWaypoints_(false),
-      displayFutureWaypoints_(true),
-      displayOlympicMarker_(true),
-      currentTransparency_(false),
       isInFocus_(false),
-      isRemoteInterfaceSick_(false)
+      isRemoteInterfaceSick_(false),
+      enableToolbarButtons_(true)
 { 
     inputFactory_.reset( new PathFollowerInputFactory );
     enableHI();
-    
-    painter_.initialize( displayWaypoints_, displayPastWaypoints_, displayFutureWaypoints_, displayOlympicMarker_, currentTransparency_);
+
+    PathFollowerPainterConfig config;
+    painter_.initialize( config );
     
     pathUpdateConsumer_ = new PathUpdateConsumer;
 
@@ -100,9 +85,10 @@ PathFollower2dElement::enableHI()
                                                     guiElementSet_,
                                                     painter_, 
                                                     context_,
-                                                    inputFactory_.get()) );
+                                                    inputFactory_.get(),
+                                                    enableToolbarButtons_ ) );
     pathUI_->setFocus( isInFocus_ );
-    pathUI_->setUseTransparency( currentTransparency_ );
+    pathUI_->setUseTransparency( painter_.useTransparency() );
 }
 
 void
@@ -114,10 +100,11 @@ PathFollower2dElement::disableHI()
 void
 PathFollower2dElement::setFocus( bool inFocus ) 
 {
-    painter_.setFocus( inFocus ); 
+    painter_.setFocus( inFocus );
+    isInFocus_ = inFocus;
+    
     if ( pathUI_.get() )
         pathUI_->setFocus( inFocus); 
-    isInFocus_ = inFocus;
 };
 
 void
@@ -145,17 +132,11 @@ PathFollower2dElement::update()
         pathUpdateConsumer_->pathPipe_.get( newPath );
         painter_.setData( newPath );
     }
-    if ( pathUpdateConsumer_->indexPipe_.isNewData() )
+    if ( pathUpdateConsumer_->statePipe_.isNewData() )
     {
-        int index;
-        pathUpdateConsumer_->indexPipe_.get( index );
-        painter_.setWpIndex( index );
-    }
-    if ( pathUpdateConsumer_->relativeTimePipe_.isNewData() )
-    {
-        double relTime;
-        pathUpdateConsumer_->relativeTimePipe_.get( relTime );
-        painter_.setRelativeStartTime( relTime );
+        orca::PathFollower2dState state;
+        pathUpdateConsumer_->statePipe_.get( state );
+        painter_.setState( state );
     }
 }
 
@@ -164,7 +145,7 @@ PathFollower2dElement::isFollowerEnabled( bool &isEnabled )
 {
     try
     {
-        isEnabled = pathFollower2dPrx_->enabled();
+        isEnabled = pathFollower2dPrx_->getState().isEnabled;
         if (isRemoteInterfaceSick_) {
             humanManager_.showStatusInformation( "PathFollower2dElement::remote interface is sane again" );
             isRemoteInterfaceSick_ = false;
@@ -184,11 +165,11 @@ PathFollower2dElement::isFollowerEnabled( bool &isEnabled )
 void 
 PathFollower2dElement::setUseTransparency( bool useTransparency ) 
 { 
-    cout << "TRACE(pathfollower2delement.cpp): setUseTransparency: " << useTransparency << endl;
-    painter_.setUseTransparency( useTransparency ); 
+//     cout << "TRACE(pathfollower2delement.cpp): setUseTransparency: " << useTransparency << endl;
+    painter_.setUseTransparency( useTransparency );
+
     if ( pathUI_.get() )
         pathUI_->setUseTransparency( useTransparency );
-    currentTransparency_ = useTransparency;
 }
 
 void
@@ -226,27 +207,37 @@ QStringList
 PathFollower2dElement::contextMenu()
 {
     QStringList s;
-    if (displayWaypoints_) {
+    if (painter_.displayWaypoints()) {
         s << "Switch all waypoints OFF";
     } else {
         s << "Switch all waypoints ON";
     }
-    if (displayPastWaypoints_) {
+    if (painter_.displayPastWaypoints()) {
         s << "Switch past waypoints OFF";
     } else {
         s << "Switch past waypoints ON";
     }
-    if (displayFutureWaypoints_) {
+    if (painter_.displayFutureWaypoints()) {
         s << "Switch future waypoints OFF";
     } else {
         s << "Switch future waypoints ON";
     }
-    if (displayOlympicMarker_) {
+    if (painter_.displayPathWhenFinished()) {
+        s << "Switch finished path OFF";
+    } else {
+        s << "Switch finished path ON";
+    }
+    if (painter_.displayPathWhenNotActivated()) {
+        s << "Switch unactivated path OFF";
+    } else {
+        s << "Switch unactivated path ON";
+    }
+    if (painter_.displayOlympicMarker()) {
         s << "Switch olympic marker OFF";
     } else {
         s << "Switch olympic marker ON";
     }
-    if (currentTransparency_) {
+    if (painter_.useTransparency()) {
         s << "Switch transparency OFF";
     } else {
         s << "Switch transparency ON";
@@ -271,49 +262,33 @@ PathFollower2dElement::contextMenu()
 void 
 PathFollower2dElement::execute( int action )
 {
-    cout<<"TRACE(pathfollower2delement.cpp): execute: " << action << endl;
+//     cout<<"TRACE(pathfollower2delement.cpp): execute: " << action << endl;
     if ( action == 0 )
-    {
-        displayWaypoints_ = !displayWaypoints_;
         painter_.toggleDisplayWaypoints();    
-    }
     else if ( action == 1 )
-    {
-        displayPastWaypoints_ = !displayPastWaypoints_;
         painter_.togglePastWaypoints();
-    }
     else if ( action == 2 )
-    {
-        displayFutureWaypoints_ = !displayFutureWaypoints_;
         painter_.toggleFutureWaypoints();
-    }
     else if ( action == 3 )
-    {
-        displayOlympicMarker_ = !displayOlympicMarker_;
-        painter_.toggleOlympicMarker();
-    }
+        painter_.toggleDisplayPathWhenFinished();
     else if ( action == 4 )
-    {
-        setUseTransparency(!currentTransparency_);
-    }
+        painter_.toggleDisplayPathWhenNotActivate();
     else if ( action == 5 )
-    {
-        toggleEnabled();
-    }
+        painter_.toggleOlympicMarker();
     else if ( action == 6 )
-    {
-        if ( pathUI_.get() )
-            pathUI_->savePathAs();
-    }
+        setUseTransparency(!painter_.useTransparency());
     else if ( action == 7 )
+        toggleEnabled();
+    else if ( action == 8 )
     {
-        if ( pathUI_.get() )
-            pathUI_->savePath();
+        if ( pathUI_.get() ) pathUI_->savePathAs();
+    }
+    else if ( action == 9 )
+    {
+        if ( pathUI_.get() ) pathUI_->savePath();
     }
     else
-    {
         assert( false && "PathFollower2dElement::execute(): bad action" );
-    }
 }
 
 void
@@ -328,7 +303,10 @@ PathFollower2dElement::toggleEnabled()
 
     bool isEnabled;
     try {
-        pathFollower2dPrx_->setEnabled( !pathFollower2dPrx_->enabled() );
+        orca::PathFollower2dState state = pathFollower2dPrx_->getState();
+        state.isEnabled = !state.isEnabled;
+        pathFollower2dPrx_->setEnabled( state.isEnabled );
+        isEnabled = state.isEnabled;
         isFollowerEnabled( isEnabled );
     }
     catch ( const std::exception &e ) {
@@ -354,7 +332,7 @@ PathFollower2dElement::go()
         return;
     }
     
-    cout<<"TRACE(PathFollower2dElement): go()" << endl;
+//     cout<<"TRACE(PathFollower2dElement): go()" << endl;
     humanManager_.showStatusInformation("Received GO signal");
     try
     {
@@ -376,7 +354,7 @@ PathFollower2dElement::stop()
         return;
     }
         
-    cout<<"TRACE(PathFollower2dElement): stop()" << endl;
+//     cout<<"TRACE(PathFollower2dElement): stop()" << endl;
     humanManager_.showStatusInformation("Received STOP signal");
     orca::PathFollower2dData dummyPath;
     const bool activateNow = true;
@@ -408,7 +386,6 @@ PathFollower2dElement::sendPath( const hydroqguipath::IPathInput *pathInput,
         // if we are already subscribed, the server will just do nothing
         pathFollower2dPrx_->subscribe(callbackPrx_);
         
-        orca::PathFollower2dData data;
         hydroqguipath::GuiPath guiPath;
         int numLoops = 0;
         float timeOffset = 0.0;
@@ -416,8 +393,11 @@ PathFollower2dElement::sendPath( const hydroqguipath::IPathInput *pathInput,
         
         if ( guiPath.size()>0 )
         {
+
+            orca::PathFollower2dData data;
+            data.timeStamp = orcaice::getNow();
             guiPathToOrcaPath( guiPath, data.path, numLoops, timeOffset );
-            cout<<"TRACE(pathfollower2delement.cpp): setData() with data: " << orcaobj::toVerboseString(data) << endl;
+//             cout<<"TRACE(pathfollower2delement.cpp): setData() with data: " << orcaobj::toVerboseString(data) << endl;
             pathFollower2dPrx_->setData( data, activateImmediately );
             if (!activateImmediately) 
                 humanManager_.showStatusInformation( "Path needs to be activated by pressing the Go button." );
@@ -439,8 +419,26 @@ void
 PathFollower2dElement::paint( QPainter *p, int z )
 {   
     painter_.paint( p, z );
+
     if ( pathUI_.get() )
         pathUI_->paint( p );
+}
+
+void
+PathFollower2dElement::enableToolbarButtons( bool enable )
+{
+    disableHI();
+    enableToolbarButtons_ = enable;
+    enableHI();
+}
+
+QObject*
+PathFollower2dElement::pathUi()
+{
+    if ( pathUI_.get() )
+        return (QObject*)pathUI_.get();
+    
+    return 0;
 }
 
 }

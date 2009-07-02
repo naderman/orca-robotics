@@ -14,8 +14,7 @@ namespace ogfusion {
 
 typedef struct
 {
-    double mapResX;
-    double mapResY;
+    double mapRes;
     int mapSizeX;
     int mapSizeY;
     double mapOriginX;

@@ -23,8 +23,7 @@ convert( const orca::OgMapData & input, hydroogmap::OgMap & output )
     output.offset().p.x = input.offset.p.x;
     output.offset().p.y = input.offset.p.y;
     output.offset().o = input.offset.o;
-    output.setMetresPerCellX( input.metresPerCellX );
-    output.setMetresPerCellY( input.metresPerCellY );
+    output.setMetresPerCell( input.metresPerCell );
 }
 
 void 
@@ -38,8 +37,7 @@ convert( const hydroogmap::OgMap &input, orca::OgMapData &output, orca::OgMapTyp
     output.offset.p.x = input.offset().p.x;
     output.offset.p.y = input.offset().p.y;
     output.offset.o   = input.offset().o;
-    output.metresPerCellX = input.metresPerCellX();
-    output.metresPerCellY = input.metresPerCellY();
+    output.metresPerCell = input.metresPerCell();
     output.mapType = mapType;
 }
 

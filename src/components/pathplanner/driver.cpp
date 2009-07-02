@@ -83,13 +83,13 @@ namespace {
             totalLength += thisLength;
         }
 
-        double totalTime = orcaice::timeDiffAsDouble(goalParams.timeTarget, startParams.timeTarget);
+        double totalTime = goalParams.timeTarget - startParams.timeTarget;
         if ( totalTime < 0 )
         {
             stringstream ss;
             ss << "Time of goal was _before_ time of start!" << endl
-               << "  startWp.timeTarget: " << orcaobj::toString(startParams.timeTarget) << endl
-               << "  goalWp.timeTarget:  " << orcaobj::toString(goalParams.timeTarget);
+               << "  startWp.timeTarget: " << startParams.timeTarget << endl
+               << "  goalWp.timeTarget:  " << goalParams.timeTarget;
             throw gbxutilacfr::Exception( ERROR_INFO, ss.str() );
         }
 
@@ -119,7 +119,7 @@ namespace {
                     const double fractionOfTotalLength = legLengths[i-1]/totalLength;
                     const double timeThisLeg = fractionOfTotalLength*totalTime;
                     wp.timeTarget = orcaPath.back().timeTarget;
-                    orcaice::add( wp.timeTarget, timeThisLeg );
+                    wp.timeTarget += timeThisLeg;
                 }
             }
             orcaPath.push_back( wp );

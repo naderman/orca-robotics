@@ -48,7 +48,7 @@ PathPlanner2dElement::PathPlanner2dElement( const hydroqguielementutil::GuiEleme
                                             hydroqguielementutil::IHumanManager        &humanManager,
                                             hydroqguielementutil::MouseEventManager    &mouseEventManager,
                                             hydroqguielementutil::ShortcutKeyManager   &shortcutKeyManager )
-    : orcaqguielementutil::IceStormGuiElement2d<PathPainter,
+    : orcaqguielementutil::IceStormGuiElement2d<PathPlannerPainter,
                         orca::PathPlanner2dData,
                         orca::PathPlanner2dPrx,
                         orca::PathPlanner2dConsumer,
@@ -56,8 +56,6 @@ PathPlanner2dElement::PathPlanner2dElement( const hydroqguielementutil::GuiEleme
       context_(context),
       proxyString_(proxyString),
       humanManager_(humanManager),
-      displayWaypoints_(true),
-      currentTransparency_(false),
       pathHI_( this,
                proxyString,
                humanManager,
@@ -66,11 +64,10 @@ PathPlanner2dElement::PathPlanner2dElement( const hydroqguielementutil::GuiEleme
                painter_,
                context_ )
 {
-    cout<<"TRACE(pathplanner2delement.cpp): Instantiating w/ proxyString '" << proxyString << "'" << endl;   
-    const bool displayPastWaypoints = true;
-    const bool displayFutureWaypoints = true;
-    const bool displayOlympicMarker = false;
-    painter_.initialize( displayWaypoints_, displayPastWaypoints, displayFutureWaypoints, displayOlympicMarker, currentTransparency_);
+//     cout<<"TRACE(pathplanner2delement.cpp): Instantiating w/ proxyString '" << proxyString << "'" << endl;   
+    const bool useTransparency = true;
+    const bool displayOlympicMarker = true;
+    painter_.initialize( useTransparency, displayOlympicMarker );
     pathTaskAnswerConsumer_ = new PathPlannerTaskAnswerConsumer;
 }
 
@@ -99,10 +96,9 @@ PathPlanner2dElement::update()
 void 
 PathPlanner2dElement::setUseTransparency( bool useTransparency ) 
 { 
-    cout << "TRACE(pathplanner2delement.cpp): setUseTransparency: " << useTransparency << endl;
+//     cout << "TRACE(pathplanner2delement.cpp): setUseTransparency: " << useTransparency << endl;
     painter_.setUseTransparency( useTransparency ); 
     pathHI_.setUseTransparency( useTransparency );
-    currentTransparency_ = useTransparency;
 }
 
 void
@@ -131,12 +127,12 @@ QStringList
 PathPlanner2dElement::contextMenu()
 {
     QStringList s;
-    if (displayWaypoints_) {
+    if (painter_.displayWaypoints()) {
         s << "Switch all waypoints OFF";
     } else {
         s << "Switch all waypoints ON";
     }
-    if (currentTransparency_) {
+    if (painter_.useTransparency()) {
         s << "Switch transparency OFF";
     } else {
         s << "Switch transparency ON";
@@ -150,28 +146,17 @@ PathPlanner2dElement::contextMenu()
 void 
 PathPlanner2dElement::execute( int action )
 {
-    cout<<"TRACE(pathplanner2delement.cpp): execute: " << action << endl;
+//     cout<<"TRACE(pathplanner2delement.cpp): execute: " << action << endl;
     if ( action == 0 )
-    {
-        displayWaypoints_ = !displayWaypoints_;
         painter_.toggleDisplayWaypoints();    
-    }  
     else if ( action == 1 )
-    {
-        setUseTransparency(!currentTransparency_);
-    }
+        setUseTransparency(!painter_.useTransparency());
     else if ( action == 2 )
-    {
         pathHI_.savePathAs();
-    }
     else if ( action == 3 )
-    {
         pathHI_.savePath();
-    }
     else
-    {
         assert( false && "PathPlanner2dElement::execute(): bad action" );
-    }
 }
 
 void 

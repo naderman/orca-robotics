@@ -25,6 +25,7 @@ class CoordinateFrame
 
 public: 
 
+    // Initialises to identity
     CoordinateFrame();
     CoordinateFrame( const Vector3 &pos,
                      double         roll,
@@ -42,6 +43,7 @@ public:
     const Vector3 &pos()  const { return pos_; }
 
     void setOrientation( const Vector3 &fwd, const Vector3 &up );
+    void setPosition( const Vector3 &pos ) { pos_ = pos; }
 
     void translate( const Vector3 &offset );
     void rotate( const Vector3 &axis, double angle );
@@ -81,7 +83,7 @@ private:
 std::string toString( const CoordinateFrame &c );
 inline std::ostream &operator<<( std::ostream &s, const CoordinateFrame &c )
 { return s << toString(c); }
-
+std::string toEulerString( const CoordinateFrame &c );
 }
 
 #endif

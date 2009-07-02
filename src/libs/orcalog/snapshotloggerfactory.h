@@ -14,6 +14,7 @@
 #include <orcalog/factory.h>
 #include <orcalog/snapshotlogger.h>
 #include <orcalog/logwriterinfo.h>
+#include <orcaice/context.h>
 
 namespace orcalog
 {
@@ -26,7 +27,7 @@ public:
 
     //! Creates a SnapshotLogger. Returns a pointer to it if
     //! successful or a NULL pointer if it fails.
-    virtual SnapshotLogger* create( const std::string &interfaceType )=0;
+    virtual SnapshotLogger* create( const std::string &interfaceType, const orcaice::Context& context )=0;
 };
 
 } // namespace

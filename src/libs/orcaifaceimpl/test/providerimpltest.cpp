@@ -58,18 +58,21 @@ public:
 
 class PathFollowerCallback : public orcaifaceimpl::AbstractPathFollowerCallback {
 public:
-    virtual void setData( const orca::PathFollower2dData &path, bool activateImmediately ) {};
-    virtual void activateNow() {};
-    virtual int  getWaypointIndex() { return 0; };
-    virtual bool getAbsoluteActivationTime( orca::Time &activationTime ) { return true; };
-    virtual bool getRelativeActivationTime( double &secondsSinceActivation ) { return true; };
-    virtual void setEnabled( bool enabled ) {};
-    virtual bool enabled() { return true; };
+    virtual void setData( const orca::PathFollower2dData &path, bool activateImmediately ) {}
+    virtual void activateNow() {}
+    virtual void setEnabled( bool enabled ) {}
+    virtual orca::PathFollower2dState getState() 
+        { orca::PathFollower2dState s; return s; }
 };
 
 class BinarySwitchCallback : public orcaifaceimpl::AbstractBinarySwitchCallback {
 public:
     virtual void setData( const orca::BinarySwitchData &data ) {};
+};
+
+class EStopCallback : public orcaifaceimpl::AbstractEStopCallback {
+public:
+    virtual void setEnabled( bool enabled ) {};
 };
 
 void
@@ -91,7 +94,8 @@ TestComponent::start()
         ptr->localSet( orca::DriveBicycleData() );
     }
     {
-        orcaifaceimpl::EStopImplPtr ptr = new orcaifaceimpl::EStopImpl( orca::EStopDescription(), context(), "crap" );
+        EStopCallback cb;
+        orcaifaceimpl::EStopImplPtr ptr = new orcaifaceimpl::EStopImpl( cb, orca::EStopDescription(), context(), "crap" );
         ptr->localSet( orca::EStopData() );
     }
     {

@@ -30,10 +30,10 @@ namespace laser2og
         Returns a list of cells along a straight line from one point to another.
         Both points startPoint and endPoint must be in the world coordinate system.
      */
-    std::vector<hydropathplan::Cell2D> rayTrace(const hydroogmap::CartesianPoint2d & startPoint,
-                                                const hydroogmap::CartesianPoint2d & endPoint,
+    std::vector<hydropathplan::Cell2D> rayTrace(const hydroogmap::WorldCoords & startPoint,
+                                                const hydroogmap::WorldCoords & endPoint,
                                                 const double originX, const double originY,
-                                                const double mapResX, const double mapResY = -1 ) ;
+                                                const double mapRes ) ;
 }
   
 #endif

@@ -33,10 +33,10 @@ private:
     virtual void work();
     
     double stdDevPosition_;
-    double stdDevHeading_;
+    double stdDevOrientation_;
     double minInterPublishPeriodSec_;
     
-    orcaifaceimpl::BufferedOdometry2dConsumerImplPtr odometry2dConsumer_;
+    orcaifaceimpl::StoringOdometry2dConsumerImplPtr odometry2dConsumer_;
     orcaifaceimpl::Localise2dImplPtr localiseInterface_;
     
     void initNetworkInterface();

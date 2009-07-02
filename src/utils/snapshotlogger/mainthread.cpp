@@ -44,9 +44,14 @@ MainThread::MainThread( const orcaice::Context& context ) :
 
 MainThread::~MainThread()
 {
-    // important: do not delete loggers because most of them derive from 
-    // Ice smart pointers and self-destruct. Deleting them here will result
-    // in seg fault.
+    // IMPORTANT: delete loggers before the libraries, segfault will result otherwise!
+    cout<<"DEBUG: deleting "<<snapshotLoggers_.size()<<" snapshot loggers..."<<endl;
+    for ( unsigned int i=0; i < snapshotLoggers_.size(); i++ )
+    {
+        cout<<"DEBUG: deleting snapshot logger "<<i
+            <<" with buffer size="<<snapshotLoggers_[i]->snapshotBufferSize()<<endl;
+        delete snapshotLoggers_[i];
+    }
 
     assert( libraries_.size() == logFactories_.size() );
     for ( unsigned int i=0; i < libraries_.size(); i++ )
@@ -133,7 +138,7 @@ MainThread::initLoggers()
         orcalog::parseRequiredTag( requiredTags[i], interfaceType, interfaceTypeSuffix );
 
         // look up format
-        std::string format = orcaice::getPropertyWithDefault( props, prefix+requiredTags[i]+".Format", "ice" );
+        std::string format = orcaice::getPropertyWithDefault( props, prefix+requiredTags[i]+".Format", "asciigenerated" );
         
         orcalog::LogWriterInfo logWriterInfo( context_ );
         logWriterInfo.interfaceType = interfaceType;
@@ -165,7 +170,7 @@ MainThread::initLoggers()
 
     // initialize and subscribe all interfaces  
     for ( size_t i=0; i < snapshotLoggers_.size(); i++ )
-        snapshotLoggers_[i]->subscribe( context_, logWriterInfos_[i].interfaceTag );
+        snapshotLoggers_[i]->subscribe( logWriterInfos_[i].interfaceTag );
 }
 
 void
@@ -367,7 +372,7 @@ MainThread::createLogger( const std::string &interfaceType )
             continue;
         }
 
-        orcalog::SnapshotLogger* logger = logFactories_[i]->create( interfaceType );
+        orcalog::SnapshotLogger* logger = logFactories_[i]->create( interfaceType, context_ );
 
         if ( logger ) { 
             return logger;

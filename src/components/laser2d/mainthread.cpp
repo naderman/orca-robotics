@@ -18,6 +18,9 @@
 using namespace std;
 using namespace laser2d;
 
+const double MAX_HEARTBEAT_INITIALIZIING_DRIVER = 20.0;
+const double MAX_HEARTBEAT_WORKING_DRIVER = 1.0;
+
 MainThread::MainThread( const orcaice::Context &context ) :
     orcaice::SubsystemThread( context.tracer(), context.status(), "MainThread" ),
     context_(context)
@@ -27,7 +30,7 @@ MainThread::MainThread( const orcaice::Context &context ) :
 void
 MainThread::initialise()
 {
-    setMaxHeartbeatInterval( 20.0 );
+    setMaxHeartbeatInterval( MAX_HEARTBEAT_INITIALIZIING_DRIVER );
 
     initSettings();
 
@@ -41,7 +44,7 @@ MainThread::initialise()
 void
 MainThread::work() 
 {
-    setMaxHeartbeatInterval( 1.0 );
+    setMaxHeartbeatInterval( MAX_HEARTBEAT_WORKING_DRIVER );
 
     while ( !isStopping() )
     {
@@ -145,8 +148,9 @@ MainThread::initNetworkInterface()
     ifaceutil::zeroAndClear( descr.offset );
     descr.offset = orcaobj::getPropertyAsFrame3dWithDefault( prop, prefix+"Offset", descr.offset );
 
-    // consider the special case of the sensor mounted level (pitch=0) but upside-down (roll=180)
-    if ( NEAR(descr.offset.o.r,M_PI,0.001) && descr.offset.o.p==0.0 ) {
+    // consider the special case of the sensor mounted upside-down (roll=180)
+    if ( NEAR(descr.offset.o.r,M_PI,0.001) ) 
+    {
         // the offset is appropriate, now check the user preference (default is TRUE)
         compensateRoll_ = (bool)orcaice::getPropertyAsIntWithDefault( prop, prefix+"AllowRollCompensation", 1 );
 
@@ -177,6 +181,8 @@ MainThread::initNetworkInterface()
 void
 MainThread::initHardwareDriver()
 {
+    setMaxHeartbeatInterval( MAX_HEARTBEAT_INITIALIZIING_DRIVER );
+
     Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag() + ".Config.";
 
@@ -213,6 +219,8 @@ MainThread::initHardwareDriver()
             orcaice::catchExceptionsWithStatusAndSleep( "initialising hardware driver", health() );
         }   
     }
+
+    setMaxHeartbeatInterval( MAX_HEARTBEAT_WORKING_DRIVER );
 }
 
 void

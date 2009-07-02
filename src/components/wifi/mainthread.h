@@ -35,7 +35,7 @@ private:
     orcaifaceimpl::WifiImplPtr wifiInterface_;
     WifiDriver *driver_;
     
-    int snrWarningThreshhold_;
+//     int snrWarningThreshhold_;
     
     void initNetworkInterface();
     void initHardwareDriver();

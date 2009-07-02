@@ -21,29 +21,23 @@
 
 namespace orcaifaceimpl {
 
-typedef ProviderWithDescriptionImpl<orca::Camera, orca::CameraPrx,
-                    orca::ImageConsumer, orca::ImageConsumerPrx,
+typedef ProviderWithDescriptionImpl<orca::Camera, orca::ImageConsumer,
                     orca::ImageDataPtr, orca::ImageDescriptionPtr> CameraImpl;
 typedef IceUtil::Handle<CameraImpl> CameraImplPtr;
 
-typedef StoringConsumerImpl<orca::Camera, orca::CameraPrx,
-                    orca::ImageConsumer, orca::ImageConsumerPrx,
+typedef StoringConsumerImpl<orca::Camera, orca::ImageConsumer,
                     orca::ImageDataPtr> StoringCameraConsumerImpl;
 typedef IceUtil::Handle<StoringCameraConsumerImpl> StoringCameraConsumerImplPtr;
 
-typedef BufferedConsumerImpl<orca::Camera, orca::CameraPrx,
-                        orca::ImageConsumer, orca::ImageConsumerPrx,
+typedef BufferedConsumerImpl<orca::Camera, orca::ImageConsumer,
                         orca::ImageDataPtr> BufferedCameraConsumerImpl;
 typedef IceUtil::Handle<BufferedCameraConsumerImpl> BufferedCameraConsumerImplPtr;
 
-typedef NotifyingConsumerImpl<orca::Camera, orca::CameraPrx,
-                        orca::ImageConsumer,
-                        orca::ImageConsumerPrx,
+typedef NotifyingConsumerImpl<orca::Camera, orca::ImageConsumer,
                         orca::ImageDataPtr> NotifyingCameraConsumerImpl;
 typedef IceUtil::Handle<NotifyingCameraConsumerImpl> NotifyingCameraConsumerImplPtr;
 
-typedef PrintingConsumerImpl<orca::Camera, orca::CameraPrx,
-                        orca::ImageConsumer, orca::ImageConsumerPrx,
+typedef PrintingConsumerImpl<orca::Camera, orca::ImageConsumer,
                         orca::ImageDataPtr> PrintingCameraConsumerImpl;
 typedef IceUtil::Handle<PrintingCameraConsumerImpl> PrintingCameraConsumerImplPtr;
 

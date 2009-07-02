@@ -2,6 +2,8 @@ include( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
 link_libraries( OrcaLog OrcaLogFactory )
 
+# This test used to do end-to-end test of selected log writers/readers.
+# It's not longer maintained.
 #add_executable( logreplaytest logreplaytest.cpp )
 ## Need OpenCV to compress images to file
 # include( ${ORCA_CMAKE_DIR}/FindOpenCV.cmake )

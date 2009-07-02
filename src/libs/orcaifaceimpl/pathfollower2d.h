@@ -21,24 +21,19 @@
 
 namespace orcaifaceimpl {
 
-typedef StoringConsumerImpl<orca::PathFollower2d, orca::PathFollower2dPrx,
-                    orca::PathFollower2dConsumer, orca::PathFollower2dConsumerPrx,
-                    orca::PathFollower2dData> StoringPathFollower2dConsumerImpl;
+typedef StoringConsumerImpl<orca::PathFollower2d, orca::PathFollower2dConsumer, 
+                        orca::PathFollower2dData> StoringPathFollower2dConsumerImpl;
 typedef IceUtil::Handle<StoringPathFollower2dConsumerImpl> StoringPathFollower2dConsumerImplPtr;
 
-typedef BufferedConsumerImpl<orca::PathFollower2d, orca::PathFollower2dPrx,
-                        orca::PathFollower2dConsumer, orca::PathFollower2dConsumerPrx,
+typedef BufferedConsumerImpl<orca::PathFollower2d, orca::PathFollower2dConsumer,
                         orca::PathFollower2dData> BufferedPathFollower2dConsumerImpl;
 typedef IceUtil::Handle<BufferedPathFollower2dConsumerImpl> BufferedPathFollower2dConsumerImplPtr;
 
-typedef NotifyingConsumerImpl<orca::PathFollower2d, orca::PathFollower2dPrx,
-                        orca::PathFollower2dConsumer,
-                        orca::PathFollower2dConsumerPrx,
+typedef NotifyingConsumerImpl<orca::PathFollower2d, orca::PathFollower2dConsumer,
                         orca::PathFollower2dData> NotifyingPathFollower2dConsumerImpl;
 typedef IceUtil::Handle<NotifyingPathFollower2dConsumerImpl> NotifyingPathFollower2dConsumerImplPtr;
 
-typedef PrintingConsumerImpl<orca::PathFollower2d, orca::PathFollower2dPrx,
-                        orca::PathFollower2dConsumer, orca::PathFollower2dConsumerPrx,
+typedef PrintingConsumerImpl<orca::PathFollower2d, orca::PathFollower2dConsumer,
                         orca::PathFollower2dData> PrintingPathFollower2dConsumerImpl;
 typedef IceUtil::Handle<PrintingPathFollower2dConsumerImpl> PrintingPathFollower2dConsumerImplPtr;
 

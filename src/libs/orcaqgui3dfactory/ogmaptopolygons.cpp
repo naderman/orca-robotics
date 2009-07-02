@@ -73,8 +73,8 @@ scale( const potrace_dpoint_t &p,
 {
     potrace_dpoint_t sp;
 
-    sp.x = p.x * ogMap.metresPerCellX();
-    sp.y = p.y * ogMap.metresPerCellY();
+    sp.x = p.x * ogMap.metresPerCell();
+    sp.y = p.y * ogMap.metresPerCell();
 
     // cout<<"TRACE(ogmaptopolygons.cpp): p: " << orcapotrace::toString(p) << " -> sp: " << orcapotrace::toString(sp) << endl;
     // cout<<"TRACE(ogmaptopolygons.cpp): ogMap.worldSizeX(): " << ogMap.worldSizeX() << endl;

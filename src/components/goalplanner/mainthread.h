@@ -52,20 +52,10 @@ private:
     bool waitForNewPath( orca::PathFollower2dData &newPathData );
 
     orca::PathPlanner2dData planPath( const hydronavutil::Pose &pose, const orca::PathFollower2dData &coarsePath );
-    orca::PathFollower2dData convertToPathFollowerData( const orca::PathPlanner2dData &pathPlan );
     void sendPath( const orca::PathFollower2dData &pathToSend, bool activateImmediately );
-
-    // Adjust timing: work out how long it takes to the first waypoint based on straight-line distance 
-    // and configured velocityToFirstWaypoint_. Take the max of first wp time and the computed time.
-    // Add this time to all waypoints.
-    void addTimeToReachFirstWp( const hydronavutil::Pose &pose,
-                                orca::PathFollower2dData &incomingPath );
     
     // tries a few times to get localise data by issueing remote calls
     void tryGetLocaliseData( orca::Localise2dData &data );
-    
-    // check whether the localise data is stale, if yes throws an exception
-    void checkForStaleness( orca::Localise2dData &data );
 
     // Gets the most likely pose from the localiser (may throw).
     // Also sets isLocalisationUncertain.

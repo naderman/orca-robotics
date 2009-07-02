@@ -50,17 +50,14 @@ public:
 
 private: 
 
-    void internalSetWaypointIndex( int index );
-    void internalSetActivationTime( const orca::Time &absoluteTime, double relativeTime );
+    void internalSetState( const orca::PathFollower2dState &state );
     void internalSetData( const orca::PathFollower2dData &data );
-    void internalSetEnabledState( bool enabledState );
 
     bool followingPath() const;
 
     bool gotData_;
     orca::PathFollower2dData pathData_;
-    bool isEnabled_;
-    int wpIndex_;
+    orca::PathFollower2dState state_;
 
     IceUtil::Mutex mutex_;
 

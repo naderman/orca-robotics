@@ -29,6 +29,8 @@ using namespace orcaqgui3d;
 LaserScanner2dPainter::LaserScanner2dPainter( QColor outlineColor )
     : isDisplayScan_(true),
       isDisplayPoints_(true),
+      minRange_(0.0),
+      maxRange_(0.0),
       outlineColor_(outlineColor)
 {
     root_ = new osg::Group;
@@ -43,17 +45,22 @@ LaserScanner2dPainter::clear()
 
 void
 LaserScanner2dPainter::setDescr(  const orca::Frame3d &offset,
-                                  const orca::Size3d  &size )
+                                  const orca::Size3d  &size,
+                                  double minRange,
+                                  double maxRange )
 {
-    if ( root_->containsNode( xformNode_.get() ) )
-        root_->removeChild( xformNode_.get() );
+    minRange_ = minRange;
+    maxRange_ = maxRange;
 
-    xformNode_ = orcaqgui3d::getPositionAttitudeTransform( offset.p.x,
-                                                           offset.p.y,
-                                                           offset.p.z,
-                                                           offset.o.r,
-                                                           offset.o.p,
-                                                           offset.o.y );
+    if ( root_->containsNode( platformToSensorXformNode_.get() ) )
+        root_->removeChild( platformToSensorXformNode_.get() );
+
+    platformToSensorXformNode_ = orcaqgui3d::getPositionAttitudeTransform( offset.p.x,
+                                                                           offset.p.y,
+                                                                           offset.p.z,
+                                                                           offset.o.r,
+                                                                           offset.o.p,
+                                                                           offset.o.y );
     
     osg::ref_ptr<osg::Box> box = new osg::Box( osg::Vec3( 0, 0, 0 ),
                                                size.l, size.w, size.h );
@@ -69,10 +76,10 @@ LaserScanner2dPainter::setDescr(  const orca::Frame3d &offset,
     wireFrameGeode->addDrawable( wfDrawable.get() );
     orcaqgui3d::setWireFrameMode( wireFrameGeode.get() );
 
-    xformNode_->addChild( filledGeode.get() );
-    xformNode_->addChild( wireFrameGeode.get() );
+    platformToSensorXformNode_->addChild( filledGeode.get() );
+    platformToSensorXformNode_->addChild( wireFrameGeode.get() );
 
-    root_->addChild( xformNode_.get() );
+    root_->addChild( platformToSensorXformNode_.get() );
 }
 
 void
@@ -82,7 +89,7 @@ LaserScanner2dPainter::setData( const orca::RangeScanner2dDataPtr &data )
 
     // Clear out the old one
     if ( scanNode_.get() )
-        xformNode_->removeChild( scanNode_.get() );
+        platformToSensorXformNode_->removeChild( scanNode_.get() );
 
     // Check if this thing is a laser scan.
     orca::LaserScanner2dDataPtr laserScan = orca::LaserScanner2dDataPtr::dynamicCast( data );
@@ -113,7 +120,7 @@ LaserScanner2dPainter::setData( const orca::RangeScanner2dDataPtr &data )
     }
 
     vertices->push_back( osg::Vec3(0,0,0) );
-    double angleIncrement = data->fieldOfView / double(data->ranges.size()+1);
+    double angleIncrement = data->fieldOfView / double(data->ranges.size()-1);
     for ( unsigned int i=0; i < data->ranges.size(); i++ )
     {
         float bearing = data->startAngle + i * angleIncrement;
@@ -125,7 +132,13 @@ LaserScanner2dPainter::setData( const orca::RangeScanner2dDataPtr &data )
     {
         linePrim->push_back(i);
         if ( isDisplayPoints_ )
-            pointsPrim->push_back(i);
+        {
+            if ( data->ranges[i] > minRange_+1e-3 && 
+                 data->ranges[i] < maxRange_-1e-3 )
+            {
+                pointsPrim->push_back(i);
+            }
+        }
     }
 
     osg::ref_ptr<osg::Vec4Array> colors = new osg::Vec4Array;
@@ -149,7 +162,7 @@ LaserScanner2dPainter::setData( const orca::RangeScanner2dDataPtr &data )
         stateSet->setAttribute( pointAttr.get() );
     }
 
-    xformNode_->addChild( scanNode_.get() );
+    platformToSensorXformNode_->addChild( scanNode_.get() );
 }
 
 void LaserScanner2dPainter::setColor( QColor color )
