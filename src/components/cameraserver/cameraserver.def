@@ -30,4 +30,6 @@ Config.ImageFormat.Default=BGR8
 Config.DC1394.IsoMode.Comment=Valid values are at least: {'1394A', '1394B'}
 Config.DC1394.IsoMode.Default=1394A
 
+Config.DC1394.Guid.Comment= The GUID of the firewire camera, no supplied value connect to first camera detected
+
 
