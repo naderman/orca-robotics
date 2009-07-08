@@ -28,38 +28,11 @@ namespace orcaice
 namespace detail
 {
 
-// Transfer a property from one property set to another
+// Set a property of a property set, conditionally force assignemnt.
 // returns:
 //  0 if it was transferred successfully
 //  1 if the property already existed in the target set and it was left untouched
-// -1 if the property was not set in the source set, the target was left untouched
-int
-transferProperty( const Ice::PropertiesPtr& fromProps, 
-                  const Ice::PropertiesPtr& toProps,
-                  const string&             fromKey,
-                  const string&             toKey,
-                  bool                      force )
-{
-    string fromValue = fromProps->getProperty( fromKey );
-    bool existFromValue = !fromValue.empty();
-    if ( !existFromValue ) {
-        // the property is not set in the source set, leave the target one untouched
-        return -1;
-    }
-    return transferProperty( toProps,
-                             fromKey,
-                             fromValue,
-                             toKey,
-                             force );
-}
-
-// Transfer a property from one property set to another
-// returns:
-//  0 if it was transferred successfully
-//  1 if the property already existed in the target set and it was left untouched
-int
-transferProperty( const Ice::PropertiesPtr& toProps,
-                  const string&             fromKey,
+int setProperty( const Ice::PropertiesPtr& toProps,
                   const string&             fromValue,
                   const string&             toKey,
                   bool                      force )
@@ -82,10 +55,29 @@ transferProperty( const Ice::PropertiesPtr& toProps,
     return 0;
 }
 
+// Transfer a property from one property set to another
+// returns:
+//  0 if it was transferred successfully
+//  1 if the property already existed in the target set and it was left untouched
+// -1 if the property was not set in the source set, the target was left untouched
+int transferProperty( const Ice::PropertiesPtr& fromProps, 
+                  const Ice::PropertiesPtr& toProps,
+                  const string&             fromKey,
+                  const string&             toKey,
+                  bool                      force )
+{
+    string fromValue = fromProps->getProperty( fromKey );
+    bool existFromValue = !fromValue.empty();
+    if ( !existFromValue ) {
+        // the property is not set in the source set, leave the target one untouched
+        return -1;
+    }
+    return setProperty( toProps, fromValue, toKey, force );
+}
+
 // Internal helper function.
 // behaves like transferProperty. if key is missing, sets the toValue to defaultValue.
-void
-transferPropertyWithDefault( const Ice::PropertiesPtr& fromProps, 
+void transferPropertyWithDefault( const Ice::PropertiesPtr& fromProps, 
                              const Ice::PropertiesPtr& toProps,
                              const string&             fromKey,
                              const string&             toKey,
@@ -150,6 +142,8 @@ setFactoryProperties( Ice::PropertiesPtr& props, const std::string& compTag )
     // in the config files.
     // Note: we no longer set AdapterId here. See postProcessComponentProperties().
     tempProps->setProperty( compTag+".Endpoints", "tcp -t 5000" );
+    // the component will decide later whether to enable the Admin interfaces or not.
+    tempProps->setProperty( "Ice.Admin.Endpoints", "tcp -t 5000" );
 
     // orca properties
     tempProps->setProperty( "Orca.Warn.DefaultProperty",  "1" );
@@ -323,10 +317,9 @@ setComponentPropertiesFromServer( const Context& context )
 
         for ( std::map<string,string>::const_iterator it=netProps.begin(); it!=netProps.end(); ++it ) 
         {
-            const string &fromKey   = it->first;
             const string &fromValue = it->second;
             const string &toKey     = it->first;
-            int ret = transferProperty( context.properties(), fromKey, fromValue, toKey, forceTransfer );
+            int ret = setProperty( context.properties(), fromValue, toKey, forceTransfer );
             stringstream ss;
             if ( ret == 0 )
             {
@@ -430,8 +423,6 @@ postProcessComponentProperties( const Ice::PropertiesPtr& props, const std::stri
     // 
     // Admin interface
     //
-    // the component will decide later whether to enable the interface or not.
-    props->setProperty( "Ice.Admin.Endpoints", "tcp -t 5000" );
     string adminInstanceName = fqCName.platform + "." + fqCName.component;
     props->setProperty( "Ice.Admin.InstanceName", adminInstanceName );
     // I don't think we need the delay actually. All settings are set before the communicator is created.
