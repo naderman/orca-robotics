@@ -26,6 +26,7 @@ SFUSER=$1
 SFSCPHOST=web.sf.net
 SFSHELLHOST=shell.sf.net
 SFPROJECT=orca-robotics
+# alexm: the final orca may not be needed anymore
 SFDIR=/home/groups/o/or/orca-robotics/htdocs/orca
 
 force ls
