@@ -16,7 +16,7 @@ namespace ifaceutil
 
 std::string toCustomString( const orca::Time& obj, int recurse, int expand, int indent ) 
 { 
-    IceUtil::Time t = IceUtil::Time::seconds(obj.seconds) + IceUtil::Time::milliSeconds(obj.useconds); 
+    IceUtil::Time t = IceUtil::Time::seconds(obj.seconds) + IceUtil::Time::microSeconds(obj.useconds);
     return t.toDateTime();
 }
 
