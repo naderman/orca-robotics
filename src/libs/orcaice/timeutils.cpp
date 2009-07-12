@@ -39,7 +39,7 @@ toOrcaTime( const IceUtil::Time & icetime )
     orca::Time orcatime;
     //! @todo are these casts ok?
     orcatime.seconds = (int)icetime.toSeconds();
-    orcatime.useconds = (int)icetime.toMicroSeconds() - (int)icetime.toSeconds()*1000000;
+    orcatime.useconds = (int)(icetime.toMicroSeconds() - icetime.toSeconds()*1000000);
     return orcatime;
 }
 
