@@ -37,8 +37,8 @@ orca::Time
 toOrcaTime( const IceUtil::Time & icetime )
 {
     orca::Time orcatime;
-    //! @todo are these casts ok?
     orcatime.seconds = (int)icetime.toSeconds();
+    // subtract two large number first (in Int64 format) and then cast to normal int
     orcatime.useconds = (int)(icetime.toMicroSeconds() - icetime.toSeconds()*1000000);
     return orcatime;
 }
