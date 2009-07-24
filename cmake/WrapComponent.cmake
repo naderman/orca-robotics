@@ -69,7 +69,7 @@ macro( ORCA_WRAP_COMPONENT_INTO_SERVICE )
     # libs properly in Windows. Hopefully, the changes would be confined to
     # to service.[h/cpp].in files.
     # So for now, NOT using DEFAULT option here!
-    GBX_ADD_LIBRARY( ${SERVICE_NAME} SHARED ${ARGN} ${_service_cpp_file} )
+    GBX_ADD_LIBRARY( ${SERVICE_NAME} SHARED ${GBX_PROJECT_VERSION} ${ARGN} ${_service_cpp_file} )
 
     include_directories( ${CMAKE_CURRENT_SOURCE_DIR} )
 
@@ -172,7 +172,7 @@ macro( ORCA_WRAP_MAINTHREAD_INTO_SERVICE )
     # libs properly in Windows. Hopefully, the changes would be confined to
     # to service.[h/cpp].in files.
     # So for now, NOT using DEFAULT option here!
-    GBX_ADD_LIBRARY( ${SERVICE_NAME} SHARED ${ARGN} ${_service_cpp_file} ${_component_cpp_file} )
+    GBX_ADD_LIBRARY( ${SERVICE_NAME} SHARED ${GBX_PROJECT_VERSION} ${ARGN} ${_service_cpp_file} ${_component_cpp_file} )
 
     include_directories( ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR}/autogen )
 
