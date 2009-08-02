@@ -72,6 +72,9 @@ protected:
     //! Used for fast-forwarding through a file.
     virtual void read()=0;
 
+    //! Hook for allowing calls on initialisation (i.e. when file has just opened)
+    virtual void initialised() {}
+
     //alen - Needed to move this into protected, otherwise openLogFile could not be overwritten
     LogReaderInfo logReaderInfo_;
 

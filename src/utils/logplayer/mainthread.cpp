@@ -141,8 +141,10 @@ MainThread::initialise()
     //
     // Initialise replayer
     //
+    cout<<"TRACE(mainthread.cpp): Looping through replayers to initialise..." << endl;
     for ( size_t i=0; i < replayers_.size(); i++ )
     {
+        cout<<"TRACE(mainthread.cpp): Calling init..." << endl;
         replayers_[i]->init();
     }
 

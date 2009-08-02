@@ -47,6 +47,9 @@ LogReader::init()
     // calling it from the constructor would call the base-class's version.
     //
     openLogFile();
+
+    // Allow the subclass to do something
+    initialised();
 }
 
 void

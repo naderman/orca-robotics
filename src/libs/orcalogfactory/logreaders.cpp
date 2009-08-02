@@ -744,7 +744,6 @@ PowerLogReader::PowerLogReader( const orcalog::LogReaderInfo &logReaderInfo )
     : orcalog::LogReader( logReaderInfo )
 {
     checkFormatIceOrAscii( logReaderInfo );
-    orcalog::LogReader::zeroLogIndex();
 }
 void
 PowerLogReader::read( orca::PowerData &obj )
@@ -762,7 +761,6 @@ WifiLogReader::WifiLogReader( const orcalog::LogReaderInfo &logReaderInfo )
     : orcalog::LogReader( logReaderInfo )
 {
     checkFormatIceOnly( logReaderInfo );
-    orcalog::LogReader::zeroLogIndex();
 }
 void
 WifiLogReader::read( orca::WifiData &obj )

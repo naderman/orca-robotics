@@ -121,6 +121,7 @@ public:
     PowerLogReader( const orcalog::LogReaderInfo &logReaderInfo );
     void read( orca::PowerData &obj );
     void read() { orca::PowerData obj; read(obj); }
+    void initialised() { orcalog::LogReader::zeroLogIndex(); }
 };
 
 //////////////////////////////////////////////////////////////////////
@@ -131,6 +132,7 @@ public:
     WifiLogReader( const orcalog::LogReaderInfo &logReaderInfo );
     void read( orca::WifiData &obj );
     void read() { orca::WifiData obj; read(obj); }
+    void initialised() { orcalog::LogReader::zeroLogIndex(); }
 };
 
 }
