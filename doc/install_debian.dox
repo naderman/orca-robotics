@@ -122,6 +122,6 @@ alias cmake='cmake -DGEARBOX_INSTALL=$DIR -DGEARBOX_HOME=$DIR -DHYDRO_INSTALL=$D
 export PATH=$DIR/bin:$PATH
 @endverbatim
 
-@see You may also want to check out notes on @ref orca_doc_install_debian_opt.
+@see You may also want to check out notes on @ref orca_doc_installdebian_opt
 
 */

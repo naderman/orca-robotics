@@ -101,29 +101,19 @@ Some components require @c pkg-config utility to check for dependencies
 # apt-get install pkg-config
 @endverbatim
 
-@section orca_doc_installdebian_opt_player_package Player/Stage using debian package
+@section orca_doc_installdebian_opt_player_package Player/Stage using Debian package
 
-@note Player seems to be in a bit of a flux right now. We list installation from package as the preferred option even though we've had mixed success with it. As of writing, the Debian package has not moved into Testing. When it does, we expect that things will become easier. At the moment, check with the official Player instructions first and if something doesn't work, try @ref orca_doc_installdebian_opt_player_source.
-
-You can download Player and Stage as a debian packages from their website. This has been tested with Player 2.0.4 and Stage 2.0.3. Install dependencies.
+Player/Stage are now part of Debian Testing. You can install the packages like that:
 
 @verbatim
-# apt-get install libglib2.0-dev libgtk2.0-dev libltdl3-dev libjpeg-dev
-# apt-get install libboost-dev libboost-signals-dev libboost-thread-dev
-@endverbatim
-
-Now, simply install the Player and Stage packages (as root):
-
-@verbatim
-# dpkg -i player_xxx_i386.deb
-# dpkg -i stage_xxx_i386.deb
+# apt-get install robot-player stage libplayercore-dev libplayerc++-dev
 @endverbatim
 
 This will install the libraries in @c /usr/lib, the executables in @c /usr/bin and the configuration files in @c /usr/share/player and @c /usr/share/stage.
 
 For a quick start:
 @verbatim
-$ player /usr/share/stage/worlds/simple.cfg
+$ robot-player /usr/share/stage/worlds/simple.cfg
 @endverbatim
 
 In case of a problem see our short section on @ref orca_doc_installdebian_opt_player_troubleshoot or consult Player mailing lists.
