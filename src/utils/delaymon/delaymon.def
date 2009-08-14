@@ -1,0 +1,14 @@
+DefaultComponentTag=DelayMon
+
+# Provided Interfaces
+
+# Required Interfaces
+Requires.LaserScanner2d.Type=LaserScanner2d
+Requires.LaserScanner2d.DefaultProxy=laserscanner2d@local/laser2d
+
+# Config Parameters
+Config.Start.Default=0
+Config.End.Default=1000
+Config.Stride.Default=20
+Config.FilenamePrefix.Default=histogram
+Config.MaxCount.Default=-1

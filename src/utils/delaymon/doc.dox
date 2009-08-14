@@ -1,0 +1,44 @@
+/*
+ * Orca-Robotics Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2009 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This copy of Orca is licensed to you under the terms described in
+ * the LICENSE file included in this distribution.
+ *
+ */
+
+/*!
+
+@ingroup orca_utilities
+@ingroup orca_apps
+@ingroup orca_cpp
+@ingroup orca_linux
+@ingroup orca_win
+@defgroup orca_component_lasermon DelayMon
+@brief A simple monitoring component that computes histogram of intervals between (periodic) messages
+
+@par Provides
+
+- @ref orca_interface_home
+
+@par Requires
+
+- @ref orca_interface_laserscanner2d [LaserMon.Requires.LaserScanner2d]
+
+@image html lasermon.png
+
+@par Operation
+
+Computes time elapsed between the arrival of consecutive messages and builds a histogram.
+
+@par Configuration
+None.
+
+An example configuration file is installed into [ORCA-INSTALL-DIR]/share/orca/cfg/ directory.
+
+@par Authors
+Alex Makarenko
+
+*/
+
