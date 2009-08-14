@@ -1,0 +1,40 @@
+/*
+ * Orca-Robotics Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2009 Alex Brooks
+ *
+ * This distribution is licensed to you under the terms described in
+ * the LICENSE file included in this distribution.
+ *
+ */
+/*!
+@ingroup hydro_libs
+@ingroup hydro_cpp
+@ingroup hydro_linux
+@defgroup hydro_library_hydroping libHydroPing
+@brief Library for making ICMP pings.
+
+Wraps up liboping (http://verplant.org/liboping/).
+
+Warning: ping requires root permissions (to open a raw socket).  This
+library won't work if you don't have them.
+
+@par Prerequisites
+
+@verbatim
+# apt-get install liboping-dev
+@endverbatim
+
+
+@par Authors
+Alex Brooks
+    
+*/
+
+/*!
+@brief Wraps up liboping (http://verplant.org/liboping/).
+@namespace hydroping
+
+@see @ref hydro_library_hydroping
+
+*/

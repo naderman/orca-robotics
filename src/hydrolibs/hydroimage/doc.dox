@@ -1,0 +1,36 @@
+/*
+ * Orca-Robotics Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2009 Alex Brooks, Alexei Makarenko, Tobias Kaupp, Tom Burdick
+ *
+ * This copy of Orca is licensed to you under the terms described in
+ * the LICENSE file included in this distribution.
+ *
+ */
+
+/*!
+@ingroup hydro_libs
+@defgroup hydro_library_hydroimage libHydroImage
+@brief Library containing image formats and image configuration structure
+
+    @section overview Overview
+
+Provides standard image types and structures that can be used for identification
+when deciding on algorithms and configuration to be used.
+
+For a full list of functions and classes see the complete documentation for the @ref hydroimage "hydroimage namespace".
+
+@par Responsible Developers
+Tom Burdick
+  
+*/
+
+/*!
+@brief Library containing image formats and image configuration structure
+@namespace hydroimage
+
+This namespace is part of a library which contains image types and structures for identification.
+
+@see @ref hydro_library_hydroimage
+
+*/

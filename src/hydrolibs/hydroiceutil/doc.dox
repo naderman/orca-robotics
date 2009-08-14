@@ -1,0 +1,42 @@
+/*
+ * Orca-Robotics Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2009 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This distribution is licensed to you under the terms described in
+ * the LICENSE file included in this distribution.
+ *
+ */
+/*!
+@ingroup hydro_libs
+@defgroup hydro_library_hydroiceutil libHydroIceUtil
+@brief Customizes libIceUtil API for Orca and adds a few useful classes.
+
+@par Development status
+Used by all components, API is fairly stable.
+
+@section hydro_library_hydroiceutil_overview Overview
+
+The use of this library is completely optional.
+
+For a full list of functions and classes see the complete documentation for the @ref hydroiceutil "hydroiceutil namespace".
+
+Header file:
+@verbatim
+#include <hydroiceutil/hydroiceutil.h>
+@endverbatim
+
+    @par Responsible Developer
+    Alex Brooks, Alex Makarenko
+  
+*/
+
+/*!
+@brief libHydroUtil customizes libIceUtil to simplify writing Orca components.
+@namespace hydroiceutil
+
+This namespace is part of a library which aims at simplifying Orca component development.
+
+@see @ref hydro_library_hydroiceutil
+
+*/

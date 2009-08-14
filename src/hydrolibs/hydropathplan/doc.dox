@@ -1,0 +1,55 @@
+/*
+ * Orca-Robotics Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2009 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This copy of Orca is licensed to you under the terms described in
+ * the LICENSE file included in this distribution.
+ *
+ */
+/*!
+@ingroup hydro_libs
+@defgroup hydro_library_hydropathplan libHydroPathplan
+@brief Library useful for path planning applications
+
+@section overview Overview
+
+This library contains an API to common path planning functionality in a 2D world. All path planning uses an occupancy grid representation of the world.
+
+The library consists of plain C-functions and a few a few helper classes. For all classes and functions, refer to @ref hydropathplan. They can be used in a pathplanning component such as @ref hydro_component_pathplanner.
+
+Header file:
+@verbatim
+#include <hydropathplan/hydropathplan.h>
+@endverbatim
+
+@section configuration Configuration parameters
+
+Here's a list of a few configuration parameters and their meaning. For more information, refer to @ref hydro_component_pathplanner.
+
+- @c traversabilityThreshhold (double)
+    - Everything below this threshhold is considered traversable, everything above is an obstacle
+    - Valid values: [0.0;1.0]
+    
+- @c robotDiameterMetres (double)
+    - The robot's diameter including some safety distance
+    - Unit: meters
+
+- @c doPathOptimization (bool)
+    - Flag which determines whether an optimized path should be computed @ref hydro_pathplanner_pathoptimization
+    - Valid values: 0 or 1
+
+@section developer Responsible Developer
+Tobias Kaupp
+  
+*/
+
+/*!
+@brief Library useful for path planning applications
+@namespace hydropathplan
+
+This namespace is part of a library which contains classes and functions for ogmap based pathplanning.
+
+@see @ref hydro_library_hydropathplan
+
+*/

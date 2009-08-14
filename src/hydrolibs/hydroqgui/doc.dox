@@ -1,0 +1,37 @@
+/*
+ * Orca-Robotics Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2009 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This copy of Orca is licensed to you under the terms described in
+ * the LICENSE file included in this distribution.
+ *
+ */
+/*!
+@ingroup hydro_libs
+@defgroup hydro_library_hydroqgui libHydroQGui
+@brief Library useful to build Qt GUIs for 2d robotics applications
+
+@section overview Overview
+
+This library contains classes which are useful to build Qt GUIs for 2d robotics applications. It contains (1) abstract interfaces which have to be implemented elsewhere, and (2) implementation classes. For all classes and functions, refer to @ref hydroqgui.
+
+Header file:
+@verbatim
+#include <hydroqgui/hydroqgui.h>
+@endverbatim
+
+@section developer Responsible Developer
+Tobias Kaupp
+  
+*/
+
+/*!
+@brief Library useful to build Qt GUIs for 2d robotics applications
+@namespace hydroqgui
+
+This namespace is part of a library which contains classes and functions for building Qt GUIs for 2d robotics applications.
+
+@see @ref hydro_library_hydroqgui
+
+*/

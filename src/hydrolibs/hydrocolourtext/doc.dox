@@ -1,0 +1,42 @@
+/*
+ * Orca-Robotics Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2007-current Alex Brooks, Alex Makarenko
+ *
+ * This distribution is licensed to you under the terms described in
+ * the LICENSE file included in this distribution.
+ *
+ */
+/*!
+@ingroup hydro_libs
+@defgroup hydro_library_hydrocolourtext libHydroColourText
+@brief Simple text colours on the Linux terminal, using escape-codes.
+
+@section overview Overview
+
+For a full list of functions and classes see the documentation for @ref hydroctext namespace.
+
+For more information on the underlying Linux functionality
+@verbatim
+$ man console_codes
+@endverbatim
+
+Header file:
+@verbatim
+#include <hydrocolourtext/colourtext.h>
+@endverbatim
+
+
+@par Authors
+
+Alex Brooks, Alex Makarenko
+  
+*/
+
+/*!
+@brief Simple text colours on the Linux terminal, using escape-codes.
+@namespace hydroctext
+
+This namespace is part of a library @ref hydro_library_hydrocolourtext.
+
+*/

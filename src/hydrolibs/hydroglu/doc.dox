@@ -1,0 +1,37 @@
+/*
+* Orca-Robotics Project: Components for robotics 
+*               http://orca-robotics.sf.net/
+* Copyright (c) 2007-2009 Tom Burdick
+*
+* This copy of Orca is licensed to you under the terms described in
+* the LICENSE file included in this distribution.
+*
+*/
+/*!
+@ingroup hydro_libs
+@defgroup hydro_library_hydroglu libHydroGlu
+@brief Library useful to build algorithms using OpenGL to take advantage of powerful GPU's
+
+@section overview Overview
+
+This library contains classes which are useful to build algorithms that can take advantage of powerful graphics processors commonly found on video cards. It contains classes to help compile and link glsl shaders @ref hydroglu.
+
+Header file:
+@verbatim
+#include <hydroglu/hydroglu.h>
+@endverbatim
+
+@section developer Responsible Developer
+Tom Burdick
+
+*/
+
+/*!
+@brief Library useful to build algorithms using powerful GPU's
+@namespace hydroglu
+
+This namespace is part of a library which contains classes and functions for building algorithms using powerful GPU's
+
+@see @ref hydro_library_hydroglu
+
+*/

@@ -1,0 +1,29 @@
+/*
+ * Orca-Robotics Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2009 Alex Brooks
+ *
+ * This copy of Orca is licensed to you under the terms described in
+ * the LICENSE file included in this distribution.
+ *
+ */
+/*!
+@ingroup hydro_libs
+@defgroup hydro_library_hydroogmapload libHydroOgMapLoad
+@brief Simple (Qt-based) library for loading OgMaps and PixMaps from files.
+
+@section Development status
+Beta
+
+Header files:
+@verbatim
+#include <hydromapload/ogmaploadutil.h>
+#include <hydromapload/pixmaploadutil.h>
+@endverbatim
+
+
+@section Responsible Developers
+Alex Brooks,
+Tobias Kaupp
+  
+*/

@@ -1,0 +1,42 @@
+/*
+ * Orca-Robotics Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2009 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This distribution is licensed to you under the terms described in
+ * the LICENSE file included in this distribution.
+ *
+ */
+/*!
+
+@ingroup hydro_libs
+@defgroup hydro_library_hydrodll libHydroDll
+@brief Dynamically loads C++ classes
+
+@par Development status
+Well tested. 
+
+@section overview Overview
+
+This is a very small library for dynamically loading C++ classes.
+
+For a full list of functions and classes see @ref hydrodll.
+
+@par Dependencies
+
+Links to @c libdl but if, for some reason, you are getting an error similar to "undefined reference to dlopen" add this library dependency manualy.
+
+@par Responsible Developer
+Alex Brooks
+  
+*/
+
+/*!
+@namespace hydrodll
+@brief Dynamically loads C++ classes
+
+This is a very small library for dynamically loading C++ classes.
+
+@see @ref hydro_library_orcadynamicload 
+*/
+

@@ -1,0 +1,5 @@
+moving from orca to hydro
+--This line, and those below, will be ignored--
+
+A    https://orca-robotics.svn.sf.net/svnroot/orca-robotics/hydro/trunk/src/libs/hydrobros1
+D    https://orca-robotics.svn.sf.net/svnroot/orca-robotics/orca/trunk/src/libs/bros1

@@ -1,0 +1,33 @@
+/*
+ * Orca-Robotics Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2009 Alex Brooks, Alexei Makarenko, Tobias Kaupp, Matt Ridley
+ *
+ * This distribution is licensed to you under the terms described in
+ * the LICENSE file included in this distribution.
+ *
+ */
+/*!
+@ingroup hydro_libs
+@defgroup hydro_library_hydronavutil libHydroNavUtil
+@brief Mobile Robot Navigation Utility Functions
+
+    @section overview Overview
+
+Provides some fairly simple functionality useful for mobile robot
+navigation: stuff like manipulation of poses, odometry, etc.
+
+For a full list of functions and classes see @ref hydronavutil.
+
+    @par Responsible Developer
+    Alex Brooks
+  
+*/
+
+/*!
+@brief libOrcaNavUtil Mobile Robot Navigation Utility Functions
+@namespace hydronavutil
+
+@see @ref hydro_library_hydronavutil
+
+*/

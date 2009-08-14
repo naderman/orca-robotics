@@ -1,0 +1,42 @@
+/*
+ * Orca-Robotics Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2009 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This distribution is licensed to you under the terms described in
+ * the LICENSE file included in this distribution.
+ *
+ */
+/*!
+@ingroup hydro_libs
+@defgroup hydro_library_hydroutil libHydroUtil
+@brief Basic classes for defining Hydro driver and algorithm interfaces.
+
+@par Development status
+Used by all components, API is fairly stable.
+
+@section hydro_library_hydroutil_overview Overview
+
+This library is designed not to have any large dependencies.
+
+For a full list of functions and classes see the complete documentation for the @ref hydroutil "hydroutil namespace".
+
+Header file:
+@verbatim
+#include <hydroutil/hydroutil.h>
+@endverbatim
+
+    @par Responsible Developer
+    Alex Brooks, Alex Makarenko
+  
+*/
+
+/*!
+@brief libHydroUtil provides classes for defining Hydro driver and algorithm interfaces.
+@namespace hydroutil
+
+This namespace is part of a library.
+
+@see @ref hydro_library_hydroutil
+
+*/
