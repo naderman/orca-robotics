@@ -11,13 +11,14 @@
 #ifndef ORCAIFACEIMPL_CPU_H
 #define ORCAIFACEIMPL_CPU_H
 
+#include <orca/cpu.h>
+#include <orcaifaceutil/cpu.h>
+
 #include <orcaifaceimpl/providerWithDescriptionImpl.h>
 #include <orcaifaceimpl/storingconsumerImpl.h>
 #include <orcaifaceimpl/bufferedconsumerImpl.h>
 #include <orcaifaceimpl/notifyingconsumerImpl.h>
 #include <orcaifaceimpl/printingconsumerImpl.h>
-
-#include <orca/cpu.h>
 
 namespace orcaifaceimpl {
 

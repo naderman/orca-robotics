@@ -479,7 +479,7 @@ toXmlTemplateText( const ComponentDef &def )
 
     // special parameters
 //     ss <<tab<<tab<<tab<<tab<<"<!-- Component properties -->" << endl;
-    ss <<tab<<tab<<tab<<tab<<"<property name=\""<<def.tag<<".Platform\" value=\"local\"/>" << endl;
+    ss <<tab<<tab<<tab<<tab<<"<property name=\""<<def.tag<<".Platform\" value=\"${platform}\"/>" << endl;
     ss <<tab<<tab<<tab<<tab<<"<property name=\""<<def.tag<<".Component\" value=\""<<cfg.fqname.component<<"\"/>" << endl;
     if ( def.isSpecialEndpoints ) {
         ss <<tab<<tab<<tab<<tab<<"<property name=\""<<def.tag<<".Endpoints\" value=\""<<def.endpoints<<"\"/>" << endl;

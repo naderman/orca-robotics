@@ -11,13 +11,14 @@
 #ifndef ORCAIFACEIMPL_FEATUREMAP2D_H
 #define ORCAIFACEIMPL_FEATUREMAP2D_H
 
+#include <orca/featuremap2d.h>
+#include <orcaifaceutil/featuremap2d.h>
+
 #include <orcaifaceimpl/providerImpl.h>
 #include <orcaifaceimpl/storingconsumerImpl.h>
 #include <orcaifaceimpl/bufferedconsumerImpl.h>
 #include <orcaifaceimpl/notifyingconsumerImpl.h>
 #include <orcaifaceimpl/printingconsumerImpl.h>
-
-#include <orca/featuremap2d.h>
 
 namespace orcaifaceimpl {
 

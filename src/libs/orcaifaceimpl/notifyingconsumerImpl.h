@@ -31,12 +31,6 @@ public:
     //! Constructor.
     NotifyingConsumerImpl( const orcaice::Context &context )
         : ConsumerImpl<ProviderType,ConsumerType,ObjectType>(context) {}
-//         : ConsumerImpl<ProviderType,ProviderPrxType,ConsumerType,ConsumerPrxType,ObjectType>(context) {}
-
-    ~NotifyingConsumerImpl()
-        {
-            std::cout<<"NotifyingConsumerImpl::~NotifyingConsumerImpl()"<<std::endl;
-        }
 
     // from gbxiceutilacfr::Notify:
     // void  setNotifyHandler( NotifyHandler<Type>* handler );

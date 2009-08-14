@@ -48,6 +48,7 @@ class Localise2dPainter
 
     void toggleDisplayHistory()  { isDisplayHistory_ = !isDisplayHistory_; }
     void toggleMultiHypothesis() { isDisplayMultiHypothesis_ = !isDisplayMultiHypothesis_; }
+    void toggleUncertainty() { isDisplayUncertainty_ = !isDisplayUncertainty_; }
     void setMaxNumHistoryPoints( int maxNumPoints ) { history_.setMaxNumPoints( maxNumPoints ); }
     int currentMaxNumHistoryPoints() const { return history_.currentMaxNumPoints(); }
 
@@ -76,6 +77,7 @@ class Localise2dPainter
     hydroqguielementutil::PoseHistory history_;
 
     bool isDisplayMultiHypothesis_;
+    bool isDisplayUncertainty_;
 
     bool isInFocus_;
 };

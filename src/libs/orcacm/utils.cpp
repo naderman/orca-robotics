@@ -227,26 +227,34 @@ getComponentHomeData( const orcaice::Context& context, const Ice::ObjectPrx& oho
 
     // look up provided interface types
     ProvidesHeader pface;
-    for ( unsigned int j=0; j<homeData.comp.provides.size(); ++j ) {   
+    for ( unsigned int j=0; j<homeData.comp.provides.size(); ++j )
+    {
         // debug
-//         cout<<"looking up interface "<<homeData.comp.provides[j].name<<" on "<<orcaice::toString(data.name)<<endl;
-        orca::FQInterfaceName fqName;
-        fqName.platform = data.name.platform;
-        fqName.component = data.name.component;
-        fqName.iface = homeData.comp.provides[j].name;
+        //cout<<"looking up interface "<<homeData.comp.provides[j].name<<" on "<<orcaice::toString(data.name)<<endl;
+        try {
+            orca::FQInterfaceName fqName;
+            fqName.platform = data.name.platform;
+            fqName.component = data.name.component;
+            fqName.iface = homeData.comp.provides[j].name;
 
-        // remote call!
-        if ( homeData.comp.provides[j].id  == "::orca::Tracer" ||    
-             homeData.comp.provides[j].id  == "::orca::Status" || 
-             homeData.comp.provides[j].id  == "::orca::Home" )  
-        {
-            pface = getAdminProvidesHeader( ohome, fqName );
+            // remote call!
+            if ( homeData.comp.provides[j].id  == "::orca::Tracer" ||    
+                 homeData.comp.provides[j].id  == "::orca::Status" || 
+                 homeData.comp.provides[j].id  == "::orca::Home" )  
+            {
+                pface = getAdminProvidesHeader( ohome, fqName );
+            }
+            else
+            {
+                pface = getProvidesHeader( context, fqName );
+            }
         }
-        else
+        catch ( std::exception &e )
         {
-            pface = getProvidesHeader( context, fqName );
+            cout << __func__ << ": Failed to lookup interface "<<homeData.comp.provides[j].name
+                 <<" on "<<orcaice::toString(data.name)<<": "<<e.what()<<endl;
+            pface.isReachable = false;
         }
-
         data.provides.push_back( pface );
     }
 
@@ -304,7 +312,6 @@ getProvidesHeader( const orcaice::Context& context, const orca::FQInterfaceName&
     header.name = fqName.iface;
     
     Ice::ObjectPrx obj = context.communicator()->stringToProxy( orcaice::toString(fqName) );
-    //cout<<"looking up proxy "<<obj<<endl;
     try
     {
         header.id = obj->ice_id();

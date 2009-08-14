@@ -11,13 +11,14 @@
 #ifndef ORCAIFACEIMPL_PATHFOLLOWER2D_H
 #define ORCAIFACEIMPL_PATHFOLLOWER2D_H
 
+#include <orca/pathfollower2d.h>
+#include <orcaifaceutil/pathfollower2d.h>
+
 #include <orcaifaceimpl/pathfollower2dImpl.h>
 #include <orcaifaceimpl/storingconsumerImpl.h>
 #include <orcaifaceimpl/bufferedconsumerImpl.h>
 #include <orcaifaceimpl/notifyingconsumerImpl.h>
 #include <orcaifaceimpl/printingconsumerImpl.h>
-
-#include <orca/pathfollower2d.h>
 
 namespace orcaifaceimpl {
 

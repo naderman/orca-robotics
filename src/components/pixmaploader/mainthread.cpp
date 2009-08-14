@@ -134,6 +134,5 @@ MainThread::initialise()
     //
     // create servant for direct connections
     pixMapImpl_ = new orcaifaceimpl::PixMapImpl( "PixMap", context_ );
-    pixMapImpl_->initInterface( this, subsysName() );
-    pixMapImpl_->localSetAndSend( theMap );
+    pixMapImpl_->initInterface( theMap, this, subsysName() );
 }

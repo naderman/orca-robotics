@@ -11,13 +11,14 @@
 #ifndef ORCAIFACEIMPL_BINARYSWITCH_H
 #define ORCAIFACEIMPL_BINARYSWITCH_H
 
+#include <orca/binaryswitch.h>
+#include <orcaifaceutil/binaryswitch.h>
+
 #include <orcaifaceimpl/binaryswitchImpl.h>
 #include <orcaifaceimpl/storingconsumerImpl.h>
 #include <orcaifaceimpl/bufferedconsumerImpl.h>
 #include <orcaifaceimpl/notifyingconsumerImpl.h>
 #include <orcaifaceimpl/printingconsumerImpl.h>
-
-#include <orca/binaryswitch.h>
 
 namespace orcaifaceimpl {
 

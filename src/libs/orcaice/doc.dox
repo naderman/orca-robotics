@@ -94,7 +94,18 @@ The following properties are assigned defaults unless they are configured explic
     - Default: "[platform name]/[component name]"
 
 - @c [ComponentTag].Endpoints (string)
+    - Communication endpoints used by component interfaces.
     - Default: "tcp -t 5000"
+    - Note on usage with IceGrid: if this property is left undefined in the XML application
+      descriptor, IceGrid will fill it with 'default' in the generated config file.
+      This means that the Orca default will never be envoked.
+
+- @c Ice.Admin.Endpoints (string)
+    - Communication endpoints used by component "standard" interfaces, i.e. Home, Tracer, Status.
+    - Default: "tcp -t 5000"
+    - Note on usage with IceGrid: if this property is left undefined in the XML application
+      descriptor, IceGrid will fill it with 'tcp -h 127.0.0.1' in the generated config file. 
+      This means that the Orca default will never be envoked.
 
 Component and Application properties.
 
@@ -175,7 +186,7 @@ Properties for individual standard interfaces.
 
 - @c Orca.Tracer.Filename (string)
     - The name of the file to which the Tracer will write the traces enabled by *ToFile properties.
-    - Default: "orca_component_trace.txt"
+    - Default: "[ComponentName]_trace.txt"
 
 - @c Orca.Tracer.Timestamp (bool)
     - When enabled, prepends human-readable time stamp to all traces.

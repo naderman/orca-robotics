@@ -118,7 +118,7 @@ QStringList
 Localise2dElement::contextMenu()
 {
     QStringList s;
-    s<<"Toggle History"<<"Set Max Num History Points"<<"Toggle Multi-Hypothesis";
+    s<<"Toggle History"<<"Set Max Num History Points"<<"Toggle Multi-Hypothesis"<<"Toggle Uncertainty";
     return s;
 }
 
@@ -151,6 +151,11 @@ Localise2dElement::execute( int action )
         case 2 :
         {
             painter_.toggleMultiHypothesis();
+            break;
+        }
+        case 3 :
+        {
+            painter_.toggleUncertainty();
             break;
         }
         default:

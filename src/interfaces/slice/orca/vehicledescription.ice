@@ -75,7 +75,7 @@ class VehicleControlVelocityDifferentialDescription extends VehicleControlDescri
 
     //! Maximum forward acceleration [m/s/s]
     double maxForwardAcceleration;
-    //! Maximum reverse acceleration [m/s/s]
+    //! Maximum reverse acceleration [m/s/s] (note: this is a positive number)
     double maxReverseAcceleration;
     //! Maximum rotational acceleration [rad/s/s] (assumes equal in either direction)
     double maxRotationalAcceleration;

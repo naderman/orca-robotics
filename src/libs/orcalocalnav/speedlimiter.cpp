@@ -15,7 +15,7 @@
 using namespace std;
 using namespace orcaice;
 
-namespace localnav {
+namespace orcalocalnav {
 
 //////////////////////////////////////////////////////////////////////
 //                    Non-Member  Functions
@@ -106,13 +106,13 @@ SpeedLimiter::setIntendedSpeedThisLeg( const orcalocalnav::Goal &goal )
 
 void
 SpeedLimiter::constrainMaxSpeeds( orcalocalnav::Goal &goal,
-                                  const hydronavutil::Velocity &currentVelocity )
+                                  double              currentSpeed )
 {
     // Check if we're supposed to be stationary
     const double AT_GOAL_SPEED_THRESHOLD=0.2;
     if ( orcalocalnav::goalPosReached(goal) && 
          goal.timeRemaining > 0.0 &&
-         currentVelocity.lin() < AT_GOAL_SPEED_THRESHOLD )
+         currentSpeed < AT_GOAL_SPEED_THRESHOLD )
     {
         // We're at the goal, pretty-much stationary, and we have to wait.
         // constrain the turnrate so we stay put.

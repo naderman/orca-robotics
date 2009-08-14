@@ -59,7 +59,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
      on image frequency and delay between the capture the the display of it.
 
 - libOrcaIfaceUtil
-  - bug: check how does Slice byte print out? (alexm)
+  - feature: special toString() for exceptions? only for those which derive from OrcaException?
 
 - Probe
   - bug: probes the wrong interface. DataHub has 3 standard and 2 nonstandard interfaces. selecting 3 (the first unsupported interface) 
@@ -86,6 +86,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
   - There was a minor readjustment of CMake files in the satellite projects.
     Reason: simplify updates in the future by separating bootstrap files which change as Orca evolves and project-specific files which do not 
     need to be updated. In your satellite project, make the following changes. First update Orca.
+  - builds with gcc-4.4
 @verbatim
 $ cd <your-project>
 $ mkdir cmake/project
@@ -156,6 +157,9 @@ ORCA_WRAP_COMPONENT_INTO_SERVICE( ${srcs} )
 - SnapShotLogger (AlexB)
   - Logs data and configurations from interfaces when triggered
 
+- DelayMon (alex m)
+  - A simple utility for recording histograms of delays between consecutive messages.
+
 @par New libraries
 
 - libOrcaSystemStatusUtil 
@@ -180,6 +184,9 @@ ORCA_WRAP_COMPONENT_INTO_SERVICE( ${srcs} )
 - TracerMon
  - This component was broken by the big changes which converted Tracer interface to an Admin facet. 
    Fixed by making it connect to the admin facet. (alexm)
+
+- PixMapLoader, OgMapLoader
+ - fixed leading to brief unavailability of data on startup (alexm)
 
 @par Updated utilities
 
@@ -250,6 +257,8 @@ ORCA_WRAP_COMPONENT_INTO_SERVICE( ${srcs} )
     manual activation, supply orcaice::Component with the following 3rd initialization parameter: 
     orcaice::AdapterManualActivation.
   - connectutils/multiconnectutils: added getDescriptionWithTag functions (alex b)
+  - fixed bug which prevented custom override of Admin endpoints (alexm)
+  - Default value for the Orca.Tracer.Filename property is now component-specific: <component-name>_trace.txt (alexm)
 
 - libOrcaIfaceImpl
   - all multi-try functions: redefined in terms of the new light interface class gbxutilacfr::Stoppable. Similar changes in

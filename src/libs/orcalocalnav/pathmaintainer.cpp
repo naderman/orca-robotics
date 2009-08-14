@@ -17,7 +17,7 @@
 using namespace std;
 using namespace orcaice;
 
-namespace localnav {
+namespace orcalocalnav {
 
 namespace {
 
@@ -53,9 +53,9 @@ namespace {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-PathMaintainer::PathMaintainer( PathFollowerInterface   &pathFollowerInterface,
-                                const Clock             &clock,
-                                const orcaice::Context  &context)
+PathMaintainer::PathMaintainer( PathFollowerInterface     &pathFollowerInterface,
+                                const orcalocalnav::Clock &clock,
+                                const orcaice::Context    &context)
     : activationState_(orca::NoPathLoaded),
       wpIndex_(0),
       stateOrWpIndexChanged_(false),

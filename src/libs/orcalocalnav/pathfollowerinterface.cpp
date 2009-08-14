@@ -6,13 +6,13 @@
 
 using namespace std;
 
-namespace localnav {
+namespace orcalocalnav {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-PathFollowerInterface::PathFollowerInterface( const Clock &clock,
-                                              const std::string &interfaceTag,
-                                              const orcaice::Context &context )
+PathFollowerInterface::PathFollowerInterface( const orcalocalnav::Clock &clock,
+                                              const std::string         &interfaceTag,
+                                              const orcaice::Context    &context )
     : pathFollower2dImpl_(new orcaifaceimpl::PathFollower2dImpl(*this,interfaceTag,context)),
       clock_(clock),
       context_(context)

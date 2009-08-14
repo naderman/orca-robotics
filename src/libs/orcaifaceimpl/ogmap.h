@@ -11,13 +11,14 @@
 #ifndef ORCAIFACEIMPL_OGMAP_H
 #define ORCAIFACEIMPL_OGMAP_H
 
+#include <orca/ogmap.h>
+#include <orcaifaceutil/ogmap.h>
+
 #include <orcaifaceimpl/providerImpl.h>
 #include <orcaifaceimpl/storingconsumerImpl.h>
 #include <orcaifaceimpl/bufferedconsumerImpl.h>
 #include <orcaifaceimpl/notifyingconsumerImpl.h>
 #include <orcaifaceimpl/printingconsumerImpl.h>
-
-#include <orca/ogmap.h>
 
 namespace orcaifaceimpl {
 

@@ -23,6 +23,12 @@ public:
         : localise2dImpl_(new orcaifaceimpl::Localise2dImpl(geomDescr,interfaceTag,context))
         {}
 
+    PosePublisher( const orca::VehicleGeometryDescriptionPtr &geomDescr,
+                   const orcaice::Context                    &context,
+                   const std::string                         &interfaceString )
+        : localise2dImpl_(new orcaifaceimpl::Localise2dImpl(geomDescr,context,interfaceString))
+        {}
+
     void initInterface()
         { localise2dImpl_->initInterface(); }
 

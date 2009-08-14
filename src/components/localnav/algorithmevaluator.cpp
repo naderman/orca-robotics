@@ -120,8 +120,8 @@ AlgorithmEvaluator::~AlgorithmEvaluator()
 }
 
 void
-AlgorithmEvaluator::evaluate( double timeToMakeDecision,
-                              const Simulator &simulator )
+AlgorithmEvaluator::evaluate( double                             timeToMakeDecision,
+                              const orcalocalnavtest::Simulator &simulator )
 {
     numIterations_++;
     const double distToObstacle = distanceToNearestObstacle( simulator.ogMap(),

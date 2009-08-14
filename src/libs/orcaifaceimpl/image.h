@@ -11,13 +11,14 @@
 #ifndef ORCAIFACEIMPL_IMAGE_H
 #define ORCAIFACEIMPL_IMAGE_H
 
+#include <orca/image.h>
+#include <orcaifaceutil/image.h>
+
 #include <orcaifaceimpl/providerWithDescriptionImpl.h>
 #include <orcaifaceimpl/storingconsumerImpl.h>
 #include <orcaifaceimpl/bufferedconsumerImpl.h>
 #include <orcaifaceimpl/notifyingconsumerImpl.h>
 #include <orcaifaceimpl/printingconsumerImpl.h>
-
-#include <orca/image.h>
 
 namespace orcaifaceimpl {
 

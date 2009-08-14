@@ -212,6 +212,39 @@ getDescriptionWithTag( const Context          &context,
     }
 }
 
+template<class InterfacePrxType, typename DescriptionType>
+void
+getDescriptionWithString( const Context          &context,
+                          const std::string      &interfaceString,
+                          DescriptionType        &description,
+                          gbxutilacfr::Stoppable *activity,
+                          const std::string      &subsysName       = "", 
+                          int                     retryIntervalSec = 2, 
+                          int                     retryNumber      = -1 )
+{
+    int count = 0;
+    while ( !activity->isStopping() && ( retryNumber<0 || count<retryNumber) )
+    {
+        try {
+            description = orcaice::getDescriptionWithString<InterfacePrxType,DescriptionType>( context, interfaceString );
+            if ( !subsysName.empty() )
+                context.status().ok( subsysName );
+            break;
+        }
+        catch ( const orcaice::NetworkException& e ) {
+            std::stringstream ss;
+            ss << "Failed to connect to interface with string "<<interfaceString<<" : "<< e.what()
+               << "\nWill retry in "<<retryIntervalSec<<"s.";
+            if ( !subsysName.empty() )
+                context.status().warning( subsysName, ss.str() );
+            else
+                context.tracer().warning( subsysName, ss.str() );
+        }
+        ++count;
+        gbxiceutilacfr::checkedSleep( activity, retryIntervalSec*1000 );
+    }
+}
+
 
 //@}
 

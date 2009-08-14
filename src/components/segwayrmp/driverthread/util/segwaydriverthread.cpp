@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstdio>
 #include <driverthread/driverthread.h>
 #include <gbxutilacfr/trivialtracer.h>
 #include <hydroiceutil/localstatus.h>

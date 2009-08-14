@@ -11,6 +11,7 @@
 #define ORCA_SIM2D_H
 
 #include <orcasim2d/posepublisher.h>
+#include <orcasim2d/odompublisher.h>
 #include <orcasim2d/rangescanpublisher.h>
 
 #endif

@@ -11,13 +11,14 @@
 #ifndef ORCAIFACEIMPL_QGRAPHICS2D_H
 #define ORCAIFACEIMPL_QGRAPHICS2D_H
 
+#include <orca/qgraphics2d.h>
+#include <orcaifaceutil/qgraphics2d.h>
+
 #include <orcaifaceimpl/providerImpl.h>
 #include <orcaifaceimpl/storingconsumerImpl.h>
 #include <orcaifaceimpl/bufferedconsumerImpl.h>
 #include <orcaifaceimpl/notifyingconsumerImpl.h>
 #include <orcaifaceimpl/printingconsumerImpl.h>
-
-#include <orca/qgraphics2d.h>
 
 namespace orcaifaceimpl {
 

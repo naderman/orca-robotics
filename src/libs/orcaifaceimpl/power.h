@@ -11,13 +11,14 @@
 #ifndef ORCAIFACEIMPL_POWER_H
 #define ORCAIFACEIMPL_POWER_H
 
+#include <orca/power.h>
+#include <orcaifaceutil/power.h>
+
 #include <orcaifaceimpl/providerImpl.h>
 #include <orcaifaceimpl/storingconsumerImpl.h>
 #include <orcaifaceimpl/bufferedconsumerImpl.h>
 #include <orcaifaceimpl/notifyingconsumerImpl.h>
 #include <orcaifaceimpl/printingconsumerImpl.h>
-
-#include <orca/power.h>
 
 namespace orcaifaceimpl {
 

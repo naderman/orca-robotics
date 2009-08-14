@@ -13,12 +13,19 @@ if( build )
 
     include( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
 
-    # for jpeg camera logging
-    include( ${ORCA_CMAKE_DIR}/FindOpenCV.cmake )
-    if( OPENCV_FOUND )
-        INCLUDE (${ORCA_CMAKE_DIR}/UseOpenCV.cmake)
-        add_definitions( -DOPENCV_FOUND )
-    endif( OPENCV_FOUND )
+    # Image/Camera log recorder/player are special:
+    #    they have an external dependency on OpenCV
+    # In odrer to optionally avoid this dependency, we create a special
+    # user-configurable cmake variable ORCALOGFACTORY_USE_OPENCV
+    option( ORCALOGFACTORY_USE_OPENCV "If OpenCV is installed, should libOrcaLogFactory use it?" ON )
+    if ( ORCALOGFACTORY_USE_OPENCV )
+        include( ${ORCA_CMAKE_DIR}/FindOpenCV.cmake )
+        if( OPENCV_FOUND )
+            include( ${ORCA_CMAKE_DIR}/UseOpenCV.cmake )
+            add_definitions( -DOPENCV_FOUND )
+            message( STATUS "libOrcaLogFactory is using OpenCV" )
+        endif( OPENCV_FOUND )
+    endif( ORCALOGFACTORY_USE_OPENCV )
 
     file( GLOB hdrs *.h )
     file( GLOB srcs *.cpp )

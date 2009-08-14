@@ -11,19 +11,24 @@
 #ifndef ORCAIFACEIMPL_LASERSCANNER2D_H
 #define ORCAIFACEIMPL_LASERSCANNER2D_H
 
+#include <orca/laserscanner2d.h>
+#include <orcaifaceutil/laserscanner2d.h>
+
 #include <orcaifaceimpl/providerWithDescriptionImpl.h>
 #include <orcaifaceimpl/storingconsumerImpl.h>
 #include <orcaifaceimpl/bufferedconsumerImpl.h>
 #include <orcaifaceimpl/notifyingconsumerImpl.h>
 #include <orcaifaceimpl/printingconsumerImpl.h>
 
-#include <orca/laserscanner2d.h>
-
 namespace orcaifaceimpl {
 
 typedef ProviderWithDescriptionImpl<orca::LaserScanner2d, orca::RangeScanner2dConsumer,
                     orca::RangeScanner2dDataPtr, orca::RangeScanner2dDescription> LaserScanner2dImpl;
 typedef IceUtil::Handle<LaserScanner2dImpl> LaserScanner2dImplPtr;
+
+typedef ConsumerImpl<orca::LaserScanner2d, orca::RangeScanner2dConsumer,
+                    orca::RangeScanner2dDataPtr> LaserScanner2dConsumerImpl;
+typedef IceUtil::Handle<LaserScanner2dConsumerImpl> LaserScanner2dConsumerImplPtr;
 
 typedef StoringConsumerImpl<orca::LaserScanner2d, orca::RangeScanner2dConsumer,
                     orca::RangeScanner2dDataPtr> StoringLaserScanner2dConsumerImpl;

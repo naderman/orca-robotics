@@ -23,6 +23,13 @@ public:
           descr_(descr)
         {}
 
+    RangeScanPublisher( const orca::RangeScanner2dDescription &descr,
+                        const orcaice::Context                &context,
+                        const std::string                     &interfaceString )
+        : rangeScanner2dImpl_(new orcaifaceimpl::RangeScanner2dImpl(descr,context,interfaceString)),
+          descr_(descr)
+        {}
+
     void initInterface()
         { rangeScanner2dImpl_->initInterface(); }
 

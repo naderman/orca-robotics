@@ -1,11 +1,11 @@
-#ifndef TESTSIM_H
-#define TESTSIM_H
+#ifndef ORCALOCALNAVTEST_TESTSIM_H
+#define ORCALOCALNAVTEST_TESTSIM_H
 
-#include <testsim/simulator.h>
+#include <orcalocalnavtest/simulator.h>
 #include <orca/pathfollower2d.h>
 #include <hydroogmap/hydroogmap.h>
 
-namespace localnav {
+namespace orcalocalnavtest {
 
     orca::PathFollower2dData getTestPath( const hydroogmap::OgMap &ogMap,
                                           int numWaypoints,

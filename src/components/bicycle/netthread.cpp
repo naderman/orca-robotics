@@ -14,6 +14,7 @@
 #include <gbxsickacfr/gbxiceutilacfr/timer.h>
 #include <orcaice/orcaice.h>
 #include "netthread.h"
+#include <orcaifaceutil/drivebicycle.h>
 
 using namespace std;
 

@@ -11,13 +11,14 @@
 #ifndef ORCAIFACEIMPL_SYSTEMSTATUS_H
 #define ORCAIFACEIMPL_SYSTEMSTATUS_H
 
+#include <orca/systemstatus.h>
+#include <orcaifaceutil/systemstatus.h>
+
 #include <orcaifaceimpl/providerImpl.h>
 #include <orcaifaceimpl/storingconsumerImpl.h>
 #include <orcaifaceimpl/bufferedconsumerImpl.h>
 #include <orcaifaceimpl/notifyingconsumerImpl.h>
 #include <orcaifaceimpl/printingconsumerImpl.h>
-
-#include <orca/systemstatus.h>
 
 namespace orcaifaceimpl {
 

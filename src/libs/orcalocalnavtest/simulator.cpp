@@ -3,14 +3,13 @@
 #include <orcaice/orcaice.h>
 #include <orcaobj/bros1.h>
 #include <orcaobjutil/vehicleutil.h>
-#include <hydropathplan/hydropathplan.h>
 #include <hydrogeom2d/geom2d.h>
 #include <orcaogmap/orcaogmap.h>
 #include "testsimutil.h"
 
 using namespace std;
 
-namespace localnav {
+namespace orcalocalnavtest {
 
 namespace {
     const double WORLD_SIZE = 40.0;
@@ -59,7 +58,8 @@ Simulator::Simulator( const orcaice::Context         &context,
     // instantiate the simulation
     vehicleSimulator_.reset( new hydrosim2d::VehicleSimulator( vehicleSimConfig,
                                                                ogMap_,
-                                                               *posePublisher_ ) );
+                                                               *posePublisher_,
+                                                               odomPublisher_.get() ) );
     rangeScannerSimulator_.reset( new hydrosim2d::RangeScannerSimulator( rangeScanSimConfig,
                                                                          ogMap_,
                                                                          *rangeScanPublisher_ ) );
@@ -88,8 +88,8 @@ Simulator::setupInterfaces( const hydrosim2d::VehicleSimulator::Config &vehicleS
     scannerDescr_.timeStamp       = orcaice::getNow();
 
     rangeScanPublisher_.reset( new orcasim2d::RangeScanPublisher( scannerDescr_,
-                                                                  "TestLaserScanner",
-                                                                  context_ ) );
+                                                                  context_,
+                                                                  scannerInterfaceName() ) );
 
     orca::VehicleControlVelocityDifferentialDescription *c 
         = new orca::VehicleControlVelocityDifferentialDescription;
@@ -114,11 +114,14 @@ Simulator::setupInterfaces( const hydrosim2d::VehicleSimulator::Config &vehicleS
     vehicleDescr_.geometry = g;
 
     posePublisher_.reset( new orcasim2d::PosePublisher( vehicleDescr_.geometry,
-                                                        "TestLocalise",
-                                                        context_ ) );
+                                                        context_,
+                                                        localiseInterfaceName() ) );
 
-    ogMapInterface_    = new orcaifaceimpl::OgMapImpl( "TestOgMap",
-                                                        context_ );
+    odomPublisher_.reset( new orcasim2d::OdomPublisher( vehicleDescr_,
+                                                        context_,
+                                                        odomInterfaceName() ) );
+
+    ogMapInterface_    = new orcaifaceimpl::OgMapImpl( context_, "TestOgMap" );
     try {
         rangeScanPublisher_->initInterface();
     } 
@@ -128,6 +131,13 @@ Simulator::setupInterfaces( const hydrosim2d::VehicleSimulator::Config &vehicleS
 
     try {
         posePublisher_->initInterface();
+    }
+    catch ( std::exception &e ) {
+        cout << "Ignoring problem initialising interface: " << e.what();
+    }
+
+    try {
+        odomPublisher_->initInterface();
     }
     catch ( std::exception &e ) {
         cout << "Ignoring problem initialising interface: " << e.what();
@@ -181,13 +191,13 @@ Simulator::act( const hydronavutil::Velocity &cmd )
 void
 Simulator::checkProgress( bool &pathCompleted, bool &pathFailed )
 {
-    localnav::checkProgress( testPath_,
-                             *vehicleSimulator_,
-                             iterationNum_,
-                             config_.numIterationsLimit,
-                             wpI_,
-                             pathCompleted,
-                             pathFailed );
+    orcalocalnavtest::checkProgress( testPath_,
+                                     *vehicleSimulator_,
+                                     iterationNum_,
+                                     config_.numIterationsLimit,
+                                     wpI_,
+                                     pathCompleted,
+                                     pathFailed );
 }
 
 orca::Time 

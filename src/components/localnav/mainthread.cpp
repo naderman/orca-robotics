@@ -18,7 +18,7 @@
 #include <hydroutil/cpustopwatch.h>
 #include <orcanavutil/orcanavutil.h>
 #include "mainthread.h"
-#include "testsim/testsimutil.h"
+#include <orcalocalnavtest/testsimutil.h>
 #include "stats.h"
 
 using namespace std;
@@ -57,7 +57,7 @@ MainThread::initialise()
     setMaxHeartbeatInterval( 10.0 );
     
     orca::Time t; t.seconds=0; t.useconds=0;
-    clock_.reset( new Clock( t ) );
+    clock_.reset( new orcalocalnav::Clock( t ) );
 
     Ice::PropertiesPtr prop = context_.properties();
     std::string prefix = context_.tag();
@@ -67,7 +67,7 @@ MainThread::initialise()
     timestampsCheckEnabled_ = orcaice::getPropertyAsIntWithDefault( prop, prefix+"TimestampsCheckEnabled", 1 );
 
     // Create our provided interface
-    pathFollowerInterface_.reset( new PathFollowerInterface( *clock_, "PathFollower2d", context_ ) );
+    pathFollowerInterface_.reset( new orcalocalnav::PathFollowerInterface( *clock_, "PathFollower2d", context_ ) );
 
     //
     // Instantiate bogus info sources in test-in-simulation-mode
@@ -79,7 +79,7 @@ MainThread::initialise()
         int seed = orcaice::getPropertyAsIntWithDefault( prop, tprefix+"RandomSeed", 0 );
         srand(seed);
 
-        Simulator::Config cfg;
+        orcalocalnavtest::Simulator::Config cfg;
         cfg.maxLateralAcceleration = 
             orcaice::getPropertyAsDoubleWithDefault( prop, tprefix+"MaxLateralAcceleraton", 1.0 );
         cfg.checkLateralAcceleration = 
@@ -102,20 +102,20 @@ MainThread::initialise()
 
         const double WORLD_SIZE = 40.0;
         const double CELL_SIZE = 0.1;
-        hydroogmap::OgMap ogMap = setupMap( WORLD_SIZE, CELL_SIZE, numObstacles, cfg.useRoom );
+        hydroogmap::OgMap ogMap = orcalocalnavtest::setupMap( WORLD_SIZE, CELL_SIZE, numObstacles, cfg.useRoom );
 
         int numWaypoints = orcaice::getPropertyAsIntWithDefault( prop, prefix+"Test.NumWaypoints", 10 );
         bool turnOnSpot = orcaice::getPropertyAsIntWithDefault( prop, prefix+"Test.TurnOnSpot", 1 );
         bool stressTiming = orcaice::getPropertyAsIntWithDefault( prop, prefix+"Test.StressTiming", 1 );
 
-        orca::PathFollower2dData testPath = getTestPath( ogMap,
-                                                         numWaypoints,
-                                                         stressTiming,
-                                                         turnOnSpot,
-                                                         cfg.useRoom );
+        orca::PathFollower2dData testPath = orcalocalnavtest::getTestPath( ogMap,
+                                                                           numWaypoints,
+                                                                           stressTiming,
+                                                                           turnOnSpot,
+                                                                           cfg.useRoom );
         pathFollowerInterface_->setData( testPath, true );
 
-        testSimulator_ = new Simulator( context_, ogMap, testPath, cfg );
+        testSimulator_.reset( new orcalocalnavtest::Simulator( context_, ogMap, testPath, cfg ) );
 
         bool evaluateAlg = orcaice::getPropertyAsIntWithDefault( prop, prefix+"Test.EvaluateAlg", 0 );
         if ( evaluateAlg )
@@ -208,7 +208,7 @@ MainThread::work()
 
                 // If we do have an active goal, limit the max speed for the current goal
                 // and get the pathplanner to work out the next set of actions
-                speedLimiter_->constrainMaxSpeeds( inputs.goals[0], inputs.currentVelocity );
+                speedLimiter_->constrainMaxSpeeds( inputs.goals[0], inputs.currentVelocity.lin() );
             }     
             
             // The actual driver which determines the path and commands to send to the vehicle.
@@ -416,8 +416,8 @@ MainThread::setup()
     descrStream << "Working with the following range scanner: " << orcaobj::toString(scannerDescr_) << endl;
     context_.tracer().info( descrStream.str() );
 
-    pathMaintainer_.reset( new PathMaintainer( *pathFollowerInterface_, *clock_, context_ ) );
-    speedLimiter_.reset( new SpeedLimiter( context_ ) );
+    pathMaintainer_.reset( new orcalocalnav::PathMaintainer( *pathFollowerInterface_, *clock_, context_ ) );
+    speedLimiter_.reset( new orcalocalnav::SpeedLimiter( context_ ) );
 
     //
     // Instantiate the driver

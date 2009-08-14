@@ -1,1 +1,1 @@
-add_subdirectory( sync )
+message( STATUS "== SCRIPTS ==" )

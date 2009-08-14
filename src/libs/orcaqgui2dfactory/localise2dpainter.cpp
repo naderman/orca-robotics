@@ -29,6 +29,7 @@ Localise2dPainter::Localise2dPainter( bool beginDisplayHistory )
       basicColor_(Qt::blue),
       isDisplayHistory_(beginDisplayHistory),
       isDisplayMultiHypothesis_(true),
+      isDisplayUncertainty_(true),
       isInFocus_(false)
 {
 }
@@ -119,11 +120,17 @@ Localise2dPainter::paintHypothesis( QPainter* p, const orca::Pose2dHypothesis &h
                 hydroqguielementutil::paintCubicPlatformPose( p, length_, width_, weight, minLengthInMetres );
             }
 
-            p->setPen( color );
-            hydroqguielementutil::paintUncertaintyWedge( p, cov.tt, minLengthInMetres*3.0 );
+            if ( isDisplayUncertainty_ )
+            {
+                p->setPen( color );
+                hydroqguielementutil::paintUncertaintyWedge( p, cov.tt, minLengthInMetres*3.0 );
+            }
         }
-        p->setPen( color );
-        hydroqguielementutil::paintCovarianceEllipse( p, cov.xx, cov.xy, cov.yy );
+        if ( isDisplayUncertainty_ )
+        {
+            p->setPen( color );
+            hydroqguielementutil::paintCovarianceEllipse( p, cov.xx, cov.xy, cov.yy );
+        }
     }
 }
 

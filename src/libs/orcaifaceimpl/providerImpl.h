@@ -68,12 +68,26 @@ public:
     }
 
     // local interface:
+    //! Creates the interface and connects to the IceStorm topic.
     //! May throw gbxutilacfr::Exceptions.
     void initInterface()
     {
         orcaice::createInterfaceWithString( context_, ptr_, interfaceName_ );
     
         topicHandler_->connectToTopic();
+    }
+    //! Same as above but sets the data before initializing the interface and sends it out after.
+    void initInterface( const DataType& data )
+    {
+        // by setting the data first we avoid the possibility of initializing the interface
+        // but not having the data in it.
+        localSet( data );
+
+        orcaice::createInterfaceWithString( context_, ptr_, interfaceName_ );
+    
+        topicHandler_->connectToTopic();
+
+        topicHandler_->publish( data );
     }
 
     //! Sets up interface and connects to IceStorm. Catches all exceptions and retries
@@ -83,6 +97,20 @@ public:
         orcaice::createInterfaceWithString( context_, ptr_, interfaceName_, activity, subsysName, retryInterval );
     
         topicHandler_->connectToTopic( activity, subsysName, retryInterval );
+    }
+    //! Same as above but sets the data before initializing the interface and sends it out after.
+    void initInterface( const DataType& data, 
+                        gbxutilacfr::Stoppable* activity, const std::string& subsysName="", int retryInterval=2 )
+    {
+        // by setting the data first we avoid the possibility of initializing the interface
+        // but not having the data in it.
+        localSet( data );
+
+        orcaice::createInterfaceWithString( context_, ptr_, interfaceName_, activity, subsysName, retryInterval );
+    
+        topicHandler_->connectToTopic( activity, subsysName, retryInterval );
+
+        topicHandler_->publish( data );
     }
 
     //! A local call which sets the data reported by the interface

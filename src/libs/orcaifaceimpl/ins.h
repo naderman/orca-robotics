@@ -11,13 +11,14 @@
 #ifndef ORCAIFACEIMPL_INS_H
 #define ORCAIFACEIMPL_INS_H
 
+#include <orca/ins.h>
+#include <orcaifaceutil/ins.h>
+
 #include <orcaifaceimpl/providerWithDescriptionImpl.h>
 #include <orcaifaceimpl/storingconsumerImpl.h>
 #include <orcaifaceimpl/bufferedconsumerImpl.h>
 #include <orcaifaceimpl/notifyingconsumerImpl.h>
 #include <orcaifaceimpl/printingconsumerImpl.h>
-
-#include <orca/ins.h>
 
 namespace orcaifaceimpl {
 

@@ -268,9 +268,12 @@ enable_testing()
 add_subdirectory( src )
 
 #
-# Some scripts need to be installed
+# Some scripts may need to be installed.
+# This directory exists in Orca but is considered optional for satellite projects.
 #
-add_subdirectory( scripts )
+if( EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/scripts )
+    add_subdirectory( scripts )
+endif()
 
 #
 # Experimental

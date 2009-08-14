@@ -7,18 +7,18 @@
  * the LICENSE file included in this distribution.
  *
  */
-#ifndef ORCA_PATHMAINTAINER_H
-#define ORCA_PATHMAINTAINER_H
+#ifndef ORCALOCALNAV_PATHMAINTAINER_H
+#define ORCALOCALNAV_PATHMAINTAINER_H
 
 #include <orca/pathfollower2d.h>
 #include <orcaice/context.h>
 #include <hydronavutil/pose.h>
-#include "goal.h"
+#include <orcalocalnav/goal.h>
 
-namespace localnav {
+namespace orcalocalnav {
 
-class PathFollowerInterface;
 class Clock;
+class PathFollowerInterface;
 
 //
 // @author Alex Brooks
@@ -33,7 +33,7 @@ class PathMaintainer
 public: 
 
     PathMaintainer( PathFollowerInterface     &pathFollowerInterface,
-                    const Clock               &clock,
+                    const orcalocalnav::Clock &clock,
                     const orcaice::Context    &context );
 
     // Gets a list of up to maxNumGoals goals, the first
@@ -87,7 +87,7 @@ private:
     PathFollowerInterface &pathFollowerInterface_;
 
     // The global time
-    const Clock &clock_;
+    const orcalocalnav::Clock &clock_;
 
     orcaice::Context context_;
 };

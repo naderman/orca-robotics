@@ -8,7 +8,7 @@ namespace orcarobotdriverutil {
 StateMachine::StateMachine()
 {
     // Assume something's wrong till we know otherwise
-    setFault( "Initialising" );
+    setFault( "Hardware driver is initialising" );
 }
 
 void

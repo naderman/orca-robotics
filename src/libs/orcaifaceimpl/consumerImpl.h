@@ -20,6 +20,7 @@
 // we only need the definition of Stoppable and checkedSleep() function.
 // (we don't need the actual Thread class).
 #include <gbxsickacfr/gbxiceutilacfr/threadutils.h>
+#include <gbxsickacfr/gbxiceutilacfr/timer.h>
 
 namespace orcaifaceimpl
 {
@@ -103,8 +104,9 @@ class ConsumerTypeI : virtual public ConsumerType
 {
 public:
     ConsumerTypeI( AbstractConsumer<ObjectType> &impl ) :
-        impl_(impl) {}
-    virtual ~ConsumerTypeI() {};
+        impl_(impl)
+        {}
+    virtual ~ConsumerTypeI() {}
 
     // implementation of remote call defined in all *Consumer interfaces
     // this implementation redirects to the Impl class
@@ -133,7 +135,6 @@ Oct 25 03:26:49 tango /usr/bin/icebox[2474]: Topic: status/ast@tango/localnav: u
 Oct 25 03:26:49 tango /usr/bin/icebox[2474]: Subscriber: 0x81182e0 07394FBF-586C-4128-AA28-1727B9DA2E19: subscriber errored out: OutgoingAsync.cpp:305: Ice::ObjectNotExistException: object does not exist: identity: `07394FBF-586C-4128-AA28-1727B9DA2E19' facet:  operation: setData retry: 0/0
 @endverbatim
 */
-// template<class ProviderType, class ProviderPrxType, class ConsumerType, class ConsumerPrxType, class ObjectType>
 template<class ProviderType, class ConsumerType, class ObjectType>
 class ConsumerImpl : public ConsumerSubscriber, 
                      public AbstractConsumer<ObjectType>,
@@ -164,26 +165,39 @@ public:
 
     virtual ~ConsumerImpl() 
     {
-//         context_.tracer().debug( "ConsumerImpl::~ConsumerImpl()" );
-        // unsubscribe from the info provider
-        try {
-            unsubscribe();
-        }
-        catch ( const std::exception& e ) {
-            std::stringstream ss;
-            ss << "failed to unsubscribe in destructor: " << e.what();
-            context_.tracer().warning( ss.str() );
-        }
-        catch ( ... ) {
-            context_.tracer().warning( "failed to unsubscribe in destructor." );
-        }
+            // unsubscribe from the info provider
+            try {
+                unsubscribe();
+            }
+            catch ( const std::exception& e ) {
+                std::stringstream ss;
+                ss << "failed to unsubscribe in destructor: " << e.what();
+                context_.tracer().warning( ss.str() );
+            }
+            catch ( ... ) {
+                context_.tracer().warning( "failed to unsubscribe in destructor." );
+            }
 
-        // now, remove our consumer object from Adapter
-        if ( !consumerPrx_ )
-            return;
+            // now, remove our consumer object from Adapter
+            if ( consumerPrx_ )
+            {
+                orcaice::tryRemoveInterfaceWithIdentity( context_, consumerPrx_->ice_getIdentity() );
+            }
 
-        orcaice::tryRemoveInterfaceWithIdentity( context_, consumerPrx_->ice_getIdentity() );
-    }
+            // Make sure that the adapter has let go of its smart point -- if not, it means
+            // that a 'setData()' call is still executing
+            gbxiceutilacfr::Timer timer;
+            while ( !context_.adapter()->isDeactivated() &&
+                    consumerPtr_->__getRef() > 1 )
+            {
+                const double maxSec = 10.0; // This is a bit arbitrary...
+                if ( timer.elapsedSec() > maxSec )
+                {
+                    std::cout<<"TRACE(consumerImpl.h): been waiting " << timer.elapsedSec() << "s for setData() call to finish..." << std::endl;                    
+                }
+                usleep(100000);
+            }
+        }
 
     //! Access the proxy to the internal consumer interface implementation.
     ConsumerPrxType consumerPrx() const { return consumerPrx_; }
@@ -191,7 +205,7 @@ public:
     //! Access to the context.
     orcaice::Context& context() { return context_; };
 
-    // This is tricky! Can't leave it pure virtual because we unsubscribe and detsroy
+    // This is tricky! Can't leave it pure virtual because we unsubscribe and destroy
     // in ConsumerImpl destructor. By that time, the derived class (e.g. StoringConsumer)
     // is already destroyed and we'll get "pure virtual method called".
     //

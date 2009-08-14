@@ -11,13 +11,14 @@
 #ifndef ORCAIFACEIMPL_CAMERA_H
 #define ORCAIFACEIMPL_CAMERA_H
 
+#include <orca/camera.h>
+#include <orcaifaceutil/camera.h>
+
 #include <orcaifaceimpl/providerWithDescriptionImpl.h>
 #include <orcaifaceimpl/storingconsumerImpl.h>
 #include <orcaifaceimpl/bufferedconsumerImpl.h>
 #include <orcaifaceimpl/notifyingconsumerImpl.h>
 #include <orcaifaceimpl/printingconsumerImpl.h>
-
-#include <orca/camera.h>
 
 namespace orcaifaceimpl {
 

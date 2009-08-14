@@ -11,13 +11,14 @@
 #ifndef ORCAIFACEIMPL_LOCALISE2D_H
 #define ORCAIFACEIMPL_LOCALISE2D_H
 
+#include <orca/localise2d.h>
+#include <orcaifaceutil/localise2d.h>
+
 #include <orcaifaceimpl/providerWithDescriptionImpl.h>
 #include <orcaifaceimpl/storingconsumerImpl.h>
 #include <orcaifaceimpl/bufferedconsumerImpl.h>
 #include <orcaifaceimpl/notifyingconsumerImpl.h>
 #include <orcaifaceimpl/printingconsumerImpl.h>
-
-#include <orca/localise2d.h>
 
 namespace orcaifaceimpl {
 

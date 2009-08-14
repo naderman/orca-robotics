@@ -11,12 +11,13 @@
 #ifndef ORCAIFACEIMPL_TRACER_H
 #define ORCAIFACEIMPL_TRACER_H
 
+#include <orca/tracer.h>
+#include <orcaifaceutil/tracer.h>
+
 #include <orcaifaceimpl/storingconsumerImpl.h>
 #include <orcaifaceimpl/bufferedconsumerImpl.h>
 #include <orcaifaceimpl/notifyingconsumerImpl.h>
 #include <orcaifaceimpl/printingconsumerImpl.h>
-
-#include <orca/tracer.h>
 
 namespace orcaifaceimpl {
 

@@ -37,7 +37,7 @@ struct Waypoint2d {
     float   distanceTolerance;
 
     //! How closely the follower has to match the target orientation
-    float   headingTolerance;
+    ["slice2orca:string:degrees"] float   headingTolerance;
 
     //! The time at which the follower should reach the waypoint (in seconds), as
     //! an offset from the time the path was activated.
@@ -47,7 +47,7 @@ struct Waypoint2d {
     float   maxApproachSpeed;
 
     //! Max turnrate the follower can use when approaching this waypoint
-    float   maxApproachTurnrate;
+    ["slice2orca:string:degrees"] float   maxApproachTurnrate;
 };
 
 //! A sequence of waypoints

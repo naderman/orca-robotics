@@ -128,26 +128,30 @@ MainThread::checkWifiSignal( orca::WifiData &data )
     for (unsigned int i=0; i<data.interfaces.size(); i++)
     {
         const orca::WifiInterface &iface = data.interfaces[i];
-        
-        if ( iface.linkType != orca::LinkQualityTypeDbm )
+
+        if (iface.linkType == orca::LinkQualityTypeDbm)
         {
-            // we can't judge how good the signal is in relative mode, so just say ok
-            health().ok();
-            continue;
-        }
-        
-        if ( iface.discreteLevel == orca::SignalLevelVeryLow ||
-             iface.discreteLevel == orca::SignalLevelLow )
-        {
+            int dB = iface.signalLevel-iface.noiseLevel;
             stringstream ss;
-            ss << "Wifi signal strength of interface " << iface.interfaceName << " is " << enumToString( iface.discreteLevel);
-            health().warning( ss.str() );
-            context_.tracer().warning( ss.str() );
+            ss << "Checking signal strength: " << dB << "dB";
+            context_.tracer().debug(ss.str(),3);
+            
+            if ( iface.discreteLevel == orca::SignalLevelVeryLow )
+            {
+                stringstream ss;
+                ss << "Wifi signal strength of interface " << iface.interfaceName << " is " << enumToString( iface.discreteLevel ) << " (" << dB << "dB)";
+                health().warning( ss.str() );
+                context_.tracer().warning( ss.str() );
+            }
+            else
+            {
+                health().ok();
+            }
         }
         else
         {
-            health().ok();
+            // we can't judge how good the signal is in relative or unknown mode, so just say ok
+            health().ok();        
         }
-    }
-    
+    } 
 }

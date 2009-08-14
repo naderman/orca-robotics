@@ -11,13 +11,14 @@
 #ifndef ORCAIFACEIMPL_DRIVEBICYCLE_H
 #define ORCAIFACEIMPL_DRIVEBICYCLE_H
 
+#include <orca/drivebicycle.h>
+#include <orcaifaceutil/drivebicycle.h>
+
 #include <orcaifaceimpl/drivebicycleImpl.h>
 #include <orcaifaceimpl/storingconsumerImpl.h>
 #include <orcaifaceimpl/bufferedconsumerImpl.h>
 #include <orcaifaceimpl/notifyingconsumerImpl.h>
 #include <orcaifaceimpl/printingconsumerImpl.h>
-
-#include <orca/drivebicycle.h>
 
 namespace orcaifaceimpl {
 

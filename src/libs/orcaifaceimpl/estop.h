@@ -11,13 +11,14 @@
 #ifndef ORCAIFACEIMPL_ESTOP_H
 #define ORCAIFACEIMPL_ESTOP_H
 
+#include <orca/estop.h>
+#include <orcaifaceutil/estop.h>
+
 #include <orcaifaceimpl/estopImpl.h>
 #include <orcaifaceimpl/storingconsumerImpl.h>
 #include <orcaifaceimpl/bufferedconsumerImpl.h>
 #include <orcaifaceimpl/notifyingconsumerImpl.h>
 #include <orcaifaceimpl/printingconsumerImpl.h>
-
-#include <orca/estop.h>
 
 namespace orcaifaceimpl {
 

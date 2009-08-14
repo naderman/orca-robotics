@@ -11,13 +11,14 @@
 #ifndef ORCAIFACEIMPL_PROPERTIES_H
 #define ORCAIFACEIMPL_PROPERTIES_H
 
+#include <orca/properties.h>
+#include <orcaifaceutil/properties.h>
+
 #include <orcaifaceimpl/propertiesImpl.h>
 #include <orcaifaceimpl/storingconsumerImpl.h>
 #include <orcaifaceimpl/bufferedconsumerImpl.h>
 #include <orcaifaceimpl/notifyingconsumerImpl.h>
 #include <orcaifaceimpl/printingconsumerImpl.h>
-
-#include <orca/properties.h>
 
 namespace orcaifaceimpl {
 

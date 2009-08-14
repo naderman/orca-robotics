@@ -2,11 +2,10 @@
 #include <iostream>
 #include <hydroutil/rand.h>
 #include <orcaice/orcaice.h>
-#include "pathmaintainer.h"
 
 using namespace std;
 
-namespace localnav {
+namespace orcalocalnavtest {
 
 namespace {
 
@@ -55,9 +54,11 @@ namespace {
                         int                      &t,
                         bool                      stressTiming )
     {
+        const double dt = 10;
+
         // move off
         if ( stressTiming )
-            t+=3;
+            t+=dt;
         wp.target.p.x   = 10;
         wp.target.p.y   = 10;
         wp.target.o     = M_PI;
@@ -65,7 +66,7 @@ namespace {
         d.path.push_back( wp );
 
         if ( stressTiming )
-            t+=3;
+            t+=dt;
         wp.target.p.x   = 10;
         wp.target.p.y   = 0;
         wp.target.o     = M_PI;
@@ -74,7 +75,7 @@ namespace {
 
         // Try to get thru door
         if ( stressTiming )
-            t+=3;
+            t+=dt;
         wp.target.p.x   = -14;
 //        wp.target.p.y   = 10;
         wp.target.p.y   = 9;
@@ -83,7 +84,7 @@ namespace {
         d.path.push_back( wp );
 
         if ( stressTiming )
-            t+=3;
+            t+=dt;
 //        wp.target.p.x   = -14;
         wp.target.p.x   = -14.5;
 //        wp.target.p.x   = -15;
@@ -94,7 +95,7 @@ namespace {
         
         // Then back out.
         if ( stressTiming )
-            t+=3;
+            t+=dt;
         wp.target.p.x   = -14;
         wp.target.p.y   = 14;
         wp.target.o     = -M_PI/2.0;
@@ -102,7 +103,7 @@ namespace {
         d.path.push_back( wp );
 
         if ( stressTiming )
-            t+=3;
+            t+=dt;
         wp.target.p.x   = -14;
         wp.target.p.y   = 10;
         wp.target.o     = -M_PI/2.0;

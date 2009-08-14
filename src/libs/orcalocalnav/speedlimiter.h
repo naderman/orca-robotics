@@ -7,17 +7,15 @@
  * the LICENSE file included in this distribution.
  *
  */
-#ifndef ORCA_SPEEDLIMITER_H
-#define ORCA_SPEEDLIMITER_H
+#ifndef ORCALOCALNAV_SPEEDLIMITER_H
+#define ORCALOCALNAV_SPEEDLIMITER_H
 
 #include <orcaice/context.h>
 #include <orcaice/heartbeater.h>
 #include <orcalocalnav/goal.h>
 #include <hydronavutil/hydronavutil.h>
 
-namespace localnav {
-
-class LocalNavParameters;
+namespace orcalocalnav {
 
 //
 // Constrains the speed according to the next goal taking into account the time
@@ -37,7 +35,7 @@ public:
 
     // constrain the max speeds for a particular goal
     void constrainMaxSpeeds( orcalocalnav::Goal &goal,
-                             const hydronavutil::Velocity &currentVelocity );
+                             double              currentSpeed );
 
 private: 
 

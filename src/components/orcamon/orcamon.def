@@ -1,7 +1,0 @@
-DefaultComponentTag=OrcaMon
-
-# Provided Interfaces
-
-# Required Interfaces
-Requires.Generic.Type=OrcaObject
-Requires.Generic.DefaultProxy=power@local/power

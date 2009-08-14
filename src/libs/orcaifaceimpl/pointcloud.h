@@ -11,13 +11,14 @@
 #ifndef ORCAIFACEIMPL_POINTCLOUD_H
 #define ORCAIFACEIMPL_POINTCLOUD_H
 
+#include <orca/pointcloud.h>
+#include <orcaifaceutil/pointcloud.h>
+
 #include <orcaifaceimpl/providerWithDescriptionImpl.h>
 #include <orcaifaceimpl/storingconsumerImpl.h>
 #include <orcaifaceimpl/bufferedconsumerImpl.h>
 #include <orcaifaceimpl/notifyingconsumerImpl.h>
 #include <orcaifaceimpl/printingconsumerImpl.h>
-
-#include <orca/pointcloud.h>
 
 namespace orcaifaceimpl {
 

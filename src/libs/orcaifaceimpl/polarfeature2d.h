@@ -11,13 +11,14 @@
 #ifndef ORCAIFACEIMPL_POLARFEATURE2D_H
 #define ORCAIFACEIMPL_POLARFEATURE2D_H
 
+#include <orca/polarfeature2d.h>
+#include <orcaifaceutil/polarfeature2d.h>
+
 #include <orcaifaceimpl/providerWithDescriptionImpl.h>
 #include <orcaifaceimpl/storingconsumerImpl.h>
 #include <orcaifaceimpl/bufferedconsumerImpl.h>
 #include <orcaifaceimpl/notifyingconsumerImpl.h>
 #include <orcaifaceimpl/printingconsumerImpl.h>
-
-#include <orca/polarfeature2d.h>
 
 namespace orcaifaceimpl {
 

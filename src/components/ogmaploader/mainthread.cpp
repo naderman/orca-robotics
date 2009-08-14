@@ -75,6 +75,5 @@ MainThread::initialise()
     // EXTERNAL PROVIDED INTERFACES
     //
     ogMapImpl_ = new orcaifaceimpl::OgMapImpl( "OgMap", context_ );
-    ogMapImpl_->initInterface( this, subsysName() );
-    ogMapImpl_->localSetAndSend( theMap );
+    ogMapImpl_->initInterface( theMap, this, subsysName() );
 }

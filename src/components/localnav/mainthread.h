@@ -17,14 +17,14 @@
 #include <orcaice/context.h>
 #include <orcaice/subsystemthread.h>
 #include <gbxsickacfr/gbxiceutilacfr/store.h>
-#include "speedlimiter.h"
-#include "pathmaintainer.h"
-#include "clock.h"
+#include <orcalocalnav/speedlimiter.h>
+#include <orcalocalnav/pathmaintainer.h>
+#include <orcalocalnav/clock.h>
 #include <orcalocalnav/idriver.h>
 #include <hydronavutil/hydronavutil.h>
 #include <hydrodll/dynamicload.h>
-#include "pathfollowerinterface.h"
-#include "testsim/simulator.h"
+#include <orcalocalnav/pathfollowerinterface.h>
+#include <orcalocalnavtest/simulator.h>
 #include "algorithmevaluator.h"
 
 namespace localnav {
@@ -74,10 +74,10 @@ private:
     void stopVehicle();
 
     // Constrains the max speed
-    std::auto_ptr<SpeedLimiter> speedLimiter_;
+    std::auto_ptr<orcalocalnav::SpeedLimiter> speedLimiter_;
 
     // Keeps track of the path we're following
-    std::auto_ptr<PathMaintainer>  pathMaintainer_;
+    std::auto_ptr<orcalocalnav::PathMaintainer>  pathMaintainer_;
 
     // The library that contains the driver factory (must be declared first so it's destructed last!!!)
     std::auto_ptr<hydrodll::DynamicallyLoadedLibrary> driverLib_;
@@ -92,12 +92,12 @@ private:
     orcaifaceimpl::StoringLocalise2dConsumerImplPtr     locConsumer_;
     orcaifaceimpl::StoringOdometry2dConsumerImplPtr     odomConsumer_;
 
-    std::auto_ptr<PathFollowerInterface> pathFollowerInterface_;
+    std::auto_ptr<orcalocalnav::PathFollowerInterface> pathFollowerInterface_;
 
     // Outgoing commands: live version
     orca::VelocityControl2dPrx     velControl2dPrx_;
     // Outgoing commands: test version
-    Simulator                     *testSimulator_;
+    std::auto_ptr<orcalocalnavtest::Simulator> testSimulator_;
 
     // temporary data
     orca::Localise2dData           orcaLocaliseData_;
@@ -105,7 +105,7 @@ private:
     orca::RangeScanner2dDataPtr    orcaRangeData_;
 
     // A global time reference
-    std::auto_ptr<Clock> clock_;
+    std::auto_ptr<orcalocalnav::Clock> clock_;
 
     orca::VehicleDescription        vehicleDescr_;
     orca::RangeScanner2dDescription scannerDescr_;

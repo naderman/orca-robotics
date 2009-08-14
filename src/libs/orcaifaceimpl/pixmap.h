@@ -11,19 +11,24 @@
 #ifndef ORCAIFACEIMPL_PIXMAP_H
 #define ORCAIFACEIMPL_PIXMAP_H
 
+#include <orca/pixmap.h>
+#include <orcaifaceutil/pixmap.h>
+
 #include <orcaifaceimpl/providerImpl.h>
 #include <orcaifaceimpl/storingconsumerImpl.h>
 #include <orcaifaceimpl/bufferedconsumerImpl.h>
 #include <orcaifaceimpl/notifyingconsumerImpl.h>
 #include <orcaifaceimpl/printingconsumerImpl.h>
 
-#include <orca/pixmap.h>
-
 namespace orcaifaceimpl {
 
 typedef ProviderImpl<orca::PixMap, orca::PixMapConsumer,
                     orca::PixMapData> PixMapImpl;
 typedef IceUtil::Handle<PixMapImpl> PixMapImplPtr;
+
+typedef ConsumerImpl<orca::PixMap, orca::PixMapConsumer,
+                    orca::PixMapData> PixMapConsumerImpl;
+typedef IceUtil::Handle<PixMapConsumerImpl> PixMapConsumerImplPtr;
 
 typedef StoringConsumerImpl<orca::PixMap, orca::PixMapConsumer,
                     orca::PixMapData> StoringPixMapConsumerImpl;

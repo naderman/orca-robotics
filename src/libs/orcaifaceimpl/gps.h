@@ -11,13 +11,14 @@
 #ifndef ORCAIFACEIMPL_GPS_H
 #define ORCAIFACEIMPL_GPS_H
 
+#include <orca/gps.h>
+#include <orcaifaceutil/gps.h>
+
 #include <orcaifaceimpl/providerWithDescriptionImpl.h>
 #include <orcaifaceimpl/storingconsumerImpl.h>
 #include <orcaifaceimpl/bufferedconsumerImpl.h>
 #include <orcaifaceimpl/notifyingconsumerImpl.h>
 #include <orcaifaceimpl/printingconsumerImpl.h>
-
-#include <orca/gps.h>
 
 namespace orcaifaceimpl {
 

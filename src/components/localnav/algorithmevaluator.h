@@ -1,7 +1,7 @@
 #ifndef LOCALNAV_ALGORITHMEVALUATOR_H
 #define LOCALNAV_ALGORITHMEVALUATOR_H
 
-#include "testsim/simulator.h"
+#include <orcalocalnavtest/simulator.h>
 #include <list>
 
 namespace localnav {
@@ -24,8 +24,8 @@ public:
         {}
     ~AlgorithmEvaluator();
 
-    void evaluate( double timeToMakeDecision,
-                   const Simulator &simulator );
+    void evaluate( double                             timeToMakeDecision,
+                   const orcalocalnavtest::Simulator &simulator );
 
 private: 
 

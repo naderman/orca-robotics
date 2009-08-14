@@ -11,14 +11,15 @@
 #ifndef ORCAIFACEIMPL_PATHPLANNER2D_H
 #define ORCAIFACEIMPL_PATHPLANNER2D_H
 
+#include <orca/pathplanner2d.h>
+#include <orcaifaceutil/pathplanner2d.h>
+
 // TODO: this one does not exist but probably should.
 // #include <orcaifaceimpl/pathplanner2dImpl.h>
 #include <orcaifaceimpl/storingconsumerImpl.h>
 #include <orcaifaceimpl/bufferedconsumerImpl.h>
 #include <orcaifaceimpl/notifyingconsumerImpl.h>
 #include <orcaifaceimpl/printingconsumerImpl.h>
-
-#include <orca/pathplanner2d.h>
 
 namespace orcaifaceimpl {
 

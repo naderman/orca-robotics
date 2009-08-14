@@ -11,13 +11,14 @@
 #ifndef ORCAIFACEIMPL_PARTICLE2D_H
 #define ORCAIFACEIMPL_PARTICLE2D_H
 
+#include <orca/particle2d.h>
+#include <orcaifaceutil/particle2d.h>
+
 #include <orcaifaceimpl/providerImpl.h>
 #include <orcaifaceimpl/storingconsumerImpl.h>
 #include <orcaifaceimpl/bufferedconsumerImpl.h>
 #include <orcaifaceimpl/notifyingconsumerImpl.h>
 #include <orcaifaceimpl/printingconsumerImpl.h>
-
-#include <orca/particle2d.h>
 
 namespace orcaifaceimpl {
 

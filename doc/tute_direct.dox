@@ -12,7 +12,7 @@
 
 @page orca_doc_tute_direct Connecting components without the Registry
 
-@note Reviewed for release 2.10.0.
+@note Reviewed for release 2.14.
 
 In this tutorial we will reproduce the setup of the @ref orca_doc_quickstart but now without running the IceGrid Registry. The system diagram is shown below.
 
@@ -43,8 +43,8 @@ $ cp [ORCA-INSTALL]/share/orca/cfg/lasermon.cfg .
 
 Edit @c laser2d.cfg file:
 - Configure the component to accept connections on a specific port (we will use port 15000 in this tutorial) instead of a random one assigned by the operating system.  
-- Change driver library from @c 'libHydroLaserScanner2dSickCarmen.so' to @c 'libHydroLaserScanner2dFake.so'.
-- Tell the component to ignore the fact the registry is not there on activation by setting the @c Orca.RequireRegistry property to zero. 
+- Change driver library to @c 'libHydroLaserScanner2dFake.so'.
+- Tell the component to ignore the fact the registry is not there on activation by setting the @c Orca.Component.RequireRegistry property to zero. 
 
 The config file should now contain the following lines:
 @verbatim
@@ -52,12 +52,10 @@ Laser2d.Endpoints=tcp -t 5000 -p 15000
 ...
 Laser2d.Config.DriverLib=libHydroLaserScanner2dFake.so
 ...
-Orca.RequireRegistry=0
+Orca.Component.RequireRegistry=0
 @endverbatim
 
 Start the server.
-
-@note alexm: HERE WE HAVE A PROBLEM! THE SERVER CANNOT CONNECT!
 
 @verbatim
 $ laser2d
@@ -69,7 +67,7 @@ Start a new shell where we will run the client @ref orca_component_lasermon. Thi
 @verbatim
 LaserMon.Requires.LaserScanner2d.Proxy=laserscanner2d:tcp -p 15000
 ...
-Orca.RequireRegistry=0
+Orca.Component.RequireRegistry=0
 @endverbatim
 Start the client.
 

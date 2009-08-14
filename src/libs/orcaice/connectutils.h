@@ -148,6 +148,20 @@ getDescriptionWithTag( const Context     &context,
     return interfacePrx->getDescription();
 }
 
+//!
+//! Connects to the interface and gets the description.
+//! Relies on standard naming: "getDescription()".
+//!
+template<class InterfacePrxType,typename DescriptionType>
+DescriptionType
+getDescriptionWithString( const Context     &context,
+                          const std::string &interfaceString )
+{
+    InterfacePrxType interfacePrx;
+    connectToInterfaceWithString( context, interfacePrx, interfaceString );
+    return interfacePrx->getDescription();
+}
+
 //@}
 
 } // namespace

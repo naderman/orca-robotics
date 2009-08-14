@@ -7,7 +7,7 @@
 #include <memory>
 #include <orcaifaceimpl/ogmap.h>
 
-namespace localnav {
+namespace orcalocalnavtest {
 
 //
 // @author Alex Brooks
@@ -57,6 +57,12 @@ public:
     const hydrosim2d::VehicleSimulator &vehicleSimulator() const { return *vehicleSimulator_; }
     const hydroogmap::OgMap &ogMap() const { return ogMap_; }
 
+    const orca::PathFollower2dData &testPath() const { return testPath_; }
+
+    static std::string scannerInterfaceName()  { return "TestLaserScanner"; }
+    static std::string localiseInterfaceName() { return "TestLocalise"; }
+    static std::string odomInterfaceName()     { return "TestOdometry"; }
+
 private: 
 
     void setupInterfaces( const hydrosim2d::VehicleSimulator::Config &vehicleSimConfig,
@@ -64,6 +70,7 @@ private:
 
     std::auto_ptr<orcasim2d::PosePublisher>      posePublisher_;
     std::auto_ptr<orcasim2d::RangeScanPublisher> rangeScanPublisher_;
+    std::auto_ptr<orcasim2d::OdomPublisher>      odomPublisher_;
     orcaifaceimpl::OgMapImplPtr                  ogMapInterface_;
 
     orca::RangeScanner2dDescription scannerDescr_;

@@ -11,13 +11,14 @@
 #ifndef ORCAIFACEIMPL_LOCALISE3D_H
 #define ORCAIFACEIMPL_LOCALISE3D_H
 
+#include <orca/localise3d.h>
+#include <orcaifaceutil/localise3d.h>
+
 #include <orcaifaceimpl/providerWithDescriptionImpl.h>
 #include <orcaifaceimpl/storingconsumerImpl.h>
 #include <orcaifaceimpl/bufferedconsumerImpl.h>
 #include <orcaifaceimpl/notifyingconsumerImpl.h>
 #include <orcaifaceimpl/printingconsumerImpl.h>
-
-#include <orca/localise3d.h>
 
 namespace orcaifaceimpl {
 

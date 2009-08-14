@@ -7,6 +7,7 @@ message( STATUS "== UTILITIES ==" )
 
 add_subdirectory( deftools )
 add_subdirectory( def2uml )
+add_subdirectory( delaymon )
 add_subdirectory( iceping )
 add_subdirectory( logplayer )
 add_subdirectory( logrecorder )

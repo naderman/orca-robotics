@@ -11,13 +11,14 @@
 #ifndef ORCAIFACEIMPL_WIFI_H
 #define ORCAIFACEIMPL_WIFI_H
 
+#include <orca/wifi.h>
+#include <orcaifaceutil/wifi.h>
+
 #include <orcaifaceimpl/providerImpl.h>
 #include <orcaifaceimpl/storingconsumerImpl.h>
 #include <orcaifaceimpl/bufferedconsumerImpl.h>
 #include <orcaifaceimpl/notifyingconsumerImpl.h>
 #include <orcaifaceimpl/printingconsumerImpl.h>
-
-#include <orca/wifi.h>
 
 namespace orcaifaceimpl {
 

@@ -2,9 +2,9 @@
 #define LOCALNAV_PATHFOLLOWERINTERFACE_H
 
 #include <orcaifaceimpl/pathfollower2d.h>
-#include "clock.h"
+#include <orcalocalnav/clock.h>
 
-namespace localnav {
+namespace orcalocalnav {
 
 //
 // @brief Implements the orca::PathFollower2d interface.
@@ -18,9 +18,9 @@ class PathFollowerInterface : public orcaifaceimpl::AbstractPathFollowerCallback
 
 public: 
 
-    PathFollowerInterface( const Clock            &clock,
-                           const std::string      &interfaceTag,
-                           const orcaice::Context &context );
+    PathFollowerInterface( const orcalocalnav::Clock &clock,
+                           const std::string         &interfaceTag,
+                           const orcaice::Context    &context );
 
     void initInterface();
     void initInterface( gbxutilacfr::Stoppable* activity, const std::string& subsysName="", int retryInterval=2 );
@@ -75,9 +75,9 @@ private:
 
     orcaifaceimpl::PathFollower2dImplPtr pathFollower2dImpl_;
 
-    orca::PathFollower2dState pathFollower2dState_;
-    orca::Time activationTime_;
-    const Clock &clock_;
+    orca::PathFollower2dState  pathFollower2dState_;
+    orca::Time                 activationTime_;
+    const orcalocalnav::Clock &clock_;
     
     // Protects our data
     IceUtil::Mutex mutex_;
