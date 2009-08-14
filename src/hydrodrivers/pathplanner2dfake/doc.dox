@@ -1,0 +1,34 @@
+/*
+ * Orca-Robotics Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2009 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This distribution is licensed to you under the terms described in
+ * the LICENSE file included in this distribution.
+ *
+ */
+
+/*!
+@ingroup hydro_drivers_pathplanner2d
+@ingroup hydro_cpp
+@ingroup hydro_linux
+@ingroup hydro_win
+@defgroup hydro_drivers_pathplanner2dfake PathPlanner2dFake
+@brief A fake implementation useful for debugging.
+
+computePath() returns a vector with {start; [optional points], goal}.
+
+@par Configuration
+
+
+- @c Fake.InsertPoints (int)
+  - Number of extra points this "path planner" will insert between the start and the goal points.
+    The points are inserted along a straight line.
+  - Valid options: >=0
+  - Default: 0
+
+@par Dependencies.
+
+- none
+
+*/

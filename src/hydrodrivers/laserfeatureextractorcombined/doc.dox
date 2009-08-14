@@ -1,0 +1,174 @@
+/*
+ * Orca-Robotics Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2009 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This distribution is licensed to you under the terms described in
+ * the LICENSE file included in this distribution.
+ *
+ */
+
+/*!
+@ingroup hydro_drivers_laserfeatureextractor
+@ingroup hydro_cpp
+@ingroup hydro_linux
+@defgroup hydro_driver_laserfeatureextractorcombined LaserFeatureExtractorCombined
+@brief An ACFR implementation of a laser feature extractor
+
+@section hydro_driver_laserfeatureextractorcombined_config Configuration
+
+The configuration documentation is split into sections for each feature type
+
+@par General
+
+- The uncertainty of point features
+  - @c PointTargetRangeSd (float) [m]
+    - Default: 0.2
+  - @c PointTargetBearingSd (float) [deg]
+    - Default: 5.0
+      - Note these values need to take into account:
+        - Inherent sensor uncertainty
+        - Sensor offset uncertainty
+        - Timing uncertainty
+
+@par Reflectors
+
+- @c ExtractReflectors (bool)
+    - Default: true
+
+- @c Reflectors.MaxDeltaRangeNearReflector (float) [m]
+    - Don't extract a feature if there's a jump in the ranges > this threshold
+      near the reflector.
+      This rejects spurious reflectors that are partially-obscured behind a foreground obstacle.
+      It also reduces the angles about which a reflector on a corner can be extracted.
+    - Default: 0.5
+
+- @c Reflectors.MaxDeltaRangeWithinReflector (float) [m]
+    - A reflector that includes a jump in range > this threshold will be ignored.
+      Default: 0.3
+
+- @c Reflectors.MinBrightness (int)
+    - minimum intensity value to be considered a feature
+    - Default: 1
+
+- @c Reflectors.PFalsePositive (float)
+    - porbability of a false positive
+    - Default: 0.1
+
+- @c Reflectors.PTruePositive (float)
+    - probability of a true positive
+    - Default: 0.6
+
+@par Foreground Points
+
+- @c ExtractForegroundPoints (bool)
+    - Default: 0
+
+- @c FGPoints.MinForegroundWidth (float) [m]
+    - minimum width of poles/trees
+    - Default: 0.01
+
+- @c FGPoints.MaxForegroundWidth (float) [m]
+    - maximum width of poles and trees
+    - Default: 0.5
+
+- @c FGPoints.MinForegroundBackgroundSeparation (float) [m]
+    - The pole must be at least this far from the background or other clutter
+    - Default: 2.0
+
+- @c FGPoints.ClearForegroundBackgroundSeparation (float) [m]
+    - pTruePositive/pFalsePositive gets scaled according to the distance from clutter.
+      ClearForegroundBackgroundSeparation is the distance at which scaling no longer happens.
+    - Default: 4.0
+
+- @c FGPoints.ReliableScannerRange (float) [m]
+    - At short ranges you get fewer false positives
+    - Default: 5.0
+
+- @c FGPoints.PFalsePositive (double)
+    - Probability of detecting a false-positive foreground point
+    - Default: 0.4
+
+- @c FGPoints.PTruePositive (double)
+    - Probability of detecting a true-positive foreground point
+    - Default: 0.5
+
+@par Lines
+
+- @c ExtractLines (bool)
+    - Default: 1
+
+- @c Lines.MaxDeltaRangeInCluster (float) [m]
+    - Points are first clustered before fitting lines.
+    - A change in range greater than this breaks a cluster.
+    - Default: 0.5
+
+- @c Lines.MaxDeltaInLine (float) [m]
+    - For a line to be fit, the orthogonal distance of each point from
+      the line must be less than this.
+    - Default: 0.1
+
+- @c Lines.MinPointsInLine (int)
+    - Self-explanatory
+    - Default: 6
+
+- @c Lines.MinLineLengthForLineFeature (float) [m]
+    - Self-explanatory
+    - Default: 1.0
+
+- @c Lines.MinLineLengthForVisibleEndpoints (float) [m]
+    - Self-explanatory
+    - Default: 1.0
+
+- @c Lines.PFalsePositive (double)
+    - Probability of detecting a false-positive line
+    - Default: 0.4
+
+- @c Lines.PTruePositive (double)
+    - Probability of detecting a line when it's really there
+    - Default: 0.6
+
+@par Corners
+
+- @c ExtractCorners (bool)
+    - Default: 1
+- @c PFalsePositive (double)
+    - Probability of detecting a false-positive corner
+    - Default: 0.2
+- @c PTruePositive (double)
+    - Probability of detecting a true-positive corner
+    - Default: 0.6
+
+- The corner extractor looks for intersecting lines.  It relies
+  on the line extractor, and is therefore affected by the line
+  extractor's configuration (with the exception of the MinLineLength
+  parameter: the corner detector will look for the intersection of 
+  smaller lines than the line detector is configured for).
+
+
+@par Doors
+
+- @c ExtractDoors (bool)
+    - Default: 0
+- @c Doors.MinDoorWidth (double)
+    - Default: 0.9
+- @c Doors.MaxDoorWidth (double)
+    - Default: 1.2
+- @c Doors.MinDeltaRangeThruDoor (double)
+    - Default: 2.0
+- @c Doors.RangeSd (double)
+    - Default: 0.3
+- @c Doors.BearingSd (double)
+    - Default: 5.0
+- @c Doors.MinReturnsThruDoor (int)
+    - Default: 3
+- @c Doors.MinReturnsBesideDoor (int)
+    - Default: 2
+- @c Doors.MaxDeltaRangeWallBesideDoor (double)
+    - Default: 0.3
+
+
+@par Authors
+Alex Brooks
+
+*/

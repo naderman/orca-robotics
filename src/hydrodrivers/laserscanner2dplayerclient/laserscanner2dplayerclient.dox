@@ -1,0 +1,45 @@
+/*
+ * Orca-Robotics Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2009 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This distribution is licensed to you under the terms described in
+ * the LICENSE file included in this distribution.
+ *
+ */
+
+/*!
+@ingroup hydro_drivers_laserscanner2d
+@ingroup hydro_cpp
+@ingroup hydro_linux
+@defgroup hydro_driver_laserscanner2dplayerclient LaserScanner2dPlayerClient
+@brief A wrapper for Player client.
+
+This driver wraps a player client. Given a running Player server, the laser gets data from that server and distributes it over Orca pipes. Talks to a Player server (see the <a
+href="http://playerstage.sourceforge.net/" target="_blank">Player webpage</a>).
+
+@par Dependencies
+
+- Player. Requires that Player v.>=2.0 are installed and running. As Player itself, this driver is Linux only.
+
+@par Extra configuration
+
+- @c PlayerClient.Host (string)
+    - The host that Player (or Stage) is running on
+    - Default: "localhost"
+- @c PlayerClient.Port (int)
+    - The port that PLayer (or Stage) is running on
+    - Default: 6665
+- @c PlayerClient.Device (int)
+    - Device ID of the laser to which the driver will connect to
+    - Default: 0
+- @c PlayerClient.Driver (string)
+    - Driver used by the Player server. In theory this is unnecessary because the Player laser interface should abstract these differences. In reality the drivers either do not implement the interface fully or the implementation contains bugs. So we need to specify the driver here and implement various work-arounds.
+    - Valid values: { "sicklms200", "stage", "gazebo", "urglaser" }
+    - Default: "sicklms200"
+- @c PlayerClient.UsePlayerTimestamp (int)    
+    - Whether to use the timestamp Player reports
+    - If 0, the timestamp is set by the arrival time of the data
+    - Default: 0
+
+*/

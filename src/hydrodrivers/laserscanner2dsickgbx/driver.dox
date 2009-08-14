@@ -1,0 +1,29 @@
+/*
+ * Orca-Robotics Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2009 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This distribution is licensed to you under the terms described in
+ * the LICENSE file included in this distribution.
+ *
+ */
+
+/*!
+@ingroup hydro_drivers_laserscanner2d
+@ingroup hydro_cpp
+@ingroup hydro_linux
+@defgroup hydro_driver_laserscanner2dsickgbx LaserScanner2dSickGbx
+@brief Gearbox driver for SICK laser range-finder.
+
+Drives SICK hardware, directly connected to the computer. 
+
+@par Extra configuration
+
+- @c SickGbx.Device (string)
+  - The unix device to use
+  - Default: "/dev/ttyS0"
+- @c SickGbx.Baudrate (int) [bps]
+  - Valid Values: { 9600, 19200, 38400, 500000 }
+  - Default: 38400
+
+*/

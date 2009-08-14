@@ -1,0 +1,29 @@
+/*
+ * Orca-Robotics Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2009 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This distribution is licensed to you under the terms described in
+ * the LICENSE file included in this distribution.
+ *
+ */
+
+/*!
+@ingroup hydro_drivers_robot2d
+@ingroup hydro_cpp
+@ingroup hydro_linux
+@ingroup hydro_win
+@defgroup hydro_driver_robot2dfake Robot2dFake
+@brief A fake implementation useful for debugging.
+
+read() returns fake odometry at 1Hz.
+
+write() simulates hardware failure when commanded velocity exceeds 2m/s by throwing exception.
+
+The rest of the functions do nothing.
+
+@par Dependencies.
+
+libIceUtil (for timing)
+
+*/

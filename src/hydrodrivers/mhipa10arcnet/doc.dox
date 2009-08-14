@@ -1,0 +1,36 @@
+/*
+ * Orca-Robotics Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2009 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This distribution is licensed to you under the terms described in
+ * the LICENSE file included in this distribution.
+ *
+ */
+
+/*!
+@ingroup hydro_drivers_mhipa10
+@ingroup hydro_cpp
+@ingroup hydro_linux
+@defgroup hydro_driver_mhipa10arcnet MhiPA10Arcnet
+@brief Hardware driver for MHI's PA-10 robot (using Arcnet hardware).
+
+Note: This driver has been tested on the PA-10-6CE robotic manipulator.
+
+The mhipa10 driver provides control of a MHI PA-10 six axis robotic manipulator.
+
+For safety, the PA-10 will stop motion and apply brakes when no new command is received after three command cycles. Nominally a command cycle is 2ms but this is changeable. Unless you have modified parameters in the servo driver's ROM, then the PA-10 will cease motion after 6 ms of no new commands. This is done in PA-10 firmware and this component does not duplicate this functionality. Thus, if you want to continue moving you must continuously send your desired command to the manipulator interface.
+
+The driver will accept two types of commands for each of the six servos in the arms. The two types are either velocity or torque commands. For velocity commands the driver will check the current command against the previously reported joint angle. If the joint angle is near the limit and the current velocity command will take it closer or beyond the limit, the driver will set the command to 0. In the case of torque commands, however, we can not set a torque command to 0. Instead we apply the brakes if the current torque command will get us to close to a joint limit.
+
+@par Dependancies
+
+- libIceUtil (for timing)
+- libpcap (v.0.8 - optional: only used to find a suitable arcnet device if none is specified)
+
+Make sure libpcap0.8 is installed. In Debian, the easiest way to do this is by using apt-get:
+
+@verbatim
+# apt-get install libpcap0.8-dev
+@endverbatim
+*/

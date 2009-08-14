@@ -1,0 +1,39 @@
+/*
+ * Orca-Robotics Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2009 Michael Moser
+ *
+ * This distribution is licensed to you under the terms described in
+ * the LICENSE file included in this distribution.
+ *
+ */
+
+/*!
+@ingroup hydro_drivers_laserscanner2d
+@ingroup hydro_cpp
+@ingroup hydro_linux
+@defgroup hydro_driver_laserscanner2dhokuyoaist LaserScanner2dHokuyoAist
+@brief A wrapper for hokuyo_aist driver for Hukuyo's SCIP compatible lasers (distributed with Gearbox, tested with URG and UHG).
+
+@note New and not very well tested
+
+@par Dependencies.
+
+- hokuyo_aist
+- libIceUtil (for timing)
+
+@par Configuration
+
+- @c HokuyoAist.Device (string)
+    - The unix device to use
+    - Default: "/dev/ttyACM0"
+
+- @c HokuyoAist.Baudrate (int) [bps]
+    - Valid Values: { 19200, 38400, 115200 }
+    - Default: 19200
+
+- @c HokuyoAist.HighSensitivity (bool)
+    - Enable the laser's high-sensitivity mode. Supposedly higher sensitivity (higher range for dark objects?) at the cost
+      of higher noise.
+    - default: 0
+*/

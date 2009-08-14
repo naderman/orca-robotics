@@ -1,0 +1,34 @@
+/*
+ * Orca-Robotics Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2009 Tom Burdick, Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This distribution is licensed to you under the terms described in
+ * the LICENSE file included in this distribution.
+ *
+ */
+
+/*!
+@ingroup hydro_drivers_image
+@ingroup hydro_cpp
+@ingroup hydro_linux
+@ingroup hydro_win
+@defgroup hydro_driver_imagefile ImageFile 
+@brief An image file implementation useful for debugging.
+
+Returns image from file.
+
+@par Dependencies.
+
+- libIceUtil (for timing)
+- libHydroImage
+- Qt4
+
+@par Extra configuration
+
+- @c File.FileName (string)
+  - The image file to use.
+  - Default: "image.png"
+
+
+*/

@@ -1,0 +1,44 @@
+/*
+ * Orca-Robotics Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2009 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This distribution is licensed to you under the terms described in
+ * the LICENSE file included in this distribution.
+ *
+ */
+
+/*!
+@ingroup hydro_drivers_laserscanner2d
+@ingroup hydro_cpp
+@ingroup hydro_linux
+@defgroup hydro_driver_laserscanner2dsickcarmen LaserScanner2dSickCarmen
+@brief A wrapper for project-Carmen implementation for SICK lasers.
+
+Drives real laser hardware, directly connected to the computer. Uses
+Carmen's SICK laser implementation (see the <a
+href="http://carmen.sourceforge.net/" target="_blank">Carmen
+website</a>). This driver works robustly and can be configured with
+different baud rates.
+
+@par Dependencies.
+
+- libIceUtil (for timing)
+
+@par Limitations
+
+This is a Linux-only implementation. Does NOT work with kernel 2.6.17 producing this message (use dmesg) "laser2d sets custom speed on ttyS3. This is deprecated." Google search indicates that it's a known kernel issue which currently has no solution. A new method of setting custom serial speed will be introduced in future kernels at which point we'll try to convert our code.
+
+@par Configuration
+
+- @c SickCarmen.Device (string)
+  - The unix device to use
+  - Default: "/dev/ttyS0"
+- @c SickCarmen.LaserType (string)
+  - Valid Values: {"LMS","PMS"}
+  - Default: "LMS"
+- @c SickCarmen.Baudrate (int) [bps]
+  - Valid Values: { 9600, 19200, 38400, 500000 }
+  - Default: 38400
+
+*/

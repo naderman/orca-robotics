@@ -1,0 +1,39 @@
+/*
+ * Orca-Robotics Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2009 Tom Burdick, Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *                         Ben Upcroft
+ *
+ * This distribution is licensed to you under the terms described in
+ * the LICENSE file included in this distribution.
+ *
+ */
+
+/*!
+@ingroup hydro_drivers_multiimage
+@ingroup hydro_cpp
+@ingroup hydro_linux
+@ingroup hydro_win
+@defgroup hydro_driver_multicameraopencv MultiCameraOpenCV 
+@brief A mutlicamera frame grabber using OpenCV. Typically used for stereo rigs.
+
+This driver has the same characteristics as @ref hydro_driver_cameraopencv but can connect to multiple cameras at once.
+
+@par Dependencies.
+
+see @ref hydro_driver_cameraopencv for dependencies.
+
+TODO: Image properties cannot be set at the moment. If used with the orca CameraServer, you must specify the actual image width and height that the camera outputs by default.
+
+@par FireWire (IEEE 1394)
+
+see @ref hydro_driver_cameraopencv for instructions on setting up firewire.
+
+Note that this driver assumes that the cameras start on node 0 of the firewire but with the nodes incrementing by 1 for each camera. 
+
+@par USB
+
+see @ref hydro_driver_cameraopencv for instructions on setting up usb.
+
+
+*/

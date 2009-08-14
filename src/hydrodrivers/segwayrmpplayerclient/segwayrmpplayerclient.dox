@@ -1,0 +1,47 @@
+/*
+ * Orca-Robotics Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2009 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This distribution is licensed to you under the terms described in
+ * the LICENSE file included in this distribution.
+ *
+ */
+
+/*!
+@ingroup hydro_drivers_segwayrmp
+@ingroup hydro_cpp
+@ingroup hydro_linux
+@defgroup hydro_driver_segwayrmpplayerclient SegwayRmpPlayerClient
+@brief An implementation using Player client API.
+
+This driver wraps up a Player client. It requires a running Player
+server. The driver gets data from that server and converts it to the
+format specified by SegwayRmp interface. More information on
+Player/Stage.
+
+@par Dependancies
+
+- Player
+
+Requires that Player/Stage v.>=2.0 are installed and running. As
+Player itself, this driver is Linux only. See our notes on installing
+Player in platform-dependent installation page, e.g. @ref
+orca_doc_installdebian_player.
+
+@par Extra configuration
+
+- @c PlayerClient.Host (string)
+    - The host that Player (or Stage) is running on
+    - Default: "localhost"
+- @c PlayerClient.Port (int)
+    - The port that Player (or Stage) is running on
+    - Constraints: >0
+    - Default: 6665
+    
+Naturally, both real hardware and Stage simulator are
+supported. Support is limited to what Player supports which at the
+time of writing is the original RMP with CAN I/O using Peak systems
+driver and USB from FTDI.
+
+*/

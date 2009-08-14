@@ -1,0 +1,47 @@
+/*
+ * Orca-Robotics Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2009 Alen Alempijevic, Tom Burdick, Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This distribution is licensed to you under the terms described in
+ * the LICENSE file included in this distribution.
+ *
+ */
+
+/*!
+@ingroup hydro_drivers_image
+@ingroup hydro_cpp
+@ingroup hydro_linux
+@defgroup hydro_driver_imagedc1394 ImageDC1394 
+@brief A camera frame grabber using libdc1394-2. 
+
+Connects to Firewire camera using libdc1394-2
+
+For RAW8 Format defaults to connecting using Format7. 
+Otherwise connects to the camera using specified width*height 
+
+
+- @c DC1394.IsoMode (string)
+  - The ISO Mode the camera supports
+  - Valid values:
+        - '1394A' - 400Mb connection 
+        - '1394B' - 800Mb connection
+  - Default: "1394A"
+
+- @c DC1394.Guid (string)
+  - The Guid of the camera to connect to
+  - Default: "Not Guid supplied, will connect to first camera found on firewire bus"
+
+@par Dependencies.
+- dc1394
+- raw1394
+- libIceUtil (for timing)
+
+@par Tested On
+- Point Grey DragonFly
+- Point Grey Ladybug2
+- Point Grey Ladybug3
+- Unibrain Fire-i
+- Hitachi HV-31F
+
+*/

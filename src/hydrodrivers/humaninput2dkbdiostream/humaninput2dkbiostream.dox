@@ -1,0 +1,42 @@
+/*
+ * Orca-Robotics Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2009 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This distribution is licensed to you under the terms described in
+ * the LICENSE file included in this distribution.
+ *
+ */
+
+/*!
+@ingroup hydro_drivers_humaninput2d
+@ingroup hydro_cpp
+@ingroup hydro_linux
+@ingroup hydro_win
+@defgroup hydro_driver_humaninput2dkbdiostream HumanInput2dKbdIostream
+@brief Simple keyboard driver for HumanInput2d using iostream library.
+
+Converts keyboard strokes to 2D position or velocity commands. 
+
+This is a very simple driver intended for debugging. It's not easy to use because you have to press ENTER after each character.
+
+Motion commands are issued by pressing keyboard keys.
+- i : increment "forward motion"
+- k : decrement "forward motion"
+- j : increment "turn"
+- l : decrement "turn"
+- u : stop turn
+- o : stop movement (but still turn)
+- anything else (except white space) : stop
+
+Note that the meaning of "forward motion" and "turn" may be interpreted differently depending on which type of device we are controlling.
+
+@par Additional Configuration
+
+- none
+
+@par Authors
+
+Alex Makarenko    
+
+*/

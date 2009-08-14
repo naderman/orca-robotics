@@ -1,0 +1,45 @@
+/*
+ * Orca-Robotics Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2009 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This distribution is licensed to you under the terms described in
+ * the LICENSE file included in this distribution.
+ *
+ */
+
+/*!
+@ingroup hydro_drivers_mhipa10
+@ingroup hydro_cpp
+@ingroup hydro_linux
+@defgroup hydro_driver_mhipa10fake MhiPA10Fake
+@brief Fake driver for MHI's PA-10 robot.
+
+Note: This driver has been tested for the PA-10-6CE robotic manipulator.
+
+This is a fake driver which uses a model of the PA-10 to compute realisitic joint angles and velocities in response to torque commands. Currently the model will not accept velocity commands.
+
+@par Dependancies
+
+- libIceUtil (for timing)
+- libroboop
+- libnewmat
+
+Make sure libroboop and libnewmat are installed. libroboop depends on libnewmat so the easiest way to install these libraries is as follows. First install newmat:
+
+@verbatim
+# svn export https://drics.googlecode.com/svn/third-party-libraries/newmat newmat
+# cd newmat
+# cmake .
+# make && make install
+@endverbatim
+
+Then to install roboop:
+
+@verbatim
+# svn export https://drics.googlecode.com/svn/third-party-libraries/roboop roboop
+# cd roboop
+# cmake .
+# make && make install
+@endverbatim
+*/

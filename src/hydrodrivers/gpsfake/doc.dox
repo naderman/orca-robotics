@@ -1,0 +1,40 @@
+/*
+ * Orca-Robotics Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2009 Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *
+ * This distribution is licensed to you under the terms described in
+ * the LICENSE file included in this distribution.
+ *
+ */
+
+/*!
+@ingroup hydro_drivers_gps
+@ingroup hydro_cpp
+@ingroup hydro_linux
+@defgroup hydro_driver_gpsfake GpsFake
+@brief A fake implementation useful for debugging.
+
+The fake driver can be used to spit out GPS coordinates which can be specified in the config file.
+This is useful to test the displaying of GPS positions in a GUI for example. The configured positions 
+are served in a ring-like fashion.
+
+- @c Fake.Latitudes (vector of doubles)
+  - Latitudes of GPS coordinates. The number of latitudes must be the same as longitudes.
+  - Format: space separated doubles.
+  - Default: "-35.0 -35.5"
+
+- @c Fake.Longitudes (vector of doubles)
+  - Latitudes of GPS coordinates. The number of longitudes must be the same as latitudes.
+  - Format: space separated doubles.
+  - Default: "150.0 149.5"
+
+- @c Fake.NeverSeeSatellites (bool)
+  - If set, we'll never make a GPS reading
+  - Default: 0
+  
+@par Dependencies.
+
+- libIceUtil (for timing)
+
+*/

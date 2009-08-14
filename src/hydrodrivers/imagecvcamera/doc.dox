@@ -1,0 +1,71 @@
+/*
+ * Orca-Robotics Project: Components for robotics 
+ *               http://orca-robotics.sf.net/
+ * Copyright (c) 2004-2009 Tom Burdick, Alex Brooks, Alexei Makarenko, Tobias Kaupp
+ *                         Ben Upcroft
+ *
+ * This distribution is licensed to you under the terms described in
+ * the LICENSE file included in this distribution.
+ *
+ */
+
+/*!
+@ingroup hydro_drivers_image
+@ingroup hydro_cpp
+@ingroup hydro_linux
+@ingroup hydro_win
+@defgroup hydro_driver_cameraopencv CameraOpenCV 
+@brief A camera frame grabber using OpenCV. 
+
+Uses software trigger and should return the correct number of images from correct number of cameras always in BGR reverse format (IplImage default byte format) *or* single byte format (IplImage grayscale). It does not do image format conversions. If the camera frames are bayer encoded then the camera server using cameraopencv driver gives back bayer encoded grayscale images. This is to reduce the number of bytes being sent. Decoding bayer images from orca::ImageData can be done using the Orca Image library function cvtToBgr.
+
+This driver will work with usb and firewire cameras.
+
+@par Dependencies.
+- libcv
+- libhighgui
+- libIceUtil (for timing)
+
+Requires <a href="http://pr.willowgarage.com/wiki/OpenCV" target="_blank">OpenCV library</a>. Latest tested version 1.1pre1. 
+
+
+TODO: Image properties cannot be set at the moment. If used with the orca CameraServer, you must specify the actual image width and height that the camera outputs by default.
+
+@par FireWire (IEEE 1394)
+
+To use FireWire cameras (IEEE 1394) you need to install libdc1394.
+@verbatim
+# apt-get install libdc1394-13 libdc1394-22 libdc1394-13-dev libdc1394-utils
+@endverbatim
+Note that the dev files for the libdc1394-13 are required for OpenCV. libdc1394-13-dev is incompatible with libdc1394-22-dev. However, libdc1394-13 and libdc1394-22 can live side by side.
+
+To gain access to the hardware you have to have the right permissions. You can check which group you must belong to by checking who owns @c /dev/video1394 and @c /dev/raw1394. Under Debian and Ubuntu these groups are @c video and @c disk respectively. Add yourself to those groups like this:
+@verbatim
+# adduser [username] video
+# adduser [username] disk
+@endverbatim
+(You may have to re-login for the change to take effect).
+
+If you have any troubles with not being able to grab images with a firewire camera, it may be the dc1394 libraries playing up or your camera is not being detected. You can test the dc1394 libraries and find whether the camera is being detected by typing:
+@verbatim
+# testlibraw
+@endverbatim
+
+Typing 
+@verbatim
+$ dmesg
+@endverbatim
+will also give you information about detection of the camera
+
+
+Also you could check that the hardware is functioning properly by running a GUI program called <a href="http://damien.douxchamps.net/ieee1394/coriander/index.php">Coriander</a>. 
+
+@par USB
+
+? What do we need?
+
+
+
+
+
+*/
