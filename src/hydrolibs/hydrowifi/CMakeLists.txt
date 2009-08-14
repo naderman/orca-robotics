@@ -7,7 +7,7 @@ GBX_REQUIRE_VAR( build LIB ${LIB_NAME} GBX_OS_LINUX "only Linux OS is supported"
 
 if( build )
 
-    include( ${HYDRO_CMAKE_DIR}/UseBasicRules.cmake )
+    include( ${ORCA_CMAKE_DIR}/UseBasicRules.cmake )
     
     file( GLOB hdrs *.h )
     file( GLOB srcs *.cpp )

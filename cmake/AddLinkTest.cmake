@@ -17,7 +17,7 @@ macro( HYDRO_ADD_LINK_TEST interface_name driver_namespace driver_header )
 
     set( target_name ${driver_namespace}_linktest )
 
-    configure_file( ${HYDRO_CMAKE_DIR}/linktest.cpp.template ${MAIN_CPP_FILE} )
+    configure_file( ${ORCA_CMAKE_DIR}/linktest.cpp.template ${MAIN_CPP_FILE} )
 
     add_executable( ${target_name} ${MAIN_CPP_FILE} )
     target_link_libraries( ${target_name} ${ARGN} )
@@ -38,7 +38,7 @@ macro( HYDRO_ADD_LINK_TEST_WITH_CONFIG interface_name driver_namespace driver_he
 
     set( target_name ${driver_namespace}_linktest )
 
-    configure_file( ${HYDRO_CMAKE_DIR}/linktestwithconfig.cpp.template ${MAIN_CPP_FILE} )
+    configure_file( ${ORCA_CMAKE_DIR}/linktestwithconfig.cpp.template ${MAIN_CPP_FILE} )
 
     add_executable( ${target_name} ${MAIN_CPP_FILE} )
     target_link_libraries( ${target_name} ${ARGN} )

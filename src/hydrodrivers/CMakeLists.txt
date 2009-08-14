@@ -1,6 +1,6 @@
 # A place for well-tested and well-documented libraries.
 
-message( STATUS "== DRIVERS ==" )
+message( STATUS "== HYDRO DRIVERS ==" )
 
 # when adding new directories, please maintain alphabetical order 
 # unless there are inter-dependencies.

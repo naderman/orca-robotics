@@ -9,9 +9,9 @@ GBX_REQUIRE_LIBS( build LIB ${LIB_NAME} ${dep_libs} )
 
 if( build )
 
-    include( ${HYDRO_CMAKE_DIR}/UseBasicRules.cmake )
+    include( ${ORCA_CMAKE_DIR}/UseBasicRules.cmake )
     include( ${GEARBOX_USE_FILE} )
-    include( ${HYDRO_CMAKE_DIR}/UseIceUtil.cmake )
+    include( ${ORCA_CMAKE_DIR}/UseIceUtil.cmake )
     
     # Source files
     file( GLOB srcs *.cpp )

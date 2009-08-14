@@ -13,7 +13,7 @@ if( build )
     include( ${ORCA_CMAKE_DIR}/UseBasicRules.cmake )
     include( ${ORCA_CMAKE_DIR}/UseLibProjectInterfaces.cmake )
     include( ${ORCA_CMAKE_DIR}/UseIceBasics.cmake )
-    include( ${HYDRO_CMAKE_DIR}/UseHydroIceUtil.cmake )
+    include( ${ORCA_CMAKE_DIR}/UseHydroIceUtil.cmake )
     # debug only! comment out when finished.
 #     include( ${ORCA_CMAKE_DIR}/UseOrcaIfaceUtil.cmake )
     

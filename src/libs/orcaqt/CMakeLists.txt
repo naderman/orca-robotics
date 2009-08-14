@@ -9,7 +9,7 @@ GBX_REQUIRE_VAR( build LIB ${LIB_NAME} QT4_FOUND "Qt4 not found" )
 
 if( build )
 
-    include( ${HYDRO_CMAKE_DIR}/UseQt.cmake )
+    include( ${ORCA_CMAKE_DIR}/UseQt.cmake )
 
     file( GLOB hdrs *.h )
     file( GLOB human_srcs *.cpp )

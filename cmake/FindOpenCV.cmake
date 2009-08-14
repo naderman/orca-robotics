@@ -4,7 +4,7 @@
 # OPENCV_HOME where to find include, lib, bin, etc.
 # OPENCV_FOUND, If false, don't try to use Ice.
 
-INCLUDE (${HYDRO_CMAKE_DIR}/FindPkgConfig.cmake)
+INCLUDE (${ORCA_CMAKE_DIR}/FindPkgConfig.cmake)
 
 if( CMAKE_PKGCONFIG_EXECUTABLE )
 
@@ -28,7 +28,7 @@ endif( CMAKE_PKGCONFIG_EXECUTABLE )
 
 TRY_COMPILE( OPENCV_CAMERASUPPORT 
              ${PROJECT_BINARY_DIR}/CMakeTmp 
-             ${HYDRO_CMAKE_DIR}/opencvcameratest/main.cpp
+             ${ORCA_CMAKE_DIR}/opencvcameratest/main.cpp
              CMAKE_FLAGS "-DLINK_LIBRARIES=${OPENCV_LIBS}"
              OUTPUT_VARIABLE OUTPUT
            )

@@ -15,7 +15,7 @@ set( dep_libs ${dep_libs} IceGrid )
 if( build )
 
     include( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
-    include( ${HYDRO_CMAKE_DIR}/UseQt.cmake )
+    include( ${ORCA_CMAKE_DIR}/UseQt.cmake )
 
     file( GLOB hdrs *.h )
     file( GLOB human_srcs *.cpp )

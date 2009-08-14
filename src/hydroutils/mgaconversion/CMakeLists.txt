@@ -11,7 +11,7 @@ GBX_REQUIRE_LIBS( build LIB ${module_name} ${dep_libs} )
 
 if( build )
 
-    include( ${HYDRO_CMAKE_DIR}/UseBasicRules.cmake )
+    include( ${ORCA_CMAKE_DIR}/UseBasicRules.cmake )
     include( ${GEARBOX_USE_FILE} )
 
     link_libraries( ${dep_libs} )

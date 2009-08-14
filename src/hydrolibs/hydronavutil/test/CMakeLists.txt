@@ -1,6 +1,6 @@
 # include( ${ORCA_CMAKE_DIR}/component_rules.cmake )
 # include( ${ORCA_CMAKE_DIR}/UseOrcaIce.cmake )
-include( ${HYDRO_CMAKE_DIR}/UseBasicRules.cmake )
+include( ${ORCA_CMAKE_DIR}/UseBasicRules.cmake )
 
 link_libraries( HydroNavUtil )
 

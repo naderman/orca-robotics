@@ -5,7 +5,7 @@ set( build TRUE )
 GBX_REQUIRE_OPTION( build LIB ${LIB_NAME} ON )
 GBX_REQUIRE_VAR( build LIB ${LIB_NAME} GBX_OS_LINUX "Only Linux OS is supported" )
 
-include(${HYDRO_CMAKE_DIR}/FindPlayer2.1.cmake)
+include(${ORCA_CMAKE_DIR}/FindPlayer2.1.cmake)
 GBX_REQUIRE_VAR( build LIB ${LIB_NAME} PLAYER_FOUND "Player not found" )
 
 set( dep_libs GbxUtilAcfr HydroUtil HydroInterfaces HydroIceUtil )
@@ -13,10 +13,10 @@ GBX_REQUIRE_LIBS( build LIB ${LIB_NAME} ${dep_libs} )
 
 if( build )
 
-    include( ${HYDRO_CMAKE_DIR}/UseBasicRules.cmake )
+    include( ${ORCA_CMAKE_DIR}/UseBasicRules.cmake )
     include( ${GEARBOX_USE_FILE} )
-    include( ${HYDRO_CMAKE_DIR}/UsePlayer.cmake )
-    include( ${HYDRO_CMAKE_DIR}/UseIceUtil.cmake )
+    include( ${ORCA_CMAKE_DIR}/UsePlayer.cmake )
+    include( ${ORCA_CMAKE_DIR}/UseIceUtil.cmake )
 
     file( GLOB srcs *.cpp )
     

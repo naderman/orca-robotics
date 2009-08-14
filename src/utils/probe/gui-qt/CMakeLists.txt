@@ -1,4 +1,4 @@
-include( ${HYDRO_CMAKE_DIR}/UseQt.cmake )
+include( ${ORCA_CMAKE_DIR}/UseQt.cmake )
 
 file( GLOB human_srcs *.cpp )
 

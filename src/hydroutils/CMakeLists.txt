@@ -1,6 +1,6 @@
 # A place for well-tested and well-documented utility applications.
 
-message( STATUS "== UTILITIES ==" )
+message( STATUS "== HYDRO UTILITIES ==" )
 
 # when adding new directories, please maintain alphabetical order 
 # unless there are inter-dependencies.

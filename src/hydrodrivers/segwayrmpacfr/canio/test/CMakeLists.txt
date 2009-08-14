@@ -1,4 +1,4 @@
-include( ${HYDRO_CMAKE_DIR}/UseBasicRules.cmake )
+include( ${ORCA_CMAKE_DIR}/UseBasicRules.cmake )
 
 #Now tell the system where to find the libraries we need to link
 include_directories( ${PROJECT_SOURCE_DIR}/src/hydrodrivers/segwayrmpacfr)

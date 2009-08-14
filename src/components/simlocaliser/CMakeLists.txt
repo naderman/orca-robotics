@@ -15,7 +15,7 @@ if( build )
     include( ${ORCA_CMAKE_DIR}/OptionalSubLibrary.cmake )
 
     # Look for Player
-    include( ${HYDRO_CMAKE_DIR}/FindPlayer2.cmake )
+    include( ${ORCA_CMAKE_DIR}/FindPlayer2.cmake )
 
     # these should be in the subdir, but they have no effect there for some reason
     include_directories( ${PLAYER_INCLUDE_DIRS} )

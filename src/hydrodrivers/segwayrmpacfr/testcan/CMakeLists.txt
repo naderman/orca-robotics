@@ -1,5 +1,5 @@
-include( ${HYDRO_CMAKE_DIR}/UseBasicRules.cmake )
-include( ${HYDRO_CMAKE_DIR}/UseIceUtil.cmake )
+include( ${ORCA_CMAKE_DIR}/UseBasicRules.cmake )
+include( ${ORCA_CMAKE_DIR}/UseIceUtil.cmake )
 
 # Test for correct linking.
 add_executable( testcan_linktest linktest.cpp )

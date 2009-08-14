@@ -9,15 +9,15 @@ GBX_REQUIRE_VAR( build LIB ${LIB_NAME} not_os_win "Windows OS is not  supported"
 set( dep_libs GbxUtilAcfr HydroOgMap HydroUtil )
 GBX_REQUIRE_LIBS( build LIB ${LIB_NAME} ${dep_libs} )
 
-include( ${HYDRO_CMAKE_DIR}/FindOPing.cmake )
+include( ${ORCA_CMAKE_DIR}/FindOPing.cmake )
 GBX_REQUIRE_VAR( build LIB ${LIB_NAME} LIBOPING_FOUND "liboping not found" )
 set( dep_libs ${dep_libs} oping ) 
 
 if( build )
     
-    include( ${HYDRO_CMAKE_DIR}/UseBasicRules.cmake )
+    include( ${ORCA_CMAKE_DIR}/UseBasicRules.cmake )
     include( ${GEARBOX_USE_FILE} )
-    include( ${HYDRO_CMAKE_DIR}/UseIceUtil.cmake )
+    include( ${ORCA_CMAKE_DIR}/UseIceUtil.cmake )
 
     file( GLOB hdrs *.h )
     file( GLOB srcs *.cpp )

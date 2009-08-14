@@ -14,7 +14,7 @@ GBX_REQUIRE_LIBS( build LIB ${LIB_NAME} ${dep_libs} )
 if( build )
 
     include( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
-    include( ${HYDRO_CMAKE_DIR}/UseQt.cmake )
+    include( ${ORCA_CMAKE_DIR}/UseQt.cmake )
 
     set( dep_libs ${dep_libs} osg osgUtil )
 

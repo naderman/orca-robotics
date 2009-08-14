@@ -1,4 +1,4 @@
-include( ${HYDRO_CMAKE_DIR}/UseBasicRules.cmake )
+include( ${ORCA_CMAKE_DIR}/UseBasicRules.cmake )
 
 link_libraries( HydroGeom2d HydroUtil  )
 

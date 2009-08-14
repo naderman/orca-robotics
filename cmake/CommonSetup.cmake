@@ -14,55 +14,7 @@ if(COMMAND cmake_policy)
 endif(COMMAND cmake_policy)
 
 #
-# Official dependency number 1: Hydro
-#
-    
-if( DEFINED IS_SUPER_PROJECT )
-    
-    set( h_config_file hydro-config-internal.cmake )
-    set( h_search_dir ${CMAKE_SOURCE_DIR}/hydro/cmake/internal )
-    find_path( h_found_dir ${h_config_file} PATHS ${h_search_dir} NO_DEFAULT_PATH )
-
-    ORCA_ASSERT( h_found_dir 
-            "Looking for super-project Hydro - not found. Is this a super-project?" 
-            "Looking for super-project Hydro - found internal config in ${h_found_dir}" 
-            1 )
-
-    include( ${h_found_dir}/${h_config_file} )
-
-else( DEFINED IS_SUPER_PROJECT )
-
-    set( hydro_search_path
-        # check cmake variable: i.e. specified on the command line
-        ${HYDRO_HOME}
-        # check environment variable
-        $ENV{HYDRO_HOME}
-        # check common installation points
-        /usr/local
-        /opt/hydro
-        C:/hydro )
-    message( STATUS "Searching for Hydro in: ${hydro_search_path}" )
-
-    find_package( hydro REQUIRED 
-        PATHS ${hydro_search_path}
-        NO_DEFAULT_PATH )
-
-    ORCA_ASSERT( HYDRO_FOUND 
-            "Looking for Hydro - not found." 
-            "Looking for Hydro - found package config in ${HYDRO_LINK_DIR}" 
-            1 )
-
-endif( DEFINED IS_SUPER_PROJECT )
-
-# # Test Hydro installation
-# include( ${ORCA_CMAKE_DIR}/TestHydro.cmake )
-# ORCA_ASSERT ( HYDRO_WORKS
-#          "Testing Hydro - failed. Please check or reinstall it, then re-run CMake."
-#          "Testing Hydro - ok."
-#          1 )
-
-#
-# Official dependency number 2: Gearbox
+# Official dependency number 1: Gearbox
 #         
          
 if( DEFINED IS_SUPER_PROJECT )
@@ -106,7 +58,14 @@ else( DEFINED IS_SUPER_PROJECT )
 
 endif( DEFINED IS_SUPER_PROJECT )
 
-# Test Gearbox installation or rely on Hydro have already done it ??
+#
+# Test Gearbox installation
+#
+# include( ${ORCA_CMAKE_DIR}/TestGearbox.cmake )
+# ORCA_ASSERT ( GEARBOX_WORKS
+#          "Testing Gearbox - failed. Please check or reinstall it, ** delete CMakeCache.txt **, then re-run CMake."
+#          "Testing Gearbox - ok."
+# 
 
 #
 # Process project name
@@ -116,7 +75,7 @@ include( ${GEARBOX_CMAKE_DIR}/SetupProjectName.cmake )
 #
 # process version number
 #
-include( ${HYDRO_CMAKE_DIR}/SetupVersion.cmake )
+include( ${ORCA_CMAKE_DIR}/SetupVersion.cmake )
 
 #
 # Project directories
@@ -139,7 +98,7 @@ include( ${PROJECT_SOURCE_DIR}/cmake/internal/buildtype.cmake )
 include( ${PROJECT_SOURCE_DIR}/cmake/internal/compiler.cmake )
 
 # 
-# Official dependency number 3: ZeroC's Ice
+# Official dependency number 2: ZeroC's Ice
 #
 include( ${ORCA_CMAKE_DIR}/FindIce.cmake )
 ORCA_ASSERT( ICE_FOUND 
@@ -166,7 +125,8 @@ set( ICE_INCLUDE_DIR ${ICE_HOME}/include )
 #
 include( ${GEARBOX_CMAKE_DIR}/TargetUtils.cmake )
 include( ${GEARBOX_CMAKE_DIR}/DependencyUtils.cmake )
-include( ${HYDRO_CMAKE_DIR}/NameUtils.cmake )
+include( ${ORCA_CMAKE_DIR}/NameUtils.cmake )
+include( ${ORCA_CMAKE_DIR}/AddLinkTest.cmake )
 
 #
 # Defaults for big source code switches 
@@ -211,7 +171,6 @@ include( ${ORCA_CMAKE_DIR}/CheckCommonDependencies.cmake )
 set( CMAKE_INSTALL_RPATH 
         ${ICE_LIB_DIR}
         ${GEARBOX_LINK_DIR}
-        ${HYDRO_LINK_DIR} 
         ${ORCA_LINK_DIR}        # this is where satellite projects found Orca
         ${GBX_LIB_INSTALL_DIR}  # this is where Orca project will install libs
     )

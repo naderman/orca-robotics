@@ -20,7 +20,7 @@ set( dep_libs ${dep_libs} osg osgUtil )
 if( build )
 
     include( ${ORCA_CMAKE_DIR}/UseComponentRules.cmake )
-    include( ${HYDRO_CMAKE_DIR}/UseQt.cmake )
+    include( ${ORCA_CMAKE_DIR}/UseQt.cmake )
 
     file( GLOB human_srcs *.cpp )
 

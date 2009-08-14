@@ -1,5 +1,5 @@
-include( ${HYDRO_CMAKE_DIR}/UseBasicRules.cmake )
-include( ${HYDRO_CMAKE_DIR}/UseHydroIceUtil.cmake )
+include( ${ORCA_CMAKE_DIR}/UseBasicRules.cmake )
+include( ${ORCA_CMAKE_DIR}/UseHydroIceUtil.cmake )
 
 add_executable( eventqueuetest eventqueuetest.cpp )
 GBX_ADD_TEST( HydroIceUtilEventQueueTest eventqueuetest )

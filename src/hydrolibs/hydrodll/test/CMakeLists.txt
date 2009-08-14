@@ -1,4 +1,4 @@
-include( ${HYDRO_CMAKE_DIR}/UseBasicRules.cmake )
+include( ${ORCA_CMAKE_DIR}/UseBasicRules.cmake )
 
 add_library( HydroDllTestOne SHARED myimplementation.cpp )
 add_library( HydroDllTestMulti SHARED multiimplementation.cpp )

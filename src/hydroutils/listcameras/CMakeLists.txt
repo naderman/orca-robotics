@@ -4,15 +4,15 @@ GBX_ADD_LICENSE( LGPL )
 set( build TRUE )
 GBX_REQUIRE_OPTION( build EXE ${exe_name} ON )
 
-include( ${HYDRO_CMAKE_DIR}/FindDc1394.cmake )
+include( ${ORCA_CMAKE_DIR}/FindDc1394.cmake )
 GBX_REQUIRE_VAR( build EXE ${exe_name} DC1394_FOUND "libdc1394v2 (dc1394 ver 2) was not found" )
 
 if( build )
 
-    include( ${HYDRO_CMAKE_DIR}/UseBasicRules.cmake )
+    include( ${ORCA_CMAKE_DIR}/UseBasicRules.cmake )
     include( ${GEARBOX_USE_FILE} )
-    include( ${HYDRO_CMAKE_DIR}/UseIceUtil.cmake )
-#    INCLUDE (${HYDRO_CMAKE_DIR}/UseOpenCV.cmake)
+    include( ${ORCA_CMAKE_DIR}/UseIceUtil.cmake )
+#    INCLUDE (${ORCA_CMAKE_DIR}/UseOpenCV.cmake)
 
     # Source files
     file( GLOB srcs *.cpp *.c )

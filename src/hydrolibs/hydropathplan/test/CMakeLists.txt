@@ -1,4 +1,4 @@
-include( ${HYDRO_CMAKE_DIR}/UseBasicRules.cmake )
+include( ${ORCA_CMAKE_DIR}/UseBasicRules.cmake )
 
 add_executable( testconversions testconversions.cpp )
 target_link_libraries( testconversions HydroPathPlan  )

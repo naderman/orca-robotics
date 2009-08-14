@@ -1,6 +1,6 @@
 # A place for well-tested and well-documented libraries.
 
-message( STATUS "== LIBRARIES ==" )
+message( STATUS "== HYDRO LIBRARIES ==" )
 
 # when adding new directories, please maintain the order of dependencies.
 

@@ -14,7 +14,7 @@ if( build )
     file( GLOB srcs *.cpp )
 
     if( QT4_FOUND )
-        include( ${HYDRO_CMAKE_DIR}/UseQt.cmake )
+        include( ${ORCA_CMAKE_DIR}/UseQt.cmake )
         add_definitions( -DQT4_FOUND )
     else( QT4_FOUND )
         list( REMOVE_ITEM srcs "${CMAKE_CURRENT_SOURCE_DIR}/skeletongraphicsI.cpp" )

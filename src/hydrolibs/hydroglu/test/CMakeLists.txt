@@ -5,9 +5,9 @@ set( QT_USE_QTOPENGL 1 )
 include( ${QT_USE_FILE} )
 
 include( ${GEARBOX_USE_FILE} )
-include( ${HYDRO_CMAKE_DIR}/UseBasicRules.cmake )
-include( ${HYDRO_CMAKE_DIR}/UseIceUtil.cmake )
-include( ${HYDRO_CMAKE_DIR}/UseGLEW.cmake )
+include( ${ORCA_CMAKE_DIR}/UseBasicRules.cmake )
+include( ${ORCA_CMAKE_DIR}/UseIceUtil.cmake )
+include( ${ORCA_CMAKE_DIR}/UseGLEW.cmake )
 
 link_libraries( HydroGlu GbxUtilAcfr ${OPENGL_LIBRARIES} ${QT_LIBRARIES} )
 

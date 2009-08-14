@@ -6,7 +6,7 @@ GBX_REQUIRE_OPTION( build LIB ${LIB_NAME} ON )
 
 if( build )
 
-    include( ${HYDRO_CMAKE_DIR}/UseBasicRules.cmake )
+    include( ${ORCA_CMAKE_DIR}/UseBasicRules.cmake )
     
     # to include header files from subdirectories
     include_directories( ${CMAKE_CURRENT_SOURCE_DIR} )

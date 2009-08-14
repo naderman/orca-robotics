@@ -8,7 +8,7 @@ set( dep_libs HydroPing )
 GBX_REQUIRE_LIBS( build EXE ${APP_NAME} ${dep_libs} )
 
 # Look for liboping just in case -- a library for 'ping'ing from C
-include( ${HYDRO_CMAKE_DIR}/FindOPing.cmake )
+include( ${ORCA_CMAKE_DIR}/FindOPing.cmake )
 GBX_REQUIRE_VAR( build EXE ${APP_NAME} LIBOPING_FOUND "liboping not found" )
 
 if( build )

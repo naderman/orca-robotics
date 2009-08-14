@@ -4,7 +4,7 @@
 # ROBOOP_HOME where to find include, lib, bin, etc.
 # ROBOOP_FOUND, If false, don't try to use Ice.
 
-INCLUDE (${HYDRO_CMAKE_DIR}/FindPkgConfig.cmake)
+INCLUDE (${ORCA_CMAKE_DIR}/FindPkgConfig.cmake)
 
 if( CMAKE_PKGCONFIG_EXECUTABLE )
 

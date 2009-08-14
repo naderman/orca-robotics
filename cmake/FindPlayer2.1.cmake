@@ -5,7 +5,7 @@
 # PLAYER_FOUND, If false, don't try to use Ice.
 
 # using HYDRO_CMAKE_DIR makes this script not-portable
-INCLUDE( ${HYDRO_CMAKE_DIR}/FindPkgConfig.cmake )
+INCLUDE( ${ORCA_CMAKE_DIR}/FindPkgConfig.cmake )
 
 IF( CMAKE_PKGCONFIG_EXECUTABLE )
 

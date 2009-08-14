@@ -15,11 +15,11 @@ GBX_REQUIRE_LIBS( build LIB ${LIB_NAME} ${dep_libs} )
 
 if( build )
 
-    include( ${HYDRO_USE_FILE} )
-    include( ${HYDRO_CMAKE_DIR}/UseQt.cmake )
+    include( ${ORCA_CMAKE_DIR}/UseQt.cmake )
     include( ${ORCA_CMAKE_DIR}/UseBasicRules.cmake )
     include( ${ORCA_CMAKE_DIR}/UseIceBasics.cmake )
     include( ${ORCA_CMAKE_DIR}/UseLibProjectInterfaces.cmake )
+    include( ${GEARBOX_USE_FILE} )
 
     file( GLOB hdrs *.h )
     file( GLOB human_srcs *.cpp )

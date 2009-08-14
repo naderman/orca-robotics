@@ -38,7 +38,7 @@ if( build )
 
     if( build_qt_driver )
 
-        include( ${HYDRO_CMAKE_DIR}/UseQt.cmake )
+        include( ${ORCA_CMAKE_DIR}/UseQt.cmake )
 
         # this old macro will be replaced at some point
         ORCA_OPTIONAL_SUB_LIBRARY( 

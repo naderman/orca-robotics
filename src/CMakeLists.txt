@@ -1,3 +1,8 @@
+add_subdirectory( hydrolibs )
+add_subdirectory( hydrointerfaces )
+add_subdirectory( hydrodrivers )
+add_subdirectory( hydroutils )
+
 add_subdirectory( interfaces )
 add_subdirectory( libs )
 add_subdirectory( utils )

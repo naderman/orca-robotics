@@ -1,4 +1,7 @@
 include_directories( 
+    ${PROJECT_SOURCE_DIR}/src/hydrolibs
+    ${PROJECT_SOURCE_DIR}/src           # for hydrointerfaces
+    ${PROJECT_SOURCE_DIR}/src/hydrodrivers
     ${PROJECT_SOURCE_DIR}/src/libs
 )
 
