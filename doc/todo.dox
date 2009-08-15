@@ -11,11 +11,19 @@
 TEMPLATE
 @section orca_doc_history_head Changes in SVN since Last Release
 @par Project wide
-@par New interfaces
+@par New driver interfaces
+@par New drivers
+@par New non-framework utilities
+@par New non-framework libraries
+@par New component interfaces
 @par New components
 @par New utilities
 @par New libraries
-@par Updated interfaces
+@par Updated driver interfaces
+@par Updated drivers
+@par Updated non-framework utilities
+@par Updated non-framework libraries
+@par Updated component interfaces
 @par Updated components
 @par Updated utilities
 @par Updated libraries
@@ -74,6 +82,7 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
 @section orca_doc_history_head Changes in SVN since Last Release
 
 @par Project wide
+
 - Build system
   - Added a hook in the CMake setup to allow building Orca as part of a bigger "super-project". Default behavior is not modified. (tobie,alexm)
   - Using new CMake macro GBX_REQUIRE_LIBS which simplifies enforcing dependencies, both in-project and installed ones. The older macros
@@ -86,7 +95,6 @@ Developers: as you make substantial changes in the code (add features, fix bugs,
   - There was a minor readjustment of CMake files in the satellite projects.
     Reason: simplify updates in the future by separating bootstrap files which change as Orca evolves and project-specific files which do not 
     need to be updated. In your satellite project, make the following changes. First update Orca.
-  - builds with gcc-4.4
 @verbatim
 $ cd <your-project>
 $ mkdir cmake/project
@@ -100,6 +108,11 @@ $ rm cmake/internal/orca-*
 $ svn add cmake/internal/Setup.cmake
 $ cp <orca>/CMakeLists.txt . # edit project name and version
 @endverbatim
+  - Using new CMake macro GBX_REQUIRE_LIBS which simplifies enforcing dependencies, both in-project and installed ones. (alexm)
+  - Hydro libraries do not look for Qt, use QT4_FOUND variable instead.
+  - Removed a bunch of redundant checks for e.g. GbxUtilAcfr when HydroUtil is checked.
+  - Builds with gcc-4.4
+  - Using LIB_INSTALL variable in all Hydro libs and drivers.
 
 - Autogeneration of component files
   - Renamed *.template files used by autogenerators to more standard *.in
@@ -142,7 +155,22 @@ ORCA_WRAP_COMPONENT_INTO_SERVICE( ${srcs} )
     Non-typical code may need to add the following:
     - #include \<orcaice/convertutils.h>
 
-@par New interfaces
+
+@par New driver interfaces
+
+  - RangerArray (Mikel Astiz)
+    - Interface for arrays of range sensors, e.g. sonar rings.
+
+@par New drivers
+
+  - RangerArrayFake, RangerArrayPlayerSonarClient (Mikel Astiz)
+
+  - PathPlanner2dFake (alexm)
+
+@par New non-framework utilities
+@par New non-framework libraries
+
+@par New component interfaces
 
  - RangerArray (Mikel Astiz)
  - BinarySwitch (AlexB)
@@ -165,7 +193,28 @@ ORCA_WRAP_COMPONENT_INTO_SERVICE( ${srcs} )
 - libOrcaSystemStatusUtil 
   - wraps up tricky functionality of maintaining remote status of a component. Used in SystemStatus. (alexm)
 
-@par Updated interfaces
+@par Updated driver interfaces
+@par Updated drivers
+
+- SegwayRmpAcfr
+  - removed unnecessary dependency between CAN and USB drivers. (alexm)
+
+@par Updated non-framework utilities
+@par Updated non-framework libraries
+
+- libHydroIceUtil
+  - Job class: implements gbxutilacfr::Stoppable interface. No change required in existing code.
+  
+- libHydroQGuiPath
+  - Improved abstract ipathinput and ipathuserinteraction interfaces (tobi)
+  - Fixed rare segfaults related to shortcut keys and mouse events (tobi)
+  - Changed the way paths are saved from user input (tobi)
+
+- libHydroIceUtil
+  - LocalStatus class: added component-wide tolerance to subsystem heartbeat delays. This change
+    is promted by long-operations of non-RT OS's, e.g. Linux.
+
+@par Updated component interfaces
 
 - Status
   - new classes to support the taks of keeping history of status changes. (alexm)
@@ -299,7 +348,39 @@ ORCA_WRAP_COMPONENT_INTO_SERVICE( ${srcs} )
 - Documentation
   - Updated the Quick-start Guide by adding a sorely missing bit on how to connect components over the network.
 
-@par New interfaces
+@par New driver interfaces
+
+- MultiImage (tom)
+  - Abstract class for an multiimage source.
+
+- ImageConverter (tom)
+  - Abstract class for a imageconverter source.
+
+- Disparity (tom)
+  - Abstract class for a stereo image correspondance, or disparity, source. 
+
+@par New drivers
+
+- ImageConverterBayer (tom)
+
+- ImageCvCamera (tom)
+  - OpenCV camera driver
+
+- ImageDc1394 (tom)
+  - libdc1394-2 image driver
+
+- ImageFake (tom)
+  - Bogus image driver, useful for testing the rest of the component.
+
+- DisparitySimple (tom)
+  - An extremely simple, error prone, but fast with the right video card, stereo correspondance driver.
+
+@par New non-framework utilities
+
+- listcameras (tom)
+  - list all firewire cameras and their associated information using libdc1394 v2
+
+@par New component interfaces
 
 - SystemStatus (tobi)
    - provides the status of a whole system consisting of a bunch of components
@@ -329,7 +410,25 @@ ORCA_WRAP_COMPONENT_INTO_SERVICE( ${srcs} )
 - @ref orcaifaceutil
   - autogenerated utility functions for all Orca Slice data types, including toString() functions.
 
-@par Updated interfaces
+@par Updated drivers
+
+- LaserScanner2dPlayerClient (tobi)
+- Robot2dPlayerClient (tobi)
+  - made the usage of the Player timestamp configurable
+
+- PathPlanner2dAcfr (alexb)
+  - Simply wraps up the existing hydropathplan gear.
+
+@par Updated non-framework libraries
+
+-libHydroIceUtil
+  - EventQueueHolder class: renamed convenience function postEvent(int) to postEventWithType(int) because 
+  it was succeptible to inheritance hiding. (alexm)
+  - JobQueue class: when warning about the queue size also provides information about the last added job. (alexm)
+  - JobQueue class: can now detect when a job is stalled and optionally trace a warning. For this to work
+    jobs need to report their expected run time. (alexm)
+
+@par Updated component interfaces
 
 - all existing interfaces
   - removed cpp:const directive from idempotent methods. This was a leftover from the old days with 'nonmutating'
@@ -437,7 +536,17 @@ ORCA_WRAP_COMPONENT_INTO_SERVICE( ${srcs} )
 - slice2string and slice2log are combined into one new utility: slice2util
 - systemtracermon: used to display aggregated traces from platforms. This functionality is now in Status interface and the new SystemStatus component.
 
+
 @section orca_doc_history_2120 Changes in Release 2.12.0
+
+@par New drivers
+
+- HydroHokuyoAist
+  - Wrapper around the re-written and renamed Hokuyo driver from Gearbox. (michael m.)
+
+@par New non-framework libraries
+
+- libHydroQGuiPath
 
 @par New components
 
@@ -449,7 +558,26 @@ ORCA_WRAP_COMPONENT_INTO_SERVICE( ${srcs} )
 - libOrcaTeleop
   - refactored Teleop functionality into a library for reuse in GUI's (tobi)
 
-@par Updated interfaces
+@par Updated drivers
+
+- HydroSegwayRmpFake, HydroLaserScanner2dFake
+  - Simulated data rate is now configurable. Default values remained unchanged:
+    1Hz for segway and 10Hz for laser. (alexm)
+
+@par Updated non-framework libraries
+
+- libHydroQGui
+  - ZoomWidget: removed an arbitrary limit to zoom-in and zoom-out factors. (alexm)
+  - ZoomWidget: fixed bug with recentering view when scaling (alexm)
+  - WorldView widget now display XY position of the mouse (alexm)
+
+- libHydroQGuiPath
+  - added button for enabling/disabling the path follower (alexm)
+
+- libHydroIceUtil
+  - Jobs in the JobQueue are now individually tracable (alexm)
+
+@par Updated component interfaces
 
 - VehicleDescription (alexb)
   - Removed 'platformToVehicleTransform', renamed 'vehicleToGeometryTransform' -> 'platformToGeometryTransform'
@@ -486,6 +614,7 @@ ORCA_WRAP_COMPONENT_INTO_SERVICE( ${srcs} )
 - libOrcaIfaceString
   - added documentation.
 
+
 @section orca_doc_history_2110 Changes in Release 2.11.0
 
 @par Project wide
@@ -498,6 +627,18 @@ ORCA_WRAP_COMPONENT_INTO_SERVICE( ${srcs} )
     - cmake files updated for cmake 2.6
 - Compiler
     - compiles cleanly with gcc43, tested nightly and continuously (tobi)
+
+@par New drivers
+
+- GpsGarminGbx
+  - a thin wrapper for the actual Garmin driver which moved from Hydro to Gearbox.
+
+@par New non-framework libraries
+
+  - libHydroQGuiPath (tobi)
+    - Library for gui path representation and input
+  - libHydroSim2d (alex b)
+    - Library for simple 2D simulations
 
 @par New utilities
 
@@ -518,7 +659,17 @@ ORCA_WRAP_COMPONENT_INTO_SERVICE( ${srcs} )
   - This library is autogenerated from Slice defenitions (.ice files).
     It contains string utilities for Slice data types (enums, structures, classes).  
 
-@par Updated interfaces
+@par Updated non-framework libraries
+
+- HydroIceUtil
+  - In the EventLoop class fixed a bug which caused error messages from clearing (alex m)
+  - EventLoop::postEvent() added an option to supply a string to the event which will help identify where
+the event came from in case it's not handled properly (alex m)
+  - In EventScheduler class fixed bug which led to mutex lockup on recursive scheduling. (alex m)
+  - Fixed a number of bugs in LocalStatus which prevented properly reporting changes in status. 
+Update is published when subsystems are added and removed. (alex m)
+
+@par Updated component interfaces
 
 - Image, OgPatch, OgMap, RangeScanner2d, LaserScanner2d, QGraphics2d, Hand, PointCloud.
   - Using newly defined 'standard' sequences of builtin types (defined in containers.ice)
@@ -560,6 +711,7 @@ ORCA_WRAP_COMPONENT_INTO_SERVICE( ${srcs} )
 
 - IceGridMon utility because the standard IceGrid GUI is very good.
 - Logger utility was renamed to LogReplayer to avoid conflicts with shell logger command.
+- GpsGarmin device driver. Moved to GearBox. Added new driver wrapper called GpsGarminGbx.
 
 @section orca_doc_history_2100 Changes in Release 2.10.0
 
@@ -570,16 +722,54 @@ ORCA_WRAP_COMPONENT_INTO_SERVICE( ${srcs} )
   - Default installation directories follow GearBox standard (/usr/local).
   - Renamed all local cmake variables to low case. The names of all CMake macros defined in 
     Orca now start with "ORCA_" (alex m)
+  - Added autogenerated linking tests to all dynamically loadable drivers. (alex m)
 
 - Documentation
   - Cleaned up and shortened the programming style guide.
+
+@par New driver interfaces
+
+- Gps
+  - Access to GPS devices.
+- LaserFeatureExtractor
+  - Extracts features from scans
+
+@par New drivers
+
+- GpsFake, GpsGarmin
+  - Ported from Orca.
+- LaserFeatureExtractorCombined
+  - Ported from Orca.
+
+@par New non-framework libraries
+
+  - libHydroFeatureObs (alex b)
+    - Library for representing features (eg features extracted for SLAM purposes).
+
+  - libHydroLaserFeatureExtract (alex b)
+    - Library for extracting features from laser scans.
+    - Almost-complete rewrite from Orca version.
 
 @par New utilities
 
 - SnapshotLogger (alex b)
   - Logs a small window (in time) of information when triggered.
 
-@par Updated interfaces
+@par Updated non-framework libraries
+
+- libHydroUtil
+  - Much stricter parsing of properties. Throwing exceptions whenever parsing fails (to int and double,
+    vectors of ints and doubles). Fails when characters trail a numeric value. This applies to '.' as
+    meaning that parsing fails when a double is given in place of an int. 
+    Comments are allowed to trail values.  (alex m)
+  - Properties API. Added function isDefined(key). (alex m)
+
+- libHydroIceUtil
+  - JobQueue reports number of active jobs. (alex m)
+  - New class EventLoop which is a specialization of JobQueue for dispatching events to recievers. Includes
+    a built-in registry of reciever ID's. (alex m)
+
+@par Updated component interfaces
 
 - PolarFeature2d (alex b)
   - Added 'description' which includes the sensor offset.
@@ -632,6 +822,8 @@ ORCA_WRAP_COMPONENT_INTO_SERVICE( ${srcs} )
 @par Project wide
 
 - Build system
+  - Better cmake feedback when modules cannot be built. (alex m)
+  - Added modular input of license information (with GLOBAL_ADD_LICENSE macro). (alex m)
   - Updated style of checking module dependencies, for both components and libraries.
     Better cmake feedback when a component cannot be built. (alex m)
   - Component containers (Application and Service) are now auto-generated by the build-system (using WRAP_COMPONENT_INTO_APP
@@ -643,8 +835,20 @@ ORCA_WRAP_COMPONENT_INTO_SERVICE( ${srcs} )
 
 - Source 
   - Global change to the updated API's of orcaice::Context.
+  - Global change to the updated API's of hydroutil::Status and hydrointerfaces::Context.
+  - Compiles with gcc-4.3
 
-@par New interfaces
+@par New non-framework libraries
+
+- HydroSerialDriver (alex b)
+  - Utility classes for writing serial drivers.
+
+- HydroIceUtil (alex m)
+  - Split off all IceUtil-dependent code from HydroUtil. This allows IceUtil-independent drivers.
+  - Added EventScheduler class -- a simple inaccurate delayed dispatcher of events. (alex m)
+  - Added checkedSleep(ThreadPtr) function to sleep for some time but check for stopping every once in a while. (alex m)
+
+@par New component interfaces
 
   - Properties (alex b)
     - Hands out a set of Properties, for use in implementing a centralised properties database.
@@ -653,8 +857,37 @@ ORCA_WRAP_COMPONENT_INTO_SERVICE( ${srcs} )
 
   - PropertyServer (alex b)
     - Implements orca::Properties interface
+@par Updated driver interfaces
 
-@par Updated interfaces
+- LaserScanner2d (alex b)
+  - Allowed reporting of warnings.
+
+@par Updated drivers
+
+- SegwayRmpAcfr
+  - Fixed a couple of bugs which resulted in incorrect speeds. (alex b)
+  - CAN version: tested with libpcan v. 6.5 and updated documentation. (alex m)
+
+- HydroPathPlan (alex b)
+  - Bugfix in extra nodes for sparse skel
+
+@par Updated non-framework libraries
+
+- libHydroUtil
+  - Fixed thread-unsafe bug in LocalTracer (alex m)
+  - Significant changes to JobQueue API. Results are no longer returned. Any results should be sent
+    back to job owners through events. Polling for jobs is replaced with much more efficient blocking. (alex m)
+  - Important changes to Status API. addSubsystem() must be called first. (alex m)
+  - Added convinience class SubStatus integrated by SafeThread. (alex m)  
+  - Moved Context from libHydroInterfaces
+  - Context now returns references to Tracer and Status instead of pointers (alex m)
+  - Removed deprecated hydroutil::Proxy (replaced with Store) (alex b)
+  - Split off all IceUtil-dependent code into libHydroIceUtil (alex m)
+
+- libHydroInterfaces
+  - Moved Context to libHydroUtil
+
+@par Updated component interfaces
 
 - VehicleDescription (alex b)
   - For Differential Drive robots, changed description of allowable control region.
@@ -716,6 +949,7 @@ ORCA_WRAP_COMPONENT_INTO_SERVICE( ${srcs} )
 @par Removed
    - Imu component. It was never implemented properly and it's component structure was hopelessly obsolete.
 
+
 @section orca_doc_history_280 Changes in Release 2.8.0
 
 @par Project wide
@@ -730,8 +964,50 @@ ORCA_WRAP_COMPONENT_INTO_SERVICE( ${srcs} )
 
 - build system
   - looking for Ice installation, first looks in generic dirs: /opt/Ice; /opt/Ice-3; /opt/Ice-3.2
+  - fixed bugs in checking dependencies (alex m, alex b)
+  - fixed compilation in Windows (tom b.)
 
-@par New interfaces
+@par New driver interfaces
+
+- HumanInput2d
+    - Abstraction of 2D input for position or velocity control.
+- Robot2d
+    - Access to a generic 2D robotic platform. 
+- SegwayRmp
+    - Access to Segway's RMP robotic platform. 
+
+@par New drivers
+
+- HumanInput2dJoystick
+- HumanInput2dKbdIostream
+- HumanInput2dKbdTermio
+    - Implementations of HumanInput2d interface. Refactored from Orca's Teleop component. (alexm)
+
+- Robot2dFake
+- Robot2dPlayerClient
+    - Implementations of Robot2d interface. Refactored from Orca's Robot2d component. (alexm)
+
+- SegwayRmpAcfr
+- SegwayRmpFake
+- SegwayRmpPlayerClient
+    - Implementations of SegwayRmp interface. Refactored from Orca's SegwayRmp component. (alexm)
+
+@par New non-framework utilities
+
+- mgaconversion
+    - moved from Orca
+
+@par New non-framework libraries
+
+- libHydroGeom2d
+- libHydroGpsUtil
+- libHydroNovatelUtil
+- libHydroOgMap
+- libHydroPathPlan
+- libHydroMapLoad
+  - Moved in from Orca (alexb, alexm)
+
+@par New component interfaces
 
 - Button (alex b)
   - A simple thing you can press remotely, with no feedback.
@@ -741,7 +1017,27 @@ ORCA_WRAP_COMPONENT_INTO_SERVICE( ${srcs} )
 - libOrcaNavUtil (alex b)
   - Library for conversion between Orca types and HydroNavUtil types.
 
-@par Updated interfaces
+@par Updated non-framework libraries
+
+- libHydroUtil
+    - The constructor of Properties can now take an optional string specifying the common key prefix which
+      will be removed from all keys before insertion. (alex m)
+    - bug fix: LocalTracer inits itself properly. (alex m)
+    - Calls to LocalStatus are now automatically traced when status or message change (alex m)
+    - SafeThread uses Tracer if one is provided. (alex m)
+    - added simple time utility functions. (alex m)
+ 
+- libHydroNavUtil
+    - Created Gmm: a class for representing Gaussian Mixture Models (for pose distributions) (alex b)
+    - Moved Velocity in (from orcalocalnav) (alex b)
+    - Removed Offset.  Use Pose everywhere instead (alex b)
+
+- libHydroPathPlan
+    - Cleaned up structure (alex b)
+    - Added code to add extra nodes in SparseSkel to avoid problems
+      when the skel is super-sparse in some areas (alex b)
+
+@par Updated component interfaces
 
 - PolarFeature2d (alex b)
   - PolarFeature2dData was un-necessarily a class.  It's now a struct.
@@ -855,11 +1151,18 @@ ORCA_WRAP_COMPONENT_INTO_SERVICE( ${srcs} )
 - Build system
    - only one XML file is now generated from .def file instead of two before (it contains the xml template)
 
-@par New interfaces
+@par New non-framework libraries and utilities
 
-@par New components
+- Code refactored from Orca.
 
-@par New utilities
+- libHydroUtil was refactored from libOrcaIce
+   - a set of tools which depends only on libIceUtil (and general c++). Specifically,
+     contains nothing related to communications. See notes on libOrcaIce. (alex m)
+   - added new utility class JobQueue for spinning off long-term tasks into a
+     different thread. (alex b)
+   - added new function substitute() to string utilities. It substitutes parameters
+     in the form ${parameter}. (alex m)
+   - added new function executeSystemCommand() a wrapper for Linux popen(). (alex b)
 
 @par New libraries
 
@@ -874,7 +1177,7 @@ ORCA_WRAP_COMPONENT_INTO_SERVICE( ${srcs} )
 - ReactiveWalker (alex m)
    - resurrected from the sandbox. It's a robot controller similar to Player's randomwalk.
 
-@par Updated interfaces
+@par Updated component interfaces
 
 - Gps (alex b)
   - removed GpsMapGrid and GpsTime interfaces.
@@ -962,7 +1265,7 @@ ORCA_WRAP_COMPONENT_INTO_SERVICE( ${srcs} )
     - Fixed CMake bug with ORCA_MOTHERSHIP, it was unusalbe in satellite projects. (thanks John Yamokoski)
     - Added project-wide access to Orca installation directory by adding -DCMAKE_INSTALL_PREFIX (Tobi)
 
-@par New interfaces
+@par New component interfaces
 
 - Pinger (alex b)
   - Interface for requesting that a host be 'ping'ed.
@@ -1006,7 +1309,7 @@ ORCA_WRAP_COMPONENT_INTO_SERVICE( ${srcs} )
 - PureIcePython (ben u.)
     - Example of Orca component in Python.
 
-@par Updated interfaces
+@par Updated component interfaces
 - Localise2d
     - added getGeometry() which describes the geometry of the localised robot (Tobi)
 
@@ -1119,7 +1422,7 @@ ORCA_WRAP_COMPONENT_INTO_SERVICE( ${srcs} )
   - added tutorial with simple robot teleop in stage
   - added tutorial on logging interface data in text format
 
-@par New interfaces
+@par New component interfaces
 
 - Image (alexm)
   - Represents an image source. It is similar to PixMap and Camera. Unlike the
@@ -1142,7 +1445,7 @@ ORCA_WRAP_COMPONENT_INTO_SERVICE( ${srcs} )
 - Player2Orca (alex m.)
   - A simple component which connects to both Player and Orca systems.
 
-@par Updated interfaces
+@par Updated component interfaces
 
 - DriveBicycle (alex m.)
   - provides information on the current state of the actuators (speed and steer angle).
@@ -1249,7 +1552,7 @@ ORCA_WRAP_COMPONENT_INTO_SERVICE( ${srcs} )
 - documentation
   - added a high-level guide on how to start coding (alex m)
 
-@par New interfaces
+@par New component interfaces
 
 @par New components
 
@@ -1263,7 +1566,7 @@ ORCA_WRAP_COMPONENT_INTO_SERVICE( ${srcs} )
 - libOrcaColourText (alexb)
   - Simple text colours on the Linux terminal, using escape-codes.
 
-@par Updated interfaces
+@par Updated component interfaces
 
 - PathPlanner
   - Added an error string (tobi)
@@ -1333,7 +1636,7 @@ ORCA_WRAP_COMPONENT_INTO_SERVICE( ${srcs} )
   - Compatible with Ice v3.1 and Ice v3.2, but warnings are spewed out
     for Ice v3.2 (alex b)
 
-@par New interfaces
+@par New component interfaces
 
 - Replay
     - Remote interface to a log playing process.
@@ -1353,7 +1656,7 @@ ORCA_WRAP_COMPONENT_INTO_SERVICE( ${srcs} )
     - split up orcanavutil
     - added nmea classes which were with the gps component before
 
-@par Updated interfaces
+@par Updated component interfaces
 
 - Tracer
   - Has functions to subscribe just for that componnent, or to all
@@ -1431,7 +1734,7 @@ ORCA_WRAP_COMPONENT_INTO_SERVICE( ${srcs} )
     - changed all IceStorm subscriptions to 'twoway' to reduce risk of keeping subscriptions after consumers go down.
 
 
-@par New interfaces
+@par New component interfaces
 
 - Tracer
     - Remote access to component's traces, e.g. errors, warning, etc. Separated from the existing Status interface. 
@@ -1470,7 +1773,7 @@ ORCA_WRAP_COMPONENT_INTO_SERVICE( ${srcs} )
 - orcawifi
   - Library for getting wireless information in Linux (Tobi)
 
-@par Updated interfaces
+@par Updated component interfaces
 
 - Wifi, OgMap (Tobi)
     - enums instead of const int for types
@@ -1574,7 +1877,7 @@ ORCA_WRAP_COMPONENT_INTO_SERVICE( ${srcs} )
     - factored out commonly used Qt elements. Currently contains the Orca icon and 
         aboutOrca() function.
 
-@par Updated interfaces
+@par Updated component interfaces
 
 - PolarFeature2d
     - Added two fields to all features: pFalsePositive and pTruePositive, to characterise

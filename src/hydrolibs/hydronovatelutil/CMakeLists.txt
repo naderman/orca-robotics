@@ -16,7 +16,7 @@ if( build )
     
     GBX_ADD_LIBRARY( ${LIB_NAME} DEFAULT ${LIB_VERSION} ${srcs} )
     
-    GBX_ADD_HEADERS( hydronovatelutil ${hdrs} )
+    GBX_ADD_HEADERS( ${LIB_INSTALL} ${hdrs} )
     
     # installation only
     add_subdirectory( cmd )

@@ -72,6 +72,10 @@ WARN_LOGFILE           = "doxywarn.txt"
 # configuration options related to the input files
 #---------------------------------------------------------------------------
 INPUT                  = . \
+                         ../src/hydrointerfaces \
+                         ../src/hydrodrivers \
+                         ../src/hydrolibs \
+                         ../src/hydroutils \
                          ../src/interfaces \
                          ../src/components \
                          ../src/libs \

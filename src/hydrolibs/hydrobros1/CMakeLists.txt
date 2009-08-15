@@ -13,6 +13,6 @@ if( build )
     
     GBX_ADD_LIBRARY( ${LIB_NAME} DEFAULT ${LIB_VERSION} ${srcs} )
     
-    GBX_ADD_HEADERS( hydrobros1 ${hdrs} )
+    GBX_ADD_HEADERS( ${LIB_INSTALL} ${hdrs} )
 
 endif( build )

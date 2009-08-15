@@ -1,6 +1,7 @@
 GBX_ADD_LICENSE( LGPL )
 
 ORCA_SET_LIBRARY_NAME( HydroMhiPa10Fake )
+set( LIB_INSTALL mhipa10fake )
 
 set( build TRUE )
 GBX_REQUIRE_OPTION( build LIB ${LIB_NAME} ON )
@@ -28,6 +29,6 @@ if( build )
 	GBX_ADD_LIBRARY( ${LIB_NAME} DEFAULT ${LIB_VERSION} ${srcs} )
 	target_link_libraries( ${LIB_NAME} ${dep_libs} )
 	
-	GBX_ADD_HEADERS( mhipa10fake ${hdrs} )
+    GBX_ADD_HEADERS( ${LIB_INSTALL} ${hdrs} )
 
 endif( build )

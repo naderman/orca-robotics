@@ -11,9 +11,9 @@
 
 /*!
 @ingroup hydro_drivers_multiimage
-@ingroup hydro_cpp
-@ingroup hydro_linux
-@ingroup hydro_win
+@ingroup orca_cpp
+@ingroup orca_linux
+@ingroup orca_win
 @defgroup hydro_driver_multicameraopencv MultiCameraOpenCV 
 @brief A mutlicamera frame grabber using OpenCV. Typically used for stereo rigs.
 

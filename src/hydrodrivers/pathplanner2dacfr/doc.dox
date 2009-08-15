@@ -10,8 +10,8 @@
 
 /*!
 @ingroup hydro_drivers_pathplanner2d
-@ingroup hydro_cpp
-@ingroup hydro_linux
+@ingroup orca_cpp
+@ingroup orca_linux
 @defgroup hydro_drivers_pathplanner2dacfr PathPlanner2dAcfr
 @brief An implementation of several classic path-planning algorithms.
 

@@ -10,8 +10,8 @@
 
 /*!
 @ingroup hydro_drivers_humaninput2d
-@ingroup hydro_cpp
-@ingroup hydro_linux
+@ingroup orca_cpp
+@ingroup orca_linux
 @defgroup hydro_driver_humaninput2dkbdtermio HumanInput2dKbdTermio
 @brief Keyboard driver for HumanInput2d using termio library.
 

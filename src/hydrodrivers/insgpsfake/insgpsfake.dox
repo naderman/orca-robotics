@@ -10,9 +10,9 @@
 
 /*!
 @ingroup hydro_drivers_insgps
-@ingroup hydro_cpp
-@ingroup hydro_linux
-@ingroup hydro_win
+@ingroup orca_cpp
+@ingroup orca_linux
+@ingroup orca_win
 @defgroup hydro_driver_insgpsfake InsGpsFake
 @author Michael Moser
 @brief A fake implementation useful for debugging.

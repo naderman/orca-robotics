@@ -14,7 +14,7 @@ if( build )
     
     GBX_ADD_LIBRARY( ${LIB_NAME} DEFAULT ${LIB_VERSION} ${srcs} )
     
-    GBX_ADD_HEADERS( hydrowifi ${hdrs} )
+    GBX_ADD_HEADERS( ${LIB_INSTALL} ${hdrs} )
     
     if( ORCA_BUILD_TESTS ) 
         add_subdirectory( test )

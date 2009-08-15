@@ -10,9 +10,9 @@
 
 /*!
 @ingroup hydro_drivers_robot2d
-@ingroup hydro_cpp
-@ingroup hydro_linux
-@ingroup hydro_win
+@ingroup orca_cpp
+@ingroup orca_linux
+@ingroup orca_win
 @defgroup hydro_driver_robot2dfake Robot2dFake
 @brief A fake implementation useful for debugging.
 

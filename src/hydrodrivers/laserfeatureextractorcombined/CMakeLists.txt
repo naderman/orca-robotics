@@ -18,7 +18,7 @@ if( build )
 
     # install the headers so others can re-use parts
     file( GLOB hdrs *.h )
-    GBX_ADD_HEADERS( laserfeatureextractorcombined ${hdrs} )
+    GBX_ADD_HEADERS( ${LIB_INSTALL} ${hdrs} )
     
     GBX_ADD_LIBRARY( ${LIB_NAME} DEFAULT ${LIB_VERSION} ${srcs} )
     target_link_libraries( ${LIB_NAME} ${dep_libs} )

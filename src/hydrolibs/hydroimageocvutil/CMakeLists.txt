@@ -26,10 +26,6 @@ if( build )
     GBX_ADD_LIBRARY( ${LIB_NAME} DEFAULT ${LIB_VERSION} ${srcs} )
     target_link_libraries( ${LIB_NAME} ${dep_libs} )
 
-    GBX_ADD_HEADERS( hydroimageocvutil ${hdrs} )
-    
-    #if( ORCA_BUILD_TESTS )
-    #    add_subdirectory( test )
-    #endif( ORCA_BUILD_TESTS )
+    GBX_ADD_HEADERS( ${LIB_INSTALL} ${hdrs} )
 
 endif( build )

@@ -10,8 +10,8 @@
 
 /*!
 @ingroup hydro_drivers_laserfeatureextractor
-@ingroup hydro_cpp
-@ingroup hydro_linux
+@ingroup orca_cpp
+@ingroup orca_linux
 @defgroup hydro_driver_laserfeatureextractorcombined LaserFeatureExtractorCombined
 @brief An ACFR implementation of a laser feature extractor
 

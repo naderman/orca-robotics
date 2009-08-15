@@ -10,9 +10,9 @@
 
 /*!
 @ingroup hydro_drivers_humaninput2d
-@ingroup hydro_cpp
-@ingroup hydro_linux
-@ingroup hydro_win
+@ingroup orca_cpp
+@ingroup orca_linux
+@ingroup orca_win
 @defgroup hydro_driver_humaninput2dkbdiostream HumanInput2dKbdIostream
 @brief Simple keyboard driver for HumanInput2d using iostream library.
 

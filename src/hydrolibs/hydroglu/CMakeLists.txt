@@ -25,7 +25,7 @@ if( build )
     
     TARGET_LINK_LIBRARIES ( ${LIB_NAME} ${OPENGL_LIBRARIES} ${GLEW_LIBRARIES} )
 
-    GBX_ADD_HEADERS( hydroglu ${hdrs} )
+    GBX_ADD_HEADERS( ${LIB_INSTALL} ${hdrs} )
 
     if( ORCA_BUILD_TESTS )
         add_subdirectory( test )

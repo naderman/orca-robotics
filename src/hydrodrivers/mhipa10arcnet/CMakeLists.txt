@@ -1,6 +1,7 @@
 GBX_ADD_LICENSE( LGPL )
 
 ORCA_SET_LIBRARY_NAME( HydroMhiPa10Arcnet )
+set( LIB_INSTALL mhipa10arcnet )
 
 set( build TRUE )
 GBX_REQUIRE_OPTION( build LIB ${LIB_NAME} ON )
@@ -27,6 +28,6 @@ if( build )
 	    add_subdirectory( test )
 	endif( ORCA_BUILD_TESTS )
 	
-	GBX_ADD_HEADERS( mhipa10arcnet ${hdrs} )
+    GBX_ADD_HEADERS( ${LIB_INSTALL} ${hdrs} )
 
 endif( build )

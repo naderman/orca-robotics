@@ -9,8 +9,8 @@
  */
 /*!
 @ingroup hydro_libs
-@ingroup hydro_cpp
-@ingroup hydro_linux
+@ingroup orca_cpp
+@ingroup orca_linux
 @defgroup hydro_library_hydroping libHydroPing
 @brief Library for making ICMP pings.
 

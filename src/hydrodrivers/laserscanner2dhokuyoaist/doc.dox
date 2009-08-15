@@ -10,8 +10,8 @@
 
 /*!
 @ingroup hydro_drivers_laserscanner2d
-@ingroup hydro_cpp
-@ingroup hydro_linux
+@ingroup orca_cpp
+@ingroup orca_linux
 @defgroup hydro_driver_laserscanner2dhokuyoaist LaserScanner2dHokuyoAist
 @brief A wrapper for hokuyo_aist driver for Hukuyo's SCIP compatible lasers (distributed with Gearbox, tested with URG and UHG).
 

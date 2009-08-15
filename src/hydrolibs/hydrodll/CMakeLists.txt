@@ -19,7 +19,7 @@ if( build )
         target_link_libraries( ${LIB_NAME} kernel32 )
     endif( NOT GBX_OS_WIN )
     
-    GBX_ADD_HEADERS( hydrodll ${hdrs} )
+    GBX_ADD_HEADERS( ${LIB_INSTALL} ${hdrs} )
     
     if( ORCA_BUILD_TESTS )
         add_subdirectory( test )

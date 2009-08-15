@@ -10,8 +10,8 @@
 
 /*!
 @ingroup hydro_drivers_rangerarray
-@ingroup hydro_cpp
-@ingroup hydro_linux
+@ingroup orca_cpp
+@ingroup orca_linux
 @defgroup hydro_driver_rangerarrayplayersonarclient RangerArrayPlayerSonarClient
 @brief A wrapper for Player sonar client.
 

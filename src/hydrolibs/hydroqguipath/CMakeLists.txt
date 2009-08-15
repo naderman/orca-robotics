@@ -27,6 +27,6 @@ if( build )
 
     GBX_ADD_LIBRARY( ${LIB_NAME} DEFAULT ${LIB_VERSION} ${human_srcs} ${moc_srcs} )
 
-    GBX_ADD_HEADERS( hydroqguipath ${hdrs} )
+    GBX_ADD_HEADERS( ${LIB_INSTALL} ${hdrs} )
 
 endif( build )

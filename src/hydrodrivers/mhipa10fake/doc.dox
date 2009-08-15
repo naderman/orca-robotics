@@ -10,8 +10,8 @@
 
 /*!
 @ingroup hydro_drivers_mhipa10
-@ingroup hydro_cpp
-@ingroup hydro_linux
+@ingroup orca_cpp
+@ingroup orca_linux
 @defgroup hydro_driver_mhipa10fake MhiPA10Fake
 @brief Fake driver for MHI's PA-10 robot.
 

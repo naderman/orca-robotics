@@ -10,7 +10,7 @@
 
 /*!
 @ingroup hydro_utils
-@ingroup hydro_linux
+@ingroup orca_linux
 @defgroup hydro_util_mgaconversion MgaConversion
 @brief Utilities to convert latitude/longitude to MGA
 

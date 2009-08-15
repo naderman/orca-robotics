@@ -10,8 +10,8 @@
 
 /*!
 @ingroup hydro_drivers_bicycle
-@ingroup hydro_cpp
-@ingroup hydro_linux
+@ingroup orca_cpp
+@ingroup orca_linux
 @defgroup hydro_driver_bicycleplayerclient BicyclePlayerClient
 @brief An implementation using Player client API.
 

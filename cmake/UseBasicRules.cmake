@@ -13,3 +13,8 @@ if( NOT ORCA_OS_WIN )
 else( NOT ORCA_OS_WIN )
     add_definitions( "-Wall -D_CRT_SECURE_NO_DEPRECATE" )
 endif( NOT ORCA_OS_WIN )
+
+#
+# Rules specific to a project
+#
+include( ${PROJECT_SOURCE_DIR}/cmake/project/ProjectBasicRules.cmake )

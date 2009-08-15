@@ -11,9 +11,9 @@
 
 /*!
 @ingroup hydro_drivers_image
-@ingroup hydro_cpp
-@ingroup hydro_linux
-@ingroup hydro_win
+@ingroup orca_cpp
+@ingroup orca_linux
+@ingroup orca_win
 @defgroup hydro_driver_cameraopencv CameraOpenCV 
 @brief A camera frame grabber using OpenCV. 
 

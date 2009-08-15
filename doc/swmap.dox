@@ -20,6 +20,10 @@
 
 @par By type
 
+- @ref hydro_interfaces
+- @ref hydro_drivers
+- @ref hydro_libs
+- @ref hydro_utils
 - @ref orca_components
 - @ref orca_libs
 - @ref orca_utils

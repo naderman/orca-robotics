@@ -11,6 +11,11 @@
 
 /*!
 
+@defgroup hydro_interfaces Driver Interfaces
+@defgroup hydro_drivers Drivers
+@defgroup hydro_libs Framework-Independent Libraries
+@defgroup hydro_utils Framework-Independent Utilities
+
 @defgroup orca_interfaces Interfaces
 @defgroup orca_components Components
 @defgroup orca_libs Libraries

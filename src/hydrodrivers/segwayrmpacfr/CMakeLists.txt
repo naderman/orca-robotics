@@ -10,6 +10,7 @@ set( buildUSB false )
 # CAN IO
 #
 ORCA_SET_LIBRARY_NAME( HydroSegwayRmpAcfrCan )
+set( LIB_INSTALL segwayrmpacfr )
 
 set( build TRUE )
 GBX_REQUIRE_OPTION( build LIB ${LIB_NAME} ON )
@@ -44,7 +45,7 @@ if( build )
         add_subdirectory( testcan )
     endif( ORCA_BUILD_TESTS )
 
-    GBX_ADD_HEADERS( segwayrmpacfr ${hdrs} )
+    GBX_ADD_HEADERS( ${LIB_INSTALL} ${hdrs} )
 
     if( ORCA_BUILD_TESTS )
         HYDRO_ADD_LINK_TEST( SegwayRmp segwayrmpacfr driver.h ${LIB_NAME} ${dep_libs} )
@@ -56,6 +57,7 @@ endif( build )
 #  USB IO
 #
 ORCA_SET_LIBRARY_NAME( HydroSegwayRmpAcfrUsb )
+set( LIB_INSTALL segwayrmpacfr )
 
 set( build TRUE )
 GBX_REQUIRE_OPTION( build LIB ${LIB_NAME} ON )
@@ -89,7 +91,7 @@ if( build )
     # (not using add_definitions() command because it sets flags for the whole directory)
     set_target_properties( ${LIB_NAME} PROPERTIES COMPILE_FLAGS -DUSB_IO_DRIVER )
 
-    GBX_ADD_HEADERS( segwayrmpacfr ${hdrs} )
+    GBX_ADD_HEADERS( ${LIB_INSTALL} ${hdrs} )
 
 endif( build )
 

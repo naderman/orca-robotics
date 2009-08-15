@@ -10,8 +10,8 @@
 
 /*!
 @ingroup hydro_drivers_gps
-@ingroup hydro_cpp
-@ingroup hydro_linux
+@ingroup orca_cpp
+@ingroup orca_linux
 @defgroup hydro_driver_gpsfake GpsFake
 @brief A fake implementation useful for debugging.
 

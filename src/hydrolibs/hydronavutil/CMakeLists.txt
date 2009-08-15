@@ -19,7 +19,7 @@ if( build )
 
     target_link_libraries( ${LIB_NAME} ${dep_libs} )
 
-    GBX_ADD_HEADERS( hydronavutil ${hdrs} )
+    GBX_ADD_HEADERS( ${LIB_INSTALL} ${hdrs} )
 
     if( ORCA_BUILD_TESTS )
         add_subdirectory( test )

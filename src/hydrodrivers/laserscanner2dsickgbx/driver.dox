@@ -10,8 +10,8 @@
 
 /*!
 @ingroup hydro_drivers_laserscanner2d
-@ingroup hydro_cpp
-@ingroup hydro_linux
+@ingroup orca_cpp
+@ingroup orca_linux
 @defgroup hydro_driver_laserscanner2dsickgbx LaserScanner2dSickGbx
 @brief Gearbox driver for SICK laser range-finder.
 

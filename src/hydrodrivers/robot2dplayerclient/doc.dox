@@ -10,8 +10,8 @@
 
 /*!
 @ingroup hydro_drivers_robot2d
-@ingroup hydro_cpp
-@ingroup hydro_linux
+@ingroup orca_cpp
+@ingroup orca_linux
 @defgroup hydro_driver_robot2dplayerclient Robot2dPlayerClient
 @brief An implementation using Player client API.
 
