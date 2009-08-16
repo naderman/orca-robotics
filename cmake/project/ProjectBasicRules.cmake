@@ -1,3 +1,0 @@
-#
-# Add project-specific rules.
-#

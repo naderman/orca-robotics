@@ -192,8 +192,10 @@ else( ORCA_MOTHERSHIP )
     set( DEFTOOLS_HOME ${ORCA_DEFTOOLS_BIN_DIR} )
     set( SLICE2ORCA_HOME ${ORCA_SLICE2ORCA_BIN_DIR} )
 
-    # other project-specific stuff
-    include( ${PROJECT_SOURCE_DIR}/cmake/project/ProjectSetup.cmake )
+    # Optional project-specific stuff
+    if( EXISTS ${PROJECT_SOURCE_DIR}/cmake/project/ProjectSetup.cmake )
+        include( ${PROJECT_SOURCE_DIR}/cmake/project/ProjectSetup.cmake )
+    endif()
 
 endif( ORCA_MOTHERSHIP )
 
