@@ -1079,10 +1079,10 @@ std::string
 toLogString( const orca::ImageDataPtr& obj )
 {
     stringstream s;
-    s << toLogString(obj->timeStamp);
-    s << obj->description->width;
-    s << obj->description->height;
-    s << obj->description->format;
+    s << toLogString(obj->timeStamp) << " "
+      << obj->description->width << " "
+      << obj->description->height << " "
+      << obj->description->format;
     return s.str();
 }
 
