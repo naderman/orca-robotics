@@ -234,6 +234,29 @@ private:
 };
 
 //////////////////////////////////////////////////////////////////////
+
+class  MultiCameraAutoLogger : public GenericAutoLogger<orca::MultiCamera,
+                                                            orca:: MultiCameraConsumer,
+                                                            orca::MultiCameraDataPtr,
+                                                            MultiCameraLogWriter>
+{
+public:
+
+    MultiCameraAutoLogger(const orcaice::Context &context) :
+            GenericAutoLogger<orca::MultiCamera, orca::MultiCameraConsumer,
+                        orca::MultiCameraDataPtr,
+                        MultiCameraLogWriter>(context) {};
+    private:
+        void setupEvent(orca::MultiCameraPrx &providerPrx, MultiCameraLogWriter &logWriter)
+        {
+            // MultiCameraWriter needs to know properties of the data in order to set up properly
+            logWriter.initMultiCameraWriter(providerPrx->getDescription());
+            logWriter.write(providerPrx->getDescription());
+        }
+};
+
+
+//////////////////////////////////////////////////////////////////////
 // the following do not use the generic template because their data
 // types are classes and not structs
 //////////////////////////////////////////////////////////////////////

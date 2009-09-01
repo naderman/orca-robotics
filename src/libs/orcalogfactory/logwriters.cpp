@@ -966,5 +966,76 @@ CameraLogWriter::createLogFile( const std::string &filename, const std::string &
         throw orcalog::FormatNotSupportedException( ERROR_INFO, ss.str() );
     }
 }
+
+//////////////////////////////////////////////////////////////////////
+
+void
+MultiCameraLogWriter::checkFormat( const std::string &format )
+{
+    vector<string> okFormats;
+    okFormats.push_back("ice");
+    okFormats.push_back("jpeg");
+    okFormats.push_back("avi");
+    checkFormats( format, okFormats );
+}
+
+void
+MultiCameraLogWriter::write( const orca::MultiCameraDescriptionPtr &descr )
+{
+    if ( orcalog::LogWriter::numItemsLogged() > 0 )
+        throw orcalog::Exception( ERROR_INFO, "Tried to write description after logging started" );
+
+    multiCameraWriter.logToFile( file_,
+               orcalog::LogWriter::logWriterInfo().format,
+               orcalog::LogWriter::logWriterInfo().context,
+               descr );
+
+}
+
+void
+MultiCameraLogWriter::write( const orca::MultiCameraDataPtr &obj, const orca::Time &arrivalTime  )
+{
+    writeReferenceToMasterFile(arrivalTime);
+
+    multiCameraWriter.logToFile( file_,
+            orcalog::LogWriter::logWriterInfo().format,
+            orcalog::LogWriter::logWriterInfo().context,
+            obj);
+
+}
+
+
+void MultiCameraLogWriter::initMultiCameraWriter( const orca::MultiCameraDescriptionPtr &descr ) {
+   multiCameraWriter.init(descr, orcalog::LogWriter::logWriterInfo().format);
+}
+//
+//alen - had to overwrite this method from logwriter.h to include jpegs
+//
+void
+MultiCameraLogWriter::createLogFile( const std::string &filename, const std::string &format )
+{
+    // Check that the file's not already open
+    if ( file_ ) {
+        std::string s = "Log file already exists.";
+        throw orcalog::FileException( ERROR_INFO, s );
+    }
+
+    //
+    // create log file, will throw expection otherwise
+    //
+    if ( format == "ice" ) {
+        file_ = orcalog::openBinaryFileForWriting(filename);
+    }
+    else if ( format == "jpeg" || format == "avi") {
+        multiCameraWriter.createLogDirectory(filename);
+        file_ = orcalog::openAsciiFileForWriting(filename);
+    }
+    else {
+        // format is not supported: throw exception
+        stringstream ss;
+        ss << "Unknown log format: "<<format<<endl;
+        throw orcalog::FormatNotSupportedException( ERROR_INFO, ss.str() );
+    }
+}
 }
 

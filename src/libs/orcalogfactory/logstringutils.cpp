@@ -1099,4 +1099,79 @@ fromLogString ( std::stringstream &s, orca::ImageData& obj )
     s >> ptr->format; 
 }
 
+
+// Multicameras
+
+std::string
+toLogString(const orca::MultiCameraDescriptionPtr& obj) {
+    int length = obj->descriptions.size();
+    stringstream s;
+    for (int i = 0; i < length; i++) {
+        s << "Camera" << i << ": "
+                << obj->descriptions[i]->width << " "
+                << obj->descriptions[i]->height << " "
+                << obj->descriptions[i]->format << " "
+                << obj->descriptions[i]->frameRate << " "
+                << toLogString(obj->descriptions[i]->offset) << " "
+                << toLogString(obj->descriptions[i]->caseSize) << " "
+                << obj->descriptions[i]->focalLength.x << " "
+                << obj->descriptions[i]->focalLength.y << " "
+                << obj->descriptions[i]->principlePoint.x << " "
+                << obj->descriptions[i]->principlePoint.y << " "
+                << obj->descriptions[i]->k1 << " "
+                << obj->descriptions[i]->k2 << " "
+                << obj->descriptions[i]->p1 << " "
+                << obj->descriptions[i]->p2 << " " << endl;
+    }
+    return s.str();
+}
+
+void
+fromLogString( std::stringstream &s, orca::MultiCameraDescription& obj )
+{
+    /*fromLogString(s,obj.width);
+    fromLogString(s,obj.height);
+    s >> obj.format;
+    fromLogString(s,obj.frameRate);
+    fromLogString(s,obj.offset);
+    fromLogString(s,obj.caseSize);
+    fromLogString(s,obj.focalLength.x);
+    fromLogString(s,obj.focalLength.y);
+    fromLogString(s,obj.principlePoint.x);
+    fromLogString(s,obj.principlePoint.y);
+    fromLogString(s,obj.k1);
+    fromLogString(s,obj.k2);
+    fromLogString(s,obj.p1);
+    fromLogString(s,obj.p2);*/
+}
+
+
+std::string
+toLogString( const orca::MultiCameraDataPtr& obj )
+{
+    int length = obj->cameraDataVector.size();
+    stringstream s;
+    for (int i = 0; i < length; i++) {
+        //s << "multicameradatapointer test!";
+        s << toLogString(obj->cameraDataVector[i]->timeStamp) << " ";
+        s << obj->cameraDataVector[i]->description->width << " ";
+        s << obj->cameraDataVector[i]->description->height << " ";
+        s << obj->cameraDataVector[i]->description->format << " ";
+    }
+    return s.str();
+}
+
+void
+fromLogString ( std::stringstream &s, orca::MultiCameraData& obj )
+{
+    /*fromLogString(s,obj.timeStamp );
+
+    orca::ImageDescription* ptr = new orca::ImageDescription;
+    obj.description  = ptr;
+
+    fromLogString(s,ptr->width);
+    fromLogString(s,ptr->height);
+    s >> ptr->format; */
+}
+
 }

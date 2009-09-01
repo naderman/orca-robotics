@@ -17,7 +17,9 @@
 
 #include <orca/camera.h>
 #include <orca/image.h>
+#include <orca/multicamera.h>
 #include "camerawriter.h"
+#include "multicamerawriter.h"
 
 namespace orcalogfactory {
 
@@ -168,6 +170,21 @@ private:
 
 //////////////////////////////////////////////////////////////////////
 
+class MultiCameraLogWriter : public orcalog::LogWriter
+{
+public:
+    void checkFormat( const std::string &format );
+    void write( const orca::MultiCameraDataPtr &obj, const orca::Time &arrivalTime  );
+    void write( const orca::MultiCameraDescriptionPtr &descr );
+    void initMultiCameraWriter( const orca::MultiCameraDescriptionPtr &descr );
+    void createLogFile( const std::string &filename, const std::string &format );
+private:
+// alen - member class for camera logging so we can handle jpegs
+    MultiCameraWriter multiCameraWriter;
+
+};
+
+//////////////////////////////////////////////////////////////////////
 
 }
 

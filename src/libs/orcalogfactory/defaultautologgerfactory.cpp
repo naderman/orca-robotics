@@ -31,6 +31,7 @@ DefaultAutoLoggerFactory::DefaultAutoLoggerFactory()
     addSupportedType("Gps");
     addSupportedType("Camera");
     addSupportedType("Image");
+    addSupportedType("MultiCamera");
 }
 
 orcalog::AutoLogger* 
@@ -92,6 +93,10 @@ DefaultAutoLoggerFactory::create( const std::string &interfaceType, const orcaic
     else if (interfaceType == "Image")
     {
         logger.reset( new ImageAutoLogger( context ) );
+    }
+    else if (interfaceType == "MultiCamera")
+    {
+        logger.reset( new MultiCameraAutoLogger( context) );
     }
     else
     {

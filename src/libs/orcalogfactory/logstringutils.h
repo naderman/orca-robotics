@@ -31,6 +31,7 @@
 #include <orca/featuremap2d.h>
 #include <orca/pathplanner2d.h>
 #include <orca/wifi.h>
+#include <orca/multicamera.h>
 
 namespace orcalogfactory
 {
@@ -97,6 +98,13 @@ void fromLogString( std::stringstream &, orca::CameraDescription& );
 
 std::string toLogString( const orca::ImageDataPtr& );
 void fromLogString( std::stringstream &, orca::ImageData& );
+
+// Multicameras
+ std::string toLogString( const orca::MultiCameraDescriptionPtr& );
+void fromLogString( std::stringstream &, orca::MultiCameraDescription& );
+
+std::string toLogString( const orca::MultiCameraDataPtr& );
+void fromLogString( std::stringstream &, orca::MultiCameraData& );
 
 //}
 
