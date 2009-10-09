@@ -51,6 +51,9 @@ namespace {
             orca::VehicleGeometryDescriptionPtr geometry = new orca::VehicleGeometryDescription;
             geometry->type = orca::VehicleGeometryOther;
             vehicleDescr.geometry = geometry; 
+            orca::VehicleControlDescriptionPtr ctrl = new orca::VehicleControlDescription;
+            ctrl->type = orca::VehicleControlOther;
+            vehicleDescr.control = ctrl;        
         }
         else
         {
