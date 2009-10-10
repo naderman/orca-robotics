@@ -1,5 +1,5 @@
 /*
- * Orca-Robotics Project: Components for robotics 
+ * Orca-Robotics Project: Components for robotics
  *               http://orca-robotics.sf.net/
  * Copyright (c) 2004-2009 Alex Brooks, Alexei Makarenko, Tobias Kaupp
  *
@@ -39,7 +39,7 @@ public:
     virtual void newRelativeCommand( double longitudinal, double transverse, double angle );
 
 
-private:
+protected:
 
     hydroiceutil::EventQueuePtr events_;
 
