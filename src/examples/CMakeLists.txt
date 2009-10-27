@@ -13,9 +13,9 @@ if( ORCA_BUILD_EXAMPLES )
     add_subdirectory( player2orca )
     add_subdirectory( pureice )
     # much easier to check for java here, because the example is build as a separate project
-    if( JAVA_FOUND AND build_JAVA )
+    if( JAVA_FOUND AND ORCA_BUILD_JAVA )
         add_subdirectory( pureicej )
-    endif( JAVA_FOUND AND build_JAVA )
+    endif( JAVA_FOUND AND ORCA_BUILD_JAVA )
     # much easier to check for python here, because the example is build as a separate project
     if( PYTHON_FOUND AND build_PYTHON )
         add_subdirectory( pureicepy )
