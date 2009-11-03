@@ -210,7 +210,7 @@ PathFollowerUserInteraction::send()
     }
         
     // save path to file automatically
-    char buffer [5];
+    char buffer [6];
     sprintf(buffer,"%05d",numAutoPathDumps_++);
     QString fileName = readDumpPath(context_.properties(), context_.tag()) + "/pathdump" + QString(buffer) + ".txt";
     hydroqguipath::GuiPath guiPath;
