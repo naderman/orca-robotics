@@ -26,6 +26,22 @@ If you use Orca, please let us know so we can add you to this list.
 </td></tr>
 
 <tr><td width="170" rowspan="1" colspan="1" align="left" valign="top">
+@image html project_c3uv_150.jpg
+</td>
+<td rowspan="1" colspan="1" align="left" valign="top">
+The <a href="http://calccit.org/c3uv/" target="_blank">Center for Collaborative Control of Unmanned Vehicles (C3UV)</a> at the University of California, Berkeley applies task allocation and data fusion research 
+to a multi-UAV system. Orca is used for all UAV-to-UAV and UAV-to-ground communications.
+</td></tr>
+
+<tr><td width="170" rowspan="1" colspan="1" align="left" valign="top">
+@image html project_cornell_150.jpg
+</td>
+<td rowspan="1" colspan="1" align="left" valign="top">
+The Cornell University <a href="http://asl.mae.cornell.edu/wiki" target="_blank">Autonomous Systems Lab</a> focuses
+on estimation and control for a variety of applications in the general area of autonomous/semi-autonomous robotic systems.
+</td></tr>
+
+<tr><td width="170" rowspan="1" colspan="1" align="left" valign="top">
 @image html project_uts_150.jpg
 </td>
 <td rowspan="1" colspan="1" align="left" valign="top">
@@ -40,13 +56,6 @@ Several projects related to <a href="http://ims.uts.edu.au/projects.html#Automot
 </td></tr>
 
 <tr><td width="170" rowspan="1" colspan="1" align="left" valign="top">
-@image html project_generic_150.png
-</td>
-<td rowspan="1" colspan="1" align="left" valign="top">
-University of Florida (USA).
-</td></tr>
-
-<tr><td width="170" rowspan="1" colspan="1" align="left" valign="top">
 @image html project_iward_150.jpg
 </td>
 <td rowspan="1" colspan="1" align="left" valign="top">
@@ -54,17 +63,17 @@ University of Florida (USA).
 </td></tr>
 
 <tr><td width="170" rowspan="1" colspan="1" align="left" valign="top">
-@image html project_c3uv_150.jpg
+@image html project_mm_150.png
 </td>
 <td rowspan="1" colspan="1" align="left" valign="top">
-The <a href="http://calccit.org/c3uv/" target="_blank">Center for Collaborative Control of Unmanned Vehicles (C3UV)</a> at the University of California, Berkeley is transitioning its multi-UAV architecture to Orca. Orca is used for UAV-to-UAV and UAV-to-ground communications.
+Master's thesis on robotic sensor calibration at the University of Sydney (Australia). Uses Orca for data logging, playback, and visualization.
 </td></tr>
 
 <tr><td width="170" rowspan="1" colspan="1" align="left" valign="top">
 @image html project_generic_150.png
 </td>
 <td rowspan="1" colspan="1" align="left" valign="top">
-Master's thesis on robotic sensor calibration at the University of Sydney (Australia). Uses Orca for data logging, playback, and visualization.
+University of Florida (USA).
 </td></tr>
 
 <tr><td width="170" rowspan="1" colspan="1" align="left" valign="top">

@@ -1,6 +1,6 @@
 #
 # Official dependency number 0: CMake.
-# Obviously, we must have it if we are here but test version.
+# Obviously, we must have it if we are here but test its version.
 #
 cmake_minimum_required( VERSION 2.6.3 FATAL_ERROR )
 
@@ -12,11 +12,11 @@ cmake_minimum_required( VERSION 2.6.3 FATAL_ERROR )
 project( orca )
 
 # project version
-set( GBX_PROJECT_VERSION_MAJOR "2" )
-set( GBX_PROJECT_VERSION_MINOR "13" )
-set( GBX_PROJECT_VERSION_PATCH "+" )
+set( GBX_PROJECT_VERSION_MAJOR "9" )
+set( GBX_PROJECT_VERSION_MINOR "11" )
+set( GBX_PROJECT_VERSION_PATCH "0" )
 
-set( GBX_PROJECT_VERSION 
+set( GBX_PROJECT_VERSION
     ${GBX_PROJECT_VERSION_MAJOR}.${GBX_PROJECT_VERSION_MINOR}.${GBX_PROJECT_VERSION_PATCH} )
 
 #

@@ -1,5 +1,5 @@
 /*
- * Orca-Robotics Project: Components for robotics 
+ * Orca-Robotics Project: Components for robotics
  *               http://orca-robotics.sf.net/
  * Copyright (c) 2004-2009 Alex Brooks, Alexei Makarenko, Tobias Kaupp
  *
@@ -12,7 +12,7 @@
 
 @page orca_doc_install_debian Installing Orca on Debian Linux
 
-@note Reviewed for release 9.06.
+@note Reviewed for release 9.11.
 
 These are detailed instructions for installing Orca on Debian Linux. They are known to work for a system using Debian \b Testing distribution. They are also applicable to Ubuntu/Kubuntu 8.10 (Intrepid). See @ref orca_doc_getting for general guidelines.
 
@@ -44,8 +44,8 @@ Minimum version required 3.3.0 (latest tested: 3.3.1).
 
 @section orca_doc_install_debian_gearbox GearBox
 
-Minimum version required 9.02
-    - Download @ref orca_doc_getting_download "GearBox source" archive and un-tar it.
+Minimum version required 9.11
+    - If you haven't yet, download @ref orca_doc_getting_download "GearBox source" archive and un-tar it.
     - Configure using with CMake (note the dot after cmake), compile, and install.
     - The default installation directory is  @c /usr/local (see below on how to change it).
 @verbatim
@@ -56,24 +56,10 @@ $ make
 # make install
 @endverbatim
 
-@section orca_doc_install_debian_hydro Hydro
-
-Build and install Hydro distribution.
-    - Download @ref orca_doc_getting_download "Hydro source" archive and un-tar it.
-    - Configure using with CMake (note the dot after cmake), compile, and install.
-    - The default installation directory is  @c /usr/local (see below on how to change it).
-@verbatim
-$ tar -zxf hydro-x.x.x.tar.gz
-$ cd hydro
-$ cmake .
-$ make
-# make install
-@endverbatim
-
 @section orca_doc_install_debian_orca Orca
 
 Build and install Orca distribution.
-    - Download @ref orca_doc_getting_download "Orca source" archive and un-tar it.
+    - If you haven't yet, download @ref orca_doc_getting_download "Orca source" archive and un-tar it.
     - Configure using with CMake (note the dot after cmake), compile, and install.
     - The default installation directory is  @c /usr/local (see below on how to change it).
 @verbatim
@@ -84,7 +70,7 @@ $ make
 # make install
 @endverbatim
 
-We are done. To make sure that everything worked as expected, try this (actual versions may be different):
+We are done. For a quick check that everything worked as expected, try this (actual versions may be different):
 
 @verbatim
 $ laser2d --version
@@ -102,13 +88,9 @@ The following are the names of available variables for each distribution:
 - GearBox
     - GEARBOX_INSTALL - where to install Hydro installation, e.g. "cmake -DHYDRO_INSTALL=/home/myuser/temp ."
     - ICEUTIL_HOME - where to find IceUtil installation, e.g. "cmake -DICEUTIL_HOME=/home/myuser/temp ."
-- Hydro
-    - HYDRO_INSTALL - where to install Hydro installation, e.g. "cmake -DHYDRO_INSTALL=/home/myuser/temp ."
-    - ICEUTIL_HOME - where to find IceUtil installation, e.g. "cmake -DICEUTIL_HOME=/home/myuser/temp ."
-    - GEARBOX_HOME - where to find Gearbox installation, e.g. "cmake -DGEARBOX_HOME=/home/myuser/temp ."
 - Orca
     - ORCA_INSTALL - where to install Orca, e.g. "cmake -DORCA_INSTALL=/home/myuser/temp ."
-    - ICE_HOME - where to find Ice installation, e.g. "cmake -DICEUTIL_HOME=/home/myuser/temp ."
+    - ICE_HOME - where to find Ice installation, e.g. "cmake -DICE_HOME=/home/myuser/temp ."
     - GEARBOX_HOME - where to find Gearbox installation, e.g. "cmake -DGEARBOX_HOME=/home/myuser/temp ."
     - HYDRO_HOME - where to find Hydro installation, e.g. "cmake -DHYDRO_HOME=/home/myuser/temp ."
 
@@ -118,7 +100,7 @@ Each distribution needs to be told where to install. In addition, each dependent
 
 @verbatim
 DIR=/home/myuser/install
-alias cmake='cmake -DGEARBOX_INSTALL=$DIR -DGEARBOX_HOME=$DIR -DHYDRO_INSTALL=$DIR -DHYDRO_HOME=$DIR -DORCA_INSTALL=$DIR'
+alias cmake='cmake -DGEARBOX_INSTALL=$DIR -DGEARBOX_HOME=$DIR -DORCA_INSTALL=$DIR'
 export PATH=$DIR/bin:$PATH
 @endverbatim
 
