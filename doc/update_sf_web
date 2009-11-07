@@ -19,15 +19,15 @@ if [ $# -ne 1 ]; then
   exit 1
 fi
 
-DOXYGENCMD=doxyorca
+# doxyorca doesn't work anymore (needs libstdc++.so.5)
+DOXYGENCMD=doxygen #doxyorca
 DOXYFILE=doxyfile
 TARBALL=orca-release-doc.tar.gz
 SFUSER=$1
 SFSCPHOST=web.sf.net
 SFSHELLHOST=shell.sf.net
 SFPROJECT=orca-robotics
-# alexm: the final orca may not be needed anymore
-SFDIR=/home/groups/o/or/orca-robotics/htdocs/orca
+SFDIR=/home/groups/o/or/orca-robotics/htdocs
 
 force ls
 force $DOXYGENCMD $DOXYFILE
@@ -43,5 +43,5 @@ force scp $TARBALL $SFUSER@$SFSCPHOST:
 # don't know how to combine this login with commands, do it manually
 echo "when connected execute this:"
 echo "cd $SFDIR; mv ~/$TARBALL .; tar -zxvf $TARBALL"
-echo "to quit, type 'shutdown'"
+echo "to quit, type 'shutdown; exit'"
 force ssh -t $SFUSER,$SFPROJECT@$SFSHELLHOST create #"cd $SFDIR; mv ~/$TARBALL .; tar -zxvf $TARBALL"
